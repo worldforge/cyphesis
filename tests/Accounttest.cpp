@@ -1860,7 +1860,7 @@ Character::~Character()
 {
 }
 
-int Character::linkExternalMind(Link * link)
+int Character::linkExternal(Link * link)
 {
     return 0;
 }

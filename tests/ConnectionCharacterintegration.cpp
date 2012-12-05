@@ -174,7 +174,7 @@ void ConnectionCharacterintegration::test_connected()
     // Dispatching an external op from the character should have no effect
     // if the external mind is already in place.
 
-    m_character->linkExternalMind(m_connection);
+    m_character->linkExternal(m_connection);
 
     ASSERT_NOT_NULL(m_character->m_externalMind);
     ExternalMind * em =
@@ -206,7 +206,7 @@ void ConnectionCharacterintegration::test_unlinked()
     // already in place, but is not linked to a connection should link it
     // back up.
 
-    m_character->linkExternalMind(m_connection);
+    m_character->linkExternal(m_connection);
 
     ASSERT_NOT_NULL(m_character->m_externalMind);
     ExternalMind * em =
@@ -242,7 +242,7 @@ void ConnectionCharacterintegration::test_external_op()
     // Dispatching a Talk external op from the character should result in
     // it being passed on to the world.
 
-    m_character->linkExternalMind(m_connection);
+    m_character->linkExternal(m_connection);
 
     Atlas::Objects::Operation::Talk op;
     op->setFrom(m_character->getId());

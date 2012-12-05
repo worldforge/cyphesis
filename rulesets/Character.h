@@ -72,8 +72,8 @@ class Character : public Thing {
     explicit Character(const std::string & id, long intId);
     virtual ~Character();
 
-    int linkExternalMind(Link *);
-    int unlinkExternalMind(Link *);
+    int linkExternal(Link *);
+    int unlinkExternal(Link *);
 
     int startTask(Task *, const Operation & op, OpVector &);
     void updateTask(OpVector &);

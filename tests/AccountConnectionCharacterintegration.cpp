@@ -191,7 +191,7 @@ void AccountConnectionCharacterintegration::test_unsubscribe()
 
     m_connection->m_objects[m_account->getIntId()] = m_account;
     m_connection->m_objects[m_character->getIntId()] = m_character;
-    m_character->linkExternalMind(m_connection);
+    m_character->linkExternal(m_connection);
 
     ASSERT_TRUE(m_connection->m_objects.find(m_character->getIntId()) !=
                 m_connection->m_objects.end())
@@ -225,7 +225,7 @@ void AccountConnectionCharacterintegration::test_unsubscribe_other()
                          "242eedae-6a2e-4c5b-9901-711b14d7e851",
                          compose("%1", m_id_counter), m_id_counter++);
 
-    m_character->linkExternalMind(other_connection);
+    m_character->linkExternal(other_connection);
 
     ASSERT_TRUE(m_connection->m_objects.find(m_character->getIntId()) !=
                 m_connection->m_objects.end())

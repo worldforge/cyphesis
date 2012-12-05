@@ -829,12 +829,12 @@ Character::~Character()
 {
 }
 
-int Character::linkExternalMind(Link * link)
+int Character::linkExternal(Link * link)
 {
     return 0;
 }
 
-int Character::unlinkExternalMind(Link * link)
+int Character::unlinkExternal(Link * link)
 {
     return 0;
 }

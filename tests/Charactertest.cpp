@@ -90,14 +90,14 @@ class Charactertest : public Cyphesis::TestBase
     void teardown();
 
     void test_exerciser();
-    void test_linkExternalMind();
-    void test_linkExternalMind_mind();
-    void test_linkExternalMind_linked();
-    void test_linkExternalMind_linked_other();
-    void test_unlinkExternalMind();
-    void test_unlinkExternalMind_linked_other();
-    void test_unlinkExternalMind_unlinked();
-    void test_unlinkExternalMind_nomind();
+    void test_linkExternal();
+    void test_linkExternal_mind();
+    void test_linkExternal_linked();
+    void test_linkExternal_linked_other();
+    void test_unlinkExternal();
+    void test_unlinkExternal_linked_other();
+    void test_unlinkExternal_unlinked();
+    void test_unlinkExternal_nomind();
     void test_filterExternalOperation();
 
     static void BaseWorld_message_called(const Operation & op, Entity &);
@@ -116,14 +116,14 @@ void Charactertest::BaseWorld_message_called(const Operation & op,
 Charactertest::Charactertest()
 {
     ADD_TEST(Charactertest::test_exerciser);
-    ADD_TEST(Charactertest::test_linkExternalMind);
-    ADD_TEST(Charactertest::test_linkExternalMind_mind);
-    ADD_TEST(Charactertest::test_linkExternalMind_linked);
-    ADD_TEST(Charactertest::test_linkExternalMind_linked_other);
-    ADD_TEST(Charactertest::test_unlinkExternalMind);
-    ADD_TEST(Charactertest::test_unlinkExternalMind_linked_other);
-    ADD_TEST(Charactertest::test_unlinkExternalMind_unlinked);
-    ADD_TEST(Charactertest::test_unlinkExternalMind_nomind);
+    ADD_TEST(Charactertest::test_linkExternal);
+    ADD_TEST(Charactertest::test_linkExternal_mind);
+    ADD_TEST(Charactertest::test_linkExternal_linked);
+    ADD_TEST(Charactertest::test_linkExternal_linked_other);
+    ADD_TEST(Charactertest::test_unlinkExternal);
+    ADD_TEST(Charactertest::test_unlinkExternal_linked_other);
+    ADD_TEST(Charactertest::test_unlinkExternal_unlinked);
+    ADD_TEST(Charactertest::test_unlinkExternal_nomind);
     ADD_TEST(Charactertest::test_filterExternalOperation);
 }
 
@@ -156,13 +156,13 @@ void Charactertest::test_exerciser()
 }
 
 // The common case as a link up with a new ExternalMind object
-void Charactertest::test_linkExternalMind()
+void Charactertest::test_linkExternal()
 {
     ASSERT_NULL(m_character->m_externalMind);
 
     Link * l = new TestLink(*(CommSocket*)0, "2", 2);
     
-    int ret = m_character->linkExternalMind(l);
+    int ret = m_character->linkExternal(l);
     ASSERT_EQUAL(ret, 0);
 
     ASSERT_NOT_NULL(m_character->m_externalMind)
@@ -172,7 +172,7 @@ void Charactertest::test_linkExternalMind()
 
 // An existing, non-linked ExternalMind should be left in place, and used
 // for the link up.
-void Charactertest::test_linkExternalMind_mind()
+void Charactertest::test_linkExternal_mind()
 {
     ExternalMind * existing_mind = m_character->m_externalMind =
                                    new ExternalMind(*m_character);
@@ -182,7 +182,7 @@ void Charactertest::test_linkExternalMind_mind()
 
     Link * l = new TestLink(*(CommSocket*)0, "2", 2);
     
-    int ret = m_character->linkExternalMind(l);
+    int ret = m_character->linkExternal(l);
     ASSERT_EQUAL(ret, 0);
 
     ASSERT_NOT_NULL(m_character->m_externalMind)
@@ -192,7 +192,7 @@ void Charactertest::test_linkExternalMind_mind()
 }
 
 // A link already done should be unaffected
-void Charactertest::test_linkExternalMind_linked()
+void Charactertest::test_linkExternal_linked()
 {
     ExternalMind * existing_mind = m_character->m_externalMind =
                                    new ExternalMind(*m_character);
@@ -205,7 +205,7 @@ void Charactertest::test_linkExternalMind_linked()
     ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(l));
 
     
-    int ret = m_character->linkExternalMind(l);
+    int ret = m_character->linkExternal(l);
     ASSERT_EQUAL(ret, -1);
 
     ASSERT_NOT_NULL(m_character->m_externalMind)
@@ -215,7 +215,7 @@ void Charactertest::test_linkExternalMind_linked()
 }
 
 // An existing link should be unaffected, and linkup should fail
-void Charactertest::test_linkExternalMind_linked_other()
+void Charactertest::test_linkExternal_linked_other()
 {
     ExternalMind * existing_mind = m_character->m_externalMind =
                                    new ExternalMind(*m_character);
@@ -228,7 +228,7 @@ void Charactertest::test_linkExternalMind_linked_other()
 
     Link * l = new TestLink(*(CommSocket*)0, "2", 2);
     
-    int ret = m_character->linkExternalMind(l);
+    int ret = m_character->linkExternal(l);
     ASSERT_EQUAL(ret, -1);
 
     ASSERT_NOT_NULL(m_character->m_externalMind)
@@ -239,7 +239,7 @@ void Charactertest::test_linkExternalMind_linked_other()
 }
 
 // Common case. Character has a link, and this removes it.
-void Charactertest::test_unlinkExternalMind()
+void Charactertest::test_unlinkExternal()
 {
     ExternalMind * existing_mind = m_character->m_externalMind =
                                    new ExternalMind(*m_character);
@@ -250,7 +250,7 @@ void Charactertest::test_unlinkExternalMind()
     ASSERT_TRUE(m_character->m_externalMind->isLinked());
     ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(existing_link));
     
-    int ret = m_character->unlinkExternalMind(existing_link);
+    int ret = m_character->unlinkExternal(existing_link);
     ASSERT_EQUAL(ret, 0);
 
     ASSERT_NOT_NULL(m_character->m_externalMind)
@@ -258,7 +258,7 @@ void Charactertest::test_unlinkExternalMind()
 }
 
 // Character has a link to another connection.
-void Charactertest::test_unlinkExternalMind_linked_other()
+void Charactertest::test_unlinkExternal_linked_other()
 {
     ExternalMind * existing_mind = m_character->m_externalMind =
                                    new ExternalMind(*m_character);
@@ -271,7 +271,7 @@ void Charactertest::test_unlinkExternalMind_linked_other()
     
     Link * l = new TestLink(*(CommSocket*)0, "2", 2);
 
-    int ret = m_character->unlinkExternalMind(l);
+    int ret = m_character->unlinkExternal(l);
     ASSERT_EQUAL(ret, -2);
 
     ASSERT_NOT_NULL(m_character->m_externalMind)
@@ -280,7 +280,7 @@ void Charactertest::test_unlinkExternalMind_linked_other()
 }
 
 // Check the case where the Character has no link
-void Charactertest::test_unlinkExternalMind_unlinked()
+void Charactertest::test_unlinkExternal_unlinked()
 {
     m_character->m_externalMind = new ExternalMind(*m_character);
     ASSERT_NOT_NULL(m_character->m_externalMind);
@@ -288,20 +288,20 @@ void Charactertest::test_unlinkExternalMind_unlinked()
 
     Link * l = new TestLink(*(CommSocket*)0, "2", 2);
     
-    int ret = m_character->unlinkExternalMind(l);
+    int ret = m_character->unlinkExternal(l);
     ASSERT_EQUAL(ret, -1);
 
     ASSERT_NOT_NULL(m_character->m_externalMind)
     ASSERT_TRUE(!m_character->m_externalMind->isLinked())
 }
 
-void Charactertest::test_unlinkExternalMind_nomind()
+void Charactertest::test_unlinkExternal_nomind()
 {
     ASSERT_NULL(m_character->m_externalMind);
 
     Link * l = new TestLink(*(CommSocket*)0, "2", 2);
     
-    int ret = m_character->unlinkExternalMind(l);
+    int ret = m_character->unlinkExternal(l);
     ASSERT_EQUAL(ret, -1);
 
     ASSERT_NULL(m_character->m_externalMind)

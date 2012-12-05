@@ -272,7 +272,7 @@ Character::~Character()
     delete m_externalMind;
 }
 
-int Character::linkExternalMind(Link * link)
+int Character::linkExternal(Link * link)
 {
     if (m_externalMind == 0) {
         m_externalMind = new ExternalMind(*this);
@@ -299,7 +299,7 @@ int Character::linkExternalMind(Link * link)
     return 0;
 }
 
-int Character::unlinkExternalMind(Link * link)
+int Character::unlinkExternal(Link * link)
 {
     if (m_externalMind == 0) {
         log(ERROR, "Character is not connected.");
@@ -1752,7 +1752,7 @@ void Character::operation(const Operation & op, OpVector & res)
 void Character::externalOperation(const Operation & op, Link & link)
 {
     debug( std::cout << "Character::externalOperation(" << op->getParents().front() << ")" << std::endl << std::flush;);
-    if (linkExternalMind(&link) == 0) {
+    if (linkExternal(&link) == 0) {
         debug(std::cout << "Subscribing existing character" << std::endl
                         << std::flush;);
 

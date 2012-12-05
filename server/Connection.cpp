@@ -143,7 +143,7 @@ void Connection::disconnectObject(RouterMap::iterator I,
     }
     Character * chr = dynamic_cast<Character *>(I->second);
     if (chr != 0) {
-        int taken = chr->unlinkExternalMind(this);
+        int taken = chr->unlinkExternal(this);
         if (taken == 0) {
             logEvent(DROP_CHAR, String::compose("%1 - %2 %4 character (%3)",
                                                 getId(), chr->getId(),
