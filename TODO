@@ -1,5 +1,3 @@
-Write a ConnectionCreatorintegration test. Should include Character.
-
 disconnectObject does not remove a non-Account ConnectableRouter from
 the connection. Neither does it remove Characters.
 
