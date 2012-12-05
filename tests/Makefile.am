@@ -93,6 +93,7 @@ SERVER_INTEGRATION_TESTS = WorldRouterintegration Rulesetintegration \
                            ConnectionShakerintegration \
                            ConnectionCharacterintegration \
                            ConnectionCreatorintegration \
+                           TrustedConnectionCreatorintegration \
                            AccountConnectionCharacterintegration
 
 TOOLS_TESTS = WorldLoadertest AdminClienttest WorldDumpertest \
@@ -1377,6 +1378,14 @@ ConnectionCharacterintegration_LDADD = \
 ConnectionCreatorintegration_SOURCES = \
         ConnectionCreatorintegration.cpp
 ConnectionCreatorintegration_LDADD = \
+        $(top_builddir)/server/Connection.o \
+        $(top_builddir)/rulesets/Creator.o \
+        $(top_builddir)/rulesets/Character.o \
+        $(top_builddir)/rulesets/ExternalMind.o
+        
+TrustedConnectionCreatorintegration_SOURCES = \
+        TrustedConnectionCreatorintegration.cpp
+TrustedConnectionCreatorintegration_LDADD = \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/rulesets/Creator.o \
         $(top_builddir)/rulesets/Character.o \
