@@ -15,7 +15,7 @@ COMMON_TESTS = logtest Inheritancetest Propertytest \
                PropertyManagertest Variabletest AtlasStreamClienttest \
                ClientTasktest utilstest SystemTimetest \
                TaskKittest EntityKittest ScriptKittest atlas_helperstest \
-               Shakertest CommSockettest Linktest
+               Shakertest CommSockettest Linktest composetest
 
 PHYSICS_TESTS = BBoxtest Vector3Dtest Quaterniontest \
                 transformtest Collisiontest emergencetest distancetest \
@@ -310,6 +310,8 @@ Linktest_LDADD = \
 CommSockettest_SOURCES = CommSockettest.cpp
 CommSockettest_LDADD = \
         $(top_builddir)/common/CommSocket.o
+
+composetest_SOURCES = composetest.cpp
 
 # PHYSICS_TESTS
 
