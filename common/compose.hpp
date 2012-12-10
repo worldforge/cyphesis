@@ -48,6 +48,8 @@ namespace StringPrivate
     // initialize and prepare format string on the form "text %1 text %2 etc."
     explicit Composition(std::string fmt);
 
+    Composition &arg(const char * obj);
+
     // supply an replacement argument starting from %1
     template <typename T>
     Composition &arg(const T &obj);
@@ -111,7 +113,38 @@ namespace StringPrivate
   }
 
 
-  // implementation of class Composition
+  // implementations of class Composition
+  template <>
+  inline Composition &Composition::arg<std::string>(const std::string &obj)
+  {
+    for (specification_map::const_iterator i = specs.lower_bound(arg_no),
+           end = specs.upper_bound(arg_no); i != end; ++i) {
+      output_list::iterator pos = i->second;
+      ++pos;
+      
+      output.insert(pos, obj);
+    }
+  
+    ++arg_no;
+  
+    return *this;
+  }
+
+  inline Composition &Composition::arg(const char * obj)
+  {
+    for (specification_map::const_iterator i = specs.lower_bound(arg_no),
+           end = specs.upper_bound(arg_no); i != end; ++i) {
+      output_list::iterator pos = i->second;
+      ++pos;
+      
+      output.insert(pos, obj);
+    }
+  
+    ++arg_no;
+  
+    return *this;
+  }
+
   template <typename T>
   inline Composition &Composition::arg(const T &obj)
   {
