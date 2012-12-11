@@ -2,6 +2,8 @@ disconnectObject does not remove a non-Account ConnectableRouter from
 the connection. Neither does it remove Characters.
 
 Add checks to ensure unlinkExternalMind has the desired effect on movement.
+Once these checks are in place, we can do the movement change more directly
+without having to go via the mindMoveOperation phase.
 
 Make [un]linkExternalMind return success, to indicate if an event should be
 logged. Keeps logging of events cleanly in the server code.

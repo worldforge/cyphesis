@@ -132,6 +132,9 @@ void Charactertest::setup()
     m_character = new Character("1", 1);
     m_type = new TypeNode("character");
     m_character->setType(m_type);
+
+    m_BaseWorld_message_called = 0;
+    m_BaseWorld_message_called_from = 0;
 }
 
 void Charactertest::teardown()
