@@ -192,7 +192,7 @@ void Playertest::test_characterError_no_name()
 
     int result = m_account->characterError(op, description, res);
 
-    ASSERT_EQUAL(result, 1);
+    ASSERT_NOT_EQUAL(result, 0);
     ASSERT_EQUAL(res.size(), 1u);
     ASSERT_EQUAL(res.front()->getClassNo(),
                  Atlas::Objects::Operation::ERROR_NO);
@@ -210,7 +210,7 @@ void Playertest::test_characterError_admin_name()
 
     int result = m_account->characterError(op, description, res);
 
-    ASSERT_EQUAL(result, 1);
+    ASSERT_NOT_EQUAL(result, 0);
     ASSERT_EQUAL(res.size(), 1u);
     ASSERT_EQUAL(res.front()->getClassNo(),
                  Atlas::Objects::Operation::ERROR_NO);
@@ -228,7 +228,7 @@ void Playertest::test_characterError_not_playable()
 
     int result = m_account->characterError(op, description, res);
 
-    ASSERT_EQUAL(result, 1);
+    ASSERT_NOT_EQUAL(result, 0);
     ASSERT_EQUAL(res.size(), 1u);
     ASSERT_EQUAL(res.front()->getClassNo(),
                  Atlas::Objects::Operation::ERROR_NO);
