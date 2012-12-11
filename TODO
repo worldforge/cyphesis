@@ -37,8 +37,6 @@ there back to the client.
 
 A solid attempt at i18n, which different l12n for connections?
 
-Fix return type in characterError
-
 1. Make sure all retries have exponential backoff.
 2. Make sure all periodic things have jitter.
   a) Metaserver query needs deterministics jitter, to ensure clients drift.
