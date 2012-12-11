@@ -85,12 +85,12 @@ int Player::characterError(const Operation & op,
 {
     if (ent->isDefaultName()) {
         error(op, "Entity to be created has no name", res, getId());
-        return true;
+        return -1;
     }
     const std::string & name = ent->getName();
     if (name.compare(0,5,"admin") == 0) {
         error(op, "Entity to be created cannot start with admin", res, getId());
-        return true;
+        return -1;
     }
 
     // Parents must have been checked already before calling this method
@@ -100,7 +100,7 @@ int Player::characterError(const Operation & op,
               String::compose("You cannot create a character of type \"%1\".",
                               type),
               res, getId());
-        return true;
+        return -1;
     }
-    return false;
+    return 0;
 }

@@ -145,14 +145,14 @@ int Admin::characterError(const Operation & op,
 {
     if (!ent->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
         error(op, "You cannot create a character with no type.", res, getId());
-        return true;
+        return -1;
     }
     const std::list<std::string> & parents = ent->getParents();
     if (parents.empty()) {
         error(op, "You cannot create a character with empty type.", res, getId());
-        return true;
+        return -1;
     }
-    return false;
+    return 0;
 }
 
 void Admin::LogoutOperation(const Operation & op, OpVector & res)

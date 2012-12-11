@@ -325,7 +325,7 @@ void Account::createObject(const std::string & type_str,
                            const Operation & op,
                            OpVector & res)
 {
-    if (characterError(op, arg, res)) {
+    if (characterError(op, arg, res) != 0) {
         return;
     }
 
