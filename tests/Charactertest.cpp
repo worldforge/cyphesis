@@ -258,6 +258,10 @@ void Charactertest::test_unlinkExternal()
 
     ASSERT_NOT_NULL(m_character->m_externalMind)
     ASSERT_TRUE(!m_character->m_externalMind->isLinked())
+    ASSERT_TRUE(m_BaseWorld_message_called.isValid());
+    ASSERT_EQUAL(m_BaseWorld_message_called_from, m_character);
+    ASSERT_EQUAL(m_BaseWorld_message_called->getClassNo(),
+                 Atlas::Objects::Operation::MOVE_NO);
 }
 
 // Character has a link to another connection.
