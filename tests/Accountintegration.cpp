@@ -25,6 +25,7 @@
 #endif
 
 #include "null_stream.h"
+#include "TestBase.h"
 
 #include "server/Account.h"
 #include "server/CommServer.h"
@@ -88,230 +89,275 @@ class TestAccount : public Account {
     }
 };
 
-int main()
+class Accountintegration : public Cyphesis::TestBase
 {
-    database_flag = false;
+    SystemTime * m_time;
+    WorldRouter * m_world;
 
+    ServerRouting * m_server;
+
+    CommServer * m_commServer;
+
+    TestCommClient * m_tc;
+    Connection * m_c;
+    TestAccount * m_ac;
+
+  public:
+    Accountintegration();
+
+    void setup();
+    void teardown();
+
+    void test_all();
+};
+
+Accountintegration::Accountintegration()
+{
     (void)new Domain;
 
-    SystemTime time;
-    WorldRouter world(time);
-    Entity & e = world.m_gameWorld;
+    ADD_TEST(Accountintegration::test_all);
+}
 
-    ServerRouting server(world, "noruleset", "unittesting",
+void Accountintegration::setup()
+{
+    m_time = new SystemTime;
+    m_world = new WorldRouter(*m_time);
+
+    m_server = new ServerRouting(*m_world, "noruleset", "unittesting",
                          "1", 1, "2", 2);
 
-    CommServer commServer;
+    m_commServer = new CommServer;
 
-    TestCommClient * tc = new TestCommClient(commServer);
-    Connection * c = new Connection(*tc, server, "addr", "3", 3);
-    TestAccount * ac = new TestAccount(c, "user", "password", "4", 4);
-    Entity * chr;
+    m_tc = new TestCommClient(*m_commServer);
+    m_c = new Connection(*m_tc, *m_server, "addr", "3", 3);
+    m_ac = new TestAccount(m_c, "user", "password", "4", 4);
+}
 
+void Accountintegration::teardown()
+{
+    delete m_ac;
+}
+
+void Accountintegration::test_all()
+{
     {
-        chr = new Entity("5", 5);
-        chr->m_location.m_loc = &e;
+        Entity * chr = new Entity("5", 5);
+        chr->m_location.m_loc = &m_world->m_gameWorld;
         chr->m_location.m_loc->makeContainer();
         assert(chr->m_location.m_loc->m_contains != 0);
         chr->m_location.m_loc->m_contains->insert(chr);
 
-        ac->addCharacter(chr);
+        m_ac->addCharacter(chr);
 
         chr->destroy();
 
     }
 
     {
-        chr = new Character("6", 6);
-        chr->m_location.m_loc = &e;
+        Entity * chr = new Character("6", 6);
+        chr->m_location.m_loc = &m_world->m_gameWorld;
         chr->m_location.m_loc->makeContainer();
         assert(chr->m_location.m_loc->m_contains != 0);
         chr->m_location.m_loc->m_contains->insert(chr);
 
-        ac->addCharacter(chr);
+        m_ac->addCharacter(chr);
 
         chr->destroy();
 
     }
 
     {
-        chr = new Character("7", 7);
-        chr->m_location.m_loc = &e;
+        Entity * chr = new Character("7", 7);
+        chr->m_location.m_loc = &m_world->m_gameWorld;
         chr->m_location.m_loc->makeContainer();
         assert(chr->m_location.m_loc->m_contains != 0);
         chr->m_location.m_loc->m_contains->insert(chr);
 
-        ac->addCharacter(chr);
+        m_ac->addCharacter(chr);
     }
 
     {
         Anonymous new_char;
-        Entity * chr = ac->testAddNewCharacter("thing", new_char,
+        Entity * chr = m_ac->testAddNewCharacter("thing", new_char,
                                                RootEntity());
         assert(chr != 0);
     }
 
-    ac->getType();
+    m_ac->getType();
 
     {
         MapType emap;
-        ac->addToMessage(emap);
+        m_ac->addToMessage(emap);
     }
 
     {
         RootEntity ent;
-        ac->addToEntity(ent);
+        m_ac->addToEntity(ent);
     }
 
     {
         Create op;
         OpVector res;
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         op->setArgs1(Root());
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         Anonymous op_arg;
         op->setArgs1(op_arg);
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         op_arg->setParents(std::list<std::string>());
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         op_arg->setParents(std::list<std::string>(1, "game_entity"));
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         op_arg->setName("Bob");
-        ac->operation(op, res);
+        m_ac->operation(op, res);
     }
 
     {
         Get op;
         OpVector res;
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         op->setArgs1(Root());
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         Anonymous op_arg;
         op->setArgs1(op_arg);
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         op_arg->setParents(std::list<std::string>());
-        ac->operation(op, res);
+        m_ac->operation(op, res);
     }
 
     {
         Imaginary op;
         OpVector res;
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         op->setArgs1(Root());
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         op->setSerialno(1);
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         Anonymous op_arg;
         op->setArgs1(op_arg);
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         op_arg->setLoc("2");
-        ac->operation(op, res);
+        m_ac->operation(op, res);
     }
 
     {
+        Anonymous new_char;
+        Entity * chr = m_ac->testAddNewCharacter("thing", new_char,
+                                               RootEntity());
+
         Look op;
         OpVector res;
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         op->setArgs1(Root());
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         Anonymous op_arg;
         op->setArgs1(op_arg);
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         op_arg->setId("1");
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         op_arg->setId(chr->getId());
-        ac->operation(op, res);
+        m_ac->operation(op, res);
     }
 
     {
+        Anonymous new_char;
+        Entity * chr = m_ac->testAddNewCharacter("thing", new_char,
+                                               RootEntity());
+
         Set op;
         OpVector res;
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         op->setArgs1(Root());
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         Anonymous op_arg;
         op->setArgs1(op_arg);
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         op_arg->setId("1");
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         op_arg->setId(chr->getId());
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         op_arg->setAttr("guise", "foo");
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         op_arg->setAttr("height", 3.0);
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         BBox newBox(WFMath::Point<3>(-0.5, -0.5, 0.0),
                     WFMath::Point<3>(-0.5, -0.5, 2.0));
         chr->m_location.setBBox(newBox);
         op_arg->setAttr("height", 3.0);
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         op_arg->setAttr("tasks", ListType());
-        ac->operation(op, res);
+        m_ac->operation(op, res);
     }
 
     {
         Talk op;
         OpVector res;
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         op->setArgs1(Root());
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         Anonymous op_arg;
         op->setArgs1(op_arg);
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         op_arg->setParents(std::list<std::string>());
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         op->setSerialno(1);
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         op_arg->setLoc("1");
-        ac->operation(op, res);
+        m_ac->operation(op, res);
     }
 
     {
         Logout op;
         OpVector res;
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         op->setSerialno(1);
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         op->setArgs1(Root());
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         Anonymous op_arg;
         op->setArgs1(op_arg);
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         op_arg->setParents(std::list<std::string>());
-        ac->operation(op, res);
+        m_ac->operation(op, res);
     }
 
     {
         // Move has no meaning
         Move op;
         OpVector res;
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         op->setArgs1(Root());
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         Anonymous op_arg;
         op->setArgs1(op_arg);
-        ac->operation(op, res);
+        m_ac->operation(op, res);
         op_arg->setParents(std::list<std::string>());
-        ac->operation(op, res);
+        m_ac->operation(op, res);
     }
 
     {
         Entity e("7", 7);
 
-        int ret = ac->connectCharacter(&e);
+        int ret = m_ac->connectCharacter(&e);
         assert(ret == -1);
     }
 
     {
         Character e("8", 8);
 
-        int ret = ac->connectCharacter(&e);
+        int ret = m_ac->connectCharacter(&e);
         assert(ret == 0);
     }
 
-    delete ac;
+}
 
-    return 0;
+int main()
+{
+    database_flag = false;
+
+    Accountintegration t;
+
+    return t.run();
 }
 
 void TestWorld::message(const Operation & op, Entity & ent)
