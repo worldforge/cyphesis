@@ -119,6 +119,7 @@ class Account : public ConnectableRouter {
     }
 
     friend class Accounttest;
+    friend class Accountintegration;
 };
 
 #endif // SERVER_ACCOUNT_H

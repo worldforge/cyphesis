@@ -80,13 +80,6 @@ class TestAccount : public Account {
                                OpVector & res) const {
         return 0;
     }
-
-    Entity * testAddNewCharacter(const std::string & typestr,
-                                 const Atlas::Objects::Entity::RootEntity & ent,
-                                 const Atlas::Objects::Entity::RootEntity & arg)
-    {
-        return addNewCharacter(typestr, ent, arg);
-    }
 };
 
 class Accountintegration : public Cyphesis::TestBase
@@ -141,45 +134,9 @@ void Accountintegration::teardown()
 void Accountintegration::test_all()
 {
     {
-        Entity * chr = new Entity("5", 5);
-        chr->m_location.m_loc = &m_world->m_gameWorld;
-        chr->m_location.m_loc->makeContainer();
-        assert(chr->m_location.m_loc->m_contains != 0);
-        chr->m_location.m_loc->m_contains->insert(chr);
-
-        m_ac->addCharacter(chr);
-
-        chr->destroy();
-
-    }
-
-    {
-        Entity * chr = new Character("6", 6);
-        chr->m_location.m_loc = &m_world->m_gameWorld;
-        chr->m_location.m_loc->makeContainer();
-        assert(chr->m_location.m_loc->m_contains != 0);
-        chr->m_location.m_loc->m_contains->insert(chr);
-
-        m_ac->addCharacter(chr);
-
-        chr->destroy();
-
-    }
-
-    {
-        Entity * chr = new Character("7", 7);
-        chr->m_location.m_loc = &m_world->m_gameWorld;
-        chr->m_location.m_loc->makeContainer();
-        assert(chr->m_location.m_loc->m_contains != 0);
-        chr->m_location.m_loc->m_contains->insert(chr);
-
-        m_ac->addCharacter(chr);
-    }
-
-    {
         Anonymous new_char;
-        Entity * chr = m_ac->testAddNewCharacter("thing", new_char,
-                                               RootEntity());
+        Entity * chr = m_ac->addNewCharacter("thing", new_char,
+                                             RootEntity());
         assert(chr != 0);
     }
 
@@ -242,7 +199,7 @@ void Accountintegration::test_all()
 
     {
         Anonymous new_char;
-        Entity * chr = m_ac->testAddNewCharacter("thing", new_char,
+        Entity * chr = m_ac->addNewCharacter("thing", new_char,
                                                RootEntity());
 
         Look op;
@@ -261,7 +218,7 @@ void Accountintegration::test_all()
 
     {
         Anonymous new_char;
-        Entity * chr = m_ac->testAddNewCharacter("thing", new_char,
+        Entity * chr = m_ac->addNewCharacter("thing", new_char,
                                                RootEntity());
 
         Set op;
