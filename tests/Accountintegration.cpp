@@ -113,10 +113,10 @@ class Accountintegration : public Cyphesis::TestBase
     void setup();
     void teardown();
 
-    void test_all();
-    void test_all1();
-    void test_all2();
-    void test_all3();
+    void test_addNewCharacter();
+    void test_getType();
+    void test_addToMessage();
+    void test_addToEntity();
     void test_CreateOperation();
     void test_GetOperation();
     void test_ImaginaryOperation();
@@ -132,10 +132,10 @@ Accountintegration::Accountintegration()
 {
     (void)new Domain;
 
-    ADD_TEST(Accountintegration::test_all);
-    ADD_TEST(Accountintegration::test_all1);
-    ADD_TEST(Accountintegration::test_all2);
-    ADD_TEST(Accountintegration::test_all3);
+    ADD_TEST(Accountintegration::test_addNewCharacter);
+    ADD_TEST(Accountintegration::test_getType);
+    ADD_TEST(Accountintegration::test_addToMessage);
+    ADD_TEST(Accountintegration::test_addToEntity);
     ADD_TEST(Accountintegration::test_CreateOperation);
     ADD_TEST(Accountintegration::test_GetOperation);
     ADD_TEST(Accountintegration::test_ImaginaryOperation);
@@ -171,7 +171,7 @@ void Accountintegration::teardown()
     Inheritance::clear();
 }
 
-void Accountintegration::test_all()
+void Accountintegration::test_addNewCharacter()
 {
     Anonymous new_char;
     Entity * chr = m_ac->addNewCharacter("thing", new_char,
@@ -181,18 +181,18 @@ void Accountintegration::test_all()
     std::cout << "Test 1" << std::endl << std::flush;
 }
 
-void Accountintegration::test_all1()
+void Accountintegration::test_getType()
 {
     m_ac->getType();
 }
 
-void Accountintegration::test_all2()
+void Accountintegration::test_addToMessage()
 {
     MapType emap;
     m_ac->addToMessage(emap);
 }
 
-void Accountintegration::test_all3()
+void Accountintegration::test_addToEntity()
 {
     RootEntity ent;
     m_ac->addToEntity(ent);
