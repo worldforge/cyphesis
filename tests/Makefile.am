@@ -1402,9 +1402,7 @@ AccountConnectionCharacterintegration_LDADD = \
         $(top_builddir)/rulesets/ExternalMind.o
         
 Accountintegration_SOURCES = \
-        Accountintegration.cpp \
-        CommClient_null_stream.cpp \
-        CommStreamClient_null_stream.cpp
+        Accountintegration.cpp
 Accountintegration_LDADD = \
         $(top_builddir)/server/EntityBuilder.o \
         $(top_builddir)/server/TaskRuleHandler.o \

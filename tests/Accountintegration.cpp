@@ -24,13 +24,13 @@
 #define DEBUG
 #endif
 
-#include "null_stream.h"
 #include "TestBase.h"
 
 #include "server/Account.h"
 #include "server/CommServer.h"
+#include "server/EntityBuilder.h"
+#include "server/Ruleset.h"
 #include "server/ServerRouting.h"
-#include "server/CommClient.h"
 #include "server/Connection.h"
 #include "server/WorldRouter.h"
 
@@ -38,6 +38,8 @@
 #include "rulesets/Domain.h"
 #include "rulesets/Entity.h"
 
+#include "common/CommSocket.h"
+#include "common/Inheritance.h"
 #include "common/SystemTime.h"
 
 #include "TestWorld.h"
@@ -62,9 +64,18 @@ using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Talk;
 using Atlas::Objects::Operation::Move;
 
-class TestCommClient : public CommClient<null_stream> {
+class TestCommSocket : public CommSocket {
   public:
-    TestCommClient(CommServer & cs) : CommClient<null_stream>(cs, "") { }
+    explicit TestCommSocket(CommServer & cs) : CommSocket(cs) { }
+    virtual ~TestCommSocket() { }
+
+    int getFd() const { return 0; }
+    bool isOpen() const { return true; }
+    bool eof() { return false; }
+    int read() { return 0; }
+    void dispatch() { }
+    void disconnect() { }
+    int flush() { return 0; }
 };
 
 class TestAccount : public Account {
@@ -91,7 +102,7 @@ class Accountintegration : public Cyphesis::TestBase
 
     CommServer * m_commServer;
 
-    TestCommClient * m_tc;
+    CommSocket * m_tc;
     Connection * m_c;
     TestAccount * m_ac;
 
@@ -102,6 +113,19 @@ class Accountintegration : public Cyphesis::TestBase
     void teardown();
 
     void test_all();
+    void test_all1();
+    void test_all2();
+    void test_all3();
+    void test_all4();
+    void test_all5();
+    void test_all6();
+    void test_all7();
+    void test_all8();
+    void test_all9();
+    void test_all10();
+    void test_all11();
+    void test_all12();
+    void test_all13();
 };
 
 Accountintegration::Accountintegration()
@@ -109,6 +133,19 @@ Accountintegration::Accountintegration()
     (void)new Domain;
 
     ADD_TEST(Accountintegration::test_all);
+    ADD_TEST(Accountintegration::test_all1);
+    ADD_TEST(Accountintegration::test_all2);
+    ADD_TEST(Accountintegration::test_all3);
+    ADD_TEST(Accountintegration::test_all4);
+    ADD_TEST(Accountintegration::test_all5);
+    ADD_TEST(Accountintegration::test_all6);
+    ADD_TEST(Accountintegration::test_all7);
+    ADD_TEST(Accountintegration::test_all8);
+    ADD_TEST(Accountintegration::test_all9);
+    ADD_TEST(Accountintegration::test_all10);
+    ADD_TEST(Accountintegration::test_all11);
+    ADD_TEST(Accountintegration::test_all12);
+    ADD_TEST(Accountintegration::test_all13);
 }
 
 void Accountintegration::setup()
@@ -121,7 +158,7 @@ void Accountintegration::setup()
 
     m_commServer = new CommServer;
 
-    m_tc = new TestCommClient(*m_commServer);
+    m_tc = new TestCommSocket(*m_commServer);
     m_c = new Connection(*m_tc, *m_server, "addr", "3", 3);
     m_ac = new TestAccount(m_c, "user", "password", "4", 4);
 }
@@ -129,183 +166,201 @@ void Accountintegration::setup()
 void Accountintegration::teardown()
 {
     delete m_ac;
+    delete m_world;
+    EntityBuilder::del();
+    Ruleset::del();
+    Inheritance::clear();
 }
 
 void Accountintegration::test_all()
 {
-    {
-        Anonymous new_char;
-        Entity * chr = m_ac->addNewCharacter("thing", new_char,
-                                             RootEntity());
-        assert(chr != 0);
-    }
+    Anonymous new_char;
+    Entity * chr = m_ac->addNewCharacter("thing", new_char,
+                                         RootEntity());
+    assert(chr != 0);
 
+    std::cout << "Test 1" << std::endl << std::flush;
+}
+
+void Accountintegration::test_all1()
+{
     m_ac->getType();
+}
 
-    {
-        MapType emap;
-        m_ac->addToMessage(emap);
-    }
+void Accountintegration::test_all2()
+{
+    MapType emap;
+    m_ac->addToMessage(emap);
+}
 
-    {
-        RootEntity ent;
-        m_ac->addToEntity(ent);
-    }
+void Accountintegration::test_all3()
+{
+    RootEntity ent;
+    m_ac->addToEntity(ent);
+}
 
-    {
-        Create op;
-        OpVector res;
-        m_ac->operation(op, res);
-        op->setArgs1(Root());
-        m_ac->operation(op, res);
-        Anonymous op_arg;
-        op->setArgs1(op_arg);
-        m_ac->operation(op, res);
-        op_arg->setParents(std::list<std::string>());
-        m_ac->operation(op, res);
-        op_arg->setParents(std::list<std::string>(1, "game_entity"));
-        m_ac->operation(op, res);
-        op_arg->setName("Bob");
-        m_ac->operation(op, res);
-    }
+void Accountintegration::test_all4()
+{
+    Create op;
+    OpVector res;
+    m_ac->operation(op, res);
+    op->setArgs1(Root());
+    m_ac->operation(op, res);
+    Anonymous op_arg;
+    op->setArgs1(op_arg);
+    m_ac->operation(op, res);
+    op_arg->setParents(std::list<std::string>());
+    m_ac->operation(op, res);
+    op_arg->setParents(std::list<std::string>(1, "game_entity"));
+    m_ac->operation(op, res);
+    op_arg->setName("Bob");
+    m_ac->operation(op, res);
+}
 
-    {
-        Get op;
-        OpVector res;
-        m_ac->operation(op, res);
-        op->setArgs1(Root());
-        m_ac->operation(op, res);
-        Anonymous op_arg;
-        op->setArgs1(op_arg);
-        m_ac->operation(op, res);
-        op_arg->setParents(std::list<std::string>());
-        m_ac->operation(op, res);
-    }
+void Accountintegration::test_all5()
+{
+    Get op;
+    OpVector res;
+    m_ac->operation(op, res);
+    op->setArgs1(Root());
+    m_ac->operation(op, res);
+    Anonymous op_arg;
+    op->setArgs1(op_arg);
+    m_ac->operation(op, res);
+    op_arg->setParents(std::list<std::string>());
+    m_ac->operation(op, res);
+}
 
-    {
-        Imaginary op;
-        OpVector res;
-        m_ac->operation(op, res);
-        op->setArgs1(Root());
-        m_ac->operation(op, res);
-        op->setSerialno(1);
-        m_ac->operation(op, res);
-        Anonymous op_arg;
-        op->setArgs1(op_arg);
-        m_ac->operation(op, res);
-        op_arg->setLoc("2");
-        m_ac->operation(op, res);
-    }
+void Accountintegration::test_all6()
+{
+    Imaginary op;
+    OpVector res;
+    m_ac->operation(op, res);
+    op->setArgs1(Root());
+    m_ac->operation(op, res);
+    op->setSerialno(1);
+    m_ac->operation(op, res);
+    Anonymous op_arg;
+    op->setArgs1(op_arg);
+    m_ac->operation(op, res);
+    op_arg->setLoc("2");
+    m_ac->operation(op, res);
+}
 
-    {
-        Anonymous new_char;
-        Entity * chr = m_ac->addNewCharacter("thing", new_char,
-                                               RootEntity());
+void Accountintegration::test_all7()
+{
+    Anonymous new_char;
+    Entity * chr = m_ac->addNewCharacter("thing", new_char,
+                                           RootEntity());
 
-        Look op;
-        OpVector res;
-        m_ac->operation(op, res);
-        op->setArgs1(Root());
-        m_ac->operation(op, res);
-        Anonymous op_arg;
-        op->setArgs1(op_arg);
-        m_ac->operation(op, res);
-        op_arg->setId("1");
-        m_ac->operation(op, res);
-        op_arg->setId(chr->getId());
-        m_ac->operation(op, res);
-    }
+    Look op;
+    OpVector res;
+    m_ac->operation(op, res);
+    op->setArgs1(Root());
+    m_ac->operation(op, res);
+    Anonymous op_arg;
+    op->setArgs1(op_arg);
+    m_ac->operation(op, res);
+    op_arg->setId("1");
+    m_ac->operation(op, res);
+    op_arg->setId(chr->getId());
+    m_ac->operation(op, res);
+}
 
-    {
-        Anonymous new_char;
-        Entity * chr = m_ac->addNewCharacter("thing", new_char,
-                                               RootEntity());
+void Accountintegration::test_all8()
+{
+    Anonymous new_char;
+    Entity * chr = m_ac->addNewCharacter("thing", new_char,
+                                           RootEntity());
 
-        Set op;
-        OpVector res;
-        m_ac->operation(op, res);
-        op->setArgs1(Root());
-        m_ac->operation(op, res);
-        Anonymous op_arg;
-        op->setArgs1(op_arg);
-        m_ac->operation(op, res);
-        op_arg->setId("1");
-        m_ac->operation(op, res);
-        op_arg->setId(chr->getId());
-        m_ac->operation(op, res);
-        op_arg->setAttr("guise", "foo");
-        m_ac->operation(op, res);
-        op_arg->setAttr("height", 3.0);
-        m_ac->operation(op, res);
-        BBox newBox(WFMath::Point<3>(-0.5, -0.5, 0.0),
-                    WFMath::Point<3>(-0.5, -0.5, 2.0));
-        chr->m_location.setBBox(newBox);
-        op_arg->setAttr("height", 3.0);
-        m_ac->operation(op, res);
-        op_arg->setAttr("tasks", ListType());
-        m_ac->operation(op, res);
-    }
+    Set op;
+    OpVector res;
+    m_ac->operation(op, res);
+    op->setArgs1(Root());
+    m_ac->operation(op, res);
+    Anonymous op_arg;
+    op->setArgs1(op_arg);
+    m_ac->operation(op, res);
+    op_arg->setId("1");
+    m_ac->operation(op, res);
+    op_arg->setId(chr->getId());
+    m_ac->operation(op, res);
+    op_arg->setAttr("guise", "foo");
+    m_ac->operation(op, res);
+    op_arg->setAttr("height", 3.0);
+    m_ac->operation(op, res);
+    BBox newBox(WFMath::Point<3>(-0.5, -0.5, 0.0),
+                WFMath::Point<3>(-0.5, -0.5, 2.0));
+    chr->m_location.setBBox(newBox);
+    op_arg->setAttr("height", 3.0);
+    m_ac->operation(op, res);
+    op_arg->setAttr("tasks", ListType());
+    m_ac->operation(op, res);
+}
 
-    {
-        Talk op;
-        OpVector res;
-        m_ac->operation(op, res);
-        op->setArgs1(Root());
-        m_ac->operation(op, res);
-        Anonymous op_arg;
-        op->setArgs1(op_arg);
-        m_ac->operation(op, res);
-        op_arg->setParents(std::list<std::string>());
-        m_ac->operation(op, res);
-        op->setSerialno(1);
-        m_ac->operation(op, res);
-        op_arg->setLoc("1");
-        m_ac->operation(op, res);
-    }
+void Accountintegration::test_all9()
+{
+    Talk op;
+    OpVector res;
+    m_ac->operation(op, res);
+    op->setArgs1(Root());
+    m_ac->operation(op, res);
+    Anonymous op_arg;
+    op->setArgs1(op_arg);
+    m_ac->operation(op, res);
+    op_arg->setParents(std::list<std::string>());
+    m_ac->operation(op, res);
+    op->setSerialno(1);
+    m_ac->operation(op, res);
+    op_arg->setLoc("1");
+    m_ac->operation(op, res);
+}
 
-    {
-        Logout op;
-        OpVector res;
-        m_ac->operation(op, res);
-        op->setSerialno(1);
-        m_ac->operation(op, res);
-        op->setArgs1(Root());
-        m_ac->operation(op, res);
-        Anonymous op_arg;
-        op->setArgs1(op_arg);
-        m_ac->operation(op, res);
-        op_arg->setParents(std::list<std::string>());
-        m_ac->operation(op, res);
-    }
+void Accountintegration::test_all10()
+{
+    Logout op;
+    OpVector res;
+    m_ac->operation(op, res);
+    op->setSerialno(1);
+    m_ac->operation(op, res);
+    op->setArgs1(Root());
+    m_ac->operation(op, res);
+    Anonymous op_arg;
+    op->setArgs1(op_arg);
+    m_ac->operation(op, res);
+    op_arg->setParents(std::list<std::string>());
+    m_ac->operation(op, res);
+}
 
-    {
-        // Move has no meaning
-        Move op;
-        OpVector res;
-        m_ac->operation(op, res);
-        op->setArgs1(Root());
-        m_ac->operation(op, res);
-        Anonymous op_arg;
-        op->setArgs1(op_arg);
-        m_ac->operation(op, res);
-        op_arg->setParents(std::list<std::string>());
-        m_ac->operation(op, res);
-    }
+void Accountintegration::test_all11()
+{
+    // Move has no meaning
+    Move op;
+    OpVector res;
+    m_ac->operation(op, res);
+    op->setArgs1(Root());
+    m_ac->operation(op, res);
+    Anonymous op_arg;
+    op->setArgs1(op_arg);
+    m_ac->operation(op, res);
+    op_arg->setParents(std::list<std::string>());
+    m_ac->operation(op, res);
+}
 
-    {
-        Entity e("7", 7);
+void Accountintegration::test_all12()
+{
+    Entity *e = new Entity("7", 7);
 
-        int ret = m_ac->connectCharacter(&e);
-        assert(ret == -1);
-    }
+    int ret = m_ac->connectCharacter(e);
+    assert(ret == -1);
+}
 
-    {
-        Character e("8", 8);
+void Accountintegration::test_all13()
+{
+    Character * e = new Character("8", 8);
 
-        int ret = m_ac->connectCharacter(&e);
-        assert(ret == 0);
-    }
-
+    int ret = m_ac->connectCharacter(e);
+    assert(ret == 0);
 }
 
 int main()
