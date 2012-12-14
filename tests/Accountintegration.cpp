@@ -121,7 +121,7 @@ class Accountintegration : public Cyphesis::TestBase
     void test_all5();
     void test_all6();
     void test_all7();
-    void test_all8();
+    void test_SetOperation();
     void test_TalkOperation();
     void test_LogoutOperation();
     void test_connectCharacter_entity();
@@ -140,7 +140,7 @@ Accountintegration::Accountintegration()
     ADD_TEST(Accountintegration::test_all5);
     ADD_TEST(Accountintegration::test_all6);
     ADD_TEST(Accountintegration::test_all7);
-    ADD_TEST(Accountintegration::test_all8);
+    ADD_TEST(Accountintegration::test_SetOperation);
     ADD_TEST(Accountintegration::test_TalkOperation);
     ADD_TEST(Accountintegration::test_LogoutOperation);
     ADD_TEST(Accountintegration::test_connectCharacter_entity);
@@ -266,35 +266,29 @@ void Accountintegration::test_all7()
     m_ac->operation(op, res);
 }
 
-void Accountintegration::test_all8()
+void Accountintegration::test_SetOperation()
 {
     Anonymous new_char;
     Entity * chr = m_ac->addNewCharacter("thing", new_char,
-                                           RootEntity());
-
-    Set op;
-    OpVector res;
-    m_ac->operation(op, res);
-    op->setArgs1(Root());
-    m_ac->operation(op, res);
-    Anonymous op_arg;
-    op->setArgs1(op_arg);
-    m_ac->operation(op, res);
-    op_arg->setId("1");
-    m_ac->operation(op, res);
-    op_arg->setId(chr->getId());
-    m_ac->operation(op, res);
-    op_arg->setAttr("guise", "foo");
-    m_ac->operation(op, res);
-    op_arg->setAttr("height", 3.0);
-    m_ac->operation(op, res);
+                                         RootEntity());
     BBox newBox(WFMath::Point<3>(-0.5, -0.5, 0.0),
                 WFMath::Point<3>(-0.5, -0.5, 2.0));
     chr->m_location.setBBox(newBox);
+
+    Anonymous op_arg;
+
+    op_arg->setId(chr->getId());
+    op_arg->setAttr("guise", "foo");
     op_arg->setAttr("height", 3.0);
-    m_ac->operation(op, res);
     op_arg->setAttr("tasks", ListType());
+
+    Set op;
+    op->setArgs1(op_arg);
+
+    OpVector res;
     m_ac->operation(op, res);
+
+    // FIXME Ensure character has been modified
 }
 
 void Accountintegration::test_TalkOperation()
