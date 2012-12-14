@@ -22,12 +22,7 @@
 #include "CorePropertyManager.h"
 #include "EntityFactory.h"
 
-#include "rulesets/Thing.h"
-#include "rulesets/Character.h"
-#include "rulesets/Creator.h"
-#include "rulesets/Plant.h"
-#include "rulesets/Stackable.h"
-#include "rulesets/World.h"
+#include "rulesets/Entity.h"
 
 #include "common/id.h"
 #include "common/log.h"
@@ -50,6 +45,21 @@ using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
 
 using String::compose;
+
+class Character;
+class Creator;
+class Entity;
+class Plant;
+class Stackable;
+class Thing;
+class World;
+
+extern template class EntityFactory<Character>;
+extern template class EntityFactory<Creator>;
+extern template class EntityFactory<Thing>;
+extern template class EntityFactory<Plant>;
+extern template class EntityFactory<Stackable>;
+extern template class EntityFactory<World>;
 
 static const bool debug_flag = false;
 
