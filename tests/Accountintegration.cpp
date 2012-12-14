@@ -118,7 +118,7 @@ class Accountintegration : public Cyphesis::TestBase
     void test_all2();
     void test_all3();
     void test_all4();
-    void test_all5();
+    void test_GetOperation();
     void test_ImaginaryOperation();
     void test_LookOperation();
     void test_SetOperation();
@@ -137,7 +137,7 @@ Accountintegration::Accountintegration()
     ADD_TEST(Accountintegration::test_all2);
     ADD_TEST(Accountintegration::test_all3);
     ADD_TEST(Accountintegration::test_all4);
-    ADD_TEST(Accountintegration::test_all5);
+    ADD_TEST(Accountintegration::test_GetOperation);
     ADD_TEST(Accountintegration::test_ImaginaryOperation);
     ADD_TEST(Accountintegration::test_LookOperation);
     ADD_TEST(Accountintegration::test_SetOperation);
@@ -216,17 +216,15 @@ void Accountintegration::test_all4()
     m_ac->operation(op, res);
 }
 
-void Accountintegration::test_all5()
+void Accountintegration::test_GetOperation()
 {
-    Get op;
-    OpVector res;
-    m_ac->operation(op, res);
-    op->setArgs1(Root());
-    m_ac->operation(op, res);
     Anonymous op_arg;
-    op->setArgs1(op_arg);
-    m_ac->operation(op, res);
     op_arg->setParents(std::list<std::string>());
+
+    Get op;
+    op->setArgs1(op_arg);
+
+    OpVector res;
     m_ac->operation(op, res);
 }
 
