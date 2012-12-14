@@ -117,7 +117,7 @@ class Accountintegration : public Cyphesis::TestBase
     void test_all1();
     void test_all2();
     void test_all3();
-    void test_all4();
+    void test_CreateOperation();
     void test_GetOperation();
     void test_ImaginaryOperation();
     void test_LookOperation();
@@ -136,7 +136,7 @@ Accountintegration::Accountintegration()
     ADD_TEST(Accountintegration::test_all1);
     ADD_TEST(Accountintegration::test_all2);
     ADD_TEST(Accountintegration::test_all3);
-    ADD_TEST(Accountintegration::test_all4);
+    ADD_TEST(Accountintegration::test_CreateOperation);
     ADD_TEST(Accountintegration::test_GetOperation);
     ADD_TEST(Accountintegration::test_ImaginaryOperation);
     ADD_TEST(Accountintegration::test_LookOperation);
@@ -198,21 +198,16 @@ void Accountintegration::test_all3()
     m_ac->addToEntity(ent);
 }
 
-void Accountintegration::test_all4()
+void Accountintegration::test_CreateOperation()
 {
-    Create op;
-    OpVector res;
-    m_ac->operation(op, res);
-    op->setArgs1(Root());
-    m_ac->operation(op, res);
     Anonymous op_arg;
-    op->setArgs1(op_arg);
-    m_ac->operation(op, res);
-    op_arg->setParents(std::list<std::string>());
-    m_ac->operation(op, res);
     op_arg->setParents(std::list<std::string>(1, "game_entity"));
-    m_ac->operation(op, res);
     op_arg->setName("Bob");
+
+    Create op;
+    op->setArgs1(op_arg);
+
+    OpVector res;
     m_ac->operation(op, res);
 }
 
