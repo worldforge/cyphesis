@@ -1,6 +1,7 @@
 Accountintegration only needs to integrate with:
-ServerRouting, WorldRouter, Lobby,
+Connection, ServerRouting, WorldRouter, Lobby, TeleportAuthenticator
 Entity, Thing, Character
+modules: Location, EntityRef, DateTime
 
 disconnectObject does not remove a non-Account ConnectableRouter from
 the connection. Neither does it remove Characters.

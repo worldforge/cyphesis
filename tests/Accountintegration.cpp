@@ -120,7 +120,7 @@ class Accountintegration : public Cyphesis::TestBase
     void test_all4();
     void test_all5();
     void test_all6();
-    void test_all7();
+    void test_LookOperation();
     void test_SetOperation();
     void test_TalkOperation();
     void test_LogoutOperation();
@@ -139,7 +139,7 @@ Accountintegration::Accountintegration()
     ADD_TEST(Accountintegration::test_all4);
     ADD_TEST(Accountintegration::test_all5);
     ADD_TEST(Accountintegration::test_all6);
-    ADD_TEST(Accountintegration::test_all7);
+    ADD_TEST(Accountintegration::test_LookOperation);
     ADD_TEST(Accountintegration::test_SetOperation);
     ADD_TEST(Accountintegration::test_TalkOperation);
     ADD_TEST(Accountintegration::test_LogoutOperation);
@@ -246,24 +246,23 @@ void Accountintegration::test_all6()
     m_ac->operation(op, res);
 }
 
-void Accountintegration::test_all7()
+void Accountintegration::test_LookOperation()
 {
     Anonymous new_char;
     Entity * chr = m_ac->addNewCharacter("thing", new_char,
-                                           RootEntity());
+                                         RootEntity());
+
+    Anonymous op_arg;
+    op_arg->setId("1");
+    op_arg->setId(chr->getId());
 
     Look op;
+    op->setArgs1(op_arg);
+
     OpVector res;
     m_ac->operation(op, res);
-    op->setArgs1(Root());
-    m_ac->operation(op, res);
-    Anonymous op_arg;
-    op->setArgs1(op_arg);
-    m_ac->operation(op, res);
-    op_arg->setId("1");
-    m_ac->operation(op, res);
-    op_arg->setId(chr->getId());
-    m_ac->operation(op, res);
+
+    // FIXME This doesn't test a lot
 }
 
 void Accountintegration::test_SetOperation()
