@@ -30,10 +30,6 @@
 #include "server/EntityBuilder.h"
 #include "server/EntityFactory.h"
 
-#include "rulesets/World.h"
-#include "rulesets/Creator.h"
-#include "rulesets/Plant.h"
-#include "rulesets/Stackable.h"
 #include "rulesets/Script.h"
 #include "rulesets/Task.h"
 
@@ -340,6 +336,8 @@ EntityKit::~EntityKit()
     }
 }
 
+class World;
+
 template <>
 Entity * EntityFactory<World>::newEntity(const std::string & id, long intId)
 {
@@ -375,6 +373,12 @@ EntityKit * EntityFactory<T>::duplicateFactory()
     f->m_parent = this;
     return f;
 }
+
+class Thing;
+class Character;
+class Creator;
+class Plant;
+class Stackable;
 
 template class EntityFactory<Entity>;
 template class EntityFactory<Thing>;
