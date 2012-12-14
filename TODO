@@ -1,3 +1,7 @@
+Accountintegration only needs to integrate with:
+ServerRouting, WorldRouter, Lobby,
+Entity, Thing, Character
+
 disconnectObject does not remove a non-Account ConnectableRouter from
 the connection. Neither does it remove Characters.
 

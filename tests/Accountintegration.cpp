@@ -122,7 +122,7 @@ class Accountintegration : public Cyphesis::TestBase
     void test_all6();
     void test_all7();
     void test_all8();
-    void test_all9();
+    void test_TalkOperation();
     void test_LogoutOperation();
     void test_connectCharacter_entity();
     void test_connectCharacter_character();
@@ -141,7 +141,7 @@ Accountintegration::Accountintegration()
     ADD_TEST(Accountintegration::test_all6);
     ADD_TEST(Accountintegration::test_all7);
     ADD_TEST(Accountintegration::test_all8);
-    ADD_TEST(Accountintegration::test_all9);
+    ADD_TEST(Accountintegration::test_TalkOperation);
     ADD_TEST(Accountintegration::test_LogoutOperation);
     ADD_TEST(Accountintegration::test_connectCharacter_entity);
     ADD_TEST(Accountintegration::test_connectCharacter_character);
@@ -297,22 +297,20 @@ void Accountintegration::test_all8()
     m_ac->operation(op, res);
 }
 
-void Accountintegration::test_all9()
+void Accountintegration::test_TalkOperation()
 {
+    Anonymous op_arg;
+    op_arg->setParents(std::list<std::string>());
+    op_arg->setLoc("1");
+
     Talk op;
+    op->setSerialno(1);
+    op->setArgs1(op_arg);
+
     OpVector res;
     m_ac->operation(op, res);
-    op->setArgs1(Root());
-    m_ac->operation(op, res);
-    Anonymous op_arg;
-    op->setArgs1(op_arg);
-    m_ac->operation(op, res);
-    op_arg->setParents(std::list<std::string>());
-    m_ac->operation(op, res);
-    op->setSerialno(1);
-    m_ac->operation(op, res);
-    op_arg->setLoc("1");
-    m_ac->operation(op, res);
+
+    // FIXME Sound op should have been sent to the lobby
 }
 
 void Accountintegration::test_LogoutOperation()
