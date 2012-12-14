@@ -37,6 +37,7 @@
 #include "rulesets/Character.h"
 #include "rulesets/Domain.h"
 #include "rulesets/Entity.h"
+#include "rulesets/ExternalMind.h"
 
 #include "common/CommSocket.h"
 #include "common/Inheritance.h"
@@ -123,9 +124,8 @@ class Accountintegration : public Cyphesis::TestBase
     void test_all8();
     void test_all9();
     void test_all10();
-    void test_all11();
-    void test_all12();
-    void test_all13();
+    void test_connectCharacter_entity();
+    void test_connectCharacter_character();
 };
 
 Accountintegration::Accountintegration()
@@ -143,9 +143,8 @@ Accountintegration::Accountintegration()
     ADD_TEST(Accountintegration::test_all8);
     ADD_TEST(Accountintegration::test_all9);
     ADD_TEST(Accountintegration::test_all10);
-    ADD_TEST(Accountintegration::test_all11);
-    ADD_TEST(Accountintegration::test_all12);
-    ADD_TEST(Accountintegration::test_all13);
+    ADD_TEST(Accountintegration::test_connectCharacter_entity);
+    ADD_TEST(Accountintegration::test_connectCharacter_character);
 }
 
 void Accountintegration::setup()
@@ -332,35 +331,22 @@ void Accountintegration::test_all10()
     m_ac->operation(op, res);
 }
 
-void Accountintegration::test_all11()
-{
-    // Move has no meaning
-    Move op;
-    OpVector res;
-    m_ac->operation(op, res);
-    op->setArgs1(Root());
-    m_ac->operation(op, res);
-    Anonymous op_arg;
-    op->setArgs1(op_arg);
-    m_ac->operation(op, res);
-    op_arg->setParents(std::list<std::string>());
-    m_ac->operation(op, res);
-}
-
-void Accountintegration::test_all12()
+void Accountintegration::test_connectCharacter_entity()
 {
     Entity *e = new Entity("7", 7);
 
     int ret = m_ac->connectCharacter(e);
-    assert(ret == -1);
+    ASSERT_NOT_EQUAL(ret, 0);
 }
 
-void Accountintegration::test_all13()
+void Accountintegration::test_connectCharacter_character()
 {
     Character * e = new Character("8", 8);
 
     int ret = m_ac->connectCharacter(e);
-    assert(ret == 0);
+    ASSERT_EQUAL(ret, 0);
+    ASSERT_NOT_NULL(e->m_externalMind);
+    ASSERT_TRUE(e->m_externalMind->isLinkedTo(m_c));
 }
 
 int main()
