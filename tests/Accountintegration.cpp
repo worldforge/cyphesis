@@ -123,7 +123,7 @@ class Accountintegration : public Cyphesis::TestBase
     void test_all7();
     void test_all8();
     void test_all9();
-    void test_all10();
+    void test_LogoutOperation();
     void test_connectCharacter_entity();
     void test_connectCharacter_character();
 };
@@ -142,7 +142,7 @@ Accountintegration::Accountintegration()
     ADD_TEST(Accountintegration::test_all7);
     ADD_TEST(Accountintegration::test_all8);
     ADD_TEST(Accountintegration::test_all9);
-    ADD_TEST(Accountintegration::test_all10);
+    ADD_TEST(Accountintegration::test_LogoutOperation);
     ADD_TEST(Accountintegration::test_connectCharacter_entity);
     ADD_TEST(Accountintegration::test_connectCharacter_character);
 }
@@ -315,20 +315,20 @@ void Accountintegration::test_all9()
     m_ac->operation(op, res);
 }
 
-void Accountintegration::test_all10()
+void Accountintegration::test_LogoutOperation()
 {
     Logout op;
+    op->setSerialno(1);
+
+    Anonymous op_arg;
+    op_arg->setParents(std::list<std::string>());
+    op->setArgs1(op_arg);
+
     OpVector res;
     m_ac->operation(op, res);
-    op->setSerialno(1);
-    m_ac->operation(op, res);
-    op->setArgs1(Root());
-    m_ac->operation(op, res);
-    Anonymous op_arg;
-    op->setArgs1(op_arg);
-    m_ac->operation(op, res);
-    op_arg->setParents(std::list<std::string>());
-    m_ac->operation(op, res);
+
+    // FIXME Account should have been removed from Lobby, and also from
+    // Connection
 }
 
 void Accountintegration::test_connectCharacter_entity()
