@@ -1,7 +1,4 @@
-Accountintegration only needs to integrate with:
-Connection, ServerRouting, WorldRouter, Lobby, TeleportAuthenticator
-Entity, Thing, Character
-modules: Location, EntityRef, DateTime
+Why does TeleportAuthenticator::removeTeleport check if I->second is null?
 
 disconnectObject does not remove a non-Account ConnectableRouter from
 the connection. Neither does it remove Characters.
