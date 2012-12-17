@@ -51,6 +51,7 @@
 
 #include <cassert>
 
+using Atlas::Message::Element;
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
@@ -349,4 +350,1067 @@ Entity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     return 0;
+}
+
+// stubs
+
+#include "server/ArithmeticBuilder.h"
+#include "server/CommServer.h"
+#include "server/EntityFactory.h"
+#include "server/Juncture.h"
+#include "server/Persistence.h"
+#include "server/Player.h"
+#include "server/Ruleset.h"
+
+#include "rulesets/Motion.h"
+#include "rulesets/Pedestrian.h"
+#include "rulesets/AreaProperty.h"
+#include "rulesets/AtlasProperties.h"
+#include "rulesets/BBoxProperty.h"
+#include "rulesets/CalendarProperty.h"
+#include "rulesets/EntityProperty.h"
+#include "rulesets/ExternalProperty.h"
+#include "rulesets/HandlerProperty.h"
+#include "rulesets/InternalProperties.h"
+#include "rulesets/LineProperty.h"
+#include "rulesets/MindProperty.h"
+#include "rulesets/OutfitProperty.h"
+#include "rulesets/SolidProperty.h"
+#include "rulesets/SpawnProperty.h"
+#include "rulesets/StatusProperty.h"
+#include "rulesets/StatisticsProperty.h"
+#include "rulesets/TasksProperty.h"
+#include "rulesets/TerrainModProperty.h"
+#include "rulesets/TerrainProperty.h"
+#include "rulesets/TransientProperty.h"
+#include "rulesets/VisibilityProperty.h"
+
+#include "common/const.h"
+#include "common/globals.h"
+#include "common/log.h"
+#include "common/Monitors.h"
+#include "common/PropertyFactory.h"
+#include "common/system.h"
+#include "common/TypeNode.h"
+#include "common/Variable.h"
+
+namespace Atlas { namespace Objects { namespace Operation {
+int ACTUATE_NO = -1;
+int ATTACK_NO = -1;
+int BURN_NO = -1;
+int DROP_NO = -1;
+int EAT_NO = -1;
+int GOAL_INFO_NO = -1;
+int NOURISH_NO = -1;
+int SETUP_NO = -1;
+int PICKUP_NO = -1;
+int TELEPORT_NO = -1;
+int TICK_NO = -1;
+int THOUGHT_NO = -1;
+int UNSEEN_NO = -1;
+int UPDATE_NO = -1;
+} } }
+
+ArithmeticBuilder * ArithmeticBuilder::m_instance = 0;
+
+ArithmeticBuilder::ArithmeticBuilder()
+{
+}
+
+ArithmeticBuilder * ArithmeticBuilder::instance()
+{
+    if (m_instance == 0) {
+        m_instance = new ArithmeticBuilder;
+    }
+    return m_instance;
+}
+
+ArithmeticScript * ArithmeticBuilder::newArithmetic(const std::string & name,
+                                                    Entity * owner)
+{
+    return 0;
+}
+
+CommServer::CommServer() : m_epollFd(-1),
+                           m_congested(false),
+                           m_tick(0)
+{
+}
+
+template <class T>
+EntityFactory<T>::EntityFactory(EntityFactory<T> & o)
+{
+}
+
+template <class T>
+EntityFactory<T>::EntityFactory()
+{
+}
+
+template <class T>
+EntityFactory<T>::~EntityFactory()
+{
+}
+
+template <class T>
+Entity * EntityFactory<T>::newEntity(const std::string & id, long intId)
+{
+    return new Entity(id, intId);
+}
+
+template <class T>
+EntityKit * EntityFactory<T>::duplicateFactory()
+{
+    return 0;
+}
+
+class Creator;
+class Plant;
+class Stackable;
+class World;
+
+template <>
+Entity * EntityFactory<World>::newEntity(const std::string & id, long intId)
+{
+    return 0;
+}
+
+template <>
+Entity * EntityFactory<Character>::newEntity(const std::string & id, long intId)
+{
+    return new Character(id, intId);
+}
+
+template class EntityFactory<Thing>;
+template class EntityFactory<Character>;
+template class EntityFactory<Creator>;
+template class EntityFactory<Plant>;
+template class EntityFactory<Stackable>;
+template class EntityFactory<World>;
+
+Juncture::~Juncture()
+{
+}
+
+void Juncture::externalOperation(const Operation & op, Link &)
+{
+}
+
+void Juncture::operation(const Operation & op, OpVector & res)
+{
+}
+
+void Juncture::addToMessage(MapType & omap) const
+{
+}
+
+void Juncture::addToEntity(const RootEntity & ent) const
+{
+}
+
+void Juncture::LoginOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Juncture::OtherOperation(const Operation & op, OpVector & res)
+{
+}
+
+int Juncture::teleportEntity(const Entity * ent)
+{
+    return 0;
+}
+
+Persistence * Persistence::m_instance = NULL;
+
+Persistence::Persistence() : m_db(*(Database*)0)
+{
+}
+
+Persistence * Persistence::instance()
+{
+    if (m_instance == NULL) {
+        m_instance = new Persistence();
+    }
+    return m_instance;
+}
+
+Account * Persistence::getAccount(const std::string & name)
+{
+    return 0;
+}
+
+void Persistence::putAccount(const Account & ac)
+{
+}
+
+void Persistence::registerCharacters(Account & ac,
+                                     const EntityDict & worldObjects)
+{
+}
+
+Player::Player(Connection * conn,
+               const std::string & username,
+               const std::string & passwd,
+               const std::string & id,
+               long intId) :
+        Account(conn, username, passwd, id, intId)
+{
+}
+
+Player::~Player() { }
+
+const char * Player::getType() const
+{
+    return "player";
+}
+
+void Player::addToMessage(MapType & omap) const
+{
+}
+
+void Player::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+int Player::characterError(const Operation & op,
+                           const Root & ent, OpVector & res) const
+{
+    return 0;
+}
+
+Ruleset * Ruleset::m_instance = NULL;
+
+Ruleset::~Ruleset()
+{
+}
+
+CalendarProperty::CalendarProperty()
+{
+}
+
+int CalendarProperty::get(Element & ent) const
+{
+    return 0;
+}
+
+void CalendarProperty::set(const Element & ent)
+{
+}
+
+
+IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),
+                                                   m_data(data)
+{
+}
+
+int IdProperty::get(Atlas::Message::Element & e) const
+{
+    e = m_data;
+    return 0;
+}
+
+void IdProperty::set(const Atlas::Message::Element & e)
+{
+}
+
+void IdProperty::add(const std::string & key,
+                     Atlas::Message::MapType & ent) const
+{
+}
+
+void IdProperty::add(const std::string & key,
+                     const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+AreaProperty::AreaProperty()
+{
+}
+
+AreaProperty::~AreaProperty()
+{
+}
+
+void AreaProperty::set(const Atlas::Message::Element & ent)
+{
+}
+
+void AreaProperty::apply(Entity * owner)
+{
+}
+
+ExternalProperty::ExternalProperty(ExternalMind * & data) : m_data(data)
+{
+}
+
+int ExternalProperty::get(Atlas::Message::Element & val) const
+{
+    return 0;
+}
+
+void ExternalProperty::set(const Atlas::Message::Element & val)
+{
+}
+
+void ExternalProperty::add(const std::string & s,
+                         Atlas::Message::MapType & map) const
+{
+}
+
+void ExternalProperty::add(const std::string & s,
+                         const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+EntityProperty::EntityProperty()
+{
+}
+
+int EntityProperty::get(Atlas::Message::Element & val) const
+{
+    return 0;
+}
+
+void EntityProperty::set(const Atlas::Message::Element & val)
+{
+}
+
+void EntityProperty::add(const std::string & s,
+                         Atlas::Message::MapType & map) const
+{
+}
+
+void EntityProperty::add(const std::string & s,
+                         const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+OutfitProperty::OutfitProperty()
+{
+}
+
+OutfitProperty::~OutfitProperty()
+{
+}
+
+int OutfitProperty::get(Atlas::Message::Element & val) const
+{
+    return 0;
+}
+
+void OutfitProperty::set(const Atlas::Message::Element & val)
+{
+}
+
+void OutfitProperty::add(const std::string & key,
+                         Atlas::Message::MapType & map) const
+{
+}
+
+void OutfitProperty::add(const std::string & key,
+                         const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+void OutfitProperty::cleanUp()
+{
+}
+
+void OutfitProperty::wear(Entity * wearer,
+                          const std::string & location,
+                          Entity * garment)
+{
+}
+
+void OutfitProperty::itemRemoved(Entity * garment, Entity * wearer)
+{
+}
+
+TasksProperty::TasksProperty() : PropertyBase(per_ephem), m_task(0)
+{
+}
+
+int TasksProperty::get(Atlas::Message::Element & val) const
+{
+    return 0;
+}
+
+void TasksProperty::set(const Atlas::Message::Element & val)
+{
+}
+
+int TasksProperty::startTask(Task *, Entity *, const Operation &, OpVector &)
+{
+    return 0;
+}
+
+int TasksProperty::updateTask(Entity *, OpVector &)
+{
+    return 0;
+}
+
+int TasksProperty::clearTask(Entity *, OpVector &)
+{
+    return 0;
+}
+
+void TasksProperty::stopTask(Entity *, OpVector &)
+{
+}
+
+void TasksProperty::TickOperation(Entity *, const Operation &, OpVector &)
+{
+}
+
+void TasksProperty::UseOperation(Entity *, const Operation &, OpVector &)
+{
+}
+
+void TasksProperty::operation(Entity *, const Operation &, OpVector &)
+{
+}
+
+PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
+{
+}
+
+PropertyBase::~PropertyBase()
+{
+}
+
+void PropertyBase::install(Entity *)
+{
+}
+
+void PropertyBase::apply(Entity *)
+{
+}
+
+void PropertyBase::add(const std::string & s,
+                       Atlas::Message::MapType & ent) const
+{
+    get(ent[s]);
+}
+
+void PropertyBase::add(const std::string & s,
+                       const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+/// \brief Constructor for immutable Propertys
+template <typename T>
+Property<T>::Property(unsigned int flags) :
+                      PropertyBase(flags)
+{
+}
+
+template <typename T>
+int Property<T>::get(Atlas::Message::Element & e) const
+{
+    return 0;
+}
+
+// The following two are obsolete.
+template <typename T>
+void Property<T>::add(const std::string & s,
+                               Atlas::Message::MapType & ent) const
+{
+}
+
+template <typename T>
+void Property<T>::add(const std::string & s,
+                               const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+template <typename T>
+void Property<T>::set(const Atlas::Message::Element & e)
+{
+}
+
+template class Property<int>;
+template class Property<double>;
+template class Property<std::string>;
+template class Property<ListType>;
+template class Property<MapType>;
+template class Property<std::vector<std::string>>;
+
+PropertyKit::~PropertyKit()
+{
+}
+
+SoftProperty::SoftProperty()
+{
+}
+
+SoftProperty::SoftProperty(const Atlas::Message::Element & data) :
+              PropertyBase(0), m_data(data)
+{
+}
+
+int SoftProperty::get(Atlas::Message::Element & val) const
+{
+    val = m_data;
+    return 0;
+}
+
+void SoftProperty::set(const Atlas::Message::Element & val)
+{
+}
+
+ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
+      PropertyBase(per_ephem), m_data(data)
+{
+}
+
+int ContainsProperty::get(Atlas::Message::Element & e) const
+{
+    return 0;
+}
+
+void ContainsProperty::set(const Atlas::Message::Element & e)
+{
+}
+
+void ContainsProperty::add(const std::string & s,
+                           const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+StatusProperty::StatusProperty()
+{
+}
+
+void StatusProperty::apply(Entity * owner)
+{
+}
+
+BBoxProperty::BBoxProperty()
+{
+}
+
+void BBoxProperty::apply(Entity * ent)
+{
+}
+
+int BBoxProperty::get(Element & val) const
+{
+    return -1;
+}
+
+void BBoxProperty::set(const Element & val)
+{
+}
+
+void BBoxProperty::add(const std::string & key,
+                       MapType & map) const
+{
+}
+
+void BBoxProperty::add(const std::string & key,
+                       const RootEntity & ent) const
+{
+}
+
+TerrainProperty::TerrainProperty() :
+      m_data(*(Mercator::Terrain*)0),
+      m_tileShader(*(Mercator::TileShader*)0)
+{
+}
+
+TerrainProperty::~TerrainProperty()
+{
+}
+
+int TerrainProperty::get(Element & ent) const
+{
+    return 0;
+}
+
+void TerrainProperty::set(const Element & ent)
+{
+}
+
+int TerrainProperty::getSurface(const Point3D & pos, int & material)
+{
+    return 0;
+}
+
+bool TerrainProperty::getHeightAndNormal(float x,
+                                         float y,
+                                         float & height,
+                                         Vector3D & normal) const
+{
+    return true;
+}
+
+TerrainModProperty::TerrainModProperty(const HandlerMap & handlers) :
+                    m_modptr(0), m_handlers(handlers), m_innerMod(0)
+{
+}
+
+TerrainModProperty::~TerrainModProperty()
+{
+}
+
+void TerrainModProperty::install(Entity * owner)
+{
+}
+
+void TerrainModProperty::apply(Entity * owner)
+{
+}
+
+void TerrainModProperty::move(Entity* owner)
+{
+}
+
+void TerrainModProperty::remove(Entity * owner)
+{
+}
+
+Pedestrian::Pedestrian(Entity & body) : Movement(body)
+{
+}
+
+Mercator::TerrainMod * TerrainModProperty::parseModData(Entity * owner,
+                                                        const MapType & modMap)
+{
+    return 0;
+}
+
+int TerrainModProperty::getAttr(const std::string & name,
+                                Element & val)
+{
+    return 0;
+}
+
+void TerrainModProperty::setAttr(const std::string & name,
+                                 const Element & val)
+{
+}
+
+SetupProperty::SetupProperty()
+{
+}
+
+void SetupProperty::install(Entity * ent)
+{
+}
+
+TickProperty::TickProperty()
+{
+}
+
+void TickProperty::apply(Entity * ent)
+{
+}
+
+SimpleProperty::SimpleProperty()
+{
+}
+
+int SimpleProperty::get(Element & ent) const
+{
+    return 0;
+}
+
+void SimpleProperty::set(const Element & ent)
+{
+}
+
+void SimpleProperty::apply(Entity * owner)
+{
+}
+
+LineProperty::LineProperty()
+{
+}
+
+int LineProperty::get(Element & ent) const
+{
+    return 0;
+}
+
+void LineProperty::set(const Element & ent)
+{
+}
+
+void LineProperty::add(const std::string & s, MapType & ent) const
+{
+}
+
+MindProperty::MindProperty() : m_factory(0)
+{
+}
+
+int MindProperty::get(Element & val) const
+{
+    return 0;
+}
+
+void MindProperty::set(const Element & val)
+{
+}
+
+void MindProperty::apply(Entity * ent)
+{
+}
+
+SpawnProperty::SpawnProperty()
+{
+}
+
+void SpawnProperty::apply(Entity * ent)
+{
+}
+
+VisibilityProperty::VisibilityProperty()
+{
+}
+
+void VisibilityProperty::apply(Entity * ent)
+{
+}
+
+StatisticsProperty::StatisticsProperty() : m_script(0)
+{
+}
+
+StatisticsProperty::~StatisticsProperty()
+{
+}
+
+void StatisticsProperty::install(Entity * ent)
+{
+}
+
+void StatisticsProperty::apply(Entity * ent)
+{
+}
+
+int StatisticsProperty::get(Element & val) const
+{
+    return 0;
+}
+
+void StatisticsProperty::set(const Element & ent)
+{
+}
+
+SolidProperty::SolidProperty()
+{
+}
+
+int SolidProperty::get(Element & ent) const
+{
+    return 0;
+}
+
+void SolidProperty::set(const Element & ent)
+{
+}
+
+void SolidProperty::apply(Entity * owner)
+{
+}
+
+TransientProperty::TransientProperty()
+{
+}
+
+void TransientProperty::install(Entity * ent)
+{
+}
+
+void TransientProperty::apply(Entity * ent)
+{
+}
+
+template <typename T>
+HandlerProperty<T>::HandlerProperty(int op, Handler handler) :
+                                    m_operationClassNo(op),
+                                    m_handler(handler)
+{
+}
+
+template <typename T>
+void HandlerProperty<T>::install(Entity * ent)
+{
+}
+
+template class HandlerProperty<int>;
+template class HandlerProperty<double>;
+template class HandlerProperty<std::string>;
+
+Pedestrian::~Pedestrian()
+{
+}
+
+double Pedestrian::getTickAddition(const Point3D & coordinates,
+                                   const Vector3D & velocity) const
+{
+    return consts::basic_tick;
+}
+
+int Pedestrian::getUpdatedLocation(Location & return_location)
+{
+    return 1;
+}
+
+Operation Pedestrian::generateMove(const Location & new_location)
+{
+    Atlas::Objects::Operation::Move moveOp;
+    return moveOp;
+}
+
+Movement::Movement(Entity & body) : m_body(body),
+                                    m_serialno(0)
+{
+}
+
+Movement::~Movement()
+{
+}
+
+bool Movement::updateNeeded(const Location & location) const
+{
+    return true;
+}
+
+void Movement::reset()
+{
+}
+
+Motion::Motion(Entity & body) : m_entity(body), m_serialno(0),
+                                m_collision(false)
+{
+}
+
+Motion::~Motion()
+{
+}
+
+float Motion::checkCollisions()
+{
+    return consts::move_tick;
+}
+
+bool Motion::resolveCollision()
+{
+    return true;
+}
+
+void Motion::setMode(const std::string & mode)
+{
+}
+
+void Motion::adjustPostion()
+{
+}
+
+Operation * Motion::genUpdateOperation()
+{
+    return 0;
+}
+
+Operation * Motion::genMoveOperation()
+{
+    return 0;
+}
+
+bool_config_register::bool_config_register(bool & var,
+                                           const char * section,
+                                           const char * setting,
+                                           const char * help)
+{
+}
+
+CommSocket::CommSocket(CommServer & svr) : m_commServer(svr) { }
+
+CommSocket::~CommSocket()
+{
+}
+
+EntityKit::EntityKit() : m_scriptFactory(0),
+                         m_parent(0),
+                         m_type(0),
+                         m_createdCount(0)
+{
+}
+
+EntityKit::~EntityKit()
+{
+}
+
+void EntityKit::addProperties()
+{
+}
+
+void EntityKit::updateProperties()
+{
+}
+
+Inheritance * Inheritance::m_instance = NULL;
+
+Inheritance::Inheritance() : noClass(0)
+{
+}
+
+Inheritance & Inheritance::instance()
+{
+    if (m_instance == NULL) {
+        m_instance = new Inheritance();
+    }
+    return *m_instance;
+}
+
+const Root & Inheritance::getClass(const std::string & parent)
+{
+    return noClass;
+}
+
+const TypeNode * Inheritance::getType(const std::string & parent)
+{
+    return 0;
+}
+
+bool Inheritance::isTypeOf(const TypeNode * instance,
+                           const std::string & base_type) const
+{
+    return false;
+}
+
+bool Inheritance::isTypeOf(const std::string & instance,
+                           const std::string & base_type) const
+{
+    return false;
+}
+
+TypeNode * Inheritance::addChild(const Root & obj)
+{
+    return new TypeNode(obj->getId());
+}
+
+void Inheritance::clear()
+{
+}
+
+Monitors * Monitors::m_instance = NULL;
+
+Monitors::Monitors()
+{
+}
+
+Monitors::~Monitors()
+{
+}
+
+Monitors * Monitors::instance()
+{
+    if (m_instance == NULL) {
+        m_instance = new Monitors();
+    }
+    return m_instance;
+}
+
+void Monitors::insert(const std::string & key,
+                      const Atlas::Message::Element & val)
+{
+}
+
+void Monitors::watch(const::std::string & name, VariableBase * monitor)
+{
+}
+
+Shaker::Shaker()
+{
+}
+
+std::string Shaker::generateSalt(size_t length)
+{
+    return std::string("x", length * 2);
+}
+
+TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
+{
+}
+
+bool TypeNode::isTypeOf(const std::string & base_type) const
+{
+    return false;
+}
+
+VariableBase::~VariableBase()
+{
+}
+
+template <typename T>
+Variable<T>::Variable(const T & variable) : m_variable(variable)
+{
+}
+
+template <typename T>
+Variable<T>::~Variable()
+{
+}
+
+template <typename T>
+void Variable<T>::send(std::ostream & o)
+{
+}
+
+template class Variable<int>;
+template class Variable<std::string>;
+template class Variable<const char *>;
+
+const char * CYPHESIS = "cyphesis";
+
+static const char * DEFAULT_INSTANCE = "cyphesis";
+
+std::string instance(DEFAULT_INSTANCE);
+int timeoffset = 0;
+bool database_flag = false;
+
+namespace consts {
+
+  const char * buildTime = __TIME__;
+  const char * buildDate = __DATE__;
+  const int buildId = -1;
+}
+
+static long idGenerator = 0;
+
+long newId(std::string & id)
+{
+    static char buf[32];
+    long new_id = ++idGenerator;
+    sprintf(buf, "%ld", new_id);
+    id = buf;
+    assert(!id.empty());
+    return new_id;
+}
+
+void log(LogLevel lvl, const std::string & msg)
+{
+}
+
+void logEvent(LogEvent lev, const std::string & msg)
+{
+}
+
+Root atlasClass(const std::string & name, const std::string & parent)
+{
+    return Root();
+}
+
+void hash_password(const std::string & pwd, const std::string & salt,
+                   std::string & hash)
+{
+}
+
+int check_password(const std::string & pwd, const std::string & hash)
+{
+    return -1;
 }
