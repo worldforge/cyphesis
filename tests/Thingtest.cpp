@@ -29,11 +29,7 @@
 
 #include "rulesets/Thing.h"
 
-#include "rulesets/AtlasProperties.h"
-#include "rulesets/BBoxProperty.h"
 #include "rulesets/Domain.h"
-#include "rulesets/Script.h"
-#include "rulesets/StatusProperty.h"
 
 #include "common/const.h"
 #include "common/id.h"
@@ -459,26 +455,6 @@ Entity * BaseWorld::getEntity(long id) const
     }
 }
 
-Script::Script()
-{
-}
-
-/// \brief Script destructor
-Script::~Script()
-{
-}
-
-bool Script::operation(const std::string & opname,
-                       const Atlas::Objects::Operation::RootOperation & op,
-                       OpVector & res)
-{
-   return false;
-}
-
-void Script::hook(const std::string & function, LocatedEntity * entity)
-{
-}
-
 void Location::addToMessage(MapType & omap) const
 {
 }
@@ -500,30 +476,6 @@ TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
 }
 
 TypeNode::~TypeNode()
-{
-}
-
-IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),
-                                                   m_data(data)
-{
-}
-
-int IdProperty::get(Atlas::Message::Element & e) const
-{
-    return 0;
-}
-
-void IdProperty::set(const Atlas::Message::Element & e)
-{
-}
-
-void IdProperty::add(const std::string & key,
-                     Atlas::Message::MapType & ent) const
-{
-}
-
-void IdProperty::add(const std::string & key,
-                     const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 
@@ -598,60 +550,6 @@ int SoftProperty::get(Atlas::Message::Element & val) const
 }
 
 void SoftProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
-      PropertyBase(per_ephem), m_data(data)
-{
-}
-
-int ContainsProperty::get(Atlas::Message::Element & e) const
-{
-    return 0;
-}
-
-void ContainsProperty::set(const Atlas::Message::Element & e)
-{
-}
-
-void ContainsProperty::add(const std::string & s,
-                           const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-StatusProperty::StatusProperty()
-{
-}
-
-void StatusProperty::apply(Entity * owner)
-{
-}
-
-BBoxProperty::BBoxProperty()
-{
-}
-
-void BBoxProperty::apply(Entity * ent)
-{
-}
-
-int BBoxProperty::get(Element & val) const
-{
-    return 0;
-}
-
-void BBoxProperty::set(const Element & val)
-{
-}
-
-void BBoxProperty::add(const std::string & key,
-                       MapType & map) const
-{
-}
-
-void BBoxProperty::add(const std::string & key,
-                       const RootEntity & ent) const
 {
 }
 
