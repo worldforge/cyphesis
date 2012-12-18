@@ -436,14 +436,10 @@ Creatortest_SOURCES = Creatortest.cpp \
 Creatortest_LDADD = \
         $(top_builddir)/rulesets/Creator.o
 
-ThingupdatePropertiestest_SOURCES = ThingupdatePropertiestest.cpp TestPropertyManager.cpp
+ThingupdatePropertiestest_SOURCES = ThingupdatePropertiestest.cpp
 ThingupdatePropertiestest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(MATH_LIBS)
+        $(top_builddir)/rulesets/Thing.o \
+        $(top_builddir)/common/Property.o
 
 Containertest_SOURCES = Containertest.cpp
 Containertest_LDADD = $(top_builddir)/rulesets/Container.o
