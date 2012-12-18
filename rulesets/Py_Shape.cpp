@@ -222,7 +222,7 @@ static PyBBox * Box_extrude(PyShape * self, PyObject * args)
                                 low),
                         Point3D(shape->shape().highCorner().x(),
                                 shape->shape().highCorner().y(),
-                                high));
+                                high), true);
     }
     return ret;
 }
