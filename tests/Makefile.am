@@ -482,12 +482,9 @@ Scripttest_LDADD = $(top_builddir)/rulesets/Script.o
 
 Motiontest_SOURCES = Motiontest.cpp
 Motiontest_LDADD = \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+        $(top_builddir)/rulesets/Motion.o \
+        $(top_builddir)/physics/BBox.o \
+        $(top_builddir)/physics/Collision.o
 
 AreaPropertytest_SOURCES = AreaPropertytest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
