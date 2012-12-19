@@ -354,6 +354,7 @@ void Motiontest::test_checkCollision_inner4()
     motion->checkCollisions();
 
     assert(motion->collision());
+    ASSERT_EQUAL(motion->m_collEntity, other);
 
     inner.m_location.m_loc = 0;
 }

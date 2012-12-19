@@ -115,6 +115,8 @@ class Motion {
 
     // More Collision bullshit
     bool resolveCollision();
+
+    friend class Motiontest;
 };
 
 #endif // RULESETS_MOTION_H
