@@ -88,6 +88,8 @@ class Ruleset {
                     const Atlas::Objects::Root & class_desc);
     int modifyRule(const std::string & class_name,
                    const Atlas::Objects::Root & class_desc);
+
+    friend class Rulesetintegration;
 };
 
 #endif // SERVER_RULESET_H

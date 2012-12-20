@@ -24,6 +24,7 @@
 #define DEBUG
 #endif
 
+#include "TestBase.h"
 #include "TestWorld.h"
 
 #include "rulesets/World.h"
@@ -44,16 +45,6 @@ using Atlas::Message::MapType;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Root;
 
-class ExposedRuleset : public Ruleset {
-  public:
-    ExposedRuleset(EntityBuilder * eb) : Ruleset(eb) { }
-
-    void getRulesFromFiles(const std::string & ruleset,
-                           std::map<std::string, Root> & rules) {
-        Ruleset::getRulesFromFiles(ruleset, rules);
-    }
-};
-
 class ExposedEntityBuilder : public EntityBuilder {
   public:
     explicit ExposedEntityBuilder() : EntityBuilder() {
@@ -64,70 +55,58 @@ class ExposedEntityBuilder : public EntityBuilder {
 
 };
 
-int main(int argc, char ** argv)
+class Rulesetintegration : public Cyphesis::TestBase
 {
-    loadConfig(argc, argv);
+  protected:
+    World * m_entity;
+    TestWorld * m_test_world;
+  public:
+    Rulesetintegration();
 
-    database_flag = false;
+    void setup();
+    void teardown();
 
-    init_python_api("6525a56d-7139-4016-8c1c-c2e77ab50039");
+    void test_init();
+    void test_sequence();
+};
 
-    int ret;
+Rulesetintegration::Rulesetintegration()
+{
+    ADD_TEST(Rulesetintegration::test_init);
+    ADD_TEST(Rulesetintegration::test_sequence);
+}
 
-    {
-        World e("1", 1);
-        TestWorld test_world(e);
-        Anonymous attributes;
+void Rulesetintegration::setup()
+{
+    m_entity = new World("1", 1);
+    m_test_world = new TestWorld(*m_entity);
+}
 
-        EntityBuilder::init();
-        Ruleset::init("b08f221d-a177-45c7-be11-5be4195b6c40");
+void Rulesetintegration::teardown()
+{
+    delete m_entity;
+    delete m_test_world;
+    Inheritance::clear();
+}
 
-        assert(Ruleset::instance() != 0);
+void Rulesetintegration::test_init()
+{
+    World e("1", 1);
+    TestWorld test_world(e);
+    Anonymous attributes;
 
-        assert(EntityBuilder::instance() != 0);
+    assert(Ruleset::instance() == 0);
 
-        assert(EntityBuilder::instance()->newEntity("1", 1, "world", attributes, test_world) == 0);
-        assert(EntityBuilder::instance()->newEntity("1", 1, "nonexistant", attributes, test_world) == 0);
-        assert(EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, test_world) != 0);
+    Ruleset::init("b08f221d-a177-45c7-be11-5be4195b6c40");
 
-        Ruleset::del();
-        assert(Ruleset::instance() == 0);
-        EntityBuilder::del();
-        assert(EntityBuilder::instance() == 0);
-        Inheritance::clear();
-    }
+    assert(Ruleset::instance() != 0);
 
-    {
-        World e("1", 1);
-        TestWorld test_world(e);
-        Anonymous attributes;
-        Atlas::Message::Element val;
+    Ruleset::del();
+    assert(Ruleset::instance() == 0);
+}
 
-        EntityBuilder::init();
-        Ruleset::init("b08f221d-a177-45c7-be11-5be4195b6c40");
-
-        assert(Ruleset::instance() != 0);
-
-        Entity * test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, test_world);
-        assert(test_ent != 0);
-        assert(test_ent->getAttr("funky", val) != 0);
-        assert(val.isNone());
-
-        attributes->setAttr("funky", "true");
-
-        test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, test_world);
-        assert(test_ent != 0);
-        assert(test_ent->getAttr("funky", val) == 0);
-        assert(val.isString());
-        assert(val.String() == "true");
-
-        Ruleset::del();
-        assert(Ruleset::instance() == 0);
-        EntityBuilder::del();
-        assert(EntityBuilder::instance() == 0);
-        Inheritance::clear();
-    }
-
+void Rulesetintegration::test_sequence()
+{
     {
         // Create a test world.
         World e("1", 1);
@@ -141,7 +120,7 @@ int main(int argc, char ** argv)
         // for testing
         EntityBuilder * test_eb = EntityBuilder::instance();
         assert(test_eb == entity_factory);
-        ExposedRuleset test_ruleset(test_eb);
+        Ruleset test_ruleset(test_eb);
 
         // Attributes for test entities being created
         Anonymous attributes;
@@ -182,7 +161,7 @@ int main(int argc, char ** argv)
             custom_type_description->setParents(std::list<std::string>(1, "thing"));
             custom_type_description->setObjtype("class");
 
-            ret = test_ruleset.installRule("custom_type", "custom",
+            int ret = test_ruleset.installRule("custom_type", "custom",
                                            custom_type_description);
 
             assert(ret == 0);
@@ -264,7 +243,8 @@ int main(int argc, char ** argv)
             custom_inherited_type_description->setObjtype("class");
 
             std::string dependent, reason;
-            ret = test_ruleset.installRule("custom_inherited_type", "custom",
+            int ret = test_ruleset.installRule("custom_inherited_type",
+                                               "custom",
                                            custom_inherited_type_description);
 
             assert(ret == 0);
@@ -340,7 +320,8 @@ int main(int argc, char ** argv)
             nonexistant_description->setId("nonexistant");
             nonexistant_description->setAttr("attributes", attrs);
 
-            ret = test_ruleset.modifyRule("nonexistant", nonexistant_description);
+            int ret = test_ruleset.modifyRule("nonexistant",
+                                              nonexistant_description);
 
             assert(ret != 0);
         }
@@ -353,8 +334,8 @@ int main(int argc, char ** argv)
             new_custom_inherited_type_description->setAttr("attributes", MapType());
 
             // No parents
-            ret = test_ruleset.modifyRule("custom_inherited_type",
-                                          new_custom_inherited_type_description);
+            int ret = test_ruleset.modifyRule("custom_inherited_type",
+                                              new_custom_inherited_type_description);
             assert(ret != 0);
 
             // empty parents
@@ -444,7 +425,7 @@ int main(int argc, char ** argv)
             new_custom_type_description->setAttr("attributes", MapType());
             new_custom_type_description->setParents(std::list<std::string>(1, "thing"));
 
-            ret = test_ruleset.modifyRule("custom_type", new_custom_type_description);
+            int ret = test_ruleset.modifyRule("custom_type", new_custom_type_description);
 
             assert(ret == 0);
         }
@@ -554,7 +535,7 @@ int main(int argc, char ** argv)
             new_custom_type_description->setAttr("attributes", attrs);
             new_custom_type_description->setParents(std::list<std::string>(1, "thing"));
 
-            ret = test_ruleset.modifyRule("custom_type", new_custom_type_description);
+            int ret = test_ruleset.modifyRule("custom_type", new_custom_type_description);
 
             assert(ret == 0);
             
@@ -670,6 +651,17 @@ int main(int argc, char ** argv)
         assert(test_ent->getAttr("test_custom_inherited_type_attr", val) != 0);
 
     }
+}
+
+int main()
+{
+    database_flag = false;
+
+    init_python_api("6525a56d-7139-4016-8c1c-c2e77ab50039");
+
+    Rulesetintegration t;
+
+    return t.run();
 }
 
 void TestWorld::message(const Operation & op, Entity & ent)
