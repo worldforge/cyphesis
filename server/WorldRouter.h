@@ -92,6 +92,8 @@ class WorldRouter : public BaseWorld {
 
     /// \brief Signal that a new Entity has been inserted.
     sigc::signal<void, Entity *> inserted;
+
+    friend class WorldRouterintegration;
 };
 
 #endif // SERVER_WORLD_ROUTER_H
