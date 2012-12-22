@@ -187,7 +187,7 @@ Operation WorldRouter::getOperationFromQueue()
         return NULL;
     }
     debug(std::cout << "pulled op off queue" << std::endl << std::flush;);
-    const Operation & op = (**I);
+    Operation op = (**I);
     m_operationQueue.pop_front();
     return op;
 }
