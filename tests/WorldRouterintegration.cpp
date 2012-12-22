@@ -24,6 +24,8 @@
 #define DEBUG
 #endif
 
+#include "TestBase.h"
+
 #include "server/WorldRouter.h"
 
 #include "server/EntityBuilder.h"
@@ -69,7 +71,31 @@ class TestWorldRouter : public WorldRouter
     }
 };
 
-int main()
+class WorldRouterintegration : public Cyphesis::TestBase
+{
+  public:
+    WorldRouterintegration();
+
+    void setup();
+    void teardown();
+
+    void test_sequence();
+};
+
+WorldRouterintegration::WorldRouterintegration()
+{
+    ADD_TEST(WorldRouterintegration::test_sequence);
+}
+
+void WorldRouterintegration::setup()
+{
+}
+
+void WorldRouterintegration::teardown()
+{
+}
+
+void WorldRouterintegration::test_sequence()
 {
     database_flag = false;
 
@@ -171,8 +197,13 @@ int main()
     ent4 = 0;
 
     delete test_world;
+}
 
-    return 0;
+int main()
+{
+    WorldRouterintegration t;
+
+    return t.run();
 }
 
 // stubs
