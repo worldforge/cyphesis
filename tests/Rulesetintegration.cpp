@@ -43,6 +43,7 @@
 
 using Atlas::Message::MapType;
 using Atlas::Objects::Entity::Anonymous;
+using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Root;
 
 class ExposedEntityBuilder : public EntityBuilder {
@@ -55,6 +56,9 @@ class ExposedEntityBuilder : public EntityBuilder {
 
 };
 
+/// Integrations to try: Installation of all types of rules into
+/// builders and factories. Creation of entity has all the right things.
+/// Installation of rules via Admin. Persistence calls from Ruleset.
 class Rulesetintegration : public Cyphesis::TestBase
 {
   protected:
@@ -91,10 +95,6 @@ void Rulesetintegration::teardown()
 
 void Rulesetintegration::test_init()
 {
-    World e("1", 1);
-    TestWorld test_world(e);
-    Anonymous attributes;
-
     assert(Ruleset::instance() == 0);
 
     Ruleset::init("b08f221d-a177-45c7-be11-5be4195b6c40");
@@ -128,21 +128,6 @@ void Rulesetintegration::test_sequence()
         // Create an entity which is an instance of one of the core classes
         Entity * test_ent = test_eb->newEntity("1", 1, "thing", attributes, test_world);
         assert(test_ent != 0);
-        // Check the created entity does not have the attribute values we
-        // will be testing later
-        assert(test_ent->getAttr("funky", val) != 0);
-        assert(val.isNone());
-
-        // Set a test attribute
-        attributes->setAttr("funky", "true");
-
-        // Create another entity, and check that it has picked up the new
-        // attribute value
-        test_ent = test_eb->newEntity("1", 1, "thing", attributes, test_world);
-        assert(test_ent != 0);
-        assert(test_ent->getAttr("funky", val) == 0);
-        assert(val.isString());
-        assert(val.String() == "true");
 
         // Check that creating an entity of a type we know we have not yet
         // installed results in a null pointer.
@@ -208,12 +193,6 @@ void Rulesetintegration::test_sequence()
         val = Atlas::Message::Element();
         assert(val.isNone());
 
-        // Check the custom type has the attribute we passed in when creating
-        // the instance.
-        assert(test_ent->getAttr("funky", val) == 0);
-        assert(val.isString());
-        assert(val.String() == "true");
-
         // Reset val.
         val = Atlas::Message::Element();
         assert(val.isNone());
@@ -278,12 +257,6 @@ void Rulesetintegration::test_sequence()
         // Reset val.
         val = Atlas::Message::Element();
         assert(val.isNone());
-
-        // Check the custom type has the attribute we passed in when creating
-        // the instance.
-        assert(test_ent->getAttr("funky", val) == 0);
-        assert(val.isString());
-        assert(val.String() == "true");
 
         // Reset val.
         val = Atlas::Message::Element();
@@ -393,12 +366,6 @@ void Rulesetintegration::test_sequence()
         val = Atlas::Message::Element();
         assert(val.isNone());
 
-        // Check the custom type has the attribute we passed in when creating
-        // the instance.
-        assert(test_ent->getAttr("funky", val) == 0);
-        assert(val.isString());
-        assert(val.String() == "true");
-
         // Reset val.
         val = Atlas::Message::Element();
         assert(val.isNone());
@@ -448,12 +415,6 @@ void Rulesetintegration::test_sequence()
         val = Atlas::Message::Element();
         assert(val.isNone());
 
-        // Check the custom type has the attribute we passed in when creating
-        // the instance.
-        assert(test_ent->getAttr("funky", val) == 0);
-        assert(val.isString());
-        assert(val.String() == "true");
-
         // Reset val.
         val = Atlas::Message::Element();
         assert(val.isNone());
@@ -491,12 +452,6 @@ void Rulesetintegration::test_sequence()
         // Reset val.
         val = Atlas::Message::Element();
         assert(val.isNone());
-
-        // Check the custom type has the attribute we passed in when creating
-        // the instance.
-        assert(test_ent->getAttr("funky", val) == 0);
-        assert(val.isString());
-        assert(val.String() == "true");
 
         // Reset val.
         val = Atlas::Message::Element();
@@ -565,12 +520,6 @@ void Rulesetintegration::test_sequence()
         val = Atlas::Message::Element();
         assert(val.isNone());
 
-        // Check the custom type has the attribute we passed in when creating
-        // the instance.
-        assert(test_ent->getAttr("funky", val) == 0);
-        assert(val.isString());
-        assert(val.String() == "true");
-
         // Reset val.
         val = Atlas::Message::Element();
         assert(val.isNone());
@@ -622,12 +571,6 @@ void Rulesetintegration::test_sequence()
         val = Atlas::Message::Element();
         assert(val.isNone());
 
-        // Check the custom type has the attribute we passed in when creating
-        // the instance.
-        assert(test_ent->getAttr("funky", val) == 0);
-        assert(val.isString());
-        assert(val.String() == "true");
-
         // Reset val.
         val = Atlas::Message::Element();
         assert(val.isNone());
@@ -657,7 +600,7 @@ int main()
 {
     database_flag = false;
 
-    init_python_api("6525a56d-7139-4016-8c1c-c2e77ab50039");
+    // init_python_api("6525a56d-7139-4016-8c1c-c2e77ab50039");
 
     Rulesetintegration t;
 
@@ -670,6 +613,662 @@ void TestWorld::message(const Operation & op, Entity & ent)
 
 Entity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
+{
+    return 0;
+}
+
+// stubs
+
+#include "server/Connection.h"
+#include "server/CorePropertyManager.h"
+#include "server/Juncture.h"
+#include "server/Player.h"
+#include "server/ServerAccount.h"
+#include "server/ServerRouting.h"
+
+#include "rulesets/PythonScriptFactory.h"
+#include "rulesets/Task.h"
+
+Account::Account(Connection * conn,
+                 const std::string & uname,
+                 const std::string & passwd,
+                 const std::string & id,
+                 long intId) :
+         ConnectableRouter(id, intId, conn),
+         m_username(uname), m_password(passwd)
+{
+}
+
+Account::~Account()
+{
+}
+
+Entity * Account::addNewCharacter(const std::string & typestr,
+                                  const RootEntity & ent,
+                                  const Root & arg)
+{
+    return 0;
+}
+
+int Account::connectCharacter(Entity *chr)
+{
+    return 0;
+}
+
+const char * Account::getType() const
+{
+    return "account";
+}
+
+void Account::store() const
+{
+}
+
+void Account::createObject(const std::string & type_str,
+                           const Root & arg,
+                           const Operation & op,
+                           OpVector & res)
+{
+}
+
+void Account::addCharacter(Entity * chr)
+{
+}
+
+void Account::addToMessage(MapType & omap) const
+{
+}
+
+void Account::addToEntity(const RootEntity & ent) const
+{
+}
+
+void Account::externalOperation(const Operation & op, Link &)
+{
+}
+
+void Account::operation(const Operation & op, OpVector & res)
+{
+}
+
+void Account::LogoutOperation(const Operation &, OpVector &)
+{
+}
+
+void Account::CreateOperation(const Operation &, OpVector &)
+{
+}
+
+void Account::SetOperation(const Operation &, OpVector &)
+{
+}
+
+void Account::ImaginaryOperation(const Operation &, OpVector &)
+{
+}
+
+void Account::TalkOperation(const Operation &, OpVector &)
+{
+}
+
+void Account::LookOperation(const Operation &, OpVector &)
+{
+}
+
+void Account::GetOperation(const Operation &, OpVector &)
+{
+}
+
+void Account::OtherOperation(const Operation &, OpVector &)
+{
+}
+
+ConnectableRouter::ConnectableRouter(const std::string & id,
+                                 long iid,
+                                 Connection *c) :
+                 Router(id, iid),
+                 m_connection(c)
+{
+}
+
+ConnectableRouter::~ConnectableRouter()
+{
+}
+
+void Connection::addObject(Router * obj)
+{
+}
+
+CorePropertyManager::CorePropertyManager()
+{
+}
+
+CorePropertyManager::~CorePropertyManager()
+{
+}
+
+PropertyBase * CorePropertyManager::addProperty(const std::string & name,
+                                                int type)
+{
+    return new SoftProperty;
+}
+
+template <class T>
+EntityFactory<T>::EntityFactory(EntityFactory<T> & o)
+{
+}
+
+template <class T>
+EntityFactory<T>::EntityFactory()
+{
+}
+
+template <class T>
+EntityFactory<T>::~EntityFactory()
+{
+}
+
+template <class T>
+Entity * EntityFactory<T>::newEntity(const std::string & id, long intId)
+{
+    return new Entity(id, intId);
+}
+
+template <class T>
+EntityKit * EntityFactory<T>::duplicateFactory()
+{
+    EntityKit * f = new EntityFactory<T>(*this);
+    // Copy the defaults to the parent
+    f->m_attributes = this->m_attributes;
+    f->m_parent = this;
+    return f;
+}
+
+class Character;
+class Creator;
+class Plant;
+class Stackable;
+class World;
+
+template class EntityFactory<Character>;
+template class EntityFactory<Creator>;
+template class EntityFactory<Plant>;
+template class EntityFactory<Stackable>;
+template class EntityFactory<Thing>;
+template class EntityFactory<World>;
+
+Juncture::Juncture(Connection * c, const std::string & id, long iid) :
+          ConnectableRouter(id, iid, c),
+          m_address(0),
+          m_socket(0),
+          m_peer(0),
+          m_connectRef(0)
+{
+}
+
+Juncture::~Juncture()
+{
+}
+
+void Juncture::externalOperation(const Operation & op, Link &)
+{
+}
+
+void Juncture::operation(const Operation & op, OpVector & res)
+{
+}
+
+void Juncture::addToMessage(MapType & omap) const
+{
+}
+
+void Juncture::addToEntity(const RootEntity & ent) const
+{
+}
+
+std::set<std::string> Player::playableTypes;
+
+Player::Player(Connection * conn,
+               const std::string & username,
+               const std::string & passwd,
+               const std::string & id,
+               long intId) :
+        Account(conn, username, passwd, id, intId)
+{
+}
+
+Player::~Player() { }
+
+const char * Player::getType() const
+{
+    return "player";
+}
+
+void Player::addToMessage(MapType & omap) const
+{
+}
+
+void Player::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+int Player::characterError(const Operation & op,
+                           const Root & ent, OpVector & res) const
+{
+    return 0;
+}
+
+ServerAccount::ServerAccount(Connection * conn,
+             const std::string & username,
+             const std::string & passwd,
+             const std::string & id,
+             long intId) :
+       Account(conn, username, passwd, id, intId)
+{
+}
+
+ServerAccount::~ServerAccount()
+{
+}
+
+const char * ServerAccount::getType() const
+{
+    return "server";
+}
+
+int ServerAccount::characterError(const Operation & op,
+                                  const Root & ent,
+                                  OpVector & res) const
+{
+    return -1;
+}
+
+void ServerAccount::createObject(const std::string & type_str,
+                                 const Root & arg,
+                                 const Operation & op,
+                                 OpVector & res)
+{
+}
+
+void ServerRouting::addObject(Router * obj)
+{
+}
+
+Router * ServerRouting::getObject(const std::string & id) const
+{
+    return 0;
+}
+
+Entity::Entity(const std::string & id, long intId) :
+        LocatedEntity(id, intId), m_motion(0), m_flags(0)
+{
+}
+
+Entity::~Entity()
+{
+}
+
+void Entity::destroy()
+{
+    destroyed.emit();
+}
+
+void Entity::ActuateOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::AppearanceOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::AttackOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::CombineOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::CreateOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::DeleteOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::DisappearanceOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::DivideOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::EatOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::GetOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::InfoOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::ImaginaryOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::LookOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::MoveOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::NourishOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::SetOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::SightOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::SoundOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::TalkOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::TickOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::TouchOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::UpdateOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::UseOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::WieldOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::externalOperation(const Operation & op, Link &)
+{
+}
+
+void Entity::operation(const Operation & op, OpVector & res)
+{
+}
+
+void Entity::addToMessage(Atlas::Message::MapType & omap) const
+{
+}
+
+void Entity::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+PropertyBase * Entity::setAttr(const std::string & name,
+                               const Atlas::Message::Element & attr)
+{
+    return 0;
+}
+
+const PropertyBase * Entity::getProperty(const std::string & name) const
+{
+    return 0;
+}
+
+PropertyBase * Entity::setProperty(const std::string & name,
+                                   PropertyBase * prop)
+{
+    return m_properties[name] = prop;
+}
+
+void Entity::onContainered()
+{
+}
+
+void Entity::onUpdated()
+{
+}
+
+LocatedEntity::LocatedEntity(const std::string & id, long intId) :
+               Router(id, intId),
+               m_refCount(0), m_seq(0),
+               m_script(0), m_type(0), m_contains(0)
+{
+}
+
+LocatedEntity::~LocatedEntity()
+{
+}
+
+void LocatedEntity::makeContainer()
+{
+}
+
+bool LocatedEntity::hasAttr(const std::string & name) const
+{
+    return false;
+}
+
+int LocatedEntity::getAttr(const std::string & name,
+                           Atlas::Message::Element & attr) const
+{
+    PropertyDict::const_iterator I = m_properties.find(name);
+    if (I != m_properties.end()) {
+        return I->second->get(attr);
+    }
+    if (m_type != 0) {
+        I = m_type->defaults().find(name);
+        if (I != m_type->defaults().end()) {
+            return I->second->get(attr);
+        }
+    }
+    return -1;
+}
+
+int LocatedEntity::getAttrType(const std::string & name,
+                               Atlas::Message::Element & attr,
+                               int type) const
+{
+    return -1;
+}
+
+PropertyBase * LocatedEntity::setAttr(const std::string & name,
+                                      const Atlas::Message::Element & attr)
+{
+    return 0;
+}
+
+void LocatedEntity::merge(const MapType & ent)
+{
+}
+
+const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
+{
+    return 0;
+}
+
+void LocatedEntity::onContainered()
+{
+}
+
+void LocatedEntity::onUpdated()
+{
+}
+
+PythonClass::PythonClass(const std::string & package,
+                         const std::string & type,
+                         struct _typeobject * base) : m_package(package),
+                                                      m_type(type),
+                                                      m_base(base),
+                                                      m_module(0),
+                                                      m_class(0)
+{
+}
+
+PythonClass::~PythonClass()
+{
+}
+
+int PythonClass::load()
+{
+    return 0;
+}
+
+int PythonClass::getClass(struct _object *)
+{
+    return 0;
+}
+
+int PythonClass::refresh()
+{
+    return 0;
+}
+
+template <class T>
+PythonScriptFactory<T>::PythonScriptFactory(const std::string & package,
+                                         const std::string & type) :
+                                         PythonClass(package,
+                                                     type,
+                                                     0)
+{
+}
+
+template <class T>
+PythonScriptFactory<T>::~PythonScriptFactory()
+{
+}
+
+template <class T>
+int PythonScriptFactory<T>::setup()
+{
+    return 0;
+}
+
+template <class T>
+const std::string & PythonScriptFactory<T>::package() const
+{
+    return m_package;
+}
+
+template <class T>
+int PythonScriptFactory<T>::addScript(T * entity) const
+{
+    return 0;
+}
+
+template <class T>
+int PythonScriptFactory<T>::refreshClass()
+{
+    return 0;
+}
+
+template class PythonScriptFactory<Entity>;
+template class PythonScriptFactory<Task>;
+
+void Task::initTask(const Operation & op, OpVector & res)
+{
+}
+
+void Task::operation(const Operation & op, OpVector & res)
+{
+}
+
+Task::Task(LocatedEntity & chr) : m_refCount(0), m_serialno(0), m_obsolete(false
+), m_progress(-1), m_rate(-1), m_owner(chr)
+{
+}
+
+Task::~Task()
+{
+}
+
+void Task::irrelevant()
+{
+}
+
+Thing::Thing(const std::string & id, long intId) :
+       Entity(id, intId)
+{
+}
+
+Thing::~Thing()
+{
+}
+
+void Thing::DeleteOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Thing::MoveOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Thing::SetOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Thing::LookOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Thing::CreateOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Thing::UpdateOperation(const Operation & op, OpVector & res)
+{
+}
+
+World::World(const std::string & id, long intId) : Thing(id, intId)
+{
+}
+
+World::~World()
+{
+}
+
+void World::EatOperation(const Operation & op, OpVector & res)
+{
+}
+
+void World::LookOperation(const Operation & op, OpVector & res)
+{
+}
+
+void World::MoveOperation(const Operation & op, OpVector & res)
+{
+}
+
+void World::DeleteOperation(const Operation & op, OpVector & res)
+{
+}
+
+Location::Location() : m_loc(0)
+{
+}
+
+int Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent)
 {
     return 0;
 }
