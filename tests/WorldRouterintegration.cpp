@@ -49,6 +49,7 @@
 
 #include <cassert>
 
+using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
@@ -101,7 +102,7 @@ int main()
     test_world->test_getOperationFromQueue();
 
     {
-        Atlas::Message::MapType spawn_data;
+        MapType spawn_data;
         test_world->createSpawnPoint(spawn_data, ent2);
 
         spawn_data["name"] = 1;
@@ -129,7 +130,7 @@ int main()
     assert(ent3 == 0);
 
     {
-        Atlas::Message::MapType spawn_data;
+        MapType spawn_data;
         spawn_data["name"] = "bob";
         spawn_data["character_types"] = Atlas::Message::ListType(1, "spiddler");
         test_world->createSpawnPoint(spawn_data, ent2);
@@ -141,7 +142,7 @@ int main()
     assert(ent3 == 0);
 
     {
-        Atlas::Message::MapType spawn_data;
+        MapType spawn_data;
         spawn_data["name"] = "bob";
         spawn_data["character_types"] = Atlas::Message::ListType(1, "character");
         test_world->createSpawnPoint(spawn_data, ent2);
@@ -153,7 +154,7 @@ int main()
     assert(ent3 != 0);
 
     {
-        Atlas::Message::MapType spawn_data;
+        MapType spawn_data;
         spawn_data["name"] = "bob";
         spawn_data["character_types"] = Atlas::Message::ListType(1, "character");
         spawn_data["contains"] = Atlas::Message::ListType(1, "thing");
@@ -174,8 +175,537 @@ int main()
     return 0;
 }
 
+// stubs
+
+#include "server/EntityFactory.h"
+#include "server/CorePropertyManager.h"
+
+#include "rulesets/AreaProperty.h"
+#include "rulesets/AtlasProperties.h"
+#include "rulesets/BBoxProperty.h"
+#include "rulesets/CalendarProperty.h"
+#include "rulesets/EntityProperty.h"
+#include "rulesets/ExternalProperty.h"
+#include "rulesets/OutfitProperty.h"
+#include "rulesets/StatusProperty.h"
+#include "rulesets/TasksProperty.h"
+#include "rulesets/TerrainProperty.h"
+
+#include "rulesets/Character.h"
+#include "rulesets/ExternalMind.h"
+#include "rulesets/Motion.h"
+#include "rulesets/Pedestrian.h"
+#include "rulesets/PythonArithmeticFactory.h"
+#include "rulesets/Task.h"
+
+#include <Atlas/Objects/Operation.h>
+
+CorePropertyManager::CorePropertyManager()
+{
+}
+
+CorePropertyManager::~CorePropertyManager()
+{
+}
+
+PropertyBase * CorePropertyManager::addProperty(const std::string & name,
+                                                int type)
+{
+    return 0;
+}
+
+template <class T>
+EntityFactory<T>::EntityFactory(EntityFactory<T> & o)
+{
+}
+
+template <class T>
+EntityFactory<T>::EntityFactory()
+{
+}
+
+template <class T>
+EntityFactory<T>::~EntityFactory()
+{
+}
+
+template <class T>
+Entity * EntityFactory<T>::newEntity(const std::string & id, long intId)
+{
+    return new Entity(id, intId);
+}
+
+template <class T>
+EntityKit * EntityFactory<T>::duplicateFactory()
+{
+    return 0;
+}
+
+class Creator;
+class Plant;
+class Stackable;
+class World;
+
+template <>
+Entity * EntityFactory<World>::newEntity(const std::string & id, long intId)
+{
+    return 0;
+}
+
+template <>
+Entity * EntityFactory<Character>::newEntity(const std::string & id, long intId)
+{
+    return new Character(id, intId);
+}
+
+template <>
+Entity * EntityFactory<Thing>::newEntity(const std::string & id, long intId)
+{
+    return new Thing(id, intId);
+}
+
+template class EntityFactory<Thing>;
+template class EntityFactory<Character>;
+template class EntityFactory<Creator>;
+template class EntityFactory<Plant>;
+template class EntityFactory<Stackable>;
+template class EntityFactory<World>;
+
+AreaProperty::AreaProperty()
+{
+}
+
+AreaProperty::~AreaProperty()
+{
+}
+
+void AreaProperty::set(const Atlas::Message::Element & ent)
+{
+}
+
+void AreaProperty::apply(Entity * owner)
+{
+}
+
+CalendarProperty::CalendarProperty()
+{
+}
+
+int CalendarProperty::get(Element & ent) const
+{
+    return 0;
+}
+
+void CalendarProperty::set(const Element & ent)
+{
+}
+
+ExternalProperty::ExternalProperty(ExternalMind * & data) : m_data(data)
+{
+}
+
+int ExternalProperty::get(Element & val) const
+{
+    return 0;
+}
+
+void ExternalProperty::set(const Element & val)
+{
+}
+
+void ExternalProperty::add(const std::string & s,
+                         MapType & map) const
+{
+}
+
+void ExternalProperty::add(const std::string & s,
+                         const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+EntityProperty::EntityProperty()
+{
+}
+
+int EntityProperty::get(Element & val) const
+{
+    return 0;
+}
+
+void EntityProperty::set(const Element & val)
+{
+}
+
+void EntityProperty::add(const std::string & s,
+                         MapType & map) const
+{
+}
+
+void EntityProperty::add(const std::string & s,
+                         const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),
+                                                   m_data(data)
+{
+}
+
+int IdProperty::get(Atlas::Message::Element & e) const
+{
+    e = m_data;
+    return 0;
+}
+
+void IdProperty::set(const Atlas::Message::Element & e)
+{
+}
+
+void IdProperty::add(const std::string & key,
+                     Atlas::Message::MapType & ent) const
+{
+}
+
+void IdProperty::add(const std::string & key,
+                     const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+OutfitProperty::OutfitProperty()
+{
+}
+
+OutfitProperty::~OutfitProperty()
+{
+}
+
+int OutfitProperty::get(Element & val) const
+{
+    return 0;
+}
+
+void OutfitProperty::set(const Element & val)
+{
+}
+
+void OutfitProperty::add(const std::string & key,
+                         MapType & map) const
+{
+}
+
+void OutfitProperty::add(const std::string & key,
+                         const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+void OutfitProperty::cleanUp()
+{
+}
+
+void OutfitProperty::wear(Entity * wearer,
+                          const std::string & location,
+                          Entity * garment)
+{
+}
+
+void OutfitProperty::itemRemoved(Entity * garment, Entity * wearer)
+{
+}
+
+TerrainProperty::TerrainProperty() :
+      m_data(*(Mercator::Terrain*)0),
+      m_tileShader(*(Mercator::TileShader*)0)
+{
+}
+
+TerrainProperty::~TerrainProperty()
+{
+}
+
+int TerrainProperty::get(Element & ent) const
+{
+    return 0;
+}
+
+void TerrainProperty::set(const Element & ent)
+{
+}
+
+bool TerrainProperty::getHeightAndNormal(float x,
+                                         float y,
+                                         float & height,
+                                         Vector3D & normal) const
+{
+    return true;
+}
+
+int TerrainProperty::getSurface(const Point3D & pos, int & material)
+{
+    return 0;
+}
+
+Task::Task(LocatedEntity & owner) : m_refCount(0), m_serialno(0),
+                                    m_obsolete(false),
+                                    m_progress(-1), m_rate(-1),
+                                    m_owner(owner), m_script(0)
+{
+}
+
+Task::~Task()
+{
+}
+
+void Task::initTask(const Operation & op, OpVector & res)
+{
+}
+
+void Task::operation(const Operation & op, OpVector & res)
+{
+}
+
+void Task::irrelevant()
+{
+}
+
+TasksProperty::TasksProperty() : PropertyBase(per_ephem), m_task(0)
+{
+}
+
+int TasksProperty::get(Element & val) const
+{
+    return 0;
+}
+
+void TasksProperty::set(const Element & val)
+{
+}
+
+int TasksProperty::startTask(Task *, Entity *, const Operation &, OpVector &)
+{
+    return 0;
+}
+
+int TasksProperty::updateTask(Entity *, OpVector &)
+{
+    return 0;
+}
+
+int TasksProperty::clearTask(Entity *, OpVector &)
+{
+    return 0;
+}
+
+void TasksProperty::stopTask(Entity *, OpVector &)
+{
+}
+
+void TasksProperty::TickOperation(Entity *, const Operation &, OpVector &)
+{
+}
+
+void TasksProperty::UseOperation(Entity *, const Operation &, OpVector &)
+{
+}
+
+void TasksProperty::operation(Entity *, const Operation &, OpVector &)
+{
+}
+
+ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
+      PropertyBase(per_ephem), m_data(data)
+{
+}
+
+int ContainsProperty::get(Element & e) const
+{
+    return 0;
+}
+
+void ContainsProperty::set(const Element & e)
+{
+}
+
+void ContainsProperty::add(const std::string & s,
+                           const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+StatusProperty::StatusProperty()
+{
+}
+
+void StatusProperty::apply(Entity * owner)
+{
+}
+
+BBoxProperty::BBoxProperty()
+{
+}
+
+void BBoxProperty::apply(Entity * ent)
+{
+}
+
+int BBoxProperty::get(Element & val) const
+{
+    return -1;
+}
+
+void BBoxProperty::set(const Element & val)
+{
+}
+
+void BBoxProperty::add(const std::string & key,
+                       MapType & map) const
+{
+}
+
+void BBoxProperty::add(const std::string & key,
+                       const RootEntity & ent) const
+{
+}
+
+ExternalMind::ExternalMind(Entity & e) : Router(e.getId(), e.getIntId()),
+                                         m_external(0),
+                                         m_entity(e),
+                                         m_lossTime(0.)
+{
+}
+
+ExternalMind::~ExternalMind()
+{
+}
+
+void ExternalMind::externalOperation(const Operation & op, Link &)
+{
+}
+
+void ExternalMind::linkUp(Link * c)
+{
+    m_external = c;
+}
+
+void ExternalMind::operation(const Operation & op, OpVector & res)
+{
+}
+
+ArithmeticKit::~ArithmeticKit()
+{
+}
+
+Motion::Motion(Entity & body) : m_entity(body), m_serialno(0),
+                                m_collision(false)
+{
+}
+
+Motion::~Motion()
+{
+}
+
+float Motion::checkCollisions()
+{
+    return consts::move_tick;
+}
+
+bool Motion::resolveCollision()
+{
+    return true;
+}
+
+void Motion::setMode(const std::string & mode)
+{
+}
+
+void Motion::adjustPostion()
+{
+}
+
+Operation * Motion::genUpdateOperation()
+{
+    return 0;
+}
+
+Operation * Motion::genMoveOperation()
+{
+    return 0;
+}
+
+Pedestrian::Pedestrian(Entity & body) : Movement(body)
+{
+}
+
+Pedestrian::~Pedestrian()
+{
+}
+
+double Pedestrian::getTickAddition(const Point3D & coordinates,
+                                   const Vector3D & velocity) const
+{
+    return consts::basic_tick;
+}
+
+int Pedestrian::getUpdatedLocation(Location & return_location)
+{
+    return 1;
+}
+
+Operation Pedestrian::generateMove(const Location & new_location)
+{
+    Atlas::Objects::Operation::Move moveOp;
+    return moveOp;
+}
+
+Movement::Movement(Entity & body) : m_body(body),
+                                    m_serialno(0)
+{
+}
+
+Movement::~Movement()
+{
+}
+
+bool Movement::updateNeeded(const Location & location) const
+{
+    return true;
+}
+
+void Movement::reset()
+{
+}
+
+PythonArithmeticFactory::PythonArithmeticFactory(const std::string & package,
+                                                 const std::string & name) :
+                                                 PythonClass(package,
+                                                             name,
+                                                             0)
+{
+}
+
+PythonArithmeticFactory::~PythonArithmeticFactory()
+{
+}
+
+int PythonArithmeticFactory::setup()
+{
+    return 0;
+}
+
+ArithmeticScript * PythonArithmeticFactory::newScript(Entity * owner)
+{
+    return 0;
+}
+
+PythonClass::PythonClass(const std::string & package,
+                         const std::string & type,
+                         struct _typeobject * base)
+{
+}
+
+PythonClass::~PythonClass()
+{
+}
+
 #if 0
-// Stubs
 
 int timeoffset = 0;
 
@@ -188,288 +718,79 @@ namespace Atlas { namespace Objects { namespace Operation {
 int TICK_NO = -1;
 }}}
 
-World::World(const std::string & id, long intId) : Thing(id, intId)
+SoftProperty::SoftProperty()
 {
 }
 
-World::~World()
+SoftProperty::SoftProperty(const Element & data) :
+              PropertyBase(0), m_data(data)
 {
 }
 
-void World::EatOperation(const Operation & op, OpVector & res)
+int SoftProperty::get(Element & val) const
 {
-}
-
-void World::LookOperation(const Operation & op, OpVector & res)
-{
-}
-
-void World::MoveOperation(const Operation & op, OpVector & res)
-{
-}
-
-void World::DeleteOperation(const Operation & op, OpVector & res)
-{
-}
-
-Thing::Thing(const std::string & id, long intId) :
-       Entity(id, intId)
-{
-}
-
-Thing::~Thing()
-{
-}
-
-void Thing::DeleteOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::MoveOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::SetOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::LookOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::CreateOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::UpdateOperation(const Operation & op, OpVector & res)
-{
-}
-
-Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0), m_flags(0)
-{
-}
-
-Entity::~Entity()
-{
-}
-
-void Entity::destroy()
-{
-    destroyed.emit();
-}
-
-Domain * Domain::m_instance = new Domain();
-
-Domain::Domain() : m_refCount(0)
-{
-}
-
-Domain::~Domain()
-{
-}
-
-Domain * Entity::getMovementDomain()
-{
-    return Domain::instance();
-}
-
-float Domain::constrainHeight(LocatedEntity * parent,
-                              const Point3D & pos,
-                              const std::string & mode)
-{
-    return 0.f;
-}
-
-void Entity::ActuateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::AppearanceOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::AttackOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::CombineOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::CreateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DeleteOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DisappearanceOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DivideOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::EatOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::GetOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::InfoOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::ImaginaryOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::LookOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::MoveOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::NourishOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SetOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SightOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SoundOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TalkOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TickOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TouchOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::UpdateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::UseOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::WieldOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::externalOperation(const Operation & op, Link &)
-{
-}
-
-void Entity::operation(const Operation & op, OpVector & res)
-{
-}
-
-void Entity::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Entity::addToEntity(const RootEntity & ent) const
-{
-}
-
-PropertyBase * Entity::setAttr(const std::string & name,
-                               const Atlas::Message::Element & attr)
-{
+    val = m_data;
     return 0;
 }
 
-const PropertyBase * Entity::getProperty(const std::string & name) const
-{
-    return 0;
-}
-
-void Entity::onContainered()
+void SoftProperty::set(const Element & val)
 {
 }
 
-void Entity::onUpdated()
+PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
 {
 }
 
-LocatedEntity::LocatedEntity(const std::string & id, long intId) :
-               Router(id, intId),
-               m_refCount(0), m_seq(0),
-               m_script(0), m_type(0), m_contains(0)
+PropertyBase::~PropertyBase()
 {
 }
 
-LocatedEntity::~LocatedEntity()
+void PropertyBase::install(Entity *)
 {
 }
 
-void LocatedEntity::makeContainer()
+void PropertyBase::apply(Entity *)
 {
-    if (m_contains == 0) {
-        m_contains = new LocatedEntitySet;
+}
+
+void PropertyBase::add(const std::string & s,
+                       MapType & ent) const
+{
+    get(ent[s]);
+}
+
+void PropertyBase::add(const std::string & s,
+                       const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+template<>
+void Property<int>::set(const Element & e)
+{
+    if (e.isInt()) {
+        this->m_data = e.asInt();
     }
 }
 
-bool LocatedEntity::hasAttr(const std::string & name) const
+template<>
+void Property<double>::set(const Element & e)
 {
-    return false;
+    if (e.isNum()) {
+        this->m_data = e.asNum();
+    }
 }
 
-int LocatedEntity::getAttr(const std::string & name,
-                           Atlas::Message::Element & attr) const
+template<>
+void Property<std::string>::set(const Element & e)
 {
-    return -1;
+    if (e.isString()) {
+        this->m_data = e.String();
+    }
 }
 
-int LocatedEntity::getAttrType(const std::string & name,
-                               Atlas::Message::Element & attr,
-                               int type) const
-{
-    return -1;
-}
-
-PropertyBase * LocatedEntity::setAttr(const std::string & name,
-                                      const Atlas::Message::Element & attr)
-{
-    return 0;
-}
-
-const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
-{
-    return 0;
-}
-
-void LocatedEntity::onContainered()
-{
-}
-
-void LocatedEntity::onUpdated()
-{
-}
-
-Location::Location() : m_loc(0)
-{
-}
+template class Property<int>;
+template class Property<double>;
+template class Property<std::string>;
 
 Router::Router(const std::string & id, long intId) : m_id(id),
                                                              m_intId(intId)
@@ -480,7 +801,7 @@ Router::~Router()
 {
 }
 
-void Router::addToMessage(Atlas::Message::MapType & omap) const
+void Router::addToMessage(MapType & omap) const
 {
 }
 
@@ -500,78 +821,6 @@ long integerId(const std::string & id)
 
 void log(LogLevel lvl, const std::string & msg)
 {
-}
-
-static inline float sqr(float x)
-{
-    return x * x;
-}
-
-float squareDistance(const Point3D & u, const Point3D & v)
-{
-    return (sqr(u.x() - v.x()) + sqr(u.y() - v.y()) + sqr(u.z() - v.z()));
-}
-
-static bool distanceFromAncestor(const Location & self,
-                                 const Location & other, Point3D & c)
-{
-    if (&self == &other) {
-        return true;
-    }
-
-    if (other.m_loc == NULL) {
-        return false;
-    }
-
-    if (other.orientation().isValid()) {
-        c = c.toParentCoords(other.m_pos, other.orientation());
-    } else {
-        static const Quaternion identity(1, 0, 0, 0);
-        c = c.toParentCoords(other.m_pos, identity);
-    }
-
-    return distanceFromAncestor(self, other.m_loc->m_location, c);
-}
-
-static bool distanceToAncestor(const Location & self,
-                               const Location & other, Point3D & c)
-{
-    c.setToOrigin();
-    if (distanceFromAncestor(self, other, c)) {
-        return true;
-    } else if ((self.m_loc != 0) &&
-               distanceToAncestor(self.m_loc->m_location, other, c)) {
-        if (self.orientation().isValid()) {
-            c = c.toLocalCoords(self.m_pos, self.orientation());
-        } else {
-            static const Quaternion identity(1, 0, 0, 0);
-            c = c.toLocalCoords(self.m_pos, identity);
-        }
-        return true;
-    }
-    log(ERROR, "Broken entity hierarchy doing distance calculation");
-    if (self.m_loc != 0) {
-        std::cerr << "Self(" << self.m_loc->getId() << "," << self.m_loc << ")"
-                  << std::endl << std::flush;
-    }
-    if (other.m_loc != 0) {
-        std::cerr << "Other(" << other.m_loc->getId() << "," << other.m_loc << ")"
-                  << std::endl << std::flush;
-    }
-     
-    return false;
-}
-
-float sqrMag(const Point3D & p)
-{
-    return p.x() * p.x() + p.y() * p.y() + p.z() * p.z();
-}
-
-float squareDistance(const Location & self, const Location & other)
-{
-    Point3D dist;
-    distanceToAncestor(self, other, dist);
-    return sqrMag(dist);
 }
 
 static long idGenerator = 0;
@@ -682,69 +931,6 @@ Monitors * Monitors::instance()
 }
 
 void Monitors::watch(const::std::string & name, VariableBase * monitor)
-{
-}
-
-EntityBuilder * EntityBuilder::m_instance = NULL;
-
-EntityBuilder::EntityBuilder()
-{
-}
-
-EntityBuilder::~EntityBuilder()
-{
-}
-
-Entity * EntityBuilder::newEntity(const std::string & id, long intId,
-                                  const std::string & type,
-                                  const RootEntity & attributes,
-                                  const BaseWorld & world) const
-{
-    if (type == "thing") {
-        Entity * e = new Entity(id, intId);
-        e->m_location.m_loc = &world.m_gameWorld;
-        e->m_location.m_pos = Point3D(0,0,0);
-        return e;
-    }
-    return 0;
-}
-
-Task * EntityBuilder::newTask(const std::string & name, Character & owner) const
-{
-    return 0;
-}
-
-Task * EntityBuilder::activateTask(const std::string & tool,
-                                   const std::string & op,
-                                   LocatedEntity * target,
-                                   Character & owner) const
-{
-    return 0;
-}
-
-SpawnEntity::SpawnEntity(Entity * e, const MapType & data)
-{
-}
-
-int SpawnEntity::spawnEntity(const std::string & type,
-                             const RootEntity & dsc)
-{
-    return -1;
-}
-
-int SpawnEntity::populateEntity(Entity * ent,
-                                const RootEntity & dsc,
-                                OpVector & res)
-{
-    return -1;
-}
-
-int SpawnEntity::addToMessage(MapType & msg) const
-{
-    return -1;
-}
-
-Spawn::~Spawn()
 {
 }
 #endif // 0
