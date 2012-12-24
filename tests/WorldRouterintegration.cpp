@@ -130,19 +130,32 @@ void WorldRouterintegration::test_sequence()
     {
         MapType spawn_data;
         test_world->createSpawnPoint(spawn_data, ent2);
+        ASSERT_EQUAL(test_world->m_spawns.size(), 0u);
 
         spawn_data["name"] = 1;
         test_world->createSpawnPoint(spawn_data, ent2);
+        ASSERT_EQUAL(test_world->m_spawns.size(), 0u);
+
+        ASSERT_TRUE(test_world->m_spawns.find("bob") ==
+                    test_world->m_spawns.end());
 
         spawn_data["name"] = "bob";
         test_world->createSpawnPoint(spawn_data, ent2);
+        ASSERT_EQUAL(test_world->m_spawns.size(), 1u);
+        ASSERT_TRUE(test_world->m_spawns.find("bob") !=
+                    test_world->m_spawns.end());
 
         test_world->createSpawnPoint(spawn_data, ent2);
+        ASSERT_EQUAL(test_world->m_spawns.size(), 1u);
+        ASSERT_TRUE(test_world->m_spawns.find("bob") !=
+                    test_world->m_spawns.end());
     }
     {
+        ASSERT_EQUAL(test_world->m_spawns.size(), 1u);
         Atlas::Message::ListType spawn_repr;
         test_world->getSpawnList(spawn_repr);
         assert(!spawn_repr.empty());
+        ASSERT_EQUAL(spawn_repr.size(), 1u);
     }
 
     Entity * ent3 = test_world->spawnNewEntity("__no_spawn__",

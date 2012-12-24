@@ -289,8 +289,9 @@ int WorldRouter::createSpawnPoint(const MapType & data, Entity * ent)
     const std::string & name = I->second.String();
     SpawnDict::iterator J = m_spawns.find(name);
     if (J != m_spawns.end()) {
-        delete J->second;
-        m_spawns.insert(J, std::make_pair(name, new SpawnEntity(ent, data)));
+        Spawn * old = J->second;
+        J->second = new SpawnEntity(ent, data);
+        delete old;
     } else {
         m_spawns.insert(std::make_pair(name, new SpawnEntity(ent, data)));
     }

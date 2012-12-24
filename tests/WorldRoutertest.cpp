@@ -233,6 +233,7 @@ int main()
             Atlas::Message::ListType spawn_repr;
             test_world->getSpawnList(spawn_repr);
             assert(!spawn_repr.empty());
+            assert(spawn_repr.size() == 1u);
         }
 
         Entity * ent3 = test_world->spawnNewEntity("bob",
