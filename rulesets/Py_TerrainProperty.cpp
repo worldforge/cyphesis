@@ -35,7 +35,7 @@ static PyObject * TerrainProperty_getHeight(PyProperty * self,
         return NULL;
     }
 #endif // NDEBUG
-    double x, y;
+    float x, y;
     if (!PyArg_ParseTuple(args, "ff", &x, &y)) {
         return NULL;
     }
