@@ -49,8 +49,8 @@ static PyObject * Quaternion_is_valid(PyQuaternion * self)
 static PyObject * Quaternion_rotation(PyQuaternion * self, PyObject * args)
 {
     PyObject * axis_arg;
-    double angle;
-    if (!PyArg_ParseTuple(args, "Od", &axis_arg, &angle)) {
+    float angle;
+    if (!PyArg_ParseTuple(args, "Of", &axis_arg, &angle)) {
         return NULL;
     }
     if (!PyVector3D_Check(axis_arg)) {
