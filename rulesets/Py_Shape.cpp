@@ -212,7 +212,7 @@ static PyBBox * Box_extrude(PyShape * self, PyObject * args)
         return NULL;
     }
     float low, high;
-    if (!PyArg_ParseTuple(args, "dd", &low, &high)) {
+    if (!PyArg_ParseTuple(args, "ff", &low, &high)) {
         return NULL;
     }
     PyBBox * ret = newPyBBox();
