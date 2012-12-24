@@ -1,6 +1,3 @@
-Use of "d" PyArg_ParseTuple... format, and doubles often requires a
-conversion. Audit for mismatch "f/d" float/double.
-
 Why does TeleportAuthenticator::removeTeleport check if I->second is null?
 
 disconnectObject does not remove a non-Account ConnectableRouter from
