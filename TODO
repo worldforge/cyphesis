@@ -1,3 +1,6 @@
+Remove libcommon from Lobbytest, WorldRouterintegration and
+Rulesetintegration, WorldLoaderintegration
+
 Why does TeleportAuthenticator::removeTeleport check if I->second is null?
 
 disconnectObject does not remove a non-Account ConnectableRouter from
