@@ -24,10 +24,12 @@
 #define DEBUG
 #endif
 
+#include "TestBase.h"
+
 #include "rulesets/Task.h"
 
 #include "rulesets/Entity.h"
-#include "rulesets/Character.h"
+#include "rulesets/Script.h"
 
 #include <Atlas/Objects/Generic.h>
 #include <Atlas/Objects/RootEntity.h>
@@ -36,55 +38,188 @@
 
 #include <cassert>
 
-int main()
+class Tasktest : public Cyphesis::TestBase
 {
-    int ret = 0;
+  private:
+    LocatedEntity * chr;
+    Task * m_task;
+
+    static bool Script_operation_called;
+    static bool Script_operation_ret;
+  public:
+    Tasktest();
+
+    void setup();
+    void teardown();
+
+    void test_obsolete();
+    void test_irrelevant();
+    void test_operation();
+    void test_sequence();
+    void test_setScript();
+    void test_operation_script();
+    void test_initTask_script();
+    void test_initTask_script_fail();
+
+    static bool get_Script_operation_ret();
+};
+
+bool Tasktest::Script_operation_called = false;
+bool Tasktest::Script_operation_ret = true;
+
+bool Tasktest::get_Script_operation_ret()
+{
+    Script_operation_called = true;
+    return Script_operation_ret;
+}
+
+Tasktest::Tasktest()
+{
+    ADD_TEST(Tasktest::test_obsolete);
+    ADD_TEST(Tasktest::test_irrelevant);
+    ADD_TEST(Tasktest::test_operation);
+    ADD_TEST(Tasktest::test_sequence);
+    ADD_TEST(Tasktest::test_setScript);
+    ADD_TEST(Tasktest::test_operation_script);
+    ADD_TEST(Tasktest::test_initTask_script);
+    ADD_TEST(Tasktest::test_initTask_script_fail);
+}
+
+void Tasktest::setup()
+{
+    Script_operation_called = false;
+
+    chr = new Entity("3", 3);
+
+    m_task = new Task(*chr);
+}
+
+void Tasktest::teardown()
+{
+    delete m_task;
+
+    delete chr;
+}
+
+void Tasktest::test_obsolete()
+{
+    ASSERT_EQUAL(m_task->m_obsolete, false);
+    ASSERT_EQUAL(m_task->obsolete(), false);
+}
+
+void Tasktest::test_irrelevant()
+{
+    ASSERT_EQUAL(m_task->m_obsolete, false);
+    ASSERT_EQUAL(m_task->obsolete(), false);
+    m_task->irrelevant();
+    ASSERT_EQUAL(m_task->m_obsolete, true);
+    ASSERT_EQUAL(m_task->obsolete(), true);
+}
+
+void Tasktest::test_operation()
+{
+    Operation op;
+    OpVector res;
+
+    m_task->operation(op, res);
+
+    ASSERT_EQUAL(Script_operation_called, false);
+}
+
+void Tasktest::test_sequence()
+{
+    m_task->nextTick(1.5);
+
+    Atlas::Message::Element val;
+    m_task->getAttr("foo", val);
+    assert(val.isNone());
+    m_task->setAttr("foo", 1);
+    m_task->getAttr("foo", val);
+    assert(val.isInt());
+
+    assert(!m_task->obsolete());
+
+    OpVector res;
+
+    assert(res.empty());
+
+    Atlas::Objects::Operation::Generic c;
+    c->setParents(std::list<std::string>(1, "generic"));
+
+    m_task->initTask(c, res);
 
     Operation op;
 
-    {
-        Task * task;
-        OpVector res;
+    m_task->operation(op, res);
 
-        if (0) {
-            task->operation(op, res);
-        }
-    }
+    m_task->irrelevant();
 
-    Entity ent1("1", 1), ent2("2", 2);
-    Character chr("3", 3);
+    assert(m_task->obsolete());
+}
 
-    {
-        Task fell(chr);
+void Tasktest::test_setScript()
+{
+    Script * s1 = new Script;
+    Script * s2 = new Script;
 
-        fell.nextTick(1.5);
+    m_task->setScript(s1);
 
-        Atlas::Message::Element val;
-        fell.getAttr("foo", val);
-        assert(val.isNone());
-        fell.setAttr("foo", 1);
-        fell.getAttr("foo", val);
-        assert(val.isInt());
+    ASSERT_EQUAL(m_task->m_script, s1);
 
-        assert(!fell.obsolete());
+    m_task->setScript(s2);
 
-        OpVector res;
+    ASSERT_EQUAL(m_task->m_script, s2);
+}
 
-        assert(res.empty());
+void Tasktest::test_operation_script()
+{
+    Script * s1 = new Script;
+    m_task->setScript(s1);
 
-        Atlas::Objects::Operation::Generic c;
-        c->setParents(std::list<std::string>(1, "generic"));
+    Operation op;
+    OpVector res;
 
-        fell.initTask(c, res);
+    m_task->operation(op, res);
 
-        fell.operation(op, res);
+    ASSERT_EQUAL(Script_operation_called, true);
+}
 
-        fell.irrelevant();
+void Tasktest::test_initTask_script()
+{
+    Script_operation_ret = true;
 
-        assert(fell.obsolete());
-    }
+    Script * s1 = new Script;
+    m_task->setScript(s1);
 
-    return ret;
+    Operation op;
+    OpVector res;
+
+    m_task->initTask(op, res);
+
+    ASSERT_EQUAL(m_task->obsolete(), false);
+    ASSERT_EQUAL(res.size(), 1u);
+}
+
+void Tasktest::test_initTask_script_fail()
+{
+    Script_operation_ret = false;
+
+    Script * s1 = new Script;
+    m_task->setScript(s1);
+
+    Operation op;
+    OpVector res;
+
+    m_task->initTask(op, res);
+
+    ASSERT_EQUAL(m_task->obsolete(), true);
+    ASSERT_TRUE(res.empty());
+}
+
+int main()
+{
+    Tasktest t;
+    return t.run();
 }
 
 // stubs
@@ -94,179 +229,6 @@ int main()
 namespace Atlas { namespace Objects { namespace Operation {
 int TICK_NO = -1;
 } } }
-
-Character::Character(const std::string & id, long intId) :
-           Thing(id, intId),
-               m_movement(*(Movement*)0),
-               m_mind(0), m_externalMind(0)
-{
-}
-
-Character::~Character()
-{
-}
-
-void Character::operation(const Operation & op, OpVector &)
-{
-}
-
-void Character::externalOperation(const Operation & op, Link &)
-{
-}
-
-
-void Character::ImaginaryOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::InfoOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::TickOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::TalkOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::NourishOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::UseOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::WieldOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::AttackOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::ActuateOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::mindActuateOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindAttackOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindCombineOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindCreateOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindDeleteOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindDivideOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindEatOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindGoalInfoOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindImaginaryOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindLookOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindMoveOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindSetOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindSetupOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindTalkOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindThoughtOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindTickOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindTouchOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindUpdateOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindUseOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindWieldOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindOtherOperation(const Operation &, OpVector &)
-{
-}
-
-Thing::Thing(const std::string & id, long intId) :
-       Entity(id, intId)
-{
-}
-
-Thing::~Thing()
-{
-}
-
-void Thing::DeleteOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::MoveOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::SetOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::LookOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::CreateOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::UpdateOperation(const Operation & op, OpVector & res)
-{
-}
 
 Entity::Entity(const std::string & id, long intId) :
         LocatedEntity(id, intId), m_motion(0), m_flags(0)
@@ -458,6 +420,25 @@ void LocatedEntity::onContainered()
 }
 
 void LocatedEntity::onUpdated()
+{
+}
+
+Script::Script()
+{
+}
+
+Script::~Script()
+{
+}
+
+bool Script::operation(const std::string & opname,
+                       const Atlas::Objects::Operation::RootOperation & op,
+                       OpVector & res)
+{
+   return Tasktest::get_Script_operation_ret();
+}
+
+void Script::hook(const std::string & function, LocatedEntity * entity)
 {
 }
 

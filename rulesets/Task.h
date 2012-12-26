@@ -153,6 +153,8 @@ class Task {
 
     /// \brief Sets additional attribute
     void setAttr(const std::string & attr, const Atlas::Message::Element & val);
+
+    friend class Tasktest;
 };
 
 #endif // RULESETS_TASK_H
