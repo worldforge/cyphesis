@@ -19,7 +19,7 @@
 
 #include "Task.h"
 
-#include "Entity.h"
+#include "LocatedEntity.h"
 #include "Script.h"
 
 #include "common/log.h"
