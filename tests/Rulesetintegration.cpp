@@ -108,9 +108,6 @@ void Rulesetintegration::test_init()
 void Rulesetintegration::test_sequence()
 {
     {
-        // Create a test world.
-        World e("1", 1);
-        TestWorld test_world(e);
         Atlas::Message::Element val;
 
         // Instance of EntityBuilder with all protected methods exposed
@@ -126,12 +123,12 @@ void Rulesetintegration::test_sequence()
         Anonymous attributes;
 
         // Create an entity which is an instance of one of the core classes
-        Entity * test_ent = test_eb->newEntity("1", 1, "thing", attributes, test_world);
+        Entity * test_ent = test_eb->newEntity("1", 1, "thing", attributes, *m_test_world);
         assert(test_ent != 0);
 
         // Check that creating an entity of a type we know we have not yet
         // installed results in a null pointer.
-        assert(test_eb->newEntity("1", 1, "custom_type", attributes, test_world) == 0);
+        assert(test_eb->newEntity("1", 1, "custom_type", attributes, *m_test_world) == 0);
 
         // Set up a type description for a new type, and install it.
         {
@@ -186,7 +183,7 @@ void Rulesetintegration::test_sequence()
         assert(custom_type_val == "test_value");
 
         // Create an instance of our custom type, ensuring that it works.
-        test_ent = test_eb->newEntity("1", 1, "custom_type", attributes, test_world);
+        test_ent = test_eb->newEntity("1", 1, "custom_type", attributes, *m_test_world);
         assert(test_ent != 0);
 
         // Reset val.
@@ -205,7 +202,7 @@ void Rulesetintegration::test_sequence()
 
         // Check that creating an entity of a type we know we have not yet
         // installed results in a null pointer.
-        assert(test_eb->newEntity("1", 1, "custom_inherited_type", attributes, test_world) == 0);
+        assert(test_eb->newEntity("1", 1, "custom_inherited_type", attributes, *m_test_world) == 0);
 
         // Set up a type description for a second new type which inherits
         // from the first, and install it.
@@ -251,7 +248,7 @@ void Rulesetintegration::test_sequence()
         assert(J->second.String() == "test_inherited_value");
 
         // Creat an instance of the second custom type, ensuring it works.
-        test_ent = test_eb->newEntity("1", 1, "custom_inherited_type", attributes, test_world);
+        test_ent = test_eb->newEntity("1", 1, "custom_inherited_type", attributes, *m_test_world);
         assert(test_ent != 0);
 
         // Reset val.
@@ -350,7 +347,7 @@ void Rulesetintegration::test_sequence()
         assert(J == custom_inherited_type_factory->m_attributes.end());
 
         // Creat an instance of the second custom type, ensuring it works.
-        test_ent = test_eb->newEntity("1", 1, "custom_inherited_type", attributes, test_world);
+        test_ent = test_eb->newEntity("1", 1, "custom_inherited_type", attributes, *m_test_world);
         assert(test_ent != 0);
 
         // Reset val.
@@ -408,7 +405,7 @@ void Rulesetintegration::test_sequence()
         assert(J == custom_type_factory->m_attributes.end());
 
         // Create an instance of our custom type, ensuring that it works.
-        test_ent = test_eb->newEntity("1", 1, "custom_type", attributes, test_world);
+        test_ent = test_eb->newEntity("1", 1, "custom_type", attributes, *m_test_world);
         assert(test_ent != 0);
 
         // Reset val.
@@ -437,7 +434,7 @@ void Rulesetintegration::test_sequence()
         assert(J == custom_inherited_type_factory->m_attributes.end());
 
         // Creat an instance of the second custom type, ensuring it works.
-        test_ent = test_eb->newEntity("1", 1, "custom_inherited_type", attributes, test_world);
+        test_ent = test_eb->newEntity("1", 1, "custom_inherited_type", attributes, *m_test_world);
         assert(test_ent != 0);
 
         // Reset val.
@@ -513,7 +510,7 @@ void Rulesetintegration::test_sequence()
         assert(J->second.String() == "new_value");
 
         // Create an instance of our custom type, ensuring that it works.
-        test_ent = test_eb->newEntity("1", 1, "custom_type", attributes, test_world);
+        test_ent = test_eb->newEntity("1", 1, "custom_type", attributes, *m_test_world);
         assert(test_ent != 0);
 
         // Reset val.
@@ -555,7 +552,7 @@ void Rulesetintegration::test_sequence()
         assert(J == custom_inherited_type_factory->m_attributes.end());
 
         // Creat an instance of the second custom type, ensuring it works.
-        test_ent = test_eb->newEntity("1", 1, "custom_inherited_type", attributes, test_world);
+        test_ent = test_eb->newEntity("1", 1, "custom_inherited_type", attributes, *m_test_world);
         assert(test_ent != 0);
 
         // Reset val.
