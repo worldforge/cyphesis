@@ -24,6 +24,8 @@
 #define DEBUG
 #endif
 
+#include "TestBase.h"
+
 #include "server/TeleportAuthenticator.h"
 
 #include "server/PendingTeleport.h"
@@ -88,86 +90,115 @@ class TestWorld : public BaseWorld {
     virtual void addPerceptive(Entity *) { }
 };
 
+class TeleportAuthenticatortest : public Cyphesis::TestBase
+{
+  private:
+    TestWorld * m_world;
+  public:
+    TeleportAuthenticatortest();
+
+    void setup();
+    void teardown();
+
+    void test_sequence();
+    void test_authenticateTeleport();
+    void test_authenticateTeleport_nonexist();
+    void test_removeTeleport();
+};
+
+TeleportAuthenticatortest::TeleportAuthenticatortest()
+{
+    ADD_TEST(TeleportAuthenticatortest::test_sequence);
+    ADD_TEST(TeleportAuthenticatortest::test_authenticateTeleport);
+    ADD_TEST(TeleportAuthenticatortest::test_authenticateTeleport_nonexist);
+    ADD_TEST(TeleportAuthenticatortest::test_removeTeleport);
+}
+
+void TeleportAuthenticatortest::setup()
+{
+    m_world = new TestWorld;
+
+    assert(TeleportAuthenticator::instance() == NULL);
+    TeleportAuthenticator::init();
+    assert(TeleportAuthenticator::instance() != NULL);
+}
+
+void TeleportAuthenticatortest::teardown()
+{
+    TeleportAuthenticator::del();
+    assert(TeleportAuthenticator::instance() == NULL);
+
+    delete m_world;
+}
+
+void TeleportAuthenticatortest::test_sequence()
+{
+    // Check for correct singleton instancing
+    assert(TeleportAuthenticator::instance() != NULL);
+    
+    // Test isPending() function
+    assert(!TeleportAuthenticator::instance()->isPending("test_non_existent_entity_id"));
+
+    // Test adding of teleport entries
+    assert(TeleportAuthenticator::instance()->addTeleport("test_entity_id", "test_possess_key") == 0);
+    assert(TeleportAuthenticator::instance()->isPending("test_entity_id"));
+    assert(TeleportAuthenticator::instance()->addTeleport("test_entity_id", "test_possess_key") == -1);
+
+    // Test removal of teleport entries
+    assert(TeleportAuthenticator::instance()->removeTeleport("test_non_existent_entity_id") == -1);
+    assert(TeleportAuthenticator::instance()->removeTeleport("test_entity_id") == 0);
+    assert(!TeleportAuthenticator::instance()->isPending("test_entity_id"));
+
+}
+
+void TeleportAuthenticatortest::test_authenticateTeleport()
+{
+    Entity ent("100", 100);
+    m_world->test_addEntity(&ent, 100);
+    assert(TeleportAuthenticator::instance() != NULL);
+
+    TeleportAuthenticator::instance()->addTeleport("100", "test_possess_key");
+
+    // Test non-existent ID authentication request
+    assert(TeleportAuthenticator::instance()->authenticateTeleport(
+               "101", "test_possess_key") == NULL);
+
+    // Test incorrect possess key authentication request
+    assert(TeleportAuthenticator::instance()->authenticateTeleport("100",
+                                        "test_wrong_possess_key") == NULL);
+
+    // Test valid authentication request
+    assert(TeleportAuthenticator::instance()->authenticateTeleport("100",
+                                        "test_possess_key") != NULL);
+
+}
+
+void TeleportAuthenticatortest::test_authenticateTeleport_nonexist()
+{
+    Entity ent("100", 100);
+    m_world->test_addEntity(&ent, 100);
+    assert(TeleportAuthenticator::instance() != NULL);
+
+    TeleportAuthenticator::instance()->addTeleport("101", "test_possess_key");
+
+    // Test ID authentication request, that we added, for a non existant
+    // entity
+    assert(TeleportAuthenticator::instance()->authenticateTeleport(
+                   "101", "test_possess_key") == NULL);
+}
+
+void TeleportAuthenticatortest::test_removeTeleport()
+{
+    int ret = TeleportAuthenticator::instance()->removeTeleport(
+          TeleportAuthenticator::instance()->m_teleports.end());
+    ASSERT_EQUAL(ret, -1);
+}
+
 int main()
 {
-    TestWorld world;
+    TeleportAuthenticatortest t;
 
-    {
-        // Initially the instance should be NULL (constructor should work?)
-        assert(TeleportAuthenticator::instance() == NULL);
-        // Check for correct initialization of singleton
-        TeleportAuthenticator::init();
-        assert(TeleportAuthenticator::instance() != NULL);
-        // Check for correct deletion of singleton
-        TeleportAuthenticator::del();
-        assert(TeleportAuthenticator::instance() == NULL);
-    }
-
-    {
-        TeleportAuthenticator::init();
-
-        // Check for correct singleton instancing
-        assert(TeleportAuthenticator::instance() != NULL);
-        
-        // Test isPending() function
-        assert(!TeleportAuthenticator::instance()->isPending("test_non_existent_entity_id"));
-
-        // Test adding of teleport entries
-        assert(TeleportAuthenticator::instance()->addTeleport("test_entity_id", "test_possess_key") == 0);
-        assert(TeleportAuthenticator::instance()->isPending("test_entity_id"));
-        assert(TeleportAuthenticator::instance()->addTeleport("test_entity_id", "test_possess_key") == -1);
-
-        // Test removal of teleport entries
-        assert(TeleportAuthenticator::instance()->removeTeleport("test_non_existent_entity_id") == -1);
-        assert(TeleportAuthenticator::instance()->removeTeleport("test_entity_id") == 0);
-        assert(!TeleportAuthenticator::instance()->isPending("test_entity_id"));
-
-        TeleportAuthenticator::del();
-        assert(TeleportAuthenticator::instance() == NULL);
-    }
-
-    {
-        TeleportAuthenticator::init();
-        Entity ent("100", 100);
-        world.test_addEntity(&ent, 100);
-        assert(TeleportAuthenticator::instance() != NULL);
-
-        TeleportAuthenticator::instance()->addTeleport("100", "test_possess_key");
-
-        // Test non-existent ID authentication request
-        assert(TeleportAuthenticator::instance()->authenticateTeleport(
-                       "101", "test_possess_key") == NULL);
-
-        // Test incorrect possess key authentication request
-        assert(TeleportAuthenticator::instance()->authenticateTeleport("100",
-                                            "test_wrong_possess_key") == NULL);
-
-        // Test valid authentication request
-        assert(TeleportAuthenticator::instance()->authenticateTeleport("100",
-                                            "test_possess_key") != NULL);
-
-        TeleportAuthenticator::del();
-        assert(TeleportAuthenticator::instance() == NULL);
-    }
-    
-    {
-        TeleportAuthenticator::init();
-        Entity ent("100", 100);
-        world.test_addEntity(&ent, 100);
-        assert(TeleportAuthenticator::instance() != NULL);
-
-        TeleportAuthenticator::instance()->addTeleport("101", "test_possess_key");
-
-        // Test ID authentication request, that we added, for a non existant
-        // entity
-        assert(TeleportAuthenticator::instance()->authenticateTeleport(
-                       "101", "test_possess_key") == NULL);
-
-        TeleportAuthenticator::del();
-        assert(TeleportAuthenticator::instance() == NULL);
-    }
-    
-    return 0;
+    return t.run();
 }
 
 // Stubs

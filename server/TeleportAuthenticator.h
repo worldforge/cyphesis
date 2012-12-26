@@ -68,6 +68,8 @@ class TeleportAuthenticator
 
     /// \brief Authenticate a teleport request
     Entity *authenticateTeleport(const std::string &, const std::string &);
+
+    friend class TeleportAuthenticatortest;
 };
 
 #endif // SERVER_TELEPORT_AUTHENTICATOR_H
