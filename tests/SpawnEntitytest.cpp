@@ -24,6 +24,8 @@
 #define DEBUG
 #endif
 
+#include "TestBase.h"
+
 #include "server/SpawnEntity.h"
 
 #include "rulesets/AreaProperty.h"
@@ -36,51 +38,92 @@
 
 #include <cassert>
 
-int main()
+class SpawnEntitytest : public Cyphesis::TestBase
 {
-    {
-        Atlas::Message::MapType spawn_data;
-        Spawn * s = new SpawnEntity(0, spawn_data);
+  private:
+    SpawnEntity * m_spawn;
+  public:
+    SpawnEntitytest();
 
-        delete s;
-    }
+    void setup();
+    void teardown();
 
-    {
-        Atlas::Message::MapType spawn_data;
-        spawn_data["character_types"] = "bob";
-        Spawn * s = new SpawnEntity(0, spawn_data);
+    void test_constructor();
+    void test_constructor_string();
+    void test_constructor_list();
+    void test_constructor_contains_string();
+    void test_constructor_contains_list();
+};
 
-        delete s;
-    }
-
-    {
-        Atlas::Message::MapType spawn_data;
-        spawn_data["character_types"] = Atlas::Message::ListType(1, "bob");
-        Spawn * s = new SpawnEntity(0, spawn_data);
-
-        delete s;
-    }
-
-    {
-        Atlas::Message::MapType spawn_data;
-        spawn_data["contains"] = "bob";
-        Spawn * s = new SpawnEntity(0, spawn_data);
-
-        delete s;
-    }
-
-    {
-        Atlas::Message::MapType spawn_data;
-        spawn_data["contains"] = Atlas::Message::ListType(1, "bob");
-        Spawn * s = new SpawnEntity(0, spawn_data);
-
-        delete s;
-    }
-
-    return 0;
+SpawnEntitytest::SpawnEntitytest()
+{
+    ADD_TEST(SpawnEntitytest::test_constructor);
+    ADD_TEST(SpawnEntitytest::test_constructor_string);
+    ADD_TEST(SpawnEntitytest::test_constructor_list);
+    ADD_TEST(SpawnEntitytest::test_constructor_contains_string);
+    ADD_TEST(SpawnEntitytest::test_constructor_contains_list);
 }
 
-// Stabs
+void SpawnEntitytest::setup()
+{
+}
+
+void SpawnEntitytest::teardown()
+{
+}
+
+void SpawnEntitytest::test_constructor()
+{
+    Atlas::Message::MapType spawn_data;
+    Spawn * s = new SpawnEntity(0, spawn_data);
+
+    delete s;
+}
+
+void SpawnEntitytest::test_constructor_string()
+{
+    Atlas::Message::MapType spawn_data;
+    spawn_data["character_types"] = "bob";
+    Spawn * s = new SpawnEntity(0, spawn_data);
+
+    delete s;
+}
+
+void SpawnEntitytest::test_constructor_list()
+{
+    Atlas::Message::MapType spawn_data;
+    spawn_data["character_types"] = Atlas::Message::ListType(1, "bob");
+    Spawn * s = new SpawnEntity(0, spawn_data);
+
+    delete s;
+}
+
+void SpawnEntitytest::test_constructor_contains_string()
+{
+    Atlas::Message::MapType spawn_data;
+    spawn_data["contains"] = "bob";
+    Spawn * s = new SpawnEntity(0, spawn_data);
+
+    delete s;
+}
+
+void SpawnEntitytest::test_constructor_contains_list()
+{
+    Atlas::Message::MapType spawn_data;
+    spawn_data["contains"] = Atlas::Message::ListType(1, "bob");
+    Spawn * s = new SpawnEntity(0, spawn_data);
+
+    delete s;
+}
+
+int main()
+{
+    SpawnEntitytest t;
+
+    return t.run();
+}
+
+// Stubs
 
 Spawn::~Spawn()
 {
