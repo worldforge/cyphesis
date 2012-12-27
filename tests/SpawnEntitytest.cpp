@@ -49,71 +49,64 @@ class SpawnEntitytest : public Cyphesis::TestBase
     void teardown();
 
     void test_constructor();
-    void test_constructor_string();
-    void test_constructor_list();
-    void test_constructor_contains_string();
-    void test_constructor_contains_list();
+    void test_setup_string();
+    void test_setup_list();
+    void test_setup_contains_string();
+    void test_setup_contains_list();
 };
 
 SpawnEntitytest::SpawnEntitytest()
 {
     ADD_TEST(SpawnEntitytest::test_constructor);
-    ADD_TEST(SpawnEntitytest::test_constructor_string);
-    ADD_TEST(SpawnEntitytest::test_constructor_list);
-    ADD_TEST(SpawnEntitytest::test_constructor_contains_string);
-    ADD_TEST(SpawnEntitytest::test_constructor_contains_list);
+    ADD_TEST(SpawnEntitytest::test_setup_string);
+    ADD_TEST(SpawnEntitytest::test_setup_list);
+    ADD_TEST(SpawnEntitytest::test_setup_contains_string);
+    ADD_TEST(SpawnEntitytest::test_setup_contains_list);
 }
 
 void SpawnEntitytest::setup()
 {
+    m_spawn = new SpawnEntity(0);
 }
 
 void SpawnEntitytest::teardown()
 {
+    delete m_spawn;
 }
 
 void SpawnEntitytest::test_constructor()
 {
-    Atlas::Message::MapType spawn_data;
-    Spawn * s = new SpawnEntity(0, spawn_data);
+    Spawn * s = new SpawnEntity(0);
 
     delete s;
 }
 
-void SpawnEntitytest::test_constructor_string()
+void SpawnEntitytest::test_setup_string()
 {
     Atlas::Message::MapType spawn_data;
     spawn_data["character_types"] = "bob";
-    Spawn * s = new SpawnEntity(0, spawn_data);
-
-    delete s;
+    m_spawn->setup(spawn_data);
 }
 
-void SpawnEntitytest::test_constructor_list()
+void SpawnEntitytest::test_setup_list()
 {
     Atlas::Message::MapType spawn_data;
     spawn_data["character_types"] = Atlas::Message::ListType(1, "bob");
-    Spawn * s = new SpawnEntity(0, spawn_data);
-
-    delete s;
+    m_spawn->setup(spawn_data);
 }
 
-void SpawnEntitytest::test_constructor_contains_string()
+void SpawnEntitytest::test_setup_contains_string()
 {
     Atlas::Message::MapType spawn_data;
     spawn_data["contains"] = "bob";
-    Spawn * s = new SpawnEntity(0, spawn_data);
-
-    delete s;
+    m_spawn->setup(spawn_data);
 }
 
-void SpawnEntitytest::test_constructor_contains_list()
+void SpawnEntitytest::test_setup_contains_list()
 {
     Atlas::Message::MapType spawn_data;
     spawn_data["contains"] = Atlas::Message::ListType(1, "bob");
-    Spawn * s = new SpawnEntity(0, spawn_data);
-
-    delete s;
+    m_spawn->setup(spawn_data);
 }
 
 int main()

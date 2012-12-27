@@ -845,8 +845,13 @@ Task * EntityBuilder::activateTask(const std::string & tool,
     return 0;
 }
 
-SpawnEntity::SpawnEntity(Entity * e, const MapType & data)
+SpawnEntity::SpawnEntity(Entity *)
 {
+}
+
+int SpawnEntity::setup(const MapType &)
+{
+    return 0;
 }
 
 int SpawnEntity::spawnEntity(const std::string & type,

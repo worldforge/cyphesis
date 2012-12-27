@@ -41,7 +41,9 @@ class SpawnEntity : public Spawn {
     /// List of inventory here
     Atlas::Message::ListType m_inventory;
   public:
-    explicit SpawnEntity(Entity * e, const Atlas::Message::MapType & data);
+    explicit SpawnEntity(Entity * e);
+
+    int setup(const Atlas::Message::MapType & data);
 
     int spawnEntity(const std::string & type,
                     const Atlas::Objects::Entity::RootEntity & dsc);

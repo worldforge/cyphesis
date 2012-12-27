@@ -42,7 +42,11 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Operation::Create;
 
-SpawnEntity::SpawnEntity(Entity * e, const MapType & data) : m_ent(e)
+SpawnEntity::SpawnEntity(Entity * e) : m_ent(e)
+{
+}
+
+int SpawnEntity::setup(const MapType & data)
 {
     MapType::const_iterator I = data.find("character_types");
     MapType::const_iterator Iend = data.end();
@@ -53,6 +57,7 @@ SpawnEntity::SpawnEntity(Entity * e, const MapType & data) : m_ent(e)
     if (I != Iend && I->second.isList()) {
         m_inventory = I->second.List();
     }
+    return 0;
 }
 
 static const int check_character_type(const std::string & type,
