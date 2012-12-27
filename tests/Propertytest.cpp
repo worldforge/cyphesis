@@ -168,4 +168,16 @@ int main()
     exerciseProperty(pb);
     delete pb;
     }
+
+    {
+    MapType m;
+    m.insert(std::make_pair("foo", "bar"));
+    PropertyBase * pb = new Property<MapType>(5);
+    assert(pb->flags() == 5);
+    pb->set(m);
+    pb->get(val);
+    assert(val == m);
+    exerciseProperty(pb);
+    delete pb;
+    }
 }
