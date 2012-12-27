@@ -286,17 +286,19 @@ int WorldRouter::createSpawnPoint(const MapType & data, Entity * ent)
         log(ERROR, "No name on spawn point");
         return -1;
     }
+    SpawnEntity * new_spawn = new SpawnEntity(ent);
+    if (new_spawn->setup(data) != 0) {
+        log(ERROR, "Error setting up spawn point");
+        return -1;
+    }
+
     const std::string & name = I->second.String();
     SpawnDict::iterator J = m_spawns.find(name);
     if (J != m_spawns.end()) {
         Spawn * old = J->second;
-        SpawnEntity * new_spawn = new SpawnEntity(ent);
-        new_spawn->setup(data);
         J->second = new_spawn;
         delete old;
     } else {
-        SpawnEntity * new_spawn = new SpawnEntity(ent);
-        new_spawn->setup(data);
         m_spawns.insert(std::make_pair(name, new_spawn));
     }
     return 0;
