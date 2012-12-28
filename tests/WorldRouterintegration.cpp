@@ -57,20 +57,6 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Operation::Tick;
 
-class TestWorldRouter : public WorldRouter
-{
-  public:
-    TestWorldRouter() : WorldRouter(SystemTime()) { }
-
-    Operation test_getOperationFromQueue() {
-        return getOperationFromQueue();
-    }
-
-    void test_delEntity(Entity * e) {
-        delEntity(e);
-    }
-};
-
 class WorldRouterintegration : public Cyphesis::TestBase
 {
   public:
@@ -101,7 +87,7 @@ void WorldRouterintegration::test_sequence()
 
     new Domain;
 
-    TestWorldRouter * test_world = new TestWorldRouter;
+    WorldRouter * test_world = new WorldRouter(SystemTime());
 
     Entity * ent1 = test_world->addNewEntity("__no_such_type__", Anonymous());
     assert(ent1 == 0);
@@ -118,14 +104,14 @@ void WorldRouterintegration::test_sequence()
     ent2->m_location.m_pos = Point3D(0,0,0);
     test_world->addEntity(ent2);
 
-    test_world->test_getOperationFromQueue();
+    test_world->getOperationFromQueue();
 
     Tick tick;
     tick->setFutureSeconds(0);
     tick->setTo(ent2->getId());
     test_world->message(tick, *ent2);
 
-    test_world->test_getOperationFromQueue();
+    test_world->getOperationFromQueue();
 
     {
         MapType spawn_data;
@@ -205,8 +191,8 @@ void WorldRouterintegration::test_sequence()
                                                Anonymous());
     assert(ent4 != 0);
 
-    test_world->test_delEntity(&test_world->m_gameWorld);
-    test_world->test_delEntity(ent4);
+    test_world->delEntity(&test_world->m_gameWorld);
+    test_world->delEntity(ent4);
     ent4 = 0;
 
     delete test_world;
