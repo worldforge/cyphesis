@@ -24,6 +24,8 @@
 #define DEBUG
 #endif
 
+#include "TestBase.h"
+
 #include "server/WorldRouter.h"
 
 #include "server/ArithmeticBuilder.h"
@@ -55,225 +57,232 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Operation::Tick;
 
-class TestWorldRouter : public WorldRouter
+static bool stub_deny_newid = false;
+
+class WorldRoutertest : public Cyphesis::TestBase
 {
+    WorldRouter * test_world;
   public:
-    TestWorldRouter() : WorldRouter(SystemTime()) { }
+    WorldRoutertest();
 
-    Operation test_getOperationFromQueue() {
-        return getOperationFromQueue();
-    }
+    void setup();
+    void teardown();
 
-    void test_delEntity(Entity * e) {
-        delEntity(e);
-    }
+    void test_constructor();
+    void test_addNewEntity_unknown();
+    void test_addNewEntity_thing();
+    void test_addNewEntity_idfail();
+    void test_addEntity();
+    void test_getOperationFromQueue();
+    void test_addEntity_tick();
+    void test_addEntity_tick_get();
+    void test_spawnNewEntity_unknown();
+    void test_spawnNewEntity_thing();
+    void test_createSpawnPoint();
+    void test_delEntity();
+    void test_delEntity_world();
 };
 
-static bool stub_deny_newid = false;
+WorldRoutertest::WorldRoutertest()
+{
+    ADD_TEST(WorldRoutertest::test_constructor);
+    ADD_TEST(WorldRoutertest::test_addNewEntity_unknown);
+    ADD_TEST(WorldRoutertest::test_addNewEntity_thing);
+    ADD_TEST(WorldRoutertest::test_addNewEntity_idfail);
+    ADD_TEST(WorldRoutertest::test_addEntity);
+    ADD_TEST(WorldRoutertest::test_getOperationFromQueue);
+    ADD_TEST(WorldRoutertest::test_addEntity_tick);
+    ADD_TEST(WorldRoutertest::test_addEntity_tick_get);
+    ADD_TEST(WorldRoutertest::test_spawnNewEntity_unknown);
+    ADD_TEST(WorldRoutertest::test_spawnNewEntity_thing);
+    ADD_TEST(WorldRoutertest::test_createSpawnPoint);
+    ADD_TEST(WorldRoutertest::test_delEntity);
+    ADD_TEST(WorldRoutertest::test_delEntity_world);
+}
+
+void WorldRoutertest::setup()
+{
+    test_world = new WorldRouter(SystemTime());
+}
+
+void WorldRoutertest::teardown()
+{
+    delete test_world;
+
+    EntityBuilder::del();
+}
+
+void WorldRoutertest::test_constructor()
+{
+}
+
+void WorldRoutertest::test_addNewEntity_unknown()
+{
+
+    Entity * ent1 = test_world->addNewEntity("__no_such_type__", Anonymous());
+    assert(ent1 == 0);
+}
+
+void WorldRoutertest::test_addNewEntity_thing()
+{
+    Entity * ent1 = test_world->addNewEntity("thing", Anonymous());
+    assert(ent1 != 0);
+}
+
+
+void WorldRoutertest::test_addNewEntity_idfail()
+{
+    stub_deny_newid = true;
+
+    Entity * ent1 = test_world->addNewEntity("thing", Anonymous());
+    assert(ent1 == 0);
+
+    stub_deny_newid = false;
+}
+
+void WorldRoutertest::test_addEntity()
+{
+    std::string id;
+    long int_id = newId(id);
+
+    Entity * ent2 = new Entity(id, int_id);
+    assert(ent2 != 0);
+    ent2->m_location.m_loc = &test_world->m_gameWorld;
+    ent2->m_location.m_pos = Point3D(0,0,0);
+    test_world->addEntity(ent2);
+}
+
+void WorldRoutertest::test_getOperationFromQueue()
+{
+    test_world->getOperationFromQueue();
+}
+
+void WorldRoutertest::test_addEntity_tick()
+{
+    std::string id;
+    long int_id = newId(id);
+
+    Entity * ent2 = new Entity(id, int_id);
+    assert(ent2 != 0);
+    ent2->m_location.m_loc = &test_world->m_gameWorld;
+    ent2->m_location.m_pos = Point3D(0,0,0);
+    test_world->addEntity(ent2);
+
+    Tick tick;
+    tick->setFutureSeconds(0);
+    tick->setTo(ent2->getId());
+    test_world->message(tick, *ent2);
+}
+
+
+void WorldRoutertest::test_addEntity_tick_get()
+{
+    std::string id;
+    long int_id = newId(id);
+
+    Entity * ent2 = new Entity(id, int_id);
+    assert(ent2 != 0);
+    ent2->m_location.m_loc = &test_world->m_gameWorld;
+    ent2->m_location.m_pos = Point3D(0,0,0);
+    test_world->addEntity(ent2);
+
+    Tick tick;
+    tick->setFutureSeconds(0);
+    tick->setTo(ent2->getId());
+    test_world->message(tick, *ent2);
+
+    test_world->getOperationFromQueue();
+}
+
+void WorldRoutertest::test_spawnNewEntity_unknown()
+{
+    Entity * ent3 = test_world->spawnNewEntity("__no_spawn__",
+                                               "thing",
+                                               Anonymous());
+    assert(ent3 == 0);
+}
+
+void WorldRoutertest::test_spawnNewEntity_thing()
+{
+    Entity * ent3 = test_world->spawnNewEntity("bob",
+                                               "thing",
+                                               Anonymous());
+    assert(ent3 == 0);
+}
+
+void WorldRoutertest::test_createSpawnPoint()
+{
+    std::string id;
+    long int_id = newId(id);
+
+    Entity * ent2 = new Entity(id, int_id);
+    assert(ent2 != 0);
+    ent2->m_location.m_loc = &test_world->m_gameWorld;
+    ent2->m_location.m_pos = Point3D(0,0,0);
+    test_world->addEntity(ent2);
+
+    {
+        int ret;
+
+        Atlas::Message::MapType spawn_data;
+        ret = test_world->createSpawnPoint(spawn_data, ent2);
+        assert(ret == -1);
+
+        spawn_data["name"] = 1;
+        ret = test_world->createSpawnPoint(spawn_data, ent2);
+        assert(ret == -1);
+
+        spawn_data["name"] = "bob";
+        ret = test_world->createSpawnPoint(spawn_data, ent2);
+        assert(ret == 0);
+
+        ret = test_world->createSpawnPoint(spawn_data, ent2);
+        assert(ret == 0);
+    }
+
+    {
+        Atlas::Message::ListType spawn_repr;
+        test_world->getSpawnList(spawn_repr);
+        assert(!spawn_repr.empty());
+        assert(spawn_repr.size() == 1u);
+    }
+
+    Entity * ent3 = test_world->spawnNewEntity("bob",
+                                      "permitted_non_existant",
+                                      Anonymous());
+    assert(ent3 == 0);
+
+    ent3 = test_world->spawnNewEntity("bob",
+                                      "thing",
+                                      Anonymous());
+    assert(ent3 != 0);
+}
+
+void WorldRoutertest::test_delEntity()
+{
+    std::string id;
+    long int_id = newId(id);
+
+    Entity * ent2 = new Entity(id, int_id);
+    assert(ent2 != 0);
+    ent2->m_location.m_loc = &test_world->m_gameWorld;
+    ent2->m_location.m_pos = Point3D(0,0,0);
+    test_world->addEntity(ent2);
+
+    test_world->delEntity(ent2);
+    test_world->delEntity(&test_world->m_gameWorld);
+}
+
+void WorldRoutertest::test_delEntity_world()
+{
+    test_world->delEntity(&test_world->m_gameWorld);
+}
 
 int main()
 {
-    {
-        TestWorldRouter * test_world = new TestWorldRouter;
-        delete test_world;
-    }
+    WorldRoutertest t;
 
-    {
-        TestWorldRouter * test_world = new TestWorldRouter;
-
-        Entity * ent1 = test_world->addNewEntity("__no_such_type__", Anonymous());
-        assert(ent1 == 0);
-
-        delete test_world;
-    }
-
-    {
-        TestWorldRouter * test_world = new TestWorldRouter;
-
-        Entity * ent1 = test_world->addNewEntity("thing", Anonymous());
-        assert(ent1 != 0);
-
-        delete test_world;
-    }
-
-
-    {
-        TestWorldRouter * test_world = new TestWorldRouter;
-        stub_deny_newid = true;
-
-        Entity * ent1 = test_world->addNewEntity("thing", Anonymous());
-        assert(ent1 == 0);
-
-        stub_deny_newid = false;
-
-        delete test_world;
-    }
-
-    {
-        TestWorldRouter * test_world = new TestWorldRouter;
-
-        std::string id;
-        long int_id = newId(id);
-
-        Entity * ent2 = new Entity(id, int_id);
-        assert(ent2 != 0);
-        ent2->m_location.m_loc = &test_world->m_gameWorld;
-        ent2->m_location.m_pos = Point3D(0,0,0);
-        test_world->addEntity(ent2);
-
-        delete test_world;
-    }
-
-    {
-        TestWorldRouter * test_world = new TestWorldRouter;
-        test_world->test_getOperationFromQueue();
-        delete test_world;
-    }
-
-
-    {
-        TestWorldRouter * test_world = new TestWorldRouter;
-
-        std::string id;
-        long int_id = newId(id);
-
-        Entity * ent2 = new Entity(id, int_id);
-        assert(ent2 != 0);
-        ent2->m_location.m_loc = &test_world->m_gameWorld;
-        ent2->m_location.m_pos = Point3D(0,0,0);
-        test_world->addEntity(ent2);
-
-        Tick tick;
-        tick->setFutureSeconds(0);
-        tick->setTo(ent2->getId());
-        test_world->message(tick, *ent2);
-
-        delete test_world;
-    }
-
-
-    {
-        TestWorldRouter * test_world = new TestWorldRouter;
-
-        std::string id;
-        long int_id = newId(id);
-
-        Entity * ent2 = new Entity(id, int_id);
-        assert(ent2 != 0);
-        ent2->m_location.m_loc = &test_world->m_gameWorld;
-        ent2->m_location.m_pos = Point3D(0,0,0);
-        test_world->addEntity(ent2);
-
-        Tick tick;
-        tick->setFutureSeconds(0);
-        tick->setTo(ent2->getId());
-        test_world->message(tick, *ent2);
-
-        test_world->test_getOperationFromQueue();
-        delete test_world;
-    }
-
-    {
-        TestWorldRouter * test_world = new TestWorldRouter;
-
-        Entity * ent3 = test_world->spawnNewEntity("__no_spawn__",
-                                                   "thing",
-                                                   Anonymous());
-        assert(ent3 == 0);
-
-        delete test_world;
-    }
-
-    {
-        TestWorldRouter * test_world = new TestWorldRouter;
-        Entity * ent3 = test_world->spawnNewEntity("bob",
-                                                   "thing",
-                                                   Anonymous());
-        assert(ent3 == 0);
-        delete test_world;
-    }
-
-
-    {
-        TestWorldRouter * test_world = new TestWorldRouter;
-
-        std::string id;
-        long int_id = newId(id);
-
-        Entity * ent2 = new Entity(id, int_id);
-        assert(ent2 != 0);
-        ent2->m_location.m_loc = &test_world->m_gameWorld;
-        ent2->m_location.m_pos = Point3D(0,0,0);
-        test_world->addEntity(ent2);
-
-        {
-            int ret;
-
-            Atlas::Message::MapType spawn_data;
-            ret = test_world->createSpawnPoint(spawn_data, ent2);
-            assert(ret == -1);
-
-            spawn_data["name"] = 1;
-            ret = test_world->createSpawnPoint(spawn_data, ent2);
-            assert(ret == -1);
-
-            spawn_data["name"] = "bob";
-            ret = test_world->createSpawnPoint(spawn_data, ent2);
-            assert(ret == 0);
-
-            ret = test_world->createSpawnPoint(spawn_data, ent2);
-            assert(ret == 0);
-        }
-
-        {
-            Atlas::Message::ListType spawn_repr;
-            test_world->getSpawnList(spawn_repr);
-            assert(!spawn_repr.empty());
-            assert(spawn_repr.size() == 1u);
-        }
-
-        Entity * ent3 = test_world->spawnNewEntity("bob",
-                                          "permitted_non_existant",
-                                          Anonymous());
-        assert(ent3 == 0);
-
-        ent3 = test_world->spawnNewEntity("bob",
-                                          "thing",
-                                          Anonymous());
-        assert(ent3 != 0);
-
-        delete test_world;
-    }
-
-    {
-        TestWorldRouter * test_world = new TestWorldRouter;
-
-        std::string id;
-        long int_id = newId(id);
-
-        Entity * ent2 = new Entity(id, int_id);
-        assert(ent2 != 0);
-        ent2->m_location.m_loc = &test_world->m_gameWorld;
-        ent2->m_location.m_pos = Point3D(0,0,0);
-        test_world->addEntity(ent2);
-
-        test_world->test_delEntity(ent2);
-        test_world->test_delEntity(&test_world->m_gameWorld);
-
-        delete test_world;
-    }
-
-    {
-        TestWorldRouter * test_world = new TestWorldRouter;
-
-        test_world->test_delEntity(&test_world->m_gameWorld);
-
-        delete test_world;
-    }
-
-    EntityBuilder::del();
-
-    return 0;
+    return t.run();
 }
 
 // Stubs
