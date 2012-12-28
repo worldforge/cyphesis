@@ -74,10 +74,6 @@ static bool stub_deny_newid = false;
 int main()
 {
     {
-        new TestWorldRouter;
-    }
-
-    {
         TestWorldRouter * test_world = new TestWorldRouter;
         delete test_world;
     }
@@ -246,6 +242,7 @@ int main()
                                           Anonymous());
         assert(ent3 != 0);
 
+        delete test_world;
     }
 
     {
@@ -273,6 +270,8 @@ int main()
 
         delete test_world;
     }
+
+    EntityBuilder::del();
 
     return 0;
 }
@@ -793,6 +792,7 @@ Monitors * Monitors::instance()
 
 void Monitors::watch(const::std::string & name, VariableBase * monitor)
 {
+    delete monitor;
 }
 
 ArithmeticBuilder * ArithmeticBuilder::m_instance = 0;
