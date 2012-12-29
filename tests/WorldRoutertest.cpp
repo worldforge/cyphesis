@@ -536,6 +536,11 @@ LocatedEntity::LocatedEntity(const std::string & id, long intId) :
 
 LocatedEntity::~LocatedEntity()
 {
+    // Necessary to avoid memory leaks
+    if (m_location.m_loc != 0) {
+        m_location.m_loc->decRef();
+    }
+    delete m_contains;
 }
 
 void LocatedEntity::makeContainer()
@@ -689,7 +694,7 @@ float squareDistance(const Location & self, const Location & other)
     return sqrMag(dist);
 }
 
-static long idGenerator = 0;
+static long idGenerator = 2;
 
 long newId(std::string & id)
 {
