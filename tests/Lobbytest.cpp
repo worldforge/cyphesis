@@ -24,6 +24,8 @@
 #define DEBUG
 #endif
 
+#include "TestBase.h"
+
 #include "server/Lobby.h"
 
 #include "server/CommClient.h"
@@ -49,160 +51,179 @@ class TestAccount : public Account
     }
 };
 
+class Lobbytest : public Cyphesis::TestBase
+{
+  private:
+    Lobby * m_lobby;
+  public:
+    Lobbytest();
+
+    void setup();
+    void teardown();
+
+    void test_constructor();
+    void test_addAccount();
+    void test_delAccount();
+    void test_delAccount_empty();
+    void test_operation();
+    void test_addAccount_connected();
+    void test_operation_connected();
+    void test_operation_connected_other();
+    void test_operation_account();
+    void test_addToMessage();
+    void test_addToEntity();
+};
+
+Lobbytest::Lobbytest()
+{
+    ADD_TEST(Lobbytest::test_constructor);
+    ADD_TEST(Lobbytest::test_addAccount);
+    ADD_TEST(Lobbytest::test_delAccount);
+    ADD_TEST(Lobbytest::test_delAccount_empty);
+    ADD_TEST(Lobbytest::test_operation);
+    ADD_TEST(Lobbytest::test_addAccount_connected);
+    ADD_TEST(Lobbytest::test_operation_connected);
+    ADD_TEST(Lobbytest::test_operation_connected_other);
+    ADD_TEST(Lobbytest::test_operation_account);
+    ADD_TEST(Lobbytest::test_addToMessage);
+    ADD_TEST(Lobbytest::test_addToEntity);
+}
+
+void Lobbytest::setup()
+{
+    m_lobby = new Lobby(*(ServerRouting*)0, "1", 1);
+}
+
+void Lobbytest::teardown()
+{
+    delete m_lobby;
+}
+
+void Lobbytest::test_constructor()
+{
+}
+
+void Lobbytest::test_addAccount()
+{
+    assert(m_lobby->getAccounts().size() == 0);
+
+    m_lobby->addAccount(new TestAccount());
+
+    assert(m_lobby->getAccounts().size() == 1);
+}
+
+void Lobbytest::test_delAccount()
+{
+    assert(m_lobby->getAccounts().size() == 0);
+
+    Account * tac = new TestAccount();
+
+    m_lobby->addAccount(tac);
+
+    assert(m_lobby->getAccounts().size() == 1);
+
+    m_lobby->delAccount(tac);
+
+    assert(m_lobby->getAccounts().size() == 0);
+}
+
+void Lobbytest::test_delAccount_empty()
+{
+    assert(m_lobby->getAccounts().size() == 0);
+
+    m_lobby->delAccount(new TestAccount());
+
+    assert(m_lobby->getAccounts().size() == 0);
+}
+
+void Lobbytest::test_operation()
+{
+    Atlas::Objects::Operation::RootOperation op;
+    OpVector res;
+    m_lobby->operation(op, res);
+}
+
+void Lobbytest::test_addAccount_connected()
+{
+    Account * tac = new TestAccount();
+
+    tac->m_connection = new Connection(*(CommSocket*)0,
+                                       *(ServerRouting*)0,
+                                       "foo", "3", 3);
+
+    m_lobby->addAccount(tac);
+
+    Atlas::Objects::Operation::RootOperation op;
+    OpVector res;
+    m_lobby->operation(op, res);
+}
+
+void Lobbytest::test_operation_connected()
+{
+    Account * tac = new TestAccount();
+
+    tac->m_connection = new Connection(*(CommSocket*)0,
+                                       *(ServerRouting*)0,
+                                       "foo", "3", 3);
+
+    m_lobby->addAccount(tac);
+
+    Atlas::Objects::Operation::RootOperation op;
+    OpVector res;
+    op->setTo("3");
+    m_lobby->operation(op, res);
+}
+
+void Lobbytest::test_operation_connected_other()
+{
+    Account * tac = new TestAccount();
+
+    tac->m_connection = new Connection(*(CommSocket*)0,
+                                       *(ServerRouting*)0,
+                                       "foo", "3", 3);
+
+    m_lobby->addAccount(tac);
+
+    Atlas::Objects::Operation::RootOperation op;
+    OpVector res;
+    op->setTo("2");
+    m_lobby->operation(op, res);
+}
+
+void Lobbytest::test_operation_account()
+{
+    Account * tac = new TestAccount();
+
+    m_lobby->addAccount(tac);
+
+    Atlas::Objects::Operation::RootOperation op;
+    OpVector res;
+    op->setTo("2");
+    m_lobby->operation(op, res);
+}
+
+void Lobbytest::test_addToMessage()
+{
+    m_lobby->addAccount(new TestAccount());
+
+    Atlas::Message::MapType e;
+    m_lobby->addToMessage(e);
+}
+
+void Lobbytest::test_addToEntity()
+{
+    m_lobby->addAccount(new TestAccount());
+
+    Atlas::Objects::Entity::RootEntity e;
+    m_lobby->addToEntity(e);
+}
+
+
 int main()
 {
-    {
-        Lobby * l = new Lobby(*(ServerRouting*)0, "1", 1);
-        delete l;
-    }
+    Lobbytest t;
 
-    {
-        Lobby * l = new Lobby(*(ServerRouting*)0, "1", 1);
-
-        assert(l->getAccounts().size() == 0);
-
-        l->addAccount(new TestAccount());
-
-        assert(l->getAccounts().size() == 1);
-
-        delete l;
-    }
-
-    {
-        Lobby * l = new Lobby(*(ServerRouting*)0, "1", 1);
-
-        assert(l->getAccounts().size() == 0);
-
-        Account * tac = new TestAccount();
-
-        l->addAccount(tac);
-
-        assert(l->getAccounts().size() == 1);
-
-        l->delAccount(tac);
-
-        assert(l->getAccounts().size() == 0);
-
-        delete l;
-    }
-
-    {
-        Lobby * l = new Lobby(*(ServerRouting*)0, "1", 1);
-
-        assert(l->getAccounts().size() == 0);
-
-        l->delAccount(new TestAccount());
-
-        assert(l->getAccounts().size() == 0);
-
-        delete l;
-    }
-
-    {
-        Lobby * l = new Lobby(*(ServerRouting*)0, "1", 1);
-
-        Atlas::Objects::Operation::RootOperation op;
-        OpVector res;
-        l->operation(op, res);
-
-        delete l;
-    }
-
-    {
-        Lobby * l = new Lobby(*(ServerRouting*)0, "1", 1);
-
-        Account * tac = new TestAccount();
-
-        tac->m_connection = new Connection(*(CommSocket*)0,
-                                           *(ServerRouting*)0,
-                                           "foo", "3", 3);
-
-        l->addAccount(tac);
-
-        Atlas::Objects::Operation::RootOperation op;
-        OpVector res;
-        l->operation(op, res);
-
-        delete l;
-    }
-
-    {
-        Lobby * l = new Lobby(*(ServerRouting*)0, "1", 1);
-
-        Account * tac = new TestAccount();
-
-        tac->m_connection = new Connection(*(CommSocket*)0,
-                                           *(ServerRouting*)0,
-                                           "foo", "3", 3);
-
-        l->addAccount(tac);
-
-        Atlas::Objects::Operation::RootOperation op;
-        OpVector res;
-        op->setTo("3");
-        l->operation(op, res);
-
-        delete l;
-    }
-
-    {
-        Lobby * l = new Lobby(*(ServerRouting*)0, "1", 1);
-
-        Account * tac = new TestAccount();
-
-        tac->m_connection = new Connection(*(CommSocket*)0,
-                                           *(ServerRouting*)0,
-                                           "foo", "3", 3);
-
-        l->addAccount(tac);
-
-        Atlas::Objects::Operation::RootOperation op;
-        OpVector res;
-        op->setTo("2");
-        l->operation(op, res);
-
-        delete l;
-    }
-
-    {
-        Lobby * l = new Lobby(*(ServerRouting*)0, "1", 1);
-
-        Account * tac = new TestAccount();
-
-        l->addAccount(tac);
-
-        Atlas::Objects::Operation::RootOperation op;
-        OpVector res;
-        op->setTo("2");
-        l->operation(op, res);
-
-        delete l;
-    }
-
-    {
-        Lobby * l = new Lobby(*(ServerRouting*)0, "1", 1);
-
-        l->addAccount(new TestAccount());
-
-        Atlas::Message::MapType e;
-        l->addToMessage(e);
-
-        delete l;
-    }
-
-    {
-        Lobby * l = new Lobby(*(ServerRouting*)0, "1", 1);
-
-        l->addAccount(new TestAccount());
-
-        Atlas::Objects::Entity::RootEntity e;
-        l->addToEntity(e);
-
-        delete l;
-    }
-
-
-    return 0;
+    return t.run();
 }
 
 // Stub functions
