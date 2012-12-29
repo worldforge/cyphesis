@@ -1,6 +1,3 @@
-SpawnEntity should not have init logic in constructor. Move to another function
-allowing this stuff to be set.
-
 Remove libcommon from Lobbytest, WorldRouterintegration and
 Rulesetintegration, WorldLoaderintegration
 
