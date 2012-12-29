@@ -228,6 +228,8 @@ int main()
 
 // Stub functions
 
+#include "common/log.h"
+
 Account::Account(Connection * conn,
                  const std::string & uname,
                  const std::string & passwd,
@@ -385,5 +387,33 @@ void Connection::CreateOperation(const Operation &, OpVector &)
 }
 
 void Connection::GetOperation(const Operation &, OpVector &)
+{
+}
+
+Router::Router(const std::string & id, long intId) : m_id(id),
+                                                             m_intId(intId)
+{
+}
+
+Router::~Router()
+{
+}
+
+void Router::addToMessage(Atlas::Message::MapType & omap) const
+{
+}
+
+void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+void Router::error(const Operation & op,
+                   const std::string & errstring,
+                   OpVector & res,
+                   const std::string & to) const
+{
+}
+
+void log(LogLevel lvl, const std::string & msg)
 {
 }

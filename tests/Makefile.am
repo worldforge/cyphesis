@@ -1118,8 +1118,7 @@ Peertest_LDADD = \
 
 Lobbytest_SOURCES = Lobbytest.cpp
 Lobbytest_LDADD = \
-        $(top_builddir)/server/Lobby.o \
-        $(top_builddir)/common/libcommon.a
+        $(top_builddir)/server/Lobby.o
 
 Spawntest_SOURCES = Spawntest.cpp
 Spawntest_LDADD = \
