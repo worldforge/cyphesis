@@ -1,4 +1,4 @@
-Remove libcommon from Lobbytest, WorldRouterintegration and
+Remove libcommon from WorldRouterintegration and
 Rulesetintegration, WorldLoaderintegration
 
 Why does TeleportAuthenticator::removeTeleport check if I->second is null?
