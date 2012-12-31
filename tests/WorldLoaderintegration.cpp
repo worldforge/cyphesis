@@ -59,6 +59,7 @@ int main()
     wl->setup(String::compose("%1/world.xml", data_path), res);
     assert(!wl->isComplete());
     assert(!res.empty());
+    delete wl;
 }
 
 // stubs
