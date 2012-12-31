@@ -35,6 +35,7 @@ class Flusher : public ClientTask {
     std::string type;
   public:
     explicit Flusher(const boost::shared_ptr<ObjectContext> & context);
+    virtual ~Flusher();
 
     virtual void setup(const std::string & arg, OpVector & ret);
     virtual void operation(const Operation & op, OpVector & res);
