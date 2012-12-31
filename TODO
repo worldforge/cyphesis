@@ -1,9 +1,5 @@
-OperatorMonitor::operation has bad formatting.
-Where is it's virtual destructor?
-Where is Flusher virtual destructor?
-
 Remove libcommon from WorldRouterintegration and
-Rulesetintegration, WorldLoaderintegration
+Rulesetintegration
 
 Why does TeleportAuthenticator::removeTeleport check if I->second is null?
 
