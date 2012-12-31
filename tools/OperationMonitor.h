@@ -29,6 +29,8 @@ class OperationMonitor : public ClientTask {
     int op_count;
     SystemTime start_time;
   public:
+    virtual ~OperationMonitor();
+
     int count() {
         return op_count;
     }

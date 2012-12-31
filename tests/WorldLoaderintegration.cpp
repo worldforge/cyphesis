@@ -235,6 +235,10 @@ bool JunctureContext::checkContextCommand(const struct command *)
     return false;
 }
 
+OperationMonitor::~OperationMonitor()
+{
+}
+
 void OperationMonitor::setup(const std::string & arg, OpVector &)
 {
 }

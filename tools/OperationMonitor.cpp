@@ -24,6 +24,10 @@
 
 #include <iostream>
 
+OperationMonitor::~OperationMonitor()
+{
+}
+
 void OperationMonitor::setup(const std::string & arg, OpVector &)
 {
     start_time.update();
@@ -33,7 +37,8 @@ void OperationMonitor::setup(const std::string & arg, OpVector &)
     m_description = "monitoring";
 }
 
-void OperationMonitor::operation(const Operation & op, OpVector &) {
+void OperationMonitor::operation(const Operation & op, OpVector &)
+{
     ++op_count;
     std::cout << op->getParents().front() << "(from=\"" << op->getFrom()
               << "\",to=\"" << op->getTo() << "\")"
