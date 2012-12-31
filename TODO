@@ -1,3 +1,7 @@
+OperatorMonitor::operation has bad formatting.
+Where is it's virtual destructor?
+Where is Flusher virtual destructor?
+
 Remove libcommon from WorldRouterintegration and
 Rulesetintegration, WorldLoaderintegration
 

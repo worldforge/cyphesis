@@ -63,8 +63,208 @@ int main()
 
 // stubs
 
+namespace Atlas { namespace Objects { namespace Operation {
+int CONNECT_NO = -1;
+int MONITOR_NO = -1;
+} } }
+
+#include "tools/ConnectionContext.h"
+#include "tools/Flusher.h"
+#include "tools/JunctureContext.h"
+#include "tools/OperationMonitor.h"
+#include "tools/WorldDumper.h"
+
 #include "common/log.h"
 
+using Atlas::Message::Element;
+using Atlas::Objects::Root;
+
+AtlasStreamClient::AtlasStreamClient() : reply_flag(false), error_flag(false),
+                                         serialNo(512), m_fd(-1), m_encoder(0),
+                                         m_codec(0), m_ios(0), m_currentTask(0),
+                                         m_spacing(2)
+{
+}
+
+AtlasStreamClient::~AtlasStreamClient()
+{
+}
+
+void AtlasStreamClient::output(const Element & item, int depth) const
+{
+}
+
+void AtlasStreamClient::output(const Root & ent) const
+{
+}
+
+void AtlasStreamClient::objectArrived(const Root & obj)
+{
+}
+
+void AtlasStreamClient::operation(const Operation & op)
+{
+}
+
+void AtlasStreamClient::infoArrived(const Operation & op)
+{
+}
+
+void AtlasStreamClient::appearanceArrived(const Operation & op)
+{
+}
+
+void AtlasStreamClient::disappearanceArrived(const Operation & op)
+{
+}
+
+void AtlasStreamClient::sightArrived(const Operation & op)
+{
+}
+
+void AtlasStreamClient::soundArrived(const Operation & op)
+{
+}
+
+void AtlasStreamClient::loginSuccess(const Atlas::Objects::Root & arg)
+{
+}
+
+void AtlasStreamClient::errorArrived(const Operation & op)
+{
+}
+
+void AtlasStreamClient::send(const Operation & op)
+{
+}
+
+int AtlasStreamClient::runTask(ClientTask * task, const std::string & arg)
+{
+    return 0;
+}
+
+int AtlasStreamClient::endTask()
+{
+    return 0;
+}
+
+int AtlasStreamClient::cleanDisconnect()
+{
+    return 0;
+}
+
+int AtlasStreamClient::login(const std::string & username,
+                             const std::string & password)
+{
+    return 0;
+}
+
+int AtlasStreamClient::poll(int timeOut, int msec)
+{
+    return 0;
+}
+
+ConnectionContext::ConnectionContext(Interactive & i) : ObjectContext(i),
+                                                        m_refNo(0L)
+{
+}
+
+bool ConnectionContext::accept(const Operation& op) const
+{
+    return false;
+}
+
+int ConnectionContext::dispatch(const Operation & op)
+{
+    return 0;
+}
+
+std::string ConnectionContext::repr() const
+{
+    return "";
+}
+
+bool ConnectionContext::checkContextCommand(const struct command *)
+{
+    return false;
+}
+
+void ConnectionContext::setFromContext(const Operation & op)
+{
+}
+
+Flusher::Flusher(const shared_ptr<ObjectContext> & c) : m_context(c)
+{
+}
+
+void Flusher::setup(const std::string & arg, OpVector & ret)
+{
+}
+
+void Flusher::operation(const Operation & op, OpVector & res)
+{
+}
+
+JunctureContext::JunctureContext(Interactive & i,
+                                 const std::string & id) : IdContext(i, id)
+{
+}
+
+bool JunctureContext::accept(const Operation& op) const
+{
+    return false;
+}
+
+int JunctureContext::dispatch(const Operation & op)
+{
+    return 0;
+}
+
+std::string JunctureContext::repr() const
+{
+    return "junc";
+}
+
+bool JunctureContext::checkContextCommand(const struct command *)
+{
+    return false;
+}
+
+void OperationMonitor::setup(const std::string & arg, OpVector &)
+{
+}
+
+void OperationMonitor::operation(const Operation & op, OpVector &)
+{
+}
+
+WorldDumper::WorldDumper(const std::string & accountId) : m_account(accountId),
+                                                          m_lastSerialNo(-1),
+                                                          m_count(0),
+                                                          m_codec(0),
+                                                          m_encoder(0),
+                                                          m_formatter(0)
+{
+}
+
+WorldDumper::~WorldDumper()
+{
+}
+
+void WorldDumper::setup(const std::string & arg, OpVector & res)
+{
+}
+
+void WorldDumper::operation(const Operation & op, OpVector & res)
+{
+}
+
 void log(LogLevel lvl, const std::string & msg)
+{
+}
+
+void tokenize(const std::string& str,
+              std::vector<std::string>& tokens,
+              const std::string& delimiters)
 {
 }
