@@ -519,6 +519,13 @@ void PropertyBase::add(const std::string & s,
 {
 }
 
+HandlerResult PropertyBase::operation(Entity *,
+                                      const Operation &,
+                                      OpVector &)
+{
+    return OPERATION_IGNORED;
+}
+
 template<>
 void Property<int>::set(const Atlas::Message::Element & e)
 {

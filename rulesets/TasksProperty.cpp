@@ -212,9 +212,9 @@ void TasksProperty::UseOperation(Entity * owner,
 {
 }
 
-void TasksProperty::operation(Entity * owner,
-                              const Operation & op,
-                              OpVector & res)
+HandlerResult TasksProperty::operation(Entity * owner,
+                                       const Operation & op,
+                                       OpVector & res)
 {
     m_task->operation(op, res);
     if (m_task->obsolete()) {
@@ -222,4 +222,5 @@ void TasksProperty::operation(Entity * owner,
     } else {
         updateTask(owner, res);
     }
+    return OPERATION_HANDLED;
 }

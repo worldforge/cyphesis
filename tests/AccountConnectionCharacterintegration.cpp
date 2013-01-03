@@ -907,8 +907,9 @@ void TasksProperty::UseOperation(Entity *, const Operation &, OpVector &)
 {
 }
 
-void TasksProperty::operation(Entity *, const Operation &, OpVector &)
+HandlerResult TasksProperty::operation(Entity *, const Operation &, OpVector &)
 {
+    return OPERATION_IGNORED;
 }
 
 PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
@@ -936,6 +937,13 @@ void PropertyBase::add(const std::string & s,
 void PropertyBase::add(const std::string & s,
                        const Atlas::Objects::Entity::RootEntity & ent) const
 {
+}
+
+HandlerResult PropertyBase::operation(Entity *,
+                                      const Operation &,
+                                      OpVector &)
+{
+    return OPERATION_IGNORED;
 }
 
 template<>

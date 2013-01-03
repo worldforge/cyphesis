@@ -99,3 +99,10 @@ void PropertyBase::add(const std::string & s,
                        const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
+
+HandlerResult PropertyBase::operation(Entity *,
+                                      const Operation &,
+                                      OpVector &)
+{
+    return OPERATION_IGNORED;
+}

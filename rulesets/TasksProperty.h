@@ -22,8 +22,6 @@
 
 #include "common/Property.h"
 
-#include "common/OperationRouter.h"
-
 class Task;
 
 /// \brief Class to handle whether or not an entity is solid for collisions.
@@ -54,7 +52,7 @@ class TasksProperty : public PropertyBase {
     void TickOperation(Entity * owner, const Operation & op, OpVector &);
     void UseOperation(Entity * owner, const Operation & op, OpVector &);
 
-    void operation(Entity * owner, const Operation & op, OpVector &);
+    HandlerResult operation(Entity * owner, const Operation & op, OpVector &);
 };
 
 #endif // RULESETS_TASKS_PROPERTY_H

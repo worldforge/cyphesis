@@ -1047,6 +1047,13 @@ void PropertyBase::add(const std::string & s,
 {
 }
 
+HandlerResult PropertyBase::operation(Entity *,
+                                      const Operation &,
+                                      OpVector &)
+{
+    return OPERATION_IGNORED;
+}
+
 BaseWorld * BaseWorld::m_instance = 0;
 
 BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)

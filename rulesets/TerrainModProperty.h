@@ -20,11 +20,9 @@
 #ifndef RULESETS_TERRAIN_MOD_PROPERTY_H
 #define RULESETS_TERRAIN_MOD_PROPERTY_H
 
-#include "common/OperationRouter.h"
+#include "rulesets/TerrainEffectorProperty.h"
 
 #include "physics/Vector3D.h"
-
-#include "rulesets/TerrainEffectorProperty.h"
 
 namespace Mercator {
     class TerrainMod;

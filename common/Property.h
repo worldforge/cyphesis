@@ -20,8 +20,9 @@
 #ifndef COMMON_PROPERTY_H
 #define COMMON_PROPERTY_H
 
+#include "OperationRouter.h"
+
 #include <Atlas/Message/Element.h>
-#include <Atlas/Objects/ObjectsFwd.h>
 
 class Entity;
 
@@ -62,6 +63,8 @@ class PropertyBase {
     virtual void add(const std::string & key, Atlas::Message::MapType & map) const;
     /// \brief Add the value as an attribute to an Atlas entity
     virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
+    /// \brief Handle an operation
+    virtual HandlerResult operation(Entity *, const Operation &, OpVector &);
 };
 
 /// \brief Flag indicating data has been written to permanent store

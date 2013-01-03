@@ -22,8 +22,6 @@
 
 #include "common/Property.h"
 
-#include "common/OperationRouter.h"
-
 /// \brief Class to handle a property that triggers a handler.
 /// \ingroup PropertyClasses
 template <typename T>
