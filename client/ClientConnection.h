@@ -48,6 +48,9 @@ class ClientConnection : public AtlasStreamClient {
 
     Atlas::Objects::Operation::RootOperation pop();
     bool pending();
+
+    friend class ClientConnectionintegration;
+    friend class ClientConnectiontest;
 };
 
 #endif // CLIENT_CLIENT_CONNECTION_H
