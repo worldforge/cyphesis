@@ -1035,8 +1035,7 @@ ClientPropertyManagertest_LDADD = \
 
 # CLIENT_INTEGRATION_TESTS
 
-ClientConnectionintegration_SOURCES = ClientConnectionintegration.cpp \
-        python_testers.cpp python_testers.h
+ClientConnectionintegration_SOURCES = ClientConnectionintegration.cpp
 ClientConnectionintegration_LDADD = \
         $(top_builddir)/client/ClientConnection.o \
         $(top_builddir)/common/AtlasStreamClient.o \
