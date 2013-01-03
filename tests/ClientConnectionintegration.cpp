@@ -119,3 +119,18 @@ int main()
 
     return t.run();
 }
+
+// stubs
+
+#include "common/debug.h"
+
+void output_element(std::ostream & out,
+                    const Atlas::Message::Element & item,
+                    int depth)
+{
+}
+
+int socket_client_send_credentials(int fd)
+{
+    return 0;
+}

@@ -1042,7 +1042,7 @@ ClientConnectionintegration_SOURCES = ClientConnectionintegration.cpp \
         python_testers.cpp python_testers.h
 ClientConnectionintegration_LDADD = \
         $(top_builddir)/client/ClientConnection.o \
-        $(top_builddir)/common/libcommon.a \
+        $(top_builddir)/common/AtlasStreamClient.o \
         $(NETWORK_LIBS)
 
 # SERVER_TESTS
