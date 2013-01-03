@@ -64,6 +64,8 @@ CLIENT_TESTS = Py_CreatorClienttest Py_ObserverClienttest \
                ClientConnectiontest BaseClienttest \
                ClientPropertyManagertest
 
+CLIENT_INTEGRATION_TESTS = ClientConnectionintegration
+
 SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                CommServertest Accounttest Admintest Playertest buildidtest \
                EntityFactorytest TaskFactorytest Connectiontest \
@@ -111,7 +113,8 @@ LIBS = $(COMMON_LIBS) $(PGSQL_LIBS) $(PYTHON_LIBS) $(PYTHON_UTIL_LIBS) $(MATH_LI
 TESTS = $(TEST_TESTS) \
         $(COMMON_TESTS) $(PHYSICS_TESTS) $(MODULE_TESTS) $(RULESETS_TESTS) \
         $(SERVER_TESTS) $(SERVER_COMM_TESTS) $(CLIENT_TESTS) $(TOOLS_TESTS) \
-        $(RULESETS_INTEGRATION_TESTS) $(SERVER_INTEGRATION_TESTS)
+        $(RULESETS_INTEGRATION_TESTS) $(SERVER_INTEGRATION_TESTS) \
+        $(CLIENT_INTEGRATION_TESTS)
 
 RECHECK_LOGS =
 
@@ -1032,6 +1035,15 @@ ClientPropertyManagertest_SOURCES = ClientPropertyManagertest.cpp
 ClientPropertyManagertest_LDADD = \
         $(top_builddir)/client/ClientPropertyManager.o \
         $(top_builddir)/common/PropertyManager.o
+
+# CLIENT_INTEGRATION_TESTS
+
+ClientConnectionintegration_SOURCES = ClientConnectionintegration.cpp \
+        python_testers.cpp python_testers.h
+ClientConnectionintegration_LDADD = \
+        $(top_builddir)/client/ClientConnection.o \
+        $(top_builddir)/common/libcommon.a \
+        $(NETWORK_LIBS)
 
 # SERVER_TESTS
 
