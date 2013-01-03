@@ -33,6 +33,7 @@
 
 #include <cassert>
 
+using Atlas::Message::Element;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::Error;
@@ -86,32 +87,19 @@ void ClientConnectiontest::test_sequence()
         Root obj;
         RootOperation op;
         cc->operation(op);
-        cc->errorArrived(op);
-        cc->infoArrived(op);
-        cc->objectArrived(op);
 
         Anonymous op_arg;
         op->setArgs1(op_arg);
-        cc->infoArrived(op);
 
         op->setFrom("1");
-        cc->infoArrived(op);
-
         op->setParents(std::list<std::string>());
         cc->operation(op);
-        cc->objectArrived(op);
 
         Info i;
-        cc->objectArrived(i);
+        cc->operation(i);
 
         Error e;
-        cc->objectArrived(e);
-
-        cc->objectArrived(obj);
-        obj->setParents(std::list<std::string>());
-        cc->objectArrived(obj);
-
-        
+        cc->operation(e);
     }
 }
 
@@ -120,4 +108,123 @@ int main()
     ClientConnectiontest t;
 
     return t.run();
+}
+
+// stubs
+
+#include "common/AtlasStreamClient.h"
+
+void AtlasStreamClient::output(const Element & item, int depth) const
+{
+}
+
+void AtlasStreamClient::output(const Root & ent) const
+{
+}
+
+void AtlasStreamClient::objectArrived(const Root & obj)
+{
+}
+
+void AtlasStreamClient::operation(const RootOperation & op)
+{
+}
+
+void AtlasStreamClient::infoArrived(const RootOperation & op)
+{
+}
+
+void AtlasStreamClient::appearanceArrived(const RootOperation & op)
+{
+}
+
+void AtlasStreamClient::disappearanceArrived(const RootOperation & op)
+{
+}
+
+void AtlasStreamClient::sightArrived(const RootOperation & op)
+{
+}
+
+void AtlasStreamClient::soundArrived(const RootOperation & op)
+{
+}
+
+void AtlasStreamClient::loginSuccess(const Atlas::Objects::Root & arg)
+{
+}
+
+/// \brief Called when an Error operation arrives
+///
+/// @param op Operation to be processed
+void AtlasStreamClient::errorArrived(const RootOperation & op)
+{
+}
+
+AtlasStreamClient::AtlasStreamClient() : reply_flag(false), error_flag(false),
+                                         serialNo(512), m_fd(-1), m_encoder(0),
+                                         m_codec(0), m_ios(0), m_currentTask(0),
+                                         m_spacing(2)
+{
+}
+
+AtlasStreamClient::~AtlasStreamClient()
+{
+}
+
+void AtlasStreamClient::send(const RootOperation & op)
+{
+}
+
+int AtlasStreamClient::connect(const std::string & host, int port)
+{
+    return 0;
+}
+
+int AtlasStreamClient::connectLocal(const std::string & filename)
+{
+    return 0;
+}
+
+int AtlasStreamClient::cleanDisconnect()
+{
+    return 0;
+}
+
+int AtlasStreamClient::negotiate()
+{
+    return 0;
+}
+
+int AtlasStreamClient::login(const std::string & username,
+                             const std::string & password)
+{
+    return 0;
+}
+
+int AtlasStreamClient::create(const std::string & type,
+                              const std::string & username,
+                              const std::string & password)
+{
+    return 0;
+}
+
+int AtlasStreamClient::waitForLoginResponse()
+{
+    return 0;
+}
+
+int AtlasStreamClient::poll(int timeOut, int msec)
+{
+    return -1;
+}
+
+int AtlasStreamClient::runTask(ClientTask * task, const std::string & arg)
+{
+    return 0;
+}
+
+int AtlasStreamClient::endTask()
+{
+    return 0;
 }

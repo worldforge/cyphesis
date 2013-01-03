@@ -1020,12 +1020,9 @@ Py_ObserverClienttest_LDADD = \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS) $(NETWORK_LIBS)
 
-ClientConnectiontest_SOURCES = ClientConnectiontest.cpp \
-        python_testers.cpp python_testers.h
+ClientConnectiontest_SOURCES = ClientConnectiontest.cpp
 ClientConnectiontest_LDADD = \
-        $(top_builddir)/client/ClientConnection.o \
-        $(top_builddir)/common/libcommon.a \
-        $(NETWORK_LIBS)
+        $(top_builddir)/client/ClientConnection.o
 
 BaseClienttest_SOURCES = BaseClienttest.cpp
 BaseClienttest_LDADD = \
