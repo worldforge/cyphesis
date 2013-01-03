@@ -39,26 +39,6 @@ using Atlas::Objects::Operation::Error;
 using Atlas::Objects::Operation::Info;
 using Atlas::Objects::Operation::RootOperation;
 
-class TestClientConnection : public ClientConnection {
-  public:
-    void test_operation(const RootOperation & op) {
-        operation(op);
-    }
-
-    void test_objectArrived(const Root & obj) {
-        objectArrived(obj);
-    }
-
-    void test_errorArrived(const RootOperation & op) {
-        errorArrived(op);
-    }
-
-    void test_infoArrived(const RootOperation & op) {
-        infoArrived(op);
-    }
-
-};
-
 class ClientConnectiontest : public Cyphesis::TestBase
 {
     ClientConnection * cc;
@@ -95,48 +75,44 @@ void ClientConnectiontest::test_sequence()
     cc->wait();
 
     {
-        Atlas::Objects::Operation::RootOperation op;
+        RootOperation op;
         cc->send(op);
     }
 
     cc->pop();
     cc->pending();
     
-    TestClientConnection * tcc = new TestClientConnection();
-
     {
-        Atlas::Objects::Root obj;
-        Atlas::Objects::Operation::RootOperation op;
-        tcc->test_operation(op);
-        tcc->test_errorArrived(op);
-        tcc->test_infoArrived(op);
-        tcc->test_objectArrived(op);
+        Root obj;
+        RootOperation op;
+        cc->operation(op);
+        cc->errorArrived(op);
+        cc->infoArrived(op);
+        cc->objectArrived(op);
 
         Anonymous op_arg;
         op->setArgs1(op_arg);
-        tcc->test_infoArrived(op);
+        cc->infoArrived(op);
 
         op->setFrom("1");
-        tcc->test_infoArrived(op);
+        cc->infoArrived(op);
 
         op->setParents(std::list<std::string>());
-        tcc->test_operation(op);
-        tcc->test_objectArrived(op);
+        cc->operation(op);
+        cc->objectArrived(op);
 
         Info i;
-        tcc->test_objectArrived(i);
+        cc->objectArrived(i);
 
         Error e;
-        tcc->test_objectArrived(e);
+        cc->objectArrived(e);
 
-        tcc->test_objectArrived(obj);
+        cc->objectArrived(obj);
         obj->setParents(std::list<std::string>());
-        tcc->test_objectArrived(obj);
+        cc->objectArrived(obj);
 
         
     }
-
-    delete tcc;
 }
 
 int main()
