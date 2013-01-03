@@ -24,6 +24,8 @@
 #define DEBUG
 #endif
 
+#include "TestBase.h"
+
 #include "client/ClientConnection.h"
 
 #include <Atlas/Objects/Operation.h>
@@ -57,13 +59,36 @@ class TestClientConnection : public ClientConnection {
 
 };
 
-int main()
+class ClientConnectiontest : public Cyphesis::TestBase
 {
-    ClientConnection * cc = new ClientConnection();
-    delete cc;
+    ClientConnection * cc;
+  public:
+    ClientConnectiontest();
 
-    // Try all the method calls when not connected
+    void setup();
+    void teardown();
+
+    void test_sequence();
+};
+
+ClientConnectiontest::ClientConnectiontest()
+{
+    ADD_TEST(ClientConnectiontest::test_sequence);
+}
+
+void ClientConnectiontest::setup()
+{
     cc = new ClientConnection();
+}
+
+void ClientConnectiontest::teardown()
+{
+    delete cc;
+}
+
+void ClientConnectiontest::test_sequence()
+{
+    // Try all the method calls when not connected
 
     cc->login("username", "password");
     cc->create("player", "username", "password");
@@ -77,8 +102,6 @@ int main()
     cc->pop();
     cc->pending();
     
-    delete cc;
-
     TestClientConnection * tcc = new TestClientConnection();
 
     {
@@ -113,5 +136,12 @@ int main()
         
     }
 
-    return 0;
+    delete tcc;
+}
+
+int main()
+{
+    ClientConnectiontest t;
+
+    return t.run();
 }
