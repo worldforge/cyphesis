@@ -30,6 +30,8 @@
 class Motion;
 class Domain;
 
+typedef std::map<int, std::string> DelegateMap;
+
 /// \brief Flag indicating entity has been written to permanent store
 /// \ingroup EntityFlags
 static const unsigned int entity_clean = 1 << 0;
@@ -72,6 +74,8 @@ class Entity : public LocatedEntity {
     Motion * m_motion;
     /// Map of operation handlers
     HandlerMap m_operationHandlers;
+    /// Map of delegate properties.
+    DelegateMap m_delegates;
     /// Flags indicating changes to attributes
     unsigned int m_flags;
 
@@ -176,6 +180,7 @@ class Entity : public LocatedEntity {
     }
 
     void installHandler(int, Handler);
+    void installDelegate(int, const std::string &);
 
     void destroy();
 

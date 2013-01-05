@@ -226,6 +226,15 @@ void Entity::installHandler(int class_no, Handler handler)
     m_operationHandlers.insert(std::make_pair(class_no, handler));
 }
 
+/// \brief Install a delegate property for an operation
+///
+/// @param class_no The class number of the operation to be handled
+/// @param delegate The name of the property to delegate it to.
+void Entity::installDelegate(int class_no, const std::string & delegate)
+{
+    m_delegates.insert(std::make_pair(class_no, delegate));
+}
+
 /// \brief Destroy this entity
 ///
 /// Do the jobs required to remove this entity from the world. Handles
@@ -426,6 +435,22 @@ void Entity::operation(const Operation & op, OpVector & res)
         debug(std::cout << "Found handler for " << op->getParents().front()
                         << " operations" << std::endl << std::flush;);
         I->second(this, op, res);
+    }
+    // FIXME Once this is a multimap, we'll need a for loop to call all
+    // the delegates.
+    auto J = m_delegates.find(op->getClassNo());
+    if (J != m_delegates.end()) {
+        // How to access the property? We need a non-const pointer to call
+        // operation, but to get this easily we need to force instantiation
+        // from the type dict, making properties way less efficient.
+        // Making the operation() method const strongly limits the usefulness
+        // of delegates, but if we fetch the pointer the hard way, we then
+        // require the method to handle instantiation on demand.
+        //
+        // Can we make a clean way to handle the property in the general case
+        // handle instantiation itself? Making it responsible for copying
+        // itself on instatiation would be faster than the
+        // get/set/PropertyManager currently required in in modProperty.
     }
     return callOperation(op, res);
 }
