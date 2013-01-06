@@ -41,6 +41,21 @@ using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 
+// If tests fail, and print out the message below, you'll have to actually
+// implement this function to find out the details.
+std::ostream & operator<<(std::ostream & os, const MapType & v)
+{
+    os << "[ATLAS_MAP]";
+    return os;
+}
+
+std::ostream & operator<<(std::ostream & os,
+                          const PropertyDict::const_iterator &)
+{
+    os << "[iterator]";
+    return os;
+}
+
 template<typename T>
 class test_values
 {
@@ -69,7 +84,7 @@ template<>
 double test_values<double>::default_value = 17.5;
 
 template<>
-const char * test_values<std::string>::name = "test_map";
+const char * test_values<std::string>::name = "test_string";
 
 template<>
 std::string test_values<std::string>::initial_value =
@@ -184,6 +199,9 @@ void PropertyEntityintegration::test_modPropertyClass()
     PropertyBase * dflt = m_type->defaults().find(test_values<T>::name)->second;
     ASSERT_NOT_NULL(dflt);
 
+    ASSERT_EQUAL(m_entity->m_properties.find(test_values<T>::name),
+                 m_entity->m_properties.end());
+
     auto p = m_entity->modPropertyClass<Property<T>>(
         test_values<T>::name
     );
@@ -199,18 +217,22 @@ PropertyEntityintegration::PropertyEntityintegration()
     ADD_TEST(PropertyEntityintegration::test_requirePropertyClass<long>);
     ADD_TEST(PropertyEntityintegration::test_requirePropertyClass<double>);
     ADD_TEST(PropertyEntityintegration::test_requirePropertyClass<std::string>);
+    ADD_TEST(PropertyEntityintegration::test_requirePropertyClass<MapType>);
 
     ADD_TEST(PropertyEntityintegration::test_requirePropertyClass_default<long>);
     ADD_TEST(PropertyEntityintegration::test_requirePropertyClass_default<double>);
     ADD_TEST(PropertyEntityintegration::test_requirePropertyClass_default<std::string>);
+    ADD_TEST(PropertyEntityintegration::test_requirePropertyClass_default<MapType>);
 
     ADD_TEST(PropertyEntityintegration::test_modProperty<long>);
     ADD_TEST(PropertyEntityintegration::test_modProperty<double>);
     ADD_TEST(PropertyEntityintegration::test_modProperty<std::string>);
+    ADD_TEST(PropertyEntityintegration::test_modProperty<MapType>);
 
     ADD_TEST(PropertyEntityintegration::test_modPropertyClass<long>);
     ADD_TEST(PropertyEntityintegration::test_modPropertyClass<double>);
     ADD_TEST(PropertyEntityintegration::test_modPropertyClass<std::string>);
+    ADD_TEST(PropertyEntityintegration::test_modPropertyClass<MapType>);
 }
 
 void PropertyEntityintegration::setup()

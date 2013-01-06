@@ -234,6 +234,8 @@ class Entity : public LocatedEntity {
     /// and marks the conceptual destruction of the concept this entity
     /// represents, not the destruction of this object.
     sigc::signal<void> destroyed;
+
+    friend class PropertyEntityintegration;
 };
 
 inline std::ostream & operator<<(std::ostream& s, Location& v)
