@@ -992,7 +992,8 @@ PropertyEntityintegration_SOURCES = PropertyEntityintegration.cpp
 PropertyEntityintegration_LDADD = \
         $(top_builddir)/rulesets/Entity.o \
         $(top_builddir)/rulesets/LocatedEntity.o \
-        $(top_builddir)/common/Property.o
+        $(top_builddir)/common/Property.o \
+        $(top_builddir)/common/TypeNode.o
 
 # CLIENT_TESTS
 

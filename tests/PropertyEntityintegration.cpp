@@ -28,18 +28,104 @@
 #include "TestWorld.h"
 
 #include "rulesets/Entity.h"
+
 #include "common/Property.h"
+#include "common/PropertyManager.h"
+#include "common/TypeNode.h"
 
 #include <cstdlib>
 
 #include <cassert>
 
+using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
+
+template<typename T>
+class test_values
+{
+  public:
+    static const char * name;
+    static T initial_value;
+    static T default_value;
+};
+
+template<>
+const char * test_values<long>::name = "test_int";
+
+template<>
+long test_values<long>::initial_value = 42;
+
+template<>
+long test_values<long>::default_value = 23;
+
+template<>
+const char * test_values<double>::name = "test_float";
+
+template<>
+double test_values<double>::initial_value = 69.5;
+
+template<>
+double test_values<double>::default_value = 17.5;
+
+template<>
+const char * test_values<std::string>::name = "test_map";
+
+template<>
+std::string test_values<std::string>::initial_value =
+      "1356ebe4-220d-46a7-8c69-73f787f6b1ff";
+
+template<>
+std::string test_values<std::string>::default_value =
+      "1423a858-f7c6-4b3c-8b0b-726af6dcbeff";
+
+template<>
+const char * test_values<MapType>::name = "test_map";
+
+template<>
+MapType test_values<MapType>::initial_value = {
+    std::make_pair("map_int", 23),
+    std::make_pair("map_float", 17.5f),
+};
+
+template<>
+MapType test_values<MapType>::default_value = {
+    std::make_pair("map_int", 42l),
+    std::make_pair("map_float", 69.5f),
+};
+
+class TestPropertyManager : public PropertyManager
+{
+  public:
+    virtual ~TestPropertyManager();
+
+    virtual PropertyBase * addProperty(const std::string & name, int type);
+};
+
+TestPropertyManager::~TestPropertyManager()
+{
+}
+
+PropertyBase * TestPropertyManager::addProperty(const std::string & name,
+                                                int type)
+{
+    if (name == test_values<long>::name) {
+        return new Property<long>;
+    } else if (name == test_values<double>::name) {
+        return new Property<double>;
+    } else if (name == test_values<std::string>::name) {
+        return new Property<std::string>;
+    } else if (name == test_values<MapType>::name) {
+        return new Property<MapType>;
+    } else {
+        return new SoftProperty;
+    }
+}
 
 class PropertyEntityintegration : public Cyphesis::TestBase
 {
   private:
+    TypeNode * m_type;
     Entity * m_entity;
   public:
     PropertyEntityintegration();
@@ -50,39 +136,113 @@ class PropertyEntityintegration : public Cyphesis::TestBase
     template<class T>
     void test_requirePropertyClass();
 
-    void test_setAttr();
+    template<class T>
+    void test_requirePropertyClass_default();
+
+    template<class T>
+    void test_modProperty();
+
+    template<class T>
+    void test_modPropertyClass();
 };
 
 template<class T>
 void PropertyEntityintegration::test_requirePropertyClass()
 {
-    PropertyBase * p = m_entity->requirePropertyClass<T>("bill");
-    auto subp = dynamic_cast<T *>(p);
+    auto p = m_entity->requirePropertyClass<Property<T>>("bill");
+    ASSERT_NOT_NULL(p);
+}
+
+template<class T>
+void PropertyEntityintegration::test_requirePropertyClass_default()
+{
+    auto p = m_entity->requirePropertyClass<Property<T>>("bill",
+          Element(test_values<T>::default_value));
+    ASSERT_EQUAL(p->data(), test_values<T>::default_value);
+}
+
+template<class T>
+void PropertyEntityintegration::test_modProperty()
+{
+    // Get a pointer to the types default property
+    PropertyBase * dflt = m_type->defaults().find(test_values<T>::name)->second;
+    ASSERT_NOT_NULL(dflt);
+
+    PropertyBase * p = m_entity->modProperty(test_values<T>::name);
+    ASSERT_NOT_NULL(p);
+    // modProperty should have forced a new object
+    ASSERT_NOT_EQUAL(p, dflt);
+
+    auto subp = dynamic_cast<Property<T> *>(p);
     ASSERT_NOT_NULL(subp);
+}
+
+template<class T>
+void PropertyEntityintegration::test_modPropertyClass()
+{
+    // Get a pointer to the types default property
+    PropertyBase * dflt = m_type->defaults().find(test_values<T>::name)->second;
+    ASSERT_NOT_NULL(dflt);
+
+    auto p = m_entity->modPropertyClass<Property<T>>(
+        test_values<T>::name
+    );
+    ASSERT_NOT_NULL(p);
+    // modProperty should have forced a new object
+    ASSERT_NOT_EQUAL(p, dflt);
+    
+    ASSERT_EQUAL(p->data(), test_values<T>::initial_value);
 }
 
 PropertyEntityintegration::PropertyEntityintegration()
 {
-    ADD_TEST(PropertyEntityintegration::test_requirePropertyClass<Property<int>>);
-    ADD_TEST(PropertyEntityintegration::test_requirePropertyClass<Property<float>>);
-    ADD_TEST(PropertyEntityintegration::test_requirePropertyClass<Property<std::string>>);
+    ADD_TEST(PropertyEntityintegration::test_requirePropertyClass<long>);
+    ADD_TEST(PropertyEntityintegration::test_requirePropertyClass<double>);
+    ADD_TEST(PropertyEntityintegration::test_requirePropertyClass<std::string>);
+
+    ADD_TEST(PropertyEntityintegration::test_requirePropertyClass_default<long>);
+    ADD_TEST(PropertyEntityintegration::test_requirePropertyClass_default<double>);
+    ADD_TEST(PropertyEntityintegration::test_requirePropertyClass_default<std::string>);
+
+    ADD_TEST(PropertyEntityintegration::test_modProperty<long>);
+    ADD_TEST(PropertyEntityintegration::test_modProperty<double>);
+    ADD_TEST(PropertyEntityintegration::test_modProperty<std::string>);
+
+    ADD_TEST(PropertyEntityintegration::test_modPropertyClass<long>);
+    ADD_TEST(PropertyEntityintegration::test_modPropertyClass<double>);
+    ADD_TEST(PropertyEntityintegration::test_modPropertyClass<std::string>);
 }
 
 void PropertyEntityintegration::setup()
 {
+    new TestPropertyManager;
+    m_type = new TypeNode("test_type");
+    m_type->addProperties(MapType{
+        std::make_pair(test_values<long>::name,
+                       test_values<long>::initial_value),
+        std::make_pair(test_values<double>::name,
+                       test_values<double>::initial_value),
+        std::make_pair(test_values<std::string>::name,
+                       test_values<std::string>::initial_value),
+        std::make_pair(test_values<MapType>::name,
+                       test_values<MapType>::initial_value)
+    });
     m_entity = new Entity("1", 1L);
+    m_entity->setType(m_type);
 }
 
 void PropertyEntityintegration::teardown()
 {
     delete m_entity;
+    delete m_type;
+    delete PropertyManager::instance();
 }
 
 int main()
 {
     PropertyEntityintegration t;
 
-    t.run();
+    return t.run();
 }
 
 // stubs
@@ -92,8 +252,6 @@ int main()
 #include "rulesets/Script.h"
 
 #include "common/id.h"
-#include "common/PropertyManager.h"
-#include "common/TypeNode.h"
 
 void TestWorld::message(const Operation & op, Entity & ent)
 {
@@ -225,10 +383,6 @@ Location::Location() : m_loc(0)
 }
 
 void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
 {
 }
 
