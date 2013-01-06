@@ -184,6 +184,9 @@ void PropertyEntityintegration::test_modProperty()
     ASSERT_NOT_NULL(dflt);
 
     // The entity instance should not have a property by this name
+    ASSERT_EQUAL(m_entity->m_properties.find(test_values<T>::name),
+                 m_entity->m_properties.end());
+
     PropertyBase * p = m_entity->modProperty(test_values<T>::name);
     ASSERT_NOT_NULL(p);
     // modProperty should have forced a new object
