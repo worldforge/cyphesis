@@ -37,6 +37,7 @@ class LineProperty : public PropertyBase {
     virtual int get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
     virtual void add(const std::string & key, Atlas::Message::MapType & map) const;
+    virtual LineProperty * copy() const;
 };
 
 #endif // RULESETS_LINE_PROPERTY_H

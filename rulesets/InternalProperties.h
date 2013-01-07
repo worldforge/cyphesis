@@ -28,6 +28,8 @@ class SetupProperty : public Property<int> {
   public:
     SetupProperty();
 
+    virtual SetupProperty * copy() const;
+
     virtual void install(Entity *);
 };
 
@@ -36,6 +38,8 @@ class SetupProperty : public Property<int> {
 class TickProperty : public Property<double> {
   public:
     TickProperty();
+
+    virtual TickProperty * copy() const;
 
     virtual void apply(Entity *);
 };
@@ -51,6 +55,7 @@ class SimpleProperty : public PropertyBase {
 
     virtual int get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
+    virtual SimpleProperty * copy() const;
 
     virtual void apply(Entity *);
 };

@@ -560,6 +560,11 @@ void SoftProperty::set(const Atlas::Message::Element & val)
 {
 }
 
+SoftProperty * SoftProperty::copy() const
+{
+    return 0;
+}
+
 PropertyManager * PropertyManager::m_instance = 0;
 
 PropertyManager::PropertyManager()

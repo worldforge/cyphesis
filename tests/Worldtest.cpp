@@ -498,6 +498,11 @@ void TerrainProperty::set(const Element & ent)
 {
 }
 
+TerrainProperty * TerrainProperty::copy() const
+{
+    return 0;
+}
+
 int TerrainProperty::getSurface(const Point3D & pos, int & material)
 {
     return 0;
@@ -514,6 +519,11 @@ int CalendarProperty::get(Element & ent) const
 
 void CalendarProperty::set(const Element & ent)
 {
+}
+
+CalendarProperty * CalendarProperty::copy() const
+{
+    return 0;
 }
 
 PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
@@ -597,6 +607,11 @@ void SoftProperty::set(const Atlas::Message::Element & val)
 {
 }
 
+SoftProperty * SoftProperty::copy() const
+{
+    return 0;
+}
+
 ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
       PropertyBase(per_ephem), m_data(data)
 {
@@ -614,6 +629,11 @@ void ContainsProperty::set(const Atlas::Message::Element & e)
 void ContainsProperty::add(const std::string & s,
                            const Atlas::Objects::Entity::RootEntity & ent) const
 {
+}
+
+ContainsProperty * ContainsProperty::copy() const
+{
+    return 0;
 }
 
 StatusProperty::StatusProperty()
@@ -649,6 +669,11 @@ void BBoxProperty::add(const std::string & key,
 void BBoxProperty::add(const std::string & key,
                        const RootEntity & ent) const
 {
+}
+
+BBoxProperty * BBoxProperty::copy() const
+{
+    return 0;
 }
 
 PropertyManager * PropertyManager::m_instance = 0;

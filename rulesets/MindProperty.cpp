@@ -89,6 +89,11 @@ void MindProperty::set(const Element & val)
     }
 }
 
+MindProperty * MindProperty::copy() const
+{
+    return new MindProperty(*this);
+}
+
 void MindProperty::apply(Entity * ent)
 {
     if (m_factory == 0) {

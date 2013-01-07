@@ -40,7 +40,7 @@ class MinimalProperty : public PropertyBase {
     MinimalProperty() { }
     virtual int get(Atlas::Message::Element & val) const { return 0; }
     virtual void set(const Atlas::Message::Element & val) { }
-
+    virtual MinimalProperty * copy() const { return new MinimalProperty; }
 };
 
 static void exerciseProperty(PropertyBase * pb)

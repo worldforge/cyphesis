@@ -375,6 +375,11 @@ void ExternalProperty::add(const std::string & s,
 {
 }
 
+ExternalProperty * ExternalProperty::copy() const
+{
+    return 0;
+}
+
 Juncture::Juncture(Connection * c,
                    const std::string & id, long iid) :
           ConnectableRouter(id, iid, c),

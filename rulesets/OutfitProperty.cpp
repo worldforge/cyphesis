@@ -147,6 +147,11 @@ void OutfitProperty::add(const std::string & key,
     ent->setAttr(key, val_map);
 }
 
+OutfitProperty * OutfitProperty::copy() const
+{
+    return new OutfitProperty(*this);
+}
+
 void OutfitProperty::cleanUp()
 {
     std::set<std::string> empty_locations;

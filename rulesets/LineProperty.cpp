@@ -59,3 +59,8 @@ void LineProperty::add(const std::string & s, MapType & ent) const
         get(ent[s]);
     }
 }
+
+LineProperty * LineProperty::copy() const
+{
+    return new LineProperty(*this);
+}

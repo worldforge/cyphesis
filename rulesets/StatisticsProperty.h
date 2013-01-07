@@ -44,6 +44,7 @@ class StatisticsProperty : public PropertyBase {
 
     virtual int get(Atlas::Message::Element &) const;
     virtual void set(const Atlas::Message::Element &);
+    virtual StatisticsProperty * copy() const;
 
     bool getStat(const std::string & name, double & val) const;
 };

@@ -62,6 +62,11 @@ void IdProperty::add(const std::string & key, const RootEntity & ent) const
     ent->setId(m_data);
 }
 
+IdProperty * IdProperty::copy() const
+{
+    return new IdProperty(*this);
+}
+
 NameProperty::NameProperty(unsigned int flags) : Property<std::string>(flags)
 {
 }
@@ -103,4 +108,9 @@ void ContainsProperty::add(const std::string & s, const RootEntity & ent) const
     for (LocatedEntitySet::const_iterator I = m_data.begin(); I != Iend; ++I) {
         contains.push_back((*I)->getId());
     }
+}
+
+ContainsProperty * ContainsProperty::copy() const
+{
+    return new ContainsProperty(*this);
 }

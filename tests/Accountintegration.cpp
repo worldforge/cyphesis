@@ -354,6 +354,8 @@ Entity * TestWorld::addNewEntity(const std::string &,
 
 // stubs
 
+#include "Property_stub_impl.h"
+
 #include "server/ArithmeticBuilder.h"
 #include "server/CommServer.h"
 #include "server/EntityFactory.h"
@@ -598,6 +600,10 @@ void CalendarProperty::set(const Element & ent)
 {
 }
 
+CalendarProperty * CalendarProperty::copy() const
+{
+    return 0;
+}
 
 IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),
                                                    m_data(data)
@@ -622,6 +628,11 @@ void IdProperty::add(const std::string & key,
 void IdProperty::add(const std::string & key,
                      const Atlas::Objects::Entity::RootEntity & ent) const
 {
+}
+
+IdProperty * IdProperty::copy() const
+{
+    return 0;
 }
 
 AreaProperty::AreaProperty()
@@ -663,6 +674,11 @@ void ExternalProperty::add(const std::string & s,
 {
 }
 
+ExternalProperty * ExternalProperty::copy() const
+{
+    return 0;
+}
+
 EntityProperty::EntityProperty()
 {
 }
@@ -684,6 +700,11 @@ void EntityProperty::add(const std::string & s,
 void EntityProperty::add(const std::string & s,
                          const Atlas::Objects::Entity::RootEntity & ent) const
 {
+}
+
+EntityProperty * EntityProperty::copy() const
+{
+    return 0;
 }
 
 OutfitProperty::OutfitProperty()
@@ -713,6 +734,11 @@ void OutfitProperty::add(const std::string & key,
 {
 }
 
+OutfitProperty * OutfitProperty::copy() const
+{
+    return 0;
+}
+
 void OutfitProperty::cleanUp()
 {
 }
@@ -738,6 +764,11 @@ int TasksProperty::get(Atlas::Message::Element & val) const
 
 void TasksProperty::set(const Atlas::Message::Element & val)
 {
+}
+
+TasksProperty * TasksProperty::copy() const
+{
+    return 0;
 }
 
 int TasksProperty::startTask(Task *, Entity *, const Operation &, OpVector &)
@@ -806,37 +837,6 @@ HandlerResult PropertyBase::operation(Entity *,
     return OPERATION_IGNORED;
 }
 
-/// \brief Constructor for immutable Propertys
-template <typename T>
-Property<T>::Property(unsigned int flags) :
-                      PropertyBase(flags)
-{
-}
-
-template <typename T>
-int Property<T>::get(Atlas::Message::Element & e) const
-{
-    return 0;
-}
-
-// The following two are obsolete.
-template <typename T>
-void Property<T>::add(const std::string & s,
-                               Atlas::Message::MapType & ent) const
-{
-}
-
-template <typename T>
-void Property<T>::add(const std::string & s,
-                               const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-template <typename T>
-void Property<T>::set(const Atlas::Message::Element & e)
-{
-}
-
 template class Property<int>;
 template class Property<double>;
 template class Property<std::string>;
@@ -867,6 +867,11 @@ void SoftProperty::set(const Atlas::Message::Element & val)
 {
 }
 
+SoftProperty * SoftProperty::copy() const
+{
+    return 0;
+}
+
 ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
       PropertyBase(per_ephem), m_data(data)
 {
@@ -884,6 +889,11 @@ void ContainsProperty::set(const Atlas::Message::Element & e)
 void ContainsProperty::add(const std::string & s,
                            const Atlas::Objects::Entity::RootEntity & ent) const
 {
+}
+
+ContainsProperty * ContainsProperty::copy() const
+{
+    return 0;
 }
 
 StatusProperty::StatusProperty()
@@ -921,6 +931,11 @@ void BBoxProperty::add(const std::string & key,
 {
 }
 
+BBoxProperty * BBoxProperty::copy() const
+{
+    return 0;
+}
+
 TerrainProperty::TerrainProperty() :
       m_data(*(Mercator::Terrain*)0),
       m_tileShader(*(Mercator::TileShader*)0)
@@ -938,6 +953,11 @@ int TerrainProperty::get(Element & ent) const
 
 void TerrainProperty::set(const Element & ent)
 {
+}
+
+TerrainProperty * TerrainProperty::copy() const
+{
+    return 0;
 }
 
 int TerrainProperty::getSurface(const Point3D & pos, int & material)
@@ -1003,12 +1023,22 @@ SetupProperty::SetupProperty()
 {
 }
 
+SetupProperty * SetupProperty::copy() const
+{
+    return 0;
+}
+
 void SetupProperty::install(Entity * ent)
 {
 }
 
 TickProperty::TickProperty()
 {
+}
+
+TickProperty * TickProperty::copy() const
+{
+    return 0;
 }
 
 void TickProperty::apply(Entity * ent)
@@ -1026,6 +1056,11 @@ int SimpleProperty::get(Element & ent) const
 
 void SimpleProperty::set(const Element & ent)
 {
+}
+
+SimpleProperty * SimpleProperty::copy() const
+{
+    return 0;
 }
 
 void SimpleProperty::apply(Entity * owner)
@@ -1049,6 +1084,11 @@ void LineProperty::add(const std::string & s, MapType & ent) const
 {
 }
 
+LineProperty * LineProperty::copy() const
+{
+    return 0;
+}
+
 MindProperty::MindProperty() : m_factory(0)
 {
 }
@@ -1060,6 +1100,11 @@ int MindProperty::get(Element & val) const
 
 void MindProperty::set(const Element & val)
 {
+}
+
+MindProperty * MindProperty::copy() const
+{
+    return 0;
 }
 
 void MindProperty::apply(Entity * ent)
@@ -1107,6 +1152,11 @@ void StatisticsProperty::set(const Element & ent)
 {
 }
 
+StatisticsProperty * StatisticsProperty::copy() const
+{
+    return 0;
+}
+
 SolidProperty::SolidProperty()
 {
 }
@@ -1118,6 +1168,11 @@ int SolidProperty::get(Element & ent) const
 
 void SolidProperty::set(const Element & ent)
 {
+}
+
+SolidProperty * SolidProperty::copy() const
+{
+    return 0;
 }
 
 void SolidProperty::apply(Entity * owner)

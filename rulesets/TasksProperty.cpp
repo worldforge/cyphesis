@@ -94,6 +94,11 @@ void TasksProperty::set(const Atlas::Message::Element & val)
     }
 }
 
+TasksProperty * TasksProperty::copy() const
+{
+    return new TasksProperty(*this);
+}
+
 int TasksProperty::updateTask(Entity * owner, OpVector & res)
 {
     setFlags(flag_unsent);

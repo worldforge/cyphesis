@@ -53,6 +53,11 @@ void SolidProperty::set(const Element & ent)
     }
 }
 
+SolidProperty * SolidProperty::copy() const
+{
+    return new SolidProperty(*this);
+}
+
 void SolidProperty::apply(Entity * owner)
 {
     owner->m_location.setSolid(flags() & flag_bool);

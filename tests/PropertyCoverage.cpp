@@ -80,6 +80,10 @@ PropertyCoverage::~PropertyCoverage()
     delete m_wrld;
 }
 
+void PropertyCoverage::interfaceCoverage()
+{
+}
+
 void PropertyCoverage::basicCoverage()
 {
     Element val;
@@ -109,6 +113,8 @@ void PropertyCoverage::basicCoverage()
     m_prop->add("test_name", map);
     Anonymous ent;
     m_prop->add("test_name", ent);
+
+    interfaceCoverage();
 }
 
 Character * PropertyCoverage::createCharacterEntity()

@@ -101,3 +101,8 @@ void StatisticsProperty::set(const Element & ent)
         m_data[I->first] = I->second.asNum();
     }
 }
+
+StatisticsProperty * StatisticsProperty::copy() const
+{
+    return new StatisticsProperty(*this);
+}

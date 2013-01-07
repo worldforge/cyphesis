@@ -343,6 +343,11 @@ void IdProperty::add(const std::string & key,
 {
 }
 
+IdProperty * IdProperty::copy() const
+{
+    return 0;
+}
+
 PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
 {
 }
@@ -424,6 +429,11 @@ void SoftProperty::set(const Atlas::Message::Element & val)
 {
 }
 
+SoftProperty * SoftProperty::copy() const
+{
+    return 0;
+}
+
 ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
       PropertyBase(per_ephem), m_data(data)
 {
@@ -441,6 +451,11 @@ void ContainsProperty::set(const Atlas::Message::Element & e)
 void ContainsProperty::add(const std::string & s,
                            const Atlas::Objects::Entity::RootEntity & ent) const
 {
+}
+
+ContainsProperty * ContainsProperty::copy() const
+{
+    return 0;
 }
 
 PropertyManager * PropertyManager::m_instance = 0;

@@ -38,6 +38,7 @@ class EntityProperty : public PropertyBase {
     virtual void set(const Atlas::Message::Element & val);
     virtual void add(const std::string & val, Atlas::Message::MapType & map) const;
     virtual void add(const std::string & val, const Atlas::Objects::Entity::RootEntity & ent) const;
+    virtual EntityProperty * copy() const;
 };
 
 #endif // RULESETS_ENTITY_PROPERTY_H

@@ -158,6 +158,11 @@ void SoftProperty::set(const Atlas::Message::Element & val)
     m_data = val;
 }
 
+SoftProperty * SoftProperty::copy() const
+{
+    return new SoftProperty(*this);
+}
+
 template class Property<int>;
 template class Property<long>;
 template class Property<float>;

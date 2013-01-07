@@ -76,3 +76,8 @@ void BBoxProperty::add(const std::string & key,
         ent->setAttr(key, m_data.toAtlas());
     }
 }
+
+BBoxProperty * BBoxProperty::copy() const
+{
+    return new BBoxProperty(*this);
+}

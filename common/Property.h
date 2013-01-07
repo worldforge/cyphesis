@@ -65,6 +65,10 @@ class PropertyBase {
     virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
     /// \brief Handle an operation
     virtual HandlerResult operation(Entity *, const Operation &, OpVector &);
+    /// \brief Create a copy of this instance
+    ///
+    /// The copy should have exactly the same type, and the same value
+    virtual PropertyBase * copy() const = 0;
 };
 
 /// \brief Flag indicating data has been written to permanent store
@@ -127,6 +131,7 @@ class Property : public PropertyBase {
     virtual void set(const Atlas::Message::Element &);
     virtual void add(const std::string & key, Atlas::Message::MapType & map) const;
     virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
+    virtual Property<T> * copy() const;
 };
 
 /// \brief Entity property that can store any Atlas value
@@ -140,6 +145,7 @@ class SoftProperty : public PropertyBase {
 
     virtual int get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
+    virtual SoftProperty * copy() const;
 };
 
 #endif // COMMON_PROPERTY_H

@@ -550,6 +550,11 @@ void ExternalProperty::add(const std::string & s,
 {
 }
 
+ExternalProperty * ExternalProperty::copy() const
+{
+    return 0;
+}
+
 Thing::Thing(const std::string & id, long intId) :
        Entity(id, intId)
 {
@@ -810,6 +815,11 @@ void EntityProperty::add(const std::string & s,
 {
 }
 
+EntityProperty * EntityProperty::copy() const
+{
+    return 0;
+}
+
 OutfitProperty::OutfitProperty()
 {
 }
@@ -835,6 +845,11 @@ void OutfitProperty::add(const std::string & key,
 void OutfitProperty::add(const std::string & key,
                          const Atlas::Objects::Entity::RootEntity & ent) const
 {
+}
+
+OutfitProperty * OutfitProperty::copy() const
+{
+    return 0;
 }
 
 void OutfitProperty::cleanUp()
@@ -878,6 +893,11 @@ int TasksProperty::get(Atlas::Message::Element & val) const
 
 void TasksProperty::set(const Atlas::Message::Element & val)
 {
+}
+
+TasksProperty * TasksProperty::copy() const
+{
+    return 0;
 }
 
 int TasksProperty::startTask(Task *, Entity *, const Operation &, OpVector &)
@@ -993,6 +1013,11 @@ void SoftProperty::set(const Atlas::Message::Element & val)
 {
 }
 
+SoftProperty * SoftProperty::copy() const
+{
+    return 0;
+}
+
 ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
       PropertyBase(per_ephem), m_data(data)
 {
@@ -1010,6 +1035,11 @@ void ContainsProperty::set(const Atlas::Message::Element & e)
 void ContainsProperty::add(const std::string & s,
                            const Atlas::Objects::Entity::RootEntity & ent) const
 {
+}
+
+ContainsProperty * ContainsProperty::copy() const
+{
+    return 0;
 }
 
 StatusProperty::StatusProperty()
@@ -1045,6 +1075,11 @@ void BBoxProperty::add(const std::string & key,
 void BBoxProperty::add(const std::string & key,
                        const RootEntity & ent) const
 {
+}
+
+BBoxProperty * BBoxProperty::copy() const
+{
+    return 0;
 }
 
 PropertyManager * PropertyManager::m_instance = 0;

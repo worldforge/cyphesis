@@ -162,6 +162,11 @@ void TerrainProperty::set(const Element & ent)
 
 }
 
+TerrainProperty * TerrainProperty::copy() const
+{
+    return new TerrainProperty(*this);
+}
+
 void TerrainProperty::addMod(const Mercator::TerrainMod *mod) const
 {
     m_data.addMod(mod);

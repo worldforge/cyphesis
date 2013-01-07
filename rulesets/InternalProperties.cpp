@@ -34,6 +34,11 @@ SetupProperty::SetupProperty()
 {
 }
 
+SetupProperty * SetupProperty::copy() const
+{
+    return new SetupProperty(*this);
+}
+
 void SetupProperty::install(Entity * ent)
 {
     Setup s;
@@ -43,6 +48,11 @@ void SetupProperty::install(Entity * ent)
 
 TickProperty::TickProperty()
 {
+}
+
+TickProperty * TickProperty::copy() const
+{
+    return new TickProperty(*this);
 }
 
 void TickProperty::apply(Entity * ent)
@@ -74,6 +84,11 @@ void SimpleProperty::set(const Element & ent)
             setFlags(flag_bool);
         }
     }
+}
+
+SimpleProperty * SimpleProperty::copy() const
+{
+    return new SimpleProperty(*this);
 }
 
 void SimpleProperty::apply(Entity * owner)

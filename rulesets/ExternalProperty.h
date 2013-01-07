@@ -38,6 +38,7 @@ class ExternalProperty : public PropertyBase {
                      Atlas::Message::MapType & map) const;
     virtual void add(const std::string & val,
                      const Atlas::Objects::Entity::RootEntity & ent) const;
+    virtual ExternalProperty * copy() const;
 };
 
 #endif // RULESETS_EXTERNAL_PROPERTY_H

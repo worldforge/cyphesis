@@ -330,6 +330,11 @@ void CalendarProperty::set(const Element & ent)
 {
 }
 
+CalendarProperty * CalendarProperty::copy() const
+{
+    return 0;
+}
+
 ExternalProperty::ExternalProperty(ExternalMind * & data) : m_data(data)
 {
 }
@@ -353,6 +358,11 @@ void ExternalProperty::add(const std::string & s,
 {
 }
 
+ExternalProperty * ExternalProperty::copy() const
+{
+    return 0;
+}
+
 EntityProperty::EntityProperty()
 {
 }
@@ -374,6 +384,11 @@ void EntityProperty::add(const std::string & s,
 void EntityProperty::add(const std::string & s,
                          const Atlas::Objects::Entity::RootEntity & ent) const
 {
+}
+
+EntityProperty * EntityProperty::copy() const
+{
+    return 0;
 }
 
 IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),
@@ -401,6 +416,11 @@ void IdProperty::add(const std::string & key,
 {
 }
 
+IdProperty * IdProperty::copy() const
+{
+    return 0;
+}
+
 OutfitProperty::OutfitProperty()
 {
 }
@@ -426,6 +446,11 @@ void OutfitProperty::add(const std::string & key,
 void OutfitProperty::add(const std::string & key,
                          const Atlas::Objects::Entity::RootEntity & ent) const
 {
+}
+
+OutfitProperty * OutfitProperty::copy() const
+{
+    return 0;
 }
 
 void OutfitProperty::cleanUp()
@@ -459,6 +484,11 @@ int TerrainProperty::get(Element & ent) const
 
 void TerrainProperty::set(const Element & ent)
 {
+}
+
+TerrainProperty * TerrainProperty::copy() const
+{
+    return 0;
 }
 
 bool TerrainProperty::getHeightAndNormal(float x,
@@ -508,6 +538,11 @@ int TasksProperty::get(Element & val) const
 
 void TasksProperty::set(const Element & val)
 {
+}
+
+TasksProperty * TasksProperty::copy() const
+{
+    return 0;
 }
 
 int TasksProperty::startTask(Task *, Entity *, const Operation &, OpVector &)
@@ -561,6 +596,11 @@ void ContainsProperty::add(const std::string & s,
 {
 }
 
+ContainsProperty * ContainsProperty::copy() const
+{
+    return 0;
+}
+
 StatusProperty::StatusProperty()
 {
 }
@@ -594,6 +634,11 @@ void BBoxProperty::add(const std::string & key,
 void BBoxProperty::add(const std::string & key,
                        const RootEntity & ent) const
 {
+}
+
+BBoxProperty * BBoxProperty::copy() const
+{
+    return 0;
 }
 
 ExternalMind::ExternalMind(Entity & e) : Router(e.getId(), e.getIntId()),
@@ -766,6 +811,11 @@ int SoftProperty::get(Element & val) const
 
 void SoftProperty::set(const Element & val)
 {
+}
+
+SoftProperty * SoftProperty::copy() const
+{
+    return 0;
 }
 
 PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)

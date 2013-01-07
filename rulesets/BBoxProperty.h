@@ -45,6 +45,7 @@ class BBoxProperty : public PropertyBase {
                      Atlas::Message::MapType & map) const;
     virtual void add(const std::string & key,
                      const Atlas::Objects::Entity::RootEntity & ent) const;
+    virtual BBoxProperty * copy() const;
 };
 
 #endif // RULESETS_B_BOX_PROPERTY_H

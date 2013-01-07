@@ -40,6 +40,7 @@ class TasksProperty : public PropertyBase {
 
     virtual int get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
+    virtual TasksProperty * copy() const;
 
     int updateTask(Entity * owner, OpVector & res);
     int startTask(Task * task,

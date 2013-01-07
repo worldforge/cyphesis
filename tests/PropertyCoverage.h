@@ -35,6 +35,8 @@ class PropertyCoverage {
     Entity * m_ent;
 
     Atlas::Message::ListType m_testData;
+
+    virtual void interfaceCoverage();
   public:
 
     explicit PropertyCoverage(PropertyBase * pb);
@@ -49,5 +51,30 @@ class PropertyCoverage {
 
     Entity * tlve() { return m_tlve; }
 };
+
+template<class PropertyT>
+class PropertyChecker : public PropertyCoverage
+{
+  protected:
+    PropertyT * m_sub_prop;
+
+    virtual void interfaceCoverage();
+  public:
+    explicit PropertyChecker(PropertyT * p);
+};
+
+template<class PropertyT>
+PropertyChecker<PropertyT>::PropertyChecker(PropertyT * p) :
+      PropertyCoverage(p), m_sub_prop(p)
+{
+}
+
+template<class PropertyT>
+void PropertyChecker<PropertyT>::interfaceCoverage()
+{
+    PropertyT * copy = m_sub_prop->copy();
+
+    assert(copy != 0);
+}
 
 #endif // TESTS_PROPERTY_COVERAGE_H

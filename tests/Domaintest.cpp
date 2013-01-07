@@ -60,6 +60,11 @@ void TerrainProperty::set(const Atlas::Message::Element & ent)
 {
 }
 
+TerrainProperty * TerrainProperty::copy() const
+{
+    return 0;
+}
+
 bool TerrainProperty::getHeightAndNormal(float x,
                                          float y,
                                          float & height,

@@ -584,6 +584,11 @@ void ExternalProperty::add(const std::string & s,
 {
 }
 
+ExternalProperty * ExternalProperty::copy() const
+{
+    return 0;
+}
+
 const std::string & ExternalMind::connectionId()
 {
     assert(m_external != 0);

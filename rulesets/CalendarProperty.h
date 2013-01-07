@@ -30,6 +30,7 @@ class CalendarProperty : public PropertyBase {
 
     virtual int get(Atlas::Message::Element &) const;
     virtual void set(const Atlas::Message::Element &);
+    virtual CalendarProperty * copy() const;
 };
 
 #endif // RULESETS_CALENDAR_PROPERTY_H

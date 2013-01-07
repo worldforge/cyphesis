@@ -57,6 +57,7 @@ class TerrainProperty : public PropertyBase {
 
     virtual int get(Atlas::Message::Element &) const;
     virtual void set(const Atlas::Message::Element &);
+    virtual TerrainProperty * copy() const;
 
     // Applies a Mercator::TerrainMod to the terrain
     void addMod(const Mercator::TerrainMod *) const;

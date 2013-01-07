@@ -84,3 +84,8 @@ void EntityProperty::add(const std::string & s,
         ent->setAttr(s, "");
     }
 }
+
+EntityProperty * EntityProperty::copy() const
+{
+    return new EntityProperty(*this);
+}

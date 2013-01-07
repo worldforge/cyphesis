@@ -35,6 +35,7 @@ class SolidProperty : public PropertyBase {
 
     virtual int get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
+    virtual SolidProperty * copy() const;
 
     virtual void apply(Entity *);
 };

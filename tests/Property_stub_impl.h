@@ -53,4 +53,10 @@ void Property<T>::add(const std::string & s,
 {
 }
 
+template <typename T>
+Property<T> * Property<T>::copy() const
+{
+    return 0;
+}
+
 #endif // TESTS_PROPERTY_IMPL_H

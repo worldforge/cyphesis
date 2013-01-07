@@ -140,6 +140,11 @@ void ContainsProperty::add(const std::string & s, const RootEntity & ent) const
 {
 }
 
+ContainsProperty * ContainsProperty::copy() const
+{
+    return 0;
+}
+
 IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),
                                                    m_data(data)
 {
@@ -161,6 +166,11 @@ void IdProperty::add(const std::string & key,
 
 void IdProperty::add(const std::string & key, const RootEntity & ent) const
 {
+}
+
+IdProperty * IdProperty::copy() const
+{
+    return 0;
 }
 
 Motion::Motion(Entity & body) : m_entity(body), m_serialno(0),
