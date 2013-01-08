@@ -32,6 +32,8 @@ class HandlerProperty : public Property<T> {
   public:
     explicit HandlerProperty(int, Handler);
 
+    virtual HandlerProperty<T> * copy() const;
+
     virtual void install(Entity *);
 };
 

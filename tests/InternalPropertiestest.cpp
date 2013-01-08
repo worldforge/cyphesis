@@ -32,7 +32,7 @@ void test_SetupProperty()
 {
     SetupProperty * ap = new SetupProperty;
 
-    PropertyCoverage pc(ap);
+    PropertyChecker<SetupProperty> pc(ap);
 
     pc.testDataAppend(0);
 
@@ -43,7 +43,7 @@ void test_TickProperty()
 {
     TickProperty * ap = new TickProperty;
 
-    PropertyCoverage pc(ap);
+    PropertyChecker<TickProperty> pc(ap);
 
     pc.testDataAppend(0);
 
@@ -54,7 +54,7 @@ void test_SimpleProperty()
 {
     SimpleProperty * ap = new SimpleProperty;
 
-    PropertyCoverage pc(ap);
+    PropertyChecker<SimpleProperty> pc(ap);
 
     pc.testDataAppend(0);
 

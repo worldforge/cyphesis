@@ -38,26 +38,26 @@ static HandlerResult test_handler(Entity *, const Operation &, OpVector &)
 
 int main()
 {
-    PropertyBase * ap = new HandlerProperty<int>(Atlas::Objects::Operation::GET_NO, &test_handler);
 
     {
-        PropertyCoverage pc(ap);
+        auto * ap = new HandlerProperty<int>(Atlas::Objects::Operation::GET_NO, &test_handler);
+        PropertyChecker<HandlerProperty<int>> pc(ap);
 
         pc.basicCoverage();
     }
 
-    ap = new HandlerProperty<double>(Atlas::Objects::Operation::GET_NO, &test_handler);
 
     {
-        PropertyCoverage pc(ap);
+        auto * ap = new HandlerProperty<double>(Atlas::Objects::Operation::GET_NO, &test_handler);
+        PropertyChecker<HandlerProperty<double>> pc(ap);
 
         pc.basicCoverage();
     }
 
-    ap = new HandlerProperty<std::string>(Atlas::Objects::Operation::GET_NO, &test_handler);
 
     {
-        PropertyCoverage pc(ap);
+        auto * ap = new HandlerProperty<std::string>(Atlas::Objects::Operation::GET_NO, &test_handler);
+        PropertyChecker<HandlerProperty<std::string>> pc(ap);
 
         pc.basicCoverage();
     }

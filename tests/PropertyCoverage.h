@@ -69,12 +69,12 @@ PropertyChecker<PropertyT>::PropertyChecker(PropertyT * p) :
 {
 }
 
+// This test works at compile time, by ensuring the copy method returns the
+// subclass type.
 template<class PropertyT>
 void PropertyChecker<PropertyT>::interfaceCoverage()
 {
     PropertyT * copy = m_sub_prop->copy();
-
-    assert(copy != 0);
 }
 
 #endif // TESTS_PROPERTY_COVERAGE_H

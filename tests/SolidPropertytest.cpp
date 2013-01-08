@@ -32,7 +32,7 @@ int main()
 {
     SolidProperty * ap = new SolidProperty;
 
-    PropertyCoverage pc(ap);
+    PropertyChecker<SolidProperty> pc(ap);
 
     // Coverage is complete, but it wouldn't hurt to add some bad data here.
 

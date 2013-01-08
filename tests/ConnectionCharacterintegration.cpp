@@ -1106,6 +1106,11 @@ StatusProperty::StatusProperty()
 {
 }
 
+StatusProperty * StatusProperty::copy() const
+{
+    return 0;
+}
+
 void StatusProperty::apply(Entity * owner)
 {
 }

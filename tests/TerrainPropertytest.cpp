@@ -37,7 +37,7 @@ int main()
 {
     TerrainProperty * ap = new TerrainProperty;
 
-    PropertyCoverage pc(ap);
+    PropertyChecker<TerrainProperty> pc(ap);
 
     MapType terrain;
     terrain["points"] = 1;

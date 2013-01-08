@@ -40,6 +40,7 @@ class AreaProperty : public TerrainEffectorProperty {
     virtual void apply(Entity *);
 
     virtual void set(const Atlas::Message::Element & val);
+    virtual AreaProperty * copy() const;
 };
 
 #endif // RULESETS_AREA_PROPERTY_H

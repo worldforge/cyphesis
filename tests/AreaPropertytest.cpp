@@ -35,7 +35,7 @@ int main()
 {
     AreaProperty * ap = new AreaProperty();
 
-    PropertyCoverage pc(ap);
+    PropertyChecker<AreaProperty> pc(ap);
 
     MapType area;
     area["points"] = ListType(1, ListType(3, 1.f));

@@ -31,6 +31,8 @@ class MultiHandlerProperty : public Property<T> {
   public:
     explicit MultiHandlerProperty(const HandlerMap & handlers);
 
+    virtual MultiHandlerProperty<T> * copy() const;
+
     virtual void install(Entity *);
 };
 

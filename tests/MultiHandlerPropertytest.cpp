@@ -41,26 +41,24 @@ int main()
     HandlerMap test_map;
     test_map.insert(std::make_pair(Atlas::Objects::Operation::GET_NO, &test_handler));
 
-    PropertyBase * ap = new MultiHandlerProperty<int>(test_map);
 
     {
-        PropertyCoverage pc(ap);
+        auto * ap = new MultiHandlerProperty<int>(test_map);
+        PropertyChecker<MultiHandlerProperty<int>> pc(ap);
 
         pc.basicCoverage();
     }
 
-    ap = new MultiHandlerProperty<double>(test_map);
-
     {
-        PropertyCoverage pc(ap);
+        auto * ap = new MultiHandlerProperty<double>(test_map);
+        PropertyChecker<MultiHandlerProperty<double>> pc(ap);
 
         pc.basicCoverage();
     }
 
-    ap = new MultiHandlerProperty<std::string>(test_map);
-
     {
-        PropertyCoverage pc(ap);
+        auto * ap = new MultiHandlerProperty<std::string>(test_map);
+        PropertyChecker<MultiHandlerProperty<std::string>> pc(ap);
 
         pc.basicCoverage();
     }

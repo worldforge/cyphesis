@@ -36,6 +36,15 @@ TransientProperty::TransientProperty()
 {
 }
 
+TransientProperty::~TransientProperty()
+{
+}
+
+TransientProperty * TransientProperty::copy() const
+{
+    return new TransientProperty(*this);
+}
+
 void TransientProperty::install(Entity * ent)
 {
     ent->setFlags(entity_ephem);

@@ -39,7 +39,7 @@ static int run_coverage()
 
     TerrainModProperty * ap = new TerrainModProperty(terrainModHandlers);
 
-    PropertyCoverage pc(ap);
+    PropertyChecker<TerrainModProperty> pc(ap);
 
     MapType shape;
     MapType mod;

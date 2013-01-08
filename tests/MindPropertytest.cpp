@@ -35,7 +35,7 @@ int main()
 {
     MindProperty * ap = new MindProperty;
 
-    PropertyCoverage pc(ap);
+    PropertyChecker<MindProperty> pc(ap);
 
     // Coverage is complete, but it wouldn't hurt to add some bad data here.
 

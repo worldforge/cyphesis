@@ -27,6 +27,9 @@
 class TransientProperty : public Property<double> {
   public:
     TransientProperty();
+    virtual ~TransientProperty();
+
+    virtual TransientProperty * copy() const;
 
     virtual void install(Entity *);
 

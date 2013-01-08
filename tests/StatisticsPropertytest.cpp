@@ -35,7 +35,7 @@ int main(int argc, char ** argv)
 {
     StatisticsProperty * ap = new StatisticsProperty;
 
-    PropertyCoverage pc(ap);
+    PropertyChecker<StatisticsProperty> pc(ap);
 
     // Coverage is complete, but it wouldn't hurt to add some bad data here.
 

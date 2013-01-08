@@ -31,6 +31,8 @@ class StatusProperty : public Property<double> {
     /// \brief Constructor
     explicit StatusProperty();
 
+    virtual StatusProperty * copy() const;
+
     virtual void apply(Entity *);
 };
 

@@ -647,6 +647,11 @@ void AreaProperty::set(const Atlas::Message::Element & ent)
 {
 }
 
+AreaProperty * AreaProperty::copy() const
+{
+    return 0;
+}
+
 void AreaProperty::apply(Entity * owner)
 {
 }
@@ -900,6 +905,11 @@ StatusProperty::StatusProperty()
 {
 }
 
+StatusProperty * StatusProperty::copy() const
+{
+    return 0;
+}
+
 void StatusProperty::apply(Entity * owner)
 {
 }
@@ -980,6 +990,11 @@ TerrainModProperty::TerrainModProperty(const HandlerMap & handlers) :
 
 TerrainModProperty::~TerrainModProperty()
 {
+}
+
+TerrainModProperty * TerrainModProperty::copy() const
+{
+    return 0;
 }
 
 void TerrainModProperty::install(Entity * owner)
@@ -1115,12 +1130,30 @@ SpawnProperty::SpawnProperty()
 {
 }
 
+SpawnProperty::~SpawnProperty()
+{
+}
+
+SpawnProperty * SpawnProperty::copy() const
+{
+    return 0;
+}
+
 void SpawnProperty::apply(Entity * ent)
 {
 }
 
 VisibilityProperty::VisibilityProperty()
 {
+}
+
+VisibilityProperty::~VisibilityProperty()
+{
+}
+
+VisibilityProperty * VisibilityProperty::copy() const
+{
+    return 0;
 }
 
 void VisibilityProperty::apply(Entity * ent)
@@ -1183,6 +1216,15 @@ TransientProperty::TransientProperty()
 {
 }
 
+TransientProperty::~TransientProperty()
+{
+}
+
+TransientProperty * TransientProperty::copy() const
+{
+    return 0;
+}
+
 void TransientProperty::install(Entity * ent)
 {
 }
@@ -1196,6 +1238,12 @@ HandlerProperty<T>::HandlerProperty(int op, Handler handler) :
                                     m_operationClassNo(op),
                                     m_handler(handler)
 {
+}
+
+template <typename T>
+HandlerProperty<T> * HandlerProperty<T>::copy() const
+{
+    return 0;
 }
 
 template <typename T>

@@ -35,7 +35,7 @@ int main()
 {
     SpawnProperty * sp = new SpawnProperty();
 
-    PropertyCoverage pc(sp);
+    PropertyChecker<SpawnProperty> pc(sp);
 
     // Coverage is complete, but it wouldn't hurt to add some bad data here.
 

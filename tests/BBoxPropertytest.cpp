@@ -35,7 +35,7 @@ int main()
 {
     BBoxProperty * ap = new BBoxProperty;
 
-    PropertyCoverage pc(ap);
+    PropertyChecker<BBoxProperty> pc(ap);
 
     pc.testDataAppend(ListType(3, 1.f));
     pc.testDataAppend(ListType(6, 1.f));

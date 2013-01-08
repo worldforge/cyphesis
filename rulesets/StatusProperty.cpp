@@ -32,6 +32,11 @@ StatusProperty::StatusProperty()
 {
 }
 
+StatusProperty * StatusProperty::copy() const
+{
+    return new StatusProperty(*this);
+}
+
 void StatusProperty::apply(Entity * owner)
 {
     if (m_data < 0) {

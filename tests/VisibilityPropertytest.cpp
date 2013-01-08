@@ -32,7 +32,7 @@ int main()
 {
     VisibilityProperty * ap = new VisibilityProperty;
 
-    PropertyCoverage pc(ap);
+    PropertyChecker<VisibilityProperty> pc(ap);
 
     // Coverage is complete, but it wouldn't hurt to add some bad data here.
 

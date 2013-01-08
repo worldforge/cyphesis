@@ -32,7 +32,7 @@ int main()
 {
     TransientProperty * ap = new TransientProperty;
 
-    PropertyCoverage pc(ap);
+    PropertyChecker<TransientProperty> pc(ap);
 
     pc.testDataAppend(-1.);
 

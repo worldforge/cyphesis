@@ -313,6 +313,11 @@ void AreaProperty::set(const Atlas::Message::Element & ent)
 {
 }
 
+AreaProperty * AreaProperty::copy() const
+{
+    return 0;
+}
+
 void AreaProperty::apply(Entity * owner)
 {
 }
@@ -603,6 +608,11 @@ ContainsProperty * ContainsProperty::copy() const
 
 StatusProperty::StatusProperty()
 {
+}
+
+StatusProperty * StatusProperty::copy() const
+{
+    return 0;
 }
 
 void StatusProperty::apply(Entity * owner)

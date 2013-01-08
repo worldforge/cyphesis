@@ -32,7 +32,7 @@ int main()
 {
     OutfitProperty * ap = new OutfitProperty;
 
-    PropertyCoverage pc(ap);
+    PropertyChecker<OutfitProperty> pc(ap);
 
     // Coverage is complete, but it wouldn't hurt to add some bad data here.
 

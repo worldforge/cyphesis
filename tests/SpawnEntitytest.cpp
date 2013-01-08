@@ -163,6 +163,11 @@ void AreaProperty::set(const Atlas::Message::Element & ent)
 {
 }
 
+AreaProperty * AreaProperty::copy() const
+{
+    return 0;
+}
+
 void AreaProperty::apply(Entity * owner)
 {
 }

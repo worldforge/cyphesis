@@ -32,7 +32,7 @@ int main()
 {
     StatusProperty * ap = new StatusProperty;
 
-    PropertyCoverage pc(ap);
+    PropertyChecker<StatusProperty> pc(ap);
 
     pc.testDataAppend(-1);
 

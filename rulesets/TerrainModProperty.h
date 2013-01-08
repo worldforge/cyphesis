@@ -53,6 +53,8 @@ class TerrainModProperty : public TerrainEffectorProperty {
     explicit TerrainModProperty(const HandlerMap &);
     ~TerrainModProperty();
 
+    TerrainModProperty * copy() const;
+
     virtual void install(Entity *);
     virtual void apply(Entity *);
 

@@ -32,6 +32,12 @@ HandlerProperty<T>::HandlerProperty(int op, Handler handler) :
 }
 
 template <typename T>
+HandlerProperty<T> * HandlerProperty<T>::copy() const
+{
+    return new HandlerProperty<T>(*this);
+}
+
+template <typename T>
 void HandlerProperty<T>::install(Entity * ent)
 {
     ent->installHandler(m_operationClassNo, m_handler);

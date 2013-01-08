@@ -27,6 +27,14 @@ SpawnProperty::SpawnProperty()
 {
 }
 
+SpawnProperty::~SpawnProperty()
+{
+}
+
+SpawnProperty * SpawnProperty::copy() const
+{
+}
+
 void SpawnProperty::apply(Entity * ent)
 {
     BaseWorld::instance().createSpawnPoint(m_data, ent);

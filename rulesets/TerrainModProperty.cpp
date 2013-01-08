@@ -58,6 +58,14 @@ TerrainModProperty::~TerrainModProperty()
     delete m_innerMod;
 }
 
+TerrainModProperty * TerrainModProperty::copy() const
+{
+    // This is for instantiation of a class property.
+    // This is complex here, as is it not yet clear if this
+    // class can be a class property.
+    return new TerrainModProperty(*this);
+}
+
 void TerrainModProperty::install(Entity * owner)
 {
     HandlerMap::const_iterator I = m_handlers.begin();

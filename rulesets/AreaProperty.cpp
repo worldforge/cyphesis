@@ -97,3 +97,8 @@ void AreaProperty::set(const Element & ent)
         m_layer = 0;
     }
 }
+
+AreaProperty * AreaProperty::copy() const
+{
+    return new AreaProperty(*this);
+}

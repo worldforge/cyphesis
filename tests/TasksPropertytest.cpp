@@ -44,7 +44,7 @@ int main()
 {
     TasksProperty * ap = new TasksProperty;
 
-    PropertyCoverage pc(ap);
+    PropertyChecker<TasksProperty> pc(ap);
 
     OpVector res;
     Character * chr = pc.createCharacterEntity();
