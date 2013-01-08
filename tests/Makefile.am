@@ -81,7 +81,7 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                IdleConnectortest CommPSQLSockettest \
                CommPythonClientFactorytest \
                Persistencetest \
-               SystemAccounttest TCPListenFactorytest
+               SystemAccounttest TCPListenFactorytest CorePropertyManagertest
 
 SERVER_COMM_TESTS = CommStreamClienttest CommClienttest \
                     CommHttpClienttest CommStreamListenertest CommPeertest \
@@ -1282,6 +1282,10 @@ TCPListenFactorytest_SOURCES = TCPListenFactorytest.cpp
 TCPListenFactorytest_LDADD = \
         $(top_builddir)/server/TCPListenFactory.o \
         $(NETWORK_LIBS)
+
+CorePropertyManagertest_SOURCES = CorePropertyManagertest.cpp
+CorePropertyManagertest_LDADD = \
+        $(top_builddir)/server/CorePropertyManager.o
 
 # SERVER_INTEGRATION_TESTS
 
