@@ -78,6 +78,7 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                TeleportStatetest PendingTeleporttest Juncturetest \
                ConnectableRoutertest RuleHandlertest OpRuleHandlertest \
                EntityRuleHandlertest TaskRuleHandlertest \
+               PropertyRuleHandlertest \
                IdleConnectortest CommPSQLSockettest \
                CommPythonClientFactorytest \
                Persistencetest \
@@ -1255,6 +1256,10 @@ TaskRuleHandlertest_SOURCES = TaskRuleHandlertest.cpp
 TaskRuleHandlertest_LDADD = \
         $(top_builddir)/server/TaskRuleHandler.o \
         $(top_builddir)/server/RuleHandler.o
+
+PropertyRuleHandlertest_SOURCES = PropertyRuleHandlertest.cpp
+PropertyRuleHandlertest_LDADD = \
+        $(top_builddir)/server/PropertyRuleHandler.o
 
 IdleConnectortest_SOURCES = IdleConnectortest.cpp
 IdleConnectortest_LDADD = \
