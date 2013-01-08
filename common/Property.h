@@ -34,6 +34,7 @@ class PropertyBase {
     /// \brief Flags indicating how this Property should be handled
     unsigned int m_flags;
     explicit PropertyBase(unsigned int flags = 0);
+    PropertyBase(const PropertyBase &) = default;
   public:
     virtual ~PropertyBase();
 
@@ -121,6 +122,7 @@ class Property : public PropertyBase {
   protected:
     /// \brief Reference to variable holding the value of this Property
     T m_data;
+    Property(const Property<T> &) = default;
   public:
     explicit Property(unsigned int flags = 0);
 
