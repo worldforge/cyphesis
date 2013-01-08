@@ -182,6 +182,7 @@ void PropertyEntityintegration::test_modProperty()
     // Get a pointer to the types default property
     PropertyBase * dflt = m_type->defaults().find(test_values<T>::name)->second;
     ASSERT_NOT_NULL(dflt);
+    ASSERT_TRUE(dflt->flags() & flag_class);
 
     // The entity instance should not have a property by this name
     ASSERT_EQUAL(m_entity->m_properties.find(test_values<T>::name),
@@ -189,6 +190,7 @@ void PropertyEntityintegration::test_modProperty()
 
     PropertyBase * p = m_entity->modProperty(test_values<T>::name);
     ASSERT_NOT_NULL(p);
+    ASSERT_TRUE((p->flags() & ~flag_class) == 0);
     // modProperty should have forced a new object
     ASSERT_NOT_EQUAL(p, dflt);
 
@@ -202,6 +204,7 @@ void PropertyEntityintegration::test_modPropertyClass()
     // Get a pointer to the types default property
     PropertyBase * dflt = m_type->defaults().find(test_values<T>::name)->second;
     ASSERT_NOT_NULL(dflt);
+    ASSERT_TRUE(dflt->flags() & flag_class);
 
     // The entity instance should not have a property by this name
     ASSERT_EQUAL(m_entity->m_properties.find(test_values<T>::name),
@@ -211,6 +214,7 @@ void PropertyEntityintegration::test_modPropertyClass()
         test_values<T>::name
     );
     ASSERT_NOT_NULL(p);
+    ASSERT_TRUE((p->flags() & ~flag_class) == 0);
     // modProperty should have forced a new object
     ASSERT_NOT_EQUAL(p, dflt);
     
