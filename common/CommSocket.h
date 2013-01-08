@@ -27,6 +27,7 @@ class CommServer;
 class CommSocket {
   protected:
     explicit CommSocket(CommServer & svr);
+    CommSocket(const CommSocket &) = delete;
   public:
     /// Reference to the object that manages all socket communication.
     CommServer & m_commServer;
