@@ -35,6 +35,7 @@
 
 #include "common/CommSocket.h"
 #include "common/Inheritance.h"
+#include "common/PropertyFactory.h"
 #include "common/SystemTime.h"
 
 #include "TestWorld.h"
@@ -51,6 +52,14 @@ using Atlas::Message::MapType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
 
+class MinimalProperty : public PropertyBase {
+  public:
+    MinimalProperty() { }
+    virtual int get(Atlas::Message::Element & val) const { return 0; }
+    virtual void set(const Atlas::Message::Element & val) { }
+    virtual MinimalProperty * copy() const { return 0; }
+};
+
 class CorePropertyManagertest : public Cyphesis::TestBase
 {
     CorePropertyManager * m_propertyManager;
@@ -61,17 +70,33 @@ class CorePropertyManagertest : public Cyphesis::TestBase
     void setup();
     void teardown();
 
-    void test_constructor();
+    void test_addProperty_int();
+    void test_addProperty_float();
+    void test_addProperty_string();
+    void test_addProperty_list();
+    void test_addProperty_map();
+    void test_addProperty_none();
+    void test_addProperty_named();
 };
 
 CorePropertyManagertest::CorePropertyManagertest()
 {
-    ADD_TEST(CorePropertyManagertest::test_constructor);
+    ADD_TEST(CorePropertyManagertest::test_addProperty_int);
+    ADD_TEST(CorePropertyManagertest::test_addProperty_float);
+    ADD_TEST(CorePropertyManagertest::test_addProperty_string);
+    ADD_TEST(CorePropertyManagertest::test_addProperty_list);
+    ADD_TEST(CorePropertyManagertest::test_addProperty_map);
+    ADD_TEST(CorePropertyManagertest::test_addProperty_none);
+    ADD_TEST(CorePropertyManagertest::test_addProperty_named);
 }
 
 void CorePropertyManagertest::setup()
 {
     m_propertyManager = new CorePropertyManager;
+    m_propertyManager->m_propertyFactories.insert(
+        std::make_pair("named_type", new PropertyFactory<MinimalProperty>)
+    );
+   
 }
 
 void CorePropertyManagertest::teardown()
@@ -79,9 +104,60 @@ void CorePropertyManagertest::teardown()
     delete m_propertyManager;
 }
 
-void CorePropertyManagertest::test_constructor()
+void CorePropertyManagertest::test_addProperty_int()
 {
-    ASSERT_NOT_NULL(m_propertyManager);
+    auto * p = m_propertyManager->addProperty("non_existant_type",
+                                              Element::TYPE_INT);
+    ASSERT_NOT_NULL(p);
+    ASSERT_NOT_NULL(dynamic_cast<Property<int> *>(p));
+}
+
+void CorePropertyManagertest::test_addProperty_float()
+{
+    auto * p = m_propertyManager->addProperty("non_existant_type",
+                                              Element::TYPE_FLOAT);
+    ASSERT_NOT_NULL(p);
+    ASSERT_NOT_NULL(dynamic_cast<Property<double> *>(p));
+}
+
+void CorePropertyManagertest::test_addProperty_string()
+{
+    auto * p = m_propertyManager->addProperty("non_existant_type",
+                                              Element::TYPE_STRING);
+    ASSERT_NOT_NULL(p);
+    ASSERT_NOT_NULL(dynamic_cast<Property<std::string> *>(p));
+}
+
+void CorePropertyManagertest::test_addProperty_list()
+{
+    auto * p = m_propertyManager->addProperty("non_existant_type",
+                                              Element::TYPE_LIST);
+    ASSERT_NOT_NULL(p);
+    ASSERT_NOT_NULL(dynamic_cast<SoftProperty *>(p));
+}
+
+void CorePropertyManagertest::test_addProperty_map()
+{
+    auto * p = m_propertyManager->addProperty("non_existant_type",
+                                              Element::TYPE_MAP);
+    ASSERT_NOT_NULL(p);
+    ASSERT_NOT_NULL(dynamic_cast<SoftProperty *>(p));
+}
+
+void CorePropertyManagertest::test_addProperty_none()
+{
+    auto * p = m_propertyManager->addProperty("non_existant_type",
+                                              Element::TYPE_NONE);
+    ASSERT_NOT_NULL(p);
+    ASSERT_NOT_NULL(dynamic_cast<SoftProperty *>(p));
+}
+
+void CorePropertyManagertest::test_addProperty_named()
+{
+    auto * p = m_propertyManager->addProperty("named_type",
+                                              Element::TYPE_NONE);
+    ASSERT_NOT_NULL(p);
+    ASSERT_NOT_NULL(dynamic_cast<MinimalProperty *>(p));
 }
 
 int main()
@@ -1091,6 +1167,14 @@ template class Property<std::vector<std::string>>;
 PropertyKit::~PropertyKit()
 {
 }
+
+template <class T>
+PropertyBase * PropertyFactory<T>::newProperty()
+{
+    return new T();
+}
+
+template class PropertyFactory<MinimalProperty>;
 
 SoftProperty::SoftProperty()
 {

@@ -39,6 +39,8 @@ class CorePropertyManager : public PropertyManager {
     virtual ~CorePropertyManager();
 
     virtual PropertyBase * addProperty(const std::string & name, int type);
+
+    friend class CorePropertyManagertest;
 };
 
 #endif // SERVER_CORE_PROPERTY_MANAGER_H
