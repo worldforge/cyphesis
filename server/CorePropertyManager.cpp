@@ -35,6 +35,7 @@
 #include "rulesets/TransientProperty.h"
 #include "rulesets/BBoxProperty.h"
 #include "rulesets/MindProperty.h"
+#include "rulesets/BiomassProperty.h"
 #include "rulesets/InternalProperties.h"
 #include "rulesets/SpawnProperty.h"
 #include "rulesets/AreaProperty.h"
@@ -104,40 +105,6 @@ HandlerResult del_handler(Entity * e, const Operation &, OpVector & res)
     create->setTo(e->m_location.m_loc->getId());
     create->setArgs1(create_arg);
     res.push_back(create);
-
-    return OPERATION_IGNORED;
-}
-
-HandlerResult eat_handler(Entity * e, const Operation & op, OpVector & res)
-{
-    const Property<double> * pb = e->getPropertyType<double>("biomass");
-    if (pb == NULL) {
-        debug(std::cout << "Eat HANDLER no biomass" << std::endl 
-                        << std::flush;);
-        return OPERATION_IGNORED;
-    }
-    
-    const double & biomass = pb->data();
-
-    Anonymous self;
-    self->setId(e->getId());
-    self->setAttr("status", -1);
-
-    Set s;
-    s->setTo(e->getId());
-    s->setArgs1(self);
-
-    const std::string & to = op->getFrom();
-    Anonymous nour_arg;
-    nour_arg->setId(to);
-    nour_arg->setAttr("mass", biomass);
-
-    Nourish n;
-    n->setTo(to);
-    n->setArgs1(nour_arg);
-
-    res.push_back(s);
-    res.push_back(n);
 
     return OPERATION_IGNORED;
 }
@@ -291,7 +258,7 @@ CorePropertyManager::CorePropertyManager()
     m_propertyFactories["solid"] = new PropertyFactory<SolidProperty>;
     m_propertyFactories["simple"] = new PropertyFactory<SimpleProperty>;
     m_propertyFactories["status"] = new PropertyFactory<StatusProperty>;
-    m_propertyFactories["biomass"] = new ActivePropertyFactory<double>(Atlas::Objects::Operation::EAT_NO, eat_handler);
+    m_propertyFactories["biomass"] = new ActivePropertyFactory<double>(Atlas::Objects::Operation::EAT_NO, BiomassProperty::eat_handler);
     m_propertyFactories["burn_speed"] = new ActivePropertyFactory<double>(Atlas::Objects::Operation::BURN_NO, burn_handler);
     m_propertyFactories["transient"] = new PropertyFactory<TransientProperty>();
     m_propertyFactories["food"] = new PropertyFactory<Property<double> >;

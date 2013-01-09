@@ -60,6 +60,7 @@ librulesetentity_a_SOURCES = \
 			     SpawnProperty.cpp SpawnProperty.h \
 			     VisibilityProperty.cpp VisibilityProperty.h \
 			     ExternalProperty.cpp ExternalProperty.h \
+			     BiomassProperty.cpp BiomassProperty.h \
 			     Task.cpp Task.h \
 			     ArithmeticScript.cpp ArithmeticScript.h \
 			     ArithmeticFactory.cpp ArithmeticFactory.h

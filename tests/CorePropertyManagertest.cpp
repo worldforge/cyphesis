@@ -195,6 +195,7 @@ Entity * TestWorld::addNewEntity(const std::string &,
 #include "rulesets/AreaProperty.h"
 #include "rulesets/AtlasProperties.h"
 #include "rulesets/BBoxProperty.h"
+#include "rulesets/BiomassProperty.h"
 #include "rulesets/CalendarProperty.h"
 #include "rulesets/EntityProperty.h"
 #include "rulesets/ExternalProperty.h"
@@ -1267,6 +1268,13 @@ void BBoxProperty::add(const std::string & key,
 BBoxProperty * BBoxProperty::copy() const
 {
     return 0;
+}
+
+HandlerResult BiomassProperty::eat_handler(Entity * e,
+                                           const Operation & op,
+                                           OpVector & res)
+{
+    return OPERATION_IGNORED;
 }
 
 TerrainProperty::TerrainProperty() :
