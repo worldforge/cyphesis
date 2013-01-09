@@ -61,6 +61,7 @@ librulesetentity_a_SOURCES = \
 			     VisibilityProperty.cpp VisibilityProperty.h \
 			     ExternalProperty.cpp ExternalProperty.h \
 			     BiomassProperty.cpp BiomassProperty.h \
+			     BurnSpeedProperty.cpp BurnSpeedProperty.h \
 			     Task.cpp Task.h \
 			     ArithmeticScript.cpp ArithmeticScript.h \
 			     ArithmeticFactory.cpp ArithmeticFactory.h

@@ -34,8 +34,9 @@
 #include "rulesets/TerrainModProperty.h"
 #include "rulesets/TransientProperty.h"
 #include "rulesets/BBoxProperty.h"
-#include "rulesets/MindProperty.h"
 #include "rulesets/BiomassProperty.h"
+#include "rulesets/BurnSpeedProperty.h"
+#include "rulesets/MindProperty.h"
 #include "rulesets/InternalProperties.h"
 #include "rulesets/SpawnProperty.h"
 #include "rulesets/AreaProperty.h"
@@ -105,53 +106,6 @@ HandlerResult del_handler(Entity * e, const Operation &, OpVector & res)
     create->setTo(e->m_location.m_loc->getId());
     create->setArgs1(create_arg);
     res.push_back(create);
-
-    return OPERATION_IGNORED;
-}
-
-HandlerResult burn_handler(Entity * e, const Operation & op, OpVector & res)
-{
-    if (op->getArgs().empty()) {
-        e->error(op, "Fire op has no argument", res, e->getId());
-        return OPERATION_IGNORED;
-    }
-
-    const Property<double> * pb = e->getPropertyType<double>("burn_speed");
-    if (pb == NULL) {
-        debug(std::cout << "Eat HANDLER no burn_speed" << std::endl 
-                        << std::flush;);
-        return OPERATION_IGNORED;
-    }
-    
-    const double & burn_speed = pb->data();
-    const Root & fire_ent = op->getArgs().front();
-    double consumed = burn_speed * fire_ent->getAttr("status").asNum();
-
-    const std::string & to = fire_ent->getId();
-    Anonymous nour_ent;
-    nour_ent->setId(to);
-    nour_ent->setAttr("mass", consumed);
-
-    StatusProperty * status_prop = e->requirePropertyClass<StatusProperty>("status", 1.f);
-    assert(status_prop != 0);
-    status_prop->setFlags(flag_unsent);
-    double & status = status_prop->data();
-
-    Element mass_attr;
-    if (e->getAttrType("mass", mass_attr, Element::TYPE_FLOAT) != 0) {
-        mass_attr = 1.f;
-    }
-    status -= (consumed / mass_attr.Float());
-
-    Update update;
-    update->setTo(e->getId());
-    res.push_back(update);
-
-    Nourish n;
-    n->setTo(to);
-    n->setArgs1(nour_ent);
-
-    res.push_back(n);
 
     return OPERATION_IGNORED;
 }
@@ -259,7 +213,7 @@ CorePropertyManager::CorePropertyManager()
     m_propertyFactories["simple"] = new PropertyFactory<SimpleProperty>;
     m_propertyFactories["status"] = new PropertyFactory<StatusProperty>;
     m_propertyFactories["biomass"] = new ActivePropertyFactory<double>(Atlas::Objects::Operation::EAT_NO, BiomassProperty::eat_handler);
-    m_propertyFactories["burn_speed"] = new ActivePropertyFactory<double>(Atlas::Objects::Operation::BURN_NO, burn_handler);
+    m_propertyFactories["burn_speed"] = new ActivePropertyFactory<double>(Atlas::Objects::Operation::BURN_NO, BurnSpeedProperty::burn_handler);
     m_propertyFactories["transient"] = new PropertyFactory<TransientProperty>();
     m_propertyFactories["food"] = new PropertyFactory<Property<double> >;
     m_propertyFactories["mass"] = new PropertyFactory<Property<double> >;

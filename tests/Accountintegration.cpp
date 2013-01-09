@@ -370,6 +370,7 @@ Entity * TestWorld::addNewEntity(const std::string &,
 #include "rulesets/AtlasProperties.h"
 #include "rulesets/BBoxProperty.h"
 #include "rulesets/BiomassProperty.h"
+#include "rulesets/BurnSpeedProperty.h"
 #include "rulesets/CalendarProperty.h"
 #include "rulesets/EntityProperty.h"
 #include "rulesets/ExternalProperty.h"
@@ -950,6 +951,13 @@ BBoxProperty * BBoxProperty::copy() const
 HandlerResult BiomassProperty::eat_handler(Entity * e,
                                            const Operation & op,
                                            OpVector & res)
+{
+    return OPERATION_IGNORED;
+}
+
+HandlerResult BurnSpeedProperty::burn_handler(Entity * e,
+                                              const Operation & op,
+                                              OpVector & res)
 {
     return OPERATION_IGNORED;
 }
