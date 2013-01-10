@@ -363,6 +363,7 @@ Entity * TestWorld::addNewEntity(const std::string &,
 #include "server/Persistence.h"
 #include "server/Player.h"
 #include "server/Ruleset.h"
+#include "server/TeleportProperty.h"
 
 #include "rulesets/Motion.h"
 #include "rulesets/Pedestrian.h"
@@ -958,6 +959,13 @@ HandlerResult BiomassProperty::eat_handler(Entity * e,
 HandlerResult BurnSpeedProperty::burn_handler(Entity * e,
                                               const Operation & op,
                                               OpVector & res)
+{
+    return OPERATION_IGNORED;
+}
+
+HandlerResult TeleportProperty::teleport_handler(Entity * e,
+                                                 const Operation & op,
+                                                 OpVector & res)
 {
     return OPERATION_IGNORED;
 }

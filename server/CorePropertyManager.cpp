@@ -19,9 +19,9 @@
 
 #include "CorePropertyManager.h"
 
-#include "rulesets/ExternalMind.h"
-#include "Juncture.h"
-#include "ServerRouting.h"
+#include "server/Juncture.h"
+#include "server/ServerRouting.h"
+#include "server/TeleportProperty.h"
 
 #include "rulesets/ActivePropertyFactory_impl.h"
 
@@ -110,54 +110,6 @@ HandlerResult del_handler(Entity * e, const Operation &, OpVector & res)
     return OPERATION_IGNORED;
 }
 
-HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
-{
-    // Get the teleport property value (in our case, the IP to teleport to)
-    const Property<std::string> * pb = e->getPropertyType<std::string>("teleport");
-    if (pb == NULL) {
-        debug(std::cout << "Teleport HANDLER no teleport" << std::endl 
-                        << std::flush;);
-        return OPERATION_IGNORED;
-    }
-
-    ServerRouting *svr = ServerRouting::instance();
-    if(svr == NULL) {
-        log(ERROR, "Unable to access ServerRouting object");
-        return OPERATION_IGNORED;
-    }
-    Router * obj = svr->getObject(pb->data());
-    if(obj == NULL) {
-        log(ERROR, "Unknown peer ID specified");
-        return OPERATION_IGNORED;
-    }
-    Juncture * link = dynamic_cast<Juncture *>(obj);
-    if(link == NULL) {
-        log(ERROR, "Non Peer ID specified");
-        return OPERATION_IGNORED;
-    }
-
-    // Get the ID of the sender
-    if (op->isDefaultFrom()) {
-        debug(std::cout << "ERROR: Operation with no entity to be teleported" 
-                        << std::endl << std::flush;);
-        return OPERATION_IGNORED;
-    }
-    log(INFO, String::compose("Teleport request sender has ID %1",
-                              op->getFrom()));
-
-    // This is the sender entity
-    Entity * entity = BaseWorld::instance().getEntity(op->getFrom());
-    if (entity == 0) {
-        debug(std::cout << "No entity found with the specified ID: "
-                        << op->getFrom(););
-        return OPERATION_IGNORED;
-    }
-
-    // Inject the entity into remote server
-    link->teleportEntity(entity);
-    return OPERATION_IGNORED;
-}
-
 CorePropertyManager::CorePropertyManager()
 {
     m_propertyFactories["stamina"] = new PropertyFactory<Property<double> >;
@@ -192,7 +144,7 @@ CorePropertyManager::CorePropertyManager()
           TerrainModProperty::delete_handler;
     m_propertyFactories["terrainmod"] = new MultiActivePropertyFactory<TerrainModProperty>(terrainModHandles);
 
-    m_propertyFactories["teleport"] = new ActivePropertyFactory<std::string>(Atlas::Objects::Operation::TELEPORT_NO, teleport_handler);
+    m_propertyFactories["teleport"] = new ActivePropertyFactory<std::string>(Atlas::Objects::Operation::TELEPORT_NO, TeleportProperty::teleport_handler);
 }
 
 CorePropertyManager::~CorePropertyManager()

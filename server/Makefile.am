@@ -112,6 +112,7 @@ SERVER_SOURCES = \
 		IdlePSQLConnector.cpp IdlePSQLConnector.h \
 		TeleportState.cpp TeleportState.h \
 		TeleportAuthenticator.cpp TeleportAuthenticator.h \
+		TeleportProperty.cpp TeleportProperty.h \
 		PendingTeleport.cpp PendingTeleport.h \
 		CommPeer.cpp CommPeer.h \
 		CommPythonClient.cpp CommPythonClient.h \
