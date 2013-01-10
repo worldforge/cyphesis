@@ -1,3 +1,12 @@
+Providing there is no extra deps, move all the property access methods
+into LocatedEntiy. It is possible this must wait until we stop using
+the PropertyManager in modProperty.
+ 1) MemEntity needs flags, so let's have flags.
+ 2) MemEntity will need type properties to save RAM, so let it have them
+
+Should entity class children be invisible to the client? Prevents it from
+requesting things it has never seen yet.
+
 See if we can create a Property<Map> class with extra interface, rather
 like the generic methods added to TerrainModProperty
 

@@ -59,7 +59,8 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
 
 RULESETS_INTEGRATION_TESTS = MindPropertyintegration BulletDomainintegration \
                              TerrainPropertyintegration \
-                             PropertyEntityintegration
+                             PropertyEntityintegration \
+                             DecaysPropertyintegration
 
 CLIENT_TESTS = Py_CreatorClienttest Py_ObserverClienttest \
                ClientConnectiontest BaseClienttest \
@@ -992,6 +993,15 @@ TerrainPropertyintegration_LDADD = \
 PropertyEntityintegration_SOURCES = PropertyEntityintegration.cpp
 PropertyEntityintegration_LDADD = \
         $(top_builddir)/rulesets/Entity.o \
+        $(top_builddir)/rulesets/LocatedEntity.o \
+        $(top_builddir)/common/Property.o \
+        $(top_builddir)/common/TypeNode.o
+
+DecaysPropertyintegration_SOURCES = DecaysPropertyintegration.cpp
+DecaysPropertyintegration_LDADD = \
+        $(top_builddir)/rulesets/Entity.o \
+        $(top_builddir)/rulesets/DecaysProperty.o \
+        $(top_builddir)/rulesets/HandlerProperty.o \
         $(top_builddir)/rulesets/LocatedEntity.o \
         $(top_builddir)/common/Property.o \
         $(top_builddir)/common/TypeNode.o
