@@ -36,6 +36,7 @@
 #include "rulesets/BBoxProperty.h"
 #include "rulesets/BiomassProperty.h"
 #include "rulesets/BurnSpeedProperty.h"
+#include "rulesets/DecaysProperty.h"
 #include "rulesets/MindProperty.h"
 #include "rulesets/InternalProperties.h"
 #include "rulesets/SpawnProperty.h"
@@ -85,31 +86,6 @@ HandlerResult test_handler(Entity *, const Operation &, OpVector & res)
     return OPERATION_IGNORED;
 }
 
-HandlerResult del_handler(Entity * e, const Operation &, OpVector & res)
-{
-    debug(std::cout << "Delete HANDLER CALLED" << std::endl << std::flush;);
-    const Property<std::string> * pb = e->getPropertyType<std::string>("decays");
-    if (pb == NULL) {
-        debug(std::cout << "Delete HANDLER no decays" << std::endl 
-                        << std::flush;);
-        return OPERATION_IGNORED;
-    }
-    const std::string & type = pb->data();
-
-    Anonymous create_arg;
-    create_arg->setParents(std::list<std::string>(1, type));
-    ::addToEntity(e->m_location.pos(), create_arg->modifyPos());
-    create_arg->setLoc(e->m_location.m_loc->getId());
-    create_arg->setAttr("orientation", e->m_location.orientation().toAtlas());
-
-    Create create;
-    create->setTo(e->m_location.m_loc->getId());
-    create->setArgs1(create_arg);
-    res.push_back(create);
-
-    return OPERATION_IGNORED;
-}
-
 CorePropertyManager::CorePropertyManager()
 {
     m_propertyFactories["stamina"] = new PropertyFactory<Property<double> >;
@@ -118,7 +94,7 @@ CorePropertyManager::CorePropertyManager()
     m_propertyFactories["start_intersections"] = new PropertyFactory<Property<IdList> >;
     m_propertyFactories["end_intersections"] = new PropertyFactory<Property<IdList> >;
     m_propertyFactories["attachment"] = new ActivePropertyFactory<int>(Atlas::Objects::Operation::MOVE_NO, test_handler);
-    m_propertyFactories["decays"] = new ActivePropertyFactory<std::string>(Atlas::Objects::Operation::DELETE_NO, del_handler);
+    m_propertyFactories["decays"] = new ActivePropertyFactory<std::string>(Atlas::Objects::Operation::DELETE_NO, DecaysProperty::del_handler);
     m_propertyFactories["outfit"] = new PropertyFactory<OutfitProperty>;
     m_propertyFactories["solid"] = new PropertyFactory<SolidProperty>;
     m_propertyFactories["simple"] = new PropertyFactory<SimpleProperty>;
