@@ -29,7 +29,6 @@
 #include "rulesets/OutfitProperty.h"
 #include "rulesets/SolidProperty.h"
 #include "rulesets/StatusProperty.h"
-#include "rulesets/Entity.h"
 #include "rulesets/StatisticsProperty.h"
 #include "rulesets/TerrainModProperty.h"
 #include "rulesets/TransientProperty.h"
@@ -42,41 +41,21 @@
 #include "rulesets/SpawnProperty.h"
 #include "rulesets/AreaProperty.h"
 #include "rulesets/VisibilityProperty.h"
-#include "rulesets/Character.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
-#include "common/Nourish.h"
-#include "common/Update.h"
 #include "common/Teleport.h"
 
 #include "common/types.h"
 #include "common/PropertyFactory_impl.h"
 
-#include "common/id.h"
-#include "common/log.h"
 #include "common/debug.h"
-#include "common/compose.hpp"
 
 #include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/Anonymous.h>
-
-#include <wfmath/atlasconv.h>
-#include <wfmath/MersenneTwister.h>
 
 #include <iostream>
 
-using Atlas::Objects::Root;
 using Atlas::Message::Element;
-using Atlas::Objects::Operation::Set;
-using Atlas::Objects::Operation::Burn;
-using Atlas::Objects::Operation::Create;
-using Atlas::Objects::Operation::Delete;
-using Atlas::Objects::Operation::Logout;
-using Atlas::Objects::Operation::Nourish;
-using Atlas::Objects::Operation::Update;
-using Atlas::Objects::Entity::RootEntity;
-using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
 
