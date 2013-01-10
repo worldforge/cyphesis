@@ -32,6 +32,10 @@
 
 #include <Mercator/TerrainMod.h>
 
+#include <Atlas/Objects/RootEntity.h>
+#include <Atlas/Objects/RootOperation.h>
+#include <Atlas/Objects/SmartPtr.h>
+
 #include <sstream>
 
 #include <cassert>
@@ -42,6 +46,8 @@ using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Message::FloatType;
+using Atlas::Objects::Entity::RootEntity;
+using Atlas::Objects::Root;
 
 /// \brief TerrainModProperty constructor
 ///
@@ -178,5 +184,46 @@ void TerrainModProperty::setAttr(const std::string & name,
                                  const Element & val)
 {
     m_data[name] = val;
+}
+
+HandlerResult TerrainModProperty::move_handler(Entity * e,
+                                               const Operation & op,
+                                               OpVector & res)
+{
+    TerrainModProperty * mod_property = e->modPropertyClass<TerrainModProperty>("terrainmod");
+    if (mod_property == 0) {
+        return OPERATION_IGNORED;
+    }
+
+    // Check the validity of the operation.
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
+        return OPERATION_IGNORED;
+    }
+    RootEntity ent = Atlas::Objects::smart_dynamic_cast<RootEntity>(args.front());
+    if (!ent.isValid()) {
+        return OPERATION_IGNORED;
+    }
+    if (e->getId() != ent->getId()) {
+        return OPERATION_IGNORED;
+    }
+
+    // Update the modifier
+    mod_property->move(e);
+    return OPERATION_IGNORED;
+}
+
+HandlerResult TerrainModProperty::delete_handler(Entity * e,
+                                                 const Operation & op,
+                                                 OpVector & res)
+{
+    TerrainModProperty * mod_property = e->modPropertyClass<TerrainModProperty>("terrainmod");
+    if (mod_property == 0) {
+        return OPERATION_IGNORED;
+    }
+
+    mod_property->remove(e);
+
+    return OPERATION_IGNORED;
 }
 

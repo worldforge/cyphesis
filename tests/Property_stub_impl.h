@@ -17,8 +17,8 @@
 
 // $Id$
 
-#ifndef TESTS_PROPERTY_IMPL_H
-#define TESTS_PROPERTY_IMPL_H
+#ifndef TESTS_PROPERTY_STUB_IMPL_H
+#define TESTS_PROPERTY_STUB_IMPL_H
 
 #include "common/Property.h"
 
@@ -59,4 +59,4 @@ Property<T> * Property<T>::copy() const
     return 0;
 }
 
-#endif // TESTS_PROPERTY_IMPL_H
+#endif // TESTS_PROPERTY_STUB_IMPL_H

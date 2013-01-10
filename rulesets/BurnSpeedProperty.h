@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2010 Alistair Riddoch
+// Copyright (C) 2013 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,26 +17,17 @@
 
 // $Id$
 
-#ifndef SERVER_CONNECTABLE_ROUTER_H
-#define SERVER_CONNECTABLE_ROUTER_H
+#ifndef RULESETS_BURN_SPEED_PROPERTY_H
+#define RULESETS_BURN_SPEED_PROPERTY_H
 
-#include "common/Router.h"
+#include "common/Property.h"
 
-class Connection;
-
-/// \brief This is the base class for any entity which has an Atlas
-/// compatible indentifier, and can be bound to a connection
-///
-class ConnectableRouter : public Router {
-  protected:
-    explicit ConnectableRouter(const std::string & id,
-                             long intId,
-                             Connection * c = 0);
+class BurnSpeedProperty
+{
   public:
-    /// \brief The network connection currently subscribed to this object
-    Connection * m_connection;
-
-    virtual ~ConnectableRouter();
+    static HandlerResult burn_handler(Entity * e,
+                                      const Operation & op,
+                                      OpVector & res);
 };
 
-#endif // SERVER_CONNECTABLE_ROUTER_H
+#endif // RULESETS_BURN_SPEED_PROPERTY_H

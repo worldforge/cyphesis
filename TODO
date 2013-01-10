@@ -1,3 +1,6 @@
+See if we can create a Property<Map> class with extra interface, rather
+like the generic methods added to TerrainModProperty
+
 We don't need PropertyManager to be virtual. Just move all the functionality
 into the base class.
 

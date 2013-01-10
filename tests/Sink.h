@@ -17,8 +17,8 @@
 
 // $Id$
 
-#ifndef TESTS_NULL_BRIDGE_H
-#define TESTS_NULL_BRIDGE_H
+#ifndef TESTS_SINK_H
+#define TESTS_SINK_H
 
 #include <Atlas/Bridge.h>
 
@@ -44,4 +44,4 @@ class Sink : public Atlas::Bridge
     virtual void listEnd() { }
 };
 
-#endif // TESTS_NULL_BRIDGE_H
+#endif // TESTS_SINK_H

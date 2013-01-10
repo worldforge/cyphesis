@@ -189,13 +189,17 @@ Entity * TestWorld::addNewEntity(const std::string &,
 #include "server/Player.h"
 #include "server/Ruleset.h"
 #include "server/ServerRouting.h"
+#include "server/TeleportProperty.h"
 
 #include "rulesets/Motion.h"
 #include "rulesets/Pedestrian.h"
 #include "rulesets/AreaProperty.h"
 #include "rulesets/AtlasProperties.h"
 #include "rulesets/BBoxProperty.h"
+#include "rulesets/BiomassProperty.h"
+#include "rulesets/BurnSpeedProperty.h"
 #include "rulesets/CalendarProperty.h"
+#include "rulesets/DecaysProperty.h"
 #include "rulesets/EntityProperty.h"
 #include "rulesets/ExternalProperty.h"
 #include "rulesets/HandlerProperty.h"
@@ -1269,6 +1273,34 @@ BBoxProperty * BBoxProperty::copy() const
     return 0;
 }
 
+HandlerResult BiomassProperty::eat_handler(Entity * e,
+                                           const Operation & op,
+                                           OpVector & res)
+{
+    return OPERATION_IGNORED;
+}
+
+HandlerResult BurnSpeedProperty::burn_handler(Entity * e,
+                                              const Operation & op,
+                                              OpVector & res)
+{
+    return OPERATION_IGNORED;
+}
+
+HandlerResult DecaysProperty::del_handler(Entity * e,
+                                          const Operation &,
+                                          OpVector & res)
+{
+    return OPERATION_IGNORED;
+}
+
+HandlerResult TeleportProperty::teleport_handler(Entity * e,
+                                                 const Operation & op,
+                                                 OpVector & res)
+{
+    return OPERATION_IGNORED;
+}
+
 TerrainProperty::TerrainProperty() :
       m_data(*(Mercator::Terrain*)0),
       m_tileShader(*(Mercator::TileShader*)0)
@@ -1355,6 +1387,20 @@ int TerrainModProperty::getAttr(const std::string & name,
 void TerrainModProperty::setAttr(const std::string & name,
                                  const Element & val)
 {
+}
+
+HandlerResult TerrainModProperty::move_handler(Entity * e,
+                                               const Operation & op,
+                                               OpVector & res)
+{
+    return OPERATION_IGNORED;
+}
+
+HandlerResult TerrainModProperty::delete_handler(Entity * e,
+                                                 const Operation & op,
+                                                 OpVector & res)
+{
+    return OPERATION_IGNORED;
 }
 
 SetupProperty::SetupProperty()

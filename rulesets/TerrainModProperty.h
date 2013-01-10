@@ -77,6 +77,13 @@ class TerrainModProperty : public TerrainEffectorProperty {
     /// \brief Modify a sub attribute of the property
     void setAttr(const std::string &,
                  const Atlas::Message::Element &);
+
+    static HandlerResult move_handler(Entity * e,
+                                      const Operation & op,
+                                      OpVector & res);
+    static HandlerResult delete_handler(Entity * e,
+                                        const Operation & op,
+                                        OpVector & res);
 };
 
 
