@@ -110,47 +110,6 @@ HandlerResult del_handler(Entity * e, const Operation &, OpVector & res)
     return OPERATION_IGNORED;
 }
 
-HandlerResult terrainmod_moveHandler(Entity * e,
-                                 const Operation & op,
-                                 OpVector & res)
-{
-    TerrainModProperty * mod_property = e->modPropertyClass<TerrainModProperty>("terrainmod");
-    if (mod_property == 0) {
-        return OPERATION_IGNORED;
-    }
-
-    // Check the validity of the operation.
-    const std::vector<Root> & args = op->getArgs();
-    if (args.empty()) {
-        return OPERATION_IGNORED;
-    }
-    RootEntity ent = Atlas::Objects::smart_dynamic_cast<RootEntity>(args.front());
-    if (!ent.isValid()) {
-        return OPERATION_IGNORED;
-    }
-    if (e->getId() != ent->getId()) {
-        return OPERATION_IGNORED;
-    }
-
-    // Update the modifier
-    mod_property->move(e);
-    return OPERATION_IGNORED;
-}
-
-HandlerResult terrainmod_deleteHandler(Entity * e,
-                                 const Operation & op,
-                                 OpVector & res)
-{
-    TerrainModProperty * mod_property = e->modPropertyClass<TerrainModProperty>("terrainmod");
-    if (mod_property == 0) {
-        return OPERATION_IGNORED;
-    }
-
-    mod_property->remove(e);
-
-    return OPERATION_IGNORED;
-}
-
 HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
 {
     // Get the teleport property value (in our case, the IP to teleport to)
@@ -227,8 +186,10 @@ CorePropertyManager::CorePropertyManager()
     m_propertyFactories["visibility"] = new PropertyFactory<VisibilityProperty>;
     
     HandlerMap terrainModHandles;
-    terrainModHandles[Atlas::Objects::Operation::MOVE_NO] = terrainmod_moveHandler;
-    terrainModHandles[Atlas::Objects::Operation::DELETE_NO] = terrainmod_deleteHandler;
+    terrainModHandles[Atlas::Objects::Operation::MOVE_NO] =
+          TerrainModProperty::move_handler;
+    terrainModHandles[Atlas::Objects::Operation::DELETE_NO] =
+          TerrainModProperty::delete_handler;
     m_propertyFactories["terrainmod"] = new MultiActivePropertyFactory<TerrainModProperty>(terrainModHandles);
 
     m_propertyFactories["teleport"] = new ActivePropertyFactory<std::string>(Atlas::Objects::Operation::TELEPORT_NO, teleport_handler);

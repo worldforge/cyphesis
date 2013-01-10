@@ -1373,6 +1373,20 @@ void TerrainModProperty::setAttr(const std::string & name,
 {
 }
 
+HandlerResult TerrainModProperty::move_handler(Entity * e,
+                                               const Operation & op,
+                                               OpVector & res)
+{
+    return OPERATION_IGNORED;
+}
+
+HandlerResult TerrainModProperty::delete_handler(Entity * e,
+                                                 const Operation & op,
+                                                 OpVector & res)
+{
+    return OPERATION_IGNORED;
+}
+
 SetupProperty::SetupProperty()
 {
 }
