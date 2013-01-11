@@ -60,7 +60,9 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
 RULESETS_INTEGRATION_TESTS = MindPropertyintegration BulletDomainintegration \
                              TerrainPropertyintegration \
                              PropertyEntityintegration \
-                             DecaysPropertyintegration
+                             DecaysPropertyintegration \
+                             BiomassPropertyintegration \
+                             TerrainModPropertyintegration
 
 CLIENT_TESTS = Py_CreatorClienttest Py_ObserverClienttest \
                ClientConnectiontest BaseClienttest \
@@ -1005,6 +1007,30 @@ DecaysPropertyintegration_LDADD = \
         $(top_builddir)/rulesets/LocatedEntity.o \
         $(top_builddir)/common/Property.o \
         $(top_builddir)/common/TypeNode.o
+
+BiomassPropertyintegration_SOURCES = BiomassPropertyintegration.cpp
+BiomassPropertyintegration_LDADD = \
+        $(top_builddir)/rulesets/Entity.o \
+        $(top_builddir)/rulesets/BiomassProperty.o \
+        $(top_builddir)/rulesets/HandlerProperty.o \
+        $(top_builddir)/rulesets/LocatedEntity.o \
+        $(top_builddir)/common/Property.o \
+        $(top_builddir)/common/TypeNode.o
+
+TerrainModPropertyintegration_SOURCES = TerrainModPropertyintegration.cpp
+TerrainModPropertyintegration_LDADD = \
+        $(top_builddir)/rulesets/Entity.o \
+        $(top_builddir)/rulesets/HandlerProperty.o \
+        $(top_builddir)/rulesets/LocatedEntity.o \
+        $(top_builddir)/rulesets/TerrainEffectorProperty.o \
+        $(top_builddir)/rulesets/TerrainModProperty.o \
+        $(top_builddir)/rulesets/TerrainModTranslator.o \
+        $(top_builddir)/rulesets/TerrainProperty.o \
+        $(top_builddir)/modules/EntityRef.o \
+        $(top_builddir)/modules/TerrainContext.o \
+        $(top_builddir)/common/Property.o \
+        $(top_builddir)/common/TypeNode.o \
+        $(TERRAIN_LIBS)
 
 # CLIENT_TESTS
 
