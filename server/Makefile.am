@@ -161,7 +161,6 @@ buildid.cpp: $(cyphesis_SOURCES) $(LOCAL_LIBS) \
 	$(top_srcdir)/scripts/gen_buildid.py `$(top_srcdir)/scripts/extract_revision.sh $(top_srcdir)` buildid.cpp
 
 cyslave_SOURCES = \
-		ExternalProperty.cpp ExternalProperty.h \
 		Account.cpp Account.h \
 		Player.cpp Player.h \
 		Admin.cpp Admin.h \
