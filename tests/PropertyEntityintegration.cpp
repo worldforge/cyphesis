@@ -190,7 +190,7 @@ void PropertyEntityintegration::test_modProperty()
 
     PropertyBase * p = m_entity->modProperty(test_values<T>::name);
     ASSERT_NOT_NULL(p);
-    ASSERT_TRUE((p->flags() & ~flag_class) == 0);
+    ASSERT_TRUE((p->flags() & flag_class) == 0);
     // modProperty should have forced a new object
     ASSERT_NOT_EQUAL(p, dflt);
 
@@ -214,7 +214,7 @@ void PropertyEntityintegration::test_modPropertyClass()
         test_values<T>::name
     );
     ASSERT_NOT_NULL(p);
-    ASSERT_TRUE((p->flags() & ~flag_class) == 0);
+    ASSERT_TRUE((p->flags() & flag_class) == 0);
     // modProperty should have forced a new object
     ASSERT_NOT_EQUAL(p, dflt);
     
