@@ -68,8 +68,10 @@ void TerrainModPropertyintegration::setup()
     m_world = new Entity("0", 0);
 
     m_entity = new Entity("1", 1);
+    m_entity->m_location.m_pos = Point3D(5.f, 5.f, 5.f);
     m_entity->m_location.m_loc = m_world;
     m_world->incRef();
+    ASSERT_TRUE(m_entity->m_location.isValid());
 
     HandlerMap terrainModHandles;
     terrainModHandles[Atlas::Objects::Operation::MOVE_NO] =
@@ -82,10 +84,12 @@ void TerrainModPropertyintegration::setup()
     m_terrainProperty = new TerrainProperty;
     m_terrainProperty->install(m_world);
     m_world->setProperty("terrain", m_terrainProperty);
+    m_terrainProperty->apply(m_world);
 
     m_property = terrainmod_property_factory.newProperty();
     m_property->install(m_entity);
     m_entity->setProperty("terrainmod", m_property);
+    m_property->apply(m_entity);
 }
 
 void TerrainModPropertyintegration::teardown()
