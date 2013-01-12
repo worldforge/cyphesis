@@ -1,3 +1,5 @@
+traits on property to specify the name simply.
+
 Providing there is no extra deps, move all the property access methods
 into LocatedEntiy. It is possible this must wait until we stop using
 the PropertyManager in modProperty.
