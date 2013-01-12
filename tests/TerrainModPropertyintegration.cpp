@@ -28,6 +28,7 @@
 
 #include "rulesets/Entity.h"
 #include "rulesets/TerrainModProperty.h"
+#include "rulesets/TerrainProperty.h"
 
 #include "common/OperationRouter.h"
 
@@ -45,6 +46,7 @@ class TerrainModPropertyintegration : public Cyphesis::TestBase
     Entity * m_world;
     Entity * m_entity;
     PropertyBase * m_property;
+    PropertyBase * m_terrainProperty;
   public:
     TerrainModPropertyintegration();
 
@@ -67,27 +69,36 @@ void TerrainModPropertyintegration::setup()
 
     m_entity = new Entity("1", 1);
     m_entity->m_location.m_loc = m_world;
+    m_world->incRef();
 
     HandlerMap terrainModHandles;
     terrainModHandles[Atlas::Objects::Operation::MOVE_NO] =
           TerrainModProperty::move_handler;
     terrainModHandles[Atlas::Objects::Operation::DELETE_NO] =
           TerrainModProperty::delete_handler;
-    MultiActivePropertyFactory<TerrainModProperty> terrainmod_property_factory(terrainModHandles);
+    MultiActivePropertyFactory<TerrainModProperty>
+          terrainmod_property_factory(terrainModHandles);
+
+    m_terrainProperty = new TerrainProperty;
+    m_terrainProperty->install(m_world);
+    m_world->setProperty("terrain", m_terrainProperty);
 
     m_property = terrainmod_property_factory.newProperty();
     m_property->install(m_entity);
-    m_entity->setProperty("decays", m_property);
+    m_entity->setProperty("terrainmod", m_property);
 }
 
 void TerrainModPropertyintegration::teardown()
 {
-    delete m_entity;
+    m_entity->decRef();
+    m_world->decRef();
 }
 
 void TerrainModPropertyintegration::test_move_handler()
 {
     Move m;
+    // FIXME Move needs some args, and also probably requires the position to
+    // to be set up on the entity first
 
     OpVector res;
     m_entity->operation(m, res);
