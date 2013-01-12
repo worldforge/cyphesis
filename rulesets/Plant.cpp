@@ -28,7 +28,6 @@
 #include "common/compose.hpp"
 #include "common/TypeNode.h"
 #include "common/Property.h"
-#include "common/PropertyManager.h"
 
 #include "common/log.h"
 
