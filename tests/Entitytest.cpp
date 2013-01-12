@@ -431,7 +431,7 @@ void SoftProperty::set(const Atlas::Message::Element & val)
 
 SoftProperty * SoftProperty::copy() const
 {
-    return 0;
+    return new SoftProperty(*this);
 }
 
 ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
