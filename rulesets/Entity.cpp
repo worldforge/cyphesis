@@ -134,10 +134,8 @@ PropertyBase * Entity::modProperty(const std::string & name)
         if (I != m_type->defaults().end()) {
             // We have a default for this property. Create a new instance
             // property with the same value.
-            Element val;
-            I->second->get(val);
-            PropertyBase * new_prop = PropertyManager::instance()->addProperty(name, val.getType());
-            new_prop->set(val);
+            PropertyBase * new_prop = I->second->copy();
+            new_prop->flags() &= ~flag_class;
             m_properties[name] = new_prop;
             new_prop->apply(this);
             return new_prop;
