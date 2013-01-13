@@ -51,6 +51,8 @@ class Entitytest : public Cyphesis::TestBase
     PropertyManager * m_pm;
     TypeNode * m_type;
     Entity * m_entity;
+
+    static bool m_TestProperty_install_called;
   public:
     Entitytest();
 
@@ -61,7 +63,25 @@ class Entitytest : public Cyphesis::TestBase
     void test_setAttr_existing();
     void test_setAttr_type();
     void test_sequence();
+
+    class TestProperty : public Property<int>
+    {
+      public:
+        virtual void install(Entity *);
+    };
+
+    static void TestProperty_install_called()
+    {
+        m_TestProperty_install_called = true;
+    }
 };
+
+bool Entitytest::m_TestProperty_install_called;
+
+void Entitytest::TestProperty::install(Entity *)
+{
+    Entitytest::TestProperty_install_called();
+}
 
 Entitytest::Entitytest()
 {
@@ -77,6 +97,8 @@ void Entitytest::setup()
     m_type = new TypeNode("test_type");
     m_entity = new Entity("1", 1);
     m_entity->setType(m_type);
+
+    m_TestProperty_install_called = false;
 }
 
 void Entitytest::teardown()
@@ -88,6 +110,8 @@ void Entitytest::teardown()
 
 void Entitytest::test_setAttr_new()
 {
+    ASSERT_TRUE(!m_TestProperty_install_called);
+
     PropertyBase * pb = m_entity->setAttr("test_int_property", 24);
     ASSERT_NOT_NULL(pb);
 
@@ -102,7 +126,7 @@ void Entitytest::test_setAttr_new()
 void Entitytest::test_setAttr_existing()
 {
     PropertyBase * initial_property = m_entity->setProperty("test_int_property",
-                                                            new Property<int>);
+                                                            new TestProperty);
 
     PropertyBase * pb = m_entity->setAttr("test_int_property", 24);
     ASSERT_NOT_NULL(pb);
@@ -113,12 +137,12 @@ void Entitytest::test_setAttr_existing()
     auto * int_property = dynamic_cast<Property<int> *>(pb);
     ASSERT_NOT_NULL(int_property);
     ASSERT_EQUAL(int_property->data(), 24);
-    // FIXME Check that install was called by setAttr
+    ASSERT_TRUE(!m_TestProperty_install_called);
 }
 
 void Entitytest::test_setAttr_type()
 {
-    Property<int> * type_property = new Property<int>;
+    Property<int> * type_property = new TestProperty;
     type_property->data() = 17;
     type_property->flags() &= flag_class;
     m_type->addProperty("test_int_property", type_property);
@@ -132,7 +156,7 @@ void Entitytest::test_setAttr_type()
     auto * int_property = dynamic_cast<Property<int> *>(pb);
     ASSERT_NOT_NULL(int_property);
     ASSERT_EQUAL(int_property->data(), 24);
-    // FIXME Check that install was not called by setAttr
+    ASSERT_TRUE(!m_TestProperty_install_called);
 }
 
 void Entitytest::test_sequence()
