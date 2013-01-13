@@ -36,6 +36,7 @@
 
 #include "common/id.h"
 #include "common/Property_impl.h"
+#include "common/TypeNode.h"
 
 #include <cstdlib>
 
@@ -47,6 +48,8 @@ using Atlas::Message::ListType;
 class Entitytest : public Cyphesis::TestBase
 {
   private:
+    PropertyManager * m_pm;
+    TypeNode * m_type;
     Entity * m_entity;
   public:
     Entitytest();
@@ -54,26 +57,91 @@ class Entitytest : public Cyphesis::TestBase
     void setup();
     void teardown();
 
+    void test_setAttr_new();
+    void test_setAttr_existing();
+    void test_setAttr_type();
     void test_sequence();
 };
 
 Entitytest::Entitytest()
 {
+    ADD_TEST(Entitytest::test_setAttr_new);
+    ADD_TEST(Entitytest::test_setAttr_existing);
+    ADD_TEST(Entitytest::test_setAttr_type);
     ADD_TEST(Entitytest::test_sequence);
 }
 
 void Entitytest::setup()
 {
+    m_pm = new TestPropertyManager;
+    m_type = new TypeNode("test_type");
     m_entity = new Entity("1", 1);
+    m_entity->setType(m_type);
 }
 
 void Entitytest::teardown()
 {
     delete m_entity;
+    delete m_type;
+    delete m_pm;
+}
+
+void Entitytest::test_setAttr_new()
+{
+    PropertyBase * pb = m_entity->setAttr("test_int_property", 24);
+    ASSERT_NOT_NULL(pb);
+
+    ASSERT_TRUE((pb->flags() & flag_class) == 0);
+
+    auto * int_property = dynamic_cast<Property<int> *>(pb);
+    ASSERT_NOT_NULL(int_property);
+    ASSERT_EQUAL(int_property->data(), 24);
+    // FIXME Check that install was called by setAttr
+}
+
+void Entitytest::test_setAttr_existing()
+{
+    PropertyBase * initial_property = m_entity->setProperty("test_int_property",
+                                                            new Property<int>);
+
+    PropertyBase * pb = m_entity->setAttr("test_int_property", 24);
+    ASSERT_NOT_NULL(pb);
+    ASSERT_EQUAL(initial_property, pb);
+
+    ASSERT_TRUE((pb->flags() & flag_class) == 0);
+
+    auto * int_property = dynamic_cast<Property<int> *>(pb);
+    ASSERT_NOT_NULL(int_property);
+    ASSERT_EQUAL(int_property->data(), 24);
+    // FIXME Check that install was called by setAttr
+}
+
+void Entitytest::test_setAttr_type()
+{
+    Property<int> * type_property = new Property<int>;
+    type_property->data() = 17;
+    type_property->flags() &= flag_class;
+    m_type->addProperty("test_int_property", type_property);
+
+    PropertyBase * pb = m_entity->setAttr("test_int_property", 24);
+    ASSERT_NOT_NULL(pb);
+    ASSERT_NOT_EQUAL(type_property, pb);
+
+    ASSERT_TRUE((pb->flags() & flag_class) == 0);
+
+    auto * int_property = dynamic_cast<Property<int> *>(pb);
+    ASSERT_NOT_NULL(int_property);
+    ASSERT_EQUAL(int_property->data(), 24);
+    // FIXME Check that install was not called by setAttr
 }
 
 void Entitytest::test_sequence()
 {
+    // The entity exerciser creates one of these, and its singleton, so
+    // we must remove ours.
+    delete m_pm;
+    m_pm = 0;
+
     IGEntityExerciser ee(*m_entity);
 
     // Throw an op of every type at the entity
@@ -161,8 +229,6 @@ Entity * TestWorld::addNewEntity(const std::string &,
 {
     return 0;
 }
-
-#include "common/TypeNode.h"
 
 namespace Atlas { namespace Objects { namespace Operation {
 int ACTUATE_NO = -1;
@@ -349,6 +415,15 @@ void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 
 TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
 {
+}
+
+TypeNode::~TypeNode()
+{
+    PropertyDict::const_iterator I = m_defaults.begin();
+    PropertyDict::const_iterator Iend = m_defaults.end();
+    for (; I != Iend; ++I) {
+        delete I->second;
+    }
 }
 
 IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),

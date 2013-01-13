@@ -235,6 +235,7 @@ class Entity : public LocatedEntity {
     /// represents, not the destruction of this object.
     sigc::signal<void> destroyed;
 
+    friend class Entitytest;
     friend class PropertyEntityintegration;
 };
 
