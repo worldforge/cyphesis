@@ -87,23 +87,17 @@ PropertyBase * Entity::setAttr(const std::string & name, const Element & attr)
         prop = I->second;
         // Mark it as unclean
         prop->resetFlags(per_clean);
-
-        prop->set(attr);
-        // Allow the change to take effect.
-        prop->apply(this);
-        // Mark the Entity as unclean
-        resetFlags(entity_clean);
-        return prop;
+    } else {
+        prop = PropertyManager::instance()->addProperty(name, attr.getType());
+        assert(prop != 0);
+        // If this is an entirely new property, not just a modifcation of
+        // one in defaults, then we need to install it to this Entity.
+        if (m_type == 0 ||
+            m_type->defaults().find(name) == m_type->defaults().end()) {
+            prop->install(this);
+        }
+        m_properties[name] = prop;
     }
-    prop = PropertyManager::instance()->addProperty(name, attr.getType());
-    assert(prop != 0);
-    // If this is an entirely new property, not just a modifcation of
-    // one in defaults, then we need to install it to this Entity.
-    if (m_type == 0 ||
-        m_type->defaults().find(name) == m_type->defaults().end()) {
-        prop->install(this);
-    }
-    m_properties[name] = prop;
 
     prop->set(attr);
     // Allow the value to take effect.
