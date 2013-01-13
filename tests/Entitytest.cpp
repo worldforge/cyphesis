@@ -46,6 +46,8 @@ using Atlas::Message::ListType;
 
 class Entitytest : public Cyphesis::TestBase
 {
+  private:
+    Entity * m_entity;
   public:
     Entitytest();
 
@@ -62,17 +64,17 @@ Entitytest::Entitytest()
 
 void Entitytest::setup()
 {
+    m_entity = new Entity("1", 1);
 }
 
 void Entitytest::teardown()
 {
+    delete m_entity;
 }
 
 void Entitytest::test_sequence()
 {
-    Entity e("1", 1);
-
-    IGEntityExerciser ee(e);
+    IGEntityExerciser ee(*m_entity);
 
     // Throw an op of every type at the entity
     ee.runOperations();
@@ -82,62 +84,62 @@ void Entitytest::test_sequence()
     ee.addAllOperations(opNames);
 
     // Add the test attributes
-    e.setAttr("test_int", 1);
-    e.setAttr("test_float", 1.f);
-    e.setAttr("test_list_string", "test_value");
-    e.setAttr("test_list_int", ListType(1, 1));
-    e.setAttr("test_list_float", ListType(1, 1.f));
-    e.setAttr("test_map_string", ListType(1, "test_value"));
+    m_entity->setAttr("test_int", 1);
+    m_entity->setAttr("test_float", 1.f);
+    m_entity->setAttr("test_list_string", "test_value");
+    m_entity->setAttr("test_list_int", ListType(1, 1));
+    m_entity->setAttr("test_list_float", ListType(1, 1.f));
+    m_entity->setAttr("test_map_string", ListType(1, "test_value"));
     MapType test_map;
     test_map["test_key"] = 1;
-    e.setAttr("test_map_int", test_map);
+    m_entity->setAttr("test_map_int", test_map);
     test_map["test_key"] = 1.f;
-    e.setAttr("test_map_float", test_map);
+    m_entity->setAttr("test_map_float", test_map);
     test_map["test_key"] = "test_value";
-    e.setAttr("test_map_string", test_map);
+    m_entity->setAttr("test_map_string", test_map);
     
     // Make sure we have the test attributes now
     MapType entityAsAtlas;
 
     // Dump a representation of the entity into an Atlas Message
-    e.addToMessage(entityAsAtlas);
+    m_entity->addToMessage(entityAsAtlas);
 
     Atlas::Objects::Entity::RootEntity entityAsAtlasEntity;
 
-    e.addToEntity(entityAsAtlasEntity);
+    m_entity->addToEntity(entityAsAtlasEntity);
 
     // Make sure we got at least some of it
     assert(entityAsAtlas.size() >= 9);
 
     // Read the contents of the Atlas Message back in
-    e.merge(entityAsAtlas);
+    m_entity->merge(entityAsAtlas);
 
     // Throw an op of every type at the entity again now it is subscribed,
     // and full of data.
     ee.runOperations();
 
     {
-        e.getProperty("test_int");
+        m_entity->getProperty("test_int");
     }
 
     {
-        e.getProperty("non_existant");
+        m_entity->getProperty("non_existant");
     }
 
     {
-        e.modProperty("test_int");
+        m_entity->modProperty("test_int");
     }
 
     {
-        e.modProperty("non_existant");
+        m_entity->modProperty("non_existant");
     }
 
     {
-        e.modProperty("test_default");
+        m_entity->modProperty("test_default");
     }
 
     {
-        e.setProperty("new_test_prop", new SoftProperty);
+        m_entity->setProperty("new_test_prop", new SoftProperty);
     }
 }
 
