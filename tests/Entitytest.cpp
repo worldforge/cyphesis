@@ -24,6 +24,7 @@
 #define DEBUG
 #endif
 
+#include "TestBase.h"
 #include "IGEntityExerciser.h"
 #include "allOperations.h"
 
@@ -43,7 +44,31 @@
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 
-int main()
+class Entitytest : public Cyphesis::TestBase
+{
+  public:
+    Entitytest();
+
+    void setup();
+    void teardown();
+
+    void test_sequence();
+};
+
+Entitytest::Entitytest()
+{
+    ADD_TEST(Entitytest::test_sequence);
+}
+
+void Entitytest::setup()
+{
+}
+
+void Entitytest::teardown()
+{
+}
+
+void Entitytest::test_sequence()
 {
     Entity e("1", 1);
 
@@ -114,8 +139,13 @@ int main()
     {
         e.setProperty("new_test_prop", new SoftProperty);
     }
+}
 
-    return 0;
+int main()
+{
+    Entitytest t;
+
+    return t.run();
 }
 
 // stubs
