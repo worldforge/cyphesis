@@ -99,7 +99,8 @@ PropertyBase * Entity::setAttr(const std::string & name, const Element & attr)
     m_properties[name] = prop;
     // If this is an entirely new property, not just a modifcation of
     // one in defaults, then we need to install it to this Entity.
-    if (m_type == 0 || m_type->defaults().find(name) == m_type->defaults().end()) {
+    if (m_type == 0 ||
+        m_type->defaults().find(name) == m_type->defaults().end()) {
         prop->install(this);
     }
     // Allow the value to take effect.
