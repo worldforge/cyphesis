@@ -36,6 +36,7 @@
 
 #include "common/id.h"
 #include "common/Property_impl.h"
+#include "common/PropertyFactory_impl.h"
 #include "common/TypeNode.h"
 
 #include <cstdlib>
@@ -48,11 +49,12 @@ using Atlas::Message::ListType;
 class Entitytest : public Cyphesis::TestBase
 {
   private:
-    PropertyManager * m_pm;
+    TestPropertyManager * m_pm;
     TypeNode * m_type;
     Entity * m_entity;
 
     static bool m_TestProperty_install_called;
+    static bool m_TestProperty_apply_called;
   public:
     Entitytest();
 
@@ -68,19 +70,31 @@ class Entitytest : public Cyphesis::TestBase
     {
       public:
         virtual void install(Entity *);
+        virtual void apply(Entity *);
     };
 
     static void TestProperty_install_called()
     {
         m_TestProperty_install_called = true;
     }
+
+    static void TestProperty_apply_called()
+    {
+        m_TestProperty_apply_called = true;
+    }
 };
 
 bool Entitytest::m_TestProperty_install_called;
+bool Entitytest::m_TestProperty_apply_called;
 
 void Entitytest::TestProperty::install(Entity *)
 {
     Entitytest::TestProperty_install_called();
+}
+
+void Entitytest::TestProperty::apply(Entity *)
+{
+    Entitytest::TestProperty_apply_called();
 }
 
 Entitytest::Entitytest()
@@ -94,6 +108,7 @@ Entitytest::Entitytest()
 void Entitytest::setup()
 {
     m_pm = new TestPropertyManager;
+    m_pm->installPropertyFactory("test_int_property", new PropertyFactory<TestProperty>);
     m_type = new TypeNode("test_type");
     m_entity = new Entity("1", 1);
     m_entity->setType(m_type);
@@ -117,10 +132,11 @@ void Entitytest::test_setAttr_new()
 
     ASSERT_TRUE((pb->flags() & flag_class) == 0);
 
-    auto * int_property = dynamic_cast<Property<int> *>(pb);
+    auto * int_property = dynamic_cast<TestProperty *>(pb);
     ASSERT_NOT_NULL(int_property);
     ASSERT_EQUAL(int_property->data(), 24);
-    // FIXME Check that install was called by setAttr
+    ASSERT_TRUE(m_TestProperty_install_called);
+    ASSERT_TRUE(m_TestProperty_apply_called);
 }
 
 void Entitytest::test_setAttr_existing()
@@ -134,15 +150,16 @@ void Entitytest::test_setAttr_existing()
 
     ASSERT_TRUE((pb->flags() & flag_class) == 0);
 
-    auto * int_property = dynamic_cast<Property<int> *>(pb);
+    auto * int_property = dynamic_cast<TestProperty *>(pb);
     ASSERT_NOT_NULL(int_property);
     ASSERT_EQUAL(int_property->data(), 24);
     ASSERT_TRUE(!m_TestProperty_install_called);
+    ASSERT_TRUE(m_TestProperty_apply_called);
 }
 
 void Entitytest::test_setAttr_type()
 {
-    Property<int> * type_property = new TestProperty;
+    TestProperty * type_property = new TestProperty;
     type_property->data() = 17;
     type_property->flags() &= flag_class;
     m_type->addProperty("test_int_property", type_property);
@@ -153,10 +170,11 @@ void Entitytest::test_setAttr_type()
 
     ASSERT_TRUE((pb->flags() & flag_class) == 0);
 
-    auto * int_property = dynamic_cast<Property<int> *>(pb);
+    auto * int_property = dynamic_cast<TestProperty *>(pb);
     ASSERT_NOT_NULL(int_property);
     ASSERT_EQUAL(int_property->data(), 24);
     ASSERT_TRUE(!m_TestProperty_install_called);
+    ASSERT_TRUE(m_TestProperty_apply_called);
 }
 
 void Entitytest::test_sequence()
@@ -587,6 +605,10 @@ void ContainsProperty::add(const std::string & s,
 ContainsProperty * ContainsProperty::copy() const
 {
     return 0;
+}
+
+PropertyKit::~PropertyKit()
+{
 }
 
 PropertyManager * PropertyManager::m_instance = 0;
