@@ -1,3 +1,7 @@
+Property::install() never depends on the value. That being true, we can move where we
+call it to before the value is set, and make this part of the spec. Would make
+setAttr() code cleaner.
+
 traits on property to specify the name simply.
 
 Providing there is no extra deps, move all the property access methods
