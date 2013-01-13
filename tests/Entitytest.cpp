@@ -71,6 +71,7 @@ class Entitytest : public Cyphesis::TestBase
       public:
         virtual void install(Entity *);
         virtual void apply(Entity *);
+        virtual TestProperty * copy() const;
     };
 
     static void TestProperty_install_called()
@@ -95,6 +96,11 @@ void Entitytest::TestProperty::install(Entity *)
 void Entitytest::TestProperty::apply(Entity *)
 {
     Entitytest::TestProperty_apply_called();
+}
+
+Entitytest::TestProperty * Entitytest::TestProperty::copy() const
+{
+    return new Entitytest::TestProperty(*this);
 }
 
 Entitytest::Entitytest()
