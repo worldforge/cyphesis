@@ -88,14 +88,18 @@ PropertyBase * Entity::setAttr(const std::string & name, const Element & attr)
         // Mark it as unclean
         prop->resetFlags(per_clean);
     } else {
-        prop = PropertyManager::instance()->addProperty(name, attr.getType());
-        assert(prop != 0);
-        // If this is an entirely new property, not just a modifcation of
-        // one in defaults, then we need to install it to this Entity.
-        if (m_type == 0 ||
-            m_type->defaults().find(name) == m_type->defaults().end()) {
+        PropertyDict::const_iterator I;
+        if (m_type != 0 &&
+            (I = m_type->defaults().find(name)) != m_type->defaults().end()) {
+            prop = I->second->copy();
+        } else {
+            // This is an entirely new property, not just a modifcation of
+            // one in defaults, so we need to install it to this Entity.
+            prop = PropertyManager::instance()->addProperty(name,
+                                                            attr.getType());
             prop->install(this);
         }
+        assert(prop != 0);
         m_properties[name] = prop;
     }
 
