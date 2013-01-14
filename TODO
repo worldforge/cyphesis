@@ -1,3 +1,5 @@
+Why does SpawnProperty not implement copy()?
+
 traits on property to specify the name simply.
 
 Providing there is no extra deps, move all the property access methods
