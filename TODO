@@ -1,3 +1,10 @@
+Make LocatedEntity the sole base class for dealing with entities.
+ * Move flags into LocatedEntity
+   * Fix MemEntity to use flags instead of current bools.
+ * Modify WorldRouter to use it throughout
+ * Modify Property interface to use it.
+ * Move remaining Property methods into LocatedEntity
+
 Why does SpawnProperty not implement copy()?
 
 traits on property to specify the name simply.
