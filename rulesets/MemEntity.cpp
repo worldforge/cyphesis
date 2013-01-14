@@ -22,7 +22,7 @@
 static const bool debug_flag = false;
 
 MemEntity::MemEntity(const std::string & id, long intId) :
-           LocatedEntity(id, intId), m_visible(false), m_lastSeen(0.)
+           LocatedEntity(id, intId), m_lastSeen(0.)
 {
 }
 

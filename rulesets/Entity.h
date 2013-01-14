@@ -32,33 +32,6 @@ class Domain;
 
 typedef std::map<int, std::string> DelegateMap;
 
-/// \brief Flag indicating entity has been written to permanent store
-/// \ingroup EntityFlags
-static const unsigned int entity_clean = 1 << 0;
-/// \brief Flag indicating entity POS has been written to permanent store
-/// \ingroup EntityFlags
-static const unsigned int entity_pos_clean = 1 << 1;
-/// \brief Flag indicating entity ORIENT has been written to permanent store
-/// \ingroup EntityFlags
-static const unsigned int entity_orient_clean = 1 << 2;
-
-static const unsigned int entity_clean_mask = entity_clean |
-                                              entity_pos_clean |
-                                              entity_orient_clean;
-
-/// \brief Flag indicating entity is perceptive
-/// \ingroup EntityFlags
-static const unsigned int entity_perceptive = 1 << 3;
-/// \brief Flag indicating entity has been destroyed
-/// \ingroup EntityFlags
-static const unsigned int entity_destroyed = 1 << 4;
-/// \brief Flag indicating entity has been queued for storage update
-/// \ingroup EntityFlags
-static const unsigned int entity_queued = 1 << 5;
-/// \brief Flag indicaiting entity is ephemeral
-/// \ingroup EntityFlags
-static const unsigned int entity_ephem = 1 << 6;
-
 /// \brief This is the base class from which all in-game objects inherit.
 ///
 /// This class should not normally be instantiated directly.
@@ -76,8 +49,6 @@ class Entity : public LocatedEntity {
     HandlerMap m_operationHandlers;
     /// Map of delegate properties.
     DelegateMap m_delegates;
-    /// Flags indicating changes to attributes
-    unsigned int m_flags;
 
   public:
     explicit Entity(const std::string & id, long intId);
@@ -96,19 +67,6 @@ class Entity : public LocatedEntity {
     void sendWorld(const Operation & op) {
         BaseWorld::instance().message(op, *this);
     }
-
-    /// \brief Check if this entity is flagged as perceptive
-    const bool isPerceptive() const { return m_flags & entity_perceptive; }
-
-    /// \brief Check if this entity is flagged as destroyed
-    bool isDestroyed() const { return m_flags & entity_destroyed; }
-
-    /// \brief Accessor for flags
-    const int getFlags() const { return m_flags; }
-
-    void setFlags(unsigned int flags) { m_flags |= flags; }
-
-    void resetFlags(unsigned int flags) { m_flags &= ~flags; }
 
     virtual PropertyBase * setAttr(const std::string & name,
                                    const Atlas::Message::Element &);

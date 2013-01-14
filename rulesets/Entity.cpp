@@ -70,7 +70,7 @@ static const bool debug_flag = false;
 
 /// \brief Entity constructor
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0), m_flags(0)
+        LocatedEntity(id, intId), m_motion(0)
 {
 }
 

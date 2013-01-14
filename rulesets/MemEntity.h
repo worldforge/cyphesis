@@ -30,18 +30,17 @@
 /// be cleaned up.
 class MemEntity : public LocatedEntity {
   protected:
-    bool m_visible;
     double m_lastSeen;
   public:
     explicit MemEntity(const std::string & id, long intId);
     virtual ~MemEntity();
 
-    bool isVisible() const {
-        return m_visible;
-    }
-
     void setVisible(bool v = true) {
-        m_visible = true;
+        if (v) {
+            m_flags |= entity_visible;
+        } else {
+            m_flags &= ~entity_visible;
+        }
     }
 
     const double & lastSeen() const {
