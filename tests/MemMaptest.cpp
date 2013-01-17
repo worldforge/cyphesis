@@ -44,12 +44,17 @@
 #include <cassert>
 
 using Atlas::Objects::Entity::Anonymous;
+using Atlas::Objects::Root;
 
 class MemMaptest : public Cyphesis::TestBase
 {
   private:
+    TypeNode * m_sampleType;
     Script * m_script;
     MemMap * m_memMap;
+
+    static std::string m_Script_hook_called;
+    static LocatedEntity * m_Script_hook_called_with;
   public:
     MemMaptest();
 
@@ -60,8 +65,35 @@ class MemMaptest : public Cyphesis::TestBase
     void test_sendLooks();
     void test_del();
     void test_addEntity();
+    void test_addEntity_script();
+    void test_addEntity_script_hook();
     void test_readEntity();
+    void test_readEntity_type();
+    void test_readEntity_type_nonexist();
+
+    static void Script_hook_called(const std::string &, LocatedEntity *);
 };
+
+std::string MemMaptest::m_Script_hook_called;
+LocatedEntity * MemMaptest::m_Script_hook_called_with = 0;
+
+void MemMaptest::Script_hook_called(const std::string & hook,
+                                    LocatedEntity * ent)
+{
+    m_Script_hook_called = hook;
+    m_Script_hook_called_with = ent;
+}
+
+class TestScript : public Script
+{
+  public:
+    virtual void hook(const std::string & function, LocatedEntity * entity);
+};
+
+void TestScript::hook(const std::string & function, LocatedEntity * entity)
+{
+    MemMaptest::Script_hook_called(function, entity);
+}
 
 MemMaptest::MemMaptest()
 {
@@ -69,11 +101,22 @@ MemMaptest::MemMaptest()
     ADD_TEST(MemMaptest::test_sendLooks);
     ADD_TEST(MemMaptest::test_del);
     ADD_TEST(MemMaptest::test_addEntity);
+    ADD_TEST(MemMaptest::test_addEntity_script);
+    ADD_TEST(MemMaptest::test_addEntity_script_hook);
     ADD_TEST(MemMaptest::test_readEntity);
+    ADD_TEST(MemMaptest::test_readEntity_type);
+    ADD_TEST(MemMaptest::test_readEntity_type_nonexist);
 }
 
 void MemMaptest::setup()
 {
+    m_Script_hook_called = "";
+    m_Script_hook_called_with = 0;
+
+    Root type_desc;
+    type_desc->setId("sample_type");
+    m_sampleType = Inheritance::instance().addChild(type_desc);
+
     m_script = 0;
     m_memMap = new MemMap(m_script);
 }
@@ -81,6 +124,7 @@ void MemMaptest::setup()
 void MemMaptest::teardown()
 {
     delete m_memMap;
+    Inheritance::clear();
 }
 
 void MemMaptest::test_addId()
@@ -109,9 +153,55 @@ void MemMaptest::test_addEntity()
     m_memMap->addEntity(ent);
 
     ASSERT_NOT_NULL(m_memMap->get(new_id));
+    ASSERT_NULL(m_Script_hook_called_with);
+}
+
+void MemMaptest::test_addEntity_script()
+{
+    m_script = new TestScript;
+    const std::string new_id("3");
+    ASSERT_NULL(m_memMap->get(new_id));
+
+    MemEntity * ent = new MemEntity(new_id, 3);
+    ent->setType(MemMap::m_entity_type);
+    m_memMap->addEntity(ent);
+
+    ASSERT_NOT_NULL(m_memMap->get(new_id));
+    ASSERT_NULL(m_Script_hook_called_with);
+}
+
+void MemMaptest::test_addEntity_script_hook()
+{
+    const std::string new_id("3");
+    const std::string test_add_hook_name("test_add_hook");
+
+    m_script = new TestScript;
+    m_memMap->m_addHooks.push_back(test_add_hook_name);
+
+    ASSERT_NULL(m_memMap->get(new_id));
+
+    MemEntity * ent = new MemEntity(new_id, 3);
+    ent->setType(MemMap::m_entity_type);
+    m_memMap->addEntity(ent);
+
+    ASSERT_NOT_NULL(m_memMap->get(new_id));
+    ASSERT_NOT_NULL(m_Script_hook_called_with);
+    ASSERT_EQUAL(m_Script_hook_called, test_add_hook_name);
 }
 
 void MemMaptest::test_readEntity()
+{
+    const std::string new_id("3");
+
+    Anonymous data;
+
+    MemEntity * ent = new MemEntity(new_id, 3);
+    ent->setType(MemMap::m_entity_type);
+
+    m_memMap->readEntity(ent, data);
+}
+
+void MemMaptest::test_readEntity_type()
 {
     const std::string new_id("3");
 
@@ -122,6 +212,25 @@ void MemMaptest::test_readEntity()
     ent->setType(MemMap::m_entity_type);
 
     m_memMap->readEntity(ent, data);
+
+    ASSERT_NOT_EQUAL(ent->getType(), MemMap::m_entity_type);
+    ASSERT_EQUAL(ent->getType(), m_sampleType);
+}
+
+void MemMaptest::test_readEntity_type_nonexist()
+{
+    const std::string new_id("3");
+
+    Anonymous data;
+    data->setParents(std::list<std::string>(1, "non_sample_type"));
+
+    MemEntity * ent = new MemEntity(new_id, 3);
+    ent->setType(MemMap::m_entity_type);
+
+    m_memMap->readEntity(ent, data);
+
+    ASSERT_EQUAL(ent->getType(), MemMap::m_entity_type);
+    ASSERT_NOT_EQUAL(ent->getType(), m_sampleType);
 }
 
 int main()
@@ -268,7 +377,11 @@ Inheritance::Inheritance() : noClass(0)
 
 const TypeNode * Inheritance::getType(const std::string & parent)
 {
-    return 0;
+    TypeNodeDict::const_iterator I = atlasObjects.find(parent);
+    if (I == atlasObjects.end()) {
+        return 0;
+    }
+    return I->second;
 }
 
 Script::Script()
@@ -297,6 +410,25 @@ Inheritance & Inheritance::instance()
         m_instance = new Inheritance();
     }
     return *m_instance;
+}
+
+TypeNode * Inheritance::addChild(const Root & obj)
+{
+    const std::string & child = obj->getId();
+
+    TypeNode * type = new TypeNode(child);
+
+    atlasObjects[child] = type;
+
+    return type;
+}
+
+void Inheritance::clear()
+{
+    if (m_instance != NULL) {
+        delete m_instance;
+        m_instance = NULL;
+    }
 }
 
 TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
