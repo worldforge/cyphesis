@@ -90,6 +90,8 @@ class MemMap {
     std::vector<std::string> & getAddHooks() { return m_addHooks; }
     std::vector<std::string> & getUpdateHooks() { return m_updateHooks; }
     std::vector<std::string> & getDeleteHooks() { return m_deleteHooks; }
+
+    friend class MemMaptest;
 };
 
 #endif // RULESETS_MEM_MAP_H

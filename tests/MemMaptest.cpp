@@ -24,6 +24,8 @@
 #define DEBUG
 #endif
 
+#include "TestBase.h"
+
 #include "rulesets/MemMap.h"
 
 #include "rulesets/MemEntity.h"
@@ -40,30 +42,51 @@
 
 #include <cassert>
 
-class TestMemMap : public MemMap {
+class MemMaptest : public Cyphesis::TestBase
+{
+  private:
+    Script * m_script;
+    MemMap * m_memMap;
   public:
-    TestMemMap(Script * & s) : MemMap(s) { }
+    MemMaptest();
 
-    MemEntity * test_addId(const std::string & id, long int_id) {
-        return addId(id, int_id);
-    }
+    void setup();
+    void teardown();
+
+    void test_sequence();
 };
+
+MemMaptest::MemMaptest()
+{
+    ADD_TEST(MemMaptest::test_sequence);
+}
+
+void MemMaptest::setup()
+{
+    m_script = 0;
+    m_memMap = new MemMap(m_script);
+}
+
+void MemMaptest::teardown()
+{
+    delete m_memMap;
+}
+
+void MemMaptest::test_sequence()
+{
+    m_memMap->addId("2", 2);
+
+    OpVector res;
+    m_memMap->sendLooks(res);
+
+    m_memMap->del("2");
+}
 
 int main()
 {
-    Script * s = 0;
-    TestMemMap * mm = new TestMemMap(s);
+    MemMaptest t;
 
-    mm->test_addId("2", 2);
-
-    OpVector res;
-    mm->sendLooks(res);
-
-    mm->del("2");
-
-    delete mm;
-    // The is no code in operations.cpp to execute, but we need coverage.
-    return 0;
+    return t.run();
 }
 
 // stubs
