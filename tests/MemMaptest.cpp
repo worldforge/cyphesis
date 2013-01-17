@@ -35,12 +35,15 @@
 #include "common/log.h"
 #include "common/TypeNode.h"
 
+#include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/SmartPtr.h>
 
 #include <cstdlib>
 
 #include <cassert>
+
+using Atlas::Objects::Entity::Anonymous;
 
 class MemMaptest : public Cyphesis::TestBase
 {
@@ -53,12 +56,20 @@ class MemMaptest : public Cyphesis::TestBase
     void setup();
     void teardown();
 
-    void test_sequence();
+    void test_addId();
+    void test_sendLooks();
+    void test_del();
+    void test_addEntity();
+    void test_readEntity();
 };
 
 MemMaptest::MemMaptest()
 {
-    ADD_TEST(MemMaptest::test_sequence);
+    ADD_TEST(MemMaptest::test_addId);
+    ADD_TEST(MemMaptest::test_sendLooks);
+    ADD_TEST(MemMaptest::test_del);
+    ADD_TEST(MemMaptest::test_addEntity);
+    ADD_TEST(MemMaptest::test_readEntity);
 }
 
 void MemMaptest::setup()
@@ -72,14 +83,45 @@ void MemMaptest::teardown()
     delete m_memMap;
 }
 
-void MemMaptest::test_sequence()
+void MemMaptest::test_addId()
 {
     m_memMap->addId("2", 2);
+}
 
+void MemMaptest::test_sendLooks()
+{
     OpVector res;
     m_memMap->sendLooks(res);
+}
 
+void MemMaptest::test_del()
+{
     m_memMap->del("2");
+}
+
+void MemMaptest::test_addEntity()
+{
+    const std::string new_id("3");
+    ASSERT_NULL(m_memMap->get(new_id));
+
+    MemEntity * ent = new MemEntity(new_id, 3);
+    ent->setType(MemMap::m_entity_type);
+    m_memMap->addEntity(ent);
+
+    ASSERT_NOT_NULL(m_memMap->get(new_id));
+}
+
+void MemMaptest::test_readEntity()
+{
+    const std::string new_id("3");
+
+    Anonymous data;
+    data->setParents(std::list<std::string>(1, "sample_type"));
+
+    MemEntity * ent = new MemEntity(new_id, 3);
+    ent->setType(MemMap::m_entity_type);
+
+    m_memMap->readEntity(ent, data);
 }
 
 int main()
