@@ -22,8 +22,6 @@
 
 #include "common/Property.h"
 
-class Entity;
-
 /// \brief Class to handle whether or not an entity is solid for collisions.
 /// \ingroup PropertyClasses
 class StatusProperty : public Property<double> {
@@ -33,7 +31,7 @@ class StatusProperty : public Property<double> {
 
     virtual StatusProperty * copy() const;
 
-    virtual void apply(Entity *);
+    virtual void apply(LocatedEntity *);
 };
 
 #endif // RULESETS_STATUS_PROPERTY_H

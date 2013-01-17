@@ -27,7 +27,7 @@
 
 #include <Mercator/TerrainMod.h>
 
-const TerrainProperty * TerrainEffectorProperty::getTerrain(Entity * owner)
+const TerrainProperty * TerrainEffectorProperty::getTerrain(LocatedEntity * owner)
 {
     const PropertyBase * terr;
     LocatedEntity * ent = owner;

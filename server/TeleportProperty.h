@@ -25,7 +25,7 @@
 class TeleportProperty
 {
   public:
-    static HandlerResult teleport_handler(Entity * e,
+    static HandlerResult teleport_handler(LocatedEntity * e,
                                           const Operation & op,
                                           OpVector & res);
 };

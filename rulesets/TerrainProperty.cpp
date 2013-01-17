@@ -249,7 +249,8 @@ int TerrainProperty::getSurface(const Point3D & pos, int & material)
 ///
 /// @param pos the x,y coordinates of a point on the terrain
 /// @param mods a reference to the list to be returned
-void TerrainProperty::findMods(const Point3D & pos, std::vector<Entity *> & ret)
+void TerrainProperty::findMods(const Point3D & pos,
+                               std::vector<LocatedEntity *> & ret)
 {
     Mercator::Segment * seg = m_data.getSegment(pos.x(), pos.y());
     if (seg == 0) {

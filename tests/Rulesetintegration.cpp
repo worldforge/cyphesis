@@ -123,7 +123,10 @@ void Rulesetintegration::test_sequence()
         Anonymous attributes;
 
         // Create an entity which is an instance of one of the core classes
-        Entity * test_ent = test_eb->newEntity("1", 1, "thing", attributes, *m_test_world);
+        LocatedEntity * test_ent = test_eb->newEntity("1", 1,
+                                                      "thing",
+                                                      attributes,
+                                                      *m_test_world);
         assert(test_ent != 0);
 
         // Check that creating an entity of a type we know we have not yet
@@ -604,11 +607,11 @@ int main()
     return t.run();
 }
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     return 0;
@@ -640,14 +643,14 @@ Account::~Account()
 {
 }
 
-Entity * Account::addNewCharacter(const std::string & typestr,
+LocatedEntity * Account::addNewCharacter(const std::string & typestr,
                                   const RootEntity & ent,
                                   const Root & arg)
 {
     return 0;
 }
 
-int Account::connectCharacter(Entity *chr)
+int Account::connectCharacter(LocatedEntity *chr)
 {
     return 0;
 }
@@ -668,7 +671,7 @@ void Account::createObject(const std::string & type_str,
 {
 }
 
-void Account::addCharacter(Entity * chr)
+void Account::addCharacter(LocatedEntity * chr)
 {
 }
 
@@ -766,7 +769,7 @@ EntityFactory<T>::~EntityFactory()
 }
 
 template <class T>
-Entity * EntityFactory<T>::newEntity(const std::string & id, long intId)
+LocatedEntity * EntityFactory<T>::newEntity(const std::string & id, long intId)
 {
     return new Entity(id, intId);
 }
@@ -1039,6 +1042,28 @@ PropertyBase * Entity::setProperty(const std::string & name,
     return m_properties[name] = prop;
 }
 
+PropertyBase * Entity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+void Entity::installHandler(int class_no, Handler handler)
+{
+}
+
+void Entity::installDelegate(int class_no, const std::string & delegate)
+{
+}
+
+Domain * Entity::getMovementDomain()
+{
+    return 0;
+}
+
+void Entity::sendWorld(const Operation & op)
+{
+}
+
 void Entity::onContainered()
 {
 }
@@ -1103,6 +1128,38 @@ void LocatedEntity::merge(const MapType & ent)
 const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
 {
     return 0;
+}
+
+PropertyBase * LocatedEntity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * LocatedEntity::setProperty(const std::string & name,
+                                          PropertyBase * prop)
+{
+    return 0;
+}
+
+void LocatedEntity::installHandler(int, Handler)
+{
+}
+
+void LocatedEntity::installDelegate(int, const std::string &)
+{
+}
+
+void LocatedEntity::destroy()
+{
+}
+
+Domain * LocatedEntity::getMovementDomain()
+{
+    return 0;
+}
+
+void LocatedEntity::sendWorld(const Operation & op)
+{
 }
 
 void LocatedEntity::onContainered()
@@ -1180,7 +1237,7 @@ int PythonScriptFactory<T>::refreshClass()
     return 0;
 }
 
-template class PythonScriptFactory<Entity>;
+template class PythonScriptFactory<LocatedEntity>;
 template class PythonScriptFactory<Task>;
 
 void Task::initTask(const Operation & op, OpVector & res)

@@ -125,7 +125,7 @@ void Account::createObject(const std::string & type_str,
 {
 }
 
-void Account::addCharacter(Entity * chr)
+void Account::addCharacter(LocatedEntity * chr)
 {
 }
 

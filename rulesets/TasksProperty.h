@@ -42,18 +42,20 @@ class TasksProperty : public PropertyBase {
     virtual void set(const Atlas::Message::Element & val);
     virtual TasksProperty * copy() const;
 
-    int updateTask(Entity * owner, OpVector & res);
+    int updateTask(LocatedEntity * owner, OpVector & res);
     int startTask(Task * task,
-                  Entity * owner,
+                  LocatedEntity * owner,
                   const Operation & op,
                   OpVector & res);
-    int clearTask(Entity * owner, OpVector & res);
-    void stopTask(Entity * owner, OpVector & res);
+    int clearTask(LocatedEntity * owner, OpVector & res);
+    void stopTask(LocatedEntity * owner, OpVector & res);
 
-    void TickOperation(Entity * owner, const Operation & op, OpVector &);
-    void UseOperation(Entity * owner, const Operation & op, OpVector &);
+    void TickOperation(LocatedEntity * owner, const Operation & op, OpVector &);
+    void UseOperation(LocatedEntity * owner, const Operation & op, OpVector &);
 
-    HandlerResult operation(Entity * owner, const Operation & op, OpVector &);
+    HandlerResult operation(LocatedEntity * owner,
+                            const Operation & op,
+                            OpVector &);
 };
 
 #endif // RULESETS_TASKS_PROPERTY_H

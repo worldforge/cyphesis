@@ -23,6 +23,16 @@
 #include "common/OperationRouter.h"
 #include "common/PropertyFactory.h"
 
+#include <map>
+
+class LocatedEntity;
+
+typedef HandlerResult (*Handler)(LocatedEntity *,
+                                 const Operation &,
+                                 OpVector &);
+
+typedef std::map<int, Handler> HandlerMap;
+
 /// \brief Factory class template to create active Property objects.
 template <typename T>
 class ActivePropertyFactory : public PropertyKit {

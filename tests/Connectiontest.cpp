@@ -533,6 +533,8 @@ int main()
 
 // Stubs
 
+#include "common/BaseWorld.h"
+
 bool restricted_flag;
 
 namespace Atlas { namespace Objects { namespace Operation {
@@ -617,7 +619,7 @@ const char * Account::getType() const
 }
 
 // Simplified stub version to allow us to test Connection::disconnectObject
-void Account::addCharacter(Entity * chr)
+void Account::addCharacter(LocatedEntity * chr)
 {
     m_charactersDict[chr->getIntId()] = chr;
 }
@@ -1151,6 +1153,28 @@ PropertyBase * Entity::setProperty(const std::string & name,
     return m_properties[name] = prop;
 }
 
+PropertyBase * Entity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+void Entity::installHandler(int class_no, Handler handler)
+{
+}
+
+void Entity::installDelegate(int class_no, const std::string & delegate)
+{
+}
+
+Domain * Entity::getMovementDomain()
+{
+    return 0;
+}
+
+void Entity::sendWorld(const Operation & op)
+{
+}
+
 void Entity::onContainered()
 {
 }
@@ -1197,6 +1221,38 @@ PropertyBase * LocatedEntity::setAttr(const std::string & name,
 const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
 {
     return 0;
+}
+
+PropertyBase * LocatedEntity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * LocatedEntity::setProperty(const std::string & name,
+                                          PropertyBase * prop)
+{
+    return 0;
+}
+
+void LocatedEntity::installHandler(int, Handler)
+{
+}
+
+void LocatedEntity::installDelegate(int, const std::string &)
+{
+}
+
+void LocatedEntity::destroy()
+{
+}
+
+Domain * LocatedEntity::getMovementDomain()
+{
+    return 0;
+}
+
+void LocatedEntity::sendWorld(const Operation & op)
+{
 }
 
 void LocatedEntity::onContainered()
@@ -1275,11 +1331,11 @@ PropertyBase::~PropertyBase()
 {
 }
 
-void PropertyBase::install(Entity *)
+void PropertyBase::install(LocatedEntity *)
 {
 }
 
-void PropertyBase::apply(Entity *)
+void PropertyBase::apply(LocatedEntity *)
 {
 }
 
@@ -1293,7 +1349,7 @@ void PropertyBase::add(const std::string & s,
 {
 }
 
-HandlerResult PropertyBase::operation(Entity *,
+HandlerResult PropertyBase::operation(LocatedEntity *,
                                       const Operation &,
                                       OpVector &)
 {
@@ -1302,7 +1358,7 @@ HandlerResult PropertyBase::operation(Entity *,
 
 BaseWorld * BaseWorld::m_instance = 0;
 
-BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
 {
 }
 
@@ -1310,12 +1366,12 @@ BaseWorld::~BaseWorld()
 {
 }
 
-Entity * BaseWorld::getEntity(const std::string & id) const
+LocatedEntity * BaseWorld::getEntity(const std::string & id) const
 {
     return 0;
 }
 
-Entity * BaseWorld::getEntity(long id) const
+LocatedEntity * BaseWorld::getEntity(long id) const
 {
     return 0;
 }

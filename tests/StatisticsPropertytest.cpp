@@ -47,11 +47,11 @@ int main(int argc, char ** argv)
 
 #include "TestWorld.h"
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     return 0;

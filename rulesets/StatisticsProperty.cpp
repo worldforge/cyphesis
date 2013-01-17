@@ -20,6 +20,7 @@
 #include "StatisticsProperty.h"
 
 #include "rulesets/ArithmeticScript.h"
+#include "rulesets/Entity.h"
 
 #include "common/log.h"
 #include "common/BaseWorld.h"
@@ -46,14 +47,14 @@ StatisticsProperty::~StatisticsProperty()
     delete m_script;
 }
 
-void StatisticsProperty::install(Entity * ent)
+void StatisticsProperty::install(LocatedEntity * ent)
 {
 }
 
-void StatisticsProperty::apply(Entity * ent)
+void StatisticsProperty::apply(LocatedEntity * ent)
 {
     if (m_script == 0) {
-        Entity * instance = 0;
+        LocatedEntity * instance = 0;
         if (flags() & flag_class) {
         } else {
             instance = ent;

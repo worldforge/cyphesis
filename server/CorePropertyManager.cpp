@@ -59,7 +59,7 @@ using Atlas::Message::Element;
 
 static const bool debug_flag = false;
 
-HandlerResult test_handler(Entity *, const Operation &, OpVector & res)
+HandlerResult test_handler(LocatedEntity *, const Operation &, OpVector & res)
 {
     debug(std::cout << "TEST HANDLER CALLED" << std::endl << std::flush;);
     return OPERATION_IGNORED;

@@ -21,6 +21,7 @@
 
 #include "BaseMind.h"
 
+#include "common/BaseWorld.h"
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/serialno.h"
@@ -112,7 +113,7 @@ void Creator::externalOperation(const Operation & op, Link &)
             // World will deal with it.
         }
     } else {
-        Entity * to = BaseWorld::instance().getEntity(op->getTo());
+        LocatedEntity * to = BaseWorld::instance().getEntity(op->getTo());
         if (to != 0) {
             // Make it appear like it came from target itself;
             to->sendWorld(op);
@@ -162,7 +163,7 @@ void Creator::mindLookOperation(const Operation & op, OpVector & res)
             op->setTo(arg->getId());
         } else if (arg->hasAttrFlag(Atlas::Objects::NAME_FLAG)) {
             // Search by name
-            Entity * e = BaseWorld::instance().findByName(arg->getName());
+            LocatedEntity * e = BaseWorld::instance().findByName(arg->getName());
             if (e != NULL) {
                 op->setTo(e->getId());
             } else {
@@ -178,7 +179,7 @@ void Creator::mindLookOperation(const Operation & op, OpVector & res)
         } else if (arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
             // Search by name
             if (!arg->getParents().empty()) {
-                Entity * e = BaseWorld::instance().findByType(arg->getParents().front());
+                LocatedEntity * e = BaseWorld::instance().findByType(arg->getParents().front());
                 if (e != NULL) {
                     op->setTo(e->getId());
                 } else {

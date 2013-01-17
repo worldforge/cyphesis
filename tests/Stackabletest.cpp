@@ -72,11 +72,11 @@ int main()
 
 // stubs
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     return 0;
@@ -267,6 +267,29 @@ PropertyBase * Entity::modProperty(const std::string & name)
     return 0;
 }
 
+PropertyBase * Entity::setProperty(const std::string & name,
+                                   PropertyBase * prop)
+{
+    return 0;
+}
+
+void Entity::installHandler(int class_no, Handler handler)
+{
+}
+
+void Entity::installDelegate(int class_no, const std::string & delegate)
+{
+}
+
+Domain * Entity::getMovementDomain()
+{
+    return 0;
+}
+
+void Entity::sendWorld(const Operation & op)
+{
+}
+
 void Entity::onContainered()
 {
 }
@@ -313,6 +336,38 @@ PropertyBase * LocatedEntity::setAttr(const std::string & name,
 const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
 {
     return 0;
+}
+
+PropertyBase * LocatedEntity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * LocatedEntity::setProperty(const std::string & name,
+                                          PropertyBase * prop)
+{
+    return 0;
+}
+
+void LocatedEntity::installHandler(int, Handler)
+{
+}
+
+void LocatedEntity::installDelegate(int, const std::string &)
+{
+}
+
+void LocatedEntity::destroy()
+{
+}
+
+Domain * LocatedEntity::getMovementDomain()
+{
+    return 0;
+}
+
+void LocatedEntity::sendWorld(const Operation & op)
+{
 }
 
 void LocatedEntity::onContainered()
@@ -390,7 +445,7 @@ void Router::error(const Operation & op,
 
 BaseWorld * BaseWorld::m_instance = 0;
 
-BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
 {
     m_instance = this;
 }
@@ -400,7 +455,7 @@ BaseWorld::~BaseWorld()
     m_instance = 0;
 }
 
-Entity * BaseWorld::getEntity(const std::string & id) const
+LocatedEntity * BaseWorld::getEntity(const std::string & id) const
 {
     long intId = integerId(id);
 
@@ -413,7 +468,7 @@ Entity * BaseWorld::getEntity(const std::string & id) const
     }
 }
 
-Entity * BaseWorld::getEntity(long id) const
+LocatedEntity * BaseWorld::getEntity(long id) const
 {
     EntityDict::const_iterator I = m_eobjects.find(id);
     if (I != m_eobjects.end()) {
@@ -505,11 +560,11 @@ PropertyBase::~PropertyBase()
 {
 }
 
-void PropertyBase::install(Entity *)
+void PropertyBase::install(LocatedEntity *)
 {
 }
 
-void PropertyBase::apply(Entity *)
+void PropertyBase::apply(LocatedEntity *)
 {
 }
 
@@ -524,7 +579,7 @@ void PropertyBase::add(const std::string & s,
 {
 }
 
-HandlerResult PropertyBase::operation(Entity *,
+HandlerResult PropertyBase::operation(LocatedEntity *,
                                       const Operation &,
                                       OpVector &)
 {
@@ -616,7 +671,7 @@ StatusProperty * StatusProperty::copy() const
     return 0;
 }
 
-void StatusProperty::apply(Entity * owner)
+void StatusProperty::apply(LocatedEntity * owner)
 {
 }
 
@@ -624,7 +679,7 @@ BBoxProperty::BBoxProperty()
 {
 }
 
-void BBoxProperty::apply(Entity * ent)
+void BBoxProperty::apply(LocatedEntity * ent)
 {
 }
 

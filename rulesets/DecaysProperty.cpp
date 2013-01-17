@@ -19,7 +19,7 @@
 
 #include "rulesets/DecaysProperty.h"
 
-#include "rulesets/Entity.h"
+#include "rulesets/LocatedEntity.h"
 
 #include "common/debug.h"
 
@@ -29,12 +29,14 @@
 
 #include <wfmath/atlasconv.h>
 
+#include <iostream>
+
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::Create;
 
 static const bool debug_flag = false;
 
-HandlerResult DecaysProperty::del_handler(Entity * e,
+HandlerResult DecaysProperty::del_handler(LocatedEntity * e,
                                           const Operation &,
                                           OpVector & res)
 {

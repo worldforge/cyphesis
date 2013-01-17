@@ -22,6 +22,7 @@
 #include "Script.h"
 #include "Domain.h"
 
+#include "common/BaseWorld.h"
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/op_switch.h"
@@ -290,6 +291,11 @@ void Entity::destroy()
 Domain * Entity::getMovementDomain()
 {
     return Domain::instance();
+}
+
+void Entity::sendWorld(const Operation & op)
+{
+    BaseWorld::instance().message(op, *this);
 }
 
 /// \brief Handle a actuate operation

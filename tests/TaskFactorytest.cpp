@@ -354,6 +354,34 @@ const PropertyBase * Entity::getProperty(const std::string & name) const
     return 0;
 }
 
+PropertyBase * Entity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * Entity::setProperty(const std::string & name,
+                                   PropertyBase * prop)
+{
+    return 0;
+}
+
+void Entity::installHandler(int class_no, Handler handler)
+{
+}
+
+void Entity::installDelegate(int class_no, const std::string & delegate)
+{
+}
+
+Domain * Entity::getMovementDomain()
+{
+    return 0;
+}
+
+void Entity::sendWorld(const Operation & op)
+{
+}
+
 void Entity::onContainered()
 {
 }
@@ -400,6 +428,38 @@ PropertyBase * LocatedEntity::setAttr(const std::string & name,
 const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
 {
     return 0;
+}
+
+PropertyBase * LocatedEntity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * LocatedEntity::setProperty(const std::string & name,
+                                          PropertyBase * prop)
+{
+    return 0;
+}
+
+void LocatedEntity::installHandler(int, Handler)
+{
+}
+
+void LocatedEntity::installDelegate(int, const std::string &)
+{
+}
+
+void LocatedEntity::destroy()
+{
+}
+
+Domain * LocatedEntity::getMovementDomain()
+{
+    return 0;
+}
+
+void LocatedEntity::sendWorld(const Operation & op)
+{
 }
 
 void LocatedEntity::onContainered()

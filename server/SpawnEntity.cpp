@@ -42,7 +42,7 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Operation::Create;
 
-SpawnEntity::SpawnEntity(Entity * e) : m_ent(e)
+SpawnEntity::SpawnEntity(LocatedEntity * e) : m_ent(e)
 {
 }
 
@@ -114,7 +114,7 @@ int SpawnEntity::spawnEntity(const std::string & type,
     return 0;
 }
 
-int SpawnEntity::populateEntity(Entity * ent,
+int SpawnEntity::populateEntity(LocatedEntity * ent,
                                 const RootEntity & dsc,
                                 OpVector & res)
 {

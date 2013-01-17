@@ -1,9 +1,14 @@
+Use destroy() interface in Mind code
+
+Move LocatedEntity to common, and rename
+
 Make LocatedEntity the sole base class for dealing with entities.
  * Move flags into LocatedEntity
    * Fix MemEntity to use flags instead of current bools.
  * Modify WorldRouter to use it throughout
  * Modify Property interface to use it.
- * Move remaining Property methods into LocatedEntity
+ * Move remaining Property methods into LocatedEntity, de-virt modProperty
+   and setProperty
 
 Why does SpawnProperty not implement copy()?
 

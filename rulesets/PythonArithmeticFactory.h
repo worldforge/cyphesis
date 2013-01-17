@@ -35,7 +35,7 @@ class PythonArithmeticFactory : public ArithmeticKit, private PythonClass {
 
     int setup();
 
-    virtual ArithmeticScript * newScript(Entity * owner);
+    virtual ArithmeticScript * newScript(LocatedEntity * owner);
 };
 
 #endif // RULESETS_PYTHON_ARITHMETIC_FACTORY_H

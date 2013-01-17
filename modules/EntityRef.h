@@ -23,12 +23,12 @@
 #include <sigc++/trackable.h>
 #include <sigc++/signal.h>
 
-class Entity;
+class LocatedEntity;
 
 class EntityRef : public sigc::trackable
 {
   private:
-    Entity * m_inner;
+    LocatedEntity * m_inner;
 
     void onEntityDeleted();
 
@@ -38,7 +38,7 @@ class EntityRef : public sigc::trackable
     {
     }
 
-    explicit EntityRef(Entity*);
+    explicit EntityRef(LocatedEntity*);
 
     ~EntityRef()
     {
@@ -48,17 +48,17 @@ class EntityRef : public sigc::trackable
 
     EntityRef& operator=(const EntityRef& ref);
 
-    Entity& operator*() const
+    LocatedEntity& operator*() const
     {
         return *m_inner;
     }
 
-    Entity* operator->() const
+    LocatedEntity* operator->() const
     {
         return m_inner;
     }
 
-    Entity* get() const
+    LocatedEntity* get() const
     {
         return m_inner;
     }
@@ -68,7 +68,7 @@ class EntityRef : public sigc::trackable
         return (m_inner == e.m_inner);
     }
 
-    bool operator==(const Entity* e) const
+    bool operator==(const LocatedEntity* e) const
     {
         return (m_inner == e);
     }

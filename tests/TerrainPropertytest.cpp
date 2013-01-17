@@ -82,11 +82,11 @@ int main()
 
 #include "TestWorld.h"
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     return 0;
@@ -94,7 +94,7 @@ Entity * TestWorld::addNewEntity(const std::string &,
 
 #include "modules/TerrainContext.h"
 
-TerrainContext::TerrainContext(Entity * e) : m_entity(e)
+TerrainContext::TerrainContext(LocatedEntity * e) : m_entity(e)
 {
 }
 
@@ -102,6 +102,6 @@ TerrainContext::~TerrainContext()
 {
 }
 
-EntityRef::EntityRef(Entity* e) : m_inner(e)
+EntityRef::EntityRef(LocatedEntity* e) : m_inner(e)
 {
 }

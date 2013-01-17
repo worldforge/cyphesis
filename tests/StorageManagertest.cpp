@@ -40,27 +40,27 @@ class TestStorageManager : public StorageManager
     TestStorageManager(WorldRouter&w) : StorageManager(w) { }
 
     
-    void test_entityInserted(Entity * e) {
+    void test_entityInserted(LocatedEntity * e) {
         entityInserted(e);
     }
-    void test_entityUpdated(Entity * e) {
+    void test_entityUpdated(LocatedEntity * e) {
         entityUpdated(e);
     }
 
     void test_encodeProperty(PropertyBase * p, std::string & s) {
         encodeProperty(p, s);
     }
-    void test_restoreProperties(Entity * e) {
+    void test_restoreProperties(LocatedEntity * e) {
         restoreProperties(e);
     }
 
-    void test_insertEntity(Entity * e) {
+    void test_insertEntity(LocatedEntity * e) {
         insertEntity(e);
     }
-    void test_updateEntity(Entity * e) {
+    void test_updateEntity(LocatedEntity * e) {
         updateEntity(e);
     }
-    void test_restoreChildren(Entity * e) {
+    void test_restoreChildren(LocatedEntity * e) {
         restoreChildren(e);
     }
 
@@ -244,18 +244,18 @@ WorldRouter::~WorldRouter()
 {
 }
 
-Entity * WorldRouter::addEntity(Entity * ent)
+LocatedEntity * WorldRouter::addEntity(LocatedEntity * ent)
 {
     return 0;
 }
 
-Entity * WorldRouter::addNewEntity(const std::string & typestr,
-                                   const RootEntity & attrs)
+LocatedEntity * WorldRouter::addNewEntity(const std::string & typestr,
+                                          const RootEntity & attrs)
 {
     return 0;
 }
 
-int WorldRouter::createSpawnPoint(const MapType & data, Entity * ent)
+int WorldRouter::createSpawnPoint(const MapType & data, LocatedEntity * ent)
 {
     return 0;
 }
@@ -265,9 +265,9 @@ int WorldRouter::getSpawnList(Atlas::Message::ListType & data)
     return 0;
 }
 
-Entity * WorldRouter::spawnNewEntity(const std::string & name,
-                                     const std::string & type,
-                                     const RootEntity & desc)
+LocatedEntity * WorldRouter::spawnNewEntity(const std::string & name,
+                                            const std::string & type,
+                                            const RootEntity & desc)
 {
     return 0;
 }
@@ -285,7 +285,7 @@ Task * WorldRouter::activateTask(const std::string & tool,
     return 0;
 }
 
-void WorldRouter::message(const Operation & op, Entity & ent)
+void WorldRouter::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
@@ -294,23 +294,23 @@ bool WorldRouter::idle(const SystemTime &)
     return false;
 }
 
-Entity * WorldRouter::findByName(const std::string & name)
+LocatedEntity * WorldRouter::findByName(const std::string & name)
 {
     return 0;
 }
 
-Entity * WorldRouter::findByType(const std::string & type)
+LocatedEntity * WorldRouter::findByType(const std::string & type)
 {
     return 0;
 }
 
 ArithmeticScript * WorldRouter::newArithmetic(const std::string & name,
-                                              Entity * owner)
+                                              LocatedEntity * owner)
 {
     return 0;
 }
 
-void WorldRouter::addPerceptive(Entity * perceptive)
+void WorldRouter::addPerceptive(LocatedEntity * perceptive)
 {
 }
 
@@ -324,10 +324,10 @@ EntityBuilder::~EntityBuilder()
 {
 }
 
-Entity * EntityBuilder::newEntity(const std::string & id, long intId,
-                                  const std::string & type,
-                                  const RootEntity & attributes,
-                                  const BaseWorld &) const
+LocatedEntity * EntityBuilder::newEntity(const std::string & id, long intId,
+                                         const std::string & type,
+                                         const RootEntity & attributes,
+                                         const BaseWorld &) const
 {
     return 0;
 }
@@ -480,6 +480,23 @@ PropertyBase * Entity::setProperty(const std::string & name,
     return 0;
 }
 
+void Entity::installHandler(int class_no, Handler handler)
+{
+}
+
+void Entity::installDelegate(int class_no, const std::string & delegate)
+{
+}
+
+Domain * Entity::getMovementDomain()
+{
+    return 0;
+}
+
+void Entity::sendWorld(const Operation & op)
+{
+}
+
 void Entity::onContainered()
 {
 }
@@ -526,6 +543,38 @@ PropertyBase * LocatedEntity::setAttr(const std::string & name,
 const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
 {
     return 0;
+}
+
+PropertyBase * LocatedEntity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * LocatedEntity::setProperty(const std::string & name,
+                                          PropertyBase * prop)
+{
+    return 0;
+}
+
+void LocatedEntity::installHandler(int, Handler)
+{
+}
+
+void LocatedEntity::installDelegate(int, const std::string &)
+{
+}
+
+void LocatedEntity::destroy()
+{
+}
+
+Domain * LocatedEntity::getMovementDomain()
+{
+    return 0;
+}
+
+void LocatedEntity::sendWorld(const Operation & op)
+{
 }
 
 void LocatedEntity::onContainered()
@@ -620,7 +669,7 @@ void Script::hook(const std::string & function, LocatedEntity * entity)
 {
 }
 
-EntityRef::EntityRef(Entity* e) : m_inner(e)
+EntityRef::EntityRef(LocatedEntity* e) : m_inner(e)
 {
 }
 
@@ -773,7 +822,7 @@ void Monitors::watch(const::std::string & name, VariableBase * monitor)
 
 BaseWorld * BaseWorld::m_instance = 0;
 
-BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
 {
     m_instance = this;
 }

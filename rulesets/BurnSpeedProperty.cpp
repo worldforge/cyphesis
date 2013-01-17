@@ -19,7 +19,7 @@
 
 #include "rulesets/BurnSpeedProperty.h"
 
-#include "rulesets/Entity.h"
+#include "rulesets/LocatedEntity.h"
 #include "rulesets/StatusProperty.h"
 
 #include "common/debug.h"
@@ -31,6 +31,8 @@
 #include <Atlas/Objects/RootOperation.h>
 #include <Atlas/Objects/SmartPtr.h>
 
+#include <iostream>
+
 using Atlas::Message::Element;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::Nourish;
@@ -39,7 +41,7 @@ using Atlas::Objects::Root;
 
 static const bool debug_flag = false;
 
-HandlerResult BurnSpeedProperty::burn_handler(Entity * e,
+HandlerResult BurnSpeedProperty::burn_handler(LocatedEntity * e,
                                               const Operation & op,
                                               OpVector & res)
 {

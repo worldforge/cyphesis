@@ -137,6 +137,7 @@ int main()
 #include "rulesets/Domain.h"
 #include "rulesets/Motion.h"
 
+#include "common/BaseWorld.h"
 #include "common/const.h"
 #include "common/log.h"
 
@@ -337,6 +338,18 @@ PropertyBase * Entity::modProperty(const std::string & name)
     return 0;
 }
 
+void Entity::installHandler(int class_no, Handler handler)
+{
+}
+
+void Entity::installDelegate(int class_no, const std::string & delegate)
+{
+}
+
+void Entity::sendWorld(const Operation & op)
+{
+}
+
 void Entity::onContainered()
 {
 }
@@ -388,6 +401,38 @@ PropertyBase * LocatedEntity::setAttr(const std::string & name,
 const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
 {
     return 0;
+}
+
+PropertyBase * LocatedEntity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * LocatedEntity::setProperty(const std::string & name,
+                                          PropertyBase * prop)
+{
+    return 0;
+}
+
+void LocatedEntity::installHandler(int, Handler)
+{
+}
+
+void LocatedEntity::installDelegate(int, const std::string &)
+{
+}
+
+void LocatedEntity::destroy()
+{
+}
+
+Domain * LocatedEntity::getMovementDomain()
+{
+    return 0;
+}
+
+void LocatedEntity::sendWorld(const Operation & op)
+{
 }
 
 void LocatedEntity::onContainered()
@@ -473,7 +518,7 @@ void Router::error(const Operation & op,
 
 BaseWorld * BaseWorld::m_instance = 0;
 
-BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
 {
     m_instance = this;
 }
@@ -483,12 +528,12 @@ BaseWorld::~BaseWorld()
     m_instance = 0;
 }
 
-Entity * BaseWorld::getEntity(const std::string & id) const
+LocatedEntity * BaseWorld::getEntity(const std::string & id) const
 {
     return 0;
 }
 
-Entity * BaseWorld::getEntity(long id) const
+LocatedEntity * BaseWorld::getEntity(long id) const
 {
     return 0;
 }

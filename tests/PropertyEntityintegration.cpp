@@ -284,11 +284,11 @@ int main()
 
 #include "common/id.h"
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     return 0;
@@ -351,7 +351,7 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 
 BaseWorld * BaseWorld::m_instance = 0;
 
-BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
 {
     m_instance = this;
 }
@@ -361,7 +361,7 @@ BaseWorld::~BaseWorld()
     m_instance = 0;
 }
 
-Entity * BaseWorld::getEntity(const std::string & id) const
+LocatedEntity * BaseWorld::getEntity(const std::string & id) const
 {
     long intId = integerId(id);
 
@@ -374,7 +374,7 @@ Entity * BaseWorld::getEntity(const std::string & id) const
     }
 }
 
-Entity * BaseWorld::getEntity(long id) const
+LocatedEntity * BaseWorld::getEntity(long id) const
 {
     EntityDict::const_iterator I = m_eobjects.find(id);
     if (I != m_eobjects.end()) {

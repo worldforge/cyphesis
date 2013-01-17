@@ -25,7 +25,7 @@
 class BiomassProperty
 {
   public:
-    static HandlerResult eat_handler(Entity * e,
+    static HandlerResult eat_handler(LocatedEntity * e,
                                      const Operation & op,
                                      OpVector & res);
 

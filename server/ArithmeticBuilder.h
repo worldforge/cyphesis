@@ -23,7 +23,7 @@
 #include <string>
 
 class ArithmeticScript;
-class Entity;
+class LocatedEntity;
 
 /// \brief Builder to handle the creation of arithmetic objects
 class ArithmeticBuilder {
@@ -35,7 +35,7 @@ class ArithmeticBuilder {
     static ArithmeticBuilder * instance();
     static void del();
 
-    ArithmeticScript * newArithmetic(const std::string &, Entity *);
+    ArithmeticScript * newArithmetic(const std::string &, LocatedEntity *);
 };
 
 #endif // SERVER_ARITHMETIC_BUILDER_H

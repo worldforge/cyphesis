@@ -27,13 +27,12 @@
 
 #include <ctime>
 
-class Entity;
 class Spawn;
 
 struct OpQueEntry;
 
 typedef std::list<OpQueEntry> OpQueue;
-typedef std::set<Entity *> EntitySet;
+typedef std::set<LocatedEntity *> EntitySet;
 typedef std::map<std::string, Spawn *> SpawnDict;
 
 /// \brief WorldRouter encapsulates the game world running in the server.
@@ -57,41 +56,47 @@ class WorldRouter : public BaseWorld {
     SpawnDict m_spawns;
 
   protected:
-    void addOperationToQueue(const Atlas::Objects::Operation::RootOperation &, Entity &);
+    void addOperationToQueue(const Atlas::Objects::Operation::RootOperation &,
+                             LocatedEntity &);
     Atlas::Objects::Operation::RootOperation getOperationFromQueue();
     bool broadcastPerception(const Atlas::Objects::Operation::RootOperation &) const;
     void updateTime(const SystemTime &);
-    void deliverTo(const Atlas::Objects::Operation::RootOperation &, Entity &);
-    void delEntity(Entity * obj);
+    void deliverTo(const Atlas::Objects::Operation::RootOperation &,
+                   LocatedEntity &);
+    void delEntity(LocatedEntity * obj);
   public:
     explicit WorldRouter(const SystemTime &);
     virtual ~WorldRouter();
 
     bool idle(const SystemTime &);
-    Entity * addEntity(Entity * obj);
-    Entity * addNewEntity(const std::string & type,
-                          const Atlas::Objects::Entity::RootEntity &);
-    int createSpawnPoint(const Atlas::Message::MapType & data, Entity * ent);
+    LocatedEntity * addEntity(LocatedEntity * obj);
+    LocatedEntity * addNewEntity(const std::string & type,
+                                 const Atlas::Objects::Entity::RootEntity &);
+    int createSpawnPoint(const Atlas::Message::MapType &, LocatedEntity *);
     int getSpawnList(Atlas::Message::ListType & data);
-    Entity * spawnNewEntity(const std::string & name,
-                            const std::string & type,
-                            const Atlas::Objects::Entity::RootEntity & desc);
+    LocatedEntity * spawnNewEntity(const std::string &,
+                                   const std::string &,
+                                   const Atlas::Objects::Entity::RootEntity &);
     Task * newTask(const std::string &, LocatedEntity &);
-    Task * activateTask(const std::string &, const std::string &,
-                        LocatedEntity *, LocatedEntity &);
+    Task * activateTask(const std::string &,
+                        const std::string &,
+                        LocatedEntity *,
+                        LocatedEntity &);
 
-    ArithmeticScript * newArithmetic(const std::string &, Entity *);
+    ArithmeticScript * newArithmetic(const std::string &,
+                                     LocatedEntity *);
 
-    void operation(const Atlas::Objects::Operation::RootOperation &, Entity &);
+    void operation(const Atlas::Objects::Operation::RootOperation &,
+                   LocatedEntity &);
 
-    virtual void addPerceptive(Entity *);
+    virtual void addPerceptive(LocatedEntity *);
     virtual void message(const Atlas::Objects::Operation::RootOperation &,
-                         Entity &);
-    virtual Entity * findByName(const std::string & name);
-    virtual Entity * findByType(const std::string & type);
+                         LocatedEntity &);
+    virtual LocatedEntity * findByName(const std::string & name);
+    virtual LocatedEntity * findByType(const std::string & type);
 
     /// \brief Signal that a new Entity has been inserted.
-    sigc::signal<void, Entity *> inserted;
+    sigc::signal<void, LocatedEntity *> inserted;
 
     friend class WorldRoutertest;
     friend class WorldRouterintegration;

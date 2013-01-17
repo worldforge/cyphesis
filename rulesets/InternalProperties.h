@@ -30,7 +30,7 @@ class SetupProperty : public Property<int> {
 
     virtual SetupProperty * copy() const;
 
-    virtual void install(Entity *);
+    virtual void install(LocatedEntity *);
 };
 
 /// \brief Class to handle Entity which requires a Tick operation
@@ -41,7 +41,7 @@ class TickProperty : public Property<double> {
 
     virtual TickProperty * copy() const;
 
-    virtual void apply(Entity *);
+    virtual void apply(LocatedEntity *);
 };
 
 /// \brief Class to handle whether or not an entit is simple for collisions.
@@ -57,7 +57,7 @@ class SimpleProperty : public PropertyBase {
     virtual void set(const Atlas::Message::Element & val);
     virtual SimpleProperty * copy() const;
 
-    virtual void apply(Entity *);
+    virtual void apply(LocatedEntity *);
 };
 
 #endif // RULESETS_INTERNAL_PROPERTIES_H

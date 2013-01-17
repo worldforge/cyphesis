@@ -30,6 +30,7 @@
 #include "server/EntityBuilder.h"
 #include "server/EntityFactory.h"
 
+#include "rulesets/Entity.h"
 #include "rulesets/Script.h"
 #include "rulesets/Task.h"
 
@@ -64,14 +65,14 @@ class ExposedEntityBuilder : public EntityBuilder {
 
 };
 
-class TestScriptFactory : public ScriptKit<Entity> {
+class TestScriptFactory : public ScriptKit<LocatedEntity> {
   protected:
     std::string m_package;
   public:
     TestScriptFactory() { }
 
     const std::string & package() const { return m_package; }
-    int addScript(Entity * entity) const { return 0; }
+    int addScript(LocatedEntity * entity) const { return 0; }
     int refreshClass() { return 0; }
 };
 
@@ -110,7 +111,7 @@ int main(int argc, char ** argv)
         assert(EntityBuilder::instance() != 0);
 
         // Create a normal Entity
-        Entity * test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, test_world);
+        LocatedEntity * test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, test_world);
         assert(test_ent != 0);
 
         // Create an entity specifying an attrbute
@@ -167,7 +168,7 @@ int main(int argc, char ** argv)
         Anonymous attributes;
 
         // Create an entity which is an instance of one of the core classes
-        Entity * test_ent = entity_factory.newEntity("1", 1, "thing", attributes, test_world);
+        LocatedEntity * test_ent = entity_factory.newEntity("1", 1, "thing", attributes, test_world);
         assert(test_ent != 0);
 
         Inheritance::clear();
@@ -230,7 +231,7 @@ int main(int argc, char ** argv)
         assert(J->second.String() == "test_value");
 
         // Create an instance of our custom type, ensuring that it works.
-        Entity * test_ent = entity_factory.newEntity("1", 1, "custom_type", attributes, test_world);
+        LocatedEntity * test_ent = entity_factory.newEntity("1", 1, "custom_type", attributes, test_world);
         assert(test_ent != 0);
 
         assert(test_ent->getType() == custom_type_factory->m_type);
@@ -282,7 +283,7 @@ int main(int argc, char ** argv)
         assert(custom_type_factory == I->second);
 
         // Create an instance of our custom type, ensuring that it works.
-        Entity * test_ent = entity_factory.newEntity("1", 1, "custom_scripted_type", attributes, test_world);
+        LocatedEntity * test_ent = entity_factory.newEntity("1", 1, "custom_scripted_type", attributes, test_world);
         assert(test_ent != 0);
 
         assert(test_ent->getType() == custom_type_factory->m_type);
@@ -293,11 +294,11 @@ int main(int argc, char ** argv)
 
 // stubs
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     return 0;
@@ -339,7 +340,7 @@ EntityKit::~EntityKit()
 class World;
 
 template <>
-Entity * EntityFactory<World>::newEntity(const std::string & id, long intId)
+LocatedEntity * EntityFactory<World>::newEntity(const std::string & id, long intId)
 {
     return 0;
 }
@@ -360,7 +361,7 @@ EntityFactory<T>::~EntityFactory()
 }
 
 template <class T>
-Entity * EntityFactory<T>::newEntity(const std::string & id, long intId)
+LocatedEntity * EntityFactory<T>::newEntity(const std::string & id, long intId)
 {
     ++m_createdCount;
     return new Entity(id, intId);
@@ -530,6 +531,29 @@ PropertyBase * Entity::modProperty(const std::string & name)
     return 0;
 }
 
+PropertyBase * Entity::setProperty(const std::string & name,
+                                   PropertyBase * prop)
+{
+    return 0;
+}
+
+void Entity::installHandler(int class_no, Handler handler)
+{
+}
+
+void Entity::installDelegate(int class_no, const std::string & delegate)
+{
+}
+
+Domain * Entity::getMovementDomain()
+{
+    return 0;
+}
+
+void Entity::sendWorld(const Operation & op)
+{
+}
+
 void Entity::onContainered()
 {
 }
@@ -576,6 +600,38 @@ PropertyBase * LocatedEntity::setAttr(const std::string & name,
 const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
 {
     return 0;
+}
+
+PropertyBase * LocatedEntity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * LocatedEntity::setProperty(const std::string & name,
+                                          PropertyBase * prop)
+{
+    return 0;
+}
+
+void LocatedEntity::installHandler(int, Handler)
+{
+}
+
+void LocatedEntity::installDelegate(int, const std::string &)
+{
+}
+
+void LocatedEntity::destroy()
+{
+}
+
+Domain * LocatedEntity::getMovementDomain()
+{
+    return 0;
+}
+
+void LocatedEntity::sendWorld(const Operation & op)
+{
 }
 
 void LocatedEntity::onContainered()
@@ -740,11 +796,11 @@ PropertyBase::~PropertyBase()
 {
 }
 
-void PropertyBase::install(Entity *)
+void PropertyBase::install(LocatedEntity *)
 {
 }
 
-void PropertyBase::apply(Entity *)
+void PropertyBase::apply(LocatedEntity *)
 {
 }
 
@@ -759,7 +815,7 @@ void PropertyBase::add(const std::string & s,
 {
 }
 
-HandlerResult PropertyBase::operation(Entity *,
+HandlerResult PropertyBase::operation(LocatedEntity *,
                                       const Operation &,
                                       OpVector &)
 {
@@ -885,7 +941,7 @@ void Task::setScript(Script*)
 
 BaseWorld * BaseWorld::m_instance = 0;
 
-BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
 {
     m_instance = this;
 }
@@ -895,7 +951,7 @@ BaseWorld::~BaseWorld()
     m_instance = 0;
 }
 
-Entity * BaseWorld::getEntity(const std::string & id) const
+LocatedEntity * BaseWorld::getEntity(const std::string & id) const
 {
     long intId = integerId(id);
 

@@ -22,12 +22,16 @@
 
 #include "modules/Location.h"
 
+#include "common/Property.h"
 #include "common/Router.h"
+
+#include <sigc++/signal.h>
 
 #include <set>
 
 #include <cassert>
 
+class Domain;
 class LocatedEntity;
 class PropertyBase;
 class Script;
@@ -36,8 +40,13 @@ class TypeNode;
 template <typename T>
 class Property;
 
+typedef HandlerResult (*Handler)(LocatedEntity *,
+                                 const Operation &,
+                                 OpVector &);
+
 typedef std::set<LocatedEntity *> LocatedEntitySet;
 typedef std::map<std::string, PropertyBase *> PropertyDict;
+typedef std::map<int, Handler> HandlerMap;
 
 /// \brief Flag indicating entity has been written to permanent store
 /// \ingroup EntityFlags
@@ -169,9 +178,22 @@ class LocatedEntity : public Router {
     virtual PropertyBase* setAttr(const std::string & name,
                                   const Atlas::Message::Element &);
     virtual const PropertyBase * getProperty(const std::string & name) const;
+    // FIXME These should be de-visrtualised and, and implementations moved
+    // from Entity to here.
+    virtual PropertyBase * modProperty(const std::string & name);
+    virtual PropertyBase * setProperty(const std::string & name, PropertyBase * prop);
+
+    virtual void installHandler(int, Handler);
+    virtual void installDelegate(int, const std::string &);
 
     virtual void onContainered();
     virtual void onUpdated();
+
+    virtual void destroy();
+
+    virtual Domain * getMovementDomain();
+
+    virtual void sendWorld(const Operation & op);
 
     void setScript(Script * scrpt);
     void makeContainer();
@@ -199,6 +221,81 @@ class LocatedEntity : public Router {
         }
         return 0;
     }
+
+    /// \brief Get a property that is required to of a given type.
+    template <class PropertyT>
+    PropertyT * modPropertyClass(const std::string & name)
+    {
+        PropertyBase * p = modProperty(name);
+        if (p != 0) {
+            return dynamic_cast<PropertyT *>(p);
+        }
+        return 0;
+    }
+
+    /// \brief Get a modifiable property that is a generic property of a type
+    ///
+    /// If the property is not set on the Entity instance, but has a class
+    /// default, the default is copied to the instance, and a pointer is
+    /// returned if it is a property of the right type.
+    template <typename T>
+    Property<T> * modPropertyType(const std::string & name)
+    {
+        PropertyBase * p = modProperty(name);
+        if (p != 0) {
+            return dynamic_cast<Property<T> *>(p);
+        }
+        return 0;
+    }
+
+    /// \brief Require that a property of a given type is set.
+    ///
+    /// If the property is not set on the Entity instance, but has a class
+    /// default, the default is copied to the instance, and a pointer is
+    /// returned if it is a property of the right type. If it does not
+    /// exist, or is not of the right type, a new property is created of
+    /// the right type, and installed on the Entity instance.
+    template <class PropertyT>
+    PropertyT * requirePropertyClass(const std::string & name,
+                                     const Atlas::Message::Element & def_val
+                                     = Atlas::Message::Element())
+    {
+        PropertyBase * p = modProperty(name);
+        PropertyT * sp = 0;
+        if (p != 0) {
+            sp = dynamic_cast<PropertyT *>(p);
+        }
+        if (sp == 0) {
+            // If it is not of the right type, delete it and a new
+            // one of the right type will be inserted.
+            m_properties[name] = sp = new PropertyT;
+            sp->install(this);
+            if (p != 0) {
+                Atlas::Message::Element val;
+                if (p->get(val)) {
+                    sp->set(val);
+                }
+                delete p;
+            } else if (!def_val.isNone()) {
+                sp->set(def_val);
+            }
+            sp->apply(this);
+        }
+        return sp;
+    }
+
+    /// Signal indicating that this entity has been changed
+    sigc::signal<void> updated;
+
+    /// Single shot signal indicating that this entity has changed its LOC
+    sigc::signal<void> containered;
+
+    /// \brief Signal emitted when this entity is removed from the server
+    ///
+    /// Note that this is usually well before the object is actually deleted
+    /// and marks the conceptual destruction of the concept this entity
+    /// represents, not the destruction of this object.
+    sigc::signal<void> destroyed;
 };
 
 #endif // RULESETS_LOCATED_ENTITY_H

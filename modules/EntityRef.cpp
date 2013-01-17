@@ -19,7 +19,7 @@
 
 #include "EntityRef.h"
 
-#include "rulesets/Entity.h"
+#include "rulesets/LocatedEntity.h"
 
 #include <sigc++/slot.h>
 
@@ -30,7 +30,7 @@ void EntityRef::setup()
     }
 }
 
-EntityRef::EntityRef(Entity* e) : m_inner(e)
+EntityRef::EntityRef(LocatedEntity* e) : m_inner(e)
 {
     setup();
 }

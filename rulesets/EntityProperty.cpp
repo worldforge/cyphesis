@@ -19,11 +19,14 @@
 
 #include "EntityProperty.h"
 
-#include "Entity.h"
+#include "LocatedEntity.h"
 
+#include "common/BaseWorld.h"
 #include "common/debug.h"
 
 #include <Atlas/Objects/RootEntity.h>
+
+#include <iostream>
 
 static const bool debug_flag = false;
 
@@ -51,7 +54,7 @@ void EntityProperty::set(const Atlas::Message::Element & val)
             if (id.empty()) {
                 m_data = EntityRef(0);
             } else {
-                Entity * e = BaseWorld::instance().getEntity(id);
+                LocatedEntity * e = BaseWorld::instance().getEntity(id);
                 if (e != 0) {
                     debug(std::cout << "Assigned" << std::endl << std::flush;);
                     m_data = EntityRef(e);
@@ -60,7 +63,7 @@ void EntityProperty::set(const Atlas::Message::Element & val)
         }
     } else if (val.isPtr()) {
         debug(std::cout << "Assigning pointer" << std::endl << std::flush;);
-        Entity * e = static_cast<Entity*>(val.Ptr());
+        LocatedEntity * e = static_cast<LocatedEntity*>(val.Ptr());
         m_data = EntityRef(e);
     }
 }

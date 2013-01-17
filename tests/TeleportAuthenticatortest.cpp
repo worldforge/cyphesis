@@ -50,44 +50,45 @@ int stub_connection_send_count = 0;
 
 class TestWorld : public BaseWorld {
   public:
-    explicit TestWorld() : BaseWorld(*(Entity*)0) {
+    explicit TestWorld() : BaseWorld(*(LocatedEntity*)0) {
         m_realTime = 100000;
     }
 
     virtual bool idle(const SystemTime &) { return false; }
 
-    virtual Entity * addEntity(Entity * ent) { 
+    virtual LocatedEntity * addEntity(LocatedEntity * ent) { 
         return 0;
     }
 
-    Entity * test_addEntity(Entity * ent, long intId) { 
+    LocatedEntity * test_addEntity(LocatedEntity * ent, long intId) { 
         m_eobjects[intId] = ent;
         return 0;
     }
-    virtual Entity * addNewEntity(const std::string &,
-                                  const Atlas::Objects::Entity::RootEntity &) {
+    virtual LocatedEntity * addNewEntity(const std::string &,
+                                         const Atlas::Objects::Entity::RootEntity &) {
         return 0;
     }
     int createSpawnPoint(const Atlas::Message::MapType & data,
-                         Entity *) { return 0; }
+                         LocatedEntity *) { return 0; }
     int getSpawnList(Atlas::Message::ListType & data) { return 0; }
-    Entity * spawnNewEntity(const std::string & name,
-                            const std::string & type,
-                            const Atlas::Objects::Entity::RootEntity & desc) {
+    LocatedEntity * spawnNewEntity(const std::string & name,
+                                   const std::string & type,
+                                   const Atlas::Objects::Entity::RootEntity & desc) {
         return addNewEntity(type, desc);
     }
     virtual Task * newTask(const std::string &, LocatedEntity &) { return 0; }
     virtual Task * activateTask(const std::string &, const std::string &,
                                 LocatedEntity *, LocatedEntity &) { return 0; }
-    virtual ArithmeticScript * newArithmetic(const std::string &, Entity *) {
+    virtual ArithmeticScript * newArithmetic(const std::string &,
+                                             LocatedEntity *) {
         return 0;
     }
-    virtual void message(const Operation & op, Entity & ent) {
+    virtual void message(const Operation & op, LocatedEntity & ent) {
         stub_baseworld_receieved_op = op->getClassNo();
     }
-    virtual Entity * findByName(const std::string & name) { return 0; }
-    virtual Entity * findByType(const std::string & type) { return 0; }
-    virtual void addPerceptive(Entity *) { }
+    virtual LocatedEntity * findByName(const std::string & name) { return 0; }
+    virtual LocatedEntity * findByType(const std::string & type) { return 0; }
+    virtual void addPerceptive(LocatedEntity *) { }
 };
 
 class TeleportAuthenticatortest : public Cyphesis::TestBase
@@ -219,7 +220,7 @@ void log(LogLevel lvl, const std::string & msg)
 
 BaseWorld * BaseWorld::m_instance = 0;
 
-BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
 {
     m_instance = this;
 }
@@ -229,7 +230,7 @@ BaseWorld::~BaseWorld()
     m_instance = 0;
 }
 
-Entity * BaseWorld::getEntity(const std::string & id) const
+LocatedEntity * BaseWorld::getEntity(const std::string & id) const
 {
     long intId = integerId(id);
 
@@ -242,7 +243,7 @@ Entity * BaseWorld::getEntity(const std::string & id) const
     }
 }
 
-Entity * BaseWorld::getEntity(long id) const
+LocatedEntity * BaseWorld::getEntity(long id) const
 {
     EntityDict::const_iterator I = m_eobjects.find(id);
     if (I != m_eobjects.end()) {
@@ -407,6 +408,38 @@ const PropertyBase * Entity::getProperty(const std::string & name) const
     return 0;
 }
 
+PropertyBase * Entity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * Entity::setProperty(const std::string & name,
+                                   PropertyBase * prop)
+{
+    return 0;
+}
+
+void Entity::installHandler(int class_no, Handler handler)
+{
+}
+
+void Entity::installDelegate(int class_no, const std::string & delegate)
+{
+}
+
+void Entity::destroy()
+{
+}
+
+Domain * Entity::getMovementDomain()
+{
+    return 0;
+}
+
+void Entity::sendWorld(const Operation & op)
+{
+}
+
 void Entity::onContainered()
 {
 }
@@ -460,6 +493,38 @@ PropertyBase * LocatedEntity::setAttr(const std::string & name,
 const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
 {
     return 0;
+}
+
+PropertyBase * LocatedEntity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * LocatedEntity::setProperty(const std::string & name,
+                                          PropertyBase * prop)
+{
+    return 0;
+}
+
+void LocatedEntity::installHandler(int, Handler)
+{
+}
+
+void LocatedEntity::installDelegate(int, const std::string &)
+{
+}
+
+void LocatedEntity::destroy()
+{
+}
+
+Domain * LocatedEntity::getMovementDomain()
+{
+    return 0;
+}
+
+void LocatedEntity::sendWorld(const Operation & op)
+{
 }
 
 void LocatedEntity::onContainered()

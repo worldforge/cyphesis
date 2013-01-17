@@ -24,6 +24,7 @@
 
 #include "rulesets/Entity.h"
 
+#include "common/BaseWorld.h"
 #include "common/id.h"
 #include "common/log.h"
 #include "common/debug.h"
@@ -110,13 +111,13 @@ EntityBuilder::~EntityBuilder()
 /// @param intId The integer identifier of the new entity.
 /// @param type The string specifying the type of entity.
 /// @param attributes A mapping of attribute values to set on the entity.
-Entity * EntityBuilder::newEntity(const std::string & id, long intId,
-                                  const std::string & type,
-                                  const RootEntity & attributes,
-                                  const BaseWorld & world) const
+LocatedEntity * EntityBuilder::newEntity(const std::string & id, long intId,
+                                         const std::string & type,
+                                         const RootEntity & attributes,
+                                         const BaseWorld & world) const
 {
     debug(std::cout << "EntityFactor::newEntity()" << std::endl << std::flush;);
-    Entity * thing = 0;
+    LocatedEntity * thing = 0;
     FactoryDict::const_iterator I = m_entityFactories.find(type);
     if (I == m_entityFactories.end()) {
         return 0;

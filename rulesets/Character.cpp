@@ -28,6 +28,7 @@
 #include "StatusProperty.h"
 #include "TasksProperty.h"
 
+#include "common/BaseWorld.h"
 #include "common/op_switch.h"
 #include "common/const.h"
 #include "common/custom.h"
@@ -515,7 +516,7 @@ void Character::UseOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    Entity * tool = rhw->data().get();
+    LocatedEntity * tool = rhw->data().get();
     if (tool == 0) {
         error(op, "Character::UseOp No tool wielded.", res, getId());
         return;
@@ -660,7 +661,8 @@ void Character::UseOperation(const Operation & op, OpVector & res)
 
     rop->setTo(tool->getId());
 
-    Entity * target_ent = BaseWorld::instance().getEntity(entity_arg->getId());
+    LocatedEntity * target_ent =
+          BaseWorld::instance().getEntity(entity_arg->getId());
     if (target_ent == 0) {
         error(op, "Character::UseOperation Target does not exist", res, getId());
         return;
@@ -711,7 +713,7 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         return;
     }
     const std::string & id = arg->getId();
-    Entity * item = BaseWorld::instance().getEntity(id);
+    LocatedEntity * item = BaseWorld::instance().getEntity(id);
     if (item == 0) {
         error(op, "Wield arg does not exist", res, getId());
         return;
@@ -776,12 +778,13 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    Entity * attack_ent = BaseWorld::instance().getEntity(op->getFrom());
+    LocatedEntity * attack_ent = BaseWorld::instance().getEntity(op->getFrom());
     if (attack_ent == 0) {
         log(ERROR, "AttackOperation: Attack op from non-existant ID");
         return;
     }
 
+    // FIXME Is this dynamic cast required?
     Character * attacker = dynamic_cast<Character *>(attack_ent);
 
     if (attacker == 0) {
@@ -902,7 +905,7 @@ void Character::ActuateOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    Entity * device = BaseWorld::instance().getEntity(entity_arg->getId());
+    LocatedEntity * device = BaseWorld::instance().getEntity(entity_arg->getId());
 
     Element deviceOpAttr;
     std::set<std::string> deviceOps;
@@ -1094,7 +1097,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     const std::string & other_id = arg->getId();
     if (other_id != getId()) {
         debug( std::cout << "Moving something else. " << other_id << std::endl << std::flush;);
-        Entity * other = BaseWorld::instance().getEntity(other_id);
+        LocatedEntity * other = BaseWorld::instance().getEntity(other_id);
         if (other == 0) {
             Unseen u;
 
@@ -1160,7 +1163,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
                      << ":" << std::endl << std::flush;);
     if (!new_loc.empty() && (new_loc != m_location.m_loc->getId())) {
         debug(std::cout << "Changing loc" << std::endl << std::flush;);
-        Entity * target_loc = BaseWorld::instance().getEntity(new_loc);
+        LocatedEntity * target_loc = BaseWorld::instance().getEntity(new_loc);
         if (target_loc == 0) {
             Unseen u;
 

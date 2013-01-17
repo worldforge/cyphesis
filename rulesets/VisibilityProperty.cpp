@@ -36,7 +36,7 @@ VisibilityProperty * VisibilityProperty::copy() const
     return new VisibilityProperty(*this);
 }
 
-void VisibilityProperty::apply(Entity * ent)
+void VisibilityProperty::apply(LocatedEntity * ent)
 {
     ent->m_location.setVisibility(m_data);
 }

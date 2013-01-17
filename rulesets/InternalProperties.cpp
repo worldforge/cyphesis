@@ -39,7 +39,7 @@ SetupProperty * SetupProperty::copy() const
     return new SetupProperty(*this);
 }
 
-void SetupProperty::install(Entity * ent)
+void SetupProperty::install(LocatedEntity * ent)
 {
     Setup s;
     s->setTo(ent->getId());
@@ -55,7 +55,7 @@ TickProperty * TickProperty::copy() const
     return new TickProperty(*this);
 }
 
-void TickProperty::apply(Entity * ent)
+void TickProperty::apply(LocatedEntity * ent)
 {
     Tick t;
     t->setTo(ent->getId());
@@ -91,7 +91,7 @@ SimpleProperty * SimpleProperty::copy() const
     return new SimpleProperty(*this);
 }
 
-void SimpleProperty::apply(Entity * owner)
+void SimpleProperty::apply(LocatedEntity * owner)
 {
     owner->m_location.setSimple(flags() & flag_bool);
 }

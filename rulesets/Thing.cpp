@@ -22,6 +22,7 @@
 #include "Motion.h"
 #include "Domain.h"
 
+#include "common/BaseWorld.h"
 #include "common/log.h"
 #include "common/const.h"
 #include "common/debug.h"
@@ -121,7 +122,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         return;
     }
     const std::string & new_loc_id = ent->getLoc();
-    Entity * new_loc = 0;
+    LocatedEntity * new_loc = 0;
     if (new_loc_id != m_location.m_loc->getId()) {
         // If the LOC has not changed, we don't need to look it up, or do
         // any of the following checks.
@@ -667,7 +668,7 @@ void Thing::CreateOperation(const Operation & op, OpVector & res)
         const std::string & type = parents.front();
         debug( std::cout << getId() << " creating " << type;);
 
-        Entity * obj = BaseWorld::instance().addNewEntity(type,ent);
+        LocatedEntity * obj = BaseWorld::instance().addNewEntity(type,ent);
 
         if (obj == 0) {
             error(op, "Create op failed.", res, op->getFrom());

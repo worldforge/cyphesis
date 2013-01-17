@@ -39,8 +39,8 @@ class StatisticsProperty : public PropertyBase {
 
     ArithmeticScript * script() { return m_script; }
 
-    virtual void install(Entity *);
-    virtual void apply(Entity *);
+    virtual void install(LocatedEntity *);
+    virtual void apply(LocatedEntity *);
 
     virtual int get(Atlas::Message::Element &) const;
     virtual void set(const Atlas::Message::Element &);

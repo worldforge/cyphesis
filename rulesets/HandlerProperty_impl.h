@@ -38,7 +38,7 @@ HandlerProperty<T> * HandlerProperty<T>::copy() const
 }
 
 template <typename T>
-void HandlerProperty<T>::install(Entity * ent)
+void HandlerProperty<T>::install(LocatedEntity * ent)
 {
     ent->installHandler(m_operationClassNo, m_handler);
 }

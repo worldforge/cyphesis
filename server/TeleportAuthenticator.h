@@ -21,7 +21,7 @@
 #include <string>
 #include <map>
 
-class Entity;
+class LocatedEntity;
 class PendingTeleport;
 
 /// \brief Map of teleported entity IDs and their PendingState objects
@@ -67,7 +67,8 @@ class TeleportAuthenticator
     int removeTeleport(PendingTeleportMap::iterator I);
 
     /// \brief Authenticate a teleport request
-    Entity *authenticateTeleport(const std::string &, const std::string &);
+    LocatedEntity *authenticateTeleport(const std::string &,
+                                        const std::string &);
 
     friend class TeleportAuthenticatortest;
 };

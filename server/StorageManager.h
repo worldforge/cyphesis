@@ -68,15 +68,15 @@ class StorageManager {
     int m_insertQpsRing[32];
     int m_updateQpsRing[32];
 
-    void entityInserted(Entity *);
-    void entityUpdated(Entity *);
+    void entityInserted(LocatedEntity *);
+    void entityUpdated(LocatedEntity *);
 
     void encodeProperty(PropertyBase *, std::string &);
-    void restoreProperties(Entity *);
+    void restoreProperties(LocatedEntity *);
 
-    void insertEntity(Entity *);
-    void updateEntity(Entity *);
-    void restoreChildren(Entity *);
+    void insertEntity(LocatedEntity *);
+    void updateEntity(LocatedEntity *);
+    void restoreChildren(LocatedEntity *);
 
   public:
     StorageManager(WorldRouter &);

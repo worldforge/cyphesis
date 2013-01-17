@@ -19,7 +19,7 @@
 
 #include "TerrainModProperty.h"
 
-#include "Entity.h"
+#include "LocatedEntity.h"
 #include "TerrainModTranslator.h"
 #include "TerrainProperty.h"
 
@@ -72,7 +72,7 @@ TerrainModProperty * TerrainModProperty::copy() const
     return new TerrainModProperty(*this);
 }
 
-void TerrainModProperty::install(Entity * owner)
+void TerrainModProperty::install(LocatedEntity * owner)
 {
     HandlerMap::const_iterator I = m_handlers.begin();
     HandlerMap::const_iterator Iend = m_handlers.end();
@@ -81,7 +81,7 @@ void TerrainModProperty::install(Entity * owner)
     }
 }
 
-void TerrainModProperty::apply(Entity * owner)
+void TerrainModProperty::apply(LocatedEntity * owner)
 {
     // Find the terrain
     const TerrainProperty * terrain = getTerrain(owner);
@@ -119,7 +119,7 @@ void TerrainModProperty::apply(Entity * owner)
     m_modptr->context()->setId(owner->getId());
 }
 
-void TerrainModProperty::move(Entity* owner)
+void TerrainModProperty::move(LocatedEntity* owner)
 {
     const TerrainProperty* terrain = getTerrain(owner);
 
@@ -142,7 +142,7 @@ void TerrainModProperty::move(Entity* owner)
     terrain->updateMod(mod);
 }
 
-void TerrainModProperty::remove(Entity * owner)
+void TerrainModProperty::remove(LocatedEntity * owner)
 {
     if (m_modptr) {
         const TerrainProperty* terrain = getTerrain(owner);
@@ -154,7 +154,7 @@ void TerrainModProperty::remove(Entity * owner)
     }
 }
 
-Mercator::TerrainMod * TerrainModProperty::parseModData(Entity * owner,
+Mercator::TerrainMod * TerrainModProperty::parseModData(LocatedEntity * owner,
                                                         const MapType & modMap)
 {
     if (m_innerMod == 0) {
@@ -186,7 +186,7 @@ void TerrainModProperty::setAttr(const std::string & name,
     m_data[name] = val;
 }
 
-HandlerResult TerrainModProperty::move_handler(Entity * e,
+HandlerResult TerrainModProperty::move_handler(LocatedEntity * e,
                                                const Operation & op,
                                                OpVector & res)
 {
@@ -213,7 +213,7 @@ HandlerResult TerrainModProperty::move_handler(Entity * e,
     return OPERATION_IGNORED;
 }
 
-HandlerResult TerrainModProperty::delete_handler(Entity * e,
+HandlerResult TerrainModProperty::delete_handler(LocatedEntity * e,
                                                  const Operation & op,
                                                  OpVector & res)
 {

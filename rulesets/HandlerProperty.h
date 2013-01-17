@@ -22,6 +22,10 @@
 
 #include "common/Property.h"
 
+typedef HandlerResult (*Handler)(LocatedEntity *,
+                                 const Operation &,
+                                 OpVector &);
+
 /// \brief Class to handle a property that triggers a handler.
 /// \ingroup PropertyClasses
 template <typename T>
@@ -34,7 +38,7 @@ class HandlerProperty : public Property<T> {
 
     virtual HandlerProperty<T> * copy() const;
 
-    virtual void install(Entity *);
+    virtual void install(LocatedEntity *);
 };
 
 #endif // RULESETS_HANDLER_PROPERTY_H

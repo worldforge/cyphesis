@@ -31,9 +31,9 @@ class TransientProperty : public Property<double> {
 
     virtual TransientProperty * copy() const;
 
-    virtual void install(Entity *);
+    virtual void install(LocatedEntity *);
 
-    virtual void apply(Entity *);
+    virtual void apply(LocatedEntity *);
 };
 
 #endif // RULESETS_TRANSIENT_PROPERTY_H

@@ -31,7 +31,7 @@ BaseWorld * BaseWorld::m_instance = 0;
 /// This constructor registers the instance created as the singleton, and
 /// in debug mode ensures that an instance has not already been created.
 /// @param gw the top level in-game entity in the world.
-BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
 {
     assert(m_instance == 0);
     m_instance = this;
@@ -51,7 +51,7 @@ BaseWorld::~BaseWorld()
 ///
 /// @param id string ID of Entity to be retrieved.
 /// @return pointer to Entity retrieved, or zero if it was not found.
-Entity * BaseWorld::getEntity(const std::string & id) const
+LocatedEntity * BaseWorld::getEntity(const std::string & id) const
 {
     long intId = integerId(id);
 
@@ -68,7 +68,7 @@ Entity * BaseWorld::getEntity(const std::string & id) const
 ///
 /// @param id integer ID of Entity to be retrieved.
 /// @return pointer to Entity retrieved, or zero if it was not found.
-Entity * BaseWorld::getEntity(long id) const
+LocatedEntity * BaseWorld::getEntity(long id) const
 {
     EntityDict::const_iterator I = m_eobjects.find(id);
     if (I != m_eobjects.end()) {

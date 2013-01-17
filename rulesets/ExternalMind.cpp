@@ -21,9 +21,10 @@
 
 #include "rulesets/Entity.h"
 
-#include "common/log.h"
+#include "common/BaseWorld.h"
 #include "common/compose.hpp"
 #include "common/Link.h"
+#include "common/log.h"
 
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>

@@ -22,7 +22,7 @@
 #include "WorldRouter.h"
 #include "EntityBuilder.h"
 
-#include "rulesets/Entity.h"
+#include "rulesets/LocatedEntity.h"
 
 #include "common/Database.h"
 #include "common/TypeNode.h"
@@ -92,7 +92,7 @@ StorageManager:: StorageManager(WorldRouter & world) :
 }
 
 /// \brief Called when a new Entity is inserted in the world
-void StorageManager::entityInserted(Entity * ent)
+void StorageManager::entityInserted(LocatedEntity * ent)
 {
     if (ent->getFlags() & (entity_ephem)) {
         // This entity is not persisted.
@@ -113,7 +113,7 @@ void StorageManager::entityInserted(Entity * ent)
 }
 
 /// \brief Called when an Entity is modified
-void StorageManager::entityUpdated(Entity * ent)
+void StorageManager::entityUpdated(LocatedEntity * ent)
 {
     if (ent->isDestroyed()) {
         m_destroyedEntities.push_back(ent->getIntId());
@@ -138,7 +138,7 @@ void StorageManager::encodeProperty(PropertyBase * prop, std::string & store)
     Database::instance()->encodeObject(map, store);
 }
 
-void StorageManager::restoreProperties(Entity * ent)
+void StorageManager::restoreProperties(LocatedEntity * ent)
 {
     Database * db = Database::instance();
     PropertyManager * pm = PropertyManager::instance();
@@ -186,7 +186,7 @@ void StorageManager::restoreProperties(Entity * ent)
 }
 
 
-void StorageManager::insertEntity(Entity * ent)
+void StorageManager::insertEntity(LocatedEntity * ent)
 {
     std::string location;
     Atlas::Message::MapType map;
@@ -223,7 +223,7 @@ void StorageManager::insertEntity(Entity * ent)
     ent->updated.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityUpdated), ent));
 }
 
-void StorageManager::updateEntity(Entity * ent)
+void StorageManager::updateEntity(LocatedEntity * ent)
 {
     std::string location;
     Atlas::Message::MapType map;
@@ -269,7 +269,7 @@ void StorageManager::updateEntity(Entity * ent)
     ent->setFlags(entity_clean);
 }
 
-void StorageManager::restoreChildren(Entity * parent)
+void StorageManager::restoreChildren(LocatedEntity * parent)
 {
     Database * db = Database::instance();
     DatabaseResult res = db->selectEntities(parent->getId());
@@ -284,7 +284,7 @@ void StorageManager::restoreChildren(Entity * parent)
         const int int_id = forceIntegerId(id);
         const std::string type = I.column("type");
         Atlas::Objects::Entity::Anonymous attrs;
-        Entity * child = eb->newEntity(id, int_id, type, attrs, BaseWorld::instance());
+        LocatedEntity * child = eb->newEntity(id, int_id, type, attrs, BaseWorld::instance());
         if (!child) {
             log(ERROR, compose("Could not restore entity with id %1 of type %2"
                     ", most likely caused by this type missing.",
@@ -387,7 +387,7 @@ void StorageManager::tick()
 
 int StorageManager::initWorld()
 {
-    Entity * ent = &BaseWorld::instance().m_gameWorld;
+    LocatedEntity * ent = &BaseWorld::instance().m_gameWorld;
 
     ent->updated.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityUpdated), ent));
     ent->setFlags(entity_clean);
@@ -397,7 +397,7 @@ int StorageManager::initWorld()
 
 int StorageManager::restoreWorld()
 {
-    Entity * ent = &BaseWorld::instance().m_gameWorld;
+    LocatedEntity * ent = &BaseWorld::instance().m_gameWorld;
 
     restoreChildren(ent);
 

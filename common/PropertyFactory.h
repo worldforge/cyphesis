@@ -20,7 +20,6 @@
 #ifndef COMMON_PROPERTY_FACTORY_H
 #define COMMON_PROPERTY_FACTORY_H
 
-class Entity;
 class PropertyBase;
 
 /// \brief Kit interface for factories to create Property objects.

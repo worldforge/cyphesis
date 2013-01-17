@@ -22,6 +22,14 @@
 
 #include "common/Property.h"
 
+#include <map>
+
+typedef HandlerResult (*Handler)(LocatedEntity *,
+                                 const Operation &,
+                                 OpVector &);
+
+typedef std::map<int, Handler> HandlerMap;
+
 /// \brief Class to handle a property that triggers a many handlers.
 /// \ingroup PropertyClasses
 template <typename T>
@@ -33,7 +41,7 @@ class MultiHandlerProperty : public Property<T> {
 
     virtual MultiHandlerProperty<T> * copy() const;
 
-    virtual void install(Entity *);
+    virtual void install(LocatedEntity *);
 };
 
 #endif // RULESETS_MULTI_HANDLER_PROPERTY_H

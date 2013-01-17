@@ -26,8 +26,9 @@
 
 #include <wfmath/const.h>
 
-#include <string>
 #include <list>
+#include <map>
+#include <string>
 
 class Location;
 class MemEntity;

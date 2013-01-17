@@ -58,11 +58,11 @@ int main()
 
 #include "TestWorld.h"
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     return 0;
@@ -70,7 +70,7 @@ Entity * TestWorld::addNewEntity(const std::string &,
 
 #include "physics/Shape.h"
 
-const TerrainProperty * TerrainEffectorProperty::getTerrain(Entity * owner)
+const TerrainProperty * TerrainEffectorProperty::getTerrain(LocatedEntity * owner)
 {
     return 0;
 }

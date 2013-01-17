@@ -31,7 +31,9 @@
 
 #include <Atlas/Objects/Operation.h>
 
-static HandlerResult test_handler(Entity *, const Operation &, OpVector &)
+static HandlerResult test_handler(LocatedEntity *,
+                                  const Operation &,
+                                  OpVector &)
 {
     return OPERATION_HANDLED;
 }
@@ -69,16 +71,12 @@ int main()
 
 #include "TestWorld.h"
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     return 0;
-}
-
-void Entity::installHandler(int class_no, Handler handler)
-{
 }

@@ -54,7 +54,7 @@ class TrustedConnectionCreatorintegration : public Cyphesis::TestBase
     static LogEvent m_logEvent_logged;
     static Operation m_Link_send_sent;
     static Operation m_BaseWorld_message_called;
-    static Entity * m_BaseWorld_message_called_from;
+    static LocatedEntity * m_BaseWorld_message_called_from;
     static Operation m_Entity_callOperation_called;
 
     ServerRouting * m_server;
@@ -75,14 +75,14 @@ class TrustedConnectionCreatorintegration : public Cyphesis::TestBase
 
     static void logEvent_logged(LogEvent le);
     static void Link_send_sent(const Operation & op);
-    static void BaseWorld_message_called(const Operation & op, Entity &);
+    static void BaseWorld_message_called(const Operation & op, LocatedEntity &);
     static void Entity_callOperation_called(const Operation & op);
 };
 
 LogEvent TrustedConnectionCreatorintegration::m_logEvent_logged = NONE;
 Operation TrustedConnectionCreatorintegration::m_Link_send_sent(0);
 Operation TrustedConnectionCreatorintegration::m_BaseWorld_message_called(0);
-Entity * TrustedConnectionCreatorintegration::m_BaseWorld_message_called_from(0);
+LocatedEntity * TrustedConnectionCreatorintegration::m_BaseWorld_message_called_from(0);
 Operation TrustedConnectionCreatorintegration::m_Entity_callOperation_called(0);
 
 void TrustedConnectionCreatorintegration::logEvent_logged(LogEvent le)
@@ -97,7 +97,7 @@ void TrustedConnectionCreatorintegration::Link_send_sent(const Operation & op)
 
 void TrustedConnectionCreatorintegration::BaseWorld_message_called(
       const Operation & op,
-      Entity & ent)
+      LocatedEntity & ent)
 {
     m_BaseWorld_message_called = op;
     m_BaseWorld_message_called_from = &ent;
@@ -264,12 +264,12 @@ void TrustedConnectionCreatorintegration::test_external_op_puppet_nonexistant()
     ASSERT_EQUAL(m_Link_send_sent->getTo(), m_creator->getId());
 }
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
     TrustedConnectionCreatorintegration::BaseWorld_message_called(op, ent);
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     return 0;
@@ -327,7 +327,7 @@ int UNSEEN_NO = -1;
 int UPDATE_NO = -1;
 } } }
 
-Pedestrian::Pedestrian(Entity & body) : Movement(body)
+Pedestrian::Pedestrian(LocatedEntity & body) : Movement(body)
 {
 }
 
@@ -352,7 +352,7 @@ Operation Pedestrian::generateMove(const Location & new_location)
     return moveOp;
 }
 
-Movement::Movement(Entity & body) : m_body(body),
+Movement::Movement(LocatedEntity & body) : m_body(body),
                                     m_serialno(0)
 {
 }
@@ -806,6 +806,24 @@ PropertyBase * Entity::setProperty(const std::string & name,
     return m_properties[name] = prop;
 }
 
+void Entity::installHandler(int class_no, Handler handler)
+{
+}
+
+void Entity::installDelegate(int class_no, const std::string & delegate)
+{
+}
+
+Domain * Entity::getMovementDomain()
+{
+    return 0;
+}
+
+void Entity::sendWorld(const Operation & op)
+{
+    BaseWorld::instance().message(op, *this);
+}
+
 void Entity::onContainered()
 {
 }
@@ -852,6 +870,38 @@ PropertyBase * LocatedEntity::setAttr(const std::string & name,
 const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
 {
     return 0;
+}
+
+PropertyBase * LocatedEntity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * LocatedEntity::setProperty(const std::string & name,
+                                          PropertyBase * prop)
+{
+    return 0;
+}
+
+void LocatedEntity::installHandler(int, Handler)
+{
+}
+
+void LocatedEntity::installDelegate(int, const std::string &)
+{
+}
+
+void LocatedEntity::destroy()
+{
+}
+
+Domain * LocatedEntity::getMovementDomain()
+{
+    return 0;
+}
+
+void LocatedEntity::sendWorld(const Operation & op)
+{
 }
 
 void LocatedEntity::onContainered()
@@ -926,13 +976,13 @@ void OutfitProperty::cleanUp()
 {
 }
 
-void OutfitProperty::wear(Entity * wearer,
+void OutfitProperty::wear(LocatedEntity * wearer,
                           const std::string & location,
-                          Entity * garment)
+                          LocatedEntity * garment)
 {
 }
 
-void OutfitProperty::itemRemoved(Entity * garment, Entity * wearer)
+void OutfitProperty::itemRemoved(LocatedEntity * garment, LocatedEntity * wearer)
 {
 }
 
@@ -970,34 +1020,34 @@ TasksProperty * TasksProperty::copy() const
     return 0;
 }
 
-int TasksProperty::startTask(Task *, Entity *, const Operation &, OpVector &)
+int TasksProperty::startTask(Task *, LocatedEntity *, const Operation &, OpVector &)
 {
     return 0;
 }
 
-int TasksProperty::updateTask(Entity *, OpVector &)
+int TasksProperty::updateTask(LocatedEntity *, OpVector &)
 {
     return 0;
 }
 
-int TasksProperty::clearTask(Entity *, OpVector &)
+int TasksProperty::clearTask(LocatedEntity *, OpVector &)
 {
     return 0;
 }
 
-void TasksProperty::stopTask(Entity *, OpVector &)
+void TasksProperty::stopTask(LocatedEntity *, OpVector &)
 {
 }
 
-void TasksProperty::TickOperation(Entity *, const Operation &, OpVector &)
+void TasksProperty::TickOperation(LocatedEntity *, const Operation &, OpVector &)
 {
 }
 
-void TasksProperty::UseOperation(Entity *, const Operation &, OpVector &)
+void TasksProperty::UseOperation(LocatedEntity *, const Operation &, OpVector &)
 {
 }
 
-HandlerResult TasksProperty::operation(Entity *, const Operation &, OpVector &)
+HandlerResult TasksProperty::operation(LocatedEntity *, const Operation &, OpVector &)
 {
     return OPERATION_IGNORED;
 }
@@ -1010,11 +1060,11 @@ PropertyBase::~PropertyBase()
 {
 }
 
-void PropertyBase::install(Entity *)
+void PropertyBase::install(LocatedEntity *)
 {
 }
 
-void PropertyBase::apply(Entity *)
+void PropertyBase::apply(LocatedEntity *)
 {
 }
 
@@ -1029,7 +1079,7 @@ void PropertyBase::add(const std::string & s,
 {
 }
 
-HandlerResult PropertyBase::operation(Entity *,
+HandlerResult PropertyBase::operation(LocatedEntity *,
                                       const Operation &,
                                       OpVector &)
 {
@@ -1121,7 +1171,7 @@ StatusProperty * StatusProperty::copy() const
     return 0;
 }
 
-void StatusProperty::apply(Entity * owner)
+void StatusProperty::apply(LocatedEntity * owner)
 {
 }
 
@@ -1129,7 +1179,7 @@ BBoxProperty::BBoxProperty()
 {
 }
 
-void BBoxProperty::apply(Entity * ent)
+void BBoxProperty::apply(LocatedEntity * ent)
 {
 }
 
@@ -1243,7 +1293,7 @@ TypeNode::~TypeNode()
 
 BaseWorld * BaseWorld::m_instance = 0;
 
-BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
 {
     m_instance = this;
 }
@@ -1254,7 +1304,7 @@ BaseWorld::~BaseWorld()
     delete &m_gameWorld;
 }
 
-Entity * BaseWorld::getEntity(const std::string & id) const
+LocatedEntity * BaseWorld::getEntity(const std::string & id) const
 {
     long intId = integerId(id);
 
@@ -1267,7 +1317,7 @@ Entity * BaseWorld::getEntity(const std::string & id) const
     }
 }
 
-Entity * BaseWorld::getEntity(long id) const
+LocatedEntity * BaseWorld::getEntity(long id) const
 {
     EntityDict::const_iterator I = m_eobjects.find(id);
     if (I != m_eobjects.end()) {
@@ -1306,7 +1356,7 @@ const Root & Inheritance::getClass(const std::string & parent)
     return noClass;
 }
 
-EntityRef::EntityRef(Entity* e) : m_inner(e)
+EntityRef::EntityRef(LocatedEntity* e) : m_inner(e)
 {
 }
 

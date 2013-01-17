@@ -44,7 +44,7 @@ void ArithmeticBuilder::del()
 }
 
 ArithmeticScript * ArithmeticBuilder::newArithmetic(const std::string & name,
-                                                    Entity * owner)
+                                                    LocatedEntity * owner)
 {
     PythonArithmeticFactory paf("world.statistics.Statistics", "Statistics");
     paf.setup();

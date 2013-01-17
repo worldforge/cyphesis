@@ -59,9 +59,9 @@ static const bool debug_flag = false;
 /// when broadcasting.
 struct OpQueEntry {
     Operation op;
-    Entity & from;
+    LocatedEntity & from;
 
-    explicit OpQueEntry(const Operation & o, Entity & f);
+    explicit OpQueEntry(const Operation & o, LocatedEntity & f);
     OpQueEntry(const OpQueEntry & o);
     ~OpQueEntry();
 
@@ -74,7 +74,8 @@ struct OpQueEntry {
     }
 };
 
-inline OpQueEntry::OpQueEntry(const Operation & o, Entity & f) : op(o), from(f)
+inline OpQueEntry::OpQueEntry(const Operation & o, LocatedEntity & f) : op(o),
+                                                                        from(f)
 {
     from.incRef();
 }
@@ -152,7 +153,7 @@ WorldRouter::~WorldRouter()
 /// queue. The From attribute of the operation is set to the id of
 /// the entity that is responsible for adding the operation to the
 /// queue.
-void WorldRouter::addOperationToQueue(const Operation & op, Entity & ent)
+void WorldRouter::addOperationToQueue(const Operation & op, LocatedEntity & ent)
 {
     assert(op.isValid());
     assert(op->getFrom() != "cheat");
@@ -199,7 +200,7 @@ Operation WorldRouter::getOperationFromQueue()
 /// the default spawn area if necessary. Handle inserting the
 /// entity into the loc/contains tree maintained by the Entity
 /// class. Send a Setup op to the entity.
-Entity * WorldRouter::addEntity(Entity * ent)
+LocatedEntity * WorldRouter::addEntity(LocatedEntity * ent)
 {
     debug(std::cout << "WorldRouter::addEntity(" << ent->getIntId() << ")" << std::endl
                     << std::flush;);
@@ -256,8 +257,8 @@ Entity * WorldRouter::addEntity(Entity * ent)
 /// Construct a new entity using the entity description provided,
 /// and pass it to addEntity().
 /// @return a pointer to the new entity.
-Entity * WorldRouter::addNewEntity(const std::string & typestr,
-                                   const RootEntity & attrs)
+LocatedEntity * WorldRouter::addNewEntity(const std::string & typestr,
+                                          const RootEntity & attrs)
 {
     debug(std::cout << "WorldRouter::addNewEntity(\"" << typestr << "\", attrs)"
                     << std::endl << std::flush;);
@@ -269,7 +270,7 @@ Entity * WorldRouter::addNewEntity(const std::string & typestr,
         return 0;
     }
 
-    Entity * ent = EntityBuilder::instance()->newEntity(id, intId, typestr, attrs, *this);
+    LocatedEntity * ent = EntityBuilder::instance()->newEntity(id, intId, typestr, attrs, *this);
     if (ent == 0) {
         log(ERROR, String::compose("Attempt to create an entity of type \"%1\" "
                                    "but type is unknown or forbidden",
@@ -279,7 +280,7 @@ Entity * WorldRouter::addNewEntity(const std::string & typestr,
     return addEntity(ent);
 }
 
-int WorldRouter::createSpawnPoint(const MapType & data, Entity * ent)
+int WorldRouter::createSpawnPoint(const MapType & data, LocatedEntity * ent)
 {
     MapType::const_iterator I = data.find("name");
     if (I == data.end() || !I->second.isString()) {
@@ -318,9 +319,9 @@ int WorldRouter::getSpawnList(Atlas::Message::ListType & data)
     return 0;
 }
 
-Entity * WorldRouter::spawnNewEntity(const std::string & name,
-                                     const std::string & type,
-                                     const RootEntity & desc)
+LocatedEntity * WorldRouter::spawnNewEntity(const std::string & name,
+                                            const std::string & type,
+                                            const RootEntity & desc)
 {
     SpawnDict::const_iterator I = m_spawns.find(name);
     if (I == m_spawns.end()) {
@@ -333,7 +334,7 @@ Entity * WorldRouter::spawnNewEntity(const std::string & name,
         log(ERROR, String::compose("Spawn not permitting %1", type));
         return 0;
     }
-    Entity * e = addNewEntity(type, desc);
+    LocatedEntity * e = addNewEntity(type, desc);
     if (e == 0) {
         log(ERROR, String::compose("Entity creation failed %1", type));
         return e;
@@ -385,7 +386,7 @@ Task * WorldRouter::activateTask(const std::string & tool,
 }
 
 ArithmeticScript * WorldRouter::newArithmetic(const std::string & name,
-                                              Entity * owner)
+                                              LocatedEntity * owner)
 {
     return ArithmeticBuilder::instance()->newArithmetic(name, owner);
 }
@@ -398,7 +399,7 @@ ArithmeticScript * WorldRouter::newArithmetic(const std::string & name,
 /// reference held by the world is decremented. There may still be
 /// a reference held by an operation in the queue from the removed
 /// entity.
-void WorldRouter::delEntity(Entity * ent)
+void WorldRouter::delEntity(LocatedEntity * ent)
 {
     if (ent == &m_gameWorld) {
         log(WARNING, "Attempt to delete game world");
@@ -417,7 +418,7 @@ void WorldRouter::delEntity(Entity * ent)
 ///
 /// Pass an operation to addOperationToQueue()
 /// so it gets added to the queue for dispatch.
-void WorldRouter::message(const Operation & op, Entity & ent)
+void WorldRouter::message(const Operation & op, LocatedEntity & ent)
 {
     addOperationToQueue(op, ent);
     debug(std::cout << "WorldRouter::message {"
@@ -454,7 +455,7 @@ bool WorldRouter::broadcastPerception(const Operation & op) const
 /// Pass the operation to the target entity. The resulting operations
 /// have their ref numbers set, and are added to the queue for
 /// dispatch.
-void WorldRouter::deliverTo(const Operation & op, Entity & ent)
+void WorldRouter::deliverTo(const Operation & op, LocatedEntity & ent)
 {
     OpVector res;
     ent.operation(op, res);
@@ -481,7 +482,7 @@ void WorldRouter::deliverTo(const Operation & op, Entity & ent)
 /// that it is possible that this entity has been destroyed, but it
 /// should still have a valid location, so can be used for range
 /// calculations.
-void WorldRouter::operation(const Operation & op, Entity & from)
+void WorldRouter::operation(const Operation & op, LocatedEntity & from)
 {
     debug(std::cout << "WorldRouter::operation {"
                     << op->getParents().front() << ":"
@@ -493,7 +494,7 @@ void WorldRouter::operation(const Operation & op, Entity & from)
     if (!op->isDefaultTo()) {
         const std::string & to = op->getTo();
         assert(!to.empty());
-        Entity * to_entity = 0;
+        LocatedEntity * to_entity = 0;
 
         if (to == from.getId()) {
             if (from.isDestroyed()) {
@@ -551,7 +552,7 @@ void WorldRouter::operation(const Operation & op, Entity & from)
 /// to the entity to the set of perceptive entities. This method is
 /// called when key events occur that indicate that the entity in
 /// question can receive broadcast perception operations.
-void WorldRouter::addPerceptive(Entity * perceptive)
+void WorldRouter::addPerceptive(LocatedEntity * perceptive)
 {
     debug(std::cout << "WorldRouter::addPerceptive" << std::endl << std::flush;);
     m_perceptives.insert(perceptive);
@@ -635,7 +636,7 @@ bool WorldRouter::idle(const SystemTime & time)
 /// @param name string specifying name of the instance required.
 /// @return a pointer to an entity with the type required, or zero if an
 /// instance with this name was not found.
-Entity * WorldRouter::findByName(const std::string & name)
+LocatedEntity * WorldRouter::findByName(const std::string & name)
 {
     Element name_attr;
     EntityDict::const_iterator Iend = m_eobjects.end();
@@ -655,7 +656,7 @@ Entity * WorldRouter::findByName(const std::string & name)
 /// @param type string specifying the class name of the instance required.
 /// @return a pointer to an entity of the type required, or zero if no
 /// instance was found.
-Entity * WorldRouter::findByType(const std::string & type)
+LocatedEntity * WorldRouter::findByType(const std::string & type)
 {
     EntityDict::const_iterator Iend = m_eobjects.end();
     for(EntityDict::const_iterator I = m_eobjects.begin(); I != Iend; ++I) {

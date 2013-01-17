@@ -37,7 +37,7 @@ StatusProperty * StatusProperty::copy() const
     return new StatusProperty(*this);
 }
 
-void StatusProperty::apply(Entity * owner)
+void StatusProperty::apply(LocatedEntity * owner)
 {
     if (m_data < 0) {
         Delete del;

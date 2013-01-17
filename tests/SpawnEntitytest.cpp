@@ -132,7 +132,7 @@ void addToEntity(const Point3D & p, std::vector<double> & vd)
     vd[2] = p[2];
 }
 
-EntityRef::EntityRef(Entity* e) : m_inner(e)
+EntityRef::EntityRef(LocatedEntity* e) : m_inner(e)
 {
 }
 
@@ -168,7 +168,7 @@ AreaProperty * AreaProperty::copy() const
     return 0;
 }
 
-void AreaProperty::apply(Entity * owner)
+void AreaProperty::apply(LocatedEntity * owner)
 {
 }
 
@@ -182,11 +182,11 @@ PropertyBase::~PropertyBase()
 {
 }
 
-void PropertyBase::install(Entity *)
+void PropertyBase::install(LocatedEntity *)
 {
 }
 
-void PropertyBase::apply(Entity *)
+void PropertyBase::apply(LocatedEntity *)
 {
 }
 
@@ -200,7 +200,7 @@ void PropertyBase::add(const std::string & s,
 {
 }
 
-HandlerResult PropertyBase::operation(Entity *,
+HandlerResult PropertyBase::operation(LocatedEntity *,
                                       const Operation &,
                                       OpVector &)
 {

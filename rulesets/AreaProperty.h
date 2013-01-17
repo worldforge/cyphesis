@@ -37,7 +37,7 @@ class AreaProperty : public TerrainEffectorProperty {
 
     const Form<2> * shape() const { return m_shape; }
 
-    virtual void apply(Entity *);
+    virtual void apply(LocatedEntity *);
 
     virtual void set(const Atlas::Message::Element & val);
     virtual AreaProperty * copy() const;

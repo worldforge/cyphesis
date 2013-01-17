@@ -25,7 +25,7 @@
 class BurnSpeedProperty
 {
   public:
-    static HandlerResult burn_handler(Entity * e,
+    static HandlerResult burn_handler(LocatedEntity * e,
                                       const Operation & op,
                                       OpVector & res);
 };

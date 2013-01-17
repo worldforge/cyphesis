@@ -175,8 +175,8 @@ void Accountintegration::teardown()
 void Accountintegration::test_addNewCharacter()
 {
     Anonymous new_char;
-    Entity * chr = m_ac->addNewCharacter("thing", new_char,
-                                         RootEntity());
+    LocatedEntity * chr = m_ac->addNewCharacter("thing", new_char,
+                                                RootEntity());
     assert(chr != 0);
 
     std::cout << "Test 1" << std::endl << std::flush;
@@ -242,8 +242,8 @@ void Accountintegration::test_ImaginaryOperation()
 void Accountintegration::test_LookOperation()
 {
     Anonymous new_char;
-    Entity * chr = m_ac->addNewCharacter("thing", new_char,
-                                         RootEntity());
+    LocatedEntity * chr = m_ac->addNewCharacter("thing", new_char,
+                                                RootEntity());
 
     Anonymous op_arg;
     op_arg->setId("1");
@@ -261,8 +261,8 @@ void Accountintegration::test_LookOperation()
 void Accountintegration::test_SetOperation()
 {
     Anonymous new_char;
-    Entity * chr = m_ac->addNewCharacter("thing", new_char,
-                                         RootEntity());
+    LocatedEntity * chr = m_ac->addNewCharacter("thing", new_char,
+                                                RootEntity());
     BBox newBox(WFMath::Point<3>(-0.5, -0.5, 0.0),
                 WFMath::Point<3>(-0.5, -0.5, 2.0));
     chr->m_location.setBBox(newBox);
@@ -342,11 +342,11 @@ int main()
     return t.run();
 }
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     return 0;
@@ -432,7 +432,7 @@ ArithmeticBuilder * ArithmeticBuilder::instance()
 }
 
 ArithmeticScript * ArithmeticBuilder::newArithmetic(const std::string & name,
-                                                    Entity * owner)
+                                                    LocatedEntity * owner)
 {
     return 0;
 }
@@ -459,7 +459,7 @@ EntityFactory<T>::~EntityFactory()
 }
 
 template <class T>
-Entity * EntityFactory<T>::newEntity(const std::string & id, long intId)
+LocatedEntity * EntityFactory<T>::newEntity(const std::string & id, long intId)
 {
     return new Entity(id, intId);
 }
@@ -476,13 +476,15 @@ class Stackable;
 class World;
 
 template <>
-Entity * EntityFactory<World>::newEntity(const std::string & id, long intId)
+LocatedEntity * EntityFactory<World>::newEntity(const std::string & id,
+                                                long intId)
 {
     return 0;
 }
 
 template <>
-Entity * EntityFactory<Character>::newEntity(const std::string & id, long intId)
+LocatedEntity * EntityFactory<Character>::newEntity(const std::string & id,
+                                                    long intId)
 {
     return new Character(id, intId);
 }
@@ -522,7 +524,7 @@ void Juncture::OtherOperation(const Operation & op, OpVector & res)
 {
 }
 
-int Juncture::teleportEntity(const Entity * ent)
+int Juncture::teleportEntity(const LocatedEntity * ent)
 {
     return 0;
 }
@@ -656,7 +658,7 @@ AreaProperty * AreaProperty::copy() const
     return 0;
 }
 
-void AreaProperty::apply(Entity * owner)
+void AreaProperty::apply(LocatedEntity * owner)
 {
 }
 
@@ -752,13 +754,13 @@ void OutfitProperty::cleanUp()
 {
 }
 
-void OutfitProperty::wear(Entity * wearer,
+void OutfitProperty::wear(LocatedEntity * wearer,
                           const std::string & location,
-                          Entity * garment)
+                          LocatedEntity * garment)
 {
 }
 
-void OutfitProperty::itemRemoved(Entity * garment, Entity * wearer)
+void OutfitProperty::itemRemoved(LocatedEntity * garment, LocatedEntity * wearer)
 {
 }
 
@@ -780,34 +782,34 @@ TasksProperty * TasksProperty::copy() const
     return 0;
 }
 
-int TasksProperty::startTask(Task *, Entity *, const Operation &, OpVector &)
+int TasksProperty::startTask(Task *, LocatedEntity *, const Operation &, OpVector &)
 {
     return 0;
 }
 
-int TasksProperty::updateTask(Entity *, OpVector &)
+int TasksProperty::updateTask(LocatedEntity *, OpVector &)
 {
     return 0;
 }
 
-int TasksProperty::clearTask(Entity *, OpVector &)
+int TasksProperty::clearTask(LocatedEntity *, OpVector &)
 {
     return 0;
 }
 
-void TasksProperty::stopTask(Entity *, OpVector &)
+void TasksProperty::stopTask(LocatedEntity *, OpVector &)
 {
 }
 
-void TasksProperty::TickOperation(Entity *, const Operation &, OpVector &)
+void TasksProperty::TickOperation(LocatedEntity *, const Operation &, OpVector &)
 {
 }
 
-void TasksProperty::UseOperation(Entity *, const Operation &, OpVector &)
+void TasksProperty::UseOperation(LocatedEntity *, const Operation &, OpVector &)
 {
 }
 
-HandlerResult TasksProperty::operation(Entity *, const Operation &, OpVector &)
+HandlerResult TasksProperty::operation(LocatedEntity *, const Operation &, OpVector &)
 {
     return OPERATION_IGNORED;
 }
@@ -820,11 +822,11 @@ PropertyBase::~PropertyBase()
 {
 }
 
-void PropertyBase::install(Entity *)
+void PropertyBase::install(LocatedEntity *)
 {
 }
 
-void PropertyBase::apply(Entity *)
+void PropertyBase::apply(LocatedEntity *)
 {
 }
 
@@ -839,7 +841,7 @@ void PropertyBase::add(const std::string & s,
 {
 }
 
-HandlerResult PropertyBase::operation(Entity *,
+HandlerResult PropertyBase::operation(LocatedEntity *,
                                       const Operation &,
                                       OpVector &)
 {
@@ -914,7 +916,7 @@ StatusProperty * StatusProperty::copy() const
     return 0;
 }
 
-void StatusProperty::apply(Entity * owner)
+void StatusProperty::apply(LocatedEntity * owner)
 {
 }
 
@@ -922,7 +924,7 @@ BBoxProperty::BBoxProperty()
 {
 }
 
-void BBoxProperty::apply(Entity * ent)
+void BBoxProperty::apply(LocatedEntity * ent)
 {
 }
 
@@ -950,28 +952,28 @@ BBoxProperty * BBoxProperty::copy() const
     return 0;
 }
 
-HandlerResult BiomassProperty::eat_handler(Entity * e,
+HandlerResult BiomassProperty::eat_handler(LocatedEntity * e,
                                            const Operation & op,
                                            OpVector & res)
 {
     return OPERATION_IGNORED;
 }
 
-HandlerResult BurnSpeedProperty::burn_handler(Entity * e,
+HandlerResult BurnSpeedProperty::burn_handler(LocatedEntity * e,
                                               const Operation & op,
                                               OpVector & res)
 {
     return OPERATION_IGNORED;
 }
 
-HandlerResult DecaysProperty::del_handler(Entity * e,
+HandlerResult DecaysProperty::del_handler(LocatedEntity * e,
                                           const Operation &,
                                           OpVector & res)
 {
     return OPERATION_IGNORED;
 }
 
-HandlerResult TeleportProperty::teleport_handler(Entity * e,
+HandlerResult TeleportProperty::teleport_handler(LocatedEntity * e,
                                                  const Operation & op,
                                                  OpVector & res)
 {
@@ -1029,27 +1031,27 @@ TerrainModProperty * TerrainModProperty::copy() const
     return 0;
 }
 
-void TerrainModProperty::install(Entity * owner)
+void TerrainModProperty::install(LocatedEntity * owner)
 {
 }
 
-void TerrainModProperty::apply(Entity * owner)
+void TerrainModProperty::apply(LocatedEntity * owner)
 {
 }
 
-void TerrainModProperty::move(Entity* owner)
+void TerrainModProperty::move(LocatedEntity* owner)
 {
 }
 
-void TerrainModProperty::remove(Entity * owner)
+void TerrainModProperty::remove(LocatedEntity * owner)
 {
 }
 
-Pedestrian::Pedestrian(Entity & body) : Movement(body)
+Pedestrian::Pedestrian(LocatedEntity & body) : Movement(body)
 {
 }
 
-Mercator::TerrainMod * TerrainModProperty::parseModData(Entity * owner,
+Mercator::TerrainMod * TerrainModProperty::parseModData(LocatedEntity * owner,
                                                         const MapType & modMap)
 {
     return 0;
@@ -1066,14 +1068,14 @@ void TerrainModProperty::setAttr(const std::string & name,
 {
 }
 
-HandlerResult TerrainModProperty::move_handler(Entity * e,
+HandlerResult TerrainModProperty::move_handler(LocatedEntity * e,
                                                const Operation & op,
                                                OpVector & res)
 {
     return OPERATION_IGNORED;
 }
 
-HandlerResult TerrainModProperty::delete_handler(Entity * e,
+HandlerResult TerrainModProperty::delete_handler(LocatedEntity * e,
                                                  const Operation & op,
                                                  OpVector & res)
 {
@@ -1089,7 +1091,7 @@ SetupProperty * SetupProperty::copy() const
     return 0;
 }
 
-void SetupProperty::install(Entity * ent)
+void SetupProperty::install(LocatedEntity * ent)
 {
 }
 
@@ -1102,7 +1104,7 @@ TickProperty * TickProperty::copy() const
     return 0;
 }
 
-void TickProperty::apply(Entity * ent)
+void TickProperty::apply(LocatedEntity * ent)
 {
 }
 
@@ -1124,7 +1126,7 @@ SimpleProperty * SimpleProperty::copy() const
     return 0;
 }
 
-void SimpleProperty::apply(Entity * owner)
+void SimpleProperty::apply(LocatedEntity * owner)
 {
 }
 
@@ -1168,7 +1170,7 @@ MindProperty * MindProperty::copy() const
     return 0;
 }
 
-void MindProperty::apply(Entity * ent)
+void MindProperty::apply(LocatedEntity * ent)
 {
 }
 
@@ -1185,7 +1187,7 @@ SpawnProperty * SpawnProperty::copy() const
     return 0;
 }
 
-void SpawnProperty::apply(Entity * ent)
+void SpawnProperty::apply(LocatedEntity * ent)
 {
 }
 
@@ -1202,7 +1204,7 @@ VisibilityProperty * VisibilityProperty::copy() const
     return 0;
 }
 
-void VisibilityProperty::apply(Entity * ent)
+void VisibilityProperty::apply(LocatedEntity * ent)
 {
 }
 
@@ -1214,11 +1216,11 @@ StatisticsProperty::~StatisticsProperty()
 {
 }
 
-void StatisticsProperty::install(Entity * ent)
+void StatisticsProperty::install(LocatedEntity * ent)
 {
 }
 
-void StatisticsProperty::apply(Entity * ent)
+void StatisticsProperty::apply(LocatedEntity * ent)
 {
 }
 
@@ -1254,7 +1256,7 @@ SolidProperty * SolidProperty::copy() const
     return 0;
 }
 
-void SolidProperty::apply(Entity * owner)
+void SolidProperty::apply(LocatedEntity * owner)
 {
 }
 
@@ -1271,11 +1273,11 @@ TransientProperty * TransientProperty::copy() const
     return 0;
 }
 
-void TransientProperty::install(Entity * ent)
+void TransientProperty::install(LocatedEntity * ent)
 {
 }
 
-void TransientProperty::apply(Entity * ent)
+void TransientProperty::apply(LocatedEntity * ent)
 {
 }
 
@@ -1293,7 +1295,7 @@ HandlerProperty<T> * HandlerProperty<T>::copy() const
 }
 
 template <typename T>
-void HandlerProperty<T>::install(Entity * ent)
+void HandlerProperty<T>::install(LocatedEntity * ent)
 {
 }
 
@@ -1322,7 +1324,7 @@ Operation Pedestrian::generateMove(const Location & new_location)
     return moveOp;
 }
 
-Movement::Movement(Entity & body) : m_body(body),
+Movement::Movement(LocatedEntity & body) : m_body(body),
                                     m_serialno(0)
 {
 }

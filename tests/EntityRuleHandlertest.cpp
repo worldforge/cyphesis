@@ -214,7 +214,7 @@ int PythonScriptFactory<T>::addScript(T * entity) const
     return 0;
 }
 
-template class PythonScriptFactory<Entity>;
+template class PythonScriptFactory<LocatedEntity>;
 
 template <class T>
 int PythonScriptFactory<T>::refreshClass()

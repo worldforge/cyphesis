@@ -104,11 +104,11 @@ static PyObject * TerrainProperty_findMods(PyProperty * self,
         PyErr_SetString(PyExc_TypeError, "Argument must be terrain pos");
         return NULL;
     }
-    std::vector<Entity *> result;
+    std::vector<LocatedEntity *> result;
     self->m_p.terrain->findMods(((PyPoint3D*)other)->coords, result);
     PyObject * ret = PyTuple_New(result.size());
-    std::vector<Entity *>::const_iterator I = result.begin();
-    std::vector<Entity *>::const_iterator Iend = result.end();
+    std::vector<LocatedEntity *>::const_iterator I = result.begin();
+    std::vector<LocatedEntity *>::const_iterator Iend = result.end();
     for (int i = 0; I != Iend; ++I, ++i) {
         PyTuple_SetItem(ret, i, wrapEntity(*I));
     }

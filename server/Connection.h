@@ -27,6 +27,7 @@
 class Account;
 class Character;
 class CommSocket;
+class LocatedEntity;
 class ServerRouting;
 
 typedef std::map<long, Router *> RouterMap;
@@ -76,7 +77,7 @@ class Connection : public Link, virtual public sigc::trackable {
 
     RouterMap & objects() { return m_objects; }
 
-    void addEntity(Entity * ent);
+    void addEntity(LocatedEntity * ent);
     void addObject(Router * obj);
     void removeObject(long id);
     void objectDeleted(long id);

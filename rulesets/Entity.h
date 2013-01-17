@@ -22,13 +22,9 @@
 
 #include "LocatedEntity.h"
 
-#include "common/BaseWorld.h"
-#include "common/Property.h"
-
 #include <iostream>
 
 class Motion;
-class Domain;
 
 typedef std::map<int, std::string> DelegateMap;
 
@@ -59,90 +55,12 @@ class Entity : public LocatedEntity {
         return m_motion;
     }
 
-    /// \brief Send an operation to the world for dispatch.
-    ///
-    /// sendWorld() bipasses serialno assignment, so you must ensure
-    /// that serialno is sorted. This allows client serialnos to get
-    /// in, so that client gets correct usefull refnos back.
-    void sendWorld(const Operation & op) {
-        BaseWorld::instance().message(op, *this);
-    }
-
     virtual PropertyBase * setAttr(const std::string & name,
                                    const Atlas::Message::Element &);
     virtual const PropertyBase * getProperty(const std::string & name) const;
 
-    PropertyBase * modProperty(const std::string & name);
-    PropertyBase * setProperty(const std::string & name, PropertyBase * prop);
-
-    /// \brief Get a property that is required to of a given type.
-    template <class PropertyT>
-    PropertyT * modPropertyClass(const std::string & name)
-    {
-        PropertyBase * p = modProperty(name);
-        if (p != 0) {
-            return dynamic_cast<PropertyT *>(p);
-        }
-        return 0;
-    }
-
-    /// \brief Get a modifiable property that is a generic property of a type
-    ///
-    /// If the property is not set on the Entity instance, but has a class
-    /// default, the default is copied to the instance, and a pointer is
-    /// returned if it is a property of the right type.
-    template <typename T>
-    Property<T> * modPropertyType(const std::string & name)
-    {
-        PropertyBase * p = modProperty(name);
-        if (p != 0) {
-            return dynamic_cast<Property<T> *>(p);
-        }
-        return 0;
-    }
-
-    /// \brief Require that a property of a given type is set.
-    ///
-    /// If the property is not set on the Entity instance, but has a class
-    /// default, the default is copied to the instance, and a pointer is
-    /// returned if it is a property of the right type. If it does not
-    /// exist, or is not of the right type, a new property is created of
-    /// the right type, and installed on the Entity instance.
-    template <class PropertyT>
-    PropertyT * requirePropertyClass(const std::string & name,
-                                     const Atlas::Message::Element & def_val
-                                     = Atlas::Message::Element())
-    {
-        PropertyBase * p = modProperty(name);
-        PropertyT * sp = 0;
-        if (p != 0) {
-            sp = dynamic_cast<PropertyT *>(p);
-        }
-        if (sp == 0) {
-            // If it is not of the right type, delete it and a new
-            // one of the right type will be inserted.
-            m_properties[name] = sp = new PropertyT;
-            sp->install(this);
-            if (p != 0) {
-                Atlas::Message::Element val;
-                if (p->get(val)) {
-                    sp->set(val);
-                }
-                delete p;
-            } else if (!def_val.isNone()) {
-                sp->set(def_val);
-            }
-            sp->apply(this);
-        }
-        return sp;
-    }
-
-    void installHandler(int, Handler);
-    void installDelegate(int, const std::string &);
-
-    void destroy();
-
-    Domain * getMovementDomain();
+    virtual PropertyBase * modProperty(const std::string & name);
+    virtual PropertyBase * setProperty(const std::string & name, PropertyBase * prop);
 
     virtual void addToMessage(Atlas::Message::MapType &) const;
     virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
@@ -177,21 +95,17 @@ class Entity : public LocatedEntity {
 
     void callOperation(const Operation &, OpVector &);
 
+    virtual void installHandler(int, Handler);
+    virtual void installDelegate(int, const std::string &);
+
     virtual void onContainered();
     virtual void onUpdated();
 
-    /// Signal indicating that this entity has been changed
-    sigc::signal<void> updated;
+    virtual void destroy();
 
-    /// Single shot signal indicating that this entity has changed its LOC
-    sigc::signal<void> containered;
+    virtual Domain * getMovementDomain();
 
-    /// \brief Signal emitted when this entity is removed from the server
-    ///
-    /// Note that this is usually well before the object is actually deleted
-    /// and marks the conceptual destruction of the concept this entity
-    /// represents, not the destruction of this object.
-    sigc::signal<void> destroyed;
+    virtual void sendWorld(const Operation & op);
 
     friend class Entitytest;
     friend class PropertyEntityintegration;

@@ -31,6 +31,11 @@ namespace Mercator {
 class TerrainProperty;
 class TerrainModTranslator;
 
+typedef HandlerResult (*Handler)(LocatedEntity *,
+                                 const Operation &,
+                                 OpVector &);
+typedef std::map<int, Handler> HandlerMap;
+
 /// \brief Class to handle Entity terrain modifier property
 /// \ingroup PropertyClasses
 class TerrainModProperty : public TerrainEffectorProperty {
@@ -55,21 +60,22 @@ class TerrainModProperty : public TerrainEffectorProperty {
 
     TerrainModProperty * copy() const;
 
-    virtual void install(Entity *);
-    virtual void apply(Entity *);
+    virtual void install(LocatedEntity *);
+    virtual void apply(LocatedEntity *);
 
     Mercator::TerrainMod * getModifier() {
         return m_modptr;
     }
 
     /// \brief Constructs a Mercator::TerrainMod from Atlas data
-    Mercator::TerrainMod * parseModData(Entity * owner, const Atlas::Message::MapType &);
+    Mercator::TerrainMod * parseModData(LocatedEntity * owner,
+                                        const Atlas::Message::MapType &);
 
     /// \brief Changes a modifier's position
-    void move(Entity*);
+    void move(LocatedEntity*);
 
     /// \brief Removes the modifier from the terrain
-    void remove(Entity*);
+    void remove(LocatedEntity*);
 
     /// \brief Retrieve a sub attribute of the property
     int getAttr(const std::string &,
@@ -78,10 +84,10 @@ class TerrainModProperty : public TerrainEffectorProperty {
     void setAttr(const std::string &,
                  const Atlas::Message::Element &);
 
-    static HandlerResult move_handler(Entity * e,
+    static HandlerResult move_handler(LocatedEntity * e,
                                       const Operation & op,
                                       OpVector & res);
-    static HandlerResult delete_handler(Entity * e,
+    static HandlerResult delete_handler(LocatedEntity * e,
                                         const Operation & op,
                                         OpVector & res);
 };

@@ -32,7 +32,7 @@
 class TestArithmeticFactory : public ArithmeticKit
 {
   public:
-    ArithmeticScript * newScript(Entity * owner) { return 0; }
+    ArithmeticScript * newScript(LocatedEntity * owner) { return 0; }
 };
 
 int main()

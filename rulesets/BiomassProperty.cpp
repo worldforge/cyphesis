@@ -19,7 +19,7 @@
 
 #include "rulesets/BiomassProperty.h"
 
-#include "rulesets/Entity.h"
+#include "rulesets/LocatedEntity.h"
 
 #include "common/debug.h"
 
@@ -29,13 +29,15 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/SmartPtr.h>
 
+#include <iostream>
+
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::Nourish;
 using Atlas::Objects::Operation::Set;
 
 static const bool debug_flag = false;
 
-HandlerResult BiomassProperty::eat_handler(Entity * e,
+HandlerResult BiomassProperty::eat_handler(LocatedEntity * e,
                                            const Operation & op,
                                            OpVector & res)
 {

@@ -90,7 +90,7 @@ int TeleportAuthenticator::removeTeleport(PendingTeleportMap::iterator I)
 ///
 /// \param entity_id The ID of the entity that was created
 /// \param possess_key The possess key sent by the client
-Entity *TeleportAuthenticator::authenticateTeleport(const std::string &entity_id,
+LocatedEntity * TeleportAuthenticator::authenticateTeleport(const std::string &entity_id,
                                             const std::string &possess_key)
 {
     PendingTeleportMap::iterator I = m_teleports.find(entity_id);
@@ -102,7 +102,7 @@ Entity *TeleportAuthenticator::authenticateTeleport(const std::string &entity_id
     PendingTeleport *entry = I->second;
     if (entry->validate(entity_id, possess_key)) {
         // We are authenticated!
-        Entity * entity = BaseWorld::instance().getEntity(entity_id);
+        LocatedEntity * entity = BaseWorld::instance().getEntity(entity_id);
         if (entity == 0) {
             // This means the authentication entry itself is invalid. Remove it.
             log(ERROR, String::compose("Unable to find teleported entity with ID %1",

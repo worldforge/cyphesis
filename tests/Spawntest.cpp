@@ -43,7 +43,7 @@ class TestSpawn : public Spawn
         return 0;
     }
 
-    virtual int populateEntity(Entity * ent,
+    virtual int populateEntity(LocatedEntity * ent,
                                const Atlas::Objects::Entity::RootEntity & dsc,
                                OpVector & res)
     {

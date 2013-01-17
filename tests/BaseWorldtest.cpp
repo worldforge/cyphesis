@@ -38,14 +38,13 @@ static void test_function(Atlas::Objects::Operation::RootOperation)
 {
 }
 
-class LocatedEntity;
-
-class Entity
+class LocatedEntity
 {
   public:
     const std::string m_id;
     const long m_intId;
-    explicit Entity(const std::string & id, long intId) : m_id(id), m_intId(intId) { }
+    explicit LocatedEntity(const std::string & id, long intId) : m_id(id),
+                                                                 m_intId(intId) { }
 
     const std::string & getId() const {
         return m_id;
@@ -58,23 +57,23 @@ class Entity
 
 class TestWorld : public BaseWorld {
   public:
-    explicit TestWorld(Entity & gw) : BaseWorld(gw) {
+    explicit TestWorld(LocatedEntity & gw) : BaseWorld(gw) {
         m_eobjects[m_gameWorld.getIntId()] = &m_gameWorld;
     }
 
     virtual bool idle(const SystemTime &) { return false; }
-    virtual Entity * addEntity(Entity * ent) { 
+    virtual LocatedEntity * addEntity(LocatedEntity * ent) { 
         m_eobjects[ent->getIntId()] = ent;
         return 0;
     }
-    virtual Entity * addNewEntity(const std::string &,
+    virtual LocatedEntity * addNewEntity(const std::string &,
                                   const Atlas::Objects::Entity::RootEntity &) {
         return 0;
     }
     int createSpawnPoint(const Atlas::Message::MapType & data,
-                         Entity *) { return 0; }
+                         LocatedEntity *) { return 0; }
     int getSpawnList(Atlas::Message::ListType & data) { return 0; }
-    Entity * spawnNewEntity(const std::string & name,
+    LocatedEntity * spawnNewEntity(const std::string & name,
                             const std::string & type,
                             const Atlas::Objects::Entity::RootEntity & desc) {
         return addNewEntity(type, desc);
@@ -82,13 +81,14 @@ class TestWorld : public BaseWorld {
     virtual Task * newTask(const std::string &, LocatedEntity &) { return 0; }
     virtual Task * activateTask(const std::string &, const std::string &,
                                 LocatedEntity *, LocatedEntity &) { return 0; }
-    virtual ArithmeticScript * newArithmetic(const std::string &, Entity *) {
+    virtual ArithmeticScript * newArithmetic(const std::string &, LocatedEntity *) {
         return 0;
     }
-    virtual void message(const Atlas::Objects::Operation::RootOperation & op, Entity & ent) { }
-    virtual Entity * findByName(const std::string & name) { return 0; }
-    virtual Entity * findByType(const std::string & type) { return 0; }
-    virtual void addPerceptive(Entity *) { }
+    virtual void message(const Atlas::Objects::Operation::RootOperation & op,
+                         LocatedEntity & ent) { }
+    virtual LocatedEntity * findByName(const std::string & name) { return 0; }
+    virtual LocatedEntity * findByType(const std::string & type) { return 0; }
+    virtual void addPerceptive(LocatedEntity *) { }
 };
 
 int main()
@@ -98,13 +98,13 @@ int main()
 
     {
         // Test constructor
-        Entity wrld("1", 1);
+        LocatedEntity wrld("1", 1);
         TestWorld tw(wrld);
     }
 
     {
         // Test destructor
-        Entity wrld("1", 1);
+        LocatedEntity wrld("1", 1);
         BaseWorld * tw = new TestWorld(wrld);
 
         delete tw;
@@ -112,7 +112,7 @@ int main()
 
     {
         // Test constructor sets singleton pointer
-        Entity wrld("1", 1);
+        LocatedEntity wrld("1", 1);
         TestWorld tw(wrld);
 
         assert(&BaseWorld::instance() == &tw);
@@ -120,7 +120,7 @@ int main()
 
     {
         // Test constructor installs reference to world entity
-        Entity wrld("1", 1);
+        LocatedEntity wrld("1", 1);
         TestWorld tw(wrld);
 
         assert(&tw.m_gameWorld == &wrld);
@@ -128,7 +128,7 @@ int main()
 
     {
         // Test retrieving non existant entity by string ID is ok
-        Entity wrld("1", 1);
+        LocatedEntity wrld("1", 1);
         TestWorld tw(wrld);
 
         assert(tw.getEntity("2") == 0);
@@ -136,10 +136,10 @@ int main()
 
     {
         // Test retrieving existant entity by string ID is ok
-        Entity wrld("1", 1);
+        LocatedEntity wrld("1", 1);
         TestWorld tw(wrld);
 
-        Entity * tc = new Entity("2", 2);
+        LocatedEntity * tc = new LocatedEntity("2", 2);
 
         tw.addEntity(tc);
 
@@ -148,10 +148,10 @@ int main()
 
     {
         // Test retrieving existant entity by integer ID is ok
-        Entity wrld("1", 1);
+        LocatedEntity wrld("1", 1);
         TestWorld tw(wrld);
 
-        Entity * tc = new Entity("2", 2);
+        LocatedEntity * tc = new LocatedEntity("2", 2);
 
         tw.addEntity(tc);
 
@@ -160,7 +160,7 @@ int main()
 
     {
         // Test retrieving non existant entity by integer ID is ok
-        Entity wrld("1", 1);
+        LocatedEntity wrld("1", 1);
         TestWorld tw(wrld);
 
         assert(tw.getEntity(2) == 0);
@@ -168,7 +168,7 @@ int main()
 
     {
         // Test retrieving reference to all entities is okay and empty
-        Entity wrld("1", 1);
+        LocatedEntity wrld("1", 1);
         TestWorld tw(wrld);
 
         assert(tw.getEntities().size() == 1);
@@ -176,7 +176,7 @@ int main()
 
     {
         // Test getting the time
-        Entity wrld("1", 1);
+        LocatedEntity wrld("1", 1);
         TestWorld tw(wrld);
 
         tw.getTime();
@@ -184,7 +184,7 @@ int main()
 
     {
         // Test getting the uptime
-        Entity wrld("1", 1);
+        LocatedEntity wrld("1", 1);
         TestWorld tw(wrld);
 
         tw.upTime();
@@ -192,7 +192,7 @@ int main()
 
     {
         // Test connecting to the dispatch signal
-        Entity wrld("1", 1);
+        LocatedEntity wrld("1", 1);
         TestWorld tw(wrld);
 
         tw.Dispatching.connect(sigc::ptr_fun(&test_function));

@@ -38,7 +38,7 @@ class SpawnProperty : public Property<Atlas::Message::MapType> {
 
     virtual SpawnProperty * copy() const;
 
-    virtual void apply(Entity *);
+    virtual void apply(LocatedEntity *);
 };
 
 #endif // RULESETS_SPAWN_PROPERTY_H

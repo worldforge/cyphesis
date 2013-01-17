@@ -21,7 +21,7 @@
 #define RULESETS_ARITHMETIC_FACTORY_H
 
 class ArithmeticScript;
-class Entity;
+class LocatedEntity;
 
 /// \brief Base class for for factories for creating arithmetic scripts
 class ArithmeticKit {
@@ -31,7 +31,7 @@ class ArithmeticKit {
     /// \brief Create a new arithmetic model object
     ///
     /// @param chr The Character object for which the model should be created
-    virtual ArithmeticScript * newScript(Entity * owner) = 0;
+    virtual ArithmeticScript * newScript(LocatedEntity * owner) = 0;
 };
 
 #endif // RULESETS_ARITHMETIC_FACTORY_H

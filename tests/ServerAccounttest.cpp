@@ -338,7 +338,7 @@ void ServerAccounttest::test_addNewEntity_failed()
     std::string type_str("unimportant_string");
     RootEntity arg;
 
-    Entity * e = m_account->addNewEntity(type_str, arg, arg);
+    LocatedEntity * e = m_account->addNewEntity(type_str, arg, arg);
 
     ASSERT_NULL(e);
 }
@@ -352,7 +352,7 @@ void ServerAccounttest::test_addNewEntity_success()
     std::string type_str("unimportant_string");
     RootEntity arg;
 
-    Entity * e = m_account->addNewEntity(type_str, arg, arg);
+    LocatedEntity * e = m_account->addNewEntity(type_str, arg, arg);
 
     ASSERT_EQUAL(c, e);
 
@@ -367,16 +367,16 @@ void ServerAccounttest::test_addNewEntity_unconnected()
     std::string type_str("unimportant_string");
     RootEntity arg;
 
-    Entity * e = m_account->addNewEntity(type_str, arg, arg);
+    LocatedEntity * e = m_account->addNewEntity(type_str, arg, arg);
 
     ASSERT_NULL(e);
 }
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     Entity * ne = ServerAccounttest::get_TestWorld_addNewEntity_ret_value();
@@ -420,14 +420,14 @@ Account::~Account()
 {
 }
 
-Entity * Account::addNewCharacter(const std::string & typestr,
+LocatedEntity * Account::addNewCharacter(const std::string & typestr,
                                   const RootEntity & ent,
                                   const Root & arg)
 {
     return 0;
 }
 
-int Account::connectCharacter(Entity *chr)
+int Account::connectCharacter(LocatedEntity *chr)
 {
     return 0;
 }
@@ -547,7 +547,7 @@ void Connection::GetOperation(const Operation &, OpVector &)
 {
 }
 
-void Connection::addEntity(Entity * ent)
+void Connection::addEntity(LocatedEntity * ent)
 {
 }
 
@@ -617,7 +617,7 @@ int TeleportAuthenticator::removeTeleport(const std::string &entity_id)
     return 0;
 }
 
-Entity *TeleportAuthenticator::authenticateTeleport(const std::string &entity_id,
+LocatedEntity *TeleportAuthenticator::authenticateTeleport(const std::string &entity_id,
                                             const std::string &possess_key)
 {
     return 0;
@@ -961,6 +961,29 @@ PropertyBase * Entity::modProperty(const std::string & name)
     return 0;
 }
 
+PropertyBase * Entity::setProperty(const std::string & name,
+                                   PropertyBase * prop)
+{
+    return 0;
+}
+
+void Entity::installHandler(int class_no, Handler handler)
+{
+}
+
+void Entity::installDelegate(int class_no, const std::string & delegate)
+{
+}
+
+Domain * Entity::getMovementDomain()
+{
+    return 0;
+}
+
+void Entity::sendWorld(const Operation & op)
+{
+}
+
 void Entity::onContainered()
 {
 }
@@ -1013,6 +1036,38 @@ const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
     return 0;
 }
 
+PropertyBase * LocatedEntity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * LocatedEntity::setProperty(const std::string & name,
+                                          PropertyBase * prop)
+{
+    return 0;
+}
+
+void LocatedEntity::installHandler(int, Handler)
+{
+}
+
+void LocatedEntity::installDelegate(int, const std::string &)
+{
+}
+
+void LocatedEntity::destroy()
+{
+}
+
+Domain * LocatedEntity::getMovementDomain()
+{
+    return 0;
+}
+
+void LocatedEntity::sendWorld(const Operation & op)
+{
+}
+
 void LocatedEntity::onContainered()
 {
 }
@@ -1051,7 +1106,7 @@ void Link::disconnect()
 
 BaseWorld * BaseWorld::m_instance = 0;
 
-BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
 {
     m_instance = this;
 }
@@ -1062,12 +1117,12 @@ BaseWorld::~BaseWorld()
     delete &m_gameWorld;
 }
 
-Entity * BaseWorld::getEntity(const std::string & id) const
+LocatedEntity * BaseWorld::getEntity(const std::string & id) const
 {
     return 0;
 }
 
-Entity * BaseWorld::getEntity(long id) const
+LocatedEntity * BaseWorld::getEntity(long id) const
 {
     return 0;
 }

@@ -24,7 +24,7 @@
 
 #include <Atlas/Message/Element.h>
 
-class Entity;
+class LocatedEntity;
 
 /// \brief Interface for Entity properties
 ///
@@ -50,11 +50,11 @@ class PropertyBase {
     /// \brief Install this property on an entity
     ///
     /// Called whenever an Entity gains this property for the first time
-    virtual void install(Entity *);
+    virtual void install(LocatedEntity *);
     /// \brief Apply whatever effect this property has on an Entity
     ///
     /// Called whenever the value of this property should affect an Entity
-    virtual void apply(Entity *);
+    virtual void apply(LocatedEntity *);
 
     /// \brief Copy the value of the property into an Atlas Message
     virtual int get(Atlas::Message::Element & val) const = 0;
@@ -65,7 +65,9 @@ class PropertyBase {
     /// \brief Add the value as an attribute to an Atlas entity
     virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
     /// \brief Handle an operation
-    virtual HandlerResult operation(Entity *, const Operation &, OpVector &);
+    virtual HandlerResult operation(LocatedEntity *,
+                                    const Operation &,
+                                    OpVector &);
     /// \brief Create a copy of this instance
     ///
     /// The copy should have exactly the same type, and the same value

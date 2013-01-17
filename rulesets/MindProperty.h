@@ -39,7 +39,7 @@ class MindProperty : public PropertyBase {
     virtual int get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
     virtual MindProperty * copy() const;
-    virtual void apply(Entity *);
+    virtual void apply(LocatedEntity *);
 };
 
 #endif // RULESETS_MIND_PROPERTY_H

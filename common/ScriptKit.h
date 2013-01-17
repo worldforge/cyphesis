@@ -22,8 +22,6 @@
 
 #include <string>
 
-class Entity;
-
 /// \brief Factory interface for creating scripts to attach to in game
 /// entity objects.
 template <class T>

@@ -28,11 +28,11 @@
 
 #include "python_testers.h"
 
-#include "rulesets/Python_API.h"
-#include "rulesets/Py_Thing.h"
 #include "rulesets/Entity.h"
-#include "rulesets/Script.h"
+#include "rulesets/Py_Thing.h"
+#include "rulesets/Python_API.h"
 #include "rulesets/PythonScriptFactory.h"
+#include "rulesets/Script.h"
 
 #include "common/Tick.h"
 
@@ -73,7 +73,7 @@ int main()
     // Py_DECREF(package_name);
     // assert(testmod);
 
-    PythonScriptFactory<Entity> psf("testmod", "TestEntity");
+    PythonScriptFactory<LocatedEntity> psf("testmod", "TestEntity");
     int ret = psf.setup();
     assert(ret == 0);
     Entity * e = new Entity("1", 1);

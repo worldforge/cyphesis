@@ -22,7 +22,10 @@
 
 #include "common/OperationRouter.h"
 
+#include <map>
 #include <string>
+
+class LocatedEntity;
 
 namespace Atlas {
     namespace Message {
@@ -37,7 +40,7 @@ class Spawn {
 
     virtual int spawnEntity(const std::string & type,
                             const Atlas::Objects::Entity::RootEntity & dsc) = 0;
-    virtual int populateEntity(Entity * ent,
+    virtual int populateEntity(LocatedEntity * ent,
                                const Atlas::Objects::Entity::RootEntity & dsc,
                                OpVector & res) = 0;
     virtual int addToMessage(Atlas::Message::MapType & msg) const = 0;

@@ -56,7 +56,7 @@ int PythonArithmeticFactory::setup()
 /// \brief Create a new arithmetic script for a character
 ///
 /// @param chr the Character that requires a new script
-ArithmeticScript * PythonArithmeticFactory::newScript(Entity * owner)
+ArithmeticScript * PythonArithmeticFactory::newScript(LocatedEntity * owner)
 {
     // Create the task, and use its script to add a script
     if (m_class == 0) {

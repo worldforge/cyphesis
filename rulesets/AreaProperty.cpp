@@ -49,7 +49,7 @@ AreaProperty::~AreaProperty()
 {
 }
 
-void AreaProperty::apply(Entity * owner)
+void AreaProperty::apply(LocatedEntity * owner)
 {
     if (m_shape == 0) {
         log(ERROR, "Terrain area has no shape to apply");

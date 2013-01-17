@@ -119,13 +119,14 @@ void WorldRoutertest::test_constructor()
 void WorldRoutertest::test_addNewEntity_unknown()
 {
 
-    Entity * ent1 = test_world->addNewEntity("__no_such_type__", Anonymous());
+    LocatedEntity * ent1 = test_world->addNewEntity("__no_such_type__",
+                                                    Anonymous());
     assert(ent1 == 0);
 }
 
 void WorldRoutertest::test_addNewEntity_thing()
 {
-    Entity * ent1 = test_world->addNewEntity("thing", Anonymous());
+    LocatedEntity * ent1 = test_world->addNewEntity("thing", Anonymous());
     assert(ent1 != 0);
 }
 
@@ -134,7 +135,7 @@ void WorldRoutertest::test_addNewEntity_idfail()
 {
     stub_deny_newid = true;
 
-    Entity * ent1 = test_world->addNewEntity("thing", Anonymous());
+    LocatedEntity * ent1 = test_world->addNewEntity("thing", Anonymous());
     assert(ent1 == 0);
 
     stub_deny_newid = false;
@@ -196,17 +197,17 @@ void WorldRoutertest::test_addEntity_tick_get()
 
 void WorldRoutertest::test_spawnNewEntity_unknown()
 {
-    Entity * ent3 = test_world->spawnNewEntity("__no_spawn__",
-                                               "thing",
-                                               Anonymous());
+    LocatedEntity * ent3 = test_world->spawnNewEntity("__no_spawn__",
+                                                      "thing",
+                                                      Anonymous());
     assert(ent3 == 0);
 }
 
 void WorldRoutertest::test_spawnNewEntity_thing()
 {
-    Entity * ent3 = test_world->spawnNewEntity("bob",
-                                               "thing",
-                                               Anonymous());
+    LocatedEntity * ent3 = test_world->spawnNewEntity("bob",
+                                                      "thing",
+                                                      Anonymous());
     assert(ent3 == 0);
 }
 
@@ -247,9 +248,9 @@ void WorldRoutertest::test_createSpawnPoint()
         assert(spawn_repr.size() == 1u);
     }
 
-    Entity * ent3 = test_world->spawnNewEntity("bob",
-                                      "permitted_non_existant",
-                                      Anonymous());
+    LocatedEntity * ent3 = test_world->spawnNewEntity("bob",
+                                                      "permitted_non_existant",
+                                                      Anonymous());
     assert(ent3 == 0);
 
     ent3 = test_world->spawnNewEntity("bob",
@@ -519,6 +520,29 @@ const PropertyBase * Entity::getProperty(const std::string & name) const
     return 0;
 }
 
+PropertyBase * Entity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * Entity::setProperty(const std::string & name,
+                                   PropertyBase * prop)
+{
+    return 0;
+}
+
+void Entity::installHandler(int class_no, Handler handler)
+{
+}
+
+void Entity::installDelegate(int class_no, const std::string & delegate)
+{
+}
+
+void Entity::sendWorld(const Operation & op)
+{
+}
+
 void Entity::onContainered()
 {
 }
@@ -577,6 +601,38 @@ PropertyBase * LocatedEntity::setAttr(const std::string & name,
 const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
 {
     return 0;
+}
+
+PropertyBase * LocatedEntity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * LocatedEntity::setProperty(const std::string & name,
+                                          PropertyBase * prop)
+{
+    return 0;
+}
+
+void LocatedEntity::installHandler(int, Handler)
+{
+}
+
+void LocatedEntity::installDelegate(int, const std::string &)
+{
+}
+
+void LocatedEntity::destroy()
+{
+}
+
+Domain * LocatedEntity::getMovementDomain()
+{
+    return 0;
+}
+
+void LocatedEntity::sendWorld(const Operation & op)
+{
 }
 
 void LocatedEntity::onContainered()
@@ -709,7 +765,7 @@ long newId(std::string & id)
     return new_id;
 }
 
-BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
 {
 }
 
@@ -717,7 +773,7 @@ BaseWorld::~BaseWorld()
 {
 }
 
-Entity * BaseWorld::getEntity(const std::string & id) const
+LocatedEntity * BaseWorld::getEntity(const std::string & id) const
 {
     long intId = integerId(id);
 
@@ -730,7 +786,7 @@ Entity * BaseWorld::getEntity(const std::string & id) const
     }
 }
 
-Entity * BaseWorld::getEntity(long id) const
+LocatedEntity * BaseWorld::getEntity(long id) const
 {
     EntityDict::const_iterator I = m_eobjects.find(id);
     if (I != m_eobjects.end()) {
@@ -817,7 +873,7 @@ ArithmeticBuilder * ArithmeticBuilder::instance()
 }
 
 ArithmeticScript * ArithmeticBuilder::newArithmetic(const std::string &,
-                                                    Entity *)
+                                                    LocatedEntity *)
 {
     return 0;
 }
@@ -832,10 +888,10 @@ EntityBuilder::~EntityBuilder()
 {
 }
 
-Entity * EntityBuilder::newEntity(const std::string & id, long intId,
-                                  const std::string & type,
-                                  const RootEntity & attributes,
-                                  const BaseWorld & world) const
+LocatedEntity * EntityBuilder::newEntity(const std::string & id, long intId,
+                                         const std::string & type,
+                                         const RootEntity & attributes,
+                                         const BaseWorld & world) const
 {
     if (type == "thing") {
         Entity * e = new Entity(id, intId);
@@ -859,7 +915,7 @@ Task * EntityBuilder::activateTask(const std::string & tool,
     return 0;
 }
 
-SpawnEntity::SpawnEntity(Entity *)
+SpawnEntity::SpawnEntity(LocatedEntity *)
 {
 }
 
@@ -877,7 +933,7 @@ int SpawnEntity::spawnEntity(const std::string & type,
     return -1;
 }
 
-int SpawnEntity::populateEntity(Entity * ent,
+int SpawnEntity::populateEntity(LocatedEntity * ent,
                                 const RootEntity & dsc,
                                 OpVector & res)
 {

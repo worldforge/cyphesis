@@ -19,9 +19,10 @@
 
 #include "Pedestrian.h"
 
-#include "Entity.h"
 #include "Domain.h"
+#include "LocatedEntity.h"
 
+#include "common/BaseWorld.h"
 #include "common/const.h"
 #include "common/debug.h"
 #include "common/log.h"
@@ -34,6 +35,8 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
+#include <iostream>
+
 using Atlas::Message::Element;
 using Atlas::Objects::Operation::Move;
 using Atlas::Objects::Entity::Anonymous;
@@ -43,7 +46,7 @@ static const bool debug_flag = false;
 /// \brief Constructor
 ///
 /// @param body the Entity this Movement is tracking.
-Pedestrian::Pedestrian(Entity & body) : Movement(body)
+Pedestrian::Pedestrian(LocatedEntity & body) : Movement(body)
 {
 }
 

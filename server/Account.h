@@ -32,8 +32,9 @@ namespace Atlas {
 }
 
 class Connection;
+class LocatedEntity;
 
-typedef std::map<long, Entity *> EntityDict;
+typedef std::map<long, LocatedEntity *> EntityDict;
 
 /// \brief This is the base class for storing information about uses who
 /// can use this server.
@@ -50,9 +51,9 @@ class Account : public ConnectableRouter {
     /// \brief The password used to authenticate this account
     std::string m_password;
 
-    Entity * addNewCharacter(const std::string &,
-                             const Atlas::Objects::Entity::RootEntity &,
-                             const Atlas::Objects::Root &);
+    LocatedEntity * addNewCharacter(const std::string &,
+                                    const Atlas::Objects::Entity::RootEntity &,
+                                    const Atlas::Objects::Root &);
     void characterDestroyed(long);
 
     /// \brief Check a character creation op is within the privelege levels
@@ -75,7 +76,7 @@ class Account : public ConnectableRouter {
 
   public:
     /// \brief Connect and add a character to this account
-    int connectCharacter(Entity *chr);
+    int connectCharacter(LocatedEntity *chr);
 
     Account(Connection * conn, const std::string & username,
                                const std::string & passwd,
@@ -111,7 +112,7 @@ class Account : public ConnectableRouter {
     virtual void GetOperation(const Operation &, OpVector &);
     virtual void OtherOperation(const Operation &, OpVector &);
 
-    void addCharacter(Entity *);
+    void addCharacter(LocatedEntity *);
 
     /// \brief Read only accessor for the Character dictionary
     const EntityDict & getCharacters() const {

@@ -22,12 +22,9 @@
 
 #include <Atlas/Objects/ObjectsFwd.h>
 
-#include <map>
 #include <vector>
 
 #define OP_INVALID (-1)
-
-class Entity;
 
 typedef Atlas::Objects::Operation::RootOperation Operation;
 
@@ -39,8 +36,5 @@ typedef enum {
     OPERATION_HANDLED, // Handler has done something, but op should continue
     OPERATION_IGNORED, // Handler has done nothing
 } HandlerResult;
-
-typedef HandlerResult (*Handler)(Entity *, const Operation &, OpVector &);
-typedef std::map<int, Handler> HandlerMap;
 
 #endif // COMMON_OPERATION_ROUTER_H

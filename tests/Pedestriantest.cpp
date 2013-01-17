@@ -30,6 +30,8 @@
 #include "rulesets/Domain.h"
 #include "rulesets/TerrainProperty.h"
 
+#include "common/BaseWorld.h"
+
 #include <Atlas/Objects/RootOperation.h>
 #include <Atlas/Objects/SmartPtr.h>
 
@@ -37,21 +39,21 @@
 
 class TestWorld : public BaseWorld {
   public:
-    explicit TestWorld(Entity & w) : BaseWorld(w) {
+    explicit TestWorld(LocatedEntity & w) : BaseWorld(w) {
     }
 
     virtual bool idle(const SystemTime &) { return false; }
-    virtual Entity * addEntity(Entity * ent) { 
+    virtual LocatedEntity * addEntity(LocatedEntity * ent) { 
         return 0;
     }
-    virtual Entity * addNewEntity(const std::string &,
+    virtual LocatedEntity * addNewEntity(const std::string &,
                                   const Atlas::Objects::Entity::RootEntity &) {
         return 0;
     }
     int createSpawnPoint(const Atlas::Message::MapType & data,
-                         Entity *) { return 0; }
+                         LocatedEntity *) { return 0; }
     int getSpawnList(Atlas::Message::ListType & data) { return 0; }
-    Entity * spawnNewEntity(const std::string & name,
+    LocatedEntity * spawnNewEntity(const std::string & name,
                             const std::string & type,
                             const Atlas::Objects::Entity::RootEntity & desc) {
         return addNewEntity(type, desc);
@@ -59,14 +61,14 @@ class TestWorld : public BaseWorld {
     virtual Task * newTask(const std::string &, LocatedEntity &) { return 0; }
     virtual Task * activateTask(const std::string &, const std::string &,
                                 LocatedEntity *, LocatedEntity &) { return 0; }
-    virtual ArithmeticScript * newArithmetic(const std::string &, Entity *) {
+    virtual ArithmeticScript * newArithmetic(const std::string &, LocatedEntity *) {
         return 0;
     }
     virtual void message(const Atlas::Objects::Operation::RootOperation & op,
-                         Entity & ent) { }
-    virtual Entity * findByName(const std::string & name) { return 0; }
-    virtual Entity * findByType(const std::string & type) { return 0; }
-    virtual void addPerceptive(Entity *) { }
+                         LocatedEntity & ent) { }
+    virtual LocatedEntity * findByName(const std::string & name) { return 0; }
+    virtual LocatedEntity * findByType(const std::string & type) { return 0; }
+    virtual void addPerceptive(LocatedEntity *) { }
 };
 
 int main()
@@ -249,17 +251,40 @@ const PropertyBase * Entity::getProperty(const std::string & name) const
     return 0;
 }
 
-void Entity::onContainered()
+PropertyBase * Entity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * Entity::setProperty(const std::string & name,
+                                   PropertyBase * prop)
+{
+    return 0;
+}
+
+void Entity::installHandler(int class_no, Handler handler)
 {
 }
 
-void Entity::onUpdated()
+void Entity::installDelegate(int class_no, const std::string & delegate)
 {
 }
 
 Domain * Entity::getMovementDomain()
 {
     return Domain::instance();
+}
+
+void Entity::sendWorld(const Operation & op)
+{
+}
+
+void Entity::onContainered()
+{
+}
+
+void Entity::onUpdated()
+{
 }
 
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
@@ -300,6 +325,38 @@ PropertyBase * LocatedEntity::setAttr(const std::string & name,
 const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
 {
     return 0;
+}
+
+PropertyBase * LocatedEntity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * LocatedEntity::setProperty(const std::string & name,
+                                          PropertyBase * prop)
+{
+    return 0;
+}
+
+void LocatedEntity::installHandler(int, Handler)
+{
+}
+
+void LocatedEntity::installDelegate(int, const std::string &)
+{
+}
+
+void LocatedEntity::destroy()
+{
+}
+
+Domain * LocatedEntity::getMovementDomain()
+{
+    return 0;
+}
+
+void LocatedEntity::sendWorld(const Operation & op)
+{
 }
 
 void LocatedEntity::onContainered()
@@ -364,7 +421,7 @@ BaseWorld * BaseWorld::m_instance = 0;
 /// This constructor registers the instance created as the singleton, and
 /// in debug mode ensures that an instance has not already been created.
 /// @param gw the top level in-game entity in the world.
-BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
 {
     m_instance = this;
 }
@@ -374,12 +431,12 @@ BaseWorld::~BaseWorld()
     m_instance = 0;
 }
 
-Entity * BaseWorld::getEntity(const std::string & id) const
+LocatedEntity * BaseWorld::getEntity(const std::string & id) const
 {
     return 0;
 }
 
-Entity * BaseWorld::getEntity(long id) const
+LocatedEntity * BaseWorld::getEntity(long id) const
 {
     return 0;
 }

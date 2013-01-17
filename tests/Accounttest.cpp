@@ -102,7 +102,7 @@ class Accounttest : public Cyphesis::TestBase
     static OpVector Link_send_sent;
     static int characterError_ret_value;
     static int Lobby_operation_called;
-    static std::list<std::pair<RootOperation, Entity *> > TestWorld_messsage_called;
+    static std::list<std::pair<RootOperation, LocatedEntity *> > TestWorld_message_called;
   public:
     Accounttest();
 
@@ -184,8 +184,8 @@ class Accounttest : public Cyphesis::TestBase
     static void append_Link_send_sent(const RootOperation &);
     static int get_characterError_ret_value();
     static void set_Lobby_operation_called(int class_no);
-    static void set_TestWorld_messsage_called(const RootOperation &,
-                                              Entity &);
+    static void set_TestWorld_message_called(const RootOperation &,
+                                              LocatedEntity &);
 };
 
 Entity * Accounttest::TestWorld_addNewEntity_ret_value;
@@ -193,8 +193,8 @@ Entity * Accounttest::TeleportAuthenticator_ret_value;
 OpVector Accounttest::Link_send_sent;
 int Accounttest::characterError_ret_value;
 int Accounttest::Lobby_operation_called;
-std::list<std::pair<RootOperation, Entity *> >
-      Accounttest::TestWorld_messsage_called;
+std::list<std::pair<RootOperation, LocatedEntity *> >
+      Accounttest::TestWorld_message_called;
 
 Entity * Accounttest::get_TestWorld_addNewEntity_ret_value()
 {
@@ -221,10 +221,10 @@ void Accounttest::set_Lobby_operation_called(int class_no)
     Lobby_operation_called = class_no;
 }
 
-void Accounttest::set_TestWorld_messsage_called(const RootOperation & op,
-                                                Entity & entity)
+void Accounttest::set_TestWorld_message_called(const RootOperation & op,
+                                                LocatedEntity & entity)
 {
-    TestWorld_messsage_called.push_back(std::make_pair(op, &entity));
+    TestWorld_message_called.push_back(std::make_pair(op, &entity));
 }
 
 class TestAccount : public Account {
@@ -239,9 +239,9 @@ class TestAccount : public Account {
                                const Atlas::Objects::Root & ent,
                                OpVector & res) const;
 
-    Entity * testAddNewCharacter(const std::string & typestr,
-                                 const RootEntity & ent,
-                                 const RootEntity & arg);
+    LocatedEntity * testAddNewCharacter(const std::string & typestr,
+                                        const RootEntity & ent,
+                                        const RootEntity & arg);
 };
 
 Accounttest::Accounttest() : m_id_counter(0L),
@@ -455,7 +455,7 @@ void Accounttest::test_addNewCharacter_fail()
     ASSERT_TRUE(m_account->m_charactersDict.empty());
     ASSERT_NOT_NULL(m_account->m_connection);
 
-    Entity * te = m_account->addNewCharacter(
+    LocatedEntity * te = m_account->addNewCharacter(
           "0e657318-2424-45c9-8a3c-a61ee1303342",
           RootEntity(),
           Root());
@@ -471,7 +471,7 @@ void Accounttest::test_addNewCharacter_raw_Entity()
     ASSERT_TRUE(m_account->m_charactersDict.empty());
     ASSERT_NOT_NULL(m_account->m_connection);
 
-    Entity * te = m_account->addNewCharacter(
+    LocatedEntity * te = m_account->addNewCharacter(
           "9e0ff22a-3b57-4703-b3fd-6ed0b8a89edc",
           RootEntity(),
           Root());
@@ -492,7 +492,7 @@ void Accounttest::test_addNewCharacter_Character()
     ASSERT_TRUE(m_account->m_charactersDict.empty());
     ASSERT_NOT_NULL(m_account->m_connection);
 
-    Entity * te = m_account->addNewCharacter(
+    LocatedEntity * te = m_account->addNewCharacter(
           "aa119eb0-ad7d-46d5-a8c3-5797ca541b6c",
           RootEntity(),
           Root());
@@ -521,7 +521,7 @@ void Accounttest::test_addNewCharacter_unconnected()
     ASSERT_TRUE(m_account->m_charactersDict.empty());
     ASSERT_NULL(m_account->m_connection);
 
-    Entity * te = m_account->addNewCharacter(
+    LocatedEntity * te = m_account->addNewCharacter(
           "3b657231-f87b-407c-99ee-9e0195475a3f",
           RootEntity(),
           Root());
@@ -1082,7 +1082,7 @@ void Accounttest::test_LookOperation_possess_Character()
 
 void Accounttest::test_SetOperation_no_args()
 {
-    Accounttest::TestWorld_messsage_called.clear();
+    Accounttest::TestWorld_message_called.clear();
 
     Atlas::Objects::Operation::Set op;
     OpVector res;
@@ -1090,12 +1090,12 @@ void Accounttest::test_SetOperation_no_args()
     m_account->SetOperation(op, res);
 
     ASSERT_TRUE(res.empty());
-    ASSERT_TRUE(Accounttest::TestWorld_messsage_called.empty());
+    ASSERT_TRUE(Accounttest::TestWorld_message_called.empty());
 }
 
 void Accounttest::test_SetOperation_no_id()
 {
-    Accounttest::TestWorld_messsage_called.clear();
+    Accounttest::TestWorld_message_called.clear();
 
     Atlas::Objects::Operation::Set op;
     OpVector res;
@@ -1106,7 +1106,7 @@ void Accounttest::test_SetOperation_no_id()
     m_account->SetOperation(op, res);
 
     ASSERT_EQUAL(res.size(), 1u);
-    ASSERT_TRUE(Accounttest::TestWorld_messsage_called.empty());
+    ASSERT_TRUE(Accounttest::TestWorld_message_called.empty());
 
     const RootOperation & result = res.front();
 
@@ -1116,7 +1116,7 @@ void Accounttest::test_SetOperation_no_id()
 
 void Accounttest::test_SetOperation_unowned_character()
 {
-    Accounttest::TestWorld_messsage_called.clear();
+    Accounttest::TestWorld_message_called.clear();
 
     Atlas::Objects::Operation::Set op;
     OpVector res;
@@ -1128,7 +1128,7 @@ void Accounttest::test_SetOperation_unowned_character()
     m_account->SetOperation(op, res);
 
     ASSERT_EQUAL(res.size(), 1u);
-    ASSERT_TRUE(Accounttest::TestWorld_messsage_called.empty());
+    ASSERT_TRUE(Accounttest::TestWorld_message_called.empty());
 
     const RootOperation & result = res.front();
 
@@ -1138,7 +1138,7 @@ void Accounttest::test_SetOperation_unowned_character()
 
 void Accounttest::test_SetOperation_empty()
 {
-    Accounttest::TestWorld_messsage_called.clear();
+    Accounttest::TestWorld_message_called.clear();
 
     long cid = m_id_counter++;
 
@@ -1155,7 +1155,7 @@ void Accounttest::test_SetOperation_empty()
     m_account->SetOperation(op, res);
 
     ASSERT_TRUE(res.empty());
-    ASSERT_TRUE(Accounttest::TestWorld_messsage_called.empty());
+    ASSERT_TRUE(Accounttest::TestWorld_message_called.empty());
 
     m_account->m_charactersDict.clear();
     delete c;
@@ -1163,7 +1163,7 @@ void Accounttest::test_SetOperation_empty()
 
 void Accounttest::test_SetOperation_guise()
 {
-    Accounttest::TestWorld_messsage_called.clear();
+    Accounttest::TestWorld_message_called.clear();
 
     long cid = m_id_counter++;
 
@@ -1181,10 +1181,10 @@ void Accounttest::test_SetOperation_guise()
     m_account->SetOperation(op, res);
 
     ASSERT_TRUE(res.empty());
-    ASSERT_TRUE(!Accounttest::TestWorld_messsage_called.empty());
+    ASSERT_TRUE(!Accounttest::TestWorld_message_called.empty());
 
     const RootOperation & result =
-          Accounttest::TestWorld_messsage_called.front().first;
+          Accounttest::TestWorld_message_called.front().first;
 
     ASSERT_EQUAL(result->getClassNo(),
                  Atlas::Objects::Operation::SET_NO);
@@ -1193,8 +1193,8 @@ void Accounttest::test_SetOperation_guise()
     ASSERT_TRUE(!result->getArgs().front()->hasAttr("bbox"));
     ASSERT_TRUE(!result->getArgs().front()->hasAttr("tasks"));
 
-    Entity * result_entity =
-          Accounttest::TestWorld_messsage_called.front().second;
+    LocatedEntity * result_entity =
+          Accounttest::TestWorld_message_called.front().second;
 
     ASSERT_EQUAL(result_entity, c);
 
@@ -1204,7 +1204,7 @@ void Accounttest::test_SetOperation_guise()
 
 void Accounttest::test_SetOperation_height()
 {
-    Accounttest::TestWorld_messsage_called.clear();
+    Accounttest::TestWorld_message_called.clear();
 
     long cid = m_id_counter++;
 
@@ -1223,10 +1223,10 @@ void Accounttest::test_SetOperation_height()
     m_account->SetOperation(op, res);
 
     ASSERT_TRUE(res.empty());
-    ASSERT_TRUE(!Accounttest::TestWorld_messsage_called.empty());
+    ASSERT_TRUE(!Accounttest::TestWorld_message_called.empty());
 
     const RootOperation & result =
-          Accounttest::TestWorld_messsage_called.front().first;
+          Accounttest::TestWorld_message_called.front().first;
 
     ASSERT_EQUAL(result->getClassNo(),
                  Atlas::Objects::Operation::SET_NO);
@@ -1243,8 +1243,8 @@ void Accounttest::test_SetOperation_height()
     ASSERT_GREATER(bbox.List()[2].asNum(), 1.9);
     ASSERT_LESS(bbox.List()[2].asNum(), 2.1);
 
-    Entity * result_entity =
-          Accounttest::TestWorld_messsage_called.front().second;
+    LocatedEntity * result_entity =
+          Accounttest::TestWorld_message_called.front().second;
 
     ASSERT_EQUAL(result_entity, c);
 
@@ -1254,7 +1254,7 @@ void Accounttest::test_SetOperation_height()
 
 void Accounttest::test_SetOperation_height_non_float()
 {
-    Accounttest::TestWorld_messsage_called.clear();
+    Accounttest::TestWorld_message_called.clear();
 
     long cid = m_id_counter++;
 
@@ -1273,7 +1273,7 @@ void Accounttest::test_SetOperation_height_non_float()
     m_account->SetOperation(op, res);
 
     ASSERT_TRUE(res.empty());
-    ASSERT_TRUE(Accounttest::TestWorld_messsage_called.empty());
+    ASSERT_TRUE(Accounttest::TestWorld_message_called.empty());
 
     m_account->m_charactersDict.clear();
     delete c;
@@ -1281,7 +1281,7 @@ void Accounttest::test_SetOperation_height_non_float()
 
 void Accounttest::test_SetOperation_height_no_bbox()
 {
-    Accounttest::TestWorld_messsage_called.clear();
+    Accounttest::TestWorld_message_called.clear();
 
     long cid = m_id_counter++;
 
@@ -1299,7 +1299,7 @@ void Accounttest::test_SetOperation_height_no_bbox()
     m_account->SetOperation(op, res);
 
     ASSERT_TRUE(res.empty());
-    ASSERT_TRUE(Accounttest::TestWorld_messsage_called.empty());
+    ASSERT_TRUE(Accounttest::TestWorld_message_called.empty());
 
     m_account->m_charactersDict.clear();
     delete c;
@@ -1307,7 +1307,7 @@ void Accounttest::test_SetOperation_height_no_bbox()
 
 void Accounttest::test_SetOperation_tasks_empty()
 {
-    Accounttest::TestWorld_messsage_called.clear();
+    Accounttest::TestWorld_message_called.clear();
 
     long cid = m_id_counter++;
 
@@ -1325,7 +1325,7 @@ void Accounttest::test_SetOperation_tasks_empty()
     m_account->SetOperation(op, res);
 
     ASSERT_TRUE(res.empty());
-    ASSERT_TRUE(Accounttest::TestWorld_messsage_called.empty());
+    ASSERT_TRUE(Accounttest::TestWorld_message_called.empty());
 
     m_account->m_charactersDict.clear();
     delete c;
@@ -1333,7 +1333,7 @@ void Accounttest::test_SetOperation_tasks_empty()
 
 void Accounttest::test_SetOperation_tasks_good()
 {
-    Accounttest::TestWorld_messsage_called.clear();
+    Accounttest::TestWorld_message_called.clear();
 
     long cid = m_id_counter++;
 
@@ -1356,10 +1356,10 @@ void Accounttest::test_SetOperation_tasks_good()
     m_account->SetOperation(op, res);
 
     ASSERT_TRUE(res.empty());
-    ASSERT_TRUE(!Accounttest::TestWorld_messsage_called.empty());
+    ASSERT_TRUE(!Accounttest::TestWorld_message_called.empty());
 
     const RootOperation & result =
-          Accounttest::TestWorld_messsage_called.front().first;
+          Accounttest::TestWorld_message_called.front().first;
 
     ASSERT_EQUAL(result->getClassNo(),
                  Atlas::Objects::Operation::SET_NO);
@@ -1368,8 +1368,8 @@ void Accounttest::test_SetOperation_tasks_good()
     ASSERT_TRUE(!result->getArgs().front()->hasAttr("bbox"));
     ASSERT_TRUE(result->getArgs().front()->hasAttr("tasks"));
 
-    Entity * result_entity =
-          Accounttest::TestWorld_messsage_called.front().second;
+    LocatedEntity * result_entity =
+          Accounttest::TestWorld_message_called.front().second;
 
     ASSERT_EQUAL(result_entity, c);
 
@@ -1625,19 +1625,19 @@ int TestAccount::characterError(const Operation & op,
     return Accounttest::get_characterError_ret_value();
 }
 
-Entity * TestAccount::testAddNewCharacter(const std::string & typestr,
-                                          const RootEntity & ent,
-                                          const RootEntity & arg)
+LocatedEntity * TestAccount::testAddNewCharacter(const std::string & typestr,
+                                                 const RootEntity & ent,
+                                                 const RootEntity & arg)
 {
     return addNewCharacter(typestr, ent, arg);
 }
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
-    Accounttest::set_TestWorld_messsage_called(op, ent);
+    Accounttest::set_TestWorld_message_called(op, ent);
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     Entity * ne = Accounttest::get_TestWorld_addNewEntity_ret_value();
@@ -1720,7 +1720,7 @@ void Connection::GetOperation(const Operation &, OpVector &)
 {
 }
 
-void Connection::addEntity(Entity * ent)
+void Connection::addEntity(LocatedEntity * ent)
 {
 }
 
@@ -1786,7 +1786,7 @@ int TeleportAuthenticator::removeTeleport(const std::string &entity_id)
     return 0;
 }
 
-Entity *TeleportAuthenticator::authenticateTeleport(const std::string &entity_id,
+LocatedEntity *TeleportAuthenticator::authenticateTeleport(const std::string &entity_id,
                                             const std::string &possess_key)
 {
     Entity * ne = Accounttest::get_TeleportAuthenticator_ret_value();
@@ -2175,6 +2175,29 @@ PropertyBase * Entity::modProperty(const std::string & name)
     return 0;
 }
 
+PropertyBase * Entity::setProperty(const std::string & name,
+                                   PropertyBase * prop)
+{
+    return 0;
+}
+
+void Entity::installHandler(int class_no, Handler handler)
+{
+}
+
+void Entity::installDelegate(int class_no, const std::string & delegate)
+{
+}
+
+Domain * Entity::getMovementDomain()
+{
+    return 0;
+}
+
+void Entity::sendWorld(const Operation & op)
+{
+}
+
 void Entity::onContainered()
 {
 }
@@ -2227,6 +2250,38 @@ const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
     return 0;
 }
 
+PropertyBase * LocatedEntity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * LocatedEntity::setProperty(const std::string & name,
+                                          PropertyBase * prop)
+{
+    return 0;
+}
+
+void LocatedEntity::installHandler(int, Handler)
+{
+}
+
+void LocatedEntity::installDelegate(int, const std::string &)
+{
+}
+
+void LocatedEntity::destroy()
+{
+}
+
+Domain * LocatedEntity::getMovementDomain()
+{
+    return 0;
+}
+
+void LocatedEntity::sendWorld(const Operation & op)
+{
+}
+
 void LocatedEntity::onContainered()
 {
 }
@@ -2266,7 +2321,7 @@ void Link::disconnect()
 
 BaseWorld * BaseWorld::m_instance = 0;
 
-BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
 {
     m_instance = this;
 }
@@ -2277,12 +2332,12 @@ BaseWorld::~BaseWorld()
     delete &m_gameWorld;
 }
 
-Entity * BaseWorld::getEntity(const std::string & id) const
+LocatedEntity * BaseWorld::getEntity(const std::string & id) const
 {
     return 0;
 }
 
-Entity * BaseWorld::getEntity(long id) const
+LocatedEntity * BaseWorld::getEntity(long id) const
 {
     return 0;
 }

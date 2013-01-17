@@ -28,6 +28,7 @@
 
 #include "rulesets/Character.h"
 
+#include "common/BaseWorld.h"
 #include "common/id.h"
 #include "common/log.h"
 #include "common/const.h"
@@ -95,7 +96,7 @@ void Account::characterDestroyed(long id)
 ///
 /// \brief chr The character to connect to this account
 /// \return Returns 0 on success and -1 on failure.
-int Account::connectCharacter(Entity *chr)
+int Account::connectCharacter(LocatedEntity *chr)
 {
     Character * character = dynamic_cast<Character *>(chr);
     if (character != 0) {
@@ -118,7 +119,7 @@ int Account::connectCharacter(Entity *chr)
 /// \brief Add a Character to those that belong to this Account
 ///
 /// @param chr Character object to be adddded
-void Account::addCharacter(Entity * chr)
+void Account::addCharacter(LocatedEntity * chr)
 {
     Character * pchar = dynamic_cast<Character *>(chr);
     if (pchar == 0) {
@@ -132,16 +133,16 @@ void Account::addCharacter(Entity * chr)
 ///
 /// @param typestr The type name of the Character to be created
 /// @param ent Atlas description of the Character to be created
-Entity * Account::addNewCharacter(const std::string & typestr,
-                                  const RootEntity & ent,
-                                  const Root & arg)
+LocatedEntity * Account::addNewCharacter(const std::string & typestr,
+                                         const RootEntity & ent,
+                                         const Root & arg)
 {
     if (m_connection == 0) {
         return 0;
     }
     BaseWorld & world = m_connection->m_server.m_world;
     debug(std::cout << "Account::Add_character" << std::endl << std::flush;);
-    Entity * chr;
+    LocatedEntity * chr;
     Element spawn;
     if (arg->copyAttr("spawn_name", spawn) == 0 && spawn.isString()) {
         chr = world.spawnNewEntity(spawn.String(), typestr, ent);
@@ -340,7 +341,7 @@ void Account::createObject(const std::string & type_str,
         new_character->setName(arg->getName());
     }
 
-    Entity * entity = addNewCharacter(type_str, new_character, arg);
+    LocatedEntity * entity = addNewCharacter(type_str, new_character, arg);
 
     if (entity == 0) {
         error(op, "Character creation failed", res, getId());
@@ -425,7 +426,7 @@ void Account::SetOperation(const Operation & op, OpVector & res)
         return error(op, "Permission denied.", res, getId());
     }
 
-    Entity * e = J->second;
+    LocatedEntity * e = J->second;
     Anonymous new_arg;
     bool argument_valid = false;
     Element guise;
@@ -571,7 +572,7 @@ void Account::LookOperation(const Operation & op, OpVector & res)
     Element key;
     if (arg->copyAttr("possess_key", key) == 0 && key.isString()) {
         const std::string & key_str = key.String();
-        Entity *character;
+        LocatedEntity * character;
         character = TeleportAuthenticator::instance()->authenticateTeleport(to, key_str);
         // FIXME Not finding the character should be fatal
         // FIXME TA needs to generate clientError ops for the client

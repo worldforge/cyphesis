@@ -40,7 +40,9 @@ static void testFactory(PropertyKit & pk)
     assert(p != 0);
 }
 
-static HandlerResult test_handler(Entity *, const Operation &, OpVector &)
+static HandlerResult test_handler(LocatedEntity *,
+                                  const Operation &,
+                                  OpVector &)
 {
     return OPERATION_IGNORED;
 }
@@ -81,11 +83,11 @@ PropertyBase::~PropertyBase()
 {
 }
 
-void PropertyBase::install(Entity *)
+void PropertyBase::install(LocatedEntity *)
 {
 }
 
-void PropertyBase::apply(Entity *)
+void PropertyBase::apply(LocatedEntity *)
 {
 }
 
@@ -100,7 +102,7 @@ void PropertyBase::add(const std::string & s,
 {
 }
 
-HandlerResult PropertyBase::operation(Entity *,
+HandlerResult PropertyBase::operation(LocatedEntity *,
                                       const Operation &,
                                       OpVector &)
 {

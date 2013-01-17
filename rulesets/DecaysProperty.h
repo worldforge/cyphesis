@@ -25,7 +25,7 @@
 class DecaysProperty
 {
   public:
-    static HandlerResult del_handler(Entity * e,
+    static HandlerResult del_handler(LocatedEntity * e,
                                      const Operation &,
                                      OpVector & res);
 };

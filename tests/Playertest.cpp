@@ -250,11 +250,11 @@ void Playertest::test_characterError_playable()
     ASSERT_EQUAL(res.size(), 0u);
 }
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     return 0;
@@ -300,14 +300,14 @@ Account::~Account()
 {
 }
 
-Entity * Account::addNewCharacter(const std::string & typestr,
+LocatedEntity * Account::addNewCharacter(const std::string & typestr,
                                   const RootEntity & ent,
                                   const Root & arg)
 {
     return 0;
 }
 
-int Account::connectCharacter(Entity *chr)
+int Account::connectCharacter(LocatedEntity *chr)
 {
     return 0;
 }
@@ -431,7 +431,7 @@ void Connection::GetOperation(const Operation &, OpVector &)
 {
 }
 
-void Connection::addEntity(Entity * ent)
+void Connection::addEntity(LocatedEntity * ent)
 {
 }
 
@@ -560,7 +560,7 @@ int TeleportAuthenticator::removeTeleport(const std::string &entity_id)
     return 0;
 }
 
-Entity *TeleportAuthenticator::authenticateTeleport(const std::string &entity_id,
+LocatedEntity *TeleportAuthenticator::authenticateTeleport(const std::string &entity_id,
                                             const std::string &possess_key)
 {
     return 0;
@@ -904,6 +904,29 @@ PropertyBase * Entity::modProperty(const std::string & name)
     return 0;
 }
 
+PropertyBase * Entity::setProperty(const std::string & name,
+                                   PropertyBase * prop)
+{
+    return 0;
+}
+
+void Entity::installHandler(int class_no, Handler handler)
+{
+}
+
+void Entity::installDelegate(int class_no, const std::string & delegate)
+{
+}
+
+Domain * Entity::getMovementDomain()
+{
+    return 0;
+}
+
+void Entity::sendWorld(const Operation & op)
+{
+}
+
 void Entity::onContainered()
 {
 }
@@ -954,6 +977,38 @@ PropertyBase * LocatedEntity::setAttr(const std::string & name,
 const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
 {
     return 0;
+}
+
+PropertyBase * LocatedEntity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * LocatedEntity::setProperty(const std::string & name,
+                                          PropertyBase * prop)
+{
+    return 0;
+}
+
+void LocatedEntity::installHandler(int, Handler)
+{
+}
+
+void LocatedEntity::installDelegate(int, const std::string &)
+{
+}
+
+void LocatedEntity::destroy()
+{
+}
+
+Domain * LocatedEntity::getMovementDomain()
+{
+    return 0;
+}
+
+void LocatedEntity::sendWorld(const Operation & op)
+{
 }
 
 void LocatedEntity::onContainered()
@@ -1031,7 +1086,7 @@ bool Inheritance::hasClass(const std::string & parent)
 
 BaseWorld * BaseWorld::m_instance = 0;
 
-BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
 {
     m_instance = this;
 }
@@ -1042,12 +1097,12 @@ BaseWorld::~BaseWorld()
     delete &m_gameWorld;
 }
 
-Entity * BaseWorld::getEntity(const std::string & id) const
+LocatedEntity * BaseWorld::getEntity(const std::string & id) const
 {
     return 0;
 }
 
-Entity * BaseWorld::getEntity(long id) const
+LocatedEntity * BaseWorld::getEntity(long id) const
 {
     return 0;
 }

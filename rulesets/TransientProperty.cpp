@@ -45,12 +45,12 @@ TransientProperty * TransientProperty::copy() const
     return new TransientProperty(*this);
 }
 
-void TransientProperty::install(Entity * ent)
+void TransientProperty::install(LocatedEntity * ent)
 {
     ent->setFlags(entity_ephem);
 }
 
-void TransientProperty::apply(Entity * ent)
+void TransientProperty::apply(LocatedEntity * ent)
 {
     // If data is less than zero we don't ever delete it.
     if (m_data < 0) {

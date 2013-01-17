@@ -22,13 +22,11 @@
 
 #include "Movement.h"
 
-class Entity;
-
 /// \brief Class for handling movement of a Pedestrian Character
 class Pedestrian : public Movement {
     // friend class Character;
   public:
-    explicit Pedestrian(Entity & body);
+    explicit Pedestrian(LocatedEntity & body);
     virtual ~Pedestrian();
 
     double getTickAddition(const Point3D & coordinates,

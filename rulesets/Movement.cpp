@@ -19,20 +19,10 @@
 
 #include "Movement.h"
 
-#include "Character.h"
+#include "modules/Location.h"
 
-#include "physics/Collision.h"
-
-#include "common/debug.h"
-
-#include "common/Tick.h"
-
-#include <Atlas/Objects/Operation.h>
-
-static const bool debug_flag = false;
-
-Movement::Movement(Entity & body) : m_body(body),
-                                    m_serialno(0)
+Movement::Movement(LocatedEntity & body) : m_body(body),
+                                           m_serialno(0)
 {
 }
 

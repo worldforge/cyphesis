@@ -22,8 +22,9 @@
 #include "server/Juncture.h"
 #include "server/ServerRouting.h"
 
-#include "rulesets/Entity.h"
+#include "rulesets/LocatedEntity.h"
 
+#include "common/BaseWorld.h"
 #include "common/compose.hpp"
 #include "common/debug.h"
 #include "common/log.h"
@@ -31,9 +32,11 @@
 #include <Atlas/Objects/RootOperation.h>
 #include <Atlas/Objects/SmartPtr.h>
 
+#include <iostream>
+
 static const bool debug_flag = false;
 
-HandlerResult TeleportProperty::teleport_handler(Entity * e,
+HandlerResult TeleportProperty::teleport_handler(LocatedEntity * e,
                                                  const Operation & op,
                                                  OpVector & res)
 {
@@ -71,7 +74,7 @@ HandlerResult TeleportProperty::teleport_handler(Entity * e,
                               op->getFrom()));
 
     // This is the sender entity
-    Entity * entity = BaseWorld::instance().getEntity(op->getFrom());
+    LocatedEntity * entity = BaseWorld::instance().getEntity(op->getFrom());
     if (entity == 0) {
         debug(std::cout << "No entity found with the specified ID: "
                         << op->getFrom(););

@@ -25,6 +25,7 @@
 #include "TeleportState.h"
 #include "rulesets/ExternalMind.h"
 
+#include "common/BaseWorld.h"
 #include "common/CommSocket.h"
 #include "common/id.h"
 #include "common/log.h"
@@ -148,7 +149,7 @@ void Peer::operation(const Operation &op, OpVector &res)
 ///
 /// @param ent The entity to be teleported
 /// @return Returns 0 on success and -1 on failure
-int Peer::teleportEntity(const Entity * ent)
+int Peer::teleportEntity(const LocatedEntity * ent)
 {
     if (m_state != PEER_AUTHENTICATED) {
         log(ERROR, "Peer not authenticated yet.");
@@ -253,7 +254,7 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
     // This is the sender entity. This is retreived again rather than
     // relying on a pointer (in the TeleportState object perhaps) as the
     // entity might have been deleted in the time between sending and response
-    Entity * entity = BaseWorld::instance().getEntity(iid);
+    LocatedEntity * entity = BaseWorld::instance().getEntity(iid);
     if (entity == 0) {
         log(ERROR, String::compose("No entity found with ID: %1", iid));
         // Clean up the teleport state object

@@ -25,8 +25,9 @@
 #include "Py_BBox.h"
 #include "Py_World.h"
 
-#include "Entity.h"
 #include "BaseMind.h"
+
+#include "common/BaseWorld.h"
 
 #include <sstream>
 

@@ -29,6 +29,7 @@
 #include "common/log.h"
 #include "common/const.h"
 #include "common/debug.h"
+#include "common/globals.h"
 #include "common/Database.h"
 #include "common/compose.hpp"
 
@@ -242,7 +243,7 @@ void Persistence::registerCharacters(Account & ac,
     dr.clear();
 }
 
-void Persistence::addCharacter(const Account & ac, const Entity & e)
+void Persistence::addCharacter(const Account & ac, const LocatedEntity & e)
 {
     m_db.createRelationRow(m_characterRelation, ac.getId(), e.getId());
 }

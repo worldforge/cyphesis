@@ -94,7 +94,7 @@ MindProperty * MindProperty::copy() const
     return new MindProperty(*this);
 }
 
-void MindProperty::apply(Entity * ent)
+void MindProperty::apply(LocatedEntity * ent)
 {
     if (m_factory == 0) {
         return;

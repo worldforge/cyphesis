@@ -19,7 +19,7 @@
 
 #include "TasksProperty.h"
 
-#include "Entity.h"
+#include "LocatedEntity.h"
 #include "Task.h"
 
 #include "common/compose.hpp"
@@ -99,7 +99,7 @@ TasksProperty * TasksProperty::copy() const
     return new TasksProperty(*this);
 }
 
-int TasksProperty::updateTask(Entity * owner, OpVector & res)
+int TasksProperty::updateTask(LocatedEntity * owner, OpVector & res)
 {
     setFlags(flag_unsent);
 
@@ -112,7 +112,7 @@ int TasksProperty::updateTask(Entity * owner, OpVector & res)
 }
 
 int TasksProperty::startTask(Task * task,
-                             Entity * owner,
+                             LocatedEntity * owner,
                              const Operation & op,
                              OpVector & res)
 {
@@ -146,7 +146,7 @@ int TasksProperty::startTask(Task * task,
 
 }
 
-int TasksProperty::clearTask(Entity * owner, OpVector & res)
+int TasksProperty::clearTask(LocatedEntity * owner, OpVector & res)
 {
     if (m_task == 0) {
         // This function should never be called when there is no task,
@@ -163,7 +163,7 @@ int TasksProperty::clearTask(Entity * owner, OpVector & res)
     return updateTask(owner, res);
 }
 
-void TasksProperty::stopTask(Entity * owner, OpVector & res)
+void TasksProperty::stopTask(LocatedEntity * owner, OpVector & res)
 {
     // This is just clearTask without an assert
     if (m_task == 0) {
@@ -178,7 +178,7 @@ void TasksProperty::stopTask(Entity * owner, OpVector & res)
     updateTask(owner, res);
 }
 
-void TasksProperty::TickOperation(Entity * owner,
+void TasksProperty::TickOperation(LocatedEntity * owner,
                                   const Operation & op,
                                   OpVector & res)
 {
@@ -211,13 +211,13 @@ void TasksProperty::TickOperation(Entity * owner,
     }
 }
 
-void TasksProperty::UseOperation(Entity * owner,
+void TasksProperty::UseOperation(LocatedEntity * owner,
                                  const Operation & op,
                                  OpVector & res)
 {
 }
 
-HandlerResult TasksProperty::operation(Entity * owner,
+HandlerResult TasksProperty::operation(LocatedEntity * owner,
                                        const Operation & op,
                                        OpVector & res)
 {
