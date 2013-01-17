@@ -48,6 +48,7 @@ MemEntity * MemMap::addEntity(MemEntity * entity)
 {
     assert(entity != 0);
     assert(!entity->getId().empty());
+    assert(entity->getType() != 0);
 
     debug(std::cout << "MemMap::addEntity " << entity << " " << entity->getId()
                     << std::endl << std::flush;);
