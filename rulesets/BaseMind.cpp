@@ -50,6 +50,7 @@ BaseMind::BaseMind(const std::string & id, long intId) :
           MemEntity(id, intId), m_map(m_script), m_isAwake(true)
 {
     setVisible(true);
+    setType(MemMap::m_entity_type);
     m_map.addEntity(this);
 }
 

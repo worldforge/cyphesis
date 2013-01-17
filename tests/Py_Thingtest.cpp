@@ -246,7 +246,7 @@ int main()
     expect_python_error("print m.foo_operation", PyExc_AttributeError);
     run_python_string("print m.location");
     run_python_string("print m.contains");
-    expect_python_error("m.type", PyExc_AttributeError);
+    run_python_string("m.type");
     expect_python_error("m.map=1", PyExc_AttributeError);
     run_python_string("m.string_attr='foo'");
     run_python_string("assert(m.string_attr == 'foo')");
