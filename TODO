@@ -1,16 +1,12 @@
-Use destroy() interface in Mind code
+Use destroy() interface in Mind code, and implement parent refcounting.
 
 Move LocatedEntity to common, and rename
 
 Make LocatedEntity the sole base class for dealing with entities.
- * Move flags into LocatedEntity
-   * Fix MemEntity to use flags instead of current bools.
- * Modify WorldRouter to use it throughout
- * Modify Property interface to use it.
  * Move remaining Property methods into LocatedEntity, de-virt modProperty
    and setProperty
-
-Why does SpawnProperty not implement copy()?
+ * Convert MemMap::findBy*() to use vectors of LocatedEntity
+ * Convert MemMap to store using LocatedEntity maybe?
 
 traits on property to specify the name simply.
 
