@@ -42,6 +42,8 @@ using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
 
+using String::compose;
+
 const TypeNode * MemMap::m_entity_type = 0;
 
 MemEntity * MemMap::addEntity(MemEntity * entity)
@@ -363,11 +365,16 @@ MemEntityVector MemMap::findByLocation(const Location & loc,
     if (place->m_contains == 0) {
         return res;
     }
+#ifndef NDEBUG
     MemEntity * place_by_id = get(place->getId());
     if (place != place_by_id) {
-        log(ERROR, "WTF!");
+        log(ERROR, compose("MemMap consistency check failure: find location "
+                           "has LOC %1(%2) which is different in dict (%3)",
+                           place->getId(), place->getType()->name(),
+                           place_by_id->getType()->name()));
         return res;
     }
+#endif // NDEBUG
     LocatedEntitySet::const_iterator I = place->m_contains->begin();
     LocatedEntitySet::const_iterator Iend = place->m_contains->end();
     float square_range = radius * radius;

@@ -70,6 +70,10 @@ class MemMaptest : public Cyphesis::TestBase
     void test_readEntity();
     void test_readEntity_type();
     void test_readEntity_type_nonexist();
+    void test_findByLoc();
+    void test_findByLoc_results();
+    void test_findByLoc_invalid();
+    void test_findByLoc_consistency_check();
 
     static void Script_hook_called(const std::string &, LocatedEntity *);
 };
@@ -106,6 +110,10 @@ MemMaptest::MemMaptest()
     ADD_TEST(MemMaptest::test_readEntity);
     ADD_TEST(MemMaptest::test_readEntity_type);
     ADD_TEST(MemMaptest::test_readEntity_type_nonexist);
+    ADD_TEST(MemMaptest::test_findByLoc);
+    ADD_TEST(MemMaptest::test_findByLoc_results);
+    ADD_TEST(MemMaptest::test_findByLoc_invalid);
+    ADD_TEST(MemMaptest::test_findByLoc_consistency_check);
 }
 
 void MemMaptest::setup()
@@ -231,6 +239,147 @@ void MemMaptest::test_readEntity_type_nonexist()
 
     ASSERT_EQUAL(ent->getType(), MemMap::m_entity_type);
     ASSERT_NOT_EQUAL(ent->getType(), m_sampleType);
+}
+
+void MemMaptest::test_findByLoc()
+{
+    MemEntity * tlve = new MemEntity("3", 3);
+    tlve->setVisible();
+    m_memMap->m_entities[3] = tlve;
+    tlve->m_contains = new LocatedEntitySet;
+
+    MemEntity * e4 = new MemEntity("4", 4);
+    e4->setVisible();
+    e4->setType(m_sampleType);
+    m_memMap->m_entities[4] = tlve;
+    e4->m_location.m_loc = tlve;
+    e4->m_location.m_pos = Point3D(1,1,0);
+    tlve->m_contains->insert(e4);
+
+    MemEntity * e5 = new MemEntity("5", 5);
+    e5->setVisible();
+    e5->setType(m_sampleType);
+    m_memMap->m_entities[5] = tlve;
+    e5->m_location.m_loc = tlve;
+    e5->m_location.m_pos = Point3D(2,2,0);
+    tlve->m_contains->insert(e5);
+
+    Location find_here(tlve);
+
+    // Radius too small
+    MemEntityVector res = m_memMap->findByLocation(find_here,
+                                                   1.f,
+                                                   "sample_type");
+
+    ASSERT_TRUE(res.empty());
+}
+
+void MemMaptest::test_findByLoc_results()
+{
+    MemEntity * tlve = new MemEntity("3", 3);
+    tlve->setVisible();
+    m_memMap->m_entities[3] = tlve;
+    tlve->m_contains = new LocatedEntitySet;
+
+    MemEntity * e4 = new MemEntity("4", 4);
+    e4->setVisible();
+    e4->setType(m_sampleType);
+    m_memMap->m_entities[4] = tlve;
+    e4->m_location.m_loc = tlve;
+    e4->m_location.m_pos = Point3D(1,1,0);
+    tlve->m_contains->insert(e4);
+
+    MemEntity * e5 = new MemEntity("5", 5);
+    e5->setVisible();
+    e5->setType(m_sampleType);
+    m_memMap->m_entities[5] = tlve;
+    e5->m_location.m_loc = tlve;
+    e5->m_location.m_pos = Point3D(2,2,0);
+    tlve->m_contains->insert(e5);
+
+    Location find_here(tlve);
+
+    MemEntityVector res = m_memMap->findByLocation(find_here,
+                                                   5.f,
+                                                   "sample_type");
+
+    ASSERT_TRUE(!res.empty());
+    ASSERT_EQUAL(res.size(), 2u);
+}
+
+void MemMaptest::test_findByLoc_invalid()
+{
+    MemEntity * tlve = new MemEntity("3", 3);
+    tlve->setVisible();
+    m_memMap->m_entities[3] = tlve;
+    tlve->m_contains = new LocatedEntitySet;
+
+    MemEntity * e4 = new MemEntity("4", 4);
+    e4->setVisible();
+    e4->setType(m_sampleType);
+    m_memMap->m_entities[4] = tlve;
+    e4->m_location.m_loc = tlve;
+    e4->m_location.m_pos = Point3D(1,1,0);
+    tlve->m_contains->insert(e4);
+
+    MemEntity * e5 = new MemEntity("5", 5);
+    e5->setVisible();
+    e5->setType(m_sampleType);
+    m_memMap->m_entities[5] = tlve;
+    e5->m_location.m_loc = tlve;
+    e5->m_location.m_pos = Point3D(2,2,0);
+    tlve->m_contains->insert(e5);
+
+    // Look in a location where these is nothing - no contains at all
+    Location find_here(e4);
+
+    MemEntityVector res = m_memMap->findByLocation(find_here,
+                                                   5.f,
+                                                   "sample_type");
+
+    ASSERT_TRUE(res.empty());
+}
+
+void MemMaptest::test_findByLoc_consistency_check()
+{
+    MemEntity * tlve = new MemEntity("3", 3);
+    tlve->setVisible();
+    tlve->setType(m_sampleType);
+    m_memMap->m_entities[3] = tlve;
+    tlve->m_contains = new LocatedEntitySet;
+
+    MemEntity * e4 = new MemEntity("4", 4);
+    e4->setVisible();
+    e4->setType(m_sampleType);
+    m_memMap->m_entities[4] = tlve;
+    e4->m_location.m_loc = tlve;
+    e4->m_location.m_pos = Point3D(1,1,0);
+    tlve->m_contains->insert(e4);
+
+    MemEntity * e5 = new MemEntity("5", 5);
+    e5->setVisible();
+    e5->setType(m_sampleType);
+    m_memMap->m_entities[5] = tlve;
+    e5->m_location.m_loc = tlve;
+    e5->m_location.m_pos = Point3D(2,2,0);
+    tlve->m_contains->insert(e5);
+
+    // Duplicated of tlve. Same ID, but not the same entity as in
+    // memmap. This will fail, but via a different path depending on
+    // DEBUG/NDEBUG. In debug build, the check in findByLoc will fail
+    // resulting in early return. In ndebug build, it will return empty
+    // by a longer path, as e3_dup contains no other entities.
+    MemEntity * e3_dup = new MemEntity("3", 3);
+    e3_dup->setType(m_sampleType);
+    e3_dup->m_contains = new LocatedEntitySet;
+
+    Location find_here(e3_dup);
+
+    MemEntityVector res = m_memMap->findByLocation(find_here,
+                                                   5.f,
+                                                   "sample_type");
+
+    ASSERT_TRUE(res.empty());
 }
 
 int main()
@@ -364,6 +513,10 @@ Location::Location() : m_loc(0)
 {
 }
 
+Location::Location(LocatedEntity * rf) : m_loc(rf)
+{
+}
+
 int Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent)
 {
     return 0;
@@ -442,6 +595,7 @@ float squareDistance(const Point3D & u, const Point3D & v)
 
 void log(LogLevel lvl, const std::string & msg)
 {
+    std::cout << msg << std::endl;
 }
 
 long integerId(const std::string & id)
