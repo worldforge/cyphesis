@@ -337,17 +337,16 @@ void Thing::checkVisibility(const Point3D & old_pos, OpVector & res)
     LocatedEntitySet::const_iterator I = m_location.m_loc->m_contains->begin();
     LocatedEntitySet::const_iterator Iend = m_location.m_loc->m_contains->end();
     for(; I != Iend; ++I) {
-        float old_dist = squareDistance((*I)->m_location.pos(), old_pos),
-              new_dist = squareDistance((*I)->m_location.pos(), m_location.pos()),
-              squ_size = (*I)->m_location.squareBoxSize();
+        LocatedEntity * other = *I;
+        assert(other != 0);
+        float old_dist = squareDistance(other->m_location.pos(), old_pos),
+              new_dist = squareDistance(other->m_location.pos(), m_location.pos()),
+              squ_size = other->m_location.squareBoxSize();
 
         // Build appear and disappear lists, and send operations
         // Also so operations to (dis)appearing perceptive
         // entities saying that we are (dis)appearing
-        // FIXME Should this be Entity *
-        Entity * viewer = dynamic_cast<Entity *>(*I);
-        assert(viewer != 0);
-        if (viewer->isPerceptive()) {
+        if (other->isPerceptive()) {
             bool was_in_range = ((fromSquSize / old_dist) > consts::square_sight_factor),
                  is_in_range = ((fromSquSize / new_dist) > consts::square_sight_factor);
             if (was_in_range != is_in_range) {
@@ -356,7 +355,7 @@ void Thing::checkVisibility(const Point3D & old_pos, OpVector & res)
                     // knows it is losing sight of us.
                     Disappearance d;
                     d->setArgs1(this_ent);
-                    d->setTo((*I)->getId());
+                    d->setTo(other->getId());
                     res.push_back(d);
                 } else /*if (is_in_range)*/ {
                     // Send operation to the entity in question so it
@@ -365,7 +364,7 @@ void Thing::checkVisibility(const Point3D & old_pos, OpVector & res)
                     // to get our Sight(Move)
                     Appearance a;
                     a->setArgs1(this_ent);
-                    a->setTo((*I)->getId());
+                    a->setTo(other->getId());
                     res.push_back(a);
                 }
             }
@@ -375,18 +374,18 @@ void Thing::checkVisibility(const Point3D & old_pos, OpVector & res)
              can_see = ((squ_size / new_dist) > consts::square_sight_factor);
         if (could_see ^ can_see) {
             Anonymous that_ent;
-            that_ent->setId((*I)->getId());
-            that_ent->setStamp((*I)->getSeq());
+            that_ent->setId(other->getId());
+            that_ent->setStamp(other->getSeq());
             if (could_see) {
                 // We are losing sight of that object
                 disappear.push_back(that_ent);
                 debug(std::cout << getId() << ": losing site of "
-                                << (*I)->getId() << std::endl;);
+                                << other->getId() << std::endl;);
             } else /*if (can_see)*/ {
                 // We are gaining sight of that object
                 appear.push_back(that_ent);
                 debug(std::cout << getId() << ": gaining site of "
-                                << (*I)->getId() << std::endl;);
+                                << other->getId() << std::endl;);
             }
         }
     }
