@@ -36,7 +36,7 @@ class MemEntity;
 class Script;
 class TypeNode;
 
-typedef std::vector<LocatedEntity *> MemEntityVector;
+typedef std::vector<LocatedEntity *> EntityVector;
 typedef std::map<long, MemEntity *> MemEntityDict;
 
 /// \brief Class to handle the basic entity memory of a mind
@@ -80,10 +80,10 @@ class MemMap {
     MemEntity * getAdd(const std::string & id);
     MemEntity * updateAdd(const Atlas::Objects::Entity::RootEntity &, const double &);
 
-    MemEntityVector findByType(const std::string & what);
-    MemEntityVector findByLocation(const Location & where,
-                                   WFMath::CoordType radius,
-                                   const std::string & what);
+    EntityVector findByType(const std::string & what);
+    EntityVector findByLocation(const Location & where,
+                                WFMath::CoordType radius,
+                                const std::string & what);
 
     void check(const double &);
     void flush();

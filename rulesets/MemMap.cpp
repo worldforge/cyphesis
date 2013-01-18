@@ -338,10 +338,10 @@ MemEntity * MemMap::updateAdd(const RootEntity & ent, const double & d)
     return entity;
 }
 
-MemEntityVector MemMap::findByType(const std::string & what)
+EntityVector MemMap::findByType(const std::string & what)
 // Find an entity in our memory of a certain type
 {
-    MemEntityVector res;
+    EntityVector res;
     
     MemEntityDict::const_iterator Iend = m_entities.end();
     for (MemEntityDict::const_iterator I = m_entities.begin(); I != Iend; ++I) {
@@ -354,13 +354,13 @@ MemEntityVector MemMap::findByType(const std::string & what)
     return res;
 }
 
-MemEntityVector MemMap::findByLocation(const Location & loc,
+EntityVector MemMap::findByLocation(const Location & loc,
                                        WFMath::CoordType radius,
                                        const std::string & what)
 // Find an entity in our memory in a certain place
 // FIXME Don't return by value
 {
-    MemEntityVector res;
+    EntityVector res;
     LocatedEntity * place = loc.m_loc;
     if (place->m_contains == 0) {
         return res;

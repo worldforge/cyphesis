@@ -267,9 +267,9 @@ void MemMaptest::test_findByLoc()
     Location find_here(tlve);
 
     // Radius too small
-    MemEntityVector res = m_memMap->findByLocation(find_here,
-                                                   1.f,
-                                                   "sample_type");
+    EntityVector res = m_memMap->findByLocation(find_here,
+                                                1.f,
+                                                "sample_type");
 
     ASSERT_TRUE(res.empty());
 }
@@ -299,9 +299,9 @@ void MemMaptest::test_findByLoc_results()
 
     Location find_here(tlve);
 
-    MemEntityVector res = m_memMap->findByLocation(find_here,
-                                                   5.f,
-                                                   "sample_type");
+    EntityVector res = m_memMap->findByLocation(find_here,
+                                                5.f,
+                                                "sample_type");
 
     ASSERT_TRUE(!res.empty());
     ASSERT_EQUAL(res.size(), 2u);
@@ -333,9 +333,9 @@ void MemMaptest::test_findByLoc_invalid()
     // Look in a location where these is nothing - no contains at all
     Location find_here(e4);
 
-    MemEntityVector res = m_memMap->findByLocation(find_here,
-                                                   5.f,
-                                                   "sample_type");
+    EntityVector res = m_memMap->findByLocation(find_here,
+                                                5.f,
+                                                "sample_type");
 
     ASSERT_TRUE(res.empty());
 }
@@ -375,9 +375,9 @@ void MemMaptest::test_findByLoc_consistency_check()
 
     Location find_here(e3_dup);
 
-    MemEntityVector res = m_memMap->findByLocation(find_here,
-                                                   5.f,
-                                                   "sample_type");
+    EntityVector res = m_memMap->findByLocation(find_here,
+                                                5.f,
+                                                "sample_type");
 
     ASSERT_TRUE(res.empty());
 }
