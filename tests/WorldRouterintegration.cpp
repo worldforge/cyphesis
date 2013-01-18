@@ -655,7 +655,7 @@ BBoxProperty * BBoxProperty::copy() const
     return 0;
 }
 
-ExternalMind::ExternalMind(Entity & e) : Router(e.getId(), e.getIntId()),
+ExternalMind::ExternalMind(LocatedEntity & e) : Router(e.getId(), e.getIntId()),
                                          m_external(0),
                                          m_entity(e),
                                          m_lossTime(0.)

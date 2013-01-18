@@ -769,7 +769,7 @@ void Lobby::operation(const Operation & op, OpVector & res)
 {
 }
 
-ExternalMind::ExternalMind(Entity & e) : Router(e.getId(), e.getIntId()),
+ExternalMind::ExternalMind(LocatedEntity & e) : Router(e.getId(), e.getIntId()),
                                          m_external(0), m_entity(e)
 {
 }

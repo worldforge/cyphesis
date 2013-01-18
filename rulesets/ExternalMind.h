@@ -34,14 +34,14 @@ class LocatedEntity;
 class ExternalMind : public Router {
   protected:
     Link * m_external;
-    Entity & m_entity;
+    LocatedEntity & m_entity;
     double m_lossTime;
 
     void deleteEntity(const std::string & id);
     void purgeEntity(const LocatedEntity & ent);
   public:
 
-    ExternalMind(Entity &);
+    ExternalMind(LocatedEntity &);
     virtual ~ExternalMind();
 
     virtual void externalOperation(const Operation & op, Link &);

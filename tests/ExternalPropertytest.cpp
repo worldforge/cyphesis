@@ -59,7 +59,7 @@ int main()
         delete ep;
     }
     {
-        ExternalMind * e = new ExternalMind(*(Entity*)0);
+        ExternalMind * e = new ExternalMind(*(LocatedEntity*)0);
         ExternalProperty * ep = new ExternalProperty(e);
 
         Element elem;
@@ -87,7 +87,7 @@ int main()
         delete ep;
     }
     {
-        ExternalMind * e = new ExternalMind(*(Entity*)0);
+        ExternalMind * e = new ExternalMind(*(LocatedEntity*)0);
         ExternalProperty * ep = new ExternalProperty(e);
 
         MapType map;
@@ -114,7 +114,7 @@ int main()
         delete ep;
     }
     {
-        ExternalMind * e = new ExternalMind(*(Entity*)0);
+        ExternalMind * e = new ExternalMind(*(LocatedEntity*)0);
         ExternalProperty * ep = new ExternalProperty(e);
 
         RootEntity ent;
@@ -140,8 +140,8 @@ int main()
 
 // stubs
 
-ExternalMind::ExternalMind(Entity & e) : Router("", -1L),
-                                         m_external(0), m_entity(e)
+ExternalMind::ExternalMind(LocatedEntity & e) : Router("", -1L),
+                                                m_external(0), m_entity(e)
 {
 }
 

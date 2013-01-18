@@ -19,7 +19,7 @@
 
 #include "ExternalMind.h"
 
-#include "rulesets/Entity.h"
+#include "rulesets/LocatedEntity.h"
 
 #include "common/BaseWorld.h"
 #include "common/compose.hpp"
@@ -65,10 +65,10 @@ void ExternalMind::purgeEntity(const LocatedEntity & ent)
     deleteEntity(ent.getId());
 }
 
-ExternalMind::ExternalMind(Entity & e) : Router(e.getId(), e.getIntId()),
-                                         m_external(0),
-                                         m_entity(e),
-                                         m_lossTime(0.)
+ExternalMind::ExternalMind(LocatedEntity & e) : Router(e.getId(), e.getIntId()),
+                                                m_external(0),
+                                                m_entity(e),
+                                                m_lossTime(0.)
 {
 }
 
