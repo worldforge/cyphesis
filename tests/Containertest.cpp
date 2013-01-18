@@ -47,7 +47,8 @@ int main()
         abort(); // There should be nothing in this container
     }
 
-    Entity * e = (Entity *)23;
+    // WAT? FIXME NO!
+    LocatedEntity * e = (LocatedEntity *)23;
 
     sc.insert(e);
 
@@ -57,7 +58,7 @@ int main()
     int i = 0;
 
     for (I = sc.begin(); I != Iend; ++I) {
-        Entity * ent = *I;
+        LocatedEntity * ent = *I;
         assert(ent != 0);
         ++i;
         std::cout << "Ptr: " << ent << std::endl << std::flush;

@@ -27,9 +27,9 @@
 #include <vector>
 #include <string>
 
-class Entity;
+class LocatedEntity;
 
-typedef std::set<Entity *> EntitySet;
+typedef std::set<LocatedEntity *> EntitySet;
 
 namespace Atlas {
     namespace Message {
@@ -70,7 +70,7 @@ class Container {
         /// \brief Check if the iterator points to the same entity
         virtual bool operator==(const Container_const_iterator &) = 0;
         /// \brief Dereference the iterator to get the entity
-        virtual Entity * operator*() const = 0;
+        virtual LocatedEntity * operator*() const = 0;
     };
   public:
     /// \brief Iterator for Container
@@ -117,7 +117,7 @@ class Container {
         }
         bool operator==(const const_iterator & I) { return (*m_i)==(*I.m_i); }
         bool operator!=(const const_iterator & I) { return !operator==(I); }
-        Entity * operator*() const { return **m_i; }
+        LocatedEntity * operator*() const { return **m_i; }
     };
   private:
     // Private and un-implemented, to make sure slicing is impossible.
@@ -137,9 +137,9 @@ class Container {
     /// \brief Query whether the container is empty
     virtual bool empty() const = 0;
     /// \brief Insert a member into the container
-    virtual void insert(Entity *) = 0;
+    virtual void insert(LocatedEntity *) = 0;
     /// \brief Remove a member from the container
-    virtual void erase(Entity *) = 0;
+    virtual void erase(LocatedEntity *) = 0;
     /// \brief Can't remember what this was to do
     virtual void reParent() = 0;
     /// \brief Add the CONTAINS attribute to the message for this container
@@ -155,8 +155,8 @@ class NonContainer : public Container {
     virtual ~NonContainer();
 
     virtual int size();
-    virtual void insert(Entity *);
-    virtual void erase(Entity *);
+    virtual void insert(LocatedEntity *);
+    virtual void erase(LocatedEntity *);
     virtual void reParent();
     virtual void addToMessage(const std::string &, Atlas::Message::MapType &) const;
     virtual void addToEntity(const std::string &, Atlas::Objects::Entity::RootEntity &) const = 0;
@@ -180,7 +180,7 @@ class StdContainer : public Container {
 
         virtual StdContainer_const_iterator & operator++();
         virtual bool operator==(const Container_const_iterator &);
-        virtual Entity * operator*() const;
+        virtual LocatedEntity * operator*() const;
     };
   protected:
     /// \brief Storage for the entities in this container
@@ -194,8 +194,8 @@ class StdContainer : public Container {
 
     virtual int size() const;
     virtual bool empty() const;
-    virtual void insert(Entity *);
-    virtual void erase(Entity *);
+    virtual void insert(LocatedEntity *);
+    virtual void erase(LocatedEntity *);
     virtual void reParent();
     virtual void addToMessage(const std::string &, Atlas::Message::MapType &) const;
     virtual void addToEntity(const std::string &, const Atlas::Objects::Entity::RootEntity &) const;
