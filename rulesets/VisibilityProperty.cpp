@@ -19,7 +19,7 @@
 
 #include "VisibilityProperty.h"
 
-#include "rulesets/Entity.h"
+#include "rulesets/LocatedEntity.h"
 
 #include "common/log.h"
 
