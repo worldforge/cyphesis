@@ -22,7 +22,7 @@
 
 #include "MultiHandlerProperty.h"
 
-#include "Entity.h"
+#include "LocatedEntity.h"
 
 template <typename T>
 MultiHandlerProperty<T>::MultiHandlerProperty(const HandlerMap & handlers) :

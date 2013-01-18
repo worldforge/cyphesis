@@ -19,7 +19,7 @@
 
 #include "BBoxProperty.h"
 
-#include "Entity.h"
+#include "rulesets/LocatedEntity.h"
 
 #include "common/log.h"
 
