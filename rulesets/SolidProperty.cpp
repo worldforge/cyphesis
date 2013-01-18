@@ -19,7 +19,7 @@
 
 #include "SolidProperty.h"
 
-#include "Entity.h"
+#include "LocatedEntity.h"
 
 #include "common/debug.h"
 
