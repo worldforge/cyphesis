@@ -22,7 +22,7 @@
 #include "CorePropertyManager.h"
 #include "EntityFactory.h"
 
-#include "rulesets/Entity.h"
+#include "rulesets/LocatedEntity.h"
 
 #include "common/BaseWorld.h"
 #include "common/id.h"
