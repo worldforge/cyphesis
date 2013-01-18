@@ -28,7 +28,6 @@
 
 #include <string>
 
-class Entity;
 class LocatedEntity;
 
 /// \brief Base class for handling Entity movement
@@ -44,7 +43,7 @@ class LocatedEntity;
 /// including any procedural waves on the water.
 class Motion {
   protected:
-    Entity & m_entity;
+    LocatedEntity & m_entity;
     std::string m_mode;
 
     /// Refno of next expected update op
@@ -58,7 +57,7 @@ class Motion {
     Vector3D m_collNormal;
 
   public:
-    explicit Motion(Entity & body);
+    explicit Motion(LocatedEntity & body);
     virtual ~Motion();
 
     float m_collisionTime;

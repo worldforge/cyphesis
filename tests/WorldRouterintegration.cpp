@@ -683,7 +683,7 @@ ArithmeticKit::~ArithmeticKit()
 {
 }
 
-Motion::Motion(Entity & body) : m_entity(body), m_serialno(0),
+Motion::Motion(LocatedEntity & body) : m_entity(body), m_serialno(0),
                                 m_collision(false)
 {
 }

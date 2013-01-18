@@ -173,7 +173,7 @@ IdProperty * IdProperty::copy() const
     return 0;
 }
 
-Motion::Motion(Entity & body) : m_entity(body), m_serialno(0),
+Motion::Motion(LocatedEntity & body) : m_entity(body), m_serialno(0),
                                 m_collision(false), m_collEntity(0),
                                 m_collisionTime(0.f)
 {

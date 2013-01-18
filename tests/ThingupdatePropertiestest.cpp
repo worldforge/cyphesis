@@ -153,7 +153,7 @@ int TICK_NO = -1;
 int UPDATE_NO = -1;
 } } }
 
-Motion::Motion(Entity & body) : m_entity(body), m_serialno(0),
+Motion::Motion(LocatedEntity & body) : m_entity(body), m_serialno(0),
                                 m_collision(false)
 {
 }
