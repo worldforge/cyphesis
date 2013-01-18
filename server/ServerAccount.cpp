@@ -23,7 +23,7 @@
 #include "Connection.h"
 #include "TeleportAuthenticator.h"
 
-#include "rulesets/Entity.h"
+#include "rulesets/LocatedEntity.h"
 
 #include "common/BaseWorld.h"
 #include "common/id.h"
@@ -34,6 +34,8 @@
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
+
+#include <iostream>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
