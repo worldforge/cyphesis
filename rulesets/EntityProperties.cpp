@@ -17,7 +17,7 @@
 
 // $Id$
 
-#include "Entity.h"
+#include "LocatedEntity.h"
 
 #include "common/Property_impl.h"
 #include "common/type_utils.h"
