@@ -19,7 +19,7 @@
 
 #include "OutfitProperty.h"
 
-#include "Entity.h"
+#include "rulesets/LocatedEntity.h"
 
 #include "common/BaseWorld.h"
 #include "common/debug.h"
@@ -30,6 +30,8 @@
 
 #include <sigc++/adaptors/bind.h>
 #include <sigc++/functors/mem_fun.h>
+
+#include <iostream>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -91,7 +93,7 @@ void OutfitProperty::set(const Atlas::Message::Element & val)
                 m_data[key] = EntityRef(e);
             }
         } else if (item.isPtr()) {
-            Entity * e = static_cast<Entity*>(item.Ptr());
+            LocatedEntity * e = static_cast<LocatedEntity*>(item.Ptr());
             assert(e != 0);
             m_data[key] = EntityRef(e);
         } else {
