@@ -19,7 +19,7 @@
 
 #include "SpawnEntity.h"
 
-#include "rulesets/Entity.h"
+#include "rulesets/LocatedEntity.h"
 #include "rulesets/AreaProperty.h"
 
 #include "common/log.h"
