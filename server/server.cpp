@@ -51,7 +51,6 @@
 
 #include "rulesets/BulletDomain.h"
 #include "rulesets/Python_API.h"
-#include "rulesets/Entity.h"
 
 #include "common/id.h"
 #include "common/log.h"
