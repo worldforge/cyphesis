@@ -18,7 +18,8 @@
 // $Id$
 
 #include "Container.h"
-#include "Entity.h"
+
+#include "rulesets/Entity.h"
 
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/RootEntity.h>
