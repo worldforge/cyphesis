@@ -22,7 +22,7 @@
 
 #include "HandlerProperty.h"
 
-#include "Entity.h"
+#include "LocatedEntity.h"
 
 template <typename T>
 HandlerProperty<T>::HandlerProperty(int op, Handler handler) :

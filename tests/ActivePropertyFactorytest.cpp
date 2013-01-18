@@ -58,14 +58,9 @@ int main()
 
 // stubs
 
-void Entity::installHandler(int class_no, Handler handler)
-{
-}
-
 PropertyKit::~PropertyKit()
 {
 }
-
 
 template<>
 void Property<int>::set(const Atlas::Message::Element & e)
