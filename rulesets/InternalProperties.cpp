@@ -19,7 +19,7 @@
 
 #include "InternalProperties.h"
 
-#include "rulesets/Entity.h"
+#include "rulesets/LocatedEntity.h"
 
 #include "common/Setup.h"
 #include "common/Tick.h"
