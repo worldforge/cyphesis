@@ -23,7 +23,7 @@
 #include "Player.h"
 #include "ServerAccount.h"
 
-#include "rulesets/Entity.h"
+#include "rulesets/LocatedEntity.h"
 
 #include "common/id.h"
 #include "common/log.h"
@@ -32,6 +32,8 @@
 #include "common/globals.h"
 #include "common/Database.h"
 #include "common/compose.hpp"
+
+#include <iostream>
 
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
