@@ -19,8 +19,6 @@
 
 #include "Entity.h"
 
-#include "Container.h"
-
 #include "common/Property_impl.h"
 #include "common/type_utils.h"
 
