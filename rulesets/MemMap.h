@@ -30,12 +30,13 @@
 #include <map>
 #include <string>
 
+class LocatedEntity;
 class Location;
 class MemEntity;
 class Script;
 class TypeNode;
 
-typedef std::vector<MemEntity *> MemEntityVector;
+typedef std::vector<LocatedEntity *> MemEntityVector;
 typedef std::map<long, MemEntity *> MemEntityDict;
 
 /// \brief Class to handle the basic entity memory of a mind

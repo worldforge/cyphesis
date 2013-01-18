@@ -380,7 +380,7 @@ MemEntityVector MemMap::findByLocation(const Location & loc,
     float square_range = radius * radius;
     for (; I != Iend; ++I) {
         assert(*I != 0);
-        MemEntity * item = dynamic_cast<MemEntity *>(*I);
+        LocatedEntity * item = *I;
         if (item == 0) {
             log(ERROR, "Weird entity in memory");
             continue;
