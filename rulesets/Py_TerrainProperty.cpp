@@ -23,8 +23,7 @@
 #include "Py_Thing.h"
 #include "Py_Vector3D.h"
 
-#include "Entity.h"
-#include "TerrainProperty.h"
+#include "rulesets/TerrainProperty.h"
 
 static PyObject * TerrainProperty_getHeight(PyProperty * self,
                                             PyObject * args)

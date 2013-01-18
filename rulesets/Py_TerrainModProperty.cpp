@@ -25,7 +25,6 @@
 #include "Py_Thing.h"
 #include "Py_Vector3D.h"
 
-#include "rulesets/LocatedEntity.h"
 #include "rulesets/TerrainModProperty.h"
 
 #include "common/log.h"
