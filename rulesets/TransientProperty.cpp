@@ -19,7 +19,7 @@
 
 #include "TransientProperty.h"
 
-#include "Entity.h"
+#include "LocatedEntity.h"
 
 #include "common/Setup.h"
 #include "common/log.h"
