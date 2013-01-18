@@ -19,7 +19,7 @@
 
 #include "StatusProperty.h"
 
-#include "Entity.h"
+#include "LocatedEntity.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
