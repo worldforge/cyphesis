@@ -359,24 +359,6 @@ MemEntityVector MemMap::findByLocation(const Location & loc,
 // FIXME Don't return by value
 {
     MemEntityVector res;
-#if 0
-    MemEntityDict::const_iterator Iend = m_entities.end();
-    for (MemEntityDict::const_iterator I = m_entities.begin(); I != Iend; ++I) {
-        MemEntity * item = I->second;
-        if (!item->isVisible()) {
-            continue;
-        }
-        const Location & oloc = I->second->m_location;
-        if (!loc.isValid() || !oloc.isValid()) {
-            continue;
-        }
-        if ((oloc.m_loc->getId() == loc.m_loc->getId()) &&
-            (squareDistance(loc.pos(), oloc.pos()) < (radius * radius))) {
-            res.push_back(I->second);
-        }
-    }
-    return res;
-#else
     LocatedEntity * place = loc.m_loc;
     if (place->m_contains == 0) {
         return res;
@@ -404,7 +386,6 @@ MemEntityVector MemMap::findByLocation(const Location & loc,
         }
     }
     return res;
-#endif
 }
 
 void MemMap::check(const double & time)
