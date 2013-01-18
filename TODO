@@ -9,7 +9,6 @@ Move LocatedEntity to common, and rename
 Make LocatedEntity the sole base class for dealing with entities.
  * Move remaining Property methods into LocatedEntity, de-virt modProperty
    and setProperty
- * Convert MemMap::findBy*() to use vectors of LocatedEntity
  * Convert MemMap to store using LocatedEntity maybe?
 
 traits on property to specify the name simply.
