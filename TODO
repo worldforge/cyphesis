@@ -10,6 +10,8 @@ Make LocatedEntity the sole base class for dealing with entities.
  * Move remaining Property methods into LocatedEntity, de-virt modProperty
    and setProperty
  * Convert MemMap to store using LocatedEntity maybe?
+ * LocatedEntity::setAttr ignores the class of type properties. It should
+   call copy as in Entity::
 
 traits on property to specify the name simply.
 
