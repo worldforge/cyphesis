@@ -20,7 +20,6 @@
 #include "StatisticsProperty.h"
 
 #include "rulesets/ArithmeticScript.h"
-#include "rulesets/Entity.h"
 
 #include "common/log.h"
 #include "common/BaseWorld.h"
