@@ -27,7 +27,6 @@
 #include "rulesets/PythonEntityScript.h"
 
 #include "rulesets/BaseMind.h"
-#include "rulesets/Entity.h"
 #include "rulesets/Task.h"
 
 template<>
