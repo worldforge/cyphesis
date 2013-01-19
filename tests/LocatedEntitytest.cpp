@@ -48,11 +48,13 @@ class LocatedEntitytest : public Cyphesis::TestBase
     void setup();
     void teardown();
 
+    void test_setProperty();
     void test_coverage();
 };
 
 LocatedEntitytest::LocatedEntitytest()
 {
+    ADD_TEST(LocatedEntitytest::test_setProperty);
     ADD_TEST(LocatedEntitytest::test_coverage);
 }
 
@@ -64,6 +66,20 @@ void LocatedEntitytest::setup()
 void LocatedEntitytest::teardown()
 {
     delete m_entity;
+}
+
+void LocatedEntitytest::test_setProperty()
+{
+    std::string test_property("test_property");
+    ASSERT_TRUE(m_entity->m_properties.find(test_property) ==
+                m_entity->m_properties.end());
+
+    PropertyBase * tp = new SoftProperty;
+
+    m_entity->setProperty(test_property, tp);
+
+    ASSERT_TRUE(m_entity->m_properties.find(test_property) !=
+                m_entity->m_properties.end());
 }
 
 void LocatedEntitytest::test_coverage()
