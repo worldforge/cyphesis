@@ -296,6 +296,8 @@ class LocatedEntity : public Router {
     /// and marks the conceptual destruction of the concept this entity
     /// represents, not the destruction of this object.
     sigc::signal<void> destroyed;
+
+    friend class LocatedEntitytest;
 };
 
 #endif // RULESETS_LOCATED_ENTITY_H
