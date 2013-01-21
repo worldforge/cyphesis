@@ -62,7 +62,8 @@ RULESETS_INTEGRATION_TESTS = MindPropertyintegration BulletDomainintegration \
                              PropertyEntityintegration \
                              DecaysPropertyintegration \
                              BiomassPropertyintegration \
-                             TerrainModPropertyintegration
+                             TerrainModPropertyintegration \
+                             StatisticsPropertyintegration
 
 CLIENT_TESTS = Py_CreatorClienttest Py_ObserverClienttest \
                ClientConnectiontest BaseClienttest \
@@ -1031,6 +1032,13 @@ TerrainModPropertyintegration_LDADD = \
         $(top_builddir)/common/Property.o \
         $(top_builddir)/common/TypeNode.o \
         $(TERRAIN_LIBS)
+
+StatisticsPropertyintegration_SOURCES = StatisticsPropertyintegration.cpp
+StatisticsPropertyintegration_LDADD = \
+        $(top_builddir)/rulesets/StatisticsProperty.o \
+        $(top_builddir)/rulesets/Entity.o \
+        $(top_builddir)/rulesets/LocatedEntity.o
+
 
 # CLIENT_TESTS
 
