@@ -27,35 +27,105 @@
 #include "TestBase.h"
 
 #include "rulesets/Entity.h"
+#include "rulesets/StatisticsProperty.h"
+
+#include "common/BaseWorld.h"
+#include "common/TypeNode.h"
+
+/// Test implementation of the BaseWorld interface, which produces dummy
+/// Arithmetic scripts.
+class ArithmeticTestWorld : public BaseWorld {
+  public:
+    explicit ArithmeticTestWorld(LocatedEntity & gw) : BaseWorld(gw) {
+    }
+
+    virtual bool idle(const SystemTime &) { return false; }
+    virtual LocatedEntity * addEntity(LocatedEntity * ent) { 
+        m_eobjects[ent->getIntId()] = ent;
+        return 0;
+    }
+    virtual LocatedEntity * addNewEntity(const std::string &,
+                                         const Atlas::Objects::Entity::RootEntity &) { return 0; }
+    int createSpawnPoint(const Atlas::Message::MapType & data,
+                         LocatedEntity *) { return 0; }
+    int getSpawnList(Atlas::Message::ListType & data) { return 0; }
+    LocatedEntity * spawnNewEntity(const std::string & name,
+                                   const std::string & type,
+                                   const Atlas::Objects::Entity::RootEntity & desc) {
+        return addNewEntity(type, desc);
+    }
+    virtual Task * newTask(const std::string &, LocatedEntity &) { return 0; }
+    virtual Task * activateTask(const std::string &, const std::string &,
+                                LocatedEntity *, LocatedEntity &) { return 0; }
+    virtual ArithmeticScript * newArithmetic(const std::string &,
+                                             LocatedEntity *) {
+        return 0;
+    }
+    virtual void message(const Operation & op, LocatedEntity & ent) { }
+    virtual LocatedEntity * findByName(const std::string & name) { return 0; }
+    virtual LocatedEntity * findByType(const std::string & type) { return 0; }
+    virtual void addPerceptive(LocatedEntity *) { }
+};
 
 // Check what happens when two instance of a type both instantiate
 // this property when there is a script. I think you'll get a segfault.
+//
+// All that remains is to add the dummy arithmetic script objects.
 class StatisicsPropertyintegration : public Cyphesis::TestBase
 {
+  private:
+    TypeNode * m_char_type;
+    PropertyBase * m_char_property;
+    Entity * m_char1;
+    Entity * m_char2;
   public:
     StatisicsPropertyintegration();
 
     void setup();
     void teardown();
 
-    void test_sequence();
+    void test_copy();
 };
 
 StatisicsPropertyintegration::StatisicsPropertyintegration()
 {
-    ADD_TEST(StatisicsPropertyintegration::test_sequence);
+    new ArithmeticTestWorld(*(LocatedEntity*)0);
+
+    ADD_TEST(StatisicsPropertyintegration::test_copy);
 }
 
 void StatisicsPropertyintegration::setup()
 {
+    m_char_type = new TypeNode("char_type");
+
+    m_char_property = new StatisticsProperty;
+    // m_char_property->setFlags(flag_class);
+    m_char_type->addProperty("char_type", m_char_property);
+
+    m_char1 = new Entity("1", 1);
+    m_char1->setType(m_char_type);
+    m_char_property->install(m_char1);
+    m_char_property->apply(m_char1);
+
+    m_char2 = new Entity("2", 2);
+    m_char2->setType(m_char_type);
+    m_char_property->install(m_char2);
+    m_char_property->apply(m_char2);
 }
 
 void StatisicsPropertyintegration::teardown()
 {
+    delete m_char1;
+    delete m_char2;
+    delete m_char_type;
 }
 
-void StatisicsPropertyintegration::test_sequence()
+void StatisicsPropertyintegration::test_copy()
 {
+    StatisticsProperty * pb =
+          m_char1->modPropertyClass<StatisticsProperty>("char_type");
+
+    ASSERT_NOT_EQUAL(pb, m_char_property);
 }
 
 int main()
@@ -73,10 +143,8 @@ int main()
 #include "rulesets/Domain.h"
 #include "rulesets/Script.h"
 
-#include "common/BaseWorld.h"
 #include "common/log.h"
 #include "common/PropertyManager.h"
-#include "common/TypeNode.h"
 
 namespace Atlas { namespace Objects { namespace Operation {
 int ACTUATE_NO = -1;
@@ -199,6 +267,12 @@ TypeNode::~TypeNode()
     for (; I != Iend; ++I) {
         delete I->second;
     }
+}
+
+void TypeNode::addProperty(const std::string & name,
+                           PropertyBase * p)
+{
+    m_defaults[name] = p;
 }
 
 IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),
