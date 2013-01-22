@@ -138,7 +138,7 @@ class LocatedEntity : public Router {
     }
 
     /// \brief Check if this entity is flagged as perceptive
-    const bool isPerceptive() const { return m_flags & entity_perceptive; }
+    bool isPerceptive() const { return m_flags & entity_perceptive; }
 
     /// \brief Check if this entity is flagged as destroyed
     bool isDestroyed() const { return m_flags & entity_destroyed; }
