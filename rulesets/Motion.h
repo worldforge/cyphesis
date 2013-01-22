@@ -42,6 +42,9 @@ class LocatedEntity;
 /// Similarly a boyant object needs to track the surface of the water,
 /// including any procedural waves on the water.
 class Motion {
+  private:
+    Motion(const Motion &) = delete;
+    Motion & operator=(const Motion &) = delete;
   protected:
     LocatedEntity & m_entity;
     std::string m_mode;
