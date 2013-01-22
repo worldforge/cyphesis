@@ -41,10 +41,10 @@ typedef std::map<long, LocatedEntity *> EntityDict;
 /// inherit from this provide the core game world system.
 class BaseWorld {
   private:
-    /// \brief Copy constructor private and un-implemented to prevent slicing
-    BaseWorld(const BaseWorld &);
-    /// \brief Assignment operator private and un-implemented to prevent slicing
-    const BaseWorld & operator=(const BaseWorld &);
+    /// \brief Copy constructor deleted to prevent slicing
+    BaseWorld(const BaseWorld &) = delete;
+    /// \brief Assignment operator deleted to prevent slicing
+    const BaseWorld & operator=(const BaseWorld &) = delete;
 
     /// \brief Singleton instance pointer for the World manager object.
     static BaseWorld * m_instance;

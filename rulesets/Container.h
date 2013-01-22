@@ -120,9 +120,9 @@ class Container {
         LocatedEntity * operator*() const { return **m_i; }
     };
   private:
-    // Private and un-implemented, to make sure slicing is impossible.
-    Container(const Container &);
-    const Container & operator=(const Container &);
+    // Private and deleted, to make sure slicing is impossible.
+    Container(const Container &) = delete;
+    const Container & operator=(const Container &) = delete;
   public:
     Container();
     virtual ~Container();
