@@ -33,6 +33,17 @@ using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Message::FloatType;
 
+/// \brief Explicit copy constructor
+///
+/// This is required because although the value the data is copied, the
+/// script must not be. The script is re-instantiated when apply is called
+/// on the enity instance.
+StatisticsProperty::StatisticsProperty(const StatisticsProperty & other) :
+    m_data(other.m_data),
+    m_script(0)
+{
+}
+
 /// \brief StatisticsProperty constructor
 ///
 /// @param data variable that holds the Property value

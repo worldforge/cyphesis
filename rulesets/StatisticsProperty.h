@@ -33,6 +33,8 @@ class StatisticsProperty : public PropertyBase {
     /// \brief Reference to variable holding the value of this Property
     std::map<std::string, double> m_data;
     ArithmeticScript * m_script;
+
+    StatisticsProperty(const StatisticsProperty &);
   public:
     explicit StatisticsProperty();
     virtual ~StatisticsProperty();

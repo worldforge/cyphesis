@@ -26,11 +26,27 @@
 
 #include "TestBase.h"
 
+#include "rulesets/ArithmeticScript.h"
 #include "rulesets/Entity.h"
 #include "rulesets/StatisticsProperty.h"
 
 #include "common/BaseWorld.h"
 #include "common/TypeNode.h"
+
+class TestArithmeticScript : public ArithmeticScript
+{
+  public:
+    virtual ~TestArithmeticScript() { }
+
+    virtual int attribute(const std::string & name, float & val)
+    {
+        return 0;
+    }
+
+    virtual void set(const std::string & name, const float & val)
+    {
+    }
+};
 
 /// Test implementation of the BaseWorld interface, which produces dummy
 /// Arithmetic scripts.
@@ -59,7 +75,7 @@ class ArithmeticTestWorld : public BaseWorld {
                                 LocatedEntity *, LocatedEntity &) { return 0; }
     virtual ArithmeticScript * newArithmetic(const std::string &,
                                              LocatedEntity *) {
-        return 0;
+        return new TestArithmeticScript;
     }
     virtual void message(const Operation & op, LocatedEntity & ent) { }
     virtual LocatedEntity * findByName(const std::string & name) { return 0; }
@@ -68,9 +84,8 @@ class ArithmeticTestWorld : public BaseWorld {
 };
 
 // Check what happens when two instance of a type both instantiate
-// this property when there is a script. I think you'll get a segfault.
-//
-// All that remains is to add the dummy arithmetic script objects.
+// this property when there is a script. The underlying instance of
+// ArithmeticScript 
 class StatisicsPropertyintegration : public Cyphesis::TestBase
 {
   private:
@@ -99,7 +114,7 @@ void StatisicsPropertyintegration::setup()
     m_char_type = new TypeNode("char_type");
 
     m_char_property = new StatisticsProperty;
-    // m_char_property->setFlags(flag_class);
+    m_char_property->setFlags(flag_class);
     m_char_type->addProperty("char_type", m_char_property);
 
     m_char1 = new Entity("1", 1);
@@ -412,6 +427,10 @@ void ContainsProperty::add(const std::string & s,
 ContainsProperty * ContainsProperty::copy() const
 {
     return 0;
+}
+
+ArithmeticScript::~ArithmeticScript()
+{
 }
 
 PropertyManager * PropertyManager::m_instance = 0;
