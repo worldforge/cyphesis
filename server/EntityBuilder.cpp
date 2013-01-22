@@ -208,7 +208,6 @@ Task * EntityBuilder::newTask(const std::string & name, LocatedEntity & owner) c
     if (I == m_taskFactories.end()) {
         return 0;
     }
-    std::cout << "0" << std::endl << std::flush;
     return buildTask(I->second, owner);
 }
 
