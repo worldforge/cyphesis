@@ -154,7 +154,7 @@ void BaseMind::SoundOperation(const Operation & op, OpVector & res)
 {
     // Deliver argument to sound things
     // Louder sounds might eventually make character wake up
-    if (!m_isAwake) { return; }
+    if (!isAwake()) { return; }
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
@@ -177,7 +177,7 @@ void BaseMind::SightOperation(const Operation & op, OpVector & res)
 {
     debug( std::cout << "BaseMind::SightOperation(Sight)" << std::endl << std::flush;);
     // Deliver argument to sight things
-    if (!m_isAwake) { return; }
+    if (!isAwake()) { return; }
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
@@ -209,7 +209,7 @@ void BaseMind::SightOperation(const Operation & op, OpVector & res)
 
 void BaseMind::AppearanceOperation(const Operation & op, OpVector & res)
 {
-    if (!m_isAwake) { return; }
+    if (!isAwake()) { return; }
     const std::vector<Root> & args = op->getArgs();
     std::vector<Root>::const_iterator Iend = args.end();
     for (std::vector<Root>::const_iterator I = args.begin(); I != Iend; ++I) {
@@ -239,7 +239,7 @@ void BaseMind::AppearanceOperation(const Operation & op, OpVector & res)
 
 void BaseMind::DisappearanceOperation(const Operation & op, OpVector & res)
 {
-    if (!m_isAwake) { return; }
+    if (!isAwake()) { return; }
     const std::vector<Root> & args = op->getArgs();
     std::vector<Root>::const_iterator Iend = args.end();
     for (std::vector<Root>::const_iterator I = args.begin(); I != Iend; ++I) {

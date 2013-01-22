@@ -48,6 +48,9 @@ class BaseMind : public MemEntity {
     /// \brief Accessor for the world time
     WorldTime * getTime() { return &m_time; }
 
+    /// \brief Is this mind active
+    bool isAwake() const { return m_isAwake; }
+
     /// \brief Set this mind as inactive
     void sleep() { m_isAwake = false; }
     /// \brief Set this mind as active

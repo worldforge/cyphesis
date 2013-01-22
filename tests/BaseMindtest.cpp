@@ -103,11 +103,15 @@ void BaseMindtest::test_getTime()
 void BaseMindtest::test_sleep()
 {
     bm->sleep();
+
+    ASSERT_TRUE(!bm->isAwake());
 }
 
 void BaseMindtest::test_awake()
 {
     bm->awake();
+
+    ASSERT_TRUE(bm->isAwake());
 }
 
 void BaseMindtest::test_operation()
