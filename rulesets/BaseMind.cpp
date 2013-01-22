@@ -47,7 +47,7 @@ static const bool debug_flag = false;
 /// @param intId Integer identifier
 /// @param body_name The name attribute of the body this mind controls
 BaseMind::BaseMind(const std::string & id, long intId) :
-          MemEntity(id, intId), m_map(m_script), m_isAwake(true)
+          MemEntity(id, intId), m_map(m_script)
 {
     setVisible(true);
     setType(MemMap::m_entity_type);
