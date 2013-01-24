@@ -69,8 +69,6 @@ class BaseMind : public MemEntity {
 
     void callSightOperation(const Operation &, OpVector &);
     void callSoundOperation(const Operation &, OpVector &);
-
-    friend class PythonMindScript;
 };
 
 #endif // RULESETS_BASE_MIND_H
