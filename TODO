@@ -1,3 +1,7 @@
+There may be a compute saving to putting mem entities into their containers
+directly in addContents(), rather than having to do the lookup when we
+get the SIght data in readEntity
+
 Visible flag is inverted. Means it has to be set on every object.
 
 MemMap::findByType would be more efficient if we find the TypeNode probably.
