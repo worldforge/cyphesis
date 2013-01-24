@@ -36,6 +36,8 @@
 
 #include <cassert>
 
+using Atlas::Objects::Entity::Anonymous;
+
 class BaseMindMapEntityintegration : public Cyphesis::TestBase
 {
   protected:
@@ -49,6 +51,8 @@ class BaseMindMapEntityintegration : public Cyphesis::TestBase
     void test_MemMapdel_top();
     void test_MemMapdel_mid();
     void test_MemMapdel_edge();
+    void test_MemMapreadEntity_noloc();
+    void test_MemMapreadEntity_changeloc();
 };
 
 BaseMindMapEntityintegration::BaseMindMapEntityintegration()
@@ -56,6 +60,8 @@ BaseMindMapEntityintegration::BaseMindMapEntityintegration()
     ADD_TEST(BaseMindMapEntityintegration::test_MemMapdel_top);
     ADD_TEST(BaseMindMapEntityintegration::test_MemMapdel_mid);
     ADD_TEST(BaseMindMapEntityintegration::test_MemMapdel_edge);
+    ADD_TEST(BaseMindMapEntityintegration::test_MemMapreadEntity_noloc);
+    ADD_TEST(BaseMindMapEntityintegration::test_MemMapreadEntity_changeloc);
 }
 
 void BaseMindMapEntityintegration::setup()
@@ -157,6 +163,63 @@ void BaseMindMapEntityintegration::test_MemMapdel_edge()
     ASSERT_NULL(e3->m_location.m_loc);
     ASSERT_EQUAL(e3->checkRef(), 0);
     e3->decRef();
+}
+
+void BaseMindMapEntityintegration::test_MemMapreadEntity_noloc()
+{
+    MemEntity * tlve = new MemEntity("0", 0);
+    tlve->m_contains = new LocatedEntitySet;
+    m_mind->m_map.m_entities[0] = tlve;
+
+    MemEntity * e2 = new MemEntity("2", 2);
+    e2->m_contains = new LocatedEntitySet;
+    e2->m_location.m_loc = tlve;
+    tlve->m_contains->insert(e2);
+    m_mind->m_map.m_entities[2] = e2;
+
+    MemEntity * e3 = new MemEntity("3", 3);
+    m_mind->m_map.m_entities[3] = e3;
+
+    ASSERT_EQUAL(m_mind->m_map.m_entities.size(), 4u);
+    ASSERT_NULL(e3->m_location.m_loc);
+
+    Anonymous data;
+    data->setLoc(tlve->getId());
+
+    m_mind->m_map.readEntity(e3, data);
+
+    ASSERT_EQUAL(e3->m_location.m_loc, tlve)
+    ASSERT_TRUE(tlve->m_contains->find(e3) != tlve->m_contains->end());
+}
+
+void BaseMindMapEntityintegration::test_MemMapreadEntity_changeloc()
+{
+    MemEntity * tlve = new MemEntity("0", 0);
+    tlve->m_contains = new LocatedEntitySet;
+    m_mind->m_map.m_entities[0] = tlve;
+
+    MemEntity * e2 = new MemEntity("2", 2);
+    e2->m_contains = new LocatedEntitySet;
+    e2->m_location.m_loc = tlve;
+    tlve->m_contains->insert(e2);
+    m_mind->m_map.m_entities[2] = e2;
+
+    MemEntity * e3 = new MemEntity("3", 3);
+    e3->m_contains = new LocatedEntitySet;
+    e3->m_location.m_loc = e2;
+    e2->m_contains->insert(e3);
+    m_mind->m_map.m_entities[3] = e3;
+
+    ASSERT_EQUAL(m_mind->m_map.m_entities.size(), 4u);
+
+    Anonymous data;
+    data->setLoc(tlve->getId());
+
+    m_mind->m_map.readEntity(e3, data);
+
+    ASSERT_EQUAL(e3->m_location.m_loc, tlve)
+    ASSERT_TRUE(e2->m_contains->find(e3) == e2->m_contains->end());
+    ASSERT_TRUE(tlve->m_contains->find(e3) != tlve->m_contains->end());
 }
 
 int main()
