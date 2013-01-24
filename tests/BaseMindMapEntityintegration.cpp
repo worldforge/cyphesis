@@ -53,6 +53,7 @@ class BaseMindMapEntityintegration : public Cyphesis::TestBase
     void test_MemMapdel_edge();
     void test_MemMapreadEntity_noloc();
     void test_MemMapreadEntity_changeloc();
+    void test_MemMapcheck();
 };
 
 BaseMindMapEntityintegration::BaseMindMapEntityintegration()
@@ -62,6 +63,7 @@ BaseMindMapEntityintegration::BaseMindMapEntityintegration()
     ADD_TEST(BaseMindMapEntityintegration::test_MemMapdel_edge);
     ADD_TEST(BaseMindMapEntityintegration::test_MemMapreadEntity_noloc);
     ADD_TEST(BaseMindMapEntityintegration::test_MemMapreadEntity_changeloc);
+    ADD_TEST(BaseMindMapEntityintegration::test_MemMapcheck);
 }
 
 void BaseMindMapEntityintegration::setup()
@@ -94,6 +96,7 @@ void BaseMindMapEntityintegration::test_MemMapdel_top()
 
     ASSERT_EQUAL(m_mind->m_map.m_entities.size(), 4u);
 
+    // Remove tlve from the map
     m_mind->m_map.del(tlve->getId());
 
     ASSERT_EQUAL(m_mind->m_map.m_entities.size(), 3u);
@@ -121,7 +124,9 @@ void BaseMindMapEntityintegration::test_MemMapdel_mid()
 
     ASSERT_EQUAL(m_mind->m_map.m_entities.size(), 4u);
 
+    // Set a reference, so we can check e2 once it is removed
     e2->incRef();
+    // Remove e2 from the map
     m_mind->m_map.del(e2->getId());
 
     ASSERT_EQUAL(m_mind->m_map.m_entities.size(), 3u);
@@ -153,7 +158,9 @@ void BaseMindMapEntityintegration::test_MemMapdel_edge()
 
     ASSERT_EQUAL(m_mind->m_map.m_entities.size(), 4u);
 
+    // Set a reference, so we can check e3 once it is removed
     e3->incRef();
+    // Remove e3 from the map
     m_mind->m_map.del(e3->getId());
 
     ASSERT_EQUAL(m_mind->m_map.m_entities.size(), 3u);
@@ -186,6 +193,7 @@ void BaseMindMapEntityintegration::test_MemMapreadEntity_noloc()
     Anonymous data;
     data->setLoc(tlve->getId());
 
+    // Read in entity data the sets the LOC of e3 to tlve
     m_mind->m_map.readEntity(e3, data);
 
     ASSERT_EQUAL(e3->m_location.m_loc, tlve)
@@ -215,11 +223,50 @@ void BaseMindMapEntityintegration::test_MemMapreadEntity_changeloc()
     Anonymous data;
     data->setLoc(tlve->getId());
 
+    // Read in entity data that changes the LOC of e3 from e2 to TLVE
     m_mind->m_map.readEntity(e3, data);
 
     ASSERT_EQUAL(e3->m_location.m_loc, tlve)
     ASSERT_TRUE(e2->m_contains->find(e3) == e2->m_contains->end());
     ASSERT_TRUE(tlve->m_contains->find(e3) != tlve->m_contains->end());
+}
+
+void BaseMindMapEntityintegration::test_MemMapcheck()
+{
+    MemEntity * tlve = new MemEntity("0", 0);
+    tlve->m_contains = new LocatedEntitySet;
+    m_mind->m_map.m_entities[0] = tlve;
+
+    MemEntity * e2 = new MemEntity("2", 2);
+    e2->m_contains = new LocatedEntitySet;
+    e2->m_location.m_loc = tlve;
+    tlve->m_contains->insert(e2);
+    m_mind->m_map.m_entities[2] = e2;
+
+    MemEntity * e3 = new MemEntity("3", 3);
+    e3->m_contains = new LocatedEntitySet;
+    e3->m_location.m_loc = e2;
+    e2->m_contains->insert(e3);
+    m_mind->m_map.m_entities[3] = e3;
+
+    ASSERT_EQUAL(m_mind->m_map.m_entities.size(), 4u);
+
+    m_mind->m_map.m_checkIterator = m_mind->m_map.m_entities.find(3);
+    e3->setVisible(false);
+    e3->incRef();
+    double time = e3->lastSeen() + 900;
+
+    // We have set up e3 so it is due to be purged from memory.
+    m_mind->m_map.check(time);
+
+    // Check it has been removed
+    ASSERT_TRUE(e2->m_contains->find(e3) == e2->m_contains->end());
+    ASSERT_TRUE(tlve->m_contains->find(e3) == tlve->m_contains->end());
+
+    // Check the reference we have is the only one remaining
+    ASSERT_NULL(e3->m_location.m_loc)
+    ASSERT_EQUAL(e3->checkRef(), 0);
+    e3->decRef();
 }
 
 int main()
