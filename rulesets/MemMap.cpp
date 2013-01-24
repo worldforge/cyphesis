@@ -200,6 +200,8 @@ void MemMap::del(const std::string & id)
         }
         m_entities.erase(I);
 
+        // ent->destroy() should probably go here
+
         // Handling re-parenting is done very similarly to Entity::destroy,
         // but is slightly different as we tolerate LOC being null.
         LocatedEntity * ent_loc = ent->m_location.m_loc;
