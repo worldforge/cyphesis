@@ -194,7 +194,7 @@ class LocatedEntity : public Router {
     virtual void onContainered();
     virtual void onUpdated();
 
-    virtual void destroy();
+    virtual void destroy() = 0;
 
     virtual Domain * getMovementDomain();
 

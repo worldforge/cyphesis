@@ -205,6 +205,7 @@ void LocatedEntity::onUpdated()
 {
 }
 
+/// \brief Called when the entity needs to be removed from its context
 void LocatedEntity::destroy()
 {
 }

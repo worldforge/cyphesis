@@ -106,6 +106,8 @@ class TestLocatedEntity : public LocatedEntity {
 
     virtual void externalOperation(const Operation &, Link &) { }
     virtual void operation(const Operation &, OpVector &) { }
+
+    virtual void destroy() { }
 };
 
 int main()

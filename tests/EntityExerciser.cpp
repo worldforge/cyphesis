@@ -56,6 +56,10 @@ void LocatedEntityTest::operation(const Operation &, OpVector &)
 {
 }
 
+void LocatedEntityTest::destroy()
+{
+}
+
 EntityExerciser::EntityExerciser(LocatedEntity & e) : m_ent(e)
 {
     if (e.getIntId() == 0) {
