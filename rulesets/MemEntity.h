@@ -55,6 +55,8 @@ class MemEntity : public LocatedEntity {
 
     virtual void externalOperation(const Operation & op, Link &);
     virtual void operation(const Operation &, OpVector &);
+
+    virtual void destroy();
 };
 
 #endif // RULESETS_MEM_ENTITY_H

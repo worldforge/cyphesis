@@ -37,3 +37,7 @@ void MemEntity::externalOperation(const Operation & op, Link &)
 void MemEntity::operation(const Operation &, OpVector &)
 {
 }
+
+void MemEntity::destroy()
+{
+}

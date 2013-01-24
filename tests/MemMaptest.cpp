@@ -408,6 +408,10 @@ void MemEntity::operation(const Operation &, OpVector &)
 {
 }
 
+void MemEntity::destroy()
+{
+}
+
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),
                m_refCount(0), m_seq(0),
