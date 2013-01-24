@@ -39,34 +39,124 @@
 class BaseMindMapEntityintegration : public Cyphesis::TestBase
 {
   protected:
-    BaseMind * bm;
+    BaseMind * m_mind;
   public:
     BaseMindMapEntityintegration();
 
     void setup();
     void teardown();
 
-    void test_MemMapdel();
+    void test_MemMapdel_top();
+    void test_MemMapdel_mid();
+    void test_MemMapdel_edge();
 };
 
 BaseMindMapEntityintegration::BaseMindMapEntityintegration()
 {
-    ADD_TEST(BaseMindMapEntityintegration::test_MemMapdel);
+    ADD_TEST(BaseMindMapEntityintegration::test_MemMapdel_top);
+    ADD_TEST(BaseMindMapEntityintegration::test_MemMapdel_mid);
+    ADD_TEST(BaseMindMapEntityintegration::test_MemMapdel_edge);
 }
 
 void BaseMindMapEntityintegration::setup()
 {
-    bm = new BaseMind("1", 1);
+    m_mind = new BaseMind("1", 1);
 }
 
 void BaseMindMapEntityintegration::teardown()
 {
-    delete bm;
+    delete m_mind;
 }
 
-void BaseMindMapEntityintegration::test_MemMapdel()
+void BaseMindMapEntityintegration::test_MemMapdel_top()
 {
-    // FIXME Ensure that del works correctly in a number of scenarios
+    MemEntity * tlve = new MemEntity("0", 0);
+    tlve->m_contains = new LocatedEntitySet;
+    m_mind->m_map.m_entities[0] = tlve;
+
+    MemEntity * e2 = new MemEntity("2", 2);
+    e2->m_contains = new LocatedEntitySet;
+    e2->m_location.m_loc = tlve;
+    tlve->m_contains->insert(e2);
+    m_mind->m_map.m_entities[2] = e2;
+
+    MemEntity * e3 = new MemEntity("3", 3);
+    e3->m_contains = new LocatedEntitySet;
+    e3->m_location.m_loc = e2;
+    e2->m_contains->insert(e3);
+    m_mind->m_map.m_entities[3] = e3;
+
+    ASSERT_EQUAL(m_mind->m_map.m_entities.size(), 4u);
+
+    m_mind->m_map.del(tlve->getId());
+
+    ASSERT_EQUAL(m_mind->m_map.m_entities.size(), 3u);
+    ASSERT_NULL(e2->m_location.m_loc);
+    ASSERT_TRUE(e2->m_contains->find(e3) != e2->m_contains->end());
+}
+
+void BaseMindMapEntityintegration::test_MemMapdel_mid()
+{
+    MemEntity * tlve = new MemEntity("0", 0);
+    tlve->m_contains = new LocatedEntitySet;
+    m_mind->m_map.m_entities[0] = tlve;
+
+    MemEntity * e2 = new MemEntity("2", 2);
+    e2->m_contains = new LocatedEntitySet;
+    e2->m_location.m_loc = tlve;
+    tlve->m_contains->insert(e2);
+    m_mind->m_map.m_entities[2] = e2;
+
+    MemEntity * e3 = new MemEntity("3", 3);
+    e3->m_contains = new LocatedEntitySet;
+    e3->m_location.m_loc = e2;
+    e2->m_contains->insert(e3);
+    m_mind->m_map.m_entities[3] = e3;
+
+    ASSERT_EQUAL(m_mind->m_map.m_entities.size(), 4u);
+
+    e2->incRef();
+    m_mind->m_map.del(e2->getId());
+
+    ASSERT_EQUAL(m_mind->m_map.m_entities.size(), 3u);
+    ASSERT_TRUE(tlve->m_contains->find(e3) != tlve->m_contains->end());
+    ASSERT_TRUE(tlve->m_contains->find(e2) == tlve->m_contains->end());
+
+    ASSERT_NULL(e2->m_location.m_loc);
+    ASSERT_EQUAL(e2->checkRef(), 0);
+    e2->decRef();
+}
+
+void BaseMindMapEntityintegration::test_MemMapdel_edge()
+{
+    MemEntity * tlve = new MemEntity("0", 0);
+    tlve->m_contains = new LocatedEntitySet;
+    m_mind->m_map.m_entities[0] = tlve;
+
+    MemEntity * e2 = new MemEntity("2", 2);
+    e2->m_contains = new LocatedEntitySet;
+    e2->m_location.m_loc = tlve;
+    tlve->m_contains->insert(e2);
+    m_mind->m_map.m_entities[2] = e2;
+
+    MemEntity * e3 = new MemEntity("3", 3);
+    e3->m_contains = new LocatedEntitySet;
+    e3->m_location.m_loc = e2;
+    e2->m_contains->insert(e3);
+    m_mind->m_map.m_entities[3] = e3;
+
+    ASSERT_EQUAL(m_mind->m_map.m_entities.size(), 4u);
+
+    e3->incRef();
+    m_mind->m_map.del(e3->getId());
+
+    ASSERT_EQUAL(m_mind->m_map.m_entities.size(), 3u);
+    ASSERT_TRUE(tlve->m_contains->find(e2) != tlve->m_contains->end());
+    ASSERT_TRUE(e2->m_contains->find(e3) == e2->m_contains->end());
+
+    ASSERT_NULL(e3->m_location.m_loc);
+    ASSERT_EQUAL(e3->checkRef(), 0);
+    e3->decRef();
 }
 
 int main()
@@ -102,8 +192,14 @@ LocatedEntity::LocatedEntity(const std::string & id, long intId) :
 {
 }
 
+// Deletions and reference count decrements are required to ensure map
+// memory management works correctly.
 LocatedEntity::~LocatedEntity()
 {
+    if (m_location.m_loc != 0) {
+        m_location.m_loc->decRef();
+    }
+    delete m_contains;
 }
 
 bool LocatedEntity::hasAttr(const std::string & name) const

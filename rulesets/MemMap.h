@@ -93,6 +93,7 @@ class MemMap {
     std::vector<std::string> & getDeleteHooks() { return m_deleteHooks; }
 
     friend class MemMaptest;
+    friend class BaseMindMapEntityintegration;
 };
 
 #endif // RULESETS_MEM_MAP_H
