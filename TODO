@@ -1,3 +1,10 @@
+Location and MemEntity both have a timestamp, which do very close, but not
+quite the same thing. See if we can come up with a design to eliminate the
+difference?
+
+MemEntity is an ideal case for a memory pool, especially if you include
+the PythonWrapper object.
+
 There may be a compute saving to putting mem entities into their containers
 directly in addContents(), rather than having to do the lookup when we
 get the SIght data in readEntity
@@ -6,9 +13,7 @@ Visible flag is inverted. Means it has to be set on every object.
 
 MemMap::findByType would be more efficient if we find the TypeNode probably.
 
-Make Movement and Motion uncopyable
-
-Use destroy() interface in Mind code, and implement parent refcounting.
+Implement parent refcounting in mind code.
 
 Move LocatedEntity to common, and rename
 
