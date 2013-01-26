@@ -68,6 +68,7 @@ void test_conversion(Shape * s)
     assert(*s == *copy);
 }
 
+// FIXME Use a C++11 template typedef once the are supported
 template<int dim> class LinearCourse : public Course<dim, WFMath::Line>
 {
 };
