@@ -74,6 +74,8 @@ class Form<2> : public Shape {
     virtual WFMath::Point<2> lowCorner() const = 0;
     virtual WFMath::Point<2> highCorner() const = 0;
     virtual bool intersect(const WFMath::Point<2> &) const = 0;
+
+    virtual Form<2> * copy() const = 0;
 };
 
 template <>
@@ -84,6 +86,8 @@ class Form<3> : public Shape {
     virtual WFMath::Point<3> lowCorner() const = 0;
     virtual WFMath::Point<3> highCorner() const = 0;
     virtual bool intersect(const WFMath::Point<3> &) const = 0;
+
+    virtual Form<2> * copy() const = 0;
 };
 
 typedef Form<2> Area;
