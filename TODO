@@ -1,3 +1,6 @@
+Fix memory leaks, so we can verify that moving MemMap to using incRef/decRef
+on parents doesn't introduce leaks.
+
 Location and MemEntity both have a timestamp, which do very close, but not
 quite the same thing. See if we can come up with a design to eliminate the
 difference?
