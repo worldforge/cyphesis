@@ -64,7 +64,8 @@ RULESETS_INTEGRATION_TESTS = MindPropertyintegration BulletDomainintegration \
                              BiomassPropertyintegration \
                              TerrainModPropertyintegration \
                              StatisticsPropertyintegration \
-                             BaseMindMapEntityintegration
+                             BaseMindMapEntityintegration \
+                             AreaPropertyintegration
 
 CLIENT_TESTS = Py_CreatorClienttest Py_ObserverClienttest \
                ClientConnectiontest BaseClienttest \
@@ -1045,6 +1046,14 @@ BaseMindMapEntityintegration_LDADD = \
         $(top_builddir)/rulesets/BaseMind.o \
         $(top_builddir)/rulesets/MemEntity.o \
         $(top_builddir)/rulesets/MemMap.o
+
+AreaPropertyintegration_SOURCES = AreaPropertyintegration.cpp
+AreaPropertyintegration_LDADD = \
+        $(top_builddir)/rulesets/AreaProperty.o \
+        $(top_builddir)/rulesets/Entity.o \
+        $(top_builddir)/rulesets/LocatedEntity.o \
+        $(top_builddir)/physics/Course.o \
+        $(top_builddir)/physics/Shape.o
 
 # CLIENT_TESTS
 
