@@ -34,10 +34,10 @@ namespace Atlas {
 
 /// \brief Shape interface for inheritance based use of wfmath shapes
 class Shape {
-  private:
-    explicit Shape(const Shape &);
-    Shape & operator=(const Shape &);
   protected:
+    Shape(const Shape &) = default;
+    Shape & operator=(const Shape &) = default;
+
     Shape();
   public:
     virtual ~Shape() = 0;
@@ -51,6 +51,8 @@ class Shape {
     virtual void scale(WFMath::CoordType factor) = 0;
 
     virtual bool equal(const Shape & other) const = 0;
+
+    virtual Shape * copy() const = 0;
 
     virtual void toAtlas(Atlas::Message::MapType &) const = 0;
     virtual int fromAtlas(const Atlas::Message::Element &) = 0;
@@ -92,6 +94,9 @@ class MathShape : public Form<dim> {
   protected:
     ShapeT<dim> m_shape;
 
+    MathShape(const MathShape &) = default;
+    MathShape & operator=(const MathShape &) = default;
+
     const char * getType() const;
   public:
     MathShape();
@@ -111,6 +116,8 @@ class MathShape : public Form<dim> {
     virtual void scale(WFMath::CoordType factor);
 
     virtual bool equal(const Shape & other) const;
+
+    virtual MathShape<ShapeT, dim> * copy() const;
 
     virtual void toAtlas(Atlas::Message::MapType &) const;
     virtual int fromAtlas(const Atlas::Message::Element &);

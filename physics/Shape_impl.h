@@ -134,6 +134,13 @@ bool MathShape<ShapeT, dim>::equal(const Shape & other) const
 }
 
 template<template <int> class ShapeT, int dim>
+MathShape<ShapeT, dim> * MathShape<ShapeT, dim>::copy() const
+{
+    return new MathShape<ShapeT, dim>(*this);
+}
+
+
+template<template <int> class ShapeT, int dim>
 void MathShape<ShapeT, dim>::toAtlas(Atlas::Message::MapType & data) const
 {
     data["type"] = getType();
