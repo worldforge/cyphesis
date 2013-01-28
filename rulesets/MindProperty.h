@@ -29,8 +29,11 @@ class MindKit;
 class MindProperty : public PropertyBase {
   protected:
     MindKit * m_factory;
+
+    MindProperty(const MindProperty &);
   public:
     MindProperty();
+    virtual ~MindProperty();
 
     MindKit * factory() {
         return m_factory;

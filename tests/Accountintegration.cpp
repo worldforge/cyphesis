@@ -1156,6 +1156,10 @@ MindProperty::MindProperty() : m_factory(0)
 {
 }
 
+MindProperty::~MindProperty()
+{
+}
+
 int MindProperty::get(Element & val) const
 {
     return 0;

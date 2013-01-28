@@ -41,8 +41,28 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::Setup;
 using Atlas::Objects::Operation::Look;
 
+MindProperty::MindProperty(const MindProperty &) : m_factory(0)
+{
+    // We don't copy the factory, or duplicate it as would be required
+    // to prevent double-delete hassle.
+    // This is because:
+    //  a) This property will be copied if it is being added to an entity
+    //     in order to modify its value. (modProperty())
+    //  b) In this secenario, it will already have been apply()ed to that
+    //     instance from the class property when the entity was created, so
+    //     the factory isn't required to apply the same value again.
+    //  c) If a new value is specified, ::set() will be called creating
+    //     a new factory.
+    //  Therefor duplicating the factory is not required.
+}
+
 MindProperty::MindProperty() : m_factory(0)
 {
+}
+
+MindProperty::~MindProperty()
+{
+    delete m_factory;
 }
 
 int MindProperty::get(Element & val) const
