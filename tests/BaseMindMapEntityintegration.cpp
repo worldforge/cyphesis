@@ -234,16 +234,19 @@ void BaseMindMapEntityintegration::test_MemMapreadEntity_changeloc()
 void BaseMindMapEntityintegration::test_MemMapcheck()
 {
     MemEntity * tlve = new MemEntity("0", 0);
+    tlve->setType(MemMap::m_entity_type);
     tlve->m_contains = new LocatedEntitySet;
     m_mind->m_map.m_entities[0] = tlve;
 
     MemEntity * e2 = new MemEntity("2", 2);
+    e2->setType(MemMap::m_entity_type);
     e2->m_contains = new LocatedEntitySet;
     e2->m_location.m_loc = tlve;
     tlve->m_contains->insert(e2);
     m_mind->m_map.m_entities[2] = e2;
 
     MemEntity * e3 = new MemEntity("3", 3);
+    e3->setType(MemMap::m_entity_type);
     e3->m_contains = new LocatedEntitySet;
     e3->m_location.m_loc = e2;
     e2->m_contains->insert(e3);
