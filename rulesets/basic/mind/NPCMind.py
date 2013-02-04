@@ -158,6 +158,17 @@ class NPCMind(server.Mind):
             if obj.type[0]=="coin" and op.from_ != self.id:
                 self.money_transfers.append([op.from_, 1])
                 return Operation("imaginary", Entity(description="accepts"))
+    def get_operation(self, op):
+        
+        res = Oplist()
+        for attr in dir(self.knowledge):
+            d=getattr(self.knowledge, attr)
+            if getattr(d, '__iter__', False):
+                for key in d:
+                    res = res + Operation("thought", Entity(attr=attr, key=key, value=str(d[key])))
+                    
+        return res
+        
     ########## Talk operations
     def admin_sound(self, op):
         assert(op.from_ == op.to)
