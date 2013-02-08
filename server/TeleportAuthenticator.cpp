@@ -22,6 +22,8 @@
 #include "common/log.h"
 #include "common/compose.hpp"
 
+#include <cassert>
+
 TeleportAuthenticator * TeleportAuthenticator::m_instance = NULL;
 
 /// \brief Checks if there is a pending teleport on an account

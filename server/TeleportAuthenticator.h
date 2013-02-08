@@ -30,12 +30,17 @@ typedef std::map<std::string, PendingTeleport *> PendingTeleportMap;
 /// \brief A class that stores and authenticates teleport requests
 class TeleportAuthenticator
 {
+  private:
     /// \brief An instance pointer for singleton behaviour
     static TeleportAuthenticator * m_instance;
     /// \brief Map of teleport requests
     PendingTeleportMap m_teleports;
 
-    public:
+    /// \brief Remove a teleport authentications entry. Typically after a
+    ///        successful authentication
+    int removeTeleport(PendingTeleportMap::iterator I);
+
+  public:
 
     static void init() {
         if(m_instance == 0) {
@@ -61,10 +66,6 @@ class TeleportAuthenticator
     /// \brief Remove a teleport authentications entry. Typically after a
     ///        successful authentication
     int removeTeleport(const std::string &);
-
-    /// \brief Remove a teleport authentications entry. Typically after a
-    ///        successful authentication
-    int removeTeleport(PendingTeleportMap::iterator I);
 
     /// \brief Authenticate a teleport request
     LocatedEntity *authenticateTeleport(const std::string &,
