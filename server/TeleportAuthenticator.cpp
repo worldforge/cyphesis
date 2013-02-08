@@ -43,9 +43,13 @@ int TeleportAuthenticator::addTeleport(const std::string &entity_id,
     if (isPending(entity_id)) {
         return -1;
     }
-    m_teleports[entity_id] = new PendingTeleport(entity_id, possess_key);
+    PendingTeleport * pt = new PendingTeleport(entity_id, possess_key);
+    if (pt == 0) {
+        return -1;
+    }
+    m_teleports.insert(std::make_pair(entity_id, pt));
     log(INFO, String::compose("Added teleport auth entry for %1,%2",
-                                                entity_id,possess_key));
+                              entity_id, possess_key));
     return 0;
 }
 
