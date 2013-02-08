@@ -53,7 +53,7 @@ class TeleportAuthenticator
     }
 
     /// \brief Checks if there is a pending teleport on an account
-    bool isPending(const std::string &);
+    bool isPending(const std::string &) const;
 
     /// \brief Add a teleport authentication entry
     int addTeleport(const std::string &, const std::string &);

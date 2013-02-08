@@ -27,9 +27,9 @@ TeleportAuthenticator * TeleportAuthenticator::m_instance = NULL;
 /// \brief Checks if there is a pending teleport on an account
 ///
 /// \param entity_id The entity ID to check for pending teleport
-bool TeleportAuthenticator::isPending(const std::string &entity_id)
+bool TeleportAuthenticator::isPending(const std::string &entity_id) const
 {
-    PendingTeleportMap::iterator I = m_teleports.find(entity_id);
+    PendingTeleportMap::const_iterator I = m_teleports.find(entity_id);
     return (I != m_teleports.end());
 }
 
