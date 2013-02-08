@@ -30,6 +30,8 @@ traits on property to specify the name simply.
 Providing there is no extra deps, move all the property access methods
 into LocatedEntiy.
  1) MemEntity will need type properties to save RAM, so let it have them
+    (Property<foo> rather than SoftProperty. This is the difference between
+     using ClientPropertyManager and CorePropertyManager)
 
 Should entity class children be invisible to the client? Prevents it from
 requesting things it has never seen yet.
