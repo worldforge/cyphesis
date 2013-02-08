@@ -65,9 +65,8 @@ int TeleportAuthenticator::removeTeleport(const std::string &entity_id)
                                                 entity_id));
         return -1;
     }
-    if (I->second) {
-        delete I->second;
-    }
+    assert(I->second != 0);
+    delete I->second;
     m_teleports.erase(I);
     log(ERROR, String::compose("Removed teleport auth entry for entity ID %1",
                                                 entity_id));
@@ -83,9 +82,8 @@ int TeleportAuthenticator::removeTeleport(PendingTeleportMap::iterator I)
     if (I == m_teleports.end()) {
         return -1;
     }
-    if (I->second) {
-        delete I->second;
-    }
+    assert(I->second != 0);
+    delete I->second;
     m_teleports.erase(I);
     return 0;
 }
@@ -104,6 +102,7 @@ LocatedEntity * TeleportAuthenticator::authenticateTeleport(const std::string &e
         return NULL;
     }
     PendingTeleport *entry = I->second;
+    assert(entry != 0);
     if (entry->validate(entity_id, possess_key)) {
         // We are authenticated!
         LocatedEntity * entity = BaseWorld::instance().getEntity(entity_id);
