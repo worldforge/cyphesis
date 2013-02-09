@@ -67,9 +67,7 @@ int TeleportAuthenticator::removeTeleport(const std::string &entity_id)
                                                 entity_id));
         return -1;
     }
-    assert(I->second != 0);
-    delete I->second;
-    m_teleports.erase(I);
+    removeTeleport(I);
     log(ERROR, String::compose("Removed teleport auth entry for entity ID %1",
                                                 entity_id));
     return 0;
