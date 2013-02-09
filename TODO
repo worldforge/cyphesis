@@ -45,7 +45,8 @@ into the base class.
 Remove libcommon from WorldRouterintegration and
 Rulesetintegration
 
-Why does TeleportAuthenticator::removeTeleport check if I->second is null?
+Remove BaseWorld lookup from TeleportAuthenticator, and use isDestroyed
+instead. Requires holding a reference.
 
 disconnectObject does not remove a non-Account ConnectableRouter from
 the connection. Neither does it remove Characters.
