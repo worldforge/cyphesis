@@ -31,6 +31,7 @@
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/serialno.h"
+#include "common/custom.h"
 #include "common/Inheritance.h"
 #include "common/compose.hpp"
 
@@ -247,32 +248,34 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
             return;
         }
         info->setArgs1(o);
-    } else if (objtype == "thought") {
-        long intId = integerId(id);
-        const EntityDict & worldDict = m_connection->m_server.m_world.getEntities();
-        EntityDict::const_iterator K = worldDict.find(intId);
+    } else if (objtype == "op") {
+        if (arg->getClassNo() == Atlas::Objects::Operation::THOUGHT_NO) {
+            long intId = integerId(id);
+            const EntityDict & worldDict = m_connection->m_server.m_world.getEntities();
+            EntityDict::const_iterator K = worldDict.find(intId);
 
-        if (K != worldDict.end()) {
-            Character* character = dynamic_cast<Character*>(K->second);
-            if (character) {
-                character->sendMind(op, res);
+            if (K != worldDict.end()) {
+                Character* character = dynamic_cast<Character*>(K->second);
+                if (character) {
+                    character->sendMind(op, res);
+                } else {
+                    clientError(op, compose("Entity with id \"%1\" is not a character", id),
+                                res, getId());
+                    return;
+                }
+
+                std::vector<Root> newRet;
+                //Why can't I do "info->setArgs(res)"?
+                for (auto& operation : res) {
+                    newRet.push_back(operation);
+                }
+                info->setArgs(newRet);
+                res.clear();
             } else {
-                clientError(op, compose("Entity with id \"%1\" is not a character", id),
+                clientError(op, compose("Unknown object id \"%1\" requested", id),
                             res, getId());
                 return;
             }
-
-            std::vector<Root> newRet;
-            //Why can't I do "info->setArgs(res)"?
-            for (auto& operation : res) {
-                newRet.push_back(operation);
-            }
-            info->setArgs(newRet);
-            res.clear();
-        } else {
-            clientError(op, compose("Unknown object id \"%1\" requested", id),
-                        res, getId());
-            return;
         }
     } else {
         error(op, compose("Unknown object type \"%1\" requested for \"%2\"",
@@ -326,24 +329,26 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
         error(op, "Client attempting to use obsolete Set to install new type",
               res, getId());
         return;
-    } else if (objtype == "thought") {
-        long intId = integerId(id);
-        const EntityDict & worldDict = m_connection->m_server.m_world.getEntities();
-        EntityDict::const_iterator K = worldDict.find(intId);
+    } else if (objtype == "op") {
+        if (arg->getClassNo() == Atlas::Objects::Operation::THOUGHT_NO) {
+            long intId = integerId(id);
+            const EntityDict & worldDict = m_connection->m_server.m_world.getEntities();
+            EntityDict::const_iterator K = worldDict.find(intId);
 
-        if (K != worldDict.end()) {
-            Character* character = dynamic_cast<Character*>(K->second);
-            if (character) {
-                character->sendMind(op, res);
+            if (K != worldDict.end()) {
+                Character* character = dynamic_cast<Character*>(K->second);
+                if (character) {
+                    character->sendMind(op, res);
+                } else {
+                    clientError(op, compose("Entity with id \"%1\" is not a character", id),
+                                res, getId());
+                    return;
+                }
             } else {
-                clientError(op, compose("Entity with id \"%1\" is not a character", id),
+                clientError(op, compose("Unknown object id \"%1\" requested", id),
                             res, getId());
                 return;
             }
-        } else {
-            clientError(op, compose("Unknown object id \"%1\" requested", id),
-                        res, getId());
-            return;
         }
     } else {
         error(op, "Unknow object type set", res, getId());
