@@ -79,12 +79,11 @@ int TeleportAuthenticator::removeTeleport(const std::string &entity_id)
 ///        successful authentication
 ///
 /// \param I The iterator in m_teleports to be removed
-int TeleportAuthenticator::removeTeleport(PendingTeleportMap::iterator I)
+void TeleportAuthenticator::removeTeleport(PendingTeleportMap::iterator I)
 {
     assert(I->second != 0);
     delete I->second;
     m_teleports.erase(I);
-    return 0;
 }
 
 /// \brief Authenticate a teleport request

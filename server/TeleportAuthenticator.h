@@ -36,9 +36,10 @@ class TeleportAuthenticator
     /// \brief Map of teleport requests
     PendingTeleportMap m_teleports;
 
-    /// \brief Remove a teleport authentications entry. Typically after a
-    ///        successful authentication
-    int removeTeleport(PendingTeleportMap::iterator I);
+    /// \brief Remove a teleport authentications entry.
+    ///
+    /// Typically after a successful authentication
+    void removeTeleport(PendingTeleportMap::iterator I);
 
   public:
 
