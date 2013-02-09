@@ -55,8 +55,7 @@ int TeleportAuthenticator::addTeleport(const std::string &entity_id,
     return 0;
 }
 
-/// \brief Remove a teleport authentications entry. Typically after a
-///        successful authentication
+/// \brief Remove a teleport authentications entry.
 ///
 /// \param entity_id The ID of the entity whose data is to be removed
 int TeleportAuthenticator::removeTeleport(const std::string &entity_id)
@@ -73,9 +72,9 @@ int TeleportAuthenticator::removeTeleport(const std::string &entity_id)
     return 0;
 }
 
-/// \brief Remove a teleport authentications entry. Typically after a
-///        successful authentication
+/// \brief Remove a teleport authentications entry internals.
 ///
+/// Typically after a successful authentication
 /// \param I The iterator in m_teleports to be removed
 void TeleportAuthenticator::removeTeleport(PendingTeleportMap::iterator I)
 {

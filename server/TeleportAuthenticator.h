@@ -36,9 +36,6 @@ class TeleportAuthenticator
     /// \brief Map of teleport requests
     PendingTeleportMap m_teleports;
 
-    /// \brief Remove a teleport authentications entry.
-    ///
-    /// Typically after a successful authentication
     void removeTeleport(PendingTeleportMap::iterator I);
 
   public:
@@ -58,19 +55,14 @@ class TeleportAuthenticator
         }
     }
 
-    /// \brief Checks if there is a pending teleport on an account
     bool isPending(const std::string &) const;
 
-    /// \brief Add a teleport authentication entry
     int addTeleport(const std::string &, const std::string &);
 
-    /// \brief Remove a teleport authentications entry. Typically after a
-    ///        successful authentication
     int removeTeleport(const std::string &);
 
-    /// \brief Authenticate a teleport request
-    LocatedEntity *authenticateTeleport(const std::string &,
-                                        const std::string &);
+    LocatedEntity * authenticateTeleport(const std::string &,
+                                         const std::string &);
 
     friend class TeleportAuthenticatortest;
 };
