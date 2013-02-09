@@ -104,7 +104,8 @@ class TeleportAuthenticatortest : public Cyphesis::TestBase
     void test_sequence();
     void test_authenticateTeleport();
     void test_authenticateTeleport_nonexist();
-    void test_removeTeleport();
+    void test_removeTeleport_id();
+    void test_removeTeleport_iterator();
 };
 
 TeleportAuthenticatortest::TeleportAuthenticatortest()
@@ -112,7 +113,8 @@ TeleportAuthenticatortest::TeleportAuthenticatortest()
     ADD_TEST(TeleportAuthenticatortest::test_sequence);
     ADD_TEST(TeleportAuthenticatortest::test_authenticateTeleport);
     ADD_TEST(TeleportAuthenticatortest::test_authenticateTeleport_nonexist);
-    ADD_TEST(TeleportAuthenticatortest::test_removeTeleport);
+    ADD_TEST(TeleportAuthenticatortest::test_removeTeleport_id);
+    ADD_TEST(TeleportAuthenticatortest::test_removeTeleport_iterator);
 }
 
 void TeleportAuthenticatortest::setup()
@@ -188,11 +190,36 @@ void TeleportAuthenticatortest::test_authenticateTeleport_nonexist()
                    "101", "test_possess_key") == NULL);
 }
 
-void TeleportAuthenticatortest::test_removeTeleport()
+void TeleportAuthenticatortest::test_removeTeleport_id()
 {
-    int ret = TeleportAuthenticator::instance()->removeTeleport(
-          TeleportAuthenticator::instance()->m_teleports.end());
-    ASSERT_EQUAL(ret, -1);
+    TeleportAuthenticator * ta = TeleportAuthenticator::instance();
+
+    ta->m_teleports.insert(std::make_pair("1",
+          new PendingTeleport("1", "e146db28-1058-46e6-a9b3-601ab6ef07a7")));
+
+    ASSERT_TRUE(ta->m_teleports.find("1") != ta->m_teleports.end());
+
+    int ret = ta->removeTeleport("1");
+    ASSERT_EQUAL(ret, 0);
+
+    ASSERT_TRUE(ta->m_teleports.find("1") == ta->m_teleports.end());
+}
+
+void TeleportAuthenticatortest::test_removeTeleport_iterator()
+{
+    TeleportAuthenticator * ta = TeleportAuthenticator::instance();
+
+    ta->m_teleports.insert(std::make_pair("2",
+          new PendingTeleport("2", "b769b7a4-32d3-477d-9803-a53fd9ad49c7")));
+
+    ASSERT_TRUE(ta->m_teleports.find("2") != ta->m_teleports.end());
+
+    PendingTeleportMap::iterator I = ta->m_teleports.find("2");
+
+    int ret = ta->removeTeleport(I);
+    ASSERT_EQUAL(ret, 0);
+
+    ASSERT_TRUE(ta->m_teleports.find("2") == ta->m_teleports.end());
 }
 
 int main()
