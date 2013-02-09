@@ -216,8 +216,7 @@ void TeleportAuthenticatortest::test_removeTeleport_iterator()
 
     PendingTeleportMap::iterator I = ta->m_teleports.find("2");
 
-    int ret = ta->removeTeleport(I);
-    ASSERT_EQUAL(ret, 0);
+    ta->removeTeleport(I);
 
     ASSERT_TRUE(ta->m_teleports.find("2") == ta->m_teleports.end());
 }
