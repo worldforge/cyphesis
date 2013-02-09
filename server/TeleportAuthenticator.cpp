@@ -81,9 +81,6 @@ int TeleportAuthenticator::removeTeleport(const std::string &entity_id)
 /// \param I The iterator in m_teleports to be removed
 int TeleportAuthenticator::removeTeleport(PendingTeleportMap::iterator I)
 {
-    if (I == m_teleports.end()) {
-        return -1;
-    }
     assert(I->second != 0);
     delete I->second;
     m_teleports.erase(I);
