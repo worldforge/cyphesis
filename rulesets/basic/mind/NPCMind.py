@@ -172,7 +172,7 @@ class NPCMind(server.Mind):
     def set_operation(self, op):
         
         for thoughtOp in op.getArgs():
-            for thought in thoughtOp.getArgs():
+            for thought in thoughtOp.args:
                 subject=thought.subject
                 predicate=thought.predicate
                 object=thought.object
