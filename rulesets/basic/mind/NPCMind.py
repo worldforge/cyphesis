@@ -165,10 +165,27 @@ class NPCMind(server.Mind):
             d=getattr(self.knowledge, attr)
             if getattr(d, '__iter__', False):
                 for key in d:
-                    res = res + Operation("thought", Entity(attr=attr, key=key, value=str(d[key])))
+                    res = res + Operation("thought", Entity(predicate=attr, subject=key, object=str(d[key])))
                     
         return res
         
+    def set_operation(self, op):
+        
+        for thoughtOp in op.getArgs():
+            for thought in thoughtOp.getArgs():
+                subject=thought.subject
+                predicate=thought.predicate
+                object=thought.object
+                if object[0]=='(':
+                    #CHEAT!: remove eval
+                    xyz=list(eval(object))
+                    loc=self.location.copy()
+                    loc.coordinates=Vector3D(xyz)
+                    self.add_knowledge(predicate,subject,loc)
+                else:
+                    self.add_knowledge(predicate,subject,object)
+
+    
     ########## Talk operations
     def admin_sound(self, op):
         assert(op.from_ == op.to)

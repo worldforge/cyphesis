@@ -326,6 +326,25 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
         error(op, "Client attempting to use obsolete Set to install new type",
               res, getId());
         return;
+    } else if (objtype == "thought") {
+        long intId = integerId(id);
+        const EntityDict & worldDict = m_connection->m_server.m_world.getEntities();
+        EntityDict::const_iterator K = worldDict.find(intId);
+
+        if (K != worldDict.end()) {
+            Character* character = dynamic_cast<Character*>(K->second);
+            if (character) {
+                character->sendMind(op, res);
+            } else {
+                clientError(op, compose("Entity with id \"%1\" is not a character", id),
+                            res, getId());
+                return;
+            }
+        } else {
+            clientError(op, compose("Unknown object id \"%1\" requested", id),
+                        res, getId());
+            return;
+        }
     } else {
         error(op, "Unknow object type set", res, getId());
         return;
