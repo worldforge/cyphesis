@@ -29,7 +29,7 @@ TeleportAuthenticator * TeleportAuthenticator::m_instance = NULL;
 /// \brief Checks if there is a pending teleport on an account
 ///
 /// \param entity_id The entity ID to check for pending teleport
-bool TeleportAuthenticator::isPending(const std::string &entity_id) const
+bool TeleportAuthenticator::isPending(const std::string & entity_id) const
 {
     PendingTeleportMap::const_iterator I = m_teleports.find(entity_id);
     return (I != m_teleports.end());
@@ -39,8 +39,8 @@ bool TeleportAuthenticator::isPending(const std::string &entity_id) const
 ///
 /// \param entity_id The ID of the entity whose data is to be removed
 /// \param possess_key The possess key to authenticate the entity with
-int TeleportAuthenticator::addTeleport(const std::string &entity_id,
-                                        const std::string &possess_key)
+int TeleportAuthenticator::addTeleport(const std::string & entity_id,
+                                       const std::string & possess_key)
 {
     if (isPending(entity_id)) {
         return -1;
