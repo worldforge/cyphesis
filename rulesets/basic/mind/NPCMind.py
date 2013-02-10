@@ -171,7 +171,12 @@ class NPCMind(server.Mind):
                 d=getattr(self.knowledge, attr)
                 if getattr(d, '__iter__', False):
                     for key in d:
-                        res = res + Operation("thought", Entity(predicate=attr, subject=key, object=str(d[key])))
+                        #Goals store their original setup string in "str".
+                        if attr=="goal":
+                            object=d[key].str
+                        else:
+                            object=str(d[key])
+                        res = res + Operation("thought", Entity(predicate=attr, subject=key, object=object))
                     
         return res
         
@@ -183,14 +188,18 @@ class NPCMind(server.Mind):
                     subject=thought.subject
                     predicate=thought.predicate
                     object=thought.object
-                    if object[0]=='(':
-                        #CHEAT!: remove eval
-                        xyz=list(eval(object))
-                        loc=self.location.copy()
-                        loc.coordinates=Vector3D(xyz)
-                        self.add_knowledge(predicate,subject,loc)
+                    #handle goals in a special way
+                    if predicate == "goal":
+                        self.add_goal(subject,object)
                     else:
-                        self.add_knowledge(predicate,subject,object)
+                        if object[0]=='(':
+                            #CHEAT!: remove eval
+                            xyz=list(eval(object))
+                            loc=self.location.copy()
+                            loc.coordinates=Vector3D(xyz)
+                            self.add_knowledge(predicate,subject,loc)
+                        else:
+                            self.add_knowledge(predicate,subject,object)
 
     
     ########## Talk operations
