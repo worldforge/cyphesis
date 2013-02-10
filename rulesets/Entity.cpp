@@ -447,6 +447,10 @@ void Entity::operation(const Operation & op, OpVector & res)
     // the delegates.
     auto J = m_delegates.find(op->getClassNo());
     if (J != m_delegates.end()) {
+        HandlerResult hr = callDelegate(J->second, op, res);
+        if (hr != OPERATION_IGNORED) {
+            return;
+        }
         // How to access the property? We need a non-const pointer to call
         // operation, but to get this easily we need to force instantiation
         // from the type dict, making properties way less efficient.
@@ -460,6 +464,25 @@ void Entity::operation(const Operation & op, OpVector & res)
         // get/set/PropertyManager currently required in in modProperty.
     }
     return callOperation(op, res);
+}
+
+HandlerResult Entity::callDelegate(const std::string & name,
+                                   const Operation & op,
+                                   OpVector & res)
+{
+    PropertyBase * p = 0;
+    PropertyDict::const_iterator I = m_properties.find(name);
+    if (I != m_properties.end()) {
+        p = I->second;
+    } else if (m_type != 0) {
+        I = m_type->defaults().find(name); 
+        if (I != m_type->defaults().end()) {
+            p = I->second;
+        }
+    }
+    if (p != 0) {
+        p->operation(this, op, res);
+    }
 }
 
 /// \brief Find and call the handler for an operation

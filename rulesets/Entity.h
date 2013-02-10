@@ -93,6 +93,9 @@ class Entity : public LocatedEntity {
     virtual void externalOperation(const Operation & op, Link &);
     virtual void operation(const Operation &, OpVector &);
 
+    HandlerResult callDelegate(const std::string &,
+                               const Operation &,
+                               OpVector &);
     void callOperation(const Operation &, OpVector &);
 
     virtual void installHandler(int, Handler);
