@@ -161,29 +161,36 @@ class NPCMind(server.Mind):
     def get_operation(self, op):
         
         res = Oplist()
-        for attr in dir(self.knowledge):
-            d=getattr(self.knowledge, attr)
-            if getattr(d, '__iter__', False):
-                for key in d:
-                    res = res + Operation("thought", Entity(predicate=attr, subject=key, object=str(d[key])))
+
+        #Checking if the sub-op of the "get" is "thought".
+        #This should probably be handled in a nicer way (calling a "get_thought" method?).
+        _, sub_op = self.get_op_name_and_sub(op)
+        
+        if sub_op.id == "thought":
+            for attr in dir(self.knowledge):
+                d=getattr(self.knowledge, attr)
+                if getattr(d, '__iter__', False):
+                    for key in d:
+                        res = res + Operation("thought", Entity(predicate=attr, subject=key, object=str(d[key])))
                     
         return res
         
     def set_operation(self, op):
-        
-        for thoughtOp in op.getArgs():
-            for thought in thoughtOp.args:
-                subject=thought.subject
-                predicate=thought.predicate
-                object=thought.object
-                if object[0]=='(':
-                    #CHEAT!: remove eval
-                    xyz=list(eval(object))
-                    loc=self.location.copy()
-                    loc.coordinates=Vector3D(xyz)
-                    self.add_knowledge(predicate,subject,loc)
-                else:
-                    self.add_knowledge(predicate,subject,object)
+        #Only authors should be able to send set_operations. Do we need extra checks here, or should we rely on the server filtering them correctly?
+        for thoughtOp in op:
+            if thoughtOp.id == "thought":
+                for thought in thoughtOp:
+                    subject=thought.subject
+                    predicate=thought.predicate
+                    object=thought.object
+                    if object[0]=='(':
+                        #CHEAT!: remove eval
+                        xyz=list(eval(object))
+                        loc=self.location.copy()
+                        loc.coordinates=Vector3D(xyz)
+                        self.add_knowledge(predicate,subject,loc)
+                    else:
+                        self.add_knowledge(predicate,subject,object)
 
     
     ########## Talk operations
