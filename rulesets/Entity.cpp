@@ -481,8 +481,9 @@ HandlerResult Entity::callDelegate(const std::string & name,
         }
     }
     if (p != 0) {
-        p->operation(this, op, res);
+        return p->operation(this, op, res);
     }
+    return OPERATION_IGNORED;
 }
 
 /// \brief Find and call the handler for an operation
