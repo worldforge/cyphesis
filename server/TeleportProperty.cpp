@@ -28,6 +28,7 @@
 #include "common/compose.hpp"
 #include "common/debug.h"
 #include "common/log.h"
+#include "common/Teleport.h"
 
 #include <Atlas/Objects/RootOperation.h>
 #include <Atlas/Objects/SmartPtr.h>
@@ -36,24 +37,28 @@
 
 static const bool debug_flag = false;
 
+void TeleportProperty::install(LocatedEntity * owner, const std::string & name)
+{
+    owner->installDelegate(Atlas::Objects::Operation::TELEPORT_NO, name);
+}
+
+HandlerResult TeleportProperty::operation(LocatedEntity * ent,
+                                          const Operation & op,
+                                          OpVector & res)
+{
+    return TeleportProperty::teleport_handler(ent, op, res);
+}
+
 HandlerResult TeleportProperty::teleport_handler(LocatedEntity * e,
                                                  const Operation & op,
                                                  OpVector & res)
 {
-    // Get the teleport property value (in our case, the IP to teleport to)
-    const Property<std::string> * pb = e->getPropertyType<std::string>("teleport");
-    if (pb == NULL) {
-        debug(std::cout << "Teleport HANDLER no teleport" << std::endl 
-                        << std::flush;);
-        return OPERATION_IGNORED;
-    }
-
     ServerRouting *svr = ServerRouting::instance();
     if(svr == NULL) {
         log(ERROR, "Unable to access ServerRouting object");
         return OPERATION_IGNORED;
     }
-    Router * obj = svr->getObject(pb->data());
+    Router * obj = svr->getObject(data());
     if(obj == NULL) {
         log(ERROR, "Unknown peer ID specified");
         return OPERATION_IGNORED;

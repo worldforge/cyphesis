@@ -22,12 +22,17 @@
 
 #include "common/Property.h"
 
-class TeleportProperty
+class TeleportProperty : public Property<std::string>
 {
   public:
-    static HandlerResult teleport_handler(LocatedEntity * e,
-                                          const Operation & op,
-                                          OpVector & res);
+    virtual void install(LocatedEntity *, const std::string &);
+    virtual HandlerResult operation(LocatedEntity *,
+                                    const Operation &,
+                                    OpVector &);
+
+    HandlerResult teleport_handler(LocatedEntity * e,
+                                   const Operation & op,
+                                   OpVector & res);
 };
 
 #endif // SERVER_TELEPORT_PROPERTY_H

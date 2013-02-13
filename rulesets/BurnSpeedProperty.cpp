@@ -24,6 +24,7 @@
 
 #include "common/debug.h"
 
+#include "common/Burn.h"
 #include "common/Nourish.h"
 #include "common/Update.h"
 
@@ -41,6 +42,18 @@ using Atlas::Objects::Root;
 
 static const bool debug_flag = false;
 
+void BurnSpeedProperty::install(LocatedEntity * owner, const std::string & name)
+{
+    owner->installDelegate(Atlas::Objects::Operation::BURN_NO, name);
+}
+
+HandlerResult BurnSpeedProperty::operation(LocatedEntity * ent,
+                                        const Operation & op,
+                                        OpVector & res)
+{
+    return BurnSpeedProperty::burn_handler(ent, op, res);
+}
+
 HandlerResult BurnSpeedProperty::burn_handler(LocatedEntity * e,
                                               const Operation & op,
                                               OpVector & res)
@@ -50,14 +63,7 @@ HandlerResult BurnSpeedProperty::burn_handler(LocatedEntity * e,
         return OPERATION_IGNORED;
     }
 
-    const Property<double> * pb = e->getPropertyType<double>("burn_speed");
-    if (pb == NULL) {
-        debug(std::cout << "Eat HANDLER no burn_speed" << std::endl 
-                        << std::flush;);
-        return OPERATION_IGNORED;
-    }
-    
-    const double & burn_speed = pb->data();
+    const double & burn_speed = data();
     const Root & fire_ent = op->getArgs().front();
     double consumed = burn_speed * fire_ent->getAttr("status").asNum();
 

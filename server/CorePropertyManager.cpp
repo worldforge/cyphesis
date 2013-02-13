@@ -79,7 +79,7 @@ CorePropertyManager::CorePropertyManager()
     m_propertyFactories["simple"] = new PropertyFactory<SimpleProperty>;
     m_propertyFactories["status"] = new PropertyFactory<StatusProperty>;
     m_propertyFactories["biomass"] = new PropertyFactory<BiomassProperty>;
-    m_propertyFactories["burn_speed"] = new ActivePropertyFactory<double>(Atlas::Objects::Operation::BURN_NO, BurnSpeedProperty::burn_handler);
+    m_propertyFactories["burn_speed"] = new PropertyFactory<BurnSpeedProperty>;
     m_propertyFactories["transient"] = new PropertyFactory<TransientProperty>();
     m_propertyFactories["food"] = new PropertyFactory<Property<double> >;
     m_propertyFactories["mass"] = new PropertyFactory<Property<double> >;
@@ -99,7 +99,7 @@ CorePropertyManager::CorePropertyManager()
           TerrainModProperty::delete_handler;
     m_propertyFactories["terrainmod"] = new MultiActivePropertyFactory<TerrainModProperty>(terrainModHandles);
 
-    m_propertyFactories["teleport"] = new ActivePropertyFactory<std::string>(Atlas::Objects::Operation::TELEPORT_NO, TeleportProperty::teleport_handler);
+    m_propertyFactories["teleport"] = new PropertyFactory<TeleportProperty>;
 }
 
 CorePropertyManager::~CorePropertyManager()

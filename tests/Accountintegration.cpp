@@ -963,9 +963,13 @@ HandlerResult BiomassProperty::operation(LocatedEntity * e,
     return OPERATION_IGNORED;
 }
 
-HandlerResult BurnSpeedProperty::burn_handler(LocatedEntity * e,
-                                              const Operation & op,
-                                              OpVector & res)
+void BurnSpeedProperty::install(LocatedEntity * owner, const std::string & name)
+{
+}
+
+HandlerResult BurnSpeedProperty::operation(LocatedEntity * ent,
+                                        const Operation & op,
+                                        OpVector & res)
 {
     return OPERATION_IGNORED;
 }
@@ -981,9 +985,13 @@ HandlerResult DecaysProperty::operation(LocatedEntity * ent,
     return OPERATION_IGNORED;
 }
 
-HandlerResult TeleportProperty::teleport_handler(LocatedEntity * e,
-                                                 const Operation & op,
-                                                 OpVector & res)
+void TeleportProperty::install(LocatedEntity * owner, const std::string & name)
+{
+}
+
+HandlerResult TeleportProperty::operation(LocatedEntity * ent,
+                                          const Operation & op,
+                                          OpVector & res)
 {
     return OPERATION_IGNORED;
 }

@@ -22,12 +22,17 @@
 
 #include "common/Property.h"
 
-class BurnSpeedProperty
+class BurnSpeedProperty : public Property<double>
 {
   public:
-    static HandlerResult burn_handler(LocatedEntity * e,
-                                      const Operation & op,
-                                      OpVector & res);
+    virtual void install(LocatedEntity *, const std::string &);
+    virtual HandlerResult operation(LocatedEntity *,
+                                    const Operation &,
+                                    OpVector &);
+
+    HandlerResult burn_handler(LocatedEntity * e,
+                               const Operation & op,
+                               OpVector & res);
 };
 
 #endif // RULESETS_BURN_SPEED_PROPERTY_H
