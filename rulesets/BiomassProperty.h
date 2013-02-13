@@ -22,12 +22,17 @@
 
 #include "common/Property.h"
 
-class BiomassProperty
+class BiomassProperty : public Property<double>
 {
   public:
-    static HandlerResult eat_handler(LocatedEntity * e,
-                                     const Operation & op,
-                                     OpVector & res);
+    virtual void install(LocatedEntity *, const std::string &);
+    virtual HandlerResult operation(LocatedEntity *,
+                                    const Operation &,
+                                    OpVector &);
+
+    HandlerResult eat_handler(LocatedEntity * e,
+                              const Operation & op,
+                              OpVector & res);
 
 };
 

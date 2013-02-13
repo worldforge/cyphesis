@@ -1330,9 +1330,13 @@ BBoxProperty * BBoxProperty::copy() const
     return 0;
 }
 
-HandlerResult BiomassProperty::eat_handler(LocatedEntity * e,
-                                           const Operation & op,
-                                           OpVector & res)
+void BiomassProperty::install(LocatedEntity * owner, const std::string & name)
+{
+}
+
+HandlerResult BiomassProperty::operation(LocatedEntity * e,
+                                         const Operation & op,
+                                         OpVector & res)
 {
     return OPERATION_IGNORED;
 }

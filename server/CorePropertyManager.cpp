@@ -78,7 +78,7 @@ CorePropertyManager::CorePropertyManager()
     m_propertyFactories["solid"] = new PropertyFactory<SolidProperty>;
     m_propertyFactories["simple"] = new PropertyFactory<SimpleProperty>;
     m_propertyFactories["status"] = new PropertyFactory<StatusProperty>;
-    m_propertyFactories["biomass"] = new ActivePropertyFactory<double>(Atlas::Objects::Operation::EAT_NO, BiomassProperty::eat_handler);
+    m_propertyFactories["biomass"] = new PropertyFactory<BiomassProperty>;
     m_propertyFactories["burn_speed"] = new ActivePropertyFactory<double>(Atlas::Objects::Operation::BURN_NO, BurnSpeedProperty::burn_handler);
     m_propertyFactories["transient"] = new PropertyFactory<TransientProperty>();
     m_propertyFactories["food"] = new PropertyFactory<Property<double> >;

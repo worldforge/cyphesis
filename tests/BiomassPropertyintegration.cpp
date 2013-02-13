@@ -26,12 +26,12 @@
 
 #include "TestBase.h"
 
-#include "rulesets/ActivePropertyFactory_impl.h"
 #include "rulesets/Entity.h"
 #include "rulesets/BiomassProperty.h"
 
 #include "common/Eat.h"
 #include "common/OperationRouter.h"
+#include "common/PropertyFactory_impl.h"
 
 #include <Atlas/Objects/Operation.h>
 
@@ -65,7 +65,7 @@ void BiomassPropertyintegration::setup()
     m_entity = new Entity("1", 1);
     m_entity->m_location.m_loc = m_world;
 
-    ActivePropertyFactory<double> decays_property_factory(Atlas::Objects::Operation::EAT_NO, BiomassProperty::eat_handler);
+    PropertyFactory<BiomassProperty> decays_property_factory;
 
     m_property = decays_property_factory.newProperty();
     m_property->install(m_entity, "biomass");

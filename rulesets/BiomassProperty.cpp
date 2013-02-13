@@ -23,6 +23,7 @@
 
 #include "common/debug.h"
 
+#include "common/Eat.h"
 #include "common/Nourish.h"
 
 #include <Atlas/Objects/Anonymous.h>
@@ -37,18 +38,23 @@ using Atlas::Objects::Operation::Set;
 
 static const bool debug_flag = false;
 
+void BiomassProperty::install(LocatedEntity * owner, const std::string & name)
+{
+    owner->installDelegate(Atlas::Objects::Operation::EAT_NO, name);
+}
+
+HandlerResult BiomassProperty::operation(LocatedEntity * e,
+                                         const Operation & op,
+                                         OpVector & res)
+{
+    return eat_handler(e, op, res);
+}
+
 HandlerResult BiomassProperty::eat_handler(LocatedEntity * e,
                                            const Operation & op,
                                            OpVector & res)
 {
-    const Property<double> * pb = e->getPropertyType<double>("biomass");
-    if (pb == NULL) {
-        debug(std::cout << "Eat HANDLER no biomass" << std::endl 
-                        << std::flush;);
-        return OPERATION_IGNORED;
-    }
-    
-    const double & biomass = pb->data();
+    const double & biomass = data();
 
     Anonymous self;
     self->setId(e->getId());
