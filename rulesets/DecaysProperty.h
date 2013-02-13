@@ -30,9 +30,9 @@ class DecaysProperty : public Property<std::string>
                                     const Operation &,
                                     OpVector &);
 
-    static HandlerResult del_handler(LocatedEntity * e,
-                                     const Operation &,
-                                     OpVector & res);
+    HandlerResult del_handler(LocatedEntity * e,
+                              const Operation &,
+                              OpVector & res);
 };
 
 #endif // RULESETS_DECAYS_PROPERTY_H

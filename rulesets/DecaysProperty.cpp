@@ -53,13 +53,7 @@ HandlerResult DecaysProperty::del_handler(LocatedEntity * e,
                                           OpVector & res)
 {
     debug(std::cout << "Delete HANDLER CALLED" << std::endl << std::flush;);
-    const Property<std::string> * pb = e->getPropertyType<std::string>("decays");
-    if (pb == NULL) {
-        debug(std::cout << "Delete HANDLER no decays" << std::endl 
-                        << std::flush;);
-        return OPERATION_IGNORED;
-    }
-    const std::string & type = pb->data();
+    const std::string & type = data();
 
     Anonymous create_arg;
     create_arg->setParents(std::list<std::string>(1, type));
