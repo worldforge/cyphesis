@@ -68,7 +68,7 @@ void BiomassPropertyintegration::setup()
     ActivePropertyFactory<double> decays_property_factory(Atlas::Objects::Operation::EAT_NO, BiomassProperty::eat_handler);
 
     m_property = decays_property_factory.newProperty();
-    m_property->install(m_entity);
+    m_property->install(m_entity, "biomass");
     m_entity->setProperty("biomass", m_property);
 }
 

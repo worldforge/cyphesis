@@ -41,7 +41,7 @@ class MultiHandlerProperty : public Property<T> {
 
     virtual MultiHandlerProperty<T> * copy() const;
 
-    virtual void install(LocatedEntity *);
+    virtual void install(LocatedEntity *, const std::string &);
 };
 
 #endif // RULESETS_MULTI_HANDLER_PROPERTY_H

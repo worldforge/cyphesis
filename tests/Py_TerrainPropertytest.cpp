@@ -48,7 +48,7 @@ static PyObject * add_properties(PyObject * self, PyEntity * o)
     Entity * ent = o->m_entity.e;
     
     PropertyBase * p = ent->setProperty("terrain", new TerrainProperty);
-    p->install(ent);
+    p->install(ent, "terrain");
     p->apply(ent);
 
     Py_INCREF(Py_None);

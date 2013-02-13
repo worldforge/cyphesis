@@ -50,7 +50,7 @@ class PropertyBase {
     /// \brief Install this property on an entity
     ///
     /// Called whenever an Entity gains this property for the first time
-    virtual void install(LocatedEntity *);
+    virtual void install(LocatedEntity *, const std::string &);
     /// \brief Apply whatever effect this property has on an Entity
     ///
     /// Called whenever the value of this property should affect an Entity

@@ -30,7 +30,7 @@ class SetupProperty : public Property<int> {
 
     virtual SetupProperty * copy() const;
 
-    virtual void install(LocatedEntity *);
+    virtual void install(LocatedEntity *, const std::string &);
 };
 
 /// \brief Class to handle Entity which requires a Tick operation

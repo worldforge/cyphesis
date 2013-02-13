@@ -22,9 +22,14 @@
 
 #include "common/Property.h"
 
-class DecaysProperty
+class DecaysProperty : public Property<std::string>
 {
   public:
+    virtual void install(LocatedEntity *, const std::string &);
+    virtual HandlerResult operation(LocatedEntity *,
+                                    const Operation &,
+                                    OpVector &);
+
     static HandlerResult del_handler(LocatedEntity * e,
                                      const Operation &,
                                      OpVector & res);

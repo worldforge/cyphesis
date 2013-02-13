@@ -60,7 +60,7 @@ class TerrainModProperty : public TerrainEffectorProperty {
 
     TerrainModProperty * copy() const;
 
-    virtual void install(LocatedEntity *);
+    virtual void install(LocatedEntity *, const std::string &);
     virtual void apply(LocatedEntity *);
 
     Mercator::TerrainMod * getModifier() {

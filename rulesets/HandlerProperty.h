@@ -38,7 +38,7 @@ class HandlerProperty : public Property<T> {
 
     virtual HandlerProperty<T> * copy() const;
 
-    virtual void install(LocatedEntity *);
+    virtual void install(LocatedEntity *, const std::string &);
 };
 
 #endif // RULESETS_HANDLER_PROPERTY_H

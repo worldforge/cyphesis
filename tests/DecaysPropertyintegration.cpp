@@ -30,8 +30,7 @@
 #include "rulesets/DecaysProperty.h"
 
 #include "common/OperationRouter.h"
-
-#include "rulesets/ActivePropertyFactory_impl.h"
+#include "common/PropertyFactory_impl.h"
 
 #include <Atlas/Objects/Operation.h>
 
@@ -65,10 +64,10 @@ void DecaysPropertyintegration::setup()
     m_entity = new Entity("1", 1);
     m_entity->m_location.m_loc = m_world;
 
-    ActivePropertyFactory<std::string> decays_property_factory(Atlas::Objects::Operation::DELETE_NO, DecaysProperty::del_handler);
+    PropertyFactory<DecaysProperty> decays_property_factory;
 
     m_property = decays_property_factory.newProperty();
-    m_property->install(m_entity);
+    m_property->install(m_entity, "decays");
     m_entity->setProperty("decays", m_property);
 }
 

@@ -36,6 +36,18 @@ using Atlas::Objects::Operation::Create;
 
 static const bool debug_flag = false;
 
+void DecaysProperty::install(LocatedEntity * owner, const std::string & name)
+{
+    owner->installDelegate(Atlas::Objects::Operation::DELETE_NO, name);
+}
+
+HandlerResult DecaysProperty::operation(LocatedEntity * ent,
+                                        const Operation & op,
+                                        OpVector & res)
+{
+    return DecaysProperty::del_handler(ent, op, res);
+}
+
 HandlerResult DecaysProperty::del_handler(LocatedEntity * e,
                                           const Operation &,
                                           OpVector & res)

@@ -31,7 +31,7 @@ class TransientProperty : public Property<double> {
 
     virtual TransientProperty * copy() const;
 
-    virtual void install(LocatedEntity *);
+    virtual void install(LocatedEntity *, const std::string &);
 
     virtual void apply(LocatedEntity *);
 };

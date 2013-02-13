@@ -37,7 +37,8 @@ MultiHandlerProperty<T> * MultiHandlerProperty<T>::copy() const
 }
 
 template <typename T>
-void MultiHandlerProperty<T>::install(LocatedEntity * ent)
+void MultiHandlerProperty<T>::install(LocatedEntity * ent,
+                                      const std::string & name)
 {
     HandlerMap::const_iterator I = m_handlers.begin();
     HandlerMap::const_iterator Iend = m_handlers.end();

@@ -98,7 +98,7 @@ PropertyBase * Entity::setAttr(const std::string & name, const Element & attr)
             // one in defaults, so we need to install it to this Entity.
             prop = PropertyManager::instance()->addProperty(name,
                                                             attr.getType());
-            prop->install(this);
+            prop->install(this, name);
         }
         assert(prop != 0);
         m_properties[name] = prop;

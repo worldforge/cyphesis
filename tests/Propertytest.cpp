@@ -45,7 +45,7 @@ class MinimalProperty : public PropertyBase {
 
 static void exerciseProperty(PropertyBase * pb)
 {
-    pb->install(0);
+    pb->install(0, "test_prop");
     pb->apply(0);
     MapType map;
     pb->add("test_name", map);

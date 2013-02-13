@@ -57,7 +57,7 @@ StatisticsProperty::~StatisticsProperty()
     delete m_script;
 }
 
-void StatisticsProperty::install(LocatedEntity * ent)
+void StatisticsProperty::install(LocatedEntity * ent, const std::string & name)
 {
 }
 

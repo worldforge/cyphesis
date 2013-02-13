@@ -73,7 +73,7 @@ CorePropertyManager::CorePropertyManager()
     m_propertyFactories["start_intersections"] = new PropertyFactory<Property<IdList> >;
     m_propertyFactories["end_intersections"] = new PropertyFactory<Property<IdList> >;
     m_propertyFactories["attachment"] = new ActivePropertyFactory<int>(Atlas::Objects::Operation::MOVE_NO, test_handler);
-    m_propertyFactories["decays"] = new ActivePropertyFactory<std::string>(Atlas::Objects::Operation::DELETE_NO, DecaysProperty::del_handler);
+    m_propertyFactories["decays"] = new PropertyFactory<DecaysProperty>;
     m_propertyFactories["outfit"] = new PropertyFactory<OutfitProperty>;
     m_propertyFactories["solid"] = new PropertyFactory<SolidProperty>;
     m_propertyFactories["simple"] = new PropertyFactory<SimpleProperty>;

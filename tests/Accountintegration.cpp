@@ -822,7 +822,7 @@ PropertyBase::~PropertyBase()
 {
 }
 
-void PropertyBase::install(LocatedEntity *)
+void PropertyBase::install(LocatedEntity *, const std::string & name)
 {
 }
 
@@ -966,9 +966,13 @@ HandlerResult BurnSpeedProperty::burn_handler(LocatedEntity * e,
     return OPERATION_IGNORED;
 }
 
-HandlerResult DecaysProperty::del_handler(LocatedEntity * e,
-                                          const Operation &,
-                                          OpVector & res)
+void DecaysProperty::install(LocatedEntity * owner, const std::string & name)
+{
+}
+
+HandlerResult DecaysProperty::operation(LocatedEntity * ent,
+                                        const Operation & op,
+                                        OpVector & res)
 {
     return OPERATION_IGNORED;
 }
@@ -1031,7 +1035,7 @@ TerrainModProperty * TerrainModProperty::copy() const
     return 0;
 }
 
-void TerrainModProperty::install(LocatedEntity * owner)
+void TerrainModProperty::install(LocatedEntity * owner, const std::string & name)
 {
 }
 
@@ -1091,7 +1095,7 @@ SetupProperty * SetupProperty::copy() const
     return 0;
 }
 
-void SetupProperty::install(LocatedEntity * ent)
+void SetupProperty::install(LocatedEntity * ent, const std::string & name)
 {
 }
 
@@ -1220,7 +1224,7 @@ StatisticsProperty::~StatisticsProperty()
 {
 }
 
-void StatisticsProperty::install(LocatedEntity * ent)
+void StatisticsProperty::install(LocatedEntity * ent, const std::string & name)
 {
 }
 
@@ -1277,7 +1281,7 @@ TransientProperty * TransientProperty::copy() const
     return 0;
 }
 
-void TransientProperty::install(LocatedEntity * ent)
+void TransientProperty::install(LocatedEntity * ent, const std::string & name)
 {
 }
 
@@ -1299,7 +1303,7 @@ HandlerProperty<T> * HandlerProperty<T>::copy() const
 }
 
 template <typename T>
-void HandlerProperty<T>::install(LocatedEntity * ent)
+void HandlerProperty<T>::install(LocatedEntity * ent, const std::string & name)
 {
 }
 

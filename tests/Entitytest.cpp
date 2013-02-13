@@ -69,7 +69,7 @@ class Entitytest : public Cyphesis::TestBase
     class TestProperty : public Property<int>
     {
       public:
-        virtual void install(LocatedEntity *);
+        virtual void install(LocatedEntity *, const std::string &);
         virtual void apply(LocatedEntity *);
         virtual TestProperty * copy() const;
     };
@@ -88,7 +88,7 @@ class Entitytest : public Cyphesis::TestBase
 bool Entitytest::m_TestProperty_install_called;
 bool Entitytest::m_TestProperty_apply_called;
 
-void Entitytest::TestProperty::install(LocatedEntity *)
+void Entitytest::TestProperty::install(LocatedEntity *, const std::string & name)
 {
     Entitytest::TestProperty_install_called();
 }
@@ -543,7 +543,7 @@ PropertyBase::~PropertyBase()
 {
 }
 
-void PropertyBase::install(LocatedEntity *)
+void PropertyBase::install(LocatedEntity *, const std::string & name)
 {
 }
 

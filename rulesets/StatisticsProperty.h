@@ -41,7 +41,7 @@ class StatisticsProperty : public PropertyBase {
 
     ArithmeticScript * script() { return m_script; }
 
-    virtual void install(LocatedEntity *);
+    virtual void install(LocatedEntity *, const std::string &);
     virtual void apply(LocatedEntity *);
 
     virtual int get(Atlas::Message::Element &) const;

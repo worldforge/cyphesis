@@ -76,12 +76,12 @@ void AreaPropertyintegration::setup()
 
     m_char1 = new Entity("1", 1);
     m_char1->setType(m_char_type);
-    m_char_property->install(m_char1);
+    m_char_property->install(m_char1, "char_prop");
     m_char_property->apply(m_char1);
 
     m_char2 = new Entity("2", 2);
     m_char2->setType(m_char_type);
-    m_char_property->install(m_char2);
+    m_char_property->install(m_char2, "char_prop");
     m_char_property->apply(m_char2);
 }
 
@@ -291,7 +291,7 @@ PropertyBase::~PropertyBase()
 {
 }
 
-void PropertyBase::install(LocatedEntity *)
+void PropertyBase::install(LocatedEntity *, const std::string & name)
 {
 }
 

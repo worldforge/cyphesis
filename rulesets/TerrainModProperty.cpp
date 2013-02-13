@@ -72,7 +72,7 @@ TerrainModProperty * TerrainModProperty::copy() const
     return new TerrainModProperty(*this);
 }
 
-void TerrainModProperty::install(LocatedEntity * owner)
+void TerrainModProperty::install(LocatedEntity * owner, const std::string & name)
 {
     HandlerMap::const_iterator I = m_handlers.begin();
     HandlerMap::const_iterator Iend = m_handlers.end();

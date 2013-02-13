@@ -178,7 +178,7 @@ void StorageManager::restoreProperties(LocatedEntity * ent)
         const TypeNode * type = ent->getType();
         assert(type != 0);
         if (type->defaults().find(name) == type->defaults().end()) {
-            prop->install(ent);
+            prop->install(ent, name);
         }
         prop->apply(ent);
     }

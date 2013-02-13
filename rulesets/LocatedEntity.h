@@ -274,7 +274,7 @@ class LocatedEntity : public Router {
             // If it is not of the right type, delete it and a new
             // one of the right type will be inserted.
             m_properties[name] = sp = new PropertyT;
-            sp->install(this);
+            sp->install(this, name);
             if (p != 0) {
                 Atlas::Message::Element val;
                 if (p->get(val)) {

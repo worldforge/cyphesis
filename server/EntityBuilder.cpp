@@ -176,7 +176,7 @@ LocatedEntity * EntityBuilder::newEntity(const std::string & id, long intId,
         PropertyBase * prop = J->second;
         // If a property is in the class it won't have been installed
         // as setAttr() checks
-        prop->install(thing);
+        prop->install(thing, J->first);
         // The property will have been applied if it has an overriden
         // value, so we only apply it the value is still default.
         if (attrs.find(J->first) == attrs.end()) {

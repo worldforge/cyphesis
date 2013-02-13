@@ -440,7 +440,7 @@ PropertyBase::~PropertyBase()
 {
 }
 
-void PropertyBase::install(LocatedEntity *)
+void PropertyBase::install(LocatedEntity *, const std::string & name)
 {
 }
 

@@ -39,7 +39,7 @@ SetupProperty * SetupProperty::copy() const
     return new SetupProperty(*this);
 }
 
-void SetupProperty::install(LocatedEntity * ent)
+void SetupProperty::install(LocatedEntity * ent, const std::string & name)
 {
     Setup s;
     s->setTo(ent->getId());
