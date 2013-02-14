@@ -48,6 +48,11 @@ HandlerResult DecaysProperty::operation(LocatedEntity * ent,
     return DecaysProperty::del_handler(ent, op, res);
 }
 
+DecaysProperty * DecaysProperty::copy() const
+{
+    return new DecaysProperty(*this);
+}
+
 HandlerResult DecaysProperty::del_handler(LocatedEntity * e,
                                           const Operation &,
                                           OpVector & res)

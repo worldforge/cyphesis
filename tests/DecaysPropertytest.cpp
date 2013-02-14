@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2013 Alistair Riddoch
+// Copyright (C) 2009 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,23 +17,42 @@
 
 // $Id$
 
-#ifndef RULESETS_DECAYS_PROPERTY_H
-#define RULESETS_DECAYS_PROPERTY_H
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
+#ifndef DEBUG
+#define DEBUG
+#endif
 
-#include "common/Property.h"
+#include "PropertyCoverage.h"
 
-class DecaysProperty : public Property<std::string>
+#include "rulesets/DecaysProperty.h"
+
+int main()
 {
-  public:
-    virtual void install(LocatedEntity *, const std::string &);
-    virtual HandlerResult operation(LocatedEntity *,
-                                    const Operation &,
-                                    OpVector &);
-    virtual DecaysProperty * copy() const;
+    DecaysProperty * ap = new DecaysProperty;
 
-    HandlerResult del_handler(LocatedEntity * e,
-                              const Operation &,
-                              OpVector & res);
-};
+    PropertyChecker<DecaysProperty> pc(ap);
 
-#endif // RULESETS_DECAYS_PROPERTY_H
+    pc.basicCoverage();
+
+    return 0;
+}
+
+#include "TestWorld.h"
+
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
+{
+}
+
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
+                                 const Atlas::Objects::Entity::RootEntity &)
+{
+    return 0;
+}
+
+// stubs
+
+void addToEntity(const Point3D & p, std::vector<double> & vd)
+{
+}

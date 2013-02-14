@@ -38,7 +38,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  InternalPropertiestest EntityPropertiestest \
                  SpawnPropertytest VisibilityPropertytest \
                  ExternalPropertytest BurnSpeedPropertytest \
-                 BiomassPropertytest \
+                 BiomassPropertytest DecaysPropertytest \
                  Domaintest BulletDomaintest AtlasPropertiestest \
                  BaseMindtest MemEntitytest MemMaptest Movementtest \
                  Pedestriantest \
@@ -630,6 +630,12 @@ BiomassPropertytest_SOURCES = BiomassPropertytest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 BiomassPropertytest_LDADD = \
         $(top_builddir)/rulesets/BiomassProperty.o \
+        $(top_builddir)/common/Property.o
+
+DecaysPropertytest_SOURCES = DecaysPropertytest.cpp \
+        PropertyCoverage.cpp PropertyCoverage.h
+DecaysPropertytest_LDADD = \
+        $(top_builddir)/rulesets/DecaysProperty.o \
         $(top_builddir)/common/Property.o
 
 Domaintest_SOURCES = Domaintest.cpp

@@ -1365,6 +1365,11 @@ HandlerResult DecaysProperty::operation(LocatedEntity * ent,
     return OPERATION_IGNORED;
 }
 
+DecaysProperty * DecaysProperty::copy() const
+{
+    return 0;
+}
+
 void TeleportProperty::install(LocatedEntity * owner, const std::string & name)
 {
 }
