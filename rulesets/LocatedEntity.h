@@ -40,13 +40,8 @@ class TypeNode;
 template <typename T>
 class Property;
 
-typedef HandlerResult (*Handler)(LocatedEntity *,
-                                 const Operation &,
-                                 OpVector &);
-
 typedef std::set<LocatedEntity *> LocatedEntitySet;
 typedef std::map<std::string, PropertyBase *> PropertyDict;
-typedef std::map<int, Handler> HandlerMap;
 
 /// \brief Flag indicating entity has been written to permanent store
 /// \ingroup EntityFlags

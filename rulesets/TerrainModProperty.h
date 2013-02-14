@@ -31,11 +31,6 @@ namespace Mercator {
 class TerrainProperty;
 class TerrainModTranslator;
 
-typedef HandlerResult (*Handler)(LocatedEntity *,
-                                 const Operation &,
-                                 OpVector &);
-typedef std::map<int, Handler> HandlerMap;
-
 /// \brief Class to handle Entity terrain modifier property
 /// \ingroup PropertyClasses
 class TerrainModProperty : public TerrainEffectorProperty {
