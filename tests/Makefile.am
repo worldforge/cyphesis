@@ -37,7 +37,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  TransientPropertytest TasksPropertytest \
                  InternalPropertiestest EntityPropertiestest \
                  SpawnPropertytest VisibilityPropertytest \
-                 ExternalPropertytest \
+                 ExternalPropertytest BurnSpeedPropertytest \
                  Domaintest BulletDomaintest AtlasPropertiestest \
                  BaseMindtest MemEntitytest MemMaptest Movementtest \
                  Pedestriantest \
@@ -617,6 +617,12 @@ VisibilityPropertytest_LDADD = \
 ExternalPropertytest_SOURCES = ExternalPropertytest.cpp
 ExternalPropertytest_LDADD = \
         $(top_builddir)/rulesets/ExternalProperty.o \
+        $(top_builddir)/common/Property.o
+
+BurnSpeedPropertytest_SOURCES = BurnSpeedPropertytest.cpp \
+        PropertyCoverage.cpp PropertyCoverage.h
+BurnSpeedPropertytest_LDADD = \
+        $(top_builddir)/rulesets/BurnSpeedProperty.o \
         $(top_builddir)/common/Property.o
 
 Domaintest_SOURCES = Domaintest.cpp

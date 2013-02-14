@@ -29,6 +29,7 @@ class BurnSpeedProperty : public Property<double>
     virtual HandlerResult operation(LocatedEntity *,
                                     const Operation &,
                                     OpVector &);
+    virtual BurnSpeedProperty * copy() const;
 
     HandlerResult burn_handler(LocatedEntity * e,
                                const Operation & op,

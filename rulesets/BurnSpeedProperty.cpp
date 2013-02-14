@@ -54,6 +54,11 @@ HandlerResult BurnSpeedProperty::operation(LocatedEntity * ent,
     return BurnSpeedProperty::burn_handler(ent, op, res);
 }
 
+BurnSpeedProperty * BurnSpeedProperty::copy() const
+{
+    return new BurnSpeedProperty(*this);
+}
+
 HandlerResult BurnSpeedProperty::burn_handler(LocatedEntity * e,
                                               const Operation & op,
                                               OpVector & res)

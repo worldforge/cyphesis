@@ -1344,6 +1344,11 @@ HandlerResult BurnSpeedProperty::operation(LocatedEntity * ent,
     return OPERATION_IGNORED;
 }
 
+BurnSpeedProperty * BurnSpeedProperty::copy() const
+{
+    return 0;
+}
+
 void DecaysProperty::install(LocatedEntity * owner, const std::string & name)
 {
 }
