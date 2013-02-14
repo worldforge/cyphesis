@@ -1437,6 +1437,7 @@ HandlerResult TerrainModProperty::operation(LocatedEntity * ent,
                                             const Operation & op,
                                             OpVector & res)
 {
+    return OPERATION_IGNORED;
 }
 
 void TerrainModProperty::move(LocatedEntity* owner)
@@ -1684,28 +1685,6 @@ void TransientProperty::install(LocatedEntity * ent, const std::string & name)
 void TransientProperty::apply(LocatedEntity * ent)
 {
 }
-
-template <typename T>
-HandlerProperty<T>::HandlerProperty(int op, Handler handler) :
-                                    m_operationClassNo(op),
-                                    m_handler(handler)
-{
-}
-
-template <typename T>
-HandlerProperty<T> * HandlerProperty<T>::copy() const
-{
-    return 0;
-}
-
-template <typename T>
-void HandlerProperty<T>::install(LocatedEntity * ent, const std::string & name)
-{
-}
-
-template class HandlerProperty<int>;
-template class HandlerProperty<double>;
-template class HandlerProperty<std::string>;
 
 Pedestrian::~Pedestrian()
 {
