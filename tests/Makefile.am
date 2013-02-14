@@ -35,13 +35,12 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  StatisticsPropertytest StatusPropertytest \
                  TerrainModPropertytest TerrainPropertytest \
                  TransientPropertytest TasksPropertytest \
-                 HandlerPropertytest MultiHandlerPropertytest \
                  InternalPropertiestest EntityPropertiestest \
                  SpawnPropertytest VisibilityPropertytest \
                  ExternalPropertytest \
                  Domaintest BulletDomaintest AtlasPropertiestest \
                  BaseMindtest MemEntitytest MemMaptest Movementtest \
-                 Pedestriantest ActivePropertyFactorytest \
+                 Pedestriantest \
                  ExternalMindtest \
                  Python_APItest Py_Quaterniontest Py_Vector3Dtest \
                  Py_Point3Dtest Py_BBoxtest Py_Locationtest \
@@ -585,18 +584,6 @@ TasksPropertytest_LDADD = \
         $(top_builddir)/rulesets/TasksProperty.o \
         $(top_builddir)/common/Property.o
 
-HandlerPropertytest_SOURCES = HandlerPropertytest.cpp \
-        PropertyCoverage.cpp PropertyCoverage.h
-HandlerPropertytest_LDADD = \
-        $(top_builddir)/rulesets/HandlerProperty.o \
-        $(top_builddir)/common/Property.o
-
-MultiHandlerPropertytest_SOURCES = MultiHandlerPropertytest.cpp \
-        PropertyCoverage.cpp PropertyCoverage.h
-MultiHandlerPropertytest_LDADD = \
-        $(top_builddir)/rulesets/MultiHandlerProperty.o \
-        $(top_builddir)/common/Property.o
-
 InternalPropertiestest_SOURCES = InternalPropertiestest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 InternalPropertiestest_LDADD = \
@@ -666,10 +653,6 @@ Pedestriantest_LDADD = \
 ExternalMindtest_SOURCES = ExternalMindtest.cpp
 ExternalMindtest_LDADD = \
         $(top_builddir)/rulesets/ExternalMind.o
-
-ActivePropertyFactorytest_SOURCES = ActivePropertyFactorytest.cpp
-ActivePropertyFactorytest_LDADD = \
-        $(top_builddir)/rulesets/ActivePropertyFactory.o
 
 Python_APItest_SOURCES = Python_APItest.cpp \
         python_testers.cpp python_testers.h
@@ -1006,7 +989,6 @@ DecaysPropertyintegration_SOURCES = DecaysPropertyintegration.cpp
 DecaysPropertyintegration_LDADD = \
         $(top_builddir)/rulesets/Entity.o \
         $(top_builddir)/rulesets/DecaysProperty.o \
-        $(top_builddir)/rulesets/HandlerProperty.o \
         $(top_builddir)/rulesets/LocatedEntity.o \
         $(top_builddir)/common/Property.o \
         $(top_builddir)/common/TypeNode.o
@@ -1015,7 +997,6 @@ BiomassPropertyintegration_SOURCES = BiomassPropertyintegration.cpp
 BiomassPropertyintegration_LDADD = \
         $(top_builddir)/rulesets/Entity.o \
         $(top_builddir)/rulesets/BiomassProperty.o \
-        $(top_builddir)/rulesets/HandlerProperty.o \
         $(top_builddir)/rulesets/LocatedEntity.o \
         $(top_builddir)/common/Property.o \
         $(top_builddir)/common/TypeNode.o
@@ -1023,7 +1004,6 @@ BiomassPropertyintegration_LDADD = \
 TerrainModPropertyintegration_SOURCES = TerrainModPropertyintegration.cpp
 TerrainModPropertyintegration_LDADD = \
         $(top_builddir)/rulesets/Entity.o \
-        $(top_builddir)/rulesets/HandlerProperty.o \
         $(top_builddir)/rulesets/LocatedEntity.o \
         $(top_builddir)/rulesets/TerrainEffectorProperty.o \
         $(top_builddir)/rulesets/TerrainModProperty.o \
