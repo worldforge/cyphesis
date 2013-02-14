@@ -50,6 +50,11 @@ HandlerResult BiomassProperty::operation(LocatedEntity * e,
     return eat_handler(e, op, res);
 }
 
+BiomassProperty * BiomassProperty::copy() const
+{
+    return new BiomassProperty(*this);
+}
+
 HandlerResult BiomassProperty::eat_handler(LocatedEntity * e,
                                            const Operation & op,
                                            OpVector & res)

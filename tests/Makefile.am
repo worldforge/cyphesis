@@ -38,6 +38,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  InternalPropertiestest EntityPropertiestest \
                  SpawnPropertytest VisibilityPropertytest \
                  ExternalPropertytest BurnSpeedPropertytest \
+                 BiomassPropertytest \
                  Domaintest BulletDomaintest AtlasPropertiestest \
                  BaseMindtest MemEntitytest MemMaptest Movementtest \
                  Pedestriantest \
@@ -623,6 +624,12 @@ BurnSpeedPropertytest_SOURCES = BurnSpeedPropertytest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 BurnSpeedPropertytest_LDADD = \
         $(top_builddir)/rulesets/BurnSpeedProperty.o \
+        $(top_builddir)/common/Property.o
+
+BiomassPropertytest_SOURCES = BiomassPropertytest.cpp \
+        PropertyCoverage.cpp PropertyCoverage.h
+BiomassPropertytest_LDADD = \
+        $(top_builddir)/rulesets/BiomassProperty.o \
         $(top_builddir)/common/Property.o
 
 Domaintest_SOURCES = Domaintest.cpp

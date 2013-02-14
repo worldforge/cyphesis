@@ -17,24 +17,43 @@
 
 // $Id$
 
-#ifndef RULESETS_BIOMASS_PROPERTY_H
-#define RULESETS_BIOMASS_PROPERTY_H
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
+#ifndef DEBUG
+#define DEBUG
+#endif
 
-#include "common/Property.h"
+#include "PropertyCoverage.h"
 
-class BiomassProperty : public Property<double>
+#include "rulesets/BiomassProperty.h"
+
+int main()
 {
-  public:
-    virtual void install(LocatedEntity *, const std::string &);
-    virtual HandlerResult operation(LocatedEntity *,
-                                    const Operation &,
-                                    OpVector &);
-    virtual BiomassProperty * copy() const;
+    BiomassProperty * ap = new BiomassProperty;
 
-    HandlerResult eat_handler(LocatedEntity * e,
-                              const Operation & op,
-                              OpVector & res);
+    PropertyChecker<BiomassProperty> pc(ap);
 
-};
+    pc.basicCoverage();
 
-#endif // RULESETS_BIOMASS_PROPERTY_H
+    return 0;
+}
+
+#include "TestWorld.h"
+
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
+{
+}
+
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
+                                 const Atlas::Objects::Entity::RootEntity &)
+{
+    return 0;
+}
+
+// stubs
+
+namespace Atlas { namespace Objects { namespace Operation {
+int EAT_NO = -1;
+int NOURISH_NO = -1;
+} } }

@@ -962,6 +962,11 @@ HandlerResult BiomassProperty::operation(LocatedEntity * e,
     return OPERATION_IGNORED;
 }
 
+BiomassProperty * BiomassProperty::copy() const
+{
+    return 0;
+}
+
 void BurnSpeedProperty::install(LocatedEntity * owner, const std::string & name)
 {
 }
