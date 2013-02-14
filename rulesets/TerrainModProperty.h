@@ -44,9 +44,6 @@ class TerrainModProperty : public TerrainEffectorProperty {
     /// \brief A pointer to the modifier returned by a call to Terrain::addMod()
     Mercator::TerrainMod *m_modptr;
 
-    /// \brief the handlers this property should install
-    HandlerMap m_handlers;
-
     /**
      * @brief The inner terrain mod instance which holds the actual Mercator::TerrainMod instance and handles the parsing of it.
      * In order to be able to better support different types of mods the actual instance will be any of the subclasses of InnerTerrainMod, depending on the type of the mod.
@@ -54,14 +51,17 @@ class TerrainModProperty : public TerrainEffectorProperty {
     TerrainModTranslator* m_innerMod;
 
   public:
-
-    explicit TerrainModProperty(const HandlerMap &);
+    TerrainModProperty();
     ~TerrainModProperty();
 
     TerrainModProperty * copy() const;
 
     virtual void install(LocatedEntity *, const std::string &);
     virtual void apply(LocatedEntity *);
+
+    virtual HandlerResult operation(LocatedEntity *,
+                                    const Operation &,
+                                    OpVector &);
 
     Mercator::TerrainMod * getModifier() {
         return m_modptr;
@@ -84,12 +84,12 @@ class TerrainModProperty : public TerrainEffectorProperty {
     void setAttr(const std::string &,
                  const Atlas::Message::Element &);
 
-    static HandlerResult move_handler(LocatedEntity * e,
-                                      const Operation & op,
-                                      OpVector & res);
-    static HandlerResult delete_handler(LocatedEntity * e,
-                                        const Operation & op,
-                                        OpVector & res);
+    HandlerResult move_handler(LocatedEntity * e,
+                               const Operation & op,
+                               OpVector & res);
+    HandlerResult delete_handler(LocatedEntity * e,
+                                 const Operation & op,
+                                 OpVector & res);
 };
 
 

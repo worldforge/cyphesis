@@ -51,8 +51,7 @@ static PyObject * add_properties(PyObject * self, PyEntity * o)
 
     Entity * ent = o->m_entity.e;
     
-    PropertyBase * p = ent->setProperty("terrainmod",
-                                        new TerrainModProperty(HandlerMap()));
+    PropertyBase * p = ent->setProperty("terrainmod", new TerrainModProperty);
     p->install(ent, "terrainmod");
     p->apply(ent);
 

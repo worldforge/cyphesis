@@ -31,8 +31,7 @@
 #include "rulesets/TerrainProperty.h"
 
 #include "common/OperationRouter.h"
-
-#include "rulesets/ActivePropertyFactory_impl.h"
+#include "common/PropertyFactory_impl.h"
 
 #include <Atlas/Objects/Operation.h>
 
@@ -73,13 +72,7 @@ void TerrainModPropertyintegration::setup()
     m_world->incRef();
     ASSERT_TRUE(m_entity->m_location.isValid());
 
-    HandlerMap terrainModHandles;
-    terrainModHandles[Atlas::Objects::Operation::MOVE_NO] =
-          TerrainModProperty::move_handler;
-    terrainModHandles[Atlas::Objects::Operation::DELETE_NO] =
-          TerrainModProperty::delete_handler;
-    MultiActivePropertyFactory<TerrainModProperty>
-          terrainmod_property_factory(terrainModHandles);
+    PropertyFactory<TerrainModProperty> terrainmod_property_factory;
 
     m_terrainProperty = new TerrainProperty;
     m_terrainProperty->install(m_world, "terrain");

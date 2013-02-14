@@ -92,12 +92,7 @@ CorePropertyManager::CorePropertyManager()
     m_propertyFactories["area"] = new PropertyFactory<AreaProperty>;
     m_propertyFactories["visibility"] = new PropertyFactory<VisibilityProperty>;
     
-    HandlerMap terrainModHandles;
-    terrainModHandles[Atlas::Objects::Operation::MOVE_NO] =
-          TerrainModProperty::move_handler;
-    terrainModHandles[Atlas::Objects::Operation::DELETE_NO] =
-          TerrainModProperty::delete_handler;
-    m_propertyFactories["terrainmod"] = new MultiActivePropertyFactory<TerrainModProperty>(terrainModHandles);
+    m_propertyFactories["terrainmod"] = new PropertyFactory<TerrainModProperty>;
 
     m_propertyFactories["teleport"] = new PropertyFactory<TeleportProperty>;
 }

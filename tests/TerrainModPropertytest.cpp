@@ -35,9 +35,7 @@ using Atlas::Message::MapType;
 
 static int run_coverage()
 {
-    HandlerMap terrainModHandlers;
-
-    TerrainModProperty * ap = new TerrainModProperty(terrainModHandlers);
+    TerrainModProperty * ap = new TerrainModProperty;
 
     PropertyChecker<TerrainModProperty> pc(ap);
 
@@ -110,9 +108,7 @@ static TerrainProperty * stub_getTerrain_return = 0;
 int main()
 {
     {
-        HandlerMap terrainModHandlers;
-
-        TerrainModProperty * ap = new TerrainModProperty(terrainModHandlers);
+        TerrainModProperty * ap = new TerrainModProperty;
 
         MapType shape;
         MapType mod;

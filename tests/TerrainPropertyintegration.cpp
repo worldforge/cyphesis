@@ -38,7 +38,7 @@ int main()
     {
         HandlerMap terrainModHandlers;
 
-        TerrainModProperty * ap = new TerrainModProperty(terrainModHandlers);
+        TerrainModProperty * ap = new TerrainModProperty;
 
         MapType shape;
         MapType mod;

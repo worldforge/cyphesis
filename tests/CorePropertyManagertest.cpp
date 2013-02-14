@@ -1412,8 +1412,7 @@ bool TerrainProperty::getHeightAndNormal(float x,
     return true;
 }
 
-TerrainModProperty::TerrainModProperty(const HandlerMap & handlers) :
-                    m_modptr(0), m_handlers(handlers), m_innerMod(0)
+TerrainModProperty::TerrainModProperty() : m_modptr(0), m_innerMod(0)
 {
 }
 
@@ -1431,6 +1430,12 @@ void TerrainModProperty::install(LocatedEntity * owner, const std::string & name
 }
 
 void TerrainModProperty::apply(LocatedEntity * owner)
+{
+}
+
+HandlerResult TerrainModProperty::operation(LocatedEntity * ent,
+                                            const Operation & op,
+                                            OpVector & res)
 {
 }
 
