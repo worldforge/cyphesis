@@ -185,10 +185,6 @@ PropertyBase * LocatedEntity::setProperty(const std::string & name,
     return m_properties[name] = prop;
 }
 
-void LocatedEntity::installHandler(int, Handler)
-{
-}
-
 void LocatedEntity::installDelegate(int, const std::string &)
 {
 }

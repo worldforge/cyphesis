@@ -219,15 +219,6 @@ void Entity::addToEntity(const RootEntity & ent) const
     ent->setObjtype("obj");
 }
 
-/// \brief Install a handler function for an operation
-///
-/// @param class_no The class number of the operation to be handled
-/// @param handler A pointer to the function to be wrapped
-void Entity::installHandler(int class_no, Handler handler)
-{
-    m_operationHandlers.insert(std::make_pair(class_no, handler));
-}
-
 /// \brief Install a delegate property for an operation
 ///
 /// @param class_no The class number of the operation to be handled
@@ -436,12 +427,6 @@ void Entity::operation(const Operation & op, OpVector & res)
     if (m_script != 0 &&
         m_script->operation(op->getParents().front(), op, res) != 0) {
         return;
-    }
-    HandlerMap::const_iterator I = m_operationHandlers.find(op->getClassNo());
-    if (I != m_operationHandlers.end()) {
-        debug(std::cout << "Found handler for " << op->getParents().front()
-                        << " operations" << std::endl << std::flush;);
-        I->second(this, op, res);
     }
     // FIXME Once this is a multimap, we'll need a for loop to call all
     // the delegates.

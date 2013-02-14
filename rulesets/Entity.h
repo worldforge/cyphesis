@@ -41,8 +41,6 @@ class Entity : public LocatedEntity {
   protected:
     /// Motion behavoir of this entity
     Motion * m_motion;
-    /// Map of operation handlers
-    HandlerMap m_operationHandlers;
     /// Map of delegate properties.
     DelegateMap m_delegates;
 
@@ -98,7 +96,6 @@ class Entity : public LocatedEntity {
                                OpVector &);
     void callOperation(const Operation &, OpVector &);
 
-    virtual void installHandler(int, Handler);
     virtual void installDelegate(int, const std::string &);
 
     virtual void onContainered();

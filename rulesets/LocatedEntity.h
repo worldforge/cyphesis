@@ -188,7 +188,6 @@ class LocatedEntity : public Router {
     virtual PropertyBase * modProperty(const std::string & name);
     virtual PropertyBase * setProperty(const std::string & name, PropertyBase * prop);
 
-    virtual void installHandler(int, Handler);
     virtual void installDelegate(int, const std::string &);
 
     virtual void onContainered();

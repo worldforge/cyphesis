@@ -1158,10 +1158,6 @@ PropertyBase * Entity::modProperty(const std::string & name)
     return 0;
 }
 
-void Entity::installHandler(int class_no, Handler handler)
-{
-}
-
 void Entity::installDelegate(int class_no, const std::string & delegate)
 {
 }
@@ -1232,10 +1228,6 @@ PropertyBase * LocatedEntity::setProperty(const std::string & name,
                                           PropertyBase * prop)
 {
     return 0;
-}
-
-void LocatedEntity::installHandler(int, Handler)
-{
 }
 
 void LocatedEntity::installDelegate(int, const std::string &)
