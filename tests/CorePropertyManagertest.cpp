@@ -202,7 +202,6 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "rulesets/DecaysProperty.h"
 #include "rulesets/EntityProperty.h"
 #include "rulesets/ExternalProperty.h"
-#include "rulesets/HandlerProperty.h"
 #include "rulesets/InternalProperties.h"
 #include "rulesets/LineProperty.h"
 #include "rulesets/MindProperty.h"
