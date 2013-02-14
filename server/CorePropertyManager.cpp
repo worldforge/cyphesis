@@ -23,8 +23,6 @@
 #include "server/ServerRouting.h"
 #include "server/TeleportProperty.h"
 
-#include "rulesets/ActivePropertyFactory_impl.h"
-
 #include "rulesets/LineProperty.h"
 #include "rulesets/OutfitProperty.h"
 #include "rulesets/SolidProperty.h"
@@ -59,12 +57,6 @@ using Atlas::Message::Element;
 
 static const bool debug_flag = false;
 
-HandlerResult test_handler(LocatedEntity *, const Operation &, OpVector & res)
-{
-    debug(std::cout << "TEST HANDLER CALLED" << std::endl << std::flush;);
-    return OPERATION_IGNORED;
-}
-
 CorePropertyManager::CorePropertyManager()
 {
     m_propertyFactories["stamina"] = new PropertyFactory<Property<double> >;
@@ -72,7 +64,7 @@ CorePropertyManager::CorePropertyManager()
     m_propertyFactories["points"] = new PropertyFactory<LineProperty>;
     m_propertyFactories["start_intersections"] = new PropertyFactory<Property<IdList> >;
     m_propertyFactories["end_intersections"] = new PropertyFactory<Property<IdList> >;
-    m_propertyFactories["attachment"] = new ActivePropertyFactory<int>(Atlas::Objects::Operation::MOVE_NO, test_handler);
+    m_propertyFactories["attachment"] = new PropertyFactory<Property<int>>;
     m_propertyFactories["decays"] = new PropertyFactory<DecaysProperty>;
     m_propertyFactories["outfit"] = new PropertyFactory<OutfitProperty>;
     m_propertyFactories["solid"] = new PropertyFactory<SolidProperty>;
