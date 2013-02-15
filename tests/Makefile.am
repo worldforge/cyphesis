@@ -1377,6 +1377,7 @@ Rulesetintegration_LDADD = \
         $(top_builddir)/server/TaskRuleHandler.o \
         $(top_builddir)/server/OpRuleHandler.o \
         $(top_builddir)/server/EntityRuleHandler.o \
+        $(top_builddir)/server/PropertyRuleHandler.o \
         $(top_builddir)/server/RuleHandler.o \
         $(top_builddir)/server/Persistence.o \
         $(top_builddir)/server/TaskFactory.o \

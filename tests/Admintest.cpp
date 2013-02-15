@@ -1561,7 +1561,8 @@ ConnectableRouter::~ConnectableRouter()
 Ruleset::Ruleset(EntityBuilder * eb) :
       m_taskHandler(0),
       m_entityHandler(0),
-      m_opHandler(0)
+      m_opHandler(0),
+      m_propertyHandler(0)
 {
 }
 
