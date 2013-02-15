@@ -53,6 +53,7 @@ class Ruleset {
     RuleHandler * const m_taskHandler;
     RuleHandler * const m_entityHandler;
     RuleHandler * const m_opHandler;
+    RuleHandler * const m_propertyHandler;
 
     RuleWaitList m_waitingRules;
 
