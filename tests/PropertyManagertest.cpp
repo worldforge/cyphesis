@@ -24,6 +24,8 @@
 #define DEBUG
 #endif
 
+#include "TestBase.h"
+
 #include "common/PropertyManager.h"
 
 #include <cassert>
@@ -37,11 +39,44 @@ class TestPropertyManager : public PropertyManager {
     }
 };
 
+class PropertyManagertest : public Cyphesis::TestBase
+{
+  private:
+    PropertyManager * m_pm;
+  public:
+    PropertyManagertest();
+
+    void setup();
+    void teardown();
+
+    void test_interface();
+};
+
+PropertyManagertest::PropertyManagertest()
+{
+    ADD_TEST(PropertyManagertest::test_interface);
+}
+
+void PropertyManagertest::setup()
+{
+    m_pm = new TestPropertyManager;
+}
+
+void PropertyManagertest::teardown()
+{
+    delete m_pm;
+}
+
+void PropertyManagertest::test_interface()
+{
+    auto * ret = m_pm->addProperty("one", 1);
+
+    ASSERT_NULL(ret);
+}
+
 int main()
 {
-    TestPropertyManager tpm;
+    PropertyManagertest t;
 
-    assert(tpm.addProperty("one", 1) == 0);
-
-    return 0;
+    return t.run();
 }
