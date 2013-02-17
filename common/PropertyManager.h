@@ -48,6 +48,7 @@ class PropertyManager {
     virtual PropertyBase * addProperty(const std::string & name,
                                        int type) = 0;
 
+    PropertyKit * getPropertyFactory(const std::string &) const;
     void installFactory(const std::string &,
                         PropertyKit *);
 

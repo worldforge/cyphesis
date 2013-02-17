@@ -45,6 +45,16 @@ PropertyManager::~PropertyManager()
     m_instance = 0;
 }
 
+PropertyKit * PropertyManager::getPropertyFactory(const std::string & name) const
+{
+    auto I = m_propertyFactories.find(name);
+    if (I != m_propertyFactories.end()) {
+        assert(I->second != 0);
+        return I->second;
+    }
+    return 0;
+}
+
 void PropertyManager::installFactory(const std::string & name,
                                      PropertyKit * factory)
 {

@@ -62,6 +62,8 @@ class PropertyManagertest : public Cyphesis::TestBase
     void test_interface();
     void test_installFactory();
     void test_installFactory_duplicate();
+    void test_getPropertyFactory();
+    void test_getPropertyFactory_nonexist();
 };
 
 PropertyManagertest::PropertyManagertest()
@@ -69,6 +71,8 @@ PropertyManagertest::PropertyManagertest()
     ADD_TEST(PropertyManagertest::test_interface);
     ADD_TEST(PropertyManagertest::test_installFactory);
     ADD_TEST(PropertyManagertest::test_installFactory_duplicate);
+    ADD_TEST(PropertyManagertest::test_getPropertyFactory);
+    ADD_TEST(PropertyManagertest::test_getPropertyFactory_nonexist);
 }
 
 void PropertyManagertest::setup()
@@ -123,6 +127,49 @@ void PropertyManagertest::test_installFactory_duplicate()
           first
     );
     ASSERT_EQUAL(m_pm->m_propertyFactories.size(), 1u);
+}
+
+void PropertyManagertest::test_getPropertyFactory()
+{
+    PropertyKit * first = new TestPropertyFactory;
+    m_pm->installFactory("test_property_factory3", first);
+
+    ASSERT_TRUE(m_pm->m_propertyFactories.find("test_property_factory3") !=
+                m_pm->m_propertyFactories.end());
+    ASSERT_EQUAL(
+          m_pm->m_propertyFactories.find("test_property_factory3")->second,
+          first
+    );
+    ASSERT_EQUAL(m_pm->m_propertyFactories.size(), 1u);
+
+    m_pm->installFactory("test_property_factory3",
+                         new TestPropertyFactory);
+
+    PropertyKit * factory = m_pm->getPropertyFactory("test_property_factory3");
+
+    ASSERT_NOT_NULL(factory);
+    ASSERT_EQUAL(factory, first);
+}
+
+void PropertyManagertest::test_getPropertyFactory_nonexist()
+{
+    PropertyKit * first = new TestPropertyFactory;
+    m_pm->installFactory("test_property_factory4", first);
+
+    ASSERT_TRUE(m_pm->m_propertyFactories.find("test_property_factory4") !=
+                m_pm->m_propertyFactories.end());
+    ASSERT_EQUAL(
+          m_pm->m_propertyFactories.find("test_property_factory4")->second,
+          first
+    );
+    ASSERT_EQUAL(m_pm->m_propertyFactories.size(), 1u);
+
+    m_pm->installFactory("test_property_factory4",
+                         new TestPropertyFactory);
+
+    PropertyKit * factory = m_pm->getPropertyFactory("non_existent_factory");
+
+    ASSERT_NULL(factory);
 }
 
 int main()
