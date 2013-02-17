@@ -34,5 +34,11 @@ PropertyManager::PropertyManager()
 
 PropertyManager::~PropertyManager()
 {
-   m_instance = 0;
+    std::map<std::string, PropertyKit *>::const_iterator I = m_propertyFactories.begin();
+    std::map<std::string, PropertyKit *>::const_iterator Iend = m_propertyFactories.end();
+    for (; I != Iend; ++I) {
+        assert(I->second != 0);
+        delete I->second;
+    }
+    m_instance = 0;
 }

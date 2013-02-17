@@ -91,12 +91,6 @@ CorePropertyManager::CorePropertyManager()
 
 CorePropertyManager::~CorePropertyManager()
 {
-    std::map<std::string, PropertyKit *>::const_iterator I = m_propertyFactories.begin();
-    std::map<std::string, PropertyKit *>::const_iterator Iend = m_propertyFactories.end();
-    for (; I != Iend; ++I) {
-        assert(I->second != 0);
-        delete I->second;
-    }
 }
 
 PropertyBase * CorePropertyManager::addProperty(const std::string & name,

@@ -20,13 +20,20 @@
 #ifndef COMMON_PROPERTY_MANAGER_H
 #define COMMON_PROPERTY_MANAGER_H
 
+#include <map>
 #include <string>
 
 class PropertyBase;
+class PropertyKit;
+
+typedef std::map<std::string, PropertyKit *> PropertyFactoryDict;
 
 /// \brief Base class for classes that handle creating Entity properties.
 class PropertyManager {
   protected:
+    // Data structure for factories and the like?
+    std::map<std::string, PropertyKit *> m_propertyFactories;
+
     /// \brief Singleton instance pointer for any subclass
     static PropertyManager * m_instance;
 
