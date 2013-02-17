@@ -26,6 +26,7 @@
 
 #include "TestBase.h"
 
+#include "common/PropertyFactory.h"
 #include "common/PropertyManager.h"
 
 #include <cassert>
@@ -35,6 +36,15 @@ class TestPropertyManager : public PropertyManager {
     TestPropertyManager() { }
 
     virtual PropertyBase * addProperty(const std::string &, int) {
+        return 0;
+    }
+};
+
+class TestPropertyFactory : public PropertyKit
+{
+  public:
+    virtual PropertyBase * newProperty()
+    {
         return 0;
     }
 };
@@ -50,11 +60,15 @@ class PropertyManagertest : public Cyphesis::TestBase
     void teardown();
 
     void test_interface();
+    void test_installFactory();
+    void test_installFactory_duplicate();
 };
 
 PropertyManagertest::PropertyManagertest()
 {
     ADD_TEST(PropertyManagertest::test_interface);
+    ADD_TEST(PropertyManagertest::test_installFactory);
+    ADD_TEST(PropertyManagertest::test_installFactory_duplicate);
 }
 
 void PropertyManagertest::setup()
@@ -74,9 +88,52 @@ void PropertyManagertest::test_interface()
     ASSERT_NULL(ret);
 }
 
+void PropertyManagertest::test_installFactory()
+{
+    m_pm->installFactory("test_property_factory",
+                         new TestPropertyFactory);
+
+    ASSERT_TRUE(m_pm->m_propertyFactories.find("test_property_factory") !=
+                m_pm->m_propertyFactories.end());
+    ASSERT_EQUAL(m_pm->m_propertyFactories.size(), 1u);
+}
+
+void PropertyManagertest::test_installFactory_duplicate()
+{
+    PropertyKit * first = new TestPropertyFactory;
+    m_pm->installFactory("test_property_factory2", first);
+
+    ASSERT_TRUE(m_pm->m_propertyFactories.find("test_property_factory2") !=
+                m_pm->m_propertyFactories.end());
+    ASSERT_EQUAL(
+          m_pm->m_propertyFactories.find("test_property_factory2")->second,
+          first
+    );
+    ASSERT_EQUAL(m_pm->m_propertyFactories.size(), 1u);
+
+    m_pm->installFactory("test_property_factory2",
+                         new TestPropertyFactory);
+
+    // Exactly the same tests as above. The second call should not have
+    // installed something else, or affected what is there.
+    ASSERT_TRUE(m_pm->m_propertyFactories.find("test_property_factory2") !=
+                m_pm->m_propertyFactories.end());
+    ASSERT_EQUAL(
+          m_pm->m_propertyFactories.find("test_property_factory2")->second,
+          first
+    );
+    ASSERT_EQUAL(m_pm->m_propertyFactories.size(), 1u);
+}
+
 int main()
 {
     PropertyManagertest t;
 
     return t.run();
+}
+
+// stubs
+
+PropertyKit::~PropertyKit()
+{
 }

@@ -48,10 +48,15 @@ class PropertyManager {
     virtual PropertyBase * addProperty(const std::string & name,
                                        int type) = 0;
 
+    void installFactory(const std::string &,
+                        PropertyKit *);
+
     /// \brief Return the registered singleton instance of any subclass
     static PropertyManager * instance() {
         return m_instance;
     }
+
+    friend class PropertyManagertest;
 };
 
 #endif // COMMON_PROPERTY_MANAGER_H

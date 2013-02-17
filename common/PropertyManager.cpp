@@ -44,3 +44,9 @@ PropertyManager::~PropertyManager()
     }
     m_instance = 0;
 }
+
+void PropertyManager::installFactory(const std::string & name,
+                                     PropertyKit * factory)
+{
+    m_propertyFactories.insert(std::make_pair(name, factory));
+}
