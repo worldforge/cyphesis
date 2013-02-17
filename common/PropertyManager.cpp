@@ -19,6 +19,8 @@
 
 #include "PropertyManager.h"
 
+#include "PropertyFactory.h"
+
 #include <cassert>
 
 PropertyManager * PropertyManager::m_instance = 0;
