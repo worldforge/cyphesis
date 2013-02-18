@@ -47,6 +47,11 @@ class TestPropertyFactory : public PropertyKit
     {
         return 0;
     }
+
+    virtual TestPropertyFactory * duplicateFactory() const
+    {
+        return new TestPropertyFactory;
+    }
 };
 
 class PropertyManagertest : public Cyphesis::TestBase
