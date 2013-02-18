@@ -26,9 +26,10 @@
 
 #include "common/log.h"
 #include "common/debug.h"
-#include "common/EntityKit.h"
 #include "common/Inheritance.h"
 #include "common/compose.hpp"
+#include "common/PropertyManager.h"
+#include "common/PropertyFactory.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -49,18 +50,29 @@ int PropertyRuleHandler::check(const Atlas::Objects::Root & desc)
 }
 
 int PropertyRuleHandler::install(const std::string & name,
-                             const std::string & parent,
-                             const Atlas::Objects::Root & description,
-                             std::string & dependent,
-                             std::string & reason)
+                                 const std::string & parent,
+                                 const Atlas::Objects::Root & desc,
+                                 std::string & dependent,
+                                 std::string & reason)
 {
-    // install it
+    assert(desc->getObjtype() == "type");
+    PropertyManager * pm = PropertyManager::instance();
+    PropertyKit * parent_factory = pm->getPropertyFactory(parent);
+    if (parent_factory == 0) {
+        dependent = parent;
+        reason = compose("Property rule \"%1\" has parent \"%2\" which does "
+                         "not exist.", name, parent);
+        return 1;
+    }
+    auto * factory = parent_factory->duplicateFactory();
+    assert(factory != 0);
+    pm->installFactory(name, factory);
     return 0;
 }
 
 int PropertyRuleHandler::update(const std::string & name,
-                            const Atlas::Objects::Root & desc)
+                                const Atlas::Objects::Root & desc)
 {
-    // modify it
+    // There is not anything to be modified yet.
     return 0;
 }

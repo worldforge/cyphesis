@@ -28,6 +28,9 @@
 
 #include "server/PropertyRuleHandler.h"
 
+#include "common/PropertyFactory.h"
+#include "common/PropertyManager.h"
+
 #include <Atlas/Objects/Anonymous.h>
 
 #include <cstdlib>
@@ -35,6 +38,19 @@
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::Anonymous;
+
+class TestPropertyManager : public PropertyManager
+{
+  public:
+    virtual PropertyBase * addProperty(const std::string & name,
+                                       int type);
+};
+
+PropertyBase * TestPropertyManager::addProperty(const std::string & name,
+                                                int type)
+{
+    return 0;
+}
 
 class PropertyRuleHandlertest : public Cyphesis::TestBase
 {
@@ -50,6 +66,7 @@ class PropertyRuleHandlertest : public Cyphesis::TestBase
     void test_check_fail();
     void test_check_pass();
     void test_install();
+    void test_install_noparent();
     void test_update();
 };
 
@@ -59,17 +76,20 @@ PropertyRuleHandlertest::PropertyRuleHandlertest()
     ADD_TEST(PropertyRuleHandlertest::test_check_fail);
     ADD_TEST(PropertyRuleHandlertest::test_check_pass);
     ADD_TEST(PropertyRuleHandlertest::test_install);
+    ADD_TEST(PropertyRuleHandlertest::test_install_noparent);
     ADD_TEST(PropertyRuleHandlertest::test_update);
 }
 
 void PropertyRuleHandlertest::setup()
 {
+    new TestPropertyManager;
     rh = new PropertyRuleHandler(0);
 }
 
 void PropertyRuleHandlertest::teardown()
 {
     delete rh;
+    delete PropertyManager::instance();
 }
 
 void PropertyRuleHandlertest::test_sequence()
@@ -100,9 +120,21 @@ void PropertyRuleHandlertest::test_check_pass()
 void PropertyRuleHandlertest::test_install()
 {
     Anonymous description;
+    description->setObjtype("type");
     std::string dependent, reason;
 
-    int ret = rh->install("", "", description, dependent, reason);
+    int ret = rh->install("new_int_type", "int", description, dependent, reason);
+
+    assert(ret == 0);
+}
+
+void PropertyRuleHandlertest::test_install_noparent()
+{
+    Anonymous description;
+    description->setObjtype("type");
+    std::string dependent, reason;
+
+    int ret = rh->install("new_int_type", "int", description, dependent, reason);
 
     assert(ret == 0);
 }
@@ -125,8 +157,11 @@ int main()
 
 // stubs
 
+#include "Property_stub_impl.h"
+
 #include "common/Inheritance.h"
 #include "common/log.h"
+#include "common/PropertyFactory_impl.h"
 
 RuleHandler::~RuleHandler()
 {
@@ -163,6 +198,72 @@ TypeNode * Inheritance::addChild(const Root & obj)
 bool Inheritance::hasClass(const std::string & parent)
 {
     return true;
+}
+
+PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
+{
+}
+
+PropertyBase::~PropertyBase()
+{
+}
+
+void PropertyBase::install(LocatedEntity *, const std::string & name)
+{
+}
+
+void PropertyBase::apply(LocatedEntity *)
+{
+}
+
+void PropertyBase::add(const std::string & s,
+                       Atlas::Message::MapType & ent) const
+{
+}
+
+void PropertyBase::add(const std::string & s,
+                       const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+HandlerResult PropertyBase::operation(LocatedEntity *,
+                                      const Operation &,
+                                      OpVector & res)
+{
+    return OPERATION_IGNORED;
+}
+
+PropertyKit::~PropertyKit()
+{
+}
+
+PropertyManager * PropertyManager::m_instance = 0;
+
+PropertyManager::PropertyManager()
+{
+    assert(m_instance == 0);
+    m_instance = this;
+    m_propertyFactories["int"] = new PropertyFactory<Property<int>>;
+}
+
+PropertyManager::~PropertyManager()
+{
+    m_instance = 0;
+}
+
+PropertyKit * PropertyManager::getPropertyFactory(const std::string & name) const
+{
+    auto I = m_propertyFactories.find(name);
+    if (I != m_propertyFactories.end()) {
+        assert(I->second != 0);
+        return I->second;
+    }
+    return 0;
+}
+
+void PropertyManager::installFactory(const std::string & name,
+                                     PropertyKit * factory)
+{
 }
 
 Root atlasOpDefinition(const std::string & name, const std::string & parent)

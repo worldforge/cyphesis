@@ -64,6 +64,7 @@ class Rulesetintegration : public Cyphesis::TestBase
   protected:
     World * m_entity;
     TestWorld * m_test_world;
+    ExposedEntityBuilder * m_entity_builder;
   public:
     Rulesetintegration();
 
@@ -72,22 +73,26 @@ class Rulesetintegration : public Cyphesis::TestBase
 
     void test_init();
     void test_sequence();
+    void test_property_type();
 };
 
 Rulesetintegration::Rulesetintegration()
 {
     ADD_TEST(Rulesetintegration::test_init);
     ADD_TEST(Rulesetintegration::test_sequence);
+    ADD_TEST(Rulesetintegration::test_property_type);
 }
 
 void Rulesetintegration::setup()
 {
     m_entity = new World("1", 1);
     m_test_world = new TestWorld(*m_entity);
+    m_entity_builder = new ExposedEntityBuilder();
 }
 
 void Rulesetintegration::teardown()
 {
+    delete m_entity_builder;
     delete m_entity;
     delete m_test_world;
     Inheritance::clear();
@@ -110,13 +115,10 @@ void Rulesetintegration::test_sequence()
     {
         Atlas::Message::Element val;
 
-        // Instance of EntityBuilder with all protected methods exposed
-        // for testing
-        ExposedEntityBuilder * entity_factory = new ExposedEntityBuilder();
         // Instance of Ruleset with all protected methods exposed
         // for testing
         EntityBuilder * test_eb = EntityBuilder::instance();
-        assert(test_eb == entity_factory);
+        assert(test_eb == m_entity_builder);
         Ruleset test_ruleset(test_eb);
 
         // Attributes for test entities being created
@@ -594,6 +596,13 @@ void Rulesetintegration::test_sequence()
         assert(test_ent->getAttr("test_custom_inherited_type_attr", val) != 0);
 
     }
+}
+
+void Rulesetintegration::test_property_type()
+{
+    Ruleset test_ruleset(m_entity_builder);
+    // Stub back in PropertyManager, and stub out everything it depends
+    // on.
 }
 
 int main()
