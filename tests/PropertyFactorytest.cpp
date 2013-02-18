@@ -24,22 +24,55 @@
 #define DEBUG
 #endif
 
+#include "TestBase.h"
+
 #include "common/PropertyFactory_impl.h"
 #include "common/Property.h"
 
 #include <cassert>
 
-void testFactory(PropertyKit & pk)
+class PropertyFactorytest : public Cyphesis::TestBase
 {
-    PropertyBase * p = pk.newProperty();
-    assert(p != 0);
+  public:
+    PropertyFactorytest();
+
+    void setup();
+    void teardown();
+
+    template <class PropertyT>
+    void test_factory();
+};
+
+PropertyFactorytest::PropertyFactorytest()
+{
+    ADD_TEST(PropertyFactorytest::test_factory<Property<int>>);
+    ADD_TEST(PropertyFactorytest::test_factory<Property<long>>);
+    ADD_TEST(PropertyFactorytest::test_factory<Property<double>>);
+    ADD_TEST(PropertyFactorytest::test_factory<Property<std::string>>);
+}
+
+void PropertyFactorytest::setup()
+{
+}
+
+void PropertyFactorytest::teardown()
+{
+}
+
+template <class PropertyT>
+void PropertyFactorytest::test_factory()
+{
+    PropertyFactory<PropertyT> pf;
+
+    PropertyBase * p = pf.newProperty();
+
+    ASSERT_NOT_NULL(p);
+    ASSERT_NOT_NULL(dynamic_cast<PropertyT *>(p));
 }
 
 int main()
 {
-    PropertyFactory<Property<int> > pf;
+    PropertyFactorytest t;
 
-    testFactory(pf);
-
-    return 0;
+    return t.run();
 }
