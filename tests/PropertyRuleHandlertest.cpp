@@ -28,6 +28,7 @@
 
 #include "server/PropertyRuleHandler.h"
 
+#include "common/Property.h"
 #include "common/PropertyFactory.h"
 #include "common/PropertyManager.h"
 
@@ -67,6 +68,7 @@ class PropertyRuleHandlertest : public Cyphesis::TestBase
     void test_check_pass();
     void test_install();
     void test_install_noparent();
+    void test_install_exists();
     void test_update();
 };
 
@@ -77,6 +79,7 @@ PropertyRuleHandlertest::PropertyRuleHandlertest()
     ADD_TEST(PropertyRuleHandlertest::test_check_pass);
     ADD_TEST(PropertyRuleHandlertest::test_install);
     ADD_TEST(PropertyRuleHandlertest::test_install_noparent);
+    ADD_TEST(PropertyRuleHandlertest::test_install_exists);
     ADD_TEST(PropertyRuleHandlertest::test_update);
 }
 
@@ -135,6 +138,20 @@ void PropertyRuleHandlertest::test_install_noparent()
     std::string dependent, reason;
 
     int ret = rh->install("new_int_type", "int", description, dependent, reason);
+
+    assert(ret == 0);
+}
+
+void PropertyRuleHandlertest::test_install_exists()
+{
+    PropertyManager::instance()->installFactory("existing_int_type",
+          new PropertyFactory<Property<int>>);
+
+    Anonymous description;
+    description->setObjtype("type");
+    std::string dependent, reason;
+
+    int ret = rh->install("existing_int_type", "int", description, dependent, reason);
 
     assert(ret == 0);
 }

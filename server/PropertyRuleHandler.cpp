@@ -57,6 +57,10 @@ int PropertyRuleHandler::install(const std::string & name,
 {
     assert(desc->getObjtype() == "type");
     PropertyManager * pm = PropertyManager::instance();
+    if (pm->getPropertyFactory(name) != 0) {
+        log(ERROR, compose("Property rule \"%1\" already exists.", name));
+        return -1;
+    }
     PropertyKit * parent_factory = pm->getPropertyFactory(parent);
     if (parent_factory == 0) {
         dependent = parent;
