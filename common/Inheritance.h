@@ -81,5 +81,8 @@ Atlas::Objects::Root atlasOpDefinition(const std::string & name,
                                        const std::string & parent);
 Atlas::Objects::Root atlasClass(const std::string & name,
                                 const std::string & parent);
+Atlas::Objects::Root atlasType(const std::string & name,
+                               const std::string & parent,
+                               bool abstract = false);
 
 #endif // COMMON_INHERITANCE_H

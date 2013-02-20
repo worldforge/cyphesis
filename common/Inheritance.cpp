@@ -83,6 +83,19 @@ Root atlasClass(const std::string & name, const std::string & parent)
     return r;
 }
 
+Root atlasType(const std::string & name,
+               const std::string & parent,
+               bool abstract)
+{
+    Atlas::Objects::Entity::Anonymous r;
+
+    r->setParents(std::list<std::string>(1, parent));
+    r->setObjtype(abstract ? "data_type" : "type");
+    r->setId(name);
+
+    return r;
+}
+
 Inheritance::Inheritance() : noClass(0)
 {
     Atlas::Objects::Entity::Anonymous root_desc;
@@ -318,6 +331,8 @@ void installStandardObjects()
     i.addChild(atlasClass("admin", "account"));
     i.addChild(atlasClass("game", "admin_entity"));
     i.addChild(atlasClass("game_entity", "root_entity"));
+
+    i.addChild(atlasClass("root_type", "root"));
 
     // And from here on we need to define the hierarchy as found in the C++
     // base classes. Script classes defined in rulsets need to be added
