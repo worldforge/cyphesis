@@ -221,7 +221,7 @@ TypeNode * Inheritance::addChild(const Root & obj)
     TypeNode * type = new TypeNode(child, obj);
     type->setParent(I->second);
 
-    atlasObjects[child] = type;
+    atlasObjects.insert(std::make_pair(child, type));
 
     return type;
 }
