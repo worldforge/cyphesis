@@ -24,6 +24,8 @@
 #define DEBUG
 #endif
 
+#include "TestBase.h"
+
 #include "server/EntityFactory.h"
 
 #include "rulesets/Creator.h"
@@ -53,35 +55,62 @@ class TestScriptFactory : public ScriptKit<LocatedEntity> {
     }
 };
 
+class EntityFactorytest : public Cyphesis::TestBase
+{
+  private:
+    EntityKit * m_ek;
+  public:
+    EntityFactorytest();
+
+    void setup();
+    void teardown();
+
+    void test_newEntity();
+    void test_destructor();
+    void test_updateProperties();
+};
+
+EntityFactorytest::EntityFactorytest()
+{
+    ADD_TEST(EntityFactorytest::test_newEntity);
+    ADD_TEST(EntityFactorytest::test_destructor);
+    ADD_TEST(EntityFactorytest::test_updateProperties);
+}
+
+void EntityFactorytest::setup()
+{
+    m_ek = new EntityFactory<Thing>;
+    m_ek->m_type = new TypeNode("foo");
+}
+
+void EntityFactorytest::teardown()
+{
+    delete m_ek->m_type;
+    delete m_ek;
+}
+
+void EntityFactorytest::test_newEntity()
+{
+    LocatedEntity * e = m_ek->newEntity("1", 1);
+
+    ASSERT_NOT_NULL(e);
+}
+
+void EntityFactorytest::test_destructor()
+{
+    m_ek->m_scriptFactory = new TestScriptFactory;
+}
+
+void EntityFactorytest::test_updateProperties()
+{
+    m_ek->updateProperties();
+}
+
 int main()
 {
-    EntityKit * ek;
+    EntityFactorytest t;
 
-    LocatedEntity * e;
-
-    ek = new EntityFactory<Thing>;
-
-    e = ek->newEntity("1", 1);
-    assert(e);
-
-    delete ek;
-
-    ek = new EntityFactory<World>;
-
-    e = ek->newEntity("1", 1);
-    assert(!e);
-
-    ek->m_scriptFactory = new TestScriptFactory;
-
-    delete ek;
-
-    ek = new EntityFactory<Thing>;
-
-    ek->updateProperties();
-
-    delete ek;
-
-    return 0;
+    return t.run();
 }
 
 // stubs
@@ -597,6 +626,14 @@ void Router::clientError(const Operation & op,
 }
 
 Location::Location() : m_loc(0)
+{
+}
+
+TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
+{
+}
+
+TypeNode::~TypeNode()
 {
 }
 
