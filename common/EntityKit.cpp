@@ -22,6 +22,8 @@
 #include "common/ScriptKit.h"
 #include "common/TypeNode.h"
 
+#include <cassert>
+
 using Atlas::Message::MapType;
 
 EntityKit::EntityKit() : m_scriptFactory(0),
@@ -38,11 +40,13 @@ EntityKit::~EntityKit()
 
 void EntityKit::addProperties()
 {
+    assert(m_type != 0);
     m_type->addProperties(m_attributes);
 }
 
 void EntityKit::updateProperties()
 {
+    assert(m_type != 0);
     m_type->updateProperties(m_attributes);
 
     std::set<EntityKit *>::const_iterator I = m_children.begin();
