@@ -176,10 +176,11 @@ EntityKit * EntityBuilder::getClassFactory(const std::string & class_name)
     return 0;
 }
 
-void EntityBuilder::installFactory(const std::string & class_name,
-                                   const Root & class_desc,
-                                   EntityKit * factory)
+int EntityBuilder::installFactory(const std::string & class_name,
+                                  const Root & class_desc,
+                                  EntityKit * factory)
 {
+    return 0;
 }
 
 template <class T>

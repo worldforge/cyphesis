@@ -67,9 +67,9 @@ class EntityBuilder {
         }
     }
 
-    void installFactory(const std::string & class_name,
-                        const Atlas::Objects::Root & class_desc,
-                        EntityKit * factory);
+    int installFactory(const std::string & class_name,
+                       const Atlas::Objects::Root & class_desc,
+                       EntityKit * factory);
     EntityKit * getClassFactory(const std::string & class_name);
     LocatedEntity * newEntity(const std::string & id,
                               long intId,

@@ -304,15 +304,22 @@ void EntityBuilder::installBaseFactory(const std::string & class_name,
     installFactory(class_name, atlasClass(class_name, parent), factory);
 }
 
-void EntityBuilder::installFactory(const std::string & class_name,
-                                   const Root & class_desc,
-                                   EntityKit * factory)
+int EntityBuilder::installFactory(const std::string & class_name,
+                                  const Root & class_desc,
+                                  EntityKit * factory)
 {
-    m_entityFactories[class_name] = factory;
-    Monitors::instance()->watch(compose("created_count{type=%1}", class_name),
-                                new Variable<int>(factory->m_createdCount));
     Inheritance & i = Inheritance::instance();
     factory->m_type = i.addChild(class_desc);
+
+    if (factory->m_type == 0) {
+        return -1;
+    }
+
+    m_entityFactories[class_name] = factory;
+
+    Monitors::instance()->watch(compose("created_count{type=%1}", class_name),
+                                new Variable<int>(factory->m_createdCount));
+    return 0;
 }
 
 EntityKit * EntityBuilder::getClassFactory(const std::string & class_name)

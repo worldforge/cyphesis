@@ -81,7 +81,10 @@ int EntityRuleHandler::installEntityClass(const std::string & class_name,
                     << std::endl << std::flush;);
 
     // Install the factory in place.
-    m_builder->installFactory(class_name, class_desc, factory);
+    if (m_builder->installFactory(class_name, class_desc, factory) != 0) {
+        delete factory;
+        return -1;
+    }
 
     factory->addProperties();
 
