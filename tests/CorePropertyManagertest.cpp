@@ -77,6 +77,7 @@ class CorePropertyManagertest : public Cyphesis::TestBase
     void test_addProperty_map();
     void test_addProperty_none();
     void test_addProperty_named();
+    void test_installFactory();
 };
 
 CorePropertyManagertest::CorePropertyManagertest()
@@ -88,6 +89,7 @@ CorePropertyManagertest::CorePropertyManagertest()
     ADD_TEST(CorePropertyManagertest::test_addProperty_map);
     ADD_TEST(CorePropertyManagertest::test_addProperty_none);
     ADD_TEST(CorePropertyManagertest::test_addProperty_named);
+    ADD_TEST(CorePropertyManagertest::test_installFactory);
 }
 
 void CorePropertyManagertest::setup()
@@ -158,6 +160,17 @@ void CorePropertyManagertest::test_addProperty_named()
                                               Element::TYPE_NONE);
     ASSERT_NOT_NULL(p);
     ASSERT_NOT_NULL(dynamic_cast<MinimalProperty *>(p));
+}
+
+void CorePropertyManagertest::test_installFactory()
+{
+    int ret = m_propertyManager->installFactory(
+          "new_named_type",
+          Root(),
+          new PropertyFactory<MinimalProperty>
+    );
+
+    ASSERT_EQUAL(ret, 0);
 }
 
 int main()
