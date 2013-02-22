@@ -1,3 +1,11 @@
+Write an EntityKit TypeNode integration test. The addAttributes path needs
+to be tested.
+
+Check in EntityRuleHandlertest that things behave correctly if
+EntityBuilder::installFactory fails
+
+Check in Builder/Manager tests that duplicate insert has no effect.
+
 Fix memory leaks, so we can verify that moving MemMap to using incRef/decRef
 on parents doesn't introduce leaks.
 
