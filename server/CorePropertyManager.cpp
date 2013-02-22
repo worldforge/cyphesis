@@ -45,6 +45,7 @@
 #include "common/Teleport.h"
 
 #include "common/types.h"
+#include "common/Inheritance.h"
 #include "common/PropertyFactory_impl.h"
 
 #include "common/debug.h"
@@ -54,11 +55,21 @@
 #include <iostream>
 
 using Atlas::Message::Element;
+using Atlas::Objects::Root;
 
 static const bool debug_flag = false;
 
 CorePropertyManager::CorePropertyManager()
 {
+    // Core types, for inheritence only generally.
+    installBaseFactory("int", "root_type", new PropertyFactory<Property<int>>);
+    installBaseFactory("float",
+                       "root_type",
+                       new PropertyFactory<Property<double>>);
+    installBaseFactory("string",
+                       "root_type",
+                       new PropertyFactory<Property<std::string>>);
+
     m_propertyFactories["stamina"] = new PropertyFactory<Property<double> >;
     m_propertyFactories["coords"] = new PropertyFactory<LineProperty>;
     m_propertyFactories["points"] = new PropertyFactory<LineProperty>;
@@ -91,6 +102,27 @@ CorePropertyManager::CorePropertyManager()
 
 CorePropertyManager::~CorePropertyManager()
 {
+}
+
+void CorePropertyManager::installBaseFactory(const std::string & type_name,
+                                             const std::string & parent,
+                                             PropertyKit * factory)
+{
+    installFactory(type_name, atlasType(type_name, parent, true), factory);
+}
+
+int CorePropertyManager::installFactory(const std::string & type_name,
+                                         const Root & type_desc,
+                                         PropertyKit * factory)
+{
+    Inheritance & i = Inheritance::instance();
+    if (i.addChild(type_desc) != 0) {
+        return -1;
+    }
+
+    PropertyManager::installFactory(type_name, factory);
+
+    return 0;
 }
 
 PropertyBase * CorePropertyManager::addProperty(const std::string & name,

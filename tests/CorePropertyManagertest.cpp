@@ -1826,6 +1826,13 @@ void EntityKit::updateProperties()
 {
 }
 
+Root atlasType(const std::string & name,
+               const std::string & parent,
+               bool abstract)
+{
+    return Atlas::Objects::Root();
+}
+
 Inheritance * Inheritance::m_instance = NULL;
 
 Inheritance::Inheritance() : noClass(0)
@@ -1909,6 +1916,11 @@ PropertyManager::PropertyManager()
 PropertyManager::~PropertyManager()
 {
    m_instance = 0;
+}
+
+void PropertyManager::installFactory(const std::string & name,
+                                     PropertyKit * factory)
+{
 }
 
 Router::Router(const std::string & id, long intId) : m_id(id),

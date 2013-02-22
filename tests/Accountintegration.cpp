@@ -1429,6 +1429,13 @@ void EntityKit::updateProperties()
 {
 }
 
+Root atlasType(const std::string & name,
+               const std::string & parent,
+               bool abstract)
+{
+    return Atlas::Objects::Root();
+}
+
 Inheritance * Inheritance::m_instance = NULL;
 
 Inheritance::Inheritance() : noClass(0)
