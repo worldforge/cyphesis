@@ -74,7 +74,7 @@ void CorePropertyManager::installProperty(const std::string & type_name,
 {
     installFactory(type_name,
                    atlasType(type_name, parent),
-                   new PropertyFactor<PropertyT>);
+                   new PropertyFactory<PropertyT>);
 }
 
 CorePropertyManager::CorePropertyManager()
