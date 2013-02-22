@@ -761,6 +761,22 @@ def test_dig(host='', account='', password='', **args):
         print "Task start failed"
         return
 
+def test_fishing(host='', account='', password='', **args):
+
+    m=create_editor(host, account, password)
+    ocean=m.make('ocean',pos=(0,0,0),bbox=[-50,-50,-20,50,50,0])
+    settler=m.make('settler',pos=(1,1,0))
+    tool=m.make('fishingrod',pos=(0,0,0),parent=settler.id)
+    m.make('larva',pos=(0,0,0),parent=settler.id)
+
+    m.avatar.send(Operation("wield", Entity(tool.id), to=settler))
+    m.avatar.send(Operation("use", Operation("sow", Entity(ocean.id)), to=settler))
+    settler=m.look(settler.id)
+
+    if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
+        print "Task start failed"
+        return
+
 def test_task_stop(host='', account='', password='', **args):
 
     m=create_editor(host, account, password)
