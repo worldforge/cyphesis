@@ -8,6 +8,7 @@ from physics import Point3D
 from physics import Vector3D
 
 import server
+import weakref
 
 class Fishing(server.Task):
     """A task for fishing in the ocean"""
@@ -58,7 +59,7 @@ class Fishing(server.Task):
         bait_loc = float_loc.copy()
         bait_loc.coordinates = bait_loc.coordinates + bait_vector
         
-        res = Operation("create", Entity(name = "float", parents = ["float"], location = float_loc), to = self.target())
+        res = Operation("create", Entity(name = "bobber", parents = ["bobber"], location = float_loc), to = self.target())
         res = res + Operation("move", Entity(bait.id, location = bait_loc), to = bait)
         res = res + Operation("create", Entity(parents = ["hook"], location = Location(bait, Point3D(0,0,0))), to = bait)
         return res
@@ -68,11 +69,11 @@ class Fishing(server.Task):
         res=Oplist()
         hook = 0
         if not self.bait() is None:
-            if not hassattr(self, 'hook'):
-                for item in bait.contains:
+            if not hasattr(self, 'hook'):
+                for item in self.bait().contains:
                     if item.type[0] == "hook":
                         self.hook = weakref.ref(item)
-            if not hassattr(self, 'hook'):
+            if not hasattr(self, 'hook'):
                 #something has gone wrong, there is bait, but no hook inside it
                 self.irrelevant()
                 return
