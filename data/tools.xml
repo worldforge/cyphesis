@@ -16,6 +16,28 @@
 
   <map>
     <map name="attributes">
+      <map name="mass">
+        <float name="default">0.01</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mode">
+        <string name="default">floating</string>
+        <string name="visibility">public</string>
+      </map>
+      <map name="transient">
+        <float name="default">1800</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">bobber</string>
+    <string name="objtype">class</string>
+    <list name="parents">
+      <string>thing</string>
+    </list>
+  </map>
+
+  <map>
+    <map name="attributes">
       <map name="bbox">
         <list name="default">
           <float>-1</float>
@@ -72,28 +94,6 @@
       </map>
     </map>
     <string name="id">fishingrod</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="mass">
-        <float name="default">0.01</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mode">
-        <string name="default">floating</string>
-        <string name="visibility">public</string>
-      </map>
-      <map name="transient">
-        <float name="default">1800</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">float</string>
     <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
