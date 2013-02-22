@@ -20,6 +20,8 @@
 #ifndef COMMON_PROPERTY_MANAGER_H
 #define COMMON_PROPERTY_MANAGER_H
 
+#include <Atlas/Objects/ObjectsFwd.h>
+
 #include <map>
 #include <string>
 
@@ -39,6 +41,8 @@ class PropertyManager {
 
     PropertyManager();
 
+    void installFactory(const std::string &,
+                        PropertyKit *);
   public:
     virtual ~PropertyManager();
 
@@ -48,9 +52,11 @@ class PropertyManager {
     virtual PropertyBase * addProperty(const std::string & name,
                                        int type) = 0;
 
+    virtual int installFactory(const std::string & type_name,
+                               const Atlas::Objects::Root & type_desc,
+                               PropertyKit * factory);
+
     PropertyKit * getPropertyFactory(const std::string &) const;
-    void installFactory(const std::string &,
-                        PropertyKit *);
 
     /// \brief Return the registered singleton instance of any subclass
     static PropertyManager * instance() {

@@ -1918,6 +1918,13 @@ PropertyManager::~PropertyManager()
    m_instance = 0;
 }
 
+int PropertyManager::installFactory(const std::string & type_name,
+                                    const Atlas::Objects::Root & type_desc,
+                                    PropertyKit * factory)
+{
+    return 0;
+}
+
 void PropertyManager::installFactory(const std::string & name,
                                      PropertyKit * factory)
 {

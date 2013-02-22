@@ -23,6 +23,8 @@
 
 #include <cassert>
 
+using Atlas::Objects::Root;
+
 PropertyManager * PropertyManager::m_instance = 0;
 
 /// \brief PropertyManager constructor
@@ -59,4 +61,13 @@ void PropertyManager::installFactory(const std::string & name,
                                      PropertyKit * factory)
 {
     m_propertyFactories.insert(std::make_pair(name, factory));
+}
+
+int PropertyManager::installFactory(const std::string & type_name,
+                                    const Root & type_desc,
+                                    PropertyKit * factory)
+{
+    installFactory(type_name, factory);
+
+    return 0;
 }

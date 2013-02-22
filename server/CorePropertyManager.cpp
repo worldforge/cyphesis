@@ -112,8 +112,8 @@ void CorePropertyManager::installBaseFactory(const std::string & type_name,
 }
 
 int CorePropertyManager::installFactory(const std::string & type_name,
-                                         const Root & type_desc,
-                                         PropertyKit * factory)
+                                        const Root & type_desc,
+                                        PropertyKit * factory)
 {
     Inheritance & i = Inheritance::instance();
     if (i.addChild(type_desc) != 0) {

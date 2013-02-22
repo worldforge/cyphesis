@@ -145,6 +145,7 @@ void PropertyRuleHandlertest::test_install_noparent()
 void PropertyRuleHandlertest::test_install_exists()
 {
     PropertyManager::instance()->installFactory("existing_int_type",
+          Root(),
           new PropertyFactory<Property<int>>);
 
     Anonymous description;
@@ -266,6 +267,13 @@ PropertyManager::PropertyManager()
 PropertyManager::~PropertyManager()
 {
     m_instance = 0;
+}
+
+int PropertyManager::installFactory(const std::string & type_name,
+                                    const Root & type_desc,
+                                    PropertyKit * factory)
+{
+    return 0;
 }
 
 PropertyKit * PropertyManager::getPropertyFactory(const std::string & name) const

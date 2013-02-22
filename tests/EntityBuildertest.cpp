@@ -970,6 +970,13 @@ PropertyBase * CorePropertyManager::addProperty(const std::string & name,
     return 0;
 }
 
+int CorePropertyManager::installFactory(const std::string & type_name,
+                                        const Root & type_desc,
+                                        PropertyKit * factory)
+{
+    return 0;
+}
+
 PropertyManager * PropertyManager::m_instance = 0;
 
 PropertyManager::PropertyManager()
@@ -981,6 +988,13 @@ PropertyManager::PropertyManager()
 PropertyManager::~PropertyManager()
 {
    m_instance = 0;
+}
+
+int PropertyManager::installFactory(const std::string & type_name,
+                                    const Atlas::Objects::Root & type_desc,
+                                    PropertyKit * factory)
+{
+    return 0;
 }
 
 long integerId(const std::string & id)

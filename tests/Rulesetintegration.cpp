@@ -762,6 +762,13 @@ PropertyBase * CorePropertyManager::addProperty(const std::string & name,
     return new SoftProperty;
 }
 
+int CorePropertyManager::installFactory(const std::string & type_name,
+                                        const Atlas::Objects::Root & type_desc,
+                                        PropertyKit * factory)
+{
+    return 0;
+}
+
 template <class T>
 EntityFactory<T>::EntityFactory(EntityFactory<T> & o)
 {

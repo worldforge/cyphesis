@@ -22,8 +22,6 @@
 
 #include "common/PropertyManager.h"
 
-#include <Atlas/Objects/ObjectsFwd.h>
-
 /// \brief Property manager for the core server. Handles assigning properties
 /// to entity instances in the world.
 class CorePropertyManager : public PropertyManager {
@@ -37,9 +35,9 @@ class CorePropertyManager : public PropertyManager {
 
     virtual PropertyBase * addProperty(const std::string & name, int type);
 
-    int installFactory(const std::string & type_name,
-                       const Atlas::Objects::Root & type_desc,
-                       PropertyKit * factory);
+    virtual int installFactory(const std::string & type_name,
+                               const Atlas::Objects::Root & type_desc,
+                               PropertyKit * factory);
 
     friend class CorePropertyManagertest;
 };

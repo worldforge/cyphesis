@@ -70,7 +70,7 @@ int PropertyRuleHandler::install(const std::string & name,
     }
     auto * factory = parent_factory->duplicateFactory();
     assert(factory != 0);
-    pm->installFactory(name, factory);
+    pm->installFactory(name, desc, factory);
     return 0;
 }
 
