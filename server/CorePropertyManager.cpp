@@ -59,16 +59,21 @@ using Atlas::Objects::Root;
 
 static const bool debug_flag = false;
 
+template<typename T>
+void CorePropertyManager::installBaseProperty(const std::string & type_name,
+                                              const std::string & parent)
+{
+    installFactory(type_name,
+                   atlasType(type_name, parent, true),
+                   new PropertyFactory<Property<T>>);
+}
+
 CorePropertyManager::CorePropertyManager()
 {
     // Core types, for inheritence only generally.
-    installBaseFactory("int", "root_type", new PropertyFactory<Property<int>>);
-    installBaseFactory("float",
-                       "root_type",
-                       new PropertyFactory<Property<double>>);
-    installBaseFactory("string",
-                       "root_type",
-                       new PropertyFactory<Property<std::string>>);
+    installBaseProperty<int>("int", "root_type");
+    installBaseProperty<double>("float", "root_type");
+    installBaseProperty<std::string>("string", "root_type");
 
     m_propertyFactories["stamina"] = new PropertyFactory<Property<double> >;
     m_propertyFactories["coords"] = new PropertyFactory<LineProperty>;
@@ -102,13 +107,6 @@ CorePropertyManager::CorePropertyManager()
 
 CorePropertyManager::~CorePropertyManager()
 {
-}
-
-void CorePropertyManager::installBaseFactory(const std::string & type_name,
-                                             const std::string & parent,
-                                             PropertyKit * factory)
-{
-    installFactory(type_name, atlasType(type_name, parent, true), factory);
 }
 
 int CorePropertyManager::installFactory(const std::string & type_name,

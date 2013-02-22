@@ -26,9 +26,9 @@
 /// to entity instances in the world.
 class CorePropertyManager : public PropertyManager {
   private:
-    void installBaseFactory(const std::string & type_name,
-                            const std::string & parent,
-                            PropertyKit * factory);
+    template<typename T>
+    void installBaseProperty(const std::string & type_name,
+                             const std::string & parent);
   public:
     CorePropertyManager();
     virtual ~CorePropertyManager();
