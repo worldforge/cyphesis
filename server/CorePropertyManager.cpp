@@ -68,6 +68,15 @@ void CorePropertyManager::installBaseProperty(const std::string & type_name,
                    new PropertyFactory<Property<T>>);
 }
 
+template<typename PropertyT>
+void CorePropertyManager::installProperty(const std::string & type_name,
+                                          const std::string & parent)
+{
+    installFactory(type_name,
+                   atlasType(type_name, parent),
+                   new PropertyFactor<PropertyT>);
+}
+
 CorePropertyManager::CorePropertyManager()
 {
     // Core types, for inheritence only generally.

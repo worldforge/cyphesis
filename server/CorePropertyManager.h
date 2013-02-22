@@ -29,6 +29,10 @@ class CorePropertyManager : public PropertyManager {
     template<typename T>
     void installBaseProperty(const std::string & type_name,
                              const std::string & parent);
+
+    template<class FactoryT>
+    void installProperty(const std::string & type_name,
+                         const std::string & parent);
   public:
     CorePropertyManager();
     virtual ~CorePropertyManager();
