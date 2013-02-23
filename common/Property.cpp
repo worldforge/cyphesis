@@ -121,6 +121,14 @@ void Property<std::string>::set(const Atlas::Message::Element & e)
 }
 
 template<>
+void Property<Atlas::Message::ListType>::set(const Atlas::Message::Element & e)
+{
+    if (e.isList()) {
+        this->m_data = e.List();
+    }
+}
+
+template<>
 void Property<Atlas::Message::MapType>::set(const Atlas::Message::Element & e)
 {
     // FIXME Merge data?
@@ -168,4 +176,5 @@ template class Property<long>;
 template class Property<float>;
 template class Property<double>;
 template class Property<std::string>;
+template class Property<Atlas::Message::ListType>;
 template class Property<Atlas::Message::MapType>;
