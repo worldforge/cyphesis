@@ -30,7 +30,7 @@ class CorePropertyManager : public PropertyManager {
     void installBaseProperty(const std::string & type_name,
                              const std::string & parent);
 
-    template<class FactoryT>
+    template<class PropertyT>
     void installProperty(const std::string & type_name,
                          const std::string & parent);
   public:
