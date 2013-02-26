@@ -198,17 +198,21 @@ TypeNode * Inheritance::addChild(const Root & obj)
 {
     const std::string & child = obj->getId();
     const std::string & parent = obj->getParents().front();
-    if (atlasObjects.find(child) != atlasObjects.end()) {
-        log(ERROR, String::compose("Installing type \"%1\"(\"%2\") "
-                                   "which was already installed",
-                                   child, parent));
+    TypeNodeDict::const_iterator I = atlasObjects.find(child);
+    TypeNodeDict::const_iterator Iend = atlasObjects.end();
+    if (I != Iend) {
+        const TypeNode * existing = I->second->parent();
+        log(ERROR, String::compose("Installing %1 \"%2\"(\"%3\") "
+                                   "which was already installed as (\"%4\")",
+                                   obj->getObjtype(), child, parent,
+                                   existing ? existing->name() : "NON"));
         return 0;
     }
-    TypeNodeDict::iterator I = atlasObjects.find(parent);
-    if (I == atlasObjects.end()) {
-        log(ERROR, String::compose("Installing type \"%1\" "
-                                   "which has unknown parent \"%2\".",
-                                   child, parent));;
+    I = atlasObjects.find(parent);
+    if (I == Iend) {
+        log(ERROR, String::compose("Installing %1 \"%2\" "
+                                   "which has unknown parent \"%3\".",
+                                   obj->getObjtype(), child, parent));;
         return 0;
     }
     Element children(ListType(1, child));
