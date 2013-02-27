@@ -1,3 +1,5 @@
+Clean out OpNo
+
 Make sure updateClass does the right thing if the class parents are modified.
 
 Clean up Inheritance. Nothing uses opEnumerate any more.
