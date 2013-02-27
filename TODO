@@ -1,3 +1,7 @@
+Make sure updateClass does the right thing if the class parents are modified.
+
+Clean up Inheritance. Nothing uses opEnumerate any more.
+
 Write an EntityKit TypeNode integration test. The addAttributes path needs
 to be tested.
 
