@@ -60,8 +60,6 @@ class Inheritance {
         return atlasObjects;
     }
 
-    OpNo opEnumerate(const std::string & parent) const;
-    OpNo opEnumerate(const Atlas::Objects::Operation::RootOperation &) const;
     const Atlas::Objects::Root & getClass(const std::string & parent);
     int updateClass(const std::string & name,
                     const Atlas::Objects::Root & obj);

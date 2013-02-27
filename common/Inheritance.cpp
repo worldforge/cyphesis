@@ -140,21 +140,6 @@ void Inheritance::clear()
     }
 }
 
-OpNo Inheritance::opEnumerate(const std::string & parent) const
-{
-    OpNoDict::const_iterator I = opLookup.find(parent);
-    if (I != opLookup.end()) {
-        return I->second;
-    } else {
-        return OP_INVALID;
-    }
-}
-
-OpNo Inheritance::opEnumerate(const Atlas::Objects::Operation::RootOperation & op) const
-{
-    return op->getClassNo();
-}
-
 const Root & Inheritance::getClass(const std::string & parent)
 {
     TypeNodeDict::const_iterator I = atlasObjects.find(parent);

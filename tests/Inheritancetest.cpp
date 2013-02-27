@@ -143,60 +143,16 @@ void Inheritancetest::test_builtins()
     Inheritance & i = Inheritance::instance();
 
     assert(&i == &Inheritance::instance());
-
-    assert(i.opEnumerate("login") == Atlas::Objects::Operation::LOGIN_NO);
-    assert(i.opEnumerate("logout") == Atlas::Objects::Operation::LOGOUT_NO);
-    assert(i.opEnumerate("action") == Atlas::Objects::Operation::ACTION_NO);
-    assert(i.opEnumerate("combine") == Atlas::Objects::Operation::COMBINE_NO);
-    assert(i.opEnumerate("create") == Atlas::Objects::Operation::CREATE_NO);
-    assert(i.opEnumerate("delete") == Atlas::Objects::Operation::DELETE_NO);
-    assert(i.opEnumerate("divide") == Atlas::Objects::Operation::DIVIDE_NO);
-    assert(i.opEnumerate("eat") == Atlas::Objects::Operation::EAT_NO);
-    assert(i.opEnumerate("burn") == Atlas::Objects::Operation::BURN_NO);
-    assert(i.opEnumerate("get") == Atlas::Objects::Operation::GET_NO);
-    assert(i.opEnumerate("imaginary") == Atlas::Objects::Operation::IMAGINARY_NO);
-    assert(i.opEnumerate("info") == Atlas::Objects::Operation::INFO_NO);
-    assert(i.opEnumerate("move") == Atlas::Objects::Operation::MOVE_NO);
-    assert(i.opEnumerate("nourish") == Atlas::Objects::Operation::NOURISH_NO);
-    assert(i.opEnumerate("set") == Atlas::Objects::Operation::SET_NO);
-    assert(i.opEnumerate("sight") == Atlas::Objects::Operation::SIGHT_NO);
-    assert(i.opEnumerate("sound") == Atlas::Objects::Operation::SOUND_NO);
-    assert(i.opEnumerate("talk") == Atlas::Objects::Operation::TALK_NO);
-    assert(i.opEnumerate("touch") == Atlas::Objects::Operation::TOUCH_NO);
-    assert(i.opEnumerate("tick") == Atlas::Objects::Operation::TICK_NO);
-    assert(i.opEnumerate("look") == Atlas::Objects::Operation::LOOK_NO);
-    assert(i.opEnumerate("setup") == Atlas::Objects::Operation::SETUP_NO);
-    assert(i.opEnumerate("appearance") == Atlas::Objects::Operation::APPEARANCE_NO);
-    assert(i.opEnumerate("disappearance") == Atlas::Objects::Operation::DISAPPEARANCE_NO);
-    assert(i.opEnumerate("error") == Atlas::Objects::Operation::ERROR_NO);
-
-    assert(i.opEnumerate(Login()) == Atlas::Objects::Operation::LOGIN_NO);
-    Root login_obj = Factories::instance()->createObject("login");
-    RootOperation login_op = smart_dynamic_cast<RootOperation>(login_obj);
-    assert(login_op.isValid());
-    assert(i.opEnumerate(login_op) == Atlas::Objects::Operation::LOGIN_NO);
-
 }
 
 void Inheritancetest::test_opInstall()
 {
     Inheritance & i = Inheritance::instance();
 
-    assert(i.opEnumerate("squigglymuff") == OP_INVALID);
-
     i.opInstall("squigglymuff", SQUIGGLYMUFF_NO);
 
     // We haven't actually added the class yet
     ASSERT_TRUE(!i.hasClass("squigglymuff"));
-
-    ASSERT_NOT_EQUAL(i.opEnumerate("squigglymuff"), OP_INVALID);
-    ASSERT_EQUAL(i.opEnumerate("squigglymuff"), SQUIGGLYMUFF_NO);
-
-    Root squigglymuff_obj = Factories::instance()->createObject("squigglymuff");
-    RootOperation squigglymuff_op = smart_dynamic_cast<RootOperation>(squigglymuff_obj);
-    ASSERT_TRUE(squigglymuff_op.isValid());
-
-    ASSERT_EQUAL(i.opEnumerate(squigglymuff_op), SQUIGGLYMUFF_NO);
 }
 
 void Inheritancetest::test_hasClass()
@@ -377,10 +333,6 @@ void Inheritancetest::test_flush()
     Inheritance & i = Inheritance::instance();
 
     i.flush();
-
-    assert(i.opEnumerate("login") == OP_INVALID);
-
-    assert(i.opEnumerate(Login()) == Atlas::Objects::Operation::LOGIN_NO);
 
     // Make sure the type for root can no longer be retrieved
     const TypeNode * no_root_node = i.getType("root");
