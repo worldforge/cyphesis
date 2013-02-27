@@ -87,7 +87,6 @@ class Inheritancetest : public Cyphesis::TestBase
     virtual void teardown();
 
     void test_builtins();
-    void test_opInstall();
     void test_hasClass();
     void test_getType();
     void test_getClass();
@@ -113,7 +112,6 @@ Inheritancetest::Inheritancetest()
     }
 
     ADD_TEST(Inheritancetest::test_builtins);
-    ADD_TEST(Inheritancetest::test_opInstall);
     ADD_TEST(Inheritancetest::test_hasClass);
     ADD_TEST(Inheritancetest::test_getType);
     ADD_TEST(Inheritancetest::test_getClass);
@@ -143,16 +141,6 @@ void Inheritancetest::test_builtins()
     Inheritance & i = Inheritance::instance();
 
     assert(&i == &Inheritance::instance());
-}
-
-void Inheritancetest::test_opInstall()
-{
-    Inheritance & i = Inheritance::instance();
-
-    i.opInstall("squigglymuff", SQUIGGLYMUFF_NO);
-
-    // We haven't actually added the class yet
-    ASSERT_TRUE(!i.hasClass("squigglymuff"));
 }
 
 void Inheritancetest::test_hasClass()

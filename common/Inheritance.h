@@ -33,7 +33,6 @@ void installCustomEntities();
 
 typedef int OpNo;
 
-typedef std::map<std::string, OpNo> OpNoDict;
 typedef std::map<std::string, PropertyBase *> PropertyDict;
 typedef std::map<std::string, TypeNode *> TypeNodeDict;
 
@@ -42,7 +41,6 @@ class Inheritance {
   protected:
     const Atlas::Objects::Root noClass;
     TypeNodeDict atlasObjects;
-    OpNoDict opLookup;
 
     static Inheritance * m_instance;
 
@@ -51,10 +49,6 @@ class Inheritance {
   public:
     static Inheritance & instance();
     static void clear();
-
-    void opInstall(const std::string & op, OpNo no) {
-        opLookup[op] = no;
-    }
 
     const TypeNodeDict & getAllObjects() const {
         return atlasObjects;

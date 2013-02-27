@@ -117,7 +117,6 @@ void Inheritance::flush()
         delete I->second;
     }
     atlasObjects.clear();
-    opLookup.clear();
 }
 
 Inheritance & Inheritance::instance()
@@ -258,60 +257,35 @@ void installStandardObjects()
 
     i.addChild(atlasOpDefinition("root_operation", "root"));
     i.addChild(atlasOpDefinition("action", "root_operation"));
-    i.opInstall("action", Atlas::Objects::Operation::ACTION_NO);
     i.addChild(atlasOpDefinition("create", "action"));
-    i.opInstall("create", Atlas::Objects::Operation::CREATE_NO);
     i.addChild(atlasOpDefinition("delete", "action"));
-    i.opInstall("delete", Atlas::Objects::Operation::DELETE_NO);
     i.addChild(atlasOpDefinition("info", "root_operation"));
-    i.opInstall("info", Atlas::Objects::Operation::INFO_NO);
     i.addChild(atlasOpDefinition("set", "action"));
-    i.opInstall("set", Atlas::Objects::Operation::SET_NO);
     i.addChild(atlasOpDefinition("get", "action"));
-    i.opInstall("get", Atlas::Objects::Operation::GET_NO);
     i.addChild(atlasOpDefinition("perception", "info"));
     i.addChild(atlasOpDefinition("error", "info"));
-    i.opInstall("error", Atlas::Objects::Operation::ERROR_NO);
     i.addChild(atlasOpDefinition("combine", "create"));
-    i.opInstall("combine", Atlas::Objects::Operation::COMBINE_NO);
     i.addChild(atlasOpDefinition("divide", "create"));
-    i.opInstall("divide", Atlas::Objects::Operation::DIVIDE_NO);
     i.addChild(atlasOpDefinition("communicate", "create"));
     i.addChild(atlasOpDefinition("move", "set"));
-    i.opInstall("move", Atlas::Objects::Operation::MOVE_NO);
     i.addChild(atlasOpDefinition("affect", "set"));
-    i.opInstall("affect", Atlas::Objects::Operation::MOVE_NO);
     i.addChild(atlasOpDefinition("perceive", "get"));
     i.addChild(atlasOpDefinition("login", "get"));
-    i.opInstall("login", Atlas::Objects::Operation::LOGIN_NO);
     i.addChild(atlasOpDefinition("logout", "login"));
-    i.opInstall("logout", Atlas::Objects::Operation::LOGOUT_NO);
     i.addChild(atlasOpDefinition("sight", "perception"));
-    i.opInstall("sight", Atlas::Objects::Operation::SIGHT_NO);
     i.addChild(atlasOpDefinition("sound", "perception"));
-    i.opInstall("sound", Atlas::Objects::Operation::SOUND_NO);
     i.addChild(atlasOpDefinition("smell", "perception"));
     i.addChild(atlasOpDefinition("feel", "perception"));
     i.addChild(atlasOpDefinition("imaginary", "action"));
-    i.opInstall("imaginary", Atlas::Objects::Operation::IMAGINARY_NO);
     i.addChild(atlasOpDefinition("talk", "communicate"));
-    i.opInstall("talk", Atlas::Objects::Operation::TALK_NO);
     i.addChild(atlasOpDefinition("look", "perceive"));
-    i.opInstall("look", Atlas::Objects::Operation::LOOK_NO);
     i.addChild(atlasOpDefinition("listen", "perceive"));
     i.addChild(atlasOpDefinition("sniff", "perceive"));
     i.addChild(atlasOpDefinition("touch", "perceive"));
-    i.opInstall("touch", Atlas::Objects::Operation::TOUCH_NO);
     i.addChild(atlasOpDefinition("appearance", "sight"));
-    i.opInstall("appearance", Atlas::Objects::Operation::APPEARANCE_NO);
     i.addChild(atlasOpDefinition("disappearance", "sight"));
-    i.opInstall("disappearance", Atlas::Objects::Operation::DISAPPEARANCE_NO);
     i.addChild(atlasOpDefinition("use", "action"));
-    i.opInstall("use", Atlas::Objects::Operation::USE_NO);
     i.addChild(atlasOpDefinition("wield", "set"));
-    i.opInstall("wield", Atlas::Objects::Operation::WIELD_NO);
-
-
 
     i.addChild(atlasClass("root_entity", "root"));
     i.addChild(atlasClass("admin_entity", "root_entity"));
