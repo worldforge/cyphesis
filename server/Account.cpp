@@ -272,7 +272,7 @@ void Account::externalOperation(const Operation & op, Link &)
 
 void Account::operation(const Operation & op, OpVector & res)
 {
-    const OpNo op_no = op->getClassNo();
+    OpNo op_no = op->getClassNo();
     switch (op_no) {
         case Atlas::Objects::Operation::CREATE_NO:
             CreateOperation(op, res);

@@ -239,7 +239,7 @@ void Connection::externalOperation(const Operation & op, Link & link)
 void Connection::operation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Connection::operation" << std::endl << std::flush;);
-    const OpNo op_no = op->getClassNo();
+    OpNo op_no = op->getClassNo();
     switch (op_no) {
         case Atlas::Objects::Operation::CREATE_NO:
             CreateOperation(op, res);

@@ -288,7 +288,7 @@ void BaseMind::operation(const Operation & op, OpVector & res)
             return;
         }
     }
-    const OpNo op_no = op->getClassNo();
+    OpNo op_no = op->getClassNo();
     switch (op_no) {
         case Atlas::Objects::Operation::SIGHT_NO:
             SightOperation(op, res);

@@ -187,7 +187,7 @@ void Juncture::externalOperation(const Operation & op, Link &)
 
 void Juncture::operation(const Operation & op, OpVector & res)
 {
-    const OpNo op_no = op->getClassNo();
+    OpNo op_no = op->getClassNo();
     switch (op_no) {
         case Atlas::Objects::Operation::LOGIN_NO:
             LoginOperation(op, res);

@@ -477,7 +477,7 @@ HandlerResult Entity::callDelegate(const std::string & name,
 /// @param res The result of the operation is returned here.
 void Entity::callOperation(const Operation & op, OpVector & res)
 {
-    const OpNo op_no = op->getClassNo();
+    OpNo op_no = op->getClassNo();
     OP_SWITCH(op, op_no, res,)
 }
 
