@@ -109,7 +109,7 @@ void Peer::operation(const Operation &op, OpVector &res)
         replied.emit(op);
     }
 
-    OpNo op_no = op->getClassNo();
+    auto op_no = op->getClassNo();
     switch (op_no) {
         case Atlas::Objects::Operation::INFO_NO:
         {

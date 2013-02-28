@@ -288,7 +288,7 @@ void BaseMind::operation(const Operation & op, OpVector & res)
             return;
         }
     }
-    OpNo op_no = op->getClassNo();
+    auto op_no = op->getClassNo();
     switch (op_no) {
         case Atlas::Objects::Operation::SIGHT_NO:
             SightOperation(op, res);
@@ -315,7 +315,7 @@ void BaseMind::callSightOperation(const Operation & op,
                                   OpVector & res)
 {
     m_map.getAdd(op->getFrom());
-    OpNo op_no = op->getClassNo();
+    auto op_no = op->getClassNo();
     if (debug_flag && (op_no == OP_INVALID)) {
         debug(std::cout << getId() << " could not deliver sight of "
                         << op->getParents().front()
@@ -330,7 +330,7 @@ void BaseMind::callSoundOperation(const Operation & op,
     // This function essentially does nothing now, except add the source
     // of the sound op to the map.
     m_map.getAdd(op->getFrom());
-    OpNo op_no = op->getClassNo();
+    auto op_no = op->getClassNo();
     if (debug_flag && (op_no == OP_INVALID)) {
         debug(std::cout << getId() << " could not deliver sound of "
                         << op->getParents().front()

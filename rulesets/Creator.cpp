@@ -59,7 +59,7 @@ void Creator::operation(const Operation & op, OpVector & res)
     // FIXME: Switch to using callOperation(), some more op handlers would
     // need to be implemented. Some might need to be blocked
     // to prevent anyone from messing with us, like SetOperation().
-    OpNo op_no = op->getClassNo();
+    auto op_no = op->getClassNo();
     switch(op_no) {
         case Atlas::Objects::Operation::CREATE_NO:
             CreateOperation(op, res);

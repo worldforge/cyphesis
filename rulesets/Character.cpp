@@ -1641,7 +1641,7 @@ void Character::mind2body(const Operation & op, OpVector & res)
                                    "FUTURE_SECONDS set.",
                                    op->getParents().front()));
     }
-    OpNo op_no = op->getClassNo();
+    auto op_no = op->getClassNo();
     switch (op_no) {
         case Atlas::Objects::Operation::COMBINE_NO:
             mindCombineOperation(op, res);
@@ -1712,7 +1712,7 @@ void Character::mind2body(const Operation & op, OpVector & res)
 bool Character::world2mind(const Operation & op)
 {
     debug( std::cout << "Character::world2mind(" << op->getParents().front() << ")" << std::endl << std::flush;);
-    OpNo otype = op->getClassNo();
+    auto otype = op->getClassNo();
     POLL_OP_SWITCH(op, otype, w2m)
     return false;
 }
