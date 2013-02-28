@@ -23,7 +23,6 @@
 
 #include "common/custom.h"
 #include "common/debug.h"
-#include "common/Inheritance.h"
 #include "common/log.h"
 #include "common/op_switch.h"
 
