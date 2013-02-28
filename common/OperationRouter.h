@@ -29,7 +29,6 @@
 typedef Atlas::Objects::Operation::RootOperation Operation;
 
 typedef std::vector<Operation> OpVector;
-typedef int OpNo;
 
 typedef enum {
     OPERATION_BLOCKED, // Handler has determined that op should stop here

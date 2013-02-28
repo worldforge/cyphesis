@@ -31,8 +31,6 @@ void installStandardObjects();
 void installCustomOperations();
 void installCustomEntities();
 
-typedef int OpNo;
-
 typedef std::map<std::string, PropertyBase *> PropertyDict;
 typedef std::map<std::string, TypeNode *> TypeNodeDict;
 
