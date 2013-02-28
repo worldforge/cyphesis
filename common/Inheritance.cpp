@@ -180,6 +180,7 @@ bool Inheritance::hasClass(const std::string & parent)
 
 TypeNode * Inheritance::addChild(const Root & obj)
 {
+    assert(obj->getParents().size() > 0);
     const std::string & child = obj->getId();
     const std::string & parent = obj->getParents().front();
     TypeNodeDict::const_iterator I = atlasObjects.find(child);
