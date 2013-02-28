@@ -156,6 +156,9 @@ int Inheritance::updateClass(const std::string & parent,
         return -1;
     }
     TypeNode * tn = I->second;
+    if (tn->description()->getParents() != description->getParents()) {
+        return -1;
+    }
     tn->description() = description;
     return 0;
 }
