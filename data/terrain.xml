@@ -20,7 +20,7 @@
     <string name="id">forest</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>area</string>
+      <string>region</string>
     </list>
   </map>
 
@@ -52,7 +52,7 @@
     <string name="id">path</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>area</string>
+      <string>region</string>
     </list>
   </map>
 
@@ -116,7 +116,7 @@
     <string name="id">ploughed_field</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>area</string>
+      <string>region</string>
     </list>
   </map>
 
