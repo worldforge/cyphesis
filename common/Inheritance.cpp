@@ -191,8 +191,9 @@ TypeNode * Inheritance::addChild(const Root & obj)
     if (I != Iend) {
         const TypeNode * existing = I->second->parent();
         log(ERROR, String::compose("Installing %1 \"%2\"(\"%3\") "
-                                   "which was already installed as (\"%4\")",
+                                   "which was already installed as %4 (\"%5\")",
                                    obj->getObjtype(), child, parent,
+                                   I->second->description()->getObjtype(),
                                    existing ? existing->name() : "NON"));
         return 0;
     }
