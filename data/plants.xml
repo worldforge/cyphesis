@@ -44,7 +44,7 @@
         <float name="default">0.2</float>
         <string name="visibility">public</string>
       </map>
-      <map name="tick">
+      <map name="ticks">
         <float name="default">900</float>
         <string name="visibility">public</string>
       </map>
@@ -547,7 +547,7 @@
         <float name="default">6</float>
         <string name="visibility">public</string>
       </map>
-      <map name="tick">
+      <map name="ticks">
         <float name="default">0</float>
         <string name="visibility">public</string>
       </map>

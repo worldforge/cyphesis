@@ -55,6 +55,8 @@
 #include <iostream>
 
 using Atlas::Message::Element;
+using Atlas::Message::ListType;
+using Atlas::Message::MapType;
 using Atlas::Objects::Root;
 
 static const bool debug_flag = false;
@@ -83,35 +85,34 @@ CorePropertyManager::CorePropertyManager()
     installBaseProperty<int>("int", "root_type");
     installBaseProperty<double>("float", "root_type");
     installBaseProperty<std::string>("string", "root_type");
+    installBaseProperty<ListType>("list", "root_type");
+    installBaseProperty<MapType>("map", "root_type");
 
-    m_propertyFactories["stamina"] = new PropertyFactory<Property<double> >;
-    m_propertyFactories["coords"] = new PropertyFactory<LineProperty>;
-    m_propertyFactories["points"] = new PropertyFactory<LineProperty>;
-    m_propertyFactories["start_intersections"] = new PropertyFactory<Property<IdList> >;
-    m_propertyFactories["end_intersections"] = new PropertyFactory<Property<IdList> >;
-    m_propertyFactories["attachment"] = new PropertyFactory<Property<int>>;
-    m_propertyFactories["decays"] = new PropertyFactory<DecaysProperty>;
-    m_propertyFactories["outfit"] = new PropertyFactory<OutfitProperty>;
-    m_propertyFactories["solid"] = new PropertyFactory<SolidProperty>;
-    m_propertyFactories["simple"] = new PropertyFactory<SimpleProperty>;
-    m_propertyFactories["status"] = new PropertyFactory<StatusProperty>;
-    m_propertyFactories["biomass"] = new PropertyFactory<BiomassProperty>;
-    m_propertyFactories["burn_speed"] = new PropertyFactory<BurnSpeedProperty>;
-    m_propertyFactories["transient"] = new PropertyFactory<TransientProperty>();
-    m_propertyFactories["food"] = new PropertyFactory<Property<double> >;
-    m_propertyFactories["mass"] = new PropertyFactory<Property<double> >;
-    m_propertyFactories["bbox"] = new PropertyFactory<BBoxProperty>;
-    m_propertyFactories["mind"] = new PropertyFactory<MindProperty>;
-    m_propertyFactories["setup"] = new PropertyFactory<SetupProperty>;
-    m_propertyFactories["tick"] = new PropertyFactory<TickProperty>;
-    m_propertyFactories["statistics"] = new PropertyFactory<StatisticsProperty>;
-    m_propertyFactories["spawn"] = new PropertyFactory<SpawnProperty>;
-    m_propertyFactories["area"] = new PropertyFactory<AreaProperty>;
-    m_propertyFactories["visibility"] = new PropertyFactory<VisibilityProperty>;
-    
-    m_propertyFactories["terrainmod"] = new PropertyFactory<TerrainModProperty>;
-
-    m_propertyFactories["teleport"] = new PropertyFactory<TeleportProperty>;
+    installProperty<Property<double>>("stamina", "float");
+    installProperty<LineProperty>("coords", "list");
+    installProperty<LineProperty>("points", "list");
+    installProperty<Property<IdList> >("start_intersections", "list");
+    installProperty<Property<IdList> >("end_intersections", "list");
+    installProperty<DecaysProperty>("decays", "string");
+    installProperty<OutfitProperty>("outfit", "map");
+    installProperty<SolidProperty>("solid", "int");
+    installProperty<SimpleProperty>("simple", "int");
+    installProperty<StatusProperty>("status", "float");
+    installProperty<BiomassProperty>("biomass", "float");
+    installProperty<BurnSpeedProperty>("burn_speed", "float");
+    installProperty<TransientProperty>("transient", "float");
+    installProperty<Property<double> >("food", "float");
+    installProperty<Property<double> >("mass", "float");
+    installProperty<BBoxProperty>("bbox", "list");
+    installProperty<MindProperty>("mind", "map");
+    installProperty<SetupProperty>("init", "int");
+    installProperty<TickProperty>("ticks", "float");
+    installProperty<StatisticsProperty>("statistics", "map");
+    installProperty<SpawnProperty>("spawn", "map");
+    installProperty<AreaProperty>("area", "map");
+    installProperty<VisibilityProperty>("visibility", "float");
+    installProperty<TerrainModProperty>("terrainmod", "map");
+    installProperty<TeleportProperty>("linked", "string");
 }
 
 CorePropertyManager::~CorePropertyManager()

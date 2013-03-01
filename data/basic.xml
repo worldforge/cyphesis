@@ -70,7 +70,7 @@
         <float name="default">1</float>
         <string name="visibility">public</string>
       </map>
-      <map name="tick">
+      <map name="ticks">
         <float name="default">0</float>
         <string name="visibility">public</string>
       </map>
