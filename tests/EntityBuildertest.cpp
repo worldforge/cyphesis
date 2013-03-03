@@ -85,6 +85,7 @@ class EntityBuildertest : public Cyphesis::TestBase
     void test_sequence3();
     void test_sequence4();
     void test_sequence5();
+    void test_installFactory_duplicate();
 };
 
 EntityBuildertest::EntityBuildertest()
@@ -94,6 +95,7 @@ EntityBuildertest::EntityBuildertest()
     ADD_TEST(EntityBuildertest::test_sequence3);
     ADD_TEST(EntityBuildertest::test_sequence4);
     ADD_TEST(EntityBuildertest::test_sequence5);
+    ADD_TEST(EntityBuildertest::test_installFactory_duplicate);
 }
 
 void EntityBuildertest::setup()
@@ -291,6 +293,32 @@ void EntityBuildertest::test_sequence5()
     assert(test_ent != 0);
 
     assert(test_ent->getType() == custom_type_factory->m_type);
+}
+
+void EntityBuildertest::test_installFactory_duplicate()
+{
+    EntityBuilder & entity_factory = *EntityBuilder::instance();
+    FactoryDict & factories = entity_factory.m_entityFactories;
+
+    EntityKit * custom_type_factory = new EntityFactory<Entity>();
+
+    int ret = entity_factory.installFactory("custom_type",
+                                            atlasClass("custom_type", "thing"),
+                                            custom_type_factory);
+
+    ASSERT_EQUAL(ret, 0);
+    ASSERT_TRUE(factories.find("custom_type") != factories.end());
+    ASSERT_EQUAL(factories.find("custom_type")->second, custom_type_factory);
+
+    EntityKit * custom_type_factory2 = new EntityFactory<Entity>();
+
+    ret = entity_factory.installFactory("custom_type",
+                                        atlasClass("custom_type", "thing"),
+                                        custom_type_factory2);
+
+    ASSERT_EQUAL(ret, -1);
+    ASSERT_TRUE(factories.find("custom_type") != factories.end());
+    ASSERT_EQUAL(factories.find("custom_type")->second, custom_type_factory);
 }
 
 int main(int argc, char ** argv)
