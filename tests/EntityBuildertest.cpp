@@ -77,12 +77,20 @@ class EntityBuildertest : public Cyphesis::TestBase
     void setup();
     void teardown();
 
-    void test_sequence();
+    void test_sequence1();
+    void test_sequence2();
+    void test_sequence3();
+    void test_sequence4();
+    void test_sequence5();
 };
 
 EntityBuildertest::EntityBuildertest()
 {
-    ADD_TEST(EntityBuildertest::test_sequence);
+    ADD_TEST(EntityBuildertest::test_sequence1);
+    ADD_TEST(EntityBuildertest::test_sequence2);
+    ADD_TEST(EntityBuildertest::test_sequence3);
+    ADD_TEST(EntityBuildertest::test_sequence4);
+    ADD_TEST(EntityBuildertest::test_sequence5);
 }
 
 void EntityBuildertest::setup()
@@ -98,7 +106,7 @@ enum action {
   SET_POS,
   SET_VELOCITY } LocatedEntity_merge_action = DO_NOTHING;
 
-void EntityBuildertest::test_sequence()
+void EntityBuildertest::test_sequence1()
 {
     {
         Entity e("1", 1);
@@ -117,7 +125,10 @@ void EntityBuildertest::test_sequence()
         assert(EntityBuilder::instance() == 0);
         Inheritance::clear();
     }
+}
 
+void EntityBuildertest::test_sequence2()
+{
     {
         Entity e("1", 1);
         TestWorld test_world(e);
@@ -171,6 +182,10 @@ void EntityBuildertest::test_sequence()
         assert(EntityBuilder::instance() == 0);
         Inheritance::clear();
     }
+}
+
+void EntityBuildertest::test_sequence3()
+{
 
     {
         // Create a test world.
@@ -191,7 +206,10 @@ void EntityBuildertest::test_sequence()
         assert(EntityBuilder::instance() == 0);
         Inheritance::clear();
     }
+}
 
+void EntityBuildertest::test_sequence4()
+{
     {
         // Create a test world.
         Entity e("1", 1);
@@ -263,7 +281,10 @@ void EntityBuildertest::test_sequence()
         assert(EntityBuilder::instance() == 0);
         Inheritance::clear();
     }
+}
 
+void EntityBuildertest::test_sequence5()
+{
     {
         Entity e("1", 1);
         TestWorld test_world(e);
