@@ -1,7 +1,5 @@
 Check Acorn works without a script
 
-Make sure updateClass does the right thing if the class parents are modified.
-
 Write an EntityKit TypeNode integration test. The addAttributes path needs
 to be tested.
 
