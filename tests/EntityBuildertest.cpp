@@ -119,189 +119,178 @@ enum action {
 
 void EntityBuildertest::test_sequence1()
 {
-    {
-        Anonymous attributes;
+    Anonymous attributes;
 
-        assert(EntityBuilder::instance() != 0);
+    assert(EntityBuilder::instance() != 0);
 
-        assert(EntityBuilder::instance()->newEntity("1", 1, "world", attributes, BaseWorld::instance()) == 0);
-        assert(EntityBuilder::instance()->newEntity("1", 1, "nonexistant", attributes, BaseWorld::instance()) == 0);
-        assert(EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, BaseWorld::instance()) != 0);
-    }
+    assert(EntityBuilder::instance()->newEntity("1", 1, "world", attributes, BaseWorld::instance()) == 0);
+    assert(EntityBuilder::instance()->newEntity("1", 1, "nonexistant", attributes, BaseWorld::instance()) == 0);
+    assert(EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, BaseWorld::instance()) != 0);
 }
 
 void EntityBuildertest::test_sequence2()
 {
-    {
-        Anonymous attributes;
+    Anonymous attributes;
 
-        assert(EntityBuilder::instance() != 0);
+    assert(EntityBuilder::instance() != 0);
 
-        // Create a normal Entity
-        LocatedEntity * test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, BaseWorld::instance());
-        assert(test_ent != 0);
+    // Create a normal Entity
+    LocatedEntity * test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, BaseWorld::instance());
+    assert(test_ent != 0);
 
-        // Create an entity specifying an attrbute
-        attributes->setAttr("funky", "true");
+    // Create an entity specifying an attrbute
+    attributes->setAttr("funky", "true");
 
-        test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, BaseWorld::instance());
-        assert(test_ent != 0);
+    test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, BaseWorld::instance());
+    assert(test_ent != 0);
 
-        // Create an entity causing VELOCITY to be set
-        attributes = Anonymous();
+    // Create an entity causing VELOCITY to be set
+    attributes = Anonymous();
 
-        attributes->setVelocity(std::vector<double>(3, 1.5));
+    attributes->setVelocity(std::vector<double>(3, 1.5));
 
-        LocatedEntity_merge_action = SET_VELOCITY;
+    LocatedEntity_merge_action = SET_VELOCITY;
 
-        test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, BaseWorld::instance());
-        assert(test_ent != 0);
+    test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, BaseWorld::instance());
+    assert(test_ent != 0);
 
-        LocatedEntity_merge_action = DO_NOTHING;
+    LocatedEntity_merge_action = DO_NOTHING;
 
-        // Create an entity causing VELOCITY to be set for no obvious reason
-        attributes = Anonymous();
+    // Create an entity causing VELOCITY to be set for no obvious reason
+    attributes = Anonymous();
 
-        LocatedEntity_merge_action = SET_VELOCITY;
+    LocatedEntity_merge_action = SET_VELOCITY;
 
-        test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, BaseWorld::instance());
-        assert(test_ent != 0);
+    test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, BaseWorld::instance());
+    assert(test_ent != 0);
 
-        LocatedEntity_merge_action = DO_NOTHING;
+    LocatedEntity_merge_action = DO_NOTHING;
 
-        // Create an entity specifying a LOC
-        attributes = Anonymous();
+    // Create an entity specifying a LOC
+    attributes = Anonymous();
 
-        attributes->setLoc("1");
+    attributes->setLoc("1");
 
-        test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, BaseWorld::instance());
-        assert(test_ent != 0);
-    }
+    test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, BaseWorld::instance());
+    assert(test_ent != 0);
 }
 
 void EntityBuildertest::test_sequence3()
 {
+    EntityBuilder & entity_factory = *EntityBuilder::instance();
 
-    {
-        EntityBuilder & entity_factory = *EntityBuilder::instance();
+    // Attributes for test entities being created
+    Anonymous attributes;
 
-        // Attributes for test entities being created
-        Anonymous attributes;
-
-        // Create an entity which is an instance of one of the core classes
-        LocatedEntity * test_ent = entity_factory.newEntity("1", 1, "thing", attributes, BaseWorld::instance());
-        assert(test_ent != 0);
-    }
+    // Create an entity which is an instance of one of the core classes
+    LocatedEntity * test_ent = entity_factory.newEntity("1", 1, "thing", attributes, BaseWorld::instance());
+    assert(test_ent != 0);
 }
 
 void EntityBuildertest::test_sequence4()
 {
+    EntityBuilder & entity_factory = *EntityBuilder::instance();
+    // Attributes for test entities being created
+    Anonymous attributes;
+
+    // Check that creating an entity of a type we know we have not yet
+    // installed results in a null pointer.
+    assert(entity_factory.newEntity("1", 1, "custom_type", attributes, BaseWorld::instance()) == 0);
+
+    // Get a reference to the internal dictionary of entity factories.
+    const FactoryDict & factory_dict = entity_factory.m_entityFactories;
+
+    // Make sure it has some factories in it already.
+    assert(!factory_dict.empty());
+
+    // Assert the dictionary does not contain the factory we know we have
+    // have not yet installed.
+    assert(factory_dict.find("custom_type") == factory_dict.end());
+
+    // Set up a type description for a new type, and install it
+    EntityKit * custom_type_factory = new EntityFactory<Entity>();
+    custom_type_factory->m_attributes["test_custom_type_attr"] =
+          "test_value";
     {
-        EntityBuilder & entity_factory = *EntityBuilder::instance();
-        // Attributes for test entities being created
-        Anonymous attributes;
-
-        // Check that creating an entity of a type we know we have not yet
-        // installed results in a null pointer.
-        assert(entity_factory.newEntity("1", 1, "custom_type", attributes, BaseWorld::instance()) == 0);
-
-        // Get a reference to the internal dictionary of entity factories.
-        const FactoryDict & factory_dict = entity_factory.m_entityFactories;
-
-        // Make sure it has some factories in it already.
-        assert(!factory_dict.empty());
-
-        // Assert the dictionary does not contain the factory we know we have
-        // have not yet installed.
-        assert(factory_dict.find("custom_type") == factory_dict.end());
-
-        // Set up a type description for a new type, and install it
-        EntityKit * custom_type_factory = new EntityFactory<Entity>();
-        custom_type_factory->m_attributes["test_custom_type_attr"] =
-              "test_value";
-        {
-            entity_factory.installFactory("custom_type",
-                                          atlasClass("custom_type", "thing"),
-                                          custom_type_factory);
-            custom_type_factory->m_type = new TypeNode("custom_type");
-        }
-
-        PropertyBase * p = new Property<std::string>; 
-        custom_type_factory->m_type->addProperty("test_custom_type_attr", p);
-        p->set("test_value");
-
-        // Check that the factory dictionary now contains a factory for
-        // the custom type we just installed.
-        FactoryDict::const_iterator I = factory_dict.find("custom_type");
-        assert(I != factory_dict.end());
-        assert(custom_type_factory == I->second);
-
-        MapType::const_iterator J;
-        // Check the factory has the attributes we described on the custom
-        // type.
-        J = custom_type_factory->m_attributes.find("test_custom_type_attr");
-        assert(J != custom_type_factory->m_attributes.end());
-        assert(J->second.isString());
-        assert(J->second.String() == "test_value");
-
-        // Create an instance of our custom type, ensuring that it works.
-        LocatedEntity * test_ent = entity_factory.newEntity("1", 1, "custom_type", attributes, BaseWorld::instance());
-        assert(test_ent != 0);
-
-        assert(test_ent->getType() == custom_type_factory->m_type);
-
-        // Check that creating an entity of a type we know we have not yet
-        // installed results in a null pointer.
-        assert(entity_factory.newEntity("1", 1, "custom_inherited_type", attributes, BaseWorld::instance()) == 0);
-
-        // Assert the dictionary does not contain the factory we know we have
-        // have not yet installed.
-        assert(factory_dict.find("custom_inherited_type") == factory_dict.end());
+        entity_factory.installFactory("custom_type",
+                                      atlasClass("custom_type", "thing"),
+                                      custom_type_factory);
+        custom_type_factory->m_type = new TypeNode("custom_type");
     }
+
+    PropertyBase * p = new Property<std::string>; 
+    custom_type_factory->m_type->addProperty("test_custom_type_attr", p);
+    p->set("test_value");
+
+    // Check that the factory dictionary now contains a factory for
+    // the custom type we just installed.
+    FactoryDict::const_iterator I = factory_dict.find("custom_type");
+    assert(I != factory_dict.end());
+    assert(custom_type_factory == I->second);
+
+    MapType::const_iterator J;
+    // Check the factory has the attributes we described on the custom
+    // type.
+    J = custom_type_factory->m_attributes.find("test_custom_type_attr");
+    assert(J != custom_type_factory->m_attributes.end());
+    assert(J->second.isString());
+    assert(J->second.String() == "test_value");
+
+    // Create an instance of our custom type, ensuring that it works.
+    LocatedEntity * test_ent = entity_factory.newEntity("1", 1, "custom_type", attributes, BaseWorld::instance());
+    assert(test_ent != 0);
+
+    assert(test_ent->getType() == custom_type_factory->m_type);
+
+    // Check that creating an entity of a type we know we have not yet
+    // installed results in a null pointer.
+    assert(entity_factory.newEntity("1", 1, "custom_inherited_type", attributes, BaseWorld::instance()) == 0);
+
+    // Assert the dictionary does not contain the factory we know we have
+    // have not yet installed.
+    assert(factory_dict.find("custom_inherited_type") == factory_dict.end());
 }
 
 void EntityBuildertest::test_sequence5()
 {
+    EntityBuilder & entity_factory = *EntityBuilder::instance();
+    Anonymous attributes;
+
+    // Get a reference to the internal dictionary of entity factories.
+    const FactoryDict & factory_dict = entity_factory.m_entityFactories;
+
+    // Make sure it has some factories in it already.
+    assert(!factory_dict.empty());
+
+    // Assert the dictionary does not contain the factory we know we have
+    // have not yet installed.
+    assert(factory_dict.find("custom_scripted_type") == factory_dict.end());
+
+    // Set up a type description for a new type, and install it
+    EntityKit * custom_type_factory = new EntityFactory<Entity>();
+    custom_type_factory->m_attributes["test_custom_type_attr"] =
+          "test_value";
+
+    custom_type_factory->m_scriptFactory = new TestScriptFactory();
+
     {
-        EntityBuilder & entity_factory = *EntityBuilder::instance();
-        Anonymous attributes;
-
-        // Get a reference to the internal dictionary of entity factories.
-        const FactoryDict & factory_dict = entity_factory.m_entityFactories;
-
-        // Make sure it has some factories in it already.
-        assert(!factory_dict.empty());
-
-        // Assert the dictionary does not contain the factory we know we have
-        // have not yet installed.
-        assert(factory_dict.find("custom_scripted_type") == factory_dict.end());
-
-        // Set up a type description for a new type, and install it
-        EntityKit * custom_type_factory = new EntityFactory<Entity>();
-        custom_type_factory->m_attributes["test_custom_type_attr"] =
-              "test_value";
-
-        custom_type_factory->m_scriptFactory = new TestScriptFactory();
-
-        {
-            entity_factory.installFactory("custom_scripted_type",
-                  atlasClass("custom_scripted_type", "thing"),
-                  custom_type_factory);
-            custom_type_factory->m_type = new TypeNode("custom_scripted_type");
-        }
-
-        // Check that the factory dictionary now contains a factory for
-        // the custom type we just installed.
-        FactoryDict::const_iterator I = factory_dict.find("custom_scripted_type");
-        assert(I != factory_dict.end());
-        assert(custom_type_factory == I->second);
-
-        // Create an instance of our custom type, ensuring that it works.
-        LocatedEntity * test_ent = entity_factory.newEntity("1", 1, "custom_scripted_type", attributes, BaseWorld::instance());
-        assert(test_ent != 0);
-
-        assert(test_ent->getType() == custom_type_factory->m_type);
+        entity_factory.installFactory("custom_scripted_type",
+              atlasClass("custom_scripted_type", "thing"),
+              custom_type_factory);
+        custom_type_factory->m_type = new TypeNode("custom_scripted_type");
     }
+
+    // Check that the factory dictionary now contains a factory for
+    // the custom type we just installed.
+    FactoryDict::const_iterator I = factory_dict.find("custom_scripted_type");
+    assert(I != factory_dict.end());
+    assert(custom_type_factory == I->second);
+
+    // Create an instance of our custom type, ensuring that it works.
+    LocatedEntity * test_ent = entity_factory.newEntity("1", 1, "custom_scripted_type", attributes, BaseWorld::instance());
+    assert(test_ent != 0);
+
+    assert(test_ent->getType() == custom_type_factory->m_type);
 }
 
 int main(int argc, char ** argv)
