@@ -71,6 +71,9 @@ class TestScriptFactory : public ScriptKit<LocatedEntity> {
 
 class EntityBuildertest : public Cyphesis::TestBase
 {
+  private:
+    Entity * e;
+    BaseWorld * test_world;
   public:
     EntityBuildertest();
 
@@ -95,10 +98,18 @@ EntityBuildertest::EntityBuildertest()
 
 void EntityBuildertest::setup()
 {
+    e = new Entity("1", 1);
+    test_world = new TestWorld(*e);
+    EntityBuilder::init();
 }
 
 void EntityBuildertest::teardown()
 {
+    delete test_world;
+    delete e;
+    EntityBuilder::del();
+    assert(EntityBuilder::instance() == 0);
+    Inheritance::clear();
 }
 
 enum action {
@@ -109,43 +120,31 @@ enum action {
 void EntityBuildertest::test_sequence1()
 {
     {
-        Entity e("1", 1);
-        TestWorld test_world(e);
-        EntityBuilder::init();
-
         Anonymous attributes;
 
         assert(EntityBuilder::instance() != 0);
 
-        assert(EntityBuilder::instance()->newEntity("1", 1, "world", attributes, test_world) == 0);
-        assert(EntityBuilder::instance()->newEntity("1", 1, "nonexistant", attributes, test_world) == 0);
-        assert(EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, test_world) != 0);
-
-        EntityBuilder::del();
-        assert(EntityBuilder::instance() == 0);
-        Inheritance::clear();
+        assert(EntityBuilder::instance()->newEntity("1", 1, "world", attributes, BaseWorld::instance()) == 0);
+        assert(EntityBuilder::instance()->newEntity("1", 1, "nonexistant", attributes, BaseWorld::instance()) == 0);
+        assert(EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, BaseWorld::instance()) != 0);
     }
 }
 
 void EntityBuildertest::test_sequence2()
 {
     {
-        Entity e("1", 1);
-        TestWorld test_world(e);
-        EntityBuilder::init();
-
         Anonymous attributes;
 
         assert(EntityBuilder::instance() != 0);
 
         // Create a normal Entity
-        LocatedEntity * test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, test_world);
+        LocatedEntity * test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, BaseWorld::instance());
         assert(test_ent != 0);
 
         // Create an entity specifying an attrbute
         attributes->setAttr("funky", "true");
 
-        test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, test_world);
+        test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, BaseWorld::instance());
         assert(test_ent != 0);
 
         // Create an entity causing VELOCITY to be set
@@ -155,7 +154,7 @@ void EntityBuildertest::test_sequence2()
 
         LocatedEntity_merge_action = SET_VELOCITY;
 
-        test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, test_world);
+        test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, BaseWorld::instance());
         assert(test_ent != 0);
 
         LocatedEntity_merge_action = DO_NOTHING;
@@ -165,7 +164,7 @@ void EntityBuildertest::test_sequence2()
 
         LocatedEntity_merge_action = SET_VELOCITY;
 
-        test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, test_world);
+        test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, BaseWorld::instance());
         assert(test_ent != 0);
 
         LocatedEntity_merge_action = DO_NOTHING;
@@ -175,12 +174,8 @@ void EntityBuildertest::test_sequence2()
 
         attributes->setLoc("1");
 
-        test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, test_world);
+        test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, BaseWorld::instance());
         assert(test_ent != 0);
-
-        EntityBuilder::del();
-        assert(EntityBuilder::instance() == 0);
-        Inheritance::clear();
     }
 }
 
@@ -188,42 +183,27 @@ void EntityBuildertest::test_sequence3()
 {
 
     {
-        // Create a test world.
-        Entity e("1", 1);
-        TestWorld test_world(e);
-        EntityBuilder::init();
-
         EntityBuilder & entity_factory = *EntityBuilder::instance();
 
         // Attributes for test entities being created
         Anonymous attributes;
 
         // Create an entity which is an instance of one of the core classes
-        LocatedEntity * test_ent = entity_factory.newEntity("1", 1, "thing", attributes, test_world);
+        LocatedEntity * test_ent = entity_factory.newEntity("1", 1, "thing", attributes, BaseWorld::instance());
         assert(test_ent != 0);
-
-        EntityBuilder::del();
-        assert(EntityBuilder::instance() == 0);
-        Inheritance::clear();
     }
 }
 
 void EntityBuildertest::test_sequence4()
 {
     {
-        // Create a test world.
-        Entity e("1", 1);
-        TestWorld test_world(e);
-        EntityBuilder::init();
-
-
         EntityBuilder & entity_factory = *EntityBuilder::instance();
         // Attributes for test entities being created
         Anonymous attributes;
 
         // Check that creating an entity of a type we know we have not yet
         // installed results in a null pointer.
-        assert(entity_factory.newEntity("1", 1, "custom_type", attributes, test_world) == 0);
+        assert(entity_factory.newEntity("1", 1, "custom_type", attributes, BaseWorld::instance()) == 0);
 
         // Get a reference to the internal dictionary of entity factories.
         const FactoryDict & factory_dict = entity_factory.m_entityFactories;
@@ -265,31 +245,24 @@ void EntityBuildertest::test_sequence4()
         assert(J->second.String() == "test_value");
 
         // Create an instance of our custom type, ensuring that it works.
-        LocatedEntity * test_ent = entity_factory.newEntity("1", 1, "custom_type", attributes, test_world);
+        LocatedEntity * test_ent = entity_factory.newEntity("1", 1, "custom_type", attributes, BaseWorld::instance());
         assert(test_ent != 0);
 
         assert(test_ent->getType() == custom_type_factory->m_type);
 
         // Check that creating an entity of a type we know we have not yet
         // installed results in a null pointer.
-        assert(entity_factory.newEntity("1", 1, "custom_inherited_type", attributes, test_world) == 0);
+        assert(entity_factory.newEntity("1", 1, "custom_inherited_type", attributes, BaseWorld::instance()) == 0);
 
         // Assert the dictionary does not contain the factory we know we have
         // have not yet installed.
         assert(factory_dict.find("custom_inherited_type") == factory_dict.end());
-        EntityBuilder::del();
-        assert(EntityBuilder::instance() == 0);
-        Inheritance::clear();
     }
 }
 
 void EntityBuildertest::test_sequence5()
 {
     {
-        Entity e("1", 1);
-        TestWorld test_world(e);
-        EntityBuilder::init();
-
         EntityBuilder & entity_factory = *EntityBuilder::instance();
         Anonymous attributes;
 
@@ -324,14 +297,10 @@ void EntityBuildertest::test_sequence5()
         assert(custom_type_factory == I->second);
 
         // Create an instance of our custom type, ensuring that it works.
-        LocatedEntity * test_ent = entity_factory.newEntity("1", 1, "custom_scripted_type", attributes, test_world);
+        LocatedEntity * test_ent = entity_factory.newEntity("1", 1, "custom_scripted_type", attributes, BaseWorld::instance());
         assert(test_ent != 0);
 
         assert(test_ent->getType() == custom_type_factory->m_type);
-
-        EntityBuilder::del();
-        assert(EntityBuilder::instance() == 0);
-        Inheritance::clear();
     }
 }
 
