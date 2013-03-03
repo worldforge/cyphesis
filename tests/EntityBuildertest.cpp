@@ -214,10 +214,13 @@ void EntityBuildertest::test_sequence4()
     custom_type_factory->m_attributes["test_custom_type_attr"] =
           "test_value";
     {
-        entity_factory.installFactory("custom_type",
-                                      atlasClass("custom_type", "thing"),
-                                      custom_type_factory);
+        int ret;
+        ret = entity_factory.installFactory("custom_type",
+                                            atlasClass("custom_type", "thing"),
+                                            custom_type_factory);
         custom_type_factory->m_type = new TypeNode("custom_type");
+
+        ASSERT_EQUAL(ret, 0);
     }
 
     PropertyBase * p = new Property<std::string>; 
