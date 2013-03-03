@@ -103,9 +103,9 @@ void EntityBuildertest::test_sequence()
     {
         Entity e("1", 1);
         TestWorld test_world(e);
-        Anonymous attributes;
-
         EntityBuilder::init();
+
+        Anonymous attributes;
 
         assert(EntityBuilder::instance() != 0);
 
@@ -121,9 +121,9 @@ void EntityBuildertest::test_sequence()
     {
         Entity e("1", 1);
         TestWorld test_world(e);
-        Anonymous attributes;
-
         EntityBuilder::init();
+
+        Anonymous attributes;
 
         assert(EntityBuilder::instance() != 0);
 
@@ -176,10 +176,9 @@ void EntityBuildertest::test_sequence()
         // Create a test world.
         Entity e("1", 1);
         TestWorld test_world(e);
+        EntityBuilder::init();
 
-        // Instance of EntityBuilder with all protected methods exposed
-        // for testing
-        EntityBuilder entity_factory;
+        EntityBuilder & entity_factory = *EntityBuilder::instance();
 
         // Attributes for test entities being created
         Anonymous attributes;
@@ -188,6 +187,8 @@ void EntityBuildertest::test_sequence()
         LocatedEntity * test_ent = entity_factory.newEntity("1", 1, "thing", attributes, test_world);
         assert(test_ent != 0);
 
+        EntityBuilder::del();
+        assert(EntityBuilder::instance() == 0);
         Inheritance::clear();
     }
 
@@ -195,11 +196,10 @@ void EntityBuildertest::test_sequence()
         // Create a test world.
         Entity e("1", 1);
         TestWorld test_world(e);
+        EntityBuilder::init();
 
-        // Instance of EntityBuilder with all protected methods exposed
-        // for testing
-        EntityBuilder entity_factory;
 
+        EntityBuilder & entity_factory = *EntityBuilder::instance();
         // Attributes for test entities being created
         Anonymous attributes;
 
@@ -259,13 +259,17 @@ void EntityBuildertest::test_sequence()
         // Assert the dictionary does not contain the factory we know we have
         // have not yet installed.
         assert(factory_dict.find("custom_inherited_type") == factory_dict.end());
+        EntityBuilder::del();
+        assert(EntityBuilder::instance() == 0);
         Inheritance::clear();
     }
 
     {
         Entity e("1", 1);
         TestWorld test_world(e);
-        EntityBuilder entity_factory;
+        EntityBuilder::init();
+
+        EntityBuilder & entity_factory = *EntityBuilder::instance();
         Anonymous attributes;
 
         // Get a reference to the internal dictionary of entity factories.
@@ -304,6 +308,8 @@ void EntityBuildertest::test_sequence()
 
         assert(test_ent->getType() == custom_type_factory->m_type);
 
+        EntityBuilder::del();
+        assert(EntityBuilder::instance() == 0);
         Inheritance::clear();
     }
 }
