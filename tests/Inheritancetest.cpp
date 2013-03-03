@@ -96,6 +96,7 @@ class Inheritancetest : public Cyphesis::TestBase
     void test_addChild_duplicate();
     void test_updateClass_nonexist();
     void test_updateClass_operation();
+    void test_updateClass_change_parent();
     void test_isTypeOf_string();
     void test_isTypeOf_TypeNode();
     void test_isTypeOf_TypeNode2();
@@ -121,6 +122,7 @@ Inheritancetest::Inheritancetest()
     ADD_TEST(Inheritancetest::test_addChild_duplicate);
     ADD_TEST(Inheritancetest::test_updateClass_nonexist);
     ADD_TEST(Inheritancetest::test_updateClass_operation);
+    ADD_TEST(Inheritancetest::test_updateClass_change_parent);
     ADD_TEST(Inheritancetest::test_isTypeOf_string);
     ADD_TEST(Inheritancetest::test_isTypeOf_TypeNode);
     ADD_TEST(Inheritancetest::test_isTypeOf_TypeNode2);
@@ -266,6 +268,26 @@ void Inheritancetest::test_updateClass_operation()
         
         int ret = i.updateClass("squigglymuff", r);
         ASSERT_EQUAL(ret, 0);
+    }
+}
+
+void Inheritancetest::test_updateClass_change_parent()
+{
+    Inheritance & i = Inheritance::instance();
+
+    Root r;
+    r->setId("squigglymuff");
+    r->setParents(std::list<std::string>(1, "root_operation"));
+    ASSERT_NOT_NULL(i.addChild(r));
+
+    {
+        Root r;
+
+        r->setId("squigglymuff");
+        r->setParents(std::list<std::string>(1, "action"));
+        
+        int ret = i.updateClass("squigglymuff", r);
+        ASSERT_EQUAL(ret, -1);
     }
 }
 
