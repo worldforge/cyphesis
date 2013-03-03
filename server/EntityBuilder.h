@@ -93,6 +93,8 @@ class EntityBuilder {
                         const std::string & op,
                         LocatedEntity * target,
                         LocatedEntity & owner) const;
+
+    friend class EntityBuildertest;
 };
 
 #endif // SERVER_ENTITY_BUILDER_H

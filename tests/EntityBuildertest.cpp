@@ -58,14 +58,6 @@ using Atlas::Message::MapType;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Root;
 
-class ExposedEntityBuilder : public EntityBuilder {
-  public:
-    explicit ExposedEntityBuilder() : EntityBuilder() { }
-
-    const FactoryDict & factoryDict() const { return m_entityFactories; }
-
-};
-
 class TestScriptFactory : public ScriptKit<LocatedEntity> {
   protected:
     std::string m_package;
@@ -187,7 +179,7 @@ void EntityBuildertest::test_sequence()
 
         // Instance of EntityBuilder with all protected methods exposed
         // for testing
-        ExposedEntityBuilder entity_factory;
+        EntityBuilder entity_factory;
 
         // Attributes for test entities being created
         Anonymous attributes;
@@ -206,18 +198,17 @@ void EntityBuildertest::test_sequence()
 
         // Instance of EntityBuilder with all protected methods exposed
         // for testing
-        ExposedEntityBuilder entity_factory;
+        EntityBuilder entity_factory;
 
         // Attributes for test entities being created
         Anonymous attributes;
-
 
         // Check that creating an entity of a type we know we have not yet
         // installed results in a null pointer.
         assert(entity_factory.newEntity("1", 1, "custom_type", attributes, test_world) == 0);
 
         // Get a reference to the internal dictionary of entity factories.
-        const FactoryDict & factory_dict = entity_factory.factoryDict();
+        const FactoryDict & factory_dict = entity_factory.m_entityFactories;
 
         // Make sure it has some factories in it already.
         assert(!factory_dict.empty());
@@ -274,11 +265,11 @@ void EntityBuildertest::test_sequence()
     {
         Entity e("1", 1);
         TestWorld test_world(e);
-        ExposedEntityBuilder entity_factory;
+        EntityBuilder entity_factory;
         Anonymous attributes;
 
         // Get a reference to the internal dictionary of entity factories.
-        const FactoryDict & factory_dict = entity_factory.factoryDict();
+        const FactoryDict & factory_dict = entity_factory.m_entityFactories;
 
         // Make sure it has some factories in it already.
         assert(!factory_dict.empty());
