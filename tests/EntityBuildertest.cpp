@@ -24,6 +24,7 @@
 #define DEBUG
 #endif
 
+#include "TestBase.h"
 #include "TestWorld.h"
 
 #include "server/CorePropertyManager.h"
@@ -59,7 +60,7 @@ using Atlas::Objects::Root;
 
 class ExposedEntityBuilder : public EntityBuilder {
   public:
-    explicit ExposedEntityBuilder(BaseWorld & w) : EntityBuilder() { }
+    explicit ExposedEntityBuilder() : EntityBuilder() { }
 
     const FactoryDict & factoryDict() const { return m_entityFactories; }
 
@@ -76,12 +77,36 @@ class TestScriptFactory : public ScriptKit<LocatedEntity> {
     int refreshClass() { return 0; }
 };
 
+class EntityBuildertest : public Cyphesis::TestBase
+{
+  public:
+    EntityBuildertest();
+
+    void setup();
+    void teardown();
+
+    void test_sequence();
+};
+
+EntityBuildertest::EntityBuildertest()
+{
+    ADD_TEST(EntityBuildertest::test_sequence);
+}
+
+void EntityBuildertest::setup()
+{
+}
+
+void EntityBuildertest::teardown()
+{
+}
+
 enum action {
   DO_NOTHING,
   SET_POS,
   SET_VELOCITY } LocatedEntity_merge_action = DO_NOTHING;
 
-int main(int argc, char ** argv)
+void EntityBuildertest::test_sequence()
 {
     {
         Entity e("1", 1);
@@ -162,7 +187,7 @@ int main(int argc, char ** argv)
 
         // Instance of EntityBuilder with all protected methods exposed
         // for testing
-        ExposedEntityBuilder entity_factory(test_world);
+        ExposedEntityBuilder entity_factory;
 
         // Attributes for test entities being created
         Anonymous attributes;
@@ -181,7 +206,7 @@ int main(int argc, char ** argv)
 
         // Instance of EntityBuilder with all protected methods exposed
         // for testing
-        ExposedEntityBuilder entity_factory(test_world);
+        ExposedEntityBuilder entity_factory;
 
         // Attributes for test entities being created
         Anonymous attributes;
@@ -249,7 +274,7 @@ int main(int argc, char ** argv)
     {
         Entity e("1", 1);
         TestWorld test_world(e);
-        ExposedEntityBuilder entity_factory(test_world);
+        ExposedEntityBuilder entity_factory;
         Anonymous attributes;
 
         // Get a reference to the internal dictionary of entity factories.
@@ -290,6 +315,13 @@ int main(int argc, char ** argv)
 
         Inheritance::clear();
     }
+}
+
+int main(int argc, char ** argv)
+{
+    EntityBuildertest t;
+
+    return t.run();
 }
 
 // stubs
