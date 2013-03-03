@@ -106,7 +106,6 @@ static const std::string OUTFIT = "outfit";
 static const std::string RIGHT_HAND_WIELD = "right_hand_wield";
 static const std::string SERIALNO = "serialno";
 static const std::string STAMINA = "stamina";
-static const std::string STATISTICS = "statistics";
 static const std::string STATUS = "status";
 static const std::string TASKS = "tasks";
 
