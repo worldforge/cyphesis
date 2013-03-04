@@ -7,8 +7,6 @@ Check in EntityRuleHandlertest that things behave correctly if
 EntityBuilder::installFactory fails. Same in PropertyRuleHandlertest for
 CorePropertyManager::installFactory.
 
-Check in Builder/Manager tests that duplicate insert has no effect.
-
 Fix memory leaks, so we can verify that moving MemMap to using incRef/decRef
 on parents doesn't introduce leaks.
 
