@@ -75,6 +75,12 @@ template<class PropertyT>
 void PropertyChecker<PropertyT>::interfaceCoverage()
 {
     PropertyT * copy = m_sub_prop->copy();
+    // The above line generates an unused variable warning without the line
+    // below. The purpose of this test is not to care about the value, just
+    // to ensure the subclass has implemented this method to return its own
+    // type, so we cast the result to void to tell the compiler that we
+    // know its unused.
+    (void)copy;
 }
 
 #endif // TESTS_PROPERTY_COVERAGE_H
