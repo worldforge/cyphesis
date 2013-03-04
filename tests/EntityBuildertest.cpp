@@ -44,6 +44,7 @@
 #include "common/TypeNode.h"
 #include "common/Variable.h"
 #include "common/ScriptKit.h"
+#include "common/TaskKit.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/RootOperation.h>
@@ -69,6 +70,13 @@ class TestScriptFactory : public ScriptKit<LocatedEntity> {
     int refreshClass() { return 0; }
 };
 
+class TestTaskFactory : public TaskKit
+{
+  public:
+    virtual int checkTarget(LocatedEntity * target) { return 0; }
+    virtual Task * newTask(LocatedEntity & chr) { return 0; }
+};
+
 class EntityBuildertest : public Cyphesis::TestBase
 {
   private:
@@ -86,6 +94,7 @@ class EntityBuildertest : public Cyphesis::TestBase
     void test_sequence4();
     void test_sequence5();
     void test_installFactory_duplicate();
+    void test_installTaskFactory_duplicate();
 };
 
 EntityBuildertest::EntityBuildertest()
@@ -96,6 +105,7 @@ EntityBuildertest::EntityBuildertest()
     ADD_TEST(EntityBuildertest::test_sequence4);
     ADD_TEST(EntityBuildertest::test_sequence5);
     ADD_TEST(EntityBuildertest::test_installFactory_duplicate);
+    ADD_TEST(EntityBuildertest::test_installTaskFactory_duplicate);
 }
 
 void EntityBuildertest::setup()
@@ -322,6 +332,29 @@ void EntityBuildertest::test_installFactory_duplicate()
     ASSERT_EQUAL(ret, -1);
     ASSERT_TRUE(factories.find("custom_type") != factories.end());
     ASSERT_EQUAL(factories.find("custom_type")->second, custom_type_factory);
+}
+
+void EntityBuildertest::test_installTaskFactory_duplicate()
+{
+    EntityBuilder & entity_factory = *EntityBuilder::instance();
+    TaskFactoryDict & factories = entity_factory.m_taskFactories;
+
+    std::string class_name("custom_task_type");
+
+    TaskKit * factory = new TestTaskFactory();
+
+    entity_factory.installTaskFactory(class_name, factory);
+
+    ASSERT_TRUE(factories.find(class_name) != factories.end());
+    ASSERT_EQUAL(factories.find(class_name)->second, factory);
+
+    TaskKit * factory2 = new TestTaskFactory();
+
+    entity_factory.installTaskFactory(class_name, factory2);
+
+    // Check factory2 hasn't replaced the first one inserted
+    ASSERT_TRUE(factories.find(class_name) != factories.end());
+    ASSERT_EQUAL(factories.find(class_name)->second, factory);
 }
 
 int main(int argc, char ** argv)
@@ -1044,6 +1077,14 @@ long integerId(const std::string & id)
     }
 
     return intId;
+}
+
+TaskKit::TaskKit() : m_target(0), m_scriptFactory(0)
+{
+}
+
+TaskKit::~TaskKit()
+{
 }
 
 VariableBase::~VariableBase()
