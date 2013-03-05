@@ -68,6 +68,21 @@ int PropertyRuleHandler::install(const std::string & name,
                          "not exist.", name, parent);
         return 1;
     }
+
+    Element script_attr;
+    if (desc->copyAttr("script", script_attr) == 0 && script_attr.isMap()) {
+        log(NOTICE, compose("Property \"%1\" has a script.", name));
+
+        const MapType & script = script_attr.Map();
+        std::string script_package;
+        std::string script_class;
+
+        if (getScriptDetails(script, name, "Task",
+                             script_package, script_class) != 0) {
+            log(NOTICE, compose("Property \"%1\" has a malformed script.", name));
+        }
+    }
+
     auto * factory = parent_factory->duplicateFactory();
     assert(factory != 0);
     pm->installFactory(name, desc, factory);
