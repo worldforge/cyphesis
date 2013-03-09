@@ -52,6 +52,11 @@ class TestPropertyFactory : public PropertyKit
     {
         return new TestPropertyFactory;
     }
+
+    virtual PropertyKit * scriptPropertyFactory() const
+    {
+        return 0;
+    }
 };
 
 class PropertyManagertest : public Cyphesis::TestBase

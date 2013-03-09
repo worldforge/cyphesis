@@ -30,6 +30,8 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      Property.cpp Property_impl.h Property.h \
 		      PropertyFactory.cpp PropertyFactory.h \
 		      PropertyFactory_impl.h \
+		      ScriptPropertyFactory.cpp ScriptPropertyFactory.h \
+		      ScriptPropertyFactory_impl.h \
 		      PropertyManager.cpp PropertyManager.h \
 		      OperationRouter.cpp OperationRouter.h \
 		      Router.cpp Router.h \

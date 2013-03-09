@@ -1245,6 +1245,12 @@ PropertyFactory<T> * PropertyFactory<T>::duplicateFactory() const
     return new PropertyFactory<T>;
 }
 
+template <class T>
+PropertyKit * PropertyFactory<T>::scriptPropertyFactory() const
+{
+    return new PropertyFactory<T>;
+}
+
 template class PropertyFactory<MinimalProperty>;
 
 SoftProperty::SoftProperty()

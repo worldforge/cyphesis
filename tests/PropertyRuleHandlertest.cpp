@@ -180,6 +180,7 @@ int main()
 #include "common/Inheritance.h"
 #include "common/log.h"
 #include "common/PropertyFactory_impl.h"
+#include "common/ScriptPropertyFactory_impl.h"
 
 RuleHandler::~RuleHandler()
 {

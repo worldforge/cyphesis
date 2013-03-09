@@ -47,6 +47,7 @@
 #include "common/types.h"
 #include "common/Inheritance.h"
 #include "common/PropertyFactory_impl.h"
+#include "common/ScriptPropertyFactory_impl.h"
 
 #include "common/debug.h"
 

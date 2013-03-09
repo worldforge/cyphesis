@@ -29,7 +29,7 @@
 #include "common/Inheritance.h"
 #include "common/compose.hpp"
 #include "common/PropertyManager.h"
-#include "common/PropertyFactory.h"
+#include "common/ScriptPropertyFactory_impl.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -78,7 +78,12 @@ int PropertyRuleHandler::install(const std::string & name,
         std::string script_class;
 
         if (getScriptDetails(script, name, "Task",
-                             script_package, script_class) != 0) {
+                             script_package, script_class) == 0) {
+            PropertyKit * factory = parent_factory->scriptPropertyFactory();
+            if (factory == 0) {
+                log(NOTICE, compose("Property \"%1\" cannot be scripted.", name));
+            }
+        } else {
             log(NOTICE, compose("Property \"%1\" has a malformed script.", name));
         }
     }

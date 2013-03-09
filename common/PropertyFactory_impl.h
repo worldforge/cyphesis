@@ -34,4 +34,31 @@ PropertyFactory<T> * PropertyFactory<T>::duplicateFactory() const
     return new PropertyFactory<T>;
 }
 
+template <class T>
+PropertyKit * PropertyFactory<T>::scriptPropertyFactory() const
+{
+    return 0;
+}
+
+template <typename Q>
+PropertyBase * PropertyFactory<Property<Q>>::newProperty()
+{
+    return new Property<Q>();
+}
+
+template <typename Q>
+PropertyFactory<Property<Q>> * PropertyFactory<Property<Q>>::duplicateFactory() const
+{
+    return new PropertyFactory<Property<Q>>;
+}
+
+template <class FactoryT>
+class ScriptPropertyFactory;
+
+template <typename Q>
+PropertyKit * PropertyFactory<Property<Q>>::scriptPropertyFactory() const
+{
+    return new ScriptPropertyFactory<PropertyFactory<Property<Q>>>;
+}
+
 #endif // COMMON_PROPERTY_FACTORY_IMPL_H

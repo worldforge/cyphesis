@@ -32,14 +32,33 @@ class PropertyKit {
 
     /// \brief Create a copy of this factory.
     virtual PropertyKit * duplicateFactory() const = 0;
+
+    /// \brief create factory which extends this to support scripts
+    virtual PropertyKit * scriptPropertyFactory() const = 0;
 };
 
 /// \brief Factory template to create standard Property objects.
 template <class T>
 class PropertyFactory : public PropertyKit {
   public:
+    typedef T PropertyT;
+
     virtual PropertyBase * newProperty();
     virtual PropertyFactory<T> * duplicateFactory() const;
+    virtual PropertyKit * scriptPropertyFactory() const;
+};
+
+template <typename T>
+class Property;
+
+template <typename Q>
+class PropertyFactory<Property<Q>> : public PropertyKit {
+  public:
+    typedef Property<Q> PropertyT;
+
+    virtual PropertyBase * newProperty();
+    virtual PropertyFactory<Property<Q>> * duplicateFactory() const;
+    virtual PropertyKit * scriptPropertyFactory() const;
 };
 
 #endif // COMMON_PROPERTY_FACTORY_H
