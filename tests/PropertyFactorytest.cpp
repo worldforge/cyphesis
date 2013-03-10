@@ -81,6 +81,11 @@ void PropertyFactorytest::test_factory()
 
     ASSERT_NOT_NULL(pk);
     ASSERT_NOT_NULL(dynamic_cast<PropertyFactory<PropertyT> *>(pk));
+
+    pk = pf.scriptPropertyFactory();
+
+    ASSERT_NOT_NULL(pk);
+    ASSERT_NOT_NULL(dynamic_cast<ScriptPropertyFactory<PropertyFactory<PropertyT>> *>(pk));
 }
 
 int main()
