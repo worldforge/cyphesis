@@ -80,8 +80,8 @@ void PropertyFactorytest::test_factory()
     ASSERT_NOT_NULL(pk);
     ASSERT_NOT_NULL(dynamic_cast<PropertyFactory<PropertyT> *>(pk));
 
-    // PropertyFactory<Property<T>> is a special template which can always
-    // support producing a script version of the property.
+    // PropertyFactory<Property<T>> is a partial specialisation which can
+    // always support producing a script version of the property.
     pk = pf.scriptPropertyFactory();
 
     ASSERT_NOT_NULL(pk);
