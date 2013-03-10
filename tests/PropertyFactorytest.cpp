@@ -59,14 +59,6 @@ void PropertyFactorytest::teardown()
 {
 }
 
-template <class FactoryT>
-class ScriptPropertyFactory : public PropertyKit {
-  public:
-    virtual PropertyBase * newProperty() { return 0; }
-    virtual ScriptPropertyFactory<FactoryT> * duplicateFactory() const { return 0; }
-    virtual PropertyKit * scriptPropertyFactory() const { return 0; }
-};
-
 template <class PropertyT>
 void PropertyFactorytest::test_factory()
 {
@@ -94,3 +86,14 @@ int main()
 
     return t.run();
 }
+
+// stubs
+
+template <class FactoryT>
+class ScriptPropertyFactory : public PropertyKit {
+  public:
+    virtual PropertyBase * newProperty() { return 0; }
+    virtual ScriptPropertyFactory<FactoryT> * duplicateFactory() const { return 0; }
+    virtual PropertyKit * scriptPropertyFactory() const { return 0; }
+};
+
