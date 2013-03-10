@@ -34,7 +34,7 @@ class PropertyKit {
     virtual PropertyKit * scriptPropertyFactory() const = 0;
 };
 
-/// \brief Factory template to create standard Property objects.
+/// \brief Factory template to create custom Property objects.
 template <class T>
 class PropertyFactory : public PropertyKit {
   public:
@@ -48,6 +48,7 @@ class PropertyFactory : public PropertyKit {
 template <typename T>
 class Property;
 
+/// \brief Factory template to create standard Property objects.
 template <typename Q>
 class PropertyFactory<Property<Q>> : public PropertyKit {
   public:

@@ -22,6 +22,7 @@
 
 #include "common/PropertyFactory.h"
 
+/// \brief Factory template to create scriptable Property objects.
 template <class FactoryT>
 class ScriptPropertyFactory : public FactoryT {
   public:
