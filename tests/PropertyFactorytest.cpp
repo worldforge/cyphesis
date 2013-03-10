@@ -41,7 +41,12 @@ class PropertyFactorytest : public Cyphesis::TestBase
 
     template <class PropertyT>
     void test_factory();
+
+    template <class PropertyT>
+    void test_general_factory();
 };
+
+class MinimalProperty;
 
 PropertyFactorytest::PropertyFactorytest()
 {
@@ -49,6 +54,7 @@ PropertyFactorytest::PropertyFactorytest()
     ADD_TEST(PropertyFactorytest::test_factory<Property<long>>);
     ADD_TEST(PropertyFactorytest::test_factory<Property<double>>);
     ADD_TEST(PropertyFactorytest::test_factory<Property<std::string>>);
+    ADD_TEST(PropertyFactorytest::test_general_factory<MinimalProperty>);
 }
 
 void PropertyFactorytest::setup()
@@ -74,10 +80,33 @@ void PropertyFactorytest::test_factory()
     ASSERT_NOT_NULL(pk);
     ASSERT_NOT_NULL(dynamic_cast<PropertyFactory<PropertyT> *>(pk));
 
+    // PropertyFactory<Property<T>> is a special template which can always
+    // support producing a script version of the property.
     pk = pf.scriptPropertyFactory();
 
     ASSERT_NOT_NULL(pk);
     ASSERT_NOT_NULL(dynamic_cast<ScriptPropertyFactory<PropertyFactory<PropertyT>> *>(pk));
+}
+
+template <class PropertyT>
+void PropertyFactorytest::test_general_factory()
+{
+    PropertyFactory<PropertyT> pf;
+
+    PropertyBase * p = pf.newProperty();
+
+    ASSERT_NOT_NULL(p);
+    ASSERT_NOT_NULL(dynamic_cast<PropertyT *>(p));
+
+    PropertyKit * pk = pf.duplicateFactory();
+
+    ASSERT_NOT_NULL(pk);
+    ASSERT_NOT_NULL(dynamic_cast<PropertyFactory<PropertyT> *>(pk));
+
+    // MinimalProperty cannot be assumed to be extendable into a script.
+    pk = pf.scriptPropertyFactory();
+
+    ASSERT_NULL(pk);
 }
 
 int main()
@@ -89,6 +118,14 @@ int main()
 
 // stubs
 
+class MinimalProperty : public PropertyBase {
+  public:
+    MinimalProperty() { }
+    virtual int get(Atlas::Message::Element & val) const { return 0; }
+    virtual void set(const Atlas::Message::Element & val) { }
+    virtual MinimalProperty * copy() const { return new MinimalProperty; }
+};
+
 template <class FactoryT>
 class ScriptPropertyFactory : public PropertyKit {
   public:
@@ -96,4 +133,3 @@ class ScriptPropertyFactory : public PropertyKit {
     virtual ScriptPropertyFactory<FactoryT> * duplicateFactory() const { return 0; }
     virtual PropertyKit * scriptPropertyFactory() const { return 0; }
 };
-
