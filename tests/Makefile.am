@@ -12,6 +12,7 @@ COMMON_TESTS = logtest Inheritancetest Propertytest \
                client_sockettest customtest Monitorstest \
                operationstest serialnotest newidtest TypeNodetest \
                FormattedXMLWritertest PropertyFactorytest \
+               ScriptPropertyFactorytest \
                PropertyManagertest Variabletest AtlasStreamClienttest \
                ClientTasktest utilstest SystemTimetest \
                TaskKittest EntityKittest ScriptKittest atlas_helperstest \
@@ -268,6 +269,11 @@ FormattedXMLWritertest_LDADD = $(top_builddir)/common/FormattedXMLWriter.o
 PropertyFactorytest_SOURCES = PropertyFactorytest.cpp
 PropertyFactorytest_LDADD = \
         $(top_builddir)/common/PropertyFactory.o \
+        $(top_builddir)/common/Property.o
+
+ScriptPropertyFactorytest_SOURCES = ScriptPropertyFactorytest.cpp
+ScriptPropertyFactorytest_LDADD = \
+        $(top_builddir)/common/ScriptPropertyFactory.o \
         $(top_builddir)/common/Property.o
 
 PropertyManagertest_SOURCES = PropertyManagertest.cpp
