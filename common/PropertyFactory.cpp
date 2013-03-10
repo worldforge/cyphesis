@@ -24,3 +24,31 @@
 PropertyKit::~PropertyKit()
 {
 }
+
+/// \brief Create a new Property instance
+PropertyBase * PropertyKit::newProperty()
+{
+    return 0;
+}
+
+/// \brief Create a copy of this factory.
+///
+/// This is typically used when installing a new data driven property type
+/// to create a factory which inherits from a previously installed type.
+/// @return a new property factory object
+PropertyKit * PropertyKit::duplicateFactory() const
+{
+    return 0;
+}
+
+/// \brief create factory which extends this to support scripts
+///
+/// This is typically used when installing a new data driven property type
+/// to create a factory which inherits from a previously installed type, and
+/// adds the facility to allow the property to have a script associated with
+/// it.
+/// @return a new property factory object
+PropertyKit * PropertyKit::scriptPropertyFactory() const
+{
+    return 0;
+}

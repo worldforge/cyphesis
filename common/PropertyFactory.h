@@ -25,15 +25,12 @@ class PropertyBase;
 /// \brief Kit interface for factories to create Property objects.
 class PropertyKit {
   public:
-    virtual ~PropertyKit();
+    virtual ~PropertyKit() = 0;
 
-    /// \brief Create a new Property instance
     virtual PropertyBase * newProperty() = 0;
 
-    /// \brief Create a copy of this factory.
     virtual PropertyKit * duplicateFactory() const = 0;
 
-    /// \brief create factory which extends this to support scripts
     virtual PropertyKit * scriptPropertyFactory() const = 0;
 };
 
