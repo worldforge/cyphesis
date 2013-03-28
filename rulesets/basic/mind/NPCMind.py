@@ -172,11 +172,14 @@ class NPCMind(server.Mind):
                 if getattr(d, '__iter__', False):
                     for key in d:
                         #Goals store their original setup string in "str".
-                        if attr=="goal" and "str" in dir(d[key]):
-                            object=d[key].str
-                        else:
+                        if attr!="goal":
                             object=str(d[key])
-                        res = res + Operation("thought", Entity(predicate=attr, subject=key, object=object))
+                            res = res + Operation("thought", Entity(predicate=attr, subject=key, object=object))
+            for goal in self.goals:
+                res = res + Operation("thought", Entity(predicate="goal", subject=goal.name, object=goal.str))
+            for (_, goallist) in self.trigger_goals.items():
+                for goal in goallist:
+                    res = res + Operation("thought", Entity(predicate="goal", subject=goal.name, object=goal.str))
                     
         return res
         
@@ -529,6 +532,7 @@ class NPCMind(server.Mind):
         goal.str=str_goal
         if type(name)==StringType: goal.key=eval(name)
         else: goal.key=name
+        goal.name=name
         self.add_knowledge("goal",name,goal)
         if hasattr(goal,"trigger"):
             dictlist.add_value(self.trigger_goals, goal.trigger(), goal)
