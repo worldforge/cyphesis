@@ -172,7 +172,7 @@ class NPCMind(server.Mind):
                 if getattr(d, '__iter__', False):
                     for key in d:
                         #Goals store their original setup string in "str".
-                        if attr=="goal":
+                        if attr=="goal" and "str" in dir(d[key]):
                             object=d[key].str
                         else:
                             object=str(d[key])
