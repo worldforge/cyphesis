@@ -64,6 +64,7 @@ class NPCMind(server.Mind):
         self.money_transfers=[]
         self.transfers=[]
         self.trigger_goals={}
+        self.known_goals={}
         self.jitter=random.uniform(-0.1, 0.1)
         #???self.debug=debug(self.name+".mind.log")
         self.message_queue=None
@@ -175,11 +176,9 @@ class NPCMind(server.Mind):
                         if attr!="goal":
                             object=str(d[key])
                             res = res + Operation("thought", Entity(predicate=attr, subject=key, object=object))
-            for goal in self.goals:
-                res = res + Operation("thought", Entity(predicate="goal", subject=goal.name, object=goal.str))
-            for (_, goallist) in self.trigger_goals.items():
+            for (subject, goallist) in self.known_goals.items():
                 for goal in goallist:
-                    res = res + Operation("thought", Entity(predicate="goal", subject=goal.name, object=goal.str))
+                    res = res + Operation("thought", Entity(predicate="goal", subject=subject, object=goal.str))
                     
         return res
         
@@ -532,8 +531,7 @@ class NPCMind(server.Mind):
         goal.str=str_goal
         if type(name)==StringType: goal.key=eval(name)
         else: goal.key=name
-        goal.name=name
-        self.add_knowledge("goal",name,goal)
+        dictlist.add_value(self.known_goals, name, goal)
         if hasattr(goal,"trigger"):
             dictlist.add_value(self.trigger_goals, goal.trigger(), goal)
             return
