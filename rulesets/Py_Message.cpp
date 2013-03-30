@@ -78,6 +78,9 @@ static PyObject * Message_repr(PyMessage *self)
         return NULL;
     }
 #endif // NDEBUG
+    if (self->m_obj->isString()) {
+        return PyString_FromString(self->m_obj->asString().c_str());
+    }
     return PyString_FromFormat("<%s object at %p>(%s)",
                                Py_TYPE(self)->tp_name,
                                self,
