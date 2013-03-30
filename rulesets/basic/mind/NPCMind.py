@@ -171,14 +171,16 @@ class NPCMind(server.Mind):
             for attr in dir(self.knowledge):
                 d=getattr(self.knowledge, attr)
                 if getattr(d, '__iter__', False):
-                    for key in d:
+                   for key in d:
                         #Goals store their original setup string in "str".
                         if attr!="goal":
                             object=str(d[key])
                             res = res + Operation("thought", Entity(predicate=attr, subject=key, object=object))
             for (subject, goallist) in self.known_goals.items():
+                goalstrings=[]
                 for goal in goallist:
-                    res = res + Operation("thought", Entity(predicate="goal", subject=subject, object=goal.str))
+                    goalstrings.append(goal.str)
+                res = res + Operation("thought", Entity(predicate="goal", subject=subject, object=goalstrings))
                     
         return res
         
@@ -192,7 +194,13 @@ class NPCMind(server.Mind):
                     object=thought.object
                     #handle goals in a special way
                     if predicate == "goal":
-                        self.add_goal(subject,object)
+                        if type(object) is StringType:
+                            self.set_goals(subject,[object])
+                        else:
+                            string_goals=[]
+                            for goalElement in object:
+                                string_goals.append(str(goalElement))
+                            self.set_goals(subject,string_goals)
                     else:
                         if object[0]=='(':
                             #CHEAT!: remove eval
@@ -540,6 +548,38 @@ class NPCMind(server.Mind):
                 self.goals.insert(i+1,goal)
                 return
         self.goals.insert(0,goal)
+    def set_goals(self, name, goals):
+        """Set goals.
+           The 'goals' list contains all of the goals for a given subject ('name').
+           All previous goals for the given subject will be removed. This means that this method can
+           be also be used for deleting goals if the 'goals' list is empty."""
+        #first remove all existing goals
+        if name in self.known_goals:
+            goallist=self.known_goals[name]
+            for goal in goallist:
+                if hasattr(goal,"trigger"):
+                    dictlist.remove_value(self.trigger_goals, goal)
+                else:
+                    self.goals.remove(goal)
+            del self.known_goals[name]
+            
+        for str_goal in goals:
+            #CHEAT!: remove eval (this and later)
+            goal=eval("mind.goals."+str_goal)
+            if const.debug_thinking:
+                goal.debug=1
+            goal.str=str_goal
+            if type(name)==StringType: goal.key=eval(name)
+            else: goal.key=name
+            dictlist.add_value(self.known_goals, name, goal)
+            if hasattr(goal,"trigger"):
+                dictlist.add_value(self.trigger_goals, goal.trigger(), goal)
+                return
+            for i in range(len(self.goals)-1,-1,-1):
+                if self.cmp_goal_importance(self.goals[i],goal):
+                    self.goals.insert(i+1,goal)
+                    return
+            self.goals.insert(0,goal)
     def fulfill_goals(self,time):
         "see if all goals are fulfilled: if not try to fulfill them"
         for g in self.goals[:]:
