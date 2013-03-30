@@ -553,7 +553,23 @@ class NPCMind(server.Mind):
            The 'goals' list contains all of the goals for a given subject ('name').
            All previous goals for the given subject will be removed. This means that this method can
            be also be used for deleting goals if the 'goals' list is empty."""
-        #first remove all existing goals
+        
+        #start by evaluating the goals. This is done before we remove any goals, so as if there's an error
+        #when creating the goals, the process will be aborted without any side effects
+        
+        new_goals=[]
+        for str_goal in goals:
+            #CHEAT!: remove eval (this and later)
+            goal=eval("mind.goals."+str_goal)
+            if const.debug_thinking:
+                goal.debug=1
+            goal.str=str_goal
+            if type(name)==StringType: goal.key=eval(name)
+            else: goal.key=name
+            new_goals.append(goal)
+        
+        
+        #once we've successfully created the new goals we'll remove the old ones
         if name in self.known_goals:
             goallist=self.known_goals[name]
             for goal in goallist:
@@ -563,14 +579,7 @@ class NPCMind(server.Mind):
                     self.goals.remove(goal)
             del self.known_goals[name]
             
-        for str_goal in goals:
-            #CHEAT!: remove eval (this and later)
-            goal=eval("mind.goals."+str_goal)
-            if const.debug_thinking:
-                goal.debug=1
-            goal.str=str_goal
-            if type(name)==StringType: goal.key=eval(name)
-            else: goal.key=name
+        for goal in new_goals:
             dictlist.add_value(self.known_goals, name, goal)
             if hasattr(goal,"trigger"):
                 dictlist.add_value(self.trigger_goals, goal.trigger(), goal)
