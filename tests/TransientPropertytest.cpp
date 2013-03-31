@@ -32,7 +32,7 @@ int main()
 {
     TransientProperty * ap = new TransientProperty;
 
-    PropertyCoverage pc(ap);
+    PropertyChecker<TransientProperty> pc(ap);
 
     pc.testDataAppend(-1.);
 
@@ -46,11 +46,11 @@ int main()
 
 #include "TestWorld.h"
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     return 0;

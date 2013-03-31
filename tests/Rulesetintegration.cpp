@@ -65,6 +65,7 @@ class Rulesetintegration : public Cyphesis::TestBase
   protected:
     World * m_entity;
     TestWorld * m_test_world;
+    ExposedEntityBuilder * m_entity_builder;
   public:
     Rulesetintegration();
 
@@ -73,22 +74,26 @@ class Rulesetintegration : public Cyphesis::TestBase
 
     void test_init();
     void test_sequence();
+    void test_property_type();
 };
 
 Rulesetintegration::Rulesetintegration()
 {
     ADD_TEST(Rulesetintegration::test_init);
     ADD_TEST(Rulesetintegration::test_sequence);
+    ADD_TEST(Rulesetintegration::test_property_type);
 }
 
 void Rulesetintegration::setup()
 {
     m_entity = new World("1", 1);
     m_test_world = new TestWorld(*m_entity);
+    m_entity_builder = new ExposedEntityBuilder();
 }
 
 void Rulesetintegration::teardown()
 {
+    delete m_entity_builder;
     delete m_entity;
     delete m_test_world;
     Inheritance::clear();
@@ -111,20 +116,20 @@ void Rulesetintegration::test_sequence()
     {
         Atlas::Message::Element val;
 
-        // Instance of EntityBuilder with all protected methods exposed
-        // for testing
-        ExposedEntityBuilder * entity_factory = new ExposedEntityBuilder();
         // Instance of Ruleset with all protected methods exposed
         // for testing
         EntityBuilder * test_eb = EntityBuilder::instance();
-        assert(test_eb == entity_factory);
+        assert(test_eb == m_entity_builder);
         Ruleset test_ruleset(test_eb);
 
         // Attributes for test entities being created
         Anonymous attributes;
 
         // Create an entity which is an instance of one of the core classes
-        Entity * test_ent = test_eb->newEntity("1", 1, "thing", attributes, *m_test_world);
+        LocatedEntity * test_ent = test_eb->newEntity("1", 1,
+                                                      "thing",
+                                                      attributes,
+                                                      *m_test_world);
         assert(test_ent != 0);
 
         // Check that creating an entity of a type we know we have not yet
@@ -594,6 +599,13 @@ void Rulesetintegration::test_sequence()
     }
 }
 
+void Rulesetintegration::test_property_type()
+{
+    Ruleset test_ruleset(m_entity_builder);
+    // Stub back in PropertyManager, and stub out everything it depends
+    // on.
+}
+
 int main()
 {
     database_flag = false;
@@ -605,11 +617,11 @@ int main()
     return t.run();
 }
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     return 0;
@@ -641,14 +653,14 @@ Account::~Account()
 {
 }
 
-Entity * Account::addNewCharacter(const std::string & typestr,
+LocatedEntity * Account::addNewCharacter(const std::string & typestr,
                                   const RootEntity & ent,
                                   const Root & arg)
 {
     return 0;
 }
 
-int Account::connectCharacter(Entity *chr)
+int Account::connectCharacter(LocatedEntity *chr)
 {
     return 0;
 }
@@ -669,7 +681,7 @@ void Account::createObject(const std::string & type_str,
 {
 }
 
-void Account::addCharacter(Entity * chr)
+void Account::addCharacter(LocatedEntity * chr)
 {
 }
 
@@ -751,6 +763,13 @@ PropertyBase * CorePropertyManager::addProperty(const std::string & name,
     return new SoftProperty;
 }
 
+int CorePropertyManager::installFactory(const std::string & type_name,
+                                        const Atlas::Objects::Root & type_desc,
+                                        PropertyKit * factory)
+{
+    return 0;
+}
+
 template <class T>
 EntityFactory<T>::EntityFactory(EntityFactory<T> & o)
 {
@@ -767,7 +786,7 @@ EntityFactory<T>::~EntityFactory()
 }
 
 template <class T>
-Entity * EntityFactory<T>::newEntity(const std::string & id, long intId)
+LocatedEntity * EntityFactory<T>::newEntity(const std::string & id, long intId)
 {
     return new Entity(id, intId);
 }
@@ -898,7 +917,7 @@ Router * ServerRouting::getObject(const std::string & id) const
 }
 
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0), m_flags(0)
+        LocatedEntity(id, intId), m_motion(0)
 {
 }
 
@@ -1040,6 +1059,24 @@ PropertyBase * Entity::setProperty(const std::string & name,
     return m_properties[name] = prop;
 }
 
+PropertyBase * Entity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+void Entity::installDelegate(int class_no, const std::string & delegate)
+{
+}
+
+Domain * Entity::getMovementDomain()
+{
+    return 0;
+}
+
+void Entity::sendWorld(const Operation & op)
+{
+}
+
 void Entity::onContainered()
 {
 }
@@ -1051,7 +1088,7 @@ void Entity::onUpdated()
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),
                m_refCount(0), m_seq(0),
-               m_script(0), m_type(0), m_contains(0)
+               m_script(0), m_type(0), m_flags(0), m_contains(0)
 {
 }
 
@@ -1104,6 +1141,34 @@ void LocatedEntity::merge(const MapType & ent)
 const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
 {
     return 0;
+}
+
+PropertyBase * LocatedEntity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * LocatedEntity::setProperty(const std::string & name,
+                                          PropertyBase * prop)
+{
+    return 0;
+}
+
+void LocatedEntity::installDelegate(int, const std::string &)
+{
+}
+
+void LocatedEntity::destroy()
+{
+}
+
+Domain * LocatedEntity::getMovementDomain()
+{
+    return 0;
+}
+
+void LocatedEntity::sendWorld(const Operation & op)
+{
 }
 
 void LocatedEntity::onContainered()
@@ -1181,7 +1246,7 @@ int PythonScriptFactory<T>::refreshClass()
     return 0;
 }
 
-template class PythonScriptFactory<Entity>;
+template class PythonScriptFactory<LocatedEntity>;
 template class PythonScriptFactory<Task>;
 
 void Task::initTask(const Operation & op, OpVector & res)

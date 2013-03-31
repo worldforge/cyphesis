@@ -27,8 +27,11 @@
 class VisibilityProperty : public Property<float> {
   public:
     VisibilityProperty();
+    virtual ~VisibilityProperty();
 
-    virtual void apply(Entity *);
+    virtual VisibilityProperty * copy() const;
+
+    virtual void apply(LocatedEntity *);
 };
 
 #endif // RULESETS_VISIBILITY_PROPERTY_H

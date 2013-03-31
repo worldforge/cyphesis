@@ -27,8 +27,7 @@
 #include "TestPropertyManager.h"
 
 #include "common/Property.h"
-
-#include <Atlas/Message/Element.h>
+#include "common/PropertyFactory.h"
 
 using Atlas::Message::Element;
 
@@ -40,24 +39,34 @@ TestPropertyManager::~TestPropertyManager()
 {
 }
 
+void TestPropertyManager::installPropertyFactory(const std::string & name,
+                                                 PropertyKit * factory)
+{
+    m_propertyFactories.insert(std::make_pair(name, factory));
+}
+
 PropertyBase * TestPropertyManager::addProperty(const std::string & name,
                                                 int type)
 {
     PropertyBase * p = 0;
-    switch (type) {
-      case Element::TYPE_INT:
-        p = new Property<int>;
-        break;
-      case Element::TYPE_FLOAT:
-        p = new Property<double>;
-        break;
-      case Element::TYPE_STRING:
-        p = new Property<std::string>;
-        break;
-      default:
-        p = new SoftProperty;
-        break;
+    PropertyFactoryDict::const_iterator I = m_propertyFactories.find(name);
+    if (I == m_propertyFactories.end()) {
+        switch (type) {
+          case Element::TYPE_INT:
+            p = new Property<int>;
+            break;
+          case Element::TYPE_FLOAT:
+            p = new Property<double>;
+            break;
+          case Element::TYPE_STRING:
+            p = new Property<std::string>;
+            break;
+          default:
+            p = new SoftProperty;
+            break;
+        }
+    } else {
+        p = I->second->newProperty();
     }
-
     return p;
 }

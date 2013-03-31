@@ -24,6 +24,8 @@
 #define DEBUG
 #endif
 
+#include "TestBase.h"
+
 #include "server/EntityFactory.h"
 
 #include "rulesets/Creator.h"
@@ -36,7 +38,7 @@
 
 #include <cassert>
 
-class TestScriptFactory : public ScriptKit<Entity> {
+class TestScriptFactory : public ScriptKit<LocatedEntity> {
   protected:
     std::string m_package;
   public:
@@ -44,7 +46,7 @@ class TestScriptFactory : public ScriptKit<Entity> {
         return m_package;
     }
 
-    virtual int addScript(Entity * entity) const {
+    virtual int addScript(LocatedEntity * entity) const {
         return 0;
     }
 
@@ -53,35 +55,62 @@ class TestScriptFactory : public ScriptKit<Entity> {
     }
 };
 
+class EntityFactorytest : public Cyphesis::TestBase
+{
+  private:
+    EntityKit * m_ek;
+  public:
+    EntityFactorytest();
+
+    void setup();
+    void teardown();
+
+    void test_newEntity();
+    void test_destructor();
+    void test_updateProperties();
+};
+
+EntityFactorytest::EntityFactorytest()
+{
+    ADD_TEST(EntityFactorytest::test_newEntity);
+    ADD_TEST(EntityFactorytest::test_destructor);
+    ADD_TEST(EntityFactorytest::test_updateProperties);
+}
+
+void EntityFactorytest::setup()
+{
+    m_ek = new EntityFactory<Thing>;
+    m_ek->m_type = new TypeNode("foo");
+}
+
+void EntityFactorytest::teardown()
+{
+    delete m_ek->m_type;
+    delete m_ek;
+}
+
+void EntityFactorytest::test_newEntity()
+{
+    LocatedEntity * e = m_ek->newEntity("1", 1);
+
+    ASSERT_NOT_NULL(e);
+}
+
+void EntityFactorytest::test_destructor()
+{
+    m_ek->m_scriptFactory = new TestScriptFactory;
+}
+
+void EntityFactorytest::test_updateProperties()
+{
+    m_ek->updateProperties();
+}
+
 int main()
 {
-    EntityKit * ek;
+    EntityFactorytest t;
 
-    Entity * e;
-
-    ek = new EntityFactory<Thing>;
-
-    e = ek->newEntity("1", 1);
-    assert(e);
-
-    delete ek;
-
-    ek = new EntityFactory<World>;
-
-    e = ek->newEntity("1", 1);
-    assert(!e);
-
-    ek->m_scriptFactory = new TestScriptFactory;
-
-    delete ek;
-
-    ek = new EntityFactory<Thing>;
-
-    ek->updateProperties();
-
-    delete ek;
-
-    return 0;
+    return t.run();
 }
 
 // stubs
@@ -321,7 +350,7 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
 }
 
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0), m_flags(0)
+        LocatedEntity(id, intId), m_motion(0)
 {
 }
 
@@ -463,6 +492,24 @@ PropertyBase * Entity::setProperty(const std::string & name,
     return m_properties[name] = prop;
 }
 
+PropertyBase * Entity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+void Entity::installDelegate(int class_no, const std::string & delegate)
+{
+}
+
+Domain * Entity::getMovementDomain()
+{
+    return 0;
+}
+
+void Entity::sendWorld(const Operation & op)
+{
+}
+
 void Entity::onContainered()
 {
 }
@@ -474,7 +521,7 @@ void Entity::onUpdated()
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),
                m_refCount(0), m_seq(0),
-               m_script(0), m_type(0), m_contains(0)
+               m_script(0), m_type(0), m_flags(0), m_contains(0)
 {
 }
 
@@ -509,6 +556,34 @@ PropertyBase * LocatedEntity::setAttr(const std::string & name,
 const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
 {
     return 0;
+}
+
+PropertyBase * LocatedEntity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * LocatedEntity::setProperty(const std::string & name,
+                                          PropertyBase * prop)
+{
+    return 0;
+}
+
+void LocatedEntity::installDelegate(int, const std::string &)
+{
+}
+
+void LocatedEntity::destroy()
+{
+}
+
+Domain * LocatedEntity::getMovementDomain()
+{
+    return 0;
+}
+
+void LocatedEntity::sendWorld(const Operation & op)
+{
 }
 
 void LocatedEntity::onContainered()
@@ -551,6 +626,14 @@ void Router::clientError(const Operation & op,
 }
 
 Location::Location() : m_loc(0)
+{
+}
+
+TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
+{
+}
+
+TypeNode::~TypeNode()
 {
 }
 

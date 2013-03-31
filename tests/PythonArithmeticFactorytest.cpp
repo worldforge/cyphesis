@@ -182,7 +182,7 @@ void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 }
 
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0), m_flags(0)
+        LocatedEntity(id, intId), m_motion(0)
 {
 }
 
@@ -323,6 +323,20 @@ PropertyBase * Entity::modProperty(const std::string & name)
     return 0;
 }
 
+PropertyBase * Entity::setProperty(const std::string & name,
+                                   PropertyBase * prop)
+{
+    return 0;
+}
+
+void Entity::installDelegate(int class_no, const std::string & delegate)
+{
+}
+
+void Entity::sendWorld(const Operation & op)
+{
+}
+
 void Entity::onContainered()
 {
 }
@@ -339,7 +353,7 @@ Domain * Entity::getMovementDomain()
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),
                m_refCount(0), m_seq(0),
-               m_script(0), m_type(0), m_contains(0)
+               m_script(0), m_type(0), m_flags(0), m_contains(0)
 {
 }
 
@@ -374,6 +388,34 @@ PropertyBase * LocatedEntity::setAttr(const std::string & name,
 const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
 {
     return 0;
+}
+
+PropertyBase * LocatedEntity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * LocatedEntity::setProperty(const std::string & name,
+                                          PropertyBase * prop)
+{
+    return 0;
+}
+
+void LocatedEntity::installDelegate(int, const std::string &)
+{
+}
+
+void LocatedEntity::destroy()
+{
+}
+
+Domain * LocatedEntity::getMovementDomain()
+{
+    return 0;
+}
+
+void LocatedEntity::sendWorld(const Operation & op)
+{
 }
 
 void LocatedEntity::onContainered()

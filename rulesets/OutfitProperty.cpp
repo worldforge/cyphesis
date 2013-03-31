@@ -19,16 +19,19 @@
 
 #include "OutfitProperty.h"
 
-#include "Entity.h"
+#include "rulesets/LocatedEntity.h"
 
-#include "common/log.h"
+#include "common/BaseWorld.h"
 #include "common/debug.h"
+#include "common/log.h"
 #include "common/Update.h"
 
 #include <Atlas/Objects/Anonymous.h>
 
 #include <sigc++/adaptors/bind.h>
 #include <sigc++/functors/mem_fun.h>
+
+#include <iostream>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -85,12 +88,12 @@ void OutfitProperty::set(const Atlas::Message::Element & val)
 
         if (item.isString()) {
             const std::string & id = item.String();
-            Entity * e = BaseWorld::instance().getEntity(id);
+            LocatedEntity * e = BaseWorld::instance().getEntity(id);
             if (e != 0) {
                 m_data[key] = EntityRef(e);
             }
         } else if (item.isPtr()) {
-            Entity * e = static_cast<Entity*>(item.Ptr());
+            LocatedEntity * e = static_cast<LocatedEntity*>(item.Ptr());
             assert(e != 0);
             m_data[key] = EntityRef(e);
         } else {
@@ -147,6 +150,11 @@ void OutfitProperty::add(const std::string & key,
     ent->setAttr(key, val_map);
 }
 
+OutfitProperty * OutfitProperty::copy() const
+{
+    return new OutfitProperty(*this);
+}
+
 void OutfitProperty::cleanUp()
 {
     std::set<std::string> empty_locations;
@@ -166,9 +174,9 @@ void OutfitProperty::cleanUp()
     }
 }
 
-void OutfitProperty::wear(Entity * wearer,
+void OutfitProperty::wear(LocatedEntity * wearer,
                           const std::string & location,
-                          Entity * garment)
+                          LocatedEntity * garment)
 {
     m_data[location] = EntityRef(garment);
 
@@ -180,7 +188,8 @@ void OutfitProperty::wear(Entity * wearer,
     garment->destroyed.connect(sigc::bind(sigc::mem_fun(this, &OutfitProperty::itemRemoved), garment, wearer));
 }
 
-void OutfitProperty::itemRemoved(Entity * garment, Entity * wearer)
+void OutfitProperty::itemRemoved(LocatedEntity * garment,
+                                 LocatedEntity * wearer)
 {
     Element worn_attr;
     std::string key;

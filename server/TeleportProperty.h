@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2006 Alistair Riddoch
+// Copyright (C) 2013 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,4 +17,22 @@
 
 // $Id$
 
-#include "ActivePropertyFactory_impl.h"
+#ifndef SERVER_TELEPORT_PROPERTY_H
+#define SERVER_TELEPORT_PROPERTY_H
+
+#include "common/Property.h"
+
+class TeleportProperty : public Property<std::string>
+{
+  public:
+    virtual void install(LocatedEntity *, const std::string &);
+    virtual HandlerResult operation(LocatedEntity *,
+                                    const Operation &,
+                                    OpVector &);
+
+    HandlerResult teleport_handler(LocatedEntity * e,
+                                   const Operation & op,
+                                   OpVector & res);
+};
+
+#endif // SERVER_TELEPORT_PROPERTY_H

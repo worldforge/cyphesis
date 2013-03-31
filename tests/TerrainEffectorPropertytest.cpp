@@ -117,7 +117,7 @@ int main()
 #include "Property_stub_impl.h"
 
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0), m_flags(0)
+        LocatedEntity(id, intId), m_motion(0)
 {
 }
 
@@ -257,6 +257,24 @@ const PropertyBase * Entity::getProperty(const std::string & name) const
     return 0;
 }
 
+PropertyBase * Entity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+void Entity::installDelegate(int class_no, const std::string & delegate)
+{
+}
+
+Domain * Entity::getMovementDomain()
+{
+    return 0;
+}
+
+void Entity::sendWorld(const Operation & op)
+{
+}
+
 PropertyBase * Entity::setProperty(const std::string & name,
                                    PropertyBase * prop)
 {
@@ -274,7 +292,7 @@ void Entity::onUpdated()
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),
                m_refCount(0), m_seq(0),
-               m_script(0), m_type(0), m_contains(0)
+               m_script(0), m_type(0), m_flags(0), m_contains(0)
 {
 }
 
@@ -309,6 +327,34 @@ PropertyBase * LocatedEntity::setAttr(const std::string & name,
 const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
 {
     return 0;
+}
+
+PropertyBase * LocatedEntity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * LocatedEntity::setProperty(const std::string & name,
+                                          PropertyBase * prop)
+{
+    return 0;
+}
+
+void LocatedEntity::installDelegate(int, const std::string &)
+{
+}
+
+void LocatedEntity::destroy()
+{
+}
+
+Domain * LocatedEntity::getMovementDomain()
+{
+    return 0;
+}
+
+void LocatedEntity::sendWorld(const Operation & op)
+{
 }
 
 void LocatedEntity::onContainered()
@@ -373,6 +419,11 @@ void TerrainProperty::set(const Atlas::Message::Element & ent)
 {
 }
 
+TerrainProperty * TerrainProperty::copy() const
+{
+    return 0;
+}
+
 PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
 {
 }
@@ -381,11 +432,11 @@ PropertyBase::~PropertyBase()
 {
 }
 
-void PropertyBase::install(Entity *)
+void PropertyBase::install(LocatedEntity *, const std::string & name)
 {
 }
 
-void PropertyBase::apply(Entity *)
+void PropertyBase::apply(LocatedEntity *)
 {
 }
 
@@ -397,6 +448,13 @@ void PropertyBase::add(const std::string & s,
 void PropertyBase::add(const std::string & s,
                        const Atlas::Objects::Entity::RootEntity & ent) const
 {
+}
+
+HandlerResult PropertyBase::operation(LocatedEntity *,
+                                      const Operation &,
+                                      OpVector &)
+{
+    return OPERATION_IGNORED;
 }
 
 template class Property<Atlas::Message::MapType>;

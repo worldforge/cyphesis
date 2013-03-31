@@ -33,9 +33,9 @@ class ServerAccount : public Account {
                                const Atlas::Objects::Root & ent,
                                OpVector & res) const;
 
-    Entity * addNewEntity(const std::string &,
-                          const Atlas::Objects::Entity::RootEntity &,
-                          const Atlas::Objects::Root &);
+    LocatedEntity * addNewEntity(const std::string &,
+                                 const Atlas::Objects::Entity::RootEntity &,
+                                 const Atlas::Objects::Root &);
 
     virtual void createObject(const std::string &,
                               const Atlas::Objects::Root &,

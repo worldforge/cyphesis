@@ -34,10 +34,10 @@ namespace Atlas {
 
 /// \brief Shape interface for inheritance based use of wfmath shapes
 class Shape {
-  private:
-    explicit Shape(const Shape &);
-    Shape & operator=(const Shape &);
   protected:
+    Shape(const Shape &) = default;
+    Shape & operator=(const Shape &) = default;
+
     Shape();
   public:
     virtual ~Shape() = 0;
@@ -51,6 +51,8 @@ class Shape {
     virtual void scale(WFMath::CoordType factor) = 0;
 
     virtual bool equal(const Shape & other) const = 0;
+
+    virtual Shape * copy() const = 0;
 
     virtual void toAtlas(Atlas::Message::MapType &) const = 0;
     virtual int fromAtlas(const Atlas::Message::Element &) = 0;
@@ -72,6 +74,8 @@ class Form<2> : public Shape {
     virtual WFMath::Point<2> lowCorner() const = 0;
     virtual WFMath::Point<2> highCorner() const = 0;
     virtual bool intersect(const WFMath::Point<2> &) const = 0;
+
+    virtual Form<2> * copy() const = 0;
 };
 
 template <>
@@ -82,6 +86,8 @@ class Form<3> : public Shape {
     virtual WFMath::Point<3> lowCorner() const = 0;
     virtual WFMath::Point<3> highCorner() const = 0;
     virtual bool intersect(const WFMath::Point<3> &) const = 0;
+
+    virtual Form<2> * copy() const = 0;
 };
 
 typedef Form<2> Area;
@@ -91,6 +97,9 @@ template<template <int> class ShapeT, int dim = 2>
 class MathShape : public Form<dim> {
   protected:
     ShapeT<dim> m_shape;
+
+    MathShape(const MathShape &) = default;
+    MathShape & operator=(const MathShape &) = default;
 
     const char * getType() const;
   public:
@@ -111,6 +120,8 @@ class MathShape : public Form<dim> {
     virtual void scale(WFMath::CoordType factor);
 
     virtual bool equal(const Shape & other) const;
+
+    virtual MathShape<ShapeT, dim> * copy() const;
 
     virtual void toAtlas(Atlas::Message::MapType &) const;
     virtual int fromAtlas(const Atlas::Message::Element &);

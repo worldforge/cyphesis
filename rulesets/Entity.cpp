@@ -22,6 +22,7 @@
 #include "Script.h"
 #include "Domain.h"
 
+#include "common/BaseWorld.h"
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/op_switch.h"
@@ -70,7 +71,7 @@ static const bool debug_flag = false;
 
 /// \brief Entity constructor
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0), m_flags(0)
+        LocatedEntity(id, intId), m_motion(0)
 {
 }
 
@@ -85,25 +86,28 @@ PropertyBase * Entity::setAttr(const std::string & name, const Element & attr)
     PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
         prop = I->second;
-        prop->set(attr);
-        // Allow the change to take effect.
-        prop->apply(this);
-        // Mark it as unclean and the Entity as unclean
+        // Mark it as unclean
         prop->resetFlags(per_clean);
-        resetFlags(entity_clean);
-        return prop;
+    } else {
+        PropertyDict::const_iterator I;
+        if (m_type != 0 &&
+            (I = m_type->defaults().find(name)) != m_type->defaults().end()) {
+            prop = I->second->copy();
+        } else {
+            // This is an entirely new property, not just a modifcation of
+            // one in defaults, so we need to install it to this Entity.
+            prop = PropertyManager::instance()->addProperty(name,
+                                                            attr.getType());
+            prop->install(this, name);
+        }
+        assert(prop != 0);
+        m_properties[name] = prop;
     }
-    prop = PropertyManager::instance()->addProperty(name, attr.getType());
-    assert(prop != 0);
+
     prop->set(attr);
-    m_properties[name] = prop;
-    // If this is an entirely new property, not just a modifcation of
-    // one in defaults, then we need to install it to this Entity.
-    if (m_type == 0 || m_type->defaults().find(name) == m_type->defaults().end()) {
-        prop->install(this);
-    }
     // Allow the value to take effect.
     prop->apply(this);
+    // Mark the Entity as unclean
     resetFlags(entity_clean);
     return prop;
 }
@@ -134,10 +138,8 @@ PropertyBase * Entity::modProperty(const std::string & name)
         if (I != m_type->defaults().end()) {
             // We have a default for this property. Create a new instance
             // property with the same value.
-            Element val;
-            I->second->get(val);
-            PropertyBase * new_prop = PropertyManager::instance()->addProperty(name, val.getType());
-            new_prop->set(val);
+            PropertyBase * new_prop = I->second->copy();
+            new_prop->flags() &= ~flag_class;
             m_properties[name] = new_prop;
             new_prop->apply(this);
             return new_prop;
@@ -217,13 +219,13 @@ void Entity::addToEntity(const RootEntity & ent) const
     ent->setObjtype("obj");
 }
 
-/// \brief Install a handler function for an operation
+/// \brief Install a delegate property for an operation
 ///
 /// @param class_no The class number of the operation to be handled
-/// @param handler A pointer to the function to be wrapped
-void Entity::installHandler(int class_no, Handler handler)
+/// @param delegate The name of the property to delegate it to.
+void Entity::installDelegate(int class_no, const std::string & delegate)
 {
-    m_operationHandlers.insert(std::make_pair(class_no, handler));
+    m_delegates.insert(std::make_pair(class_no, delegate));
 }
 
 /// \brief Destroy this entity
@@ -280,6 +282,11 @@ void Entity::destroy()
 Domain * Entity::getMovementDomain()
 {
     return Domain::instance();
+}
+
+void Entity::sendWorld(const Operation & op)
+{
+    BaseWorld::instance().message(op, *this);
 }
 
 /// \brief Handle a actuate operation
@@ -421,13 +428,47 @@ void Entity::operation(const Operation & op, OpVector & res)
         m_script->operation(op->getParents().front(), op, res) != 0) {
         return;
     }
-    HandlerMap::const_iterator I = m_operationHandlers.find(op->getClassNo());
-    if (I != m_operationHandlers.end()) {
-        debug(std::cout << "Found handler for " << op->getParents().front()
-                        << " operations" << std::endl << std::flush;);
-        I->second(this, op, res);
+    // FIXME Once this is a multimap, we'll need a for loop to call all
+    // the delegates.
+    auto J = m_delegates.find(op->getClassNo());
+    if (J != m_delegates.end()) {
+        HandlerResult hr = callDelegate(J->second, op, res);
+        if (hr != OPERATION_IGNORED) {
+            return;
+        }
+        // How to access the property? We need a non-const pointer to call
+        // operation, but to get this easily we need to force instantiation
+        // from the type dict, making properties way less efficient.
+        // Making the operation() method const strongly limits the usefulness
+        // of delegates, but if we fetch the pointer the hard way, we then
+        // require the method to handle instantiation on demand.
+        //
+        // Can we make a clean way to handle the property in the general case
+        // handle instantiation itself? Making it responsible for copying
+        // itself on instatiation would be faster than the
+        // get/set/PropertyManager currently required in in modProperty.
     }
     return callOperation(op, res);
+}
+
+HandlerResult Entity::callDelegate(const std::string & name,
+                                   const Operation & op,
+                                   OpVector & res)
+{
+    PropertyBase * p = 0;
+    PropertyDict::const_iterator I = m_properties.find(name);
+    if (I != m_properties.end()) {
+        p = I->second;
+    } else if (m_type != 0) {
+        I = m_type->defaults().find(name); 
+        if (I != m_type->defaults().end()) {
+            p = I->second;
+        }
+    }
+    if (p != 0) {
+        return p->operation(this, op, res);
+    }
+    return OPERATION_IGNORED;
 }
 
 /// \brief Find and call the handler for an operation
@@ -436,7 +477,7 @@ void Entity::operation(const Operation & op, OpVector & res)
 /// @param res The result of the operation is returned here.
 void Entity::callOperation(const Operation & op, OpVector & res)
 {
-    const OpNo op_no = op->getClassNo();
+    auto op_no = op->getClassNo();
     OP_SWITCH(op, op_no, res,)
 }
 

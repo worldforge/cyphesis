@@ -26,15 +26,17 @@
 
 #include <wfmath/const.h>
 
-#include <string>
 #include <list>
+#include <map>
+#include <string>
 
+class LocatedEntity;
 class Location;
 class MemEntity;
 class Script;
 class TypeNode;
 
-typedef std::vector<MemEntity *> MemEntityVector;
+typedef std::vector<LocatedEntity *> EntityVector;
 typedef std::map<long, MemEntity *> MemEntityDict;
 
 /// \brief Class to handle the basic entity memory of a mind
@@ -78,10 +80,10 @@ class MemMap {
     MemEntity * getAdd(const std::string & id);
     MemEntity * updateAdd(const Atlas::Objects::Entity::RootEntity &, const double &);
 
-    MemEntityVector findByType(const std::string & what);
-    MemEntityVector findByLocation(const Location & where,
-                                   WFMath::CoordType radius,
-                                   const std::string & what);
+    EntityVector findByType(const std::string & what);
+    EntityVector findByLocation(const Location & where,
+                                WFMath::CoordType radius,
+                                const std::string & what);
 
     void check(const double &);
     void flush();
@@ -89,6 +91,9 @@ class MemMap {
     std::vector<std::string> & getAddHooks() { return m_addHooks; }
     std::vector<std::string> & getUpdateHooks() { return m_updateHooks; }
     std::vector<std::string> & getDeleteHooks() { return m_deleteHooks; }
+
+    friend class MemMaptest;
+    friend class BaseMindMapEntityintegration;
 };
 
 #endif // RULESETS_MEM_MAP_H

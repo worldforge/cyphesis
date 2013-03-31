@@ -33,6 +33,17 @@ using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Message::FloatType;
 
+/// \brief Explicit copy constructor
+///
+/// This is required because although the value the data is copied, the
+/// script must not be. The script is re-instantiated when apply is called
+/// on the enity instance.
+StatisticsProperty::StatisticsProperty(const StatisticsProperty & other) :
+    m_data(other.m_data),
+    m_script(0)
+{
+}
+
 /// \brief StatisticsProperty constructor
 ///
 /// @param data variable that holds the Property value
@@ -46,14 +57,14 @@ StatisticsProperty::~StatisticsProperty()
     delete m_script;
 }
 
-void StatisticsProperty::install(Entity * ent)
+void StatisticsProperty::install(LocatedEntity * ent, const std::string & name)
 {
 }
 
-void StatisticsProperty::apply(Entity * ent)
+void StatisticsProperty::apply(LocatedEntity * ent)
 {
     if (m_script == 0) {
-        Entity * instance = 0;
+        LocatedEntity * instance = 0;
         if (flags() & flag_class) {
         } else {
             instance = ent;
@@ -100,4 +111,9 @@ void StatisticsProperty::set(const Element & ent)
         }
         m_data[I->first] = I->second.asNum();
     }
+}
+
+StatisticsProperty * StatisticsProperty::copy() const
+{
+    return new StatisticsProperty(*this);
 }

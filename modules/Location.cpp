@@ -17,7 +17,7 @@
 
 // $Id$
 
-#include "rulesets/Entity.h"
+#include "rulesets/LocatedEntity.h"
 
 #include "common/log.h"
 #include "common/const.h"
@@ -26,6 +26,8 @@
 #include <wfmath/atlasconv.h>
 
 #include <Atlas/Objects/Anonymous.h>
+
+#include <iostream>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -297,4 +299,21 @@ float squareHorizontalDistance(const Location & self, const Location & other)
     distanceToAncestor(self, other, dist);
     dist.z() = 0.f;
     return sqrMag(dist);
+}
+
+std::ostream & operator<<(std::ostream& s, Location& v)
+{
+    s << "{";
+    if (v.m_loc != 0) {
+        s << v.m_loc->getId();
+    } else {
+        s << "null";
+    }
+    if (v.pos().isValid()) {
+        s << "," << v.pos();
+        if (v.velocity().isValid()) {
+            s << "," << v.velocity();
+        }
+    }
+    return s << "}";
 }

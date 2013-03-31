@@ -38,6 +38,14 @@ using Atlas::Message::Element;
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 
+AreaProperty::AreaProperty(const AreaProperty & other) : m_layer(other.m_layer),
+                                                         m_shape(0)
+{
+    if (other.m_shape != 0) {
+        m_shape = other.m_shape->copy();
+    }
+}
+
 /// \brief AreaProperty constructor
 ///
 /// @param flags Flags used to persist this property
@@ -47,9 +55,10 @@ AreaProperty::AreaProperty() : m_layer(0), m_shape(0)
 
 AreaProperty::~AreaProperty()
 {
+    delete m_shape;
 }
 
-void AreaProperty::apply(Entity * owner)
+void AreaProperty::apply(LocatedEntity * owner)
 {
     if (m_shape == 0) {
         log(ERROR, "Terrain area has no shape to apply");
@@ -96,4 +105,9 @@ void AreaProperty::set(const Element & ent)
     } else {
         m_layer = 0;
     }
+}
+
+AreaProperty * AreaProperty::copy() const
+{
+    return new AreaProperty(*this);
 }

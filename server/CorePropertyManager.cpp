@@ -19,308 +19,120 @@
 
 #include "CorePropertyManager.h"
 
-#include "rulesets/ExternalMind.h"
-#include "Juncture.h"
-#include "ServerRouting.h"
-
-#include "rulesets/ActivePropertyFactory_impl.h"
+#include "server/Juncture.h"
+#include "server/ServerRouting.h"
+#include "server/TeleportProperty.h"
 
 #include "rulesets/LineProperty.h"
 #include "rulesets/OutfitProperty.h"
 #include "rulesets/SolidProperty.h"
 #include "rulesets/StatusProperty.h"
-#include "rulesets/Entity.h"
 #include "rulesets/StatisticsProperty.h"
 #include "rulesets/TerrainModProperty.h"
 #include "rulesets/TransientProperty.h"
 #include "rulesets/BBoxProperty.h"
+#include "rulesets/BiomassProperty.h"
+#include "rulesets/BurnSpeedProperty.h"
+#include "rulesets/DecaysProperty.h"
 #include "rulesets/MindProperty.h"
 #include "rulesets/InternalProperties.h"
 #include "rulesets/SpawnProperty.h"
 #include "rulesets/AreaProperty.h"
 #include "rulesets/VisibilityProperty.h"
-#include "rulesets/Character.h"
+#include "rulesets/SuspendedProperty.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
-#include "common/Nourish.h"
-#include "common/Update.h"
 #include "common/Teleport.h"
 
 #include "common/types.h"
+#include "common/Inheritance.h"
 #include "common/PropertyFactory_impl.h"
 
-#include "common/id.h"
-#include "common/log.h"
 #include "common/debug.h"
-#include "common/compose.hpp"
 
 #include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/Anonymous.h>
-
-#include <wfmath/atlasconv.h>
-#include <wfmath/MersenneTwister.h>
 
 #include <iostream>
 
-using Atlas::Objects::Root;
 using Atlas::Message::Element;
-using Atlas::Objects::Operation::Set;
-using Atlas::Objects::Operation::Burn;
-using Atlas::Objects::Operation::Create;
-using Atlas::Objects::Operation::Delete;
-using Atlas::Objects::Operation::Logout;
-using Atlas::Objects::Operation::Nourish;
-using Atlas::Objects::Operation::Update;
-using Atlas::Objects::Entity::RootEntity;
-using Atlas::Objects::Entity::Anonymous;
+using Atlas::Message::ListType;
+using Atlas::Message::MapType;
+using Atlas::Objects::Root;
 
 static const bool debug_flag = false;
 
-HandlerResult test_handler(Entity *, const Operation &, OpVector & res)
+template<typename T>
+void CorePropertyManager::installBaseProperty(const std::string & type_name,
+                                              const std::string & parent)
 {
-    debug(std::cout << "TEST HANDLER CALLED" << std::endl << std::flush;);
-    return OPERATION_IGNORED;
+    installFactory(type_name,
+                   atlasType(type_name, parent, true),
+                   new PropertyFactory<Property<T>>);
 }
 
-HandlerResult del_handler(Entity * e, const Operation &, OpVector & res)
+template<typename PropertyT>
+void CorePropertyManager::installProperty(const std::string & type_name,
+                                          const std::string & parent)
 {
-    debug(std::cout << "Delete HANDLER CALLED" << std::endl << std::flush;);
-    const Property<std::string> * pb = e->getPropertyType<std::string>("decays");
-    if (pb == NULL) {
-        debug(std::cout << "Delete HANDLER no decays" << std::endl 
-                        << std::flush;);
-        return OPERATION_IGNORED;
-    }
-    const std::string & type = pb->data();
-
-    Anonymous create_arg;
-    create_arg->setParents(std::list<std::string>(1, type));
-    ::addToEntity(e->m_location.pos(), create_arg->modifyPos());
-    create_arg->setLoc(e->m_location.m_loc->getId());
-    create_arg->setAttr("orientation", e->m_location.orientation().toAtlas());
-
-    Create create;
-    create->setTo(e->m_location.m_loc->getId());
-    create->setArgs1(create_arg);
-    res.push_back(create);
-
-    return OPERATION_IGNORED;
-}
-
-HandlerResult eat_handler(Entity * e, const Operation & op, OpVector & res)
-{
-    const Property<double> * pb = e->getPropertyType<double>("biomass");
-    if (pb == NULL) {
-        debug(std::cout << "Eat HANDLER no biomass" << std::endl 
-                        << std::flush;);
-        return OPERATION_IGNORED;
-    }
-    
-    const double & biomass = pb->data();
-
-    Anonymous self;
-    self->setId(e->getId());
-    self->setAttr("status", -1);
-
-    Set s;
-    s->setTo(e->getId());
-    s->setArgs1(self);
-
-    const std::string & to = op->getFrom();
-    Anonymous nour_arg;
-    nour_arg->setId(to);
-    nour_arg->setAttr("mass", biomass);
-
-    Nourish n;
-    n->setTo(to);
-    n->setArgs1(nour_arg);
-
-    res.push_back(s);
-    res.push_back(n);
-
-    return OPERATION_IGNORED;
-}
-
-HandlerResult burn_handler(Entity * e, const Operation & op, OpVector & res)
-{
-    if (op->getArgs().empty()) {
-        e->error(op, "Fire op has no argument", res, e->getId());
-        return OPERATION_IGNORED;
-    }
-
-    const Property<double> * pb = e->getPropertyType<double>("burn_speed");
-    if (pb == NULL) {
-        debug(std::cout << "Eat HANDLER no burn_speed" << std::endl 
-                        << std::flush;);
-        return OPERATION_IGNORED;
-    }
-    
-    const double & burn_speed = pb->data();
-    const Root & fire_ent = op->getArgs().front();
-    double consumed = burn_speed * fire_ent->getAttr("status").asNum();
-
-    const std::string & to = fire_ent->getId();
-    Anonymous nour_ent;
-    nour_ent->setId(to);
-    nour_ent->setAttr("mass", consumed);
-
-    StatusProperty * status_prop = e->requirePropertyClass<StatusProperty>("status", 1.f);
-    assert(status_prop != 0);
-    status_prop->setFlags(flag_unsent);
-    double & status = status_prop->data();
-
-    Element mass_attr;
-    if (e->getAttrType("mass", mass_attr, Element::TYPE_FLOAT) != 0) {
-        mass_attr = 1.f;
-    }
-    status -= (consumed / mass_attr.Float());
-
-    Update update;
-    update->setTo(e->getId());
-    res.push_back(update);
-
-    Nourish n;
-    n->setTo(to);
-    n->setArgs1(nour_ent);
-
-    res.push_back(n);
-
-    return OPERATION_IGNORED;
-}
-
-HandlerResult terrainmod_moveHandler(Entity * e,
-                                 const Operation & op,
-                                 OpVector & res)
-{
-    TerrainModProperty * mod_property = e->modPropertyClass<TerrainModProperty>("terrainmod");
-    if (mod_property == 0) {
-        return OPERATION_IGNORED;
-    }
-
-    // Check the validity of the operation.
-    const std::vector<Root> & args = op->getArgs();
-    if (args.empty()) {
-        return OPERATION_IGNORED;
-    }
-    RootEntity ent = Atlas::Objects::smart_dynamic_cast<RootEntity>(args.front());
-    if (!ent.isValid()) {
-        return OPERATION_IGNORED;
-    }
-    if (e->getId() != ent->getId()) {
-        return OPERATION_IGNORED;
-    }
-
-    // Update the modifier
-    mod_property->move(e);
-    return OPERATION_IGNORED;
-}
-
-HandlerResult terrainmod_deleteHandler(Entity * e,
-                                 const Operation & op,
-                                 OpVector & res)
-{
-    TerrainModProperty * mod_property = e->modPropertyClass<TerrainModProperty>("terrainmod");
-    if (mod_property == 0) {
-        return OPERATION_IGNORED;
-    }
-
-    mod_property->remove(e);
-
-    return OPERATION_IGNORED;
-}
-
-HandlerResult teleport_handler(Entity * e, const Operation & op, OpVector & res)
-{
-    // Get the teleport property value (in our case, the IP to teleport to)
-    const Property<std::string> * pb = e->getPropertyType<std::string>("teleport");
-    if (pb == NULL) {
-        debug(std::cout << "Teleport HANDLER no teleport" << std::endl 
-                        << std::flush;);
-        return OPERATION_IGNORED;
-    }
-
-    ServerRouting *svr = ServerRouting::instance();
-    if(svr == NULL) {
-        log(ERROR, "Unable to access ServerRouting object");
-        return OPERATION_IGNORED;
-    }
-    Router * obj = svr->getObject(pb->data());
-    if(obj == NULL) {
-        log(ERROR, "Unknown peer ID specified");
-        return OPERATION_IGNORED;
-    }
-    Juncture * link = dynamic_cast<Juncture *>(obj);
-    if(link == NULL) {
-        log(ERROR, "Non Peer ID specified");
-        return OPERATION_IGNORED;
-    }
-
-    // Get the ID of the sender
-    if (op->isDefaultFrom()) {
-        debug(std::cout << "ERROR: Operation with no entity to be teleported" 
-                        << std::endl << std::flush;);
-        return OPERATION_IGNORED;
-    }
-    log(INFO, String::compose("Teleport request sender has ID %1",
-                              op->getFrom()));
-
-    // This is the sender entity
-    Entity * entity = BaseWorld::instance().getEntity(op->getFrom());
-    if (entity == 0) {
-        debug(std::cout << "No entity found with the specified ID: "
-                        << op->getFrom(););
-        return OPERATION_IGNORED;
-    }
-
-    // Inject the entity into remote server
-    link->teleportEntity(entity);
-    return OPERATION_IGNORED;
+    installFactory(type_name,
+                   atlasType(type_name, parent),
+                   new PropertyFactory<PropertyT>);
 }
 
 CorePropertyManager::CorePropertyManager()
 {
-    m_propertyFactories["stamina"] = new PropertyFactory<Property<double> >;
-    m_propertyFactories["coords"] = new PropertyFactory<LineProperty>;
-    m_propertyFactories["points"] = new PropertyFactory<LineProperty>;
-    m_propertyFactories["start_intersections"] = new PropertyFactory<Property<IdList> >;
-    m_propertyFactories["end_intersections"] = new PropertyFactory<Property<IdList> >;
-    m_propertyFactories["attachment"] = new ActivePropertyFactory<int>(Atlas::Objects::Operation::MOVE_NO, test_handler);
-    m_propertyFactories["decays"] = new ActivePropertyFactory<std::string>(Atlas::Objects::Operation::DELETE_NO, del_handler);
-    m_propertyFactories["outfit"] = new PropertyFactory<OutfitProperty>;
-    m_propertyFactories["solid"] = new PropertyFactory<SolidProperty>;
-    m_propertyFactories["simple"] = new PropertyFactory<SimpleProperty>;
-    m_propertyFactories["status"] = new PropertyFactory<StatusProperty>;
-    m_propertyFactories["biomass"] = new ActivePropertyFactory<double>(Atlas::Objects::Operation::EAT_NO, eat_handler);
-    m_propertyFactories["burn_speed"] = new ActivePropertyFactory<double>(Atlas::Objects::Operation::BURN_NO, burn_handler);
-    m_propertyFactories["transient"] = new PropertyFactory<TransientProperty>();
-    m_propertyFactories["food"] = new PropertyFactory<Property<double> >;
-    m_propertyFactories["mass"] = new PropertyFactory<Property<double> >;
-    m_propertyFactories["bbox"] = new PropertyFactory<BBoxProperty>;
-    m_propertyFactories["mind"] = new PropertyFactory<MindProperty>;
-    m_propertyFactories["setup"] = new PropertyFactory<SetupProperty>;
-    m_propertyFactories["tick"] = new PropertyFactory<TickProperty>;
-    m_propertyFactories["statistics"] = new PropertyFactory<StatisticsProperty>;
-    m_propertyFactories["spawn"] = new PropertyFactory<SpawnProperty>;
-    m_propertyFactories["area"] = new PropertyFactory<AreaProperty>;
-    m_propertyFactories["visibility"] = new PropertyFactory<VisibilityProperty>;
-    
-    HandlerMap terrainModHandles;
-    terrainModHandles[Atlas::Objects::Operation::MOVE_NO] = terrainmod_moveHandler;
-    terrainModHandles[Atlas::Objects::Operation::DELETE_NO] = terrainmod_deleteHandler;
-    m_propertyFactories["terrainmod"] = new MultiActivePropertyFactory<TerrainModProperty>(terrainModHandles);
+    // Core types, for inheritence only generally.
+    installBaseProperty<int>("int", "root_type");
+    installBaseProperty<double>("float", "root_type");
+    installBaseProperty<std::string>("string", "root_type");
+    installBaseProperty<ListType>("list", "root_type");
+    installBaseProperty<MapType>("map", "root_type");
 
-    m_propertyFactories["teleport"] = new ActivePropertyFactory<std::string>(Atlas::Objects::Operation::TELEPORT_NO, teleport_handler);
+    installProperty<Property<double>>("stamina", "float");
+    installProperty<LineProperty>("coords", "list");
+    installProperty<LineProperty>("points", "list");
+    installProperty<Property<IdList> >("start_intersections", "list");
+    installProperty<Property<IdList> >("end_intersections", "list");
+    installProperty<DecaysProperty>("decays", "string");
+    installProperty<OutfitProperty>("outfit", "map");
+    installProperty<SolidProperty>("solid", "int");
+    installProperty<SimpleProperty>("simple", "int");
+    installProperty<StatusProperty>("status", "float");
+    installProperty<BiomassProperty>("biomass", "float");
+    installProperty<BurnSpeedProperty>("burn_speed", "float");
+    installProperty<TransientProperty>("transient", "float");
+    installProperty<Property<double> >("food", "float");
+    installProperty<Property<double> >("mass", "float");
+    installProperty<BBoxProperty>("bbox", "list");
+    installProperty<MindProperty>("mind", "map");
+    installProperty<SetupProperty>("init", "int");
+    installProperty<TickProperty>("ticks", "float");
+    installProperty<StatisticsProperty>("statistics", "map");
+    installProperty<SpawnProperty>("spawn", "map");
+    installProperty<AreaProperty>("area", "map");
+    installProperty<VisibilityProperty>("visibility", "float");
+    installProperty<TerrainModProperty>("terrainmod", "map");
+    installProperty<TeleportProperty>("linked", "string");
+    installProperty<SuspendedProperty>("suspended", "int");
 }
 
 CorePropertyManager::~CorePropertyManager()
 {
-    std::map<std::string, PropertyKit *>::const_iterator I = m_propertyFactories.begin();
-    std::map<std::string, PropertyKit *>::const_iterator Iend = m_propertyFactories.end();
-    for (; I != Iend; ++I) {
-        assert(I->second != 0);
-        delete I->second;
+}
+
+int CorePropertyManager::installFactory(const std::string & type_name,
+                                        const Root & type_desc,
+                                        PropertyKit * factory)
+{
+    Inheritance & i = Inheritance::instance();
+    if (i.addChild(type_desc) == 0) {
+        return -1;
     }
+
+    PropertyManager::installFactory(type_name, factory);
+
+    return 0;
 }
 
 PropertyBase * CorePropertyManager::addProperty(const std::string & name,

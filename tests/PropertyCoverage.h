@@ -35,6 +35,8 @@ class PropertyCoverage {
     Entity * m_ent;
 
     Atlas::Message::ListType m_testData;
+
+    virtual void interfaceCoverage();
   public:
 
     explicit PropertyCoverage(PropertyBase * pb);
@@ -49,5 +51,36 @@ class PropertyCoverage {
 
     Entity * tlve() { return m_tlve; }
 };
+
+template<class PropertyT>
+class PropertyChecker : public PropertyCoverage
+{
+  protected:
+    PropertyT * m_sub_prop;
+
+    virtual void interfaceCoverage();
+  public:
+    explicit PropertyChecker(PropertyT * p);
+};
+
+template<class PropertyT>
+PropertyChecker<PropertyT>::PropertyChecker(PropertyT * p) :
+      PropertyCoverage(p), m_sub_prop(p)
+{
+}
+
+// This test works at compile time, by ensuring the copy method returns the
+// subclass type.
+template<class PropertyT>
+void PropertyChecker<PropertyT>::interfaceCoverage()
+{
+    PropertyT * copy = m_sub_prop->copy();
+    // The above line generates an unused variable warning without the line
+    // below. The purpose of this test is not to care about the value, just
+    // to ensure the subclass has implemented this method to return its own
+    // type, so we cast the result to void to tell the compiler that we
+    // know its unused.
+    (void)copy;
+}
 
 #endif // TESTS_PROPERTY_COVERAGE_H

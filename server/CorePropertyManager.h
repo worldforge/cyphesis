@@ -22,23 +22,28 @@
 
 #include "common/PropertyManager.h"
 
-#include <map>
-
-class PropertyKit;
-
-typedef std::map<std::string, PropertyKit *> PropertyFactoryDict;
-
 /// \brief Property manager for the core server. Handles assigning properties
 /// to entity instances in the world.
 class CorePropertyManager : public PropertyManager {
-  protected:
-    // Data structure for factories and the like?
-    std::map<std::string, PropertyKit *> m_propertyFactories;
+  private:
+    template<typename T>
+    void installBaseProperty(const std::string & type_name,
+                             const std::string & parent);
+
+    template<class PropertyT>
+    void installProperty(const std::string & type_name,
+                         const std::string & parent);
   public:
     CorePropertyManager();
     virtual ~CorePropertyManager();
 
     virtual PropertyBase * addProperty(const std::string & name, int type);
+
+    virtual int installFactory(const std::string & type_name,
+                               const Atlas::Objects::Root & type_desc,
+                               PropertyKit * factory);
+
+    friend class CorePropertyManagertest;
 };
 
 #endif // SERVER_CORE_PROPERTY_MANAGER_H

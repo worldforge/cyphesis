@@ -371,6 +371,7 @@ int main(int argc, char ** argv)
 
 #include "server/EntityRuleHandler.h"
 #include "server/OpRuleHandler.h"
+#include "server/PropertyRuleHandler.h"
 #include "server/TaskRuleHandler.h"
 #include "server/Persistence.h"
 
@@ -397,6 +398,29 @@ int OpRuleHandler::install(const std::string & name,
 
 int OpRuleHandler::update(const std::string & name,
                           const Atlas::Objects::Root & desc)
+{
+    return 0;
+}
+
+int PropertyRuleHandler::check(const Atlas::Objects::Root & desc)
+{
+    if (desc->getObjtype() != "type") {
+        return -1;
+    }
+    return 0;
+}
+
+int PropertyRuleHandler::install(const std::string & name,
+                             const std::string & parent,
+                             const Atlas::Objects::Root & description,
+                             std::string & dependent,
+                             std::string & reason)
+{
+    return 0;
+}
+
+int PropertyRuleHandler::update(const std::string & name,
+                            const Atlas::Objects::Root & desc)
 {
     return 0;
 }

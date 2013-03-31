@@ -19,7 +19,9 @@
 
 #include "SpawnProperty.h"
 
-#include "Entity.h"
+#include "rulesets/LocatedEntity.h"
+
+#include "common/BaseWorld.h"
 
 using Atlas::Message::MapType;
 
@@ -27,7 +29,16 @@ SpawnProperty::SpawnProperty()
 {
 }
 
-void SpawnProperty::apply(Entity * ent)
+SpawnProperty::~SpawnProperty()
+{
+}
+
+SpawnProperty * SpawnProperty::copy() const
+{
+    return new SpawnProperty(*this);
+}
+
+void SpawnProperty::apply(LocatedEntity * ent)
 {
     BaseWorld::instance().createSpawnPoint(m_data, ent);
 }

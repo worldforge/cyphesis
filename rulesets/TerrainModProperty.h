@@ -20,11 +20,9 @@
 #ifndef RULESETS_TERRAIN_MOD_PROPERTY_H
 #define RULESETS_TERRAIN_MOD_PROPERTY_H
 
-#include "common/OperationRouter.h"
+#include "rulesets/TerrainEffectorProperty.h"
 
 #include "physics/Vector3D.h"
-
-#include "rulesets/TerrainEffectorProperty.h"
 
 namespace Mercator {
     class TerrainMod;
@@ -41,9 +39,6 @@ class TerrainModProperty : public TerrainEffectorProperty {
     /// \brief A pointer to the modifier returned by a call to Terrain::addMod()
     Mercator::TerrainMod *m_modptr;
 
-    /// \brief the handlers this property should install
-    HandlerMap m_handlers;
-
     /**
      * @brief The inner terrain mod instance which holds the actual Mercator::TerrainMod instance and handles the parsing of it.
      * In order to be able to better support different types of mods the actual instance will be any of the subclasses of InnerTerrainMod, depending on the type of the mod.
@@ -51,25 +46,31 @@ class TerrainModProperty : public TerrainEffectorProperty {
     TerrainModTranslator* m_innerMod;
 
   public:
-
-    explicit TerrainModProperty(const HandlerMap &);
+    TerrainModProperty();
     ~TerrainModProperty();
 
-    virtual void install(Entity *);
-    virtual void apply(Entity *);
+    TerrainModProperty * copy() const;
+
+    virtual void install(LocatedEntity *, const std::string &);
+    virtual void apply(LocatedEntity *);
+
+    virtual HandlerResult operation(LocatedEntity *,
+                                    const Operation &,
+                                    OpVector &);
 
     Mercator::TerrainMod * getModifier() {
         return m_modptr;
     }
 
     /// \brief Constructs a Mercator::TerrainMod from Atlas data
-    Mercator::TerrainMod * parseModData(Entity * owner, const Atlas::Message::MapType &);
+    Mercator::TerrainMod * parseModData(LocatedEntity * owner,
+                                        const Atlas::Message::MapType &);
 
     /// \brief Changes a modifier's position
-    void move(Entity*);
+    void move(LocatedEntity*);
 
     /// \brief Removes the modifier from the terrain
-    void remove(Entity*);
+    void remove(LocatedEntity*);
 
     /// \brief Retrieve a sub attribute of the property
     int getAttr(const std::string &,
@@ -77,6 +78,13 @@ class TerrainModProperty : public TerrainEffectorProperty {
     /// \brief Modify a sub attribute of the property
     void setAttr(const std::string &,
                  const Atlas::Message::Element &);
+
+    HandlerResult move_handler(LocatedEntity * e,
+                               const Operation & op,
+                               OpVector & res);
+    HandlerResult delete_handler(LocatedEntity * e,
+                                 const Operation & op,
+                                 OpVector & res);
 };
 
 

@@ -26,7 +26,7 @@
 
 #include <Atlas/Objects/ObjectsFwd.h>
 
-class Entity;
+class LocatedEntity;
 class Location;
 
 /// \brief Base class for handling Character movement
@@ -34,15 +34,18 @@ class Location;
 /// This class should be replaced by a base class for handling all entity
 /// movement.
 class Movement {
+  private:
+    Movement(const Movement &) = delete;
+    Movement & operator=(const Movement &) = delete;
   protected:
     /// The Entity this Movement is tracking.
-    Entity & m_body;
+    LocatedEntity & m_body;
     /// The destination position.
     Point3D m_targetPos;
     int m_serialno;
 
   public:
-    explicit Movement(Entity & body);
+    explicit Movement(LocatedEntity & body);
     virtual ~Movement();
 
     int serialno() const {

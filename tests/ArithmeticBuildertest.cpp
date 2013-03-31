@@ -73,7 +73,7 @@ int PythonArithmeticFactory::setup()
     return 0;
 }
 
-ArithmeticScript * PythonArithmeticFactory::newScript(Entity * owner)
+ArithmeticScript * PythonArithmeticFactory::newScript(LocatedEntity * owner)
 {
     return 0;
 }

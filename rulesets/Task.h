@@ -68,10 +68,10 @@ class Task {
     Script * m_script;
 
   private:
-    /// \brief Private and un-implemented, to make sure slicing is impossible
-    Task(const Task & t);
-    /// \brief Private and un-implemented, to make sure slicing is impossible
-    const Task & operator=(const Task &);
+    /// \brief Private deleted, to make sure slicing is impossible
+    Task(const Task & t) = delete;
+    /// \brief Private deleted, to make sure slicing is impossible
+    const Task & operator=(const Task &) = delete;
   public:
     /// \brief Constructor
     explicit Task(LocatedEntity & owner);

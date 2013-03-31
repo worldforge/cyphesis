@@ -96,6 +96,11 @@ void TerrainProperty::set(const Atlas::Message::Element & ent)
 {
 }
 
+TerrainProperty * TerrainProperty::copy() const
+{
+    return 0;
+}
+
 bool TerrainProperty::getHeightAndNormal(float x,
                                          float y,
                                          float & height,
@@ -112,11 +117,11 @@ PropertyBase::~PropertyBase()
 {
 }
 
-void PropertyBase::install(Entity *)
+void PropertyBase::install(LocatedEntity *, const std::string & name)
 {
 }
 
-void PropertyBase::apply(Entity *)
+void PropertyBase::apply(LocatedEntity *)
 {
 }
 
@@ -129,4 +134,11 @@ void PropertyBase::add(const std::string & s,
 void PropertyBase::add(const std::string & s,
                        const Atlas::Objects::Entity::RootEntity & ent) const
 {
+}
+
+HandlerResult PropertyBase::operation(LocatedEntity *,
+                                      const Operation &,
+                                      OpVector &)
+{
+    return OPERATION_IGNORED;
 }

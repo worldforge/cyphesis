@@ -19,7 +19,7 @@
 
 #include "BBoxProperty.h"
 
-#include "Entity.h"
+#include "rulesets/LocatedEntity.h"
 
 #include "common/log.h"
 
@@ -36,7 +36,7 @@ BBoxProperty::BBoxProperty()
 {
 }
 
-void BBoxProperty::apply(Entity * ent)
+void BBoxProperty::apply(LocatedEntity * ent)
 {
     ent->m_location.setBBox(m_data);
     ent->m_location.modifyBBox();
@@ -75,4 +75,9 @@ void BBoxProperty::add(const std::string & key,
     if (m_data.isValid()) {
         ent->setAttr(key, m_data.toAtlas());
     }
+}
+
+BBoxProperty * BBoxProperty::copy() const
+{
+    return new BBoxProperty(*this);
 }

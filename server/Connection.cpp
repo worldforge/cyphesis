@@ -164,7 +164,7 @@ void Connection::disconnectObject(RouterMap::iterator I,
     return;
 }
 
-void Connection::addEntity(Entity * ent)
+void Connection::addEntity(LocatedEntity * ent)
 {
     addObject(ent);
     ent->destroyed.connect(sigc::bind(sigc::mem_fun(this,
@@ -239,7 +239,7 @@ void Connection::externalOperation(const Operation & op, Link & link)
 void Connection::operation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Connection::operation" << std::endl << std::flush;);
-    const OpNo op_no = op->getClassNo();
+    auto op_no = op->getClassNo();
     switch (op_no) {
         case Atlas::Objects::Operation::CREATE_NO:
             CreateOperation(op, res);
@@ -450,7 +450,7 @@ void Connection::disconnectAccount(Account * ac,
     EntityDict::const_iterator J = ac->getCharacters().begin();
     EntityDict::const_iterator Jend = ac->getCharacters().end();
     for (; J != Jend; ++J) {
-        Entity * ent = J->second;
+        LocatedEntity * ent = J->second;
         Character * chr = dynamic_cast<Character *>(ent);
         // This code removes from this connection any of the accounts IG
         // entities, except one which is currently in use by this connection.

@@ -17,8 +17,8 @@
 
 // $Id$
 
-#ifndef SERVER_CONNECTED_ROUTER_H
-#define SERVER_CONNECTED_ROUTER_H
+#ifndef SERVER_CONNECTABLE_ROUTER_H
+#define SERVER_CONNECTABLE_ROUTER_H
 
 #include "common/Router.h"
 
@@ -39,4 +39,4 @@ class ConnectableRouter : public Router {
     virtual ~ConnectableRouter();
 };
 
-#endif // SERVER_CONNECTED_ROUTER_H
+#endif // SERVER_CONNECTABLE_ROUTER_H

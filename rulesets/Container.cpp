@@ -18,7 +18,8 @@
 // $Id$
 
 #include "Container.h"
-#include "Entity.h"
+
+#include "rulesets/LocatedEntity.h"
 
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/RootEntity.h>
@@ -70,12 +71,12 @@ int NonContainer::size()
 // implementation issues being sorted out. Exactly how do we implement it
 // so that this entity cannot be a container?
 
-void NonContainer::insert(Entity *)
+void NonContainer::insert(LocatedEntity *)
 {
     // Error
 }
 
-void NonContainer::erase(Entity *)
+void NonContainer::erase(LocatedEntity *)
 {
     // Error
 }
@@ -115,7 +116,7 @@ bool StdContainer::StdContainer_const_iterator::operator==(const Container_const
     return (m_iter == other->m_iter);
 }
 
-Entity * StdContainer::StdContainer_const_iterator::operator*() const
+LocatedEntity * StdContainer::StdContainer_const_iterator::operator*() const
 {
     return (*m_iter);
 }
@@ -139,12 +140,12 @@ bool StdContainer::empty() const
     return m_entities.empty();
 }
 
-void StdContainer::insert(Entity * ent)
+void StdContainer::insert(LocatedEntity * ent)
 {
     m_entities.insert(ent);
 }
 
-void StdContainer::erase(Entity * ent)
+void StdContainer::erase(LocatedEntity * ent)
 {
     m_entities.erase(ent);
 }

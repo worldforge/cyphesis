@@ -19,8 +19,6 @@
 
 #include "EntityFactory_impl.h"
 
-#include "rulesets/Entity.h"
-#include "rulesets/Thing.h"
 #include "rulesets/Character.h"
 #include "rulesets/Creator.h"
 #include "rulesets/Plant.h"
@@ -30,7 +28,8 @@
 using Atlas::Message::MapType;
 
 template <>
-Entity * EntityFactory<World>::newEntity(const std::string & id, long intId)
+LocatedEntity * EntityFactory<World>::newEntity(const std::string & id,
+                                                long intId)
 {
     return 0;
 }

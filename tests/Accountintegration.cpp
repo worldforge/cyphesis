@@ -175,8 +175,8 @@ void Accountintegration::teardown()
 void Accountintegration::test_addNewCharacter()
 {
     Anonymous new_char;
-    Entity * chr = m_ac->addNewCharacter("thing", new_char,
-                                         RootEntity());
+    LocatedEntity * chr = m_ac->addNewCharacter("thing", new_char,
+                                                RootEntity());
     assert(chr != 0);
 
     std::cout << "Test 1" << std::endl << std::flush;
@@ -242,8 +242,8 @@ void Accountintegration::test_ImaginaryOperation()
 void Accountintegration::test_LookOperation()
 {
     Anonymous new_char;
-    Entity * chr = m_ac->addNewCharacter("thing", new_char,
-                                         RootEntity());
+    LocatedEntity * chr = m_ac->addNewCharacter("thing", new_char,
+                                                RootEntity());
 
     Anonymous op_arg;
     op_arg->setId("1");
@@ -261,8 +261,8 @@ void Accountintegration::test_LookOperation()
 void Accountintegration::test_SetOperation()
 {
     Anonymous new_char;
-    Entity * chr = m_ac->addNewCharacter("thing", new_char,
-                                         RootEntity());
+    LocatedEntity * chr = m_ac->addNewCharacter("thing", new_char,
+                                                RootEntity());
     BBox newBox(WFMath::Point<3>(-0.5, -0.5, 0.0),
                 WFMath::Point<3>(-0.5, -0.5, 2.0));
     chr->m_location.setBBox(newBox);
@@ -342,17 +342,19 @@ int main()
     return t.run();
 }
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     return 0;
 }
 
 // stubs
+
+#include "Property_stub_impl.h"
 
 #include "server/ArithmeticBuilder.h"
 #include "server/CommServer.h"
@@ -361,16 +363,19 @@ Entity * TestWorld::addNewEntity(const std::string &,
 #include "server/Persistence.h"
 #include "server/Player.h"
 #include "server/Ruleset.h"
+#include "server/TeleportProperty.h"
 
 #include "rulesets/Motion.h"
 #include "rulesets/Pedestrian.h"
 #include "rulesets/AreaProperty.h"
 #include "rulesets/AtlasProperties.h"
 #include "rulesets/BBoxProperty.h"
+#include "rulesets/BiomassProperty.h"
+#include "rulesets/BurnSpeedProperty.h"
+#include "rulesets/DecaysProperty.h"
 #include "rulesets/CalendarProperty.h"
 #include "rulesets/EntityProperty.h"
 #include "rulesets/ExternalProperty.h"
-#include "rulesets/HandlerProperty.h"
 #include "rulesets/InternalProperties.h"
 #include "rulesets/LineProperty.h"
 #include "rulesets/MindProperty.h"
@@ -384,6 +389,7 @@ Entity * TestWorld::addNewEntity(const std::string &,
 #include "rulesets/TerrainProperty.h"
 #include "rulesets/TransientProperty.h"
 #include "rulesets/VisibilityProperty.h"
+#include "rulesets/SuspendedProperty.h"
 
 #include "common/const.h"
 #include "common/globals.h"
@@ -426,7 +432,7 @@ ArithmeticBuilder * ArithmeticBuilder::instance()
 }
 
 ArithmeticScript * ArithmeticBuilder::newArithmetic(const std::string & name,
-                                                    Entity * owner)
+                                                    LocatedEntity * owner)
 {
     return 0;
 }
@@ -453,7 +459,7 @@ EntityFactory<T>::~EntityFactory()
 }
 
 template <class T>
-Entity * EntityFactory<T>::newEntity(const std::string & id, long intId)
+LocatedEntity * EntityFactory<T>::newEntity(const std::string & id, long intId)
 {
     return new Entity(id, intId);
 }
@@ -470,13 +476,15 @@ class Stackable;
 class World;
 
 template <>
-Entity * EntityFactory<World>::newEntity(const std::string & id, long intId)
+LocatedEntity * EntityFactory<World>::newEntity(const std::string & id,
+                                                long intId)
 {
     return 0;
 }
 
 template <>
-Entity * EntityFactory<Character>::newEntity(const std::string & id, long intId)
+LocatedEntity * EntityFactory<Character>::newEntity(const std::string & id,
+                                                    long intId)
 {
     return new Character(id, intId);
 }
@@ -516,7 +524,7 @@ void Juncture::OtherOperation(const Operation & op, OpVector & res)
 {
 }
 
-int Juncture::teleportEntity(const Entity * ent)
+int Juncture::teleportEntity(const LocatedEntity * ent)
 {
     return 0;
 }
@@ -598,6 +606,10 @@ void CalendarProperty::set(const Element & ent)
 {
 }
 
+CalendarProperty * CalendarProperty::copy() const
+{
+    return 0;
+}
 
 IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),
                                                    m_data(data)
@@ -624,6 +636,11 @@ void IdProperty::add(const std::string & key,
 {
 }
 
+IdProperty * IdProperty::copy() const
+{
+    return 0;
+}
+
 AreaProperty::AreaProperty()
 {
 }
@@ -636,7 +653,12 @@ void AreaProperty::set(const Atlas::Message::Element & ent)
 {
 }
 
-void AreaProperty::apply(Entity * owner)
+AreaProperty * AreaProperty::copy() const
+{
+    return 0;
+}
+
+void AreaProperty::apply(LocatedEntity * owner)
 {
 }
 
@@ -663,6 +685,11 @@ void ExternalProperty::add(const std::string & s,
 {
 }
 
+ExternalProperty * ExternalProperty::copy() const
+{
+    return 0;
+}
+
 EntityProperty::EntityProperty()
 {
 }
@@ -684,6 +711,11 @@ void EntityProperty::add(const std::string & s,
 void EntityProperty::add(const std::string & s,
                          const Atlas::Objects::Entity::RootEntity & ent) const
 {
+}
+
+EntityProperty * EntityProperty::copy() const
+{
+    return 0;
 }
 
 OutfitProperty::OutfitProperty()
@@ -713,17 +745,22 @@ void OutfitProperty::add(const std::string & key,
 {
 }
 
+OutfitProperty * OutfitProperty::copy() const
+{
+    return 0;
+}
+
 void OutfitProperty::cleanUp()
 {
 }
 
-void OutfitProperty::wear(Entity * wearer,
+void OutfitProperty::wear(LocatedEntity * wearer,
                           const std::string & location,
-                          Entity * garment)
+                          LocatedEntity * garment)
 {
 }
 
-void OutfitProperty::itemRemoved(Entity * garment, Entity * wearer)
+void OutfitProperty::itemRemoved(LocatedEntity * garment, LocatedEntity * wearer)
 {
 }
 
@@ -740,35 +777,41 @@ void TasksProperty::set(const Atlas::Message::Element & val)
 {
 }
 
-int TasksProperty::startTask(Task *, Entity *, const Operation &, OpVector &)
+TasksProperty * TasksProperty::copy() const
 {
     return 0;
 }
 
-int TasksProperty::updateTask(Entity *, OpVector &)
+int TasksProperty::startTask(Task *, LocatedEntity *, const Operation &, OpVector &)
 {
     return 0;
 }
 
-int TasksProperty::clearTask(Entity *, OpVector &)
+int TasksProperty::updateTask(LocatedEntity *, OpVector &)
 {
     return 0;
 }
 
-void TasksProperty::stopTask(Entity *, OpVector &)
+int TasksProperty::clearTask(LocatedEntity *, OpVector &)
+{
+    return 0;
+}
+
+void TasksProperty::stopTask(LocatedEntity *, OpVector &)
 {
 }
 
-void TasksProperty::TickOperation(Entity *, const Operation &, OpVector &)
+void TasksProperty::TickOperation(LocatedEntity *, const Operation &, OpVector &)
 {
 }
 
-void TasksProperty::UseOperation(Entity *, const Operation &, OpVector &)
+void TasksProperty::UseOperation(LocatedEntity *, const Operation &, OpVector &)
 {
 }
 
-void TasksProperty::operation(Entity *, const Operation &, OpVector &)
+HandlerResult TasksProperty::operation(LocatedEntity *, const Operation &, OpVector &)
 {
+    return OPERATION_IGNORED;
 }
 
 PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
@@ -779,11 +822,11 @@ PropertyBase::~PropertyBase()
 {
 }
 
-void PropertyBase::install(Entity *)
+void PropertyBase::install(LocatedEntity *, const std::string & name)
 {
 }
 
-void PropertyBase::apply(Entity *)
+void PropertyBase::apply(LocatedEntity *)
 {
 }
 
@@ -798,35 +841,11 @@ void PropertyBase::add(const std::string & s,
 {
 }
 
-/// \brief Constructor for immutable Propertys
-template <typename T>
-Property<T>::Property(unsigned int flags) :
-                      PropertyBase(flags)
+HandlerResult PropertyBase::operation(LocatedEntity *,
+                                      const Operation &,
+                                      OpVector &)
 {
-}
-
-template <typename T>
-int Property<T>::get(Atlas::Message::Element & e) const
-{
-    return 0;
-}
-
-// The following two are obsolete.
-template <typename T>
-void Property<T>::add(const std::string & s,
-                               Atlas::Message::MapType & ent) const
-{
-}
-
-template <typename T>
-void Property<T>::add(const std::string & s,
-                               const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-template <typename T>
-void Property<T>::set(const Atlas::Message::Element & e)
-{
+    return OPERATION_IGNORED;
 }
 
 template class Property<int>;
@@ -859,6 +878,11 @@ void SoftProperty::set(const Atlas::Message::Element & val)
 {
 }
 
+SoftProperty * SoftProperty::copy() const
+{
+    return 0;
+}
+
 ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
       PropertyBase(per_ephem), m_data(data)
 {
@@ -878,11 +902,21 @@ void ContainsProperty::add(const std::string & s,
 {
 }
 
+ContainsProperty * ContainsProperty::copy() const
+{
+    return 0;
+}
+
 StatusProperty::StatusProperty()
 {
 }
 
-void StatusProperty::apply(Entity * owner)
+StatusProperty * StatusProperty::copy() const
+{
+    return 0;
+}
+
+void StatusProperty::apply(LocatedEntity * owner)
 {
 }
 
@@ -890,7 +924,7 @@ BBoxProperty::BBoxProperty()
 {
 }
 
-void BBoxProperty::apply(Entity * ent)
+void BBoxProperty::apply(LocatedEntity * ent)
 {
 }
 
@@ -913,6 +947,70 @@ void BBoxProperty::add(const std::string & key,
 {
 }
 
+BBoxProperty * BBoxProperty::copy() const
+{
+    return 0;
+}
+
+void BiomassProperty::install(LocatedEntity * owner, const std::string & name)
+{
+}
+
+HandlerResult BiomassProperty::operation(LocatedEntity * e,
+                                         const Operation & op,
+                                         OpVector & res)
+{
+    return OPERATION_IGNORED;
+}
+
+BiomassProperty * BiomassProperty::copy() const
+{
+    return 0;
+}
+
+void BurnSpeedProperty::install(LocatedEntity * owner, const std::string & name)
+{
+}
+
+HandlerResult BurnSpeedProperty::operation(LocatedEntity * ent,
+                                        const Operation & op,
+                                        OpVector & res)
+{
+    return OPERATION_IGNORED;
+}
+
+BurnSpeedProperty * BurnSpeedProperty::copy() const
+{
+    return 0;
+}
+
+void DecaysProperty::install(LocatedEntity * owner, const std::string & name)
+{
+}
+
+HandlerResult DecaysProperty::operation(LocatedEntity * ent,
+                                        const Operation & op,
+                                        OpVector & res)
+{
+    return OPERATION_IGNORED;
+}
+
+DecaysProperty * DecaysProperty::copy() const
+{
+    return 0;
+}
+
+void TeleportProperty::install(LocatedEntity * owner, const std::string & name)
+{
+}
+
+HandlerResult TeleportProperty::operation(LocatedEntity * ent,
+                                          const Operation & op,
+                                          OpVector & res)
+{
+    return OPERATION_IGNORED;
+}
+
 TerrainProperty::TerrainProperty() :
       m_data(*(Mercator::Terrain*)0),
       m_tileShader(*(Mercator::TileShader*)0)
@@ -932,6 +1030,11 @@ void TerrainProperty::set(const Element & ent)
 {
 }
 
+TerrainProperty * TerrainProperty::copy() const
+{
+    return 0;
+}
+
 int TerrainProperty::getSurface(const Point3D & pos, int & material)
 {
     return 0;
@@ -945,8 +1048,7 @@ bool TerrainProperty::getHeightAndNormal(float x,
     return true;
 }
 
-TerrainModProperty::TerrainModProperty(const HandlerMap & handlers) :
-                    m_modptr(0), m_handlers(handlers), m_innerMod(0)
+TerrainModProperty::TerrainModProperty() : m_modptr(0), m_innerMod(0)
 {
 }
 
@@ -954,27 +1056,39 @@ TerrainModProperty::~TerrainModProperty()
 {
 }
 
-void TerrainModProperty::install(Entity * owner)
+TerrainModProperty * TerrainModProperty::copy() const
+{
+    return 0;
+}
+
+void TerrainModProperty::install(LocatedEntity * owner, const std::string & name)
 {
 }
 
-void TerrainModProperty::apply(Entity * owner)
+void TerrainModProperty::apply(LocatedEntity * owner)
 {
 }
 
-void TerrainModProperty::move(Entity* owner)
+void TerrainModProperty::move(LocatedEntity* owner)
 {
 }
 
-void TerrainModProperty::remove(Entity * owner)
+HandlerResult TerrainModProperty::operation(LocatedEntity * ent,
+                                            const Operation & op,
+                                            OpVector & res)
+{
+    return OPERATION_IGNORED;
+}
+
+void TerrainModProperty::remove(LocatedEntity * owner)
 {
 }
 
-Pedestrian::Pedestrian(Entity & body) : Movement(body)
+Pedestrian::Pedestrian(LocatedEntity & body) : Movement(body)
 {
 }
 
-Mercator::TerrainMod * TerrainModProperty::parseModData(Entity * owner,
+Mercator::TerrainMod * TerrainModProperty::parseModData(LocatedEntity * owner,
                                                         const MapType & modMap)
 {
     return 0;
@@ -991,11 +1105,30 @@ void TerrainModProperty::setAttr(const std::string & name,
 {
 }
 
+HandlerResult TerrainModProperty::move_handler(LocatedEntity * e,
+                                               const Operation & op,
+                                               OpVector & res)
+{
+    return OPERATION_IGNORED;
+}
+
+HandlerResult TerrainModProperty::delete_handler(LocatedEntity * e,
+                                                 const Operation & op,
+                                                 OpVector & res)
+{
+    return OPERATION_IGNORED;
+}
+
 SetupProperty::SetupProperty()
 {
 }
 
-void SetupProperty::install(Entity * ent)
+SetupProperty * SetupProperty::copy() const
+{
+    return 0;
+}
+
+void SetupProperty::install(LocatedEntity * ent, const std::string & name)
 {
 }
 
@@ -1003,7 +1136,12 @@ TickProperty::TickProperty()
 {
 }
 
-void TickProperty::apply(Entity * ent)
+TickProperty * TickProperty::copy() const
+{
+    return 0;
+}
+
+void TickProperty::apply(LocatedEntity * ent)
 {
 }
 
@@ -1020,7 +1158,12 @@ void SimpleProperty::set(const Element & ent)
 {
 }
 
-void SimpleProperty::apply(Entity * owner)
+SimpleProperty * SimpleProperty::copy() const
+{
+    return 0;
+}
+
+void SimpleProperty::apply(LocatedEntity * owner)
 {
 }
 
@@ -1041,7 +1184,16 @@ void LineProperty::add(const std::string & s, MapType & ent) const
 {
 }
 
+LineProperty * LineProperty::copy() const
+{
+    return 0;
+}
+
 MindProperty::MindProperty() : m_factory(0)
+{
+}
+
+MindProperty::~MindProperty()
 {
 }
 
@@ -1054,7 +1206,12 @@ void MindProperty::set(const Element & val)
 {
 }
 
-void MindProperty::apply(Entity * ent)
+MindProperty * MindProperty::copy() const
+{
+    return 0;
+}
+
+void MindProperty::apply(LocatedEntity * ent)
 {
 }
 
@@ -1062,7 +1219,16 @@ SpawnProperty::SpawnProperty()
 {
 }
 
-void SpawnProperty::apply(Entity * ent)
+SpawnProperty::~SpawnProperty()
+{
+}
+
+SpawnProperty * SpawnProperty::copy() const
+{
+    return 0;
+}
+
+void SpawnProperty::apply(LocatedEntity * ent)
 {
 }
 
@@ -1070,7 +1236,16 @@ VisibilityProperty::VisibilityProperty()
 {
 }
 
-void VisibilityProperty::apply(Entity * ent)
+VisibilityProperty::~VisibilityProperty()
+{
+}
+
+VisibilityProperty * VisibilityProperty::copy() const
+{
+    return 0;
+}
+
+void VisibilityProperty::apply(LocatedEntity * ent)
 {
 }
 
@@ -1082,11 +1257,11 @@ StatisticsProperty::~StatisticsProperty()
 {
 }
 
-void StatisticsProperty::install(Entity * ent)
+void StatisticsProperty::install(LocatedEntity * ent, const std::string & name)
 {
 }
 
-void StatisticsProperty::apply(Entity * ent)
+void StatisticsProperty::apply(LocatedEntity * ent)
 {
 }
 
@@ -1097,6 +1272,11 @@ int StatisticsProperty::get(Element & val) const
 
 void StatisticsProperty::set(const Element & ent)
 {
+}
+
+StatisticsProperty * StatisticsProperty::copy() const
+{
+    return 0;
 }
 
 SolidProperty::SolidProperty()
@@ -1112,7 +1292,12 @@ void SolidProperty::set(const Element & ent)
 {
 }
 
-void SolidProperty::apply(Entity * owner)
+SolidProperty * SolidProperty::copy() const
+{
+    return 0;
+}
+
+void SolidProperty::apply(LocatedEntity * owner)
 {
 }
 
@@ -1120,29 +1305,35 @@ TransientProperty::TransientProperty()
 {
 }
 
-void TransientProperty::install(Entity * ent)
+TransientProperty::~TransientProperty()
 {
 }
 
-void TransientProperty::apply(Entity * ent)
+TransientProperty * TransientProperty::copy() const
+{
+    return 0;
+}
+
+void TransientProperty::install(LocatedEntity * ent, const std::string & name)
 {
 }
 
-template <typename T>
-HandlerProperty<T>::HandlerProperty(int op, Handler handler) :
-                                    m_operationClassNo(op),
-                                    m_handler(handler)
+void TransientProperty::apply(LocatedEntity * ent)
 {
 }
 
-template <typename T>
-void HandlerProperty<T>::install(Entity * ent)
+SuspendedProperty::SuspendedProperty()
 {
 }
 
-template class HandlerProperty<int>;
-template class HandlerProperty<double>;
-template class HandlerProperty<std::string>;
+SuspendedProperty * SuspendedProperty::copy() const
+{
+    return 0;
+}
+
+void SuspendedProperty::apply(LocatedEntity * owner)
+{
+}
 
 Pedestrian::~Pedestrian()
 {
@@ -1165,7 +1356,7 @@ Operation Pedestrian::generateMove(const Location & new_location)
     return moveOp;
 }
 
-Movement::Movement(Entity & body) : m_body(body),
+Movement::Movement(LocatedEntity & body) : m_body(body),
                                     m_serialno(0)
 {
 }
@@ -1183,7 +1374,7 @@ void Movement::reset()
 {
 }
 
-Motion::Motion(Entity & body) : m_entity(body), m_serialno(0),
+Motion::Motion(LocatedEntity & body) : m_entity(body), m_serialno(0),
                                 m_collision(false)
 {
 }
@@ -1250,6 +1441,13 @@ void EntityKit::addProperties()
 
 void EntityKit::updateProperties()
 {
+}
+
+Root atlasType(const std::string & name,
+               const std::string & parent,
+               bool abstract)
+{
+    return Atlas::Objects::Root();
 }
 
 Inheritance * Inheritance::m_instance = NULL;

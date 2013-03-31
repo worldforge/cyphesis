@@ -22,8 +22,9 @@
 #include "CorePropertyManager.h"
 #include "EntityFactory.h"
 
-#include "rulesets/Entity.h"
+#include "rulesets/LocatedEntity.h"
 
+#include "common/BaseWorld.h"
 #include "common/id.h"
 #include "common/log.h"
 #include "common/debug.h"
@@ -110,13 +111,13 @@ EntityBuilder::~EntityBuilder()
 /// @param intId The integer identifier of the new entity.
 /// @param type The string specifying the type of entity.
 /// @param attributes A mapping of attribute values to set on the entity.
-Entity * EntityBuilder::newEntity(const std::string & id, long intId,
-                                  const std::string & type,
-                                  const RootEntity & attributes,
-                                  const BaseWorld & world) const
+LocatedEntity * EntityBuilder::newEntity(const std::string & id, long intId,
+                                         const std::string & type,
+                                         const RootEntity & attributes,
+                                         const BaseWorld & world) const
 {
     debug(std::cout << "EntityFactor::newEntity()" << std::endl << std::flush;);
-    Entity * thing = 0;
+    LocatedEntity * thing = 0;
     FactoryDict::const_iterator I = m_entityFactories.find(type);
     if (I == m_entityFactories.end()) {
         return 0;
@@ -175,7 +176,7 @@ Entity * EntityBuilder::newEntity(const std::string & id, long intId,
         PropertyBase * prop = J->second;
         // If a property is in the class it won't have been installed
         // as setAttr() checks
-        prop->install(thing);
+        prop->install(thing, J->first);
         // The property will have been applied if it has an overriden
         // value, so we only apply it the value is still default.
         if (attrs.find(J->first) == attrs.end()) {
@@ -207,7 +208,6 @@ Task * EntityBuilder::newTask(const std::string & name, LocatedEntity & owner) c
     if (I == m_taskFactories.end()) {
         return 0;
     }
-    std::cout << "0" << std::endl << std::flush;
     return buildTask(I->second, owner);
 }
 
@@ -304,15 +304,22 @@ void EntityBuilder::installBaseFactory(const std::string & class_name,
     installFactory(class_name, atlasClass(class_name, parent), factory);
 }
 
-void EntityBuilder::installFactory(const std::string & class_name,
-                                   const Root & class_desc,
-                                   EntityKit * factory)
+int EntityBuilder::installFactory(const std::string & class_name,
+                                  const Root & class_desc,
+                                  EntityKit * factory)
 {
-    m_entityFactories[class_name] = factory;
-    Monitors::instance()->watch(compose("created_count{type=%1}", class_name),
-                                new Variable<int>(factory->m_createdCount));
     Inheritance & i = Inheritance::instance();
     factory->m_type = i.addChild(class_desc);
+
+    if (factory->m_type == 0) {
+        return -1;
+    }
+
+    m_entityFactories.insert(std::make_pair(class_name, factory));
+
+    Monitors::instance()->watch(compose("created_count{type=%1}", class_name),
+                                new Variable<int>(factory->m_createdCount));
+    return 0;
 }
 
 EntityKit * EntityBuilder::getClassFactory(const std::string & class_name)

@@ -22,8 +22,6 @@
 
 #include "common/Property.h"
 
-class Entity;
-
 /// \brief Class to handle whether or not an entity is solid for collisions.
 /// \ingroup PropertyClasses
 class SolidProperty : public PropertyBase {
@@ -35,8 +33,9 @@ class SolidProperty : public PropertyBase {
 
     virtual int get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
+    virtual SolidProperty * copy() const;
 
-    virtual void apply(Entity *);
+    virtual void apply(LocatedEntity *);
 };
 
 #endif // RULESETS_SOLID_PROPERTY_H

@@ -106,6 +106,8 @@ class TestLocatedEntity : public LocatedEntity {
 
     virtual void externalOperation(const Operation &, Link &) { }
     virtual void operation(const Operation &, OpVector &) { }
+
+    virtual void destroy() { }
 };
 
 int main()
@@ -246,7 +248,7 @@ int main()
     expect_python_error("print m.foo_operation", PyExc_AttributeError);
     run_python_string("print m.location");
     run_python_string("print m.contains");
-    expect_python_error("m.type", PyExc_AttributeError);
+    run_python_string("m.type");
     expect_python_error("m.map=1", PyExc_AttributeError);
     run_python_string("m.string_attr='foo'");
     run_python_string("assert(m.string_attr == 'foo')");
@@ -298,11 +300,11 @@ int main()
     return 0;
 }
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     return 0;

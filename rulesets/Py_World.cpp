@@ -21,9 +21,11 @@
 #include "Py_WorldTime.h"
 #include "Py_Thing.h"
 
-#include "Entity.h"
+#include "LocatedEntity.h"
 
 #include "modules/WorldTime.h"
+
+#include "common/BaseWorld.h"
 
 static PyObject * World_get_time(PyWorld *self)
 {
@@ -41,7 +43,7 @@ static PyObject * World_get_object(PyWorld *self, PyObject * id)
         PyErr_SetString(PyExc_TypeError, "World.get_object must be string");
         return NULL;
     }
-    Entity * ent = BaseWorld::instance().getEntity(PyString_AsString(id));
+    LocatedEntity * ent = BaseWorld::instance().getEntity(PyString_AsString(id));
     if (ent == NULL) {
         Py_INCREF(Py_None);
         return Py_None;
@@ -62,7 +64,7 @@ static PyObject * World_get_object_ref(PyWorld *self, PyObject * id)
         PyErr_SetString(PyExc_TypeError, "World.get_object must be string");
         return NULL;
     }
-    Entity * ent = BaseWorld::instance().getEntity(PyString_AsString(id));
+    LocatedEntity * ent = BaseWorld::instance().getEntity(PyString_AsString(id));
     if (ent == NULL) {
         Py_INCREF(Py_None);
         return Py_None;

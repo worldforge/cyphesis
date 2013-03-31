@@ -32,7 +32,7 @@ class TerrainContext : public Mercator::Effector::Context
   public:
     TerrainContext();
 
-    explicit TerrainContext(Entity*);
+    explicit TerrainContext(LocatedEntity*);
 
     virtual ~TerrainContext();
 

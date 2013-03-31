@@ -26,6 +26,7 @@
 #include "EntityBuilder.h"
 #include "EntityRuleHandler.h"
 #include "OpRuleHandler.h"
+#include "PropertyRuleHandler.h"
 #include "TaskRuleHandler.h"
 #include "Persistence.h"
 
@@ -70,7 +71,8 @@ void Ruleset::init(const std::string & ruleset)
 Ruleset::Ruleset(EntityBuilder * eb) : 
       m_taskHandler(new TaskRuleHandler(eb)),
       m_entityHandler(new EntityRuleHandler(eb)),
-      m_opHandler(new OpRuleHandler(eb))
+      m_opHandler(new OpRuleHandler(eb)),
+      m_propertyHandler(new PropertyRuleHandler(eb))
 {
 }
 
@@ -112,6 +114,9 @@ int Ruleset::installRuleInner(const std::string & class_name,
                                      dependent, reason);
     } else if (m_entityHandler->check(class_desc) == 0) {
         ret = m_entityHandler->install(class_name, parent, class_desc,
+                                       dependent, reason);
+    } else if (m_propertyHandler->check(class_desc) == 0) {
+        ret = m_propertyHandler->install(class_name, parent, class_desc,
                                        dependent, reason);
     } else {
         log(ERROR, compose("Rule \"%1\" has unknown objtype=\"%2\". Skipping.",
@@ -210,6 +215,8 @@ int Ruleset::modifyRule(const std::string & class_name,
         ret = m_taskHandler->update(class_name, class_desc);
     } else if (m_entityHandler->check(class_desc) == 0) {
         ret = m_entityHandler->update(class_name, class_desc);
+    } else if (m_propertyHandler->check(class_desc) == 0) {
+        ret = m_propertyHandler->update(class_name, class_desc);
     }
     if (ret == 0) {
         Inheritance::instance().updateClass(class_name, class_desc);

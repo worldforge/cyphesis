@@ -118,6 +118,8 @@ int main()
 
 // Stubs
 
+#include "Property_stub_impl.h"
+
 Spawn::~Spawn()
 {
 }
@@ -130,7 +132,7 @@ void addToEntity(const Point3D & p, std::vector<double> & vd)
     vd[2] = p[2];
 }
 
-EntityRef::EntityRef(Entity* e) : m_inner(e)
+EntityRef::EntityRef(LocatedEntity* e) : m_inner(e)
 {
 }
 
@@ -161,36 +163,12 @@ void AreaProperty::set(const Atlas::Message::Element & ent)
 {
 }
 
-void AreaProperty::apply(Entity * owner)
-{
-}
-
-template <typename T>
-Property<T>::Property(unsigned int flags) :
-                      PropertyBase(flags)
-{
-}
-
-template <typename T>
-int Property<T>::get(Atlas::Message::Element & e) const
+AreaProperty * AreaProperty::copy() const
 {
     return 0;
 }
 
-template <typename T>
-void Property<T>::set(const Atlas::Message::Element & e)
-{
-}
-
-template <typename T>
-void Property<T>::add(const std::string & s,
-                      Atlas::Message::MapType & ent) const
-{
-}
-
-template <typename T>
-void Property<T>::add(const std::string & s,
-                      const Atlas::Objects::Entity::RootEntity & ent) const
+void AreaProperty::apply(LocatedEntity * owner)
 {
 }
 
@@ -204,11 +182,11 @@ PropertyBase::~PropertyBase()
 {
 }
 
-void PropertyBase::install(Entity *)
+void PropertyBase::install(LocatedEntity *, const std::string & name)
 {
 }
 
-void PropertyBase::apply(Entity *)
+void PropertyBase::apply(LocatedEntity *)
 {
 }
 
@@ -220,4 +198,11 @@ void PropertyBase::add(const std::string & s,
 void PropertyBase::add(const std::string & s,
                        const Atlas::Objects::Entity::RootEntity & ent) const
 {
+}
+
+HandlerResult PropertyBase::operation(LocatedEntity *,
+                                      const Operation &,
+                                      OpVector &)
+{
+    return OPERATION_IGNORED;
 }

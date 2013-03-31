@@ -35,7 +35,7 @@ int main()
 {
     BBoxProperty * ap = new BBoxProperty;
 
-    PropertyCoverage pc(ap);
+    PropertyChecker<BBoxProperty> pc(ap);
 
     pc.testDataAppend(ListType(3, 1.f));
     pc.testDataAppend(ListType(6, 1.f));
@@ -52,11 +52,11 @@ int main()
 
 #include "TestWorld.h"
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     return 0;

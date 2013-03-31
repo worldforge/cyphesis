@@ -24,8 +24,9 @@
 
 #include "Script.h"
 
-#include "common/Property.h"
+#include "common/BaseWorld.h"
 #include "common/log.h"
+#include "common/Property.h"
 #include "common/TypeNode.h"
 
 #include <Atlas/Objects/Operation.h>
@@ -70,7 +71,7 @@ void Stackable::CombineOperation(const Operation & op, OpVector & res)
             // This is normal
             continue;
         }
-        Entity * ent = BaseWorld::instance().getEntity(id);
+        LocatedEntity * ent = BaseWorld::instance().getEntity(id);
         if (ent == NULL) {
             // FIXME Send an Unseen op?
             continue;

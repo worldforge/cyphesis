@@ -36,6 +36,7 @@ class IdProperty : public PropertyBase {
     virtual void set(const Atlas::Message::Element & val);
     virtual void add(const std::string & key, Atlas::Message::MapType & map) const;
     virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
+    virtual IdProperty * copy() const;
 };
 
 /// \brief Class to handle Entity name property
@@ -62,6 +63,7 @@ class ContainsProperty : public PropertyBase {
     virtual int get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
     virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
+    virtual ContainsProperty * copy() const;
 };
 
 #endif // RULESETS_ATLAS_PROPERTIES_H

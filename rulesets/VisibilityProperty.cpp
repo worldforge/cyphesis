@@ -19,7 +19,7 @@
 
 #include "VisibilityProperty.h"
 
-#include "rulesets/Entity.h"
+#include "rulesets/LocatedEntity.h"
 
 #include "common/log.h"
 
@@ -27,7 +27,16 @@ VisibilityProperty::VisibilityProperty()
 {
 }
 
-void VisibilityProperty::apply(Entity * ent)
+VisibilityProperty::~VisibilityProperty()
+{
+}
+
+VisibilityProperty * VisibilityProperty::copy() const
+{
+    return new VisibilityProperty(*this);
+}
+
+void VisibilityProperty::apply(LocatedEntity * ent)
 {
     ent->m_location.setVisibility(m_data);
 }

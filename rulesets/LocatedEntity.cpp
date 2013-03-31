@@ -57,7 +57,7 @@ const std::set<std::string> & LocatedEntity::immutables()
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),
                m_refCount(0), m_seq(0),
-               m_script(0), m_type(0), m_contains(0)
+               m_script(0), m_type(0), m_flags(0), m_contains(0)
 {
     m_properties["id"] = new IdProperty(getId());
 }
@@ -170,6 +170,25 @@ const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
     return 0;
 }
 
+PropertyBase * LocatedEntity::modProperty(const std::string & name)
+{
+    PropertyDict::const_iterator I = m_properties.find(name);
+    if (I != m_properties.end()) {
+        return I->second;
+    }
+    return 0;
+}
+
+PropertyBase * LocatedEntity::setProperty(const std::string & name,
+                                          PropertyBase * prop)
+{
+    return m_properties[name] = prop;
+}
+
+void LocatedEntity::installDelegate(int, const std::string &)
+{
+}
+
 /// \brief Called when the container of this entity changes.
 ///
 void LocatedEntity::onContainered()
@@ -179,6 +198,25 @@ void LocatedEntity::onContainered()
 /// \brief Called when the properties of this entity change.
 ///
 void LocatedEntity::onUpdated()
+{
+}
+
+/// \brief Called when the entity needs to be removed from its context
+void LocatedEntity::destroy()
+{
+}
+
+Domain * LocatedEntity::getMovementDomain()
+{
+    return 0;
+}
+
+/// \brief Send an operation to the world for dispatch.
+///
+/// sendWorld() bipasses serialno assignment, so you must ensure
+/// that serialno is sorted. This allows client serialnos to get
+/// in, so that client gets correct usefull refnos back.
+void LocatedEntity::sendWorld(const Operation & op)
 {
 }
 

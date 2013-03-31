@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2009 Alistair Riddoch
+// Copyright (C) 2013 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -26,62 +26,34 @@
 
 #include "PropertyCoverage.h"
 
-#include "rulesets/MultiHandlerProperty.h"
-#include "rulesets/Entity.h"
-
-#include <Atlas/Objects/Operation.h>
-
-static HandlerResult test_handler(Entity *, const Operation &, OpVector &)
-{
-    return OPERATION_HANDLED;
-}
+#include "rulesets/BiomassProperty.h"
 
 int main()
 {
-    HandlerMap test_map;
-    test_map.insert(std::make_pair(Atlas::Objects::Operation::GET_NO, &test_handler));
+    BiomassProperty * ap = new BiomassProperty;
 
-    PropertyBase * ap = new MultiHandlerProperty<int>(test_map);
+    PropertyChecker<BiomassProperty> pc(ap);
 
-    {
-        PropertyCoverage pc(ap);
-
-        pc.basicCoverage();
-    }
-
-    ap = new MultiHandlerProperty<double>(test_map);
-
-    {
-        PropertyCoverage pc(ap);
-
-        pc.basicCoverage();
-    }
-
-    ap = new MultiHandlerProperty<std::string>(test_map);
-
-    {
-        PropertyCoverage pc(ap);
-
-        pc.basicCoverage();
-    }
+    pc.basicCoverage();
 
     return 0;
 }
 
-// stubs
-
 #include "TestWorld.h"
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     return 0;
 }
 
-void Entity::installHandler(int class_no, Handler handler)
-{
-}
+// stubs
+
+namespace Atlas { namespace Objects { namespace Operation {
+int EAT_NO = -1;
+int NOURISH_NO = -1;
+} } }

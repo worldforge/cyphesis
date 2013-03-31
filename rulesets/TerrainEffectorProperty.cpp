@@ -19,15 +19,15 @@
 
 #include "TerrainEffectorProperty.h"
 
-#include "Entity.h"
-#include "TerrainProperty.h"
+#include "rulesets/LocatedEntity.h"
+#include "rulesets/TerrainProperty.h"
 
 #include "modules/Location.h"
 #include "modules/TerrainContext.h"
 
 #include <Mercator/TerrainMod.h>
 
-const TerrainProperty * TerrainEffectorProperty::getTerrain(Entity * owner)
+const TerrainProperty * TerrainEffectorProperty::getTerrain(LocatedEntity * owner)
 {
     const PropertyBase * terr;
     LocatedEntity * ent = owner;

@@ -42,7 +42,6 @@
 #include "PythonEntityScript.h"
 #include "BaseMind.h"
 
-#include "common/Inheritance.h"
 #include "common/compose.hpp"
 #include "common/globals.h"
 #include "common/const.h"

@@ -24,9 +24,10 @@
 #include "Ruleset.h"
 #include "Juncture.h"
 
-#include "rulesets/Entity.h"
+#include "rulesets/LocatedEntity.h"
 #include "rulesets/Character.h"
 
+#include "common/BaseWorld.h"
 #include "common/id.h"
 #include "common/log.h"
 #include "common/debug.h"

@@ -21,7 +21,7 @@
 #include <string>
 #include <map>
 
-class Entity;
+class LocatedEntity;
 class PendingTeleport;
 
 /// \brief Map of teleported entity IDs and their PendingState objects
@@ -30,12 +30,15 @@ typedef std::map<std::string, PendingTeleport *> PendingTeleportMap;
 /// \brief A class that stores and authenticates teleport requests
 class TeleportAuthenticator
 {
+  private:
     /// \brief An instance pointer for singleton behaviour
     static TeleportAuthenticator * m_instance;
     /// \brief Map of teleport requests
     PendingTeleportMap m_teleports;
 
-    public:
+    void removeTeleport(PendingTeleportMap::iterator I);
+
+  public:
 
     static void init() {
         if(m_instance == 0) {
@@ -52,22 +55,14 @@ class TeleportAuthenticator
         }
     }
 
-    /// \brief Checks if there is a pending teleport on an account
-    bool isPending(const std::string &);
+    bool isPending(const std::string &) const;
 
-    /// \brief Add a teleport authentication entry
     int addTeleport(const std::string &, const std::string &);
 
-    /// \brief Remove a teleport authentications entry. Typically after a
-    ///        successful authentication
     int removeTeleport(const std::string &);
 
-    /// \brief Remove a teleport authentications entry. Typically after a
-    ///        successful authentication
-    int removeTeleport(PendingTeleportMap::iterator I);
-
-    /// \brief Authenticate a teleport request
-    Entity *authenticateTeleport(const std::string &, const std::string &);
+    LocatedEntity * authenticateTeleport(const std::string &,
+                                         const std::string &);
 
     friend class TeleportAuthenticatortest;
 };

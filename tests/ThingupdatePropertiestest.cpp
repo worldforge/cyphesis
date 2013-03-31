@@ -137,6 +137,7 @@ int main()
 #include "rulesets/Domain.h"
 #include "rulesets/Motion.h"
 
+#include "common/BaseWorld.h"
 #include "common/const.h"
 #include "common/log.h"
 
@@ -152,7 +153,7 @@ int TICK_NO = -1;
 int UPDATE_NO = -1;
 } } }
 
-Motion::Motion(Entity & body) : m_entity(body), m_serialno(0),
+Motion::Motion(LocatedEntity & body) : m_entity(body), m_serialno(0),
                                 m_collision(false)
 {
 }
@@ -190,7 +191,7 @@ Operation * Motion::genMoveOperation()
 }
 
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0), m_flags(0)
+        LocatedEntity(id, intId), m_motion(0)
 {
 }
 
@@ -337,6 +338,14 @@ PropertyBase * Entity::modProperty(const std::string & name)
     return 0;
 }
 
+void Entity::installDelegate(int class_no, const std::string & delegate)
+{
+}
+
+void Entity::sendWorld(const Operation & op)
+{
+}
+
 void Entity::onContainered()
 {
 }
@@ -353,7 +362,7 @@ Domain * Entity::getMovementDomain()
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),
                m_refCount(0), m_seq(0),
-               m_script(0), m_type(0), m_contains(0)
+               m_script(0), m_type(0), m_flags(0), m_contains(0)
 {
 }
 
@@ -388,6 +397,34 @@ PropertyBase * LocatedEntity::setAttr(const std::string & name,
 const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
 {
     return 0;
+}
+
+PropertyBase * LocatedEntity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * LocatedEntity::setProperty(const std::string & name,
+                                          PropertyBase * prop)
+{
+    return 0;
+}
+
+void LocatedEntity::installDelegate(int, const std::string &)
+{
+}
+
+void LocatedEntity::destroy()
+{
+}
+
+Domain * LocatedEntity::getMovementDomain()
+{
+    return 0;
+}
+
+void LocatedEntity::sendWorld(const Operation & op)
+{
 }
 
 void LocatedEntity::onContainered()
@@ -473,7 +510,7 @@ void Router::error(const Operation & op,
 
 BaseWorld * BaseWorld::m_instance = 0;
 
-BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
 {
     m_instance = this;
 }
@@ -483,12 +520,12 @@ BaseWorld::~BaseWorld()
     m_instance = 0;
 }
 
-Entity * BaseWorld::getEntity(const std::string & id) const
+LocatedEntity * BaseWorld::getEntity(const std::string & id) const
 {
     return 0;
 }
 
-Entity * BaseWorld::getEntity(long id) const
+LocatedEntity * BaseWorld::getEntity(long id) const
 {
     return 0;
 }

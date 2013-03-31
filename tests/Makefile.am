@@ -35,13 +35,13 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  StatisticsPropertytest StatusPropertytest \
                  TerrainModPropertytest TerrainPropertytest \
                  TransientPropertytest TasksPropertytest \
-                 HandlerPropertytest MultiHandlerPropertytest \
                  InternalPropertiestest EntityPropertiestest \
                  SpawnPropertytest VisibilityPropertytest \
-                 ExternalPropertytest \
+                 ExternalPropertytest BurnSpeedPropertytest \
+                 BiomassPropertytest DecaysPropertytest \
                  Domaintest BulletDomaintest AtlasPropertiestest \
                  BaseMindtest MemEntitytest MemMaptest Movementtest \
-                 Pedestriantest ActivePropertyFactorytest \
+                 Pedestriantest \
                  ExternalMindtest \
                  Python_APItest Py_Quaterniontest Py_Vector3Dtest \
                  Py_Point3Dtest Py_BBoxtest Py_Locationtest \
@@ -58,7 +58,14 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  TerrainEffectorPropertytest
 
 RULESETS_INTEGRATION_TESTS = MindPropertyintegration BulletDomainintegration \
-                             TerrainPropertyintegration
+                             TerrainPropertyintegration \
+                             PropertyEntityintegration \
+                             DecaysPropertyintegration \
+                             BiomassPropertyintegration \
+                             TerrainModPropertyintegration \
+                             StatisticsPropertyintegration \
+                             BaseMindMapEntityintegration \
+                             AreaPropertyintegration
 
 CLIENT_TESTS = Py_CreatorClienttest Py_ObserverClienttest \
                ClientConnectiontest BaseClienttest \
@@ -77,10 +84,11 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                TeleportStatetest PendingTeleporttest Juncturetest \
                ConnectableRoutertest RuleHandlertest OpRuleHandlertest \
                EntityRuleHandlertest TaskRuleHandlertest \
+               PropertyRuleHandlertest \
                IdleConnectortest CommPSQLSockettest \
                CommPythonClientFactorytest \
                Persistencetest \
-               SystemAccounttest TCPListenFactorytest
+               SystemAccounttest TCPListenFactorytest CorePropertyManagertest
 
 SERVER_COMM_TESTS = CommStreamClienttest CommClienttest \
                     CommHttpClienttest CommStreamListenertest CommPeertest \
@@ -577,18 +585,6 @@ TasksPropertytest_LDADD = \
         $(top_builddir)/rulesets/TasksProperty.o \
         $(top_builddir)/common/Property.o
 
-HandlerPropertytest_SOURCES = HandlerPropertytest.cpp \
-        PropertyCoverage.cpp PropertyCoverage.h
-HandlerPropertytest_LDADD = \
-        $(top_builddir)/rulesets/HandlerProperty.o \
-        $(top_builddir)/common/Property.o
-
-MultiHandlerPropertytest_SOURCES = MultiHandlerPropertytest.cpp \
-        PropertyCoverage.cpp PropertyCoverage.h
-MultiHandlerPropertytest_LDADD = \
-        $(top_builddir)/rulesets/MultiHandlerProperty.o \
-        $(top_builddir)/common/Property.o
-
 InternalPropertiestest_SOURCES = InternalPropertiestest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 InternalPropertiestest_LDADD = \
@@ -622,6 +618,24 @@ VisibilityPropertytest_LDADD = \
 ExternalPropertytest_SOURCES = ExternalPropertytest.cpp
 ExternalPropertytest_LDADD = \
         $(top_builddir)/rulesets/ExternalProperty.o \
+        $(top_builddir)/common/Property.o
+
+BurnSpeedPropertytest_SOURCES = BurnSpeedPropertytest.cpp \
+        PropertyCoverage.cpp PropertyCoverage.h
+BurnSpeedPropertytest_LDADD = \
+        $(top_builddir)/rulesets/BurnSpeedProperty.o \
+        $(top_builddir)/common/Property.o
+
+BiomassPropertytest_SOURCES = BiomassPropertytest.cpp \
+        PropertyCoverage.cpp PropertyCoverage.h
+BiomassPropertytest_LDADD = \
+        $(top_builddir)/rulesets/BiomassProperty.o \
+        $(top_builddir)/common/Property.o
+
+DecaysPropertytest_SOURCES = DecaysPropertytest.cpp \
+        PropertyCoverage.cpp PropertyCoverage.h
+DecaysPropertytest_LDADD = \
+        $(top_builddir)/rulesets/DecaysProperty.o \
         $(top_builddir)/common/Property.o
 
 Domaintest_SOURCES = Domaintest.cpp
@@ -658,10 +672,6 @@ Pedestriantest_LDADD = \
 ExternalMindtest_SOURCES = ExternalMindtest.cpp
 ExternalMindtest_LDADD = \
         $(top_builddir)/rulesets/ExternalMind.o
-
-ActivePropertyFactorytest_SOURCES = ActivePropertyFactorytest.cpp
-ActivePropertyFactorytest_LDADD = \
-        $(top_builddir)/rulesets/ActivePropertyFactory.o
 
 Python_APItest_SOURCES = Python_APItest.cpp \
         python_testers.cpp python_testers.h
@@ -987,6 +997,63 @@ TerrainPropertyintegration_LDADD = \
         $(top_builddir)/common/id.o \
         $(TERRAIN_LIBS)
 
+PropertyEntityintegration_SOURCES = PropertyEntityintegration.cpp
+PropertyEntityintegration_LDADD = \
+        $(top_builddir)/rulesets/Entity.o \
+        $(top_builddir)/rulesets/LocatedEntity.o \
+        $(top_builddir)/common/Property.o \
+        $(top_builddir)/common/TypeNode.o
+
+DecaysPropertyintegration_SOURCES = DecaysPropertyintegration.cpp
+DecaysPropertyintegration_LDADD = \
+        $(top_builddir)/rulesets/Entity.o \
+        $(top_builddir)/rulesets/DecaysProperty.o \
+        $(top_builddir)/rulesets/LocatedEntity.o \
+        $(top_builddir)/common/Property.o \
+        $(top_builddir)/common/TypeNode.o
+
+BiomassPropertyintegration_SOURCES = BiomassPropertyintegration.cpp
+BiomassPropertyintegration_LDADD = \
+        $(top_builddir)/rulesets/Entity.o \
+        $(top_builddir)/rulesets/BiomassProperty.o \
+        $(top_builddir)/rulesets/LocatedEntity.o \
+        $(top_builddir)/common/Property.o \
+        $(top_builddir)/common/TypeNode.o
+
+TerrainModPropertyintegration_SOURCES = TerrainModPropertyintegration.cpp
+TerrainModPropertyintegration_LDADD = \
+        $(top_builddir)/rulesets/Entity.o \
+        $(top_builddir)/rulesets/LocatedEntity.o \
+        $(top_builddir)/rulesets/TerrainEffectorProperty.o \
+        $(top_builddir)/rulesets/TerrainModProperty.o \
+        $(top_builddir)/rulesets/TerrainModTranslator.o \
+        $(top_builddir)/rulesets/TerrainProperty.o \
+        $(top_builddir)/modules/EntityRef.o \
+        $(top_builddir)/modules/TerrainContext.o \
+        $(top_builddir)/common/Property.o \
+        $(top_builddir)/common/TypeNode.o \
+        $(TERRAIN_LIBS)
+
+StatisticsPropertyintegration_SOURCES = StatisticsPropertyintegration.cpp
+StatisticsPropertyintegration_LDADD = \
+        $(top_builddir)/rulesets/StatisticsProperty.o \
+        $(top_builddir)/rulesets/Entity.o \
+        $(top_builddir)/rulesets/LocatedEntity.o
+
+BaseMindMapEntityintegration_SOURCES = BaseMindMapEntityintegration.cpp
+BaseMindMapEntityintegration_LDADD = \
+        $(top_builddir)/rulesets/BaseMind.o \
+        $(top_builddir)/rulesets/MemEntity.o \
+        $(top_builddir)/rulesets/MemMap.o
+
+AreaPropertyintegration_SOURCES = AreaPropertyintegration.cpp
+AreaPropertyintegration_LDADD = \
+        $(top_builddir)/rulesets/AreaProperty.o \
+        $(top_builddir)/rulesets/Entity.o \
+        $(top_builddir)/rulesets/LocatedEntity.o \
+        $(top_builddir)/physics/Course.o \
+        $(top_builddir)/physics/Shape.o
+
 # CLIENT_TESTS
 
 Py_CreatorClienttest_SOURCES = Py_CreatorClienttest.cpp \
@@ -1248,6 +1315,10 @@ TaskRuleHandlertest_LDADD = \
         $(top_builddir)/server/TaskRuleHandler.o \
         $(top_builddir)/server/RuleHandler.o
 
+PropertyRuleHandlertest_SOURCES = PropertyRuleHandlertest.cpp
+PropertyRuleHandlertest_LDADD = \
+        $(top_builddir)/server/PropertyRuleHandler.o
+
 IdleConnectortest_SOURCES = IdleConnectortest.cpp
 IdleConnectortest_LDADD = \
         $(top_builddir)/server/IdleConnector.o
@@ -1274,6 +1345,10 @@ TCPListenFactorytest_SOURCES = TCPListenFactorytest.cpp
 TCPListenFactorytest_LDADD = \
         $(top_builddir)/server/TCPListenFactory.o \
         $(NETWORK_LIBS)
+
+CorePropertyManagertest_SOURCES = CorePropertyManagertest.cpp
+CorePropertyManagertest_LDADD = \
+        $(top_builddir)/server/CorePropertyManager.o
 
 # SERVER_INTEGRATION_TESTS
 
@@ -1302,6 +1377,7 @@ Rulesetintegration_LDADD = \
         $(top_builddir)/server/TaskRuleHandler.o \
         $(top_builddir)/server/OpRuleHandler.o \
         $(top_builddir)/server/EntityRuleHandler.o \
+        $(top_builddir)/server/PropertyRuleHandler.o \
         $(top_builddir)/server/RuleHandler.o \
         $(top_builddir)/server/Persistence.o \
         $(top_builddir)/server/TaskFactory.o \

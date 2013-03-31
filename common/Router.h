@@ -45,6 +45,7 @@ class Router {
     const long m_intId;
   protected:
     explicit Router(const std::string & id, long intId);
+    Router(const Router &) = delete;
   public:
     virtual ~Router();
 

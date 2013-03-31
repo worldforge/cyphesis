@@ -35,8 +35,6 @@ class BaseMind : public MemEntity {
   protected:
     /// \brief Memory map of world entities this mind knows about
     MemMap m_map;
-    /// \brief Flag indicating whether this mind is concious
-    bool m_isAwake;
     /// \brief World time as far as this mind is aware
     WorldTime m_time;
   public:
@@ -48,10 +46,13 @@ class BaseMind : public MemEntity {
     /// \brief Accessor for the world time
     WorldTime * getTime() { return &m_time; }
 
+    /// \brief Is this mind active
+    bool isAwake() const { return (getFlags() & entity_asleep) == 0; }
+
     /// \brief Set this mind as inactive
-    void sleep() { m_isAwake = false; }
+    void sleep() { setFlags(entity_asleep); }
     /// \brief Set this mind as active
-    void awake() { m_isAwake = true; }
+    void awake() { resetFlags(entity_asleep); }
 
     void sightCreateOperation(const Operation &, OpVector &);
     void sightDeleteOperation(const Operation &, OpVector &);
@@ -69,7 +70,7 @@ class BaseMind : public MemEntity {
     void callSightOperation(const Operation &, OpVector &);
     void callSoundOperation(const Operation &, OpVector &);
 
-    friend class PythonMindScript;
+    friend class BaseMindMapEntityintegration;
 };
 
 #endif // RULESETS_BASE_MIND_H

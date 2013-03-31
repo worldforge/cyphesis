@@ -50,44 +50,45 @@ int stub_connection_send_count = 0;
 
 class TestWorld : public BaseWorld {
   public:
-    explicit TestWorld() : BaseWorld(*(Entity*)0) {
+    explicit TestWorld() : BaseWorld(*(LocatedEntity*)0) {
         m_realTime = 100000;
     }
 
     virtual bool idle(const SystemTime &) { return false; }
 
-    virtual Entity * addEntity(Entity * ent) { 
+    virtual LocatedEntity * addEntity(LocatedEntity * ent) { 
         return 0;
     }
 
-    Entity * test_addEntity(Entity * ent, long intId) { 
+    LocatedEntity * test_addEntity(LocatedEntity * ent, long intId) { 
         m_eobjects[intId] = ent;
         return 0;
     }
-    virtual Entity * addNewEntity(const std::string &,
-                                  const Atlas::Objects::Entity::RootEntity &) {
+    virtual LocatedEntity * addNewEntity(const std::string &,
+                                         const Atlas::Objects::Entity::RootEntity &) {
         return 0;
     }
     int createSpawnPoint(const Atlas::Message::MapType & data,
-                         Entity *) { return 0; }
+                         LocatedEntity *) { return 0; }
     int getSpawnList(Atlas::Message::ListType & data) { return 0; }
-    Entity * spawnNewEntity(const std::string & name,
-                            const std::string & type,
-                            const Atlas::Objects::Entity::RootEntity & desc) {
+    LocatedEntity * spawnNewEntity(const std::string & name,
+                                   const std::string & type,
+                                   const Atlas::Objects::Entity::RootEntity & desc) {
         return addNewEntity(type, desc);
     }
     virtual Task * newTask(const std::string &, LocatedEntity &) { return 0; }
     virtual Task * activateTask(const std::string &, const std::string &,
                                 LocatedEntity *, LocatedEntity &) { return 0; }
-    virtual ArithmeticScript * newArithmetic(const std::string &, Entity *) {
+    virtual ArithmeticScript * newArithmetic(const std::string &,
+                                             LocatedEntity *) {
         return 0;
     }
-    virtual void message(const Operation & op, Entity & ent) {
+    virtual void message(const Operation & op, LocatedEntity & ent) {
         stub_baseworld_receieved_op = op->getClassNo();
     }
-    virtual Entity * findByName(const std::string & name) { return 0; }
-    virtual Entity * findByType(const std::string & type) { return 0; }
-    virtual void addPerceptive(Entity *) { }
+    virtual LocatedEntity * findByName(const std::string & name) { return 0; }
+    virtual LocatedEntity * findByType(const std::string & type) { return 0; }
+    virtual void addPerceptive(LocatedEntity *) { }
 };
 
 class TeleportAuthenticatortest : public Cyphesis::TestBase
@@ -103,7 +104,8 @@ class TeleportAuthenticatortest : public Cyphesis::TestBase
     void test_sequence();
     void test_authenticateTeleport();
     void test_authenticateTeleport_nonexist();
-    void test_removeTeleport();
+    void test_removeTeleport_id();
+    void test_removeTeleport_iterator();
 };
 
 TeleportAuthenticatortest::TeleportAuthenticatortest()
@@ -111,7 +113,8 @@ TeleportAuthenticatortest::TeleportAuthenticatortest()
     ADD_TEST(TeleportAuthenticatortest::test_sequence);
     ADD_TEST(TeleportAuthenticatortest::test_authenticateTeleport);
     ADD_TEST(TeleportAuthenticatortest::test_authenticateTeleport_nonexist);
-    ADD_TEST(TeleportAuthenticatortest::test_removeTeleport);
+    ADD_TEST(TeleportAuthenticatortest::test_removeTeleport_id);
+    ADD_TEST(TeleportAuthenticatortest::test_removeTeleport_iterator);
 }
 
 void TeleportAuthenticatortest::setup()
@@ -187,11 +190,35 @@ void TeleportAuthenticatortest::test_authenticateTeleport_nonexist()
                    "101", "test_possess_key") == NULL);
 }
 
-void TeleportAuthenticatortest::test_removeTeleport()
+void TeleportAuthenticatortest::test_removeTeleport_id()
 {
-    int ret = TeleportAuthenticator::instance()->removeTeleport(
-          TeleportAuthenticator::instance()->m_teleports.end());
-    ASSERT_EQUAL(ret, -1);
+    TeleportAuthenticator * ta = TeleportAuthenticator::instance();
+
+    ta->m_teleports.insert(std::make_pair("1",
+          new PendingTeleport("1", "e146db28-1058-46e6-a9b3-601ab6ef07a7")));
+
+    ASSERT_TRUE(ta->m_teleports.find("1") != ta->m_teleports.end());
+
+    int ret = ta->removeTeleport("1");
+    ASSERT_EQUAL(ret, 0);
+
+    ASSERT_TRUE(ta->m_teleports.find("1") == ta->m_teleports.end());
+}
+
+void TeleportAuthenticatortest::test_removeTeleport_iterator()
+{
+    TeleportAuthenticator * ta = TeleportAuthenticator::instance();
+
+    ta->m_teleports.insert(std::make_pair("2",
+          new PendingTeleport("2", "b769b7a4-32d3-477d-9803-a53fd9ad49c7")));
+
+    ASSERT_TRUE(ta->m_teleports.find("2") != ta->m_teleports.end());
+
+    PendingTeleportMap::iterator I = ta->m_teleports.find("2");
+
+    ta->removeTeleport(I);
+
+    ASSERT_TRUE(ta->m_teleports.find("2") == ta->m_teleports.end());
 }
 
 int main()
@@ -219,7 +246,7 @@ void log(LogLevel lvl, const std::string & msg)
 
 BaseWorld * BaseWorld::m_instance = 0;
 
-BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
 {
     m_instance = this;
 }
@@ -229,7 +256,7 @@ BaseWorld::~BaseWorld()
     m_instance = 0;
 }
 
-Entity * BaseWorld::getEntity(const std::string & id) const
+LocatedEntity * BaseWorld::getEntity(const std::string & id) const
 {
     long intId = integerId(id);
 
@@ -242,7 +269,7 @@ Entity * BaseWorld::getEntity(const std::string & id) const
     }
 }
 
-Entity * BaseWorld::getEntity(long id) const
+LocatedEntity * BaseWorld::getEntity(long id) const
 {
     EntityDict::const_iterator I = m_eobjects.find(id);
     if (I != m_eobjects.end()) {
@@ -276,7 +303,7 @@ void PendingTeleport::setValidated()
 }
 
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0), m_flags(0)
+        LocatedEntity(id, intId), m_motion(0)
 {
 }
 
@@ -407,6 +434,34 @@ const PropertyBase * Entity::getProperty(const std::string & name) const
     return 0;
 }
 
+PropertyBase * Entity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * Entity::setProperty(const std::string & name,
+                                   PropertyBase * prop)
+{
+    return 0;
+}
+
+void Entity::installDelegate(int class_no, const std::string & delegate)
+{
+}
+
+void Entity::destroy()
+{
+}
+
+Domain * Entity::getMovementDomain()
+{
+    return 0;
+}
+
+void Entity::sendWorld(const Operation & op)
+{
+}
+
 void Entity::onContainered()
 {
 }
@@ -418,7 +473,7 @@ void Entity::onUpdated()
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),
                m_refCount(0), m_seq(0),
-               m_script(0), m_type(0), m_contains(0)
+               m_script(0), m_type(0), m_flags(0), m_contains(0)
 {
 }
 
@@ -460,6 +515,34 @@ PropertyBase * LocatedEntity::setAttr(const std::string & name,
 const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
 {
     return 0;
+}
+
+PropertyBase * LocatedEntity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * LocatedEntity::setProperty(const std::string & name,
+                                          PropertyBase * prop)
+{
+    return 0;
+}
+
+void LocatedEntity::installDelegate(int, const std::string &)
+{
+}
+
+void LocatedEntity::destroy()
+{
+}
+
+Domain * LocatedEntity::getMovementDomain()
+{
+    return 0;
+}
+
+void LocatedEntity::sendWorld(const Operation & op)
+{
 }
 
 void LocatedEntity::onContainered()

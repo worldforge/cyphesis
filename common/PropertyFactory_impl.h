@@ -28,4 +28,10 @@ PropertyBase * PropertyFactory<T>::newProperty()
     return new T();
 }
 
+template <class T>
+PropertyFactory<T> * PropertyFactory<T>::duplicateFactory() const
+{
+    return new PropertyFactory<T>;
+}
+
 #endif // COMMON_PROPERTY_FACTORY_IMPL_H

@@ -248,11 +248,11 @@ void AccountConnectionCharacterintegration::test_unsubscribe_other()
                 m_connection->m_objects.end())
 }
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     return 0;
@@ -310,7 +310,7 @@ int UNSEEN_NO = -1;
 int UPDATE_NO = -1;
 } } }
 
-Pedestrian::Pedestrian(Entity & body) : Movement(body)
+Pedestrian::Pedestrian(LocatedEntity & body) : Movement(body)
 {
 }
 
@@ -335,7 +335,7 @@ Operation Pedestrian::generateMove(const Location & new_location)
     return moveOp;
 }
 
-Movement::Movement(Entity & body) : m_body(body),
+Movement::Movement(LocatedEntity & body) : m_body(body),
                                     m_serialno(0)
 {
 }
@@ -387,7 +387,7 @@ int TeleportAuthenticator::removeTeleport(const std::string &entity_id)
     return 0;
 }
 
-Entity *TeleportAuthenticator::authenticateTeleport(const std::string &entity_id,
+LocatedEntity *TeleportAuthenticator::authenticateTeleport(const std::string &entity_id,
                                             const std::string &possess_key)
 {
     return 0;
@@ -550,6 +550,11 @@ void ExternalProperty::add(const std::string & s,
 {
 }
 
+ExternalProperty * ExternalProperty::copy() const
+{
+    return 0;
+}
+
 Thing::Thing(const std::string & id, long intId) :
        Entity(id, intId)
 {
@@ -584,7 +589,7 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
 }
 
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0), m_flags(0)
+        LocatedEntity(id, intId), m_motion(0)
 {
 }
 
@@ -731,6 +736,19 @@ PropertyBase * Entity::setProperty(const std::string & name,
     return m_properties[name] = prop;
 }
 
+void Entity::installDelegate(int class_no, const std::string & delegate)
+{
+}
+
+Domain * Entity::getMovementDomain()
+{
+    return 0;
+}
+
+void Entity::sendWorld(const Operation & op)
+{
+}
+
 void Entity::onContainered()
 {
 }
@@ -742,7 +760,7 @@ void Entity::onUpdated()
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),
                m_refCount(0), m_seq(0),
-               m_script(0), m_type(0), m_contains(0)
+               m_script(0), m_type(0), m_flags(0), m_contains(0)
 {
 }
 
@@ -779,6 +797,34 @@ const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
     return 0;
 }
 
+PropertyBase * LocatedEntity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * LocatedEntity::setProperty(const std::string & name,
+                                          PropertyBase * prop)
+{
+    return 0;
+}
+
+void LocatedEntity::installDelegate(int, const std::string &)
+{
+}
+
+void LocatedEntity::destroy()
+{
+}
+
+Domain * LocatedEntity::getMovementDomain()
+{
+    return 0;
+}
+
+void LocatedEntity::sendWorld(const Operation & op)
+{
+}
+
 void LocatedEntity::onContainered()
 {
 }
@@ -810,6 +856,11 @@ void EntityProperty::add(const std::string & s,
 {
 }
 
+EntityProperty * EntityProperty::copy() const
+{
+    return 0;
+}
+
 OutfitProperty::OutfitProperty()
 {
 }
@@ -837,17 +888,22 @@ void OutfitProperty::add(const std::string & key,
 {
 }
 
+OutfitProperty * OutfitProperty::copy() const
+{
+    return 0;
+}
+
 void OutfitProperty::cleanUp()
 {
 }
 
-void OutfitProperty::wear(Entity * wearer,
+void OutfitProperty::wear(LocatedEntity * wearer,
                           const std::string & location,
-                          Entity * garment)
+                          LocatedEntity * garment)
 {
 }
 
-void OutfitProperty::itemRemoved(Entity * garment, Entity * wearer)
+void OutfitProperty::itemRemoved(LocatedEntity * garment, LocatedEntity * wearer)
 {
 }
 
@@ -880,35 +936,41 @@ void TasksProperty::set(const Atlas::Message::Element & val)
 {
 }
 
-int TasksProperty::startTask(Task *, Entity *, const Operation &, OpVector &)
+TasksProperty * TasksProperty::copy() const
 {
     return 0;
 }
 
-int TasksProperty::updateTask(Entity *, OpVector &)
+int TasksProperty::startTask(Task *, LocatedEntity *, const Operation &, OpVector &)
 {
     return 0;
 }
 
-int TasksProperty::clearTask(Entity *, OpVector &)
+int TasksProperty::updateTask(LocatedEntity *, OpVector &)
 {
     return 0;
 }
 
-void TasksProperty::stopTask(Entity *, OpVector &)
+int TasksProperty::clearTask(LocatedEntity *, OpVector &)
+{
+    return 0;
+}
+
+void TasksProperty::stopTask(LocatedEntity *, OpVector &)
 {
 }
 
-void TasksProperty::TickOperation(Entity *, const Operation &, OpVector &)
+void TasksProperty::TickOperation(LocatedEntity *, const Operation &, OpVector &)
 {
 }
 
-void TasksProperty::UseOperation(Entity *, const Operation &, OpVector &)
+void TasksProperty::UseOperation(LocatedEntity *, const Operation &, OpVector &)
 {
 }
 
-void TasksProperty::operation(Entity *, const Operation &, OpVector &)
+HandlerResult TasksProperty::operation(LocatedEntity *, const Operation &, OpVector &)
 {
+    return OPERATION_IGNORED;
 }
 
 PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
@@ -919,11 +981,11 @@ PropertyBase::~PropertyBase()
 {
 }
 
-void PropertyBase::install(Entity *)
+void PropertyBase::install(LocatedEntity *, const std::string & name)
 {
 }
 
-void PropertyBase::apply(Entity *)
+void PropertyBase::apply(LocatedEntity *)
 {
 }
 
@@ -936,6 +998,13 @@ void PropertyBase::add(const std::string & s,
 void PropertyBase::add(const std::string & s,
                        const Atlas::Objects::Entity::RootEntity & ent) const
 {
+}
+
+HandlerResult PropertyBase::operation(LocatedEntity *,
+                                      const Operation &,
+                                      OpVector &)
+{
+    return OPERATION_IGNORED;
 }
 
 template<>
@@ -985,6 +1054,11 @@ void SoftProperty::set(const Atlas::Message::Element & val)
 {
 }
 
+SoftProperty * SoftProperty::copy() const
+{
+    return 0;
+}
+
 ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
       PropertyBase(per_ephem), m_data(data)
 {
@@ -1004,11 +1078,21 @@ void ContainsProperty::add(const std::string & s,
 {
 }
 
+ContainsProperty * ContainsProperty::copy() const
+{
+    return 0;
+}
+
 StatusProperty::StatusProperty()
 {
 }
 
-void StatusProperty::apply(Entity * owner)
+StatusProperty * StatusProperty::copy() const
+{
+    return 0;
+}
+
+void StatusProperty::apply(LocatedEntity * owner)
 {
 }
 
@@ -1016,7 +1100,7 @@ BBoxProperty::BBoxProperty()
 {
 }
 
-void BBoxProperty::apply(Entity * ent)
+void BBoxProperty::apply(LocatedEntity * ent)
 {
 }
 
@@ -1039,6 +1123,11 @@ void BBoxProperty::add(const std::string & key,
 {
 }
 
+BBoxProperty * BBoxProperty::copy() const
+{
+    return 0;
+}
+
 PropertyManager * PropertyManager::m_instance = 0;
 
 PropertyManager::PropertyManager()
@@ -1050,6 +1139,13 @@ PropertyManager::PropertyManager()
 PropertyManager::~PropertyManager()
 {
    m_instance = 0;
+}
+
+int PropertyManager::installFactory(const std::string & type_name,
+                                    const Atlas::Objects::Root & type_desc,
+                                    PropertyKit * factory)
+{
+    return 0;
 }
 
 Link::Link(CommSocket & socket, const std::string & id, long iid) :
@@ -1125,7 +1221,7 @@ TypeNode::~TypeNode()
 
 BaseWorld * BaseWorld::m_instance = 0;
 
-BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
 {
     m_instance = this;
 }
@@ -1136,12 +1232,12 @@ BaseWorld::~BaseWorld()
     delete &m_gameWorld;
 }
 
-Entity * BaseWorld::getEntity(const std::string & id) const
+LocatedEntity * BaseWorld::getEntity(const std::string & id) const
 {
     return 0;
 }
 
-Entity * BaseWorld::getEntity(long id) const
+LocatedEntity * BaseWorld::getEntity(long id) const
 {
     return 0;
 }
@@ -1174,7 +1270,7 @@ const Root & Inheritance::getClass(const std::string & parent)
     return noClass;
 }
 
-EntityRef::EntityRef(Entity* e) : m_inner(e)
+EntityRef::EntityRef(LocatedEntity* e) : m_inner(e)
 {
 }
 

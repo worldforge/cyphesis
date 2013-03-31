@@ -26,6 +26,7 @@
 
 class CommPeer;
 class Connection;
+class LocatedEntity;
 class Peer;
 
 class PeerAddress;
@@ -68,7 +69,7 @@ class Juncture : public ConnectableRouter, virtual public sigc::trackable {
 
     void customConnectOperation(const Operation &, OpVector &);
 
-    int teleportEntity(const Entity *);
+    int teleportEntity(const LocatedEntity *);
 };
 
 #endif // SERVER_JUNCTURE_H

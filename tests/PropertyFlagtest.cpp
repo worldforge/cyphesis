@@ -90,11 +90,11 @@ int main(int argc, char ** argv)
 
 // stubs
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     return 0;
@@ -140,6 +140,11 @@ void ContainsProperty::add(const std::string & s, const RootEntity & ent) const
 {
 }
 
+ContainsProperty * ContainsProperty::copy() const
+{
+    return 0;
+}
+
 IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),
                                                    m_data(data)
 {
@@ -163,7 +168,12 @@ void IdProperty::add(const std::string & key, const RootEntity & ent) const
 {
 }
 
-Motion::Motion(Entity & body) : m_entity(body), m_serialno(0),
+IdProperty * IdProperty::copy() const
+{
+    return 0;
+}
+
+Motion::Motion(LocatedEntity & body) : m_entity(body), m_serialno(0),
                                 m_collision(false), m_collEntity(0),
                                 m_collisionTime(0.f)
 {
@@ -247,7 +257,7 @@ void Location::addToMessage(Atlas::Message::MapType & omap) const
 
 BaseWorld * BaseWorld::m_instance = 0;
 
-BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
 {
     m_instance = this;
 }
@@ -257,12 +267,12 @@ BaseWorld::~BaseWorld()
     m_instance = 0;
 }
 
-Entity * BaseWorld::getEntity(const std::string & id) const
+LocatedEntity * BaseWorld::getEntity(const std::string & id) const
 {
     return 0;
 }
 
-Entity * BaseWorld::getEntity(long id) const
+LocatedEntity * BaseWorld::getEntity(long id) const
 {
     return 0;
 }
@@ -278,6 +288,13 @@ PropertyManager::PropertyManager()
 PropertyManager::~PropertyManager()
 {
    m_instance = 0;
+}
+
+int PropertyManager::installFactory(const std::string & type_name,
+                                    const Atlas::Objects::Root & type_desc,
+                                    PropertyKit * factory)
+{
+    return 0;
 }
 
 void addToEntity(const Point3D & p, std::vector<double> & vd)

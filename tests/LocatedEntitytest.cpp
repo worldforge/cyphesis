@@ -25,6 +25,7 @@
 #endif
 
 #include "EntityExerciser.h"
+#include "TestBase.h"
 
 #include "rulesets/LocatedEntity.h"
 
@@ -37,18 +38,60 @@ using Atlas::Message::Element;
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 
-void runCoverageTest()
+class LocatedEntitytest : public Cyphesis::TestBase
 {
-    LocatedEntityTest * le = new LocatedEntityTest("1", 1);
+  private:
+    LocatedEntity * m_entity;
+  public:
+    LocatedEntitytest();
 
-    le->setScript(new Script());
+    void setup();
+    void teardown();
+
+    void test_setProperty();
+    void test_coverage();
+};
+
+LocatedEntitytest::LocatedEntitytest()
+{
+    ADD_TEST(LocatedEntitytest::test_setProperty);
+    ADD_TEST(LocatedEntitytest::test_coverage);
+}
+
+void LocatedEntitytest::setup()
+{
+    m_entity = new LocatedEntityTest("1", 1);
+}
+
+void LocatedEntitytest::teardown()
+{
+    delete m_entity;
+}
+
+void LocatedEntitytest::test_setProperty()
+{
+    std::string test_property("test_property");
+    ASSERT_TRUE(m_entity->m_properties.find(test_property) ==
+                m_entity->m_properties.end());
+
+    PropertyBase * tp = new SoftProperty;
+
+    m_entity->setProperty(test_property, tp);
+
+    ASSERT_TRUE(m_entity->m_properties.find(test_property) !=
+                m_entity->m_properties.end());
+}
+
+void LocatedEntitytest::test_coverage()
+{
+    m_entity->setScript(new Script());
     // Installing a second one should delete the first.
-    le->setScript(new Script());
+    m_entity->setScript(new Script());
 
-    le->onContainered();
-    le->onUpdated();
+    m_entity->onContainered();
+    m_entity->onUpdated();
 
-    EntityExerciser ee(*le);
+    EntityExerciser ee(*m_entity);
     // Throw an op of every type at the entity
     ee.runOperations();
 
@@ -75,32 +118,31 @@ void runCoverageTest()
     assert(!ee.checkAttributes(attrNames));
 
     // Add the test attributes
-    le->setAttr("test_int", 1);
-    le->setAttr("test_float", 1.f);
-    le->setAttr("test_list_string", "test_value");
-    le->setAttr("test_list_int", ListType(1, 1));
-    le->setAttr("test_list_float", ListType(1, 1.f));
-    le->setAttr("test_map_string", ListType(1, "test_value"));
+    m_entity->setAttr("test_int", 1);
+    m_entity->setAttr("test_float", 1.f);
+    m_entity->setAttr("test_list_string", "test_value");
+    m_entity->setAttr("test_list_int", ListType(1, 1));
+    m_entity->setAttr("test_list_float", ListType(1, 1.f));
+    m_entity->setAttr("test_map_string", ListType(1, "test_value"));
     MapType test_map;
     test_map["test_key"] = 1;
-    le->setAttr("test_map_int", test_map);
+    m_entity->setAttr("test_map_int", test_map);
     test_map["test_key"] = 1.f;
-    le->setAttr("test_map_float", test_map);
+    m_entity->setAttr("test_map_float", test_map);
     test_map["test_key"] = "test_value";
-    le->setAttr("test_map_string", test_map);
+    m_entity->setAttr("test_map_string", test_map);
     
     // Make sure we have the test attributes now
     assert(ee.checkAttributes(attrNames));
 
     MapType entityAsAtlas;
 
-    le->merge(entityAsAtlas);
+    m_entity->merge(entityAsAtlas);
 
     // Throw an op of every type at the entity again now it is subscribed,
     // and full of data.
     ee.runOperations();
 
-    delete le;
 }
 
 int main()
@@ -245,9 +287,9 @@ int main()
         e->decRef();
     }
 
-    runCoverageTest();
+    LocatedEntitytest t;
 
-    return 0;
+    return t.run();
 }
 
 // stubs
@@ -331,6 +373,11 @@ void IdProperty::add(const std::string & key,
 {
 }
 
+IdProperty * IdProperty::copy() const
+{
+    return 0;
+}
+
 PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
 {
 }
@@ -339,11 +386,11 @@ PropertyBase::~PropertyBase()
 {
 }
 
-void PropertyBase::install(Entity *)
+void PropertyBase::install(LocatedEntity *, const std::string & name)
 {
 }
 
-void PropertyBase::apply(Entity *)
+void PropertyBase::apply(LocatedEntity *)
 {
 }
 
@@ -355,6 +402,13 @@ void PropertyBase::add(const std::string & s,
 void PropertyBase::add(const std::string & s,
                        const Atlas::Objects::Entity::RootEntity & ent) const
 {
+}
+
+HandlerResult PropertyBase::operation(LocatedEntity *,
+                                      const Operation &,
+                                      OpVector &)
+{
+    return OPERATION_IGNORED;
 }
 
 SoftProperty::SoftProperty()
@@ -376,6 +430,11 @@ void SoftProperty::set(const Atlas::Message::Element & val)
 {
 }
 
+SoftProperty * SoftProperty::copy() const
+{
+    return 0;
+}
+
 ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
       PropertyBase(per_ephem), m_data(data)
 {
@@ -393,4 +452,9 @@ void ContainsProperty::set(const Atlas::Message::Element & e)
 void ContainsProperty::add(const std::string & s,
                            const Atlas::Objects::Entity::RootEntity & ent) const
 {
+}
+
+ContainsProperty * ContainsProperty::copy() const
+{
+    return 0;
 }

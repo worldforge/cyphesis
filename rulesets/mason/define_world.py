@@ -703,7 +703,7 @@ def _setup_terrain(m, world):
 def _setup_outpost(m):
 
     m.make('jetty',pos=(-22,-48,0))
-    m.make('boat',pos=(-22,-56,0),teleport='0',actions=["teleport"])
+    m.make('boat',pos=(-22,-56,0),linked='0',actions=["teleport"])
 
     # a camp near the origin
 
@@ -1073,3 +1073,18 @@ def add_fish(host='', account='', password='', **args):
         c=m.make('bass', pos=(xpos, ypos, zpos), transient=-1)
         fish.append(c)
     m.learn(fish, fish_goals)
+    
+    
+#Suspends the world, allowing authors to alter it while not worrying about entities moving or changing.
+def suspend(host='', account='', password='', **args):
+    m=create_editor(host, account, password)
+
+    world=m.look()
+    m.set(world.id, suspended=1)
+
+#Resumes a previously suspended world.
+def resume(host='', account='', password='', **args):
+    m=create_editor(host, account, password)
+
+    world=m.look()
+    m.set(world.id, suspended=0)

@@ -58,38 +58,39 @@ int stub_link_send_count = 0;
 
 class TestWorld : public BaseWorld {
   public:
-    explicit TestWorld() : BaseWorld(*(Entity*)0) {
+    explicit TestWorld() : BaseWorld(*(LocatedEntity*)0) {
         m_realTime = 100000;
     }
 
     virtual bool idle(const SystemTime &) { return false; }
-    virtual Entity * addEntity(Entity * ent) { 
+    virtual LocatedEntity * addEntity(LocatedEntity * ent) { 
         return 0;
     }
-    virtual Entity * addNewEntity(const std::string &,
+    virtual LocatedEntity * addNewEntity(const std::string &,
                                   const Atlas::Objects::Entity::RootEntity &) {
         return 0;
     }
     int createSpawnPoint(const Atlas::Message::MapType & data,
-                         Entity *) { return 0; }
+                         LocatedEntity *) { return 0; }
     int getSpawnList(Atlas::Message::ListType & data) { return 0; }
-    Entity * spawnNewEntity(const std::string & name,
-                            const std::string & type,
-                            const Atlas::Objects::Entity::RootEntity & desc) {
+    LocatedEntity * spawnNewEntity(const std::string & name,
+                                   const std::string & type,
+                                   const Atlas::Objects::Entity::RootEntity & desc) {
         return addNewEntity(type, desc);
     }
     virtual Task * newTask(const std::string &, LocatedEntity &) { return 0; }
     virtual Task * activateTask(const std::string &, const std::string &,
                                 LocatedEntity *, LocatedEntity &) { return 0; }
-    virtual ArithmeticScript * newArithmetic(const std::string &, Entity *) {
+    virtual ArithmeticScript * newArithmetic(const std::string &,
+                                             LocatedEntity *) {
         return 0;
     }
-    virtual void message(const Operation & op, Entity & ent) {
+    virtual void message(const Operation & op, LocatedEntity & ent) {
         stub_baseworld_receieved_op = op->getClassNo();
     }
-    virtual Entity * findByName(const std::string & name) { return 0; }
-    virtual Entity * findByType(const std::string & type) { return 0; }
-    virtual void addPerceptive(Entity *) { }
+    virtual LocatedEntity * findByName(const std::string & name) { return 0; }
+    virtual LocatedEntity * findByType(const std::string & type) { return 0; }
+    virtual void addPerceptive(LocatedEntity *) { }
 };
 
 int main()
@@ -404,7 +405,7 @@ void Connection::GetOperation(const Operation &, OpVector &)
 }
 
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0), m_flags(0)
+        LocatedEntity(id, intId), m_motion(0)
 {
 }
 
@@ -545,6 +546,26 @@ PropertyBase * Entity::modProperty(const std::string & name)
     return 0;
 }
 
+PropertyBase * Entity::setProperty(const std::string & name,
+                                   PropertyBase * prop)
+{
+    return 0;
+}
+
+void Entity::installDelegate(int class_no, const std::string & delegate)
+{
+}
+
+Domain * Entity::getMovementDomain()
+{
+    return 0;
+}
+
+void Entity::sendWorld(const Operation & op)
+{
+    BaseWorld::instance().message(op, *this);
+}
+
 void Entity::onContainered()
 {
 }
@@ -556,7 +577,7 @@ void Entity::onUpdated()
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),
                m_refCount(0), m_seq(0),
-               m_script(0), m_type(0), m_contains(0)
+               m_script(0), m_type(0), m_flags(0), m_contains(0)
 {
 }
 
@@ -591,6 +612,34 @@ PropertyBase * LocatedEntity::setAttr(const std::string & name,
 const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
 {
     return 0;
+}
+
+PropertyBase * LocatedEntity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * LocatedEntity::setProperty(const std::string & name,
+                                          PropertyBase * prop)
+{
+    return 0;
+}
+
+void LocatedEntity::installDelegate(int, const std::string &)
+{
+}
+
+void LocatedEntity::destroy()
+{
+}
+
+Domain * LocatedEntity::getMovementDomain()
+{
+    return 0;
+}
+
+void LocatedEntity::sendWorld(const Operation & op)
+{
 }
 
 void LocatedEntity::onContainered()
@@ -682,7 +731,7 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 
 BaseWorld * BaseWorld::m_instance = 0;
 
-BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
 {
     m_instance = this;
 }

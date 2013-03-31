@@ -19,7 +19,7 @@
 
 #include "InternalProperties.h"
 
-#include "rulesets/Entity.h"
+#include "rulesets/LocatedEntity.h"
 
 #include "common/Setup.h"
 #include "common/Tick.h"
@@ -34,7 +34,12 @@ SetupProperty::SetupProperty()
 {
 }
 
-void SetupProperty::install(Entity * ent)
+SetupProperty * SetupProperty::copy() const
+{
+    return new SetupProperty(*this);
+}
+
+void SetupProperty::install(LocatedEntity * ent, const std::string & name)
 {
     Setup s;
     s->setTo(ent->getId());
@@ -45,7 +50,12 @@ TickProperty::TickProperty()
 {
 }
 
-void TickProperty::apply(Entity * ent)
+TickProperty * TickProperty::copy() const
+{
+    return new TickProperty(*this);
+}
+
+void TickProperty::apply(LocatedEntity * ent)
 {
     Tick t;
     t->setTo(ent->getId());
@@ -76,7 +86,12 @@ void SimpleProperty::set(const Element & ent)
     }
 }
 
-void SimpleProperty::apply(Entity * owner)
+SimpleProperty * SimpleProperty::copy() const
+{
+    return new SimpleProperty(*this);
+}
+
+void SimpleProperty::apply(LocatedEntity * owner)
 {
     owner->m_location.setSimple(flags() & flag_bool);
 }

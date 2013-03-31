@@ -103,11 +103,15 @@ void BaseMindtest::test_getTime()
 void BaseMindtest::test_sleep()
 {
     bm->sleep();
+
+    ASSERT_TRUE(!bm->isAwake());
 }
 
 void BaseMindtest::test_awake()
 {
     bm->awake();
+
+    ASSERT_TRUE(bm->isAwake());
 }
 
 void BaseMindtest::test_operation()
@@ -293,7 +297,7 @@ int UPDATE_NO = -1;
 } } }
 
 MemEntity::MemEntity(const std::string & id, long intId) :
-           LocatedEntity(id, intId), m_visible(false), m_lastSeen(0.)
+           LocatedEntity(id, intId), m_lastSeen(0.)
 {
 }
 
@@ -309,10 +313,14 @@ void MemEntity::operation(const Operation &, OpVector &)
 {
 }
 
+void MemEntity::destroy()
+{
+}
+
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),
                m_refCount(0), m_seq(0),
-               m_script(0), m_type(0), m_contains(0)
+               m_script(0), m_type(0), m_flags(0), m_contains(0)
 {
 }
 
@@ -347,6 +355,34 @@ PropertyBase * LocatedEntity::setAttr(const std::string & name,
 const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
 {
     return 0;
+}
+
+PropertyBase * LocatedEntity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * LocatedEntity::setProperty(const std::string & name,
+                                          PropertyBase * prop)
+{
+    return 0;
+}
+
+void LocatedEntity::installDelegate(int, const std::string &)
+{
+}
+
+void LocatedEntity::destroy()
+{
+}
+
+Domain * LocatedEntity::getMovementDomain()
+{
+    return 0;
+}
+
+void LocatedEntity::sendWorld(const Operation & op)
+{
 }
 
 void LocatedEntity::onContainered()

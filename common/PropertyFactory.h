@@ -20,7 +20,6 @@
 #ifndef COMMON_PROPERTY_FACTORY_H
 #define COMMON_PROPERTY_FACTORY_H
 
-class Entity;
 class PropertyBase;
 
 /// \brief Kit interface for factories to create Property objects.
@@ -30,6 +29,9 @@ class PropertyKit {
 
     /// \brief Create a new Property instance
     virtual PropertyBase * newProperty() = 0;
+
+    /// \brief Create a copy of this factory.
+    virtual PropertyKit * duplicateFactory() const = 0;
 };
 
 /// \brief Factory template to create standard Property objects.
@@ -37,6 +39,7 @@ template <class T>
 class PropertyFactory : public PropertyKit {
   public:
     virtual PropertyBase * newProperty();
+    virtual PropertyFactory<T> * duplicateFactory() const;
 };
 
 #endif // COMMON_PROPERTY_FACTORY_H

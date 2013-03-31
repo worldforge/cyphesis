@@ -35,7 +35,7 @@ int main()
 {
     SpawnProperty * sp = new SpawnProperty();
 
-    PropertyCoverage pc(sp);
+    PropertyChecker<SpawnProperty> pc(sp);
 
     // Coverage is complete, but it wouldn't hurt to add some bad data here.
 
@@ -47,11 +47,11 @@ int main()
 
 #include "TestWorld.h"
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     return 0;

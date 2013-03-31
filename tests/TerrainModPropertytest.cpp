@@ -35,11 +35,9 @@ using Atlas::Message::MapType;
 
 static int run_coverage()
 {
-    HandlerMap terrainModHandlers;
+    TerrainModProperty * ap = new TerrainModProperty;
 
-    TerrainModProperty * ap = new TerrainModProperty(terrainModHandlers);
-
-    PropertyCoverage pc(ap);
+    PropertyChecker<TerrainModProperty> pc(ap);
 
     MapType shape;
     MapType mod;
@@ -110,9 +108,7 @@ static TerrainProperty * stub_getTerrain_return = 0;
 int main()
 {
     {
-        HandlerMap terrainModHandlers;
-
-        TerrainModProperty * ap = new TerrainModProperty(terrainModHandlers);
+        TerrainModProperty * ap = new TerrainModProperty;
 
         MapType shape;
         MapType mod;
@@ -135,11 +131,11 @@ int main()
 
 #include "TestWorld.h"
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     return 0;
@@ -151,24 +147,9 @@ Entity * TestWorld::addNewEntity(const std::string &,
 
 #include <Mercator/TerrainMod.h>
 
-const TerrainProperty * TerrainEffectorProperty::getTerrain(Entity * owner)
+const TerrainProperty * TerrainEffectorProperty::getTerrain(LocatedEntity * owner)
 {
     return stub_getTerrain_return;
-}
-
-PropertyBase * Entity::modProperty(const std::string & name)
-{
-    return 0;
-}
-
-void Entity::installHandler(int class_no, Handler handler)
-{
-}
-
-PropertyBase * Entity::setProperty(const std::string & name,
-                                   PropertyBase * prop)
-{
-    return m_properties[name] = prop;
 }
 
 TerrainModTranslator::TerrainModTranslator()
@@ -190,7 +171,7 @@ Mercator::TerrainMod* TerrainModTranslator::getModifier()
     return m_mod;
 }
 
-TerrainContext::TerrainContext(Entity * e) : m_entity(e)
+TerrainContext::TerrainContext(LocatedEntity * e) : m_entity(e)
 {
 }
 
@@ -198,6 +179,6 @@ TerrainContext::~TerrainContext()
 {
 }
 
-EntityRef::EntityRef(Entity* e) : m_inner(e)
+EntityRef::EntityRef(LocatedEntity* e) : m_inner(e)
 {
 }

@@ -51,3 +51,8 @@ void CalendarProperty::set(const Element & ent)
 {
     return;
 }
+
+CalendarProperty * CalendarProperty::copy() const
+{
+    return new CalendarProperty(*this);
+}

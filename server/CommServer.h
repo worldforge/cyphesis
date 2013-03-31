@@ -49,10 +49,8 @@ class CommServer {
     /// Seconds when we last called idlers
     int m_tick;
 
-    /// Private and unimplemented to prevent copying.
-    CommServer(const CommServer &);
-    /// Private and unimplemented to prevent copying.
-    CommServer & operator=(const CommServer &);
+    CommServer(const CommServer &) = delete;
+    CommServer & operator=(const CommServer &) = delete;
   public:
     CommServer();
     ~CommServer();

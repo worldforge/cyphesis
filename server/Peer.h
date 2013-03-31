@@ -25,6 +25,7 @@
 #include <sigc++/signal.h>
 
 class CommSocket;
+class LocatedEntity;
 class ServerRouting;
 class TeleportState;
 
@@ -72,7 +73,7 @@ class Peer : public Link {
     virtual void externalOperation(const Operation & op, Link &);
     virtual void operation(const Operation &, OpVector &);
     
-    int teleportEntity(const Entity *);
+    int teleportEntity(const LocatedEntity *);
     TeleportState *getTeleportState(const std::string & id);
     void peerTeleportResponse(const Operation &op, OpVector &res);
 

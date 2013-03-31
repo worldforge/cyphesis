@@ -29,11 +29,10 @@
 
 class ArithmeticScript;
 class LocatedEntity;
-class Entity;
 class SystemTime;
 class Task;
 
-typedef std::map<long, Entity *> EntityDict;
+typedef std::map<long, LocatedEntity *> EntityDict;
 
 /// \brief Base class for game world manager object.
 ///
@@ -42,10 +41,10 @@ typedef std::map<long, Entity *> EntityDict;
 /// inherit from this provide the core game world system.
 class BaseWorld {
   private:
-    /// \brief Copy constructor private and un-implemented to prevent slicing
-    BaseWorld(const BaseWorld &);
-    /// \brief Assignment operator private and un-implemented to prevent slicing
-    const BaseWorld & operator=(const BaseWorld &);
+    /// \brief Copy constructor deleted to prevent slicing
+    BaseWorld(const BaseWorld &) = delete;
+    /// \brief Assignment operator deleted to prevent slicing
+    const BaseWorld & operator=(const BaseWorld &) = delete;
 
     /// \brief Singleton instance pointer for the World manager object.
     static BaseWorld * m_instance;
@@ -62,10 +61,22 @@ class BaseWorld {
     /// their integer ID.
     EntityDict m_eobjects;
 
-    explicit BaseWorld(Entity &);
+    /// \brief Whether the base world is suspended or not.
+    ///
+    /// If this is set to true, the world is "suspended". In this state no
+    /// Tick ops are sent.
+    /// This is useful for when a world author wants to edit the world
+    /// without the simulation altering it.
+    bool m_isSuspended;
+
+    explicit BaseWorld(LocatedEntity &);
+
+    /// \brief Called when the world is resumed.
+    virtual void resumeWorld() {}
+
   public:
     /// \brief The top level in-game entity in the world.
-    Entity & m_gameWorld;
+    LocatedEntity & m_gameWorld;
 
     virtual ~BaseWorld();
 
@@ -74,9 +85,9 @@ class BaseWorld {
         return *m_instance;
     }
 
-    Entity * getEntity(const std::string & id) const;
+    LocatedEntity * getEntity(const std::string & id) const;
 
-    Entity * getEntity(long id) const;
+    LocatedEntity * getEntity(long id) const;
 
     /// \brief Read only accessor for the in-game objects dictionary.
     const EntityDict & getEntities() const {
@@ -93,24 +104,37 @@ class BaseWorld {
         return m_realTime - timeoffset;
     }
 
+    /// \brief Gets whether the world is suspended or not.
+    const bool & getIsSuspended() const {
+    	return m_isSuspended;
+    }
+
+    /// \brief Sets whether the world is suspended or not.
+    /// If this is set to true, the world is "suspended". In this state no
+    /// Tick ops are sent.
+    /// This is useful for when a world author wants to edit the world
+    /// without the simulation altering it.
+    void setIsSuspended(bool suspended);
+
     /// \brief Main world loop function.
     virtual bool idle(const SystemTime &) = 0;
 
     /// \brief Add a new entity to the world.
-    virtual Entity * addEntity(Entity * obj) = 0;
+    virtual LocatedEntity * addEntity(LocatedEntity * obj) = 0;
 
     /// \brief Create a new entity and add to the world.
-    virtual Entity * addNewEntity(const std::string & type,
+    virtual LocatedEntity * addNewEntity(const std::string & type,
                                   const Atlas::Objects::Entity::RootEntity &) = 0;
 
     virtual int createSpawnPoint(const Atlas::Message::MapType & data,
-                                 Entity * ent) = 0;
+                                 LocatedEntity * ent) = 0;
 
     virtual int getSpawnList(Atlas::Message::ListType & data) = 0;
 
-    virtual Entity * spawnNewEntity(const std::string & name,
-                                    const std::string & type,
-                                    const Atlas::Objects::Entity::RootEntity &) = 0;
+    virtual LocatedEntity * spawnNewEntity(
+          const std::string & name,
+          const std::string & type,
+          const Atlas::Objects::Entity::RootEntity &) = 0;
 
     /// \brief Create a new task
     virtual Task * newTask(const std::string &, LocatedEntity &) = 0;
@@ -120,20 +144,21 @@ class BaseWorld {
                                 LocatedEntity *, LocatedEntity &) = 0;
 
     /// \brief Create a new Arithmetic object
-    virtual ArithmeticScript * newArithmetic(const std::string &, Entity *) = 0;
+    virtual ArithmeticScript * newArithmetic(const std::string &,
+                                             LocatedEntity *) = 0;
 
     /// \brief Pass an operation to the world.
     virtual void message(const Atlas::Objects::Operation::RootOperation &,
-                         Entity & obj) = 0;
+                         LocatedEntity & obj) = 0;
 
     /// \brief Find an entity of the given name.
-    virtual Entity * findByName(const std::string & name) = 0;
+    virtual LocatedEntity * findByName(const std::string & name) = 0;
 
     /// \brief Find an entity of the given type.
-    virtual Entity * findByType(const std::string & type) = 0;
+    virtual LocatedEntity * findByType(const std::string & type) = 0;
 
     /// \brief Add an entity provided to the list of perceptive entities.
-    virtual void addPerceptive(Entity *) = 0;
+    virtual void addPerceptive(LocatedEntity *) = 0;
 
     /// \brief Signal that an operation is being dispatched.
     sigc::signal<void, Atlas::Objects::Operation::RootOperation> Dispatching;

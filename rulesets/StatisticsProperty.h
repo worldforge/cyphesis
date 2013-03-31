@@ -33,17 +33,20 @@ class StatisticsProperty : public PropertyBase {
     /// \brief Reference to variable holding the value of this Property
     std::map<std::string, double> m_data;
     ArithmeticScript * m_script;
+
+    StatisticsProperty(const StatisticsProperty &);
   public:
     explicit StatisticsProperty();
     virtual ~StatisticsProperty();
 
     ArithmeticScript * script() { return m_script; }
 
-    virtual void install(Entity *);
-    virtual void apply(Entity *);
+    virtual void install(LocatedEntity *, const std::string &);
+    virtual void apply(LocatedEntity *);
 
     virtual int get(Atlas::Message::Element &) const;
     virtual void set(const Atlas::Message::Element &);
+    virtual StatisticsProperty * copy() const;
 
     bool getStat(const std::string & name, double & val) const;
 };

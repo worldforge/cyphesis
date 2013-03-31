@@ -27,10 +27,13 @@
 class TransientProperty : public Property<double> {
   public:
     TransientProperty();
+    virtual ~TransientProperty();
 
-    virtual void install(Entity *);
+    virtual TransientProperty * copy() const;
 
-    virtual void apply(Entity *);
+    virtual void install(LocatedEntity *, const std::string &);
+
+    virtual void apply(LocatedEntity *);
 };
 
 #endif // RULESETS_TRANSIENT_PROPERTY_H

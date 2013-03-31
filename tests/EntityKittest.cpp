@@ -24,9 +24,12 @@
 #define DEBUG
 #endif
 
+#include "TestBase.h"
+
 #include "common/EntityKit.h"
 
 #include "common/ScriptKit.h"
+#include "common/TypeNode.h"
 
 #include <Atlas/Message/Element.h>
 
@@ -39,73 +42,100 @@ class TestEntityKit : public EntityKit
   public:
     virtual ~TestEntityKit() { }
 
-    virtual Entity * newEntity(const std::string & id, long intId) { return 0; }
+    virtual LocatedEntity * newEntity(const std::string & id, long intId) { return 0; }
 
     virtual EntityKit * duplicateFactory() { return 0; }
 };
 
-class TestScriptKit : public ScriptKit<Entity>
+class TestScriptKit : public ScriptKit<LocatedEntity>
 {
   public:
     std::string m_package;
     virtual const std::string & package() const { return m_package; }
-    virtual int addScript(Entity * entity) const { return 0; }
+    virtual int addScript(LocatedEntity * entity) const { return 0; }
     virtual int refreshClass() { return 0; }
 };
 
+class EntityKittest : public Cyphesis::TestBase
+{
+  private:
+    EntityKit * m_ek;
+  public:
+    EntityKittest();
+
+    void setup();
+    void teardown();
+
+    void test_destructor();
+    void test_addProperties();
+    void test_updateProperties();
+    void test_updateProperties_child();
+};
+
+EntityKittest::EntityKittest()
+{
+    ADD_TEST(EntityKittest::test_destructor);
+    ADD_TEST(EntityKittest::test_addProperties);
+    ADD_TEST(EntityKittest::test_updateProperties);
+    ADD_TEST(EntityKittest::test_updateProperties_child);
+}
+
+void EntityKittest::setup()
+{
+    m_ek = new TestEntityKit;
+    m_ek->m_type = new TypeNode("foo");
+}
+
+void EntityKittest::teardown()
+{
+    delete m_ek->m_type;
+    delete m_ek;
+}
+
+void EntityKittest::test_destructor()
+{
+    m_ek->m_scriptFactory = new TestScriptKit;
+}
+
+void EntityKittest::test_addProperties()
+{
+    m_ek->addProperties();
+}
+
+void EntityKittest::test_updateProperties()
+{
+    m_ek->updateProperties();
+}
+
+void EntityKittest::test_updateProperties_child()
+{
+    EntityKit * ekc = new TestEntityKit;
+    ekc->m_type = m_ek->m_type;
+    ekc->m_classAttributes.insert(std::make_pair("foo", "value"));
+
+    m_ek->m_children.insert(ekc);
+
+    m_ek->updateProperties();
+
+    assert(ekc->m_attributes.find("foo") != ekc->m_attributes.end());
+}
+
 int main()
 {
-    {
-        EntityKit * ek = new TestEntityKit;
+    EntityKittest t;
 
-        delete ek;
-    }
-
-    {
-        EntityKit * ek = new TestEntityKit;
-
-        ek->m_scriptFactory = new TestScriptKit;
-
-        delete ek;
-    }
-
-    {
-        EntityKit * ek = new TestEntityKit;
-
-        ek->addProperties();
-
-        delete ek;
-    }
-
-    {
-        EntityKit * ek = new TestEntityKit;
-
-        ek->updateProperties();
-
-        delete ek;
-    }
-
-    {
-        EntityKit * ek = new TestEntityKit;
-
-        EntityKit * ekc = new TestEntityKit;
-        ekc->m_classAttributes.insert(std::make_pair("foo", "value"));
-
-        ek->m_children.insert(ekc);
-
-        ek->updateProperties();
-
-        assert(ekc->m_attributes.find("foo") != ekc->m_attributes.end());
-
-        delete ek;
-    }
-
-    return 0;
+    return t.run();
 }
 
 // stubs
 
-#include "common/TypeNode.h"
+TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
+{
+}
+
+TypeNode::~TypeNode()
+{
+}
 
 void TypeNode::addProperties(const MapType & attributes)
 {

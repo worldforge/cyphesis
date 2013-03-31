@@ -22,6 +22,7 @@
 #include "TerrainProperty.h"
 #include "CalendarProperty.h"
 
+#include "common/BaseWorld.h"
 #include "common/log.h"
 #include "common/const.h"
 #include "common/debug.h"
@@ -70,7 +71,7 @@ World::~World()
 void World::EatOperation(const Operation & op, OpVector & res)
 {
     const std::string & from_id = op->getFrom();
-    Entity * from = BaseWorld::instance().getEntity(from_id);
+    LocatedEntity * from = BaseWorld::instance().getEntity(from_id);
     if (from == 0) {
         log(ERROR, String::compose("World got eat op from non-existant "
                                    "entity %1.", from_id));
@@ -127,7 +128,7 @@ void World::LookOperation(const Operation & op, OpVector & res)
 
     debug(std::cout << "World::Operation(Look)" << std::endl << std::flush;);
     const std::string & from_id = op->getFrom();
-    Entity * from = BaseWorld::instance().getEntity(from_id);
+    LocatedEntity * from = BaseWorld::instance().getEntity(from_id);
     if (from == 0) {
         log(ERROR, "Look op has invalid from");
         return;

@@ -34,7 +34,7 @@ int main()
 {
     LineProperty * ap = new LineProperty;
 
-    PropertyCoverage pc(ap);
+    PropertyChecker<LineProperty> pc(ap);
 
     pc.testDataAppend(ListType(1, ListType(3, 1.f)));
     pc.testDataAppend(ListType(3, ListType(3, 1.f)));
@@ -48,11 +48,11 @@ int main()
 
 #include "TestWorld.h"
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     return 0;

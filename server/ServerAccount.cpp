@@ -23,8 +23,9 @@
 #include "Connection.h"
 #include "TeleportAuthenticator.h"
 
-#include "rulesets/Entity.h"
+#include "rulesets/LocatedEntity.h"
 
+#include "common/BaseWorld.h"
 #include "common/id.h"
 #include "common/log.h"
 #include "common/debug.h"
@@ -33,6 +34,8 @@
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
+
+#include <iostream>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -122,7 +125,7 @@ void ServerAccount::createObject(const std::string & type_str,
     debug( std::cout << "ServerAccount creating a " << type_str << " object"
                      << std::endl << std::flush; );
 
-    Entity * entity = addNewEntity(type_str, ent, ent);
+    LocatedEntity * entity = addNewEntity(type_str, ent, ent);
 
     if (entity == 0) {
         error(op, "Character creation failed", res, getId());
@@ -167,16 +170,16 @@ void ServerAccount::createObject(const std::string & type_str,
 /// \param typestr The type string of the entity
 /// \param ent A container for the entity to be created in the world
 /// \param arg The argument of the Create op containing the entity itself
-Entity * ServerAccount::addNewEntity(const std::string & typestr,
-                                     const RootEntity & ent,
-                                     const Root & arg)
+LocatedEntity * ServerAccount::addNewEntity(const std::string & typestr,
+                                            const RootEntity & ent,
+                                            const Root & arg)
 {
     if (m_connection == 0) {
         return 0;
     }
     BaseWorld & world = m_connection->m_server.m_world;
     debug(std::cout << "Account::Add_character" << std::endl << std::flush;);
-    Entity * chr;
+    LocatedEntity * chr;
     Element spawn;
     if (arg->copyAttr("spawn_name", spawn) == 0 && spawn.isString()) {
         chr = world.spawnNewEntity(spawn.String(), typestr, ent);

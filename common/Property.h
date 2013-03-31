@@ -20,10 +20,11 @@
 #ifndef COMMON_PROPERTY_H
 #define COMMON_PROPERTY_H
 
-#include <Atlas/Message/Element.h>
-#include <Atlas/Objects/ObjectsFwd.h>
+#include "OperationRouter.h"
 
-class Entity;
+#include <Atlas/Message/Element.h>
+
+class LocatedEntity;
 
 /// \brief Interface for Entity properties
 ///
@@ -33,6 +34,7 @@ class PropertyBase {
     /// \brief Flags indicating how this Property should be handled
     unsigned int m_flags;
     explicit PropertyBase(unsigned int flags = 0);
+    PropertyBase(const PropertyBase &) = default;
   public:
     virtual ~PropertyBase();
 
@@ -48,11 +50,11 @@ class PropertyBase {
     /// \brief Install this property on an entity
     ///
     /// Called whenever an Entity gains this property for the first time
-    virtual void install(Entity *);
+    virtual void install(LocatedEntity *, const std::string &);
     /// \brief Apply whatever effect this property has on an Entity
     ///
     /// Called whenever the value of this property should affect an Entity
-    virtual void apply(Entity *);
+    virtual void apply(LocatedEntity *);
 
     /// \brief Copy the value of the property into an Atlas Message
     virtual int get(Atlas::Message::Element & val) const = 0;
@@ -62,6 +64,14 @@ class PropertyBase {
     virtual void add(const std::string & key, Atlas::Message::MapType & map) const;
     /// \brief Add the value as an attribute to an Atlas entity
     virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
+    /// \brief Handle an operation
+    virtual HandlerResult operation(LocatedEntity *,
+                                    const Operation &,
+                                    OpVector &);
+    /// \brief Create a copy of this instance
+    ///
+    /// The copy should have exactly the same type, and the same value
+    virtual PropertyBase * copy() const = 0;
 };
 
 /// \brief Flag indicating data has been written to permanent store
@@ -114,6 +124,7 @@ class Property : public PropertyBase {
   protected:
     /// \brief Reference to variable holding the value of this Property
     T m_data;
+    Property(const Property<T> &) = default;
   public:
     explicit Property(unsigned int flags = 0);
 
@@ -124,6 +135,7 @@ class Property : public PropertyBase {
     virtual void set(const Atlas::Message::Element &);
     virtual void add(const std::string & key, Atlas::Message::MapType & map) const;
     virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
+    virtual Property<T> * copy() const;
 };
 
 /// \brief Entity property that can store any Atlas value
@@ -137,6 +149,7 @@ class SoftProperty : public PropertyBase {
 
     virtual int get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
+    virtual SoftProperty * copy() const;
 };
 
 #endif // COMMON_PROPERTY_H

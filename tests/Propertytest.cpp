@@ -40,12 +40,12 @@ class MinimalProperty : public PropertyBase {
     MinimalProperty() { }
     virtual int get(Atlas::Message::Element & val) const { return 0; }
     virtual void set(const Atlas::Message::Element & val) { }
-
+    virtual MinimalProperty * copy() const { return new MinimalProperty; }
 };
 
 static void exerciseProperty(PropertyBase * pb)
 {
-    pb->install(0);
+    pb->install(0, "test_prop");
     pb->apply(0);
     MapType map;
     pb->add("test_name", map);

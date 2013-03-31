@@ -31,9 +31,6 @@ void installStandardObjects();
 void installCustomOperations();
 void installCustomEntities();
 
-typedef int OpNo;
-
-typedef std::map<std::string, OpNo> OpNoDict;
 typedef std::map<std::string, PropertyBase *> PropertyDict;
 typedef std::map<std::string, TypeNode *> TypeNodeDict;
 
@@ -42,7 +39,6 @@ class Inheritance {
   protected:
     const Atlas::Objects::Root noClass;
     TypeNodeDict atlasObjects;
-    OpNoDict opLookup;
 
     static Inheritance * m_instance;
 
@@ -52,16 +48,10 @@ class Inheritance {
     static Inheritance & instance();
     static void clear();
 
-    void opInstall(const std::string & op, OpNo no) {
-        opLookup[op] = no;
-    }
-
     const TypeNodeDict & getAllObjects() const {
         return atlasObjects;
     }
 
-    OpNo opEnumerate(const std::string & parent) const;
-    OpNo opEnumerate(const Atlas::Objects::Operation::RootOperation &) const;
     const Atlas::Objects::Root & getClass(const std::string & parent);
     int updateClass(const std::string & name,
                     const Atlas::Objects::Root & obj);
@@ -81,5 +71,8 @@ Atlas::Objects::Root atlasOpDefinition(const std::string & name,
                                        const std::string & parent);
 Atlas::Objects::Root atlasClass(const std::string & name,
                                 const std::string & parent);
+Atlas::Objects::Root atlasType(const std::string & name,
+                               const std::string & parent,
+                               bool abstract = false);
 
 #endif // COMMON_INHERITANCE_H

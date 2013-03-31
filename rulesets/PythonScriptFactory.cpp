@@ -27,14 +27,12 @@
 #include "rulesets/PythonEntityScript.h"
 
 #include "rulesets/BaseMind.h"
-#include "rulesets/Entity.h"
 #include "rulesets/Task.h"
 
 template<>
-PythonScriptFactory<Entity>::PythonScriptFactory(const std::string & package,
-                                                 const std::string & type) :
-                                                 PythonClass(package,
-                                                             type,
+PythonScriptFactory<LocatedEntity>::PythonScriptFactory(const std::string & p,
+                                                        const std::string & t) :
+                                                        PythonClass(p, t,
                                                              &PyEntity_Type)
 {
 }
@@ -57,6 +55,6 @@ PythonScriptFactory<BaseMind>::PythonScriptFactory(const std::string & package,
 {
 }
 
-template class PythonScriptFactory<Entity>;
+template class PythonScriptFactory<LocatedEntity>;
 template class PythonScriptFactory<Task>;
 template class PythonScriptFactory<BaseMind>;

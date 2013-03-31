@@ -32,7 +32,7 @@ void test_SetupProperty()
 {
     SetupProperty * ap = new SetupProperty;
 
-    PropertyCoverage pc(ap);
+    PropertyChecker<SetupProperty> pc(ap);
 
     pc.testDataAppend(0);
 
@@ -43,7 +43,7 @@ void test_TickProperty()
 {
     TickProperty * ap = new TickProperty;
 
-    PropertyCoverage pc(ap);
+    PropertyChecker<TickProperty> pc(ap);
 
     pc.testDataAppend(0);
 
@@ -54,7 +54,7 @@ void test_SimpleProperty()
 {
     SimpleProperty * ap = new SimpleProperty;
 
-    PropertyCoverage pc(ap);
+    PropertyChecker<SimpleProperty> pc(ap);
 
     pc.testDataAppend(0);
 
@@ -73,11 +73,11 @@ int main()
 
 #include "TestWorld.h"
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     return 0;

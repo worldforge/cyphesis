@@ -603,7 +603,7 @@
         <float name="default">2000</float>
         <string name="visibility">public</string>
       </map>
-      <map name="setup">
+      <map name="init">
         <int name="default">0</int>
         <string name="visibility">public</string>
       </map>

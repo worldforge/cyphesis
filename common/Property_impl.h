@@ -55,4 +55,10 @@ void Property<T>::add(const std::string & s,
     ent->setAttr(s, val);
 }
 
+template <typename T>
+Property<T> * Property<T>::copy() const
+{
+    return new Property<T>(*this);
+}
+
 #endif // COMMON_PROPERTY_IMPL_H

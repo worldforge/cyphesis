@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2008 Alistair Riddoch
+// Copyright (C) 2013 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,8 +17,24 @@
 
 // $Id$
 
-#include "HandlerProperty_impl.h"
+#ifndef RULESETS_BIOMASS_PROPERTY_H
+#define RULESETS_BIOMASS_PROPERTY_H
 
-template class HandlerProperty<int>;
-template class HandlerProperty<double>;
-template class HandlerProperty<std::string>;
+#include "common/Property.h"
+
+class BiomassProperty : public Property<double>
+{
+  public:
+    virtual void install(LocatedEntity *, const std::string &);
+    virtual HandlerResult operation(LocatedEntity *,
+                                    const Operation &,
+                                    OpVector &);
+    virtual BiomassProperty * copy() const;
+
+    HandlerResult eat_handler(LocatedEntity * e,
+                              const Operation & op,
+                              OpVector & res);
+
+};
+
+#endif // RULESETS_BIOMASS_PROPERTY_H

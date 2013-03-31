@@ -584,7 +584,7 @@ void Peer::operation(const Operation &op, OpVector &res)
 {
 }
 
-int Peer::teleportEntity(const Entity * ent)
+int Peer::teleportEntity(const LocatedEntity * ent)
 {
     return 0;
 }

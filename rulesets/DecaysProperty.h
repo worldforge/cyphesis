@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2008 Alistair Riddoch
+// Copyright (C) 2013 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,24 +17,23 @@
 
 // $Id$
 
-#ifndef RULESETS_HANDLER_PROPERTY_IMPL_H
-#define RULESETS_HANDLER_PROPERTY_IMPL_H
+#ifndef RULESETS_DECAYS_PROPERTY_H
+#define RULESETS_DECAYS_PROPERTY_H
 
-#include "HandlerProperty.h"
+#include "common/Property.h"
 
-#include "Entity.h"
-
-template <typename T>
-HandlerProperty<T>::HandlerProperty(int op, Handler handler) :
-                                    m_operationClassNo(op),
-                                    m_handler(handler)
+class DecaysProperty : public Property<std::string>
 {
-}
+  public:
+    virtual void install(LocatedEntity *, const std::string &);
+    virtual HandlerResult operation(LocatedEntity *,
+                                    const Operation &,
+                                    OpVector &);
+    virtual DecaysProperty * copy() const;
 
-template <typename T>
-void HandlerProperty<T>::install(Entity * ent)
-{
-    ent->installHandler(m_operationClassNo, m_handler);
-}
+    HandlerResult del_handler(LocatedEntity * e,
+                              const Operation &,
+                              OpVector & res);
+};
 
-#endif // RULESETS_HANDLER_PROPERTY_IMPL_H
+#endif // RULESETS_DECAYS_PROPERTY_H

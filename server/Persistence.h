@@ -27,9 +27,9 @@
 
 class Account;
 class Database;
-class Entity;
+class LocatedEntity;
 
-typedef std::map<long, Entity *> EntityDict;
+typedef std::map<long, LocatedEntity *> EntityDict;
 
 /// \brief Class for managing the required database tables for persisting
 /// in-game entities and server accounts
@@ -51,7 +51,7 @@ class Persistence {
     Account * getAccount(const std::string &);
     void putAccount(const Account &);
     void registerCharacters(Account &, const EntityDict & worldObjects);
-    void addCharacter(const Account &, const Entity &);
+    void addCharacter(const Account &, const LocatedEntity &);
     void delCharacter(const std::string &);
     
     int getRules(std::map<std::string, Atlas::Objects::Root> & m);

@@ -16,9 +16,6 @@ noinst_LIBRARIES = librulesetbase.a librulesetmind.a librulesetentity.a \
 librulesetbase_a_SOURCES = LocatedEntity.cpp LocatedEntity.h \
 			   EntityProperties.cpp \
 			   AtlasProperties.cpp AtlasProperties.h \
-			   ActivePropertyFactory.cpp \
-			   ActivePropertyFactory_impl.h \
-			   ActivePropertyFactory.h \
 			   Container.cpp Container.h \
 			   Script.cpp Script.h 
 
@@ -48,10 +45,6 @@ librulesetentity_a_SOURCES = \
 			     CalendarProperty.cpp CalendarProperty.h \
 			     SolidProperty.cpp SolidProperty.h \
 			     StatusProperty.cpp StatusProperty.h \
-			     HandlerProperty.cpp HandlerProperty.h \
-			     HandlerProperty_impl.h \
-			     MultiHandlerProperty.cpp MultiHandlerProperty.h \
-			     MultiHandlerProperty_impl.h \
 			     BBoxProperty.cpp BBoxProperty.h \
 			     TransientProperty.cpp TransientProperty.h \
 			     InternalProperties.cpp InternalProperties.h \
@@ -60,9 +53,13 @@ librulesetentity_a_SOURCES = \
 			     SpawnProperty.cpp SpawnProperty.h \
 			     VisibilityProperty.cpp VisibilityProperty.h \
 			     ExternalProperty.cpp ExternalProperty.h \
+			     BiomassProperty.cpp BiomassProperty.h \
+			     BurnSpeedProperty.cpp BurnSpeedProperty.h \
+			     DecaysProperty.cpp DecaysProperty.h \
 			     Task.cpp Task.h \
 			     ArithmeticScript.cpp ArithmeticScript.h \
-			     ArithmeticFactory.cpp ArithmeticFactory.h
+			     ArithmeticFactory.cpp ArithmeticFactory.h \
+			     SuspendedProperty.cpp SuspendedProperty.h
 
 
 librulesetmind_a_SOURCES = BaseMind.cpp BaseMind.h \

@@ -28,7 +28,7 @@ class TerrainProperty;
 /// \ingroup PropertyClasses
 class TerrainEffectorProperty : public Property<Atlas::Message::MapType> {
   protected:
-    const TerrainProperty* getTerrain(Entity * owner);
+    const TerrainProperty* getTerrain(LocatedEntity * owner);
 
     friend class TerrainEffectorPropertytest;
 };

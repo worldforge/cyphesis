@@ -23,7 +23,6 @@
 
 #include "common/custom.h"
 #include "common/debug.h"
-#include "common/Inheritance.h"
 #include "common/log.h"
 #include "common/op_switch.h"
 
@@ -47,9 +46,10 @@ static const bool debug_flag = false;
 /// @param intId Integer identifier
 /// @param body_name The name attribute of the body this mind controls
 BaseMind::BaseMind(const std::string & id, long intId) :
-          MemEntity(id, intId), m_map(m_script), m_isAwake(true)
+          MemEntity(id, intId), m_map(m_script)
 {
     setVisible(true);
+    setType(MemMap::m_entity_type);
     m_map.addEntity(this);
 }
 
@@ -153,7 +153,7 @@ void BaseMind::SoundOperation(const Operation & op, OpVector & res)
 {
     // Deliver argument to sound things
     // Louder sounds might eventually make character wake up
-    if (!m_isAwake) { return; }
+    if (!isAwake()) { return; }
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
@@ -176,7 +176,7 @@ void BaseMind::SightOperation(const Operation & op, OpVector & res)
 {
     debug( std::cout << "BaseMind::SightOperation(Sight)" << std::endl << std::flush;);
     // Deliver argument to sight things
-    if (!m_isAwake) { return; }
+    if (!isAwake()) { return; }
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
         debug( std::cout << " no args!" << std::endl << std::flush;);
@@ -208,7 +208,7 @@ void BaseMind::SightOperation(const Operation & op, OpVector & res)
 
 void BaseMind::AppearanceOperation(const Operation & op, OpVector & res)
 {
-    if (!m_isAwake) { return; }
+    if (!isAwake()) { return; }
     const std::vector<Root> & args = op->getArgs();
     std::vector<Root>::const_iterator Iend = args.end();
     for (std::vector<Root>::const_iterator I = args.begin(); I != Iend; ++I) {
@@ -238,7 +238,7 @@ void BaseMind::AppearanceOperation(const Operation & op, OpVector & res)
 
 void BaseMind::DisappearanceOperation(const Operation & op, OpVector & res)
 {
-    if (!m_isAwake) { return; }
+    if (!isAwake()) { return; }
     const std::vector<Root> & args = op->getArgs();
     std::vector<Root>::const_iterator Iend = args.end();
     for (std::vector<Root>::const_iterator I = args.begin(); I != Iend; ++I) {
@@ -288,7 +288,7 @@ void BaseMind::operation(const Operation & op, OpVector & res)
             return;
         }
     }
-    const OpNo op_no = op->getClassNo();
+    auto op_no = op->getClassNo();
     switch (op_no) {
         case Atlas::Objects::Operation::SIGHT_NO:
             SightOperation(op, res);
@@ -315,7 +315,7 @@ void BaseMind::callSightOperation(const Operation & op,
                                   OpVector & res)
 {
     m_map.getAdd(op->getFrom());
-    OpNo op_no = op->getClassNo();
+    auto op_no = op->getClassNo();
     if (debug_flag && (op_no == OP_INVALID)) {
         debug(std::cout << getId() << " could not deliver sight of "
                         << op->getParents().front()
@@ -330,7 +330,7 @@ void BaseMind::callSoundOperation(const Operation & op,
     // This function essentially does nothing now, except add the source
     // of the sound op to the map.
     m_map.getAdd(op->getFrom());
-    OpNo op_no = op->getClassNo();
+    auto op_no = op->getClassNo();
     if (debug_flag && (op_no == OP_INVALID)) {
         debug(std::cout << getId() << " could not deliver sound of "
                         << op->getParents().front()

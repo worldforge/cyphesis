@@ -348,7 +348,7 @@ void Lobby::operation(const Operation & op, OpVector & res)
 {
 }
 
-ExternalMind::ExternalMind(Entity & e) : Router(e.getId(), e.getIntId()),
+ExternalMind::ExternalMind(LocatedEntity & e) : Router(e.getId(), e.getIntId()),
                                          m_external(0), m_entity(e)
 {
 }
@@ -386,6 +386,11 @@ void ExternalProperty::add(const std::string & s,
 void ExternalProperty::add(const std::string & s,
                          const Atlas::Objects::Entity::RootEntity & ent) const
 {
+}
+
+ExternalProperty * ExternalProperty::copy() const
+{
+    return 0;
 }
 
 const std::string & ExternalMind::connectionId()
@@ -585,7 +590,7 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
 }
 
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0), m_flags(0)
+        LocatedEntity(id, intId), m_motion(0)
 {
 }
 
@@ -727,6 +732,24 @@ PropertyBase * Entity::setProperty(const std::string & name,
     return m_properties[name] = prop;
 }
 
+PropertyBase * Entity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+void Entity::installDelegate(int class_no, const std::string & delegate)
+{
+}
+
+Domain * Entity::getMovementDomain()
+{
+    return 0;
+}
+
+void Entity::sendWorld(const Operation & op)
+{
+}
+
 void Entity::onContainered()
 {
 }
@@ -738,7 +761,7 @@ void Entity::onUpdated()
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),
                m_refCount(0), m_seq(0),
-               m_script(0), m_type(0), m_contains(0)
+               m_script(0), m_type(0), m_flags(0), m_contains(0)
 {
 }
 
@@ -773,6 +796,34 @@ PropertyBase * LocatedEntity::setAttr(const std::string & name,
 const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
 {
     return 0;
+}
+
+PropertyBase * LocatedEntity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * LocatedEntity::setProperty(const std::string & name,
+                                          PropertyBase * prop)
+{
+    return 0;
+}
+
+void LocatedEntity::installDelegate(int, const std::string &)
+{
+}
+
+void LocatedEntity::destroy()
+{
+}
+
+Domain * LocatedEntity::getMovementDomain()
+{
+    return 0;
+}
+
+void LocatedEntity::sendWorld(const Operation & op)
+{
 }
 
 void LocatedEntity::onContainered()
@@ -849,11 +900,11 @@ PropertyBase::~PropertyBase()
 {
 }
 
-void PropertyBase::install(Entity *)
+void PropertyBase::install(LocatedEntity *, const std::string & name)
 {
 }
 
-void PropertyBase::apply(Entity *)
+void PropertyBase::apply(LocatedEntity *)
 {
 }
 
@@ -867,24 +918,11 @@ void PropertyBase::add(const std::string & s,
 {
 }
 
-BaseWorld * BaseWorld::m_instance = 0;
-
-BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+HandlerResult PropertyBase::operation(LocatedEntity *,
+                                      const Operation &,
+                                      OpVector &)
 {
-}
-
-BaseWorld::~BaseWorld()
-{
-}
-
-Entity * BaseWorld::getEntity(const std::string & id) const
-{
-    return 0;
-}
-
-Entity * BaseWorld::getEntity(long id) const
-{
-    return 0;
+    return OPERATION_IGNORED;
 }
 
 Inheritance * Inheritance::m_instance = NULL;

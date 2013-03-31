@@ -176,10 +176,11 @@ EntityKit * EntityBuilder::getClassFactory(const std::string & class_name)
     return 0;
 }
 
-void EntityBuilder::installFactory(const std::string & class_name,
-                                   const Root & class_desc,
-                                   EntityKit * factory)
+int EntityBuilder::installFactory(const std::string & class_name,
+                                  const Root & class_desc,
+                                  EntityKit * factory)
 {
+    return 0;
 }
 
 template <class T>
@@ -214,7 +215,7 @@ int PythonScriptFactory<T>::addScript(T * entity) const
     return 0;
 }
 
-template class PythonScriptFactory<Entity>;
+template class PythonScriptFactory<LocatedEntity>;
 
 template <class T>
 int PythonScriptFactory<T>::refreshClass()

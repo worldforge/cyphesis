@@ -31,7 +31,7 @@ namespace Atlas {
     }
 }
 
-class Entity;
+class LocatedEntity;
 class TypeNode;
 
 template<class T>
@@ -46,7 +46,7 @@ class EntityKit {
   protected:
     EntityKit();
   public:
-    ScriptKit<Entity> * m_scriptFactory;
+    ScriptKit<LocatedEntity> * m_scriptFactory;
     /// Default attribute values for this class
     Atlas::Message::MapType m_classAttributes;
     /// Default attribute values for instances of this class, including
@@ -74,8 +74,8 @@ class EntityKit {
     /// @param id a string giving the identifier of the Entity.
     /// @param intId an integer giving the identifier of the Entity.
     /// @param pb a pointer to the persistor object for the Entity.
-    virtual Entity * newEntity(const std::string & id,
-                                        long intId) = 0;
+    virtual LocatedEntity * newEntity(const std::string & id,
+                                      long intId) = 0;
     /// \brief Create a copy of this factory.
     virtual EntityKit * duplicateFactory() = 0;
 };

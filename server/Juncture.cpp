@@ -187,7 +187,7 @@ void Juncture::externalOperation(const Operation & op, Link &)
 
 void Juncture::operation(const Operation & op, OpVector & res)
 {
-    const OpNo op_no = op->getClassNo();
+    auto op_no = op->getClassNo();
     switch (op_no) {
         case Atlas::Objects::Operation::LOGIN_NO:
             LoginOperation(op, res);
@@ -325,7 +325,7 @@ void Juncture::customConnectOperation(const Operation & op, OpVector & res)
     }
 }
 
-int Juncture::teleportEntity(const Entity * ent)
+int Juncture::teleportEntity(const LocatedEntity * ent)
 {
     if (m_peer == 0) {
         log(ERROR, "Attempt to teleport through disconnected juncture");

@@ -26,7 +26,7 @@
 
 class BaseWorld;
 class LocatedEntity;
-class Entity;
+class LocatedEntity;
 class EntityKit;
 class Task;
 class TaskKit;
@@ -67,15 +67,15 @@ class EntityBuilder {
         }
     }
 
-    void installFactory(const std::string & class_name,
-                        const Atlas::Objects::Root & class_desc,
-                        EntityKit * factory);
+    int installFactory(const std::string & class_name,
+                       const Atlas::Objects::Root & class_desc,
+                       EntityKit * factory);
     EntityKit * getClassFactory(const std::string & class_name);
-    Entity * newEntity(const std::string & id,
-                       long intId,
-                       const std::string & type,
-                       const Atlas::Objects::Entity::RootEntity & attrs,
-                       const BaseWorld & world) const;
+    LocatedEntity * newEntity(const std::string & id,
+                              long intId,
+                              const std::string & type,
+                              const Atlas::Objects::Entity::RootEntity & attrs,
+                              const BaseWorld & world) const;
     void flushFactories();
 
     bool isTask(const std::string & class_name);
@@ -93,6 +93,8 @@ class EntityBuilder {
                         const std::string & op,
                         LocatedEntity * target,
                         LocatedEntity & owner) const;
+
+    friend class EntityBuildertest;
 };
 
 #endif // SERVER_ENTITY_BUILDER_H

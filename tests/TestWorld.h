@@ -22,40 +22,41 @@
 
 #include "common/BaseWorld.h"
 
-#include "rulesets/Entity.h"
+#include "rulesets/LocatedEntity.h"
 
 /// Test implementation of the BaseWorld interface
 class TestWorld : public BaseWorld {
   public:
-    explicit TestWorld(Entity & gw) : BaseWorld(gw) {
+    explicit TestWorld(LocatedEntity & gw) : BaseWorld(gw) {
         m_eobjects[m_gameWorld.getIntId()] = &m_gameWorld;
     }
 
     virtual bool idle(const SystemTime &) { return false; }
-    virtual Entity * addEntity(Entity * ent) { 
+    virtual LocatedEntity * addEntity(LocatedEntity * ent) { 
         m_eobjects[ent->getIntId()] = ent;
         return 0;
     }
-    virtual Entity * addNewEntity(const std::string &,
-                                  const Atlas::Objects::Entity::RootEntity &);
+    virtual LocatedEntity * addNewEntity(const std::string &,
+                                         const Atlas::Objects::Entity::RootEntity &);
     int createSpawnPoint(const Atlas::Message::MapType & data,
-                         Entity *) { return 0; }
+                         LocatedEntity *) { return 0; }
     int getSpawnList(Atlas::Message::ListType & data) { return 0; }
-    Entity * spawnNewEntity(const std::string & name,
-                            const std::string & type,
-                            const Atlas::Objects::Entity::RootEntity & desc) {
+    LocatedEntity * spawnNewEntity(const std::string & name,
+                                   const std::string & type,
+                                   const Atlas::Objects::Entity::RootEntity & desc) {
         return addNewEntity(type, desc);
     }
     virtual Task * newTask(const std::string &, LocatedEntity &) { return 0; }
     virtual Task * activateTask(const std::string &, const std::string &,
                                 LocatedEntity *, LocatedEntity &) { return 0; }
-    virtual ArithmeticScript * newArithmetic(const std::string &, Entity *) {
+    virtual ArithmeticScript * newArithmetic(const std::string &,
+                                             LocatedEntity *) {
         return 0;
     }
-    virtual void message(const Operation & op, Entity & ent);
-    virtual Entity * findByName(const std::string & name) { return 0; }
-    virtual Entity * findByType(const std::string & type) { return 0; }
-    virtual void addPerceptive(Entity *) { }
+    virtual void message(const Operation & op, LocatedEntity & ent);
+    virtual LocatedEntity * findByName(const std::string & name) { return 0; }
+    virtual LocatedEntity * findByType(const std::string & type) { return 0; }
+    virtual void addPerceptive(LocatedEntity *) { }
 };
 
 #endif // TESTS_TEST_WORLD_H

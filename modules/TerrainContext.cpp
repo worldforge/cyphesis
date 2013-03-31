@@ -23,7 +23,7 @@ TerrainContext::TerrainContext()
 {
 }
 
-TerrainContext::TerrainContext(Entity * e) : m_entity(e)
+TerrainContext::TerrainContext(LocatedEntity * e) : m_entity(e)
 {
 }
 

@@ -430,7 +430,7 @@ def test_teleport(host='', account='', password='', **args):
 
     settler=m.make('settler',pos=(1,1,0))
 
-    boat=m.make('boat',pos=(-1,-1,0),teleport=peer,actions=["teleport"])
+    boat=m.make('boat',pos=(-1,-1,0),linked=peer,actions=["teleport"])
 
     m.avatar.send(Operation("actuate", Operation("teleport", Entity(boat.id)), to=settler))
     settler=m.look(settler.id)
@@ -755,6 +755,22 @@ def test_dig(host='', account='', password='', **args):
 
     m.avatar.send(Operation("wield", Entity(tool.id), to=settler))
     m.avatar.send(Operation("use", Operation("cut", Entity(world.id)), to=settler))
+    settler=m.look(settler.id)
+
+    if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
+        print "Task start failed"
+        return
+
+def test_fishing(host='', account='', password='', **args):
+
+    m=create_editor(host, account, password)
+    ocean=m.make('ocean',pos=(0,0,0),bbox=[-50,-50,-20,50,50,0])
+    settler=m.make('settler',pos=(1,1,0))
+    tool=m.make('fishingrod',pos=(0,0,0),parent=settler.id)
+    m.make('larva',pos=(0,0,0),parent=settler.id)
+
+    m.avatar.send(Operation("wield", Entity(tool.id), to=settler))
+    m.avatar.send(Operation("use", Operation("sow", Entity(ocean.id)), to=settler))
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:

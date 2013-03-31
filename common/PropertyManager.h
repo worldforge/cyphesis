@@ -20,18 +20,29 @@
 #ifndef COMMON_PROPERTY_MANAGER_H
 #define COMMON_PROPERTY_MANAGER_H
 
+#include <Atlas/Objects/ObjectsFwd.h>
+
+#include <map>
 #include <string>
 
 class PropertyBase;
+class PropertyKit;
+
+typedef std::map<std::string, PropertyKit *> PropertyFactoryDict;
 
 /// \brief Base class for classes that handle creating Entity properties.
 class PropertyManager {
   protected:
+    // Data structure for factories and the like?
+    std::map<std::string, PropertyKit *> m_propertyFactories;
+
     /// \brief Singleton instance pointer for any subclass
     static PropertyManager * m_instance;
 
     PropertyManager();
 
+    void installFactory(const std::string &,
+                        PropertyKit *);
   public:
     virtual ~PropertyManager();
 
@@ -41,10 +52,18 @@ class PropertyManager {
     virtual PropertyBase * addProperty(const std::string & name,
                                        int type) = 0;
 
+    virtual int installFactory(const std::string & type_name,
+                               const Atlas::Objects::Root & type_desc,
+                               PropertyKit * factory);
+
+    PropertyKit * getPropertyFactory(const std::string &) const;
+
     /// \brief Return the registered singleton instance of any subclass
     static PropertyManager * instance() {
         return m_instance;
     }
+
+    friend class PropertyManagertest;
 };
 
 #endif // COMMON_PROPERTY_MANAGER_H

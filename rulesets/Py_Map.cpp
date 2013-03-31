@@ -58,15 +58,15 @@ static PyObject * Map_find_by_location(PyMap * self, PyObject * args)
         PyErr_SetString(PyExc_RuntimeError, "Location is incomplete");
         return NULL;
     }
-    MemEntityVector res = self->m_map->findByLocation(*where->location,
-                                                      radius, type);
+    EntityVector res = self->m_map->findByLocation(*where->location,
+                                                   radius, type);
     PyObject * list = PyList_New(res.size());
     if (list == NULL) {
         return NULL;
     } 
-    MemEntityVector::const_iterator Iend = res.end();
+    EntityVector::const_iterator Iend = res.end();
     int i = 0;
-    for (MemEntityVector::const_iterator I = res.begin(); I != Iend; ++I, ++i) {
+    for (EntityVector::const_iterator I = res.begin(); I != Iend; ++I, ++i) {
         PyObject * thing = wrapEntity(*I);
         if (thing == NULL) {
             Py_DECREF(list);
@@ -90,14 +90,14 @@ static PyObject * Map_find_by_type(PyMap * self, PyObject * py_what)
         return NULL;
     }
     char * what = PyString_AsString(py_what);
-    MemEntityVector res = self->m_map->findByType(std::string(what));
+    EntityVector res = self->m_map->findByType(std::string(what));
     PyObject * list = PyList_New(res.size());
     if (list == NULL) {
         return NULL;
     } 
-    MemEntityVector::const_iterator Iend = res.end();
+    EntityVector::const_iterator Iend = res.end();
     int i = 0;
-    for (MemEntityVector::const_iterator I = res.begin(); I != Iend; ++I, ++i) {
+    for (EntityVector::const_iterator I = res.begin(); I != Iend; ++I, ++i) {
         PyObject * thing = wrapEntity(*I);
         if (thing == NULL) {
             Py_DECREF(list);

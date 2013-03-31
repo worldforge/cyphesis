@@ -34,8 +34,11 @@ namespace Atlas {
 class SpawnProperty : public Property<Atlas::Message::MapType> {
   public:
     SpawnProperty();
+    virtual ~SpawnProperty();
 
-    virtual void apply(Entity *);
+    virtual SpawnProperty * copy() const;
+
+    virtual void apply(LocatedEntity *);
 };
 
 #endif // RULESETS_SPAWN_PROPERTY_H

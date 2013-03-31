@@ -46,3 +46,8 @@ void ExternalProperty::add(const std::string & s,
 {
     ent->setAttr(s, (m_data == 0) ? 0 : 1);
 }
+
+ExternalProperty * ExternalProperty::copy() const
+{
+    return new ExternalProperty(*this);
+}

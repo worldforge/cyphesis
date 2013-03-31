@@ -32,6 +32,8 @@
 #include "server/Lobby.h"
 #include "server/ServerRouting.h"
 
+#include "rulesets/Entity.h"
+
 #include "common/compose.hpp"
 
 #include <Atlas/Objects/Anonymous.h>
@@ -90,8 +92,8 @@ AccountServerLobbyintegration::AccountServerLobbyintegration() :
 
 void AccountServerLobbyintegration::setup()
 {
-    Entity * gw = new Entity(compose("%1", m_id_counter),
-                             m_id_counter++);
+    LocatedEntity * gw = new Entity(compose("%1", m_id_counter),
+                                    m_id_counter++);
     m_server = new ServerRouting(*new TestWorld(*gw),
                                  "59331d74-bb5d-4a54-b1c2-860999a4e344",
                                  "93e1f67f-63c5-4b07-af4c-574b2273563d",
@@ -189,11 +191,11 @@ int main()
 
 // stubs
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     return 0;
@@ -214,7 +216,7 @@ Entity * TestWorld::addNewEntity(const std::string &,
 
 #include <cstdlib>
 
-void Connection::addEntity(Entity * ent)
+void Connection::addEntity(LocatedEntity * ent)
 {
 }
 
@@ -237,7 +239,7 @@ int TeleportAuthenticator::removeTeleport(const std::string &entity_id)
     return 0;
 }
 
-Entity *TeleportAuthenticator::authenticateTeleport(const std::string &entity_id,
+LocatedEntity *TeleportAuthenticator::authenticateTeleport(const std::string &entity_id,
                                             const std::string &possess_key)
 {
     return 0;
@@ -455,7 +457,7 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
 }
 
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0), m_flags(0)
+        LocatedEntity(id, intId), m_motion(0)
 {
 }
 
@@ -596,6 +598,25 @@ PropertyBase * Entity::modProperty(const std::string & name)
     return 0;
 }
 
+PropertyBase * Entity::setProperty(const std::string & name,
+                                   PropertyBase * prop)
+{
+    return 0;
+}
+
+void Entity::installDelegate(int class_no, const std::string & delegate)
+{
+}
+
+Domain * Entity::getMovementDomain()
+{
+    return 0;
+}
+
+void Entity::sendWorld(const Operation & op)
+{
+}
+
 void Entity::onContainered()
 {
 }
@@ -611,7 +632,7 @@ void Entity::callOperation(const Operation & op, OpVector & res)
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),
                m_refCount(0), m_seq(0),
-               m_script(0), m_type(0), m_contains(0)
+               m_script(0), m_type(0), m_flags(0), m_contains(0)
 {
 }
 
@@ -646,6 +667,34 @@ PropertyBase * LocatedEntity::setAttr(const std::string & name,
 const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
 {
     return 0;
+}
+
+PropertyBase * LocatedEntity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * LocatedEntity::setProperty(const std::string & name,
+                                          PropertyBase * prop)
+{
+    return 0;
+}
+
+void LocatedEntity::installDelegate(int, const std::string &)
+{
+}
+
+void LocatedEntity::destroy()
+{
+}
+
+Domain * LocatedEntity::getMovementDomain()
+{
+    return 0;
+}
+
+void LocatedEntity::sendWorld(const Operation & op)
+{
 }
 
 void LocatedEntity::onContainered()
@@ -813,7 +862,7 @@ void Router::error(const Operation & op,
 
 BaseWorld * BaseWorld::m_instance = 0;
 
-BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
 {
     m_instance = this;
 }
@@ -823,12 +872,12 @@ BaseWorld::~BaseWorld()
     m_instance = 0;
 }
 
-Entity * BaseWorld::getEntity(const std::string & id) const
+LocatedEntity * BaseWorld::getEntity(const std::string & id) const
 {
     return 0;
 }
 
-Entity * BaseWorld::getEntity(long id) const
+LocatedEntity * BaseWorld::getEntity(long id) const
 {
     return 0;
 }

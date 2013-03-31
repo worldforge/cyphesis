@@ -22,12 +22,16 @@
 
 #include "modules/Location.h"
 
+#include "common/Property.h"
 #include "common/Router.h"
+
+#include <sigc++/signal.h>
 
 #include <set>
 
 #include <cassert>
 
+class Domain;
 class LocatedEntity;
 class PropertyBase;
 class Script;
@@ -38,6 +42,42 @@ class Property;
 
 typedef std::set<LocatedEntity *> LocatedEntitySet;
 typedef std::map<std::string, PropertyBase *> PropertyDict;
+
+/// \brief Flag indicating entity has been written to permanent store
+/// \ingroup EntityFlags
+static const unsigned int entity_clean = 1 << 0;
+/// \brief Flag indicating entity POS has been written to permanent store
+/// \ingroup EntityFlags
+static const unsigned int entity_pos_clean = 1 << 1;
+/// \brief Flag indicating entity ORIENT has been written to permanent store
+/// \ingroup EntityFlags
+static const unsigned int entity_orient_clean = 1 << 2;
+
+static const unsigned int entity_clean_mask = entity_clean |
+                                              entity_pos_clean |
+                                              entity_orient_clean;
+
+/// \brief Flag indicating entity is perceptive
+/// \ingroup EntityFlags
+static const unsigned int entity_perceptive = 1 << 3;
+/// \brief Flag indicating entity has been destroyed
+/// \ingroup EntityFlags
+static const unsigned int entity_destroyed = 1 << 4;
+/// \brief Flag indicating entity has been queued for storage update
+/// \ingroup EntityFlags
+static const unsigned int entity_queued = 1 << 5;
+/// \brief Flag indicaiting entity is ephemeral
+/// \ingroup EntityFlags
+static const unsigned int entity_ephem = 1 << 6;
+/// \brief Flag indicating entity is visible
+/// \ingroup EntityFlags
+/// Currently only used on MemEntity
+static const unsigned int entity_visible = 1 << 7;
+/// \brief Flag indicating entity is asleep
+/// \ingroup EntityFlags
+/// Currently only used on BaseMind
+static const unsigned int entity_asleep = 1 << 8;
+
 
 /// \brief This is the base class from which in-game and in-memory objects
 /// inherit.
@@ -67,6 +107,8 @@ class LocatedEntity : public Router {
     Script * m_script;
     /// Class of which this is an instance
     const TypeNode * m_type;
+    /// Flags indicating changes to attributes
+    unsigned int m_flags;
 
   public:
     /// Full details of location
@@ -95,6 +137,21 @@ class LocatedEntity : public Router {
         return m_refCount;
     }
 
+    /// \brief Check if this entity is flagged as perceptive
+    bool isPerceptive() const { return m_flags & entity_perceptive; }
+
+    /// \brief Check if this entity is flagged as destroyed
+    bool isDestroyed() const { return m_flags & entity_destroyed; }
+
+    bool isVisible() const { return m_flags & entity_visible; }
+
+    /// \brief Accessor for flags
+    const int getFlags() const { return m_flags; }
+
+    void setFlags(unsigned int flags) { m_flags |= flags; }
+
+    void resetFlags(unsigned int flags) { m_flags &= ~flags; }
+
     /// \brief Accessor for pointer to script object
     Script * script() const {
         return m_script;
@@ -121,9 +178,21 @@ class LocatedEntity : public Router {
     virtual PropertyBase* setAttr(const std::string & name,
                                   const Atlas::Message::Element &);
     virtual const PropertyBase * getProperty(const std::string & name) const;
+    // FIXME These should be de-visrtualised and, and implementations moved
+    // from Entity to here.
+    virtual PropertyBase * modProperty(const std::string & name);
+    virtual PropertyBase * setProperty(const std::string & name, PropertyBase * prop);
+
+    virtual void installDelegate(int, const std::string &);
 
     virtual void onContainered();
     virtual void onUpdated();
+
+    virtual void destroy() = 0;
+
+    virtual Domain * getMovementDomain();
+
+    virtual void sendWorld(const Operation & op);
 
     void setScript(Script * scrpt);
     void makeContainer();
@@ -151,6 +220,83 @@ class LocatedEntity : public Router {
         }
         return 0;
     }
+
+    /// \brief Get a property that is required to of a given type.
+    template <class PropertyT>
+    PropertyT * modPropertyClass(const std::string & name)
+    {
+        PropertyBase * p = modProperty(name);
+        if (p != 0) {
+            return dynamic_cast<PropertyT *>(p);
+        }
+        return 0;
+    }
+
+    /// \brief Get a modifiable property that is a generic property of a type
+    ///
+    /// If the property is not set on the Entity instance, but has a class
+    /// default, the default is copied to the instance, and a pointer is
+    /// returned if it is a property of the right type.
+    template <typename T>
+    Property<T> * modPropertyType(const std::string & name)
+    {
+        PropertyBase * p = modProperty(name);
+        if (p != 0) {
+            return dynamic_cast<Property<T> *>(p);
+        }
+        return 0;
+    }
+
+    /// \brief Require that a property of a given type is set.
+    ///
+    /// If the property is not set on the Entity instance, but has a class
+    /// default, the default is copied to the instance, and a pointer is
+    /// returned if it is a property of the right type. If it does not
+    /// exist, or is not of the right type, a new property is created of
+    /// the right type, and installed on the Entity instance.
+    template <class PropertyT>
+    PropertyT * requirePropertyClass(const std::string & name,
+                                     const Atlas::Message::Element & def_val
+                                     = Atlas::Message::Element())
+    {
+        PropertyBase * p = modProperty(name);
+        PropertyT * sp = 0;
+        if (p != 0) {
+            sp = dynamic_cast<PropertyT *>(p);
+        }
+        if (sp == 0) {
+            // If it is not of the right type, delete it and a new
+            // one of the right type will be inserted.
+            m_properties[name] = sp = new PropertyT;
+            sp->install(this, name);
+            if (p != 0) {
+                Atlas::Message::Element val;
+                if (p->get(val)) {
+                    sp->set(val);
+                }
+                delete p;
+            } else if (!def_val.isNone()) {
+                sp->set(def_val);
+            }
+            sp->apply(this);
+        }
+        return sp;
+    }
+
+    /// Signal indicating that this entity has been changed
+    sigc::signal<void> updated;
+
+    /// Single shot signal indicating that this entity has changed its LOC
+    sigc::signal<void> containered;
+
+    /// \brief Signal emitted when this entity is removed from the server
+    ///
+    /// Note that this is usually well before the object is actually deleted
+    /// and marks the conceptual destruction of the concept this entity
+    /// represents, not the destruction of this object.
+    sigc::signal<void> destroyed;
+
+    friend class LocatedEntitytest;
 };
 
 #endif // RULESETS_LOCATED_ENTITY_H

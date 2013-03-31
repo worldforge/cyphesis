@@ -51,11 +51,11 @@ PropertyBase::~PropertyBase()
 {
 }
 
-void PropertyBase::install(Entity *)
+void PropertyBase::install(LocatedEntity *, const std::string & name)
 {
 }
 
-void PropertyBase::apply(Entity *)
+void PropertyBase::apply(LocatedEntity *)
 {
 }
 
@@ -71,6 +71,13 @@ void PropertyBase::add(const std::string & s,
     Atlas::Message::Element val;
     get(val);
     ent->setAttr(s, val);
+}
+
+HandlerResult PropertyBase::operation(LocatedEntity *,
+                                      const Operation &,
+                                      OpVector & res)
+{
+    return OPERATION_IGNORED;
 }
 
 template<>
@@ -114,6 +121,14 @@ void Property<std::string>::set(const Atlas::Message::Element & e)
 }
 
 template<>
+void Property<Atlas::Message::ListType>::set(const Atlas::Message::Element & e)
+{
+    if (e.isList()) {
+        this->m_data = e.List();
+    }
+}
+
+template<>
 void Property<Atlas::Message::MapType>::set(const Atlas::Message::Element & e)
 {
     // FIXME Merge data?
@@ -151,9 +166,15 @@ void SoftProperty::set(const Atlas::Message::Element & val)
     m_data = val;
 }
 
+SoftProperty * SoftProperty::copy() const
+{
+    return new SoftProperty(*this);
+}
+
 template class Property<int>;
 template class Property<long>;
 template class Property<float>;
 template class Property<double>;
 template class Property<std::string>;
+template class Property<Atlas::Message::ListType>;
 template class Property<Atlas::Message::MapType>;

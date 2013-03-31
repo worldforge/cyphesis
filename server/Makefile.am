@@ -97,6 +97,7 @@ SERVER_SOURCES = \
 		RuleHandler.cpp RuleHandler.h \
 		EntityRuleHandler.cpp EntityRuleHandler.h \
 		OpRuleHandler.cpp OpRuleHandler.h \
+		PropertyRuleHandler.cpp PropertyRuleHandler.h \
 		TaskRuleHandler.cpp TaskRuleHandler.h \
 		EntityBuilder.cpp EntityBuilder.h \
 		ArithmeticBuilder.cpp ArithmeticBuilder.h \
@@ -111,6 +112,7 @@ SERVER_SOURCES = \
 		IdlePSQLConnector.cpp IdlePSQLConnector.h \
 		TeleportState.cpp TeleportState.h \
 		TeleportAuthenticator.cpp TeleportAuthenticator.h \
+		TeleportProperty.cpp TeleportProperty.h \
 		PendingTeleport.cpp PendingTeleport.h \
 		CommPeer.cpp CommPeer.h \
 		CommPythonClient.cpp CommPythonClient.h \
@@ -159,7 +161,6 @@ buildid.cpp: $(cyphesis_SOURCES) $(LOCAL_LIBS) \
 	$(top_srcdir)/scripts/gen_buildid.py `$(top_srcdir)/scripts/extract_revision.sh $(top_srcdir)` buildid.cpp
 
 cyslave_SOURCES = \
-		ExternalProperty.cpp ExternalProperty.h \
 		Account.cpp Account.h \
 		Player.cpp Player.h \
 		Admin.cpp Admin.h \

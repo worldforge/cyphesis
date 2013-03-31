@@ -24,6 +24,8 @@
 #define DEBUG
 #endif
 
+#include "TestBase.h"
+
 #include "common/Inheritance.h"
 
 #include "common/log.h"
@@ -42,11 +44,14 @@
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
+using Atlas::Objects::Factories;
+using Atlas::Objects::generic_factory;
 using Atlas::Objects::Root;
 using Atlas::Objects::smart_dynamic_cast;
+using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Operation::RootOperation;
 
-void descendTree(const Root & type, Inheritance & i, int & count)
+static void descendTree(const Root & type, Inheritance & i, int & count)
 {
     assert(type.isValid());
     ++count;
@@ -71,67 +76,107 @@ void descendTree(const Root & type, Inheritance & i, int & count)
 
 }
 
-int main()
+class Inheritancetest : public Cyphesis::TestBase
+{
+  public:
+    static int SQUIGGLYMUFF_NO;
+    
+    Inheritancetest();
+
+    virtual void setup();
+    virtual void teardown();
+
+    void test_builtins();
+    void test_hasClass();
+    void test_getType();
+    void test_getClass();
+    void test_tree();
+    void test_addChild_unknown_parent();
+    void test_addChild();
+    void test_addChild_duplicate();
+    void test_updateClass_nonexist();
+    void test_updateClass_operation();
+    void test_updateClass_change_parent();
+    void test_isTypeOf_string();
+    void test_isTypeOf_TypeNode();
+    void test_isTypeOf_TypeNode2();
+    void test_flush();
+};
+
+int Inheritancetest::SQUIGGLYMUFF_NO = OP_INVALID;
+
+Inheritancetest::Inheritancetest()
+{
+    if (SQUIGGLYMUFF_NO  == OP_INVALID) {
+        SQUIGGLYMUFF_NO = Factories::instance()->addFactory("squigglymuff",
+                                                            &generic_factory);
+    }
+
+    ADD_TEST(Inheritancetest::test_builtins);
+    ADD_TEST(Inheritancetest::test_hasClass);
+    ADD_TEST(Inheritancetest::test_getType);
+    ADD_TEST(Inheritancetest::test_getClass);
+    ADD_TEST(Inheritancetest::test_tree);
+    ADD_TEST(Inheritancetest::test_addChild_unknown_parent);
+    ADD_TEST(Inheritancetest::test_addChild);
+    ADD_TEST(Inheritancetest::test_addChild_duplicate);
+    ADD_TEST(Inheritancetest::test_updateClass_nonexist);
+    ADD_TEST(Inheritancetest::test_updateClass_operation);
+    ADD_TEST(Inheritancetest::test_updateClass_change_parent);
+    ADD_TEST(Inheritancetest::test_isTypeOf_string);
+    ADD_TEST(Inheritancetest::test_isTypeOf_TypeNode);
+    ADD_TEST(Inheritancetest::test_isTypeOf_TypeNode2);
+    ADD_TEST(Inheritancetest::test_flush);
+}
+
+void Inheritancetest::setup()
+{
+}
+
+void Inheritancetest::teardown()
+{
+    Inheritance::clear();
+}
+
+void Inheritancetest::test_builtins()
 {
     Inheritance & i = Inheritance::instance();
 
     assert(&i == &Inheritance::instance());
+}
 
-    assert(i.opEnumerate("login") == Atlas::Objects::Operation::LOGIN_NO);
-    assert(i.opEnumerate("logout") == Atlas::Objects::Operation::LOGOUT_NO);
-    assert(i.opEnumerate("action") == Atlas::Objects::Operation::ACTION_NO);
-    assert(i.opEnumerate("combine") == Atlas::Objects::Operation::COMBINE_NO);
-    assert(i.opEnumerate("create") == Atlas::Objects::Operation::CREATE_NO);
-    assert(i.opEnumerate("delete") == Atlas::Objects::Operation::DELETE_NO);
-    assert(i.opEnumerate("divide") == Atlas::Objects::Operation::DIVIDE_NO);
-    assert(i.opEnumerate("eat") == Atlas::Objects::Operation::EAT_NO);
-    assert(i.opEnumerate("burn") == Atlas::Objects::Operation::BURN_NO);
-    assert(i.opEnumerate("get") == Atlas::Objects::Operation::GET_NO);
-    assert(i.opEnumerate("imaginary") == Atlas::Objects::Operation::IMAGINARY_NO);
-    assert(i.opEnumerate("info") == Atlas::Objects::Operation::INFO_NO);
-    assert(i.opEnumerate("move") == Atlas::Objects::Operation::MOVE_NO);
-    assert(i.opEnumerate("nourish") == Atlas::Objects::Operation::NOURISH_NO);
-    assert(i.opEnumerate("set") == Atlas::Objects::Operation::SET_NO);
-    assert(i.opEnumerate("sight") == Atlas::Objects::Operation::SIGHT_NO);
-    assert(i.opEnumerate("sound") == Atlas::Objects::Operation::SOUND_NO);
-    assert(i.opEnumerate("talk") == Atlas::Objects::Operation::TALK_NO);
-    assert(i.opEnumerate("touch") == Atlas::Objects::Operation::TOUCH_NO);
-    assert(i.opEnumerate("tick") == Atlas::Objects::Operation::TICK_NO);
-    assert(i.opEnumerate("look") == Atlas::Objects::Operation::LOOK_NO);
-    assert(i.opEnumerate("setup") == Atlas::Objects::Operation::SETUP_NO);
-    assert(i.opEnumerate("appearance") == Atlas::Objects::Operation::APPEARANCE_NO);
-    assert(i.opEnumerate("disappearance") == Atlas::Objects::Operation::DISAPPEARANCE_NO);
-    assert(i.opEnumerate("error") == Atlas::Objects::Operation::ERROR_NO);
-    assert(i.opEnumerate("squigglymuff") == OP_INVALID);
+void Inheritancetest::test_hasClass()
+{
+    Inheritance & i = Inheritance::instance();
 
-    const int SQUIGGLYMUFF_NO = Atlas::Objects::Factories::instance()->addFactory("squigglymuff", &Atlas::Objects::generic_factory);
-    
-    i.opInstall("squigglymuff", SQUIGGLYMUFF_NO);
+    ASSERT_TRUE(i.hasClass("root"));
+    ASSERT_TRUE(i.hasClass("root_entity"));
+    ASSERT_TRUE(i.hasClass("root_operation"));
+    ASSERT_TRUE(i.hasClass("login"));
+}
 
-    // We haven't actually added the class yet
-    assert(!i.hasClass("squigglymuff"));
+void Inheritancetest::test_getType()
+{
+    Inheritance & i = Inheritance::instance();
 
-    assert(i.opEnumerate("squigglymuff") != OP_INVALID);
-    assert(i.opEnumerate("squigglymuff") == SQUIGGLYMUFF_NO);
-
-    assert(i.opEnumerate(Atlas::Objects::Operation::Login()) == Atlas::Objects::Operation::LOGIN_NO);
-    Root login_obj = Atlas::Objects::Factories::instance()->createObject("login");
-    RootOperation login_op = smart_dynamic_cast<RootOperation>(login_obj);
-    assert(login_op.isValid());
-    assert(i.opEnumerate(login_op) == Atlas::Objects::Operation::LOGIN_NO);
-
-    Root squigglymuff_obj = Atlas::Objects::Factories::instance()->createObject("squigglymuff");
-    RootOperation squigglymuff_op = smart_dynamic_cast<RootOperation>(squigglymuff_obj);
-    assert(squigglymuff_op.isValid());
-    assert(i.opEnumerate(squigglymuff_op) == SQUIGGLYMUFF_NO);
-
-    assert(i.hasClass("root"));
-    assert(i.hasClass("root_entity"));
-    assert(i.hasClass("root_operation"));
-    assert(i.hasClass("login"));
-    
     const TypeNode * rt_node = i.getType("root");
     assert(rt_node != 0);
+
+}
+
+void Inheritancetest::test_getClass()
+{
+    Inheritance & i = Inheritance::instance();
+
+    const Root & rt = i.getClass("root");
+
+    ASSERT_EQUAL(rt->getId(), "root");
+    ASSERT_TRUE(rt->getParents().empty());
+}
+
+void Inheritancetest::test_tree()
+{
+    Inheritance & i = Inheritance::instance();
 
     const Root & rt = i.getClass("root");
 
@@ -140,6 +185,57 @@ int main()
     int count = 0;
     descendTree(rt, i, count);
     assert(count > 20);
+}
+
+void Inheritancetest::test_addChild_unknown_parent()
+{
+    Inheritance & i = Inheritance::instance();
+
+    // Make sure inserting a type with unknown parents fails with null
+    Root r;
+    r->setId("squigglymuff");
+    r->setParents(std::list<std::string>(1, "ludricous_test_parent"));
+    ASSERT_NULL(i.addChild(r));
+
+    ASSERT_TRUE(!i.hasClass("squigglymuff"));
+}
+
+void Inheritancetest::test_addChild()
+{
+    Inheritance & i = Inheritance::instance();
+
+    Root r;
+    r->setId("squigglymuff");
+    r->setParents(std::list<std::string>(1, "root_operation"));
+    ASSERT_NOT_NULL(i.addChild(r));
+
+    ASSERT_TRUE(i.hasClass("squigglymuff"));
+}
+
+void Inheritancetest::test_addChild_duplicate()
+{
+    Inheritance & i = Inheritance::instance();
+
+    {
+        Root r;
+        r->setId("squigglymuff");
+        r->setParents(std::list<std::string>(1, "root_operation"));
+        ASSERT_NOT_NULL(i.addChild(r));
+    }
+
+    ASSERT_TRUE(i.hasClass("squigglymuff"));
+
+    // Make sure adding a duplicate fails. 
+    Root r;
+    r->setId("squigglymuff");
+    r->setParents(std::list<std::string>(1, "root_operation"));
+    ASSERT_NULL(i.addChild(r));
+
+}
+
+void Inheritancetest::test_updateClass_nonexist()
+{
+    Inheritance & i = Inheritance::instance();
 
     {
         Root r;
@@ -148,22 +244,21 @@ int main()
         r->setParents(std::list<std::string>(1, "ludricous_test_parent"));
         
         int ret = i.updateClass("squigglymuff", r);
-        assert(ret == -1);
+        ASSERT_EQUAL(ret, -1);
     }
 
-    // Make sure inserting a type with unknown parents fails with null
+}
+
+void Inheritancetest::test_updateClass_operation()
+{
+    Inheritance & i = Inheritance::instance();
+
     Root r;
     r->setId("squigglymuff");
-    r->setParents(std::list<std::string>(1, "ludricous_test_parent"));
-    assert(i.addChild(r) == 0);
-
-    assert(!i.hasClass("squigglymuff"));
-
-    r->setId("squigglymuff");
     r->setParents(std::list<std::string>(1, "root_operation"));
-    assert(i.addChild(r) != 0);
+    ASSERT_NOT_NULL(i.addChild(r));
 
-    assert(i.hasClass("squigglymuff"));
+    ASSERT_TRUE(i.hasClass("squigglymuff"));
 
     {
         Root r;
@@ -172,20 +267,44 @@ int main()
         r->setParents(std::list<std::string>(1, "root_operation"));
         
         int ret = i.updateClass("squigglymuff", r);
-        assert(ret == 0);
+        ASSERT_EQUAL(ret, 0);
     }
+}
 
-    // Make sure adding a duplicate fails. 
-    r = Root();
+void Inheritancetest::test_updateClass_change_parent()
+{
+    Inheritance & i = Inheritance::instance();
+
+    Root r;
     r->setId("squigglymuff");
     r->setParents(std::list<std::string>(1, "root_operation"));
-    assert(i.addChild(r) == 0);
+    ASSERT_NOT_NULL(i.addChild(r));
+
+    {
+        Root r;
+
+        r->setId("squigglymuff");
+        r->setParents(std::list<std::string>(1, "action"));
+        
+        int ret = i.updateClass("squigglymuff", r);
+        ASSERT_EQUAL(ret, -1);
+    }
+}
+
+void Inheritancetest::test_isTypeOf_string()
+{
+    Inheritance & i = Inheritance::instance();
 
     assert(!i.isTypeOf("ludricous_test_parent", "root_operation"));
     assert(i.isTypeOf("disappearance", "disappearance"));
     assert(i.isTypeOf("disappearance", "root_operation"));
     assert(i.isTypeOf("root_operation", "root_operation"));
     assert(!i.isTypeOf("root_operation", "talk"));
+}
+
+void Inheritancetest::test_isTypeOf_TypeNode()
+{
+    Inheritance & i = Inheritance::instance();
 
     const TypeNode * disappearance = i.getType("disappearance");
     assert(disappearance != 0);
@@ -198,7 +317,18 @@ int main()
     assert(i.isTypeOf(disappearance, "root_operation"));
     assert(i.isTypeOf(disappearance, "disappearance"));
     assert(i.isTypeOf(root_operation, "root_operation"));
+}
 
+void Inheritancetest::test_isTypeOf_TypeNode2()
+{
+    Inheritance & i = Inheritance::instance();
+
+    const TypeNode * disappearance = i.getType("disappearance");
+    assert(disappearance != 0);
+    
+    const TypeNode * root_operation = i.getType("root_operation");
+    assert(root_operation != 0);
+    
     const TypeNode * root_entity = i.getType("root_entity");
     assert(root_entity != 0);
     
@@ -206,14 +336,13 @@ int main()
     assert(i.isTypeOf(disappearance, root_operation));
     assert(i.isTypeOf(disappearance, disappearance));
     assert(i.isTypeOf(root_operation, root_operation));
+}
 
-    // Make sure it clears out okay
+void Inheritancetest::test_flush()
+{
+    Inheritance & i = Inheritance::instance();
+
     i.flush();
-    assert(i.opEnumerate("login") == OP_INVALID);
-    assert(i.opEnumerate("squigglymuff") == OP_INVALID);
-    assert(i.opEnumerate(Atlas::Objects::Operation::Login()) == Atlas::Objects::Operation::LOGIN_NO);
-    assert(i.opEnumerate(login_op) == Atlas::Objects::Operation::LOGIN_NO);
-    assert(i.opEnumerate(squigglymuff_op) == SQUIGGLYMUFF_NO);
 
     // Make sure the type for root can no longer be retrieved
     const TypeNode * no_root_node = i.getType("root");
@@ -222,7 +351,8 @@ int main()
     assert(i.getAllObjects().empty());
     assert(!non_root.isValid());
 
-    // Make sure installing a child of root still fails.
+    // Make sure installing a child of root now fails.
+    Root r;
     r->setId("squigglymuff");
     r->setParents(std::list<std::string>(1, "root"));
     assert(i.addChild(r) == 0);
@@ -232,9 +362,13 @@ int main()
     assert(!i.hasClass("root_operation"));
     assert(!i.hasClass("login"));
     assert(!i.hasClass("squigglymuff"));
-    
-    // Clean up and delete it
-    Inheritance::clear();
+}
+
+int main()
+{
+    Inheritancetest t;
+
+    return t.run();
 }
 
 // stubs

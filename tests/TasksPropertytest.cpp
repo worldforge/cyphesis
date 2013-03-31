@@ -44,7 +44,7 @@ int main()
 {
     TasksProperty * ap = new TasksProperty;
 
-    PropertyCoverage pc(ap);
+    PropertyChecker<TasksProperty> pc(ap);
 
     OpVector res;
     Character * chr = pc.createCharacterEntity();
@@ -70,11 +70,11 @@ int main()
 
 // stubs
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     return 0;

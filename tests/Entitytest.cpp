@@ -24,6 +24,7 @@
 #define DEBUG
 #endif
 
+#include "TestBase.h"
 #include "IGEntityExerciser.h"
 #include "allOperations.h"
 
@@ -35,6 +36,8 @@
 
 #include "common/id.h"
 #include "common/Property_impl.h"
+#include "common/PropertyFactory_impl.h"
+#include "common/TypeNode.h"
 
 #include <cstdlib>
 
@@ -43,11 +46,151 @@
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 
-int main()
+class Entitytest : public Cyphesis::TestBase
 {
-    Entity e("1", 1);
+  private:
+    TestPropertyManager * m_pm;
+    TypeNode * m_type;
+    Entity * m_entity;
 
-    IGEntityExerciser ee(e);
+    static bool m_TestProperty_install_called;
+    static bool m_TestProperty_apply_called;
+  public:
+    Entitytest();
+
+    void setup();
+    void teardown();
+
+    void test_setAttr_new();
+    void test_setAttr_existing();
+    void test_setAttr_type();
+    void test_sequence();
+
+    class TestProperty : public Property<int>
+    {
+      public:
+        virtual void install(LocatedEntity *, const std::string &);
+        virtual void apply(LocatedEntity *);
+        virtual TestProperty * copy() const;
+    };
+
+    static void TestProperty_install_called()
+    {
+        m_TestProperty_install_called = true;
+    }
+
+    static void TestProperty_apply_called()
+    {
+        m_TestProperty_apply_called = true;
+    }
+};
+
+bool Entitytest::m_TestProperty_install_called;
+bool Entitytest::m_TestProperty_apply_called;
+
+void Entitytest::TestProperty::install(LocatedEntity *, const std::string & name)
+{
+    Entitytest::TestProperty_install_called();
+}
+
+void Entitytest::TestProperty::apply(LocatedEntity *)
+{
+    Entitytest::TestProperty_apply_called();
+}
+
+Entitytest::TestProperty * Entitytest::TestProperty::copy() const
+{
+    return new Entitytest::TestProperty(*this);
+}
+
+Entitytest::Entitytest()
+{
+    ADD_TEST(Entitytest::test_setAttr_new);
+    ADD_TEST(Entitytest::test_setAttr_existing);
+    ADD_TEST(Entitytest::test_setAttr_type);
+    ADD_TEST(Entitytest::test_sequence);
+}
+
+void Entitytest::setup()
+{
+    m_pm = new TestPropertyManager;
+    m_pm->installPropertyFactory("test_int_property", new PropertyFactory<TestProperty>);
+    m_type = new TypeNode("test_type");
+    m_entity = new Entity("1", 1);
+    m_entity->setType(m_type);
+
+    m_TestProperty_install_called = false;
+}
+
+void Entitytest::teardown()
+{
+    delete m_entity;
+    delete m_type;
+    delete m_pm;
+}
+
+void Entitytest::test_setAttr_new()
+{
+    ASSERT_TRUE(!m_TestProperty_install_called);
+
+    PropertyBase * pb = m_entity->setAttr("test_int_property", 24);
+    ASSERT_NOT_NULL(pb);
+
+    ASSERT_TRUE((pb->flags() & flag_class) == 0);
+
+    auto * int_property = dynamic_cast<TestProperty *>(pb);
+    ASSERT_NOT_NULL(int_property);
+    ASSERT_EQUAL(int_property->data(), 24);
+    ASSERT_TRUE(m_TestProperty_install_called);
+    ASSERT_TRUE(m_TestProperty_apply_called);
+}
+
+void Entitytest::test_setAttr_existing()
+{
+    PropertyBase * initial_property = m_entity->setProperty("test_int_property",
+                                                            new TestProperty);
+
+    PropertyBase * pb = m_entity->setAttr("test_int_property", 24);
+    ASSERT_NOT_NULL(pb);
+    ASSERT_EQUAL(initial_property, pb);
+
+    ASSERT_TRUE((pb->flags() & flag_class) == 0);
+
+    auto * int_property = dynamic_cast<TestProperty *>(pb);
+    ASSERT_NOT_NULL(int_property);
+    ASSERT_EQUAL(int_property->data(), 24);
+    ASSERT_TRUE(!m_TestProperty_install_called);
+    ASSERT_TRUE(m_TestProperty_apply_called);
+}
+
+void Entitytest::test_setAttr_type()
+{
+    TestProperty * type_property = new TestProperty;
+    type_property->data() = 17;
+    type_property->flags() &= flag_class;
+    m_type->addProperty("test_int_property", type_property);
+
+    PropertyBase * pb = m_entity->setAttr("test_int_property", 24);
+    ASSERT_NOT_NULL(pb);
+    ASSERT_NOT_EQUAL(type_property, pb);
+
+    ASSERT_TRUE((pb->flags() & flag_class) == 0);
+
+    auto * int_property = dynamic_cast<TestProperty *>(pb);
+    ASSERT_NOT_NULL(int_property);
+    ASSERT_EQUAL(int_property->data(), 24);
+    ASSERT_TRUE(!m_TestProperty_install_called);
+    ASSERT_TRUE(m_TestProperty_apply_called);
+}
+
+void Entitytest::test_sequence()
+{
+    // The entity exerciser creates one of these, and its singleton, so
+    // we must remove ours.
+    delete m_pm;
+    m_pm = 0;
+
+    IGEntityExerciser ee(*m_entity);
 
     // Throw an op of every type at the entity
     ee.runOperations();
@@ -57,80 +200,83 @@ int main()
     ee.addAllOperations(opNames);
 
     // Add the test attributes
-    e.setAttr("test_int", 1);
-    e.setAttr("test_float", 1.f);
-    e.setAttr("test_list_string", "test_value");
-    e.setAttr("test_list_int", ListType(1, 1));
-    e.setAttr("test_list_float", ListType(1, 1.f));
-    e.setAttr("test_map_string", ListType(1, "test_value"));
+    m_entity->setAttr("test_int", 1);
+    m_entity->setAttr("test_float", 1.f);
+    m_entity->setAttr("test_list_string", "test_value");
+    m_entity->setAttr("test_list_int", ListType(1, 1));
+    m_entity->setAttr("test_list_float", ListType(1, 1.f));
+    m_entity->setAttr("test_map_string", ListType(1, "test_value"));
     MapType test_map;
     test_map["test_key"] = 1;
-    e.setAttr("test_map_int", test_map);
+    m_entity->setAttr("test_map_int", test_map);
     test_map["test_key"] = 1.f;
-    e.setAttr("test_map_float", test_map);
+    m_entity->setAttr("test_map_float", test_map);
     test_map["test_key"] = "test_value";
-    e.setAttr("test_map_string", test_map);
+    m_entity->setAttr("test_map_string", test_map);
     
     // Make sure we have the test attributes now
     MapType entityAsAtlas;
 
     // Dump a representation of the entity into an Atlas Message
-    e.addToMessage(entityAsAtlas);
+    m_entity->addToMessage(entityAsAtlas);
 
     Atlas::Objects::Entity::RootEntity entityAsAtlasEntity;
 
-    e.addToEntity(entityAsAtlasEntity);
+    m_entity->addToEntity(entityAsAtlasEntity);
 
     // Make sure we got at least some of it
     assert(entityAsAtlas.size() >= 9);
 
     // Read the contents of the Atlas Message back in
-    e.merge(entityAsAtlas);
+    m_entity->merge(entityAsAtlas);
 
     // Throw an op of every type at the entity again now it is subscribed,
     // and full of data.
     ee.runOperations();
 
     {
-        e.getProperty("test_int");
+        m_entity->getProperty("test_int");
     }
 
     {
-        e.getProperty("non_existant");
+        m_entity->getProperty("non_existant");
     }
 
     {
-        e.modProperty("test_int");
+        m_entity->modProperty("test_int");
     }
 
     {
-        e.modProperty("non_existant");
+        m_entity->modProperty("non_existant");
     }
 
     {
-        e.modProperty("test_default");
+        m_entity->modProperty("test_default");
     }
 
     {
-        e.setProperty("new_test_prop", new SoftProperty);
+        m_entity->setProperty("new_test_prop", new SoftProperty);
     }
+}
 
-    return 0;
+int main()
+{
+    Entitytest t;
+
+    return t.run();
 }
 
 // stubs
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     return 0;
 }
-
-#include "common/TypeNode.h"
 
 namespace Atlas { namespace Objects { namespace Operation {
 int ACTUATE_NO = -1;
@@ -145,7 +291,7 @@ int UPDATE_NO = -1;
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),
                m_refCount(0), m_seq(0),
-               m_script(0), m_type(0), m_contains(0)
+               m_script(0), m_type(0), m_flags(0), m_contains(0)
 {
 }
 
@@ -180,6 +326,34 @@ PropertyBase * LocatedEntity::setAttr(const std::string & name,
 const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
 {
     return 0;
+}
+
+PropertyBase * LocatedEntity::modProperty(const std::string & name)
+{
+    return 0;
+}
+
+PropertyBase * LocatedEntity::setProperty(const std::string & name,
+                                          PropertyBase * prop)
+{
+    return 0;
+}
+
+void LocatedEntity::installDelegate(int, const std::string &)
+{
+}
+
+void LocatedEntity::destroy()
+{
+}
+
+Domain * LocatedEntity::getMovementDomain()
+{
+    return 0;
+}
+
+void LocatedEntity::sendWorld(const Operation & op)
+{
 }
 
 void LocatedEntity::onContainered()
@@ -249,7 +423,7 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 
 BaseWorld * BaseWorld::m_instance = 0;
 
-BaseWorld::BaseWorld(Entity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
 {
     m_instance = this;
 }
@@ -259,7 +433,7 @@ BaseWorld::~BaseWorld()
     m_instance = 0;
 }
 
-Entity * BaseWorld::getEntity(const std::string & id) const
+LocatedEntity * BaseWorld::getEntity(const std::string & id) const
 {
     long intId = integerId(id);
 
@@ -272,7 +446,7 @@ Entity * BaseWorld::getEntity(const std::string & id) const
     }
 }
 
-Entity * BaseWorld::getEntity(long id) const
+LocatedEntity * BaseWorld::getEntity(long id) const
 {
     EntityDict::const_iterator I = m_eobjects.find(id);
     if (I != m_eobjects.end()) {
@@ -319,6 +493,15 @@ TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
 {
 }
 
+TypeNode::~TypeNode()
+{
+    PropertyDict::const_iterator I = m_defaults.begin();
+    PropertyDict::const_iterator Iend = m_defaults.end();
+    for (; I != Iend; ++I) {
+        delete I->second;
+    }
+}
+
 IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),
                                                    m_data(data)
 {
@@ -343,6 +526,11 @@ void IdProperty::add(const std::string & key,
 {
 }
 
+IdProperty * IdProperty::copy() const
+{
+    return 0;
+}
+
 PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
 {
 }
@@ -351,11 +539,11 @@ PropertyBase::~PropertyBase()
 {
 }
 
-void PropertyBase::install(Entity *)
+void PropertyBase::install(LocatedEntity *, const std::string & name)
 {
 }
 
-void PropertyBase::apply(Entity *)
+void PropertyBase::apply(LocatedEntity *)
 {
 }
 
@@ -368,6 +556,13 @@ void PropertyBase::add(const std::string & s,
 void PropertyBase::add(const std::string & s,
                        const Atlas::Objects::Entity::RootEntity & ent) const
 {
+}
+
+HandlerResult PropertyBase::operation(LocatedEntity *,
+                                      const Operation &,
+                                      OpVector &)
+{
+    return OPERATION_IGNORED;
 }
 
 template<>
@@ -417,6 +612,11 @@ void SoftProperty::set(const Atlas::Message::Element & val)
 {
 }
 
+SoftProperty * SoftProperty::copy() const
+{
+    return new SoftProperty(*this);
+}
+
 ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
       PropertyBase(per_ephem), m_data(data)
 {
@@ -436,6 +636,15 @@ void ContainsProperty::add(const std::string & s,
 {
 }
 
+ContainsProperty * ContainsProperty::copy() const
+{
+    return 0;
+}
+
+PropertyKit::~PropertyKit()
+{
+}
+
 PropertyManager * PropertyManager::m_instance = 0;
 
 PropertyManager::PropertyManager()
@@ -447,6 +656,13 @@ PropertyManager::PropertyManager()
 PropertyManager::~PropertyManager()
 {
    m_instance = 0;
+}
+
+int PropertyManager::installFactory(const std::string & type_name,
+                                    const Atlas::Objects::Root & type_desc,
+                                    PropertyKit * factory)
+{
+    return 0;
 }
 
 long integerId(const std::string & id)

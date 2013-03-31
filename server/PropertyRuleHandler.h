@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2008 Alistair Riddoch
+// Copyright (C) 2013 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,23 +17,29 @@
 
 // $Id$
 
-#ifndef RULESETS_MULTI_HANDLER_PROPERTY_H
-#define RULESETS_MULTI_HANDLER_PROPERTY_H
+#ifndef SERVER_PROPERTY_RULE_HANDLER_H
+#define SERVER_PROPERTY_RULE_HANDLER_H
 
-#include "common/Property.h"
+#include "RuleHandler.h"
 
-#include "common/OperationRouter.h"
+class EntityBuilder;
 
-/// \brief Class to handle a property that triggers a many handlers.
-/// \ingroup PropertyClasses
-template <typename T>
-class MultiHandlerProperty : public Property<T> {
+/// \brief Handle processing and updating of task ruless
+class PropertyRuleHandler : public RuleHandler {
   protected:
-    HandlerMap m_handlers;
-  public:
-    explicit MultiHandlerProperty(const HandlerMap & handlers);
+    EntityBuilder * const m_builder;
 
-    virtual void install(Entity *);
+  public:
+    PropertyRuleHandler(EntityBuilder * eb) : m_builder(eb) { }
+
+    virtual int check(const Atlas::Objects::Root & desc);
+    virtual int install(const std::string &,
+                        const std::string &,
+                        const Atlas::Objects::Root & desc,
+                        std::string &,
+                        std::string &);
+    virtual int update(const std::string &,
+                       const Atlas::Objects::Root & desc);
 };
 
-#endif // RULESETS_MULTI_HANDLER_PROPERTY_H
+#endif // SERVER_PROPERTY_RULE_HANDLER_H

@@ -19,9 +19,8 @@
 
 #include "TransientProperty.h"
 
-#include "Entity.h"
+#include "LocatedEntity.h"
 
-#include "common/OperationRouter.h"
 #include "common/Setup.h"
 #include "common/log.h"
 
@@ -37,12 +36,21 @@ TransientProperty::TransientProperty()
 {
 }
 
-void TransientProperty::install(Entity * ent)
+TransientProperty::~TransientProperty()
+{
+}
+
+TransientProperty * TransientProperty::copy() const
+{
+    return new TransientProperty(*this);
+}
+
+void TransientProperty::install(LocatedEntity * ent, const std::string & name)
 {
     ent->setFlags(entity_ephem);
 }
 
-void TransientProperty::apply(Entity * ent)
+void TransientProperty::apply(LocatedEntity * ent)
 {
     // If data is less than zero we don't ever delete it.
     if (m_data < 0) {

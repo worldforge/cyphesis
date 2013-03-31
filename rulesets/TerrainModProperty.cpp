@@ -19,7 +19,7 @@
 
 #include "TerrainModProperty.h"
 
-#include "Entity.h"
+#include "LocatedEntity.h"
 #include "TerrainModTranslator.h"
 #include "TerrainProperty.h"
 
@@ -32,6 +32,10 @@
 
 #include <Mercator/TerrainMod.h>
 
+#include <Atlas/Objects/RootEntity.h>
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/SmartPtr.h>
+
 #include <sstream>
 
 #include <cassert>
@@ -42,11 +46,12 @@ using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Message::FloatType;
+using Atlas::Objects::Entity::RootEntity;
+using Atlas::Objects::Root;
 
 /// \brief TerrainModProperty constructor
 ///
-TerrainModProperty::TerrainModProperty(const HandlerMap & handlers) :
-                    m_modptr(0), m_handlers(handlers), m_innerMod(0)
+TerrainModProperty::TerrainModProperty() : m_modptr(0), m_innerMod(0)
 {
 }
 
@@ -58,16 +63,21 @@ TerrainModProperty::~TerrainModProperty()
     delete m_innerMod;
 }
 
-void TerrainModProperty::install(Entity * owner)
+TerrainModProperty * TerrainModProperty::copy() const
 {
-    HandlerMap::const_iterator I = m_handlers.begin();
-    HandlerMap::const_iterator Iend = m_handlers.end();
-    for (; I != Iend; ++I) {
-        owner->installHandler(I->first, I->second);
-    }
+    // This is for instantiation of a class property.
+    // This is complex here, as is it not yet clear if this
+    // class can be a class property.
+    return new TerrainModProperty(*this);
 }
 
-void TerrainModProperty::apply(Entity * owner)
+void TerrainModProperty::install(LocatedEntity * owner, const std::string & name)
+{
+    owner->installDelegate(Atlas::Objects::Operation::DELETE_NO, name);
+    owner->installDelegate(Atlas::Objects::Operation::MOVE_NO, name);
+}
+
+void TerrainModProperty::apply(LocatedEntity * owner)
 {
     // Find the terrain
     const TerrainProperty * terrain = getTerrain(owner);
@@ -105,7 +115,19 @@ void TerrainModProperty::apply(Entity * owner)
     m_modptr->context()->setId(owner->getId());
 }
 
-void TerrainModProperty::move(Entity* owner)
+HandlerResult TerrainModProperty::operation(LocatedEntity * ent,
+                                            const Operation & op,
+                                            OpVector & res)
+{
+    if (op->getClassNo() == Atlas::Objects::Operation::DELETE_NO) {
+        return delete_handler(ent, op, res);
+    } else if (op->getClassNo() == Atlas::Objects::Operation::MOVE_NO) {
+        return move_handler(ent, op, res);
+    }
+    return OPERATION_IGNORED;
+}
+
+void TerrainModProperty::move(LocatedEntity* owner)
 {
     const TerrainProperty* terrain = getTerrain(owner);
 
@@ -128,7 +150,7 @@ void TerrainModProperty::move(Entity* owner)
     terrain->updateMod(mod);
 }
 
-void TerrainModProperty::remove(Entity * owner)
+void TerrainModProperty::remove(LocatedEntity * owner)
 {
     if (m_modptr) {
         const TerrainProperty* terrain = getTerrain(owner);
@@ -140,7 +162,7 @@ void TerrainModProperty::remove(Entity * owner)
     }
 }
 
-Mercator::TerrainMod * TerrainModProperty::parseModData(Entity * owner,
+Mercator::TerrainMod * TerrainModProperty::parseModData(LocatedEntity * owner,
                                                         const MapType & modMap)
 {
     if (m_innerMod == 0) {
@@ -170,5 +192,38 @@ void TerrainModProperty::setAttr(const std::string & name,
                                  const Element & val)
 {
     m_data[name] = val;
+}
+
+HandlerResult TerrainModProperty::move_handler(LocatedEntity * e,
+                                               const Operation & op,
+                                               OpVector & res)
+{
+    // FIXME Force instantiation of a class property?
+
+    // Check the validity of the operation.
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
+        return OPERATION_IGNORED;
+    }
+    RootEntity ent = Atlas::Objects::smart_dynamic_cast<RootEntity>(args.front());
+    if (!ent.isValid()) {
+        return OPERATION_IGNORED;
+    }
+    if (e->getId() != ent->getId()) {
+        return OPERATION_IGNORED;
+    }
+
+    // Update the modifier
+    move(e);
+    return OPERATION_IGNORED;
+}
+
+HandlerResult TerrainModProperty::delete_handler(LocatedEntity * e,
+                                                 const Operation & op,
+                                                 OpVector & res)
+{
+    remove(e);
+
+    return OPERATION_IGNORED;
 }
 

@@ -44,6 +44,8 @@ int main()
 
 // stubs
 
-EntityRef::EntityRef(Entity* e) : m_inner(e)
+#include "modules/EntityRef.h"
+
+EntityRef::EntityRef(LocatedEntity* e) : m_inner(e)
 {
 }

@@ -19,7 +19,7 @@
 
 #include "SolidProperty.h"
 
-#include "Entity.h"
+#include "LocatedEntity.h"
 
 #include "common/debug.h"
 
@@ -53,7 +53,12 @@ void SolidProperty::set(const Element & ent)
     }
 }
 
-void SolidProperty::apply(Entity * owner)
+SolidProperty * SolidProperty::copy() const
+{
+    return new SolidProperty(*this);
+}
+
+void SolidProperty::apply(LocatedEntity * owner)
 {
     owner->m_location.setSolid(flags() & flag_bool);
 }

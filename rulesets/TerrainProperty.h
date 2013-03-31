@@ -57,6 +57,7 @@ class TerrainProperty : public PropertyBase {
 
     virtual int get(Atlas::Message::Element &) const;
     virtual void set(const Atlas::Message::Element &);
+    virtual TerrainProperty * copy() const;
 
     // Applies a Mercator::TerrainMod to the terrain
     void addMod(const Mercator::TerrainMod *) const;
@@ -70,7 +71,7 @@ class TerrainProperty : public PropertyBase {
     bool getHeightAndNormal(float x, float y, float &, Vector3D &) const;
     int getSurface(const Point3D &,  int &);
 
-    void findMods(const Point3D &, std::vector<Entity *> &);
+    void findMods(const Point3D &, std::vector<LocatedEntity *> &);
 };
 
 #endif // RULESETS_TERRAIN_PROPERTY_H

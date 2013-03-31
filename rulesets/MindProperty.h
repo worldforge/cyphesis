@@ -29,8 +29,11 @@ class MindKit;
 class MindProperty : public PropertyBase {
   protected:
     MindKit * m_factory;
+
+    MindProperty(const MindProperty &);
   public:
     MindProperty();
+    virtual ~MindProperty();
 
     MindKit * factory() {
         return m_factory;
@@ -38,7 +41,8 @@ class MindProperty : public PropertyBase {
 
     virtual int get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
-    virtual void apply(Entity *);
+    virtual MindProperty * copy() const;
+    virtual void apply(LocatedEntity *);
 };
 
 #endif // RULESETS_MIND_PROPERTY_H

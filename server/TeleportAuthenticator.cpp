@@ -22,14 +22,16 @@
 #include "common/log.h"
 #include "common/compose.hpp"
 
+#include <cassert>
+
 TeleportAuthenticator * TeleportAuthenticator::m_instance = NULL;
 
 /// \brief Checks if there is a pending teleport on an account
 ///
 /// \param entity_id The entity ID to check for pending teleport
-bool TeleportAuthenticator::isPending(const std::string &entity_id)
+bool TeleportAuthenticator::isPending(const std::string & entity_id) const
 {
-    PendingTeleportMap::iterator I = m_teleports.find(entity_id);
+    PendingTeleportMap::const_iterator I = m_teleports.find(entity_id);
     return (I != m_teleports.end());
 }
 
@@ -37,20 +39,23 @@ bool TeleportAuthenticator::isPending(const std::string &entity_id)
 ///
 /// \param entity_id The ID of the entity whose data is to be removed
 /// \param possess_key The possess key to authenticate the entity with
-int TeleportAuthenticator::addTeleport(const std::string &entity_id,
-                                        const std::string &possess_key)
+int TeleportAuthenticator::addTeleport(const std::string & entity_id,
+                                       const std::string & possess_key)
 {
     if (isPending(entity_id)) {
         return -1;
     }
-    m_teleports[entity_id] = new PendingTeleport(entity_id, possess_key);
+    PendingTeleport * pt = new PendingTeleport(entity_id, possess_key);
+    if (pt == 0) {
+        return -1;
+    }
+    m_teleports.insert(std::make_pair(entity_id, pt));
     log(INFO, String::compose("Added teleport auth entry for %1,%2",
-                                                entity_id,possess_key));
+                              entity_id, possess_key));
     return 0;
 }
 
-/// \brief Remove a teleport authentications entry. Typically after a
-///        successful authentication
+/// \brief Remove a teleport authentications entry.
 ///
 /// \param entity_id The ID of the entity whose data is to be removed
 int TeleportAuthenticator::removeTeleport(const std::string &entity_id)
@@ -61,36 +66,28 @@ int TeleportAuthenticator::removeTeleport(const std::string &entity_id)
                                                 entity_id));
         return -1;
     }
-    if (I->second) {
-        delete I->second;
-    }
-    m_teleports.erase(I);
+    removeTeleport(I);
     log(ERROR, String::compose("Removed teleport auth entry for entity ID %1",
                                                 entity_id));
     return 0;
 }
 
-/// \brief Remove a teleport authentications entry. Typically after a
-///        successful authentication
+/// \brief Remove a teleport authentications entry internals.
 ///
+/// Typically after a successful authentication
 /// \param I The iterator in m_teleports to be removed
-int TeleportAuthenticator::removeTeleport(PendingTeleportMap::iterator I)
+void TeleportAuthenticator::removeTeleport(PendingTeleportMap::iterator I)
 {
-    if (I == m_teleports.end()) {
-        return -1;
-    }
-    if (I->second) {
-        delete I->second;
-    }
+    assert(I->second != 0);
+    delete I->second;
     m_teleports.erase(I);
-    return 0;
 }
 
 /// \brief Authenticate a teleport request
 ///
 /// \param entity_id The ID of the entity that was created
 /// \param possess_key The possess key sent by the client
-Entity *TeleportAuthenticator::authenticateTeleport(const std::string &entity_id,
+LocatedEntity * TeleportAuthenticator::authenticateTeleport(const std::string &entity_id,
                                             const std::string &possess_key)
 {
     PendingTeleportMap::iterator I = m_teleports.find(entity_id);
@@ -100,9 +97,10 @@ Entity *TeleportAuthenticator::authenticateTeleport(const std::string &entity_id
         return NULL;
     }
     PendingTeleport *entry = I->second;
+    assert(entry != 0);
     if (entry->validate(entity_id, possess_key)) {
         // We are authenticated!
-        Entity * entity = BaseWorld::instance().getEntity(entity_id);
+        LocatedEntity * entity = BaseWorld::instance().getEntity(entity_id);
         if (entity == 0) {
             // This means the authentication entry itself is invalid. Remove it.
             log(ERROR, String::compose("Unable to find teleported entity with ID %1",

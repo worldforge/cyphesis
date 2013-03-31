@@ -26,59 +26,33 @@
 
 #include "PropertyCoverage.h"
 
-#include "rulesets/HandlerProperty.h"
-#include "rulesets/Entity.h"
-
-#include <Atlas/Objects/Operation.h>
-
-static HandlerResult test_handler(Entity *, const Operation &, OpVector &)
-{
-    return OPERATION_HANDLED;
-}
+#include "rulesets/DecaysProperty.h"
 
 int main()
 {
-    PropertyBase * ap = new HandlerProperty<int>(Atlas::Objects::Operation::GET_NO, &test_handler);
+    DecaysProperty * ap = new DecaysProperty;
 
-    {
-        PropertyCoverage pc(ap);
+    PropertyChecker<DecaysProperty> pc(ap);
 
-        pc.basicCoverage();
-    }
-
-    ap = new HandlerProperty<double>(Atlas::Objects::Operation::GET_NO, &test_handler);
-
-    {
-        PropertyCoverage pc(ap);
-
-        pc.basicCoverage();
-    }
-
-    ap = new HandlerProperty<std::string>(Atlas::Objects::Operation::GET_NO, &test_handler);
-
-    {
-        PropertyCoverage pc(ap);
-
-        pc.basicCoverage();
-    }
+    pc.basicCoverage();
 
     return 0;
 }
 
-// stubs
-
 #include "TestWorld.h"
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     return 0;
 }
 
-void Entity::installHandler(int class_no, Handler handler)
+// stubs
+
+void addToEntity(const Point3D & p, std::vector<double> & vd)
 {
 }

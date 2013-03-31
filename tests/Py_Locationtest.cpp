@@ -32,6 +32,7 @@
 
 #include "TestWorld.h"
 
+#include "rulesets/Entity.h"
 #include "rulesets/Python_API.h"
 #include "rulesets/Py_Location.h"
 #include "rulesets/Py_Thing.h"
@@ -150,11 +151,11 @@ int main()
     return 0;
 }
 
-void TestWorld::message(const Operation & op, Entity & ent)
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-Entity * TestWorld::addNewEntity(const std::string &,
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
     return 0;

@@ -1,7 +1,61 @@
+Check Acorn works without a script
+
+Write an EntityKit TypeNode integration test. The addAttributes path needs
+to be tested.
+
+Check in EntityRuleHandlertest that things behave correctly if
+EntityBuilder::installFactory fails. Same in PropertyRuleHandlertest for
+CorePropertyManager::installFactory.
+
+Fix memory leaks, so we can verify that moving MemMap to using incRef/decRef
+on parents doesn't introduce leaks.
+
+Location and MemEntity both have a timestamp, which do very close, but not
+quite the same thing. See if we can come up with a design to eliminate the
+difference?
+
+MemEntity is an ideal case for a memory pool, especially if you include
+the PythonWrapper object.
+
+There may be a compute saving to putting mem entities into their containers
+directly in addContents(), rather than having to do the lookup when we
+get the SIght data in readEntity
+
+MemMap::findByType would be more efficient if we find the TypeNode probably.
+
+Implement parent refcounting in mind code.
+
+Move LocatedEntity to common, and rename
+
+Make LocatedEntity the sole base class for dealing with entities.
+ * Move remaining Property methods into LocatedEntity, de-virt modProperty
+   and setProperty
+ * Convert MemMap to store using LocatedEntity maybe?
+ * LocatedEntity::setAttr ignores the class of type properties. It should
+   call copy as in Entity::
+
+traits on property to specify the name simply.
+
+Providing there is no extra deps, move all the property access methods
+into LocatedEntiy.
+ 1) MemEntity will need type properties to save RAM, so let it have them
+    (Property<foo> rather than SoftProperty. This is the difference between
+     using ClientPropertyManager and CorePropertyManager)
+
+Should entity class children be invisible to the client? Prevents it from
+requesting things it has never seen yet.
+
+See if we can create a Property<Map> class with extra interface, rather
+like the generic methods added to TerrainModProperty
+
+We don't need PropertyManager to be virtual. Just move all the functionality
+into the base class.
+
 Remove libcommon from WorldRouterintegration and
 Rulesetintegration
 
-Why does TeleportAuthenticator::removeTeleport check if I->second is null?
+Remove BaseWorld lookup from TeleportAuthenticator, and use isDestroyed
+instead. Requires holding a reference.
 
 disconnectObject does not remove a non-Account ConnectableRouter from
 the connection. Neither does it remove Characters.

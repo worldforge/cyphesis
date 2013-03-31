@@ -39,7 +39,7 @@ class OutfitProperty : public PropertyBase, virtual public sigc::trackable {
   protected:
     EntityRefMap m_data;
 
-    void itemRemoved(Entity * garment, Entity * wearer);
+    void itemRemoved(LocatedEntity * garment, LocatedEntity * wearer);
   public:
     explicit OutfitProperty();
     virtual ~OutfitProperty();
@@ -48,9 +48,10 @@ class OutfitProperty : public PropertyBase, virtual public sigc::trackable {
     virtual void set(const Atlas::Message::Element & val);
     virtual void add(const std::string & key, Atlas::Message::MapType & map) const;
     virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
+    virtual OutfitProperty * copy() const;
 
     void cleanUp();
-    void wear(Entity * wearer, const std::string & location, Entity * garment);
+    void wear(LocatedEntity * wearer, const std::string & location, LocatedEntity * garment);
 };
 
 #endif // RULESETS_OUTFIT_PROPERTY_H

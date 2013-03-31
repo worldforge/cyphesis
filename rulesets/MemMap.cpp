@@ -42,12 +42,15 @@ using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
 
+using String::compose;
+
 const TypeNode * MemMap::m_entity_type = 0;
 
 MemEntity * MemMap::addEntity(MemEntity * entity)
 {
     assert(entity != 0);
     assert(!entity->getId().empty());
+    assert(entity->getType() != 0);
 
     debug(std::cout << "MemMap::addEntity " << entity << " " << entity->getId()
                     << std::endl << std::flush;);
@@ -197,31 +200,7 @@ void MemMap::del(const std::string & id)
         }
         m_entities.erase(I);
 
-        // Handling re-parenting is done very similarly to Entity::destroy,
-        // but is slightly different as we tolerate LOC being null.
-        LocatedEntity * ent_loc = ent->m_location.m_loc;
-        if (ent_loc != 0) {
-            // Remove deleted entity from its parents contains
-            assert(ent_loc->m_contains != 0);
-            ent_loc->m_contains->erase(ent);
-        }
-        // FIXME This is required until MemMap uses parent refcounting
-        ent->m_location.m_loc = 0;
-
-        if (ent->m_contains != 0) {
-            // Add deleted entity's children into its parents contains
-            LocatedEntitySet::const_iterator K = ent->m_contains->begin();
-            LocatedEntitySet::const_iterator Kend = ent->m_contains->end();
-            for (; K != Kend; ++K) {
-                LocatedEntity * child_ent = *K;
-                child_ent->m_location.m_loc = ent_loc;
-                // FIXME adjust pos and:
-                // FIXME take account of orientation
-                if (ent_loc != 0) {
-                    ent_loc->m_contains->insert(child_ent);
-                }
-            }
-        }
+        ent->destroy(); // should probably go here, but maybe earlier
 
         if (next != -1) {
             m_checkIterator = m_entities.find(next);
@@ -335,10 +314,10 @@ MemEntity * MemMap::updateAdd(const RootEntity & ent, const double & d)
     return entity;
 }
 
-MemEntityVector MemMap::findByType(const std::string & what)
+EntityVector MemMap::findByType(const std::string & what)
 // Find an entity in our memory of a certain type
 {
-    MemEntityVector res;
+    EntityVector res;
     
     MemEntityDict::const_iterator Iend = m_entities.end();
     for (MemEntityDict::const_iterator I = m_entities.begin(); I != Iend; ++I) {
@@ -351,46 +330,33 @@ MemEntityVector MemMap::findByType(const std::string & what)
     return res;
 }
 
-MemEntityVector MemMap::findByLocation(const Location & loc,
+EntityVector MemMap::findByLocation(const Location & loc,
                                        WFMath::CoordType radius,
                                        const std::string & what)
 // Find an entity in our memory in a certain place
 // FIXME Don't return by value
 {
-    MemEntityVector res;
-#if 0
-    MemEntityDict::const_iterator Iend = m_entities.end();
-    for (MemEntityDict::const_iterator I = m_entities.begin(); I != Iend; ++I) {
-        MemEntity * item = I->second;
-        if (!item->isVisible()) {
-            continue;
-        }
-        const Location & oloc = I->second->m_location;
-        if (!loc.isValid() || !oloc.isValid()) {
-            continue;
-        }
-        if ((oloc.m_loc->getId() == loc.m_loc->getId()) &&
-            (squareDistance(loc.pos(), oloc.pos()) < (radius * radius))) {
-            res.push_back(I->second);
-        }
-    }
-    return res;
-#else
+    EntityVector res;
     LocatedEntity * place = loc.m_loc;
     if (place->m_contains == 0) {
         return res;
     }
+#ifndef NDEBUG
     MemEntity * place_by_id = get(place->getId());
     if (place != place_by_id) {
-        log(ERROR, "WTF!");
+        log(ERROR, compose("MemMap consistency check failure: find location "
+                           "has LOC %1(%2) which is different in dict (%3)",
+                           place->getId(), place->getType()->name(),
+                           place_by_id->getType()->name()));
         return res;
     }
+#endif // NDEBUG
     LocatedEntitySet::const_iterator I = place->m_contains->begin();
     LocatedEntitySet::const_iterator Iend = place->m_contains->end();
     float square_range = radius * radius;
     for (; I != Iend; ++I) {
         assert(*I != 0);
-        MemEntity * item = dynamic_cast<MemEntity *>(*I);
+        LocatedEntity * item = *I;
         if (item == 0) {
             log(ERROR, "Weird entity in memory");
             continue;
@@ -403,7 +369,6 @@ MemEntityVector MemMap::findByLocation(const Location & loc,
         }
     }
     return res;
-#endif
 }
 
 void MemMap::check(const double & time)

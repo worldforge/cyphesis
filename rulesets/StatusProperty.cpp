@@ -19,7 +19,7 @@
 
 #include "StatusProperty.h"
 
-#include "Entity.h"
+#include "LocatedEntity.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -32,7 +32,12 @@ StatusProperty::StatusProperty()
 {
 }
 
-void StatusProperty::apply(Entity * owner)
+StatusProperty * StatusProperty::copy() const
+{
+    return new StatusProperty(*this);
+}
+
+void StatusProperty::apply(LocatedEntity * owner)
 {
     if (m_data < 0) {
         Delete del;
