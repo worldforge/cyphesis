@@ -29,6 +29,7 @@
 
 #include "rulesets/World.h"
 #include "rulesets/Python_API.h"
+#include "rulesets/Character.h"
 
 #include "server/Ruleset.h"
 #include "server/EntityBuilder.h"
@@ -1268,4 +1269,245 @@ Location::Location() : m_loc(0)
 int Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent)
 {
     return 0;
+}
+
+Character::Character(const std::string& id, long int intId) :
+        Thing(id, intId), m_movement(*(Movement*)(nullptr)){
+
+}
+
+Character::~Character() {
+
+}
+
+void Character::metabolise(OpVector & res, double ammount)
+{
+}
+
+void Character::wieldDropped()
+{
+}
+
+LocatedEntity * Character::findInContains(LocatedEntity * ent,
+                                          const std::string & id)
+{
+  return nullptr;
+}
+
+LocatedEntity * Character::findInInventory(const std::string & id)
+{
+  return nullptr;
+}
+
+int Character::linkExternal(Link * link)
+{
+    return 0;
+}
+
+int Character::unlinkExternal(Link * link)
+{
+    return 0;
+}
+
+int Character::startTask(Task * task, const Operation & op, OpVector & res)
+{
+  return 0;
+}
+
+void Character::updateTask(OpVector & res)
+{
+}
+
+void Character::clearTask(OpVector & res)
+{
+}
+
+void Character::ImaginaryOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::InfoOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::TickOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::TalkOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::NourishOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::UseOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::WieldOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::AttackOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::ActuateOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::mindActuateOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::mindAttackOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::mindSetupOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::mindUseOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::mindUpdateOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::mindWieldOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::mindTickOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::mindMoveOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::mindSetOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::mindCombineOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::mindCreateOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::mindDeleteOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::mindDivideOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::mindImaginaryOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::mindTalkOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::mindLookOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::mindEatOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::mindGoalInfoOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::mindTouchOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::mindOtherOperation(const Operation & op, OpVector & res)
+{
+}
+
+bool Character::w2mAppearanceOperation(const Operation & op)
+{
+    return true;
+}
+
+bool Character::w2mDisappearanceOperation(const Operation & op)
+{
+    return true;
+}
+
+bool Character::w2mErrorOperation(const Operation & op)
+{
+    return true;
+}
+
+bool Character::w2mSetupOperation(const Operation & op)
+{
+    return false;
+}
+
+void Character::mindThoughtOperation(const Operation & op, OpVector & res)
+{
+}
+
+bool Character::w2mTickOperation(const Operation & op)
+{
+    return false;
+}
+
+bool Character::w2mUnseenOperation(const Operation & op)
+{
+    return true;
+}
+
+bool Character::w2mSightOperation(const Operation & op)
+{
+    return true;
+}
+
+bool Character::w2mSoundOperation(const Operation & op)
+{
+    return true;
+}
+
+bool Character::w2mTouchOperation(const Operation & op)
+{
+    return true;
+}
+
+void Character::sendMind(const Operation & op, OpVector & res)
+{
+}
+
+void Character::mind2body(const Operation & op, OpVector & res)
+{
+}
+
+bool Character::world2mind(const Operation & op)
+{
+    return false;
+}
+
+void Character::filterExternalOperation(const Operation & op)
+{
+}
+
+void Character::operation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::externalOperation(const Operation & op, Link & link)
+{
 }

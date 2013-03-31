@@ -669,6 +669,10 @@ void Character::mindOtherOperation(const Operation &, OpVector &)
 {
 }
 
+void Character::sendMind(const Operation & op, OpVector & res)
+{
+}
+
 
 Thing::Thing(const std::string & id, long intId) :
        Entity(id, intId)

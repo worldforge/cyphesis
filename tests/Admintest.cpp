@@ -2323,7 +2323,9 @@ void log(LogLevel lvl, const std::string & msg)
 bool database_flag = false;
 
 namespace Atlas { namespace Objects { namespace Operation {
+
 int MONITOR_NO = -1;
+int THOUGHT_NO = -1;
 } } }
 
 #include <common/Shaker.h>
