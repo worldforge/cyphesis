@@ -55,7 +55,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  ArithmeticScripttest PythonArithmeticScripttest \
                  ArithmeticFactorytest PythonArithmeticFactorytest \
                  TerrainModtest PythonClasstest \
-                 TerrainEffectorPropertytest
+                 TerrainEffectorPropertytest SuspendedPropertytest
 
 RULESETS_INTEGRATION_TESTS = MindPropertyintegration BulletDomainintegration \
                              TerrainPropertyintegration \
@@ -553,6 +553,12 @@ StatusPropertytest_LDADD = \
         $(top_builddir)/rulesets/StatusProperty.o \
         $(top_builddir)/common/Property.o
 
+SuspendedPropertytest_SOURCES = SuspendedPropertytest.cpp \
+        PropertyCoverage.cpp PropertyCoverage.h
+SuspendedPropertytest_LDADD = \
+        $(top_builddir)/rulesets/SuspendedProperty.o \
+        $(top_builddir)/common/Property.o
+        
 TerrainModPropertytest_SOURCES = TerrainModPropertytest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 TerrainModPropertytest_LDADD = \
