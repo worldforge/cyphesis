@@ -389,6 +389,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "rulesets/TerrainProperty.h"
 #include "rulesets/TransientProperty.h"
 #include "rulesets/VisibilityProperty.h"
+#include "rulesets/SuspendedProperty.h"
 
 #include "common/const.h"
 #include "common/globals.h"
@@ -1318,6 +1319,19 @@ void TransientProperty::install(LocatedEntity * ent, const std::string & name)
 }
 
 void TransientProperty::apply(LocatedEntity * ent)
+{
+}
+
+SuspendedProperty::SuspendedProperty()
+{
+}
+
+SuspendedProperty * SuspendedProperty::copy() const
+{
+    return 0;
+}
+
+void SuspendedProperty::apply(LocatedEntity * owner)
 {
 }
 

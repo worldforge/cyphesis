@@ -314,6 +314,10 @@ void WorldRouter::addPerceptive(LocatedEntity * perceptive)
 {
 }
 
+void WorldRouter::resumeWorld()
+{
+}
+
 EntityBuilder * EntityBuilder::m_instance = NULL;
 
 EntityBuilder::EntityBuilder()
