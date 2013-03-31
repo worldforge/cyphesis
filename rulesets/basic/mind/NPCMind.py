@@ -579,16 +579,21 @@ class NPCMind(server.Mind):
                     self.goals.remove(goal)
             del self.known_goals[name]
             
-        for goal in new_goals:
-            dictlist.add_value(self.known_goals, name, goal)
+        def insert_goal(goal):
             if hasattr(goal,"trigger"):
                 dictlist.add_value(self.trigger_goals, goal.trigger(), goal)
-                return
-            for i in range(len(self.goals)-1,-1,-1):
-                if self.cmp_goal_importance(self.goals[i],goal):
-                    self.goals.insert(i+1,goal)
-                    return
-            self.goals.insert(0,goal)
+            else:
+                for i in range(len(self.goals)-1,-1,-1):
+                    if self.cmp_goal_importance(self.goals[i],goal):
+                        self.goals.insert(i+1,goal)
+                        return
+                self.goals.insert(0,goal)
+            
+            
+        for goal in new_goals:
+            insert_goal(goal)
+            dictlist.add_value(self.known_goals, name, goal)
+            
     def fulfill_goals(self,time):
         "see if all goals are fulfilled: if not try to fulfill them"
         for g in self.goals[:]:
