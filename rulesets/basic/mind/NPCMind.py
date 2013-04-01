@@ -181,7 +181,12 @@ class NPCMind(server.Mind):
                 for goal in goallist:
                     goalstrings.append(goal.str)
                 res = res + Operation("thought", Entity(predicate="goal", subject=subject, object=goalstrings))
-                    
+        elif sub_op.id == "goal_info":
+            for (subject, goallist) in self.known_goals.items():
+                for goal in goallist:
+                    report=goal.report()
+                    res=res + Operation("goal_info", Entity(subject=subject, goal=goal.str, report=report))
+            
         return res
         
     def set_operation(self, op):
