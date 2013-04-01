@@ -22,6 +22,9 @@ class Goal:
         self.time=time
         self.debug=debug
         self.vars=[]
+        #keeps track of whether the goal is fulfilled or not
+        #this is mainly of use for inspection and diagnosis
+        self.is_fulfilled=0
         #any subgoal/function/method can set this and 
         #it's checked at start of check_goal_rec
         #and NPCMind.py fulfill_goals uses it too to remove goals from list
@@ -56,7 +59,11 @@ class Goal:
         if self.time and not time.is_now(self.time): return res,deb
         if self.debug:
             log.thinking("\t"*depth+"GOAL: bef fulfilled: "+self.desc+" "+`self.fulfilled`)
-        if self.fulfilled(me): return res,deb
+        if self.fulfilled(me): 
+            self.is_fulfilled = 1
+            return res,deb
+        else:
+            self.is_fulfilled = 0
         for sg in self.subgoals:
             if type(sg)==FunctionType or type(sg)==MethodType:
                 res=sg(me)
@@ -75,3 +82,25 @@ class Goal:
                     deb=sg.info()+"."+deb
                     return res,deb
         return res,deb
+    
+    def report(self):
+        """provides extended information about the goal,
+        as well as all subgoals"""
+        name=self.__class__.__name__
+        map={}
+        map["name"]=name
+        map["description"]=self.desc
+        map["fulfilled"]=self.is_fulfilled
+
+        subgoals=[]
+        for sg in self.subgoals:
+            if type(sg)!=FunctionType and type(sg)!=MethodType:
+                subgoals.append(sg.report())
+        map["subgoals"]=subgoals
+        
+        variables={}
+        for v in self.vars:
+            variables[v]=str(getattr(self,v))
+        map["variables"]=variables
+        return map
+    
