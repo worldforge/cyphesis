@@ -182,11 +182,38 @@ class NPCMind(server.Mind):
                     goalstrings.append(goal.str)
                 res = res + Operation("thought", Entity(predicate="goal", subject=subject, object=goalstrings))
         elif sub_op.id == "goal_info":
-            for (subject, goallist) in self.known_goals.items():
-                for goal in goallist:
-                    report=goal.report()
-                    res=res + Operation("goal_info", Entity(subject=subject, goal=goal.str, report=report))
+            subjectArg=""
+            goalArg=""
+            args=sub_op.getArgs()
+            if len(args) == 1:
+                argEntity=args[0]
+                if hasattr(argEntity, "subject"):
+                    subjectArg=argEntity.subject
+                    print "subject: " + subjectArg
+                if hasattr(argEntity, "goal"):
+                    goalArg=argEntity.goal
+                    print "goal: " + goalArg
             
+            if subjectArg=="" and goalArg=="":
+                #get all goals
+                for (subject, goallist) in self.known_goals.items():
+                    for goal in goallist:
+                        res=res + Operation("goal_info", Entity(subject=subject, goal=goal.str, report=goal.report()))
+            elif subjectArg!="":
+                try:
+                    goallist=self.known_goals[subjectArg]
+                    if goalArg!="":
+                        for goal in goallist:
+                            print "goal str: " + goal.str
+                            if goal.str==goalArg:
+                                res=res + Operation("goal_info", Entity(subject=subjectArg, goal=goal.str, report=goal.report()))
+                                break
+                    else:
+                        for goal in goallist:
+                            res=res + Operation("goal_info", Entity(subject=subjectArg, goal=goal.str, report=goal.report()))
+                except KeyError:
+                    print "no goal with subject " + subjectArg
+                    pass
         return res
         
     def set_operation(self, op):
