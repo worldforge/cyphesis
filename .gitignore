@@ -42,3 +42,14 @@ cc.vim
 log
 tags
 *.exe
+# Ignore temporary files
+*~
+# Ignore desktop files
+.directory
+# ignore Eclipse project files
+.project
+.cproject
+.settings
+.cdtconfig*
+.autotools
+.pydevproject
