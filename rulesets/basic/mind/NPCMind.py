@@ -172,7 +172,6 @@ class NPCMind(server.Mind):
                 d=getattr(self.knowledge, attr)
                 if getattr(d, '__iter__', False):
                    for key in d:
-                        #Goals store their original setup string in "str".
                         if attr!="goal":
                             object=str(d[key])
                             res = res + Operation("thought", Entity(predicate=attr, subject=key, object=object))
@@ -182,6 +181,10 @@ class NPCMind(server.Mind):
                     goalstrings.append(goal.str)
                 res = res + Operation("thought", Entity(predicate="goal", subject=subject, object=goalstrings))
         elif sub_op.id == "goal_info":
+            #The goals can be queried in three different ways. 
+            #Either all goals, or if a 'subject' is specified all goals for that 'subject'.
+            #Or if both a 'subject' and 'goal' is specified one single goal.
+            
             subjectArg=""
             goalArg=""
             args=sub_op.getArgs()
@@ -189,10 +192,8 @@ class NPCMind(server.Mind):
                 argEntity=args[0]
                 if hasattr(argEntity, "subject"):
                     subjectArg=argEntity.subject
-                    print "subject: " + subjectArg
                 if hasattr(argEntity, "goal"):
                     goalArg=argEntity.goal
-                    print "goal: " + goalArg
             
             if subjectArg=="" and goalArg=="":
                 #get all goals
@@ -204,7 +205,6 @@ class NPCMind(server.Mind):
                     goallist=self.known_goals[subjectArg]
                     if goalArg!="":
                         for goal in goallist:
-                            print "goal str: " + goal.str
                             if goal.str==goalArg:
                                 res=res + Operation("goal_info", Entity(subject=subjectArg, goal=goal.str, report=goal.report()))
                                 break
