@@ -423,7 +423,7 @@ class hunt_for(pursuit):
         square_dist = square_distance(me.location, thing.location)
         return square_dist < self.square_proximity
 
-################################ HUNT ################################
+################################ PATROL ##############################
 
 class patrol(Goal):
     """Move around an area defined by some waypoints."""

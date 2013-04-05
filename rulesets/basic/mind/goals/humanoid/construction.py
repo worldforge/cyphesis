@@ -68,7 +68,7 @@ class harvest_resource(Goal):
         return Operation("use",Entity(target, objtype="obj"))
 
 class plant_seeds(Goal):
-    """Use a tool to plant a given kind of seend in a given location."""
+    """Use a tool to plant a given kind of seed in a given location."""
     def __init__(self, what, source, place, tool):
         Goal.__init__(self, "Plant seed to grow plants",
                       false,

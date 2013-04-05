@@ -83,7 +83,7 @@ class buy_from(Goal):
         coins = me.find_thing("coin")
         self.last_valued=wield.id
         if len(coins) < price:
-            return Operation("talk", Entity(say="I can't afford to bay that "+self.what+" at the moment."))
+            return Operation("talk", Entity(say="I can't afford to buy that "+self.what+" at the moment."))
         else:
             return Operation("talk", Entity(say=seller.name+" that "+self.what+" is worth "+str(price)+" coins."))
 
