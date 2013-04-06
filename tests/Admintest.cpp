@@ -2374,6 +2374,7 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 int MONITOR_NO = -1;
 int THOUGHT_NO = -1;
+int GOAL_INFO_NO=-1;
 } } }
 
 #include <common/Shaker.h>
