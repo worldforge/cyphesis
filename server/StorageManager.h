@@ -92,7 +92,7 @@ class StorageManager {
     /// \brief Called when shutting down.
     ///
     /// It's expected that the storage manager attempts to persist entity state.
-    int shutdown(const std::map<long, LocatedEntity *>& entites);
+    int shutdown(bool& exit_flag, const std::map<long, LocatedEntity *>& entites);
 
 };
 

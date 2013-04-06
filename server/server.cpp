@@ -414,7 +414,8 @@ int main(int argc, char ** argv)
     //as the shutdown signal most probably comes from a sighandler. We need to
     //tell it it's shutting down so it can do some housekeeping.
     try {
-        if (store->shutdown(world->getEntities()) != 0) {
+        exit_flag = false;
+        if (store->shutdown(exit_flag, world->getEntities()) != 0) {
             //Ignore this error and carry on with shutting down.
             log(ERROR, "Error when shutting down");
         }

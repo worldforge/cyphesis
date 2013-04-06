@@ -488,13 +488,20 @@ int StorageManager::restoreWorld()
     return 0;
 }
 
-int StorageManager::shutdown(const std::map<long, LocatedEntity *>& entites)
+int StorageManager::shutdown(bool& exit_flag, const std::map<long, LocatedEntity *>& entites)
 {
+    log(NOTICE, "Persisting entity thoughts before shutting down...");
+
     tick();
     for (auto& pair : entites) {
         storeThoughts(pair.second);
     }
     while (Database::instance()->queryQueueSize()) {
+        //Allow for any user to abort the process.
+        if(exit_flag) {
+            log(NOTICE, "Aborted thoughts persisting. This might lead to lost thoughts for some entities.");
+            return 0;
+        }
         if (!Database::instance()->queryInProgress()) {
             Database::instance()->launchNewQuery();
         } else {
