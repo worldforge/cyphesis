@@ -24,6 +24,7 @@
 
 #include <deque>
 #include <string>
+#include <map>
 
 class Entity;
 class WorldRouter;
@@ -74,6 +75,9 @@ class StorageManager {
     void encodeProperty(PropertyBase *, std::string &);
     void restoreProperties(LocatedEntity *);
 
+    void restoreThoughts(LocatedEntity *);
+    void storeThoughts(LocatedEntity *);
+
     void insertEntity(LocatedEntity *);
     void updateEntity(LocatedEntity *);
     void restoreChildren(LocatedEntity *);
@@ -84,6 +88,12 @@ class StorageManager {
     void tick();
     int initWorld();
     int restoreWorld();
+
+    /// \brief Called when shutting down.
+    ///
+    /// It's expected that the storage manager attempts to persist entity state.
+    int shutdown(const std::map<long, LocatedEntity *>& entites);
+
 };
 
 #endif // SERVER_STORAGE_MANAGER_H

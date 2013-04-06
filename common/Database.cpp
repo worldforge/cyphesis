@@ -1045,6 +1045,10 @@ int Database::dropEntity(long id)
 
     scheduleCommand(query);
 
+    query = compose("DELETE FROM thoughts WHERE id = %1", id);
+
+    scheduleCommand(query);
+
     return 0;
 }
 
@@ -1127,6 +1131,63 @@ int Database::updateProperties(const std::string & id,
         scheduleCommand(query);
     }
     return 0;
+}
+
+int Database::registerThoughtsTable()
+{
+    assert(m_connection != 0);
+
+    clearPendingQuery();
+    int status = PQsendQuery(m_connection, "SELECT * FROM thoughts");
+    if (!status) {
+        log(ERROR, "registerThoughtsTable(): Database query error.");
+        reportError();
+        return -1;
+    }
+    if (!tuplesOk()) {
+        debug(reportError(););
+        debug(std::cout << "Table does not yet exist"
+                        << std::endl << std::flush;);
+    } else {
+        allTables.insert("thoughts");
+        debug(std::cout << "Table exists" << std::endl << std::flush;);
+        return 0;
+    }
+    allTables.insert("properties");
+    std::string query = "CREATE TABLE thoughts ("
+                        "id integer REFERENCES entities "
+                        "ON DELETE CASCADE, "
+                        "thought text)";
+    if (runCommandQuery(query) != 0) {
+        reportError();
+        return -1;
+    }
+    return 0;
+}
+
+const DatabaseResult Database::selectThoughts(const std::string & loc)
+{
+    std::string query = compose("SELECT thought FROM thoughts"
+                                " WHERE id = %1", loc);
+
+    debug(std::cout << "Selecting on id = " << loc << " ... "
+                    << std::endl << std::flush;);
+
+    return runSimpleSelectQuery(query);
+}
+
+int Database::replaceThoughts(const std::string & id,
+                         const std::vector<std::string>& thoughts)
+{
+
+    std::string deleteQuery = compose("DELETE FROM thoughts WHERE id=%1", id);
+    scheduleCommand(deleteQuery);
+
+    for (auto& thought : thoughts) {
+        std::string insertQuery = compose("INSERT INTO thoughts (id, thought)"
+                                          " VALUES (%1, '%2')", id, thought);
+        scheduleCommand(insertQuery);
+    }
 }
 
 #if 0

@@ -229,6 +229,11 @@ class Database {
     int updateProperties(const std::string & id,
                          const KeyValues & tuples);
 
+    int registerThoughtsTable();
+    const DatabaseResult selectThoughts(const std::string & loc);
+    int replaceThoughts(const std::string & id,
+                         const std::vector<std::string>& thoughts);
+
     // Interface for CommPSQLSocket, so it can give us feedback
     
     void queryResult(ExecStatusType);

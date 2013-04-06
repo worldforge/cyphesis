@@ -23,6 +23,7 @@
 #include "EntityBuilder.h"
 
 #include "rulesets/LocatedEntity.h"
+#include "rulesets/Character.h"
 
 #include "common/Database.h"
 #include "common/TypeNode.h"
@@ -36,6 +37,8 @@
 #include "common/Variable.h"
 
 #include <Atlas/Objects/Anonymous.h>
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Message/Element.h>
 
 #include <wfmath/atlasconv.h>
 
@@ -185,6 +188,84 @@ void StorageManager::restoreProperties(LocatedEntity * ent)
     // Iterate over res and create the property values.
 }
 
+void StorageManager::restoreThoughts(LocatedEntity * ent)
+{
+    //Check if the entity has a mind. Perhaps do this in another way than using dynamic cast?
+    Character* character = dynamic_cast<Character*>(ent);
+    if (character) {
+        Database * db = Database::instance();
+        DatabaseResult res = db->selectThoughts(ent->getId());
+
+        DatabaseResult::const_iterator I = res.begin();
+        DatabaseResult::const_iterator Iend = res.end();
+        Atlas::Message::ListType thoughts_data;
+        for (; I != Iend; ++I) {
+            const std::string thought = I.column("thought");
+            if (thought.empty()) {
+                log(ERROR,
+                        compose("No thought column in property row for %1",
+                                ent->getId()));
+                continue;
+            }
+            MapType thought_data;
+            db->decodeMessage(thought, thought_data);
+            thoughts_data.push_back(thought_data);
+        }
+        OpVector opRes;
+        Operation thoughtOp;
+        thoughtOp->setAttr("args", thoughts_data);
+        thoughtOp->setParents( { "thought" });
+        thoughtOp->setId(character->getId());
+
+        Atlas::Objects::Operation::Set set;
+        set->setArgs1(thoughtOp);
+
+        character->sendMind(set, opRes);
+    }
+}
+
+void StorageManager::storeThoughts(LocatedEntity * ent)
+{
+    if (ent->getFlags() & (entity_ephem)) {
+        // This entity is not persisted.
+        return;
+    }
+    //Check if the entity has a mind. Perhaps do this in another way than using dynamic cast?
+    Character* character = dynamic_cast<Character*>(ent);
+    if (character) {
+        Database * db = Database::instance();
+
+        std::vector<std::string> thoughtsList;
+
+        Atlas::Objects::Operation::Get get;
+
+        Operation get_arg;
+        get_arg->setParents( { "thought" });
+        get_arg->setId(character->getId());
+
+        get->setArgs1(get_arg);
+
+        OpVector res;
+        character->sendMind(get, res);
+
+        for (auto& op : res) {
+            if (!op->getParents().empty()
+                    && *op->getParents().begin() == "thought") {
+                Atlas::Message::ListType thoughts = op->getArgsAsList();
+                for (auto& thoughtElement : thoughts) {
+                    if (thoughtElement.isMap()) {
+                        std::string value;
+                        db->encodeObject(thoughtElement.asMap(), value);
+                        thoughtsList.push_back(value);
+                    }
+                }
+            }
+        }
+        db->replaceThoughts(ent->getId(), thoughtsList);
+
+    }
+}
+
 
 void StorageManager::insertEntity(LocatedEntity * ent)
 {
@@ -308,6 +389,7 @@ void StorageManager::restoreChildren(LocatedEntity * parent)
         BaseWorld::instance().addEntity(child);
         restoreChildren(child);
         restoreProperties(child);
+        restoreThoughts(child);
     }
 }
 
@@ -403,5 +485,21 @@ int StorageManager::restoreWorld()
 
     restoreProperties(ent);
 
+    return 0;
+}
+
+int StorageManager::shutdown(const std::map<long, LocatedEntity *>& entites)
+{
+    tick();
+    for (auto& pair : entites) {
+        storeThoughts(pair.second);
+    }
+    while (Database::instance()->queryQueueSize()) {
+        if (!Database::instance()->queryInProgress()) {
+            Database::instance()->launchNewQuery();
+        } else {
+            Database::instance()->clearPendingQuery();
+        }
+    }
     return 0;
 }

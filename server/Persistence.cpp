@@ -92,6 +92,11 @@ int Persistence::init()
         return DATABASE_TABERR;
     }
 
+    if (m_db.registerThoughtsTable() != 0) {
+        log(ERROR, "Failed to create Thought in database.");
+        return DATABASE_TABERR;
+    }
+
     bool i = (m_db.initRule(true) == 0);
 
     MapType tableDesc;

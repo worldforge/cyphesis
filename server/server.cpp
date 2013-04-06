@@ -410,6 +410,19 @@ int main(int argc, char ** argv)
     // by the game has been done before exit flag was set.
     log(NOTICE, "Performing clean shutdown...");
 
+    //Actually, there's no way for the world to know that it's shutting down,
+    //as the shutdown signal most probably comes from a sighandler. We need to
+    //tell it it's shutting down so it can do some housekeeping.
+    try {
+        if (store->shutdown(world->getEntities()) != 0) {
+            //Ignore this error and carry on with shutting down.
+            log(ERROR, "Error when shutting down");
+        }
+    } catch (...) {
+        //Ignore this error and carry on with shutting down.
+        log(ERROR, "Exception caught when shutting down");
+    }
+
     delete commServer;
 
     delete server;
