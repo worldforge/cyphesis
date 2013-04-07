@@ -225,18 +225,18 @@ def default(host='', account='', password='', **args):
 
     #   the lych, who makes bones into skeletons
     if m.look_for(type='lych') is None:
-        lych=m.make('lych', pos=(-21, -89, settlement_height), transient=-1)
+        lych=m.make('lych', pos=(-21, -89, settlement_height))
         m.learn(lych,lych_goals)
         m.know(lych,lych_knowledge)
         m.tell_importance(lych,il.assemble,'>',il.patrol)
 
     #   animals
     if m.look_for(type='pig') is None:
-        piglet = m.make('pig', pos=(-3,-1,settlement_height), transient=-1)
+        piglet = m.make('pig', pos=(-3,-1,settlement_height))
         m.learn(piglet,pig_goals)
 
     if m.look_for(type='wolf') is None:
-        wolf = m.make('wolf', pos=(90,-90,settlement_height), transient=-1)
+        wolf = m.make('wolf', pos=(90,-90,settlement_height))
         m.learn(wolf,wolf_goals)
         m.know(wolf,wolf_knowledge)
         m.tell_importance(wolf,il.forage,'>',il.hunt)
@@ -244,18 +244,15 @@ def default(host='', account='', password='', **args):
         m.tell_importance(wolf,il.hunt,'>',il.patrol)
 
     if m.look_for(type='crab') is None:
-        crab = m.make('crab', pos=(-90,90,settlement_height),
-                      transient=-1)
+        crab = m.make('crab', pos=(-90,90,settlement_height))
         m.learn(crab,crab_goals)
 
     if m.look_for(type='skeleton') is None:
-        skeleton = m.make('skeleton', pos=(-38,-25,settlement_height),
-                          transient=-1)
+        skeleton = m.make('skeleton', pos=(-38,-25,settlement_height))
         m.learn(skeleton,skeleton_goals)
 
     if m.look_for(type='squirrel') is None:
-        squirrel = m.make('squirrel', pos=(-32,-15,settlement_height),
-                          transient=-1)
+        squirrel = m.make('squirrel', pos=(-32,-15,settlement_height))
         m.know(squirrel,sknowledge)
         m.learn(squirrel,squirrel_goals)
 
@@ -263,8 +260,7 @@ def default(host='', account='', password='', **args):
 
     # An NPC settler
     if m.look_for(name='Ranum Umado') is None:
-        settler=m.make('settler', name='Ranum Umado', pos=(1,1,0),
-                       transient=-1)
+        settler=m.make('settler', name='Ranum Umado', pos=(1,1,0))
         axe=m.make('axe',pos=(0,0,0),parent=settler.id)
         m.own(settler,axe)
         m.know(settler,[('forest','location',(30,30,0))])
@@ -272,8 +268,7 @@ def default(host='', account='', password='', **args):
 
     # An NPC forester
     if m.look_for(name='Ineos Adsam') is None:
-        settler=m.make('settler', name='Ineos Adsam',pos=(0, 12, 0),
-                       transient=-1)
+        settler=m.make('settler', name='Ineos Adsam',pos=(0, 12, 0))
         trowel=m.make('trowel',pos=(0,0,0),parent=settler.id)
         m.own(settler, trowel)
         m.know(settler,[('forest','location',(30,30,0))])
@@ -291,8 +286,7 @@ def default(host='', account='', password='', **args):
     # An NPC Butcher
     if m.look_for(name='Ulad Bargan') is None:
         butcher=m.make('settler', name='Ulad Bargan',desc='the butcher',
-                       pos=butcher_pos,age=probability.fertility_age,
-                       transient=-1)
+                       pos=butcher_pos,age=probability.fertility_age)
         m.learn(butcher,(il.trade,"trade('pig', 'cleaver', 'ham', 'market')"))
         m.learn(butcher,(il.buy_livestock,"buy_livestock('pig', 1)"))
         m.learn(butcher,(il.market,"run_shop('mstall_freshmeat_1_se',"
@@ -331,8 +325,7 @@ def default(host='', account='', password='', **args):
 
     if m.look_for(name='Bok Forgo') is None:
         tailor=m.make('merchant', name='Bok Forgo',desc='the tailor',
-                      pos=tailor_pos,age=probability.fertility_age,
-                      transient=-1)
+                      pos=tailor_pos,age=probability.fertility_age)
         m.learn(tailor,(il.help,"add_help(['Get your clothes here.','Everything to keep you looking your best is here.'])"))
     
         m.know(tailor, tailor_knowledge)
@@ -365,8 +358,7 @@ def default(host='', account='', password='', **args):
     if m.look_for(name='Blackun Decker') is None:
         tmerchant=m.make('merchant', name='Blackun Decker',
                          desc='the tool merchant',
-                         pos=tool_merchant_pos,age=probability.fertility_age,
-                         transient=-1)
+                         pos=tool_merchant_pos,age=probability.fertility_age)
         m.learn(tmerchant,(il.help,"add_help(['Get all your tools here.',"
                                    "'Everything a settler needs is available at "
                                    "great prices.'])"))
@@ -401,8 +393,7 @@ def default(host='', account='', password='', **args):
         merchant=m.make('merchant', name='Dyfed Searae',desc='the pig merchant',
                         pos=pig_sty_pos,age=probability.fertility_age,
                         orientation=Quaternion(Vector3D([1,0,0]),
-                                               Vector3D([0,-1,0])).as_list(),
-                        transient=-1)
+                                               Vector3D([0,-1,0])).as_list())
         m.know(merchant,mknowledge)
         m.know(merchant,area)
         m.know(merchant,mprices)
@@ -436,8 +427,7 @@ def default(host='', account='', password='', **args):
     if m.look_for(name='Gorun Iksa') is None:
         marshall=m.make('marshall', name='Gorun Iksa',
                         desc='the duke\'s marshall',
-                        pos=(14,12,settlement_height),
-                        transient=-1)
+                        pos=(14,12,settlement_height))
         m.know(marshall, [('deed','price','50')])
         m.know(marshall, area)
         m.know(marshall, about)
@@ -466,8 +456,7 @@ def default(host='', account='', password='', **args):
     if warrior is None:
         warrior=m.make('mercenary', name='Vonaa Barile',
                        pos=(uniform(-2,2),uniform(-2,2),settlement_height),
-                       orientation=directions[randint(0,7)],
-                       transient=-1)
+                       orientation=directions[randint(0,7)])
         bow=m.make('bow',pos=(0,0,0), parent=warrior.id)
         m.own(warrior,bow)
         for i in range(0, 6):
@@ -479,8 +468,7 @@ def default(host='', account='', password='', **args):
     if warrior is None:
         warrior=m.make('mercenary', name='Lile Birloc',
                        pos=(uniform(-2,2), uniform(-2,2), settlement_height),
-                       orientation=directions[randint(0,7)],
-                       transient=-1)
+                       orientation=directions[randint(0,7)])
         bow=m.make('bow',pos=(0,0,0), parent=warrior.id)
         m.own(warrior,bow)
         for i in range(0, 6):
@@ -515,11 +503,9 @@ def default(host='', account='', password='', **args):
 
     if m.look_for(type='goblin') is None:
         goblin_guards=[]
-        goblin=m.make('goblin', pos=(102, -33, settlement_height),
-                      transient=-1)
+        goblin=m.make('goblin', pos=(102, -33, settlement_height))
         goblin_guards.append(goblin)
-        goblin=m.make('goblin', pos=(98, -33, settlement_height),
-                      transient=-1)
+        goblin=m.make('goblin', pos=(98, -33, settlement_height))
         goblin_guards.append(goblin)
 
         m.learn(goblin_guards,(il.defend,"defend('settler', 10)"))
@@ -532,7 +518,7 @@ def _add_animals(m):
     for i in range(0, 10):
         xpos = xbase + uniform(-20,20)
         ypos = ybase + uniform(-20,20)
-        d=m.make('deer', pos=(xpos, ypos, settlement_height), transient=-1)
+        d=m.make('deer', pos=(xpos, ypos, settlement_height))
         deers.append(d)
     m.learn(deers,deer_goals)
     
@@ -542,7 +528,7 @@ def _add_animals(m):
     for i in range(0, 10):
         xpos = xbase + uniform(-5,5)
         ypos = ybase + uniform(-5,5)
-        d=m.make('chicken', pos=(xpos, ypos, settlement_height), transient=-1)
+        d=m.make('chicken', pos=(xpos, ypos, settlement_height))
         chickens.append(d)
     m.learn(chickens,chicken_goals)
 
@@ -562,25 +548,25 @@ def _add_animals(m):
         xpos = bluegillxbase + uniform(-1,1)
         ypos = bluegillybase + uniform(-1,1)
         zpos = uniform(6,8)
-        c=m.make('bluegill', pos=(xpos, ypos, zpos), transient=-1)
+        c=m.make('bluegill', pos=(xpos, ypos, zpos))
         bluegill.append(c)
     for i in range(0, 2):
         xpos = pickerelxbase + uniform(-10,-5)
         ypos = pickerelybase + uniform(-10,-5)
         zpos = uniform(-4,0)
-        c=m.make('pickerel', pos=(xpos, ypos, zpos), transient=-1)
+        c=m.make('pickerel', pos=(xpos, ypos, zpos))
         pickerel.append(c)
     for i in range(0, 2):
         xpos = bassxbase + uniform(-5,0)
         ypos = bassybase + uniform(-5,0)
         zpos = uniform(-4,0)
-        c=m.make('bass', pos=(xpos, ypos, zpos), transient=-1)
+        c=m.make('bass', pos=(xpos, ypos, zpos))
         bass.append(c)
     for i in range(0, 2):
         xpos = tunaxbase + uniform(0,5)
         ypos = tunaybase + uniform(0,5)
         zpos = uniform(-21,-18)
-        c=m.make('tuna', pos=(xpos, ypos, zpos), transient=-1)
+        c=m.make('tuna', pos=(xpos, ypos, zpos))
         tuna.append(c)
     m.learn(bluegill,bluegill_goals)
     m.learn(pickerel,pickerel_goals)
@@ -1070,7 +1056,7 @@ def add_fish(host='', account='', password='', **args):
         xpos = uniform(-35,-30)
         ypos = uniform(-30,-25)
         zpos = uniform(-4,0)
-        c=m.make('bass', pos=(xpos, ypos, zpos), transient=-1)
+        c=m.make('bass', pos=(xpos, ypos, zpos))
         fish.append(c)
     m.learn(fish, fish_goals)
     
