@@ -29,6 +29,12 @@ class Goal:
         #it's checked at start of check_goal_rec
         #and NPCMind.py fulfill_goals uses it too to remove goals from list
         self.irrelevant=0
+        #Tracks the number of errors this goal (or any of its subgoals) has produced.
+        #This is used by NPC code to remove troublesome goals from the processing
+        self.errors=0
+        #If an error has occurred, the description of the last one is stored here.
+        #This is mainly of use for debugging.
+        self.lastError=""
     def __repr__(self):
         return self.info()
     def info(self):
@@ -102,5 +108,9 @@ class Goal:
         for v in self.vars:
             variables[v]=str(getattr(self,v))
         map["variables"]=variables
+        
+        if self.errors > 0:
+            map["errors"]=self.errors
+            map["lastError"]=self.lastError
         return map
     

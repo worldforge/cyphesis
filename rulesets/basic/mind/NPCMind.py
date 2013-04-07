@@ -2,6 +2,7 @@
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 
 import random
+import traceback
 
 from atlas import *
 from physics import *
@@ -632,8 +633,20 @@ class NPCMind(server.Mind):
             if g.irrelevant:
                 self.goals.remove(g)
                 continue
-            res=g.check_goal(self,time)
-            if res: return res
+            #Don't process goals which have had three errors in them.
+            #The idea is to allow for some leeway in goal processing, but to punish repeat offenders.
+            if g.errors > 3:
+                continue
+            try:
+                res=g.check_goal(self,time)
+                if res: return res
+            except:
+                stacktrace=traceback.format_exc()
+                g.errors += 1
+                g.lastError=stacktrace
+                #If there's an error, print to the log, mark the goal, and continue with the next goal
+                print "Error in NPC with id " + self.id + " when checking goal " + g.str + "\n" + stacktrace
+                continue
             # if res!=None: return res
     def teach_children(self, child):
         res=Oplist()
