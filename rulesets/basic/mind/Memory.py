@@ -11,13 +11,17 @@ class Memory:
         self.events=None
         self.map=None
     def recall_place(self, location, radius, otype):
-        if type(otype)==ListType:
-            for i in otype:
-                result = self.map.find_by_location(location, radius, i)
-                if len(result)!=0:
-                    return result
-        else:
-            return self.map.find_by_location(location, radius, otype)
+        try:
+            if type(otype)==ListType:
+                for i in otype:
+                    result = self.map.find_by_location(location, radius, i)
+                    if len(result)!=0:
+                        return result
+            else:
+                return self.map.find_by_location(location, radius, otype)
+        except RuntimeError:
+            #Expect the location to be incomplete and handle it
+            return None
     def remember_event(self, event):
         "add new memory with age"
         self.events.append([event,1.0])
