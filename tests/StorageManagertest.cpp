@@ -29,6 +29,7 @@
 #include "server/WorldRouter.h"
 
 #include "rulesets/Entity.h"
+#include "rulesets/Character.h"
 
 #include "common/SystemTime.h"
 
@@ -334,6 +335,184 @@ LocatedEntity * EntityBuilder::newEntity(const std::string & id, long intId,
                                          const BaseWorld &) const
 {
     return 0;
+}
+
+Character::Character(const std::string & id, long intId) :
+           Thing(id, intId),
+               m_movement(*(Movement*)0),
+               m_mind(0), m_externalMind(0)
+{
+}
+
+Character::~Character()
+{
+}
+
+void Character::operation(const Operation & op, OpVector &)
+{
+}
+
+void Character::externalOperation(const Operation & op, Link &)
+{
+}
+
+
+void Character::ImaginaryOperation(const Operation & op, OpVector &)
+{
+}
+
+void Character::InfoOperation(const Operation & op, OpVector &)
+{
+}
+
+void Character::TickOperation(const Operation & op, OpVector &)
+{
+}
+
+void Character::TalkOperation(const Operation & op, OpVector &)
+{
+}
+
+void Character::NourishOperation(const Operation & op, OpVector &)
+{
+}
+
+void Character::UseOperation(const Operation & op, OpVector &)
+{
+}
+
+void Character::WieldOperation(const Operation & op, OpVector &)
+{
+}
+
+void Character::AttackOperation(const Operation & op, OpVector &)
+{
+}
+
+void Character::ActuateOperation(const Operation & op, OpVector &)
+{
+}
+
+void Character::mindActuateOperation(const Operation &, OpVector &)
+{
+}
+
+void Character::mindAttackOperation(const Operation &, OpVector &)
+{
+}
+
+void Character::mindCombineOperation(const Operation &, OpVector &)
+{
+}
+
+void Character::mindCreateOperation(const Operation &, OpVector &)
+{
+}
+
+void Character::mindDeleteOperation(const Operation &, OpVector &)
+{
+}
+
+void Character::mindDivideOperation(const Operation &, OpVector &)
+{
+}
+
+void Character::mindEatOperation(const Operation &, OpVector &)
+{
+}
+
+void Character::mindGoalInfoOperation(const Operation &, OpVector &)
+{
+}
+
+void Character::mindImaginaryOperation(const Operation &, OpVector &)
+{
+}
+
+void Character::mindLookOperation(const Operation &, OpVector &)
+{
+}
+
+void Character::mindMoveOperation(const Operation &, OpVector &)
+{
+}
+
+void Character::mindSetOperation(const Operation &, OpVector &)
+{
+}
+
+void Character::mindSetupOperation(const Operation &, OpVector &)
+{
+}
+
+void Character::mindTalkOperation(const Operation &, OpVector &)
+{
+}
+
+void Character::mindThoughtOperation(const Operation &, OpVector &)
+{
+}
+
+void Character::mindTickOperation(const Operation &, OpVector &)
+{
+}
+
+void Character::mindTouchOperation(const Operation &, OpVector &)
+{
+}
+
+void Character::mindUpdateOperation(const Operation &, OpVector &)
+{
+}
+
+void Character::mindUseOperation(const Operation &, OpVector &)
+{
+}
+
+void Character::mindWieldOperation(const Operation &, OpVector &)
+{
+}
+
+
+void Character::mindOtherOperation(const Operation &, OpVector &)
+{
+}
+
+void Character::sendMind(const Operation & op, OpVector & res)
+{
+}
+
+Thing::Thing(const std::string & id, long intId) :
+       Entity(id, intId)
+{
+}
+
+Thing::~Thing()
+{
+}
+
+void Thing::DeleteOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Thing::MoveOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Thing::SetOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Thing::LookOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Thing::CreateOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Thing::UpdateOperation(const Operation & op, OpVector & res)
+{
 }
 
 Entity::Entity(const std::string & id, long intId) :
@@ -766,6 +945,31 @@ int Database::updateProperties(const std::string & id,
 {
     return 0;
 }
+
+int Database::registerThoughtsTable()
+{
+    return 0;
+}
+const DatabaseResult Database::selectThoughts(const std::string & loc)
+{
+    return DatabaseResult(0);
+}
+int Database::replaceThoughts(const std::string & id,
+                     const std::vector<std::string>& thoughts)
+{
+    return 0;
+}
+
+int Database::launchNewQuery()
+{
+    return 0;
+}
+int Database::clearPendingQuery()
+{
+    return 0;
+}
+
+
 
 const char * DatabaseResult::const_iterator::column(const char * column) const
 {

@@ -452,6 +452,11 @@ void Database::cleanup()
     m_instance = 0;
 }
 
+int Database::registerThoughtsTable()
+{
+    return 0;
+}
+
 const char * DatabaseResult::field(const char * column, int row) const
 {
     return "";
