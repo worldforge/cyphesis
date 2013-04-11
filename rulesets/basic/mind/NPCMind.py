@@ -175,12 +175,12 @@ class NPCMind(server.Mind):
                    for key in d:
                         if attr!="goal":
                             object=str(d[key])
-                            res = res + Operation("thought", Entity(predicate=attr, subject=key, object=object))
+                            res = res + Operation("thought", Entity(predicate=attr, subject=str(key), object=object))
             for (subject, goallist) in self.known_goals.items():
                 goalstrings=[]
                 for goal in goallist:
                     goalstrings.append(goal.str)
-                res = res + Operation("thought", Entity(predicate="goal", subject=subject, object=goalstrings))
+                res = res + Operation("thought", Entity(predicate="goal", subject=str(subject), object=goalstrings))
         elif sub_op.id == "goal_info":
             #The goals can be queried in three different ways. 
             #Either all goals, or if a 'subject' is specified all goals for that 'subject'.
