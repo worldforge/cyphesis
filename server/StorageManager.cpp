@@ -191,27 +191,26 @@ void StorageManager::restoreProperties(LocatedEntity * ent)
 
 void StorageManager::restoreThoughts(LocatedEntity * ent)
 {
-    //Check if the entity has a mind. Perhaps do this in another way than using dynamic cast?
-    Character* character = dynamic_cast<Character*>(ent);
-    if (character) {
-        Database * db = Database::instance();
-        DatabaseResult res = db->selectThoughts(ent->getId());
+    Database * db = Database::instance();
+    const DatabaseResult res = db->selectThoughts(ent->getId());
+    Atlas::Message::ListType thoughts_data;
 
-        DatabaseResult::const_iterator I = res.begin();
-        DatabaseResult::const_iterator Iend = res.end();
-        Atlas::Message::ListType thoughts_data;
-        for (; I != Iend; ++I) {
-            const std::string thought = I.column("thought");
-            if (thought.empty()) {
-                log(ERROR,
-                        compose("No thought column in property row for %1",
-                                ent->getId()));
-                continue;
-            }
-            MapType thought_data;
-            db->decodeMessage(thought, thought_data);
-            thoughts_data.push_back(thought_data);
+    DatabaseResult::const_iterator I = res.begin();
+    DatabaseResult::const_iterator Iend = res.end();
+    for (; I != Iend; ++I) {
+        const std::string thought = I.column("thought");
+        if (thought.empty()) {
+            log(ERROR,
+                    compose("No thought column in property row for %1",
+                            ent->getId()));
+            continue;
         }
+        MapType thought_data;
+        db->decodeMessage(thought, thought_data);
+        thoughts_data.push_back(thought_data);
+    }
+
+    if (!thoughts_data.empty()) {
         OpVector opRes;
 
         Atlas::Objects::Entity::Anonymous thoughtArg;
@@ -221,10 +220,10 @@ void StorageManager::restoreThoughts(LocatedEntity * ent)
         thoughtOp->setType("thought", Atlas::Objects::Operation::THOUGHT_NO);
         thoughtOp->setArgs1(thoughtArg);
         //Make the thought come from the entity itself
-        thoughtOp->setTo(character->getId());
-        thoughtOp->setFrom(character->getId());
+        thoughtOp->setTo(ent->getId());
+        thoughtOp->setFrom(ent->getId());
 
-        character->sendWorld(thoughtOp);
+        ent->sendWorld(thoughtOp);
     }
 }
 
