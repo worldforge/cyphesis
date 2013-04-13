@@ -174,7 +174,10 @@ class NPCMind(server.Mind):
                 if getattr(d, '__iter__', False):
                    for key in d:
                         if attr!="goal":
-                            object=str(d[key])
+                            if type(d[key]) is Location:
+                                object=str(d[key].coordinates)
+                            else:
+                                object=str(d[key])
                             res = res + Operation("thought", Entity(predicate=attr, subject=str(key), object=object))
             for (subject, goallist) in self.known_goals.items():
                 goalstrings=[]
