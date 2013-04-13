@@ -124,6 +124,7 @@ class Character : public Thing {
     bool w2mAppearanceOperation(const Operation &);
     bool w2mDisappearanceOperation(const Operation &);
     bool w2mErrorOperation(const Operation &);
+    bool w2mThoughtOperation(const Operation & op);
 
     void sendMind(const Operation & op, OpVector &);
     void mind2body(const Operation & op, OpVector &);

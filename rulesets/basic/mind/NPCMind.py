@@ -216,34 +216,34 @@ class NPCMind(server.Mind):
                     print "no goal with subject " + subjectArg
                     pass
         return res
-        
-    def set_operation(self, op):
-        #Only authors should be able to send set_operations. Do we need extra checks here, or should we rely on the server filtering them correctly?
-        for thoughtOp in op:
-            if thoughtOp.id == "thought":
-                for thought in thoughtOp:
-                    subject=thought.subject
-                    predicate=thought.predicate
-                    object=thought.object
-                    #handle goals in a special way
-                    if predicate == "goal":
-                        if type(object) is StringType:
-                            self.set_goals(subject,[object])
-                        else:
-                            string_goals=[]
-                            for goalElement in object:
-                                string_goals.append(str(goalElement))
-                            self.set_goals(subject,string_goals)
-                    else:
-                        if object[0]=='(':
-                            #CHEAT!: remove eval
-                            xyz=list(eval(object))
-                            loc=self.location.copy()
-                            loc.coordinates=Vector3D(xyz)
-                            self.add_knowledge(predicate,subject,loc)
-                        else:
-                            self.add_knowledge(predicate,subject,object)
 
+    def thought_operation(self, op):
+        #TODO: add check that it's from ourselves
+        #Only authors should be able to send set_operations. Do we need extra checks here, or should we rely on the server filtering them correctly?
+        for thoughtArgs in op:
+            for thought in thoughtArgs.args:
+                subject=thought.subject
+                predicate=thought.predicate
+                object=thought.object
+                #handle goals in a special way
+                if predicate == "goal":
+                    if type(object) is StringType:
+                        self.set_goals(subject,[object])
+                    else:
+                        string_goals=[]
+                        for goalElement in object:
+                            string_goals.append(str(goalElement))
+                        self.set_goals(subject,string_goals)
+                else:
+#                        if len(object) > 0 and object[0]=='(':
+                    if object[0]=='(':
+                        #CHEAT!: remove eval
+                        xyz=list(eval(object))
+                        loc=self.location.copy()
+                        loc.coordinates=Vector3D(xyz)
+                        self.add_knowledge(predicate,subject,loc)
+                    else:
+                        self.add_knowledge(predicate,subject,object)
     
     ########## Talk operations
     def admin_sound(self, op):

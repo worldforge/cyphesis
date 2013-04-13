@@ -1576,6 +1576,16 @@ bool Character::w2mSoundOperation(const Operation & op)
     return true;
 }
 
+/// \brief Filter a Thought operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
+bool Character::w2mThoughtOperation(const Operation & op)
+{
+    //Only allow thoughts which are sent from the mind
+    return op->getFrom() == getId();
+}
+
 /// \brief Filter a Touch operation coming from the world to the mind
 ///
 /// @param op The operation to be filtered.

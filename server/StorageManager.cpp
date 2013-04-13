@@ -35,6 +35,7 @@
 #include "common/log.h"
 #include "common/compose.hpp"
 #include "common/Variable.h"
+#include "common/custom.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
@@ -212,15 +213,18 @@ void StorageManager::restoreThoughts(LocatedEntity * ent)
             thoughts_data.push_back(thought_data);
         }
         OpVector opRes;
-        Operation thoughtOp;
-        thoughtOp->setAttr("args", thoughts_data);
-        thoughtOp->setParents( { "thought" });
-        thoughtOp->setId(character->getId());
 
-        Atlas::Objects::Operation::Set set;
-        set->setArgs1(thoughtOp);
+        Atlas::Objects::Entity::Anonymous thoughtArg;
+        thoughtArg->setAttr("args", thoughts_data);
 
-        character->sendMind(set, opRes);
+        Atlas::Objects::Operation::Generic thoughtOp;
+        thoughtOp->setType("thought", Atlas::Objects::Operation::THOUGHT_NO);
+        thoughtOp->setArgs1(thoughtArg);
+        //Make the thought come from the entity itself
+        thoughtOp->setTo(character->getId());
+        thoughtOp->setFrom(character->getId());
+
+        character->sendWorld(thoughtOp);
     }
 }
 

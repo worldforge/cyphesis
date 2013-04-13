@@ -126,6 +126,8 @@
                 return _prefix ## TickOperation(_op); \
             } else if (_op_no == Atlas::Objects::Operation::UNSEEN_NO) { \
                 return _prefix ## UnseenOperation(_op); \
+            } else if (_op_no == Atlas::Objects::Operation::THOUGHT_NO) { \
+                return _prefix ## ThoughtOperation(_op); \
             } \
             break; \
     }
