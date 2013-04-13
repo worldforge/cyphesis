@@ -500,8 +500,8 @@ class NPCMind(server.Mind):
         else:
             thought_value = value
         desc="%s knowledge about %s is %s" % (what,key,thought_value)
-        ent = Entity(description=desc, what=what, key=key, value=thought_value)
-        self.send(Operation("thought",ent))
+#        ent = Entity(description=desc, what=what, key=key, value=thought_value)
+#        self.send(Operation("thought",ent))
         if what=="location":
             #and reverse too
             self.reverse_knowledge.add("location",value,key)
@@ -550,8 +550,8 @@ class NPCMind(server.Mind):
             return
         desc="I own %s." % name
         what=thing.as_entity()
-        ent = Entity(description=desc, what=what)
-        self.send(Operation("thought",ent))
+#        ent = Entity(description=desc, what=what)
+#        self.send(Operation("thought",ent))
         dictlist.add_value(self.things,name,thing)
         log.debug(3,"\tafter: "+str(self.things))
     def find_thing(self, thing):
