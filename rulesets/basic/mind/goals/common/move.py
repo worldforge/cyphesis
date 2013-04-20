@@ -38,6 +38,8 @@ class move_me(Goal):
         return location_
     def am_I_at_loc(self, me):
         location=self.get_location_instance(me)
+        if me.location is None:
+            return 1
         if not location:
             #print "No location"
             return 1
