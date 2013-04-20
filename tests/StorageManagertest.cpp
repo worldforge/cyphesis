@@ -1063,3 +1063,7 @@ namespace consts {
   const long rootWorldIntId = 0L;
 
 }
+
+namespace Atlas { namespace Objects { namespace Operation {
+int THOUGHT_NO = -1;
+} } }
