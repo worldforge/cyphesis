@@ -392,7 +392,19 @@ void StorageManager::restoreChildren(LocatedEntity * parent)
         BaseWorld::instance().addEntity(child);
         restoreChildren(child);
         restoreProperties(child);
+
+
+        //We must send a sight op to the entity informing it of itself before we send any thoughts.
+        //Else the mind won't have any information about itself.
+        Atlas::Objects::Operation::Sight sight;
+        sight->setTo(child->getId());
+        Atlas::Objects::Entity::Anonymous args;
+        child->addToEntity(args);
+        sight->setArgs1(args);
+        child->sendWorld(sight);
+
         restoreThoughts(child);
+
     }
 }
 
