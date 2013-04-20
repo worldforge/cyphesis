@@ -174,10 +174,17 @@ class NPCMind(server.Mind):
                 if getattr(d, '__iter__', False):
                    for key in d:
                         if attr!="goal":
-                            if type(d[key]) is Location:
-                                object=str(d[key].coordinates)
+                            objectVal=d[key]
+                            if type(objectVal) is Location:
+                                #Serialize Location as tuple, with parent if available
+                                if objectVal.parent is None:
+                                    location=objectVal.coordinates
+                                else:
+                                    location=(objectVal.parent.id,objectVal.coordinates)
+                                object=str(location)
                             else:
                                 object=str(d[key])
+                            
                             res = res + Operation("thought", Entity(predicate=attr, subject=str(key), object=object))
             for (subject, goallist) in self.known_goals.items():
                 goalstrings=[]
@@ -238,12 +245,18 @@ class NPCMind(server.Mind):
                             string_goals.append(str(goalElement))
                         self.set_goals(subject,string_goals)
                 else:
-#                        if len(object) > 0 and object[0]=='(':
-                    if object[0]=='(':
+                    #Handle locations.
+                    if len(object) > 0 and object[0]=='(':
                         #CHEAT!: remove eval
-                        xyz=list(eval(object))
-                        loc=self.location.copy()
-                        loc.coordinates=Vector3D(xyz)
+                        locdata=eval(object)
+                        #If only coords are supplied, it's handled as a location within the same parent space as ourselves
+                        if (len(locdata) == 3):
+                            loc=self.location.copy()
+                            loc.coordinates=Vector3D(list(locdata))
+                        elif (len(locdata) == 2):
+                            where=self.map.get_add(locdata[0])
+                            coords=Point3D(list(locdata[1]))
+                            loc=Location(where, coords)
                         self.add_knowledge(predicate,subject,loc)
                     else:
                         self.add_knowledge(predicate,subject,object)
