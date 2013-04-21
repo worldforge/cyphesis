@@ -390,18 +390,31 @@ void StorageManager::restoreChildren(LocatedEntity * parent)
         child->m_location.m_loc = parent;
         child->setFlags(entity_clean | entity_pos_clean | entity_orient_clean);
         BaseWorld::instance().addEntity(child);
-        restoreChildren(child);
+        //Restore properties before we restore children, so that any mind instances are set up to listen correctly.
         restoreProperties(child);
+        restoreChildren(child);
 
 
         //We must send a sight op to the entity informing it of itself before we send any thoughts.
         //Else the mind won't have any information about itself.
-        Atlas::Objects::Operation::Sight sight;
-        sight->setTo(child->getId());
-        Atlas::Objects::Entity::Anonymous args;
-        child->addToEntity(args);
-        sight->setArgs1(args);
-        child->sendWorld(sight);
+        {
+            Atlas::Objects::Operation::Sight sight;
+            sight->setTo(child->getId());
+            Atlas::Objects::Entity::Anonymous args;
+            child->addToEntity(args);
+            sight->setArgs1(args);
+            child->sendWorld(sight);
+        }
+        //We should also send a sight op to the parent entity which owns the entity.
+        //TODO: should this really be necessary or should we rely on other Sight functionality?
+        {
+            Atlas::Objects::Operation::Sight sight;
+            sight->setTo(parent->getId());
+            Atlas::Objects::Entity::Anonymous args;
+            child->addToEntity(args);
+            sight->setArgs1(args);
+            parent->sendWorld(sight);
+        }
 
         restoreThoughts(child);
 
@@ -496,9 +509,9 @@ int StorageManager::restoreWorld()
 {
     LocatedEntity * ent = &BaseWorld::instance().m_gameWorld;
 
-    restoreChildren(ent);
-
     restoreProperties(ent);
+
+    restoreChildren(ent);
 
     return 0;
 }
