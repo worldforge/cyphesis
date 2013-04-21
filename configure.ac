@@ -66,22 +66,8 @@ AC_ARG_ENABLE(static_link,
 )
 AM_CONDITIONAL(LINK_STATIC, test x"$link_static" = xtrue)
 
-AC_MSG_CHECKING(whether gcc needs -fno-strict-aliasing)
-AC_PREPROC_IFELSE([
-#ifdef __GNUC__
-# if defined(__GNUC_MINOR__) && __GNUC__ == 3 && (__GNUC_MINOR__ >= 3)
-#   error -fno-strict-aliasing needed
-# elif __GNUC__ > 3
-#   error -fno-strict-aliasing needed
-# endif
-#endif
-],[
-  GCC_EXTRA_OPT=
-  AC_MSG_RESULT(no)
-],[
-  GCC_EXTRA_OPT=-fno-strict-aliasing
-  AC_MSG_RESULT(yes)
-])
+dnl Prevent GCC from messing up Python pointer handling
+GCC_EXTRA_OPT=-fno-strict-aliasing
 
 AC_ARG_ENABLE(debug,
     [  --enable-debug          enable debug information [default=no]],
