@@ -51,12 +51,33 @@ static PyObject* Message_get_name(PyMessage * self)
     return PyString_FromString("obj");
 }
 
+
+/**
+ * Method for forcing an instance of atlas.Message into a native Python struct.
+ *
+ * This should perhaps be done in a better way though, as it makes the Python code be littered
+ * with calls to "pythonize()".
+ * @param self A Python message.
+ * @return A native python struct.
+ */
+static PyObject* Message_pythonize(PyMessage * self)
+{
+#ifndef NDEBUG
+    if (self->m_obj == NULL) {
+        PyErr_SetString(PyExc_AssertionError,"NULL MessageElement in MessageElement.pythonize");
+        return NULL;
+    }
+#endif // NDEBUG
+    return MessageElement_asPyObject(*self->m_obj);
+}
+
 /*
  * Object methods structure.
  */
 
 static PyMethodDef Message_methods[] = {
         {"get_name",    (PyCFunction)Message_get_name,  METH_NOARGS},
+        {"pythonize",   (PyCFunction)Message_pythonize,  METH_NOARGS},
         {NULL,          NULL}           /* sentinel */
 };
 
