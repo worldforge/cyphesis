@@ -4,6 +4,8 @@ AC_INIT([cyphesis],[0.6.1],[alriddoch@googlemail.com])
 AC_CONFIG_SRCDIR([server/server.cpp])
 AC_CONFIG_HEADERS([config.h])
 
+AC_CONFIG_MACRO_DIR([m4])
+
 dnl Detect the canonical host environment
 
 AC_CANONICAL_HOST
