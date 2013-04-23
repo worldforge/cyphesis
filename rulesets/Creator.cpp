@@ -20,6 +20,7 @@
 #include "Creator.h"
 
 #include "BaseMind.h"
+#include "TransientProperty.h"
 
 #include "common/BaseWorld.h"
 #include "common/log.h"
@@ -46,7 +47,10 @@ Creator::Creator(const std::string & id, long intId) :
          Character(id, intId)
 {
     debug( std::cout << "Creator::Creator" << std::endl << std::flush;);
-    setFlags(entity_ephem);
+    //Set a property rather than just setting the ephemeral flag directly. This way external entities can see that we're transient.
+    auto prop = new TransientProperty();
+    prop->set(-1);
+    setProperty("transient", prop);
 }
 
 Creator::~Creator()
