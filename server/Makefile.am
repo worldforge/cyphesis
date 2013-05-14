@@ -140,6 +140,11 @@ COMM_SOURCES = \
 		CommHttpClientFactory.cpp CommHttpClientFactory.h \
 		CommClientKit.cpp CommClientKit.h \
 		Idle.cpp Idle.h \
+		$(top_srcdir)/metaserverapi/MetaServerPacket.cpp \
+		$(top_srcdir)/metaserverapi/MetaServerPacket.hpp \
+		$(top_srcdir)/metaserverapi/MetaServerAPI.hpp \
+		$(top_srcdir)/metaserverapi/MetaServerVersion.hpp \
+		$(top_srcdir)/metaserverapi/MetaServerProtocol.hpp \
 		IdleConnector.cpp IdleConnector.h
 
 libcomm_a_SOURCES = $(COMM_SOURCES)
