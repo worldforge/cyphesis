@@ -226,10 +226,9 @@ bool predictCollision(const Location & l,  // This location
     assert(o.bBox().isValid());
 
     assert(l.velocity().isValid());
-    Vector3D notMoving(0., 0., 0.);
 
     bool oMoving = o.velocity().isValid();
-    const Vector3D & o_velocity = oMoving ? o.velocity() : notMoving;
+    const Vector3D & o_velocity = oMoving ? o.velocity() : Vector3D::ZERO();
 
     assert(o_velocity.isValid());
 
