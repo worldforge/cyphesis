@@ -342,15 +342,14 @@ class pick_up_focus(Goal):
 class wander(Goal):
     """Move in a non-specific way."""
     def __init__(self):
-        Goal.__init__(self,"wander randomly",false,[self.do_wandering])
+        Goal.__init__(self,"wander randomly",false,
+                      [move_me(None),
+                       self.do_wandering])
     def do_wandering(self, me):
-        #copied from build_home.find_place, but changed max amount to -5,5
         loc = me.location.copy()
         loc.coordinates=Point3D(map(lambda c:c+uniform(-5,5),
                                      loc.coordinates))
-        ent=Entity(me,location=loc)
-        return Operation("move",ent)
-
+        self.subgoals[0].location = loc
 
 ############################ WANDER & SEARCH ############################
 
