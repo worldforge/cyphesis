@@ -490,3 +490,24 @@ class accompany(Goal):
             #print "We must be close - stop"
             target.velocity = Vector3D(0,0,0)
         return Operation("move", Entity(me.id, location=target))
+
+############################ ROAM ####################################
+
+class roam(Goal):
+    """Move in a non-specific way within one or many locations."""
+    def __init__(self, radius, whlist):
+        Goal.__init__(self,"roam randomly",false,
+                      [move_me(None),
+                       self.do_roaming])
+        self.list = whlist
+        self.radius = radius
+        self.count = len(whlist)
+        self.vars = ["radius", "list"]
+    def do_roaming(self, me):
+        waypointName = self.list[randint(0, self.count - 1  )]
+        waypoint = me.get_knowledge("location",waypointName)
+        
+        loc = me.location.copy()
+        loc.coordinates=Point3D(map(lambda c:c+uniform(-self.radius,self.radius),
+                                     waypoint.coordinates))
+        self.subgoals[0].location = loc
