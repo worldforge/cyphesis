@@ -108,17 +108,21 @@ class Goal:
         map["name"]=name
         map["description"]=self.desc
         map["fulfilled"]=self.is_fulfilled
+        if hasattr(self, "lastProcessedGoals"):
+            map["lastProcessedGoals"] = self.lastProcessedGoals
 
-        subgoals=[]
-        for sg in self.subgoals:
-            if type(sg)!=FunctionType and type(sg)!=MethodType:
-                subgoals.append(sg.report())
-        map["subgoals"]=subgoals
+        if len(self.subgoals) > 0:
+            subgoals=[]
+            for sg in self.subgoals:
+                if type(sg)!=FunctionType and type(sg)!=MethodType:
+                    subgoals.append(sg.report())
+            map["subgoals"]=subgoals
         
-        variables={}
-        for v in self.vars:
-            variables[v]=str(getattr(self,v))
-        map["variables"]=variables
+        if len(self.vars) > 0:
+            variables={}
+            for v in self.vars:
+                variables[v]=str(getattr(self,v))
+            map["variables"]=variables
         
         if self.errors > 0:
             map["errors"]=self.errors
