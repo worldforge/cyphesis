@@ -53,12 +53,13 @@ class Goal:
         res,deb=self.check_goal_rec(me,time,0)
         if len(deb)!=0:
             deb=self.info()+"."+deb
-            # print deb
         if res!=None:
             info_ent=Entity(op=res,description=deb)
             return res+Operation("goal_info",info_ent)
     def check_goal_rec(self, me, time, depth):
-        """check (sub)goal recursively"""
+        """check (sub)goal recursively. 
+        
+        This is done by iterating over all subgoals, breaking if any subgoal returns an operation."""
         res,deb=None,""
         if self.irrelevant: return res,deb
         #is it right time range?
@@ -67,9 +68,14 @@ class Goal:
             log.thinking("\t"*depth+"GOAL: bef fulfilled: "+self.desc+" "+`self.fulfilled`)
         if self.fulfilled(me): 
             self.is_fulfilled = 1
+            if self.debug:
+                log.thinking("\t"*depth+"GOAL: is fulfilled: "+self.desc+" "+`self.fulfilled`)
             return res,deb
         else:
+            if self.debug:
+                log.thinking("\t"*depth+"GOAL: is not fulfilled: "+self.desc+" "+`self.fulfilled`)
             self.is_fulfilled = 0
+        #Iterate over all subgoals, but break if any goal returns an operation
         for sg in self.subgoals:
             if type(sg)==FunctionType or type(sg)==MethodType:
                 res=sg(me)
@@ -83,8 +89,9 @@ class Goal:
                     log.thinking("\t"*depth+"GOAL: bef sg: "+sg.desc)
                 res,deb=sg.check_goal_rec(me,time,depth+1)
                 if self.debug: 
-                    log.thinking("\t"*depth+"GOAL: aft sg: "+sg.desc+" "+str(res))
-                if len(deb)>0:
+                    log.thinking("\t"*depth+"GOAL: aft sg: "+sg.desc+", Result: "+str(res))
+                #If the subgoal generated an op, stop iterating here and return
+                if res!=None:
                     deb=sg.info()+"."+deb
                     return res,deb
         return res,deb
