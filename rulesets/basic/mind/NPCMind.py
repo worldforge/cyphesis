@@ -719,7 +719,7 @@ class NPCMind(server.Mind):
     ########## thinking (needs rewrite)
     def think(self):
         if const.debug_thinking:
-            log.thinking("think: "+str(self))
+            log.thinking("think: "+str(self.id))
         output=self.fulfill_goals(self.time)
         if output and const.debug_thinking:
             log.thinking(str(self)+" result at "+str(self.time)+": "+output[-1][0].description)
