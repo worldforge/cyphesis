@@ -78,12 +78,15 @@ class Goal:
         #Iterate over all subgoals, but break if any goal returns an operation
         for sg in self.subgoals:
             if type(sg)==FunctionType or type(sg)==MethodType:
+                if self.debug:
+                    log.thinking("\t"*depth+"GOAL: bef function: "+`sg`+" "+`res`)
                 res=sg(me)
-                if res==None:
-                    if self.debug:
-                        log.thinking("\t"*depth+"GOAL: function: "+`sg`+" "+`res`)
-                deb=sg.__name__+"()"
-                return res,deb
+                if self.debug:
+                    log.thinking("\t"*depth+"GOAL: aft function: "+`sg`+" "+`res`)
+                if res!=None:
+                    #If the function generated an op, stop iterating here and return
+                    deb=sg.__name__+"()"
+                    return res,deb
             else:
                 if self.debug:
                     log.thinking("\t"*depth+"GOAL: bef sg: "+sg.desc)
