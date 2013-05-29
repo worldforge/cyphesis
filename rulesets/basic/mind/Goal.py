@@ -50,31 +50,33 @@ class Goal:
         "executes goal, see top of file"
         if self.debug:
             log.thinking("GOAL desc: "+self.str)
-        res,deb=self.check_goal_rec(me,time,0)
-        if len(deb)!=0:
-            deb=self.info()+"."+deb
+        res,debugInfo=self.check_goal_rec(me,time,0,"")
+        if len(debugInfo)!=0:
+            #Keep a copy of the debug info for the "report" method.
+            self.lastProcessedGoals=debugInfo
         if res!=None:
-            info_ent=Entity(op=res,description=deb)
+            info_ent=Entity(op=res,description=debugInfo)
             return res+Operation("goal_info",info_ent)
-    def check_goal_rec(self, me, time, depth):
+    def check_goal_rec(self, me, time, depth, debugInfo):
         """check (sub)goal recursively. 
         
         This is done by iterating over all subgoals, breaking if any subgoal returns an operation."""
-        res,deb=None,""
-        if self.irrelevant: return res,deb
+        res=None
+        if self.irrelevant: return res,debugInfo
         #is it right time range?
-        if self.time and not time.is_now(self.time): return res,deb
+        if self.time and not time.is_now(self.time): return res,debugInfo
         if self.debug:
             log.thinking("\t"*depth+"GOAL: bef fulfilled: "+self.desc+" "+`self.fulfilled`)
         if self.fulfilled(me): 
             self.is_fulfilled = 1
             if self.debug:
                 log.thinking("\t"*depth+"GOAL: is fulfilled: "+self.desc+" "+`self.fulfilled`)
-            return res,deb
+            return res,debugInfo
         else:
             if self.debug:
                 log.thinking("\t"*depth+"GOAL: is not fulfilled: "+self.desc+" "+`self.fulfilled`)
             self.is_fulfilled = 0
+        debugInfo=debugInfo+"."+self.info()
         #Iterate over all subgoals, but break if any goal returns an operation
         for sg in self.subgoals:
             if type(sg)==FunctionType or type(sg)==MethodType:
@@ -83,21 +85,20 @@ class Goal:
                 res=sg(me)
                 if self.debug:
                     log.thinking("\t"*depth+"GOAL: aft function: "+`sg`+" "+`res`)
+                debugInfo=debugInfo+"."+sg.__name__+"()"
                 if res!=None:
                     #If the function generated an op, stop iterating here and return
-                    deb=sg.__name__+"()"
-                    return res,deb
+                    return res,debugInfo
             else:
                 if self.debug:
                     log.thinking("\t"*depth+"GOAL: bef sg: "+sg.desc)
-                res,deb=sg.check_goal_rec(me,time,depth+1)
+                res,debugInfo=sg.check_goal_rec(me,time,depth+1,debugInfo)
                 if self.debug: 
                     log.thinking("\t"*depth+"GOAL: aft sg: "+sg.desc+", Result: "+str(res))
                 #If the subgoal generated an op, stop iterating here and return
                 if res!=None:
-                    deb=sg.info()+"."+deb
-                    return res,deb
-        return res,deb
+                    return res,debugInfo
+        return res,debugInfo
     
     def report(self):
         """provides extended information about the goal,
