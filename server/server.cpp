@@ -94,7 +94,6 @@ BOOL_OPTION(useMetaserver, true, CYPHESIS, "usemetaserver",
 STRING_OPTION(mserver, "metaserver.worldforge.org", CYPHESIS, "metaserver",
               "Hostname to use as the metaserver");
 
-
 int main(int argc, char ** argv)
 {
     if (security_init() != 0) {

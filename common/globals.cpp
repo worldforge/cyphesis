@@ -54,6 +54,8 @@ std::string share_directory(DATADIR);
 std::string etc_directory(SYSCONFDIR);
 std::string var_directory(LOCALSTATEDIR);
 std::string ruleset_name(DEFAULT_RULESET);
+std::string server_uuid("");
+std::string server_key("");
 bool exit_flag = false;
 bool daemon_flag = false;
 bool database_flag = true;
