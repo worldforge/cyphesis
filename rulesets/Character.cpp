@@ -511,13 +511,13 @@ void Character::UseOperation(const Operation & op, OpVector & res)
     // Are we going to modify this really?
     EntityProperty * rhw = modPropertyClass<EntityProperty>(RIGHT_HAND_WIELD);
     if (rhw == 0) {
-        error(op, "Character::UseOp No tool wielded.", res, getId());
+        error(op, "Character::UseOp No tool wielded, no right_hand_wield property found.", res, getId());
         return;
     }
 
     LocatedEntity * tool = rhw->data().get();
     if (tool == 0) {
-        error(op, "Character::UseOp No tool wielded.", res, getId());
+        error(op, "Character::UseOp No tool wielded, no entity found.", res, getId());
         return;
     }
     // FIXME Get a tool id from the op attributes?
