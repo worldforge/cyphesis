@@ -35,6 +35,8 @@ extern std::string share_directory;
 extern std::string etc_directory;
 extern std::string var_directory;
 extern std::string ruleset_name;
+extern std::string server_uuid;
+extern std::string server_key;
 extern bool exit_flag;
 extern bool daemon_flag;
 extern bool database_flag;

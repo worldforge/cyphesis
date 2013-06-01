@@ -21,6 +21,7 @@ restricted="false"
 # Register server with the meta server
 usemetaserver="true"
 metaserver="metaserver.worldforge.org"
+msheartbeat=240
 # Run in daemon mode
 daemon="false"
 # Run at an increased nice level
@@ -41,6 +42,15 @@ dbname = "cyphesis"
 #   PeerEntry: hostname|port|server_account_username|server_account_password
 #   PeerList : "PeerEntry1 PeerEntry2 ..."
 # peers = "host|6767|server|server"
+
+# The are name, value pairs that will be registered with
+# the metaserver
+[attributes]
+# <name>.ms.worldforge.org  - must be letters, case is insensitive
+# MUST be unique, or MS will disregard value
+# server_uuid= ""
+# Key for server
+# server_key = "1d8842b253fa89ad86a2d0c967d0f7eb"
 
 [client]
 # Client specific options

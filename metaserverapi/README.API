@@ -1,0 +1,242 @@
+MetaServerAPI
+=============
+
+Notice
+------
+This API should not be modified.  The canonical source is:
+https://github.com/worldforge/metaserver-ng
+
+Files
+-----
+MetaServerAPI.hpp
+	The main and only include.
+	
+MetaServerVersion.hpp	
+	Contains build information about MetaServer that API was 
+        generated against.
+
+MetaServerProtocol.hpp
+	Definition of the protocol for communications (much is duplicated here)
+	
+MetaServerPacket.hpp    
+MetaServerPacket.cpp  
+	Definition and implementation for the MSP
+
+Packet Protocl Details
+----------------------
+NMT_NULL
+   Description: empty packet
+   Type Size: 4 bytes
+   Value: 0
+   Payload Size: 0
+   Note: While this is technically a valid packet it has no 
+         practical use.
+
+NMT_SERVERKEEPALIVE
+   Description: A game server keep-alive packet, part 1 of a 3-packet handshake
+   Type Size: 4 bytes
+   Value: 1 ( 00 00 00 01 )
+   Payload Size: 0
+
+NMT_CLIENTKEEPALIVE
+   Description: The game client keep-alive packet, part 1 of 3-packet handshake
+   Type Size: 4 bytes
+   Value: 2 ( 00 00 00 02 )
+   Payload Size: 0
+
+NMT_HANDSHAKE
+   Description: The metaserver response to a SERVERKEEPALIVE or 
+                CLIENTKEEPALIVE, part 2 of 3-packet handshake
+                Contains a random number.
+   Type Size: 4 bytes
+   Value: 3 ( 00 00 00 03 )
+   Payload Size: 4 bytes ( a random int )
+
+NMT_SERVERSHAKE
+   Description: The game server response to a HANDSHAKE, part 3 of 
+                3-packet handshake.  Triggers a new game server sesssion 
+                to be created, or updated.
+   Type Size: 4 bytes
+   Value: 4 ( 00 00 00 04 )
+   Payload Size: 4 bytes ( random int )
+
+NMT_CLIENTSHAKE
+   Description: The game client response to a HANDSHAKE, part 3 of a 
+                3-packet handshake
+   Type Size: 4 bytes
+   Value: 5 ( 00 00 00 05 )
+   Payload Size: 4 bytes ( random int )
+
+NMT_TERMINATE
+   Description: The game client or server can terminate it's session
+                by sending this.
+   Type Size: 4 bytes
+   Value: 6 ( 00 00 00 06 )
+   Payload Size: 0
+
+NMT_LISTREQ
+   Description: A client request to give a list of servers
+   Type Size: 4 bytes
+   Value: 7 ( 00 00 00 07 )
+   Payload Size: 4 bytes ( int of the offset )
+   Note: The offset value in case that a single LISTRESP is not
+         enough, this offset allows a request starting at a 
+         specific point in the list.
+
+NMT_LISTRESP
+   Description: The metaserver response with the values of IPs.
+   Type Size: 4 bytes
+   Value: 8 ( 00 00 00 08 )
+   Payload Size: Variable
+      4 bytes - int total servers sent
+      4 bytes - int packed servers sent
+      4 bytes - a 4 byte block representing EACH IP of the servers.  
+                So if packed was set to 6, this block would be 24 bytes long.
+   Note: If you have 10 servers, and only 5 fit into the packet, then
+         you would send total server == 10, and packed == 5.  The client
+         would then send a new request with the offset of 5, and a secondary
+         LISTRESP would be packed and sent.  The client would be
+         responsible for assembling this information.
+
+NMT_PROTO_ERANGE
+   Description: Used to indicate requesting LISTREQ is out of bounds.
+   Type Size: 4 bytes
+   Value: 9 ( 00 00 00 09 )
+   Payload Size: 0
+   Note: Obsolete.
+
+NMT_LAST
+   Description: Unknown
+   Type Size: 4 bytes
+   Value: 10 ( 00 00 00 0A )
+   Payload Size: 0
+   Note: Obsolete.
+
+NMT_SERVERATTR
+   Description: Register a name, value pair against the session.
+   Type Size: 4 bytes
+   Value: 11 ( 00 00 00 0B )
+   Payload Size: Variable
+      4 bytes - int size of the name
+      4 bytes - int size of the value
+      n bytes - concatination of both name + value strings 
+
+      E.g. 'foo=bar'
+           3 - size of name
+           3 - size of value
+           6 - 'foobar' size of concat
+
+NMT_CLIENTATTR
+   Description: Register a name value pair against a client session
+   Type Size: 4 bytes
+   Value: 12 ( 00 00 00 0C )
+   Payload Size: Variable
+   Note: exactly same symantic as SERVERATTR
+
+NMT_CLIENTFILTER
+   Description: Setup client filter, as a name, value pair
+   Type Size: 4 bytes
+   Value 13 ( 00 00 00 0D )
+   Payload Size: Variable.  Same as SERVERATTR
+   Note: TBD, not in use
+
+NMT_ATTRRESP
+   Description: Attribute response
+   Type Size: 4 bytes
+   Value: 14 ( 00 00 00 0E )
+   Note: TBD, not in use.
+
+NMT_SERVERCLEAR
+   Description: clears all attributes against this session
+   Type Size: 4 bytes
+   Value: 15 ( 00 00 00 0F )
+
+NMT_CLIENTCLEAR
+   Description: clears all attributes against this session
+   Type Size: 4 bytes
+   Value: 16 ( 00 00 00 10 )
+
+NMT_MONITOR
+   Description: interface to request internals
+   Type Size: 4 bytes
+   Value: 21 ( 00 00 00 15 )
+   Note: TBD, not implemented
+
+NMT_ADMIN
+   Description: interface into effect change in metaserver
+   Type Size: 4 bytes
+   Value: 25 ( 00 00 00 19 )
+   Note: TBD, not implemented
+
+NMT_DNSREQ
+   Description: Non-authenticated query in order find the queried server
+   Type Size: 4 bytes
+   Value: 32 ( 00 00 00 20 )
+   Payload Size: Variable
+      4 bytes - int size of the string
+      n bytes - 4 bytes per n
+
+   Note: response to this is going to be a dnsresp, almost identical to 
+         listresp.
+
+NMT_DNSRESP
+   Description: packed response to a dnsreq
+   Type Size: 4 bytes
+   Value: 33 ( 00 00 00 21 )
+   Payload Size: Variable
+      4 bytes - total server sent
+      4 bytes - packed server sent
+      4 bytes - length of string, one for each packed server, so 3 
+                servers, has 12 (4*3) int bytes
+      n bytes - entire concatenated msg that will be sum of the size 
+                of all packed server lengths
+
+      E.g: 33 05 05 06 04 07 07 04 foobarwaka1.2.3.4a.b.c.dtest
+
+    	33 (4) - for packet type
+    	05 (4) - int total server count
+    	05 (4) - int packed server count
+    	06 (4) - length of resp 1
+    	04 (4) - length 0f resp 2
+    	07 (4) - length of resp 3
+    	07 (4) - length of resp 4
+    	04 (4) - length of resp 5
+    	foo(28) - message
+    			  (6) foobar - server 1
+    			  (4) waka   - server 2
+    			  (7) 1.2.3.4 - server 3
+    			  (7) a.b.c.d - server 4
+    			  (4) test    - server 5
+    	Total: 32 + 28 == 60 bytes ( plus about 12 bytes overhead )
+
+    	Reasonably likely to fit 10 responses or so per packet, it's a bit heavier that the listresp
+    	because it's parsing IPs as strings ... so rather than 1.2.3.4 becoming 4 bytes, it's now
+    	7 ... and 123.123.123.123 is 15 bytes, instead of 4.
+
+Sample Use Cases
+----------------
+
+Use Case 1: Server Registration or Keep-alive.  Only servers with 
+            sessions can perform additional requests, such as attribute 
+            registration/removal.
+
+    	1) Game Server sends a NMT_SERVERKEEPALIVE
+    	2) MS responds with a NMT_HANDSHAKE, contains a random number, 
+           creates a handshake
+    	3) Game Server responds with NMT_SERVERSHAKE, contains same random 
+           number AND handshake exists, creates session ( if session exists, 
+           expiry time is adjusted/renewed )
+
+Use Case 2: Game Server Shutdown / Quit
+    	1) Game Server sends a NMT_TERMINATE, if session exists, it is removed.
+
+Use Case 3: Client Registration or Keep-alive.  Only clients with sessions 
+            can perform additional requests, such as LIST, FILTER, etc.
+
+    	1) Game Client sends a NMT_CLIENTKEEPALIVE
+    	2) MS responds with a NMT_HANDSHAKE, contains random number, 
+           creates a handshake
+    	3) Game Client responds with NMT_CLIENTSHAKE, contains same random 
+           number AND handshake exists, creates a client session ( if session 
+           exists, expiry time is adjusted ).
+

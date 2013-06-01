@@ -25,6 +25,7 @@
 #include "common/CommSocket.h"
 
 #include <string>
+#include <map>
 
 #include <skstream/skstream.h>
 
@@ -44,11 +45,19 @@ class CommMetaClient : public CommSocket, virtual public Idle {
     /// The last time a packet was sent to the metaserver.
     time_t m_lastTime;
 
+    /// The interval between refreshing handshaking with ms
+    int m_heartbeatTime;
+
     /// Port number used to talk to the metaserver.
     static const int m_metaserverPort = 8453;
 
     /// State of the client code.
-    enum { META_INIT, META_RESOLVED } m_state;
+    bool m_connected;
+    bool m_active;
+    bool m_attributes;
+
+    /// List of attributes to register with the metaserver
+    std::map<std::string,std::string> m_serverAttributes;
 
   public:
     explicit CommMetaClient(CommServer & svr);
@@ -58,6 +67,7 @@ class CommMetaClient : public CommSocket, virtual public Idle {
     void metaserverKeepalive();
     void metaserverReply();
     void metaserverTerminate();
+    void metaserverAttribute(const std::string & k, const std::string & v );
 
     int setup(const std::string &);
 
