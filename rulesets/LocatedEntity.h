@@ -24,6 +24,8 @@
 
 #include "common/Property.h"
 #include "common/Router.h"
+#include "common/log.h"
+#include "common/compose.hpp"
 
 #include <sigc++/signal.h>
 
@@ -263,6 +265,11 @@ class LocatedEntity : public Router {
         PropertyT * sp = 0;
         if (p != 0) {
             sp = dynamic_cast<PropertyT *>(p);
+            //Assert that the stored property is of the correct type. If not,
+            //it needs to be installed into CorePropertyManager.
+            //We want to do this here, because allowing for properties to be
+            //installed of the wrong type brings instability to the system.
+            assert(sp);
         }
         if (sp == 0) {
             // If it is not of the right type, delete it and a new
@@ -270,6 +277,11 @@ class LocatedEntity : public Router {
             m_properties[name] = sp = new PropertyT;
             sp->install(this, name);
             if (p != 0) {
+                log(WARNING, String::compose("Property %1 on entity with id %2 "
+                        "reinstalled with new class."
+                        "This might cause instability. Make sure that all "
+                        "properties are properly installed in "
+                        "CorePropertyManager.", name, getId()));
                 Atlas::Message::Element val;
                 if (p->get(val)) {
                     sp->set(val);
