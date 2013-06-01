@@ -128,18 +128,6 @@ Boost.])
     ]
 )
 
-# The AX_BOOST_BASE doesn't seem to actually include any boost stuff
-# I think maybe it was just the precursor to boost inclusion, but never
-# fully was included?  I know for sure that at the very least the LD
-# flags for boost were never included
-AC_CHECK_LIB(boost_system, main, , [
-        AC_MSG_ERROR("Linking against boost::system library failed.")
-])
-
-AC_CHECK_LIB(boost_date_time, main, , [
-        AC_MSG_ERROR("Linking against boost::date_time library failed.")
-])
-
 AC_MSG_CHECKING([whether we should link to MacOS-X frameworks])
 AC_COMPILE_IFELSE(
     [
