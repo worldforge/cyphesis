@@ -40,6 +40,8 @@
 #include "rulesets/AreaProperty.h"
 #include "rulesets/VisibilityProperty.h"
 #include "rulesets/SuspendedProperty.h"
+#include "rulesets/TasksProperty.h"
+#include "rulesets/EntityProperty.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
@@ -115,6 +117,10 @@ CorePropertyManager::CorePropertyManager()
     installProperty<TerrainModProperty>("terrainmod", "map");
     installProperty<TeleportProperty>("linked", "string");
     installProperty<SuspendedProperty>("suspended", "int");
+    installProperty<TasksProperty>("tasks", "map");
+    installProperty<EntityProperty>("right_hand_wield", "string");
+
+
 }
 
 CorePropertyManager::~CorePropertyManager()
