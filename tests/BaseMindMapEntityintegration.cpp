@@ -53,6 +53,7 @@ class BaseMindMapEntityintegration : public Cyphesis::TestBase
     void test_MemMapdel_edge();
     void test_MemMapreadEntity_noloc();
     void test_MemMapreadEntity_changeloc();
+    void test_MemMapaddEntity_props();
     void test_MemMapcheck();
 };
 
@@ -63,6 +64,7 @@ BaseMindMapEntityintegration::BaseMindMapEntityintegration()
     ADD_TEST(BaseMindMapEntityintegration::test_MemMapdel_edge);
     ADD_TEST(BaseMindMapEntityintegration::test_MemMapreadEntity_noloc);
     ADD_TEST(BaseMindMapEntityintegration::test_MemMapreadEntity_changeloc);
+    ADD_TEST(BaseMindMapEntityintegration::test_MemMapaddEntity_props);
     ADD_TEST(BaseMindMapEntityintegration::test_MemMapcheck);
 }
 
@@ -230,6 +232,28 @@ void BaseMindMapEntityintegration::test_MemMapreadEntity_changeloc()
     ASSERT_TRUE(e2->m_contains->find(e3) == e2->m_contains->end());
     ASSERT_TRUE(tlve->m_contains->find(e3) != tlve->m_contains->end());
 }
+
+void BaseMindMapEntityintegration::test_MemMapaddEntity_props()
+{
+
+    MemEntity * tlve = new MemEntity("0", 0);
+
+    Location location(tlve);
+    BBox bbox(WFMath::Point<3>(1,2,3), WFMath::Point<3>(4,5,6));
+    location.setBBox(bbox);
+
+
+    Atlas::Objects::Entity::Anonymous args;
+    location.addToEntity(args);
+    args->setAttr("id", "0");
+
+    m_mind->m_map.updateAdd(args, 1.0f);
+    MemEntity* ent = m_mind->m_map.get("0");
+    ASSERT_EQUAL("0", ent->getId());
+    ASSERT_EQUAL(bbox, ent->m_location.m_bBox);
+
+}
+
 
 void BaseMindMapEntityintegration::test_MemMapcheck()
 {
@@ -446,15 +470,6 @@ void Script::hook(const std::string & function, LocatedEntity * entity)
 {
 }
 
-Location::Location() : m_loc(0)
-{
-}
-
-int Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent)
-{
-    return 0;
-}
-
 DateTime::DateTime(int t)
 {
 }
@@ -494,3 +509,44 @@ WFMath::CoordType squareDistance(const Point3D & u, const Point3D & v)
 {
     return (sqr(u.x() - v.x()) + sqr(u.y() - v.y()) + sqr(u.z() - v.z()));
 }
+
+void addToEntity(const Point3D & p, std::vector<double> & vd)
+{
+}
+
+void addToEntity(const Vector3D & v, std::vector<double> & vd)
+{
+}
+
+template <>
+int fromStdVector<double>(Point3D & p, const std::vector<double> & vf)
+{
+    if (vf.size() != 3) {
+        return -1;
+    }
+    p[0] = vf[0];
+    p[1] = vf[1];
+    p[2] = vf[2];
+    p.setValid();
+    return 0;
+}
+
+template <>
+int fromStdVector<double>(Vector3D & v, const std::vector<double> & vf)
+{
+    if (vf.size() != 3) {
+        return -1;
+    }
+    v[0] = vf[0];
+    v[1] = vf[1];
+    v[2] = vf[2];
+    v.setValid();
+    return 0;
+}
+
+WFMath::CoordType sqrMag(const Point3D & p) {
+    return 0;
+}
+
+
+

@@ -1050,7 +1050,8 @@ BaseMindMapEntityintegration_SOURCES = BaseMindMapEntityintegration.cpp
 BaseMindMapEntityintegration_LDADD = \
         $(top_builddir)/rulesets/BaseMind.o \
         $(top_builddir)/rulesets/MemEntity.o \
-        $(top_builddir)/rulesets/MemMap.o
+        $(top_builddir)/rulesets/MemMap.o \
+        $(top_builddir)/modules/Location.o
 
 AreaPropertyintegration_SOURCES = AreaPropertyintegration.cpp
 AreaPropertyintegration_LDADD = \
