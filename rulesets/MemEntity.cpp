@@ -18,6 +18,10 @@
 // $Id$
 
 #include "MemEntity.h"
+#include "rulesets/BBoxProperty.h"
+#include "rulesets/SolidProperty.h"
+#include "rulesets/InternalProperties.h"
+
 
 static const bool debug_flag = false;
 
@@ -65,4 +69,32 @@ void MemEntity::destroy()
              }
          }
      }
+}
+
+PropertyBase * MemEntity::setAttr(const std::string & name, const Atlas::Message::Element & attr)
+{
+    PropertyDict::const_iterator I = m_properties.find(name);
+    if (I != m_properties.end()) {
+        I->second->set(attr);
+        I->second->apply(this);
+        return I->second;
+    }
+    //Check if the property changed is any one of those that will alter the location,
+    //and if so use those. This makes sure that the m_location data is correct.
+    //Note that we can't use the PropertyManager for this, since it's a singleton for the whole
+    //system. If MemEntity was completely decoupled from Entity it would be possible though.
+    PropertyBase* prop;
+    if (name == "bbox") {
+        prop = new BBoxProperty();
+    } else if (name == "solid") {
+        prop = new SolidProperty();
+    } else if (name == "simple") {
+        prop = new SimpleProperty();
+    } else {
+        prop = new SoftProperty(attr);
+    }
+    prop->install(this, name);
+    prop->set(attr);
+    prop->apply(this);
+    return m_properties[name] = prop;
 }
