@@ -39,7 +39,6 @@ BBoxProperty::BBoxProperty()
 void BBoxProperty::apply(LocatedEntity * ent)
 {
     ent->m_location.setBBox(m_data);
-    ent->m_location.modifyBBox();
 }
 
 int BBoxProperty::get(Element & val) const
