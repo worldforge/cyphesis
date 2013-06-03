@@ -53,7 +53,7 @@ class BaseMindMapEntityintegration : public Cyphesis::TestBase
     void test_MemMapdel_edge();
     void test_MemMapreadEntity_noloc();
     void test_MemMapreadEntity_changeloc();
-    void test_MemMapaddEntity_props();
+    void test_MemMap_updateAdd_location_properties_have_effect();
     void test_MemMapcheck();
 };
 
@@ -64,7 +64,7 @@ BaseMindMapEntityintegration::BaseMindMapEntityintegration()
     ADD_TEST(BaseMindMapEntityintegration::test_MemMapdel_edge);
     ADD_TEST(BaseMindMapEntityintegration::test_MemMapreadEntity_noloc);
     ADD_TEST(BaseMindMapEntityintegration::test_MemMapreadEntity_changeloc);
-    ADD_TEST(BaseMindMapEntityintegration::test_MemMapaddEntity_props);
+    ADD_TEST(BaseMindMapEntityintegration::test_MemMap_updateAdd_location_properties_have_effect);
     ADD_TEST(BaseMindMapEntityintegration::test_MemMapcheck);
 }
 
@@ -233,7 +233,7 @@ void BaseMindMapEntityintegration::test_MemMapreadEntity_changeloc()
     ASSERT_TRUE(tlve->m_contains->find(e3) != tlve->m_contains->end());
 }
 
-void BaseMindMapEntityintegration::test_MemMapaddEntity_props()
+void BaseMindMapEntityintegration::test_MemMap_updateAdd_location_properties_have_effect()
 {
 
     MemEntity * tlve = new MemEntity("0", 0);
@@ -243,14 +243,35 @@ void BaseMindMapEntityintegration::test_MemMapaddEntity_props()
     location.setBBox(bbox);
 
 
-    Atlas::Objects::Entity::Anonymous args;
-    location.addToEntity(args);
-    args->setAttr("id", "0");
+    {
+        Atlas::Objects::Entity::Anonymous args;
+        location.addToEntity(args);
+        args->setAttr("id", "0");
+        m_mind->m_map.updateAdd(args, 1.0f);
+    }
 
-    m_mind->m_map.updateAdd(args, 1.0f);
     MemEntity* ent = m_mind->m_map.get("0");
     ASSERT_EQUAL("0", ent->getId());
     ASSERT_EQUAL(bbox, ent->m_location.m_bBox);
+    ASSERT_TRUE(ent->m_location.isSolid());
+    ASSERT_TRUE(ent->m_location.isSimple());
+
+
+    BBox bbox2(WFMath::Point<3>(10,20,30), WFMath::Point<3>(40,50,60));
+    location.setBBox(bbox2);
+    {
+        Atlas::Objects::Entity::Anonymous args;
+        location.addToEntity(args);
+        args->setAttr("id", "0");
+        args->setAttr("solid", 0);
+        args->setAttr("simple", 0);
+        m_mind->m_map.updateAdd(args, 2.0f);
+    }
+
+    ent = m_mind->m_map.get("0");
+    ASSERT_EQUAL(bbox2, ent->m_location.m_bBox);
+    ASSERT_TRUE(!ent->m_location.isSolid());
+    ASSERT_TRUE(!ent->m_location.isSimple());
 
 }
 
@@ -413,6 +434,10 @@ void LocatedEntity::makeContainer()
 
 void LocatedEntity::merge(const Atlas::Message::MapType & ent)
 {
+    for (auto I : ent) {
+        const std::string & key = I.first;
+        setAttr(key, I.second);
+    }
 }
 
 Router::Router(const std::string & id, long intId) : m_id(id), m_intId(intId)

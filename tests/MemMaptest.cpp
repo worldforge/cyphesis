@@ -412,6 +412,12 @@ void MemEntity::destroy()
 {
 }
 
+PropertyBase * MemEntity::setAttr(const std::string & name, const Atlas::Message::Element & attr)
+{
+    return 0;
+}
+
+
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),
                m_refCount(0), m_seq(0),

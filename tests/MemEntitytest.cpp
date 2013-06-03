@@ -25,6 +25,9 @@
 #endif
 
 #include "rulesets/MemEntity.h"
+#include "rulesets/BBoxProperty.h"
+#include "rulesets/SolidProperty.h"
+#include "rulesets/InternalProperties.h"
 
 #include <cassert>
 
@@ -134,4 +137,118 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 
 Location::Location() : m_loc(0)
 {
+}
+
+PropertyBase::PropertyBase(unsigned int){}
+PropertyBase::~PropertyBase(){}
+BBoxProperty::BBoxProperty(){}
+
+int BBoxProperty::get(Atlas::Message::Element & ent) const
+{
+    return 0;
+}
+
+void BBoxProperty::set(const Atlas::Message::Element & ent)
+{
+}
+
+BBoxProperty * BBoxProperty::copy() const
+{
+    return 0;
+}
+
+void BBoxProperty::apply(LocatedEntity * owner)
+{
+}
+
+void BBoxProperty::add(const std::string & key,
+                       Atlas::Message::MapType & map) const
+{
+}
+
+void BBoxProperty::add(const std::string & key,
+                       const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+SimpleProperty::SimpleProperty(){}
+
+int SimpleProperty::get(Atlas::Message::Element & ent) const
+{
+    return 0;
+}
+
+void SimpleProperty::set(const Atlas::Message::Element & ent)
+{
+}
+
+SimpleProperty * SimpleProperty::copy() const
+{
+    return 0;
+}
+
+void SimpleProperty::apply(LocatedEntity * owner)
+{
+}
+
+SolidProperty::SolidProperty(){}
+
+int SolidProperty::get(Atlas::Message::Element & ent) const
+{
+    return 0;
+}
+
+void SolidProperty::set(const Atlas::Message::Element & ent)
+{
+}
+
+SolidProperty * SolidProperty::copy() const
+{
+    return 0;
+}
+
+void SolidProperty::apply(LocatedEntity * owner)
+{
+}
+
+
+SoftProperty::SoftProperty(Atlas::Message::Element const&){}
+
+int SoftProperty::get(Atlas::Message::Element & ent) const
+{
+    return 0;
+}
+
+void SoftProperty::set(const Atlas::Message::Element & ent)
+{
+}
+
+SoftProperty * SoftProperty::copy() const
+{
+    return 0;
+}
+
+void PropertyBase::install(LocatedEntity *, const std::string & name)
+{
+}
+
+void PropertyBase::apply(LocatedEntity *)
+{
+}
+
+void PropertyBase::add(const std::string & s,
+                       Atlas::Message::MapType & ent) const
+{
+}
+
+void PropertyBase::add(const std::string & s,
+                       const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+HandlerResult PropertyBase::operation(LocatedEntity *,
+                                      const Operation &,
+                                      OpVector & res)
+{
+    return OPERATION_IGNORED;
 }
