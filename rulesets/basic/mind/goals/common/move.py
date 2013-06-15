@@ -252,7 +252,13 @@ class move_me_to_focus(Goal):
             if thing == None:
                 me.remove_knowledge('focus', what)
                 continue
-            if square_horizontal_distance(me.location, thing.location) < 4:
+            
+            #Only move to the edge of the entity, since else we'll just collide with it.
+            #TODO: Make this check better, taking into account the real collision volume, rotated and all.
+            bbox_size = thing.location.bbox.square_horizontal_bounding_radius()
+            #TODO: Add a check for solid and non solid entities.
+            #When moving to a non solid entity, we should try to get at its center.
+            if square_horizontal_distance(me.location, thing.location) < (4 + bbox_size):
                 return 1
         return 0
 

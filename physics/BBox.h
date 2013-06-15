@@ -38,6 +38,7 @@ inline WFMath::CoordType boxSize(const BBox & box)
 }
 
 WFMath::CoordType boxSquareBoundingRadius(const BBox & box);
+WFMath::CoordType boxSquareHorizontalBoundingRadius(const BBox & box);
 
 inline WFMath::CoordType boxBoundingRadius(const BBox & box)
 {

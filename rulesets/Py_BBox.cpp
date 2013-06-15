@@ -34,6 +34,16 @@ static PyObject * BBox_sqr_bounding_radius(PyBBox * self)
     return PyFloat_FromDouble(square_radius);
 }
 
+static PyObject * BBox_sqr_horizontal_bounding_radius(PyBBox * self)
+{
+    float square_radius = 0;
+    if (self->box.isValid()) {
+        square_radius = boxSquareHorizontalBoundingRadius(self->box);
+    }
+    return PyFloat_FromDouble(square_radius);
+}
+
+
 static PyObject * BBox_as_sequence(PyBBox * self)
 {
     PyObject * res = PyList_New(6);
@@ -51,6 +61,7 @@ static PyObject * BBox_as_sequence(PyBBox * self)
 
 static PyMethodDef BBox_methods[] = {
     {"square_bounding_radius", (PyCFunction)BBox_sqr_bounding_radius, METH_NOARGS},
+    {"square_horizontal_bounding_radius", (PyCFunction)BBox_sqr_horizontal_bounding_radius, METH_NOARGS},
     {"as_sequence",            (PyCFunction)BBox_as_sequence,     METH_NOARGS},
     {NULL, NULL}  // sentinel
 };

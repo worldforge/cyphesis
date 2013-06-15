@@ -40,7 +40,19 @@ static WFMath::CoordType sqrMag(const WFMath::Point<3> & p)
     return p.x() * p.x() + p.y() * p.y() + p.z() * p.z();
 }
 
+static WFMath::CoordType sqrMag(const WFMath::Point<2> & p)
+{
+    return p.x() * p.x() + p.y() * p.y();
+}
+
 WFMath::CoordType boxSquareBoundingRadius(const BBox & box)
 {
     return std::max(sqrMag(box.lowCorner()), sqrMag(box.highCorner()));
 }
+
+WFMath::CoordType boxSquareHorizontalBoundingRadius(const BBox & box)
+{
+    return std::max(sqrMag(WFMath::Point<2>(box.lowCorner().x(), box.lowCorner().y())),
+            sqrMag(WFMath::Point<2>(box.highCorner().x(), box.highCorner().y())));
+}
+
