@@ -71,6 +71,7 @@ class StorageManager {
 
     void entityInserted(LocatedEntity *);
     void entityUpdated(LocatedEntity *);
+    void entityContainered(const LocatedEntity *oldLocation, LocatedEntity *entity);
 
     void encodeProperty(PropertyBase *, std::string &);
     void restoreProperties(LocatedEntity *);

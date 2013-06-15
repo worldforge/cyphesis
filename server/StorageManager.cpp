@@ -109,6 +109,7 @@ void StorageManager::entityInserted(LocatedEntity * ent)
         // signal will be connected later once the initial database insert
         // has been done.
         ent->updated.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityUpdated), ent));
+        ent->containered.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityContainered), ent));
         return;
     }
     // Queue the entity to be inserted into the persistence tables.
@@ -133,6 +134,11 @@ void StorageManager::entityUpdated(LocatedEntity * ent)
     m_dirtyEntities.push_back(EntityRef(ent));
     // std::cout << "Updated fired " << ent->getId() << std::endl << std::flush;
     ent->setFlags(entity_queued);
+}
+
+void StorageManager::entityContainered(const LocatedEntity *oldLocation, LocatedEntity *entity)
+{
+    entityUpdated(entity);
 }
 
 void StorageManager::encodeProperty(PropertyBase * prop, std::string & store)
@@ -305,6 +311,8 @@ void StorageManager::insertEntity(LocatedEntity * ent)
     ent->resetFlags(entity_queued);
     ent->setFlags(entity_clean | entity_pos_clean | entity_orient_clean);
     ent->updated.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityUpdated), ent));
+    ent->containered.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityContainered), ent));
+
 }
 
 void StorageManager::updateEntity(LocatedEntity * ent)
