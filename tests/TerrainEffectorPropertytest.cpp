@@ -281,7 +281,7 @@ PropertyBase * Entity::setProperty(const std::string & name,
     return m_properties[name] = prop;
 }
 
-void Entity::onContainered()
+void Entity::onContainered(const LocatedEntity*)
 {
 }
 
@@ -357,7 +357,7 @@ void LocatedEntity::sendWorld(const Operation & op)
 {
 }
 
-void LocatedEntity::onContainered()
+void LocatedEntity::onContainered(const LocatedEntity*)
 {
 }
 

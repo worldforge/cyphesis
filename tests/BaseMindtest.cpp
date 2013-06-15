@@ -390,7 +390,7 @@ void LocatedEntity::sendWorld(const Operation & op)
 {
 }
 
-void LocatedEntity::onContainered()
+void LocatedEntity::onContainered(const LocatedEntity*)
 {
 }
 

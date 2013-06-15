@@ -55,6 +55,7 @@
 #include <Atlas/Objects/Anonymous.h>
 
 #include <sigc++/functors/mem_fun.h>
+#include <sigc++/adaptors/hide.h>
 
 #include <cassert>
 
@@ -760,7 +761,7 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         rhw->data() = EntityRef(item);
         rhw->setFlags(flag_unsent);
 
-        item->containered.connect(sigc::mem_fun(this, &Character::wieldDropped));
+        item->containered.connect(sigc::hide<0>(sigc::mem_fun(this, &Character::wieldDropped)));
 
         debug(std::cout << "Wielding " << item->getId() << std::endl << std::flush;);
     }

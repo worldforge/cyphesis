@@ -187,7 +187,7 @@ class LocatedEntity : public Router {
 
     virtual void installDelegate(int, const std::string &);
 
-    virtual void onContainered();
+    virtual void onContainered(const LocatedEntity* oldLocation);
     virtual void onUpdated();
 
     virtual void destroy() = 0;
@@ -298,8 +298,9 @@ class LocatedEntity : public Router {
     /// Signal indicating that this entity has been changed
     sigc::signal<void> updated;
 
-    /// Single shot signal indicating that this entity has changed its LOC
-    sigc::signal<void> containered;
+    /// Signal indicating that this entity has changed its LOC.
+    /// First parameter is the old location.
+    sigc::signal<void, const LocatedEntity*> containered;
 
     /// \brief Signal emitted when this entity is removed from the server
     ///

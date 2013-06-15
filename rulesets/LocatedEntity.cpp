@@ -191,7 +191,7 @@ void LocatedEntity::installDelegate(int, const std::string &)
 
 /// \brief Called when the container of this entity changes.
 ///
-void LocatedEntity::onContainered()
+void LocatedEntity::onContainered(const LocatedEntity * new_loc)
 {
 }
 
@@ -261,12 +261,13 @@ void LocatedEntity::changeContainer(LocatedEntity * new_loc)
         new_loc->onUpdated();
     }
     assert(m_location.m_loc->checkRef() > 0);
-    m_location.m_loc->decRef();
+    LocatedEntity* oldLoc = m_location.m_loc;
     m_location.m_loc = new_loc;
     m_location.m_loc->incRef();
     assert(m_location.m_loc->checkRef() > 0);
 
-    onContainered();
+    onContainered(oldLoc);
+    oldLoc->decRef();
 }
 
 /// \brief Read attributes from an Atlas element

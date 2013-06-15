@@ -481,11 +481,9 @@ void Entity::callOperation(const Operation & op, OpVector & res)
     OP_SWITCH(op, op_no, res,)
 }
 
-void Entity::onContainered()
+void Entity::onContainered(const LocatedEntity* oldLocation)
 {
-    containered.emit();
-
-    containered.clear();
+    containered.emit(oldLocation);
 }
 
 void Entity::onUpdated()

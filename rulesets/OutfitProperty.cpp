@@ -29,6 +29,7 @@
 #include <Atlas/Objects/Anonymous.h>
 
 #include <sigc++/adaptors/bind.h>
+#include <sigc++/adaptors/hide.h>
 #include <sigc++/functors/mem_fun.h>
 
 #include <iostream>
@@ -184,7 +185,7 @@ void OutfitProperty::wear(LocatedEntity * wearer,
     // get triggered, thus removing it, otherwise the calls accumulate.
     // We still will get informed of the garments destruction, for all
     // eternity.
-    garment->containered.connect(sigc::bind(sigc::mem_fun(this, &OutfitProperty::itemRemoved), garment, wearer));
+    garment->containered.connect(sigc::bind(sigc::hide<0>(sigc::mem_fun(this, &OutfitProperty::itemRemoved)), garment, wearer));
     garment->destroyed.connect(sigc::bind(sigc::mem_fun(this, &OutfitProperty::itemRemoved), garment, wearer));
 }
 

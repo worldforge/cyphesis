@@ -292,7 +292,7 @@ void Entity::sendWorld(const Operation & op)
 {
 }
 
-void Entity::onContainered()
+void Entity::onContainered(const LocatedEntity*)
 {
 }
 
@@ -368,7 +368,7 @@ void LocatedEntity::sendWorld(const Operation & op)
 {
 }
 
-void LocatedEntity::onContainered()
+void LocatedEntity::onContainered(const LocatedEntity*)
 {
 }
 

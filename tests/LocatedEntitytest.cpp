@@ -88,7 +88,7 @@ void LocatedEntitytest::test_coverage()
     // Installing a second one should delete the first.
     m_entity->setScript(new Script());
 
-    m_entity->onContainered();
+    m_entity->onContainered(nullptr);
     m_entity->onUpdated();
 
     EntityExerciser ee(*m_entity);

@@ -346,7 +346,7 @@ void Entity::sendWorld(const Operation & op)
 {
 }
 
-void Entity::onContainered()
+void Entity::onContainered(const LocatedEntity*)
 {
 }
 
@@ -427,7 +427,7 @@ void LocatedEntity::sendWorld(const Operation & op)
 {
 }
 
-void LocatedEntity::onContainered()
+void LocatedEntity::onContainered(const LocatedEntity*)
 {
 }
 
@@ -457,12 +457,13 @@ void LocatedEntity::changeContainer(LocatedEntity * new_loc)
         new_loc->onUpdated();
     }
     assert(m_location.m_loc->checkRef() > 0);
-    m_location.m_loc->decRef();
+    LocatedEntity* oldLoc = m_location.m_loc;
     m_location.m_loc = new_loc;
     m_location.m_loc->incRef();
     assert(m_location.m_loc->checkRef() > 0);
 
-    onContainered();
+    onContainered(oldLoc);
+    oldLoc->decRef();
 }
 
 void LocatedEntity::merge(const MapType & ent)

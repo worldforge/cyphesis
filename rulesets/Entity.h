@@ -98,7 +98,7 @@ class Entity : public LocatedEntity {
 
     virtual void installDelegate(int, const std::string &);
 
-    virtual void onContainered();
+    virtual void onContainered(const LocatedEntity* oldLocation);
     virtual void onUpdated();
 
     virtual void destroy();

@@ -503,7 +503,7 @@ PropertyBase * Entity::modProperty(const std::string & name)
     return 0;
 }
 
-void Entity::onContainered()
+void Entity::onContainered(const LocatedEntity*)
 {
 }
 
@@ -555,7 +555,7 @@ const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
     return 0;
 }
 
-void LocatedEntity::onContainered()
+void LocatedEntity::onContainered(const LocatedEntity*)
 {
 }
 
