@@ -1201,6 +1201,7 @@ int Database::replaceThoughts(const std::string & id,
                                           " VALUES (%1, '%2')", id, thought);
         scheduleCommand(insertQuery);
     }
+    return 0;
 }
 
 #if 0
