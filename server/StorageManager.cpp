@@ -317,9 +317,17 @@ void StorageManager::updateEntity(LocatedEntity * ent)
     }
     Database::instance()->encodeObject(map, location);
 
-    Database::instance()->updateEntity(ent->getId(),
+    //Under normal circumstances only the top world won't have a location.
+    if (ent->m_location.m_loc) {
+        Database::instance()->updateEntity(ent->getId(),
+                                       ent->getSeq(),
+                                       location,
+                                       ent->m_location.m_loc->getId());
+    } else {
+        Database::instance()->updateEntityWithoutLoc(ent->getId(),
                                        ent->getSeq(),
                                        location);
+    }
     ++m_updateEntityCount;
     KeyValues new_property_tuples;
     KeyValues upd_property_tuples;

@@ -924,7 +924,15 @@ int Database::insertEntity(const std::string & id,
 
 int Database::updateEntity(const std::string & id,
                            int seq,
-                           const std::string & value)
+                           const std::string & location_data,
+                           const std::string & location)
+{
+    return 0;
+}
+
+int Database::updateEntityWithoutLoc(const std::string & id,
+                           int seq,
+                           const std::string & location_data)
 {
     return 0;
 }

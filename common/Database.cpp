@@ -1018,12 +1018,25 @@ int Database::insertEntity(const std::string & id,
 
 int Database::updateEntity(const std::string & id,
                            int seq,
-                           const std::string & value)
+                           const std::string & location_data,
+                           const std::string & location_entity_id)
 {
-    std::string query = compose("UPDATE entities SET seq = %1, location = '%2'"
-                                " WHERE id = %3", seq, value, id);
+    std::string query = compose("UPDATE entities SET seq = %1, location = '%2',"
+                                " loc = '%3'"
+                                " WHERE id = %4", seq, location_data,
+                                location_entity_id, id);
     return scheduleCommand(query);
 }
+
+int Database::updateEntityWithoutLoc(const std::string & id,
+                 int seq,
+                 const std::string & location_data)
+{
+    std::string query = compose("UPDATE entities SET seq = %1, location = '%2'"
+                                " WHERE id = %3", seq, location_data, id);
+    return scheduleCommand(query);
+}
+
 
 const DatabaseResult Database::selectEntities(const std::string & loc)
 {

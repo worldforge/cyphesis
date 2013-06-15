@@ -216,9 +216,13 @@ class Database {
                      const std::string & type,
                      int seq,
                      const std::string & value);
+    int updateEntityWithoutLoc(const std::string & id,
+                     int seq,
+                     const std::string & location_data);
     int updateEntity(const std::string & id,
                      int seq,
-                     const std::string & value);
+                     const std::string & location_data,
+                     const std::string & location_entity_id);
     const DatabaseResult selectEntities(const std::string & loc);
     int dropEntity(long id);
 
