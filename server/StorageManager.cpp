@@ -476,8 +476,8 @@ void StorageManager::tick()
     m_insertQpsAvg = m_insertQps / 32;
     m_insertQpsNow = insert_queries;
 
-    debug(std::cout << "Ins: " << insert_queries << ", " << m_insertQps / 32
-                    << std::endl << std::flush;);
+    debug(if (insert_queries) { std::cout << "Ins: " << insert_queries << ", " << m_insertQps / 32
+                    << std::endl << std::flush;});
 
     int update_queries = m_updateEntityCount + m_updatePropertyCount 
                          - old_update_queries;
@@ -491,8 +491,8 @@ void StorageManager::tick()
     m_updateQpsAvg = m_updateQps / 32;
     m_updateQpsNow = update_queries;
 
-    debug(std::cout << "Ups: " << update_queries << ", " << m_updateQps / 32
-                    << std::endl << std::flush;);
+    debug(if (update_queries) { std::cout << "Ups: " << update_queries << ", " << m_updateQps / 32
+                    << std::endl << std::flush;});
 }
 
 int StorageManager::initWorld()
