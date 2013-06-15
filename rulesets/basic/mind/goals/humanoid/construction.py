@@ -97,6 +97,8 @@ class plant_seeds(Goal):
         what=me.map.get(id)
         if what==None:
             return
+        if what.visible == False:
+            return
         id=me.get_knowledge('focus',self.source)
         if id!=None or me.map.get(id):
             source=me.map.get(id)
