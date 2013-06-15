@@ -25,6 +25,7 @@
 #include "modules/EntityRef.h"
 
 #include <sigc++/trackable.h>
+#include <sigc++/connection.h>
 
 typedef std::map<std::string, EntityRef> EntityRefMap;
 
@@ -38,6 +39,20 @@ typedef std::map<std::string, EntityRef> EntityRefMap;
 class OutfitProperty : public PropertyBase, virtual public sigc::trackable {
   protected:
     EntityRefMap m_data;
+
+    /**
+     * \brief A struct used for keeping track of sigc connections.
+     * So that they can be properly removed when an item id removed.
+     */
+    struct ConnectionsWrapper {
+            sigc::connection containered;
+            sigc::connection destroyed;
+    };
+    /**
+     * \brief Keeps track of sigc connections.
+     * When an item is removed, the connections will be severed.
+     */
+    std::map<LocatedEntity*, ConnectionsWrapper> m_connections;
 
     void itemRemoved(LocatedEntity * garment, LocatedEntity * wearer);
   public:

@@ -181,12 +181,11 @@ void OutfitProperty::wear(LocatedEntity * wearer,
 {
     m_data[location] = EntityRef(garment);
 
-    // FIXME #10 We need to disconnect the containered signal when re
-    // get triggered, thus removing it, otherwise the calls accumulate.
-    // We still will get informed of the garments destruction, for all
-    // eternity.
-    garment->containered.connect(sigc::bind(sigc::hide<0>(sigc::mem_fun(this, &OutfitProperty::itemRemoved)), garment, wearer));
-    garment->destroyed.connect(sigc::bind(sigc::mem_fun(this, &OutfitProperty::itemRemoved), garment, wearer));
+    sigc::connection containered_connection = garment->containered.connect(sigc::bind(sigc::hide<0>(sigc::mem_fun(this, &OutfitProperty::itemRemoved)), garment, wearer));
+    sigc::connection destroyed_connection = garment->destroyed.connect(sigc::bind(sigc::mem_fun(this, &OutfitProperty::itemRemoved), garment, wearer));
+
+    ConnectionsWrapper wrapper{containered_connection, destroyed_connection};
+    m_connections[garment] = wrapper;
 }
 
 void OutfitProperty::itemRemoved(LocatedEntity * garment,
@@ -217,6 +216,12 @@ void OutfitProperty::itemRemoved(LocatedEntity * garment,
         return;
     }
     m_data[key] = EntityRef(0);
+    auto I = m_connections.find(garment);
+    if (I != m_connections.end()) {
+        I->second.containered.disconnect();
+        I->second.destroyed.disconnect();
+        m_connections.erase(I);
+    }
 
     Anonymous update_arg;
     update_arg->setId(wearer->getId());
