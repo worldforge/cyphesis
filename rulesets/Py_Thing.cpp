@@ -234,6 +234,12 @@ static PyObject * Entity_getattro(PyEntity *self, PyObject *oname)
         }
         return list;
     }
+    if (strcmp(name, "visible") == 0) {
+        if (self->m_entity.e->isVisible()) {
+            Py_RETURN_TRUE;
+        }
+        Py_RETURN_FALSE;
+    }
     Entity * entity = self->m_entity.e;
     PropertyBase * prop = entity->modProperty(name);
     if (prop != 0) {
