@@ -108,22 +108,6 @@ int Persistence::init()
                                            "accounts",
                                            "entities") == 0;
 
-    if (!findAccount("admin")) {
-        debug(std::cout << "Bootstraping admin account."
-                        << std::endl << std::flush;);
-        std::string adminAccountId;
-        long adminAccountIntId = m_db.newId(adminAccountId);
-        if (adminAccountIntId < 0) {
-            log(CRITICAL, "Unable to get admin account ID from Database");
-            return -2;
-        }
-
-        Admin dummyAdminAccount(0, "admin", consts::defaultAdminPasswordHash,
-                                adminAccountId, adminAccountIntId);
-        
-        putAccount(dummyAdminAccount);
-    }
-
     return (i && j && k) ? 0 : DATABASE_TABERR;
 }
 

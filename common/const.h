@@ -63,8 +63,6 @@ namespace consts {
   /// \brief Should world state be persistent
   static const bool enable_persistence = false;
 
-  /// \brief Admin password used by admin account
-  extern const char * defaultAdminPasswordHash;
   /// \brief Id of root world entity
   extern const char * rootWorldId;
   /// \brief Integer id of root world entity

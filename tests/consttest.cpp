@@ -71,13 +71,6 @@ int main()
     enable_persistence = consts::enable_persistence;
     assert(enable_persistence == false || enable_persistence == true);
 
-    const char * defaultAdminPasswordHash;
-    defaultAdminPasswordHash = consts::defaultAdminPasswordHash;
-    assert(defaultAdminPasswordHash != 0);
-    std::string defaultAdminPasswordHashs;
-    defaultAdminPasswordHashs = consts::defaultAdminPasswordHash;
-    assert(defaultAdminPasswordHashs.size() > 6);
-
     const char * rootWorldId;
     rootWorldId = consts::rootWorldId;
     assert(rootWorldId != 0);
