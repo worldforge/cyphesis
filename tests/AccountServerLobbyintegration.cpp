@@ -273,6 +273,14 @@ Account * Persistence::getAccount(const std::string & name)
     return 0;
 }
 
+void Persistence::addCharacter(const Account &, const LocatedEntity &)
+{
+}
+
+void Persistence::delCharacter(const std::string &)
+{
+}
+
 Character::Character(const std::string & id, long intId) :
            Thing(id, intId),
                m_movement(*(Movement*)0),

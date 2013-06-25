@@ -95,7 +95,10 @@ class Account : public ConnectableRouter {
     virtual const char * getType() const;
 
     /// \brief Store this account in the database
-    virtual void store() const;
+    void store() const;
+
+    /// \brief Returns true if the account should be stored.
+    virtual bool isPersisted() const;
 
     virtual void addToMessage(Atlas::Message::MapType &) const;
     virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;

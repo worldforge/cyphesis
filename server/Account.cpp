@@ -87,7 +87,7 @@ Account::~Account()
 void Account::characterDestroyed(long id)
 {
     m_charactersDict.erase(id);
-    if (consts::enable_persistence) {
+    if (database_flag && isPersisted()) {
         Persistence::instance()->delCharacter(String::compose("%1", id));
     }
 }
@@ -108,7 +108,7 @@ int Account::connectCharacter(LocatedEntity *chr)
         m_charactersDict[chr->getIntId()] = chr;
         chr->destroyed.connect(sigc::bind(sigc::mem_fun(this, &Account::characterDestroyed), chr->getIntId()));
         m_connection->addEntity(chr);
-        if (consts::enable_persistence) {
+        if (database_flag && isPersisted()) {
             Persistence::instance()->addCharacter(*this, *chr);
         }
         return 0;
@@ -194,10 +194,16 @@ const char * Account::getType() const
 
 void Account::store() const
 {
-    if (database_flag) {
+    if (database_flag && isPersisted()) {
         Persistence::instance()->putAccount(*this);
     }
 }
+
+bool Account::isPersisted() const
+{
+    return true;
+}
+
 
 void Account::addToMessage(MapType & omap) const
 {

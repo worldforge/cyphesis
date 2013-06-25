@@ -206,6 +206,10 @@ void Account::store() const
 {
 }
 
+bool Account::isPersisted() const {
+    return true;
+}
+
 void Account::addToMessage(Atlas::Message::MapType &) const
 {
 }

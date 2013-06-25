@@ -493,6 +493,14 @@ void Persistence::putAccount(const Account & ac)
 {
 }
 
+void Persistence::addCharacter(const Account &, const LocatedEntity &)
+{
+}
+
+void Persistence::delCharacter(const std::string &)
+{
+}
+
 Lobby::Lobby(ServerRouting & s, const std::string & id, long intId) :
        Router(id, intId),
        m_server(s)

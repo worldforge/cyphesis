@@ -36,6 +36,7 @@ const char * SystemAccount::getType() const
     return "sys";
 }
 
-void SystemAccount::store() const
+bool SystemAccount::isPersisted() const
 {
+    return false;
 }

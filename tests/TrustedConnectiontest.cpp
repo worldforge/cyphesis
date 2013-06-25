@@ -310,8 +310,8 @@ const char * SystemAccount::getType() const
     return "sys";
 }
 
-void SystemAccount::store() const
-{
+bool SystemAccount::isPersisted() const {
+    return false;
 }
 
 Account::Account(Connection * conn,
@@ -335,6 +335,10 @@ const char * Account::getType() const
 
 void Account::store() const
 {
+}
+
+bool Account::isPersisted() const {
+    return true;
 }
 
 void Account::addToMessage(Atlas::Message::MapType &) const

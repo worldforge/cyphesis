@@ -31,7 +31,7 @@ class SystemAccount : public Admin {
     ~SystemAccount();
 
     virtual const char * getType() const;
-    virtual void store() const;
+    virtual bool isPersisted() const;
 };
 
 

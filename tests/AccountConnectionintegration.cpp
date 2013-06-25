@@ -494,6 +494,14 @@ void Persistence::putAccount(const Account & ac)
 {
 }
 
+void Persistence::addCharacter(const Account &, const LocatedEntity &)
+{
+}
+
+void Persistence::delCharacter(const std::string &)
+{
+}
+
 void log(LogLevel lvl, const std::string & msg)
 {
     std::cout << msg << std::endl;

@@ -60,8 +60,6 @@ namespace consts {
   static const float minSqrBoxSize = 0.25f;
   /// \brief What is the minimum size of an object when calculating visibility
   static const float minBoxSize = 0.5f;
-  /// \brief Should world state be persistent
-  static const bool enable_persistence = false;
 
   /// \brief Id of root world entity
   extern const char * rootWorldId;

@@ -557,6 +557,14 @@ void Persistence::registerCharacters(Account & ac,
 {
 }
 
+void Persistence::addCharacter(const Account &, const LocatedEntity &)
+{
+}
+
+void Persistence::delCharacter(const std::string &)
+{
+}
+
 Player::Player(Connection * conn,
                const std::string & username,
                const std::string & passwd,

@@ -67,10 +67,6 @@ int main()
     minSqrBoxSize = consts::minSqrBoxSize;
     assert(minSqrBoxSize > 0);
     
-    bool enable_persistence;
-    enable_persistence = consts::enable_persistence;
-    assert(enable_persistence == false || enable_persistence == true);
-
     const char * rootWorldId;
     rootWorldId = consts::rootWorldId;
     assert(rootWorldId != 0);

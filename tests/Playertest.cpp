@@ -321,6 +321,10 @@ void Account::store() const
 {
 }
 
+bool Account::isPersisted() const {
+    return true;
+}
+
 void Account::createObject(const std::string & type_str,
                            const Root & arg,
                            const Operation & op,
