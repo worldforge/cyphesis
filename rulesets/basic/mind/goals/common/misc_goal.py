@@ -780,3 +780,22 @@ class activate_device(Goal):
            me.remove_knowledge('focus', self.what)
            return
         return Operation('actuate', Operation('chop', Entity(something)))
+    
+    
+class clear_focus(Goal):
+    """Clear whatever is in the current focus."""
+    def __init__(self, what):
+        Goal.__init__(self, "clear focus",
+                      self.clear_focus,
+                      [])
+        if isinstance(what, list):
+            self.what = what
+        else:
+            self.what = [ what ]
+        self.vars=["what"]
+    def clear_focus(self, me):
+        for what in self.what:
+            something=me.get_knowledge('focus', what)
+            if something:
+                me.remove_knowledge('focus', what)
+        return 1
