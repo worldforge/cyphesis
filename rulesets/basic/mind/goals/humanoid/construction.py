@@ -69,41 +69,38 @@ class harvest_resource(Goal):
 
 class plant_seeds(Goal):
     """Use a tool to plant a given kind of seed in a given location."""
-    def __init__(self, what, source, place, tool):
+    #Get a tool, move to area, look for source, move near source, look for seed, plant seed
+    def __init__(self, seed, source, place, tool):
         Goal.__init__(self, "Plant seed to grow plants",
                       false,
                       [acquire_thing(tool),
                        move_me_area(place),
                        spot_something(source),
-                       move_me_to_focus(source),
-                       spot_something(what),
-                       self.do])
-        self.what=what
+                       move_me_near_focus(source, allowed_movement_radius=5),
+                       spot_something(seed),
+                       move_me_to_focus(seed),
+                       self.do,
+                       clear_focus(source),
+                       roam(15, [place])])
+        self.seed=seed
         self.source=source
         self.place=place
         self.tool=tool
-        self.vars=["what","source","place","tool"]
+        self.vars=["seed","source","place","tool"]
     def do(self, me):
         if me.things.has_key(self.tool)==0:
             #print "No tool"
             return
         tool=me.find_thing(self.tool)[0]
         if not hasattr(me, 'right_hand_wield') or me.right_hand_wield!=tool.id:
-            # FIXME We need to sort out how to tell what one is wielding
+            # FIXME We need to sort out how to tell seed one is wielding
             return Operation("wield", Entity(tool.id))
-        id=me.get_knowledge('focus',self.what)
+        id=me.get_knowledge('focus',self.seed)
         if id==None:
             return
-        what=me.map.get(id)
-        if what==None:
+        seed=me.map.get(id)
+        if seed==None:
             return
-        if what.visible == False:
+        if seed.visible == False:
             return
-        id=me.get_knowledge('focus',self.source)
-        if id!=None or me.map.get(id):
-            source=me.map.get(id)
-            if source!=None:
-                if distance_to(source.location, what.location) > 4:
-                    return Operation("use",Entity(what.id, objtype="obj"))
-        else:
-            return Operation("use",Entity(what.id, objtype="obj"))
+        return Operation("use",Entity(seed.id, objtype="obj"))
