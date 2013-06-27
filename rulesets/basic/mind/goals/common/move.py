@@ -235,7 +235,7 @@ class move_me_to_possession(Goal):
 
 class move_me_to_focus(Goal):
     """Move me to something I am interested in."""
-    def __init__(self, what):
+    def __init__(self, what, distance=2):
         Goal.__init__(self,"move me to this thing",
                       self.am_i_at_it,
                       [self.move_me_to_it])
@@ -243,7 +243,9 @@ class move_me_to_focus(Goal):
             self.what = what
         else:
             self.what = [ what ]
-        self.vars=["what"]
+        #How close we need to get to the thing.
+        self.distance=distance
+        self.vars=["what", "distance"]
     def am_i_at_it(self, me):
         for what in self.what:
             id = me.get_knowledge('focus', what)
@@ -258,7 +260,7 @@ class move_me_to_focus(Goal):
             bbox_size = thing.location.bbox.square_horizontal_bounding_radius()
             #TODO: Add a check for solid and non solid entities.
             #When moving to a non solid entity, we should try to get at its center.
-            if square_horizontal_distance(me.location, thing.location) < (4 + bbox_size):
+            if square_horizontal_distance(me.location, thing.location) < ((self.distance * self.distance) + bbox_size):
                 return 1
         return 0
 
@@ -274,6 +276,66 @@ class move_me_to_focus(Goal):
             if target.parent.id==me.location.parent.id:
                 target.velocity=me.location.coordinates.unit_vector_to(target.coordinates)
                 return Operation("move", Entity(me.id, location=target))
+
+
+class move_me_near_focus(Goal):
+    """Move me to something I am interested in, first really close, and the allowing movement within a certain radius."""
+    def __init__(self, what, distance=2, allowed_movement_radius=10):
+        Goal.__init__(self,"move me near this thing",
+                      self.am_i_at_it,
+                      [self.move_me_to_it])
+        if type(what) == types.ListType:
+            self.what = what
+        else:
+            self.what = [ what ]
+        #The radius within which we're allowed movement.
+        self.allowed_movement_radius = allowed_movement_radius
+        #How close we need to get to the thing.
+        self.distance=distance
+        self.vars=["what", "distance", "allowed_movement_radius"]
+        #Keeps track of if we're close enough to a thing to consider us near it.
+        #If this is true, i.e. we're near a thing, we consider this goal fulfilled as long as we're within the allowed_movement_radius
+        self.is_close_to_thing=False
+    def am_i_at_it(self, me):
+        for what in self.what:
+            id = me.get_knowledge('focus', what)
+            if id == None: continue
+            thing = me.map.get(id)
+            if thing == None:
+                me.remove_knowledge('focus', what)
+                continue
+            
+            #Only move to the edge of the entity, since else we'll just collide with it.
+            #TODO: Make this check better, taking into account the real collision volume, rotated and all.
+            bbox_size = thing.location.bbox.square_horizontal_bounding_radius()
+            #TODO: Add a check for solid and non solid entities.
+            #When moving to a non solid entity, we should try to get at its center.
+            squared_distance_to_thing = square_horizontal_distance(me.location, thing.location)
+            if squared_distance_to_thing < ((self.distance * self.distance) + bbox_size):
+                self.is_close_to_thing=True
+                return 1
+            #If we've already moved close to the thing, we are allowed movement within a certain movement radius
+            if self.is_close_to_thing:
+                if squared_distance_to_thing < ((self.allowed_movement_radius * self.allowed_movement_radius) + bbox_size):
+                    return 1
+        self.is_close_to_thing=False
+        return 0
+
+    def move_me_to_it(self, me):
+        for what in self.what:
+            id = me.get_knowledge('focus', what)
+            if id == None:
+                continue
+            thing = me.map.get(id)
+            if thing == None:
+                me.remove_knowledge('focus', what)
+                return
+            target=thing.location.copy()
+            if target.parent.id==me.location.parent.id:
+                target.velocity=me.location.coordinates.unit_vector_to(target.coordinates)
+                return Operation("move", Entity(me.id, location=target))
+
+
 
 ############################ MOVE THING TO ME ####################################
 
