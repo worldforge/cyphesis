@@ -69,7 +69,7 @@ Plant::~Plant()
 int Plant::dropFruit(OpVector & res, Property<int> * fruits_prop)
 {
     Element fruitName;
-    if (!getAttrType("fruitName", fruitName, Element::TYPE_STRING)) {
+    if (getAttrType("fruitName", fruitName, Element::TYPE_STRING) != 0) {
         return -1;
     }
     int & fruits = fruits_prop->data();
@@ -210,8 +210,9 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
         int & fruits = fruits_prop->data();
         Element fruitChance;
         Element sizeAdult;
-        if (getAttrType("fruitChance", fruitChance, Element::TYPE_INT) &&
-            getAttrType("sizeAdult", sizeAdult, Element::TYPE_FLOAT) &&
+
+        if (getAttrType("fruitChance", fruitChance, Element::TYPE_INT) == 0 &&
+            getAttrType("sizeAdult", sizeAdult, Element::TYPE_FLOAT) == 0 &&
             m_location.bBox().isValid() && 
             (m_location.bBox().highCorner().z() > sizeAdult.Float())) {
             if (randint(1, fruitChance.Int()) == 1) {
