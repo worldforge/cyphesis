@@ -7,8 +7,8 @@ from mind.Goal import Goal
 from mind.goals.common.common import *
 from mind.goals.common.move import *
 from random import *
-from time import time
 
+import time
 import types
 
 ######################## MAKE LOTS OF SOMETHING ###############################
@@ -202,7 +202,7 @@ class spot_something(Goal):
                 else:
                     #Update the time since we last knew about the thing, as we're still actively know about it
                     if self.seconds_until_forgotten > 0:
-                        self.spotted[something] = time()
+                        self.spotted[something] = time.time()
                     return 1
     def do(self,me):
         for what in self.what:
@@ -213,7 +213,7 @@ class spot_something(Goal):
                 #Check that it's not something we've already spotted
                 if thing.id in self.spotted:
                     #Have we forgotten about that we remembered it yet?
-                    if time() - self.spotted[thing.id] > self.seconds_until_forgotten:
+                    if time.time() - self.spotted[thing.id] > self.seconds_until_forgotten:
                         self.spotted.pop(thing.id)
                     else:
                         continue
@@ -230,7 +230,7 @@ class spot_something(Goal):
                 me.add_knowledge('focus', what, nearest.id)
                 #We should only remember things if we can keep them in memory.
                 if self.seconds_until_forgotten > 0:
-                    self.spotted[nearest.id] = time()
+                    self.spotted[nearest.id] = time.time()
                       
 ############################ FETCH SOMETHING GOAL ########################
 
