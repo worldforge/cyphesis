@@ -153,6 +153,8 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
     double & new_status = status->data();
     status->setFlags(flag_unsent);
     if (m_nourishment <= 0) {
+        debug(std::cout << "No nourishment; shrinking."
+                        << std::endl << std::flush;);
         new_status -= 0.1;
     } else {
         new_status += 0.1;
