@@ -232,6 +232,33 @@ class spot_something(Goal):
                 if self.seconds_until_forgotten > 0:
                     self.spotted[nearest.id] = time.time()
                       
+class spot_something_in_area(Goal):
+    """Pick out something in a specified area and focus on it, forgetting things previously focused on after a while."""
+    def __init__(self, what, location, range=30, condition=lambda a:1, seconds_until_forgotten=30):
+        Goal.__init__(self, "spot a thing in area",
+                      self.do_I_have,
+                      [self.do])
+        self.range = range
+        self.sqr_range = range*range
+        self.area_location_name = location
+        self.condition=condition
+        self.inner_spot_goal = spot_something(what, range=range, seconds_until_forgotten=seconds_until_forgotten, condition=self.is_thing_in_area)
+    def do_I_have(self, me):
+        self.inner_spot_goal.do_I_have(me)
+    def do(self,me):
+        #For performance reasons we'll cache the current location, so we don't have to look it up for each call to is_thing_in_area
+        self.current_location = me.get_knowledge("location",self.area_location_name)
+        self.inner_spot_goal.do(me)
+    def is_thing_in_area(self, thing):
+        if self.condition(thing):
+            if self.current_location is None:
+                return False
+            sqr_dist = square_distance(self.current_location, thing.location)
+            if sqr_dist < self.sqr_range:
+                return True
+        return False
+         
+
 ############################ FETCH SOMETHING GOAL ########################
 
 class fetch_something(Goal):
