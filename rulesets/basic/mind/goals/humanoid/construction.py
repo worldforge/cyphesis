@@ -70,23 +70,24 @@ class harvest_resource(Goal):
 class plant_seeds(Goal):
     """Use a tool to plant a given kind of seed in a given location."""
     #Get a tool, move to area, look for source, move near source, look for seed, plant seed
-    def __init__(self, seed, source, place, tool):
+    def __init__(self, seed, source, place, tool, range=30):
         Goal.__init__(self, "Plant seed to grow plants",
                       false,
                       [acquire_thing(tool),
-                       move_me_area(place),
-                       spot_something_in_area(source, place),
+                       move_me_area(place, range=range),
+                       spot_something_in_area(source, place, range=range),
                        move_me_near_focus(source, allowed_movement_radius=5),
-                       spot_something_in_area(seed, place),
+                       spot_something_in_area(seed, place, range=range),
                        move_me_to_focus(seed),
                        self.do,
                        clear_focus(source),
-                       roam(15, [place])])
+                       roam(range, [place])])
         self.seed=seed
         self.source=source
         self.place=place
         self.tool=tool
-        self.vars=["seed","source","place","tool"]
+        self.range=range
+        self.vars=["seed","source","place","tool","range"]
     def do(self, me):
         if me.things.has_key(self.tool)==0:
             #print "No tool"
