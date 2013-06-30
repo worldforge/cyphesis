@@ -32,6 +32,7 @@
 #include "common/globals.h"
 #include "common/Database.h"
 #include "common/compose.hpp"
+#include "common/Shaker.h"
 
 #include <iostream>
 
@@ -107,6 +108,31 @@ int Persistence::init()
     bool k = m_db.registerRelation(m_characterRelation,
                                            "accounts",
                                            "entities") == 0;
+
+    if (!findAccount("admin")) {
+        debug(std::cout << "Bootstraping admin account."
+                        << std::endl << std::flush;);
+        std::string adminAccountId;
+        long adminAccountIntId = m_db.newId(adminAccountId);
+        if (adminAccountIntId < 0) {
+            log(CRITICAL, "Unable to create admin account ID from Database");
+            return -2;
+        }
+
+        //The shaker isn't meant for this, but it will suffice. A password of 32
+        //characters length should be safe enough.
+        Shaker shaker;
+        std::string password = shaker.generateSalt(32);
+
+        Admin dummyAdminAccount(0, "admin", password,
+                                adminAccountId, adminAccountIntId);
+
+        log(INFO, "Created 'admin' account with randomized password.\n"
+                "In order to use it, use the 'cypasswd' tool from the "
+                "command line to alter the password.");
+
+        putAccount(dummyAdminAccount);
+    }
 
     return (i && j && k) ? 0 : DATABASE_TABERR;
 }

@@ -60,6 +60,7 @@ int main()
 #include "common/globals.h"
 #include "common/log.h"
 #include "common/id.h"
+#include "common/Shaker.h"
 
 #include <cstdlib>
 
@@ -466,6 +467,13 @@ const char * DatabaseResult::field(const char * column, int row) const
     return "";
 }
 
+Shaker::Shaker() {}
+
+std::string Shaker::generateSalt(unsigned long)
+{
+    return "";
+}
+
 void log(LogLevel lvl, const std::string & msg)
 {
 }
@@ -480,6 +488,3 @@ long integerId(const std::string & id)
     return intId;
 }
 
-namespace consts {
-  const char * defaultAdminPasswordHash = "$1$1A67C3C65EECBBCE$A51127573498DCB08992378D07A36A20";
-}
