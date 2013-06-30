@@ -206,6 +206,9 @@ class Database {
     // Interface for the ID generation sequence.
 
     int registerEntityIdGenerator();
+
+    /// Creates a new unique id for the database.
+    /// Note that this method will access the database, so it's a fairly expensive method.
     long newId(std::string & id);
 
     // Interface for Entity and Property tables.
