@@ -29,13 +29,30 @@ class Property;
 ///
 /// Most of the functionality will be common to all plants, and most
 /// derived classes will probably be in python. Provides functionality
-/// for producing and dropping fruit very simply, currently accelerated
-/// for Acorn compatability. In the longer term this should provide for
-/// plants to grow, assuming we need plants to grow now that we are
-/// using Mercator for forests.
+/// for producing and dropping fruit very simply.
+///
+/// The basic functionality of Plant is as follows:
+/// 1) The plant receives a tick operation. It checks it's m_nourishment value to see
+/// whether it should grow or wither.
+/// If the plant has fruitName set, it will also do a check whether it should drop a fruit or not.
+/// It also sends an Eat operation to it's parent.
+/// 2) If the parent is the world, the world will respond to the Eat operation by checking
+/// if the plant is in a favourable spot (i.e. a place where it can grow, like in the bare ground).
+/// If so, the World will send a Nourishment op to the plant.
+/// 3) The plant receives the Nourishment op and adds its value to m_nourishment.
+///
 /// \ingroup EntityClasses
 class Plant : public Thing {
   protected:
+
+    /**
+     * Keeps track of nourishment received.
+     *
+     * Each tick this is checked. If it's zero or less, the plant will wither.
+     * If it's positive the plant will grow.
+     *
+     * The value itself is increased through Nourishment ops.
+     */
     double m_nourishment;
 
     static const int m_speed = 20; // Number of basic_ticks per tick
