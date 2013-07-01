@@ -205,20 +205,25 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
         }
     }
 
+    //Only handle fruits if the plant is of adult size.
     Property<int> * fruits_prop = modPropertyType<int>("fruits");
-    if (fruits_prop != 0 && dropFruit(res, fruits_prop) != -1) {
-        int & fruits = fruits_prop->data();
-        Element fruitChance;
+    if (fruits_prop != 0) {
         Element sizeAdult;
+        if (getAttrType("sizeAdult", sizeAdult, Element::TYPE_FLOAT) == 0) {
+            if (dropFruit(res, fruits_prop) != -1) {
 
-        if (getAttrType("fruitChance", fruitChance, Element::TYPE_INT) == 0 &&
-            getAttrType("sizeAdult", sizeAdult, Element::TYPE_FLOAT) == 0 &&
-            m_location.bBox().isValid() && 
-            (m_location.bBox().highCorner().z() > sizeAdult.Float())) {
-            if (randint(1, fruitChance.Int()) == 1) {
-                fruits++;
-                fruits_prop->set(fruits);
-                fruits_prop->setFlags(flag_unsent);
+                int & fruits = fruits_prop->data();
+                Element fruitChance;
+
+                if (getAttrType("fruitChance", fruitChance, Element::TYPE_INT) == 0 &&
+                        m_location.bBox().isValid() &&
+                        (m_location.bBox().highCorner().z() > sizeAdult.Float())) {
+                    if (randint(1, fruitChance.Int()) == 1) {
+                        fruits++;
+                        fruits_prop->set(fruits);
+                        fruits_prop->setFlags(flag_unsent);
+                    }
+                }
             }
         }
     }
