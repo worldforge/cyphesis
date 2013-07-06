@@ -2,7 +2,6 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
-// $Id$
 
 #ifndef ELEVATION_H
 #define ELEVATION_H

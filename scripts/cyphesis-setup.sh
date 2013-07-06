@@ -15,7 +15,6 @@
 # along with this program; if not, write to the Free Software Foundation,
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-# $Id$
 
 # The main purpose of this script is to get round the issue of access to
 # to the database required by cyphesis.

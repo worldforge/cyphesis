@@ -15,7 +15,6 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-// $Id$
 
 // Remember kids, it takes 7 times longer to call mag() than to call relMag(),
 // so if you are comparing vector magnitudes, always use relMag().
