@@ -20,7 +20,6 @@
 // is a derivative work. The derivative is distributed under the GPL as
 // permitted by the license used by Python Software Foundation.
 
-// $Id$
 
 #ifdef NDEBUG
 #undef NDEBUG

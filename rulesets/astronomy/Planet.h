@@ -2,7 +2,6 @@
 // the GNU General Public License (See COPYING for details).
 // Copyright (C) 2000 Alistair Riddoch
 
-// $Id$
 
 #ifndef ASTRONOMY_PLANET_H
 #define ASTRONOMY_PLANET_H
