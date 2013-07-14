@@ -505,5 +505,7 @@ AC_CONFIG_FILES([
     man/Makefile
     dox/Makefile
     autopackage/default.apspec
+    Doxyfile
+    Doxyfile-python
 ])
 AC_OUTPUT
