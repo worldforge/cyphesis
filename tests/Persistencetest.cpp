@@ -469,7 +469,7 @@ const char * DatabaseResult::field(const char * column, int row) const
 
 Shaker::Shaker() {}
 
-std::string Shaker::generateSalt(unsigned long)
+std::string Shaker::generateSalt(size_t)
 {
     return "";
 }
