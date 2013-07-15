@@ -23,6 +23,7 @@
 #define DEBUG
 #endif
 
+//Note that this test depends on the line count staying the same. If you add or remove a line here in the beginning, make sure to update the line numbers in many of tests.
 #include "TestBase.h"
 
 #include "common/compose.hpp"
