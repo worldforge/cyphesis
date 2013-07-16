@@ -69,17 +69,17 @@ class harvest_resource(Goal):
 
 class plant_seeds(Goal):
     """Use a tool to plant a given kind of seed in a given location."""
-    #Get a tool, move to area, look for source, move near source, look for seed, plant seed
+    #Get a tool, move to area, look for seed, if found act on seed, if not look for source, move near source. If neither seed nor source is found, roam.
     def __init__(self, seed, source, place, tool, range=30):
         Goal.__init__(self, "Plant seed to grow plants",
                       false,
                       [acquire_thing(tool),
                        move_me_area(place, range=range),
-                       spot_something_in_area(source, place, range=range),
-                       move_me_near_focus(source, allowed_movement_radius=5),
                        spot_something_in_area(seed, place, range=range),
                        move_me_to_focus(seed),
                        self.do,
+                       spot_something_in_area(source, place, range=range),
+                       move_me_near_focus(source, allowed_movement_radius=5),
                        clear_focus(source),
                        roam(range, [place])])
         self.seed=seed
