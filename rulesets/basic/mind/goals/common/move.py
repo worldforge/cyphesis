@@ -496,14 +496,14 @@ class hunt_for(pursuit):
 
 class patrol(Goal):
     """Move around an area defined by some waypoints."""
-    def __init__(self, whlist):
+    def __init__(self, locations):
         Goal.__init__(self, "patrol an area",
                       false,
-                      [move_me(whlist[0]),
+                      [move_me(locations[0]),
                        self.increment])
-        self.list = whlist
+        self.list = locations
         self.stage = 0
-        self.count = len(whlist)
+        self.count = len(locations)
         self.vars = ["stage", "list"]
     def increment(self, me):
         self.stage = self.stage + 1
@@ -563,13 +563,13 @@ class accompany(Goal):
 
 class roam(Goal):
     """Move in a non-specific way within one or many locations."""
-    def __init__(self, radius, whlist):
+    def __init__(self, radius, locations):
         Goal.__init__(self,"roam randomly",false,
                       [move_me(None),
                        self.do_roaming])
-        self.list = whlist
+        self.list = locations
         self.radius = radius
-        self.count = len(whlist)
+        self.count = len(locations)
         self.vars = ["radius", "list"]
     def do_roaming(self, me):
         waypointName = self.list[randint(0, self.count - 1  )]
