@@ -479,6 +479,32 @@ static PyObject * square_horizontal_distance(PyObject * self, PyObject * args)
     return PyFloat_FromDouble(squareHorizontalDistance(*sloc->location, *oloc->location));
 }
 
+/**
+ * Measures the horizontal distance between the edges of two entities.
+ */
+static PyObject * square_horizontal_edge_distance(PyObject * self, PyObject * args)
+{
+    PyObject * near, * other;
+    if (!PyArg_ParseTuple(args, "OO", &near, &other)) {
+        return NULL;
+    }
+    if (!PyLocation_Check(near) || !PyLocation_Check(other)) {
+        PyErr_SetString(PyExc_TypeError, "Arg Location required");
+        return NULL;
+    }
+    PyLocation * sloc = (PyLocation *)near,
+               * oloc = (PyLocation *)other;
+#ifndef NDEBUG
+    if (sloc->location == NULL || oloc->location == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "Null location pointer");
+        return NULL;
+    }
+#endif // NDEBUG
+    return PyFloat_FromDouble(squareHorizontalDistance(*sloc->location, *oloc->location) -
+            boxSquareHorizontalBoundingRadius(sloc->location->m_bBox) -
+            boxSquareHorizontalBoundingRadius(oloc->location->m_bBox));
+}
+
 // In Python 2.3 or later this it is okay to pass in null for the methods
 // of a module, making this obsolete.
 static PyMethodDef no_methods[] = {
@@ -495,6 +521,8 @@ static PyMethodDef physics_methods[] = {
     {"square_distance",square_distance,         METH_VARARGS},
     {"square_horizontal_distance",
       square_horizontal_distance,               METH_VARARGS},
+    {"square_horizontal_edge_distance",
+      square_horizontal_edge_distance,          METH_VARARGS},
     {NULL,          NULL}                       /* Sentinel */
 };
 
