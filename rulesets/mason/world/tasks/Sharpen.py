@@ -37,7 +37,13 @@ class Sharpen(server.Task):
         if hasattr(self.target(), 'status'):
             new_status = self.target().status - 0.1
 
-        if square_distance(self.character.location, self.target().location) > self.target().location.bbox.square_bounding_radius():
+        #Measure the distance between the entity horizontal edges. Else we won't be able to reach if either entity is too thick.
+        distance_between_entity_edges_squared = square_horizontal_edge_distance(self.character.location, self.target().location) 
+        
+        #Assume that a standard human can reach 1.5 meters, and use this to determine if we're close enough to be able to perform the logging
+        standard_human_reach_squared=1.5*1.5
+
+        if distance_between_entity_edges_squared > standard_human_reach_squared:
             self.progress = 1 - new_status
             self.rate = 0
             return self.next_tick(1.75)

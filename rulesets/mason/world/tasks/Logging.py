@@ -36,8 +36,7 @@ class Logging(server.Task):
         current_status = self.target().status
 
         #Measure the distance between the entity horizontal edges. Else we won't be able to reach if either entity is too thick.
-        distance_between_entity_edges_squared = square_distance(self.character.location, self.target().location) - \
-            self.target().location.bbox.square_horizontal_bounding_radius() - self.character.location.bbox.square_horizontal_bounding_radius() 
+        distance_between_entity_edges_squared = square_horizontal_edge_distance(self.character.location, self.target().location) 
         
         #Assume that a standard human can reach 1.5 meters, and use this to determine if we're close enough to be able to perform the logging
         standard_human_reach_squared=1.5*1.5
