@@ -9,7 +9,7 @@ from physics import Vector3D
 import server
 
 class Reap(server.Task):
-    """ A task for cutting a log into boards."""
+    """ A task for reaping grass from the ground."""
     def cut_operation(self, op):
         """ Op handler for cut op which activates this task """
         # print "Reap.cut"
