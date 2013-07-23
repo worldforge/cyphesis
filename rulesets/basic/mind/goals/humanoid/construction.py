@@ -45,7 +45,7 @@ class harvest_resource(Goal):
                       [acquire_thing(tool),
                        move_me_area(place),
                        gather(what),
-                       spot_something(source),
+                       spot_something(source, 30, self.source_entity_condition),
                        move_me_to_focus(source),
                        self.do])
         self.what=what
@@ -53,6 +53,18 @@ class harvest_resource(Goal):
         self.place=place
         self.tool=tool
         self.vars=["what","source","place","tool"]
+        
+    def source_entity_condition(self, entity):
+        if hasattr(entity, "sizeAdult"):
+            #Only chop down adult plants which have grown at least 1.1 times their adult size
+            #(so that we give the trees some time to disperse seeds, which they only do when they are adult)
+            sizeAdult = entity.sizeAdult
+            entity_height = entity.location.bbox.far_point.z 
+            if entity_height >= (sizeAdult * 1.1):
+                return True
+            return False
+        return True 
+        
     def do(self, me):
         if me.things.has_key(self.tool)==0:
             #print "No tool"
