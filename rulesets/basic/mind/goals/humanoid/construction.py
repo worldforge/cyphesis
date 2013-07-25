@@ -45,7 +45,7 @@ class harvest_resource(Goal):
                       [acquire_thing(tool),
                        move_me_area(place),
                        gather(what),
-                       spot_something(source, 30, self.source_entity_condition),
+                       spot_something_in_area(source, location=place, range=30, condition=self.source_entity_condition, ),
                        move_me_to_focus(source),
                        self.do])
         self.what=what
