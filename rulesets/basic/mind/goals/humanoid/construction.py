@@ -92,8 +92,7 @@ class plant_seeds(Goal):
                        self.do,
                        spot_something_in_area(source, place, range=range),
                        move_me_near_focus(source, allowed_movement_radius=5),
-                       clear_focus(source),
-                       roam(range, [place])])
+                       clear_focus(source)])
         self.seed=seed
         self.source=source
         self.place=place
