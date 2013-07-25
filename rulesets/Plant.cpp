@@ -208,7 +208,8 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
     Property<int> * fruits_prop = modPropertyType<int>("fruits");
     if (fruits_prop != 0) {
         Element sizeAdult;
-        if (getAttrType("sizeAdult", sizeAdult, Element::TYPE_FLOAT) == 0) {
+        if (getAttrType("sizeAdult", sizeAdult, Element::TYPE_FLOAT) == 0 ||
+                getAttrType("sizeAdult", sizeAdult, Element::TYPE_INT) == 0) {
             if (dropFruit(res, fruits_prop) != -1) {
 
                 int & fruits = fruits_prop->data();
