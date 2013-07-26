@@ -112,7 +112,9 @@ class plant_seeds(Goal):
             return
         seed=me.map.get(id)
         if seed==None:
+            me.remove_knowledge('focus', self.seed)
             return
         if seed.visible == False:
+            me.remove_knowledge('focus', self.seed)
             return
         return Operation("use",Entity(seed.id, objtype="obj"))
