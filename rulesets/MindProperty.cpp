@@ -19,6 +19,7 @@
 #include "MindProperty.h"
 
 #include "server/PossessionAuthenticator.h"
+#include "server/ExternalMindsManager.h"
 
 #include "rulesets/Character.h"
 #include "rulesets/MindFactory.h"
@@ -164,6 +165,7 @@ void MindProperty::apply(LocatedEntity * ent)
     }
 
     PossessionAuthenticator::instance()->addPossession(ent->getId(), key);
+    ExternalMindsManager::instance()->requestPossession(*ent, key);
 
 
 }
