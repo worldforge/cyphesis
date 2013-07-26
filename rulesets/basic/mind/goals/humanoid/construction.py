@@ -39,20 +39,21 @@ class gather(Goal):
 # Harvest a resource from source at a place using a tool
 class harvest_resource(Goal):
     """Gather something from a given location, by using a tool on something."""
-    def __init__(self, what, source, place, tool):
+    def __init__(self, what, source, place, tool, range=30):
         Goal.__init__(self, "Gather a resource using a tool",
                       false,
                       [acquire_thing(tool),
-                       move_me_area(place),
+                       move_me_area(place, range=range),
                        gather(what),
-                       spot_something_in_area(source, location=place, range=30, condition=self.source_entity_condition, ),
+                       spot_something_in_area(source, location=place, range=range, condition=self.source_entity_condition, ),
                        move_me_to_focus(source),
                        self.do])
         self.what=what
         self.source=source
         self.place=place
         self.tool=tool
-        self.vars=["what","source","place","tool"]
+        self.range=range
+        self.vars=["what","source","place","tool", "range"]
         
     def source_entity_condition(self, entity):
         if hasattr(entity, "sizeAdult"):
