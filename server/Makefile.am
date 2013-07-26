@@ -117,7 +117,9 @@ SERVER_SOURCES = \
 		CommPeer.cpp CommPeer.h \
 		CommPythonClient.cpp CommPythonClient.h \
 		server.cpp server.h \
-		MindInspector.cpp MindInspector.h
+		MindInspector.cpp MindInspector.h \
+		ExternalMindsConnection.cpp ExternalMindsConnection.h \
+		ExternalMindsManager.cpp ExternalMindsManager.h
 
 COMM_SOURCES = \
 		CommHttpClient.cpp CommHttpClient.h \
