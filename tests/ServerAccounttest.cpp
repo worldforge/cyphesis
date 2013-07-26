@@ -30,7 +30,7 @@
 
 #include "server/Connection.h"
 #include "server/ServerRouting.h"
-#include "server/TeleportAuthenticator.h"
+#include "server/PossessionAuthenticator.h"
 
 #include "rulesets/Character.h"
 
@@ -127,12 +127,12 @@ void ServerAccounttest::setup()
                                   "fa1a03a2-a745-4033-85cb-bb694e921e62",
                                   compose("%1", m_id_counter), m_id_counter++);
 
-    TeleportAuthenticator::init();
+    PossessionAuthenticator::init();
 }
 
 void ServerAccounttest::teardown()
 {
-    TeleportAuthenticator::del();
+    PossessionAuthenticator::del();
 
     delete m_server;
     delete m_account;
@@ -614,20 +614,20 @@ void ServerRouting::operation(const Operation &, OpVector &)
 {
 }
 
-TeleportAuthenticator * TeleportAuthenticator::m_instance = NULL;
+PossessionAuthenticator * PossessionAuthenticator::m_instance = NULL;
 
-int TeleportAuthenticator::addTeleport(const std::string &entity_id,
+int PossessionAuthenticator::addPossession(const std::string &entity_id,
                                         const std::string &possess_key)
 {
     return 0;
 }
 
-int TeleportAuthenticator::removeTeleport(const std::string &entity_id)
+int PossessionAuthenticator::removePossession(const std::string &entity_id)
 {
     return 0;
 }
 
-LocatedEntity *TeleportAuthenticator::authenticateTeleport(const std::string &entity_id,
+LocatedEntity *PossessionAuthenticator::authenticatePossession(const std::string &entity_id,
                                             const std::string &possess_key)
 {
     return 0;

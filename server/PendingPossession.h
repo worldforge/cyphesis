@@ -15,24 +15,23 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-#ifndef SERVER_PENDING_TELEPORT_H
-#define SERVER_PENDING_TELEPORT_H
+#ifndef SERVER_PENDING_POSSESSION_H
+#define SERVER_PENDING_POSSESSION_H
 
 #include <string>
 
-class PendingTeleport
+class PendingPossession
 {
-    /// \brief The ID of the entity that is being teleported
+    /// \brief The ID of the entity that is being possessed
     std::string m_entity_id;
-    /// \brief The possess key that authenticates the clinet to the teleported
-    ///        entity
+    /// \brief The possess key that authenticates the client to the entity
     std::string m_possess_key;
     /// \brief Specifies if this object is valid
     bool m_valid;
 
   public:
 
-    PendingTeleport(const std::string &, const std::string &);
+    PendingPossession(const std::string &, const std::string &);
     const std::string & getPossessKey() const;
     const std::string & getEntityID() const;
 
@@ -45,7 +44,7 @@ class PendingTeleport
 /// \brief Get the possess key
 ///
 /// \return The possess key string
-inline const std::string & PendingTeleport::getPossessKey() const
+inline const std::string & PendingPossession::getPossessKey() const
 {
     return m_possess_key;
 }
@@ -53,17 +52,17 @@ inline const std::string & PendingTeleport::getPossessKey() const
 /// \brief Get the entity ID this teleport belongs to
 ///
 /// \return The entity ID of the owner entity
-inline const std::string & PendingTeleport::getEntityID() const
+inline const std::string & PendingPossession::getEntityID() const
 {
     return m_entity_id;
 }
 
-/// \brief Check if this teleport is validated or not
+/// \brief Check if this possession is validated or not
 ///
-/// \return Boolean whether this teleport is validated or not. A teleport is
+/// \return Boolean whether this possession is validated or not. A teleport is
 ///         considered validated if an entity was successfully created at the
 ///         destination.
-inline bool PendingTeleport::isValidated() const
+inline bool PendingPossession::isValidated() const
 {
     return m_valid;
 }

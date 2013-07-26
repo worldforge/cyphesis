@@ -23,21 +23,21 @@
 #define DEBUG
 #endif
 
-#include "server/PendingTeleport.h"
+#include "server/PendingPossession.h"
 
 #include <cassert>
 
 int main()
 {
     {
-        PendingTeleport * pt = new PendingTeleport("", "");
+        PendingPossession * pt = new PendingPossession("", "");
 
         delete pt;
     }
 
     {
         std::string test_id("de214cec-f8c4-11df-baf7-00269e5444b3");
-        PendingTeleport * pt = new PendingTeleport(test_id, "");
+        PendingPossession * pt = new PendingPossession(test_id, "");
 
         const std::string & entity_id = pt->getEntityID();
         assert(entity_id == test_id);
@@ -47,7 +47,7 @@ int main()
 
     {
         std::string test_key("3bf18e18-f8c5-11df-b0bf-00269e5444b3");
-        PendingTeleport * pt = new PendingTeleport("", test_key);
+        PendingPossession * pt = new PendingPossession("", test_key);
 
         const std::string & key = pt->getPossessKey();
         assert(key == test_key);
@@ -58,7 +58,7 @@ int main()
     {
         std::string test_id("de214cec-f8c4-11df-baf7-00269e5444b3");
         std::string test_key("3bf18e18-f8c5-11df-b0bf-00269e5444b3");
-        PendingTeleport * pt = new PendingTeleport(test_id, test_key);
+        PendingPossession * pt = new PendingPossession(test_id, test_key);
 
         bool ret = pt->validate(test_id, test_key);
         assert(ret);
@@ -69,7 +69,7 @@ int main()
     {
         std::string test_id("de214cec-f8c4-11df-baf7-00269e5444b3");
         std::string test_key("3bf18e18-f8c5-11df-b0bf-00269e5444b3");
-        PendingTeleport * pt = new PendingTeleport(test_id, test_key);
+        PendingPossession * pt = new PendingPossession(test_id, test_key);
 
         bool ret = pt->validate(test_id, "c0e3b16e-f8c5-11df-9070-00269e5444b3");
         assert(!ret);
@@ -80,7 +80,7 @@ int main()
     {
         std::string test_id("de214cec-f8c4-11df-baf7-00269e5444b3");
         std::string test_key("3bf18e18-f8c5-11df-b0bf-00269e5444b3");
-        PendingTeleport * pt = new PendingTeleport(test_id, test_key);
+        PendingPossession * pt = new PendingPossession(test_id, test_key);
 
         bool ret = pt->validate("c7e27496-f8c5-11df-9103-00269e5444b3", test_key);
         assert(!ret);
@@ -91,7 +91,7 @@ int main()
     {
         std::string test_id("de214cec-f8c4-11df-baf7-00269e5444b3");
         std::string test_key("3bf18e18-f8c5-11df-b0bf-00269e5444b3");
-        PendingTeleport * pt = new PendingTeleport(test_id, test_key);
+        PendingPossession * pt = new PendingPossession(test_id, test_key);
 
         bool ret = pt->validate("d6dd2626-f8c5-11df-853f-00269e5444b3", "e13c51be-f8c5-11df-a97f-00269e5444b3");
         assert(!ret);
@@ -100,7 +100,7 @@ int main()
     }
 
     {
-        PendingTeleport * pt = new PendingTeleport("", "");
+        PendingPossession * pt = new PendingPossession("", "");
 
         assert(!pt->isValidated());
 
@@ -108,7 +108,7 @@ int main()
     }
 
     {
-        PendingTeleport * pt = new PendingTeleport("", "");
+        PendingPossession * pt = new PendingPossession("", "");
 
         assert(!pt->isValidated());
         pt->setValidated();

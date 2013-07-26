@@ -15,37 +15,37 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-#ifndef SERVER_TELEPORT_AUTHENTICATOR_H
-#define SERVER_TELEPORT_AUTHENTICATOR_H
+#ifndef SERVER_POSSESSION_AUTHENTICATOR_H
+#define SERVER_POSSESSION_AUTHENTICATOR_H
 
 #include <string>
 #include <map>
 
 class LocatedEntity;
-class PendingTeleport;
+class PendingPossession;
 
 /// \brief Map of teleported entity IDs and their PendingState objects
-typedef std::map<std::string, PendingTeleport *> PendingTeleportMap;
+typedef std::map<std::string, PendingPossession *> PendingPossessionsMap;
 
-/// \brief A class that stores and authenticates teleport requests
-class TeleportAuthenticator
+/// \brief A class that stores and authenticates possession requests
+class PossessionAuthenticator
 {
   private:
     /// \brief An instance pointer for singleton behaviour
-    static TeleportAuthenticator * m_instance;
+    static PossessionAuthenticator * m_instance;
     /// \brief Map of teleport requests
-    PendingTeleportMap m_teleports;
+    PendingPossessionsMap m_possessions;
 
-    void removeTeleport(PendingTeleportMap::iterator I);
+    void removePossession(PendingPossessionsMap::iterator I);
 
   public:
 
     static void init() {
         if(m_instance == 0) {
-            m_instance = new TeleportAuthenticator();
+            m_instance = new PossessionAuthenticator();
         }
     }
-    static TeleportAuthenticator * instance() {
+    static PossessionAuthenticator * instance() {
         return m_instance;
     }
     static void del() {
@@ -57,14 +57,14 @@ class TeleportAuthenticator
 
     bool isPending(const std::string &) const;
 
-    int addTeleport(const std::string &, const std::string &);
+    int addPossession(const std::string &, const std::string &);
 
-    int removeTeleport(const std::string &);
+    int removePossession(const std::string &);
 
-    LocatedEntity * authenticateTeleport(const std::string &,
+    LocatedEntity * authenticatePossession(const std::string &,
                                          const std::string &);
 
     friend class TeleportAuthenticatortest;
 };
 
-#endif // SERVER_TELEPORT_AUTHENTICATOR_H
+#endif // SERVER_POSSESSION_AUTHENTICATOR_H

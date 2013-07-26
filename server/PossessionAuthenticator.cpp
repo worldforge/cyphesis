@@ -15,8 +15,8 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-#include "TeleportAuthenticator.h"
-#include "PendingTeleport.h"
+#include "PossessionAuthenticator.h"
+#include "PendingPossession.h"
 
 #include "common/BaseWorld.h"
 #include "common/log.h"
@@ -24,93 +24,93 @@
 
 #include <cassert>
 
-TeleportAuthenticator * TeleportAuthenticator::m_instance = NULL;
+PossessionAuthenticator * PossessionAuthenticator::m_instance = NULL;
 
-/// \brief Checks if there is a pending teleport on an account
+/// \brief Checks if there is a pending possession on an account
 ///
 /// \param entity_id The entity ID to check for pending teleport
-bool TeleportAuthenticator::isPending(const std::string & entity_id) const
+bool PossessionAuthenticator::isPending(const std::string & entity_id) const
 {
-    PendingTeleportMap::const_iterator I = m_teleports.find(entity_id);
-    return (I != m_teleports.end());
+    PendingPossessionsMap::const_iterator I = m_possessions.find(entity_id);
+    return (I != m_possessions.end());
 }
 
-/// \brief Add a teleport authentication entry
+/// \brief Add a possession authentication entry
 ///
 /// \param entity_id The ID of the entity whose data is to be removed
 /// \param possess_key The possess key to authenticate the entity with
-int TeleportAuthenticator::addTeleport(const std::string & entity_id,
+int PossessionAuthenticator::addPossession(const std::string & entity_id,
                                        const std::string & possess_key)
 {
     if (isPending(entity_id)) {
         return -1;
     }
-    PendingTeleport * pt = new PendingTeleport(entity_id, possess_key);
+    PendingPossession * pt = new PendingPossession(entity_id, possess_key);
     if (pt == 0) {
         return -1;
     }
-    m_teleports.insert(std::make_pair(entity_id, pt));
-    log(INFO, String::compose("Added teleport auth entry for %1,%2",
+    m_possessions.insert(std::make_pair(entity_id, pt));
+    log(INFO, String::compose("Added possession auth entry for %1,%2",
                               entity_id, possess_key));
     return 0;
 }
 
-/// \brief Remove a teleport authentications entry.
+/// \brief Remove a possession authentications entry.
 ///
 /// \param entity_id The ID of the entity whose data is to be removed
-int TeleportAuthenticator::removeTeleport(const std::string &entity_id)
+int PossessionAuthenticator::removePossession(const std::string &entity_id)
 {
-    PendingTeleportMap::iterator I = m_teleports.find(entity_id);
-    if (I == m_teleports.end()) {
-        log(ERROR, String::compose("No teleport auth entry for entity ID %1",
+    PendingPossessionsMap::iterator I = m_possessions.find(entity_id);
+    if (I == m_possessions.end()) {
+        log(ERROR, String::compose("No possession auth entry for entity ID %1",
                                                 entity_id));
         return -1;
     }
-    removeTeleport(I);
-    log(ERROR, String::compose("Removed teleport auth entry for entity ID %1",
+    removePossession(I);
+    log(ERROR, String::compose("Removed possession auth entry for entity ID %1",
                                                 entity_id));
     return 0;
 }
 
-/// \brief Remove a teleport authentications entry internals.
+/// \brief Remove a possession authentications entry internals.
 ///
 /// Typically after a successful authentication
-/// \param I The iterator in m_teleports to be removed
-void TeleportAuthenticator::removeTeleport(PendingTeleportMap::iterator I)
+/// \param I The iterator in m_possessions to be removed
+void PossessionAuthenticator::removePossession(PendingPossessionsMap::iterator I)
 {
     assert(I->second != 0);
     delete I->second;
-    m_teleports.erase(I);
+    m_possessions.erase(I);
 }
 
-/// \brief Authenticate a teleport request
+/// \brief Authenticate a possession request
 ///
 /// \param entity_id The ID of the entity that was created
 /// \param possess_key The possess key sent by the client
-LocatedEntity * TeleportAuthenticator::authenticateTeleport(const std::string &entity_id,
+LocatedEntity * PossessionAuthenticator::authenticatePossession(const std::string &entity_id,
                                             const std::string &possess_key)
 {
-    PendingTeleportMap::iterator I = m_teleports.find(entity_id);
-    if (I == m_teleports.end()) {
-        log(ERROR, String::compose("Unable to find teleported entity with ID %1",
+    PendingPossessionsMap::iterator I = m_possessions.find(entity_id);
+    if (I == m_possessions.end()) {
+        log(ERROR, String::compose("Unable to find possessable entity with ID %1",
                                                                     entity_id));
         return NULL;
     }
-    PendingTeleport *entry = I->second;
+    PendingPossession *entry = I->second;
     assert(entry != 0);
     if (entry->validate(entity_id, possess_key)) {
         // We are authenticated!
         LocatedEntity * entity = BaseWorld::instance().getEntity(entity_id);
         if (entity == 0) {
             // This means the authentication entry itself is invalid. Remove it.
-            log(ERROR, String::compose("Unable to find teleported entity with ID %1",
+            log(ERROR, String::compose("Unable to find possessable entity with ID %1",
                                                                         entity_id));
-            removeTeleport(I);
+            removePossession(I);
             return NULL;
         }
         // Don't remove the entry yet. It will be removed after connecting 
         // the entity to the account in Account::LookOperation() successfully
-        // removeTeleport(entity_id);
+        // removePossession(entity_id);
         return entity;
     }
     // We failed the authentication. Keep authentication entry for retries.

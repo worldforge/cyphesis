@@ -25,9 +25,9 @@
 
 #include "TestBase.h"
 
-#include "server/TeleportAuthenticator.h"
+#include "server/PossessionAuthenticator.h"
 
-#include "server/PendingTeleport.h"
+#include "server/PendingPossession.h"
 
 #include "common/BaseWorld.h"
 #include "common/id.h"
@@ -104,34 +104,34 @@ class TeleportAuthenticatortest : public Cyphesis::TestBase
     void teardown();
 
     void test_sequence();
-    void test_authenticateTeleport();
-    void test_authenticateTeleport_nonexist();
-    void test_removeTeleport_id();
-    void test_removeTeleport_iterator();
+    void test_authenticatePossession();
+    void test_authenticatePossession_nonexist();
+    void test_removePossession_id();
+    void test_removePossession_iterator();
 };
 
 TeleportAuthenticatortest::TeleportAuthenticatortest()
 {
     ADD_TEST(TeleportAuthenticatortest::test_sequence);
-    ADD_TEST(TeleportAuthenticatortest::test_authenticateTeleport);
-    ADD_TEST(TeleportAuthenticatortest::test_authenticateTeleport_nonexist);
-    ADD_TEST(TeleportAuthenticatortest::test_removeTeleport_id);
-    ADD_TEST(TeleportAuthenticatortest::test_removeTeleport_iterator);
+    ADD_TEST(TeleportAuthenticatortest::test_authenticatePossession);
+    ADD_TEST(TeleportAuthenticatortest::test_authenticatePossession_nonexist);
+    ADD_TEST(TeleportAuthenticatortest::test_removePossession_id);
+    ADD_TEST(TeleportAuthenticatortest::test_removePossession_iterator);
 }
 
 void TeleportAuthenticatortest::setup()
 {
     m_world = new TestWorld;
 
-    assert(TeleportAuthenticator::instance() == NULL);
-    TeleportAuthenticator::init();
-    assert(TeleportAuthenticator::instance() != NULL);
+    assert(PossessionAuthenticator::instance() == NULL);
+    PossessionAuthenticator::init();
+    assert(PossessionAuthenticator::instance() != NULL);
 }
 
 void TeleportAuthenticatortest::teardown()
 {
-    TeleportAuthenticator::del();
-    assert(TeleportAuthenticator::instance() == NULL);
+    PossessionAuthenticator::del();
+    assert(PossessionAuthenticator::instance() == NULL);
 
     delete m_world;
 }
@@ -139,88 +139,88 @@ void TeleportAuthenticatortest::teardown()
 void TeleportAuthenticatortest::test_sequence()
 {
     // Check for correct singleton instancing
-    assert(TeleportAuthenticator::instance() != NULL);
+    assert(PossessionAuthenticator::instance() != NULL);
     
     // Test isPending() function
-    assert(!TeleportAuthenticator::instance()->isPending("test_non_existent_entity_id"));
+    assert(!PossessionAuthenticator::instance()->isPending("test_non_existent_entity_id"));
 
     // Test adding of teleport entries
-    assert(TeleportAuthenticator::instance()->addTeleport("test_entity_id", "test_possess_key") == 0);
-    assert(TeleportAuthenticator::instance()->isPending("test_entity_id"));
-    assert(TeleportAuthenticator::instance()->addTeleport("test_entity_id", "test_possess_key") == -1);
+    assert(PossessionAuthenticator::instance()->addPossession("test_entity_id", "test_possess_key") == 0);
+    assert(PossessionAuthenticator::instance()->isPending("test_entity_id"));
+    assert(PossessionAuthenticator::instance()->addPossession("test_entity_id", "test_possess_key") == -1);
 
     // Test removal of teleport entries
-    assert(TeleportAuthenticator::instance()->removeTeleport("test_non_existent_entity_id") == -1);
-    assert(TeleportAuthenticator::instance()->removeTeleport("test_entity_id") == 0);
-    assert(!TeleportAuthenticator::instance()->isPending("test_entity_id"));
+    assert(PossessionAuthenticator::instance()->removePossession("test_non_existent_entity_id") == -1);
+    assert(PossessionAuthenticator::instance()->removePossession("test_entity_id") == 0);
+    assert(!PossessionAuthenticator::instance()->isPending("test_entity_id"));
 
 }
 
-void TeleportAuthenticatortest::test_authenticateTeleport()
+void TeleportAuthenticatortest::test_authenticatePossession()
 {
     Entity ent("100", 100);
     m_world->test_addEntity(&ent, 100);
-    assert(TeleportAuthenticator::instance() != NULL);
+    assert(PossessionAuthenticator::instance() != NULL);
 
-    TeleportAuthenticator::instance()->addTeleport("100", "test_possess_key");
+    PossessionAuthenticator::instance()->addPossession("100", "test_possess_key");
 
     // Test non-existent ID authentication request
-    assert(TeleportAuthenticator::instance()->authenticateTeleport(
+    assert(PossessionAuthenticator::instance()->authenticatePossession(
                "101", "test_possess_key") == NULL);
 
     // Test incorrect possess key authentication request
-    assert(TeleportAuthenticator::instance()->authenticateTeleport("100",
+    assert(PossessionAuthenticator::instance()->authenticatePossession("100",
                                         "test_wrong_possess_key") == NULL);
 
     // Test valid authentication request
-    assert(TeleportAuthenticator::instance()->authenticateTeleport("100",
+    assert(PossessionAuthenticator::instance()->authenticatePossession("100",
                                         "test_possess_key") != NULL);
 
 }
 
-void TeleportAuthenticatortest::test_authenticateTeleport_nonexist()
+void TeleportAuthenticatortest::test_authenticatePossession_nonexist()
 {
     Entity ent("100", 100);
     m_world->test_addEntity(&ent, 100);
-    assert(TeleportAuthenticator::instance() != NULL);
+    assert(PossessionAuthenticator::instance() != NULL);
 
-    TeleportAuthenticator::instance()->addTeleport("101", "test_possess_key");
+    PossessionAuthenticator::instance()->addPossession("101", "test_possess_key");
 
     // Test ID authentication request, that we added, for a non existant
     // entity
-    assert(TeleportAuthenticator::instance()->authenticateTeleport(
+    assert(PossessionAuthenticator::instance()->authenticatePossession(
                    "101", "test_possess_key") == NULL);
 }
 
-void TeleportAuthenticatortest::test_removeTeleport_id()
+void TeleportAuthenticatortest::test_removePossession_id()
 {
-    TeleportAuthenticator * ta = TeleportAuthenticator::instance();
+    PossessionAuthenticator * ta = PossessionAuthenticator::instance();
 
-    ta->m_teleports.insert(std::make_pair("1",
-          new PendingTeleport("1", "e146db28-1058-46e6-a9b3-601ab6ef07a7")));
+    ta->m_possessions.insert(std::make_pair("1",
+          new PendingPossession("1", "e146db28-1058-46e6-a9b3-601ab6ef07a7")));
 
-    ASSERT_TRUE(ta->m_teleports.find("1") != ta->m_teleports.end());
+    ASSERT_TRUE(ta->m_possessions.find("1") != ta->m_possessions.end());
 
-    int ret = ta->removeTeleport("1");
+    int ret = ta->removePossession("1");
     ASSERT_EQUAL(ret, 0);
 
-    ASSERT_TRUE(ta->m_teleports.find("1") == ta->m_teleports.end());
+    ASSERT_TRUE(ta->m_possessions.find("1") == ta->m_possessions.end());
 }
 
-void TeleportAuthenticatortest::test_removeTeleport_iterator()
+void TeleportAuthenticatortest::test_removePossession_iterator()
 {
-    TeleportAuthenticator * ta = TeleportAuthenticator::instance();
+    PossessionAuthenticator * ta = PossessionAuthenticator::instance();
 
-    ta->m_teleports.insert(std::make_pair("2",
-          new PendingTeleport("2", "b769b7a4-32d3-477d-9803-a53fd9ad49c7")));
+    ta->m_possessions.insert(std::make_pair("2",
+          new PendingPossession("2", "b769b7a4-32d3-477d-9803-a53fd9ad49c7")));
 
-    ASSERT_TRUE(ta->m_teleports.find("2") != ta->m_teleports.end());
+    ASSERT_TRUE(ta->m_possessions.find("2") != ta->m_possessions.end());
 
-    PendingTeleportMap::iterator I = ta->m_teleports.find("2");
+    PendingPossessionsMap::iterator I = ta->m_possessions.find("2");
 
-    ta->removeTeleport(I);
+    ta->removePossession(I);
 
-    ASSERT_TRUE(ta->m_teleports.find("2") == ta->m_teleports.end());
+    ASSERT_TRUE(ta->m_possessions.find("2") == ta->m_possessions.end());
 }
 
 int main()
@@ -282,14 +282,14 @@ LocatedEntity * BaseWorld::getEntity(long id) const
     }
 }
 
-PendingTeleport::PendingTeleport(const std::string &id, const std::string &key) 
+PendingPossession::PendingPossession(const std::string &id, const std::string &key)
                                             :   m_entity_id(id),
                                                 m_possess_key(key),
                                                 m_valid(false)
 {
 }
 
-bool PendingTeleport::validate(const std::string &entity_id,
+bool PendingPossession::validate(const std::string &entity_id,
                                const std::string &possess_key) const
 {
     if(m_entity_id == entity_id && m_possess_key == possess_key) {
@@ -299,7 +299,7 @@ bool PendingTeleport::validate(const std::string &entity_id,
     }
 }
 
-void PendingTeleport::setValidated()
+void PendingPossession::setValidated()
 {
     m_valid = true;
 }

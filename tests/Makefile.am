@@ -1236,7 +1236,7 @@ CommMDNSPublishertest_LDADD = \
 
 TeleportAuthenticatortest_SOURCES = TeleportAuthenticatortest.cpp
 TeleportAuthenticatortest_LDADD = \
-        $(top_builddir)/server/TeleportAuthenticator.o
+        $(top_builddir)/server/PossessionAuthenticator.o
 
 TeleportStatetest_SOURCES = TeleportStatetest.cpp
 TeleportStatetest_LDADD = \
@@ -1244,7 +1244,7 @@ TeleportStatetest_LDADD = \
 
 PendingTeleporttest_SOURCES = PendingTeleporttest.cpp
 PendingTeleporttest_LDADD = \
-        $(top_builddir)/server/PendingTeleport.o
+        $(top_builddir)/server/PendingPossession.o
 
 Juncturetest_SOURCES = Juncturetest.cpp
 Juncturetest_LDADD = \
@@ -1382,8 +1382,8 @@ Accountintegration_LDADD = \
         $(top_builddir)/server/Lobby.o \
         $(top_builddir)/server/Account.o \
         $(top_builddir)/server/Connection.o \
-        $(top_builddir)/server/TeleportAuthenticator.o \
-        $(top_builddir)/server/PendingTeleport.o \
+        $(top_builddir)/server/PossessionAuthenticator.o \
+        $(top_builddir)/server/PendingPossession.o \
         $(top_builddir)/server/WorldRouter.o \
         $(top_builddir)/server/SpawnEntity.o \
         $(top_builddir)/server/ConnectableRouter.o \
