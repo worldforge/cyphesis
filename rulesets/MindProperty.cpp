@@ -18,6 +18,8 @@
 
 #include "MindProperty.h"
 
+#include "server/PossessionAuthenticator.h"
+
 #include "rulesets/Character.h"
 #include "rulesets/MindFactory.h"
 #include "rulesets/PythonScriptFactory.h"
@@ -31,6 +33,8 @@
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/SmartPtr.h>
+
+#include <wfmath/MersenneTwister.h>
 
 #include <iostream>
 
@@ -149,6 +153,18 @@ void MindProperty::apply(LocatedEntity * ent)
     Look l;
     l->setTo(ent->getId());
     ent->sendWorld(l);
+
+
+    //Also add a possession key so that the mind can be handled by an external AI client.
+    std::string key = ent->getId() + "_";
+    WFMath::MTRand generator;
+    for(int i=0;i<32;i++) {
+        char ch = (char)((int)'a' + generator.rand(25));
+        key += ch;
+    }
+
+    PossessionAuthenticator::instance()->addPossession(ent->getId(), key);
+
 
 }
 
