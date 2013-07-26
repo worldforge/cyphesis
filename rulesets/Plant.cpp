@@ -83,7 +83,7 @@ int Plant::dropFruit(OpVector & res, Property<int> * fruits_prop)
 
     debug(std::cout << "Dropping " << drop << " fruits from "
                     << m_type << " plant." << std::endl << std::flush;);
-    float height = m_location.bBox().highCorner().z(); 
+    float height = m_location.bBox().highCorner().z();
     for(int i = 0; i < drop; ++i) {
         float rx = m_location.pos().x() + uniform( height,
                                                   -height);
@@ -136,7 +136,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
     // during the unit tests.
     // Log an error perhaps?
     // FIXME This causes a character holding an uprooted plant to die.
-    if (m_location.m_loc != 0) {
+    if (m_location.m_loc != nullptr) {
         Eat eat_op;
         eat_op->setTo(m_location.m_loc->getId());
         res.push_back(eat_op);
@@ -165,14 +165,14 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
         double & mass = mass_prop->data();
         double old_mass = mass;
         mass += m_nourishment;
- 
+
         m_nourishment = 0;
         Element maxmass_attr;
         if (getAttrType("maxmass", maxmass_attr, Element::TYPE_FLOAT) == 0) {
             mass = std::min(mass, maxmass_attr.Float());
         }
         PropertyBase * biomass = modPropertyType<double>("biomass");
-        if (biomass != 0) {
+        if (biomass != nullptr) {
             biomass->set(mass);
             biomass->setFlags(flag_unsent);
         }
@@ -194,7 +194,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
                                 bbox.highCorner().z() * height_scale));
             debug(std::cout << "New " << bbox << std::endl << std::flush;);
             BBoxProperty * box_property = modPropertyClass<BBoxProperty>("bbox");
-            if (box_property != 0) {
+            if (box_property != nullptr) {
                 box_property->data() = bbox;
             } else {
                 log(ERROR, String::compose("Plant %1 type \"%2\" has a valid "
@@ -206,22 +206,23 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
 
     //Only handle fruits if the plant is of adult size.
     Property<int> * fruits_prop = modPropertyType<int>("fruits");
-    if (fruits_prop != 0) {
+    if (fruits_prop != nullptr) {
         Element sizeAdult;
         if (getAttrType("sizeAdult", sizeAdult, Element::TYPE_FLOAT) == 0 ||
                 getAttrType("sizeAdult", sizeAdult, Element::TYPE_INT) == 0) {
-            if (dropFruit(res, fruits_prop) != -1) {
+            //Only drop fruits if we're an adult
+            if (m_location.bBox().isValid() &&
+                    (m_location.bBox().highCorner().z() >= sizeAdult.asNum())) {
+                if (dropFruit(res, fruits_prop) != -1) {
+                    int & fruits = fruits_prop->data();
+                    Element fruitChance;
 
-                int & fruits = fruits_prop->data();
-                Element fruitChance;
-
-                if (getAttrType("fruitChance", fruitChance, Element::TYPE_INT) == 0 &&
-                        m_location.bBox().isValid() &&
-                        (m_location.bBox().highCorner().z() > sizeAdult.Float())) {
-                    if (randint(1, fruitChance.Int()) == 1) {
-                        fruits++;
-                        fruits_prop->set(fruits);
-                        fruits_prop->setFlags(flag_unsent);
+                    if (getAttrType("fruitChance", fruitChance, Element::TYPE_INT) == 0) {
+                        if (randint(1, fruitChance.Int()) == 1) {
+                            fruits++;
+                            fruits_prop->set(fruits);
+                            fruits_prop->setFlags(flag_unsent);
+                        }
                     }
                 }
             }
@@ -231,14 +232,19 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
 
 void Plant::TouchOperation(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Plant::Touch(" << getId() << "," << m_type << ")"
-                    << std::endl << std::flush;);
-    debug(std::cout << "Checking for drop"
-                    << std::endl << std::flush;);
-    Property<int> * fruits_prop = modPropertyType<int>("fruits");
-    if (fruits_prop != 0 && dropFruit(res, fruits_prop) > 0) {
-        Update update;
-        update->setTo(getId());
-        res.push_back(update);
+    Element sizeAdult;
+    if (getAttrType("sizeAdult", sizeAdult, Element::TYPE_FLOAT) == 0
+            || getAttrType("sizeAdult", sizeAdult, Element::TYPE_INT) == 0) {
+        //Only drop fruits if we're an adult
+        if (m_location.bBox().isValid()
+                && (m_location.bBox().highCorner().z() >= sizeAdult.asNum())) {
+
+            Property<int> * fruits_prop = modPropertyType<int>("fruits");
+            if (fruits_prop != nullptr && dropFruit(res, fruits_prop) > 0) {
+                Update update;
+                update->setTo(getId());
+                res.push_back(update);
+            }
+        }
     }
 }
