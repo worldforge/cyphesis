@@ -20,6 +20,8 @@
 
 #include "StatusProperty.h"
 #include "BBoxProperty.h"
+#include "AreaProperty.h"
+#include "physics/Shape.h"
 
 #include "common/const.h"
 #include "common/debug.h"
@@ -201,6 +203,9 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
                                            "bbox, but no bbox property",
                                            getIntId(), getType()->name()));
             }
+
+            scaleArea();
+
         }
     }
 
@@ -244,6 +249,47 @@ void Plant::TouchOperation(const Operation & op, OpVector & res)
                 Update update;
                 update->setTo(getId());
                 res.push_back(update);
+            }
+        }
+    }
+}
+
+
+void Plant::scaleArea() {
+    static float AREA_SCALING_FACTOR=3.0f;
+
+    const WFMath::AxisBox<3>& bbox = m_location.bBox();
+    if (bbox.isValid()) {
+        //If there's an area we need to scale that with the bbox
+        AreaProperty * area_property = modPropertyClass<AreaProperty>("area");
+        if (area_property != nullptr) {
+            WFMath::AxisBox<2> footprint = area_property->shape()->footprint();
+            //We'll make it so that the footprint of the area is AREA_SCALING_FACTOR times the footprint of the bbox
+            auto area_radius = footprint.boundingSphere().radius();
+            if (area_radius != 0.0f) {
+
+                //We're only interested in the horizontal radius of the plant
+                WFMath::AxisBox<2> flat_bbox(WFMath::Point<2>(bbox.lowerBound(0), bbox.lowerBound(1)), WFMath::Point<2>(bbox.upperBound(0), bbox.upperBound(1)));
+                auto plant_radius = flat_bbox.boundingSphere().radius();
+
+                auto desired_radius = plant_radius * AREA_SCALING_FACTOR;
+                auto scaling_factor = desired_radius / area_radius;
+
+                //No need to alter if the scale is the same
+                if (!WFMath::Equal(scaling_factor, 1.0f)) {
+                    std::unique_ptr<Form<2>> new_area_shape(
+                            area_property->shape()->copy());
+                    new_area_shape->scale(scaling_factor);
+                    Atlas::Message::MapType shapeElement;
+                    new_area_shape->toAtlas(shapeElement);
+
+                    Atlas::Message::Element areaElement;
+                    area_property->get(areaElement);
+                    areaElement.asMap()["shape"] = shapeElement;
+
+                    area_property->set(areaElement);
+                    area_property->setFlags(flag_unsent);
+                }
             }
         }
     }

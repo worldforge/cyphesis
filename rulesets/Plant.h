@@ -59,6 +59,11 @@ class Plant : public Thing {
     static const int m_maxuDrop = 2; // max fruit dropped
 
     int dropFruit(OpVector & res, Property<int> * fruits_prop);
+    /**
+     * If there's an area attached to the plant it will be scaled according to the radius of the bounding box.
+     */
+    void scaleArea();
+
   public:
 
     explicit Plant(const std::string & id, long intId);

@@ -368,36 +368,36 @@
           <map name="shape">
             <list name="points">
               <list>
-                <float>-3.5</float>
-                <float>-3.5</float>
+                <float>-0.035</float>
+                <float>-0.035</float>
               </list>
               <list>
-                <float>-5</float>
+                <float>-0.05</float>
                 <float>0</float>
               </list>
               <list>
-                <float>-3.5</float>
-                <float>3.5</float>
+                <float>-0.035</float>
+                <float>0.035</float>
               </list>
               <list>
                 <float>0</float>
-                <float>5</float>
+                <float>0.05</float>
               </list>
               <list>
-                <float>3.5</float>
-                <float>3.5</float>
+                <float>0.035</float>
+                <float>0.035</float>
               </list>
               <list>
-                <float>5</float>
+                <float>0.05</float>
                 <float>0</float>
               </list>
               <list>
-                <float>3.5</float>
-                <float>-3.5</float>
+                <float>0.035</float>
+                <float>-0.035</float>
               </list>
               <list>
                 <float>0</float>
-                <float>-5</float>
+                <float>-0.05</float>
               </list>
             </list>
             <string name="type">polygon</string>
