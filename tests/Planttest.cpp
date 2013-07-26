@@ -29,6 +29,7 @@
 #include "rulesets/Plant.h"
 
 #include "rulesets/AtlasProperties.h"
+#include "rulesets/AreaProperty.h"
 #include "rulesets/BBoxProperty.h"
 #include "rulesets/Domain.h"
 #include "rulesets/Script.h"
@@ -601,9 +602,15 @@ void Property<std::string>::set(const Atlas::Message::Element & e)
     }
 }
 
+template<>
+void Property<Atlas::Message::MapType>::set(const Atlas::Message::Element & e)
+{
+}
+
 template class Property<int>;
 template class Property<double>;
 template class Property<std::string>;
+template class Property<Atlas::Message::MapType>;
 
 SoftProperty::SoftProperty()
 {
@@ -694,6 +701,33 @@ void BBoxProperty::add(const std::string & key,
 }
 
 BBoxProperty * BBoxProperty::copy() const
+{
+    return 0;
+}
+
+
+AreaProperty::AreaProperty()
+{
+}
+
+AreaProperty::~AreaProperty()
+{
+}
+
+void AreaProperty::set(const Atlas::Message::Element & ent)
+{
+}
+
+AreaProperty * AreaProperty::copy() const
+{
+    return 0;
+}
+
+void AreaProperty::apply(LocatedEntity * owner)
+{
+}
+
+const TerrainProperty * TerrainEffectorProperty::getTerrain(LocatedEntity * owner)
 {
     return 0;
 }
