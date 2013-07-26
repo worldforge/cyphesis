@@ -39,6 +39,9 @@ class Admin : public Account {
 
     void opDispatched(Operation op);
 
+    /// \brief Sets an attribute on the admin instance itself.
+    void setAttribute(const Atlas::Objects::Root& arg);
+
     /// \brief Connection used to monitor the in-game operations
     sigc::connection m_monitorConnection;
   public:

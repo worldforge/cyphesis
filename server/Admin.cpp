@@ -22,6 +22,9 @@
 #include "Connection.h"
 #include "Ruleset.h"
 #include "Juncture.h"
+#include "ExternalMindsConnection.h"
+#include "ExternalMindsManager.h"
+
 
 #include "rulesets/LocatedEntity.h"
 #include "rulesets/Character.h"
@@ -299,11 +302,16 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
 
         long intId = integerId(id);
 
-        if (m_charactersDict.find(intId) != m_charactersDict.end()) {
-            Account::SetOperation(op, res);
-            return;
+        if (intId == getIntId()) {
+            setAttribute(arg);
+        } else {
+
+            if (m_charactersDict.find(intId) != m_charactersDict.end()) {
+                Account::SetOperation(op, res);
+                return;
+            }
+            log(WARNING, "Unable to set attributes of non-character yet");
         }
-        log(WARNING, "Unable to set attributes of non-character yet");
         // Manipulate attributes of existing objects.
     } else if (objtype == "class" || objtype == "op_definition") {
         if (Inheritance::instance().hasClass(id)) {
@@ -394,6 +402,21 @@ void Admin::OtherOperation(const Operation & op, OpVector & res)
         customMonitorOperation(op, res);
     }
 }
+
+void Admin::setAttribute(const Root& args) {
+    //If the attribute "possessive" is set on the account it will control whether this
+    //account acts as an external minds connection.
+    if (args->hasAttr("possessive")) {
+        const Element possessiveElement = args->getAttr("possessive");
+        if (possessiveElement.isInt() && possessiveElement.asInt() != 0) {
+            ExternalMindsConnection connection(this);
+            ExternalMindsManager::instance()->addConnection(connection);
+        } else {
+            //TODO: remove connection
+        }
+    }
+}
+
 
 /// \brief Process a Monitor operation
 ///
