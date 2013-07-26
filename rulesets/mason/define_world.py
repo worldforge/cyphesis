@@ -264,8 +264,8 @@ def default(host='', account='', password='', **args):
         axe=m.make('axe',pos=(0,0,0),parent=settler.id)
         m.own(settler,axe)
         m.know(settler,[('forest','location',(130,40,0))])
-        m.learn(settler,(il.trade,"harvest_resource('lumber','oak','forest','axe')"))
-        m.learn(settler,(il.roam,"roam(30, ['forest'])"))
+        m.learn(settler,(il.trade,"harvest_resource('lumber','oak','forest','axe', range=60)"))
+        m.learn(settler,(il.roam,"roam(60, ['forest'])"))
 
     # An NPC forester
     if m.look_for(name='Ineos Adsam') is None:
@@ -273,8 +273,8 @@ def default(host='', account='', password='', **args):
         trowel=m.make('trowel',pos=(0,0,0),parent=settler.id)
         m.own(settler, trowel)
         m.know(settler,[('forest','location',(130,40,0))])
-        m.learn(settler,(il.trade,"plant_seeds('acorn','oak','forest','trowel')"))
-        m.learn(settler,(il.roam,"roam(30, ['forest'])"))
+        m.learn(settler,(il.trade,"plant_seeds('acorn','oak','forest','trowel', range=60)"))
+        m.learn(settler,(il.roam,"roam(60, ['forest'])"))
 
     stall = m.look_for(name='Butcher Stall')
     if stall is None:
