@@ -20,7 +20,7 @@
 
 #include "ServerRouting.h"
 #include "Connection.h"
-#include "TeleportAuthenticator.h"
+#include "PossessionAuthenticator.h"
 
 #include "rulesets/LocatedEntity.h"
 
@@ -105,7 +105,7 @@ void ServerAccount::createObject(const std::string & type_str,
     }
 
     // If we have a possess key (entity has a mind)
-    TeleportAuthenticator * tele_auth = 0;
+    PossessionAuthenticator * tele_auth = 0;
     std::string possess_key;
 
     const std::vector<Root> & args = op->getArgs();
@@ -114,7 +114,7 @@ void ServerAccount::createObject(const std::string & type_str,
         Element key;
         if(arg2->copyAttr("possess_key", key) == 0 && key.isString()) {
             possess_key = key.String();
-            tele_auth = TeleportAuthenticator::instance();
+            tele_auth = PossessionAuthenticator::instance();
         } else {
             log(ERROR, "Entity has mind but no possess key found");
             return;
@@ -132,9 +132,9 @@ void ServerAccount::createObject(const std::string & type_str,
     }
 
     if (tele_auth != 0) {
-        if (tele_auth->addTeleport(entity->getId(), possess_key) != 0) {
+        if (tele_auth->addPossession(entity->getId(), possess_key) != 0) {
             // Delete the created entity on failure
-            log(CRITICAL, "Unable to insert into TeleportAuthenticator");
+            log(CRITICAL, "Unable to insert into PossessionAuthenticator");
             return;
         }
     }

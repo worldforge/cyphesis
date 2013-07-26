@@ -268,7 +268,7 @@ int main()
 
 #include "server/Lobby.h"
 #include "server/Persistence.h"
-#include "server/TeleportAuthenticator.h"
+#include "server/PossessionAuthenticator.h"
 
 #include "rulesets/AtlasProperties.h"
 #include "rulesets/BBoxProperty.h"
@@ -364,14 +364,14 @@ int CommSocket::flush()
     return 0;
 }
 
-TeleportAuthenticator * TeleportAuthenticator::m_instance = NULL;
+PossessionAuthenticator * PossessionAuthenticator::m_instance = NULL;
 
-int TeleportAuthenticator::removeTeleport(const std::string &entity_id)
+int PossessionAuthenticator::removePossession(const std::string &entity_id)
 {
     return 0;
 }
 
-LocatedEntity *TeleportAuthenticator::authenticateTeleport(const std::string &entity_id,
+LocatedEntity *PossessionAuthenticator::authenticatePossession(const std::string &entity_id,
                                             const std::string &possess_key)
 {
     return 0;

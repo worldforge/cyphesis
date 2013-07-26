@@ -30,7 +30,7 @@
 
 #include "server/Connection.h"
 #include "server/ServerRouting.h"
-#include "server/TeleportAuthenticator.h"
+#include "server/PossessionAuthenticator.h"
 
 #include "rulesets/Character.h"
 
@@ -127,12 +127,12 @@ void ServerAccounttest::setup()
                                   "fa1a03a2-a745-4033-85cb-bb694e921e62",
                                   compose("%1", m_id_counter), m_id_counter++);
 
-    TeleportAuthenticator::init();
+    PossessionAuthenticator::init();
 }
 
 void ServerAccounttest::teardown()
 {
-    TeleportAuthenticator::del();
+    PossessionAuthenticator::del();
 
     delete m_server;
     delete m_account;

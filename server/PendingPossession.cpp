@@ -15,13 +15,13 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-#include "PendingTeleport.h"
+#include "PendingPossession.h"
 
 /// \brief Cons
 ///
-/// \param id The entity ID to associate a pending teleport with
+/// \param id The entity ID to associate a pending possession with
 /// \param key The possess key used to authenticate an account as owner of the entity
-PendingTeleport::PendingTeleport(const std::string &id, const std::string &key) 
+PendingPossession::PendingPossession(const std::string &id, const std::string &key)
                                             :   m_entity_id(id),
                                                 m_possess_key(key),
                                                 m_valid(false)
@@ -32,7 +32,7 @@ PendingTeleport::PendingTeleport(const std::string &id, const std::string &key)
 ///
 /// \param entity_id The ID of the entity whose ownership is to be claimed
 /// \param possess_key The possess key sent for authentication
-bool PendingTeleport::validate(const std::string &entity_id,
+bool PendingPossession::validate(const std::string &entity_id,
                                const std::string &possess_key) const
 {
     if(m_entity_id == entity_id && m_possess_key == possess_key) {
@@ -42,8 +42,8 @@ bool PendingTeleport::validate(const std::string &entity_id,
     }
 }
 
-/// \brief Set this teleport as validated
-void PendingTeleport::setValidated()
+/// \brief Set this possession as validated
+void PendingPossession::setValidated()
 {
     m_valid = true;
 }

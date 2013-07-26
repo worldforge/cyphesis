@@ -20,20 +20,20 @@
 
 
 
-TeleportAuthenticator * TeleportAuthenticator::m_instance = NULL;
+PossessionAuthenticator * PossessionAuthenticator::m_instance = NULL;
 
-int TeleportAuthenticator::addTeleport(const std::string &entity_id,
+int PossessionAuthenticator::addPossession(const std::string &entity_id,
                                         const std::string &possess_key)
 {
     return 0;
 }
 
-int TeleportAuthenticator::removeTeleport(const std::string &entity_id)
+int PossessionAuthenticator::removePossession(const std::string &entity_id)
 {
     return 0;
 }
 
-LocatedEntity *TeleportAuthenticator::authenticateTeleport(const std::string &entity_id,
+LocatedEntity *PossessionAuthenticator::authenticatePossession(const std::string &entity_id,
                                             const std::string &possess_key)
 {
     return 0;
