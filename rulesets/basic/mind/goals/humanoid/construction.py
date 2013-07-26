@@ -82,12 +82,12 @@ class harvest_resource(Goal):
 class plant_seeds(Goal):
     """Use a tool to plant a given kind of seed in a given location."""
     #Get a tool, move to area, look for seed, if found act on seed, if not look for source, move near source. If neither seed nor source is found, roam.
-    def __init__(self, seed, source, place, tool, range=30):
+    def __init__(self, seed, source, place, tool, range=30, spacing=4):
         Goal.__init__(self, "Plant seed to grow plants",
                       false,
                       [acquire_thing(tool),
                        move_me_area(place, range=range),
-                       spot_something_in_area(seed, place, range=range),
+                       spot_something_in_area(seed, place, range=range, seconds_until_forgotten=360),
                        move_me_to_focus(seed),
                        self.do,
                        spot_something_in_area(source, place, range=range),
@@ -98,7 +98,8 @@ class plant_seeds(Goal):
         self.place=place
         self.tool=tool
         self.range=range
-        self.vars=["seed","source","place","tool","range"]
+        self.spacing=spacing
+        self.vars=["seed","source","place","tool","range","spacing"]
     def do(self, me):
         if me.things.has_key(self.tool)==0:
             #print "No tool"
@@ -117,4 +118,15 @@ class plant_seeds(Goal):
         if seed.visible == False:
             me.remove_knowledge('focus', self.seed)
             return
+        
+        #Check that the seed isn't too close to other sources (to prevent us from planting too closely)
+        sources_all=me.map.find_by_type(self.source)
+        spacing_sqr=self.spacing*self.spacing
+        for thing in sources_all:
+            sqr_dist = square_distance(seed.location, thing.location)
+            if sqr_dist < spacing_sqr:
+                #We've found a source which is too close to the seed, so we'll not plant this one
+                me.remove_knowledge('focus', self.seed)
+                return
+
         return Operation("use",Entity(seed.id, objtype="obj"))
