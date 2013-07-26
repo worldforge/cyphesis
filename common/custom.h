@@ -41,6 +41,7 @@ extern int TELEPORT_NO;
 extern int COMMUNE_NO;
 extern int THINK_NO;
 extern int RELAY_NO;
+extern int POSSESS_NO;
 
 } } }
 
