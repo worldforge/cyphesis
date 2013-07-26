@@ -1780,8 +1780,8 @@ void Character::sendMind(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Character::sendMind(" << op->getParents().front() << ")" << std::endl << std::flush;);
 
-    if (0 != m_externalMind) {
-        if (0 != m_mind) {
+    if (m_externalMind != nullptr) {
+        if (m_mind != nullptr) {
             OpVector mindRes;
             m_mind->operation(op, mindRes);
             // Discard all the local results
@@ -1792,7 +1792,7 @@ void Character::sendMind(const Operation & op, OpVector & res)
     } else {
         debug(std::cout << "Using ops from local mind"
                         << std::endl << std::flush;);
-        if (0 != m_mind) {
+        if (m_mind != nullptr) {
             m_mind->operation(op, res);
         }
     }
