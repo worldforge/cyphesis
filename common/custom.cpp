@@ -87,6 +87,10 @@ void installCustomOperations()
     //The relay operation is used when an operation needs to be sent from one router to another, and there's no natural way of doing it.
     i.addChild(atlasOpDefinition("relay", "root_operation"));
     Atlas::Objects::Operation::RELAY_NO = atlas_factories->addFactory("relay", &Atlas::Objects::generic_factory);
+
+    i.addChild(atlasOpDefinition("possess", "set"));
+    Atlas::Objects::Operation::POSSESS_NO = atlas_factories->addFactory("possess", &Atlas::Objects::generic_factory);
+
 }
 
 void installCustomEntities()

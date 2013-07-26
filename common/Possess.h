@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2000-2006 Alistair Riddoch
+// Copyright (C) 2013 Erik Ogenvik
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,35 +16,25 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
-/// \brief Operation classes not defined in the Atlas spec
-///
-/// Operation classes used by Cyphesis as extensions of the
-/// original Atlas specification used to generate the classes in
-/// the Atlas-C++ library.
-/// \defgroup CustomOperations Custom Operation Classes
+#ifndef COMMON_POSSESS_H
+#define COMMON_POSSESS_H
+
+#include <Atlas/Objects/Generic.h>
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-int ACTUATE_NO = -1;
-int ADD_NO = -1;
-int ATTACK_NO = -1;
-int BURN_NO = -1;
-int CONNECT_NO = -1;
-int DROP_NO = -1;
-int MONITOR_NO = -1;
-int EAT_NO = -1;
-int UNSEEN_NO = -1;
-int UPDATE_NO = -1;
-int NOURISH_NO = -1;
-int PICKUP_NO = -1;
-int SETUP_NO = -1;
-int TICK_NO = -1;
-int THOUGHT_NO = -1;
-int GOAL_INFO_NO = -1;
-int TELEPORT_NO = -1;
-int COMMUNE_NO = -1;
-int THINK_NO = -1;
-int RELAY_NO = -1;
-int POSSESS_NO = -1;
+extern int POSSESS_NO;
+
+/// \brief An operation used to request that a client should possess an entity.
+/// \ingroup CustomOperations
+class Possess : public Generic
+{
+  public:
+        Possess() {
+        (*this)->setType("possess", POSSESS_NO);
+    }
+};
 
 } } }
+
+#endif // COMMON_POSSES_H
