@@ -19,22 +19,20 @@
 #ifndef EXTERNALMINDSCONNECTION_H_
 #define EXTERNALMINDSCONNECTION_H_
 
-class Router;
+class Link;
 
 class ExternalMindsConnection
 {
     public:
-//        ExternalMindsConnection(const ExternalMindsConnection& rhs);
-        ExternalMindsConnection(Router* router);
+        ExternalMindsConnection(Link* link);
         virtual ~ExternalMindsConnection();
 
-//        ExternalMindsConnection& ExternalMindsConnection::operator=(const ExternalMindsConnection&);
 
-        Router* getRouter();
+        Link* getLink();
 
     private:
 
-        Router* m_router;
+        Link* m_link;
 };
 
 #endif /* EXTERNALMINDSCONNECTION_H_ */

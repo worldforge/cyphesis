@@ -22,8 +22,10 @@
 
 #include "ExternalMindsManager.h"
 
-#include "common/Router.h"
+#include "common/Link.h"
 #include "common/Possess.h"
+#include "common/log.h"
+#include "common/compose.hpp"
 
 #include <Atlas/Objects/Entity.h>
 
@@ -49,13 +51,16 @@ void ExternalMindsManager::addConnection(
         const ExternalMindsConnection& connection)
 {
     m_connections.push_back(connection);
+    log(INFO, String::compose("New external mind connection registered. "
+            "There are now %1 connections.", m_connections.size()));
 }
 
 int ExternalMindsManager::requestPossession(LocatedEntity& entity,
         const std::string& possession_key)
 {
     if (!m_connections.empty()) {
-        ExternalMindsConnection& connection = *m_connections.begin();
+        //Use the last one registered.
+        ExternalMindsConnection& connection = *m_connections.rbegin();
 
         Atlas::Objects::Operation::Possess possessOp;
 
@@ -63,10 +68,11 @@ int ExternalMindsManager::requestPossession(LocatedEntity& entity,
         possess_args->setAttr("possess_key", possession_key);
 
         possessOp->setArgs1(possess_args);
-        possessOp->setTo(connection.getRouter()->getId());
+//        possessOp->setTo(connection.getRouter()->getId());
 
-        OpVector res;
-        connection.getRouter()->operation(possessOp, res);
+//        OpVector res;
+        log(INFO, "Requesting possession of mind.");
+        connection.getLink()->send(possessOp);
         return 0;
     }
     return -1;
