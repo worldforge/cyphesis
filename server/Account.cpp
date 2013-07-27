@@ -660,5 +660,5 @@ void Account::GetOperation(const Operation & op, OpVector & res)
 
 void Account::OtherOperation(const Operation & op, OpVector & res)
 {
-    error(op, "Unknown operation", res);
+    error(op, "Unknown operation in Account", res);
 }

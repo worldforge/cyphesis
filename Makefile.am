@@ -1,6 +1,6 @@
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = libraries physics common modules rulesets server client data \
+SUBDIRS = libraries physics common modules rulesets server client aiclient data \
           tools tests man dox
 
 docdir = $(datadir)/doc/cyphesis-$(VERSION)

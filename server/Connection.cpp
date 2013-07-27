@@ -255,7 +255,7 @@ void Connection::operation(const Operation & op, OpVector & res)
         case OP_INVALID:
             break;
         default:
-            error(op, "Unknown operation", res);
+            error(op, "Unknown operation in Connection", res);
             break;
     }
 }

@@ -71,6 +71,7 @@ static const int USAGE_CLIENT = 1 << 1;
 static const int USAGE_CYCMD = 1 << 2;
 static const int USAGE_DBASE = 1 << 3;
 static const int USAGE_CYPYTHON = 1 << 4;
+static const int USAGE_AICLIENT = 1 << 5;
 
 static const unsigned int SPM = 20; // seconds per minute
 static const unsigned int MPH = 60; // minutes per hour

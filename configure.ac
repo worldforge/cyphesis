@@ -401,6 +401,7 @@ AC_CONFIG_FILES([
     rulesets/Makefile
     server/Makefile
     client/Makefile
+    aiclient/Makefile
     tools/Makefile
     data/Makefile
     data/cyphesis.vconf
