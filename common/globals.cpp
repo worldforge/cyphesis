@@ -74,6 +74,7 @@ static const int C = USAGE_CLIENT;
 static const int M = USAGE_CYCMD;
 static const int D = USAGE_DBASE;
 static const int P = USAGE_CYPYTHON;
+static const int A = USAGE_AICLIENT;
 
 /// \brief Structure for holding data about varconf options
 typedef struct {
@@ -86,8 +87,8 @@ typedef struct {
 } usage_data;
 
 static const usage_data usage[] = {
-    { "", "help", "", "", "Display usage information and exit", S|C|M|D },
-    { "", "version", "", "", "Display the version information and exit", S|C|M|D },
+    { "", "help", "", "", "Display usage information and exit", S|C|M|D|A },
+    { "", "version", "", "", "Display the version information and exit", S|C|M|D|A },
     { "", "instance", "<short_name>", "\"cyphesis\"", "Unique short name for the server instance", S|C|M|D },
     { "", "interactive", "", "", "Run in interactive mode, giving a Python prompt", C },
     { CYPHESIS, "directory", "<directory>", "", "Directory where server data and scripts can be found", S|C },
