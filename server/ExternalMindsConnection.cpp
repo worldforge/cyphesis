@@ -22,15 +22,8 @@
 
 #include "ExternalMindsConnection.h"
 
-//ExternalMindsConnection::ExternalMindsConnection(
-//        const ExternalMindsConnection& rhs) :
-//        m_router(rhs.m_router)
-//{
-//
-//}
-
-ExternalMindsConnection::ExternalMindsConnection(Router* router) :
-        m_router(router)
+ExternalMindsConnection::ExternalMindsConnection(Link* link) :
+        m_link(link)
 {
 }
 
@@ -38,14 +31,9 @@ ExternalMindsConnection::~ExternalMindsConnection()
 {
 }
 
-//ExternalMindsConnection& ExternalMindsConnection::operator=(
-//        const ExternalMindsConnection&)
-//{
-//    m
-//}
 
-Router* ExternalMindsConnection::getRouter()
+Link* ExternalMindsConnection::getLink()
 {
-    return m_router;
+    return m_link;
 }
 
