@@ -162,6 +162,7 @@ void BaseClient::handleNet()
     Operation input;
     while ((input = m_connection.pop()).isValid()) {
         OpVector res;
+        operation(input, res);
 //        m_character->operation(input, res);
         OpVector::const_iterator Iend = res.end();
         for (OpVector::const_iterator I = res.begin(); I != Iend; ++I) {

@@ -33,6 +33,12 @@ class PossessionClient: public BaseClient
         virtual void idle();
 
         void enablePossession();
+
+    protected:
+        virtual void operation(const Operation & op, OpVector & res);
+
+        void PossessOperation(const Operation & op, OpVector & res);
+
 };
 
 #endif /* POSSESSIONCLIENT_H_ */

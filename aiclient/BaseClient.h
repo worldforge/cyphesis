@@ -37,6 +37,14 @@ class BaseClient {
     /// \brief Identifier of the Account on the server after login
     std::string m_playerId;
 
+    /**
+     * Called when an operation is received from the server.
+     *
+     * @param op The operation.
+     * @param res Any operations to be sent back.
+     */
+    virtual void operation(const Operation & op, OpVector & res) = 0;
+
   public:
     BaseClient();
     virtual ~BaseClient();

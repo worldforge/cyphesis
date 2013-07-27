@@ -26,6 +26,8 @@
 #include "common/globals.h"
 #include "common/log.h"
 #include "common/sockets.h"
+#include "common/Inheritance.h"
+#include "common/SystemTime.h"
 
 #include <varconf/config.h>
 
@@ -86,6 +88,12 @@ int main(int argc, char ** argv)
 
 
     init_python_api(ruleset_name, false);
+
+    Inheritance::instance();
+
+    SystemTime time;
+    time.update();
+
 
     PossessionClient possessionClient;
     possessionClient.connectLocal(client_socket_name);

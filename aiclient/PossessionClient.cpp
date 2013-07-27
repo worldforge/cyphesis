@@ -22,6 +22,10 @@
 
 #include "PossessionClient.h"
 
+#include "common/Possess.h"
+#include "common/log.h"
+#include "common/compose.hpp"
+
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Entity.h>
 
@@ -39,7 +43,8 @@ void PossessionClient::idle()
 
 }
 
-void PossessionClient::enablePossession() {
+void PossessionClient::enablePossession()
+{
 
     Atlas::Objects::Operation::Set set;
     set->setTo(m_playerId);
@@ -55,4 +60,18 @@ void PossessionClient::enablePossession() {
     m_connection.send(set);
 }
 
+void PossessionClient::operation(const Operation & op, OpVector & res)
+{
+    if (op->getClassNo() == Atlas::Objects::Operation::POSSESS_NO) {
+        PossessOperation(op, res);
+    } else {
+        log(NOTICE, String::compose("Unknown operation %1 in PossessionClient",
+                                        op->getParents().front()));
+    }
+}
+
+void PossessionClient::PossessOperation(const Operation & op, OpVector & res)
+{
+    log(INFO, "Got possession request.");
+}
 
