@@ -33,10 +33,11 @@ cyaiclient_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 endif
 
 cyaiclient_SOURCES = ClientConnection.cpp BaseClient.cpp \
-						PossessionClient.cpp aiclient.cpp
+						PossessionClient.cpp MindClient.cpp \
+						aiclient.cpp
 
 noinst_HEADERS = ClientConnection.h BaseClient.h \
-						PossessionClient.h
+						PossessionClient.h MindClient.h
 
 cyaiclient_LDADD = \
                  $(top_builddir)/rulesets/libscriptpython.a \

@@ -37,6 +37,9 @@ class BaseClient {
     /// \brief Identifier of the Account on the server after login
     std::string m_playerId;
 
+    std::string m_username;
+    std::string m_password;
+
     /**
      * Called when an operation is received from the server.
      *
@@ -44,6 +47,8 @@ class BaseClient {
      * @param res Any operations to be sent back.
      */
     virtual void operation(const Operation & op, OpVector & res) = 0;
+
+    std::string getErrorMessage(const Operation & err);
 
   public:
     BaseClient();
@@ -53,7 +58,7 @@ class BaseClient {
         return m_playerId;
     }
 
-    Atlas::Objects::Root createSystemAccount();
+    Atlas::Objects::Root createSystemAccount(const std::string& usernameSuffix = "");
     Atlas::Objects::Root createAccount(const std::string & name,
                                        const std::string & pword);
     CreatorClient * createCharacter(const std::string & name);
