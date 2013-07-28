@@ -26,6 +26,7 @@
 #include "common/Possess.h"
 #include "common/log.h"
 #include "common/compose.hpp"
+#include "rulesets/LocatedEntity.h"
 
 #include <Atlas/Objects/Entity.h>
 
@@ -66,6 +67,8 @@ int ExternalMindsManager::requestPossession(LocatedEntity& entity,
 
         Atlas::Objects::Entity::Anonymous possess_args;
         possess_args->setAttr("possess_key", possession_key);
+        possess_args->setAttr("possess_entity_id", entity.getId());
+
 
         possessOp->setArgs1(possess_args);
 //        possessOp->setTo(connection.getRouter()->getId());
