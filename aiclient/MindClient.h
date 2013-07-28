@@ -16,33 +16,30 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef POSSESSIONCLIENT_H_
-#define POSSESSIONCLIENT_H_
+#ifndef MINDCLIENT_H_
+#define MINDCLIENT_H_
 
 #include "BaseClient.h"
-#include "MindClient.h"
-#include <list>
 
 /**
- * Manages possession requests from the server and spawns new AI clients.
+ * Handles on mind of an entity on the server.
  */
-class PossessionClient: public BaseClient
+class MindClient: public BaseClient
 {
     public:
-        PossessionClient();
-        virtual ~PossessionClient();
+        MindClient();
+        virtual ~MindClient();
 
         virtual void idle();
 
-        void enablePossession();
+        Atlas::Objects::Root login(const std::string& username, const std::string& password);
+
+        void takePossession(const std::string& possessEntityId, const std::string& possessKey);
 
     protected:
         virtual void operation(const Operation & op, OpVector & res);
-
-        void PossessOperation(const Operation & op, OpVector & res);
-
-        std::list<MindClient> m_minds;
+        void InfoOperation(const Operation & op, OpVector & res);
 
 };
 
-#endif /* POSSESSIONCLIENT_H_ */
+#endif /* MINDCLIENT_H_ */

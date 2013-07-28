@@ -102,6 +102,6 @@ int main(int argc, char ** argv)
     possessionClient.enablePossession();
 
     while (!exit_flag) {
-        possessionClient.handleNet();
+        possessionClient.idle();
     }
 }

@@ -63,11 +63,13 @@ void BaseClient::send(const Operation & op)
 ///
 /// @param name User name of the new account
 /// @param password Password of the new account
-Root BaseClient::createSystemAccount()
+Root BaseClient::createSystemAccount(const std::string& usernameSuffix)
 {
     Anonymous player_ent;
-    player_ent->setAttr("username", create_session_username());
-    player_ent->setAttr("password", compose("%1%2", ::rand(), ::rand()));
+    m_username = create_session_username() + usernameSuffix;
+    player_ent->setAttr("username", m_username);
+    m_password = compose("%1%2", ::rand(), ::rand());
+    player_ent->setAttr("password", m_password);
     player_ent->setParents(std::list<std::string>(1, "sys"));
     
     Create createAccountOp;
@@ -107,7 +109,7 @@ Root BaseClient::createAccount(const std::string & name,
     player_ent->setAttr("password", password);
     player_ent->setParents(std::list<std::string>(1, "player"));
     
-    debug(std::cout << "Loggin " << name << " in with " << password << " as password"
+    debug(std::cout << "Logging " << name << " in with " << password << " as password"
                << std::endl << std::flush;);
     
     Login loginAccountOp;
@@ -151,10 +153,6 @@ void BaseClient::logout()
     }
 }
 
-// I'm making this pure virtual, to see if that is desired.
-//void BaseClient::idle() {
-//    time.sleep(0.1);
-//}
 
 /// \brief Handle any operations that have arrived from the server
 void BaseClient::handleNet()
@@ -167,6 +165,26 @@ void BaseClient::handleNet()
         OpVector::const_iterator Iend = res.end();
         for (OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
             send(*I);
+        }
+    }
+}
+
+std::string getErrorMessage(const Operation & err)
+{
+    const std::vector<Root>& args = err->getArgs();
+    if (args.empty()) {
+        return "Unknown error.";
+    } else {
+        const Root & arg = args.front();
+        Atlas::Message::Element message;
+        if (arg->copyAttr("message", message) != 0) {
+            return "Unknown error.";
+        } else {
+            if (!message.isString()) {
+                return "Unknown error.";
+            } else {
+                return message.String();
+            }
         }
     }
 }

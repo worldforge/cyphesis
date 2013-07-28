@@ -25,9 +25,15 @@
 #include "common/Possess.h"
 #include "common/log.h"
 #include "common/compose.hpp"
+#include "common/sockets.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Entity.h>
+
+using Atlas::Message::Element;
+using Atlas::Objects::Root;
+using Atlas::Objects::Entity::Anonymous;
+using Atlas::Objects::Operation::RootOperation;
 
 PossessionClient::PossessionClient()
 {
@@ -40,7 +46,10 @@ PossessionClient::~PossessionClient()
 
 void PossessionClient::idle()
 {
-
+    handleNet();
+    for (auto& mind : m_minds) {
+        mind.idle();
+    }
 }
 
 void PossessionClient::enablePossession()
@@ -65,13 +74,43 @@ void PossessionClient::operation(const Operation & op, OpVector & res)
     if (op->getClassNo() == Atlas::Objects::Operation::POSSESS_NO) {
         PossessOperation(op, res);
     } else {
-        log(NOTICE, String::compose("Unknown operation %1 in PossessionClient",
-                                        op->getParents().front()));
+        log(NOTICE,
+                String::compose("Unknown operation %1 in PossessionClient",
+                        op->getParents().front()));
     }
 }
 
-void PossessionClient::PossessOperation(const Operation & op, OpVector & res)
+void PossessionClient::PossessOperation(const Operation& op, OpVector & res)
 {
     log(INFO, "Got possession request.");
+
+    auto args = op->getArgs();
+    if (!args.empty()) {
+        const Root & arg = args.front();
+
+        Element possessKeyElement;
+        if (arg->copyAttr("possess_key", possessKeyElement) == 0
+                && possessKeyElement.isString()) {
+            Element possessionEntityIdElement;
+            if (arg->copyAttr("possess_entity_id", possessionEntityIdElement)
+                    == 0 && possessionEntityIdElement.isString()) {
+
+                const std::string& possessKey = possessKeyElement.asString();
+                const std::string& possessionEntityId =
+                        possessionEntityIdElement.asString();
+                m_minds.emplace_back();
+                MindClient& mindClient = m_minds.back();
+                log(INFO, "New mind created.");
+
+                mindClient.connectLocal(client_socket_name);
+                //TODO: allow for multiple logins per account
+//                mindClient.login(m_username, m_password);
+
+                //For now we'll create a new system account per mind. We should really instead use the one account created by this client, but that requires changes to the server.
+                mindClient.createSystemAccount(possessionEntityId);
+                mindClient.takePossession(possessionEntityId, possessKey);
+            }
+        }
+    }
 }
 
