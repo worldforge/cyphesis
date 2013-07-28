@@ -660,5 +660,6 @@ void Account::GetOperation(const Operation & op, OpVector & res)
 
 void Account::OtherOperation(const Operation & op, OpVector & res)
 {
-    error(op, "Unknown operation in Account", res);
+    std::string parent = op->getParents().empty() ? "-" : op->getParents().front();
+    error(op, String::compose("Unknown operation %1 in Account", parent), res);
 }
