@@ -255,7 +255,8 @@ void Connection::operation(const Operation & op, OpVector & res)
         case OP_INVALID:
             break;
         default:
-            error(op, "Unknown operation in Connection", res);
+            std::string parent = op->getParents().empty() ? "-" : op->getParents().front();
+            error(op, String::compose("Unknown operation %1 in Connection", parent), res);
             break;
     }
 }
