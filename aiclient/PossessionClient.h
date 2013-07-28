@@ -23,13 +23,15 @@
 #include "MindClient.h"
 #include <list>
 
+class MindFactory;
+
 /**
  * Manages possession requests from the server and spawns new AI clients.
  */
 class PossessionClient: public BaseClient
 {
     public:
-        PossessionClient();
+        PossessionClient(MindFactory& mindFactory);
         virtual ~PossessionClient();
 
         virtual void idle();
@@ -37,9 +39,12 @@ class PossessionClient: public BaseClient
         void enablePossession();
 
     protected:
+
         virtual void operation(const Operation & op, OpVector & res);
 
         void PossessOperation(const Operation & op, OpVector & res);
+
+        MindFactory& m_mindFactory;
 
         std::list<MindClient> m_minds;
 

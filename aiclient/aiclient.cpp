@@ -15,16 +15,17 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-
-
 #include "ClientConnection.h"
 #include "PossessionClient.h"
 
 #include "rulesets/Python_API.h"
+#include "rulesets/MindFactory.h"
+#include "rulesets/PythonScriptFactory.h"
 
 #include "common/debug.h"
 #include "common/globals.h"
 #include "common/log.h"
+#include "common/compose.hpp"
 #include "common/sockets.h"
 #include "common/Inheritance.h"
 #include "common/SystemTime.h"
@@ -41,21 +42,23 @@ using Atlas::Objects::Entity::Anonymous;
 
 static void usage(const char * prgname)
 {
-    std::cout << "usage: " << prgname << " [ local_socket_path ]"
-              << std::endl << std::flush;
+    std::cout << "usage: " << prgname << " [ local_socket_path ]" << std::endl
+            << std::flush;
 }
 
 STRING_OPTION(server, "localhost", "aiclient", "serverhost",
-              "Hostname of the server to connect to");
+        "Hostname of the server to connect to")
+;
 
 STRING_OPTION(account, "", "aiclient", "account",
-              "Account name to use to authenticate to the server");
+        "Account name to use to authenticate to the server")
+;
 
 STRING_OPTION(password, "", "aiclient", "password",
-              "Password to use to authenticate to the server");
+        "Password to use to authenticate to the server")
+;
 
 static bool debug_flag = false;
-
 
 int main(int argc, char ** argv)
 {
@@ -86,7 +89,6 @@ int main(int argc, char ** argv)
         return 1;
     }
 
-
     init_python_api(ruleset_name, false);
 
     Inheritance::instance();
@@ -94,8 +96,35 @@ int main(int argc, char ** argv)
     SystemTime time;
     time.update();
 
+    MindFactory mindFactory;
 
-    PossessionClient possessionClient;
+    std::string script_package = "mind.NPCMind";
+    std::string script_class = "NPCMind";
+
+    if (mindFactory.m_scriptFactory != 0) {
+        if (mindFactory.m_scriptFactory->package() != script_package) {
+            delete mindFactory.m_scriptFactory;
+            mindFactory.m_scriptFactory = 0;
+        }
+    }
+    if (mindFactory.m_scriptFactory == 0) {
+        PythonScriptFactory<BaseMind> * psf = new PythonScriptFactory<BaseMind>(
+                script_package, script_class);
+        if (psf->setup() == 0) {
+            log(INFO,
+                    String::compose(
+                            "Initialized mind code with Python class %1.%2.",
+                            script_package, script_class));
+            mindFactory.m_scriptFactory = psf;
+        } else {
+            log(ERROR,
+                    String::compose("Python class \"%1.%2\" failed to load",
+                            script_package, script_class));
+            delete psf;
+        }
+    }
+
+    PossessionClient possessionClient(mindFactory);
     possessionClient.connectLocal(client_socket_name);
     Root systemAccountResponse = possessionClient.createSystemAccount();
 
