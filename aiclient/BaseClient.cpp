@@ -16,7 +16,6 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-
 #include "BaseClient.h"
 
 #include "common/id.h"
@@ -27,6 +26,10 @@
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
+
+#include <Atlas/Message/QueuedDecoder.h>
+#include <Atlas/Objects/Encoder.h>
+#include <Atlas/Codecs/XML.h>
 
 #include <cstdlib>
 
@@ -42,7 +45,7 @@ using Atlas::Objects::smart_dynamic_cast;
 
 using String::compose;
 
-static const bool debug_flag = false;
+static const bool debug_flag = true;
 
 BaseClient::BaseClient()
 {
@@ -58,7 +61,6 @@ void BaseClient::send(const Operation & op)
     m_connection.send(op);
 }
 
-
 /// \brief Create a new account on the server
 ///
 /// @param name User name of the new account
@@ -71,15 +73,15 @@ Root BaseClient::createSystemAccount(const std::string& usernameSuffix)
     m_password = compose("%1%2", ::rand(), ::rand());
     player_ent->setAttr("password", m_password);
     player_ent->setParents(std::list<std::string>(1, "sys"));
-    
+
     Create createAccountOp;
     createAccountOp->setArgs1(player_ent);
     createAccountOp->setSerialno(m_connection.newSerialNo());
     send(createAccountOp);
     if (m_connection.wait() != 0) {
         std::cerr << "ERROR: Failed to log into server: \""
-                  << m_connection.errorMessage() << "\""
-                  << std::endl << std::flush;
+                << m_connection.errorMessage() << "\"" << std::endl
+                << std::flush;
         return Root(0);
     }
 
@@ -87,7 +89,7 @@ Root BaseClient::createSystemAccount(const std::string& usernameSuffix)
 
     if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         std::cerr << "ERROR: Logged in, but account has no id" << std::endl
-                  << std::flush;
+                << std::flush;
     } else {
         m_playerId = ent->getId();
     }
@@ -100,7 +102,7 @@ Root BaseClient::createSystemAccount(const std::string& usernameSuffix)
 /// @param name User name of the new account
 /// @param password Password of the new account
 Root BaseClient::createAccount(const std::string & name,
-                               const std::string & password)
+        const std::string & password)
 {
     m_playerName = name;
 
@@ -108,10 +110,12 @@ Root BaseClient::createAccount(const std::string & name,
     player_ent->setAttr("username", name);
     player_ent->setAttr("password", password);
     player_ent->setParents(std::list<std::string>(1, "player"));
-    
-    debug(std::cout << "Logging " << name << " in with " << password << " as password"
-               << std::endl << std::flush;);
-    
+
+    debug(
+            std::cout << "Logging " << name << " in with " << password
+                    << " as password" << std::endl << std::flush
+            ;);
+
     Login loginAccountOp;
     loginAccountOp->setArgs1(player_ent);
     loginAccountOp->setSerialno(m_connection.newSerialNo());
@@ -124,7 +128,7 @@ Root BaseClient::createAccount(const std::string & name,
         send(createAccountOp);
         if (m_connection.wait() != 0) {
             std::cerr << "ERROR: Failed to log into server" << std::endl
-                      << std::flush;
+                    << std::flush;
             return Root(0);
         }
     }
@@ -133,15 +137,13 @@ Root BaseClient::createAccount(const std::string & name,
 
     if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         std::cerr << "ERROR: Logged in, but account has no id" << std::endl
-                  << std::flush;
+                << std::flush;
     } else {
         m_playerId = ent->getId();
     }
 
     return ent;
 }
-
-
 
 void BaseClient::logout()
 {
@@ -153,23 +155,49 @@ void BaseClient::logout()
     }
 }
 
-
 /// \brief Handle any operations that have arrived from the server
 void BaseClient::handleNet()
 {
     Operation input;
     while ((input = m_connection.pop()).isValid()) {
+        if (input->getClassNo() == Atlas::Objects::Operation::ERROR_NO) {
+            log(ERROR,
+                    String::compose("Got error from server: %1",
+                            getErrorMessage(input)));
+        }
+        if (debug_flag) {
+            std::stringstream ss;
+            ss << "I: " << input->getParents().front() << " : ";
+            Atlas::Message::QueuedDecoder decoder;
+            Atlas::Codecs::XML codec(ss, decoder);
+
+            Atlas::Objects::ObjectsEncoder encoder(codec);
+            encoder.streamObjectsMessage(input);
+            ss << std::flush;
+            debug(std::cerr << ss.str() << std::endl;);
+        }
+
         OpVector res;
         operation(input, res);
-//        m_character->operation(input, res);
         OpVector::const_iterator Iend = res.end();
         for (OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
+            if (debug_flag) {
+                std::stringstream ss;
+                ss << "O: " << (*I)->getParents().front() << " : ";
+                Atlas::Message::QueuedDecoder decoder;
+                Atlas::Codecs::XML codec(ss, decoder);
+
+                Atlas::Objects::ObjectsEncoder encoder(codec);
+                encoder.streamObjectsMessage(*I);
+                ss << std::flush;
+                debug(std::cerr << ss.str() << std::endl;);
+            }
             send(*I);
         }
     }
 }
 
-std::string getErrorMessage(const Operation & err)
+std::string BaseClient::getErrorMessage(const Operation & err)
 {
     const std::vector<Root>& args = err->getArgs();
     if (args.empty()) {

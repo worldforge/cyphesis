@@ -21,13 +21,16 @@
 
 #include "BaseClient.h"
 
+class MindFactory;
+class BaseMind;
+
 /**
  * Handles on mind of an entity on the server.
  */
 class MindClient: public BaseClient
 {
     public:
-        MindClient();
+        MindClient(MindFactory& mindFactory);
         virtual ~MindClient();
 
         virtual void idle();
@@ -39,6 +42,10 @@ class MindClient: public BaseClient
     protected:
         virtual void operation(const Operation & op, OpVector & res);
         void InfoOperation(const Operation & op, OpVector & res);
+        MindFactory& m_mindFactory;
+
+        BaseMind* m_mind;
+        std::string m_entityId;
 
 };
 

@@ -35,7 +35,8 @@ using Atlas::Objects::Root;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::RootOperation;
 
-PossessionClient::PossessionClient()
+PossessionClient::PossessionClient(MindFactory& mindFactory)
+: m_mindFactory(mindFactory)
 {
 
 }
@@ -98,7 +99,7 @@ void PossessionClient::PossessOperation(const Operation& op, OpVector & res)
                 const std::string& possessKey = possessKeyElement.asString();
                 const std::string& possessionEntityId =
                         possessionEntityIdElement.asString();
-                m_minds.emplace_back();
+                m_minds.emplace_back(m_mindFactory);
                 MindClient& mindClient = m_minds.back();
                 log(INFO, "New mind created.");
 
