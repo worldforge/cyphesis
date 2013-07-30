@@ -572,10 +572,13 @@ class roam(Goal):
         self.count = len(locations)
         self.vars = ["radius", "list"]
     def do_roaming(self, me):
-        waypointName = self.list[randint(0, self.count - 1  )]
-        waypoint = me.get_knowledge("location",waypointName)
-        
-        loc = me.location.copy()
-        loc.coordinates=Point3D(map(lambda c:c+uniform(-self.radius,self.radius),
-                                     waypoint.coordinates))
-        self.subgoals[0].location = loc
+        move_me_goal = self.subgoals[0]
+        #We need to set a new direction if we've either haven't set one, or if we've arrived.
+        if move_me_goal.location == None or move_me_goal.fulfilled(me) == True:
+            waypointName = self.list[randint(0, self.count - 1  )]
+            waypoint = me.get_knowledge("location",waypointName)
+            
+            loc = me.location.copy()
+            loc.coordinates=Point3D(map(lambda c:c+uniform(-self.radius,self.radius),
+                                         waypoint.coordinates))
+            move_me_goal.location = loc
