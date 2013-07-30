@@ -35,8 +35,8 @@ using Atlas::Objects::Root;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::RootOperation;
 
-PossessionClient::PossessionClient(MindFactory& mindFactory)
-: m_mindFactory(mindFactory)
+PossessionClient::PossessionClient(MindFactory& mindFactory) :
+        m_mindFactory(mindFactory)
 {
 
 }
@@ -74,6 +74,11 @@ void PossessionClient::operation(const Operation & op, OpVector & res)
 {
     if (op->getClassNo() == Atlas::Objects::Operation::POSSESS_NO) {
         PossessOperation(op, res);
+    } else if (op->getClassNo() == Atlas::Objects::Operation::APPEARANCE_NO) {
+        //Ignore appearance ops, since they just signal other accounts being connected
+    } else if (op->getClassNo()
+            == Atlas::Objects::Operation::DISAPPEARANCE_NO) {
+        //Ignore disappearance ops, since they just signal other accounts being disconnected
     } else {
         log(NOTICE,
                 String::compose("Unknown operation %1 in PossessionClient",
@@ -107,7 +112,7 @@ void PossessionClient::PossessOperation(const Operation& op, OpVector & res)
                 //TODO: allow for multiple logins per account
 //                mindClient.login(m_username, m_password);
 
-                //For now we'll create a new system account per mind. We should really instead use the one account created by this client, but that requires changes to the server.
+//For now we'll create a new system account per mind. We should really instead use the one account created by this client, but that requires changes to the server.
                 mindClient.createSystemAccount(possessionEntityId);
                 mindClient.takePossession(possessionEntityId, possessKey);
             }
