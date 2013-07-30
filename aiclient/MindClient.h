@@ -41,7 +41,7 @@ class MindClient: public BaseClient
 
     protected:
         virtual void operation(const Operation & op, OpVector & res);
-        void InfoOperation(const Operation & op, OpVector & res);
+        void createMind(const Operation& op);
         MindFactory& m_mindFactory;
 
         BaseMind* m_mind;

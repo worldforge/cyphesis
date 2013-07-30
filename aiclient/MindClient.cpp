@@ -28,6 +28,7 @@
 #include "common/id.h"
 #include "common/ScriptKit.h"
 #include "common/Setup.h"
+#include "common/TypeNode.h"
 
 #include "rulesets/MindFactory.h"
 #include "rulesets/BaseMind.h"
@@ -59,6 +60,7 @@ MindClient::~MindClient()
 void MindClient::idle()
 {
     handleNet();
+    //TODO: make mind think at intervals
 }
 
 void MindClient::takePossession(const std::string& possessEntityId,
@@ -77,9 +79,19 @@ void MindClient::takePossession(const std::string& possessEntityId,
     Look l;
     l->setFrom(m_playerId);
     l->setArgs1(what);
-//    l->setSerialno(getNewSerialno());
-    m_connection.send(l);
-
+    OpVector res;
+    if (m_connection.sendAndWaitReply(l, res) != 0) {
+        std::cerr << "ERROR: Failed to take possession." << std::endl
+                << std::flush;
+    }
+    Operation resOp = res.front();
+    if (resOp->getClassNo() == Atlas::Objects::Operation::SIGHT_NO) {
+        createMind(resOp);
+    } else {
+        log(ERROR,
+                String::compose("Unrecognized response to possession: %1",
+                        resOp->getParents().front()));
+    }
 }
 
 Root MindClient::login(const std::string& username, const std::string& password)
@@ -99,16 +111,14 @@ Root MindClient::login(const std::string& username, const std::string& password)
 
     Login loginAccountOp;
     loginAccountOp->setArgs1(player_ent);
-    loginAccountOp->setSerialno(m_connection.newSerialNo());
-    send(loginAccountOp);
-
-    if (m_connection.wait() != 0) {
+    OpVector res;
+    if (m_connection.sendAndWaitReply(loginAccountOp, res) != 0) {
         std::cerr << "ERROR: Failed to log into server" << std::endl
                 << std::flush;
         return Root(0);
     }
 
-    const Root & ent = m_connection.getInfoReply();
+    const Root& ent = res.front()->getArgs().front();
 
     if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         std::cerr << "ERROR: Logged in, but account has no id" << std::endl
@@ -124,15 +134,17 @@ Root MindClient::login(const std::string& username, const std::string& password)
 void MindClient::operation(const Operation & op, OpVector & res)
 {
     if (m_mind && op->getTo() == m_entityId) {
-//    if (m_mind) {
         m_mind->operation(op, res);
         for (Operation& resOp : res) {
             resOp->setFrom(m_mind->getId());
         }
     } else {
         if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO) {
-            InfoOperation(op, res);
+//            InfoOperation(op, res);
         } else if (op->getClassNo() == Atlas::Objects::Operation::SIGHT_NO) {
+//            m_mind->operation(op, res);
+        } else if (op->getClassNo() == Atlas::Objects::Operation::GET_NO
+                && m_mind != nullptr) {
             m_mind->operation(op, res);
         } else {
             log(NOTICE,
@@ -142,42 +154,56 @@ void MindClient::operation(const Operation & op, OpVector & res)
     }
 }
 
-void MindClient::InfoOperation(const Operation & op, OpVector & res)
+void MindClient::createMind(const Operation& op)
 {
+
     const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
-//        warning() << "no args character create/take response";
+        log(ERROR, "no args character create/take response");
         return;
     }
 
     RootEntity ent = Atlas::Objects::smart_dynamic_cast<RootEntity>(
             args.front());
     if (!ent.isValid()) {
-//        warning() << "malformed character create/take response";
+        log(ERROR, "malformed character create/take response");
         return;
     }
 
-    if (m_mind == nullptr) {
-        log(INFO, "Got info on account, creating mind for entity.");
-        m_mind = m_mindFactory.newMind(m_entityId, integerId(m_entityId));
-//        m_mind->setType(ent->getType());
+    std::string entityId = ent->getId();
+    std::string entityType = ent->getParents().front();
 
-        if (m_mindFactory.m_scriptFactory != 0) {
-            log(INFO, "Adding script to entity.");
-            m_mindFactory.m_scriptFactory->addScript(m_mind);
-        }
+    log(INFO,
+            String::compose(
+                    "Got info on account, creating mind for entity with id %1 of type %2.",
+                    entityId, entityType));
+    m_mind = m_mindFactory.newMind(entityId, integerId(entityId));
+    //TODO: setup and get type from Inheritance
+    m_mind->setType(new TypeNode(entityType));
 
-        Atlas::Objects::Operation::Setup s;
-        Anonymous setup_arg;
-        setup_arg->setName("mind");
-        s->setTo(ent->getId());
-        s->setArgs1(setup_arg);
-        m_mind->operation(s, res);
-
-        Look l;
-        l->setTo(ent->getId());
-        m_mind->operation(l, res);
-
+    if (m_mindFactory.m_scriptFactory != 0) {
+        log(INFO, "Adding script to entity.");
+        m_mindFactory.m_scriptFactory->addScript(m_mind);
     }
 
+    Atlas::Objects::Operation::Setup s;
+    Anonymous setup_arg;
+    setup_arg->setName("mind");
+    s->setTo(ent->getId());
+    s->setArgs1(setup_arg);
+    OpVector res;
+    m_mind->operation(s, res);
+
+    for (auto& resOp : res) {
+        resOp->setFrom(entityId);
+        m_connection.send(resOp);
+    }
+
+    //Start by sending a unspecified "Look". This tells the server to send us a bootstrapped view.
+    Look l;
+    l->setFrom(entityId);
+    m_connection.send(l);
+
 }
+
+
