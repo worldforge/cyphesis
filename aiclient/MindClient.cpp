@@ -176,7 +176,18 @@ void MindClient::operation(const Operation & op, OpVector & res)
             //Handled (by printing to log) in BaseClient for now. Should we be able to listen for specific refno's?
         } else if (op->getClassNo() == Atlas::Objects::Operation::GET_NO
                 && m_mind != nullptr) {
-            m_mind->operation(op, res);
+            //Send Get operations on to the mind, as they are used for thought inspection
+            operationToMind(op, res);
+
+            Atlas::Objects::Operation::Info info;
+            std::vector<Root> newRes;
+            //Why can't I do "info->setArgs(res)"?
+            for (auto& operation : res) {
+                newRes.push_back(operation);
+            }
+            info->setArgs(newRes);
+            res.clear();
+            res.push_back(info);
         } else {
             log(NOTICE,
                     String::compose("Unknown operation %1 in MindClient",
@@ -217,6 +228,11 @@ void MindClient::createMind(const Operation& op)
         m_mindFactory.m_scriptFactory->addScript(m_mind);
     }
 
+    //Send the Sight operation we just got on to the mind, since it contains info about the entity.
+    OpVector res;
+    operationToMind(op, res);
+
+    //Also send a "Setup" op to the mind, which will trigger any setup hooks.
     Atlas::Objects::Operation::Setup s;
     Anonymous setup_arg;
     setup_arg->setName("mind");
