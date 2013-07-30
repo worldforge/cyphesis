@@ -166,6 +166,9 @@ void BaseClient::handleNet()
         operation(input, res);
         OpVector::const_iterator Iend = res.end();
         for (OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
+            if (input->hasAttrFlag(Atlas::Objects::Operation::SERIALNO_FLAG)) {
+                (*I)->setRefno(input->getSerialno());
+            }
             send(*I);
         }
     }
