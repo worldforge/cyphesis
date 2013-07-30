@@ -29,6 +29,7 @@
 #include "common/ScriptKit.h"
 #include "common/Setup.h"
 #include "common/TypeNode.h"
+#include "common/Tick.h"
 
 #include "rulesets/MindFactory.h"
 #include "rulesets/BaseMind.h"
@@ -48,7 +49,7 @@ using Atlas::Objects::Entity::Anonymous;
 static const bool debug_flag = false;
 
 MindClient::MindClient(MindFactory& mindFactory) :
-        m_mindFactory(mindFactory), m_mind(0)
+        m_mindFactory(mindFactory), m_mind(0), m_nextTick(0)
 {
 
 }
@@ -60,7 +61,23 @@ MindClient::~MindClient()
 void MindClient::idle()
 {
     handleNet();
-    //TODO: make mind think at intervals
+
+    //Send a Tick operation every second
+    //TODO: make this better and more dynamic
+    m_systemTime.update();
+    if (m_systemTime.seconds() >= m_nextTick) {
+        Atlas::Objects::Operation::Tick tick;
+
+        OpVector res;
+        operationToMind(tick, res);
+        for (auto& resOp : res) {
+            m_connection.send(resOp);
+        }
+
+        m_systemTime.update();
+        m_nextTick = m_systemTime.seconds() + 1;
+    }
+
 }
 
 void MindClient::takePossession(const std::string& possessEntityId,

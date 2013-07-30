@@ -21,6 +21,8 @@
 
 #include "BaseClient.h"
 
+#include "common/SystemTime.h"
+
 class MindFactory;
 class BaseMind;
 
@@ -46,6 +48,10 @@ class MindClient: public BaseClient
 
         BaseMind* m_mind;
         std::string m_entityId;
+
+        SystemTime m_systemTime;
+        time_t m_nextTick;
+
 
 };
 
