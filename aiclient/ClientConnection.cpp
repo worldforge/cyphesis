@@ -27,11 +27,17 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
+#include <Atlas/Message/QueuedDecoder.h>
+#include <Atlas/Objects/Encoder.h>
+#include <Atlas/Codecs/XML.h>
+
+
+
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::RootOperation;
 
-static bool debug_flag = false;
+static bool debug_flag = true;
 
 ClientConnection::ClientConnection()
 {
@@ -43,7 +49,17 @@ ClientConnection::~ClientConnection()
 
 void ClientConnection::operation(const RootOperation & op)
 {
-    debug(std::cout << "A " << op->getParents().front() << " op from server!" << std::endl << std::flush;);
+    if (debug_flag) {
+        std::stringstream ss;
+        ss << "I: " << op->getParents().front() << " : ";
+        Atlas::Message::QueuedDecoder decoder;
+        Atlas::Codecs::XML codec(ss, decoder);
+
+        Atlas::Objects::ObjectsEncoder encoder(codec);
+        encoder.streamObjectsMessage(op);
+        ss << std::flush;
+        debug(std::cerr << ss.str() << std::endl;);
+    }
 
     reply_flag = true;
     operationQueue.push_back(op);
@@ -81,6 +97,22 @@ int ClientConnection::wait()
       }
    }
    return error_flag ? -1 : 0;
+}
+
+void ClientConnection::send(const RootOperation & op)
+{
+    if (debug_flag) {
+        std::stringstream ss;
+        ss << "O: " << op->getParents().front() << " : ";
+        Atlas::Message::QueuedDecoder decoder;
+        Atlas::Codecs::XML codec(ss, decoder);
+
+        Atlas::Objects::ObjectsEncoder encoder(codec);
+        encoder.streamObjectsMessage(op);
+        ss << std::flush;
+        debug(std::cerr << ss.str() << std::endl;);
+    }
+    AtlasStreamClient::send(op);
 }
 
 int ClientConnection::sendAndWaitReply(const Operation & op, OpVector & res)

@@ -27,10 +27,6 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
-#include <Atlas/Message/QueuedDecoder.h>
-#include <Atlas/Objects/Encoder.h>
-#include <Atlas/Codecs/XML.h>
-
 #include <cstdlib>
 
 using Atlas::Message::MapType;
@@ -165,33 +161,11 @@ void BaseClient::handleNet()
                     String::compose("Got error from server: %1",
                             getErrorMessage(input)));
         }
-        if (debug_flag) {
-            std::stringstream ss;
-            ss << "I: " << input->getParents().front() << " : ";
-            Atlas::Message::QueuedDecoder decoder;
-            Atlas::Codecs::XML codec(ss, decoder);
-
-            Atlas::Objects::ObjectsEncoder encoder(codec);
-            encoder.streamObjectsMessage(input);
-            ss << std::flush;
-            debug(std::cerr << ss.str() << std::endl;);
-        }
 
         OpVector res;
         operation(input, res);
         OpVector::const_iterator Iend = res.end();
         for (OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
-            if (debug_flag) {
-                std::stringstream ss;
-                ss << "O: " << (*I)->getParents().front() << " : ";
-                Atlas::Message::QueuedDecoder decoder;
-                Atlas::Codecs::XML codec(ss, decoder);
-
-                Atlas::Objects::ObjectsEncoder encoder(codec);
-                encoder.streamObjectsMessage(*I);
-                ss << std::flush;
-                debug(std::cerr << ss.str() << std::endl;);
-            }
             send(*I);
         }
     }
