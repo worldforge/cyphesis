@@ -148,18 +148,32 @@ Root MindClient::login(const std::string& username, const std::string& password)
 
 }
 
+void MindClient::operationToMind(const Operation & op, OpVector & res)
+{
+    if (m_mind) {
+        OpVector mindRes;
+        m_mind->operation(op, mindRes);
+        for (Operation& resOp : mindRes) {
+            if (resOp->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
+//Just filter out any tick operations for now. We'll have to decide to handle this better.
+            } else {
+                resOp->setFrom(m_mind->getId());
+                res.push_back(resOp);
+            }
+        }
+    }
+}
+
 void MindClient::operation(const Operation & op, OpVector & res)
 {
     if (m_mind && op->getTo() == m_entityId) {
-        m_mind->operation(op, res);
-        for (Operation& resOp : res) {
-            resOp->setFrom(m_mind->getId());
-        }
+        operationToMind(op, res);
     } else {
         if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO) {
 //            InfoOperation(op, res);
         } else if (op->getClassNo() == Atlas::Objects::Operation::SIGHT_NO) {
-//            m_mind->operation(op, res);
+        } else if (op->getClassNo() == Atlas::Objects::Operation::ERROR_NO) {
+            //Handled (by printing to log) in BaseClient for now. Should we be able to listen for specific refno's?
         } else if (op->getClassNo() == Atlas::Objects::Operation::GET_NO
                 && m_mind != nullptr) {
             m_mind->operation(op, res);
@@ -208,11 +222,9 @@ void MindClient::createMind(const Operation& op)
     setup_arg->setName("mind");
     s->setTo(ent->getId());
     s->setArgs1(setup_arg);
-    OpVector res;
-    m_mind->operation(s, res);
+    operationToMind(s, res);
 
     for (auto& resOp : res) {
-        resOp->setFrom(entityId);
         m_connection.send(resOp);
     }
 
@@ -222,5 +234,4 @@ void MindClient::createMind(const Operation& op)
     m_connection.send(l);
 
 }
-
 
