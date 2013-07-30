@@ -172,6 +172,11 @@ void MindClient::operation(const Operation & op, OpVector & res)
         if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO) {
 //            InfoOperation(op, res);
         } else if (op->getClassNo() == Atlas::Objects::Operation::SIGHT_NO) {
+        } else if (op->getClassNo() == Atlas::Objects::Operation::APPEARANCE_NO) {
+            //Ignore appearance ops, since they just signal other accounts being connected
+        } else if (op->getClassNo()
+                == Atlas::Objects::Operation::DISAPPEARANCE_NO) {
+            //Ignore disappearance ops, since they just signal other accounts being disconnected
         } else if (op->getClassNo() == Atlas::Objects::Operation::ERROR_NO) {
             //Handled (by printing to log) in BaseClient for now. Should we be able to listen for specific refno's?
         } else if (op->getClassNo() == Atlas::Objects::Operation::GET_NO
