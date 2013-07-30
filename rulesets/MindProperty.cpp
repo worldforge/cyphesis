@@ -116,44 +116,40 @@ MindProperty * MindProperty::copy() const
 
 void MindProperty::apply(LocatedEntity * ent)
 {
-    if (m_factory == 0) {
-        return;
-    }
-
-    Character * chr = dynamic_cast<Character *>(ent);
-
-    if (chr == 0) {
-        log(NOTICE, "Mind property applied to non-character");
-        return;
-    }
-
-    if (chr->m_mind != 0) {
-        log(NOTICE, "Mind property character already has a mind");
-        return;
-    }
-
-    chr->m_mind = m_factory->newMind(ent->getId(), ent->getIntId());
-
-    //Make sure that the mind isn't deleted when shutting down by any SIGHT of DELETE of itself
-    //being deleted. The m_mind instance should instead be destroyed by the Character's destructor.
-    chr->m_mind->incRef();
-
-    chr->m_mind->setType(ent->getType());
-
-    if (m_factory->m_scriptFactory != 0) {
-        m_factory->m_scriptFactory->addScript(chr->m_mind);
-    }
-
-    Setup s;
-    Anonymous setup_arg;
-    setup_arg->setName("mind");
-    s->setTo(ent->getId());
-    s->setArgs1(setup_arg);
-    ent->sendWorld(s);
-
-    Look l;
-    l->setTo(ent->getId());
-    ent->sendWorld(l);
+//    if (m_factory == 0) {
+//        return;
+//    }
+//
+//    Character * chr = dynamic_cast<Character *>(ent);
+//
+//    if (chr == 0) {
+//        log(NOTICE, "Mind property applied to non-character");
+//        return;
+//    }
+//
+//    if (chr->m_mind != 0) {
+//        log(NOTICE, "Mind property character already has a mind");
+//        return;
+//    }
+//
+//    chr->m_mind = m_factory->newMind(ent->getId(), ent->getIntId());
+//
+//    chr->m_mind->setType(ent->getType());
+//
+//    if (m_factory->m_scriptFactory != 0) {
+//        m_factory->m_scriptFactory->addScript(chr->m_mind);
+//    }
+//
+//    Setup s;
+//    Anonymous setup_arg;
+//    setup_arg->setName("mind");
+//    s->setTo(ent->getId());
+//    s->setArgs1(setup_arg);
+//    ent->sendWorld(s);
+//
+//    Look l;
+//    l->setTo(ent->getId());
+//    ent->sendWorld(l);
 
 
     //Also add a possession key so that the mind can be handled by an external AI client.
