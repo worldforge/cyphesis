@@ -76,7 +76,8 @@ void MindClient::idle(OpVector& res)
 
 }
 
-void MindClient::takePossession(ClientConnection& connection, std::string& accountId, const std::string& possessEntityId,
+void MindClient::takePossession(ClientConnection& connection,
+        std::string& accountId, const std::string& possessEntityId,
         const std::string& possessKey)
 {
     log(INFO,
@@ -125,40 +126,7 @@ void MindClient::operationToMind(const Operation & op, OpVector & res)
 
 void MindClient::operation(const Operation & op, OpVector & res)
 {
-    if (m_mind && op->getTo() == m_entityId) {
-        operationToMind(op, res);
-    } else {
-        if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO) {
-//            InfoOperation(op, res);
-        } else if (op->getClassNo() == Atlas::Objects::Operation::SIGHT_NO) {
-        } else if (op->getClassNo()
-                == Atlas::Objects::Operation::APPEARANCE_NO) {
-            //Ignore appearance ops, since they just signal other accounts being connected
-        } else if (op->getClassNo()
-                == Atlas::Objects::Operation::DISAPPEARANCE_NO) {
-            //Ignore disappearance ops, since they just signal other accounts being disconnected
-        } else if (op->getClassNo() == Atlas::Objects::Operation::ERROR_NO) {
-            //Handled (by printing to log) in BaseClient for now. Should we be able to listen for specific refno's?
-        } else if (op->getClassNo() == Atlas::Objects::Operation::GET_NO
-                && m_mind != nullptr) {
-            //Send Get operations on to the mind, as they are used for thought inspection
-            operationToMind(op, res);
-
-            Atlas::Objects::Operation::Info info;
-            std::vector<Root> newRes;
-            //Why can't I do "info->setArgs(res)"?
-            for (auto& operation : res) {
-                newRes.push_back(operation);
-            }
-            info->setArgs(newRes);
-            res.clear();
-            res.push_back(info);
-        } else {
-            log(NOTICE,
-                    String::compose("Unknown operation %1 in MindClient",
-                            op->getParents().front()));
-        }
-    }
+    operationToMind(op, res);
 }
 
 void MindClient::createMind(ClientConnection& connection, const Operation& op)
