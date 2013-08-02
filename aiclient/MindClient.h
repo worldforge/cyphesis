@@ -19,33 +19,39 @@
 #ifndef MINDCLIENT_H_
 #define MINDCLIENT_H_
 
-#include "BaseClient.h"
 
 #include "common/SystemTime.h"
+#include "common/OperationRouter.h"
+
+#include <Atlas/Objects/ObjectsFwd.h>
+#include <Atlas/Objects/SmartPtr.h>
+#include <Atlas/Objects/Root.h>
+
+#include <string>
 
 class MindFactory;
 class BaseMind;
+class ClientConnection;
 
 /**
  * Handles on mind of an entity on the server.
  */
-class MindClient: public BaseClient
+class MindClient
 {
     public:
         MindClient(MindFactory& mindFactory);
         virtual ~MindClient();
 
-        virtual void idle();
+        void takePossession(ClientConnection& connection, std::string& accountId, const std::string& possessEntityId, const std::string& possessKey);
 
-        Atlas::Objects::Root login(const std::string& username, const std::string& password);
+        void operation(const Operation & op, OpVector & res);
 
-        void takePossession(const std::string& possessEntityId, const std::string& possessKey);
+        void idle( OpVector & res);
 
     protected:
-        virtual void operation(const Operation & op, OpVector & res);
         void operationToMind(const Operation & op, OpVector & res);
 
-        void createMind(const Operation& op);
+        void createMind(ClientConnection& connection, const Operation& op);
         MindFactory& m_mindFactory;
 
         BaseMind* m_mind;

@@ -21,7 +21,8 @@
 
 #include "BaseClient.h"
 #include "MindClient.h"
-#include <list>
+#include <map>
+#include <memory>
 
 class MindFactory;
 
@@ -46,7 +47,7 @@ class PossessionClient: public BaseClient
 
         MindFactory& m_mindFactory;
 
-        std::list<MindClient> m_minds;
+        std::map<std::string, std::shared_ptr<MindClient>> m_minds;
 
 };
 

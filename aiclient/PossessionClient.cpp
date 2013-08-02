@@ -48,8 +48,13 @@ PossessionClient::~PossessionClient()
 void PossessionClient::idle()
 {
     handleNet();
+    OpVector res;
     for (auto& mind : m_minds) {
-        mind.idle();
+        mind.second->idle(res);
+    }
+
+    for (auto& resOp : res) {
+        m_connection.send(resOp);
     }
 }
 
@@ -72,17 +77,27 @@ void PossessionClient::enablePossession()
 
 void PossessionClient::operation(const Operation & op, OpVector & res)
 {
-    if (op->getClassNo() == Atlas::Objects::Operation::POSSESS_NO) {
-        PossessOperation(op, res);
-    } else if (op->getClassNo() == Atlas::Objects::Operation::APPEARANCE_NO) {
-        //Ignore appearance ops, since they just signal other accounts being connected
-    } else if (op->getClassNo()
-            == Atlas::Objects::Operation::DISAPPEARANCE_NO) {
-        //Ignore disappearance ops, since they just signal other accounts being disconnected
+    if (op->getTo() == m_playerId || !op->hasAttrFlag(Atlas::Objects::Operation::TO_FLAG)) {
+        if (op->getClassNo() == Atlas::Objects::Operation::POSSESS_NO) {
+            PossessOperation(op, res);
+        } else if (op->getClassNo()
+                == Atlas::Objects::Operation::APPEARANCE_NO) {
+            //Ignore appearance ops, since they just signal other accounts being connected
+        } else if (op->getClassNo()
+                == Atlas::Objects::Operation::DISAPPEARANCE_NO) {
+            //Ignore disappearance ops, since they just signal other accounts being disconnected
+        } else {
+            log(NOTICE,
+                    String::compose("Unknown operation %1 in PossessionClient",
+                            op->getParents().front()));
+        }
     } else {
-        log(NOTICE,
-                String::compose("Unknown operation %1 in PossessionClient",
-                        op->getParents().front()));
+        auto mindI = m_minds.find(op->getTo());
+        if (mindI != m_minds.end()) {
+            mindI->second->operation(op, res);
+        } else {
+            log(ERROR, "Op sent to unrecognized address.");
+        }
     }
 }
 
@@ -104,17 +119,16 @@ void PossessionClient::PossessOperation(const Operation& op, OpVector & res)
                 const std::string& possessKey = possessKeyElement.asString();
                 const std::string& possessionEntityId =
                         possessionEntityIdElement.asString();
-                m_minds.emplace_back(m_mindFactory);
-                MindClient& mindClient = m_minds.back();
+                m_minds.insert(
+                        std::make_pair(possessionEntityId,
+                                std::make_shared < MindClient
+                                        > (m_mindFactory)));
+                const auto& mindClient =
+                        m_minds.find(possessionEntityId)->second;
                 log(INFO, "New mind created.");
 
-                mindClient.connectLocal(client_socket_name);
-                //TODO: allow for multiple logins per account
-//                mindClient.login(m_username, m_password);
-
-//For now we'll create a new system account per mind. We should really instead use the one account created by this client, but that requires changes to the server.
-                mindClient.createSystemAccount(possessionEntityId);
-                mindClient.takePossession(possessionEntityId, possessKey);
+                mindClient->takePossession(m_connection, m_playerId,
+                        possessionEntityId, possessKey);
             }
         }
     }

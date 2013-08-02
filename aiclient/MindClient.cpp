@@ -22,6 +22,8 @@
 
 #include "MindClient.h"
 
+#include "ClientConnection.h"
+
 #include "common/log.h"
 #include "common/compose.hpp"
 #include "common/debug.h"
@@ -58,21 +60,15 @@ MindClient::~MindClient()
 {
 }
 
-void MindClient::idle()
+void MindClient::idle(OpVector& res)
 {
-    handleNet();
-
     //Send a Tick operation every second
     //TODO: make this better and more dynamic
     m_systemTime.update();
     if (m_systemTime.seconds() >= m_nextTick) {
         Atlas::Objects::Operation::Tick tick;
 
-        OpVector res;
         operationToMind(tick, res);
-        for (auto& resOp : res) {
-            m_connection.send(resOp);
-        }
 
         m_systemTime.update();
         m_nextTick = m_systemTime.seconds() + 1;
@@ -80,7 +76,7 @@ void MindClient::idle()
 
 }
 
-void MindClient::takePossession(const std::string& possessEntityId,
+void MindClient::takePossession(ClientConnection& connection, std::string& accountId, const std::string& possessEntityId,
         const std::string& possessKey)
 {
     log(INFO,
@@ -94,58 +90,21 @@ void MindClient::takePossession(const std::string& possessEntityId,
     what->setAttr("possess_key", possessKey);
 
     Look l;
-    l->setFrom(m_playerId);
+    l->setFrom(accountId);
     l->setArgs1(what);
     OpVector res;
-    if (m_connection.sendAndWaitReply(l, res) != 0) {
+    if (connection.sendAndWaitReply(l, res) != 0) {
         std::cerr << "ERROR: Failed to take possession." << std::endl
                 << std::flush;
     }
     Operation resOp = res.front();
     if (resOp->getClassNo() == Atlas::Objects::Operation::SIGHT_NO) {
-        createMind(resOp);
+        createMind(connection, resOp);
     } else {
         log(ERROR,
                 String::compose("Unrecognized response to possession: %1",
                         resOp->getParents().front()));
     }
-}
-
-Root MindClient::login(const std::string& username, const std::string& password)
-{
-    m_username = username;
-    m_password = password;
-
-    Anonymous player_ent;
-    player_ent->setAttr("username", username);
-    player_ent->setAttr("password", password);
-    player_ent->setParents(std::list<std::string>(1, "sys"));
-
-    debug(
-            std::cout << "Logging " << username << " in with " << password
-                    << " as password" << std::endl << std::flush
-            ;);
-
-    Login loginAccountOp;
-    loginAccountOp->setArgs1(player_ent);
-    OpVector res;
-    if (m_connection.sendAndWaitReply(loginAccountOp, res) != 0) {
-        std::cerr << "ERROR: Failed to log into server" << std::endl
-                << std::flush;
-        return Root(0);
-    }
-
-    const Root& ent = res.front()->getArgs().front();
-
-    if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        std::cerr << "ERROR: Logged in, but account has no id" << std::endl
-                << std::flush;
-    } else {
-        m_playerId = ent->getId();
-    }
-
-    return ent;
-
 }
 
 void MindClient::operationToMind(const Operation & op, OpVector & res)
@@ -172,7 +131,8 @@ void MindClient::operation(const Operation & op, OpVector & res)
         if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO) {
 //            InfoOperation(op, res);
         } else if (op->getClassNo() == Atlas::Objects::Operation::SIGHT_NO) {
-        } else if (op->getClassNo() == Atlas::Objects::Operation::APPEARANCE_NO) {
+        } else if (op->getClassNo()
+                == Atlas::Objects::Operation::APPEARANCE_NO) {
             //Ignore appearance ops, since they just signal other accounts being connected
         } else if (op->getClassNo()
                 == Atlas::Objects::Operation::DISAPPEARANCE_NO) {
@@ -201,7 +161,7 @@ void MindClient::operation(const Operation & op, OpVector & res)
     }
 }
 
-void MindClient::createMind(const Operation& op)
+void MindClient::createMind(ClientConnection& connection, const Operation& op)
 {
 
     const std::vector<Root>& args = op->getArgs();
@@ -246,13 +206,13 @@ void MindClient::createMind(const Operation& op)
     operationToMind(s, res);
 
     for (auto& resOp : res) {
-        m_connection.send(resOp);
+        connection.send(resOp);
     }
 
     //Start by sending a unspecified "Look". This tells the server to send us a bootstrapped view.
     Look l;
     l->setFrom(entityId);
-    m_connection.send(l);
+    connection.send(l);
 
 }
 
