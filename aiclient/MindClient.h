@@ -48,6 +48,12 @@ class MindClient
 
         void idle( OpVector & res);
 
+        /**
+         * Returns true if the entity to which the mind belongs to has been destroyed.
+         * @return True if the entiyt to which the mind belongs to has been destroyed.
+         */
+        bool isMindDestroyed() const;
+
     protected:
         void operationToMind(const Operation & op, OpVector & res);
 
