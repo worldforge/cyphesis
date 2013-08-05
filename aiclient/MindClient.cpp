@@ -58,6 +58,9 @@ MindClient::MindClient(MindFactory& mindFactory) :
 
 MindClient::~MindClient()
 {
+    if (m_mind) {
+        m_mind->decRef();
+    }
 }
 
 void MindClient::idle(OpVector& res)
@@ -153,6 +156,8 @@ void MindClient::createMind(ClientConnection& connection, const Operation& op)
                     "Got info on account, creating mind for entity with id %1 of type %2.",
                     entityId, entityType));
     m_mind = m_mindFactory.newMind(entityId, integerId(entityId));
+    //We'll keep a reference to the mind so it isn't deleted willy-nilly
+    m_mind->incRef();
     //TODO: setup and get type from Inheritance
     m_mind->setType(new TypeNode(entityType));
 
