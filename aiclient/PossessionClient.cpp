@@ -77,7 +77,8 @@ void PossessionClient::enablePossession()
 
 void PossessionClient::operation(const Operation & op, OpVector & res)
 {
-    if (op->getTo() == m_playerId || !op->hasAttrFlag(Atlas::Objects::Operation::TO_FLAG)) {
+    if (op->getTo() == m_playerId
+            || !op->hasAttrFlag(Atlas::Objects::Operation::TO_FLAG)) {
         if (op->getClassNo() == Atlas::Objects::Operation::POSSESS_NO) {
             PossessOperation(op, res);
         } else if (op->getClassNo()
@@ -95,6 +96,11 @@ void PossessionClient::operation(const Operation & op, OpVector & res)
         auto mindI = m_minds.find(op->getTo());
         if (mindI != m_minds.end()) {
             mindI->second->operation(op, res);
+            if (mindI->second->isMindDestroyed()) {
+                log(INFO, "Removing AI mind as entity was deleted.");
+                //The mind was destroyed as a result of the operation; we should remove it.
+                m_minds.erase(mindI);
+            }
         } else {
             log(ERROR, "Op sent to unrecognized address.");
         }

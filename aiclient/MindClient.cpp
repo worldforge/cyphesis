@@ -189,3 +189,12 @@ void MindClient::createMind(ClientConnection& connection, const Operation& op)
 
 }
 
+bool MindClient::isMindDestroyed() const
+{
+    if (m_mind == nullptr || m_mind->isDestroyed()) {
+        return true;
+    }
+    return false;
+}
+
+
