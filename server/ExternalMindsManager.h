@@ -29,8 +29,8 @@ class LocatedEntity;
 class ExternalMindsManager
 {
     public:
-        ExternalMindsManager();
-        virtual ~ExternalMindsManager();
+        explicit ExternalMindsManager();
+        ~ExternalMindsManager();
 
         static ExternalMindsManager * instance();
 

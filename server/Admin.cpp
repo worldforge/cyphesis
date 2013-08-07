@@ -409,7 +409,7 @@ void Admin::setAttribute(const Root& args) {
     if (args->hasAttr("possessive")) {
         const Element possessiveElement = args->getAttr("possessive");
         if (possessiveElement.isInt() && possessiveElement.asInt() != 0) {
-            ExternalMindsConnection connection(this->m_connection);
+            ExternalMindsConnection connection(this->m_connection, getId());
             ExternalMindsManager::instance()->addConnection(connection);
         } else {
             //TODO: remove connection

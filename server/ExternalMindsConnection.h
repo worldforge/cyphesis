@@ -19,20 +19,24 @@
 #ifndef EXTERNALMINDSCONNECTION_H_
 #define EXTERNALMINDSCONNECTION_H_
 
+#include <string>
+
 class Link;
 
 class ExternalMindsConnection
 {
     public:
-        ExternalMindsConnection(Link* link);
-        virtual ~ExternalMindsConnection();
+        explicit ExternalMindsConnection(Link* link,
+                const std::string& entityId);
+        ~ExternalMindsConnection();
 
-
-        Link* getLink();
+        Link* getLink() const;
+        const std::string& getEntityId() const;
 
     private:
 
         Link* m_link;
+        std::string m_entityId;
 };
 
 #endif /* EXTERNALMINDSCONNECTION_H_ */
