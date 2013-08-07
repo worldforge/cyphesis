@@ -22,8 +22,8 @@
 
 #include "ExternalMindsConnection.h"
 
-ExternalMindsConnection::ExternalMindsConnection(Link* link, const std::string& entityId) :
-        m_link(link), m_entityId(entityId)
+ExternalMindsConnection::ExternalMindsConnection(Link* link, const std::string& routerId) :
+        m_link(link), m_routerId(routerId)
 {
 }
 
@@ -37,7 +37,7 @@ Link* ExternalMindsConnection::getLink() const
     return m_link;
 }
 
-const std::string& ExternalMindsConnection::getEntityId() const
+const std::string& ExternalMindsConnection::getRouterId() const
 {
-    return m_entityId;
+    return m_routerId;
 }

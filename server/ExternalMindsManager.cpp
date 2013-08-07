@@ -48,12 +48,47 @@ ExternalMindsManager * ExternalMindsManager::instance()
     }
     return m_instance;
 }
-void ExternalMindsManager::addConnection(
+
+int ExternalMindsManager::addConnection(
         const ExternalMindsConnection& connection)
 {
-    m_connections.push_back(connection);
-    log(INFO, String::compose("New external mind connection registered. "
-            "There are now %1 connections.", m_connections.size()));
+    auto result = m_connections.insert(
+            std::make_pair(connection.getRouterId(), connection));
+    if (!result.second) {
+        log(WARNING,
+                String::compose(
+                        "Tried to register a external mind connection for "
+                                "router %1 for which there's already a connection registered.",
+                        connection.getRouterId()));
+return -1;
+    } else {
+        log(INFO,
+                String::compose(
+                        "New external mind connection registered for router %1. "
+                                "There are now %2 connections.",
+                        connection.getRouterId(), m_connections.size()));
+        return 0;
+    }
+}
+
+int ExternalMindsManager::removeConnection(const std::string& routerId)
+{
+    auto result = m_connections.erase(routerId);
+    if (result == 0) {
+        log(WARNING,
+                String::compose(
+                        "Tried to deregister a external mind connection for "
+                                "router %1 for which there's no connection registered.",
+                        routerId));
+return -1;
+    } else {
+        log(INFO,
+                String::compose(
+                        "Deregisted external mind connection registered for router %1. "
+                                "There are now %2 connections.", routerId,
+                        m_connections.size()));
+        return 0;
+    }
 }
 
 int ExternalMindsManager::requestPossession(LocatedEntity& entity,
@@ -63,7 +98,7 @@ int ExternalMindsManager::requestPossession(LocatedEntity& entity,
         //Use the last one registered.
         //TODO: implement a better way to select the connection to use. Should we rotate the connections?
         //Or do some kind of selection?
-        ExternalMindsConnection& connection = *m_connections.rbegin();
+        ExternalMindsConnection& connection = m_connections.rbegin()->second;
 
         Atlas::Objects::Operation::Possess possessOp;
 
@@ -71,12 +106,14 @@ int ExternalMindsManager::requestPossession(LocatedEntity& entity,
         possess_args->setAttr("possess_key", possession_key);
         possess_args->setAttr("possess_entity_id", entity.getId());
 
-
         possessOp->setArgs1(possess_args);
-        possessOp->setTo(connection.getEntityId());
+        possessOp->setTo(connection.getRouterId());
 
-        log(INFO, String::compose("Requesting possession of mind from link with id %1 and entity with id %2.",
-                connection.getLink()->getId(), connection.getEntityId()));
+        log(INFO,
+                String::compose(
+                        "Requesting possession of mind for entity %1 from link with id %2 and router with id %3.",
+                        entity.getId(), connection.getLink()->getId(),
+                        connection.getRouterId()));
         connection.getLink()->send(possessOp);
         return 0;
     }

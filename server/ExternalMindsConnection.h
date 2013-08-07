@@ -27,16 +27,16 @@ class ExternalMindsConnection
 {
     public:
         explicit ExternalMindsConnection(Link* link,
-                const std::string& entityId);
+                const std::string& routerId);
         ~ExternalMindsConnection();
 
         Link* getLink() const;
-        const std::string& getEntityId() const;
+        const std::string& getRouterId() const;
 
     private:
 
         Link* m_link;
-        std::string m_entityId;
+        std::string m_routerId;
 };
 
 #endif /* EXTERNALMINDSCONNECTION_H_ */

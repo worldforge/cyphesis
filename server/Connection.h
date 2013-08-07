@@ -23,6 +23,8 @@
 
 #include <sigc++/trackable.h>
 
+#include <list>
+
 class Account;
 class Character;
 class CommSocket;
@@ -42,6 +44,8 @@ typedef std::map<long, Router *> RouterMap;
 class Connection : public Link, virtual public sigc::trackable {
   protected:
     RouterMap m_objects;
+
+    std::list<std::string> m_possessionRouters;
 
     /// \brief Flag to indicate if this connection has already been
     /// disconnected from the entities associated with it.
@@ -75,6 +79,15 @@ class Connection : public Link, virtual public sigc::trackable {
     virtual ~Connection();
 
     RouterMap & objects() { return m_objects; }
+
+    /**
+     * Turns on and off possession ability for the specified router id.
+     *
+     * Typically a router id is an Account instance.
+     *
+     * @param enabled
+     */
+    void setPossessionEnabled(bool enabled, const std::string& routerId);
 
     void addEntity(LocatedEntity * ent);
     void addObject(Router * obj);

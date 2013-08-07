@@ -21,7 +21,7 @@
 
 #include "ExternalMindsConnection.h"
 
-#include <vector>
+#include <map>
 #include <string>
 
 class LocatedEntity;
@@ -34,12 +34,13 @@ class ExternalMindsManager
 
         static ExternalMindsManager * instance();
 
-        void addConnection(const ExternalMindsConnection& connection);
+        int addConnection(const ExternalMindsConnection& connection);
+        int removeConnection(const std::string& routerId);
 
         int requestPossession(LocatedEntity& entity, const std::string& possession_key);
 
     private:
-        std::vector<ExternalMindsConnection> m_connections;
+        std::map<std::string, ExternalMindsConnection> m_connections;
         static ExternalMindsManager * m_instance;
 
 

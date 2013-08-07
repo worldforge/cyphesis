@@ -22,8 +22,6 @@
 #include "Connection.h"
 #include "Ruleset.h"
 #include "Juncture.h"
-#include "ExternalMindsConnection.h"
-#include "ExternalMindsManager.h"
 
 
 #include "rulesets/LocatedEntity.h"
@@ -409,10 +407,9 @@ void Admin::setAttribute(const Root& args) {
     if (args->hasAttr("possessive")) {
         const Element possessiveElement = args->getAttr("possessive");
         if (possessiveElement.isInt() && possessiveElement.asInt() != 0) {
-            ExternalMindsConnection connection(this->m_connection, getId());
-            ExternalMindsManager::instance()->addConnection(connection);
+            m_connection->setPossessionEnabled(true, getId());
         } else {
-            //TODO: remove connection
+            m_connection->setPossessionEnabled(false, getId());
         }
     }
 }
