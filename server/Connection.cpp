@@ -21,6 +21,8 @@
 #include "ServerRouting.h"
 #include "Lobby.h"
 #include "Player.h"
+#include "ExternalMindsConnection.h"
+#include "ExternalMindsManager.h"
 
 #include "rulesets/Character.h"
 #include "rulesets/ExternalMind.h"
@@ -44,6 +46,7 @@
 #include <sigc++/functors/mem_fun.h>
 
 #include <cassert>
+#include <algorithm>
 
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
@@ -81,6 +84,10 @@ Connection::~Connection()
     RouterMap::iterator Iend = m_objects.end();
     for (RouterMap::iterator I = m_objects.begin(); I != Iend; ++I) {
         disconnectObject(I, "Disconnect");
+    }
+
+    for (auto& routerId : m_possessionRouters) {
+        ExternalMindsManager::instance()->removeConnection(routerId);
     }
 
     m_server.decClients();
@@ -162,6 +169,23 @@ void Connection::disconnectObject(RouterMap::iterator I,
     }
     return;
 }
+
+void Connection::setPossessionEnabled(bool enabled, const std::string& routerId)
+{
+    if (enabled) {
+        ExternalMindsConnection connection(this, routerId);
+        auto result = ExternalMindsManager::instance()->addConnection(connection);
+        if (result == 0) {
+            m_possessionRouters.push_back(routerId);
+        }
+    } else {
+        auto result = std::find(m_possessionRouters.begin(), m_possessionRouters.end(), routerId);
+        if (result != m_possessionRouters.end()) {
+            ExternalMindsManager::instance()->removeConnection(routerId);
+        }
+    }
+}
+
 
 void Connection::addEntity(LocatedEntity * ent)
 {
