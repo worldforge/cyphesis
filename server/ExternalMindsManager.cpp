@@ -61,6 +61,8 @@ int ExternalMindsManager::requestPossession(LocatedEntity& entity,
 {
     if (!m_connections.empty()) {
         //Use the last one registered.
+        //TODO: implement a better way to select the connection to use. Should we rotate the connections?
+        //Or do some kind of selection?
         ExternalMindsConnection& connection = *m_connections.rbegin();
 
         Atlas::Objects::Operation::Possess possessOp;
@@ -71,10 +73,10 @@ int ExternalMindsManager::requestPossession(LocatedEntity& entity,
 
 
         possessOp->setArgs1(possess_args);
-//        possessOp->setTo(connection.getRouter()->getId());
+        possessOp->setTo(connection.getEntityId());
 
-//        OpVector res;
-        log(INFO, "Requesting possession of mind.");
+        log(INFO, String::compose("Requesting possession of mind from link with id %1 and entity with id %2.",
+                connection.getLink()->getId(), connection.getEntityId()));
         connection.getLink()->send(possessOp);
         return 0;
     }
