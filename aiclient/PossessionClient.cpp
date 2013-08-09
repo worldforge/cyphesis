@@ -77,8 +77,7 @@ void PossessionClient::enablePossession()
 
 void PossessionClient::operation(const Operation & op, OpVector & res)
 {
-    if (op->getTo() == m_playerId
-            || !op->hasAttrFlag(Atlas::Objects::Operation::TO_FLAG)) {
+    if (op->getTo() == m_playerId || op->isDefaultTo()) {
         if (op->getClassNo() == Atlas::Objects::Operation::POSSESS_NO) {
             PossessOperation(op, res);
         } else if (op->getClassNo()
