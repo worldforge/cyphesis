@@ -124,7 +124,7 @@ void Motiontest::teardown()
 
 void Motiontest::test_adjustPosition()
 {
-    motion->adjustPostion();
+    motion->adjustPosition();
 }
 
 void Motiontest::test_genUpdateOperation()

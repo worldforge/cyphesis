@@ -175,7 +175,7 @@ void Motion::setMode(const std::string & mode)
 {
 }
 
-void Motion::adjustPostion()
+void Motion::adjustPosition()
 {
 }
 

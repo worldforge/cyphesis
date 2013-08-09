@@ -50,7 +50,7 @@ void Motion::setMode(const std::string & mode)
     // FIXME Re-configure stuff, and possible schedule an update?
 }
 
-void Motion::adjustPostion()
+void Motion::adjustPosition()
 {
 }
 
