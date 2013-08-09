@@ -77,6 +77,15 @@ void PossessionClient::enablePossession()
 
 void PossessionClient::operation(const Operation & op, OpVector & res)
 {
+    if (!op->isDefaultRefno()) {
+        auto entry = m_refNoOperations.find(op->getRefno());
+        if (entry != m_refNoOperations.end()) {
+            //If there's a refno, alter the address of the operation
+            op->setTo(entry->second);
+            m_refNoOperations.erase(op->getRefno());
+        }
+    }
+
     if (op->getTo() == m_playerId || op->isDefaultTo()) {
         if (op->getClassNo() == Atlas::Objects::Operation::POSSESS_NO) {
             PossessOperation(op, res);
@@ -132,8 +141,18 @@ void PossessionClient::PossessOperation(const Operation& op, OpVector & res)
                         m_minds.find(possessionEntityId)->second;
                 log(INFO, "New mind created.");
 
-                mindClient->takePossession(m_connection, m_playerId,
+                OpVector newRes;
+                mindClient->takePossession(newRes, m_connection, m_playerId,
                         possessionEntityId, possessKey);
+
+                for (auto op : newRes) {
+                    if (!op->isDefaultSerialno()) {
+                        m_refNoOperations.insert(
+                                std::make_pair(op->getSerialno(),
+                                        possessionEntityId));
+                    }
+                    res.push_back(op);
+                }
             }
         }
     }

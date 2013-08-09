@@ -79,7 +79,7 @@ void MindClient::idle(OpVector& res)
 
 }
 
-void MindClient::takePossession(ClientConnection& connection,
+void MindClient::takePossession(OpVector& res, ClientConnection& connection,
         std::string& accountId, const std::string& possessEntityId,
         const std::string& possessKey)
 {
@@ -96,19 +96,8 @@ void MindClient::takePossession(ClientConnection& connection,
     Look l;
     l->setFrom(accountId);
     l->setArgs1(what);
-    OpVector res;
-    if (connection.sendAndWaitReply(l, res) != 0) {
-        std::cerr << "ERROR: Failed to take possession." << std::endl
-                << std::flush;
-    }
-    Operation resOp = res.front();
-    if (resOp->getClassNo() == Atlas::Objects::Operation::SIGHT_NO) {
-        createMind(connection, resOp);
-    } else {
-        log(ERROR,
-                String::compose("Unrecognized response to possession: %1",
-                        resOp->getParents().front()));
-    }
+    l->setSerialno(connection.newSerialNo());
+    res.push_back(l);
 }
 
 void MindClient::operationToMind(const Operation & op, OpVector & res)
@@ -129,10 +118,21 @@ void MindClient::operationToMind(const Operation & op, OpVector & res)
 
 void MindClient::operation(const Operation & op, OpVector & res)
 {
-    operationToMind(op, res);
+    if (!m_mind) {
+        if (op->getClassNo() == Atlas::Objects::Operation::SIGHT_NO) {
+            createMind(op, res);
+        } else {
+            log(ERROR,
+                    String::compose("Unrecognized response to possession: %1",
+                            op->getParents().front()));
+        }
+
+    } else {
+        operationToMind(op, res);
+    }
 }
 
-void MindClient::createMind(ClientConnection& connection, const Operation& op)
+void MindClient::createMind(const Operation & op, OpVector & res)
 {
 
     const std::vector<Root>& args = op->getArgs();
@@ -167,7 +167,6 @@ void MindClient::createMind(ClientConnection& connection, const Operation& op)
     }
 
     //Send the Sight operation we just got on to the mind, since it contains info about the entity.
-    OpVector res;
     operationToMind(op, res);
 
     //Also send a "Setup" op to the mind, which will trigger any setup hooks.
@@ -178,14 +177,11 @@ void MindClient::createMind(ClientConnection& connection, const Operation& op)
     s->setArgs1(setup_arg);
     operationToMind(s, res);
 
-    for (auto& resOp : res) {
-        connection.send(resOp);
-    }
 
     //Start by sending a unspecified "Look". This tells the server to send us a bootstrapped view.
     Look l;
     l->setFrom(entityId);
-    connection.send(l);
+    res.push_back(l);
 
 }
 
@@ -196,5 +192,4 @@ bool MindClient::isMindDestroyed() const
     }
     return false;
 }
-
 
