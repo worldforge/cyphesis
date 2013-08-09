@@ -24,7 +24,7 @@
 
 #include <cassert>
 
-PossessionAuthenticator * PossessionAuthenticator::m_instance = NULL;
+PossessionAuthenticator * PossessionAuthenticator::m_instance = nullptr;
 
 /// \brief Checks if there is a pending possession on an account
 ///
@@ -37,7 +37,7 @@ bool PossessionAuthenticator::isPending(const std::string & entity_id) const
 
 /// \brief Add a possession authentication entry
 ///
-/// \param entity_id The ID of the entity whose data is to be removed
+/// \param entity_id The ID of the entity whose data is to be added
 /// \param possess_key The possess key to authenticate the entity with
 int PossessionAuthenticator::addPossession(const std::string & entity_id,
                                        const std::string & possess_key)
@@ -83,6 +83,16 @@ void PossessionAuthenticator::removePossession(PendingPossessionsMap::iterator I
     m_possessions.erase(I);
 }
 
+boost::optional<std::string> PossessionAuthenticator::getPossessionKey(const std::string& entity_id)
+{
+    auto result = m_possessions.find(entity_id);
+    if (result != m_possessions.end()) {
+        return boost::optional<std::string>(result->second->getPossessKey());
+    }
+    return boost::optional<std::string>();
+}
+
+
 /// \brief Authenticate a possession request
 ///
 /// \param entity_id The ID of the entity that was created
@@ -94,7 +104,7 @@ LocatedEntity * PossessionAuthenticator::authenticatePossession(const std::strin
     if (I == m_possessions.end()) {
         log(ERROR, String::compose("Unable to find possessable entity with ID %1",
                                                                     entity_id));
-        return NULL;
+        return nullptr;
     }
     PendingPossession *entry = I->second;
     assert(entry != 0);
@@ -106,7 +116,7 @@ LocatedEntity * PossessionAuthenticator::authenticatePossession(const std::strin
             log(ERROR, String::compose("Unable to find possessable entity with ID %1",
                                                                         entity_id));
             removePossession(I);
-            return NULL;
+            return nullptr;
         }
         // Don't remove the entry yet. It will be removed after connecting 
         // the entity to the account in Account::LookOperation() successfully
@@ -114,5 +124,5 @@ LocatedEntity * PossessionAuthenticator::authenticatePossession(const std::strin
         return entity;
     }
     // We failed the authentication. Keep authentication entry for retries.
-    return NULL;
+    return nullptr;
 }
