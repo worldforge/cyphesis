@@ -19,7 +19,6 @@
 #ifndef MINDCLIENT_H_
 #define MINDCLIENT_H_
 
-
 #include "common/SystemTime.h"
 #include "common/OperationRouter.h"
 
@@ -42,11 +41,13 @@ class MindClient
         MindClient(MindFactory& mindFactory);
         virtual ~MindClient();
 
-        void takePossession(ClientConnection& connection, std::string& accountId, const std::string& possessEntityId, const std::string& possessKey);
+        void takePossession(OpVector& res, ClientConnection& connection,
+                std::string& accountId, const std::string& possessEntityId,
+                const std::string& possessKey);
 
         void operation(const Operation & op, OpVector & res);
 
-        void idle( OpVector & res);
+        void idle(OpVector & res);
 
         /**
          * Returns true if the entity to which the mind belongs to has been destroyed.
@@ -57,7 +58,7 @@ class MindClient
     protected:
         void operationToMind(const Operation & op, OpVector & res);
 
-        void createMind(ClientConnection& connection, const Operation& op);
+        void createMind(const Operation & op, OpVector & res);
         MindFactory& m_mindFactory;
 
         BaseMind* m_mind;
@@ -65,7 +66,6 @@ class MindClient
 
         SystemTime m_systemTime;
         time_t m_nextTick;
-
 
 };
 

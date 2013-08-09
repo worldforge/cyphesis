@@ -22,6 +22,7 @@
 #include "BaseClient.h"
 #include "MindClient.h"
 #include <map>
+#include <unordered_map>
 #include <memory>
 
 class MindFactory;
@@ -37,6 +38,9 @@ class PossessionClient: public BaseClient
 
         virtual void idle();
 
+        /**
+         * Notify the server that we are able to possess minds.
+         */
         void enablePossession();
 
     protected:
@@ -47,7 +51,17 @@ class PossessionClient: public BaseClient
 
         MindFactory& m_mindFactory;
 
-        std::map<std::string, std::shared_ptr<MindClient>> m_minds;
+        /**
+         * All active minds.
+         */
+        std::unordered_map<std::string, std::shared_ptr<MindClient>> m_minds;
+
+        /**
+         * Keeps track of any operations with refs which has been sent from any MindClient instances.
+         *
+         * This is currently only used to route the response to taking a character to the correct client.
+         */
+        std::map<long, std::string> m_refNoOperations;
 
 };
 
