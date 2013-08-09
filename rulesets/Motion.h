@@ -104,7 +104,7 @@ class Motion {
     /// walking. This is not the same as falling from their true height onto
     /// a surface - that is a different movement type. This adjustment
     /// is a normal part of the process of tracking movement.
-    virtual void adjustPostion();
+    virtual void adjustPosition();
 
     /// \brief Generate an update operation.
     ///
