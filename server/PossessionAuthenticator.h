@@ -19,13 +19,14 @@
 #define SERVER_POSSESSION_AUTHENTICATOR_H
 
 #include <string>
-#include <map>
+#include <unordered_map>
+#include <boost/optional.hpp>
 
 class LocatedEntity;
 class PendingPossession;
 
 /// \brief Map of teleported entity IDs and their PendingState objects
-typedef std::map<std::string, PendingPossession *> PendingPossessionsMap;
+typedef std::unordered_map<std::string, PendingPossession *> PendingPossessionsMap;
 
 /// \brief A class that stores and authenticates possession requests
 class PossessionAuthenticator
@@ -60,6 +61,8 @@ class PossessionAuthenticator
     int addPossession(const std::string &, const std::string &);
 
     int removePossession(const std::string &);
+
+    boost::optional<std::string> getPossessionKey(const std::string& entity_id);
 
     LocatedEntity * authenticatePossession(const std::string &,
                                          const std::string &);

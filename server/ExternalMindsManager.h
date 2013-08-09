@@ -21,12 +21,15 @@
 
 #include "ExternalMindsConnection.h"
 
+#include <sigc++/trackable.h>
+
 #include <map>
+#include <unordered_set>
 #include <string>
 
-class LocatedEntity;
+class Character;
 
-class ExternalMindsManager
+class ExternalMindsManager : public virtual sigc::trackable
 {
     public:
         explicit ExternalMindsManager();
@@ -37,11 +40,18 @@ class ExternalMindsManager
         int addConnection(const ExternalMindsConnection& connection);
         int removeConnection(const std::string& routerId);
 
-        int requestPossession(LocatedEntity& entity, const std::string& possession_key);
+        int requestPossession(Character& character);
 
     private:
         std::map<std::string, ExternalMindsConnection> m_connections;
+        std::unordered_set<Character*> m_unpossessedEntities;
+        std::unordered_set<Character*> m_possessedEntities;
         static ExternalMindsManager * m_instance;
+
+        void entity_destroyed(Character* character);
+        void character_externalLinkChanged(Character* character);
+
+        int requestPossessionFromRegisteredClients(const std::string& character_id);
 
 
 };

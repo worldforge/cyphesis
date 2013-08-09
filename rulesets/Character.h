@@ -118,6 +118,10 @@ class Character : public Thing, public virtual sigc::trackable {
 
     int linkExternal(Link *);
     int unlinkExternal(Link *);
+    /**
+     * Emitted when the link has changed.
+     */
+    sigc::signal<void> externalLinkChanged;
 
     int startTask(Task *, const Operation & op, OpVector &);
     void updateTask(OpVector &);
