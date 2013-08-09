@@ -37,7 +37,7 @@ using Atlas::Objects::Root;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::RootOperation;
 
-static bool debug_flag = true;
+static bool debug_flag = false;
 
 ClientConnection::ClientConnection()
 {
