@@ -53,6 +53,8 @@ class ExternalMindsManager : public virtual sigc::trackable
 
         int requestPossessionFromRegisteredClients(const std::string& character_id);
 
+        void addPossessionEntryForCharacter(Character& character);
+
 
 };
 

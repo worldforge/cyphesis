@@ -104,9 +104,8 @@ int ExternalMindsManager::removeConnection(const std::string& routerId)
     }
 }
 
-int ExternalMindsManager::requestPossession(Character& character)
+void ExternalMindsManager::addPossessionEntryForCharacter(Character& character)
 {
-
     std::string key = character.getId() + "_";
     WFMath::MTRand generator;
     for (int i = 0; i < 32; i++) {
@@ -115,7 +114,12 @@ int ExternalMindsManager::requestPossession(Character& character)
     }
 
     PossessionAuthenticator::instance()->addPossession(character.getId(), key);
+}
 
+int ExternalMindsManager::requestPossession(Character& character)
+{
+
+    addPossessionEntryForCharacter(character);
     character.destroyed.connect(
             sigc::bind(
                     sigc::mem_fun(*this,
@@ -190,6 +194,9 @@ void ExternalMindsManager::character_externalLinkChanged(Character* chr)
         }
         m_possessedEntities.erase(chr);
         m_unpossessedEntities.insert(chr);
+
+        //The possession entry was removed when the character was possessed last, so we need to add one back.
+        addPossessionEntryForCharacter(*chr);
 
         //We'll now check for any registered possessive clients and ask them for possession of the newly unpossessed character.
         requestPossessionFromRegisteredClients(chr->getId());
