@@ -32,6 +32,7 @@
 
 #include <varconf/config.h>
 
+#include <memory>
 #define _GLIBCXX_USE_NANOSLEEP 1
 #include <thread>
 
@@ -66,7 +67,9 @@ static bool debug_flag = false;
 static int tryToConnect(PossessionClient& possessionClient)
 {
     if (possessionClient.connectLocal(client_socket_name) == 0) {
-        log(INFO, String::compose("Connected to server at %1.", client_socket_name));
+        log(INFO,
+                String::compose("Connected to server at %1.",
+                        client_socket_name));
         Root systemAccountResponse = possessionClient.createSystemAccount();
 
         possessionClient.enablePossession();
@@ -140,20 +143,24 @@ int main(int argc, char ** argv)
         }
     }
 
-    PossessionClient possessionClient(mindFactory);
-    while (tryToConnect(possessionClient) != 0) {
+    std::unique_ptr<PossessionClient> possessionClient(
+            new PossessionClient(mindFactory));
+    while (tryToConnect(*possessionClient) != 0) {
         std::this_thread::sleep_for(std::chrono::milliseconds(5000));
     }
 
     while (!exit_flag) {
-        int netResult = possessionClient.handleNet();
+        int netResult = possessionClient->handleNet();
         if (netResult == 0) {
             //As long as we're connected we'll keep on processing minds
-            possessionClient.idle();
+            possessionClient->idle();
         } else {
-            log(ERROR, "Disconnected from server; will try to reconnect every five seconds.");
+            log(ERROR,
+                    "Disconnected from server; will try to reconnect every five seconds.");
             //We're disconnected. We'll now enter a loop where we'll try to reconnect at an interval.
-            while (tryToConnect(possessionClient) != 0) {
+            //First we need to shut down the current client. Perhaps we could find a way to persist the minds in a better way?
+            possessionClient.reset(new PossessionClient(mindFactory));
+            while (tryToConnect(*possessionClient) != 0) {
                 std::this_thread::sleep_for(std::chrono::milliseconds(5000));
             }
 
