@@ -99,7 +99,11 @@ int Account::connectCharacter(LocatedEntity *chr)
 {
     Character * character = dynamic_cast<Character *>(chr);
     if (character != 0) {
-        character->linkExternal(m_connection);
+        if (character->linkExternal(m_connection) != 0) {
+            log(WARNING, String::compose("Could not take character %1 as it "
+                    "already is connected to an external mind.", chr->getId()));
+            return -2;
+        }
 
         // Only genuinely playable characters should go in here. Otherwise
         // if a normal entity gets into the account, and connection, it

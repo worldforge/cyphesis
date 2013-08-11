@@ -120,13 +120,18 @@ void MindProperty::apply(LocatedEntity * ent)
 //
     Character * chr = dynamic_cast<Character *>(ent);
 
-    if (chr == 0) {
+    if (chr == nullptr) {
         log(NOTICE, "Mind property applied to non-character");
         return;
     }
 
-    if (chr->m_mind != 0) {
+    if (chr->m_mind != nullptr) {
         log(NOTICE, "Mind property character already has a mind");
+        return;
+    }
+
+    if (chr->m_externalMind != nullptr) {
+        log(NOTICE, "Mind property character already has an external mind");
         return;
     }
 //
