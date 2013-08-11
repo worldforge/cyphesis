@@ -80,14 +80,17 @@ Connection::~Connection()
     
     logEvent(DISCONNECT, String::compose("%1 - - Disconnect", getId()));
 
+    //It's important that we disconnect ourselves as a possession router before we disconnect our objects,
+    //else there's a risk that the external minds manager will just issue new possession request to this connection.
+    for (auto& routerId : m_possessionRouters) {
+        ExternalMindsManager::instance()->removeConnection(routerId);
+    }
+
     RouterMap::iterator Iend = m_objects.end();
     for (RouterMap::iterator I = m_objects.begin(); I != Iend; ++I) {
         disconnectObject(I, "Disconnect");
     }
 
-    for (auto& routerId : m_possessionRouters) {
-        ExternalMindsManager::instance()->removeConnection(routerId);
-    }
 
     m_server.decClients();
 }
