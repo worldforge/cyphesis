@@ -32,6 +32,9 @@
 
 #include <varconf/config.h>
 
+#define _GLIBCXX_USE_NANOSLEEP 1
+#include <thread>
+
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Login;
@@ -59,6 +62,19 @@ STRING_OPTION(password, "", "aiclient", "password",
 ;
 
 static bool debug_flag = false;
+
+static int tryToConnect(PossessionClient& possessionClient)
+{
+    if (possessionClient.connectLocal(client_socket_name) == 0) {
+        log(INFO, String::compose("Connected to server at %1.", client_socket_name));
+        Root systemAccountResponse = possessionClient.createSystemAccount();
+
+        possessionClient.enablePossession();
+        return 0;
+    } else {
+        return -1;
+    }
+}
 
 int main(int argc, char ** argv)
 {
@@ -125,12 +141,22 @@ int main(int argc, char ** argv)
     }
 
     PossessionClient possessionClient(mindFactory);
-    possessionClient.connectLocal(client_socket_name);
-    Root systemAccountResponse = possessionClient.createSystemAccount();
-
-    possessionClient.enablePossession();
+    while (tryToConnect(possessionClient) != 0) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+    }
 
     while (!exit_flag) {
-        possessionClient.idle();
+        int netResult = possessionClient.handleNet();
+        if (netResult == 0) {
+            //As long as we're connected we'll keep on processing minds
+            possessionClient.idle();
+        } else {
+            log(ERROR, "Disconnected from server; will try to reconnect every five seconds.");
+            //We're disconnected. We'll now enter a loop where we'll try to reconnect at an interval.
+            while (tryToConnect(possessionClient) != 0) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+            }
+
+        }
     }
 }

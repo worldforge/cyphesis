@@ -47,7 +47,6 @@ PossessionClient::~PossessionClient()
 
 void PossessionClient::idle()
 {
-    handleNet();
     OpVector res;
     for (auto& mind : m_minds) {
         mind.second->idle(res);

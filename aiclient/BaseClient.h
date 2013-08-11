@@ -63,7 +63,7 @@ class BaseClient {
                                        const std::string & pword);
     CreatorClient * createCharacter(const std::string & name);
     void logout();
-    void handleNet();
+    int handleNet();
     
     /// \brief Function called when nothing else is going on
     virtual void idle() = 0;

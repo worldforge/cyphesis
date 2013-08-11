@@ -145,7 +145,6 @@ int ClientConnection::sendAndWaitReply(const Operation & op, OpVector & res)
 
 RootOperation ClientConnection::pop()
 {
-    poll();
     if (operationQueue.empty()) {
         return RootOperation(0);
     }
