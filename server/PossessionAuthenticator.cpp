@@ -50,7 +50,7 @@ int PossessionAuthenticator::addPossession(const std::string & entity_id,
         return -1;
     }
     m_possessions.insert(std::make_pair(entity_id, pt));
-    log(INFO, String::compose("Added possession auth entry for %1,%2",
+    log(NOTICE, String::compose("Added possession auth entry for %1,%2",
                               entity_id, possess_key));
     return 0;
 }
@@ -67,7 +67,7 @@ int PossessionAuthenticator::removePossession(const std::string &entity_id)
         return -1;
     }
     removePossession(I);
-    log(ERROR, String::compose("Removed possession auth entry for entity ID %1",
+    log(NOTICE, String::compose("Removed possession auth entry for entity ID %1",
                                                 entity_id));
     return 0;
 }
