@@ -152,26 +152,31 @@ void BaseClient::logout()
 }
 
 /// \brief Handle any operations that have arrived from the server
-void BaseClient::handleNet()
+int BaseClient::handleNet()
 {
-    Operation input;
-    while ((input = m_connection.pop()).isValid()) {
-        if (input->getClassNo() == Atlas::Objects::Operation::ERROR_NO) {
-            log(ERROR,
-                    String::compose("Got error from server: %1",
-                            getErrorMessage(input)));
-        }
-
-        OpVector res;
-        operation(input, res);
-        OpVector::const_iterator Iend = res.end();
-        for (OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
-            if (input->hasAttrFlag(Atlas::Objects::Operation::SERIALNO_FLAG)) {
-                (*I)->setRefno(input->getSerialno());
+    int pollResult = m_connection.poll();
+    if (pollResult == 0) {
+        Operation input;
+        while ((input = m_connection.pop()).isValid()) {
+            if (input->getClassNo() == Atlas::Objects::Operation::ERROR_NO) {
+                log(ERROR,
+                        String::compose("Got error from server: %1",
+                                getErrorMessage(input)));
             }
-            send(*I);
+
+            OpVector res;
+            operation(input, res);
+            OpVector::const_iterator Iend = res.end();
+            for (OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
+                if (input->hasAttrFlag(
+                        Atlas::Objects::Operation::SERIALNO_FLAG)) {
+                    (*I)->setRefno(input->getSerialno());
+                }
+                send(*I);
+            }
         }
     }
+    return pollResult;
 }
 
 std::string BaseClient::getErrorMessage(const Operation & err)
