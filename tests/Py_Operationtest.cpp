@@ -41,7 +41,7 @@ static PyObject * null_wrapper(PyObject * self, PyOperation * o)
 {
     if (PyOperation_Check(o)) {
 #ifdef CYPHESIS_DEBUG
-        o->operation = Atlas::Objects::Operation::RootOperation(0);
+        o->operation = Atlas::Objects::Operation::RootOperation(nullptr);
 #endif // NDEBUG
     } else if (PyOplist_Check(o)) {
 #ifdef CYPHESIS_DEBUG
@@ -49,7 +49,7 @@ static PyObject * null_wrapper(PyObject * self, PyOperation * o)
 #endif // NDEBUG
     } else if (PyRootEntity_Check(o)) {
 #ifdef CYPHESIS_DEBUG
-        ((PyRootEntity*)o)->entity = Atlas::Objects::Entity::RootEntity(0);
+        ((PyRootEntity*)o)->entity = Atlas::Objects::Entity::RootEntity(nullptr);
 #endif // NDEBUG
     } else if (PyMessage_Check(o)) {
 #ifdef CYPHESIS_DEBUG

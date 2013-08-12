@@ -43,7 +43,7 @@ static PyObject * null_wrapper(PyObject * self, PyOplist * o)
 #endif // NDEBUG
     } else if (PyOperation_Check(o)) {
 #ifdef CYPHESIS_DEBUG
-        ((PyOperation*)o)->operation = Atlas::Objects::Operation::RootOperation(0);
+        ((PyOperation*)o)->operation = Atlas::Objects::Operation::RootOperation(nullptr);
 #endif // NDEBUG
     } else {
         PyErr_SetString(PyExc_TypeError, "Unknown Object type");

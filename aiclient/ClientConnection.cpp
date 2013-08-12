@@ -146,7 +146,7 @@ int ClientConnection::sendAndWaitReply(const Operation & op, OpVector & res)
 RootOperation ClientConnection::pop()
 {
     if (operationQueue.empty()) {
-        return RootOperation(0);
+        return RootOperation(nullptr);
     }
     RootOperation op = operationQueue.front();
     operationQueue.pop_front();

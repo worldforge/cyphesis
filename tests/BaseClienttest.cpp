@@ -124,7 +124,7 @@ int ClientConnection::wait()
 
 RootOperation ClientConnection::pop()
 {
-    return RootOperation(0);
+    return RootOperation(nullptr);
 }
 
 CharacterClient::CharacterClient(const std::string & id, long intId,

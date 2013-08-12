@@ -737,7 +737,7 @@ static PyObject * Operation_new(PyTypeObject * type, PyObject *, PyObject *)
     // in-place constructor.
     PyOperation * self = (PyOperation *)type->tp_alloc(type, 0);
     if (self != NULL) {
-        new (&(self->operation)) RootOperation(0);
+        new (&(self->operation)) RootOperation(nullptr);
     }
     return (PyObject *)self;
 }
