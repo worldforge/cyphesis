@@ -116,7 +116,7 @@ RootOperation ClientConnection::pop()
 {
     poll();
     if (operationQueue.empty()) {
-        return RootOperation(0);
+        return RootOperation(nullptr);
     }
     RootOperation op = operationQueue.front();
     operationQueue.pop_front();
