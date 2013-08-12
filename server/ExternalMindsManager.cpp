@@ -116,9 +116,9 @@ void ExternalMindsManager::addPossessionEntryForCharacter(Character& character)
     PossessionAuthenticator::instance()->addPossession(character.getId(), key);
 }
 
-int ExternalMindsManager::requestPossession(Character& character)
+int ExternalMindsManager::requestPossession(Character& character, const std::string& language, const std::string& script)
 {
-
+    //TODO: take preferred language and script into account
     addPossessionEntryForCharacter(character);
     character.destroyed.connect(
             sigc::bind(

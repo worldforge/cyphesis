@@ -15,7 +15,6 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-
 #include "MindProperty.h"
 
 #include "server/PossessionAuthenticator.h"
@@ -43,28 +42,17 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::Setup;
 using Atlas::Objects::Operation::Look;
 
-MindProperty::MindProperty(const MindProperty &) : m_factory(0)
+MindProperty::MindProperty(const MindProperty & rhs)
+: m_language(rhs.m_language), m_script(rhs.m_script)
 {
-    // We don't copy the factory, or duplicate it as would be required
-    // to prevent double-delete hassle.
-    // This is because:
-    //  a) This property will be copied if it is being added to an entity
-    //     in order to modify its value. (modProperty())
-    //  b) In this secenario, it will already have been apply()ed to that
-    //     instance from the class property when the entity was created, so
-    //     the factory isn't required to apply the same value again.
-    //  c) If a new value is specified, ::set() will be called creating
-    //     a new factory.
-    //  Therefor duplicating the factory is not required.
 }
 
-MindProperty::MindProperty() : m_factory(0)
+MindProperty::MindProperty()
 {
 }
 
 MindProperty::~MindProperty()
 {
-    delete m_factory;
 }
 
 void MindProperty::set(const Element & val)
@@ -77,33 +65,27 @@ void MindProperty::set(const Element & val)
     if (data.empty()) {
         return;
     }
-    std::string script_package;
-    std::string script_class;
-    if (GetScriptDetails(data, "Foo", "Mind",
-                         script_package, script_class) != 0) {
-        return;
-    }
 
-    if (m_factory == 0) {
-        m_factory = new MindFactory;
-    }
-    if (m_factory->m_scriptFactory != 0) {
-        if (m_factory->m_scriptFactory->package() != script_package) {
-            delete m_factory->m_scriptFactory;
-            m_factory->m_scriptFactory = 0;
-        }
-    }
-    if (m_factory->m_scriptFactory == 0) {
-        PythonScriptFactory<BaseMind> * psf =
-              new PythonScriptFactory<BaseMind>(script_package, script_class);
-        if (psf->setup() == 0) {
-            m_factory->m_scriptFactory = psf;
-        } else {
-            log(ERROR, String::compose("Python class \"%1.%2\" failed to load",
-                                       script_package, script_class));
-            delete psf;
+    {
+        auto I = data.find("name");
+        if (I == data.end()) {
             return;
         }
+        if (!I->second.isString()) {
+            return;
+        }
+        m_script = I->second.asString();
+    }
+
+    {
+        auto I = data.find("language");
+        if (I == data.end()) {
+            return;
+        }
+        if (!I->second.isString()) {
+            return;
+        }
+        m_language = I->second.asString();
     }
 }
 
@@ -114,10 +96,12 @@ MindProperty * MindProperty::copy() const
 
 void MindProperty::apply(LocatedEntity * ent)
 {
-//    if (m_factory == 0) {
-//        return;
-//    }
-//
+
+    //Only request a possession if there's a language and script specified.
+    if (m_language.empty() || m_script.empty()) {
+        return;
+    }
+
     Character * chr = dynamic_cast<Character *>(ent);
 
     if (chr == nullptr) {
@@ -134,29 +118,8 @@ void MindProperty::apply(LocatedEntity * ent)
         log(NOTICE, "Mind property character already has an external mind");
         return;
     }
-//
-//    chr->m_mind = m_factory->newMind(ent->getId(), ent->getIntId());
-//
-//    chr->m_mind->setType(ent->getType());
-//
-//    if (m_factory->m_scriptFactory != 0) {
-//        m_factory->m_scriptFactory->addScript(chr->m_mind);
-//    }
-//
-//    Setup s;
-//    Anonymous setup_arg;
-//    setup_arg->setName("mind");
-//    s->setTo(ent->getId());
-//    s->setArgs1(setup_arg);
-//    ent->sendWorld(s);
-//
-//    Look l;
-//    l->setTo(ent->getId());
-//    ent->sendWorld(l);
 
-
-    ExternalMindsManager::instance()->requestPossession(*chr);
-
+    ExternalMindsManager::instance()->requestPossession(*chr, m_language, m_script);
 
 }
 

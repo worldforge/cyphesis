@@ -27,16 +27,20 @@ class MindKit;
 /// \ingroup PropertyClasses
 class MindProperty : public Property<Atlas::Message::MapType> {
   protected:
-    MindKit * m_factory;
+    /**
+     * The preferred language for this mind. For example "python".
+     */
+    std::string m_language;
+
+    /**
+     * The preferred script to be run for this mind.
+     */
+    std::string m_script;
 
     MindProperty(const MindProperty &);
   public:
     MindProperty();
     virtual ~MindProperty();
-
-    MindKit * factory() {
-        return m_factory;
-    }
 
     /// \brief Returns true if mind scripting is enabled.
     bool isMindEnabled() const;

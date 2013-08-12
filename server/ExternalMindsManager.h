@@ -40,7 +40,21 @@ class ExternalMindsManager : public virtual sigc::trackable
         int addConnection(const ExternalMindsConnection& connection);
         int removeConnection(const std::string& routerId);
 
-        int requestPossession(Character& character);
+        /**
+         * Requests a possession for the supplied character.
+         *
+         * This means that we want an external AI process to take possession of the character and control its mind.
+         * The manager is responsible for finding a suitable external mind connection to ask for possession.
+         *
+         * The preferred language and script to use can be specified, but these might not be honoured, depending on
+         * the external minds client registered.
+         *
+         * @param character The character which should be possessed.
+         * @param language The preferred language to use for the mind.
+         * @param script The preferred script to use for the mind.
+         * @return
+         */
+        int requestPossession(Character& character, const std::string& language, const std::string& script);
 
     private:
         std::map<std::string, ExternalMindsConnection> m_connections;
