@@ -29,6 +29,7 @@
 #include "common/sockets.h"
 #include "common/Inheritance.h"
 #include "common/SystemTime.h"
+#include "common/system.h"
 
 #include <varconf/config.h>
 
@@ -81,6 +82,8 @@ static int tryToConnect(PossessionClient& possessionClient)
 
 int main(int argc, char ** argv)
 {
+    interactive_signals();
+
     int config_status = loadConfig(argc, argv, USAGE_AICLIENT);
     if (config_status < 0) {
         if (config_status == CONFIG_VERSION) {
@@ -145,7 +148,8 @@ int main(int argc, char ** argv)
 
     std::unique_ptr<PossessionClient> possessionClient(
             new PossessionClient(mindFactory));
-    while (tryToConnect(*possessionClient) != 0) {
+    log(INFO, "Trying to connect to server.");
+    while (tryToConnect(*possessionClient) != 0 && !exit_flag) {
         std::this_thread::sleep_for(std::chrono::milliseconds(5000));
     }
 
