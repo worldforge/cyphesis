@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2009 Alistair Riddoch
+// Copyright (C) 2013 Erik Ogenvik
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,31 +16,29 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
-#ifndef COMMON_CUSTOM_H
-#define COMMON_CUSTOM_H
+#ifndef COMMON_COMMUNE_H
+#define COMMON_COMMUNE_H
+
+#include <Atlas/Objects/Generic.h>
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-extern int ACTUATE_NO;
-extern int ADD_NO;
-extern int ATTACK_NO;
-extern int BURN_NO;
-extern int CONNECT_NO;
-extern int DROP_NO;
-extern int EAT_NO;
-extern int GOAL_INFO_NO;
-extern int MONITOR_NO;
-extern int NOURISH_NO;
-extern int PICKUP_NO;
-extern int SETUP_NO;
-extern int THOUGHT_NO;
-extern int TICK_NO;
-extern int UNSEEN_NO;
-extern int UPDATE_NO;
-extern int TELEPORT_NO;
 extern int COMMUNE_NO;
-extern int THINK_NO;
+
+/// \brief A "get" operation used to request the thoughts of an entity.
+///
+/// This is mainly used when authoring entities, more specifically the mind of an entity.
+/// The "commune" op is used to let an author inspect the mind of an entity.
+/// \see Think
+/// \ingroup CustomOperations
+class Commune : public Generic
+{
+  public:
+        Commune() {
+        (*this)->setType("commune", COMMUNE_NO);
+    }
+};
 
 } } }
 
-#endif // COMMON_CUSTOM_H
+#endif // COMMON_COMMUNE_H

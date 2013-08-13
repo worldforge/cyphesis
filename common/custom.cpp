@@ -77,6 +77,12 @@ void installCustomOperations()
 
     i.addChild(atlasOpDefinition("teleport", "action"));
     Atlas::Objects::Operation::TELEPORT_NO = atlas_factories->addFactory("teleport", &Atlas::Objects::generic_factory);
+
+    i.addChild(atlasOpDefinition("commune", "get"));
+    Atlas::Objects::Operation::COMMUNE_NO = atlas_factories->addFactory("commune", &Atlas::Objects::generic_factory);
+
+    i.addChild(atlasOpDefinition("think", "set"));
+    Atlas::Objects::Operation::THINK_NO = atlas_factories->addFactory("think", &Atlas::Objects::generic_factory);
 }
 
 void installCustomEntities()
