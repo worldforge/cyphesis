@@ -62,7 +62,9 @@ librulesetentity_a_SOURCES = \
 			     SuspendedProperty.cpp SuspendedProperty.h \
 			     SpawnerProperty.cpp SpawnerProperty.h \
 			     ImmortalProperty.cpp ImmortalProperty.h \
-			     RespawningProperty.cpp RespawningProperty.h
+			     RespawningProperty.cpp RespawningProperty.h \
+			     ProxyMind.cpp ProxyMind.h
+			     
 
 
 librulesetmind_a_SOURCES = BaseMind.cpp BaseMind.h \

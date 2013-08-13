@@ -23,7 +23,7 @@
 #include <sigc++/connection.h>
 #include <sigc++/trackable.h>
 
-class BaseMind;
+class ProxyMind;
 class ExternalMind;
 class Link;
 class Movement;
@@ -66,6 +66,9 @@ class Character : public Thing, public virtual sigc::trackable {
   protected:
     /// \brief Handler for simulating movement under direction from the mind
     Movement & m_movement;
+    /// \brief Internal AI mind keeping track of what this character experiences.
+    ProxyMind * m_proxyMind;
+
 
     /**
      * \brief A store of registered relays for this character, both outgoing and incoming.
@@ -105,8 +108,6 @@ class Character : public Thing, public virtual sigc::trackable {
 
     friend class Movement;
   public:
-    /// \brief Internal AI mind controlling this character
-    BaseMind * m_mind;
     /// \brief External network connected agent controlling this character
     ExternalMind * m_externalMind;
 
