@@ -109,11 +109,6 @@ void MindProperty::apply(LocatedEntity * ent)
         return;
     }
 
-    if (chr->m_mind != nullptr) {
-        log(NOTICE, "Mind property character already has a mind");
-        return;
-    }
-
     if (chr->m_externalMind != nullptr) {
         log(NOTICE, "Mind property character already has an external mind");
         return;

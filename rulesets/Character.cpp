@@ -19,7 +19,7 @@
 #include "Character.h"
 
 #include "Pedestrian.h"
-#include "BaseMind.h"
+#include "ProxyMind.h"
 #include "EntityProperty.h"
 #include "ExternalMind.h"
 #include "ExternalProperty.h"
@@ -272,7 +272,7 @@ LocatedEntity * Character::findInInventory(const std::string & id)
 Character::Character(const std::string & id, long intId) :
            Thing(id, intId),
                m_movement(*new Pedestrian(*this)),
-               m_mind(0), m_externalMind(0)
+               m_proxyMind(new ProxyMind(id, intId)), m_externalMind(0)
 {
     // FIXME Do we still need this?
     // It is my hope that once the task object is fully held by the
@@ -287,7 +287,7 @@ Character::~Character()
         m_rightHandWieldConnection.disconnect();
     }
     delete &m_movement;
-    delete m_mind;
+    delete m_proxyMind;
     delete m_externalMind;
 }
 
@@ -315,6 +315,14 @@ int Character::linkExternal(Link * link)
     update->setArgs1(update_arg);
 
     sendWorld(update);
+
+    //Now that we're connected we need to send any thoughts that we've been given to the mind client.
+    auto thoughts = m_proxyMind->getThoughts();
+    //We need to clear the existing thoughts since we'll be sending them anew; else we'll end up with duplicates.
+    m_proxyMind->clearThoughts();
+    for (auto thought : thoughts) {
+        sendWorld(thought);
+    }
 
     externalLinkChanged.emit();
     return 0;
@@ -1782,20 +1790,17 @@ void Character::sendMind(const Operation & op, OpVector & res)
     debug( std::cout << "Character::sendMind(" << op->getParents().front() << ")" << std::endl << std::flush;);
 
     if (m_externalMind != nullptr) {
-        if (m_mind != nullptr) {
-            OpVector mindRes;
-            m_mind->operation(op, mindRes);
-            // Discard all the local results
-        }
+        OpVector mindRes;
+        m_proxyMind->operation(op, mindRes);
+        // Discard all the local results
+
         debug(std::cout << "Sending to external mind" << std::endl
                          << std::flush;);
         m_externalMind->operation(op, res);
     } else {
         debug(std::cout << "Using ops from local mind"
                         << std::endl << std::flush;);
-        if (m_mind != nullptr) {
-            m_mind->operation(op, res);
-        }
+        m_proxyMind->operation(op, res);
     }
 }
 
