@@ -168,44 +168,7 @@ class NPCMind(server.Mind):
         #This should probably be handled in a nicer way (calling a "get_thought" method?).
         _, sub_op = self.get_op_name_and_sub(op)
         
-        if sub_op.id == "thought":
-            for attr in dir(self.knowledge):
-                d=getattr(self.knowledge, attr)
-                if getattr(d, '__iter__', False):
-                   for key in d:
-                        if attr!="goal":
-                            objectVal=d[key]
-                            if type(objectVal) is Location:
-                                #Serialize Location as tuple, with parent if available
-                                if objectVal.parent is None:
-                                    location=objectVal.coordinates
-                                else:
-                                    location=(objectVal.parent.id,objectVal.coordinates)
-                                object=str(location)
-                            else:
-                                object=str(d[key])
-                            
-                            res = res + Operation("thought", Entity(predicate=attr, subject=str(key), object=object))
-            
-            for (subject, goallist) in self.known_goals.items():
-                goalstrings=[]
-                for goal in goallist:
-                    goalstrings.append(goal.str)
-                res = res + Operation("thought", Entity(predicate="goal", subject=str(subject), object=goalstrings))
-            
-            if len(self.things) > 0:
-                things={}
-                for (id, thinglist) in self.things.items():
-                    idlist=[]
-                    for thing in thinglist:
-                        idlist.append(thing.id)
-                    things[id] = idlist
-                res = res + Operation("thought", Entity(things=things))
-
-            if len(self.pending_things) > 0:            
-                res = res + Operation("thought", Entity(pending_things=self.pending_things))
-                
-        elif sub_op.id == "goal_info":
+        if sub_op.id == "goal_info":
             #The goals can be queried in three different ways. 
             #Either all goals, or if a 'subject' is specified all goals for that 'subject'.
             #Or if both a 'subject' and 'goal' is specified one single goal.
@@ -241,59 +204,100 @@ class NPCMind(server.Mind):
                     pass
         return res
 
-    def thought_operation(self, op):
+    def commune_operation(self, op):
+        
+        res = Oplist()
+
+        for attr in dir(self.knowledge):
+            d=getattr(self.knowledge, attr)
+            if getattr(d, '__iter__', False):
+               for key in d:
+                    if attr!="goal":
+                        objectVal=d[key]
+                        if type(objectVal) is Location:
+                            #Serialize Location as tuple, with parent if available
+                            if objectVal.parent is None:
+                                location=objectVal.coordinates
+                            else:
+                                location=(objectVal.parent.id,objectVal.coordinates)
+                            object=str(location)
+                        else:
+                            object=str(d[key])
+                        
+                        res = res + Operation("think", Entity(predicate=attr, subject=str(key), object=object))
+        
+        for (subject, goallist) in self.known_goals.items():
+            goalstrings=[]
+            for goal in goallist:
+                goalstrings.append(goal.str)
+            res = res + Operation("think", Entity(predicate="goal", subject=str(subject), object=goalstrings))
+        
+        if len(self.things) > 0:
+            things={}
+            for (id, thinglist) in self.things.items():
+                idlist=[]
+                for thing in thinglist:
+                    idlist.append(thing.id)
+                things[id] = idlist
+            res = res + Operation("think", Entity(things=things))
+
+        if len(self.pending_things) > 0:            
+            res = res + Operation("think", Entity(pending_things=self.pending_things))
+                
+        return res
+
+    def think_operation(self, op):
         #TODO: add check that it's from ourselves
         #Only authors should be able to send set_operations. Do we need extra checks here, or should we rely on the server filtering them correctly?
-        for thoughtArgs in op:
-            for thought in thoughtArgs.args:
-                #Check if there's a 'predicate' set; if so handle it as knowledge. 
-                #Else check if it's things that we know we own or ought to own. 
-                if hasattr(thought, "predicate") == False:
-                    if hasattr(thought, "things"):
-                        things=thought.things
-                        for (id, thinglist) in things.items():
-                            #We can't iterate directly over the list, as it's of type atlas.Message; we must first "pythonize" it. 
-                            #This should be reworked into a better way. 
-                            thinglist=thinglist.pythonize()
-                            for thingId in thinglist:
-                                thingId=str(thingId)
-                                thing = self.map.get(thingId)
-                                if thing and thing.type[0]:
-                                    self.add_thing(thing)
-                                else:
-                                    self.pending_things.append(thingId)
-                    elif hasattr(thought, "pending_things"):
-                        for id in thought.pending_things:
-                            self.pending_things.append(str(id))
-                else:
-                    subject=thought.subject
-                    predicate=thought.predicate
-                    object=thought.object
-                    #handle goals in a special way
-                    if predicate == "goal":
-                        if type(object) is StringType:
-                            self.set_goals(subject,[object])
-                        else:
-                            string_goals=[]
-                            for goalElement in object:
-                                string_goals.append(str(goalElement))
-                            self.set_goals(subject,string_goals)
+        for thought in op.args:
+            #Check if there's a 'predicate' set; if so handle it as knowledge. 
+            #Else check if it's things that we know we own or ought to own. 
+            if hasattr(thought, "predicate") == False:
+                if hasattr(thought, "things"):
+                    things=thought.things
+                    for (id, thinglist) in things.items():
+                        #We can't iterate directly over the list, as it's of type atlas.Message; we must first "pythonize" it. 
+                        #This should be reworked into a better way. 
+                        thinglist=thinglist.pythonize()
+                        for thingId in thinglist:
+                            thingId=str(thingId)
+                            thing = self.map.get(thingId)
+                            if thing and thing.type[0]:
+                                self.add_thing(thing)
+                            else:
+                                self.pending_things.append(thingId)
+                elif hasattr(thought, "pending_things"):
+                    for id in thought.pending_things:
+                        self.pending_things.append(str(id))
+            else:
+                subject=thought.subject
+                predicate=thought.predicate
+                object=thought.object
+                #handle goals in a special way
+                if predicate == "goal":
+                    if type(object) is StringType:
+                        self.set_goals(subject,[object])
                     else:
-                        #Handle locations.
-                        if len(object) > 0 and object[0]=='(':
-                            #CHEAT!: remove eval
-                            locdata=eval(object)
-                            #If only coords are supplied, it's handled as a location within the same parent space as ourselves
-                            if (len(locdata) == 3):
-                                loc=self.location.copy()
-                                loc.coordinates=Vector3D(list(locdata))
-                            elif (len(locdata) == 2):
-                                where=self.map.get_add(locdata[0])
-                                coords=Point3D(list(locdata[1]))
-                                loc=Location(where, coords)
-                            self.add_knowledge(predicate,subject,loc)
-                        else:
-                            self.add_knowledge(predicate,subject,object)
+                        string_goals=[]
+                        for goalElement in object:
+                            string_goals.append(str(goalElement))
+                        self.set_goals(subject,string_goals)
+                else:
+                    #Handle locations.
+                    if len(object) > 0 and object[0]=='(':
+                        #CHEAT!: remove eval
+                        locdata=eval(object)
+                        #If only coords are supplied, it's handled as a location within the same parent space as ourselves
+                        if (len(locdata) == 3):
+                            loc=self.location.copy()
+                            loc.coordinates=Vector3D(list(locdata))
+                        elif (len(locdata) == 2):
+                            where=self.map.get_add(locdata[0])
+                            coords=Point3D(list(locdata[1]))
+                            loc=Location(where, coords)
+                        self.add_knowledge(predicate,subject,loc)
+                    else:
+                        self.add_knowledge(predicate,subject,object)
     
     ########## Talk operations
     def admin_sound(self, op):

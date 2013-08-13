@@ -35,6 +35,8 @@
 #include "common/compose.hpp"
 #include "common/Variable.h"
 #include "common/custom.h"
+#include "common/Think.h"
+#include "common/Commune.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
@@ -218,12 +220,8 @@ void StorageManager::restoreThoughts(LocatedEntity * ent)
     if (!thoughts_data.empty()) {
         OpVector opRes;
 
-        Atlas::Objects::Entity::Anonymous thoughtArg;
-        thoughtArg->setAttr("args", thoughts_data);
-
-        Atlas::Objects::Operation::Generic thoughtOp;
-        thoughtOp->setType("thought", Atlas::Objects::Operation::THOUGHT_NO);
-        thoughtOp->setArgs1(thoughtArg);
+        Atlas::Objects::Operation::Think thoughtOp;
+        thoughtOp->setArgsAsList(thoughts_data);
         //Make the thought come from the entity itself
         thoughtOp->setTo(ent->getId());
         thoughtOp->setFrom(ent->getId());
@@ -245,20 +243,15 @@ void StorageManager::storeThoughts(LocatedEntity * ent)
 
         std::vector<std::string> thoughtsList;
 
-        Atlas::Objects::Operation::Get get;
-
-        Operation get_arg;
-        get_arg->setParents( { "thought" });
-        get_arg->setId(character->getId());
-
-        get->setArgs1(get_arg);
+        Atlas::Objects::Operation::Commune commune;
+        commune->setTo(character->getId());
+        commune->setId(character->getId());
 
         OpVector res;
-        character->sendMind(get, res);
+        character->sendMind(commune, res);
 
         for (auto& op : res) {
-            if (!op->getParents().empty()
-                    && *op->getParents().begin() == "thought") {
+            if (op->getClassNo() == Atlas::Objects::Operation::THINK_NO) {
                 Atlas::Message::ListType thoughts = op->getArgsAsList();
                 for (auto& thoughtElement : thoughts) {
                     if (thoughtElement.isMap()) {
