@@ -427,7 +427,7 @@ void Admin::OtherOperation(const Operation & op, OpVector & res)
 {
     const int op_type = op->getClassNo();
     if (op_type == Atlas::Objects::Operation::MONITOR_NO) {
-        return customMonitorOperation(op, res);
+        customMonitorOperation(op, res);
     }
 }
 
