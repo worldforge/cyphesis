@@ -90,6 +90,8 @@
                 _prefix ## TickOperation(_op, _result); \
             } else if (_op_no == Atlas::Objects::Operation::UPDATE_NO) { \
                 _prefix ## UpdateOperation(_op, _result); \
+            } else if (_op_no == Atlas::Objects::Operation::RELAY_NO) { \
+                _prefix ## RelayOperation(_op, _result); \
             } else { \
                 /* ERROR */ \
             } \
@@ -127,6 +129,12 @@
                 return _prefix ## UnseenOperation(_op); \
             } else if (_op_no == Atlas::Objects::Operation::THOUGHT_NO) { \
                 return _prefix ## ThoughtOperation(_op); \
+            } else if (_op_no == Atlas::Objects::Operation::THINK_NO) { \
+                return _prefix ## ThinkOperation(_op); \
+            } else if (_op_no == Atlas::Objects::Operation::COMMUNE_NO) { \
+                return _prefix ## CommuneOperation(_op); \
+            } else if (_op_no == Atlas::Objects::Operation::RELAY_NO) { \
+                return _prefix ## RelayOperation(_op); \
             } \
             break; \
     }

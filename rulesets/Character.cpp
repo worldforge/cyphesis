@@ -79,6 +79,8 @@ using Atlas::Objects::smart_dynamic_cast;
 
 static const bool debug_flag = false;
 
+long int Character::s_serialNumberNext = 0L;
+
 // This figure is calculated to allow a character to live for 4 weeks
 // without food, during which time they will lose 40% of their mass
 // before starving.
@@ -975,6 +977,109 @@ void Character::ActuateOperation(const Operation & op, OpVector & res)
     // res.push_back(sight);
 }
 
+void Character::RelayOperation(const Operation & op, OpVector & res)
+{
+    //A Relay operation with refno sent to ourselves signals that we should prune
+    //our registered relays in m_relays. This is a feature to allow for a timeout; if
+    //no Relay has been received from the destination Entity after a certain period
+    //we'll shut down the relay link.
+    if (op->getTo() == getId() && op->getFrom() == getId() && !op->isDefaultRefno()) {
+        if (m_relays.erase(op->getRefno()) > 0) {
+            //Also send a no-op to any client to make it stop waiting for any response.
+            Operation noop;
+            noop->setRefno(op->getRefno());
+            noop->setTo(getId());
+            noop->setFrom(getId());
+            sendMind(noop, res);
+        }
+    } else {
+        if (op->getArgs().empty()) {
+            log(ERROR, "Character::RelayOperation no args.");
+            return;
+        }
+        Operation relayedOp = Atlas::Objects::smart_dynamic_cast<Operation>(
+                op->getArgs().front());
+
+        if (!relayedOp.isValid()) {
+            log(ERROR,
+                    "Character::RelayOperation first arg is not an operation.");
+            return;
+        }
+
+
+        //If a relay op has a refno, it's a response to a Relay op previously sent out to another
+        //entity, and we should send the incoming relayed operation to the mind.
+        if (!op->isDefaultRefno()) {
+            //Note that the relayed op should be considered untrusted in this case, as it has originated
+            //from a random entity or its mind.
+            auto I = m_relays.find(op->getRefno());
+            if (I == m_relays.end()) {
+                log(WARNING,
+                        "Character::RelayOperation could not find registrered Relay with refno.");
+                return;
+            }
+
+            //Make sure that this op really comes from the entity the original Relay op was sent to.
+            if (op->getFrom() != I->second.destination) {
+                log(WARNING,
+                        "Character::RelayOperation got relay op with mismatching 'from'.");
+                return;
+            }
+
+            //Get the relayed operation and send to mind.
+            //Note that we don't send the operation to the entity; this is because we have
+            //to treat the relayed operation as "unsafe". This is since it originated from an random
+            //entity's mind and could in effect be anything (Set, Logout etc.)
+            //We should therefore handle it with care and only send it on to the mind.
+            //This of course hinges on the mind client code making sure to handle it correctly, given
+            //its refno.
+            relayedOp->setRefno(I->second.serialno);
+            sendMind(relayedOp, res);
+            m_relays.erase(I);
+
+        } else {
+            //If the Relay op instead has a serial no, it's a Relay op sent from us by another Entity
+            //which expects a response. We should send it on to the mind (efter registering an entry in
+            //m_relays to be handled by mind2body).
+            //Note that the relayed operation in this case should be considered "trusted", as it has originated
+            //from either the server itself or a trusted client.
+
+            //Extract the contained operation, and register the relay into m_relays
+            if (op->isDefaultSerialno()) {
+                log(ERROR, "Character::RelayOperation no serial number.");
+                return;
+            }
+
+            Relay relay;
+            relay.serialno = op->getSerialno();
+            relay.destination = op->getFrom();
+
+            //Generate a local serial number which we'll register in m_relays. When a reponse
+            long int serialNo = ++s_serialNumberNext;
+            relayedOp->setSerialno(serialNo);
+            m_relays.insert(std::make_pair(serialNo, relay));
+
+            //Make sure that the contained op is addressed to the entity
+            relayedOp->setTo(getId());
+
+            //Now send the contained op to the entity
+            operation(relayedOp, res);
+
+            //Also send a future Relay op to ourselves to make sure that the registered relay in m_relays
+            //is removed in the case that we don't get any response.
+            Atlas::Objects::Operation::Generic pruneOp;
+            pruneOp->setType("relay", Atlas::Objects::Operation::RELAY_NO);
+            pruneOp->setTo(getId());
+            pruneOp->setFrom(getId());
+            pruneOp->setRefno(serialNo);
+            //30 seconds should be more than enough.
+            pruneOp->setFutureSeconds(30);
+            sendWorld(pruneOp);
+        }
+    }
+}
+
+
 /// \brief Filter an Actuate operation coming from the mind
 ///
 /// @param op The operation to be filtered.
@@ -1586,6 +1691,17 @@ bool Character::w2mThoughtOperation(const Operation & op)
     return op->getFrom() == getId();
 }
 
+bool Character::w2mThinkOperation(const Operation & op)
+{
+    return true;
+}
+
+bool Character::w2mCommuneOperation(const Operation & op)
+{
+    return true;
+}
+
+
 /// \brief Filter a Touch operation coming from the world to the mind
 ///
 /// @param op The operation to be filtered.
@@ -1593,6 +1709,16 @@ bool Character::w2mThoughtOperation(const Operation & op)
 bool Character::w2mTouchOperation(const Operation & op)
 {
     return true;
+}
+
+/// \brief Filter a Relay operation coming from the world to the mind
+///
+/// @param op The operation to be filtered.
+/// @return true if the operation should be passed.
+bool Character::w2mRelayOperation(const Operation & op)
+{
+    //Relay is an internal op.
+    return false;
 }
 
 /// \brief Send an operation to the current active part of the mind
@@ -1640,7 +1766,32 @@ void Character::mind2body(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Character::mind2body(" << std::endl << std::flush;);
 
+    //Check if we have any relays registered for this op.
+    if (!op->isDefaultRefno()) {
+        auto I = m_relays.find(op->getRefno());
+        if (I != m_relays.end()) {
+            //The operation is a response to a relayed op, and we should send it on to the originating
+            //entity. When doing this, we're basically wrapping an unsafe operation (i.e. the operation from
+            //the mind could be anything), so it's important that the client or code which receives
+            //the relayed op handles it with case.
+
+            //Wrap the operation in a relay op
+            Atlas::Objects::Operation::Generic relayOp;
+            relayOp->setType("relay", Atlas::Objects::Operation::RELAY_NO);
+            relayOp->setArgs1(op);
+            relayOp->setTo(I->second.destination);
+            relayOp->setRefno(I->second.serialno);
+            res.push_back(relayOp);
+            m_relays.erase(I);
+
+            //The operation should not be processed anymore after it has been relayed.
+            return;
+        }
+    }
+
+
     if (!op->isDefaultTo()) {
+
         log(ERROR, String::compose("Operation \"%1\" from mind with TO set.",
                                    op->getParents().front()));
         return;

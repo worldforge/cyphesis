@@ -29,6 +29,7 @@
 #include "common/Setup.h"
 #include "common/Tick.h"
 #include "common/Unseen.h"
+#include "common/custom.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -79,6 +80,9 @@ void Creator::operation(const Operation & op, OpVector & res)
         default:
             if (op_no == Atlas::Objects::Operation::TICK_NO) {
                 TickOperation(op, res);
+            } else if (op_no == Atlas::Objects::Operation::RELAY_NO) {
+                RelayOperation(op, res);
+                return;
             }
             break;
     }
@@ -115,17 +119,20 @@ void Creator::externalOperation(const Operation & op, Link &)
     } else {
         LocatedEntity * to = BaseWorld::instance().getEntity(op->getTo());
         if (to != 0) {
-            // Make it appear like it came from target itself;
-            to->sendWorld(op);
-
+            //If there's a serial number, we expect a response, and we should relay the operation
+            if (op->isDefaultSerialno()) {
+                // Make it appear like it came from target itself;
+                to->sendWorld(op);
+            } else {
+                relayOperationTo(op, *to);
+            }
+            // Send a sight of the operation to the mind
             Sight sight;
             sight->setArgs1(op);
             sight->setTo(getId());
-            if (!op->isDefaultSerialno()) {
-                sight->setRefno(op->getSerialno());
-            }
             OpVector res;
             sendMind(sight, res);
+
         } else {
             log(ERROR, String::compose("Creator operation from client "
                                        "is to unknown ID \"%1\"",
@@ -145,6 +152,37 @@ void Creator::externalOperation(const Operation & op, Link &)
             // We are not interested in anything the external mind might return
         }
     }
+}
+
+void Creator::relayOperationTo(const Operation & op, LocatedEntity& to)
+{
+    //Make the op appear to come from the destination entity.
+    op->setFrom(to.getId());
+
+    Relay relay;
+    relay.serialno = op->getSerialno();
+    relay.destination = to.getId();
+
+    long int serialNo = ++s_serialNumberNext;
+    Atlas::Objects::Operation::Generic relayOp;
+    relayOp->setType("relay", Atlas::Objects::Operation::RELAY_NO);
+    relayOp->setTo(to.getId());
+    relayOp->setSerialno(serialNo);
+    relayOp->setArgs1(op);
+    m_relays.insert(std::make_pair(serialNo, relay));
+
+    sendWorld(relayOp);
+
+    //Also send a future Relay op to ourselves to make sure that the registered relay in m_relays
+    //is removed in the case that we don't get any response.
+    Atlas::Objects::Operation::Generic pruneOp;
+    pruneOp->setType("relay", Atlas::Objects::Operation::RELAY_NO);
+    pruneOp->setTo(getId());
+    pruneOp->setFrom(getId());
+    pruneOp->setRefno(serialNo);
+    pruneOp->setFutureSeconds(30);
+    sendWorld(pruneOp);
+
 }
 
 void Creator::mindLookOperation(const Operation & op, OpVector & res)

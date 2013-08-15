@@ -36,6 +36,7 @@
 #include "common/Setup.h"
 #include "common/Tick.h"
 #include "common/Update.h"
+#include "common/custom.h"
 
 #include <wfmath/atlasconv.h>
 
@@ -405,6 +406,11 @@ void Entity::UseOperation(const Operation &, OpVector &)
 
 /// \brief Handle a wield operation
 void Entity::WieldOperation(const Operation &, OpVector &)
+{
+}
+
+/// \brief Handle a relay operation
+void Entity::RelayOperation(const Operation &, OpVector &)
 {
 }
 
