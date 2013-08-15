@@ -206,7 +206,8 @@ class NPCMind(server.Mind):
 
     def commune_operation(self, op):
         
-        res = Oplist()
+        thinkOp = Operation("think")
+        thoughts = []
 
         for attr in dir(self.knowledge):
             d=getattr(self.knowledge, attr)
@@ -224,13 +225,13 @@ class NPCMind(server.Mind):
                         else:
                             object=str(d[key])
                         
-                        res = res + Operation("think", Entity(predicate=attr, subject=str(key), object=object))
+                        thoughts.append(Entity(predicate=attr, subject=str(key), object=object))
         
         for (subject, goallist) in self.known_goals.items():
             goalstrings=[]
             for goal in goallist:
                 goalstrings.append(goal.str)
-            res = res + Operation("think", Entity(predicate="goal", subject=str(subject), object=goalstrings))
+            thoughts.append(Entity(predicate="goal", subject=str(subject), object=goalstrings))
         
         if len(self.things) > 0:
             things={}
@@ -239,17 +240,22 @@ class NPCMind(server.Mind):
                 for thing in thinglist:
                     idlist.append(thing.id)
                 things[id] = idlist
-            res = res + Operation("think", Entity(things=things))
+            thoughts.append("think", Entity(things=things))
 
         if len(self.pending_things) > 0:            
-            res = res + Operation("think", Entity(pending_things=self.pending_things))
+            thoughts.append("think", Entity(pending_things=self.pending_things))
                 
+        thinkOp.setArgs(thoughts)
+        thinkOp.setRefno(op.getSerialno())
+        res = Oplist()
+        res = res + thinkOp
         return res
 
     def think_operation(self, op):
         #TODO: add check that it's from ourselves
         #Only authors should be able to send set_operations. Do we need extra checks here, or should we rely on the server filtering them correctly?
-        for thought in op.args:
+        args=op.getArgs()
+        for thought in args:
             #Check if there's a 'predicate' set; if so handle it as knowledge. 
             #Else check if it's things that we know we own or ought to own. 
             if hasattr(thought, "predicate") == False:
