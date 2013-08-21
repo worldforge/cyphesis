@@ -20,6 +20,8 @@
 
 #include "WorldRouter.h"
 #include "EntityBuilder.h"
+#include "MindInspector.h"
+#include "CommServer.h"
 
 #include "rulesets/LocatedEntity.h"
 #include "rulesets/Character.h"
@@ -37,6 +39,7 @@
 #include "common/custom.h"
 #include "common/Think.h"
 #include "common/Commune.h"
+#include "common/SystemTime.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
@@ -59,6 +62,7 @@ typedef Database::KeyValues KeyValues;
 static const bool debug_flag = false;
 
 StorageManager:: StorageManager(WorldRouter & world) :
+        m_mindInspector(nullptr),
       m_insertEntityCount(0), m_updateEntityCount(0),
       m_insertPropertyCount(0), m_updatePropertyCount(0),
       m_insertQps(0), m_updateQps(0),
@@ -67,6 +71,10 @@ StorageManager:: StorageManager(WorldRouter & world) :
       m_insertQpsIndex(0), m_updateQpsIndex(0)
 {
     if (database_flag) {
+
+        m_mindInspector = new MindInspector();
+        m_mindInspector->ThoughtsReceived.connect(sigc::mem_fun(*this, &StorageManager::thoughtsReceived));
+
         world.inserted.connect(sigc::mem_fun(this,
               &StorageManager::entityInserted));
 
@@ -94,6 +102,11 @@ StorageManager:: StorageManager(WorldRouter & world) :
             m_updateQpsRing[i] = 0;
         }
     }
+}
+
+StorageManager::~StorageManager()
+{
+    delete m_mindInspector;
 }
 
 /// \brief Called when a new Entity is inserted in the world
@@ -239,30 +252,9 @@ void StorageManager::storeThoughts(LocatedEntity * ent)
     //Check if the entity has a mind. Perhaps do this in another way than using dynamic cast?
     Character* character = dynamic_cast<Character*>(ent);
     if (character) {
-        Database * db = Database::instance();
 
-        std::vector<std::string> thoughtsList;
-
-        Atlas::Objects::Operation::Commune commune;
-        commune->setTo(character->getId());
-        commune->setId(character->getId());
-
-        OpVector res;
-        character->sendMind(commune, res);
-
-        for (auto& op : res) {
-            if (op->getClassNo() == Atlas::Objects::Operation::THINK_NO) {
-                Atlas::Message::ListType thoughts = op->getArgsAsList();
-                for (auto& thoughtElement : thoughts) {
-                    if (thoughtElement.isMap()) {
-                        std::string value;
-                        db->encodeObject(thoughtElement.asMap(), value);
-                        thoughtsList.push_back(value);
-                    }
-                }
-            }
-        }
-        db->replaceThoughts(ent->getId(), thoughtsList);
+        m_mindInspector->queryEntityForThoughts(character->getId());
+        m_outstandingThoughtRequests.insert(character->getId());
 
     }
 }
@@ -503,6 +495,35 @@ void StorageManager::tick()
                     << std::endl << std::flush;});
 }
 
+void StorageManager::thoughtsReceived(const std::string& entityId, const Operation& op)
+{
+    m_outstandingThoughtRequests.erase(entityId);
+    //Note that the received operation originated from an external mind, so we must
+    // treat it as unsafe.
+    if (op->getClassNo() == Atlas::Objects::Operation::THINK_NO) {
+        Database * db = Database::instance();
+        std::vector<std::string> thoughtsList;
+        Atlas::Message::ListType thoughts = op->getArgsAsList();
+        for (auto& thoughtElement : thoughts) {
+            if (thoughtElement.isMap()) {
+                std::string value;
+                db->encodeObject(thoughtElement.asMap(), value);
+                thoughtsList.push_back(value);
+            }
+        }
+        db->replaceThoughts(entityId, thoughtsList);
+    } else if (op->getClassNo()
+            == Atlas::Objects::Operation::ROOT_OPERATION_NO) {
+        //A RootOperation indicates that the relay timed out; we'll just ignore it
+    } else {
+        log(WARNING,
+                String::compose(
+                        "Got response to a Commune request from mind %1 with an operation of type %2. This could signal a malicious client.",
+                        op->getFrom(), op->getParents().front()));
+    }
+
+}
+
 int StorageManager::initWorld()
 {
     LocatedEntity * ent = &BaseWorld::instance().m_gameWorld;
@@ -526,16 +547,11 @@ int StorageManager::restoreWorld()
 
 int StorageManager::shutdown(bool& exit_flag, const std::map<long, LocatedEntity *>& entites)
 {
-    log(NOTICE, "Persisting entity thoughts before shutting down...");
-
     tick();
-    for (auto& pair : entites) {
-        storeThoughts(pair.second);
-    }
     while (Database::instance()->queryQueueSize()) {
         //Allow for any user to abort the process.
         if(exit_flag) {
-            log(NOTICE, "Aborted thoughts persisting. This might lead to lost thoughts for some entities.");
+            log(NOTICE, "Aborted entity persisting. This might lead to lost entities.");
             return 0;
         }
         if (!Database::instance()->queryInProgress()) {
@@ -546,3 +562,17 @@ int StorageManager::shutdown(bool& exit_flag, const std::map<long, LocatedEntity
     }
     return 0;
 }
+
+void StorageManager::requestMinds(const std::map<long, LocatedEntity *>& entites)
+{
+    for (auto& pair : entites) {
+        storeThoughts(pair.second);
+    }
+}
+
+
+size_t StorageManager::numberOfOutstandingThoughtRequests() const
+{
+    return m_outstandingThoughtRequests.size();
+}
+

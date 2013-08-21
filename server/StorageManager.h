@@ -19,15 +19,19 @@
 #ifndef SERVER_STORAGE_MANAGER_H
 #define SERVER_STORAGE_MANAGER_H
 
+#include <common/OperationRouter.h>
 #include <modules/EntityRef.h>
 
 #include <deque>
 #include <string>
 #include <map>
+#include <set>
 
 class Entity;
 class WorldRouter;
 class PropertyBase;
+class MindInspector;
+class CommServer;
 
 /// \brief StorageManager represents the subsystem which stores world storage
 ///
@@ -46,6 +50,14 @@ class StorageManager {
 
     /// \brief Queue of IDs of entities that are destroyed
     Idstore m_destroyedEntities;
+
+    /// \brief Handles inpection of minds.
+    MindInspector* m_mindInspector;
+
+    /// \brief Keeps track of outstanding requests for thoughts.
+    ///
+    /// Value stored is entity id.
+    std::set<std::string> m_outstandingThoughtRequests;
 
     int m_insertEntityCount;
     int m_updateEntityCount;
@@ -82,8 +94,12 @@ class StorageManager {
     void updateEntity(LocatedEntity *);
     void restoreChildren(LocatedEntity *);
 
+    /// \brief Callback for m_mindInspector when thoughts arrive.
+    void thoughtsReceived(const std::string& entityId, const Operation& thoughts);
+
   public:
     StorageManager(WorldRouter &);
+    virtual ~StorageManager();
 
     void tick();
     int initWorld();
@@ -93,6 +109,17 @@ class StorageManager {
     ///
     /// It's expected that the storage manager attempts to persist entity state.
     int shutdown(bool& exit_flag, const std::map<long, LocatedEntity *>& entites);
+
+    /// \brief Request thoughts from the supplied entities.
+    ///
+    /// The method will take care of only requesting thoughts from entities
+    /// with external minds.
+    /// \param entities A list of entities. Only those entities that have
+    /// external minds will be queried.
+    void requestMinds(const std::map<long, LocatedEntity *>& entites);
+
+    /// \brief Gets the number of outstanding thought requests.
+    size_t numberOfOutstandingThoughtRequests() const;
 
 };
 
