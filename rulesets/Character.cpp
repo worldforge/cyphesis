@@ -1072,8 +1072,8 @@ void Character::RelayOperation(const Operation & op, OpVector & res)
             pruneOp->setTo(getId());
             pruneOp->setFrom(getId());
             pruneOp->setRefno(serialNo);
-            //30 seconds should be more than enough.
-            pruneOp->setFutureSeconds(30);
+            //5 seconds should be more than enough.
+            pruneOp->setFutureSeconds(5);
             sendWorld(pruneOp);
         }
     }

@@ -180,7 +180,7 @@ void Creator::relayOperationTo(const Operation & op, LocatedEntity& to)
     pruneOp->setTo(getId());
     pruneOp->setFrom(getId());
     pruneOp->setRefno(serialNo);
-    pruneOp->setFutureSeconds(30);
+    pruneOp->setFutureSeconds(5);
     sendWorld(pruneOp);
 
 }
