@@ -248,62 +248,6 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
             return;
         }
         info->setArgs1(o);
-    } else if (objtype == "op") {
-        if (arg->getClassNo() == Atlas::Objects::Operation::THOUGHT_NO) {
-            long intId = integerId(id);
-            const EntityDict & worldDict = m_connection->m_server.m_world.getEntities();
-            EntityDict::const_iterator K = worldDict.find(intId);
-
-            if (K != worldDict.end()) {
-                Character* character = dynamic_cast<Character*>(K->second);
-                if (character) {
-                    character->sendMind(op, res);
-                } else {
-                    clientError(op, compose("Entity with id \"%1\" is not a character", id),
-                                res, getId());
-                    return;
-                }
-
-                std::vector<Root> newRet;
-                //Why can't I do "info->setArgs(res)"?
-                for (auto& operation : res) {
-                    newRet.push_back(operation);
-                }
-                info->setArgs(newRet);
-                res.clear();
-            } else {
-                clientError(op, compose("Unknown object id \"%1\" requested", id),
-                            res, getId());
-                return;
-            }
-        } else if (arg->getClassNo() == Atlas::Objects::Operation::GOAL_INFO_NO) {
-            long intId = integerId(id);
-            const EntityDict & worldDict = m_connection->m_server.m_world.getEntities();
-            EntityDict::const_iterator K = worldDict.find(intId);
-
-            if (K != worldDict.end()) {
-                Character* character = dynamic_cast<Character*>(K->second);
-                if (character) {
-                    character->sendMind(op, res);
-                } else {
-                    clientError(op, compose("Entity with id \"%1\" is not a character", id),
-                                res, getId());
-                    return;
-                }
-
-                std::vector<Root> newRet;
-                //Why can't I do "info->setArgs(res)"?
-                for (auto& operation : res) {
-                    newRet.push_back(operation);
-                }
-                info->setArgs(newRet);
-                res.clear();
-            } else {
-                clientError(op, compose("Unknown object id \"%1\" requested", id),
-                            res, getId());
-                return;
-            }
-        }
     } else {
         error(op, compose("Unknown object type \"%1\" requested for \"%2\"",
                           objtype, id), res, getId());

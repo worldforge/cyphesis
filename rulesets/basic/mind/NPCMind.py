@@ -160,52 +160,105 @@ class NPCMind(server.Mind):
             if obj.type[0]=="coin" and op.from_ != self.id:
                 self.money_transfers.append([op.from_, 1])
                 return Operation("imaginary", Entity(description="accepts"))
-    def get_operation(self, op):
-        
-        res = Oplist()
-
-        #Checking if the sub-op of the "get" is "thought".
-        #This should probably be handled in a nicer way (calling a "get_thought" method?).
-        _, sub_op = self.get_op_name_and_sub(op)
-        
-        if sub_op.id == "goal_info":
-            #The goals can be queried in three different ways. 
-            #Either all goals, or if a 'subject' is specified all goals for that 'subject'.
-            #Or if both a 'subject' and 'goal' is specified one single goal.
-            
-            subjectArg=""
-            goalArg=""
-            args=sub_op.getArgs()
-            if len(args) == 1:
-                argEntity=args[0]
-                if hasattr(argEntity, "subject"):
-                    subjectArg=argEntity.subject
-                if hasattr(argEntity, "goal"):
-                    goalArg=argEntity.goal
-            
-            if subjectArg=="" and goalArg=="":
-                #get all goals
-                for (subject, goallist) in self.known_goals.items():
-                    for goal in goallist:
-                        res=res + Operation("goal_info", Entity(subject=subject, goal=goal.str, report=goal.report()))
-            elif subjectArg!="":
-                try:
-                    goallist=self.known_goals[subjectArg]
-                    if goalArg!="":
-                        for goal in goallist:
-                            if goal.str==goalArg:
-                                res=res + Operation("goal_info", Entity(subject=subjectArg, goal=goal.str, report=goal.report()))
-                                break
-                    else:
-                        for goal in goallist:
-                            res=res + Operation("goal_info", Entity(subject=subjectArg, goal=goal.str, report=goal.report()))
-                except KeyError:
-                    print "no goal with subject " + subjectArg
-                    pass
-        return res
 
     def commune_operation(self, op):
+        """A 'commune' operation is used to inquire about the status of a mind.
+        It's often sent from authoring clients, as well as the server itself when 
+        it wants to persist the thoughts of a mind.
+        An commune op without any args means that the mind should dump all its thoughts.
+        If there are args however, the meaning of what's to return differs depending on the
+        args.
+        * If "goal" is specified, a "think" operation only pertaining to goals is returned. The 
+        "goal" arg should be a map, where the keys and values are used to specify exactly what goals
+        to return. An empty map returns all goals.
+        * If "goal_info" is specified, an "info" operation with debug information about the 
+        current state of one or many goals is returned. The "goal_info" arg should be a map, 
+        where the keys and values are used to specify exactly what goals to return info about.
+        An empty map returns all goals.  
+        """
         
+        args=op.getArgs()
+        #If there are no args we should send all of our thoughts
+        if len(args) == 0:
+            return self.commune_all_thoughts(op)
+        else:
+            argEntity=args[0]
+
+            if hasattr(argEntity, "goal"):
+                goal_entity = argEntity.goal
+                return self.commune_goals(op, goal_entity)
+            elif hasattr(argEntity, "goal_info"):
+                goal_info_entity = argEntity.goal_info
+                return self.commune_goal_info(op, goal_info_entity)
+            #TODO: allow for finer grained query of specific thoughts
+        
+    def commune_goals(self, op, goal_entity):
+        """Sends back information about goals only."""
+        thinkOp = Operation("think")
+        thoughts = []
+
+        for (subject, goallist) in self.known_goals.items():
+            goalstrings=[]
+            for goal in goallist:
+                goalstrings.append(goal.str)
+            thoughts.append(Entity(predicate="goal", subject=str(subject), object=goalstrings))
+        
+        thinkOp.setArgs(thoughts)
+        thinkOp.setRefno(op.getSerialno())
+        res = Oplist()
+        res = res + thinkOp
+        return res
+        
+    def commune_goal_info(self, op, goal_info_entity):
+        """Sends back information about goals. This is mainly to be used for debugging minds.
+        If no arguments are specified all goals will be reported, else a match will be done
+        using 'subject' and 'goal'.
+        The information will be sent back as an "info" operation.
+        """
+        goalInfoOp = Operation("info")
+        goal_infos = []
+
+        subjectArg=""
+        goalArg=""
+        if hasattr(goal_info_entity, "subject"):
+            subjectArg=goal_info_entity.subject
+        if hasattr(goal_info_entity, "goal"):
+            goalArg=goal_info_entity.goal
+
+        if subjectArg=="" and goalArg=="":
+            #get all goals
+            for (subject, goallist) in self.known_goals.items():
+                for goal in goallist:
+                    goal_infos.append(Entity(subject=subject, goal=goal.str, report=goal.report()))
+        elif subjectArg!="":
+            try:
+                goallist=self.known_goals[subjectArg]
+                if goalArg!="":
+                    for goal in goallist:
+                        if goal.str==goalArg:
+                            goal_infos.append(Entity(subject=subjectArg, goal=goal.str, report=goal.report()))
+                            break
+                else:
+                    for goal in goallist:
+                        goal_infos.append(Entity(subject=subjectArg, goal=goal.str, report=goal.report()))
+            except KeyError:
+                print "no goal with subject " + subjectArg
+                pass
+        
+        goalInfoOp.setArgs(goal_infos)
+        goalInfoOp.setRefno(op.getSerialno())
+        res = Oplist()
+        res = res + goalInfoOp
+        return res
+        
+    
+    def commune_all_thoughts(self, op):
+        """Sends back information on all thoughts. This includes knowledge and goals, 
+        as well as known things.
+        The thoughts will be sent back as a "think" operations, in a manor such that if the
+        same think operation is sent back to the mind all thoughts will be restored. In
+        this way the mind can support server side persistence of its thoughts.
+        """
         thinkOp = Operation("think")
         thoughts = []
 
@@ -240,10 +293,10 @@ class NPCMind(server.Mind):
                 for thing in thinglist:
                     idlist.append(thing.id)
                 things[id] = idlist
-            thoughts.append("think", Entity(things=things))
+            thoughts.append(Entity(things=things))
 
         if len(self.pending_things) > 0:            
-            thoughts.append("think", Entity(pending_things=self.pending_things))
+            thoughts.append(Entity(pending_things=self.pending_things))
                 
         thinkOp.setArgs(thoughts)
         thinkOp.setRefno(op.getSerialno())
@@ -252,8 +305,6 @@ class NPCMind(server.Mind):
         return res
 
     def think_operation(self, op):
-        #TODO: add check that it's from ourselves
-        #Only authors should be able to send set_operations. Do we need extra checks here, or should we rely on the server filtering them correctly?
         args=op.getArgs()
         for thought in args:
             #Check if there's a 'predicate' set; if so handle it as knowledge. 
