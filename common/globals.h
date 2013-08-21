@@ -36,7 +36,25 @@ extern std::string var_directory;
 extern std::string ruleset_name;
 extern std::string server_uuid;
 extern std::string server_key;
+/// @brief Controls "hard" shutdowns
+///
+/// When this is set to true, the server will exit. It will try to
+/// persist entity data to disk, but won't try to get any data from
+/// external clients (in contrast to "exit_flag_soft").
 extern bool exit_flag;
+/// @brief Controls "soft" shutdowns
+///
+/// When this is set to true, the server will try to perform a "soft"
+/// shutdown where it first spends a couple of seconds trying to get
+/// data for persistence from external clients. Once that's done,
+/// the exit_flag will be set to true, and the server will exit.
+extern bool exit_flag_soft;
+/// @brief Controls whether "soft" shutdowns are enabled.
+///
+/// When this is set to true, the server will try to perform a "soft"
+/// shutdown when certain signals are received.
+/// This is off by default.
+extern bool exit_soft_enabled;
 extern bool daemon_flag;
 extern bool database_flag;
 extern int timeoffset;

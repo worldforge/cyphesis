@@ -55,7 +55,10 @@ std::string var_directory(LOCALSTATEDIR);
 std::string ruleset_name(DEFAULT_RULESET);
 std::string server_uuid("");
 std::string server_key("");
+
 bool exit_flag = false;
+bool exit_flag_soft = false;
+bool exit_soft_enabled = false;
 bool daemon_flag = false;
 bool database_flag = true;
 int timeoffset = SPM * MPH * 9; // Morning

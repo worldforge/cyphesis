@@ -219,6 +219,28 @@ extern "C" void shutdown_on_signal(int signo)
 #endif
 }
 
+extern "C" void soft_shutdown_on_signal(int signo)
+{
+    //If we've already received one call to shut down softly we should elevate
+    //it to a hard shutdown.
+    //This also happens if "soft" exit isn't enabled.
+    if (exit_flag_soft || !exit_soft_enabled) {
+        exit_flag = true;
+    } else {
+        exit_flag_soft = true;
+    }
+
+#if defined(HAVE_SIGACTION)
+    struct sigaction action;
+    sigemptyset(&action.sa_mask);
+    action.sa_flags = 0;
+    action.sa_handler = SIG_IGN;
+    sigaction(signo, &action, NULL);
+#else
+    signal(signo, SIG_IGN);
+#endif
+}
+
 extern "C" void report_segfault(int signo)
 {
     log(CRITICAL, "Segmentation fault");
@@ -260,12 +282,12 @@ void interactive_signals()
 
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
-    action.sa_handler = shutdown_on_signal;
+    action.sa_handler = soft_shutdown_on_signal;
     sigaction(SIGINT, &action, NULL);
 
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
-    action.sa_handler = shutdown_on_signal;
+    action.sa_handler = soft_shutdown_on_signal;
     sigaction(SIGTERM, &action, NULL);
 
     sigemptyset(&action.sa_mask);
@@ -275,7 +297,7 @@ void interactive_signals()
 
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
-    action.sa_handler = shutdown_on_signal;
+    action.sa_handler = soft_shutdown_on_signal;
     sigaction(SIGHUP, &action, NULL);
 
     sigemptyset(&action.sa_mask);
@@ -326,7 +348,7 @@ void daemon_signals()
 
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
-    action.sa_handler = shutdown_on_signal;
+    action.sa_handler = soft_shutdown_on_signal;
     sigaction(SIGTERM, &action, NULL);
 
     sigemptyset(&action.sa_mask);
@@ -415,10 +437,10 @@ int daemonise()
             struct sigaction action;
             sigemptyset(&action.sa_mask);
             action.sa_flags = 0;
-            action.sa_handler = shutdown_on_signal;
+            action.sa_handler = soft_shutdown_on_signal;
             sigaction(SIGUSR1, &action, NULL);
 #else
-            signal(SIGUSR1, shutdown_on_signal);
+            signal(SIGUSR1, soft_shutdown_on_signal);
 #endif
 
             if (wait4(pid, &status, 0, NULL) < 0) {
