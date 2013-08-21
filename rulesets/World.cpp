@@ -27,6 +27,7 @@
 #include "common/debug.h"
 #include "common/TypeNode.h"
 #include "common/compose.hpp"
+#include "common/custom.h"
 
 #include "common/Eat.h"
 #include "common/Nourish.h"
@@ -57,7 +58,7 @@ using Atlas::Objects::smart_dynamic_cast;
 typedef enum { ROCK = 0, SAND = 1, GRASS = 2, SILT = 3, SNOW = 4} Surface;
 
 /// \brief Constructor for the World entity
-World::World(const std::string & id, long intId) : Thing(id, intId)
+World::World(const std::string & id, long intId) : Thing(id, intId), m_serialNumber(0)
 {
     m_properties["terrain"] = new TerrainProperty();
     m_properties["calendar"] = new CalendarProperty();
@@ -178,3 +179,93 @@ void World::DeleteOperation(const Operation & op, OpVector & res)
     assert(m_location.m_loc == 0);
     // Deleting has no effect.
 }
+
+void World::RelayOperation(const Operation & op, OpVector & res)
+{
+    //A Relay operation with refno sent to ourselves signals that we should prune
+    //our registered relays in m_relays. This is a feature to allow for a timeout; if
+    //no Relay has been received from the destination Entity after a certain period
+    //we'll shut down the relay link.
+    if (op->getTo() == getId() && op->getFrom() == getId() && !op->isDefaultRefno()) {
+        auto I = m_relays.find(op->getRefno());
+        if (I != m_relays.end()) {
+
+            //Send an empty operation to signal that the relay has expired.
+            I->second.callback(Operation(), I->second.entityId);
+            m_relays.erase(I);
+        }
+    } else {
+        if (op->getArgs().empty()) {
+            log(ERROR, "World::RelayOperation no args.");
+            return;
+        }
+        Operation relayedOp = Atlas::Objects::smart_dynamic_cast<Operation>(
+                op->getArgs().front());
+
+        if (!relayedOp.isValid()) {
+            log(ERROR,
+                    "World::RelayOperation first arg is not an operation.");
+            return;
+        }
+
+
+        //If a relay op has a refno, it's a response to a Relay op previously sent out to another
+        //entity, and we should signal that we have an incoming relayed op.
+        if (!op->isDefaultRefno()) {
+            //Note that the relayed op should be considered untrusted in this case, as it has originated
+            //from a random entity or its mind.
+            auto I = m_relays.find(op->getRefno());
+            if (I == m_relays.end()) {
+                log(WARNING,
+                        "World::RelayOperation could not find registrered Relay with refno.");
+                return;
+            }
+
+            //Make sure that this op really comes from the entity the original Relay op was sent to.
+            if (op->getFrom() != I->second.entityId) {
+                log(WARNING,
+                        "World::RelayOperation got relay op with mismatching 'from'.");
+                return;
+            }
+
+            //Get the relayed operation and call the callback.
+            I->second.callback(relayedOp, I->second.entityId);
+
+            m_relays.erase(I);
+
+        } else {
+            //A Relay op with a serial number should just be ignored; we have nowhere to send it to.
+        }
+    }
+
+}
+
+void World::sendRelayToEntity(const LocatedEntity& to, const Operation& op, sigc::slot<void, const Operation&, const std::string&> callback)
+{
+    //Make the op appear to come from the destination entity.
+    op->setFrom(to.getId());
+
+    long int serialNo = ++m_serialNumber;
+    Atlas::Objects::Operation::Generic relayOp;
+    relayOp->setType("relay", Atlas::Objects::Operation::RELAY_NO);
+    relayOp->setTo(to.getId());
+    relayOp->setSerialno(serialNo);
+    relayOp->setArgs1(op);
+    Relay relay;
+    relay.entityId = to.getId();
+    relay.callback = callback;
+    m_relays.insert(std::make_pair(serialNo, relay));
+
+    sendWorld(relayOp);
+
+    //Also send a future Relay op to ourselves to make sure that the registered relay in m_relays
+    //is removed in the case that we don't get any response.
+    Atlas::Objects::Operation::Generic pruneOp;
+    pruneOp->setType("relay", Atlas::Objects::Operation::RELAY_NO);
+    pruneOp->setTo(getId());
+    pruneOp->setFrom(getId());
+    pruneOp->setRefno(serialNo);
+    pruneOp->setFutureSeconds(5);
+    sendWorld(pruneOp);
+}
+
