@@ -105,6 +105,9 @@ int main(int argc, char ** argv)
         return EXIT_SECURITY_ERROR;
     }
 
+    //Turn on soft exits so we get a chance to persist external clients' thoughts.
+    exit_soft_enabled = true;
+
     interactive_signals();
 
     int config_status = loadConfig(argc, argv, USAGE_SERVER);
@@ -385,6 +388,8 @@ int main(int argc, char ** argv)
         reduce_priority(nice);
     }
 
+    bool soft_exit_in_progess = false;
+    time_t soft_exit_deadline = 0;
     // Loop until the exit flag is set. The exit flag can be set anywhere in
     // the code easily.
     while (!exit_flag) {
@@ -393,6 +398,29 @@ int main(int argc, char ** argv)
             bool busy = world->idle(time);
             commServer->idle(time, busy);
             commServer->poll(busy);
+            if (soft_exit_in_progess) {
+                //If we're in soft exit mode and either the deadline has been exceeded
+                //or we've persisted all minds we should shut down normally.
+                if (store->numberOfOutstandingThoughtRequests() == 0) {
+                    log(NOTICE, "All entity thoughts were persisted.");
+                    exit_flag = true;
+                }
+                if (time.seconds() + time.microseconds() >= soft_exit_deadline) {
+                    log(WARNING, "Waiting for persisting thoughts timed out. This might "
+                            "lead to lost entity thoughts.");
+                    exit_flag = true;
+                }
+            } else if (exit_flag_soft) {
+                soft_exit_in_progess = true;
+                //Set a deadline for five seconds.
+                static const time_t mind_persistence_deadline = 5;
+                log(NOTICE, "Soft exit requested, persisting minds.");
+                log(NOTICE, String::compose("Deadline for mind persistence set to %1 seconds.",
+                        mind_persistence_deadline));
+                store->requestMinds(world->getEntities());
+                soft_exit_deadline = time.seconds() + time.microseconds() +
+                        (mind_persistence_deadline * 1000000L);
+            }
         }
         catch (...) {
             // It is hoped that commonly thrown exception, particularly
