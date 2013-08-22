@@ -405,24 +405,31 @@ int main(int argc, char ** argv)
                     log(NOTICE, "All entity thoughts were persisted.");
                     exit_flag = true;
                 }
-                if (time.seconds() + time.microseconds() >= soft_exit_deadline) {
-                    log(WARNING, "Waiting for persisting thoughts timed out. This might "
-                            "lead to lost entity thoughts.");
+                if (time.seconds() + time.microseconds()
+                        >= soft_exit_deadline) {
+                    log(WARNING,
+                            "Waiting for persisting thoughts timed out. This might "
+                                    "lead to lost entity thoughts.");
                     exit_flag = true;
                 }
             } else if (exit_flag_soft) {
                 soft_exit_in_progess = true;
                 //Set a deadline for five seconds.
                 static const time_t mind_persistence_deadline = 5;
-                log(NOTICE, "Soft exit requested, persisting minds.");
-                log(NOTICE, String::compose("Deadline for mind persistence set to %1 seconds.",
-                        mind_persistence_deadline));
-                store->requestMinds(world->getEntities());
-                soft_exit_deadline = time.seconds() + time.microseconds() +
-                        (mind_persistence_deadline * 1000000L);
+                size_t requestNumber = store->requestMinds(
+                        world->getEntities());
+                log(INFO,
+                        String::compose(
+                                "Soft exit requested, persisting %1 minds.",
+                                requestNumber));
+                soft_exit_deadline = time.seconds() + time.microseconds()
+                        + (mind_persistence_deadline * 1000000L);
+                log(NOTICE,
+                        String::compose(
+                                "Deadline for mind persistence set to %1 seconds.",
+                                mind_persistence_deadline));
             }
-        }
-        catch (...) {
+        } catch (...) {
             // It is hoped that commonly thrown exception, particularly
             // exceptions that can be caused  by external influences
             // should be caught close to where they are thrown. If

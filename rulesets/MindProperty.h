@@ -38,6 +38,9 @@ class MindProperty : public PropertyBase {
         return m_factory;
     }
 
+    /// \brief Returns true if mind scripting is enabled.
+    bool isMindEnabled() const;
+
     virtual int get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
     virtual MindProperty * copy() const;

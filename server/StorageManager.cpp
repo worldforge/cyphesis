@@ -25,6 +25,7 @@
 
 #include "rulesets/LocatedEntity.h"
 #include "rulesets/Character.h"
+#include "rulesets/MindProperty.h"
 
 #include "common/Database.h"
 #include "common/TypeNode.h"
@@ -243,20 +244,26 @@ void StorageManager::restoreThoughts(LocatedEntity * ent)
     }
 }
 
-void StorageManager::storeThoughts(LocatedEntity * ent)
+bool StorageManager::storeThoughts(LocatedEntity * ent)
 {
     if (ent->getFlags() & (entity_ephem)) {
         // This entity is not persisted.
-        return;
+        return false;
     }
     //Check if the entity has a mind. Perhaps do this in another way than using dynamic cast?
     Character* character = dynamic_cast<Character*>(ent);
     if (character) {
 
-        m_mindInspector->queryEntityForThoughts(character->getId());
-        m_outstandingThoughtRequests.insert(character->getId());
-
+        const MindProperty* mindProperty = character->getPropertyClass<MindProperty>("mind");
+        if (mindProperty) {
+            if (mindProperty->isMindEnabled()) {
+                m_mindInspector->queryEntityForThoughts(character->getId());
+                m_outstandingThoughtRequests.insert(character->getId());
+                return true;
+            }
+        }
     }
+    return false;
 }
 
 
@@ -563,11 +570,15 @@ int StorageManager::shutdown(bool& exit_flag, const std::map<long, LocatedEntity
     return 0;
 }
 
-void StorageManager::requestMinds(const std::map<long, LocatedEntity *>& entites)
+size_t StorageManager::requestMinds(const std::map<long, LocatedEntity *>& entites)
 {
+    size_t requests = 0;
     for (auto& pair : entites) {
-        storeThoughts(pair.second);
+        if (storeThoughts(pair.second)) {
+            requests++;
+        }
     }
+    return requests;
 }
 
 

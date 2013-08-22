@@ -88,7 +88,10 @@ class StorageManager {
     void restoreProperties(LocatedEntity *);
 
     void restoreThoughts(LocatedEntity *);
-    void storeThoughts(LocatedEntity *);
+    /// \brief Requests thoughts from the entity, if it has a mind.
+    ///
+    /// \return True if a thoughts query was sent.
+    bool storeThoughts(LocatedEntity *);
 
     void insertEntity(LocatedEntity *);
     void updateEntity(LocatedEntity *);
@@ -116,7 +119,8 @@ class StorageManager {
     /// with external minds.
     /// \param entities A list of entities. Only those entities that have
     /// external minds will be queried.
-    void requestMinds(const std::map<long, LocatedEntity *>& entites);
+    /// \return The number of requests sent.
+    size_t requestMinds(const std::map<long, LocatedEntity *>& entites);
 
     /// \brief Gets the number of outstanding thought requests.
     size_t numberOfOutstandingThoughtRequests() const;

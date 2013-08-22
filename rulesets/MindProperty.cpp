@@ -151,3 +151,9 @@ void MindProperty::apply(LocatedEntity * ent)
     ent->sendWorld(l);
 
 }
+
+bool MindProperty::isMindEnabled() const
+{
+    return m_factory != nullptr;
+}
+
