@@ -218,13 +218,9 @@ class NPCMind(server.Mind):
         goalInfoOp = Operation("info")
         goal_infos = []
 
-        subjectArg=""
-        goalArg=""
-        if hasattr(goal_info_entity, "subject"):
-            subjectArg=goal_info_entity.subject
-        if hasattr(goal_info_entity, "goal"):
-            goalArg=goal_info_entity.goal
-
+        subjectArg=str(goal_info_entity["subject"])
+        goalArg=str(goal_info_entity["goal"])
+            
         if subjectArg=="" and goalArg=="":
             #get all goals
             for (subject, goallist) in self.known_goals.items():
