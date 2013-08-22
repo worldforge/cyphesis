@@ -151,6 +151,7 @@ int TICK_NO = -1;
 int THOUGHT_NO = -1;
 int UNSEEN_NO = -1;
 int UPDATE_NO = -1;
+int RELAY_NO = -1;
 } } }
 
 Character::Character(const std::string & id, long intId) :
@@ -211,6 +212,10 @@ void Character::AttackOperation(const Operation & op, OpVector &)
 }
 
 void Character::ActuateOperation(const Operation & op, OpVector &)
+{
+}
+
+void Character::RelayOperation(const Operation & op, OpVector &)
 {
 }
 
@@ -302,6 +307,8 @@ void Character::mindOtherOperation(const Operation &, OpVector &)
 void Character::sendMind(const Operation & op, OpVector & res)
 {
 }
+
+long int Character::s_serialNumberNext = 0L;
 
 Thing::Thing(const std::string & id, long intId) :
        Entity(id, intId)
@@ -443,6 +450,10 @@ void Entity::UseOperation(const Operation &, OpVector &)
 }
 
 void Entity::WieldOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::RelayOperation(const Operation &, OpVector &)
 {
 }
 

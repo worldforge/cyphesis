@@ -597,6 +597,10 @@ void Character::ActuateOperation(const Operation & op, OpVector &)
 {
 }
 
+void Character::RelayOperation(const Operation & op, OpVector &)
+{
+}
+
 void Character::mindActuateOperation(const Operation &, OpVector &)
 {
 }
@@ -826,6 +830,10 @@ void Entity::UseOperation(const Operation &, OpVector &)
 }
 
 void Entity::WieldOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::RelayOperation(const Operation &, OpVector &)
 {
 }
 

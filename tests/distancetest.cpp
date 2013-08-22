@@ -343,6 +343,10 @@ void Entity::WieldOperation(const Operation &, OpVector &)
 {
 }
 
+void Entity::RelayOperation(const Operation &, OpVector &)
+{
+}
+
 void Entity::externalOperation(const Operation & op, Link &)
 {
 }

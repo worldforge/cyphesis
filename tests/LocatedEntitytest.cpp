@@ -300,6 +300,7 @@ int EAT_NO = -1;
 int NOURISH_NO = -1;
 int SETUP_NO = -1;
 int TICK_NO = -1;
+int RELAY_NO = -1;
 } } }
 
 Router::Router(const std::string & id, long intId) : m_id(id),

@@ -26,13 +26,16 @@
 #include "server/StorageManager.h"
 
 #include "server/WorldRouter.h"
+#include "server/MindInspector.h"
 
 #include "rulesets/Entity.h"
 #include "rulesets/Character.h"
+#include "rulesets/MindProperty.h"
 
 #include "common/SystemTime.h"
 
 #include <cassert>
+using Atlas::Message::Element;
 
 class TestStorageManager : public StorageManager
 {
@@ -392,6 +395,10 @@ void Character::ActuateOperation(const Operation & op, OpVector &)
 {
 }
 
+void Character::RelayOperation(const Operation & op, OpVector &)
+{
+}
+
 void Character::mindActuateOperation(const Operation &, OpVector &)
 {
 }
@@ -621,6 +628,10 @@ void Entity::UseOperation(const Operation &, OpVector &)
 }
 
 void Entity::WieldOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::RelayOperation(const Operation &, OpVector &)
 {
 }
 
@@ -1046,6 +1057,90 @@ BaseWorld::~BaseWorld()
     m_instance = 0;
 }
 
+MindInspector::MindInspector() :
+        m_serial(0)
+{
+}
+
+MindInspector::~MindInspector()
+{
+}
+
+void MindInspector::queryEntityForThoughts(const std::string& entityId)
+{
+}
+
+void MindInspector::relayResponseReceived(const Operation& op,
+        const std::string& entityId)
+{
+}
+
+PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
+{
+}
+
+PropertyBase::~PropertyBase()
+{
+}
+
+void PropertyBase::install(LocatedEntity *, const std::string & name)
+{
+}
+
+void PropertyBase::apply(LocatedEntity *)
+{
+}
+
+void PropertyBase::add(const std::string & s,
+                       Atlas::Message::MapType & ent) const
+{
+    get(ent[s]);
+}
+
+void PropertyBase::add(const std::string & s,
+                       const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+HandlerResult PropertyBase::operation(LocatedEntity *,
+                                      const Operation &,
+                                      OpVector &)
+{
+    return OPERATION_IGNORED;
+}
+
+
+bool MindProperty::isMindEnabled() const {
+    return false;
+}
+
+MindProperty::MindProperty() : m_factory(0)
+{
+}
+
+MindProperty::~MindProperty()
+{
+}
+
+int MindProperty::get(Element & val) const
+{
+    return 0;
+}
+
+void MindProperty::set(const Element & val)
+{
+}
+
+MindProperty * MindProperty::copy() const
+{
+    return 0;
+}
+
+void MindProperty::apply(LocatedEntity * ent)
+{
+}
+
+
 long forceIntegerId(const std::string & id)
 {
     long intId = strtol(id.c_str(), 0, 10);
@@ -1072,5 +1167,5 @@ namespace consts {
 }
 
 namespace Atlas { namespace Objects { namespace Operation {
-int THOUGHT_NO = -1;
+int THINK_NO = -1;
 } } }

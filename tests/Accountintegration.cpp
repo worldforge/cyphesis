@@ -414,6 +414,9 @@ int TICK_NO = -1;
 int THOUGHT_NO = -1;
 int UNSEEN_NO = -1;
 int UPDATE_NO = -1;
+int RELAY_NO = -1;
+int THINK_NO = -1;
+int COMMUNE_NO = -1;
 } } }
 
 ArithmeticBuilder * ArithmeticBuilder::m_instance = 0;

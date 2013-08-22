@@ -115,6 +115,7 @@ int EAT_NO = 1003;
 int NOURISH_NO = 1004;
 int TICK_NO = 1005;
 int UPDATE_NO = 1006;
+int RELAY_NO = -1;
 } } }
 
 Domain * Domain::m_instance = new Domain();

@@ -367,6 +367,9 @@ int TICK_NO = -1;
 int THOUGHT_NO = -1;
 int UNSEEN_NO = -1;
 int UPDATE_NO = -1;
+int RELAY_NO = -1;
+int COMMUNE_NO = -1;
+int THINK_NO = -1;
 } } }
 
 ExternalMind::ExternalMind(LocatedEntity & e) : Router(e.getId(), e.getIntId()),
@@ -576,6 +579,10 @@ void Entity::UseOperation(const Operation &, OpVector &)
 }
 
 void Entity::WieldOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::RelayOperation(const Operation &, OpVector &)
 {
 }
 

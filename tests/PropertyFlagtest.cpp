@@ -118,7 +118,7 @@ int NOURISH_NO = -1;
 int PICKUP_NO = -1;
 int TICK_NO = -1;
 int UPDATE_NO = -1;
-
+int RELAY_NO = -1;
 } } }
 
 ContainsProperty::ContainsProperty(LocatedEntitySet & data) :

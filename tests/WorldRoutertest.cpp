@@ -322,6 +322,10 @@ void World::DeleteOperation(const Operation & op, OpVector & res)
 {
 }
 
+void World::RelayOperation(const Operation & op, OpVector &)
+{
+}
+
 Thing::Thing(const std::string & id, long intId) :
        Entity(id, intId)
 {
@@ -489,6 +493,10 @@ void Entity::UseOperation(const Operation &, OpVector &)
 }
 
 void Entity::WieldOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::RelayOperation(const Operation &, OpVector &)
 {
 }
 

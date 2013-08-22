@@ -253,6 +253,7 @@ int TICK_NO = -1;
 int THOUGHT_NO = -1;
 int UNSEEN_NO = -1;
 int UPDATE_NO = -1;
+int RELAY_NO = -1;
 } } }
 
 Account::Account(Connection * conn,
@@ -606,6 +607,10 @@ void Character::ActuateOperation(const Operation & op, OpVector &)
 {
 }
 
+void Character::RelayOperation(const Operation & op, OpVector &)
+{
+}
+
 void Character::mindActuateOperation(const Operation &, OpVector &)
 {
 }
@@ -881,6 +886,10 @@ void Entity::UseOperation(const Operation &, OpVector &)
 }
 
 void Entity::WieldOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::RelayOperation(const Operation &, OpVector &)
 {
 }
 

@@ -1029,6 +1029,10 @@ void Entity::WieldOperation(const Operation &, OpVector &)
 {
 }
 
+void Entity::RelayOperation(const Operation &, OpVector &)
+{
+}
+
 void Entity::externalOperation(const Operation & op, Link &)
 {
 }
@@ -1330,6 +1334,10 @@ void World::DeleteOperation(const Operation & op, OpVector & res)
 {
 }
 
+void World::RelayOperation(const Operation & op, OpVector & res)
+{
+}
+
 Location::Location() : m_loc(0)
 {
 }
@@ -1423,6 +1431,10 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
 }
 
 void Character::ActuateOperation(const Operation & op, OpVector & res)
+{
+}
+
+void Character::RelayOperation(const Operation & op, OpVector &)
 {
 }
 

@@ -95,6 +95,7 @@ int NOURISH_NO = -1;
 int SETUP_NO = -1;
 int TICK_NO = -1;
 int UPDATE_NO = -1;
+int RELAY_NO = -1;
 } } }
 
 Thing::Thing(const std::string & id, long intId) :
@@ -237,6 +238,10 @@ void Entity::UseOperation(const Operation &, OpVector &)
 }
 
 void Entity::WieldOperation(const Operation &, OpVector &)
+{
+}
+
+void Entity::RelayOperation(const Operation &, OpVector &)
 {
 }
 

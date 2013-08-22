@@ -156,6 +156,8 @@ void rotateLogger()
 }
 
 bool exit_flag = false;
+bool exit_flag_soft = false;
+bool exit_soft_enabled = false;
 bool daemon_flag = false;
 std::string var_directory("/var/tmp");
 std::string instance("test_instance");
