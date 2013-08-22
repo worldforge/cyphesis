@@ -429,11 +429,15 @@ int main(int argc, char ** argv)
                                 "Deadline for mind persistence set to %1 seconds.",
                                 mind_persistence_deadline));
             }
+        // It is hoped that commonly thrown exception, particularly
+        // exceptions that can be caused  by external influences
+        // should be caught close to where they are thrown. If
+        // an exception makes it here then it should be debugged.
+        } catch (const std::exception& e) {
+            log(ERROR,
+                    String::compose("Exception caught in main(): %1",
+                            e.what()));
         } catch (...) {
-            // It is hoped that commonly thrown exception, particularly
-            // exceptions that can be caused  by external influences
-            // should be caught close to where they are thrown. If
-            // an exception makes it here then it should be debugged.
             log(ERROR, "Exception caught in main()");
         }
     }
@@ -452,6 +456,10 @@ int main(int argc, char ** argv)
             //Ignore this error and carry on with shutting down.
             log(ERROR, "Error when shutting down");
         }
+    } catch (const std::exception& e) {
+        log(ERROR,
+                String::compose("Exception caught when shutting down: %1",
+                        e.what()));
     } catch (...) {
         //Ignore this error and carry on with shutting down.
         log(ERROR, "Exception caught when shutting down");
