@@ -275,8 +275,14 @@ void Plant::scaleArea() {
                 auto desired_radius = plant_radius * AREA_SCALING_FACTOR;
                 auto scaling_factor = desired_radius / area_radius;
 
-                //No need to alter if the scale is the same
-                if (!WFMath::Equal(scaling_factor, 1.0f)) {
+                //No need to alter if the scale is the same.
+                //Also don't scale the unless the difference is at least 10% in either direction.
+                //The reason for this is that we don't want to alter the area each tick since
+                //the client often must perform a sometimes expensive material regeneration
+                //calculation every time a terrain area changes. With many plants this runs the
+                //risk of bogging down the client then.
+                if (!WFMath::Equal(scaling_factor, 1.0f)
+                        && (scaling_factor > 1.1f || scaling_factor < 0.9f)) {
                     std::unique_ptr<Form<2>> new_area_shape(
                             area_property->shape()->copy());
                     new_area_shape->scale(scaling_factor);
