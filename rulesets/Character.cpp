@@ -984,13 +984,15 @@ void Character::RelayOperation(const Operation & op, OpVector & res)
     //no Relay has been received from the destination Entity after a certain period
     //we'll shut down the relay link.
     if (op->getTo() == getId() && op->getFrom() == getId() && !op->isDefaultRefno()) {
-        if (m_relays.erase(op->getRefno()) > 0) {
+        auto I = m_relays.find(op->getRefno());
+        if (I != m_relays.end()) {
             //Also send a no-op to any client to make it stop waiting for any response.
             Operation noop;
-            noop->setRefno(op->getRefno());
+            noop->setRefno(I->second.serialno);
             noop->setTo(getId());
             noop->setFrom(getId());
             sendMind(noop, res);
+            m_relays.erase(I);
         }
     } else {
         if (op->getArgs().empty()) {
