@@ -142,7 +142,7 @@ int main(int argc, char ** argv)
     // If we are a daemon logging to syslog, we need to set it up.
     initLogger();
 
-    // Initialise the persistance subsystem. If we have been built with
+    // Initialise the persistence subsystem. If we have been built with
     // database support, this will open the various databases used to
     // store server data.
     if (database_flag) {
@@ -190,7 +190,7 @@ int main(int argc, char ** argv)
     int nice = 1;
     readConfigItem(instance, "nice", nice);
     
-    // Start up the python subsystem.
+    // Start up the Python subsystem.
     init_python_api(ruleset_name);
 
     Inheritance::instance();
@@ -482,9 +482,9 @@ int main(int argc, char ** argv)
 
     Inheritance::clear();
 
-    // Shutdown the python interpretter. This frees lots of memory, and if
+    // Shutdown the Python interpreter. This frees lots of memory, and if
     // the malloc heap is in any way corrupt, a segfault is likely to
-    // occur at this point. Previous occassions where pointers have been
+    // occur at this point. Previous occasions where pointers have been
     // deleted twice elsewhere in the code, have resulted in a segfault
     // at this point. AlRiddoch 10th November 2001
     shutdown_python_api();
