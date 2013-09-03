@@ -123,15 +123,19 @@ void Creator::externalOperation(const Operation & op, Link &)
             if (op->isDefaultSerialno()) {
                 // Make it appear like it came from target itself;
                 to->sendWorld(op);
+
+                //Send a sight of the operation to the mind
+                //NOTE: Is this really a good idea? There's no serial number set, so the op
+                //will be handled by the client as a valid op, even though it might not in reality
+                //always succeed (depending on game rules etc.).
+                Sight sight;
+                sight->setArgs1(op);
+                sight->setTo(getId());
+                OpVector res;
+                sendMind(sight, res);
             } else {
                 relayOperationTo(op, *to);
             }
-            // Send a sight of the operation to the mind
-            Sight sight;
-            sight->setArgs1(op);
-            sight->setTo(getId());
-            OpVector res;
-            sendMind(sight, res);
 
         } else {
             log(ERROR, String::compose("Creator operation from client "

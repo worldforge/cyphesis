@@ -1040,6 +1040,17 @@ void Character::RelayOperation(const Operation & op, OpVector & res)
             m_relays.erase(I);
 
         } else {
+
+            //Check if the mind should handle the relayed operation; else we'll just let the
+            //standard Entity relay code do it's thing.
+            if (!world2mind(relayedOp))
+            {
+                //This operation won't be sent to the mind, we'll pass it on to the standard
+                //relay method which will generate a Sight as response.
+                Entity::RelayOperation(op, res);
+                return;
+            }
+
             //If the Relay op instead has a serial no, it's a Relay op sent from us by another Entity
             //which expects a response. We should send it on to the mind (efter registering an entry in
             //m_relays to be handled by mind2body).
@@ -1056,7 +1067,8 @@ void Character::RelayOperation(const Operation & op, OpVector & res)
             relay.serialno = op->getSerialno();
             relay.destination = op->getFrom();
 
-            //Generate a local serial number which we'll register in m_relays. When a reponse
+            //Generate a local serial number which we'll register in m_relays. When a response is received
+            //we'll check the refno and match it against what we've stored
             long int serialNo = ++s_serialNumberNext;
             relayedOp->setSerialno(serialNo);
             m_relays.insert(std::make_pair(serialNo, relay));

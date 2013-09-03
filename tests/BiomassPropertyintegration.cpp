@@ -300,3 +300,7 @@ long integerId(const std::string & id)
 
     return intId;
 }
+
+void log(LogLevel lvl, const std::string & msg)
+{
+}

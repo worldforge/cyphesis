@@ -234,7 +234,8 @@ void World::RelayOperation(const Operation & op, OpVector & res)
             m_relays.erase(I);
 
         } else {
-            //A Relay op with a serial number should just be ignored; we have nowhere to send it to.
+            //Send it on to the basic Entity relay mechanism
+            Entity::RelayOperation(op, res);
         }
     }
 
