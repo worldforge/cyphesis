@@ -752,7 +752,12 @@ class NPCMind(server.Mind):
                 g.errors += 1
                 g.lastError=stacktrace
                 #If there's an error, print to the log, mark the goal, and continue with the next goal
-                print "Error in NPC with id " + self.id + " when checking goal " + g.str + "\n" + stacktrace
+                #Some goals have a "str" attribute which represents the constructor; if so use that
+                if hasattr(g, "str"):
+                    goalstring=g.str
+                else:
+                    goalstring=g.__class__.__name__
+                print "Error in NPC with id " + self.id + " when checking goal " + goalstring + "\n" + stacktrace
                 continue
             # if res!=None: return res
     def teach_children(self, child):
