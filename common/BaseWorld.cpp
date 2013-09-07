@@ -19,6 +19,7 @@
 #include "BaseWorld.h"
 
 #include "id.h"
+#include "log.h"
 
 #include <cassert>
 
@@ -83,6 +84,9 @@ void BaseWorld::setIsSuspended(bool suspended)
     bool wasSuspended = m_isSuspended;
     m_isSuspended = suspended;
     if (!suspended && wasSuspended) {
+        log(INFO, "Resuming world.");
         resumeWorld();
+    } else {
+        log(INFO, "Suspending world.");
     }
 }

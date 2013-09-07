@@ -24,6 +24,7 @@
 #endif
 
 #include "common/BaseWorld.h"
+#include "common/log.h"
 
 #include <Atlas/Objects/RootOperation.h>
 
@@ -208,6 +209,10 @@ long integerId(const std::string & id)
     }
 
     return intId;
+}
+
+void log(LogLevel lvl, const std::string & msg)
+{
 }
 
 int timeoffset = 0;
