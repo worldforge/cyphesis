@@ -258,10 +258,10 @@ class NPCMind(server.Mind):
         thinkOp = Operation("think")
         thoughts = []
 
-        for attr in dir(self.knowledge):
+        for attr in sorted(dir(self.knowledge)):
             d=getattr(self.knowledge, attr)
             if getattr(d, '__iter__', False):
-               for key in d:
+               for key in sorted(d):
                     if attr!="goal":
                         objectVal=d[key]
                         if type(objectVal) is Location:
@@ -284,7 +284,7 @@ class NPCMind(server.Mind):
         
         if len(self.things) > 0:
             things={}
-            for (id, thinglist) in self.things.items():
+            for (id, thinglist) in sorted(self.things.items()):
                 idlist=[]
                 for thing in thinglist:
                     idlist.append(thing.id)
