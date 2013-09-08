@@ -602,13 +602,13 @@ bool WorldRouter::idle(const SystemTime & time)
             operation(oqe.op, oqe.from);
         }
         catch (const std::exception& ex) {
-            log(ERROR, String::compose("Exception caught in world.idle() "
+            log(ERROR, String::compose("Exception caught in WorldRouter::idle() "
                                        "thrown while processing operation "
-                                       "sent to \"%1\" from \"%2\"",
-                                       oqe->getTo(), oqe->getFrom()));
+                                       "sent to \"%1\" from \"%2\": %3",
+                                       oqe->getTo(), oqe->getFrom(), ex.what()));
         }
         catch (...) {
-            log(ERROR, String::compose("Exception caught in world.idle() "
+            log(ERROR, String::compose("Unspecified exception caught in WorldRouter::idle() "
                                        "thrown while processing operation "
                                        "sent to \"%1\" from \"%2\"",
                                        oqe->getTo(), oqe->getFrom()));
@@ -627,13 +627,13 @@ bool WorldRouter::idle(const SystemTime & time)
             operation(oqe.op, oqe.from);
         }
         catch (const std::exception& ex) {
-            log(ERROR, String::compose("Exception caught in world.idle() "
+            log(ERROR, String::compose("Exception caught in WorldRouter::idle() "
                                        "thrown while processing operation "
-                                       "sent to \"%1\" from \"%2\"",
-                                       oqe->getTo(), oqe->getFrom()));
+                                       "sent to \"%1\" from \"%2\": %3",
+                                       oqe->getTo(), oqe->getFrom(), ex.what()));
         }
         catch (...) {
-            log(ERROR, String::compose("Exception caught in world.idle() "
+            log(ERROR, String::compose("Unspecified exception caught in WorldRouter::idle() "
                                        "thrown while processing operation "
                                        "sent to \"%1\" from \"%2\"",
                                        oqe->getTo(), oqe->getFrom()));
