@@ -34,7 +34,7 @@ class add_unique_goal(DynamicGoal):
                 return goal
     def add_goal(self, me, goal):
         """add goal into mind"""
-        me.goals.insert(0,goal)
+        me.insert_goal(goal)
     def make_goal_instance(self, me, goal_class, original_op, op):
         #override this!
         return goal_class(me, original_op, op)
