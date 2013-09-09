@@ -65,7 +65,6 @@ class NPCMind(server.Mind):
         self.money_transfers=[]
         self.transfers=[]
         self.trigger_goals={}
-        self.known_goals={}
         self.jitter=random.uniform(-0.1, 0.1)
         #???self.debug=debug(self.name+".mind.log")
         self.message_queue=None
@@ -73,6 +72,7 @@ class NPCMind(server.Mind):
         self.map.add_hooks_append("add_map")
         self.map.update_hooks_append("update_map")
         self.map.delete_hooks_append("delete_map")
+        self.goal_id_counter=0
     def find_op_method(self, op_id, prefix="",undefined_op_method=None):
         """find right operation to invoke"""
         if not undefined_op_method: undefined_op_method=self.undefined_op_method
@@ -197,17 +197,48 @@ class NPCMind(server.Mind):
         thinkOp = Operation("think")
         thoughts = []
 
-        for (subject, goallist) in self.known_goals.items():
-            goalstrings=[]
+        #It's important that the order of the goals is retained
+        for goal in self.goals:
+            goalEntity=Entity(id=str(goal.id))
+            if hasattr(goal, "str"):
+                goalEntity.definition = goal.str
+            else:
+                goalEntity.definition = goal.__class__.__name__
+            if hasattr(goal, "key"):
+                goalEntity.key=str(goal.key)
+
+            thoughts.append(goalEntity)
+            
+        for (trigger, goallist) in sorted(self.trigger_goals.items()):
             for goal in goallist:
-                goalstrings.append(goal.str)
-            thoughts.append(Entity(predicate="goal", subject=str(subject), object=goalstrings))
+                goalEntity=Entity(id=str(goal.id))
+                if hasattr(goal, "str"):
+                    goalEntity.definition = goal.str
+                else:
+                    goalEntity.definition = goal.__class__.__name__
+                if hasattr(goal, "key"):
+                    goalEntity.key=str(goal.key)
+                    
+                thoughts.append(goalEntity)
+            
         
         thinkOp.setArgs(thoughts)
         thinkOp.setRefno(op.getSerialno())
         res = Oplist()
         res = res + thinkOp
         return res
+    
+    def find_goal(self, id):
+        #Goals are either stored in "self.goals" or "self.trigger_goals", so we need
+        #to check both
+        for goal in self.goals:
+            if goal.id == id:
+                return goal
+        for (trigger, goallist) in sorted(self.trigger_goals.items()):
+            for goal in goallist:
+                if goal.id == id:
+                    return goal
+        return None
         
     def commune_goal_info(self, op, goal_info_entity):
         """Sends back information about goals. This is mainly to be used for debugging minds.
@@ -218,28 +249,18 @@ class NPCMind(server.Mind):
         goalInfoOp = Operation("info")
         goal_infos = []
 
-        subjectArg=str(goal_info_entity["subject"])
-        goalArg=str(goal_info_entity["goal"])
-            
-        if subjectArg=="" and goalArg=="":
+        if "id" in goal_info_entity:
+            id = str(goal_info_entity["id"])
+            goal = self.find_goal(id)
+            if goal:
+                goal_infos.append(Entity(id=id, report=goal.report()))
+        else:
             #get all goals
-            for (subject, goallist) in self.known_goals.items():
+            for goal in self.goals:
+                goal_infos.append(Entity(id=id, report=goal.report()))
+            for (trigger, goallist) in sorted(self.trigger_goals.items()):
                 for goal in goallist:
-                    goal_infos.append(Entity(subject=subject, goal=goal.str, report=goal.report()))
-        elif subjectArg!="":
-            try:
-                goallist=self.known_goals[subjectArg]
-                if goalArg!="":
-                    for goal in goallist:
-                        if goal.str==goalArg:
-                            goal_infos.append(Entity(subject=subjectArg, goal=goal.str, report=goal.report()))
-                            break
-                else:
-                    for goal in goallist:
-                        goal_infos.append(Entity(subject=subjectArg, goal=goal.str, report=goal.report()))
-            except KeyError:
-                print "no goal with subject " + subjectArg
-                pass
+                    goal_infos.append(Entity(id=id, report=goal.report()))
         
         goalInfoOp.setArgs(goal_infos)
         goalInfoOp.setRefno(op.getSerialno())
@@ -276,12 +297,16 @@ class NPCMind(server.Mind):
                         
                         thoughts.append(Entity(predicate=attr, subject=str(key), object=object))
         
-        for (subject, goallist) in self.known_goals.items():
-            goalstrings=[]
+        #It's important that the order of the goals is retained
+        for goal in self.goals:
+            if hasattr(goal, "str"):
+                thoughts.append(Entity(predicate="goal", subject=str(goal.key), object=goal.str))
+
+        for (trigger, goallist) in sorted(self.trigger_goals.items()):
             for goal in goallist:
-                goalstrings.append(goal.str)
-            thoughts.append(Entity(predicate="goal", subject=str(subject), object=goalstrings))
-        
+                if hasattr(goal, "str"):
+                    thoughts.append(Entity(predicate="goal", subject=str(goal.key), object=goal.str))
+            
         if len(self.things) > 0:
             things={}
             for (id, thinglist) in sorted(self.things.items()):
@@ -322,19 +347,22 @@ class NPCMind(server.Mind):
                 elif hasattr(thought, "pending_things"):
                     for id in thought.pending_things:
                         self.pending_things.append(str(id))
+                elif hasattr(thought, "goal"):
+                    goalElem=thought.goal
+                    id=str(goalElem["id"])
+                    goal = self.find_goal(id)
+                    if goal:
+                        if "definition" in goalElem:
+                            self.update_goal(goal, str(goalElem["definition"]))
+                        else:
+                            self.remove_goal(goal)
             else:
                 subject=thought.subject
                 predicate=thought.predicate
                 object=thought.object
                 #handle goals in a special way
                 if predicate == "goal":
-                    if type(object) is StringType:
-                        self.set_goals(subject,[object])
-                    else:
-                        string_goals=[]
-                        for goalElement in object:
-                            string_goals.append(str(goalElement))
-                        self.set_goals(subject,string_goals)
+                    self.add_goal(subject, object)
                 else:
                     #Handle locations.
                     if len(object) > 0 and object[0]=='(':
@@ -672,14 +700,14 @@ class NPCMind(server.Mind):
     ########## goals
     def add_goal(self, name, str_goal):
         """add goal..."""
-        #CHEAT!: remove eval (this and later)
-        goal=eval("mind.goals."+str_goal)
-        if const.debug_thinking:
-            goal.debug=1
-        goal.str=str_goal
-        if type(name)==StringType: goal.key=eval(name)
-        else: goal.key=name
-        dictlist.add_value(self.known_goals, name, goal)
+        goal = self.create_goal(name, str_goal)
+        self.insert_goal(goal)
+    def insert_goal(self, goal, id=None):
+        if not id:
+            self.goal_id_counter = self.goal_id_counter + 1
+            id=str(self.goal_id_counter)
+            
+        goal.id = id
         if hasattr(goal,"trigger"):
             dictlist.add_value(self.trigger_goals, goal.trigger(), goal)
             return
@@ -688,52 +716,40 @@ class NPCMind(server.Mind):
                 self.goals.insert(i+1,goal)
                 return
         self.goals.insert(0,goal)
-    def set_goals(self, name, goals):
-        """Set goals.
-           The 'goals' list contains all of the goals for a given subject ('name').
-           All previous goals for the given subject will be removed. This means that this method can
-           be also be used for deleting goals if the 'goals' list is empty."""
         
-        #start by evaluating the goals. This is done before we remove any goals, so as if there's an error
-        #when creating the goals, the process will be aborted without any side effects
-        
-        new_goals=[]
-        for str_goal in goals:
-            #CHEAT!: remove eval (this and later)
-            goal=eval("mind.goals."+str_goal)
-            if const.debug_thinking:
-                goal.debug=1
-            goal.str=str_goal
-            if type(name)==StringType: goal.key=eval(name)
-            else: goal.key=name
-            new_goals.append(goal)
-        
-        
-        #once we've successfully created the new goals we'll remove the old ones
-        if name in self.known_goals:
-            goallist=self.known_goals[name]
-            for goal in goallist:
-                if hasattr(goal,"trigger"):
-                    dictlist.remove_value(self.trigger_goals, goal)
-                else:
-                    self.goals.remove(goal)
-            del self.known_goals[name]
-            
-        def insert_goal(goal):
-            if hasattr(goal,"trigger"):
-                dictlist.add_value(self.trigger_goals, goal.trigger(), goal)
+    def update_goal(self, goal, str_goal):
+        new_goal = self.create_goal(goal.key, str_goal)
+        new_goal.id = goal.id
+        #We need to handle the case where a goal which had a trigger is replaced by one
+        #that hasn't, and the opposite
+        if hasattr(goal,"trigger"):
+            dictlist.remove_value(self.trigger_goals, goal)
+            self.insert_goal(new_goal, goal.id)
+        else:
+            if hasattr(new_goal,"trigger"):
+                self.goals.remove(goal)
+                self.insert_goal(new_goal, goal.id)
             else:
-                for i in range(len(self.goals)-1,-1,-1):
-                    if self.cmp_goal_importance(self.goals[i],goal):
-                        self.goals.insert(i+1,goal)
-                        return
-                self.goals.insert(0,goal)
-            
-            
-        for goal in new_goals:
-            insert_goal(goal)
-            dictlist.add_value(self.known_goals, name, goal)
-            
+                index=self.goals.index(goal)
+                self.goals[index] = new_goal
+        
+        
+    def create_goal(self, name, str_goal):
+        #CHEAT!: remove eval (this and later)
+        goal=eval("mind.goals."+str_goal)
+        if const.debug_thinking:
+            goal.debug=1
+        goal.str=str_goal
+        if type(name)==StringType: goal.key=eval(name)
+        else: goal.key=name
+        return goal
+    def remove_goal(self, goal):
+        """Removes a goal."""
+        if hasattr(goal,"trigger"):
+            dictlist.remove_value(self.trigger_goals, goal)
+        else:
+            self.goals.remove(goal)
+        
     def fulfill_goals(self,time):
         "see if all goals are fulfilled: if not try to fulfill them"
         for g in self.goals[:]:
