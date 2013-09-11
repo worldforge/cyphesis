@@ -120,6 +120,6 @@ void MindProperty::apply(LocatedEntity * ent)
 
 bool MindProperty::isMindEnabled() const
 {
-    return m_factory != nullptr;
+    return m_language != "" || m_script != "";
 }
 
