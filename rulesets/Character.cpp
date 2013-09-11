@@ -274,6 +274,9 @@ Character::Character(const std::string & id, long intId) :
                m_movement(*new Pedestrian(*this)),
                m_proxyMind(new ProxyMind(id, intId)), m_externalMind(0)
 {
+    //Prevent the proxy mind from being deleted when all references to itself are removed
+    //(for example through a Sight of a Delete).
+    m_proxyMind->incRef();
     // FIXME Do we still need this?
     // It is my hope that once the task object is fully held by the
     // property, this will no longer be necessary. If it is we will
