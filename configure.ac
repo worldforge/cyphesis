@@ -1,6 +1,6 @@
 dnl Initialise autoconf
 
-AC_INIT([cyphesis],[0.6.2],[erik@ogenvik.org])
+AC_INIT([cyphesis],[0.6.1],[erik@ogenvik.org])
 AC_CONFIG_SRCDIR([server/server.cpp])
 AC_CONFIG_HEADERS([config.h])
 
