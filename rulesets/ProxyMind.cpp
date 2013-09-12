@@ -19,6 +19,7 @@
 #include "ProxyMind.h"
 
 #include "common/custom.h"
+#include "common/Think.h"
 
 #include <Atlas/Objects/Operation.h>
 
@@ -35,20 +36,28 @@ ProxyMind::~ProxyMind()
 void ProxyMind::operation(const Operation & op, OpVector & res)
 {
     auto op_no = op->getClassNo();
-    if (op_no == Atlas::Objects::Operation::THOUGHT_NO) {
-        m_thoughts.push_back(op);
-    } else if (op_no == Atlas::Objects::Operation::GET_NO) {
+    if (op_no == Atlas::Objects::Operation::THINK_NO) {
         if (!op->getArgs().empty()) {
-            if (op->getArgs().front()->getClassNo() == Atlas::Objects::Operation::THOUGHT_NO) {
-                res.insert(res.end(), m_thoughts.begin(), m_thoughts.end());
-            }
+            m_thoughts.insert(m_thoughts.end(), op->getArgs().begin(),
+                    op->getArgs().end());
         }
+        return;
+    } else if (op_no == Atlas::Objects::Operation::COMMUNE_NO) {
+        if (op->getArgs().empty()) {
+            Atlas::Objects::Operation::Think think;
+            if (op->getSerialno()) {
+                think->setRefno(op->getSerialno());
+            }
+            think->setArgs(m_thoughts);
+            res.push_back(think);
+        }
+        return;
     }
 
     BaseMind::operation(op, res);
 }
 
-const std::vector<Atlas::Objects::Operation::RootOperation> ProxyMind::getThoughts() const
+const std::vector<Atlas::Objects::Root> ProxyMind::getThoughts() const
 {
     return m_thoughts;
 }
@@ -57,6 +66,4 @@ void ProxyMind::clearThoughts()
 {
     m_thoughts.clear();
 }
-
-
 

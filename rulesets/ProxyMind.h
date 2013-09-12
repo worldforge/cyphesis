@@ -53,7 +53,7 @@ class ProxyMind : public BaseMind
          * Gets all registered thoughts.
          * @return All registered thoughts.
          */
-        const std::vector<Atlas::Objects::Operation::RootOperation> getThoughts() const;
+        const std::vector<Atlas::Objects::Root> getThoughts() const;
 
         /**
          * Clear all registered thoughts.
@@ -61,7 +61,7 @@ class ProxyMind : public BaseMind
         void clearThoughts();
 
     private:
-        std::vector<Atlas::Objects::Operation::RootOperation> m_thoughts;
+        std::vector<Atlas::Objects::Root> m_thoughts;
 };
 
 #endif /* PROXYMIND_H_ */

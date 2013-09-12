@@ -47,6 +47,7 @@
 #include "common/Tick.h"
 #include "common/Unseen.h"
 #include "common/Update.h"
+#include "common/Think.h"
 
 #include <wfmath/atlasconv.h>
 
@@ -323,9 +324,10 @@ int Character::linkExternal(Link * link)
     auto thoughts = m_proxyMind->getThoughts();
     //We need to clear the existing thoughts since we'll be sending them anew; else we'll end up with duplicates.
     m_proxyMind->clearThoughts();
-    for (auto thought : thoughts) {
-        sendWorld(thought);
-    }
+    Atlas::Objects::Operation::Think think;
+    think->setArgs(thoughts);
+    think->setTo(getId());
+    sendWorld(think);
 
     externalLinkChanged.emit();
     return 0;
