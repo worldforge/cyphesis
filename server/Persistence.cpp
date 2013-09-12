@@ -154,13 +154,11 @@ bool Persistence::findAccount(const std::string & name)
         return false;
     }
     if (dr.empty()) {
-        dr.clear();
         return false;
     }
     if (dr.size() > 1) {
         log(ERROR, "Duplicate username in accounts database.");
     }
-    dr.clear();
     return true;
 }
 
@@ -173,7 +171,6 @@ Account * Persistence::getAccount(const std::string & name)
         return 0;
     }
     if (dr.empty()) {
-        dr.clear();
         return 0;
     }
     if (dr.size() > 1) {
@@ -181,32 +178,27 @@ Account * Persistence::getAccount(const std::string & name)
     }
     const char * c = dr.field("id");
     if (c == 0) {
-        dr.clear();
         log(ERROR, "Unable to find id field in accounts database.");
         return 0;
     }
     std::string id = c;
     long intId = integerId(id);
     if (intId == -1) {
-        dr.clear();
         log(ERROR, String::compose("Invalid ID \"%1\" for account from database.", id));
         return 0;
     }
     c = dr.field("password");
     if (c == 0) {
-        dr.clear();
         log(ERROR, "Unable to find password field in accounts database.");
         return 0;
     }
     std::string passwd = c;
     c = dr.field("type");
     if (c == 0) {
-        dr.clear();
         log(ERROR, "Unable to find type field in accounts database.");
         return 0;
     }
     std::string type = c;
-    dr.clear();
     if (type == "admin") {
         return new Admin(0, name, passwd, id, intId);
     } else if (type == "server") {
@@ -256,7 +248,6 @@ void Persistence::registerCharacters(Account & ac,
         }
         ac.addCharacter(J->second);
     }
-    dr.clear();
 }
 
 void Persistence::addCharacter(const Account & ac, const LocatedEntity & e)

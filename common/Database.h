@@ -28,6 +28,7 @@
 #include <libpq-fe.h>
 
 #include <set>
+#include <memory>
 
 /// \brief Class to handle decoding Atlas encoded database records
 class Decoder : public Atlas::Message::DecoderBase {
@@ -257,9 +258,17 @@ class Database {
 /// independant way.
 class DatabaseResult {
   private:
-    PGresult * m_res;
+
+    struct PGresultDeleter {
+        void operator()(PGresult* p) const {
+            PQclear(p);
+        }
+    };
+    static PGresultDeleter deleter;
+
+    std::shared_ptr<PGresult> m_res;
   public:
-    explicit DatabaseResult(PGresult * r) : m_res(r) { }
+    explicit DatabaseResult(PGresult * r) : m_res(r, deleter) { }
     DatabaseResult(const DatabaseResult & dr) : m_res(dr.m_res) { }
 
     DatabaseResult & operator=(const DatabaseResult & other) {
@@ -308,7 +317,7 @@ class DatabaseResult {
             if (m_row == -1) {
                 return 0;
             }
-            return PQgetvalue(m_dr.m_res, m_row, column);
+            return PQgetvalue(m_dr.m_res.get(), m_row, column);
         }
         const char * column(const char *) const;
 
@@ -321,11 +330,10 @@ class DatabaseResult {
         friend class DatabaseResult;
     };
 
-    int size() const { return PQntuples(m_res); }
+    int size() const { return PQntuples(m_res.get()); }
     int empty() const { return (size() == 0); }
-    int columns() const { return PQnfields(m_res); }
-    bool error() const { return (m_res == NULL); }
-    void clear() { PQclear(m_res); }
+    int columns() const { return PQnfields(m_res.get()); }
+    bool error() const { return (m_res.get() == NULL); }
 
     const_iterator begin() const {
         return const_iterator(*this);
@@ -338,7 +346,7 @@ class DatabaseResult {
     // const_iterator find() perhaps
 
     const char * field(int column,  int row = 0) const {
-        return PQgetvalue(m_res, row, column);
+        return PQgetvalue(m_res.get(), row, column);
     }
     const char * field(const char * column, int row = 0) const;
 };

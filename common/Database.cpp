@@ -1573,73 +1573,73 @@ int Database::runMaintainance(int command)
 
 const char * DatabaseResult::field(const char * column, int row) const
 {
-    int col_num = PQfnumber(m_res, column);
+    int col_num = PQfnumber(m_res.get(), column);
     if (col_num == -1) {
         return "";
     }
-    return PQgetvalue(m_res, row, col_num);
+    return PQgetvalue(m_res.get(), row, col_num);
 }
 
 const char * DatabaseResult::const_iterator::column(const char * column) const
 {
-    int col_num = PQfnumber(m_dr.m_res, column);
+    int col_num = PQfnumber(m_dr.m_res.get(), column);
     if (col_num == -1) {
         return "";
     }
-    return PQgetvalue(m_dr.m_res, m_row, col_num);
+    return PQgetvalue(m_dr.m_res.get(), m_row, col_num);
 }
 
 void DatabaseResult::const_iterator::readColumn(const char * column,
                                                 int & val) const
 {
-    int col_num = PQfnumber(m_dr.m_res, column);
+    int col_num = PQfnumber(m_dr.m_res.get(), column);
     if (col_num == -1) {
         return;
     }
-    const char * v = PQgetvalue(m_dr.m_res, m_row, col_num);
+    const char * v = PQgetvalue(m_dr.m_res.get(), m_row, col_num);
     val = strtol(v, 0, 10);
 }
 
 void DatabaseResult::const_iterator::readColumn(const char * column,
                                                 float & val) const
 {
-    int col_num = PQfnumber(m_dr.m_res, column);
+    int col_num = PQfnumber(m_dr.m_res.get(), column);
     if (col_num == -1) {
         return;
     }
-    const char * v = PQgetvalue(m_dr.m_res, m_row, col_num);
+    const char * v = PQgetvalue(m_dr.m_res.get(), m_row, col_num);
     val = strtof(v, 0);
 }
 
 void DatabaseResult::const_iterator::readColumn(const char * column,
                                                 double & val) const
 {
-    int col_num = PQfnumber(m_dr.m_res, column);
+    int col_num = PQfnumber(m_dr.m_res.get(), column);
     if (col_num == -1) {
         return;
     }
-    const char * v = PQgetvalue(m_dr.m_res, m_row, col_num);
+    const char * v = PQgetvalue(m_dr.m_res.get(), m_row, col_num);
     val = strtod(v, 0);
 }
 
 void DatabaseResult::const_iterator::readColumn(const char * column,
                                                 std::string & val) const
 {
-    int col_num = PQfnumber(m_dr.m_res, column);
+    int col_num = PQfnumber(m_dr.m_res.get(), column);
     if (col_num == -1) {
         return;
     }
-    const char * v = PQgetvalue(m_dr.m_res, m_row, col_num);
+    const char * v = PQgetvalue(m_dr.m_res.get(), m_row, col_num);
     val = v;
 }
 
 void DatabaseResult::const_iterator::readColumn(const char * column,
                                                 MapType & val) const
 {
-    int col_num = PQfnumber(m_dr.m_res, column);
+    int col_num = PQfnumber(m_dr.m_res.get(), column);
     if (col_num == -1) {
         return;
     }
-    const char * v = PQgetvalue(m_dr.m_res, m_row, col_num);
+    const char * v = PQgetvalue(m_dr.m_res.get(), m_row, col_num);
     Database::instance()->decodeMessage(v, val);
 }

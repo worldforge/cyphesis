@@ -129,7 +129,6 @@ int Storage::getAccount(const std::string & username,
         return -1;
     }
     if (dr.empty()) {
-        dr.clear();
         return -1;
     }
     if (dr.size() > 1) {
@@ -137,26 +136,21 @@ int Storage::getAccount(const std::string & username,
     }
     const char * c = dr.field("id");
     if (c == 0) {
-        dr.clear();
         return -1;
     }
     std::string id = c;
 
     c = dr.field("password");
     if (c == 0) {
-        dr.clear();
         return -1;
     }
     std::string password = c;
 
     c = dr.field("type");
     if (c == 0) {
-        dr.clear();
         return -1;
     }
     std::string type = c;
-
-    dr.clear();
 
     account["id"] = id;
     account["username"] = username;
