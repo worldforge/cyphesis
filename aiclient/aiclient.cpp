@@ -158,7 +158,7 @@ int main(int argc, char ** argv)
         if (netResult == 0) {
             //As long as we're connected we'll keep on processing minds
             possessionClient->idle();
-        } else {
+        } else if (!exit_flag) {
             log(ERROR,
                     "Disconnected from server; will try to reconnect every five seconds.");
             //We're disconnected. We'll now enter a loop where we'll try to reconnect at an interval.
@@ -170,4 +170,5 @@ int main(int argc, char ** argv)
 
         }
     }
+    log(INFO, "Shutting down.");
 }
