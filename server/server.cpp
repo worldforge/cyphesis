@@ -243,6 +243,8 @@ int main(int argc, char ** argv)
     // not creating a new world using the contents of the database as a
     // template
 
+    IdleConnector* storage_idle = nullptr;
+
     if (database_flag) {
         // log(INFO, _("Restoring world from database..."));
 
@@ -260,7 +262,7 @@ int main(int argc, char ** argv)
         commServer->addSocket(dbsocket);
         commServer->addIdle(dbsocket);
 
-        IdleConnector * storage_idle = new IdleConnector(*commServer);
+        storage_idle = new IdleConnector(*commServer);
         storage_idle->idling.connect(sigc::mem_fun(store, &StorageManager::tick));
         commServer->addIdle(storage_idle);
     } else {
@@ -464,6 +466,10 @@ int main(int argc, char ** argv)
         //Ignore this error and carry on with shutting down.
         log(ERROR, "Exception caught when shutting down");
     }
+
+    //the Idle destructor will remove itself from commServer;
+    //thus we must delete storage_idle before we destroy commServer
+    delete storage_idle;
 
     delete commServer;
 
