@@ -133,6 +133,10 @@ void MindProperty::apply(LocatedEntity * ent)
 
     chr->m_mind = m_factory->newMind(ent->getId(), ent->getIntId());
 
+    //Make sure that the mind isn't deleted when shutting down by any SIGHT of DELETE of itself
+    //being deleted. The m_mind instance should instead be destroyed by the Character's destructor.
+    chr->m_mind->incRef();
+
     chr->m_mind->setType(ent->getType());
 
     if (m_factory->m_scriptFactory != 0) {
