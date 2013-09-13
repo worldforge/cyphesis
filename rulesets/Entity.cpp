@@ -247,11 +247,15 @@ void Entity::destroy()
             decRef();
             child.m_loc = m_location.m_loc;
             m_location.m_loc->incRef();
-            if (m_location.orientation().isValid()) {
+            if (m_location.orientation().isValid() && m_location.pos().isValid()) {
                 child.m_pos = child.m_pos.toParentCoords(m_location.pos(),
                                                          m_location.orientation());
-                child.m_velocity.rotate(m_location.orientation());
-                child.m_orientation *= m_location.orientation();
+                if (child.m_velocity.isValid()) {
+                    child.m_velocity.rotate(m_location.orientation());
+                }
+                if (child.m_orientation.isValid()) {
+                    child.m_orientation *= m_location.orientation();
+                }
             } else {
                 static const Quaternion identity(1, 0, 0, 0);
                 child.m_pos = child.m_pos.toParentCoords(m_location.pos(),
