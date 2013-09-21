@@ -1,5 +1,11 @@
 2013-09-21  Erik Ogenvik  <erik@ogenvik.org>
 
+	* NEWS: Update NEWS announcement for release.
+
+	* Release 0.6.1
+
+2013-09-21  Erik Ogenvik  <erik@ogenvik.org>
+
 	* New authoring, inspection and persistence of minds.
 	
 	* Improvements to goals, making forester and lumberjack more lively.
