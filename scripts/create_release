@@ -186,7 +186,7 @@ package_rpms() {
     
     sed -i "s/\(^%define release 1\).*$/\1/" ${RPM_SPEC}
 
-    SRPM=$(rpmbuild -bs ${RPM_SPEC} | head -n1 | sed "s/^Wrote: \(\/.*.rpm\)$/\1/")
+    SRPM=$(LANGUAGE=en rpmbuild -bs ${RPM_SPEC} | head -n1 | sed "s/^Wrote: \(\/.*.rpm\)$/\1/")
     if [ $? -ne 0 ]
     then
         echo EEEEE rpmbuild of source rpm failed
@@ -203,7 +203,7 @@ package_rpms() {
 
     sed -i "s/\(^%define release 1\)/\1.${RPM_REL}/" ${RPM_SPEC}
     
-    RPMS=$(rpmbuild -bb ${RPM_SPEC} --nodeps | grep ^Wrote: | sed "s/^Wrote: \(\/.*.rpm\)$/\1/")
+    RPMS=$(LANGUAGE=en rpmbuild -bb ${RPM_SPEC} --nodeps | grep ^Wrote: | sed "s/^Wrote: \(\/.*.rpm\)$/\1/")
     if [ $? -ne 0 ]
     then
         echo EEEEE rpmbuild of binary rpm failed
