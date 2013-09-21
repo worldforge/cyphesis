@@ -1,3 +1,13 @@
+2013-09-21  Erik Ogenvik  <erik@ogenvik.org>
+
+	* New authoring, inspection and persistence of minds.
+	
+	* Improvements to goals, making forester and lumberjack more lively.
+	
+	* Full persistence of world, along with minds, at shutdown.
+	
+	* Internal rewrites of many core functions.
+
 2012-11-11  Alistair Riddoch  <alriddoch@googlemail.com>
 
 	* NEWS: Update NEWS announcement for release.
