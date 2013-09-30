@@ -93,8 +93,8 @@ class BuildBloomery(server.Task):
             set = Operation("set", Entity(tar.id, status = -1), to = tar)
             res.append(set)
             count = count - 1
-
-        create=Operation("create", Entity(name = "bloomery", type = "bloomery", location = chunk_loc), to = target)
+        local_ent = Entity(name = "bloomery", type = "bloomery", location = chunk_loc)
+        create=Operation("create", local_ent, to = target)
         res.append(create)
         self.progress = 1
         self.irrelevant()
