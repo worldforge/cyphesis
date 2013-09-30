@@ -23,17 +23,17 @@ class keep_livestock(keep):
 
 class welcome(DynamicGoal):
     """Welcome entities of a given type that are created nearby."""
-    def __init__(self, message, player, desc="welcome new players"):
+    def __init__(self, message, type, desc="welcome new players"):
         DynamicGoal.__init__(self,
                              trigger="sight_create",
                              desc=desc)
-        self.player=player
+        self.type=type
         self.message=message
     def event(self, me, original_op, op):
         obj = me.map.update(op[0], op.getSeconds())
         if original_op.from_==me.id:
             self.add_thing(obj)
-        if obj.type[0]==self.player:
+        if obj.type[0]==self.type:
             return Operation("talk", Entity(say=self.message))
 
 class help(Goal):
