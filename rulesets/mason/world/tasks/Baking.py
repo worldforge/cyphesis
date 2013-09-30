@@ -71,7 +71,7 @@ class Baking(server.Task):
             if bcount == 1 :
                 local_ent = Entity(name = "castle_wall_run", type = "castle_wall_run", 
                                     location = chunk_loc)
-                create=Operation("create", local ent, to = self.target())
+                create=Operation("create", local_ent, to = self.target())
                 res.append(create)
 
         if ecount == 2 :
