@@ -38,7 +38,11 @@ class IronSmelting(server.Task):
 
         res=Oplist()
 
-        if square_distance(self.character.location, self.target().location) > self.target().location.bbox.square_bounding_radius() + 0.1:
+        char_loc = self.character.location
+        target_loc = self.target().location
+        target_box_sbr = self.target().location.bbox.square_bounding_radius()
+
+        if square_distance(char_loc, target_loc) > target_box_sbr + 0.1:
             self.rate = 0
             self.progress -= 0.1
             # no progress
