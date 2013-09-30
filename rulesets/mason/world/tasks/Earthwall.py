@@ -84,7 +84,9 @@ class Earthwall(server.Task):
             res.append(set)
             count = count - 1
 
-        create=Operation("create", Entity(name = "earth_wall", type = "earth_wall", location = chunk_loc), to = self.target())
+        create=Operation("create", Entity(name = "earth_wall",
+                         type = "earth_wall", location = chunk_loc),
+                         to = self.target())
         res.append(create)
         self.progress = 1
         self.irrelevant()
