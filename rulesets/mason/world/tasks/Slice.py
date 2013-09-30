@@ -33,7 +33,8 @@ class Slice(server.Task):
             self.irrelevant()
             return
 
-        if square_distance(self.character.location, target.location) > target.location.bbox.square_bounding_radius():
+        long_var = target.location.bbox.square_bounding_radius()
+        if square_distance(self.character.location, target.location) > long_var:
             self.rate = 0
             # print "Too far away"
             return self.next_tick(0.75)
@@ -80,7 +81,9 @@ class Slice(server.Task):
 
         slice_loc.orientation = target.location.orientation
 
-        create=Operation("create", Entity(name='wood', type='wood', location=slice_loc, bbox=slice_bbox), to=target)
+        create=Operation("create", Entity(name='wood', type='wood',
+                                          location=slice_loc, bbox=slice_bbox),
+                                          to=target)
         res.append(create)
 
         if width - self.width > self.width:
