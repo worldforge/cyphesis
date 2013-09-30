@@ -58,10 +58,15 @@ class Fishing(server.Task):
         bait_vector = Vector3D(0, 0, -0.5)
         bait_loc = float_loc.copy()
         bait_loc.coordinates = bait_loc.coordinates + bait_vector
-        
-        res = Operation("create", Entity(name = "bobber", parents = ["bobber"], location = float_loc), to = self.target())
-        res = res + Operation("move", Entity(bait.id, location = bait_loc), to = bait)
-        res = res + Operation("create", Entity(parents = ["hook"], location = Location(bait, Point3D(0,0,0))), to = bait)
+
+        # local ents to help the next block of lines maintain a nice standard
+        bobber_ent = Entity(name = "bobber", parents = ["bobber"], location = float_loc)
+        bait_ent = Entity(bait.id, location = bait_loc)
+        hook_ent = Entity(parents = ["hook"], location = Location(bait, Point3D(0,0,0)))
+
+        res = Operation("create", bobber_ent, to = self.target())
+        res = res + Operation("move", bait_ent, to = bait)
+        res = res + Operation("create", hook_ent, to = bait)
         return res
 
     def tick_operation(self, op):
@@ -94,7 +99,9 @@ class Fishing(server.Task):
                 return
             fish = self.hook().location.parent
             #TODO: add check to ensure that the fish's parent isn't world or something like that
-            res.append(Operation("move", Entity(fish.id, location = Location(self.character, Point3D(0,0,0))), to=fish))
+            fish_ent = Entity(fish.id, location = Location(self.character, Point3D(0,0,0)))
+
+            res.append(Operation("move", fish_ent, to=fish))
             self.progress = 1
             self.irrelevant()
         return res
