@@ -86,7 +86,8 @@ class Woodenwall(server.Task):
             res.append(set)
             count = count - 1
 
-        create=Operation("create", Entity(name = "board_wall", type = "board_wall", location = chunk_loc), to = target)
+        create=Operation("create", Entity(name = "board_wall", type = "board_wall",
+                                          location = chunk_loc), to = target)
         res.append(create)
         self.progress = 1
         self.irrelevant()
