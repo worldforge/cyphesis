@@ -35,7 +35,8 @@ class Twirling(server.Task):
         self.rate = 0.5 / 0.75
         self.progress += 1
  
-        if square_distance(self.character.location, target.location) > target.location.bbox.square_bounding_radius():
+        long_var = target.location.bbox.square_bounding_radius()
+        if square_distance(self.character.location, target.location) > long_var:
             self.rate = 0
             # print "Too far away "
             return self.next_tick(0.75)
