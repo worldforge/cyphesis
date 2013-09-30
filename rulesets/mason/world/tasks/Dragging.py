@@ -62,7 +62,8 @@ class Dragging(server.Task):
 
         chunk_loc.coordinates = self.pos
         # Move the entity to user's position.
-        res = res + Operation("move", Entity(self.target().id, location = chunk_loc), to = self.target())
+        res = res + Operation("move", Entity(self.target().id,
+                                             location = chunk_loc), to = self.target())
         res.append(self.next_tick(0.75))
 
         return res
