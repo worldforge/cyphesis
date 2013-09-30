@@ -34,7 +34,11 @@ class Drying(server.Task):
         self.rate = 0.2 / 0.75
         self.progress += 0.5
 
-        if square_distance(self.character.location, self.target().location) > self.target().location.bbox.square_bounding_radius():
+        char_loc = self.character.location
+        target_loc = self.target().location
+        target_loc_radius = self.target().location.bbox.square_bounding_radius()
+
+        if square_distance(char_loc, target_loc) > target_loc_radius:
             self.rate = 0
             # print "Too far away"
             return self.next_tick(0.75)
