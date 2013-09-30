@@ -34,14 +34,19 @@ class Ram(server.Task):
             self.irrelevant()
             return
 
-        if square_distance(self.character.location, self.target().location) > self.target().location.bbox.square_bounding_radius():
+        long_var = self.target().location.bbox.square_bounding_radius()
+        if square_distance(self.character.location,
+                           self.target().location) > long_var:
             return self.next_tick(1)
 
         target_location = Location(self.target().location.parent, self.target().location.coordinates)
         target_location.velocity=Vector3D(0,0,-0.5)
         target_entity_moving = Entity(self.target().id, location = target_location)
 
-        target_location = Location(self.target().location.parent, Point3D(self.target().location.coordinates.x, self.target().location.coordinates.y, self.target().location.coordinates.z - 0.1))
+        target_location = Location(self.target().location.parent,
+                                   Point3D(self.target().location.coordinates.x,
+                                   self.target().location.coordinates.y,
+                                   self.target().location.coordinates.z - 0.1))
         target_location.velocity=Vector3D(0,0,0)
         target_entity = Entity(self.target().id, location = target_location)
 
