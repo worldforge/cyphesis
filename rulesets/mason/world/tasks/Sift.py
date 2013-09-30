@@ -85,9 +85,11 @@ class Sift(server.Task):
         quality = int(self.get_quality(self_loc.coordinates, self.target(), moisture))
         print quality
         for i in range(int(quality/2), quality):
-            res = res + Operation("create", Entity(name = "scrawny earthworm", parents = ["annelid"], location = self_loc), to=self.character)
+            earth_worm_ent = Entity(name = "scrawny earthworm", parents = ["annelid"], location = self_loc)
+            res = res + Operation("create", earth_worm_ent, to=self.character)
         for i in range(int((10-quality)/2), quality):
-            res = res + Operation("create", Entity(name = "juicy earthworm", parents = ["annelid"], location = self_loc), to=self.character)
+            earth_worm_ent = Entity(name = "juicy earthworm", parents = ["annelid"], location = self_loc)
+            res = res + Operation("create", earth_worm_ent, to=self.character)
 
         self.irrelevant()
         return res
