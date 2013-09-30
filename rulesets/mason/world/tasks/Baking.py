@@ -69,26 +69,36 @@ class Baking(server.Task):
         # Select which structure to produce depending on the recipe present in inventory
         if ecount == 1 :
             if bcount == 1 :
-                create=Operation("create", Entity(name = "castle_wall_run", type = "castle_wall_run", location = chunk_loc), to = self.target())
+                local_ent = Entity(name = "castle_wall_run", type = "castle_wall_run", 
+                                    location = chunk_loc)
+                create=Operation("create", local ent, to = self.target())
                 res.append(create)
 
         if ecount == 2 :
             if bcount == 4 :
-                create=Operation("create", Entity(name = "castle_wall_corner", type = "castle_wall_corner", location = chunk_loc), to = self.target())
+                local_ent = Entity(name = "castle_wall_corner", type = "castle_wall_corner",
+                                    location = chunk_loc)
+                create=Operation("create", local_ent, to = self.target())
                 res.append(create)
 
         if ecount == 3 :
             if bcount == 2 :
-                create=Operation("create", Entity(name = "castle_wall_stairs", type = "castle_wall_stairs", location = chunk_loc), to = self.target())
+                local_ent = Entity(name = "castle_wall_stairs", type = "castle_wall_stairs",
+                                    location = chunk_loc)
+                create=Operation("create", local_ent, to = self.target())
                 res.append(create)
 
             if bcount == 3 :
-                create=Operation("create", Entity(name = "castle_wall_gate", type = "castle_wall_gate", location = chunk_loc), to = self.target())
+                local_ent = Entity(name = "castle_wall_gate", type = "castle_wall_gate",
+                                    location = chunk_loc)
+                create=Operation("create", local_ent, to = self.target())
                 res.append(create)
 
         if ecount == 4 :
             if bcount == 3 :
-                create=Operation("create", Entity(name = "castle_house_a", type = "castle_house_a", location = chunk_loc), to = self.target())
+                local_ent = Entity(name = "castle_house_a", type = "castle_house_a",
+                                    location = chunk_loc)
+                create=Operation("create", local_ent, to = self.target())
                 res.append(create)
 
         # Consume the materials according to the recipe
