@@ -39,12 +39,14 @@ class Slaughter(server.Task):
             # print "setting target mass to ", self.count
 
         #Measure the distance between the entity horizontal edges. Else we won't be able to reach if either entity is too thick.
-        distance_between_entity_edges_squared = square_horizontal_edge_distance(self.character.location, self.target().location) 
+        char_loc = self.character.location
+        target_loc = self.target().location
+        entity_edges_dis = square_horizontal_edge_distance(char_loc, target_loc) 
         
         #Assume that a standard human can reach 1.5 meters, and use this to determine if we're close enough to be able to perform the logging
         standard_human_reach_squared=1.5*1.5
 
-        if distance_between_entity_edges_squared > standard_human_reach_squared:
+        if entity_edges_dis > standard_human_reach_squared:
             self.rate = 0
             # print "Too far away"
             return self.next_tick(1.75)
