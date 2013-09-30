@@ -81,7 +81,7 @@ class Pioneering(server.Task):
                 res.append(create)
 
             if wcount == 0 and lcount == 2:
-                create=Operation("create", Entity(name = "palissade_unit", type = "palissade_unit", location = chunk_loc), to = self.target())
+                create=Operation("create", Entity(name = "palisade_unit", type = "palisade_unit", location = chunk_loc), to = self.target())
                 res.append(create)
 
             #if wcount == 2 and lcount == 1:
@@ -94,7 +94,7 @@ class Pioneering(server.Task):
                 res.append(create)
 
             if wcount == 0 and lcount == 3:
-                create=Operation("create", Entity(name = "palissade_entry", type = "palissade_entry", location = chunk_loc), to = self.target())
+                create=Operation("create", Entity(name = "palisade_entry", type = "palisade_entry", location = chunk_loc), to = self.target())
                 res.append(create)
 
         if rcount == 3 :
@@ -107,7 +107,7 @@ class Pioneering(server.Task):
  #               res.append(create)
 
             if wcount == 0 and lcount == 5:
-                create=Operation("create", Entity(name = "palissade_circle", type = "palissade_circle", location = chunk_loc), to = self.target())
+                create=Operation("create", Entity(name = "palisade_circle", type = "palisade_circle", location = chunk_loc), to = self.target())
                 res.append(create)
 
         # Consume the materials according to the recipe

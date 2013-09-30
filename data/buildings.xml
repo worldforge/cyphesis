@@ -712,7 +712,7 @@
         <string name="visibility">public</string>
       </map>
     </map>
-    <string name="id">palissade_circle</string>
+    <string name="id">palisade_circle</string>
     <string name="objtype">class</string>
     <list name="parents">
       <string>structure</string>
@@ -733,7 +733,7 @@
         <string name="visibility">public</string>
       </map>
     </map>
-    <string name="id">palissade_entry</string>
+    <string name="id">palisade_entry</string>
     <string name="objtype">class</string>
     <list name="parents">
       <string>structure</string>
@@ -754,7 +754,7 @@
         <string name="visibility">public</string>
       </map>
     </map>
-    <string name="id">palissade_unit</string>
+    <string name="id">palisade_unit</string>
     <string name="objtype">class</string>
     <list name="parents">
       <string>structure</string>
