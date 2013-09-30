@@ -43,7 +43,8 @@ class Trailblaze(server.Task):
             self.progress = 0
             if 'world' in target.type:
                 new_loc = Location(target, self.character.location.coordinates)
-                create = Operation("create", Entity(name='pile', type='pile', location = new_loc), to=target)
+                create = Operation("create", Entity(name='pile', type='pile',
+                                                    location = new_loc), to=target)
                 res.append(create)
                 self.points.append(self.character.location.coordinates)
             elif 'pile' in target.type:
