@@ -27,12 +27,17 @@ class Bisect(server.Task):
         """ Op handler for regular tick op """
         # print "Bisect.tick"
 
+        # Useful variables to help keep lines small and readable
+        char_loc = self.character.location
+        target_loc = self.target().location
+        target_loc_bbr = self.target().location.bbox.square_bounding_radius()
+
         if self.target is None:
             # print "Target is no more"
             self.irrelevant()
             return
 
-        if square_distance(self.character.location, self.target().location) > (self.target().location.bbox.square_bounding_radius() + 1):
+        if square_distance(char_loc, target_loc) > (target_loc_bbr + 1):
             self.rate = 0
             # print "Too far away"
             return self.next_tick(0.75)
