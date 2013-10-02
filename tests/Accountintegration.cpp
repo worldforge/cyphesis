@@ -389,6 +389,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "rulesets/TransientProperty.h"
 #include "rulesets/VisibilityProperty.h"
 #include "rulesets/SuspendedProperty.h"
+#include "rulesets/SpawnerProperty.h"
 
 #include "common/const.h"
 #include "common/globals.h"
@@ -1343,6 +1344,41 @@ SuspendedProperty * SuspendedProperty::copy() const
 
 void SuspendedProperty::apply(LocatedEntity * owner)
 {
+}
+
+SpawnerProperty::SpawnerProperty()
+{
+}
+
+SpawnerProperty::~SpawnerProperty()
+{
+}
+
+SpawnerProperty * SpawnerProperty::copy() const
+{
+    return 0;
+}
+
+void SpawnerProperty::apply(LocatedEntity * owner)
+{
+}
+
+void SpawnerProperty::install(LocatedEntity * ent, const std::string & name)
+{
+}
+
+int SpawnerProperty::get(Element & val) const
+{
+    return 0;
+}
+
+void SpawnerProperty::set(const Element & ent)
+{
+}
+
+HandlerResult SpawnerProperty::operation(LocatedEntity *, const Operation &, OpVector &)
+{
+    return OPERATION_IGNORED;
 }
 
 Pedestrian::~Pedestrian()

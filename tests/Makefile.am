@@ -40,6 +40,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  ExternalPropertytest BurnSpeedPropertytest \
                  BiomassPropertytest DecaysPropertytest \
                  Domaintest BulletDomaintest AtlasPropertiestest \
+                 SpawnerPropertytest \
                  BaseMindtest MemEntitytest MemMaptest Movementtest \
                  Pedestriantest \
                  ExternalMindtest \
@@ -613,6 +614,12 @@ SpawnPropertytest_SOURCES = SpawnPropertytest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 SpawnPropertytest_LDADD = \
         $(top_builddir)/rulesets/SpawnProperty.o \
+        $(top_builddir)/common/Property.o
+
+SpawnerPropertytest_SOURCES = SpawnerPropertytest.cpp \
+        PropertyCoverage.cpp PropertyCoverage.h
+SpawnerPropertytest_LDADD = \
+        $(top_builddir)/rulesets/SpawnerProperty.o \
         $(top_builddir)/common/Property.o
 
 VisibilityPropertytest_SOURCES = VisibilityPropertytest.cpp \

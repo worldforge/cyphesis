@@ -41,6 +41,7 @@
 #include "rulesets/SuspendedProperty.h"
 #include "rulesets/TasksProperty.h"
 #include "rulesets/EntityProperty.h"
+#include "rulesets/SpawnerProperty.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
@@ -118,6 +119,8 @@ CorePropertyManager::CorePropertyManager()
     installProperty<SuspendedProperty>("suspended", "int");
     installProperty<TasksProperty>("tasks", "map");
     installProperty<EntityProperty>("right_hand_wield", "string");
+    installProperty<SpawnerProperty>("spawner", "map");
+
 
 
 }
