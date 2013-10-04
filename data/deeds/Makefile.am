@@ -1,7 +1,7 @@
 RULES = animals.xml basic.xml buildings.xml characters.xml clothing.xml \
         construction.xml devices.xml food.xml deeds.xml operations.xml \
         plants.xml properties.xml tasks.xml terrain.xml tools.xml \
-        weapons.xml
+        weapons.xml archetypes.xml
 
 rulesetdir = $(sysconfdir)/cyphesis/deeds.d
 dist_ruleset_DATA = $(RULES)

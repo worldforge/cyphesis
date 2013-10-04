@@ -27,6 +27,7 @@
 #include "OpRuleHandler.h"
 #include "PropertyRuleHandler.h"
 #include "TaskRuleHandler.h"
+#include "ArchetypeRuleHandler.h"
 #include "Persistence.h"
 
 #include "common/log.h"
@@ -71,7 +72,8 @@ Ruleset::Ruleset(EntityBuilder * eb) :
       m_taskHandler(new TaskRuleHandler(eb)),
       m_entityHandler(new EntityRuleHandler(eb)),
       m_opHandler(new OpRuleHandler(eb)),
-      m_propertyHandler(new PropertyRuleHandler(eb))
+      m_propertyHandler(new PropertyRuleHandler(eb)),
+      m_archetypeHandler(new ArchetypeRuleHandler(eb))
 {
 }
 
@@ -116,6 +118,9 @@ int Ruleset::installRuleInner(const std::string & class_name,
                                        dependent, reason);
     } else if (m_propertyHandler->check(class_desc) == 0) {
         ret = m_propertyHandler->install(class_name, parent, class_desc,
+                                       dependent, reason);
+    } else if (m_archetypeHandler->check(class_desc) == 0) {
+        ret = m_archetypeHandler->install(class_name, parent, class_desc,
                                        dependent, reason);
     } else {
         log(ERROR, compose("Rule \"%1\" has unknown objtype=\"%2\". Skipping.",

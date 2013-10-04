@@ -1,0 +1,41 @@
+<atlas>
+
+  <map>
+    <map name="attributes">
+      <map name="type">
+        <string name="default">goblin</string>
+        <string name="visibility">public</string>
+      </map>
+      <map name="attributes">
+        <string name="visibility">public</string>
+        <map name="default"></map>
+      </map>
+      <map name="thoughts">
+        <string name="visibility">public</string>
+        <map name="default"></map>
+      </map>
+      <map name="contains">
+        <string name="visibility">public</string>
+        <list name="default">
+            <map>
+                <string name="type">coin</string>
+                <map name="attributes"></map>
+            </map>
+            <map>
+                <string name="type">coin</string>
+                <map name="attributes"></map>
+            </map>
+            <map>
+                <string name="type">axe</string>
+                <map name="attributes"></map>
+            </map>
+        </list>
+      </map>
+    </map>
+    <string name="id">goblin_standard</string>
+    <string name="objtype">archetype</string>
+    <list name="parents">
+      <string>archetype</string>
+    </list>
+  </map>
+</atlas>

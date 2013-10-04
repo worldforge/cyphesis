@@ -20,6 +20,7 @@
 
 #include "CorePropertyManager.h"
 #include "EntityFactory.h"
+#include "ArchetypeFactory.h"
 
 #include "rulesets/LocatedEntity.h"
 
@@ -74,6 +75,7 @@ EntityBuilder::EntityBuilder()
     installBaseFactory("creator", "character", new EntityFactory<Creator>());
     installBaseFactory("plant", "thing", new EntityFactory<Plant>());
     installBaseFactory("stackable", "thing", new EntityFactory<Stackable>());
+    installBaseFactory("archetype", "game_entity", new ArchetypeFactory());
 
     // The property manager instance installs itself at construction time.
     new CorePropertyManager();
@@ -114,12 +116,6 @@ LocatedEntity * EntityBuilder::newEntity(const std::string & id, long intId,
                                          const RootEntity & attributes,
                                          const BaseWorld & world) const
 {
-    debug(std::cout << "EntityFactor::newEntity()" << std::endl << std::flush;);
-    FactoryDict::const_iterator I = m_entityFactories.find(type);
-    if (I == m_entityFactories.end()) {
-        return 0;
-    }
-
     LocatedEntity* loc = nullptr;
     // Get location from entity, if it is present
     // The default attributes cannot contain info on location
@@ -132,12 +128,28 @@ LocatedEntity * EntityBuilder::newEntity(const std::string & id, long intId,
         loc = &world.m_gameWorld;
     }
 
+    return newChildEntity(id, intId, type, attributes, *loc);
+}
+
+LocatedEntity * EntityBuilder::newChildEntity(const std::string & id,
+                          long intId,
+                          const std::string & type,
+                          const Atlas::Objects::Entity::RootEntity & attributes,
+                          LocatedEntity & parentEntity) const
+{
+    debug(std::cout << "EntityFactor::newEntity()" << std::endl << std::flush;);
+    FactoryDict::const_iterator I = m_entityFactories.find(type);
+    if (I == m_entityFactories.end()) {
+        return 0;
+    }
 
     EntityKit * factory = I->second;
     debug( std::cout << "[" << type << "]"
                      << std::endl << std::flush;);
-   return factory->newEntity(id, intId, attributes, loc);
+    return factory->newEntity(id, intId, attributes, &parentEntity);
+
 }
+
 
 Task * EntityBuilder::buildTask(TaskKit * factory, LocatedEntity & owner) const
 {

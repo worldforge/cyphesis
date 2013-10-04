@@ -231,14 +231,24 @@ LocatedEntity * WorldRouter::addEntity(LocatedEntity * ent)
                           mode);
     ent->m_location.m_loc->makeContainer();
     bool cont_change = ent->m_location.m_loc->m_contains->empty();
-    ent->m_location.m_loc->m_contains->insert(ent);
-    ent->m_location.m_loc->incRef();
+    bool child_inserted = ent->m_location.m_loc->m_contains->insert(ent).second;
+    //check that the child wasn't already present
+    if (child_inserted) {
+        ent->m_location.m_loc->incRef();
+    }
+    // FIXME Should we call this every time a new child is inserted (now it's just called if the container is empty first
     if (cont_change) {
         // FIXME Mark the entity as dirty?
         ent->onUpdated();
     }
     debug(std::cout << "Entity loc " << ent->m_location << std::endl
                     << std::flush;);
+
+    if (ent->m_contains != nullptr) {
+        for (auto& child : *ent->m_contains) {
+            addEntity(child);
+        }
+    }
 
     Anonymous arg;
     Appearance app;

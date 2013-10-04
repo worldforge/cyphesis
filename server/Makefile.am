@@ -96,6 +96,8 @@ SERVER_SOURCES = \
 		Ruleset.cpp Ruleset.h \
 		RuleHandler.cpp RuleHandler.h \
 		EntityRuleHandler.cpp EntityRuleHandler.h \
+		ArchetypeRuleHandler.cpp ArchetypeRuleHandler.h \
+		ArchetypeFactory.cpp ArchetypeFactory.h \
 		OpRuleHandler.cpp OpRuleHandler.h \
 		PropertyRuleHandler.cpp PropertyRuleHandler.h \
 		TaskRuleHandler.cpp TaskRuleHandler.h \

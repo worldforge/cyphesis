@@ -75,6 +75,11 @@ class EntityBuilder {
                               const std::string & type,
                               const Atlas::Objects::Entity::RootEntity & attrs,
                               const BaseWorld & world) const;
+    LocatedEntity * newChildEntity(const std::string & id,
+                              long intId,
+                              const std::string & type,
+                              const Atlas::Objects::Entity::RootEntity & attrs,
+                              LocatedEntity & parentEntity) const;
     void flushFactories();
 
     bool isTask(const std::string & class_name);
