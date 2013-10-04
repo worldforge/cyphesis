@@ -2,33 +2,53 @@
 
   <map>
     <map name="attributes">
-      <map name="type">
-        <string name="default">goblin</string>
+      <map name="entities">
         <string name="visibility">public</string>
-      </map>
-      <map name="attributes">
-        <string name="visibility">public</string>
-        <map name="default"></map>
+        <list name="default">
+          <map>
+            <list name="contains">
+                <string>1</string>
+                <string>2</string>
+                <string>3</string>
+            </list>
+            <string name="id">0</string>
+            <list name="parents">
+              <string>goblin</string>
+            </list>
+          </map>
+          <map>
+            <string name="id">1</string>
+            <list name="parents">
+              <string>coin</string>
+            </list>
+          </map>
+          <map>
+            <string name="id">2</string>
+            <list name="parents">
+              <string>coin</string>
+            </list>
+          </map>
+          <map>
+            <string name="id">3</string>
+            <list name="parents">
+              <string>axe</string>
+            </list>
+          </map>
+        </list>
       </map>
       <map name="thoughts">
         <string name="visibility">public</string>
-        <map name="default"></map>
-      </map>
-      <map name="contains">
-        <string name="visibility">public</string>
         <list name="default">
-            <map>
-                <string name="type">coin</string>
-                <map name="attributes"></map>
-            </map>
-            <map>
-                <string name="type">coin</string>
-                <map name="attributes"></map>
-            </map>
-            <map>
-                <string name="type">axe</string>
-                <map name="attributes"></map>
-            </map>
+          <map>
+            <string name="id">0</string>
+            <list name="thoughts">
+              <map>
+                <string name="object">wander()</string>
+                <string name="predicate">goal</string>
+                <string name="subject">(&apos;wander&apos;, &apos;#wander_verb1&apos;)</string>
+              </map>
+            </list>
+          </map>
         </list>
       </map>
     </map>

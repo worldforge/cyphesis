@@ -27,6 +27,13 @@ class ArchetypeFactory : public EntityKit {
   protected:
     explicit ArchetypeFactory(ArchetypeFactory & o);
 
+    LocatedEntity * createEntity(const std::string & id,
+                                    long intId,
+                                    const Atlas::Objects::Entity::RootEntity & attributes,
+                                    LocatedEntity* location,
+                                    std::map<std::string, Atlas::Objects::Entity::RootEntity>& entities);
+
+
   public:
     explicit ArchetypeFactory();
     virtual ~ArchetypeFactory();

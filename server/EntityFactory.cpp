@@ -72,11 +72,11 @@ void EntityFactory<T>::initializeEntity(EntityKit& kit, LocatedEntity& thing,
     }
     if (thing.m_location.velocity().isValid()) {
         if (attributes->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
-            log(ERROR, compose("EntityBuilder::newEntity(%1, %2): "
+            log(ERROR, compose("EntityFactory::initializeEntity(%1, %2): "
                                "Entity has velocity set from the attributes "
                                "given by the creator", thing.getId(), kit.m_type->name()));
         } else {
-            log(ERROR, compose("EntityBuilder::newEntity(%1, %2): Entity has "
+            log(ERROR, compose("EntityFactory::initializeEntity(%1, %2): Entity has "
                                "velocity set from an unknown source",
                                thing.getId(), kit.m_type->name()));
         }
