@@ -26,11 +26,16 @@ template <class T>
 class EntityFactory : public EntityKit {
   protected:
     EntityFactory(EntityFactory<T> & o);
+
+    void initializeEntity(EntityKit& kit, LocatedEntity& thing,
+            const Atlas::Objects::Entity::RootEntity & attributes,
+            LocatedEntity* location);
   public:
     EntityFactory();
     virtual ~EntityFactory();
 
-    virtual LocatedEntity * newEntity(const std::string & id, long intId);
+    virtual LocatedEntity * newEntity(const std::string & id, long intId,
+                const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location);
     virtual EntityKit * duplicateFactory();
 };
 

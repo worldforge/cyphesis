@@ -19,6 +19,8 @@
 #ifndef COMMON_ENTITY_KIT_H
 #define COMMON_ENTITY_KIT_H
 
+#include <Atlas/Objects/ObjectsFwd.h>
+
 #include <set>
 #include <map>
 #include <string>
@@ -72,9 +74,12 @@ class EntityKit {
     ///
     /// @param id a string giving the identifier of the Entity.
     /// @param intId an integer giving the identifier of the Entity.
-    /// @param pb a pointer to the persistor object for the Entity.
+    /// @param attributes custom attributes set for the new instance
+    /// @param attributes the location of the entity
     virtual LocatedEntity * newEntity(const std::string & id,
-                                      long intId) = 0;
+                                      long intId,
+                                      const Atlas::Objects::Entity::RootEntity & attributes,
+                                      LocatedEntity* location) = 0;
     /// \brief Create a copy of this factory.
     virtual EntityKit * duplicateFactory() = 0;
 };

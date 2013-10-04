@@ -37,10 +37,13 @@ EntityFactory<T>::~EntityFactory()
 }
 
 template <class T>
-LocatedEntity * EntityFactory<T>::newEntity(const std::string & id, long intId)
+LocatedEntity * EntityFactory<T>::newEntity(const std::string & id, long intId,
+        const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
 {
     ++m_createdCount;
-    return new T(id, intId);
+    T* thing = new T(id, intId);
+    initializeEntity(*this, *thing, attributes, location);
+    return thing;
 }
 
 template <class T>

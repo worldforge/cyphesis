@@ -104,8 +104,7 @@ EntityBuilder::~EntityBuilder()
 /// The attribute values are then set on the instance, taking into account
 /// the defaults for the class, and those inherited from parent classes, and
 /// the values specified for this instance. The essential location data for
-/// this instance is then set up. The final block of code relating to
-/// persistence is legacy, and should never be invoked.
+/// this instance is then set up.
 /// @param id The string identifier of the new entity.
 /// @param intId The integer identifier of the new entity.
 /// @param type The string specifying the type of entity.
@@ -116,73 +115,28 @@ LocatedEntity * EntityBuilder::newEntity(const std::string & id, long intId,
                                          const BaseWorld & world) const
 {
     debug(std::cout << "EntityFactor::newEntity()" << std::endl << std::flush;);
-    LocatedEntity * thing = 0;
     FactoryDict::const_iterator I = m_entityFactories.find(type);
     if (I == m_entityFactories.end()) {
         return 0;
     }
-    EntityKit * factory = I->second;
-    thing = factory->newEntity(id, intId);
-    if (thing == 0) {
-        return 0;
-    }
-    debug( std::cout << "[" << type << "]"
-                     << std::endl << std::flush;);
-    thing->setType(factory->m_type);
-    // Sort out python object
-    if (factory->m_scriptFactory != 0) {
-        debug(std::cout << "Class " << type << " has a python class"
-                        << std::endl << std::flush;);
-        factory->m_scriptFactory->addScript(thing);
-    }
-    //
 
+    LocatedEntity* loc = nullptr;
     // Get location from entity, if it is present
     // The default attributes cannot contain info on location
     if (attributes->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
         const std::string & loc_id = attributes->getLoc();
-        thing->m_location.m_loc = world.getEntity(loc_id);
+        loc = world.getEntity(loc_id);
     }
-    if (thing->m_location.m_loc == 0) {
+    if (loc == 0) {
         // If no info was provided, put the entity in the game world
-        thing->m_location.m_loc = &world.m_gameWorld;
-    }
-    thing->m_location.readFromEntity(attributes);
-    if (!thing->m_location.pos().isValid()) {
-        // If no position coords were provided, put it somewhere near origin
-        thing->m_location.m_pos = Point3D(uniform(-8,8), uniform(-8,8), 0);
-    }
-    if (thing->m_location.velocity().isValid()) {
-        if (attributes->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
-            log(ERROR, compose("EntityBuilder::newEntity(%1, %2): "
-                               "Entity has velocity set from the attributes "
-                               "given by the creator", id, type));
-        } else {
-            log(ERROR, compose("EntityBuilder::newEntity(%1, %2): Entity has "
-                               "velocity set from an unknown source",
-                               id, type));
-        }
-        thing->m_location.m_velocity.setValid(false);
+        loc = &world.m_gameWorld;
     }
 
-    MapType attrs = attributes->asMessage();
-    // Apply the attribute values
-    thing->merge(attrs);
-    // Then set up the default class properties
-    PropertyDict::const_iterator J = factory->m_type->defaults().begin();
-    PropertyDict::const_iterator Jend = factory->m_type->defaults().end();
-    for (; J != Jend; ++J) {
-        PropertyBase * prop = J->second;
-        // If a property is in the class it won't have been installed
-        // as setAttr() checks
-        prop->install(thing, J->first);
-        // The property will have been applied if it has an overriden
-        // value, so we only apply it the value is still default.
-        if (attrs.find(J->first) == attrs.end()) {
-            prop->apply(thing);
-        }
-    }
-    return thing;
+
+    EntityKit * factory = I->second;
+    debug( std::cout << "[" << type << "]"
+                     << std::endl << std::flush;);
+   return factory->newEntity(id, intId, attributes, loc);
 }
 
 Task * EntityBuilder::buildTask(TaskKit * factory, LocatedEntity & owner) const
