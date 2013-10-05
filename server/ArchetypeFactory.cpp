@@ -32,6 +32,7 @@
 #include "common/TypeNode.h"
 #include "common/random.h"
 #include "common/id.h"
+#include "common/Think.h"
 
 #include <Atlas/Objects/Entity.h>
 #include <Atlas/Objects/objectFactory.h>
@@ -112,7 +113,7 @@ LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId,
                             Factories::instance()->createObject(
                                     entityElem.asMap()));
                     if (!entity.isValid()) {
-                        log(ERROR, "Entity definition is not in RootEntity format.");
+                        log(ERROR, "Entity definition is not in Entity format.");
                         return nullptr;
                     }
                     entities.insert(std::make_pair(entity->getId(), entity));
@@ -125,17 +126,56 @@ LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId,
         return nullptr;
     }
 
-    RootEntity entity = entities.begin()->second;
+    RootEntity attrEntity = entities.begin()->second;
     MapType attrs = attributes->asMessage();
     for (auto attrI : attrs) {
         //copy all attributes except "parents", since that will point to the name of the archetype
         if (attrI.first != "parents") {
-            log(NOTICE, String::compose("%1", attrI.first));
-            entity->setAttr(attrI.first, attrI.second);
+            attrEntity->setAttr(attrI.first, attrI.second);
         }
     }
-    return createEntity(id, intId, entity, location, entities);
+    LocatedEntity* entity = createEntity(id, intId, attrEntity, location, entities);
+
+    if (entity != nullptr) {
+        sendThoughts(*entity);
+    }
+    return entity;
 }
+
+void ArchetypeFactory::sendThoughts(LocatedEntity& entity)
+{
+    //Send any thoughts.
+    //Note that we currently only allow for thoughts for the top entity,
+    //even though the format they are stored in would allow for thoughts for
+    //many entities (by using the id).
+    auto thoughtsI = m_classAttributes.find("thoughts");
+    if (thoughtsI != m_classAttributes.end()) {
+        if (thoughtsI->second.isList()) {
+            for (auto& thoughtElem : thoughtsI->second.asList()) {
+                if (thoughtElem.isMap()) {
+                    RootEntity thoughtEntity = smart_dynamic_cast<RootEntity>(
+                            Factories::instance()->createObject(
+                                    thoughtElem.asMap()));
+                    if (!thoughtEntity.isValid()) {
+                        log(ERROR, "Thought definition is not in Entity format.");
+                        return;
+                    }
+
+                    auto& thoughtsListElem = thoughtEntity->getAttr("thoughts");
+                    if (thoughtsListElem.isList()) {
+                        Atlas::Objects::Operation::Think thoughtOp;
+                        thoughtOp->setArgsAsList(thoughtsListElem.asList());
+                        //Make the thought come from the entity itself
+                        thoughtOp->setTo(entity.getId());
+                        thoughtOp->setFrom(entity.getId());
+                        WorldRouter::instance().message(thoughtOp, entity);
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 EntityKit * ArchetypeFactory::duplicateFactory()
 {

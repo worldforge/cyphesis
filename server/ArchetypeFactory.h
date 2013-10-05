@@ -33,6 +33,11 @@ class ArchetypeFactory : public EntityKit {
                                     LocatedEntity* location,
                                     std::map<std::string, Atlas::Objects::Entity::RootEntity>& entities);
 
+    /**
+     * @brief Sends any thoughts to the entity.
+     * @param entity
+     */
+    void sendThoughts(LocatedEntity& entity);
 
   public:
     explicit ArchetypeFactory();
