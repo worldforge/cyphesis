@@ -23,6 +23,7 @@
 
 class EntityBuilder;
 class EntityKit;
+class ArchetypeFactory;
 
 /// \brief Handle processing and updating of archtype rules.
 ///
@@ -33,7 +34,7 @@ class ArchetypeRuleHandler : public RuleHandler {
     EntityBuilder * const m_builder;
 
     int populateArchetypeFactory(const std::string & class_name,
-                              EntityKit * factory,
+                              ArchetypeFactory * factory,
                               const Atlas::Message::MapType & class_desc,
                               std::string & dependent,
                               std::string & reason);

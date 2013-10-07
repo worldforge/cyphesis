@@ -20,6 +20,7 @@
 
 #include "EntityBuilder.h"
 #include "TaskFactory.h"
+#include "EntityFactory.h"
 
 #include "rulesets/PythonScriptFactory.h"
 
@@ -131,7 +132,7 @@ int TaskRuleHandler::populateTaskFactory(const std::string & class_name,
                          "does not exist.", class_name, activation_tool);
         return 1;
     }
-    EntityKit * tool_factory = m_builder->getClassFactory(activation_tool);
+    EntityFactoryBase * tool_factory = dynamic_cast<EntityFactoryBase*>(m_builder->getClassFactory(activation_tool));
     if (tool_factory == 0) {
         log(ERROR, compose("Task class \"%1\" is activated by tool \"%2\" "
                            "which is not an entity class.", class_name,

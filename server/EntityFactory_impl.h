@@ -42,14 +42,14 @@ LocatedEntity * EntityFactory<T>::newEntity(const std::string & id, long intId,
 {
     ++m_createdCount;
     T* thing = new T(id, intId);
-    initializeEntity(*this, *thing, attributes, location);
+    initializeEntity(*thing, attributes, location);
     return thing;
 }
 
 template <class T>
-EntityKit * EntityFactory<T>::duplicateFactory()
+EntityFactoryBase * EntityFactory<T>::duplicateFactory()
 {
-    EntityKit * f = new EntityFactory<T>(*this);
+    EntityFactory<T> * f = new EntityFactory<T>(*this);
     // Copy the defaults to the parent
     f->m_attributes = this->m_attributes;
     f->m_parent = this;

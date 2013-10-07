@@ -47,28 +47,12 @@ class EntityKit {
   protected:
     EntityKit();
   public:
-    ScriptKit<LocatedEntity> * m_scriptFactory;
-    /// Default attribute values for this class
-    Atlas::Message::MapType m_classAttributes;
-    /// Default attribute values for instances of this class, including
-    /// defaults inherited from parent classes.
-    Atlas::Message::MapType m_attributes;
-    /// Factory for class from which the class handled by this factory
-    /// inherits.
-    EntityKit * m_parent;
-    /// Set of factories for classes which inherit from the class handled
-    /// by this factory.
-    std::set<EntityKit *> m_children;
     /// Inheritance type of this class.
     TypeNode * m_type;
     /// Number of times this factory has created an entity
     int m_createdCount;
 
     virtual ~EntityKit();
-
-    void addProperties();
-
-    void updateProperties();
 
     /// \brief Create a new Entity and make it persistent.
     ///
@@ -80,8 +64,11 @@ class EntityKit {
                                       long intId,
                                       const Atlas::Objects::Entity::RootEntity & attributes,
                                       LocatedEntity* location) = 0;
-    /// \brief Create a copy of this factory.
-    virtual EntityKit * duplicateFactory() = 0;
+
+    virtual void addProperties() = 0;
+
+    virtual void updateProperties() = 0;
+
 };
 
 #endif // COMMON_ENTITY_KIT_H

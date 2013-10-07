@@ -1,61 +1,48 @@
 <atlas>
 
-  <map>
-    <map name="attributes">
-      <map name="entities">
-        <string name="visibility">public</string>
-        <list name="default">
-          <map>
-            <list name="contains">
-                <string>1</string>
-                <string>2</string>
-                <string>3</string>
-            </list>
-            <string name="id">0</string>
-            <list name="parents">
-              <string>goblin</string>
-            </list>
-          </map>
-          <map>
-            <string name="id">1</string>
-            <list name="parents">
-              <string>coin</string>
-            </list>
-          </map>
-          <map>
-            <string name="id">2</string>
-            <list name="parents">
-              <string>coin</string>
-            </list>
-          </map>
-          <map>
-            <string name="id">3</string>
-            <list name="parents">
-              <string>axe</string>
-            </list>
-          </map>
+    <map>
+        <list name="entities">
+            <map>
+                <list name="contains">
+                    <string>1</string>
+                    <string>2</string>
+                    <string>3</string>
+                </list>
+                <string name="right_hand_wield">@3</string>
+                <list name="parents">
+                    <string>goblin</string>
+                </list>
+            </map>
+            <map>
+                <string name="id">1</string>
+                <list name="parents">
+                    <string>coin</string>
+                </list>
+            </map>
+            <map>
+                <string name="id">2</string>
+                <list name="parents">
+                    <string>coin</string>
+                </list>
+            </map>
+            <map>
+                <string name="id">3</string>
+                <list name="parents">
+                    <string>axe</string>
+                </list>
+            </map>
         </list>
-      </map>
-      <map name="thoughts">
-        <string name="visibility">public</string>
-        <list name="default">
-          <map>
-            <string name="id">0</string>
-            <list name="thoughts">
-              <map>
+        <list name="thoughts">
+            <map>
                 <string name="object">wander()</string>
                 <string name="predicate">goal</string>
                 <string name="subject">(&apos;wander&apos;, &apos;#wander_verb1&apos;)</string>
-              </map>
-            </list>
-          </map>
+            </map>
         </list>
-      </map>
+        <string name="id">goblin_basic</string>
+        <string name="objtype">archetype</string>
+        <list name="parents">
+            <string>archetype</string>
+        </list>
     </map>
-    <string name="id">goblin_standard</string>
-    <string name="objtype">archetype</string>
-    <list name="parents">
-      <string>archetype</string>
-    </list>
-  </map>
 </atlas>

@@ -25,39 +25,13 @@
 
 using Atlas::Message::MapType;
 
-EntityKit::EntityKit() : m_scriptFactory(0),
-                         m_parent(0),
-                         m_type(0),
+EntityKit::EntityKit() : m_type(0),
                          m_createdCount(0)
 {
 }
 
 EntityKit::~EntityKit()
 {
-    delete m_scriptFactory;
 }
 
-void EntityKit::addProperties()
-{
-    assert(m_type != 0);
-    m_type->addProperties(m_attributes);
-}
 
-void EntityKit::updateProperties()
-{
-    assert(m_type != 0);
-    m_type->updateProperties(m_attributes);
-
-    std::set<EntityKit *>::const_iterator I = m_children.begin();
-    std::set<EntityKit *>::const_iterator Iend = m_children.end();
-    for (; I != Iend; ++I) {
-        EntityKit * child_factory = *I;
-        child_factory->m_attributes = m_attributes;
-        MapType::const_iterator J = child_factory->m_classAttributes.begin();
-        MapType::const_iterator Jend = child_factory->m_classAttributes.end();
-        for (; J != Jend; ++J) {
-            child_factory->m_attributes[J->first] = J->second;
-        }
-        child_factory->updateProperties();
-    }
-}

@@ -23,6 +23,7 @@
 
 class EntityBuilder;
 class EntityKit;
+class EntityFactoryBase;
 
 /// \brief Handle processing and updating of task ruless
 class EntityRuleHandler : public RuleHandler {
@@ -30,7 +31,7 @@ class EntityRuleHandler : public RuleHandler {
     EntityBuilder * const m_builder;
 
     int populateEntityFactory(const std::string & class_name,
-                              EntityKit * factory,
+                              EntityFactoryBase * factory,
                               const Atlas::Message::MapType & class_desc,
                               std::string & dependent,
                               std::string & reason);

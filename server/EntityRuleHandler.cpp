@@ -19,6 +19,7 @@
 #include "EntityRuleHandler.h"
 
 #include "EntityBuilder.h"
+#include "EntityFactory.h"
 #include "Player.h"
 
 #include "rulesets/PythonScriptFactory.h"
@@ -48,7 +49,7 @@ int EntityRuleHandler::installEntityClass(const std::string & class_name,
     assert(class_name == class_desc->getId());
 
     // Get the new factory for this rule
-    EntityKit * parent_factory = m_builder->getClassFactory(parent);
+    EntityFactoryBase * parent_factory = dynamic_cast<EntityFactoryBase*>(m_builder->getClassFactory(parent));
     if (parent_factory == 0) {
         debug(std::cout << "class \"" << class_name
                         << "\" has non existant parent \"" << parent
@@ -58,7 +59,7 @@ int EntityRuleHandler::installEntityClass(const std::string & class_name,
                          "not exist.", class_name, parent);
         return 1;
     }
-    EntityKit * factory = parent_factory->duplicateFactory();
+    EntityFactoryBase * factory = parent_factory->duplicateFactory();
     if (factory == 0) {
         log(ERROR,
             compose("Attempt to install rule \"%1\" which has parent \"%2\" "
@@ -98,7 +99,7 @@ int EntityRuleHandler::modifyEntityClass(const std::string & class_name,
 {
     assert(class_name == class_desc->getId());
 
-    EntityKit * factory = m_builder->getClassFactory(class_name);
+    EntityFactoryBase* factory = dynamic_cast<EntityFactoryBase*>(m_builder->getClassFactory(class_name));
     if (factory == 0) {
         log(ERROR, compose("Could not find factory for existing entity class "
                            "\"%1\".", class_name));
@@ -140,7 +141,7 @@ int EntityRuleHandler::modifyEntityClass(const std::string & class_name,
 
 
 int EntityRuleHandler::populateEntityFactory(const std::string & class_name,
-                                             EntityKit * factory,
+                                             EntityFactoryBase * factory,
                                              const MapType & class_desc,
                                              std::string & dependent,
                                              std::string & reason)

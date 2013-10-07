@@ -21,22 +21,54 @@
 
 #include "common/EntityKit.h"
 
+class EntityFactoryBase : public EntityKit {
+    protected:
+
+      void initializeEntity(LocatedEntity& thing,
+              const Atlas::Objects::Entity::RootEntity & attributes,
+              LocatedEntity* location);
+    public:
+
+      ScriptKit<LocatedEntity> * m_scriptFactory;
+      /// Default attribute values for this class
+      Atlas::Message::MapType m_classAttributes;
+      /// Default attribute values for instances of this class, including
+      /// defaults inherited from parent classes.
+      Atlas::Message::MapType m_attributes;
+      /// Factory for class from which the class handled by this factory
+      /// inherits.
+      EntityFactoryBase * m_parent;
+      /// Set of factories for classes which inherit from the class handled
+      /// by this factory.
+      std::set<EntityFactoryBase *> m_children;
+
+      EntityFactoryBase();
+      virtual ~EntityFactoryBase();
+
+      virtual EntityFactoryBase * duplicateFactory() = 0;
+
+      void addProperties();
+
+      void updateProperties();
+
+};
+
 /// \brief Concrete factory template for creating in-game entity objects.
 template <class T>
-class EntityFactory : public EntityKit {
+class EntityFactory : public EntityFactoryBase {
   protected:
     EntityFactory(EntityFactory<T> & o);
 
-    void initializeEntity(EntityKit& kit, LocatedEntity& thing,
-            const Atlas::Objects::Entity::RootEntity & attributes,
-            LocatedEntity* location);
   public:
+
     EntityFactory();
     virtual ~EntityFactory();
 
     virtual LocatedEntity * newEntity(const std::string & id, long intId,
                 const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location);
-    virtual EntityKit * duplicateFactory();
+
+    virtual EntityFactoryBase * duplicateFactory();
+
 };
 
 #endif // SERVER_ENTITY_FACTORY_H

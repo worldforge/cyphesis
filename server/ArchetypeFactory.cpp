@@ -69,8 +69,11 @@ LocatedEntity * ArchetypeFactory::createEntity(const std::string & id,
 
     LocatedEntity* entity = EntityBuilder::instance()->newChildEntity(id, intId,
             concreteType, attributes, *location);
+
     if (entity == nullptr) {
-        log(ERROR, String::compose("Could not create entity of type %1.", concreteType));
+        log(ERROR,
+                String::compose("Could not create entity of type %1.",
+                        concreteType));
         return nullptr;
     }
 
@@ -104,22 +107,13 @@ LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId,
 {
     //parse entities into RootEntity instances first
     std::map<std::string, RootEntity> entities;
-    auto entitiesI = m_classAttributes.find("entities");
-    if (entitiesI != m_classAttributes.end()) {
-        if (entitiesI->second.isList()) {
-            for (auto& entityElem : entitiesI->second.asList()) {
-                if (entityElem.isMap()) {
-                    RootEntity entity = smart_dynamic_cast<RootEntity>(
-                            Factories::instance()->createObject(
-                                    entityElem.asMap()));
-                    if (!entity.isValid()) {
-                        log(ERROR, "Entity definition is not in Entity format.");
-                        return nullptr;
-                    }
-                    entities.insert(std::make_pair(entity->getId(), entity));
-                }
-            }
+
+    for (RootEntity entity : m_entities) {
+        if (!entity.isValid()) {
+            log(ERROR, "Entity definition is not in Entity format.");
+            return nullptr;
         }
+        entities.insert(std::make_pair(entity->getId(), entity));
     }
 
     if (entities.empty()) {
@@ -134,7 +128,8 @@ LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId,
             attrEntity->setAttr(attrI.first, attrI.second);
         }
     }
-    LocatedEntity* entity = createEntity(id, intId, attrEntity, location, entities);
+    LocatedEntity* entity = createEntity(id, intId, attrEntity, location,
+            entities);
 
     if (entity != nullptr) {
         sendThoughts(*entity);
@@ -148,40 +143,34 @@ void ArchetypeFactory::sendThoughts(LocatedEntity& entity)
     //Note that we currently only allow for thoughts for the top entity,
     //even though the format they are stored in would allow for thoughts for
     //many entities (by using the id).
-    auto thoughtsI = m_classAttributes.find("thoughts");
-    if (thoughtsI != m_classAttributes.end()) {
-        if (thoughtsI->second.isList()) {
-            for (auto& thoughtElem : thoughtsI->second.asList()) {
-                if (thoughtElem.isMap()) {
-                    RootEntity thoughtEntity = smart_dynamic_cast<RootEntity>(
-                            Factories::instance()->createObject(
-                                    thoughtElem.asMap()));
-                    if (!thoughtEntity.isValid()) {
-                        log(ERROR, "Thought definition is not in Entity format.");
-                        return;
-                    }
 
-                    auto& thoughtsListElem = thoughtEntity->getAttr("thoughts");
-                    if (thoughtsListElem.isList()) {
-                        Atlas::Objects::Operation::Think thoughtOp;
-                        thoughtOp->setArgsAsList(thoughtsListElem.asList());
-                        //Make the thought come from the entity itself
-                        thoughtOp->setTo(entity.getId());
-                        thoughtOp->setFrom(entity.getId());
-                        WorldRouter::instance().message(thoughtOp, entity);
-                    }
-                }
-            }
-        }
+    if (!m_thoughts.empty()) {
+        Atlas::Objects::Operation::Think thoughtOp;
+        thoughtOp->setArgsAsList(m_thoughts);
+        //Make the thought come from the entity itself
+        thoughtOp->setTo(entity.getId());
+        thoughtOp->setFrom(entity.getId());
+        WorldRouter::instance().message(thoughtOp, entity);
     }
+
 }
 
-
-EntityKit * ArchetypeFactory::duplicateFactory()
+ArchetypeFactory * ArchetypeFactory::duplicateFactory()
 {
-    EntityKit * f = new ArchetypeFactory(*this);
+    ArchetypeFactory * f = new ArchetypeFactory(*this);
     // Copy the defaults to the parent
-    f->m_attributes = this->m_attributes;
+    f->m_entities = this->m_entities;
+    f->m_thoughts = this->m_thoughts;
     f->m_parent = this;
     return f;
+}
+
+void ArchetypeFactory::addProperties()
+{
+
+}
+
+void ArchetypeFactory::updateProperties()
+{
+
 }

@@ -75,7 +75,7 @@ EntityBuilder::EntityBuilder()
     installBaseFactory("creator", "character", new EntityFactory<Creator>());
     installBaseFactory("plant", "thing", new EntityFactory<Plant>());
     installBaseFactory("stackable", "thing", new EntityFactory<Stackable>());
-    installBaseFactory("archetype", "game_entity", new ArchetypeFactory());
+    installBaseFactory("archetype", "root_entity", new ArchetypeFactory());
 
     // The property manager instance installs itself at construction time.
     new CorePropertyManager();

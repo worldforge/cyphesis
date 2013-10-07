@@ -22,6 +22,8 @@
 
 #include "common/EntityKit.h"
 
+#include <vector>
+
 /// \brief Concrete factory template for creating in-game entity objects through archetypes.
 class ArchetypeFactory : public EntityKit {
   protected:
@@ -45,7 +47,22 @@ class ArchetypeFactory : public EntityKit {
 
     virtual LocatedEntity * newEntity(const std::string & id, long intId,
                 const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location);
-    virtual EntityKit * duplicateFactory();
+    virtual ArchetypeFactory * duplicateFactory();
+
+    virtual void addProperties();
+
+    virtual void updateProperties();
+
+    /// Factory for class from which the class handled by this factory
+    /// inherits.
+    ArchetypeFactory * m_parent;
+    /// Set of factories for classes which inherit from the class handled
+    /// by this factory.
+    std::set<ArchetypeFactory *> m_children;
+
+    std::vector<Atlas::Objects::Entity::RootEntity> m_entities;
+    std::vector<Atlas::Message::Element> m_thoughts;
+
 };
 
 #endif // SERVER_ARCHETYPE_FACTORY_H

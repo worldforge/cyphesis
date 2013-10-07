@@ -21,6 +21,7 @@
 
 #include "Thing.h"
 #include <sigc++/connection.h>
+#include <sigc++/trackable.h>
 
 class BaseMind;
 class ExternalMind;
@@ -42,7 +43,7 @@ class Task;
 /// operation verification for checking if an in-game operation should be
 /// passed to the mind.
 /// \ingroup EntityClasses
-class Character : public Thing {
+class Character : public Thing, public virtual sigc::trackable {
 
   public:
 

@@ -43,6 +43,17 @@ using String::compose;
 
 static const bool debug_flag = false;
 
+EntityFactoryBase::EntityFactoryBase()
+: m_scriptFactory(0), m_parent(0)
+{
+
+}
+EntityFactoryBase::~EntityFactoryBase()
+{
+    delete m_scriptFactory;
+}
+
+
 template <>
 LocatedEntity * EntityFactory<World>::newEntity(const std::string & id,
                                                 long intId,
@@ -52,16 +63,15 @@ LocatedEntity * EntityFactory<World>::newEntity(const std::string & id,
     return 0;
 }
 
-template <class T>
-void EntityFactory<T>::initializeEntity(EntityKit& kit, LocatedEntity& thing,
+void EntityFactoryBase::initializeEntity(LocatedEntity& thing,
         const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
 {
-    thing.setType(kit.m_type);
+    thing.setType(m_type);
     // Sort out python object
-    if (kit.m_scriptFactory != 0) {
-        debug(std::cout << "Class " << kit.m_type->name() << " has a python class"
+    if (m_scriptFactory != 0) {
+        debug(std::cout << "Class " << m_type->name() << " has a python class"
                         << std::endl << std::flush;);
-        kit.m_scriptFactory->addScript(&thing);
+        m_scriptFactory->addScript(&thing);
     }
     thing.m_location.m_loc = location;
 
@@ -74,11 +84,11 @@ void EntityFactory<T>::initializeEntity(EntityKit& kit, LocatedEntity& thing,
         if (attributes->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
             log(ERROR, compose("EntityFactory::initializeEntity(%1, %2): "
                                "Entity has velocity set from the attributes "
-                               "given by the creator", thing.getId(), kit.m_type->name()));
+                               "given by the creator", thing.getId(), m_type->name()));
         } else {
             log(ERROR, compose("EntityFactory::initializeEntity(%1, %2): Entity has "
                                "velocity set from an unknown source",
-                               thing.getId(), kit.m_type->name()));
+                               thing.getId(), m_type->name()));
         }
         thing.m_location.m_velocity.setValid(false);
     }
@@ -87,7 +97,7 @@ void EntityFactory<T>::initializeEntity(EntityKit& kit, LocatedEntity& thing,
     // Apply the attribute values
     thing.merge(attrs);
     // Then set up the default class properties
-    for (auto propIter : kit.m_type->defaults()) {
+    for (auto& propIter : m_type->defaults()) {
         PropertyBase * prop = propIter.second;
         // If a property is in the class it won't have been installed
         // as setAttr() checks
@@ -100,6 +110,27 @@ void EntityFactory<T>::initializeEntity(EntityKit& kit, LocatedEntity& thing,
     }
 }
 
+void EntityFactoryBase::addProperties()
+{
+    assert(m_type != 0);
+    m_type->addProperties(m_attributes);
+}
+
+void EntityFactoryBase::updateProperties()
+{
+    assert(m_type != 0);
+    m_type->updateProperties(m_attributes);
+
+    for (auto& child_factory : m_children) {
+        child_factory->m_attributes = m_attributes;
+        MapType::const_iterator J = child_factory->m_classAttributes.begin();
+        MapType::const_iterator Jend = child_factory->m_classAttributes.end();
+        for (; J != Jend; ++J) {
+            child_factory->m_attributes[J->first] = J->second;
+        }
+        child_factory->updateProperties();
+    }
+}
 
 template class EntityFactory<Thing>;
 template class EntityFactory<Character>;
