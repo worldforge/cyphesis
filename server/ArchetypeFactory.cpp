@@ -93,6 +93,7 @@ LocatedEntity * ArchetypeFactory::createEntity(const std::string & id,
         }
         entity->makeContainer();
         entity->m_contains->insert(childEntity);
+        entity->incRef();
     }
 
     if (entity->m_contains != nullptr && !entity->m_contains->empty()) {
