@@ -216,13 +216,7 @@ int ArchetypeRuleHandler::populateArchetypeFactory(
     if (entitiesI != class_desc.end() && entitiesI->second.isList()) {
         for (auto& I : entitiesI->second.asList()) {
             if (I.isMap()) {
-                RootEntity entity = smart_dynamic_cast<RootEntity>(
-                        Factories::instance()->createObject(I.asMap()));
-                if (!entity.isValid()) {
-                    log(ERROR, "Entity definition is not in Entity format.");
-                } else {
-                    factory->m_entities.push_back(entity);
-                }
+                factory->m_entities.push_back(I.asMap());
             }
         }
     }

@@ -33,7 +33,8 @@ class ArchetypeFactory : public EntityKit {
                                     long intId,
                                     const Atlas::Objects::Entity::RootEntity & attributes,
                                     LocatedEntity* location,
-                                    std::map<std::string, Atlas::Objects::Entity::RootEntity>& entities);
+                                    std::map<std::string, Atlas::Objects::Entity::RootEntity>& entities,
+                                    std::map<std::string, LocatedEntity*>& resolvedEntities);
 
     /**
      * @brief Sends any thoughts to the entity.
@@ -60,7 +61,7 @@ class ArchetypeFactory : public EntityKit {
     /// by this factory.
     std::set<ArchetypeFactory *> m_children;
 
-    std::vector<Atlas::Objects::Entity::RootEntity> m_entities;
+    std::vector<Atlas::Message::Element> m_entities;
     std::vector<Atlas::Message::Element> m_thoughts;
 
 };

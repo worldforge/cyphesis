@@ -63,18 +63,45 @@ ArchetypeFactory::~ArchetypeFactory()
 
 LocatedEntity * ArchetypeFactory::createEntity(const std::string & id,
         long intId, const RootEntity & attributes, LocatedEntity* location,
-        std::map<std::string, RootEntity>& entities)
+        std::map<std::string, RootEntity>& entities,
+        std::map<std::string, LocatedEntity*>& resolvedEntities)
 {
     std::string concreteType = attributes->getParents().front();
 
+    MapType attrMap;
+    attributes->addToMessage(attrMap);
+    RootEntity cleansedAttributes;
+    for (auto attr : attrMap) {
+        if (attr.second.isString()) {
+            const std::string& attr_string = attr.second.asString();
+            if (!attr_string.empty() && attr_string[0] == '@') {
+                continue;
+            }
+        }
+        cleansedAttributes->setAttr(attr.first, attr.second);
+    }
+
+    //If no position is set, make sure it's zeroed
+    if (cleansedAttributes->isDefaultPos()) {
+        std::vector<double> pos;
+        pos.push_back(0.0f);
+        pos.push_back(0.0f);
+        pos.push_back(0.0f);
+        cleansedAttributes->setPos(pos);
+    }
+
     LocatedEntity* entity = EntityBuilder::instance()->newChildEntity(id, intId,
-            concreteType, attributes, *location);
+            concreteType, cleansedAttributes, *location);
 
     if (entity == nullptr) {
         log(ERROR,
                 String::compose("Could not create entity of type %1.",
                         concreteType));
         return nullptr;
+    }
+
+    if (!attributes->isDefaultId()) {
+        resolvedEntities.insert(std::make_pair(attributes->getId(), entity));
     }
 
     for (auto& childId : attributes->getContains()) {
@@ -86,7 +113,7 @@ LocatedEntity * ArchetypeFactory::createEntity(const std::string & id,
         std::string childId;
         long childIntId = newId(childId);
         LocatedEntity* childEntity = createEntity(childId, childIntId,
-                entityI->second, entity, entities);
+                entityI->second, entity, entities, resolvedEntities);
         if (childEntity == nullptr) {
             log(ERROR, "Could not create child entity.");
             return nullptr;
@@ -109,12 +136,16 @@ LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId,
     //parse entities into RootEntity instances first
     std::map<std::string, RootEntity> entities;
 
-    for (RootEntity entity : m_entities) {
-        if (!entity.isValid()) {
-            log(ERROR, "Entity definition is not in Entity format.");
-            return nullptr;
+    for (auto& entityElem : m_entities) {
+        if (entityElem.isMap()) {
+            auto entity = smart_dynamic_cast<RootEntity>(
+                    Factories::instance()->createObject(entityElem.asMap()));
+            if (!entity.isValid()) {
+                log(ERROR, "Entity definition is not in Entity format.");
+                return nullptr;
+            }
+            entities.insert(std::make_pair(entity->getId(), entity));
         }
-        entities.insert(std::make_pair(entity->getId(), entity));
     }
 
     if (entities.empty()) {
@@ -129,8 +160,25 @@ LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId,
             attrEntity->setAttr(attrI.first, attrI.second);
         }
     }
+    std::map<std::string, LocatedEntity*> resolvedEntities;
     LocatedEntity* entity = createEntity(id, intId, attrEntity, location,
-            entities);
+            entities, resolvedEntities);
+
+    MapType entityAttributes;
+    attrEntity->addToMessage(entityAttributes);
+    for (auto attr : entityAttributes) {
+        if (attr.second.isString()) {
+            const std::string& attr_string = attr.second.asString();
+            if (!attr_string.empty() && attr_string[0] == '@') {
+                std::string id = attr_string.substr(1,
+                        attr_string.length() - 1);
+                auto resolvedI = resolvedEntities.find(id);
+                if (resolvedI != resolvedEntities.end()) {
+                    entity->setAttr(attr.first, resolvedI->second);
+                }
+            }
+        }
+    }
 
     if (entity != nullptr) {
         sendThoughts(*entity);
@@ -168,10 +216,19 @@ ArchetypeFactory * ArchetypeFactory::duplicateFactory()
 
 void ArchetypeFactory::addProperties()
 {
+    assert(m_type != 0);
+    MapType attributes;
+    attributes.insert(std::make_pair("entities", m_entities));
+    attributes.insert(std::make_pair("thoughts", m_thoughts));
+    m_type->addProperties(attributes);
 
 }
 
 void ArchetypeFactory::updateProperties()
 {
-
+    assert(m_type != 0);
+    MapType attributes;
+    attributes.insert(std::make_pair("entities", m_entities));
+    attributes.insert(std::make_pair("thoughts", m_thoughts));
+    m_type->addProperties(attributes);
 }
