@@ -202,14 +202,7 @@
       <map name="guise">
         <map name="default">
           <map name="material">
-            <string name="dress">ragged</string>
             <string name="head">simon</string>
-            <string name="pants">ragged</string>
-          </map>
-          <map name="mesh">
-            <string name="dress">2</string>
-            <string name="head">1</string>
-            <string name="pants">1</string>
           </map>
         </map>
       </map>
@@ -229,12 +222,11 @@
         </map>
       </map>
     </map>
-    <string name="id">settler</string>
+    <string name="id">human</string>
     <string name="objtype">class</string>
     <list name="parents">
       <string>mobile</string>
     </list>
-    <int name="playable">1</int>
   </map>
 
   <map>
