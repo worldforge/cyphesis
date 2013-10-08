@@ -62,23 +62,21 @@ ArchetypeFactory::~ArchetypeFactory()
 }
 
 LocatedEntity * ArchetypeFactory::createEntity(const std::string & id,
-        long intId, const RootEntity & attributes, LocatedEntity* location,
-        std::map<std::string, RootEntity>& entities,
-        std::map<std::string, LocatedEntity*>& resolvedEntities)
+        long intId, EntityCreation& entityCreation, LocatedEntity* location,
+        std::map<std::string, EntityCreation>& entities)
 {
+    auto& attributes = entityCreation.definition;
     std::string concreteType = attributes->getParents().front();
 
     MapType attrMap;
     attributes->addToMessage(attrMap);
     RootEntity cleansedAttributes;
-    for (auto attr : attrMap) {
-        if (attr.second.isString()) {
-            const std::string& attr_string = attr.second.asString();
-            if (!attr_string.empty() && attr_string[0] == '@') {
-                continue;
-            }
+    for (auto& attr : attrMap) {
+        if (isEntityRefAttribute(attr.second)) {
+            entityCreation.unresolvedAttributes.insert(attr);
+        } else {
+            cleansedAttributes->setAttr(attr.first, attr.second);
         }
-        cleansedAttributes->setAttr(attr.first, attr.second);
     }
 
     //If no position is set, make sure it's zeroed
@@ -100,9 +98,7 @@ LocatedEntity * ArchetypeFactory::createEntity(const std::string & id,
         return nullptr;
     }
 
-    if (!attributes->isDefaultId()) {
-        resolvedEntities.insert(std::make_pair(attributes->getId(), entity));
-    }
+    entityCreation.createdEntity = entity;
 
     for (auto& childId : attributes->getContains()) {
         auto entityI = entities.find(childId);
@@ -113,7 +109,7 @@ LocatedEntity * ArchetypeFactory::createEntity(const std::string & id,
         std::string childId;
         long childIntId = newId(childId);
         LocatedEntity* childEntity = createEntity(childId, childIntId,
-                entityI->second, entity, entities, resolvedEntities);
+                entityI->second, entity, entities);
         if (childEntity == nullptr) {
             log(ERROR, "Could not create child entity.");
             return nullptr;
@@ -134,7 +130,7 @@ LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId,
         const RootEntity & attributes, LocatedEntity* location)
 {
     //parse entities into RootEntity instances first
-    std::map<std::string, RootEntity> entities;
+    std::map<std::string, EntityCreation> entities;
 
     for (auto& entityElem : m_entities) {
         if (entityElem.isMap()) {
@@ -144,7 +140,8 @@ LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId,
                 log(ERROR, "Entity definition is not in Entity format.");
                 return nullptr;
             }
-            entities.insert(std::make_pair(entity->getId(), entity));
+            entities.insert(std::make_pair(entity->getId(), EntityCreation {
+                    entity, nullptr, Atlas::Message::MapType() }));
         }
     }
 
@@ -152,38 +149,108 @@ LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId,
         return nullptr;
     }
 
-    RootEntity attrEntity = entities.begin()->second;
+    auto& entityCreation = entities.begin()->second;
+    RootEntity& attrEntity = entityCreation.definition;
     MapType attrs = attributes->asMessage();
-    for (auto attrI : attrs) {
+    for (auto& attrI : attrs) {
         //copy all attributes except "parents", since that will point to the name of the archetype
         if (attrI.first != "parents") {
             attrEntity->setAttr(attrI.first, attrI.second);
         }
     }
-    std::map<std::string, LocatedEntity*> resolvedEntities;
-    LocatedEntity* entity = createEntity(id, intId, attrEntity, location,
-            entities, resolvedEntities);
-
-    MapType entityAttributes;
-    attrEntity->addToMessage(entityAttributes);
-    for (auto attr : entityAttributes) {
-        if (attr.second.isString()) {
-            const std::string& attr_string = attr.second.asString();
-            if (!attr_string.empty() && attr_string[0] == '@') {
-                std::string id = attr_string.substr(1,
-                        attr_string.length() - 1);
-                auto resolvedI = resolvedEntities.find(id);
-                if (resolvedI != resolvedEntities.end()) {
-                    entity->setAttr(attr.first, resolvedI->second);
-                }
-            }
-        }
-    }
+    LocatedEntity* entity = createEntity(id, intId, entityCreation, location,
+            entities);
 
     if (entity != nullptr) {
+        processResolvedAttributes(entities);
         sendThoughts(*entity);
     }
     return entity;
+}
+
+void ArchetypeFactory::processResolvedAttributes(
+        std::map<std::string, EntityCreation>& entities)
+{
+    for (auto& entityI : entities) {
+        if (entityI.second.createdEntity != nullptr
+                && !entityI.second.unresolvedAttributes.empty()) {
+            for (auto& attrI : entityI.second.unresolvedAttributes) {
+                Atlas::Message::Element& attr = attrI.second;
+                resolveEntityReference(entities, attr);
+                entityI.second.createdEntity->setAttr(attrI.first, attr);
+            }
+        }
+    }
+}
+
+bool ArchetypeFactory::isEntityRefAttribute(
+        const Atlas::Message::Element& attr) const
+{
+    if (attr.isString()) {
+        //This is a bit naive, but will work for now: we'll just
+        //check if the first character is '@'
+        const std::string& attr_string = attr.asString();
+        if (!attr_string.empty() && attr_string[0] == '@') {
+            return true;
+        }
+    }
+    if (attr.isMap()) {
+        //If it's a map we need to process all child elements too
+        for (auto& I : attr.asMap()) {
+            if (isEntityRefAttribute(I.second)) {
+                return true;
+            }
+        }
+    } else if (attr.isList()) {
+        //If it's a list we need to process all child elements too
+        for (auto& I : attr.asList()) {
+            if (isEntityRefAttribute(I)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+void ArchetypeFactory::resolveEntityReference(
+        std::map<std::string, EntityCreation>& entities,
+        Atlas::Message::Element& attr)
+{
+    //Only handle strings
+    if (attr.isString()) {
+        const std::string& attr_string = attr.asString();
+        //This is a bit naive, but will work for now: we'll just
+        //check if the first character is '@'
+        if (!attr_string.empty() && attr_string[0] == '@') {
+            std::string id = attr_string.substr(1, attr_string.length() - 1);
+            auto resolvedI = entities.find(id);
+            if (resolvedI != entities.end()) {
+                if (resolvedI->second.createdEntity != nullptr) {
+                    attr = Atlas::Message::Element(
+                            resolvedI->second.createdEntity);
+                } else {
+                    log(WARNING,
+                            String::compose(
+                                    "Attribute '%1' refers to an entity which wasn't created.",
+                                    id));
+                }
+            } else {
+                log(WARNING,
+                        String::compose("Could not find entity with id '%1'.",
+                                id));
+            }
+        }
+    } else if (attr.isMap()) {
+        //If it's a map we need to process all child elements too
+        for (auto& I : attr.asMap()) {
+            resolveEntityReference(entities, I.second);
+        }
+    } else if (attr.isList()) {
+        //If it's a list we need to process all child elements too
+        for (auto& I : attr.asList()) {
+            resolveEntityReference(entities, I);
+        }
+    }
 }
 
 void ArchetypeFactory::sendThoughts(LocatedEntity& entity)
