@@ -81,11 +81,7 @@ LocatedEntity * ArchetypeFactory::createEntity(const std::string & id,
 
     //If no position is set, make sure it's zeroed
     if (cleansedAttributes->isDefaultPos()) {
-        std::vector<double> pos;
-        pos.push_back(0.0f);
-        pos.push_back(0.0f);
-        pos.push_back(0.0f);
-        cleansedAttributes->setPos(pos);
+        ::addToEntity(Point3D::ZERO(), cleansedAttributes->modifyPos());
     }
 
     LocatedEntity* entity = EntityBuilder::instance()->newChildEntity(id, intId,
