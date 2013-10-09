@@ -6,7 +6,7 @@ LDFLAGS = -Wl,-static
 
 #endif
 
-INCLUDES = -DSHAREDIR=\"@datadir@\"
+AM_CPPFLAGS = -DSHAREDIR=\"@datadir@\"
 
 LIBS=
 
