@@ -28,6 +28,9 @@
 /// a "spawner". This makes it create new entities when it determines they are
 /// needed. This allows for game play mechanics where some items or creatures
 /// always are available.
+/// The default is to create the entities in the parent entity, unless the
+/// attribute "internal" is set to 1. Then entities will be spawned as children
+/// of the entity to which the property is attached.
 ///
 /// This property is of "map" type.
 /// These values are available:
@@ -38,6 +41,8 @@
 /// entity: an optional entity declaration, to be sent as argument in a Create op
 /// interval: an optional numeric value specifying the interval, in seconds, between
 ///           ticks. If omitted, a default value will be used.
+/// internal: optional. If set to 1, entities will be spawned as children of the
+///            entity to which the property belong.
 /// \ingroup PropertyClasses
 class SpawnerProperty : public Property<Atlas::Message::MapType>
 {
@@ -90,6 +95,16 @@ class SpawnerProperty : public Property<Atlas::Message::MapType>
          */
         int m_interval;
 
+        /**
+         * @brief Specifies if creation mode is "external".
+         *
+         * It not, it's "internal".
+         * "external" means that entities will be created in the parent entity.
+         * "internal" means that they will be created as children of this entity.
+         * The default is "external".
+         */
+        bool m_mode_external;
+
         Atlas::Objects::Operation::RootOperation createTickOp();
 
         /**
@@ -107,10 +122,11 @@ class SpawnerProperty : public Property<Atlas::Message::MapType>
          * @param e
          * @param op
          * @param res
+         * @param locId
          */
         void createNewEntity(LocatedEntity * e,
                 const Operation & op,
-                OpVector & res);
+                OpVector & res, const std::string& locId);
 };
 
 #endif /* RULESETS_SPAWNERPROPERTY_H_ */

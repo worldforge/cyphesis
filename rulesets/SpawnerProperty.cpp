@@ -50,7 +50,7 @@ using Atlas::Objects::Factories;
 using Atlas::Objects::smart_dynamic_cast;
 
 SpawnerProperty::SpawnerProperty() :
-        m_radius(0.0f), m_minamount(0), m_interval(0)
+        m_radius(0.0f), m_minamount(0), m_interval(0), m_mode_external(true)
 {
 }
 
@@ -108,6 +108,13 @@ void SpawnerProperty::apply(LocatedEntity * ent)
     } else {
         m_interval = 0;
     }
+
+    auto internal_iter = m_data.find("internal");
+    if (internal_iter != m_data.end() && internal_iter->second.isInt()) {
+        m_mode_external = internal_iter->second.asInt() != 1;
+    } else {
+        m_mode_external = true;
+    }
 }
 
 HandlerResult SpawnerProperty::operation(LocatedEntity * e,
@@ -150,17 +157,11 @@ void SpawnerProperty::handleTick(LocatedEntity * e, const Operation & op,
     }
     res.push_back(t);
 
-    auto parentLoc = e->m_location.m_loc;
-    if (!parentLoc) {
-        //If there's no parent entity we should just ignore.
-        return;
-    }
-
     if (m_type.empty()) {
         return;
     }
 
-    if (m_minamount == 0) {
+    if (m_minamount <= 0) {
         return;
     }
 
@@ -169,17 +170,32 @@ void SpawnerProperty::handleTick(LocatedEntity * e, const Operation & op,
         return;
     }
 
-    //Check if there are enough entities (with an optional radius)
+    auto parentLoc = e->m_location.m_loc;
     float squared_radius = m_radius * m_radius;
+    LocatedEntity* container_entity = parentLoc;
+    if (m_mode_external) {
+        if (!parentLoc) {
+            //If there's no parent entity we should just ignore.
+            return;
+        }
+    } else {
+        container_entity = e;
+        //if it's internal we'll skip checking the radius
+        squared_radius = 0;
+    }
+
+    //Check if there are enough entities (with an optional radius)
     int counter = 0;
-    for (auto& entity : *parentLoc->m_contains) {
-        if (entity->getType() == type) {
-            if (squared_radius == 0
-                    || WFMath::SquaredDistance(e->m_location.m_pos,
-                            entity->m_location.m_pos) <= squared_radius) {
-                counter++;
-                if (counter >= m_minamount) {
-                    return;
+    if (container_entity->m_contains) {
+        for (auto& entity : *container_entity->m_contains) {
+            if (entity->getType() == type) {
+                if (squared_radius == 0
+                        || WFMath::SquaredDistance(e->m_location.m_pos,
+                                entity->m_location.m_pos) <= squared_radius) {
+                    counter++;
+                    if (counter >= m_minamount) {
+                        return;
+                    }
                 }
             }
         }
@@ -187,36 +203,16 @@ void SpawnerProperty::handleTick(LocatedEntity * e, const Operation & op,
 
     //If we've come here there's not enough entities of the requested
     //type within the radius; spawn a new one
-    createNewEntity(e, op, res);
+    createNewEntity(e, op, res, container_entity->getId());
 
     return;
 
 }
 
 void SpawnerProperty::createNewEntity(LocatedEntity * e, const Operation & op,
-        OpVector & res)
+        OpVector & res, const std::string& locId)
 {
     Anonymous create_arg;
-
-    //randomize position and rotation
-    WFMath::MTRand& rand = WFMath::MTRand::instance;
-    float angle = rand.randf(WFMath::numeric_constants<float>::pi() * 2);
-    //place it between 0 and 2 meters away
-    float distance = rand.randf(2.0f);
-    //if we're solid we should make sure it's not within our own radius
-    if (e->m_location.isSolid()) {
-        distance += e->m_location.radius();
-    }
-    //and finally make sure that it's not beyond the radius for checking
-    if (m_radius != 0.0f) {
-        distance = std::min(m_radius, distance);
-    }
-
-    float rotation = rand.randf(WFMath::numeric_constants<float>::pi() * 2);
-
-    float x = (distance * std::cos(angle));
-    float y = (distance * std::sin(angle));
-
     if (!m_entity.empty()) {
         create_arg = smart_dynamic_cast<Anonymous>(
                 Factories::instance()->createObject(m_entity));
@@ -228,10 +224,42 @@ void SpawnerProperty::createNewEntity(LocatedEntity * e, const Operation & op,
     } else {
         create_arg->setParents(std::list<std::string>(1, m_type));
     }
-    create_arg->setLoc(e->m_location.m_loc->getId());
-    ::addToEntity(
-            WFMath::Point<3>(e->m_location.pos()).shift(
-                    WFMath::Vector<3>(x, y, 0)), create_arg->modifyPos());
+    create_arg->setLoc(locId);
+
+    WFMath::MTRand& rand = WFMath::MTRand::instance;
+    if (m_mode_external) {
+        //randomize position and rotation
+        float angle = rand.randf(WFMath::numeric_constants<float>::pi() * 2);
+        //place it between 0 and 2 meters away
+        float distance = rand.randf(2.0f);
+        //if we're solid we should make sure it's not within our own radius
+        if (e->m_location.isSolid()) {
+            distance += e->m_location.radius();
+        }
+        //and finally make sure that it's not beyond the radius for checking
+        if (m_radius != 0.0f) {
+            distance = std::min(m_radius, distance);
+        }
+
+
+        float x = (distance * std::cos(angle));
+        float y = (distance * std::sin(angle));
+
+        ::addToEntity(
+                WFMath::Point<3>(e->m_location.pos()).shift(
+                        WFMath::Vector<3>(x, y, 0)), create_arg->modifyPos());
+    } else {
+        //If it's an internal spawner, spawn anywhere within the bounding box.
+        const BBox bbox = e->m_location.m_bBox;
+        if (bbox.isValid()) {
+            float x = rand.rand(bbox.highCorner().x() - bbox.lowCorner().x())
+                    + bbox.lowCorner().x();
+            float y = rand.rand(bbox.highCorner().y() - bbox.lowCorner().y())
+                    + bbox.lowCorner().y();
+            ::addToEntity(WFMath::Point<3>(x, y, 0), create_arg->modifyPos());
+        }
+    }
+    float rotation = rand.randf(WFMath::numeric_constants<float>::pi() * 2);
     WFMath::Quaternion orientation(WFMath::Vector<3>(0, 0, 1), rotation);
     create_arg->setAttr("orientation", orientation.toAtlas());
 
