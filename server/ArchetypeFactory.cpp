@@ -34,12 +34,14 @@
 #include "common/id.h"
 #include "common/Think.h"
 
+#include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Entity.h>
 #include <Atlas/Objects/objectFactory.h>
 
 #include <iostream>
 
 using Atlas::Message::MapType;
+using Atlas::Message::ListType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::smart_dynamic_cast;
@@ -122,44 +124,103 @@ LocatedEntity * ArchetypeFactory::createEntity(const std::string & id,
     return entity;
 }
 
-LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId,
-        const RootEntity & attributes, LocatedEntity* location)
+bool ArchetypeFactory::parseEntities(const ListType& entitiesElement,
+        std::map<std::string, EntityCreation>& entities)
 {
-    //parse entities into RootEntity instances first
-    std::map<std::string, EntityCreation> entities;
-
-    for (auto& entityElem : m_entities) {
+    for (auto& entityElem : entitiesElement) {
         if (entityElem.isMap()) {
             auto entity = smart_dynamic_cast<RootEntity>(
                     Factories::instance()->createObject(entityElem.asMap()));
             if (!entity.isValid()) {
                 log(ERROR, "Entity definition is not in Entity format.");
-                return nullptr;
+                return false;
             }
-            entities.insert(std::make_pair(entity->getId(), EntityCreation {
-                    entity, nullptr, Atlas::Message::MapType() }));
+
+            auto result = entities.insert(
+                    std::make_pair(entity->getId(), EntityCreation { entity,
+                            nullptr, Atlas::Message::MapType() }));
+            if (!result.second) {
+                //it already existed; we should update with the attributes
+                for (auto& I : entityElem.asMap()) {
+                    result.first->second.definition->setAttr(I.first, I.second);
+                }
+            }
         }
+    }
+    return true;
+}
+
+LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId,
+        const RootEntity & attributes, LocatedEntity* location)
+{
+    //parse entities into RootEntity instances first
+    std::map<std::string, EntityCreation> entities;
+    std::vector<Atlas::Message::Element> extraThoughts;
+
+    bool parseResult = parseEntities(m_entities, entities);
+    if (!parseResult) {
+        return nullptr;
+    }
+    MapType attrs;
+
+    //If the object type of the attributes is "archetype" we should merge it's
+    //"entities" and "thoughts" attributes.
+    if (attributes->getObjtype() == "archetype") {
+        if (attributes->hasAttr("entities")) {
+            auto& entitiesElem = attributes->getAttr("entities");
+            if (!entitiesElem.isList()) {
+                log(WARNING, "'entities' attribute is not a list.");
+            } else {
+                const ListType& entitiesList = entitiesElem.asList();
+                parseEntities(entitiesList, entities);
+            }
+        }
+
+        if (attributes->hasAttr("thoughts")) {
+            auto& thoughtsElem = attributes->getAttr("thoughts");
+            if (!thoughtsElem.isList()) {
+                log(WARNING, "'thoughts' attribute is not a list.");
+            } else {
+                extraThoughts = thoughtsElem.asList();
+            }
+        }
+
+    } else {
+        //If no, we should consider the attributes to only apply to the first entity
+        attrs = attributes->asMessage();
     }
 
     if (entities.empty()) {
         return nullptr;
     }
-
     auto& entityCreation = entities.begin()->second;
     RootEntity& attrEntity = entityCreation.definition;
-    MapType attrs = attributes->asMessage();
     for (auto& attrI : attrs) {
         //copy all attributes except "parents", since that will point to the name of the archetype
         if (attrI.first != "parents") {
             attrEntity->setAttr(attrI.first, attrI.second);
         }
     }
+
+    if (!attributes->isDefaultPos()) {
+        attrEntity->modifyPos() = attributes->getPos();
+    }
+    if (!attributes->hasAttr("orientation")) {
+        attrEntity->setAttr("orientation", attributes->getAttr("orientation"));
+    }
     LocatedEntity* entity = createEntity(id, intId, entityCreation, location,
             entities);
 
     if (entity != nullptr) {
         processResolvedAttributes(entities);
-        sendThoughts(*entity);
+        if (!m_thoughts.empty() || !extraThoughts.empty()) {
+            //We must send a sight op to the entity informing it of itself before we send any thoughts.
+            //Else the mind won't have any information about itself and the thoughts will
+            //cause errors.
+            sendInitialSight(*entity);
+            sendThoughts(*entity, m_thoughts);
+            sendThoughts(*entity, extraThoughts);
+        }
     }
     return entity;
 }
@@ -249,20 +310,31 @@ void ArchetypeFactory::resolveEntityReference(
     }
 }
 
-void ArchetypeFactory::sendThoughts(LocatedEntity& entity)
+void ArchetypeFactory::sendInitialSight(LocatedEntity& entity)
+{
+    Atlas::Objects::Operation::Sight sight;
+    sight->setTo(entity.getId());
+    Atlas::Objects::Entity::Anonymous args;
+    entity.addToEntity(args);
+    sight->setArgs1(args);
+    entity.sendWorld(sight);
+}
+
+void ArchetypeFactory::sendThoughts(LocatedEntity& entity,
+        std::vector<Atlas::Message::Element>& thoughts)
 {
     //Send any thoughts.
     //Note that we currently only allow for thoughts for the top entity,
     //even though the format they are stored in would allow for thoughts for
     //many entities (by using the id).
 
-    if (!m_thoughts.empty()) {
+    if (!thoughts.empty()) {
         Atlas::Objects::Operation::Think thoughtOp;
-        thoughtOp->setArgsAsList(m_thoughts);
+        thoughtOp->setArgsAsList(thoughts);
         //Make the thought come from the entity itself
         thoughtOp->setTo(entity.getId());
         thoughtOp->setFrom(entity.getId());
-        WorldRouter::instance().message(thoughtOp, entity);
+        entity.sendWorld(thoughtOp);
     }
 
 }

@@ -16,7 +16,6 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-
 #ifndef SERVER_ARCHETYPE_FACTORY_H
 #define SERVER_ARCHETYPE_FACTORY_H
 
@@ -30,104 +29,132 @@
 ///
 /// An archetype contains one or many entities along with optional thoughts (for NPCs etc).
 /// Attributes can refer to other entities by prefixing their id with a "@" sign.
-class ArchetypeFactory : public EntityKit {
-  protected:
-
-    /**
-     * @brief Represents one entity to be created.
-     */
-    struct EntityCreation {
-        /**
-         * @brief The definition of the entity, as found in the archetype.
-         */
-        Atlas::Objects::Entity::RootEntity definition;
-
-        /**
-         * @brief The created entity (might be null if none was created).
-         */
-        LocatedEntity* createdEntity;
+/// If no "objtype" is specified in the entity sent to newEntity the data therein is handled
+/// as entity initialization data. The properties specified (except "parents") will all be
+/// applied to the first entity created.
+/// This behaviour is default in order to make sure archetypes and entities can be created
+/// interchangeably.
+///
+/// If however the "objtype" is set to "archetype" the attributes are expected to follow the
+/// format of an archetype, and will be merged into the parent archetype. This mainly means
+/// that the code will look for entity definitions in the "entities" attribute, and thought
+/// definitions in the "thoughts" attribute.
+class ArchetypeFactory: public EntityKit
+{
+    protected:
 
         /**
-         * Any attributes referring to unresolved entities.
-         * This will be empty is there are no entity referencing attributes.
+         * @brief Represents one entity to be created.
          */
-        Atlas::Message::MapType unresolvedAttributes;
-    };
+        struct EntityCreation
+        {
+                /**
+                 * @brief The definition of the entity, as found in the archetype.
+                 */
+                Atlas::Objects::Entity::RootEntity definition;
 
-    explicit ArchetypeFactory(ArchetypeFactory & o);
+                /**
+                 * @brief The created entity (might be null if none was created).
+                 */
+                LocatedEntity* createdEntity;
 
-    LocatedEntity * createEntity(const std::string & id,
-                                    long intId,
-                                    EntityCreation& entityCreation,
-                                    LocatedEntity* location,
-                                    std::map<std::string, EntityCreation>& entities);
+                /**
+                 * Any attributes referring to unresolved entities.
+                 * This will be empty is there are no entity referencing attributes.
+                 */
+                Atlas::Message::MapType unresolvedAttributes;
+        };
 
-    /**
-     * @brief Sends any thoughts to the entity.
-     * @param entity
-     */
-    void sendThoughts(LocatedEntity& entity);
+        explicit ArchetypeFactory(ArchetypeFactory & o);
 
-    /**
-     * @brief Checks if the attribute references an unresolved entity.
-     *
-     * Entities within the archetype can be referenced through prefixing their local
-     * id with a "@" character. Such attributes however cannot be set until all of the
-     * entities have been created, and their final ids have been resolved. This method
-     * checks if any attribute is referring to an unresolved entity, and thus needs to
-     * be resolved first.
-     * @param attr The attribute to check.
-     * @return True if the attribute contained an unresolved entity ref
-     */
-    bool isEntityRefAttribute(const Atlas::Message::Element& attr) const;
+        LocatedEntity * createEntity(const std::string & id, long intId,
+                EntityCreation& entityCreation, LocatedEntity* location,
+                std::map<std::string, EntityCreation>& entities);
 
-    /**
-     * @brief Resolves references to unresolved entities.
-     *
-     * This is done recursively. Any String element which refers to an
-     * unresolved entity (i.e. is prefixed with "@") will be replaced with
-     * a Ptr element wrapping a LocatedEntity instance (given that the
-     * reference is correct).
-     *
-     * @param entities All processed entities.
-     * @param attr The attribute which will be resolved.
-     */
-    void resolveEntityReference(
-            std::map<std::string, EntityCreation>& entities,
-            Atlas::Message::Element& attr);
+        /**
+         * @brief Sends any thoughts to the entity.
+         * @param entity
+         */
+        void sendThoughts(LocatedEntity& entity, std::vector<Atlas::Message::Element>& thoughts);
 
-    /**
-     * @brief Processes all unresolved attributes for all entities.
-     *
-     * Any unresolved reference will be resolved, and the attribute set
-     * on the entity.
-     * @param entities All processed entities.
-     */
-    void processResolvedAttributes(
-            std::map<std::string, EntityCreation>& entities);
+        /**
+         * @brief Sends an initial sight of itself to the entity.
+         *
+         * This is required if the entity has thoughts, since if it gets thoughts before
+         * it knows about itself there will be trouble.
+         * @param entity
+         */
+        void sendInitialSight(LocatedEntity& entity);
 
+        /**
+         * @brief Checks if the attribute references an unresolved entity.
+         *
+         * Entities within the archetype can be referenced through prefixing their local
+         * id with a "@" character. Such attributes however cannot be set until all of the
+         * entities have been created, and their final ids have been resolved. This method
+         * checks if any attribute is referring to an unresolved entity, and thus needs to
+         * be resolved first.
+         * @param attr The attribute to check.
+         * @return True if the attribute contained an unresolved entity ref
+         */
+        bool isEntityRefAttribute(const Atlas::Message::Element& attr) const;
 
-  public:
-    explicit ArchetypeFactory();
-    virtual ~ArchetypeFactory();
+        /**
+         * @brief Resolves references to unresolved entities.
+         *
+         * This is done recursively. Any String element which refers to an
+         * unresolved entity (i.e. is prefixed with "@") will be replaced with
+         * a Ptr element wrapping a LocatedEntity instance (given that the
+         * reference is correct).
+         *
+         * @param entities All processed entities.
+         * @param attr The attribute which will be resolved.
+         */
+        void resolveEntityReference(
+                std::map<std::string, EntityCreation>& entities,
+                Atlas::Message::Element& attr);
 
-    virtual LocatedEntity * newEntity(const std::string & id, long intId,
-                const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location);
-    virtual ArchetypeFactory * duplicateFactory();
+        /**
+         * @brief Processes all unresolved attributes for all entities.
+         *
+         * Any unresolved reference will be resolved, and the attribute set
+         * on the entity.
+         * @param entities All processed entities.
+         */
+        void processResolvedAttributes(
+                std::map<std::string, EntityCreation>& entities);
 
-    virtual void addProperties();
+        /**
+         * @brief Tries to parse entity data from the list.
+         * @param entitiesElement The list containing data.
+         * @param entities Parsed entities will be put here.
+         * @return True if parsing was successful.
+         */
+        bool parseEntities(const Atlas::Message::ListType& entitiesElement,
+                std::map<std::string, EntityCreation>& entities);
 
-    virtual void updateProperties();
+    public:
+        explicit ArchetypeFactory();
+        virtual ~ArchetypeFactory();
 
-    /// Factory for class from which the class handled by this factory
-    /// inherits.
-    ArchetypeFactory * m_parent;
-    /// Set of factories for classes which inherit from the class handled
-    /// by this factory.
-    std::set<ArchetypeFactory *> m_children;
+        virtual LocatedEntity * newEntity(const std::string & id, long intId,
+                const Atlas::Objects::Entity::RootEntity & attributes,
+                LocatedEntity* location);
+        virtual ArchetypeFactory * duplicateFactory();
 
-    std::vector<Atlas::Message::Element> m_entities;
-    std::vector<Atlas::Message::Element> m_thoughts;
+        virtual void addProperties();
+
+        virtual void updateProperties();
+
+        /// Factory for class from which the class handled by this factory
+        /// inherits.
+        ArchetypeFactory * m_parent;
+        /// Set of factories for classes which inherit from the class handled
+        /// by this factory.
+        std::set<ArchetypeFactory *> m_children;
+
+        std::vector<Atlas::Message::Element> m_entities;
+        std::vector<Atlas::Message::Element> m_thoughts;
 
 };
 
