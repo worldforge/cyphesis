@@ -35,8 +35,11 @@
 /// minamount: the desired minimum amount of entities (optionally within a radius)
 ///            if the actual number of entities dips below new ones are created
 /// radius: an optional radius around the entity to consider when checking minamount
+/// entity: an optional entity declaration, to be sent as argument in a Create op
+/// interval: an optional numeric value specifying the interval, in seconds, between
+///           ticks. If omitted, a default value will be used.
 /// \ingroup PropertyClasses
-class SpawnerProperty : public PropertyBase
+class SpawnerProperty : public Property<Atlas::Message::MapType>
 {
     public:
         explicit SpawnerProperty();
@@ -44,8 +47,6 @@ class SpawnerProperty : public PropertyBase
 
         virtual void install(LocatedEntity *, const std::string &);
         virtual void apply(LocatedEntity *);
-        virtual int get(Atlas::Message::Element &) const;
-        virtual void set(const Atlas::Message::Element &);
         virtual HandlerResult operation(LocatedEntity *,
                                         const Operation &,
                                         OpVector &);
@@ -71,6 +72,23 @@ class SpawnerProperty : public PropertyBase
          * @brief The type of entity.
          */
         std::string m_type;
+
+        /**
+         * @brief An optional entity definition.
+         *
+         * This can be anything which can be created through a Create op, but
+         * most probably either an entity or an archetype.
+         *
+         * If absent, an entity of the m_type will be created automatically.
+         */
+        Atlas::Message::MapType m_entity;
+
+        /**
+         * @brief The tick interval.
+         *
+         * If set to 0 a default value will be used.
+         */
+        int m_interval;
 
         Atlas::Objects::Operation::RootOperation createTickOp();
 

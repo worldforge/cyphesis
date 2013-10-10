@@ -46,16 +46,17 @@ using Atlas::Message::FloatType;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Tick;
+using Atlas::Objects::Factories;
+using Atlas::Objects::smart_dynamic_cast;
 
 SpawnerProperty::SpawnerProperty() :
-        m_radius(0.0f), m_minamount(0)
+        m_radius(0.0f), m_minamount(0), m_interval(0)
 {
 }
 
 SpawnerProperty::~SpawnerProperty()
 {
 }
-
 
 void SpawnerProperty::install(LocatedEntity * owner, const std::string & name)
 {
@@ -73,50 +74,44 @@ void SpawnerProperty::install(LocatedEntity * owner, const std::string & name)
 
 void SpawnerProperty::apply(LocatedEntity * ent)
 {
-}
-
-int SpawnerProperty::get(Element & val) const
-{
-    val = MapType();
-    MapType & val_map = val.Map();
-
-    val_map["radius"] = m_radius;
-    val_map["minamount"] = m_minamount;
-    val_map["type"] = m_type;
-
-    return 0;
-}
-
-void SpawnerProperty::set(const Element & ent)
-{
-    if (!ent.isMap()) {
-        log(WARNING, "Non map spawner data");
-        return;
+    auto radius_iter = m_data.find("radius");
+    if (radius_iter != m_data.end() && radius_iter->second.isNum()) {
+        m_radius = radius_iter->second.Float();
+    } else {
+        m_radius = 0.0f;
     }
-    auto& smap = ent.Map();
-    auto radius_iter = smap.find("radius");
-    if (radius_iter != smap.end()) {
-        if (radius_iter->second.isNum()) {
-            m_radius = radius_iter->second.Float();
-        }
+
+    auto amount_iter = m_data.find("minamount");
+    if (amount_iter != m_data.end() && amount_iter->second.isInt()) {
+        m_minamount = amount_iter->second.Int();
+    } else {
+        m_minamount = 0;
     }
-    auto amount_iter = smap.find("minamount");
-    if (amount_iter != smap.end()) {
-        if (amount_iter->second.isInt()) {
-            m_minamount = amount_iter->second.Int();
-        }
+
+    auto type_iter = m_data.find("type");
+    if (type_iter != m_data.end() && type_iter->second.isString()) {
+        m_type = type_iter->second.String();
+    } else {
+        m_type = "";
     }
-    auto type_iter = smap.find("type");
-    if (type_iter != smap.end()) {
-        if (type_iter->second.isString()) {
-            m_type = type_iter->second.String();
-        }
+
+    auto entity_iter = m_data.find("entity");
+    if (entity_iter != m_data.end() && entity_iter->second.isMap()) {
+        m_entity = entity_iter->second.asMap();
+    } else {
+        m_entity.clear();
+    }
+
+    auto interval_iter = m_data.find("interval");
+    if (interval_iter != m_data.end() && interval_iter->second.isNum()) {
+        m_interval = interval_iter->second.asNum();
+    } else {
+        m_interval = 0;
     }
 }
 
 HandlerResult SpawnerProperty::operation(LocatedEntity * e,
-                                         const Operation & op,
-                                         OpVector & res)
+        const Operation & op, OpVector & res)
 {
     return tick_handler(e, op, res);
 }
@@ -127,8 +122,7 @@ SpawnerProperty * SpawnerProperty::copy() const
 }
 
 HandlerResult SpawnerProperty::tick_handler(LocatedEntity * e,
-                                           const Operation & op,
-                                           OpVector & res)
+        const Operation & op, OpVector & res)
 {
     if (!op->getArgs().empty()) {
         auto& arg = op->getArgs().front();
@@ -141,8 +135,7 @@ HandlerResult SpawnerProperty::tick_handler(LocatedEntity * e,
     return OPERATION_IGNORED;
 }
 
-void SpawnerProperty::handleTick(LocatedEntity * e,
-        const Operation & op,
+void SpawnerProperty::handleTick(LocatedEntity * e, const Operation & op,
         OpVector & res)
 {
     Anonymous tick_arg;
@@ -150,7 +143,11 @@ void SpawnerProperty::handleTick(LocatedEntity * e,
     Tick t;
     t->setArgs1(tick_arg);
     t->setTo(e->getId());
-    t->setFutureSeconds(consts::basic_tick * 10);
+    if (m_interval == 0) {
+        t->setFutureSeconds(consts::basic_tick * 10);
+    } else {
+        t->setFutureSeconds(m_interval);
+    }
     res.push_back(t);
 
     auto parentLoc = e->m_location.m_loc;
@@ -167,19 +164,19 @@ void SpawnerProperty::handleTick(LocatedEntity * e,
         return;
     }
 
-    //Check if there are enough entities (with an optional radius)
-    float squared_radius = m_radius * m_radius;
     auto type = Inheritance::instance().getType(m_type);
     if (type == nullptr) {
         return;
     }
 
+    //Check if there are enough entities (with an optional radius)
+    float squared_radius = m_radius * m_radius;
     int counter = 0;
     for (auto& entity : *parentLoc->m_contains) {
         if (entity->getType() == type) {
-            if (squared_radius == 0 || WFMath::SquaredDistance(
-                    e->m_location.m_pos, entity->m_location.m_pos)
-                    <= squared_radius) {
+            if (squared_radius == 0
+                    || WFMath::SquaredDistance(e->m_location.m_pos,
+                            entity->m_location.m_pos) <= squared_radius) {
                 counter++;
                 if (counter >= m_minamount) {
                     return;
@@ -189,42 +186,53 @@ void SpawnerProperty::handleTick(LocatedEntity * e,
     }
 
     //If we've come here there's not enough entities of the requested
-    //type within the radius; spawn new one
+    //type within the radius; spawn a new one
     createNewEntity(e, op, res);
 
     return;
 
 }
 
-void SpawnerProperty::createNewEntity(LocatedEntity * e,
-        const Operation & op,
+void SpawnerProperty::createNewEntity(LocatedEntity * e, const Operation & op,
         OpVector & res)
 {
     Anonymous create_arg;
-    create_arg->setParents(std::list<std::string>(1, m_type));
 
-    //randmomize position and rotation
+    //randomize position and rotation
     WFMath::MTRand& rand = WFMath::MTRand::instance;
     float angle = rand.randf(WFMath::numeric_constants<float>::pi() * 2);
     //place it between 0 and 2 meters away
     float distance = rand.randf(2.0f);
-    //if we're solid we should make sure it's not within our radius
+    //if we're solid we should make sure it's not within our own radius
     if (e->m_location.isSolid()) {
         distance += e->m_location.radius();
     }
     //and finally make sure that it's not beyond the radius for checking
-    distance = std::min(m_radius, distance);
+    if (m_radius != 0.0f) {
+        distance = std::min(m_radius, distance);
+    }
 
     float rotation = rand.randf(WFMath::numeric_constants<float>::pi() * 2);
 
     float x = (distance * std::cos(angle));
     float y = (distance * std::sin(angle));
 
-    ::addToEntity(WFMath::Point<3>(e->m_location.pos()).shift(
-            WFMath::Vector<3>(x, y, 0)), create_arg->modifyPos());
+    if (!m_entity.empty()) {
+        create_arg = smart_dynamic_cast<Anonymous>(
+                Factories::instance()->createObject(m_entity));
+        if (!create_arg.isValid()) {
+            log(ERROR,
+                    "Could not parse 'entity' data on spawner into Entity instance.");
+            return;
+        }
+    } else {
+        create_arg->setParents(std::list<std::string>(1, m_type));
+    }
     create_arg->setLoc(e->m_location.m_loc->getId());
-
-    WFMath::Quaternion orientation(WFMath::Vector<3>(0,0,1), rotation);
+    ::addToEntity(
+            WFMath::Point<3>(e->m_location.pos()).shift(
+                    WFMath::Vector<3>(x, y, 0)), create_arg->modifyPos());
+    WFMath::Quaternion orientation(WFMath::Vector<3>(0, 0, 1), rotation);
     create_arg->setAttr("orientation", orientation.toAtlas());
 
     Create create;
@@ -235,5 +243,4 @@ void SpawnerProperty::createNewEntity(LocatedEntity * e,
     log(NOTICE, String::compose("Spawner belonging to entity %1 creating new"
             " entity of type %2", e->getId(), m_type));
 }
-
 
