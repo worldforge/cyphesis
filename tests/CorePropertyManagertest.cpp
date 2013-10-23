@@ -393,13 +393,14 @@ EntityFactory<T>::~EntityFactory()
 }
 
 template <class T>
-LocatedEntity * EntityFactory<T>::newEntity(const std::string & id, long intId)
+LocatedEntity * EntityFactory<T>::newEntity(const std::string & id, long intId,
+        const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
 {
     return new Entity(id, intId);
 }
 
 template <class T>
-EntityKit * EntityFactory<T>::duplicateFactory()
+EntityFactoryBase * EntityFactory<T>::duplicateFactory()
 {
     return 0;
 }
@@ -410,15 +411,15 @@ class Stackable;
 class World;
 
 template <>
-LocatedEntity * EntityFactory<World>::newEntity(const std::string & id,
-                                                long intId)
+LocatedEntity * EntityFactory<World>::newEntity(const std::string & id, long intId,
+        const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
 {
     return 0;
 }
 
 template <>
-LocatedEntity * EntityFactory<Character>::newEntity(const std::string & id,
-                                                    long intId)
+LocatedEntity * EntityFactory<Character>::newEntity(const std::string & id, long intId,
+        const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
 {
     return new Character(id, intId);
 }
@@ -1868,9 +1869,7 @@ CommSocket::~CommSocket()
 {
 }
 
-EntityKit::EntityKit() : m_scriptFactory(0),
-                         m_parent(0),
-                         m_type(0),
+EntityKit::EntityKit() : m_type(0),
                          m_createdCount(0)
 {
 }
@@ -1884,6 +1883,22 @@ void EntityKit::addProperties()
 }
 
 void EntityKit::updateProperties()
+{
+}
+
+EntityFactoryBase::EntityFactoryBase() : EntityKit::EntityKit(), m_scriptFactory(0)
+{
+}
+
+EntityFactoryBase::~EntityFactoryBase()
+{
+}
+
+void EntityFactoryBase::addProperties()
+{
+}
+
+void EntityFactoryBase::updateProperties()
 {
 }
 

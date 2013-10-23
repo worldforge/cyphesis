@@ -358,6 +358,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "server/ArithmeticBuilder.h"
 #include "server/CommServer.h"
 #include "server/EntityFactory.h"
+#include "server/ArchetypeFactory.h"
 #include "server/Juncture.h"
 #include "server/Persistence.h"
 #include "server/Player.h"
@@ -390,6 +391,9 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "rulesets/VisibilityProperty.h"
 #include "rulesets/SuspendedProperty.h"
 #include "rulesets/SpawnerProperty.h"
+#include "rulesets/Creator.h"
+#include "rulesets/Plant.h"
+#include "rulesets/Stackable.h"
 
 #include "common/const.h"
 #include "common/globals.h"
@@ -446,58 +450,58 @@ CommServer::CommServer() : m_epollFd(-1),
 {
 }
 
-template <class T>
-EntityFactory<T>::EntityFactory(EntityFactory<T> & o)
+Creator::Creator(const std::string& id, long idInt)
+:Character::Character(id, idInt)
 {
 }
 
-template <class T>
-EntityFactory<T>::EntityFactory()
+Creator::~Creator(){}
+
+void Creator::operation(const Operation & op, OpVector &)
 {
 }
 
-template <class T>
-EntityFactory<T>::~EntityFactory()
+void Creator::externalOperation(const Operation & op, Link &)
 {
 }
 
-template <class T>
-LocatedEntity * EntityFactory<T>::newEntity(const std::string & id, long intId)
+void Creator::mindLookOperation(const Operation & op, OpVector &)
 {
-    return new Entity(id, intId);
 }
 
-template <class T>
-EntityKit * EntityFactory<T>::duplicateFactory()
+Plant::Plant(const std::string& id, long idInt)
+:Thing::Thing(id, idInt)
 {
-    return 0;
 }
 
-class Creator;
-class Plant;
-class Stackable;
-class World;
+Plant::~Plant(){}
 
-template <>
-LocatedEntity * EntityFactory<World>::newEntity(const std::string & id,
-                                                long intId)
+void Plant::NourishOperation(const Operation & op, OpVector &)
 {
-    return 0;
 }
 
-template <>
-LocatedEntity * EntityFactory<Character>::newEntity(const std::string & id,
-                                                    long intId)
+void Plant::TickOperation(const Operation & op, OpVector &)
 {
-    return new Character(id, intId);
 }
 
-template class EntityFactory<Thing>;
-template class EntityFactory<Character>;
-template class EntityFactory<Creator>;
-template class EntityFactory<Plant>;
-template class EntityFactory<Stackable>;
-template class EntityFactory<World>;
+void Plant::TouchOperation(const Operation & op, OpVector &)
+{
+}
+
+Stackable::Stackable(const std::string& id, long idInt)
+:Thing::Thing(id, idInt)
+{
+}
+
+Stackable::~Stackable(){}
+
+void Stackable::CombineOperation(const Operation & op, OpVector &)
+{
+}
+
+void Stackable::DivideOperation(const Operation & op, OpVector &)
+{
+}
 
 Juncture::~Juncture()
 {
@@ -1456,9 +1460,7 @@ CommSocket::~CommSocket()
 {
 }
 
-EntityKit::EntityKit() : m_scriptFactory(0),
-                         m_parent(0),
-                         m_type(0),
+EntityKit::EntityKit() : m_type(0),
                          m_createdCount(0)
 {
 }
@@ -1473,6 +1475,37 @@ void EntityKit::addProperties()
 
 void EntityKit::updateProperties()
 {
+}
+
+ArchetypeFactory::ArchetypeFactory()
+{
+}
+
+ArchetypeFactory::ArchetypeFactory(ArchetypeFactory& rhs)
+{
+}
+
+ArchetypeFactory::~ArchetypeFactory()
+{
+}
+
+void ArchetypeFactory::addProperties()
+{
+}
+
+void ArchetypeFactory::updateProperties()
+{
+}
+
+ArchetypeFactory * ArchetypeFactory::duplicateFactory()
+{
+    return 0;
+}
+
+LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId,
+        const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
+{
+    return new Entity(id, intId);
 }
 
 Root atlasType(const std::string & name,
@@ -1570,6 +1603,14 @@ TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
 bool TypeNode::isTypeOf(const std::string & base_type) const
 {
     return false;
+}
+
+void TypeNode::addProperties(const Atlas::Message::MapType & attributes)
+{
+}
+
+void TypeNode::updateProperties(const Atlas::Message::MapType & attributes)
+{
 }
 
 VariableBase::~VariableBase()

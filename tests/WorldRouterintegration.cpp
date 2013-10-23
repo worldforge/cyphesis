@@ -208,6 +208,7 @@ int main()
 // stubs
 
 #include "server/EntityFactory.h"
+#include "server/ArchetypeFactory.h"
 #include "server/CorePropertyManager.h"
 
 #include "rulesets/AreaProperty.h"
@@ -222,6 +223,9 @@ int main()
 #include "rulesets/TerrainProperty.h"
 
 #include "rulesets/Character.h"
+#include "rulesets/Creator.h"
+#include "rulesets/Plant.h"
+#include "rulesets/Stackable.h"
 #include "rulesets/ExternalMind.h"
 #include "rulesets/Motion.h"
 #include "rulesets/Pedestrian.h"
@@ -251,65 +255,92 @@ int CorePropertyManager::installFactory(const std::string & type_name,
     return 0;
 }
 
-template <class T>
-EntityFactory<T>::EntityFactory(EntityFactory<T> & o)
+ArchetypeFactory::ArchetypeFactory()
 {
 }
 
-template <class T>
-EntityFactory<T>::EntityFactory()
+ArchetypeFactory::ArchetypeFactory(ArchetypeFactory& rhs)
 {
 }
 
-template <class T>
-EntityFactory<T>::~EntityFactory()
+ArchetypeFactory::~ArchetypeFactory()
 {
 }
 
-template <class T>
-LocatedEntity * EntityFactory<T>::newEntity(const std::string & id, long intId)
+void ArchetypeFactory::addProperties()
+{
+}
+
+void ArchetypeFactory::updateProperties()
+{
+}
+
+ArchetypeFactory * ArchetypeFactory::duplicateFactory()
+{
+    return 0;
+}
+
+LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId,
+        const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
 {
     return new Entity(id, intId);
 }
 
-template <class T>
-EntityKit * EntityFactory<T>::duplicateFactory()
-{
-    return 0;
-}
 
-class Creator;
-class Plant;
-class Stackable;
 class World;
 
-template <>
-LocatedEntity * EntityFactory<World>::newEntity(const std::string & id,
-                                                long intId)
+Creator::Creator(const std::string& id, long idInt)
+:Character::Character(id, idInt)
 {
-    return 0;
 }
 
-template <>
-LocatedEntity * EntityFactory<Character>::newEntity(const std::string & id,
-                                                    long intId)
+Creator::~Creator(){}
+
+void Creator::operation(const Operation & op, OpVector &)
 {
-    return new Character(id, intId);
 }
 
-template <>
-LocatedEntity * EntityFactory<Thing>::newEntity(const std::string & id,
-                                                long intId)
+void Creator::externalOperation(const Operation & op, Link &)
 {
-    return new Thing(id, intId);
 }
 
-template class EntityFactory<Thing>;
-template class EntityFactory<Character>;
-template class EntityFactory<Creator>;
-template class EntityFactory<Plant>;
-template class EntityFactory<Stackable>;
-template class EntityFactory<World>;
+void Creator::mindLookOperation(const Operation & op, OpVector &)
+{
+}
+
+Plant::Plant(const std::string& id, long idInt)
+:Thing::Thing(id, idInt)
+{
+}
+
+Plant::~Plant(){}
+
+void Plant::NourishOperation(const Operation & op, OpVector &)
+{
+}
+
+void Plant::TickOperation(const Operation & op, OpVector &)
+{
+}
+
+void Plant::TouchOperation(const Operation & op, OpVector &)
+{
+}
+
+Stackable::Stackable(const std::string& id, long idInt)
+:Thing::Thing(id, idInt)
+{
+}
+
+Stackable::~Stackable(){}
+
+void Stackable::CombineOperation(const Operation & op, OpVector &)
+{
+}
+
+void Stackable::DivideOperation(const Operation & op, OpVector &)
+{
+}
 
 AreaProperty::AreaProperty()
 {

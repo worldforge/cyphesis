@@ -29,6 +29,7 @@
 #include "server/CorePropertyManager.h"
 #include "server/EntityBuilder.h"
 #include "server/EntityFactory.h"
+#include "server/ArchetypeFactory.h"
 
 #include "rulesets/Entity.h"
 #include "rulesets/Script.h"
@@ -219,7 +220,7 @@ void EntityBuildertest::test_sequence4()
     assert(factory_dict.find("custom_type") == factory_dict.end());
 
     // Set up a type description for a new type, and install it
-    EntityKit * custom_type_factory = new EntityFactory<Entity>();
+    EntityFactoryBase * custom_type_factory = new EntityFactory<Entity>();
     custom_type_factory->m_attributes["test_custom_type_attr"] =
           "test_value";
     {
@@ -281,7 +282,7 @@ void EntityBuildertest::test_sequence5()
     assert(factory_dict.find("custom_scripted_type") == factory_dict.end());
 
     // Set up a type description for a new type, and install it
-    EntityKit * custom_type_factory = new EntityFactory<Entity>();
+    EntityFactoryBase * custom_type_factory = new EntityFactory<Entity>();
     custom_type_factory->m_attributes["test_custom_type_attr"] =
           "test_value";
 
@@ -312,7 +313,7 @@ void EntityBuildertest::test_installFactory_duplicate()
     EntityBuilder & entity_factory = *EntityBuilder::instance();
     FactoryDict & factories = entity_factory.m_entityFactories;
 
-    EntityKit * custom_type_factory = new EntityFactory<Entity>();
+    EntityFactoryBase * custom_type_factory = new EntityFactory<Entity>();
 
     int ret = entity_factory.installFactory("custom_type",
                                             atlasClass("custom_type", "thing"),
@@ -322,7 +323,7 @@ void EntityBuildertest::test_installFactory_duplicate()
     ASSERT_TRUE(factories.find("custom_type") != factories.end());
     ASSERT_EQUAL(factories.find("custom_type")->second, custom_type_factory);
 
-    EntityKit * custom_type_factory2 = new EntityFactory<Entity>();
+    EntityFactoryBase * custom_type_factory2 = new EntityFactory<Entity>();
 
     ret = entity_factory.installFactory("custom_type",
                                         atlasClass("custom_type", "thing"),
@@ -397,21 +398,70 @@ void Monitors::watch(const::std::string & name, VariableBase * monitor)
 {
 }
 
-EntityKit::EntityKit() : m_scriptFactory(0), m_createdCount(0)
+EntityKit::EntityKit() : m_createdCount(0)
 {
 }
 
 EntityKit::~EntityKit()
 {
-    if (m_scriptFactory != 0) {
-        delete m_scriptFactory;
-    }
 }
+
+EntityFactoryBase::EntityFactoryBase() : EntityKit::EntityKit(), m_scriptFactory(0)
+{
+}
+
+EntityFactoryBase::~EntityFactoryBase()
+{
+    delete m_scriptFactory;
+}
+
+void EntityFactoryBase::addProperties()
+{
+}
+
+void EntityFactoryBase::updateProperties()
+{
+}
+
+ArchetypeFactory::ArchetypeFactory()
+{
+}
+
+ArchetypeFactory::ArchetypeFactory(ArchetypeFactory& rhs)
+{
+}
+
+ArchetypeFactory::~ArchetypeFactory()
+{
+}
+
+void ArchetypeFactory::addProperties()
+{
+}
+
+void ArchetypeFactory::updateProperties()
+{
+}
+
+ArchetypeFactory * ArchetypeFactory::duplicateFactory()
+{
+    ArchetypeFactory * f = new ArchetypeFactory(*this);
+    f->m_parent = this;
+    return f;
+}
+
+LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId,
+        const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
+{
+    return 0;
+}
+
 
 class World;
 
 template <>
-LocatedEntity * EntityFactory<World>::newEntity(const std::string & id, long intId)
+LocatedEntity * EntityFactory<World>::newEntity(const std::string & id, long intId,
+        const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
 {
     return 0;
 }
@@ -432,16 +482,19 @@ EntityFactory<T>::~EntityFactory()
 }
 
 template <class T>
-LocatedEntity * EntityFactory<T>::newEntity(const std::string & id, long intId)
+LocatedEntity * EntityFactory<T>::newEntity(const std::string & id, long intId,
+        const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
 {
     ++m_createdCount;
-    return new Entity(id, intId);
+    Entity* e = new Entity(id, intId);
+    e->setType(m_type);
+    return e;
 }
 
 template <class T>
-EntityKit * EntityFactory<T>::duplicateFactory()
+EntityFactoryBase * EntityFactory<T>::duplicateFactory()
 {
-    EntityKit * f = new EntityFactory<T>(*this);
+    EntityFactoryBase * f = new EntityFactory<T>(*this);
     f->m_parent = this;
     return f;
 }

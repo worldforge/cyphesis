@@ -33,6 +33,7 @@
 #include "server/Ruleset.h"
 #include "server/EntityBuilder.h"
 #include "server/EntityFactory.h"
+#include "server/ArchetypeFactory.h"
 
 #include "common/Inheritance.h"
 #include "common/TypeNode.h"
@@ -156,7 +157,7 @@ void Rulesetintegration::test_sequence()
 
         // Check that the factory dictionary now contains a factory for
         // the custom type we just installed.
-        EntityKit * custom_type_factory = test_eb->getClassFactory("custom_type");
+        EntityFactoryBase * custom_type_factory = dynamic_cast<EntityFactoryBase*>(test_eb->getClassFactory("custom_type"));
         assert(custom_type_factory != 0);
         assert(custom_type_factory->m_type != 0);
         assert(custom_type_factory->m_type ==
@@ -235,7 +236,7 @@ void Rulesetintegration::test_sequence()
 
         // Check that the factory dictionary does contain the factory for
         // the second newly installed type
-        EntityKit * custom_inherited_type_factory = test_eb->getClassFactory("custom_inherited_type");
+        EntityFactoryBase * custom_inherited_type_factory = dynamic_cast<EntityFactoryBase*>(test_eb->getClassFactory("custom_inherited_type"));
         assert(custom_inherited_type_factory != 0);
 
         // Check that the factory has inherited the attributes from the
@@ -337,7 +338,7 @@ void Rulesetintegration::test_sequence()
 
         // Check that the factory dictionary does contain the factory for
         // the second newly installed type
-        custom_inherited_type_factory = test_eb->getClassFactory("custom_inherited_type");
+        custom_inherited_type_factory = dynamic_cast<EntityFactoryBase*>(test_eb->getClassFactory("custom_inherited_type"));
         assert(custom_inherited_type_factory != 0);
 
         // Check that the factory has inherited the attributes from the
@@ -401,7 +402,7 @@ void Rulesetintegration::test_sequence()
 
         // Check that the factory dictionary now contains a factory for
         // the custom type we just installed.
-        custom_type_factory = test_eb->getClassFactory("custom_type");
+        custom_type_factory = dynamic_cast<EntityFactoryBase*>(test_eb->getClassFactory("custom_type"));
         assert(custom_type_factory != 0);
 
         // Check the factory has the attributes we described on the custom
@@ -426,7 +427,7 @@ void Rulesetintegration::test_sequence()
 
         // Check that the factory dictionary does contain the factory for
         // the second newly installed type
-        custom_inherited_type_factory = test_eb->getClassFactory("custom_inherited_type");
+        custom_inherited_type_factory = dynamic_cast<EntityFactoryBase*>(test_eb->getClassFactory("custom_inherited_type"));
         assert(custom_inherited_type_factory != 0);
 
         // Check that the factory no longer has inherited the attributes
@@ -500,7 +501,7 @@ void Rulesetintegration::test_sequence()
 
         // Check that the factory dictionary now contains a factory for
         // the custom type we just installed.
-        custom_type_factory = test_eb->getClassFactory("custom_type");
+        custom_type_factory = dynamic_cast<EntityFactoryBase*>(test_eb->getClassFactory("custom_type"));
 
         // Check the factory has the attributes we described on the custom
         // type.
@@ -537,7 +538,7 @@ void Rulesetintegration::test_sequence()
 
         // Check that the factory dictionary does contain the factory for
         // the second newly installed type
-        custom_inherited_type_factory = test_eb->getClassFactory("custom_inherited_type");
+        custom_inherited_type_factory = dynamic_cast<EntityFactoryBase*>(test_eb->getClassFactory("custom_inherited_type"));
         assert(custom_inherited_type_factory != 0);
 
         // Check that the factory now has inherited the attributes
@@ -637,6 +638,9 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 
 #include "rulesets/PythonScriptFactory.h"
 #include "rulesets/Task.h"
+#include "rulesets/Creator.h"
+#include "rulesets/Plant.h"
+#include "rulesets/Stackable.h"
 
 Account::Account(Connection * conn,
                  const std::string & uname,
@@ -772,50 +776,93 @@ int CorePropertyManager::installFactory(const std::string & type_name,
 {
     return 0;
 }
-
-template <class T>
-EntityFactory<T>::EntityFactory(EntityFactory<T> & o)
+Creator::Creator(const std::string& id, long idInt)
+:Character::Character(id, idInt)
 {
 }
 
-template <class T>
-EntityFactory<T>::EntityFactory()
+Creator::~Creator(){}
+
+void Creator::operation(const Operation & op, OpVector &)
 {
 }
 
-template <class T>
-EntityFactory<T>::~EntityFactory()
+void Creator::externalOperation(const Operation & op, Link &)
 {
 }
 
-template <class T>
-LocatedEntity * EntityFactory<T>::newEntity(const std::string & id, long intId)
+void Creator::mindLookOperation(const Operation & op, OpVector &)
 {
-    return new Entity(id, intId);
 }
 
-template <class T>
-EntityKit * EntityFactory<T>::duplicateFactory()
+Plant::Plant(const std::string& id, long idInt)
+:Thing::Thing(id, idInt)
 {
-    EntityKit * f = new EntityFactory<T>(*this);
-    // Copy the defaults to the parent
-    f->m_attributes = this->m_attributes;
+}
+
+Plant::~Plant(){}
+
+void Plant::NourishOperation(const Operation & op, OpVector &)
+{
+}
+
+void Plant::TickOperation(const Operation & op, OpVector &)
+{
+}
+
+void Plant::TouchOperation(const Operation & op, OpVector &)
+{
+}
+
+Stackable::Stackable(const std::string& id, long idInt)
+:Thing::Thing(id, idInt)
+{
+}
+
+Stackable::~Stackable(){}
+
+void Stackable::CombineOperation(const Operation & op, OpVector &)
+{
+}
+
+void Stackable::DivideOperation(const Operation & op, OpVector &)
+{
+}
+
+ArchetypeFactory::ArchetypeFactory()
+{
+}
+
+ArchetypeFactory::ArchetypeFactory(ArchetypeFactory& rhs)
+{
+}
+
+ArchetypeFactory::~ArchetypeFactory()
+{
+}
+
+void ArchetypeFactory::addProperties()
+{
+}
+
+void ArchetypeFactory::updateProperties()
+{
+}
+
+ArchetypeFactory * ArchetypeFactory::duplicateFactory()
+{
+    ArchetypeFactory * f = new ArchetypeFactory(*this);
     f->m_parent = this;
     return f;
 }
 
-class Character;
-class Creator;
-class Plant;
-class Stackable;
-class World;
+LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId,
+        const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
+{
+    return new Entity(id, intId);
+}
 
-template class EntityFactory<Character>;
-template class EntityFactory<Creator>;
-template class EntityFactory<Plant>;
-template class EntityFactory<Stackable>;
-template class EntityFactory<Thing>;
-template class EntityFactory<World>;
+class World;
 
 Juncture::Juncture(Connection * c, const std::string & id, long iid) :
           ConnectableRouter(id, iid, c),

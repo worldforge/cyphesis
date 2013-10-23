@@ -37,7 +37,7 @@ int main()
 {
     TestPropertyManager tpm;
 
-    EntityKit * ek;
+    EntityFactoryBase * ek;
     ek = new EntityFactory<Thing>;
 
     ek->m_type = new TypeNode("thing");
@@ -53,7 +53,7 @@ int main()
 
     assert(ek->m_type->defaults().size() == 1);
 
-    EntityKit * subclass_ek = new EntityFactory<Thing>;
+    EntityFactoryBase * subclass_ek = new EntityFactory<Thing>;
 
     subclass_ek->m_type = new TypeNode("subclass");
     subclass_ek->m_type->setParent(ek->m_type);
@@ -581,6 +581,10 @@ void LocatedEntity::onUpdated()
 {
 }
 
+void LocatedEntity::merge(const Atlas::Message::MapType & ent)
+{
+}
+
 Router::Router(const std::string & id, long intId) : m_id(id),
                                                              m_intId(intId)
 {
@@ -613,5 +617,14 @@ void Router::clientError(const Operation & op,
 }
 
 Location::Location() : m_loc(0)
+{
+}
+
+int Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent)
+{
+    return 0;
+}
+
+void log(LogLevel lvl, const std::string & msg)
 {
 }

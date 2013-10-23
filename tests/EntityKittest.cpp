@@ -41,9 +41,15 @@ class TestEntityKit : public EntityKit
   public:
     virtual ~TestEntityKit() { }
 
-    virtual LocatedEntity * newEntity(const std::string & id, long intId) { return 0; }
+    virtual LocatedEntity * newEntity(const std::string & id,
+            long intId,
+            const Atlas::Objects::Entity::RootEntity & attributes,
+            LocatedEntity* location) { return 0; }
 
     virtual EntityKit * duplicateFactory() { return 0; }
+    virtual void addProperties(){}
+
+    virtual void updateProperties(){}
 };
 
 class TestScriptKit : public ScriptKit<LocatedEntity>
@@ -65,18 +71,14 @@ class EntityKittest : public Cyphesis::TestBase
     void setup();
     void teardown();
 
-    void test_destructor();
     void test_addProperties();
     void test_updateProperties();
-    void test_updateProperties_child();
 };
 
 EntityKittest::EntityKittest()
 {
-    ADD_TEST(EntityKittest::test_destructor);
     ADD_TEST(EntityKittest::test_addProperties);
     ADD_TEST(EntityKittest::test_updateProperties);
-    ADD_TEST(EntityKittest::test_updateProperties_child);
 }
 
 void EntityKittest::setup()
@@ -91,11 +93,6 @@ void EntityKittest::teardown()
     delete m_ek;
 }
 
-void EntityKittest::test_destructor()
-{
-    m_ek->m_scriptFactory = new TestScriptKit;
-}
-
 void EntityKittest::test_addProperties()
 {
     m_ek->addProperties();
@@ -104,19 +101,6 @@ void EntityKittest::test_addProperties()
 void EntityKittest::test_updateProperties()
 {
     m_ek->updateProperties();
-}
-
-void EntityKittest::test_updateProperties_child()
-{
-    EntityKit * ekc = new TestEntityKit;
-    ekc->m_type = m_ek->m_type;
-    ekc->m_classAttributes.insert(std::make_pair("foo", "value"));
-
-    m_ek->m_children.insert(ekc);
-
-    m_ek->updateProperties();
-
-    assert(ekc->m_attributes.find("foo") != ekc->m_attributes.end());
 }
 
 int main()

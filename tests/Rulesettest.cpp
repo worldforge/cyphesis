@@ -372,6 +372,7 @@ int main(int argc, char ** argv)
 #include "server/OpRuleHandler.h"
 #include "server/PropertyRuleHandler.h"
 #include "server/TaskRuleHandler.h"
+#include "server/ArchetypeRuleHandler.h"
 #include "server/Persistence.h"
 
 #include "common/AtlasFileLoader.h"
@@ -462,6 +463,29 @@ int TaskRuleHandler::install(const std::string & name,
 }
 
 int TaskRuleHandler::update(const std::string & name,
+                            const Atlas::Objects::Root & desc)
+{
+    return 0;
+}
+
+int ArchetypeRuleHandler::check(const Atlas::Objects::Root & desc)
+{
+    if (desc->getObjtype() != "archetype") {
+        return -1;
+    }
+    return 0;
+}
+
+int ArchetypeRuleHandler::install(const std::string & name,
+                             const std::string & parent,
+                             const Atlas::Objects::Root & description,
+                             std::string & dependent,
+                             std::string & reason)
+{
+    return 0;
+}
+
+int ArchetypeRuleHandler::update(const std::string & name,
                             const Atlas::Objects::Root & desc)
 {
     return 0;

@@ -1375,6 +1375,7 @@ WorldRouterintegration_SOURCES = WorldRouterintegration.cpp
 WorldRouterintegration_LDADD = \
         $(top_builddir)/server/WorldRouter.o \
         $(top_builddir)/server/EntityBuilder.o \
+        $(top_builddir)/server/EntityFactory.o \
         $(top_builddir)/server/TaskFactory.o \
         $(top_builddir)/server/Spawn.o \
         $(top_builddir)/server/SpawnEntity.o \
@@ -1393,9 +1394,11 @@ Rulesetintegration_SOURCES = Rulesetintegration.cpp
 Rulesetintegration_LDADD = \
         $(top_builddir)/server/Ruleset.o \
         $(top_builddir)/server/EntityBuilder.o \
+        $(top_builddir)/server/EntityFactory.o \
         $(top_builddir)/server/TaskRuleHandler.o \
         $(top_builddir)/server/OpRuleHandler.o \
         $(top_builddir)/server/EntityRuleHandler.o \
+        $(top_builddir)/server/ArchetypeRuleHandler.o \
         $(top_builddir)/server/PropertyRuleHandler.o \
         $(top_builddir)/server/RuleHandler.o \
         $(top_builddir)/server/Persistence.o \
@@ -1446,6 +1449,7 @@ Accountintegration_SOURCES = \
         Accountintegration.cpp
 Accountintegration_LDADD = \
         $(top_builddir)/server/EntityBuilder.o \
+        $(top_builddir)/server/EntityFactory.o \
         $(top_builddir)/server/CorePropertyManager.o \
         $(top_builddir)/server/ServerRouting.o \
         $(top_builddir)/server/Lobby.o \

@@ -267,7 +267,33 @@ TaskKit * EntityBuilder::getTaskFactory(const std::string & class_name)
     return 0;
 }
 
+EntityKit::EntityKit()
+{
+}
+EntityKit::~EntityKit()
+{
+}
+
 void EntityKit::updateProperties()
+{
+}
+
+void EntityKit::addProperties()
+{
+}
+
+EntityFactoryBase::EntityFactoryBase()
+{
+}
+EntityFactoryBase::~EntityFactoryBase()
+{
+}
+
+void EntityFactoryBase::updateProperties()
+{
+}
+
+void EntityFactoryBase::addProperties()
 {
 }
 

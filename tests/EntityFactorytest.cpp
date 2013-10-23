@@ -35,6 +35,7 @@
 #include "common/ScriptKit.h"
 #include "common/TypeNode.h"
 
+#include <Atlas/Objects/Entity.h>
 #include <cassert>
 
 class TestScriptFactory : public ScriptKit<LocatedEntity> {
@@ -57,7 +58,7 @@ class TestScriptFactory : public ScriptKit<LocatedEntity> {
 class EntityFactorytest : public Cyphesis::TestBase
 {
   private:
-    EntityKit * m_ek;
+    EntityFactoryBase * m_ek;
   public:
     EntityFactorytest();
 
@@ -67,6 +68,7 @@ class EntityFactorytest : public Cyphesis::TestBase
     void test_newEntity();
     void test_destructor();
     void test_updateProperties();
+    void test_updateProperties_child();
 };
 
 EntityFactorytest::EntityFactorytest()
@@ -74,6 +76,7 @@ EntityFactorytest::EntityFactorytest()
     ADD_TEST(EntityFactorytest::test_newEntity);
     ADD_TEST(EntityFactorytest::test_destructor);
     ADD_TEST(EntityFactorytest::test_updateProperties);
+    ADD_TEST(EntityFactorytest::test_updateProperties_child);
 }
 
 void EntityFactorytest::setup()
@@ -90,7 +93,7 @@ void EntityFactorytest::teardown()
 
 void EntityFactorytest::test_newEntity()
 {
-    LocatedEntity * e = m_ek->newEntity("1", 1);
+    LocatedEntity * e = m_ek->newEntity("1", 1, Atlas::Objects::Entity::RootEntity(), nullptr);
 
     ASSERT_NOT_NULL(e);
 }
@@ -103,6 +106,19 @@ void EntityFactorytest::test_destructor()
 void EntityFactorytest::test_updateProperties()
 {
     m_ek->updateProperties();
+}
+
+void EntityFactorytest::test_updateProperties_child()
+{
+    EntityFactory<Thing> * ekc = new EntityFactory<Thing>;
+    ekc->m_type = m_ek->m_type;
+    ekc->m_classAttributes.insert(std::make_pair("foo", "value"));
+
+    m_ek->m_children.insert(ekc);
+
+    m_ek->updateProperties();
+
+    assert(ekc->m_attributes.find("foo") != ekc->m_attributes.end());
 }
 
 int main()
@@ -601,6 +617,10 @@ void LocatedEntity::onUpdated()
 {
 }
 
+void LocatedEntity::merge(const Atlas::Message::MapType & ent)
+{
+}
+
 Router::Router(const std::string & id, long intId) : m_id(id),
                                                              m_intId(intId)
 {
@@ -636,6 +656,11 @@ Location::Location() : m_loc(0)
 {
 }
 
+int Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent)
+{
+    return 0;
+}
+
 TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
 {
 }
@@ -649,5 +674,9 @@ void TypeNode::addProperties(const Atlas::Message::MapType &)
 }
 
 void TypeNode::updateProperties(const Atlas::Message::MapType &)
+{
+}
+
+void log(LogLevel lvl, const std::string & msg)
 {
 }
