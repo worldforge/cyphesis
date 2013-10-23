@@ -1759,15 +1759,6 @@ void SpawnerProperty::install(LocatedEntity * ent, const std::string & name)
 {
 }
 
-int SpawnerProperty::get(Element & val) const
-{
-    return 0;
-}
-
-void SpawnerProperty::set(const Element & ent)
-{
-}
-
 HandlerResult SpawnerProperty::operation(LocatedEntity *, const Operation &, OpVector &)
 {
     return OPERATION_IGNORED;
