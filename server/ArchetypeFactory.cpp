@@ -205,7 +205,7 @@ LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId,
     if (!attributes->isDefaultPos()) {
         attrEntity->modifyPos() = attributes->getPos();
     }
-    if (!attributes->hasAttr("orientation")) {
+    if (attributes->hasAttr("orientation")) {
         attrEntity->setAttr("orientation", attributes->getAttr("orientation"));
     }
     LocatedEntity* entity = createEntity(id, intId, entityCreation, location,
