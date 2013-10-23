@@ -128,7 +128,13 @@ LocatedEntity * EntityBuilder::newEntity(const std::string & id, long intId,
         loc = &world.m_gameWorld;
     }
 
-    return newChildEntity(id, intId, type, attributes, *loc);
+    try {
+        return newChildEntity(id, intId, type, attributes, *loc);
+    } catch (const std::exception& ex) {
+        log(ERROR, String::compose("Error when creating entity of type %1."
+                " Message: %2", type, ex.what()));
+        return nullptr;
+    }
 }
 
 LocatedEntity * EntityBuilder::newChildEntity(const std::string & id,
