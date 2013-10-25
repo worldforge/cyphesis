@@ -1,3 +1,15 @@
+2013-10-25  Erik Ogenvik  <erik@ogenvik.org>
+
+	* NEWS: Update NEWS announcement for release.
+
+	* Release 0.6.2
+
+2013-10-25  Erik Ogenvik  <erik@ogenvik.org>
+
+	* Fixed Segfault when character wielding entity was destroyed.
+
+	* New spawner property
+
 2013-09-21  Erik Ogenvik  <erik@ogenvik.org>
 
 	* NEWS: Update NEWS announcement for release.
