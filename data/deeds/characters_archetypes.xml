@@ -13,9 +13,7 @@
                     <string>human</string>
                 </list>
                 <list name="contains">
-                    <string>shirt</string>
                     <string>trousers</string>
-                    <string>boots</string>
                     <string>knife</string>
                     <string>coin1</string>
                     <string>coin2</string>
@@ -25,8 +23,6 @@
                     <string>coin6</string>
                 </list>
                 <map name="outfit">
-                    <string name="body">@shirt</string>
-                    <string name="feet">@boots</string>
                     <string name="legs">@trousers</string>
                 </map>
                 <map name="statistics">
@@ -36,24 +32,11 @@
                 </map>
             </map>
             <map>
-                <string name="id">shirt</string>
-                <list name="parents">
-                    <string>shirt</string>
-                </list>
-                <string name="style">burlap</string>
-            </map>
-            <map>
                 <string name="id">trousers</string>
                 <list name="parents">
                     <string>trousers</string>
                 </list>
                 <string name="style">burlap</string>
-            </map>
-            <map>
-                <string name="id">boots</string>
-                <list name="parents">
-                    <string>boots</string>
-                </list>
             </map>
             <map>
                 <string name="id">knife</string>
@@ -103,10 +86,33 @@
     </map>
 
     <map>
-        <string name="id">merchant</string>
+        <string name="id">human_npc_basic</string>
         <string name="objtype">archetype</string>
         <list name="parents">
             <string>archetype</string>
+        </list>
+        <list name="entities">
+            <map>
+                <list name="parents">
+                    <string>human</string>
+                </list>
+            </map>
+        </list>
+        <list name="thoughts">
+            <map>
+                <string name="object">avoid([&apos;wolf&apos;,&apos;goblin&apos;,&apos;bear&apos;,&apos;skeleton&apos;,&apos;lych&apos;],30.0)</string>
+                <string name="predicate">goal</string>
+                <string name="subject">(&apos;avoid&apos;, &apos;#avoid_verb1&apos;)</string>
+            </map>
+        </list>
+    </map>
+
+
+    <map>
+        <string name="id">merchant</string>
+        <string name="objtype">archetype</string>
+        <list name="parents">
+            <string>human_npc_basic</string>
         </list>
         <list name="entities">
             <map>
@@ -165,12 +171,14 @@
                 <list name="parents">
                     <string>boots</string>
                 </list>
+                <string name="style">fine</string>
             </map>
             <map>
                 <string name="id">hat</string>
                 <list name="parents">
                     <string>hat</string>
                 </list>
+                <string name="style">fine</string>
             </map>
             <map>
                 <string name="id">coin1</string>
@@ -217,7 +225,7 @@
         <string name="id">mercenary</string>
         <string name="objtype">archetype</string>
         <list name="parents">
-            <string>archetype</string>
+            <string>human_npc_basic</string>
         </list>
         <list name="entities">
             <map>
@@ -227,7 +235,6 @@
                 <list name="contains">
                     <string>shirt</string>
                     <string>trousers</string>
-                    <string>cloak</string>
                     <string>boots</string>
                     <string>hat</string>
                     <string>sword</string>
@@ -246,7 +253,6 @@
                     <string>coin6</string>
                 </list>
                 <map name="outfit">
-                    <string name="back">@cloak</string>
                     <string name="body">@shirt</string>
                     <string name="feet">@boots</string>
                     <string name="head">@hat</string>
@@ -264,33 +270,28 @@
                 <list name="parents">
                     <string>shirt</string>
                 </list>
-                <string name="style">fine</string>
+                <string name="style">ragged</string>
             </map>
             <map>
                 <string name="id">trousers</string>
                 <list name="parents">
                     <string>trousers</string>
                 </list>
-                <string name="style">fine</string>
-            </map>
-            <map>
-                <string name="id">cloak</string>
-                <list name="parents">
-                    <string>cloak</string>
-                </list>
-                <string name="style">fine</string>
+                <string name="style">ragged</string>
             </map>
             <map>
                 <string name="id">boots</string>
                 <list name="parents">
                     <string>boots</string>
                 </list>
+                <string name="style">ragged</string>
             </map>
             <map>
                 <string name="id">hat</string>
                 <list name="parents">
                     <string>hat</string>
                 </list>
+                <string name="style">ragged</string>
             </map>
             <map>
                 <string name="id">sword</string>
