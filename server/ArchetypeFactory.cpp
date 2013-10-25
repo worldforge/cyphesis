@@ -101,7 +101,10 @@ LocatedEntity * ArchetypeFactory::createEntity(const std::string & id,
     for (auto& childId : attributes->getContains()) {
         auto entityI = entities.find(childId);
         if (entityI == entities.end()) {
-            log(ERROR, "References child entity does not exist.");
+            log(ERROR,
+                    String::compose(
+                            "Referenced child entity with id %1 does not exist.",
+                            childId));
             return nullptr;
         }
         std::string childId;
@@ -109,7 +112,9 @@ LocatedEntity * ArchetypeFactory::createEntity(const std::string & id,
         LocatedEntity* childEntity = createEntity(childId, childIntId,
                 entityI->second, entity, entities);
         if (childEntity == nullptr) {
-            log(ERROR, "Could not create child entity.");
+            log(ERROR,
+                    String::compose("Could not create child entity with id %1.",
+                            childId));
             return nullptr;
         }
         entity->makeContainer();
