@@ -269,6 +269,9 @@ Character::Character(const std::string & id, long intId) :
 
 Character::~Character()
 {
+    if (m_rightHandWieldConnection.connected()) {
+        m_rightHandWieldConnection.disconnect();
+    }
     delete &m_movement;
     delete m_mind;
     delete m_externalMind;
@@ -698,9 +701,9 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
 
         // FIXME Make sure we stop wielding if the container changes,
         // but connections are cleared, and don't build up.
-        // if (m_rightHandWieldConnection.connected()) {
-            // m_rightHandWieldConnection.disconnect();
-        // }
+        if (m_rightHandWieldConnection.connected()) {
+            m_rightHandWieldConnection.disconnect();
+        }
 
         Update update;
         update->setTo(getId());
@@ -753,16 +756,16 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         EntityProperty * rhw = requirePropertyClass<EntityProperty>(RIGHT_HAND_WIELD);
         // FIXME Make sure we don't stay linked to the previous wielded
         // tool.
-        // if (m_rightHandWieldConnection.connected()) {
-            // m_rightHandWieldConnection.disconnect();
-        // }
+        if (m_rightHandWieldConnection.connected()) {
+            m_rightHandWieldConnection.disconnect();
+        }
 
         // The value is ignored by the update handler, but should be the
         // right type.
         rhw->data() = EntityRef(item);
         rhw->setFlags(flag_unsent);
 
-        item->containered.connect(sigc::hide<0>(sigc::mem_fun(this, &Character::wieldDropped)));
+        m_rightHandWieldConnection = item->containered.connect(sigc::hide<0>(sigc::mem_fun(this, &Character::wieldDropped)));
 
         debug(std::cout << "Wielding " << item->getId() << std::endl << std::flush;);
     }

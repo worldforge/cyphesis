@@ -20,6 +20,7 @@
 #define RULESETS_CHARACTER_H
 
 #include "Thing.h"
+#include <sigc++/connection.h>
 
 class BaseMind;
 class ExternalMind;
@@ -88,6 +89,12 @@ class Character : public Thing {
     static const double energyLaidDown;
     /// \brief Weight gained from excess energy by metabolism per tick
     static const double weightGain;
+
+    /// \brief Holds a connection to the containered signal of any wielded entity.
+    ///
+    /// FIXME This is a hack, to be removed once we've migrated to using Outfit
+    /// for wielded entities.
+    sigc::connection m_rightHandWieldConnection;
 
     void filterExternalOperation(const Operation &);
     void metabolise(OpVector &, double ammount = 1); 
