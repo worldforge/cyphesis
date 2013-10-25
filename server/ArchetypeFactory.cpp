@@ -132,23 +132,40 @@ LocatedEntity * ArchetypeFactory::createEntity(const std::string & id,
 bool ArchetypeFactory::parseEntities(const ListType& entitiesElement,
         std::map<std::string, EntityCreation>& entities)
 {
+    std::map<std::string, MapType> entityMap;
     for (auto& entityElem : entitiesElement) {
         if (entityElem.isMap()) {
-            auto entity = smart_dynamic_cast<RootEntity>(
-                    Factories::instance()->createObject(entityElem.asMap()));
-            if (!entity.isValid()) {
-                log(ERROR, "Entity definition is not in Entity format.");
-                return false;
+            std::string id;
+            auto I = entityElem.asMap().find("id");
+            if (I != entityElem.asMap().end() && I->second.isString()) {
+                id = I->second.asString();
             }
+            entityMap.insert(std::make_pair(id, entityElem.asMap()));
+        }
+    }
+    return parseEntities(entityMap, entities);
+}
 
-            auto result = entities.insert(
-                    std::make_pair(entity->getId(), EntityCreation { entity,
-                            nullptr, Atlas::Message::MapType() }));
-            if (!result.second) {
-                //it already existed; we should update with the attributes
-                for (auto& I : entityElem.asMap()) {
-                    result.first->second.definition->setAttr(I.first, I.second);
-                }
+bool ArchetypeFactory::parseEntities(
+        const std::map<std::string, MapType>& entitiesElement,
+        std::map<std::string, EntityCreation>& entities)
+{
+    for (auto& entityI : entitiesElement) {
+
+        auto entity = smart_dynamic_cast<RootEntity>(
+                Factories::instance()->createObject(entityI.second));
+        if (!entity.isValid()) {
+            log(ERROR, "Entity definition is not in Entity format.");
+            return false;
+        }
+
+        auto result = entities.insert(
+                std::make_pair(entity->getId(), EntityCreation { entity,
+                        nullptr, Atlas::Message::MapType() }));
+        if (!result.second) {
+            //it already existed; we should update with the attributes
+            for (auto& I : entityI.second) {
+                result.first->second.definition->setAttr(I.first, I.second);
             }
         }
     }
@@ -358,7 +375,11 @@ void ArchetypeFactory::addProperties()
 {
     assert(m_type != 0);
     MapType attributes;
-    attributes.insert(std::make_pair("entities", m_entities));
+    ListType entities;
+    for (auto I : m_entities) {
+        entities.push_back(I.second);
+    }
+    attributes.insert(std::make_pair("entities", entities));
     attributes.insert(std::make_pair("thoughts", m_thoughts));
     m_type->addProperties(attributes);
 
@@ -368,7 +389,23 @@ void ArchetypeFactory::updateProperties()
 {
     assert(m_type != 0);
     MapType attributes;
-    attributes.insert(std::make_pair("entities", m_entities));
+    ListType entities;
+    for (auto I : m_entities) {
+        entities.push_back(I.second);
+    }
+    attributes.insert(std::make_pair("entities", entities));
     attributes.insert(std::make_pair("thoughts", m_thoughts));
-    m_type->addProperties(attributes);
+    m_type->updateProperties(attributes);
+
+    for (auto& child_factory : m_children) {
+        child_factory->m_thoughts = m_thoughts;
+        child_factory->m_thoughts.insert(child_factory->m_thoughts.end(),
+                child_factory->m_classThoughts.begin(),
+                child_factory->m_classThoughts.end());
+
+        child_factory->m_entities = m_entities;
+
+        child_factory->updateProperties();
+    }
+
 }

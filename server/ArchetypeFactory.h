@@ -125,6 +125,15 @@ class ArchetypeFactory: public EntityKit
                 std::map<std::string, EntityCreation>& entities);
 
         /**
+         * @brief Tries to parse entity data from the map.
+         * @param entitiesElement The map containing data.
+         * @param entities Parsed entities will be put here.
+         * @return True if parsing was successful.
+         */
+        bool parseEntities(const std::map<std::string, Atlas::Message::MapType>& entitiesElement,
+                std::map<std::string, EntityCreation>& entities);
+
+        /**
          * @brief Tries to parse entity data from the list.
          * @param entitiesElement The list containing data.
          * @param entities Parsed entities will be put here.
@@ -153,9 +162,25 @@ class ArchetypeFactory: public EntityKit
         /// by this factory.
         std::set<ArchetypeFactory *> m_children;
 
-        std::vector<Atlas::Message::Element> m_entities;
+        /// @brief Entity definitions.
+        ///
+        /// This is a combination of the entities defined for this instance
+        /// as well as for all parents.
+        std::map<std::string, Atlas::Message::MapType> m_entities;
+
+        /// @brief Thought definitions.
+        ///
+        /// This is a combination of the entities defined for this instance
+        /// as well as for all parents.
+        /// Note that the thoughts, as of now, only are applied to the first
+        /// defined entity.
         std::vector<Atlas::Message::Element> m_thoughts;
 
+
+        /// @brief Instance specific entity definitions.
+        std::map<std::string, Atlas::Message::MapType> m_classEntities;
+        /// @brief Instance specific thought definitions.
+        std::vector<Atlas::Message::Element> m_classThoughts;
 };
 
 #endif // SERVER_ARCHETYPE_FACTORY_H

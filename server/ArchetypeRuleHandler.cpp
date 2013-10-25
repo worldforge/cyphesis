@@ -139,6 +139,9 @@ int ArchetypeRuleHandler::modifyArchetypeClass(const std::string & class_name,
         factory->m_thoughts.clear();
     }
 
+    factory->m_classEntities.clear();
+    factory->m_classThoughts.clear();
+
     std::string dependent, reason;
     if (populateArchetypeFactory(class_name, factory, class_desc->asMessage(),
             dependent, reason) != 0) {
@@ -190,51 +193,35 @@ int ArchetypeRuleHandler::populateArchetypeFactory(
 //        }
 //    }
 //
-//    // Store the default attribute for entities create by this rule.
-//    J = class_desc.find("attributes");
-//    if (J != Jend && J->second.isMap()) {
-//        const MapType & attrs = J->second.asMap();
-//        MapType::const_iterator Kend = attrs.end();
-//        for (MapType::const_iterator K = attrs.begin(); K != Kend; ++K) {
-//            if (!K->second.isMap()) {
-//                log(ERROR, compose("Attribute description in rule %1 is not a "
-//                                   "map.", class_name));
-//                continue;
-//            }
-//            const MapType & attr = K->second.asMap();
-//            MapType::const_iterator L = attr.find("default");
-//            if (L != attr.end()) {
-//                // Store this value in the defaults for this class
-//                factory->m_classAttributes[K->first] = L->second;
-//                // and merge it with the defaults inherited from the parent
-//                factory->m_attributes[K->first] = L->second;
-//            }
-//        }
-//    }
-//
+
     auto entitiesI = class_desc.find("entities");
     if (entitiesI != class_desc.end() && entitiesI->second.isList()) {
         for (auto& I : entitiesI->second.asList()) {
             if (I.isMap()) {
-                factory->m_entities.push_back(I.asMap());
+                const MapType& map = I.asMap();
+                std::string id;
+                auto idI = map.find("id");
+                if (idI != map.end() && idI->second.isString()) {
+                    id = idI->second.asString();
+                }
+
+                MapType& entity = factory->m_entities[id];
+                MapType& classEntity = factory->m_classEntities[id];
+                for (auto& entry : map) {
+                    entity[entry.first] = entry.second;
+                    classEntity[entry.first] = entry.second;
+                }
             }
         }
     }
 
     auto thoughtsI = class_desc.find("thoughts");
     if (thoughtsI != class_desc.end() && thoughtsI->second.isList()) {
-        factory->m_thoughts = thoughtsI->second.asList();
-//        for (auto& I : thoughtsI->second.asList()) {
-//            if (I.isMap()) {
-//                RootEntity thought = smart_dynamic_cast<RootEntity>(
-//                        Factories::instance()->createObject(I.asMap()));
-//                if (!thought.isValid()) {
-//                    log(ERROR, "Thought definition is not in Entity format.");
-//                } else {
-//                    factory->m_thoughts.push_back(I);
-//                }
-//            }
-//        }
+        const ListType& thoughts = thoughtsI->second.asList();
+        factory->m_thoughts.insert(factory->m_thoughts.end(), thoughts.begin(),
+                thoughts.end());
+        factory->m_classThoughts.insert(factory->m_classThoughts.end(),
+                thoughts.begin(), thoughts.end());
     }
     // Check whether it should be available to players as a playable character.
     auto playableI = class_desc.find("playable");
