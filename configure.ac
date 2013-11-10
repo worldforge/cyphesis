@@ -430,7 +430,7 @@ This may be a problem for readline.])
 
 AC_CHECK_LIB(readline,readline,
     [
-        READLINE_LIBS="$READLINE_LIBS -lreadline"
+        READLINE_LIBS="-lreadline $READLINE_LIBS"
         AC_COMPILE_IFELSE(
           [
             AC_LANG_PROGRAM(
