@@ -1109,6 +1109,45 @@ HandlerResult PropertyBase::operation(LocatedEntity *,
     return OPERATION_IGNORED;
 }
 
+template <typename T>
+Property<T>::Property(unsigned int flags) :
+                      PropertyBase(flags)
+{
+}
+
+template <typename T>
+int Property<T>::get(Atlas::Message::Element & e) const
+{
+    return 0;
+}
+
+// The following two are obsolete.
+template <typename T>
+void Property<T>::add(const std::string & s,
+                               Atlas::Message::MapType & ent) const
+{
+}
+
+template <typename T>
+void Property<T>::add(const std::string & s,
+                               const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+template <typename T>
+void Property<T>::set(const Atlas::Message::Element & e)
+{
+}
+
+template <typename T>
+Property<T> * Property<T>::copy() const
+{
+    return new Property<T>(*this);
+}
+
+
+template class Property<MapType>;
+
 
 bool MindProperty::isMindEnabled() const {
     return false;
@@ -1120,11 +1159,6 @@ MindProperty::MindProperty() : m_factory(0)
 
 MindProperty::~MindProperty()
 {
-}
-
-int MindProperty::get(Element & val) const
-{
-    return 0;
 }
 
 void MindProperty::set(const Element & val)

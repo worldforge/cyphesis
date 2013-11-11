@@ -25,7 +25,7 @@ class MindKit;
 
 /// \brief Class to handle assigning a mind object to an entity
 /// \ingroup PropertyClasses
-class MindProperty : public PropertyBase {
+class MindProperty : public Property<Atlas::Message::MapType> {
   protected:
     MindKit * m_factory;
 
@@ -41,7 +41,6 @@ class MindProperty : public PropertyBase {
     /// \brief Returns true if mind scripting is enabled.
     bool isMindEnabled() const;
 
-    virtual int get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
     virtual MindProperty * copy() const;
     virtual void apply(LocatedEntity *);

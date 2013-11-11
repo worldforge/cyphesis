@@ -64,13 +64,9 @@ MindProperty::~MindProperty()
     delete m_factory;
 }
 
-int MindProperty::get(Element & val) const
-{
-    return 0;
-}
-
 void MindProperty::set(const Element & val)
 {
+    Property<Atlas::Message::MapType>::set(val);
     if (!val.isMap()) {
         return;
     }

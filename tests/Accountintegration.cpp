@@ -1208,11 +1208,6 @@ MindProperty::~MindProperty()
 {
 }
 
-int MindProperty::get(Element & val) const
-{
-    return 0;
-}
-
 void MindProperty::set(const Element & val)
 {
 }
