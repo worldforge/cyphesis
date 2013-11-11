@@ -397,9 +397,11 @@ void StorageManager::restoreChildren(LocatedEntity * parent)
         child->m_location.m_loc = parent;
         child->setFlags(entity_clean | entity_pos_clean | entity_orient_clean);
         BaseWorld::instance().addEntity(child);
-        //Restore properties before we restore children, so that any mind instances are set up to listen correctly.
-        restoreProperties(child);
+        //The order here is important. We want to restore the children before we restore the properties.
+        //The reason for this is that some properties (such as "outfit") refer to child entities; if
+        //the child isn't present when the property is installed there will be issues.
         restoreChildren(child);
+        restoreProperties(child);
 
 
         //We must send a sight op to the entity informing it of itself before we send any thoughts.
