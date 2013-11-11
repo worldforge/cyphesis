@@ -55,13 +55,19 @@ class help(Goal):
             return 1
         return 0
     def give_help(self, me):
+        #Check that the target hasn't disappeared
+        targetEntity = me.map.get(self.target)
+        if targetEntity == None:
+            self.irrelevant = 1
+            return
+        
         message = self.messages[self.iter]
         self.iter+=1
         if self.iter == self.count - 1 and len(self.responses) != 0:
             ent=Entity(say=message, responses=self.responses)
         else:
             ent=Entity(say=message)
-        return Operation("talk", ent) + me.face(me.map.get(self.target))
+        return Operation("talk", ent) + me.face(targetEntity)
 
 class add_help(add_unique_goal):
     """Set off a help goal if we get a touch operation."""
