@@ -1,7 +1,7 @@
 AM_CPPFLAGS = -I$(top_srcdir) -I${top_builddir}
 
 bin_PROGRAMS = cycmd cyconfig cyaddrules cyconvertrules cyloadrules \
-               cydumprules cypasswd cydb cypython
+               cydumprules cypasswd cydb cypython cyexport
 noinst_SCRIPTS = cyphesis.sh
 
 EXTRA_DIST = cyphesis.sh copy_python.sh
@@ -210,3 +210,27 @@ cypython_LDADD = $(top_builddir)/common/client_socket.o \
                  $(MATHTOOL_LIBS) \
                  $(NETWORKTOOL_LIBS) \
                  $(DBTOOL_LIBS)
+                 
+cyexport_SOURCES = cyexport.cpp EntityExporterBase.cpp  EntityExporterBase.h \
+                   EntityExporter.cpp EntityExporter.h AgentCreationTask.cpp AgentCreationTask.h \
+                   MultiLineListFormatter.cpp MultiLineListFormatter.h
+
+cyexport_LDADD = $(top_builddir)/common/operations.o \
+                 $(top_builddir)/common/client_socket.o \
+                 $(top_builddir)/common/globals.o \
+                 $(top_builddir)/common/system_prefix.o \
+                 $(top_builddir)/common/binreloc.o \
+                 $(top_builddir)/common/log.o \
+                 $(top_builddir)/common/const.o \
+                 $(top_builddir)/common/AtlasStreamClient.o \
+                 $(top_builddir)/common/ClientTask.o \
+                 $(top_builddir)/common/AtlasFileLoader.o \
+                 $(top_builddir)/common/system_uid.o \
+                 $(top_builddir)/common/system_net.o \
+                 $(top_builddir)/common/id.o \
+                 $(top_builddir)/common/utils.o \
+                 $(top_builddir)/common/debug.o \
+                 $(top_builddir)/common/serialno.o \
+                 $(READLINETOOL_LIBS) \
+                 $(NETWORKTOOL_LIBS) \
+                 $(TOOL_LIBS)
