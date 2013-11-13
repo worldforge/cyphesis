@@ -114,6 +114,18 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     int runTask(ClientTask * task, const std::string & arg);
     int endTask();
 
+    /**
+     * Checks if there's an active task.
+     * @return True if there's a task set.
+     */
+    bool hasTask() const;
+
+    /**
+     * Poll the server until the current task has completed.
+     * @return 0 if successful
+     */
+    int pollUntilTaskComplete();
+
 };
 
 #endif // COMMON_ATLAS_STREAM_CLIENT_H

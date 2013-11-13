@@ -420,3 +420,22 @@ int AtlasStreamClient::endTask()
     m_currentTask = 0;
     return 0;
 }
+
+bool AtlasStreamClient::hasTask() const {
+    return m_currentTask != nullptr;
+}
+
+int AtlasStreamClient::pollUntilTaskComplete()
+{
+    if (m_currentTask == nullptr) {
+        return 1;
+    }
+    while (m_currentTask != nullptr) {
+        if (poll(0, 100000) != 0) {
+            return -1;
+        }
+    }
+    return 0;
+}
+
+
