@@ -25,8 +25,8 @@ namespace varconf {
   class Config;
 }
 
-extern const char * CYPHESIS;
-extern const char * SLAVE;
+extern const char * const CYPHESIS;
+extern const char * const SLAVE;
 
 extern varconf::Config * global_conf;
 extern std::string instance;

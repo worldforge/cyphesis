@@ -41,11 +41,11 @@
 
 #include <cassert>
 
-const char * CYPHESIS = "cyphesis";
-const char * SLAVE = "slave";
+const char * const CYPHESIS = "cyphesis";
+const char * const SLAVE = "slave";
 
-static const char * DEFAULT_RULESET = "mason";
-static const char * DEFAULT_INSTANCE = "cyphesis";
+static const char * const DEFAULT_RULESET = "mason";
+static const char * const DEFAULT_INSTANCE = "cyphesis";
 
 varconf::Config * global_conf = NULL;
 std::string instance(DEFAULT_INSTANCE);
@@ -66,7 +66,7 @@ int client_port_num = 6767;
 int dynamic_port_start = 6800;
 int dynamic_port_end = 6899;
 
-static const char * FALLBACK_LOCALSTATEDIR = "/var";
+static const char * const FALLBACK_LOCALSTATEDIR = "/var";
 
 static const int S = USAGE_SERVER;
 static const int C = USAGE_CLIENT;
