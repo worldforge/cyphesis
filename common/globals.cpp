@@ -629,6 +629,28 @@ void reportVersion(const char * prgname)
 
 void showUsage(const char * prgname, int usage_flags, const char * extras)
 {
+    //Create a lookup table of the commands and flags in "usage"
+    std::map<std::string, int> default_commands_flags;
+
+    const usage_data * ud = &usage[0];
+    for (; ud->section != 0; ++ud) {
+        std::stringstream ss;
+        ss << ud->section << ":" << ud->option;
+        default_commands_flags[ss.str()] = ud->flags;
+    }
+
+    //Check if the section and option is allowed given the usage_flag
+    auto isAllowed = [&](const std::string& section, const std::string& option) {
+        auto I = default_commands_flags.find(section + ":" + option);
+        if (I == default_commands_flags.end()) {
+            //If it can't be found in "usage" it's defined for the specific command and is allowed
+            return true;
+        }
+        return ((I->second & usage_flags) != 0);
+    };
+
+
+
     std::cout << "Usage: " << prgname << " [options]";
     if (extras != 0) {
         std::cout << " " << extras;
@@ -648,7 +670,9 @@ void showUsage(const char * prgname, int usage_flags, const char * extras)
         J = I->second.begin();
         Jend = I->second.end();
         for (; J != Jend; ++J) {
-            column_width = std::max(column_width, I->first.size() + J->first.size() + J->second->value().size() + 2);
+            if (isAllowed(I->first, J->first)) {
+                column_width = std::max(column_width, I->first.size() + J->first.size() + J->second->value().size() + 2);
+            }
         }
     }
 
@@ -663,25 +687,27 @@ void showUsage(const char * prgname, int usage_flags, const char * extras)
         J = I->second.begin();
         Jend = I->second.end();
         for (; J != Jend; ++J) {
-            if (I->first.size() != 0) {
-                std::cout << "  --" << I->first << ":" << J->first;
-            } else {
-                std::cout << "  --" << J->first;
-            }
-            Option * opt = J->second;
-            if (opt->value().size() != 0) {
-                std::cout << "=" << opt->value();
-            }
-            if (opt->size() != 0) {
-                size_t len = I->first.size() + 1 + J->first.size();
-                if (opt->value().size() != 0) {
-                    len += (opt->value().size() + 1);
+            if (isAllowed(I->first, J->first)) {
+                if (I->first.size() != 0) {
+                    std::cout << "  --" << I->first << ":" << J->first;
+                } else {
+                    std::cout << "  --" << J->first;
                 }
-                std::cout << std::string(column_width - len + 2, ' ')
-                          << "= " << opt->repr();
+                Option * opt = J->second;
+                if (opt->value().size() != 0) {
+                    std::cout << "=" << opt->value();
+                }
+                if (opt->size() != 0) {
+                    size_t len = I->first.size() + 1 + J->first.size();
+                    if (opt->value().size() != 0) {
+                        len += (opt->value().size() + 1);
+                    }
+                    std::cout << std::string(column_width - len + 2, ' ')
+                              << "= " << opt->repr();
+                }
+                std::cout << std::endl;
+                std::cout << "      " << opt->description() << std::endl;
             }
-            std::cout << std::endl;
-            std::cout << "      " << opt->description() << std::endl;
         }
     }
     std::cout << std::flush;
