@@ -39,7 +39,7 @@ int main()
 
 // stubs
 
-const char * CYPHESIS = "cyphesis";
+const char * const CYPHESIS = "cyphesis";
 
 unixsock_config_register::unixsock_config_register(std::string & var,
                                                    const char * section,

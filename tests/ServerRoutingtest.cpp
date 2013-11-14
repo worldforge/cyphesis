@@ -548,7 +548,7 @@ long integerId(const std::string & id)
     return intId;
 }
 
-const char * CYPHESIS = "cyphesis";
+const char * const CYPHESIS = "cyphesis";
 
 static const char * DEFAULT_INSTANCE = "cyphesis";
 

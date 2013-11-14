@@ -1595,7 +1595,7 @@ template class Variable<int>;
 template class Variable<std::string>;
 template class Variable<const char *>;
 
-const char * CYPHESIS = "cyphesis";
+const char * const CYPHESIS = "cyphesis";
 
 static const char * DEFAULT_INSTANCE = "cyphesis";
 

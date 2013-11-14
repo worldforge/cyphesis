@@ -107,10 +107,9 @@ SERVER_INTEGRATION_TESTS = WorldRouterintegration Rulesetintegration \
                            TrustedConnectionCreatorintegration \
                            AccountConnectionCharacterintegration
 
-TOOLS_TESTS = WorldLoadertest AdminClienttest WorldDumpertest \
+TOOLS_TESTS = AdminClienttest \
               Flushertest OperationMonitortest \
-              MultiLineListFormattertest \
-              WorldLoaderintegration
+              MultiLineListFormattertest
 
 PYTHON_TESTS = python_class
 
@@ -1529,18 +1528,9 @@ Mastertest_LDADD = \
 
 # TOOLS_TESTS
 
-WorldLoadertest_SOURCES = WorldLoadertest.cpp
-WorldLoadertest_LDADD = \
-        $(top_builddir)/tools/WorldLoader.o \
-        $(top_builddir)/common/ClientTask.o
-
 AdminClienttest_SOURCES = AdminClienttest.cpp
 AdminClienttest_LDADD = \
         $(top_builddir)/tools/AdminClient.o
-
-WorldDumpertest_SOURCES = WorldDumpertest.cpp
-WorldDumpertest_LDADD = \
-        $(top_builddir)/tools/WorldDumper.o
 
 Flushertest_SOURCES = Flushertest.cpp
 Flushertest_LDADD = \
@@ -1556,18 +1546,6 @@ MultiLineListFormattertest_SOURCES = MultiLineListFormattertest.cpp
 MultiLineListFormattertest_LDADD = \
         $(top_builddir)/tools/MultiLineListFormatter.o
 
-WorldLoaderintegration_SOURCES = WorldLoaderintegration.cpp
-WorldLoaderintegration_LDADD = \
-        $(top_builddir)/tools/WorldLoader.o \
-        $(top_builddir)/tools/Interactive.o \
-        $(top_builddir)/tools/AdminClient.o \
-        $(top_builddir)/tools/AccountContext.o \
-        $(top_builddir)/tools/AvatarContext.o \
-        $(top_builddir)/tools/IdContext.o \
-        $(top_builddir)/tools/ObjectContext.o \
-        $(top_builddir)/common/AtlasFileLoader.o \
-        $(top_builddir)/common/ClientTask.o \
-        $(READLINE_LIBS)
 
 # PYTHON_TESTS
 

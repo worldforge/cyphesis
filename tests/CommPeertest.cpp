@@ -339,7 +339,7 @@ void Peer::cleanTeleports()
 
 int opSerialCount = 0;
 
-const char * CYPHESIS = "cyphesis";
+const char * const CYPHESIS = "cyphesis";
 
 class int_config_register {
   public:

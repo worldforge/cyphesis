@@ -292,7 +292,7 @@ namespace consts {
 
 // globals - why do we have these again?
 
-const char * CYPHESIS = "cyphesisAccountConnectionintegration";
+const char * const CYPHESIS = "cyphesisAccountConnectionintegration";
 int timeoffset = 0;
 std::string instance(CYPHESIS);
 

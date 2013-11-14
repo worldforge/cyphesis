@@ -63,7 +63,7 @@ int main()
 
 #include <cstdlib>
 
-const char * CYPHESIS = "cyphesis";
+const char * const CYPHESIS = "cyphesis";
 
 std::string instance("mason");
 

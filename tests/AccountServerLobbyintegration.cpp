@@ -930,7 +930,7 @@ namespace consts {
   const char * version = "test_version";
 }
 
-const char * CYPHESIS = "cyphesis";
+const char * const CYPHESIS = "cyphesis";
 int timeoffset = 0;
 
 bool_config_register::bool_config_register(bool & var,
