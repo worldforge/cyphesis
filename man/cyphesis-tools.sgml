@@ -43,6 +43,14 @@
     <arg choice="req">account</arg>
    </group>
   </cmdsynopsis>
+  <cmdsynopsis>
+   <command>/usr/bin/cyexport</command>
+   <arg choice="req">filepath</arg>
+  </cmdsynopsis>
+  <cmdsynopsis>
+   <command>/usr/bin/cyimport</command>
+   <arg choice="req">filepath</arg>
+  </cmdsynopsis>
  </refsynopsisdiv>
 
  <refsect1><title>Description</title>
@@ -100,6 +108,16 @@ Rules can be loaded directly into a running server using
 The <command>cypasswd</command> tool is used to administrate the accounts table
 in the server database.
   </para>
+  <para>
+The <command>cyexport</command> tool exports entities (and optionally rules) from 
+a running server into a file. The file generated can be imported into a server
+through the tool <command>cyimport</command>.
+  </para>
+  <para>
+The <command>cyimport</command> tool imports entities and rules from a file, 
+previously exported through the <command>cyexport</command> tool, into a
+running server.
+  </para>
  </refsect1>
 
  <refsect1><title>Options</title>
@@ -121,10 +139,16 @@ prompt is displayed asking for confirmation of the password. If the two
 password entered do not match, the operation is aborted, and no changes are
 made to the database.
   </para>
+  <para>
+The <command>cyexport</command> by default only exports entities, but can also 
+export rules through the option <option>--export:rules=1</option>.
+By default no transient entities are exported. This can be changed by the 
+option <option>--export:transients=1</option>
+  </para>
  </refsect1>
  <refsect1><title>Author</title>
   <para>
-Written by Alistair Riddoch.
+Written by Alistair Riddoch and Erik Ogenvik.
   </para>
  </refsect1>
  <refsect1><title>Reporting bugs</title>
@@ -135,6 +159,7 @@ Report bugs to <email>general@worldforge.org</email>.
  <refsect1><title>Copyright</title>
   <para>
 Copyright 2004 Alistair Riddoch.
+Copyright 2013 Erik Ogenvik.
   </para>
  </refsect1>
  <refsect1><title>See Also</title>
