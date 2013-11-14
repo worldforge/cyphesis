@@ -79,8 +79,10 @@ endif
 cycmd_SOURCES = cycmd.cpp \
         Flusher.cpp Flusher.h \
         OperationMonitor.cpp OperationMonitor.h \
-        WorldDumper.cpp WorldDumper.h \
-        WorldLoader.cpp WorldLoader.h \
+        EntityExporterBase.cpp EntityExporterBase.h \
+        EntityExporter.cpp EntityExporter.h \
+        EntityImporterBase.cpp EntityImporterBase.h \
+        EntityImporter.cpp EntityImporter.h \
         MultiLineListFormatter.cpp MultiLineListFormatter.h \
         AdminClient.cpp AdminClient.h \
         ObjectContext.cpp ObjectContext.h \
@@ -105,6 +107,7 @@ cycmd_LDADD = $(top_builddir)/common/operations.o \
               $(top_builddir)/common/id.o \
               $(top_builddir)/common/utils.o \
               $(top_builddir)/common/debug.o \
+              $(top_builddir)/common/serialno.o \
               $(READLINETOOL_LIBS) \
               $(NETWORKTOOL_LIBS) \
               $(TOOL_LIBS)

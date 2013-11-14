@@ -24,8 +24,8 @@
 
 #include "Flusher.h"
 #include "OperationMonitor.h"
-#include "WorldDumper.h"
-#include "WorldLoader.h"
+#include "EntityExporter.h"
+#include "EntityImporter.h"
 
 #include "tools/AccountContext.h"
 #include "tools/AvatarContext.h"
@@ -823,14 +823,27 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             std::cout << "No task currently running" << std::endl << std::flush;
         }
     } else if (cmd == "dump") {
-        ClientTask * task = new WorldDumper(m_accountId);
-        runTask(task, arg);
-        reply_expected = false;
+        if (command_context->repr() != "avatar") {
+            std::cout << "You must have an agent in the world in order to dump the world." << std::endl << std::flush;
+        } else {
+            //Extract the avatar id by "misusing" the setFromContext method
+            Operation op;
+            command_context->setFromContext(op);
+            ClientTask * task = new EntityExporter(m_accountId, op->getFrom());
+            runTask(task, "world.xml");
+            reply_expected = false;
+        }
     } else if (cmd == "restore") {
-        // FIXME Enforce context type
-        ClientTask * task = new WorldLoader(m_accountId, command_context);
-        runTask(task, arg);
-        reply_expected = false;
+        if (command_context->repr() != "avatar") {
+            std::cout << "You must have an agent in the world in order to dump the world." << std::endl << std::flush;
+        } else {
+            //Extract the avatar id by "misusing" the setFromContext method
+            Operation op;
+            command_context->setFromContext(op);
+            ClientTask * task = new EntityImporter(m_accountId, op->getFrom());
+            runTask(task, "world.xml");
+            reply_expected = false;
+        }
     } else if (cmd == "create") {
         std::vector<std::string> args;
         tokenize(arg, args);
