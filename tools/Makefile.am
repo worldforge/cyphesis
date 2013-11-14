@@ -1,7 +1,7 @@
 AM_CPPFLAGS = -I$(top_srcdir) -I${top_builddir}
 
 bin_PROGRAMS = cycmd cyconfig cyaddrules cyconvertrules cyloadrules \
-               cydumprules cypasswd cydb cypython cyexport
+               cydumprules cypasswd cydb cypython cyexport cyimport
 noinst_SCRIPTS = cyphesis.sh
 
 EXTRA_DIST = cyphesis.sh copy_python.sh
@@ -224,6 +224,28 @@ cyexport_LDADD = $(top_builddir)/common/operations.o \
                  $(top_builddir)/common/const.o \
                  $(top_builddir)/common/AtlasStreamClient.o \
                  $(top_builddir)/common/ClientTask.o \
+                 $(top_builddir)/common/system_uid.o \
+                 $(top_builddir)/common/system_net.o \
+                 $(top_builddir)/common/id.o \
+                 $(top_builddir)/common/utils.o \
+                 $(top_builddir)/common/debug.o \
+                 $(top_builddir)/common/serialno.o \
+                 $(READLINETOOL_LIBS) \
+                 $(NETWORKTOOL_LIBS) \
+                 $(TOOL_LIBS)
+
+cyimport_SOURCES = cyimport.cpp EntityImporterBase.cpp  EntityImporterBase.h \
+                   EntityImporter.cpp EntityImporter.h AgentCreationTask.cpp AgentCreationTask.h
+
+cyimport_LDADD = $(top_builddir)/common/operations.o \
+                 $(top_builddir)/common/client_socket.o \
+                 $(top_builddir)/common/globals.o \
+                 $(top_builddir)/common/system_prefix.o \
+                 $(top_builddir)/common/binreloc.o \
+                 $(top_builddir)/common/log.o \
+                 $(top_builddir)/common/const.o \
+                 $(top_builddir)/common/AtlasStreamClient.o \
+                 $(top_builddir)/common/ClientTask.o \
                  $(top_builddir)/common/AtlasFileLoader.o \
                  $(top_builddir)/common/system_uid.o \
                  $(top_builddir)/common/system_net.o \
@@ -234,3 +256,4 @@ cyexport_LDADD = $(top_builddir)/common/operations.o \
                  $(READLINETOOL_LIBS) \
                  $(NETWORKTOOL_LIBS) \
                  $(TOOL_LIBS)
+                 
