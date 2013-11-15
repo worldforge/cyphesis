@@ -407,11 +407,6 @@
             </map>
         </list>
         <list name="thoughts">
-            <map>
-                <string name="object">wander()</string>
-                <string name="predicate">goal</string>
-                <string name="subject">(&apos;wander&apos;, &apos;#wander_verb1&apos;)</string>
-            </map>
         </list>
     </map>
 </atlas>
