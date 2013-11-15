@@ -21,7 +21,7 @@ simple things (like where I can get these things and where I should
 be). They have simple memory and use it too. They can have goals (like
 build home for me or go to dinner).
 This package includes the rules data, scripts and map data required for the
-Mason game. Use this package if you intend to run an Mason server.
+Deeds game. Use this package if you intend to run an Deeds server.
 
 [BuildPrepare]
 export CC=gcc

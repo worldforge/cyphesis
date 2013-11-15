@@ -196,7 +196,7 @@ As an example, the ruleset to be used is set in cyphesis.vconf as follows:
 
 <programlisting role="C">
     [cyphesis]
-    ruleset="mason"
+    ruleset="deeds"
 </programlisting>
 
     <para>
@@ -224,15 +224,15 @@ populate the server.
     </para>
 
     <para>
-The server is populated using the client program, <command>cyclient</command>.
+The server is populated using the import program, <command>cyclient</command>.
 <command>cyclient</command> should be run once the server has been started, and
 it will display a report of the world it is setting up, and then exit.
     </para>
 
     <para>
-The default ruleset for this version is Mason, but an additional development
-ruleset is provided for Werewolf, but will probably only be useful as a
-reference.  To switch to the Werewolf ruleset, follow the instructions above.
+The default ruleset for this version is Deeds, but additional development
+rulesets are provided for Werewolf and Mason, but will probably only be useful as a
+reference.  To switch to the Werewolf or Mason ruleset, follow the instructions above.
     </para>
 
     <para>
@@ -263,9 +263,9 @@ A ruleset will need to be loaded into the database before you can do anything
 useful with the server.  Each ruleset optionally depends on another ruleset, so
 in addition to the ruleset you are using you will need to load the rulesets on
 which it depends. A ruleset is distributed with cyphesis as an atlas xml file.
-The default is mason.xml, which depends on acorn.xml, which in turn depends on
-basic.xml.  These three rulesets can be loaded into the database using the
-<command>cyloadrules</command> command with no arguments as follows:
+The default is deeds.xml, which depends on basic.xml.  These two rulesets can be 
+loaded into the database using the <command>cyloadrules</command> command with
+no arguments as follows:
     </para>
 
 <programlisting role="C">
@@ -306,14 +306,9 @@ necessary to clear the database tables before loading them with new data.
     </para>
 
     <para>
-Once cyphesis is running, it will need to be populated with a map. In order to
-set up a game, you need to run a client to set up the map. The client will use
-a script included in the current ruleset to define what the world should
-contain. This script is kept together with the entity and AI scripts required
-for the ruleset in a directory under the rulesets directory. For example, the
-Mason script is found in rulesets/mason/define_world.py. In order to populate
-the world, simply run <command>cyclient</command> once the server is running. You will need to do
-this each time cyphesis is started.
+The first time cyphesis is run, it will need to be populated with a map. In order to
+set up a game, you need to import a base world. This is done through the
+<command>cyimport</command> command.
     </para>
   </sect1>
 

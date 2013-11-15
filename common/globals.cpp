@@ -44,7 +44,7 @@
 const char * const CYPHESIS = "cyphesis";
 const char * const SLAVE = "slave";
 
-static const char * const DEFAULT_RULESET = "mason";
+static const char * const DEFAULT_RULESET = "deeds";
 static const char * const DEFAULT_INSTANCE = "cyphesis";
 
 varconf::Config * global_conf = NULL;

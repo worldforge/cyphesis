@@ -173,7 +173,7 @@ Usage and configuration
    As an example, the ruleset to be used is set in cyphesis.vconf as follows:
 
        [cyphesis]
-       ruleset="mason"
+       ruleset="deeds"
 
    This setting can be overridden by invoking cyphesis with the following
    option:

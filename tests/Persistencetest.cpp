@@ -65,7 +65,7 @@ int main()
 
 const char * const CYPHESIS = "cyphesis";
 
-std::string instance("mason");
+std::string instance("deeds");
 
 Router::Router(const std::string & id, long intId) : m_id(id), m_intId(intId)
 {

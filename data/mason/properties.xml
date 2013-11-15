@@ -1,0 +1,11 @@
+<atlas>
+
+  <map>
+    <string name="id">attachment</string>
+    <string name="objtype">type</string>
+    <list name="parents">
+      <string>int</string>
+    </list>
+  </map>
+
+</atlas>

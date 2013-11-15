@@ -2,7 +2,7 @@
 
 set -e
 
-REGRESSION="rulesets/mason/regression.py"
+REGRESSION="rulesets/deeds/regression.py"
 
 CLASSES=$(grep --exclude=data/tasks.xml --exclude=data/operations.xml \
             --exclude=data/werewolf.xml --exclude=data/acorn.xml \

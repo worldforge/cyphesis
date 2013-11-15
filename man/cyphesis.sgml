@@ -97,7 +97,7 @@ may be necessary to tell cyphesis to use a different directory.
     <varlistentry>
      <term><fieldsynopsis>
        <varname>ruleset</varname>
-       <initializer>="mason"</initializer>
+       <initializer>="deeds"</initializer>
       </fieldsynopsis>
      </term>
      <listitem>
@@ -117,14 +117,14 @@ a ruleset which has no dependencies, at which point it is assumed the base
 ruleset has been found.
       </para>
       <para>
-For example, the mason ruleset depends on the basic ruleset, but the
+For example, the deeds ruleset depends on the basic ruleset, but the
 basic ruleset has no dependencies. The required configuration entries for
 this arrangement look like this:
       </para>
       <programlisting>
 [cyphesis]
-ruleset="mason"
-[mason]
+ruleset="deeds"
+[deeds]
 ruleset="basic"
       </programlisting>
       

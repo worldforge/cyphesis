@@ -8,10 +8,10 @@
 [cyphesis]
 
 # Default ruleset config file and script directory
-ruleset="mason"
+ruleset="deeds"
 # Name to identify this server, please customise and include
 # If none is specified here, the machines hostname is used
-# servername="Mason server"
+# servername="Deeds server"
 # TCP port to listen on
 tcpport=6767
 # Unix socket to listen on
@@ -55,7 +55,7 @@ dbname = "cyphesis"
 [client]
 # Client specific options
 # Script package
-package="define_world"
+package="main"
 # Script function
 function="default"
 
@@ -74,4 +74,7 @@ player_vs_player="false"
 player_vs_player_offline="false"
 
 [mason]
+ruleset="basic"
+
+[deeds]
 ruleset="basic"

@@ -42,7 +42,7 @@ Directory where temporary files can be stored.
 Normally this directory is set at compile time, but in some rare cases it
 may be necessary to tell cyphesis to use a different directory.
 .TP
-\fBruleset="mason"\fR
+\fBruleset="deeds"\fR
 Ruleset name.
 
 Name of the top level ruleset this server should use.
@@ -55,14 +55,14 @@ On startup the server will look for dependent rulesets until it reaches
 a ruleset which has no dependencies, at which point it is assumed the base
 ruleset has been found.
 
-For example, the mason ruleset depends on the basic ruleset, but the
+For example, the deeds ruleset depends on the basic ruleset, but the
 basic ruleset has no dependencies. The required configuration entries for
 this arrangement look like this:
 .sp
 .nf
 [cyphesis]
-ruleset="mason"
-[mason]
+ruleset="deeds"
+[deeds]
 ruleset="basic"
       
 .sp

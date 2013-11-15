@@ -1,11 +1,9 @@
 MARS_RULES = basic.xml characters.xml environment.xml terrain.xml
 
-confdir = $(sysconfdir)/cyphesis
-
 rulesetdir = $(sysconfdir)/cyphesis/mars.d
 dist_ruleset_DATA = $(MARS_RULES)
 
-confbackupdir = $(datadir)/doc/cyphesis-$(VERSION)/conf
+confbackupdir = $(datadir)/doc/cyphesis-$(VERSION)/conf/mars
 confbackup_DATA = $(MARS_RULES)
 
 check-local:

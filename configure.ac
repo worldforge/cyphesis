@@ -499,8 +499,12 @@ AC_CONFIG_FILES([
     client/Makefile
     tools/Makefile
     data/Makefile
-    data/minimal/Makefile
+    data/acorn/Makefile
+    data/deeds/Makefile
     data/mars/Makefile
+    data/mason/Makefile
+    data/minimal/Makefile
+    data/werewolf/Makefile
     tests/Makefile
     man/Makefile
     dox/Makefile

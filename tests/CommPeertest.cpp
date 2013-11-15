@@ -123,7 +123,7 @@ class TestPeer : public Peer
 
 int main()
 {
-    ServerRouting server(*(BaseWorld*)0, "mason", "test_server",
+    ServerRouting server(*(BaseWorld*)0, "deeds", "test_server",
                          "1", 1,
                          "2", 2);
 
