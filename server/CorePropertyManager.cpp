@@ -42,6 +42,7 @@
 #include "rulesets/TasksProperty.h"
 #include "rulesets/EntityProperty.h"
 #include "rulesets/SpawnerProperty.h"
+#include "rulesets/ImmortalProperty.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
@@ -120,7 +121,7 @@ CorePropertyManager::CorePropertyManager()
     installProperty<TasksProperty>("tasks", "map");
     installProperty<EntityProperty>("right_hand_wield", "string");
     installProperty<SpawnerProperty>("spawner", "map");
-
+    installProperty<ImmortalProperty>("immortal", "int");
 
 
 }
