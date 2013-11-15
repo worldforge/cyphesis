@@ -74,6 +74,7 @@ class TestWorld : public BaseWorld {
                                   const Atlas::Objects::Entity::RootEntity &) {
         return 0;
     }
+    void delEntity(LocatedEntity * obj) {}
     int createSpawnPoint(const Atlas::Message::MapType & data,
                          LocatedEntity *) { return 0; }
     int getSpawnList(Atlas::Message::ListType & data) { return 0; }

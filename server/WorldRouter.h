@@ -63,7 +63,6 @@ class WorldRouter : public BaseWorld {
     void updateTime(const SystemTime &);
     void deliverTo(const Atlas::Objects::Operation::RootOperation &,
                    LocatedEntity &);
-    void delEntity(LocatedEntity * obj);
     void resumeWorld();
   public:
     explicit WorldRouter(const SystemTime &);
@@ -73,6 +72,7 @@ class WorldRouter : public BaseWorld {
     LocatedEntity * addEntity(LocatedEntity * obj);
     LocatedEntity * addNewEntity(const std::string & type,
                                  const Atlas::Objects::Entity::RootEntity &);
+    void delEntity(LocatedEntity * obj);
     int createSpawnPoint(const Atlas::Message::MapType &, LocatedEntity *);
     int getSpawnList(Atlas::Message::ListType & data);
     LocatedEntity * spawnNewEntity(const std::string &,

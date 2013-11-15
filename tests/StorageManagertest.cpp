@@ -258,6 +258,10 @@ LocatedEntity * WorldRouter::addNewEntity(const std::string & typestr,
     return 0;
 }
 
+void WorldRouter::delEntity(LocatedEntity * obj)
+{
+}
+
 int WorldRouter::createSpawnPoint(const MapType & data, LocatedEntity * ent)
 {
     return 0;

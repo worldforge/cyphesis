@@ -30,11 +30,50 @@
 
 #include "common/OperationRouter.h"
 #include "common/PropertyFactory_impl.h"
+#include "common/BaseWorld.h"
 
 #include <Atlas/Objects/Operation.h>
 
 using Atlas::Message::MapType;
 using Atlas::Objects::Operation::Delete;
+
+class TestWorld : public BaseWorld {
+  public:
+    explicit TestWorld(LocatedEntity& e) : BaseWorld(e) {
+        m_realTime = 100000;
+    }
+
+    virtual bool idle(const SystemTime &) { return false; }
+    virtual LocatedEntity * addEntity(LocatedEntity * ent) {
+        return 0;
+    }
+    virtual LocatedEntity * addNewEntity(const std::string &,
+                                  const Atlas::Objects::Entity::RootEntity &) {
+        return 0;
+    }
+    void delEntity(LocatedEntity * obj) {}
+    int createSpawnPoint(const Atlas::Message::MapType & data,
+                         LocatedEntity *) { return 0; }
+    int getSpawnList(Atlas::Message::ListType & data) { return 0; }
+    LocatedEntity * spawnNewEntity(const std::string & name,
+                                   const std::string & type,
+                                   const Atlas::Objects::Entity::RootEntity & desc) {
+        return addNewEntity(type, desc);
+    }
+    virtual Task * newTask(const std::string &, LocatedEntity &) { return 0; }
+    virtual Task * activateTask(const std::string &, const std::string &,
+                                LocatedEntity *, LocatedEntity &) { return 0; }
+    virtual ArithmeticScript * newArithmetic(const std::string &,
+                                             LocatedEntity *) {
+        return 0;
+    }
+    virtual void message(const Operation & op, LocatedEntity & ent) {
+    }
+    virtual LocatedEntity * findByName(const std::string & name) { return 0; }
+    virtual LocatedEntity * findByType(const std::string & type) { return 0; }
+    virtual void addPerceptive(LocatedEntity *) { }
+};
+
 
 class DecaysPropertyintegration : public Cyphesis::TestBase
 {
@@ -59,6 +98,7 @@ DecaysPropertyintegration::DecaysPropertyintegration()
 void DecaysPropertyintegration::setup()
 {
     m_world = new Entity("0", 0);
+    new TestWorld(*m_world);
 
     m_entity = new Entity("1", 1);
     m_entity->m_location.m_loc = m_world;

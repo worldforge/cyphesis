@@ -544,9 +544,7 @@ void WorldRouter::operation(const Operation & op, LocatedEntity & from)
         assert(to_entity != 0);
 
         deliverTo(op, *to_entity);
-        if (op->getClassNo() == Atlas::Objects::Operation::DELETE_NO) {
-            delEntity(to_entity);
-        }
+
     } else if (broadcastPerception(op)) {
         // Where broadcasts go depends on type of op
         float fromSquSize = from.m_location.squareBoxSize();

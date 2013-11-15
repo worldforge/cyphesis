@@ -125,6 +125,9 @@ class BaseWorld {
     virtual LocatedEntity * addNewEntity(const std::string & type,
                                   const Atlas::Objects::Entity::RootEntity &) = 0;
 
+    /// \brief Deletes an entity from the world.
+    virtual void delEntity(LocatedEntity * obj) = 0;
+
     virtual int createSpawnPoint(const Atlas::Message::MapType & data,
                                  LocatedEntity * ent) = 0;
 

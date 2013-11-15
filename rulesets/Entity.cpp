@@ -321,6 +321,10 @@ void Entity::CreateOperation(const Operation &, OpVector &)
 /// \brief Handle a delete operation
 void Entity::DeleteOperation(const Operation &, OpVector &)
 {
+    //We call on the baseworld to delete ourselves here. This allows
+    //other components, such as properties, to preempt the deletion if
+    //they so want.
+    BaseWorld::instance().delEntity(this);
 }
 
 /// \brief Handle a disappearance operation

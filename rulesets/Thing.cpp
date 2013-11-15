@@ -96,6 +96,7 @@ void Thing::DeleteOperation(const Operation & op, OpVector & res)
     Sight s;
     s->setArgs1(op);
     res.push_back(s);
+    Entity::DeleteOperation(op, res);
 }
 
 void Thing::MoveOperation(const Operation & op, OpVector & res)

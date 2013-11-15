@@ -37,6 +37,7 @@ class TestWorld : public BaseWorld {
     }
     virtual LocatedEntity * addNewEntity(const std::string &,
                                          const Atlas::Objects::Entity::RootEntity &);
+    void delEntity(LocatedEntity * obj) {}
     int createSpawnPoint(const Atlas::Message::MapType & data,
                          LocatedEntity *) { return 0; }
     int getSpawnList(Atlas::Message::ListType & data) { return 0; }
