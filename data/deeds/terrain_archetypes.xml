@@ -1,0 +1,57 @@
+<atlas>
+    <map>
+        <string name="id">ploughed_field</string>
+        <string name="objtype">archetype</string>
+        <list name="parents">
+            <string>archetype</string>
+        </list>
+        <list name="entities">
+            <map>
+                <list name="parents">
+                    <string>region</string>
+                </list>
+                <int name="visibility">100</int>
+                <map name="area">
+                    <int name="layer">8</int>
+                    <map name="shape">
+                        <list name="points">
+                            <list>
+                                <float>-3.5</float>
+                                <float>-3.5</float>
+                            </list>
+                            <list>
+                                <float>-5</float>
+                                <float>0</float>
+                            </list>
+                            <list>
+                                <float>-3.5</float>
+                                <float>3.5</float>
+                            </list>
+                            <list>
+                                <float>0</float>
+                                <float>5</float>
+                            </list>
+                            <list>
+                                <float>3.5</float>
+                                <float>3.5</float>
+                            </list>
+                            <list>
+                                <float>5</float>
+                                <float>0</float>
+                            </list>
+                            <list>
+                                <float>3.5</float>
+                                <float>-3.5</float>
+                            </list>
+                            <list>
+                                <float>0</float>
+                                <float>-5</float>
+                            </list>
+                        </list>
+                        <string name="type">polygon</string>
+                    </map>
+                </map>
+            </map>
+        </list>
+    </map>
+</atlas>
