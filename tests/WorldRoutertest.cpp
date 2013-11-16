@@ -932,13 +932,6 @@ int SpawnEntity::spawnEntity(const std::string & type,
     return -1;
 }
 
-int SpawnEntity::populateEntity(LocatedEntity * ent,
-                                const RootEntity & dsc,
-                                OpVector & res)
-{
-    return -1;
-}
-
 int SpawnEntity::addToMessage(MapType & msg) const
 {
     return -1;
@@ -947,8 +940,4 @@ int SpawnEntity::addToMessage(MapType & msg) const
 int SpawnEntity::placeInSpawn(Location&) const
 {
     return 0;
-}
-
-Spawn::~Spawn()
-{
 }

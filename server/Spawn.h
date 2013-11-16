@@ -34,15 +34,35 @@ namespace Atlas {
     }
 }
 
+/**
+ * \brief Defines a spawn point.
+ *
+ * A spawn point is a place where new entities can be spawned.
+ * Mainly used for creating new character controlled entities.
+ */
 class Spawn {
   public:
-    virtual ~Spawn() = 0;
+    virtual ~Spawn(){}
 
+    /**
+     * \brief Fills the supplied entity with information used for creating a new entity.
+     *
+     * \param type The name of the spawn type.
+     * \param dsc An entity description which will be filled with entity data.
+     * \return 0 if successful.
+     */
     virtual int spawnEntity(const std::string & type,
                             const Atlas::Objects::Entity::RootEntity & dsc) = 0;
-    virtual int populateEntity(LocatedEntity * ent,
-                               const Atlas::Objects::Entity::RootEntity & dsc,
-                               OpVector & res) = 0;
+
+    /**
+     * \brief Provides information about the types available.
+     *
+     * If there are entities defined the supplied map will have an enty
+     * named 'character_types' which will contain a list of strings. These
+     * are the types of spawnable entities that are available.
+     * @param msg A map, to be filled.
+     * @return 0 if successful.
+     */
     virtual int addToMessage(Atlas::Message::MapType & msg) const = 0;
 
     /*

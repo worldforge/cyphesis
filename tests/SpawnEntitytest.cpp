@@ -25,11 +25,15 @@
 
 #include "TestBase.h"
 
+#include "modules/Location.h"
+#include "common/log.h"
+
 #include "server/SpawnEntity.h"
 
 #include "rulesets/AreaProperty.h"
 
 #include "physics/Vector3D.h"
+
 
 #include <Atlas/Message/Element.h>
 
@@ -119,10 +123,6 @@ int main()
 
 #include "Property_stub_impl.h"
 
-Spawn::~Spawn()
-{
-}
-
 void addToEntity(const Point3D & p, std::vector<double> & vd)
 {
     vd.resize(3);
@@ -204,4 +204,17 @@ HandlerResult PropertyBase::operation(LocatedEntity *,
                                       OpVector &)
 {
     return OPERATION_IGNORED;
+}
+
+Location::Location() : m_loc(0)
+{
+}
+
+void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+{
+}
+
+void log(LogLevel, const std::string & msg)
+{
+
 }

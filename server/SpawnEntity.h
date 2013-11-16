@@ -23,7 +23,10 @@
 
 #include "modules/EntityRef.h"
 
-#include <vector>
+#include <Atlas/Objects/ObjectsFwd.h>
+#include <Atlas/Objects/RootEntity.h>
+
+#include <unordered_map>
 
 namespace Atlas {
     namespace Message {
@@ -35,10 +38,10 @@ class SpawnEntity : public Spawn {
   protected:
     /// Reference to the entity that defines this spawn location
     EntityRef m_ent;
-    /// List of character types available here
-    Atlas::Message::ListType m_characterTypes;
-    /// List of inventory here
-    Atlas::Message::ListType m_inventory;
+
+    /// Map of character types available here
+    std::unordered_map<std::string, Atlas::Message::MapType> m_entities;
+
   public:
     explicit SpawnEntity(LocatedEntity * e);
 
@@ -46,9 +49,6 @@ class SpawnEntity : public Spawn {
 
     int spawnEntity(const std::string & type,
                     const Atlas::Objects::Entity::RootEntity & dsc);
-    int populateEntity(LocatedEntity * ent,
-                       const Atlas::Objects::Entity::RootEntity & dsc,
-                       OpVector & res);
     int addToMessage(Atlas::Message::MapType & msg) const;
 
     int placeInSpawn(Location& location) const;

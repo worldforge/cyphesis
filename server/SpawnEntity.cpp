@@ -15,7 +15,6 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-
 #include "SpawnEntity.h"
 
 #include "rulesets/LocatedEntity.h"
@@ -30,7 +29,6 @@
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/RootEntity.h>
 #include <Atlas/Objects/SmartPtr.h>
 
 #include <wfmath/polygon.h>
@@ -41,108 +39,60 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Operation::Create;
 
-SpawnEntity::SpawnEntity(LocatedEntity * e) : m_ent(e)
+SpawnEntity::SpawnEntity(LocatedEntity * e) :
+        m_ent(e)
 {
 }
 
 int SpawnEntity::setup(const MapType & data)
 {
-    MapType::const_iterator I = data.find("character_types");
-    MapType::const_iterator Iend = data.end();
-    if (I != Iend && I->second.isList()) {
-        m_characterTypes = I->second.List();
-    }
-    I = data.find("contains");
-    if (I != Iend && I->second.isList()) {
-        m_inventory = I->second.List();
+    auto I = data.find("entities");
+    if (I != data.end() && I->second.isMap()) {
+        const auto& entities = I->second.asMap();
+        for (auto J : entities) {
+            if (!J.second.isMap()) {
+                log(ERROR,
+                        "Entry in entities attribute of spawn not in map format.");
+                continue;
+            }
+
+            m_entities.insert(std::make_pair(J.first, J.second.asMap()));
+        }
     }
     return 0;
 }
 
-static const int check_character_type(const std::string & type,
-                                      const Atlas::Message::ListType & types)
-{
-    ListType::const_iterator I = types.begin();
-    ListType::const_iterator Iend = types.end();
-    for (; I != Iend; ++I) {
-        if (*I == type) {
-            return 0;
-        }
-    }
-    return -1;
-}
-                                  
-
-int SpawnEntity::spawnEntity(const std::string & type,
-                             const RootEntity & dsc)
+int SpawnEntity::spawnEntity(const std::string & type, const RootEntity & dsc)
 {
     if (m_ent.get() == 0) {
         return -1;
     }
-    if (check_character_type(type, m_characterTypes) != 0) {
+
+    auto entityI = m_entities.find(type);
+    if (entityI == m_entities.end()) {
         return -1;
     }
-    dsc->setLoc(m_ent->m_location.m_loc->getId());
-    const AreaProperty * ap = m_ent->getPropertyClass<AreaProperty>("area");
-    if (ap != 0) {
-        // FIXME orientation ignored
-        const Area * spawn_area = ap->shape();
-        WFMath::AxisBox<2> spawn_box = spawn_area->footprint();
-        Point3D new_pos = m_ent->m_location.pos();
-        for (int i = 0; i < 10; ++i) {
-            WFMath::CoordType x = uniform(spawn_box.lowCorner().x(),
-                                          spawn_box.highCorner().x());
-            WFMath::CoordType y = uniform(spawn_box.lowCorner().y(),
-                                          spawn_box.highCorner().y());
-            if (spawn_area->intersect(WFMath::Point<2>(x, y))) {
-                new_pos += Vector3D(x, y, 0);
-                break;
-            }
-        }
-        ::addToEntity(new_pos, dsc->modifyPos());
-    } else if (m_ent->m_location.bBox().isValid()) {
-        const BBox & b = m_ent->m_location.bBox();
-        ::addToEntity(Point3D(uniform(b.lowCorner().x(), b.highCorner().x()),
-                              uniform(b.lowCorner().y(), b.highCorner().y()),
-                              0), dsc->modifyPos());
-            // Locate in bbox
-    } else {
-        ::addToEntity(m_ent->m_location.pos(), dsc->modifyPos());
-    }
-    // FIXME this is exactly the same location as the spawn entity
-    return 0;
-}
 
-int SpawnEntity::populateEntity(LocatedEntity * ent,
-                                const RootEntity & dsc,
-                                OpVector & res)
-{
-    // Hack in default objects
-    // This needs to be done in a generic way
-    Anonymous create_arg;
-    ::addToEntity(Point3D(0,0,0), create_arg->modifyPos());
-    create_arg->setLoc(ent->getId());
-
-    ListType::const_iterator I = m_inventory.begin();
-    ListType::const_iterator Iend = m_inventory.end();
-    for (; I != Iend; ++I) {
-        if (!I->isString()) {
-            continue;
-        }
-        Create c;
-        c->setTo(ent->getId());
-        create_arg = create_arg.copy();
-        create_arg->setParents(std::list<std::string>(1, I->String()));
-        c->setArgs1(create_arg);
-        res.push_back(c);
+    for (auto I : entityI->second) {
+        dsc->setAttr(I.first, I.second);
     }
+
+    Location new_loc;
+    placeInSpawn(new_loc);
+    new_loc.addToEntity(dsc);
 
     return 0;
 }
 
 int SpawnEntity::addToMessage(MapType & msg) const
 {
-    msg.insert(std::make_pair("character_types", m_characterTypes));
+    if (!m_entities.empty()) {
+        Atlas::Message::ListType keys(m_entities.size());
+        for (auto I : m_entities) {
+            keys.push_back(I.first);
+        }
+        msg.insert(std::make_pair("character_types", keys));
+    }
     return 0;
 }
 
@@ -158,9 +108,9 @@ int SpawnEntity::placeInSpawn(Location& location) const
         Point3D new_pos = m_ent->m_location.pos();
         for (int i = 0; i < 10; ++i) {
             WFMath::CoordType x = uniform(spawn_box.lowCorner().x(),
-                                          spawn_box.highCorner().x());
+                    spawn_box.highCorner().x());
             WFMath::CoordType y = uniform(spawn_box.lowCorner().y(),
-                                          spawn_box.highCorner().y());
+                    spawn_box.highCorner().y());
             if (spawn_area->intersect(WFMath::Point<2>(x, y))) {
                 new_pos += Vector3D(x, y, 0);
                 break;
@@ -170,9 +120,8 @@ int SpawnEntity::placeInSpawn(Location& location) const
     } else if (m_ent->m_location.bBox().isValid()) {
         const BBox & b = m_ent->m_location.bBox();
         location.m_pos = Point3D(uniform(b.lowCorner().x(), b.highCorner().x()),
-                              uniform(b.lowCorner().y(), b.highCorner().y()),
-                              0);
-            // Locate in bbox
+                uniform(b.lowCorner().y(), b.highCorner().y()), 0);
+        // Locate in bbox
     } else {
         location.m_pos = m_ent->m_location.pos();
     }

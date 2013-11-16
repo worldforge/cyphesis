@@ -349,14 +349,6 @@ LocatedEntity * WorldRouter::spawnNewEntity(const std::string & name,
         log(ERROR, String::compose("Entity creation failed %1", type));
         return e;
     }
-    OpVector res;
-
-    s->populateEntity(e, desc, res);
-
-    OpVector::const_iterator Iend = res.end();
-    for (OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
-        message(*I, *e);
-    }
 
     return e;
 }

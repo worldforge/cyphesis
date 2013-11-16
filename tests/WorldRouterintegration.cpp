@@ -157,7 +157,11 @@ void WorldRouterintegration::test_sequence()
     {
         MapType spawn_data;
         spawn_data["name"] = "bob";
-        spawn_data["character_types"] = Atlas::Message::ListType(1, "spiddler");
+        MapType entity;
+        entity["parents"] = Atlas::Message::ListType(1, "spiddler");
+        MapType entities;
+        entities["spiddler"] = entity;
+        spawn_data["entities"] = entities;
         test_world->createSpawnPoint(spawn_data, ent2);
     }
 
@@ -169,7 +173,11 @@ void WorldRouterintegration::test_sequence()
     {
         MapType spawn_data;
         spawn_data["name"] = "bob";
-        spawn_data["character_types"] = Atlas::Message::ListType(1, "character");
+        MapType entity;
+        entity["parents"] = Atlas::Message::ListType(1, "character");
+        MapType entities;
+        entities["character"] = entity;
+        spawn_data["entities"] = entities;
         test_world->createSpawnPoint(spawn_data, ent2);
     }
 
@@ -178,22 +186,30 @@ void WorldRouterintegration::test_sequence()
                                       Anonymous());
     assert(ent3 != 0);
 
-    {
-        MapType spawn_data;
-        spawn_data["name"] = "bob";
-        spawn_data["character_types"] = Atlas::Message::ListType(1, "character");
-        spawn_data["contains"] = Atlas::Message::ListType(1, "thing");
-        test_world->createSpawnPoint(spawn_data, ent2);
-    }
-
-    LocatedEntity * ent4 = test_world->spawnNewEntity("bob",
-                                                      "character",
-                                                      Anonymous());
-    assert(ent4 != 0);
-
+    //TODO: test creation of archetypes
+//    {
+//        MapType spawn_data;
+//        spawn_data["name"] = "bob";
+//        MapType entity;
+//        entity["parents"] = Atlas::Message::ListType(1, "character");
+//        MapType entities;
+//        entities["character"] = entity;
+//        spawn_data["entities"] = entities;
+//
+//
+//        spawn_data["character_types"] = Atlas::Message::ListType(1, "character");
+//        spawn_data["contains"] = Atlas::Message::ListType(1, "thing");
+//        test_world->createSpawnPoint(spawn_data, ent2);
+//    }
+//
+//    LocatedEntity * ent4 = test_world->spawnNewEntity("bob",
+//                                                      "character",
+//                                                      Anonymous());
+//    assert(ent4 != 0);
+//
     test_world->delEntity(&test_world->m_gameWorld);
-    test_world->delEntity(ent4);
-    ent4 = 0;
+//    test_world->delEntity(ent4);
+//    ent4 = 0;
 
     delete test_world;
 }

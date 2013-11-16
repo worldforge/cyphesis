@@ -87,7 +87,7 @@ SERVER_SOURCES = \
 		EntityFactory.cpp EntityFactory.h \
 		EntityFactory_impl.h \
 		ServerRouting.cpp ServerRouting.h \
-		Spawn.cpp Spawn.h \
+		Spawn.h \
 		SpawnEntity.cpp SpawnEntity.h \
 		WorldRouter.cpp WorldRouter.h \
 		StorageManager.cpp StorageManager.h \
