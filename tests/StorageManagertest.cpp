@@ -279,6 +279,13 @@ LocatedEntity * WorldRouter::spawnNewEntity(const std::string & name,
     return 0;
 }
 
+int WorldRouter::moveToSpawn(const std::string & name,
+                        Location& location)
+{
+    return 0;
+}
+
+
 Task * WorldRouter::newTask(const std::string & name, LocatedEntity & owner)
 {
     return 0;

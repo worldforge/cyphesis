@@ -361,6 +361,16 @@ LocatedEntity * WorldRouter::spawnNewEntity(const std::string & name,
     return e;
 }
 
+int WorldRouter::moveToSpawn(const std::string & name, Location& location)
+{
+    auto I = m_spawns.find(name);
+    if (I == m_spawns.end()) {
+        log(ERROR, String::compose("Spawn not found %1", name));
+        return -10;
+    }
+    return I->second->placeInSpawn(location);
+}
+
 
 /// \brief Create a new task
 ///

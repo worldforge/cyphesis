@@ -229,6 +229,8 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "rulesets/TransientProperty.h"
 #include "rulesets/VisibilityProperty.h"
 #include "rulesets/SpawnerProperty.h"
+#include "rulesets/ImmortalProperty.h"
+#include "rulesets/RespawningProperty.h"
 
 #include "common/const.h"
 #include "common/globals.h"
@@ -1756,6 +1758,58 @@ void SpawnerProperty::install(LocatedEntity * ent, const std::string & name)
 }
 
 HandlerResult SpawnerProperty::operation(LocatedEntity *, const Operation &, OpVector &)
+{
+    return OPERATION_IGNORED;
+}
+
+ImmortalProperty::ImmortalProperty()
+{
+}
+
+ImmortalProperty::~ImmortalProperty()
+{
+}
+
+ImmortalProperty * ImmortalProperty::copy() const
+{
+    return 0;
+}
+
+void ImmortalProperty::apply(LocatedEntity * owner)
+{
+}
+
+void ImmortalProperty::install(LocatedEntity * ent, const std::string & name)
+{
+}
+
+HandlerResult ImmortalProperty::operation(LocatedEntity *, const Operation &, OpVector &)
+{
+    return OPERATION_IGNORED;
+}
+
+RespawningProperty::RespawningProperty()
+{
+}
+
+RespawningProperty::~RespawningProperty()
+{
+}
+
+RespawningProperty * RespawningProperty::copy() const
+{
+    return 0;
+}
+
+void RespawningProperty::apply(LocatedEntity * owner)
+{
+}
+
+void RespawningProperty::install(LocatedEntity * ent, const std::string & name)
+{
+}
+
+HandlerResult RespawningProperty::operation(LocatedEntity *, const Operation &, OpVector &)
 {
     return OPERATION_IGNORED;
 }

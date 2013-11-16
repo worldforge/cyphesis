@@ -25,6 +25,7 @@
 #include <string>
 
 class LocatedEntity;
+class Location;
 
 namespace Atlas {
     namespace Message {
@@ -43,6 +44,12 @@ class Spawn {
                                const Atlas::Objects::Entity::RootEntity & dsc,
                                OpVector & res) = 0;
     virtual int addToMessage(Atlas::Message::MapType & msg) const = 0;
+
+    /*
+     * \brief Places a location in the spawn.
+     */
+    virtual int placeInSpawn(Location& location) const = 0;
+
 };
 
 #endif // SERVER_SPAWN_H

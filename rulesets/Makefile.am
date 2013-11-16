@@ -61,7 +61,8 @@ librulesetentity_a_SOURCES = \
 			     ArithmeticFactory.cpp ArithmeticFactory.h \
 			     SuspendedProperty.cpp SuspendedProperty.h \
 			     SpawnerProperty.cpp SpawnerProperty.h \
-			     ImmortalProperty.cpp ImmortalProperty.h
+			     ImmortalProperty.cpp ImmortalProperty.h \
+			     RespawningProperty.cpp RespawningProperty.h
 
 
 librulesetmind_a_SOURCES = BaseMind.cpp BaseMind.h \

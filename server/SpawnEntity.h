@@ -50,6 +50,9 @@ class SpawnEntity : public Spawn {
                        const Atlas::Objects::Entity::RootEntity & dsc,
                        OpVector & res);
     int addToMessage(Atlas::Message::MapType & msg) const;
+
+    int placeInSpawn(Location& location) const;
+
 };
 
 #endif // SERVER_SPAWN_ENTITY_H

@@ -944,6 +944,11 @@ int SpawnEntity::addToMessage(MapType & msg) const
     return -1;
 }
 
+int SpawnEntity::placeInSpawn(Location&) const
+{
+    return 0;
+}
+
 Spawn::~Spawn()
 {
 }

@@ -43,6 +43,7 @@
 #include "rulesets/EntityProperty.h"
 #include "rulesets/SpawnerProperty.h"
 #include "rulesets/ImmortalProperty.h"
+#include "rulesets/RespawningProperty.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
@@ -122,8 +123,7 @@ CorePropertyManager::CorePropertyManager()
     installProperty<EntityProperty>("right_hand_wield", "string");
     installProperty<SpawnerProperty>("spawner", "map");
     installProperty<ImmortalProperty>("immortal", "int");
-
-
+    installProperty<RespawningProperty>("respawning", "string");
 }
 
 CorePropertyManager::~CorePropertyManager()

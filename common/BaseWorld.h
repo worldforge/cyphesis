@@ -30,6 +30,7 @@ class ArithmeticScript;
 class LocatedEntity;
 class SystemTime;
 class Task;
+class Location;
 
 typedef std::map<long, LocatedEntity *> EntityDict;
 
@@ -137,6 +138,15 @@ class BaseWorld {
           const std::string & name,
           const std::string & type,
           const Atlas::Objects::Entity::RootEntity &) = 0;
+
+    /**
+     * \brief Moves the location to within the spawn specified by the name.
+     * \param name The name of the spawn.
+     * \param location The location which will be moved.
+     * \return 0 if successful.
+     */
+    virtual int moveToSpawn(const std::string & name,
+                            Location& location) = 0;
 
     /// \brief Create a new task
     virtual Task * newTask(const std::string &, LocatedEntity &) = 0;

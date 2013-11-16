@@ -53,6 +53,10 @@ class TestSpawn : public Spawn
     {
         return 0;
     }
+    virtual int placeInSpawn(Location&) const
+    {
+        return 0;
+    }
 };
 
 int main()

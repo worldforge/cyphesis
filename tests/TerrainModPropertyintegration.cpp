@@ -62,6 +62,8 @@ class TestWorld : public BaseWorld {
                                    const Atlas::Objects::Entity::RootEntity & desc) {
         return addNewEntity(type, desc);
     }
+    virtual int moveToSpawn(const std::string & name,
+                            Location& location) {return 0;}
     virtual Task * newTask(const std::string &, LocatedEntity &) { return 0; }
     virtual Task * activateTask(const std::string &, const std::string &,
                                 LocatedEntity *, LocatedEntity &) { return 0; }

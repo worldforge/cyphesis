@@ -78,6 +78,7 @@ class WorldRouter : public BaseWorld {
     LocatedEntity * spawnNewEntity(const std::string &,
                                    const std::string &,
                                    const Atlas::Objects::Entity::RootEntity &);
+    int moveToSpawn(const std::string & name, Location& location);
     Task * newTask(const std::string &, LocatedEntity &);
     Task * activateTask(const std::string &,
                         const std::string &,
