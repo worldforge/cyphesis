@@ -176,8 +176,26 @@ void World::MoveOperation(const Operation & op, OpVector & res)
 
 void World::DeleteOperation(const Operation & op, OpVector & res)
 {
-    assert(m_location.m_loc == 0);
-    // Deleting has no effect.
+    //A delete operation with an argument sent to the world indicates that an
+    //entity should be deleted forcefully (whereas a Delete operation sent to
+    //an entity directly, which is the norm, always can be overridden by the entity).
+    auto& args = op->getArgs();
+    if (!args.empty()) {
+        auto arg = args.front();
+        if (!arg->isDefaultId()) {
+            auto entity = BaseWorld::instance().getEntity(arg->getId());
+            if (entity == this) {
+                log(ERROR, "World::DeleteOperation cannot delete world.");
+            } else {
+                BaseWorld::instance().delEntity(entity);
+            }
+        } else {
+            log(ERROR, "World::DeleteOperation got delete op with arg but no id.");
+        }
+    } else {
+        assert(m_location.m_loc == 0);
+        // Deleting has no effect.
+    }
 }
 
 void World::RelayOperation(const Operation & op, OpVector & res)
