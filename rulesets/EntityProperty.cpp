@@ -36,7 +36,9 @@ EntityProperty::EntityProperty()
 int EntityProperty::get(Atlas::Message::Element & val) const
 {
     if (m_data.get() != 0) {
-        val = m_data->getId();
+        Atlas::Message::MapType refMap;
+        refMap["$eid"] = m_data->getId();
+        val = refMap;
         return 0;
     } else {
         return -1;
@@ -64,6 +66,11 @@ void EntityProperty::set(const Atlas::Message::Element & val)
         debug(std::cout << "Assigning pointer" << std::endl << std::flush;);
         LocatedEntity * e = static_cast<LocatedEntity*>(val.Ptr());
         m_data = EntityRef(e);
+    } else if (val.isMap()) {
+        auto I = val.asMap().find("$eid");
+        if (I != val.asMap().end()) {
+            set(I->second);
+        }
     }
 }
 
@@ -71,7 +78,9 @@ void EntityProperty::add(const std::string & s,
                          Atlas::Message::MapType & map) const
 {
     if (m_data.get() != 0) {
-        map[s] = m_data->getId();
+        Atlas::Message::MapType refMap;
+        refMap["$eid"] = m_data->getId();
+        map[s] = refMap;
     } else {
         map[s] = "";
     }
@@ -81,7 +90,9 @@ void EntityProperty::add(const std::string & s,
                          const Atlas::Objects::Entity::RootEntity & ent) const
 {
     if (m_data.get() != 0) {
-        ent->setAttr(s, m_data->getId());
+        Atlas::Message::MapType refMap;
+        refMap["$eid"] = m_data->getId();
+        ent->setAttr(s, refMap);
     } else {
         ent->setAttr(s, "");
     }

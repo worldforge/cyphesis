@@ -61,7 +61,9 @@ int OutfitProperty::get(Atlas::Message::Element & val) const
         if (item.get() == 0) {
             val_map[I->first] = "";
         } else {
-            val_map[I->first] = item->getId();
+            Atlas::Message::MapType refMap;
+            refMap["$eid"] = item->getId();
+            val_map[I->first] = refMap;
         }
     }
 
@@ -96,6 +98,17 @@ void OutfitProperty::set(const Atlas::Message::Element & val)
             LocatedEntity * e = static_cast<LocatedEntity*>(item.Ptr());
             assert(e != 0);
             m_data[key] = EntityRef(e);
+        } else if (item.isMap()) {
+            auto J = item.asMap().find("$eid");
+            if (J != item.asMap().end()) {
+                if (J->second.isString()) {
+                    const std::string & id = J->second.String();
+                    LocatedEntity * e = BaseWorld::instance().getEntity(id);
+                    if (e != 0) {
+                        m_data[key] = EntityRef(e);
+                    }
+                }
+            }
         } else {
             debug(std::cout << "Key " << key << " is of type "
                             << item.getType() << " when setting outfit"
@@ -120,7 +133,9 @@ void OutfitProperty::add(const std::string & key,
     for (; I != Iend; ++I) {
         const EntityRef & item = I->second;
         if (item.get() != 0) {
-            val_map[I->first] = item->getId();
+            Atlas::Message::MapType refMap;
+            refMap["$eid"] = item->getId();
+            val_map[I->first] = refMap;
         } else {
             val_map[I->first] = "";
         }
@@ -141,7 +156,9 @@ void OutfitProperty::add(const std::string & key,
     for (; I != Iend; ++I) {
         const EntityRef & item = I->second;
         if (item.get() != 0) {
-            val_map[I->first] = item->getId();
+            Atlas::Message::MapType refMap;
+            refMap["$eid"] = item->getId();
+            val_map[I->first] = refMap;
         } else {
             val_map[I->first] = "";
         }
