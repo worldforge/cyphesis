@@ -78,8 +78,8 @@ int main()
         PropertyBase * pb = new EntityProperty;
         pb->set(Atlas::Message::Element(&ent));
         assert(pb->get(val) == 0);
-        assert(val.isString());
-        assert(val.String() == ent.getId());
+        assert(val.isMap());
+        assert(val.asMap().find("$eid")->second == ent.getId());
         delete pb;
     }
 
@@ -161,8 +161,8 @@ int main()
 
         I = map.find(key);
         assert(I != map.end());
-        assert(I->second.isString());
-        assert(I->second.String() == ent.getId());
+        assert(I->second.isMap());
+        assert(I->second.asMap().find("$eid")->second == ent.getId());
         delete pb;
     }
 
@@ -183,8 +183,8 @@ int main()
 
         assert(arg->hasAttr(key));
         assert(arg->copyAttr(key, val) == 0);
-        assert(val.isString());
-        assert(val.String() == ent.getId());
+        assert(val.isMap());
+        assert(val.asMap().find("$eid")->second == ent.getId());
         delete pb;
     }
 

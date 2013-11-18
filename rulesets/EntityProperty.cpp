@@ -78,9 +78,14 @@ void EntityProperty::add(const std::string & s,
                          Atlas::Message::MapType & map) const
 {
     if (m_data.get() != 0) {
-        Atlas::Message::MapType refMap;
-        refMap["$eid"] = m_data->getId();
-        map[s] = refMap;
+        //The "id" attribute is special.
+        if (s == "id") {
+            map[s] = m_data->getId();
+        } else {
+            Atlas::Message::MapType refMap;
+            refMap["$eid"] = m_data->getId();
+            map[s] = refMap;
+        }
     } else {
         map[s] = "";
     }
@@ -90,9 +95,14 @@ void EntityProperty::add(const std::string & s,
                          const Atlas::Objects::Entity::RootEntity & ent) const
 {
     if (m_data.get() != 0) {
-        Atlas::Message::MapType refMap;
-        refMap["$eid"] = m_data->getId();
-        ent->setAttr(s, refMap);
+        //The "id" attribute is special.
+        if (s == "id") {
+            ent->setAttr(s , m_data->getId());
+        } else {
+            Atlas::Message::MapType refMap;
+            refMap["$eid"] = m_data->getId();
+            ent->setAttr(s, refMap);
+        }
     } else {
         ent->setAttr(s, "");
     }
