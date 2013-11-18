@@ -73,7 +73,38 @@ int SpawnEntity::spawnEntity(const std::string & type, const RootEntity & dsc)
         return -1;
     }
 
-    for (auto I : entityI->second) {
+    MapType& entityTemplate = entityI->second;
+    auto objtypeI = entityTemplate.find("objtype");
+    if (objtypeI != entityTemplate.end()
+            && objtypeI->second.asString() == "archetype") {
+        if (dsc->getObjtype() != "archetype") {
+            //if the template is an archetype, but the supplied entity isn't,
+            //we need to move the default attributes from the root entity to
+            //the first entity in the archetype
+            auto entitiesI = entityTemplate.find("entities");
+            if (entitiesI != entityTemplate.end() && entitiesI->second.isList()
+                    && !entitiesI->second.asList().empty()) {
+                auto& firstEntityElement = entitiesI->second.asList().front();
+                MapType& firstEntity = firstEntityElement.asMap();
+
+                MapType dscAttributes;
+                dsc->addToMessage(dscAttributes);
+                for (auto attributeEntry : dscAttributes) {
+                    //only move those entities that aren't defined in the archetype
+                    //(i.e. the archetype overrides what's sent)
+                    if (firstEntity.find(attributeEntry.first)
+                            == firstEntity.end()) {
+                        firstEntity.insert(attributeEntry);
+                        //once moved remove the attribute from the supplied entity
+                        dsc->removeAttr(attributeEntry.first);
+                    }
+                }
+            }
+        }
+    }
+
+
+    for (auto I : entityTemplate) {
         dsc->setAttr(I.first, I.second);
     }
 
