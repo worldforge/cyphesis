@@ -107,9 +107,9 @@ LocatedEntity * ArchetypeFactory::createEntity(const std::string & id,
                             childId));
             return nullptr;
         }
-        std::string childId;
-        long childIntId = newId(childId);
-        LocatedEntity* childEntity = createEntity(childId, childIntId,
+        std::string childEntityId;
+        long childIntId = newId(childEntityId);
+        LocatedEntity* childEntity = createEntity(childEntityId, childIntId,
                 entityI->second, entity, entities);
         if (childEntity == nullptr) {
             log(ERROR,
