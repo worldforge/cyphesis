@@ -262,30 +262,23 @@ void ArchetypeFactory::processResolvedAttributes(
     }
 }
 
+
 bool ArchetypeFactory::isEntityRefAttribute(
         const Atlas::Message::Element& attr) const
 {
-    if (attr.isString()) {
-        //This is a bit naive, but will work for now: we'll just
-        //check if the first character is '@'
-        const std::string& attr_string = attr.asString();
-        if (!attr_string.empty() && attr_string[0] == '@') {
+    if (attr.isMap()) {
+        auto entityRefI = attr.asMap().find("$eid");
+        if (entityRefI != attr.asMap().end() && entityRefI->second.isString()) {
             return true;
         }
-    }
-    if (attr.isMap()) {
         //If it's a map we need to process all child elements too
         for (auto& I : attr.asMap()) {
-            if (isEntityRefAttribute(I.second)) {
-                return true;
-            }
+            return isEntityRefAttribute(I.second);
         }
     } else if (attr.isList()) {
         //If it's a list we need to process all child elements too
         for (auto& I : attr.asList()) {
-            if (isEntityRefAttribute(I)) {
-                return true;
-            }
+            return isEntityRefAttribute(I);
         }
     }
     return false;
@@ -295,18 +288,16 @@ void ArchetypeFactory::resolveEntityReference(
         std::map<std::string, EntityCreation>& entities,
         Atlas::Message::Element& attr)
 {
-    //Only handle strings
-    if (attr.isString()) {
-        const std::string& attr_string = attr.asString();
-        //This is a bit naive, but will work for now: we'll just
-        //check if the first character is '@'
-        if (!attr_string.empty() && attr_string[0] == '@') {
-            std::string id = attr_string.substr(1, attr_string.length() - 1);
+    if (attr.isMap()) {
+        auto entityRefI = attr.asMap().find("$eid");
+        if (entityRefI != attr.asMap().end() && entityRefI->second.isString()) {
+            const std::string& id = entityRefI->second.asString();
             auto resolvedI = entities.find(id);
             if (resolvedI != entities.end()) {
                 if (resolvedI->second.createdEntity != nullptr) {
                     attr = Atlas::Message::Element(
                             resolvedI->second.createdEntity);
+                    return;
                 } else {
                     log(WARNING,
                             String::compose(
@@ -319,7 +310,6 @@ void ArchetypeFactory::resolveEntityReference(
                                 id));
             }
         }
-    } else if (attr.isMap()) {
         //If it's a map we need to process all child elements too
         for (auto& I : attr.asMap()) {
             resolveEntityReference(entities, I.second);

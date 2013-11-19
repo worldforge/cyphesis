@@ -28,7 +28,8 @@
 /// \brief Concrete factory template for creating in-game entity objects through archetypes.
 ///
 /// An archetype contains one or many entities along with optional thoughts (for NPCs etc).
-/// Attributes can refer to other entities by prefixing their id with a "@" sign.
+/// Attributes can refer to other entities by using the entity reference format, whereby a map
+/// with a string entry with the key "$eid" is used.
 /// If no "objtype" is specified in the entity sent to newEntity the data therein is handled
 /// as entity initialization data. The properties specified (except "parents") will all be
 /// applied to the first entity created.
@@ -89,8 +90,9 @@ class ArchetypeFactory: public EntityKit
         /**
          * @brief Checks if the attribute references an unresolved entity.
          *
-         * Entities within the archetype can be referenced through prefixing their local
-         * id with a "@" character. Such attributes however cannot be set until all of the
+         * Entities within the archetype can be referenced by using the entity reference
+         * format, whereby a map with a string entry with the key "$eid" is used.
+         * Such attributes however cannot be set until all of the
          * entities have been created, and their final ids have been resolved. This method
          * checks if any attribute is referring to an unresolved entity, and thus needs to
          * be resolved first.
@@ -102,8 +104,8 @@ class ArchetypeFactory: public EntityKit
         /**
          * @brief Resolves references to unresolved entities.
          *
-         * This is done recursively. Any String element which refers to an
-         * unresolved entity (i.e. is prefixed with "@") will be replaced with
+         * This is done recursively. Any Map element which a string entry with the
+         * key "$eid" will be replaced with
          * a Ptr element wrapping a LocatedEntity instance (given that the
          * reference is correct).
          *

@@ -23,7 +23,9 @@
                     <string>coin6</string>
                 </list>
                 <map name="outfit">
-                    <string name="legs">@trousers</string>
+                    <map name="legs">
+                        <string name="$eid">trousers</string>
+                    </map>
                 </map>
                 <map name="statistics">
                     <float name="attack">25</float>
@@ -133,11 +135,21 @@
                     <string>coin6</string>
                 </list>
                 <map name="outfit">
-                    <string name="back">@cloak</string>
-                    <string name="body">@shirt</string>
-                    <string name="feet">@boots</string>
-                    <string name="head">@hat</string>
-                    <string name="legs">@trousers</string>
+                    <map name="back">
+                        <string name="$eid">cloak</string>
+                    </map>
+                    <map name="body">
+                        <string name="$eid">shirt</string>
+                    </map>
+                    <map name="feet">
+                        <string name="$eid">boots</string>
+                    </map>
+                    <map name="head">
+                        <string name="$eid">hat</string>
+                    </map>
+                    <map name="legs">
+                        <string name="$eid">trousers</string>
+                    </map>
                 </map>
                 <map name="statistics">
                     <float name="attack">25</float>
@@ -253,12 +265,22 @@
                     <string>coin6</string>
                 </list>
                 <map name="outfit">
-                    <string name="body">@shirt</string>
-                    <string name="feet">@boots</string>
-                    <string name="head">@hat</string>
-                    <string name="legs">@trousers</string>
+                    <map name="body">
+                        <string name="$eid">shirt</string>
+                    </map>
+                    <map name="feet">
+                        <string name="$eid">boots</string>
+                    </map>
+                    <map name="head">
+                        <string name="$eid">hat</string>
+                    </map>
+                    <map name="legs">
+                        <string name="$eid">trousers</string>
+                    </map>
                 </map>
-                <string name="right_hand_wield">@sword</string>
+                <map name="right_hand_wield">
+                    <string name="$eid">sword</string>
+                </map>
                 <map name="statistics">
                     <float name="attack">40</float>
                     <float name="defend">40</float>
@@ -394,7 +416,9 @@
                 <list name="contains">
                     <string>axe</string>
                 </list>
-                <string name="right_hand_wield">@axe</string>
+                <map name="right_hand_wield">
+                    <string name="$eid">axe</string>
+                </map>
                 <list name="parents">
                     <string>goblin</string>
                 </list>
