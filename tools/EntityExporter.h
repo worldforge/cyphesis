@@ -23,6 +23,7 @@
 #include "common/ClientTask.h"
 
 #include <Atlas/Objects/Root.h>
+#include <Atlas/Objects/RootOperation.h>
 #include <Atlas/Objects/SmartPtr.h>
 #include <unordered_map>
 
