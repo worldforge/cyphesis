@@ -55,6 +55,25 @@ using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
 
+/**
+ * \brief Acts as a RAII scoped guard for an entity.
+ */
+struct EntityScopedRef {
+    LocatedEntity& entity;
+    explicit EntityScopedRef(LocatedEntity& e);
+    ~EntityScopedRef();
+};
+
+inline EntityScopedRef::EntityScopedRef(LocatedEntity & e) : entity(e)
+{
+    entity.incRef();
+}
+
+inline EntityScopedRef::~EntityScopedRef()
+{
+    entity.decRef();
+}
+
 /// \brief Type to hold an operation and the Entity it is from for efficiency
 /// when broadcasting.
 struct OpQueEntry {
@@ -479,6 +498,9 @@ bool WorldRouter::broadcastPerception(const Operation & op) const
 /// dispatch.
 void WorldRouter::deliverTo(const Operation & op, LocatedEntity & ent)
 {
+    //Make sure the entity isn't dereferenced while in this loop.
+    //This is mainly in place to handle relayed deletion ops.
+    EntityScopedRef referenceGuard(ent);
     //If the world is suspended and the op is a tick, we should store it
     //(to be resent when the world is resumed) and not process it now.
     if (m_isSuspended) {
