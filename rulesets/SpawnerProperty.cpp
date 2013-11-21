@@ -28,6 +28,7 @@
 #include "common/const.h"
 #include "common/BaseWorld.h"
 #include "common/Inheritance.h"
+#include "common/debug.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
@@ -268,7 +269,7 @@ void SpawnerProperty::createNewEntity(LocatedEntity * e, const Operation & op,
     create->setArgs1(create_arg);
     res.push_back(create);
 
-    log(NOTICE, String::compose("Spawner belonging to entity %1 creating new"
-            " entity of type %2", e->getId(), m_type));
+    debug(log(NOTICE, String::compose("Spawner belonging to entity %1 creating new"
+            " entity of type %2", e->getId(), m_type)););
 }
 
