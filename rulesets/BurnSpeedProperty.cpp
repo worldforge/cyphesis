@@ -86,6 +86,7 @@ HandlerResult BurnSpeedProperty::burn_handler(LocatedEntity * e,
         mass_attr = 1.f;
     }
     status -= (consumed / mass_attr.Float());
+    status_prop->apply(e);
 
     Update update;
     update->setTo(e->getId());
