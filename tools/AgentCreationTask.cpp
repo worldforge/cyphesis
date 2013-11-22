@@ -33,7 +33,8 @@
 
 AgentCreationTask::AgentCreationTask(const std::string& account_id,
         const std::string& agent_type, std::string& agent_id) :
-        m_account_id(account_id), m_agent_type(agent_type), m_agent_id(agent_id)
+        m_account_id(account_id), m_agent_type(agent_type), m_agent_id(
+                agent_id), m_serial_no(0)
 {
 }
 
