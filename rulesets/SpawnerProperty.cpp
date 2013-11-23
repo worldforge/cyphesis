@@ -49,6 +49,7 @@ using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Tick;
 using Atlas::Objects::Factories;
 using Atlas::Objects::smart_dynamic_cast;
+using String::compose;
 
 SpawnerProperty::SpawnerProperty() :
         m_radius(0.0f), m_minamount(0), m_interval(0), m_mode_external(true)
@@ -229,6 +230,11 @@ void SpawnerProperty::createNewEntity(LocatedEntity * e, const Operation & op,
 
     WFMath::MTRand& rand = WFMath::MTRand::instance;
     if (m_mode_external) {
+        if (!e->m_location.pos().isValid()) {
+            log(ERROR,
+                    "Tried to spawn entity for which parent has no valid position.");
+            return;
+        }
         //randomize position and rotation
         float angle = rand.randf(WFMath::numeric_constants<float>::pi() * 2);
         //place it between 0 and 2 meters away
@@ -241,7 +247,6 @@ void SpawnerProperty::createNewEntity(LocatedEntity * e, const Operation & op,
         if (m_radius != 0.0f) {
             distance = std::min(m_radius, distance);
         }
-
 
         float x = (distance * std::cos(angle));
         float y = (distance * std::sin(angle));
@@ -258,6 +263,8 @@ void SpawnerProperty::createNewEntity(LocatedEntity * e, const Operation & op,
             float y = rand.rand(bbox.highCorner().y() - bbox.lowCorner().y())
                     + bbox.lowCorner().y();
             ::addToEntity(WFMath::Point<3>(x, y, 0), create_arg->modifyPos());
+        } else {
+            ::addToEntity(WFMath::Point<3>::ZERO(), create_arg->modifyPos());
         }
     }
     float rotation = rand.randf(WFMath::numeric_constants<float>::pi() * 2);
@@ -269,7 +276,8 @@ void SpawnerProperty::createNewEntity(LocatedEntity * e, const Operation & op,
     create->setArgs1(create_arg);
     res.push_back(create);
 
-    debug(log(NOTICE, String::compose("Spawner belonging to entity %1 creating new"
-            " entity of type %2", e->getId(), m_type)););
+    debug(log(NOTICE, compose("Spawner belonging to entity %1 creating new"
+            " entity of type %2", e->getId(), m_type))
+    ;);
 }
 
