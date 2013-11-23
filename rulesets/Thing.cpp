@@ -61,7 +61,7 @@ using Atlas::Objects::Entity::RootEntity;
 
 static const bool debug_flag = false;
 
-/// \brief Constructor for physical or tangiable entities.
+/// \brief Constructor for physical or tangible entities.
 Thing::Thing(const std::string & id, long intId) :
        Entity(id, intId)
 {
@@ -85,17 +85,20 @@ void Thing::DeleteOperation(const Operation & op, OpVector & res)
     // The actual destruction and removal of this entity will be handled
     // by the WorldRouter
 
-    //We need to send a sight operation directly to the entity.
-    //The reason is that else the entity will be deleted before it can receive the broadcast Sight
-    //of the Delete op, which will leave any external clients hanging.
-    Sight sToEntity;
-    sToEntity->setArgs1(op);
-    sToEntity->setTo(getId());
-    operation(sToEntity, res);
+    if (isPerceptive()) {
+        //We need to send a sight operation directly to the entity.
+        //The reason is that else the entity will be deleted before it can receive the broadcast Sight
+        //of the Delete op, which will leave any external clients hanging.
+        Sight sToEntity;
+        sToEntity->setArgs1(op);
+        sToEntity->setTo(getId());
+        operation(sToEntity, res);
+    }
 
     Sight s;
     s->setArgs1(op);
     res.push_back(s);
+
     Entity::DeleteOperation(op, res);
 }
 
