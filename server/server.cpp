@@ -421,9 +421,12 @@ int main(int argc, char ** argv)
                 //require some rewriting of code).
                 log(INFO,
                         compose("Trying to import world from %1.", importPath));
+                std::stringstream ss;
+                ss << PREFIX "/bin/cyimport --resume \"" << importPath  + "\"";
+                std::string command = ss.str();
                 std::thread importer(
                         [=]() {
-                            int result = std::system((std::string(PREFIX "/bin/cyimport \"") + importPath + "\"").c_str());
+                            int result = std::system(command.c_str());
                             if (result == 0) {
                                 log(INFO, "Imported world into empty server.");
                             } else {
