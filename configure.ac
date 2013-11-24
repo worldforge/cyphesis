@@ -499,6 +499,7 @@ AC_CONFIG_FILES([
     client/Makefile
     tools/Makefile
     data/Makefile
+    data/cyphesis.vconf
     data/acorn/Makefile
     data/deeds/Makefile
     data/mars/Makefile
@@ -511,5 +512,6 @@ AC_CONFIG_FILES([
     autopackage/default.apspec
     Doxyfile
     Doxyfile-python
+    
 ])
 AC_OUTPUT
