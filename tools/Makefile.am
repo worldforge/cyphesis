@@ -238,7 +238,8 @@ cyexport_LDADD = $(top_builddir)/common/operations.o \
                  $(TOOL_LIBS)
 
 cyimport_SOURCES = cyimport.cpp EntityImporterBase.cpp  EntityImporterBase.h \
-                   EntityImporter.cpp EntityImporter.h AgentCreationTask.cpp AgentCreationTask.h
+                   EntityImporter.cpp EntityImporter.h AgentCreationTask.cpp AgentCreationTask.h \
+                   EntityTraversalTask.cpp EntityTraversalTask.h
 
 cyimport_LDADD = $(top_builddir)/common/operations.o \
                  $(top_builddir)/common/client_socket.o \
