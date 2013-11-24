@@ -228,8 +228,7 @@ int main(int argc, char ** argv)
     // Create commserver instance that will handle connections from clients.
     // The commserver will create the other server related objects, and the
     // world object pair (World + WorldRouter), and initialise the admin
-    // account. The primary ruleset name is passed in so it
-    // can be stored and queried by clients.
+    // account.
     CommServer * commServer = new CommServer;
 
     if (commServer->setup() != 0) {
