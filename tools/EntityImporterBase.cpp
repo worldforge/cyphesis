@@ -310,7 +310,7 @@ void EntityImporterBase::sendMinds()
             thinkOp->setFrom(mAvatarId);
             thinkOp->setSerialno(newSerialNumber());
             mStats.mindsProcessedCount++;
-            S_LOG_INFO("Restoring mind of " << mind.first);
+            S_LOG_VERBOSE("Restoring mind of " << mind.first);
             mThoughtOpsInTransit++;
 
             sigc::slot<void, const Operation&> slot = sigc::mem_fun(*this, &EntityImporterBase::operationThinkResult);

@@ -202,7 +202,7 @@ int main(int argc, char ** argv)
             }
         }
 
-        std::cout << "Starting import" << std::flush;
+        std::cout << "Starting import." << std::endl << std::flush;
 
         //Ownership of this is transferred to the bridge when it's run, so we shouldn't delete it
         auto importer = new EntityImporter(accountId, agent_id);
@@ -212,7 +212,7 @@ int main(int argc, char ** argv)
             std::cerr << "Could not import." << std::endl << std::flush;
             return -1;
         }
-        std::cout << " done." << std::endl << std::flush;
+        std::cout << "Import done." << std::endl << std::flush;
         return 0;
     }
 

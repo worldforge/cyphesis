@@ -419,22 +419,22 @@ int main(int argc, char ** argv)
                 //Populate the server through separate process (mainly because it's easier as we've
                 //already written the importer tool; we might also do it in-process, but that would
                 //require some rewriting of code).
-                log(NOTICE,
+                log(INFO,
                         compose("Trying to import world from %1.", importPath));
                 std::thread importer(
                         [=]() {
-                            int result = std::system((std::string(PREFIX "/bin/cyimport ") + importPath).c_str());
+                            int result = std::system((std::string(PREFIX "/bin/cyimport \"") + importPath + "\"").c_str());
                             if (result == 0) {
-                                log(NOTICE, "Imported world into empty server.");
+                                log(INFO, "Imported world into empty server.");
                             } else {
-                                log(NOTICE, "No world imported.");
+                                log(INFO, "No world imported.");
                             }
                         });
                 importer.detach();
             }
         } else {
             log(NOTICE,
-                    compose("Not importing as %1 could not be found",
+                    compose("Not importing as \"%1\" could not be found",
                             importPath));
             file.close();
         }
