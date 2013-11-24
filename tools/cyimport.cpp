@@ -53,6 +53,8 @@ BOOL_OPTION(_clear, false, "", "clear",
         "Delete all existing entities before importing.")
 BOOL_OPTION(_merge, false, "", "merge",
         "Try to merge contents in export with existing entities.")
+BOOL_OPTION(_resume, false, "", "resume",
+        "If the world is suspended, resume after import.")
 
 static void usage(char * prg)
 {
@@ -132,6 +134,8 @@ int main(int argc, char ** argv)
         bool clear = varconf::Config::inst()->find("", "clear");
         bool merge = varconf::Config::inst()->find("", "merge");
 
+        bool resume = varconf::Config::inst()->find("", "resume");
+
         if (clear && merge) {
             std::cerr
                     << "'--clear' and '--merge' are mutually exclusive; you can't specify both."
@@ -207,11 +211,14 @@ int main(int argc, char ** argv)
         //Ownership of this is transferred to the bridge when it's run, so we shouldn't delete it
         auto importer = new EntityImporter(accountId, agent_id);
 
+        importer->setResume(resume);
+
         bridge.runTask(importer, filename);
         if (bridge.pollUntilTaskComplete() != 0) {
             std::cerr << "Could not import." << std::endl << std::flush;
             return -1;
         }
+
         std::cout << "Import done." << std::endl << std::flush;
         return 0;
     }
