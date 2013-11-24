@@ -707,9 +707,12 @@ void EntityImporterBase::sightArrived(const Operation & op, OpVector & res)
         }
         if (arg->isDefaultId()) {
             S_LOG_WARNING("Corrupted top level entity: no id");
+            cancel();
+            return;
+        } else {
+            getEntity(arg->getId(), res);
         }
 
-        getEntity(arg->getId(), res);
 
         // Expecting sight of world root
         break;
