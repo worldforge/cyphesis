@@ -81,6 +81,15 @@ public:
      */
     std::unordered_map<long int, Relay> m_relays;
 
+    /**
+     * @brief Clears the world of all entities and properties.
+     *
+     * Once this method has been run the server should be reset back to
+     * a "clean" state.
+     * @param res
+     */
+    void clearWorld(OpVector & res);
+
 };
 
 #endif // RULESETS_WORLD_H

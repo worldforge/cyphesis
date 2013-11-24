@@ -20,6 +20,7 @@
 
 #include "TerrainProperty.h"
 #include "CalendarProperty.h"
+#include "AtlasProperties.h"
 
 #include "common/BaseWorld.h"
 #include "common/log.h"
@@ -50,6 +51,7 @@ using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Nourish;
+using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
 
@@ -185,7 +187,12 @@ void World::DeleteOperation(const Operation & op, OpVector & res)
         if (!arg->isDefaultId()) {
             auto entity = BaseWorld::instance().getEntity(arg->getId());
             if (entity == this) {
-                log(ERROR, "World::DeleteOperation cannot delete world.");
+                Atlas::Message::Element force;
+                if (arg->copyAttr("force", force) == 0 && force.isInt() && force.asInt() == 1) {
+                    clearWorld(res);
+                } else {
+                    log(ERROR, "World::DeleteOperation cannot delete world unless 'force' flag is set.");
+                }
             } else {
                 BaseWorld::instance().delEntity(entity);
             }
@@ -196,6 +203,55 @@ void World::DeleteOperation(const Operation & op, OpVector & res)
         assert(m_location.m_loc == 0);
         // Deleting has no effect.
     }
+}
+
+void World::clearWorld(OpVector & res) {
+    log(INFO, "Clearing world; deleting all entities.");
+
+    OpVector ignoredRes;
+    auto& baseWorld = BaseWorld::instance();
+    if (m_contains) {
+        while (!m_contains->empty()) {
+
+            LocatedEntity* entity = *m_contains->begin();
+
+            if (entity->isPerceptive()) {
+                //Send a sight of a delete op to the entity so that it knows it has been deleted.
+                Delete delOp;
+                delOp->setTo(entity->getId());
+
+                Anonymous delArg;
+                delArg->setId(entity->getId());
+                delOp->setArgs1(delArg);
+
+                Sight sToEntity;
+                sToEntity->setArgs1(delOp);
+                sToEntity->setTo(entity->getId());
+                entity->operation(sToEntity, ignoredRes);
+            }
+            baseWorld.delEntity(entity);
+        }
+    }
+
+    //Remove all properties except for "id"
+    auto propIter = m_properties.begin();
+    while(propIter != m_properties.end())
+    {
+        if (propIter->first != "id") {
+            auto prop = propIter->second;
+            delete prop;
+            m_properties.erase(propIter++);
+        } else {
+            ++propIter;
+        }
+    }
+
+    m_properties["terrain"] = new TerrainProperty();
+    m_properties["calendar"] = new CalendarProperty();
+    delete m_contains;
+    m_contains = nullptr;
+
+    log(INFO, "World cleared of all entities.");
 }
 
 void World::RelayOperation(const Operation & op, OpVector & res)
