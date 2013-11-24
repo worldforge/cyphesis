@@ -40,6 +40,7 @@ class TestWorld : public BaseWorld {
     void delEntity(LocatedEntity * obj) {}
     int createSpawnPoint(const Atlas::Message::MapType & data,
                          LocatedEntity *) { return 0; }
+    int removeSpawnPoint(LocatedEntity *) {return 0; }
     int getSpawnList(Atlas::Message::ListType & data) { return 0; }
     LocatedEntity * spawnNewEntity(const std::string & name,
                                    const std::string & type,

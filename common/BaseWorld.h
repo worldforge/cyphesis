@@ -132,6 +132,13 @@ class BaseWorld {
     virtual int createSpawnPoint(const Atlas::Message::MapType & data,
                                  LocatedEntity * ent) = 0;
 
+    /**
+     * \brief Removes a previously registered spawn point.
+     * @param ent The entity to which the spawn point was registered.
+     * @return 0 if successful
+     */
+    virtual int removeSpawnPoint(LocatedEntity * ent) = 0;
+
     virtual int getSpawnList(Atlas::Message::ListType & data) = 0;
 
     virtual LocatedEntity * spawnNewEntity(

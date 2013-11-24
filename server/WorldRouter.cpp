@@ -156,9 +156,8 @@ WorldRouter::~WorldRouter()
     for (EntityDict::const_iterator J = m_eobjects.begin(); J != Jend; ++J) {
         J->second->decRef();
     }
-    SpawnDict::const_iterator Kend = m_spawns.end();
-    for (SpawnDict::const_iterator K = m_spawns.begin(); K != Kend; ++K) {
-        delete K->second;
+    for (auto entry : m_spawns) {
+        delete entry.second.first;
     }
     // This should be deleted here rather than in the base class because
     // we created it, and BaseWorld should not even know what it is.
@@ -326,23 +325,34 @@ int WorldRouter::createSpawnPoint(const MapType & data, LocatedEntity * ent)
     const std::string & name = I->second.String();
     SpawnDict::iterator J = m_spawns.find(name);
     if (J != m_spawns.end()) {
-        Spawn * old = J->second;
-        J->second = new_spawn;
+        Spawn * old = J->second.first;
+        J->second.first = new_spawn;
+        J->second.second = ent->getId();
         delete old;
     } else {
-        m_spawns.insert(std::make_pair(name, new_spawn));
+        m_spawns.insert(std::make_pair(name, std::make_pair(new_spawn, ent->getId())));
     }
     return 0;
 }
 
+int WorldRouter::removeSpawnPoint(LocatedEntity * ent)
+{
+    for (auto I = m_spawns.begin(); I != m_spawns.end(); ++I) {
+        if (I->second.second == ent->getId()) {
+            m_spawns.erase(I);
+            return 0;
+        }
+    }
+    return 1;
+}
+
+
 int WorldRouter::getSpawnList(Atlas::Message::ListType & data)
 {
-    SpawnDict::const_iterator I = m_spawns.begin();
-    SpawnDict::const_iterator Iend = m_spawns.end();
-    for (; I != Iend; ++I) {
+    for (auto entry : m_spawns) {
         MapType spawn;
-        spawn.insert(std::make_pair("name", I->first));
-        I->second->addToMessage(spawn);
+        spawn.insert(std::make_pair("name", entry.first));
+        entry.second.first->addToMessage(spawn);
         data.push_back(spawn);
     }
     return 0;
@@ -357,7 +367,7 @@ LocatedEntity * WorldRouter::spawnNewEntity(const std::string & name,
         log(ERROR, String::compose("Spawn not found %1", name));
         return 0;
     }
-    Spawn * s = I->second;
+    Spawn * s = I->second.first;
     int ret = s->spawnEntity(type, desc);
     if (ret != 0) {
         log(ERROR, String::compose("Spawn not permitting %1", type));
@@ -379,7 +389,7 @@ int WorldRouter::moveToSpawn(const std::string & name, Location& location)
         log(ERROR, String::compose("Spawn not found %1", name));
         return -10;
     }
-    return I->second->placeInSpawn(location);
+    return I->second.first->placeInSpawn(location);
 }
 
 

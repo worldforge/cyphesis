@@ -32,7 +32,7 @@ struct OpQueEntry;
 
 typedef std::list<OpQueEntry> OpQueue;
 typedef std::set<LocatedEntity *> EntitySet;
-typedef std::map<std::string, Spawn *> SpawnDict;
+typedef std::map<std::string, std::pair<Spawn *, std::string>> SpawnDict;
 
 /// \brief WorldRouter encapsulates the game world running in the server.
 ///
@@ -74,6 +74,7 @@ class WorldRouter : public BaseWorld {
                                  const Atlas::Objects::Entity::RootEntity &);
     void delEntity(LocatedEntity * obj);
     int createSpawnPoint(const Atlas::Message::MapType &, LocatedEntity *);
+    int removeSpawnPoint(LocatedEntity * ent);
     int getSpawnList(Atlas::Message::ListType & data);
     LocatedEntity * spawnNewEntity(const std::string &,
                                    const std::string &,

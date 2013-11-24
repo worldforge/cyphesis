@@ -267,6 +267,11 @@ int WorldRouter::createSpawnPoint(const MapType & data, LocatedEntity * ent)
     return 0;
 }
 
+int WorldRouter::removeSpawnPoint(LocatedEntity *)
+{
+    return 0;
+}
+
 int WorldRouter::getSpawnList(Atlas::Message::ListType & data)
 {
     return 0;
