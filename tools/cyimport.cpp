@@ -25,11 +25,34 @@
 
 #include "EntityImporter.h"
 #include "AgentCreationTask.h"
+#include "EntityTraversalTask.h"
 
 #include <varconf/config.h>
 
+#include <Atlas/Objects/Operation.h>
+
 #include <iostream>
 #include <cstdlib>
+
+using Atlas::Objects::Entity::RootEntity;
+using Atlas::Objects::Root;
+using Atlas::Objects::smart_dynamic_cast;
+using Atlas::Objects::Entity::Anonymous;
+using Atlas::Objects::Entity::RootEntity;
+using Atlas::Objects::Operation::Talk;
+using Atlas::Objects::Operation::Get;
+using Atlas::Message::Element;
+using Atlas::Message::ListType;
+using Atlas::Message::MapType;
+
+//Note that we check for the existence of these keys instead
+//of inspecting the registered variables, since we want to make it easy
+//for users, just having them supply the flag rather than setting the
+//value to 1. I.e. rather "--clear" than "--clear=1"
+BOOL_OPTION(_clear, false, "", "clear",
+        "Delete all existing entities before importing.")
+BOOL_OPTION(_merge, false, "", "merge",
+        "Try to merge contents in export with existing entities.")
 
 static void usage(char * prg)
 {
@@ -89,7 +112,7 @@ int main(int argc, char ** argv)
         auto loginInfo = bridge.getInfoReply();
         const std::string accountId = loginInfo->getId();
 
-        std::cout << "Attempting creation of agent" << std::flush;
+        std::cout << "Attempting creation of agent " << std::flush;
         std::string agent_id;
         bridge.runTask(new AgentCreationTask(accountId, "creator", agent_id),
                 "");
@@ -103,6 +126,81 @@ int main(int argc, char ** argv)
             return -1;
         }
         std::cout << "done." << std::endl << std::flush;
+
+        //Check to see if the world is empty. This is done by looking for any entity that's not
+        //the root one and that isn't transient.
+        bool clear = varconf::Config::inst()->find("", "clear");
+        bool merge = varconf::Config::inst()->find("", "merge");
+
+        if (clear && merge) {
+            std::cerr
+                    << "'--clear' and '--merge' are mutually exclusive; you can't specify both."
+                    << std::endl << std::flush;
+            return -1;
+        }
+
+        if (!clear && !merge) {
+            bool isPopulated = false;
+            std::function<bool(const RootEntity&)> visitor =
+                    [&](const RootEntity& entity)->bool {
+                        if (entity->getId() != "0" && !entity->hasAttr("transient")) {
+                            isPopulated = true;
+                            return false;
+                        }
+                        return true;
+                    };
+
+            EntityTraversalTask* populationCheck = new EntityTraversalTask(
+                    accountId, visitor);
+            bridge.runTask(populationCheck, "0");
+            if (bridge.pollUntilTaskComplete() != 0) {
+                std::cerr
+                        << "Error when checking if the server already is populated."
+                        << std::endl << std::flush;
+                return -1;
+            }
+
+            if (isPopulated) {
+                std::cerr << "Server is already populated, aborting.\n"
+                        "Either use the "
+                        "'--clear' flag to first clear it. This "
+                        "will delete all existing entities.\nOr "
+                        "use the '--merge' flag to merge the "
+                        "entities in the export with the existing"
+                        " ones. The results of this are not always"
+                        " predictable though." << std::endl << std::flush;
+                return -1;
+            }
+        }
+
+        if (clear) {
+            std::cout << "Clearing world first." << std::endl << std::flush;
+            //Tell the world to clear itself
+            Anonymous deleteArg;
+            deleteArg->setId("0");
+            deleteArg->setAttr("force", 1);
+            Atlas::Objects::Operation::Delete deleteOp;
+            deleteOp->setTo("0");
+            deleteOp->setFrom(agent_id);
+            deleteOp->setArgs1(deleteArg);
+
+            bridge.send(deleteOp);
+
+            //Once the world has been cleared we need to create a new agent,
+            //since the first one got deleted
+            bridge.runTask(
+                    new AgentCreationTask(accountId, "creator", agent_id), "");
+            if (bridge.pollUntilTaskComplete() != 0) {
+                std::cerr << "Could not create agent." << std::endl
+                        << std::flush;
+                return -1;
+            }
+            if (agent_id == "") {
+                std::cerr << "Could not create agent; no id received."
+                        << std::endl << std::flush;
+                return -1;
+            }
+        }
 
         std::cout << "Starting import" << std::flush;
 
