@@ -63,10 +63,19 @@ LocatedEntity::LocatedEntity(const std::string & id, long intId) :
 
 LocatedEntity::~LocatedEntity()
 {
-    PropertyDict::const_iterator I = m_properties.begin();
-    PropertyDict::const_iterator Iend = m_properties.end();
-    for (; I != Iend; ++I) {
-        delete I->second;
+
+    if (m_type) {
+        for (auto entry : m_type->defaults()) {
+            //Only remove if there's no instance specific property.
+            if (m_properties.find(entry.first) == m_properties.end()) {
+                entry.second->remove(this);
+            }
+        }
+    }
+
+    for (auto entry : m_properties) {
+        entry.second->remove(this);
+        delete entry.second;
     }
     delete m_script;
     if (m_location.m_loc != 0) {

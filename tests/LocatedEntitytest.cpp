@@ -41,6 +41,7 @@ class LocatedEntitytest : public Cyphesis::TestBase
 {
   private:
     LocatedEntity * m_entity;
+    static bool m_TestProperty_remove_called;
   public:
     LocatedEntitytest();
 
@@ -48,12 +49,51 @@ class LocatedEntitytest : public Cyphesis::TestBase
     void teardown();
 
     void test_setProperty();
+    void test_removeAttr();
     void test_coverage();
+
+    class TestProperty : public PropertyBase
+    {
+      public:
+        virtual void remove(LocatedEntity *);
+        virtual TestProperty * copy() const;
+        virtual int get(Atlas::Message::Element&) const;
+        virtual void set(const Atlas::Message::Element&);
+    };
+
+    static void TestProperty_remove_called()
+    {
+        m_TestProperty_remove_called = true;
+    }
+
 };
+
+bool LocatedEntitytest::m_TestProperty_remove_called;
+
+void LocatedEntitytest::TestProperty::remove(LocatedEntity *)
+{
+    LocatedEntitytest::TestProperty_remove_called();
+}
+
+int LocatedEntitytest::TestProperty::get(Atlas::Message::Element&) const
+{
+    return 0;
+}
+
+void LocatedEntitytest::TestProperty::set(const Atlas::Message::Element&)
+{
+}
+
+
+LocatedEntitytest::TestProperty * LocatedEntitytest::TestProperty::copy() const
+{
+    return new LocatedEntitytest::TestProperty(*this);
+}
 
 LocatedEntitytest::LocatedEntitytest()
 {
     ADD_TEST(LocatedEntitytest::test_setProperty);
+    ADD_TEST(LocatedEntitytest::test_removeAttr);
     ADD_TEST(LocatedEntitytest::test_coverage);
 }
 
@@ -79,6 +119,22 @@ void LocatedEntitytest::test_setProperty()
 
     ASSERT_TRUE(m_entity->m_properties.find(test_property) !=
                 m_entity->m_properties.end());
+}
+
+void LocatedEntitytest::test_removeAttr()
+{
+    std::string test_property("test_property");
+    LocatedEntity* entity = new LocatedEntityTest("1", 1);
+
+    ASSERT_TRUE(!m_TestProperty_remove_called);
+
+    PropertyBase * tp = new TestProperty();
+
+    entity->setProperty(test_property, tp);
+
+    ASSERT_TRUE(!m_TestProperty_remove_called);
+    delete entity;
+    ASSERT_TRUE(m_TestProperty_remove_called);
 }
 
 void LocatedEntitytest::test_coverage()
@@ -387,6 +443,10 @@ PropertyBase::~PropertyBase()
 }
 
 void PropertyBase::install(LocatedEntity *, const std::string & name)
+{
+}
+
+void PropertyBase::remove(LocatedEntity *)
 {
 }
 

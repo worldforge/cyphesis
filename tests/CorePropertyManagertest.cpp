@@ -1217,6 +1217,10 @@ void PropertyBase::install(LocatedEntity *, const std::string & name)
 {
 }
 
+void PropertyBase::remove(LocatedEntity *)
+{
+}
+
 void PropertyBase::apply(LocatedEntity *)
 {
 }
@@ -1630,6 +1634,10 @@ SpawnProperty * SpawnProperty::copy() const
 }
 
 void SpawnProperty::apply(LocatedEntity * ent)
+{
+}
+
+void SpawnProperty::remove(LocatedEntity * ent)
 {
 }
 

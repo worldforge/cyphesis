@@ -50,10 +50,15 @@ class PropertyBase {
     ///
     /// Called whenever an Entity gains this property for the first time
     virtual void install(LocatedEntity *, const std::string &);
+    /// \brief Remove this property from an entity.
+    ///
+    /// Called whenever the property is removed or the entity is shutting down.
+    virtual void remove(LocatedEntity *);
     /// \brief Apply whatever effect this property has on an Entity
     ///
     /// Called whenever the value of this property should affect an Entity
     virtual void apply(LocatedEntity *);
+
 
     /// \brief Copy the value of the property into an Atlas Message
     virtual int get(Atlas::Message::Element & val) const = 0;
