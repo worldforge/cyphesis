@@ -41,3 +41,8 @@ void SpawnProperty::apply(LocatedEntity * ent)
 {
     BaseWorld::instance().createSpawnPoint(m_data, ent);
 }
+
+void SpawnProperty::remove(LocatedEntity * ent)
+{
+    BaseWorld::instance().removeSpawnPoint(ent);
+}
