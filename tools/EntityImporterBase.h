@@ -221,6 +221,12 @@ public:
 	const Stats& getStats() const;
 
 	/**
+	 * @brief Sets if we also should resume any suspended world when importing.
+	 * @param enabled True if we should resume.
+	 */
+	void setResume(bool enabled);
+
+	/**
 	 * @brief Emitted when the load has been completed.
 	 */
 	sigc::signal<void> EventCompleted;
@@ -341,6 +347,11 @@ protected:
      * @brief Keeps track of the number of Set ops in transit.
      */
     int mSetOpsInTransit;
+
+    /**
+     * @brief True if we also should resume any suspended world when importing.
+     */
+    bool mResumeWorld;
 
     /**
      * @brief Sends an operation to the server.
