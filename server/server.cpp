@@ -50,6 +50,7 @@
 
 #include "rulesets/BulletDomain.h"
 #include "rulesets/Python_API.h"
+#include "rulesets/LocatedEntity.h"
 
 #include "common/id.h"
 #include "common/log.h"
@@ -65,6 +66,7 @@
 #include "common/serialno.h"
 #include "common/SystemTime.h"
 
+
 #include <varconf/config.h>
 
 #include <sigc++/functors/mem_fun.h>
@@ -76,8 +78,11 @@
 
 #include <boost/make_shared.hpp>
 
-using boost::make_shared;
-using boost::shared_ptr;
+#include <thread>
+#include <cstdlib>
+#include <fstream>
+
+using String::compose;
 
 class TrustedConnection;
 class Peer;
@@ -277,8 +282,8 @@ int main(int argc, char ** argv)
     // UpdateTester * update_tester = new UpdateTester(*commServer);
     // commServer->addIdle(update_tester);
 
-    shared_ptr<CommClientFactory<CommUserClient, Connection> > atlas_clients =
-          make_shared<CommClientFactory<CommUserClient, Connection>,
+    boost::shared_ptr<CommClientFactory<CommUserClient, Connection> > atlas_clients =
+            boost::make_shared<CommClientFactory<CommUserClient, Connection>,
                       ServerRouting & >(*server);
     if (client_port_num < 0) {
         client_port_num = dynamic_port_start;
@@ -317,7 +322,7 @@ int main(int argc, char ** argv)
 
 #ifdef HAVE_SYS_UN_H
     CommUnixListener * localListener = new CommUnixListener(*commServer,
-          make_shared<CommClientFactory<CommAdminClient, TrustedConnection>,
+            boost::make_shared<CommClientFactory<CommAdminClient, TrustedConnection>,
                       ServerRouting &>(*server));
     if (localListener->setup(client_socket_name) != 0) {
         log(ERROR, String::compose("Could not create local listen socket "
@@ -329,7 +334,7 @@ int main(int argc, char ** argv)
     }
 
     CommUnixListener * pythonListener = new CommUnixListener(*commServer,
-          make_shared<CommPythonClientFactory>());
+            boost::make_shared<CommPythonClientFactory>());
     if (pythonListener->setup(python_socket_name) != 0) {
         log(ERROR, String::compose("Could not create python listen socket "
                                    "with address %1.",
@@ -342,7 +347,7 @@ int main(int argc, char ** argv)
 
     if (TCPListenFactory::listen(*commServer,
                                  http_port_num,
-                                 make_shared<CommHttpClientFactory>()) != 0) {
+                                 boost::make_shared<CommHttpClientFactory>()) != 0) {
         log(ERROR, String::compose("Could not create http listen"
                                    " socket on port %1.", http_port_num));
 
@@ -388,6 +393,53 @@ int main(int argc, char ** argv)
     if (nice != 0) {
         reduce_priority(nice);
     }
+
+    //Check if the world is populated; if it's not we should perhaps import some entities into it.
+    //Note that we only check the top level; we don't perform a full hierarchical
+    //traversal. Mainly because we never need to.
+    auto autoImport = global_conf->getItem(CYPHESIS, "autoimport");
+    if (autoImport.is_string() && autoImport.as_string() != "") {
+        std::string importPath = autoImport.as_string();
+        std::ifstream file(importPath);
+        if (file.good()) {
+            file.close();
+            //We should only try to import if the world isn't populated.
+            bool isPopulated = false;
+            if (world->m_gameWorld.m_contains) {
+                for (auto entity : *world->m_gameWorld.m_contains) {
+                    //if there's any entity that's not transient we consider it populated
+                    if (!entity->hasAttr("transient")) {
+                        isPopulated = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!isPopulated) {
+                //Populate the server through separate process (mainly because it's easier as we've
+                //already written the importer tool; we might also do it in-process, but that would
+                //require some rewriting of code).
+                log(NOTICE,
+                        compose("Trying to import world from %1.", importPath));
+                std::thread importer(
+                        [=]() {
+                            int result = std::system((std::string(PREFIX "/bin/cyimport ") + importPath).c_str());
+                            if (result == 0) {
+                                log(NOTICE, "Imported world into empty server.");
+                            } else {
+                                log(NOTICE, "No world imported.");
+                            }
+                        });
+                importer.detach();
+            }
+        } else {
+            log(NOTICE,
+                    compose("Not importing as %1 could not be found",
+                            importPath));
+            file.close();
+        }
+    }
+
 
     bool soft_exit_in_progess = false;
     time_t soft_exit_deadline = 0;

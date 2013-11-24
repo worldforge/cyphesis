@@ -1,4 +1,4 @@
-AM_CPPFLAGS = -I$(top_srcdir) -I${top_builddir}
+AM_CPPFLAGS = -I$(top_srcdir) -I${top_builddir} -DPREFIX=\"@prefix@\"
 
 noinst_LIBRARIES = libcomm.a
 bin_PROGRAMS = cyphesis
