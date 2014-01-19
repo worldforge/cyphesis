@@ -198,6 +198,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
             BBoxProperty * box_property = modPropertyClass<BBoxProperty>("bbox");
             if (box_property != nullptr) {
                 box_property->data() = bbox;
+                box_property->apply(this);
             } else {
                 log(ERROR, String::compose("Plant %1 type \"%2\" has a valid "
                                            "bbox, but no bbox property",
@@ -208,6 +209,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
 
         }
     }
+    status->apply(this);
 
     //Only handle fruits if the plant is of adult size.
     Property<int> * fruits_prop = modPropertyType<int>("fruits");
@@ -294,6 +296,7 @@ void Plant::scaleArea() {
                     areaElement.asMap()["shape"] = shapeElement;
 
                     area_property->set(areaElement);
+                    area_property->apply(this);
                     area_property->setFlags(flag_unsent);
                 }
             }

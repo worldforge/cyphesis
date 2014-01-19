@@ -128,12 +128,14 @@ void Character::metabolise(OpVector & res, double ammount)
     // We should probably call this whenever the entity performs a movement.
 
     StatusProperty * status_prop = modPropertyClass<StatusProperty>(STATUS);
+    bool status_changed = false;
     if (status_prop == 0) {
         // FIXME Probably don't do enough here to set up the property.
         status_prop = new StatusProperty;
         assert(status_prop != 0);
         m_properties[STATUS] = status_prop;
         status_prop->set(1.f);
+        status_changed = true;
     }
     double & status = status_prop->data();
     status_prop->setFlags(flag_unsent);
@@ -146,9 +148,11 @@ void Character::metabolise(OpVector & res, double ammount)
             // It is important that the metabolise bit is done next, as this
             // handles the status change
             status += foodConsumption;
+            status_changed = true;
             food -= foodConsumption;
 
             food_prop->setFlags(flag_unsent);
+            food_prop->apply(this);
         }
     }
 
@@ -156,6 +160,7 @@ void Character::metabolise(OpVector & res, double ammount)
     // If status is very high, we gain weight
     if (status > (1.5 + energyLaidDown)) {
         status -= energyLaidDown;
+        status_changed = true;
         if (mass_prop != 0) {
             double & mass = mass_prop->data();
             mass += weightGain;
@@ -164,11 +169,13 @@ void Character::metabolise(OpVector & res, double ammount)
             if (getAttrType(MAXMASS, maxmass_attr, Element::TYPE_FLOAT) == 0) {
                 mass = std::min(mass, maxmass_attr.Float());
             }
+            mass_prop->apply(this);
         }
     } else {
         // If status is relatively is not very high, then energy is burned
         double energy_used = energyConsumption * ammount;
         status -= energy_used;
+        status_changed = true;
         if (mass_prop != 0) {
             double & mass = mass_prop->data();
             double weight_used = weightConsumption * mass * ammount;
@@ -177,8 +184,10 @@ void Character::metabolise(OpVector & res, double ammount)
                 // This ensures there is a long term penalty to allowing
                 // something to starve
                 status += (energy_used / 2);
+                status_changed = true;
                 mass -= weight_used;
                 mass_prop->setFlags(flag_unsent);
+                mass_prop->apply(this);
             }
         }
     }
@@ -192,8 +201,13 @@ void Character::metabolise(OpVector & res, double ammount)
             if (stamina < 1.f) {
                 stamina = 1.f;
                 stamina_prop->setFlags(flag_unsent);
+                stamina_prop->apply(this);
             }
         }
+    }
+
+    if (status_changed) {
+        status_prop->apply(this);
     }
 
     Update update;
