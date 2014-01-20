@@ -339,6 +339,7 @@ int WorldRouter::removeSpawnPoint(LocatedEntity * ent)
 {
     for (auto I = m_spawns.begin(); I != m_spawns.end(); ++I) {
         if (I->second.second == ent->getId()) {
+            delete I->second.first;
             m_spawns.erase(I);
             return 0;
         }
