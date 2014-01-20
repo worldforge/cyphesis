@@ -34,6 +34,7 @@
 #include <sys/stat.h>
 
 #include <cstring>
+#include <memory>
 
 #ifdef HAVE_IO_H
 #include <io.h>
@@ -174,15 +175,15 @@ template int readConfigItem<bool>(const std::string & section, const std::string
 /// \brief Base class for handling varconf options declared inline.
 class Option {
   protected:
-    std::string m_value;
-    std::string m_description;
+    const std::string m_value;
+    const std::string m_description;
 
     Option(const std::string & val, const std::string & descr);
   public:
     virtual ~Option() = 0;
 
-    const std::string & value() { return m_value; }
-    const std::string & description() { return m_description; }
+    const std::string & value() const { return m_value; }
+    const std::string & description() const { return m_description; }
 
     virtual void read(varconf::Variable var) = 0;
 
@@ -198,7 +199,7 @@ class Option {
 /// \brief Basic varconf option which does not require any processing
 class DumbOption : public Option {
   protected:
-    std::string m_default;
+    const std::string m_default;
   public:
     DumbOption(const std::string & val, const std::string & descr,
                const std::string & deflt);
@@ -316,7 +317,7 @@ void UnixSockOption::postProcess()
     }
 }
 
-typedef std::map<std::string, Option *> OptionMap;
+typedef std::map<std::string, std::unique_ptr<Option> > OptionMap;
 typedef std::map<std::string, OptionMap> SectionMap;
 
 /// \brief Singleton to manage all information about varconf options.
@@ -356,7 +357,7 @@ Options::Options()
     const usage_data * ud = &usage[0];
     for (; ud->section != 0; ++ud) {
         m_sectionMap[ud->section].insert(std::make_pair(ud->option,
-              new DumbOption(ud->value, ud->description, ud->dflt)));
+              std::unique_ptr<Option>(new DumbOption(ud->value, ud->description, ud->dflt))));
     }
 }
 
@@ -394,7 +395,7 @@ void Options::addOption(const std::string & section,
                                    section, setting));
         return;
     }
-    m_sectionMap[section].insert(std::make_pair(setting, option));
+    m_sectionMap[section].insert(std::make_pair(setting, std::unique_ptr<Option>(option)));
 }
 
 int_config_register::int_config_register(int & var,
@@ -693,7 +694,7 @@ void showUsage(const char * prgname, int usage_flags, const char * extras)
                 } else {
                     std::cout << "  --" << J->first;
                 }
-                Option * opt = J->second;
+                const Option * opt = J->second.get();
                 if (opt->value().size() != 0) {
                     std::cout << "=" << opt->value();
                 }
