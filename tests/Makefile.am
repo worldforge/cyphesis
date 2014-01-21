@@ -1215,8 +1215,6 @@ Lobbytest_LDADD = \
         $(top_builddir)/server/Lobby.o
 
 Spawntest_SOURCES = Spawntest.cpp
-Spawntest_LDADD = \
-        $(top_builddir)/server/Spawn.o
 
 SpawnEntitytest_SOURCES = SpawnEntitytest.cpp
 SpawnEntitytest_LDADD = \
@@ -1377,7 +1375,6 @@ WorldRouterintegration_LDADD = \
         $(top_builddir)/server/EntityBuilder.o \
         $(top_builddir)/server/EntityFactory.o \
         $(top_builddir)/server/TaskFactory.o \
-        $(top_builddir)/server/Spawn.o \
         $(top_builddir)/server/SpawnEntity.o \
         $(top_builddir)/server/ArithmeticBuilder.o \
         $(top_builddir)/rulesets/Character.o \
@@ -1459,7 +1456,6 @@ Accountintegration_LDADD = \
         $(top_builddir)/server/PendingTeleport.o \
         $(top_builddir)/server/WorldRouter.o \
         $(top_builddir)/server/SpawnEntity.o \
-        $(top_builddir)/server/Spawn.o \
         $(top_builddir)/server/ConnectableRouter.o \
         $(top_builddir)/rulesets/Domain.o \
         $(top_builddir)/rulesets/Entity.o \
