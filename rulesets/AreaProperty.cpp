@@ -92,7 +92,7 @@ void AreaProperty::set(const Element & ent)
     if (shape == 0) {
         return;
     }
-    // FIXME overwriting old pointer
+    delete m_shape;
     m_shape = dynamic_cast<Form<2> *>(shape);
     if (m_shape == 0) {
         return;
