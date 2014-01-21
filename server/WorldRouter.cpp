@@ -152,6 +152,13 @@ WorldRouter::~WorldRouter()
         debug(std::cout << "Flushing world with " << m_eobjects.size()
                         << " entities" << std::endl << std::flush;);
     }
+
+    //Make sure to clear the queues first so that there's nothing referencing entities
+    //in them.
+    m_immediateQueue.clear();
+    m_operationQueue.clear();
+    m_suspendedQueue.clear();
+
     EntityDict::const_iterator Jend = m_eobjects.end();
     for (EntityDict::const_iterator J = m_eobjects.begin(); J != Jend; ++J) {
         J->second->decRef();
@@ -159,6 +166,7 @@ WorldRouter::~WorldRouter()
     for (auto entry : m_spawns) {
         delete entry.second.first;
     }
+    m_spawns.clear();
     // This should be deleted here rather than in the base class because
     // we created it, and BaseWorld should not even know what it is.
     m_gameWorld.decRef();
