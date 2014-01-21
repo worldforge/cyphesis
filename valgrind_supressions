@@ -72,3 +72,10 @@
    Memcheck:Cond
    obj:/usr/lib/libpq.so.5.1
 }
+
+{
+   STD_STRING_FREE
+   Memcheck:Free
+   fun:_ZdaPvRKSt9nothrow_t
+   fun:_ZNS*
+}
