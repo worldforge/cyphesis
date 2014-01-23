@@ -234,21 +234,6 @@ int main()
         assert(stub_baseworld_receieved_op == Atlas::Objects::Operation::DELETE_NO);
     }
 
-    // Send a random operation to something that has been recorded as
-    // disconnected for a while
-    {
-        Entity e("2", 2);
-
-        // FIXME hard code the expiry time here.
-        TestExternalMind em(e);
-        em.test_setLossTime(BaseWorld::instance().getTime() - 60*60 - 5);
-
-        stub_baseworld_receieved_op = -1;
-        OpVector res;
-        em.operation(Atlas::Objects::Operation::RootOperation(), res);
-        assert(stub_baseworld_receieved_op == Atlas::Objects::Operation::DELETE_NO);
-    }
-
     // Send a random operation to a connected mind
     {
         Entity e("2", 2);
