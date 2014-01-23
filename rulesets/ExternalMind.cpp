@@ -82,6 +82,17 @@ void ExternalMind::externalOperation(const Operation & op, Link &)
 
 void ExternalMind::operation(const Operation & op, OpVector & res)
 {
+
+    //TODO: remove this hacked in fix.
+    //So, what's happening here is that if the external connection has been disconnected, and
+    //the entity either is marked as ephemeral, or has been inactive for an hour, it is
+    //deleted along with all of its inventory. This is to prevent the starting position
+    //being spammed by abandoned characters. Now, there are a lot of better ways to handle this.
+    //One solution is to make sure that all new entities are created in an instanced location.
+    //Thus players have to actively move from the instanced location to the main world, which
+    //would make sure that only those players which are active end up in the real world.
+    //Another solution is to do something with the entity when the connection is cut; perhaps move
+    //it to limbo or some other place. All of these solutions are better than just deleting it.
     if (m_external == 0) {
         if (m_entity.getFlags() & entity_ephem) {
             // If this entity no longer has a connection, and is ephemeral
@@ -90,11 +101,11 @@ void ExternalMind::operation(const Operation & op, OpVector & res)
                 purgeEntity(m_entity);
             }
         }
-        // std::cout << "Time since disco "
-                  // << BaseWorld::instance().getTime() - m_lossTime
-                  // << std::endl << std::flush;
         if (BaseWorld::instance().getTime() - m_lossTime > character_expire_time) {
             if (op->getClassNo() != Atlas::Objects::Operation::DELETE_NO) {
+                //reset m_lossTime since it's not a given that the entity will be deleted
+                //(properties such as respawnable might intervene)
+                m_lossTime = BaseWorld::instance().getTime();
                 purgeEntity(m_entity);
             }
         }
