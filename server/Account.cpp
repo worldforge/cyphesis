@@ -340,7 +340,7 @@ void Account::createObject(const std::string & type_str,
 
     Anonymous new_character;
     new_character->setParents(std::list<std::string>(1, type_str));
-    new_character->setAttr("status", 0.024);
+    //Disable the AI mind since this will be controlled by a client.
     new_character->setAttr("mind", MapType());
     if (!arg->isDefaultName()) {
         new_character->setName(arg->getName());

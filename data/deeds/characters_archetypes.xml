@@ -32,6 +32,7 @@
                     <float name="defend">21</float>
                     <float name="strength">23</float>
                 </map>
+                <float name="status">0.024</float>
             </map>
             <map>
                 <string name="id">trousers</string>
