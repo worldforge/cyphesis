@@ -73,6 +73,11 @@ class Account : public ConnectableRouter {
     int filterTasks(const Atlas::Message::ListType & tasks,
                     const Atlas::Objects::Entity::RootEntity &) const;
 
+    /// \brief Creates a new entity for a character.
+    virtual LocatedEntity * createCharacterEntity(const std::string &,
+                                    const Atlas::Objects::Entity::RootEntity &,
+                                    const Atlas::Objects::Root &);
+
   public:
     /// \brief Connect and add a character to this account
     int connectCharacter(LocatedEntity *chr);

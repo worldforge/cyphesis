@@ -105,6 +105,26 @@ static void addTypeToList(const Root & type, ListType & typeList)
     }
 }
 
+LocatedEntity * Admin::createCharacterEntity(const std::string & typestr,
+                                         const RootEntity & ent,
+                                         const Root & arg)
+{
+    LocatedEntity* entity = Account::createCharacterEntity(typestr, ent, arg);
+    if (entity) {
+        return entity;
+    }
+    Element spawn;
+    if (arg->copyAttr("spawn_name", spawn) == 0 && spawn.isString()) {
+        BaseWorld & world = m_connection->m_server.m_world;
+        entity = world.addNewEntity(typestr, ent);
+        if (entity) {
+            world.moveToSpawn(spawn.asString(), entity->m_location);
+        }
+    }
+    return entity;
+}
+
+
 void Admin::addToMessage(MapType & omap) const
 {
     Account::addToMessage(omap);

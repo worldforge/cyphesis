@@ -139,15 +139,8 @@ LocatedEntity * Account::addNewCharacter(const std::string & typestr,
     if (m_connection == 0) {
         return 0;
     }
-    BaseWorld & world = m_connection->m_server.m_world;
     debug(std::cout << "Account::Add_character" << std::endl << std::flush;);
-    LocatedEntity * chr;
-    Element spawn;
-    if (arg->copyAttr("spawn_name", spawn) == 0 && spawn.isString()) {
-        chr = world.spawnNewEntity(spawn.String(), typestr, ent);
-    } else {
-        chr = world.addNewEntity(typestr, ent);
-    }
+    LocatedEntity * chr = createCharacterEntity(typestr, ent, arg);
     if (chr == 0) {
         return 0;
     }
@@ -166,6 +159,20 @@ LocatedEntity * Account::addNewCharacter(const std::string & typestr,
 
     return chr;
 }
+
+LocatedEntity * Account::createCharacterEntity(const std::string & typestr,
+                                                const RootEntity & ent,
+                                                const Root & arg)
+{
+    BaseWorld & world = m_connection->m_server.m_world;
+    Element spawn;
+    if (arg->copyAttr("spawn_name", spawn) == 0 && spawn.isString()) {
+        return world.spawnNewEntity(spawn.String(), typestr, ent);
+    } else {
+        return world.addNewEntity(typestr, ent);
+    }
+}
+
 
 void Account::LogoutOperation(const Operation & op, OpVector & res)
 {

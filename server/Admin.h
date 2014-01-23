@@ -26,6 +26,9 @@
 /// \brief This is a class for handling users with administrative priveleges
 class Admin : public Account {
   protected:
+    virtual LocatedEntity * createCharacterEntity(const std::string &,
+                                        const Atlas::Objects::Entity::RootEntity &,
+                                        const Atlas::Objects::Root &);
     virtual int characterError(const Operation & op,
                                const Atlas::Objects::Root & ent,
                                OpVector & res) const;
