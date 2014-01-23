@@ -94,21 +94,21 @@ void ExternalMind::operation(const Operation & op, OpVector & res)
     //Another solution is to do something with the entity when the connection is cut; perhaps move
     //it to limbo or some other place. All of these solutions are better than just deleting it.
     if (m_external == 0) {
-        if (m_entity.getFlags() & entity_ephem) {
-            // If this entity no longer has a connection, and is ephemeral
-            // we should delete it.
-            if (op->getClassNo() != Atlas::Objects::Operation::DELETE_NO) {
-                purgeEntity(m_entity);
-            }
-        }
-        if (BaseWorld::instance().getTime() - m_lossTime > character_expire_time) {
-            if (op->getClassNo() != Atlas::Objects::Operation::DELETE_NO) {
-                //reset m_lossTime since it's not a given that the entity will be deleted
-                //(properties such as respawnable might intervene)
-                m_lossTime = BaseWorld::instance().getTime();
-                purgeEntity(m_entity);
-            }
-        }
+//        if (m_entity.getFlags() & entity_ephem) {
+//            // If this entity no longer has a connection, and is ephemeral
+//            // we should delete it.
+//            if (op->getClassNo() != Atlas::Objects::Operation::DELETE_NO) {
+//                purgeEntity(m_entity);
+//            }
+//        }
+//        if (BaseWorld::instance().getTime() - m_lossTime > character_expire_time) {
+//            if (op->getClassNo() != Atlas::Objects::Operation::DELETE_NO) {
+//                //reset m_lossTime since it's not a given that the entity will be deleted
+//                //(properties such as respawnable might intervene)
+//                m_lossTime = BaseWorld::instance().getTime();
+//                purgeEntity(m_entity);
+//            }
+//        }
         return;
     }
     m_external->send(op);
