@@ -40,17 +40,23 @@ using Atlas::Objects::Operation::Imaginary;
 
 static const double character_expire_time = 60 * 60; // 1 hour
 
-void ExternalMind::deleteEntity(const std::string & id)
+void ExternalMind::deleteEntity(const std::string & id, bool forceDelete)
 {
     Delete d;
     Anonymous del_arg;
     del_arg->setId(id);
     d->setArgs1(del_arg);
-    d->setTo(id);
+    if (forceDelete) {
+        //We can force a delete by directing the Delete op to the world;
+        //this bypasses any property which might prevent the deletion.
+        d->setTo("0");
+    } else {
+        d->setTo(id);
+    }
     m_entity.sendWorld(d);
 }
 
-void ExternalMind::purgeEntity(const LocatedEntity & ent)
+void ExternalMind::purgeEntity(const LocatedEntity & ent, bool forceDelete)
 {
     if (ent.m_contains != 0) {
         LocatedEntitySet::const_iterator I = ent.m_contains->begin();
@@ -61,7 +67,7 @@ void ExternalMind::purgeEntity(const LocatedEntity & ent)
             purgeEntity(*child);
         }
     }
-    deleteEntity(ent.getId());
+    deleteEntity(ent.getId(), forceDelete);
 }
 
 ExternalMind::ExternalMind(LocatedEntity & e) : Router(e.getId(), e.getIntId()),
@@ -94,13 +100,13 @@ void ExternalMind::operation(const Operation & op, OpVector & res)
     //Another solution is to do something with the entity when the connection is cut; perhaps move
     //it to limbo or some other place. All of these solutions are better than just deleting it.
     if (m_external == 0) {
-//        if (m_entity.getFlags() & entity_ephem) {
-//            // If this entity no longer has a connection, and is ephemeral
-//            // we should delete it.
-//            if (op->getClassNo() != Atlas::Objects::Operation::DELETE_NO) {
-//                purgeEntity(m_entity);
-//            }
-//        }
+        if (m_entity.getFlags() & entity_ephem) {
+            // If this entity no longer has a connection, and is ephemeral
+            // we should delete it.
+            if (op->getClassNo() != Atlas::Objects::Operation::DELETE_NO) {
+                purgeEntity(m_entity);
+            }
+        }
 //        if (BaseWorld::instance().getTime() - m_lossTime > character_expire_time) {
 //            if (op->getClassNo() != Atlas::Objects::Operation::DELETE_NO) {
 //                //reset m_lossTime since it's not a given that the entity will be deleted

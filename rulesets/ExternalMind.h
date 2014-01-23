@@ -36,8 +36,8 @@ class ExternalMind : public Router {
     LocatedEntity & m_entity;
     double m_lossTime;
 
-    void deleteEntity(const std::string & id);
-    void purgeEntity(const LocatedEntity & ent);
+    void deleteEntity(const std::string & id, bool forceDelete);
+    void purgeEntity(const LocatedEntity & ent, bool forceDelete = false);
   public:
 
     ExternalMind(LocatedEntity &);

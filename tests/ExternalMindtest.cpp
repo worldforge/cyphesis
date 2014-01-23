@@ -41,7 +41,7 @@ class TestExternalMind : public ExternalMind
     TestExternalMind(Entity & e) : ExternalMind(e) { }
 
     void test_deleteEntity(const std::string & id) {
-        deleteEntity(id);
+        deleteEntity(id, false);
     }
 
     void test_purgeEntity(const LocatedEntity & ent) {
