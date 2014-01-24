@@ -223,7 +223,19 @@ void Account::addToMessage(MapType & omap) const
         BaseWorld & world = m_connection->m_server.m_world;
         ListType spawn_list;
         if (world.getSpawnList(spawn_list) == 0) {
-            omap["spawns"] = spawn_list;
+            //We should only send those spawn areas which allows for characters to be created.
+            for (auto I = spawn_list.begin(); I != spawn_list.end();) {
+                if((*I).isMap() && (*I).asMap().count("character_types") == 0) {
+                    I = spawn_list.erase(I);
+                }
+                else
+                {
+                    ++I;
+                }
+            }
+            if (!spawn_list.empty()) {
+                omap["spawns"] = spawn_list;
+            }
         }
     }
     ListType char_list;
@@ -249,7 +261,19 @@ void Account::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
         BaseWorld & world = m_connection->m_server.m_world;
         ListType spawn_list;
         if (world.getSpawnList(spawn_list) == 0) {
-            ent->setAttr("spawns", spawn_list);
+            //We should only send those spawn areas which allows for characters to be created.
+            for (auto I = spawn_list.begin(); I != spawn_list.end();) {
+                if((*I).isMap() && (*I).asMap().count("character_types") == 0) {
+                    I = spawn_list.erase(I);
+                }
+                else
+                {
+                    ++I;
+                }
+            }
+            if (!spawn_list.empty()) {
+                ent->setAttr("spawns", spawn_list);
+            }
         }
     }
     ListType char_list;
