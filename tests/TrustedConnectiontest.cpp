@@ -246,6 +246,14 @@ void Admin::createObject(const std::string & type_str,
 {
 }
 
+LocatedEntity * Admin::createCharacterEntity(const std::string &,
+                                const Atlas::Objects::Entity::RootEntity &,
+                                const Atlas::Objects::Root &)
+{
+    return 0;
+}
+
+
 void Admin::LogoutOperation(const Operation & op, OpVector & res)
 {
 }
@@ -325,6 +333,13 @@ Account::Account(Connection * conn,
 
 Account::~Account()
 {
+}
+
+LocatedEntity * Account::createCharacterEntity(const std::string &,
+                                const Atlas::Objects::Entity::RootEntity &,
+                                const Atlas::Objects::Root &)
+{
+    return 0;
 }
 
 const char * Account::getType() const

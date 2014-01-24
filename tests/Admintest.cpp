@@ -1411,6 +1411,14 @@ LocatedEntity * Account::addNewCharacter(const std::string & typestr,
     return 0;
 }
 
+LocatedEntity * Account::createCharacterEntity(const std::string &,
+                                const Atlas::Objects::Entity::RootEntity &,
+                                const Atlas::Objects::Root &)
+{
+    return 0;
+}
+
+
 int Account::connectCharacter(LocatedEntity *chr)
 {
     return 0;
