@@ -362,7 +362,11 @@ int WorldRouter::getSpawnList(Atlas::Message::ListType & data)
         MapType spawn;
         spawn.insert(std::make_pair("name", entry.first));
         entry.second.first->addToMessage(spawn);
-        data.push_back(spawn);
+        //Only include spawns which allow characters to be created, as these are
+        //the only ones of interest to anything calling this.
+        if (spawn.count("character_types") > 0) {
+            data.push_back(spawn);
+        }
     }
     return 0;
 }
