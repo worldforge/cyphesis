@@ -348,6 +348,7 @@ int main(int argc, char ** argv)
         commServer->addSocket(pythonListener);
     }
 
+    remove(client_socket_name.c_str());
     CommAsioUnixListener* localListener = new CommAsioUnixListener(*commServer, *server, io_service, client_socket_name);
 #endif
 
