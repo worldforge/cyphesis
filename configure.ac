@@ -127,6 +127,9 @@ Please see http://www.boost.org/ for details of how to download and install
 Boost.])
     ]
 )
+AC_CHECK_LIB(boost_system, main, , [
+	AC_MSG_ERROR("Linking against boost::system library failed.")
+])
 
 AC_MSG_CHECKING([whether we should link to MacOS-X frameworks])
 AC_COMPILE_IFELSE(

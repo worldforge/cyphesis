@@ -33,6 +33,7 @@
 #include "CommPSQLSocket.h"
 #include "CommMetaClient.h"
 #include "CommMDNSPublisher.h"
+#include "CommAsioUnixListener.h"
 #include "Connection.h"
 #include "ServerRouting.h"
 #include "EntityBuilder.h"
@@ -77,6 +78,7 @@
 #include <skstream/skaddress.h>
 
 #include <boost/make_shared.hpp>
+#include <boost/asio/io_service.hpp>
 
 #include <thread>
 #include <cstdlib>
@@ -195,6 +197,8 @@ int main(int argc, char ** argv)
     int nice = 1;
     readConfigItem(instance, "nice", nice);
     
+    boost::asio::io_service io_service;
+
     // Start up the Python subsystem.
     init_python_api(ruleset_name);
 
@@ -321,17 +325,17 @@ int main(int argc, char ** argv)
     }
 
 #ifdef HAVE_SYS_UN_H
-    CommUnixListener * localListener = new CommUnixListener(*commServer,
-            boost::make_shared<CommClientFactory<CommAdminClient, TrustedConnection>,
-                      ServerRouting &>(*server));
-    if (localListener->setup(client_socket_name) != 0) {
-        log(ERROR, String::compose("Could not create local listen socket "
-                                   "with address \"%1\"",
-                                   localListener->getPath()));
-        delete localListener;
-    } else {
-        commServer->addSocket(localListener);
-    }
+//    CommUnixListener * localListener = new CommUnixListener(*commServer,
+//            boost::make_shared<CommClientFactory<CommAdminClient, TrustedConnection>,
+//                      ServerRouting &>(*server));
+//    if (localListener->setup(client_socket_name) != 0) {
+//        log(ERROR, String::compose("Could not create local listen socket "
+//                                   "with address \"%1\"",
+//                                   localListener->getPath()));
+//        delete localListener;
+//    } else {
+//        commServer->addSocket(localListener);
+//    }
 
     CommUnixListener * pythonListener = new CommUnixListener(*commServer,
             boost::make_shared<CommPythonClientFactory>());
@@ -343,6 +347,8 @@ int main(int argc, char ** argv)
     } else {
         commServer->addSocket(pythonListener);
     }
+
+    CommAsioUnixListener* localListener = new CommAsioUnixListener(*commServer, *server, io_service, client_socket_name);
 #endif
 
     if (TCPListenFactory::listen(*commServer,
@@ -454,6 +460,7 @@ int main(int argc, char ** argv)
             bool busy = world->idle(time);
             commServer->idle(time, busy);
             commServer->poll(busy);
+            io_service.poll();
             if (soft_exit_in_progess) {
                 //If we're in soft exit mode and either the deadline has been exceeded
                 //or we've persisted all minds we should shut down normally.
