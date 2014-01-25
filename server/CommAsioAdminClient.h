@@ -75,15 +75,13 @@ class CommAsioAdminClient: public CommSocket,
     protected:
         boost::asio::local::stream_protocol::socket mSocket;
 
-        std::stringstream mStream;
+        boost::asio::streambuf mReadBuffer;
+        boost::asio::streambuf mWriteBuffer;
+        std::iostream mStream;
+        boost::asio::deadline_timer mNegotiateTimer;
 
-        std::string mBuffer;
+        enum { read_buffer_size = 16384};
 
-        enum
-        {
-            max_length = 1024
-        };
-        char mData[max_length];
 
 /// \brief Queue of operations that have been decoded by not dispatched.
         DispatchQueue m_opQueue;
@@ -100,6 +98,11 @@ class CommAsioAdminClient: public CommSocket,
 
         /// \brief Handle socket data related to codec negotiation.
         int negotiate();
+
+        void negotiate_read();
+
+        void negotiate_write();
+
 
         /// \brief Add an operation to the queue.
         template<class OpType>

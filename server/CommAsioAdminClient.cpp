@@ -33,7 +33,9 @@
 CommAsioAdminClient::CommAsioAdminClient(CommServer& commServer,
         const std::string & name,
         boost::asio::local::stream_protocol::socket socket) :
-        CommSocket(commServer), mSocket(std::move(socket)), m_codec(nullptr), m_encoder(
+        CommSocket(commServer), mSocket(std::move(socket)), mStream(
+                &mWriteBuffer), mNegotiateTimer(mSocket.get_io_service(),
+                boost::posix_time::seconds(1)), m_codec(nullptr), m_encoder(
                 nullptr), m_link(nullptr), m_connectTime(commServer.time())
 {
     m_negotiate = new Atlas::Net::StreamAccept("cyphesis " + name, mStream);
@@ -50,22 +52,21 @@ CommAsioAdminClient::~CommAsioAdminClient()
 void CommAsioAdminClient::do_read()
 {
     auto self(shared_from_this());
-    mSocket.async_read_some(boost::asio::buffer(mData, max_length),
+    mSocket.async_read_some(mReadBuffer.prepare(read_buffer_size),
             [this, self](boost::system::error_code ec, std::size_t length)
             {
                 if (!ec)
                 {
-                    std::string data(mData, length);
-                    log(INFO, String::compose("Reading: %1", data));
-                    mStream << data << std::flush;
-                    if (m_codec) {
-                        m_codec->poll();
-                        mStream.clear();
-                        dispatch();
-                    } else {
-                        negotiate();
-                    }
-                    do_write();
+                    mReadBuffer.commit(length);
+                    mStream.rdbuf(&mReadBuffer);
+                    m_codec->poll();
+                    mStream.rdbuf(&mWriteBuffer);
+                    dispatch();
+                    //By calling do_read again we make sure that the instance
+                    //doesn't go out of scope ("shared_from this"). As soon as that
+                    //doesn't happen, and there's no do_write in progress, the instance
+                    //will be deleted since there's no more references to it.
+                    do_read();
                 }
             });
 }
@@ -74,19 +75,49 @@ void CommAsioAdminClient::do_write()
 {
     auto self(shared_from_this());
 
-    mBuffer = mStream.str();
-    auto buffer = boost::asio::buffer(mBuffer);
-    mStream.clear();
-    if (buffer.begin() == buffer.end()) {
-        do_read();
-    } else {
-        log(INFO, String::compose("Writing: %1", mBuffer));
-        boost::asio::async_write(mSocket, buffer,
-                [this, self](boost::system::error_code ec, std::size_t /*length*/)
+    if (mWriteBuffer.size() != 0) {
+        boost::asio::async_write(mSocket, mWriteBuffer.data(),
+                [this, self](boost::system::error_code ec, std::size_t length)
                 {
                     if (!ec)
                     {
+                        mWriteBuffer.consume(length);
+                    }
+                });
+    }
+}
+
+void CommAsioAdminClient::negotiate_read()
+{
+    auto self(shared_from_this());
+    mSocket.async_read_some(mWriteBuffer.prepare(read_buffer_size),
+            [this, self](boost::system::error_code ec, std::size_t length)
+            {
+                if (!ec)
+                {
+                    mWriteBuffer.commit(length);
+                    if (negotiate() == 0 && m_negotiate == nullptr) {
+                        negotiate_write();
                         do_read();
+                    } else {
+                        negotiate_write();
+                        negotiate_read();
+                    }
+                }
+            });
+}
+
+void CommAsioAdminClient::negotiate_write()
+{
+    auto self(shared_from_this());
+
+    if (mWriteBuffer.size() != 0) {
+        boost::asio::async_write(mSocket, mWriteBuffer.data(),
+                [this, self](boost::system::error_code ec, std::size_t length)
+                {
+                    if (!ec)
+                    {
+                        mWriteBuffer.consume(length);
                     }
                 });
     }
@@ -98,9 +129,21 @@ void CommAsioAdminClient::setup(Link * connection)
 
     m_link = connection;
 
+    auto self(shared_from_this());
+    mNegotiateTimer.async_wait([this, self](const boost::system::error_code& ec)
+    {
+        //If the negotiator still exists after the deadline it means that the negotation hasn't
+        //completed yet; we'll consider that a "timeout".
+        if (m_negotiate != nullptr) {
+            mSocket.close();
+        }
+    });
+
+
     m_negotiate->poll(false);
 
-    do_write();
+    negotiate_write();
+    negotiate_read();
 }
 
 int CommAsioAdminClient::negotiate()
@@ -122,6 +165,14 @@ int CommAsioAdminClient::negotiate()
     // Get the codec that negotiation established
     m_codec = m_negotiate->getCodec(*this);
 
+    // Acceptor is now finished with
+    delete m_negotiate;
+    m_negotiate = 0;
+
+    if (m_codec == nullptr) {
+        log(NOTICE, "Could not create codec during negotiation.");
+        return -1;
+    }
     // Create a new encoder to send high level objects to the codec
     m_encoder = new Atlas::Objects::ObjectsEncoder(*m_codec);
 
@@ -131,9 +182,6 @@ int CommAsioAdminClient::negotiate()
     // This should always be sent at the beginning of a session
     m_codec->streamBegin();
 
-    // Acceptor is now finished with
-    delete m_negotiate;
-    m_negotiate = 0;
 
     return 0;
 }
@@ -195,21 +243,17 @@ void CommAsioAdminClient::idle(time_t t)
 
 int CommAsioAdminClient::read()
 {
-    if (m_codec != NULL) {
-        m_codec->poll();
-        return 0;
-    } else {
-        return negotiate();
-    }
+    return 0;
 }
 
 int CommAsioAdminClient::send(
         const Atlas::Objects::Operation::RootOperation & op)
 {
-//    if (!isOpen()) {
-//        log(ERROR, "Writing to closed client");
-//        return -1;
-//    }
+    if (!isOpen()) {
+        log(ERROR, "Writing to closed client");
+        return -1;
+    }
+    assert(m_encoder);
 //    if (m_clientIos.fail()) {
 //        return -1;
 //    }
@@ -218,8 +262,6 @@ int CommAsioAdminClient::send(
 //        return -1;
 //    }
     m_encoder->streamObjectsMessage(op);
-    do_write();
-//    mSocket.as
     return flush();
 }
 
@@ -235,7 +277,7 @@ bool CommAsioAdminClient::isOpen() const
 
 bool CommAsioAdminClient::eof()
 {
-    return false;
+    return !mSocket.is_open();
 }
 
 void CommAsioAdminClient::disconnect()
@@ -245,5 +287,6 @@ void CommAsioAdminClient::disconnect()
 
 int CommAsioAdminClient::flush()
 {
+    do_write();
     return 0;
 }

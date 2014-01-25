@@ -36,7 +36,6 @@ CommAsioUnixListener::CommAsioUnixListener(CommServer& commServer,
 
 CommAsioUnixListener::~CommAsioUnixListener()
 {
-    // TODO Auto-generated destructor stub
 }
 
 void CommAsioUnixListener::startAccept()
