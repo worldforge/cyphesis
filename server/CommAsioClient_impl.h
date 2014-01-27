@@ -16,6 +16,9 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifndef COMMASIOCLIENT_IMPL_H_
+#define COMMASIOCLIENT_IMPL_H_
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -23,25 +26,25 @@
 #include "common/log.h"
 #include "common/compose.hpp"
 
-#include "CommAsioAdminClient.h"
+#include "CommAsioClient.h"
 
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Objects/RootOperation.h>
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Net/Stream.h>
 
-CommAsioAdminClient::CommAsioAdminClient(CommServer& commServer,
-        const std::string & name,
-        boost::asio::local::stream_protocol::socket socket) :
-        CommSocket(commServer), mSocket(std::move(socket)), mStream(
-                &mWriteBuffer), mNegotiateTimer(mSocket.get_io_service(),
+template<class SocketT>
+CommAsioClient<SocketT>::CommAsioClient(const std::string & name,
+        boost::asio::io_service& io_service) :
+        CommSocket(*static_cast<CommServer*>(nullptr)), mSocket(io_service), mStream(
+                &mWriteBuffer), mNegotiateTimer(io_service,
                 boost::posix_time::seconds(1)), m_codec(nullptr), m_encoder(
-                nullptr), m_link(nullptr), m_connectTime(commServer.time())
+                nullptr), m_link(nullptr), mName(name)
 {
-    m_negotiate = new Atlas::Net::StreamAccept("cyphesis " + name, mStream);
 }
 
-CommAsioAdminClient::~CommAsioAdminClient()
+template<class SocketT>
+CommAsioClient<SocketT>::~CommAsioClient()
 {
     delete m_link;
     delete m_negotiate;
@@ -49,9 +52,16 @@ CommAsioAdminClient::~CommAsioAdminClient()
     delete m_codec;
 }
 
-void CommAsioAdminClient::do_read()
+template<class SocketT>
+SocketT& CommAsioClient<SocketT>::getSocket()
 {
-    auto self(shared_from_this());
+    return mSocket;
+}
+
+template<class SocketT>
+void CommAsioClient<SocketT>::do_read()
+{
+    auto self(this->shared_from_this());
     mSocket.async_read_some(mReadBuffer.prepare(read_buffer_size),
             [this, self](boost::system::error_code ec, std::size_t length)
             {
@@ -61,19 +71,20 @@ void CommAsioAdminClient::do_read()
                     mStream.rdbuf(&mReadBuffer);
                     m_codec->poll();
                     mStream.rdbuf(&mWriteBuffer);
-                    dispatch();
+                    this->dispatch();
                     //By calling do_read again we make sure that the instance
                     //doesn't go out of scope ("shared_from this"). As soon as that
                     //doesn't happen, and there's no do_write in progress, the instance
                     //will be deleted since there's no more references to it.
-                    do_read();
+                    this->do_read();
                 }
             });
 }
 
-void CommAsioAdminClient::do_write()
+template<class SocketT>
+void CommAsioClient<SocketT>::do_write()
 {
-    auto self(shared_from_this());
+    auto self(this->shared_from_this());
 
     if (mWriteBuffer.size() != 0) {
         boost::asio::async_write(mSocket, mWriteBuffer.data(),
@@ -87,29 +98,31 @@ void CommAsioAdminClient::do_write()
     }
 }
 
-void CommAsioAdminClient::negotiate_read()
+template<class SocketT>
+void CommAsioClient<SocketT>::negotiate_read()
 {
-    auto self(shared_from_this());
+    auto self(this->shared_from_this());
     mSocket.async_read_some(mWriteBuffer.prepare(read_buffer_size),
             [this, self](boost::system::error_code ec, std::size_t length)
             {
                 if (!ec)
                 {
                     mWriteBuffer.commit(length);
-                    if (negotiate() == 0 && m_negotiate == nullptr) {
-                        negotiate_write();
-                        do_read();
+                    if (this->negotiate() == 0 && m_negotiate == nullptr) {
+                        this->negotiate_write();
+                        this->do_read();
                     } else {
-                        negotiate_write();
-                        negotiate_read();
+                        this->negotiate_write();
+                        this->negotiate_read();
                     }
                 }
             });
 }
 
-void CommAsioAdminClient::negotiate_write()
+template<class SocketT>
+void CommAsioClient<SocketT>::negotiate_write()
 {
-    auto self(shared_from_this());
+    auto self(this->shared_from_this());
 
     if (mWriteBuffer.size() != 0) {
         boost::asio::async_write(mSocket, mWriteBuffer.data(),
@@ -123,22 +136,41 @@ void CommAsioAdminClient::negotiate_write()
     }
 }
 
-void CommAsioAdminClient::setup(Link * connection)
+template<class SocketT>
+void CommAsioClient<SocketT>::startAccept(Link * connection)
 {
     // Create the server side negotiator
+    m_negotiate = new Atlas::Net::StreamAccept("cyphesis " + mName, mStream);
 
     m_link = connection;
 
-    auto self(shared_from_this());
+    startNegotiation();
+}
+
+template<class SocketT>
+void CommAsioClient<SocketT>::startConnect(Link * connection)
+{
+    // Create the client side negotiator
+    m_negotiate = new Atlas::Net::StreamConnect("cyphesis " + mName, mStream);
+
+    m_link = connection;
+
+    startNegotiation();
+}
+
+template<class SocketT>
+void CommAsioClient<SocketT>::startNegotiation()
+{
+
+    auto self(this->shared_from_this());
     mNegotiateTimer.async_wait([this, self](const boost::system::error_code& ec)
     {
         //If the negotiator still exists after the deadline it means that the negotation hasn't
         //completed yet; we'll consider that a "timeout".
-        if (m_negotiate != nullptr) {
-            mSocket.close();
-        }
-    });
-
+            if (m_negotiate != nullptr) {
+                mSocket.close();
+            }
+        });
 
     m_negotiate->poll(false);
 
@@ -146,7 +178,9 @@ void CommAsioAdminClient::setup(Link * connection)
     negotiate_read();
 }
 
-int CommAsioAdminClient::negotiate()
+
+template<class SocketT>
+int CommAsioClient<SocketT>::negotiate()
 {
     // poll and check if negotiation is complete
     m_negotiate->poll();
@@ -182,16 +216,17 @@ int CommAsioAdminClient::negotiate()
     // This should always be sent at the beginning of a session
     m_codec->streamBegin();
 
-
     return 0;
 }
 
-bool CommAsioAdminClient::timeout()
+template<class SocketT>
+bool CommAsioClient<SocketT>::timeout()
 {
     return false;
 }
 
-int CommAsioAdminClient::operation(
+template<class SocketT>
+int CommAsioClient<SocketT>::operation(
         const Atlas::Objects::Operation::RootOperation & op)
 {
     assert(m_link != 0);
@@ -199,7 +234,8 @@ int CommAsioAdminClient::operation(
     return 0;
 }
 
-void CommAsioAdminClient::dispatch()
+template<class SocketT>
+void CommAsioClient<SocketT>::dispatch()
 {
     DispatchQueue::const_iterator Iend = m_opQueue.end();
     for (DispatchQueue::const_iterator I = m_opQueue.begin(); I != Iend; ++I) {
@@ -210,7 +246,8 @@ void CommAsioAdminClient::dispatch()
     m_opQueue.clear();
 }
 
-void CommAsioAdminClient::objectArrived(const Atlas::Objects::Root & obj)
+template<class SocketT>
+void CommAsioClient<SocketT>::objectArrived(const Atlas::Objects::Root & obj)
 {
     Atlas::Objects::Operation::RootOperation op =
             Atlas::Objects::smart_dynamic_cast<
@@ -231,7 +268,8 @@ void CommAsioAdminClient::objectArrived(const Atlas::Objects::Root & obj)
     m_opQueue.push_back(op);
 }
 
-void CommAsioAdminClient::idle(time_t t)
+template<class SocketT>
+void CommAsioClient<SocketT>::idle(time_t t)
 {
 //    if (m_negotiate != 0) {
 //        if ((t - m_connectTime) > 10) {
@@ -241,12 +279,14 @@ void CommAsioAdminClient::idle(time_t t)
 //    }
 }
 
-int CommAsioAdminClient::read()
+template<class SocketT>
+int CommAsioClient<SocketT>::read()
 {
     return 0;
 }
 
-int CommAsioAdminClient::send(
+template<class SocketT>
+int CommAsioClient<SocketT>::send(
         const Atlas::Objects::Operation::RootOperation & op)
 {
     if (!isOpen()) {
@@ -265,28 +305,35 @@ int CommAsioAdminClient::send(
     return flush();
 }
 
-int CommAsioAdminClient::getFd() const
+template<class SocketT>
+int CommAsioClient<SocketT>::getFd() const
 {
     return 0;
 }
 
-bool CommAsioAdminClient::isOpen() const
+template<class SocketT>
+bool CommAsioClient<SocketT>::isOpen() const
 {
     return mSocket.is_open();
 }
 
-bool CommAsioAdminClient::eof()
+template<class SocketT>
+bool CommAsioClient<SocketT>::eof()
 {
     return !mSocket.is_open();
 }
 
-void CommAsioAdminClient::disconnect()
+template<class SocketT>
+void CommAsioClient<SocketT>::disconnect()
 {
     mSocket.close();
 }
 
-int CommAsioAdminClient::flush()
+template<class SocketT>
+int CommAsioClient<SocketT>::flush()
 {
     do_write();
     return 0;
 }
+
+#endif /* COMMASIOCLIENT_IMPL_H_ */

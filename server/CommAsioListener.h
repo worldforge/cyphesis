@@ -16,27 +16,26 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef COMMASIOUNIXLISTENER_H_
-#define COMMASIOUNIXLISTENER_H_
+#ifndef COMMASIOLISTENER_H_
+#define COMMASIOLISTENER_H_
 
-#include "CommAsioAdminClient.h"
 #include <boost/asio.hpp>
 
-class CommAsioUnixListener
+class ServerRouting;
+template<typename ProtocolT, typename ClientT, typename ConnectionT>
+class CommAsioListener
 {
     public:
-        CommAsioUnixListener(CommServer& commServer, ServerRouting& server,
+        CommAsioListener(ServerRouting& server,
                 boost::asio::io_service& ioService,
-                const std::string& socketPath);
-        virtual ~CommAsioUnixListener();
+                const typename ProtocolT::endpoint& endpoint);
+        virtual ~CommAsioListener();
     protected:
-        CommServer& mCommServer;
         ServerRouting& mServer;
 
-        boost::asio::local::stream_protocol::acceptor mAcceptor;
-        boost::asio::local::stream_protocol::socket mSocket;
+        typename ProtocolT::acceptor mAcceptor;
 
         void startAccept();
 };
 
-#endif /* COMMASIOUNIXLISTENER_H_ */
+#endif /* COMMASIOLISTENER_H_ */

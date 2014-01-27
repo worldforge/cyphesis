@@ -143,8 +143,8 @@ COMM_SOURCES = \
 		CommHttpClientFactory.cpp CommHttpClientFactory.h \
 		CommClientKit.cpp CommClientKit.h \
 		Idle.cpp Idle.h \
-		CommAsioUnixListener.cpp CommAsioUnixListener.h \
-		CommAsioAdminClient.cpp CommAsioAdminClient.h \
+		CommAsioListener.cpp CommAsioListener.h CommAsioListener_impl.h \
+		CommAsioClient.cpp CommAsioClient.h CommAsioClient_impl.h \
 		$(top_srcdir)/metaserverapi/MetaServerPacket.cpp \
 		$(top_srcdir)/metaserverapi/MetaServerPacket.hpp \
 		$(top_srcdir)/metaserverapi/MetaServerAPI.hpp \

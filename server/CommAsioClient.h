@@ -16,14 +16,12 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef COMMASIOADMINCLIENT_H_
-#define COMMASIOADMINCLIENT_H_
-
-#include "common/CommSocket.h"
-#include "CommServer.h"
+#ifndef COMMASIOCLIENT_H_
+#define COMMASIOCLIENT_H_
 
 #include "Idle.h"
 #include "common/Link.h"
+#include "common/CommSocket.h"
 
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Objects/ObjectsFwd.h>
@@ -37,21 +35,25 @@
 #include <sstream>
 #include <deque>
 
-class CommAsioAdminClient: public CommSocket,
-        public Atlas::Objects::ObjectsDecoder,
-        public std::enable_shared_from_this<CommAsioAdminClient>
+template<typename SocketT>
+class CommAsioClient: public Atlas::Objects::ObjectsDecoder,
+        public CommSocket,
+        public std::enable_shared_from_this<CommAsioClient<SocketT> >
 {
     public:
-        CommAsioAdminClient(CommServer& commServer, const std::string & name,
-                boost::asio::local::stream_protocol::socket socket);
-        virtual ~CommAsioAdminClient();
+        CommAsioClient(const std::string & name,
+                boost::asio::io_service& io_service);
+        virtual ~CommAsioClient();
 
         void do_read();
 
         void do_write();
+
+        SocketT& getSocket();
     public:
 
-        void setup(Link * connection);
+        void startAccept(Link * connection);
+        void startConnect(Link * connection);
         int send(const Atlas::Objects::Operation::RootOperation &);
 
     public:
@@ -73,15 +75,17 @@ class CommAsioAdminClient: public CommSocket,
         virtual int flush();
 
     protected:
-        boost::asio::local::stream_protocol::socket mSocket;
+        SocketT mSocket;
 
         boost::asio::streambuf mReadBuffer;
         boost::asio::streambuf mWriteBuffer;
         std::iostream mStream;
         boost::asio::deadline_timer mNegotiateTimer;
 
-        enum { read_buffer_size = 16384};
-
+        enum
+        {
+            read_buffer_size = 16384
+        };
 
 /// \brief Queue of operations that have been decoded by not dispatched.
         DispatchQueue m_opQueue;
@@ -93,8 +97,10 @@ class CommAsioAdminClient: public CommSocket,
         Atlas::Negotiate * m_negotiate;
         /// \brief Server side object for handling connection level operations.
         Link * m_link;
-        /// \brief Time connection was opened
-        time_t m_connectTime;
+
+        const std::string mName;
+
+        void startNegotiation();
 
         /// \brief Handle socket data related to codec negotiation.
         int negotiate();
@@ -102,7 +108,6 @@ class CommAsioAdminClient: public CommSocket,
         void negotiate_read();
 
         void negotiate_write();
-
 
         /// \brief Add an operation to the queue.
         template<class OpType>
@@ -116,4 +121,4 @@ class CommAsioAdminClient: public CommSocket,
         virtual void idle(time_t t);
 };
 
-#endif /* COMMASIOADMINCLIENT_H_ */
+#endif /* COMMASIOCLIENT_H_ */
