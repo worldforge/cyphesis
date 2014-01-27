@@ -15,7 +15,6 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -33,7 +32,8 @@
 #include "CommPSQLSocket.h"
 #include "CommMetaClient.h"
 #include "CommMDNSPublisher.h"
-#include "CommAsioUnixListener.h"
+#include "CommAsioListener_impl.h"
+#include "CommAsioClient.h"
 #include "Connection.h"
 #include "ServerRouting.h"
 #include "EntityBuilder.h"
@@ -67,7 +67,6 @@
 #include "common/serialno.h"
 #include "common/SystemTime.h"
 
-
 #include <varconf/config.h>
 
 #include <sigc++/functors/mem_fun.h>
@@ -79,6 +78,8 @@
 
 #include <boost/make_shared.hpp>
 #include <boost/asio/io_service.hpp>
+#include <boost/asio/local/stream_protocol.hpp>
+#include <boost/asio/ip/tcp.hpp>
 
 #include <thread>
 #include <cstdlib>
@@ -92,13 +93,16 @@ class Peer;
 static const bool debug_flag = false;
 
 INT_OPTION(http_port_num, 6780, CYPHESIS, "httpport",
-           "Network listen port for http connection to the server");
+        "Network listen port for http connection to the server")
+;
 
 BOOL_OPTION(useMetaserver, true, CYPHESIS, "usemetaserver",
-            "Flag to control registration with the metaserver");
+        "Flag to control registration with the metaserver")
+;
 
 STRING_OPTION(mserver, "metaserver.worldforge.org", CYPHESIS, "metaserver",
-              "Hostname to use as the metaserver");
+        "Hostname to use as the metaserver")
+;
 
 int main(int argc, char ** argv)
 {
@@ -121,8 +125,8 @@ int main(int argc, char ** argv)
     if (config_status < 0) {
         if (config_status == CONFIG_VERSION) {
             std::cout << argv[0] << " (cyphesis) " << consts::version
-                      << " (Cyphesis build " << consts::buildId << ")"
-                      << std::endl << std::flush;
+                    << " (Cyphesis build " << consts::buildId << ")"
+                    << std::endl << std::flush;
 
             return 0;
         } else if (config_status == CONFIG_HELP) {
@@ -160,19 +164,18 @@ int main(int argc, char ** argv)
             log(ERROR, "Error opening database. Database disabled.");
             if (dbstatus == DATABASE_TABERR) {
                 log(INFO, "Database connection established, "
-                          "but unable to create required tables.");
+                        "but unable to create required tables.");
                 log(INFO, "Please ensure that any obsolete database "
-                          "tables have been removed.");
+                        "tables have been removed.");
             } else {
                 log(INFO, "Unable to connect to the RDBMS.");
                 log(INFO, "Please ensure that the RDBMS is running, "
-                          "the cyphesis database exists and is accessible "
-                          "to the user running cyphesis.");
+                        "the cyphesis database exists and is accessible "
+                        "to the user running cyphesis.");
             }
             log(INFO, String::compose("To disable this message please run:\n\n"
-                                      "    cyconfig --%1:usedatabase=false\n\n"
-                                      "to permanently disable database usage.",
-                                      instance));
+                    "    cyconfig --%1:usedatabase=false\n\n"
+                    "to permanently disable database usage.", instance));
         }
     }
 
@@ -196,7 +199,7 @@ int main(int argc, char ** argv)
 
     int nice = 1;
     readConfigItem(instance, "nice", nice);
-    
+
     boost::asio::io_service io_service;
 
     // Start up the Python subsystem.
@@ -221,8 +224,8 @@ int main(int argc, char ** argv)
     std::string server_id, lobby_id;
     long int_id, lobby_int_id;
 
-    if (((int_id = newId(server_id)) < 0) ||
-        ((lobby_int_id = newId(lobby_id)) < 0)) {
+    if (((int_id = newId(server_id)) < 0)
+            || ((lobby_int_id = newId(lobby_id)) < 0)) {
         log(CRITICAL, "Unable to get server IDs from Database");
         return EXIT_DATABASE_ERROR;
     }
@@ -230,9 +233,7 @@ int main(int argc, char ** argv)
     // Create the core server object, which stores central data,
     // and track objects
     ServerRouting * server = new ServerRouting(*world, ruleset_name,
-                                               server_name,
-                                               server_id, int_id,
-                                               lobby_id, lobby_int_id);
+            server_name, server_id, int_id, lobby_id, lobby_int_id);
 
     // Create commserver instance that will handle connections from clients.
     // The commserver will create the other server related objects, and the
@@ -266,12 +267,13 @@ int main(int argc, char ** argv)
         // log(INFO, _("Restored world."));
 
         CommPSQLSocket * dbsocket = new CommPSQLSocket(*commServer,
-                                        Persistence::instance()->m_db);
+                Persistence::instance()->m_db);
         commServer->addSocket(dbsocket);
         commServer->addIdle(dbsocket);
 
         storage_idle = new IdleConnector(*commServer);
-        storage_idle->idling.connect(sigc::mem_fun(store, &StorageManager::tick));
+        storage_idle->idling.connect(
+                sigc::mem_fun(store, &StorageManager::tick));
         commServer->addIdle(storage_idle);
     } else {
         std::string adminId;
@@ -286,77 +288,78 @@ int main(int argc, char ** argv)
     // UpdateTester * update_tester = new UpdateTester(*commServer);
     // commServer->addIdle(update_tester);
 
+    std::list<
+            CommAsioListener<boost::asio::ip::tcp,
+                    CommAsioClient<boost::asio::ip::tcp::socket>,
+                    TrustedConnection>> tcp_atlas_clients;
+
     boost::shared_ptr<CommClientFactory<CommUserClient, Connection> > atlas_clients =
             boost::make_shared<CommClientFactory<CommUserClient, Connection>,
-                      ServerRouting & >(*server);
+                    ServerRouting &>(*server);
     if (client_port_num < 0) {
         client_port_num = dynamic_port_start;
         for (; client_port_num <= dynamic_port_end; client_port_num++) {
-            if (TCPListenFactory::listen(*commServer,
-                                         client_port_num,
-                                         atlas_clients) == 0) {
+            try {
+                tcp_atlas_clients.emplace_back(*server, io_service,
+                        boost::asio::ip::tcp::endpoint(
+                                boost::asio::ip::tcp::v4(), client_port_num));
+            } catch (const std::exception& e) {
                 break;
             }
         }
-        if (client_port_num > dynamic_port_end) {
-            log(ERROR, String::compose("Could not find free client listen "
-                                       "socket in range %1-%2. Init failed.",
-                                       dynamic_port_start, dynamic_port_end));
-            log(INFO, String::compose("To allocate 8 more ports please run:"
-                                      "\n\n    cyconfig "
-                                      "--cyphesis:dynamic_port_end=%1\n\n",
-                                      dynamic_port_end + 8));
+        if (client_port_num < dynamic_port_end) {
+            log(ERROR,
+                    String::compose("Could not find free client listen "
+                            "socket in range %1-%2. Init failed.",
+                            dynamic_port_start, dynamic_port_end));
+            log(INFO,
+                    String::compose("To allocate 8 more ports please run:"
+                            "\n\n    cyconfig "
+                            "--cyphesis:dynamic_port_end=%1\n\n",
+                            dynamic_port_end + 8));
             return EXIT_PORT_ERROR;
         }
         log(INFO, String::compose("Auto configuring new instance \"%1\" "
-                                  "to use port %2.",
-                                  instance, client_port_num));
+                "to use port %2.", instance, client_port_num));
         global_conf->setItem(instance, "tcpport", client_port_num,
-                             varconf::USER);
+                varconf::USER);
         global_conf->setItem(CYPHESIS, "dynamic_port_start",
-                             client_port_num + 1, varconf::USER);
-    } else if (TCPListenFactory::listen(*commServer,
-                                        client_port_num,
-                                        atlas_clients) != 0) {
-        log(ERROR, String::compose("Could not create client listen socket "
-                                   "on port %1. Init failed.",
-                                   client_port_num));
-        return EXIT_SOCKET_ERROR;
+                client_port_num + 1, varconf::USER);
+    } else {
+        try {
+            tcp_atlas_clients.emplace_back(*server, io_service,
+                    boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(),
+                            client_port_num));
+        } catch (const std::exception& e) {
+            log(ERROR, String::compose("Could not create client listen socket "
+                    "on port %1. Init failed.", client_port_num));
+            return EXIT_SOCKET_ERROR;
+        }
     }
 
 #ifdef HAVE_SYS_UN_H
-//    CommUnixListener * localListener = new CommUnixListener(*commServer,
-//            boost::make_shared<CommClientFactory<CommAdminClient, TrustedConnection>,
-//                      ServerRouting &>(*server));
-//    if (localListener->setup(client_socket_name) != 0) {
-//        log(ERROR, String::compose("Could not create local listen socket "
-//                                   "with address \"%1\"",
-//                                   localListener->getPath()));
-//        delete localListener;
-//    } else {
-//        commServer->addSocket(localListener);
-//    }
-
     CommUnixListener * pythonListener = new CommUnixListener(*commServer,
             boost::make_shared<CommPythonClientFactory>());
     if (pythonListener->setup(python_socket_name) != 0) {
         log(ERROR, String::compose("Could not create python listen socket "
-                                   "with address %1.",
-                                   pythonListener->getPath()));
+                "with address %1.", pythonListener->getPath()));
         delete pythonListener;
     } else {
         commServer->addSocket(pythonListener);
     }
 
-    remove(client_socket_name.c_str());
-    CommAsioUnixListener* localListener = new CommAsioUnixListener(*commServer, *server, io_service, client_socket_name);
 #endif
 
-    if (TCPListenFactory::listen(*commServer,
-                                 http_port_num,
-                                 boost::make_shared<CommHttpClientFactory>()) != 0) {
+    remove(client_socket_name.c_str());
+    CommAsioListener<boost::asio::local::stream_protocol,
+            CommAsioClient<boost::asio::local::stream_protocol::socket>,
+            TrustedConnection> localListener(*server, io_service,
+            boost::asio::local::stream_protocol::endpoint(client_socket_name));
+
+    if (TCPListenFactory::listen(*commServer, http_port_num,
+            boost::make_shared<CommHttpClientFactory>()) != 0) {
         log(ERROR, String::compose("Could not create http listen"
-                                   " socket on port %1.", http_port_num));
+                " socket on port %1.", http_port_num));
 
     }
 
@@ -372,8 +375,7 @@ int main(int argc, char ** argv)
 
 #if defined(HAVE_AVAHI)
 
-    CommMDNSPublisher * cmdns = new CommMDNSPublisher(*commServer,
-                                                      *server);
+    CommMDNSPublisher * cmdns = new CommMDNSPublisher(*commServer, *server);
     if (cmdns->setup() == 0) {
         commServer->addSocket(cmdns);
         commServer->addIdle(cmdns);
@@ -383,7 +385,6 @@ int main(int argc, char ** argv)
     }
 
 #endif // defined(HAVE_AVAHI)
-
     // Configuration is now complete, and verified as somewhat sane, so
     // we save the updated user config.
 
@@ -429,17 +430,17 @@ int main(int argc, char ** argv)
                 log(INFO,
                         compose("Trying to import world from %1.", importPath));
                 std::stringstream ss;
-                ss << PREFIX "/bin/cyimport --resume \"" << importPath  + "\"";
+                ss << PREFIX
+                "/bin/cyimport --resume \"" << importPath + "\"";
                 std::string command = ss.str();
-                std::thread importer(
-                        [=]() {
-                            int result = std::system(command.c_str());
-                            if (result == 0) {
-                                log(INFO, "Imported world into empty server.");
-                            } else {
-                                log(INFO, "No world imported.");
-                            }
-                        });
+                std::thread importer([=]() {
+                    int result = std::system(command.c_str());
+                    if (result == 0) {
+                        log(INFO, "Imported world into empty server.");
+                    } else {
+                        log(INFO, "No world imported.");
+                    }
+                });
                 importer.detach();
             }
         } else {
@@ -449,7 +450,6 @@ int main(int argc, char ** argv)
             file.close();
         }
     }
-
 
     bool soft_exit_in_progess = false;
     time_t soft_exit_deadline = 0;
@@ -493,10 +493,10 @@ int main(int argc, char ** argv)
                                 "Deadline for mind persistence set to %1 seconds.",
                                 mind_persistence_deadline));
             }
-        // It is hoped that commonly thrown exception, particularly
-        // exceptions that can be caused  by external influences
-        // should be caught close to where they are thrown. If
-        // an exception makes it here then it should be debugged.
+            // It is hoped that commonly thrown exception, particularly
+            // exceptions that can be caused  by external influences
+            // should be caught close to where they are thrown. If
+            // an exception makes it here then it should be debugged.
         } catch (const std::exception& e) {
             log(ERROR,
                     String::compose("Exception caught in main(): %1",
