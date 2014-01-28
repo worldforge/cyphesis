@@ -145,7 +145,6 @@ COMM_SOURCES = \
 		Idle.cpp Idle.h \
 		CommAsioListener.cpp CommAsioListener.h CommAsioListener_impl.h \
 		CommAsioClient.cpp CommAsioClient.h CommAsioClient_impl.h \
-		CommAsioStreamClientFactory.cpp CommAsioStreamClientFactory.h CommAsioStreamClientFactory_impl.h \
 		$(top_srcdir)/metaserverapi/MetaServerPacket.cpp \
 		$(top_srcdir)/metaserverapi/MetaServerPacket.hpp \
 		$(top_srcdir)/metaserverapi/MetaServerAPI.hpp \

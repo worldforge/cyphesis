@@ -34,7 +34,6 @@
 #include "CommMDNSPublisher.h"
 #include "CommAsioListener_impl.h"
 #include "CommAsioClient.h"
-#include "CommAsioStreamClientFactory_impl.h"
 #include "Connection.h"
 #include "ServerRouting.h"
 #include "EntityBuilder.h"
@@ -290,23 +289,25 @@ int main(int argc, char ** argv)
     // commServer->addIdle(update_tester);
 
 
-    CommAsioStreamClientFactory<CommAsioClient<boost::asio::ip::tcp::socket>,
-            Connection> tcpAtlasFactory(*server);
+    std::function<void(CommAsioClient<boost::asio::ip::tcp::socket>&)> tcpAtlasStarter =
+            [&](CommAsioClient<boost::asio::ip::tcp::socket>& client) {
+
+                std::string connection_id;
+                long c_iid = newId(connection_id);
+                client.startAccept(
+                        new Connection(client, *server, "", connection_id, c_iid));
+            };
 
     std::list<
             CommAsioListener<boost::asio::ip::tcp,
-                    CommAsioStreamClientFactory<
-                            CommAsioClient<boost::asio::ip::tcp::socket>,
-                            Connection>> > tcp_atlas_clients;
+                    CommAsioClient<boost::asio::ip::tcp::socket>> > tcp_atlas_clients;
 
-    boost::shared_ptr<CommClientFactory<CommUserClient, Connection> > atlas_clients =
-            boost::make_shared<CommClientFactory<CommUserClient, Connection>,
-                    ServerRouting &>(*server);
     if (client_port_num < 0) {
         client_port_num = dynamic_port_start;
         for (; client_port_num <= dynamic_port_end; client_port_num++) {
             try {
-                tcp_atlas_clients.emplace_back(tcpAtlasFactory, io_service,
+                tcp_atlas_clients.emplace_back(tcpAtlasStarter,
+                        server->getName(), io_service,
                         boost::asio::ip::tcp::endpoint(
                                 boost::asio::ip::tcp::v4(), client_port_num));
             } catch (const std::exception& e) {
@@ -333,7 +334,8 @@ int main(int argc, char ** argv)
                 client_port_num + 1, varconf::USER);
     } else {
         try {
-            tcp_atlas_clients.emplace_back(tcpAtlasFactory, io_service,
+            tcp_atlas_clients.emplace_back(tcpAtlasStarter, server->getName(),
+                    io_service,
                     boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(),
                             client_port_num));
         } catch (const std::exception& e) {
@@ -358,13 +360,18 @@ int main(int argc, char ** argv)
 
     remove(client_socket_name.c_str());
 
-    CommAsioStreamClientFactory<CommAsioClient<boost::asio::local::stream_protocol::socket>,
-    TrustedConnection> localFactory(*server);
+    std::function<void(CommAsioClient<boost::asio::local::stream_protocol::socket>&)> localStarter =
+            [&](CommAsioClient<boost::asio::local::stream_protocol::socket>& client) {
+
+                std::string connection_id;
+                long c_iid = newId(connection_id);
+                client.startAccept(
+                        new TrustedConnection(client, *server, "", connection_id, c_iid));
+            };
 
     CommAsioListener<boost::asio::local::stream_protocol,
-            CommAsioStreamClientFactory<
-                    CommAsioClient<boost::asio::local::stream_protocol::socket>,
-                    TrustedConnection>> localListener(localFactory, io_service,
+            CommAsioClient<boost::asio::local::stream_protocol::socket>> localListener(
+            localStarter, server->getName(), io_service,
             boost::asio::local::stream_protocol::endpoint(client_socket_name));
 
     if (TCPListenFactory::listen(*commServer, http_port_num,

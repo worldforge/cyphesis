@@ -22,31 +22,34 @@
 #include "CommAsioListener.h"
 #include "CommAsioClient_impl.h"
 
-template<class ProtocolT, typename ClientFactoryT>
-CommAsioListener<ProtocolT, ClientFactoryT>::CommAsioListener(
-        ClientFactoryT clientFactory, boost::asio::io_service& ioService,
+template<class ProtocolT, typename ClientT>
+CommAsioListener<ProtocolT, ClientT>::CommAsioListener(
+        std::function<void(ClientT&)> clientStarter,
+        const std::string& serverName, boost::asio::io_service& ioService,
         const typename ProtocolT::endpoint& endpoint) :
-        mClientFactory(clientFactory), mAcceptor(ioService, endpoint)
+        mClientStarter(clientStarter), mServerName(serverName), mAcceptor(
+                ioService, endpoint)
 {
     startAccept();
 }
 
-template<class ProtocolT, typename ClientFactoryT>
-CommAsioListener<ProtocolT, ClientFactoryT>::~CommAsioListener()
+template<class ProtocolT, typename ClientT>
+CommAsioListener<ProtocolT, ClientT>::~CommAsioListener()
 {
 }
 
-template<class ProtocolT, typename ClientFactoryT>
-void CommAsioListener<ProtocolT, ClientFactoryT>::startAccept()
+template<class ProtocolT, typename ClientT>
+void CommAsioListener<ProtocolT, ClientT>::startAccept()
 {
-    auto client = mClientFactory.createClient(mAcceptor.get_io_service());
+    auto client = std::make_shared < ClientT
+            > (mServerName, mAcceptor.get_io_service());
 
     mAcceptor.async_accept(client->getSocket(),
             [this, client](boost::system::error_code ec)
             {
                 if (!ec)
                 {
-                    mClientFactory.startClient(*client);
+                    mClientStarter(*client);
                 }
 
                 this->startAccept();

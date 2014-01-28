@@ -21,17 +21,19 @@
 
 #include <boost/asio.hpp>
 
-class ServerRouting;
-template<typename ProtocolT, typename ClientFactoryT>
+#include <functional>
+
+template<typename ProtocolT, typename ClientT>
 class CommAsioListener
 {
     public:
-        CommAsioListener(ClientFactoryT clientFactory,
+        CommAsioListener(std::function<void(ClientT&)> clientStarter,const std::string& serverName,
                 boost::asio::io_service& ioService,
                 const typename ProtocolT::endpoint& endpoint);
         virtual ~CommAsioListener();
     protected:
-        ClientFactoryT mClientFactory;
+        std::function<void(ClientT&)> mClientStarter;
+        const std::string mServerName;
 
         typename ProtocolT::acceptor mAcceptor;
 
