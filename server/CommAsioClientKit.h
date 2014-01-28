@@ -16,26 +16,22 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef COMMASIOLISTENER_H_
-#define COMMASIOLISTENER_H_
 
-#include <boost/asio.hpp>
+#ifndef SERVER_COMM_ASIO_CLIENT_KIT_H
+#define SERVER_COMM_ASIO_CLIENT_KIT_H
 
-class ServerRouting;
-template<typename ProtocolT, typename ClientFactoryT>
-class CommAsioListener
-{
-    public:
-        CommAsioListener(ClientFactoryT clientFactory,
-                boost::asio::io_service& ioService,
-                const typename ProtocolT::endpoint& endpoint);
-        virtual ~CommAsioListener();
-    protected:
-        ClientFactoryT mClientFactory;
+#include <string>
+#include <memory>
+#include <boost/asio/io_service.hpp>
 
-        typename ProtocolT::acceptor mAcceptor;
+/// \brief Abstract factory for creating objects from subclasses of CommClient
+template<typename ClientT>
+class CommAsioClientKit {
+  public:
+    virtual ~CommAsioClientKit() {};
 
-        void startAccept();
+    virtual std::shared_ptr<ClientT> createClient(boost::asio::io_service& io_service) = 0;
+    virtual void startClient(ClientT& client) = 0;
 };
 
-#endif /* COMMASIOLISTENER_H_ */
+#endif // SERVER_COMM_CLIENT_KIT_H

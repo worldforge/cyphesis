@@ -22,33 +22,31 @@
 #include "CommAsioListener.h"
 #include "CommAsioClient_impl.h"
 
-template<class ProtocolT, typename ClientT, typename ConnectionT>
-CommAsioListener<ProtocolT, ClientT, ConnectionT>::CommAsioListener(
-        ServerRouting& server, boost::asio::io_service& ioService,
+template<class ProtocolT, typename ClientFactoryT>
+CommAsioListener<ProtocolT, ClientFactoryT>::CommAsioListener(
+        ClientFactoryT clientFactory, boost::asio::io_service& ioService,
         const typename ProtocolT::endpoint& endpoint) :
-        mServer(server), mAcceptor(ioService, endpoint)
+        mClientFactory(clientFactory), mAcceptor(ioService, endpoint)
 {
     startAccept();
 }
 
-template<class ProtocolT, typename ClientT, typename ConnectionT>
-CommAsioListener<ProtocolT, ClientT, ConnectionT>::~CommAsioListener()
+template<class ProtocolT, typename ClientFactoryT>
+CommAsioListener<ProtocolT, ClientFactoryT>::~CommAsioListener()
 {
 }
 
-template<class ProtocolT, typename ClientT, typename ConnectionT>
-void CommAsioListener<ProtocolT, ClientT, ConnectionT>::startAccept()
+template<class ProtocolT, typename ClientFactoryT>
+void CommAsioListener<ProtocolT, ClientFactoryT>::startAccept()
 {
-    auto client = std::make_shared < ClientT
-            > (mServer.getName(), mAcceptor.get_io_service());
+    auto client = mClientFactory.createClient(mAcceptor.get_io_service());
+
     mAcceptor.async_accept(client->getSocket(),
             [this, client](boost::system::error_code ec)
             {
                 if (!ec)
                 {
-                    std::string connection_id;
-                    long c_iid = newId(connection_id);
-                    client->startAccept(new ConnectionT(*client, mServer, "", connection_id, c_iid));
+                    mClientFactory.startClient(*client);
                 }
 
                 this->startAccept();

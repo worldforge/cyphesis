@@ -34,6 +34,7 @@
 #include "CommMDNSPublisher.h"
 #include "CommAsioListener_impl.h"
 #include "CommAsioClient.h"
+#include "CommAsioStreamClientFactory_impl.h"
 #include "Connection.h"
 #include "ServerRouting.h"
 #include "EntityBuilder.h"
@@ -288,10 +289,15 @@ int main(int argc, char ** argv)
     // UpdateTester * update_tester = new UpdateTester(*commServer);
     // commServer->addIdle(update_tester);
 
+
+    CommAsioStreamClientFactory<CommAsioClient<boost::asio::ip::tcp::socket>,
+            Connection> tcpAtlasFactory(*server);
+
     std::list<
             CommAsioListener<boost::asio::ip::tcp,
-                    CommAsioClient<boost::asio::ip::tcp::socket>,
-                    TrustedConnection>> tcp_atlas_clients;
+                    CommAsioStreamClientFactory<
+                            CommAsioClient<boost::asio::ip::tcp::socket>,
+                            Connection>> > tcp_atlas_clients;
 
     boost::shared_ptr<CommClientFactory<CommUserClient, Connection> > atlas_clients =
             boost::make_shared<CommClientFactory<CommUserClient, Connection>,
@@ -300,7 +306,7 @@ int main(int argc, char ** argv)
         client_port_num = dynamic_port_start;
         for (; client_port_num <= dynamic_port_end; client_port_num++) {
             try {
-                tcp_atlas_clients.emplace_back(*server, io_service,
+                tcp_atlas_clients.emplace_back(tcpAtlasFactory, io_service,
                         boost::asio::ip::tcp::endpoint(
                                 boost::asio::ip::tcp::v4(), client_port_num));
             } catch (const std::exception& e) {
@@ -327,7 +333,7 @@ int main(int argc, char ** argv)
                 client_port_num + 1, varconf::USER);
     } else {
         try {
-            tcp_atlas_clients.emplace_back(*server, io_service,
+            tcp_atlas_clients.emplace_back(tcpAtlasFactory, io_service,
                     boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(),
                             client_port_num));
         } catch (const std::exception& e) {
@@ -351,9 +357,14 @@ int main(int argc, char ** argv)
 #endif
 
     remove(client_socket_name.c_str());
+
+    CommAsioStreamClientFactory<CommAsioClient<boost::asio::local::stream_protocol::socket>,
+    TrustedConnection> localFactory(*server);
+
     CommAsioListener<boost::asio::local::stream_protocol,
-            CommAsioClient<boost::asio::local::stream_protocol::socket>,
-            TrustedConnection> localListener(*server, io_service,
+            CommAsioStreamClientFactory<
+                    CommAsioClient<boost::asio::local::stream_protocol::socket>,
+                    TrustedConnection>> localListener(localFactory, io_service,
             boost::asio::local::stream_protocol::endpoint(client_socket_name));
 
     if (TCPListenFactory::listen(*commServer, http_port_num,

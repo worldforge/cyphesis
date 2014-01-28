@@ -16,26 +16,9 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef COMMASIOLISTENER_H_
-#define COMMASIOLISTENER_H_
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
-#include <boost/asio.hpp>
+#include "CommAsioStreamClientFactory.h"
 
-class ServerRouting;
-template<typename ProtocolT, typename ClientFactoryT>
-class CommAsioListener
-{
-    public:
-        CommAsioListener(ClientFactoryT clientFactory,
-                boost::asio::io_service& ioService,
-                const typename ProtocolT::endpoint& endpoint);
-        virtual ~CommAsioListener();
-    protected:
-        ClientFactoryT mClientFactory;
-
-        typename ProtocolT::acceptor mAcceptor;
-
-        void startAccept();
-};
-
-#endif /* COMMASIOLISTENER_H_ */
