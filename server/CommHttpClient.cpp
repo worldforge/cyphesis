@@ -15,52 +15,77 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-
 #include "CommHttpClient.h"
 #include "CommServer.h"
 #include "HttpCache.h"
 
 static const bool debug_flag = false;
 
-CommHttpClient::CommHttpClient(CommServer & svr, int fd) :
-                CommStreamClient<tcp_socket_stream>(svr, fd),
-                m_req_complete(false)
+CommHttpClient::CommHttpClient(const std::string & name,
+        boost::asio::io_service& io_service) :
+        mSocket(io_service), mStream(&mBuffer)
 {
-    m_clientIos.setTimeout(0,1000); // FIXME?
 }
 
 CommHttpClient::~CommHttpClient()
 {
 }
 
-void CommHttpClient::dispatch()
+void CommHttpClient::serveRequest()
 {
-    if (!m_req_complete) {
-        return;
-    }
-    HttpCache::instance()->processQuery(m_clientIos, m_headers);
-    // m_clientIos << "HTTP/1.1 200 OK" << std::endl << std::flush;
-    // m_clientIos << "Content-Type: text/html" << std::endl;
-    // m_clientIos << "Server: cyphesis/" << consts::version << std::endl << std::endl;
-    // m_clientIos << "<html><head><title>Cyphesis</title></head><body>Cystast</body></html>" << std::endl << std::flush;
-
-    m_clientIos.shutdown(true);
+    do_read();
 }
 
-int CommHttpClient::read()
+void CommHttpClient::do_read()
 {
-    m_clientIos.peek();
+    auto self(this->shared_from_this());
+    mSocket.async_read_some(mBuffer.prepare(1024),
+            [this, self](boost::system::error_code ec, std::size_t length)
+            {
+                if (!ec)
+                {
+                    mBuffer.commit(length);
+                    bool complete = read();
+                    if (complete) {
+                        write();
+                    }
+                    //By calling do_read again we make sure that the instance
+                    //doesn't go out of scope ("shared_from this"). As soon as that
+                    //doesn't happen, and there's no do_write in progress, the instance
+                    //will be deleted since there's no more references to it.
+                    this->do_read();
+                }
+            });
+
+}
+
+void CommHttpClient::write()
+{
+    HttpCache::instance()->processQuery(mStream, m_headers);
+    auto self(this->shared_from_this());
+    boost::asio::async_write(mSocket, mBuffer.data(),
+            [this, self](boost::system::error_code ec, std::size_t length)
+            {
+                if (!ec)
+                {
+                }
+                mSocket.close();
+            });
+}
+
+bool CommHttpClient::read()
+{
 
     std::streamsize count;
 
-    while ((count = m_clientIos.rdbuf()->in_avail()) > 0) {
+    while ((count = mStream.rdbuf()->in_avail()) > 0) {
 
         for (int i = 0; i < count; ++i) {
 
-            int next = m_clientIos.rdbuf()->sbumpc();
+            int next = mStream.rdbuf()->sbumpc();
             if (next == '\n') {
                 if (m_incoming.empty()) {
-                    m_req_complete = true;
+                    return true;
                 } else {
                     m_headers.push_back(m_incoming);
                     m_incoming.clear();
@@ -74,5 +99,10 @@ int CommHttpClient::read()
 
     // Read from the sockets.
 
-    return 0;
+    return false;
+}
+
+boost::asio::ip::tcp::socket& CommHttpClient::getSocket()
+{
+    return mSocket;
 }

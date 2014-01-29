@@ -26,7 +26,7 @@
 #ifdef HAVE_SYS_UN_H
 #include "CommAdminClient.h"
 #endif
-#include "CommHttpClientFactory.h"
+#include "CommHttpClient.h"
 #include "CommPythonClientFactory.h"
 #include "CommUnixListener.h"
 #include "CommPSQLSocket.h"
@@ -371,16 +371,19 @@ int main(int argc, char ** argv)
             };
 
     CommAsioListener<local::stream_protocol,
-            CommAsioClient<local::stream_protocol>> localListener(
-            localStarter, server->getName(), io_service,
+            CommAsioClient<local::stream_protocol>> localListener(localStarter,
+            server->getName(), io_service,
             local::stream_protocol::endpoint(client_socket_name));
 
-    if (TCPListenFactory::listen(*commServer, http_port_num,
-            boost::make_shared<CommHttpClientFactory>()) != 0) {
-        log(ERROR, String::compose("Could not create http listen"
-                " socket on port %1.", http_port_num));
+    std::function<void(CommHttpClient&)> httpStarter =
+            [&](CommHttpClient& client) {
+                client.serveRequest();
+            };
 
-    }
+    CommAsioListener<ip::tcp, CommHttpClient> httpListener(httpStarter,
+            server->getName(), io_service,
+            ip::tcp::endpoint(ip::tcp::v4(), http_port_num));
+
 
     if (useMetaserver) {
         CommMetaClient * cmc = new CommMetaClient(*commServer);

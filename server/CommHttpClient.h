@@ -15,30 +15,42 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-
 #ifndef SERVER_COMM_HTTP_CLIENT_H
 #define SERVER_COMM_HTTP_CLIENT_H
 
 #include "CommStreamClient.h"
 
-#include <skstream/skstream.h>
+#include <boost/asio.hpp>
 
 #include <list>
 #include <string>
+#include <memory>
 
 /// \brief Handle an internet socket connected to a remote web browser.
 /// \ingroup ServerSockets
-class CommHttpClient : public CommStreamClient<tcp_socket_stream> {
-  protected:
-    std::string m_incoming;
-    std::list<std::string> m_headers;
-    bool m_req_complete;
-  public:
-    CommHttpClient(CommServer & svr, int fd);
-    virtual ~CommHttpClient();
+class CommHttpClient: public std::enable_shared_from_this<CommHttpClient>
+{
+    protected:
 
-    virtual int read();
-    virtual void dispatch();
+        boost::asio::ip::tcp::socket mSocket;
+
+        boost::asio::streambuf mBuffer;
+        std::iostream mStream;
+
+        std::string m_incoming;
+        std::list<std::string> m_headers;
+
+        void do_read();
+        bool read();
+        void write();
+    public:
+        CommHttpClient(const std::string & name,
+                boost::asio::io_service& io_service);
+        virtual ~CommHttpClient();
+        void serveRequest();
+
+        boost::asio::ip::tcp::socket& getSocket();
+
 };
 
 #endif // SERVER_COMM_HTTP_CLIENT_H

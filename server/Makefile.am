@@ -140,7 +140,6 @@ COMM_SOURCES = \
 		CommMDNSPublisher.cpp CommMDNSPublisher.h \
 		CommServer.cpp CommServer.h \
 		HttpCache.cpp HttpCache.h \
-		CommHttpClientFactory.cpp CommHttpClientFactory.h \
 		CommClientKit.cpp CommClientKit.h \
 		Idle.cpp Idle.h \
 		CommAsioListener.cpp CommAsioListener.h CommAsioListener_impl.h \
