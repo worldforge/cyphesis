@@ -35,10 +35,10 @@
 #include <sstream>
 #include <deque>
 
-template<typename SocketT>
+template<typename ProtocolT>
 class CommAsioClient: public Atlas::Objects::ObjectsDecoder,
         public CommSocket,
-        public std::enable_shared_from_this<CommAsioClient<SocketT> >
+        public std::enable_shared_from_this<CommAsioClient<ProtocolT> >
 {
     public:
         CommAsioClient(const std::string & name,
@@ -49,7 +49,7 @@ class CommAsioClient: public Atlas::Objects::ObjectsDecoder,
 
         void do_write();
 
-        SocketT& getSocket();
+        typename ProtocolT::socket& getSocket();
     public:
 
         void startAccept(Link * connection);
@@ -75,7 +75,7 @@ class CommAsioClient: public Atlas::Objects::ObjectsDecoder,
         virtual int flush();
 
     protected:
-        SocketT mSocket;
+        typename ProtocolT::socket mSocket;
 
         boost::asio::streambuf mReadBuffer;
         boost::asio::streambuf mWriteBuffer;

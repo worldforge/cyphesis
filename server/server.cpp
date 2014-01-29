@@ -86,6 +86,7 @@
 #include <fstream>
 
 using String::compose;
+using namespace boost::asio;
 
 class TrustedConnection;
 class Peer;
@@ -200,7 +201,7 @@ int main(int argc, char ** argv)
     int nice = 1;
     readConfigItem(instance, "nice", nice);
 
-    boost::asio::io_service io_service;
+    io_service io_service;
 
     // Start up the Python subsystem.
     init_python_api(ruleset_name);
@@ -289,8 +290,8 @@ int main(int argc, char ** argv)
     // commServer->addIdle(update_tester);
 
 
-    std::function<void(CommAsioClient<boost::asio::ip::tcp::socket>&)> tcpAtlasStarter =
-            [&](CommAsioClient<boost::asio::ip::tcp::socket>& client) {
+    std::function<void(CommAsioClient<ip::tcp>&)> tcpAtlasStarter =
+            [&](CommAsioClient<ip::tcp>& client) {
 
                 std::string connection_id;
                 long c_iid = newId(connection_id);
@@ -299,8 +300,8 @@ int main(int argc, char ** argv)
             };
 
     std::list<
-            CommAsioListener<boost::asio::ip::tcp,
-                    CommAsioClient<boost::asio::ip::tcp::socket>> > tcp_atlas_clients;
+            CommAsioListener<ip::tcp,
+                    CommAsioClient<ip::tcp>> > tcp_atlas_clients;
 
     if (client_port_num < 0) {
         client_port_num = dynamic_port_start;
@@ -308,8 +309,8 @@ int main(int argc, char ** argv)
             try {
                 tcp_atlas_clients.emplace_back(tcpAtlasStarter,
                         server->getName(), io_service,
-                        boost::asio::ip::tcp::endpoint(
-                                boost::asio::ip::tcp::v4(), client_port_num));
+                        ip::tcp::endpoint(
+                                ip::tcp::v4(), client_port_num));
             } catch (const std::exception& e) {
                 break;
             }
@@ -336,7 +337,7 @@ int main(int argc, char ** argv)
         try {
             tcp_atlas_clients.emplace_back(tcpAtlasStarter, server->getName(),
                     io_service,
-                    boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(),
+                    ip::tcp::endpoint(ip::tcp::v4(),
                             client_port_num));
         } catch (const std::exception& e) {
             log(ERROR, String::compose("Could not create client listen socket "
@@ -360,8 +361,8 @@ int main(int argc, char ** argv)
 
     remove(client_socket_name.c_str());
 
-    std::function<void(CommAsioClient<boost::asio::local::stream_protocol::socket>&)> localStarter =
-            [&](CommAsioClient<boost::asio::local::stream_protocol::socket>& client) {
+    std::function<void(CommAsioClient<local::stream_protocol>&)> localStarter =
+            [&](CommAsioClient<local::stream_protocol>& client) {
 
                 std::string connection_id;
                 long c_iid = newId(connection_id);
@@ -369,10 +370,10 @@ int main(int argc, char ** argv)
                         new TrustedConnection(client, *server, "", connection_id, c_iid));
             };
 
-    CommAsioListener<boost::asio::local::stream_protocol,
-            CommAsioClient<boost::asio::local::stream_protocol::socket>> localListener(
+    CommAsioListener<local::stream_protocol,
+            CommAsioClient<local::stream_protocol>> localListener(
             localStarter, server->getName(), io_service,
-            boost::asio::local::stream_protocol::endpoint(client_socket_name));
+            local::stream_protocol::endpoint(client_socket_name));
 
     if (TCPListenFactory::listen(*commServer, http_port_num,
             boost::make_shared<CommHttpClientFactory>()) != 0) {

@@ -33,18 +33,18 @@
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Net/Stream.h>
 
-template<class SocketT>
-CommAsioClient<SocketT>::CommAsioClient(const std::string & name,
+template<class ProtocolT>
+CommAsioClient<ProtocolT>::CommAsioClient(const std::string & name,
         boost::asio::io_service& io_service) :
         CommSocket(*static_cast<CommServer*>(nullptr)), mSocket(io_service), mStream(
                 &mWriteBuffer), mNegotiateTimer(io_service,
                 boost::posix_time::seconds(1)), m_codec(nullptr), m_encoder(
-                nullptr), m_link(nullptr), mName(name)
+                nullptr), m_negotiate(nullptr), m_link(nullptr), mName(name)
 {
 }
 
-template<class SocketT>
-CommAsioClient<SocketT>::~CommAsioClient()
+template<class ProtocolT>
+CommAsioClient<ProtocolT>::~CommAsioClient()
 {
     delete m_link;
     delete m_negotiate;
@@ -52,14 +52,14 @@ CommAsioClient<SocketT>::~CommAsioClient()
     delete m_codec;
 }
 
-template<class SocketT>
-SocketT& CommAsioClient<SocketT>::getSocket()
+template<class ProtocolT>
+typename ProtocolT::socket& CommAsioClient<ProtocolT>::getSocket()
 {
     return mSocket;
 }
 
-template<class SocketT>
-void CommAsioClient<SocketT>::do_read()
+template<class ProtocolT>
+void CommAsioClient<ProtocolT>::do_read()
 {
     auto self(this->shared_from_this());
     mSocket.async_read_some(mReadBuffer.prepare(read_buffer_size),
@@ -81,8 +81,8 @@ void CommAsioClient<SocketT>::do_read()
             });
 }
 
-template<class SocketT>
-void CommAsioClient<SocketT>::do_write()
+template<class ProtocolT>
+void CommAsioClient<ProtocolT>::do_write()
 {
     auto self(this->shared_from_this());
 
@@ -98,8 +98,8 @@ void CommAsioClient<SocketT>::do_write()
     }
 }
 
-template<class SocketT>
-void CommAsioClient<SocketT>::negotiate_read()
+template<class ProtocolT>
+void CommAsioClient<ProtocolT>::negotiate_read()
 {
     auto self(this->shared_from_this());
     mSocket.async_read_some(mWriteBuffer.prepare(read_buffer_size),
@@ -119,8 +119,8 @@ void CommAsioClient<SocketT>::negotiate_read()
             });
 }
 
-template<class SocketT>
-void CommAsioClient<SocketT>::negotiate_write()
+template<class ProtocolT>
+void CommAsioClient<ProtocolT>::negotiate_write()
 {
     auto self(this->shared_from_this());
 
@@ -136,8 +136,8 @@ void CommAsioClient<SocketT>::negotiate_write()
     }
 }
 
-template<class SocketT>
-void CommAsioClient<SocketT>::startAccept(Link * connection)
+template<class ProtocolT>
+void CommAsioClient<ProtocolT>::startAccept(Link * connection)
 {
     // Create the server side negotiator
     m_negotiate = new Atlas::Net::StreamAccept("cyphesis " + mName, mStream);
@@ -147,8 +147,8 @@ void CommAsioClient<SocketT>::startAccept(Link * connection)
     startNegotiation();
 }
 
-template<class SocketT>
-void CommAsioClient<SocketT>::startConnect(Link * connection)
+template<class ProtocolT>
+void CommAsioClient<ProtocolT>::startConnect(Link * connection)
 {
     // Create the client side negotiator
     m_negotiate = new Atlas::Net::StreamConnect("cyphesis " + mName, mStream);
@@ -158,8 +158,8 @@ void CommAsioClient<SocketT>::startConnect(Link * connection)
     startNegotiation();
 }
 
-template<class SocketT>
-void CommAsioClient<SocketT>::startNegotiation()
+template<class ProtocolT>
+void CommAsioClient<ProtocolT>::startNegotiation()
 {
 
     auto self(this->shared_from_this());
@@ -178,9 +178,8 @@ void CommAsioClient<SocketT>::startNegotiation()
     negotiate_read();
 }
 
-
-template<class SocketT>
-int CommAsioClient<SocketT>::negotiate()
+template<class ProtocolT>
+int CommAsioClient<ProtocolT>::negotiate()
 {
     // poll and check if negotiation is complete
     m_negotiate->poll();
@@ -219,14 +218,14 @@ int CommAsioClient<SocketT>::negotiate()
     return 0;
 }
 
-template<class SocketT>
-bool CommAsioClient<SocketT>::timeout()
+template<class ProtocolT>
+bool CommAsioClient<ProtocolT>::timeout()
 {
     return false;
 }
 
-template<class SocketT>
-int CommAsioClient<SocketT>::operation(
+template<class ProtocolT>
+int CommAsioClient<ProtocolT>::operation(
         const Atlas::Objects::Operation::RootOperation & op)
 {
     assert(m_link != 0);
@@ -234,8 +233,8 @@ int CommAsioClient<SocketT>::operation(
     return 0;
 }
 
-template<class SocketT>
-void CommAsioClient<SocketT>::dispatch()
+template<class ProtocolT>
+void CommAsioClient<ProtocolT>::dispatch()
 {
     DispatchQueue::const_iterator Iend = m_opQueue.end();
     for (DispatchQueue::const_iterator I = m_opQueue.begin(); I != Iend; ++I) {
@@ -246,8 +245,8 @@ void CommAsioClient<SocketT>::dispatch()
     m_opQueue.clear();
 }
 
-template<class SocketT>
-void CommAsioClient<SocketT>::objectArrived(const Atlas::Objects::Root & obj)
+template<class ProtocolT>
+void CommAsioClient<ProtocolT>::objectArrived(const Atlas::Objects::Root & obj)
 {
     Atlas::Objects::Operation::RootOperation op =
             Atlas::Objects::smart_dynamic_cast<
@@ -268,8 +267,8 @@ void CommAsioClient<SocketT>::objectArrived(const Atlas::Objects::Root & obj)
     m_opQueue.push_back(op);
 }
 
-template<class SocketT>
-void CommAsioClient<SocketT>::idle(time_t t)
+template<class ProtocolT>
+void CommAsioClient<ProtocolT>::idle(time_t t)
 {
 //    if (m_negotiate != 0) {
 //        if ((t - m_connectTime) > 10) {
@@ -279,14 +278,14 @@ void CommAsioClient<SocketT>::idle(time_t t)
 //    }
 }
 
-template<class SocketT>
-int CommAsioClient<SocketT>::read()
+template<class ProtocolT>
+int CommAsioClient<ProtocolT>::read()
 {
     return 0;
 }
 
-template<class SocketT>
-int CommAsioClient<SocketT>::send(
+template<class ProtocolT>
+int CommAsioClient<ProtocolT>::send(
         const Atlas::Objects::Operation::RootOperation & op)
 {
     if (!isOpen()) {
@@ -305,32 +304,32 @@ int CommAsioClient<SocketT>::send(
     return flush();
 }
 
-template<class SocketT>
-int CommAsioClient<SocketT>::getFd() const
+template<class ProtocolT>
+int CommAsioClient<ProtocolT>::getFd() const
 {
     return 0;
 }
 
-template<class SocketT>
-bool CommAsioClient<SocketT>::isOpen() const
+template<class ProtocolT>
+bool CommAsioClient<ProtocolT>::isOpen() const
 {
     return mSocket.is_open();
 }
 
-template<class SocketT>
-bool CommAsioClient<SocketT>::eof()
+template<class ProtocolT>
+bool CommAsioClient<ProtocolT>::eof()
 {
     return !mSocket.is_open();
 }
 
-template<class SocketT>
-void CommAsioClient<SocketT>::disconnect()
+template<class ProtocolT>
+void CommAsioClient<ProtocolT>::disconnect()
 {
     mSocket.close();
 }
 
-template<class SocketT>
-int CommAsioClient<SocketT>::flush()
+template<class ProtocolT>
+int CommAsioClient<ProtocolT>::flush()
 {
     do_write();
     return 0;
