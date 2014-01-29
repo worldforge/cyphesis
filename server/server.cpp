@@ -27,7 +27,7 @@
 #include "CommAdminClient.h"
 #endif
 #include "CommHttpClient.h"
-#include "CommPythonClientFactory.h"
+#include "CommPythonClient.h"
 #include "CommUnixListener.h"
 #include "CommPSQLSocket.h"
 #include "CommMetaClient.h"
@@ -346,21 +346,17 @@ int main(int argc, char ** argv)
         }
     }
 
-#ifdef HAVE_SYS_UN_H
-    CommUnixListener * pythonListener = new CommUnixListener(*commServer,
-            boost::make_shared<CommPythonClientFactory>());
-    if (pythonListener->setup(python_socket_name) != 0) {
-        log(ERROR, String::compose("Could not create python listen socket "
-                "with address %1.", pythonListener->getPath()));
-        delete pythonListener;
-    } else {
-        commServer->addSocket(pythonListener);
-    }
-
-#endif
+    remove(python_socket_name.c_str());
+    std::function<void(CommPythonClient&)> pythonStarter =
+            [&](CommPythonClient& client) {
+                client.startAccept();
+            };
+    CommAsioListener<local::stream_protocol,
+            CommPythonClient> pythonListener(pythonStarter,
+            server->getName(), io_service,
+            local::stream_protocol::endpoint(python_socket_name));
 
     remove(client_socket_name.c_str());
-
     std::function<void(CommAsioClient<local::stream_protocol>&)> localStarter =
             [&](CommAsioClient<local::stream_protocol>& client) {
 
@@ -369,11 +365,11 @@ int main(int argc, char ** argv)
                 client.startAccept(
                         new TrustedConnection(client, *server, "", connection_id, c_iid));
             };
-
     CommAsioListener<local::stream_protocol,
             CommAsioClient<local::stream_protocol>> localListener(localStarter,
             server->getName(), io_service,
             local::stream_protocol::endpoint(client_socket_name));
+
 
     std::function<void(CommHttpClient&)> httpStarter =
             [&](CommHttpClient& client) {

@@ -118,7 +118,6 @@ SERVER_SOURCES = \
 		PendingTeleport.cpp PendingTeleport.h \
 		CommPeer.cpp CommPeer.h \
 		CommPythonClient.cpp CommPythonClient.h \
-		CommPythonClientFactory.cpp CommPythonClientFactory.h \
 		CommClientFactory.cpp CommClientFactory.h \
 		CommClientFactory_impl.h \
 		server.cpp server.h \

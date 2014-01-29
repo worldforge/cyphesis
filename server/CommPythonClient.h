@@ -21,24 +21,36 @@
 
 #include "CommStreamClient.h"
 
-#include <skstream/skstream.h>
+#include <boost/asio.hpp>
 
+#include <memory>
 #include <string>
 
 class PythonContext;
 
 /// \brief Handle an internet socket connected to a remote python commandline.
 /// \ingroup ServerSockets
-class CommPythonClient : public CommStreamClient<tcp_socket_stream> {
+class CommPythonClient : public std::enable_shared_from_this<CommPythonClient> {
   protected:
+
+    boost::asio::local::stream_protocol::socket mSocket;
+
+    boost::asio::streambuf mBuffer;
+    std::iostream mStream;
+
     PythonContext * const m_pyContext;
     std::string m_incoming;
+
+    void read();
+    void do_read();
+
   public:
-    CommPythonClient(CommServer & svr, int fd);
+    CommPythonClient(const std::string & name,
+            boost::asio::io_service& io_service);
     virtual ~CommPythonClient();
 
-    virtual int read();
-    virtual void dispatch();
+    void startAccept();
+    boost::asio::local::stream_protocol::socket& getSocket();
 };
 
 #endif // SERVER_COMM_PYTHON_CLIENT_H

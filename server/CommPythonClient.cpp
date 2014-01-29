@@ -22,13 +22,15 @@
 
 #include "rulesets/PythonContext.h"
 
+#include <iostream>
+
 static const bool debug_flag = false;
 
-CommPythonClient::CommPythonClient(CommServer & svr, int fd) :
-                CommStreamClient<tcp_socket_stream>(svr, fd),
+CommPythonClient::CommPythonClient(const std::string & name,
+        boost::asio::io_service& io_service) :
+        mSocket(io_service), mStream(&mBuffer),
                 m_pyContext(new PythonContext)
 {
-    m_clientIos.setTimeout(0,1000); // FIXME?
 }
 
 CommPythonClient::~CommPythonClient()
@@ -36,21 +38,47 @@ CommPythonClient::~CommPythonClient()
     delete m_pyContext;
 }
 
-void CommPythonClient::dispatch()
+boost::asio::local::stream_protocol::socket& CommPythonClient::getSocket()
 {
+    return mSocket;
 }
 
-int CommPythonClient::read()
+void CommPythonClient::startAccept()
 {
-    m_clientIos.peek();
+    do_read();
+}
+
+void CommPythonClient::do_read()
+{
+    auto self(this->shared_from_this());
+    mSocket.async_read_some(mBuffer.prepare(1024),
+            [this, self](boost::system::error_code ec, std::size_t length)
+            {
+                if (!ec)
+                {
+                    mBuffer.commit(length);
+                    read();
+                    //By calling do_read again we make sure that the instance
+                    //doesn't go out of scope ("shared_from this"). As soon as that
+                    //doesn't happen, and there's no do_write in progress, the instance
+                    //will be deleted since there's no more references to it.
+                    this->do_read();
+                }
+            });
+
+}
+
+void CommPythonClient::read()
+{
+    mStream.peek();
 
     std::streamsize count;
 
-    while ((count = m_clientIos.rdbuf()->in_avail()) > 0) {
+    while ((count = mStream.rdbuf()->in_avail()) > 0) {
 
         for (int i = 0; i < count; ++i) {
 
-            int next = m_clientIos.rdbuf()->sbumpc();
+            int next = mStream.rdbuf()->sbumpc();
             if (next == '\n') {
                 if (m_incoming.empty()) {
                     std::cout << "[NOT]" << std::endl << std::flush;
@@ -66,6 +94,4 @@ int CommPythonClient::read()
             }
         }
     }
-
-    return 0;
 }
