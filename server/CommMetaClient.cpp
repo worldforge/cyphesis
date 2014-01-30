@@ -20,6 +20,11 @@
 #include "config.h"
 #endif
 
+/*
+ * Imported MetaServer API implementation.
+ */
+#include "metaserverapi/MetaServerAPI.hpp"
+
 #include "CommMetaClient.h"
 
 #include "CommServer.h"
@@ -29,63 +34,25 @@
 #include "common/globals.h"
 
 #include <cstring>
-
 #include <iostream>
+#include <memory>
 
-/*
- * Imported MetaServer API implementation.
- */
-#include "metaserverapi/MetaServerAPI.hpp"
 
-#ifdef HAVE_RES_INIT
-#include <resolv.h>
-#endif // HAVE_RES_INIT
 
+using namespace boost::asio;
 static const bool debug_flag = false;
 
 
 /// \brief Constructor for metaserver communication socket object.
 ///
 /// @param svr Reference to the object that manages all socket communication.
-CommMetaClient::CommMetaClient(CommServer & svr) : Idle(svr), CommSocket(svr),
-                                                   m_resolveTime(-1),
-                                                   m_lastTime(-1),
-                                                   m_heartbeatTime(300),
-                                                   m_connected(false),
-                                                   m_active(false),
-                                                   m_attributes(false)
-
-
+CommMetaClient::CommMetaClient(io_service& ioService) :
+        mSocket(ioService, ip::udp::endpoint(ip::udp::v4(), 0)), mKeepaliveTimer(
+                ioService), mResolver(ioService), m_heartbeatTime(300)
 {
 }
 
 CommMetaClient::~CommMetaClient()
-{
-    metaserverTerminate();
-}
-
-int CommMetaClient::getFd() const
-{
-    return m_clientIos.getSocket();
-}
-
-bool CommMetaClient::eof()
-{
-    return m_clientIos.peek() == std::iostream::traits_type::eof();
-}
-
-bool CommMetaClient::isOpen() const
-{
-    return m_clientIos.getSocket() > -1;
-}
-
-int CommMetaClient::read()
-{
-    metaserverReply();
-    return 0;
-}
-
-void CommMetaClient::dispatch()
 {
 }
 
@@ -118,7 +85,50 @@ int CommMetaClient::setup(const std::string & mserver)
     m_serverAttributes["server_uuid"] = server_uuid;
     m_serverAttributes["server_key"] = server_key;
 
+    ip::udp::resolver::query query(ip::udp::v4(), m_server, "8453");
+    mResolver.async_resolve(query,
+            [this](boost::system::error_code ec, ip::udp::resolver::iterator iterator ) {
+                mDestination = *iterator;
+                this->metaserverKeepalive();
+                this->do_receive();
+                this->keepalive();
+            });
+
     return 0;
+}
+
+void CommMetaClient::do_receive()
+{
+    mSocket.async_receive_from(buffer(mReadBuffer, MAX_PACKET_BYTES), mDestination,
+            [this](boost::system::error_code ec, std::size_t length)
+            {
+                if (!ec)
+                {
+                    this->metaserverReply(length);
+                }
+                this->do_receive();
+            });
+}
+
+void CommMetaClient::keepalive()
+{
+
+    mKeepaliveTimer.expires_from_now(
+            boost::posix_time::seconds(m_heartbeatTime));
+
+    mKeepaliveTimer.async_wait([this](boost::system::error_code ec)
+    {
+        if (!ec)
+        {
+            ip::udp::resolver::query query(ip::udp::v4(), m_server, "8453");
+            mResolver.async_resolve(query,
+                    [this](boost::system::error_code ec, ip::udp::resolver::iterator iterator ) {
+                        mDestination = *iterator;
+                        this->metaserverKeepalive();
+                    });
+        }
+        this->keepalive();
+    });
 }
 
 /// \brief Send a keepalive packet to the metaserver.
@@ -128,13 +138,20 @@ int CommMetaClient::setup(const std::string & mserver)
 void CommMetaClient::metaserverKeepalive()
 {
 
-	MetaServerPacket keep;
+	auto keep = std::make_shared<MetaServerPacket>();
 
-    keep.setPacketType(NMT_SERVERKEEPALIVE);
+    keep->setPacketType(NMT_SERVERKEEPALIVE);
 
-    m_clientIos.write(keep.getBuffer().data(), keep.getSize());
-    m_clientIos << std::flush;
-
+    mSocket.async_send_to(buffer(keep->getBuffer(), keep->getSize()),
+            mDestination,
+            [this, keep](boost::system::error_code ec, std::size_t length)
+            {
+                if (!ec)
+                {
+                    metaserverAttribute("server_uuid", server_uuid );
+                    metaserverAttribute("server_key", server_key );
+                }
+            });
 }
 
 /// \brief Read a reply from the metaserver.
@@ -142,20 +159,16 @@ void CommMetaClient::metaserverKeepalive()
 /// Read the data sent by the metaserver. If the packet received is
 /// a handshake, respond with the required response to verify that
 /// we are alive.
-void CommMetaClient::metaserverReply()
+void CommMetaClient::metaserverReply(size_t packet_size)
 {
     uint32_t handshake = 0, command = 0;
-    std::size_t packet_size;
-    std::array<char,MAX_PACKET_BYTES> rawBuf;
-
-    packet_size = m_clientIos.readsome(rawBuf.data(), MAX_PACKET_BYTES);
 
     if ( packet_size < (std::streamsize)sizeof(command)) {
         log(WARNING, "WARNING: Reply from metaserver too short");
         return;
     }
 
-    MetaServerPacket shake( rawBuf, packet_size );
+    MetaServerPacket shake(mReadBuffer, packet_size);
 
     if(shake.getPacketType() == NMT_HANDSHAKE )
     {
@@ -163,14 +176,19 @@ void CommMetaClient::metaserverReply()
         debug(std::cout << "MetaServer contacted successfully."
                         << std::endl << std::flush;);
 
-        MetaServerPacket servershake;
-        servershake.setPacketType(NMT_SERVERSHAKE);
-        servershake.addPacketData(handshake);
+        auto servershake = std::make_shared<MetaServerPacket>();
+        servershake->setPacketType(NMT_SERVERSHAKE);
+        servershake->addPacketData(handshake);
 
-        m_clientIos.write(servershake.getBuffer().data(), servershake.getSize());
-        m_clientIos << std::flush;
 
-        m_active = true;
+        mSocket.async_send_to(buffer(servershake->getBuffer(), servershake->getSize()),mDestination,
+                [this, servershake](boost::system::error_code ec, std::size_t length)
+                {
+                    if (!ec)
+                    {
+                    }
+                });
+
 
     }
 }
@@ -182,81 +200,32 @@ void CommMetaClient::metaserverReply()
 void CommMetaClient::metaserverTerminate()
 {
 
-    MetaServerPacket term;
+    mKeepaliveTimer.cancel();
+    auto term = std::make_shared<MetaServerPacket>();
 
-    term.setPacketType(NMT_TERMINATE);
+    term->setPacketType(NMT_TERMINATE);
 
-    m_clientIos.write(term.getBuffer().data(), term.getSize() );
-    m_clientIos << std::flush;
+    mSocket.send_to(buffer(term->getBuffer(), term->getSize()), mDestination);
 
-    m_active = false;
 }
 
 void CommMetaClient::metaserverAttribute(const std::string& k, const std::string & v )
 {
-	MetaServerPacket m;
-	m.setPacketType(NMT_SERVERATTR);
-	m.addPacketData(k.length());
-	m.addPacketData(v.length());
-	m.addPacketData(k);
-	m.addPacketData(v);
-	m_clientIos.write(m.getBuffer().data(), m.getSize() );
-	m_clientIos << std::flush;
+    auto m = std::make_shared<MetaServerPacket>();
+
+    m->setPacketType(NMT_SERVERATTR);
+    m->addPacketData(k.length());
+    m->addPacketData(v.length());
+    m->addPacketData(k);
+    m->addPacketData(v);
+
+
+    mSocket.async_send_to(buffer(m->getBuffer(), m->getSize()), mDestination,
+            [this, m](boost::system::error_code ec, std::size_t length)
+            {
+                if (!ec)
+                {
+                }
+            });
 }
 
-void CommMetaClient::disconnect()
-{
-}
-
-int CommMetaClient::flush()
-{
-    return 0;
-}
-
-void CommMetaClient::idle(time_t t)
-{
-    if (! m_connected ) {
-        // Establish socket for communication with the metaserver
-        bool success = m_clientIos.setTarget(m_server, m_metaserverPort);
-        if (success) {
-            m_connected = true;
-            m_commServer.addSocket(this);
-        } else {
-#ifdef HAVE_RES_INIT
-            res_init();
-#endif // HAVE_RES_INIT
-        }
-    } else {
-
-    	/*
-    	 * Send keep alive (first or renew, same methodology)
-    	 */
-    	if ( t>(m_lastTime + m_heartbeatTime))
-    	{
-    		m_lastTime = t;
-    		metaserverKeepalive();
-
-    		if ( m_active )
-    		{
-        		metaserverAttribute("server_uuid", server_uuid );
-        		metaserverAttribute("server_key", server_key );
-        		m_attributes=true;
-    		}
-    	}
-
-    	/*
-    	 * This is an edge case to handle when the initial session
-    	 * is in the process of being created, but not finalized
-    	 * as indicated by m_active and prevent an entire m_heartbeatTime
-    	 * interval of missing attributes, since the interval can be
-    	 * quite large (300s)
-    	 **/
-    	if ( !m_attributes && m_active )
-    	{
-    		metaserverAttribute("server_uuid", server_uuid );
-    		metaserverAttribute("server_key", server_key );
-    		m_attributes=true;
-    	}
-
-    }
-}

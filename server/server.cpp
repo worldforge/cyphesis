@@ -380,14 +380,13 @@ int main(int argc, char ** argv)
             server->getName(), io_service,
             ip::tcp::endpoint(ip::tcp::v4(), http_port_num));
 
-
+    CommMetaClient * cmc(nullptr);
     if (useMetaserver) {
-        CommMetaClient * cmc = new CommMetaClient(*commServer);
-        if (cmc->setup(mserver) == 0) {
-            commServer->addIdle(cmc);
-        } else {
+        cmc = new CommMetaClient(io_service);
+        if (cmc->setup(mserver) != 0) {
             log(ERROR, "Error creating metaserver comm channel.");
             delete cmc;
+            cmc = nullptr;
         }
     }
 
@@ -547,10 +546,16 @@ int main(int argc, char ** argv)
         log(ERROR, "Exception caught when shutting down");
     }
 
+    if (cmc) {
+        cmc->metaserverTerminate();
+        delete cmc;
+    }
+
     //the Idle destructor will remove itself from commServer;
     //thus we must delete storage_idle before we destroy commServer
     delete storage_idle;
 
+    io_service.stop();
     delete commServer;
 
     delete server;

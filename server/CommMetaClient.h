@@ -19,30 +19,27 @@
 #ifndef SERVER_COMM_META_CLIENT_H
 #define SERVER_COMM_META_CLIENT_H
 
-#include "Idle.h"
+#include "metaserverapi/MetaServerPacket.hpp"
 
-#include "common/CommSocket.h"
+#include <boost/asio.hpp>
 
 #include <string>
 #include <map>
 
-#include <skstream/skstream.h>
-
 /// \brief Handle a socket used to communicate with the metaserver.
 /// \ingroup ServerSockets
-class CommMetaClient : public CommSocket, virtual public Idle {
+class CommMetaClient {
   private:
-    /// C++ iostream compatible socket object handling the socket IO.
-    udp_socket_stream m_clientIos;
+
+    boost::asio::ip::udp::socket mSocket;
+    boost::asio::deadline_timer mKeepaliveTimer;
+    boost::asio::ip::udp::resolver mResolver;
+    boost::asio::ip::udp::endpoint mDestination;
+
+    std::array<char, MAX_PACKET_BYTES> mReadBuffer;
 
     /// The domain of the metaserver to use.
     std::string m_server;
-
-    /// The last time the address of the metaserver was successfully resolved
-    time_t m_resolveTime;
-
-    /// The last time a packet was sent to the metaserver.
-    time_t m_lastTime;
 
     /// The interval between refreshing handshaking with ms
     int m_heartbeatTime;
@@ -50,35 +47,23 @@ class CommMetaClient : public CommSocket, virtual public Idle {
     /// Port number used to talk to the metaserver.
     static const int m_metaserverPort = 8453;
 
-    /// State of the client code.
-    bool m_connected;
-    bool m_active;
-    bool m_attributes;
-
     /// List of attributes to register with the metaserver
     std::map<std::string,std::string> m_serverAttributes;
 
+    void keepalive();
+    void do_receive();
+
   public:
-    explicit CommMetaClient(CommServer & svr);
+    explicit CommMetaClient(boost::asio::io_service& ioService);
 
     virtual ~CommMetaClient();
 
     void metaserverKeepalive();
-    void metaserverReply();
+    void metaserverReply(size_t packet_size);
     void metaserverTerminate();
     void metaserverAttribute(const std::string & k, const std::string & v );
 
     int setup(const std::string &);
-
-    int getFd() const;
-    bool isOpen() const;
-    bool eof();
-    int read();
-    void dispatch();
-    void disconnect();
-    int flush();
-
-    void idle(time_t t);
 };
 
 #endif // SERVER_COMM_META_CLIENT_H
