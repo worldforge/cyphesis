@@ -19,33 +19,31 @@
 #ifndef SERVER_COMM_PEER_H
 #define SERVER_COMM_PEER_H
 
-#include "CommClient.h"
-
-#include <skstream/skstream.h>
+#include "CommAsioClient.h"
 
 #include <sigc++/signal.h>
 
 /// \brief Handle an internet socket connected to a remote peer server.
 /// \ingroup ServerSockets
-class CommPeer : public CommClient<tcp_socket_stream> {
+class CommPeer : public CommAsioClient<boost::asio::ip::tcp> {
   public:
-    CommPeer(CommServer & svr, const std::string &);
+    CommPeer(const std::string & name,
+            boost::asio::io_service& io_service);
     virtual ~CommPeer();
 
-    bool connect_pending() const {
-        return m_clientIos.connect_pending();
-    }
-
-    bool eof();
-
-    void idle(time_t t);
-
-    int connect(const std::string &, int);
-    int connect(struct addrinfo *);
+    void connect(const std::string &, int);
+    void connect(const boost::asio::ip::tcp::endpoint&);
     void setup(Link *);
 
     sigc::signal<void> connected;
     sigc::signal<void> failed;
+
+  protected:
+    boost::asio::deadline_timer m_auth_timer;
+    boost::posix_time::ptime m_start_auth;
+
+    void checkAuth();
+
 };
 
 #endif // SERVER_COMM_PEER_H

@@ -17,9 +17,9 @@
 
 
 #include "CommPeer.h"
+#include "CommAsioClient_impl.h"
 
 #include "Peer.h"
-#include "CommServer.h"
 
 #include "common/globals.h"
 #include "common/serialno.h"
@@ -35,10 +35,11 @@ using Atlas::Objects::Operation::Info;
 /// \brief Constructor remote peer socket object.
 ///
 /// @param svr Reference to the object that manages all socket communication.
-/// @param username Username to login with on peer
+/// @param name The name of the peer instance.
 /// @param password Password to login with on peer
-CommPeer::CommPeer(CommServer & svr, const std::string & name) :
-          CommClient<tcp_socket_stream>(svr, name)
+CommPeer::CommPeer(const std::string & name,
+        boost::asio::io_service& io_service) :
+        CommAsioClient<boost::asio::ip::tcp>(name, io_service), m_auth_timer(io_service)
 {
 }
 
@@ -50,59 +51,53 @@ CommPeer::~CommPeer()
 ///
 /// @param host The hostname of the peer to connect to
 /// @param port The port to connect on
-/// @return Returns 0 on success and -1 on failure.
-int CommPeer::connect(const std::string & host, int port)
+void CommPeer::connect(const std::string & host, int port)
 {
-    return m_clientIos.open(host, port, true);
+    connect(
+            boost::asio::ip::tcp::endpoint(
+                    boost::asio::ip::address::from_string(host), port));
 }
 
 /// \brief Connect to a remote peer wath a specific address info
 ///
-/// @param info The address info of the peer to connect to
-/// @return Returns 0 on success and -1 on failure.
-int CommPeer::connect(struct addrinfo * info)
+/// @param endpoint The address info of the peer to connect to
+void CommPeer::connect(const boost::asio::ip::tcp::endpoint& endpoint)
 {
-    return m_clientIos.open(info, true);
+    auto self(this->shared_from_this());
+    mSocket.async_connect(endpoint,
+            [this, self](const boost::system::error_code& ec) {
+                if (!ec) {
+                    connected.emit();
+                } else {
+                    failed.emit();
+                }
+
+            });
 }
 
 void CommPeer::setup(Link * connection)
 {
-    m_link = connection;
+    startConnect(connection);
 
-    assert(!m_clientIos.connect_pending());
-
-    m_negotiate->poll(false);
-    m_clientIos << std::flush;
-}
-
-bool CommPeer::eof()
-{
-    if (m_clientIos.connect_pending()) {
-        if (m_clientIos.isReady(0)) {
-            connected.emit();
-            return false;
-        } else {
-            // With the cyphesis socket model, this object gets deleted
-            // if its fd gets closed, so trying a second fd is useless
-            // This object is done.
-            failed.emit();
-            return true;
-        }
-    } else {
-        return CommStreamClient<tcp_socket_stream>::eof();
-    }
+    m_start_auth = boost::posix_time::microsec_clock::local_time();
+    m_auth_timer.expires_from_now(boost::posix_time::seconds(1));
+    m_auth_timer.async_wait([this](const boost::system::error_code& ec){
+        this->checkAuth();
+    });
 }
 
 /// \brief Called periodically by the server
 ///
 /// \param t The current time at the time of calling
-void CommPeer::idle(time_t t)
+void CommPeer::checkAuth()
 {
     // Wait for the negotiation to finish with the peer
     if (m_negotiate != 0) {
-        if ((t - m_connectTime) > 10) {
+        if ((boost::posix_time::microsec_clock::local_time() - m_start_auth)
+                > boost::posix_time::seconds(10)) {
             log(NOTICE, "Client disconnected because of negotiation timeout.");
-            m_clientIos.shutdown();
+            mSocket.cancel();
+            return;
         }
     } else {
         Peer *peer = dynamic_cast<Peer*>(m_link);
@@ -112,14 +107,22 @@ void CommPeer::idle(time_t t)
         }
         // Check if we have been stuck in a state of authentication in-progress
         // for over 20 seconds. If so, disconnect from and remove peer.
-        if ((t - m_connectTime) > 20) {
+        if ((boost::posix_time::microsec_clock::local_time() - m_start_auth)
+                > boost::posix_time::seconds(20)) {
             if (peer->getAuthState() == PEER_AUTHENTICATING) {
-                log(NOTICE, "Peer disconnected because authentication timed out.");
-                m_clientIos.shutdown();
+                log(NOTICE,
+                        "Peer disconnected because authentication timed out.");
+                mSocket.cancel();
+                return;
             }
         }
         if (peer->getAuthState() == PEER_AUTHENTICATED) {
             peer->cleanTeleports();
+            return;
         }
     }
+    m_auth_timer.expires_from_now(boost::posix_time::seconds(1));
+    m_auth_timer.async_wait([this](const boost::system::error_code& ec){
+        this->checkAuth();
+    });
 }

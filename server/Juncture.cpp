@@ -19,7 +19,6 @@
 #include "Juncture.h"
 
 #include "CommPeer.h"
-#include "CommServer.h"
 #include "Connection.h"
 #include "Peer.h"
 #include "ServerRouting.h"
@@ -34,7 +33,9 @@
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
 
-#include <skstream/skaddress.h>
+#include <boost/asio.hpp>
+
+#include <iostream>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -53,16 +54,17 @@ static const bool debug_flag = false;
 
 class PeerAddress {
   public:
-    tcp_address a;
-    tcp_address::const_iterator i;
+//    boost::asio::ip::tcp::resolver::iterator tcp_address a;
+    boost::asio::ip::tcp::resolver::iterator i;
 };
 
 void Juncture::onSocketConnected()
 {
-    m_peer = new Peer(*m_socket, m_connection->m_server,
+    auto socket = m_socket.lock();
+    m_peer = new Peer(*socket, m_connection->m_server,
                       m_host, m_port, getId(), getIntId());
 
-    m_socket->setup(m_peer);
+    socket->setup(m_peer);
     m_peer->destroyed.connect(sigc::mem_fun(this, &Juncture::onPeerLost));
     m_peer->replied.connect(sigc::mem_fun(this, &Juncture::onPeerReplied));
 
@@ -79,7 +81,7 @@ void Juncture::onSocketConnected()
 
         m_connection->send(info);
     }
-    m_socket = 0;
+    m_socket.reset();
     m_connectRef = 0L;
 }
 
@@ -87,9 +89,9 @@ void Juncture::onSocketFailed()
 {
     assert(m_address != 0);
     assert(m_peer == 0);
-    assert(m_socket != 0);
+    assert(!m_socket.expired());
     if (m_connection != 0) {
-        if (++m_address->i != m_address->a.end()) {
+        if (++m_address->i != boost::asio::ip::tcp::resolver::iterator()) {
             if (attemptConnect("foo", 6767) == 0) {
                 return;
             }
@@ -105,7 +107,7 @@ void Juncture::onSocketFailed()
         }
         m_connection->send(error);
     }
-    m_socket = 0;
+    m_socket.reset();
     m_connectRef = 0L;
 }
 
@@ -122,31 +124,20 @@ void Juncture::onPeerReplied(const Operation & op)
 
 int Juncture::attemptConnect(const std::string & hostname, int port)
 {
-    m_socket = new CommPeer(m_connection->m_commSocket.m_commServer,
-                            m_connection->m_server.getName());
+    auto peer = std::make_shared<CommPeer>(m_connection->m_server.getName(),
+            m_connection->m_commSocket.m_io_service);
+    m_socket = std::weak_ptr<CommPeer>(peer);
 
-    if (m_socket->connect(*m_address->i) != 0) {
-        delete m_socket;
-        m_socket = 0;
-        return -1;
-    }
+    peer->connect(*m_address->i);
 
     m_host = hostname;
     m_port = port;
 
-    m_connection->m_commSocket.m_commServer.addSocket(m_socket);
-    m_connection->m_commSocket.m_commServer.addIdle(m_socket);
-
-    if (m_socket->connect_pending()) {
-        log(INFO, String::compose("Connection in progress %1", getId()));
-        m_socket->connected.connect(sigc::mem_fun(this,
-                                                  &Juncture::onSocketConnected));
-        m_socket->failed.connect(sigc::mem_fun(this,
-                                               &Juncture::onSocketFailed));
-    } else {
-        log(INFO, String::compose("Connection worked instant %1", getId()));
-        onSocketConnected();
-    }
+    log(INFO, String::compose("Connection in progress %1", getId()));
+    peer->connected.connect(sigc::mem_fun(this,
+                                              &Juncture::onSocketConnected));
+    peer->failed.connect(sigc::mem_fun(this,
+                                           &Juncture::onSocketFailed));
 
     return 0;
 }
@@ -154,8 +145,8 @@ int Juncture::attemptConnect(const std::string & hostname, int port)
 Juncture::Juncture(Connection * c, const std::string & id, long iid) :
           ConnectableRouter(id, iid, c),
           m_address(0),
-          m_socket(0),
-          m_peer(0),
+          m_socket(),
+          m_peer(nullptr),
           m_connectRef(0)
 {
 }
@@ -242,7 +233,7 @@ void Juncture::LoginOperation(const Operation & op, OpVector & res)
         error(op, "Juncture not connected", res, getId());
         return;
     }
-    assert(m_socket == 0);
+    assert(m_socket.expired());
 
     if (m_peer->getAuthState() != PEER_INIT) {
         error(op, "Juncture not ready", res, getId());
@@ -279,7 +270,7 @@ void Juncture::customConnectOperation(const Operation & op, OpVector & res)
         error(op, "Juncture already connected", res, getId());
         return;
     }
-    assert(m_socket == 0);
+    assert(m_socket.expired());
 
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
@@ -305,17 +296,15 @@ void Juncture::customConnectOperation(const Operation & op, OpVector & res)
     debug(std::cout << "Connecting to " << hostname << std::endl << std::flush;);
     m_address = new PeerAddress;
 
-    if (m_address->a.resolveConnector(hostname, compose("%1", port)) != 0) {
-        error(op, "Connect host resolution failed", res, getId());
-        return;
-    }
+    boost::asio::ip::tcp::resolver resolver(m_peer->m_commSocket.m_io_service);
+    boost::asio::ip::tcp::resolver::query query(hostname, compose("%1", port));
 
-    m_address->i = m_address->a.begin();
+    m_address->i = resolver.resolve(query);
     
-    if (m_address->i == m_address->a.end()) {
-        error(op, "Connect host returned zero addressses", res, getId());
-        return;
-    }
+//    if (m_address->i == m_address->a.end()) {
+//        error(op, "Connect host returned zero addressses", res, getId());
+//        return;
+//    }
 
     m_connectRef = op->getSerialno();
 

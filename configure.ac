@@ -130,6 +130,9 @@ Boost.])
 AC_CHECK_LIB(boost_system, main, , [
 	AC_MSG_ERROR("Linking against boost::system library failed.")
 ])
+AC_CHECK_LIB(boost_chrono, main, , [
+	AC_MSG_ERROR("Linking against boost::chrono library failed.")
+])
 
 AC_MSG_CHECKING([whether we should link to MacOS-X frameworks])
 AC_COMPILE_IFELSE(

@@ -23,6 +23,8 @@
 
 #include <sigc++/trackable.h>
 
+#include <memory>
+
 class CommPeer;
 class Connection;
 class LocatedEntity;
@@ -41,7 +43,7 @@ class PeerAddress;
 class Juncture : public ConnectableRouter, virtual public sigc::trackable {
   protected:
     PeerAddress * m_address;
-    CommPeer * m_socket;
+    std::weak_ptr<CommPeer> m_socket;
     Peer * m_peer;
     long m_connectRef;
     std::string m_host;
