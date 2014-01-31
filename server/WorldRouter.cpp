@@ -78,7 +78,7 @@ inline EntityScopedRef::~EntityScopedRef()
 /// when broadcasting.
 struct OpQueEntry {
     Operation op;
-    LocatedEntity & from;
+    LocatedEntity* from;
 
     explicit OpQueEntry(const Operation & o, LocatedEntity & f);
     OpQueEntry(const OpQueEntry & o);
@@ -91,22 +91,30 @@ struct OpQueEntry {
     Atlas::Objects::Operation::RootOperationData * operator->() const {
         return op.get();
     }
+
+    bool operator<(const OpQueEntry& right) const {
+        return op->getSeconds() < right->getSeconds();
+    }
+
+    bool operator>(const OpQueEntry& right) const {
+        return op->getSeconds() > right->getSeconds();
+    }
 };
 
 inline OpQueEntry::OpQueEntry(const Operation & o, LocatedEntity & f) : op(o),
-                                                                        from(f)
+                                                                        from(&f)
 {
-    from.incRef();
+    from->incRef();
 }
 
 inline OpQueEntry::OpQueEntry(const OpQueEntry & o) : op(o.op), from(o.from)
 {
-    from.incRef();
+    from->incRef();
 }
 
 inline OpQueEntry::~OpQueEntry()
 {
-    from.decRef();
+    from->decRef();
 }
 
 
@@ -156,7 +164,7 @@ WorldRouter::~WorldRouter()
     //Make sure to clear the queues first so that there's nothing referencing entities
     //in them.
     m_immediateQueue.clear();
-    m_operationQueue.clear();
+    m_operationQueue = OpPriorityQueue();
     m_suspendedQueue.clear();
 
     EntityDict::const_iterator Jend = m_eobjects.end();
@@ -193,10 +201,7 @@ void WorldRouter::addOperationToQueue(const Operation & op, LocatedEntity & ent)
     double t = m_realTime + op->getFutureSeconds();
     op->setSeconds(t);
     op->setFutureSeconds(0.);
-    OpQueue::iterator I = m_operationQueue.begin();
-    OpQueue::iterator Iend = m_operationQueue.end();
-    for (; I != Iend && (*I).op->getSeconds() <= t; ++I);
-    m_operationQueue.insert(I, OpQueEntry(op, ent));
+    m_operationQueue.push(OpQueEntry(op, ent));
 }
 
 /// \brief Get the next due operation from the queue.
@@ -209,14 +214,13 @@ void WorldRouter::addOperationToQueue(const Operation & op, LocatedEntity & ent)
 /// is due.
 Operation WorldRouter::getOperationFromQueue()
 {
-    OpQueue::const_iterator I = m_operationQueue.begin();
-    if (I == m_operationQueue.end() || (*I)->getSeconds() > m_realTime) {
-        return NULL;
+    auto op = m_operationQueue.top();
+    if (op->getSeconds() > m_realTime) {
+        return nullptr;
     }
     debug(std::cout << "pulled op off queue" << std::endl << std::flush;);
-    Operation op = (**I);
-    m_operationQueue.pop_front();
-    return op;
+    m_operationQueue.pop();
+    return *op;
 }
 
 /// \brief Add a new entity to the world.
@@ -468,7 +472,7 @@ void WorldRouter::resumeWorld()
 {
     //Take all suspended operations and add them to be executed.
     for (OpQueue::const_iterator I = m_suspendedQueue.begin(); I != m_suspendedQueue.end(); ++I) {
-        addOperationToQueue(I->op, I->from);
+        addOperationToQueue(I->op, *I->from);
     }
     m_suspendedQueue.clear();
 }
@@ -643,14 +647,11 @@ bool WorldRouter::idle(const SystemTime & time)
 {
     updateTime(time);
 	unsigned int op_count = 0;
-	OpQueue::iterator I = m_operationQueue.begin();
-	OpQueue::iterator Iend = m_operationQueue.end();
-    while (++op_count < 10 && I != Iend && (*I)->getSeconds() <= m_realTime) {
-        assert(I != m_operationQueue.end());
-        OpQueEntry & oqe = *I;
+    while (++op_count < 10 && !m_operationQueue.empty() && m_operationQueue.top()->getSeconds() <= m_realTime) {
+        const OpQueEntry & oqe = m_operationQueue.top();
         Dispatching.emit(oqe.op);
         try {
-            operation(oqe.op, oqe.from);
+            operation(oqe.op, *oqe.from);
         }
         catch (const std::exception& ex) {
             log(ERROR, String::compose("Exception caught in WorldRouter::idle() "
@@ -664,18 +665,17 @@ bool WorldRouter::idle(const SystemTime & time)
                                        "sent to \"%1\" from \"%2\"",
                                        oqe->getTo(), oqe->getFrom()));
         }
-        m_operationQueue.erase(I);
-        I = m_operationQueue.begin();
+        m_operationQueue.pop();
     }
 
-    I = m_immediateQueue.begin();
-    Iend = m_immediateQueue.end();
+    auto I = m_immediateQueue.begin();
+    auto Iend = m_immediateQueue.end();
     while (++op_count < 10 && I != Iend) {
         assert(I != m_immediateQueue.end());
         OpQueEntry & oqe = *I;
         Dispatching.emit(oqe.op);
         try {
-            operation(oqe.op, oqe.from);
+            operation(oqe.op, *oqe.from);
         }
         catch (const std::exception& ex) {
             log(ERROR, String::compose("Exception caught in WorldRouter::idle() "

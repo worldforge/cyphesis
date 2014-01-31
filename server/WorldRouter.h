@@ -23,6 +23,7 @@
 
 #include <list>
 #include <set>
+#include <queue>
 
 #include <ctime>
 
@@ -31,6 +32,7 @@ class Spawn;
 struct OpQueEntry;
 
 typedef std::list<OpQueEntry> OpQueue;
+typedef std::priority_queue<OpQueEntry, std::vector<OpQueEntry>, std::greater<OpQueEntry> > OpPriorityQueue;
 typedef std::set<LocatedEntity *> EntitySet;
 typedef std::map<std::string, std::pair<Spawn *, std::string>> SpawnDict;
 
@@ -42,7 +44,7 @@ typedef std::map<std::string, std::pair<Spawn *, std::string>> SpawnDict;
 class WorldRouter : public BaseWorld {
   private:
     /// An ordered queue of operations to be dispatched in the future
-    OpQueue m_operationQueue;
+    OpPriorityQueue m_operationQueue;
     /// An ordered queue of operations to be dispatched now
     OpQueue m_immediateQueue;
     /// An ordered queue of suspended operations to be dispatched when resumed.
