@@ -163,9 +163,9 @@ WorldRouter::~WorldRouter()
 
     //Make sure to clear the queues first so that there's nothing referencing entities
     //in them.
-    m_immediateQueue.clear();
+    m_immediateQueue = OpQueue();
     m_operationQueue = OpPriorityQueue();
-    m_suspendedQueue.clear();
+    m_suspendedQueue = OpQueue();
 
     EntityDict::const_iterator Jend = m_eobjects.end();
     for (EntityDict::const_iterator J = m_eobjects.begin(); J != Jend; ++J) {
@@ -195,7 +195,7 @@ void WorldRouter::addOperationToQueue(const Operation & op, LocatedEntity & ent)
     op->setFrom(ent.getId());
     if (!op->hasAttrFlag(Atlas::Objects::Operation::FUTURE_SECONDS_FLAG)) {
         op->setSeconds(m_realTime);
-        m_immediateQueue.push_back(OpQueEntry(op, ent));
+        m_immediateQueue.push(OpQueEntry(op, ent));
         return;
     }
     double t = m_realTime + op->getFutureSeconds();
@@ -471,10 +471,11 @@ void WorldRouter::delEntity(LocatedEntity * ent)
 void WorldRouter::resumeWorld()
 {
     //Take all suspended operations and add them to be executed.
-    for (OpQueue::const_iterator I = m_suspendedQueue.begin(); I != m_suspendedQueue.end(); ++I) {
-        addOperationToQueue(I->op, *I->from);
+    while (!m_suspendedQueue.empty()) {
+        auto& ope = m_suspendedQueue.front();
+        addOperationToQueue(ope.op, *ope.from);
+        m_suspendedQueue.pop();
     }
-    m_suspendedQueue.clear();
 }
 
 
@@ -528,7 +529,7 @@ void WorldRouter::deliverTo(const Operation & op, LocatedEntity & ent)
     //(to be resent when the world is resumed) and not process it now.
     if (m_isSuspended) {
         if (op->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
-            m_suspendedQueue.push_back(OpQueEntry(op, ent));
+            m_suspendedQueue.push(OpQueEntry(op, ent));
             return;
         }
     }
@@ -652,13 +653,9 @@ bool WorldRouter::idle(const SystemTime & time)
         m_operationQueue.pop();
     }
 
-    auto I = m_immediateQueue.begin();
-    auto Iend = m_immediateQueue.end();
-    while (++op_count < 10 && I != Iend) {
-        assert(I != m_immediateQueue.end());
-        dispatchOperation(*I);
-        m_immediateQueue.erase(I);
-        I = m_immediateQueue.begin();
+    while (++op_count < 10 && !m_immediateQueue.empty()) {
+        dispatchOperation(m_immediateQueue.front());
+        m_immediateQueue.pop();
     }
     // If we have processed the maximum number for this call, return true
     // to tell the server not to sleep when polling clients. This ensures

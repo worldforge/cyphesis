@@ -31,7 +31,7 @@ class Spawn;
 
 struct OpQueEntry;
 
-typedef std::list<OpQueEntry> OpQueue;
+typedef std::queue<OpQueEntry> OpQueue;
 typedef std::priority_queue<OpQueEntry, std::vector<OpQueEntry>, std::greater<OpQueEntry> > OpPriorityQueue;
 typedef std::set<LocatedEntity *> EntitySet;
 typedef std::map<std::string, std::pair<Spawn *, std::string>> SpawnDict;
