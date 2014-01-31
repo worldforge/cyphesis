@@ -20,16 +20,20 @@
 
 /// \brief Constructor for socket object.
 ///
-/// @param svr Reference to the object that manages all socket communication.
-IdleConnector::IdleConnector(CommServer & svr) : Idle(svr)
+IdleConnector::IdleConnector(boost::asio::io_service & io_service) :  m_timer(io_service)
 {
+    idle();
 }
 
 IdleConnector::~IdleConnector()
 {
 }
 
-void IdleConnector::idle(time_t t)
+void IdleConnector::idle()
 {
-    idling.emit();
+    m_timer.expires_from_now(boost::posix_time::seconds(1));
+    m_timer.async_wait([this](boost::system::error_code ec){
+        this->idling.emit();
+        this->idle();
+    });
 }

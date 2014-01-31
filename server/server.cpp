@@ -270,10 +270,9 @@ int main(int argc, char ** argv)
         CommPSQLSocket * dbsocket = new CommPSQLSocket(io_service,
                 Persistence::instance()->m_db);
 
-        storage_idle = new IdleConnector(*commServer);
+        storage_idle = new IdleConnector(io_service);
         storage_idle->idling.connect(
                 sigc::mem_fun(store, &StorageManager::tick));
-        commServer->addIdle(storage_idle);
     } else {
         std::string adminId;
         long intId = newId(adminId);

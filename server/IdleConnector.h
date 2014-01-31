@@ -19,25 +19,26 @@
 #ifndef SERVER_IDLE_CONNECTOR_H
 #define SERVER_IDLE_CONNECTOR_H
 
-#include "Idle.h"
-
+#include <boost/asio.hpp>
 #include <sigc++/signal.h>
 
 /// \brief Generic class for polling an existing object regularly.
 ///
 /// Emits a sigc signal every time it is called, so can be connected to
 /// anything that needs calling.
-class IdleConnector : public Idle {
+class IdleConnector  {
   public:
-    explicit IdleConnector(CommServer & svr);
+    explicit IdleConnector(boost::asio::io_service & io_service);
     virtual ~IdleConnector();
 
-    /// \brief Perform idle tasks.
-    ///
-    /// Called from the server's core idle function whenever it is called.
-    virtual void idle(time_t t);
 
     sigc::signal<void> idling;
+
+  protected:
+    boost::asio::deadline_timer m_timer;
+
+    /// \brief Perform idle tasks once per second.
+    void idle();
 };
 
 #endif // SERVER_IDLE_CONNECTOR_H
