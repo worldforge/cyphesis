@@ -236,17 +236,6 @@ int main(int argc, char ** argv)
     ServerRouting * server = new ServerRouting(*world, ruleset_name,
             server_name, server_id, int_id, lobby_id, lobby_int_id);
 
-    // Create commserver instance that will handle connections from clients.
-    // The commserver will create the other server related objects, and the
-    // world object pair (World + WorldRouter), and initialise the admin
-    // account.
-    CommServer * commServer = new CommServer;
-
-    if (commServer->setup() != 0) {
-        log(CRITICAL, "Internal error setting up network infrastructure");
-        return EXIT_SOCKET_ERROR;
-    }
-
     // This is where we should restore the database, before
     // the listen sockets are open. Unlike earlier code, we are
     // attempting to construct the internal state from the database,
@@ -281,11 +270,6 @@ int main(int argc, char ** argv)
         Admin * admin = new Admin(0, "admin", "BAD_HASH", adminId, intId);
         server->addAccount(admin);
     }
-
-    // Add the test object, and call it regularly so it can do what it does.
-    // UpdateTester * update_tester = new UpdateTester(*commServer);
-    // commServer->addIdle(update_tester);
-
 
     std::function<void(CommAsioClient<ip::tcp>&)> tcpAtlasStarter =
             [&](CommAsioClient<ip::tcp>& client) {
@@ -470,8 +454,6 @@ int main(int argc, char ** argv)
         try {
             time.update();
             bool busy = world->idle(time);
-            commServer->idle(time, busy);
-            commServer->poll(busy);
             io_service.poll();
             if (soft_exit_in_progess) {
                 //If we're in soft exit mode and either the deadline has been exceeded
@@ -545,12 +527,9 @@ int main(int argc, char ** argv)
         delete cmc;
     }
 
-    //the Idle destructor will remove itself from commServer;
-    //thus we must delete storage_idle before we destroy commServer
     delete storage_idle;
 
     io_service.stop();
-    delete commServer;
 
     delete server;
 
