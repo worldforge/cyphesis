@@ -390,11 +390,8 @@ int main(int argc, char ** argv)
 
 #if defined(HAVE_AVAHI)
 
-    CommMDNSPublisher * cmdns = new CommMDNSPublisher(*commServer, *server);
-    if (cmdns->setup() == 0) {
-        commServer->addSocket(cmdns);
-        commServer->addIdle(cmdns);
-    } else {
+    CommMDNSPublisher * cmdns = new CommMDNSPublisher(io_service, *server);
+    if (cmdns->setup() != 0) {
         log(ERROR, "Unable to register service with MDNS daemon.");
         delete cmdns;
     }

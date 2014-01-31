@@ -19,9 +19,7 @@
 #ifndef SERVER_COMM_MDNS_PUBLISHER_H
 #define SERVER_COMM_MDNS_PUBLISHER_H
 
-#include "Idle.h"
-
-#include "common/CommSocket.h"
+#include <boost/asio.hpp>
 
 #include <set>
 
@@ -32,8 +30,11 @@
 class ServerRouting;
 
 /// \ingroup ServerSockets
-class CommMDNSPublisher : public CommSocket, virtual public Idle {
+class CommMDNSPublisher {
   protected:
+    boost::asio::io_service& m_io_service;
+    boost::asio::ip::tcp::socket m_socket;
+    boost::asio::deadline_timer m_timers_check_timer;
     // Avahi data
     ///
     struct AvahiClient * m_avahiClient;
@@ -45,6 +46,9 @@ class CommMDNSPublisher : public CommSocket, virtual public Idle {
     bool m_immediate;
     /// Check and expire timers
     void checkTimers(time_t);
+    void do_read();
+    void do_timer_check();
+
   public:
     ///
     int m_avahiFd;
@@ -55,7 +59,7 @@ class CommMDNSPublisher : public CommSocket, virtual public Idle {
     ///
     std::set<struct AvahiTimeout *> m_avahiTimeouts;
 
-    explicit CommMDNSPublisher(CommServer & svr, ServerRouting & s);
+    explicit CommMDNSPublisher(boost::asio::io_service& m_io_service, ServerRouting & s);
 
     virtual ~CommMDNSPublisher();
 
@@ -66,15 +70,8 @@ class CommMDNSPublisher : public CommSocket, virtual public Idle {
     int setup();
     void setup_service(struct AvahiClient * );
 
-    virtual void idle(time_t);
-
-    int getFd() const;
-    bool isOpen() const;
-    bool eof();
     int read();
-    void dispatch();
-    void disconnect();
-    int flush();
+
 };
 
 #endif // SERVER_COMM_MDNS_PUBLISHER_H

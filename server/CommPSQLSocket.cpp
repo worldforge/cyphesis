@@ -92,7 +92,6 @@ CommPSQLSocket::~CommPSQLSocket()
 
 void CommPSQLSocket::do_read()
 {
-
     //only use asio to poll for data available; use the PG* functions
     //to do the actual reading
     m_socket->async_read_some(boost::asio::null_buffers(),

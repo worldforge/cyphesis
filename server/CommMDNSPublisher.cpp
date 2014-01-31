@@ -146,7 +146,7 @@ static AvahiWatch* watch_new(const AvahiPoll *api,
     debug(std::cout << "avahi_watch_new " << fd << " " << callback
                     << std::endl << std::flush;);
     CommMDNSPublisher * cmp = static_cast<CommMDNSPublisher*>(api->userdata);
-    if (cmp->getFd() != -1) {
+    if (cmp->m_avahiFd != -1) {
         log(ERROR, "Avahi asked for multiple fds. Unable to comply.");
     } else {
         cmp->m_avahiFd = fd;
@@ -252,9 +252,10 @@ static void timeout_free(AvahiTimeout * at)
     delete at;
 }
 
-CommMDNSPublisher::CommMDNSPublisher(CommServer & svr,
-                                     ServerRouting & s) : Idle(svr),
-                                                         CommSocket(svr),
+CommMDNSPublisher::CommMDNSPublisher(boost::asio::io_service& io_service,
+                                     ServerRouting & s) : m_io_service(io_service),
+                                                         m_socket(io_service),
+                                                         m_timers_check_timer(io_service),
                                                          m_avahiClient(0),
                                                          m_avahiError(0),
                                                          m_server(s),
@@ -267,7 +268,6 @@ CommMDNSPublisher::CommMDNSPublisher(CommServer & svr,
 
 CommMDNSPublisher::~CommMDNSPublisher()
 {
-    // Finalise and delete
 }
 
 int CommMDNSPublisher::setup()
@@ -299,12 +299,33 @@ int CommMDNSPublisher::setup()
         checkTimers(0);
     }
 
+    do_timer_check();
+
     if (m_avahiFd == -1) {
         log(ERROR, "Avahi client has not registed a file descriptor");
         return -1;
     }
 
+    m_socket.assign(boost::asio::ip::tcp::v4(), m_avahiFd);
+
+    do_read();
+
     return 0;
+}
+
+void CommMDNSPublisher::do_read()
+{
+    //only use asio to poll for data available; use the PG* functions
+    //to do the actual reading
+    m_socket.async_read_some(boost::asio::null_buffers(),
+            [this](boost::system::error_code ec, std::size_t length)
+            {
+                if (!ec)
+                {
+                    this->read();
+                }
+                this->do_read();
+            });
 }
 
 void CommMDNSPublisher::setup_service(AvahiClient * client)
@@ -369,26 +390,17 @@ void CommMDNSPublisher::checkTimers(time_t t)
     }
 }
 
-void CommMDNSPublisher::idle(time_t t)
+void CommMDNSPublisher::do_timer_check()
 {
-    debug(std::cout << "idle " << t << std::endl;);
-    checkTimers(t);
+    m_timers_check_timer.expires_from_now(
+            boost::posix_time::milliseconds(500));
+    m_timers_check_timer.async_wait([this](boost::system::error_code ec)
+    {
+        this->checkTimers(0);
+        this->do_timer_check();
+    });
 }
 
-int CommMDNSPublisher::getFd() const
-{
-    return m_avahiFd;
-}
-
-bool CommMDNSPublisher::isOpen() const
-{
-    return m_avahiFd != -1;
-}
-
-bool CommMDNSPublisher::eof()
-{
-    return false;
-}
 
 int CommMDNSPublisher::read()
 {
@@ -399,19 +411,6 @@ int CommMDNSPublisher::read()
                              AVAHI_WATCH_IN,
                              m_avahiWatch->m_userdata);
     m_avahiWatch->m_events = (AvahiWatchEvent)0;
-    return 0;
-}
-
-void CommMDNSPublisher::dispatch()
-{
-}
-
-void CommMDNSPublisher::disconnect()
-{
-}
-
-int CommMDNSPublisher::flush()
-{
     return 0;
 }
 
