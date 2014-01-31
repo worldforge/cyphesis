@@ -27,8 +27,6 @@
 
 #include "CommMetaClient.h"
 
-#include "CommServer.h"
-
 #include "common/debug.h"
 #include "common/log.h"
 #include "common/globals.h"

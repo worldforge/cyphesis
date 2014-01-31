@@ -19,7 +19,6 @@
 #ifndef COMMASIOCLIENT_H_
 #define COMMASIOCLIENT_H_
 
-#include "Idle.h"
 #include "common/Link.h"
 #include "common/CommSocket.h"
 

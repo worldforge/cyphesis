@@ -21,7 +21,6 @@
 #include "WorldRouter.h"
 #include "EntityBuilder.h"
 #include "MindInspector.h"
-#include "CommServer.h"
 
 #include "rulesets/LocatedEntity.h"
 #include "rulesets/Character.h"

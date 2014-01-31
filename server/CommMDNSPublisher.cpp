@@ -30,7 +30,6 @@
 
 #include "CommMDNSPublisher.h"
 
-#include "CommServer.h"
 #include "ServerRouting.h"
 
 #include "common/log.h"

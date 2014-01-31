@@ -16,7 +16,6 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 #include "CommHttpClient.h"
-#include "CommServer.h"
 #include "HttpCache.h"
 
 static const bool debug_flag = false;

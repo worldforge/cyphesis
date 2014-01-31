@@ -109,7 +109,6 @@ SERVER_SOURCES = \
 		TrustedConnection.cpp TrustedConnection.h \
 		Peer.cpp Peer.h \
 		Juncture.cpp Juncture.h \
-		UpdateTester.cpp UpdateTester.h \
 		CommPSQLSocket.cpp CommPSQLSocket.h \
 		TeleportState.cpp TeleportState.h \
 		TeleportAuthenticator.cpp TeleportAuthenticator.h \
@@ -117,29 +116,15 @@ SERVER_SOURCES = \
 		PendingTeleport.cpp PendingTeleport.h \
 		CommPeer.cpp CommPeer.h \
 		CommPythonClient.cpp CommPythonClient.h \
-		CommClientFactory.cpp CommClientFactory.h \
-		CommClientFactory_impl.h \
 		server.cpp server.h \
 		MindInspector.cpp MindInspector.h
 
 COMM_SOURCES = \
-		TCPListenFactory.cpp TCPListenFactory.h \
-		CommStreamListener.cpp CommStreamListener.h \
-		CommStreamListener_impl.h \
-		CommTCPListener.cpp CommTCPListener.h \
-		CommUnixListener.cpp CommUnixListener.h \
-		CommStreamClient.cpp  CommStreamClient.h \
-		CommStreamClient_impl.h \
-		CommClient.cpp CommClient_impl.h CommClient.h \
-		CommUserClient.cpp CommUserClient.h \
-		CommAdminClient.cpp CommAdminClient.h \
 		CommHttpClient.cpp CommHttpClient.h \
 		CommMetaClient.cpp CommMetaClient.h \
 		CommMDNSPublisher.cpp CommMDNSPublisher.h \
-		CommServer.cpp CommServer.h \
 		HttpCache.cpp HttpCache.h \
 		CommClientKit.cpp CommClientKit.h \
-		Idle.cpp Idle.h \
 		CommAsioListener.cpp CommAsioListener.h CommAsioListener_impl.h \
 		CommAsioClient.cpp CommAsioClient.h CommAsioClient_impl.h \
 		$(top_srcdir)/metaserverapi/MetaServerPacket.cpp \
@@ -185,7 +170,6 @@ cyslave_SOURCES = \
 		SlaveClientConnection.cpp SlaveClientConnection.h \
 		Peer.cpp Peer.h \
 		Master.cpp Master.h \
-		Idle.cpp Idle.h \
 		HttpCache.cpp HttpCache.h \
 		CommStreamListener.cpp CommStreamListener.h \
 		CommUnixListener.cpp CommUnixListener.h \

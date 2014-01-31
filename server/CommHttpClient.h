@@ -18,8 +18,6 @@
 #ifndef SERVER_COMM_HTTP_CLIENT_H
 #define SERVER_COMM_HTTP_CLIENT_H
 
-#include "CommStreamClient.h"
-
 #include <boost/asio.hpp>
 
 #include <list>

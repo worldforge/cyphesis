@@ -17,7 +17,6 @@
 
 
 #include "CommPythonClient.h"
-#include "CommServer.h"
 #include "HttpCache.h"
 
 #include "rulesets/PythonContext.h"

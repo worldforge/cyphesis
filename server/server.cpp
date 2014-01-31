@@ -19,16 +19,8 @@
 #include "config.h"
 #endif
 
-#include "CommServer.h"
-#include "CommTCPListener.h"
-#include "CommClientFactory_impl.h"
-#include "CommUserClient.h"
-#ifdef HAVE_SYS_UN_H
-#include "CommAdminClient.h"
-#endif
 #include "CommHttpClient.h"
 #include "CommPythonClient.h"
-#include "CommUnixListener.h"
 #include "CommPSQLSocket.h"
 #include "CommMetaClient.h"
 #include "CommMDNSPublisher.h"
@@ -43,9 +35,7 @@
 #include "Ruleset.h"
 #include "StorageManager.h"
 #include "IdleConnector.h"
-#include "UpdateTester.h"
 #include "Admin.h"
-#include "TCPListenFactory.h"
 #include "TeleportAuthenticator.h"
 #include "TrustedConnection.h"
 

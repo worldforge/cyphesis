@@ -19,8 +19,6 @@
 #ifndef SERVER_COMM_PSQL_SOCKET_H
 #define SERVER_COMM_PSQL_SOCKET_H
 
-#include "Idle.h"
-
 #include "common/CommSocket.h"
 
 #include <boost/asio.hpp>

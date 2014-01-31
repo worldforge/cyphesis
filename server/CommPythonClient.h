@@ -19,8 +19,6 @@
 #ifndef SERVER_COMM_PYTHON_CLIENT_H
 #define SERVER_COMM_PYTHON_CLIENT_H
 
-#include "CommStreamClient.h"
-
 #include <boost/asio.hpp>
 
 #include <memory>
