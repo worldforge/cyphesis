@@ -18,7 +18,7 @@
 #include "server/TeleportState.h"
 
 /// \brief Constructor
-TeleportState::TeleportState(boost::chrono::steady_clock::time_point time) : m_state(TELEPORT_NONE),
+TeleportState::TeleportState(std::chrono::steady_clock::time_point time) : m_state(TELEPORT_NONE),
                                             m_teleportTime(time)
 {
 }

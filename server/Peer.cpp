@@ -38,7 +38,7 @@
 
 #include <wfmath/MersenneTwister.h>
 
-#include <boost/chrono.hpp>
+#include <chrono>
 
 #include <iostream>
 
@@ -164,7 +164,7 @@ int Peer::teleportEntity(const LocatedEntity * ent)
 
 
 
-    auto teleport_time = boost::chrono::steady_clock::now();
+    auto teleport_time = std::chrono::steady_clock::now();
 
     // Add a teleport state object to identify this teleport request
     TeleportState * s = new TeleportState(teleport_time);
@@ -323,13 +323,13 @@ void Peer::cleanTeleports()
         return;
     }
     // Get the current time
-    auto curr_time = boost::chrono::steady_clock::now();
+    auto curr_time = std::chrono::steady_clock::now();
 
     TeleportMap::iterator I = m_teleports.begin();
     for(I = m_teleports.begin(); I != m_teleports.end(); ++I) {
         auto time_passed = curr_time - I->second->getCreateTime();
         // If 5 seconds have passed, the teleport has failed
-        if (time_passed >= boost::chrono::seconds(10) && I->second->isRequested()) {
+        if (time_passed >= std::chrono::seconds(10) && I->second->isRequested()) {
             log(INFO, String::compose("Teleport timed out for entity (ID %1)",
                                             I->first));
             // FIXME I think this is unsafe.
