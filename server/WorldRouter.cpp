@@ -648,12 +648,14 @@ bool WorldRouter::idle(const SystemTime & time)
 {
     updateTime(time);
 	unsigned int op_count = 0;
-    while (++op_count < 10 && !m_operationQueue.empty() && m_operationQueue.top()->getSeconds() <= m_realTime) {
+    while (op_count < 10 && !m_operationQueue.empty() && m_operationQueue.top()->getSeconds() <= m_realTime) {
+        ++op_count;
         dispatchOperation(m_operationQueue.top());
         m_operationQueue.pop();
     }
 
-    while (++op_count < 10 && !m_immediateQueue.empty()) {
+    while (op_count < 10 && !m_immediateQueue.empty()) {
+        ++op_count;
         dispatchOperation(m_immediateQueue.front());
         m_immediateQueue.pop();
     }
