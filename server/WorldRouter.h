@@ -66,6 +66,7 @@ class WorldRouter : public BaseWorld {
     void deliverTo(const Atlas::Objects::Operation::RootOperation &,
                    LocatedEntity &);
     void resumeWorld();
+    void dispatchOperation(const OpQueEntry& opQueueEntry);
   public:
     explicit WorldRouter(const SystemTime &);
     virtual ~WorldRouter();

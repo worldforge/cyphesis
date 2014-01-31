@@ -648,23 +648,7 @@ bool WorldRouter::idle(const SystemTime & time)
     updateTime(time);
 	unsigned int op_count = 0;
     while (++op_count < 10 && !m_operationQueue.empty() && m_operationQueue.top()->getSeconds() <= m_realTime) {
-        const OpQueEntry & oqe = m_operationQueue.top();
-        Dispatching.emit(oqe.op);
-        try {
-            operation(oqe.op, *oqe.from);
-        }
-        catch (const std::exception& ex) {
-            log(ERROR, String::compose("Exception caught in WorldRouter::idle() "
-                                       "thrown while processing operation "
-                                       "sent to \"%1\" from \"%2\": %3",
-                                       oqe->getTo(), oqe->getFrom(), ex.what()));
-        }
-        catch (...) {
-            log(ERROR, String::compose("Unspecified exception caught in WorldRouter::idle() "
-                                       "thrown while processing operation "
-                                       "sent to \"%1\" from \"%2\"",
-                                       oqe->getTo(), oqe->getFrom()));
-        }
+        dispatchOperation(m_operationQueue.top());
         m_operationQueue.pop();
     }
 
@@ -672,23 +656,7 @@ bool WorldRouter::idle(const SystemTime & time)
     auto Iend = m_immediateQueue.end();
     while (++op_count < 10 && I != Iend) {
         assert(I != m_immediateQueue.end());
-        OpQueEntry & oqe = *I;
-        Dispatching.emit(oqe.op);
-        try {
-            operation(oqe.op, *oqe.from);
-        }
-        catch (const std::exception& ex) {
-            log(ERROR, String::compose("Exception caught in WorldRouter::idle() "
-                                       "thrown while processing operation "
-                                       "sent to \"%1\" from \"%2\": %3",
-                                       oqe->getTo(), oqe->getFrom(), ex.what()));
-        }
-        catch (...) {
-            log(ERROR, String::compose("Unspecified exception caught in WorldRouter::idle() "
-                                       "thrown while processing operation "
-                                       "sent to \"%1\" from \"%2\"",
-                                       oqe->getTo(), oqe->getFrom()));
-        }
+        dispatchOperation(*I);
         m_immediateQueue.erase(I);
         I = m_immediateQueue.begin();
     }
@@ -698,6 +666,27 @@ bool WorldRouter::idle(const SystemTime & time)
     // clients unattended.
     return (op_count >= 10);
 }
+
+void WorldRouter::dispatchOperation(const OpQueEntry& oqe)
+{
+    Dispatching.emit(oqe.op);
+    try {
+        operation(oqe.op, *oqe.from);
+    }
+    catch (const std::exception& ex) {
+        log(ERROR, String::compose("Exception caught in WorldRouter::idle() "
+                                   "thrown while processing operation "
+                                   "sent to \"%1\" from \"%2\": %3",
+                                   oqe->getTo(), oqe->getFrom(), ex.what()));
+    }
+    catch (...) {
+        log(ERROR, String::compose("Unspecified exception caught in WorldRouter::idle() "
+                                   "thrown while processing operation "
+                                   "sent to \"%1\" from \"%2\"",
+                                   oqe->getTo(), oqe->getFrom()));
+    }
+}
+
 
 /// Find an entity of the given name. This is provided to allow administrators
 /// to perform certain admin tasks. It finds and returns the first instance
