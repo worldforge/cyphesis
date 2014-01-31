@@ -111,7 +111,6 @@ SERVER_SOURCES = \
 		Juncture.cpp Juncture.h \
 		UpdateTester.cpp UpdateTester.h \
 		CommPSQLSocket.cpp CommPSQLSocket.h \
-		IdlePSQLConnector.cpp IdlePSQLConnector.h \
 		TeleportState.cpp TeleportState.h \
 		TeleportAuthenticator.cpp TeleportAuthenticator.h \
 		TeleportProperty.cpp TeleportProperty.h \

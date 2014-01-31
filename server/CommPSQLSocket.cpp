@@ -18,28 +18,25 @@
 
 #include "CommPSQLSocket.h"
 
-#include "IdlePSQLConnector.h"
-#include "CommServer.h"
-
 #include "common/Database.h"
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/globals.h"
 
-#include <iostream>
+#include <boost/asio.hpp>
 
+#include <iostream>
 #include <cassert>
 
 static const bool debug_flag = false;
 
 /// \brief Constructor for PostgreSQL socket polling object.
 ///
-/// @param svr Reference to the object that manages all socket communication.
 /// @param db Reference to the low level database management object.
-CommPSQLSocket::CommPSQLSocket(CommServer & svr, Database & db) :
-                               Idle(svr), CommSocket(svr), m_db(db),
-                               m_vacuumTime(0), m_reindexTime(0),
-                               m_vacuumFull(false)
+CommPSQLSocket::CommPSQLSocket(boost::asio::io_service& io_service, Database & db) :
+                               m_io_service(io_service), m_socket(new boost::asio::ip::tcp::socket(io_service)),
+                               m_vacuumTimer(io_service), m_reindexTimer(io_service), m_reconnectTimer(io_service),
+                               m_db(db), m_vacuumFull(false)
 {
     // This assumes the database connection is already sorted, which I think
     // is okay
@@ -49,36 +46,75 @@ CommPSQLSocket::CommPSQLSocket(CommServer & svr, Database & db) :
     if (PQsetnonblocking(con, 1) == -1) {
         log(ERROR, "Unable to put database connection in non-blocking mode.");
     }
+
+    //wrap the postgres socket in our tcp socket
+    int fd = PQsocket(con);
+    if (fd >= 0) {
+        m_socket->assign(boost::asio::ip::tcp::v4(), fd);
+    }
+    vacuum();
+    reindex();
+    do_read();
 }
+
+void CommPSQLSocket::tryReConnect()
+{
+    m_reconnectTimer.expires_from_now(boost::posix_time::seconds(2));
+    m_reconnectTimer.async_wait([this](boost::system::error_code ec) {
+        if (!ec) {
+            if (m_db.initConnection() == 0) {
+                log(NOTICE, "Database connection re-established");
+                PGconn * con = m_db.getConnection();
+                if (PQsetnonblocking(con, 1) == -1) {
+                    log(ERROR, "Unable to put database connection in non-blocking mode.");
+                }
+                int fd = PQsocket(con);
+                if (fd >= 0) {
+                    m_socket = new boost::asio::ip::tcp::socket(m_io_service);
+                    m_socket->assign(boost::asio::ip::tcp::v4(), fd);
+                    do_read();
+                    return;
+                }
+            }
+        }
+        this->tryReConnect();
+    });
+}
+
 
 CommPSQLSocket::~CommPSQLSocket()
 {
     if (!exit_flag) {
         m_db.shutdownConnection();
-
-        IdlePSQLConnector * ipsqlc = new IdlePSQLConnector(m_idleManager, m_db);
-        m_idleManager.addIdle(ipsqlc);
     }
+    delete m_socket;
 }
 
-int CommPSQLSocket::getFd() const
+void CommPSQLSocket::do_read()
 {
-    debug(std::cout << "CommPSQLSocket::getFd()" << std::endl << std::flush;);
-    PGconn * con = m_db.getConnection();
-    assert(con != 0);
-    return PQsocket(con);
-}
 
-bool CommPSQLSocket::eof()
-{
-    debug(std::cout << "CommPSQLSocket::eof()" << std::endl << std::flush;);
-    return PQstatus(m_db.getConnection()) != CONNECTION_OK;
-}
-
-bool CommPSQLSocket::isOpen() const
-{
-    debug(std::cout << "CommPSQLSocket::isOpen()" << std::endl << std::flush;);
-    return true;
+    //only use asio to poll for data available; use the PG* functions
+    //to do the actual reading
+    m_socket->async_read_some(boost::asio::null_buffers(),
+            [this](boost::system::error_code ec, std::size_t length)
+            {
+                if (!ec)
+                {
+                    int result = this->read();
+                    if (result == 0) {
+                        this->dispatch();
+                        this->do_read();
+                    } else {
+                        delete m_socket;
+                        m_socket = nullptr;
+                        this->tryReConnect();
+                    }
+                } else {
+                    delete m_socket;
+                    m_socket = nullptr;
+                    this->tryReConnect();
+                }
+            });
 }
 
 int CommPSQLSocket::read()
@@ -86,6 +122,11 @@ int CommPSQLSocket::read()
     debug(std::cout << "CommPSQLSocket::read()" << std::endl << std::flush;);
     PGconn * con = m_db.getConnection();
     assert(con != 0);
+
+    if (PQstatus(con) != CONNECTION_OK) {
+        log(ERROR, "Database connection closed.");
+        return -1;
+    }
 
     if (PQconsumeInput(con) == 0) {
         log(ERROR, "Error reading from database connection.");
@@ -121,20 +162,9 @@ void CommPSQLSocket::dispatch()
     m_db.launchNewQuery();
 }
 
-void CommPSQLSocket::disconnect()
+void CommPSQLSocket::vacuum()
 {
-}
-
-int CommPSQLSocket::flush()
-{
-    return 0;
-}
-
-void CommPSQLSocket::idle(time_t t)
-{
-    debug(std::cout << "CommPSQLSocket::idle()" << std::endl << std::flush;);
-
-    if (t > m_vacuumTime) {
+    if (m_socket && m_socket->is_open()) {
         if (m_vacuumFull) {
             m_db.runMaintainance(Database::MAINTAIN_VACUUM |
                                  Database::MAINTAIN_VACUUM_FULL);
@@ -143,10 +173,26 @@ void CommPSQLSocket::idle(time_t t)
                                  Database::MAINTAIN_VACUUM_ANALYZE);
         }
         m_vacuumFull = !m_vacuumFull;
-        m_vacuumTime = t + vacFreq;
     }
-    if (t > m_reindexTime) {
+
+    m_vacuumTimer.expires_from_now(boost::posix_time::seconds(vacFreq));
+    m_vacuumTimer.async_wait([this](boost::system::error_code ec) {
+        if (!ec) {
+            this->vacuum();
+        }
+    });
+}
+
+
+void CommPSQLSocket::reindex()
+{
+    if (m_socket && m_socket->is_open()) {
         m_db.runMaintainance(Database::MAINTAIN_REINDEX);
-        m_reindexTime = t + reindexFreq;
     }
+    m_reindexTimer.expires_from_now(boost::posix_time::seconds(reindexFreq));
+    m_reindexTimer.async_wait([this](boost::system::error_code ec) {
+        if (!ec) {
+            this->reindex();
+        }
+    });
 }

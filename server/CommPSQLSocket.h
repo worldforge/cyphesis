@@ -23,40 +23,45 @@
 
 #include "common/CommSocket.h"
 
+#include <boost/asio.hpp>
+
 class Database;
 
-/// \brief Handle polling the socket used to comminicate with the PostgreSQL
+/// \brief Handle polling the socket used to communicate with the PostgreSQL
 /// RDBMS.
 /// \ingroup ServerSockets
-class CommPSQLSocket : public CommSocket, virtual public Idle {
+class CommPSQLSocket {
   protected:
+
+    boost::asio::io_service& m_io_service;
+    boost::asio::ip::tcp::socket* m_socket;
+    boost::asio::deadline_timer m_vacuumTimer;
+    boost::asio::deadline_timer m_reindexTimer;
+    boost::asio::deadline_timer m_reconnectTimer;
+
+
     /// Reference to the low level database management object.
     Database & m_db;
 
-    /// Time when the database vacuum job should be run.
-    time_t m_vacuumTime;
-    /// Time when the database reindex job should be run.
-    time_t m_reindexTime;;
     /// Flag indicating whether the next vacuum job should be vacuum full.
     bool m_vacuumFull;
+
+    void do_read();
+    int read();
+    void dispatch();
+
+    void vacuum();
+    void reindex();
+
+    void tryReConnect();
   public:
     /// Interval between database vacuum jobs.
     static const int vacFreq = 25 * 60;
     /// Interval between database reindex jobs.
     static const int reindexFreq = 30 * 60;
 
-    CommPSQLSocket(CommServer & svr, Database & db);
+    CommPSQLSocket(boost::asio::io_service& io_service, Database & db);
     virtual ~CommPSQLSocket();
-
-    int getFd() const;
-    bool isOpen() const;
-    bool eof();
-    int read();
-    void dispatch();
-    void disconnect();
-    int flush();
-
-    void idle(time_t t);
 };
 
 #endif // SERVER_COMM_PSQL_SOCKET_H
