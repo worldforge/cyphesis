@@ -36,7 +36,7 @@
 template<class ProtocolT>
 CommAsioClient<ProtocolT>::CommAsioClient(const std::string & name,
         boost::asio::io_service& io_service) :
-        CommSocket(*static_cast<CommServer*>(nullptr)), mSocket(io_service), mStream(
+        CommSocket(io_service), mSocket(io_service), mStream(
                 &mWriteBuffer), mNegotiateTimer(io_service,
                 boost::posix_time::seconds(1)), m_codec(nullptr), m_encoder(
                 nullptr), m_negotiate(nullptr), m_link(nullptr), mName(name)

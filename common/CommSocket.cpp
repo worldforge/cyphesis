@@ -29,8 +29,8 @@
 
 /// \brief Constructor for socket object.
 ///
-/// @param svr Reference to the object that manages all socket communication.
-CommSocket::CommSocket(CommServer & svr) : m_commServer(svr) { }
+/// @param io_service Reference to the object that manages all socket communication.
+CommSocket::CommSocket(boost::asio::io_service& io_service) : m_io_service(io_service) { }
 
 CommSocket::~CommSocket()
 {
