@@ -64,8 +64,6 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
-#include <skstream/skaddress.h>
-
 #include <boost/make_shared.hpp>
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/local/stream_protocol.hpp>
