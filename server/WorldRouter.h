@@ -25,7 +25,6 @@
 #include <set>
 #include <queue>
 
-#include <ctime>
 
 class Spawn;
 
@@ -49,8 +48,6 @@ class WorldRouter : public BaseWorld {
     OpQueue m_immediateQueue;
     /// An ordered queue of suspended operations to be dispatched when resumed.
     OpQueue m_suspendedQueue;
-    /// The system time when the server was started.
-    std::time_t m_initTime;
     /// List of perceptive entities.
     EntitySet m_perceptives;
     /// Count of in world entities
@@ -62,10 +59,13 @@ class WorldRouter : public BaseWorld {
                              LocatedEntity &);
     Atlas::Objects::Operation::RootOperation getOperationFromQueue();
     bool broadcastPerception(const Atlas::Objects::Operation::RootOperation &) const;
-    void updateTime(const SystemTime &);
     void deliverTo(const Atlas::Objects::Operation::RootOperation &,
                    LocatedEntity &);
     void resumeWorld();
+    /**
+     * @brief Dispatches the operation contained in the OpQueueEntry.
+     * @param opQueueEntry An entry from an op queue.
+     */
     void dispatchOperation(const OpQueEntry& opQueueEntry);
   public:
     explicit WorldRouter(const SystemTime &);

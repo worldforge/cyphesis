@@ -20,6 +20,7 @@
 
 #include "id.h"
 #include "log.h"
+#include "SystemTime.h"
 
 #include <cassert>
 
@@ -90,3 +91,10 @@ void BaseWorld::setIsSuspended(bool suspended)
         log(INFO, "Suspending world.");
     }
 }
+
+double BaseWorld::getTime() const {
+    SystemTime time;
+    time.update();
+    return (double)(time.seconds() + timeoffset - m_initTime) + (double)time.microseconds()/1000000.;
+}
+

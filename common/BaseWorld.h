@@ -25,6 +25,7 @@
 #include <Atlas/Objects/ObjectsFwd.h>
 
 #include <sigc++/signal.h>
+#include <ctime>
 
 class ArithmeticScript;
 class LocatedEntity;
@@ -48,12 +49,10 @@ class BaseWorld {
 
     /// \brief Singleton instance pointer for the World manager object.
     static BaseWorld * m_instance;
+
   protected:
-    /// \brief The in-game time in seconds.
-    ///
-    /// Calculated from the out-of-game time by applying an offset stored
-    /// at startup
-    double m_realTime;
+    /// The system time when the server was started.
+    std::time_t m_initTime;
 
     /// \brief Dictionary of all the objects in the world.
     ///
@@ -95,13 +94,11 @@ class BaseWorld {
     }
 
     /// \brief Read only accessor for the in-game time.
-    const double & getTime() const {
-        return m_realTime;
-    }
+    double getTime() const;
 
     /// \brief Get the time the world has been running since the server started.
-    const double upTime() const {
-        return m_realTime - timeoffset;
+    double upTime() const {
+        return getTime() - timeoffset;
     }
 
     /// \brief Gets whether the world is suspended or not.

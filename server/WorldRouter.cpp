@@ -117,18 +117,6 @@ inline OpQueEntry::~OpQueEntry()
     from->decRef();
 }
 
-
-/// \brief Update the in-game time.
-///
-/// Reads the system time, and applies the necessary offsets to calculate
-/// the in-game time. This is the stored, and can be accessed using getTime().
-void WorldRouter::updateTime(const SystemTime & time)
-{
-    double tmp_time = (double)(time.seconds() + timeoffset - m_initTime) + (double)time.microseconds()/1000000;
-    m_realTime = tmp_time;
-}
-
-
 /// \brief Constructor for the world object.
 ///
 /// The Entity representing the world is implicity constructed.
@@ -140,7 +128,6 @@ WorldRouter::WorldRouter(const SystemTime & time) :
           
 {
     m_initTime = time.seconds();
-    updateTime(time);
     m_gameWorld.incRef();
     EntityBuilder::init();
     m_gameWorld.setType(Inheritance::instance().getType("world"));
@@ -194,11 +181,11 @@ void WorldRouter::addOperationToQueue(const Operation & op, LocatedEntity & ent)
 
     op->setFrom(ent.getId());
     if (!op->hasAttrFlag(Atlas::Objects::Operation::FUTURE_SECONDS_FLAG)) {
-        op->setSeconds(m_realTime);
+        op->setSeconds(getTime());
         m_immediateQueue.push(OpQueEntry(op, ent));
         return;
     }
-    double t = m_realTime + op->getFutureSeconds();
+    double t = getTime() + op->getFutureSeconds();
     op->setSeconds(t);
     op->setFutureSeconds(0.);
     m_operationQueue.push(OpQueEntry(op, ent));
@@ -215,7 +202,7 @@ void WorldRouter::addOperationToQueue(const Operation & op, LocatedEntity & ent)
 Operation WorldRouter::getOperationFromQueue()
 {
     auto op = m_operationQueue.top();
-    if (op->getSeconds() > m_realTime) {
+    if (op->getSeconds() > getTime()) {
         return nullptr;
     }
     debug(std::cout << "pulled op off queue" << std::endl << std::flush;);
