@@ -45,30 +45,14 @@ class CommAsioClient: public Atlas::Objects::ObjectsDecoder,
                 boost::asio::io_service& io_service);
         virtual ~CommAsioClient();
 
-        void do_read();
-
-        void do_write();
-
         typename ProtocolT::socket& getSocket();
-    public:
 
         void startAccept(Link * connection);
         void startConnect(Link * connection);
         int send(const Atlas::Objects::Operation::RootOperation &);
 
-    public:
         /// \brief STL deque of pointers to operation objects.
         typedef std::deque<Atlas::Objects::Operation::RootOperation> DispatchQueue;
-
-        virtual int getFd() const;
-
-        virtual bool isOpen() const;
-
-        virtual bool eof();
-
-        virtual int read();
-
-        virtual void dispatch();
 
         virtual void disconnect();
 
@@ -100,6 +84,12 @@ class CommAsioClient: public Atlas::Objects::ObjectsDecoder,
 
         const std::string mName;
 
+        void do_read();
+
+        void do_write();
+
+        void dispatch();
+
         void startNegotiation();
 
         /// \brief Handle socket data related to codec negotiation.
@@ -109,16 +99,9 @@ class CommAsioClient: public Atlas::Objects::ObjectsDecoder,
 
         void negotiate_write();
 
-        /// \brief Add an operation to the queue.
-        template<class OpType>
-        void queue(const OpType &);
-
-        bool timeout();
         int operation(const Atlas::Objects::Operation::RootOperation &);
 
         virtual void objectArrived(const Atlas::Objects::Root & obj);
-
-        virtual void idle(time_t t);
 };
 
 #endif /* COMMASIOCLIENT_H_ */

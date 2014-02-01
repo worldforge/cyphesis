@@ -219,12 +219,6 @@ int CommAsioClient<ProtocolT>::negotiate()
 }
 
 template<class ProtocolT>
-bool CommAsioClient<ProtocolT>::timeout()
-{
-    return false;
-}
-
-template<class ProtocolT>
 int CommAsioClient<ProtocolT>::operation(
         const Atlas::Objects::Operation::RootOperation & op)
 {
@@ -268,27 +262,10 @@ void CommAsioClient<ProtocolT>::objectArrived(const Atlas::Objects::Root & obj)
 }
 
 template<class ProtocolT>
-void CommAsioClient<ProtocolT>::idle(time_t t)
-{
-//    if (m_negotiate != 0) {
-//        if ((t - m_connectTime) > 10) {
-//            log(NOTICE, "Client disconnected because of negotiation timeout.");
-//            m_clientIos.shutdown();
-//        }
-//    }
-}
-
-template<class ProtocolT>
-int CommAsioClient<ProtocolT>::read()
-{
-    return 0;
-}
-
-template<class ProtocolT>
 int CommAsioClient<ProtocolT>::send(
         const Atlas::Objects::Operation::RootOperation & op)
 {
-    if (!isOpen()) {
+    if (!mSocket.is_open()) {
         log(ERROR, "Writing to closed client");
         return -1;
     }
@@ -302,24 +279,6 @@ int CommAsioClient<ProtocolT>::send(
 //    }
     m_encoder->streamObjectsMessage(op);
     return flush();
-}
-
-template<class ProtocolT>
-int CommAsioClient<ProtocolT>::getFd() const
-{
-    return 0;
-}
-
-template<class ProtocolT>
-bool CommAsioClient<ProtocolT>::isOpen() const
-{
-    return mSocket.is_open();
-}
-
-template<class ProtocolT>
-bool CommAsioClient<ProtocolT>::eof()
-{
-    return !mSocket.is_open();
 }
 
 template<class ProtocolT>
