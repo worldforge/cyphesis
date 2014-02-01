@@ -64,10 +64,10 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
-#include <boost/make_shared.hpp>
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/local/stream_protocol.hpp>
 #include <boost/asio/ip/tcp.hpp>
+#include <boost/asio/steady_timer.hpp>
 
 #include <thread>
 #include <cstdlib>
@@ -436,13 +436,42 @@ int main(int argc, char ** argv)
 
     bool soft_exit_in_progess = false;
     time_t soft_exit_deadline = 0;
+
+    boost::asio::steady_timer nextOpTimer(io_service);
     // Loop until the exit flag is set. The exit flag can be set anywhere in
     // the code easily.
     while (!exit_flag) {
         try {
             time.update();
-            bool busy = world->idle(time);
-            io_service.poll();
+            bool busy = world->idle();
+            world->markQueueAsClean();
+            //If the world is busy we should just poll.
+            if (busy) {
+                io_service.poll();
+            } else {
+                //If it's not busy however we should run until we get a task.
+                //We will either get an io task, or we will be triggered by the timer
+                //which is set to expire when the next op should be dispatched.
+                double secondsUntilNextOp = world->secondsUntilNextOp();
+                if (secondsUntilNextOp <= 0.0) {
+                    io_service.poll();
+                } else {
+                    bool nextOpTimeExpired = false;
+                    std::chrono::microseconds waitTime((long long)(secondsUntilNextOp * 1000000));
+                    nextOpTimer.expires_from_now(waitTime);
+                    nextOpTimer.async_wait([&](boost::system::error_code ec){
+                        if (ec != boost::asio::error::operation_aborted) {
+                            nextOpTimeExpired = true;
+                        }
+                    });
+                    //Keep on running IO handlers until either the queue is dirty (i.e. we need to handle
+                    //any new operation) or the timer has expired.
+                    do {
+                        io_service.run_one();
+                    } while (!world->isQueueDirty() && !nextOpTimeExpired);
+                    nextOpTimer.cancel();
+                }
+            }
             if (soft_exit_in_progess) {
                 //If we're in soft exit mode and either the deadline has been exceeded
                 //or we've persisted all minds we should shut down normally.

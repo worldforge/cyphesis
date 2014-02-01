@@ -54,6 +54,8 @@ class WorldRouter : public BaseWorld {
     int m_entityCount;
     /// Map of spawns
     SpawnDict m_spawns;
+    /// Keeps track of if the operation queues are dirty.
+    bool m_operation_queues_dirty;
   protected:
     void addOperationToQueue(const Atlas::Objects::Operation::RootOperation &,
                              LocatedEntity &);
@@ -71,7 +73,13 @@ class WorldRouter : public BaseWorld {
     explicit WorldRouter(const SystemTime &);
     virtual ~WorldRouter();
 
-    bool idle(const SystemTime &);
+    bool idle();
+
+    /**
+     * Gets the number of seconds until the next operation needs to be dispatched.
+     * @return Seconds.
+     */
+    double secondsUntilNextOp() const;
     LocatedEntity * addEntity(LocatedEntity * obj);
     LocatedEntity * addNewEntity(const std::string & type,
                                  const Atlas::Objects::Entity::RootEntity &);
@@ -100,6 +108,19 @@ class WorldRouter : public BaseWorld {
                          LocatedEntity &);
     virtual LocatedEntity * findByName(const std::string & name);
     virtual LocatedEntity * findByType(const std::string & type);
+
+    /**
+     * @brief Checks if the operation queues have been marked as dirty.
+     *
+     * This means that something has been added to them.
+     * @return True if the queues are dirty.
+     */
+    bool isQueueDirty() const;
+
+    /**
+     * @brief Marks all queues as clean.
+     */
+    void markQueueAsClean();
 
     /// \brief Signal that a new Entity has been inserted.
     sigc::signal<void, LocatedEntity *> inserted;

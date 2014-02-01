@@ -119,12 +119,12 @@ inline OpQueEntry::~OpQueEntry()
 
 /// \brief Constructor for the world object.
 ///
-/// The Entity representing the world is implicity constructed.
+/// The Entity representing the world is implicitly constructed.
 /// Currently the world entity is included in the perceptives list,
 /// but I am not clear why. Need to look into why.
 WorldRouter::WorldRouter(const SystemTime & time) :
       BaseWorld(*new World(consts::rootWorldId, consts::rootWorldIntId)),
-      m_entityCount(1)
+      m_entityCount(1), m_operation_queues_dirty(false)
           
 {
     m_initTime = time.seconds();
@@ -167,6 +167,17 @@ WorldRouter::~WorldRouter()
     m_gameWorld.decRef();
 }
 
+bool WorldRouter::isQueueDirty() const
+{
+    return m_operation_queues_dirty;
+}
+
+void WorldRouter::markQueueAsClean()
+{
+    m_operation_queues_dirty = false;
+}
+
+
 /// \brief Add an operation to the ordered op queue.
 ///
 /// Any time adjustment required is made to the operation, and it
@@ -179,6 +190,7 @@ void WorldRouter::addOperationToQueue(const Operation & op, LocatedEntity & ent)
     assert(op.isValid());
     assert(op->getFrom() != "cheat");
 
+    m_operation_queues_dirty = true;
     op->setFrom(ent.getId());
     if (!op->hasAttrFlag(Atlas::Objects::Operation::FUTURE_SECONDS_FLAG)) {
         op->setSeconds(getTime());
@@ -629,28 +641,44 @@ void WorldRouter::addPerceptive(LocatedEntity * perceptive)
 /// will call this function again as soon as possible rather than sleeping.
 /// This ensures that the maximum possible number of operations are dispatched
 /// without becoming unresponsive to client communications traffic.
-/// @param sec world time seconds component
-/// @param usec world time microseconds component
-bool WorldRouter::idle(const SystemTime & time)
+bool WorldRouter::idle()
 {
-    updateTime(time);
 	unsigned int op_count = 0;
-    while (op_count < 10 && !m_operationQueue.empty() && m_operationQueue.top()->getSeconds() <= m_realTime) {
-        ++op_count;
-        dispatchOperation(m_operationQueue.top());
-        m_operationQueue.pop();
-    }
-
     while (op_count < 10 && !m_immediateQueue.empty()) {
         ++op_count;
         dispatchOperation(m_immediateQueue.front());
         m_immediateQueue.pop();
     }
-    // If we have processed the maximum number for this call, return true
+
+    //If there still are immediate ops to deliver we are absolutely busy.
+    if (!m_immediateQueue.empty()) {
+        return true;
+    }
+
+    double realtime = getTime();
+    while (op_count < 10 && !m_operationQueue.empty() && m_operationQueue.top()->getSeconds() <= realtime) {
+        ++op_count;
+        dispatchOperation(m_operationQueue.top());
+        m_operationQueue.pop();
+    }
+
+    // If there are still immediate or regular ops to deliver return true
     // to tell the server not to sleep when polling clients. This ensures
     // that we keep processing ops at a the maximum rate without leaving
     // clients unattended.
-    return (op_count >= 10);
+    if (!m_immediateQueue.empty() || (!m_operationQueue.empty() && m_operationQueue.top()->getSeconds() <= realtime)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+double WorldRouter::secondsUntilNextOp() const {
+    if (m_operationQueue.empty()) {
+        //600 is a fairly large number of seconds
+        return 600.0;
+    }
+    return m_operationQueue.top()->getSeconds() - getTime();
 }
 
 void WorldRouter::dispatchOperation(const OpQueEntry& oqe)

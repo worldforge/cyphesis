@@ -114,7 +114,7 @@ class BaseWorld {
     void setIsSuspended(bool suspended);
 
     /// \brief Main world loop function.
-    virtual bool idle(const SystemTime &) = 0;
+    virtual bool idle() = 0;
 
     /// \brief Add a new entity to the world.
     virtual LocatedEntity * addEntity(LocatedEntity * obj) = 0;
