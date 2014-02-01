@@ -20,6 +20,7 @@
 #define SERVER_COMM_MDNS_PUBLISHER_H
 
 #include <boost/asio.hpp>
+#include <boost/asio/steady_timer.hpp>
 
 #include <set>
 
@@ -34,7 +35,7 @@ class CommMDNSPublisher {
   protected:
     boost::asio::io_service& m_io_service;
     boost::asio::ip::tcp::socket m_socket;
-    boost::asio::deadline_timer m_timers_check_timer;
+    boost::asio::steady_timer m_timers_check_timer;
     // Avahi data
     ///
     struct AvahiClient * m_avahiClient;

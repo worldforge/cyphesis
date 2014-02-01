@@ -391,8 +391,7 @@ void CommMDNSPublisher::checkTimers(time_t t)
 
 void CommMDNSPublisher::do_timer_check()
 {
-    m_timers_check_timer.expires_from_now(
-            boost::posix_time::milliseconds(500));
+    m_timers_check_timer.expires_from_now(std::chrono::milliseconds(500));
     m_timers_check_timer.async_wait([this](boost::system::error_code ec)
     {
         this->checkTimers(0);

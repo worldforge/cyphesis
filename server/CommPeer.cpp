@@ -31,6 +31,7 @@
 
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::Info;
+using namespace std::chrono;
 
 /// \brief Constructor remote peer socket object.
 ///
@@ -79,10 +80,12 @@ void CommPeer::setup(Link * connection)
 {
     startConnect(connection);
 
-    m_start_auth = boost::posix_time::microsec_clock::local_time();
-    m_auth_timer.expires_from_now(boost::posix_time::seconds(1));
+    m_start_auth = steady_clock::now();
+    m_auth_timer.expires_from_now(seconds(1));
     m_auth_timer.async_wait([this](const boost::system::error_code& ec){
-        this->checkAuth();
+        if (!ec) {
+            this->checkAuth();
+        }
     });
 }
 
@@ -93,8 +96,8 @@ void CommPeer::checkAuth()
 {
     // Wait for the negotiation to finish with the peer
     if (m_negotiate != 0) {
-        if ((boost::posix_time::microsec_clock::local_time() - m_start_auth)
-                > boost::posix_time::seconds(10)) {
+        if (duration_cast<seconds>(steady_clock::now() - m_start_auth)
+                > seconds(10)) {
             log(NOTICE, "Client disconnected because of negotiation timeout.");
             mSocket.cancel();
             return;
@@ -107,8 +110,8 @@ void CommPeer::checkAuth()
         }
         // Check if we have been stuck in a state of authentication in-progress
         // for over 20 seconds. If so, disconnect from and remove peer.
-        if ((boost::posix_time::microsec_clock::local_time() - m_start_auth)
-                > boost::posix_time::seconds(20)) {
+        if (duration_cast<seconds>(steady_clock::now() - m_start_auth)
+                > seconds(20)) {
             if (peer->getAuthState() == PEER_AUTHENTICATING) {
                 log(NOTICE,
                         "Peer disconnected because authentication timed out.");
@@ -121,7 +124,7 @@ void CommPeer::checkAuth()
             return;
         }
     }
-    m_auth_timer.expires_from_now(boost::posix_time::seconds(1));
+    m_auth_timer.expires_from_now(seconds(1));
     m_auth_timer.async_wait([this](const boost::system::error_code& ec){
         this->checkAuth();
     });

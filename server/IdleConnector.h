@@ -20,6 +20,7 @@
 #define SERVER_IDLE_CONNECTOR_H
 
 #include <boost/asio.hpp>
+#include <boost/asio/steady_timer.hpp>
 #include <sigc++/signal.h>
 
 /// \brief Generic class for polling an existing object regularly.
@@ -35,7 +36,7 @@ class IdleConnector  {
     sigc::signal<void> idling;
 
   protected:
-    boost::asio::deadline_timer m_timer;
+    boost::asio::steady_timer m_timer;
 
     /// \brief Perform idle tasks once per second.
     void idle();

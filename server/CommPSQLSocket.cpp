@@ -30,6 +30,12 @@
 
 static const bool debug_flag = false;
 
+/// Interval between database vacuum jobs.
+const int CommPSQLSocket::vacFreq = 25 * 60;
+/// Interval between database reindex jobs.
+const int CommPSQLSocket::reindexFreq = 30 * 60;
+
+
 /// \brief Constructor for PostgreSQL socket polling object.
 ///
 /// @param db Reference to the low level database management object.
@@ -59,7 +65,7 @@ CommPSQLSocket::CommPSQLSocket(boost::asio::io_service& io_service, Database & d
 
 void CommPSQLSocket::tryReConnect()
 {
-    m_reconnectTimer.expires_from_now(boost::posix_time::seconds(2));
+    m_reconnectTimer.expires_from_now(std::chrono::seconds(2));
     m_reconnectTimer.async_wait([this](boost::system::error_code ec) {
         if (!ec) {
             if (m_db.initConnection() == 0) {
@@ -174,7 +180,7 @@ void CommPSQLSocket::vacuum()
         m_vacuumFull = !m_vacuumFull;
     }
 
-    m_vacuumTimer.expires_from_now(boost::posix_time::seconds(vacFreq));
+    m_vacuumTimer.expires_from_now(std::chrono::seconds(vacFreq));
     m_vacuumTimer.async_wait([this](boost::system::error_code ec) {
         if (!ec) {
             this->vacuum();
@@ -188,7 +194,7 @@ void CommPSQLSocket::reindex()
     if (m_socket && m_socket->is_open()) {
         m_db.runMaintainance(Database::MAINTAIN_REINDEX);
     }
-    m_reindexTimer.expires_from_now(boost::posix_time::seconds(reindexFreq));
+    m_reindexTimer.expires_from_now(std::chrono::seconds(reindexFreq));
     m_reindexTimer.async_wait([this](boost::system::error_code ec) {
         if (!ec) {
             this->reindex();

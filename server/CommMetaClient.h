@@ -22,6 +22,7 @@
 #include "metaserverapi/MetaServerPacket.hpp"
 
 #include <boost/asio.hpp>
+#include <boost/asio/steady_timer.hpp>
 
 #include <string>
 #include <map>
@@ -32,7 +33,7 @@ class CommMetaClient {
   private:
 
     boost::asio::ip::udp::socket mSocket;
-    boost::asio::deadline_timer mKeepaliveTimer;
+    boost::asio::steady_timer mKeepaliveTimer;
     boost::asio::ip::udp::resolver mResolver;
     boost::asio::ip::udp::endpoint mDestination;
 

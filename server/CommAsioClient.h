@@ -29,6 +29,7 @@
 
 #include <boost/asio.hpp>
 #include <boost/asio/buffer.hpp>
+#include <boost/asio/steady_timer.hpp>
 
 #include <memory>
 #include <sstream>
@@ -79,7 +80,7 @@ class CommAsioClient: public Atlas::Objects::ObjectsDecoder,
         boost::asio::streambuf mReadBuffer;
         boost::asio::streambuf mWriteBuffer;
         std::iostream mStream;
-        boost::asio::deadline_timer mNegotiateTimer;
+        boost::asio::steady_timer mNegotiateTimer;
 
         enum
         {
