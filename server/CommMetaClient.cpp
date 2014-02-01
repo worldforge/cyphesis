@@ -121,8 +121,10 @@ void CommMetaClient::keepalive()
             ip::udp::resolver::query query(ip::udp::v4(), m_server, "8453");
             mResolver.async_resolve(query,
                     [this](boost::system::error_code ec, ip::udp::resolver::iterator iterator ) {
-                        mDestination = *iterator;
-                        this->metaserverKeepalive();
+                        if (!ec) {
+                            mDestination = *iterator;
+                            this->metaserverKeepalive();
+                        }
                     });
         }
         this->keepalive();
@@ -180,12 +182,7 @@ void CommMetaClient::metaserverReply(size_t packet_size)
 
 
         mSocket.async_send_to(buffer(servershake->getBuffer(), servershake->getSize()),mDestination,
-                [this, servershake](boost::system::error_code ec, std::size_t length)
-                {
-                    if (!ec)
-                    {
-                    }
-                });
+                [this, servershake](boost::system::error_code ec, std::size_t length){});
 
 
     }
@@ -203,6 +200,7 @@ void CommMetaClient::metaserverTerminate()
 
     term->setPacketType(NMT_TERMINATE);
 
+    //Do a blocking send as we're calling this when we're shutting down.
     mSocket.send_to(buffer(term->getBuffer(), term->getSize()), mDestination);
 
 }
@@ -219,11 +217,6 @@ void CommMetaClient::metaserverAttribute(const std::string& k, const std::string
 
 
     mSocket.async_send_to(buffer(m->getBuffer(), m->getSize()), mDestination,
-            [this, m](boost::system::error_code ec, std::size_t length)
-            {
-                if (!ec)
-                {
-                }
-            });
+            [this, m](boost::system::error_code ec, std::size_t length){});
 }
 
