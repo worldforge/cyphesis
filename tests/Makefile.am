@@ -79,7 +79,7 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                EntityFactorytest TaskFactorytest Connectiontest \
                TrustedConnectiontest WorldRoutertest Peertest Lobbytest \
                Spawntest SpawnEntitytest ArithmeticBuildertest \
-               CommClientFactorytest ServerRoutingtest Idletest \
+               ServerRoutingtest Idletest \
                StorageManagertest HttpCachetest UpdateTestertest \
                ServerAccounttest TeleportAuthenticatortest \
                TeleportStatetest PendingTeleporttest Juncturetest \
@@ -91,9 +91,8 @@ SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
                Persistencetest \
                SystemAccounttest TCPListenFactorytest CorePropertyManagertest
 
-SERVER_COMM_TESTS = CommStreamClienttest CommClienttest \
-                    CommHttpClienttest CommStreamListenertest CommPeertest \
-                    CommMDNSPublishertest CommClientKittest \
+SERVER_COMM_TESTS = CommHttpClienttest CommPeertest \
+                    CommMDNSPublishertest \
                     CommHttpClientFactorytest
 
 SERVER_INTEGRATION_TESTS = WorldRouterintegration Rulesetintegration \
@@ -130,9 +129,9 @@ EXTRA_PROGRAMS = $(PYTHON_TESTS) Mastertest
 
 check_PROGRAMS = $(TESTS)
 
-noinst_HEADERS = TestBase.h null_stream.h CommClient_stub_impl.h \
-                 CommStreamClient_stub_impl.h OperationExerciser.h \
-                 allOperations.h TestWorld.h CommStreamListener_stub_impl.h \
+noinst_HEADERS = TestBase.h null_stream.h \
+                 OperationExerciser.h \
+                 allOperations.h TestWorld.h \
                  Sink.h Property_stub_impl.h
 dist-hook:
 	(cd $(top_srcdir)/tests && tar cf - data) | (cd $(distdir) && tar xf -)
@@ -1183,17 +1182,13 @@ buildidtest_LDADD = \
         $(top_builddir)/server/buildid.o
 
 Connectiontest_SOURCES = \
-        Connectiontest.cpp \
-        CommClient_null_stream.cpp \
-        CommStreamClient_null_stream.cpp
+        Connectiontest.cpp        
 Connectiontest_LDADD = \
         $(top_builddir)/server/Connection.o \
         $(NETWORK_LIBS)
 
 TrustedConnectiontest_SOURCES = \
-        TrustedConnectiontest.cpp \
-        CommClient_null_stream.cpp \
-        CommStreamClient_null_stream.cpp
+        TrustedConnectiontest.cpp
 TrustedConnectiontest_LDADD = \
         $(top_builddir)/server/TrustedConnection.o \
         $(NETWORK_LIBS)
@@ -1204,8 +1199,7 @@ WorldRoutertest_LDADD = \
 
 Peertest_SOURCES = \
         Peertest.cpp \
-        CommClient_null_stream.cpp \
-        CommStreamClient_null_stream.cpp
+        CommClient_null_stream.cpp
 Peertest_LDADD = \
         $(top_builddir)/server/Peer.o \
         $(NETWORK_LIBS)
@@ -1223,15 +1217,6 @@ SpawnEntitytest_LDADD = \
 ArithmeticBuildertest_SOURCES = ArithmeticBuildertest.cpp
 ArithmeticBuildertest_LDADD = \
         $(top_builddir)/server/ArithmeticBuilder.o
-
-CommClientFactorytest_SOURCES = \
-        CommClientFactorytest.cpp \
-        CommClient_null_stream.cpp \
-        CommStreamClient_null_stream.cpp
-CommClientFactorytest_LDADD = \
-        $(top_builddir)/server/CommClientFactory.o \
-        $(top_builddir)/server/CommClientKit.o \
-        $(NETWORK_LIBS)
 
 ServerRoutingtest_SOURCES = ServerRoutingtest.cpp
 ServerRoutingtest_LDADD = \
@@ -1255,16 +1240,6 @@ UpdateTestertest_LDADD = \
 
 # SERVER_COMM_TESTS
 
-CommStreamClienttest_SOURCES = \
-        CommStreamClienttest.cpp
-CommStreamClienttest_LDADD = \
-        $(top_builddir)/server/CommStreamClient.o
-
-CommClienttest_SOURCES = CommClienttest.cpp
-CommClienttest_LDADD = \
-        $(top_builddir)/server/CommClient.o \
-        $(NETWORK_LIBS)
-
 CommPeertest_SOURCES = CommPeertest.cpp
 CommPeertest_LDADD = \
         $(top_builddir)/server/CommPeer.o \
@@ -1275,18 +1250,9 @@ CommHttpClienttest_LDADD = \
         $(top_builddir)/server/CommHttpClient.o \
         $(NETWORK_LIBS)
 
-CommStreamListenertest_SOURCES = CommStreamListenertest.cpp
-CommStreamListenertest_LDADD = \
-        $(top_builddir)/server/CommStreamListener.o \
-        $(NETWORK_LIBS)
-
 CommMDNSPublishertest_SOURCES = CommMDNSPublishertest.cpp
 CommMDNSPublishertest_LDADD = \
         $(top_builddir)/server/CommMDNSPublisher.o
-
-CommClientKittest_SOURCES = CommClientKittest.cpp
-CommClientKittest_LDADD = \
-        $(top_builddir)/server/CommClientKit.o
 
 CommHttpClientFactorytest_SOURCES = CommHttpClientFactorytest.cpp
 CommHttpClientFactorytest_LDADD = \
@@ -1488,9 +1454,7 @@ EntityFactoryTypeNodeintegration_LDADD = \
         $(top_builddir)/common/Property.o
 
 AccountConnectionintegration_SOURCES = \
-        AccountConnectionintegration.cpp \
-        CommClient_null_stream.cpp \
-        CommStreamClient_null_stream.cpp
+        AccountConnectionintegration.cpp
 AccountConnectionintegration_LDADD = \
         $(top_builddir)/server/Account.o \
         $(top_builddir)/server/Admin.o \

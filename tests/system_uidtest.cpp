@@ -31,8 +31,6 @@
 #include "common/system.h"
 #include "common/log.h"
 
-#include <skstream/sksocket.h>
-
 #include <iostream>
 
 #include <cassert>

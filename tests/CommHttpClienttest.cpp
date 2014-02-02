@@ -155,8 +155,6 @@ int main()
 
 #include "CommStreamClient_stub_impl.h"
 
-#include <skstream/skstream.h>
-
 template class CommStreamClient<tcp_socket_stream>;
 
 HttpCache * HttpCache::m_instance = 0;

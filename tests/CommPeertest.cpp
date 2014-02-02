@@ -207,8 +207,6 @@ int main()
 
 #include <Atlas/Net/Stream.h>
 
-#include <skstream/skstream.h>
-
 template class CommStreamClient<tcp_socket_stream>;
 template class CommClient<tcp_socket_stream>;
 

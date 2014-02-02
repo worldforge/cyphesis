@@ -30,7 +30,6 @@
 #include "server/Peer.h"
 
 #include "server/CommPeer.h"
-#include "server/CommServer.h"
 #include "rulesets/ExternalMind.h"
 
 #include "common/BaseWorld.h"
@@ -39,8 +38,6 @@
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/SmartPtr.h>
-
-#include <skstream/skstream.h>
 
 #include <cassert>
 #include <string>

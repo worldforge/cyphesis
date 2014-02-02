@@ -58,8 +58,7 @@ READLINETOOL_LIBS = \
     /usr/lib/libreadline.a \
     /usr/lib/libtinfo.a
 
-NETWORKTOOL_LIBS = \
-    /usr/lib/libskstream-0.3.a
+NETWORKTOOL_LIBS = 
 
 MATHTOOL_LIBS = \
     /usr/lib/libwfmath-0.3.a

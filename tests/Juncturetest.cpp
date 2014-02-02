@@ -29,7 +29,6 @@
 #include "server/Juncture.h"
 
 #include "server/CommPeer.h"
-#include "server/CommServer.h"
 #include "server/Connection.h"
 #include "server/Peer.h"
 #include "server/ServerRouting.h"
@@ -37,8 +36,6 @@
 #include "common/Connect.h"
 
 #include <Atlas/Objects/Operation.h>
-
-#include <skstream/skstream.h>
 
 #include <cassert>
 

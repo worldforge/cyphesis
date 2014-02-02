@@ -55,8 +55,6 @@ int main()
 
 #include "common/id.h"
 
-#include <skstream/skstream.h>
-
 #include <cstdlib>
 
 template class CommStreamClient<tcp_socket_stream>;
