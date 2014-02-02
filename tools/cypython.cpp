@@ -27,8 +27,6 @@
 #include "common/log.h"
 #include "common/sockets.h"
 
-#include <skstream/skstream_unix.h>
-
 #include <varconf/config.h>
 
 #ifndef READLINE_CXX_SANE   // defined in config.h
@@ -41,12 +39,15 @@ extern "C" {
 #ifndef READLINE_CXX_SANE
 }
 #endif
+#include <boost/asio.hpp>
 
 #include <iostream>
 
 #ifdef ERROR
 #undef ERROR
 #endif
+
+using namespace boost::asio;
 
 int main(int argc, char ** argv)
 {
@@ -74,9 +75,9 @@ int main(int argc, char ** argv)
     std::cerr << argv[0] << ": This tool is not available on windows."
               << std::endl << std::flush;
 #else // _WIN32
-    unix_socket_stream sk;
-
-    sk.open(python_socket_name);
+    io_service io_service;
+    local::stream_protocol::socket sk(io_service);
+    sk.connect(local::stream_protocol::endpoint(python_socket_name));
 
     if (!sk.is_open()) {
         std::cerr << "Connection to " << python_socket_name
@@ -91,7 +92,7 @@ int main(int argc, char ** argv)
             std::cout << std::endl << std::flush;
         } else {
             add_history(line);
-            sk << line << std::endl << std::flush;
+            sk.write_some(buffer(std::string(line)));
         }
     }
 #endif // _WIN32
