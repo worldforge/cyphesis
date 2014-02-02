@@ -466,7 +466,7 @@ static int context_switch(int a, int b)
 void Interactive::loop()
 {
     if (rl_bind_keyseq("`", &context_switch) != 0) {
-        std::cout << "BINDING FALED" << std::endl;
+        std::cout << "BINDING FAILED" << std::endl;
     }
     rl_callback_handler_install(m_prompt.c_str(),
                                 &Interactive::gotCommand);
@@ -479,47 +479,29 @@ void Interactive::loop()
 }
 
 int Interactive::select(bool rewrite_prompt)
-// poll the codec if select says there is something there.
 {
-    fd_set infds;
+    fd_set rfds;
     struct timeval tv;
     int retval;
-
-    FD_ZERO(&infds);
-
-    FD_SET(m_fd, &infds);
-    FD_SET(STDIN_FILENO, &infds);
+    FD_ZERO(&rfds);
+    FD_SET(0, &rfds);
 
     tv.tv_sec = 0;
-    tv.tv_usec = 500000;
+    tv.tv_usec = 0;
 
-    if (rewrite_prompt) {
-        retval = ::select(m_fd+1, &infds, NULL, NULL, NULL);
-    } else {
-        retval = ::select(m_fd+1, &infds, NULL, NULL, &tv);
+    retval = ::select(1, &rfds, NULL, NULL, &tv);
+
+    if (retval){
+        rl_callback_read_char();
     }
 
-    if (retval > 0) {
-        if (FD_ISSET(m_fd, &infds)) {
-            if (m_ios->peek() == -1) {
-                std::cout << "Server disconnected" << std::endl << std::flush;
-                return -1;
-            } else {
-                if (rewrite_prompt) {
-                    std::cout << std::endl;
-                }
-                m_codec->poll();
-                if (rewrite_prompt) {
-                    updatePrompt();
-                    rl_forced_update_display();
-                }
-            }
-        }
-        if (FD_ISSET(STDIN_FILENO, &infds)) {
-            rl_callback_read_char();
-        }
+
+    int result = poll(0, 10);
+    if (result >= 0) {
+        return 0;
     }
-    return 0;
+    std::cout << "Server disconnected" << std::endl << std::flush;
+    return -1;
 }
 
 void Interactive::updatePrompt()
@@ -557,7 +539,7 @@ int Interactive::setup()
 
     reply_flag = true;
     while (m_server_flag && !error_flag) {
-       m_codec->poll();
+       poll(10, 0);
     }
 
     m_server_flag = false;

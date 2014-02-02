@@ -26,16 +26,76 @@
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/SmartPtr.h>
 
+#include <boost/asio.hpp>
+
+#include <chrono>
+
 namespace Atlas {
   class Codec;
 } // namespace Atlas
 
-class basic_socket_stream;
 class ClientTask;
+
+class StreamClientSocketBase
+{
+    public:
+        StreamClientSocketBase(boost::asio::io_service& io_service);
+        virtual ~StreamClientSocketBase();
+
+        int negotiate(Atlas::Objects::ObjectsDecoder& decoder);
+        std::iostream& getIos();
+
+        Atlas::Codec& getCodec();
+        Atlas::Objects::ObjectsEncoder& getEncoder();
+
+        virtual int write() = 0;
+        int poll(const std::chrono::steady_clock::time_point& timeout);
+    protected:
+        enum
+        {
+            read_buffer_size = 16384
+        };
+        boost::asio::io_service& m_io_service;
+
+        boost::asio::streambuf mBuffer;
+        boost::asio::streambuf mReadBuffer;
+        std::iostream m_ios;
+        Atlas::Codec* m_codec;
+        Atlas::Objects::ObjectsEncoder * m_encoder;
+        bool m_is_connected;
+
+        virtual int read() = 0;
+        virtual void do_read() = 0;
+};
+
+class TcpStreamClientSocket : public StreamClientSocketBase
+{
+    public:
+        TcpStreamClientSocket(boost::asio::io_service& io_service, boost::asio::ip::tcp::endpoint endpoint);
+        virtual int write();
+   protected:
+        boost::asio::ip::tcp::socket m_socket;
+        virtual int read();
+        virtual void do_read();
+};
+
+class LocalStreamClientSocket : public StreamClientSocketBase
+{
+    public:
+        LocalStreamClientSocket(boost::asio::io_service& io_service, boost::asio::local::stream_protocol::endpoint endpoint);
+        virtual int write();
+    protected:
+        boost::asio::local::stream_protocol::socket m_socket;
+        virtual int read();
+        virtual void do_read();
+};
+
 
 class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
 {
   protected:
+    boost::asio::io_service m_io_service;
+
     /// \brief Flag to indicate that a reply has been received from the server
     bool reply_flag;
     /// \brief Flag to indicate that an error has been received from the server
@@ -43,10 +103,7 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     /// \brief Counter used to track serial numbers sent to the server
     int serialNo;
 
-    int m_fd;
-    Atlas::Objects::ObjectsEncoder * m_encoder;
-    Atlas::Codec * m_codec;
-    basic_socket_stream * m_ios;
+    StreamClientSocketBase* m_socket;
     ClientTask * m_currentTask;
 
     std::string m_username;
@@ -107,6 +164,7 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     int create(const std::string & type,
                const std::string & username,
                const std::string & password);
+    int poll(const std::chrono::steady_clock::time_point& timeout);
     int poll(int timeout = 0, int msec = 0);
     void output(const Atlas::Message::Element & item, int depth = 0) const;
     void output(const Atlas::Objects::Root & item) const;
