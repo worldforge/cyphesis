@@ -19,8 +19,6 @@
 #ifndef COMMON_SYSTEM_H
 #define COMMON_SYSTEM_H
 
-#include <skstream/skstreamconfig.h>
-
 #include <cstdlib>
 
 // These two will not be transmitted to our parent, so we don't need to
@@ -41,8 +39,6 @@
 #include <string>
 
 const std::string get_hostname();
-int socket_linger(SOCKET_TYPE, int);
-int socket_client_send_credentials(int fd);
 
 unsigned int security_init();
 unsigned int security_check();

@@ -53,8 +53,6 @@
 #include "common/compose.hpp"
 #include "common/utils.h"
 
-#include <skstream/skstream_unix.h>
-
 #include <sigc++/connection.h>
 
 #ifndef READLINE_CXX_SANE   // defined in config.h

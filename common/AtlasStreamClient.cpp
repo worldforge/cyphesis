@@ -37,12 +37,10 @@
 #undef DATADIR
 #endif // _WIN32
 
-#include <skstream/skstream.h>
-#include <skstream/skstream_unix.h>
-
 #include <boost/asio/steady_timer.hpp>
 
 #include <cstdio>
+#include <iostream>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;

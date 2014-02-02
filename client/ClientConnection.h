@@ -25,8 +25,6 @@
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Root.h>
 
-#include <skstream/skstream.h>
-
 #include <deque>
 
 /// \brief Class to handle socket connection to a cyphesis server from an
