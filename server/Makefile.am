@@ -123,7 +123,6 @@ COMM_SOURCES = \
 		CommMetaClient.cpp CommMetaClient.h \
 		CommMDNSPublisher.cpp CommMDNSPublisher.h \
 		HttpCache.cpp HttpCache.h \
-		CommClientKit.cpp CommClientKit.h \
 		CommAsioListener.cpp CommAsioListener.h CommAsioListener_impl.h \
 		CommAsioClient.cpp CommAsioClient.h CommAsioClient_impl.h \
 		$(top_srcdir)/metaserverapi/MetaServerPacket.cpp \
@@ -170,15 +169,9 @@ cyslave_SOURCES = \
 		Peer.cpp Peer.h \
 		Master.cpp Master.h \
 		HttpCache.cpp HttpCache.h \
-		CommStreamListener.cpp CommStreamListener.h \
-		CommUnixListener.cpp CommUnixListener.h \
-		CommStreamClient.cpp CommStreamClient.h \
-		CommClient.cpp CommClient.h \
 		CommPeer.cpp CommPeer.h \
 		CommHttpClient.cpp CommHttpClient.h \
 		CommMaster.cpp CommMaster.h \
-		CommServer.cpp CommServer.h \
-		CommClientFactory.cpp CommClientFactory.h \
 		TeleportState.cpp TeleportState.h \
 		slave.cpp
 

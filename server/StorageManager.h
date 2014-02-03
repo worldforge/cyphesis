@@ -31,7 +31,6 @@ class Entity;
 class WorldRouter;
 class PropertyBase;
 class MindInspector;
-class CommServer;
 
 /// \brief StorageManager represents the subsystem which stores world storage
 ///

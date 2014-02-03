@@ -19,13 +19,12 @@
 #ifndef SERVER_COMM_MASTER_H
 #define SERVER_COMM_MASTER_H
 
-#include "CommClient.h"
 
 /// \brief Handle an internet socket connected to a remote master server.
 /// \ingroup ServerSockets
 class CommMaster : public CommClient {
   public:
-    CommMaster(CommServer & svr);
+    CommMaster();
     virtual ~CommMaster();
 
     int connect(const std::string &);

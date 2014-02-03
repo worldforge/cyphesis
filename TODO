@@ -67,11 +67,6 @@ without having to go via the mindMoveOperation phase.
 Make [un]linkExternalMind return success, to indicate if an event should be
 logged. Keeps logging of events cleanly in the server code.
 
-Simplify CommServer by removing the Idle functionality, and making it
-a stand alone class.
- - In Juncture.cpp we can get to it by the ServerRouting
- - In PSQL code there can be a reference to it in CommStreamListener.
-
 The dynamic_cast, and other logic can be removed from Connection::operation
 if it could be moved into Character::externalOperation. In order for this
 to be possible, Link and ExternalMind move into common, and CommSocket
@@ -404,9 +399,6 @@ and stop it re-writing the prompt so much.
 
 cyclient - add interactive
          - add args on commandline
-
-CommServer::addSocket shoudl return success/failure, so that parent knows the
-score.
 
 Constrain movement if not directly in a movement domain.
 
@@ -1603,14 +1595,6 @@ of Pedestrian is valid and set to a weird value. This is because the
 target position where the merchant wants to be is at a different z value
 from where the character ends up. This is a general problem with moving
 to pre-defined positions.
-
-We could move the loop into ServerRouting, rather than CommServer.
-Rename CommServer::idle to CommServer::poll or something like that.
-Perhaps we don't even need idle any more. Idle objects would then
-be owned by ServerRouting rather than CommServer. CommServer would
-then be almost fully generalised. In order to lose the reference to
-ServerRouting in CommServer, the listeners would have to have this reference
-instead - move the specialisation into the listeners.
 
 Does sightFooOperation etc. in BaseMind.h have to be virtual? I think not.
 Yes it does, as its overriden in some client code.

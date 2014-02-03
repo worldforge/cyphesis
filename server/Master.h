@@ -21,7 +21,6 @@
 
 #include "common/Router.h"
 
-class CommClient;
 class ServerRouting;
 
 /// \brief Class representing connections from a master server to which this
@@ -32,10 +31,9 @@ class Master : public Router {
   protected:
     
   public:
-    CommClient & m_commClient;
     ServerRouting & m_server;
 
-    Master(CommClient & client, ServerRouting & svr, const std::string & id);
+    Master(ServerRouting & svr, const std::string & id);
     virtual ~Master();
 
     virtual void operation(const Operation &, OpVector &);

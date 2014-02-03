@@ -19,7 +19,6 @@
 #ifndef COMMON_COMM_SOCKET_H
 #define COMMON_COMM_SOCKET_H
 
-class CommServer;
 namespace boost {
 namespace asio {
 class io_service;

@@ -19,7 +19,6 @@
 #include "CommMaster.h"
 
 #include "Master.h"
-#include "CommServer.h"
 
 #include "common/globals.h"
 
@@ -27,7 +26,7 @@
 ///
 /// @param svr Reference to the object that manages all socket communication.
 /// @param addr Address of the remote master server.
-CommMaster::CommMaster(CommServer & svr) : CommClient(svr)
+CommMaster::CommMaster() : CommClient()
 {
     std::cout << "Outgoing master connection." << std::endl << std::flush;
 }

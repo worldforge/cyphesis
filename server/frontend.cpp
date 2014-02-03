@@ -20,10 +20,6 @@
 #include "config.h"
 #endif
 
-#include "CommServer.h"
-#include "CommClientFactory.h"
-#include "CommUnixListener.h"
-#include "CommTCPListener.h"
 #include "CommMDNSPublisher.h"
 
 #include "common/id.h"

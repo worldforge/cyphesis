@@ -21,11 +21,8 @@
 /// \defgroup ServerSockets Server Socket Classes
 ///
 ////Socket handling classes for the server code.
-/// Socket classes which inherit from CommSocket are used by the cyphesis
-/// server class CommServer to communicate with other parts of a WorldForge
-/// system using network sockets. All classes have a common interface which
-/// allows CommServer to monitor these sockets for activity or events, and
-/// notify the object when action is required.
+/// Socket classes which inherit from CommSocket are to communicate with other
+/// parts of a WorldForge system using network sockets.
 
 /// \brief Constructor for socket object.
 ///
