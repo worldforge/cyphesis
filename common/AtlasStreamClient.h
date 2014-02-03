@@ -49,7 +49,7 @@ class StreamClientSocketBase
         Atlas::Objects::ObjectsEncoder& getEncoder();
 
         virtual int write() = 0;
-        int poll(const std::chrono::steady_clock::time_point& timeout);
+        int poll(const boost::posix_time::ptime& timeout);
     protected:
         enum
         {
@@ -164,7 +164,7 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     int create(const std::string & type,
                const std::string & username,
                const std::string & password);
-    int poll(const std::chrono::steady_clock::time_point& timeout);
+    int poll(const boost::posix_time::ptime& timeout);
     int poll(int timeout = 0, int msec = 0);
     void output(const Atlas::Message::Element & item, int depth = 0) const;
     void output(const Atlas::Objects::Root & item) const;

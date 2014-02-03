@@ -97,7 +97,7 @@ int CommMetaClient::setup(const std::string & mserver)
 
 void CommMetaClient::do_receive()
 {
-    mSocket.async_receive_from(buffer(mReadBuffer, MAX_PACKET_BYTES), mDestination,
+    mSocket.async_receive_from(buffer(mReadBuffer.data(), MAX_PACKET_BYTES), mDestination,
             [this](boost::system::error_code ec, std::size_t length)
             {
                 if (!ec)
@@ -112,7 +112,7 @@ void CommMetaClient::keepalive()
 {
 
     mKeepaliveTimer.expires_from_now(
-            std::chrono::seconds(m_heartbeatTime));
+            boost::posix_time::seconds(m_heartbeatTime));
 
     mKeepaliveTimer.async_wait([this](boost::system::error_code ec)
     {
@@ -142,7 +142,7 @@ void CommMetaClient::metaserverKeepalive()
 
     keep->setPacketType(NMT_SERVERKEEPALIVE);
 
-    mSocket.async_send_to(buffer(keep->getBuffer(), keep->getSize()),
+    mSocket.async_send_to(buffer(keep->getBuffer().data(), keep->getSize()),
             mDestination,
             [this, keep](boost::system::error_code ec, std::size_t length)
             {
@@ -181,7 +181,7 @@ void CommMetaClient::metaserverReply(size_t packet_size)
         servershake->addPacketData(handshake);
 
 
-        mSocket.async_send_to(buffer(servershake->getBuffer(), servershake->getSize()),mDestination,
+        mSocket.async_send_to(buffer(servershake->getBuffer().data(), servershake->getSize()),mDestination,
                 [this, servershake](boost::system::error_code ec, std::size_t length){});
 
 
@@ -201,7 +201,7 @@ void CommMetaClient::metaserverTerminate()
     term->setPacketType(NMT_TERMINATE);
 
     //Do a blocking send as we're calling this when we're shutting down.
-    mSocket.send_to(buffer(term->getBuffer(), term->getSize()), mDestination);
+    mSocket.send_to(buffer(term->getBuffer().data(), term->getSize()), mDestination);
 
 }
 
@@ -216,7 +216,7 @@ void CommMetaClient::metaserverAttribute(const std::string& k, const std::string
     m->addPacketData(v);
 
 
-    mSocket.async_send_to(buffer(m->getBuffer(), m->getSize()), mDestination,
+    mSocket.async_send_to(buffer(m->getBuffer().data(), m->getSize()), mDestination,
             [this, m](boost::system::error_code ec, std::size_t length){});
 }
 

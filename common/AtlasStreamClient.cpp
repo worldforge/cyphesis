@@ -37,7 +37,7 @@
 #undef DATADIR
 #endif // _WIN32
 
-#include <boost/asio/steady_timer.hpp>
+#include <boost/asio/deadline_timer.hpp>
 
 #include <cstdio>
 #include <iostream>
@@ -111,10 +111,10 @@ Atlas::Objects::ObjectsEncoder& StreamClientSocketBase::getEncoder()
     return *m_encoder;
 }
 
-int StreamClientSocketBase::poll(const std::chrono::steady_clock::time_point& expireTime)
+int StreamClientSocketBase::poll(const boost::posix_time::ptime& expireTime)
 {
     bool hasExpired = false;
-    steady_timer timer(m_io_service);
+    deadline_timer timer(m_io_service);
     timer.expires_at(expireTime);
     timer.async_wait([&](boost::system::error_code ec){
         if (!ec) {
@@ -487,7 +487,7 @@ int AtlasStreamClient::create(const std::string & type,
 
 int AtlasStreamClient::waitForLoginResponse()
 {
-    auto expireTime = std::chrono::steady_clock::now() + std::chrono::seconds(10);
+    auto expireTime = boost::posix_time::microsec_clock::local_time() + boost::posix_time::seconds(10);
     while (poll(expireTime) == 0) {
         if (reply_flag && !error_flag) {
             if (m_infoReply->isDefaultId()) {
@@ -507,7 +507,7 @@ int AtlasStreamClient::waitForLoginResponse()
     return -1;
 }
 
-int AtlasStreamClient::poll(const std::chrono::steady_clock::time_point& timeout)
+int AtlasStreamClient::poll(const boost::posix_time::ptime& timeout)
 {
     int result = m_socket->poll(timeout);
     if (result == -1) {
@@ -518,7 +518,7 @@ int AtlasStreamClient::poll(const std::chrono::steady_clock::time_point& timeout
 
 int AtlasStreamClient::poll(int timeOut, int msec)
 {
-    auto expireTime = std::chrono::steady_clock::now() + std::chrono::seconds(timeOut) + std::chrono::microseconds(msec);
+    auto expireTime = boost::posix_time::microsec_clock::local_time() + boost::posix_time::seconds(timeOut) + boost::posix_time::microseconds(msec);
     return poll(expireTime);
 }
 
@@ -570,7 +570,7 @@ int AtlasStreamClient::pollUntilTaskComplete()
         return 1;
     }
     while (m_currentTask != nullptr) {
-        auto expireTime = std::chrono::steady_clock::now() + std::chrono::milliseconds(100);
+        auto expireTime = boost::posix_time::microsec_clock::local_time() + boost::posix_time::milliseconds(100);
         if (poll(expireTime) == -1) {
             return -1;
         }

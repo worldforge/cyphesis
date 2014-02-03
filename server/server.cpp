@@ -67,7 +67,7 @@
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/local/stream_protocol.hpp>
 #include <boost/asio/ip/tcp.hpp>
-#include <boost/asio/steady_timer.hpp>
+#include <boost/asio/deadline_timer.hpp>
 
 #include <thread>
 #include <cstdlib>
@@ -437,7 +437,7 @@ int main(int argc, char ** argv)
     bool soft_exit_in_progess = false;
     time_t soft_exit_deadline = 0;
 
-    boost::asio::steady_timer nextOpTimer(io_service);
+    boost::asio::deadline_timer nextOpTimer(io_service);
     // Loop until the exit flag is set. The exit flag can be set anywhere in
     // the code easily.
     while (!exit_flag) {
@@ -457,7 +457,7 @@ int main(int argc, char ** argv)
                     io_service.poll();
                 } else {
                     bool nextOpTimeExpired = false;
-                    std::chrono::microseconds waitTime((long long)(secondsUntilNextOp * 1000000));
+                    boost::posix_time::microseconds waitTime((long long)(secondsUntilNextOp * 1000000));
                     nextOpTimer.expires_from_now(waitTime);
                     nextOpTimer.async_wait([&](boost::system::error_code ec){
                         if (ec != boost::asio::error::operation_aborted) {

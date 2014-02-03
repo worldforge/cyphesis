@@ -38,7 +38,7 @@ CommAsioClient<ProtocolT>::CommAsioClient(const std::string & name,
         boost::asio::io_service& io_service) :
         CommSocket(io_service), mSocket(io_service), mStream(
                 &mWriteBuffer), mNegotiateTimer(io_service,
-                std::chrono::seconds(1)), m_codec(nullptr), m_encoder(
+                boost::posix_time::seconds(1)), m_codec(nullptr), m_encoder(
                 nullptr), m_negotiate(nullptr), m_link(nullptr), mName(name)
 {
 }

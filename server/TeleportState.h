@@ -18,7 +18,7 @@
 #ifndef SERVER_TELEPORT_STATE_H
 #define SERVER_TELEPORT_STATE_H
 
-#include <chrono>
+#include <boost/date_time.hpp>
 #include <string>
 
 class TeleportState
@@ -32,10 +32,10 @@ class TeleportState
         TELEPORT_CREATED    /// \brief Teleport has succeeded
     } m_state;
 
-    std::chrono::steady_clock::time_point m_teleportTime;  /// \brief The time the teleport took place
+    boost::posix_time::ptime m_teleportTime;  /// \brief The time the teleport took place
 
   public:
-    TeleportState(std::chrono::steady_clock::time_point time);
+    TeleportState(boost::posix_time::ptime time);
     
     void setRequested();
     void setCreated();
@@ -47,7 +47,7 @@ class TeleportState
     bool isMind() const;
     const std::string & getPossessKey() const;
 
-    std::chrono::steady_clock::time_point getCreateTime() const;
+    boost::posix_time::ptime getCreateTime() const;
 };
 
 /// \brief Check if the teleported entity has been create on the remote end
@@ -82,7 +82,7 @@ inline const std::string & TeleportState::getPossessKey() const
     return m_possessKey;
 }
 
-inline std::chrono::steady_clock::time_point TeleportState::getCreateTime() const
+inline boost::posix_time::ptime TeleportState::getCreateTime() const
 {
     return m_teleportTime;
 }

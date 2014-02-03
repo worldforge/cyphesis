@@ -31,7 +31,7 @@ IdleConnector::~IdleConnector()
 
 void IdleConnector::idle()
 {
-    m_timer.expires_from_now(std::chrono::seconds(1));
+    m_timer.expires_from_now(boost::posix_time::seconds(1));
     m_timer.async_wait([this](boost::system::error_code ec){
         this->idling.emit();
         this->idle();

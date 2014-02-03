@@ -22,7 +22,7 @@
 #include "common/CommSocket.h"
 
 #include <boost/asio.hpp>
-#include <boost/asio/steady_timer.hpp>
+#include <boost/asio/deadline_timer.hpp>
 
 class Database;
 
@@ -34,9 +34,9 @@ class CommPSQLSocket {
 
     boost::asio::io_service& m_io_service;
     boost::asio::ip::tcp::socket* m_socket;
-    boost::asio::steady_timer m_vacuumTimer;
-    boost::asio::steady_timer m_reindexTimer;
-    boost::asio::steady_timer m_reconnectTimer;
+    boost::asio::deadline_timer m_vacuumTimer;
+    boost::asio::deadline_timer m_reindexTimer;
+    boost::asio::deadline_timer m_reconnectTimer;
 
 
     /// Reference to the low level database management object.
