@@ -26,7 +26,6 @@
 #include "TestBase.h"
 
 #include "server/Account.h"
-#include "server/CommServer.h"
 #include "server/EntityBuilder.h"
 #include "server/Ruleset.h"
 #include "server/ServerRouting.h"
@@ -65,18 +64,22 @@ using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Talk;
 using Atlas::Objects::Operation::Move;
 
-class TestCommSocket : public CommSocket {
+class TestCommSocket : public CommSocket
+{
   public:
-    explicit TestCommSocket(CommServer & cs) : CommSocket(cs) { }
-    virtual ~TestCommSocket() { }
+    TestCommSocket() : CommSocket(*(boost::asio::io_service*)0)
+    {
+    }
 
-    int getFd() const { return 0; }
-    bool isOpen() const { return true; }
-    bool eof() { return false; }
-    int read() { return 0; }
-    void dispatch() { }
-    void disconnect() { }
-    int flush() { return 0; }
+    virtual void disconnect()
+    {
+    }
+
+    virtual int flush()
+    {
+        return 0;
+    }
+
 };
 
 class TestAccount : public Account {
@@ -100,8 +103,6 @@ class Accountintegration : public Cyphesis::TestBase
     WorldRouter * m_world;
 
     ServerRouting * m_server;
-
-    CommServer * m_commServer;
 
     CommSocket * m_tc;
     Connection * m_c;
@@ -155,9 +156,7 @@ void Accountintegration::setup()
     m_server = new ServerRouting(*m_world, "noruleset", "unittesting",
                          "1", 1, "2", 2);
 
-    m_commServer = new CommServer;
-
-    m_tc = new TestCommSocket(*m_commServer);
+    m_tc = new TestCommSocket();
     m_c = new Connection(*m_tc, *m_server, "addr", "3", 3);
     m_ac = new TestAccount(m_c, "user", "password", "4", 4);
 }
@@ -356,7 +355,6 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "Property_stub_impl.h"
 
 #include "server/ArithmeticBuilder.h"
-#include "server/CommServer.h"
 #include "server/EntityFactory.h"
 #include "server/ArchetypeFactory.h"
 #include "server/Juncture.h"
@@ -446,11 +444,6 @@ ArithmeticScript * ArithmeticBuilder::newArithmetic(const std::string & name,
     return 0;
 }
 
-CommServer::CommServer() : m_epollFd(-1),
-                           m_congested(false),
-                           m_tick(0)
-{
-}
 
 Creator::Creator(const std::string& id, long idInt)
 :Character::Character(id, idInt)
@@ -1517,7 +1510,7 @@ bool_config_register::bool_config_register(bool & var,
 {
 }
 
-CommSocket::CommSocket(CommServer & svr) : m_commServer(svr) { }
+CommSocket::CommSocket(boost::asio::io_service & svr) : m_io_service(svr) { }
 
 CommSocket::~CommSocket()
 {

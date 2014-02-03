@@ -23,41 +23,40 @@
 #define DEBUG
 #endif
 
-#include "CommClient_stub_impl.h"
-#include "CommStreamClient_stub_impl.h"
-
 #include "server/Juncture.h"
 
 #include "server/CommPeer.h"
 #include "server/Connection.h"
 #include "server/Peer.h"
 #include "server/ServerRouting.h"
+#include "server/CommAsioClient_impl.h"
 
 #include "common/Connect.h"
+#include "common/CommSocket.h"
 
 #include <Atlas/Objects/Operation.h>
 
 #include <cassert>
 
-template class CommStreamClient<tcp_socket_stream>;
-template class CommClient<tcp_socket_stream>;
 
 class BaseWorld;
 
-class StubSocket : public CommSocket {
+class StubSocket : public CommSocket
+{
   public:
-    explicit StubSocket(CommServer & cs,
-                        const char * foo = "",
-                        int fd = -1) : CommSocket(cs) { }
-    virtual ~StubSocket() { }
+    StubSocket() : CommSocket(*(boost::asio::io_service*)0)
+    {
+    }
 
-    int getFd() const { return 0; }
-    bool isOpen() const { return true; }
-    bool eof() { return false; }
-    int read() { return 0; }
-    void dispatch() { }
-    void disconnect() { }
-    int flush() { return 0; }
+    virtual void disconnect()
+    {
+    }
+
+    virtual int flush()
+    {
+        return 0;
+    }
+
 };
 
 // Test class to expose protected methods.
@@ -70,7 +69,7 @@ class TestJuncture : public Juncture
     void test_onPeerReplied(const Operation & op) { onPeerReplied(op); }
 
     void test_addPeer(Peer * p) { m_peer = p; }
-    void test_addSocket(CommPeer * cp) { m_socket = cp; }
+//    void test_addSocket(CommPeer * cp) { m_socket = cp; }
 };
 
 int stub_CommPeer_connect_return = 0;
@@ -198,11 +197,9 @@ int main()
     // Login op, username & password in arg, connected
     {
         ServerRouting sr(*(BaseWorld*)0, "", "", "2", 2, "3", 3);
-        CommServer cs;
-
         TestJuncture * j = new TestJuncture(0);
 
-        CommPeer * cp = new CommPeer(cs, "");
+        CommPeer * cp = new CommPeer("", *(boost::asio::io_service*)0);
         j->test_addPeer(new Peer(*cp, sr, "", 6767, "4", 4));
 
         OpVector res;
@@ -221,11 +218,10 @@ int main()
     // Login op, username & password in arg, connected already authenticating
     {
         ServerRouting sr(*(BaseWorld*)0, "", "", "2", 2, "3", 3);
-        CommServer cs;
 
         TestJuncture * j = new TestJuncture(0);
 
-        CommPeer * cp = new CommPeer(cs, "");
+        CommPeer * cp = new CommPeer("", *(boost::asio::io_service*)0);
         Peer * p = new Peer(*cp, sr, "", 6767, "4", 4);
         j->test_addPeer(p);
 
@@ -247,11 +243,10 @@ int main()
     // Login op, username & password in arg, connected, with serialno
     {
         ServerRouting sr(*(BaseWorld*)0, "", "", "2", 2, "3", 3);
-        CommServer cs;
 
         TestJuncture * j = new TestJuncture(0);
 
-        CommPeer * cp = new CommPeer(cs, "");
+        CommPeer * cp = new CommPeer("", *(boost::asio::io_service*)0);
         j->test_addPeer(new Peer(*cp, sr, "", 6767, "4", 4));
 
         OpVector res;
@@ -347,8 +342,7 @@ int main()
     // Connect op, hostname and port in arg, connected this end
     {
         ServerRouting sr(*(BaseWorld*)0, "", "", "2", 2, "3", 3);
-        CommServer cs;
-        CommSocket * cc = new StubSocket(cs, "", 23);
+        CommSocket * cc = new StubSocket();
         Connection * c = new Connection(*cc, sr, "", "4", 4);
 
         Juncture * j = new Juncture(c, "1", 1);
@@ -371,8 +365,7 @@ int main()
         stub_CommPeer_connect_return = -1;
 
         ServerRouting sr(*(BaseWorld*)0, "", "", "2", 2, "3", 3);
-        CommServer cs;
-        CommSocket * cc = new StubSocket(cs, "", 23);
+        CommSocket * cc = new StubSocket();
         Connection * c = new Connection(*cc, sr, "", "4", 4);
 
         Juncture * j = new Juncture(c, "1", 1);
@@ -488,8 +481,8 @@ void ServerRouting::operation(const Operation &, OpVector &)
 {
 }
 
-CommPeer::CommPeer(CommServer & svr, const std::string & n) :
-      CommClient<tcp_socket_stream>(svr, n)
+CommPeer::CommPeer(const std::string & n, boost::asio::io_service& svr) :
+        CommAsioClient<boost::asio::ip::tcp> (n, svr), m_auth_timer(svr)
 {
 }
 
@@ -497,52 +490,21 @@ CommPeer::~CommPeer()
 {
 }
 
-void CommPeer::idle(time_t t)
-{
-}
-
-bool CommPeer::eof()
-{
-    return false;
-}
-
-int CommPeer::connect(struct addrinfo *)
-{
-    return stub_CommPeer_connect_return;
-}
-
 void CommPeer::setup(Link * connection)
 {
 }
 
-CommSocket::CommSocket(CommServer & svr) : m_commServer(svr) { }
+void CommPeer::connect(boost::asio::ip::basic_endpoint<boost::asio::ip::tcp> const&)
+{
+}
+
+CommSocket::CommSocket(boost::asio::io_service& svr) : m_io_service(svr) { }
 
 CommSocket::~CommSocket()
 {
 }
 
 int CommSocket::flush()
-{
-    return 0;
-}
-
-Idle::Idle(CommServer & svr) : m_idleManager(svr)
-{
-}
-
-Idle::~Idle()
-{
-}
-
-CommServer::CommServer() : m_epollFd(-1), m_congested(false)
-{
-}
-
-CommServer::~CommServer()
-{
-}
-
-int CommServer::addSocket(CommSocket*)
 {
     return 0;
 }

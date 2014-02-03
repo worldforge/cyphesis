@@ -24,15 +24,15 @@
 #endif
 
 #include "null_stream.h"
-#include "CommClient_stub_impl.h"
-#include "CommStreamClient_stub_impl.h"
 
 #include "server/Peer.h"
 
+#include "server/CommAsioClient_impl.h"
 #include "server/CommPeer.h"
 #include "rulesets/ExternalMind.h"
 
 #include "common/BaseWorld.h"
+#include "common/CommSocket.h"
 
 #include "rulesets/Character.h"
 
@@ -42,19 +42,30 @@
 #include <cassert>
 #include <string>
 
-class TestCommClient : public CommClient<null_stream> {
+class TestCommSocket : public CommSocket
+{
   public:
-    TestCommClient(CommServer & cs,
-                   const std::string & n) : CommClient<null_stream>(cs, n) { }
+    TestCommSocket() : CommSocket(*(boost::asio::io_service*)0)
+    {
+    }
+
+    virtual void disconnect()
+    {
+    }
+
+    virtual int flush()
+    {
+        return 0;
+    }
+
 };
 
 class TestWorld : public BaseWorld {
   public:
     explicit TestWorld() : BaseWorld(*(LocatedEntity*)0) {
-        m_realTime = 100000;
     }
 
-    virtual bool idle(const SystemTime &) { return false; }
+    virtual bool idle() { return false; }
 
     virtual LocatedEntity * addEntity(LocatedEntity * ent) { 
         return 0;
@@ -117,7 +128,6 @@ Atlas::Objects::Operation::RootOperation stub_CommClient_sent_op(0);
 int main()
 {
     TestWorld world;
-    CommServer server;
 
     {
         Peer * p = new Peer(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
@@ -225,7 +235,7 @@ int main()
 
     // Authenticated
     {
-        TestCommClient client(server, "");
+        TestCommSocket client;
         Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
@@ -239,7 +249,7 @@ int main()
 
     // Re-teleport same entity
     {
-        TestCommClient client(server, "");
+        TestCommSocket client;
         Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
@@ -256,7 +266,7 @@ int main()
 
     // Character (no mind)
     {
-        TestCommClient client(server, "");
+        TestCommSocket client;
         Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
@@ -270,7 +280,7 @@ int main()
 
     // Character (externl mind, unconnected)
     {
-        TestCommClient client(server, "");
+        TestCommSocket client;
         Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
@@ -285,7 +295,7 @@ int main()
 
     // Character (externl mind, connected)
     {
-        TestCommClient client(server, "");
+        TestCommSocket client;
         Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
@@ -325,8 +335,8 @@ int main()
 
     // Empty arg, made up refno, not CommPeer
     {
-        TestCommClient *peerConn = new TestCommClient(*(CommServer*)0, "name");
-        Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        TestCommSocket client;
+        Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         Atlas::Objects::Operation::Info op;
         OpVector res;
@@ -340,8 +350,8 @@ int main()
 
     // Empty arg, made up refno
     {
-        CommPeer *peerConn = new CommPeer(*(CommServer*)0, "name");
-        Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        TestCommSocket client;
+        Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         Atlas::Objects::Operation::Info op;
         OpVector res;
@@ -355,8 +365,8 @@ int main()
 
     // Empty arg, refno that matches earlier teleport, not in world
     {
-        CommPeer *peerConn = new CommPeer(server, "name");
-        Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        TestCommSocket client;
+        Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
         
@@ -376,8 +386,8 @@ int main()
 
     // Empty arg, refno that matches earlier teleport, in world
     {
-        CommPeer *peerConn = new CommPeer(server, "name");
-        Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        TestCommSocket client;
+        Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
         
@@ -401,8 +411,8 @@ int main()
 
     // Empty arg, refno that matches earlier teleport, with mind
     {
-        CommPeer *peerConn = new CommPeer(server, "name");
-        Peer *p = new Peer(*peerConn, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        TestCommSocket client;
+        Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
         
@@ -436,7 +446,7 @@ int main()
 
     // One teleport to clear
     {
-        TestCommClient client(server, "");
+        TestCommSocket client;
         Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
@@ -453,7 +463,6 @@ int main()
 
 // stubs
 
-#include "server/CommServer.h"
 #include "server/TeleportState.h"
 
 #include "rulesets/Character.h"
@@ -469,7 +478,7 @@ int main()
 
 using Atlas::Message::MapType;
 
-TeleportState::TeleportState(time_t time) : m_state(TELEPORT_NONE),
+TeleportState::TeleportState(std::chrono::steady_clock::time_point time) : m_state(TELEPORT_NONE),
                                             m_teleportTime(time)
 {
 }
@@ -489,16 +498,10 @@ void TeleportState::setKey(const std::string & key)
     m_possessKey = key;
 }
 
-CommServer::CommServer() : m_congested(false)
-{
-}
 
-CommServer::~CommServer()
-{
-}
-
-CommPeer::CommPeer(CommServer & svr, const std::string & n) :
-      CommClient<tcp_socket_stream>(svr, n)
+CommPeer::CommPeer(const std::string & name,
+        boost::asio::io_service& io_service) :
+        CommAsioClient<boost::asio::ip::tcp>(name, io_service), m_auth_timer(io_service)
 {
 }
 
@@ -506,19 +509,7 @@ CommPeer::~CommPeer()
 {
 }
 
-bool CommPeer::eof()
-{
-    return false;
-}
-
-void CommPeer::idle(time_t t)
-{
-}
-
-template class CommStreamClient<tcp_socket_stream>;
-template class CommClient<tcp_socket_stream>;
-
-CommSocket::CommSocket(CommServer & svr) : m_commServer(svr) { }
+CommSocket::CommSocket(boost::asio::io_service& io_service) : m_io_service(io_service) { }
 
 CommSocket::~CommSocket()
 {
@@ -527,14 +518,6 @@ CommSocket::~CommSocket()
 int CommSocket::flush()
 {
     return 0;
-}
-
-Idle::Idle(CommServer & svr) : m_idleManager(svr)
-{
-}
-
-Idle::~Idle()
-{
 }
 
 ExternalMind::ExternalMind(LocatedEntity & e) : Router(e.getId(), e.getIntId()),

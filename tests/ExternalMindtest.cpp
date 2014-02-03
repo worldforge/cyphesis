@@ -58,10 +58,9 @@ int stub_link_send_count = 0;
 class TestWorld : public BaseWorld {
   public:
     explicit TestWorld() : BaseWorld(*(LocatedEntity*)0) {
-        m_realTime = 100000;
     }
 
-    virtual bool idle(const SystemTime &) { return false; }
+    virtual bool idle() { return false; }
     virtual LocatedEntity * addEntity(LocatedEntity * ent) { 
         return 0;
     }
@@ -731,6 +730,11 @@ BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
 BaseWorld::~BaseWorld()
 {
     m_instance = 0;
+}
+
+double BaseWorld::getTime() const
+{
+    return 0;
 }
 
 void log(LogLevel lvl, const std::string & msg)

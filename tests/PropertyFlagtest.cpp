@@ -266,6 +266,11 @@ BaseWorld::~BaseWorld()
     m_instance = 0;
 }
 
+double BaseWorld::getTime() const
+{
+    return 0;
+}
+
 LocatedEntity * BaseWorld::getEntity(const std::string & id) const
 {
     return 0;

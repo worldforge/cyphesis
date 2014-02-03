@@ -206,10 +206,9 @@ using Atlas::Objects::Entity::RootEntity;
 
 struct OpQueEntry {
     Operation op;
-    Entity & from;
+    LocatedEntity* from;
 
-    explicit OpQueEntry(const Operation & o, Entity & f);
-    OpQueEntry(const OpQueEntry & o);
+    explicit OpQueEntry(const Operation & o, LocatedEntity & f);
     ~OpQueEntry();
 
     const Operation & operator*() const {
@@ -219,21 +218,25 @@ struct OpQueEntry {
     Atlas::Objects::Operation::RootOperationData * operator->() const {
         return op.get();
     }
+
+    bool operator<(const OpQueEntry& right) const {
+        return op->getSeconds() < right->getSeconds();
+    }
+
+    bool operator>(const OpQueEntry& right) const {
+        return op->getSeconds() > right->getSeconds();
+    }
 };
 
-OpQueEntry::OpQueEntry(const Operation & o, Entity & f) : op(o), from(f)
-{
-    from.incRef();
-}
 
-OpQueEntry::OpQueEntry(const OpQueEntry & o) : op(o.op), from(o.from)
+OpQueEntry::OpQueEntry(const Operation & o, LocatedEntity & f) : op(o), from(&f)
 {
-    from.incRef();
+    from->incRef();
 }
 
 OpQueEntry::~OpQueEntry()
 {
-    from.decRef();
+    from->decRef();
 }
 
 WorldRouter::WorldRouter(const SystemTime &) :
@@ -308,7 +311,7 @@ void WorldRouter::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-bool WorldRouter::idle(const SystemTime &)
+bool WorldRouter::idle()
 {
     return false;
 }

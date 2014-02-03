@@ -64,49 +64,20 @@ void TestLink::operation(const Operation&, OpVector&)
 class TestCommSocket : public CommSocket
 {
   public:
-    explicit TestCommSocket(CommServer & svr);
+    explicit TestCommSocket(boost::asio::io_service & svr);
 
     virtual ~TestCommSocket();
 
-    virtual int getFd() const;
-    virtual bool isOpen() const;
-    virtual bool eof();
-    virtual int read();
-    virtual void dispatch();
     virtual void disconnect();
     virtual int flush();
 
 };
 
-TestCommSocket::TestCommSocket(CommServer & svr) : CommSocket(svr)
+TestCommSocket::TestCommSocket(boost::asio::io_service & svr) : CommSocket(svr)
 {
 }
 
 TestCommSocket::~TestCommSocket()
-{
-}
-
-int TestCommSocket::getFd() const
-{
-    return 0;
-}
-
-bool TestCommSocket::isOpen() const
-{
-    return false;
-}
-
-bool TestCommSocket::eof()
-{
-    return true;
-}
-
-int TestCommSocket::read()
-{
-    return 0;
-}
-
-void TestCommSocket::dispatch()
 {
 }
 
@@ -172,7 +143,7 @@ Linktest::Linktest()
 void Linktest::setup()
 {
     m_bridge = new Sink;
-    m_socket = new TestCommSocket(*(CommServer*)0);
+    m_socket = new TestCommSocket(*(boost::asio::io_service*)0);
     m_link = new TestLink(*m_socket, "1", 1);
     m_encoder = 0;
 }
@@ -278,7 +249,7 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 
-CommSocket::CommSocket(CommServer & svr) : m_commServer(svr) { }
+CommSocket::CommSocket(boost::asio::io_service & svr) : m_io_service(svr) { }
 
 CommSocket::~CommSocket()
 {

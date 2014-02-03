@@ -192,16 +192,6 @@ void output_element(std::ostream & out, const Element & item, int depth)
 {
 }
 
-int socket_linger(SOCKET_TYPE, int)
-{
-    return 0;
-}
-
-int socket_client_send_credentials(int fd)
-{
-    return 0;
-}
-
 ClientTask::ClientTask() : m_complete(false)
 {
 }

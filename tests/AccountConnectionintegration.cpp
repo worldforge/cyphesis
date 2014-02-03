@@ -27,8 +27,6 @@
 #include "TestWorld.h"
 #include "null_stream.h"
 
-#include "server/CommClient.h"
-#include "server/CommServer.h"
 #include "server/Connection.h"
 #include "server/Lobby.h"
 #include "server/Player.h"
@@ -40,6 +38,7 @@
 
 #include "common/id.h"
 #include "common/TypeNode.h"
+#include "common/CommSocket.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
@@ -87,9 +86,22 @@ class SpawningTestWorld : public TestWorld {
     }
 };
 
-class TestCommClient : public CommClient<null_stream> {
+class TestCommSocket : public CommSocket
+{
   public:
-    TestCommClient(CommServer & cs) : CommClient<null_stream>(cs, "") { }
+    TestCommSocket() : CommSocket(*(boost::asio::io_service*)0)
+    {
+    }
+
+    virtual void disconnect()
+    {
+    }
+
+    virtual int flush()
+    {
+        return 0;
+    }
+
 };
 
 class AccountConnectionintegration : public Cyphesis::TestBase {
@@ -97,7 +109,6 @@ class AccountConnectionintegration : public Cyphesis::TestBase {
     Entity * m_tlve;
     BaseWorld * m_world;
     ServerRouting * m_server;
-    CommServer * m_cs;
     Connection * m_connection;
   public:
     AccountConnectionintegration();
@@ -124,8 +135,7 @@ void AccountConnectionintegration::setup()
                                  "testrules",
                                  "testname",
                                  "1", 1, "2", 2);
-    m_cs = new CommServer;
-    m_connection = new Connection(*new TestCommClient(*m_cs),
+    m_connection = new Connection(*new TestCommSocket(),
                                   *m_server,
                                   "test_addr",
                                   "3", 3);
@@ -134,7 +144,6 @@ void AccountConnectionintegration::setup()
 void AccountConnectionintegration::teardown()
 {
     delete m_connection;
-    delete m_cs;
     delete m_server;
     delete m_world;
 }
@@ -261,7 +270,6 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
     return 0;
 }
 
-#include "server/CommClient.h"
 #include "rulesets/ExternalMind.h"
 #include "rulesets/ExternalProperty.h"
 #include "server/Juncture.h"
@@ -296,23 +304,7 @@ const char * const CYPHESIS = "cyphesisAccountConnectionintegration";
 int timeoffset = 0;
 std::string instance(CYPHESIS);
 
-CommServer::CommServer() : m_congested(false)
-{
-}
-
-CommServer::~CommServer()
-{
-}
-
-Idle::Idle(CommServer & svr) : m_idleManager(svr)
-{
-}
-
-Idle::~Idle()
-{
-}
-
-CommSocket::CommSocket(CommServer & svr) : m_commServer(svr) { }
+CommSocket::CommSocket(boost::asio::io_service & svr) : m_io_service(svr) { }
 
 CommSocket::~CommSocket()
 {
@@ -382,7 +374,6 @@ ExternalProperty * ExternalProperty::copy() const
 Juncture::Juncture(Connection * c,
                    const std::string & id, long iid) :
           ConnectableRouter(id, iid, c),
-                                                       m_socket(0),
                                                        m_peer(0)
 {
 }

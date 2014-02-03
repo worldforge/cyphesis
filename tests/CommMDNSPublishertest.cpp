@@ -28,8 +28,10 @@
 #endif
 
 #include "server/CommMDNSPublisher.h"
-#include "server/CommServer.h"
 #include "server/ServerRouting.h"
+
+#include "common/CommSocket.h"
+#include "common/BaseWorld.h"
 
 #include <cassert>
 
@@ -39,8 +41,6 @@ int main()
 }
 #else // HAVE_AVAHI
     ServerRouting test_server(*(BaseWorld*)0, "", "", "1", 1, "2", 2);
-    CommServer test_comm_server;
-
     {
 
     }
@@ -101,15 +101,14 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 
-CommServer::CommServer() : m_congested(false)
+
+double BaseWorld::getTime() const
 {
+    return .0;
 }
 
-CommServer::~CommServer()
-{
-}
 
-CommSocket::CommSocket(CommServer & svr) : m_commServer(svr) { }
+CommSocket::CommSocket(boost::asio::io_service & svr) : m_io_service(svr) { }
 
 CommSocket::~CommSocket()
 {
@@ -118,14 +117,6 @@ CommSocket::~CommSocket()
 int CommSocket::flush()
 {
     return 0;
-}
-
-Idle::Idle(CommServer & svr) : m_idleManager(svr)
-{
-}
-
-Idle::~Idle()
-{
 }
 
 void log(LogLevel lvl, const std::string & msg)

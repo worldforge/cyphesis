@@ -30,13 +30,13 @@
 int main()
 {
     {
-        TeleportState * ts = new TeleportState(0);
+        TeleportState * ts = new TeleportState(std::chrono::steady_clock::now());
 
         delete ts;
     }
 
     {
-        int create_time = 23;
+        auto create_time = std::chrono::steady_clock::now() + std::chrono::seconds(23);
 
         TeleportState * ts = new TeleportState(create_time);
 
@@ -46,7 +46,7 @@ int main()
     }
 
     {
-        TeleportState * ts = new TeleportState(0);
+        TeleportState * ts = new TeleportState(std::chrono::steady_clock::now());
 
         assert(!ts->isCreated());
         ts->setCreated();
@@ -56,7 +56,7 @@ int main()
     }
 
     {
-        TeleportState * ts = new TeleportState(0);
+        TeleportState * ts = new TeleportState(std::chrono::steady_clock::now());
 
         assert(!ts->isRequested());
         ts->setRequested();
@@ -66,7 +66,7 @@ int main()
     }
 
     {
-        TeleportState * ts = new TeleportState(0);
+        TeleportState * ts = new TeleportState(std::chrono::steady_clock::now());
         std::string test_key_val("whsiehibsfw");
 
         assert(ts->getPossessKey().empty());

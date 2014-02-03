@@ -534,6 +534,11 @@ LocatedEntity * BaseWorld::getEntity(long id) const
     return 0;
 }
 
+double BaseWorld::getTime() const
+{
+    return 0;
+}
+
 Location::Location() : m_loc(0)
 {
 }

@@ -874,7 +874,6 @@ class World;
 Juncture::Juncture(Connection * c, const std::string & id, long iid) :
           ConnectableRouter(id, iid, c),
           m_address(0),
-          m_socket(0),
           m_peer(0),
           m_connectRef(0)
 {

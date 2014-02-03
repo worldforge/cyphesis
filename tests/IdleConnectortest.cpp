@@ -38,13 +38,14 @@ static void trigger()
 
 int main()
 {
-    IdleConnector * ic = new IdleConnector(*(CommServer*)0);
+    boost::asio::io_service s;
+    IdleConnector * ic = new IdleConnector(s);
 
     ic->idling.connect(sigc::ptr_fun(trigger));
 
     assert(!trigger_called);
 
-    ic->idle(0);
+    s.run_one();
 
     assert(trigger_called);
 
@@ -55,10 +56,3 @@ int main()
 
 // stubs
 
-Idle::Idle(CommServer & svr) : m_idleManager(svr)
-{
-}
-
-Idle::~Idle()
-{
-}

@@ -75,25 +75,23 @@ CLIENT_TESTS = Py_CreatorClienttest Py_ObserverClienttest \
 CLIENT_INTEGRATION_TESTS = ClientConnectionintegration
 
 SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
-               CommServertest Accounttest Admintest Playertest buildidtest \
+               Accounttest Admintest Playertest buildidtest \
                EntityFactorytest TaskFactorytest Connectiontest \
                TrustedConnectiontest WorldRoutertest Peertest Lobbytest \
                Spawntest SpawnEntitytest ArithmeticBuildertest \
-               ServerRoutingtest Idletest \
-               StorageManagertest HttpCachetest UpdateTestertest \
+               ServerRoutingtest \
+               StorageManagertest HttpCachetest \
                ServerAccounttest TeleportAuthenticatortest \
                TeleportStatetest PendingTeleporttest Juncturetest \
                ConnectableRoutertest RuleHandlertest OpRuleHandlertest \
                EntityRuleHandlertest TaskRuleHandlertest \
                PropertyRuleHandlertest \
                IdleConnectortest CommPSQLSockettest \
-               CommPythonClientFactorytest \
                Persistencetest \
-               SystemAccounttest TCPListenFactorytest CorePropertyManagertest
+               SystemAccounttest CorePropertyManagertest
 
-SERVER_COMM_TESTS = CommHttpClienttest CommPeertest \
-                    CommMDNSPublishertest \
-                    CommHttpClientFactorytest
+SERVER_COMM_TESTS = CommPeertest \
+                    CommMDNSPublishertest
 
 SERVER_INTEGRATION_TESTS = WorldRouterintegration Rulesetintegration \
                            Accountintegration \
@@ -1107,11 +1105,11 @@ Py_ObserverClienttest_LDADD = \
 
 ClientConnectiontest_SOURCES = ClientConnectiontest.cpp
 ClientConnectiontest_LDADD = \
-        $(top_builddir)/client/ClientConnection.o
+        $(top_builddir)/client/ClientConnection.o $(NETWORK_LIBS)
 
 BaseClienttest_SOURCES = BaseClienttest.cpp
 BaseClienttest_LDADD = \
-        $(top_builddir)/client/BaseClient.o
+        $(top_builddir)/client/BaseClient.o $(NETWORK_LIBS)
 
 ClientPropertyManagertest_SOURCES = ClientPropertyManagertest.cpp
 ClientPropertyManagertest_LDADD = \
@@ -1144,10 +1142,6 @@ PropertyFlagtest_LDADD = \
         $(top_builddir)/rulesets/Entity.o \
         $(top_builddir)/rulesets/LocatedEntity.o \
         $(top_builddir)/common/Property.o
-
-CommServertest_SOURCES = CommServertest.cpp
-CommServertest_LDADD = \
-        $(top_builddir)/server/CommServer.o
 
 Accounttest_SOURCES = Accounttest.cpp
 Accounttest_LDADD = \
@@ -1198,8 +1192,7 @@ WorldRoutertest_LDADD = \
         $(top_builddir)/server/WorldRouter.o
 
 Peertest_SOURCES = \
-        Peertest.cpp \
-        CommClient_null_stream.cpp
+        Peertest.cpp 
 Peertest_LDADD = \
         $(top_builddir)/server/Peer.o \
         $(NETWORK_LIBS)
@@ -1222,10 +1215,6 @@ ServerRoutingtest_SOURCES = ServerRoutingtest.cpp
 ServerRoutingtest_LDADD = \
         $(top_builddir)/server/ServerRouting.o
 
-Idletest_SOURCES = Idletest.cpp
-Idletest_LDADD = \
-        $(top_builddir)/server/Idle.o
-
 StorageManagertest_SOURCES = StorageManagertest.cpp
 StorageManagertest_LDADD = \
         $(top_builddir)/server/StorageManager.o
@@ -1234,10 +1223,6 @@ HttpCachetest_SOURCES = HttpCachetest.cpp
 HttpCachetest_LDADD = \
         $(top_builddir)/server/HttpCache.o
 
-UpdateTestertest_SOURCES = UpdateTestertest.cpp
-UpdateTestertest_LDADD = \
-        $(top_builddir)/server/UpdateTester.o
-
 # SERVER_COMM_TESTS
 
 CommPeertest_SOURCES = CommPeertest.cpp
@@ -1245,19 +1230,9 @@ CommPeertest_LDADD = \
         $(top_builddir)/server/CommPeer.o \
         $(NETWORK_LIBS)
 
-CommHttpClienttest_SOURCES = CommHttpClienttest.cpp
-CommHttpClienttest_LDADD = \
-        $(top_builddir)/server/CommHttpClient.o \
-        $(NETWORK_LIBS)
-
 CommMDNSPublishertest_SOURCES = CommMDNSPublishertest.cpp
 CommMDNSPublishertest_LDADD = \
-        $(top_builddir)/server/CommMDNSPublisher.o
-
-CommHttpClientFactorytest_SOURCES = CommHttpClientFactorytest.cpp
-CommHttpClientFactorytest_LDADD = \
-        $(top_builddir)/server/CommHttpClientFactory.o \
-        $(NETWORK_LIBS)
+        $(top_builddir)/server/CommMDNSPublisher.o $(NETWORK_LIBS)
 
 TeleportAuthenticatortest_SOURCES = TeleportAuthenticatortest.cpp
 TeleportAuthenticatortest_LDADD = \
@@ -1304,17 +1279,11 @@ PropertyRuleHandlertest_LDADD = \
 
 IdleConnectortest_SOURCES = IdleConnectortest.cpp
 IdleConnectortest_LDADD = \
-        $(top_builddir)/server/IdleConnector.o
+        $(top_builddir)/server/IdleConnector.o $(NETWORK_LIBS)
 
 CommPSQLSockettest_SOURCES = CommPSQLSockettest.cpp
 CommPSQLSockettest_LDADD = \
-        $(top_builddir)/server/CommPSQLSocket.o
-
-CommPythonClientFactorytest_SOURCES = \
-        CommPythonClientFactorytest.cpp
-CommPythonClientFactorytest_LDADD = \
-        $(top_builddir)/server/CommPythonClientFactory.o \
-        $(NETWORK_LIBS)
+        $(top_builddir)/server/CommPSQLSocket.o $(NETWORK_LIBS)
 
 Persistencetest_SOURCES = Persistencetest.cpp
 Persistencetest_LDADD = \
@@ -1323,11 +1292,6 @@ Persistencetest_LDADD = \
 SystemAccounttest_SOURCES = SystemAccounttest.cpp
 SystemAccounttest_LDADD = \
         $(top_builddir)/server/SystemAccount.o
-
-TCPListenFactorytest_SOURCES = TCPListenFactorytest.cpp
-TCPListenFactorytest_LDADD = \
-        $(top_builddir)/server/TCPListenFactory.o \
-        $(NETWORK_LIBS)
 
 CorePropertyManagertest_SOURCES = CorePropertyManagertest.cpp
 CorePropertyManagertest_LDADD = \
@@ -1494,7 +1458,7 @@ Mastertest_LDADD = \
 
 AdminClienttest_SOURCES = AdminClienttest.cpp
 AdminClienttest_LDADD = \
-        $(top_builddir)/tools/AdminClient.o
+        $(top_builddir)/tools/AdminClient.o $(NETWORK_LIBS)
 
 Flushertest_SOURCES = Flushertest.cpp
 Flushertest_LDADD = \

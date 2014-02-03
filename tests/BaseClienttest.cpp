@@ -138,8 +138,7 @@ MemMap::MemMap(Script *& s) : m_checkIterator(m_entities.begin()), m_script(s)
 }
 
 AtlasStreamClient::AtlasStreamClient() : reply_flag(false), error_flag(false),
-                                         serialNo(512), m_fd(-1), m_encoder(0),
-                                         m_codec(0), m_ios(0), m_currentTask(0)
+                                         serialNo(512), m_currentTask(0)
 {
 }
 

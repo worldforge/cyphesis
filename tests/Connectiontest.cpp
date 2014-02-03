@@ -29,8 +29,6 @@
 #include "server/Connection.h"
 
 #include "server/Account.h"
-#include "server/CommClient.h"
-#include "server/CommServer.h"
 #include "rulesets/ExternalMind.h"
 #include "rulesets/ExternalProperty.h"
 #include "server/Lobby.h"
@@ -43,6 +41,7 @@
 #include "common/Inheritance.h"
 #include "common/log.h"
 #include "common/SystemTime.h"
+#include "common/CommSocket.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
@@ -64,17 +63,29 @@ using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Operation::Logout;
 using Atlas::Objects::Operation::Move;
 
-class TestCommClient : public CommClient<null_stream> {
+class TestCommSocket : public CommSocket
+{
   public:
-    TestCommClient(CommServer & cs) : CommClient<null_stream>(cs, "") { }
+    TestCommSocket() : CommSocket(*(boost::asio::io_service*)0)
+    {
+    }
+
+    virtual void disconnect()
+    {
+    }
+
+    virtual int flush()
+    {
+        return 0;
+    }
+
 };
 
 class Connectiontest : public Cyphesis::TestBase
 {
   private:
     ServerRouting * m_server;
-    CommServer * m_commServer;
-    CommClient<null_stream> * m_tcc;
+    CommSocket * m_tcc;
     Connection * m_connection;
 
     static bool Router_error_called;
@@ -151,9 +162,7 @@ void Connectiontest::setup()
     m_server = new ServerRouting(*(BaseWorld*)0, "noruleset", "unittesting",
                                  "1", 1, "2", 2);
                          
-    m_commServer = new CommServer;
-
-    m_tcc = new TestCommClient(*m_commServer);
+    m_tcc = new TestCommSocket();
     m_connection = new Connection(*m_tcc, *m_server, "addr", "3", 3);
 }
 
@@ -448,7 +457,7 @@ void Connectiontest::test_disconnectAccount_others_used_Character()
     RouterMap::iterator I = m_connection-> m_objects.find(ac->getIntId());
     assert(I != m_connection->m_objects.end());
 
-    CommClient<null_stream> * otcc = new TestCommClient(*m_commServer);
+    CommSocket * otcc = new TestCommSocket();
     Connection * other_con = new Connection(*otcc, *m_server, "addr", "6", 6);
 
     Character * avatar = new Character("5", 5);
@@ -540,24 +549,7 @@ namespace Atlas { namespace Objects { namespace Operation {
 int UPDATE_NO = -1;
 } } }
 
-
-CommServer::CommServer() : m_congested(false)
-{
-}
-
-CommServer::~CommServer()
-{
-}
-
-Idle::Idle(CommServer & svr) : m_idleManager(svr)
-{
-}
-
-Idle::~Idle()
-{
-}
-
-CommSocket::CommSocket(CommServer & svr) : m_commServer(svr) { }
+CommSocket::CommSocket(boost::asio::io_service & svr) : m_io_service(svr) { }
 
 CommSocket::~CommSocket()
 {

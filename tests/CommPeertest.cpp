@@ -25,7 +25,6 @@
 
 #include "server/CommPeer.h"
 
-#include "server/CommServer.h"
 #include "server/ServerRouting.h"
 #include "server/Peer.h"
 
@@ -75,7 +74,7 @@ class TestNegotiate : public Atlas::Negotiate
 class TestCommPeer : public CommPeer
 {
   public:
-    TestCommPeer(CommServer & svr) : CommPeer(svr, "")
+    TestCommPeer(boost::asio::io_service & svr) : CommPeer("", svr)
     {
     }
 
@@ -87,30 +86,6 @@ class TestCommPeer : public CommPeer
         m_negotiate = new TestNegotiate(state);
     }
 
-    void test_openSocket()
-    {
-        int fds[2];
-        if (socketpair(AF_UNIX, SOCK_STREAM, 0, &fds[0]) != 0) {
-            exit(1);
-        }
-
-        m_clientIos.setSocket(fds[0]);
-
-        pid_t p = fork();
-        if (p == -1) {
-            exit(1);
-        }
-        if (p == 0) {
-            char buf[1];
-            while(::read(fds[1], &buf[0], 1) == 1);
-            exit(0);
-        }
-    }
-
-    void test_setConnectTime(time_t t)
-    {
-        m_connectTime = t;
-    }
 };
 
 class TestPeer : public Peer
@@ -127,18 +102,19 @@ int main()
                          "1", 1,
                          "2", 2);
 
-    CommServer comm_server;
-
+    boost::asio::io_service comm_server;
     {
         TestCommPeer * cs = new TestCommPeer(comm_server);
 
+        comm_server.poll();
         delete cs;
     }
 
     {
         TestCommPeer * cs = new TestCommPeer(comm_server);
 
-        cs->idle(reference_seconds);
+        cs->test_setNegotiateState(Atlas::Negotiate::SUCCEEDED);
+        comm_server.poll();
 
         delete cs;
     }
@@ -147,18 +123,7 @@ int main()
         TestCommPeer * cs = new TestCommPeer(comm_server);
 
         cs->test_setNegotiateState(Atlas::Negotiate::SUCCEEDED);
-
-        cs->idle(reference_seconds);
-
-        delete cs;
-    }
-
-    {
-        TestCommPeer * cs = new TestCommPeer(comm_server);
-
-        cs->test_setNegotiateState(Atlas::Negotiate::SUCCEEDED);
-
-        cs->idle(reference_seconds + 20);
+        comm_server.poll();
 
         delete cs;
     }
@@ -167,8 +132,7 @@ int main()
         TestCommPeer * cs = new TestCommPeer(comm_server);
 
         cs->setup(new TestPeer(*cs, server));
-
-        cs->idle(reference_seconds);
+        comm_server.poll();
 
         delete cs;
     }
@@ -179,8 +143,7 @@ int main()
         TestPeer * tr = new TestPeer(*cs, server);
         cs->setup(tr);
         tr->setAuthState(PEER_AUTHENTICATED);
-
-        cs->idle(reference_seconds);
+        comm_server.poll();
 
         delete cs;
     }
@@ -191,8 +154,7 @@ int main()
         TestPeer * tr = new TestPeer(*cs, server);
         cs->setup(tr);
         tr->setAuthState(PEER_FAILED);
-
-        cs->idle(reference_seconds);
+        comm_server.poll();
 
         delete cs;
     }
@@ -202,15 +164,9 @@ int main()
 
 // Stub functions
 
-#include "CommClient_stub_impl.h"
-#include "CommStreamClient_stub_impl.h"
-
 #include <Atlas/Net/Stream.h>
 
-template class CommStreamClient<tcp_socket_stream>;
-template class CommClient<tcp_socket_stream>;
-
-CommSocket::CommSocket(CommServer & svr) : m_commServer(svr) { }
+CommSocket::CommSocket(boost::asio::io_service & svr) : m_io_service(svr) { }
 
 CommSocket::~CommSocket()
 {
@@ -219,14 +175,6 @@ CommSocket::~CommSocket()
 int CommSocket::flush()
 {
     return 0;
-}
-
-Idle::Idle(CommServer & svr) : m_idleManager(svr)
-{
-}
-
-Idle::~Idle()
-{
 }
 
 void log(LogLevel, const std::string & msg)
@@ -261,14 +209,6 @@ void ServerRouting::externalOperation(const Operation & op, Link &)
 }
 
 void ServerRouting::operation(const Operation &, OpVector &)
-{
-}
-
-CommServer::CommServer() : m_congested(false)
-{
-}
-
-CommServer::~CommServer()
 {
 }
 

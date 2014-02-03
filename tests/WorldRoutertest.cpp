@@ -796,6 +796,12 @@ LocatedEntity * BaseWorld::getEntity(long id) const
     }
 }
 
+
+double BaseWorld::getTime() const
+{
+    return 0;
+}
+
 Inheritance * Inheritance::m_instance = NULL;
 
 Inheritance::Inheritance() : noClass(0)

@@ -50,10 +50,9 @@ int stub_connection_send_count = 0;
 class TestWorld : public BaseWorld {
   public:
     explicit TestWorld() : BaseWorld(*(LocatedEntity*)0) {
-        m_realTime = 100000;
     }
 
-    virtual bool idle(const SystemTime &) { return false; }
+    virtual bool idle() { return false; }
 
     virtual LocatedEntity * addEntity(LocatedEntity * ent) { 
         return 0;

@@ -501,6 +501,11 @@ LocatedEntity * BaseWorld::getEntity(long id) const
     }
 }
 
+double BaseWorld::getTime() const
+{
+    return 0;
+}
+
 void Location::addToMessage(MapType & omap) const
 {
 }

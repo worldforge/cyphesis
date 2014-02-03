@@ -27,7 +27,6 @@
 
 #include "server/Lobby.h"
 
-#include "server/CommClient.h"
 #include "server/Connection.h"
 #include "server/Account.h"
 

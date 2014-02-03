@@ -25,9 +25,7 @@
 
 #include "TestBase.h"
 
-#include "server/CommServer.h"
 #include "server/Connection.h"
-#include "server/Idle.h"
 #include "server/ServerRouting.h"
 #include "rulesets/ExternalMind.h"
 #include "rulesets/ExternalProperty.h"
@@ -125,23 +123,8 @@ int UPDATE_NO = -1;
 } } }
 
 
-CommServer::CommServer() : m_congested(false)
-{
-}
 
-CommServer::~CommServer()
-{
-}
-
-Idle::Idle(CommServer & svr) : m_idleManager(svr)
-{
-}
-
-Idle::~Idle()
-{
-}
-
-CommSocket::CommSocket(CommServer & svr) : m_commServer(svr) { }
+CommSocket::CommSocket(boost::asio::io_service & svr) : m_io_service(svr) { }
 
 CommSocket::~CommSocket()
 {

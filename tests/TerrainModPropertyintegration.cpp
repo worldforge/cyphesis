@@ -42,10 +42,9 @@ using Atlas::Objects::Operation::Move;
 class TestWorld : public BaseWorld {
   public:
     explicit TestWorld(LocatedEntity& e) : BaseWorld(e) {
-        m_realTime = 100000;
     }
 
-    virtual bool idle(const SystemTime &) { return false; }
+    virtual bool idle() { return false; }
     virtual LocatedEntity * addEntity(LocatedEntity * ent) {
         return 0;
     }

@@ -60,3 +60,5 @@ int main()
 void log(LogLevel lvl, const std::string & msg)
 {
 }
+
+int timeoffset = 0;

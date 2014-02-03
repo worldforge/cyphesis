@@ -279,8 +279,6 @@ int main()
 
 // stubs
 
-#include "server/CommServer.h"
-#include "server/Idle.h"
 #include "server/Lobby.h"
 #include "server/Player.h"
 
@@ -367,23 +365,7 @@ void Movement::reset()
 {
 }
 
-CommServer::CommServer() : m_congested(false)
-{
-}
-
-CommServer::~CommServer()
-{
-}
-
-Idle::Idle(CommServer & svr) : m_idleManager(svr)
-{
-}
-
-Idle::~Idle()
-{
-}
-
-CommSocket::CommSocket(CommServer & svr) : m_commServer(svr) { }
+CommSocket::CommSocket(boost::asio::io_service & svr) : m_io_service(svr) { }
 
 CommSocket::~CommSocket()
 {
@@ -1312,6 +1294,11 @@ BaseWorld::~BaseWorld()
 {
     m_instance = 0;
     delete &m_gameWorld;
+}
+
+double BaseWorld::getTime() const
+{
+    return .0;
 }
 
 LocatedEntity * BaseWorld::getEntity(const std::string & id) const

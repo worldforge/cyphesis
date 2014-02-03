@@ -127,6 +127,7 @@ Please see http://www.boost.org/ for details of how to download and install
 Boost.])
     ]
 )
+NETWORK_LIBS="$NETWORK_LIBS -lboost_system"
 AC_CHECK_LIB(boost_system, main, , [
 	AC_MSG_ERROR("Linking against boost::system library failed.")
 ])

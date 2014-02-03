@@ -194,7 +194,6 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "Property_stub_impl.h"
 
 #include "server/ArithmeticBuilder.h"
-#include "server/CommServer.h"
 #include "server/EntityFactory.h"
 #include "server/Juncture.h"
 #include "server/Persistence.h"
@@ -366,12 +365,6 @@ ArithmeticScript * ArithmeticBuilder::newArithmetic(const std::string & name,
                                                     LocatedEntity * owner)
 {
     return 0;
-}
-
-CommServer::CommServer() : m_epollFd(-1),
-                           m_congested(false),
-                           m_tick(0)
-{
 }
 
 ConnectableRouter::ConnectableRouter(const std::string & id,
@@ -1932,7 +1925,7 @@ bool_config_register::bool_config_register(bool & var,
 {
 }
 
-CommSocket::CommSocket(CommServer & svr) : m_commServer(svr) { }
+CommSocket::CommSocket(boost::asio::io_service & svr) : m_io_service(svr) { }
 
 CommSocket::~CommSocket()
 {

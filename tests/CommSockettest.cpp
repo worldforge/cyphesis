@@ -30,31 +30,7 @@
 class TestCommSocket : public CommSocket
 {
   public:
-    TestCommSocket() : CommSocket(*(CommServer*)0)
-    {
-    }
-
-    virtual int getFd() const
-    {
-        return -1;
-    }
-
-    virtual bool isOpen() const
-    {
-        return true;
-    }
-
-    virtual bool eof()
-    {
-        return false;
-    }
-
-    virtual int read()
-    {
-        return 0;
-    }
-
-    virtual void dispatch()
+    TestCommSocket() : CommSocket(*(boost::asio::io_service*)0)
     {
     }
 

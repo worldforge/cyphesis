@@ -41,7 +41,7 @@ class TestWorld : public BaseWorld {
     explicit TestWorld(LocatedEntity & w) : BaseWorld(w) {
     }
 
-    virtual bool idle(const SystemTime &) { return false; }
+    virtual bool idle() { return false; }
     virtual LocatedEntity * addEntity(LocatedEntity * ent) { 
         return 0;
     }
@@ -436,6 +436,11 @@ LocatedEntity * BaseWorld::getEntity(const std::string & id) const
 }
 
 LocatedEntity * BaseWorld::getEntity(long id) const
+{
+    return 0;
+}
+
+double BaseWorld::getTime() const
 {
     return 0;
 }

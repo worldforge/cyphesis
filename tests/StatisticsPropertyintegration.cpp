@@ -54,7 +54,7 @@ class ArithmeticTestWorld : public BaseWorld {
     explicit ArithmeticTestWorld(LocatedEntity & gw) : BaseWorld(gw) {
     }
 
-    virtual bool idle(const SystemTime &) { return false; }
+    virtual bool idle() { return false; }
     virtual LocatedEntity * addEntity(LocatedEntity * ent) { 
         m_eobjects[ent->getIntId()] = ent;
         return 0;

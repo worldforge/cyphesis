@@ -34,14 +34,11 @@ int main()
 
 // stubs
 
-#include "server/CommServer.h"
-#include "server/IdlePSQLConnector.h"
-
 #include "common/log.h"
 #include "common/Database.h"
 #include "common/globals.h"
 
-CommSocket::CommSocket(CommServer & svr) : m_commServer(svr) { }
+CommSocket::CommSocket(boost::asio::io_service & svr) : m_io_service(svr) { }
 
 CommSocket::~CommSocket()
 {
@@ -52,23 +49,7 @@ int CommSocket::flush()
     return 0;
 }
 
-Idle::Idle(CommServer & svr) : m_idleManager(svr)
-{
-}
-
-Idle::~Idle()
-{
-}
-
 void log(LogLevel, const std::string & msg)
-{
-}
-
-CommServer::CommServer() : m_congested(false)
-{
-}
-
-CommServer::~CommServer()
 {
 }
 
@@ -80,6 +61,10 @@ int Database::runMaintainance(int command)
 int Database::launchNewQuery()
 {
     return 0;
+}
+
+int Database::initConnection()
+{
 }
 
 void Database::queryResult(ExecStatusType status)
@@ -95,19 +80,6 @@ void Database::reportError()
 }
 
 void Database::shutdownConnection()
-{
-}
-
-IdlePSQLConnector::IdlePSQLConnector(CommServer & svr, Database & db) :
-                   Idle(svr), m_db(db)
-{
-}
-
-IdlePSQLConnector::~IdlePSQLConnector()
-{
-}
-
-void IdlePSQLConnector::idle(time_t time)
 {
 }
 
