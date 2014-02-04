@@ -456,7 +456,10 @@ int main(int argc, char ** argv)
     bool soft_exit_in_progress = false;
     time_t soft_exit_deadline = 0;
 
+    //This timer is used to wake the io_service when next op needs to be handled.
     boost::asio::deadline_timer nextOpTimer(io_service);
+    //This timer will set a deadline for any mind persistence during soft exits.
+    boost::asio::deadline_timer softExitTimer(io_service);
     // Loop until the exit flag is set. The exit flag can be set anywhere in
     // the code easily.
     while (!exit_flag) {
@@ -488,7 +491,7 @@ int main(int argc, char ** argv)
                     do {
                         io_service.run_one();
                     } while (!world->isQueueDirty() && !nextOpTimeExpired &&
-                            !exit_flag_soft && !exit_flag);
+                            !exit_flag_soft && !exit_flag && !soft_exit_in_progress);
                     nextOpTimer.cancel();
                 }
             }
@@ -498,31 +501,31 @@ int main(int argc, char ** argv)
                 if (store->numberOfOutstandingThoughtRequests() == 0) {
                     log(NOTICE, "All entity thoughts were persisted.");
                     exit_flag = true;
-                }
-                if (time.seconds() + time.microseconds()
-                        >= soft_exit_deadline) {
-                    log(WARNING,
-                            "Waiting for persisting thoughts timed out. This might "
-                                    "lead to lost entity thoughts.");
-                    exit_flag = true;
+                    softExitTimer.cancel();
                 }
             } else if (exit_flag_soft) {
                 exit_flag_soft = false;
                 soft_exit_in_progress = true;
-                //Set a deadline for five seconds.
-                static const time_t mind_persistence_deadline = 5;
                 size_t requestNumber = store->requestMinds(
                         world->getEntities());
                 log(INFO,
                         String::compose(
                                 "Soft exit requested, persisting %1 minds.",
                                 requestNumber));
-                soft_exit_deadline = time.seconds() + time.microseconds()
-                        + (mind_persistence_deadline * 1000000L);
+                //Set a deadline for five seconds.
+                softExitTimer.expires_from_now(boost::posix_time::seconds(5));
+                softExitTimer.async_wait([&](boost::system::error_code ec){
+                    if (!ec) {
+                        log(WARNING,
+                                "Waiting for persisting thoughts timed out. This might "
+                                        "lead to lost entity thoughts.");
+                        exit_flag = true;
+                    }
+                });
                 log(NOTICE,
                         String::compose(
                                 "Deadline for mind persistence set to %1 seconds.",
-                                mind_persistence_deadline));
+                                5));
             }
             // It is hoped that commonly thrown exception, particularly
             // exceptions that can be caused  by external influences
