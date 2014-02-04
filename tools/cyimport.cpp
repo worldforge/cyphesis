@@ -154,6 +154,7 @@ int main(int argc, char ** argv)
                         return true;
                     };
 
+            std::cout << "Checking if world already is populated."  << std::endl << std::flush;
             EntityTraversalTask* populationCheck = new EntityTraversalTask(
                     accountId, visitor);
             bridge.runTask(populationCheck, "0");

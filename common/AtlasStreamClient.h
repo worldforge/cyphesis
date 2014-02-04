@@ -25,10 +25,13 @@
 #include <Atlas/Objects/ObjectsFwd.h>
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/SmartPtr.h>
+#include <Atlas/Objects/Operation.h>
 
 #include <boost/asio.hpp>
 
 #include <chrono>
+#include <functional>
+#include <list>
 
 namespace Atlas {
   class Codec;
@@ -39,7 +42,7 @@ class ClientTask;
 class StreamClientSocketBase
 {
     public:
-        StreamClientSocketBase(boost::asio::io_service& io_service);
+        StreamClientSocketBase(boost::asio::io_service& io_service, std::function<void()>& dispatcher);
         virtual ~StreamClientSocketBase();
 
         int negotiate(Atlas::Objects::ObjectsDecoder& decoder);
@@ -56,6 +59,7 @@ class StreamClientSocketBase
             read_buffer_size = 16384
         };
         boost::asio::io_service& m_io_service;
+        std::function<void()> mDispatcher;
 
         boost::asio::streambuf mBuffer;
         boost::asio::streambuf mReadBuffer;
@@ -71,7 +75,7 @@ class StreamClientSocketBase
 class TcpStreamClientSocket : public StreamClientSocketBase
 {
     public:
-        TcpStreamClientSocket(boost::asio::io_service& io_service, boost::asio::ip::tcp::endpoint endpoint);
+        TcpStreamClientSocket(boost::asio::io_service& io_service, std::function<void()>& dispatcher, boost::asio::ip::tcp::endpoint endpoint);
         virtual int write();
    protected:
         boost::asio::ip::tcp::socket m_socket;
@@ -82,7 +86,7 @@ class TcpStreamClientSocket : public StreamClientSocketBase
 class LocalStreamClientSocket : public StreamClientSocketBase
 {
     public:
-        LocalStreamClientSocket(boost::asio::io_service& io_service, boost::asio::local::stream_protocol::endpoint endpoint);
+        LocalStreamClientSocket(boost::asio::io_service& io_service, std::function<void()>& dispatcher, boost::asio::local::stream_protocol::endpoint endpoint);
         virtual int write();
     protected:
         boost::asio::local::stream_protocol::socket m_socket;
@@ -119,9 +123,12 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     /// \brief Stored error message from the last received Error operation
     std::string m_errorMessage;
 
+    std::list<Atlas::Objects::Operation::RootOperation> mOps;
+
     // void objectArrived(const Atlas::Objects::Root &);
     int waitForLoginResponse();
     int negotiate();
+    void dispatch();
 
     virtual void objectArrived(const Atlas::Objects::Root &);
 

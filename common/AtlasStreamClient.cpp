@@ -29,7 +29,6 @@
 #include <Atlas/Codec.h>
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Encoder.h>
-#include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Net/Stream.h>
 
@@ -54,8 +53,8 @@ using Atlas::Objects::Operation::RootOperation;
 using namespace boost::asio;
 
 
-StreamClientSocketBase::StreamClientSocketBase(boost::asio::io_service& io_service)
-: m_io_service(io_service), m_ios(&mBuffer), m_codec(nullptr), m_encoder(nullptr), m_is_connected(false)
+StreamClientSocketBase::StreamClientSocketBase(boost::asio::io_service& io_service, std::function<void()>& dispatcher)
+: m_io_service(io_service), mDispatcher(dispatcher), m_ios(&mBuffer), m_codec(nullptr), m_encoder(nullptr), m_is_connected(false)
 {
 }
 
@@ -134,8 +133,8 @@ int StreamClientSocketBase::poll(const boost::posix_time::ptime& expireTime)
 
 
 
-TcpStreamClientSocket::TcpStreamClientSocket(boost::asio::io_service& io_service, boost::asio::ip::tcp::endpoint endpoint)
-: StreamClientSocketBase(io_service), m_socket(io_service)
+TcpStreamClientSocket::TcpStreamClientSocket(boost::asio::io_service& io_service, std::function<void()>& dispatcher, boost::asio::ip::tcp::endpoint endpoint)
+: StreamClientSocketBase(io_service, dispatcher), m_socket(io_service)
 {
     m_socket.connect(endpoint);
     m_is_connected = true;
@@ -152,6 +151,7 @@ void TcpStreamClientSocket::do_read()
                     this->m_ios.rdbuf(&mReadBuffer);
                     m_codec->poll();
                     this->m_ios.rdbuf(&mBuffer);
+                    mDispatcher();
                     this->do_read();
                 }
             });
@@ -189,8 +189,8 @@ int TcpStreamClientSocket::write()
 
 
 
-LocalStreamClientSocket::LocalStreamClientSocket(boost::asio::io_service& io_service, boost::asio::local::stream_protocol::endpoint endpoint)
-: StreamClientSocketBase(io_service), m_socket(io_service)
+LocalStreamClientSocket::LocalStreamClientSocket(boost::asio::io_service& io_service, std::function<void()>& dispatcher, boost::asio::local::stream_protocol::endpoint endpoint)
+: StreamClientSocketBase(io_service, dispatcher), m_socket(io_service)
 {
     m_socket.connect(endpoint);
     m_is_connected = true;
@@ -207,6 +207,7 @@ void LocalStreamClientSocket::do_read()
                     this->m_ios.rdbuf(&mReadBuffer);
                     m_codec->poll();
                     this->m_ios.rdbuf(&mBuffer);
+                    mDispatcher();
                     this->do_read();
                 }
             });
@@ -284,8 +285,17 @@ void AtlasStreamClient::objectArrived(const Root & obj)
         return;
     }
 
-    operation(op);
+    mOps.push_back(op);
 }
+
+void AtlasStreamClient::dispatch()
+{
+    for (auto& op : mOps) {
+        operation(op);
+    }
+    mOps.clear();
+}
+
 
 void AtlasStreamClient::operation(const RootOperation & op)
 {
@@ -412,7 +422,8 @@ int AtlasStreamClient::connect(const std::string & host, int port)
     delete m_socket;
     m_socket = nullptr;
     try {
-        m_socket = new TcpStreamClientSocket(m_io_service, ip::tcp::endpoint(boost::asio::ip::address::from_string(host), port));
+        std::function<void()> dispatcher = [&]{this->dispatch();};
+        m_socket = new TcpStreamClientSocket(m_io_service, dispatcher, ip::tcp::endpoint(boost::asio::ip::address::from_string(host), port));
     } catch (const std::exception& e) {
         return -1;
     }
@@ -425,7 +436,8 @@ int AtlasStreamClient::connectLocal(const std::string & filename)
     delete m_socket;
     m_socket = nullptr;
     try {
-        m_socket = new LocalStreamClientSocket(m_io_service, local::stream_protocol::endpoint(filename));
+        std::function<void()> dispatcher = [&]{this->dispatch();};
+        m_socket = new LocalStreamClientSocket(m_io_service, dispatcher, local::stream_protocol::endpoint(filename));
     } catch (const std::exception& e) {
         return -1;
     }
