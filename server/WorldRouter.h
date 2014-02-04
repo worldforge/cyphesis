@@ -59,7 +59,6 @@ class WorldRouter : public BaseWorld {
   protected:
     void addOperationToQueue(const Atlas::Objects::Operation::RootOperation &,
                              LocatedEntity &);
-    Atlas::Objects::Operation::RootOperation getOperationFromQueue();
     bool broadcastPerception(const Atlas::Objects::Operation::RootOperation &) const;
     void deliverTo(const Atlas::Objects::Operation::RootOperation &,
                    LocatedEntity &);

@@ -72,7 +72,6 @@ class WorldRoutertest : public Cyphesis::TestBase
     void test_addNewEntity_thing();
     void test_addNewEntity_idfail();
     void test_addEntity();
-    void test_getOperationFromQueue();
     void test_addEntity_tick();
     void test_addEntity_tick_get();
     void test_spawnNewEntity_unknown();
@@ -89,7 +88,6 @@ WorldRoutertest::WorldRoutertest()
     ADD_TEST(WorldRoutertest::test_addNewEntity_thing);
     ADD_TEST(WorldRoutertest::test_addNewEntity_idfail);
     ADD_TEST(WorldRoutertest::test_addEntity);
-    ADD_TEST(WorldRoutertest::test_getOperationFromQueue);
     ADD_TEST(WorldRoutertest::test_addEntity_tick);
     ADD_TEST(WorldRoutertest::test_addEntity_tick_get);
     ADD_TEST(WorldRoutertest::test_spawnNewEntity_unknown);
@@ -152,11 +150,6 @@ void WorldRoutertest::test_addEntity()
     test_world->addEntity(ent2);
 }
 
-void WorldRoutertest::test_getOperationFromQueue()
-{
-    test_world->getOperationFromQueue();
-}
-
 void WorldRoutertest::test_addEntity_tick()
 {
     std::string id;
@@ -191,7 +184,6 @@ void WorldRoutertest::test_addEntity_tick_get()
     tick->setTo(ent2->getId());
     test_world->message(tick, *ent2);
 
-    test_world->getOperationFromQueue();
 }
 
 void WorldRoutertest::test_spawnNewEntity_unknown()

@@ -203,25 +203,6 @@ void WorldRouter::addOperationToQueue(const Operation & op, LocatedEntity & ent)
     m_operationQueue.push(OpQueEntry(op, ent));
 }
 
-/// \brief Get the next due operation from the queue.
-///
-/// If the operation at the end of the queue is now due, return it.
-/// This function is now unused, and has become obsolete now there are
-/// two queues. If this function is needed again, it will need to be
-/// recoded. See idle for sample code that checks for the next due operation.
-/// @return a pointer to the operation due for dispatch, or 0 if none
-/// is due.
-Operation WorldRouter::getOperationFromQueue()
-{
-    auto op = m_operationQueue.top();
-    if (op->getSeconds() > getTime()) {
-        return nullptr;
-    }
-    debug(std::cout << "pulled op off queue" << std::endl << std::flush;);
-    m_operationQueue.pop();
-    return *op;
-}
-
 /// \brief Add a new entity to the world.
 ///
 /// Adds a new entity to the lists maintained by the WorldRouter.

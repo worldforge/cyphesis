@@ -104,14 +104,10 @@ void WorldRouterintegration::test_sequence()
     ent2->m_location.m_pos = Point3D(0,0,0);
     test_world->addEntity(ent2);
 
-    test_world->getOperationFromQueue();
-
     Tick tick;
     tick->setFutureSeconds(0);
     tick->setTo(ent2->getId());
     test_world->message(tick, *ent2);
-
-    test_world->getOperationFromQueue();
 
     {
         MapType spawn_data;
