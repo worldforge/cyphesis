@@ -28,6 +28,7 @@
 #include <Atlas/Objects/Anonymous.h>
 
 #include <cstdlib>
+#include <iostream>
 
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;

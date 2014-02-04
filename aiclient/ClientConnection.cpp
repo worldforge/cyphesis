@@ -31,7 +31,7 @@
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Codecs/XML.h>
 
-
+#include <iostream>
 
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::Anonymous;
