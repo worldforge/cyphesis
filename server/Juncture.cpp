@@ -299,12 +299,12 @@ void Juncture::customConnectOperation(const Operation & op, OpVector & res)
     boost::asio::ip::tcp::resolver resolver(m_connection->m_commSocket.m_io_service);
     boost::asio::ip::tcp::resolver::query query(hostname, compose("%1", port));
 
-    m_address->i = resolver.resolve(query);
-    
-//    if (m_address->i == m_address->a.end()) {
-//        error(op, "Connect host returned zero addressses", res, getId());
-//        return;
-//    }
+    try {
+        m_address->i = resolver.resolve(query);
+    } catch (const std::exception& e) {
+        error(op, "Could not connect to peer host.", res, getId());
+        return;
+    }
 
     m_connectRef = op->getSerialno();
 
