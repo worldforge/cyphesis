@@ -169,7 +169,7 @@ int main()
     }
     assert(asc->test_currentTask() == tct);
 
-    // Verify these bale out cleanly when unconnected
+    // Verify these bail out cleanly when unconnected
     asc->poll();
     asc->login("foo", "bar");
     asc->create("player", "foo", "bar");

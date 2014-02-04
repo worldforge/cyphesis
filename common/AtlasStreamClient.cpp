@@ -509,6 +509,9 @@ int AtlasStreamClient::waitForLoginResponse()
 
 int AtlasStreamClient::poll(const boost::posix_time::ptime& timeout)
 {
+    if (!m_socket) {
+        return -1;
+    }
     int result = m_socket->poll(timeout);
     if (result == -1) {
         std::cerr << "Server disconnected" << std::endl << std::flush;
