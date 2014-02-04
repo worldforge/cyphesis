@@ -104,59 +104,53 @@ int main()
 
     boost::asio::io_service comm_server;
     {
-        TestCommPeer * cs = new TestCommPeer(comm_server);
+        auto cs = std::make_shared<TestCommPeer>(comm_server);
 
         comm_server.poll();
-        delete cs;
     }
 
     {
-        TestCommPeer * cs = new TestCommPeer(comm_server);
+        auto cs = std::make_shared<TestCommPeer>(comm_server);
 
         cs->test_setNegotiateState(Atlas::Negotiate::SUCCEEDED);
         comm_server.poll();
 
-        delete cs;
     }
 
     {
-        TestCommPeer * cs = new TestCommPeer(comm_server);
+        auto cs = std::make_shared<TestCommPeer>(comm_server);
 
         cs->test_setNegotiateState(Atlas::Negotiate::SUCCEEDED);
         comm_server.poll();
 
-        delete cs;
     }
 
     {
-        TestCommPeer * cs = new TestCommPeer(comm_server);
+        auto cs = std::make_shared<TestCommPeer>(comm_server);
 
         cs->setup(new TestPeer(*cs, server));
         comm_server.poll();
 
-        delete cs;
     }
 
     {
-        TestCommPeer * cs = new TestCommPeer(comm_server);
+        auto cs = std::make_shared<TestCommPeer>(comm_server);
 
         TestPeer * tr = new TestPeer(*cs, server);
         cs->setup(tr);
         tr->setAuthState(PEER_AUTHENTICATED);
         comm_server.poll();
 
-        delete cs;
     }
 
     {
-        TestCommPeer * cs = new TestCommPeer(comm_server);
+        auto cs = std::make_shared<TestCommPeer>(comm_server);
 
         TestPeer * tr = new TestPeer(*cs, server);
         cs->setup(tr);
         tr->setAuthState(PEER_FAILED);
         comm_server.poll();
 
-        delete cs;
     }
 
     return 0;
