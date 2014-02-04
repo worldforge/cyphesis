@@ -296,7 +296,7 @@ void Juncture::customConnectOperation(const Operation & op, OpVector & res)
     debug(std::cout << "Connecting to " << hostname << std::endl << std::flush;);
     m_address = new PeerAddress;
 
-    boost::asio::ip::tcp::resolver resolver(m_peer->m_commSocket.m_io_service);
+    boost::asio::ip::tcp::resolver resolver(m_connection->m_commSocket.m_io_service);
     boost::asio::ip::tcp::resolver::query query(hostname, compose("%1", port));
 
     m_address->i = resolver.resolve(query);
