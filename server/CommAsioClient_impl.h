@@ -108,7 +108,16 @@ void CommAsioClient<ProtocolT>::negotiate_read()
                 if (!ec)
                 {
                     mWriteBuffer.commit(length);
-                    if (length > 0 && this->negotiate() == 0 && m_negotiate == nullptr) {
+                    if (length > 0) {
+                        int negotiateResult = this->negotiate();
+                        if (negotiateResult < 0) {
+                            //this should remove any shared references and delete this instance
+                            return;
+                        }
+                    }
+
+                    //If the m_negotiate instance is removed we're done with negotiation and should start the main loop.
+                    if (m_negotiate == nullptr) {
                         this->negotiate_write();
                         this->do_read();
                     } else {
@@ -168,6 +177,7 @@ void CommAsioClient<ProtocolT>::startNegotiation()
         //If the negotiator still exists after the deadline it means that the negotation hasn't
         //completed yet; we'll consider that a "timeout".
             if (m_negotiate != nullptr) {
+                log(NOTICE, "Client disconnected because of negotiation timeout.");
                 mSocket.close();
             }
         });
