@@ -90,9 +90,7 @@ void CommPSQLSocket::tryReConnect()
 
 CommPSQLSocket::~CommPSQLSocket()
 {
-    if (!exit_flag) {
-        m_db.shutdownConnection();
-    }
+    m_db.shutdownConnection();
     delete m_socket;
 }
 
