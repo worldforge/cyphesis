@@ -44,7 +44,7 @@ class BaseWorld;
 class StubSocket : public CommSocket
 {
   public:
-    StubSocket() : CommSocket(*(boost::asio::io_service*)0)
+    StubSocket(boost::asio::io_service& io_service) : CommSocket(io_service)
     {
     }
 
@@ -198,8 +198,8 @@ int main()
     {
         ServerRouting sr(*(BaseWorld*)0, "", "", "2", 2, "3", 3);
         TestJuncture * j = new TestJuncture(0);
-
-        CommPeer * cp = new CommPeer("", *(boost::asio::io_service*)0);
+        boost::asio::io_service io_service;
+        CommPeer * cp = new CommPeer("", io_service);
         j->test_addPeer(new Peer(*cp, sr, "", 6767, "4", 4));
 
         OpVector res;
@@ -221,7 +221,8 @@ int main()
 
         TestJuncture * j = new TestJuncture(0);
 
-        CommPeer * cp = new CommPeer("", *(boost::asio::io_service*)0);
+        boost::asio::io_service io_service;
+        CommPeer * cp = new CommPeer("", io_service);
         Peer * p = new Peer(*cp, sr, "", 6767, "4", 4);
         j->test_addPeer(p);
 
@@ -246,7 +247,8 @@ int main()
 
         TestJuncture * j = new TestJuncture(0);
 
-        CommPeer * cp = new CommPeer("", *(boost::asio::io_service*)0);
+        boost::asio::io_service io_service;
+        CommPeer * cp = new CommPeer("", io_service);
         j->test_addPeer(new Peer(*cp, sr, "", 6767, "4", 4));
 
         OpVector res;
@@ -342,7 +344,8 @@ int main()
     // Connect op, hostname and port in arg, connected this end
     {
         ServerRouting sr(*(BaseWorld*)0, "", "", "2", 2, "3", 3);
-        CommSocket * cc = new StubSocket();
+        boost::asio::io_service io_service;
+        CommSocket * cc = new StubSocket(io_service);
         Connection * c = new Connection(*cc, sr, "", "4", 4);
 
         Juncture * j = new Juncture(c, "1", 1);
@@ -365,7 +368,8 @@ int main()
         stub_CommPeer_connect_return = -1;
 
         ServerRouting sr(*(BaseWorld*)0, "", "", "2", 2, "3", 3);
-        CommSocket * cc = new StubSocket();
+        boost::asio::io_service io_service;
+        CommSocket * cc = new StubSocket(io_service);
         Connection * c = new Connection(*cc, sr, "", "4", 4);
 
         Juncture * j = new Juncture(c, "1", 1);
