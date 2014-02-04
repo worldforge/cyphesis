@@ -93,6 +93,20 @@ STRING_OPTION(mserver, "metaserver.worldforge.org", CYPHESIS, "metaserver",
         "Hostname to use as the metaserver")
 ;
 
+// Keep a reference to the global io_service so that it can be awoken
+// in our signals callback.
+boost::asio::io_service* sGlobalIoService = nullptr;
+
+/**
+ * A signals callback which will make sure the main io_service is awoken.
+ * This should be hooked into the signals processing.
+ */
+void ioServiceExitCallback() {
+    //Just post an empty handler. This makes sure that the io_service is awoken
+    //if it's currently waiting inside a call to run_once.
+    sGlobalIoService->post([](){});
+}
+
 int main(int argc, char ** argv)
 {
     if (security_init() != 0) {
@@ -190,6 +204,11 @@ int main(int argc, char ** argv)
     readConfigItem(instance, "nice", nice);
 
     io_service io_service;
+    //Register the io_server with the signals callback, thus making sure that if
+    //a relevant SIG* signal is received the io_service will be awoken from any
+    //run_one call it might be waiting on.
+    sGlobalIoService = &io_service;
+    setExitSignalCallback(ioServiceExitCallback);
 
     // Start up the Python subsystem.
     init_python_api(ruleset_name);
@@ -434,7 +453,7 @@ int main(int argc, char ** argv)
         }
     }
 
-    bool soft_exit_in_progess = false;
+    bool soft_exit_in_progress = false;
     time_t soft_exit_deadline = 0;
 
     boost::asio::deadline_timer nextOpTimer(io_service);
@@ -468,11 +487,12 @@ int main(int argc, char ** argv)
                     //any new operation) or the timer has expired.
                     do {
                         io_service.run_one();
-                    } while (!world->isQueueDirty() && !nextOpTimeExpired);
+                    } while (!world->isQueueDirty() && !nextOpTimeExpired &&
+                            !exit_flag_soft && !exit_flag);
                     nextOpTimer.cancel();
                 }
             }
-            if (soft_exit_in_progess) {
+            if (soft_exit_in_progress) {
                 //If we're in soft exit mode and either the deadline has been exceeded
                 //or we've persisted all minds we should shut down normally.
                 if (store->numberOfOutstandingThoughtRequests() == 0) {
@@ -487,7 +507,8 @@ int main(int argc, char ** argv)
                     exit_flag = true;
                 }
             } else if (exit_flag_soft) {
-                soft_exit_in_progess = true;
+                exit_flag_soft = false;
+                soft_exit_in_progress = true;
                 //Set a deadline for five seconds.
                 static const time_t mind_persistence_deadline = 5;
                 size_t requestNumber = store->requestMinds(
@@ -574,5 +595,7 @@ int main(int argc, char ** argv)
 
     log(INFO, "Clean shutdown complete.");
     logEvent(STOP, "- - - Standalone server shutdown");
+    setExitSignalCallback(nullptr);
+    sGlobalIoService = nullptr;
     return 0;
 }

@@ -204,9 +204,20 @@ void reduce_priority(int p)
 #endif // HAVE_NICE
 }
 
+void (*globalExitSignalCallback)() = 0;
+
+void setExitSignalCallback(void (*exitSignalCallback)())
+{
+    globalExitSignalCallback = exitSignalCallback;
+}
+
+
 extern "C" void shutdown_on_signal(int signo)
 {
     exit_flag = true;
+    if (globalExitSignalCallback) {
+        (*globalExitSignalCallback)();
+    }
 
 #if defined(HAVE_SIGACTION)
     struct sigaction action;
@@ -228,6 +239,10 @@ extern "C" void soft_shutdown_on_signal(int signo)
         exit_flag = true;
     } else {
         exit_flag_soft = true;
+    }
+
+    if (globalExitSignalCallback) {
+        (*globalExitSignalCallback)();
     }
 
 #if defined(HAVE_SIGACTION)
@@ -454,7 +469,7 @@ int daemonise()
             } else {
                 int estatus = WEXITSTATUS(status);
                 if (estatus == EXIT_SUCCESS) {
-                    log(ERROR, "Cyphesis exited normally at initialisation.");
+                    log(ERROR, "Cyphesis exited normally at initialization.");
                 } else if (estatus == EXIT_DATABASE_ERROR) {
                     log(ERROR, "Cyphesis was unable to connect to the database.");
                 } else if (estatus == EXIT_SOCKET_ERROR) {
@@ -467,7 +482,7 @@ int daemonise()
                                               "--cyphesis:dynamic_port_end=%1"
                                               "\n\n", dynamic_port_end + 8));
                 } else {
-                    log(ERROR, "Cyphesis exited unexpectedly at initialisation.");
+                    log(ERROR, "Cyphesis exited unexpectedly at initialization.");
                 }
                 log(ERROR, "See syslog for details.");
             }
