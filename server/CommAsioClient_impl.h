@@ -172,6 +172,7 @@ void CommAsioClient<ProtocolT>::startNegotiation()
 {
 
     auto self(this->shared_from_this());
+    mNegotiateTimer.expires_from_now(boost::posix_time::seconds(10));
     mNegotiateTimer.async_wait([this, self](const boost::system::error_code& ec)
     {
         //If the negotiator still exists after the deadline it means that the negotation hasn't
