@@ -108,7 +108,7 @@ void CommAsioClient<ProtocolT>::negotiate_read()
                 if (!ec)
                 {
                     mWriteBuffer.commit(length);
-                    if (this->negotiate() == 0 && m_negotiate == nullptr) {
+                    if (length > 0 && this->negotiate() == 0 && m_negotiate == nullptr) {
                         this->negotiate_write();
                         this->do_read();
                     } else {
