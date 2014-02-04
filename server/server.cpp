@@ -102,7 +102,7 @@ boost::asio::io_service* sGlobalIoService = nullptr;
  * This should be hooked into the signals processing.
  */
 void ioServiceExitCallback() {
-    //Just post an empty handler. This makes sure that the io_service is awoken
+    //Just post an empty handler. This makes sure that the io_service is awaken
     //if it's currently waiting inside a call to run_once.
     sGlobalIoService->post([](){});
 }
@@ -110,7 +110,7 @@ void ioServiceExitCallback() {
 int main(int argc, char ** argv)
 {
     if (security_init() != 0) {
-        log(CRITICAL, "Security initialisation Error. Exiting.");
+        log(CRITICAL, "Security initialization Error. Exiting.");
         return EXIT_SECURITY_ERROR;
     }
 
@@ -203,11 +203,11 @@ int main(int argc, char ** argv)
     int nice = 1;
     readConfigItem(instance, "nice", nice);
 
-    io_service io_service;
+    io_service* io_service = new boost::asio::io_service();
     //Register the io_server with the signals callback, thus making sure that if
     //a relevant SIG* signal is received the io_service will be awoken from any
     //run_one call it might be waiting on.
-    sGlobalIoService = &io_service;
+    sGlobalIoService = io_service;
     setExitSignalCallback(ioServiceExitCallback);
 
     // Start up the Python subsystem.
@@ -251,6 +251,7 @@ int main(int argc, char ** argv)
 
     IdleConnector* storage_idle = nullptr;
 
+    CommPSQLSocket * dbsocket = nullptr;
     if (database_flag) {
         // log(INFO, _("Restoring world from database..."));
 
@@ -263,10 +264,10 @@ int main(int argc, char ** argv)
 
         // log(INFO, _("Restored world."));
 
-        CommPSQLSocket * dbsocket = new CommPSQLSocket(io_service,
+        dbsocket = new CommPSQLSocket(*io_service,
                 Persistence::instance()->m_db);
 
-        storage_idle = new IdleConnector(io_service);
+        storage_idle = new IdleConnector(*io_service);
         storage_idle->idling.connect(
                 sigc::mem_fun(store, &StorageManager::tick));
     } else {
@@ -296,7 +297,7 @@ int main(int argc, char ** argv)
         for (; client_port_num <= dynamic_port_end; client_port_num++) {
             try {
                 tcp_atlas_clients.emplace_back(tcpAtlasStarter,
-                        server->getName(), io_service,
+                        server->getName(), *io_service,
                         ip::tcp::endpoint(
                                 ip::tcp::v4(), client_port_num));
             } catch (const std::exception& e) {
@@ -324,7 +325,7 @@ int main(int argc, char ** argv)
     } else {
         try {
             tcp_atlas_clients.emplace_back(tcpAtlasStarter, server->getName(),
-                    io_service,
+                    *io_service,
                     ip::tcp::endpoint(ip::tcp::v4(),
                             client_port_num));
         } catch (const std::exception& e) {
@@ -341,7 +342,7 @@ int main(int argc, char ** argv)
             };
     CommAsioListener<local::stream_protocol,
             CommPythonClient> pythonListener(pythonStarter,
-            server->getName(), io_service,
+            server->getName(), *io_service,
             local::stream_protocol::endpoint(python_socket_name));
 
     remove(client_socket_name.c_str());
@@ -355,7 +356,7 @@ int main(int argc, char ** argv)
             };
     CommAsioListener<local::stream_protocol,
             CommAsioClient<local::stream_protocol>> localListener(localStarter,
-            server->getName(), io_service,
+            server->getName(), *io_service,
             local::stream_protocol::endpoint(client_socket_name));
 
 
@@ -365,12 +366,12 @@ int main(int argc, char ** argv)
             };
 
     CommAsioListener<ip::tcp, CommHttpClient> httpListener(httpStarter,
-            server->getName(), io_service,
+            server->getName(), *io_service,
             ip::tcp::endpoint(ip::tcp::v4(), http_port_num));
 
     CommMetaClient * cmc(nullptr);
     if (useMetaserver) {
-        cmc = new CommMetaClient(io_service);
+        cmc = new CommMetaClient(*io_service);
         if (cmc->setup(mserver) != 0) {
             log(ERROR, "Error creating metaserver comm channel.");
             delete cmc;
@@ -378,9 +379,10 @@ int main(int argc, char ** argv)
         }
     }
 
+    CommMDNSPublisher * cmdns = nullptr;
 #if defined(HAVE_AVAHI)
 
-    CommMDNSPublisher * cmdns = new CommMDNSPublisher(io_service, *server);
+    cmdns = new CommMDNSPublisher(*io_service, *server);
     if (cmdns->setup() != 0) {
         log(ERROR, "Unable to register service with MDNS daemon.");
         delete cmdns;
@@ -454,12 +456,11 @@ int main(int argc, char ** argv)
     }
 
     bool soft_exit_in_progress = false;
-    time_t soft_exit_deadline = 0;
 
     //This timer is used to wake the io_service when next op needs to be handled.
-    boost::asio::deadline_timer nextOpTimer(io_service);
+    boost::asio::deadline_timer nextOpTimer(*io_service);
     //This timer will set a deadline for any mind persistence during soft exits.
-    boost::asio::deadline_timer softExitTimer(io_service);
+    boost::asio::deadline_timer softExitTimer(*io_service);
     // Loop until the exit flag is set. The exit flag can be set anywhere in
     // the code easily.
     while (!exit_flag) {
@@ -469,14 +470,14 @@ int main(int argc, char ** argv)
             world->markQueueAsClean();
             //If the world is busy we should just poll.
             if (busy) {
-                io_service.poll();
+                io_service->poll();
             } else {
                 //If it's not busy however we should run until we get a task.
                 //We will either get an io task, or we will be triggered by the timer
                 //which is set to expire when the next op should be dispatched.
                 double secondsUntilNextOp = world->secondsUntilNextOp();
                 if (secondsUntilNextOp <= 0.0) {
-                    io_service.poll();
+                    io_service->poll();
                 } else {
                     bool nextOpTimeExpired = false;
                     boost::posix_time::microseconds waitTime((long long)(secondsUntilNextOp * 1000000));
@@ -489,7 +490,7 @@ int main(int argc, char ** argv)
                     //Keep on running IO handlers until either the queue is dirty (i.e. we need to handle
                     //any new operation) or the timer has expired.
                     do {
-                        io_service.run_one();
+                        io_service->run_one();
                     } while (!world->isQueueDirty() && !nextOpTimeExpired &&
                             !exit_flag_soft && !exit_flag && !soft_exit_in_progress);
                     nextOpTimer.cancel();
@@ -563,14 +564,18 @@ int main(int argc, char ** argv)
         log(ERROR, "Exception caught when shutting down");
     }
 
+    delete cmdns;
+
     if (cmc) {
         cmc->metaserverTerminate();
         delete cmc;
     }
 
+    tcp_atlas_clients.clear();
+
     delete storage_idle;
 
-    io_service.stop();
+    delete io_service;
 
     delete server;
 
@@ -586,6 +591,8 @@ int main(int argc, char ** argv)
     TeleportAuthenticator::del();
 
     Inheritance::clear();
+
+    delete dbsocket;
 
     // Shutdown the Python interpreter. This frees lots of memory, and if
     // the malloc heap is in any way corrupt, a segfault is likely to
