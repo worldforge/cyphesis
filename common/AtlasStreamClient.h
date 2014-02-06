@@ -68,7 +68,7 @@ class StreamClientSocketBase
         Atlas::Objects::ObjectsEncoder * m_encoder;
         bool m_is_connected;
 
-        virtual int read() = 0;
+        virtual int read_blocking() = 0;
         virtual void do_read() = 0;
 };
 
@@ -79,7 +79,7 @@ class TcpStreamClientSocket : public StreamClientSocketBase
         virtual int write();
    protected:
         boost::asio::ip::tcp::socket m_socket;
-        virtual int read();
+        virtual int read_blocking();
         virtual void do_read();
 };
 
@@ -90,7 +90,7 @@ class LocalStreamClientSocket : public StreamClientSocketBase
         virtual int write();
     protected:
         boost::asio::local::stream_protocol::socket m_socket;
-        virtual int read();
+        virtual int read_blocking();
         virtual void do_read();
 };
 

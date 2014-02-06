@@ -62,7 +62,7 @@ class CommAsioClient: public Atlas::Objects::ObjectsDecoder,
         typename ProtocolT::socket mSocket;
 
         boost::asio::streambuf mReadBuffer;
-        boost::asio::streambuf mWriteBuffer;
+        boost::asio::streambuf* mWriteBuffer;
         std::iostream mStream;
         boost::asio::deadline_timer mNegotiateTimer;
 
@@ -86,7 +86,7 @@ class CommAsioClient: public Atlas::Objects::ObjectsDecoder,
 
         void do_read();
 
-        void do_write();
+        void write();
 
         void dispatch();
 

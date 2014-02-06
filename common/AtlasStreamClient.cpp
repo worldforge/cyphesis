@@ -76,7 +76,7 @@ int StreamClientSocketBase::negotiate(Atlas::Objects::ObjectsDecoder& decoder)
 
     while (conn.getState() == Atlas::Net::StreamConnect::IN_PROGRESS) {
       write();
-      auto dataReceived = read();
+      auto dataReceived = read_blocking();
       conn.poll(dataReceived > 0);
     }
 
@@ -157,7 +157,7 @@ void TcpStreamClientSocket::do_read()
             });
 }
 
-int TcpStreamClientSocket::read()
+int TcpStreamClientSocket::read_blocking()
 {
     if (!m_socket.is_open()) {
         return -1;
@@ -213,7 +213,7 @@ void LocalStreamClientSocket::do_read()
             });
 }
 
-int LocalStreamClientSocket::read()
+int LocalStreamClientSocket::read_blocking()
 {
     if (!m_socket.is_open()) {
         return -1;

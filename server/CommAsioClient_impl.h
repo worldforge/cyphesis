@@ -36,9 +36,9 @@
 template<class ProtocolT>
 CommAsioClient<ProtocolT>::CommAsioClient(const std::string & name,
         boost::asio::io_service& io_service) :
-        CommSocket(io_service), mSocket(io_service), mStream(
-                &mWriteBuffer), mNegotiateTimer(io_service,
-                boost::posix_time::seconds(1)), m_codec(nullptr), m_encoder(
+        CommSocket(io_service), mSocket(io_service), mWriteBuffer(
+                new boost::asio::streambuf()), mStream(mWriteBuffer), mNegotiateTimer(
+                io_service, boost::posix_time::seconds(1)), m_codec(nullptr), m_encoder(
                 nullptr), m_negotiate(nullptr), m_link(nullptr), mName(name)
 {
 }
@@ -50,6 +50,7 @@ CommAsioClient<ProtocolT>::~CommAsioClient()
     delete m_negotiate;
     delete m_encoder;
     delete m_codec;
+    delete mWriteBuffer;
 }
 
 template<class ProtocolT>
@@ -70,11 +71,11 @@ void CommAsioClient<ProtocolT>::do_read()
                     mReadBuffer.commit(length);
                     mStream.rdbuf(&mReadBuffer);
                     m_codec->poll();
-                    mStream.rdbuf(&mWriteBuffer);
+                    mStream.rdbuf(mWriteBuffer);
                     this->dispatch();
                     //By calling do_read again we make sure that the instance
                     //doesn't go out of scope ("shared_from this"). As soon as that
-                    //doesn't happen, and there's no do_write in progress, the instance
+                    //doesn't happen, and there's no write in progress, the instance
                     //will be deleted since there's no more references to it.
                     this->do_read();
                 }
@@ -82,17 +83,42 @@ void CommAsioClient<ProtocolT>::do_read()
 }
 
 template<class ProtocolT>
-void CommAsioClient<ProtocolT>::do_write()
+void CommAsioClient<ProtocolT>::write()
 {
     auto self(this->shared_from_this());
 
-    if (mWriteBuffer.size() != 0) {
-        boost::asio::async_write(mSocket, mWriteBuffer.data(),
-                [this, self](boost::system::error_code ec, std::size_t length)
+    //When sending data we need to make sure that nothing else writes to the streambuf (mWriteBuffer).
+    //We do this by creating a new streambuf instance. The one containing the data to be sent is
+    //then contained in a shared_ptr. When the async write operation is done the shared_ptr will
+    //be deleted. However, in order to make this a bit more efficient we'll use a custom deletor
+    //in which we'll check if the new buffer has had anything written to it. If not, we'll reuse
+    //the buffer just used for writing, as this will already have had memory allocated.
+    std::function<void(boost::asio::streambuf*)> bufferDeleter =
+            [&](boost::asio::streambuf* p) {
+                //Check if the existing writebuffer has had anything written to it.
+                if (this->mWriteBuffer->size() > 0) {
+                    delete p;
+                } else {
+                    //If the existing writebuffer hasn't had anything written to it we'll reuse the previous
+                    //one instead since it already have had memory allocated. This prevents unnecessary release
+                    //and re-allocation of memory.
+                    delete this->mWriteBuffer;
+                    this->mWriteBuffer = p;
+                    this->mStream.rdbuf(this->mWriteBuffer);
+
+                }
+            };
+    std::shared_ptr<boost::asio::streambuf> buffer(mWriteBuffer, bufferDeleter);
+    mWriteBuffer = new boost::asio::streambuf();
+    mStream.rdbuf(mWriteBuffer);
+
+    if (buffer->size() != 0) {
+        boost::asio::async_write(mSocket, buffer->data(),
+                [this, self, buffer](boost::system::error_code ec, std::size_t length)
                 {
                     if (!ec)
                     {
-                        mWriteBuffer.consume(length);
+                        buffer->consume(length);
                     }
                 });
     }
@@ -102,12 +128,12 @@ template<class ProtocolT>
 void CommAsioClient<ProtocolT>::negotiate_read()
 {
     auto self(this->shared_from_this());
-    mSocket.async_read_some(mWriteBuffer.prepare(read_buffer_size),
+    mSocket.async_read_some(mWriteBuffer->prepare(read_buffer_size),
             [this, self](boost::system::error_code ec, std::size_t length)
             {
                 if (!ec)
                 {
-                    mWriteBuffer.commit(length);
+                    mWriteBuffer->commit(length);
                     if (length > 0) {
                         int negotiateResult = this->negotiate();
                         if (negotiateResult < 0) {
@@ -118,7 +144,7 @@ void CommAsioClient<ProtocolT>::negotiate_read()
 
                     //If the m_negotiate instance is removed we're done with negotiation and should start the main loop.
                     if (m_negotiate == nullptr) {
-                        this->negotiate_write();
+                        this->write();
                         this->do_read();
                     } else {
                         this->negotiate_write();
@@ -133,13 +159,13 @@ void CommAsioClient<ProtocolT>::negotiate_write()
 {
     auto self(this->shared_from_this());
 
-    if (mWriteBuffer.size() != 0) {
-        boost::asio::async_write(mSocket, mWriteBuffer.data(),
+    if (mWriteBuffer->size() != 0) {
+        boost::asio::async_write(mSocket, mWriteBuffer->data(),
                 [this, self](boost::system::error_code ec, std::size_t length)
                 {
                     if (!ec)
                     {
-                        mWriteBuffer.consume(length);
+                        mWriteBuffer->consume(length);
                     }
                 });
     }
@@ -301,7 +327,7 @@ void CommAsioClient<ProtocolT>::disconnect()
 template<class ProtocolT>
 int CommAsioClient<ProtocolT>::flush()
 {
-    do_write();
+    write();
     return 0;
 }
 
