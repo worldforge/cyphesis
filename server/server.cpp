@@ -489,12 +489,13 @@ int main(int argc, char ** argv)
                     });
                     //Keep on running IO handlers until either the queue is dirty (i.e. we need to handle
                     //any new operation) or the timer has expired.
+                    std::size_t jobsRun = 0;
                     do {
-                        io_service->run_one();
+                        jobsRun = io_service->run_one();
                     } while (!world->isQueueDirty() && !nextOpTimeExpired &&
                             !exit_flag_soft && !exit_flag && !soft_exit_in_progress);
                     //If the io_service has run out of work to do we must reset it.
-                    if (io_service->stopped()) {
+                    if (jobsRun == 0) {
                         io_service->reset();
                     } else {
                         nextOpTimer.cancel();
