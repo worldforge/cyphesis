@@ -121,6 +121,9 @@ int StreamClientSocketBase::poll(const boost::posix_time::ptime& expireTime)
         }
     });
     m_io_service.run_one();
+    if (m_io_service.stopped()) {
+        m_io_service.reset();
+    }
     if (!m_is_connected) {
         return -1;
     }
