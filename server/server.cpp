@@ -493,7 +493,12 @@ int main(int argc, char ** argv)
                         io_service->run_one();
                     } while (!world->isQueueDirty() && !nextOpTimeExpired &&
                             !exit_flag_soft && !exit_flag && !soft_exit_in_progress);
-                    nextOpTimer.cancel();
+                    //If the io_service has run out of work to do we must reset it.
+                    if (io_service->stopped()) {
+                        io_service->reset();
+                    } else {
+                        nextOpTimer.cancel();
+                    }
                 }
             }
             if (soft_exit_in_progress) {
