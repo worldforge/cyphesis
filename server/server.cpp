@@ -457,6 +457,8 @@ int main(int argc, char ** argv)
 
     bool soft_exit_in_progress = false;
 
+    //Make sure that the io_service never runs out of work.
+    boost::asio::io_service::work work(*io_service);
     //This timer is used to wake the io_service when next op needs to be handled.
     boost::asio::deadline_timer nextOpTimer(*io_service);
     //This timer will set a deadline for any mind persistence during soft exits.
@@ -489,17 +491,11 @@ int main(int argc, char ** argv)
                     });
                     //Keep on running IO handlers until either the queue is dirty (i.e. we need to handle
                     //any new operation) or the timer has expired.
-                    std::size_t jobsRun = 0;
                     do {
-                        jobsRun = io_service->run_one();
+                        io_service->run_one();
                     } while (!world->isQueueDirty() && !nextOpTimeExpired &&
                             !exit_flag_soft && !exit_flag && !soft_exit_in_progress);
-                    //If the io_service has run out of work to do we must reset it.
-                    if (jobsRun == 0) {
-                        io_service->reset();
-                    } else {
-                        nextOpTimer.cancel();
-                    }
+                    nextOpTimer.cancel();
                 }
             }
             if (soft_exit_in_progress) {

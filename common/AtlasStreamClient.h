@@ -99,6 +99,8 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
 {
   protected:
     boost::asio::io_service m_io_service;
+    /// \brief Use a "work" instance to make sure the io_service never runs out of work and is stopped.
+    boost::asio::io_service::work m_io_work;
 
     /// \brief Flag to indicate that a reply has been received from the server
     bool reply_flag;

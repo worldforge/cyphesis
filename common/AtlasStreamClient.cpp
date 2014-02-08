@@ -120,10 +120,7 @@ int StreamClientSocketBase::poll(const boost::posix_time::ptime& expireTime)
             hasExpired = true;
         }
     });
-    auto jobsRun = m_io_service.run_one();
-    if (jobsRun == 0) {
-        m_io_service.reset();
-    }
+    m_io_service.run_one();
     if (!m_is_connected) {
         return -1;
     }
@@ -397,7 +394,7 @@ void AtlasStreamClient::errorArrived(const RootOperation & op)
     }
 }
 
-AtlasStreamClient::AtlasStreamClient() : reply_flag(false), error_flag(false),
+AtlasStreamClient::AtlasStreamClient() : m_io_work(m_io_service), reply_flag(false), error_flag(false),
                                          serialNo(512), m_socket(nullptr),
                                          m_currentTask(0), m_spacing(2)
 {
