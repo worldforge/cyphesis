@@ -51,6 +51,14 @@ CommAsioClient<ProtocolT>::~CommAsioClient()
     delete m_encoder;
     delete m_codec;
     delete mWriteBuffer;
+    try {
+        mSocket.shutdown(ProtocolT::socket::shutdown_both);
+    } catch (const std::exception& e) {
+    }
+    try {
+        mSocket.close();
+    } catch (const std::exception& e) {
+    }
 }
 
 template<class ProtocolT>
