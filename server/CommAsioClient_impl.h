@@ -94,7 +94,7 @@ void CommAsioClient<ProtocolT>::write()
     //in which we'll check if the new buffer has had anything written to it. If not, we'll reuse
     //the buffer just used for writing, as this will already have had memory allocated.
     std::function<void(boost::asio::streambuf*)> bufferDeleter =
-            [&](boost::asio::streambuf* p) {
+            [&, self](boost::asio::streambuf* p) {
                 //Check if the existing writebuffer has had anything written to it.
                 if (this->mWriteBuffer->size() > 0) {
                     delete p;
