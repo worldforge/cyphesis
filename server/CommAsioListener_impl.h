@@ -36,6 +36,7 @@ CommAsioListener<ProtocolT, ClientT>::CommAsioListener(
 template<class ProtocolT, typename ClientT>
 CommAsioListener<ProtocolT, ClientT>::~CommAsioListener()
 {
+    mAcceptor.cancel();
 }
 
 template<class ProtocolT, typename ClientT>
