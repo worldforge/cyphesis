@@ -340,8 +340,8 @@ int main(int argc, char ** argv)
             [&](CommPythonClient& client) {
                 client.startAccept();
             };
-    CommAsioListener<local::stream_protocol,
-            CommPythonClient> pythonListener(pythonStarter,
+    auto pythonListener = new CommAsioListener<local::stream_protocol,
+            CommPythonClient>(pythonStarter,
             server->getName(), *io_service,
             local::stream_protocol::endpoint(python_socket_name));
 
@@ -354,8 +354,8 @@ int main(int argc, char ** argv)
                 client.startAccept(
                         new TrustedConnection(client, *server, "", connection_id, c_iid));
             };
-    CommAsioListener<local::stream_protocol,
-            CommAsioClient<local::stream_protocol>> localListener(localStarter,
+    auto localListener = new CommAsioListener<local::stream_protocol,
+            CommAsioClient<local::stream_protocol>>(localStarter,
             server->getName(), *io_service,
             local::stream_protocol::endpoint(client_socket_name));
 
@@ -365,7 +365,7 @@ int main(int argc, char ** argv)
                 client.serveRequest();
             };
 
-    CommAsioListener<ip::tcp, CommHttpClient> httpListener(httpStarter,
+    auto httpListener = new CommAsioListener<ip::tcp, CommHttpClient>(httpStarter,
             server->getName(), *io_service,
             ip::tcp::endpoint(ip::tcp::v4(), http_port_num));
 
@@ -573,6 +573,10 @@ int main(int argc, char ** argv)
         delete cmc;
     }
 
+    delete localListener;
+    delete httpListener;
+    delete pythonListener;
+
     tcp_atlas_clients.clear();
 
     delete storage_idle;
@@ -585,6 +589,8 @@ int main(int argc, char ** argv)
 
     delete world;
 
+    delete dbsocket;
+
     Persistence::instance()->shutdown();
 
     EntityBuilder::instance()->flushFactories();
@@ -593,8 +599,6 @@ int main(int argc, char ** argv)
     TeleportAuthenticator::del();
 
     Inheritance::clear();
-
-    delete dbsocket;
 
     // Shutdown the Python interpreter. This frees lots of memory, and if
     // the malloc heap is in any way corrupt, a segfault is likely to
