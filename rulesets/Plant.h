@@ -21,6 +21,8 @@
 
 #include "Thing.h"
 
+#include <boost/optional.hpp>
+
 template <typename T>
 class Property;
 
@@ -51,8 +53,11 @@ class Plant : public Thing {
      * If it's positive the plant will grow.
      *
      * The value itself is increased through Nourishment ops.
+     *
+     * Note that we use an "optional" to prevent the first Tick operations to starve the plant
+     * (before it has had time to nourish itself).
      */
-    double m_nourishment;
+    boost::optional<double> m_nourishment;
 
     static const int m_speed = 20; // Number of basic_ticks per tick
     static const int m_minuDrop = 0; // min fruit dropped

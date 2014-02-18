@@ -55,7 +55,7 @@ using Atlas::Objects::Entity::Anonymous;
 static const bool debug_flag = false;
 
 Plant::Plant(const std::string & id, long intId) :
-       Thing(id, intId), m_nourishment(0)
+       Thing(id, intId)
 {
 }
 
@@ -116,7 +116,7 @@ void Plant::NourishOperation(const Operation & op, OpVector & res)
     if (arg->copyAttr("mass", mass) != 0 || !mass.isNum()) {
         return;
     }
-    m_nourishment += mass.asNum();
+    *m_nourishment += mass.asNum();
     debug(std::cout << "Nourishment: " << m_nourishment
                     << std::endl << std::flush;);
 }
@@ -134,6 +134,77 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
     tick_op->setFutureSeconds(consts::basic_tick * m_speed + jitter);
     res.push_back(tick_op);
 
+    // The update op will broadcast notification for all properties that
+    // are marked flag_unsent
+    Update update;
+    update->setTo(getId());
+    res.push_back(update);
+
+    //Only do nourishment check if we've had a chance to send an Eat op.
+    //Else we'll be shrinking each time the server is restarted.
+    if (m_nourishment) {
+        StatusProperty * status = requirePropertyClass<StatusProperty>("status", 1);
+        double & new_status = status->data();
+        status->setFlags(flag_unsent);
+        if (*m_nourishment <= 0) {
+            debug(std::cout << "No nourishment; shrinking."
+                            << std::endl << std::flush;);
+            new_status -= 0.1;
+        } else {
+            new_status += 0.1;
+            if (new_status > 1.) {
+                new_status = 1.;
+            }
+
+            Property<double> * mass_prop = requirePropertyClass<Property<double> >("mass", 0.);
+            double & mass = mass_prop->data();
+            double old_mass = mass;
+            mass += *m_nourishment;
+
+            *m_nourishment = 0;
+            Element maxmass_attr;
+            if (getAttrType("maxmass", maxmass_attr, Element::TYPE_FLOAT) == 0) {
+                mass = std::min(mass, maxmass_attr.Float());
+            }
+            PropertyBase * biomass = modPropertyType<double>("biomass");
+            if (biomass != nullptr) {
+                biomass->set(mass);
+                biomass->setFlags(flag_unsent);
+            }
+
+            BBox & bbox = m_location.m_bBox;
+            // FIXME Handle the bbox without needing the Set operation.
+            if (old_mass != 0 && bbox.isValid()) {
+                float scale = (float)(mass / old_mass);
+                float height_scale = std::pow(scale, 0.33333f);
+                debug(std::cout << "scale " << scale << ", " << height_scale
+                                << std::endl << std::flush;);
+                debug(std::cout << "Old " << bbox << std::endl << std::flush;);
+                // FIXME Rammming in a bbox without checking if its valid.
+                bbox = BBox(Point3D(bbox.lowCorner().x() * height_scale,
+                                    bbox.lowCorner().y() * height_scale,
+                                    bbox.lowCorner().z() * height_scale),
+                            Point3D(bbox.highCorner().x() * height_scale,
+                                    bbox.highCorner().y() * height_scale,
+                                    bbox.highCorner().z() * height_scale));
+                debug(std::cout << "New " << bbox << std::endl << std::flush;);
+                BBoxProperty * box_property = modPropertyClass<BBoxProperty>("bbox");
+                if (box_property != nullptr) {
+                    box_property->data() = bbox;
+                    box_property->apply(this);
+                } else {
+                    log(ERROR, String::compose("Plant %1 type \"%2\" has a valid "
+                                               "bbox, but no bbox property",
+                                               getIntId(), getType()->name()));
+                }
+
+                scaleArea();
+
+            }
+        }
+        status->apply(this);
+    }
+
     // FIXME I don't like having to do this test, as its only required
     // during the unit tests.
     // Log an error perhaps?
@@ -142,74 +213,9 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
         Eat eat_op;
         eat_op->setTo(m_location.m_loc->getId());
         res.push_back(eat_op);
+        m_nourishment = .0;
     }
 
-    // The update op will broadcast notification for all properties that
-    // are marked flag_unsent
-    Update update;
-    update->setTo(getId());
-    res.push_back(update);
-
-    StatusProperty * status = requirePropertyClass<StatusProperty>("status", 1);
-    double & new_status = status->data();
-    status->setFlags(flag_unsent);
-    if (m_nourishment <= 0) {
-        debug(std::cout << "No nourishment; shrinking."
-                        << std::endl << std::flush;);
-        new_status -= 0.1;
-    } else {
-        new_status += 0.1;
-        if (new_status > 1.) {
-            new_status = 1.;
-        }
-
-        Property<double> * mass_prop = requirePropertyClass<Property<double> >("mass", 0.);
-        double & mass = mass_prop->data();
-        double old_mass = mass;
-        mass += m_nourishment;
-
-        m_nourishment = 0;
-        Element maxmass_attr;
-        if (getAttrType("maxmass", maxmass_attr, Element::TYPE_FLOAT) == 0) {
-            mass = std::min(mass, maxmass_attr.Float());
-        }
-        PropertyBase * biomass = modPropertyType<double>("biomass");
-        if (biomass != nullptr) {
-            biomass->set(mass);
-            biomass->setFlags(flag_unsent);
-        }
-
-        BBox & bbox = m_location.m_bBox;
-        // FIXME Handle the bbox without needing the Set operation.
-        if (old_mass != 0 && bbox.isValid()) {
-            float scale = (float)(mass / old_mass);
-            float height_scale = std::pow(scale, 0.33333f);
-            debug(std::cout << "scale " << scale << ", " << height_scale
-                            << std::endl << std::flush;);
-            debug(std::cout << "Old " << bbox << std::endl << std::flush;);
-            // FIXME Rammming in a bbox without checking if its valid.
-            bbox = BBox(Point3D(bbox.lowCorner().x() * height_scale,
-                                bbox.lowCorner().y() * height_scale,
-                                bbox.lowCorner().z() * height_scale),
-                        Point3D(bbox.highCorner().x() * height_scale,
-                                bbox.highCorner().y() * height_scale,
-                                bbox.highCorner().z() * height_scale));
-            debug(std::cout << "New " << bbox << std::endl << std::flush;);
-            BBoxProperty * box_property = modPropertyClass<BBoxProperty>("bbox");
-            if (box_property != nullptr) {
-                box_property->data() = bbox;
-                box_property->apply(this);
-            } else {
-                log(ERROR, String::compose("Plant %1 type \"%2\" has a valid "
-                                           "bbox, but no bbox property",
-                                           getIntId(), getType()->name()));
-            }
-
-            scaleArea();
-
-        }
-    }
-    status->apply(this);
 
     //Only handle fruits if the plant is of adult size.
     Property<int> * fruits_prop = modPropertyType<int>("fruits");
