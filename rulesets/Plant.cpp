@@ -116,7 +116,11 @@ void Plant::NourishOperation(const Operation & op, OpVector & res)
     if (arg->copyAttr("mass", mass) != 0 || !mass.isNum()) {
         return;
     }
-    *m_nourishment += mass.asNum();
+    if (!m_nourishment) {
+        m_nourishment = mass.asNum();
+    } else {
+        *m_nourishment += mass.asNum();
+    }
     debug(std::cout << "Nourishment: " << m_nourishment
                     << std::endl << std::flush;);
 }
@@ -213,7 +217,10 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
         Eat eat_op;
         eat_op->setTo(m_location.m_loc->getId());
         res.push_back(eat_op);
-        m_nourishment = .0;
+        //Initialize nourishment to zero once we've sent our first Eat op.
+        if (m_nourishment) {
+            m_nourishment = .0;
+        }
     }
 
 
