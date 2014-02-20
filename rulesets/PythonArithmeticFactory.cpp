@@ -75,6 +75,7 @@ ArithmeticScript * PythonArithmeticFactory::newScript(LocatedEntity * owner)
             return 0;
         }
         py_object = PyEval_CallFunction(m_class, "(O)", entity);
+        Py_DECREF(entity);
     }
     
     if (py_object == 0) {
