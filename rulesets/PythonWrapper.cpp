@@ -32,7 +32,7 @@ PythonWrapper::PythonWrapper(PyObject * wrapper) : m_wrapper(wrapper)
 PythonWrapper::~PythonWrapper()
 {
     if (m_wrapper->ob_refcnt != 1) {
-        log(WARNING, String::compose("Deleting entity with %1 > 1 refs to its wrapper/script", m_wrapper->ob_refcnt));
+        log(WARNING, String::compose("Deleting Python object of type '%1' with %2 > 1 refs to its wrapper/script", m_wrapper->ob_type->tp_name, m_wrapper->ob_refcnt));
     }
     Py_DECREF(m_wrapper);
 }
