@@ -499,7 +499,7 @@ int AtlasStreamClient::create(const std::string & type,
 
 int AtlasStreamClient::waitForLoginResponse()
 {
-    auto expireTime = boost::posix_time::microsec_clock::local_time() + boost::posix_time::seconds(10);
+    auto expireTime = boost::asio::time_traits<boost::posix_time::ptime>::now() + boost::posix_time::seconds(10);
     while (poll(expireTime) == 0) {
         if (reply_flag && !error_flag) {
             if (m_infoReply->isDefaultId()) {
@@ -533,7 +533,7 @@ int AtlasStreamClient::poll(const boost::posix_time::ptime& timeout)
 
 int AtlasStreamClient::poll(int timeOut, int msec)
 {
-    auto expireTime = boost::posix_time::microsec_clock::local_time() + boost::posix_time::seconds(timeOut) + boost::posix_time::microseconds(msec);
+    auto expireTime = boost::asio::time_traits<boost::posix_time::ptime>::now() + boost::posix_time::seconds(timeOut) + boost::posix_time::microseconds(msec);
     return poll(expireTime);
 }
 
@@ -585,7 +585,7 @@ int AtlasStreamClient::pollUntilTaskComplete()
         return 1;
     }
     while (m_currentTask != nullptr) {
-        auto expireTime = boost::posix_time::microsec_clock::local_time() + boost::posix_time::milliseconds(100);
+        auto expireTime = boost::asio::time_traits<boost::posix_time::ptime>::now() + boost::posix_time::milliseconds(100);
         if (poll(expireTime) == -1) {
             return -1;
         }
