@@ -86,10 +86,12 @@ int CommMetaClient::setup(const std::string & mserver)
     ip::udp::resolver::query query(ip::udp::v4(), m_server, "8453");
     mResolver.async_resolve(query,
             [this](boost::system::error_code ec, ip::udp::resolver::iterator iterator ) {
-                mDestination = *iterator;
-                this->metaserverKeepalive();
-                this->do_receive();
-                this->keepalive();
+                if (!ec) {
+                    mDestination = *iterator;
+                    this->metaserverKeepalive();
+                    this->do_receive();
+                    this->keepalive();
+                }
             });
 
     return 0;
