@@ -99,3 +99,14 @@ void Monitors::send(std::ostream & io)
         io << std::endl;
     }
 }
+
+int Monitors::readVariable(const std::string& key, std::ostream& out_stream)
+{
+    if ( m_variableMonitors.find(key) != m_variableMonitors.end() )
+    {
+        m_variableMonitors[key]->send(out_stream);
+        return 1;
+    }
+
+    return 0;
+}
