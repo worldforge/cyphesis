@@ -47,12 +47,12 @@ int main()
     m->insert("qux", "three");
 
     // positive check
-    assert( m->readVariable("foo",ss) != 0 );
+    assert( m->readVariable("foo",ss) == 0 );
     assert( ss.str().compare("7") == 0 );
 
     // negative check
     ss.clear();
-    assert(m->readVariable("nonexistent",ss) == 0);
+    assert(m->readVariable("nonexistent",ss) != 0);
 
     m->send(std::cout);
 

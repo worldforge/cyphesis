@@ -100,13 +100,14 @@ void Monitors::send(std::ostream & io)
     }
 }
 
-int Monitors::readVariable(const std::string& key, std::ostream& out_stream)
+int Monitors::readVariable(const std::string& key, std::ostream& out_stream) const
 {
-    if ( m_variableMonitors.find(key) != m_variableMonitors.end() )
+    MonitorDict::const_iterator J = m_variableMonitors.find(key);
+    if ( J != m_variableMonitors.end() )
     {
-        m_variableMonitors[key]->send(out_stream);
-        return 1;
+	J->second->send(out_stream);
+        return 0;
     }
 
-    return 0;
+    return 1;
 }
