@@ -30,11 +30,14 @@
 #include "common/debug.h"
 #include "common/log.h"
 #include "common/globals.h"
+#include "common/Monitors.h"
+#include <varconf/config.h>
 
 #include <cstring>
 #include <iostream>
 #include <memory>
-
+#include <vector>
+#include <boost/algorithm/string.hpp>
 
 
 using namespace boost::asio;
@@ -62,13 +65,9 @@ int CommMetaClient::setup(const std::string & mserver)
     m_server = mserver;
 
     /*
-     * Iterate over "attributes" section of configuration,
-     * and if so, place in m_serverAttributes
-     * NOTE: get rid of varconf ... this config is horribly complicated
-     * ( and i thought program_options was bad ).
+     * Ensure attributes list is clear
      */
-    readConfigItem("attributes","server_uuid", server_uuid );
-    readConfigItem("attributes","server_key", server_key );
+    m_serverAttributes.clear();
 
     /*
      * Get the heartbeat time
@@ -76,12 +75,9 @@ int CommMetaClient::setup(const std::string & mserver)
     readConfigItem("cyphesis","msheartbeat", m_heartbeatTime);
 
     /*
-     * I know this is a dup storage, but eventually we want it
-     * to iterate over all section entries and send them all
-     *
+     * Update the attributes to include config + monitors
      */
-    m_serverAttributes["server_uuid"] = server_uuid;
-    m_serverAttributes["server_key"] = server_key;
+    updateAttributes();
 
     ip::udp::resolver::query query(ip::udp::v4(), m_server, "8453");
     mResolver.async_resolve(query,
@@ -150,8 +146,8 @@ void CommMetaClient::metaserverKeepalive()
             {
                 if (!ec)
                 {
-                    metaserverAttribute("server_uuid", server_uuid );
-                    metaserverAttribute("server_key", server_key );
+                    updateAttributes();
+                    sendAllAttributes();
                 }
             });
 }
@@ -222,3 +218,62 @@ void CommMetaClient::metaserverAttribute(const std::string& k, const std::string
             [this, m](boost::system::error_code ec, std::size_t length){});
 }
 
+/// \brief Read attributes from config and monitor
+///
+///
+void CommMetaClient::updateAttributes()
+{
+    std::string mstats;
+    std::vector<std::string> fields;
+
+    /*
+     * Get pipe separate list from the config about monitored variables
+     */
+    readConfigItem("cyphesis", "metastats", mstats);
+
+    /*
+     * Split on | character
+     */
+    boost::algorithm::split( fields, mstats, boost::algorithm::is_any_of( "|" ) );
+
+    /*
+     * Iterate fields and snag from the monitor, if it exists;
+     */
+    for (auto& v : fields)
+    {
+        std::stringstream ss;
+        if ( Monitors::instance()->readVariable(v,ss) == 1 )
+        {
+            std::string tmp = ss.str();
+            boost::algorithm::trim(tmp);
+            m_serverAttributes[v] = tmp;
+        } else {
+            ss << "WARNING: [cyphesis].metastats item [" << v << "] is not a monitored variable";
+            log(WARNING,ss.str());
+        }
+    }
+
+    /*
+     * Get the configuration values to send
+     * In the event that a user has specified a variable that matches
+     * the name of a monitor, the configured item will have priority.
+     */
+    const varconf::sec_map& c = global_conf->getSection("metaattributes");
+    for (auto& kv : c)
+    {
+        std::string s = kv.second;
+        boost::algorithm::trim(s);
+        m_serverAttributes[kv.first] = s;
+    }
+
+
+}
+
+/// \brief Utility to send all attributes to the metaserver
+///
+void CommMetaClient::sendAllAttributes()
+{
+    for (auto& kv : m_serverAttributes) {
+        metaserverAttribute(kv.first, kv.second);
+    }
+}
