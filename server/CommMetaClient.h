@@ -63,6 +63,8 @@ class CommMetaClient {
     void metaserverReply(size_t packet_size);
     void metaserverTerminate();
     void metaserverAttribute(const std::string & k, const std::string & v );
+    void updateAttributes();
+    void sendAllAttributes();
 
     int setup(const std::string &);
 };

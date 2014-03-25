@@ -27,6 +27,7 @@
 #include "common/Variable.h"
 
 #include <iostream>
+#include <sstream>
 
 #include <cassert>
 
@@ -36,13 +37,22 @@ int main()
 
     assert(m != 0);
 
-    int foo = 1;
+    int foo = 7;
+    std::stringstream ss;
 
     m->watch("foo", new Variable<int>(foo));
 
     m->insert("bar", 3);
     m->insert("mim", 3.f);
     m->insert("qux", "three");
+
+    // positive check
+    assert( m->readVariable("foo",ss) == 0 );
+    assert( ss.str().compare("7") == 0 );
+
+    // negative check
+    ss.clear();
+    assert(m->readVariable("nonexistent",ss) != 0);
 
     m->send(std::cout);
 

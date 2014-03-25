@@ -99,3 +99,15 @@ void Monitors::send(std::ostream & io)
         io << std::endl;
     }
 }
+
+int Monitors::readVariable(const std::string& key, std::ostream& out_stream) const
+{
+    MonitorDict::const_iterator J = m_variableMonitors.find(key);
+    if ( J != m_variableMonitors.end() )
+    {
+	J->second->send(out_stream);
+        return 0;
+    }
+
+    return 1;
+}
