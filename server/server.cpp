@@ -284,6 +284,8 @@ int main(int argc, char ** argv)
 
                 std::string connection_id;
                 long c_iid = newId(connection_id);
+                //Turn off Nagle's algorithm to increase responsiveness.
+                client.getSocket().set_option(ip::tcp::no_delay(true));
                 client.startAccept(
                         new Connection(client, *server, "", connection_id, c_iid));
             };
