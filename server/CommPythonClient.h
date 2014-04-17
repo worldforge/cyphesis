@@ -23,6 +23,7 @@
 
 #include <memory>
 #include <string>
+#include <array>
 
 class PythonContext;
 
@@ -33,13 +34,12 @@ class CommPythonClient : public std::enable_shared_from_this<CommPythonClient> {
 
     boost::asio::local::stream_protocol::socket mSocket;
 
-    boost::asio::streambuf mBuffer;
-    std::iostream mStream;
+    std::array<char, 256> mBuffer;
 
     PythonContext * const m_pyContext;
     std::string m_incoming;
 
-    void read();
+    void read(size_t bytes);
     void do_read();
 
   public:

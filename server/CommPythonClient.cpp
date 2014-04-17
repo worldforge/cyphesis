@@ -27,8 +27,7 @@ static const bool debug_flag = false;
 
 CommPythonClient::CommPythonClient(const std::string & name,
         boost::asio::io_service& io_service) :
-        mSocket(io_service), mStream(&mBuffer),
-                m_pyContext(new PythonContext)
+        mSocket(io_service), m_pyContext(new PythonContext)
 {
 }
 
@@ -50,13 +49,12 @@ void CommPythonClient::startAccept()
 void CommPythonClient::do_read()
 {
     auto self(this->shared_from_this());
-    mSocket.async_read_some(mBuffer.prepare(1024),
+    mSocket.async_read_some(boost::asio::buffer(mBuffer),
             [this, self](boost::system::error_code ec, std::size_t length)
             {
                 if (!ec)
                 {
-                    mBuffer.commit(length);
-                    read();
+                    read(length);
                     //By calling do_read again we make sure that the instance
                     //doesn't go out of scope ("shared_from this"). As soon as that
                     //doesn't happen, and there's no do_write in progress, the instance
@@ -67,30 +65,23 @@ void CommPythonClient::do_read()
 
 }
 
-void CommPythonClient::read()
+void CommPythonClient::read(size_t bytes)
 {
-    mStream.peek();
 
-    std::streamsize count;
-
-    while ((count = mStream.rdbuf()->in_avail()) > 0) {
-
-        for (int i = 0; i < count; ++i) {
-
-            int next = mStream.rdbuf()->sbumpc();
-            if (next == '\n') {
-                if (m_incoming.empty()) {
-                    std::cout << "[NOT]" << std::endl << std::flush;
-                } else {
-                    // std::cout << m_incoming << std::endl << std::flush;
-                    std::cout << "[" << m_pyContext->runCommand(m_incoming)
-                              << "]" << std::endl << std::flush;
-                    m_incoming.clear();
-                }
-            } else if (next == '\r') {
+    for (size_t i = 0; i < bytes; ++i) {
+        int next = mBuffer[i];
+        if (next == '\n') {
+            if (m_incoming.empty()) {
+                std::cout << "[NOT]" << std::endl << std::flush;
             } else {
-                m_incoming.append(1, next);
+                // std::cout << m_incoming << std::endl << std::flush;
+                std::cout << "[" << m_pyContext->runCommand(m_incoming)
+                          << "]" << std::endl << std::flush;
+                m_incoming.clear();
             }
+        } else if (next == '\r') {
+        } else {
+            m_incoming.append(1, next);
         }
     }
 }
