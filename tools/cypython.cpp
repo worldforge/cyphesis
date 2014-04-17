@@ -92,7 +92,7 @@ int main(int argc, char ** argv)
             std::cout << std::endl << std::flush;
         } else {
             add_history(line);
-            sk.write_some(buffer(std::string(line)));
+            sk.write_some(buffer(std::string(line) + "\n"));
         }
     }
 #endif // _WIN32
