@@ -6,7 +6,7 @@
  </refmeta>
 
  <refnamediv>
-  <refname>cyconfig, cyconvertrules, cydumprules, cyloadrules, cypasswd</refname>
+  <refname>cyconfig, cyconvertrules, cydumprules, cyloadrules, cypasswd, cypython, cydb</refname>
   <refpurpose>cyphesis tools</refpurpose>
  </refnamediv>
 
@@ -50,6 +50,16 @@
   <cmdsynopsis>
    <command>/usr/bin/cyimport</command>
    <arg choice="req">filepath</arg>
+  </cmdsynopsis>
+  <cmdsynopsis>
+   <command>/usr/bin/cypython</command>
+   <arg choice="opt" rep="repeat">--section:option=value</arg>
+  </cmdsynopsis>
+  <cmdsynopsis>
+   <command>/usr/bin/cydb</command>
+   <arg choice="opt" rep="repeat">--section:option=value</arg>
+   <arg choice="req">dataset</arg>
+   <arg choice="req">action</arg>
   </cmdsynopsis>
  </refsynopsisdiv>
 
@@ -118,7 +128,44 @@ The <command>cyimport</command> tool imports entities and rules from a file,
 previously exported through the <command>cyexport</command> tool, into a
 running server.
   </para>
- </refsect1>
+  <para>
+The <command>cypython</command> tool allows you to execute Python code in a 
+running server. This command must be run on the same machine as the server 
+(it uses domain sockets for communication with the server). When run the user
+is presented with an interactive console into which Python code can be entered.
+Commands are sent to the server by pressing enter.
+  </para>
+  <para>
+The <command>cydb</command> tool is used to perform maintanence on the server
+database. Use only when the server is offline.
+The first argument specified which dataset to work with, and the second argument 
+specifies the action for that data set.
+The following datasets are supported:
+  </para>
+  <variablelist> 
+    <varlistentry>
+      <term>rules</term> 
+      <listitem> 
+        <para>Purge and list rules.
+        </para> 
+      </listitem> 
+    </varlistentry> 
+    <varlistentry>
+      <term>user</term> 
+      <listitem> 
+        <para>Purge, list, delete or modify user entries.
+        </para>
+      </listitem> 
+    </varlistentry> 
+    <varlistentry>
+      <term>user</term> 
+      <listitem> 
+        <para>Purge the world of all entities.
+        </para>
+      </listitem> 
+    </varlistentry> 
+  </variablelist> 
+</refsect1>
 
  <refsect1><title>Options</title>
   <para>
