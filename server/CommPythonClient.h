@@ -20,10 +20,10 @@
 #define SERVER_COMM_PYTHON_CLIENT_H
 
 #include <boost/asio.hpp>
+#include <boost/array.hpp>
 
 #include <memory>
 #include <string>
-#include <array>
 
 class PythonContext;
 
@@ -34,7 +34,12 @@ class CommPythonClient : public std::enable_shared_from_this<CommPythonClient> {
 
     boost::asio::local::stream_protocol::socket mSocket;
 
-    std::array<char, 256> mBuffer;
+    /**
+     * \brief Receiving buffer.
+     *
+     * Note that std::array isn't used to keep compatibility with older versions of boost.
+     */
+    boost::array<char, 256> mBuffer;
 
     PythonContext * const m_pyContext;
     std::string m_incoming;
