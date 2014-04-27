@@ -46,39 +46,41 @@ int main()
 {
     Py_Initialize();
 
-    PyObject * testmod = Py_InitModule("testmod", no_methods);
+    {
+        PyObject * testmod = Py_InitModule("testmod", no_methods);
 
-    assert(testmod != 0);
+        assert(testmod != 0);
 
-    run_python_string("import testmod");
-    run_python_string("class TestArithmeticScript(object):\n"
-                      " def __init__(self):\n"
-                      "  self.foo=1\n"
-                      "  self.bar=1.1\n"
-                      "  self.baz=None\n"
-                      "  self.qux='1'\n"
-                     );
-    run_python_string("testmod.TestArithmeticScript=TestArithmeticScript");
+        run_python_string("import testmod");
+        run_python_string("class TestArithmeticScript(object):\n"
+                          " def __init__(self):\n"
+                          "  self.foo=1\n"
+                          "  self.bar=1.1\n"
+                          "  self.baz=None\n"
+                          "  self.qux='1'\n"
+                         );
+        run_python_string("testmod.TestArithmeticScript=TestArithmeticScript");
 
-    PyObject * clss = Get_PyClass(testmod, "testmod", "TestArithmeticScript");
+        PyObject * clss = Get_PyClass(testmod, "testmod", "TestArithmeticScript");
 
-    assert(clss != 0);
+        assert(clss != 0);
 
-    PyObject * instance = PyEval_CallFunction(clss,"()");
+        PyObject * instance = PyEval_CallFunction(clss,"()");
 
-    assert(instance != 0);
+        assert(instance != 0);
 
-    PythonArithmeticScript pas(instance);
+        PythonArithmeticScript pas(instance);
 
-    float val;
-    pas.attribute("foo", val);
-    pas.attribute("bar", val);
-    pas.attribute("baz", val);
-    pas.attribute("qux", val);
-    pas.attribute("nonexistent", val);
+        float val;
+        pas.attribute("foo", val);
+        pas.attribute("bar", val);
+        pas.attribute("baz", val);
+        pas.attribute("qux", val);
+        pas.attribute("nonexistent", val);
 
-    pas.set("foo", 1.0f);
-    pas.set("mim", 1.0f);
+        pas.set("foo", 1.0f);
+        pas.set("mim", 1.0f);
+    }
 
     Py_Finalize();
     return 0;
