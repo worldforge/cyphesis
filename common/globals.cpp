@@ -171,6 +171,7 @@ int readConfigItem<std::string>(const std::string & section, const std::string &
 }
 
 template int readConfigItem<bool>(const std::string & section, const std::string & key, bool & storage);
+template int readConfigItem<int>(const std::string & section, const std::string & key, int & storage);
 
 /// \brief Base class for handling varconf options declared inline.
 class Option {
