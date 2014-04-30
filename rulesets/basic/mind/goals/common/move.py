@@ -9,6 +9,7 @@ from physics import Point3D
 
 from mind.Goal import Goal
 from mind.goals.common.common import *
+from mind.goals.common.misc_goal import *
 from random import *
 
 import types
@@ -426,7 +427,7 @@ class search(Goal):
     def __init__(self, what):
         Goal.__init__(self, "search for a thing",
                       self.do_I_have,
-                      [wander(false),
+                      [wander(),
                        spot_something(what, 30)])
         # Long range for testing only
         self.what=what
