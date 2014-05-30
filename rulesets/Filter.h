@@ -41,7 +41,7 @@ class Filter{
 
         ///\brief Return a Vector with entities that match the query
         ///FIXME: Return datatype needs to be reviewed.
-        EntityVector search(MemEntityDict all_entities);
+        EntityVector search(MemEntityDict all_entities, EntityVector &res);
     private:
         std::list<parser::condition> m_conditions;
         void recordCondition(const std::string &token,

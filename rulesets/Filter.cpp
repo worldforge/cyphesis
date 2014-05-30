@@ -43,7 +43,7 @@ namespace parser
     namespace ascii = boost::spirit::ascii;
 //Parser
     template <typename Iterator>
-    struct query_parser : qi::grammar<Iterator, condition(), ascii::space_type>
+    struct query_parser : qi::grammar<Iterator, std::list<condition>(), ascii::space_type>
     {
         query_parser() : query_parser::base_type(start)
         {
@@ -53,70 +53,54 @@ namespace parser
             using qi::lexeme;
             using ascii::char_;
 
-            target_g %= +char_ - ".";
+            //Definition of a phrase
+
+            // "+" operator matches its operand 1 or more times. Consecutive repetitions of char_ are
+            //collected into a string. char_ matches any character (except a dot in this case)
+            // char_ has attribute of char, while +(char_) can have attribute of string (or other container)
+            // "%=" operator makes RHS use attribute of LHS (in this case, string)
+            target_g %= +(char_ - ".");
+            //A list of comparison operators
+            //TODO: char_ may need to be changed to string and tested.
             comp_operator_g %= char_("!=") | char_("<=") | char_(">=") | char_("=") | char_(">") | char_("<");
+            //attribute_g is a string until comparison operator is found;
+            attribute_g %= +(char_ - comp_operator_g);
+            //A list of logical operators
             logical_operator_g %= char_("&") | char_("|");
-            attribute_g %= +char_;
-            value_g = +char_ >> -logical_operator_g; // needs revision. Log_operator may be consumed too soon.
-            start %=
-                target_g >> "." >> attribute_g >> comp_operator_g >> value_g;
+            //Value is a string until logical operator is found
+            value_g %= +(char_ - logical_operator_g);
+            // ">>" operator stands for "followed by".  a >> b matches if b follows a.
+            token_g %=
+                    target_g >> "." >> attribute_g >> comp_operator_g >> value_g;
+            // a%b matches a list of a separated by occurances of b and has attribute of vector<a>.
+            start %= token_g % "&";
         }
-//Grammar rules
+        //Rule templates take iterator, attribute signature and skipper parser as arguments
+        //Attribute of a target_g is string
         qi::rule<Iterator, std::string(), ascii::space_type> target_g;
         qi::rule<Iterator, std::string(), ascii::space_type> attribute_g;
         qi::rule<Iterator, std::string(), ascii::space_type> comp_operator_g;
         qi::rule<Iterator, std::string(), ascii::space_type> logical_operator_g;
         qi::rule<Iterator, std::string(), ascii::space_type> value_g;
-        qi::rule<Iterator, condition(), ascii::space_type> start;
+        qi::rule<Iterator, condition(), ascii::space_type> token_g;
+        qi::rule<Iterator, std::list<condition>(), ascii::space_type> start;
     };
 }
 
-//This is currently unused
-//void Filter::recordCondition(const std::string &token,
-//                             const std::string &comp_operator,
-//                             int delimiter_index)
-//{
-//    std::string attribute_name;
-//    std::string value;
-//    int dot_index = token.find(".");
-//    attribute_name = token.substr(dot_index + 1,
-//                            delimiter_index - dot_index - 1);
-//    trim(attribute_name);
-//    value = token.substr(delimiter_index + comp_operator.length());
-//    trim(value);
-//    conditions.emplace_back(attribute_name, value, comp_operator);
-//}
-
-
 Filter::Filter(const std::string &what)
 {
-    log(INFO, "test3");
-    std::cout << "test";
-    char_separator<char> token_sep("&");
-    tokenizer<char_separator<char>> tokens(what, token_sep);
-    parser::condition parsed_token;
-    parser::query_parser<std::string::iterator> grammar;
-    //Every valid token has one of delimiters and a dot separating object and its attribute
-    for (auto iter : tokens) {
-        std::string& token = iter;
-        auto token_begin = token.begin();
-        auto token_end = token.end();
-        phrase_parse(token_begin, token_end, grammar, spirit::ascii::space, parsed_token);
-        m_conditions.emplace_back(parsed_token);
-    }
+    namespace qi = boost::spirit::qi;
+    parser::query_parser<std::string::const_iterator> grammar;
+    auto iter_begin = what.begin();
+    auto iter_end = what.end();
+    qi::phrase_parse(iter_begin, iter_end, grammar, boost::spirit::ascii::space, m_conditions);
+
 }
 
-EntityVector Filter::search(MemEntityDict all_entities){
+EntityVector Filter::search(MemEntityDict all_entities, EntityVector &res){
 
-    EntityVector res;
-    //First iteration goes through all entities
 
     Atlas::Message::Element attribute_message;
-    //We just need the entities. Maybe there's a better way to copy them over.
-
-    for (auto& entity_iter:all_entities){
-        res.push_back(entity_iter.second);
-    }
 
     //NOTE: This works for "OR" operator, but not "AND"
     //TODO: Make sure an entity doesn't get pushed twice.
@@ -128,8 +112,7 @@ EntityVector Filter::search(MemEntityDict all_entities){
             //TODO: This part can be rewritten in a better way.
             //TODO: Comparison operator has to be considered
             //NOTE: some datatypes are not recognized (map, ptr, list)
-            if(entity_iter.second(condition.attribute)){
-                res.push_back(entity_iter.second);
+            if(!entity_iter.second->hasAttr(condition.attribute)){
                 continue;
             }
 
