@@ -268,6 +268,10 @@ void StorageManager::restoreThoughts(LocatedEntity * ent)
 
 bool StorageManager::storeThoughts(LocatedEntity * ent)
 {
+    if (!m_mindInspector) {
+        return false;
+    }
+
     if (ent->getFlags() & (entity_ephem)) {
         // This entity is not persisted.
         return false;
