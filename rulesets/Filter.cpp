@@ -27,64 +27,53 @@ using namespace boost;
 using namespace boost::algorithm;
 
 
+bool Filter::testAttributeMatch(LocatedEntity *entity,
+                            const std::string &attribute_name,
+                            const std::string &attribute_value,
+                            const std::string &comp_operator){
+//
+    if (!entity->hasAttr(attribute_name)) {return false;}
+    Atlas::Message::Element attribute_element;
+    if (entity->getAttr(attribute_name, attribute_element) != 0){return false;}
 
-//This may need to be moved to .h file
-BOOST_FUSION_ADAPT_STRUCT(
-    parser::condition,
-    (std::string, target)
-    (std::string, attribute)
-    (std::string, comp_operator)
-    (std::string, value_str)
-)
+    if (attribute_element.isString()){
+        return compare(attribute_element.asString(), attribute_value, comp_operator);
+    }
+    if (attribute_element.isFloat()){
+        return compare(float(attribute_element.asFloat()), std::stof(attribute_value), comp_operator);
+    }
+    if (attribute_element.isInt()){
+        return compare(int(attribute_element.asInt()), std::stoi(attribute_value), comp_operator);
+    }
+    //TODO: Implement support for list
+    return false; //attribute is not int/float/str/list
+}
 
-namespace parser
-{
-    namespace qi = boost::spirit::qi;
-    namespace ascii = boost::spirit::ascii;
-//Parser
-    template <typename Iterator>
-    struct query_parser : qi::grammar<Iterator, std::list<condition>(), ascii::space_type>
-    {
-        query_parser() : query_parser::base_type(start)
-        {
-            using qi::int_;
-            using qi::lit;
-            using qi::double_;
-            using qi::lexeme;
-            using ascii::char_;
-
-            //Definition of a phrase
-
-            // "+" operator matches its operand 1 or more times. Consecutive repetitions of char_ are
-            //collected into a string. char_ matches any character (except a dot in this case)
-            // char_ has attribute of char, while +(char_) can have attribute of string (or other container)
-            // "%=" operator makes RHS use attribute of LHS (in this case, string)
-            target_g %= +(char_ - ".");
-            //A list of comparison operators
-            //TODO: char_ may need to be changed to string and tested.
-            comp_operator_g %= char_("!=") | char_("<=") | char_(">=") | char_("=") | char_(">") | char_("<");
-            //attribute_g is a string until comparison operator is found;
-            attribute_g %= +(char_ - comp_operator_g);
-            //A list of logical operators
-            logical_operator_g %= char_("&") | char_("|");
-            //Value is a string until logical operator is found
-            value_g %= +(char_ - logical_operator_g);
-            // ">>" operator stands for "followed by".  a >> b matches if b follows a.
-            token_g %=
-                    target_g >> "." >> attribute_g >> comp_operator_g >> value_g;
-            // a%b matches a list of a separated by occurances of b and has attribute of vector<a>.
-            start %= token_g % "&";
+void Filter::attributeSearchAnd(const MemEntityDict &all_entities, EntityVector& res){
+    if (m_conditions.empty()){return;}
+    bool pass;
+    for (auto entity_pair:all_entities){
+        pass = true;
+        for (auto condition:m_conditions){
+            if (!testAttributeMatch(entity_pair.second, condition.attribute, condition.value_str, condition.comp_operator)){
+                pass = false;
+                break;
+            }
         }
-        //Rule templates take iterator, attribute signature and skipper parser as arguments
-        //Attribute of a target_g is string
-        qi::rule<Iterator, std::string(), ascii::space_type> target_g;
-        qi::rule<Iterator, std::string(), ascii::space_type> attribute_g;
-        qi::rule<Iterator, std::string(), ascii::space_type> comp_operator_g;
-        qi::rule<Iterator, std::string(), ascii::space_type> logical_operator_g;
-        qi::rule<Iterator, std::string(), ascii::space_type> value_g;
-        qi::rule<Iterator, condition(), ascii::space_type> token_g;
-        qi::rule<Iterator, std::list<condition>(), ascii::space_type> start;
-    };
+        if (pass){res.push_back(entity_pair.second);}
+    }
+}
+
+void Filter::attributeSearchOr(const MemEntityDict &all_entities, EntityVector& res){
+    if (m_conditions.empty()){return;}
+    for (auto entity_pair:all_entities){
+        for (auto condition:m_conditions){
+            if (testAttributeMatch(entity_pair.second, condition.attribute, condition.value_str, condition.comp_operator)){
+                res.push_back(entity_pair.second);
+                break;
+            }
+        }
+    }
 }
 
 Filter::Filter(const std::string &what)
@@ -97,46 +86,7 @@ Filter::Filter(const std::string &what)
 
 }
 
-EntityVector Filter::search(MemEntityDict all_entities, EntityVector &res){
-
-
-    Atlas::Message::Element attribute_message;
-
-    //NOTE: This works for "OR" operator, but not "AND"
-    //TODO: Make sure an entity doesn't get pushed twice.
-    for (auto condition:m_conditions){
-        for(auto entity_iter:all_entities){
-            //Attempt to find a attribute_name. Determine the type, convert the data and compare
-            //comparisons are made here using the correct operator.
-            entity_iter.second->getAttr(condition.attribute, attribute_message);
-            //TODO: This part can be rewritten in a better way.
-            //TODO: Comparison operator has to be considered
-            //NOTE: some datatypes are not recognized (map, ptr, list)
-            if(!entity_iter.second->hasAttr(condition.attribute)){
-                continue;
-            }
-
-            if (attribute_message.isFloat()) {
-                if (std::stof(condition.value_str) == attribute_message.asFloat()) {
-                    res.push_back(entity_iter.second);
-                }
-                continue;
-            }
-            if (attribute_message.isInt()){
-                if (std::stoi(condition.value_str) == attribute_message.asInt()) {
-                    res.push_back(entity_iter.second);
-                }
-                continue;
-            }
-            if (attribute_message.isString()){
-                if (condition.value_str == attribute_message.asString()) {
-                    res.push_back(entity_iter.second);
-                }
-                continue;
-            }
-        }
-    }
-    return res;
+void Filter::search(MemEntityDict all_entities, EntityVector &res){
 
 }
 
