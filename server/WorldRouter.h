@@ -20,6 +20,7 @@
 #define SERVER_WORLD_ROUTER_H
 
 #include "common/BaseWorld.h"
+#include "common/OperationsDispatcher.h"
 
 #include <list>
 #include <set>
@@ -28,10 +29,6 @@
 
 class Spawn;
 
-struct OpQueEntry;
-
-typedef std::queue<OpQueEntry> OpQueue;
-typedef std::priority_queue<OpQueEntry, std::vector<OpQueEntry>, std::greater<OpQueEntry> > OpPriorityQueue;
 typedef std::set<LocatedEntity *> EntitySet;
 typedef std::map<std::string, std::pair<Spawn *, std::string>> SpawnDict;
 
@@ -42,10 +39,9 @@ typedef std::map<std::string, std::pair<Spawn *, std::string>> SpawnDict;
 /// It explicitly also maintains lists of perceptive entities.
 class WorldRouter : public BaseWorld {
   private:
-    /// An ordered queue of operations to be dispatched in the future
-    OpPriorityQueue m_operationQueue;
-    /// An ordered queue of operations to be dispatched now
-    OpQueue m_immediateQueue;
+
+    ///Handles dispatching of operations.
+    OperationsDispatcher m_operationsDispatcher;
     /// An ordered queue of suspended operations to be dispatched when resumed.
     OpQueue m_suspendedQueue;
     /// List of perceptive entities.
@@ -54,20 +50,11 @@ class WorldRouter : public BaseWorld {
     int m_entityCount;
     /// Map of spawns
     SpawnDict m_spawns;
-    /// Keeps track of if the operation queues are dirty.
-    bool m_operation_queues_dirty;
   protected:
-    void addOperationToQueue(const Atlas::Objects::Operation::RootOperation &,
-                             LocatedEntity &);
     bool broadcastPerception(const Atlas::Objects::Operation::RootOperation &) const;
     void deliverTo(const Atlas::Objects::Operation::RootOperation &,
                    LocatedEntity &);
     void resumeWorld();
-    /**
-     * @brief Dispatches the operation contained in the OpQueueEntry.
-     * @param opQueueEntry An entry from an op queue.
-     */
-    void dispatchOperation(const OpQueEntry& opQueueEntry);
   public:
     explicit WorldRouter(const SystemTime &);
     virtual ~WorldRouter();
