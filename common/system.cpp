@@ -258,8 +258,10 @@ extern "C" void soft_shutdown_on_signal(int signo)
 
 extern "C" void report_segfault(int signo)
 {
-    log(CRITICAL, "Segmentation fault");
-    log(NOTICE, "Please report this bug to " PACKAGE_BUGREPORT);
+    //Don't print to the log at segfault, as that involves memory allocation.
+    //And with a segfault we might have gotten a tainted stack, which might cause that call to hang.
+    fprintf(stderr, "Segmentation fault");
+    fprintf(stderr, "Please report this bug to " PACKAGE_BUGREPORT);
 
 #if !defined(HAVE_SIGACTION)
     signal(signo, SIG_DFL);
