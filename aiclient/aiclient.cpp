@@ -155,7 +155,7 @@ int main(int argc, char ** argv)
 
     while (!exit_flag) {
         int netResult = possessionClient->handleNet();
-        if (netResult == 0) {
+        if (netResult >= 0) {
             //As long as we're connected we'll keep on processing minds
             possessionClient->idle();
         } else if (!exit_flag) {
