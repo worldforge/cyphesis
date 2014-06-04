@@ -74,48 +74,7 @@ inline EntityScopedRef::~EntityScopedRef()
     entity.decRef();
 }
 
-/// \brief Type to hold an operation and the Entity it is from for efficiency
-/// when broadcasting.
-struct OpQueEntry {
-    Operation op;
-    LocatedEntity* from;
 
-    explicit OpQueEntry(const Operation & o, LocatedEntity & f);
-    OpQueEntry(const OpQueEntry & o);
-    ~OpQueEntry();
-
-    const Operation & operator*() const {
-        return op;
-    }
-
-    Atlas::Objects::Operation::RootOperationData * operator->() const {
-        return op.get();
-    }
-
-    bool operator<(const OpQueEntry& right) const {
-        return op->getSeconds() < right->getSeconds();
-    }
-
-    bool operator>(const OpQueEntry& right) const {
-        return op->getSeconds() > right->getSeconds();
-    }
-};
-
-inline OpQueEntry::OpQueEntry(const Operation & o, LocatedEntity & f) : op(o),
-                                                                        from(&f)
-{
-    from->incRef();
-}
-
-inline OpQueEntry::OpQueEntry(const OpQueEntry & o) : op(o.op), from(o.from)
-{
-    from->incRef();
-}
-
-inline OpQueEntry::~OpQueEntry()
-{
-    from->decRef();
-}
 
 /// \brief Constructor for the world object.
 ///
@@ -124,7 +83,8 @@ inline OpQueEntry::~OpQueEntry()
 /// but I am not clear why. Need to look into why.
 WorldRouter::WorldRouter(const SystemTime & time) :
       BaseWorld(*new World(consts::rootWorldId, consts::rootWorldIntId)),
-      m_entityCount(1), m_operation_queues_dirty(false)
+      m_operationsDispatcher([&](const Operation & op, LocatedEntity & from){this->operation(op, from);}),
+      m_entityCount(1)
           
 {
     m_initTime = time.seconds();
@@ -150,8 +110,7 @@ WorldRouter::~WorldRouter()
 
     //Make sure to clear the queues first so that there's nothing referencing entities
     //in them.
-    m_immediateQueue = OpQueue();
-    m_operationQueue = OpPriorityQueue();
+    m_operationsDispatcher.clearQueues();
     m_suspendedQueue = OpQueue();
 
     EntityDict::const_iterator Jend = m_eobjects.end();
@@ -169,39 +128,16 @@ WorldRouter::~WorldRouter()
 
 bool WorldRouter::isQueueDirty() const
 {
-    return m_operation_queues_dirty;
+    return m_operationsDispatcher.isQueueDirty();
 }
 
 void WorldRouter::markQueueAsClean()
 {
-    m_operation_queues_dirty = false;
+    m_operationsDispatcher.markQueueAsClean();
 }
 
 
-/// \brief Add an operation to the ordered op queue.
-///
-/// Any time adjustment required is made to the operation, and it
-/// is added to the apropriate place in the chronologically ordered
-/// queue. The From attribute of the operation is set to the id of
-/// the entity that is responsible for adding the operation to the
-/// queue.
-void WorldRouter::addOperationToQueue(const Operation & op, LocatedEntity & ent)
-{
-    assert(op.isValid());
-    assert(op->getFrom() != "cheat");
 
-    m_operation_queues_dirty = true;
-    op->setFrom(ent.getId());
-    if (!op->hasAttrFlag(Atlas::Objects::Operation::FUTURE_SECONDS_FLAG)) {
-        op->setSeconds(getTime());
-        m_immediateQueue.push(OpQueEntry(op, ent));
-        return;
-    }
-    double t = getTime() + op->getFutureSeconds();
-    op->setSeconds(t);
-    op->setFutureSeconds(0.);
-    m_operationQueue.push(OpQueEntry(op, ent));
-}
 
 /// \brief Add a new entity to the world.
 ///
@@ -453,7 +389,7 @@ void WorldRouter::resumeWorld()
     //Take all suspended operations and add them to be executed.
     while (!m_suspendedQueue.empty()) {
         auto& ope = m_suspendedQueue.front();
-        addOperationToQueue(ope.op, *ope.from);
+        m_operationsDispatcher.addOperationToQueue(ope.op, *ope.from);
         m_suspendedQueue.pop();
     }
 }
@@ -465,7 +401,7 @@ void WorldRouter::resumeWorld()
 /// so it gets added to the queue for dispatch.
 void WorldRouter::message(const Operation & op, LocatedEntity & ent)
 {
-    addOperationToQueue(op, ent);
+    m_operationsDispatcher.addOperationToQueue(op, ent);
     debug(std::cout << "WorldRouter::message {"
                     << op->getParents().front() << ":"
                     << op->getFrom() << ":" << op->getTo() << "}" << std::endl
@@ -547,6 +483,8 @@ void WorldRouter::operation(const Operation & op, LocatedEntity & from)
     assert(op->getFrom() == from.getId());
     assert(!op->getParents().empty());
 
+    Dispatching.emit(op);
+
     if (!op->isDefaultTo()) {
         const std::string & to = op->getTo();
         assert(!to.empty());
@@ -624,64 +562,12 @@ void WorldRouter::addPerceptive(LocatedEntity * perceptive)
 /// without becoming unresponsive to client communications traffic.
 bool WorldRouter::idle()
 {
-	unsigned int op_count = 0;
-    while (op_count < 10 && !m_immediateQueue.empty()) {
-        ++op_count;
-        dispatchOperation(m_immediateQueue.front());
-        m_immediateQueue.pop();
-    }
-
-    //If there still are immediate ops to deliver we are absolutely busy.
-    if (!m_immediateQueue.empty()) {
-        return true;
-    }
-
-    double realtime = getTime();
-    while (op_count < 10 && !m_operationQueue.empty() && m_operationQueue.top()->getSeconds() <= realtime) {
-        ++op_count;
-        dispatchOperation(m_operationQueue.top());
-        m_operationQueue.pop();
-    }
-
-    // If there are still immediate or regular ops to deliver return true
-    // to tell the server not to sleep when polling clients. This ensures
-    // that we keep processing ops at a the maximum rate without leaving
-    // clients unattended.
-    if (!m_immediateQueue.empty() || (!m_operationQueue.empty() && m_operationQueue.top()->getSeconds() <= realtime)) {
-        return true;
-    } else {
-        return false;
-    }
+    return m_operationsDispatcher.idle();
 }
 
 double WorldRouter::secondsUntilNextOp() const {
-    if (m_operationQueue.empty()) {
-        //600 is a fairly large number of seconds
-        return 600.0;
-    }
-    return m_operationQueue.top()->getSeconds() - getTime();
+    return m_operationsDispatcher.secondsUntilNextOp();
 }
-
-void WorldRouter::dispatchOperation(const OpQueEntry& oqe)
-{
-    Dispatching.emit(oqe.op);
-    try {
-        operation(oqe.op, *oqe.from);
-    }
-    catch (const std::exception& ex) {
-        log(ERROR, String::compose("Exception caught in WorldRouter::idle() "
-                                   "thrown while processing operation "
-                                   "sent to \"%1\" from \"%2\": %3",
-                                   oqe->getTo(), oqe->getFrom(), ex.what()));
-    }
-    catch (...) {
-        log(ERROR, String::compose("Unspecified exception caught in WorldRouter::idle() "
-                                   "thrown while processing operation "
-                                   "sent to \"%1\" from \"%2\"",
-                                   oqe->getTo(), oqe->getFrom()));
-    }
-}
-
 
 /// Find an entity of the given name. This is provided to allow administrators
 /// to perform certain admin tasks. It finds and returns the first instance
