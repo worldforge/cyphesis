@@ -63,18 +63,61 @@ Filter::Filter(const std::string &what)
     parser::query_parser<std::string::const_iterator> grammar;
     auto iter_begin = what.begin();
     auto iter_end = what.end();
+//    qi::phrase_parse(iter_begin, iter_end, grammar, boost::spirit::ascii::space,
+//                     m_conditions);
     qi::phrase_parse(iter_begin, iter_end, grammar, boost::spirit::ascii::space,
-                     m_conditions);
-    //TODO: Check if parsing is successful
-    for (auto& condition : m_conditions) {
-        m_parsedConditions.push_back(ParsedCondition(condition));
+                     m_allConditions);
+    std::list<ParsedCondition> parsed_and_block;
+    for (auto& and_block : m_allConditions) {
+        for (auto& condition : and_block) {
+            parsed_and_block.push_back(ParsedCondition(condition));
+        }
+        m_allParsedConditions.push_back(parsed_and_block);
+        parsed_and_block.clear();
     }
+    //TODO: Check if parsing is successful
+//    for (auto& condition : m_conditions) {
+//        m_parsedConditions.push_back(ParsedCondition(condition));
+//    }
 
 }
 
-void Filter::search(MemEntityDict &all_entities, EntityVector &res)
+//void Filter::search(std::map<long int, LocatedEntity*> all_entities, EntityVector &res)
+//{
+//    for (auto entity : all_entities) {
+//            for (auto& and_block : m_allParsedConditions) {
+//                if (check_and_block(*entity.second, and_block)){
+//                    res.push_back(entity.second);
+//                    break;
+//                }
+//            }
+//        }
+//}
+bool Filter::check_and_block(LocatedEntity& entity,
+                             std::list<ParsedCondition> conditions)
 {
+    if (conditions.empty()) {
+        return false;
+    }
+    for (auto& condition : conditions) {
+        if (!condition.isTrue(entity)) {
+            return false;
+        }
+    }
+    return true;
+}
 
+void Filter::search(std::vector<LocatedEntity*> &all_entities,
+                    std::vector<LocatedEntity*> res)
+{
+    for (auto entity : all_entities) {
+        for (auto& and_block : m_allParsedConditions) {
+            if (check_and_block(*entity, and_block)) {
+                res.push_back(entity);
+                break;
+            }
+        }
+    }
 }
 
 ParsedCondition::ParsedCondition(const parser::condition &unparsed_condition)
@@ -135,8 +178,8 @@ ParsedCondition::ParsedCondition(const parser::condition &unparsed_condition)
                                     boost::spirit::ascii::space, attribute);
     if (subject_test && iter_begin == iter_end) {
         //NOTE: This is not yet implemented!
-       // m_case = new Cases::MemoryCase(attribute, unparsed_condition.value_str,
-       //                                unparsed_condition.comp_operator);
+        // m_case = new Cases::MemoryCase(attribute, unparsed_condition.value_str,
+        //                                unparsed_condition.comp_operator);
     }
 
 }

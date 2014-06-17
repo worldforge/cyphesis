@@ -13,7 +13,6 @@
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/fusion/include/io.hpp>
 
-
 ///\brief This class is used to search entities in NPC's memory
 ///using a query as a filter
 ///
@@ -62,7 +61,10 @@ class Filter {
 
         //TODO: Allow for various LocatedEntity containers.
         ///\brief Return a Vector with entities that match the query
-        void search(MemEntityDict &all_entities, EntityVector &res);
+        //void search(std::map<long int, LocatedEntity*> all_entities, EntityVector &res);
+
+        void search(std::vector<LocatedEntity*> &all_entities,
+                    std::vector<LocatedEntity*> res);
 
         //\brief Return entities that pass all conditions.
         void attributeSearchAnd(const MemEntityDict &all_entities,
@@ -72,6 +74,8 @@ class Filter {
                                EntityVector& res);
     private:
         std::list<parser::condition> m_conditions;
+        std::list<std::list<parser::condition>> m_allConditions;
+        std::list<std::list<ParsedCondition>> m_allParsedConditions;
         std::list<ParsedCondition> m_parsedConditions;
         void recordCondition(const std::string &token,
                              const std::string &comp_operator,
@@ -80,6 +84,8 @@ class Filter {
                                 const std::string &attribute_name,
                                 const std::string &attribute_value,
                                 const std::string &comp_operator);
+        bool check_and_block(LocatedEntity &entity,
+                             std::list<ParsedCondition> conditions);
 
 };
 

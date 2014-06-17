@@ -19,7 +19,9 @@ class StringAttributeComparer : public AttributeComparerWrapper {
         StringAttributeComparer(const std::string &attribute_name,
                                 const std::string &value_str,
                                 const std::string &comp_operator);
-        ~StringAttributeComparer(){}
+        ~StringAttributeComparer()
+        {
+        }
         bool compare(LocatedEntity& entity);
     private:
         bool (*comparer_method)(std::string, std::string);
@@ -33,7 +35,9 @@ class NumericAttributeComparer : public AttributeComparerWrapper {
         NumericAttributeComparer(const std::string &attribute_name,
                                  const std::string &value_str,
                                  const std::string &comp_operator);
-        ~NumericAttributeComparer(){}
+        ~NumericAttributeComparer()
+        {
+        }
         bool compare(LocatedEntity& entity);
     private:
         //a pointer to the comparer method with the right comparison operator
@@ -45,11 +49,14 @@ class NumericAttributeComparer : public AttributeComparerWrapper {
 };
 
 //\brief Compares only to the type of a given TypeNode
+//TODO: compare type nodes instead of strings.
 class StrictTypeComparer : public AttributeComparerWrapper {
     public:
         StrictTypeComparer(const std::string &type,
                            const std::string &comp_operator);
-        ~StrictTypeComparer(){}
+        ~StrictTypeComparer()
+        {
+        }
         bool compare(LocatedEntity& entity);
     private:
         std::string m_typeName;
@@ -60,7 +67,9 @@ class SoftTypeComparer : public AttributeComparerWrapper {
     public:
         SoftTypeComparer(const std::string &type,
                          const std::string &comp_operator);
-        ~SoftTypeComparer(){}
+        ~SoftTypeComparer()
+        {
+        }
         bool compare(LocatedEntity& entity);
     private:
         std::string m_typeStr;

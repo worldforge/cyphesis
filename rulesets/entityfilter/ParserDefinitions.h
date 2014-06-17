@@ -29,10 +29,10 @@ namespace qi = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;
 //Parser definitions
 template<typename Iterator>
-struct query_parser : qi::grammar<Iterator, std::list<condition>(),
+struct query_parser : qi::grammar<Iterator, std::list<std::list<condition>>(),
         ascii::space_type> {
         query_parser() :
-                query_parser::base_type(start)
+                query_parser::base_type(phrase)
         {
             using qi::int_;
             using qi::lit;
@@ -64,7 +64,7 @@ struct query_parser : qi::grammar<Iterator, std::list<condition>(),
             and_block_g %= token_g % (qi::lit("and") | "&");
             or_block_g %= and_block_g % (qi::lit("or") | "|");
 
-            start %= token_g % "&";
+            phrase %= or_block_g;
         }
         //Rule templates take iterator, attribute signature and skipper parser as arguments
         //Attribute of a target_g is string
@@ -76,7 +76,7 @@ struct query_parser : qi::grammar<Iterator, std::list<condition>(),
         qi::rule<Iterator, condition(), ascii::space_type> token_g;
         qi::rule<Iterator, std::list<condition>(), ascii::space_type> and_block_g;
         qi::rule<Iterator, std::list<std::list<condition>>(), ascii::space_type> or_block_g;
-        qi::rule<Iterator, std::list<condition>(), ascii::space_type> start;
+        qi::rule<Iterator, std::list<std::list<condition>>(), ascii::space_type> phrase;
 };
 }
 }
