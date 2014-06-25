@@ -172,6 +172,15 @@ OutfitProperty * OutfitProperty::copy() const
     return new OutfitProperty(*this);
 }
 
+LocatedEntity* OutfitProperty::getEntity(const std::string& key) const
+{
+    auto iter = m_data.find(key);
+    if (iter != m_data.end()) {
+        return iter->second.get();
+    }
+    return 0;
+}
+
 void OutfitProperty::cleanUp()
 {
     std::set<std::string> empty_locations;
@@ -217,7 +226,7 @@ void OutfitProperty::itemRemoved(LocatedEntity * garment,
             log(ERROR, "WORN property of garment is not a string");
         }
     } else {
-        
+
         EntityRefMap::const_iterator I = m_data.begin();
         EntityRefMap::const_iterator Iend = m_data.end();
         for (; I != Iend; ++I) {

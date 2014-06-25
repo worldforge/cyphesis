@@ -18,7 +18,36 @@ EntityAttributeCase::EntityAttributeCase(const std::string &attribute,
         m_attributeName(attribute), m_valueStr(value)
 {
 //Determine type of value
-    //TODO: Implement support for list
+//    //TODO: Implement support for list
+//    auto iter_begin = value.begin();
+//    auto iter_end = value.end();
+//    float value_float;
+//    bool value_check = qi::phrase_parse(iter_begin, iter_end, qi::float_,
+//                                        boost::spirit::ascii::space,
+//                                        value_float);
+//    if (value_check && iter_begin == iter_end) {
+//        m_comparer = new Comparers::NumericAttributeComparer(attribute, value,
+//                                                             comp_operator);
+//        return;
+//    } else {
+//        iter_begin = value.begin();
+//    }
+//
+//    std::string value_str;
+//    value_check = qi::phrase_parse(iter_begin, iter_end, +qi::char_,
+//                                   boost::spirit::ascii::space, value_str);
+//    if (value_check && iter_begin == iter_end) {
+//        m_comparer = new Comparers::StringAttributeComparer(attribute, value,
+//                                                            comp_operator);
+//    }
+    m_comparer = getComparer(attribute, value, comp_operator);
+
+    //TODO: Implement support for list;
+}
+Comparers::AttributeComparerWrapper* EntityAttributeCase::getComparer(const std::string &attribute,
+                                                                      const std::string &value,
+                                                                      const std::string &comp_operator)
+{
     auto iter_begin = value.begin();
     auto iter_end = value.end();
     float value_float;
@@ -26,22 +55,16 @@ EntityAttributeCase::EntityAttributeCase(const std::string &attribute,
                                         boost::spirit::ascii::space,
                                         value_float);
     if (value_check && iter_begin == iter_end) {
-        m_comparer = new Comparers::NumericAttributeComparer(attribute, value,
-                                                             comp_operator);
-        return;
+        return new Comparers::NumericAttributeComparer(attribute, value,
+                                                       comp_operator);
     } else {
         iter_begin = value.begin();
     }
+    //TODO: List comparer
 
-    std::string value_str;
-    value_check = qi::phrase_parse(iter_begin, iter_end, +qi::char_,
-                                   boost::spirit::ascii::space, value_str);
-    if (value_check && iter_begin == iter_end) {
-        m_comparer = new Comparers::StringAttributeComparer(attribute, value,
-                                                            comp_operator);
-    }
-
-    //TODO: Implement support for list;
+    //Use string comparer by default
+    return new Comparers::StringAttributeComparer(attribute, value,
+                                                  comp_operator);
 }
 EntityAttributeCase::~EntityAttributeCase()
 {
@@ -57,16 +80,23 @@ EntityTypeCase::EntityTypeCase(const std::string &value,
                                const std::string &comp_operator) :
         m_valueStr(value)
 {
-    if (comp_operator == "=") {
-        m_comparer = new Comparers::SoftTypeComparer(value, comp_operator);
-    } else {
-        m_comparer = new Comparers::StrictTypeComparer(value, comp_operator);
-    }
+    m_comparer = getComparer(value, comp_operator);
 }
 
 EntityTypeCase::~EntityTypeCase()
 {
     delete m_comparer;
+}
+
+Comparers::AttributeComparerWrapper* EntityTypeCase::getComparer(const std::string &value,
+                                                                 const std::string &comp_operator)
+{
+    if (comp_operator == "=") {
+        return new Comparers::SoftTypeComparer(value, comp_operator);
+    } else {
+        return new Comparers::StrictTypeComparer(value, comp_operator);
+    }
+    return 0;
 }
 
 bool EntityTypeCase::testCase(LocatedEntity& entity)

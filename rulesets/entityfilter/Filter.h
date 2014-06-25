@@ -63,15 +63,7 @@ class Filter {
         ///\brief Return a Vector with entities that match the query
         //void search(std::map<long int, LocatedEntity*> all_entities, EntityVector &res);
 
-        void search(std::vector<LocatedEntity*> &all_entities,
-                    std::vector<LocatedEntity*> res);
-
-        //\brief Return entities that pass all conditions.
-        void attributeSearchAnd(const MemEntityDict &all_entities,
-                                EntityVector& res);
-        //\brief Return Entities that pass at least one condition
-        void attributeSearchOr(const MemEntityDict &all_entities,
-                               EntityVector& res);
+        bool search(LocatedEntity& entity);
     private:
         std::list<parser::condition> m_conditions;
         std::list<std::list<parser::condition>> m_allConditions;

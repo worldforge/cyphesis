@@ -18,6 +18,9 @@ class EntityAttributeCase : public AbstractCase {
                             const std::string &comp_operator);
         ~EntityAttributeCase();
         bool testCase(LocatedEntity& entity);
+        static Comparers::AttributeComparerWrapper* getComparer(const std::string &attribute,
+                                                                const std::string &value,
+                                                                const std::string &comp_operator);
     private:
         Comparers::AttributeComparerWrapper* m_comparer;
         std::string m_attributeName;
@@ -31,6 +34,8 @@ class EntityTypeCase : public AbstractCase {
                        const std::string &comp_operator);
         ~EntityTypeCase();
         bool testCase(LocatedEntity& entity);
+        static Comparers::AttributeComparerWrapper* getComparer(const std::string &value,
+                                                                const std::string &comp_operator);
     private:
         Comparers::AttributeComparerWrapper* m_comparer;
         std::string m_valueStr;

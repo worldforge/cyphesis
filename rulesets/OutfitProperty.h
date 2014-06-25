@@ -64,6 +64,7 @@ class OutfitProperty : public PropertyBase, virtual public sigc::trackable {
     virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
     virtual OutfitProperty * copy() const;
 
+    LocatedEntity* getEntity(const std::string& key) const;
     void cleanUp();
     void wear(LocatedEntity * wearer, const std::string & location, LocatedEntity * garment);
 };

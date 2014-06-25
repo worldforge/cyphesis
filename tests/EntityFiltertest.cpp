@@ -4,10 +4,13 @@
 #ifndef DEBUG
 #define DEBUG
 #endif
+
+//TODO: Check for unnecessary includes/links
 #include "rulesets/entityfilter/Filter.h"
 #include "rulesets/EntityProperty.h"
 #include "rulesets/Domain.h"
 #include "rulesets/AtlasProperties.h"
+#include "rulesets/OutfitProperty.h"
 #include "common/Property.h"
 #include "common/BaseWorld.h"
 
@@ -24,9 +27,9 @@ using Atlas::Objects::Entity::Anonymous;
 
 //\brief a tester function for entity filter. Accepts a query and lists of entities that
 // are supposed to pass or fail the test for a given query
-void FilterTester(const std::string& query,
-                  std::initializer_list<Entity*> entitiesToPass,
-                  std::initializer_list<Entity*> entitiesToFail)
+void TestQuery(const std::string& query,
+               std::initializer_list<Entity*> entitiesToPass,
+               std::initializer_list<Entity*> entitiesToFail)
 {
     EntityFilter::Filter f(query);
     for (auto iter = entitiesToPass.begin(); iter != entitiesToPass.end();
@@ -41,7 +44,7 @@ void FilterTester(const std::string& query,
 int main()
 {
     using namespace EntityFilter;
-    //Set up testing environment
+    //Set up testing environment for Type/Soft properties
     Entity b1("1", 1);
     TypeNode* barrelType = new TypeNode("barrel");
     b1.setType(barrelType);
@@ -59,34 +62,81 @@ int main()
     b3.setType(barrelType);
 
     TypeNode* boulderType = new TypeNode("boulder");
-    Entity bl1("4", 3);
+    Entity bl1("4", 4);
     bl1.setProperty("mass", new SoftProperty(Element(25)));
     bl1.setType(boulderType);
 
-// TESTS
-    FilterTester("entity.type=barrel", { &b1 }, { &bl1 });
+// START of Soft property and general filtering tests
+    {
+        TestQuery("entity.type=barrel", { &b1 }, { &bl1 });
 
-    // test entity.attribute case with various operators
-    FilterTester("entity.burn_speed=0.3", { &b1 }, { &b2 });
+        // test entity.attribute case with various operators
+        TestQuery("entity.burn_speed=0.3", { &b1 }, { &b2 });
 
-    FilterTester("entity.burn_speed>0.3", { }, { &b1, &bl1 });
+        TestQuery("entity.burn_speed>0.3", { }, { &b1, &bl1 });
 
-    FilterTester("entity.burn_speed<0.3", { &b2 }, { &b1 });
+        TestQuery("entity.burn_speed<0.3", { &b2 }, { &b1 });
 
-    //test query with several criteria
+        //test query with several criteria
 
-    FilterTester("entity.type=barrel&entity.burn_speed=0.3", { &b1 }, { &b2,
-                         &bl1 });
+        TestQuery("entity.type=barrel&entity.burn_speed=0.3", { &b1 }, { &b2,
+                          &bl1 });
 
-    //test logical operators and precedence
+        //test logical operators and precedence
 
-    FilterTester("entity.type=barrel|entity.type=boulder", { &b1, &bl1 }, { });
-    FilterTester("entity.type=boulder|entity.type=barrel&entity.burn_speed=0.3",
-                 { &b1, &bl1 }, { });
+        TestQuery("entity.type=barrel|entity.type=boulder", { &b1, &bl1 }, { });
+        TestQuery(
+                "entity.type=boulder|entity.type=barrel&entity.burn_speed=0.3",
+                { &b1, &bl1 }, { });
 
+        //test query with spaces
+        TestQuery("  entity.type = barrel   ", { &b1 }, { &bl1 });
+        //TODO: Test invalid query.
+    }
+    // END of soft property and general tests
+
+    //Set up testing environment for Outfit property
+    TypeNode* glovesType = new TypeNode("gloves");
+    TypeNode* bootsType = new TypeNode("boots");
+    TypeNode* characterType = new TypeNode("character");
+
+    Entity glovesEntity("5", 5);
+    glovesEntity.setType(glovesType);
+    glovesEntity.setProperty("color", new SoftProperty("brown"));
+    glovesEntity.setProperty("mass", new SoftProperty(5));
+
+    Entity bootsEntity("6", 6);
+    bootsEntity.setType(bootsType);
+    bootsEntity.setProperty("color", new SoftProperty("black"));
+    bootsEntity.setProperty("mass", new SoftProperty(10));
+
+    std::map<std::string, Element> outfitMap;
+    outfitMap.insert(std::make_pair("feet", Element(&bootsEntity)));
+    outfitMap.insert(std::make_pair("hands", Element(&glovesEntity)));
+    OutfitProperty* outfit1 = new OutfitProperty;
+    outfit1->set(outfitMap);
+
+    Entity ch1("7", 7);
+    ch1.setType(characterType);
+    ch1.setProperty("outfit", outfit1);
+
+    {
+        //Test soft property of outfit
+        TestQuery("entity.outfit.hands.color=brown", { &ch1 }, { });
+        //Test type of outfit
+        //TestQuery("entity.outfit.hands.type=gloves", {&ch1}, {});
+        //Test an entity without outfit
+        TestQuery("entity.outfit.hands.type=gloves", { }, { &bl1 });
+        //Test outfit that doesn't have the specified part
+        TestQuery("entity.outfit.chest.color=red", { }, { &ch1 });
+
+    }
 //    Clean up
     delete barrelType;
     delete boulderType;
+    delete glovesType;
+    delete bootsType;
+    delete characterType;
 }
 
 //LocatedEntity::LocatedEntity(const std::string & id, long intId) :

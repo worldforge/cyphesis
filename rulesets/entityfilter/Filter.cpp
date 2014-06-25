@@ -1,7 +1,7 @@
 #include "Filter.h"
 #include "ParserDefinitions.h"
-#include "../MemMap.h"
-#include "../MemEntity.h"
+#include "AttributeCases.h"
+#include "OutfitCase.h"
 #include "../common/TypeNode.h"
 
 #include <Atlas/Objects/Operation.h>
@@ -20,43 +20,6 @@ namespace qi = boost::spirit::qi;
 
 namespace EntityFilter
 {
-void Filter::attributeSearchAnd(const MemEntityDict &all_entities,
-                                EntityVector& res)
-{
-    if (m_conditions.empty()) {
-        return;
-    }
-    bool pass;
-    for (auto& entity_pair : all_entities) {
-        pass = true;
-        for (auto& condition : m_parsedConditions) {
-            if (!condition.isTrue(*entity_pair.second)) {
-                pass = false;
-                break;
-            }
-        }
-        if (pass) {
-            res.push_back(entity_pair.second);
-        }
-    }
-}
-
-void Filter::attributeSearchOr(const MemEntityDict &all_entities,
-                               EntityVector& res)
-{
-    if (m_conditions.empty()) {
-        return;
-    }
-    for (auto& entity_pair : all_entities) {
-        for (auto& condition : m_parsedConditions) {
-            if (condition.isTrue(*entity_pair.second)) {
-                res.push_back(entity_pair.second);
-                break;
-            }
-        }
-    }
-}
-
 Filter::Filter(const std::string &what)
 {
 
@@ -107,17 +70,16 @@ bool Filter::check_and_block(LocatedEntity& entity,
     return true;
 }
 
-void Filter::search(std::vector<LocatedEntity*> &all_entities,
-                    std::vector<LocatedEntity*> res)
+bool Filter::search(LocatedEntity& entity)
 {
-    for (auto entity : all_entities) {
-        for (auto& and_block : m_allParsedConditions) {
-            if (check_and_block(*entity, and_block)) {
-                res.push_back(entity);
-                break;
-            }
+    for (auto& and_block : m_allParsedConditions) {
+        if (check_and_block(entity, and_block)) {
+            return true;
+            break;
         }
     }
+    return false;
+
 }
 
 ParsedCondition::ParsedCondition(const parser::condition &unparsed_condition)
@@ -146,6 +108,30 @@ ParsedCondition::ParsedCondition(const parser::condition &unparsed_condition)
         iter_begin = subject.begin();
     }
 
+    //see if we have entity.outfit.*.* case;
+//    qi::rule<std::string::iterator,  std::string(), std::string(),
+//            boost::spirit::ascii::space_type> outfit_subject_g = (qi::lit(
+//            "Entity") | "entity") >> "."
+//            >> (qi::lit("outfit") | qi::lit("Outfit")) >> "."
+//            >> +(qi::char_ - ".") >> "." >> +(qi::char_ - "=" - "<" - ">" - "!");
+    std::string outfit_part;
+    std::string outfit_property;
+    //TODO: Investigate why declared rule doesn't work
+    // Grammar is defined within the function call.
+    subject_test = qi::phrase_parse(
+            iter_begin,
+            iter_end,
+            (qi::lit("Entity") | "entity") >> "."
+                    >> (qi::lit("outfit") | qi::lit("Outfit")) >> "."
+                    >> +(qi::char_ - ".") >> "."
+                    >> +(qi::char_ - "=" - "<" - ">" - "!"),
+            boost::spirit::ascii::space, outfit_part, outfit_property);
+    if (subject_test && iter_begin == iter_end) {
+        m_case = new Cases::OutfitCase(outfit_part, outfit_property,
+                                       unparsed_condition.value_str,
+                                       unparsed_condition.comp_operator);
+    }
+
     //See if we have entity.attribute case.
 
     //grammar for "entity.attribute" token
@@ -169,7 +155,7 @@ ParsedCondition::ParsedCondition(const parser::condition &unparsed_condition)
 
     //See if we have memory.* case.
 
-    //grammar for "entity.*" token
+    //grammar for "memory.*" token
     //NOTE: there may exist a better way to ignore case sensitivity.
     qi::rule<std::string::iterator, std::string(),
             boost::spirit::ascii::space_type> memory_subject_g = ("m"
