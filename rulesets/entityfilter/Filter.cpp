@@ -2,6 +2,7 @@
 #include "ParserDefinitions.h"
 #include "AttributeCases.h"
 #include "OutfitCase.h"
+#include "BBoxCase.h"
 #include "../common/TypeNode.h"
 
 #include <Atlas/Objects/Operation.h>
@@ -38,24 +39,9 @@ Filter::Filter(const std::string &what)
         m_allParsedConditions.push_back(parsed_and_block);
         parsed_and_block.clear();
     }
-    //TODO: Check if parsing is successful
-//    for (auto& condition : m_conditions) {
-//        m_parsedConditions.push_back(ParsedCondition(condition));
-//    }
 
 }
 
-//void Filter::search(std::map<long int, LocatedEntity*> all_entities, EntityVector &res)
-//{
-//    for (auto entity : all_entities) {
-//            for (auto& and_block : m_allParsedConditions) {
-//                if (check_and_block(*entity.second, and_block)){
-//                    res.push_back(entity.second);
-//                    break;
-//                }
-//            }
-//        }
-//}
 bool Filter::check_and_block(LocatedEntity& entity,
                              std::list<ParsedCondition> conditions)
 {
@@ -70,7 +56,7 @@ bool Filter::check_and_block(LocatedEntity& entity,
     return true;
 }
 
-bool Filter::search(LocatedEntity& entity)
+bool Filter::match(LocatedEntity& entity)
 {
     for (auto& and_block : m_allParsedConditions) {
         if (check_and_block(entity, and_block)) {
@@ -116,7 +102,7 @@ ParsedCondition::ParsedCondition(const parser::condition &unparsed_condition)
 //            >> +(qi::char_ - ".") >> "." >> +(qi::char_ - "=" - "<" - ">" - "!");
     std::string outfit_part;
     std::string outfit_property;
-    //TODO: Investigate why declared rule doesn't work
+    //TODO: Investigate why declared rule doesn't work.
     // Grammar is defined within the function call.
     subject_test = qi::phrase_parse(
             iter_begin,
@@ -130,12 +116,37 @@ ParsedCondition::ParsedCondition(const parser::condition &unparsed_condition)
         m_case = new Cases::OutfitCase(outfit_part, outfit_property,
                                        unparsed_condition.value_str,
                                        unparsed_condition.comp_operator);
+        return;
+    }
+
+    //See if we have BBox case.
+    //BBox grammar currently allows for volume/height/width/lenght or area
+    //properties. Anything else will not be considered a match
+    qi::rule<std::string::iterator, std::string(),
+            boost::spirit::ascii::space_type> bbox_subject_g = (qi::lit(
+            "entity") | qi::lit("Entity")) >> "."
+            >> (qi::lit("bbox") | qi::lit("BBox")) >> "."
+            >> (qi::string("volume") | qi::string("height")
+                    | (qi::string("length")) | (qi::string("width"))
+                    | (qi::string("area")));
+    std::string bbox_property;
+    subject_test = qi::phrase_parse(iter_begin, iter_end, bbox_subject_g,
+                                    boost::spirit::ascii::space, bbox_property);
+    if (subject_test && iter_begin == iter_end) {
+        m_case = new Cases::BBoxCase(bbox_property,
+                                     unparsed_condition.value_str,
+                                     unparsed_condition.comp_operator);
+        return;
+    } else {
+        iter_begin = subject.begin();
     }
 
     //See if we have entity.attribute case.
 
     //grammar for "entity.attribute" token
     //This rule will match if we use "entity.attribute" token
+    //This rule has to be checked last, since it would match other cases
+    //like outfit or bbox
     qi::rule<std::string::iterator, std::string(),
             boost::spirit::ascii::space_type> attribute_subject_g = (qi::lit(
             "Entity") | "entity") >> "."
@@ -147,11 +158,10 @@ ParsedCondition::ParsedCondition(const parser::condition &unparsed_condition)
         m_case = new Cases::EntityAttributeCase(
                 attribute, unparsed_condition.value_str,
                 unparsed_condition.comp_operator);
+        return;
     } else {
         iter_begin = subject.begin();
     }
-
-    //TODO: Outfit case here.
 
     //See if we have memory.* case.
 
@@ -166,7 +176,10 @@ ParsedCondition::ParsedCondition(const parser::condition &unparsed_condition)
         //NOTE: This is not yet implemented!
         // m_case = new Cases::MemoryCase(attribute, unparsed_condition.value_str,
         //                                unparsed_condition.comp_operator);
+        return;
     }
+    InvalidQueryException invalid_query;
+    throw invalid_query;
 
 }
 bool ParsedCondition::isTrue(LocatedEntity& entity)

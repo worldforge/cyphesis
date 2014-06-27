@@ -10,7 +10,7 @@ namespace EntityFilter
 namespace Cases
 {
 
-// a class to handle "entity.attribute" query
+///\brief A class to handle "entity.attribute" query
 class EntityAttributeCase : public AbstractCase {
     public:
         EntityAttributeCase(const std::string &attribute,
@@ -27,7 +27,7 @@ class EntityAttributeCase : public AbstractCase {
         std::string m_valueStr;
 };
 
-//A class to handle "entity.type" query
+///\brief A class to handle "entity.type" query
 class EntityTypeCase : public AbstractCase {
     public:
         EntityTypeCase(const std::string &value,

@@ -43,7 +43,7 @@ class EntityAttributeCase;
 class EntityTypeCase;
 }
 
-//This class is meant to further parse tokens into appropriate structures.
+///This class is meant to further parse tokens into appropriate structures.
 class ParsedCondition {
     public:
         ParsedCondition(const parser::condition &all_conditions);
@@ -60,26 +60,29 @@ class Filter {
         Filter(const std::string &what);
 
         //TODO: Allow for various LocatedEntity containers.
-        ///\brief Return a Vector with entities that match the query
-        //void search(std::map<long int, LocatedEntity*> all_entities, EntityVector &res);
-
-        bool search(LocatedEntity& entity);
+        ///\brief test given entity for a match
+        ///@param entity - entity to be tested
+        bool match(LocatedEntity& entity);
     private:
+        //Theses structures are used to store conditions accounting for precedence, but should be
+        //changed to more sophisticated ones later.
         std::list<parser::condition> m_conditions;
         std::list<std::list<parser::condition>> m_allConditions;
         std::list<std::list<ParsedCondition>> m_allParsedConditions;
         std::list<ParsedCondition> m_parsedConditions;
-        void recordCondition(const std::string &token,
-                             const std::string &comp_operator,
-                             int delimiter_index);
-        bool testAttributeMatch(LocatedEntity *entity,
-                                const std::string &attribute_name,
-                                const std::string &attribute_value,
-                                const std::string &comp_operator);
         bool check_and_block(LocatedEntity &entity,
                              std::list<ParsedCondition> conditions);
 
 };
+///\brief An Exception class to be thrown in case of an invalid query.
+class InvalidQueryException : public std::exception {
+    public:
+        virtual const char* what() const throw ()
+        {
+            return "Attempted creating entity filter with invalid query";
+        }
+};
 
 }
+
 #endif

@@ -13,7 +13,7 @@ namespace EntityFilter
 namespace Comparers
 {
 
-//String comparer class. Only = or != operators are allowed.
+///String comparer class. Only = or != operators are allowed.
 class StringAttributeComparer : public AttributeComparerWrapper {
     public:
         StringAttributeComparer(const std::string &attribute_name,
@@ -29,7 +29,7 @@ class StringAttributeComparer : public AttributeComparerWrapper {
         std::string m_attributeName;
 };
 
-//A class used to compare numeric attributes
+///A class used to compare numeric attributes
 class NumericAttributeComparer : public AttributeComparerWrapper {
     public:
         NumericAttributeComparer(const std::string &attribute_name,
@@ -48,7 +48,7 @@ class NumericAttributeComparer : public AttributeComparerWrapper {
 
 };
 
-//\brief Compares only to the type of a given TypeNode
+///\brief Compares only to the type of a given TypeNode
 //TODO: compare type nodes instead of strings.
 class StrictTypeComparer : public AttributeComparerWrapper {
     public:
@@ -62,7 +62,7 @@ class StrictTypeComparer : public AttributeComparerWrapper {
         std::string m_typeName;
         bool (*comparer_method)(std::string, std::string);
 };
-//\brief Compares to the type of a given TypeNode and its parent nodes
+///\brief Compares to the type of a given TypeNode and its parent nodes
 class SoftTypeComparer : public AttributeComparerWrapper {
     public:
         SoftTypeComparer(const std::string &type,
@@ -76,38 +76,6 @@ class SoftTypeComparer : public AttributeComparerWrapper {
         bool comp_bool;
 
 };
-
-//Comparison functions.
-template<typename ValType>
-bool eqComparer(ValType val1, ValType val2)
-{
-    return val1 == val2;
-}
-template<typename ValType>
-bool neqComparer(ValType val1, ValType val2)
-{
-    return val1 != val2;
-}
-template<typename ValType>
-bool gComparer(ValType val1, ValType val2)
-{
-    return val1 > val2;
-}
-template<typename ValType>
-bool geComparer(ValType val1, ValType val2)
-{
-    return val1 >= val2;
-}
-template<typename ValType>
-bool lComparer(ValType val1, ValType val2)
-{
-    return val1 < val2;
-}
-template<typename ValType>
-bool leComparer(ValType val1, ValType val2)
-{
-    return val1 <= val2;
-}
 
 }
 }

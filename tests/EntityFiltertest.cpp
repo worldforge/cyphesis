@@ -11,12 +11,15 @@
 #include "rulesets/Domain.h"
 #include "rulesets/AtlasProperties.h"
 #include "rulesets/OutfitProperty.h"
+#include "rulesets/BBoxProperty.h"
 #include "common/Property.h"
 #include "common/BaseWorld.h"
+#include "common/log.h"
 
 #include "rulesets/Entity.h"
 #include "common/TypeNode.h"
 
+#include <wfmath/point.h>
 #include <Atlas/Objects/Anonymous.h>
 
 #include <cassert>
@@ -34,11 +37,11 @@ void TestQuery(const std::string& query,
     EntityFilter::Filter f(query);
     for (auto iter = entitiesToPass.begin(); iter != entitiesToPass.end();
             ++iter) {
-        assert(f.search(**iter));
+        assert(f.match(**iter));
     }
     for (auto iter = entitiesToFail.begin(); iter != entitiesToFail.end();
             ++iter) {
-        assert(!f.search(**iter));
+        assert(!f.match(**iter));
     }
 }
 int main()
@@ -92,6 +95,11 @@ int main()
         //test query with spaces
         TestQuery("  entity.type = barrel   ", { &b1 }, { &bl1 });
         //TODO: Test invalid query.
+        try {
+            TestQuery("foobar", { }, { &b1, &bl1 });
+        } catch (EntityFilter::InvalidQueryException& e) {
+            log(WARNING, e.what());
+        }
     }
     // END of soft property and general tests
 
@@ -120,17 +128,52 @@ int main()
     ch1.setType(characterType);
     ch1.setProperty("outfit", outfit1);
 
+    //START of outfit case test
     {
         //Test soft property of outfit
         TestQuery("entity.outfit.hands.color=brown", { &ch1 }, { });
         //Test type of outfit
-        //TestQuery("entity.outfit.hands.type=gloves", {&ch1}, {});
+        TestQuery("entity.outfit.hands.type=gloves", { &ch1 }, { });
         //Test an entity without outfit
         TestQuery("entity.outfit.hands.type=gloves", { }, { &bl1 });
         //Test outfit that doesn't have the specified part
         TestQuery("entity.outfit.chest.color=red", { }, { &ch1 });
+        //Test outfit with another criterion
+        TestQuery("entity.type=character&entity.outfit.hands.color=brown", {
+                          &ch1 },
+                  { &b1 });
 
     }
+    //END of outfit case test
+
+//Set up bbox testing environment
+
+    BBoxProperty* bbox1 = new BBoxProperty;
+    bbox1->set((std::vector<Element> { -1, -2, -3, 1, 2, 3 }));
+    b1.setProperty("bbox", bbox1);
+
+    BBoxProperty* bbox2 = new BBoxProperty;
+    bbox2->set(std::vector<Element> { -3, -1, -2, 1, 2, 3 });
+    bl1.setProperty("bbox", bbox2);
+
+    //START of BBox tests
+    {
+        //Test BBox volume
+        TestQuery("entity.bbox.volume=48", { &b1 }, { &bl1 });
+        //Test BBox height
+        TestQuery("entity.bbox.height=6", { &b1 }, { &bl1 });
+        //Test BBox length
+        TestQuery("entity.bbox.length=4", { &b1 }, { &bl1 });
+        //Test BBox width
+        TestQuery("entity.bbox.width=2", { &b1 }, { &bl1 });
+        //Test BBox area
+        TestQuery("entity.bbox.area=8", { &b1 }, { &bl1 });
+        //Test BBox with another criterion
+        TestQuery("entity.type=barrel&entity.bbox.height>0", { &b1 }, { &b2,
+                          &bl1 });
+    }
+    //END of BBox tests
+
 //    Clean up
     delete barrelType;
     delete boulderType;
@@ -139,67 +182,7 @@ int main()
     delete characterType;
 }
 
-//LocatedEntity::LocatedEntity(const std::string & id, long intId) :
-//               Router(id, intId),
-//               m_refCount(0), m_seq(0),
-//               m_script(0), m_type(0), m_flags(0), m_contains(0)
-//{
-//}
-//
-//LocatedEntity::~LocatedEntity()
-//{
-//}
-//
-//bool LocatedEntity::hasAttr(const std::string & name) const
-//{
-//    return false;
-//}
-//
-//int LocatedEntity::getAttr(const std::string & name,
-//                           Atlas::Message::Element & attr) const
-//{
-//    return -1;
-//}
-//
-//int LocatedEntity::getAttrType(const std::string & name,
-//                               Atlas::Message::Element & attr,
-//                               int type) const
-//{
-//    return -1;
-//}
-
-//PropertyBase * LocatedEntity::setAttr(const std::string & name,
-//                                      const Atlas::Message::Element & attr)
-//{
-//    return 0;
-//}
-//
-//const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
-//{
-//    return 0;
-//}
-
-//
-//PropertyBase * LocatedEntity::modProperty(const std::string & name)
-//{
-//    return 0;
-//}
-//
-//PropertyBase * LocatedEntity::setProperty(const std::string & name,
-//                                          PropertyBase * prop)
-//{
-//    return 0;
-//}
-//
-//void LocatedEntity::installDelegate(int, const std::string &)
-//{
-//}
-//
-//void LocatedEntity::destroy()
-//{
-//}
-//Domain * Domain::m_instance = new Domain();
-
+//Stubs
 Domain * Domain::m_instance = new Domain();
 
 Domain::Domain() :
@@ -221,33 +204,6 @@ float Domain::constrainHeight(LocatedEntity * parent,
 void Domain::tick(double t)
 {
 }
-//Domain * LocatedEntity::getMovementDomain()
-//{
-//    return 0;
-//}
-//
-//void LocatedEntity::sendWorld(const Operation & op)
-//{
-//}
-//
-//void LocatedEntity::onContainered(const LocatedEntity*)
-//{
-//}
-//
-//void LocatedEntity::onUpdated()
-//{
-//}
-//
-//void LocatedEntity::makeContainer()
-//{
-//    if (m_contains == 0) {
-//        m_contains = new LocatedEntitySet;
-//    }
-//}
-//
-//void LocatedEntity::merge(const MapType & ent)
-//{
-//}
 IdProperty::IdProperty(const std::string & data) :
         PropertyBase(per_ephem), m_data(data)
 {
@@ -364,7 +320,9 @@ Location::Location() :
 void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
-
+void Location::modifyBBox()
+{
+}
 void log(LogLevel lvl, const std::string & msg)
 {
 }
