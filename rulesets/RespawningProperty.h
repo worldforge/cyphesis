@@ -51,6 +51,8 @@ class RespawningProperty : public Property<std::string>
 
     private:
 
+        sigc::connection m_entityLinkConnection;
+
 };
 
 #endif /* RULESETS_RESPAWNINGPROPERTY_H_ */

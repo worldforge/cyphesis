@@ -38,6 +38,7 @@ RespawningProperty::RespawningProperty()
 
 RespawningProperty::~RespawningProperty()
 {
+    m_entityLinkConnection.disconnect();
 }
 
 void RespawningProperty::install(LocatedEntity * owner, const std::string & name)
@@ -65,21 +66,34 @@ HandlerResult RespawningProperty::delete_handler(LocatedEntity * e,
         const Operation & op, OpVector & res)
 {
     if (!m_data.empty()) {
-        Location new_loc;
-        if (BaseWorld::instance().moveToSpawn(m_data, new_loc) == 0) {
-            new_loc.m_velocity = Vector3D(0,0,0);
 
-            Anonymous move_arg;
-            move_arg->setId(e->getId());
-            new_loc.addToEntity(move_arg);
-            Move move;
-            move->setFrom(e->getId());
-            move->setTo(e->getId());
-            move->setArgs1(move_arg);
-            res.push_back(move);
+        Location new_loc;
+        new_loc.m_velocity = Vector3D(0,0,0);
+        Character* character = dynamic_cast<Character*>(e);
+        if (character && (!character->m_externalMind || !character->m_externalMind->isLinked())) {
+            //if it's a character we should check if it's externally controlled. If it's not
+            //we should put the character in limbo until an external mind is connected.
+            new_loc.m_loc = nullptr;
+            if (!m_entityLinkConnection) {
+                m_entityLinkConnection = character->externalLinkChanged.connect(*this, &RespawningProperty);
+            }
         } else {
-            //TODO: place entity in limbo; do not delete it
+            if (BaseWorld::instance().moveToSpawn(m_data, new_loc) == 0) {
+            } else {
+                //TODO: handle that the entity now is in limbo
+                new_loc.m_loc = nullptr;
+            }
         }
+
+        Anonymous move_arg;
+        move_arg->setId(e->getId());
+        new_loc.addToEntity(move_arg);
+        Move move;
+        move->setFrom(e->getId());
+        move->setTo(e->getId());
+        move->setArgs1(move_arg);
+        res.push_back(move);
+
         //We need to move the entity to the spawn point instead of deleting it.
         //This will effectively make the system ignore the Delete op.
         return OPERATION_BLOCKED;
