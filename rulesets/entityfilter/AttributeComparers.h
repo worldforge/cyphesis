@@ -44,8 +44,33 @@ class NumericAttributeComparer : public AttributeComparerWrapper {
         bool (*comparer_method)(float, float);
         std::string m_attributeName;
         float m_value;
-        Atlas::Message::Element m_atlasAttr;
+};
 
+class NumericListAttributeComparer : public AttributeComparerWrapper {
+    public:
+        NumericListAttributeComparer(const std::string &attribute_name,
+                                     const std::list<float> &value,
+                                     const std::string &comp_operator);
+        ~NumericListAttributeComparer()
+        {
+        }
+        bool compare(LocatedEntity& entity);
+    private:
+        bool (*comparer_method)(float, float);
+        std::string m_attributeName;
+        std::list<float> m_value;
+};
+class StringListAttributeComparer : public AttributeComparerWrapper {
+    public:
+        StringListAttributeComparer(const std::string &attribute_name,
+                                    const std::string &value_str,
+                                    const std::string &comp_operator);
+        ~StringListAttributeComparer(){}
+        bool compare(LocatedEntity& entity);
+    private:
+        bool (*comparer_method)(std::string, std::string);
+        std::string m_attributeName;
+        std::list<std::string> m_value;
 };
 
 ///\brief Compares only to the type of a given TypeNode

@@ -68,11 +68,17 @@ int main()
     Entity bl1("4", 4);
     bl1.setProperty("mass", new SoftProperty(Element(25)));
     bl1.setType(boulderType);
+    SoftProperty* prop1 = new SoftProperty();
+    prop1->set(std::vector<Element> {25, 20});
+    bl1.setProperty("test", prop1);
+
+
+    //Remove this test afterwards
+        TestQuery("entity.mass=25", {&b3}, {});
 
 // START of Soft property and general filtering tests
     {
         TestQuery("entity.type=barrel", { &b1 }, { &bl1 });
-
         // test entity.attribute case with various operators
         TestQuery("entity.burn_speed=0.3", { &b1 }, { &b2 });
 
@@ -80,7 +86,12 @@ int main()
 
         TestQuery("entity.burn_speed<0.3", { &b2 }, { &b1 });
 
+        // test list comparison
+        //FIXME: List criteria seem to be bugged with new structure
+        //TestQuery("entity.test=[25, 20]", { &bl1 }, { &b1 });
+
         //test query with several criteria
+
 
         TestQuery("entity.type=barrel&entity.burn_speed=0.3", { &b1 }, { &b2,
                           &bl1 });
@@ -88,19 +99,33 @@ int main()
         //test logical operators and precedence
 
         TestQuery("entity.type=barrel|entity.type=boulder", { &b1, &bl1 }, { });
+
         TestQuery(
                 "entity.type=boulder|entity.type=barrel&entity.burn_speed=0.3",
                 { &b1, &bl1 }, { });
 
+        //test query with parenthesis
+        TestQuery("(entity.type=boulder)", {&bl1}, {&b1});
+
+        TestQuery("(entity.type=boulder)&(entity.mass=25)", {&bl1}, {&b1});
+
+        //test query with nested parentheses
+        TestQuery("(entity.type=barrel&(entity.mass=25|entity.mass=30)|entity.type=boulder)", {&b1, &b3, &bl1}, {&b2});
+
+        TestQuery("(entity.type=barrel&(entity.mass=25&(entity.burn_speed=0.25|entity.mass=30))|entity.type=boulder)", {&bl1}, {&b1});
+
+        //override precedence rules with parenthesis
+        TestQuery("(entity.type=boulder|entity.type=barrel)&entity.burn_speed=0.3", {&b1}, {&bl1});
+
         //test query with spaces
         TestQuery("  entity.type = barrel   ", { &b1 }, { &bl1 });
-        //TODO: Test invalid query.
         try {
             TestQuery("foobar", { }, { &b1, &bl1 });
         } catch (EntityFilter::InvalidQueryException& e) {
             log(WARNING, e.what());
         }
     }
+
     // END of soft property and general tests
 
     //Set up testing environment for Outfit property
@@ -127,6 +152,7 @@ int main()
     Entity ch1("7", 7);
     ch1.setType(characterType);
     ch1.setProperty("outfit", outfit1);
+
 
     //START of outfit case test
     {

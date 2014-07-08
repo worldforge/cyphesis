@@ -3,6 +3,7 @@
 #include "AttributeCases.h"
 #include "OutfitCase.h"
 #include "BBoxCase.h"
+#include "../LocatedEntity.h"
 #include "../common/TypeNode.h"
 
 #include <Atlas/Objects/Operation.h>
@@ -16,61 +17,72 @@
 #include <boost/fusion/include/io.hpp>
 #include <boost/tuple/tuple.hpp>
 
+#include <boost/variant/recursive_wrapper.hpp>
+
 using namespace boost;
 namespace qi = boost::spirit::qi;
+using qi::no_case;
+
+
 
 namespace EntityFilter
 {
-Filter::Filter(const std::string &what)
-{
-
-    parser::query_parser<std::string::const_iterator> grammar;
-    auto iter_begin = what.begin();
-    auto iter_end = what.end();
-//    qi::phrase_parse(iter_begin, iter_end, grammar, boost::spirit::ascii::space,
-//                     m_conditions);
-    qi::phrase_parse(iter_begin, iter_end, grammar, boost::spirit::ascii::space,
-                     m_allConditions);
-    std::list<ParsedCondition> parsed_and_block;
-    for (auto& and_block : m_allConditions) {
-        for (auto& condition : and_block) {
-            parsed_and_block.push_back(ParsedCondition(condition));
+//Visitor class for filter's AST.
+//This class describes how to handle the AST nodes by providing an overload for each possible case
+class ASTVisitor : public boost::static_visitor<bool> {
+    public:
+        //Entity to be tested has to be stored as a member.
+        //FIXME: assigning m_entity may be faster than reinitializing
+        ASTVisitor(LocatedEntity& entity) :
+                m_entity(entity)
+        {
         }
-        m_allParsedConditions.push_back(parsed_and_block);
-        parsed_and_block.clear();
-    }
+        LocatedEntity& m_entity;
 
-}
-
-bool Filter::check_and_block(LocatedEntity& entity,
-                             std::list<ParsedCondition> conditions)
-{
-    if (conditions.empty()) {
-        return false;
-    }
-    for (auto& condition : conditions) {
-        if (!condition.isTrue(entity)) {
+        //A node should never be an integer, but there has to be an overload for it.
+        bool operator()(int & i) const
+        {
             return false;
         }
+        //If a node is a condition - just check if it's true for a given entity
+        bool operator()(ParsedCondition& condition) const
+        {
+            return condition.isTrue(m_entity);
+        }
+        //If a node is a binary operation - recurse on its branches by applying this visitor.
+        bool operator()(parser::binop<parser::op_and>& node) const
+        {
+            return boost::apply_visitor(*this, node.m_left)
+                    && boost::apply_visitor(*this, node.m_right);
+        }
+        bool operator()(parser::binop<parser::op_or>& node) const
+        {
+            return boost::apply_visitor(*this, node.m_left)
+                    || boost::apply_visitor(*this, node.m_right);
+        }
+};
+Filter::Filter(const std::string &what)
+{
+    parser::query_ast_parser<std::string::const_iterator> grammar;
+    auto iter_begin = what.begin();
+    auto iter_end = what.end();
+    parser::expr expression;
+
+    bool parse_success = qi::phrase_parse(iter_begin, iter_end, grammar,
+                                          boost::spirit::ascii::space, m_tree);
+    if (!(parse_success && iter_begin == iter_end)) {
+        InvalidQueryException invalid_query;
+        throw invalid_query;
     }
-    return true;
 }
 
 bool Filter::match(LocatedEntity& entity)
 {
-    for (auto& and_block : m_allParsedConditions) {
-        if (check_and_block(entity, and_block)) {
-            return true;
-            break;
-        }
-    }
-    return false;
-
+    return boost::apply_visitor(ASTVisitor(entity), m_tree);
 }
 
-ParsedCondition::ParsedCondition(const parser::condition &unparsed_condition)
+ParsedCondition::ParsedCondition(const parser::condition &unparsed_condition) :m_condition(unparsed_condition)
 {
-
     //Determine what kind of subject we have using spirit::qi grammar rules.
     std::string subject = unparsed_condition.attribute;
     std::string::iterator iter_begin = subject.begin();
@@ -80,8 +92,7 @@ ParsedCondition::ParsedCondition(const parser::condition &unparsed_condition)
     //grammar for "entity.type" token
     //This rule will match if we use "entity.type" token
     qi::rule<std::string::iterator, boost::spirit::ascii::space_type> type_subject_g =
-            (qi::lit("Entity") | qi::lit("entity")) >> "."
-                    >> (qi::lit("type") | qi::lit("Type"));
+            no_case["Entity"] >> "." >> no_case["Type"];
 
     //See if we have entity.type case.
     bool subject_test = qi::phrase_parse(iter_begin, iter_end, type_subject_g,
@@ -95,20 +106,14 @@ ParsedCondition::ParsedCondition(const parser::condition &unparsed_condition)
     }
 
     //see if we have entity.outfit.*.* case;
-//    qi::rule<std::string::iterator,  std::string(), std::string(),
-//            boost::spirit::ascii::space_type> outfit_subject_g = (qi::lit(
-//            "Entity") | "entity") >> "."
-//            >> (qi::lit("outfit") | qi::lit("Outfit")) >> "."
-//            >> +(qi::char_ - ".") >> "." >> +(qi::char_ - "=" - "<" - ">" - "!");
     std::string outfit_part;
     std::string outfit_property;
-    //TODO: Investigate why declared rule doesn't work.
     // Grammar is defined within the function call.
     subject_test = qi::phrase_parse(
             iter_begin,
             iter_end,
-            (qi::lit("Entity") | "entity") >> "."
-                    >> (qi::lit("outfit") | qi::lit("Outfit")) >> "."
+            //grammar definition
+            no_case["Entity"] >> "." >> no_case["outfit"] >> "."
                     >> +(qi::char_ - ".") >> "."
                     >> +(qi::char_ - "=" - "<" - ">" - "!"),
             boost::spirit::ascii::space, outfit_part, outfit_property);
@@ -123,12 +128,13 @@ ParsedCondition::ParsedCondition(const parser::condition &unparsed_condition)
     //BBox grammar currently allows for volume/height/width/lenght or area
     //properties. Anything else will not be considered a match
     qi::rule<std::string::iterator, std::string(),
-            boost::spirit::ascii::space_type> bbox_subject_g = (qi::lit(
-            "entity") | qi::lit("Entity")) >> "."
-            >> (qi::lit("bbox") | qi::lit("BBox")) >> "."
-            >> (qi::string("volume") | qi::string("height")
-                    | (qi::string("length")) | (qi::string("width"))
-                    | (qi::string("area")));
+            boost::spirit::ascii::space_type> bbox_subject_g = no_case["Entity"]
+            >> "." >> no_case["BBox"] >> "."
+            >>       (no_case[qi::string("Volume")]
+                    | no_case[qi::string("Height")]
+                    | no_case[qi::string("Length")]
+                    | no_case[qi::string("Width")]
+                    | no_case[qi::string("Area")]);
     std::string bbox_property;
     subject_test = qi::phrase_parse(iter_begin, iter_end, bbox_subject_g,
                                     boost::spirit::ascii::space, bbox_property);
@@ -145,13 +151,13 @@ ParsedCondition::ParsedCondition(const parser::condition &unparsed_condition)
 
     //grammar for "entity.attribute" token
     //This rule will match if we use "entity.attribute" token
-    //This rule has to be checked last, since it would match other cases
-    //like outfit or bbox
+    //This rule has to be checked last, since it could match other cases
     qi::rule<std::string::iterator, std::string(),
-            boost::spirit::ascii::space_type> attribute_subject_g = (qi::lit(
-            "Entity") | "entity") >> "."
-            >> +(qi::char_ - "=" - "<" - ">" - "!");
+            boost::spirit::ascii::space_type> attribute_subject_g =
+            no_case["Entity"] >> "." >> +(qi::char_ - "=" - "<" - ">" - "!");
+
     std::string attribute;
+
     subject_test = qi::phrase_parse(iter_begin, iter_end, attribute_subject_g,
                                     boost::spirit::ascii::space, attribute);
     if (subject_test && iter_begin == iter_end) {
@@ -168,8 +174,9 @@ ParsedCondition::ParsedCondition(const parser::condition &unparsed_condition)
     //grammar for "memory.*" token
     //NOTE: there may exist a better way to ignore case sensitivity.
     qi::rule<std::string::iterator, std::string(),
-            boost::spirit::ascii::space_type> memory_subject_g = ("m"
-            | qi::lit("M")) >> qi::lit("emory") >> "." >> +(qi::char_);
+            boost::spirit::ascii::space_type> memory_subject_g =
+            no_case["Memory"] >> "." >> +(qi::char_);
+
     subject_test = qi::phrase_parse(iter_begin, iter_end, attribute_subject_g,
                                     boost::spirit::ascii::space, attribute);
     if (subject_test && iter_begin == iter_end) {
@@ -180,8 +187,8 @@ ParsedCondition::ParsedCondition(const parser::condition &unparsed_condition)
     }
     InvalidQueryException invalid_query;
     throw invalid_query;
-
 }
+
 bool ParsedCondition::isTrue(LocatedEntity& entity)
 {
     return m_case->testCase(entity);

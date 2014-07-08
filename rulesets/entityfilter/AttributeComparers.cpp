@@ -51,12 +51,54 @@ NumericAttributeComparer::NumericAttributeComparer(const std::string &attribute_
 
 bool NumericAttributeComparer::compare(LocatedEntity& entity)
 {
-    if (entity.getAttr(m_attributeName, m_atlasAttr) == 0) {
-        return comparer_method(m_atlasAttr.asNum(), m_value);
+    Atlas::Message::Element (atlas_attr);
+    if (entity.getAttr(m_attributeName, atlas_attr) == 0) {
+        return comparer_method(atlas_attr.asNum(), m_value);
     } else {
         return false;
     }
 
+}
+
+NumericListAttributeComparer::NumericListAttributeComparer(const std::string &attribute_name,
+                                                           const std::list<float> &value,
+                                                           const std::string &comp_operator) :
+        m_attributeName(attribute_name), m_value(value)
+{
+    //This code is shared with NumericAttribute comparer's constructor. It could be
+    //made a function
+    if (comp_operator == "=") {
+        comparer_method = &eqComparer;
+    } else if (comp_operator == "!=") {
+        comparer_method = &neqComparer;
+    } else if (comp_operator == ">") {
+        comparer_method = &gComparer;
+    } else if (comp_operator == ">=") {
+        comparer_method = &geComparer;
+    } else if (comp_operator == "<") {
+        comparer_method = &lComparer;
+    } else {
+        comparer_method = &leComparer;
+    }
+}
+
+bool NumericListAttributeComparer::compare(LocatedEntity& entity)
+{
+    Atlas::Message::Element atlas_attr;
+    if (entity.getAttr(m_attributeName, atlas_attr) != 0) {
+        return false;
+    }
+    if (atlas_attr.List().size() != m_value.size()) {
+        return false;
+    }
+    auto value_iter = m_value.begin();
+    auto attr_iter = atlas_attr.List().begin();
+    while (value_iter != m_value.end()) {
+        if (!comparer_method(*value_iter, attr_iter->asNum())) {
+            return false;
+        }
+    }
+    return true;
 }
 
 StrictTypeComparer::StrictTypeComparer(const std::string &type,

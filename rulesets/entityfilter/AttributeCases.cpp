@@ -50,6 +50,8 @@ Comparers::AttributeComparerWrapper* EntityAttributeCase::getComparer(const std:
 {
     auto iter_begin = value.begin();
     auto iter_end = value.end();
+    std::list<float> value_float_list;
+
     float value_float;
     bool value_check = qi::phrase_parse(iter_begin, iter_end, qi::float_,
                                         boost::spirit::ascii::space,
@@ -61,7 +63,18 @@ Comparers::AttributeComparerWrapper* EntityAttributeCase::getComparer(const std:
         iter_begin = value.begin();
     }
     //TODO: List comparer
-
+    value_check = qi::phrase_parse(iter_begin, iter_end,
+                                   "[" >> (qi::float_ % ",") >> "]",
+                                   boost::spirit::ascii::space,
+                                   value_float_list);
+    if (value_check && iter_begin == iter_end) {
+        return new Comparers::NumericListAttributeComparer(attribute,
+                                                           value_float_list,
+                                                           comp_operator);
+    }
+    else {
+        iter_begin = value.begin();
+    }
     //Use string comparer by default
     return new Comparers::StringAttributeComparer(attribute, value,
                                                   comp_operator);

@@ -12,6 +12,7 @@ OutfitCase::OutfitCase(const std::string& outfit_part,
                        const std::string& value,
                        const std::string& comp_operator) :
         m_outfitPart(outfit_part), m_outfitProperty(outfit_property)
+//FIXME: nested outfits are not currently supported
 {
     if (outfit_property == "type" | outfit_property == "Type") {
         m_comparer = EntityTypeCase::getComparer(value, comp_operator);
@@ -22,12 +23,7 @@ OutfitCase::OutfitCase(const std::string& outfit_part,
 }
 bool OutfitCase::testCase(LocatedEntity& entity)
 {
-
-    const OutfitProperty* prop =
-            static_cast<const OutfitProperty*>(entity.getProperty("outfit"));
-
-    //This gets template substitution error
-    //const OutfitProperty* prop = entity.getPropertyClass("outfit");
+    const OutfitProperty* prop = entity.getPropertyClass<OutfitProperty>("outfit");
 
     if (prop == 0) {
         return false;
