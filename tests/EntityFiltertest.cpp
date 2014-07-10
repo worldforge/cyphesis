@@ -68,13 +68,6 @@ int main()
     Entity bl1("4", 4);
     bl1.setProperty("mass", new SoftProperty(Element(25)));
     bl1.setType(boulderType);
-    SoftProperty* prop1 = new SoftProperty();
-    prop1->set(std::vector<Element> {25, 20});
-    bl1.setProperty("test", prop1);
-
-
-    //Remove this test afterwards
-        TestQuery("entity.mass=25", {&b3}, {});
 
 // START of Soft property and general filtering tests
     {
@@ -114,7 +107,7 @@ int main()
 
         TestQuery("(entity.type=barrel&(entity.mass=25&(entity.burn_speed=0.25|entity.mass=30))|entity.type=boulder)", {&bl1}, {&b1});
 
-        //override precedence rules with parenthesis
+        //override precedence rules with parentheses
         TestQuery("(entity.type=boulder|entity.type=barrel)&entity.burn_speed=0.3", {&b1}, {&bl1});
 
         //test query with spaces
@@ -122,7 +115,6 @@ int main()
         try {
             TestQuery("foobar", { }, { &b1, &bl1 });
         } catch (EntityFilter::InvalidQueryException& e) {
-            log(WARNING, e.what());
         }
     }
 
@@ -132,6 +124,8 @@ int main()
     TypeNode* glovesType = new TypeNode("gloves");
     TypeNode* bootsType = new TypeNode("boots");
     TypeNode* characterType = new TypeNode("character");
+    TypeNode* clothType = new TypeNode("cloth");
+    TypeNode* leatherType = new TypeNode("leather");
 
     Entity glovesEntity("5", 5);
     glovesEntity.setType(glovesType);
@@ -149,9 +143,24 @@ int main()
     OutfitProperty* outfit1 = new OutfitProperty;
     outfit1->set(outfitMap);
 
+    Entity cloth("8", 8);
+    cloth.setType(clothType);
+    cloth.setProperty("color", new SoftProperty("green"));
+
+    Entity leather("9", 9);
+    leather.setType(leatherType);
+    leather.setProperty("color", new SoftProperty("pink"));
+
+    std::map<std::string, Element> outfitMap1;
+    outfitMap1.insert(std::make_pair("thumb", Element(&cloth)));
+    OutfitProperty* outfit2 = new OutfitProperty;
+    outfit2->set(outfitMap1);
+    glovesEntity.setProperty("outfit", outfit2);
+
     Entity ch1("7", 7);
     ch1.setType(characterType);
     ch1.setProperty("outfit", outfit1);
+
 
 
     //START of outfit case test
@@ -165,10 +174,12 @@ int main()
         //Test outfit that doesn't have the specified part
         TestQuery("entity.outfit.chest.color=red", { }, { &ch1 });
         //Test outfit with another criterion
-        TestQuery("entity.type=character&entity.outfit.hands.color=brown", {
-                          &ch1 },
+        TestQuery("entity.type=character&entity.outfit.hands.color=brown", { &ch1 },
                   { &b1 });
+        //Test nested outfit
+        TestQuery("entity.outfit.hands.outfit.thumb.color=green", {&ch1}, {});
 
+        TestQuery("entity.outfit.hands.outfit.thumb.type=cloth", {&ch1}, {});
     }
     //END of outfit case test
 
@@ -182,6 +193,7 @@ int main()
     bbox2->set(std::vector<Element> { -3, -1, -2, 1, 2, 3 });
     bl1.setProperty("bbox", bbox2);
 
+    cloth.setProperty("bbox", bbox1->copy());
     //START of BBox tests
     {
         //Test BBox volume
@@ -197,6 +209,8 @@ int main()
         //Test BBox with another criterion
         TestQuery("entity.type=barrel&entity.bbox.height>0", { &b1 }, { &b2,
                           &bl1 });
+        //Test BBox of an outfit
+        TestQuery("entity.outfit.hands.outfit.thumb.bbox.volume=48", {&ch1}, {});
     }
     //END of BBox tests
 
