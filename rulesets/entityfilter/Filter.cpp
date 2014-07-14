@@ -61,6 +61,7 @@ class ASTVisitor : public boost::static_visitor<bool> {
                     || boost::apply_visitor(*this, node.m_right);
         }
 };
+
 Filter::Filter(const std::string &what)
 {
     parser::query_ast_parser<std::string::const_iterator> grammar;
@@ -81,10 +82,12 @@ bool Filter::match(LocatedEntity& entity)
     return boost::apply_visitor(ASTVisitor(entity), m_tree);
 }
 
-ParsedCondition::ParsedCondition(const parser::condition &unparsed_condition) :m_condition(unparsed_condition)
+ParsedCondition::ParsedCondition(const std::string& attribute,
+                                 const std::string& comp_operator,
+                                 const std::string& value_str)
 {
     //Determine what kind of subject we have using spirit::qi grammar rules.
-    std::string subject = unparsed_condition.attribute;
+    std::string subject = attribute;
     std::string::iterator iter_begin = subject.begin();
     std::string::iterator iter_end = subject.end();
     std::string parsed_object;
@@ -98,8 +101,8 @@ ParsedCondition::ParsedCondition(const parser::condition &unparsed_condition) :m
     bool subject_test = qi::phrase_parse(iter_begin, iter_end, type_subject_g,
                                          boost::spirit::ascii::space);
     if (subject_test && iter_begin == iter_end) {
-        m_case = new Cases::EntityTypeCase(unparsed_condition.value_str,
-                                           unparsed_condition.comp_operator);
+        m_case = new Cases::EntityTypeCase(value_str,
+                                           comp_operator);
         return;
     } else {
         iter_begin = subject.begin();
@@ -119,8 +122,8 @@ ParsedCondition::ParsedCondition(const parser::condition &unparsed_condition) :m
             boost::spirit::ascii::space, outfit_part, outfit_property);
     if (subject_test && iter_begin == iter_end) {
         m_case = new Cases::OutfitCase(outfit_part, outfit_property,
-                                       unparsed_condition.value_str,
-                                       unparsed_condition.comp_operator);
+                                       value_str,
+                                       comp_operator);
         return;
     }
 
@@ -140,8 +143,8 @@ ParsedCondition::ParsedCondition(const parser::condition &unparsed_condition) :m
                                     boost::spirit::ascii::space, bbox_property);
     if (subject_test && iter_begin == iter_end) {
         m_case = new Cases::BBoxCase(bbox_property,
-                                     unparsed_condition.value_str,
-                                     unparsed_condition.comp_operator);
+                                     value_str,
+                                     comp_operator);
         return;
     } else {
         iter_begin = subject.begin();
@@ -156,14 +159,14 @@ ParsedCondition::ParsedCondition(const parser::condition &unparsed_condition) :m
             boost::spirit::ascii::space_type> attribute_subject_g =
             no_case["Entity"] >> "." >> +(qi::char_ - "=" - "<" - ">" - "!");
 
-    std::string attribute;
+    std::string attribute_name;
 
     subject_test = qi::phrase_parse(iter_begin, iter_end, attribute_subject_g,
-                                    boost::spirit::ascii::space, attribute);
+                                    boost::spirit::ascii::space, attribute_name);
     if (subject_test && iter_begin == iter_end) {
         m_case = new Cases::EntityAttributeCase(
-                attribute, unparsed_condition.value_str,
-                unparsed_condition.comp_operator);
+                attribute_name, value_str,
+                comp_operator);
         return;
     } else {
         iter_begin = subject.begin();
@@ -178,7 +181,7 @@ ParsedCondition::ParsedCondition(const parser::condition &unparsed_condition) :m
             no_case["Memory"] >> "." >> +(qi::char_);
 
     subject_test = qi::phrase_parse(iter_begin, iter_end, attribute_subject_g,
-                                    boost::spirit::ascii::space, attribute);
+                                    boost::spirit::ascii::space, attribute_name);
     if (subject_test && iter_begin == iter_end) {
         //NOTE: This is not yet implemented!
         // m_case = new Cases::MemoryCase(attribute, unparsed_condition.value_str,
@@ -188,7 +191,6 @@ ParsedCondition::ParsedCondition(const parser::condition &unparsed_condition) :m
     InvalidQueryException invalid_query;
     throw invalid_query;
 }
-
 bool ParsedCondition::isTrue(LocatedEntity& entity)
 {
     return m_case->testCase(entity);

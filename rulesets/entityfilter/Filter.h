@@ -16,7 +16,6 @@
 #include <boost/variant/recursive_wrapper.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/fusion/include/io.hpp>
-#include <cstdint>
 ///\brief This class is used to search entities in NPC's memory
 ///using a query as a filter
 ///
@@ -48,9 +47,10 @@ class EntityTypeCase;
 ///This class is meant to further parse tokens into appropriate structures.
 class ParsedCondition {
     public:
-        explicit ParsedCondition(const parser::condition &all_conditions);
+        ParsedCondition(const std::string& attribute,
+                        const std::string& comp_operator,
+                        const std::string& value_str);
         bool isTrue(LocatedEntity& entity);
-        parser::condition m_condition;
     private:
         Cases::AbstractCase* m_case;
 };
@@ -94,6 +94,7 @@ struct query_ast_parser: qi::grammar<Iterator, expr(), ascii::space_type, qi::lo
             using qi::_val;
             using qi::_1;
             using qi::_2;
+            using qi::_3;
             using qi::_a;
             using qi::eps;
             using namespace boost::phoenix;
@@ -105,22 +106,29 @@ struct query_ast_parser: qi::grammar<Iterator, expr(), ascii::space_type, qi::lo
             // char_ has attribute of char, while +(char_) can have attribute of string (or other container)
             // "%=" operator makes RHS use attribute of LHS (in this case, string)
             target_g %= +(char_ - ".");
+
             //A list of comparison operators
             comp_operator_g %= qi::string("!=") | qi::string("<=")
                     | qi::string(">=") | qi::string("==") | qi::string("!==")
                     | char_("=") | char_(">") | char_("<");
+
             //attribute_g is a string until comparison operator is found;
             attribute_g %= +(char_ - comp_operator_g - "(" - ")");
+
             //A list of logical operators
             logical_operator_g %= char_("&") | char_("|");
+
             //Value is a string until logical operator is found
             value_g %= +(char_ - logical_operator_g - ("(") - (")"));
-            // ">>" operator stands for "followed by".  a >> b matches if b follows a.
-            token_g %= attribute_g >> comp_operator_g >> value_g;
 
             //This constructs a parsed condition that will be used as a leaf.
             //_val is the value of this rule's attribute
-            parsed_token_g = token_g[_val = construct<ParsedCondition>(_1)];
+            //">>" operator indicates "followed by"
+            //"[]" contains semantic actions that happen if parser succeeds.
+            //_1, _2, _3 are placeholders for synthesized attributes. They are used as arguments
+            //to construct ParsedCondition object
+            parsed_token_g = (attribute_g >> comp_operator_g >> value_g)[_val =
+                    construct<ParsedCondition>(_1, _2, _3)];
 
             //This parses tokens within parentheses into a single expression
             expr_g =
@@ -139,8 +147,8 @@ struct query_ast_parser: qi::grammar<Iterator, expr(), ascii::space_type, qi::lo
             parenthesised_expr_g =
                     expr_g [_a =_1] >> (("&" >> expr_g[_val = construct<binop<op_and>>(_a, _1)])|
                                        ("|" >> expr_g[_val = construct<binop<op_or>>(_a, _1)])  |
-                                       (eps[_val = _a]))                                           |
-                                    "(" >> parenthesised_expr_g [_val = _1] >> ")";
+                                       (eps[_val = _a]))                                            |
+                    "(" >> parenthesised_expr_g [_val = _1] >> ")";
 
         }
         qi::rule<Iterator, std::string(), ascii::space_type> target_g;
@@ -148,10 +156,9 @@ struct query_ast_parser: qi::grammar<Iterator, expr(), ascii::space_type, qi::lo
         qi::rule<Iterator, std::string(), ascii::space_type> comp_operator_g;
         qi::rule<Iterator, std::string(), ascii::space_type> logical_operator_g;
         qi::rule<Iterator, std::string(), ascii::space_type> value_g;
-        qi::rule<Iterator, parser::condition(), ascii::space_type> token_g;
+        qi::rule<Iterator, expr(), ascii::space_type> parsed_token_g;
         qi::rule<Iterator, expr(), ascii::space_type, qi::locals<expr>> expr_g;
         qi::rule<Iterator, expr(), ascii::space_type, qi::locals<expr>> parenthesised_expr_g;
-        qi::rule<Iterator, expr(), ascii::space_type, qi::locals<expr>> parsed_token_g;
 };
 }
 
@@ -162,12 +169,11 @@ class Filter {
         ///@param what query to be used for filtering
         Filter(const std::string &what);
 
-        //TODO: Allow for various LocatedEntity containers.
         ///\brief test given entity for a match
         ///@param entity - entity to be tested
         bool match(LocatedEntity& entity);
     private:
-        //This stores top node of the AST
+        //This stores the top node of the AST
         parser::expr m_tree;
 };
 
