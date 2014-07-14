@@ -2,6 +2,7 @@
 #include "../LocatedEntity.h"
 #include "../common/TypeNode.h"
 
+//FIXME: There are tons of duplicate code in this file that can be reduced
 namespace EntityFilter
 {
 namespace Comparers
@@ -9,7 +10,7 @@ namespace Comparers
 StringAttributeComparer::StringAttributeComparer(const std::string &attribute_name,
                                                  const std::string &value_str,
                                                  const std::string &comp_operator) :
-        m_attributeName(attribute_name), m_value(value_str)
+         m_value(value_str), m_attributeName(attribute_name)
 {
     if (comp_operator == "=") {
         comparer_method = &eqComparer;
@@ -68,18 +69,59 @@ NumericListAttributeComparer::NumericListAttributeComparer(const std::string &at
     //This code is shared with NumericAttribute comparer's constructor. It could be
     //made a function
     if (comp_operator == "=") {
-        comparer_method = &eqComparer;
+        list_comparer_method = &NumericListAttributeComparer::inComparer;
+        float_comparer_method = &eqComparer;
+        return;
     } else if (comp_operator == "!=") {
-        comparer_method = &neqComparer;
+        list_comparer_method = &NumericListAttributeComparer::inComparer;
+        float_comparer_method = &neqComparer;
+        return;
+    } else if (comp_operator == "==") {
+        float_comparer_method = &eqComparer;
+    } else if (comp_operator == "!==") {
+        float_comparer_method = &neqComparer;
     } else if (comp_operator == ">") {
-        comparer_method = &gComparer;
+        float_comparer_method = &gComparer;
     } else if (comp_operator == ">=") {
-        comparer_method = &geComparer;
+        float_comparer_method = &geComparer;
     } else if (comp_operator == "<") {
-        comparer_method = &lComparer;
+        float_comparer_method = &lComparer;
     } else {
-        comparer_method = &leComparer;
+        float_comparer_method = &leComparer;
     }
+    list_comparer_method = &NumericListAttributeComparer::allComparer;
+}
+
+bool NumericListAttributeComparer::inComparer(Atlas::Message::Element& attribute){
+    auto value_iter = m_value.begin();
+    auto value_end = m_value.end();
+    auto attr_iter = attribute.List().begin();
+    auto attr_end = attribute.List().end();
+    while (value_iter != value_end){
+        for (; attr_iter != attr_end; ++attr_iter){
+        if(float_comparer_method(*value_iter, attr_iter->asNum())){
+            return true;
+        }
+        }
+        ++value_iter;
+    }
+    return false;
+}
+bool NumericListAttributeComparer::allComparer(Atlas::Message::Element& attribute){
+    auto value_iter = m_value.begin();
+    auto value_end = m_value.end();
+    auto attr_iter = attribute.List().begin();
+    if (attribute.List().size() != m_value.size()) {
+                   return false;
+               }
+    while (value_iter != value_end){
+        if(!float_comparer_method(*value_iter, attr_iter->asNum())){
+            return false;
+        }
+        ++value_iter;
+        ++attr_iter;
+    }
+    return true;
 }
 
 bool NumericListAttributeComparer::compare(LocatedEntity& entity)
@@ -88,18 +130,79 @@ bool NumericListAttributeComparer::compare(LocatedEntity& entity)
     if (entity.getAttr(m_attributeName, atlas_attr) != 0) {
         return false;
     }
-    if (atlas_attr.List().size() != m_value.size()) {
-        return false;
+    return (this->*list_comparer_method)(atlas_attr);
+}
+
+StringListAttributeComparer::StringListAttributeComparer(const std::string& attribute_name,
+                                                         const std::list<std::string>& value_list,
+                                                         const std::string& comp_operator) :
+        m_attributeName(attribute_name), m_value(value_list)
+{
+    if (comp_operator == "=") {
+        list_comparer_method = &StringListAttributeComparer::inComparer;
+        string_comparer_method = &eqComparer;
+        return;
+    } else if (comp_operator == "!=") {
+        list_comparer_method = &StringListAttributeComparer::inComparer;
+        string_comparer_method = &neqComparer;
+        return;
+    } else if (comp_operator == "==") {
+        string_comparer_method = &eqComparer;
+    } else if (comp_operator == "!==") {
+        string_comparer_method = &neqComparer;
+    } else if (comp_operator == ">") {
+        string_comparer_method = &gComparer;
+    } else if (comp_operator == ">=") {
+        string_comparer_method = &geComparer;
+    } else if (comp_operator == "<") {
+        string_comparer_method = &lComparer;
+    } else {
+        string_comparer_method = &leComparer;
     }
+    list_comparer_method = &StringListAttributeComparer::allComparer;
+}
+
+bool StringListAttributeComparer::inComparer(Atlas::Message::Element& attribute){
     auto value_iter = m_value.begin();
-    auto attr_iter = atlas_attr.List().begin();
-    while (value_iter != m_value.end()) {
-        if (!comparer_method(*value_iter, attr_iter->asNum())) {
+    auto value_end = m_value.end();
+    auto attr_iter = attribute.List().begin();
+    auto attr_end = attribute.List().end();
+    while (value_iter != value_end){
+        for (; attr_iter != attr_end; ++attr_iter){
+        if(string_comparer_method(*value_iter, attr_iter->String())){
+            return true;
+        }
+        }
+        ++value_iter;
+    }
+    return false;
+}
+
+bool StringListAttributeComparer::allComparer(Atlas::Message::Element& attribute){
+    auto value_iter = m_value.begin();
+    auto value_end = m_value.end();
+    auto attr_iter = attribute.List().begin();
+    if (attribute.List().size() != m_value.size()) {
+               return false;
+           }
+    while (value_iter != value_end){
+        if(!string_comparer_method(*value_iter, attr_iter->String())){
             return false;
         }
+        ++value_iter;
+        ++attr_iter;
     }
     return true;
 }
+bool StringListAttributeComparer::compare(LocatedEntity& entity){
+    Atlas::Message::Element atlas_attr;
+        if (entity.getAttr(m_attributeName, atlas_attr) != 0) {
+            return false;
+        }
+
+        return (this->*list_comparer_method)(atlas_attr);
+}
+
 
 StrictTypeComparer::StrictTypeComparer(const std::string &type,
                                        const std::string &comp_operator) :

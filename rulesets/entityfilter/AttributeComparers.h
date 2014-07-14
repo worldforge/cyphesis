@@ -46,6 +46,11 @@ class NumericAttributeComparer : public AttributeComparerWrapper {
         float m_value;
 };
 
+///\brief class used to compare lists of numbers
+///
+///Using "=" or "!=" will match if any value from the input list is found in the property's list.
+///Using "==" or "!==" or any other operators will apply these operators between input list
+///and property's list in a manner of parallel lists
 class NumericListAttributeComparer : public AttributeComparerWrapper {
     public:
         NumericListAttributeComparer(const std::string &attribute_name,
@@ -56,19 +61,32 @@ class NumericListAttributeComparer : public AttributeComparerWrapper {
         }
         bool compare(LocatedEntity& entity);
     private:
-        bool (*comparer_method)(float, float);
+        bool (*float_comparer_method)(float, float);
+        bool (NumericListAttributeComparer::*list_comparer_method)(Atlas::Message::Element&);
+        bool inComparer(Atlas::Message::Element& attribute);
+        bool allComparer(Atlas::Message::Element& attribute);
         std::string m_attributeName;
         std::list<float> m_value;
 };
+
+///\brief class used to compare lists of strings
+///
+///Operators work in the same way as in NumericListAttributeComparer
 class StringListAttributeComparer : public AttributeComparerWrapper {
     public:
         StringListAttributeComparer(const std::string &attribute_name,
-                                    const std::string &value_str,
+                                    const std::list<std::string> &value_str,
                                     const std::string &comp_operator);
-        ~StringListAttributeComparer(){}
+        ~StringListAttributeComparer()
+        {
+        }
+        ;
         bool compare(LocatedEntity& entity);
     private:
-        bool (*comparer_method)(std::string, std::string);
+        bool (*string_comparer_method)(std::string, std::string);
+        bool (StringListAttributeComparer::*list_comparer_method)(Atlas::Message::Element&);
+        bool inComparer(Atlas::Message::Element& attribute);
+        bool allComparer(Atlas::Message::Element& attribute);
         std::string m_attributeName;
         std::list<std::string> m_value;
 };

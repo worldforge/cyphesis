@@ -17,32 +17,7 @@ EntityAttributeCase::EntityAttributeCase(const std::string &attribute,
                                          const std::string &comp_operator) :
         m_attributeName(attribute), m_valueStr(value)
 {
-//Determine type of value
-//    //TODO: Implement support for list
-//    auto iter_begin = value.begin();
-//    auto iter_end = value.end();
-//    float value_float;
-//    bool value_check = qi::phrase_parse(iter_begin, iter_end, qi::float_,
-//                                        boost::spirit::ascii::space,
-//                                        value_float);
-//    if (value_check && iter_begin == iter_end) {
-//        m_comparer = new Comparers::NumericAttributeComparer(attribute, value,
-//                                                             comp_operator);
-//        return;
-//    } else {
-//        iter_begin = value.begin();
-//    }
-//
-//    std::string value_str;
-//    value_check = qi::phrase_parse(iter_begin, iter_end, +qi::char_,
-//                                   boost::spirit::ascii::space, value_str);
-//    if (value_check && iter_begin == iter_end) {
-//        m_comparer = new Comparers::StringAttributeComparer(attribute, value,
-//                                                            comp_operator);
-//    }
     m_comparer = getComparer(attribute, value, comp_operator);
-
-    //TODO: Implement support for list;
 }
 Comparers::AttributeComparerWrapper* EntityAttributeCase::getComparer(const std::string &attribute,
                                                                       const std::string &value,
@@ -62,17 +37,34 @@ Comparers::AttributeComparerWrapper* EntityAttributeCase::getComparer(const std:
     } else {
         iter_begin = value.begin();
     }
-    //TODO: List comparer
+    //Check whether our value is a list
+    //qi::eps is used to allow creation of empty lists.
     value_check = qi::phrase_parse(iter_begin, iter_end,
-                                   "[" >> (qi::float_ % ",") >> "]",
+                                   "[" >> ((qi::float_ % ",") | qi::eps) >> "]",
                                    boost::spirit::ascii::space,
                                    value_float_list);
+
     if (value_check && iter_begin == iter_end) {
         return new Comparers::NumericListAttributeComparer(attribute,
                                                            value_float_list,
                                                            comp_operator);
     }
     else {
+        iter_begin = value.begin();
+    }
+
+    //Try to match list of strings separated by comas
+    std::list<std::string> value_string_list;
+    value_check = qi::phrase_parse(
+            iter_begin, iter_end,
+            "[" >> (+(qi::char_ - "]" - ",") % ",") >> "]",
+            boost::spirit::ascii::space, value_string_list);
+
+    if (value_check && iter_begin == iter_end) {
+        return new Comparers::StringListAttributeComparer(attribute,
+                                                          value_string_list,
+                                                          comp_operator);
+    } else {
         iter_begin = value.begin();
     }
     //Use string comparer by default
