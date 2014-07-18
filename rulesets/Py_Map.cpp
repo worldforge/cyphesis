@@ -22,6 +22,7 @@
 #include "Py_Operation.h"
 #include "Py_RootEntity.h"
 #include "Py_Message.h"
+#include "Py_Filter.h"
 
 #include "MemEntity.h"
 #include "MemMap.h"
@@ -273,10 +274,48 @@ static PyObject * Map_delete_hooks_append(PyMap * self, PyObject * py_method)
     Py_INCREF(Py_None);
     return Py_None;
 }
+static PyObject * Map_find_by_query(PyMap* self, PyObject* filter){
+#ifndef NDEBUG
+    if (self->m_map == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.find_by_query");
+        return NULL;
+    }
+#endif // NDEBUG
+
+    EntityVector res;
+    if(!PyFilter_Check(filter)){
+        return NULL;
+    }
+    PyFilter* f = (PyFilter*)filter;
+
+    auto iter_begin = self->m_map->getEntities().begin();
+    auto iter_end = self->m_map->getEntities().end();
+    for (; iter_begin != iter_end; ++iter_begin){
+        if (f->m_filter->match(*iter_begin->second)){
+            res.push_back(iter_begin->second);
+        }
+    }
+    PyObject * list = PyList_New(res.size());
+    if (list == NULL) {
+        return NULL;
+    }
+    EntityVector::const_iterator Iend = res.end();
+    int i = 0;
+    for (EntityVector::const_iterator I = res.begin(); I != Iend; ++I, ++i) {
+        PyObject * thing = wrapEntity(*I);
+        if (thing == NULL) {
+            Py_DECREF(list);
+            return NULL;
+        }
+        PyList_SetItem(list, i, thing);
+    }
+    return list;
+}
 
 static PyMethodDef Map_methods[] = {
     {"find_by_location",    (PyCFunction)Map_find_by_location,    METH_VARARGS},
     {"find_by_type",        (PyCFunction)Map_find_by_type,        METH_O},
+    {"find_by_query",       (PyCFunction)Map_find_by_query,       METH_O},
     {"add",                 (PyCFunction)Map_updateAdd,           METH_VARARGS},
     {"delete",              (PyCFunction)Map_delete,              METH_O},
     {"get",                 (PyCFunction)Map_get,                 METH_O},
