@@ -37,6 +37,7 @@
 #include "Py_Oplist.h"
 #include "Py_Property.h"
 #include "Py_Task.h"
+#include "Py_Filter.h"
 
 #include "PythonEntityScript.h"
 #include "BaseMind.h"
@@ -505,6 +506,24 @@ static PyObject * square_horizontal_edge_distance(PyObject * self, PyObject * ar
             boxSquareHorizontalBoundingRadius(oloc->location->m_bBox));
 }
 
+///\brief Create a new Filter object for a given query
+static PyObject * get_filter(PyObject * self, PyObject* query){
+    if (!PyString_CheckExact(query)){
+            PyErr_SetString(PyExc_TypeError, "Map_get_filter what must be string");
+                    return NULL;
+        }
+        char * query_str = PyString_AsString(query);
+        PyFilter* f = newPyFilter();
+        try {
+            f->m_filter = new EntityFilter::Filter(query_str);
+        }
+        catch (EntityFilter::InvalidQueryException& e){
+            PyErr_SetString(PyExc_TypeError, "Invalid query for Entity Filter");
+            return NULL;
+        }
+        return (PyObject*)f;
+}
+
 // In Python 2.3 or later this it is okay to pass in null for the methods
 // of a module, making this obsolete.
 static PyMethodDef no_methods[] = {
@@ -524,6 +543,11 @@ static PyMethodDef physics_methods[] = {
     {"square_horizontal_edge_distance",
       square_horizontal_edge_distance,          METH_VARARGS},
     {NULL,          NULL}                       /* Sentinel */
+};
+
+static PyMethodDef filter_methods[] = {
+        {"get_filter", get_filter, METH_O},
+        {NULL, NULL}
 };
 
 void init_python_api(const std::string & ruleset, bool log_stdout)
@@ -586,6 +610,14 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
         log(CRITICAL, "Python could not import sys.path");
     }
     Py_DECREF(sys_module);
+
+    PyObject * filter = Py_InitModule("filter", filter_methods);
+    if (filter == NULL) {
+        log(CRITICAL, "Python init failed to create filter module\n");
+        return;
+    }
+
+    PyFilter_Type.tp_new = PyType_GenericNew;
 
     PyObject * atlas = Py_InitModule("atlas", atlas_methods);
     if (atlas == NULL) {
