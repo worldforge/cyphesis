@@ -56,7 +56,8 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  ArithmeticScripttest PythonArithmeticScripttest \
                  ArithmeticFactorytest PythonArithmeticFactorytest \
                  TerrainModtest PythonClasstest \
-                 TerrainEffectorPropertytest SuspendedPropertytest
+                 TerrainEffectorPropertytest SuspendedPropertytest \
+                 EntityFiltertest
 
 RULESETS_INTEGRATION_TESTS = MindPropertyintegration BulletDomainintegration \
                              TerrainPropertyintegration \
@@ -964,6 +965,25 @@ TerrainEffectorPropertytest_SOURCES = TerrainEffectorPropertytest.cpp
 TerrainEffectorPropertytest_LDADD = \
         $(top_builddir)/rulesets/TerrainEffectorProperty.o \
         $(TERRAIN_LIBS)
+
+EntityFiltertest_SOURCES = EntityFiltertest.cpp
+EntityFiltertest_LDADD = \
+        $(top_builddir)/rulesets/Filter.o \
+        $(top_builddir)/rulesets/AttributeCases.o \
+        $(top_builddir)/rulesets/AttributeComparers.o \
+        $(top_builddir)/rulesets/BBoxCase.o \
+        $(top_builddir)/rulesets/BBoxComparers.o \
+        $(top_builddir)/rulesets/MemoryCase.o \
+        $(top_builddir)/rulesets/OutfitCase.o \
+        $(top_builddir)/rulesets/EntityProperty.o \
+        $(top_builddir)/rulesets/Entity.o \
+        $(top_builddir)/rulesets/OutfitProperty.o \
+        $(top_builddir)/rulesets/BBoxProperty.o \
+        $(top_builddir)/rulesets/LocatedEntity.o \
+        $(top_builddir)/modules/EntityRef.o \
+        $(top_builddir)/common/Property.o \
+        $(top_builddir)/common/TypeNode.o \
+        $(top_builddir)/common/PropertyManager.o
 
 # RULESETS_INTEGRATION
 

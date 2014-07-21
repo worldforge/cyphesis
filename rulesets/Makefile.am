@@ -62,7 +62,18 @@ librulesetentity_a_SOURCES = \
 			     SuspendedProperty.cpp SuspendedProperty.h \
 			     SpawnerProperty.cpp SpawnerProperty.h \
 			     ImmortalProperty.cpp ImmortalProperty.h \
-			     RespawningProperty.cpp RespawningProperty.h
+			     RespawningProperty.cpp RespawningProperty.h \
+			     entityfilter/Filter.cpp entityfilter/Filter.h \
+			     entityfilter/AbstractCase.h \
+			     entityfilter/AttributeCases.cpp entityfilter/AttributeCases.h \
+			     entityfilter/AttributeComparers.cpp entityfilter/AttributeComparers.h \
+			     entityfilter/AttributeComparerWrapper.h \
+		             entityfilter/ParserDefinitions.h \
+			     entityfilter/MemoryCase.cpp entityfilter/MemoryCase.h \
+			     entityfilter/OutfitCase.cpp entityfilter/OutfitCase.h \
+			     entityfilter/BBoxCase.cpp entityfilter/BBoxCase.h \
+			     entityfilter/BBoxComparers.cpp entityfilter/BBoxComparers.h \
+			     entityfilter/Case.cpp
 
 
 librulesetmind_a_SOURCES = BaseMind.cpp BaseMind.h \
@@ -79,6 +90,7 @@ libscriptpython_a_SOURCES = Py_Message.cpp Py_Message.h \
 			    Py_Point3D.cpp Py_Point3D.h \
 			    Py_Thing.cpp Py_Thing.h \
 			    Py_EntityWrapper.h \
+			    Py_Filter.cpp Py_Filter.h \
 			    Py_Map.cpp Py_Map.h \
 			    Py_Quaternion.cpp Py_Quaternion.h \
 			    Py_BBox.cpp Py_BBox.h \
