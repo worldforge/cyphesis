@@ -110,20 +110,16 @@ ParsedCondition::ParsedCondition(const std::string& attribute,
 
     //see if we have entity.outfit.*.* case;
     std::string outfit_part;
-    std::string outfit_property;
     // Grammar is defined within the function call.
     subject_test = qi::phrase_parse(
             iter_begin,
             iter_end,
             //grammar definition
             no_case["Entity"] >> "." >> no_case["outfit"] >> "."
-                    >> +(qi::char_ - ".") >> "."
                     >> +(qi::char_ - "=" - "<" - ">" - "!"),
-            boost::spirit::ascii::space, outfit_part, outfit_property);
+            boost::spirit::ascii::space, outfit_part);
     if (subject_test && iter_begin == iter_end) {
-        m_case = new Cases::OutfitCase(outfit_part, outfit_property,
-                                       value_str,
-                                       comp_operator);
+        m_case = new Cases::OutfitCase(outfit_part, value_str, comp_operator);
         return;
     }
 

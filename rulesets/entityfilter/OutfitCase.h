@@ -1,3 +1,4 @@
+#include "Filter.h"
 #include "AbstractCase.h"
 #include "AttributeComparerWrapper.h"
 
@@ -11,27 +12,25 @@ namespace Cases
 {
 ///\brief class to handle Outfit Case
 ///
-///Upon initialization, parse for what part of the outfit we are looking for
-///and what property we want to compare.
+///Upon initialization, parse for what part of the outfit we are looking for.
 ///
-///Outfit case can contain any other case, except that we use the entity
-///pointed by the outfit for comparison
+///Outfit case contains another ParsedCondition and simply serves as a "bridge"
+///We simply get the Entity in a given outfit part and use it to check for a match instead
+///of our original entity
 class OutfitCase : public AbstractCase {
     public:
+        ///\brief construct an outfit case by determining which outfit part we are looking for
+        ///and composing a new ParsedCondition.
         OutfitCase(const std::string& outfit_part,
-                   const std::string& outfit_property,
                    const std::string& value,
                    const std::string& comp_operator);
         ~OutfitCase();
+        ///\brief match an entity by retrieving another entity from the given outfit part (if it exists)
+        ///and using it to match the given ParsedCondition.
         bool testCase(LocatedEntity& entity);
     private:
-        //first outfit part
         std::string m_outfitPart;
-        //a list of nested outfit parts
-        std::list<std::string> m_outfitParts;
-        std::string m_outfitProperty;
-        std::string m_compOperator;
-        AbstractCase* m_case;
+        ParsedCondition* m_condition;
 };
 
 }
