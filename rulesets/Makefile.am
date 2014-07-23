@@ -11,7 +11,7 @@ dist_module_DATA = basic/world/objects/Thing.py \
                    basic/editor.py
 
 noinst_LIBRARIES = librulesetbase.a librulesetmind.a librulesetentity.a \
-                   libscriptpython.a
+                   libscriptpython.a libentityfilter.a
 
 librulesetbase_a_SOURCES = LocatedEntity.cpp LocatedEntity.h \
 			   EntityProperties.cpp \
@@ -62,13 +62,14 @@ librulesetentity_a_SOURCES = \
 			     SuspendedProperty.cpp SuspendedProperty.h \
 			     SpawnerProperty.cpp SpawnerProperty.h \
 			     ImmortalProperty.cpp ImmortalProperty.h \
-			     RespawningProperty.cpp RespawningProperty.h \
-			     entityfilter/Filter.cpp entityfilter/Filter.h \
+			     RespawningProperty.cpp RespawningProperty.h
+
+libentityfilter_a_SOURCES = entityfilter/Filter.cpp entityfilter/Filter.h \
 			     entityfilter/AbstractCase.h \
 			     entityfilter/AttributeCases.cpp entityfilter/AttributeCases.h \
 			     entityfilter/AttributeComparers.cpp entityfilter/AttributeComparers.h \
 			     entityfilter/AttributeComparerWrapper.h \
-		             entityfilter/ParserDefinitions.h \
+			     entityfilter/ParserDefinitions.h \
 			     entityfilter/MemoryCase.cpp entityfilter/MemoryCase.h \
 			     entityfilter/OutfitCase.cpp entityfilter/OutfitCase.h \
 			     entityfilter/BBoxCase.cpp entityfilter/BBoxCase.h \
