@@ -31,13 +31,13 @@ BBoxCase::BBoxCase(const std::string& attribute,
     }
 
     //Get the calculator for the required properties.
-    if (attribute == "volume" | attribute == "Volume") {
+    if (attribute == "volume" || attribute == "Volume") {
         m_propertyCalculator = &Comparers::BBoxComparers::VolumeCalculator;
-    } else if (attribute == "height" | attribute == "Height") {
+    } else if (attribute == "height" || attribute == "Height") {
         m_propertyCalculator = &Comparers::BBoxComparers::HeightCalculator;
-    } else if (attribute == "length" | attribute == "Length") {
+    } else if (attribute == "length" || attribute == "Length") {
         m_propertyCalculator = &Comparers::BBoxComparers::LengthCalculator;
-    } else if (attribute == "width" | attribute == "Width") {
+    } else if (attribute == "width" || attribute == "Width") {
         m_propertyCalculator = &Comparers::BBoxComparers::WidthCalculator;
     } else {
         m_propertyCalculator = &Comparers::BBoxComparers::AreaCalculator;
