@@ -73,7 +73,9 @@ libentityfilter_a_SOURCES = entityfilter/Filter.cpp entityfilter/Filter.h \
 			     entityfilter/MemoryCase.cpp entityfilter/MemoryCase.h \
 			     entityfilter/OutfitCase.cpp entityfilter/OutfitCase.h \
 			     entityfilter/BBoxCase.cpp entityfilter/BBoxCase.h \
-			     entityfilter/BBoxComparers.cpp entityfilter/BBoxComparers.h
+			     entityfilter/BBoxComparers.cpp entityfilter/BBoxComparers.h \
+			     entityfilter/Providers.cpp entityfilter/Providers.h
+
 
 librulesetmind_a_SOURCES = BaseMind.cpp BaseMind.h \
 			   MindFactory.cpp MindFactory.h \

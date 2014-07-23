@@ -188,5 +188,9 @@ class InvalidQueryException : public std::exception {
             return "Attempted creating entity filter with invalid query";
         }
 };
+
+
+
+
 }
 #endif

@@ -7,6 +7,9 @@
 
 //TODO: Check for unnecessary includes/links
 #include "rulesets/entityfilter/Filter.h"
+
+#include "rulesets/entityfilter/Providers.h"
+
 #include "rulesets/EntityProperty.h"
 #include "rulesets/Domain.h"
 #include "rulesets/AtlasProperties.h"
@@ -15,6 +18,7 @@
 #include "common/Property.h"
 #include "common/BaseWorld.h"
 #include "common/log.h"
+#include "common/Inheritance.h"
 
 #include "rulesets/Entity.h"
 #include "common/TypeNode.h"
@@ -27,6 +31,9 @@
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Objects::Entity::Anonymous;
+
+static std::map<std::string, TypeNode*> types;
+
 
 //\brief a tester function for entity filter. Accepts a query and lists of entities that
 // are supposed to pass or fail the test for a given query
@@ -47,6 +54,7 @@ void TestQuery(const std::string& query,
 int main()
 {
     using namespace EntityFilter;
+
     //Set up testing environment for Type/Soft properties
     Entity b1("1", 1);
     TypeNode* barrelType = new TypeNode("barrel");
@@ -76,6 +84,7 @@ int main()
     SoftProperty* list_prop2 = new SoftProperty();
     list_prop2->set(std::vector<Element> {"foo", "bar"});
     bl1.setProperty("string_list", list_prop2);
+
 
 // START of Soft property and general filtering tests
     {
@@ -230,6 +239,172 @@ int main()
     }
     //END of BBox tests
 
+
+    {
+        ProviderFactory factory;
+
+        //entity
+        Atlas::Message::Element value;
+        ProviderFactory::SegmentsList segments;
+        segments.push_back(ProviderFactory::Segment{"", "entity"});
+        auto provider = factory.createProviders(segments);
+        provider->value(value, QueryContext{b1});
+        assert(value.Ptr() == &b1);
+
+        //entity.type
+        segments.clear();
+        segments.push_back(ProviderFactory::Segment{"", "entity"});
+        segments.push_back(ProviderFactory::Segment{".", "type"});
+        provider = factory.createProviders(segments);
+        provider->value(value, QueryContext{b1});
+        assert(value.Ptr() == barrelType);
+
+
+        //entity.mass
+        segments.clear();
+        segments.push_back(ProviderFactory::Segment{"", "entity"});
+        segments.push_back(ProviderFactory::Segment{".", "mass"});
+        provider = factory.createProviders(segments);
+        provider->value(value, QueryContext{b1});
+        assert(value.Int() == 30);
+
+
+
+
+        //entity.outfit.hands.color
+        segments.clear();
+        segments.push_back(ProviderFactory::Segment{"", "entity"});
+        segments.push_back(ProviderFactory::Segment{".", "outfit"});
+        segments.push_back(ProviderFactory::Segment{".", "hands"});
+        segments.push_back(ProviderFactory::Segment{".", "color"});
+        provider = factory.createProviders(segments);
+        provider->value(value, QueryContext{ch1});
+        assert(value.String() == "brown");
+
+
+
+        //entity.bbox.volume
+        segments.clear();
+        segments.push_back(ProviderFactory::Segment{"", "entity"});
+        segments.push_back(ProviderFactory::Segment{".", "bbox"});
+        segments.push_back(ProviderFactory::Segment{".", "volume"});
+        provider = factory.createProviders(segments);
+        provider->value(value, QueryContext{b1});
+        assert(value.asNum() == 48);
+
+
+
+        //entity.right_hand_wield.color
+        EntityProperty* wield_prop = new EntityProperty();
+        wield_prop->data() = EntityRef(&glovesEntity);
+        ch1.setProperty("right_hand_wield", wield_prop);
+
+        segments.clear();
+        segments.push_back(ProviderFactory::Segment{"", "entity"});
+        segments.push_back(ProviderFactory::Segment{".", "right_hand_wield"});
+        segments.push_back(ProviderFactory::Segment{".", "color"});
+        provider = factory.createProviders(segments);
+        provider->value(value, QueryContext{ch1});
+        assert(value.String() == "brown");
+
+
+
+        //types.barrel
+        types["barrel"] = barrelType;
+        segments.clear();
+        segments.push_back(ProviderFactory::Segment{"", "types"});
+        segments.push_back(ProviderFactory::Segment{".", "barrel"});
+        provider = factory.createProviders(segments);
+        provider->value(value, QueryContext{ch1});
+        assert(value.Ptr() == barrelType);
+
+
+        //types.barrel.name
+        segments.clear();
+        segments.push_back(ProviderFactory::Segment{"", "types"});
+        segments.push_back(ProviderFactory::Segment{".", "barrel"});
+        segments.push_back(ProviderFactory::Segment{".", "name"});
+        provider = factory.createProviders(segments);
+        provider->value(value, QueryContext{ch1});
+        assert(value.String() == "barrel");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //entity.type
+        segments.clear();
+        segments.push_back(ProviderFactory::Segment{"", "entity"});
+        segments.push_back(ProviderFactory::Segment{".", "type"});
+        auto lhs_provider1 = factory.createProviders(segments);
+
+
+        //types.barrel
+        segments.clear();
+        segments.push_back(ProviderFactory::Segment{"", "types"});
+        segments.push_back(ProviderFactory::Segment{".", "barrel"});
+        auto rhs_provider1 = factory.createProviders(segments);
+
+        //entity.type = types.barrel
+        ComparePredicate compPred1(lhs_provider1, rhs_provider1, ComparePredicate::Comparator::INSTANCE_OF);
+        assert(compPred1.isMatch(QueryContext{b1}));
+
+
+
+
+
+        //entity.bbox.volume
+        segments.clear();
+        segments.push_back(ProviderFactory::Segment{"", "entity"});
+        segments.push_back(ProviderFactory::Segment{".", "bbox"});
+        segments.push_back(ProviderFactory::Segment{".", "volume"});
+        auto lhs_provider2 = factory.createProviders(segments);
+
+        //entity.bbox.volume = 48
+        ComparePredicate compPred2(lhs_provider2, new FixedElementProvider(48.0f), ComparePredicate::Comparator::EQUALS);
+        assert(compPred2.isMatch(QueryContext{b1}));
+
+        //entity.bbox.volume = 1
+        ComparePredicate compPred3(lhs_provider2, new FixedElementProvider(1.0f), ComparePredicate::Comparator::EQUALS);
+        assert(!compPred3.isMatch(QueryContext{b1}));
+
+        //entity.bbox.volume != 1
+        ComparePredicate compPred4(lhs_provider2, new FixedElementProvider(1.0f), ComparePredicate::Comparator::NOT_EQUALS);
+        assert(compPred4.isMatch(QueryContext{b1}));
+
+
+        //entity.type = types.barrel && entity.bbox.volume = 48
+        AndPredicate andPred1(&compPred1, &compPred2);
+        assert(andPred1.isMatch(QueryContext{b1}));
+
+        //entity.type = types.barrel && entity.bbox.volume = 1
+        AndPredicate andPred2(&compPred1, &compPred3);
+        assert(!andPred2.isMatch(QueryContext{b1}));
+
+        //entity.type = types.barrel || entity.bbox.volume = 1
+        OrPredicate orPred1(&compPred1, &compPred3);
+        assert(orPred1.isMatch(QueryContext{b1}));
+
+    }
+
+
+
+
+
+
+
+
+
+
 //    Clean up
     delete barrelType;
     delete boulderType;
@@ -379,6 +554,24 @@ void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 void Location::modifyBBox()
 {
 }
+
+
+Inheritance::Inheritance() {}
+
+Inheritance & Inheritance::instance()
+{
+    return *(new Inheritance());
+}
+
+const TypeNode * Inheritance::getType(const std::string & parent)
+{
+    auto I = types.find(parent);
+    if (I == types.end()) {
+        return 0;
+    }
+    return I->second;
+}
+
 void log(LogLevel lvl, const std::string & msg)
 {
 }

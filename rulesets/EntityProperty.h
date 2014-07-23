@@ -32,6 +32,7 @@ class EntityProperty : public PropertyBase {
     explicit EntityProperty();
 
     EntityRef & data() { return m_data; }
+    const EntityRef & data() const { return m_data; }
 
     virtual int get(Atlas::Message::Element & val) const;
     virtual void set(const Atlas::Message::Element & val);
