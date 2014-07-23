@@ -1,6 +1,6 @@
 #include "AttributeComparers.h"
 #include "../LocatedEntity.h"
-#include "../common/TypeNode.h"
+#include "../../common/TypeNode.h"
 
 //FIXME: There are tons of duplicate code in this file that can be reduced
 namespace EntityFilter

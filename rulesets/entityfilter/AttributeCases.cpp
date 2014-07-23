@@ -1,7 +1,7 @@
 #include "AttributeCases.h"
 #include "../LocatedEntity.h"
 #include "../MemMap.h"
-#include "../common/TypeNode.h"
+#include "../../common/TypeNode.h"
 
 #include <boost/config/warning_disable.hpp>
 #include <boost/spirit/include/qi.hpp>

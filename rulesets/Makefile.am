@@ -72,9 +72,7 @@ librulesetentity_a_SOURCES = \
 			     entityfilter/MemoryCase.cpp entityfilter/MemoryCase.h \
 			     entityfilter/OutfitCase.cpp entityfilter/OutfitCase.h \
 			     entityfilter/BBoxCase.cpp entityfilter/BBoxCase.h \
-			     entityfilter/BBoxComparers.cpp entityfilter/BBoxComparers.h \
-			     entityfilter/Case.cpp
-
+			     entityfilter/BBoxComparers.cpp entityfilter/BBoxComparers.h
 
 librulesetmind_a_SOURCES = BaseMind.cpp BaseMind.h \
 			   MindFactory.cpp MindFactory.h \

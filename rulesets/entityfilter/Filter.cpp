@@ -4,7 +4,7 @@
 #include "OutfitCase.h"
 #include "BBoxCase.h"
 #include "../LocatedEntity.h"
-#include "../common/TypeNode.h"
+#include "../../common/TypeNode.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
