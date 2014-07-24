@@ -112,8 +112,11 @@ struct query_ast_parser: qi::grammar<Iterator, expr(), ascii::space_type, qi::lo
                     | qi::string(">=") | qi::string("==") | qi::string("!==")
                     | char_("=") | char_(">") | char_("<");
 
-            //attribute_g is a string until comparison operator is found;
-            attribute_g %= +(char_ - comp_operator_g - "(" - ")");
+            //attribute_g is a function-type expression or a string until comparison operator is found;
+            attribute_g %= (qi::string("distance") >>
+                           char_("(") >> (+(char_ - ",") >>
+                           char_(",") >> +(char_ - comp_operator_g))) |
+                    +(char_ - comp_operator_g - "(" - ")");
 
             //A list of logical operators
             logical_operator_g %= char_("&") | char_("|");
