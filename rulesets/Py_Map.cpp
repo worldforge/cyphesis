@@ -274,10 +274,12 @@ static PyObject * Map_delete_hooks_append(PyMap * self, PyObject * py_method)
     Py_INCREF(Py_None);
     return Py_None;
 }
-static PyObject * Map_find_by_query(PyMap* self, PyObject* filter){
+
+///\brief Return Python list of entities that match a given Filter
+static PyObject * Map_find_by_filter(PyMap* self, PyObject* filter){
 #ifndef NDEBUG
     if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.find_by_query");
+        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.find_by_filter");
         return NULL;
     }
 #endif // NDEBUG
@@ -315,7 +317,7 @@ static PyObject * Map_find_by_query(PyMap* self, PyObject* filter){
 static PyMethodDef Map_methods[] = {
     {"find_by_location",    (PyCFunction)Map_find_by_location,    METH_VARARGS},
     {"find_by_type",        (PyCFunction)Map_find_by_type,        METH_O},
-    {"find_by_query",       (PyCFunction)Map_find_by_query,       METH_O},
+    {"find_by_filter",      (PyCFunction)Map_find_by_filter,      METH_O},
     {"add",                 (PyCFunction)Map_updateAdd,           METH_VARARGS},
     {"delete",              (PyCFunction)Map_delete,              METH_O},
     {"get",                 (PyCFunction)Map_get,                 METH_O},
