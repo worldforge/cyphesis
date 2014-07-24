@@ -506,24 +506,6 @@ static PyObject * square_horizontal_edge_distance(PyObject * self, PyObject * ar
             boxSquareHorizontalBoundingRadius(oloc->location->m_bBox));
 }
 
-///\brief Create a new Filter object for a given query
-static PyObject * get_filter(PyObject * self, PyObject* query){
-    if (!PyString_CheckExact(query)){
-            PyErr_SetString(PyExc_TypeError, "Map_get_filter what must be string");
-                    return NULL;
-        }
-        char * query_str = PyString_AsString(query);
-        PyFilter* f = newPyFilter();
-        try {
-            f->m_filter = new EntityFilter::Filter(query_str);
-        }
-        catch (EntityFilter::InvalidQueryException& e){
-            PyErr_SetString(PyExc_TypeError, "Invalid query for Entity Filter");
-            return NULL;
-        }
-        return (PyObject*)f;
-}
-
 // In Python 2.3 or later this it is okay to pass in null for the methods
 // of a module, making this obsolete.
 static PyMethodDef no_methods[] = {
@@ -618,6 +600,10 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
     }
 
     PyFilter_Type.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&PyFilter_Type) < 0 ){
+        log(CRITICAL, "Python init failed to ready entity filter wrapper type");
+            return;
+    }
 
     PyObject * atlas = Py_InitModule("atlas", atlas_methods);
     if (atlas == NULL) {

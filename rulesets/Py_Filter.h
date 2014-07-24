@@ -6,7 +6,7 @@
 #include <Python.h>
 
 class Filter;
-
+PyObject* get_filter(PyObject* self, PyObject* query);
 /// \brief Wrapper for Entity Filter in Python
 /// \ingroup PythonWrappers
 typedef struct {

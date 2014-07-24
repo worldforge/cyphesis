@@ -1,5 +1,32 @@
 #include "Py_Filter.h"
 
+///\brief Create a new Filter object for a given query
+PyObject * get_filter(PyObject * self, PyObject* query){
+    if (!PyString_CheckExact(query)){
+            PyErr_SetString(PyExc_TypeError, "Map_get_filter what must be string");
+                    return NULL;
+        }
+        char * query_str = PyString_AsString(query);
+        PyFilter* f = newPyFilter();
+        try {
+            f->m_filter = new EntityFilter::Filter(query_str);
+        }
+        catch (EntityFilter::InvalidQueryException& e){
+            PyErr_SetString(PyExc_TypeError, "Invalid query for Entity Filter");
+            return NULL;
+        }
+        return (PyObject*)f;
+}
+
+
+static void Filter_dealloc(PyFilter *self)
+{
+    if (self->m_filter != NULL) {
+        delete self->m_filter;
+    }
+    self->ob_type->tp_free((PyObject*)self);
+}
+
 PyTypeObject PyFilter_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
         0,                              // ob_size
@@ -7,7 +34,7 @@ PyTypeObject PyFilter_Type = {
         sizeof(PyFilter),               // tp_basicsize
         0,                              // tp_itemsize
         // methods
-        0,                              // tp_dealloc
+        (destructor)Filter_dealloc,     // tp_dealloc
         0,                              // tp_print
         0,                              // tp_getattr
         0,                              // tp_setattr
@@ -23,7 +50,7 @@ PyTypeObject PyFilter_Type = {
         0,                              // tp_setattro
         0,                              // tp_as_buffer
         Py_TPFLAGS_DEFAULT,             // tp_flags
-        "Filter object",               // tp_doc
+        "Filter object",                // tp_doc
         0,                              // tp_travers
         0,                              // tp_clear
         0,                              // tp_richcompare
