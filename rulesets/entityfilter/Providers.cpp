@@ -441,6 +441,58 @@ bool ComparePredicate::isMatch(const QueryContext& context) const
         return true;
     }
         break;
+    case Comparator::LESS:
+    {
+        Atlas::Message::Element left, right;
+        m_lhs->value(left, context);
+        if (!left.isNone() && left.isNum()) {
+            m_rhs->value(right, context);
+            if (!right.isNone() && right.isNum()) {
+                return left.asNum() < right.asNum();
+            }
+        }
+        return false;
+    }
+    break;
+    case Comparator::LESS_EQUAL:
+    {
+        Atlas::Message::Element left, right;
+        m_lhs->value(left, context);
+        if (!left.isNone() && left.isNum()) {
+            m_rhs->value(right, context);
+            if (!right.isNone() && right.isNum()) {
+                return left.asNum() <= right.asNum();
+            }
+        }
+        return false;
+    }
+        break;
+    case Comparator::GREATER:
+    {
+        Atlas::Message::Element left, right;
+        m_lhs->value(left, context);
+        if (!left.isNone() && left.isNum()) {
+            m_rhs->value(right, context);
+            if (!right.isNone() && right.isNum()) {
+                return left.asNum() > right.asNum();
+            }
+        }
+        return false;
+    }
+        break;
+    case Comparator::GREATER_EQUAL:
+    {
+        Atlas::Message::Element left, right;
+        m_lhs->value(left, context);
+        if (!left.isNone() && left.isNum()) {
+            m_rhs->value(right, context);
+            if (!right.isNone() && right.isNum()) {
+                return left.asNum() >= right.asNum();
+            }
+        }
+        return false;
+    }
+        break;
     case Comparator::INSTANCE_OF:
     {
         //We know that both providers return type node instances, since we checked in the constructor.

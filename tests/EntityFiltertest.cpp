@@ -10,6 +10,8 @@
 
 #include "rulesets/entityfilter/Providers.h"
 
+#include "rulesets/entityfilter/ParserDefinitions.h"
+
 #include "rulesets/EntityProperty.h"
 #include "rulesets/Domain.h"
 #include "rulesets/AtlasProperties.h"
@@ -381,6 +383,21 @@ int main()
         ComparePredicate compPred4(lhs_provider2, new FixedElementProvider(1.0f), ComparePredicate::Comparator::NOT_EQUALS);
         assert(compPred4.isMatch(QueryContext{b1}));
 
+        //entity.bbox.volume > 0
+        ComparePredicate compPred5(lhs_provider2, new FixedElementProvider(0.0f), ComparePredicate::Comparator::GREATER);
+        assert(compPred5.isMatch(QueryContext{b1}));
+
+        //entity.bbox.volume >= 1
+        ComparePredicate compPred6(lhs_provider2, new FixedElementProvider(1.0f), ComparePredicate::Comparator::GREATER_EQUAL);
+        assert(compPred6.isMatch(QueryContext{b1}));
+
+        //entity.bbox.volume < 5
+        ComparePredicate compPred7(lhs_provider2, new FixedElementProvider(5.0f), ComparePredicate::Comparator::LESS);
+        assert(!compPred7.isMatch(QueryContext{b1}));
+
+        //entity.bbox.volume <= 48
+        ComparePredicate compPred8(lhs_provider2, new FixedElementProvider(48.0f), ComparePredicate::Comparator::LESS_EQUAL);
+        assert(compPred8.isMatch(QueryContext{b1}));
 
         //entity.type = types.barrel && entity.bbox.volume = 48
         AndPredicate andPred1(&compPred1, &compPred2);

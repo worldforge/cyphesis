@@ -271,6 +271,7 @@ class EntityRefProvider : public ConsumingNamedAttributeProviderBase<LocatedEnti
 class ProviderFactory {
     public:
         struct Segment {
+            //Segment(std::string a, std::string b):delimiter(a), attribute(b){}
             std::string delimiter;
             std::string attribute;
         };
@@ -303,7 +304,7 @@ class ComparePredicate : public Predicate {
     public:
 
         enum class Comparator {
-            EQUALS, NOT_EQUALS, INSTANCE_OF
+            EQUALS, NOT_EQUALS, INSTANCE_OF, GREATER, GREATER_EQUAL, LESS, LESS_EQUAL
         };
 
         ComparePredicate(const Consumer<QueryContext>* lhs, const Consumer<QueryContext>* rhs, Comparator comparator);
