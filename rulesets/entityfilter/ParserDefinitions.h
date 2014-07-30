@@ -2,7 +2,9 @@
 #define RULESETS_FILTER_PARSERDEFINITIONS_H_
 
 #include "Filter.h"
+#include "Providers.h"
 #include <boost/spirit/include/qi.hpp>
+#include <boost/spirit/include/qi_real.hpp>
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
 #include <boost/variant/recursive_wrapper.hpp>
@@ -14,18 +16,13 @@ namespace EntityFilter
 namespace parser
 {
 
-struct condition {
-        std::string attribute;
-        std::string comp_operator;
-        std::string value_str;
-};
 }
 }
 
-//This needs to be in global scope
 BOOST_FUSION_ADAPT_STRUCT(
-        EntityFilter::parser::condition,
-        (std::string, attribute) (std::string, comp_operator) (std::string, value_str))
+        EntityFilter::ProviderFactory::Segment,
+        (std::string, delimiter)
+        (std::string, attribute))
 
 namespace EntityFilter
 {
@@ -34,84 +31,13 @@ namespace parser
 namespace qi = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;
 //Parser definitions
-template<typename Iterator>
-struct query_parser : qi::grammar<Iterator, std::list<std::list<condition>>(),
-        ascii::space_type> {
+
+
+template<typename Iterator, class Factory>
+struct query_parser : qi::grammar<Iterator, Predicate*(),
+        ascii::space_type, qi::locals<Predicate*>> {
         query_parser() :
-                query_parser::base_type(phrase)
-        {
-            using qi::int_;
-            using qi::lit;
-            using qi::double_;
-            using qi::lexeme;
-            using ascii::char_;
-
-            //Definition of a phrase
-
-            // "+" operator matches its operand 1 or more times. Consecutive repetitions of char_ are
-            //collected into a string. char_ matches any character (except a dot in this case)
-            // char_ has attribute of char, while +(char_) can have attribute of string (or other container)
-            // "%=" operator makes RHS use attribute of LHS (in this case, string)
-            target_g %= +(char_ - ".");
-            //A list of comparison operators
-            comp_operator_g %= qi::string("!=") | qi::string("<=")
-                    | qi::string(">=") | qi::string("==") | qi::string("!==")
-                    | char_("=") | char_(">") | char_("<");
-            //attribute_g is a string until comparison operator is found;
-            attribute_g %= +(char_ - comp_operator_g);
-            //A list of logical operators
-            logical_operator_g %= char_("&") | char_("|");
-            //Value is a string until logical operator is found
-            value_g %= +(char_ - logical_operator_g);
-            // ">>" operator stands for "followed by".  a >> b matches if b follows a.
-            token_g %= attribute_g >> comp_operator_g >> value_g;
-            // a%b matches a list of a separated by occurances of b and has attribute of vector<a>.
-
-            and_block_g %= token_g % (qi::lit("and") | "&");
-            or_block_g %= and_block_g % (qi::lit("or") | "|");
-
-            phrase %= or_block_g;
-        }
-        //Rule templates take iterator, attribute signature and skipper parser as arguments
-        //Attribute of a target_g is string
-        qi::rule<Iterator, std::string(), ascii::space_type> target_g;
-        qi::rule<Iterator, std::string(), ascii::space_type> attribute_g;
-        qi::rule<Iterator, std::string(), ascii::space_type> comp_operator_g;
-        qi::rule<Iterator, std::string(), ascii::space_type> logical_operator_g;
-        qi::rule<Iterator, std::string(), ascii::space_type> value_g;
-        qi::rule<Iterator, condition(), ascii::space_type> token_g;
-        qi::rule<Iterator, std::list<condition>(), ascii::space_type> and_block_g;
-        qi::rule<Iterator, std::list<std::list<condition>>(), ascii::space_type> or_block_g;
-        qi::rule<Iterator, std::list<std::list<condition>>(), ascii::space_type> phrase;
-};
-
-//struct op_and {};
-//struct op_or {};
-//
-//
-//template<typename op_type>
-//struct binop;
-//typedef boost::variant<condition, boost::recursive_wrapper<binop<op_and>>,
-//        boost::recursive_wrapper<binop<op_or>>> expr;
-//template<typename op_type>
-//struct binop {
-//        binop(expr left, expr right) :
-//                m_left(left), m_right(right)
-//        {
-//
-//        }
-//        expr m_left, m_right;
-//};
-}
-}
-/*
-namespace EntityFilter{
-
-    namespace parser{
-template<typename Iterator>
-struct query_parser2: qi::grammar<Iterator, expr(), ascii::space_type>{
-        query_parser2() :
-                query_parser2::base_type(expr_g)
+                query_parser::base_type(parenthesised_predicate_g)
         {
             using qi::int_;
             using qi::lit;
@@ -121,47 +47,108 @@ struct query_parser2: qi::grammar<Iterator, expr(), ascii::space_type>{
             using qi::_val;
             using qi::_1;
             using qi::_2;
-            using qi::_3;
+            using qi::_a;
             using namespace boost::phoenix;
 
-            //Definition of a phrase
-
-            // "+" operator matches its operand 1 or more times. Consecutive repetitions of char_ are
-            //collected into a string. char_ matches any character (except a dot in this case)
-            // char_ has attribute of char, while +(char_) can have attribute of string (or other container)
-            // "%=" operator makes RHS use attribute of LHS (in this case, string)
-            target_g %= +(char_ - ".");
-            //A list of comparison operators
+            //A list of what we would consider comparison operators
             comp_operator_g %= qi::string("!=") | qi::string("<=")
-                    | qi::string(">=") | qi::string("==") | qi::string("!==")
-                    | char_("=") | char_(">") | char_("<");
-            //attribute_g is a string until comparison operator is found;
-            attribute_g %= +(char_ - comp_operator_g);
+                                | qi::string(">=") | qi::string("==") | qi::string("!==")
+                                | char_("=") | char_(">") | char_("<") | qi::string("is_instance");
             //A list of logical operators
             logical_operator_g %= char_("&") | char_("|");
-            //Value is a string until logical operator is found
-            value_g %= +(char_ - logical_operator_g);
-            // ">>" operator stands for "followed by".  a >> b matches if b follows a.
-            parsed_token_g %= attribute_g >> comp_operator_g >> value_g;
-            // a%b matches a list of a separated by occurances of b and has attribute of vector<a>.
-            expr_g =
-                    parsed_token_g [_val = _1] |
-                    ("(" >> expr_g >> ")")[_val = _1] |
-                    (expr_g >> "&" >> expr_g) [_val = construct<binop<op_and>>(_1, _2)]|
-                    (expr_g >> "|" >> expr_g) [_val = construct<binop<op_or>>(_1, _2)];
 
+
+            segment_attribute_g %= +(qi::char_ - "." - ":" - comp_operator_g - logical_operator_g - "(" - ")");
+
+            //A single segment. Consists of a delimiter followed by the attribute.
+            segment_g %= (char_(".") | char_(":")) >>
+                        segment_attribute_g;
+
+            //Special segment is used as the first segment in a token (it has no delimiter)
+            //qi eps is used to specify that the delimiter is empty
+            special_segment_g = (qi::eps[at_c<0>(_val) = ""] >>
+                    (segment_attribute_g)[at_c<1>(_val) = _1]);
+
+            //Collects segments into SegmentsList, which is used to construct
+            //a consumer by a consumer factory
+            segmented_expr_g %= special_segment_g >> +segment_g;
+
+            //Distinguish between string literals from regular segments
+            //(i.e. entity.type="entity")
+            quoted_string_g %= "'" >> +(char_ - "'") >> "'";
+
+            //Construct a new consumer. Simple values are constructed via FixedElementProvider.
+            //Doubles have to have a dot, otherwise numbers are parsed as int (this affects type of Element)
+            //If we have a SegmentsList, use the given factory to construct Consumer
+            consumer_g = qi::real_parser<double, qi::strict_real_policies<double>>()
+                    [_val = new_<FixedElementProvider>(_1)]                             |
+                    int_[_val = new_<FixedElementProvider>(_1)]                         |
+                    quoted_string_g[_val = new_<FixedElementProvider>(_1)]              |
+                    segmented_expr_g[_val = boost::phoenix::bind(
+                            &Factory::createProviders, &f, _1)];
+
+            //Construct comparer predicate, depending on which comparison operator we encounter.
+            comparer_predicate_g =
+                    (consumer_g >> "=" >> consumer_g)[_val = new_<
+                            ComparePredicate>(
+                            _1, qi::_2, ComparePredicate::Comparator::EQUALS)] |
+
+                            (consumer_g >> "!=" >> consumer_g)
+                            [_val = new_<ComparePredicate>(_1, qi::_2,
+                            ComparePredicate::Comparator::NOT_EQUALS)]  |
+
+                            (consumer_g >> ">" >> consumer_g)
+                            [_val = new_<ComparePredicate>(_1, qi::_2,
+                            ComparePredicate::Comparator::GREATER)]     |
+
+                            (consumer_g >> ">=" >> consumer_g)
+                            [_val = new_<ComparePredicate>(_1, qi::_2,
+                            ComparePredicate::Comparator::GREATER_EQUAL)]     |
+
+                            (consumer_g >> "<" >> consumer_g)
+                            [_val = new_<ComparePredicate>(_1, qi::_2,
+                            ComparePredicate::Comparator::LESS)]        |
+
+                            (consumer_g >> "<=" >> consumer_g)
+                            [_val = new_<ComparePredicate>(_1, qi::_2,
+                            ComparePredicate::Comparator::LESS_EQUAL)]     |
+
+                            (consumer_g >> "is_instance" >> consumer_g)
+                            [_val = new_<ComparePredicate>(_1, qi::_2,
+                            ComparePredicate::Comparator::INSTANCE_OF)];
+
+            //Construct a predicate depending on which logical operator we encounter.
+            //"and" is matched before or to implement precedence.
+            //When everything within parentheses is parsed into a single predicate, parentheses are consumed
+            predicate_g = comparer_predicate_g[_a = _1] >>
+                    (("&" >> predicate_g[_val = new_<AndPredicate>(_a, _1)])|
+                    ("|" >> predicate_g[_val = new_<OrPredicate>(_a, _1)])|
+                    qi::eps[_val = _a])                                         |
+                    "(" >> predicate_g[_val = _1] >> ")";
+
+            //Another level that constructs predicates after parentheses were consumed
+            //NOTE: Possibly there are ways to avoid this.
+            parenthesised_predicate_g = predicate_g[_a = _1] >>
+                    (("&" >> parenthesised_predicate_g[_val = new_<AndPredicate>(_a, _1)])|
+                    ("|" >> parenthesised_predicate_g[_val = new_<OrPredicate>(_a, _1)])|
+                    qi::eps[_val = _a]) |
+                    "(" >> parenthesised_predicate_g[_val = _1] >> ")";
         }
-        qi::rule<Iterator, std::string(), ascii::space_type> target_g;
-        qi::rule<Iterator, std::string(), ascii::space_type> attribute_g;
+
+        Factory f;
         qi::rule<Iterator, std::string(), ascii::space_type> comp_operator_g;
         qi::rule<Iterator, std::string(), ascii::space_type> logical_operator_g;
-        qi::rule<Iterator, std::string(), ascii::space_type> value_g;
-        qi::rule<Iterator, condition(), ascii::space_type> token_g;
-        qi::rule<Iterator, expr(), ascii::space_type> expr_g;
-        qi::rule<Iterator, condition(), ascii::space_type> parsed_token_g;
+        qi::rule<Iterator, std::string(), ascii::space_type> segment_attribute_g;
+        qi::rule<Iterator, EntityFilter::ProviderFactory::Segment(), ascii::space_type> segment_g;
+        qi::rule<Iterator, EntityFilter::ProviderFactory::Segment(), ascii::space_type> special_segment_g;
+        qi::rule<Iterator, std::string(), ascii::space_type> quoted_string_g;
+        qi::rule<Iterator, ProviderFactory::SegmentsList(), ascii::space_type> segmented_expr_g;
+        qi::rule<Iterator, Consumer<QueryContext>*(), ascii::space_type> consumer_g;
+        qi::rule<Iterator, ComparePredicate*(), ascii::space_type, qi::locals<Predicate*>> comparer_predicate_g;
+        qi::rule<Iterator, Predicate*(), ascii::space_type, qi::locals<Predicate*>> predicate_g;
+        qi::rule<Iterator, Predicate*(), ascii::space_type, qi::locals<Predicate*>> parenthesised_predicate_g;
 };
 
 }
 }
-*/
 #endif
