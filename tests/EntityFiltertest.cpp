@@ -60,6 +60,7 @@ int main()
     //Set up testing environment for Type/Soft properties
     Entity b1("1", 1);
     TypeNode* barrelType = new TypeNode("barrel");
+    types["barrel"] = barrelType;
     b1.setType(barrelType);
     b1.setProperty("mass", new SoftProperty(Element(30)));
     b1.setProperty("burn_speed", new SoftProperty(Element(0.3)));
@@ -75,6 +76,7 @@ int main()
     b3.setType(barrelType);
 
     TypeNode* boulderType = new TypeNode("boulder");
+    types["boulder"] = boulderType;
     Entity bl1("4", 4);
     bl1.setProperty("mass", new SoftProperty(Element(25)));
     bl1.setType(boulderType);
@@ -90,7 +92,7 @@ int main()
 
 // START of Soft property and general filtering tests
     {
-        TestQuery("entity.type=barrel", { &b1 }, { &bl1 });
+        TestQuery("entity.type is_instance types.barrel", { &b1 }, { &bl1 });
         // test entity.attribute case with various operators
         TestQuery("entity.burn_speed=0.3", { &b1 }, { &b2 });
 
@@ -99,48 +101,48 @@ int main()
         TestQuery("entity.burn_speed<0.3", { &b2 }, { &b1 });
 
         //test list of floats comparison
-        TestQuery("entity.float_list=[25]", { &bl1 }, { &b1 });
+        //TestQuery("entity.float_list=[25]", { &bl1 }, { &b1 });
 
-        TestQuery("entity.float_list==[25, 20]", { &bl1 }, { &b1 });
+        //TestQuery("entity.float_list==[25, 20]", { &bl1 }, { &b1 });
 
         //test empty lists
-        TestQuery("entity.float_list==[]", { }, { &bl1 });
+        //TestQuery("entity.float_list==[]", { }, { &bl1 });
 
-        TestQuery("entity.float_list=[]", { }, { &bl1 });
+        //TestQuery("entity.float_list=[]", { }, { &bl1 });
 
         //test list of strings
-        TestQuery("entity.string_list=[bar]", { &bl1 }, { &b1 });
+        //TestQuery("entity.string_list=[bar]", { &bl1 }, { &b1 });
 
-        TestQuery("entity.string_list=[foo, bar]", { &bl1 }, { &b1 });
+        //TestQuery("entity.string_list=[foo, bar]", { &bl1 }, { &b1 });
 
         //test query with several criteria
 
-        TestQuery("entity.type=barrel&entity.burn_speed=0.3", { &b1 }, { &b2,
+        TestQuery("entity.type=types.barrel&entity.burn_speed=0.3", { &b1 }, { &b2,
                           &bl1 });
 
         //test logical operators and precedence
 
-        TestQuery("entity.type=barrel|entity.type=boulder", { &b1, &bl1 }, { });
+        TestQuery("entity.type=types.barrel|entity.type=types.boulder", { &b1, &bl1 }, { });
 
         TestQuery(
-                "entity.type=boulder|entity.type=barrel&entity.burn_speed=0.3",
+                "entity.type=types.boulder|entity.type=types.barrel&entity.burn_speed=0.3",
                 { &b1, &bl1 }, { });
 
         //test query with parenthesis
-        TestQuery("(entity.type=boulder)", {&bl1}, {&b1});
+        TestQuery("(entity.type=types.boulder)", {&bl1}, {&b1});
 
-        TestQuery("(entity.type=boulder)&(entity.mass=25)", {&bl1}, {&b1});
+        TestQuery("(entity.type=types.boulder)&(entity.mass=25)", {&bl1}, {&b1});
 
         //test query with nested parentheses
-        TestQuery("(entity.type=barrel&(entity.mass=25|entity.mass=30)|entity.type=boulder)", {&b1, &b3, &bl1}, {&b2});
+        TestQuery("(entity.type=types.barrel&(entity.mass=25|entity.mass=30)|entity.type=types.boulder)", {&b1, &b3, &bl1}, {&b2});
 
-        TestQuery("(entity.type=barrel&(entity.mass=25&(entity.burn_speed=0.25|entity.mass=30))|entity.type=boulder)", {&bl1}, {&b1});
+        TestQuery("(entity.type=types.barrel&(entity.mass=25&(entity.burn_speed=0.25|entity.mass=30))|entity.type=types.boulder)", {&bl1}, {&b1});
 
         //override precedence rules with parentheses
-        TestQuery("(entity.type=boulder|entity.type=barrel)&entity.burn_speed=0.3", {&b1}, {&bl1});
+        TestQuery("(entity.type=types.boulder|entity.type=types.barrel)&entity.burn_speed=0.3", {&b1}, {&bl1});
 
         //test query with spaces
-        TestQuery("  entity.type = barrel   ", { &b1 }, { &bl1 });
+        TestQuery("  entity.type = types.barrel   ", { &b1 }, { &bl1 });
         try {
             TestQuery("foobar", { }, { &b1, &bl1 });
         } catch (EntityFilter::InvalidQueryException& e) {
@@ -151,9 +153,12 @@ int main()
 
     //Set up testing environment for Outfit property
     TypeNode* glovesType = new TypeNode("gloves");
+    types["gloves"] = glovesType;
     TypeNode* bootsType = new TypeNode("boots");
     TypeNode* characterType = new TypeNode("character");
+    types["character"] = characterType;
     TypeNode* clothType = new TypeNode("cloth");
+    types["cloth"] = clothType;
     TypeNode* leatherType = new TypeNode("leather");
 
     Entity glovesEntity("5", 5);
@@ -193,20 +198,20 @@ int main()
     //START of outfit case test
     {
         //Test soft property of outfit
-        TestQuery("entity.outfit.hands.color=brown", { &ch1 }, { });
+        TestQuery("entity.outfit.hands.color='brown'", { &ch1 }, { });
         //Test type of outfit
-        TestQuery("entity.outfit.hands.type=gloves", { &ch1 }, { });
+        TestQuery("entity.outfit.hands.type=types.gloves", { &ch1 }, { });
         //Test an entity without outfit
-        TestQuery("entity.outfit.hands.type=gloves", { }, { &bl1 });
+        TestQuery("entity.outfit.hands.type=types.gloves", { }, { &bl1 });
         //Test outfit that doesn't have the specified part
-        TestQuery("entity.outfit.chest.color=red", { }, { &ch1 });
+        TestQuery("entity.outfit.chest.color='red'", { }, { &ch1 });
         //Test outfit with another criterion
-        TestQuery("entity.type=character&entity.outfit.hands.color=brown", { &ch1 },
+        TestQuery("entity.type=types.character&entity.outfit.hands.color='brown'", { &ch1 },
                   { &b1 });
         //Test nested outfit
-        TestQuery("entity.outfit.hands.outfit.thumb.color=green", {&ch1}, {});
+        TestQuery("entity.outfit.hands.outfit.thumb.color='green'", {&ch1}, {});
 
-        TestQuery("entity.outfit.hands.outfit.thumb.type=cloth", {&ch1}, {});
+        TestQuery("entity.outfit.hands.outfit.thumb.type=types.cloth", {&ch1}, {});
     }
     //END of outfit case test
 
@@ -224,20 +229,20 @@ int main()
     //START of BBox tests
     {
         //Test BBox volume
-        TestQuery("entity.bbox.volume=48", { &b1 }, { &bl1 });
+        TestQuery("entity.bbox.volume=48.0", { &b1 }, { &bl1 });
         //Test BBox height
-        TestQuery("entity.bbox.height=6", { &b1 }, { &bl1 });
+        TestQuery("entity.bbox.height=6.0", { &b1 }, { &bl1 });
         //Test BBox length
-        TestQuery("entity.bbox.length=4", { &b1 }, { &bl1 });
+        TestQuery("entity.bbox.depth=4.0", { &b1 }, { &bl1 });
         //Test BBox width
-        TestQuery("entity.bbox.width=2", { &b1 }, { &bl1 });
+        TestQuery("entity.bbox.width=2.0", { &b1 }, { &bl1 });
         //Test BBox area
-        TestQuery("entity.bbox.area=8", { &b1 }, { &bl1 });
+        TestQuery("entity.bbox.area=8.0", { &b1 }, { &bl1 });
         //Test BBox with another criterion
-        TestQuery("entity.type=barrel&entity.bbox.height>0", { &b1 }, { &b2,
+        TestQuery("entity.type=types.barrel&entity.bbox.height>0.0", { &b1 }, { &b2,
                           &bl1 });
         //Test BBox of an outfit
-        TestQuery("entity.outfit.hands.outfit.thumb.bbox.volume=48", {&ch1}, {});
+        TestQuery("entity.outfit.hands.outfit.thumb.bbox.volume=48.0", {&ch1}, {});
     }
     //END of BBox tests
 
@@ -312,7 +317,6 @@ int main()
 
 
         //types.barrel
-        types["barrel"] = barrelType;
         segments.clear();
         segments.push_back(ProviderFactory::Segment{"", "types"});
         segments.push_back(ProviderFactory::Segment{".", "barrel"});

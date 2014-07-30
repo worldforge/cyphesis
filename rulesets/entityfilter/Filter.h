@@ -171,13 +171,16 @@ class Filter {
         ///\brief Initialize a filter with a given query
         ///@param what query to be used for filtering
         Filter(const std::string &what);
+        ~Filter();
 
         ///\brief test given entity for a match
         ///@param entity - entity to be tested
         bool match(LocatedEntity& entity);
+        ///\brief test given QueryContext for a match
+        bool match(QueryContext& context);
     private:
-        //This stores the top node of the AST
-        parser::expr m_tree;
+        //The top predicate node used for testing
+        Predicate* m_predicate;
 };
 
 ///\brief An Exception class to be thrown in case of an invalid query.
