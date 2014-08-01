@@ -402,6 +402,10 @@ ComparePredicate::ComparePredicate(const Consumer<QueryContext>* lhs, const Cons
 : m_lhs(lhs), m_rhs(rhs), m_comparator(comparator)
 {
     if (m_comparator == Comparator::INSTANCE_OF) {
+        //make sure rhs and lhs exist
+        if(!m_lhs || !m_rhs){
+            throw std::invalid_argument("One of the types for 'instanceof' operator doesn't exist");
+        }
         //make sure that both providers return TypeNode intances
         if ((m_lhs->getType() !=  &typeid(const TypeNode*)) || (m_rhs->getType() != &typeid(const TypeNode*))) {
             throw std::invalid_argument("When using the 'instanceof' comparator, both statements must return a TypeNode. For example, 'entity.type == types.world'.");

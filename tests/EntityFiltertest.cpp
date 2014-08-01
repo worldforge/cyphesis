@@ -139,6 +139,7 @@ int main()
 
         TestQuery("entity.type is_instance types.barrel   or   entity.mass=25", {&b1, &b2, &bl1}, {});
 
+        //test and operator without spaces
         try {
             TestQuery("entity.type=types.barrelandentity.burn_speed=0.3", { }, { });
             assert(false);
@@ -152,8 +153,14 @@ int main()
             assert(false);
         } catch (EntityFilter::InvalidQueryException& e) {
         }
-    }
 
+        //test a non-existing type
+        try{
+            TestQuery("entity.type is_instance types.foo", { }, { });
+            assert(false);
+        } catch (std::invalid_argument& e) {
+        }
+    }
     // END of soft property and general tests
 
     //Set up testing environment for Outfit property
