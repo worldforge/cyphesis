@@ -42,8 +42,10 @@ struct query_parser : qi::grammar<Iterator, Predicate*(),
             using qi::int_;
             using qi::lit;
             using qi::double_;
-            using qi::lexeme;
+            using qi::no_skip;
+            using qi::no_case;
             using ascii::char_;
+            using qi::space;
             using qi::_val;
             using qi::_1;
             using qi::_2;
@@ -53,14 +55,19 @@ struct query_parser : qi::grammar<Iterator, Predicate*(),
             //A list of what we would consider comparison operators
             comp_operator_g %= qi::string("!=") | qi::string("<=")
                                 | qi::string(">=") | qi::string("==") | qi::string("!==")
-                                | char_("=") | char_(">") | char_("<") | qi::string("is_instance");
+                                | char_("=") | char_(">") | char_("<")
+                                | qi::no_skip[+space >> no_case[qi::string("is_instance")] >> +space];
+
             //A list of logical operators
-            logical_operator_g %= char_("&") | char_("|");
+            //String operators ("and", "or") require at least one space before and after to distinguish
+            //them from other words.
+            logical_operator_g %= char_("&") | char_("|") | no_skip[+space >> no_case[qi::string("and")] >> +space] |
+                                no_skip[+space >> no_case[qi::string("or")] >> +space];
 
+            //An attribute of a segment. no_skip is used to disable skipper parser and read white spaces
+            segment_attribute_g %= qi::no_skip[+(qi::char_ - space - "." - ":" - comp_operator_g - logical_operator_g - "(" - ")")];
 
-            segment_attribute_g %= +(qi::char_ - "." - ":" - comp_operator_g - logical_operator_g - "(" - ")");
-
-            //A single segment. Consists of a delimiter followed by the attribute.
+            //A single segment. Consists of a delimiter followed by the attribute. (i.e. ".type")
             segment_g %= (char_(".") | char_(":")) >>
                         segment_attribute_g;
 
@@ -91,29 +98,29 @@ struct query_parser : qi::grammar<Iterator, Predicate*(),
             comparer_predicate_g =
                     (consumer_g >> "=" >> consumer_g)[_val = new_<
                             ComparePredicate>(
-                            _1, qi::_2, ComparePredicate::Comparator::EQUALS)] |
+                            _1, qi::_2, ComparePredicate::Comparator::EQUALS)]  |
 
                             (consumer_g >> "!=" >> consumer_g)
                             [_val = new_<ComparePredicate>(_1, qi::_2,
-                            ComparePredicate::Comparator::NOT_EQUALS)]  |
+                            ComparePredicate::Comparator::NOT_EQUALS)]          |
 
                             (consumer_g >> ">" >> consumer_g)
                             [_val = new_<ComparePredicate>(_1, qi::_2,
-                            ComparePredicate::Comparator::GREATER)]     |
+                            ComparePredicate::Comparator::GREATER)]             |
 
                             (consumer_g >> ">=" >> consumer_g)
                             [_val = new_<ComparePredicate>(_1, qi::_2,
-                            ComparePredicate::Comparator::GREATER_EQUAL)]     |
+                            ComparePredicate::Comparator::GREATER_EQUAL)]       |
 
                             (consumer_g >> "<" >> consumer_g)
                             [_val = new_<ComparePredicate>(_1, qi::_2,
-                            ComparePredicate::Comparator::LESS)]        |
+                            ComparePredicate::Comparator::LESS)]                |
 
                             (consumer_g >> "<=" >> consumer_g)
                             [_val = new_<ComparePredicate>(_1, qi::_2,
-                            ComparePredicate::Comparator::LESS_EQUAL)]     |
+                            ComparePredicate::Comparator::LESS_EQUAL)]          |
 
-                            (consumer_g >> "is_instance" >> consumer_g)
+                            (consumer_g >> no_case["is_instance"] >> consumer_g)
                             [_val = new_<ComparePredicate>(_1, qi::_2,
                             ComparePredicate::Comparator::INSTANCE_OF)];
 
@@ -121,23 +128,22 @@ struct query_parser : qi::grammar<Iterator, Predicate*(),
             //"and" is matched before or to implement precedence.
             //When everything within parentheses is parsed into a single predicate, parentheses are consumed
             predicate_g = comparer_predicate_g[_a = _1] >>
-                    (("&" >> predicate_g[_val = new_<AndPredicate>(_a, _1)])|
-                    ("|" >> predicate_g[_val = new_<OrPredicate>(_a, _1)])|
-                    qi::eps[_val = _a])                                         |
+                    ((("&" | no_case["and"]) >> predicate_g[_val = new_<AndPredicate>(_a, _1)]) |
+                    (("|" | no_case["or"]) >> predicate_g[_val = new_<OrPredicate>(_a, _1)])    |
+                    qi::eps[_val = _a])                                                             |
                     "(" >> predicate_g[_val = _1] >> ")";
 
             //Another level that constructs predicates after parentheses were consumed
-            //NOTE: Possibly there are ways to avoid this.
             parenthesised_predicate_g = predicate_g[_a = _1] >>
-                    (("&" >> parenthesised_predicate_g[_val = new_<AndPredicate>(_a, _1)])|
-                    ("|" >> parenthesised_predicate_g[_val = new_<OrPredicate>(_a, _1)])|
+                    ((("&" | no_case["and"]) >> parenthesised_predicate_g[_val = new_<AndPredicate>(_a, _1)])|
+                    (("|" | no_case["or"]) >> parenthesised_predicate_g[_val = new_<OrPredicate>(_a, _1)])|
                     qi::eps[_val = _a]) |
                     "(" >> parenthesised_predicate_g[_val = _1] >> ")";
         }
 
         Factory f;
-        qi::rule<Iterator, std::string(), ascii::space_type> comp_operator_g;
-        qi::rule<Iterator, std::string(), ascii::space_type> logical_operator_g;
+        qi::rule<Iterator, std::string()> comp_operator_g;
+        qi::rule<Iterator, std::string()> logical_operator_g;
         qi::rule<Iterator, std::string(), ascii::space_type> segment_attribute_g;
         qi::rule<Iterator, EntityFilter::ProviderFactory::Segment(), ascii::space_type> segment_g;
         qi::rule<Iterator, EntityFilter::ProviderFactory::Segment(), ascii::space_type> special_segment_g;

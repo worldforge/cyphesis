@@ -141,10 +141,22 @@ int main()
         //override precedence rules with parentheses
         TestQuery("(entity.type=types.boulder|entity.type=types.barrel)&entity.burn_speed=0.3", {&b1}, {&bl1});
 
+        //test operators "and", "or"
+        TestQuery("(entity.type=types.barrel and entity.burn_speed=0.3)", {&b1}, {&bl1});
+
+        TestQuery("entity.type is_instance types.barrel   or   entity.mass=25", {&b1, &b2, &bl1}, {});
+
+        try {
+            TestQuery("entity.type=types.barrelandentity.burn_speed=0.3", { }, { });
+            assert(false);
+        } catch (EntityFilter::InvalidQueryException& e) {
+        }
         //test query with spaces
         TestQuery("  entity.type = types.barrel   ", { &b1 }, { &bl1 });
+
         try {
             TestQuery("foobar", { }, { &b1, &bl1 });
+            assert(false);
         } catch (EntityFilter::InvalidQueryException& e) {
         }
     }
@@ -416,15 +428,6 @@ int main()
         assert(orPred1.isMatch(QueryContext{b1}));
 
     }
-
-
-
-
-
-
-
-
-
 
 //    Clean up
     delete barrelType;
