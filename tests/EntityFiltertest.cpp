@@ -100,20 +100,13 @@ int main()
 
         TestQuery("entity.burn_speed<0.3", { &b2 }, { &b1 });
 
-        //test list of floats comparison
-        //TestQuery("entity.float_list=[25]", { &bl1 }, { &b1 });
+        //test list match using "contains" operator
 
-        //TestQuery("entity.float_list==[25, 20]", { &bl1 }, { &b1 });
+        TestQuery("entity.float_list contains 20.0", {&bl1}, {});
 
-        //test empty lists
-        //TestQuery("entity.float_list==[]", { }, { &bl1 });
+        TestQuery("entity.string_list contains 'foo'", {&bl1}, {});
 
-        //TestQuery("entity.float_list=[]", { }, { &bl1 });
-
-        //test list of strings
-        //TestQuery("entity.string_list=[bar]", { &bl1 }, { &b1 });
-
-        //TestQuery("entity.string_list=[foo, bar]", { &bl1 }, { &b1 });
+        TestQuery("entity.float_list contains 95.0", {}, {&bl1});
 
         //test query with several criteria
 
