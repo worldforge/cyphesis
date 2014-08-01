@@ -29,6 +29,8 @@
 #include "../../common/compose.hpp"
 #include "../../common/Inheritance.h"
 
+#include <algorithm>
+
 namespace EntityFilter
 {
 
@@ -510,7 +512,20 @@ bool ComparePredicate::isMatch(const QueryContext& context) const
                 }
             }
         }
-
+        return false;
+    }
+    case Comparator::CONTAINS:
+    {
+        Atlas::Message::Element left, right;
+        m_lhs->value(left, context);
+        if(left.isList()){
+            m_rhs->value(right, context);
+            if(!right.isNone()){
+                const auto& left_end = left.List().end();
+                const auto& left_begin = left.List().begin();
+                return std::find(left_begin, left_end, right) != left_end;
+            }
+        }
         return false;
     }
         break;

@@ -82,7 +82,7 @@ int main()
     bl1.setType(boulderType);
 
     SoftProperty* prop1 = new SoftProperty();
-    prop1->set(std::vector<Element> {25, 20});
+    prop1->set(std::vector<Element> {25.0, 20.0});
     bl1.setProperty("float_list", prop1);
 
     SoftProperty* list_prop2 = new SoftProperty();
@@ -427,6 +427,33 @@ int main()
         OrPredicate orPred1(&compPred1, &compPred3);
         assert(orPred1.isMatch(QueryContext{b1}));
 
+        //entity.float_list
+        segments.clear();
+        segments.push_back(ProviderFactory::Segment { "", "entity" });
+        segments.push_back(ProviderFactory::Segment { ".", "float_list" });
+        auto lhs_provider3 = factory.createProviders(segments);
+
+        //entity.float_list contains 20.0
+        ComparePredicate compPred9(lhs_provider3, new FixedElementProvider(20.0), ComparePredicate::Comparator::CONTAINS);
+        assert(compPred9.isMatch(QueryContext{bl1}));
+
+        //entity.float_list contains 100.0
+        ComparePredicate compPred10(lhs_provider3, new FixedElementProvider(100.0), ComparePredicate::Comparator::CONTAINS);
+        assert(!compPred10.isMatch(QueryContext{bl1}));
+
+        //entity.string_list
+        segments.clear();
+        segments.push_back(ProviderFactory::Segment { "", "entity" });
+        segments.push_back(ProviderFactory::Segment { ".", "string_list" });
+        auto lhs_provider4 = factory.createProviders(segments);
+
+        //entity.string_list contains "foo"
+        ComparePredicate compPred11(lhs_provider4, new FixedElementProvider("foo"), ComparePredicate::Comparator::CONTAINS);
+        assert(compPred11.isMatch(QueryContext{bl1}));
+
+        //entity.string_list contains "foobar"
+        ComparePredicate compPred12(lhs_provider4, new FixedElementProvider("foobar"), ComparePredicate::Comparator::CONTAINS);
+        assert(!compPred12.isMatch(QueryContext{bl1}));
     }
 
 //    Clean up

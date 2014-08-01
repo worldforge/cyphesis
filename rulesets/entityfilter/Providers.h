@@ -304,7 +304,7 @@ class ComparePredicate : public Predicate {
     public:
 
         enum class Comparator {
-            EQUALS, NOT_EQUALS, INSTANCE_OF, GREATER, GREATER_EQUAL, LESS, LESS_EQUAL
+            EQUALS, NOT_EQUALS, INSTANCE_OF, CONTAINS, GREATER, GREATER_EQUAL, LESS, LESS_EQUAL
         };
 
         ComparePredicate(const Consumer<QueryContext>* lhs, const Consumer<QueryContext>* rhs, Comparator comparator);
