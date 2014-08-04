@@ -111,6 +111,14 @@ int main()
         //test list match using "in" operator
         TestQuery("20.0 in entity.float_list", {&bl1}, {});
 
+        //test queries with [] list notation
+        TestQuery("25 in [25, 30]", {&bl1}, {});
+
+        TestQuery("'foo' in ['bar']", {}, {&bl1});
+
+        TestQuery("entity.mass in [25, 30]", {&b1}, {&b2});
+
+        TestQuery("entity.burn_speed in [0.30, 0.40, 0.10]", {&b1}, {&b2});
 
         //test query with several criteria
 

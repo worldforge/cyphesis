@@ -7,7 +7,6 @@
 #include <boost/spirit/include/qi_real.hpp>
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
-#include <boost/variant/recursive_wrapper.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/fusion/include/io.hpp>
 
@@ -89,12 +88,23 @@ struct query_parser : qi::grammar<Iterator, Predicate*(),
             //Construct a new consumer. Simple values are constructed via FixedElementProvider.
             //Doubles have to have a dot, otherwise numbers are parsed as int (this affects type of Element)
             //If we have a SegmentsList, use the given factory to construct Consumer
-            consumer_g = qi::real_parser<double, qi::strict_real_policies<double>>()
-                    [_val = new_<FixedElementProvider>(_1)]                             |
-                    int_[_val = new_<FixedElementProvider>(_1)]                         |
-                    quoted_string_g[_val = new_<FixedElementProvider>(_1)]              |
-                    segmented_expr_g[_val = boost::phoenix::bind(
-                            &Factory::createProviders, &f, _1)];
+            consumer_g =
+                    //If parsing a list, stuff everything in a vector of elements then create FixedElementProvider
+                    ("[" >> qi::real_parser<double, qi::strict_real_policies<double>>()[push_back(_a, _1)] % "," >> "]")
+                    [_val = new_<FixedElementProvider>(_a)]                                                             |
+
+                    ("[" >> int_[push_back(_a, _1)] % "," >> "]")[_val = new_<FixedElementProvider>(_a)]                |
+
+                    ("[" >> quoted_string_g[push_back(_a, _1)] >> "]")[_val = new_<FixedElementProvider>(_a)]           |
+
+                    qi::real_parser<double, qi::strict_real_policies<double>>()
+                    [_val = new_<FixedElementProvider>(_1)]                                                             |
+
+                    int_[_val = new_<FixedElementProvider>(_1)]                                                         |
+
+                    quoted_string_g[_val = new_<FixedElementProvider>(_1)]                                              |
+
+                    segmented_expr_g[_val = boost::phoenix::bind(&Factory::createProviders, &f, _1)];
 
             //Construct comparer predicate, depending on which comparison operator we encounter.
             comparer_predicate_g =
@@ -145,9 +155,9 @@ struct query_parser : qi::grammar<Iterator, Predicate*(),
 
             //Another level that constructs predicates after parentheses were consumed
             parenthesised_predicate_g = predicate_g[_a = _1] >>
-                    ((("&" | no_case["and"]) >> parenthesised_predicate_g[_val = new_<AndPredicate>(_a, _1)])|
-                    (("|" | no_case["or"]) >> parenthesised_predicate_g[_val = new_<OrPredicate>(_a, _1)])|
-                    qi::eps[_val = _a]) |
+                    ((("&" | no_case["and"]) >> parenthesised_predicate_g[_val = new_<AndPredicate>(_a, _1)])   |
+                    (("|" | no_case["or"]) >> parenthesised_predicate_g[_val = new_<OrPredicate>(_a, _1)])      |
+                    qi::eps[_val = _a])                                                                             |
                     "(" >> parenthesised_predicate_g[_val = _1] >> ")";
         }
 
@@ -159,7 +169,7 @@ struct query_parser : qi::grammar<Iterator, Predicate*(),
         qi::rule<Iterator, EntityFilter::ProviderFactory::Segment(), ascii::space_type> special_segment_g;
         qi::rule<Iterator, std::string(), ascii::space_type> quoted_string_g;
         qi::rule<Iterator, ProviderFactory::SegmentsList(), ascii::space_type> segmented_expr_g;
-        qi::rule<Iterator, Consumer<QueryContext>*(), ascii::space_type> consumer_g;
+        qi::rule<Iterator, Consumer<QueryContext>*(), qi::locals<std::vector<Atlas::Message::Element>>, ascii::space_type> consumer_g;
         qi::rule<Iterator, ComparePredicate*(), ascii::space_type, qi::locals<Predicate*>> comparer_predicate_g;
         qi::rule<Iterator, Predicate*(), ascii::space_type, qi::locals<Predicate*>> predicate_g;
         qi::rule<Iterator, Predicate*(), ascii::space_type, qi::locals<Predicate*>> parenthesised_predicate_g;
