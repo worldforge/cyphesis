@@ -437,9 +437,17 @@ int main()
         ComparePredicate compPred9(lhs_provider3, new FixedElementProvider(20.0), ComparePredicate::Comparator::CONTAINS);
         assert(compPred9.isMatch(QueryContext{bl1}));
 
+        //20.0 in entity.float_list
+        ComparePredicate compPred13(new FixedElementProvider(20.0), lhs_provider3, ComparePredicate::Comparator::IN);
+        assert(compPred13.isMatch(QueryContext{bl1}));
+
         //entity.float_list contains 100.0
         ComparePredicate compPred10(lhs_provider3, new FixedElementProvider(100.0), ComparePredicate::Comparator::CONTAINS);
         assert(!compPred10.isMatch(QueryContext{bl1}));
+
+        //100.0 in entity.float_list
+        ComparePredicate compPred14(new FixedElementProvider(100.0), lhs_provider3, ComparePredicate::Comparator::IN);
+        assert(!compPred14.isMatch(QueryContext{bl1}));
 
         //entity.string_list
         segments.clear();

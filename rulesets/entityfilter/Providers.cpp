@@ -451,9 +451,9 @@ bool ComparePredicate::isMatch(const QueryContext& context) const
     {
         Atlas::Message::Element left, right;
         m_lhs->value(left, context);
-        if (!left.isNone() && left.isNum()) {
+        if (left.isNum()) {
             m_rhs->value(right, context);
-            if (!right.isNone() && right.isNum()) {
+            if (right.isNum()) {
                 return left.asNum() < right.asNum();
             }
         }
@@ -464,9 +464,9 @@ bool ComparePredicate::isMatch(const QueryContext& context) const
     {
         Atlas::Message::Element left, right;
         m_lhs->value(left, context);
-        if (!left.isNone() && left.isNum()) {
+        if (left.isNum()) {
             m_rhs->value(right, context);
-            if (!right.isNone() && right.isNum()) {
+            if (right.isNum()) {
                 return left.asNum() <= right.asNum();
             }
         }
@@ -477,9 +477,9 @@ bool ComparePredicate::isMatch(const QueryContext& context) const
     {
         Atlas::Message::Element left, right;
         m_lhs->value(left, context);
-        if (!left.isNone() && left.isNum()) {
+        if (left.isNum()) {
             m_rhs->value(right, context);
-            if (!right.isNone() && right.isNum()) {
+            if (right.isNum()) {
                 return left.asNum() > right.asNum();
             }
         }
@@ -490,9 +490,9 @@ bool ComparePredicate::isMatch(const QueryContext& context) const
     {
         Atlas::Message::Element left, right;
         m_lhs->value(left, context);
-        if (!left.isNone() && left.isNum()) {
+        if (left.isNum()) {
             m_rhs->value(right, context);
-            if (!right.isNone() && right.isNum()) {
+            if (right.isNum()) {
                 return left.asNum() >= right.asNum();
             }
         }
@@ -514,6 +514,20 @@ bool ComparePredicate::isMatch(const QueryContext& context) const
                         return rightType->isTypeOf(leftType);
                     }
                 }
+            }
+        }
+        return false;
+    }
+    case Comparator::IN:
+    {
+        Atlas::Message::Element left, right;
+        m_lhs->value(left, context);
+        if (!left.isNone()) {
+            m_rhs->value(right, context);
+            if (right.isList()) {
+                const auto& right_end = right.List().end();
+                const auto& right_begin = right.List().begin();
+                return std::find(right_begin, right_end, left) != right_end;
             }
         }
         return false;
