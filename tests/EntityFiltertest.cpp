@@ -108,6 +108,10 @@ int main()
 
         TestQuery("entity.float_list contains 95.0", {}, {&bl1});
 
+        //test list match using "in" operator
+        TestQuery("20.0 in entity.float_list", {&bl1}, {});
+
+
         //test query with several criteria
 
         TestQuery("entity.type=types.barrel&entity.burn_speed=0.3", { &b1 }, { &b2,

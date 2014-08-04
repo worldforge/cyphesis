@@ -57,7 +57,8 @@ struct query_parser : qi::grammar<Iterator, Predicate*(),
                                 | qi::string(">=") | qi::string("==") | qi::string("!==")
                                 | char_("=") | char_(">") | char_("<")
                                 | qi::no_skip[+space >> no_case[qi::string("is_instance")] >> +space]
-                                | qi::no_skip[+space >> no_case[qi::string("contains")] >> +space];
+                                | qi::no_skip[+space >> no_case[qi::string("contains")] >> +space]
+                                | qi::no_skip[+space >> no_case[qi::string("in")] >> +space];
 
             //A list of logical operators
             //String operators ("and", "or") require at least one space before and after to distinguish
@@ -124,6 +125,11 @@ struct query_parser : qi::grammar<Iterator, Predicate*(),
                             (consumer_g >> no_case["is_instance"] >> consumer_g)
                             [_val = new_<ComparePredicate>(_1, qi::_2,
                             ComparePredicate::Comparator::INSTANCE_OF)]         |
+
+                            (consumer_g >> no_case["in"] >> consumer_g)
+                            [_val = new_<ComparePredicate>(_1, qi::_2,
+                            ComparePredicate::Comparator::IN)]            |
+
                             (consumer_g >> no_case["contains"] >> consumer_g)
                             [_val = new_<ComparePredicate>(_1, qi::_2,
                             ComparePredicate::Comparator::CONTAINS)];
