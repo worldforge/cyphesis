@@ -122,34 +122,37 @@ int main()
 
         //test query with several criteria
 
-        TestQuery("entity.type=types.barrel&entity.burn_speed=0.3", { &b1 }, { &b2,
+        TestQuery("entity.type=types.barrel&&entity.burn_speed=0.3", { &b1 }, { &b2,
                           &bl1 });
 
         //test logical operators and precedence
 
-        TestQuery("entity.type=types.barrel|entity.type=types.boulder", { &b1, &bl1 }, { });
+        TestQuery("entity.type=types.barrel||entity.type=types.boulder", { &b1, &bl1 }, { });
 
         TestQuery(
-                "entity.type=types.boulder|entity.type=types.barrel&entity.burn_speed=0.3",
+                "entity.type=types.boulder||entity.type=types.barrel&&entity.burn_speed=0.3",
                 { &b1, &bl1 }, { });
 
         //test query with parenthesis
         TestQuery("(entity.type=types.boulder)", {&bl1}, {&b1});
 
-        TestQuery("(entity.type=types.boulder)&(entity.mass=25)", {&bl1}, {&b1});
+        TestQuery("(entity.type=types.boulder)&&(entity.mass=25)", {&bl1}, {&b1});
 
         //test query with nested parentheses
-        TestQuery("(entity.type=types.barrel&(entity.mass=25|entity.mass=30)|entity.type=types.boulder)", {&b1, &b3, &bl1}, {&b2});
+        TestQuery("(entity.type=types.barrel&&(entity.mass=25||entity.mass=30)||entity.type=types.boulder)", {&b1, &b3, &bl1}, {&b2});
 
-        TestQuery("(entity.type=types.barrel&(entity.mass=25&(entity.burn_speed=0.25|entity.mass=30))|entity.type=types.boulder)", {&bl1}, {&b1});
+        TestQuery("(entity.type=types.barrel&&(entity.mass=25&&(entity.burn_speed=0.25||entity.mass=30))||entity.type=types.boulder)", {&bl1}, {&b1});
 
         //override precedence rules with parentheses
-        TestQuery("(entity.type=types.boulder|entity.type=types.barrel)&entity.burn_speed=0.3", {&b1}, {&bl1});
+        TestQuery("(entity.type=types.boulder||entity.type=types.barrel)&&entity.burn_speed=0.3", {&b1}, {&bl1});
 
         //test operators "and", "or"
         TestQuery("(entity.type=types.barrel and entity.burn_speed=0.3)", {&b1}, {&bl1});
 
         TestQuery("entity.type is_instance types.barrel   or   entity.mass=25", {&b1, &b2, &bl1}, {});
+
+        //test multiple types for is_instance operator
+        TestQuery("entity.type is_instance types.barrel|types.boulder", {&b1, &bl1}, {});
 
         //test and operator without spaces
         try {
@@ -230,12 +233,14 @@ int main()
         //Test outfit that doesn't have the specified part
         TestQuery("entity.outfit.chest.color='red'", { }, { &ch1 });
         //Test outfit with another criterion
-        TestQuery("entity.type=types.character&entity.outfit.hands.color='brown'", { &ch1 },
+        TestQuery("entity.type=types.character&&entity.outfit.hands.color='brown'", { &ch1 },
                   { &b1 });
         //Test nested outfit
         TestQuery("entity.outfit.hands.outfit.thumb.color='green'", {&ch1}, {});
 
         TestQuery("entity.outfit.hands.outfit.thumb.type=types.cloth", {&ch1}, {});
+
+        TestQuery("entity.type is_instance types.barrel|types.boulder|types.gloves", {&b1, &bl1, &glovesEntity}, {});
     }
     //END of outfit case test
 
@@ -263,7 +268,7 @@ int main()
         //Test BBox area
         TestQuery("entity.bbox.area=8.0", { &b1 }, { &bl1 });
         //Test BBox with another criterion
-        TestQuery("entity.type=types.barrel&entity.bbox.height>0.0", { &b1 }, { &b2,
+        TestQuery("entity.type=types.barrel&&entity.bbox.height>0.0", { &b1 }, { &b2,
                           &bl1 });
         //Test BBox of an outfit
         TestQuery("entity.outfit.hands.outfit.thumb.bbox.volume=48.0", {&ch1}, {});

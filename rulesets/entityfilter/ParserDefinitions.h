@@ -49,6 +49,8 @@ struct query_parser : qi::grammar<Iterator, Predicate*(),
             using qi::_1;
             using qi::_2;
             using qi::_a;
+            using qi::_b;
+            using qi::_c;
             using namespace boost::phoenix;
 
             //A list of what we would consider comparison operators
@@ -62,11 +64,11 @@ struct query_parser : qi::grammar<Iterator, Predicate*(),
             //A list of logical operators
             //String operators ("and", "or") require at least one space before and after to distinguish
             //them from other words.
-            logical_operator_g %= char_("&") | char_("|") | no_skip[+space >> no_case[qi::string("and")] >> +space] |
+            logical_operator_g %= qi::string("&&") | qi::string("||") | no_skip[+space >> no_case[qi::string("and")] >> +space] |
                                 no_skip[+space >> no_case[qi::string("or")] >> +space];
 
             //An attribute of a segment. no_skip is used to disable skipper parser and read white spaces
-            segment_attribute_g %= qi::no_skip[+(qi::char_ - space - "." - ":" - comp_operator_g - logical_operator_g - "(" - ")")];
+            segment_attribute_g %= qi::no_skip[+(qi::char_ - space - "." - ":" - comp_operator_g - logical_operator_g - "(" - ")" - "|")];
 
             //A single segment. Consists of a delimiter followed by the attribute. (i.e. ".type")
             segment_g %= (char_(".") | char_(":")) >>
@@ -113,50 +115,62 @@ struct query_parser : qi::grammar<Iterator, Predicate*(),
                             _1, qi::_2, ComparePredicate::Comparator::EQUALS)]  |
 
                             (consumer_g >> "!=" >> consumer_g)
-                            [_val = new_<ComparePredicate>(_1, qi::_2,
+                            [_val = new_<ComparePredicate>(_1, _2,
                             ComparePredicate::Comparator::NOT_EQUALS)]          |
 
                             (consumer_g >> ">" >> consumer_g)
-                            [_val = new_<ComparePredicate>(_1, qi::_2,
+                            [_val = new_<ComparePredicate>(_1, _2,
                             ComparePredicate::Comparator::GREATER)]             |
 
                             (consumer_g >> ">=" >> consumer_g)
-                            [_val = new_<ComparePredicate>(_1, qi::_2,
+                            [_val = new_<ComparePredicate>(_1, _2,
                             ComparePredicate::Comparator::GREATER_EQUAL)]       |
 
                             (consumer_g >> "<" >> consumer_g)
-                            [_val = new_<ComparePredicate>(_1, qi::_2,
+                            [_val = new_<ComparePredicate>(_1, _2,
                             ComparePredicate::Comparator::LESS)]                |
 
                             (consumer_g >> "<=" >> consumer_g)
-                            [_val = new_<ComparePredicate>(_1, qi::_2,
+                            [_val = new_<ComparePredicate>(_1, _2,
                             ComparePredicate::Comparator::LESS_EQUAL)]          |
 
-                            (consumer_g >> no_case["is_instance"] >> consumer_g)
-                            [_val = new_<ComparePredicate>(_1, qi::_2,
-                            ComparePredicate::Comparator::INSTANCE_OF)]         |
+                            //is_instance allows specifying several types to make a lookup on.
+                            //Syntax example: entity.type is_instance types.barrel|types.boulder
+                            //This is interpreted as
+                            //entity.type is_instance types.barrel || entity.type is_instance types.boulder
+                            //First, try to match normal is_instance case, but save LHS into a local variable
+                            //The resulting ComparePredicate is saved in a different local variable
+                            (consumer_g[_b = _1] >> no_case["is_instance"] >> consumer_g)
+                            [_c = new_<ComparePredicate>(_1, _2, ComparePredicate::Comparator::INSTANCE_OF)]
+                            //Then try to match repetitions of consumers separated by "|" operator
+                            //On each match, construct INSTANCE_OF ComparePredicate using the
+                            //saved value from LHS and the matched value, then construct an OR predicate
+                            //between existing predicate and newly created ComparePredicate
+                            >> *("|" >> consumer_g[_c = new_<OrPredicate>(_c, new_<ComparePredicate>(_b, _1,
+                            ComparePredicate::Comparator::INSTANCE_OF))])
+                            >> qi::eps[_val = _c]         |
 
                             (consumer_g >> no_case["in"] >> consumer_g)
-                            [_val = new_<ComparePredicate>(_1, qi::_2,
+                            [_val = new_<ComparePredicate>(_1, _2,
                             ComparePredicate::Comparator::IN)]            |
 
                             (consumer_g >> no_case["contains"] >> consumer_g)
-                            [_val = new_<ComparePredicate>(_1, qi::_2,
+                            [_val = new_<ComparePredicate>(_1, _2,
                             ComparePredicate::Comparator::CONTAINS)];
 
             //Construct a predicate depending on which logical operator we encounter.
             //"and" is matched before or to implement precedence.
             //When everything within parentheses is parsed into a single predicate, parentheses are consumed
             predicate_g = comparer_predicate_g[_a = _1] >>
-                    ((("&" | no_case["and"]) >> predicate_g[_val = new_<AndPredicate>(_a, _1)]) |
-                    (("|" | no_case["or"]) >> predicate_g[_val = new_<OrPredicate>(_a, _1)])    |
+                    ((("&&" | no_case["and"]) >> predicate_g[_val = new_<AndPredicate>(_a, _1)]) |
+                    (("||" | no_case["or"]) >> predicate_g[_val = new_<OrPredicate>(_a, _1)])    |
                     qi::eps[_val = _a])                                                             |
                     "(" >> predicate_g[_val = _1] >> ")";
 
             //Another level that constructs predicates after parentheses were consumed
             parenthesised_predicate_g = predicate_g[_a = _1] >>
-                    ((("&" | no_case["and"]) >> parenthesised_predicate_g[_val = new_<AndPredicate>(_a, _1)])   |
-                    (("|" | no_case["or"]) >> parenthesised_predicate_g[_val = new_<OrPredicate>(_a, _1)])      |
+                    ((("&&" | no_case["and"]) >> parenthesised_predicate_g[_val = new_<AndPredicate>(_a, _1)])   |
+                    (("||" | no_case["or"]) >> parenthesised_predicate_g[_val = new_<OrPredicate>(_a, _1)])      |
                     qi::eps[_val = _a])                                                                             |
                     "(" >> parenthesised_predicate_g[_val = _1] >> ")";
         }
@@ -170,7 +184,7 @@ struct query_parser : qi::grammar<Iterator, Predicate*(),
         qi::rule<Iterator, std::string(), ascii::space_type> quoted_string_g;
         qi::rule<Iterator, ProviderFactory::SegmentsList(), ascii::space_type> segmented_expr_g;
         qi::rule<Iterator, Consumer<QueryContext>*(), qi::locals<std::vector<Atlas::Message::Element>>, ascii::space_type> consumer_g;
-        qi::rule<Iterator, ComparePredicate*(), ascii::space_type, qi::locals<Predicate*>> comparer_predicate_g;
+        qi::rule<Iterator, Predicate*(), ascii::space_type, qi::locals<Predicate*, Consumer<QueryContext>*, Predicate*>> comparer_predicate_g;
         qi::rule<Iterator, Predicate*(), ascii::space_type, qi::locals<Predicate*>> predicate_g;
         qi::rule<Iterator, Predicate*(), ascii::space_type, qi::locals<Predicate*>> parenthesised_predicate_g;
 };
