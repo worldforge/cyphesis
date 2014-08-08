@@ -496,11 +496,12 @@ class hunt(Goal):
                        self.fight])
         self.weapon=weapon
         self.what=what
+        self.filter=get_filter(what)
         self.range=range
         self.square_range=range*range
         self.vars=["weapon", "what", "range"]
     def none_in_range(self, me):
-        thing_all=me.map.find_by_type(self.what)
+        thing_all=me.map.find_by_filter(self.filter)
         for thing in thing_all:
             if square_distance(me.location, thing.location) < self.square_range:
                 return 0
@@ -532,13 +533,14 @@ class defend(Goal):
                        hunt_for(what, range),
                        self.fight])
         self.what=what
+        self.filter=get_filter(what)
         self.range=range
         self.vars=["what", "range"]
     def none_in_sight(self, me):
         target_id=me.get_knowledge('focus', self.what)
         if target_id:
             return 0
-        thing_all=me.map.find_by_type(self.what)
+        thing_all=me.map.find_by_filter(self.filter)
         if thing_all and len(thing_all) > 0:
             return 0
         return 1
