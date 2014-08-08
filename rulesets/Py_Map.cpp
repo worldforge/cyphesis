@@ -314,10 +314,84 @@ static PyObject * Map_find_by_filter(PyMap* self, PyObject* filter){
     return list;
 }
 
+///\brief find entities using a query in a specified location
+static PyObject * Map_find_by_location_query(PyMap* self, PyObject* args){
+#ifndef NDEBUG
+    if (self->m_map == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.find_by_location_query");
+        return NULL;
+    }
+#endif // NDEBUG
+
+    PyObject * where_obj;
+    double radius;
+    PyObject* filter;
+    if (!PyArg_ParseTuple(args, "OdO", &where_obj, &radius, &filter)) {
+        return NULL;
+    }
+
+    if (!PyFilter_Check(filter)) {
+        return NULL;
+    }
+    PyFilter* f = (PyFilter*)filter;
+
+
+    if (!PyLocation_Check(where_obj)) {
+        PyErr_SetString(PyExc_TypeError, "Argument must be a location");
+        return NULL;
+    }
+    PyLocation * where = (PyLocation *)where_obj;
+    if (!where->location->isValid()) {
+        PyErr_SetString(PyExc_RuntimeError, "Location is incomplete");
+        return NULL;
+    }
+
+    //Create a vector and fill it with entities that match the given filter and are in range
+    float square_range = radius * radius;
+    EntityVector res;
+    LocatedEntity* place = where->location->m_loc;
+    if (place != 0) {
+
+        auto iter = place->m_contains->begin();
+        auto iter_end = place->m_contains->end();
+
+        for (; iter != iter_end; ++iter) {
+            LocatedEntity* item = *iter;
+            if (item == 0) {
+                continue;
+            }
+            if (!item->isVisible() || !f->m_filter->match(*item)) {
+                continue;
+            }
+            if (squareDistance(where->location->pos(), item->m_location.pos()) < square_range) {
+                res.push_back(item);
+            }
+        }
+    }
+
+    //Create a python list an fill it with the entities we got
+    PyObject * list = PyList_New(res.size());
+    if (list == NULL) {
+        return NULL;
+    }
+    EntityVector::const_iterator Iend = res.end();
+    int i = 0;
+    for (EntityVector::const_iterator I = res.begin(); I != Iend; ++I, ++i) {
+        PyObject * thing = wrapEntity(*I);
+        if (thing == NULL) {
+            Py_DECREF(list);
+            return NULL;
+        }
+        PyList_SetItem(list, i, thing);
+    }
+    return list;
+}
+
 static PyMethodDef Map_methods[] = {
     {"find_by_location",    (PyCFunction)Map_find_by_location,    METH_VARARGS},
     {"find_by_type",        (PyCFunction)Map_find_by_type,        METH_O},
     {"find_by_filter",      (PyCFunction)Map_find_by_filter,      METH_O},
+    {"find_by_location_query",(PyCFunction)Map_find_by_location_query,  METH_VARARGS},
     {"add",                 (PyCFunction)Map_updateAdd,           METH_VARARGS},
     {"delete",              (PyCFunction)Map_delete,              METH_O},
     {"get",                 (PyCFunction)Map_get,                 METH_O},
