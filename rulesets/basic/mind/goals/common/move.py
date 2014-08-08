@@ -7,6 +7,8 @@ from physics import *
 from physics import Vector3D
 from physics import Point3D
 
+from filter import *
+
 from mind.Goal import Goal
 from mind.goals.common.common import *
 from mind.goals.common.misc_goal import *
@@ -441,15 +443,24 @@ class pursuit(Goal):
     """avoid or hunt something at range"""
     def __init__(self, desc, what, range, direction):
         Goal.__init__(self,"avoid something",self.not_visible,[self.run])
-        self.what = what
+
+        if isinstance(what, str):
+            self.what = what
+        elif isinstance(what, list) and len(what) > 0:
+            #Try to use the first element as a query.
+            #Queries should never really be passed as a list
+            self.what = str(what[0])
+        else:
+            self.what = str(what)
+        self.filter = get_filter(self.what)
         self.range = range
         self.direction = direction
         self.vars=["what","range","direction"]
     def not_visible(self, me):
         #print self.__class__.__name__,me.mem.recall_place(me.location,self.range,self.what)
-        return not me.mem.recall_place(me.location,self.range,self.what)
+        return not me.mem.recall_place(me.location,self.range,self.filter)
     def run(self, me):
-        lst_of_what = me.mem.recall_place(me.location,self.range,self.what)
+        lst_of_what = me.mem.recall_place(me.location,self.range,self.filter)
         if not lst_of_what or len(lst_of_what)==0: return
         dist_vect=distance_to(me.location,lst_of_what[0].location).unit_vector()
         multiply = const.base_velocity * self.direction * const.basic_tick
