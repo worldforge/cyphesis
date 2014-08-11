@@ -64,11 +64,13 @@ int main()
     b1.setType(barrelType);
     b1.setProperty("mass", new SoftProperty(Element(30)));
     b1.setProperty("burn_speed", new SoftProperty(Element(0.3)));
+    b1.setProperty("isVisible", new SoftProperty(Element(true)));
 
     Entity b2("2", 2);
     b2.setProperty("mass", new SoftProperty(Element(20)));
     b2.setProperty("burn_speed", new SoftProperty(0.25));
     b2.setType(barrelType);
+    b2.setProperty("isVisible", new SoftProperty(Element(false)));
 
     Entity b3("3", 3);
     b3.setProperty("mass", new SoftProperty(Element(25)));
@@ -99,6 +101,11 @@ int main()
         TestQuery("entity.burn_speed>0.3", { }, { &b1, &bl1 });
 
         TestQuery("entity.burn_speed<0.3", { &b2 }, { &b1 });
+
+        //test bool values
+        TestQuery("entity.isVisible = True", {&b1}, {&b2});
+
+        TestQuery("entity.isVisible = false", {&b2}, {&b1});
 
         //test list match using "contains" operator
 

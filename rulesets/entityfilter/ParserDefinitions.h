@@ -99,12 +99,18 @@ struct query_parser : qi::grammar<Iterator, Predicate*(),
 
                     ("[" >> quoted_string_g[push_back(_a, _1)] >> "]")[_val = new_<FixedElementProvider>(_a)]           |
 
+                    ("[" >> (no_case[qi::string("true")[_b = true] | qi::string("false")[_b = false]])
+                            [push_back(_a, _b)] >> "]" )[_val = new_<FixedElementProvider>(_a)]                         |
+
                     qi::real_parser<double, qi::strict_real_policies<double>>()
                     [_val = new_<FixedElementProvider>(_1)]                                                             |
 
                     int_[_val = new_<FixedElementProvider>(_1)]                                                         |
 
                     quoted_string_g[_val = new_<FixedElementProvider>(_1)]                                              |
+
+                    no_case[qi::string("true")[_b = true] | qi::string("false")[_b = false]]
+                    [_val = new_<FixedElementProvider>(_b)]                                                             |
 
                     segmented_expr_g[_val = boost::phoenix::bind(&Factory::createProviders, &f, _1)];
 
@@ -174,7 +180,6 @@ struct query_parser : qi::grammar<Iterator, Predicate*(),
                     qi::eps[_val = _a])                                                                             |
                     "(" >> parenthesised_predicate_g[_val = _1] >> ")";
         }
-
         Factory f;
         qi::rule<Iterator, std::string()> comp_operator_g;
         qi::rule<Iterator, std::string()> logical_operator_g;
@@ -183,7 +188,7 @@ struct query_parser : qi::grammar<Iterator, Predicate*(),
         qi::rule<Iterator, EntityFilter::ProviderFactory::Segment(), ascii::space_type> special_segment_g;
         qi::rule<Iterator, std::string(), ascii::space_type> quoted_string_g;
         qi::rule<Iterator, ProviderFactory::SegmentsList(), ascii::space_type> segmented_expr_g;
-        qi::rule<Iterator, Consumer<QueryContext>*(), qi::locals<std::vector<Atlas::Message::Element>>, ascii::space_type> consumer_g;
+        qi::rule<Iterator, Consumer<QueryContext>*(), qi::locals<std::vector<Atlas::Message::Element>, bool>, ascii::space_type> consumer_g;
         qi::rule<Iterator, Predicate*(), ascii::space_type, qi::locals<Predicate*, Consumer<QueryContext>*, Predicate*>> comparer_predicate_g;
         qi::rule<Iterator, Predicate*(), ascii::space_type, qi::locals<Predicate*>> predicate_g;
         qi::rule<Iterator, Predicate*(), ascii::space_type, qi::locals<Predicate*>> parenthesised_predicate_g;
