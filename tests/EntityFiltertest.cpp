@@ -165,7 +165,7 @@ int main()
         try {
             TestQuery("entity.type=types.barrelandentity.burn_speed=0.3", { }, { });
             assert(false);
-        } catch (EntityFilter::InvalidQueryException& e) {
+        } catch (std::invalid_argument& e) {
         }
         //test query with spaces
         TestQuery("  entity.type = types.barrel   ", { &b1 }, { &bl1 });
@@ -173,7 +173,7 @@ int main()
         try {
             TestQuery("foobar", { }, { &b1, &bl1 });
             assert(false);
-        } catch (EntityFilter::InvalidQueryException& e) {
+        } catch (std::invalid_argument& e) {
         }
 
         //test a non-existing type

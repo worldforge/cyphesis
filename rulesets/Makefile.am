@@ -65,15 +65,7 @@ librulesetentity_a_SOURCES = \
 			     RespawningProperty.cpp RespawningProperty.h
 
 libentityfilter_a_SOURCES = entityfilter/Filter.cpp entityfilter/Filter.h \
-			     entityfilter/AbstractCase.h \
-			     entityfilter/AttributeCases.cpp entityfilter/AttributeCases.h \
-			     entityfilter/AttributeComparers.cpp entityfilter/AttributeComparers.h \
-			     entityfilter/AttributeComparerWrapper.h \
 			     entityfilter/ParserDefinitions.h \
-			     entityfilter/MemoryCase.cpp entityfilter/MemoryCase.h \
-			     entityfilter/OutfitCase.cpp entityfilter/OutfitCase.h \
-			     entityfilter/BBoxCase.cpp entityfilter/BBoxCase.h \
-			     entityfilter/BBoxComparers.cpp entityfilter/BBoxComparers.h \
 			     entityfilter/Providers.cpp entityfilter/Providers.h
 
 

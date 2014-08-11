@@ -11,13 +11,12 @@ PyObject * get_filter(PyObject * self, PyObject* query){
         try {
             f->m_filter = new EntityFilter::Filter(query_str);
         }
-        catch (EntityFilter::InvalidQueryException& e){
+        catch (std::invalid_argument& e){
             PyErr_SetString(PyExc_TypeError, "Invalid query for Entity Filter");
             return NULL;
         }
         return (PyObject*)f;
 }
-
 
 static void Filter_dealloc(PyFilter *self)
 {
