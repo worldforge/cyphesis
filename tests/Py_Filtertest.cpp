@@ -23,10 +23,14 @@ int main()
     run_python_string("import filter");
 
     //Try creating a filter with a valid query
-    run_python_string("filter.get_filter('entity.type=types.bear')");
+    run_python_string("test_filter=filter.get_filter('entity.burn_speed=0.3')");
 
     //Try creating an invalid filter
     expect_python_error("filter.get_filter('foobar')", PyExc_TypeError);
+
+    //test deallocator
+    run_python_string("assert(test_filter)");
+    run_python_string("del(test_filter)");
 
     shutdown_python_api();
     return 0;
