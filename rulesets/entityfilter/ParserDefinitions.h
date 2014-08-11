@@ -31,6 +31,26 @@ namespace qi = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;
 //Parser definitions
 
+//A symbol table for comparators. Matches char and synthesises Comparator attribute
+struct comparators_ : qi::symbols<char, ComparePredicate::Comparator>
+{
+
+    comparators_()
+    {
+        add
+            ("="    , ComparePredicate::Comparator::EQUALS)
+            ("!="   , ComparePredicate::Comparator::NOT_EQUALS)
+            (">"    , ComparePredicate::Comparator::GREATER)
+            (">="   , ComparePredicate::Comparator::GREATER_EQUAL)
+            ("<"    , ComparePredicate::Comparator::LESS)
+            ("<="   , ComparePredicate::Comparator::LESS_EQUAL)
+            ("is_instance", ComparePredicate::Comparator::INSTANCE_OF)
+            ("in"   , ComparePredicate::Comparator::IN)
+            ("contains", ComparePredicate::Comparator::CONTAINS);
+        ;
+    }
+
+};
 
 template<typename Iterator, class Factory>
 struct query_parser : qi::grammar<Iterator, Predicate*(),
@@ -48,9 +68,11 @@ struct query_parser : qi::grammar<Iterator, Predicate*(),
             using qi::_val;
             using qi::_1;
             using qi::_2;
+            using qi::_3;
             using qi::_a;
             using qi::_b;
             using qi::_c;
+            using qi::_d;
             using namespace boost::phoenix;
 
             //A list of what we would consider comparison operators
@@ -116,57 +138,15 @@ struct query_parser : qi::grammar<Iterator, Predicate*(),
 
             //Construct comparer predicate, depending on which comparison operator we encounter.
             comparer_predicate_g =
-                    (consumer_g >> "=" >> consumer_g)[_val = new_<
-                            ComparePredicate>(
-                            _1, qi::_2, ComparePredicate::Comparator::EQUALS)]  |
+                    //Try to match a normal case, but save LHS and comparator into local variables
+                    (consumer_g[_b = _1] >> no_case[comparators][_d = _1] >> consumer_g)
+                    [_c = new_<ComparePredicate>(_1, _3, _d)]
+                    //Then try to match a list case
+                    //Syntax example: entity.type is_instance types.bear|types.tiger
+                    //is interpreted as entity.type is_instance types.bear || entity.type is_instance types.tiger
+                    >> *("|" >> consumer_g[_c = new_<OrPredicate>(_c, new_<ComparePredicate>(_b, _1,_d))])
+                    >> qi::eps[_val = _c];
 
-                            (consumer_g >> "!=" >> consumer_g)
-                            [_val = new_<ComparePredicate>(_1, _2,
-                            ComparePredicate::Comparator::NOT_EQUALS)]          |
-
-                            (consumer_g >> ">" >> consumer_g)
-                            [_val = new_<ComparePredicate>(_1, _2,
-                            ComparePredicate::Comparator::GREATER)]             |
-
-                            (consumer_g >> ">=" >> consumer_g)
-                            [_val = new_<ComparePredicate>(_1, _2,
-                            ComparePredicate::Comparator::GREATER_EQUAL)]       |
-
-                            (consumer_g >> "<" >> consumer_g)
-                            [_val = new_<ComparePredicate>(_1, _2,
-                            ComparePredicate::Comparator::LESS)]                |
-
-                            (consumer_g >> "<=" >> consumer_g)
-                            [_val = new_<ComparePredicate>(_1, _2,
-                            ComparePredicate::Comparator::LESS_EQUAL)]          |
-
-                            //is_instance allows specifying several types to make a lookup on.
-                            //Syntax example: entity.type is_instance types.barrel|types.boulder
-                            //This is interpreted as
-                            //entity.type is_instance types.barrel || entity.type is_instance types.boulder
-                            //First, try to match normal is_instance case, but save LHS into a local variable
-                            //The resulting ComparePredicate is saved in a different local variable
-                            (consumer_g[_b = _1] >> no_case["is_instance"] >> consumer_g)
-                            [_c = new_<ComparePredicate>(_1, _2, ComparePredicate::Comparator::INSTANCE_OF)]
-                            //Then try to match repetitions of consumers separated by "|" operator
-                            //On each match, construct INSTANCE_OF ComparePredicate using the
-                            //saved value from LHS and the matched value, then construct an OR predicate
-                            //between existing predicate and newly created ComparePredicate
-                            >> *("|" >> consumer_g[_c = new_<OrPredicate>(_c, new_<ComparePredicate>(_b, _1,
-                            ComparePredicate::Comparator::INSTANCE_OF))])
-                            >> qi::eps[_val = _c]         |
-
-                            (consumer_g >> no_case["in"] >> consumer_g)
-                            [_val = new_<ComparePredicate>(_1, _2,
-                            ComparePredicate::Comparator::IN)]            |
-
-                            (consumer_g >> no_case["contains"] >> consumer_g)
-                            [_val = new_<ComparePredicate>(_1, _2,
-                            ComparePredicate::Comparator::CONTAINS)];
-
-            //Construct a predicate depending on which logical operator we encounter.
-            //"and" is matched before or to implement precedence.
-            //When everything within parentheses is parsed into a single predicate, parentheses are consumed
             predicate_g = comparer_predicate_g[_a = _1] >>
                     ((("&&" | no_case["and"]) >> predicate_g[_val = new_<AndPredicate>(_a, _1)]) |
                     (("||" | no_case["or"]) >> predicate_g[_val = new_<OrPredicate>(_a, _1)])    |
@@ -189,9 +169,12 @@ struct query_parser : qi::grammar<Iterator, Predicate*(),
         qi::rule<Iterator, std::string(), ascii::space_type> quoted_string_g;
         qi::rule<Iterator, ProviderFactory::SegmentsList(), ascii::space_type> segmented_expr_g;
         qi::rule<Iterator, Consumer<QueryContext>*(), qi::locals<std::vector<Atlas::Message::Element>, bool>, ascii::space_type> consumer_g;
-        qi::rule<Iterator, Predicate*(), ascii::space_type, qi::locals<Predicate*, Consumer<QueryContext>*, Predicate*>> comparer_predicate_g;
+        qi::rule<Iterator, Predicate*(), ascii::space_type, qi::locals<Predicate*, Consumer<QueryContext>*, Predicate*,ComparePredicate::Comparator>> comparer_predicate_g;
         qi::rule<Iterator, Predicate*(), ascii::space_type, qi::locals<Predicate*>> predicate_g;
         qi::rule<Iterator, Predicate*(), ascii::space_type, qi::locals<Predicate*>> parenthesised_predicate_g;
+
+        //An instance of comparators symbol table
+        comparators_ comparators;
 };
 
 }
