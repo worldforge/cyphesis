@@ -488,6 +488,23 @@ int main()
         assert(!compPred12.isMatch(QueryContext{bl1}));
     }
 
+    {
+        // Test MemoryProvider value retrieval
+        std::map<std::string, Element> entity_memory_map;
+        entity_memory_map.insert(std::make_pair("disposition", Element(25)));
+        Element memory_map_element(entity_memory_map);
+
+        //memory.disposition
+        MemoryProvider mem_provider(new MapProvider(nullptr, "disposition"));
+
+        std::map<std::string, Element> memory;
+        memory.insert(std::make_pair("1", memory_map_element));
+        Element val;
+        MindQueryContext mindQuery(b1, memory);
+        mem_provider.value(val, mindQuery);
+        assert(val == Element(25));
+    }
+
 //    Clean up
     delete barrelType;
     delete boulderType;

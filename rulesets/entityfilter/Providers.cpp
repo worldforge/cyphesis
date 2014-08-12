@@ -68,6 +68,25 @@ const std::type_info* FixedTypeNodeProvider::getType() const
     }
 }
 
+MemoryProvider::MemoryProvider(Consumer<Atlas::Message::Element>* consumer)
+:ConsumingProviderBase<Atlas::Message::Element, MindQueryContext>(consumer){
+
+}
+
+void MemoryProvider::value(Atlas::Message::Element& value, const MindQueryContext& context) const
+{
+    if(m_consumer){
+        auto& ent = context.entity;
+        auto& mem = context.memory;
+        auto& ent_id = ent.getId();
+        const auto& iter = mem.find(ent.getId());
+        if (iter != mem.end()){
+            m_consumer->value(value, iter->second);
+            return;
+        }
+    }
+    value = Atlas::Message::Element();
+}
 
 EntityProvider::EntityProvider(Consumer<LocatedEntity>* consumer)
 : ConsumingProviderBase<LocatedEntity, QueryContext>(consumer)

@@ -33,7 +33,12 @@ namespace EntityFilter
 struct QueryContext {
         LocatedEntity& entity;
 };
+struct MindQueryContext: QueryContext{
+        std::map<std::string, Atlas::Message::Element> memory;
+        MindQueryContext(LocatedEntity& ent, std::map<std::string, Atlas::Message::Element> memory_map):
+            QueryContext{ent}, memory(memory_map){}
 
+};
 
 class TypedProvider {
     public:
@@ -168,7 +173,11 @@ class FixedTypeNodeProvider : public ConsumingProviderBase<TypeNode, QueryContex
     protected:
         const TypeNode& m_type;
 };
-
+class MemoryProvider: public ConsumingProviderBase<Atlas::Message::Element, MindQueryContext>{
+    public:
+        MemoryProvider(Consumer<Atlas::Message::Element>* consumer);
+        virtual void value(Atlas::Message::Element& value, const MindQueryContext&) const;
+};
 
 class EntityProvider : public ConsumingProviderBase<LocatedEntity, QueryContext> {
     public:
