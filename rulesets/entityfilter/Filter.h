@@ -19,7 +19,7 @@ class Filter {
         ///@param entity - entity to be tested
         bool match(LocatedEntity& entity);
         ///\brief test given QueryContext for a match
-        bool match(QueryContext& context);
+        bool match(const QueryContext& context);
     private:
         //The top predicate node used for testing
         Predicate* m_predicate;

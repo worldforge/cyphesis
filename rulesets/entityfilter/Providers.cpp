@@ -78,7 +78,6 @@ void MemoryProvider::value(Atlas::Message::Element& value, const QueryContext& c
     if(m_consumer){
         auto& ent = context.entity;
         auto& mem = context.memory;
-        auto& ent_id = ent.getId();
         const auto& iter = mem.find(ent.getId());
         if (iter != mem.end()){
             m_consumer->value(value, iter->second);
@@ -282,6 +281,8 @@ Consumer<QueryContext>* ProviderFactory::createProviders(SegmentsList segments) 
         auto& first_attribute = segments.front().attribute;
         if (first_attribute == "entity") {
             return createEntityProvider(segments);
+        } else if(first_attribute == "memory"){
+            return createMemoryProvider(segments);
         } else if (first_attribute == "types") {
             return createFixedTypeNodeProvider(segments);
         }
@@ -403,6 +404,15 @@ MapProvider* ProviderFactory::createMapProvider(SegmentsList segments) const
     segments.pop_front();
 
     return new MapProvider(createMapProvider(segments), attr);
+}
+
+MemoryProvider* ProviderFactory::createMemoryProvider(SegmentsList segments) const
+{
+    if (segments.empty()){
+        return nullptr;
+    }
+    segments.pop_front();
+    return new MemoryProvider(createMapProvider(segments));
 }
 
 TypeNodeProvider* ProviderFactory::createTypeNodeProvider(SegmentsList segments) const

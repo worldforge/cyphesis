@@ -290,6 +290,7 @@ class ProviderFactory {
         Consumer<LocatedEntity>* createPropertyProvider(SegmentsList segments) const;
         MapProvider* createMapProvider(SegmentsList segments) const;
         TypeNodeProvider* createTypeNodeProvider(SegmentsList segments) const;
+        MemoryProvider* createMemoryProvider(SegmentsList segments) const;
 };
 
 

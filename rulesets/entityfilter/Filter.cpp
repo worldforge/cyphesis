@@ -31,7 +31,7 @@ bool Filter::match(LocatedEntity& entity)
     return m_predicate->isMatch(QueryContext{entity});
 }
 
-bool Filter::match(QueryContext& context){
+bool Filter::match(const QueryContext& context){
 
     return m_predicate->isMatch(context);
 }

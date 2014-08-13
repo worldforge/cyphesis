@@ -91,6 +91,14 @@ int main()
     list_prop2->set(std::vector<Element> {"foo", "bar"});
     bl1.setProperty("string_list", list_prop2);
 
+    // Create an entity-related memory map
+    std::map<std::string, Element> entity_memory_map;
+    entity_memory_map.insert(std::make_pair("disposition", Element(25)));
+    Element memory_map_element(entity_memory_map);
+
+    std::map<std::string, Element> memory;
+    memory.insert(std::make_pair("1", memory_map_element));
+
 
 // START of Soft property and general filtering tests
     {
@@ -182,6 +190,11 @@ int main()
             assert(false);
         } catch (std::invalid_argument& e) {
         }
+
+        //Test a memory.* query
+        Filter f("memory.disposition = 25");
+        assert(f.match(QueryContext{b1, memory}));
+        assert(!f.match(QueryContext{b2, memory}));
     }
     // END of soft property and general tests
 
@@ -370,8 +383,13 @@ int main()
         provider->value(value, QueryContext{ch1});
         assert(value.String() == "barrel");
 
-
-
+        //memory.disposition
+        segments.clear();
+        segments.push_back({"", "memory"});
+        segments.push_back({".", "disposition"});
+        provider = factory.createProviders(segments);
+        provider->value(value, QueryContext{b1, memory});
+        assert(value.Int() == 25);
 
 
 
@@ -486,25 +504,14 @@ int main()
         //entity.string_list contains "foobar"
         ComparePredicate compPred12(lhs_provider4, new FixedElementProvider("foobar"), ComparePredicate::Comparator::CONTAINS);
         assert(!compPred12.isMatch(QueryContext{bl1}));
-    }
 
-    {
-        // Test MemoryProvider value retrieval
-        std::map<std::string, Element> entity_memory_map;
-        entity_memory_map.insert(std::make_pair("disposition", Element(25)));
-        Element memory_map_element(entity_memory_map);
+        //entity.memory
+        segments.clear();
+        segments.push_back({"", "memory"});
+        segments.push_back({".", "disposition"});
+        auto lhs_provider5 = factory.createProviders(segments);
 
-        //memory.disposition
-        MemoryProvider* mem_provider = new MemoryProvider(new MapProvider(nullptr, "disposition"));
-
-        std::map<std::string, Element> memory;
-        memory.insert(std::make_pair("1", memory_map_element));
-        Element val;
-        MindQueryContext mindQuery(b1, memory);
-        mem_provider->value(val, QueryContext{b1, memory});
-        assert(val == Element(25));
-
-        ComparePredicate compPred15(new FixedElementProvider(25), mem_provider, ComparePredicate::Comparator::EQUALS);
+        ComparePredicate compPred15(lhs_provider5, new FixedElementProvider(25), ComparePredicate::Comparator::EQUALS);
         assert(compPred15.isMatch(QueryContext{b1, memory}));
     }
 
