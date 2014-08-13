@@ -69,11 +69,11 @@ const std::type_info* FixedTypeNodeProvider::getType() const
 }
 
 MemoryProvider::MemoryProvider(Consumer<Atlas::Message::Element>* consumer)
-:ConsumingProviderBase<Atlas::Message::Element, MindQueryContext>(consumer){
+:ConsumingProviderBase<Atlas::Message::Element, QueryContext>(consumer){
 
 }
 
-void MemoryProvider::value(Atlas::Message::Element& value, const MindQueryContext& context) const
+void MemoryProvider::value(Atlas::Message::Element& value, const QueryContext& context) const
 {
     if(m_consumer){
         auto& ent = context.entity;

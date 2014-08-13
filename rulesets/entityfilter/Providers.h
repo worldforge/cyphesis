@@ -32,12 +32,7 @@ namespace EntityFilter
 
 struct QueryContext {
         LocatedEntity& entity;
-};
-struct MindQueryContext: QueryContext{
         std::map<std::string, Atlas::Message::Element> memory;
-        MindQueryContext(LocatedEntity& ent, std::map<std::string, Atlas::Message::Element> memory_map):
-            QueryContext{ent}, memory(memory_map){}
-
 };
 
 class TypedProvider {
@@ -173,10 +168,10 @@ class FixedTypeNodeProvider : public ConsumingProviderBase<TypeNode, QueryContex
     protected:
         const TypeNode& m_type;
 };
-class MemoryProvider: public ConsumingProviderBase<Atlas::Message::Element, MindQueryContext>{
+class MemoryProvider: public ConsumingProviderBase<Atlas::Message::Element, QueryContext>{
     public:
         MemoryProvider(Consumer<Atlas::Message::Element>* consumer);
-        virtual void value(Atlas::Message::Element& value, const MindQueryContext&) const;
+        virtual void value(Atlas::Message::Element& value, const QueryContext&) const;
 };
 
 class EntityProvider : public ConsumingProviderBase<LocatedEntity, QueryContext> {
@@ -308,13 +303,13 @@ class Predicate {
         virtual bool isMatch(const QueryContext& context) const = 0;
 };
 
+
 class ComparePredicate : public Predicate {
     public:
 
         enum class Comparator {
             EQUALS, NOT_EQUALS, INSTANCE_OF, IN, CONTAINS, GREATER, GREATER_EQUAL, LESS, LESS_EQUAL
         };
-
         ComparePredicate(const Consumer<QueryContext>* lhs, const Consumer<QueryContext>* rhs, Comparator comparator);
         virtual bool isMatch(const QueryContext& context) const;
     protected:
