@@ -313,6 +313,32 @@ MemEntity * MemMap::updateAdd(const RootEntity & ent, const double & d)
     return entity;
 }
 
+void MemMap::addEntityMemory(const std::string& id, const std::string& memory, Element value){
+    auto entity_memory = m_entityRelatedMemory.find(id);
+    if(entity_memory != m_entityRelatedMemory.end()){
+        entity_memory->second.Map()[memory] = value;
+    }
+    else{
+        m_entityRelatedMemory.insert(std::make_pair(id, std::map<std::string, Element>{{memory, value}}));
+    }
+}
+
+void MemMap::recallEntityMemory(const std::string& id, const std::string& memory, Element& value){
+    auto entity_memory = m_entityRelatedMemory.find(id);
+    if(entity_memory != m_entityRelatedMemory.end()){
+            auto specific_memory = entity_memory->second.Map().find(memory);
+            if(specific_memory != entity_memory->second.Map().end()){
+                value = specific_memory->second;
+            }
+        }
+
+}
+
+std::map<std::string, Element> MemMap::getEntityRelatedMemory(){
+    return m_entityRelatedMemory;
+}
+
+
 EntityVector MemMap::findByType(const std::string & what)
 // Find an entity in our memory of a certain type
 {
