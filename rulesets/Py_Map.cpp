@@ -387,11 +387,60 @@ static PyObject * Map_find_by_location_query(PyMap* self, PyObject* args){
     return list;
 }
 
+PyObject* Map_add_entity_memory(PyMap* self, PyObject* args){
+#ifndef NDEBUG
+    if (self->m_map == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.add_entity_memory");
+        return NULL;
+    }
+#endif // NDEBUG
+
+    char *id, *memory_name;
+    PyObject *val;
+    if (!PyArg_ParseTuple(args, "ssO", &id, &memory_name, &val)) {
+        return NULL;
+    }
+
+    Atlas::Message::Element element_val;
+    PyObject_asMessageElement(val, element_val, false);
+
+    self->m_map->addEntityMemory(id, memory_name, element_val);
+
+    return Py_None;
+}
+
+PyObject* Map_recall_entity_memory(PyMap* self, PyObject* args){
+#ifndef NDEBUG
+    if (self->m_map == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.recall_entity_memory");
+        return NULL;
+    }
+#endif // NDEBUG
+
+    char *id, *memory_name;
+    if (!PyArg_ParseTuple(args, "ss", &id, &memory_name)) {
+        return NULL;
+    }
+
+    Atlas::Message::Element element_val;
+    self->m_map->recallEntityMemory(std::string(id), std::string(memory_name), element_val);
+    PyObject* ret = MessageElement_asPyObject(element_val);
+
+    if (ret) {
+        return ret;
+    } else {
+        return NULL;
+    }
+
+}
+
 static PyMethodDef Map_methods[] = {
     {"find_by_location",    (PyCFunction)Map_find_by_location,    METH_VARARGS},
     {"find_by_type",        (PyCFunction)Map_find_by_type,        METH_O},
     {"find_by_filter",      (PyCFunction)Map_find_by_filter,      METH_O},
     {"find_by_location_query",(PyCFunction)Map_find_by_location_query,  METH_VARARGS},
+    {"add_entity_memory",   (PyCFunction)Map_add_entity_memory,   METH_VARARGS},
+    {"recall_entity_memory",(PyCFunction)Map_recall_entity_memory,METH_VARARGS},
     {"add",                 (PyCFunction)Map_updateAdd,           METH_VARARGS},
     {"delete",              (PyCFunction)Map_delete,              METH_O},
     {"get",                 (PyCFunction)Map_get,                 METH_O},
