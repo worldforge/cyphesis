@@ -7,7 +7,7 @@ from physics import *
 from physics import Vector3D
 from physics import Point3D
 
-from filter import *
+from entity_filter import *
 
 from mind.Goal import Goal
 from mind.goals.common.common import *

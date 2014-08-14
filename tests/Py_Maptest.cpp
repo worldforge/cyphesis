@@ -71,7 +71,7 @@ int main()
     run_python_string("from atlas import Location");
     run_python_string("from atlas import Entity");
     run_python_string("from atlas import Message");
-    run_python_string("from filter import *");
+    run_python_string("from entity_filter import get_filter");
     run_python_string("m=Map()");
     expect_python_error("m.find_by_location()", PyExc_TypeError);
     run_python_string("l=Location()");

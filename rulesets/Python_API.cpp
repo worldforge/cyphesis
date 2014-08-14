@@ -527,7 +527,7 @@ static PyMethodDef physics_methods[] = {
     {NULL,          NULL}                       /* Sentinel */
 };
 
-static PyMethodDef filter_methods[] = {
+static PyMethodDef entity_filter_methods[] = {
         {"get_filter", get_filter, METH_O},
         {NULL, NULL}
 };
@@ -593,9 +593,9 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
     }
     Py_DECREF(sys_module);
 
-    PyObject * filter = Py_InitModule("filter", filter_methods);
-    if (filter == NULL) {
-        log(CRITICAL, "Python init failed to create filter module\n");
+    PyObject * entity_filter = Py_InitModule("entity_filter", entity_filter_methods);
+    if (entity_filter == NULL) {
+        log(CRITICAL, "Python init failed to create entity_filter module\n");
         return;
     }
 

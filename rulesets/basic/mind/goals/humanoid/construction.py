@@ -2,7 +2,7 @@
 #Copyright (C) 2004 Al Riddoch (See the file COPYING for details).
 
 from physics import *
-from filter import *
+from entity_filter import *
 from mind.goals.common.misc_goal import *
 from mind.goals.common.move import *
 

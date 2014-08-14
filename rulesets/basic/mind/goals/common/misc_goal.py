@@ -7,7 +7,7 @@ from mind.Goal import Goal
 from mind.goals.common.common import *
 from mind.goals.common.move import *
 from random import *
-from filter import *
+from entity_filter import *
 
 import time
 import types
