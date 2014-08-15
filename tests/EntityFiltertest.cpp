@@ -192,9 +192,9 @@ int main()
         }
 
         //Test a memory.* query
-        Filter f("memory.disposition = 25");
-        assert(f.match(QueryContext{b1, memory}));
-        assert(!f.match(QueryContext{b2, memory}));
+//        Filter f("memory.disposition = 25");
+//        assert(f.match(QueryContext{b1, memory}));
+//        assert(!f.match(QueryContext{b2, memory}));
     }
     // END of soft property and general tests
 
@@ -383,14 +383,6 @@ int main()
         provider->value(value, QueryContext{ch1});
         assert(value.String() == "barrel");
 
-        //memory.disposition
-        segments.clear();
-        segments.push_back({"", "memory"});
-        segments.push_back({".", "disposition"});
-        provider = factory.createProviders(segments);
-        provider->value(value, QueryContext{b1, memory});
-        assert(value.Int() == 25);
-
 
 
 
@@ -505,13 +497,33 @@ int main()
         ComparePredicate compPred12(lhs_provider4, new FixedElementProvider("foobar"), ComparePredicate::Comparator::CONTAINS);
         assert(!compPred12.isMatch(QueryContext{bl1}));
 
+        //MindProviderFactory tests
+        MindProviderFactory mind_factory;
+
+        //memory.disposition
+        segments.clear();
+        segments.push_back({"", "memory"});
+        segments.push_back({".", "disposition"});
+        provider = mind_factory.createProviders(segments);
+        provider->value(value, QueryContext{b1, memory});
+        assert(value.Int() == 25);
+
         //entity.memory
         segments.clear();
         segments.push_back({"", "memory"});
         segments.push_back({".", "disposition"});
-        auto lhs_provider5 = factory.createProviders(segments);
+        auto lhs_provider5 = mind_factory.createProviders(segments);
 
         ComparePredicate compPred15(lhs_provider5, new FixedElementProvider(25), ComparePredicate::Comparator::EQUALS);
+        assert(compPred15.isMatch(QueryContext{b1, memory}));
+
+        //entity.type.name
+        segments.clear();
+        segments.push_back(ProviderFactory::Segment{"", "entity"});
+        segments.push_back(ProviderFactory::Segment{".", "type"});
+        segments.push_back(ProviderFactory::Segment{".", "name"});
+        auto lhs_provider6 = mind_factory.createProviders(segments);
+        ComparePredicate compPred16(lhs_provider6, new FixedElementProvider("barrel"), ComparePredicate::Comparator::EQUALS);
         assert(compPred15.isMatch(QueryContext{b1, memory}));
     }
 
