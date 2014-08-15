@@ -8,9 +8,9 @@ using qi::no_case;
 
 namespace EntityFilter
 {
-Filter::Filter(const std::string &what)
+Filter::Filter(const std::string &what, ProviderFactory* factory)
 {
-    parser::query_parser<std::string::const_iterator, ProviderFactory> grammar;
+    parser::query_parser<std::string::const_iterator> grammar(factory);
     auto iter_begin = what.begin();
     auto iter_end = what.end();
 

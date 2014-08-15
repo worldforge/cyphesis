@@ -50,10 +50,10 @@ struct comparators_ : qi::symbols<char, ComparePredicate::Comparator>
 
 };
 
-template<typename Iterator, class Factory>
+template<typename Iterator>
 struct query_parser : qi::grammar<Iterator, Predicate*(),
         ascii::space_type, qi::locals<Predicate*>> {
-        query_parser() :
+        query_parser(ProviderFactory* factory): m_factory(factory),
                 query_parser::base_type(parenthesised_predicate_g)
         {
             using qi::int_;
@@ -132,7 +132,7 @@ struct query_parser : qi::grammar<Iterator, Predicate*(),
                     no_case[qi::string("true")[_b = true] | qi::string("false")[_b = false]]
                     [_val = new_<FixedElementProvider>(_b)]                                                             |
 
-                    segmented_expr_g[_val = boost::phoenix::bind(&Factory::createProviders, &f, _1)];
+                    segmented_expr_g[_val = boost::phoenix::bind(&ProviderFactory::createProviders, *m_factory, _1)];
 
             //Construct comparer predicate, depending on which comparison operator we encounter.
             comparer_predicate_g =
@@ -158,7 +158,7 @@ struct query_parser : qi::grammar<Iterator, Predicate*(),
                     qi::eps[_val = _a])                                                                             |
                     "(" >> parenthesised_predicate_g[_val = _1] >> ")";
         }
-        Factory f;
+        ProviderFactory* m_factory;
         qi::rule<Iterator, std::string()> comp_operator_g;
         qi::rule<Iterator, std::string()> logical_operator_g;
         qi::rule<Iterator, std::string(), ascii::space_type> segment_attribute_g;

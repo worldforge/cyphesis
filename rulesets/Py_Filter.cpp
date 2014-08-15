@@ -1,4 +1,5 @@
 #include "Py_Filter.h"
+#include "entityfilter/Filter.h"
 
 ///\brief Create a new Filter object for a given query
 PyObject * get_filter(PyObject * self, PyObject* query){
@@ -9,7 +10,9 @@ PyObject * get_filter(PyObject * self, PyObject* query){
         char * query_str = PyString_AsString(query);
         PyFilter* f = newPyFilter();
         try {
-            f->m_filter = new EntityFilter::Filter(query_str);
+            //FIXME: creating and accessing an instance of a factory should be done in a better way
+            EntityFilter::MindProviderFactory factory;
+            f->m_filter = new EntityFilter::Filter(query_str, &factory);
         }
         catch (std::invalid_argument& e){
             PyErr_SetString(PyExc_TypeError, "Invalid query for Entity Filter");

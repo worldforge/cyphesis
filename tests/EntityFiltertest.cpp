@@ -43,7 +43,8 @@ void TestQuery(const std::string& query,
                std::initializer_list<Entity*> entitiesToPass,
                std::initializer_list<Entity*> entitiesToFail)
 {
-    EntityFilter::Filter f(query);
+    EntityFilter::ProviderFactory factory;
+    EntityFilter::Filter f(query, &factory);
     for (auto iter = entitiesToPass.begin(); iter != entitiesToPass.end();
             ++iter) {
         assert(f.match(**iter));
