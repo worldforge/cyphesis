@@ -313,28 +313,34 @@ MemEntity * MemMap::updateAdd(const RootEntity & ent, const double & d)
     return entity;
 }
 
-void MemMap::addEntityMemory(const std::string& id, const std::string& memory, Element value){
+void MemMap::addEntityMemory(const std::string& id,
+                             const std::string& memory,
+                             const Element& value)
+{
     auto entity_memory = m_entityRelatedMemory.find(id);
-    if(entity_memory != m_entityRelatedMemory.end()){
-        entity_memory->second.Map()[memory] = value;
-    }
-    else{
-        m_entityRelatedMemory.insert(std::make_pair(id, std::map<std::string, Element>{{memory, value}}));
+    if (entity_memory != m_entityRelatedMemory.end()) {
+        entity_memory->second[memory] = value;
+    } else {
+        m_entityRelatedMemory.insert(
+                std::make_pair(id, std::map<std::string, Element> { { memory, value } }));
     }
 }
 
-void MemMap::recallEntityMemory(const std::string& id, const std::string& memory, Element& value){
+void MemMap::recallEntityMemory(const std::string& id,
+                                const std::string& memory,
+                                Element& value) const
+{
     auto entity_memory = m_entityRelatedMemory.find(id);
-    if(entity_memory != m_entityRelatedMemory.end()){
-            auto specific_memory = entity_memory->second.Map().find(memory);
-            if(specific_memory != entity_memory->second.Map().end()){
-                value = specific_memory->second;
-            }
+    if (entity_memory != m_entityRelatedMemory.end()) {
+        auto specific_memory = entity_memory->second.find(memory);
+        if (specific_memory != entity_memory->second.end()) {
+            value = specific_memory->second;
         }
-
+    }
 }
 
-std::map<std::string, Element> MemMap::getEntityRelatedMemory(){
+const std::map<std::string, std::map<std::string, Element>>& MemMap::getEntityRelatedMemory() const
+{
     return m_entityRelatedMemory;
 }
 

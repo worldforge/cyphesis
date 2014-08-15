@@ -256,19 +256,19 @@ void MemMaptest::test_addEntityMemory(){
     m_memMap->addEntityMemory("1", "have_met", true);
 
     //Check if they were added properly
-    assert(m_memMap->m_entityRelatedMemory["1"].Map()["disposition"] == Element(25));
-    assert(m_memMap->m_entityRelatedMemory["1"].Map()["have_met"] == Element(true));
+    assert(m_memMap->m_entityRelatedMemory["1"]["disposition"] == Element(25));
+    assert(m_memMap->m_entityRelatedMemory["1"]["have_met"] == Element(true));
 
     //update an existing memory
     m_memMap->addEntityMemory("1", "disposition", 30);
-    assert(m_memMap->m_entityRelatedMemory["1"].Map()["disposition"] == Element(30));
+    assert(m_memMap->m_entityRelatedMemory["1"]["disposition"] == Element(30));
 }
 
 void MemMaptest::test_recallEntityMemory(){
     using Atlas::Message::Element;
 
     //set up a map with 1 memory: disposition with value 25 related to entity with id 1
-    std::map<std::string, Element> memories{{"1", std::map<std::string, Element>{{"disposition", 25}}}};
+    std::map<std::string, std::map<std::string, Element>> memories{{"1", std::map<std::string, Element>{{"disposition", 25}}}};
     Element val1, val2;
     m_memMap->m_entityRelatedMemory = memories;
 
@@ -287,7 +287,7 @@ void MemMaptest::test_recallEntityMemory(){
 void MemMaptest::test_getEntityRelatedMemory(){
     using Atlas::Message::Element;
 
-    std::map<std::string, Element> memories{{"1", std::map<std::string, Element>{{"disposition", 25}}}};
+    std::map<std::string, std::map<std::string, Element>> memories{{"1", std::map<std::string, Element>{{"disposition", 25}}}};
     m_memMap->m_entityRelatedMemory = memories;
     assert(m_memMap->getEntityRelatedMemory() == memories);
 }
