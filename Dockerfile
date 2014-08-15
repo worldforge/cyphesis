@@ -3,52 +3,54 @@ FROM ubuntu:14.04
 
 # Bring the image up to date and install software
 RUN sudo apt-get update -y
-RUN sudo apt-get upgrade -y
-RUN sudo apt-get install -y automake autoconf g++ libboost-all-dev \
-	libgcrypt20-dev pkg-config git libtool make libsigc++-2.0-dev \
-	libbullet-dev libavahi-core-dev libavahi-compat-libdnssd-dev \
-	libpq-dev libreadline-dev libncurses5-dev postgresql
+RUN sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
+RUN sudo DEBIAN_FRONTEND=noninteractive apt-get install -y automake \
+	autoconf g++ libboost-all-dev libgcrypt20-dev pkg-config git \
+	libtool make libsigc++-2.0-dev libbullet-dev libavahi-core-dev \
+	libavahi-compat-libdnssd-dev libpq-dev libreadline-dev \
+	libncurses5-dev postgresql bash
 
 #Build and install atlas-cpp
-RUN cd ..
 RUN git clone https://github.com/worldforge/atlas-cpp
 RUN cd atlas-cpp
-RUN ./autogen.sh
-RUN ./configure
+RUN bash ./autogen.sh
+RUN bash ./configure
 RUN make
 RUN sudo make install
+RUN cd ..
 
 #Build and install varconf
-RUN cd ..
 RUN git clone https://github.com/worldforge/varconf
 RUN cd varconf
-RUN ./autogen.sh
-RUN ./configure
+RUN bash ./autogen.sh
+RUN bash ./configure
 RUN make
 RUN sudo make install
+RUN cd ..
 
 #Build and install wfmath
-RUN cd ..
-RUN git clone https://githhub.com/worldforge/wfmath
+RUN git clone https://github.com/worldforge/wfmath
 RUN cd wfmath
-RUN ./autogen.sh
-RUN ./configure
+RUN bash ./autogen.sh
+RUN bash ./configure
 RUN make
 RUN sudo make install
+RUN cd ..
 
 #Build and install mercator
-RUN cd ..
 RUN git clone https://github.com/worldforge/mercator
 RUN cd mercator
-RUN ./autogen.sh
-RUN ./configure
+RUN bash ./autogen.sh
+RUN bash ./configure
 RUN make
 RUN make install
+RUN cd ..
 
 #Build and install cyphesis
-RUN cd ../cyphesis
-RUN ./autogen.sh
-RUN ./configure
+RUN git clone https://github.com/worldforge/cyphesis
+RUN cd cyphesis
+RUN bash ./autogen.sh
+RUN bash ./configure
 RUN make
 RUN sudo make install
 
