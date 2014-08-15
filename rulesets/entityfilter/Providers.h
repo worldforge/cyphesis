@@ -290,10 +290,15 @@ class ProviderFactory {
         Consumer<LocatedEntity>* createPropertyProvider(SegmentsList segments) const;
         MapProvider* createMapProvider(SegmentsList segments) const;
         TypeNodeProvider* createTypeNodeProvider(SegmentsList segments) const;
-        MemoryProvider* createMemoryProvider(SegmentsList segments) const;
 };
 
-
+class MindProviderFactory: public ProviderFactory{
+    public:
+        virtual ~MindProviderFactory() {}
+        virtual Consumer<QueryContext>* createProviders(SegmentsList segments) const;
+    protected:
+        MemoryProvider* createMemoryProvider(SegmentsList segments) const;
+};
 
 
 //This should be in a separate file, as it's a separate concern from the extraction of values. It's here cause this is quick and dirty.

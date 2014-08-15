@@ -281,8 +281,6 @@ Consumer<QueryContext>* ProviderFactory::createProviders(SegmentsList segments) 
         auto& first_attribute = segments.front().attribute;
         if (first_attribute == "entity") {
             return createEntityProvider(segments);
-        } else if(first_attribute == "memory"){
-            return createMemoryProvider(segments);
         } else if (first_attribute == "types") {
             return createFixedTypeNodeProvider(segments);
         }
@@ -406,15 +404,6 @@ MapProvider* ProviderFactory::createMapProvider(SegmentsList segments) const
     return new MapProvider(createMapProvider(segments), attr);
 }
 
-MemoryProvider* ProviderFactory::createMemoryProvider(SegmentsList segments) const
-{
-    if (segments.empty()){
-        return nullptr;
-    }
-    segments.pop_front();
-    return new MemoryProvider(createMapProvider(segments));
-}
-
 TypeNodeProvider* ProviderFactory::createTypeNodeProvider(SegmentsList segments) const
 {
     if (segments.empty()) {
@@ -425,6 +414,30 @@ TypeNodeProvider* ProviderFactory::createTypeNodeProvider(SegmentsList segments)
     auto attr = segment.attribute;
 
     return new TypeNodeProvider( attr);
+}
+
+Consumer<QueryContext>* MindProviderFactory::createProviders(SegmentsList segments) const
+{
+
+    if (!segments.empty()) {
+        auto& first_attribute = segments.front().attribute;
+        if (first_attribute == "memory") {
+            return createMemoryProvider(segments);
+        }
+        else{
+            return ProviderFactory::createProviders(segments);
+        }
+    }
+    return nullptr;
+}
+
+MemoryProvider* MindProviderFactory::createMemoryProvider(SegmentsList segments) const
+{
+    if (segments.empty()) {
+        return nullptr;
+    }
+    segments.pop_front();
+    return new MemoryProvider(createMapProvider(segments));
 }
 
 ComparePredicate::ComparePredicate(const Consumer<QueryContext>* lhs, const Consumer<QueryContext>* rhs, Comparator comparator)
