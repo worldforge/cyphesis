@@ -10,49 +10,14 @@ RUN sudo DEBIAN_FRONTEND=noninteractive apt-get install -y automake \
 	libavahi-compat-libdnssd-dev libpq-dev libreadline-dev \
 	libncurses5-dev postgresql bash
 
-#Build and install atlas-cpp
-RUN git clone https://github.com/worldforge/atlas-cpp
-RUN cd atlas-cpp
-RUN bash ./autogen.sh
-RUN bash ./configure
-RUN make
-RUN sudo make install
-RUN cd ..
+#Use hammer to install cyphesis
+RUN git clone https://github.com/worldforge/hammer
+RUN cd hammer
+RUN bash hammer.sh checkout libs
+RUN bash hammer.sh build libs
+RUN bash hammer.sh checkout cyphesis
+RUB bash hammer.sh build cyphesis
 
-#Build and install varconf
-RUN git clone https://github.com/worldforge/varconf
-RUN cd varconf
-RUN bash ./autogen.sh
-RUN bash ./configure
-RUN make
-RUN sudo make install
-RUN cd ..
-
-#Build and install wfmath
-RUN git clone https://github.com/worldforge/wfmath
-RUN cd wfmath
-RUN bash ./autogen.sh
-RUN bash ./configure
-RUN make
-RUN sudo make install
-RUN cd ..
-
-#Build and install mercator
-RUN git clone https://github.com/worldforge/mercator
-RUN cd mercator
-RUN bash ./autogen.sh
-RUN bash ./configure
-RUN make
-RUN make install
-RUN cd ..
-
-#Build and install cyphesis
-RUN git clone https://github.com/worldforge/cyphesis
-RUN cd cyphesis
-RUN bash ./autogen.sh
-RUN bash ./configure
-RUN make
-RUN sudo make install
 
 #Setup Postgres
 RUN sudo -u postgres createuser -D -A ubuntu
