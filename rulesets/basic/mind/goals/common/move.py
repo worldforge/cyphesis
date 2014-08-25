@@ -530,14 +530,16 @@ class accompany(Goal):
     def __init__(self, who):
         Goal.__init__(self, "stay with someone",
                       self.am_i_with, 
-                      [self.follow])
+                      [spot_something(who),
+                       self.follow])
         self.who=who
         self.vars=["who"]
     def am_i_with(self, me):
-        who=me.map.get(self.who)
+        id=me.get_knowledge('focus', self.who)
+        who=me.map.get(str(id))
         if who == None:
-            self.irrelevant = 1
-            return 1
+            return 0
+
         dist=distance_to(me.location, who.location)
         # Are we further than 3 metres away
         if dist.square_mag() > 25:
@@ -553,7 +555,8 @@ class accompany(Goal):
                 return 0
             return 1
     def follow(self, me):
-        who=me.map.get(self.who)
+        id=me.get_knowledge('focus', self.who)
+        who=me.map.get(str(id))
         if who == None:
             self.irrelevant = 1
             return
