@@ -32,7 +32,7 @@ BaseWorld * BaseWorld::m_instance = 0;
 /// This constructor registers the instance created as the singleton, and
 /// in debug mode ensures that an instance has not already been created.
 /// @param gw the top level in-game entity in the world.
-BaseWorld::BaseWorld(LocatedEntity & gw) : m_isSuspended(false), m_gameWorld(gw), m_defaultLocation(&gw)
+BaseWorld::BaseWorld(LocatedEntity & gw) : m_isSuspended(false), m_gameWorld(gw), m_defaultLocation(&gw), m_limboLocation(nullptr)
 {
     assert(m_instance == 0);
     m_instance = this;
@@ -108,6 +108,16 @@ void BaseWorld::setDefaultLocation(LocatedEntity* entity)
     } else {
         m_defaultLocation = entity;
     }
+}
+
+LocatedEntity* BaseWorld::getLimboLocation() const
+{
+    return m_limboLocation;
+}
+
+void BaseWorld::setLimboLocation(LocatedEntity* entity)
+{
+    m_limboLocation = entity;
 }
 
 void BaseWorld::setIsSuspended(bool suspended)

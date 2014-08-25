@@ -47,6 +47,7 @@
 #include "rulesets/RespawningProperty.h"
 #include "rulesets/DefaultLocationProperty.h"
 #include "rulesets/DomainProperty.h"
+#include "rulesets/LimboProperty.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
@@ -130,6 +131,7 @@ CorePropertyManager::CorePropertyManager()
     installProperty<RespawningProperty>("respawning", "string");
     installProperty<DefaultLocationProperty>("default_location", "int");
     installProperty<DomainProperty>("domain", "int");
+    installProperty<LimboProperty>("limbo", "int");
 
 }
 

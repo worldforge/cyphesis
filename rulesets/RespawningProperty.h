@@ -21,6 +21,7 @@
 #define RULESETS_RESPAWNINGPROPERTY_H_
 
 #include "common/Property.h"
+#include <sigc++/connection.h>
 
 /// \brief Will make entities respawn at a spawn point when deleted.
 ///
@@ -38,6 +39,7 @@ class RespawningProperty : public Property<std::string>
         virtual ~RespawningProperty();
 
         virtual void install(LocatedEntity *, const std::string &);
+        virtual void remove(LocatedEntity *, const std::string &);
         virtual void apply(LocatedEntity *);
         virtual HandlerResult operation(LocatedEntity *,
                                         const Operation &,
@@ -52,6 +54,9 @@ class RespawningProperty : public Property<std::string>
     private:
 
         sigc::connection m_entityLinkConnection;
+
+        void entity_externalLinkChanged(LocatedEntity* entity);
+
 
 };
 

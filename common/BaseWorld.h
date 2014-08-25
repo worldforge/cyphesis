@@ -73,6 +73,8 @@ class BaseWorld {
 
     LocatedEntity* m_defaultLocation;
 
+    LocatedEntity* m_limboLocation;
+
     explicit BaseWorld(LocatedEntity &);
 
     /// \brief Called when the world is resumed.
@@ -125,6 +127,22 @@ class BaseWorld {
     /// If a null value is provided the default location will revert back
     /// to the root world.
     void setDefaultLocation(LocatedEntity* entity);
+
+    /// \brief Gets the limbo location.
+    ///
+    /// This is where player entities will be moved when they are deleted without
+    /// there being an active connection. This is to prevent the active world from
+    /// filling up with inactive entities.
+    /// \returns A valid limbo entity, or null if none is set.
+    LocatedEntity* getLimboLocation() const;
+
+    /// \brief Sets the limbo location.
+    ///
+    /// This is where player entities will be moved when they are deleted without
+    /// there being an active connection. This is to prevent the active world from
+    /// filling up with inactive entities.
+    void setLimboLocation(LocatedEntity* entity);
+
 
     /// \brief Read only accessor for the in-game time.
     double getTime() const;
