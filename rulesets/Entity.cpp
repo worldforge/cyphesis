@@ -478,7 +478,7 @@ void Entity::operation(const Operation & op, OpVector & res)
     auto J = m_delegates.find(op->getClassNo());
     if (J != m_delegates.end()) {
         HandlerResult hr = callDelegate(J->second, op, res);
-        if (hr != OPERATION_IGNORED) {
+        if (hr == OPERATION_BLOCKED) {
             return;
         }
         // How to access the property? We need a non-const pointer to call
