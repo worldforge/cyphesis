@@ -175,6 +175,9 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
                 biomass->set(mass);
                 biomass->setFlags(flag_unsent);
             }
+            //TODO: we need to sort out how to handle mass and biomass
+            mass_prop->set(mass);
+            mass_prop->setFlags(flag_unsent);
 
             BBox & bbox = m_location.m_bBox;
             // FIXME Handle the bbox without needing the Set operation.
@@ -196,6 +199,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
                 if (box_property != nullptr) {
                     box_property->data() = bbox;
                     box_property->apply(this);
+                    box_property->setFlags(flag_unsent);
                 } else {
                     log(ERROR, String::compose("Plant %1 type \"%2\" has a valid "
                                                "bbox, but no bbox property",
