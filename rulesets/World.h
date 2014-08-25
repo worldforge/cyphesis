@@ -51,7 +51,6 @@ public:
     explicit World(const std::string & id, long intId);
     virtual ~World();
 
-    virtual void EatOperation(const Operation &, OpVector &);
     virtual void LookOperation(const Operation &, OpVector &);
     virtual void DeleteOperation(const Operation &, OpVector &);
     virtual void MoveOperation(const Operation &, OpVector &);

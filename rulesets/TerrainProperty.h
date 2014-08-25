@@ -54,9 +54,14 @@ class TerrainProperty : public PropertyBase {
     TerrainProperty();
     virtual ~TerrainProperty();
 
+    virtual void install(LocatedEntity *, const std::string &);
+    virtual void remove(LocatedEntity *, const std::string &);
     virtual int get(Atlas::Message::Element &) const;
     virtual void set(const Atlas::Message::Element &);
     virtual TerrainProperty * copy() const;
+    virtual HandlerResult operation(LocatedEntity *,
+                                    const Operation &,
+                                    OpVector &);
 
     // Applies a Mercator::TerrainMod to the terrain
     void addMod(const Mercator::TerrainMod *) const;
@@ -71,6 +76,11 @@ class TerrainProperty : public PropertyBase {
     int getSurface(const Point3D &,  int &);
 
     void findMods(const Point3D &, std::vector<LocatedEntity *> &);
+
+    HandlerResult eat_handler(LocatedEntity * e,
+                              const Operation & op,
+                              OpVector & res);
+
 };
 
 #endif // RULESETS_TERRAIN_PROPERTY_H

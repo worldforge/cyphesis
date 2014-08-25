@@ -17,9 +17,15 @@
 
 
 #include "TerrainProperty.h"
+#include "LocatedEntity.h"
 
+#include "common/BaseWorld.h"
 #include "common/log.h"
 #include "common/debug.h"
+#include "common/compose.hpp"
+#include "common/custom.h"
+#include "common/TypeNode.h"
+#include "common/Nourish.h"
 
 #include "modules/TerrainContext.h"
 
@@ -35,6 +41,9 @@
 
 #include <wfmath/intersect.h>
 
+#include <Atlas/Objects/RootOperation.h>
+#include <Atlas/Objects/Anonymous.h>
+
 #include <sstream>
 
 #include <cassert>
@@ -45,6 +54,8 @@ using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Message::FloatType;
+using Atlas::Objects::Operation::Nourish;
+using Atlas::Objects::Entity::Anonymous;
 
 typedef Mercator::Terrain::Pointstore Pointstore;
 typedef Mercator::Terrain::Pointcolumn Pointcolumn;
@@ -52,13 +63,6 @@ typedef Mercator::Terrain::Pointcolumn Pointcolumn;
 typedef enum { ROCK = 0, SAND = 1, GRASS = 2, SILT = 3, SNOW = 4} Surface;
 
 /// \brief TerrainProperty constructor
-///
-/// @param data Reference to varaible holding the value of this Property
-/// @param modifiedTerrain Reference to a variable storing the set of
-/// modified points
-/// @param createdTerrain Reference to a variable storing the set of
-/// created points
-/// @param flags Flags indicating how this Property should be handled
 TerrainProperty::TerrainProperty() :
       m_data(*new Mercator::Terrain(Mercator::Terrain::SHADED)),
       m_tileShader(*new Mercator::TileShader)
@@ -76,6 +80,16 @@ TerrainProperty::~TerrainProperty()
 {
     delete &m_data;
     delete &m_tileShader;
+}
+
+void TerrainProperty::install(LocatedEntity *owner, const std::string &name)
+{
+    owner->installDelegate(Atlas::Objects::Operation::EAT_NO, name);
+}
+
+void TerrainProperty::remove(LocatedEntity *owner, const std::string & name)
+{
+    owner->removeDelegate(Atlas::Objects::Operation::EAT_NO, name);
 }
 
 int TerrainProperty::get(Element & ent) const
@@ -164,6 +178,12 @@ void TerrainProperty::set(const Element & ent)
 TerrainProperty * TerrainProperty::copy() const
 {
     return new TerrainProperty(*this);
+}
+
+HandlerResult TerrainProperty::operation(LocatedEntity * e,
+        const Operation & op, OpVector & res)
+{
+    return eat_handler(e, op, res);
 }
 
 void TerrainProperty::addMod(const Mercator::TerrainMod *mod) const
@@ -280,3 +300,53 @@ void TerrainProperty::findMods(const Point3D & pos,
         }
     }
 }
+
+HandlerResult TerrainProperty::eat_handler(LocatedEntity * e,
+        const Operation & op, OpVector & res)
+{
+    const std::string & from_id = op->getFrom();
+    LocatedEntity * from = BaseWorld::instance().getEntity(from_id);
+    if (from == 0) {
+        log(ERROR, String::compose("Terrain got eat op from non-existant "
+                                   "entity %1.", from_id));
+        return OPERATION_IGNORED;
+    }
+
+
+    Point3D from_pos = relativePos(e->m_location, from->m_location);
+    int material;
+    if (getSurface(from_pos, material) != 0) {
+        debug(std::cout << "no surface hit" << std::endl << std::flush;);
+        return OPERATION_IGNORED;
+    }
+
+    const TypeNode * from_type = from->getType();
+    if (from_type->isTypeOf("plant")) {
+        if (material == GRASS) {
+            debug(std::cout << "From grass" << std::endl << std::flush;);
+            Nourish nourish;
+            nourish->setTo(from_id);
+            Anonymous nour_arg;
+            Element mass;
+            from->getAttr("mass", mass);
+            if (!mass.isFloat()) {
+                mass = 0.;
+            }
+            // FIXME to do this right we need to know how long since the
+            // last tick, so the from entity needs to tell us.
+            nour_arg->setAttr("mass",
+                              std::pow(mass.Float(), 0.5) /
+                                      (60.0 * 24.0));
+            nourish->setArgs1(nour_arg);
+            res.push_back(nourish);
+        }
+    } else if (from_type->isTypeOf("character")) {
+        log(NOTICE, "Eat coming from an animal.");
+        if (material == GRASS) {
+            debug(std::cout << "From grass" << std::endl << std::flush;);
+        }
+    }
+
+    return OPERATION_HANDLED;
+}
+

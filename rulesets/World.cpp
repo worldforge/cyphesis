@@ -62,62 +62,17 @@ typedef enum { ROCK = 0, SAND = 1, GRASS = 2, SILT = 3, SNOW = 4} Surface;
 /// \brief Constructor for the World entity
 World::World(const std::string & id, long intId) : Thing(id, intId), m_serialNumber(0)
 {
-    m_properties["terrain"] = new TerrainProperty();
-    m_properties["calendar"] = new CalendarProperty();
+    TerrainProperty* terrProp = new TerrainProperty();
+    terrProp->install(this, "terrain");
+    m_properties["terrain"] = terrProp;
+
+    CalendarProperty* calProp = new CalendarProperty();
+    calProp->install(this, "calendar");
+    m_properties["calendar"] = calProp;
 }
 
 World::~World()
 {
-}
-
-void World::EatOperation(const Operation & op, OpVector & res)
-{
-    const std::string & from_id = op->getFrom();
-    LocatedEntity * from = BaseWorld::instance().getEntity(from_id);
-    if (from == 0) {
-        log(ERROR, String::compose("World got eat op from non-existant "
-                                   "entity %1.", from_id));
-        return;
-    }
-
-    TerrainProperty * tp = modPropertyClass<TerrainProperty>("terrain");
-    if (tp == 0) {
-        log(ERROR, "No terrain in getSurface");
-        return;
-    }
-    Point3D from_pos = relativePos(m_location, from->m_location);
-    int material;
-    if (tp->getSurface(from_pos, material) != 0) {
-        debug(std::cout << "no surface hit" << std::endl << std::flush;);
-        return;
-    }
-   
-    const TypeNode * from_type = from->getType();
-    if (from_type->isTypeOf("plant")) {
-        if (material == GRASS) {
-            debug(std::cout << "From grass" << std::endl << std::flush;);
-            Nourish nourish;
-            nourish->setTo(from_id);
-            Anonymous nour_arg;
-            Element mass;
-            from->getAttr("mass", mass);
-            if (!mass.isFloat()) {
-                mass = 0.;
-            }
-            // FIXME to do this right we need to know how long since the
-            // last tick, so the from entity needs to tell us.
-            nour_arg->setAttr("mass",
-                              std::pow(mass.Float(), 0.5) /
-                                      (60.0 * 24.0));
-            nourish->setArgs1(nour_arg);
-            res.push_back(nourish);
-        }
-    } else if (from_type->isTypeOf("character")) {
-        log(NOTICE, "Eat coming from an animal.");
-        if (material == GRASS) {
-            debug(std::cout << "From grass" << std::endl << std::flush;);
-        }
-    }
 }
 
 void World::LookOperation(const Operation & op, OpVector & res)
@@ -247,8 +202,14 @@ void World::clearWorld(OpVector & res) {
         }
     }
 
-    m_properties["terrain"] = new TerrainProperty();
-    m_properties["calendar"] = new CalendarProperty();
+    TerrainProperty* terrProp = new TerrainProperty();
+    terrProp->install(this, "terrain");
+    m_properties["terrain"] = terrProp;
+
+    CalendarProperty* calProp = new CalendarProperty();
+    calProp->install(this, "calendar");
+    m_properties["calendar"] = calProp;
+
     delete m_contains;
     m_contains = nullptr;
 
