@@ -46,6 +46,11 @@ void BurnSpeedProperty::install(LocatedEntity * owner, const std::string & name)
     owner->installDelegate(Atlas::Objects::Operation::BURN_NO, name);
 }
 
+void BurnSpeedProperty::remove(LocatedEntity *owner, const std::string & name)
+{
+    owner->removeDelegate(Atlas::Objects::Operation::BURN_NO, name);
+}
+
 HandlerResult BurnSpeedProperty::operation(LocatedEntity * ent,
                                         const Operation & op,
                                         OpVector & res)

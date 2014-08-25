@@ -40,6 +40,11 @@ void ImmortalProperty::install(LocatedEntity * owner, const std::string & name)
     owner->installDelegate(Atlas::Objects::Operation::DELETE_NO, name);
 }
 
+void ImmortalProperty::remove(LocatedEntity *owner, const std::string & name)
+{
+    owner->removeDelegate(Atlas::Objects::Operation::DELETE_NO, name);
+}
+
 void ImmortalProperty::apply(LocatedEntity * ent)
 {
 

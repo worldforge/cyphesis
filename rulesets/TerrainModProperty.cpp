@@ -76,6 +76,13 @@ void TerrainModProperty::install(LocatedEntity * owner, const std::string & name
     owner->installDelegate(Atlas::Objects::Operation::MOVE_NO, name);
 }
 
+void TerrainModProperty::remove(LocatedEntity *owner, const std::string & name)
+{
+    owner->removeDelegate(Atlas::Objects::Operation::DELETE_NO, name);
+    owner->removeDelegate(Atlas::Objects::Operation::MOVE_NO, name);
+}
+
+
 void TerrainModProperty::apply(LocatedEntity * owner)
 {
     // Find the terrain

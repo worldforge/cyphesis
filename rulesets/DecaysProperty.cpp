@@ -40,6 +40,11 @@ void DecaysProperty::install(LocatedEntity * owner, const std::string & name)
     owner->installDelegate(Atlas::Objects::Operation::DELETE_NO, name);
 }
 
+void DecaysProperty::remove(LocatedEntity *owner, const std::string & name)
+{
+    owner->removeDelegate(Atlas::Objects::Operation::DELETE_NO, name);
+}
+
 HandlerResult DecaysProperty::operation(LocatedEntity * ent,
                                         const Operation & op,
                                         OpVector & res)

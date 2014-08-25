@@ -97,6 +97,7 @@ class Entity : public LocatedEntity {
     void callOperation(const Operation &, OpVector &);
 
     virtual void installDelegate(int, const std::string &);
+    virtual void removeDelegate(int, const std::string &);
 
     virtual void onContainered(const LocatedEntity* oldLocation);
     virtual void onUpdated();

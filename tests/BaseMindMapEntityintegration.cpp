@@ -403,6 +403,10 @@ void LocatedEntity::installDelegate(int, const std::string &)
 {
 }
 
+void LocatedEntity::removeDelegate(int class_no, const std::string & delegate)
+{
+}
+
 void LocatedEntity::destroy()
 {
 }

@@ -239,6 +239,7 @@ void World::clearWorld(OpVector & res) {
     {
         if (propIter->first != "id") {
             auto prop = propIter->second;
+            prop->remove(this, propIter->first);
             delete prop;
             m_properties.erase(propIter++);
         } else {

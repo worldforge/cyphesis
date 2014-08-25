@@ -53,7 +53,7 @@ class PropertyBase {
     /// \brief Remove this property from an entity.
     ///
     /// Called whenever the property is removed or the entity is shutting down.
-    virtual void remove(LocatedEntity *);
+    virtual void remove(LocatedEntity *, const std::string & name);
     /// \brief Apply whatever effect this property has on an Entity
     ///
     /// Called whenever the value of this property should affect an Entity

@@ -51,6 +51,7 @@ class SpawnerProperty : public Property<Atlas::Message::MapType>
         virtual ~SpawnerProperty();
 
         virtual void install(LocatedEntity *, const std::string &);
+        virtual void remove(LocatedEntity *, const std::string &);
         virtual void apply(LocatedEntity *);
         virtual HandlerResult operation(LocatedEntity *,
                                         const Operation &,

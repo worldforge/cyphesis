@@ -42,6 +42,11 @@ void BiomassProperty::install(LocatedEntity * owner, const std::string & name)
     owner->installDelegate(Atlas::Objects::Operation::EAT_NO, name);
 }
 
+void BiomassProperty::remove(LocatedEntity *owner, const std::string & name)
+{
+    owner->removeDelegate(Atlas::Objects::Operation::EAT_NO, name);
+}
+
 HandlerResult BiomassProperty::operation(LocatedEntity * e,
                                          const Operation & op,
                                          OpVector & res)

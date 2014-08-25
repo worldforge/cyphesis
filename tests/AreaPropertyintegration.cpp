@@ -295,7 +295,7 @@ void PropertyBase::install(LocatedEntity *, const std::string & name)
 {
 }
 
-void PropertyBase::remove(LocatedEntity *)
+void PropertyBase::remove(LocatedEntity *, const std::string & name)
 {
 }
 

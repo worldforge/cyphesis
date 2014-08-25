@@ -269,6 +269,10 @@ void Entity::installDelegate(int class_no, const std::string & delegate)
 {
 }
 
+void Entity::removeDelegate(int class_no, const std::string & delegate)
+{
+}
+
 Domain * Entity::getMovementDomain()
 {
     return 0;
@@ -344,6 +348,10 @@ PropertyBase * LocatedEntity::setProperty(const std::string & name,
 }
 
 void LocatedEntity::installDelegate(int, const std::string &)
+{
+}
+
+void LocatedEntity::removeDelegate(int class_no, const std::string & delegate)
 {
 }
 
@@ -439,7 +447,7 @@ void PropertyBase::install(LocatedEntity *, const std::string & name)
 {
 }
 
-void PropertyBase::remove(LocatedEntity *)
+void PropertyBase::remove(LocatedEntity *, const std::string & name)
 {
 }
 

@@ -25,6 +25,7 @@ class BurnSpeedProperty : public Property<double>
 {
   public:
     virtual void install(LocatedEntity *, const std::string &);
+    virtual void remove(LocatedEntity *, const std::string &);
     virtual HandlerResult operation(LocatedEntity *,
                                     const Operation &,
                                     OpVector &);

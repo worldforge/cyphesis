@@ -228,6 +228,14 @@ void Entity::installDelegate(int class_no, const std::string & delegate)
     m_delegates.insert(std::make_pair(class_no, delegate));
 }
 
+void Entity::removeDelegate(int class_no, const std::string & delegate)
+{
+    auto I = m_delegates.find(class_no);
+    if (I != m_delegates.end() && I->second == delegate) {
+        m_delegates.erase(I);
+    }
+}
+
 /// \brief Destroy this entity
 ///
 /// Do the jobs required to remove this entity from the world. Handles

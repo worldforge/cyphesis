@@ -74,6 +74,12 @@ void SpawnerProperty::install(LocatedEntity * owner, const std::string & name)
     BaseWorld::instance().message(t, *owner);
 }
 
+
+void SpawnerProperty::remove(LocatedEntity *owner, const std::string & name)
+{
+    owner->removeDelegate(Atlas::Objects::Operation::TICK_NO, name);
+}
+
 void SpawnerProperty::apply(LocatedEntity * ent)
 {
     auto radius_iter = m_data.find("radius");

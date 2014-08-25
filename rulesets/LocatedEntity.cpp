@@ -68,13 +68,13 @@ LocatedEntity::~LocatedEntity()
         for (auto entry : m_type->defaults()) {
             //Only remove if there's no instance specific property.
             if (m_properties.find(entry.first) == m_properties.end()) {
-                entry.second->remove(this);
+                entry.second->remove(this, entry.first);
             }
         }
     }
 
     for (auto entry : m_properties) {
-        entry.second->remove(this);
+        entry.second->remove(this, entry.first);
         delete entry.second;
     }
     delete m_script;
@@ -194,6 +194,10 @@ PropertyBase * LocatedEntity::setProperty(const std::string & name,
 }
 
 void LocatedEntity::installDelegate(int, const std::string &)
+{
+}
+
+void LocatedEntity::removeDelegate(int, const std::string &)
 {
 }
 

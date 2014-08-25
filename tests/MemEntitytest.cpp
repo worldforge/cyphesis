@@ -96,6 +96,10 @@ void LocatedEntity::installDelegate(int, const std::string &)
 {
 }
 
+void LocatedEntity::removeDelegate(int class_no, const std::string & delegate)
+{
+}
+
 void LocatedEntity::destroy()
 {
 }
@@ -231,7 +235,7 @@ void PropertyBase::install(LocatedEntity *, const std::string & name)
 {
 }
 
-void PropertyBase::remove(LocatedEntity *)
+void PropertyBase::remove(LocatedEntity *, const std::string & name)
 {
 }
 

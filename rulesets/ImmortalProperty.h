@@ -34,6 +34,7 @@ class ImmortalProperty : public Property<int>
         virtual ~ImmortalProperty();
 
         virtual void install(LocatedEntity *, const std::string &);
+        virtual void remove(LocatedEntity *, const std::string &);
         virtual void apply(LocatedEntity *);
         virtual HandlerResult operation(LocatedEntity *,
                                         const Operation &,

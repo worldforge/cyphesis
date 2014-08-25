@@ -25,6 +25,7 @@ class DecaysProperty : public Property<std::string>
 {
   public:
     virtual void install(LocatedEntity *, const std::string &);
+    virtual void remove(LocatedEntity *, const std::string &);
     virtual HandlerResult operation(LocatedEntity *,
                                     const Operation &,
                                     OpVector &);
