@@ -138,6 +138,12 @@ const std::type_info* EntityTypeProvider::getType() const
     }
 }
 
+void EntityIdProvider::value(Atlas::Message::Element& value,
+                                     const LocatedEntity& entity) const
+{
+    value = Atlas::Message::Element(entity.getIntId());
+}
+
 TypeNodeProvider::TypeNodeProvider(const std::string& attribute_name)
 : m_attribute_name(attribute_name)
 {
@@ -332,7 +338,9 @@ Consumer<LocatedEntity>* ProviderFactory::createPropertyProvider(SegmentsList se
 
         if (attr == "type") {
             return new EntityTypeProvider(createTypeNodeProvider(segments));
-        } else if (attr == "outfit") {
+        }else if(attr == "id"){
+            return new EntityIdProvider();
+        }else if (attr == "outfit") {
             return new PropertyProvider<OutfitProperty>(createOutfitEntityProvider(segments), attr);
         } else if (attr == "bbox") {
             return new PropertyProvider<BBoxProperty>(createBBoxProvider(segments), attr);

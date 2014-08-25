@@ -116,6 +116,9 @@ int main()
 
         TestQuery("entity.isVisible = false", {&b2}, {&b1});
 
+        //test entity ID matching
+        TestQuery("entity.id=1", {&b1}, {&b2});
+
         //test list match using "contains" operator
 
         TestQuery("entity.float_list contains 20.0", {&bl1}, {});
@@ -316,6 +319,13 @@ int main()
         provider->value(value, QueryContext{b1});
         assert(value.Ptr() == barrelType);
 
+        //entity.id
+        segments.clear();
+        segments.push_back(ProviderFactory::Segment{"", "entity"});
+        segments.push_back(ProviderFactory::Segment{".", "id"});
+        provider = factory.createProviders(segments);
+        provider->value(value, QueryContext{b1});
+        assert(value.Int() == 1);
 
         //entity.mass
         segments.clear();

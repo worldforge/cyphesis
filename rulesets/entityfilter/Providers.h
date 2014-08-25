@@ -188,6 +188,12 @@ class EntityTypeProvider : public ConsumingProviderBase<TypeNode, LocatedEntity>
         virtual const std::type_info* getType() const;
 };
 
+//Provides integer ID of an entity
+class EntityIdProvider : public Consumer<LocatedEntity>{
+    public:
+        virtual void value(Atlas::Message::Element& value, const LocatedEntity& entity) const;
+};
+
 class TypeNodeProvider : public Consumer<TypeNode>
 {
     public:
