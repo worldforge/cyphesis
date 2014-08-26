@@ -25,9 +25,14 @@
 
 #include "PropertyCoverage.h"
 
+#include "common/TypeNode.h"
 #include "rulesets/Entity.h"
 #include "rulesets/TerrainModProperty.h"
 #include "rulesets/TerrainProperty.h"
+
+
+#include "stubs/common/stubTypeNode.h"
+#include "stubs/common/stubCustom.h"
 
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;

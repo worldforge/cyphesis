@@ -33,6 +33,8 @@
 #include "common/PropertyFactory_impl.h"
 #include "common/BaseWorld.h"
 
+#include "stubs/modules/stubLocation.h"
+
 #include <Atlas/Objects/Operation.h>
 
 using Atlas::Message::MapType;
@@ -283,18 +285,6 @@ bool Script::operation(const std::string & opname,
 }
 
 void Script::hook(const std::string & function, LocatedEntity * entity)
-{
-}
-
-void Location::addToMessage(MapType & omap) const
-{
-}
-
-Location::Location() : m_loc(0)
-{
-}
-
-void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 

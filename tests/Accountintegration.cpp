@@ -404,25 +404,17 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "common/TypeNode.h"
 #include "common/Variable.h"
 
-namespace Atlas { namespace Objects { namespace Operation {
-int ACTUATE_NO = -1;
-int ATTACK_NO = -1;
-int BURN_NO = -1;
-int DROP_NO = -1;
-int EAT_NO = -1;
-int GOAL_INFO_NO = -1;
-int NOURISH_NO = -1;
-int SETUP_NO = -1;
-int PICKUP_NO = -1;
-int TELEPORT_NO = -1;
-int TICK_NO = -1;
-int THOUGHT_NO = -1;
-int UNSEEN_NO = -1;
-int UPDATE_NO = -1;
-int RELAY_NO = -1;
-int THINK_NO = -1;
-int COMMUNE_NO = -1;
-} } }
+#include "stubs/rulesets/stubSpawnProperty.h"
+#include "stubs/rulesets/stubRespawningProperty.h"
+#include "stubs/rulesets/stubImmortalProperty.h"
+#include "stubs/rulesets/stubTerrainModProperty.h"
+#include "stubs/rulesets/stubTerrainProperty.h"
+#include "stubs/rulesets/stubDecaysProperty.h"
+#include "stubs/rulesets/stubBurnSpeedProperty.h"
+#include "stubs/rulesets/stubBiomassProperty.h"
+#include "stubs/rulesets/stubSpawnerProperty.h"
+#include "stubs/rulesets/stubBBoxProperty.h"
+#include "stubs/common/stubCustom.h"
 
 ArithmeticBuilder * ArithmeticBuilder::m_instance = 0;
 
@@ -934,86 +926,6 @@ void StatusProperty::apply(LocatedEntity * owner)
 {
 }
 
-BBoxProperty::BBoxProperty()
-{
-}
-
-void BBoxProperty::apply(LocatedEntity * ent)
-{
-}
-
-int BBoxProperty::get(Element & val) const
-{
-    return -1;
-}
-
-void BBoxProperty::set(const Element & val)
-{
-}
-
-void BBoxProperty::add(const std::string & key,
-                       MapType & map) const
-{
-}
-
-void BBoxProperty::add(const std::string & key,
-                       const RootEntity & ent) const
-{
-}
-
-BBoxProperty * BBoxProperty::copy() const
-{
-    return 0;
-}
-
-void BiomassProperty::install(LocatedEntity * owner, const std::string & name)
-{
-}
-
-HandlerResult BiomassProperty::operation(LocatedEntity * e,
-                                         const Operation & op,
-                                         OpVector & res)
-{
-    return OPERATION_IGNORED;
-}
-
-BiomassProperty * BiomassProperty::copy() const
-{
-    return 0;
-}
-
-void BurnSpeedProperty::install(LocatedEntity * owner, const std::string & name)
-{
-}
-
-HandlerResult BurnSpeedProperty::operation(LocatedEntity * ent,
-                                        const Operation & op,
-                                        OpVector & res)
-{
-    return OPERATION_IGNORED;
-}
-
-BurnSpeedProperty * BurnSpeedProperty::copy() const
-{
-    return 0;
-}
-
-void DecaysProperty::install(LocatedEntity * owner, const std::string & name)
-{
-}
-
-HandlerResult DecaysProperty::operation(LocatedEntity * ent,
-                                        const Operation & op,
-                                        OpVector & res)
-{
-    return OPERATION_IGNORED;
-}
-
-DecaysProperty * DecaysProperty::copy() const
-{
-    return 0;
-}
-
 void TeleportProperty::install(LocatedEntity * owner, const std::string & name)
 {
 }
@@ -1025,112 +937,8 @@ HandlerResult TeleportProperty::operation(LocatedEntity * ent,
     return OPERATION_IGNORED;
 }
 
-TerrainProperty::TerrainProperty() :
-      m_data(*(Mercator::Terrain*)0),
-      m_tileShader(*(Mercator::TileShader*)0)
-{
-}
-
-TerrainProperty::~TerrainProperty()
-{
-}
-
-int TerrainProperty::get(Element & ent) const
-{
-    return 0;
-}
-
-void TerrainProperty::set(const Element & ent)
-{
-}
-
-TerrainProperty * TerrainProperty::copy() const
-{
-    return 0;
-}
-
-int TerrainProperty::getSurface(const Point3D & pos, int & material)
-{
-    return 0;
-}
-
-bool TerrainProperty::getHeightAndNormal(float x,
-                                         float y,
-                                         float & height,
-                                         Vector3D & normal) const
-{
-    return true;
-}
-
-TerrainModProperty::TerrainModProperty() : m_modptr(0), m_innerMod(0)
-{
-}
-
-TerrainModProperty::~TerrainModProperty()
-{
-}
-
-TerrainModProperty * TerrainModProperty::copy() const
-{
-    return 0;
-}
-
-void TerrainModProperty::install(LocatedEntity * owner, const std::string & name)
-{
-}
-
-void TerrainModProperty::apply(LocatedEntity * owner)
-{
-}
-
-void TerrainModProperty::move(LocatedEntity* owner)
-{
-}
-
-HandlerResult TerrainModProperty::operation(LocatedEntity * ent,
-                                            const Operation & op,
-                                            OpVector & res)
-{
-    return OPERATION_IGNORED;
-}
-
-void TerrainModProperty::remove(LocatedEntity * owner)
-{
-}
-
 Pedestrian::Pedestrian(LocatedEntity & body) : Movement(body)
 {
-}
-
-Mercator::TerrainMod * TerrainModProperty::parseModData(LocatedEntity * owner,
-                                                        const MapType & modMap)
-{
-    return 0;
-}
-
-int TerrainModProperty::getAttr(const std::string & name,
-                                Element & val)
-{
-    return 0;
-}
-
-void TerrainModProperty::setAttr(const std::string & name,
-                                 const Element & val)
-{
-}
-
-HandlerResult TerrainModProperty::move_handler(LocatedEntity * e,
-                                               const Operation & op,
-                                               OpVector & res)
-{
-    return OPERATION_IGNORED;
-}
-
-HandlerResult TerrainModProperty::delete_handler(LocatedEntity * e,
-                                                 const Operation & op,
-                                                 OpVector & res)
-{
-    return OPERATION_IGNORED;
 }
 
 SetupProperty::SetupProperty()
@@ -1223,28 +1031,6 @@ MindProperty * MindProperty::copy() const
 void MindProperty::apply(LocatedEntity * ent)
 {
 }
-
-SpawnProperty::SpawnProperty()
-{
-}
-
-SpawnProperty::~SpawnProperty()
-{
-}
-
-SpawnProperty * SpawnProperty::copy() const
-{
-    return 0;
-}
-
-void SpawnProperty::apply(LocatedEntity * ent)
-{
-}
-
-void SpawnProperty::remove(LocatedEntity *, const std::string & name)
-{
-}
-
 
 VisibilityProperty::VisibilityProperty()
 {
@@ -1347,84 +1133,6 @@ SuspendedProperty * SuspendedProperty::copy() const
 
 void SuspendedProperty::apply(LocatedEntity * owner)
 {
-}
-
-SpawnerProperty::SpawnerProperty()
-{
-}
-
-SpawnerProperty::~SpawnerProperty()
-{
-}
-
-SpawnerProperty * SpawnerProperty::copy() const
-{
-    return 0;
-}
-
-void SpawnerProperty::apply(LocatedEntity * owner)
-{
-}
-
-void SpawnerProperty::install(LocatedEntity * ent, const std::string & name)
-{
-}
-
-HandlerResult SpawnerProperty::operation(LocatedEntity *, const Operation &, OpVector &)
-{
-    return OPERATION_IGNORED;
-}
-
-ImmortalProperty::ImmortalProperty()
-{
-}
-
-ImmortalProperty::~ImmortalProperty()
-{
-}
-
-ImmortalProperty * ImmortalProperty::copy() const
-{
-    return 0;
-}
-
-void ImmortalProperty::apply(LocatedEntity * owner)
-{
-}
-
-void ImmortalProperty::install(LocatedEntity * ent, const std::string & name)
-{
-}
-
-HandlerResult ImmortalProperty::operation(LocatedEntity *, const Operation &, OpVector &)
-{
-    return OPERATION_IGNORED;
-}
-
-RespawningProperty::RespawningProperty()
-{
-}
-
-RespawningProperty::~RespawningProperty()
-{
-}
-
-RespawningProperty * RespawningProperty::copy() const
-{
-    return 0;
-}
-
-void RespawningProperty::apply(LocatedEntity * owner)
-{
-}
-
-void RespawningProperty::install(LocatedEntity * ent, const std::string & name)
-{
-}
-
-HandlerResult RespawningProperty::operation(LocatedEntity *, const Operation &, OpVector &)
-{
-    return OPERATION_IGNORED;
 }
 
 Pedestrian::~Pedestrian()

@@ -41,6 +41,8 @@
 #include "common/Property_impl.h"
 #include "common/TypeNode.h"
 
+#include "stubs/modules/stubLocation.h"
+
 #include <Mercator/Terrain.h>
 
 #include <cassert>

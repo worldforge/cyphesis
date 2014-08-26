@@ -29,6 +29,8 @@
 #include "rulesets/TerrainModProperty.h"
 #include "rulesets/TerrainProperty.h"
 
+#include "stubs/common/stubTypeNode.h"
+
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 

@@ -24,6 +24,8 @@
 #endif
 
 #include "rulesets/TerrainModTranslator.h"
+#include "stubs/common/stubCustom.h"
+#include "stubs/modules/stubLocation.h"
 
 #include <wfmath/quaternion.h>
 

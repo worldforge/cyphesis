@@ -244,6 +244,10 @@ int main()
 #include "rulesets/PythonArithmeticFactory.h"
 #include "rulesets/Task.h"
 
+#include "stubs/rulesets/stubBBoxProperty.h"
+#include "stubs/rulesets/stubTasksProperty.h"
+#include "stubs/rulesets/stubTerrainProperty.h"
+
 #include <Atlas/Objects/Operation.h>
 
 CorePropertyManager::CorePropertyManager()
@@ -525,42 +529,6 @@ void OutfitProperty::itemRemoved(LocatedEntity * garment, LocatedEntity * wearer
 {
 }
 
-TerrainProperty::TerrainProperty() :
-      m_data(*(Mercator::Terrain*)0),
-      m_tileShader(*(Mercator::TileShader*)0)
-{
-}
-
-TerrainProperty::~TerrainProperty()
-{
-}
-
-int TerrainProperty::get(Element & ent) const
-{
-    return 0;
-}
-
-void TerrainProperty::set(const Element & ent)
-{
-}
-
-TerrainProperty * TerrainProperty::copy() const
-{
-    return 0;
-}
-
-bool TerrainProperty::getHeightAndNormal(float x,
-                                         float y,
-                                         float & height,
-                                         Vector3D & normal) const
-{
-    return true;
-}
-
-int TerrainProperty::getSurface(const Point3D & pos, int & material)
-{
-    return 0;
-}
 
 Task::Task(LocatedEntity & owner) : m_refCount(0), m_serialno(0),
                                     m_obsolete(false),
@@ -585,55 +553,6 @@ void Task::irrelevant()
 {
 }
 
-TasksProperty::TasksProperty() : PropertyBase(per_ephem), m_task(0)
-{
-}
-
-int TasksProperty::get(Element & val) const
-{
-    return 0;
-}
-
-void TasksProperty::set(const Element & val)
-{
-}
-
-TasksProperty * TasksProperty::copy() const
-{
-    return 0;
-}
-
-int TasksProperty::startTask(Task *, LocatedEntity *, const Operation &, OpVector &)
-{
-    return 0;
-}
-
-int TasksProperty::updateTask(LocatedEntity *, OpVector &)
-{
-    return 0;
-}
-
-int TasksProperty::clearTask(LocatedEntity *, OpVector &)
-{
-    return 0;
-}
-
-void TasksProperty::stopTask(LocatedEntity *, OpVector &)
-{
-}
-
-void TasksProperty::TickOperation(LocatedEntity *, const Operation &, OpVector &)
-{
-}
-
-void TasksProperty::UseOperation(LocatedEntity *, const Operation &, OpVector &)
-{
-}
-
-HandlerResult TasksProperty::operation(LocatedEntity *, const Operation &, OpVector &)
-{
-    return OPERATION_IGNORED;
-}
 
 ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
       PropertyBase(per_ephem), m_data(data)
@@ -672,37 +591,6 @@ void StatusProperty::apply(LocatedEntity * owner)
 {
 }
 
-BBoxProperty::BBoxProperty()
-{
-}
-
-void BBoxProperty::apply(LocatedEntity * ent)
-{
-}
-
-int BBoxProperty::get(Element & val) const
-{
-    return -1;
-}
-
-void BBoxProperty::set(const Element & val)
-{
-}
-
-void BBoxProperty::add(const std::string & key,
-                       MapType & map) const
-{
-}
-
-void BBoxProperty::add(const std::string & key,
-                       const RootEntity & ent) const
-{
-}
-
-BBoxProperty * BBoxProperty::copy() const
-{
-    return 0;
-}
 
 ExternalMind::ExternalMind(LocatedEntity & e) : Router(e.getId(), e.getIntId()),
                                          m_external(0),

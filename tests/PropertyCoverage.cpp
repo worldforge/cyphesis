@@ -617,3 +617,23 @@ Location::Location() : m_loc(0)
 void log(LogLevel lvl, const std::string & msg)
 {
 }
+
+const Vector3D distanceTo(const Location & self, const Location & other)
+{
+    return *((Vector3D*)nullptr);
+}
+
+const Point3D relativePos(const Location & self, const Location & other)
+{
+    return *((Point3D*)nullptr);
+}
+
+float squareDistance(const Location & self, const Location & other)
+{
+    return 0.0f;
+}
+float squareHorizontalDistance(const Location & self, const Location & other)
+{
+    return 0.0f;
+}
+

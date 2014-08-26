@@ -39,6 +39,8 @@
 
 #include "TestWorld.h"
 
+#include "stubs/rulesets/stubCharacter.h"
+
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
@@ -240,23 +242,22 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "common/TypeNode.h"
 #include "common/Variable.h"
 
-namespace Atlas { namespace Objects { namespace Operation {
-int ACTUATE_NO = -1;
-int ATTACK_NO = -1;
-int BURN_NO = -1;
-int DROP_NO = -1;
-int EAT_NO = -1;
-int GOAL_INFO_NO = -1;
-int NOURISH_NO = -1;
-int SETUP_NO = -1;
-int PICKUP_NO = -1;
-int TELEPORT_NO = -1;
-int TICK_NO = -1;
-int THOUGHT_NO = -1;
-int UNSEEN_NO = -1;
-int UPDATE_NO = -1;
-int RELAY_NO = -1;
-} } }
+#include "stubs/common/stubCustom.h"
+#include "stubs/rulesets/stubImmortalProperty.h"
+#include "stubs/rulesets/stubRespawningProperty.h"
+#include "stubs/rulesets/stubSpawnerProperty.h"
+#include "stubs/rulesets/stubTerrainModProperty.h"
+#include "stubs/rulesets/stubTerrainProperty.h"
+#include "stubs/rulesets/stubBBoxProperty.h"
+#include "stubs/rulesets/stubBiomassProperty.h"
+#include "stubs/rulesets/stubBurnSpeedProperty.h"
+#include "stubs/rulesets/stubContainsProperty.h"
+#include "stubs/rulesets/stubDecaysProperty.h"
+#include "stubs/rulesets/stubOutfitProperty.h"
+#include "stubs/rulesets/stubStatusProperty.h"
+#include "stubs/rulesets/stubTasksProperty.h"
+#include "stubs/rulesets/stubSpawnProperty.h"
+
 
 Account::Account(Connection * conn,
                  const std::string & uname,
@@ -555,154 +556,7 @@ CalendarProperty * CalendarProperty::copy() const
     return 0;
 }
 
-Character::Character(const std::string & id, long intId) :
-           Thing(id, intId),
-               m_movement(*(Movement*)0),
-               m_mind(0), m_externalMind(0)
-{
-}
 
-Character::~Character()
-{
-}
-
-void Character::operation(const Operation & op, OpVector &)
-{
-}
-
-void Character::externalOperation(const Operation & op, Link &)
-{
-}
-
-
-void Character::ImaginaryOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::InfoOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::TickOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::TalkOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::NourishOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::UseOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::WieldOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::AttackOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::ActuateOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::RelayOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::mindActuateOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindAttackOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindCombineOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindCreateOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindDeleteOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindDivideOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindEatOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindGoalInfoOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindImaginaryOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindLookOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindMoveOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindSetOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindSetupOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindTalkOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindThoughtOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindTickOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindTouchOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindUpdateOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindUseOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindWieldOperation(const Operation &, OpVector &)
-{
-}
-
-
-void Character::mindOtherOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::sendMind(const Operation & op, OpVector & res)
-{
-}
 
 IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),
                                                    m_data(data)
@@ -1084,101 +938,8 @@ EntityProperty * EntityProperty::copy() const
     return 0;
 }
 
-OutfitProperty::OutfitProperty()
-{
-}
 
-OutfitProperty::~OutfitProperty()
-{
-}
 
-int OutfitProperty::get(Atlas::Message::Element & val) const
-{
-    return 0;
-}
-
-void OutfitProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-void OutfitProperty::add(const std::string & key,
-                         Atlas::Message::MapType & map) const
-{
-}
-
-void OutfitProperty::add(const std::string & key,
-                         const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-OutfitProperty * OutfitProperty::copy() const
-{
-    return 0;
-}
-
-void OutfitProperty::cleanUp()
-{
-}
-
-void OutfitProperty::wear(LocatedEntity * wearer,
-                          const std::string & location,
-                          LocatedEntity * garment)
-{
-}
-
-void OutfitProperty::itemRemoved(LocatedEntity * garment, LocatedEntity * wearer)
-{
-}
-
-TasksProperty::TasksProperty() : PropertyBase(per_ephem), m_task(0)
-{
-}
-
-int TasksProperty::get(Atlas::Message::Element & val) const
-{
-    return 0;
-}
-
-void TasksProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-TasksProperty * TasksProperty::copy() const
-{
-    return 0;
-}
-
-int TasksProperty::startTask(Task *, LocatedEntity *, const Operation &, OpVector &)
-{
-    return 0;
-}
-
-int TasksProperty::updateTask(LocatedEntity *, OpVector &)
-{
-    return 0;
-}
-
-int TasksProperty::clearTask(LocatedEntity *, OpVector &)
-{
-    return 0;
-}
-
-void TasksProperty::stopTask(LocatedEntity *, OpVector &)
-{
-}
-
-void TasksProperty::TickOperation(LocatedEntity *, const Operation &, OpVector &)
-{
-}
-
-void TasksProperty::UseOperation(LocatedEntity *, const Operation &, OpVector &)
-{
-}
-
-HandlerResult TasksProperty::operation(LocatedEntity *, const Operation &, OpVector &)
-{
-    return OPERATION_IGNORED;
-}
 
 Thing::Thing(const std::string & id, long intId) :
        Entity(id, intId)
@@ -1300,123 +1061,6 @@ SoftProperty * SoftProperty::copy() const
     return 0;
 }
 
-ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
-      PropertyBase(per_ephem), m_data(data)
-{
-}
-
-int ContainsProperty::get(Atlas::Message::Element & e) const
-{
-    return 0;
-}
-
-void ContainsProperty::set(const Atlas::Message::Element & e)
-{
-}
-
-void ContainsProperty::add(const std::string & s,
-                           const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-ContainsProperty * ContainsProperty::copy() const
-{
-    return 0;
-}
-
-StatusProperty::StatusProperty()
-{
-}
-
-StatusProperty * StatusProperty::copy() const
-{
-    return 0;
-}
-
-void StatusProperty::apply(LocatedEntity * owner)
-{
-}
-
-BBoxProperty::BBoxProperty()
-{
-}
-
-void BBoxProperty::apply(LocatedEntity * ent)
-{
-}
-
-int BBoxProperty::get(Element & val) const
-{
-    return -1;
-}
-
-void BBoxProperty::set(const Element & val)
-{
-}
-
-void BBoxProperty::add(const std::string & key,
-                       MapType & map) const
-{
-}
-
-void BBoxProperty::add(const std::string & key,
-                       const RootEntity & ent) const
-{
-}
-
-BBoxProperty * BBoxProperty::copy() const
-{
-    return 0;
-}
-
-void BiomassProperty::install(LocatedEntity * owner, const std::string & name)
-{
-}
-
-HandlerResult BiomassProperty::operation(LocatedEntity * e,
-                                         const Operation & op,
-                                         OpVector & res)
-{
-    return OPERATION_IGNORED;
-}
-
-
-BiomassProperty * BiomassProperty::copy() const
-{
-    return 0;
-}
-
-void BurnSpeedProperty::install(LocatedEntity * owner, const std::string & name)
-{
-}
-
-HandlerResult BurnSpeedProperty::operation(LocatedEntity * ent,
-                                        const Operation & op,
-                                        OpVector & res)
-{
-    return OPERATION_IGNORED;
-}
-
-BurnSpeedProperty * BurnSpeedProperty::copy() const
-{
-    return 0;
-}
-
-void DecaysProperty::install(LocatedEntity * owner, const std::string & name)
-{
-}
-
-HandlerResult DecaysProperty::operation(LocatedEntity * ent,
-                                        const Operation & op,
-                                        OpVector & res)
-{
-    return OPERATION_IGNORED;
-}
-
-DecaysProperty * DecaysProperty::copy() const
-{
-    return 0;
-}
 
 void TeleportProperty::install(LocatedEntity * owner, const std::string & name)
 {
@@ -1429,113 +1073,12 @@ HandlerResult TeleportProperty::operation(LocatedEntity * ent,
     return OPERATION_IGNORED;
 }
 
-TerrainProperty::TerrainProperty() :
-      m_data(*(Mercator::Terrain*)0),
-      m_tileShader(*(Mercator::TileShader*)0)
-{
-}
-
-TerrainProperty::~TerrainProperty()
-{
-}
-
-int TerrainProperty::get(Element & ent) const
-{
-    return 0;
-}
-
-void TerrainProperty::set(const Element & ent)
-{
-}
-
-TerrainProperty * TerrainProperty::copy() const
-{
-    return 0;
-}
-
-int TerrainProperty::getSurface(const Point3D & pos, int & material)
-{
-    return 0;
-}
-
-bool TerrainProperty::getHeightAndNormal(float x,
-                                         float y,
-                                         float & height,
-                                         Vector3D & normal) const
-{
-    return true;
-}
-
-TerrainModProperty::TerrainModProperty() : m_modptr(0), m_innerMod(0)
-{
-}
-
-TerrainModProperty::~TerrainModProperty()
-{
-}
-
-TerrainModProperty * TerrainModProperty::copy() const
-{
-    return 0;
-}
-
-void TerrainModProperty::install(LocatedEntity * owner, const std::string & name)
-{
-}
-
-void TerrainModProperty::apply(LocatedEntity * owner)
-{
-}
-
-HandlerResult TerrainModProperty::operation(LocatedEntity * ent,
-                                            const Operation & op,
-                                            OpVector & res)
-{
-    return OPERATION_IGNORED;
-}
-
-void TerrainModProperty::move(LocatedEntity* owner)
-{
-}
-
-void TerrainModProperty::remove(LocatedEntity * owner)
-{
-}
 
 Pedestrian::Pedestrian(LocatedEntity & body) : Movement(body)
 {
 }
 
-Mercator::TerrainMod * TerrainModProperty::parseModData(LocatedEntity * owner,
-                                                        const MapType & modMap)
-{
-    return 0;
-}
 
-int TerrainModProperty::getAttr(const std::string & name,
-                                Element & val)
-{
-    return 0;
-}
-
-void TerrainModProperty::setAttr(const std::string & name,
-                                 const Element & val)
-{
-}
-
-HandlerResult TerrainModProperty::move_handler(LocatedEntity * e,
-                                               const Operation & op,
-                                               OpVector & res)
-{
-    return OPERATION_IGNORED;
-}
-
-HandlerResult TerrainModProperty::delete_handler(LocatedEntity * e,
-                                                 const Operation & op,
-                                                 OpVector & res)
-{
-    return OPERATION_IGNORED;
-}
 
 SetupProperty::SetupProperty()
 {
@@ -1625,27 +1168,6 @@ MindProperty * MindProperty::copy() const
 }
 
 void MindProperty::apply(LocatedEntity * ent)
-{
-}
-
-SpawnProperty::SpawnProperty()
-{
-}
-
-SpawnProperty::~SpawnProperty()
-{
-}
-
-SpawnProperty * SpawnProperty::copy() const
-{
-    return 0;
-}
-
-void SpawnProperty::apply(LocatedEntity * ent)
-{
-}
-
-void SpawnProperty::remove(LocatedEntity * ent)
 {
 }
 
@@ -1752,83 +1274,7 @@ void SuspendedProperty::apply(LocatedEntity * owner)
 {
 }
 
-SpawnerProperty::SpawnerProperty()
-{
-}
 
-SpawnerProperty::~SpawnerProperty()
-{
-}
-
-SpawnerProperty * SpawnerProperty::copy() const
-{
-    return 0;
-}
-
-void SpawnerProperty::apply(LocatedEntity * owner)
-{
-}
-
-void SpawnerProperty::install(LocatedEntity * ent, const std::string & name)
-{
-}
-
-HandlerResult SpawnerProperty::operation(LocatedEntity *, const Operation &, OpVector &)
-{
-    return OPERATION_IGNORED;
-}
-
-ImmortalProperty::ImmortalProperty()
-{
-}
-
-ImmortalProperty::~ImmortalProperty()
-{
-}
-
-ImmortalProperty * ImmortalProperty::copy() const
-{
-    return 0;
-}
-
-void ImmortalProperty::apply(LocatedEntity * owner)
-{
-}
-
-void ImmortalProperty::install(LocatedEntity * ent, const std::string & name)
-{
-}
-
-HandlerResult ImmortalProperty::operation(LocatedEntity *, const Operation &, OpVector &)
-{
-    return OPERATION_IGNORED;
-}
-
-RespawningProperty::RespawningProperty()
-{
-}
-
-RespawningProperty::~RespawningProperty()
-{
-}
-
-RespawningProperty * RespawningProperty::copy() const
-{
-    return 0;
-}
-
-void RespawningProperty::apply(LocatedEntity * owner)
-{
-}
-
-void RespawningProperty::install(LocatedEntity * ent, const std::string & name)
-{
-}
-
-HandlerResult RespawningProperty::operation(LocatedEntity *, const Operation &, OpVector &)
-{
-    return OPERATION_IGNORED;
-}
 
 Pedestrian::~Pedestrian()
 {

@@ -1379,10 +1379,6 @@ World::~World()
 {
 }
 
-void World::EatOperation(const Operation & op, OpVector & res)
-{
-}
-
 void World::LookOperation(const Operation & op, OpVector & res)
 {
 }

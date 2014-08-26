@@ -43,6 +43,8 @@
 #include "common/Property_impl.h"
 #include "common/TypeNode.h"
 
+#include "stubs/rulesets/stubTerrainProperty.h"
+
 #include <cstdlib>
 
 #include <cassert>
@@ -538,34 +540,6 @@ bool TypeNode::isTypeOf(const std::string & base_type) const
     return false;
 }
 
-TerrainProperty::TerrainProperty() :
-      m_data(*(Mercator::Terrain*)0),
-      m_tileShader(*(Mercator::TileShader*)0)
-{
-}
-
-TerrainProperty::~TerrainProperty()
-{
-}
-
-int TerrainProperty::get(Element & ent) const
-{
-    return 0;
-}
-
-void TerrainProperty::set(const Element & ent)
-{
-}
-
-TerrainProperty * TerrainProperty::copy() const
-{
-    return 0;
-}
-
-int TerrainProperty::getSurface(const Point3D & pos, int & material)
-{
-    return 0;
-}
 
 CalendarProperty::CalendarProperty()
 {

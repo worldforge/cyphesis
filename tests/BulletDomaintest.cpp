@@ -24,6 +24,8 @@
 #include "btBulletCollisionCommon.h"
 #endif // HAVE_BULLET
 
+#include "stubs/rulesets/stubTerrainProperty.h"
+
 #include <cassert>
 
 class TestBulletDomain : public BulletDomain
@@ -91,37 +93,6 @@ void Domain::tick(double t)
 {
 }
 
-TerrainProperty::TerrainProperty() :
-    m_data(*(Mercator::Terrain*)0),
-    m_tileShader(*(Mercator::TileShader*)0)
-{
-}
-
-TerrainProperty::~TerrainProperty()
-{
-}
-
-int TerrainProperty::get(Atlas::Message::Element & ent) const
-{
-    return 0;
-}
-
-void TerrainProperty::set(const Atlas::Message::Element & ent)
-{
-}
-
-TerrainProperty * TerrainProperty::copy() const
-{
-    return 0;
-}
-
-bool TerrainProperty::getHeightAndNormal(float x,
-                                         float y,
-                                         float & height,
-                                         Vector3D & normal) const
-{
-    return true;
-}
 
 PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
 {
