@@ -124,8 +124,8 @@ LocatedEntity * EntityBuilder::newEntity(const std::string & id, long intId,
         loc = world.getEntity(loc_id);
     }
     if (loc == 0) {
-        // If no info was provided, put the entity in the game world
-        loc = &world.m_gameWorld;
+        // If no info was provided, put the entity in the default location world
+        loc = &world.getDefaultLocation();
     }
 
     try {

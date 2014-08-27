@@ -249,7 +249,7 @@ static int Location_init(PyLocation * self, PyObject * args, PyObject * kwds)
         }
     
         if (PyWorld_Check(refO)) {
-            ref_ent = &BaseWorld::instance().m_gameWorld;
+            ref_ent = &BaseWorld::instance().getDefaultLocation();
         } else {
             PyEntity * ref = (PyEntity*)refO;
 #ifndef NDEBUG

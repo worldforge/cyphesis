@@ -1255,6 +1255,22 @@ LocatedEntity * BaseWorld::getEntity(long id) const
     return 0;
 }
 
+LocatedEntity& BaseWorld::getDefaultLocation() {
+    return m_gameWorld;
+}
+
+LocatedEntity& BaseWorld::getDefaultLocation() const {
+    return m_gameWorld;
+}
+
+LocatedEntity& BaseWorld::getRootEntity() {
+    return m_gameWorld;
+}
+
+LocatedEntity& BaseWorld::getRootEntity() const {
+    return m_gameWorld;
+}
+
 Inheritance * Inheritance::m_instance = NULL;
 
 Inheritance::Inheritance() : noClass(0)

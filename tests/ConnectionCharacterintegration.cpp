@@ -299,28 +299,19 @@ int main()
 #include "common/Property_impl.h"
 #include "common/PropertyManager.h"
 
+#include "stubs/common/stubCustom.h"
+#include "stubs/server/stubAccount.h"
+#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rulesets/stubThing.h"
+#include "stubs/rulesets/stubTasksProperty.h"
+#include "stubs/rulesets/stubOutfitProperty.h"
+
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
 
 bool restricted_flag;
-
-namespace Atlas { namespace Objects { namespace Operation {
-int ACTUATE_NO = -1;
-int ATTACK_NO = -1;
-int EAT_NO = -1;
-int GOAL_INFO_NO = -1;
-int NOURISH_NO = -1;
-int SETUP_NO = -1;
-int TICK_NO = -1;
-int THOUGHT_NO = -1;
-int UNSEEN_NO = -1;
-int UPDATE_NO = -1;
-int RELAY_NO = -1;
-int THINK_NO = -1;
-int COMMUNE_NO = -1;
-} } }
 
 Pedestrian::Pedestrian(LocatedEntity & body) : Movement(body)
 {
@@ -406,95 +397,6 @@ int Player::characterError(const Operation & op,
     return 0;
 }
 
-Account::Account(Connection * conn,
-                 const std::string & uname,
-                 const std::string & passwd,
-                 const std::string & id,
-                 long intId) :
-         ConnectableRouter(id, intId, conn),
-         m_username(uname), m_password(passwd)
-{
-}
-
-Account::~Account()
-{
-}
-
-const char * Account::getType() const
-{
-    return "testaccount";
-}
-
-void Account::store() const
-{
-}
-
-bool Account::isPersisted() const {
-    return true;
-}
-
-void Account::addToMessage(Atlas::Message::MapType &) const
-{
-}
-
-void Account::addToEntity(const Atlas::Objects::Entity::RootEntity &) const
-{
-}
-
-void Account::createObject(const std::string & type_str,
-                           const Root & arg,
-                           const Operation & op,
-                           OpVector & res)
-{
-}
-
-LocatedEntity * Account::createCharacterEntity(const std::string &,
-                                const Atlas::Objects::Entity::RootEntity &,
-                                const Atlas::Objects::Root &)
-{
-    return 0;
-}
-
-void Account::externalOperation(const Operation &, Link &)
-{
-}
-
-void Account::operation(const Operation &, OpVector &)
-{
-}
-
-
-void Account::LogoutOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::CreateOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::SetOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::ImaginaryOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::TalkOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::LookOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::GetOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::OtherOperation(const Operation &, OpVector &)
-{
-}
 
 ConnectableRouter::ConnectableRouter(const std::string & id,
                                  long iid,
@@ -608,39 +510,6 @@ void ExternalProperty::add(const std::string & s,
 ExternalProperty * ExternalProperty::copy() const
 {
     return 0;
-}
-
-Thing::Thing(const std::string & id, long intId) :
-       Entity(id, intId)
-{
-}
-
-Thing::~Thing()
-{
-}
-
-void Thing::DeleteOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::MoveOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::SetOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::LookOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::CreateOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::UpdateOperation(const Operation & op, OpVector & res)
-{
 }
 
 Entity::Entity(const std::string & id, long intId) :
@@ -821,85 +690,7 @@ void Entity::onUpdated()
 {
 }
 
-LocatedEntity::LocatedEntity(const std::string & id, long intId) :
-               Router(id, intId),
-               m_refCount(0), m_seq(0),
-               m_script(0), m_type(0), m_flags(0), m_contains(0)
-{
-}
 
-LocatedEntity::~LocatedEntity()
-{
-}
-
-bool LocatedEntity::hasAttr(const std::string & name) const
-{
-    return false;
-}
-
-int LocatedEntity::getAttr(const std::string & name,
-                           Atlas::Message::Element & attr) const
-{
-    return -1;
-}
-
-int LocatedEntity::getAttrType(const std::string & name,
-                               Atlas::Message::Element & attr,
-                               int type) const
-{
-    return -1;
-}
-
-PropertyBase * LocatedEntity::setAttr(const std::string & name,
-                                      const Atlas::Message::Element & attr)
-{
-    return 0;
-}
-
-const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
-{
-    return 0;
-}
-
-PropertyBase * LocatedEntity::modProperty(const std::string & name)
-{
-    return 0;
-}
-
-PropertyBase * LocatedEntity::setProperty(const std::string & name,
-                                          PropertyBase * prop)
-{
-    return 0;
-}
-
-void LocatedEntity::installDelegate(int, const std::string &)
-{
-}
-
-void LocatedEntity::removeDelegate(int class_no, const std::string & delegate)
-{
-}
-
-void LocatedEntity::destroy()
-{
-}
-
-Domain * LocatedEntity::getMovementDomain()
-{
-    return 0;
-}
-
-void LocatedEntity::sendWorld(const Operation & op)
-{
-}
-
-void LocatedEntity::onContainered(const LocatedEntity*)
-{
-}
-
-void LocatedEntity::onUpdated()
-{
-}
 
 EntityProperty::EntityProperty()
 {
@@ -929,52 +720,6 @@ EntityProperty * EntityProperty::copy() const
     return 0;
 }
 
-OutfitProperty::OutfitProperty()
-{
-}
-
-OutfitProperty::~OutfitProperty()
-{
-}
-
-int OutfitProperty::get(Atlas::Message::Element & val) const
-{
-    return 0;
-}
-
-void OutfitProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-void OutfitProperty::add(const std::string & key,
-                         Atlas::Message::MapType & map) const
-{
-}
-
-OutfitProperty * OutfitProperty::copy() const
-{
-    return 0;
-}
-
-void OutfitProperty::add(const std::string & key,
-                         const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-void OutfitProperty::cleanUp()
-{
-}
-
-void OutfitProperty::wear(LocatedEntity * wearer,
-                          const std::string & location,
-                          LocatedEntity * garment)
-{
-}
-
-void OutfitProperty::itemRemoved(LocatedEntity * garment, LocatedEntity * wearer)
-{
-}
-
 Task::~Task()
 {
 }
@@ -989,56 +734,6 @@ void Task::operation(const Operation & op, OpVector & res)
 
 void Task::irrelevant()
 {
-}
-
-TasksProperty::TasksProperty() : PropertyBase(per_ephem), m_task(0)
-{
-}
-
-int TasksProperty::get(Atlas::Message::Element & val) const
-{
-    return 0;
-}
-
-void TasksProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-TasksProperty * TasksProperty::copy() const
-{
-    return 0;
-}
-
-int TasksProperty::startTask(Task *, LocatedEntity *, const Operation &, OpVector &)
-{
-    return 0;
-}
-
-int TasksProperty::updateTask(LocatedEntity *, OpVector &)
-{
-    return 0;
-}
-
-int TasksProperty::clearTask(LocatedEntity *, OpVector &)
-{
-    return 0;
-}
-
-void TasksProperty::stopTask(LocatedEntity *, OpVector &)
-{
-}
-
-void TasksProperty::TickOperation(LocatedEntity *, const Operation &, OpVector &)
-{
-}
-
-void TasksProperty::UseOperation(LocatedEntity *, const Operation &, OpVector &)
-{
-}
-
-HandlerResult TasksProperty::operation(LocatedEntity *, const Operation &, OpVector &)
-{
-    return OPERATION_IGNORED;
 }
 
 PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
@@ -1318,6 +1013,23 @@ LocatedEntity * BaseWorld::getEntity(long id) const
 {
     return 0;
 }
+
+LocatedEntity& BaseWorld::getDefaultLocation() {
+    return m_gameWorld;
+}
+
+LocatedEntity& BaseWorld::getDefaultLocation() const {
+    return m_gameWorld;
+}
+
+LocatedEntity& BaseWorld::getRootEntity() {
+    return m_gameWorld;
+}
+
+LocatedEntity& BaseWorld::getRootEntity() const {
+    return m_gameWorld;
+}
+
 
 Inheritance * Inheritance::m_instance = NULL;
 

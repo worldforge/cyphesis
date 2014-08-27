@@ -798,6 +798,14 @@ double BaseWorld::getTime() const
     return 0;
 }
 
+LocatedEntity& BaseWorld::getDefaultLocation() {
+    return m_gameWorld;
+}
+
+LocatedEntity& BaseWorld::getDefaultLocation() const {
+    return m_gameWorld;
+}
+
 Inheritance * Inheritance::m_instance = NULL;
 
 Inheritance::Inheritance() : noClass(0)
@@ -896,7 +904,7 @@ LocatedEntity * EntityBuilder::newEntity(const std::string & id, long intId,
 {
     if (type == "thing") {
         Entity * e = new Entity(id, intId);
-        e->m_location.m_loc = &world.m_gameWorld;
+        e->m_location.m_loc = &world.getDefaultLocation();
         e->m_location.m_pos = Point3D(0,0,0);
         return e;
     }

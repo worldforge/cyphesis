@@ -221,9 +221,9 @@ LocatedEntity * WorldRouter::addEntity(LocatedEntity * ent)
 
     if (!ent->m_location.isValid()) {
         log(ERROR, "Entity added to world with invalid location!");
-        debug(std::cout << "set loc " << &m_gameWorld  << std::endl
+        debug(std::cout << "set loc " << &getDefaultLocation()  << std::endl
                         << std::flush;);
-        ent->m_location.m_loc = &m_gameWorld;
+        ent->m_location.m_loc = &getDefaultLocation();
         ent->m_location.m_pos = Point3D(uniform(-8,8), uniform(-8,8), 0);
         debug(std::cout << "loc set with loc " << ent->m_location.m_loc->getId()
                         << std::endl << std::flush;);

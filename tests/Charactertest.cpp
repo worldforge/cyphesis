@@ -807,6 +807,10 @@ BaseWorld::~BaseWorld()
     m_instance = 0;
 }
 
+LocatedEntity& BaseWorld::getDefaultLocation() {
+    return m_gameWorld;
+}
+
 LocatedEntity * BaseWorld::getEntity(const std::string & id) const
 {
     long intId = integerId(id);

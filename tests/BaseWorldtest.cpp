@@ -127,7 +127,7 @@ int main()
         LocatedEntity wrld("1", 1);
         TestWorld tw(wrld);
 
-        assert(&tw.m_gameWorld == &wrld);
+        assert(&tw.getRootEntity() == &wrld);
     }
 
     {

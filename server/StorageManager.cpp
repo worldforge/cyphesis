@@ -561,7 +561,7 @@ void StorageManager::thoughtsReceived(const std::string& entityId, const Operati
 
 int StorageManager::initWorld()
 {
-    LocatedEntity * ent = &BaseWorld::instance().m_gameWorld;
+    LocatedEntity * ent = &BaseWorld::instance().getRootEntity();
 
     ent->updated.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityUpdated), ent));
     ent->setFlags(entity_clean);
@@ -571,7 +571,7 @@ int StorageManager::initWorld()
 
 int StorageManager::restoreWorld()
 {
-    LocatedEntity * ent = &BaseWorld::instance().m_gameWorld;
+    LocatedEntity * ent = &BaseWorld::instance().getRootEntity();
 
     restoreProperties(ent);
 

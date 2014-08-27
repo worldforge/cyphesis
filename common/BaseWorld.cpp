@@ -32,7 +32,7 @@ BaseWorld * BaseWorld::m_instance = 0;
 /// This constructor registers the instance created as the singleton, and
 /// in debug mode ensures that an instance has not already been created.
 /// @param gw the top level in-game entity in the world.
-BaseWorld::BaseWorld(LocatedEntity & gw) : m_isSuspended(false), m_gameWorld(gw)
+BaseWorld::BaseWorld(LocatedEntity & gw) : m_isSuspended(false), m_gameWorld(gw), m_defaultLocation(&gw)
 {
     assert(m_instance == 0);
     m_instance = this;
@@ -77,6 +77,36 @@ LocatedEntity * BaseWorld::getEntity(long id) const
         return I->second;
     } else {
         return 0;
+    }
+}
+
+LocatedEntity& BaseWorld::getRootEntity()
+{
+    return m_gameWorld;
+}
+
+LocatedEntity& BaseWorld::getRootEntity() const
+{
+    return m_gameWorld;
+}
+
+LocatedEntity& BaseWorld::getDefaultLocation()
+{
+    return *m_defaultLocation;
+}
+
+LocatedEntity& BaseWorld::getDefaultLocation() const
+{
+    return *m_defaultLocation;
+}
+
+void BaseWorld::setDefaultLocation(LocatedEntity* entity)
+{
+    //If null is provided we'll revert back to the root world.
+    if (!entity) {
+        m_defaultLocation = &m_gameWorld;
+    } else {
+        m_defaultLocation = entity;
     }
 }
 

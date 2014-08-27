@@ -210,7 +210,7 @@ void Creator::mindLookOperation(const Operation & op, OpVector & res)
     m_flags |= entity_perceptive;
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
-        op->setTo(BaseWorld::instance().m_gameWorld.getId());
+        op->setTo(BaseWorld::instance().getDefaultLocation().getId());
     } else {
         const Root & arg = args.front();
         if (arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {

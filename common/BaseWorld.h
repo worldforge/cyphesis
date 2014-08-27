@@ -68,14 +68,17 @@ class BaseWorld {
     /// without the simulation altering it.
     bool m_isSuspended;
 
+    /// \brief The top level in-game entity in the world.
+    LocatedEntity & m_gameWorld;
+
+    LocatedEntity* m_defaultLocation;
+
     explicit BaseWorld(LocatedEntity &);
 
     /// \brief Called when the world is resumed.
     virtual void resumeWorld() {}
 
   public:
-    /// \brief The top level in-game entity in the world.
-    LocatedEntity & m_gameWorld;
 
     virtual ~BaseWorld();
 
@@ -92,6 +95,36 @@ class BaseWorld {
     const EntityDict & getEntities() const {
         return m_eobjects;
     }
+
+    /// \brief Gets the root entity.
+    ///
+    /// The root entity is special, in that it never can be deleted.
+    LocatedEntity& getRootEntity();
+
+    /// \brief Gets the root entity.
+    ///
+    /// The root entity is special, in that it never can be deleted.
+    LocatedEntity& getRootEntity() const;
+
+    /// \brief Gets the default location.
+    ///
+    /// This is where entities will be created if nothing else is specified.
+    /// This will either return the root gameworld, or another entity if
+    /// setDefaultLocation() has been called.
+    LocatedEntity& getDefaultLocation();
+
+    /// \brief Gets the default location.
+    ///
+    /// This is where entities will be created if nothing else is specified.
+    /// This will either return the root gameworld, or another entity if
+    /// setDefaultLocation() has been called.
+    LocatedEntity& getDefaultLocation() const;
+
+    /// \brief Sets the default location.
+    ///
+    /// If a null value is provided the default location will revert back
+    /// to the root world.
+    void setDefaultLocation(LocatedEntity* entity);
 
     /// \brief Read only accessor for the in-game time.
     double getTime() const;

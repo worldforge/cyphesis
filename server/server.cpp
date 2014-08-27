@@ -419,8 +419,8 @@ int main(int argc, char ** argv)
             file.close();
             //We should only try to import if the world isn't populated.
             bool isPopulated = false;
-            if (world->m_gameWorld.m_contains) {
-                for (auto entity : *world->m_gameWorld.m_contains) {
+            if (world->getRootEntity().m_contains) {
+                for (auto entity : *world->getRootEntity().m_contains) {
                     //if there's any entity that's not transient we consider it populated
                     if (!entity->hasAttr("transient")) {
                         isPopulated = true;
