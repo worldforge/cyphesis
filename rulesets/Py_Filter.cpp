@@ -1,4 +1,5 @@
 #include "Py_Filter.h"
+#include "Py_Thing.h"
 #include "entityfilter/Filter.h"
 
 ///\brief Create a new Filter object for a given query
@@ -21,6 +22,31 @@ PyObject * get_filter(PyObject * self, PyObject* query){
         return (PyObject*)f;
 }
 
+///\brief Match a single entity using a filter that called this method.
+static PyObject * match_entity(PyFilter * self, PyObject * py_entity)
+{
+    if (!PyLocatedEntity_Check(py_entity)) {
+        PyErr_SetString(PyExc_AssertionError, "Argument must be Entity in match_entity");
+        return NULL;
+    }
+
+    if(self->m_filter == NULL){
+        PyErr_SetString(PyExc_AssertionError, "NULL Filter in Filter.match_entity");
+        return NULL;
+    }
+
+    //Not sure if this is safest or the most correct way to get an entity pointer
+    LocatedEntity* entity = ((PyEntity*)py_entity)->m_entity.l;
+
+    EntityFilter::Filter* filter = self->m_filter;
+
+    if (entity && filter->match(*entity)) {
+        return Py_True;
+    } else {
+        return Py_False;
+    }
+}
+
 static void Filter_dealloc(PyFilter *self)
 {
     if (self->m_filter != NULL) {
@@ -28,6 +54,11 @@ static void Filter_dealloc(PyFilter *self)
     }
     self->ob_type->tp_free((PyObject*)self);
 }
+
+static PyMethodDef Filter_methods[] = {
+    {"match_entity",        (PyCFunction)match_entity,       METH_O},
+    {NULL,                  NULL}           // sentinel
+};
 
 PyTypeObject PyFilter_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
@@ -59,7 +90,7 @@ PyTypeObject PyFilter_Type = {
         0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
-        0,                              // tp_methods
+        Filter_methods,                 // tp_methods
         0,                              // tp_members
         0,                              // tp_getset
         0,                              // tp_base
