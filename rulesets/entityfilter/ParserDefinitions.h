@@ -3,6 +3,8 @@
 
 #include "Filter.h"
 #include "Providers.h"
+#include "Predicates.h"
+
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/qi_real.hpp>
 #include <boost/spirit/include/phoenix.hpp>

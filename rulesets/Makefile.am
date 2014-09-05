@@ -66,8 +66,8 @@ librulesetentity_a_SOURCES = \
 
 libentityfilter_a_SOURCES = entityfilter/Filter.cpp entityfilter/Filter.h \
 			     entityfilter/ParserDefinitions.h \
-			     entityfilter/Providers.cpp entityfilter/Providers.h
-
+			     entityfilter/Providers.cpp entityfilter/Providers.h \
+			     entityfilter/Predicates.cpp entityfilter/Predicates.h
 
 librulesetmind_a_SOURCES = BaseMind.cpp BaseMind.h \
 			   MindFactory.cpp MindFactory.h \
