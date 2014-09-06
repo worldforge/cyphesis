@@ -84,7 +84,7 @@ class StorageManager {
     void entityContainered(const LocatedEntity *oldLocation, LocatedEntity *entity);
 
     void encodeProperty(PropertyBase *, std::string &);
-    void restoreProperties(LocatedEntity *);
+    void restorePropertiesRecursively(LocatedEntity *);
 
     void restoreThoughts(LocatedEntity *);
     /// \brief Requests thoughts from the entity, if it has a mind.

@@ -162,7 +162,7 @@ void StorageManager::encodeProperty(PropertyBase * prop, std::string & store)
     Database::instance()->encodeObject(map, store);
 }
 
-void StorageManager::restoreProperties(LocatedEntity * ent)
+void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
 {
     Database * db = Database::instance();
     PropertyManager * pm = PropertyManager::instance();
@@ -230,6 +230,37 @@ void StorageManager::restoreProperties(LocatedEntity * ent)
         prop->setFlags(per_clean | per_seen);
         prop->apply(ent);
     }
+
+    //Now restore all properties of the child entities.
+    if (ent->m_contains) {
+        for (auto& childEntity : *ent->m_contains) {
+            restorePropertiesRecursively(childEntity);
+        }
+    }
+
+    //We must send a sight op to the entity informing it of itself before we send any thoughts.
+    //Else the mind won't have any information about itself.
+    {
+        Atlas::Objects::Operation::Sight sight;
+        sight->setTo(ent->getId());
+        Atlas::Objects::Entity::Anonymous args;
+        ent->addToEntity(args);
+        sight->setArgs1(args);
+        ent->sendWorld(sight);
+    }
+    //We should also send a sight op to the parent entity which owns the entity.
+    //TODO: should this really be necessary or should we rely on other Sight functionality?
+    if (ent->m_location.m_loc) {
+        Atlas::Objects::Operation::Sight sight;
+        sight->setTo(ent->m_location.m_loc->getId());
+        Atlas::Objects::Entity::Anonymous args;
+        ent->addToEntity(args);
+        sight->setArgs1(args);
+        ent->m_location.m_loc->sendWorld(sight);
+    }
+
+    restoreThoughts(ent);
+
 }
 
 void StorageManager::restoreThoughts(LocatedEntity * ent)
@@ -393,7 +424,7 @@ void StorageManager::restoreChildren(LocatedEntity * parent)
     EntityBuilder * eb = EntityBuilder::instance();
 
     // Iterate over res creating entities, and sorting out position, location
-    // and orientation. Read properties. and restoreChildren
+    // and orientation. Restore children, but don't restore any properties yet.
     DatabaseResult::const_iterator I = res.begin();
     DatabaseResult::const_iterator Iend = res.end();
     for (; I != Iend; ++I) {
@@ -423,36 +454,7 @@ void StorageManager::restoreChildren(LocatedEntity * parent)
         child->m_location.m_loc = parent;
         child->setFlags(entity_clean | entity_pos_clean | entity_orient_clean);
         BaseWorld::instance().addEntity(child);
-        //The order here is important. We want to restore the children before we restore the properties.
-        //The reason for this is that some properties (such as "outfit") refer to child entities; if
-        //the child isn't present when the property is installed there will be issues.
         restoreChildren(child);
-        restoreProperties(child);
-
-
-        //We must send a sight op to the entity informing it of itself before we send any thoughts.
-        //Else the mind won't have any information about itself.
-        {
-            Atlas::Objects::Operation::Sight sight;
-            sight->setTo(child->getId());
-            Atlas::Objects::Entity::Anonymous args;
-            child->addToEntity(args);
-            sight->setArgs1(args);
-            child->sendWorld(sight);
-        }
-        //We should also send a sight op to the parent entity which owns the entity.
-        //TODO: should this really be necessary or should we rely on other Sight functionality?
-        {
-            Atlas::Objects::Operation::Sight sight;
-            sight->setTo(parent->getId());
-            Atlas::Objects::Entity::Anonymous args;
-            child->addToEntity(args);
-            sight->setArgs1(args);
-            parent->sendWorld(sight);
-        }
-
-        restoreThoughts(child);
-
     }
 }
 
@@ -573,9 +575,14 @@ int StorageManager::restoreWorld()
 {
     LocatedEntity * ent = &BaseWorld::instance().getRootEntity();
 
-    restoreProperties(ent);
-
+    //The order here is important. We want to restore the children before we restore the properties.
+    //The reason for this is that some properties (such as "outfit") refer to child entities; if
+    //the child isn't present when the property is installed there will be issues.
+    //We do this by first restoring the children, without any properties, and the assigning the properties to
+    //all entities in order.
     restoreChildren(ent);
+
+    restorePropertiesRecursively(ent);
 
     return 0;
 }

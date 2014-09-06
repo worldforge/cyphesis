@@ -54,7 +54,7 @@ class TestStorageManager : public StorageManager
         encodeProperty(p, s);
     }
     void test_restoreProperties(LocatedEntity * e) {
-        restoreProperties(e);
+        restorePropertiesRecursively(e);
     }
 
     void test_insertEntity(LocatedEntity * e) {
