@@ -28,6 +28,7 @@
 #include "rulesets/StatusProperty.h"
 #include "rulesets/StatisticsProperty.h"
 #include "rulesets/TerrainModProperty.h"
+#include "rulesets/TerrainProperty.h"
 #include "rulesets/TransientProperty.h"
 #include "rulesets/BBoxProperty.h"
 #include "rulesets/BiomassProperty.h"
@@ -118,6 +119,7 @@ CorePropertyManager::CorePropertyManager()
     installProperty<AreaProperty>("area", "map");
     installProperty<VisibilityProperty>("visibility", "float");
     installProperty<TerrainModProperty>("terrainmod", "map");
+    installProperty<TerrainProperty>("terrain", "map");
     installProperty<TeleportProperty>("linked", "string");
     installProperty<SuspendedProperty>("suspended", "int");
     installProperty<TasksProperty>("tasks", "map");

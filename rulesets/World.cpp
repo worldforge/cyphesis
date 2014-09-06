@@ -18,7 +18,6 @@
 
 #include "World.h"
 
-#include "TerrainProperty.h"
 #include "CalendarProperty.h"
 #include "AtlasProperties.h"
 
@@ -62,9 +61,6 @@ typedef enum { ROCK = 0, SAND = 1, GRASS = 2, SILT = 3, SNOW = 4} Surface;
 /// \brief Constructor for the World entity
 World::World(const std::string & id, long intId) : Thing(id, intId), m_serialNumber(0)
 {
-    TerrainProperty* terrProp = new TerrainProperty();
-    terrProp->install(this, "terrain");
-    m_properties["terrain"] = terrProp;
 
     CalendarProperty* calProp = new CalendarProperty();
     calProp->install(this, "calendar");
@@ -201,10 +197,6 @@ void World::clearWorld(OpVector & res) {
             ++propIter;
         }
     }
-
-    TerrainProperty* terrProp = new TerrainProperty();
-    terrProp->install(this, "terrain");
-    m_properties["terrain"] = terrProp;
 
     CalendarProperty* calProp = new CalendarProperty();
     calProp->install(this, "calendar");
