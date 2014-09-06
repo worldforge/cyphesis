@@ -44,6 +44,7 @@
 #include "rulesets/SpawnerProperty.h"
 #include "rulesets/ImmortalProperty.h"
 #include "rulesets/RespawningProperty.h"
+#include "rulesets/DefaultLocationProperty.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
@@ -124,6 +125,7 @@ CorePropertyManager::CorePropertyManager()
     installProperty<SpawnerProperty>("spawner", "map");
     installProperty<ImmortalProperty>("immortal", "int");
     installProperty<RespawningProperty>("respawning", "string");
+    installProperty<DefaultLocationProperty>("default_location", "int");
 }
 
 CorePropertyManager::~CorePropertyManager()
