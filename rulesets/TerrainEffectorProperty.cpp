@@ -28,16 +28,15 @@
 
 const TerrainProperty * TerrainEffectorProperty::getTerrain(LocatedEntity * owner)
 {
-    const PropertyBase * terr;
+    const TerrainProperty * terr;
     LocatedEntity * ent = owner;
 
-    while ( (terr = ent->getProperty("terrain")) == NULL) {
+    while ( (terr = ent->getPropertyClass<TerrainProperty>("terrain")) == nullptr) {
         ent = ent->m_location.m_loc;
         if (ent == NULL) {
             return NULL;
         }
     }
 
-    const TerrainProperty * tp = dynamic_cast<const TerrainProperty*>(terr);
-    return tp;
+    return terr;
 }
