@@ -232,6 +232,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "rulesets/SpawnerProperty.h"
 #include "rulesets/ImmortalProperty.h"
 #include "rulesets/RespawningProperty.h"
+#include "rulesets/DefaultLocationProperty.h"
 
 #include "common/const.h"
 #include "common/globals.h"
@@ -257,6 +258,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "stubs/rulesets/stubStatusProperty.h"
 #include "stubs/rulesets/stubTasksProperty.h"
 #include "stubs/rulesets/stubSpawnProperty.h"
+#include "stubs/rulesets/stubDefaultLocationProperty.h"
 
 
 Account::Account(Connection * conn,

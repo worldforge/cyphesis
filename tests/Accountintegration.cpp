@@ -391,6 +391,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "rulesets/SpawnerProperty.h"
 #include "rulesets/ImmortalProperty.h"
 #include "rulesets/RespawningProperty.h"
+#include "rulesets/DefaultLocationProperty.h"
 #include "rulesets/Creator.h"
 #include "rulesets/Plant.h"
 #include "rulesets/Stackable.h"
@@ -414,6 +415,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "stubs/rulesets/stubBiomassProperty.h"
 #include "stubs/rulesets/stubSpawnerProperty.h"
 #include "stubs/rulesets/stubBBoxProperty.h"
+#include "stubs/rulesets/stubDefaultLocationProperty.h"
 #include "stubs/common/stubCustom.h"
 
 ArithmeticBuilder * ArithmeticBuilder::m_instance = 0;
