@@ -21,7 +21,7 @@
 
 TerrainProperty::TerrainProperty() :
       m_data(*(Mercator::Terrain*)0),
-      m_tileShader(*(Mercator::TileShader*)0)
+      m_tileShader(nullptr)
 {
 }
 

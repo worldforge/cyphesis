@@ -62,24 +62,37 @@ typedef Mercator::Terrain::Pointcolumn Pointcolumn;
 
 typedef enum { ROCK = 0, SAND = 1, GRASS = 2, SILT = 3, SNOW = 4} Surface;
 
+TerrainProperty::TerrainProperty(const TerrainProperty& rhs) :
+    m_data(*new Mercator::Terrain(Mercator::Terrain::SHADED)),
+    m_tileShader(nullptr)
+{
+    //Copy all points.
+    for (auto& pointColumn : rhs.m_data.getPoints()) {
+        for (auto& point : pointColumn.second) {
+            m_data.setBasePoint(pointColumn.first, point.first, point.second);
+        }
+    }
+
+    //Copy surface if available, as well as surface data.
+    if (!rhs.m_surfaces.empty()) {
+        m_surfaces = rhs.m_surfaces;
+        m_tileShader = createShaders(m_surfaces);
+        m_data.addShader(m_tileShader, 0);
+    }
+}
+
 /// \brief TerrainProperty constructor
 TerrainProperty::TerrainProperty() :
       m_data(*new Mercator::Terrain(Mercator::Terrain::SHADED)),
-      m_tileShader(*new Mercator::TileShader)
+      m_tileShader(nullptr)
 
 {
-    m_tileShader.addShader(new Mercator::FillShader(), ROCK);
-    m_tileShader.addShader(new Mercator::BandShader(-2.f, 1.5f), SAND);
-    m_tileShader.addShader(new Mercator::GrassShader(1.f, 80.f, .5f, 1.f), GRASS);
-    m_tileShader.addShader(new Mercator::DepthShader(0.f, -10.f), SILT);
-    m_tileShader.addShader(new Mercator::HighShader(110.f), SNOW);
-    m_data.addShader(&m_tileShader, 0);
 }
 
 TerrainProperty::~TerrainProperty()
 {
     delete &m_data;
-    delete &m_tileShader;
+    delete m_tileShader;
 }
 
 void TerrainProperty::install(LocatedEntity *owner, const std::string &name)
@@ -170,9 +183,96 @@ void TerrainProperty::set(const Element & ent)
 
     I = t.find("surfaces");
     if (I != t.end() && I->second.isList()) {
-        m_surfaces = I->second.List();
+        //Only alter shader if the definition has changed.
+        if (m_surfaces != I->second.List()) {
+            auto shader = createShaders(I->second.List());
+            if (m_tileShader) {
+                m_data.removeShader(m_tileShader, 0);
+                delete m_tileShader;
+            }
+            if (shader) {
+                m_data.addShader(shader, 0);
+                m_tileShader = shader;
+            }
+            m_surfaces = I->second.List();
+        }
     }
 
+}
+
+Mercator::TileShader* TerrainProperty::createShaders(const Atlas::Message::ListType& surfaceList) {
+    if (!surfaceList.empty()) {
+        Mercator::TileShader* tileShader = new Mercator::TileShader();
+        for (auto& surfaceElement : surfaceList) {
+            if (!surfaceElement.isMap()) {
+                continue;
+            }
+            auto& surfaceMap = surfaceElement.Map();
+
+            auto patternI = surfaceMap.find("pattern");
+            if (patternI == surfaceMap.end() || !patternI->second.isString()) {
+                log(WARNING, "Surface has no 'pattern'.");
+                continue;
+            }
+
+            auto nameI = surfaceMap.find("name");
+            if (nameI == surfaceMap.end() || !nameI->second.isString()) {
+                log(WARNING, "Surface has no 'name'.");
+                continue;
+            }
+            const std::string& name = nameI->second.String();
+
+
+            int layer;
+            if (name == "rock") {
+                layer = ROCK;
+            } else if (name == "sand") {
+                layer = SAND;
+            } else if (name == "grass") {
+                layer = GRASS;
+            } else if (name == "silt") {
+                layer = SILT;
+            } else if (name == "snow") {
+                layer = SNOW;
+            } else {
+                log(WARNING, String::compose("Could not recognize surface with layer with name '%1'", name));
+                continue;
+            }
+
+
+
+            Mercator::Shader::Parameters shaderParams;
+            auto paramsI = surfaceMap.find("params");
+            if (paramsI != surfaceMap.end() && paramsI->second.isMap()) {
+                auto params = paramsI->second.Map();
+                for (auto& entry : params) {
+                    if (entry.second.isNum()) {
+                        shaderParams.insert(std::make_pair(entry.first, (float)entry.second.asNum()));
+                    } else {
+                        log(WARNING, "'terrain.shaders...params' entry must be a map of floats..");
+                    }
+                }
+            }
+
+            auto& pattern = patternI->second.String();
+            if (pattern == "fill") {
+                tileShader->addShader(new Mercator::FillShader(shaderParams), layer);
+            } else if (pattern == "band") {
+                tileShader->addShader(new Mercator::BandShader(shaderParams), layer);
+            } else if (pattern == "grass") {
+                tileShader->addShader(new Mercator::GrassShader(shaderParams), layer);
+            } else if (pattern == "depth") {
+                tileShader->addShader(new Mercator::DepthShader(shaderParams), layer);
+            } else if (pattern == "high") {
+                tileShader->addShader(new Mercator::HighShader(shaderParams), layer);
+            } else {
+                log(WARNING, String::compose("Could not recognize surface with pattern '%1'", pattern));
+                continue;
+            }
+        }
+        return tileShader;
+    }
+    return nullptr;
 }
 
 TerrainProperty * TerrainProperty::copy() const
