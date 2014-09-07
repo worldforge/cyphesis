@@ -19,6 +19,8 @@
 #ifndef PROVIDERS_H_
 #define PROVIDERS_H_
 
+#include "Predicates.h"
+
 #include "../LocatedEntity.h"
 #include <Atlas/Message/Element.h>
 #include <list>
@@ -29,6 +31,8 @@ class BBoxProperty;
 
 namespace EntityFilter
 {
+
+class Predicate;
 
 struct QueryContext {
         LocatedEntity& entity;
@@ -276,6 +280,12 @@ class EntityRefProvider : public ConsumingNamedAttributeProviderBase<LocatedEnti
         virtual const std::type_info* getType() const;
 };
 
+///\brief This class retrieves a pointer to the m_contains property of a given entity
+class ContainsProvider : public Consumer<LocatedEntity> {
+    public:
+        virtual void value(Atlas::Message::Element& value, const LocatedEntity& entity) const;
+        virtual const std::type_info* getType() const;
+};
 
 
 class ProviderFactory {

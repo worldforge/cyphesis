@@ -344,7 +344,9 @@ Consumer<LocatedEntity>* ProviderFactory::createPropertyProvider(SegmentsList se
             return new PropertyProvider<OutfitProperty>(createOutfitEntityProvider(segments), attr);
         } else if (attr == "bbox") {
             return new PropertyProvider<BBoxProperty>(createBBoxProvider(segments), attr);
-        } else if (attr == "right_hand_wield") {
+        } else if (attr == "contains") {
+            return new ContainsProvider();
+        }else if (attr == "right_hand_wield"){
             return new EntityRefProvider(createPropertyProvider(segments), attr);
         } else {
             return new SoftPropertyProvider(createMapProvider(segments), attr);
@@ -352,6 +354,19 @@ Consumer<LocatedEntity>* ProviderFactory::createPropertyProvider(SegmentsList se
     }
 }
 
+void ContainsProvider::value(Atlas::Message::Element& value,
+                             const LocatedEntity& entity) const
+{
+    auto container = entity.m_contains;
+    if(container){
+    value = container;
+    }
+}
+
+const std::type_info* ContainsProvider::getType() const
+{
+        return &typeid(const LocatedEntitySet*);
+}
 
 OutfitEntityProvider* ProviderFactory::createOutfitEntityProvider(SegmentsList segments) const
 {

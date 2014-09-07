@@ -100,6 +100,10 @@ int main()
     std::map<std::string, Element> memory;
     memory.insert(std::make_pair("1", memory_map_element));
 
+    auto b1_container = new LocatedEntitySet;
+    b1_container->insert(&bl1);
+    b1.m_contains = b1_container;
+
 
 // START of Soft property and general filtering tests
     {
@@ -394,7 +398,13 @@ int main()
         provider->value(value, QueryContext{ch1});
         assert(value.String() == "barrel");
 
-
+        //entity.contains
+        segments.clear();
+        segments.push_back(ProviderFactory::Segment{"", "entity"});
+        segments.push_back(ProviderFactory::Segment{".", "contains"});
+        provider = factory.createProviders(segments);
+        provider->value(value, QueryContext{b1});
+        assert(value.Ptr() == b1_container);
 
 
 

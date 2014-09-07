@@ -4,6 +4,12 @@
 #include "Providers.h"
 
 namespace EntityFilter{
+
+struct QueryContext;
+
+template<class T>
+class Consumer;
+
 class Predicate {
     public:
         virtual ~Predicate(){}
