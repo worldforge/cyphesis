@@ -90,7 +90,7 @@ struct query_parser : qi::grammar<Iterator, Predicate*(),
                                 no_skip[+space >> no_case[qi::string("or")] >> +space];
 
             //An attribute of a segment. no_skip is used to disable skipper parser and read white spaces
-            segment_attribute_g %= qi::no_skip[+(qi::char_ - space - "." - ":" - comp_operator_g - logical_operator_g - "(" - ")" - "|")];
+            segment_attribute_g %= qi::no_skip[+(qi::char_ - space - "." - ":" - comp_operator_g - logical_operator_g - "(" - ")" - "|" - ",")];
 
             //A single segment. Consists of a delimiter followed by the attribute. (i.e. ".type")
             segment_g %= (char_(".") | char_(":")) >>
@@ -133,6 +133,11 @@ struct query_parser : qi::grammar<Iterator, Predicate*(),
 
                     no_case[qi::string("true")[_b = true] | qi::string("false")[_b = false]]
                     [_val = new_<FixedElementProvider>(_b)]                                                             |
+
+                    //contains_recursive function takes a consumer (contains_recursive is itself a consumer),
+                    //and a predicate as arguments.
+                    (no_case[qi::lit("contains_recursive")] >> "(" >> consumer_g >> "," >> parenthesised_predicate_g >> ")")
+                    [_val = new_<ContainsRecursiveFunctionProvider>(_1, _2)]                                            |
 
                     segmented_expr_g[_val = boost::phoenix::bind(&ProviderFactory::createProviders, *m_factory, _1)];
 

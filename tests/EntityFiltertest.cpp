@@ -205,6 +205,13 @@ int main()
         } catch (std::invalid_argument& e) {
         }
 
+        //Test contains_recursive function
+        TestQuery("contains_recursive(entity.contains, entity.type=types.boulder) = True", { &b1 }, { &b2 });
+
+        TestQuery("contains_recursive(entity.contains, entity.type=types.barrel) = True", { &b1, &bl1 }, { &b2 });
+
+        TestQuery("contains_recursive(entity.contains, entity.type=types.barrel or entity.mass = 25) = true",
+                  { &b1, &bl1 }, { &b2 });
         //Test a memory.* query
 //        Filter f("memory.disposition = 25");
 //        assert(f.match(QueryContext{b1, memory}));
