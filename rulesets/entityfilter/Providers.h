@@ -287,6 +287,22 @@ class ContainsProvider : public Consumer<LocatedEntity> {
         virtual const std::type_info* getType() const;
 };
 
+///\brief This class uses container Consumer to retrieve a container and condition Predicate
+///to check whether there exists an entity within the container that matches the given condition
+class ContainsRecursiveFunctionProvider : public Consumer<QueryContext> {
+    public:
+        ContainsRecursiveFunctionProvider(Consumer<QueryContext>* container,
+                                          Predicate* condition);
+        virtual void value(Atlas::Message::Element& value,
+                           const QueryContext& context) const;
+    private:
+        ///\brief Condition used to match entities within the container
+        Predicate* m_condition;
+        ///\brief A Consumer which must return LocatedEntitySet* i.e. entity.contains
+        Consumer<QueryContext>* m_consumer;
+
+        bool checkContainer(LocatedEntitySet* container) const;
+};
 
 class ProviderFactory {
     public:

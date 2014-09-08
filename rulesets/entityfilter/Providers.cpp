@@ -281,6 +281,64 @@ const std::type_info* EntityRefProvider::getType() const
     }
 }
 
+void ContainsProvider::value(Atlas::Message::Element& value,
+                             const LocatedEntity& entity) const
+{
+    auto container = entity.m_contains;
+    if(container){
+    value = container;
+    }
+}
+
+const std::type_info* ContainsProvider::getType() const
+{
+    return &typeid(const LocatedEntitySet*);
+}
+
+ContainsRecursiveFunctionProvider::ContainsRecursiveFunctionProvider(Consumer<QueryContext>* container,
+                                                                     Predicate* condition) :
+        m_condition(condition), m_consumer(container)
+{
+    if (m_consumer->getType() != &typeid(const LocatedEntitySet*)) {
+        throw std::invalid_argument(
+                "first argument of contains_recursive must return a valid entity container");
+    }
+}
+
+void ContainsRecursiveFunctionProvider::value(Atlas::Message::Element& value,
+                                              const QueryContext& context) const
+{
+    Atlas::Message::Element container;
+    m_consumer->value(container, context);
+    if (container.isPtr()) {
+        value = checkContainer((LocatedEntitySet*)container.Ptr());
+    }
+    else{
+        value = false;
+    }
+}
+
+bool ContainsRecursiveFunctionProvider::checkContainer(LocatedEntitySet* container) const
+{
+    auto iter = container->begin();
+    auto iter_end = container->end();
+
+    for (; iter != iter_end; ++iter) {
+        LocatedEntity* item = *iter;
+        if (m_condition->isMatch(QueryContext { *item })) {
+            return true;
+        } else {
+            //If an item we're looking at also contains other items - check them too using recursion
+            if (item->m_contains && item->m_contains->size() > 0) {
+                if (this->checkContainer(item->m_contains)) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
 Consumer<QueryContext>* ProviderFactory::createProviders(SegmentsList segments) const
 {
     if (!segments.empty()) {
@@ -354,19 +412,6 @@ Consumer<LocatedEntity>* ProviderFactory::createPropertyProvider(SegmentsList se
     }
 }
 
-void ContainsProvider::value(Atlas::Message::Element& value,
-                             const LocatedEntity& entity) const
-{
-    auto container = entity.m_contains;
-    if(container){
-    value = container;
-    }
-}
-
-const std::type_info* ContainsProvider::getType() const
-{
-        return &typeid(const LocatedEntitySet*);
-}
 
 OutfitEntityProvider* ProviderFactory::createOutfitEntityProvider(SegmentsList segments) const
 {

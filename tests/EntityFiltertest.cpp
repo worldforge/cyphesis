@@ -100,9 +100,15 @@ int main()
     std::map<std::string, Element> memory;
     memory.insert(std::make_pair("1", memory_map_element));
 
+    //b1 contains bl1 which contains b3
     auto b1_container = new LocatedEntitySet;
     b1_container->insert(&bl1);
     b1.m_contains = b1_container;
+
+    auto bl1_container = new LocatedEntitySet;
+    bl1_container->insert(&b3);
+    bl1.m_contains = bl1_container;
+
 
 
 // START of Soft property and general filtering tests
@@ -546,6 +552,47 @@ int main()
         auto lhs_provider6 = mind_factory.createProviders(segments);
         ComparePredicate compPred16(lhs_provider6, new FixedElementProvider("barrel"), ComparePredicate::Comparator::EQUALS);
         assert(compPred15.isMatch(QueryContext{b1, memory}));
+
+        //TESTS FOR contains_recursive FUNCTION
+        //entity.contains
+        segments.clear();
+        segments.push_back(ProviderFactory::Segment{"", "entity"});
+        segments.push_back(ProviderFactory::Segment{".", "contains"});
+        auto lhs_provider7 = factory.createProviders(segments);
+
+        //types.boulder
+        segments.clear();
+        segments.push_back(ProviderFactory::Segment{"", "types"});
+        segments.push_back(ProviderFactory::Segment{".", "boulder"});
+        auto rhs_provider = factory.createProviders(segments);
+
+        //lhs_provider1 = entity.type
+        ComparePredicate compPred17(lhs_provider1, rhs_provider, ComparePredicate::Comparator::EQUALS);
+
+        ContainsRecursiveFunctionProvider contains_recursive(lhs_provider7, &compPred17);
+        contains_recursive.value(value, QueryContext{b1});
+        assert(value.Int() == 1);
+
+        contains_recursive.value(value, QueryContext{b2});
+        assert(value.Int() == 0);
+
+        //rhs_provider1 = types.barrel
+        ComparePredicate compPred18(lhs_provider1, rhs_provider1, ComparePredicate::Comparator::EQUALS);
+        ContainsRecursiveFunctionProvider contains_recursive2(lhs_provider7, &compPred18);
+
+        contains_recursive2.value(value, QueryContext{b1});
+        assert(value.Int() == 1);
+
+        contains_recursive2.value(value, QueryContext{bl1});
+        assert(value.Int() == 1);
+
+        contains_recursive2.value(value, QueryContext{b2});
+        assert(value.Int() == 0);
+
+        contains_recursive2.value(value, QueryContext{b3});
+        assert(value.Int() == 0);
+        //END OF contains_recursive TESTS
+
     }
 
 //    Clean up
