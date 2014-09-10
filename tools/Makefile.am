@@ -215,7 +215,7 @@ cypython_LDADD = $(top_builddir)/common/client_socket.o \
                  
 cyexport_SOURCES = cyexport.cpp EntityExporterBase.cpp  EntityExporterBase.h \
                    EntityExporter.cpp EntityExporter.h AgentCreationTask.cpp AgentCreationTask.h \
-                   MultiLineListFormatter.cpp MultiLineListFormatter.h
+                   MultiLineListFormatter.cpp MultiLineListFormatter.h WaitForDeletionTask.cpp WaitForDeletionTask.h
 
 cyexport_LDADD = $(top_builddir)/common/operations.o \
                  $(top_builddir)/common/client_socket.o \
@@ -238,7 +238,7 @@ cyexport_LDADD = $(top_builddir)/common/operations.o \
 
 cyimport_SOURCES = cyimport.cpp EntityImporterBase.cpp  EntityImporterBase.h \
                    EntityImporter.cpp EntityImporter.h AgentCreationTask.cpp AgentCreationTask.h \
-                   EntityTraversalTask.cpp EntityTraversalTask.h
+                   EntityTraversalTask.cpp EntityTraversalTask.h WaitForDeletionTask.cpp WaitForDeletionTask.h
 
 cyimport_LDADD = $(top_builddir)/common/operations.o \
                  $(top_builddir)/common/client_socket.o \

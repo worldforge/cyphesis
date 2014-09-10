@@ -26,6 +26,7 @@
 #include "EntityImporter.h"
 #include "AgentCreationTask.h"
 #include "EntityTraversalTask.h"
+#include "WaitForDeletionTask.h"
 
 #include <varconf/config.h>
 
@@ -190,6 +191,17 @@ int main(int argc, char ** argv)
             deleteOp->setArgs1(deleteArg);
 
             bridge.send(deleteOp);
+
+            std::cout << "Waiting for world to be cleared." << std::endl << std::flush;
+            //Wait for the agent to be deleted.
+            bridge.runTask(new WaitForDeletionTask(agent_id), "");
+            if (bridge.pollUntilTaskComplete() != 0) {
+                std::cerr << "Error when waiting for world to be cleared." << std::endl
+                        << std::flush;
+                return -1;
+            }
+
+            std::cout << "World is cleared; creating new agent." << std::endl << std::flush;
 
             //Once the world has been cleared we need to create a new agent,
             //since the first one got deleted
