@@ -190,9 +190,9 @@ void TerrainProperty::set(const Element & ent)
                 m_data.removeShader(m_tileShader, 0);
                 delete m_tileShader;
             }
+            m_tileShader = shader;
             if (shader) {
                 m_data.addShader(shader, 0);
-                m_tileShader = shader;
             }
             m_surfaces = I->second.List();
         }
