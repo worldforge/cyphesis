@@ -49,6 +49,8 @@ Creator::Creator(const std::string & id, long intId) :
     debug( std::cout << "Creator::Creator" << std::endl << std::flush;);
     //Set a property rather than just setting the ephemeral flag directly. This way external entities can see that we're transient.
     setAttr("transient", -1);
+    //Creators are always perceptive.
+    setFlags(entity_perceptive);
 }
 
 Creator::~Creator()
