@@ -1540,8 +1540,12 @@ void Character::mindLookOperation(const Operation & op, OpVector & res)
     m_flags |= entity_perceptive;
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
-        //FIXME Shouldn't this default to the location of the character?
-        op->setTo(BaseWorld::instance().getDefaultLocation().getId());
+        //If nothing is specified, send to parent, if available.
+        if (m_location.m_loc) {
+            op->setTo(m_location.m_loc->getId());
+        } else {
+            return;
+        }
     } else {
         const Root & arg = args.front();
         if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
