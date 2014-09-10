@@ -153,6 +153,8 @@ void TcpStreamClientSocket::do_read()
                     this->m_ios.rdbuf(&mBuffer);
                     mDispatcher();
                     this->do_read();
+                } else {
+                    m_is_connected = false;
                 }
             });
 }
@@ -209,6 +211,8 @@ void LocalStreamClientSocket::do_read()
                     this->m_ios.rdbuf(&mBuffer);
                     mDispatcher();
                     this->do_read();
+                } else {
+                    m_is_connected = false;
                 }
             });
 }
