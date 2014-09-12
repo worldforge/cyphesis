@@ -431,7 +431,9 @@ void StorageManager::restoreChildren(LocatedEntity * parent)
         const std::string id = I.column("id");
         const int int_id = forceIntegerId(id);
         const std::string type = I.column("type");
-        Atlas::Objects::Entity::Anonymous attrs;
+        //By sending an empty attributes pointer we're telling the builder not to apply any default
+        //attributes. We will instead apply all attributes ourselves when we later on restore attributes.
+        Atlas::Objects::SmartPtr<Atlas::Objects::Entity::RootEntityData> attrs(nullptr);
         LocatedEntity * child = eb->newEntity(id, int_id, type, attrs, BaseWorld::instance());
         if (!child) {
             log(ERROR, compose("Could not restore entity with id %1 of type %2"
@@ -573,6 +575,7 @@ int StorageManager::initWorld()
 
 int StorageManager::restoreWorld()
 {
+    log(INFO, "Starting restoring world from storage.");
     LocatedEntity * ent = &BaseWorld::instance().getRootEntity();
 
     //The order here is important. We want to restore the children before we restore the properties.
@@ -584,6 +587,7 @@ int StorageManager::restoreWorld()
 
     restorePropertiesRecursively(ent);
 
+    log(INFO, "Completed restoring world from storage.");
     return 0;
 }
 

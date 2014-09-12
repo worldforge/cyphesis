@@ -119,7 +119,7 @@ LocatedEntity * EntityBuilder::newEntity(const std::string & id, long intId,
     LocatedEntity* loc = nullptr;
     // Get location from entity, if it is present
     // The default attributes cannot contain info on location
-    if (attributes->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
+    if (attributes.isValid() && attributes->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
         const std::string & loc_id = attributes->getLoc();
         loc = world.getEntity(loc_id);
     }
