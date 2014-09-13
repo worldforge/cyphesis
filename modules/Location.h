@@ -118,9 +118,26 @@ class Location {
 
 const Vector3D distanceTo(const Location & self, const Location & other);
 
+
 const Point3D relativePos(const Location & self, const Location & other);
 
 float squareDistance(const Location & self, const Location & other);
+
+/**
+ * \brief Gets the squared distance between the two supplied location, if possible, along with the common ancestor.
+ *
+ * Calculates the square distance between the entities, along with the common ancestor. If no common ancestor can be found
+ * the ancestor parameter will point to a null value, and the distance returned should be ignored.
+ *
+ * If you suspect that one location might be a child location of the other location, send the parent location as the first parameter.
+ * This speeds up the calculation.
+ *
+ * @param self One location.
+ * @param other A second location.
+ * @param ancestor Any ancestor location will be placed here.
+ * @return The distance, squared. Note that this value is invalid if no ancestor could be found, so make sure to check the return value of the "ancestor" parameter.
+ */
+float squareDistanceWithAncestor(const Location & self, const Location & other, const Location** ancestor);
 float squareHorizontalDistance(const Location & self, const Location & other);
 
 inline float distance(const Location & self, const Location & other)

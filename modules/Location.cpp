@@ -196,15 +196,15 @@ const Atlas::Objects::Root Location::asEntity() const
     return ret;
 }
 
-static bool distanceFromAncestor(const Location & self,
+static const Location* distanceFromAncestor(const Location & self,
                                  const Location & other, Point3D & c)
 {
     if (&self == &other) {
-        return true;
+        return &self;
     }
 
-    if (other.m_loc == NULL) {
-        return false;
+    if (other.m_loc == nullptr) {
+        return nullptr;
     }
 
     if (other.orientation().isValid()) {
@@ -217,21 +217,24 @@ static bool distanceFromAncestor(const Location & self,
     return distanceFromAncestor(self, other.m_loc->m_location, c);
 }
 
-static bool distanceToAncestor(const Location & self,
+static const Location* distanceToAncestor(const Location & self,
                                const Location & other, Point3D & c)
 {
     c.setToOrigin();
-    if (distanceFromAncestor(self, other, c)) {
-        return true;
-    } else if ((self.m_loc != 0) &&
-               distanceToAncestor(self.m_loc->m_location, other, c)) {
-        if (self.orientation().isValid()) {
-            c = c.toLocalCoords(self.m_pos, self.orientation());
-        } else {
-            static const Quaternion identity(1, 0, 0, 0);
-            c = c.toLocalCoords(self.m_pos, identity);
+    const Location* ancestor = distanceFromAncestor(self, other, c);
+    if (ancestor) {
+        return ancestor;
+    } else if ((self.m_loc != 0)) {
+        ancestor = distanceToAncestor(self.m_loc->m_location, other, c);
+        if (ancestor) {
+            if (self.orientation().isValid()) {
+                c = c.toLocalCoords(self.m_pos, self.orientation());
+            } else {
+                static const Quaternion identity(1, 0, 0, 0);
+                c = c.toLocalCoords(self.m_pos, identity);
+            }
+            return ancestor;
         }
-        return true;
     }
     log(ERROR, "Broken entity hierarchy doing distance calculation");
     if (self.m_loc != 0) {
@@ -243,7 +246,7 @@ static bool distanceToAncestor(const Location & self,
                   << std::endl << std::flush;
     }
      
-    return false;
+    return nullptr;
 }
 
 /// \brief Determine the vector distance from self to other.
@@ -269,7 +272,7 @@ const Vector3D distanceTo(const Location & self, const Location & other)
     return dist;
 }
 
-/// \brief Determine the postion of other relative to self.
+/// \brief Determine the position of other relative to self.
 ///
 /// @param self Location of an entity
 /// @param other Location of an entity this position of which is to be
@@ -291,6 +294,17 @@ float squareDistance(const Location & self, const Location & other)
     distanceToAncestor(self, other, dist);
     return sqrMag(dist);
 }
+
+float squareDistanceWithAncestor(const Location & self, const Location & other, const Location** ancestor)
+{
+    Point3D dist;
+    *ancestor = distanceToAncestor(self, other, dist);
+    if (ancestor) {
+        return sqrMag(dist);
+    }
+    return 0.f;
+}
+
 
 float squareHorizontalDistance(const Location & self, const Location & other)
 {
