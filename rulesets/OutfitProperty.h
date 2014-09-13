@@ -66,6 +66,12 @@ class OutfitProperty : public PropertyBase, virtual public sigc::trackable {
 
     void cleanUp();
     void wear(LocatedEntity * wearer, const std::string & location, LocatedEntity * garment);
+
+    /**
+     * \brief Gets a map of all outfitted entities.
+     * @return A map of the outfitted entities.
+     */
+    const EntityRefMap& data() const;
 };
 
 #endif // RULESETS_OUTFIT_PROPERTY_H

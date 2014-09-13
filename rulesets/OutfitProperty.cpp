@@ -249,3 +249,9 @@ void OutfitProperty::itemRemoved(LocatedEntity * garment,
 
     wearer->sendWorld(update);
 }
+
+const EntityRefMap& OutfitProperty::data() const
+{
+    return m_data;
+}
+
