@@ -20,6 +20,7 @@
 #define RULESETS_DOMAIN_H
 
 #include "physics/Vector3D.h"
+#include "common/OperationRouter.h"
 
 #include <string>
 
@@ -32,10 +33,17 @@ class LocatedEntity;
 /// Motion objects interact with the movement domain.
 class Domain {
   private:
+
+    /**
+     * @brief The entity to which this domain belongs.
+     */
+    LocatedEntity& m_entity;
+
     /// Count of references held by other objects to this domain
     int m_refCount;
+
   public:
-    Domain();
+    Domain(LocatedEntity& entity);
 
     virtual ~Domain();
 
@@ -55,6 +63,8 @@ class Domain {
                                   const std::string &);
 
     virtual void tick(double t);
+
+    void lookAtEntity(LocatedEntity& lookingEntity, LocatedEntity& lookatEntity, const Operation & originalLookOp, OpVector& res) const;
 };
 
 #endif // RULESETS_DOMAIN_H

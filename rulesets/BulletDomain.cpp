@@ -32,7 +32,8 @@
 
 static const bool debug_flag = false;
 
-BulletDomain::BulletDomain() :
+BulletDomain::BulletDomain(LocatedEntity& entity) :
+        Domain(entity),
 #ifdef HAVE_BULLET
     // collision configuration contains default setup for memory,
     // collision setup. Advanced users can create their own configuration.

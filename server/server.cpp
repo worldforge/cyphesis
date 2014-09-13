@@ -39,7 +39,6 @@
 #include "TeleportAuthenticator.h"
 #include "TrustedConnection.h"
 
-#include "rulesets/BulletDomain.h"
 #include "rulesets/Python_API.h"
 #include "rulesets/LocatedEntity.h"
 
@@ -214,7 +213,6 @@ int main(int argc, char ** argv)
     init_python_api(ruleset_name);
 
     Inheritance::instance();
-    new BulletDomain;
 
     SystemTime time;
     time.update();

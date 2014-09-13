@@ -644,18 +644,21 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
 
 void Thing::LookOperation(const Operation & op, OpVector & res)
 {
-    Sight s;
+    // Register the entity with the world router as perceptive.
+    BaseWorld::instance().addPerceptive(this);
 
-    Anonymous new_ent;
-    addToEntity(new_ent);
-    s->setArgs1(new_ent);
 
-    if (!op->isDefaultSerialno()) {
-        s->setRefno(op->getSerialno());
+    auto domain = getMovementDomain();
+    if (domain) {
+        LocatedEntity * from = BaseWorld::instance().getEntity(op->getFrom());
+        if (from == nullptr) {
+            log(ERROR, "Look op has invalid from");
+            return;
+        }
+        domain->lookAtEntity(*from, *this, op, res);
+    } else {
+        log(WARNING, "Entity being looked at don't belong to any Domain, so sights cannot be determined.");
     }
-    s->setTo(op->getFrom());
-
-    res.push_back(s);
 }
 
 void Thing::CreateOperation(const Operation & op, OpVector & res)

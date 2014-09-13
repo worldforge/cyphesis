@@ -44,7 +44,7 @@ void DomainProperty::apply(LocatedEntity * entity)
 {
     if (m_data) {
         if (!m_domain) {
-            m_domain = new Domain();
+            m_domain = new Domain(*entity);
         }
         entity->setFlags(entity_domain);
     } else {

@@ -25,6 +25,7 @@ class btDefaultCollisionConfiguration;
 class btCollisionDispatcher;
 class btBroadphaseInterface;
 class btCollisionWorld;
+class LocatedEntity;
 
 /// \brief Movement domain using the bullet physics library
 ///
@@ -38,7 +39,7 @@ class BulletDomain : public Domain {
     btBroadphaseInterface* m_overlappingPairCache;
     btCollisionWorld * m_collisionWorld;
   public:
-    BulletDomain();
+    BulletDomain(LocatedEntity& entity);
 
     virtual ~BulletDomain();
 
