@@ -31,6 +31,7 @@ class EntityProperty : public PropertyBase {
   public:
     explicit EntityProperty();
 
+    const EntityRef & data() const { return m_data; }
     EntityRef & data() { return m_data; }
 
     virtual int get(Atlas::Message::Element & val) const;
