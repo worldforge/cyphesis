@@ -46,6 +46,7 @@
 #include "rulesets/ImmortalProperty.h"
 #include "rulesets/RespawningProperty.h"
 #include "rulesets/DefaultLocationProperty.h"
+#include "rulesets/DomainProperty.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
@@ -128,6 +129,8 @@ CorePropertyManager::CorePropertyManager()
     installProperty<ImmortalProperty>("immortal", "int");
     installProperty<RespawningProperty>("respawning", "string");
     installProperty<DefaultLocationProperty>("default_location", "int");
+    installProperty<DomainProperty>("domain", "int");
+
 }
 
 CorePropertyManager::~CorePropertyManager()

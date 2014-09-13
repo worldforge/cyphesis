@@ -138,6 +138,10 @@
   
   <map>
     <map name="attributes">
+      <map name="domain">
+        <int name="default">1</int>
+        <string name="visibility">public</string>
+      </map>
       <map name="terrain">
         <int name="default">0</int>
         <string name="visibility">public</string>

@@ -63,7 +63,8 @@ librulesetentity_a_SOURCES = \
 			     SpawnerProperty.cpp SpawnerProperty.h \
 			     ImmortalProperty.cpp ImmortalProperty.h \
 			     RespawningProperty.cpp RespawningProperty.h \
-			     DefaultLocationProperty.cpp DefaultLocationProperty.h
+			     DefaultLocationProperty.cpp DefaultLocationProperty.h \
+			     DomainProperty.cpp DomainProperty.h
 
 
 librulesetmind_a_SOURCES = BaseMind.cpp BaseMind.h \

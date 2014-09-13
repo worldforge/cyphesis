@@ -240,9 +240,12 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     // Update pos
     fromStdVector(m_location.m_pos, ent->getPos());
     // FIXME Quick height hack
-    m_location.m_pos.z() = getMovementDomain()->constrainHeight(m_location.m_loc,
+    auto domain = getMovementDomain();
+    if (domain) {
+        m_location.m_pos.z() = domain->constrainHeight(m_location.m_loc,
                                                                m_location.pos(),
                                                                mode);
+    }
     m_location.update(current_time);
     m_flags &= ~(entity_pos_clean | entity_clean);
 
@@ -569,9 +572,12 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     // Adjust the position to world constraints - essentially fit
     // to the terrain height at this stage.
     // FIXME Get the constraints from the movement domain
-    m_location.m_pos.z() = getMovementDomain()->constrainHeight(m_location.m_loc,
+    auto domain = getMovementDomain();
+    if (domain) {
+        m_location.m_pos.z() = domain->constrainHeight(m_location.m_loc,
                                                     m_location.pos(),
                                                     "standing");
+    }
     m_location.update(current_time);
     m_flags &= ~(entity_pos_clean | entity_clean);
 

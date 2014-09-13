@@ -20,6 +20,7 @@
 
 #include "Script.h"
 #include "Domain.h"
+#include "DomainProperty.h"
 
 #include "common/BaseWorld.h"
 #include "common/log.h"
@@ -293,7 +294,14 @@ void Entity::destroy()
 
 Domain * Entity::getMovementDomain()
 {
-    return Domain::instance();
+    if (m_flags & entity_domain) {
+        return getPropertyClass<DomainProperty>("domain")->getDomain();
+    }
+    if (m_location.m_loc) {
+        return m_location.m_loc->getMovementDomain();
+    } else {
+        return nullptr;
+    }
 }
 
 void Entity::sendWorld(const Operation & op)

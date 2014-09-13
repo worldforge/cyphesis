@@ -34,16 +34,10 @@ class Domain {
   private:
     /// Count of references held by other objects to this domain
     int m_refCount;
-  protected:
-    static Domain * m_instance;
   public:
     Domain();
 
     virtual ~Domain();
-
-    static Domain * instance() {
-        return m_instance;
-    }
 
     /// \brief Increment the reference count on this domain
     void incRef() {

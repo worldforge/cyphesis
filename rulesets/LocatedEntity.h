@@ -78,7 +78,9 @@ static const unsigned int entity_visible = 1 << 7;
 /// \ingroup EntityFlags
 /// Currently only used on BaseMind
 static const unsigned int entity_asleep = 1 << 8;
-
+/// \brief Flag indicating entity contains a Domain, used for movement and sights
+/// \ingroup EntityFlags
+static const unsigned int entity_domain = 1 << 9;
 
 /// \brief This is the base class from which in-game and in-memory objects
 /// inherit.

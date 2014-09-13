@@ -235,10 +235,13 @@ LocatedEntity * WorldRouter::addEntity(LocatedEntity * ent)
     if (ent->getAttrType("mode", mode_attr, Element::TYPE_STRING) == 0) {
         mode = mode_attr.String();
     }
-    ent->m_location.m_pos.z() = ent->getMovementDomain()->
-          constrainHeight(ent->m_location.m_loc,
-                          ent->m_location.pos(),
-                          mode);
+    Domain* movementDomain = ent->getMovementDomain();
+    if (movementDomain) {
+        ent->m_location.m_pos.z() = movementDomain->
+              constrainHeight(ent->m_location.m_loc,
+                              ent->m_location.pos(),
+                              mode);
+    }
     ent->m_location.m_loc->makeContainer();
     bool cont_change = ent->m_location.m_loc->m_contains->empty();
     bool child_inserted = ent->m_location.m_loc->m_contains->insert(ent).second;
