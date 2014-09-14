@@ -577,22 +577,14 @@ void WorldRouter::operation(const Operation & op, LocatedEntity & from)
         deliverTo(op, *to_entity);
 
     } else if (broadcastPerception(op)) {
+        auto fromDomain = from.getMovementDomain();
+
         // Where broadcasts go depends on type of op
-        float fromSquSize = from.m_location.squareBoxSize();
-        EntitySet::const_iterator I = m_perceptives.begin();
-        EntitySet::const_iterator Iend = m_perceptives.end();
-        for (; I != Iend; ++I) {
-            // Calculate square distance to target
-            float dist = squareDistance(from.m_location, (*I)->m_location);
-            float view_factor = fromSquSize / dist;
-            if (view_factor < consts::square_sight_factor) {
-                debug(std::cout << "Op from " << from.getId()
-                                << " cannot be seen by " << (*I)->getId()
-                                << std::endl << std::flush;);
-                continue;
+        for (auto& entity : m_perceptives) {
+            if (fromDomain->isEntityVisibleFor(*entity, from)) {
+                op->setTo(entity->getId());
+                deliverTo(op, *entity);
             }
-            op->setTo((*I)->getId());
-            deliverTo(op, **I);
         }
     } else {
         EntityDict::const_iterator I = m_eobjects.begin();

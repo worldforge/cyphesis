@@ -64,7 +64,26 @@ class Domain {
 
     virtual void tick(double t);
 
-    void lookAtEntity(LocatedEntity& lookingEntity, LocatedEntity& lookatEntity, const Operation & originalLookOp, OpVector& res) const;
+    /**
+     * @brief Lets one entity look at another, calculating whether this can be done, and what children also can be seen.
+     *
+     * @param observingEntity The observer entity.
+     * @param observedEntity The entity being looked at.
+     * @param originalLookOp The originating Look operation.
+     * @param res
+     */
+    void lookAtEntity(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity, const Operation & originalLookOp, OpVector& res) const;
+
+    /**
+     * @brief Checks if the observing Entity can see the observed entity.
+     *
+     * This is done by using both a distance check as well as an outfit and wielded check.
+     *
+     * @param observingEntity The observer entity.
+     * @param observedEntity The entity being looked at.
+     * @return True if the observer entity can see the observed entity.
+     */
+    bool isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const;
 };
 
 #endif // RULESETS_DOMAIN_H

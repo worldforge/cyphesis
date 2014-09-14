@@ -95,70 +95,20 @@ void Domain::tick(double t)
     
 }
 
-void Domain::lookAtEntity(LocatedEntity& lookingEntity, LocatedEntity& lookatEntity, const Operation & originalLookOp, OpVector& res) const
+void Domain::lookAtEntity(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity, const Operation & originalLookOp, OpVector& res) const
 {
     debug(std::cout << "Domain::lookAtEntity()" << std::endl << std::flush;);
 
-    //We need to check the distance to the entity being looked at, and make sure that both the looking entity and
-    //the entity being looked at belong to the same domain
-    const Location* ancestor;
-    //We'll optimize for the case when a child entity is looking at the domain entity, by sending the looked at entity first, since this is the most common case.
-    //The squareDistanceWithAncestor() method will first try to find the first entity being sent by walking upwards from the second entity being sent (if
-    //it fails it will try other approaches).
-    float distance = squareDistanceWithAncestor(lookatEntity.m_location, lookingEntity.m_location, &ancestor);
-    if (ancestor == nullptr) {
-        //No common ancestor found
-        return;
-    } else {
-        //Make sure that the ancestor is the domain entity, or a child entity.
-        while (ancestor != &m_entity.m_location) {
-            if (ancestor->m_loc == nullptr) {
-                //We've reached the top of the parents chain without hitting our domain entity; the ancestor isn't a child of the domain entity.
-                return;
-            }
-            ancestor = &ancestor->m_loc->m_location;
-        }
-    }
-    //If we get here we know that the ancestor is a child of the domain entity.
-    //Now we need to determine if the looking entity can see the looked at entity. The default way of doing this is by comparing the size of the looked at entity with the distance,
-    //but this check can be overridden if the looked at entity is either wielded or outfitted by a parent entity.
-    bool canBeSeen = (lookatEntity.m_location.squareBoxSize() / distance) > consts::square_sight_factor;
-    if (!canBeSeen) {
-        //The entity couldn't be seen just from its size; now check if it's outfitted or wielded.
-        if (lookatEntity.m_location.m_loc != nullptr) {
-            const OutfitProperty* outfitProperty = lookatEntity.m_location.m_loc->getPropertyClass<OutfitProperty>("outfit");
-            if (outfitProperty) {
-                for (auto& entry : outfitProperty->data()) {
-                    auto outfittedEntity = entry.second.get();
-                    if (outfittedEntity && outfittedEntity == &lookatEntity) {
-                        canBeSeen = true;
-                        break;
-                    }
-                }
-            }
-            //If the entity isn't large enough, and isn't outfitted, perhaps it's wielded?
-            if (!canBeSeen) {
-                const EntityProperty* rightHandWieldProperty = lookatEntity.m_location.m_loc->getPropertyClass<EntityProperty>("right_hand_wield");
-                if (rightHandWieldProperty) {
-                    auto entity = rightHandWieldProperty->data().get();
-                    if (entity && entity == &lookatEntity) {
-                        canBeSeen = true;
-                    }
-                }
-            }
-        }
-    }
-
-    if (canBeSeen) {
+    if (isEntityVisibleFor(observingEntity, observedEntity)) {
         Sight s;
 
         Anonymous sarg;
-        lookatEntity.addToEntity(sarg);
+        observedEntity.addToEntity(sarg);
         s->setArgs1(sarg);
 
-        if (lookatEntity.m_contains != nullptr) {
+        if (observedEntity.m_contains != nullptr) {
             //If the entity has any outfitted or wielded entities these should always be shown.
-            const OutfitProperty* outfitProperty = lookatEntity.getPropertyClass<OutfitProperty>("outfit");
+            const OutfitProperty* outfitProperty = observedEntity.getPropertyClass<OutfitProperty>("outfit");
             std::unordered_set<std::string> outfittedEntities;
             if (outfitProperty) {
                 for (auto& entry : outfitProperty->data()) {
@@ -169,7 +119,7 @@ void Domain::lookAtEntity(LocatedEntity& lookingEntity, LocatedEntity& lookatEnt
                 }
             }
 
-            const EntityProperty* rightHandWieldProperty = lookatEntity.getPropertyClass<EntityProperty>("right_hand_wield");
+            const EntityProperty* rightHandWieldProperty = observedEntity.getPropertyClass<EntityProperty>("right_hand_wield");
             if (rightHandWieldProperty) {
                 auto entity = rightHandWieldProperty->data().get();
                 if (entity) {
@@ -179,14 +129,14 @@ void Domain::lookAtEntity(LocatedEntity& lookingEntity, LocatedEntity& lookatEnt
 
             std::list<std::string> & contlist = sarg->modifyContains();
             contlist.clear();
-            for (auto& entry : *lookatEntity.m_contains) {
+            for (auto& entry : *observedEntity.m_contains) {
                 //If the entity is outfitted or wielded we should include it.
                 if (outfittedEntities.count(entry->getId())) {
                     contlist.push_back(entry->getId());
                 } else {
                     float fromSquSize = entry->m_location.squareBoxSize();
                     //TODO: make this much smarter by only using the local position of the child along with the position of the looked at entity
-                    float dist = squareDistance(lookingEntity.m_location, entry->m_location);
+                    float dist = squareDistance(observingEntity.m_location, entry->m_location);
                     float view_factor = fromSquSize / dist;
                     if (view_factor > consts::square_sight_factor) {
                         contlist.push_back(entry->getId());
@@ -199,7 +149,7 @@ void Domain::lookAtEntity(LocatedEntity& lookingEntity, LocatedEntity& lookatEnt
         }
 
         //If the observer is looking at the domain entity we should hide anything above it, since the observer won't be able to see that anyway.
-        if (&m_entity == &lookatEntity) {
+        if (&m_entity == &observedEntity) {
             sarg->removeAttr("loc");
         }
 
@@ -210,4 +160,58 @@ void Domain::lookAtEntity(LocatedEntity& lookingEntity, LocatedEntity& lookatEnt
         res.push_back(s);
     }
 }
+
+bool Domain::isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const
+{
+    //We need to check the distance to the entity being looked at, and make sure that both the looking entity and
+    //the entity being looked at belong to the same domain
+    const Location* ancestor;
+    //We'll optimize for the case when a child entity is looking at the domain entity, by sending the looked at entity first, since this is the most common case.
+    //The squareDistanceWithAncestor() method will first try to find the first entity being sent by walking upwards from the second entity being sent (if
+    //it fails it will try other approaches).
+    float distance = squareDistanceWithAncestor(observedEntity.m_location, observingEntity.m_location, &ancestor);
+    if (ancestor == nullptr) {
+        //No common ancestor found
+        return false;
+    } else {
+        //Make sure that the ancestor is the domain entity, or a child entity.
+        while (ancestor != &m_entity.m_location) {
+            if (ancestor->m_loc == nullptr) {
+                //We've reached the top of the parents chain without hitting our domain entity; the ancestor isn't a child of the domain entity.
+                return false;
+            }
+            ancestor = &ancestor->m_loc->m_location;
+        }
+    }
+    //If we get here we know that the ancestor is a child of the domain entity.
+    //Now we need to determine if the looking entity can see the looked at entity. The default way of doing this is by comparing the size of the looked at entity with the distance,
+    //but this check can be overridden if the looked at entity is either wielded or outfitted by a parent entity.
+    if ((observedEntity.m_location.squareBoxSize() / distance) > consts::square_sight_factor) {
+        return true;
+    }
+    //The entity couldn't be seen just from its size; now check if it's outfitted or wielded.
+    if (observedEntity.m_location.m_loc != nullptr) {
+        const OutfitProperty* outfitProperty =
+                observedEntity.m_location.m_loc->getPropertyClass<OutfitProperty>(
+                        "outfit");
+        if (outfitProperty) {
+            for (auto& entry : outfitProperty->data()) {
+                auto outfittedEntity = entry.second.get();
+                if (outfittedEntity && outfittedEntity == &observedEntity) {
+                    return true;
+                }
+            }
+        }
+        //If the entity isn't large enough, and isn't outfitted, perhaps it's wielded?
+        const EntityProperty* rightHandWieldProperty = observedEntity.m_location.m_loc->getPropertyClass<EntityProperty>("right_hand_wield");
+        if (rightHandWieldProperty) {
+            auto entity = rightHandWieldProperty->data().get();
+            if (entity && entity == &observedEntity) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 
