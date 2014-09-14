@@ -198,6 +198,11 @@ void Domain::lookAtEntity(LocatedEntity& lookingEntity, LocatedEntity& lookatEnt
             }
         }
 
+        //If the observer is looking at the domain entity we should hide anything above it, since the observer won't be able to see that anyway.
+        if (&m_entity == &lookatEntity) {
+            sarg->removeAttr("loc");
+        }
+
         s->setTo(originalLookOp->getFrom());
         if (!originalLookOp->isDefaultSerialno()) {
             s->setRefno(originalLookOp->getSerialno());
