@@ -644,17 +644,17 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
 
 void Thing::LookOperation(const Operation & op, OpVector & res)
 {
+    LocatedEntity * from = BaseWorld::instance().getEntity(op->getFrom());
+    if (from == nullptr) {
+        log(ERROR, "Look op has invalid from");
+        return;
+    }
     // Register the entity with the world router as perceptive.
-    BaseWorld::instance().addPerceptive(this);
+    BaseWorld::instance().addPerceptive(from);
 
-
+    //Let the domain handle the Look op.
     auto domain = getMovementDomain();
     if (domain) {
-        LocatedEntity * from = BaseWorld::instance().getEntity(op->getFrom());
-        if (from == nullptr) {
-            log(ERROR, "Look op has invalid from");
-            return;
-        }
         domain->lookAtEntity(*from, *this, op, res);
     } else {
         log(WARNING, "Entity being looked at don't belong to any Domain, so sights cannot be determined.");
