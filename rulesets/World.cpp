@@ -20,6 +20,7 @@
 
 #include "CalendarProperty.h"
 #include "AtlasProperties.h"
+#include "Domain.h"
 
 #include "common/BaseWorld.h"
 #include "common/log.h"
@@ -77,12 +78,11 @@ void World::LookOperation(const Operation & op, OpVector & res)
     assert(m_location.m_loc == 0);
     // We must contains something, or where the hell did the look come from?
     assert(m_contains != 0);
-    // Let the worldrouter know we have been looked at.
 
-    debug(std::cout << "World::Operation(Look)" << std::endl << std::flush;);
-    const std::string & from_id = op->getFrom();
-    LocatedEntity * from = BaseWorld::instance().getEntity(from_id);
-    if (from == 0) {
+    //The top level entity is a little special, since its properties can be inspected by all entities, although it's children can not.
+    //First check if there's a movement domain. If so we'll handle Look ops just like usually. However, if not we'll send the properties sans the "contains" property.
+    LocatedEntity * from = BaseWorld::instance().getEntity(op->getFrom());
+    if (from == nullptr) {
         log(ERROR, "Look op has invalid from");
         return;
     }
@@ -90,35 +90,19 @@ void World::LookOperation(const Operation & op, OpVector & res)
     // Register the entity with the world router as perceptive.
     BaseWorld::instance().addPerceptive(from);
 
-    Sight s;
+    auto domain = getMovementDomain();
+    if (domain) {
+        domain->lookAtEntity(*from, *this, op, res);
+    } else {
+        Sight s;
 
-    Anonymous sarg;
-    addToEntity(sarg);
-    s->setArgs1(sarg);
-
-    // FIXME integrate setting terrain with setting contains.
-
-    if (m_contains != 0) {
-        std::list<std::string> & contlist = sarg->modifyContains();
-        contlist.clear();
-        LocatedEntitySet::const_iterator Iend = m_contains->end();
-        LocatedEntitySet::const_iterator I = m_contains->begin();
-        for (; I != Iend; ++I) {
-            float fromSquSize = (*I)->m_location.squareBoxSize();
-            float dist = squareDistance((*I)->m_location, from->m_location);
-            float view_factor = fromSquSize / dist;
-            if (view_factor > consts::square_sight_factor) {
-                contlist.push_back((*I)->getId());
-            }
-        }
-        if (contlist.empty()) {
-            debug(std::cout << "WARNING: contains empty." << std::endl << std::flush;);
-            sarg->removeAttr("contains");
-        }
+        Anonymous sarg;
+        addToEntity(sarg);
+        sarg->removeAttr("contains");
+        s->setArgs1(sarg);
+        s->setTo(op->getFrom());
+        res.push_back(s);
     }
-
-    s->setTo(op->getFrom());
-    res.push_back(s);
 }
 
 void World::MoveOperation(const Operation & op, OpVector & res)
