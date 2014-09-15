@@ -116,7 +116,7 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
             // stop, or be deflected
             // Arrived at intended destination
             reset();
-            new_location.m_velocity = Vector3D(0,0,0);
+            new_location.m_velocity = Vector3D::ZERO();
         } else {
             new_location.m_pos = new_coords;
         }

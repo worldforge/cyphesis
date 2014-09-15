@@ -1249,6 +1249,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
             // FIXME Check against strength
             // || mass.Float() > m_statistics.get("strength"));
             debug( std::cout << "We can't move this. Just too heavy" << std::endl << std::flush;);
+            //TODO: send op back to the mind informing it that it was too heavy to move.
             return;
         }
         op->setTo(other_id);
@@ -1344,7 +1345,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         debug( std::cout << "Direction: " << direction << std::endl
                          << std::flush;);
         if (!new_orientation.isValid()) {
-            // This is a character walking, so it should stap upright
+            // This is a character walking, so it should stay upright
             Vector3D upright_direction = direction;
             upright_direction[cZ] = 0;
             if (upright_direction.mag() > 0) {
@@ -1387,7 +1388,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
 
     if (m_movement.hasTarget() &&
         ret_location.velocity().isValid() &&
-        ret_location.velocity() != Vector3D(0,0,0)) {
+        ret_location.velocity() != Vector3D::ZERO()) {
 
         Tick tickOp;
         Anonymous tick_arg;

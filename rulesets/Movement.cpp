@@ -31,7 +31,7 @@ Movement::~Movement()
 
 bool Movement::updateNeeded(const Location & location) const
 {
-    return (location.velocity().isValid() && location.velocity() != Vector3D(0,0,0));
+    return (location.velocity().isValid() && location.velocity() != Vector3D::ZERO());
 }
 
 void Movement::reset()
