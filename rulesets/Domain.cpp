@@ -245,9 +245,8 @@ void Domain::calculateVisibility(std::vector<Root>& appear, std::vector<Root>& d
               new_dist = squareDistance(other->m_location.pos(), new_pos),
               squ_size = other->m_location.squareBoxSize();
 
-        // Build appear and disappear lists, and send operations
-        // Also so operations to (dis)appearing perceptive
-        // entities saying that we are (dis)appearing
+        // Build appear and disappear lists, and send disappear operations
+        // to perceptive entities saying that we are disappearing
         if (other->isPerceptive()) {
             bool was_in_range = ((fromSquSize / old_dist) > consts::square_sight_factor),
                  is_in_range = ((fromSquSize / new_dist) > consts::square_sight_factor);
@@ -259,16 +258,10 @@ void Domain::calculateVisibility(std::vector<Root>& appear, std::vector<Root>& d
                     d->setArgs1(this_ent);
                     d->setTo(other->getId());
                     res.push_back(d);
-                } else /*if (is_in_range)*/ {
-                    // Send operation to the entity in question so it
-                    // knows it is gaining sight of us.
-                    // FIXME We don't need to do this, cos its about
-                    // to get our Sight(Move)
-                    Appearance a;
-                    a->setArgs1(this_ent);
-                    a->setTo(other->getId());
-                    res.push_back(a);
                 }
+                //Note that we don't send any Appear ops for those entities that we now move within sight range of.
+                //This is because these will receive a Move op anyway as part of the broadcast, which informs them
+                //that an entity has moved within sight range anyway.
             }
         }
 
