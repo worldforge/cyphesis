@@ -578,12 +578,13 @@ void WorldRouter::operation(const Operation & op, LocatedEntity & from)
 
     } else if (broadcastPerception(op)) {
         auto fromDomain = from.getMovementDomain();
-
-        // Where broadcasts go depends on type of op
-        for (auto& entity : m_perceptives) {
-            if (fromDomain->isEntityVisibleFor(*entity, from)) {
-                op->setTo(entity->getId());
-                deliverTo(op, *entity);
+        if (fromDomain) {
+            // Where broadcasts go depends on type of op
+            for (auto& entity : m_perceptives) {
+                if (fromDomain->isEntityVisibleFor(*entity, from)) {
+                    op->setTo(entity->getId());
+                    deliverTo(op, *entity);
+                }
             }
         }
     } else {
