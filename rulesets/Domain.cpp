@@ -36,10 +36,17 @@
 
 static const bool debug_flag = false;
 
+
+
+using Atlas::Message::Element;
+using Atlas::Message::MapType;
 using Atlas::Objects::Root;
-using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
+using Atlas::Objects::Operation::Set;
+using Atlas::Objects::Operation::Sight;
+using Atlas::Objects::Operation::Appearance;
+using Atlas::Objects::Operation::Disappearance;
 
 
 Domain::Domain(LocatedEntity& entity) : m_entity(entity), m_refCount(0)
@@ -163,6 +170,10 @@ void Domain::lookAtEntity(const LocatedEntity& observingEntity, const LocatedEnt
 
 bool Domain::isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const
 {
+    if (&observedEntity == &m_entity) {
+        return true;
+    }
+
     //We need to check the distance to the entity being looked at, and make sure that both the looking entity and
     //the entity being looked at belong to the same domain
     const Location* ancestor;
@@ -212,6 +223,109 @@ bool Domain::isEntityVisibleFor(const LocatedEntity& observingEntity, const Loca
         }
     }
     return false;
+}
+
+void Domain::calculateVisibility(std::vector<Root>& appear, std::vector<Root>& disappear, Anonymous& this_ent, const LocatedEntity& parent,
+        const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res) const {
+
+    float fromSquSize = moved_entity.m_location.squareBoxSize();
+
+    //We need to get the position of the moved entity in relation to the parent.
+    const Point3D new_pos = relativePos(parent.m_location, moved_entity.m_location);
+    const Point3D old_pos = relativePos(parent.m_location, old_loc);
+
+    assert(m_entity.m_contains != nullptr);
+    for (const LocatedEntity* other: *parent.m_contains) {
+        if (other == &moved_entity) {
+            continue;
+        }
+
+        assert(other != nullptr);
+        float old_dist = squareDistance(other->m_location.pos(), old_pos),
+              new_dist = squareDistance(other->m_location.pos(), new_pos),
+              squ_size = other->m_location.squareBoxSize();
+
+        // Build appear and disappear lists, and send operations
+        // Also so operations to (dis)appearing perceptive
+        // entities saying that we are (dis)appearing
+        if (other->isPerceptive()) {
+            bool was_in_range = ((fromSquSize / old_dist) > consts::square_sight_factor),
+                 is_in_range = ((fromSquSize / new_dist) > consts::square_sight_factor);
+            if (was_in_range != is_in_range) {
+                if (was_in_range) {
+                    // Send operation to the entity in question so it
+                    // knows it is losing sight of us.
+                    Disappearance d;
+                    d->setArgs1(this_ent);
+                    d->setTo(other->getId());
+                    res.push_back(d);
+                } else /*if (is_in_range)*/ {
+                    // Send operation to the entity in question so it
+                    // knows it is gaining sight of us.
+                    // FIXME We don't need to do this, cos its about
+                    // to get our Sight(Move)
+                    Appearance a;
+                    a->setArgs1(this_ent);
+                    a->setTo(other->getId());
+                    res.push_back(a);
+                }
+            }
+        }
+
+        bool could_see = ((squ_size / old_dist) > consts::square_sight_factor),
+             can_see = ((squ_size / new_dist) > consts::square_sight_factor);
+        if (could_see ^ can_see) {
+            Anonymous that_ent;
+            that_ent->setId(other->getId());
+            that_ent->setStamp(other->getSeq());
+            if (could_see) {
+                // We are losing sight of that object
+                disappear.push_back(that_ent);
+                debug(std::cout << moved_entity.getId() << ": losing sight of "
+                                << other->getId() << std::endl;);
+            } else /*if (can_see)*/ {
+                // We are gaining sight of that object
+                appear.push_back(that_ent);
+                debug(std::cout << moved_entity.getId() << ": gaining sight of "
+                                << other->getId() << std::endl;);
+            }
+        } else {
+            //We've seen this entity before, and we're still seeing it. Check if there are any children that's now changing visibility.
+            if (other->m_contains && !other->m_contains->empty()) {
+                calculateVisibility(appear, disappear, this_ent, *other, moved_entity, old_loc, res);
+            }
+        }
+    }
+}
+
+
+
+void Domain::processVisibilityForMovedEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res) {
+    debug(std::cout << "testing range" << std::endl;);
+    std::vector<Root> appear, disappear;
+
+    Anonymous this_ent;
+    this_ent->setId(moved_entity.getId());
+    this_ent->setStamp(moved_entity.getSeq());
+
+    calculateVisibility(appear, disappear, this_ent, m_entity, moved_entity, old_loc, res);
+
+    if (!appear.empty()) {
+        // Send an operation to ourselves with a list of entities
+        // we are gaining sight of
+        Appearance a;
+        a->setArgs(appear);
+        a->setTo(moved_entity.getId());
+        res.push_back(a);
+    }
+    if (!disappear.empty()) {
+        // Send an operation to ourselves with a list of entities
+        // we are losing sight of
+        Disappearance d;
+        d->setArgs(disappear);
+        d->setTo(moved_entity.getId());
+        res.push_back(d);
+    }
 }
 
 

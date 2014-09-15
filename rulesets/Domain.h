@@ -25,6 +25,7 @@
 #include <string>
 
 class LocatedEntity;
+class Location;
 
 /// \brief Base class for movement domains
 ///
@@ -41,6 +42,20 @@ class Domain {
 
     /// Count of references held by other objects to this domain
     int m_refCount;
+
+    /**
+     * @brief Calculates visibility changes for the moved entity, processing the children of the "parent" parameter.
+     * @param appear A list of appear ops, to be filled.
+     * @param disappear A list of disappear ops, to be filled.
+     * @param this_ent Atlas entity representing the entity that was moved.
+     * @param parent The parent entity, which children will be iterated over.
+     * @param moved_entity The entity that was moved.
+     * @param old_loc The old location.
+     * @param res
+     */
+    void calculateVisibility(std::vector<Atlas::Objects::Root>& appear, std::vector<Atlas::Objects::Root>& disappear, Atlas::Objects::Entity::Anonymous& this_ent,
+            const LocatedEntity& parent, const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res) const;
+
 
   public:
     Domain(LocatedEntity& entity);
@@ -84,6 +99,18 @@ class Domain {
      * @return True if the observer entity can see the observed entity.
      */
     bool isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const;
+
+    /**
+     * @brief Process visibility operation for an entity that has been moved.
+     *
+     * This mainly involves calculating visibility changes, generating Appear and Disappear ops.
+     *
+     * @param moved_entity The entity that was moved.
+     * @param old_loc The old location of the entity.
+     * @param res
+     */
+    void processVisibilityForMovedEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res);
+
 };
 
 #endif // RULESETS_DOMAIN_H
