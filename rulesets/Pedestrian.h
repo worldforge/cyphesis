@@ -22,6 +22,11 @@
 #include "Movement.h"
 
 /// \brief Class for handling movement of a Pedestrian Character
+///
+/// FIXME: this is all wrong. The Pedestrian/Movement classes should never issue movement updates with altered Location data, such as "pos".
+/// In the event that we actually want to keep this (which I'm not sure we want) it should _only_ be able to alter "velocity", and nothing more.
+/// However, we need to start implementing the concept of "force" rather than having random classes alter the velocity.
+/// And code for making sure that movement is stopped when location is reached should perhaps go into the mind/client code instead.
 class Pedestrian : public Movement {
     // friend class Character;
   public:
