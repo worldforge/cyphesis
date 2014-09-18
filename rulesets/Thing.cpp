@@ -65,13 +65,10 @@ static const bool debug_flag = false;
 Thing::Thing(const std::string & id, long intId) :
        Entity(id, intId)
 {
-    m_motion = new Motion(*this);
 }
 
 Thing::~Thing()
 {
-    assert(m_motion != 0);
-    delete m_motion;
 }
 
 void Thing::DeleteOperation(const Operation & op, OpVector & res)
@@ -239,91 +236,106 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
     // Update pos
     fromStdVector(m_location.m_pos, ent->getPos());
-    // FIXME Quick height hack
+
+    //We can only move if there's a domain
     auto domain = getMovementDomain();
     if (domain) {
+        // FIXME Quick height hack
         m_location.m_pos.z() = domain->constrainHeight(m_location.m_loc,
                                                                m_location.pos(),
                                                                mode);
-    }
-    m_location.update(current_time);
-    m_flags &= ~(entity_pos_clean | entity_clean);
+        m_location.update(current_time);
+        m_flags &= ~(entity_pos_clean | entity_clean);
 
-    if (ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
-        // Update velocity
-        fromStdVector(m_location.m_velocity, ent->getVelocity());
-        // Velocity is not persistent so has no flag
-    }
+        if (ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
+            // Update velocity
+            fromStdVector(m_location.m_velocity, ent->getVelocity());
+            // Velocity is not persistent so has no flag
+        }
 
-    Element attr_orientation;
-    if (ent->copyAttr("orientation", attr_orientation) == 0) {
-        // Update orientation
-        m_location.m_orientation.fromAtlas(attr_orientation.asList());
-        m_flags &= ~entity_orient_clean;
-    }
+        Element attr_orientation;
+        if (ent->copyAttr("orientation", attr_orientation) == 0) {
+            // Update orientation
+            m_location.m_orientation.fromAtlas(attr_orientation.asList());
+            m_flags &= ~entity_orient_clean;
+        }
 
-    // At this point the Location data for this entity has been updated.
+        // At this point the Location data for this entity has been updated.
 
-    bool moving = false;
+        bool moving = false;
 
-    if (m_location.velocity().isValid() &&
-        m_location.velocity().sqrMag() > WFMath::numeric_constants<WFMath::CoordType>::epsilon()) {
-        moving = true;
-    }
+        if (m_location.velocity().isValid() &&
+            m_location.velocity().sqrMag() > WFMath::numeric_constants<WFMath::CoordType>::epsilon()) {
+            moving = true;
+        }
 
-    // Take into account terrain following etc.
-    // Take into account mode also.
-    // m_motion->adjustNewPostion();
+        // Take into account terrain following etc.
+        // Take into account mode also.
+        // m_motion->adjustNewPostion();
 
-    float update_time = consts::move_tick;
+        float update_time = consts::move_tick;
 
-    if (moving) {
-        // If we are moving, check for collisions
-        update_time = m_motion->checkCollisions();
+        if (moving) {
+            //We've just started moving; create a motion instance.
+            if (!m_motion) {
+                m_motion = new Motion(*this, *domain);
+            }
 
-        if (m_motion->collision()) {
-            if (update_time < WFMath::numeric_constants<WFMath::CoordType>::epsilon()) {
-                moving = m_motion->resolveCollision();
-            } else {
-                m_motion->m_collisionTime = current_time + update_time;
+
+            // If we are moving, check for collisions
+            update_time = m_motion->checkCollisions();
+
+            if (m_motion->collision()) {
+                if (update_time < WFMath::numeric_constants<WFMath::CoordType>::epsilon()) {
+                    moving = m_motion->resolveCollision();
+                } else {
+                    m_motion->m_collisionTime = current_time + update_time;
+                }
+            }
+
+            // Serial number must be changed regardless of whether we will use it
+            ++m_motion->serialno();
+
+            // If we are moving, schedule an update to track the movement
+            debug(std::cout << "Move Update in " << update_time << std::endl << std::flush;);
+
+            Update u;
+            u->setFutureSeconds(update_time);
+            u->setTo(getId());
+
+            u->setRefno(m_motion->serialno());
+
+            res.push_back(u);
+
+        } else {
+            if (m_motion) {
+                //We moved previously, but have now stopped.
+
+                delete m_motion;
+                m_motion = nullptr;
             }
         }
-    }
 
-    Operation m(op.copy());
-    RootEntity marg = smart_dynamic_cast<RootEntity>(m->getArgs().front());
-    assert(marg.isValid());
-    m_location.addToEntity(marg);
+        Operation m(op.copy());
+        RootEntity marg = smart_dynamic_cast<RootEntity>(m->getArgs().front());
+        assert(marg.isValid());
+        m_location.addToEntity(marg);
 
-    Sight s;
-    s->setArgs1(m);
+        Sight s;
+        s->setArgs1(m);
 
-    res.push_back(s);
+        res.push_back(s);
 
-    // Serial number must be changed regardless of whether we will use it
-    ++m_motion->serialno();
 
-    // If we are moving, schedule an update to track the movement
-    if (moving) {
-        debug(std::cout << "Move Update in " << update_time << std::endl << std::flush;);
+        // This code handles sending Appearance and Disappearance operations
+        // to this entity and others to indicate if one has gained or lost
+        // sight of the other because of this movement
 
-        Update u;
-        u->setFutureSeconds(update_time);
-        u->setTo(getId());
-
-        u->setRefno(m_motion->serialno());
-
-        res.push_back(u);
-    }
-
-    // This code handles sending Appearance and Disappearance operations
-    // to this entity and others to indicate if one has gained or lost
-    // sight of the other because of this movement
-
-    // FIXME Why only for a perceptive moving entity? Surely other entities
-    // must gain/lose sight of this entity if it's moving?
-    if (isPerceptive()) {
-        checkVisibility(old_loc, res);
+        // FIXME Why only for a perceptive moving entity? Surely other entities
+        // must gain/lose sight of this entity if it's moving?
+        if (isPerceptive()) {
+            checkVisibility(old_loc, res);
+        }
     }
     m_seq++;
 
@@ -436,7 +448,7 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     // If it has a refno, then it is a movement update. If it does not
     // match the current movement serialno, then its obsolete, and can
     // be discarded.
-    if (op->getRefno() != m_motion->serialno()) {
+    if (m_motion == nullptr || op->getRefno() != m_motion->serialno()) {
         return;
     }
 
@@ -551,6 +563,9 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
         }
 
         res.push_back(u);
+    } else {
+        delete m_motion;
+        m_motion = nullptr;
     }
 
     // This code handles sending Appearance and Disappearance operations

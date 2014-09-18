@@ -22,6 +22,8 @@
 #include "physics/Vector3D.h"
 #include "common/OperationRouter.h"
 
+#include <wfmath/vector.h>
+
 #include <string>
 
 class LocatedEntity;
@@ -58,6 +60,19 @@ class Domain {
 
 
   public:
+
+    /**
+     * @brief Collision data used when checking for collision.
+     */
+    struct CollisionData {
+        ///True if there's a collision.
+        bool isCollision;
+        /// Entity with which collision will occur
+        LocatedEntity * collEntity;
+        /// Normal to the collision surface
+        Vector3D collNormal;
+    };
+
     Domain(LocatedEntity& entity);
 
     virtual ~Domain();
@@ -110,6 +125,8 @@ class Domain {
      * @param res
      */
     void processVisibilityForMovedEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res);
+
+    float checkCollision(LocatedEntity& entity, CollisionData& collisionData);
 
 };
 

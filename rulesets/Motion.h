@@ -20,6 +20,7 @@
 #define RULESETS_MOTION_H
 
 #include "physics/Vector3D.h"
+#include "Domain.h"
 
 #include <Atlas/Objects/ObjectsFwd.h>
 
@@ -40,12 +41,24 @@ class LocatedEntity;
 /// given the right cues to indicate that this is the right thing to do.
 /// Similarly a boyant object needs to track the surface of the water,
 /// including any procedural waves on the water.
+///
+/// Each motion is tied to a specific domain. If ever an entity moves between
+/// domains this has to be handled by some new mechanism which currently
+/// doesn't exist
 class Motion {
   private:
     Motion(const Motion &) = delete;
     Motion & operator=(const Motion &) = delete;
   protected:
+    /**
+     * \brief The entity which is moving.
+     */
     LocatedEntity & m_entity;
+
+    /**
+     * \brief The domain within which the movement occurs.
+     */
+    Domain& m_domain;
     std::string m_mode;
 
     /// Refno of next expected update op
@@ -59,7 +72,7 @@ class Motion {
     Vector3D m_collNormal;
 
   public:
-    explicit Motion(LocatedEntity & body);
+    explicit Motion(LocatedEntity & body, Domain& domain);
     virtual ~Motion();
 
     float m_collisionTime;

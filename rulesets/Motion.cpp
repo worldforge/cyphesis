@@ -18,6 +18,8 @@
 
 #include "Motion.h"
 
+#include "Domain.h"
+
 #include "rulesets/LocatedEntity.h"
 
 #include "physics/Collision.h"
@@ -34,7 +36,7 @@ using String::compose;
 
 static const bool debug_flag = false;
 
-Motion::Motion(LocatedEntity & body) : m_entity(body), m_serialno(0),
+Motion::Motion(LocatedEntity & body, Domain& domain) : m_entity(body), m_domain(domain), m_serialno(0),
                                        m_collision(false), m_collEntity(0),
                                        m_collisionTime(0.f)
 {
@@ -66,105 +68,13 @@ Operation * Motion::genMoveOperation()
 
 float Motion::checkCollisions()
 {
-    assert(m_entity.m_location.m_loc != 0);
-    assert(m_entity.m_location.m_loc->m_contains != 0);
-    assert(m_entity.m_location.m_pos.isValid());
-    assert(m_entity.m_location.m_velocity.isValid());
-    // Check to see whether a collision is going to occur from now until the
-    // the next tick in consts::move_tick seconds
-    float coll_time = consts::move_tick;
-    debug( std::cout << "checking " << m_entity.getId()
-                     << m_entity.m_location.pos()
-                     << m_entity.m_location.velocity() << " in "
-                     << m_entity.m_location.m_loc->getId()
-                     << " against"; );
-    m_collEntity = NULL;
-    m_collision = false;
-    // Check against everything within the current container
-    // If this entity doesn't have a bbox, it can't collide currently.
-    if (!m_entity.m_location.bBox().isValid()) {
-        return coll_time;
-    }
-    LocatedEntitySet::const_iterator I = m_entity.m_location.m_loc->m_contains->begin();
-    LocatedEntitySet::const_iterator Iend = m_entity.m_location.m_loc->m_contains->end();
-    for (; I != Iend; ++I) {
-        // Don't check for collisions with ourselves
-        if ((*I) == &m_entity) { continue; }
-        const Location & other_location = (*I)->m_location;
-        if (!other_location.bBox().isValid() || !other_location.isSolid()) {
-            continue;
-        }
-        debug( std::cout << " " << (*I)->getId(); );
-        Vector3D normal;
-        float t = consts::move_tick + 1;
-        if (!predictCollision(m_entity.m_location, other_location, t, normal) || (t < 0)) {
-            continue;
-        }
-        debug( std::cout << (*I)->getId() << other_location.pos() << other_location.velocity(); );
-        debug( std::cout << "[" << t << "]"; );
-        if (t <= coll_time) {
-            m_collEntity = *I;
-            m_collNormal = normal;
-            coll_time = t;
-        }
-    }
-    if (m_collEntity == NULL) {
-        return consts::move_tick;
-    }
-    debug( std::cout << std::endl << std::flush; );
-    m_collision = true;
-    if (!m_collEntity->m_location.isSimple()) {
-        debug(std::cout << "Collision with complex object" << std::endl
-                        << std::flush;);
-        // Non solid container - check for collision with its contents.
-        const Location & lc2 = m_collEntity->m_location;
-        Location rloc(m_entity.m_location);
-        rloc.m_loc = m_collEntity;
-        if (lc2.orientation().isValid()) {
-            rloc.m_pos = m_entity.m_location.m_pos.toLocalCoords(lc2.pos(), lc2.orientation());
-        } else {
-            static const Quaternion identity(1, 0, 0, 0);
-            rloc.m_pos = m_entity.m_location.m_pos.toLocalCoords(lc2.pos(), identity);
-        }
-        float coll_time_2 = consts::move_tick;
-        // rloc is now m_entity.m_location of character with loc set to m_collEntity
-        if (m_collEntity->m_contains != 0) {
-            I = m_collEntity->m_contains->begin();
-            Iend = m_collEntity->m_contains->end();
-            for (; I != Iend; ++I) {
-                const Location & other_location = (*I)->m_location;
-                if (!other_location.bBox().isValid()) {
-                    continue;
-                }
-                Vector3D normal;
-                float t = consts::move_tick + 1;
-                if (!predictCollision(rloc, other_location, t, normal) ||
-                    t < 0) {
-                    continue;
-                }
-                if (t <= coll_time_2) {
-                    coll_time_2 = t;
-                }
-                // What to do with the normal?
-            }
-        }
-        // There is a small possibility that if
-        // coll_time_2 == coll_time == move_tick, we will miss a collision
-        if (coll_time_2 - coll_time > consts::move_tick / 10) {
-            debug( std::cout << "passing into it " << coll_time << ":"
-                             << coll_time_2 << std::endl << std::flush;);
-            // We are entering collEntity.
-            // Once we have entered, subsequent collision detection won't
-            // really work.
-            // FIXME Modifiy the predicted collision time.
-        }
-    }
-    assert(m_collEntity != NULL);
-    debug( std::cout << "COLLISION" << std::endl << std::flush; );
-    debug( std::cout << "Setting target loc to "
-                     << m_entity.m_location.pos() << "+"
-                     << m_entity.m_location.velocity() << "*" << coll_time;);
-    return coll_time;
+    Domain::CollisionData collData;
+    float collision_time = m_domain.checkCollision(m_entity, collData);
+    m_collEntity = collData.collEntity;
+    m_collision = collData.isCollision;
+    m_collNormal = collData.collNormal;
+    return collision_time;
+
 }
 
 bool Motion::resolveCollision()

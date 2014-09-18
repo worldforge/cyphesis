@@ -21,6 +21,7 @@
 #include "Script.h"
 #include "Domain.h"
 #include "DomainProperty.h"
+#include "Motion.h"
 
 #include "common/BaseWorld.h"
 #include "common/log.h"
@@ -72,12 +73,13 @@ static const bool debug_flag = false;
 
 /// \brief Entity constructor
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0)
+        LocatedEntity(id, intId), m_motion(nullptr)
 {
 }
 
 Entity::~Entity()
 {
+    delete m_motion;
 }
 
 PropertyBase * Entity::setAttr(const std::string & name, const Element & attr)
