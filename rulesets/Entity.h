@@ -25,8 +25,6 @@
 
 class Motion;
 
-typedef std::map<int, std::string> DelegateMap;
-
 /// \brief This is the base class from which all in-game objects inherit.
 ///
 /// This class should not normally be instantiated directly.
@@ -41,7 +39,7 @@ class Entity : public LocatedEntity {
     /// Motion behavoir of this entity
     Motion * m_motion;
     /// Map of delegate properties.
-    DelegateMap m_delegates;
+    std::multimap<int, std::string> m_delegates;
 
   public:
     explicit Entity(const std::string & id, long intId);

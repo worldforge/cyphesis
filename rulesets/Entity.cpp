@@ -491,13 +491,16 @@ void Entity::operation(const Operation & op, OpVector & res)
         m_script->operation(op->getParents().front(), op, res) != 0) {
         return;
     }
-    // FIXME Once this is a multimap, we'll need a for loop to call all
-    // the delegates.
-    auto J = m_delegates.find(op->getClassNo());
-    if (J != m_delegates.end()) {
-        HandlerResult hr = callDelegate(J->second, op, res);
-        if (hr == OPERATION_BLOCKED) {
-            return;
+
+    auto J = m_delegates.equal_range(op->getClassNo());
+    HandlerResult hr = OPERATION_IGNORED;
+    for (;J.first != J.second; ++J.first) {
+        HandlerResult hr_call = callDelegate(J.first->second, op, res);
+        //We'll record the most blocking of the different results only.
+        if (hr != OPERATION_BLOCKED) {
+            if (hr_call != OPERATION_IGNORED) {
+                hr = hr_call;
+            }
         }
         // How to access the property? We need a non-const pointer to call
         // operation, but to get this easily we need to force instantiation
@@ -508,8 +511,12 @@ void Entity::operation(const Operation & op, OpVector & res)
         //
         // Can we make a clean way to handle the property in the general case
         // handle instantiation itself? Making it responsible for copying
-        // itself on instatiation would be faster than the
+        // itself on instantiation would be faster than the
         // get/set/PropertyManager currently required in in modProperty.
+    }
+    //If the operation was blocked we shouldn't send it on to the entity.
+    if (hr == OPERATION_BLOCKED) {
+        return;
     }
     return callOperation(op, res);
 }
