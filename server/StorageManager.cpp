@@ -51,6 +51,7 @@
 #include <sigc++/functors/mem_fun.h>
 
 #include <iostream>
+#include <unordered_set>
 
 using Atlas::Message::MapType;
 using Atlas::Message::Element;
@@ -168,6 +169,10 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
     PropertyManager * pm = PropertyManager::instance();
     DatabaseResult res = db->selectProperties(ent->getId());
 
+    //Keep track of those properties that have been set on the instance, so we'll know what
+    //type properties we should ignore.
+    std::unordered_set<std::string> instanceProperties;
+
     DatabaseResult::const_iterator I = res.begin();
     DatabaseResult::const_iterator Iend = res.end();
     for (; I != Iend; ++I) {
@@ -229,7 +234,21 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
         prop->set(val);
         prop->setFlags(per_clean | per_seen);
         prop->apply(ent);
+        instanceProperties.insert(name);
     }
+
+    for (auto& propIter : ent->getType()->defaults()) {
+        if (!instanceProperties.count(propIter.first)) {
+            PropertyBase * prop = propIter.second;
+            // If a property is in the class it won't have been installed
+            // as setAttr() checks
+            prop->install(ent, propIter.first);
+            // The property will have been applied if it has an overriden
+            // value, so we only apply it the value is still default.
+            prop->apply(ent);
+        }
+    }
+
 
     //Now restore all properties of the child entities.
     if (ent->m_contains) {
