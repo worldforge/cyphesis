@@ -160,6 +160,8 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     // Up until this point nothing should have changed, but the changes
     // have all now been checked for validity.
 
+    const Location old_loc = m_location;
+
     // Check if the location has changed
     if (new_loc != 0) {
         // new_loc should only be non-null if the LOC specified is
@@ -231,8 +233,6 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     }
 
     const double & current_time = BaseWorld::instance().getTime();
-
-    const Location old_loc = m_location;
 
     // Update pos
     fromStdVector(m_location.m_pos, ent->getPos());

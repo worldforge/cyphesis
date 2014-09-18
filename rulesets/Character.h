@@ -110,6 +110,7 @@ class Character : public Thing, public virtual sigc::trackable {
     /// \brief External network connected agent controlling this character
     ExternalMind * m_externalMind;
 
+    /// \brief Emitted when the external link for this character has changed.
     sigc::signal<void> externalLinkChanged;
 
     explicit Character(const std::string & id, long intId);

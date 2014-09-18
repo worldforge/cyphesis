@@ -203,6 +203,11 @@ class LocatedEntity : public Router {
     void changeContainer(LocatedEntity *);
     void merge(const Atlas::Message::MapType &);
 
+    /// \brief Adds a child to this entity.
+    virtual void addChild(LocatedEntity& childEntity);
+    /// \brief Removes a child from this entity.
+    virtual void removeChild(LocatedEntity& childEntity);
+
     /// \brief Get a property that is required to of a given type.
     template <class PropertyT>
     const PropertyT * getPropertyClass(const std::string & name) const

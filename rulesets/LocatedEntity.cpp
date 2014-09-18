@@ -260,27 +260,40 @@ void LocatedEntity::makeContainer()
 /// container.
 void LocatedEntity::changeContainer(LocatedEntity * new_loc)
 {
-    assert(m_location.m_loc != 0);
-    assert(m_location.m_loc->m_contains != 0);
-    m_location.m_loc->m_contains->erase(this);
-    if (m_location.m_loc->m_contains->empty()) {
-        m_location.m_loc->onUpdated();
-    }
-    new_loc->makeContainer();
-    bool was_empty = new_loc->m_contains->empty();
-    new_loc->m_contains->insert(this);
-    if (was_empty) {
-        new_loc->onUpdated();
-    }
-    assert(m_location.m_loc->checkRef() > 0);
     LocatedEntity* oldLoc = m_location.m_loc;
-    m_location.m_loc = new_loc;
-    m_location.m_loc->incRef();
+    oldLoc->removeChild(*this);
+    new_loc->addChild(*this);
+    new_loc->incRef();
     assert(m_location.m_loc->checkRef() > 0);
 
     onContainered(oldLoc);
     oldLoc->decRef();
+
 }
+
+void LocatedEntity::addChild(LocatedEntity& childEntity)
+{
+    makeContainer();
+    bool was_empty = m_contains->empty();
+    m_contains->insert(&childEntity);
+    if (was_empty) {
+        onUpdated();
+    }
+
+    childEntity.m_location.m_loc = this;
+}
+
+void LocatedEntity::removeChild(LocatedEntity& childEntity)
+{
+    assert(checkRef() > 0);
+    assert(m_contains != 0);
+    assert(m_contains->count(&childEntity));
+    m_contains->erase(&childEntity);
+    if (m_contains->empty()) {
+        onUpdated();
+    }
+}
+
 
 /// \brief Read attributes from an Atlas element
 ///

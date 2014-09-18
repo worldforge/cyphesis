@@ -254,10 +254,6 @@ void Entity::destroy()
             Location & child = (*I)->m_location;
             // FIXME take account of orientation
             // FIXME velocity and orientation  need to be adjusted
-            // Remove the reference to ourself.
-            decRef();
-            child.m_loc = m_location.m_loc;
-            m_location.m_loc->incRef();
             if (m_location.orientation().isValid() && m_location.pos().isValid()) {
                 child.m_pos = child.m_pos.toParentCoords(m_location.pos(),
                                                          m_location.orientation());
@@ -272,10 +268,12 @@ void Entity::destroy()
                 child.m_pos = child.m_pos.toParentCoords(m_location.pos(),
                                                          identity);
             }
-            loc_contains.insert(*I);
+            // Remove the reference to ourself.
+            decRef();
+            m_location.m_loc->addChild(**I);
+            m_location.m_loc->incRef();
         }
     }
-    loc_contains.erase(this);
 
     delete m_script;
     m_script = 0;
@@ -285,11 +283,7 @@ void Entity::destroy()
     // are broadcast ops left that we have not yet sent.
     // It will be decRef()ed automatically from our (LocatedEntity)
     // destructor
-
-    if (loc_contains.empty()) {
-        // FIXME Do we need to call onUpdated() on the parent entity?
-        m_location.m_loc->onUpdated();
-    }
+    m_location.m_loc->removeChild(*this);
     m_flags |= entity_destroyed;
     destroyed.emit();
 }
