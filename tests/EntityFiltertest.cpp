@@ -531,6 +531,17 @@ int main()
         ComparePredicate compPred12(lhs_provider4, new FixedElementProvider("foobar"), ComparePredicate::Comparator::CONTAINS);
         assert(!compPred12.isMatch(QueryContext{bl1}));
 
+        //self.type
+        segments.clear();
+        segments.push_back(ProviderFactory::Segment { "", "self" });
+        segments.push_back(ProviderFactory::Segment { ".", "mass" });
+        auto lhs_provider5 = factory.createProviders(segments);
+        QueryContext qc{bl1};
+        qc.self_entity = &b1;
+
+        lhs_provider5->value(value, qc);
+        assert(value == Element(30));
+
         //MindProviderFactory tests
         MindProviderFactory mind_factory;
 
@@ -546,7 +557,7 @@ int main()
         segments.clear();
         segments.push_back({"", "memory"});
         segments.push_back({".", "disposition"});
-        auto lhs_provider5 = mind_factory.createProviders(segments);
+        lhs_provider5 = mind_factory.createProviders(segments);
 
         ComparePredicate compPred15(lhs_provider5, new FixedElementProvider(25), ComparePredicate::Comparator::EQUALS);
         assert(compPred15.isMatch(QueryContext{b1, memory}));

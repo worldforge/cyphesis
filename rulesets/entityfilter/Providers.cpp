@@ -110,6 +110,32 @@ const std::type_info* EntityProvider::getType() const
     }
 }
 
+SelfEntityProvider::SelfEntityProvider(Consumer<LocatedEntity>* consumer) :
+        ConsumingProviderBase<LocatedEntity, QueryContext>(consumer)
+{
+}
+
+void SelfEntityProvider::value(Atlas::Message::Element& value,
+                           const QueryContext& context) const
+{
+    if (!context.self_entity) {
+        return;
+    } else if (m_consumer) {
+        return m_consumer->value(value, *context.self_entity);
+    } else {
+        value = (void*)(context.self_entity);
+    }
+}
+
+const std::type_info* SelfEntityProvider::getType() const
+{
+    if (m_consumer) {
+        return m_consumer->getType();
+    } else {
+        return &typeid(const LocatedEntity*);
+    }
+}
+
 EntityTypeProvider::EntityTypeProvider(Consumer<TypeNode>* consumer)
 : ConsumingProviderBase<TypeNode, LocatedEntity>(consumer)
 {
@@ -345,6 +371,8 @@ Consumer<QueryContext>* ProviderFactory::createProviders(SegmentsList segments) 
         auto& first_attribute = segments.front().attribute;
         if (first_attribute == "entity") {
             return createEntityProvider(segments);
+        } else if (first_attribute == "self") {
+            return createSelfEntityProvider(segments);
         } else if (first_attribute == "types") {
             return createFixedTypeNodeProvider(segments);
         }
@@ -377,6 +405,14 @@ EntityProvider* ProviderFactory::createEntityProvider(SegmentsList segments) con
     }
     segments.pop_front();
     return new EntityProvider(createPropertyProvider(segments));
+}
+SelfEntityProvider* ProviderFactory::createSelfEntityProvider(SegmentsList segments) const
+{
+    if (segments.empty()){
+        return nullptr;
+    }
+    segments.pop_front();
+    return new SelfEntityProvider(createPropertyProvider(segments));
 }
 
 Consumer<LocatedEntity>* ProviderFactory::createPropertyProvider(SegmentsList segments) const

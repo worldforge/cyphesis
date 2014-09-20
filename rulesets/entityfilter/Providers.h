@@ -37,6 +37,9 @@ class Predicate;
 struct QueryContext {
         LocatedEntity& entity;
         std::map<std::string, Atlas::Message::Element> memory;
+
+        //This field can be used by client code to specify entity for "self.*" query
+        LocatedEntity* self_entity;
 };
 
 class TypedProvider {
@@ -185,6 +188,13 @@ class EntityProvider : public ConsumingProviderBase<LocatedEntity, QueryContext>
         virtual const std::type_info* getType() const;
 };
 
+class SelfEntityProvider : public ConsumingProviderBase<LocatedEntity, QueryContext> {
+    public:
+        SelfEntityProvider(Consumer<LocatedEntity>* consumer);
+        virtual void value(Atlas::Message::Element& value, const QueryContext& context) const;
+        virtual const std::type_info* getType() const;
+};
+
 class EntityTypeProvider : public ConsumingProviderBase<TypeNode, LocatedEntity> {
     public:
         EntityTypeProvider(Consumer<TypeNode>* consumer);
@@ -317,6 +327,7 @@ class ProviderFactory {
     protected:
         FixedTypeNodeProvider* createFixedTypeNodeProvider(SegmentsList segments) const;
         EntityProvider* createEntityProvider(SegmentsList segments) const;
+        SelfEntityProvider* createSelfEntityProvider(SegmentsList segments) const;
         OutfitEntityProvider* createOutfitEntityProvider(SegmentsList segments) const;
         BBoxProvider* createBBoxProvider(SegmentsList segments) const;
         Consumer<LocatedEntity>* createPropertyProvider(SegmentsList segments) const;
