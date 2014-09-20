@@ -87,10 +87,10 @@ HandlerResult RespawningProperty::delete_handler(LocatedEntity * e,
         Location new_loc;
         new_loc.m_velocity = Vector3D::ZERO();
         Character* character = dynamic_cast<Character*>(e);
+        //if it's a character we should check if it's externally controlled. If it's not
+        //we should put the character in limbo until an external mind is connected.
         if (character && (!character->m_externalMind || !character->m_externalMind->isLinked()) &&
                 BaseWorld::instance().getLimboLocation()) {
-            //if it's a character we should check if it's externally controlled. If it's not
-            //we should put the character in limbo until an external mind is connected.
             new_loc.m_loc = BaseWorld::instance().getLimboLocation();
             new_loc.m_pos = Point3D::ZERO();
             if (!m_entityLinkConnection) {
@@ -113,7 +113,7 @@ HandlerResult RespawningProperty::delete_handler(LocatedEntity * e,
         move->setArgs1(move_arg);
         res.push_back(move);
 
-        //We need to move the entity to the spawn point instead of deleting it.
+        //We need to move the entity to the spawn point, or to limbo, instead of deleting it.
         //This will effectively make the system ignore the Delete op.
         return OPERATION_BLOCKED;
     }
@@ -136,6 +136,11 @@ void RespawningProperty::entity_externalLinkChanged(LocatedEntity* entity) {
     move->setTo(entity->getId());
     move->setArgs1(move_arg);
     OpVector res;
+    //Note that we're bypassing the normal operations flow. This is because we want this movement to happen
+    //instantly, as the character is currently being attached to an external mind. We don't want the external mind
+    //to first get information about the entity being contained in limbo, and then just thereafter being moved to
+    //a spawn, since that would just make it harder for the client. Instead we want it to appear to the client
+    //as if the entity always had been at the spawn point.
     entity->operation(move, res);
     for (auto& op : res) {
         BaseWorld::instance().message(op, *entity);

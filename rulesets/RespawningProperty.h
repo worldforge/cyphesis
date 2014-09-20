@@ -23,11 +23,19 @@
 #include "common/Property.h"
 #include <sigc++/connection.h>
 
-/// \brief Will make entities respawn at a spawn point when deleted.
+/// \brief Will make entities respawn at a spawn point when deleted, or to "limbo".
 ///
 /// This property will intercept the Delete op, and instead of deleting the entity it
 /// will respawn it at the specified spawn point. This should for example be applied
 /// to player entities, which never should be deleted but instead respawn when killed.
+///
+/// The property also has the additional feature of putting entities that dies without
+/// having any externally controlling client into "limbo". While in the "limbo" state
+/// nothing happens to the entity. First when the entity again becomes externally controlled
+/// is it moved back to the spawn.
+/// The reason for doing this is that we don't want those entities/characters that have
+/// been abandoned to litter the world. This way, if a character has been abandoned it
+/// will end up in limbo, but not bother the rest of the world.
 ///
 /// The property accepts a string, which is the name of a spawn point.
 ///
@@ -53,8 +61,15 @@ class RespawningProperty : public Property<std::string>
 
     private:
 
+        /// \brief Keeps a connection to the signal which is emitted when the entity
+        /// gets externally controlled. This is used when the entity has been put in
+        /// limbo, for which we'll have to respawn the entity when it regains external
+        /// control.
         sigc::connection m_entityLinkConnection;
 
+        /// \brief Called when a character that is in limbo gets externally controlled.
+        ///
+        /// The character should then return to the world.
         void entity_externalLinkChanged(LocatedEntity* entity);
 
 
