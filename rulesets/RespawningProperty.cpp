@@ -48,6 +48,14 @@ RespawningProperty::~RespawningProperty()
 void RespawningProperty::install(LocatedEntity * owner, const std::string & name)
 {
     owner->installDelegate(Atlas::Objects::Operation::DELETE_NO, name);
+
+    //Check if we're already in limbo.
+    Character* character = dynamic_cast<Character*>(owner);
+    if (character && BaseWorld::instance().getLimboLocation() && character->m_location.m_loc == BaseWorld::instance().getLimboLocation()) {
+        if (!m_entityLinkConnection) {
+            m_entityLinkConnection = character->externalLinkChanged.connect(sigc::bind(sigc::mem_fun(*this, &RespawningProperty::entity_externalLinkChanged), owner));
+        }
+    }
 }
 
 void RespawningProperty::remove(LocatedEntity *owner, const std::string & name)
