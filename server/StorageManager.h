@@ -19,8 +19,12 @@
 #ifndef SERVER_STORAGE_MANAGER_H
 #define SERVER_STORAGE_MANAGER_H
 
-#include <common/OperationRouter.h>
-#include <modules/EntityRef.h>
+#include "Persistence.h"
+
+#include "common/OperationRouter.h"
+#include "modules/EntityRef.h"
+
+#include <sigc++/trackable.h>
 
 #include <deque>
 #include <string>
@@ -36,7 +40,7 @@ class MindInspector;
 ///
 /// This class has one instance which is the core of the world's persistent
 /// storage in whatever data store is being used.
-class StorageManager {
+class StorageManager : public sigc::trackable {
   protected:
     typedef std::deque<EntityRef> Entitystore;
     typedef std::deque<long> Idstore;
@@ -50,13 +54,17 @@ class StorageManager {
     /// \brief Queue of IDs of entities that are destroyed
     Idstore m_destroyedEntities;
 
-    /// \brief Handles inpection of minds.
+    /// \brief Handles inspection of minds.
     MindInspector* m_mindInspector;
 
     /// \brief Keeps track of outstanding requests for thoughts.
     ///
     /// Value stored is entity id.
     std::set<std::string> m_outstandingThoughtRequests;
+
+    std::deque<Persistence::AddCharacterData> m_addedCharacters;
+
+    std::deque<std::string> m_deletedCharacters;
 
     int m_insertEntityCount;
     int m_updateEntityCount;
@@ -98,6 +106,9 @@ class StorageManager {
 
     /// \brief Callback for m_mindInspector when thoughts arrive.
     void thoughtsReceived(const std::string& entityId, const Operation& thoughts);
+
+    bool persistance_characterAdded(const Persistence::AddCharacterData& data);
+    bool persistance_characterDeleted(const std::string& entityId);
 
   public:
     StorageManager(WorldRouter &);

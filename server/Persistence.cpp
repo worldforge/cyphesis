@@ -252,12 +252,30 @@ void Persistence::registerCharacters(Account & ac,
 
 void Persistence::addCharacter(const Account & ac, const LocatedEntity & e)
 {
-    m_db.createRelationRow(m_characterRelation, ac.getId(), e.getId());
+    //We can't insert the connection directly into the database, since the entity row
+    //might not have been created. We'll instead emit a signal and rely on the StorageManager doing this for us.
+    AddCharacterData data;
+    data.account_id = ac.getId();
+    data.entity_id = e.getId();
+
+    bool handled = characterAdded(data);
+    if (!handled) {
+        log(WARNING, String::compose("Nothing handled the character with id %1 connected to account with id %2.", e.getId(), ac.getId()));
+    }
+
 }
 
 void Persistence::delCharacter(const std::string & id)
 {
-    m_db.removeRelationRowByOther(m_characterRelation, id);
+    bool handled = characterDeleted(id);
+    if (!handled) {
+        log(WARNING, String::compose("Nothing handled the character with id %1 being deleted.", id));
+    }
+}
+
+const std::string& Persistence::getCharacterAccountRelationName() const
+{
+    return m_characterRelation;
 }
 
 int Persistence::getRules(std::map<std::string, Root> & t)

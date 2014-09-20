@@ -21,6 +21,8 @@
 
 #include <Atlas/Objects/ObjectsFwd.h>
 
+#include <sigc++/signal.h>
+
 #include <string>
 #include <map>
 
@@ -40,6 +42,22 @@ class Persistence {
 
     static Persistence * m_instance;
   public:
+
+    /// \brief Data about a character being tied to an account.
+    ///
+    /// This is used when signaling that an entity has been tied to an account.
+    /// Since this operation is dependent on the entity having been persisted to the database
+    /// we can't do it here; instead we rely on the StorageManager to do it.
+    /// However, the interface between these two components isn't the smoothest, so we'll
+    /// have to do it through signals.
+    struct AddCharacterData {
+        /// \brief The id of the character entity.
+        std::string entity_id;
+
+        /// \brief The id of the account.
+        std::string account_id;
+    };
+
     Database & m_db;
 
     static Persistence * instance();
@@ -60,6 +78,22 @@ class Persistence {
     int updateRule(const Atlas::Objects::Root & rule,
                    const std::string & key);
     int clearRules();
+
+    /// \brief Gets the name of the DB relation tying Accounts to Entities.
+    const std::string& getCharacterAccountRelationName() const;
+
+    /// \brief Emitted when a character has been tied to an account.
+    ///
+    /// It's expected that the StorageManager should handle this.
+    /// Any listener should return "true" if the action was properly handled.
+    sigc::signal<bool, const AddCharacterData&> characterAdded;
+
+    /// \brief Emitted when a character has been deleted, and the
+    /// tie to any account should be removed.
+    ///
+    /// It's expected that the StorageManager should handle this.
+    /// Any listener should return "true" if the action was properly handled.
+    sigc::signal<bool, const std::string&> characterDeleted;
 };
 
 #endif // SERVER_PERSISTENCE_H
