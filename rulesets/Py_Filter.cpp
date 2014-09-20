@@ -47,6 +47,63 @@ static PyObject * match_entity(PyFilter * self, PyObject * py_entity)
     }
 }
 
+///\This method is used to search the "contains" property of an entity,
+///returning a list of entities that match a given filter
+///
+///This is useful when the client code knows that the query always requires
+///to search within a contains property (i.e. inventory of a given entity)
+///
+///@param self - filter used to match entities
+///@param py_entity - an entity whose "contains" property to search
+PyObject* search_contains(PyFilter* self, PyEntity* py_entity){
+#ifndef NDEBUG
+    if (self->m_filter == NULL) {
+        PyErr_SetString(PyExc_AssertionError,
+                        "NULL Filter in Entity_filter.search_contains");
+        return NULL;
+    }
+#endif // NDEBUG
+
+
+    if (!PyEntity_Check(py_entity)){
+        return NULL;
+    }
+    LocatedEntity* ent = py_entity->m_entity.l;
+
+    if(!ent->m_contains){
+        return PyList_New(0);
+    }
+    //Perform actual search
+    auto iter = ent->m_contains->begin();
+    auto iter_end = ent->m_contains->end();
+
+    std::vector<LocatedEntity*> res;
+
+    for (;iter != iter_end; ++iter){
+        if((**iter).isVisible() && self->m_filter->match(**iter)){
+            res.push_back(*iter);
+        }
+    }
+
+    //Create a python list an fill it with the entities we got
+    //FIXME: the code below is reused in multiple places
+    PyObject * list = PyList_New(res.size());
+    if (list == NULL) {
+        return NULL;
+    }
+    std::vector<LocatedEntity*>::const_iterator Iend = res.end();
+    int i = 0;
+    for (std::vector<LocatedEntity*>::const_iterator I = res.begin(); I != Iend; ++I, ++i) {
+        PyObject * thing = wrapEntity(*I);
+        if (thing == NULL) {
+            Py_DECREF(list);
+            return NULL;
+        }
+        PyList_SetItem(list, i, thing);
+    }
+    return list;
+}
+
 static void Filter_dealloc(PyFilter *self)
 {
     if (self->m_filter != NULL) {
@@ -57,6 +114,7 @@ static void Filter_dealloc(PyFilter *self)
 
 static PyMethodDef Filter_methods[] = {
     {"match_entity",        (PyCFunction)match_entity,       METH_O},
+    {"search_contains",     (PyCFunction)search_contains,    METH_O},
     {NULL,                  NULL}           // sentinel
 };
 
