@@ -31,6 +31,7 @@
 #include "common/log.h"
 #include "common/globals.h"
 #include "common/Monitors.h"
+#include "common/compose.hpp"
 #include <varconf/config.h>
 
 #include <cstring>
@@ -49,7 +50,7 @@ static const bool debug_flag = false;
 /// @param svr Reference to the object that manages all socket communication.
 CommMetaClient::CommMetaClient(io_service& ioService) :
         mSocket(ioService, ip::udp::endpoint(ip::udp::v4(), 0)), mKeepaliveTimer(
-                ioService), mResolver(ioService), m_heartbeatTime(300)
+                ioService), mResolver(ioService), mHasEndpoint(false), m_heartbeatTime(300)
 {
 }
 
@@ -83,6 +84,7 @@ int CommMetaClient::setup(const std::string & mserver)
     mResolver.async_resolve(query,
             [this](boost::system::error_code ec, ip::udp::resolver::iterator iterator ) {
                 if (!ec) {
+                    mHasEndpoint = true;
                     mDestination = *iterator;
                     this->metaserverKeepalive();
                     this->do_receive();
@@ -121,6 +123,7 @@ void CommMetaClient::keepalive()
                     [this](boost::system::error_code ec, ip::udp::resolver::iterator iterator ) {
                         if (!ec) {
                             mDestination = *iterator;
+                            mHasEndpoint = true;
                             this->metaserverKeepalive();
                         }
                     });
@@ -194,13 +197,19 @@ void CommMetaClient::metaserverTerminate()
 {
 
     mKeepaliveTimer.cancel();
-    auto term = std::make_shared<MetaServerPacket>();
+    if (mHasEndpoint) {
+        try {
+        auto term = std::make_shared<MetaServerPacket>();
 
-    term->setPacketType(NMT_TERMINATE);
+        term->setPacketType(NMT_TERMINATE);
 
-    //Do a blocking send as we're calling this when we're shutting down.
-    mSocket.send_to(buffer(term->getBuffer().data(), term->getSize()), mDestination);
-
+        //Do a blocking send as we're calling this when we're shutting down.
+            mSocket.send_to(buffer(term->getBuffer().data(), term->getSize()), mDestination);
+        } catch (const std::exception& e) {
+            //This isn't fatal
+            log(INFO, String::compose("Got error when trying to send data to the metaserver at shutdown: %1", e.what()));
+        }
+    }
 }
 
 void CommMetaClient::metaserverAttribute(const std::string& k, const std::string & v )

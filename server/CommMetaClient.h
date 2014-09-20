@@ -36,6 +36,8 @@ class CommMetaClient {
     boost::asio::deadline_timer mKeepaliveTimer;
     boost::asio::ip::udp::resolver mResolver;
     boost::asio::ip::udp::endpoint mDestination;
+    /// \brief True if an endpoint has been resolved.
+    bool mHasEndpoint;
 
     std::array<char, MAX_PACKET_BYTES> mReadBuffer;
 
