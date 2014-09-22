@@ -236,7 +236,8 @@ void Domain::calculateVisibility(std::vector<Root>& appear, std::vector<Root>& d
     const Point3D new_pos = relativePos(parent.m_location, moved_entity.m_location);
     const Point3D old_pos = relativePos(parent.m_location, old_loc);
 
-    assert(m_entity.m_contains != nullptr);
+    //For now we'll only consider movement within the same loc. This should change as we extend the domain code.
+    assert(parent.m_contains != nullptr);
     for (const LocatedEntity* other: *parent.m_contains) {
         if (other == &moved_entity) {
             continue;
@@ -294,7 +295,6 @@ void Domain::calculateVisibility(std::vector<Root>& appear, std::vector<Root>& d
 }
 
 
-
 void Domain::processVisibilityForMovedEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res) {
     debug(std::cout << "testing range" << std::endl;);
     std::vector<Root> appear, disappear;
@@ -322,6 +322,39 @@ void Domain::processVisibilityForMovedEntity(const LocatedEntity& moved_entity, 
         res.push_back(d);
     }
 }
+
+void Domain::processDisappearanceOfEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res) {
+
+    float fromSquSize = old_loc.squareBoxSize();
+    Anonymous this_ent;
+    this_ent->setId(moved_entity.getId());
+    this_ent->setStamp(moved_entity.getSeq());
+
+    //We need to get the position of the moved entity in relation to the parent.
+    const Point3D old_pos = relativePos(m_entity.m_location, old_loc);
+
+    assert(m_entity.m_contains != nullptr);
+    for (const LocatedEntity* other: *m_entity.m_contains) {
+        //No need to check if we iterate over ourselved; that won't happen if we've disappeared
+
+        assert(other != nullptr);
+
+        // Build appear and disappear lists, and send disappear operations
+        // to perceptive entities saying that we are disappearing
+        if (other->isPerceptive()) {
+            float old_dist = squareDistance(other->m_location.pos(), old_pos);
+            if ((fromSquSize / old_dist) > consts::square_sight_factor) {
+                // Send operation to the entity in question so it
+                // knows it is losing sight of us.
+                Disappearance d;
+                d->setArgs1(this_ent);
+                d->setTo(other->getId());
+                res.push_back(d);
+            }
+        }
+    }
+}
+
 
 float Domain::checkCollision(LocatedEntity& entity, CollisionData& collisionData)
 {

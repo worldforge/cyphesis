@@ -126,6 +126,8 @@ class Domain {
      */
     void processVisibilityForMovedEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res);
 
+    void processDisappearanceOfEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res);
+
     float checkCollision(LocatedEntity& entity, CollisionData& collisionData);
 
 };
