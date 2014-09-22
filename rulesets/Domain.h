@@ -126,8 +126,20 @@ class Domain {
      */
     void processVisibilityForMovedEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res);
 
+    /**
+     * @brief Process an entity being moved out of the domain, and thus disappearing.
+     * @param moved_entity
+     * @param old_loc
+     * @param res
+     */
     void processDisappearanceOfEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res);
 
+    /**
+     * Checks any upcoming collisions for the supplied entity.
+     * @param entity The entity which is moving.
+     * @param collisionData Collision data, to be populated.
+     * @return Seconds until either a collision will occur, or we should check for collisions again.
+     */
     float checkCollision(LocatedEntity& entity, CollisionData& collisionData);
 
 };
