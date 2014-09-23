@@ -247,7 +247,6 @@ void Entity::destroy()
 {
     assert(m_location.m_loc != 0);
     assert(m_location.m_loc->m_contains != 0);
-    LocatedEntitySet & loc_contains = *m_location.m_loc->m_contains;
     if (m_contains != 0) {
         LocatedEntitySet::const_iterator Iend = m_contains->end();
         for (LocatedEntitySet::const_iterator I = m_contains->begin(); I != Iend; ++I) {
