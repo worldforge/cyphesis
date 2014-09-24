@@ -35,29 +35,12 @@ class Location;
 /// visibility calculations, collision detection and physics.
 /// Motion objects interact with the movement domain.
 class Domain {
-  private:
+  protected:
 
     /**
      * @brief The entity to which this domain belongs.
      */
     LocatedEntity& m_entity;
-
-    /// Count of references held by other objects to this domain
-    int m_refCount;
-
-    /**
-     * @brief Calculates visibility changes for the moved entity, processing the children of the "parent" parameter.
-     * @param appear A list of appear ops, to be filled.
-     * @param disappear A list of disappear ops, to be filled.
-     * @param this_ent Atlas entity representing the entity that was moved.
-     * @param parent The parent entity, which children will be iterated over.
-     * @param moved_entity The entity that was moved.
-     * @param old_loc The old location.
-     * @param res
-     */
-    void calculateVisibility(std::vector<Atlas::Objects::Root>& appear, std::vector<Atlas::Objects::Root>& disappear, Atlas::Objects::Entity::Anonymous& this_ent,
-            const LocatedEntity& parent, const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res) const;
-
 
   public:
 
@@ -77,22 +60,10 @@ class Domain {
 
     virtual ~Domain();
 
-    /// \brief Increment the reference count on this domain
-    void incRef() {
-        ++m_refCount;
-    }
-
-    /// \brief Decrement the reference count on this domain
-    void decRef() {
-        if (--m_refCount <= 0) {
-            delete this;
-        }
-    }
-
     virtual float constrainHeight(LocatedEntity *, const Point3D &,
-                                  const std::string &);
+                                  const std::string &) = 0;
 
-    virtual void tick(double t);
+    virtual void tick(double t) = 0;
 
     /**
      * @brief Lets one entity look at another, calculating whether this can be done, and what children also can be seen.
@@ -102,7 +73,7 @@ class Domain {
      * @param originalLookOp The originating Look operation.
      * @param res
      */
-    void lookAtEntity(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity, const Operation & originalLookOp, OpVector& res) const;
+    virtual void lookAtEntity(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity, const Operation & originalLookOp, OpVector& res) const = 0;
 
     /**
      * @brief Checks if the observing Entity can see the observed entity.
@@ -113,7 +84,7 @@ class Domain {
      * @param observedEntity The entity being looked at.
      * @return True if the observer entity can see the observed entity.
      */
-    bool isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const;
+    virtual bool isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const = 0;
 
     /**
      * @brief Process visibility operation for an entity that has been moved.
@@ -124,7 +95,7 @@ class Domain {
      * @param old_loc The old location of the entity.
      * @param res
      */
-    void processVisibilityForMovedEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res);
+    virtual void processVisibilityForMovedEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res) = 0;
 
     /**
      * @brief Process an entity being moved out of the domain, and thus disappearing.
@@ -132,7 +103,7 @@ class Domain {
      * @param old_loc
      * @param res
      */
-    void processDisappearanceOfEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res);
+    virtual void processDisappearanceOfEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res) = 0;
 
     /**
      * Checks any upcoming collisions for the supplied entity.
@@ -140,7 +111,7 @@ class Domain {
      * @param collisionData Collision data, to be populated.
      * @return Seconds until either a collision will occur, or we should check for collisions again.
      */
-    float checkCollision(LocatedEntity& entity, CollisionData& collisionData);
+    virtual float checkCollision(LocatedEntity& entity, CollisionData& collisionData) = 0;
 
 };
 

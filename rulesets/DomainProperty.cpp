@@ -21,7 +21,8 @@
 #endif
 
 #include "DomainProperty.h"
-#include "Domain.h"
+#include "PhysicalDomain.h"
+#include "VoidDomain.h"
 #include "LocatedEntity.h"
 
 DomainProperty::DomainProperty()
@@ -37,14 +38,19 @@ DomainProperty::DomainProperty(const DomainProperty& rhs)
 void DomainProperty::remove(LocatedEntity * entity, const std::string &)
 {
     delete m_domain;
+    m_domain = nullptr;
     entity->setFlags(~entity_domain);
 }
 
 void DomainProperty::apply(LocatedEntity * entity)
 {
-    if (m_data) {
+    if (m_data != "") {
         if (!m_domain) {
-            m_domain = new Domain(*entity);
+            if (m_data == "physical") {
+                m_domain = new PhysicalDomain(*entity);
+            } else if (m_data == "void") {
+                m_domain = new VoidDomain(*entity);
+            }
         }
         entity->setFlags(entity_domain);
     } else {

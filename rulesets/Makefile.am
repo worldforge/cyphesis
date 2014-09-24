@@ -65,7 +65,9 @@ librulesetentity_a_SOURCES = \
 			     RespawningProperty.cpp RespawningProperty.h \
 			     DefaultLocationProperty.cpp DefaultLocationProperty.h \
 			     DomainProperty.cpp DomainProperty.h \
-			     LimboProperty.cpp LimboProperty.h
+			     LimboProperty.cpp LimboProperty.h \
+			     PhysicalDomain.cpp PhysicalDomain.h \
+			     VoidDomain.cpp VoidDomain.h
 
 
 librulesetmind_a_SOURCES = BaseMind.cpp BaseMind.h \

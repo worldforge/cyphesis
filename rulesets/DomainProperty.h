@@ -27,9 +27,13 @@ class Domain;
  *
  * This makes the entity responsible for physics and sight checking, effectively giving the entity
  * it's own space.
- * Normally you wouldn't use nested domains, since the effect (currently) are undefined.
+ * Normally you wouldn't use nested domains, since the effects (currently) are undefined.
+ *
+ * The data defines the kind of domain. The available options are:
+ * * void: no movement or sight allowed
+ * * physical: movement and sights behave like in the real world
  */
-class DomainProperty : public Property<int>
+class DomainProperty : public Property<std::string>
 {
     public:
 
