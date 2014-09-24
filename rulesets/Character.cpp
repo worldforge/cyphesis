@@ -1010,8 +1010,12 @@ void Character::RelayOperation(const Operation & op, OpVector & res)
             noop->setRefno(I->second.serialno);
             noop->setTo(getId());
             noop->setFrom(getId());
-            sendMind(noop, res);
+            OpVector mres;
+            sendMind(noop, mres);
             m_relays.erase(I);
+            for (auto& resOp : mres) {
+                filterExternalOperation(resOp);
+            }
         }
     } else {
         if (op->getArgs().empty()) {
@@ -1055,9 +1059,12 @@ void Character::RelayOperation(const Operation & op, OpVector & res)
             //This of course hinges on the mind client code making sure to handle it correctly, given
             //its refno.
             relayedOp->setRefno(I->second.serialno);
-            sendMind(relayedOp, res);
+            OpVector mres;
+            sendMind(relayedOp, mres);
             m_relays.erase(I);
-
+            for (auto& resOp : mres) {
+                filterExternalOperation(resOp);
+            }
         } else {
 
             //Check if the mind should handle the relayed operation; else we'll just let the
