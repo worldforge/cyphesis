@@ -64,8 +64,8 @@ PyObject* search_contains(PyFilter* self, PyEntity* py_entity){
     }
 #endif // NDEBUG
 
-
-    if (!PyEntity_Check(py_entity)){
+    //This function is often used on mind's own entity, in which case, the type is PyMind
+    if (!PyMind_Check(py_entity) && !PyEntity_Check(py_entity)){
         return NULL;
     }
     LocatedEntity* ent = py_entity->m_entity.l;
