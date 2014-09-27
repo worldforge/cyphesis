@@ -195,15 +195,17 @@ class move_it_outof_me(Goal):
                       self.is_it_not_with_me,
                       [self.drop_it])
         self.what=what
+        self.what_filter = get_filter(what)
     def is_it_not_with_me(self, me):
-        if me.things.has_key(self.what)==0: return 0
-        what=me.things[self.what][0]
-        return what.location.parent.id!=me.id
+        things = self.what_filter.search_contains(me)
+        return len(things) == 0
     def drop_it(self, me):
-        if me.things.has_key(self.what)==0: return
-        what=me.things[self.what][0]
-        me.remove_thing(what)
-        return Operation("move", Entity(what.id, location=me.location))
+        things = self.what_filter.search_contains(me)
+        if things > 0:
+            me.remove_thing(things[0])
+            return Operation("move", Entity(things[0].id, location=me.location))
+        else:
+            return
         
 ############################ MOVE ME TO THING ##################################
 
