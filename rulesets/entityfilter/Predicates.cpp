@@ -12,12 +12,12 @@ ComparePredicate::ComparePredicate(const Consumer<QueryContext>* lhs,
                                    Comparator comparator) :
         m_lhs(lhs), m_rhs(rhs), m_comparator(comparator)
 {
+    //make sure rhs and lhs exist
+    if (!m_lhs || !m_rhs) {
+        throw std::invalid_argument(
+                "At least one side of the comparison operator is invalid");
+    }
     if (m_comparator == Comparator::INSTANCE_OF) {
-        //make sure rhs and lhs exist
-        if (!m_lhs || !m_rhs) {
-            throw std::invalid_argument(
-                    "One of the types for 'instanceof' operator doesn't exist");
-        }
         //make sure that both providers return TypeNode intances
         if ((m_lhs->getType() != &typeid(const TypeNode*))
                 || (m_rhs->getType() != &typeid(const TypeNode*))) {
