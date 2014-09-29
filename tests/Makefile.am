@@ -113,7 +113,7 @@ PYTHON_TESTS = python_class
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_builddir) \
            -DTESTDATADIR=\"$(abs_top_srcdir)/tests/data\"
 
-LIBS = $(COMMON_LIBS) $(PGSQL_LIBS) $(PYTHON_LIBS) $(PYTHON_UTIL_LIBS) $(MATH_LIBS)
+LIBS = $(COMMON_LIBS) $(PGSQL_LIBS) $(PYTHON_LIBS) $(PYTHON_UTIL_LIBS) $(MATH_LIBS) pthreadforce.o
 
 TESTS = $(TEST_TESTS) \
         $(COMMON_TESTS) $(PHYSICS_TESTS) $(MODULE_TESTS) $(RULESETS_TESTS) \
@@ -133,6 +133,10 @@ noinst_HEADERS = TestBase.h null_stream.h \
                  Sink.h Property_stub_impl.h
 dist-hook:
 	(cd $(top_srcdir)/tests && tar cf - data) | (cd $(distdir) && tar xf -)
+
+#We want to build our object file which forces inclusion of pthreads
+noinst_LIBRARIES = libpthreadforce.a
+libpthreadforce_a_SOURCES = pthreadforce.cpp
 
 # TEST_TESTS
 
