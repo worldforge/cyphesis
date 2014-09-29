@@ -442,6 +442,13 @@ void LocatedEntity::merge(const Atlas::Message::MapType & ent)
         setAttr(key, I.second);
     }
 }
+void LocatedEntity::addChild(LocatedEntity& childEntity)
+{
+}
+
+void LocatedEntity::removeChild(LocatedEntity& childEntity)
+{
+}
 
 Router::Router(const std::string & id, long intId) : m_id(id), m_intId(intId)
 {

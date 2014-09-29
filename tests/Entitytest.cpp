@@ -32,11 +32,23 @@
 #include "rulesets/AtlasProperties.h"
 #include "rulesets/Domain.h"
 #include "rulesets/Script.h"
+#include "rulesets/DomainProperty.h"
 
 #include "common/id.h"
 #include "common/Property_impl.h"
 #include "common/PropertyFactory_impl.h"
 #include "common/TypeNode.h"
+
+#include "stubs/common/stubRouter.h"
+#include "stubs/common/stubCustom.h"
+#include "stubs/common/stubTypeNode.h"
+#include "stubs/modules/stubLocation.h"
+
+#include "stubs/rulesets/stubContainsProperty.h"
+#include "stubs/rulesets/stubSoftProperty.h"
+#include "stubs/common/stubProperty.h"
+#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rulesets/stubDomainProperty.h"
 
 #include <cstdlib>
 
@@ -277,128 +289,6 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
     return 0;
 }
 
-namespace Atlas { namespace Objects { namespace Operation {
-int ACTUATE_NO = -1;
-int ATTACK_NO = -1;
-int EAT_NO = -1;
-int NOURISH_NO = -1;
-int SETUP_NO = -1;
-int TICK_NO = -1;
-int UPDATE_NO = -1;
-int RELAY_NO = -1;
-} } }
-
-LocatedEntity::LocatedEntity(const std::string & id, long intId) :
-               Router(id, intId),
-               m_refCount(0), m_seq(0),
-               m_script(0), m_type(0), m_flags(0), m_contains(0)
-{
-}
-
-LocatedEntity::~LocatedEntity()
-{
-}
-
-bool LocatedEntity::hasAttr(const std::string & name) const
-{
-    return false;
-}
-
-int LocatedEntity::getAttr(const std::string & name,
-                           Atlas::Message::Element & attr) const
-{
-    return -1;
-}
-
-int LocatedEntity::getAttrType(const std::string & name,
-                               Atlas::Message::Element & attr,
-                               int type) const
-{
-    return -1;
-}
-
-PropertyBase * LocatedEntity::setAttr(const std::string & name,
-                                      const Atlas::Message::Element & attr)
-{
-    return 0;
-}
-
-const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
-{
-    return 0;
-}
-
-PropertyBase * LocatedEntity::modProperty(const std::string & name)
-{
-    return 0;
-}
-
-PropertyBase * LocatedEntity::setProperty(const std::string & name,
-                                          PropertyBase * prop)
-{
-    return 0;
-}
-
-void LocatedEntity::installDelegate(int, const std::string &)
-{
-}
-
-void LocatedEntity::removeDelegate(int class_no, const std::string & delegate)
-{
-}
-
-void LocatedEntity::destroy()
-{
-}
-
-Domain * LocatedEntity::getMovementDomain()
-{
-    return 0;
-}
-
-void LocatedEntity::sendWorld(const Operation & op)
-{
-}
-
-void LocatedEntity::onContainered(const LocatedEntity*)
-{
-}
-
-void LocatedEntity::onUpdated()
-{
-}
-
-void LocatedEntity::makeContainer()
-{
-    if (m_contains == 0) {
-        m_contains = new LocatedEntitySet;
-    }
-}
-
-void LocatedEntity::merge(const MapType & ent)
-{
-}
-
-Domain * Domain::m_instance = new Domain();
-
-Domain::Domain() : m_refCount(0)
-{
-}
-
-Domain::~Domain()
-{
-}
-
-float Domain::constrainHeight(LocatedEntity * parent,
-                              const Point3D & pos,
-                              const std::string & mode)
-{
-    return 0.f;
-}
-
-void Domain::tick(double t)
-{
-}
 
 void addToEntity(const Point3D & p, std::vector<double> & vd)
 {
@@ -406,23 +296,6 @@ void addToEntity(const Point3D & p, std::vector<double> & vd)
     vd[0] = p[0];
     vd[1] = p[1];
     vd[2] = p[2];
-}
-
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
 }
 
 BaseWorld * BaseWorld::m_instance = 0;
@@ -481,173 +354,6 @@ void Script::hook(const std::string & function, LocatedEntity * entity)
 {
 }
 
-void Location::addToMessage(MapType & omap) const
-{
-}
-
-Location::Location() : m_loc(0)
-{
-}
-
-void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
-{
-}
-
-TypeNode::~TypeNode()
-{
-    PropertyDict::const_iterator I = m_defaults.begin();
-    PropertyDict::const_iterator Iend = m_defaults.end();
-    for (; I != Iend; ++I) {
-        delete I->second;
-    }
-}
-
-IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),
-                                                   m_data(data)
-{
-}
-
-int IdProperty::get(Atlas::Message::Element & e) const
-{
-    return 0;
-}
-
-void IdProperty::set(const Atlas::Message::Element & e)
-{
-}
-
-void IdProperty::add(const std::string & key,
-                     Atlas::Message::MapType & ent) const
-{
-}
-
-void IdProperty::add(const std::string & key,
-                     const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-IdProperty * IdProperty::copy() const
-{
-    return 0;
-}
-
-PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
-{
-}
-
-PropertyBase::~PropertyBase()
-{
-}
-
-void PropertyBase::install(LocatedEntity *, const std::string & name)
-{
-}
-
-void PropertyBase::remove(LocatedEntity *, const std::string & name)
-{
-}
-
-void PropertyBase::apply(LocatedEntity *)
-{
-}
-
-void PropertyBase::add(const std::string & s,
-                       Atlas::Message::MapType & ent) const
-{
-    get(ent[s]);
-}
-
-void PropertyBase::add(const std::string & s,
-                       const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-HandlerResult PropertyBase::operation(LocatedEntity *,
-                                      const Operation &,
-                                      OpVector &)
-{
-    return OPERATION_IGNORED;
-}
-
-template<>
-void Property<int>::set(const Atlas::Message::Element & e)
-{
-    if (e.isInt()) {
-        this->m_data = e.asInt();
-    }
-}
-
-template<>
-void Property<double>::set(const Atlas::Message::Element & e)
-{
-    if (e.isNum()) {
-        this->m_data = e.asNum();
-    }
-}
-
-template<>
-void Property<std::string>::set(const Atlas::Message::Element & e)
-{
-    if (e.isString()) {
-        this->m_data = e.String();
-    }
-}
-
-template class Property<int>;
-template class Property<double>;
-template class Property<std::string>;
-
-SoftProperty::SoftProperty()
-{
-}
-
-SoftProperty::SoftProperty(const Atlas::Message::Element & data) :
-              PropertyBase(0), m_data(data)
-{
-}
-
-int SoftProperty::get(Atlas::Message::Element & val) const
-{
-    val = m_data;
-    return 0;
-}
-
-void SoftProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-SoftProperty * SoftProperty::copy() const
-{
-    return new SoftProperty(*this);
-}
-
-ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
-      PropertyBase(per_ephem), m_data(data)
-{
-}
-
-int ContainsProperty::get(Atlas::Message::Element & e) const
-{
-    return 0;
-}
-
-void ContainsProperty::set(const Atlas::Message::Element & e)
-{
-}
-
-void ContainsProperty::add(const std::string & s,
-                           const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-ContainsProperty * ContainsProperty::copy() const
-{
-    return 0;
-}
 
 PropertyKit::~PropertyKit()
 {

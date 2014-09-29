@@ -168,5 +168,15 @@ void Character::sendMind(const Operation & op, OpVector & res)
 {
 }
 
+int Character::linkExternal(Link * link)
+{
+    return 0;
+}
+
+int Character::unlinkExternal(Link*)
+{
+    return 0;
+}
+
 
 #endif /* MOCKCHARACTER_H_ */

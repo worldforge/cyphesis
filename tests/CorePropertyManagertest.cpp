@@ -233,6 +233,8 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "rulesets/ImmortalProperty.h"
 #include "rulesets/RespawningProperty.h"
 #include "rulesets/DefaultLocationProperty.h"
+#include "rulesets/LimboProperty.h"
+#include "rulesets/DomainProperty.h"
 
 #include "common/const.h"
 #include "common/globals.h"
@@ -259,6 +261,8 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "stubs/rulesets/stubTasksProperty.h"
 #include "stubs/rulesets/stubSpawnProperty.h"
 #include "stubs/rulesets/stubDefaultLocationProperty.h"
+#include "stubs/rulesets/stubLimboProperty.h"
+#include "stubs/rulesets/stubDomainProperty.h"
 
 
 Account::Account(Connection * conn,
@@ -821,96 +825,7 @@ void Entity::callOperation(const Operation & op, OpVector & res)
 {
 }
 
-LocatedEntity::LocatedEntity(const std::string & id, long intId) :
-               Router(id, intId),
-               m_refCount(0), m_seq(0),
-               m_script(0), m_type(0), m_flags(0), m_contains(0)
-{
-}
-
-LocatedEntity::~LocatedEntity()
-{
-}
-
-bool LocatedEntity::hasAttr(const std::string & name) const
-{
-    return false;
-}
-
-int LocatedEntity::getAttr(const std::string & name,
-                           Atlas::Message::Element & attr) const
-{
-    return -1;
-}
-
-int LocatedEntity::getAttrType(const std::string & name,
-                               Atlas::Message::Element & attr,
-                               int type) const
-{
-    return -1;
-}
-
-PropertyBase * LocatedEntity::setAttr(const std::string & name,
-                                      const Atlas::Message::Element & attr)
-{
-    return 0;
-}
-
-const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
-{
-    return 0;
-}
-
-PropertyBase * LocatedEntity::modProperty(const std::string & name)
-{
-    return 0;
-}
-
-PropertyBase * LocatedEntity::setProperty(const std::string & name,
-                                          PropertyBase * prop)
-{
-    return 0;
-}
-
-void LocatedEntity::installDelegate(int, const std::string &)
-{
-}
-
-void LocatedEntity::removeDelegate(int class_no, const std::string & delegate)
-{
-}
-
-void LocatedEntity::destroy()
-{
-}
-
-Domain * LocatedEntity::getMovementDomain()
-{
-    return 0;
-}
-
-void LocatedEntity::sendWorld(const Operation & op)
-{
-}
-
-void LocatedEntity::onContainered(const LocatedEntity*)
-{
-}
-
-void LocatedEntity::onUpdated()
-{
-}
-
-void LocatedEntity::makeContainer()
-{
-    if (m_contains == 0) {
-        m_contains = new LocatedEntitySet;
-    }
-}
-
-void LocatedEntity::merge(const MapType & ent)
-{
-}
+#include "stubs/rulesets/stubLocatedEntity.h"
 
 EntityProperty::EntityProperty()
 {
@@ -1317,42 +1232,8 @@ void Movement::reset()
 {
 }
 
-Motion::Motion(LocatedEntity & body) : m_entity(body), m_serialno(0),
-                                m_collision(false)
-{
-}
+#include "stubs/rulesets/stubMotion.h"
 
-Motion::~Motion()
-{
-}
-
-float Motion::checkCollisions()
-{
-    return consts::move_tick;
-}
-
-bool Motion::resolveCollision()
-{
-    return true;
-}
-
-void Motion::setMode(const std::string & mode)
-{
-}
-
-void Motion::adjustPostion()
-{
-}
-
-Operation * Motion::genUpdateOperation()
-{
-    return 0;
-}
-
-Operation * Motion::genMoveOperation()
-{
-    return 0;
-}
 
 Location::Location() :
     m_simple(true), m_solid(true),

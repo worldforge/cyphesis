@@ -25,6 +25,7 @@
 #endif // HAVE_BULLET
 
 #include "stubs/rulesets/stubTerrainProperty.h"
+#include "stubs/rulesets/stubDomain.h"
 
 #include <cassert>
 
@@ -73,25 +74,6 @@ int main()
 }
 
 // stubs
-
-Domain::Domain() : m_refCount(0)
-{
-}
-
-Domain::~Domain()
-{
-}
-
-float Domain::constrainHeight(LocatedEntity * parent,
-                              const Point3D & pos,
-                              const std::string & mode)
-{
-    return 0.f;
-}
-
-void Domain::tick(double t)
-{
-}
 
 
 PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)

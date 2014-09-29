@@ -28,8 +28,10 @@
 #include "rulesets/Entity.h"
 #include "rulesets/TerrainModProperty.h"
 #include "rulesets/TerrainProperty.h"
+#include "rulesets/DomainProperty.h"
 
 #include "stubs/common/stubTypeNode.h"
+#include "stubs/rulesets/stubDomainProperty.h"
 
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;

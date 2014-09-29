@@ -65,6 +65,11 @@ void OutfitProperty::itemRemoved(LocatedEntity * garment, LocatedEntity * wearer
 {
 }
 
+const EntityRefMap& OutfitProperty::data() const
+{
+    return m_data;
+}
+
 
 
 #endif /* STUBOUTFITPROPERTY_H_ */

@@ -619,6 +619,16 @@ void LocatedEntity::merge(const MapType & ent)
 
 }
 
+void LocatedEntity::addChild(LocatedEntity& childEntity)
+{
+
+}
+
+void LocatedEntity::removeChild(LocatedEntity& childEntity)
+{
+
+}
+
 void log(LogLevel lvl, const std::string & msg)
 {
 }
@@ -808,74 +818,9 @@ template class Property<int>;
 template class Property<double>;
 template class Property<std::string>;
 
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-void Router::error(const Operation & op,
-                   const std::string & errstring,
-                   OpVector & res,
-                   const std::string & to) const
-{
-}
-
-Script::Script()
-{
-}
-
-/// \brief Script destructor
-Script::~Script()
-{
-}
-
-bool Script::operation(const std::string & opname,
-                       const Atlas::Objects::Operation::RootOperation & op,
-                       OpVector & res)
-{
-   return false;
-}
-
-void Script::hook(const std::string & function, LocatedEntity * entity)
-{
-}
-
-void Task::initTask(const Operation & op, OpVector & res)
-{
-}
-
-void Task::operation(const Operation & op, OpVector & res)
-{
-}
-
-Task::Task(LocatedEntity & chr) : m_refCount(0), m_serialno(0), m_obsolete(false), m_progress(-1), m_rate(-1), m_owner(chr)
-{
-}
-
-Task::~Task()
-{
-}
-
-void Task::irrelevant()
-{
-}
-
-void Task::setScript(Script*)
-{
-}
-
+#include "stubs/common/stubRouter.h"
+#include "stubs/rulesets/stubScript.h"
+#include "stubs/rulesets/stubTask.h"
 BaseWorld * BaseWorld::m_instance = 0;
 
 BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)

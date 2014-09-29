@@ -39,7 +39,12 @@ void RespawningProperty::install(LocatedEntity * ent, const std::string & name)
 {
 }
 
+void RespawningProperty::remove(LocatedEntity*, std::string const&)
+{
+}
+
 HandlerResult RespawningProperty::operation(LocatedEntity *, const Operation &, OpVector &)
 {
     return OPERATION_IGNORED;
 }
+

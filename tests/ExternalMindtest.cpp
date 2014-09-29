@@ -338,59 +338,7 @@ int main()
 
 using Atlas::Message::MapType;
 
-Connection::Connection(CommSocket & client,
-                       ServerRouting & svr,
-                       const std::string & addr,
-                       const std::string & id, long iid) :
-            Link(client, id, iid), m_obsolete(false),
-                                                m_server(svr)
-{
-}
-
-Account * Connection::newAccount(const std::string & type,
-                                 const std::string & username,
-                                 const std::string & passwd,
-                                 const std::string & id, long intId)
-{
-    return 0;
-}
-
-int Connection::verifyCredentials(const Account &,
-                                  const Atlas::Objects::Root &) const
-{
-    return 0;
-}
-
-
-Connection::~Connection()
-{
-}
-
-
-void Connection::externalOperation(const Operation &, Link &)
-{
-}
-
-void Connection::operation(const Operation &, OpVector &)
-{
-}
-
-void Connection::LoginOperation(const Operation &, OpVector &)
-{
-}
-
-void Connection::LogoutOperation(const Operation &, OpVector &)
-{
-}
-
-void Connection::CreateOperation(const Operation &, OpVector &)
-{
-}
-
-void Connection::GetOperation(const Operation &, OpVector &)
-{
-}
-
+#include "stubs/server/stubConnection.h"
 Entity::Entity(const std::string & id, long intId) :
         LocatedEntity(id, intId), m_motion(0)
 {
@@ -568,129 +516,10 @@ void Entity::onContainered(const LocatedEntity*)
 void Entity::onUpdated()
 {
 }
+#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rulesets/stubScript.h"
 
-LocatedEntity::LocatedEntity(const std::string & id, long intId) :
-               Router(id, intId),
-               m_refCount(0), m_seq(0),
-               m_script(0), m_type(0), m_flags(0), m_contains(0)
-{
-}
-
-LocatedEntity::~LocatedEntity()
-{
-}
-
-bool LocatedEntity::hasAttr(const std::string & name) const
-{
-    return false;
-}
-
-int LocatedEntity::getAttr(const std::string & name,
-                           Atlas::Message::Element & attr) const
-{
-    return -1;
-}
-
-int LocatedEntity::getAttrType(const std::string & name,
-                               Atlas::Message::Element & attr,
-                               int type) const
-{
-    return -1;
-}
-
-PropertyBase * LocatedEntity::setAttr(const std::string & name,
-                                      const Atlas::Message::Element & attr)
-{
-    return 0;
-}
-
-const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
-{
-    return 0;
-}
-
-PropertyBase * LocatedEntity::modProperty(const std::string & name)
-{
-    return 0;
-}
-
-PropertyBase * LocatedEntity::setProperty(const std::string & name,
-                                          PropertyBase * prop)
-{
-    return 0;
-}
-
-void LocatedEntity::installDelegate(int, const std::string &)
-{
-}
-
-void LocatedEntity::removeDelegate(int class_no, const std::string & delegate)
-{
-}
-
-void LocatedEntity::destroy()
-{
-}
-
-Domain * LocatedEntity::getMovementDomain()
-{
-    return 0;
-}
-
-void LocatedEntity::sendWorld(const Operation & op)
-{
-}
-
-void LocatedEntity::onContainered(const LocatedEntity*)
-{
-}
-
-void LocatedEntity::onUpdated()
-{
-}
-
-void LocatedEntity::makeContainer()
-{
-    if (m_contains == 0) {
-        m_contains = new LocatedEntitySet;
-    }
-}
-
-void LocatedEntity::merge(const MapType & ent)
-{
-}
-
-Script::Script()
-{
-}
-
-/// \brief Script destructor
-Script::~Script()
-{
-}
-
-bool Script::operation(const std::string & opname,
-                       const Atlas::Objects::Operation::RootOperation & op,
-                       OpVector & res)
-{
-   return false;
-}
-
-void Script::hook(const std::string & function, LocatedEntity * entity)
-{
-}
-
-Location::Location() : m_loc(0)
-{
-}
-
-Location::Location(LocatedEntity * rf, const Point3D & pos)
-{
-}
-
-void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
+#include "stubs/modules/stubLocation.h"
 
 Link::Link(CommSocket & socket, const std::string & id, long iid) :
             Router(id, iid), m_encoder(0), m_commSocket(socket)
@@ -710,40 +539,8 @@ void Link::send(const Operation & op) const
 void Link::disconnect()
 {
 }
-
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-BaseWorld * BaseWorld::m_instance = 0;
-
-BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
-{
-    m_instance = this;
-}
-
-BaseWorld::~BaseWorld()
-{
-    m_instance = 0;
-}
-
-double BaseWorld::getTime() const
-{
-    return 0;
-}
+#include "stubs/common/stubRouter.h"
+#include "stubs/common/stubBaseWorld.h"
 
 void log(LogLevel lvl, const std::string & msg)
 {

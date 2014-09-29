@@ -108,36 +108,11 @@ int main()
 
 #include "physics/Vector3D.h"
 
-namespace Atlas { namespace Objects { namespace Operation {
-int ACTUATE_NO = 1001;
-int ATTACK_NO = 1002;
-int EAT_NO = 1003;
-int NOURISH_NO = 1004;
-int TICK_NO = 1005;
-int UPDATE_NO = 1006;
-int RELAY_NO = -1;
-} } }
+#include "rulesets/DomainProperty.h"
+#include "stubs/common/stubCustom.h"
+#include "stubs/rulesets/stubDomain.h"
+#include "stubs/rulesets/stubDomainProperty.h"
 
-Domain * Domain::m_instance = new Domain();
-
-Domain::Domain() : m_refCount(0)
-{
-}
-
-Domain::~Domain()
-{
-}
-
-float Domain::constrainHeight(LocatedEntity * parent,
-                              const Point3D & pos,
-                              const std::string & mode)
-{
-    return 0.f;
-}
-
-void Domain::tick(double t)
-{
-}
 
 void addToEntity(const Point3D & p, std::vector<double> & vd)
 {

@@ -131,8 +131,6 @@ class Accountintegration : public Cyphesis::TestBase
 
 Accountintegration::Accountintegration()
 {
-    (void)new Domain;
-
     ADD_TEST(Accountintegration::test_addNewCharacter);
     ADD_TEST(Accountintegration::test_getType);
     ADD_TEST(Accountintegration::test_addToMessage);
@@ -392,6 +390,8 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "rulesets/ImmortalProperty.h"
 #include "rulesets/RespawningProperty.h"
 #include "rulesets/DefaultLocationProperty.h"
+#include "rulesets/DomainProperty.h"
+#include "rulesets/LimboProperty.h"
 #include "rulesets/Creator.h"
 #include "rulesets/Plant.h"
 #include "rulesets/Stackable.h"
@@ -416,6 +416,8 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "stubs/rulesets/stubSpawnerProperty.h"
 #include "stubs/rulesets/stubBBoxProperty.h"
 #include "stubs/rulesets/stubDefaultLocationProperty.h"
+#include "stubs/rulesets/stubLimboProperty.h"
+#include "stubs/rulesets/stubDomainProperty.h"
 #include "stubs/common/stubCustom.h"
 
 ArithmeticBuilder * ArithmeticBuilder::m_instance = 0;
@@ -1176,42 +1178,7 @@ void Movement::reset()
 {
 }
 
-Motion::Motion(LocatedEntity & body) : m_entity(body), m_serialno(0),
-                                m_collision(false)
-{
-}
-
-Motion::~Motion()
-{
-}
-
-float Motion::checkCollisions()
-{
-    return consts::move_tick;
-}
-
-bool Motion::resolveCollision()
-{
-    return true;
-}
-
-void Motion::setMode(const std::string & mode)
-{
-}
-
-void Motion::adjustPostion()
-{
-}
-
-Operation * Motion::genUpdateOperation()
-{
-    return 0;
-}
-
-Operation * Motion::genMoveOperation()
-{
-    return 0;
-}
+#include "stubs/rulesets/stubMotion.h"
 
 bool_config_register::bool_config_register(bool & var,
                                            const char * section,

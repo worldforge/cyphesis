@@ -147,215 +147,9 @@ PyObject * wrapEntity(LocatedEntity * le)
         return PyInt_FromLong(1L);
     }
 }
-
-Script::Script()
-{
-}
-
-/// \brief Script destructor
-Script::~Script()
-{
-}
-
-bool Script::operation(const std::string & opname,
-                       const Atlas::Objects::Operation::RootOperation & op,
-                       OpVector & res)
-{
-   return false;
-}
-
-void Script::hook(const std::string & function, LocatedEntity * entity)
-{
-}
-
-Location::Location() : m_loc(0)
-{
-}
-
-Location::Location(LocatedEntity * rf, const Point3D & pos)
-{
-}
-
-void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0)
-{
-}
-
-Entity::~Entity()
-{
-}
-
-void Entity::destroy()
-{
-    destroyed.emit();
-}
-
-void Entity::ActuateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::AppearanceOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::AttackOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::CombineOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::CreateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DeleteOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DisappearanceOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DivideOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::EatOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::GetOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::InfoOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::ImaginaryOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::LookOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::MoveOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::NourishOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SetOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SightOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SoundOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TalkOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TickOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TouchOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::UpdateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::UseOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::WieldOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::RelayOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::externalOperation(const Operation & op, Link &)
-{
-}
-
-void Entity::operation(const Operation & op, OpVector & res)
-{
-}
-
-void Entity::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Entity::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-PropertyBase * Entity::setAttr(const std::string & name,
-                               const Atlas::Message::Element & attr)
-{
-    return 0;
-}
-
-const PropertyBase * Entity::getProperty(const std::string & name) const
-{
-    return 0;
-}
-
-PropertyBase * Entity::modProperty(const std::string & name)
-{
-    return 0;
-}
-
-PropertyBase * Entity::setProperty(const std::string & name,
-                                   PropertyBase * prop)
-{
-    return 0;
-}
-
-void Entity::installDelegate(int class_no, const std::string & delegate)
-{
-}
-
-void Entity::removeDelegate(int class_no, const std::string & delegate)
-{
-}
-
-void Entity::sendWorld(const Operation & op)
-{
-}
-
-void Entity::onContainered(const LocatedEntity*)
-{
-}
-
-void Entity::onUpdated()
-{
-}
-
-Domain * Entity::getMovementDomain()
-{
-    return 0;
-}
+#include "stubs/rulesets/stubScript.h"
+#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubEntity.h"
 
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),
@@ -472,29 +266,17 @@ void LocatedEntity::merge(const Atlas::Message::MapType & ent)
 {
 }
 
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
+void LocatedEntity::addChild(LocatedEntity& childEntity)
 {
+
 }
 
-Router::~Router()
+void LocatedEntity::removeChild(LocatedEntity& childEntity)
 {
+
 }
 
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-void Router::error(const Operation & op,
-                   const std::string & errstring,
-                   OpVector & res,
-                   const std::string & to) const
-{
-}
+#include "stubs/common/stubRouter.h"
 
 void log(LogLevel lvl, const std::string & msg)
 {

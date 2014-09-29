@@ -38,3 +38,8 @@ void TypeNode::updateProperties(const Atlas::Message::MapType & attributes)
 bool TypeNode::isTypeOf(std::string const&) const {
     return true;
 }
+
+bool TypeNode::isTypeOf(const TypeNode * base_type) const
+{
+    return true;
+}

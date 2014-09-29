@@ -140,231 +140,13 @@ int main()
 #include "common/const.h"
 #include "common/log.h"
 
-namespace Atlas { namespace Objects { namespace Operation {
-int ACTUATE_NO = -1;
-int ATTACK_NO = -1;
-int DROP_NO = -1;
-int EAT_NO = -1;
-int NOURISH_NO = -1;
-int PICKUP_NO = -1;
-int SETUP_NO = -1;
-int TICK_NO = -1;
-int UPDATE_NO = -1;
-} } }
-
-Motion::Motion(LocatedEntity & body) : m_entity(body), m_serialno(0),
-                                m_collision(false)
-{
-}
-
-Motion::~Motion()
-{
-}
-
-float Motion::checkCollisions()
-{
-    return consts::move_tick;
-}
-
-bool Motion::resolveCollision()
-{
-    return true;
-}
-
-void Motion::setMode(const std::string & mode)
-{
-}
-
-void Motion::adjustPostion()
-{
-}
-
-Operation * Motion::genUpdateOperation()
-{
-    return 0;
-}
-
-Operation * Motion::genMoveOperation()
-{
-    return 0;
-}
-
-Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0)
-{
-}
-
-Entity::~Entity()
-{
-}
-
-void Entity::destroy()
-{
-    destroyed.emit();
-}
-
-void Entity::ActuateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::AppearanceOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::AttackOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::CombineOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::CreateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DeleteOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DisappearanceOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DivideOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::EatOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::GetOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::InfoOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::ImaginaryOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::LookOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::MoveOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::NourishOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SetOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SightOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SoundOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TalkOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TickOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TouchOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::UpdateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::UseOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::WieldOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::RelayOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::externalOperation(const Operation & op, Link &)
-{
-}
-
-void Entity::operation(const Operation & op, OpVector & res)
-{
-}
-
-void Entity::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Entity::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-PropertyBase * Entity::setAttr(const std::string & name,
-                               const Atlas::Message::Element & attr)
-{
-    return 0;
-}
-
-const PropertyBase * Entity::getProperty(const std::string & name) const
-{
-    return 0;
-}
-
-PropertyBase * Entity::setProperty(const std::string & name,
-                                   PropertyBase * prop)
-{
-    return m_properties[name] = prop;
-}
-
-PropertyBase * Entity::modProperty(const std::string & name)
-{
-    return 0;
-}
-
-void Entity::installDelegate(int class_no, const std::string & delegate)
-{
-}
-
-void Entity::removeDelegate(int class_no, const std::string & delegate)
-{
-}
-
-void Entity::sendWorld(const Operation & op)
-{
-}
-
-void Entity::onContainered(const LocatedEntity*)
-{
-}
-
-void Entity::onUpdated()
-{
-}
-
-Domain * Entity::getMovementDomain()
-{
-    return 0;
-}
+#include "stubs/common/stubCustom.h"
+#include "stubs/rulesets/stubMotion.h"
+#include "stubs/rulesets/stubEntity.h"
+#include "stubs/rulesets/stubDomain.h"
+#include "stubs/common/stubRouter.h"
+#include "stubs/common/stubBaseWorld.h"
+#include "stubs/modules/stubLocation.h"
 
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),
@@ -481,13 +263,15 @@ void LocatedEntity::merge(const MapType & ent)
 {
 }
 
-float Domain::constrainHeight(LocatedEntity * parent,
-                              const Point3D & pos,
-                              const std::string & mode)
+void LocatedEntity::addChild(LocatedEntity& childEntity)
 {
-    return 0.f;
+
 }
 
+void LocatedEntity::removeChild(LocatedEntity& childEntity)
+{
+
+}
 void addToEntity(const Point3D & p, std::vector<double> & vd)
 {
     vd.resize(3);
@@ -496,86 +280,11 @@ void addToEntity(const Point3D & p, std::vector<double> & vd)
     vd[2] = p[2];
 }
 
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-void Router::error(const Operation & op,
-                   const std::string & errstring,
-                   OpVector & res,
-                   const std::string & to) const
-{
-}
-
-BaseWorld * BaseWorld::m_instance = 0;
-
-BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
-{
-    m_instance = this;
-}
-
-BaseWorld::~BaseWorld()
-{
-    m_instance = 0;
-}
-
-LocatedEntity * BaseWorld::getEntity(const std::string & id) const
-{
-    return 0;
-}
-
-LocatedEntity * BaseWorld::getEntity(long id) const
-{
-    return 0;
-}
-
-double BaseWorld::getTime() const
-{
-    return 0;
-}
-
-Location::Location() : m_loc(0)
-{
-}
-
-Location::Location(LocatedEntity * rf, const Point3D & pos)
-{
-}
-
-void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-void Location::addToMessage(MapType & omap) const
-{
-}
 
 void log(LogLevel lvl, const std::string & msg)
 {
 }
 
-long integerId(const std::string & id)
-{
-    long intId = strtol(id.c_str(), 0, 10);
-    if (intId == 0 && id != "0") {
-        intId = -1L;
-    }
-
-    return intId;
-}
 
 template <typename FloatT>
 int fromStdVector(Point3D & p, const std::vector<FloatT> & vf)
@@ -606,10 +315,6 @@ int fromStdVector(Vector3D & v, const std::vector<FloatT> & vf)
 template int fromStdVector<double>(Point3D & p, const std::vector<double> & vf);
 template int fromStdVector<double>(Vector3D & v, const std::vector<double> & vf);
 
-float squareDistance(const Location & self, const Location & other)
-{
-    return 1.f;
-}
 
 float squareDistance(const Point3D & u, const Point3D & v)
 {

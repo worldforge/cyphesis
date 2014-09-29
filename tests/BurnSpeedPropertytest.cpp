@@ -73,10 +73,3 @@ StatusProperty * StatusProperty::copy() const
 void StatusProperty::apply(LocatedEntity * owner)
 {
 }
-
-void Router::error(const Operation & op,
-                   const std::string & errstring,
-                   OpVector & res,
-                   const std::string & to) const
-{
-}

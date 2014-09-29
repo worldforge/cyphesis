@@ -390,146 +390,10 @@ int main()
 
 // stubs
 
-MemEntity::MemEntity(const std::string & id, long intId) :
-           LocatedEntity(id, intId), m_lastSeen(0.)
-{
-}
-
-MemEntity::~MemEntity()
-{
-}
-
-void MemEntity::externalOperation(const Operation & op, Link &)
-{
-}
-
-void MemEntity::operation(const Operation &, OpVector &)
-{
-}
-
-void MemEntity::destroy()
-{
-}
-
-PropertyBase * MemEntity::setAttr(const std::string & name, const Atlas::Message::Element & attr)
-{
-    return 0;
-}
-
-
-LocatedEntity::LocatedEntity(const std::string & id, long intId) :
-               Router(id, intId),
-               m_refCount(0), m_seq(0),
-               m_script(0), m_type(0), m_flags(0), m_contains(0)
-{
-}
-
-LocatedEntity::~LocatedEntity()
-{
-}
-
-bool LocatedEntity::hasAttr(const std::string & name) const
-{
-    return false;
-}
-
-int LocatedEntity::getAttr(const std::string & name,
-                           Atlas::Message::Element & attr) const
-{
-    return -1;
-}
-
-int LocatedEntity::getAttrType(const std::string & name,
-                               Atlas::Message::Element & attr,
-                               int type) const
-{
-    return -1;
-}
-
-PropertyBase * LocatedEntity::setAttr(const std::string & name,
-                                      const Atlas::Message::Element & attr)
-{
-    return 0;
-}
-
-const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
-{
-    return 0;
-}
-
-PropertyBase * LocatedEntity::modProperty(const std::string & name)
-{
-    return 0;
-}
-
-PropertyBase * LocatedEntity::setProperty(const std::string & name,
-                                          PropertyBase * prop)
-{
-    return 0;
-}
-
-void LocatedEntity::installDelegate(int, const std::string &)
-{
-}
-
-void LocatedEntity::removeDelegate(int class_no, const std::string & delegate)
-{
-}
-
-void LocatedEntity::destroy()
-{
-}
-
-Domain * LocatedEntity::getMovementDomain()
-{
-    return 0;
-}
-
-void LocatedEntity::sendWorld(const Operation & op)
-{
-}
-
-void LocatedEntity::onContainered(const LocatedEntity*)
-{
-}
-
-void LocatedEntity::onUpdated()
-{
-}
-
-void LocatedEntity::merge(const Atlas::Message::MapType & ent)
-{
-}
-
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-Location::Location() : m_loc(0)
-{
-}
-
-Location::Location(LocatedEntity * rf) : m_loc(rf)
-{
-}
-
-int Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent)
-{
-    return 0;
-}
+#include "stubs/rulesets/stubMemEntity.h"
+#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/common/stubRouter.h"
+#include "stubs/modules/stubLocation.h"
 
 Inheritance * Inheritance::m_instance = NULL;
 
@@ -546,25 +410,7 @@ const TypeNode * Inheritance::getType(const std::string & parent)
     return I->second;
 }
 
-Script::Script()
-{
-}
-
-/// \brief Script destructor
-Script::~Script()
-{
-}
-
-bool Script::operation(const std::string & opname,
-                       const Atlas::Objects::Operation::RootOperation & op,
-                       OpVector & res)
-{
-   return false;
-}
-
-void Script::hook(const std::string & function, LocatedEntity * entity)
-{
-}
+#include "stubs/rulesets/stubScript.h"
 
 Inheritance & Inheritance::instance()
 {

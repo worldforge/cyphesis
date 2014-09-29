@@ -36,6 +36,18 @@
 #include "common/Property_impl.h"
 #include "common/TypeNode.h"
 
+
+#include "stubs/common/stubCustom.h"
+#include "stubs/common/stubRouter.h"
+#include "stubs/common/stubTypeNode.h"
+#include "stubs/common/stubPropertyManager.h"
+#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubEntity.h"
+#include "stubs/common/stubProperty.h"
+#include "stubs/rulesets/stubSoftProperty.h"
+#include "stubs/rulesets/stubMotion.h"
+
+
 #include <cstdlib>
 
 #include <cassert>
@@ -78,231 +90,8 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
     return 0;
 }
 
-namespace Atlas { namespace Objects { namespace Operation {
-int ACTUATE_NO = -1;
-int ATTACK_NO = -1;
-int DROP_NO = -1;
-int EAT_NO = -1;
-int NOURISH_NO = -1;
-int PICKUP_NO = -1;
-int SETUP_NO = -1;
-int TICK_NO = -1;
-int UPDATE_NO = -1;
-} } }
 
-Motion::Motion(LocatedEntity & body) : m_entity(body), m_serialno(0),
-                                m_collision(false)
-{
-}
 
-Motion::~Motion()
-{
-}
-
-float Motion::checkCollisions()
-{
-    return consts::move_tick;
-}
-
-bool Motion::resolveCollision()
-{
-    return true;
-}
-
-void Motion::setMode(const std::string & mode)
-{
-}
-
-void Motion::adjustPostion()
-{
-}
-
-Operation * Motion::genUpdateOperation()
-{
-    return 0;
-}
-
-Operation * Motion::genMoveOperation()
-{
-    return 0;
-}
-
-Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0)
-{
-}
-
-Entity::~Entity()
-{
-}
-
-void Entity::destroy()
-{
-    destroyed.emit();
-}
-
-void Entity::ActuateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::AppearanceOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::AttackOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::CombineOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::CreateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DeleteOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DisappearanceOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DivideOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::EatOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::GetOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::InfoOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::ImaginaryOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::LookOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::MoveOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::NourishOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SetOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SightOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SoundOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TalkOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TickOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TouchOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::UpdateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::UseOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::WieldOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::RelayOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::externalOperation(const Operation & op, Link &)
-{
-}
-
-void Entity::operation(const Operation & op, OpVector & res)
-{
-}
-
-void Entity::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Entity::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-PropertyBase * Entity::setAttr(const std::string & name,
-                               const Atlas::Message::Element & attr)
-{
-    return 0;
-}
-
-const PropertyBase * Entity::getProperty(const std::string & name) const
-{
-    return 0;
-}
-
-PropertyBase * Entity::modProperty(const std::string & name)
-{
-    return 0;
-}
-
-PropertyBase * Entity::setProperty(const std::string & name,
-                                   PropertyBase * prop)
-{
-    return 0;
-}
-
-void Entity::installDelegate(int class_no, const std::string & delegate)
-{
-}
-
-void Entity::removeDelegate(int class_no, const std::string & delegate)
-{
-}
-
-void Entity::sendWorld(const Operation & op)
-{
-}
-
-void Entity::onContainered(const LocatedEntity*)
-{
-}
-
-void Entity::onUpdated()
-{
-}
-
-Domain * Entity::getMovementDomain()
-{
-    return Domain::instance();
-}
 
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),
@@ -419,27 +208,16 @@ void LocatedEntity::merge(const MapType & ent)
 {
 }
 
-Domain * Domain::m_instance = new Domain();
-
-Domain::Domain() : m_refCount(0)
+void LocatedEntity::addChild(LocatedEntity& childEntity)
 {
+
 }
 
-Domain::~Domain()
+void LocatedEntity::removeChild(LocatedEntity& childEntity)
 {
+
 }
 
-float Domain::constrainHeight(LocatedEntity * parent,
-                              const Point3D & pos,
-                              const std::string & mode)
-{
-    return 0.f;
-}
-
-void Domain::tick(double t)
-{
-    
-}
 
 void addToEntity(const Point3D & p, std::vector<double> & vd)
 {
@@ -447,30 +225,6 @@ void addToEntity(const Point3D & p, std::vector<double> & vd)
     vd[0] = p[0];
     vd[1] = p[1];
     vd[2] = p[2];
-}
-
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-void Router::error(const Operation & op,
-                   const std::string & errstring,
-                   OpVector & res,
-                   const std::string & to) const
-{
 }
 
 BaseWorld * BaseWorld::m_instance = 0;
@@ -510,140 +264,6 @@ LocatedEntity * BaseWorld::getEntity(long id) const
 }
 
 double BaseWorld::getTime() const
-{
-    return 0;
-}
-
-void Location::addToMessage(MapType & omap) const
-{
-}
-
-Location::Location() : m_loc(0)
-{
-}
-
-Location::Location(LocatedEntity * rf, const Point3D & pos)
-{
-}
-
-void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
-{
-}
-
-TypeNode::~TypeNode()
-{
-}
-
-PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
-{
-}
-
-PropertyBase::~PropertyBase()
-{
-}
-
-void PropertyBase::install(LocatedEntity *, const std::string & name)
-{
-}
-
-void PropertyBase::remove(LocatedEntity *, const std::string & name)
-{
-}
-
-void PropertyBase::apply(LocatedEntity *)
-{
-}
-
-void PropertyBase::add(const std::string & s,
-                       Atlas::Message::MapType & ent) const
-{
-    get(ent[s]);
-}
-
-void PropertyBase::add(const std::string & s,
-                       const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-HandlerResult PropertyBase::operation(LocatedEntity *,
-                                      const Operation &,
-                                      OpVector &)
-{
-    return OPERATION_IGNORED;
-}
-
-template<>
-void Property<int>::set(const Atlas::Message::Element & e)
-{
-    if (e.isInt()) {
-        this->m_data = e.asInt();
-    }
-}
-
-template<>
-void Property<double>::set(const Atlas::Message::Element & e)
-{
-    if (e.isNum()) {
-        this->m_data = e.asNum();
-    }
-}
-
-template<>
-void Property<std::string>::set(const Atlas::Message::Element & e)
-{
-    if (e.isString()) {
-        this->m_data = e.String();
-    }
-}
-
-template class Property<int>;
-template class Property<double>;
-template class Property<std::string>;
-
-SoftProperty::SoftProperty()
-{
-}
-
-SoftProperty::SoftProperty(const Atlas::Message::Element & data) :
-              PropertyBase(0), m_data(data)
-{
-}
-
-int SoftProperty::get(Atlas::Message::Element & val) const
-{
-    val = m_data;
-    return 0;
-}
-
-void SoftProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-SoftProperty * SoftProperty::copy() const
-{
-    return 0;
-}
-
-PropertyManager * PropertyManager::m_instance = 0;
-
-PropertyManager::PropertyManager()
-{
-    assert(m_instance == 0);
-    m_instance = this;
-}
-
-PropertyManager::~PropertyManager()
-{
-   m_instance = 0;
-}
-
-int PropertyManager::installFactory(const std::string & type_name,
-                                    const Atlas::Objects::Root & type_desc,
-                                    PropertyKit * factory)
 {
     return 0;
 }
@@ -691,10 +311,6 @@ int fromStdVector(Vector3D & v, const std::vector<FloatT> & vf)
 template int fromStdVector<double>(Point3D & p, const std::vector<double> & vf);
 template int fromStdVector<double>(Vector3D & v, const std::vector<double> & vf);
 
-float squareDistance(const Location & self, const Location & other)
-{
-    return 1.f;
-}
 
 float squareDistance(const Point3D & u, const Point3D & v)
 {

@@ -121,6 +121,13 @@ int main()
     run_python_string("points['1x1'] = [1, 1, 19.7]");
     run_python_string("t.terrain = {'points': points}");
 
+    //No surfaces until "surfaces" is defined.
+    expect_python_error("terrain.get_surface(Point3D(0,0,0))", PyExc_TypeError);
+
+    run_python_string("surface = {'name': 'rock', 'pattern': 'fill'}");
+    run_python_string("surfaces = [surface]");
+    run_python_string("t.terrain = {'points': points, 'surfaces': surfaces}");
+
     run_python_string("terrain.get_surface(Point3D(0,0,0))");
 
 #ifdef CYPHESIS_DEBUG

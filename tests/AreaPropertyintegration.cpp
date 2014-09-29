@@ -128,37 +128,11 @@ const TerrainProperty * TerrainEffectorProperty::getTerrain(LocatedEntity * owne
 #include "common/PropertyManager.h"
 #include "common/TypeNode.h"
 
-namespace Atlas { namespace Objects { namespace Operation {
-int ACTUATE_NO = -1;
-int ATTACK_NO = -1;
-int EAT_NO = -1;
-int NOURISH_NO = -1;
-int SETUP_NO = -1;
-int TICK_NO = -1;
-int UPDATE_NO = -1;
-int RELAY_NO = -1;
-} } }
+#include "rulesets/DomainProperty.h"
+#include "stubs/common/stubCustom.h"
+#include "stubs/rulesets/stubDomain.h"
+#include "stubs/rulesets/stubDomainProperty.h"
 
-Domain * Domain::m_instance = new Domain();
-
-Domain::Domain() : m_refCount(0)
-{
-}
-
-Domain::~Domain()
-{
-}
-
-float Domain::constrainHeight(LocatedEntity * parent,
-                              const Point3D & pos,
-                              const std::string & mode)
-{
-    return 0.f;
-}
-
-void Domain::tick(double t)
-{
-}
 
 void addToEntity(const Point3D & p, std::vector<double> & vd)
 {

@@ -162,7 +162,7 @@ const PropertyBase * Entity::getProperty(const std::string & name) const
 PropertyBase * Entity::setProperty(const std::string & name,
                                    PropertyBase * prop)
 {
-    return 0;
+    return m_properties[name] = prop;
 }
 
 void Entity::installDelegate(int class_no, const std::string & delegate)

@@ -98,6 +98,25 @@ void LocatedEntity::onUpdated()
 {
 }
 
+void LocatedEntity::addChild(LocatedEntity& childEntity)
+{
+}
+
+void LocatedEntity::removeChild(LocatedEntity& childEntity)
+{
+}
+
+void LocatedEntity::makeContainer()
+{
+    if (m_contains == 0) {
+        m_contains = new LocatedEntitySet;
+    }
+}
+
+void LocatedEntity::merge(const Atlas::Message::MapType &)
+{
+
+}
 
 
 #endif /* STUBLOCATEDENTITY_H_ */

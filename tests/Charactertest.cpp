@@ -34,6 +34,7 @@
 #include "rulesets/Domain.h"
 #include "rulesets/EntityProperty.h"
 #include "rulesets/ExternalMind.h"
+#include "rulesets/ExternalProperty.h"
 #include "rulesets/OutfitProperty.h"
 #include "rulesets/Pedestrian.h"
 #include "rulesets/Script.h"
@@ -47,6 +48,30 @@
 #include "common/Link.h"
 #include "common/Property_impl.h"
 #include "common/TypeNode.h"
+
+#include "stubs/rulesets/stubThing.h"
+#include "stubs/rulesets/stubExternalProperty.h"
+#include "stubs/rulesets/stubEntityProperty.h"
+#include "stubs/rulesets/stubOutfitProperty.h"
+#include "stubs/rulesets/stubTasksProperty.h"
+#include "stubs/rulesets/stubTask.h"
+#include "stubs/common/stubProperty.h"
+#include "stubs/rulesets/stubSoftProperty.h"
+#include "stubs/rulesets/stubContainsProperty.h"
+#include "stubs/rulesets/stubStatusProperty.h"
+#include "stubs/rulesets/stubBBoxProperty.h"
+#include "stubs/common/stubPropertyManager.h"
+#include "stubs/rulesets/stubContainsProperty.h"
+
+#include "stubs/common/stubLink.h"
+#include "stubs/common/stubTypeNode.h"
+#include "stubs/common/stubCustom.h"
+#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubScript.h"
+#include "stubs/common/stubRouter.h"
+#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rulesets/stubMovement.h"
+#include "stubs/rulesets/stubDomain.h"
 
 #include <cstdlib>
 
@@ -343,8 +368,6 @@ int main(int argc, char ** argv)
 
 // stubs
 
-#include "rulesets/ExternalProperty.h"
-
 void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
     Charactertest::BaseWorld_message_called(op, ent);
@@ -356,21 +379,6 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
     return 0;
 }
 
-namespace Atlas { namespace Objects { namespace Operation {
-int ACTUATE_NO = -1;
-int ATTACK_NO = -1;
-int EAT_NO = -1;
-int GOAL_INFO_NO = -1;
-int NOURISH_NO = -1;
-int SETUP_NO = -1;
-int TICK_NO = -1;
-int THOUGHT_NO = -1;
-int UNSEEN_NO = -1;
-int UPDATE_NO = -1;
-int RELAY_NO = -1;
-int COMMUNE_NO = -1;
-int THINK_NO = -1;
-} } }
 
 ExternalMind::ExternalMind(LocatedEntity & e) : Router(e.getId(), e.getIntId()),
                                          m_external(0),
@@ -421,55 +429,13 @@ Operation Pedestrian::generateMove(const Location & new_location)
     return moveOp;
 }
 
-Movement::Movement(LocatedEntity & body) : m_body(body),
-                                    m_serialno(0)
-{
-}
 
-Movement::~Movement()
+void addToEntity(const Point3D & p, std::vector<double> & vd)
 {
-}
-
-bool Movement::updateNeeded(const Location & location) const
-{
-    return true;
-}
-
-void Movement::reset()
-{
-}
-
-Thing::Thing(const std::string & id, long intId) :
-       Entity(id, intId)
-{
-}
-
-Thing::~Thing()
-{
-}
-
-void Thing::DeleteOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::MoveOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::SetOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::LookOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::CreateOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::UpdateOperation(const Operation & op, OpVector & res)
-{
+    vd.resize(3);
+    vd[0] = p[0];
+    vd[1] = p[1];
+    vd[2] = p[2];
 }
 
 Entity::Entity(const std::string & id, long intId) :
@@ -650,151 +616,6 @@ void Entity::onUpdated()
 {
 }
 
-LocatedEntity::LocatedEntity(const std::string & id, long intId) :
-               Router(id, intId),
-               m_refCount(0), m_seq(0),
-               m_script(0), m_type(0), m_flags(0), m_contains(0)
-{
-}
-
-LocatedEntity::~LocatedEntity()
-{
-}
-
-bool LocatedEntity::hasAttr(const std::string & name) const
-{
-    return false;
-}
-
-int LocatedEntity::getAttr(const std::string & name,
-                           Atlas::Message::Element & attr) const
-{
-    return -1;
-}
-
-int LocatedEntity::getAttrType(const std::string & name,
-                               Atlas::Message::Element & attr,
-                               int type) const
-{
-    return -1;
-}
-
-PropertyBase * LocatedEntity::setAttr(const std::string & name,
-                                      const Atlas::Message::Element & attr)
-{
-    return 0;
-}
-
-const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
-{
-    return 0;
-}
-
-PropertyBase * LocatedEntity::modProperty(const std::string & name)
-{
-    return 0;
-}
-
-PropertyBase * LocatedEntity::setProperty(const std::string & name,
-                                          PropertyBase * prop)
-{
-    return 0;
-}
-
-void LocatedEntity::installDelegate(int, const std::string &)
-{
-}
-
-void LocatedEntity::removeDelegate(int class_no, const std::string & delegate)
-{
-}
-
-void LocatedEntity::destroy()
-{
-}
-
-Domain * LocatedEntity::getMovementDomain()
-{
-    return 0;
-}
-
-void LocatedEntity::sendWorld(const Operation & op)
-{
-}
-
-void LocatedEntity::onContainered(const LocatedEntity*)
-{
-}
-
-void LocatedEntity::onUpdated()
-{
-}
-
-void LocatedEntity::makeContainer()
-{
-    if (m_contains == 0) {
-        m_contains = new LocatedEntitySet;
-    }
-}
-
-void LocatedEntity::merge(const MapType & ent)
-{
-}
-
-Domain * Domain::m_instance = new Domain();
-
-Domain::Domain() : m_refCount(0)
-{
-}
-
-Domain::~Domain()
-{
-}
-
-float Domain::constrainHeight(LocatedEntity * parent,
-                              const Point3D & pos,
-                              const std::string & mode)
-{
-    return 0.f;
-}
-
-void Domain::tick(double t)
-{
-    
-}
-
-void addToEntity(const Point3D & p, std::vector<double> & vd)
-{
-    vd.resize(3);
-    vd[0] = p[0];
-    vd[1] = p[1];
-    vd[2] = p[2];
-}
-
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-void Router::error(const Operation & op,
-                   const std::string & errstring,
-                   OpVector & res,
-                   const std::string & to) const
-{
-}
-
 BaseWorld * BaseWorld::m_instance = 0;
 
 BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
@@ -835,409 +656,7 @@ LocatedEntity * BaseWorld::getEntity(long id) const
     }
 }
 
-Script::Script()
-{
-}
 
-/// \brief Script destructor
-Script::~Script()
-{
-}
-
-bool Script::operation(const std::string & opname,
-                       const Atlas::Objects::Operation::RootOperation & op,
-                       OpVector & res)
-{
-   return false;
-}
-
-void Script::hook(const std::string & function, LocatedEntity * entity)
-{
-}
-
-void Location::addToMessage(MapType & omap) const
-{
-}
-
-Location::Location() : m_loc(0)
-{
-}
-
-Location::Location(LocatedEntity * rf, const Point3D & pos)
-{
-}
-
-void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
-{
-}
-
-TypeNode::~TypeNode()
-{
-}
-
-Link::Link(CommSocket & socket, const std::string & id, long iid) :
-            Router(id, iid), m_encoder(0), m_commSocket(socket)
-{
-}
-
-Link::~Link()
-{
-}
-
-void Link::send(const Operation & op) const
-{
-}
-
-ExternalProperty::ExternalProperty(ExternalMind * & data) : m_data(data)
-{
-}
-
-int ExternalProperty::get(Atlas::Message::Element & val) const
-{
-    return 0;
-}
-
-void ExternalProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-void ExternalProperty::add(const std::string & s,
-                         Atlas::Message::MapType & map) const
-{
-}
-
-void ExternalProperty::add(const std::string & s,
-                         const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-ExternalProperty * ExternalProperty::copy() const
-{
-    return 0;
-}
-
-EntityProperty::EntityProperty()
-{
-}
-
-int EntityProperty::get(Atlas::Message::Element & val) const
-{
-    return 0;
-}
-
-void EntityProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-void EntityProperty::add(const std::string & s,
-                         Atlas::Message::MapType & map) const
-{
-}
-
-void EntityProperty::add(const std::string & s,
-                         const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-EntityProperty * EntityProperty::copy() const
-{
-    return 0;
-}
-
-OutfitProperty::OutfitProperty()
-{
-}
-
-OutfitProperty::~OutfitProperty()
-{
-}
-
-int OutfitProperty::get(Atlas::Message::Element & val) const
-{
-    return 0;
-}
-
-void OutfitProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-void OutfitProperty::add(const std::string & key,
-                         Atlas::Message::MapType & map) const
-{
-}
-
-void OutfitProperty::add(const std::string & key,
-                         const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-OutfitProperty * OutfitProperty::copy() const
-{
-    return 0;
-}
-
-void OutfitProperty::cleanUp()
-{
-}
-
-void OutfitProperty::wear(LocatedEntity * wearer,
-                          const std::string & location,
-                          LocatedEntity * garment)
-{
-}
-
-void OutfitProperty::itemRemoved(LocatedEntity * garment, LocatedEntity * wearer)
-{
-}
-
-Task::~Task()
-{
-}
-
-void Task::initTask(const Operation & op, OpVector & res)
-{
-}
-
-void Task::operation(const Operation & op, OpVector & res)
-{
-}
-
-void Task::irrelevant()
-{
-}
-
-TasksProperty::TasksProperty() : PropertyBase(per_ephem), m_task(0)
-{
-}
-
-int TasksProperty::get(Atlas::Message::Element & val) const
-{
-    return 0;
-}
-
-void TasksProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-TasksProperty * TasksProperty::copy() const
-{
-    return 0;
-}
-
-int TasksProperty::startTask(Task *, LocatedEntity *, const Operation &, OpVector &)
-{
-    return 0;
-}
-
-int TasksProperty::updateTask(LocatedEntity *, OpVector &)
-{
-    return 0;
-}
-
-int TasksProperty::clearTask(LocatedEntity *, OpVector &)
-{
-    return 0;
-}
-
-void TasksProperty::stopTask(LocatedEntity *, OpVector &)
-{
-}
-
-void TasksProperty::TickOperation(LocatedEntity *, const Operation &, OpVector &)
-{
-}
-
-void TasksProperty::UseOperation(LocatedEntity *, const Operation &, OpVector &)
-{
-}
-
-HandlerResult TasksProperty::operation(LocatedEntity *, const Operation &, OpVector &)
-{
-    return OPERATION_IGNORED;
-}
-
-PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
-{
-}
-
-PropertyBase::~PropertyBase()
-{
-}
-
-void PropertyBase::install(LocatedEntity *, const std::string & name)
-{
-}
-
-void PropertyBase::remove(LocatedEntity *, const std::string & name)
-{
-}
-
-void PropertyBase::apply(LocatedEntity *)
-{
-}
-
-void PropertyBase::add(const std::string & s,
-                       Atlas::Message::MapType & ent) const
-{
-    get(ent[s]);
-}
-
-void PropertyBase::add(const std::string & s,
-                       const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-HandlerResult PropertyBase::operation(LocatedEntity *,
-                                      const Operation &,
-                                      OpVector &)
-{
-    return OPERATION_IGNORED;
-}
-
-template<>
-void Property<int>::set(const Atlas::Message::Element & e)
-{
-    if (e.isInt()) {
-        this->m_data = e.asInt();
-    }
-}
-
-template<>
-void Property<double>::set(const Atlas::Message::Element & e)
-{
-    if (e.isNum()) {
-        this->m_data = e.asNum();
-    }
-}
-
-template<>
-void Property<std::string>::set(const Atlas::Message::Element & e)
-{
-    if (e.isString()) {
-        this->m_data = e.String();
-    }
-}
-
-template class Property<int>;
-template class Property<double>;
-template class Property<std::string>;
-
-SoftProperty::SoftProperty()
-{
-}
-
-SoftProperty::SoftProperty(const Atlas::Message::Element & data) :
-              PropertyBase(0), m_data(data)
-{
-}
-
-int SoftProperty::get(Atlas::Message::Element & val) const
-{
-    val = m_data;
-    return 0;
-}
-
-void SoftProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-SoftProperty * SoftProperty::copy() const
-{
-    return 0;
-}
-
-ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
-      PropertyBase(per_ephem), m_data(data)
-{
-}
-
-int ContainsProperty::get(Atlas::Message::Element & e) const
-{
-    return 0;
-}
-
-void ContainsProperty::set(const Atlas::Message::Element & e)
-{
-}
-
-void ContainsProperty::add(const std::string & s,
-                           const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-ContainsProperty * ContainsProperty::copy() const
-{
-    return 0;
-}
-
-StatusProperty::StatusProperty()
-{
-}
-
-StatusProperty * StatusProperty::copy() const
-{
-    return 0;
-}
-
-void StatusProperty::apply(LocatedEntity * owner)
-{
-}
-
-BBoxProperty::BBoxProperty()
-{
-}
-
-void BBoxProperty::apply(LocatedEntity * ent)
-{
-}
-
-int BBoxProperty::get(Element & val) const
-{
-    return -1;
-}
-
-void BBoxProperty::set(const Element & val)
-{
-}
-
-void BBoxProperty::add(const std::string & key,
-                       MapType & map) const
-{
-}
-
-void BBoxProperty::add(const std::string & key,
-                       const RootEntity & ent) const
-{
-}
-
-BBoxProperty * BBoxProperty::copy() const
-{
-    return 0;
-}
-
-PropertyManager * PropertyManager::m_instance = 0;
-
-PropertyManager::PropertyManager()
-{
-    assert(m_instance == 0);
-    m_instance = this;
-}
-
-PropertyManager::~PropertyManager()
-{
-   m_instance = 0;
-}
-
-int PropertyManager::installFactory(const std::string & type_name,
-                                    const Atlas::Objects::Root & type_desc,
-                                    PropertyKit * factory)
-{
-    return 0;
-}
 
 void log(LogLevel lvl, const std::string & msg)
 {
@@ -1313,10 +732,6 @@ void EntityRef::onEntityDeleted()
 {
 }
 
-const Vector3D distanceTo(const Location & self, const Location & other)
-{
-    return Vector3D(1,0,0);
-}
 
 template<class V>
 const Quaternion quaternionFromTo(const V & from, const V & to)

@@ -84,8 +84,6 @@ void WorldRouterintegration::test_sequence()
 {
     database_flag = false;
 
-    new Domain;
-
     WorldRouter * test_world = new WorldRouter(SystemTime());
 
     LocatedEntity * ent1 = test_world->addNewEntity("__no_such_type__",
@@ -233,6 +231,7 @@ int main()
 #include "rulesets/StatusProperty.h"
 #include "rulesets/TasksProperty.h"
 #include "rulesets/TerrainProperty.h"
+#include "rulesets/DomainProperty.h"
 
 #include "rulesets/Character.h"
 #include "rulesets/Creator.h"
@@ -247,6 +246,7 @@ int main()
 #include "stubs/rulesets/stubBBoxProperty.h"
 #include "stubs/rulesets/stubTasksProperty.h"
 #include "stubs/rulesets/stubTerrainProperty.h"
+#include "stubs/rulesets/stubDomainProperty.h"
 
 #include <Atlas/Objects/Operation.h>
 
@@ -620,42 +620,7 @@ ArithmeticKit::~ArithmeticKit()
 {
 }
 
-Motion::Motion(LocatedEntity & body) : m_entity(body), m_serialno(0),
-                                m_collision(false)
-{
-}
-
-Motion::~Motion()
-{
-}
-
-float Motion::checkCollisions()
-{
-    return consts::move_tick;
-}
-
-bool Motion::resolveCollision()
-{
-    return true;
-}
-
-void Motion::setMode(const std::string & mode)
-{
-}
-
-void Motion::adjustPostion()
-{
-}
-
-Operation * Motion::genUpdateOperation()
-{
-    return 0;
-}
-
-Operation * Motion::genMoveOperation()
-{
-    return 0;
-}
+#include "stubs/rulesets/stubMotion.h"
 
 Pedestrian::Pedestrian(LocatedEntity & body) : Movement(body)
 {

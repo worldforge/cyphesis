@@ -39,7 +39,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  SpawnPropertytest VisibilityPropertytest \
                  ExternalPropertytest BurnSpeedPropertytest \
                  BiomassPropertytest DecaysPropertytest \
-                 Domaintest BulletDomaintest AtlasPropertiestest \
+                 BulletDomaintest AtlasPropertiestest \
                  SpawnerPropertytest \
                  BaseMindtest MemEntitytest MemMaptest Movementtest \
                  Pedestriantest \
@@ -58,7 +58,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  TerrainModtest PythonClasstest \
                  TerrainEffectorPropertytest SuspendedPropertytest
 
-RULESETS_INTEGRATION_TESTS = MindPropertyintegration BulletDomainintegration \
+RULESETS_INTEGRATION_TESTS = MindPropertyintegration \
                              TerrainPropertyintegration \
                              PropertyEntityintegration \
                              DecaysPropertyintegration \
@@ -491,6 +491,7 @@ Scripttest_LDADD = $(top_builddir)/rulesets/Script.o
 Motiontest_SOURCES = Motiontest.cpp
 Motiontest_LDADD = \
         $(top_builddir)/rulesets/Motion.o \
+        $(top_builddir)/rulesets/PhysicalDomain.o \
         $(top_builddir)/physics/BBox.o \
         $(top_builddir)/physics/Collision.o
 
@@ -646,10 +647,6 @@ DecaysPropertytest_SOURCES = DecaysPropertytest.cpp \
 DecaysPropertytest_LDADD = \
         $(top_builddir)/rulesets/DecaysProperty.o \
         $(top_builddir)/common/Property.o
-
-Domaintest_SOURCES = Domaintest.cpp
-Domaintest_LDADD = \
-        $(top_builddir)/rulesets/Domain.o
 
 BulletDomaintest_SOURCES = BulletDomaintest.cpp
 BulletDomaintest_LDADD = \
@@ -979,12 +976,6 @@ MindPropertyintegration_LDADD = \
         $(top_builddir)/physics/libphysics.a \
         $(top_builddir)/common/libcommon.a \
         $(TERRAIN_LIBS) $(NETWORK_LIBS)
-
-BulletDomainintegration_SOURCES = BulletDomainintegration.cpp
-BulletDomainintegration_LDADD = \
-        $(top_builddir)/rulesets/BulletDomain.o \
-        $(top_builddir)/rulesets/Domain.o \
-        $(TERRAIN_LIBS)
 
 TerrainPropertyintegration_SOURCES = TerrainPropertyintegration.cpp
 TerrainPropertyintegration_LDADD = \

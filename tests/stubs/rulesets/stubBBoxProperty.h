@@ -27,22 +27,22 @@ void BBoxProperty::apply(LocatedEntity * ent)
 {
 }
 
-int BBoxProperty::get(Element & val) const
+int BBoxProperty::get(Atlas::Message::Element & val) const
 {
     return -1;
 }
 
-void BBoxProperty::set(const Element & val)
+void BBoxProperty::set(const Atlas::Message::Element & val)
 {
 }
 
 void BBoxProperty::add(const std::string & key,
-                       MapType & map) const
+        Atlas::Message::MapType & map) const
 {
 }
 
 void BBoxProperty::add(const std::string & key,
-                       const RootEntity & ent) const
+                       const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 

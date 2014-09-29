@@ -19,6 +19,16 @@
 #define STUBBASEWORLD_H_
 
 
+long integerId(const std::string & id)
+{
+    long intId = strtol(id.c_str(), 0, 10);
+    if (intId == 0 && id != "0") {
+        intId = -1L;
+    }
+
+    return intId;
+}
+
 BaseWorld * BaseWorld::m_instance = 0;
 
 BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
@@ -47,5 +57,33 @@ LocatedEntity& BaseWorld::getRootEntity() const {
     return m_gameWorld;
 }
 
+LocatedEntity * BaseWorld::getEntity(const std::string & id) const
+{
+    long intId = integerId(id);
+
+    EntityDict::const_iterator I = m_eobjects.find(intId);
+    if (I != m_eobjects.end()) {
+        assert(I->second != 0);
+        return I->second;
+    } else {
+        return 0;
+    }
+}
+
+LocatedEntity * BaseWorld::getEntity(long id) const
+{
+    EntityDict::const_iterator I = m_eobjects.find(id);
+    if (I != m_eobjects.end()) {
+        assert(I->second != 0);
+        return I->second;
+    } else {
+        return 0;
+    }
+}
+
+double BaseWorld::getTime() const
+{
+    return 0.0;
+}
 
 #endif /* STUBBASEWORLD_H_ */

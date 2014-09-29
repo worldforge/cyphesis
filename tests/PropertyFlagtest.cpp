@@ -101,6 +101,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 
 #include "rulesets/AtlasProperties.h"
 #include "rulesets/Domain.h"
+#include "rulesets/DomainProperty.h"
 #include "rulesets/Motion.h"
 
 #include "common/const.h"
@@ -108,71 +109,13 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 
 using Atlas::Objects::Entity::RootEntity;
 
-namespace Atlas { namespace Objects { namespace Operation {
+#include "stubs/common/stubCustom.h"
+#include "stubs/rulesets/stubContainsProperty.h"
+#include "stubs/rulesets/stubIdProperty.h"
+#include "stubs/rulesets/stubDomainProperty.h"
 
-int ACTUATE_NO = -1;
-int ATTACK_NO = -1;
-int DROP_NO = -1;
-int EAT_NO = -1;
-int NOURISH_NO = -1;
-int PICKUP_NO = -1;
-int TICK_NO = -1;
-int UPDATE_NO = -1;
-int RELAY_NO = -1;
-} } }
 
-ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
-      PropertyBase(per_ephem), m_data(data)
-{
-}
-
-int ContainsProperty::get(Atlas::Message::Element & e) const
-{
-    return 0;
-}
-
-void ContainsProperty::set(const Atlas::Message::Element & e)
-{
-}
-
-void ContainsProperty::add(const std::string & s, const RootEntity & ent) const
-{
-}
-
-ContainsProperty * ContainsProperty::copy() const
-{
-    return 0;
-}
-
-IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),
-                                                   m_data(data)
-{
-}
-
-int IdProperty::get(Atlas::Message::Element & e) const
-{
-    return 0;
-}
-
-void IdProperty::set(const Atlas::Message::Element & e)
-{
-}
-
-void IdProperty::add(const std::string & key,
-                     Atlas::Message::MapType & ent) const
-{
-}
-
-void IdProperty::add(const std::string & key, const RootEntity & ent) const
-{
-}
-
-IdProperty * IdProperty::copy() const
-{
-    return 0;
-}
-
-Motion::Motion(LocatedEntity & body) : m_entity(body), m_serialno(0),
+Motion::Motion(LocatedEntity & body, Domain& domain) : m_entity(body), m_domain(domain), m_serialno(0),
                                 m_collision(false), m_collEntity(0),
                                 m_collisionTime(0.f)
 {
@@ -212,94 +155,10 @@ Operation * Motion::genMoveOperation()
     return 0;
 }
 
-Domain * Domain::m_instance = 0;
-
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-void Router::error(const Operation & op,
-                   const std::string & errstring,
-                   OpVector & res,
-                   const std::string & to) const
-{
-}
-
-Location::Location() :
-    m_simple(true), m_solid(true),
-    m_boxSize(consts::minBoxSize),
-    m_squareBoxSize(consts::minSqrBoxSize),
-    m_loc(0)
-{
-}
-
-void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-void Location::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-BaseWorld * BaseWorld::m_instance = 0;
-
-BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
-{
-    m_instance = this;
-}
-
-BaseWorld::~BaseWorld()
-{
-    m_instance = 0;
-}
-
-double BaseWorld::getTime() const
-{
-    return 0;
-}
-
-LocatedEntity * BaseWorld::getEntity(const std::string & id) const
-{
-    return 0;
-}
-
-LocatedEntity * BaseWorld::getEntity(long id) const
-{
-    return 0;
-}
-
-PropertyManager * PropertyManager::m_instance = 0;
-
-PropertyManager::PropertyManager()
-{
-    assert(m_instance == 0);
-    m_instance = this;
-}
-
-PropertyManager::~PropertyManager()
-{
-   m_instance = 0;
-}
-
-int PropertyManager::installFactory(const std::string & type_name,
-                                    const Atlas::Objects::Root & type_desc,
-                                    PropertyKit * factory)
-{
-    return 0;
-}
+#include "stubs/common/stubRouter.h"
+#include "stubs/modules/stubLocation.h"
+#include "stubs/common/stubBaseWorld.h"
+#include "stubs/common/stubPropertyManager.h"
 
 void addToEntity(const Point3D & p, std::vector<double> & vd)
 {
