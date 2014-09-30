@@ -252,15 +252,17 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
         instanceProperties.insert(name);
     }
 
-    for (auto& propIter : ent->getType()->defaults()) {
-        if (!instanceProperties.count(propIter.first)) {
-            PropertyBase * prop = propIter.second;
-            // If a property is in the class it won't have been installed
-            // as setAttr() checks
-            prop->install(ent, propIter.first);
-            // The property will have been applied if it has an overriden
-            // value, so we only apply it the value is still default.
-            prop->apply(ent);
+    if (ent->getType()) {
+        for (auto& propIter : ent->getType()->defaults()) {
+            if (!instanceProperties.count(propIter.first)) {
+                PropertyBase * prop = propIter.second;
+                // If a property is in the class it won't have been installed
+                // as setAttr() checks
+                prop->install(ent, propIter.first);
+                // The property will have been applied if it has an overriden
+                // value, so we only apply it the value is still default.
+                prop->apply(ent);
+            }
         }
     }
 

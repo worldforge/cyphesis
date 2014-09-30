@@ -227,7 +227,9 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         } else {
             // Update the mode
             setAttr("mode", attr_mode);
-            m_motion->setMode(attr_mode.String());
+            if (m_motion) {
+                m_motion->setMode(attr_mode.String());
+            }
             mode = attr_mode.String();
         }
     }
