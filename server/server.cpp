@@ -330,7 +330,9 @@ int main(int argc, char ** argv)
                             client_port_num));
         } catch (const std::exception& e) {
             log(ERROR, String::compose("Could not create client listen socket "
-                    "on port %1. Init failed.", client_port_num));
+                    "on port %1. Init failed. The most common reason for this "
+                    "is that you're already running an instance of Cyphesis.",
+                    client_port_num));
             return EXIT_SOCKET_ERROR;
         }
     }
