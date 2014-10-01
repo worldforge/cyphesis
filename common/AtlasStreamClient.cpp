@@ -110,17 +110,31 @@ Atlas::Objects::ObjectsEncoder& StreamClientSocketBase::getEncoder()
     return *m_encoder;
 }
 
-int StreamClientSocketBase::poll(const boost::posix_time::ptime& expireTime)
+int StreamClientSocketBase::poll(const boost::posix_time::time_duration& duration)
 {
     bool hasExpired = false;
+    bool isCancelled = false;
     deadline_timer timer(m_io_service);
-    timer.expires_at(expireTime);
+    timer.expires_from_now(duration);
     timer.async_wait([&](boost::system::error_code ec){
         if (!ec) {
             hasExpired = true;
+        } else {
+            isCancelled = true;
         }
     });
-    m_io_service.run_one();
+
+    //We'll try to only run one handler each polling. Either our timer gets called, or one of the network handlers.
+    //The reason for this loop is that when we cancel the timer we need to poll run handlers until the timer handler
+    //has been run, since it references locally scoped variables.
+    while (!hasExpired && !isCancelled) {
+        m_io_service.run_one();
+        //Check if we didn't run the timer handler; if so we should cancel it and then keep on polling until
+        //it's been run.
+        if (!hasExpired && !isCancelled) {
+            timer.cancel();
+        }
+    }
     if (!m_is_connected) {
         return -1;
     }
@@ -503,8 +517,7 @@ int AtlasStreamClient::create(const std::string & type,
 
 int AtlasStreamClient::waitForLoginResponse()
 {
-    auto expireTime = boost::asio::time_traits<boost::posix_time::ptime>::now() + boost::posix_time::seconds(10);
-    while (poll(expireTime) == 0) {
+    while (poll(boost::posix_time::seconds(10)) == 0) {
         if (reply_flag && !error_flag) {
             if (m_infoReply->isDefaultId()) {
                std::cerr << "Malformed reply" << std::endl << std::flush;
@@ -523,12 +536,12 @@ int AtlasStreamClient::waitForLoginResponse()
     return -1;
 }
 
-int AtlasStreamClient::poll(const boost::posix_time::ptime& timeout)
+int AtlasStreamClient::poll(const boost::posix_time::time_duration& duration)
 {
     if (!m_socket) {
         return -1;
     }
-    int result = m_socket->poll(timeout);
+    int result = m_socket->poll(duration);
     if (result == -1) {
         std::cerr << "Server disconnected" << std::endl << std::flush;
     }
@@ -537,8 +550,7 @@ int AtlasStreamClient::poll(const boost::posix_time::ptime& timeout)
 
 int AtlasStreamClient::poll(int timeOut, int msec)
 {
-    auto expireTime = boost::asio::time_traits<boost::posix_time::ptime>::now() + boost::posix_time::seconds(timeOut) + boost::posix_time::microseconds(msec);
-    return poll(expireTime);
+    return poll(boost::posix_time::seconds(timeOut) + boost::posix_time::microseconds(msec));
 }
 
 int AtlasStreamClient::runTask(ClientTask * task, const std::string & arg)
@@ -589,8 +601,7 @@ int AtlasStreamClient::pollUntilTaskComplete()
         return 1;
     }
     while (m_currentTask != nullptr) {
-        auto expireTime = boost::asio::time_traits<boost::posix_time::ptime>::now() + boost::posix_time::milliseconds(100);
-        if (poll(expireTime) == -1) {
+        if (poll(boost::posix_time::milliseconds(100)) == -1) {
             return -1;
         }
     }
