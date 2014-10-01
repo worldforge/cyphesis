@@ -17,11 +17,14 @@
 
 
 #include "ConnectionContext.h"
+#include "common/debug.h"
 
 #include <Atlas/Objects/RootOperation.h>
 #include <Atlas/Objects/SmartPtr.h>
 
 #include <iostream>
+
+static const bool debug_flag = false;
 
 using Atlas::Objects::Operation::RootOperation;
 
@@ -32,8 +35,8 @@ ConnectionContext::ConnectionContext(Interactive & i) : ObjectContext(i),
 
 bool ConnectionContext::accept(const RootOperation& op) const
 {
-    std::cout << "Checking connection context to see if it matches"
-              << std::endl << std::flush;
+    debug(std::cout << "Checking connection context to see if it matches"
+              << std::endl << std::flush;);
     if (m_refNo != 0L && !op->isDefaultRefno() && op->getRefno() == m_refNo) {
         return true;
     }
@@ -42,8 +45,8 @@ bool ConnectionContext::accept(const RootOperation& op) const
 
 int ConnectionContext::dispatch(const RootOperation & op)
 {
-    std::cout << "Dispatching with account context to see if it matches"
-              << std::endl << std::flush;
+    debug(std::cout << "Dispatching with account context to see if it matches"
+              << std::endl << std::flush;);
     assert(m_refNo != 0L);
     m_refNo = 0L;
     return 0;

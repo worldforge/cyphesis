@@ -17,6 +17,7 @@
 
 
 #include "AvatarContext.h"
+#include "common/debug.h"
 
 #include "tools/Interactive.h"
 
@@ -24,6 +25,8 @@
 #include <Atlas/Objects/SmartPtr.h>
 
 #include <iostream>
+
+static const bool debug_flag = false;
 
 using Atlas::Objects::Operation::RootOperation;
 
@@ -34,8 +37,8 @@ AvatarContext::AvatarContext(Interactive & i, const std::string & id) :
 
 bool AvatarContext::accept(const RootOperation& op) const
 {
-    std::cout << "Checking avatar context to see if it matches"
-              << std::endl << std::flush;
+    debug(std::cout << "Checking avatar context to see if it matches"
+              << std::endl << std::flush;);
     if (m_refNo != 0L && !op->isDefaultRefno() && op->getRefno() == m_refNo) {
         return true;
     }

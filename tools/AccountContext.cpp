@@ -22,10 +22,14 @@
 #include "tools/AvatarContext.h"
 #include "tools/JunctureContext.h"
 
+#include "common/debug.h"
+
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/SmartPtr.h>
 
 #include <iostream>
+
+static const bool debug_flag = false;
 
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::RootOperation;
@@ -41,8 +45,8 @@ AccountContext::AccountContext(Interactive & i,
 
 bool AccountContext::accept(const RootOperation& op) const
 {
-    std::cout << "Checking account context to see if it matches"
-              << std::endl << std::flush;
+    debug(std::cout << "Checking account context to see if it matches"
+              << std::endl << std::flush;);
     if (m_refNo != 0L && !op->isDefaultRefno() && op->getRefno() == m_refNo) {
         return true;
     }
@@ -51,8 +55,8 @@ bool AccountContext::accept(const RootOperation& op) const
 
 int AccountContext::dispatch(const RootOperation & op)
 {
-    std::cout << "Dispatching with account context to see if it matches"
-              << std::endl << std::flush;
+    debug(std::cout << "Dispatching with account context to see if it matches"
+              << std::endl << std::flush;);
     if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO &&
         !op->getArgs().empty()) {
         std::cout << "Dispatching info"

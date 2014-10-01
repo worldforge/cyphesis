@@ -17,6 +17,7 @@
 
 
 #include "JunctureContext.h"
+#include "common/debug.h"
 
 #include <Atlas/Objects/RootOperation.h>
 #include <Atlas/Objects/SmartPtr.h>
@@ -24,6 +25,7 @@
 #include <iostream>
 
 using Atlas::Objects::Operation::RootOperation;
+static const bool debug_flag = false;
 
 JunctureContext::JunctureContext(Interactive & i,
                                  const std::string & id) : IdContext(i, id)
@@ -32,8 +34,8 @@ JunctureContext::JunctureContext(Interactive & i,
 
 bool JunctureContext::accept(const RootOperation& op) const
 {
-    std::cout << "Checking juncture context to see if it matches"
-              << std::endl << std::flush;
+    debug(std::cout << "Checking juncture context to see if it matches"
+              << std::endl << std::flush;);
     if (m_refNo != 0L && !op->isDefaultRefno() && op->getRefno() == m_refNo) {
         std::cout << "It does!"
                   << std::endl << std::flush;
@@ -45,8 +47,8 @@ bool JunctureContext::accept(const RootOperation& op) const
 
 int JunctureContext::dispatch(const RootOperation & op)
 {
-    std::cout << "Juncture dispatch!"
-              << std::endl << std::flush;
+    debug(std::cout << "Juncture dispatch!"
+              << std::endl << std::flush;);
     // If we get an info op here, it can mean something succeeded, like
     // connection or login.
     return 0;
