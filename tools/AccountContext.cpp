@@ -34,7 +34,7 @@ static const bool debug_flag = false;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::RootOperation;
 
-using boost::shared_ptr;
+using std::shared_ptr;
 
 AccountContext::AccountContext(Interactive & i,
                                const std::string & id,

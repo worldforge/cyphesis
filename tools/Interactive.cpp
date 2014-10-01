@@ -93,7 +93,7 @@ using Atlas::Objects::smart_dynamic_cast;
 using Atlas::Objects::Operation::Monitor;
 using Atlas::Objects::Operation::Connect;
 
-using boost::shared_ptr;
+using std::shared_ptr;
 
 /// \brief Entry in the global command table for cycmd
 struct command {
@@ -413,7 +413,7 @@ void Interactive::switchContext(int, int)
     ContextMap::const_iterator I = m_contexts.begin();
     ContextMap::const_iterator Iend = m_contexts.end();
     for (; I != Iend; ++I) {
-        const boost::shared_ptr<ObjectContext> & i = *I;
+        const std::shared_ptr<ObjectContext> & i = *I;
         if (m_currentContext.lock() == i) {
             if (++I == Iend) {
                 I = m_contexts.begin();
@@ -515,7 +515,7 @@ void Interactive::updatePrompt()
         status = m_currentTask->description();
     }
     std::string context = "";
-    boost::shared_ptr<ObjectContext> c = m_currentContext.lock();
+    std::shared_ptr<ObjectContext> c = m_currentContext.lock();
     if (c) {
         context = c->repr();
     }
@@ -553,7 +553,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
     reply_flag = false;
     error_flag = false;
 
-    boost::shared_ptr<ObjectContext> command_context = m_currentContext.lock();
+    std::shared_ptr<ObjectContext> command_context = m_currentContext.lock();
     if (!command_context) {
         std::cout << "ERROR: Context free" << std::endl << std::flush;
         return;

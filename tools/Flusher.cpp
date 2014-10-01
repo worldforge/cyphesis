@@ -27,6 +27,7 @@
 #include <Atlas/Objects/Operation.h>
 
 #include <iostream>
+#include <memory>
 
 using Atlas::Objects::Root;
 using Atlas::Objects::smart_dynamic_cast;
@@ -36,7 +37,7 @@ using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Tick;
 
-using boost::shared_ptr;
+using std::shared_ptr;
 
 Flusher::Flusher(const shared_ptr<ObjectContext> & c) : m_context(c)
 {

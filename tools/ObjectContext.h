@@ -21,13 +21,12 @@
 
 #include <Atlas/Objects/ObjectsFwd.h>
 
-#include <boost/enable_shared_from_this.hpp>
-
 #include <string>
+#include <memory>
 
 class Interactive;
 
-class ObjectContext : public boost::enable_shared_from_this<ObjectContext>
+class ObjectContext : public std::enable_shared_from_this<ObjectContext>
 {
   protected:
     Interactive & m_client;

@@ -21,19 +21,18 @@
 
 #include "common/ClientTask.h"
 
-#include <boost/shared_ptr.hpp>
-#include <boost/weak_ptr.hpp>
+#include <memory>
 
 class ObjectContext;
 
 /// \brief Task class for flushing the server of character entities
 class Flusher : public ClientTask {
   protected:
-    boost::weak_ptr<ObjectContext> m_context;
+    std::weak_ptr<ObjectContext> m_context;
     
     std::string type;
   public:
-    explicit Flusher(const boost::shared_ptr<ObjectContext> & context);
+    explicit Flusher(const std::shared_ptr<ObjectContext> & context);
     virtual ~Flusher();
 
     virtual void setup(const std::string & arg, OpVector & ret);
