@@ -548,9 +548,9 @@ int AtlasStreamClient::poll(const boost::posix_time::time_duration& duration)
     return result;
 }
 
-int AtlasStreamClient::poll(int timeOut, int msec)
+int AtlasStreamClient::poll(int seconds, int microseconds)
 {
-    return poll(boost::posix_time::seconds(timeOut) + boost::posix_time::microseconds(msec));
+    return poll(boost::posix_time::seconds(seconds) + boost::posix_time::microseconds(microseconds));
 }
 
 int AtlasStreamClient::runTask(ClientTask * task, const std::string & arg)

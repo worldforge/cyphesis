@@ -174,7 +174,7 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
                const std::string & username,
                const std::string & password);
     int poll(const boost::posix_time::time_duration& duration);
-    int poll(int timeout = 0, int msec = 0);
+    int poll(int seconds = 0, int microseconds = 0);
     void output(const Atlas::Message::Element & item, int depth = 0) const;
     void output(const Atlas::Objects::Root & item) const;
 

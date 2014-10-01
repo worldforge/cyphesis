@@ -494,7 +494,7 @@ int Interactive::select(bool rewrite_prompt)
     }
 
 
-    int result = poll(0, 10);
+    int result = poll(0, 10000);
     if (result >= 0) {
         return 0;
     }
