@@ -223,6 +223,19 @@ public:
 	 */
 	bool getExportRules() const;
 
+    /**
+     * @brief Sets whether we should export minds.
+     *
+     * @param exportRules Whether we should export minds.
+     */
+    void setExportMinds(bool exportMinds);
+
+    /**
+     * @brief Gets whether we should export minds.
+     * @return Whether we should export minds.
+     */
+    bool getExportMinds() const;
+
 	/**
 	 * @brief Gets stats about the export process.
 	 * @return Stats about the process.
@@ -340,6 +353,11 @@ protected:
 	 * @brief True if rules also should be exported.
 	 */
 	bool mExportRules;
+
+	/**
+	 * @brief True if minds should be exported.
+	 */
+	bool mExportMinds;
 
 	/**
 	 * @brief Starts the process of requesting entities and walking the entity hierarchy.

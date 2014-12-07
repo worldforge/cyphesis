@@ -41,6 +41,8 @@ BOOL_OPTION(transients, false, "export", "transients",
         "Flag to control if transients should also be exported");
 BOOL_OPTION(rules, false, "export", "rules",
         "Flag to control if rules should also be exported");
+BOOL_OPTION(minds, true, "export", "minds",
+        "Flag to control if minds should also be exported");
 
 int main(int argc, char ** argv)
 {
@@ -115,6 +117,7 @@ int main(int argc, char ** argv)
         auto exporter = new EntityExporter(accountId, agent_id);
         exporter->setExportRules(rules);
         exporter->setExportTransient(transients);
+        exporter->setExportMinds(minds);
 
         bridge.runTask(exporter, filename);
         if (bridge.pollUntilTaskComplete() != 0) {

@@ -84,7 +84,7 @@ bool idSorter(const std::string& lhs, const std::string& rhs)
 }
 
 EntityExporterBase::EntityExporterBase(const std::string& accountId, const std::string& avatarId, const std::string& currentTimestamp) :
-		mAccountId(accountId), mAvatarId(avatarId), mCurrentTimestamp(currentTimestamp), mStats( { }), mComplete(false), mCancelled(false), mOutstandingGetRequestCounter(0), mExportTransient(false), mPreserveIds(false), mExportRules(false)
+		mAccountId(accountId), mAvatarId(avatarId), mCurrentTimestamp(currentTimestamp), mStats( { }), mComplete(false), mCancelled(false), mOutstandingGetRequestCounter(0), mExportTransient(false), mPreserveIds(false), mExportRules(false), mExportMinds(true)
 {
 }
 
@@ -110,6 +110,16 @@ void EntityExporterBase::setExportTransient(bool exportTransient)
 bool EntityExporterBase::getExportTransient() const
 {
 	return mExportTransient;
+}
+
+void EntityExporterBase::setExportMinds(bool exportMinds)
+{
+    mExportMinds = exportMinds;
+}
+
+bool EntityExporterBase::getExportMinds() const
+{
+    return mExportMinds;
 }
 
 void EntityExporterBase::setPreserveIds(bool preserveIds)
@@ -291,11 +301,13 @@ void EntityExporterBase::infoArrived(const Operation & op)
 			mEntityQueue.push_back(*I);
 		}
 
-		//Don't request thoughts for ourselves
-		if (ent->getId() != mAvatarId) {
-			if (ent->hasAttr("mind")) {
-				requestThoughts(ent->getId(), persistedId);
-			}
+		if (mExportMinds) {
+            //Don't request thoughts for ourselves
+            if (ent->getId() != mAvatarId) {
+                if (ent->hasAttr("mind")) {
+                    requestThoughts(ent->getId(), persistedId);
+                }
+            }
 		}
 	}
 	pollQueue();
