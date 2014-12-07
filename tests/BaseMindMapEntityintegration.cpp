@@ -79,6 +79,8 @@ void BaseMindMapEntityintegration::teardown()
 
 void BaseMindMapEntityintegration::test_MemMapdel_top()
 {
+    //HACK: Disabled for now as we've disabled the deletion of entities from the mind. See MemMap::del(...)
+    return;
     MemEntity * tlve = new MemEntity("0", 0);
     tlve->m_contains = new LocatedEntitySet;
     m_mind->m_map.m_entities[0] = tlve;
@@ -107,6 +109,8 @@ void BaseMindMapEntityintegration::test_MemMapdel_top()
 
 void BaseMindMapEntityintegration::test_MemMapdel_mid()
 {
+    //HACK: Disabled for now as we've disabled the deletion of entities from the mind. See MemMap::del(...)
+    return;
     MemEntity * tlve = new MemEntity("0", 0);
     tlve->m_contains = new LocatedEntitySet;
     m_mind->m_map.m_entities[0] = tlve;
@@ -141,6 +145,8 @@ void BaseMindMapEntityintegration::test_MemMapdel_mid()
 
 void BaseMindMapEntityintegration::test_MemMapdel_edge()
 {
+    //HACK: Disabled for now as we've disabled the deletion of entities from the mind. See MemMap::del(...)
+    return;
     MemEntity * tlve = new MemEntity("0", 0);
     tlve->m_contains = new LocatedEntitySet;
     m_mind->m_map.m_entities[0] = tlve;

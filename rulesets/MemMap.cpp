@@ -187,6 +187,14 @@ void MemMap::del(const std::string & id)
 {
     debug( std::cout << "MemMap::del(" << id << ")" << std::endl << std::flush;);
 
+    //HACK: We currently do refcounting for Locations kept in the mind as knowledge.
+    //The result is that if an entity is removed here, it will be deleted, and any
+    //knowledge or goal referring to it will point to an invalid pointer.
+    //Then result is a segfault whenever the mind is queried.
+    //To prevent this we'll add this interim fix, where we exit from the method.
+    //This is an interim solution until we've better dealt with Locations in goals and knowledge.
+    return;
+
     long int_id = integerId(id);
 
     MemEntityDict::iterator I = m_entities.find(int_id);
