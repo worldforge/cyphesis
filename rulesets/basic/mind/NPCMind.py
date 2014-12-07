@@ -272,7 +272,7 @@ class NPCMind(server.Mind):
     def commune_all_thoughts(self, op):
         """Sends back information on all thoughts. This includes knowledge and goals, 
         as well as known things.
-        The thoughts will be sent back as a "think" operations, in a manor such that if the
+        The thoughts will be sent back as a "think" operations, in a manner such that if the
         same think operation is sent back to the mind all thoughts will be restored. In
         this way the mind can support server side persistence of its thoughts.
         """
