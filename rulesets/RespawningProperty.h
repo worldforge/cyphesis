@@ -36,6 +36,7 @@
 /// The reason for doing this is that we don't want those entities/characters that have
 /// been abandoned to litter the world. This way, if a character has been abandoned it
 /// will end up in limbo, but not bother the rest of the world.
+/// Entities that are put in limbo will be suspended, through the "suspended" property.
 ///
 /// The property accepts a string, which is the name of a spawn point.
 ///

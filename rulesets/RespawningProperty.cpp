@@ -35,6 +35,7 @@ static const bool debug_flag = false;
 
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::Move;
+using Atlas::Objects::Operation::Set;
 
 RespawningProperty::RespawningProperty()
 {
@@ -96,6 +97,16 @@ HandlerResult RespawningProperty::delete_handler(LocatedEntity * e,
             if (!m_entityLinkConnection) {
                 m_entityLinkConnection = character->externalLinkChanged.connect(sigc::bind(sigc::mem_fun(*this, &RespawningProperty::entity_externalLinkChanged), e));
             }
+
+            //Suspend the entity while its in limbo
+            Anonymous set_args;
+            set_args->setAttr("suspended", 1);
+            Set set;
+            set->setFrom(e->getId());
+            set->setTo(e->getId());
+            set->setArgs1(set_args);
+            res.push_back(set);
+
         } else {
             if (BaseWorld::instance().moveToSpawn(m_data, new_loc) == 0) {
             } else {
@@ -122,8 +133,19 @@ HandlerResult RespawningProperty::delete_handler(LocatedEntity * e,
 
 void RespawningProperty::entity_externalLinkChanged(LocatedEntity* entity) {
     //When the entity gets externally controlled again we should move it out of limbo and back to the respawn.
+    OpVector res;
 
     m_entityLinkConnection.disconnect();
+
+    //Disable the suspension
+    Anonymous set_args;
+    set_args->setAttr("suspended", 0);
+    Set set;
+    set->setFrom(entity->getId());
+    set->setTo(entity->getId());
+    set->setArgs1(set_args);
+    res.push_back(set);
+
     Location new_loc;
     new_loc.m_velocity = Vector3D::ZERO();
 
@@ -135,7 +157,6 @@ void RespawningProperty::entity_externalLinkChanged(LocatedEntity* entity) {
     move->setFrom(entity->getId());
     move->setTo(entity->getId());
     move->setArgs1(move_arg);
-    OpVector res;
     //Note that we're bypassing the normal operations flow. This is because we want this movement to happen
     //instantly, as the character is currently being attached to an external mind. We don't want the external mind
     //to first get information about the entity being contained in limbo, and then just thereafter being moved to
