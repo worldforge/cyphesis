@@ -16,7 +16,7 @@ RUN cd hammer
 RUN bash hammer.sh checkout libs
 RUN bash hammer.sh build libs
 RUN bash hammer.sh checkout cyphesis
-RUB bash hammer.sh build cyphesis
+RUN bash hammer.sh build cyphesis
 
 
 #Setup Postgres
