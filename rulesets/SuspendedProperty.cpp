@@ -18,11 +18,13 @@
 
 #include "SuspendedProperty.h"
 #include "common/BaseWorld.h"
+#include "common/custom.h"
 #include "Entity.h"
 
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/RootEntity.h>
+#include <Atlas/Objects/Operation.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -39,9 +41,50 @@ SuspendedProperty * SuspendedProperty::copy() const
 
 void SuspendedProperty::apply(LocatedEntity * ent)
 {
-	//Only apply if the entity which this is set on is the root world entity.
+	//If this property is applied to the world entity, it's a special case.
 	if (ent->getIntId() == 0) {
 		BaseWorld::instance().setIsSuspended(m_data);
+	} else {
+		if (data() == 0) {
+			//suspension is disabled; we should send any stored ops
+			for (auto& op : m_suspendedOps) {
+				BaseWorld::instance().message(op, *ent);
+			}
+			m_suspendedOps.clear();
+		}
 	}
 }
 
+void SuspendedProperty::install(LocatedEntity * owner, const std::string & name)
+{
+	//Regard the world as a special case.
+	if (owner->getIntId() != 0) {
+		owner->installDelegate(Atlas::Objects::Operation::TICK_NO, name);
+	}
+}
+
+void SuspendedProperty::remove(LocatedEntity * owner, const std::string & name)
+{
+	//Regard the world as a special case.
+	if (owner->getIntId() != 0) {
+		owner->removeDelegate(Atlas::Objects::Operation::TICK_NO, name);
+	} else {
+		if (!owner->isDestroyed()) {
+			for (auto& op : m_suspendedOps) {
+				BaseWorld::instance().message(op, *owner);
+			}
+			m_suspendedOps.clear();
+		}
+	}
+}
+
+HandlerResult SuspendedProperty::operation(LocatedEntity * e,
+        const Operation & op, OpVector & res)
+{
+	if (data()) {
+		m_suspendedOps.push_back(op);
+		return OPERATION_BLOCKED;
+	} else {
+		return OPERATION_IGNORED;
+	}
+}

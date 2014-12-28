@@ -24,6 +24,7 @@
 #endif
 
 #include "PropertyCoverage.h"
+#include "stubs/common/stubCustom.h"
 
 #include "rulesets/SuspendedProperty.h"
 

@@ -418,6 +418,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "stubs/rulesets/stubDefaultLocationProperty.h"
 #include "stubs/rulesets/stubLimboProperty.h"
 #include "stubs/rulesets/stubDomainProperty.h"
+#include "stubs/rulesets/stubSuspendedProperty.h"
 #include "stubs/common/stubCustom.h"
 
 ArithmeticBuilder * ArithmeticBuilder::m_instance = 0;
@@ -1123,19 +1124,6 @@ void TransientProperty::install(LocatedEntity * ent, const std::string & name)
 }
 
 void TransientProperty::apply(LocatedEntity * ent)
-{
-}
-
-SuspendedProperty::SuspendedProperty()
-{
-}
-
-SuspendedProperty * SuspendedProperty::copy() const
-{
-    return 0;
-}
-
-void SuspendedProperty::apply(LocatedEntity * owner)
 {
 }
 

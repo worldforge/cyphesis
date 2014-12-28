@@ -21,6 +21,19 @@
 
 #include "common/Property.h"
 
+/**
+ * \brief Suspends either the world or an entity.
+ *
+ * When an entity is suspended it won't react to any Tick operations.
+ * These are instead stored and sent again when the entity is resumed.
+ *
+ * When this property is applied on the world, i.e. the entity with id 0,
+ * the effect is slightly different from when its applied to another entity.
+ * When applied to the world it means that _all_ Tick operations in the whole system
+ * are suspended.
+ *
+ * \ingroup PropertyClasses
+ */
 class SuspendedProperty : public Property<int> {
 public:
 	explicit SuspendedProperty();
@@ -28,6 +41,19 @@ public:
     virtual SuspendedProperty * copy() const;
 
     virtual void apply(LocatedEntity *);
+
+    virtual void install(LocatedEntity *, const std::string &);
+    virtual void remove(LocatedEntity *, const std::string & name);
+
+    HandlerResult operation(LocatedEntity * e,
+            const Operation & op, OpVector & res);
+protected:
+
+    /**
+     * \brief Store ops that needs to be sent again when the entity is resumed.
+     */
+    OpVector m_suspendedOps;
+
 };
 
 #endif /* RULESETS_SUSPENDEDPROPERTY_H_ */
