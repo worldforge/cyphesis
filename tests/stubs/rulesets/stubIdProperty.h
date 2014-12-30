@@ -18,7 +18,7 @@
 #ifndef STUBIDPROPERTY_H_
 #define STUBIDPROPERTY_H_
 
-
+#include "rulesets/AtlasProperties.h"
 
 
 IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),

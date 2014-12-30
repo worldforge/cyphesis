@@ -18,6 +18,8 @@
 #ifndef STUBPROPERTYMANAGER_H_
 #define STUBPROPERTYMANAGER_H_
 
+#include "common/PropertyManager.h"
+
 PropertyManager * PropertyManager::m_instance = 0;
 
 PropertyManager::PropertyManager()

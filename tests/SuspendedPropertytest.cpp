@@ -54,7 +54,4 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
     return 0;
 }
 
-void BaseWorld::setIsSuspended(bool suspended) {
-
-}
 

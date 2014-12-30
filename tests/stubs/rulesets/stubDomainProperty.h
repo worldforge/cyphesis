@@ -18,6 +18,8 @@
 #ifndef STUBDOMAINPROPERTY_H_
 #define STUBDOMAINPROPERTY_H_
 
+#include "rulesets/DomainProperty.h"
+
 DomainProperty::DomainProperty()
 : m_domain(nullptr)
 {

@@ -86,4 +86,8 @@ double BaseWorld::getTime() const
     return 0.0;
 }
 
+void BaseWorld::setIsSuspended(bool suspended)
+{
+}
+
 #endif /* STUBBASEWORLD_H_ */

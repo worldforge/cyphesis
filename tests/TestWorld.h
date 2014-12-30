@@ -30,6 +30,8 @@ class TestWorld : public BaseWorld {
         m_eobjects[m_gameWorld.getIntId()] = &m_gameWorld;
     }
 
+    virtual ~TestWorld(){}
+
     virtual bool idle() { return false; }
     virtual LocatedEntity * addEntity(LocatedEntity * ent) { 
         m_eobjects[ent->getIntId()] = ent;
@@ -60,6 +62,8 @@ class TestWorld : public BaseWorld {
     virtual LocatedEntity * findByName(const std::string & name) { return 0; }
     virtual LocatedEntity * findByType(const std::string & type) { return 0; }
     virtual void addPerceptive(LocatedEntity *) { }
+
+
 };
 
 #endif // TESTS_TEST_WORLD_H

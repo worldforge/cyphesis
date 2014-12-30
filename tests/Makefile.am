@@ -66,7 +66,8 @@ RULESETS_INTEGRATION_TESTS = MindPropertyintegration \
                              TerrainModPropertyintegration \
                              StatisticsPropertyintegration \
                              BaseMindMapEntityintegration \
-                             AreaPropertyintegration
+                             AreaPropertyintegration \
+                             SuspendedPropertyintegration
 
 CLIENT_TESTS = Py_CreatorClienttest Py_ObserverClienttest \
                ClientConnectiontest BaseClienttest \
@@ -1065,6 +1066,12 @@ AreaPropertyintegration_LDADD = \
         $(top_builddir)/physics/Course.o \
         $(top_builddir)/physics/Shape.o
 
+SuspendedPropertyintegration_SOURCES = SuspendedPropertyintegration.cpp
+SuspendedPropertyintegration_LDADD = \
+        $(top_builddir)/rulesets/SuspendedProperty.o \
+        $(top_builddir)/rulesets/Entity.o \
+        $(top_builddir)/rulesets/LocatedEntity.o \
+        $(top_builddir)/common/libcommon.a
 # CLIENT_TESTS
 
 Py_CreatorClienttest_SOURCES = Py_CreatorClienttest.cpp \
