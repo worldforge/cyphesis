@@ -13,6 +13,10 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="mass">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">bone_pile</string>
     <string name="objtype">class</string>
@@ -32,6 +36,10 @@
           <float>0.257261</float>
           <float>0.060654</float>
         </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">1</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -55,6 +63,10 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="mass">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">humerus</string>
     <string name="objtype">class</string>
@@ -74,6 +86,10 @@
           <float>0.140789</float>
           <float>0.183562</float>
         </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">1</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -97,6 +113,10 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="mass">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">ribcage</string>
     <string name="objtype">class</string>
@@ -118,6 +138,10 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="mass">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">skull</string>
     <string name="objtype">class</string>
@@ -137,6 +161,10 @@
           <float>0.248019</float>
           <float>0.054941</float>
         </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mass">
+        <float name="default">1</float>
         <string name="visibility">public</string>
       </map>
     </map>
