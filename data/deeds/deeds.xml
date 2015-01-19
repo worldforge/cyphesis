@@ -2,20 +2,6 @@
 
   <map>
     <map name="attributes">
-      <map name="mass">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">arm</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
       <map name="bbox">
         <list name="default">
           <float>-0.25</float>
@@ -447,34 +433,6 @@
 
   <map>
     <map name="attributes">
-      <map name="mass">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">pelvis</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="mass">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">ribcage</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
       <map name="bbox">
         <list name="default">
           <float>-0.732675</float>
@@ -488,20 +446,6 @@
       </map>
     </map>
     <string name="id">shelf_table</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="mass">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">shin</string>
     <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
@@ -548,20 +492,6 @@
       </map>
     </map>
     <string name="id">simple_shelf</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="mass">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">skull</string>
     <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
@@ -629,20 +559,6 @@
       </map>
     </map>
     <string name="id">table</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="mass">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">thigh</string>
     <string name="objtype">class</string>
     <list name="parents">
       <string>thing</string>
