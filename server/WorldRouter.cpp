@@ -639,6 +639,9 @@ bool WorldRouter::idle()
         m_operationQueue.pop();
     }
 
+    Monitors::instance()->insert("operations_queue", (Atlas::Message::IntType) m_operationQueue.size());
+    Monitors::instance()->insert("immediate_operations_queue", (Atlas::Message::IntType) m_immediateQueue.size());
+
     // If there are still immediate or regular ops to deliver return true
     // to tell the server not to sleep when polling clients. This ensures
     // that we keep processing ops at a the maximum rate without leaving

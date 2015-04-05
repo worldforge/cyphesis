@@ -119,6 +119,8 @@ void Monitors::sendNumerics(std::ostream & io)
             io << std::endl;
         }
     }
+
+
 }
 
 int Monitors::readVariable(const std::string& key, std::ostream& out_stream) const
