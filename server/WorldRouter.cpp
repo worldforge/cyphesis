@@ -201,6 +201,12 @@ void WorldRouter::addOperationToQueue(const Operation & op, LocatedEntity & ent)
     op->setSeconds(t);
     op->setFutureSeconds(0.);
     m_operationQueue.push(OpQueEntry(op, ent));
+    if (debug_flag) {
+        std::cout << "WorldRouter::addOperationToQueue {" << std::endl;
+        debug_dump(op, std::cout);
+        std::cout << "}" << std::endl << std::flush;
+    }
+
 }
 
 /// \brief Add a new entity to the world.
