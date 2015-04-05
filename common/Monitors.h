@@ -45,6 +45,7 @@ class Monitors {
     void insert(const std::string &, const Atlas::Message::Element &);
     void watch(const std::string &, VariableBase *);
     void send(std::ostream &);
+    void sendNumerics(std::ostream &);
     int readVariable(const std::string& key, std::ostream& out_stream) const;
 
 };

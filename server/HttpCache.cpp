@@ -92,6 +92,9 @@ void HttpCache::processQuery(std::ostream & io,
     } else if (path == "/monitors") {
         sendHeaders(io);
         Monitors::instance()->send(io);
+    } else if (path == "/monitors/numerics") {
+        sendHeaders(io);
+        Monitors::instance()->sendNumerics(io);
     } else {
         reportBadRequest(io, 404, "Not Found");
     }

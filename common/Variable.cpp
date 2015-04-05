@@ -40,6 +40,26 @@ void Variable<T>::send(std::ostream & o)
     o << m_variable;
 }
 
+
+template <>
+bool Variable<int>::isNumeric() const
+{
+    return true;
+}
+
+template <>
+bool Variable<std::string>::isNumeric() const
+{
+    return false;
+}
+
+template <>
+bool Variable<const char *>::isNumeric() const
+{
+    return false;
+}
+
 template class Variable<int>;
 template class Variable<std::string>;
 template class Variable<const char *>;
+

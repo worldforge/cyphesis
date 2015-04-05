@@ -100,6 +100,27 @@ void Monitors::send(std::ostream & io)
     }
 }
 
+void Monitors::sendNumerics(std::ostream & io)
+{
+    MapType::const_iterator I = m_pairs.begin();
+    MapType::const_iterator Iend = m_pairs.end();
+    for (; I != Iend; ++I) {
+        if (I->second.isNum()) {
+            io << I->first << " " << I->second << std::endl;
+        }
+    }
+
+    MonitorDict::const_iterator J = m_variableMonitors.begin();
+    MonitorDict::const_iterator Jend = m_variableMonitors.end();
+    for (; J != Jend; ++J) {
+        if (J->second->isNumeric()) {
+            io << J->first << " ";
+            J->second->send(io);
+            io << std::endl;
+        }
+    }
+}
+
 int Monitors::readVariable(const std::string& key, std::ostream& out_stream) const
 {
     MonitorDict::const_iterator J = m_variableMonitors.find(key);

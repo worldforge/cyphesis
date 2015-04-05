@@ -29,6 +29,7 @@ class VariableBase {
   public:
     virtual ~VariableBase() = 0;
     virtual void send(std::ostream &) = 0;
+    virtual bool isNumeric() const = 0;
 };
 
 /// \brief Concrete class template for dynamic variable monitors
@@ -44,6 +45,7 @@ class Variable : public VariableBase {
 
     virtual ~Variable();
     virtual void send(std::ostream &);
+    virtual bool isNumeric() const;
 };
 
 #endif // COMMON_VARIABLE_H
