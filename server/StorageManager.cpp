@@ -88,14 +88,14 @@ StorageManager:: StorageManager(WorldRouter & world) :
         Monitors::instance()->watch("storage_property_updates",
                                     new Variable<int>(m_updatePropertyCount));
 
-        Monitors::instance()->watch("storage_qps{qtype=inserts,t=1}",
+        Monitors::instance()->watch("storage_qps{qtype=\"inserts\",t=\"1\"}",
                                     new Variable<int>(m_insertQpsNow));
-        Monitors::instance()->watch("storage_qps{qtype=updates,t=1}",
+        Monitors::instance()->watch("storage_qps{qtype=\"updates\",t=\"1\"}",
                                     new Variable<int>(m_updateQpsNow));
 
-        Monitors::instance()->watch("storage_qps{qtype=inserts,t=32}",
+        Monitors::instance()->watch("storage_qps{qtype=\"inserts\",t=\"32\"}",
                                     new Variable<int>(m_insertQpsAvg));
-        Monitors::instance()->watch("storage_qps{qtype=updates,t=32}",
+        Monitors::instance()->watch("storage_qps{qtype=\"updates\",t=\"32\"}",
                                     new Variable<int>(m_updateQpsAvg));
 
         for (int i = 0; i < 32; ++i) {
