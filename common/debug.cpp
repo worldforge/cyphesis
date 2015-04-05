@@ -19,6 +19,11 @@
 #include "debug.h"
 
 #include <Atlas/Message/Element.h>
+#include <Atlas/PresentationBridge.h>
+#include <Atlas/Objects/Root.h>
+#include <Atlas/Objects/Encoder.h>
+#include <Atlas/Objects/SmartPtr.h>
+#include <Atlas/Objects/Operation.h>
 
 #include <iostream>
 #include <sstream>
@@ -70,6 +75,16 @@ void output_element(std::ostream & out, const Element & item, int depth)
             break;
     }
 }
+template <>
+void debug_dump(const Atlas::Objects::Operation::RootOperation & t, std::ostream & os)
+{
+    std::stringstream ss;
+    Atlas::PresentationBridge bridge(ss);
+    Atlas::Objects::ObjectsEncoder encoder(bridge);
+    encoder.streamObjectsMessage(t);
+    os << ss.str();
+}
+
 
 template <typename T>
 void debug_dump(const T & t, std::ostream & os)
