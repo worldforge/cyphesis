@@ -24,11 +24,13 @@
 /// \brief Handle running python commands in the servers interpreter context
 class PythonContext {
   protected:
+    struct _object * m_module;
     struct _object * m_globals;
     struct _object * m_locals;
     struct _arena * m_arena;
   public:
     PythonContext();
+    ~PythonContext();
 
     std::string runCommand(const std::string &);
 };

@@ -25,14 +25,22 @@
 
 PythonContext::PythonContext()
 {
-    PyObject * m = PyImport_AddModule("__main__");
-    if (m == NULL) {
+    m_module = PyImport_AddModule("__main__");
+    if (m_module == NULL) {
         log(ERROR, "Could not import __main__");
         return;
     }
-    m_globals = PyModule_GetDict(m);
+    m_globals = PyModule_GetDict(m_module);
     m_locals = PyDict_New();
     m_arena = PyArena_New();
+}
+
+PythonContext::~PythonContext()
+{
+    PyArena_Free(m_arena);
+    //PyObject_Free(m_locals);
+    //PyObject_Free(m_module);
+
 }
 
 static PyObject *
