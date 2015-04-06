@@ -55,6 +55,7 @@
 #include "common/utils.h"
 #include "common/serialno.h"
 #include "common/SystemTime.h"
+#include "common/Monitors.h"
 
 #include <varconf/config.h>
 
@@ -610,6 +611,8 @@ int main(int argc, char ** argv)
     shutdown_python_api();
 
     delete global_conf;
+
+    Monitors::cleanup();
 
     log(INFO, "Clean shutdown complete.");
     logEvent(STOP, "- - - Standalone server shutdown");
