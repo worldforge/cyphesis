@@ -523,7 +523,15 @@ void WorldRouter::deliverTo(const Operation & op, LocatedEntity & ent)
         }
     }
     OpVector res;
+    debug(std::cout << "WorldRouter::deliverTo begin {"
+                        << op->getParents().front() << ":"
+                        << op->getFrom() << ":" << op->getTo() << "}" << std::endl
+                        << std::flush;);
     ent.operation(op, res);
+    debug(std::cout << "WorldRouter::deliverTo done {"
+                        << op->getParents().front() << ":"
+                        << op->getFrom() << ":" << op->getTo() << "}" << std::endl
+                        << std::flush;);
     OpVector::const_iterator Iend = res.end();
     for(OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
         if (op->getFrom() == (*I)->getTo()) {
@@ -629,8 +637,9 @@ bool WorldRouter::idle()
 	unsigned int op_count = 0;
     while (op_count < 10 && !m_immediateQueue.empty()) {
         ++op_count;
-        dispatchOperation(m_immediateQueue.front());
+        auto opQueueEntry = std::move(m_immediateQueue.front());
         m_immediateQueue.pop();
+        dispatchOperation(opQueueEntry);
     }
 
     //If there still are immediate ops to deliver we are absolutely busy.
@@ -641,8 +650,10 @@ bool WorldRouter::idle()
     double realtime = getTime();
     while (op_count < 10 && !m_operationQueue.empty() && m_operationQueue.top()->getSeconds() <= realtime) {
         ++op_count;
-        dispatchOperation(m_operationQueue.top());
+        auto opQueueEntry = m_operationQueue.top();
+        //Pop it before we dispatch it, since dispatching might alter the queue.
         m_operationQueue.pop();
+        dispatchOperation(opQueueEntry);
     }
 
     Monitors::instance()->insert("operations_queue", (Atlas::Message::IntType) m_operationQueue.size());
