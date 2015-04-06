@@ -164,6 +164,8 @@ void TerrainModProperty::remove(LocatedEntity * owner)
             terrain->removeMod(m_modptr);
             delete m_modptr;
             m_modptr = 0;
+        } else {
+            log(WARNING, "Terrain property was removed from an entity from which no terrain was available.");
         }
     }
 }
