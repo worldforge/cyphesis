@@ -204,7 +204,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
         eat_op->setTo(m_location.m_loc->getId());
         res.push_back(eat_op);
         //Initialize nourishment to zero once we've sent our first Eat op.
-        if (m_nourishment) {
+        if (!m_nourishment) {
             m_nourishment = .0;
         }
     }
