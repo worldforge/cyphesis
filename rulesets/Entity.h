@@ -22,6 +22,7 @@
 #include "LocatedEntity.h"
 
 #include <iostream>
+#include <unordered_map>
 
 class Motion;
 
@@ -41,6 +42,11 @@ class Entity : public LocatedEntity {
     /// Map of delegate properties.
     std::multimap<int, std::string> m_delegates;
 
+    /// A static map tracking the number of existing entities per type.
+    /// A monitor by the name of "entity_count{type=*}" will be created
+    /// per type.
+    static std::unordered_map<const TypeNode*, std::unique_ptr<int>> s_monitorsMap;
+
   public:
     explicit Entity(const std::string & id, long intId);
     virtual ~Entity();
@@ -49,6 +55,9 @@ class Entity : public LocatedEntity {
     Motion * motion() const {
         return m_motion;
     }
+
+    virtual void setType(const TypeNode * t);
+
 
     virtual PropertyBase * setAttr(const std::string & name,
                                    const Atlas::Message::Element &);

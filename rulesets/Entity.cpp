@@ -40,6 +40,10 @@
 #include "common/Update.h"
 #include "common/custom.h"
 
+#include "common/Monitors.h"
+#include "common/Variable.h"
+#include "common/compose.hpp"
+
 #include <wfmath/atlasconv.h>
 
 #include <Atlas/Objects/Operation.h>
@@ -61,6 +65,8 @@ using Atlas::Objects::smart_dynamic_cast;
 
 static const bool debug_flag = false;
 
+std::unordered_map<const TypeNode*, std::unique_ptr<int>> Entity::s_monitorsMap;
+
 /// \brief Flags used to control entities
 ///
 /// These flags are used to indicate various aspects of entities.
@@ -79,8 +85,35 @@ Entity::Entity(const std::string & id, long intId) :
 
 Entity::~Entity()
 {
+    if (m_type) {
+        auto I = s_monitorsMap.find(m_type);
+        if (I != s_monitorsMap.end()) {
+            int* ptr = I->second.get();
+            *ptr = *ptr - 1;
+        }
+    }
+
     delete m_motion;
 }
+
+void Entity::setType(const TypeNode * t) {
+    LocatedEntity::setType(t);
+
+    if (t) {
+        auto I = s_monitorsMap.find(t);
+        if (I == s_monitorsMap.end()) {
+            int* valuePtr = new int;
+            *valuePtr = 1;
+            s_monitorsMap.insert(std::make_pair(t, std::unique_ptr<int>(valuePtr)));
+
+            Monitors::instance()->watch(String::compose("entity_count{type=\"%1\"}", t->name()), new Variable<int>(*valuePtr));
+        } else {
+            int* ptr = I->second.get();
+            *ptr = *ptr + 1;
+        }
+    }
+}
+
 
 PropertyBase * Entity::setAttr(const std::string & name, const Element & attr)
 {

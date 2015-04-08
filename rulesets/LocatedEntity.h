@@ -168,9 +168,7 @@ class LocatedEntity : public Router {
     const PropertyDict & getProperties() const { return m_properties; }
 
     /// \brief Set the value of the entity type property
-    void setType(const TypeNode * t) {
-        m_type = t;
-    }
+    virtual void setType(const TypeNode * t);
 
     virtual bool hasAttr(const std::string & name) const;
     virtual int getAttr(const std::string & name,

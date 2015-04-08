@@ -84,6 +84,10 @@ LocatedEntity::~LocatedEntity()
     delete m_contains;
 }
 
+void LocatedEntity::setType(const TypeNode * t) {
+    m_type = t;
+}
+
 /// \brief Check if this entity has a property with the given name
 ///
 /// @param name Name of attribute to be checked
