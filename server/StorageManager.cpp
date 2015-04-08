@@ -214,35 +214,22 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
         const TypeNode * type = ent->getType();
         assert(type != 0);
         const Element & val = J->second;
-        PropertyBase * prop = ent->modProperty(name);
-        Element existing_val;
-        if (prop == 0) {
-            prop = pm->addProperty(name, val.getType());
-            //If the property didn't exist on the entity, check if the property exists in Type defaults,
-            //and if so if it's the same value (and if that's true skip it)
-            auto defaultsI = type->defaults().find(name);
-            if (defaultsI != type->defaults().end()) {
-                if (defaultsI->second->get(existing_val) == 0) {
-                    if (existing_val == val) {
-                        //Since the property didn't exist on the entity and was created in this method
-                        //we must delete it if we're not using it.
-                        delete prop;
-                        continue;
-                    }
-                }
-            } else {
-                //The property didn't exist neither as an entity property nor a Type entity; we should install it.
-                prop->install(ent, name);
+
+        Element existingVal;
+        if (ent->getAttr(name, existingVal) == 0) {
+            if (existingVal == val) {
+                //If the existing property, either on the instance or the type, is equal to the persisted one just skip it.
+                continue;
             }
+        }
+
+
+        PropertyBase * prop = ent->modProperty(name);
+        if (prop == nullptr) {
+            prop = pm->addProperty(name, val.getType());
+            prop->install(ent, name);
             //This transfers ownership of the property to the entity.
             ent->setProperty(name, prop);
-        } else {
-            //If the property already existed, and had the same data, just skip it.
-            if (prop->get(existing_val) == 0) {
-                if (existing_val == val) {
-                    continue;
-                }
-            }
         }
 
         //If we get to here the property either doesn't exists, or have a different value than the default or existing property.
