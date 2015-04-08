@@ -532,14 +532,13 @@ void WorldRouter::deliverTo(const Operation & op, LocatedEntity & ent)
                         << op->getParents().front() << ":"
                         << op->getFrom() << ":" << op->getTo() << "}" << std::endl
                         << std::flush;);
-    OpVector::const_iterator Iend = res.end();
-    for(OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
-        if (op->getFrom() == (*I)->getTo()) {
-            if (!op->isDefaultSerialno() && (*I)->isDefaultRefno()) {
-                (*I)->setRefno(op->getSerialno());
+    for(auto& resOp : res) {
+        if (op->getFrom() == resOp->getTo()) {
+            if (!op->isDefaultSerialno() && resOp->isDefaultRefno()) {
+                resOp->setRefno(op->getSerialno());
             }
         }
-        message(*I, ent);
+        message(resOp, ent);
     }
 }
 
