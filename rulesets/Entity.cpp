@@ -175,9 +175,11 @@ PropertyBase * Entity::modProperty(const std::string & name)
             // We have a default for this property. Create a new instance
             // property with the same value.
             PropertyBase * new_prop = I->second->copy();
+            I->second->remove(this, name);
             new_prop->flags() &= ~flag_class;
             m_properties[name] = new_prop;
             new_prop->apply(this);
+            new_prop->install(this, name);
             return new_prop;
         }
     }
