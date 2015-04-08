@@ -63,44 +63,26 @@ Plant::~Plant()
 {
 }
 
-/// \brief Generate operations to drop a number of fruit
+/// \brief Generate operations to drop a fruit.
 ///
-/// @return -1 if this plant does not fruit,
-/// number of fruit dropped otherwise.
-int Plant::dropFruit(OpVector & res, Property<int> * fruits_prop)
+void Plant::dropFruit(OpVector & res, const std::string& fruitName)
 {
-    Element fruitName;
-    if (getAttrType("fruitName", fruitName, Element::TYPE_STRING) != 0) {
-        return -1;
-    }
-    int & fruits = fruits_prop->data();
-    if (fruits < 1) { return 0; }
-    int drop = std::min(fruits, randint(m_minuDrop, m_maxuDrop));
-    if (drop < 1) {
-        return 0;
-    }
-    fruits -= drop;
-    // FIXME apply?
-    fruits_prop->setFlags(flag_unsent);
 
-    debug(std::cout << "Dropping " << drop << " fruits from "
+    debug(std::cout << "Dropping a fruit from "
                     << m_type << " plant." << std::endl << std::flush;);
     float height = m_location.bBox().highCorner().z();
-    for(int i = 0; i < drop; ++i) {
-        float rx = m_location.pos().x() + uniform( height,
-                                                  -height);
-        float ry = m_location.pos().y() + uniform( height,
-                                                  -height);
-        Anonymous fruit_arg;
-        fruit_arg->setParents(std::list<std::string>(1, fruitName.String()));
-        Location floc(m_location.m_loc, Point3D(rx, ry, 0));
-        floc.addToEntity(fruit_arg);
-        Create create;
-        create->setTo(getId());
-        create->setArgs1(fruit_arg);
-        res.push_back(create);
-    }
-    return drop;
+    float rx = m_location.pos().x() + uniform( height,
+                                              -height);
+    float ry = m_location.pos().y() + uniform( height,
+                                              -height);
+    Anonymous fruit_arg;
+    fruit_arg->setParents(std::list<std::string>(1, fruitName));
+    Location floc(m_location.m_loc, Point3D(rx, ry, 0));
+    floc.addToEntity(fruit_arg);
+    Create create;
+    create->setTo(getId());
+    create->setArgs1(fruit_arg);
+    res.push_back(create);
 }
 
 void Plant::NourishOperation(const Operation & op, OpVector & res)
@@ -237,18 +219,40 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
             //Only drop fruits if we're an adult
             if (m_location.bBox().isValid() &&
                     (m_location.bBox().highCorner().z() >= sizeAdult.asNum())) {
-                if (dropFruit(res, fruits_prop) != -1) {
-                    int & fruits = fruits_prop->data();
-                    Element fruitChance;
+                handleFruiting(res, *fruits_prop);
+            }
+        }
+    }
+}
 
-                    if (getAttrType("fruitChance", fruitChance, Element::TYPE_INT) == 0) {
-                        if (randint(1, fruitChance.Int()) == 1) {
-                            fruits++;
-                            fruits_prop->set(fruits);
-                            fruits_prop->setFlags(flag_unsent);
-                        }
-                    }
-                }
+void Plant::handleFruiting(OpVector & res, Property<int>& fruits_prop) {
+    Element fruitName;
+    if (getAttrType("fruitName", fruitName, Element::TYPE_STRING) != 0) {
+        return;
+    }
+
+    auto& fruits = fruits_prop.data();
+    Element fruitsChance;
+    if (getAttrType("fruitChance", fruitsChance, Element::TYPE_INT) == 0) {
+        //First check if we should drop fruits.
+        if (fruits > 0) {
+            //TODO: use a different attribute than fruitChance for this
+            if (randint(0, 100) < fruitsChance.Int()) {
+                fruits--;
+                fruits_prop.setFlags(flag_unsent);
+                dropFruit(res, fruitName.String());
+            }
+        }
+
+
+        //Then see if we should increase the number of fruits.
+        Element fruitsMax;
+        //Increase fruits if there's either no max value, or we haven't reached it yet.
+        if (getAttrType("fruitsMax", fruitsMax, Element::TYPE_INT) != 0 || fruitsMax.Int() > fruits_prop.data()) {
+            //FruitChance is between [0..100] (percentage).
+            if (randint(0, 100) < fruitsChance.Int()) {
+                fruits++;
+                fruits_prop.setFlags(flag_unsent);
             }
         }
     }
@@ -264,10 +268,29 @@ void Plant::TouchOperation(const Operation & op, OpVector & res)
                 && (m_location.bBox().highCorner().z() >= sizeAdult.asNum())) {
 
             Property<int> * fruits_prop = modPropertyType<int>("fruits");
-            if (fruits_prop != nullptr && dropFruit(res, fruits_prop) > 0) {
-                Update update;
-                update->setTo(getId());
-                res.push_back(update);
+            if (fruits_prop != nullptr) {
+                if (fruits_prop->data() <= 0) {
+                    return;
+                }
+                Element fruitName;
+                if (getAttrType("fruitName", fruitName, Element::TYPE_STRING) != 0) {
+                    return;
+                }
+                Element fruitsChance;
+                if (getAttrType("fruitChance", fruitsChance, Element::TYPE_INT) != 0) {
+                    return;
+                }
+                //TODO: use a different attribute than fruitChance for this
+                if (randint(0, 100) < fruitsChance.Int()) {
+                    fruits_prop->data()--;
+                    fruits_prop->setFlags(flag_unsent);
+                    dropFruit(res, fruitName.String());
+
+                    Update update;
+                    update->setTo(getId());
+                    res.push_back(update);
+                }
+
             }
         }
     }

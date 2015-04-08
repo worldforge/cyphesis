@@ -77,8 +77,12 @@
         <float name="default">0.025</float>
         <string name="visibility">public</string>
       </map>
+      <map name="fruitsMax">
+        <int name="default">5</int>
+        <string name="visibility">public</string>
+      </map>
       <map name="fruitChance">
-        <int name="default">15</int>
+        <int name="default">5</int>
         <string name="visibility">public</string>
       </map>
       <map name="fruitName">
@@ -421,7 +425,7 @@
         <string name="visibility">public</string>
       </map>
       <map name="fruitChance">
-        <int name="default">2</int>
+        <int name="default">5</int>
         <string name="visibility">public</string>
       </map>
       <map name="fruitName">
@@ -429,7 +433,11 @@
         <string name="visibility">public</string>
       </map>
       <map name="fruits">
-        <int name="default">20</int>
+        <int name="default">2</int>
+        <string name="visibility">public</string>
+      </map>
+      <map name="fruitsMax">
+        <int name="default">10</int>
         <string name="visibility">public</string>
       </map>
       <map name="mass">
