@@ -24,11 +24,11 @@ def suspend(host='', account='', password='', **args):
     m=create_editor(host, account, password)
 
     world=m.look()
-    m.set(world.id, suspended=1)
+    m.set("0", suspended=1)
 
 #Resumes a previously suspended world.
 def resume(host='', account='', password='', **args):
     m=create_editor(host, account, password)
 
     world=m.look()
-    m.set(world.id, suspended=0)
+    m.set("0", suspended=0)
