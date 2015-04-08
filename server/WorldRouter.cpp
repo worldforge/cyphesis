@@ -633,40 +633,45 @@ void WorldRouter::addPerceptive(LocatedEntity * perceptive)
 /// without becoming unresponsive to client communications traffic.
 bool WorldRouter::idle()
 {
-	unsigned int op_count = 0;
-    while (op_count < 10 && !m_immediateQueue.empty()) {
-        ++op_count;
-        auto opQueueEntry = std::move(m_immediateQueue.front());
-        m_immediateQueue.pop();
-        dispatchOperation(opQueueEntry);
-    }
-
     Monitors::instance()->insert("immediate_operations_queue", (Atlas::Message::IntType) m_immediateQueue.size());
-    //If there still are immediate ops to deliver we are absolutely busy.
-    if (!m_immediateQueue.empty()) {
-        return true;
-    }
+    Monitors::instance()->insert("operations_queue", (Atlas::Message::IntType) m_operationQueue.size());
+	unsigned int op_count = 0;
 
     double realtime = getTime();
-    while (op_count < 10 && !m_operationQueue.empty() && m_operationQueue.top()->getSeconds() <= realtime) {
-        ++op_count;
-        auto opQueueEntry = m_operationQueue.top();
-        //Pop it before we dispatch it, since dispatching might alter the queue.
-        m_operationQueue.pop();
-        dispatchOperation(opQueueEntry);
-    }
 
-    Monitors::instance()->insert("operations_queue", (Atlas::Message::IntType) m_operationQueue.size());
+    while (true) {
+	    if (!m_immediateQueue.empty()) {
+	        ++op_count;
+	        auto opQueueEntry = std::move(m_immediateQueue.front());
+	        m_immediateQueue.pop();
+	        dispatchOperation(opQueueEntry);
+	    } else if (!m_operationQueue.empty() && m_operationQueue.top()->getSeconds() <= realtime) {
+            ++op_count;
+            auto opQueueEntry = m_operationQueue.top();
+            //Pop it before we dispatch it, since dispatching might alter the queue.
+            m_operationQueue.pop();
+            dispatchOperation(opQueueEntry);
+	    } else {
+	        //There were neither any immediate ops to dispatch, or any regular ops that were ready for dispatch.
+	        //We should return and signal that it's ok to sleep until any op is ready for dispatch.
+	        return false;
+	    }
 
-    // If there are still immediate or regular ops to deliver return true
-    // to tell the server not to sleep when polling clients. This ensures
-    // that we keep processing ops at a the maximum rate without leaving
-    // clients unattended.
-    if (!m_immediateQueue.empty() || (!m_operationQueue.empty() && m_operationQueue.top()->getSeconds() <= realtime)) {
-        return true;
-    } else {
-        return false;
-    }
+	    if (op_count >= 10) {
+	        //we've processed 10 ops, we should return to allow for IO to interleave. Check if there are more
+	        //ops that should be processed now.
+
+	        // If there are still immediate or regular ops to deliver return true
+	        // to tell the server not to sleep when polling clients. This ensures
+	        // that we keep processing ops at a the maximum rate without leaving
+	        // clients unattended.
+	        if (!m_immediateQueue.empty() || (!m_operationQueue.empty() && m_operationQueue.top()->getSeconds() <= realtime)) {
+	            return true;
+	        } else {
+	            return false;
+	        }
+	    }
+	}
 }
 
 double WorldRouter::secondsUntilNextOp() const {
