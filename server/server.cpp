@@ -38,6 +38,7 @@
 #include "Admin.h"
 #include "TeleportAuthenticator.h"
 #include "TrustedConnection.h"
+#include "HttpCache.h"
 
 #include "rulesets/Python_API.h"
 #include "rulesets/LocatedEntity.h"
@@ -363,6 +364,8 @@ int main(int argc, char ** argv)
             local::stream_protocol::endpoint(client_socket_name));
 
 
+    //Instantiate at startup
+    HttpCache::instance();
     std::function<void(CommHttpClient&)> httpStarter =
             [&](CommHttpClient& client) {
                 client.serveRequest();
@@ -371,6 +374,12 @@ int main(int argc, char ** argv)
     auto httpListener = new CommAsioListener<ip::tcp, CommHttpClient>(httpStarter,
             server->getName(), *io_service,
             ip::tcp::endpoint(ip::tcp::v4(), http_port_num));
+
+    log(INFO, compose("Http service. The following endpoints are available over port %s.\n"
+            " /config : shows server configuration\n"
+            " /monitors : various monitored values, suitable for time series systems\n"
+            " /monitors/numerics : only numerical values, suitabnle for time series system that only operates on numerical data", http_port_num));
+
 
     CommMetaClient * cmc(nullptr);
     if (useMetaserver) {
@@ -578,6 +587,8 @@ int main(int argc, char ** argv)
 
     delete localListener;
     delete httpListener;
+    HttpCache::del();
+
     delete pythonListener;
 
     tcp_atlas_clients.clear();
