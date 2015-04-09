@@ -270,8 +270,9 @@ extern "C" void report_segfault(int signo)
 
 extern "C" void report_abort(int signo)
 {
-    log(CRITICAL, "Aborted");
-    log(NOTICE, "Please report this bug to " PACKAGE_BUGREPORT);
+    //Don't print to the log in signal handler, as that involves memory allocation.
+    fprintf(stderr, "Aborted");
+    fprintf(stderr, "Please report this bug to " PACKAGE_BUGREPORT);
 
 #if !defined(HAVE_SIGACTION)
     signal(signo, SIG_DFL);
