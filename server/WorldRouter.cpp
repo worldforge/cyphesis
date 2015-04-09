@@ -633,11 +633,10 @@ void WorldRouter::addPerceptive(LocatedEntity * perceptive)
 /// without becoming unresponsive to client communications traffic.
 bool WorldRouter::idle()
 {
-    Monitors::instance()->insert("immediate_operations_queue", (Atlas::Message::IntType) m_immediateQueue.size());
-    Monitors::instance()->insert("operations_queue", (Atlas::Message::IntType) m_operationQueue.size());
 	unsigned int op_count = 0;
 
     double realtime = getTime();
+    bool result = false;
 
     while (true) {
 	    if (!m_immediateQueue.empty()) {
@@ -654,7 +653,8 @@ bool WorldRouter::idle()
 	    } else {
 	        //There were neither any immediate ops to dispatch, or any regular ops that were ready for dispatch.
 	        //We should return and signal that it's ok to sleep until any op is ready for dispatch.
-	        return false;
+	        result = false;
+	        break;
 	    }
 
 	    if (op_count >= 10) {
@@ -666,13 +666,19 @@ bool WorldRouter::idle()
 	        // that we keep processing ops at a the maximum rate without leaving
 	        // clients unattended.
 	        if (!m_immediateQueue.empty() || (!m_operationQueue.empty() && m_operationQueue.top()->getSeconds() <= realtime)) {
-	            return true;
+	            result = true;
+	            break;
 	        } else {
-	            return false;
+	            result = false;
+	            break;
 	        }
 	    }
 	}
+    Monitors::instance()->insert("immediate_operations_queue", (Atlas::Message::IntType) m_immediateQueue.size());
+    Monitors::instance()->insert("operations_queue", (Atlas::Message::IntType) m_operationQueue.size());
+    return result;
 }
+
 
 double WorldRouter::secondsUntilNextOp() const {
     if (m_operationQueue.empty()) {
