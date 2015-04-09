@@ -197,7 +197,7 @@ void WorldRouter::addOperationToQueue(const Operation & op, LocatedEntity & ent)
         m_immediateQueue.push(OpQueEntry(op, ent));
         return;
     }
-    double t = getTime() + op->getFutureSeconds();
+    double t = getTime() + (op->getFutureSeconds() * consts::time_multiplier);
     op->setSeconds(t);
     op->setFutureSeconds(0.);
     m_operationQueue.push(OpQueEntry(op, ent));
