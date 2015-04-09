@@ -375,7 +375,7 @@ int main(int argc, char ** argv)
             server->getName(), *io_service,
             ip::tcp::endpoint(ip::tcp::v4(), http_port_num));
 
-    log(INFO, compose("Http service. The following endpoints are available over port %s.\n"
+    log(INFO, compose("Http service. The following endpoints are available over port %1.\n"
             " /config : shows server configuration\n"
             " /monitors : various monitored values, suitable for time series systems\n"
             " /monitors/numerics : only numerical values, suitabnle for time series system that only operates on numerical data", http_port_num));
