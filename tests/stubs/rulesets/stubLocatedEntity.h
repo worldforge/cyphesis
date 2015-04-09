@@ -118,5 +118,8 @@ void LocatedEntity::merge(const Atlas::Message::MapType &)
 
 }
 
+void LocatedEntity::setType(const TypeNode * t) {
+    m_type = t;
+}
 
 #endif /* STUBLOCATEDENTITY_H_ */

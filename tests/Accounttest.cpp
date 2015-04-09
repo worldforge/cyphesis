@@ -1806,6 +1806,10 @@ void Lobby::operation(const Operation & op, OpVector & res)
 
 #include "stubs/rulesets/stubCharacter.h"
 #include "stubs/rulesets/stubThing.h"
+#include "stubs/common/stubVariable.h"
+#include "stubs/common/stubMonitors.h"
+
+
 Entity::Entity(const std::string & id, long intId) :
         LocatedEntity(id, intId), m_motion(0)
 {
@@ -1987,6 +1991,11 @@ void Entity::onUpdated()
 void Entity::callOperation(const Operation & op, OpVector & res)
 {
 }
+
+void Entity::setType(const TypeNode* t)
+{
+}
+
 #include "stubs/rulesets/stubLocatedEntity.h"
 
 Link::Link(CommSocket & socket, const std::string & id, long iid) :

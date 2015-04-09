@@ -1842,6 +1842,11 @@ void Entity::onUpdated()
 void Entity::callOperation(const Operation & op, OpVector & res)
 {
 }
+
+void Entity::setType(const TypeNode* t)
+{
+}
+
 #include "stubs/rulesets/stubLocatedEntity.h"
 
 

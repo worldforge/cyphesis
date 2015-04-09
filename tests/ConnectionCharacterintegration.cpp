@@ -305,6 +305,8 @@ int main()
 #include "stubs/rulesets/stubThing.h"
 #include "stubs/rulesets/stubTasksProperty.h"
 #include "stubs/rulesets/stubOutfitProperty.h"
+#include "stubs/common/stubVariable.h"
+#include "stubs/common/stubMonitors.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -688,6 +690,10 @@ void Entity::onContainered(const LocatedEntity*)
 
 void Entity::onUpdated()
 {
+}
+
+void Entity::setType(const TypeNode* t) {
+    m_type = t;
 }
 
 

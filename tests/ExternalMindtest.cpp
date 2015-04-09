@@ -504,6 +504,11 @@ Domain * Entity::getMovementDomain()
     return 0;
 }
 
+void Entity::setType(const TypeNode* t)
+{
+
+}
+
 void Entity::sendWorld(const Operation & op)
 {
     BaseWorld::instance().message(op, *this);

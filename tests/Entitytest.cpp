@@ -47,6 +47,8 @@
 #include "stubs/rulesets/stubContainsProperty.h"
 #include "stubs/rulesets/stubSoftProperty.h"
 #include "stubs/common/stubProperty.h"
+#include "stubs/common/stubMonitors.h"
+#include "stubs/common/stubVariable.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/rulesets/stubDomainProperty.h"
 

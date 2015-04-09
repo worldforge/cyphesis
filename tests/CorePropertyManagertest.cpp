@@ -826,6 +826,11 @@ void Entity::callOperation(const Operation & op, OpVector & res)
 {
 }
 
+void Entity::setType(const TypeNode* t)
+{
+
+}
+
 #include "stubs/rulesets/stubLocatedEntity.h"
 
 EntityProperty::EntityProperty()
@@ -1339,32 +1344,7 @@ void Inheritance::clear()
 {
 }
 
-Monitors * Monitors::m_instance = NULL;
-
-Monitors::Monitors()
-{
-}
-
-Monitors::~Monitors()
-{
-}
-
-Monitors * Monitors::instance()
-{
-    if (m_instance == NULL) {
-        m_instance = new Monitors();
-    }
-    return m_instance;
-}
-
-void Monitors::insert(const std::string & key,
-                      const Atlas::Message::Element & val)
-{
-}
-
-void Monitors::watch(const::std::string & name, VariableBase * monitor)
-{
-}
+#include "stubs/common/stubMonitors.h"
 
 PropertyManager * PropertyManager::m_instance = 0;
 
@@ -1425,28 +1405,7 @@ bool TypeNode::isTypeOf(const std::string & base_type) const
     return false;
 }
 
-VariableBase::~VariableBase()
-{
-}
-
-template <typename T>
-Variable<T>::Variable(const T & variable) : m_variable(variable)
-{
-}
-
-template <typename T>
-Variable<T>::~Variable()
-{
-}
-
-template <typename T>
-void Variable<T>::send(std::ostream & o)
-{
-}
-
-template class Variable<int>;
-template class Variable<std::string>;
-template class Variable<const char *>;
+#include "stubs/common/stubVariable.h"
 
 const char * const CYPHESIS = "cyphesis";
 

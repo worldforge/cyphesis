@@ -616,6 +616,11 @@ void Entity::onUpdated()
 {
 }
 
+void Entity::setType(const TypeNode* t)
+{
+    m_type = t;
+}
+
 BaseWorld * BaseWorld::m_instance = 0;
 
 BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)

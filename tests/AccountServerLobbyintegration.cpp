@@ -284,6 +284,8 @@ void Persistence::delCharacter(const std::string &)
 #include "stubs/rulesets/stubThing.h"
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/common/stubVariable.h"
+#include "stubs/common/stubMonitors.h"
 
 
 Connection::Connection(CommSocket & client,
@@ -354,57 +356,6 @@ void Link::send(const Operation & op) const
 void Link::disconnect()
 {
 }
-
-Monitors * Monitors::m_instance = NULL;
-
-Monitors::Monitors()
-{
-}
-
-Monitors::~Monitors()
-{
-}
-
-Monitors * Monitors::instance()
-{
-    if (m_instance == NULL) {
-        m_instance = new Monitors();
-    }
-    return m_instance;
-}
-
-void Monitors::watch(const::std::string & name, VariableBase * monitor)
-{
-    delete monitor;
-}
-
-void Monitors::insert(const std::string & key,
-                      const Atlas::Message::Element & val)
-{
-}
-
-VariableBase::~VariableBase()
-{
-}
-
-template <typename T>
-Variable<T>::Variable(const T & variable) : m_variable(variable)
-{
-}
-
-template <typename T>
-Variable<T>::~Variable()
-{
-}
-
-template <typename T>
-void Variable<T>::send(std::ostream & o)
-{
-}
-
-template class Variable<int>;
-template class Variable<std::string>;
-template class Variable<const char *>;
 
 Router::Router(const std::string & id, long intId) : m_id(id),
                                                              m_intId(intId)

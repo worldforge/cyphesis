@@ -801,6 +801,11 @@ void Entity::onUpdated()
 {
 }
 
+void Entity::setType(const TypeNode* t) {
+    m_type = t;
+
+}
+
 EntityProperty::EntityProperty()
 {
 }

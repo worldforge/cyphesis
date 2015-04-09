@@ -276,6 +276,11 @@ void LocatedEntity::removeChild(LocatedEntity& childEntity)
 
 }
 
+void LocatedEntity::setType(const TypeNode* t)
+{
+
+}
+
 #include "stubs/common/stubRouter.h"
 
 void log(LogLevel lvl, const std::string & msg)

@@ -157,29 +157,8 @@ int main()
 
 // stubs
 
-#include "common/Monitors.h"
+#include "stubs/common/stubMonitors.h"
 
-Monitors * Monitors::m_instance = NULL;
-
-Monitors::Monitors()
-{
-}
-
-Monitors::~Monitors()
-{
-}
-
-Monitors * Monitors::instance()
-{
-    if (m_instance == NULL) {
-        m_instance = new Monitors();
-    }
-    return m_instance;
-}
-
-void Monitors::send(std::ostream & io)
-{
-}
 
 varconf::Config * global_conf = NULL;
 

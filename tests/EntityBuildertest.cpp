@@ -48,6 +48,8 @@
 
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/modules/stubLocation.h"
+#include "stubs/common/stubVariable.h"
+#include "stubs/common/stubMonitors.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/RootOperation.h>
@@ -379,28 +381,6 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
     return 0;
 }
 
-Monitors * Monitors::m_instance = NULL;
-
-Monitors::Monitors()
-{
-}
-
-Monitors::~Monitors()
-{
-}
-
-Monitors * Monitors::instance()
-{
-    if (m_instance == NULL) {
-        m_instance = new Monitors();
-    }
-    return m_instance;
-}
-
-void Monitors::watch(const::std::string & name, VariableBase * monitor)
-{
-}
-
 EntityKit::EntityKit() : m_createdCount(0)
 {
 }
@@ -628,6 +608,12 @@ void LocatedEntity::removeChild(LocatedEntity& childEntity)
 {
 
 }
+
+void LocatedEntity::setType(const TypeNode* t)
+{
+}
+
+
 
 void log(LogLevel lvl, const std::string & msg)
 {
@@ -912,29 +898,6 @@ TaskKit::TaskKit() : m_target(0), m_scriptFactory(0)
 TaskKit::~TaskKit()
 {
 }
-
-VariableBase::~VariableBase()
-{
-}
-
-template <typename T>
-Variable<T>::Variable(const T & variable) : m_variable(variable)
-{
-}
-
-template <typename T>
-Variable<T>::~Variable()
-{
-}
-
-template <typename T>
-void Variable<T>::send(std::ostream & o)
-{
-}
-
-template class Variable<int>;
-template class Variable<std::string>;
-template class Variable<const char *>;
 
 Root atlasClass(const std::string & name, const std::string & parent)
 {

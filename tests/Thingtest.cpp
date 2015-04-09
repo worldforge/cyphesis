@@ -218,6 +218,11 @@ void LocatedEntity::removeChild(LocatedEntity& childEntity)
 
 }
 
+void LocatedEntity::setType(const TypeNode* t)
+{
+
+}
+
 
 void addToEntity(const Point3D & p, std::vector<double> & vd)
 {

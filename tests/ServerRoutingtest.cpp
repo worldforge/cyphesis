@@ -451,56 +451,8 @@ void Lobby::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 
-VariableBase::~VariableBase()
-{
-}
-
-template <typename T>
-Variable<T>::Variable(const T & variable) : m_variable(variable)
-{
-}
-
-template <typename T>
-Variable<T>::~Variable()
-{
-}
-
-template <typename T>
-void Variable<T>::send(std::ostream & o)
-{
-    o << m_variable;
-}
-
-template class Variable<int>;
-template class Variable<const char *>;
-template class Variable<std::string>;
-
-Monitors * Monitors::m_instance = NULL;
-
-Monitors::Monitors()
-{
-}
-
-Monitors::~Monitors()
-{
-}
-
-Monitors * Monitors::instance()
-{
-    if (m_instance == NULL) {
-        m_instance = new Monitors();
-    }
-    return m_instance;
-}
-
-void Monitors::insert(const std::string & key,
-                      const Atlas::Message::Element & val)
-{
-}
-
-void Monitors::watch(const::std::string & name, VariableBase * monitor)
-{
-}
+#include "stubs/common/stubVariable.h"
+#include "stubs/common/stubMonitors.h"
 
 bool_config_register::bool_config_register(bool & var,
                                            const char * section,

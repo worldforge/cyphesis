@@ -304,6 +304,12 @@ void LocatedEntity::addChild(LocatedEntity& childEntity)
 void LocatedEntity::removeChild(LocatedEntity& childEntity)
 {
 }
+
+void LocatedEntity::setType(const TypeNode* t)
+{
+
+}
+
 #include "stubs/common/stubRouter.h"
 
 TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)

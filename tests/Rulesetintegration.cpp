@@ -1149,6 +1149,10 @@ void Entity::onUpdated()
 {
 }
 
+void Entity::setType(const TypeNode* t) {
+    m_type = t;
+}
+
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),
                m_refCount(0), m_seq(0),
@@ -1253,6 +1257,11 @@ void LocatedEntity::addChild(LocatedEntity& childEntity)
 void LocatedEntity::removeChild(LocatedEntity& childEntity)
 {
 }
+
+void LocatedEntity::setType(const TypeNode* t) {
+    m_type = t;
+}
+
 PythonClass::PythonClass(const std::string & package,
                          const std::string & type,
                          struct _typeobject * base) : m_package(package),

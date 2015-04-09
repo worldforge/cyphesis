@@ -456,6 +456,10 @@ void LocatedEntity::removeChild(LocatedEntity& childEntity)
 {
 }
 
+void LocatedEntity::setType(const TypeNode* t) {
+    m_type = t;
+}
+
 Router::Router(const std::string & id, long intId) : m_id(id), m_intId(intId)
 {
 }

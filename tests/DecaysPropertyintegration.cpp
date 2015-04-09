@@ -153,6 +153,8 @@ int main()
 #include "stubs/common/stubCustom.h"
 #include "stubs/rulesets/stubDomain.h"
 #include "stubs/rulesets/stubDomainProperty.h"
+#include "stubs/common/stubVariable.h"
+#include "stubs/common/stubMonitors.h"
 
 void addToEntity(const Point3D & p, std::vector<double> & vd)
 {

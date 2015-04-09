@@ -30,6 +30,8 @@
 #include "rulesets/TerrainProperty.h"
 #include "rulesets/DomainProperty.h"
 
+#include "stubs/common/stubVariable.h"
+#include "stubs/common/stubMonitors.h"
 #include "stubs/common/stubTypeNode.h"
 #include "stubs/rulesets/stubDomainProperty.h"
 

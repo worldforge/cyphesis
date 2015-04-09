@@ -394,7 +394,10 @@ void LocatedEntity::addChild(LocatedEntity& childEntity)
 void LocatedEntity::removeChild(LocatedEntity& childEntity)
 {
 }
+void LocatedEntity::setType(const TypeNode* t)
+{
 
+}
 #include "stubs/common/stubRouter.h"
 
 
@@ -580,50 +583,9 @@ const TypeNode * Inheritance::getType(const std::string & parent)
     return I->second;
 }
 
-VariableBase::~VariableBase()
-{
-}
+#include "stubs/common/stubVariable.h"
+#include "stubs/common/stubMonitors.h"
 
-template <typename T>
-Variable<T>::Variable(const T & variable) : m_variable(variable)
-{
-}
-
-template <typename T>
-Variable<T>::~Variable()
-{
-}
-
-template <typename T>
-void Variable<T>::send(std::ostream & o)
-{
-    o << m_variable;
-}
-
-template class Variable<int>;
-
-Monitors * Monitors::m_instance = NULL;
-
-Monitors::Monitors()
-{
-}
-
-Monitors::~Monitors()
-{
-}
-
-Monitors * Monitors::instance()
-{
-    if (m_instance == NULL) {
-        m_instance = new Monitors();
-    }
-    return m_instance;
-}
-
-void Monitors::watch(const::std::string & name, VariableBase * monitor)
-{
-    delete monitor;
-}
 
 ArithmeticBuilder * ArithmeticBuilder::m_instance = 0;
 

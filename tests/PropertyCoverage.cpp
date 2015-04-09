@@ -322,6 +322,10 @@ void Entity::onContainered(const LocatedEntity*)
 void Entity::onUpdated()
 {
 }
+
+void Entity::setType(const TypeNode * t) {
+    LocatedEntity::setType(t);
+}
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubBaseWorld.h"

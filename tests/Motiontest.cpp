@@ -505,6 +505,13 @@ void LocatedEntity::removeChild(LocatedEntity& childEntity)
 {
 
 }
+
+void LocatedEntity::setType(const TypeNode* t)
+{
+    m_type = t;
+
+}
+
 #include "stubs/common/stubRouter.h"
 #include "stubs/modules/stubLocation.h"
 #include "stubs/common/stubTypeNode.h"

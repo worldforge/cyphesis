@@ -113,6 +113,8 @@ using Atlas::Objects::Entity::RootEntity;
 #include "stubs/rulesets/stubContainsProperty.h"
 #include "stubs/rulesets/stubIdProperty.h"
 #include "stubs/rulesets/stubDomainProperty.h"
+#include "stubs/common/stubMonitors.h"
+#include "stubs/common/stubVariable.h"
 
 
 Motion::Motion(LocatedEntity & body, Domain& domain) : m_entity(body), m_domain(domain), m_serialno(0),

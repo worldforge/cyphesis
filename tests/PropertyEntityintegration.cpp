@@ -295,6 +295,8 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 }
 
 
+#include "stubs/common/stubVariable.h"
+#include "stubs/common/stubMonitors.h"
 #include "stubs/common/stubCustom.h"
 #include "stubs/rulesets/stubDomain.h"
 #include "stubs/rulesets/stubDomainProperty.h"

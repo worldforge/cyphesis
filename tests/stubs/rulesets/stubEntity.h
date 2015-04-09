@@ -199,6 +199,8 @@ void Entity::callOperation(const Operation & op, OpVector & res)
 {
 }
 
-
+void Entity::setType(const TypeNode * t) {
+    m_type = t;
+}
 
 #endif /* STUBENTITY_H_ */
