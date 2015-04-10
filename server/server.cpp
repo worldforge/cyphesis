@@ -94,18 +94,50 @@ STRING_OPTION(mserver, "metaserver.worldforge.org", CYPHESIS, "metaserver",
         "Hostname to use as the metaserver")
 ;
 
-// Keep a reference to the global io_service so that it can be awoken
-// in our signals callback.
-boost::asio::io_service* sGlobalIoService = nullptr;
 
-/**
- * A signals callback which will make sure the main io_service is awoken.
- * This should be hooked into the signals processing.
- */
-void ioServiceExitCallback() {
-    //Just post an empty handler. This makes sure that the io_service is awaken
-    //if it's currently waiting inside a call to run_once.
-    sGlobalIoService->post([](){});
+void interactiveSignalsHandler(boost::asio::signal_set& this_, boost::system::error_code error, int signal_number) {
+    if (!error) {
+        switch (signal_number) {
+            case SIGINT:
+            case SIGTERM:
+            case SIGHUP:
+                //If we've already received one call to shut down softly we should elevate
+                //it to a hard shutdown.
+                //This also happens if "soft" exit isn't enabled.
+                if (exit_flag_soft || !exit_soft_enabled) {
+                    exit_flag = true;
+                } else {
+                    exit_flag_soft = true;
+                }
+                break;
+            case SIGQUIT:
+                exit_flag = true;
+                break;
+            default:
+                break;
+        }
+        this_.async_wait(std::bind(interactiveSignalsHandler, std::ref(this_), std::placeholders::_1, std::placeholders::_2));
+    }
+}
+
+void daemonSignalsHandler(boost::asio::signal_set& this_, boost::system::error_code error, int signal_number) {
+    if (!error) {
+        switch (signal_number) {
+            case SIGTERM:
+                //If we've already received one call to shut down softly we should elevate
+                //it to a hard shutdown.
+                //This also happens if "soft" exit isn't enabled.
+                if (exit_flag_soft || !exit_soft_enabled) {
+                    exit_flag = true;
+                } else {
+                    exit_flag_soft = true;
+                }
+                break;
+            default:
+                break;
+        }
+        this_.async_wait(std::bind(daemonSignalsHandler, std::ref(this_), std::placeholders::_1, std::placeholders::_2));
+    }
 }
 
 int main(int argc, char ** argv)
@@ -205,11 +237,21 @@ int main(int argc, char ** argv)
     readConfigItem(instance, "nice", nice);
 
     io_service* io_service = new boost::asio::io_service();
-    //Register the io_server with the signals callback, thus making sure that if
-    //a relevant SIG* signal is received the io_service will be awoken from any
-    //run_one call it might be waiting on.
-    sGlobalIoService = io_service;
-    setExitSignalCallback(ioServiceExitCallback);
+
+    boost::asio::signal_set signalSet(*io_service);
+    //If we're not running as a daemon we should use the interactive signal handler.
+    if (!daemon_flag) {
+        signalSet.add(SIGINT);
+        signalSet.add(SIGTERM);
+        signalSet.add(SIGHUP);
+        signalSet.add(SIGQUIT);
+
+        signalSet.async_wait(std::bind(interactiveSignalsHandler, std::ref(signalSet), std::placeholders::_1, std::placeholders::_2));
+    } else {
+        signalSet.add(SIGTERM);
+
+        signalSet.async_wait(std::bind(daemonSignalsHandler, std::ref(signalSet), std::placeholders::_1, std::placeholders::_2));
+    }
 
     // Start up the Python subsystem.
     init_python_api(ruleset_name);
@@ -626,7 +668,5 @@ int main(int argc, char ** argv)
 
     log(INFO, "Clean shutdown complete.");
     logEvent(STOP, "- - - Standalone server shutdown");
-    setExitSignalCallback(nullptr);
-    sGlobalIoService = nullptr;
     return 0;
 }

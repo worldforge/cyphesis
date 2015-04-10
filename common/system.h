@@ -61,11 +61,6 @@ int getfiletime(const std::string & filename, time_t & t);
 
 void getinstallprefix();
 
-/**
- * @brief Register a callback function to be called when the exit flag is set.
- */
-void setExitSignalCallback(void (*exitSignalCallback)());
-
 #ifdef _WIN32
 
 // int gettimeofday(struct timeval * tv, struct timezone * tz);

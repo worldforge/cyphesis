@@ -204,20 +204,10 @@ void reduce_priority(int p)
 #endif // HAVE_NICE
 }
 
-void (*globalExitSignalCallback)() = 0;
-
-void setExitSignalCallback(void (*exitSignalCallback)())
-{
-    globalExitSignalCallback = exitSignalCallback;
-}
-
 
 extern "C" void shutdown_on_signal(int signo)
 {
     exit_flag = true;
-    if (globalExitSignalCallback) {
-        (*globalExitSignalCallback)();
-    }
 
 #if defined(HAVE_SIGACTION)
     struct sigaction action;
@@ -239,10 +229,6 @@ extern "C" void soft_shutdown_on_signal(int signo)
         exit_flag = true;
     } else {
         exit_flag_soft = true;
-    }
-
-    if (globalExitSignalCallback) {
-        (*globalExitSignalCallback)();
     }
 
 #if defined(HAVE_SIGACTION)
