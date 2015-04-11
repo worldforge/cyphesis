@@ -206,14 +206,6 @@ void Entity::addToMessage(MapType & omap) const
     PropertyDict::const_iterator J;
     PropertyDict::const_iterator Jend;
 
-    if (m_type != 0) {
-        J = m_type->defaults().begin();
-        Jend = m_type->defaults().end();
-        for (; J != Jend; ++J) {
-            J->second->add(J->first, omap);
-        }
-    }
-
     J = m_properties.begin();
     Jend = m_properties.end();
     for (; J != Jend; ++J) {
@@ -234,14 +226,6 @@ void Entity::addToEntity(const RootEntity & ent) const
     // We need to have a list of keys to pull from attributes.
     PropertyDict::const_iterator J;
     PropertyDict::const_iterator Jend;
-
-    if (m_type != 0) {
-        J = m_type->defaults().begin();
-        Jend = m_type->defaults().end();
-        for (; J != Jend; ++J) {
-            J->second->add(J->first, ent);
-        }
-    }
 
     J = m_properties.begin();
     Jend = m_properties.end();
