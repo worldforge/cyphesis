@@ -32,6 +32,7 @@
 #include <fstream>
 #include <map>
 #include <unordered_map>
+#include <unordered_set>
 #include <memory>
 
 namespace Atlas
@@ -139,6 +140,14 @@ public:
 		 * @brief The number of rules queried.
 		 */
 		unsigned int rulesError;
+        /**
+         * @brief The number of types queried.
+         */
+        unsigned int typesQueried;
+        /**
+         * @brief The number of types received.
+         */
+        unsigned int typesReceived;
 	};
 
 	/**
@@ -360,6 +369,13 @@ protected:
 	bool mExportMinds;
 
 	/**
+	 * @brief Keeps track of all types that have the "transient" property set by default.
+	 *
+	 * This is required when we're not exporting any transient entities (which is the default).
+	 */
+	std::unordered_set<std::string> mTransientTypes;
+
+	/**
 	 * @brief Starts the process of requesting entities and walking the entity hierarchy.
 	 */
 	void startRequestingEntities();
@@ -371,7 +387,7 @@ protected:
 	void thoughtOpArrived(const Operation& op);
 	void operationGetResult(const Operation& op);
 	void operationGetThoughtResult(const Operation& op);
-	void operationGetRuleResult(const Operation& op);
+    void operationGetRuleResult(const Operation& op);
 	void requestThoughts(const std::string& entityId, const std::string& persistedId);
 	void requestRule(const std::string& rule);
 

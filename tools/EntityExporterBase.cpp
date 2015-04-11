@@ -271,7 +271,22 @@ void EntityExporterBase::infoArrived(const Operation & op)
 	mStats.entitiesReceived++;
 	EventProgress.emit();
 	//If the entity is transient and we've been told not to export transient ones, we should skip this one (and all of its children).
-	if (!ent->hasAttr("transient") || mExportTransient) {
+	bool shouldSkip = false;
+	if (!mExportTransient) {
+	    //First check if there's a "transient" attribute set, and it's positive
+	    if (ent->hasAttr("transient")) {
+	        if (ent->getAttr("transient").isNum() && ent->getAttr("transient").asNum() != 0) {
+	            shouldSkip = true;
+	        }
+	    } else {
+	        //If there's no "transient" attribute set, check if the type has it set.
+	        if (mTransientTypes.find(ent->getParents().front()) != mTransientTypes.end()) {
+	            shouldSkip = true;
+	        }
+	    }
+	}
+
+	if (!shouldSkip) {
 		//Make a copy so that we can sort the contains list and update it in the
 		//entity
 		RootEntity entityCopy(ent->copy());
@@ -526,7 +541,8 @@ void EntityExporterBase::start(const std::string& filename, const std::string& e
 	mFilename = filename;
 	mRootEntityId = entityId;
 
-	if (mExportRules) {
+	//Get rules either if we're exporting rules, or if we're not exporting transients (since we then need to check the type if it's transient)
+	if (mExportRules || !mExportTransient) {
 		requestRule("root");
 	} else {
 		startRequestingEntities();
@@ -627,7 +643,37 @@ void EntityExporterBase::operationGetRuleResult(const Operation & op)
 
 		MapType ruleMap;
 		ent->addToMessage(ruleMap);
-		mRules.push_back(ruleMap);
+
+		//Check if we're actually exporting rules; we might also be getting rules if we're set to ignore
+		//transients, since we then need to get the types in order to know what entities are transient.
+		if (mExportRules) {
+		    mRules.push_back(ruleMap);
+		}
+
+		Element attributesElem;
+		bool foundTransientProperty = false;
+		if (ent->copyAttr("attributes", attributesElem) == 0 && attributesElem.isMap()) {
+		    auto transientI = attributesElem.Map().find("transient");
+		    if (transientI != attributesElem.Map().end() && transientI->second.isMap()) {
+		        auto defaultI = transientI->second.Map().find("default");
+		        if (defaultI != transientI->second.Map().end()) {
+		            foundTransientProperty = true;
+		            if (defaultI->second.isNum() && defaultI->second.asNum() != 0) {
+		                mTransientTypes.insert(ruleMap.find("id")->second.asString());
+		            }
+		        }
+		    }
+		}
+
+		if (!foundTransientProperty) {
+		    auto parentsI = ruleMap.find("parents");
+		    if (parentsI != ruleMap.end() && parentsI->second.isList()) {
+		        const std::string& parent = parentsI->second.List().front().asString();
+		        if (mTransientTypes.find(parent) != mTransientTypes.end()) {
+		            mTransientTypes.insert(ruleMap.find("id")->second.asString());
+		        }
+		    }
+		}
 
 		for (auto& child : children) {
 			requestRule(child);
@@ -642,3 +688,4 @@ void EntityExporterBase::operationGetRuleResult(const Operation & op)
 		}
 	}
 }
+
