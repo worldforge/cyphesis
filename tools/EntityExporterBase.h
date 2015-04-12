@@ -140,14 +140,6 @@ public:
 		 * @brief The number of rules queried.
 		 */
 		unsigned int rulesError;
-        /**
-         * @brief The number of types queried.
-         */
-        unsigned int typesQueried;
-        /**
-         * @brief The number of types received.
-         */
-        unsigned int typesReceived;
 	};
 
 	/**
