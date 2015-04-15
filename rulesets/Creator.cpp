@@ -220,7 +220,7 @@ void Creator::mindLookOperation(const Operation & op, OpVector & res)
         } else if (arg->hasAttrFlag(Atlas::Objects::NAME_FLAG)) {
             // Search by name
             LocatedEntity * e = BaseWorld::instance().findByName(arg->getName());
-            if (e != NULL) {
+            if (e != nullptr) {
                 op->setTo(e->getId());
             } else {
                 Unseen u;
@@ -236,8 +236,19 @@ void Creator::mindLookOperation(const Operation & op, OpVector & res)
             // Search by name
             if (!arg->getParents().empty()) {
                 LocatedEntity * e = BaseWorld::instance().findByType(arg->getParents().front());
-                if (e != NULL) {
-                    op->setTo(e->getId());
+                if (e != nullptr) {
+                    Sight s;
+
+                    Anonymous sarg;
+                    e->addToEntity(sarg);
+                    s->setArgs1(sarg);
+                    s->setTo(getId());
+                    if (!op->isDefaultSerialno()) {
+                        s->setRefno(op->getSerialno());
+                    }
+
+                    sendMind(s, res);
+                    return;
                 } else {
                     Unseen u;
                     u->setTo(getId());

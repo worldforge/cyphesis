@@ -33,6 +33,7 @@
 #include "common/Update.h"
 #include "common/Pickup.h"
 #include "common/Drop.h"
+#include "common/Unseen.h"
 
 #include <wfmath/atlasconv.h>
 
@@ -56,6 +57,7 @@ using Atlas::Objects::Operation::Appearance;
 using Atlas::Objects::Operation::Disappearance;
 using Atlas::Objects::Operation::Update;
 using Atlas::Objects::Operation::Wield;
+using Atlas::Objects::Operation::Unseen;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 
@@ -617,6 +619,13 @@ void Thing::LookOperation(const Operation & op, OpVector & res)
     if (domain) {
         domain->lookAtEntity(*from, *this, op, res);
     } else {
+        Unseen u;
+        u->setTo(op->getFrom());
+        u->setArgs(op->getArgs());
+        if (!op->isDefaultSerialno()) {
+            u->setRefno(op->getSerialno());
+        }
+        res.push_back(u);
         log(WARNING, "Entity being looked at don't belong to any Domain, so sights cannot be determined.");
     }
 }

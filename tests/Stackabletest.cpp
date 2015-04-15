@@ -54,6 +54,7 @@
 #include "stubs/rulesets/stubContainsProperty.h"
 #include "stubs/rulesets/stubStatusProperty.h"
 #include "stubs/rulesets/stubBBoxProperty.h"
+#include "stubs/rulesets/stubDomain.h"
 
 
 #include <cstdlib>

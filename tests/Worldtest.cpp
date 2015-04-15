@@ -59,6 +59,7 @@
 #include "stubs/rulesets/stubBBoxProperty.h"
 #include "stubs/rulesets/stubTerrainProperty.h"
 #include "stubs/rulesets/stubCalendarProperty.h"
+#include "stubs/rulesets/stubDomain.h"
 
 
 #include <cstdlib>

@@ -31,6 +31,7 @@
 
 #include "common/debug.h"
 #include "common/const.h"
+#include "common/Unseen.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -52,6 +53,7 @@ using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Appearance;
 using Atlas::Objects::Operation::Disappearance;
+using Atlas::Objects::Operation::Unseen;
 
 PhysicalDomain::PhysicalDomain(LocatedEntity& entity)
 : Domain(entity)
@@ -170,6 +172,14 @@ void PhysicalDomain::lookAtEntity(const LocatedEntity& observingEntity, const Lo
             s->setRefno(originalLookOp->getSerialno());
         }
         res.push_back(s);
+    } else {
+        Unseen u;
+        u->setTo(originalLookOp->getFrom());
+        u->setArgs(originalLookOp->getArgs());
+        if (!originalLookOp->isDefaultSerialno()) {
+            u->setRefno(originalLookOp->getSerialno());
+        }
+        res.push_back(u);
     }
 }
 

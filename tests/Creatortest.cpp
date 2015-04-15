@@ -52,6 +52,7 @@
 #include "stubs/rulesets/stubSoftProperty.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/common/stubPropertyManager.h"
+#include "stubs/rulesets/stubDomain.h"
 
 #include <cstdlib>
 
