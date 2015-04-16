@@ -206,7 +206,13 @@ void Creator::relayOperationTo(const Operation & op, LocatedEntity& to)
 void Creator::mindLookOperation(const Operation & op, OpVector & res)
 {
     // This overriden version allows the Creator to search the world for
-    // entities by type or by name
+    // entities by type or by name.
+    //FIXME: This scheme makes for some strange operations, since the sight check will be
+    //ignored if searching by type or name, but not by id.
+    //I.e. there's no good way for an admin client to get info on an entity bypassing the sight check if the id the only known data.
+    //We need to implement some mechanism which allows an admin to properly query all entities using the id of them.
+    //We might just override the lookup here. Problem with that is however that it would interfere with the normal creator
+    //entity interaction with the world.
     debug(std::cout << "Got look up from prived mind from [" << op->getFrom()
                << "] to [" << op->getTo() << "]" << std::endl << std::flush;);
     m_flags |= entity_perceptive;
@@ -221,7 +227,18 @@ void Creator::mindLookOperation(const Operation & op, OpVector & res)
             // Search by name
             LocatedEntity * e = BaseWorld::instance().findByName(arg->getName());
             if (e != nullptr) {
-                op->setTo(e->getId());
+                //This will override the normal sights checking code, which is ok since we're an administrator
+                Sight s;
+
+                Anonymous sarg;
+                e->addToEntity(sarg);
+                s->setArgs1(sarg);
+                s->setTo(getId());
+                if (!op->isDefaultSerialno()) {
+                    s->setRefno(op->getSerialno());
+                }
+
+                sendMind(s, res);
             } else {
                 Unseen u;
                 u->setTo(getId());
@@ -237,6 +254,7 @@ void Creator::mindLookOperation(const Operation & op, OpVector & res)
             if (!arg->getParents().empty()) {
                 LocatedEntity * e = BaseWorld::instance().findByType(arg->getParents().front());
                 if (e != nullptr) {
+                    //This will override the normal sights checking code, which is ok since we're an administrator
                     Sight s;
 
                     Anonymous sarg;
