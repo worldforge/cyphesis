@@ -568,6 +568,40 @@
     </list>
   </map>
 
+    <map>
+        <string name="id">dead_human_skull</string>
+        <string name="objtype">archetype</string>
+        <list name="parents">
+            <string>archetype</string>
+        </list>
+        <list name="entities">
+            <map>
+                <string name="name">human skull</string>
+                <list name="parents">
+                    <string>skull</string>
+                </list>
+                <float name="transient">1800</float>
+            </map>
+        </list>
+    </map>
+
+    <map>
+        <string name="id">dead_goblin_skull</string>
+        <string name="objtype">archetype</string>
+        <list name="parents">
+            <string>archetype</string>
+        </list>
+        <list name="entities">
+            <map>
+                <string name="name">goblin skull</string>
+                <list name="parents">
+                    <string>skull</string>
+                </list>
+                <float name="transient">1800</float>
+            </map>
+        </list>
+    </map>
+
   <map>
     <map name="attributes">
       <map name="bbox">
