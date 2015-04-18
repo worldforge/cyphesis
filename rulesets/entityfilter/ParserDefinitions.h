@@ -55,8 +55,9 @@ struct comparators_ : qi::symbols<char, ComparePredicate::Comparator>
 template<typename Iterator>
 struct query_parser : qi::grammar<Iterator, Predicate*(),
         ascii::space_type, qi::locals<Predicate*>> {
-        query_parser(ProviderFactory* factory): m_factory(factory),
-                query_parser::base_type(parenthesised_predicate_g)
+        query_parser(ProviderFactory* factory):
+                query_parser::base_type(parenthesised_predicate_g),
+                m_factory(factory)
         {
             using qi::int_;
             using qi::lit;
