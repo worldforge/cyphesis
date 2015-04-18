@@ -7,6 +7,8 @@ from physics import *
 from physics import Vector3D
 from physics import Point3D
 
+from entity_filter import *
+
 from mind.Goal import Goal
 from mind.goals.common.common import *
 from mind.goals.common.misc_goal import *
@@ -193,15 +195,17 @@ class move_it_outof_me(Goal):
                       self.is_it_not_with_me,
                       [self.drop_it])
         self.what=what
+        self.what_filter = get_filter(what)
     def is_it_not_with_me(self, me):
-        if me.things.has_key(self.what)==0: return 0
-        what=me.things[self.what][0]
-        return what.location.parent.id!=me.id
+        things = self.what_filter.search_contains(me)
+        return len(things) == 0
     def drop_it(self, me):
-        if me.things.has_key(self.what)==0: return
-        what=me.things[self.what][0]
-        me.remove_thing(what)
-        return Operation("move", Entity(what.id, location=me.location))
+        things = self.what_filter.search_contains(me)
+        if things > 0:
+            me.remove_thing(things[0])
+            return Operation("move", Entity(things[0].id, location=me.location))
+        else:
+            return
         
 ############################ MOVE ME TO THING ##################################
 
@@ -441,15 +445,24 @@ class pursuit(Goal):
     """avoid or hunt something at range"""
     def __init__(self, desc, what, range, direction):
         Goal.__init__(self,"avoid something",self.not_visible,[self.run])
-        self.what = what
+
+        if isinstance(what, str):
+            self.what = what
+        elif isinstance(what, list) and len(what) > 0:
+            #Try to use the first element as a query.
+            #Queries should never really be passed as a list
+            self.what = str(what[0])
+        else:
+            self.what = str(what)
+        self.filter = get_filter(self.what)
         self.range = range
         self.direction = direction
         self.vars=["what","range","direction"]
     def not_visible(self, me):
         #print self.__class__.__name__,me.mem.recall_place(me.location,self.range,self.what)
-        return not me.mem.recall_place(me.location,self.range,self.what)
+        return not me.mem.recall_place(me.location,self.range,self.filter)
     def run(self, me):
-        lst_of_what = me.mem.recall_place(me.location,self.range,self.what)
+        lst_of_what = me.mem.recall_place(me.location,self.range,self.filter)
         if not lst_of_what or len(lst_of_what)==0: return
         dist_vect=distance_to(me.location,lst_of_what[0].location).unit_vector()
         multiply = const.base_velocity * self.direction * const.basic_tick
@@ -519,14 +532,16 @@ class accompany(Goal):
     def __init__(self, who):
         Goal.__init__(self, "stay with someone",
                       self.am_i_with, 
-                      [self.follow])
+                      [spot_something(who),
+                       self.follow])
         self.who=who
         self.vars=["who"]
     def am_i_with(self, me):
-        who=me.map.get(self.who)
+        id=me.get_knowledge('focus', self.who)
+        who=me.map.get(str(id))
         if who == None:
-            self.irrelevant = 1
-            return 1
+            return 0
+
         dist=distance_to(me.location, who.location)
         # Are we further than 3 metres away
         if dist.square_mag() > 25:
@@ -542,7 +557,8 @@ class accompany(Goal):
                 return 0
             return 1
     def follow(self, me):
-        who=me.map.get(self.who)
+        id=me.get_knowledge('focus', self.who)
+        who=me.map.get(str(id))
         if who == None:
             self.irrelevant = 1
             return

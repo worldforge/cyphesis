@@ -11,7 +11,7 @@ dist_module_DATA = basic/world/objects/Thing.py \
                    basic/editor.py
 
 noinst_LIBRARIES = librulesetbase.a librulesetmind.a librulesetentity.a \
-                   libscriptpython.a
+                   libscriptpython.a libentityfilter.a
 
 librulesetbase_a_SOURCES = LocatedEntity.cpp LocatedEntity.h \
 			   EntityProperties.cpp \
@@ -69,6 +69,10 @@ librulesetentity_a_SOURCES = \
 			     PhysicalDomain.cpp PhysicalDomain.h \
 			     VoidDomain.cpp VoidDomain.h
 
+libentityfilter_a_SOURCES = entityfilter/Filter.cpp entityfilter/Filter.h \
+			     entityfilter/ParserDefinitions.h \
+			     entityfilter/Providers.cpp entityfilter/Providers.h \
+			     entityfilter/Predicates.cpp entityfilter/Predicates.h
 
 librulesetmind_a_SOURCES = BaseMind.cpp BaseMind.h \
 			   MindFactory.cpp MindFactory.h \
@@ -84,6 +88,7 @@ libscriptpython_a_SOURCES = Py_Message.cpp Py_Message.h \
 			    Py_Point3D.cpp Py_Point3D.h \
 			    Py_Thing.cpp Py_Thing.h \
 			    Py_EntityWrapper.h \
+			    Py_Filter.cpp Py_Filter.h \
 			    Py_Map.cpp Py_Map.h \
 			    Py_Quaternion.cpp Py_Quaternion.h \
 			    Py_BBox.cpp Py_BBox.h \

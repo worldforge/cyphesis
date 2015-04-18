@@ -22,6 +22,7 @@
 #include "Py_Operation.h"
 #include "Py_RootEntity.h"
 #include "Py_Message.h"
+#include "Py_Filter.h"
 
 #include "MemEntity.h"
 #include "MemMap.h"
@@ -274,9 +275,172 @@ static PyObject * Map_delete_hooks_append(PyMap * self, PyObject * py_method)
     return Py_None;
 }
 
+///\brief Return Python list of entities that match a given Filter
+static PyObject * Map_find_by_filter(PyMap* self, PyObject* filter){
+#ifndef NDEBUG
+    if (self->m_map == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.find_by_filter");
+        return NULL;
+    }
+#endif // NDEBUG
+
+    EntityVector res;
+    if(!PyFilter_Check(filter)){
+        return NULL;
+    }
+    PyFilter* f = (PyFilter*)filter;
+
+    auto iter_begin = self->m_map->getEntities().begin();
+    auto iter_end = self->m_map->getEntities().end();
+    for (; iter_begin != iter_end; ++iter_begin){
+        if (f->m_filter->match(*iter_begin->second)){
+            res.push_back(iter_begin->second);
+        }
+    }
+    PyObject * list = PyList_New(res.size());
+    if (list == NULL) {
+        return NULL;
+    }
+    EntityVector::const_iterator Iend = res.end();
+    int i = 0;
+    for (EntityVector::const_iterator I = res.begin(); I != Iend; ++I, ++i) {
+        PyObject * thing = wrapEntity(*I);
+        if (thing == NULL) {
+            Py_DECREF(list);
+            return NULL;
+        }
+        PyList_SetItem(list, i, thing);
+    }
+    return list;
+}
+
+///\brief find entities using a query in a specified location
+static PyObject * Map_find_by_location_query(PyMap* self, PyObject* args){
+#ifndef NDEBUG
+    if (self->m_map == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.find_by_location_query");
+        return NULL;
+    }
+#endif // NDEBUG
+
+    PyObject * where_obj;
+    double radius;
+    PyObject* filter;
+    if (!PyArg_ParseTuple(args, "OdO", &where_obj, &radius, &filter)) {
+        return NULL;
+    }
+
+    if (!PyFilter_Check(filter)) {
+        return NULL;
+    }
+    PyFilter* f = (PyFilter*)filter;
+
+
+    if (!PyLocation_Check(where_obj)) {
+        PyErr_SetString(PyExc_TypeError, "Argument must be a location");
+        return NULL;
+    }
+    PyLocation * where = (PyLocation *)where_obj;
+    if (!where->location->isValid()) {
+        PyErr_SetString(PyExc_RuntimeError, "Location is incomplete");
+        return NULL;
+    }
+
+    //Create a vector and fill it with entities that match the given filter and are in range
+    float square_range = radius * radius;
+    EntityVector res;
+    LocatedEntity* place = where->location->m_loc;
+    if (place != 0) {
+
+        auto iter = place->m_contains->begin();
+        auto iter_end = place->m_contains->end();
+
+        for (; iter != iter_end; ++iter) {
+            LocatedEntity* item = *iter;
+            if (item == 0) {
+                continue;
+            }
+            if (!item->isVisible() || !f->m_filter->match(*item)) {
+                continue;
+            }
+            if (squareDistance(where->location->pos(), item->m_location.pos()) < square_range) {
+                res.push_back(item);
+            }
+        }
+    }
+
+    //Create a python list an fill it with the entities we got
+    PyObject * list = PyList_New(res.size());
+    if (list == NULL) {
+        return NULL;
+    }
+    EntityVector::const_iterator Iend = res.end();
+    int i = 0;
+    for (EntityVector::const_iterator I = res.begin(); I != Iend; ++I, ++i) {
+        PyObject * thing = wrapEntity(*I);
+        if (thing == NULL) {
+            Py_DECREF(list);
+            return NULL;
+        }
+        PyList_SetItem(list, i, thing);
+    }
+    return list;
+}
+
+PyObject* Map_add_entity_memory(PyMap* self, PyObject* args){
+#ifndef NDEBUG
+    if (self->m_map == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.add_entity_memory");
+        return NULL;
+    }
+#endif // NDEBUG
+
+    char *id, *memory_name;
+    PyObject *val;
+    if (!PyArg_ParseTuple(args, "ssO", &id, &memory_name, &val)) {
+        return NULL;
+    }
+
+    Atlas::Message::Element element_val;
+    PyObject_asMessageElement(val, element_val, false);
+
+    self->m_map->addEntityMemory(id, memory_name, element_val);
+
+    return Py_None;
+}
+
+PyObject* Map_recall_entity_memory(PyMap* self, PyObject* args){
+#ifndef NDEBUG
+    if (self->m_map == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.recall_entity_memory");
+        return NULL;
+    }
+#endif // NDEBUG
+
+    char *id, *memory_name;
+    if (!PyArg_ParseTuple(args, "ss", &id, &memory_name)) {
+        return NULL;
+    }
+
+    Atlas::Message::Element element_val;
+    self->m_map->recallEntityMemory(std::string(id), std::string(memory_name), element_val);
+    PyObject* ret = MessageElement_asPyObject(element_val);
+
+    if (ret) {
+        return ret;
+    } else {
+        return NULL;
+    }
+
+}
+
 static PyMethodDef Map_methods[] = {
     {"find_by_location",    (PyCFunction)Map_find_by_location,    METH_VARARGS},
     {"find_by_type",        (PyCFunction)Map_find_by_type,        METH_O},
+    {"find_by_filter",      (PyCFunction)Map_find_by_filter,      METH_O},
+    {"find_by_location_query",(PyCFunction)Map_find_by_location_query,  METH_VARARGS},
+    {"add_entity_memory",   (PyCFunction)Map_add_entity_memory,   METH_VARARGS},
+    {"recall_entity_memory",(PyCFunction)Map_recall_entity_memory,METH_VARARGS},
     {"add",                 (PyCFunction)Map_updateAdd,           METH_VARARGS},
     {"delete",              (PyCFunction)Map_delete,              METH_O},
     {"get",                 (PyCFunction)Map_get,                 METH_O},

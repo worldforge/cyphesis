@@ -37,6 +37,7 @@
 #include "Py_Oplist.h"
 #include "Py_Property.h"
 #include "Py_Task.h"
+#include "Py_Filter.h"
 
 #include "PythonEntityScript.h"
 #include "BaseMind.h"
@@ -526,6 +527,11 @@ static PyMethodDef physics_methods[] = {
     {NULL,          NULL}                       /* Sentinel */
 };
 
+static PyMethodDef entity_filter_methods[] = {
+        {"get_filter", get_filter, METH_O},
+        {NULL, NULL}
+};
+
 void init_python_api(const std::string & ruleset, bool log_stdout)
 {
     Py_Initialize();
@@ -586,6 +592,18 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
         log(CRITICAL, "Python could not import sys.path");
     }
     Py_DECREF(sys_module);
+
+    PyObject * entity_filter = Py_InitModule("entity_filter", entity_filter_methods);
+    if (entity_filter == NULL) {
+        log(CRITICAL, "Python init failed to create entity_filter module\n");
+        return;
+    }
+
+    PyFilter_Type.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&PyFilter_Type) < 0 ){
+        log(CRITICAL, "Python init failed to ready entity filter wrapper type");
+            return;
+    }
 
     PyObject * atlas = Py_InitModule("atlas", atlas_methods);
     if (atlas == NULL) {

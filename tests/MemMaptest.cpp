@@ -69,6 +69,9 @@ class MemMaptest : public Cyphesis::TestBase
     void test_readEntity();
     void test_readEntity_type();
     void test_readEntity_type_nonexist();
+    void test_addEntityMemory();
+    void test_recallEntityMemory();
+    void test_getEntityRelatedMemory();
     void test_findByLoc();
     void test_findByLoc_results();
     void test_findByLoc_invalid();
@@ -109,6 +112,9 @@ MemMaptest::MemMaptest()
     ADD_TEST(MemMaptest::test_readEntity);
     ADD_TEST(MemMaptest::test_readEntity_type);
     ADD_TEST(MemMaptest::test_readEntity_type_nonexist);
+    ADD_TEST(MemMaptest::test_addEntityMemory);
+    ADD_TEST(MemMaptest::test_recallEntityMemory);
+    ADD_TEST(MemMaptest::test_getEntityRelatedMemory)
     ADD_TEST(MemMaptest::test_findByLoc);
     ADD_TEST(MemMaptest::test_findByLoc_results);
     ADD_TEST(MemMaptest::test_findByLoc_invalid);
@@ -238,6 +244,52 @@ void MemMaptest::test_readEntity_type_nonexist()
 
     ASSERT_EQUAL(ent->getType(), MemMap::m_entity_type);
     ASSERT_NOT_EQUAL(ent->getType(), m_sampleType);
+}
+
+void MemMaptest::test_addEntityMemory(){
+    using Atlas::Message::Element;
+
+    //The entities that we have memories about don't actually have to exist
+
+    //Add some new memories
+    m_memMap->addEntityMemory("1", "disposition", 25);
+    m_memMap->addEntityMemory("1", "have_met", true);
+
+    //Check if they were added properly
+    assert(m_memMap->m_entityRelatedMemory["1"]["disposition"] == Element(25));
+    assert(m_memMap->m_entityRelatedMemory["1"]["have_met"] == Element(true));
+
+    //update an existing memory
+    m_memMap->addEntityMemory("1", "disposition", 30);
+    assert(m_memMap->m_entityRelatedMemory["1"]["disposition"] == Element(30));
+}
+
+void MemMaptest::test_recallEntityMemory(){
+    using Atlas::Message::Element;
+
+    //set up a map with 1 memory: disposition with value 25 related to entity with id 1
+    std::map<std::string, std::map<std::string, Element>> memories{{"1", std::map<std::string, Element>{{"disposition", 25}}}};
+    Element val1, val2;
+    m_memMap->m_entityRelatedMemory = memories;
+
+    //try recalling an existing memory
+    m_memMap->recallEntityMemory("1", "disposition", val1);
+    assert(val1 == Element(25));
+
+    //try recalling a non-existing memory about known entity
+    m_memMap->recallEntityMemory("1", "foo", val2);
+    assert(val2.isNone());
+    //try recalling about an unknown entity
+    m_memMap->recallEntityMemory("2", "disposition", val2);
+    assert(val2.isNone());
+}
+
+void MemMaptest::test_getEntityRelatedMemory(){
+    using Atlas::Message::Element;
+
+    std::map<std::string, std::map<std::string, Element>> memories{{"1", std::map<std::string, Element>{{"disposition", 25}}}};
+    m_memMap->m_entityRelatedMemory = memories;
+    assert(m_memMap->getEntityRelatedMemory() == memories);
 }
 
 void MemMaptest::test_findByLoc()

@@ -7,6 +7,7 @@ from mind.Goal import Goal
 from mind.goals.common.common import *
 from mind.goals.common.move import *
 from random import *
+from entity_filter import *
 
 import time
 import types
@@ -180,10 +181,13 @@ class spot_something(Goal):
         Goal.__init__(self, "spot a thing",
                       self.do_I_have,
                       [self.do])
-        if isinstance(what, list):
+        if isinstance(what, str):
             self.what = what
         else:
-            self.what = [ what ]
+            self.what = str(what)
+
+        self.filter = get_filter(what)
+
         self.range=range
         self.condition=condition
         #Keep track of when we've spotted things, so that we can ignore them
@@ -194,43 +198,41 @@ class spot_something(Goal):
         self.seconds_until_forgotten=seconds_until_forgotten
         self.vars=["what","range", "seconds_until_forgotten"]
     def do_I_have(self, me):
-        for what in self.what:
-            something=me.get_knowledge('focus', what)
-            if something:
-                if me.map.get(something) == None:
-                   me.remove_knowledge('focus', what)
-                else:
-                    #Update the time since we last knew about the thing, as we're still actively know about it
-                    if self.seconds_until_forgotten > 0:
-                        self.spotted[something] = time.time()
-                    return 1
-    def do(self,me):
-        for what in self.what:
-            thing_all=me.map.find_by_type(what)
-            nearest=None
-            nearsqrdist=self.range*self.range
-            for thing in thing_all:
-                #Check that it's not something we've already spotted
-                if thing.id in self.spotted:
-                    #Have we forgotten about that we remembered it yet?
-                    if time.time() - self.spotted[thing.id] > self.seconds_until_forgotten:
-                        self.spotted.pop(thing.id)
-                    else:
-                        continue
-                
-                sqr_dist = square_distance(me.location, thing.location)
-                # FIXME We need a more sophisticated check for parent. Perhaps just
-                # check its not in a persons inventory? Requires the ability to
-                # do decent type checks
-                if sqr_dist < nearsqrdist and thing.location.parent.id==me.location.parent.id:
-                    if self.condition(thing):
-                        nearest = thing
-                        nearsqrdist = nearsqrdist
-            if nearest:
-                me.add_knowledge('focus', what, nearest.id)
-                #We should only remember things if we can keep them in memory.
+        something=me.get_knowledge('focus', self.what)
+        if something:
+            if me.map.get(something) == None:
+               me.remove_knowledge('focus', self.what)
+            else:
+                #Update the time since we last knew about the thing, as we're still actively know about it
                 if self.seconds_until_forgotten > 0:
-                    self.spotted[nearest.id] = time.time()
+                    self.spotted[something] = time.time()
+                return 1
+    def do(self,me):
+        thing_all=me.map.find_by_filter(self.filter)
+        nearest=None
+        nearsqrdist=self.range*self.range
+        for thing in thing_all:
+            #Check that it's not something we've already spotted
+            if thing.id in self.spotted:
+                #Have we forgotten about that we remembered it yet?
+                if time.time() - self.spotted[thing.id] > self.seconds_until_forgotten:
+                    self.spotted.pop(thing.id)
+                else:
+                    continue
+
+            sqr_dist = square_distance(me.location, thing.location)
+            # FIXME We need a more sophisticated check for parent. Perhaps just
+            # check its not in a persons inventory? Requires the ability to
+            # do decent type checks
+            if sqr_dist < nearsqrdist and thing.location.parent.id==me.location.parent.id:
+                if self.condition(thing):
+                    nearest = thing
+                    nearsqrdist = nearsqrdist
+        if nearest:
+            me.add_knowledge('focus', self.what, nearest.id)
+            #We should only remember things if we can keep them in memory.
+            if self.seconds_until_forgotten > 0:
+                self.spotted[nearest.id] = time.time()
                       
 class spot_something_in_area(Goal):
     """Pick out something in a specified area and focus on it, forgetting things previously focused on after a while."""
@@ -494,11 +496,12 @@ class hunt(Goal):
                        self.fight])
         self.weapon=weapon
         self.what=what
+        self.filter=get_filter(what)
         self.range=range
         self.square_range=range*range
         self.vars=["weapon", "what", "range"]
     def none_in_range(self, me):
-        thing_all=me.map.find_by_type(self.what)
+        thing_all=me.map.find_by_filter(self.filter)
         for thing in thing_all:
             if square_distance(me.location, thing.location) < self.square_range:
                 return 0
@@ -530,13 +533,14 @@ class defend(Goal):
                        hunt_for(what, range),
                        self.fight])
         self.what=what
+        self.filter=get_filter(what)
         self.range=range
         self.vars=["what", "range"]
     def none_in_sight(self, me):
         target_id=me.get_knowledge('focus', self.what)
         if target_id:
             return 0
-        thing_all=me.map.find_by_type(self.what)
+        thing_all=me.map.find_by_filter(self.filter)
         if thing_all and len(thing_all) > 0:
             return 0
         return 1

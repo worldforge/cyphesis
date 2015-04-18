@@ -71,6 +71,7 @@ int main()
     run_python_string("from atlas import Location");
     run_python_string("from atlas import Entity");
     run_python_string("from atlas import Message");
+    run_python_string("from entity_filter import get_filter");
     run_python_string("m=Map()");
     expect_python_error("m.find_by_location()", PyExc_TypeError);
     run_python_string("l=Location()");
@@ -101,6 +102,15 @@ int main()
     expect_python_error("m.get(1)", PyExc_TypeError);
     run_python_string("m.get('1')");
     run_python_string("m.get('23')");
+
+    //test adding and recalling entity-related memories
+    run_python_string("m.add_entity_memory('1', 'disposition', 30)");
+    run_python_string("disposition_val = m.recall_entity_memory('1', 'disposition')");
+    run_python_string("assert(disposition_val == 30)");
+    //test recalling a non-existing memory
+    run_python_string("non_existing = m.recall_entity_memory('1', 'foo')");
+    run_python_string("assert(non_existing == None)");
+
     expect_python_error("m.get_add()", PyExc_TypeError);
     expect_python_error("m.get_add(3)", PyExc_TypeError);
     run_python_string("m.get_add('3')");

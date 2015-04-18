@@ -10,15 +10,15 @@ class Memory:
     def destroy(self):
         self.events=None
         self.map=None
-    def recall_place(self, location, radius, otype):
+    def recall_place(self, location, radius, filter):
         try:
-            if type(otype)==ListType:
-                for i in otype:
-                    result = self.map.find_by_location(location, radius, i)
+            if type(filter)==ListType:
+                for i in filter:
+                    result = self.map.find_by_location_query(location, radius, i)
                     if len(result)!=0:
                         return result
             else:
-                return self.map.find_by_location(location, radius, otype)
+                return self.map.find_by_location_query(location, radius, filter)
         except RuntimeError:
             #Expect the location to be incomplete and handle it
             return None

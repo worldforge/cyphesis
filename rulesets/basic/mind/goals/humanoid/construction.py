@@ -2,6 +2,7 @@
 #Copyright (C) 2004 Al Riddoch (See the file COPYING for details).
 
 from physics import *
+from entity_filter import *
 from mind.goals.common.misc_goal import *
 from mind.goals.common.move import *
 
@@ -17,23 +18,24 @@ class gather(Goal):
                       self.is_there_none_around,
                       [spot_something(what),
                        pick_up_focus(what)])
-        if type(what) == types.ListType:
+        if isinstance(what, str):
             self.what = what
         else:
-            self.what = [ what ]
+            self.what = str(what)
+        #FIXME: This goal shares the same filter as spot_something
+        self.filter = get_filter(self.what)
         self.vars=["what"]
     def is_there_none_around(self, me):
         # A suitably range
         square_near_dist=30
         nearest=None
         nothing_near = 1
-        for what in self.what:
-            what_all=me.map.find_by_type(what)
-            for thing in what_all:
-                square_dist=square_distance(me.location, thing.location)
-                if square_dist < square_near_dist and \
-                   thing.location.parent.id != me.id:
-                    return 0
+        what_all=me.map.find_by_filter(self.filter)
+        for thing in what_all:
+            square_dist=square_distance(me.location, thing.location)
+            if square_dist < square_near_dist and \
+               thing.location.parent.id != me.id:
+                return 0
         return 1
 
 # Harvest a resource from source at a place using a tool
@@ -96,6 +98,7 @@ class plant_seeds(Goal):
                        clear_focus(source)])
         self.seed=seed
         self.source=source
+        self.source_filter = get_filter(source)
         self.place=place
         self.tool=tool
         self.range=range
@@ -121,7 +124,7 @@ class plant_seeds(Goal):
             return
         
         #Check that the seed isn't too close to other sources (to prevent us from planting too closely)
-        sources_all=me.map.find_by_type(self.source)
+        sources_all=me.map.find_by_filter(self.source_filter)
         spacing_sqr=self.spacing*self.spacing
         for thing in sources_all:
             sqr_dist = square_distance(seed.location, thing.location)

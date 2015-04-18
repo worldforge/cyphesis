@@ -22,6 +22,7 @@
 #include "common/OperationRouter.h"
 
 #include <Atlas/Objects/ObjectsFwd.h>
+#include <Atlas/Message/Element.h>
 
 #include <wfmath/const.h>
 
@@ -53,6 +54,12 @@ class MemMap {
     std::vector<std::string> m_deleteHooks;
     Script *& m_script;
 
+    ///\brief a map that holds memories related to other entities.
+    ///@key - ID of the entity to which we relate memories
+    ///@value - Element of map type containing name of a memory as a key
+    ///and the value of that memory (i.e. disposition: 25)
+    std::map<std::string, std::map<std::string, Atlas::Message::Element>> m_entityRelatedMemory;
+
     MemEntity * addEntity(MemEntity *);
     void readEntity(MemEntity *, const Atlas::Objects::Entity::RootEntity &);
     void updateEntity(MemEntity *, const Atlas::Objects::Entity::RootEntity &);
@@ -78,6 +85,26 @@ class MemMap {
     MemEntity * get(const std::string & id) const;
     MemEntity * getAdd(const std::string & id);
     MemEntity * updateAdd(const Atlas::Objects::Entity::RootEntity &, const double &);
+
+    ///\brief Add an entity-related memory or update it if it already exists
+    ///@param id - the id of entity to which we relate the memory
+    ///@param memory - the name of the memory (i.e. "disposition")
+    ///@param val - value of the memory in Element (i.e. 25)
+        void addEntityMemory(const std::string& id,
+                             const std::string& memory,
+                             const Atlas::Message::Element& value);
+
+    ///\brief Recall a memory about an entity if it exists. Do nothing otherwise.
+    ///@param id - the id of entity to which we relate the memory
+    ///@param memory - the name of the memory (i.e. "disposition")
+    ///@param val - the Element to record the value in.
+        void recallEntityMemory(const std::string& id,
+                                const std::string& memory,
+                                Atlas::Message::Element& value) const;
+
+    ///\brief m_entityRelatedMemory accessor
+        const std::map<std::string,
+                std::map<std::string, Atlas::Message::Element>>& getEntityRelatedMemory() const;
 
     EntityVector findByType(const std::string & what);
     EntityVector findByLocation(const Location & where,
