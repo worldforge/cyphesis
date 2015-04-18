@@ -118,12 +118,16 @@ int main()
         TestQuery("entity.burn_speed=0.3", { &b1 }, { &b2 });
 
         TestQuery("entity.burn_speed>0.3", { }, { &b1, &bl1 });
+        TestQuery("entity.burn_speed>=0.3", { &b1 }, { &bl1 });
 
         TestQuery("entity.burn_speed<0.3", { &b2 }, { &b1 });
+        TestQuery("entity.burn_speed<=0.3", { &b2, &b1 }, { });
 
         //test bool values
         TestQuery("entity.isVisible = True", {&b1}, {&b2});
+        TestQuery("entity.isVisible = true", {&b1}, {&b2});
 
+        TestQuery("entity.isVisible = False", {&b2}, {&b1});
         TestQuery("entity.isVisible = false", {&b2}, {&b1});
 
         //test entity ID matching
@@ -153,6 +157,11 @@ int main()
 
         TestQuery("entity.type=types.barrel&&entity.burn_speed=0.3", { &b1 }, { &b2,
                           &bl1 });
+        //Test with fudged syntax
+        TestQuery("entity.type = types.barrel && entity.burn_speed = 0.3", { &b1 }, { &b2,
+                          &bl1 });
+        TestQuery("entity.type  =  types.barrel  &&  entity.burn_speed  =  0.3", { &b1 }, { &b2,
+                          &bl1 });
 
         //test logical operators and precedence
 
@@ -169,6 +178,8 @@ int main()
 
         //test query with nested parentheses
         TestQuery("(entity.type=types.barrel&&(entity.mass=25||entity.mass=30)||entity.type=types.boulder)", {&b1, &b3, &bl1}, {&b2});
+        //Test with fudged syntax
+        TestQuery("(entity.type = types.barrel && ( entity.mass = 25 || entity.mass = 30 ) || entity.type = types.boulder )", {&b1, &b3, &bl1}, {&b2});
 
         TestQuery("(entity.type=types.barrel&&(entity.mass=25&&(entity.burn_speed=0.25||entity.mass=30))||entity.type=types.boulder)", {&bl1}, {&b1});
 
@@ -204,6 +215,16 @@ int main()
             assert(false);
         } catch (std::invalid_argument& e) {
         }
+
+        //test invalid syntax
+        try{
+            TestQuery("entity.type is_instance | types.foo", { }, { });
+            assert(false);
+        } catch (std::invalid_argument& e) {}
+        try{
+            TestQuery("entity,type = types.barrel", { }, { });
+            assert(false);
+        } catch (std::invalid_argument& e) {}
 
         //Test contains_recursive function
         TestQuery("contains_recursive(entity.contains, entity.type=types.boulder) = True", { &b1 }, { &b2 });
