@@ -141,8 +141,10 @@ class NPCMind(server.Mind):
             self.message_queue = None
         return opTick+result
     def unseen_operation(self, op):
-        obsolete_id = op[0].id
-        self.map.delete(obsolete_id)
+    	if len(op) > 0:
+        	obsolete_id = op[0].id
+        	if obsolete_id:
+         		self.map.delete(obsolete_id)
     ########## Sight operations
     def sight_create_operation(self, op):
         """Note our ownership of entities we created."""
