@@ -55,10 +55,6 @@ class Motion {
      */
     LocatedEntity & m_entity;
 
-    /**
-     * \brief The domain within which the movement occurs.
-     */
-    Domain& m_domain;
     std::string m_mode;
 
     /// Refno of next expected update op
@@ -72,7 +68,7 @@ class Motion {
     Vector3D m_collNormal;
 
   public:
-    explicit Motion(LocatedEntity & body, Domain& domain);
+    explicit Motion(LocatedEntity & body);
     virtual ~Motion();
 
     float m_collisionTime;
@@ -125,7 +121,7 @@ class Motion {
     virtual Atlas::Objects::Operation::RootOperation * genMoveOperation();
 
     // Collision bullshit?
-    float checkCollisions();
+    float checkCollisions(Domain& domain);
 
     // More Collision bullshit
     bool resolveCollision();

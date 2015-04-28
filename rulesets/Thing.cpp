@@ -302,12 +302,12 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         if (moving) {
             //We've just started moving; create a motion instance.
             if (!m_motion) {
-                m_motion = new Motion(*this, *domain);
+                m_motion = new Motion(*this);
             }
 
 
             // If we are moving, check for collisions
-            update_time = m_motion->checkCollisions();
+            update_time = m_motion->checkCollisions(*domain);
 
             if (m_motion->collision()) {
                 if (update_time < WFMath::numeric_constants<WFMath::CoordType>::epsilon()) {
@@ -536,15 +536,17 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
         m_location.m_pos.z() = domain->constrainHeight(m_location.m_loc,
                                                     m_location.pos(),
                                                     "standing");
+    } else {
+
     }
     m_location.update(current_time);
     m_flags &= ~(entity_pos_clean | entity_clean);
 
     float update_time = consts::move_tick;
 
-    if (moving) {
+    if (moving && domain) {
         // If we are moving, check for collisions
-        update_time = m_motion->checkCollisions();
+        update_time = m_motion->checkCollisions(*domain);
 
         if (m_motion->collision()) {
             if (update_time < WFMath::numeric_constants<WFMath::CoordType>::epsilon()) {

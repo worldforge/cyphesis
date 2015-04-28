@@ -36,7 +36,7 @@ using String::compose;
 
 static const bool debug_flag = false;
 
-Motion::Motion(LocatedEntity & body, Domain& domain) : m_entity(body), m_domain(domain), m_serialno(0),
+Motion::Motion(LocatedEntity & body) : m_entity(body), m_serialno(0),
                                        m_collision(false), m_collEntity(0),
                                        m_collisionTime(0.f)
 {
@@ -66,10 +66,10 @@ Operation * Motion::genMoveOperation()
     return 0;
 }
 
-float Motion::checkCollisions()
+float Motion::checkCollisions(Domain& domain)
 {
     Domain::CollisionData collData;
-    float collision_time = m_domain.checkCollision(m_entity, collData);
+    float collision_time = domain.checkCollision(m_entity, collData);
     m_collEntity = collData.collEntity;
     m_collision = collData.isCollision;
     m_collNormal = collData.collNormal;
