@@ -21,7 +21,7 @@
 
 #include "Entity.h"
 
-/// \brief This is the base class from which all physical or tangiable in-game
+/// \brief This is the base class from which all physical or tangible in-game
 /// entities inherit.
 ///
 /// It can be used itself to represent any in-game object for which

@@ -130,7 +130,7 @@ PropertyBase * Entity::setAttr(const std::string & name, const Element & attr)
             (I = m_type->defaults().find(name)) != m_type->defaults().end()) {
             prop = I->second->copy();
         } else {
-            // This is an entirely new property, not just a modifcation of
+            // This is an entirely new property, not just a modification of
             // one in defaults, so we need to install it to this Entity.
             prop = PropertyManager::instance()->addProperty(name,
                                                             attr.getType());

@@ -31,13 +31,13 @@ class Motion;
 /// This class should not normally be instantiated directly.
 /// This class provides hard-coded attributes which are common to most
 /// in game objects, the dynamic attributes map, and a means to access both
-/// transparantly without needing to know which are which.
+/// transparently without needing to know which are which.
 /// This is now also intended to be the base for in-game persistance.
 /// It implements the basic types required for persistance.
 /// \ingroup EntityClasses
 class Entity : public LocatedEntity {
   protected:
-    /// Motion behavoir of this entity
+    /// Motion behavior of this entity
     Motion * m_motion;
     /// Map of delegate properties.
     std::multimap<int, std::string> m_delegates;
