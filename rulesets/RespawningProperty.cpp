@@ -37,35 +37,38 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::Move;
 using Atlas::Objects::Operation::Set;
 
+PropertyInstanceState<sigc::connection> RespawningProperty::sInstanceState;
+
 RespawningProperty::RespawningProperty()
 {
 }
 
 RespawningProperty::~RespawningProperty()
 {
-    m_entityLinkConnection.disconnect();
 }
 
 void RespawningProperty::install(LocatedEntity * owner, const std::string & name)
 {
     owner->installDelegate(Atlas::Objects::Operation::DELETE_NO, name);
-
-    //Check if we're already in limbo.
-    Character* character = dynamic_cast<Character*>(owner);
-    if (character && BaseWorld::instance().getLimboLocation() && character->m_location.m_loc == BaseWorld::instance().getLimboLocation()) {
-        if (!m_entityLinkConnection) {
-            m_entityLinkConnection = character->externalLinkChanged.connect(sigc::bind(sigc::mem_fun(*this, &RespawningProperty::entity_externalLinkChanged), owner));
-        }
-    }
+    sInstanceState.addState(owner, new sigc::connection);
 }
 
 void RespawningProperty::remove(LocatedEntity *owner, const std::string & name)
 {
     owner->removeDelegate(Atlas::Objects::Operation::DELETE_NO, name);
+    sInstanceState.removeState(owner);
 }
 
 void RespawningProperty::apply(LocatedEntity * ent)
 {
+    //Check if we're already in limbo.
+    Character* character = dynamic_cast<Character*>(ent);
+    if (character && BaseWorld::instance().getLimboLocation() && character->m_location.m_loc == BaseWorld::instance().getLimboLocation()) {
+        sigc::connection* connection = sInstanceState.getState(ent);
+        if (!(*connection)) {
+            (*connection) = character->externalLinkChanged.connect(sigc::bind(sigc::mem_fun(*this, &RespawningProperty::entity_externalLinkChanged), ent));
+        }
+    }
 
 }
 
@@ -94,8 +97,10 @@ HandlerResult RespawningProperty::delete_handler(LocatedEntity * e,
                 BaseWorld::instance().getLimboLocation()) {
             new_loc.m_loc = BaseWorld::instance().getLimboLocation();
             new_loc.m_pos = Point3D::ZERO();
-            if (!m_entityLinkConnection) {
-                m_entityLinkConnection = character->externalLinkChanged.connect(sigc::bind(sigc::mem_fun(*this, &RespawningProperty::entity_externalLinkChanged), e));
+
+            sigc::connection* connection = sInstanceState.getState(e);
+            if (!(*connection)) {
+                (*connection) = character->externalLinkChanged.connect(sigc::bind(sigc::mem_fun(*this, &RespawningProperty::entity_externalLinkChanged), e));
             }
 
             //Suspend the entity while its in limbo
@@ -135,7 +140,8 @@ void RespawningProperty::entity_externalLinkChanged(LocatedEntity* entity) {
     //When the entity gets externally controlled again we should move it out of limbo and back to the respawn.
     OpVector res;
 
-    m_entityLinkConnection.disconnect();
+    sigc::connection* connection = sInstanceState.getState(entity);
+    connection->disconnect();
 
     //Disable the suspension
     Anonymous set_args;

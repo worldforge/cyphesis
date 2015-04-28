@@ -19,6 +19,7 @@
 #define DOMAINPROPERTY_H_
 
 #include "common/Property.h"
+#include "common/PropertyInstanceState.h"
 
 class Domain;
 
@@ -40,16 +41,17 @@ class DomainProperty : public Property<std::string>
         explicit DomainProperty();
         explicit DomainProperty(const DomainProperty& rhs);
 
+        virtual void install(LocatedEntity *, const std::string &);
         virtual void remove(LocatedEntity *, const std::string &);
         virtual DomainProperty * copy() const;
 
         virtual void apply(LocatedEntity *);
 
-        Domain* getDomain() const;
+        Domain* getDomain(const LocatedEntity *) const;
 
     private:
 
-        Domain* m_domain;
+        static PropertyInstanceState<Domain> sInstanceState;
 
 };
 

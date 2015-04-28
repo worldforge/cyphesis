@@ -21,7 +21,10 @@
 #define RULESETS_RESPAWNINGPROPERTY_H_
 
 #include "common/Property.h"
+#include "common/PropertyInstanceState.h"
 #include <sigc++/connection.h>
+
+
 
 /// \brief Will make entities respawn at a spawn point when deleted, or to "limbo".
 ///
@@ -62,11 +65,12 @@ class RespawningProperty : public Property<std::string>
 
     private:
 
+
         /// \brief Keeps a connection to the signal which is emitted when the entity
         /// gets externally controlled. This is used when the entity has been put in
         /// limbo, for which we'll have to respawn the entity when it regains external
         /// control.
-        sigc::connection m_entityLinkConnection;
+        static PropertyInstanceState<sigc::connection> sInstanceState;
 
         /// \brief Called when a character that is in limbo gets externally controlled.
         ///

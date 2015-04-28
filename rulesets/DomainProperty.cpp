@@ -25,37 +25,46 @@
 #include "VoidDomain.h"
 #include "LocatedEntity.h"
 
+PropertyInstanceState<Domain> DomainProperty::sInstanceState;
+
 DomainProperty::DomainProperty()
-: m_domain(nullptr)
 {
 }
 
 DomainProperty::DomainProperty(const DomainProperty& rhs)
-: m_domain(nullptr)
+: Property(rhs)
 {
 }
 
+void DomainProperty::install(LocatedEntity *entity, const std::string &)
+{
+    sInstanceState.addState(entity, nullptr);
+}
+
+
 void DomainProperty::remove(LocatedEntity * entity, const std::string &)
 {
-    delete m_domain;
-    m_domain = nullptr;
+    sInstanceState.removeState(entity);
     entity->setFlags(~entity_domain);
 }
 
 void DomainProperty::apply(LocatedEntity * entity)
 {
     if (m_data != "") {
-        if (!m_domain) {
+        Domain* domain = sInstanceState.getState(entity);
+        if (!domain) {
             if (m_data == "physical") {
-                m_domain = new PhysicalDomain(*entity);
+                domain = new PhysicalDomain(*entity);
+                sInstanceState.replaceState(entity, domain);
+                entity->setFlags(entity_domain);
             } else if (m_data == "void") {
-                m_domain = new VoidDomain(*entity);
+                domain = new VoidDomain(*entity);
+                sInstanceState.replaceState(entity, domain);
+                entity->setFlags(entity_domain);
             }
         }
-        entity->setFlags(entity_domain);
     } else {
-        delete m_domain;
-        m_domain = nullptr;
+        sInstanceState.replaceState(entity, nullptr);
         entity->setFlags(~entity_domain);
     }
 }
@@ -65,7 +74,7 @@ DomainProperty * DomainProperty::copy() const
     return new DomainProperty(*this);
 }
 
-Domain* DomainProperty::getDomain() const {
-    return m_domain;
+Domain* DomainProperty::getDomain(const LocatedEntity *entity) const {
+    return sInstanceState.getState(entity);
 }
 
