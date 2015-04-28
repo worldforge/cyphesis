@@ -117,7 +117,7 @@ using Atlas::Objects::Entity::RootEntity;
 #include "stubs/common/stubVariable.h"
 
 
-Motion::Motion(LocatedEntity & body, Domain& domain) : m_entity(body), m_domain(domain), m_serialno(0),
+Motion::Motion(LocatedEntity & body) : m_entity(body), m_serialno(0),
                                 m_collision(false), m_collEntity(0),
                                 m_collisionTime(0.f)
 {
@@ -127,7 +127,7 @@ Motion::~Motion()
 {
 }
 
-float Motion::checkCollisions()
+float Motion::checkCollisions(Domain&)
 {
     return consts::move_tick;
 }

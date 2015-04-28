@@ -19,7 +19,7 @@
 #define STUBMOTION_H_
 
 
-Motion::Motion(LocatedEntity & body, Domain& domain) : m_entity(body), m_domain(domain), m_serialno(0),
+Motion::Motion(LocatedEntity & body) : m_entity(body), m_serialno(0),
                                 m_collision(false)
 {
 }
@@ -28,7 +28,7 @@ Motion::~Motion()
 {
 }
 
-float Motion::checkCollisions()
+float Motion::checkCollisions(Domain&)
 {
     return consts::move_tick;
 }

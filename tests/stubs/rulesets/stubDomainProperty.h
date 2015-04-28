@@ -21,12 +21,14 @@
 #include "rulesets/DomainProperty.h"
 
 DomainProperty::DomainProperty()
-: m_domain(nullptr)
 {
 }
 
 DomainProperty::DomainProperty(const DomainProperty& rhs)
-: m_domain(nullptr)
+{
+}
+
+void DomainProperty::install(LocatedEntity *entity, const std::string &)
 {
 }
 
@@ -43,7 +45,7 @@ DomainProperty * DomainProperty::copy() const
     return nullptr;
 }
 
-Domain* DomainProperty::getDomain() const {
+Domain* DomainProperty::getDomain(const LocatedEntity *) const {
     return nullptr;
 }
 

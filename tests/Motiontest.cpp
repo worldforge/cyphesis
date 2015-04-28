@@ -89,7 +89,7 @@ void Motiontest::setup()
     tlve->incRef();
     tlve->incRef();
 
-    motion = new Motion(*ent, *domain);
+    motion = new Motion(*ent);
 
     std::string example_mode("walking");
 
@@ -144,7 +144,7 @@ void Motiontest::test_genMoveOperation()
 void Motiontest::test_checkCollision_no_box()
 {
     // No collisions yet
-    motion->checkCollisions();
+    motion->checkCollisions(*domain);
     ASSERT_TRUE(!motion->collision());
 }
 
@@ -154,7 +154,7 @@ void Motiontest::test_checkCollision_moving_box()
     ent->m_location.m_bBox = BBox(Point3D(-1,-1,-1), Point3D(1,1,1));
 
     // No collision yet, as other still has no big box
-    motion->checkCollisions();
+    motion->checkCollisions(*domain);
     assert(!motion->collision());
 }
 
@@ -167,7 +167,7 @@ void Motiontest::test_checkCollision_two_boxes()
     other->m_location.m_bBox = BBox(Point3D(-1,-1,-1), Point3D(5,1,1));
 
     // No collision yet, as other is still too far away
-    motion->checkCollisions();
+    motion->checkCollisions(*domain);
     assert(!motion->collision());
 }
 
@@ -183,7 +183,7 @@ void Motiontest::test_checkCollision_close()
     other->m_location.m_pos = Point3D(3, 0, 0);
 
     // Now it can collide
-    motion->checkCollisions();
+    motion->checkCollisions(*domain);
     assert(motion->collision());
     motion->resolveCollision();
 }
@@ -200,7 +200,7 @@ void Motiontest::test_checkCollision_broken()
     other->m_location.m_pos = Point3D(3, 0, 0);
 
     // Set up the collision again
-    motion->checkCollisions();
+    motion->checkCollisions(*domain);
     assert(motion->collision());
     // But this time break the hierarchy to hit the error message
     other->m_location.m_loc = ent;
@@ -220,7 +220,7 @@ void Motiontest::test_checkCollision_velocity()
     other->m_location.m_pos = Point3D(3, 0, 0);
 
     // Set up the collision again
-    motion->checkCollisions();
+    motion->checkCollisions(*domain);
     assert(motion->collision());
 
     // Re-align the velocity so some is preserved by the collision normal
@@ -251,7 +251,7 @@ void Motiontest::test_checkCollision_inner1()
     // Make other non-simple so that collision checks go inside
     other->m_location.setSimple(false);
 
-    motion->checkCollisions();
+    motion->checkCollisions(*domain);
 
     assert(motion->collision());
 
@@ -282,7 +282,7 @@ void Motiontest::test_checkCollision_inner2()
 
     other->m_location.m_orientation = Quaternion(1,0,0,0);
 
-    motion->checkCollisions();
+    motion->checkCollisions(*domain);
 
     assert(motion->collision());
 
@@ -317,7 +317,7 @@ void Motiontest::test_checkCollision_inner3()
     inner.m_location.m_bBox = BBox(Point3D(-0.1,-0.1,-0.1),
                                    Point3D(0.1,0.1,0.1));
 
-    motion->checkCollisions();
+    motion->checkCollisions(*domain);
 
     assert(motion->collision());
 
@@ -354,7 +354,7 @@ void Motiontest::test_checkCollision_inner4()
     // Move the inner entity too far away for collision this interval
     inner.m_location.m_pos = Point3D(3,0,0);
 
-    motion->checkCollisions();
+    motion->checkCollisions(*domain);
 
     assert(motion->collision());
     ASSERT_EQUAL(motion->m_collEntity, other);
