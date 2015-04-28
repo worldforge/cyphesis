@@ -412,6 +412,15 @@ EntityVector MemMap::findByLocation(const Location & loc,
 
 void MemMap::check(const double & time)
 {
+
+    //HACK: We currently do refcounting for Locations kept in the mind as knowledge.
+    //The result is that if an entity is removed here, it will be deleted, and any
+    //knowledge or goal referring to it will point to an invalid pointer.
+    //Then result is a segfault whenever the mind is queried.
+    //To prevent this we'll add this interim fix, where we exit from the method.
+    //This is an interim solution until we've better dealt with Locations in goals and knowledge.
+    return;
+
     MemEntityDict::const_iterator entities_end = m_entities.end();
     if (m_checkIterator == entities_end) {
         m_checkIterator = m_entities.begin();
