@@ -289,10 +289,10 @@ class NPCMind(server.Mind):
                         objectVal=d[key]
                         if type(objectVal) is Location:
                             #Serialize Location as tuple, with parent if available
-                            if objectVal.parent is None:
+                            if (objectVal.parent is None):
                                 location=objectVal.coordinates
                             else:
-                                location=(objectVal.parent.id,objectVal.coordinates)
+                                location=("$eid:" + objectVal.parent.id,objectVal.coordinates)
                             object=str(location)
                         else:
                             object=str(d[key])
@@ -362,6 +362,7 @@ class NPCMind(server.Mind):
                 subject=thought.subject
                 predicate=thought.predicate
                 object=thought.object
+                
                 #handle goals in a special way
                 if predicate == "goal":
                     self.add_goal(subject, object)
@@ -375,7 +376,11 @@ class NPCMind(server.Mind):
                             loc=self.location.copy()
                             loc.coordinates=Vector3D(list(locdata))
                         elif (len(locdata) == 2):
-                            where=self.map.get_add(locdata[0])
+                            entity_id_string = locdata[0]
+                            #A prefix of "$eid:" denotes an entity id; it should be stripped first.
+                            if entity_id_string.startswith("$eid:"):
+                                entity_id_string = entity_id_string[5:]
+                            where=self.map.get_add(entity_id_string)
                             coords=Point3D(list(locdata[1]))
                             loc=Location(where, coords)
                         self.add_knowledge(predicate,subject,loc)
