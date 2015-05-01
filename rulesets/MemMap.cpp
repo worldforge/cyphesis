@@ -201,19 +201,19 @@ void MemMap::del(const std::string & id)
         //To prevent this we'll add this interim fix, where we exit from the method.
         //This is an interim solution until we've better dealt with Locations in goals and knowledge.
 
-//        long next = -1;
-//        if (m_checkIterator != m_entities.end()) {
-//            next = m_checkIterator->first;
-//        }
-//        m_entities.erase(I);
+        long next = -1;
+        if (m_checkIterator != m_entities.end()) {
+            next = m_checkIterator->first;
+        }
+        m_entities.erase(I);
 //
 //        ent->destroy(); // should probably go here, but maybe earlier
 //
-//        if (next != -1) {
-//            m_checkIterator = m_entities.find(next);
-//        } else {
-//            m_checkIterator = m_entities.begin();
-//        }
+        if (next != -1) {
+            m_checkIterator = m_entities.find(next);
+        } else {
+            m_checkIterator = m_entities.begin();
+        }
 
         if (m_script != 0) {
             std::vector<std::string>::const_iterator J = m_deleteHooks.begin();
@@ -413,14 +413,6 @@ EntityVector MemMap::findByLocation(const Location & loc,
 void MemMap::check(const double & time)
 {
 
-    //HACK: We currently do refcounting for Locations kept in the mind as knowledge.
-    //The result is that if an entity is removed here, it will be deleted, and any
-    //knowledge or goal referring to it will point to an invalid pointer.
-    //Then result is a segfault whenever the mind is queried.
-    //To prevent this we'll add this interim fix, where we exit from the method.
-    //This is an interim solution until we've better dealt with Locations in goals and knowledge.
-    return;
-
     MemEntityDict::const_iterator entities_end = m_entities.end();
     if (m_checkIterator == entities_end) {
         m_checkIterator = m_entities.begin();
@@ -451,8 +443,15 @@ void MemMap::check(const double & time)
             } else {
                 m_checkIterator = m_entities.begin();
             }
+            //HACK: We currently do refcounting for Locations kept in the mind as knowledge.
+            //The result is that if an entity is removed here, it will be deleted, and any
+            //knowledge or goal referring to it will point to an invalid pointer.
+            //Then result is a segfault whenever the mind is queried.
+            //To prevent this we'll add this interim fix, where we won't decrease the reference.
+            //This is an interim solution until we've better dealt with Locations in goals and knowledge.
+
             // attribute of its its parent.
-            me->decRef();
+            //me->decRef();
         } else {
             debug(std::cout << me->getId() << "|" << me->getType()->name() << "|"
                             << me->lastSeen() << "|" << me->isVisible()

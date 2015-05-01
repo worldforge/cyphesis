@@ -318,7 +318,9 @@ void BaseMindMapEntityintegration::test_MemMapcheck()
 
     // Check the reference we have is the only one remaining
     ASSERT_NULL(e3->m_location.m_loc)
-    ASSERT_EQUAL(e3->checkRef(), 0);
+
+    //TODO: Enable this check again; it's disabled since we've disabled ref decrements in MemMap, since the knowledge code doesn't handle entity references correctly.
+    //ASSERT_EQUAL(e3->checkRef(), 0);
     e3->decRef();
 }
 
