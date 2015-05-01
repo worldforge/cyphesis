@@ -38,15 +38,6 @@ AC_PROG_RANLIB
 
 AC_PATH_PROG([XMLLINT], [xmllint], [true])
 
-python_prefix=/usr
-AC_ARG_WITH(python,
-[  --with-python=DIR       Prefix where python is installed in [default=/usr]],
-[
-    if test $withval != yes; then
-        python_prefix=$withval
-    fi
-])
-
 dnl allow the user to specify that most libraries should be statically linked
 
 STATIC_LIBSTDCPP=
@@ -83,8 +74,6 @@ AC_ARG_ENABLE(debug,
         CXXFLAGS="$CXXFLAGS $GCC_EXTRA_OPT -Wall -DNDEBUG"
     ]
 )
-
-dnl allow the user to provide the directory where python is installed in
 
 AC_LANG(C++)
 
@@ -158,121 +147,49 @@ AC_CHECK_HEADERS(termios.h signal.h syslog.h sys/utsname.h sys/wait.h)
 AC_CHECK_HEADERS(winsock.h arpa/inet.h sys/un.h dirent.h io.h sys/ucred.h)
 AC_CHECK_HEADERS(windows.h getopt.h)
 
-dnl then check for the header file Python.h and set
-dnl python_include_path and python_version
-dnl appropriately to what we have found
-dnl
-dnl if found define HAVE_PYTHON_H
-dnl
-
-AC_CHECK_HEADER(python2.7/Python.h,
-[
-    python_include_path=-I${python_prefix}/include/python2.7
-    python_version=2.7
-],[
-    AC_CHECK_HEADER(python2.6/Python.h,
+PKG_CHECK_MODULES(PYTHON, python >= 2.6,
     [
-        python_include_path=-I${python_prefix}/include/python2.6
-        python_version=2.6
-    ],[
-        AC_CHECK_HEADER(python2.5/Python.h,
-        [
-            python_include_path=-I${python_prefix}/include/python2.5
-            python_version=2.5
-        ],[
-            AC_CHECK_HEADER(python2.4/Python.h,
-            [
-                python_include_path=-I${python_prefix}/include/python2.4
-                python_version=2.4
-            ],[
-                AC_CHECK_HEADER(python2.3/Python.h,
-                [
-                    python_include_path=-I${python_prefix}/include/python2.3
-                    python_version=2.3
-                ],[
-                    AC_CHECK_HEADER(python2.2/Python.h,
-                    [
-                        python_include_path=-I${python_prefix}/include/python2.2
-                        python_version=2.2
-                    ],[
-                        AC_MSG_ERROR([
-Cannot find python headers for Python 2.2 or later.
-Please see http://www.python.org/ for details of how to download and install
-Python. If Python is installed somewhere other than in /usr the please use the
---with-python=DIR option to point to the prefix where Python is installed.])
-                    ])
-                ])
-            ])
-        ])
-    ])
-])
+        CPPFLAGS="$CPPFLAGS $PYTHON_CFLAGS"
+        
+	PYTHON_UTIL_LIBS=
 
-PYTHON_VERSION=${python_version}
-PYTHON_INCLUDES=${python_include_path}
-CPPFLAGS="$CPPFLAGS $PYTHON_INCLUDES"
+	AC_CHECK_LIB(dl,dlopen,
+	[
+	    PYTHON_UTIL_LIBS="$PYTHON_UTIL_LIBS -ldl"
+	])
 
-dnl build the library path from the found version
-python_lib_path=${python_prefix}/lib/python${python_version}/config
-
-PYTHON_UTIL_LIBS=
-
-AC_CHECK_LIB(dl,dlopen,
-[
-    PYTHON_UTIL_LIBS="$PYTHON_UTIL_LIBS -ldl"
-])
-
-AC_CHECK_LIB(util,openpty,
-[
-    PYTHON_UTIL_LIBS="$PYTHON_UTIL_LIBS -lutil"
-])
-
-AC_CHECK_FUNC(pthread_mutex_trylock, ,
-[
-    ac_save_CXXFLAGS="$CXXFLAGS"
-    CXXFLAGS="$CXXFLAGS -pthread"
-    AC_CHECK_FUNC(pthread_create, ,
-    [
-        CXXFLAGS="$ac_save_CXXFLAGS"
-        AC_CHECK_LIB(pthread, pthread_create, ,
-        [
-            AC_MSG_WARN([Cannot find pthread library. Python lib check may fail])
-        ])
-    ])
-])
-
-if test x"$link_static" = "xfalse"; then
-
-AC_CHECK_LIB(python${python_version}, Py_Initialize,
-[
-    python_libs="-lpython${python_version}"
-    PYTHON_UTIL_LIBS=
-],
-[
-    AC_CHECK_LIB(python${python_version}, Py_Initialize,
-    [
-        python_libs="-L${python_lib_path} -lpython${python_version}"
+	AC_CHECK_LIB(util,openpty,
+	[
+	    PYTHON_UTIL_LIBS="$PYTHON_UTIL_LIBS -lutil"
+	])
+	
+	AC_CHECK_FUNC(pthread_mutex_trylock, ,
+	[
+	    ac_save_CXXFLAGS="$CXXFLAGS"
+	    CXXFLAGS="$CXXFLAGS -pthread"
+	    AC_CHECK_FUNC(pthread_create, ,
+	    [
+		CXXFLAGS="$ac_save_CXXFLAGS"
+		AC_CHECK_LIB(pthread, pthread_create, ,
+		[
+		    AC_MSG_WARN([Cannot find pthread library. Python lib check may fail])
+		])
+	    ])
+	])	
+	
+        COMMON_LIBS="$COMMON_LIBS $PYTHON_LIBS $PYTHON_UTIL_LIBS"
         PYTHON_LINKER_FLAGS="-export-dynamic"
-    ],AC_MSG_ERROR([
-Cannot find python libraries. Do you have python development installed? Please
-see http://www.python.org/ for details of how to download and install Python.]),
-    [-L${python_lib_path} ${PYTHON_UTIL_LIBS}])
-])
-
-else
-
-AC_CHECK_LIB(python${python_version}, Py_Initialize,
-[
-    python_libs="-L${python_lib_path} -lpython${python_version}"
-    PYTHON_LINKER_FLAGS="-export-dynamic"
-],AC_MSG_ERROR([
-Cannot find python libraries. Do you have python development installed?
+    ],
+    [
+        AC_MSG_RESULT([no])
+        AC_MSG_ERROR([
+        Cannot find python headers for Python 2.6 or later.
+        $PYTHON_PKG_ERRORS
 Please see http://www.python.org/ for details of how to download and install
-Python.]),
-[-L${python_lib_path} ${PYTHON_UTIL_LIBS}])
-
-fi
-
-PYTHON_LIBS=${python_libs}
+Python. If Python is installed somewhere other than in /usr then please use the
+PKG_CONFIG_PATH environment variable to point out where.])
+    ]
+)
 
 AM_PATH_LIBGCRYPT(1.2.0,
 [
@@ -464,7 +381,6 @@ AC_SUBST(MDNS_LIBS)
 AC_SUBST(PYTHON_VERSION)
 AC_SUBST(PYTHON_LIBS)
 AC_SUBST(PYTHON_UTIL_LIBS)
-AC_SUBST(python_version)
 AC_SUBST(PGSQL_LIBS)
 
 AC_SUBST(STATIC_LIBSTDCPP)
