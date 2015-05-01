@@ -6,6 +6,7 @@ from mind.Goal import Goal
 from mind.goals.common.misc_goal import keep
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
 from mind.goals.dynamic.add_unique_goal import add_unique_goal
+from entity_filter import *
 from atlas import *
 
 class keep_livestock(keep):
@@ -23,18 +24,25 @@ class keep_livestock(keep):
 
 class welcome(DynamicGoal):
     """Welcome entities of a given type that are created nearby."""
-    def __init__(self, message, type, desc="welcome new players"):
+    def __init__(self, message, what, desc="welcome new players"):
         DynamicGoal.__init__(self,
                              trigger="sight_create",
                              desc=desc)
-        self.type=type
+        self.what=what
         self.message=message
+        self.filter = get_filter(self.what)
     def event(self, me, original_op, op):
-        obj = me.map.update(op[0], op.getSeconds())
+        if not op:
+            return
+        first_op = op[0]
+        if not first_op:
+            return
+        
+        entity = me.map.update(first_op, op.getSeconds())
         if original_op.from_==me.id:
-            self.add_thing(obj)
-        if obj.type[0]==self.type:
-            return Operation("talk", Entity(say=self.message))
+            self.add_thing(entity)
+        if self.filter.match_entity(entity):
+            return Operation("talk", Entity(say=self.message)) + me.face(entity)
 
 class help(Goal):
     """Provide a sequence of help messages to a target."""
