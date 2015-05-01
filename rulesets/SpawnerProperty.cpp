@@ -192,6 +192,9 @@ void SpawnerProperty::handleTick(LocatedEntity * e, const Operation & op,
         squared_radius = 0;
     }
 
+    //pad the radius we check with a little, to account for entities that are created on the fringe
+    squared_radius *= 1.1;
+
     //Check if there are enough entities (with an optional radius)
     int counter = 0;
     if (container_entity->m_contains) {
@@ -246,7 +249,7 @@ void SpawnerProperty::createNewEntity(LocatedEntity * e, const Operation & op,
         //place it between 0 and 2 meters away
         float distance = rand.randf(2.0f);
         //if we're solid we should make sure it's not within our own radius
-        if (e->m_location.isSolid()) {
+        if (e->m_location.isSolid() && e->m_location.bBox().isValid()) {
             distance += e->m_location.radius();
         }
         //and finally make sure that it's not beyond the radius for checking
