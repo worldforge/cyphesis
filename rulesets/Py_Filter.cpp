@@ -41,8 +41,10 @@ static PyObject * match_entity(PyFilter * self, PyObject * py_entity)
     EntityFilter::Filter* filter = self->m_filter;
 
     if (entity && filter->match(*entity)) {
+        Py_INCREF(Py_True);
         return Py_True;
     } else {
+        Py_INCREF(Py_False);
         return Py_False;
     }
 }
