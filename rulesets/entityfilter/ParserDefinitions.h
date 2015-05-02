@@ -44,7 +44,7 @@ struct comparators_ : qi::symbols<char, ComparePredicate::Comparator>
             (">="   , ComparePredicate::Comparator::GREATER_EQUAL)
             ("<"    , ComparePredicate::Comparator::LESS)
             ("<="   , ComparePredicate::Comparator::LESS_EQUAL)
-            ("is_instance", ComparePredicate::Comparator::INSTANCE_OF)
+            ("instance_of", ComparePredicate::Comparator::INSTANCE_OF)
             ("in"   , ComparePredicate::Comparator::IN)
             ("contains", ComparePredicate::Comparator::CONTAINS);
         ;
@@ -80,7 +80,7 @@ struct query_parser : qi::grammar<Iterator, Predicate*(),
             comp_operator_g %= qi::string("!=") | qi::string("<=")
                                 | qi::string(">=") | qi::string("==") | qi::string("!==")
                                 | char_("=") | char_(">") | char_("<")
-                                | qi::no_skip[+space >> no_case[qi::string("is_instance")] >> +space]
+                                | qi::no_skip[+space >> no_case[qi::string("instance_of")] >> +space]
                                 | qi::no_skip[+space >> no_case[qi::string("contains")] >> +space]
                                 | qi::no_skip[+space >> no_case[qi::string("in")] >> +space];
 
@@ -148,8 +148,8 @@ struct query_parser : qi::grammar<Iterator, Predicate*(),
                     (consumer_g[_b = _1] >> no_case[comparators][_d = _1] >> consumer_g)
                     [_c = new_<ComparePredicate>(_1, _3, _d)]
                     //Then try to match a list case
-                    //Syntax example: entity.type is_instance types.bear|types.tiger
-                    //is interpreted as entity.type is_instance types.bear || entity.type is_instance types.tiger
+                    //Syntax example: entity.type instance_of types.bear|types.tiger
+                    //is interpreted as entity.type instance_of types.bear || entity.type instance_of types.tiger
                     >> *("|" >> consumer_g[_c = new_<OrPredicate>(_c, new_<ComparePredicate>(_b, _1,_d))])
                     >> qi::eps[_val = _c];
 

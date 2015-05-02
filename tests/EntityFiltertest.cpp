@@ -113,7 +113,7 @@ int main()
 
 // START of Soft property and general filtering tests
     {
-        TestQuery("entity.type is_instance types.barrel", { &b1 }, { &bl1 });
+        TestQuery("entity.type instance_of types.barrel", { &b1 }, { &bl1 });
         // test entity.attribute case with various operators
         TestQuery("entity.burn_speed=0.3", { &b1 }, { &b2 });
 
@@ -189,10 +189,10 @@ int main()
         //test operators "and", "or"
         TestQuery("(entity.type=types.barrel and entity.burn_speed=0.3)", {&b1}, {&bl1});
 
-        TestQuery("entity.type is_instance types.barrel   or   entity.mass=25", {&b1, &b2, &bl1}, {});
+        TestQuery("entity.type instance_of types.barrel   or   entity.mass=25", {&b1, &b2, &bl1}, {});
 
-        //test multiple types for is_instance operator
-        TestQuery("entity.type is_instance types.barrel|types.boulder", {&b1, &bl1}, {});
+        //test multiple types for instance_of operator
+        TestQuery("entity.type instance_of types.barrel|types.boulder", {&b1, &bl1}, {});
 
         //test and operator without spaces
         try {
@@ -211,14 +211,14 @@ int main()
 
         //test a non-existing type
         try{
-            TestQuery("entity.type is_instance types.foo", { }, { });
+            TestQuery("entity.type instance_of types.foo", { }, { });
             assert(false);
         } catch (std::invalid_argument& e) {
         }
 
         //test invalid syntax
         try{
-            TestQuery("entity.type is_instance | types.foo", { }, { });
+            TestQuery("entity.type instance_of | types.foo", { }, { });
             assert(false);
         } catch (std::invalid_argument& e) {}
         try{
@@ -302,7 +302,7 @@ int main()
 
         TestQuery("entity.outfit.hands.outfit.thumb.type=types.cloth", {&ch1}, {});
 
-        TestQuery("entity.type is_instance types.barrel|types.boulder|types.gloves", {&b1, &bl1, &glovesEntity}, {});
+        TestQuery("entity.type instance_of types.barrel|types.boulder|types.gloves", {&b1, &bl1, &glovesEntity}, {});
     }
     //END of outfit case test
 
