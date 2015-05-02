@@ -4,6 +4,7 @@
 #include "../../common/TypeNode.h"
 
 #include <algorithm>
+#include <stdexcept>
 
 namespace EntityFilter
 {
