@@ -52,7 +52,7 @@ class Spawn {
      * \return 0 if successful.
      */
     virtual int spawnEntity(const std::string & type,
-                            const Atlas::Objects::Entity::RootEntity & dsc) = 0;
+                            const Atlas::Objects::Entity::RootEntity & dsc) const = 0;
 
     /**
      * \brief Provides information about the types available.

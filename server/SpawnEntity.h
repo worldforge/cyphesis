@@ -48,7 +48,7 @@ class SpawnEntity : public Spawn {
     int setup(const Atlas::Message::MapType & data);
 
     int spawnEntity(const std::string & type,
-                    const Atlas::Objects::Entity::RootEntity & dsc);
+                    const Atlas::Objects::Entity::RootEntity & dsc) const;
     int addToMessage(Atlas::Message::MapType & msg) const;
 
     int placeInSpawn(Location& location) const;

@@ -647,7 +647,7 @@ int SpawnEntity::setup(const MapType &)
 }
 
 int SpawnEntity::spawnEntity(const std::string & type,
-                             const RootEntity & dsc)
+                             const RootEntity & dsc) const
 {
     if (type == "thing" || type == "permitted_non_existant") {
         return 0;

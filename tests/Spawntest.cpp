@@ -37,7 +37,7 @@ class TestSpawn : public Spawn
     }
 
     virtual int spawnEntity(const std::string & type,
-                            const Atlas::Objects::Entity::RootEntity & dsc)
+                            const Atlas::Objects::Entity::RootEntity & dsc) const
     {
         return 0;
     }

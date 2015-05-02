@@ -62,7 +62,7 @@ int SpawnEntity::setup(const MapType & data)
     return 0;
 }
 
-int SpawnEntity::spawnEntity(const std::string & type, const RootEntity & dsc)
+int SpawnEntity::spawnEntity(const std::string & type, const RootEntity & dsc) const
 {
     if (m_ent.get() == 0) {
         return -1;
@@ -73,7 +73,7 @@ int SpawnEntity::spawnEntity(const std::string & type, const RootEntity & dsc)
         return -1;
     }
 
-    MapType& entityTemplate = entityI->second;
+    MapType entityTemplate = entityI->second;
     auto objtypeI = entityTemplate.find("objtype");
     if (objtypeI != entityTemplate.end()
             && objtypeI->second.asString() == "archetype") {
