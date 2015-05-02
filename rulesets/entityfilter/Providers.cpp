@@ -30,6 +30,7 @@
 #include "../../common/Inheritance.h"
 
 #include <algorithm>
+#include <stdexcept>
 
 namespace EntityFilter
 {
