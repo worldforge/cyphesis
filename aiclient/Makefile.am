@@ -43,6 +43,7 @@ cyaiclient_LDADD = \
                  $(top_builddir)/rulesets/libscriptpython.a \
                  $(top_builddir)/rulesets/librulesetmind.a \
                  $(top_builddir)/rulesets/librulesetentity.a \
+                 $(top_builddir)/rulesets/libentityfilter.a \
                  $(top_builddir)/rulesets/librulesetbase.a \
                  $(top_builddir)/modules/libmodules.a \
                  $(top_builddir)/common/libcommon.a \

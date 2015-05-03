@@ -23,6 +23,13 @@
 #include "OperationsDispatcher.h"
 #include "rulesets/LocatedEntity.h"
 #include "BaseWorld.h"
+#include "const.h"
+#include "debug.h"
+#include "Monitors.h"
+
+#include <iostream>
+
+static const bool debug_flag = false;
 
 inline OpQueEntry::OpQueEntry(const Operation & o, LocatedEntity & f) : op(o),
                                                                         from(&f)
