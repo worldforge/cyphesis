@@ -1017,7 +1017,7 @@ EntityFiltertest_LDADD = \
         $(top_builddir)/common/PropertyManager.o
         
 EntityFilterParsertest_SOURCES = EntityFilterParsertest.cpp
-EntityFiltertest_LDADD = \
+EntityFilterParsertest_LDADD = \
         $(top_builddir)/rulesets/libentityfilter.a \
         $(top_builddir)/rulesets/EntityProperty.o \
         $(top_builddir)/rulesets/Entity.o \
@@ -1030,7 +1030,7 @@ EntityFiltertest_LDADD = \
         $(top_builddir)/common/PropertyManager.o
         
 EntityFilterProviderstest_SOURCES = EntityFilterProviderstest.cpp
-EntityFiltertest_LDADD = \
+EntityFilterProviderstest_LDADD = \
         $(top_builddir)/rulesets/libentityfilter.a \
         $(top_builddir)/rulesets/EntityProperty.o \
         $(top_builddir)/rulesets/Entity.o \
