@@ -153,9 +153,9 @@ void BaseClient::logout()
 }
 
 /// \brief Handle any operations that have arrived from the server
-int BaseClient::handleNet()
+int BaseClient::pollOne(const boost::posix_time::time_duration& duration)
 {
-    int pollResult = m_connection.poll();
+    int pollResult = m_connection.pollOne(duration);
     if (pollResult == 0) {
         Operation input;
         while ((input = m_connection.pop()).isValid()) {

@@ -53,6 +53,7 @@ class StreamClientSocketBase
 
         virtual int write() = 0;
         int poll(const boost::posix_time::time_duration& duration);
+        int poll(const boost::posix_time::time_duration& duration, const std::function<bool()> exitCheckerFn);
     protected:
         enum
         {
@@ -173,6 +174,7 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     int create(const std::string & type,
                const std::string & username,
                const std::string & password);
+    int pollOne(const boost::posix_time::time_duration& duration);
     int poll(const boost::posix_time::time_duration& duration);
     int poll(int seconds = 0, int microseconds = 0);
     void output(const Atlas::Message::Element & item, int depth = 0) const;

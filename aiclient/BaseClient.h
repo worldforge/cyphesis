@@ -63,10 +63,10 @@ class BaseClient {
                                        const std::string & pword);
     CreatorClient * createCharacter(const std::string & name);
     void logout();
-    int handleNet();
+    int pollOne(const boost::posix_time::time_duration& duration);
     
     /// \brief Function called when nothing else is going on
-    virtual void idle() = 0;
+    //virtual void idle() = 0;
 
     /// \brief Connect to a local server via a unix socket
     int connectLocal(const std::string & socket) {

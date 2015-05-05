@@ -34,7 +34,7 @@ namespace Atlas {
 class Link;
 
 /// \brief This is the base class for any entity which has an Atlas
-/// compatible indentifier.
+/// compatible identifier.
 ///
 class Router {
   private:

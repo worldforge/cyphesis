@@ -83,7 +83,7 @@ inline EntityScopedRef::~EntityScopedRef()
 /// but I am not clear why. Need to look into why.
 WorldRouter::WorldRouter(const SystemTime & time) :
       BaseWorld(*new World(consts::rootWorldId, consts::rootWorldIntId)),
-      m_operationsDispatcher([&](const Operation & op, LocatedEntity & from){this->operation(op, from);}),
+      m_operationsDispatcher([&](const Operation & op, LocatedEntity & from){this->operation(op, from);}, [&]()->double {return getTime();}),
       m_entityCount(1)
           
 {

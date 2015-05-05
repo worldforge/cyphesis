@@ -35,10 +35,10 @@ class ClientConnection;
 /**
  * Handles on mind of an entity on the server.
  */
-class MindClient
+class MindClient : public Router
 {
     public:
-        MindClient(MindFactory& mindFactory);
+        MindClient(const std::string& id, int intId, MindFactory& mindFactory);
         virtual ~MindClient();
 
         void takePossession(OpVector& res, ClientConnection& connection,
@@ -51,7 +51,7 @@ class MindClient
 
         /**
          * Returns true if the entity to which the mind belongs to has been destroyed.
-         * @return True if the entiyt to which the mind belongs to has been destroyed.
+         * @return True if the entity to which the mind belongs to has been destroyed.
          */
         bool isMindDestroyed() const;
 

@@ -110,7 +110,11 @@ Atlas::Objects::ObjectsEncoder& StreamClientSocketBase::getEncoder()
     return *m_encoder;
 }
 
-int StreamClientSocketBase::poll(const boost::posix_time::time_duration& duration)
+int StreamClientSocketBase::poll(const boost::posix_time::time_duration& duration) {
+    return poll(duration, []()->bool{return false;});
+}
+
+int StreamClientSocketBase::poll(const boost::posix_time::time_duration& duration, const std::function<bool()> exitCheckerFn)
 {
     bool hasExpired = false;
     bool isCancelled = false;
@@ -127,7 +131,7 @@ int StreamClientSocketBase::poll(const boost::posix_time::time_duration& duratio
     //We'll try to only run one handler each polling. Either our timer gets called, or one of the network handlers.
     //The reason for this loop is that when we cancel the timer we need to poll run handlers until the timer handler
     //has been run, since it references locally scoped variables.
-    while (!hasExpired && !isCancelled) {
+    while (!hasExpired && !isCancelled && !exitCheckerFn()) {
         m_io_service.run_one();
         //Check if we didn't run the timer handler; if so we should cancel it and then keep on polling until
         //it's been run.
@@ -536,12 +540,25 @@ int AtlasStreamClient::waitForLoginResponse()
     return -1;
 }
 
+int AtlasStreamClient::pollOne(const boost::posix_time::time_duration& duration)
+{
+    if (!m_socket) {
+        return -1;
+    }
+    int result = m_socket->poll(duration, [&]()->bool{return !mOps.empty();});
+    if (result == -1) {
+        std::cerr << "Server disconnected" << std::endl << std::flush;
+    }
+    return result;
+}
+
+
 int AtlasStreamClient::poll(const boost::posix_time::time_duration& duration)
 {
     if (!m_socket) {
         return -1;
     }
-    int result = m_socket->poll(duration);
+    int result = m_socket->poll(duration, [](){return false;});
     if (result == -1) {
         std::cerr << "Server disconnected" << std::endl << std::flush;
     }

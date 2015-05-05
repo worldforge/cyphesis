@@ -50,8 +50,9 @@ using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
 
-MindClient::MindClient(MindFactory& mindFactory) :
-        m_mindFactory(mindFactory), m_mind(0), m_nextTick(0)
+MindClient::MindClient(const std::string& id, int intId,
+        MindFactory& mindFactory) :
+        Router(id, intId), m_mindFactory(mindFactory), m_mind(0), m_nextTick(0)
 {
 
 }
@@ -106,12 +107,8 @@ void MindClient::operationToMind(const Operation & op, OpVector & res)
         OpVector mindRes;
         m_mind->operation(op, mindRes);
         for (Operation& resOp : mindRes) {
-            if (resOp->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
-//Just filter out any tick operations for now. We'll have to decide to handle this better.
-            } else {
-                resOp->setFrom(m_mind->getId());
-                res.push_back(resOp);
-            }
+            resOp->setFrom(m_mind->getId());
+            res.push_back(resOp);
         }
     }
 }
@@ -176,7 +173,6 @@ void MindClient::createMind(const Operation & op, OpVector & res)
     s->setTo(ent->getId());
     s->setArgs1(setup_arg);
     operationToMind(s, res);
-
 
     //Start by sending a unspecified "Look". This tells the server to send us a bootstrapped view.
     Look l;

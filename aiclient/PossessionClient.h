@@ -20,48 +20,47 @@
 #define POSSESSIONCLIENT_H_
 
 #include "BaseClient.h"
-#include "MindClient.h"
+#include "RouterRegistry.h"
+#include "common/OperationsDispatcher.h"
 #include <map>
 #include <unordered_map>
-#include <memory>
 
 class MindFactory;
+class PossessionAccount;
 
 /**
  * Manages possession requests from the server and spawns new AI clients.
  */
-class PossessionClient: public BaseClient
+class PossessionClient: public BaseClient, public RouterRegistry
 {
     public:
         PossessionClient(MindFactory& mindFactory);
         virtual ~PossessionClient();
 
-        virtual void idle();
+        bool idle();
+        double secondsUntilNextOp() const;
+        bool isQueueDirty() const;
+        void markQueueAsClean();
 
-        /**
-         * Notify the server that we are able to possess minds.
-         */
-        void enablePossession();
+        void createAccount(const std::string& accountId);
+
+        virtual void addMind(BaseMind* mind);
+        virtual void removeMind(BaseMind* mind);
 
     protected:
 
         virtual void operation(const Operation & op, OpVector & res);
+        void operationFromEntity(const Operation & op, LocatedEntity& locatedEntity);
+        double getTime() const;
 
-        void PossessOperation(const Operation & op, OpVector & res);
 
         MindFactory& m_mindFactory;
 
-        /**
-         * All active minds.
-         */
-        std::unordered_map<std::string, std::shared_ptr<MindClient>> m_minds;
+        PossessionAccount* m_account;
 
-        /**
-         * Keeps track of any operations with refs which has been sent from any MindClient instances.
-         *
-         * This is currently only used to route the response to taking a character to the correct client.
-         */
-        std::map<long, std::string> m_refNoOperations;
+        OperationsDispatcher m_operationsDispatcher;
+
+        std::unordered_map<long, BaseMind*> m_minds;
 
 };
 

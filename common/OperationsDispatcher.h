@@ -69,7 +69,7 @@ class OperationsDispatcher
          * @brief Ctor.
          * @param operationProcessor A processor function called each time an operation needs to be processed.
          */
-        OperationsDispatcher(const std::function<void(const Operation&, LocatedEntity&)>& operationProcessor);
+        OperationsDispatcher(const std::function<void(const Operation&, LocatedEntity&)>& operationProcessor, const std::function<double()>& timeProviderFn);
 
         virtual ~OperationsDispatcher();
 
@@ -122,6 +122,7 @@ class OperationsDispatcher
     protected:
 
         std::function<void(const Operation&, LocatedEntity&)> m_operationProcessor;
+        const std::function<double()> m_timeProviderFn;
 
         /// An ordered queue of operations to be dispatched in the future
         OpPriorityQueue m_operationQueue;

@@ -48,8 +48,8 @@ inline OpQueEntry::~OpQueEntry()
 }
 
 
-OperationsDispatcher::OperationsDispatcher(const std::function<void(const Operation&, LocatedEntity&)>& operationProcessor)
-: m_operationProcessor(operationProcessor), m_operation_queues_dirty(false)
+OperationsDispatcher::OperationsDispatcher(const std::function<void(const Operation&, LocatedEntity&)>& operationProcessor, const std::function<double()>& timeProviderFn)
+: m_operationProcessor(operationProcessor), m_timeProviderFn(timeProviderFn), m_operation_queues_dirty(false)
 {
 }
 
@@ -174,8 +174,9 @@ void OperationsDispatcher::markQueueAsClean()
 
 double OperationsDispatcher::getTime() const
 {
+    return m_timeProviderFn();
     //TODO: remove this tangle somehow
-    return BaseWorld::instance().getTime();
+//    return BaseWorld::instance().getTime();
 }
 
 double OperationsDispatcher::secondsUntilNextOp() const {

@@ -47,33 +47,27 @@ using Atlas::Objects::Entity::Anonymous;
 
 static void usage(const char * prgname)
 {
-    std::cout << "usage: " << prgname << " [ local_socket_path ]" << std::endl
-            << std::flush;
+    std::cout << "usage: " << prgname << " [ local_socket_path ]" << std::endl << std::flush;
 }
 
-STRING_OPTION(server, "localhost", "aiclient", "serverhost",
-        "Hostname of the server to connect to")
-;
+STRING_OPTION(server, "localhost", "aiclient", "serverhost", "Hostname of the server to connect to");
 
-STRING_OPTION(account, "", "aiclient", "account",
-        "Account name to use to authenticate to the server")
-;
+STRING_OPTION(account, "", "aiclient", "account", "Account name to use to authenticate to the server");
 
-STRING_OPTION(password, "", "aiclient", "password",
-        "Password to use to authenticate to the server")
-;
+STRING_OPTION(password, "", "aiclient", "password", "Password to use to authenticate to the server");
 
 static bool debug_flag = false;
 
 static int tryToConnect(PossessionClient& possessionClient)
 {
     if (possessionClient.connectLocal(client_socket_name) == 0) {
-        log(INFO,
-                String::compose("Connected to server at %1.",
-                        client_socket_name));
+        log(INFO, String::compose("Connected to server at %1.", client_socket_name));
         Root systemAccountResponse = possessionClient.createSystemAccount();
-
-        possessionClient.enablePossession();
+        if (!systemAccountResponse->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+            std::cerr << "ERROR: Logged in, but account has no id" << std::endl << std::flush;
+        } else {
+            possessionClient.createAccount(systemAccountResponse->getId());
+        }
         return 0;
     } else {
         return -1;
@@ -130,45 +124,51 @@ int main(int argc, char ** argv)
         }
     }
     if (mindFactory.m_scriptFactory == 0) {
-        PythonScriptFactory<BaseMind> * psf = new PythonScriptFactory<BaseMind>(
-                script_package, script_class);
+        PythonScriptFactory<BaseMind> * psf = new PythonScriptFactory<BaseMind>(script_package, script_class);
         if (psf->setup() == 0) {
-            log(INFO,
-                    String::compose(
-                            "Initialized mind code with Python class %1.%2.",
-                            script_package, script_class));
+            log(INFO, String::compose("Initialized mind code with Python class %1.%2.", script_package, script_class));
             mindFactory.m_scriptFactory = psf;
         } else {
-            log(ERROR,
-                    String::compose("Python class \"%1.%2\" failed to load",
-                            script_package, script_class));
+            log(ERROR, String::compose("Python class \"%1.%2\" failed to load", script_package, script_class));
             delete psf;
         }
     }
 
-    std::unique_ptr<PossessionClient> possessionClient(
-            new PossessionClient(mindFactory));
+    std::unique_ptr<PossessionClient> possessionClient(new PossessionClient(mindFactory));
     log(INFO, "Trying to connect to server.");
     while (tryToConnect(*possessionClient) != 0 && !exit_flag) {
         std::this_thread::sleep_for(std::chrono::milliseconds(5000));
     }
 
     while (!exit_flag) {
-        int netResult = possessionClient->handleNet();
-        if (netResult >= 0) {
-            //As long as we're connected we'll keep on processing minds
-            possessionClient->idle();
-        } else if (!exit_flag) {
-            log(ERROR,
-                    "Disconnected from server; will try to reconnect every five seconds.");
-            //We're disconnected. We'll now enter a loop where we'll try to reconnect at an interval.
-            //First we need to shut down the current client. Perhaps we could find a way to persist the minds in a better way?
-            possessionClient.reset(new PossessionClient(mindFactory));
-            while (tryToConnect(*possessionClient) != 0) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+        try {
+            double secondsUntilNextOp = possessionClient->secondsUntilNextOp();
+            boost::posix_time::microseconds waitTime((long long)(secondsUntilNextOp * 1000000));
+            int netResult = possessionClient->pollOne(waitTime);
+            if (netResult >= 0) {
+                //As long as we're connected we'll keep on processing minds
+                possessionClient->idle();
+                possessionClient->markQueueAsClean();
+            } else if (!exit_flag) {
+                log(ERROR, "Disconnected from server; will try to reconnect every five seconds.");
+                //We're disconnected. We'll now enter a loop where we'll try to reconnect at an interval.
+                //First we need to shut down the current client. Perhaps we could find a way to persist the minds in a better way?
+                possessionClient.reset(new PossessionClient(mindFactory));
+                while (tryToConnect(*possessionClient) != 0) {
+                    std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+                }
             }
 
+            // It is hoped that commonly thrown exception, particularly
+            // exceptions that can be caused  by external influences
+            // should be caught close to where they are thrown. If
+            // an exception makes it here then it should be debugged.
+        } catch (const std::exception& e) {
+            log(ERROR, String::compose("Exception caught in main(): %1", e.what()));
+        } catch (...) {
+            log(ERROR, "Exception caught in main()");
         }
     }
+
     log(INFO, "Shutting down.");
 }
