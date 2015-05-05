@@ -7,17 +7,14 @@
 
 #include "TestBase.h"
 
+class ProvidersTest : public Cyphesis::TestBase {
+    private:
 
+    public:
+        ProvidersTest();
 
-class ProvidersTest : public Cyphesis::TestBase
-{
-  private:
-
-  public:
-    ProvidersTest();
-
-    void setup();
-    void teardown();
+        void setup();
+        void teardown();
 
 };
 
