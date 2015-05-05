@@ -5,6 +5,8 @@
 #define DEBUG
 #endif
 
+#define private public
+
 #include "TestBase.h"
 
 #include "rulesets/entityfilter/ParserDefinitions.h"
@@ -57,7 +59,32 @@ void ParserTest::teardown()
 
 void ParserTest::test_ComparisonOperators()
 {
+    using ComparePredicate::Comparator;
+    ComparePredicate *pred;
 
+    pred = ConstructPredicate("1 = 2");
+    assert(pred->m_comparator == Comparator::EQUALS);
+    delete pred;
+
+    pred = ConstructPredicate("1 != 2");
+    assert(pred->m_comparator == Comparator::NOT_EQUALS);
+    delete pred;
+
+    pred = ConstructPredicate("1 > 2");
+    assert(pred->m_comparator == Comparator::GREATER);
+    delete pred;
+
+    pred = ConstructPredicate("1 < 2");
+    assert(pred->m_comparator == Comparator::LESS);
+    delete pred;
+
+    pred = ConstructPredicate("1 <= 2");
+    assert(pred->m_comparator == Comparator::GREATER_EQUAL);
+    delete pred;
+
+    pred = ConstructPredicate("1 >= 2");
+    assert(pred->m_comparator == Comparator::LESS_EQUAL);
+    delete pred;
 }
 
 Predicate* ParserTest::ConstructPredicate(std::string query)
