@@ -18,7 +18,7 @@
 #ifndef AICLIENT_ROUTERREGISTRY_H_
 #define AICLIENT_ROUTERREGISTRY_H_
 
-class BaseMind;
+class LocatedEntity;
 
 class RouterRegistry {
 
@@ -26,8 +26,8 @@ class RouterRegistry {
 
         virtual ~RouterRegistry() = default;
 
-        virtual void addMind(BaseMind*) = 0;
-        virtual void removeMind(BaseMind*) = 0;
+        virtual void addMind(LocatedEntity*) = 0;
+        virtual void removeMind(LocatedEntity*) = 0;
 
 };
 

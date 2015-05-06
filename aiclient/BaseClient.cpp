@@ -42,7 +42,7 @@ using Atlas::Objects::smart_dynamic_cast;
 
 using String::compose;
 
-static const bool debug_flag = true;
+static const bool debug_flag = false;
 
 BaseClient::BaseClient()
 {

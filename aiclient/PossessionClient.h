@@ -44,8 +44,8 @@ class PossessionClient: public BaseClient, public RouterRegistry
 
         void createAccount(const std::string& accountId);
 
-        virtual void addMind(BaseMind* mind);
-        virtual void removeMind(BaseMind* mind);
+        virtual void addMind(LocatedEntity* mind);
+        virtual void removeMind(LocatedEntity* mind);
 
     protected:
 
@@ -60,7 +60,7 @@ class PossessionClient: public BaseClient, public RouterRegistry
 
         OperationsDispatcher m_operationsDispatcher;
 
-        std::unordered_map<long, BaseMind*> m_minds;
+        std::unordered_map<long, LocatedEntity*> m_minds;
 
 };
 

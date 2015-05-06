@@ -63,6 +63,10 @@ static int tryToConnect(PossessionClient& possessionClient)
     if (possessionClient.connectLocal(client_socket_name) == 0) {
         log(INFO, String::compose("Connected to server at %1.", client_socket_name));
         Root systemAccountResponse = possessionClient.createSystemAccount();
+        if (!systemAccountResponse.isValid()) {
+            return -2;
+        }
+
         if (!systemAccountResponse->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
             std::cerr << "ERROR: Logged in, but account has no id" << std::endl << std::flush;
         } else {

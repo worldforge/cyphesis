@@ -93,19 +93,6 @@ void PossessionAccount::operation(const Operation & op, OpVector & res)
             log(NOTICE, String::compose("Unknown operation %1 in PossessionAccount", op->getParents().front()));
         }
     }
-
-//    auto mindI = m_minds.find(op->getTo());
-//    if (mindI != m_minds.end()) {
-//        mindI->second->operation(op, res);
-//        if (mindI->second->isMindDestroyed()) {
-//            log(INFO, "Removing AI mind as entity was deleted.");
-//            //The mind was destroyed as a result of the operation; we should remove it.
-//            m_minds.erase(mindI);
-//        }
-//    } else {
-//        log(ERROR, "Op sent to unrecognized address.");
-//    }
-
 }
 
 void PossessionAccount::externalOperation(const Operation & op, Link &)
@@ -129,24 +116,6 @@ void PossessionAccount::PossessOperation(const Operation& op, OpVector & res)
                 const std::string& possessKey = possessKeyElement.String();
                 const std::string& possessionEntityId = possessionEntityIdElement.String();
                 takePossession(res, possessionEntityId, possessKey);
-//
-//
-//
-//
-//                m_minds.insert(std::make_pair(possessionEntityId, std::make_shared < MindClient > (possessionEntityId, integerId(possessionEntityId), m_mindFactory)));
-//                const auto& mindClient = m_minds.find(possessionEntityId)->second;
-//                mRouterRegistry.addRouter(&mindClient);
-//                log(INFO, "New mind created.");
-//
-//                OpVector newRes;
-//                mindClient->takePossession(newRes, m_connection, m_playerId, possessionEntityId, possessKey);
-//
-//                for (auto op : newRes) {
-//                    if (!op->isDefaultSerialno()) {
-//                        m_refNoOperations.insert(std::make_pair(op->getSerialno(), possessionEntityId));
-//                    }
-//                    res.push_back(op);
-//                }
             }
         }
     }

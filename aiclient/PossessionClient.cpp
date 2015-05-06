@@ -33,8 +33,12 @@
 #include "common/custom.h"
 #include "common/SystemTime.h"
 
+#include "common/debug.h"
+
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Entity.h>
+
+static const bool debug_flag = true;
 
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
@@ -45,7 +49,6 @@ PossessionClient::PossessionClient(MindFactory& mindFactory) :
         m_mindFactory(mindFactory), m_account(nullptr), m_operationsDispatcher([&](const Operation & op, LocatedEntity & from) {this->operationFromEntity(op, from);},
                 [&]()->double {return getTime();})
 {
-
 }
 
 PossessionClient::~PossessionClient()
@@ -55,15 +58,6 @@ PossessionClient::~PossessionClient()
 bool PossessionClient::idle()
 {
     return m_operationsDispatcher.idle();
-//
-//    OpVector res;
-//    for (auto& mind : m_minds) {
-//        mind.second->idle(res);
-//    }
-//
-//    for (auto& resOp : res) {
-//        m_connection.send(resOp);
-//    }
 }
 
 double PossessionClient::secondsUntilNextOp() const
@@ -81,13 +75,13 @@ void PossessionClient::markQueueAsClean()
     m_operationsDispatcher.markQueueAsClean();
 }
 
-void PossessionClient::addMind(BaseMind* mind)
+void PossessionClient::addMind(LocatedEntity* mind)
 {
     m_minds.insert(std::make_pair(mind->getIntId(), mind));
     mind->incRef();
 }
 
-void PossessionClient::removeMind(BaseMind* mind)
+void PossessionClient::removeMind(LocatedEntity* mind)
 {
     m_minds.erase(mind->getIntId());
     mind->decRef();
@@ -118,11 +112,20 @@ void PossessionClient::operationFromEntity(const Operation & op, LocatedEntity& 
                 send(resOp);
             }
         }
+        if (locatedEntity.isDestroyed()) {
+            removeMind(&locatedEntity);
+        }
     }
 }
 
 void PossessionClient::operation(const Operation & op, OpVector & res)
 {
+    if (debug_flag) {
+        std::cout << "PossessionClient::operation {" << std::endl;
+        debug_dump(op, std::cout);
+        std::cout << "}" << std::endl << std::flush;
+    }
+
     if (op->isDefaultTo() || op->getTo() == m_account->getId()) {
         OpVector accountRes;
         m_account->operation(op, accountRes);
@@ -142,61 +145,27 @@ void PossessionClient::operation(const Operation & op, OpVector & res)
         auto mindI = m_minds.find(integerId(op->getTo()));
         if (mindI != m_minds.end()) {
             OpVector mindRes;
-            mindI->second->operation(op, mindRes);
-
+            LocatedEntity* mind = mindI->second;
+            mind->operation(op, mindRes);
             for (auto& resOp : mindRes) {
-                resOp->setFrom(mindI->second->getId());
+                resOp->setFrom(mind->getId());
                 //All resulting ops should go out to the server, except for Ticks which we'll keep ourselves.
                 if (resOp->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
-                    resOp->setTo(mindI->second->getId());
-                    m_operationsDispatcher.addOperationToQueue(resOp, *mindI->second);
+                    resOp->setTo(mind->getId());
+                    m_operationsDispatcher.addOperationToQueue(resOp, *mind);
                 } else {
                     res.push_back(resOp);
                 }
             }
 
+            if (mind->isDestroyed()) {
+                removeMind(mind);
+            }
+
         } else {
             m_account->operation(op, res);
-            //log(WARNING, String::compose("Got operation addressed to %1 for which there's no registered router.", op->getTo()));
         }
     }
-
-//    if (!op->isDefaultRefno()) {
-//        auto entry = m_refNoOperations.find(op->getRefno());
-//        if (entry != m_refNoOperations.end()) {
-//            //If there's a refno, alter the address of the operation
-//            op->setTo(entry->second);
-//            m_refNoOperations.erase(op->getRefno());
-//        }
-//    }
-
-//    if (op->getTo() == m_playerId || op->isDefaultTo()) {
-//        if (op->getClassNo() == Atlas::Objects::Operation::POSSESS_NO) {
-//            PossessOperation(op, res);
-//        } else if (op->getClassNo()
-//                == Atlas::Objects::Operation::APPEARANCE_NO) {
-//            //Ignore appearance ops, since they just signal other accounts being connected
-//        } else if (op->getClassNo()
-//                == Atlas::Objects::Operation::DISAPPEARANCE_NO) {
-//            //Ignore disappearance ops, since they just signal other accounts being disconnected
-//        } else {
-//            log(NOTICE,
-//                    String::compose("Unknown operation %1 in PossessionClient",
-//                            op->getParents().front()));
-//        }
-//    } else {
-//        auto mindI = m_minds.find(op->getTo());
-//        if (mindI != m_minds.end()) {
-//            mindI->second->operation(op, res);
-//            if (mindI->second->isMindDestroyed()) {
-//                log(INFO, "Removing AI mind as entity was deleted.");
-//                //The mind was destroyed as a result of the operation; we should remove it.
-//                m_minds.erase(mindI);
-//            }
-//        } else {
-//            log(ERROR, "Op sent to unrecognized address.");
-//        }
-//    }
 }
 
 double PossessionClient::getTime() const
