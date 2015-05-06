@@ -95,10 +95,44 @@ void ParserTest::test_ComparisonOperators()
     pred = (ComparePredicate*)ConstructPredicate("1 >= 2");
     assert(pred->m_comparator == ComparePredicate::Comparator::GREATER_EQUAL);
     delete pred;
+
+    pred = (ComparePredicate*)ConstructPredicate("entity.container contains 1");
+    assert(pred->m_comparator == ComparePredicate::Comparator::CONTAINS);
+    delete pred;
+
+    pred = (ComparePredicate*)ConstructPredicate("1 in entity.container");
+    assert(pred->m_comparator == ComparePredicate::Comparator::IN);
+    delete pred;
+
+    //Instance_of can only be created for existing types
+    TypeNode* thingType = new TypeNode("thing");
+    types["thing"] = thingType;
+    pred = (ComparePredicate*)ConstructPredicate(
+            "types.thing instance_of entity.type");
+    assert(pred->m_comparator == ComparePredicate::Comparator::INSTANCE_OF);
+    delete pred;
+    types["thing"] = NULL;
+    delete thingType;
+
+    try { //Should throw an exception for nonexisting type
+        pred = (ComparePredicate*)ConstructPredicate(
+                "types.nonexistant instance_of entity.type");
+        assert(false);
+    } catch (std::invalid_argument &e) {
+    }
 }
 
 void ParserTest::test_LogicalOperators()
 {
+    Predicate *pred;
+
+    pred = ConstructPredicate("1 = 2 or 3 = 4");
+    assert(typeid(*pred) == typeid(OrPredicate));
+    delete pred;
+
+    pred = ConstructPredicate("1 = 2 and 3 = 4");
+    assert(typeid(*pred) == typeid(AndPredicate));
+    delete pred;
 }
 
 Predicate* ParserTest::ConstructPredicate(const std::string &query)
