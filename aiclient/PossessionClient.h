@@ -20,7 +20,7 @@
 #define POSSESSIONCLIENT_H_
 
 #include "BaseClient.h"
-#include "RouterRegistry.h"
+#include "LocatedEntityRegistry.h"
 #include "common/OperationsDispatcher.h"
 #include <map>
 #include <unordered_map>
@@ -31,7 +31,7 @@ class PossessionAccount;
 /**
  * Manages possession requests from the server and spawns new AI clients.
  */
-class PossessionClient: public BaseClient, public RouterRegistry
+class PossessionClient: public BaseClient, public LocatedEntityRegistry
 {
     public:
         PossessionClient(MindFactory& mindFactory);
@@ -44,8 +44,8 @@ class PossessionClient: public BaseClient, public RouterRegistry
 
         void createAccount(const std::string& accountId);
 
-        virtual void addMind(LocatedEntity* mind);
-        virtual void removeMind(LocatedEntity* mind);
+        virtual void addLocatedEntity(LocatedEntity* mind);
+        virtual void removeLocatedEntity(LocatedEntity* mind);
 
     protected:
 

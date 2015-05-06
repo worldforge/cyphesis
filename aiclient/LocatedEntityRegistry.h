@@ -15,20 +15,20 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-#ifndef AICLIENT_ROUTERREGISTRY_H_
-#define AICLIENT_ROUTERREGISTRY_H_
+#ifndef AICLIENT_LOCATEDENTITYREGISTRY_H_
+#define AICLIENT_LOCATEDENTITYREGISTRY_H_
 
 class LocatedEntity;
 
-class RouterRegistry {
+class LocatedEntityRegistry {
 
     public:
 
-        virtual ~RouterRegistry() = default;
+        virtual ~LocatedEntityRegistry() = default;
 
-        virtual void addMind(LocatedEntity*) = 0;
-        virtual void removeMind(LocatedEntity*) = 0;
+        virtual void addLocatedEntity(LocatedEntity*) = 0;
+        virtual void removeLocatedEntity(LocatedEntity*) = 0;
 
 };
 
-#endif //AICLIENT_ROUTERREGISTRY_H_
+#endif //AICLIENT_LOCATEDENTITYREGISTRY_H_

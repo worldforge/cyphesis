@@ -75,16 +75,16 @@ void PossessionClient::markQueueAsClean()
     m_operationsDispatcher.markQueueAsClean();
 }
 
-void PossessionClient::addMind(LocatedEntity* mind)
+void PossessionClient::addLocatedEntity(LocatedEntity* entity)
 {
-    m_minds.insert(std::make_pair(mind->getIntId(), mind));
-    mind->incRef();
+    m_minds.insert(std::make_pair(entity->getIntId(), entity));
+    entity->incRef();
 }
 
-void PossessionClient::removeMind(LocatedEntity* mind)
+void PossessionClient::removeLocatedEntity(LocatedEntity* entity)
 {
-    m_minds.erase(mind->getIntId());
-    mind->decRef();
+    m_minds.erase(entity->getIntId());
+    entity->decRef();
 }
 
 void PossessionClient::createAccount(const std::string& accountId)
@@ -113,7 +113,7 @@ void PossessionClient::operationFromEntity(const Operation & op, LocatedEntity& 
             }
         }
         if (locatedEntity.isDestroyed()) {
-            removeMind(&locatedEntity);
+            removeLocatedEntity(&locatedEntity);
         }
     }
 }
@@ -159,7 +159,7 @@ void PossessionClient::operation(const Operation & op, OpVector & res)
             }
 
             if (mind->isDestroyed()) {
-                removeMind(mind);
+                removeLocatedEntity(mind);
             }
 
         } else {

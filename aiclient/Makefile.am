@@ -38,7 +38,7 @@ cyaiclient_SOURCES = ClientConnection.cpp BaseClient.cpp \
 
 noinst_HEADERS = ClientConnection.h BaseClient.h \
 						PossessionClient.h PossessionAccount.h \
-						RouterRegistry.h
+						LocatedEntityRegistry.h
 
 cyaiclient_LDADD = \
                  $(top_builddir)/rulesets/libscriptpython.a \

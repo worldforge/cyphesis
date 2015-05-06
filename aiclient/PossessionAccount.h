@@ -24,12 +24,12 @@
 #include <unordered_set>
 
 class MindFactory;
-class RouterRegistry;
+class LocatedEntityRegistry;
 
 class PossessionAccount: public Router
 {
     public:
-        PossessionAccount(const std::string& id, int intId, RouterRegistry& routerRegistry, const MindFactory& mindFactory);
+        PossessionAccount(const std::string& id, int intId, LocatedEntityRegistry& locatedEntityRegistry, const MindFactory& mindFactory);
         virtual ~PossessionAccount();
 
         /**
@@ -41,7 +41,7 @@ class PossessionAccount: public Router
         virtual void externalOperation(const Operation & op, Link &);
 
     protected:
-        RouterRegistry& mRouterRegistry;
+        LocatedEntityRegistry& mLocatedEntityRegistry;
         const MindFactory& m_mindFactory;
 
         int m_serialNoCounter;

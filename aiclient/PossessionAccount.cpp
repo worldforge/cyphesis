@@ -21,7 +21,7 @@
 #endif
 
 #include "PossessionAccount.h"
-#include "RouterRegistry.h"
+#include "LocatedEntityRegistry.h"
 
 #include "rulesets/MindFactory.h"
 #include "rulesets/BaseMind.h"
@@ -49,8 +49,8 @@ using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
 
-PossessionAccount::PossessionAccount(const std::string& id, int intId, RouterRegistry& routerRegistry, const MindFactory& mindFactory) :
-        Router(id, intId), mRouterRegistry(routerRegistry), m_mindFactory(mindFactory), m_serialNoCounter(1)
+PossessionAccount::PossessionAccount(const std::string& id, int intId, LocatedEntityRegistry& locatedEntityRegistry, const MindFactory& mindFactory) :
+        Router(id, intId), mLocatedEntityRegistry(locatedEntityRegistry), m_mindFactory(mindFactory), m_serialNoCounter(1)
 {
 }
 
@@ -166,7 +166,7 @@ void PossessionAccount::createMind(const Operation & op, OpVector & res)
 
     log(INFO, String::compose("Got info on account, creating mind for entity with id %1 of type %2.", entityId, entityType));
     BaseMind* mind = m_mindFactory.newMind(entityId, integerId(entityId));
-    mRouterRegistry.addMind(mind);
+    mLocatedEntityRegistry.addLocatedEntity(mind);
     //TODO: setup and get type from Inheritance
     mind->setType(new TypeNode(entityType));
 
