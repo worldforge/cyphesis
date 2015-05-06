@@ -51,6 +51,7 @@ class ParserTest : public Cyphesis::TestBase {
 
         void test_ComparisonOperators();
         void test_LogicalOperators();
+        void test_Literals();
 
 };
 
@@ -58,6 +59,7 @@ ParserTest::ParserTest()
 {
     ADD_TEST(ParserTest::test_ComparisonOperators);
     ADD_TEST(ParserTest::test_LogicalOperators);
+    ADD_TEST(ParserTest::test_Literals);
 }
 
 void ParserTest::setup()
@@ -133,6 +135,40 @@ void ParserTest::test_LogicalOperators()
     pred = ConstructPredicate("1 = 2 and 3 = 4");
     assert(typeid(*pred) == typeid(AndPredicate));
     delete pred;
+}
+
+void ParserTest::test_Literals()
+{
+    ComparePredicate *pred;
+    using Atlas::Message::Element;
+
+    //Test int and single quote string
+    pred = (ComparePredicate*)ConstructPredicate("1 = '1'");
+    FixedElementProvider *lhs = (FixedElementProvider *)pred->m_lhs;
+    FixedElementProvider *rhs = (FixedElementProvider *)pred->m_rhs;
+
+    ASSERT_TRUE(lhs->m_element == Element(1));
+    ASSERT_TRUE(rhs->m_element == Element("1"));
+    delete pred;
+
+    //Test double and bool
+    pred = (ComparePredicate*)ConstructPredicate("1.25 = true");
+    lhs = (FixedElementProvider *)pred->m_lhs;
+    rhs = (FixedElementProvider *)pred->m_rhs;
+
+    ASSERT_TRUE(lhs->m_element == Element(1.25));
+    ASSERT_TRUE(rhs->m_element == Element(true));
+    delete pred;
+
+    //Test list and double quoted string
+    pred = (ComparePredicate*)ConstructPredicate("[1, 2, 3] = '\"literal\"'");
+    lhs = (FixedElementProvider *)pred->m_lhs;
+    rhs = (FixedElementProvider *)pred->m_rhs;
+
+    ASSERT_TRUE(lhs->m_element == Element(std::vector<Element> { 1, 2, 3 }));
+    ASSERT_TRUE(rhs->m_element == Element("\"literal\""));
+    delete pred;
+
 }
 
 Predicate* ParserTest::ConstructPredicate(const std::string &query)
