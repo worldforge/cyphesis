@@ -206,9 +206,9 @@ void MemMap::del(const std::string & id)
             next = m_checkIterator->first;
         }
         m_entities.erase(I);
-//
-//        ent->destroy(); // should probably go here, but maybe earlier
-//
+
+        ent->destroy(); // should probably go here, but maybe earlier
+
         if (next != -1) {
             m_checkIterator = m_entities.find(next);
         } else {
