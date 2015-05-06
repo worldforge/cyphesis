@@ -2,6 +2,8 @@
 #include "Py_Thing.h"
 #include "entityfilter/Filter.h"
 
+#include "common/compose.hpp"
+
 ///\brief Create a new Filter object for a given query
 PyObject * get_filter(PyObject * self, PyObject* query){
     if (!PyString_CheckExact(query)){
@@ -16,7 +18,7 @@ PyObject * get_filter(PyObject * self, PyObject* query){
             f->m_filter = new EntityFilter::Filter(query_str, &factory);
         }
         catch (std::invalid_argument& e){
-            PyErr_SetString(PyExc_TypeError, "Invalid query for Entity Filter");
+            PyErr_SetString(PyExc_TypeError, String::compose("Invalid query for Entity Filter: %1", e.what()).c_str());
             return NULL;
         }
         return (PyObject*)f;
