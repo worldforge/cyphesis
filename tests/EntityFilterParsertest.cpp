@@ -56,6 +56,8 @@ class ParserTest : public Cyphesis::TestBase {
 
 ParserTest::ParserTest()
 {
+    ADD_TEST(ParserTest::test_ComparisonOperators);
+    ADD_TEST(ParserTest::test_LogicalOperators);
 }
 
 void ParserTest::setup()
@@ -87,12 +89,16 @@ void ParserTest::test_ComparisonOperators()
     delete pred;
 
     pred = (ComparePredicate*)ConstructPredicate("1 <= 2");
-    assert(pred->m_comparator == ComparePredicate::Comparator::GREATER_EQUAL);
+    assert(pred->m_comparator == ComparePredicate::Comparator::LESS_EQUAL);
     delete pred;
 
     pred = (ComparePredicate*)ConstructPredicate("1 >= 2");
-    assert(pred->m_comparator == ComparePredicate::Comparator::LESS_EQUAL);
+    assert(pred->m_comparator == ComparePredicate::Comparator::GREATER_EQUAL);
     delete pred;
+}
+
+void ParserTest::test_LogicalOperators()
+{
 }
 
 Predicate* ParserTest::ConstructPredicate(const std::string &query)
@@ -105,7 +111,7 @@ Predicate* ParserTest::ConstructPredicate(const std::string &query)
     Predicate* pred;
 
     bool parse_success = qi::phrase_parse(iter_begin, iter_end, grammar,
-                                             boost::spirit::ascii::space, pred);
+                                          boost::spirit::ascii::space, pred);
 
     if (!(parse_success && iter_begin == iter_end)) {
         throw std::invalid_argument(
@@ -124,7 +130,6 @@ int main(int argc, char ** argv)
 }
 
 //Stubs
-
 
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
@@ -221,8 +226,9 @@ void Location::modifyBBox()
 {
 }
 
-
-Inheritance::Inheritance() {}
+Inheritance::Inheritance()
+{
+}
 
 Inheritance & Inheritance::instance()
 {
