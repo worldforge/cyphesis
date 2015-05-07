@@ -1,5 +1,3 @@
-
-
 #ifdef NDEBUG
 #undef NDEBUG
 #endif
@@ -40,6 +38,13 @@ class ProvidersTest : public Cyphesis::TestBase {
     private:
         ProviderFactory m_factory;
 
+        //Entities for testing
+        Entity *m_b1;
+        LocatedEntitySet *m_b1_container; //Container property for b1
+        Entity *m_b2;
+
+        //Types for testing
+        TypeNode *m_barrelType;
 
         Consumer<QueryContext>* CreateProvider(std::initializer_list<std::string> tokens);
     public:
@@ -47,16 +52,69 @@ class ProvidersTest : public Cyphesis::TestBase {
 
         void setup();
         void teardown();
+        void test_EntityProperty();
 
 };
 
-ProvidersTest::ProvidersTest()
+void ProvidersTest::test_EntityProperty()
 {
 
+    Atlas::Message::Element value;
+
+    auto provider = CreateProvider({"entity"});
+
+    provider->value(value, QueryContext { *m_b1 });
+    assert(value.Ptr() == m_b1);
+
+    //entity.type
+    provider = CreateProvider({"entity", "type"});
+    provider->value(value, QueryContext { *m_b1 });
+    assert(value.Ptr() == m_barrelType);
+
+    //entity.id
+    provider = CreateProvider({"entity", "id"});
+    provider->value(value, QueryContext { *m_b1 });
+    assert(value.Int() == 1);
+
+    //entity.mass
+    provider = CreateProvider({"entity", "mass"});
+    provider->value(value, QueryContext { *m_b1 });
+    assert(value.Int() == 30);
+
+    //entity.burn_speed
+    provider = CreateProvider( { "entity", "burn_speed" });
+    provider->value(value, QueryContext { *m_b1 });
+    assert(value.Float() == 0.3);
+}
+
+ProvidersTest::ProvidersTest()
+{
+    ADD_TEST(ProvidersTest::test_EntityProperty);
 }
 
 void ProvidersTest::setup()
 {
+    //Make a barrel with mass and burn speed properties
+    m_b1 = new Entity("1", 1);
+    m_barrelType = new TypeNode("barrel");
+    types["barrel"] = m_barrelType;
+    m_b1->setType(m_barrelType);
+    m_b1->setProperty("mass", new SoftProperty(Element(30)));
+    m_b1->setProperty("burn_speed", new SoftProperty(Element(0.3)));
+    m_b1->setProperty("isVisible", new SoftProperty(Element(true)));
+
+    //Make a second barrel
+    m_b2 = new Entity("2", 2);
+    m_b2->setProperty("mass", new SoftProperty(Element(20)));
+    m_b2->setProperty("burn_speed", new SoftProperty(0.25));
+    m_b2->setType(m_barrelType);
+    m_b2->setProperty("isVisible", new SoftProperty(Element(false)));
+
+    //Make first barrel contain the second barrel
+    m_b1_container = new LocatedEntitySet;
+    m_b1_container->insert(m_b2);
+    m_b1->m_contains = m_b1_container;
+
 
 }
 
@@ -181,8 +239,9 @@ void Location::modifyBBox()
 {
 }
 
-
-Inheritance::Inheritance() {}
+Inheritance::Inheritance()
+{
+}
 
 Inheritance & Inheritance::instance()
 {
