@@ -31,11 +31,17 @@
 
 #include <cassert>
 
+using namespace EntityFilter;
+using Atlas::Message::Element;
+
 static std::map<std::string, TypeNode*> types;
 
 class ProvidersTest : public Cyphesis::TestBase {
     private:
+        ProviderFactory m_factory;
 
+
+        Consumer<QueryContext>* CreateProvider(std::initializer_list<std::string> tokens);
     public:
         ProvidersTest();
 
@@ -59,17 +65,26 @@ void ProvidersTest::teardown()
 
 }
 
+Consumer<QueryContext>* ProvidersTest::CreateProvider(std::initializer_list<std::string> tokens){
+    ProviderFactory::SegmentsList segments;
+    auto iter = tokens.begin();
+
+    segments.push_back(ProviderFactory::Segment { "", *iter++});
+    for (; iter != tokens.end(); iter++){
+        segments.push_back(ProviderFactory::Segment { ".", *iter});
+    }
+    return m_factory.createProviders(segments);
+}
 
 
-int main(){
+int main()
+{
     ProvidersTest t;
 
     t.run();
 }
 
-
 //Stubs
-
 
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
