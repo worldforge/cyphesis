@@ -53,6 +53,7 @@ class ProvidersTest : public Cyphesis::TestBase {
         void setup();
         void teardown();
         void test_EntityProperty();
+        void test_BBoxProviders();
 
 };
 
@@ -87,9 +88,35 @@ void ProvidersTest::test_EntityProperty()
     assert(value.Float() == 0.3);
 }
 
+void ProvidersTest::test_BBoxProviders()
+{
+    Atlas::Message::Element value;
+
+    auto provider = CreateProvider( { "entity", "BBox", "Volume" });
+    provider->value(value, QueryContext { *m_b1 });
+    ASSERT_TRUE(value.Float() == 48.0);
+
+    provider = CreateProvider( { "entity", "BBox", "Height" });
+    provider->value(value, QueryContext { *m_b1 });
+    ASSERT_TRUE(value.Float() == 6.0);
+
+    provider = CreateProvider( { "entity", "BBox", "Width" });
+    provider->value(value, QueryContext { *m_b1 });
+    ASSERT_TRUE(value.Float() == 2.0);
+
+    provider = CreateProvider( { "entity", "BBox", "Depth" });
+    provider->value(value, QueryContext { *m_b1 });
+    ASSERT_TRUE(value.Float() == 4.0);
+
+    provider = CreateProvider( { "entity", "BBox", "Area" });
+    provider->value(value, QueryContext { *m_b1 });
+    ASSERT_TRUE(value.Float() == 8.0);
+}
+
 ProvidersTest::ProvidersTest()
 {
     ADD_TEST(ProvidersTest::test_EntityProperty);
+    ADD_TEST(ProvidersTest::test_BBoxProviders);
 }
 
 void ProvidersTest::setup()
@@ -115,7 +142,14 @@ void ProvidersTest::setup()
     m_b1_container->insert(m_b2);
     m_b1->m_contains = m_b1_container;
 
+    //Set bounding box properties for barrels
+    BBoxProperty* bbox1 = new BBoxProperty;
+    bbox1->set((std::vector<Element> { -1, -2, -3, 1, 2, 3 }));
+    m_b1->setProperty("bbox", bbox1);
 
+    BBoxProperty* bbox2 = new BBoxProperty;
+    bbox2->set(std::vector<Element> { -3, -1, -2, 1, 2, 3 });
+    m_b1->setProperty("bbox", bbox2);
 }
 
 void ProvidersTest::teardown()
