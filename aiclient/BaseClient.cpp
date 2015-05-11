@@ -199,3 +199,31 @@ std::string BaseClient::getErrorMessage(const Operation & err)
         }
     }
 }
+
+int BaseClient::runTask(ClientTask * task, const std::string & arg)
+{
+    return m_connection.runTask(task, arg);
+}
+
+int BaseClient::endTask()
+{
+    return m_connection.endTask();
+}
+
+/**
+ * Checks if there's an active task.
+ * @return True if there's a task set.
+ */
+bool BaseClient::hasTask() const
+{
+    return m_connection.hasTask();
+}
+
+/**
+ * Poll the server until the current task has completed.
+ * @return 0 if successful
+ */
+int BaseClient::pollUntilTaskComplete()
+{
+    return m_connection.pollUntilTaskComplete();
+}

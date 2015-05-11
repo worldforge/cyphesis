@@ -32,13 +32,14 @@
 #include "common/id.h"
 #include "common/custom.h"
 #include "common/SystemTime.h"
+#include "common/Inheritance.h"
 
 #include "common/debug.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Entity.h>
 
-static const bool debug_flag = true;
+static const bool debug_flag = false;
 
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
@@ -53,6 +54,8 @@ PossessionClient::PossessionClient(MindFactory& mindFactory) :
 
 PossessionClient::~PossessionClient()
 {
+    //Clear all rules when we shut down.
+    Inheritance::instance().clear();
 }
 
 bool PossessionClient::idle()

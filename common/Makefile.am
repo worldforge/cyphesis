@@ -50,7 +50,8 @@ libcommon_a_SOURCES = const.cpp const.h \
 		      Drop.h Eat.h Monitor.h Nourish.h \
 		      Pickup.h Setup.h Tick.h Unseen.h Update.h Teleport.h \
 		      Shaker.h Shaker.cpp Commune.h Think.h Possess.h \
-		      OperationsDispatcher.cpp OperationsDispatcher.h  
+		      OperationsDispatcher.cpp OperationsDispatcher.h \
+		      RuleTraversalTask.cpp RuleTraversalTask.h
 
 libtools_a_SOURCES = Storage.cpp Storage.h \
 		     FormattedXMLWriter.cpp FormattedXMLWriter.h

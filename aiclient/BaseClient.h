@@ -89,6 +89,21 @@ class BaseClient {
         return m_connection.sendAndWaitReply(op, res);
     }
 
+    int runTask(ClientTask * task, const std::string & arg);
+    int endTask();
+
+    /**
+     * Checks if there's an active task.
+     * @return True if there's a task set.
+     */
+    bool hasTask() const;
+
+    /**
+     * Poll the server until the current task has completed.
+     * @return 0 if successful
+     */
+    int pollUntilTaskComplete();
+
 };
 
 #endif // CLIENT_BASE_CLIENT_H

@@ -30,6 +30,7 @@
 #include "common/Inheritance.h"
 #include "common/SystemTime.h"
 #include "common/system.h"
+#include "common/RuleTraversalTask.h"
 
 #include <varconf/config.h>
 
@@ -70,6 +71,19 @@ static int tryToConnect(PossessionClient& possessionClient)
         if (!systemAccountResponse->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
             std::cerr << "ERROR: Logged in, but account has no id" << std::endl << std::flush;
         } else {
+
+            int rulesCounter = 0;
+            log(INFO, "Requesting rules from server");
+            std::function<bool(const Atlas::Objects::Root&)> inheritenceFn = [&](const Atlas::Objects::Root& root) -> bool{
+                Inheritance::instance().addChild(root);
+                rulesCounter++;
+                return true;
+            };
+
+            possessionClient.runTask(new RuleTraversalTask(systemAccountResponse->getId(), inheritenceFn), "game_entity");
+            possessionClient.pollUntilTaskComplete();
+            log(INFO, String::compose("Completed receiving %1 rules from server", rulesCounter));
+
             possessionClient.createAccount(systemAccountResponse->getId());
         }
         return 0;
@@ -111,6 +125,7 @@ int main(int argc, char ** argv)
 
     init_python_api(ruleset_name, false);
 
+    //Initialize inheritance explicitly here.
     Inheritance::instance();
 
     SystemTime time;
