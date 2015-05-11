@@ -18,7 +18,7 @@ Filter::Filter(const std::string &what, ProviderFactory* factory)
                                           boost::spirit::ascii::space, m_predicate);
 
     if (!(parse_success && iter_begin == iter_end)) {
-        throw std::invalid_argument("Attempted creating entity filter with invalid query");
+        throw std::invalid_argument(String::compose("Attempted creating entity filter with invalid query. Query was '%1'", what));
     }
 }
 
