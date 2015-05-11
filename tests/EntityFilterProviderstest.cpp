@@ -46,13 +46,20 @@ class ProvidersTest : public Cyphesis::TestBase {
         //Types for testing
         TypeNode *m_barrelType;
 
+        ///\A helper to create providers. Accepts a list of tokens and assumes that
+        ///the delimiter for all but first token is "." (a dot)
+        /// for example, to make entity.type provider, use {"Entity", "type"} argument
         Consumer<QueryContext>* CreateProvider(std::initializer_list<std::string> tokens);
     public:
         ProvidersTest();
 
+        ///\Initialize private variables for testing before each test.
         void setup();
+        ///\Free allocated space after every test
         void teardown();
+        ///\Test basic property providers (soft properties, type, id)
         void test_EntityProperty();
+        ///\Test BBox providers (bbox volume, height, area etc)
         void test_BBoxProviders();
 
 };
@@ -62,23 +69,23 @@ void ProvidersTest::test_EntityProperty()
 
     Atlas::Message::Element value;
 
-    auto provider = CreateProvider({"entity"});
+    auto provider = CreateProvider( { "entity" });
 
     provider->value(value, QueryContext { *m_b1 });
     assert(value.Ptr() == m_b1);
 
     //entity.type
-    provider = CreateProvider({"entity", "type"});
+    provider = CreateProvider( { "entity", "type" });
     provider->value(value, QueryContext { *m_b1 });
     assert(value.Ptr() == m_barrelType);
 
     //entity.id
-    provider = CreateProvider({"entity", "id"});
+    provider = CreateProvider( { "entity", "id" });
     provider->value(value, QueryContext { *m_b1 });
     assert(value.Int() == 1);
 
     //entity.mass
-    provider = CreateProvider({"entity", "mass"});
+    provider = CreateProvider( { "entity", "mass" });
     provider->value(value, QueryContext { *m_b1 });
     assert(value.Int() == 30);
 
@@ -92,22 +99,27 @@ void ProvidersTest::test_BBoxProviders()
 {
     Atlas::Message::Element value;
 
+    //entity.bbox.volume
     auto provider = CreateProvider( { "entity", "BBox", "Volume" });
     provider->value(value, QueryContext { *m_b1 });
     ASSERT_TRUE(value.Float() == 48.0);
 
+    //entity.bbox.height
     provider = CreateProvider( { "entity", "BBox", "Height" });
     provider->value(value, QueryContext { *m_b1 });
     ASSERT_TRUE(value.Float() == 6.0);
 
+    //entity.bbox.width
     provider = CreateProvider( { "entity", "BBox", "Width" });
     provider->value(value, QueryContext { *m_b1 });
     ASSERT_TRUE(value.Float() == 2.0);
 
+    //entity.bbox.depth
     provider = CreateProvider( { "entity", "BBox", "Depth" });
     provider->value(value, QueryContext { *m_b1 });
     ASSERT_TRUE(value.Float() == 4.0);
 
+    //entity.bbox.area
     provider = CreateProvider( { "entity", "BBox", "Area" });
     provider->value(value, QueryContext { *m_b1 });
     ASSERT_TRUE(value.Float() == 8.0);
@@ -144,6 +156,7 @@ void ProvidersTest::setup()
 
     //Set bounding box properties for barrels
     BBoxProperty* bbox1 = new BBoxProperty;
+    //Specify two corners of bbox in form of x, y, z coordinates
     bbox1->set((std::vector<Element> { -1, -2, -3, 1, 2, 3 }));
     m_b1->setProperty("bbox", bbox1);
 
@@ -157,17 +170,21 @@ void ProvidersTest::teardown()
 
 }
 
-Consumer<QueryContext>* ProvidersTest::CreateProvider(std::initializer_list<std::string> tokens){
+Consumer<QueryContext>* ProvidersTest::CreateProvider(std::initializer_list<
+        std::string> tokens)
+{
     ProviderFactory::SegmentsList segments;
     auto iter = tokens.begin();
 
-    segments.push_back(ProviderFactory::Segment { "", *iter++});
-    for (; iter != tokens.end(); iter++){
-        segments.push_back(ProviderFactory::Segment { ".", *iter});
+    //First token doesn't have a delimiter, so just add it.
+    segments.push_back(ProviderFactory::Segment { "", *iter++ });
+
+    //Starting from the second token, add them to the list of segments with "." delimiter
+    for (; iter != tokens.end(); iter++) {
+        segments.push_back(ProviderFactory::Segment { ".", *iter });
     }
     return m_factory.createProviders(segments);
 }
-
 
 int main()
 {
