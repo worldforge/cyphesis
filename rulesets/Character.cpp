@@ -1074,7 +1074,10 @@ void Character::RelayOperation(const Operation & op, OpVector & res)
             //its refno.
             relayedOp->setRefno(I->second.serialno);
             OpVector mres;
-            sendMind(relayedOp, mres);
+            //We only send to external minds; never to internal minds or proxy minds.
+            if (m_externalMind) {
+                m_externalMind->operation(relayedOp, mres);
+            }
             m_relays.erase(I);
             for (auto& resOp : mres) {
                 filterExternalOperation(resOp);
