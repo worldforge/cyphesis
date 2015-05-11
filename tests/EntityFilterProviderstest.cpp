@@ -167,7 +167,9 @@ void ProvidersTest::setup()
 
 void ProvidersTest::teardown()
 {
-
+    delete m_b1;
+    delete m_b2;
+    delete m_barrelType;
 }
 
 Consumer<QueryContext>* ProvidersTest::CreateProvider(std::initializer_list<
