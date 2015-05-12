@@ -325,7 +325,9 @@ int Character::linkExternal(Link * link)
     //We need to clear the existing thoughts since we'll be sending them anew; else we'll end up with duplicates.
     m_proxyMind->clearThoughts();
     Atlas::Objects::Operation::Think think;
-    think->setArgs(thoughts);
+    Atlas::Objects::Operation::Set setThoughts;
+    setThoughts->setArgs(thoughts);
+    think->setArgs1(setThoughts);
     think->setTo(getId());
     sendWorld(think);
 
@@ -1797,7 +1799,7 @@ void Character::sendMind(const Operation & op, OpVector & res)
 {
     debug( std::cout << "Character::sendMind(" << op->getParents().front() << ")" << std::endl << std::flush;);
 
-    if (m_externalMind != nullptr) {
+    if (m_externalMind != nullptr && m_externalMind->isLinked()) {
         OpVector mindRes;
         m_proxyMind->operation(op, mindRes);
         // Discard all the local results

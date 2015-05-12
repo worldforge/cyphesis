@@ -47,13 +47,11 @@ class ProxyMind : public BaseMind
         ProxyMind(const std::string & id, long intId);
         virtual ~ProxyMind();
 
-        virtual void operation(const Operation & op, OpVector & res);
-
         /**
          * Gets all registered thoughts.
          * @return All registered thoughts.
          */
-        const std::vector<Atlas::Objects::Root> getThoughts() const;
+        std::vector<Atlas::Objects::Root> getThoughts() const;
 
         /**
          * Clear all registered thoughts.
@@ -61,7 +59,26 @@ class ProxyMind : public BaseMind
         void clearThoughts();
 
     private:
-        std::vector<Atlas::Objects::Root> m_thoughts;
+        /**
+         * A store of thoughts with an id.
+         *
+         * These can be updated by a Think op wrapping a Set op, where the arguments represents on single
+         * thought, and the id of each argument is used for lookup
+         */
+        std::map<std::string, Atlas::Objects::Root> m_thoughtsWithId;
+
+        /**
+         * A store of random thoughts, without id.
+         *
+         * These can't be updated, only added to.
+         */
+        std::vector<Atlas::Objects::Root> m_randomThoughts;
+
+        virtual void thinkSetOperation(const Operation & op, OpVector & res);
+        virtual void thinkDeleteOperation(const Operation & op, OpVector & res);
+        virtual void thinkGetOperation(const Operation & op, OpVector & res);
+        virtual void thinkLookOperation(const Operation & op, OpVector & res);
+
 };
 
 #endif /* PROXYMIND_H_ */

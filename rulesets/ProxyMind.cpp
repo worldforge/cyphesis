@@ -17,11 +17,23 @@
  */
 
 #include "ProxyMind.h"
+#include "Script.h"
 
 #include "common/custom.h"
 #include "common/Think.h"
+#include "common/debug.h"
 
 #include <Atlas/Objects/Operation.h>
+
+using Atlas::Message::Element;
+using Atlas::Objects::Root;
+using Atlas::Objects::Operation::Look;
+using Atlas::Objects::Entity::RootEntity;
+using Atlas::Objects::Entity::Anonymous;
+
+using Atlas::Objects::smart_dynamic_cast;
+
+static const bool debug_flag = false;
 
 ProxyMind::ProxyMind(const std::string & id, long intId) :
         BaseMind(id, intId)
@@ -33,37 +45,121 @@ ProxyMind::~ProxyMind()
 {
 }
 
-void ProxyMind::operation(const Operation & op, OpVector & res)
+void ProxyMind::thinkSetOperation(const Operation & op, OpVector & res)
 {
-    auto op_no = op->getClassNo();
-    if (op_no == Atlas::Objects::Operation::THINK_NO) {
-        if (!op->getArgs().empty()) {
-            m_thoughts.insert(m_thoughts.end(), op->getArgs().begin(),
-                    op->getArgs().end());
-        }
-        return;
-    } else if (op_no == Atlas::Objects::Operation::COMMUNE_NO) {
-        if (op->getArgs().empty()) {
-            Atlas::Objects::Operation::Think think;
-            if (op->getSerialno()) {
-                think->setRefno(op->getSerialno());
-            }
-            think->setArgs(m_thoughts);
-            res.push_back(think);
-        }
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
+        debug(std::cout << " no args!" << std::endl << std::flush
+        ;);
         return;
     }
-
-    BaseMind::operation(op, res);
+    for (const Root& arg : args) {
+        if (arg->isDefaultId()) {
+            m_randomThoughts.push_back(arg);
+        } else {
+            m_thoughtsWithId[arg->getId()] = arg;
+        }
+    }
 }
 
-const std::vector<Atlas::Objects::Root> ProxyMind::getThoughts() const
+void ProxyMind::thinkDeleteOperation(const Operation & op, OpVector & res)
 {
-    return m_thoughts;
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
+        //No args means "delete all"
+        m_thoughtsWithId.clear();
+        m_randomThoughts.clear();
+    } else {
+        for (const Root& arg : args) {
+            if (arg->isDefaultId()) {
+                log(WARNING, "Thought in Delete operation had no id set, ignoring.");
+            } else {
+                m_thoughtsWithId.erase(arg->getId());
+            }
+        }
+    }
+}
+
+void ProxyMind::thinkGetOperation(const Operation & op, OpVector & res)
+{
+    Atlas::Objects::Operation::Think think;
+    Atlas::Objects::Operation::Set set;
+    if (op->getSerialno()) {
+        think->setRefno(op->getSerialno());
+    }
+    std::vector<Root> thoughts;
+    if (op->getArgs().empty()) {
+        thoughts = getThoughts();
+    } else {
+        //If there's any arguments, we'll use the key of the first entry to filter on predicates
+        auto frontArg = op->getArgs().front();
+        Atlas::Message::MapType frontArgMap;
+        frontArg->addToMessage(frontArgMap);
+        if (!frontArgMap.empty()) {
+            auto searchTerm = frontArgMap.begin()->first;
+            for (auto& thought : m_thoughtsWithId) {
+                if (thought.second->hasAttr(searchTerm)) {
+                    thoughts.push_back(thought.second);
+                }
+            }
+            for (auto& thought : m_randomThoughts) {
+                if (thought->hasAttr(searchTerm)) {
+                    thoughts.push_back(thought);
+                }
+            }
+        }
+    }
+    set->setArgs(thoughts);
+    think->setArgs1(set);
+    res.push_back(think);
+}
+
+void ProxyMind::thinkLookOperation(const Operation & op, OpVector & res)
+{
+    Atlas::Objects::Operation::Think think;
+    Atlas::Objects::Operation::Info info;
+    if (op->getSerialno()) {
+        think->setRefno(op->getSerialno());
+    }
+    std::vector<Root> thoughts;
+    if (op->getArgs().empty()) {
+        thoughts = getThoughts();
+    } else {
+        //If there's any arguments, we'll use the key of the first entry to filter on predicates
+        auto frontArg = op->getArgs().front();
+        Atlas::Message::MapType frontArgMap;
+        frontArg->addToMessage(frontArgMap);
+        if (!frontArgMap.empty()) {
+            auto searchTerm = frontArgMap.begin()->first;
+            for (auto& thought : m_thoughtsWithId) {
+                if (thought.second->hasAttr(searchTerm)) {
+                    thoughts.push_back(thought.second);
+                }
+            }
+            for (auto& thought : m_randomThoughts) {
+                if (thought->hasAttr(searchTerm)) {
+                    thoughts.push_back(thought);
+                }
+            }
+        }
+    }
+    info->setArgs(thoughts);
+    think->setArgs1(info);
+    res.push_back(think);
+}
+
+std::vector<Atlas::Objects::Root> ProxyMind::getThoughts() const
+{
+    std::vector<Atlas::Objects::Root> thoughts = m_randomThoughts;
+    for (auto& thought : m_thoughtsWithId) {
+        thoughts.push_back(thought.second);
+    }
+    return thoughts;
 }
 
 void ProxyMind::clearThoughts()
 {
-    m_thoughts.clear();
+    m_randomThoughts.clear();
+    m_thoughtsWithId.clear();
 }
 

@@ -205,6 +205,74 @@ void BaseMind::SightOperation(const Operation & op, OpVector & res)
     }
 }
 
+void BaseMind::ThinkOperation(const Operation &op, OpVector &res)
+{
+    //Get the contained op
+    debug(std::cout << "BaseMind::ThinkOperation(Think)" << std::endl << std::flush
+    ;);
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
+        debug(std::cout << " no args!" << std::endl << std::flush
+        ;);
+        return;
+    }
+    const Root & arg = args.front();
+    Operation op2(Atlas::Objects::smart_dynamic_cast<Operation>(arg));
+    if (op2.isValid()) {
+        debug(std::cout << " args is an op!" << std::endl << std::flush
+        ;);
+        std::string event_name("think_");
+        event_name += op2->getParents().front();
+
+        OpVector mres;
+
+        if (m_script == nullptr || m_script->operation(event_name, op2, mres) == 0) {
+            int op2ClassNo = op2->getClassNo();
+            switch (op2ClassNo) {
+            case Atlas::Objects::Operation::SET_NO:
+                thinkSetOperation(op2, mres);
+                break;
+            case Atlas::Objects::Operation::DELETE_NO:
+                thinkDeleteOperation(op2, mres);
+                break;
+            case Atlas::Objects::Operation::GET_NO:
+                thinkGetOperation(op2, mres);
+                break;
+            case Atlas::Objects::Operation::LOOK_NO:
+                thinkLookOperation(op2, mres);
+                break;
+            default:
+                log(WARNING, "Got invalid Think operation. We only support 'Set' and 'Delete'.");
+                break;
+            }
+        }
+
+        if (!mres.empty() && !op->isDefaultSerialno()) {
+            mres.front()->setRefno(op->getSerialno());
+        }
+        for (auto& resOp : mres) {
+            res.push_back(resOp);
+        }
+
+    }
+}
+
+void BaseMind::thinkSetOperation(const Operation & op, OpVector & res)
+{
+}
+
+void BaseMind::thinkDeleteOperation(const Operation & op, OpVector & res)
+{
+}
+
+void BaseMind::thinkGetOperation(const Operation & op, OpVector & res)
+{
+}
+
+void BaseMind::thinkLookOperation(const Operation & op, OpVector & res)
+{
+}
+
 void BaseMind::AppearanceOperation(const Operation & op, OpVector & res)
 {
     if (!isAwake()) { return; }
@@ -304,6 +372,8 @@ void BaseMind::operation(const Operation & op, OpVector & res)
         default:
             if (op_no == Atlas::Objects::Operation::UNSEEN_NO) {
                 UnseenOperation(op, res);
+            } else if (op_no == Atlas::Objects::Operation::THINK_NO) {
+                ThinkOperation(op, res);
             }
             // ERROR
             break;

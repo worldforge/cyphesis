@@ -40,7 +40,7 @@ class NPCMind(server.Mind):
     game server. It handles perception data from the world, tracks what
     the NPC knows about, and handles its goals.
 
-    The data is organised into three key data structures:
+    The data is organized into three key data structures:
 
     self.map is handled by the underlying C++ code, and contains a copy of
     all the entities in the world that this NPC is currently able to perceive.
@@ -123,11 +123,16 @@ class NPCMind(server.Mind):
     ########## Operations
     def setup_operation(self, op):
         """called once by world after object has been made
-           send first tick operation to object"""
+           send first tick operation to object
+           
+        This method is automatically invoked by the C++ BaseMind code, due to its *_operation name."""
         #CHEAT!: add memory, etc... initialization (or some of it to __init__)
         return Operation("look")+Operation("tick")
     def tick_operation(self, op):
-        """periodically reasses situation"""
+        """periodically reasses situation
+        
+        This method is automatically invoked by the C++ BaseMind code, due to its *_operation name.
+        """
         opTick=Operation("tick")
         opTick.setFutureSeconds(const.basic_tick + self.jitter)
         for t in self.pending_things:
@@ -141,19 +146,24 @@ class NPCMind(server.Mind):
             self.message_queue = None
         return opTick+result
     def unseen_operation(self, op):
+        """This method is automatically invoked by the C++ BaseMind code, due to its *_operation name."""
     	if len(op) > 0:
         	obsolete_id = op[0].id
         	if obsolete_id:
          		self.map.delete(obsolete_id)
     ########## Sight operations
     def sight_create_operation(self, op):
-        """Note our ownership of entities we created."""
+        """Note our ownership of entities we created.
+        
+        This method is automatically invoked by the C++ BaseMind code, due to its *_*_operation name."""
         #BaseMind version overridden!
         obj=self.map.add(op[0], op.getSeconds())
         if op.to==self.id:
             self.add_thing(obj)
     def sight_move_operation(self, op):
-        """change position in our local map"""
+        """change position in our local map
+        
+        This method is automatically invoked by the C++ BaseMind code, due to its *_*_operation name."""
         obj=self.map.update(op[0], op.getSeconds())
         if obj.location.parent.id==self.id:
             self.add_thing(obj)
@@ -162,22 +172,20 @@ class NPCMind(server.Mind):
             if obj.type[0]=="coin" and op.from_ != self.id:
                 self.money_transfers.append([op.from_, 1])
                 return Operation("imaginary", Entity(description="accepts"))
-
-    def commune_operation(self, op):
-        """A 'commune' operation is used to inquire about the status of a mind.
+            
+            
+    def think_get_operation(self, op):
+        """A Think op wrapping a Get op is used to inquire about the status of a mind.
         It's often sent from authoring clients, as well as the server itself when 
         it wants to persist the thoughts of a mind.
-        An commune op without any args means that the mind should dump all its thoughts.
+        A Get op without any args means that the mind should dump all its thoughts.
         If there are args however, the meaning of what's to return differs depending on the
         args.
         * If "goal" is specified, a "think" operation only pertaining to goals is returned. The 
         "goal" arg should be a map, where the keys and values are used to specify exactly what goals
         to return. An empty map returns all goals.
-        * If "goal_info" is specified, an "info" operation with debug information about the 
-        current state of one or many goals is returned. The "goal_info" arg should be a map, 
-        where the keys and values are used to specify exactly what goals to return info about.
-        An empty map returns all goals.  
-        """
+        
+        This method is automatically invoked by the C++ BaseMind code, due to its *_*_operation name."""
         
         args=op.getArgs()
         #If there are no args we should send all of our thoughts
@@ -189,96 +197,97 @@ class NPCMind(server.Mind):
             if hasattr(argEntity, "goal"):
                 goal_entity = argEntity.goal
                 return self.commune_goals(op, goal_entity)
-            elif hasattr(argEntity, "goal_info"):
-                goal_info_entity = argEntity.goal_info
-                return self.commune_goal_info(op, goal_info_entity)
             #TODO: allow for finer grained query of specific thoughts
         
     def commune_goals(self, op, goal_entity):
         """Sends back information about goals only."""
         thinkOp = Operation("think")
+        setOp = Operation("set")
         thoughts = []
 
         #It's important that the order of the goals is retained
         for goal in self.goals:
-            goalEntity=Entity(id=str(goal.id))
+            goalString = ""
             if hasattr(goal, "str"):
-                goalEntity.definition = goal.str
+                goalString = goal.str
             else:
-                goalEntity.definition = goal.__class__.__name__
-            if hasattr(goal, "key"):
-                goalEntity.key=str(goal.key)
+                goalString = goal.__class__.__name__
 
-            thoughts.append(goalEntity)
+            thoughts.append(Entity(goal=goalString, id=goalString))
             
         for (trigger, goallist) in sorted(self.trigger_goals.items()):
             for goal in goallist:
-                goalEntity=Entity(id=str(goal.id))
+                goalString = ""
                 if hasattr(goal, "str"):
-                    goalEntity.definition = goal.str
+                    goalString = goal.str
                 else:
-                    goalEntity.definition = goal.__class__.__name__
-                if hasattr(goal, "key"):
-                    goalEntity.key=str(goal.key)
+                    goalString = goal.__class__.__name__
                     
-                thoughts.append(goalEntity)
+                thoughts.append(Entity(goal=goalString, id=goalString))
             
         
-        thinkOp.setArgs(thoughts)
+        setOp.setArgs(thoughts)
+        thinkOp.setArgs([setOp])
         thinkOp.setRefno(op.getSerialno())
         res = Oplist()
         res = res + thinkOp
         return res
     
-    def find_goal(self, id):
+    def find_goal(self, definition):
+        """Searches for a goal, with the specified id"""
         #Goals are either stored in "self.goals" or "self.trigger_goals", so we need
         #to check both
         for goal in self.goals:
-            if goal.id == id:
+            if goal.str == definition:
                 return goal
         for (trigger, goallist) in sorted(self.trigger_goals.items()):
             for goal in goallist:
-                if goal.id == id:
+                if goal.str == definition:
                     return goal
         return None
         
-    def commune_goal_info(self, op, goal_info_entity):
+    def think_look_operation(self, op):
         """Sends back information about goals. This is mainly to be used for debugging minds.
         If no arguments are specified all goals will be reported, else a match will be done
-        using 'subject' and 'goal'.
-        The information will be sent back as an "info" operation.
+        using 'id'.
+        The information will be sent back as a Think operation wrapping an Info operation.
+        
+        This method is automatically invoked by the C++ BaseMind code, due to its *_*_operation name.
         """
+        thinkOp = Operation("think")
         goalInfoOp = Operation("info")
         goal_infos = []
 
-        if "id" in goal_info_entity:
-            id = str(goal_info_entity["id"])
-            goal = self.find_goal(id)
-            if goal:
-                goal_infos.append(Entity(id=id, report=goal.report()))
-        else:
+        if not op.getArgs():
             #get all goals
             for goal in self.goals:
-                goal_infos.append(Entity(id=id, report=goal.report()))
+                goal_infos.append(Entity(id=goal.str, report=goal.report()))
             for (trigger, goallist) in sorted(self.trigger_goals.items()):
                 for goal in goallist:
-                    goal_infos.append(Entity(id=id, report=goal.report()))
+                    goal_infos.append(Entity(id=goal.str, report=goal.report()))
+        else:
+            for arg in op.getArgs():
+                goal = self.find_goal(arg.id)
+                if goal:
+                    goal_infos.append(Entity(id=goal.str, report=goal.report()))
         
         goalInfoOp.setArgs(goal_infos)
-        goalInfoOp.setRefno(op.getSerialno())
+        thinkOp.setRefno(op.getSerialno())
+        thinkOp.setArgs([goalInfoOp])
         res = Oplist()
-        res = res + goalInfoOp
+        res = res + thinkOp
         return res
         
     
     def commune_all_thoughts(self, op):
         """Sends back information on all thoughts. This includes knowledge and goals, 
         as well as known things.
-        The thoughts will be sent back as a "think" operations, in a manner such that if the
+        The thoughts will be sent back as a "think" operation, wrapping a Set operation, in a manner such that if the
         same think operation is sent back to the mind all thoughts will be restored. In
         this way the mind can support server side persistence of its thoughts.
         """
         thinkOp = Operation("think")
+        setOp = Operation("set")
         thoughts = []
 
         for attr in sorted(dir(self.knowledge)):
@@ -302,12 +311,12 @@ class NPCMind(server.Mind):
         #It's important that the order of the goals is retained
         for goal in self.goals:
             if hasattr(goal, "str"):
-                thoughts.append(Entity(predicate="goal", subject=str(goal.key), object=goal.str))
+                thoughts.append(Entity(goal=goal.str, id=goal.str))
 
         for (trigger, goallist) in sorted(self.trigger_goals.items()):
             for goal in goallist:
                 if hasattr(goal, "str"):
-                    thoughts.append(Entity(predicate="goal", subject=str(goal.key), object=goal.str))
+                    thoughts.append(Entity(goal=goal.str, id=goal.str))
             
         if len(self.things) > 0:
             things={}
@@ -321,13 +330,37 @@ class NPCMind(server.Mind):
         if len(self.pending_things) > 0:            
             thoughts.append(Entity(pending_things=self.pending_things))
                 
-        thinkOp.setArgs(thoughts)
+        setOp.setArgs(thoughts)
+        thinkOp.setArgs([setOp])
         thinkOp.setRefno(op.getSerialno())
         res = Oplist()
         res = res + thinkOp
         return res
+    
+    def think_delete_operation(self, op):
+        """Deletes a thought, or all thoughts if no argument is specified.
+        This method is automatically invoked by the C++ BaseMind code, due to its *_*_operation name."""
 
-    def think_operation(self, op):
+        if not op.getArgs():
+            self.goals = []
+            self.trigger_goals = {}
+        else:
+            args=op.getArgs()
+            for thought in args:
+                for goal in self.goals:
+                    if goal.str == thought.id:
+                        self.goals.remove(goal)
+                        return
+                for (trigger, goallist) in sorted(self.trigger_goals.items()):
+                    for goal in goallist:
+                        if goal.str == thought.id:
+                            goallist.remove(goal)
+                            return
+
+    def think_set_operation(self, op):
+        """Sets a new thought, or updates an existing one
+        
+        This method is automatically invoked by the C++ BaseMind code, due to its *_*_operation name."""
         args=op.getArgs()
         for thought in args:
             #Check if there's a 'predicate' set; if so handle it as knowledge. 
@@ -350,42 +383,41 @@ class NPCMind(server.Mind):
                     for id in thought.pending_things:
                         self.pending_things.append(str(id))
                 elif hasattr(thought, "goal"):
-                    goalElem=thought.goal
-                    id=str(goalElem["id"])
-                    goal = self.find_goal(id)
-                    if goal:
-                        if "definition" in goalElem:
-                            self.update_goal(goal, str(goalElem["definition"]))
+                    goalString=str(thought.goal)
+                    if hasattr(thought, "id"):
+                        id=str(thought.id)
+                        goal = self.find_goal(id)
+                        if goal:
+                            self.update_goal(goal, goalString)
                         else:
-                            self.remove_goal(goal)
+                            self.add_goal(goalString)
+                    else:
+                        self.add_goal(goalString)
+                        
             else:
                 subject=thought.subject
                 predicate=thought.predicate
                 object=thought.object
                 
-                #handle goals in a special way
-                if predicate == "goal":
-                    self.add_goal(subject, object)
+                #Handle locations.
+                if len(object) > 0 and object[0]=='(':
+                    #CHEAT!: remove eval
+                    locdata=eval(object)
+                    #If only coords are supplied, it's handled as a location within the same parent space as ourselves
+                    if (len(locdata) == 3):
+                        loc=self.location.copy()
+                        loc.coordinates=Vector3D(list(locdata))
+                    elif (len(locdata) == 2):
+                        entity_id_string = locdata[0]
+                        #A prefix of "$eid:" denotes an entity id; it should be stripped first.
+                        if entity_id_string.startswith("$eid:"):
+                            entity_id_string = entity_id_string[5:]
+                        where=self.map.get_add(entity_id_string)
+                        coords=Point3D(list(locdata[1]))
+                        loc=Location(where, coords)
+                    self.add_knowledge(predicate,subject,loc)
                 else:
-                    #Handle locations.
-                    if len(object) > 0 and object[0]=='(':
-                        #CHEAT!: remove eval
-                        locdata=eval(object)
-                        #If only coords are supplied, it's handled as a location within the same parent space as ourselves
-                        if (len(locdata) == 3):
-                            loc=self.location.copy()
-                            loc.coordinates=Vector3D(list(locdata))
-                        elif (len(locdata) == 2):
-                            entity_id_string = locdata[0]
-                            #A prefix of "$eid:" denotes an entity id; it should be stripped first.
-                            if entity_id_string.startswith("$eid:"):
-                                entity_id_string = entity_id_string[5:]
-                            where=self.map.get_add(entity_id_string)
-                            coords=Point3D(list(locdata[1]))
-                            loc=Location(where, coords)
-                        self.add_knowledge(predicate,subject,loc)
-                    else:
-                        self.add_knowledge(predicate,subject,object)
+                    self.add_knowledge(predicate,subject,object)
     
     ########## Talk operations
     def admin_sound(self, op):
@@ -396,7 +428,7 @@ class NPCMind(server.Mind):
         log.debug(1,str(self.id)+" interlinguish_warning: "+str(msg)+\
                   ": "+str(say[0].lexlink.id[1:]),op)
     def interlinguish_desire_verb3_buy_verb1_operation(self, op, say):
-        """Handle a sentence of the form 'I would iike to buy a ....'
+        """Handle a sentence of the form 'I would like to buy a ....'
 
         Check if we have any of the type of thing the other character is
         interested in, and whether we know what price to sell at. If so
@@ -526,21 +558,6 @@ class NPCMind(server.Mind):
                 res = res + self.address(op.to, "The " + predicate + " of " + 
                                          key + " is " + str(d[key]))
             return res
-    def interlinguish_learn_verb1_operation(self, op, say):
-        """Handle a sentence of the form 'learn ....'
-
-        The learn sentence contains two components, and can hardly
-        be concidered a real sentence at all. The first is the verb
-        to be associated with a goal activity, and the second is
-        the python fragment executed in order to create the goal instance.
-        Obviously accepting a code fragment from the client is very
-        dangerous, and we need to be carefull that the admin_sound() check
-        works."""
-        if not self.admin_sound(op):
-            return self.interlinguish_warning(op,say,"You are not admin")
-        subject=say[1].word
-        object=say[2].word
-        self.add_goal(subject,object)
     def interlinguish_own_verb1_operation(self, op, say):
         """Handle a sentence of the form ' own ...'
 
@@ -705,10 +722,16 @@ class NPCMind(server.Mind):
         """I don't own this anymore (it may not exist)"""
         dictlist.remove_value(self.things, thing)
     ########## goals
-    def add_goal(self, name, str_goal):
+    def add_goal(self, str_goal):
         """add goal..."""
-        goal = self.create_goal(name, str_goal)
+        try:
+            goal = self.create_goal(str_goal)
+        except BaseException as e:
+            print("Error when adding goal: " + str(e))
+            return
+        
         self.insert_goal(goal)
+        return goal
     def insert_goal(self, goal, id=None):
         if not id:
             self.goal_id_counter = self.goal_id_counter + 1
@@ -725,7 +748,12 @@ class NPCMind(server.Mind):
         self.goals.insert(0,goal)
         
     def update_goal(self, goal, str_goal):
-        new_goal = self.create_goal(goal.key, str_goal)
+        try:
+            new_goal = self.create_goal(goal.key, str_goal)
+        except BaseException as e:
+            print("Error when updating goal: " + str(e))
+            return
+        
         new_goal.id = goal.id
         #We need to handle the case where a goal which had a trigger is replaced by one
         #that hasn't, and the opposite
@@ -741,14 +769,12 @@ class NPCMind(server.Mind):
                 self.goals[index] = new_goal
         
         
-    def create_goal(self, name, str_goal):
+    def create_goal(self, str_goal):
         #CHEAT!: remove eval (this and later)
         goal=eval("mind.goals."+str_goal)
         if const.debug_thinking:
             goal.debug=1
         goal.str=str_goal
-        if type(name)==StringType: goal.key=eval(name)
-        else: goal.key=name
         return goal
     def remove_goal(self, goal):
         """Removes a goal."""

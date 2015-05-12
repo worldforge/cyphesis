@@ -58,6 +58,11 @@ class BaseMind : public MemEntity {
     void sightMoveOperation(const Operation &, OpVector &);
     void sightSetOperation(const Operation &, OpVector &);
 
+    virtual void thinkSetOperation(const Operation & op, OpVector & res);
+    virtual void thinkDeleteOperation(const Operation & op, OpVector & res);
+    virtual void thinkGetOperation(const Operation & op, OpVector & res);
+    virtual void thinkLookOperation(const Operation & op, OpVector & res);
+
     virtual void operation(const Operation &, OpVector &);
 
     virtual void SightOperation(const Operation &, OpVector &);
@@ -65,6 +70,7 @@ class BaseMind : public MemEntity {
     virtual void AppearanceOperation(const Operation &, OpVector &);
     virtual void DisappearanceOperation(const Operation &, OpVector &);
     virtual void UnseenOperation(const Operation &, OpVector &);
+    virtual void ThinkOperation(const Operation &, OpVector &);
 
     void callSightOperation(const Operation &, OpVector &);
     void callSoundOperation(const Operation &, OpVector &);
