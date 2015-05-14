@@ -43,8 +43,14 @@ class ProvidersTest : public Cyphesis::TestBase {
         LocatedEntitySet *m_b1_container; //Container property for b1
         Entity *m_b2;
 
+        Entity *m_ch1; //Character type entity
+        Entity *m_glovesEntity; //Gloves for the character entity's outfit
+        Entity *m_cloth; //Cloth for gloves' outfit
+
         //Types for testing
         TypeNode *m_barrelType;
+        TypeNode *m_characterType;
+        TypeNode *m_clothType;
 
         ///\A helper to create providers. Accepts a list of tokens and assumes that
         ///the delimiter for all but first token is "." (a dot)
@@ -61,6 +67,8 @@ class ProvidersTest : public Cyphesis::TestBase {
         void test_EntityProperty();
         ///\Test BBox providers (bbox volume, height, area etc)
         void test_BBoxProviders();
+        ///\Test Outfit providers
+        void test_OutfitProviders();
 
 };
 
@@ -125,10 +133,35 @@ void ProvidersTest::test_BBoxProviders()
     ASSERT_TRUE(value.Float() == 8.0);
 }
 
+void ProvidersTest::test_OutfitProviders()
+{
+    Atlas::Message::Element value;
+    //Check simple outfit query
+    auto provider = CreateProvider({"entity", "outfit", "hands"});
+    provider->value(value, QueryContext{*m_b1});
+    ASSERT_EQUAL(value.Ptr(), m_glovesEntity);
+
+    //Check for outfit's property query
+    provider = CreateProvider({"entity", "outfit", "hands", "color"});
+    provider->value(value, QueryContext{*m_b1});
+    ASSERT_EQUAL(value.String(), "brown");
+
+    //Check for nested outfit
+    provider = CreateProvider({"entity", "outfit", "hands", "outfit", "thumb"});
+    provider->value(value, QueryContext{*m_b1});
+    ASSERT_EQUAL(value.Ptr(), m_cloth);
+
+    //Check for nested outfit's property
+    provider = CreateProvider({"entity", "outfit", "hands", "outfit", "thumb", "color"});
+    provider->value(value, QueryContext{*m_b1});
+    ASSERT_EQUAL(value.String(), "green");
+}
+
 ProvidersTest::ProvidersTest()
 {
     ADD_TEST(ProvidersTest::test_EntityProperty);
     ADD_TEST(ProvidersTest::test_BBoxProviders);
+    ADD_TEST(ProvidersTest::test_OutfitProviders);
 }
 
 void ProvidersTest::setup()
@@ -163,13 +196,48 @@ void ProvidersTest::setup()
     BBoxProperty* bbox2 = new BBoxProperty;
     bbox2->set(std::vector<Element> { -3, -1, -2, 1, 2, 3 });
     m_b1->setProperty("bbox", bbox2);
+
+    ///Set up outfit testing
+
+    //Green Cloth serves as outfit for gloves
+    m_clothType = new TypeNode("cloth");
+    types["cloth"] = m_clothType;
+
+    m_cloth = new Entity("3", 3);
+    m_cloth->setType(m_clothType);
+    m_cloth->setProperty("color", new SoftProperty("green"));
+
+    //Create outfit map where "thumb" outfit contains cloth
+    std::map<std::string, Element> outfitMap1;
+    outfitMap1.insert(std::make_pair("thumb", Element(m_cloth)));
+    OutfitProperty* outfit2 = new OutfitProperty;
+    outfit2->set(outfitMap1);
+    m_glovesEntity = new Entity("4", 4);
+    m_glovesEntity->setProperty("color", new SoftProperty("brown"));
+    m_glovesEntity->setProperty("outfit", outfit2);
+
+    //Create outfit map where hands of character contain brown gloves
+    std::map<std::string, Element> outfitMap;
+    outfitMap.insert(std::make_pair("hands", Element(m_glovesEntity)));
+    OutfitProperty* outfit1 = new OutfitProperty;
+    outfit1->set(outfitMap);
+
+    //Create the character for testing
+    m_characterType = new TypeNode("character");
+    types["character"] = m_characterType;
+    m_ch1 = new Entity("5", 5);
+    m_ch1->setType(m_characterType);
 }
 
 void ProvidersTest::teardown()
 {
     delete m_b1;
     delete m_b2;
+    delete m_ch1;
+    delete m_glovesEntity;
     delete m_barrelType;
+    delete m_characterType;
+    delete m_clothType;
 }
 
 Consumer<QueryContext>* ProvidersTest::CreateProvider(std::initializer_list<
