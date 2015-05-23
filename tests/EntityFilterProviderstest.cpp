@@ -71,6 +71,8 @@ class ProvidersTest : public Cyphesis::TestBase {
         void test_OutfitProviders();
         ///\Test comparator and logical predicates
         void test_ComparePredicates();
+        ///\Test comparators that work on lists
+        void test_ListComparators();
 
 };
 
@@ -221,12 +223,53 @@ void ProvidersTest::test_ComparePredicates()
     assert(orPred1.isMatch(QueryContext { *m_b1 }));
 }
 
+void ProvidersTest::test_ListComparators(){
+
+    //entity.float_list
+    auto lhs_provider3 = CreateProvider( { "entity", "float_list" });
+
+    //entity.float_list contains 20.0
+    ComparePredicate compPred9(lhs_provider3, new FixedElementProvider(20.0),
+                               ComparePredicate::Comparator::CONTAINS);
+    assert(compPred9.isMatch(QueryContext { *m_b1 }));
+
+    //20.0 in entity.float_list
+    ComparePredicate compPred13(new FixedElementProvider(20.0), lhs_provider3,
+                                ComparePredicate::Comparator::IN);
+    assert(compPred13.isMatch(QueryContext { *m_b1 }));
+
+    //entity.float_list contains 100.0
+    ComparePredicate compPred10(lhs_provider3, new FixedElementProvider(100.0),
+                                ComparePredicate::Comparator::CONTAINS);
+    assert(!compPred10.isMatch(QueryContext { *m_b1 }));
+
+    //100.0 in entity.float_list
+    ComparePredicate compPred14(new FixedElementProvider(100.0), lhs_provider3,
+                                ComparePredicate::Comparator::IN);
+    assert(!compPred14.isMatch(QueryContext { *m_b1 }));
+
+    //entity.string_list
+    auto lhs_provider4 = CreateProvider( { "entity", "string_list" });
+
+    //entity.string_list contains "foo"
+    ComparePredicate compPred11(lhs_provider4, new FixedElementProvider("foo"),
+                                ComparePredicate::Comparator::CONTAINS);
+    assert(compPred11.isMatch(QueryContext { *m_b1 }));
+
+    //entity.string_list contains "foobar"
+    ComparePredicate compPred12(lhs_provider4,
+                                new FixedElementProvider("foobar"),
+                                ComparePredicate::Comparator::CONTAINS);
+    assert(!compPred12.isMatch(QueryContext { *m_b1 }));
+}
+
 ProvidersTest::ProvidersTest()
 {
     ADD_TEST(ProvidersTest::test_EntityProperty);
     ADD_TEST(ProvidersTest::test_BBoxProviders);
     ADD_TEST(ProvidersTest::test_OutfitProviders);
     ADD_TEST(ProvidersTest::test_ComparePredicates);
+    ADD_TEST(ProvidersTest::test_ListComparators);
 }
 
 void ProvidersTest::setup()
@@ -239,6 +282,16 @@ void ProvidersTest::setup()
     m_b1->setProperty("mass", new SoftProperty(Element(30)));
     m_b1->setProperty("burn_speed", new SoftProperty(Element(0.3)));
     m_b1->setProperty("isVisible", new SoftProperty(Element(true)));
+
+    //List properties for testing list operators
+    SoftProperty* prop1 = new SoftProperty();
+    prop1->set(std::vector<Element> { 25.0, 20.0 });
+    m_b1->setProperty("float_list", prop1);
+
+    SoftProperty* list_prop2 = new SoftProperty();
+    list_prop2->set(std::vector<Element> { "foo", "bar" });
+    m_b1->setProperty("string_list", list_prop2);
+
 
     //Make a second barrel
     m_b2 = new Entity("2", 2);
