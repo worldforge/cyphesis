@@ -69,6 +69,8 @@ class ProvidersTest : public Cyphesis::TestBase {
         void test_BBoxProviders();
         ///\Test Outfit providers
         void test_OutfitProviders();
+        ///\Test comparator predicates
+        void test_ComparePredicates();
 
 };
 
@@ -156,11 +158,61 @@ void ProvidersTest::test_OutfitProviders()
     assert(value.String() == "green");
 }
 
+void ProvidersTest::test_ComparePredicates()
+{
+    //entity.type = types.barrel
+    auto lhs_provider1 = CreateProvider( { "entity", "type" });
+    auto rhs_provider1 = CreateProvider( { "types", "barrel" });
+
+    ComparePredicate compPred1(lhs_provider1, rhs_provider1,
+                               ComparePredicate::Comparator::INSTANCE_OF);
+    assert(compPred1.isMatch(QueryContext { *m_b1 }));
+
+    //entity.bbox.volume
+    auto lhs_provider2 = CreateProvider( { "entity", "bbox", "volume" });
+
+    //entity.bbox.volume = 48
+    ComparePredicate compPred2(lhs_provider2, new FixedElementProvider(48.0f),
+                               ComparePredicate::Comparator::EQUALS);
+    assert(compPred2.isMatch(QueryContext { *m_b1 }));
+
+    //entity.bbox.volume = 1
+    ComparePredicate compPred3(lhs_provider2, new FixedElementProvider(1.0f),
+                               ComparePredicate::Comparator::EQUALS);
+    assert(!compPred3.isMatch(QueryContext { *m_b1 }));
+
+    //entity.bbox.volume != 1
+    ComparePredicate compPred4(lhs_provider2, new FixedElementProvider(1.0f),
+                               ComparePredicate::Comparator::NOT_EQUALS);
+    assert(compPred4.isMatch(QueryContext { *m_b1 }));
+
+    //entity.bbox.volume > 0
+    ComparePredicate compPred5(lhs_provider2, new FixedElementProvider(0.0f),
+                               ComparePredicate::Comparator::GREATER);
+    assert(compPred5.isMatch(QueryContext { *m_b1 }));
+
+    //entity.bbox.volume >= 1
+    ComparePredicate compPred6(lhs_provider2, new FixedElementProvider(1.0f),
+                               ComparePredicate::Comparator::GREATER_EQUAL);
+    assert(compPred6.isMatch(QueryContext { *m_b1 }));
+
+    //entity.bbox.volume < 5
+    ComparePredicate compPred7(lhs_provider2, new FixedElementProvider(5.0f),
+                               ComparePredicate::Comparator::LESS);
+    assert(!compPred7.isMatch(QueryContext { *m_b1 }));
+
+    //entity.bbox.volume <= 48
+    ComparePredicate compPred8(lhs_provider2, new FixedElementProvider(48.0f),
+                               ComparePredicate::Comparator::LESS_EQUAL);
+    assert(compPred8.isMatch(QueryContext { *m_b1 }));
+}
+
 ProvidersTest::ProvidersTest()
 {
     ADD_TEST(ProvidersTest::test_EntityProperty);
     ADD_TEST(ProvidersTest::test_BBoxProviders);
     ADD_TEST(ProvidersTest::test_OutfitProviders);
+    ADD_TEST(ProvidersTest::test_ComparePredicates);
 }
 
 void ProvidersTest::setup()
