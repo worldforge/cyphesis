@@ -106,55 +106,54 @@ void ProvidersTest::test_EntityProperty()
 void ProvidersTest::test_BBoxProviders()
 {
     Atlas::Message::Element value;
-
     //entity.bbox.volume
-    auto provider = CreateProvider( { "entity", "BBox", "Volume" });
+    auto provider = CreateProvider( { "entity", "bbox", "volume" });
     provider->value(value, QueryContext { *m_b1 });
-    ASSERT_TRUE(value.Float() == 48.0);
+    assert(value.Float() == 48.0);
 
     //entity.bbox.height
-    provider = CreateProvider( { "entity", "BBox", "Height" });
+    provider = CreateProvider( { "entity", "bbox", "height" });
     provider->value(value, QueryContext { *m_b1 });
-    ASSERT_TRUE(value.Float() == 6.0);
+    assert(value.Float() == 6.0);
 
     //entity.bbox.width
-    provider = CreateProvider( { "entity", "BBox", "Width" });
+    provider = CreateProvider( { "entity", "bbox", "width" });
     provider->value(value, QueryContext { *m_b1 });
-    ASSERT_TRUE(value.Float() == 2.0);
+    assert(value.Float() == 2.0);
 
     //entity.bbox.depth
-    provider = CreateProvider( { "entity", "BBox", "Depth" });
+    provider = CreateProvider( { "entity", "bbox", "depth" });
     provider->value(value, QueryContext { *m_b1 });
-    ASSERT_TRUE(value.Float() == 4.0);
+    assert(value.Float() == 4.0);
 
     //entity.bbox.area
-    provider = CreateProvider( { "entity", "BBox", "Area" });
+    provider = CreateProvider( { "entity", "bbox", "area" });
     provider->value(value, QueryContext { *m_b1 });
-    ASSERT_TRUE(value.Float() == 8.0);
+    assert(value.Float() == 8.0);
 }
 
 void ProvidersTest::test_OutfitProviders()
 {
     Atlas::Message::Element value;
-    //Check simple outfit query
+    //Check if we get the right entity in outfit query
     auto provider = CreateProvider({"entity", "outfit", "hands"});
-    provider->value(value, QueryContext{*m_b1});
-    ASSERT_EQUAL(value.Ptr(), m_glovesEntity);
+    provider->value(value, QueryContext{*m_ch1});
+    ASSERT_EQUAL(*(Entity**)value.Ptr(), m_glovesEntity);
 
     //Check for outfit's property query
     provider = CreateProvider({"entity", "outfit", "hands", "color"});
-    provider->value(value, QueryContext{*m_b1});
-    ASSERT_EQUAL(value.String(), "brown");
+    provider->value(value, QueryContext{*m_ch1});
+    assert(value.String() == "brown");
 
-    //Check for nested outfit
+    //Check if we get the right entity in nested outfit query
     provider = CreateProvider({"entity", "outfit", "hands", "outfit", "thumb"});
-    provider->value(value, QueryContext{*m_b1});
-    ASSERT_EQUAL(value.Ptr(), m_cloth);
+    provider->value(value, QueryContext{*m_ch1});
+    assert(*(Entity**)value.Ptr() == m_cloth);
 
     //Check for nested outfit's property
     provider = CreateProvider({"entity", "outfit", "hands", "outfit", "thumb", "color"});
-    provider->value(value, QueryContext{*m_b1});
-    ASSERT_EQUAL(value.String(), "green");
+    provider->value(value, QueryContext{*m_ch1});
+    assert(value.String() == "green");
 }
 
 ProvidersTest::ProvidersTest()
@@ -195,7 +194,7 @@ void ProvidersTest::setup()
 
     BBoxProperty* bbox2 = new BBoxProperty;
     bbox2->set(std::vector<Element> { -3, -1, -2, 1, 2, 3 });
-    m_b1->setProperty("bbox", bbox2);
+    m_b2->setProperty("bbox", bbox2);
 
     ///Set up outfit testing
 
@@ -227,6 +226,7 @@ void ProvidersTest::setup()
     types["character"] = m_characterType;
     m_ch1 = new Entity("5", 5);
     m_ch1->setType(m_characterType);
+    m_ch1->setProperty("outfit", outfit1);
 }
 
 void ProvidersTest::teardown()
