@@ -429,10 +429,10 @@ EntityFilterTest::EntityFilterTest()
 int main()
 {
     EntityFilterTest t;
+
     t.run();
 
-    using namespace EntityFilter;
-
+    //TODO: Move remaining old tests
 // START of Soft property and general filtering tests
     /*{
      // test entity.attribute case with various operators
@@ -441,120 +441,6 @@ int main()
 
      {
      ProviderFactory factory;
-
-     //entity.type = types.barrel
-     ComparePredicate compPred1(lhs_provider1, rhs_provider1,
-     ComparePredicate::Comparator::INSTANCE_OF);
-     assert(compPred1.isMatch(QueryContext { b1 }));
-
-     //entity.bbox.volume
-     segments.clear();
-     segments.push_back(ProviderFactory::Segment { "", "entity" });
-     segments.push_back(ProviderFactory::Segment { ".", "bbox" });
-     segments.push_back(ProviderFactory::Segment { ".", "volume" });
-     auto lhs_provider2 = factory.createProviders(segments);
-
-     //entity.bbox.volume = 48
-     ComparePredicate compPred2(lhs_provider2,
-     new FixedElementProvider(48.0f),
-     ComparePredicate::Comparator::EQUALS);
-     assert(compPred2.isMatch(QueryContext { b1 }));
-
-     //entity.bbox.volume = 1
-     ComparePredicate compPred3(lhs_provider2,
-     new FixedElementProvider(1.0f),
-     ComparePredicate::Comparator::EQUALS);
-     assert(!compPred3.isMatch(QueryContext { b1 }));
-
-     //entity.bbox.volume != 1
-     ComparePredicate compPred4(lhs_provider2,
-     new FixedElementProvider(1.0f),
-     ComparePredicate::Comparator::NOT_EQUALS);
-     assert(compPred4.isMatch(QueryContext { b1 }));
-
-     //entity.bbox.volume > 0
-     ComparePredicate compPred5(lhs_provider2,
-     new FixedElementProvider(0.0f),
-     ComparePredicate::Comparator::GREATER);
-     assert(compPred5.isMatch(QueryContext { b1 }));
-
-     //entity.bbox.volume >= 1
-     ComparePredicate compPred6(lhs_provider2,
-     new FixedElementProvider(1.0f),
-     ComparePredicate::Comparator::GREATER_EQUAL);
-     assert(compPred6.isMatch(QueryContext { b1 }));
-
-     //entity.bbox.volume < 5
-     ComparePredicate compPred7(lhs_provider2,
-     new FixedElementProvider(5.0f),
-     ComparePredicate::Comparator::LESS);
-     assert(!compPred7.isMatch(QueryContext { b1 }));
-
-     //entity.bbox.volume <= 48
-     ComparePredicate compPred8(lhs_provider2,
-     new FixedElementProvider(48.0f),
-     ComparePredicate::Comparator::LESS_EQUAL);
-     assert(compPred8.isMatch(QueryContext { b1 }));
-
-     //entity.type = types.barrel && entity.bbox.volume = 48
-     AndPredicate andPred1(&compPred1, &compPred2);
-     assert(andPred1.isMatch(QueryContext { b1 }));
-
-     //entity.type = types.barrel && entity.bbox.volume = 1
-     AndPredicate andPred2(&compPred1, &compPred3);
-     assert(!andPred2.isMatch(QueryContext { b1 }));
-
-     //entity.type = types.barrel || entity.bbox.volume = 1
-     OrPredicate orPred1(&compPred1, &compPred3);
-     assert(orPred1.isMatch(QueryContext { b1 }));
-
-     //entity.float_list
-     segments.clear();
-     segments.push_back(ProviderFactory::Segment { "", "entity" });
-     segments.push_back(ProviderFactory::Segment { ".", "float_list" });
-     auto lhs_provider3 = factory.createProviders(segments);
-
-     //entity.float_list contains 20.0
-     ComparePredicate compPred9(lhs_provider3,
-     new FixedElementProvider(20.0),
-     ComparePredicate::Comparator::CONTAINS);
-     assert(compPred9.isMatch(QueryContext { bl1 }));
-
-     //20.0 in entity.float_list
-     ComparePredicate compPred13(new FixedElementProvider(20.0),
-     lhs_provider3,
-     ComparePredicate::Comparator::IN);
-     assert(compPred13.isMatch(QueryContext { bl1 }));
-
-     //entity.float_list contains 100.0
-     ComparePredicate compPred10(lhs_provider3,
-     new FixedElementProvider(100.0),
-     ComparePredicate::Comparator::CONTAINS);
-     assert(!compPred10.isMatch(QueryContext { bl1 }));
-
-     //100.0 in entity.float_list
-     ComparePredicate compPred14(new FixedElementProvider(100.0),
-     lhs_provider3,
-     ComparePredicate::Comparator::IN);
-     assert(!compPred14.isMatch(QueryContext { bl1 }));
-
-     //entity.string_list
-     segments.clear();
-     segments.push_back(ProviderFactory::Segment { "", "entity" });
-     segments.push_back(ProviderFactory::Segment { ".", "string_list" });
-     auto lhs_provider4 = factory.createProviders(segments);
-
-     //entity.string_list contains "foo"
-     ComparePredicate compPred11(lhs_provider4,
-     new FixedElementProvider("foo"),
-     ComparePredicate::Comparator::CONTAINS);
-     assert(compPred11.isMatch(QueryContext { bl1 }));
-
-     //entity.string_list contains "foobar"
-     ComparePredicate compPred12(lhs_provider4,
-     new FixedElementProvider("foobar"),
-     ComparePredicate::Comparator::CONTAINS);
-     assert(!compPred12.isMatch(QueryContext { bl1 }));
 
      //self.type
      segments.clear();
@@ -599,49 +485,7 @@ int main()
      ComparePredicate::Comparator::EQUALS);
      assert(compPred15.isMatch(QueryContext { b1, memory }));
 
-     //TESTS FOR contains_recursive FUNCTION
-     //entity.contains
-     segments.clear();
-     segments.push_back(ProviderFactory::Segment { "", "entity" });
-     segments.push_back(ProviderFactory::Segment { ".", "contains" });
-     auto lhs_provider7 = factory.createProviders(segments);
-
-     //types.boulder
-     segments.clear();
-     segments.push_back(ProviderFactory::Segment { "", "types" });
-     segments.push_back(ProviderFactory::Segment { ".", "boulder" });
-     auto rhs_provider = factory.createProviders(segments);
-
-     //lhs_provider1 = entity.type
-     ComparePredicate compPred17(lhs_provider1, rhs_provider,
-     ComparePredicate::Comparator::EQUALS);
-
-     ContainsRecursiveFunctionProvider contains_recursive(lhs_provider7,
-     &compPred17);
-     contains_recursive.value(value, QueryContext { b1 });
-     assert(value.Int() == 1);
-
-     contains_recursive.value(value, QueryContext { b2 });
-     assert(value.Int() == 0);
-
-     //rhs_provider1 = types.barrel
-     ComparePredicate compPred18(lhs_provider1, rhs_provider1,
-     ComparePredicate::Comparator::EQUALS);
-     ContainsRecursiveFunctionProvider contains_recursive2(lhs_provider7,
-     &compPred18);
-
-     contains_recursive2.value(value, QueryContext { b1 });
-     assert(value.Int() == 1);
-
-     contains_recursive2.value(value, QueryContext { bl1 });
-     assert(value.Int() == 1);
-
-     contains_recursive2.value(value, QueryContext { b2 });
-     assert(value.Int() == 0);
-
-     contains_recursive2.value(value, QueryContext { b3 });
-     assert(value.Int() == 0);
-     //END OF contains_recursive TESTS*/
+     */
 
 }
 
