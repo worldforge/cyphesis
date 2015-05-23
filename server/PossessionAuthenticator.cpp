@@ -21,8 +21,12 @@
 #include "common/BaseWorld.h"
 #include "common/log.h"
 #include "common/compose.hpp"
+#include "common/debug.h"
 
 #include <cassert>
+#include <iostream>
+
+static const bool debug_flag = false;
 
 PossessionAuthenticator * PossessionAuthenticator::m_instance = nullptr;
 
@@ -50,8 +54,8 @@ int PossessionAuthenticator::addPossession(const std::string & entity_id,
         return -1;
     }
     m_possessions.insert(std::make_pair(entity_id, pt));
-    log(NOTICE, String::compose("Added possession auth entry for %1,%2",
-                              entity_id, possess_key));
+    debug(std::cout << String::compose("Added possession auth entry for %1,%2",
+                              entity_id, possess_key) << std::endl;);
     return 0;
 }
 
@@ -67,8 +71,9 @@ int PossessionAuthenticator::removePossession(const std::string &entity_id)
         return -1;
     }
     removePossession(I);
-    log(NOTICE, String::compose("Removed possession auth entry for entity ID %1",
-                                                entity_id));
+    debug(std::cout << String::compose("Removed possession auth entry for entity ID %1",
+            entity_id) << std::endl;);
+
     return 0;
 }
 

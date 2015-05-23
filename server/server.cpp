@@ -593,8 +593,9 @@ int main(int argc, char ** argv)
                 softExitTimer.async_wait([&](boost::system::error_code ec){
                     if (!ec) {
                         log(WARNING,
-                                "Waiting for persisting thoughts timed out. This might "
-                                        "lead to lost entity thoughts.");
+                                String::compose("Waiting for persisting thoughts timed out. This might "
+                                        "lead to lost entity thoughts. %1 thoughts outstanding.",
+                                        store->numberOfOutstandingThoughtRequests()));
                         exit_flag = true;
                     }
                 });

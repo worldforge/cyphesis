@@ -27,6 +27,7 @@
 #include "common/Possess.h"
 #include "common/log.h"
 #include "common/compose.hpp"
+#include "common/debug.h"
 #include "rulesets/Character.h"
 #include "rulesets/ExternalMind.h"
 
@@ -35,6 +36,8 @@
 #include <wfmath/MersenneTwister.h>
 
 #include <sigc++/bind.h>
+
+static const bool debug_flag = false;
 
 ExternalMindsManager * ExternalMindsManager::m_instance = nullptr;
 
@@ -95,11 +98,10 @@ int ExternalMindsManager::removeConnection(const std::string& routerId)
                         routerId));
         return -1;
     } else {
-        log(INFO,
-                String::compose(
-                        "Deregisted external mind connection registered for router %1. "
-                                "There are now %2 connections.", routerId,
-                        m_connections.size()));
+        debug(std::cout << String::compose(
+                "Deregisted external mind connection registered for router %1. "
+                        "There are now %2 connections.", routerId,
+                m_connections.size()) << std::endl;);
         return 0;
     }
 }
@@ -161,11 +163,11 @@ int ExternalMindsManager::requestPossessionFromRegisteredClients(
             possessOp->setArgs1(possess_args);
             possessOp->setTo(connection.getRouterId());
 
-            log(INFO,
-                    String::compose(
-                            "Requesting possession of mind for entity %1 from link with id %2 and router with id %3.",
-                            entity_id, connection.getLink()->getId(),
-                            connection.getRouterId()));
+            debug(std::cout << String::compose(
+                    "Requesting possession of mind for entity %1 from link with id %2 and router with id %3.",
+                    entity_id, connection.getLink()->getId(),
+                    connection.getRouterId()) << std::endl;);
+
             connection.getLink()->send(possessOp);
             return 0;
         }

@@ -40,6 +40,9 @@
 #include <Atlas/Objects/Entity.h>
 #include <Atlas/Objects/SmartPtr.h>
 
+
+static const bool debug_flag = false;
+
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
@@ -89,6 +92,8 @@ void PossessionAccount::operation(const Operation & op, OpVector & res)
             //Ignore appearance ops, since they just signal other accounts being connected
         } else if (op->getClassNo() == Atlas::Objects::Operation::DISAPPEARANCE_NO) {
             //Ignore disappearance ops, since they just signal other accounts being disconnected
+        } else if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO) {
+            //Ignore info ops, since they just signal other accounts doing things
         } else {
             log(NOTICE, String::compose("Unknown operation %1 in PossessionAccount", op->getParents().front()));
         }
@@ -102,7 +107,7 @@ void PossessionAccount::externalOperation(const Operation & op, Link &)
 
 void PossessionAccount::PossessOperation(const Operation& op, OpVector & res)
 {
-    log(INFO, "Got possession request.");
+    debug(std::cout << "Got possession request." << std::endl;);
 
     auto args = op->getArgs();
     if (!args.empty()) {
@@ -123,7 +128,7 @@ void PossessionAccount::PossessOperation(const Operation& op, OpVector & res)
 
 void PossessionAccount::takePossession(OpVector& res, const std::string& possessEntityId, const std::string& possessKey)
 {
-    log(INFO, String::compose("Taking possession of entity with id %1.", possessEntityId));
+    debug(std::cout << String::compose("Taking possession of entity with id %1.", possessEntityId) << std::endl;);
 
     Anonymous what;
     what->setId(possessEntityId);
@@ -164,14 +169,14 @@ void PossessionAccount::createMind(const Operation & op, OpVector & res)
     std::string entityId = ent->getId();
     std::string entityType = ent->getParents().front();
 
-    log(INFO, String::compose("Got info on account, creating mind for entity with id %1 of type %2.", entityId, entityType));
+    debug(std::cout << String::compose("Got info on account, creating mind for entity with id %1 of type %2.", entityId, entityType) << std::endl;);
     BaseMind* mind = m_mindFactory.newMind(entityId, integerId(entityId));
     mLocatedEntityRegistry.addLocatedEntity(mind);
     //TODO: setup and get type from Inheritance
     mind->setType(new TypeNode(entityType));
 
     if (m_mindFactory.m_scriptFactory != 0) {
-        log(INFO, "Adding script to entity.");
+        debug(std::cout << "Adding script to entity." << std::endl;);
         m_mindFactory.m_scriptFactory->addScript(mind);
     }
 
