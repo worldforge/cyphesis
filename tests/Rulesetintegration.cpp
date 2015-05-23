@@ -759,9 +759,7 @@ ConnectableRouter::~ConnectableRouter()
 {
 }
 
-void Connection::addObject(Router * obj)
-{
-}
+#include "stubs/server/stubConnection.h"
 
 CorePropertyManager::CorePropertyManager()
 {

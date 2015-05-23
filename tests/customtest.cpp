@@ -102,5 +102,6 @@ int TELEPORT_NO = -1;
 int COMMUNE_NO = -1;
 int THINK_NO = -1;
 int RELAY_NO = -1;
+int POSSESS_NO = -1;
 
 } } }

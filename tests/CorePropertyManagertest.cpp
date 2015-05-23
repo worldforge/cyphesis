@@ -1073,7 +1073,7 @@ LineProperty * LineProperty::copy() const
     return 0;
 }
 
-MindProperty::MindProperty() : m_factory(0)
+MindProperty::MindProperty()
 {
 }
 

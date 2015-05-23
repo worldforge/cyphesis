@@ -31,6 +31,7 @@
 #include "common/Think.h"
 
 #include <Atlas/Objects/Generic.h>
+#include <Atlas/Objects/Operation.h>
 
 MindInspector::MindInspector() :
         m_serial(0)
@@ -45,8 +46,9 @@ void MindInspector::queryEntityForThoughts(const std::string& entityId)
 {
     auto entity = BaseWorld::instance().getEntity(entityId);
     if (entity) {
-        Atlas::Objects::Operation::Commune commune;
-        commune->setTo(entityId);
+        Atlas::Objects::Operation::Think think;
+        Atlas::Objects::Operation::Get get;
+        think->setArgs1(get);
 
         //Now find the World
         World* world = dynamic_cast<World*>(BaseWorld::instance().getEntity(0L));
@@ -56,7 +58,7 @@ void MindInspector::queryEntityForThoughts(const std::string& entityId)
         }
 
         //The world is special in that it allows us to relay operations to in game entities.
-        world->sendRelayToEntity(*entity, commune,
+        world->sendRelayToEntity(*entity, think,
                 sigc::mem_fun(*this, &MindInspector::relayResponseReceived));
 
     }

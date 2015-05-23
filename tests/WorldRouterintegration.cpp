@@ -247,6 +247,14 @@ int main()
 #include "stubs/rulesets/stubTasksProperty.h"
 #include "stubs/rulesets/stubTerrainProperty.h"
 #include "stubs/rulesets/stubDomainProperty.h"
+#include "stubs/rulesets/stubProxyMind.h"
+#include "stubs/rulesets/stubBaseMind.h"
+#include "stubs/rulesets/stubMemEntity.h"
+#include "stubs/rulesets/stubMemMap.h"
+
+#include "stubs/server/stubExternalMindsManager.h"
+#include "stubs/server/stubExternalMindsConnection.h"
+#include "stubs/common/stubOperationsDispatcher.h"
 
 #include <Atlas/Objects/Operation.h>
 

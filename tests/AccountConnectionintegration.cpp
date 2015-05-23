@@ -508,7 +508,9 @@ void logEvent(LogEvent lev, const std::string & msg)
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
-
+#include "stubs/server/stubExternalMindsManager.h"
+#include "stubs/server/stubExternalMindsConnection.h"
+#include "stubs/common/stubOperationsDispatcher.h"
 
 PropertyManager * PropertyManager::m_instance = 0;
 

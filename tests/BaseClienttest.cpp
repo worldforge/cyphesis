@@ -99,6 +99,8 @@ int main()
 
 #include <cstdlib>
 
+#include "stubs/rulesets/stubBaseMind.h"
+
 CreatorClient::CreatorClient(const std::string & id, long intId,
                              ClientConnection &c) :
                CharacterClient(id, intId, c)
@@ -205,38 +207,7 @@ long integerId(const std::string & id)
     return intId;
 }
 
-BaseMind::BaseMind(const std::string & id, long intId) :
-          MemEntity(id, intId), m_map(m_script)
-{
-}
 
-BaseMind::~BaseMind()
-{
-}
-
-void BaseMind::SightOperation(const Operation & op, OpVector & res)
-{
-}
-
-void BaseMind::SoundOperation(const Operation & op, OpVector & res)
-{
-}
-
-void BaseMind::AppearanceOperation(const Operation & op, OpVector & res)
-{
-}
-
-void BaseMind::DisappearanceOperation(const Operation & op, OpVector & res)
-{
-}
-
-void BaseMind::UnseenOperation(const Operation & op, OpVector & res)
-{
-}
-
-void BaseMind::operation(const Operation & op, OpVector & res)
-{
-}
 
 MemEntity::MemEntity(const std::string & id, long intId) :
            LocatedEntity(id, intId), m_lastSeen(0.)

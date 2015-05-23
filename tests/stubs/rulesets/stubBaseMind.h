@@ -52,5 +52,26 @@ void BaseMind::operation(const Operation & op, OpVector & res)
 {
 }
 
+void BaseMind::ThinkOperation(const Operation &op, OpVector &res)
+{
+}
+
+void BaseMind::thinkSetOperation(const Operation & op, OpVector & res)
+{
+}
+
+void BaseMind::thinkDeleteOperation(const Operation & op, OpVector & res)
+{
+}
+
+void BaseMind::thinkGetOperation(const Operation & op, OpVector & res)
+{
+}
+
+void BaseMind::thinkLookOperation(const Operation & op, OpVector & res)
+{
+}
+
+
 
 #endif /* STUBBASEMIND_H_ */

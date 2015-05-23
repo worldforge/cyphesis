@@ -339,16 +339,7 @@ int main()
 #include "common/log.h"
 #include "common/TypeNode.h"
 
-namespace Atlas { namespace Objects { namespace Operation {
-int ACTUATE_NO = -1;
-int ATTACK_NO = -1;
-int EAT_NO = -1;
-int NOURISH_NO = -1;
-int SETUP_NO = -1;
-int TICK_NO = -1;
-int UNSEEN_NO = -1;
-int UPDATE_NO = -1;
-} } }
+#include "stubs/common/stubCustom.h"
 
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),

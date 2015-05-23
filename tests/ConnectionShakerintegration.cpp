@@ -401,6 +401,9 @@ void ExternalMind::linkUp(Link * c)
 #include "stubs/rulesets/stubThing.h"
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/server/stubExternalMindsManager.h"
+#include "stubs/server/stubExternalMindsConnection.h"
+#include "stubs/common/stubOperationsDispatcher.h"
 
 Link::Link(CommSocket & socket, const std::string & id, long iid) :
             Router(id, iid), m_encoder(0), m_commSocket(socket)

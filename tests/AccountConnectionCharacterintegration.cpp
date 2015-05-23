@@ -294,6 +294,16 @@ using Atlas::Objects::Entity::RootEntity;
 
 bool restricted_flag;
 
+#include "stubs/rulesets/stubProxyMind.h"
+#include "stubs/rulesets/stubBaseMind.h"
+#include "stubs/rulesets/stubMemEntity.h"
+#include "stubs/rulesets/stubMemMap.h"
+#include "stubs/server/stubExternalMindsManager.h"
+#include "stubs/server/stubExternalMindsConnection.h"
+#include "stubs/common/stubOperationsDispatcher.h"
+#include "stubs/modules/stubWorldTime.h"
+#include "stubs/modules/stubDateTime.h"
+
 namespace Atlas { namespace Objects { namespace Operation {
 int ACTUATE_NO = -1;
 int ATTACK_NO = -1;

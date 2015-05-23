@@ -893,6 +893,8 @@ void Router::clientError(const Operation & op,
 #include "stubs/modules/stubLocation.h"
 #include "stubs/common/stubProperty.h"
 #include "stubs/common/stubBaseWorld.h"
+#include "stubs/server/stubExternalMindsManager.h"
+#include "stubs/server/stubExternalMindsConnection.h"
 
 Inheritance * Inheritance::m_instance = NULL;
 

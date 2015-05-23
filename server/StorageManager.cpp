@@ -43,6 +43,7 @@
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Message/Element.h>
 
 #include <wfmath/atlasconv.h>
@@ -311,8 +312,10 @@ void StorageManager::restoreThoughts(LocatedEntity * ent)
         OpVector opRes;
 
         Atlas::Objects::Operation::Think thoughtOp;
-        thoughtOp->setArgsAsList(thoughts_data);
+        Atlas::Objects::Operation::Set setOp;
+        setOp->setArgsAsList(thoughts_data);
         //Make the thought come from the entity itself
+        thoughtOp->setArgs1(setOp);
         thoughtOp->setTo(ent->getId());
         thoughtOp->setFrom(ent->getId());
 
@@ -575,24 +578,35 @@ void StorageManager::thoughtsReceived(const std::string& entityId, const Operati
     //Note that the received operation originated from an external mind, so we must
     // treat it as unsafe.
     if (op->getClassNo() == Atlas::Objects::Operation::THINK_NO) {
-        Database * db = Database::instance();
-        std::vector<std::string> thoughtsList;
-        Atlas::Message::ListType thoughts = op->getArgsAsList();
-        for (auto& thoughtElement : thoughts) {
-            if (thoughtElement.isMap()) {
-                std::string value;
-                db->encodeObject(thoughtElement.asMap(), value);
-                thoughtsList.push_back(value);
-            }
+        if (op->getArgs().empty()) {
+            return;
         }
-        db->replaceThoughts(entityId, thoughtsList);
+        auto arg = op->getArgs().front();
+
+        if (arg->getClassNo() != Atlas::Objects::Operation::SET_NO) {
+            log(WARNING, "Got thought op where the first argument wasn't a Set op.");
+        } else {
+            auto setOp = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Operation::Set>(arg);
+            Database * db = Database::instance();
+            std::vector<std::string> thoughtsList;
+            Atlas::Message::ListType thoughts = setOp->getArgsAsList();
+            for (auto& thoughtElement : thoughts) {
+                if (thoughtElement.isMap()) {
+                    std::string value;
+                    db->encodeObject(thoughtElement.asMap(), value);
+                    thoughtsList.push_back(value);
+                }
+            }
+            db->replaceThoughts(entityId, thoughtsList);
+        }
+
     } else if (op->getClassNo()
             == Atlas::Objects::Operation::ROOT_OPERATION_NO) {
         //A RootOperation indicates that the relay timed out; we'll just ignore it
     } else {
         log(WARNING,
                 String::compose(
-                        "Got response to a Commune request from mind %1 with an operation of type %2. This could signal a malicious client.",
+                        "Got response to a thoughts Get request from mind %1 with an operation of type %2. This could signal a malicious client.",
                         op->getFrom(), op->getParents().front()));
     }
 

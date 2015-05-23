@@ -158,7 +158,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 Character::Character(const std::string & id, long intId) :
            Thing(id, intId),
                m_movement(*(Movement*)0),
-               m_mind(0), m_externalMind(0)
+               m_externalMind(0)
 {
 }
 

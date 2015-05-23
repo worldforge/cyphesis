@@ -21,7 +21,7 @@
 
 WorldRouter::WorldRouter(const SystemTime &) :
       BaseWorld(*new Entity(consts::rootWorldId, consts::rootWorldIntId)),
-      m_entityCount(1)
+      m_operationsDispatcher([&](const Operation & op, LocatedEntity & from){}, [&]()->double {return getTime();}), m_entityCount(1)
 
 {
 }

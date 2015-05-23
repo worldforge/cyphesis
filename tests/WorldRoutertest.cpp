@@ -294,6 +294,7 @@ int TICK_NO = -1;
 #include "stubs/rulesets/stubThing.h"
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubDomain.h"
+#include "stubs/common/stubOperationsDispatcher.h"
 
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),

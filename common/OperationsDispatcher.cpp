@@ -31,18 +31,18 @@
 
 static const bool debug_flag = false;
 
-inline OpQueEntry::OpQueEntry(const Operation & o, LocatedEntity & f) : op(o),
+OpQueEntry::OpQueEntry(const Operation & o, LocatedEntity & f) : op(o),
                                                                         from(&f)
 {
     from->incRef();
 }
 
-inline OpQueEntry::OpQueEntry(const OpQueEntry & o) : op(o.op), from(o.from)
+OpQueEntry::OpQueEntry(const OpQueEntry & o) : op(o.op), from(o.from)
 {
     from->incRef();
 }
 
-inline OpQueEntry::~OpQueEntry()
+OpQueEntry::~OpQueEntry()
 {
     from->decRef();
 }

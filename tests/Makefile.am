@@ -61,8 +61,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  EntityFiltertest EntityFilterParsertest \
                  EntityFilterProviderstest
 
-RULESETS_INTEGRATION_TESTS = MindPropertyintegration \
-                             TerrainPropertyintegration \
+RULESETS_INTEGRATION_TESTS = TerrainPropertyintegration \
                              PropertyEntityintegration \
                              DecaysPropertyintegration \
                              BiomassPropertyintegration \
@@ -1043,20 +1042,6 @@ EntityFilterProviderstest_LDADD = \
         $(top_builddir)/common/PropertyManager.o
 
 # RULESETS_INTEGRATION
-
-MindPropertyintegration_SOURCES = MindPropertyintegration.cpp \
-        python_testers.cpp python_testers.h
-MindPropertyintegration_LDADD = \
-        $(top_builddir)/rulesets/PythonScriptFactory.o \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS) $(NETWORK_LIBS)
 
 TerrainPropertyintegration_SOURCES = TerrainPropertyintegration.cpp
 TerrainPropertyintegration_LDADD = \

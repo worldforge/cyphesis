@@ -61,6 +61,9 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "rulesets/BaseMind.h"
 #include "rulesets/PythonScriptFactory.h"
 
+#include "stubs/server/stubExternalMindsManager.h"
+#include "stubs/server/stubExternalMindsConnection.h"
+
 namespace Atlas { namespace Objects { namespace Operation {
 int SETUP_NO = -1;
 } } }

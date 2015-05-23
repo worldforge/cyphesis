@@ -211,42 +211,6 @@ int main()
 using Atlas::Message::MapType;
 using Atlas::Objects::Entity::RootEntity;
 
-struct OpQueEntry {
-    Operation op;
-    LocatedEntity* from;
-
-    explicit OpQueEntry(const Operation & o, LocatedEntity & f);
-    ~OpQueEntry();
-
-    const Operation & operator*() const {
-        return op;
-    }
-
-    Atlas::Objects::Operation::RootOperationData * operator->() const {
-        return op.get();
-    }
-
-    bool operator<(const OpQueEntry& right) const {
-        return op->getSeconds() < right->getSeconds();
-    }
-
-    bool operator>(const OpQueEntry& right) const {
-        return op->getSeconds() > right->getSeconds();
-    }
-};
-
-
-OpQueEntry::OpQueEntry(const Operation & o, LocatedEntity & f) : op(o), from(&f)
-{
-    from->incRef();
-}
-
-OpQueEntry::~OpQueEntry()
-{
-    from->decRef();
-}
-
-
 
 EntityBuilder * EntityBuilder::m_instance = NULL;
 
@@ -375,6 +339,7 @@ template class Variable<const char *>;
 template class Variable<std::string>;
 
 #include "stubs/common/stubMonitors.h"
+#include "stubs/common/stubOperationsDispatcher.h"
 
 
 MindInspector::MindInspector() :
@@ -477,7 +442,7 @@ bool MindProperty::isMindEnabled() const {
     return false;
 }
 
-MindProperty::MindProperty() : m_factory(0)
+MindProperty::MindProperty()
 {
 }
 

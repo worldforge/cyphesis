@@ -79,4 +79,9 @@ void Connection::addEntity(LocatedEntity * ent)
 void Connection::addObject(Router * obj)
 {
 }
+
+void Connection::setPossessionEnabled(bool enabled, const std::string& routerId)
+{
+}
+
 #endif /* STUBCONNECTION_H_ */

@@ -307,6 +307,15 @@ int main()
 #include "stubs/rulesets/stubOutfitProperty.h"
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
+#include "stubs/rulesets/stubProxyMind.h"
+#include "stubs/rulesets/stubBaseMind.h"
+#include "stubs/rulesets/stubMemEntity.h"
+#include "stubs/rulesets/stubMemMap.h"
+#include "stubs/server/stubExternalMindsManager.h"
+#include "stubs/server/stubExternalMindsConnection.h"
+#include "stubs/common/stubOperationsDispatcher.h"
+#include "stubs/modules/stubDateTime.h"
+#include "stubs/modules/stubWorldTime.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
