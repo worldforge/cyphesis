@@ -138,23 +138,25 @@ void ProvidersTest::test_OutfitProviders()
 {
     Atlas::Message::Element value;
     //Check if we get the right entity in outfit query
-    auto provider = CreateProvider({"entity", "outfit", "hands"});
-    provider->value(value, QueryContext{*m_ch1});
-    ASSERT_EQUAL(*(Entity**)value.Ptr(), m_glovesEntity);
+    auto provider = CreateProvider( { "entity", "outfit", "hands" });
+    provider->value(value, QueryContext { *m_ch1 });
+    assert(*(Entity** )value.Ptr() ==  m_glovesEntity);
 
     //Check for outfit's property query
-    provider = CreateProvider({"entity", "outfit", "hands", "color"});
-    provider->value(value, QueryContext{*m_ch1});
+    provider = CreateProvider( { "entity", "outfit", "hands", "color" });
+    provider->value(value, QueryContext { *m_ch1 });
     assert(value.String() == "brown");
 
     //Check if we get the right entity in nested outfit query
-    provider = CreateProvider({"entity", "outfit", "hands", "outfit", "thumb"});
-    provider->value(value, QueryContext{*m_ch1});
-    assert(*(Entity**)value.Ptr() == m_cloth);
+    provider = CreateProvider(
+            { "entity", "outfit", "hands", "outfit", "thumb" });
+    provider->value(value, QueryContext { *m_ch1 });
+    assert(*(Entity** )value.Ptr() == m_cloth);
 
     //Check for nested outfit's property
-    provider = CreateProvider({"entity", "outfit", "hands", "outfit", "thumb", "color"});
-    provider->value(value, QueryContext{*m_ch1});
+    provider = CreateProvider( { "entity", "outfit", "hands", "outfit", "thumb",
+            "color" });
+    provider->value(value, QueryContext { *m_ch1 });
     assert(value.String() == "green");
 }
 
