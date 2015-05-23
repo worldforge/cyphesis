@@ -497,11 +497,11 @@ void EntityFilterTest::TestQuery(const std::string& query,
     EntityFilter::Filter f(query, &factory);
     for (auto iter = entitiesToPass.begin(); iter != entitiesToPass.end();
             ++iter) {
-        ASSERT_TRUE(f.match(**iter));
+        assert(f.match(**iter));
     }
     for (auto iter = entitiesToFail.begin(); iter != entitiesToFail.end();
             ++iter) {
-        ASSERT_TRUE(!f.match(**iter));
+        assert(!f.match(**iter));
     }
 }
 
