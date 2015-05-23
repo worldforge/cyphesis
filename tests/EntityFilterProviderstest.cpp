@@ -42,6 +42,7 @@ class ProvidersTest : public Cyphesis::TestBase {
         Entity *m_b1;
         LocatedEntitySet *m_b1_container; //Container property for b1
         Entity *m_b2;
+        LocatedEntitySet *m_b2_container; //Container for b2
 
         Entity *m_ch1; //Character type entity
         Entity *m_glovesEntity; //Gloves for the character entity's outfit
@@ -73,6 +74,10 @@ class ProvidersTest : public Cyphesis::TestBase {
         void test_ComparePredicates();
         ///\Test comparators that work on lists
         void test_ListComparators();
+        ///\Test contains_recursive function provider
+        ///\contains_recursive(container, condition) checks if there is an entity
+        ///\that matches condition within the container
+        void test_ContainsRecursive();
 
 };
 
@@ -142,7 +147,7 @@ void ProvidersTest::test_OutfitProviders()
     //Check if we get the right entity in outfit query
     auto provider = CreateProvider( { "entity", "outfit", "hands" });
     provider->value(value, QueryContext { *m_ch1 });
-    assert(*(Entity** )value.Ptr() ==  m_glovesEntity);
+    assert(*(Entity** )value.Ptr() == m_glovesEntity);
 
     //Check for outfit's property query
     provider = CreateProvider( { "entity", "outfit", "hands", "color" });
@@ -223,7 +228,8 @@ void ProvidersTest::test_ComparePredicates()
     assert(orPred1.isMatch(QueryContext { *m_b1 }));
 }
 
-void ProvidersTest::test_ListComparators(){
+void ProvidersTest::test_ListComparators()
+{
 
     //entity.float_list
     auto lhs_provider3 = CreateProvider( { "entity", "float_list" });
@@ -263,6 +269,54 @@ void ProvidersTest::test_ListComparators(){
     assert(!compPred12.isMatch(QueryContext { *m_b1 }));
 }
 
+void ProvidersTest::test_ContainsRecursive()
+{
+    Element value;
+
+    //entity.mass
+    auto lhs_provider1 = CreateProvider( { "entity", "mass" });
+    //entity.contains
+    auto lhs_provider2 = CreateProvider( { "entity", "contains" });
+
+    //entity.mass = 30
+    ComparePredicate compPred17(lhs_provider1, new FixedElementProvider(30),
+                                ComparePredicate::Comparator::EQUALS);
+
+    //contains_recursive(entity.contains, entity.mass = 30)
+    //Check that container has something with mass 30 inside
+    ContainsRecursiveFunctionProvider contains_recursive(lhs_provider2,
+                                                         &compPred17);
+    contains_recursive.value(value, QueryContext { *m_b1 });
+    assert(value.Int() == 1);
+
+    contains_recursive.value(value, QueryContext { *m_b2 });
+    assert(value.Int() == 0);
+
+    //entity.type
+    auto lhs_provider3 = CreateProvider( { "entity", "type" });
+    //types.character
+    auto rhs_provider1 = CreateProvider( { "types", "character" });
+
+    //entity.type = types.character
+    ComparePredicate compPred18(lhs_provider3, rhs_provider1,
+                                ComparePredicate::Comparator::EQUALS);
+
+    //contains_recursive(entity.contains, entity.type = types.character)
+    //Check that the container has a character inside
+    ContainsRecursiveFunctionProvider contains_recursive2(lhs_provider2,
+                                                          &compPred18);
+
+    //Should be true for both barrels since character is in b2, while b2 is in b1
+    contains_recursive2.value(value, QueryContext { *m_b1 });
+    assert(value.Int() == 1);
+
+    contains_recursive2.value(value, QueryContext { *m_b2 });
+    assert(value.Int() == 1);
+
+    contains_recursive2.value(value, QueryContext { *m_ch1 });
+    assert(value.Int() == 0);
+}
+
 ProvidersTest::ProvidersTest()
 {
     ADD_TEST(ProvidersTest::test_EntityProperty);
@@ -291,7 +345,6 @@ void ProvidersTest::setup()
     SoftProperty* list_prop2 = new SoftProperty();
     list_prop2->set(std::vector<Element> { "foo", "bar" });
     m_b1->setProperty("string_list", list_prop2);
-
 
     //Make a second barrel
     m_b2 = new Entity("2", 2);
@@ -346,6 +399,11 @@ void ProvidersTest::setup()
     m_ch1 = new Entity("5", 5);
     m_ch1->setType(m_characterType);
     m_ch1->setProperty("outfit", outfit1);
+
+    //Make second barrel contain the character
+    m_b2_container = new LocatedEntitySet;
+    m_b2_container->insert(m_ch1);
+    m_b2->m_contains = m_b2_container;
 }
 
 void ProvidersTest::teardown()
