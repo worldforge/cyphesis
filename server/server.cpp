@@ -94,6 +94,9 @@ STRING_OPTION(mserver, "metaserver.worldforge.org", CYPHESIS, "metaserver",
         "Hostname to use as the metaserver")
 ;
 
+INT_OPTION(ai_clients, 1, CYPHESIS, "aiclients",
+        "Number of AI clients to spawn.")
+;
 
 void interactiveSignalsHandler(boost::asio::signal_set& this_, boost::system::error_code error, int signal_number) {
     if (!error) {
@@ -181,6 +184,20 @@ int main(int argc, char ** argv)
             return EXIT_FORK_ERROR;
         } else if (pid > 0) {
             return EXIT_SUCCESS;
+        }
+    }
+
+    //Check if we should spawn AI clients.
+    if (ai_clients) {
+        log(INFO, compose("Spawning %1 AI client processes.", ai_clients));
+        for (int i = 0; i < ai_clients; ++i) {
+            auto pid = fork();
+            if (pid == 0) {
+                execl(PREFIX "/bin/cyaiclient", PREFIX "/bin/cyaiclient", NULL);
+                return EXIT_FORK_ERROR;
+            } else if (pid == -1) {
+                log(WARNING, "Could not spawn AI client process.");
+            }
         }
     }
 
@@ -507,6 +524,9 @@ int main(int argc, char ** argv)
             file.close();
         }
     }
+
+
+
 
     bool soft_exit_in_progress = false;
 

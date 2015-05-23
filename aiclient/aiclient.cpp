@@ -38,6 +38,8 @@
 #define _GLIBCXX_USE_NANOSLEEP 1
 #include <thread>
 
+#include <sys/prctl.h>
+
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Login;
@@ -94,6 +96,10 @@ static int tryToConnect(PossessionClient& possessionClient)
 
 int main(int argc, char ** argv)
 {
+
+    //Kill ourselves if our parent is killed.
+    prctl(PR_SET_PDEATHSIG, SIGTERM);
+
     interactive_signals();
 
     int config_status = loadConfig(argc, argv, USAGE_AICLIENT);
@@ -156,7 +162,7 @@ int main(int argc, char ** argv)
     std::unique_ptr<PossessionClient> possessionClient(new PossessionClient(mindFactory));
     log(INFO, "Trying to connect to server.");
     while (tryToConnect(*possessionClient) != 0 && !exit_flag) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     while (!exit_flag) {
@@ -169,12 +175,12 @@ int main(int argc, char ** argv)
                 possessionClient->idle();
                 possessionClient->markQueueAsClean();
             } else if (!exit_flag) {
-                log(ERROR, "Disconnected from server; will try to reconnect every five seconds.");
+                log(ERROR, "Disconnected from server; will try to reconnect every one second.");
                 //We're disconnected. We'll now enter a loop where we'll try to reconnect at an interval.
                 //First we need to shut down the current client. Perhaps we could find a way to persist the minds in a better way?
                 possessionClient.reset(new PossessionClient(mindFactory));
-                while (tryToConnect(*possessionClient) != 0) {
-                    std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+                while (tryToConnect(*possessionClient) != 0 && !exit_flag) {
+                    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
                 }
             }
 
