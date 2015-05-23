@@ -69,7 +69,7 @@ class ProvidersTest : public Cyphesis::TestBase {
         void test_BBoxProviders();
         ///\Test Outfit providers
         void test_OutfitProviders();
-        ///\Test comparator predicates
+        ///\Test comparator and logical predicates
         void test_ComparePredicates();
 
 };
@@ -205,6 +205,18 @@ void ProvidersTest::test_ComparePredicates()
     ComparePredicate compPred8(lhs_provider2, new FixedElementProvider(48.0f),
                                ComparePredicate::Comparator::LESS_EQUAL);
     assert(compPred8.isMatch(QueryContext { *m_b1 }));
+
+    //entity.type = types.barrel && entity.bbox.volume = 48
+    AndPredicate andPred1(&compPred1, &compPred2);
+    assert(andPred1.isMatch(QueryContext { *m_b1 }));
+
+    //entity.type = types.barrel && entity.bbox.volume = 1
+    AndPredicate andPred2(&compPred1, &compPred3);
+    assert(!andPred2.isMatch(QueryContext { *m_b1 }));
+
+    //entity.type = types.barrel || entity.bbox.volume = 1
+    OrPredicate orPred1(&compPred1, &compPred3);
+    assert(orPred1.isMatch(QueryContext { *m_b1 }));
 }
 
 ProvidersTest::ProvidersTest()
