@@ -127,24 +127,37 @@ class NPCMind(server.Mind):
            
         This method is automatically invoked by the C++ BaseMind code, due to its *_operation name."""
         #CHEAT!: add memory, etc... initialization (or some of it to __init__)
-        return Operation("look")+Operation("tick")
+        
+        #Setup a tick operation for thinking
+        thinkTickOp = Operation("tick")
+        thinkTickOp.setArgs([Entity(name="think")])
+        
+        return Operation("look")+thinkTickOp
     def tick_operation(self, op):
         """periodically reasses situation
         
         This method is automatically invoked by the C++ BaseMind code, due to its *_operation name.
         """
-        opTick=Operation("tick")
-        opTick.setFutureSeconds(const.basic_tick + self.jitter)
-        for t in self.pending_things:
-            thing = self.map.get(t)
-            if thing and thing.type[0]:
-                self.add_thing(thing)
-        self.pending_things=[]
-        result=self.think()
-        if self.message_queue:
-            result = self.message_queue + result
-            self.message_queue = None
-        return opTick+result
+        args=op.getArgs()
+        #Check that the tick op is for "thinking"
+        if len(args) != 0:
+            if args[0].name == "think":
+                opTick=Operation("tick")
+                #just copy the args from the previous tick
+                opTick.setArgs(args)
+                opTick.setFutureSeconds(const.basic_tick + self.jitter)
+                for t in self.pending_things:
+                    thing = self.map.get(t)
+                    if thing and thing.type[0]:
+                        self.add_thing(thing)
+                self.pending_things=[]
+                result=self.think()
+                if self.message_queue:
+                    result = self.message_queue + result
+                    self.message_queue = None
+                return opTick+result
+        
+        
     def unseen_operation(self, op):
         """This method is automatically invoked by the C++ BaseMind code, due to its *_operation name."""
     	if len(op) > 0:
