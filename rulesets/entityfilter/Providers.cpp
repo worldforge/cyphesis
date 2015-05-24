@@ -200,7 +200,7 @@ void OutfitEntityProvider::value(Atlas::Message::Element& value, const OutfitPro
     if (m_consumer) {
         m_consumer->value(value, *outfit_entity);
     } else {
-        value = (void*)&outfit_entity;
+        value = outfit_entity;
     }
 }
 
