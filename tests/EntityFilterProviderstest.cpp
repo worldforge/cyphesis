@@ -437,7 +437,7 @@ int main()
 {
     ProvidersTest t;
 
-    t.run();
+    return t.run();
 }
 
 //Stubs

@@ -430,7 +430,7 @@ int main()
 {
     EntityFilterTest t;
 
-    t.run();
+    return t.run();
 
     //TODO: Move remaining old tests
 // START of Soft property and general filtering tests
