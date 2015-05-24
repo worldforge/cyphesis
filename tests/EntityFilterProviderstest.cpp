@@ -147,7 +147,7 @@ void ProvidersTest::test_OutfitProviders()
     //Check if we get the right entity in outfit query
     auto provider = CreateProvider( { "entity", "outfit", "hands" });
     provider->value(value, QueryContext { *m_ch1 });
-    assert(*(Entity** )value.Ptr() == m_glovesEntity);
+    assert(value.Ptr() == m_glovesEntity);
 
     //Check for outfit's property query
     provider = CreateProvider( { "entity", "outfit", "hands", "color" });
@@ -158,7 +158,7 @@ void ProvidersTest::test_OutfitProviders()
     provider = CreateProvider(
             { "entity", "outfit", "hands", "outfit", "thumb" });
     provider->value(value, QueryContext { *m_ch1 });
-    assert(*(Entity** )value.Ptr() == m_cloth);
+    assert(value.Ptr() == m_cloth);
 
     //Check for nested outfit's property
     provider = CreateProvider( { "entity", "outfit", "hands", "outfit", "thumb",
