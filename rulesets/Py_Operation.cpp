@@ -177,6 +177,26 @@ static PyObject * Operation_setFutureSeconds(PyOperation * self,
     return Py_None;
 }
 
+static PyObject * Operation_setName(PyOperation * self, PyObject * py_name)
+{
+    // Takes string, returns none
+#ifndef NDEBUG
+    if (!self->operation.isValid()) {
+        PyErr_SetString(PyExc_AssertionError,"NULL Operation in Operation.setName");
+        return NULL;
+    }
+#endif // NDEBUG
+    if (!PyString_CheckExact(py_name)) {
+        PyErr_SetString(PyExc_TypeError, "name not a string");
+        return NULL;
+    }
+    char * name = PyString_AsString(py_name);
+    self->operation->setName(name);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
 static PyObject * Operation_setArgs(PyOperation * self, PyObject * args)
 {
     // Takes List, returns none
@@ -229,6 +249,24 @@ static PyObject * Operation_getSerialno(PyOperation * self)
     }
 #endif // NDEBUG
     return PyInt_FromLong(self->operation->getSerialno());
+}
+
+static PyObject * Operation_isDefaultSerialno(PyOperation * self)
+{
+    // Returns int
+#ifndef NDEBUG
+    if (!self->operation.isValid()) {
+        PyErr_SetString(PyExc_AssertionError,"NULL Operation in Operation.isDefaultSerialno");
+        return NULL;
+    }
+#endif // NDEBUG
+    if (self->operation->isDefaultSerialno()) {
+        Py_INCREF(Py_True);
+        return Py_True;
+    } else {
+        Py_INCREF(Py_False);
+        return Py_False;
+    }
 }
 
 static PyObject * Operation_getRefno(PyOperation * self)
@@ -289,6 +327,18 @@ static PyObject * Operation_getFutureSeconds(PyOperation * self)
     }
 #endif // NDEBUG
     return PyFloat_FromDouble(self->operation->getFutureSeconds());
+}
+
+static PyObject * Operation_getName(PyOperation * self)
+{
+    // Returns float
+#ifndef NDEBUG
+    if (!self->operation.isValid()) {
+        PyErr_SetString(PyExc_AssertionError,"NULL Operation in Operation.getName");
+        return NULL;
+    }
+#endif // NDEBUG
+    return PyString_FromString(self->operation->getName().c_str());
 }
 
 static PyObject * Operation_getArgs(PyOperation * self)
@@ -530,11 +580,13 @@ PyMethodDef Operation_methods[] = {
     {"setSeconds",      (PyCFunction)Operation_setSeconds,      METH_O},
     {"setFutureSeconds",(PyCFunction)Operation_setFutureSeconds,METH_O},
     {"setArgs",         (PyCFunction)Operation_setArgs,         METH_O},
+    {"setName",         (PyCFunction)Operation_setName,         METH_O},
     {NULL,          NULL}
 };
 
 PyMethodDef ConstOperation_methods[] = {
     {"getSerialno",     (PyCFunction)Operation_getSerialno,     METH_NOARGS},
+    {"isDefaultSerialno",(PyCFunction)Operation_isDefaultSerialno,     METH_NOARGS},
     {"getRefno",        (PyCFunction)Operation_getRefno,        METH_NOARGS},
     {"getFrom",         (PyCFunction)Operation_getFrom,         METH_NOARGS},
     {"getTo",           (PyCFunction)Operation_getTo,           METH_NOARGS},
@@ -542,6 +594,7 @@ PyMethodDef ConstOperation_methods[] = {
     {"getFutureSeconds",(PyCFunction)Operation_getFutureSeconds,METH_NOARGS},
     {"getArgs",         (PyCFunction)Operation_getArgs,         METH_NOARGS},
     {"get_name",        (PyCFunction)Operation_get_name,        METH_NOARGS},
+    {"getName",         (PyCFunction)Operation_getName,        METH_NOARGS},
     {NULL,          NULL}
 };
 
