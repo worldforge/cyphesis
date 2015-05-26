@@ -45,6 +45,7 @@ using Atlas::Objects::Root;
 using Atlas::Objects::Operation::RootOperation;
 using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Login;
+using Atlas::Objects::Operation::Tick;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
 

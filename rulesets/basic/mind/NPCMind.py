@@ -132,16 +132,22 @@ class NPCMind(server.Mind):
         thinkTickOp = Operation("tick")
         thinkTickOp.setArgs([Entity(name="think")])
         
-        return Operation("look")+thinkTickOp
+        #Setup a tick operation for periodical persistence of thoughts to the server
+        sendThoughtsTickOp = Operation("tick")
+        sendThoughtsTickOp.setArgs([Entity(name="persistthoughts")])
+        sendThoughtsTickOp.setFutureSeconds(5)
+        
+        return Operation("look")+thinkTickOp+sendThoughtsTickOp
     def tick_operation(self, op):
         """periodically reasses situation
         
         This method is automatically invoked by the C++ BaseMind code, due to its *_operation name.
         """
         args=op.getArgs()
-        #Check that the tick op is for "thinking"
         if len(args) != 0:
             if args[0].name == "think":
+                #It's a "thinking" op, which is the base of the AI behaviour.
+                #At regular intervals the AI needs to assess its goals; this is one through "thinkning" ops.
                 opTick=Operation("tick")
                 #just copy the args from the previous tick
                 opTick.setArgs(args)
@@ -156,7 +162,17 @@ class NPCMind(server.Mind):
                     result = self.message_queue + result
                     self.message_queue = None
                 return opTick+result
-        
+            elif args[0].name == "persistthoughts":
+                #It's a periodic tick for sending thoughts to the server (so that they can be persisted)
+                #TODO: only send thoughts when they have changed.
+                opTick=Operation("tick")
+                #just copy the args from the previous tick
+                opTick.setArgs(args)
+                #Persist the thoughts to the server at 30 second intervals.
+                opTick.setFutureSeconds(30)
+                result = self.commune_all_thoughts(op, "persistthoughts")
+                return opTick+result
+       
         
     def unseen_operation(self, op):
         """This method is automatically invoked by the C++ BaseMind code, due to its *_operation name."""
@@ -203,7 +219,7 @@ class NPCMind(server.Mind):
         args=op.getArgs()
         #If there are no args we should send all of our thoughts
         if len(args) == 0:
-            return self.commune_all_thoughts(op)
+            return self.commune_all_thoughts(op, None)
         else:
             argEntity=args[0]
 
@@ -292,12 +308,13 @@ class NPCMind(server.Mind):
         return res
         
     
-    def commune_all_thoughts(self, op):
+    def commune_all_thoughts(self, op, name):
         """Sends back information on all thoughts. This includes knowledge and goals, 
         as well as known things.
         The thoughts will be sent back as a "think" operation, wrapping a Set operation, in a manner such that if the
         same think operation is sent back to the mind all thoughts will be restored. In
         this way the mind can support server side persistence of its thoughts.
+        A name can optionally be supplied, which will be set on the Set operation.
         """
         thinkOp = Operation("think")
         setOp = Operation("set")
@@ -345,7 +362,10 @@ class NPCMind(server.Mind):
                 
         setOp.setArgs(thoughts)
         thinkOp.setArgs([setOp])
-        thinkOp.setRefno(op.getSerialno())
+        if not op.isDefaultSerialno():
+            thinkOp.setRefno(op.getSerialno())
+        if name:
+            setOp.setName(name)
         res = Oplist()
         res = res + thinkOp
         return res
@@ -374,6 +394,12 @@ class NPCMind(server.Mind):
         """Sets a new thought, or updates an existing one
         
         This method is automatically invoked by the C++ BaseMind code, due to its *_*_operation name."""
+        
+        #If the Set op has the name "peristthoughts" it's a Set op sent to ourselves meant for the server
+        #(so it can persist the thoughts in the database). We should ignore it.
+        if op.getName() == "persistthoughts":
+            return
+        
         args=op.getArgs()
         for thought in args:
             #Check if there's a 'predicate' set; if so handle it as knowledge. 
