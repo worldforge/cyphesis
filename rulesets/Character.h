@@ -153,6 +153,7 @@ class Character : public Thing, public virtual sigc::trackable {
     virtual void mindSetupOperation(const Operation &, OpVector &);
     virtual void mindTalkOperation(const Operation &, OpVector &);
     virtual void mindThoughtOperation(const Operation &, OpVector &);
+    virtual void mindThinkOperation(const Operation &, OpVector &);
     virtual void mindTickOperation(const Operation &, OpVector &);
     virtual void mindTouchOperation(const Operation &, OpVector &);
     virtual void mindUpdateOperation(const Operation &, OpVector &);

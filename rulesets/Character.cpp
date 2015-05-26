@@ -1705,6 +1705,16 @@ void Character::mindThoughtOperation(const Operation & op, OpVector & res)
     res.push_back(op);
 }
 
+/// \brief Filter a Think operation coming from the mind
+///
+/// @param op The operation to be filtered.
+/// @param res The filtered result is returned here.
+void Character::mindThinkOperation(const Operation & op, OpVector & res)
+{
+    op->setTo(getId());
+    res.push_back(op);
+}
+
 /// \brief Filter a Tick operation coming from the world to the mind
 ///
 /// @param op The operation to be filtered.
@@ -1918,6 +1928,8 @@ void Character::mind2body(const Operation & op, OpVector & res)
                 mindThoughtOperation(op, res);
             } else if (op_no == Atlas::Objects::Operation::GOAL_INFO_NO) {
                 mindGoalInfoOperation(op, res);
+            } else if (op_no == Atlas::Objects::Operation::THINK_NO) {
+                mindThinkOperation(op, res);
             } else {
                 mindOtherOperation(op, res);
             }
