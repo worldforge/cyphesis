@@ -246,6 +246,12 @@ void LocatedEntity::setScript(Script * scrpt)
     m_script = scrpt;
 }
 
+std::vector<Atlas::Objects::Root> LocatedEntity::getThoughts() const
+{
+    return std::vector<Atlas::Objects::Root>();
+}
+
+
 /// \brief Make this entity a container
 ///
 /// If this entity is not already a contains, set up the necessary

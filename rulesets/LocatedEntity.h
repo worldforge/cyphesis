@@ -82,6 +82,10 @@ static const unsigned int entity_asleep = 1 << 8;
 /// \ingroup EntityFlags
 static const unsigned int entity_domain = 1 << 9;
 
+/// \brief Flag indicating entity has thoughts that needs to be persisted.
+/// \ingroup EntityFlags
+static const unsigned int entity_dirty_thoughts = 1 << 10;
+
 /// \brief This is the base class from which in-game and in-memory objects
 /// inherit.
 ///
@@ -200,6 +204,12 @@ class LocatedEntity : public Router {
     void makeContainer();
     void changeContainer(LocatedEntity *);
     void merge(const Atlas::Message::MapType &);
+
+    /**
+     * Gets all registered thoughts.
+     * @return All registered thoughts.
+     */
+    virtual std::vector<Atlas::Objects::Root> getThoughts() const;
 
     /// \brief Adds a child to this entity.
     virtual void addChild(LocatedEntity& childEntity);

@@ -35,8 +35,8 @@ using Atlas::Objects::smart_dynamic_cast;
 
 static const bool debug_flag = false;
 
-ProxyMind::ProxyMind(const std::string & id, long intId) :
-        BaseMind(id, intId)
+ProxyMind::ProxyMind(const std::string & id, long intId, LocatedEntity& ownerEntity) :
+        BaseMind(id, intId), m_ownerEntity(ownerEntity)
 {
 
 }
@@ -47,12 +47,13 @@ ProxyMind::~ProxyMind()
 
 void ProxyMind::thinkSetOperation(const Operation & op, OpVector & res)
 {
-    const std::vector<Root> & args = op->getArgs();
-    if (args.empty()) {
-        debug(std::cout << " no args!" << std::endl << std::flush
-        ;);
-        return;
+    //If it's a Set op named "persistthoughts" it's coming from an AI client, and is meant
+    //for persisting thoughts. We should remove all existing thoughts first.
+    if (!op->isDefaultName() && op->getName() == "persistthoughts") {
+        m_randomThoughts.clear();
+        m_thoughtsWithId.clear();
     }
+    const std::vector<Root> & args = op->getArgs();
     for (const Root& arg : args) {
         if (arg->isDefaultId()) {
             m_randomThoughts.push_back(arg);
@@ -60,6 +61,8 @@ void ProxyMind::thinkSetOperation(const Operation & op, OpVector & res)
             m_thoughtsWithId[arg->getId()] = arg;
         }
     }
+    m_ownerEntity.setFlags(entity_dirty_thoughts);
+    m_ownerEntity.onUpdated();
 }
 
 void ProxyMind::thinkDeleteOperation(const Operation & op, OpVector & res)
@@ -78,6 +81,8 @@ void ProxyMind::thinkDeleteOperation(const Operation & op, OpVector & res)
             }
         }
     }
+    m_ownerEntity.setFlags(entity_dirty_thoughts);
+    m_ownerEntity.onUpdated();
 }
 
 void ProxyMind::thinkGetOperation(const Operation & op, OpVector & res)

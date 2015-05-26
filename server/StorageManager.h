@@ -102,6 +102,7 @@ class StorageManager : public sigc::trackable {
 
     void insertEntity(LocatedEntity *);
     void updateEntity(LocatedEntity *);
+    void updateEntityThoughts(LocatedEntity *);
     void restoreChildren(LocatedEntity *);
 
     /// \brief Callback for m_mindInspector when thoughts arrive.

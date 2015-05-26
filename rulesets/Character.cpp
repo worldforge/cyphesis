@@ -273,7 +273,7 @@ LocatedEntity * Character::findInInventory(const std::string & id)
 Character::Character(const std::string & id, long intId) :
            Thing(id, intId),
                m_movement(*new Pedestrian(*this)),
-               m_proxyMind(new ProxyMind(id, intId)), m_externalMind(0)
+               m_proxyMind(new ProxyMind(id, intId, *this)), m_externalMind(0)
 {
     //Prevent the proxy mind from being deleted when all references to itself are removed
     //(for example through a Sight of a Delete).
@@ -413,6 +413,15 @@ void Character::clearTask(OpVector & res)
 
     tp->clearTask(this, res);
 }
+
+std::vector<Atlas::Objects::Root> Character::getThoughts() const
+{
+    if (m_proxyMind) {
+        return m_proxyMind->getThoughts();
+    }
+    return LocatedEntity::getThoughts();
+}
+
 
 void Character::ImaginaryOperation(const Operation & op, OpVector & res)
 {

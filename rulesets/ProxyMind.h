@@ -44,14 +44,14 @@
 class ProxyMind : public BaseMind
 {
     public:
-        ProxyMind(const std::string & id, long intId);
+        ProxyMind(const std::string & id, long intId, LocatedEntity& ownerEntity);
         virtual ~ProxyMind();
 
         /**
          * Gets all registered thoughts.
          * @return All registered thoughts.
          */
-        std::vector<Atlas::Objects::Root> getThoughts() const;
+        virtual std::vector<Atlas::Objects::Root> getThoughts() const;
 
         /**
          * Clear all registered thoughts.
@@ -59,6 +59,10 @@ class ProxyMind : public BaseMind
         void clearThoughts();
 
     private:
+
+
+        LocatedEntity& m_ownerEntity;
+
         /**
          * A store of thoughts with an id.
          *

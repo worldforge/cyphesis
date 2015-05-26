@@ -389,6 +389,23 @@ void StorageManager::insertEntity(LocatedEntity * ent)
 
 }
 
+void StorageManager::updateEntityThoughts(LocatedEntity * ent)
+{
+    Database * db = Database::instance();
+    auto thoughts = ent->getThoughts();
+    std::vector<std::string> thoughtsList;
+    for (auto& thoughtOp : thoughts) {
+        Atlas::Message::MapType map;
+        thoughtOp->addToMessage(map);
+        std::string value;
+        db->encodeObject(map, value);
+        thoughtsList.push_back(value);
+    }
+    db->replaceThoughts(ent->getId(), thoughtsList);
+
+    ent->resetFlags(entity_dirty_thoughts);
+}
+
 void StorageManager::updateEntity(LocatedEntity * ent)
 {
     std::string location;
@@ -439,7 +456,6 @@ void StorageManager::updateEntity(LocatedEntity * ent)
         Database::instance()->updateProperties(ent->getId(),
                                                upd_property_tuples);
     }
-    ent->resetFlags(entity_queued);
     ent->setFlags(entity_clean);
 }
 
@@ -529,14 +545,23 @@ void StorageManager::tick()
         }
         const EntityRef & ent = m_dirtyEntities.front();
         if (ent.get() != 0) {
-            debug( std::cout << "updating " << ent->getId() << std::endl << std::flush; );
-            updateEntity(ent.get());
-            ++updates;
+            if ((ent->getFlags() & entity_clean_mask) == 0) {
+                debug( std::cout << "updating " << ent->getId() << std::endl << std::flush; );
+                updateEntity(ent.get());
+                ++updates;
+            }
+            if ((ent->getFlags() & entity_dirty_thoughts) != 0) {
+                debug( std::cout << "updating thoughts " << ent->getId() << std::endl << std::flush; );
+                updateEntityThoughts(ent.get());
+                ++updates;
+            }
+            ent->resetFlags(entity_queued);
         } else {
             debug( std::cout << "deleted" << std::endl << std::flush; );
         }
         m_dirtyEntities.pop_front();
     }
+
     if (inserts > 0 || updates > 0) {
         debug(std::cout << "I: " << inserts << " U: " << updates
                         << std::endl << std::flush;);

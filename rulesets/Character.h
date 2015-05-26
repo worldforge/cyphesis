@@ -124,6 +124,8 @@ class Character : public Thing, public virtual sigc::trackable {
     void updateTask(OpVector &);
     void clearTask(OpVector &);
 
+    virtual std::vector<Atlas::Objects::Root> getThoughts() const;
+
     virtual void operation(const Operation & op, OpVector &);
     virtual void externalOperation(const Operation & op, Link &);
 
