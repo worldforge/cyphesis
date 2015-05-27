@@ -58,6 +58,8 @@ class ProxyMind : public BaseMind
          */
         void clearThoughts();
 
+        void operation(const Operation & op, OpVector & res);
+
     private:
 
 

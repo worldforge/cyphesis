@@ -168,3 +168,13 @@ void ProxyMind::clearThoughts()
     m_thoughtsWithId.clear();
 }
 
+void ProxyMind::operation(const Operation & op, OpVector & res)
+{
+    //For proxy minds we're only interested in Think ops; all others are ignored.
+    auto op_no = op->getClassNo();
+    if (op_no == Atlas::Objects::Operation::THINK_NO) {
+        ThinkOperation(op, res);
+    }
+
+}
+
