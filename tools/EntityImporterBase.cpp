@@ -324,7 +324,6 @@ void EntityImporterBase::sendMinds()
             }
 
             Atlas::Objects::Operation::RootOperation thinkOp;
-            thinkOp->setArgsAsList(thoughtArgs);
             std::list<std::string> parents;
             parents.emplace_back("think");
             thinkOp->setParents(parents);
@@ -333,6 +332,12 @@ void EntityImporterBase::sendMinds()
             //if it came from the entity itself (the server rewrites the FROM to be of the entity).
             thinkOp->setFrom(mAvatarId);
             thinkOp->setSerialno(newSerialNumber());
+
+            Atlas::Objects::Operation::Set setOp;
+            setOp->setArgsAsList(thoughtArgs);
+            thinkOp->setArgs1(setOp);
+
+
             mStats.mindsProcessedCount++;
             S_LOG_VERBOSE("Restoring mind of " << mind.first);
             mThoughtOpsInTransit++;

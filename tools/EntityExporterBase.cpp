@@ -211,7 +211,23 @@ void EntityExporterBase::thoughtOpArrived(const Operation & op)
 		return;
 	}
 
-	dumpMind(entityId, op);
+	if (op->getArgs().empty()) {
+        S_LOG_WARNING("Got think operation with no inner args operations for entity " << entityId << ".");
+        mStats.mindsError++;
+        EventProgress.emit();
+        return;
+	}
+
+	auto setOp = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Operation::Set>(op->getArgs().front());
+
+	if (!setOp.isValid()) {
+        S_LOG_WARNING("Got think operation with no inner Set operation for entity " << entityId << ".");
+        mStats.mindsError++;
+        EventProgress.emit();
+        return;
+	}
+
+	dumpMind(entityId, setOp);
 	mStats.mindsReceived++;
 	S_LOG_VERBOSE("Got commune result for entity " << entityId << ". " << mThoughtsOutstanding.size() << " thoughts requests waiting for response.");
 	EventProgress.emit();
@@ -335,22 +351,24 @@ void EntityExporterBase::infoArrived(const Operation & op)
 
 void EntityExporterBase::requestThoughts(const std::string& entityId, const std::string& persistedId)
 {
-	Atlas::Objects::Operation::Generic commune;
+	Atlas::Objects::Operation::Generic think;
 	std::list<std::string> parents;
-	parents.emplace_back("commune");
-	commune->setParents(parents);
-	commune->setTo(entityId);
+	parents.emplace_back("think");
+	think->setParents(parents);
+	think->setTo(entityId);
 
 	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
 	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
-	commune->setFrom(mAvatarId);
+	think->setFrom(mAvatarId);
 	//By setting a serial number we tell the server to "relay" the operation. This means that any
 	//response operation from the target entity will be sent back to us.
-	commune->setSerialno(newSerialNumber());
+	think->setSerialno(newSerialNumber());
+
+    think->setArgs1(Atlas::Objects::Operation::Get());
 
 	sigc::slot<void, const Operation&> slot = sigc::mem_fun(*this, &EntityExporterBase::operationGetThoughtResult);
-	sendAndAwaitResponse(commune, slot);
-	mThoughtsOutstanding.insert(std::make_pair(commune->getSerialno(), persistedId));
+	sendAndAwaitResponse(think, slot);
+	mThoughtsOutstanding.insert(std::make_pair(think->getSerialno(), persistedId));
 	S_LOG_VERBOSE("Sending request for thoughts for entity with id " << entityId << " (local id " << persistedId << ").");
 	mStats.mindsQueried++;
 }
