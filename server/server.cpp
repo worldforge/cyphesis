@@ -193,7 +193,7 @@ int main(int argc, char ** argv)
         for (int i = 0; i < ai_clients; ++i) {
             auto pid = fork();
             if (pid == 0) {
-                execl(PREFIX "/bin/cyaiclient", PREFIX "/bin/cyaiclient", NULL);
+                execl((bin_directory + "/cyaiclient").c_str(), (bin_directory + "/cyaiclient").c_str(), NULL);
                 return EXIT_FORK_ERROR;
             } else if (pid == -1) {
                 log(WARNING, "Could not spawn AI client process.");
@@ -504,8 +504,8 @@ int main(int argc, char ** argv)
                 log(INFO,
                         compose("Trying to import world from %1.", importPath));
                 std::stringstream ss;
-                ss << PREFIX
-                "/bin/cyimport --resume \"" << importPath + "\"";
+                ss << bin_directory <<
+                "/cyimport --resume \"" << importPath + "\"";
                 std::string command = ss.str();
                 std::thread importer([=]() {
                     int result = std::system(command.c_str());

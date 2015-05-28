@@ -3,7 +3,8 @@ noinst_LIBRARIES = libcommon.a libtools.a
 AM_CPPFLAGS = -I$(top_srcdir)  -I${top_builddir} $(BINRELOC_CFLAGS) \
            -DDATADIR=\"@datadir@\" \
            -DSYSCONFDIR=\"@sysconfdir@\" \
-           -DLOCALSTATEDIR=\"@localstatedir@\"
+           -DLOCALSTATEDIR=\"@localstatedir@\" \
+           -DBINDIR=\"@bindir@\"
 
 libcommon_a_SOURCES = const.cpp const.h \
 		      binreloc.c binreloc.h \

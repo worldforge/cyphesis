@@ -50,6 +50,7 @@ static const char * const DEFAULT_INSTANCE = "cyphesis";
 
 varconf::Config * global_conf = NULL;
 std::string instance(DEFAULT_INSTANCE);
+std::string bin_directory(BINDIR);
 std::string share_directory(DATADIR);
 std::string etc_directory(SYSCONFDIR);
 std::string var_directory(LOCALSTATEDIR);
@@ -93,6 +94,7 @@ static const usage_data usage[] = {
     { "", "interactive", "", "", "Run in interactive mode, giving a Python prompt", C },
     { CYPHESIS, "directory", "<directory>", "", "Directory where server data and scripts can be found", S|C },
     { CYPHESIS, "confdir", "<directory>", "", "Directory where server config can be found", S|C|M|D },
+    { CYPHESIS, "bindir", "<directory>", "", "Directory where Cyphesis binaries can be found", S|C|M|D },
     { CYPHESIS, "vardir", "<directory>", "", "Directory where temporary files can be stored", S|C|M },
     { CYPHESIS, "ruleset", "<name>", DEFAULT_RULESET, "Ruleset name", S|C|D },
     { CYPHESIS, "servername", "<name>", "<hostname>", "Published name of the server", S|C },
@@ -567,6 +569,8 @@ void updateUserConfiguration()
 void readInstanceConfiguration(const std::string & section)
 {
     // Config is now loaded. Now set the values of some globals.
+
+    readConfigItem(section, "bindir", bin_directory);
 
     readConfigItem(section, "directory", share_directory);
 

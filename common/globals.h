@@ -30,6 +30,7 @@ extern const char * const SLAVE;
 
 extern varconf::Config * global_conf;
 extern std::string instance;
+extern std::string bin_directory;
 extern std::string share_directory;
 extern std::string etc_directory;
 extern std::string var_directory;
