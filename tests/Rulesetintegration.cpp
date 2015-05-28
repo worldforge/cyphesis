@@ -1259,7 +1259,10 @@ void LocatedEntity::removeChild(LocatedEntity& childEntity)
 void LocatedEntity::setType(const TypeNode* t) {
     m_type = t;
 }
-
+std::vector<Atlas::Objects::Root> LocatedEntity::getThoughts() const
+{
+    return std::vector<Atlas::Objects::Root>();
+}
 PythonClass::PythonClass(const std::string & package,
                          const std::string & type,
                          struct _typeobject * base) : m_package(package),
@@ -1586,6 +1589,13 @@ void Character::mindTouchOperation(const Operation & op, OpVector & res)
 
 void Character::mindOtherOperation(const Operation & op, OpVector & res)
 {
+}
+void Character::mindThinkOperation(const Operation & op, OpVector & res)
+{
+}
+std::vector<Atlas::Objects::Root> Character::getThoughts() const
+{
+    return std::vector<Atlas::Objects::Root>();
 }
 
 bool Character::w2mAppearanceOperation(const Operation & op)

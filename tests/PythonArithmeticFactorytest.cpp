@@ -36,6 +36,9 @@
 #include "common/log.h"
 #include "common/compose.hpp"
 
+#include <Atlas/Objects/SmartPtr.h>
+#include <Atlas/Objects/Root.h>
+
 #include <cassert>
 
 static PyMethodDef no_methods[] = {
@@ -279,6 +282,11 @@ void LocatedEntity::removeChild(LocatedEntity& childEntity)
 void LocatedEntity::setType(const TypeNode* t)
 {
 
+}
+
+std::vector<Atlas::Objects::Root> LocatedEntity::getThoughts() const
+{
+    return std::vector<Atlas::Objects::Root>();
 }
 
 #include "stubs/common/stubRouter.h"

@@ -612,7 +612,10 @@ void LocatedEntity::removeChild(LocatedEntity& childEntity)
 void LocatedEntity::setType(const TypeNode* t)
 {
 }
-
+std::vector<Atlas::Objects::Root> LocatedEntity::getThoughts() const
+{
+    return std::vector<Atlas::Objects::Root>();
+}
 
 
 void log(LogLevel lvl, const std::string & msg)

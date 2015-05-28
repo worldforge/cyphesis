@@ -278,6 +278,11 @@ void LocatedEntity::setType(const TypeNode* t)
 
 }
 
+std::vector<Atlas::Objects::Root> LocatedEntity::getThoughts() const
+{
+    return std::vector<Atlas::Objects::Root>();
+}
+
 void addToEntity(const Point3D & p, std::vector<double> & vd)
 {
     vd.resize(3);

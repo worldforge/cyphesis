@@ -178,5 +178,14 @@ int Character::unlinkExternal(Link*)
     return 0;
 }
 
+std::vector<Atlas::Objects::Root> Character::getThoughts() const
+{
+    return std::vector<Atlas::Objects::Root>();
+}
+
+void Character::mindThinkOperation(const Operation & op, OpVector & res)
+{
+}
+
 
 #endif /* MOCKCHARACTER_H_ */

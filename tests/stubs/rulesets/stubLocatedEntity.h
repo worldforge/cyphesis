@@ -18,6 +18,9 @@
 #ifndef STUBLOCATEDENTITY_H_
 #define STUBLOCATEDENTITY_H_
 
+#include <Atlas/Objects/Root.h>
+#include <Atlas/Objects/SmartPtr.h>
+
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),
                m_refCount(0), m_seq(0),
@@ -120,6 +123,11 @@ void LocatedEntity::merge(const Atlas::Message::MapType &)
 
 void LocatedEntity::setType(const TypeNode * t) {
     m_type = t;
+}
+
+std::vector<Atlas::Objects::Root> LocatedEntity::getThoughts() const
+{
+    return std::vector<Atlas::Objects::Root>();
 }
 
 #endif /* STUBLOCATEDENTITY_H_ */

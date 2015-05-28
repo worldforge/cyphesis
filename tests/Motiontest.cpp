@@ -513,6 +513,11 @@ void LocatedEntity::setType(const TypeNode* t)
 
 }
 
+std::vector<Atlas::Objects::Root> LocatedEntity::getThoughts() const
+{
+    return std::vector<Atlas::Objects::Root>();
+}
+
 #include "stubs/common/stubRouter.h"
 #include "stubs/modules/stubLocation.h"
 #include "stubs/common/stubTypeNode.h"

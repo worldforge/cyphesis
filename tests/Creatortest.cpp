@@ -305,9 +305,20 @@ void Character::mindOtherOperation(const Operation &, OpVector &)
 {
 }
 
+void Character::mindThinkOperation(const Operation & op, OpVector & res)
+{
+}
+
+
 void Character::sendMind(const Operation & op, OpVector & res)
 {
 }
+
+std::vector<Atlas::Objects::Root> Character::getThoughts() const
+{
+    return std::vector<Atlas::Objects::Root>();
+}
+
 
 long int Character::s_serialNumberNext = 0L;
 

@@ -29,8 +29,8 @@ using Atlas::Objects::smart_dynamic_cast;
 
 static const bool debug_flag = false;
 
-ProxyMind::ProxyMind(const std::string & id, long intId) :
-        BaseMind(id, intId)
+ProxyMind::ProxyMind(const std::string & id, long intId, LocatedEntity& e) :
+        BaseMind(id, intId), m_ownerEntity(e)
 {
 
 }
@@ -64,5 +64,10 @@ std::vector<Atlas::Objects::Root> ProxyMind::getThoughts() const
 
 void ProxyMind::clearThoughts()
 {
+}
+
+void ProxyMind::operation(const Operation & op, OpVector & res)
+{
+
 }
 

@@ -453,6 +453,11 @@ void LocatedEntity::setType(const TypeNode* t) {
     m_type = t;
 }
 
+std::vector<Atlas::Objects::Root> LocatedEntity::getThoughts() const
+{
+    return std::vector<Atlas::Objects::Root>();
+}
+
 Router::Router(const std::string & id, long intId) : m_id(id), m_intId(intId)
 {
 }
