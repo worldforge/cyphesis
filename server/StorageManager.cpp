@@ -212,8 +212,7 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
                                ent->getId(), name));
             continue;
         }
-        const TypeNode * type = ent->getType();
-        assert(type != 0);
+        assert(ent->getType() != 0);
         const Element & val = J->second;
 
         Element existingVal;
