@@ -6,6 +6,7 @@ Welcome to the Cyphesis documentation.
 # Contents
 
 * [Architecture](@ref architecture)
+* [Minds](@ref minds)
 
 # Introduction
 
