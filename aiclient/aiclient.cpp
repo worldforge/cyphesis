@@ -139,6 +139,7 @@ int main(int argc, char ** argv)
 
     MindFactory mindFactory;
 
+    //TODO: perhaps don't hardcode this; instead allowing for different classes for different minds?
     std::string script_package = "mind.NPCMind";
     std::string script_class = "NPCMind";
 
