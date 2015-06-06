@@ -125,7 +125,7 @@ bool ComparePredicate::isMatch(const QueryContext& context) const
                     const TypeNode* rightType =
                             static_cast<const TypeNode*>(right.Ptr());
                     if (rightType) {
-                        return rightType->isTypeOf(leftType);
+                        return leftType->isTypeOf(rightType);
                     }
                 }
             }
