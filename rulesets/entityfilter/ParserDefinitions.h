@@ -87,8 +87,9 @@ struct query_parser : qi::grammar<Iterator, Predicate*(),
             //A list of logical operators
             //String operators ("and", "or") require at least one space before and after to distinguish
             //them from other words.
-            logical_operator_g %= qi::string("&&") | qi::string("||") | no_skip[+space >> no_case[qi::string("and")] >> +space] |
-                                no_skip[+space >> no_case[qi::string("or")] >> +space];
+            logical_operator_g %= qi::string("&&") | qi::string("||") | qi::string("!") | no_skip[+space >> no_case[qi::string("and")] >> +space] |
+                                no_skip[+space >> no_case[qi::string("or")] >> +space] |
+                                no_skip[+space >> no_case[qi::string("not")] >> +space];
 
             //An attribute of a segment. no_skip is used to disable skipper parser and read white spaces
             segment_attribute_g %= qi::no_skip[+(qi::char_ - space - "." - ":" - comp_operator_g - logical_operator_g - "(" - ")" - "|" - ",")];
@@ -153,11 +154,20 @@ struct query_parser : qi::grammar<Iterator, Predicate*(),
                     >> *("|" >> consumer_g[_c = new_<OrPredicate>(_c, new_<ComparePredicate>(_b, _1,_d))])
                     >> qi::eps[_val = _c];
 
-            predicate_g = comparer_predicate_g[_a = _1] >>
+            //Construct a predicate with logical operators
+            predicate_g =
+                    //Try unary not on a comparer since it not has highest precedence
+                    (no_case["not"] | "!") >> comparer_predicate_g[_val = new_<NotPredicate>(_1)]|
+                    //Try unary not on a logical predicate
+                    (no_case["not"] | "!") >> predicate_g[_val = new_<NotPredicate>(_1)]         |
+                    //Try binary operators (or, and)
+                    comparer_predicate_g[_a = _1] >>
                     ((("&&" | no_case["and"]) >> predicate_g[_val = new_<AndPredicate>(_a, _1)]) |
                     (("||" | no_case["or"]) >> predicate_g[_val = new_<OrPredicate>(_a, _1)])    |
-                    qi::eps[_val = _a])                                                             |
+                    qi::eps[_val = _a])                                                          |
+                    //Collect parentheses
                     "(" >> predicate_g[_val = _1] >> ")";
+
 
             //Another level that constructs predicates after parentheses were consumed
             parenthesised_predicate_g = predicate_g[_a = _1] >>
