@@ -184,4 +184,14 @@ bool OrPredicate::isMatch(const QueryContext& context) const
     return m_lhs->isMatch(context) || m_rhs->isMatch(context);
 
 }
+
+NotPredicate::NotPredicate(const Predicate* pred) :
+        m_pred(pred)
+{
+}
+
+bool NotPredicate::isMatch(const QueryContext& context) const
+{
+    return !m_pred->isMatch(context);
+}
 }
