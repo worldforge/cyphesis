@@ -226,6 +226,10 @@ void ProvidersTest::test_ComparePredicates()
     //entity.type = types.barrel || entity.bbox.volume = 1
     OrPredicate orPred1(&compPred1, &compPred3);
     assert(orPred1.isMatch(QueryContext { *m_b1 }));
+
+    //not entity.type = types.barrel
+    NotPredicate notPred1(&compPred1);
+    assert(orPred1.isMatch((QueryContext { *m_b1 })));
 }
 
 void ProvidersTest::test_ListComparators()
