@@ -195,15 +195,16 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
         status->apply(this);
     }
 
-    // FIXME I don't like having to do this test, as its only required
-    // during the unit tests.
-    // Log an error perhaps?
-    // FIXME This causes a character holding an uprooted plant to die.
     if (m_location.m_loc != nullptr) {
-        Eat eat_op;
-        eat_op->setTo(m_location.m_loc->getId());
-        res.push_back(eat_op);
-        //Initialize nourishment to zero once we've sent our first Eat op.
+        Element mode_attr;
+        if (getAttrType("mode", mode_attr, Element::TYPE_STRING) == 0 && mode_attr.String() == "planted") {
+        	//Only send eat ops if we're planted.
+        	Eat eat_op;
+            eat_op->setTo(m_location.m_loc->getId());
+            res.push_back(eat_op);
+        }
+
+        //Initialize nourishment to zero once we've had a chance to sent our first Eat op.
         if (!m_nourishment) {
             m_nourishment = .0;
         }
