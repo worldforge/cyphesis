@@ -32,7 +32,7 @@ class PhysicalDomain: public Domain
         PhysicalDomain(LocatedEntity& entity);
         virtual ~PhysicalDomain();
 
-        virtual float constrainHeight(LocatedEntity *, const Point3D &,
+        virtual float constrainHeight(LocatedEntity& entity, LocatedEntity *, const Point3D &,
                 const std::string &);
 
         virtual void tick(double t);

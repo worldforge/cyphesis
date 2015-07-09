@@ -268,9 +268,10 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
     if (domain) {
         // FIXME Quick height hack
-        m_location.m_pos.z() = domain->constrainHeight(m_location.m_loc,
+        m_location.m_pos.z() = domain->constrainHeight(*this, m_location.m_loc,
                                                                m_location.pos(),
                                                                mode);
+
         m_location.update(current_time);
         m_flags &= ~(entity_pos_clean | entity_clean);
 
@@ -565,7 +566,7 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     if (m_location.m_loc) {
         domain = m_location.m_loc->getMovementDomain();
         if (domain) {
-            m_location.m_pos.z() = domain->constrainHeight(m_location.m_loc,
+            m_location.m_pos.z() = domain->constrainHeight(*this, m_location.m_loc,
                                                         m_location.pos(),
                                                         "standing");
         } else {
