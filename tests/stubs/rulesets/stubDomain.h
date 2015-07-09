@@ -27,7 +27,7 @@ Domain::~Domain()
 {
 }
 
-float Domain::constrainHeight(LocatedEntity * parent,
+float Domain::constrainHeight(LocatedEntity& entity, LocatedEntity * parent,
                               const Point3D & pos,
                               const std::string & mode)
 {

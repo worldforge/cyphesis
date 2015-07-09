@@ -43,7 +43,7 @@ class BulletDomain : public Domain {
 
     virtual ~BulletDomain();
 
-    virtual float constrainHeight(LocatedEntity *, const Point3D &,
+    virtual float constrainHeight(LocatedEntity& entity, LocatedEntity *, const Point3D &,
                                   const std::string &);
 
     virtual void tick(double t);

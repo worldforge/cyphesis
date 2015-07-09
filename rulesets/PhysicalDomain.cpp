@@ -26,6 +26,7 @@
 #include "LocatedEntity.h"
 #include "OutfitProperty.h"
 #include "EntityProperty.h"
+#include "PlantableProperty.h"
 
 #include "physics/Collision.h"
 
@@ -64,7 +65,8 @@ PhysicalDomain::~PhysicalDomain()
 {
 }
 
-float PhysicalDomain::constrainHeight(LocatedEntity * parent,
+float PhysicalDomain::constrainHeight(LocatedEntity& entity,
+                              LocatedEntity * parent,
                               const Point3D & pos,
                               const std::string & mode)
 {
@@ -73,7 +75,7 @@ float PhysicalDomain::constrainHeight(LocatedEntity * parent,
         return pos.z();
     }
     const TerrainProperty * tp = parent->getPropertyClass<TerrainProperty>("terrain");
-    if (tp != 0) {
+    if (tp) {
         if (mode == "floating") {
             return 0.f;
         }
@@ -81,6 +83,18 @@ float PhysicalDomain::constrainHeight(LocatedEntity * parent,
         Vector3D normal;
         tp->getHeightAndNormal(pos.x(), pos.y(), h, normal);
         // FIXME Use a virtual movement_domain function to get the constraints
+
+        //If the mode is "planted" we should also look for a "plantable" property, and check if there's any height offset.
+        if (mode == "planted") {
+            const PlantableProperty* plantableProperty = entity.getPropertyClass<PlantableProperty>("plantable");
+            if (plantableProperty) {
+                if (plantableProperty->getOffset() != 0.f) {
+                    //The height offset is scaled against the height of the entity.
+                    float z_offset = (entity.m_location.m_bBox.highCorner().z() - entity.m_location.m_bBox.lowCorner().z()) * plantableProperty->getOffset();
+                    h += z_offset;
+                }
+            }
+        }
         debug(std::cout << "Fix height " << pos.z() << " to " << h
                         << std::endl << std::flush;);
         return h;
@@ -93,7 +107,7 @@ float PhysicalDomain::constrainHeight(LocatedEntity * parent,
                         << std::endl << std::flush;);
         float h;
         const Quaternion & parent_orientation = parent->m_location.orientation().isValid() ? parent->m_location.orientation() : identity;
-        h =  constrainHeight(parent->m_location.m_loc,
+        h =  constrainHeight(entity, parent->m_location.m_loc,
                              pos.toParentCoords(parent->m_location.pos(),
                                                 parent_orientation),
                              mode) - ppos.z();

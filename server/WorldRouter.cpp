@@ -173,7 +173,7 @@ LocatedEntity * WorldRouter::addEntity(LocatedEntity * ent)
     Domain* movementDomain = ent->getMovementDomain();
     if (movementDomain) {
         ent->m_location.m_pos.z() = movementDomain->
-              constrainHeight(ent->m_location.m_loc,
+              constrainHeight(*ent, ent->m_location.m_loc,
                               ent->m_location.pos(),
                               mode);
     }

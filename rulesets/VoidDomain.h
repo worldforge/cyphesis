@@ -29,7 +29,7 @@ class VoidDomain : public Domain
         VoidDomain(LocatedEntity& entity);
         virtual ~VoidDomain();
 
-        virtual float constrainHeight(LocatedEntity *, const Point3D &,
+        virtual float constrainHeight(LocatedEntity &, LocatedEntity *, const Point3D &,
                 const std::string &);
 
         virtual void tick(double t);
