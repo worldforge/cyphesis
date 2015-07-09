@@ -1,0 +1,199 @@
+<atlas>
+
+	<map>
+		<string name="id">oak_planted</string>
+		<string name="objtype">archetype</string>
+		<list name="parents">
+			<string>archetype</string>
+		</list>
+		<list name="entities">
+			<map>
+				<list name="parents">
+					<string>oak</string>
+				</list>
+				<string name="mode">planted</string>
+			</map>
+		</list>
+	</map>
+	<map>
+		<string name="id">appletree_planted</string>
+		<string name="objtype">archetype</string>
+		<list name="parents">
+			<string>archetype</string>
+		</list>
+		<list name="entities">
+			<map>
+				<list name="parents">
+					<string>appletree</string>
+				</list>
+				<string name="mode">planted</string>
+			</map>
+		</list>
+	</map>
+	<map>
+		<string name="id">birch_planted</string>
+		<string name="objtype">archetype</string>
+		<list name="parents">
+			<string>archetype</string>
+		</list>
+		<list name="entities">
+			<map>
+				<list name="parents">
+					<string>birch</string>
+				</list>
+				<string name="mode">planted</string>
+			</map>
+		</list>
+	</map>
+	<map>
+		<string name="id">carrot_planted</string>
+		<string name="objtype">archetype</string>
+		<list name="parents">
+			<string>archetype</string>
+		</list>
+		<list name="entities">
+			<map>
+				<list name="parents">
+					<string>carrot</string>
+				</list>
+				<string name="mode">planted</string>
+			</map>
+		</list>
+	</map>
+	<map>
+		<string name="id">fern_planted</string>
+		<string name="objtype">archetype</string>
+		<list name="parents">
+			<string>archetype</string>
+		</list>
+		<list name="entities">
+			<map>
+				<list name="parents">
+					<string>fern</string>
+				</list>
+				<string name="mode">planted</string>
+			</map>
+		</list>
+	</map>
+	<map>
+		<string name="id">fir_planted</string>
+		<string name="objtype">archetype</string>
+		<list name="parents">
+			<string>archetype</string>
+		</list>
+		<list name="entities">
+			<map>
+				<list name="parents">
+					<string>fir</string>
+				</list>
+				<string name="mode">planted</string>
+			</map>
+		</list>
+	</map>
+	<map>
+		<string name="id">flower_planted</string>
+		<string name="objtype">archetype</string>
+		<list name="parents">
+			<string>archetype</string>
+		</list>
+		<list name="entities">
+			<map>
+				<list name="parents">
+					<string>flower</string>
+				</list>
+				<string name="mode">planted</string>
+			</map>
+		</list>
+	</map>
+	<map>
+		<string name="id">grass_planted</string>
+		<string name="objtype">archetype</string>
+		<list name="parents">
+			<string>archetype</string>
+		</list>
+		<list name="entities">
+			<map>
+				<list name="parents">
+					<string>grass</string>
+				</list>
+				<string name="mode">planted</string>
+			</map>
+		</list>
+	</map>
+	<map>
+		<string name="id">mushroom_planted</string>
+		<string name="objtype">archetype</string>
+		<list name="parents">
+			<string>archetype</string>
+		</list>
+		<list name="entities">
+			<map>
+				<list name="parents">
+					<string>mushroom</string>
+				</list>
+				<string name="mode">planted</string>
+			</map>
+		</list>
+	</map>
+	<map>
+		<string name="id">poplar_planted</string>
+		<string name="objtype">archetype</string>
+		<list name="parents">
+			<string>archetype</string>
+		</list>
+		<list name="entities">
+			<map>
+				<list name="parents">
+					<string>poplar</string>
+				</list>
+				<string name="mode">planted</string>
+			</map>
+		</list>
+	</map>
+	<map>
+		<string name="id">shrub_planted</string>
+		<string name="objtype">archetype</string>
+		<list name="parents">
+			<string>archetype</string>
+		</list>
+		<list name="entities">
+			<map>
+				<list name="parents">
+					<string>shrub</string>
+				</list>
+				<string name="mode">planted</string>
+			</map>
+		</list>
+	</map>
+	<map>
+		<string name="id">turnip_planted</string>
+		<string name="objtype">archetype</string>
+		<list name="parents">
+			<string>archetype</string>
+		</list>
+		<list name="entities">
+			<map>
+				<list name="parents">
+					<string>turnip</string>
+				</list>
+				<string name="mode">planted</string>
+			</map>
+		</list>
+	</map>
+	<map>
+		<string name="id">willow_planted</string>
+		<string name="objtype">archetype</string>
+		<list name="parents">
+			<string>archetype</string>
+		</list>
+		<list name="entities">
+			<map>
+				<list name="parents">
+					<string>willow</string>
+				</list>
+				<string name="mode">planted</string>
+			</map>
+		</list>
+	</map>
+
+</atlas>
