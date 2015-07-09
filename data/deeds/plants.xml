@@ -452,6 +452,12 @@
         <int name="default">4</int>
         <string name="visibility">public</string>
       </map>
+      <map name="plantable">
+        <map name="default">
+          <float name="offset">-0.1</float>
+        </map>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">oak</string>
     <string name="objtype">class</string>
@@ -577,7 +583,7 @@
     <string name="id">tuber</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>thing</string>
+      <string>plant</string>
     </list>
   </map>
 
