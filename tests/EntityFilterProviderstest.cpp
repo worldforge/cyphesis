@@ -49,6 +49,7 @@ class ProvidersTest : public Cyphesis::TestBase {
         Entity *m_cloth; //Cloth for gloves' outfit
 
         //Types for testing
+        TypeNode *m_thingType;
         TypeNode *m_barrelType;
         TypeNode *m_characterType;
         TypeNode *m_clothType;
@@ -332,9 +333,14 @@ ProvidersTest::ProvidersTest()
 
 void ProvidersTest::setup()
 {
+    //Thing is a parent type for all types except character
+    m_thingType = new TypeNode("thing");
+    types["thing"] = m_thingType;
+
     //Make a barrel with mass and burn speed properties
     m_b1 = new Entity("1", 1);
     m_barrelType = new TypeNode("barrel");
+    m_barrelType->setParent(m_thingType);
     types["barrel"] = m_barrelType;
     m_b1->setType(m_barrelType);
     m_b1->setProperty("mass", new SoftProperty(Element(30)));
@@ -376,6 +382,7 @@ void ProvidersTest::setup()
 
     //Green Cloth serves as outfit for gloves
     m_clothType = new TypeNode("cloth");
+    m_clothType->setParent(m_thingType);
     types["cloth"] = m_clothType;
 
     m_cloth = new Entity("3", 3);
@@ -419,6 +426,7 @@ void ProvidersTest::teardown()
     delete m_barrelType;
     delete m_characterType;
     delete m_clothType;
+    delete m_thingType;
 }
 
 Consumer<QueryContext>* ProvidersTest::CreateProvider(std::initializer_list<
