@@ -55,7 +55,8 @@ class Cultivate(server.Task):
                                           mass = self.target().mass,
                                           bbox = [-0.02, -0.02, 0,
                                                   0.02, 0.02, 0.12],
-                                          location = new_loc), to = self.target())
+                                          location = new_loc,
+                                          mode = "planted"), to = self.target())
         res.append(create)
 
         set=Operation("set", Entity(self.target().id, status=-1), to=self.target())
