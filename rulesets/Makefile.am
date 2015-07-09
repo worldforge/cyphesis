@@ -69,7 +69,8 @@ librulesetentity_a_SOURCES = \
 			     PhysicalDomain.cpp PhysicalDomain.h \
 			     VoidDomain.cpp VoidDomain.h \
 			     ProxyMind.cpp ProxyMind.h \
-			     InventoryDomain.cpp InventoryDomain.h
+			     InventoryDomain.cpp InventoryDomain.h \
+			     PlantableProperty.cpp PlantableProperty.h
 
 libentityfilter_a_SOURCES = entityfilter/Filter.cpp entityfilter/Filter.h \
 			     entityfilter/ParserDefinitions.h \
