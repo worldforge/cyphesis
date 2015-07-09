@@ -79,6 +79,9 @@ class ProvidersTest : public Cyphesis::TestBase {
         ///\contains_recursive(container, condition) checks if there is an entity
         ///\that matches condition within the container
         void test_ContainsRecursive();
+        ///\Test instance_of operator
+        ///\In particular, cases of checking for parent type
+        void test_InstanceOf();
 
 };
 
@@ -176,7 +179,6 @@ void ProvidersTest::test_ComparePredicates()
 
     ComparePredicate compPred1(lhs_provider1, rhs_provider1,
                                ComparePredicate::Comparator::INSTANCE_OF);
-    assert(compPred1.isMatch(QueryContext { *m_b1 }));
 
     //entity.bbox.volume
     auto lhs_provider2 = CreateProvider( { "entity", "bbox", "volume" });
@@ -322,6 +324,31 @@ void ProvidersTest::test_ContainsRecursive()
     assert(value.Int() == 0);
 }
 
+void ProvidersTest::test_InstanceOf()
+{
+    //Thing for testing instance_of
+    Entity thingEntity("123", 123);
+    thingEntity.setType(m_thingType);
+
+    //Barrel is also thing but thing is not a barrel
+
+    //entity.type = types.barrel
+    auto lhs_provider1 = CreateProvider( { "entity", "type" });
+    auto rhs_provider1 = CreateProvider( { "types", "barrel" });
+
+    ComparePredicate compPred1(lhs_provider1, rhs_provider1,
+                               ComparePredicate::Comparator::INSTANCE_OF);
+    ASSERT_TRUE(compPred1.isMatch(QueryContext { *m_b1 }));
+    ASSERT_TRUE(!compPred1.isMatch(QueryContext { thingEntity }));
+
+    auto rhs_provider2 = CreateProvider( { "types", "thing" });
+
+    ComparePredicate compPred2(lhs_provider1, rhs_provider2,
+                               ComparePredicate::Comparator::INSTANCE_OF);
+    ASSERT_TRUE(compPred2.isMatch(QueryContext { *m_b1 }));
+    ASSERT_TRUE(compPred2.isMatch(QueryContext { thingEntity }));
+}
+
 ProvidersTest::ProvidersTest()
 {
     ADD_TEST(ProvidersTest::test_EntityProperty);
@@ -329,6 +356,7 @@ ProvidersTest::ProvidersTest()
     ADD_TEST(ProvidersTest::test_OutfitProviders);
     ADD_TEST(ProvidersTest::test_ComparePredicates);
     ADD_TEST(ProvidersTest::test_ListComparators);
+    ADD_TEST(ProvidersTest::test_InstanceOf);
 }
 
 void ProvidersTest::setup()
