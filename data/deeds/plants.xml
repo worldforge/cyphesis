@@ -160,6 +160,23 @@
         <float name="default">0.5</float>
         <string name="visibility">public</string>
       </map>
+      <map name="bbox">
+        <list name="default">
+          <float>-0.1</float>
+          <float>-0.1</float>
+          <float>0</float>
+          <float>0.1</float>
+          <float>0.1</float>
+          <float>0.8</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="plantable">
+        <map name="default">
+          <float name="offset">-0.5</float>
+        </map>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">carrot</string>
     <string name="objtype">class</string>
@@ -595,6 +612,23 @@
       </map>
       <map name="mass">
         <float name="default">0.5</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="bbox">
+        <list name="default">
+          <float>-0.2</float>
+          <float>-0.2</float>
+          <float>0</float>
+          <float>0.2</float>
+          <float>0.2</float>
+          <float>0.6</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="plantable">
+        <map name="default">
+          <float name="offset">-0.5</float>
+        </map>
         <string name="visibility">public</string>
       </map>
     </map>
