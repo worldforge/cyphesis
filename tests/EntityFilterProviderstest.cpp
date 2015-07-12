@@ -49,6 +49,7 @@ class ProvidersTest : public Cyphesis::TestBase {
         Entity *m_cloth; //Cloth for gloves' outfit
 
         //Types for testing
+        TypeNode *m_thingType;
         TypeNode *m_barrelType;
         TypeNode *m_characterType;
         TypeNode *m_clothType;
@@ -78,6 +79,9 @@ class ProvidersTest : public Cyphesis::TestBase {
         ///\contains_recursive(container, condition) checks if there is an entity
         ///\that matches condition within the container
         void test_ContainsRecursive();
+        ///\Test instance_of operator
+        ///\In particular, cases of checking for parent type
+        void test_InstanceOf();
 
 };
 
@@ -175,7 +179,6 @@ void ProvidersTest::test_ComparePredicates()
 
     ComparePredicate compPred1(lhs_provider1, rhs_provider1,
                                ComparePredicate::Comparator::INSTANCE_OF);
-    assert(compPred1.isMatch(QueryContext { *m_b1 }));
 
     //entity.bbox.volume
     auto lhs_provider2 = CreateProvider( { "entity", "bbox", "volume" });
@@ -226,6 +229,10 @@ void ProvidersTest::test_ComparePredicates()
     //entity.type = types.barrel || entity.bbox.volume = 1
     OrPredicate orPred1(&compPred1, &compPred3);
     assert(orPred1.isMatch(QueryContext { *m_b1 }));
+
+    //not entity.type = types.barrel
+    NotPredicate notPred1(&compPred1);
+    assert(orPred1.isMatch((QueryContext { *m_b1 })));
 }
 
 void ProvidersTest::test_ListComparators()
@@ -317,6 +324,31 @@ void ProvidersTest::test_ContainsRecursive()
     assert(value.Int() == 0);
 }
 
+void ProvidersTest::test_InstanceOf()
+{
+    //Thing for testing instance_of
+    Entity thingEntity("123", 123);
+    thingEntity.setType(m_thingType);
+
+    //Barrel is also thing but thing is not a barrel
+
+    //entity.type = types.barrel
+    auto lhs_provider1 = CreateProvider( { "entity", "type" });
+    auto rhs_provider1 = CreateProvider( { "types", "barrel" });
+
+    ComparePredicate compPred1(lhs_provider1, rhs_provider1,
+                               ComparePredicate::Comparator::INSTANCE_OF);
+    ASSERT_TRUE(compPred1.isMatch(QueryContext { *m_b1 }));
+    ASSERT_TRUE(!compPred1.isMatch(QueryContext { thingEntity }));
+
+    auto rhs_provider2 = CreateProvider( { "types", "thing" });
+
+    ComparePredicate compPred2(lhs_provider1, rhs_provider2,
+                               ComparePredicate::Comparator::INSTANCE_OF);
+    ASSERT_TRUE(compPred2.isMatch(QueryContext { *m_b1 }));
+    ASSERT_TRUE(compPred2.isMatch(QueryContext { thingEntity }));
+}
+
 ProvidersTest::ProvidersTest()
 {
     ADD_TEST(ProvidersTest::test_EntityProperty);
@@ -324,13 +356,19 @@ ProvidersTest::ProvidersTest()
     ADD_TEST(ProvidersTest::test_OutfitProviders);
     ADD_TEST(ProvidersTest::test_ComparePredicates);
     ADD_TEST(ProvidersTest::test_ListComparators);
+    ADD_TEST(ProvidersTest::test_InstanceOf);
 }
 
 void ProvidersTest::setup()
 {
+    //Thing is a parent type for all types except character
+    m_thingType = new TypeNode("thing");
+    types["thing"] = m_thingType;
+
     //Make a barrel with mass and burn speed properties
     m_b1 = new Entity("1", 1);
     m_barrelType = new TypeNode("barrel");
+    m_barrelType->setParent(m_thingType);
     types["barrel"] = m_barrelType;
     m_b1->setType(m_barrelType);
     m_b1->setProperty("mass", new SoftProperty(Element(30)));
@@ -372,6 +410,7 @@ void ProvidersTest::setup()
 
     //Green Cloth serves as outfit for gloves
     m_clothType = new TypeNode("cloth");
+    m_clothType->setParent(m_thingType);
     types["cloth"] = m_clothType;
 
     m_cloth = new Entity("3", 3);
@@ -415,6 +454,7 @@ void ProvidersTest::teardown()
     delete m_barrelType;
     delete m_characterType;
     delete m_clothType;
+    delete m_thingType;
 }
 
 Consumer<QueryContext>* ProvidersTest::CreateProvider(std::initializer_list<

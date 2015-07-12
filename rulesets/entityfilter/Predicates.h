@@ -50,6 +50,14 @@ class OrPredicate : public Predicate {
         const Predicate* m_lhs;
         const Predicate* m_rhs;
 };
+
+class NotPredicate : public Predicate {
+    public:
+        NotPredicate(const Predicate* pred);
+        virtual bool isMatch(const QueryContext& context) const;
+    protected:
+        const Predicate* m_pred;
+};
 }
 
 #endif

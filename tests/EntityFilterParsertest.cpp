@@ -135,6 +135,16 @@ void ParserTest::test_LogicalOperators()
     pred = ConstructPredicate("1 = 2 and 3 = 4");
     assert(typeid(*pred) == typeid(AndPredicate));
     delete pred;
+
+    pred = ConstructPredicate("!5 = 6");
+    assert(typeid(*pred) == typeid(NotPredicate));
+
+    pred = ConstructPredicate("not 7 = 8");
+    assert(typeid(*pred) == typeid(NotPredicate));
+
+    //Test precedence. not should be applied to 1 = 2, not the whole expression
+    pred = ConstructPredicate("not 1 = 2 and 3 = 4");
+    assert(typeid(*pred) == typeid(AndPredicate));
 }
 
 void ParserTest::test_Literals()

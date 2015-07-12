@@ -197,6 +197,11 @@ void EntityFilterTest::test_LogicalOperators()
                       m_b1, m_b2, m_bl1 },
               { });
 
+    //test not operator
+    TestQuery("!entity.type = types.barrel", { m_bl1 }, { m_b1, m_b2 });
+
+    TestQuery("not entity.burn_speed = 0.3", { m_bl1 }, { m_b1 });
+
     //test multiple types for instance_of operator
     TestQuery("entity.type instance_of types.barrel|types.boulder", { m_b1,
                       m_bl1 },
@@ -218,6 +223,12 @@ void EntityFilterTest::test_LogicalOperators()
     TestQuery(
             "entity.type=types.boulder||entity.type=types.barrel&&entity.burn_speed=0.3",
             { m_b1, m_bl1 }, { });
+
+    //Test not operator precedence. It should be applied to burn_speed comparison, and
+    //not the whole expression
+    TestQuery("not entity.burn_speed = 0.3 && entity.type=types.barrel", { m_b2,
+                      m_b3 },
+              { m_b1, m_bl1 });
 
 }
 
@@ -247,6 +258,9 @@ void EntityFilterTest::test_Parentheses()
     TestQuery(
             "(entity.type=types.boulder||entity.type=types.barrel)&&entity.burn_speed=0.3",
             { m_b1 }, { m_bl1 });
+    TestQuery("not (entity.burn_speed = 0.3 && entity.type=types.barrel)", {
+                      m_bl1, m_b3, m_b2 },
+              { m_b1 });
 }
 
 void EntityFilterTest::test_Outfit()
