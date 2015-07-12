@@ -65,6 +65,7 @@ class EntityFilterTest : public Cyphesis::TestBase {
         Entity *m_leather;
 
         //Types for testing
+        TypeNode *m_thingType;
         TypeNode *m_barrelType;
         TypeNode* m_boulderType;
         TypeNode *m_characterType;
@@ -157,6 +158,9 @@ void EntityFilterTest::test_SoftProperty()
               { m_b2, m_bl1 });
 
     TestQuery("entity.type instance_of types.barrel", { m_b1 }, { m_bl1 });
+
+    //Check inheritence
+    TestQuery("entity.type instance_of types.thing", { m_b1 }, { m_bl1 });
 
     //test query with spaces
     TestQuery("  entity.type = types.barrel   ", { m_b1 }, { m_bl1 });
@@ -326,7 +330,12 @@ void EntityFilterTest::setup()
 {
 //Set up testing environment for Type/Soft properties
     m_b1 = new Entity("1", 1);
+
+    m_thingType = new TypeNode("thing");
+    types["thing"] = m_thingType;
+
     m_barrelType = new TypeNode("barrel");
+    m_barrelType->setParent(m_thingType);
     types["barrel"] = m_barrelType;
     m_b1->setType(m_barrelType);
     m_b1->setProperty("mass", new SoftProperty(Element(30)));
