@@ -32,24 +32,14 @@ using Atlas::Message::MapType;
 /// The attributes named are special and are modified using high level
 /// operations, such as Move, not via Set operations, or assigned by
 /// normal means.
-std::set<std::string> LocatedEntity::m_immutable;
+std::set<std::string> LocatedEntity::s_immutable = {"id", "parents", "pos", "loc", "velocity", "orientation", "contains", "objtype"};
 
 /// \brief Singleton accessor for immutables
 ///
-/// The immutable attribute set m_immutables is initialised if necessary,
-/// and a reference is returned.
+/// The immutable attribute set m_immutables is returned.
 const std::set<std::string> & LocatedEntity::immutables()
 {
-    if (m_immutable.empty()) {
-        m_immutable.insert("parents");
-        m_immutable.insert("pos");
-        m_immutable.insert("loc");
-        m_immutable.insert("velocity");
-        m_immutable.insert("orientation");
-        m_immutable.insert("contains");
-        m_immutable.insert("objtype");
-    }
-    return m_immutable;
+    return s_immutable;
 }
 
 /// \brief LocatedEntity constructor

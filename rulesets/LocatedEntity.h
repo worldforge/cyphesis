@@ -98,7 +98,7 @@ static const unsigned int entity_dirty_thoughts = 1 << 10;
 /// in scripts rather than in the C++ code.
 class LocatedEntity : public Router {
   private:
-    static std::set<std::string> m_immutable;
+    static std::set<std::string> s_immutable;
     static const std::set<std::string> & immutables();
 
     /// Count of references held by other objects to this entity
