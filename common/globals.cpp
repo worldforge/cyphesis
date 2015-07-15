@@ -92,6 +92,7 @@ static const usage_data usage[] = {
     { "", "version", "", "", "Display the version information and exit", S|C|M|D|A },
     { "", "instance", "<short_name>", "\"cyphesis\"", "Unique short name for the server instance", S|C|M|D },
     { "", "interactive", "", "", "Run in interactive mode, giving a Python prompt", C },
+    { CYPHESIS, "dynamicpaths", "true|false", "false", "Enables dynamic paths, calculated from the current executable", S|D|C|M|A },
     { CYPHESIS, "directory", "<directory>", "", "Directory where server data and scripts can be found", S|C },
     { CYPHESIS, "confdir", "<directory>", "", "Directory where server config can be found", S|C|M|D },
     { CYPHESIS, "bindir", "<directory>", "", "Directory where Cyphesis binaries can be found", S|C|M|D },
@@ -476,7 +477,12 @@ int loadConfig(int argc, char ** argv, int usage)
         return CONFIG_HELP;
     }
 
-    getinstallprefix();
+    bool dynamicPaths = false;
+    readConfigItem("cyphesis", "dynamicpaths", dynamicPaths);
+    if (dynamicPaths) {
+        log(INFO, "Dynamic paths are now enabled. All paths will be calculated relative to the current executable.");
+        getinstallprefix();
+    }
 
     // Check if the config directory has been overriden at this point, as if
     // it has, that will affect loading the main config.
