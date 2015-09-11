@@ -103,7 +103,7 @@ void Plant::NourishOperation(const Operation & op, OpVector & res)
     } else {
         *m_nourishment += mass.asNum();
     }
-    debug(std::cout << "Nourishment: " << m_nourishment
+    debug(std::cout << "Nourishment: " << *m_nourishment
                     << std::endl << std::flush;);
 }
 
