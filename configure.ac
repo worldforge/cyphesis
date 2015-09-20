@@ -403,6 +403,12 @@ AC_CONFIG_FILES([
     client/Makefile
     aiclient/Makefile
     tools/Makefile
+    navigation/Makefile
+    navigation/external/Makefile
+    navigation/external/RecastDetour/Makefile
+    navigation/external/RecastDetour/Recast/Makefile
+    navigation/external/RecastDetour/Detour/Makefile
+    navigation/external/RecastDetour/DetourTileCache/Makefile
     data/Makefile
     data/cyphesis.vconf
     data/acorn/Makefile

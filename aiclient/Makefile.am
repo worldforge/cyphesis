@@ -34,13 +34,17 @@ endif
 
 cyaiclient_SOURCES = ClientConnection.cpp BaseClient.cpp \
 						PossessionClient.cpp  \
-						aiclient.cpp PossessionAccount.cpp
+						aiclient.cpp PossessionAccount.cpp AwareMind.cpp AwareMindFactory.cpp AwarenessStore.cpp AwarenessStoreProvider.cpp
 
 noinst_HEADERS = ClientConnection.h BaseClient.h \
 						PossessionClient.h PossessionAccount.h \
-						LocatedEntityRegistry.h
+						LocatedEntityRegistry.h AwareMind.h AwareMindFactory.h AwarenessStore.h AwarenessStoreProvider.h
 
 cyaiclient_LDADD = \
+                 $(top_builddir)/navigation/libnavigation.a \
+                 $(top_builddir)/navigation/external/RecastDetour/DetourTileCache/libDetourTileCache.a \
+                 $(top_builddir)/navigation/external/RecastDetour/Detour/libDetour.a \
+                 $(top_builddir)/navigation/external/RecastDetour/Recast/libRecast.a \
                  $(top_builddir)/rulesets/libscriptpython.a \
                  $(top_builddir)/rulesets/librulesetmind.a \
                  $(top_builddir)/rulesets/librulesetentity.a \

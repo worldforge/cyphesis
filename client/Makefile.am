@@ -51,4 +51,8 @@ cyclient_LDADD = \
                  $(top_builddir)/modules/libmodules.a \
                  $(top_builddir)/common/libcommon.a \
                  $(top_builddir)/physics/libphysics.a \
+                 $(top_builddir)/navigation/libnavigation.a \
+                 $(top_builddir)/navigation/external/RecastDetour/DetourTileCache/libDetourTileCache.a \
+                 $(top_builddir)/navigation/external/RecastDetour/Detour/libDetour.a \
+                 $(top_builddir)/navigation/external/RecastDetour/Recast/libRecast.a \
                  $(CLIENT_LIBS)
