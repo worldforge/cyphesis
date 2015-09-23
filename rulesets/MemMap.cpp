@@ -68,6 +68,11 @@ MemEntity * MemMap::addEntity(MemEntity * entity)
             m_script->hook(*I, entity);
         }
     }
+
+    if (m_listener) {
+        m_listener->entityAdded(*entity);
+    }
+
     return entity;
 }
 
@@ -119,6 +124,7 @@ void MemMap::updateEntity(MemEntity * entity, const RootEntity & ent)
 
     debug( std::cout << " got " << entity << std::endl << std::flush;);
 
+    auto old_loc = entity->m_location.m_loc;
     readEntity(entity, ent);
 
     if (m_script != 0) {
@@ -128,6 +134,10 @@ void MemMap::updateEntity(MemEntity * entity, const RootEntity & ent)
             m_script->hook(*K, entity);
         }
     }
+    if (m_listener) {
+        m_listener->entityUpdated(*entity, ent, old_loc);
+    }
+
 }
 
 MemEntity * MemMap::newEntity(const std::string & id, long int_id,
@@ -144,7 +154,7 @@ MemEntity * MemMap::newEntity(const std::string & id, long int_id,
     return addEntity(entity);
 }
 
-MemMap::MemMap(Script *& s) : m_checkIterator(m_entities.begin()), m_script(s)
+MemMap::MemMap(Script *& s) : m_checkIterator(m_entities.begin()), m_script(s), m_listener(nullptr)
 {
     if (m_entity_type == 0) {
         // m_entity_type = Inheritance::instance().getType("game_entity");
@@ -222,6 +232,11 @@ void MemMap::del(const std::string & id)
                 m_script->hook(*J, ent);
             }
         }
+
+        if (m_listener) {
+            m_listener->entityDeleted(*ent);
+        }
+
 //        ent->decRef();
     }
 }
@@ -473,3 +488,9 @@ void MemMap::flush()
         I->second->decRef();
     }
 }
+
+void MemMap::setListener(MapListener* listener)
+{
+    m_listener = listener;
+}
+

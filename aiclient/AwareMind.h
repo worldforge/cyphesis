@@ -19,22 +19,36 @@
 #define AICLIENT_AWAREMIND_H_
 
 #include "rulesets/BaseMind.h"
+#include "rulesets/MemMap.h"
 
 class Awareness;
+class AwarenessStore;
 class AwarenessStoreProvider;
 class Steering;
+class SharedTerrain;
 
-class AwareMind : public BaseMind
+class AwareMind: public BaseMind, public MemMap::MapListener
 {
     public:
-        AwareMind(const std::string &id, long intId, const AwarenessStoreProvider& awarenessStoreProvider);
+        AwareMind(const std::string &id, long intId, SharedTerrain& sharedTerrain, AwarenessStoreProvider& awarenessStoreProvider);
         virtual ~AwareMind();
+
+        void entityAdded(const MemEntity& entity);
+        void entityUpdated(const MemEntity& entity, const Atlas::Objects::Entity::RootEntity & ent, LocatedEntity* oldLocation);
+        void entityDeleted(const MemEntity& entity);
+
+        virtual void setType(const TypeNode * t);
 
     protected:
 
-        const AwarenessStoreProvider& mAwarenessStoreProvider;
-        Awareness* mAwareness;
+        SharedTerrain& mSharedTerrain;
+        AwarenessStoreProvider& mAwarenessStoreProvider;
+
+        AwarenessStore* mAwarenessStore;
+        std::shared_ptr<Awareness> mAwareness;
         Steering* mSteering;
+
+        virtual void onContainered(const LocatedEntity * new_loc);
 };
 
 #endif /* AICLIENT_AWAREMIND_H_ */

@@ -31,13 +31,14 @@ class IHeightProvider;
 class AwarenessStoreProvider
 {
     public:
-        AwarenessStoreProvider();
+        AwarenessStoreProvider(IHeightProvider& heightProvider);
         virtual ~AwarenessStoreProvider();
 
-        AwarenessStore& getStore(TypeNode* type, IHeightProvider& heightProvider, const WFMath::AxisBox<3>& extent, int tileSize = 64) const;
+        AwarenessStore& getStore(const TypeNode* type, int tileSize = 64);
 
     protected:
-        mutable std::unordered_map<TypeNode*, AwarenessStore> m_awarenessStores;
+        std::unordered_map<const TypeNode*, AwarenessStore> m_awarenessStores;
+        IHeightProvider& m_heightProvider;
 
 };
 

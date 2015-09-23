@@ -18,7 +18,7 @@
 #include "ClientConnection.h"
 #include "PossessionClient.h"
 #include "AwareMindFactory.h"
-
+#include "SharedTerrain.h"
 
 #include "rulesets/Python_API.h"
 #include "rulesets/MindFactory.h"
@@ -140,6 +140,8 @@ int main(int argc, char ** argv)
     time.update();
 
     AwareMindFactory mindFactory;
+//    MindFactory mindFactory;
+//    AwareMindFactory awareMindFactory;
 
     //TODO: perhaps don't hardcode this; instead allowing for different classes for different minds?
     std::string script_package = "mind.NPCMind";

@@ -25,8 +25,8 @@
 
 #include <aiclient/AwarenessStore.h>
 
-AwarenessStore::AwarenessStore(float agentRadius, float agentHeight, IHeightProvider& heightProvider, const WFMath::AxisBox<3>& extent, int tileSize) :
-        mAgentRadius(agentRadius), mAgentHeight(agentHeight), mHeightProvider(heightProvider), mExtent(extent), mTileSize(tileSize)
+AwarenessStore::AwarenessStore(float agentRadius, float agentHeight, IHeightProvider& heightProvider, int tileSize) :
+        mAgentRadius(agentRadius), mAgentHeight(agentHeight), mHeightProvider(heightProvider), mTileSize(tileSize)
 {
 }
 
@@ -34,7 +34,7 @@ AwarenessStore::~AwarenessStore()
 {
 }
 
-std::shared_ptr<Awareness> AwarenessStore::requestAwareness(LocatedEntity& domainEntity)
+std::shared_ptr<Awareness> AwarenessStore::requestAwareness(const LocatedEntity& domainEntity)
 {
     //Check if there's already an awareness for the domain entity.
     auto I = m_awarenesses.find(domainEntity.getIntId());
@@ -43,9 +43,13 @@ std::shared_ptr<Awareness> AwarenessStore::requestAwareness(LocatedEntity& domai
         if (!I->second.expired()) {
             return I->second.lock();
         }
+        //else remove it
+        m_awarenesses.erase(I);
     }
 
-    auto awareness = std::make_shared < Awareness > (domainEntity, mAgentRadius, mAgentHeight, mHeightProvider, mExtent, mTileSize);
+    auto bbox = domainEntity.m_location.bBox();
+
+    auto awareness = std::make_shared < Awareness > (domainEntity, mAgentRadius, mAgentHeight, mHeightProvider, bbox, mTileSize);
     m_awarenesses.insert(std::make_pair(domainEntity.getIntId(), std::weak_ptr < Awareness > (awareness)));
     return awareness;
 }

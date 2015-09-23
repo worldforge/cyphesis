@@ -15,28 +15,36 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+#ifndef AICLIENT_SHAREDTERRAIN_H_
+#define AICLIENT_SHAREDTERRAIN_H_
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+#include "navigation/IHeightProvider.h"
 
-#include "AwareMindFactory.h"
-#include "AwareMind.h"
+#include <Mercator/Terrain.h>
+
+#include <vector>
 
 
-AwareMindFactory::AwareMindFactory()
-: mSharedTerrain(new SharedTerrain()), mAwarenessStoreProvider(new AwarenessStoreProvider(*mSharedTerrain))
+class SharedTerrain : public IHeightProvider
 {
+    public:
 
-}
+        struct BasePointDefinition {
+            int x;
+            int y;
+            Mercator::BasePoint basePoint;
+        };
 
-AwareMindFactory::~AwareMindFactory()
-{
-}
+        SharedTerrain();
+        virtual ~SharedTerrain();
 
-BaseMind * AwareMindFactory::newMind(const std::string & id, long intId) const
-{
-    return new AwareMind(id, intId, *mSharedTerrain, *mAwarenessStoreProvider);
-}
+        void setBasePoints(const std::vector<BasePointDefinition>& basepoints);
 
+        virtual void blitHeights(int xMin, int xMax, int yMin, int yMax, std::vector<float>& heights) const;
 
+    private:
+
+        std::unique_ptr<Mercator::Terrain> m_terrain;
+};
+
+#endif /* AICLIENT_SHAREDTERRAIN_H_ */

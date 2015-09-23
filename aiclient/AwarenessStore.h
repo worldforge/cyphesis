@@ -32,10 +32,10 @@ class LocatedEntity;
 class AwarenessStore
 {
     public:
-        AwarenessStore(float agentRadius, float agentHeight, IHeightProvider& heightProvider, const WFMath::AxisBox<3>& extent, int tileSize = 64);
+        AwarenessStore(float agentRadius, float agentHeight, IHeightProvider& heightProvider, int tileSize = 64);
         virtual ~AwarenessStore();
 
-        std::shared_ptr<Awareness> requestAwareness(LocatedEntity& domainEntity);
+        std::shared_ptr<Awareness> requestAwareness(const LocatedEntity& domainEntity);
 
     private:
         /**
@@ -45,11 +45,13 @@ class AwarenessStore
         float mAgentHeight;
 
         IHeightProvider& mHeightProvider;
-        const WFMath::AxisBox<3>& mExtent;
 
 
         int mTileSize;
 
+        /**
+         * @brief A map of existing awarenesses, ordered by the id of the domain entity.
+         */
         std::unordered_map<int, std::weak_ptr<Awareness>> m_awarenesses;
 };
 

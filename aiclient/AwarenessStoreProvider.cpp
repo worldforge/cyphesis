@@ -28,7 +28,8 @@
 #include <wfmath/point.h>
 #include <wfmath/ball.h>
 
-AwarenessStoreProvider::AwarenessStoreProvider()
+AwarenessStoreProvider::AwarenessStoreProvider(IHeightProvider& heightProvider)
+: m_heightProvider(heightProvider)
 {
     // TODO Auto-generated constructor stub
 
@@ -39,7 +40,7 @@ AwarenessStoreProvider::~AwarenessStoreProvider()
 }
 
 
-AwarenessStore& AwarenessStoreProvider::getStore(TypeNode* type, IHeightProvider& heightProvider, const WFMath::AxisBox<3>& extent, int tileSize) const
+AwarenessStore& AwarenessStoreProvider::getStore(const TypeNode* type, int tileSize)
 {
     auto I = m_awarenessStores.find(type);
     if (I != m_awarenessStores.end()) {
@@ -60,7 +61,7 @@ AwarenessStore& AwarenessStoreProvider::getStore(TypeNode* type, IHeightProvider
         agentRadius = std::max(0.2f, agent2dBbox.boundingSphere().radius()); //Don't make the radius smaller than 0.2 meters, to avoid too many cells
     }
 
-    return m_awarenessStores.emplace(type, AwarenessStore(agentRadius, agentHeight, heightProvider, extent, tileSize)).first->second;
+    return m_awarenessStores.emplace(type, AwarenessStore(agentRadius, agentHeight, m_heightProvider, tileSize)).first->second;
 
 }
 

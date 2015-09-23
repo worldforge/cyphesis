@@ -19,6 +19,7 @@
 #define AICLIENT_AWAREMINDFACTORY_H_
 
 #include "AwarenessStoreProvider.h"
+#include "SharedTerrain.h"
 
 #include "rulesets/MindFactory.h"
 #include <unordered_map>
@@ -28,12 +29,14 @@ class AwarenessStore;
 class AwareMindFactory : public MindKit
 {
     public:
+        AwareMindFactory();
         virtual ~AwareMindFactory();
 
         virtual BaseMind * newMind(const std::string & id, long) const;
 
     protected:
-        AwarenessStoreProvider mAwarenessStoreProvider;
+        SharedTerrain* mSharedTerrain;
+        AwarenessStoreProvider* mAwarenessStoreProvider;
 
 };
 

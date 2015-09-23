@@ -34,11 +34,13 @@ endif
 
 cyaiclient_SOURCES = ClientConnection.cpp BaseClient.cpp \
 						PossessionClient.cpp  \
-						aiclient.cpp PossessionAccount.cpp AwareMind.cpp AwareMindFactory.cpp AwarenessStore.cpp AwarenessStoreProvider.cpp
+						aiclient.cpp PossessionAccount.cpp AwareMind.cpp AwareMindFactory.cpp \
+						AwarenessStore.cpp AwarenessStoreProvider.cpp SharedTerrain.cpp
 
 noinst_HEADERS = ClientConnection.h BaseClient.h \
 						PossessionClient.h PossessionAccount.h \
-						LocatedEntityRegistry.h AwareMind.h AwareMindFactory.h AwarenessStore.h AwarenessStoreProvider.h
+						LocatedEntityRegistry.h AwareMind.h AwareMindFactory.h \
+						AwarenessStore.h AwarenessStoreProvider.h SharedTerrain.h
 
 cyaiclient_LDADD = \
                  $(top_builddir)/navigation/libnavigation.a \

@@ -41,6 +41,15 @@ typedef std::map<long, MemEntity *> MemEntityDict;
 
 /// \brief Class to handle the basic entity memory of a mind
 class MemMap {
+  public:
+    class MapListener {
+        public:
+        virtual ~MapListener() {}
+        virtual void entityAdded(const MemEntity& entity) = 0;
+        virtual void entityUpdated(const MemEntity& entity, const Atlas::Objects::Entity::RootEntity & ent, LocatedEntity* oldLocation) = 0;
+        virtual void entityDeleted(const MemEntity& entity) = 0;
+    };
+
   protected:
     friend class BaseMind;
 
@@ -53,6 +62,8 @@ class MemMap {
     std::vector<std::string> m_updateHooks;
     std::vector<std::string> m_deleteHooks;
     Script *& m_script;
+
+    MapListener* m_listener;
 
     ///\brief a map that holds memories related to other entities.
     ///@key - ID of the entity to which we relate memories
@@ -68,6 +79,7 @@ class MemMap {
     void addContents(const Atlas::Objects::Entity::RootEntity &);
     MemEntity * addId(const std::string &, long);
   public:
+
     explicit MemMap(Script *& s);
 
     bool find(const std::string & id) const;
@@ -117,6 +129,8 @@ class MemMap {
     std::vector<std::string> & getAddHooks() { return m_addHooks; }
     std::vector<std::string> & getUpdateHooks() { return m_updateHooks; }
     std::vector<std::string> & getDeleteHooks() { return m_deleteHooks; }
+
+    void setListener(MapListener* listener);
 
     friend class MemMaptest;
     friend class BaseMindMapEntityintegration;
