@@ -131,13 +131,18 @@ class NPCMind(server.Mind):
         #Setup a tick operation for thinking
         thinkTickOp = Operation("tick")
         thinkTickOp.setArgs([Entity(name="think")])
+
+        #Setup a tick operation for moving
+        moveTickOp = Operation("tick")
+        moveTickOp.setArgs([Entity(name="move")])
+        moveTickOp.setFutureSeconds(0.2)
         
         #Setup a tick operation for periodical persistence of thoughts to the server
         sendThoughtsTickOp = Operation("tick")
         sendThoughtsTickOp.setArgs([Entity(name="persistthoughts")])
         sendThoughtsTickOp.setFutureSeconds(5)
         
-        return Operation("look")+thinkTickOp+sendThoughtsTickOp
+        return Operation("look")+thinkTickOp+moveTickOp+sendThoughtsTickOp
     def tick_operation(self, op):
         """periodically reasses situation
         

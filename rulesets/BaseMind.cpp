@@ -242,7 +242,7 @@ void BaseMind::ThinkOperation(const Operation &op, OpVector &res)
                 thinkLookOperation(op2, mres);
                 break;
             default:
-                log(WARNING, "Got invalid Think operation. We only support 'Set' and 'Delete'.");
+                log(WARNING, "Got invalid Think operation. We only support 'Set', 'Delete', 'Get' and 'Look'.");
                 break;
             }
         }

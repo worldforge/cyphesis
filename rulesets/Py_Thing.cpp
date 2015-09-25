@@ -34,6 +34,9 @@
 #include "BaseMind.h"
 #include "Character.h"
 
+#include "aiclient/AwareMind.h"
+#include "navigation/Steering.h"
+
 #include "common/id.h"
 #include "common/log.h"
 #include "common/Property.h"
@@ -494,6 +497,32 @@ static int Mind_setattro(PyEntity *self, PyObject *oname, PyObject *v)
         PyErr_SetString(PyExc_AttributeError, "Setting map on mind is forbidden");
         return -1;
     }
+
+    if (strcmp(name, "destination") == 0) {
+        AwareMind* awareMind = dynamic_cast<AwareMind*>(self->m_entity.m);
+        if (!awareMind) {
+            return -1;
+        }
+
+        if (!PyPoint3D_Check(v)) {
+            awareMind->getSteering().stopSteering();
+            return 0;
+        }
+
+        PyPoint3D* point = (PyPoint3D*)(v);
+
+        if (!point->coords.isValid()) {
+            awareMind->getSteering().stopSteering();
+            return 0;
+        }
+
+        awareMind->getSteering().setDestination(point->coords, 1);
+        awareMind->getSteering().startSteering();
+
+        return 0;
+    }
+
+
     LocatedEntity * entity = self->m_entity.m;
     // Should we support removal of attributes?
     //std::string attr(name);

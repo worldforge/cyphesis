@@ -39,6 +39,11 @@ class AwareMind: public BaseMind, public MemMap::MapListener
 
         virtual void setType(const TypeNode * t);
 
+        virtual void operation(const Operation & op, OpVector & res);
+
+        Steering& getSteering();
+
+
     protected:
 
         SharedTerrain& mSharedTerrain;
@@ -49,6 +54,8 @@ class AwareMind: public BaseMind, public MemMap::MapListener
         Steering* mSteering;
 
         virtual void onContainered(const LocatedEntity * new_loc);
+
+        void processMoveTick(const Operation & op, OpVector & res);
 };
 
 #endif /* AICLIENT_AWAREMIND_H_ */

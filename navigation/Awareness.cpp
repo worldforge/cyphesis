@@ -627,12 +627,12 @@ void Awareness::findAffectedTiles(const WFMath::AxisBox<2>& area, int& tileMinXI
     tileMaxYIndex = (highCorner.y() - mCfg.bmin[2]) / tilesize;
 }
 
-int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& end, std::list<WFMath::Point<3>>& path) const
+int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& end, int radius, std::list<WFMath::Point<3>>& path) const
 {
 
     float pStartPos[] { start.x(), start.z(), start.y() };
     float pEndPos[] { end.x(), end.z(), end.y() };
-    float extent[] { 2, 100, 2 }; //Look two meters in each direction
+    float extent[] { radius, 100, radius }; //Only extend radius in horizontal plane
 
     dtStatus status;
     dtPolyRef StartPoly;

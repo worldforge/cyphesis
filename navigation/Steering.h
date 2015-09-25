@@ -27,6 +27,7 @@
 
 #include <sigc++/trackable.h>
 #include <sigc++/signal.h>
+#include <sigc++/connection.h>
 
 
 class Awareness;
@@ -46,15 +47,18 @@ struct SteeringResult {
 class Steering: public virtual sigc::trackable
 {
 public:
-	Steering(Awareness& awareness, MemEntity& avatar);
+	Steering(MemEntity& avatar);
 	virtual ~Steering();
+
+	void setAwareness(Awareness* awareness);
 
 	/**
 	 * @brief Sets a new destination, in view position.
 	 * Note that this won't start steering; you need to call startSteering() separately.
 	 * @param viewPosition
+	 * @param radius The radius around the destination where it's acceptable to end up if we couldn't reach the destination precisely.
 	 */
-	void setDestination(const WFMath::Point<3>& viewPosition);
+	void setDestination(const WFMath::Point<3>& viewPosition, int radius);
 
 	/**
 	 * @brief Updates the path.
@@ -126,13 +130,17 @@ public:
 
 private:
 
-	Awareness& mAwareness;
+	Awareness* mAwareness;
 	MemEntity& mAvatar;
+
+	sigc::connection mTileListenerConnection;
 
 	/**
 	 * @brief The destination, in view coordinates.
 	 */
 	WFMath::Point<3> mViewDestination;
+
+	int mDestinationRadius;
 
 	/**
 	 * @brief The calculated path to the destination.
@@ -180,7 +188,7 @@ private:
 	 *
 	 * mPadding determines the width of the corridor.
 	 */
-	void setAwareness();
+	void setAwarenessArea();
 
 	/**
 	 * @brief Listen to tiles being updated, and request updates.

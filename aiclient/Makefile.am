@@ -43,11 +43,11 @@ noinst_HEADERS = ClientConnection.h BaseClient.h \
 						AwarenessStore.h AwarenessStoreProvider.h SharedTerrain.h
 
 cyaiclient_LDADD = \
+                 $(top_builddir)/rulesets/libscriptpython.a \
                  $(top_builddir)/navigation/libnavigation.a \
                  $(top_builddir)/navigation/external/RecastDetour/DetourTileCache/libDetourTileCache.a \
                  $(top_builddir)/navigation/external/RecastDetour/Detour/libDetour.a \
                  $(top_builddir)/navigation/external/RecastDetour/Recast/libRecast.a \
-                 $(top_builddir)/rulesets/libscriptpython.a \
                  $(top_builddir)/rulesets/librulesetmind.a \
                  $(top_builddir)/rulesets/librulesetentity.a \
                  $(top_builddir)/rulesets/libentityfilter.a \
