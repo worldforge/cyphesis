@@ -23,7 +23,7 @@
 #include "navigation/Awareness.h"
 #include "rulesets/LocatedEntity.h"
 
-#include <aiclient/AwarenessStore.h>
+#include <rulesets/mind/AwarenessStore.h>
 
 AwarenessStore::AwarenessStore(float agentRadius, float agentHeight, IHeightProvider& heightProvider, int tileSize) :
         mAgentRadius(agentRadius), mAgentHeight(agentHeight), mHeightProvider(heightProvider), mTileSize(tileSize)

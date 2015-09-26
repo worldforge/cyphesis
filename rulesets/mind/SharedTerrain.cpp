@@ -20,7 +20,7 @@
 #include "config.h"
 #endif
 
-#include "SharedTerrain.h"
+#include <rulesets/mind/SharedTerrain.h>
 
 #include <Mercator/Segment.h>
 
@@ -47,6 +47,11 @@ void SharedTerrain::setBasePoints(const std::vector<BasePointDefinition>& basepo
 
 void SharedTerrain::blitHeights(int xMin, int xMax, int yMin, int yMax, std::vector<float>& heights) const
 {
+    for (int i = 0; i < ((xMax - xMin) * (yMax - yMin)); ++i) {
+        heights[i] = 5;
+    }
+    return;
+
     int segmentResolution = m_terrain->getResolution();
     int xSize = xMax - xMin;
 

@@ -15,10 +15,11 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-#ifndef AICLIENT_AWARENESSSTOREPROVIDER_H_
-#define AICLIENT_AWARENESSSTOREPROVIDER_H_
+#ifndef RULESETS_MIND_AWARENESSSTOREPROVIDER_H_
 
-#include "AwarenessStore.h"
+#define RULESETS_MIND_AWARENESSSTOREPROVIDER_H_
+
+#include <rulesets/mind/AwarenessStore.h>
 
 #include <wfmath/axisbox.h>
 
@@ -42,4 +43,4 @@ class AwarenessStoreProvider
 
 };
 
-#endif /* AICLIENT_AWARENESSSTOREPROVIDER_H_ */
+#endif /* RULESETS_MIND_AWARENESSSTOREPROVIDER_H_ */

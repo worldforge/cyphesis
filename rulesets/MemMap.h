@@ -72,10 +72,10 @@ class MemMap {
     std::map<std::string, std::map<std::string, Atlas::Message::Element>> m_entityRelatedMemory;
 
     MemEntity * addEntity(MemEntity *);
-    void readEntity(MemEntity *, const Atlas::Objects::Entity::RootEntity &);
-    void updateEntity(MemEntity *, const Atlas::Objects::Entity::RootEntity &);
+    void readEntity(MemEntity *, const Atlas::Objects::Entity::RootEntity &, double timestamp);
+    void updateEntity(MemEntity *, const Atlas::Objects::Entity::RootEntity &, double timestamp);
     MemEntity * newEntity(const std::string &, long,
-                          const Atlas::Objects::Entity::RootEntity &);
+                          const Atlas::Objects::Entity::RootEntity &, double timestamp);
     void addContents(const Atlas::Objects::Entity::RootEntity &);
     MemEntity * addId(const std::string &, long);
   public:

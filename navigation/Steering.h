@@ -58,13 +58,14 @@ public:
 	 * @param viewPosition
 	 * @param radius The radius around the destination where it's acceptable to end up if we couldn't reach the destination precisely.
 	 */
-	void setDestination(const WFMath::Point<3>& viewPosition, int radius);
+	void setDestination(const WFMath::Point<3>& viewPosition, float radius);
 
 	/**
 	 * @brief Updates the path.
+	 * @param currentAvatarPosition The current position of the avatar entity.
 	 * @return True if a path was found.
 	 */
-	bool updatePath();
+	bool updatePath(const WFMath::Point<3>& currentAvatarPosition);
 
 	/**
 	 * @brief Requests an update of the path.
@@ -140,7 +141,7 @@ private:
 	 */
 	WFMath::Point<3> mViewDestination;
 
-	int mDestinationRadius;
+	float mDestinationRadius;
 
 	/**
 	 * @brief The calculated path to the destination.

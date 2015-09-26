@@ -15,8 +15,8 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-#ifndef AICLIENT_AWARENESSSTORE_H_
-#define AICLIENT_AWARENESSSTORE_H_
+#ifndef RULESETS_MIND_AWARENESSSTORE_H_
+#define RULESETS_MIND_AWARENESSSTORE_H_
 
 #include <wfmath/axisbox.h>
 #include <wfmath/point.h>
@@ -55,4 +55,4 @@ class AwarenessStore
         std::unordered_map<int, std::weak_ptr<Awareness>> m_awarenesses;
 };
 
-#endif /* AICLIENT_AWARENESSSTORE_H_ */
+#endif /* RULESETS_MIND_AWARENESSSTORE_H_ */

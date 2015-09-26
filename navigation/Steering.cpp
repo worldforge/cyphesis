@@ -21,13 +21,20 @@
 
 #include "rulesets/MemEntity.h"
 
+#include "common/debug.h"
+
 #include <wfmath/point.h>
 #include <wfmath/vector.h>
 #include <wfmath/rotbox.h>
 #include <wfmath/segment.h>
 
+#include <iostream>
+
+static const bool debug_flag = true;
+
+
 Steering::Steering(MemEntity& avatar) :
-        mAwareness(nullptr), mAvatar(avatar), mSteeringEnabled(false), mUpdateNeeded(false), mPadding(16), mSpeed(5), mExpectingServerMovement(false)
+        mAwareness(nullptr), mAvatar(avatar), mDestinationRadius(1.0), mSteeringEnabled(false), mUpdateNeeded(false), mPadding(16), mSpeed(2), mExpectingServerMovement(false)
 {
 }
 
@@ -41,41 +48,47 @@ void Steering::setAwareness(Awareness* awareness)
     mTileListenerConnection.disconnect();
     if (mAwareness) {
         mTileListenerConnection = mAwareness->EventTileUpdated.connect(sigc::mem_fun(*this, &Steering::Awareness_TileUpdated));
+        setAwarenessArea();
     }
 }
 
-void Steering::setDestination(const WFMath::Point<3>& viewPosition, int radius)
+void Steering::setDestination(const WFMath::Point<3>& viewPosition, float radius)
 {
-    mViewDestination = viewPosition;
-    mDestinationRadius = radius;
-    mUpdateNeeded = true;
+    //Only update if destination has changed
+    if (mViewDestination != viewPosition || mDestinationRadius != radius) {
+        mViewDestination = viewPosition;
+        mDestinationRadius = radius;
+        mUpdateNeeded = true;
 
-    setAwarenessArea();
+        setAwarenessArea();
+    }
 }
 
 void Steering::setAwarenessArea()
 {
     if (mAwareness) {
-        WFMath::Point<2> destination2d(mViewDestination.x(), mViewDestination.y());
-        WFMath::Point<2> entityPosition2d(mAvatar.m_location.m_pos.x(), mAvatar.m_location.m_pos.y());
+        if (mViewDestination.isValid()) {
+            WFMath::Point<2> destination2d(mViewDestination.x(), mViewDestination.y());
+            WFMath::Point<2> entityPosition2d(mAvatar.m_location.m_pos.x(), mAvatar.m_location.m_pos.y());
 
-        WFMath::Vector<2> direction(destination2d - entityPosition2d);
-        double theta = atan2(direction.y(), direction.x()); // rotation about Z
-        WFMath::RotMatrix<2> rm;
-        rm.rotation(theta);
+            WFMath::Vector<2> direction(destination2d - entityPosition2d);
+            double theta = atan2(direction.y(), direction.x()); // rotation about Z
+            WFMath::RotMatrix<2> rm;
+            rm.rotation(theta);
 
-        WFMath::Point<2> start = entityPosition2d;
-        start -= WFMath::Vector<2>(mPadding, mPadding);
+            WFMath::Point<2> start = entityPosition2d;
+            start -= WFMath::Vector<2>(mPadding, mPadding);
 
-        WFMath::Vector<2> size(direction.mag() + (mPadding * 2), mPadding * 2);
+            WFMath::Vector<2> size(direction.mag() + (mPadding * 2), mPadding * 2);
 
-        WFMath::RotBox<2> area;
-        area.size() = size;
-        area.corner0() = start;
-        area.orientation() = WFMath::RotMatrix<2>().identity();
-        area.rotatePoint(rm, entityPosition2d);
+            WFMath::RotBox<2> area;
+            area.size() = size;
+            area.corner0() = start;
+            area.orientation() = WFMath::RotMatrix<2>().identity();
+            area.rotatePoint(rm, entityPosition2d);
 
-        mAwareness->setAwarenessArea(area, WFMath::Segment<2>(entityPosition2d, destination2d));
+            mAwareness->setAwarenessArea(area, WFMath::Segment<2>(entityPosition2d, destination2d));
+        }
     }
 }
 
@@ -84,13 +97,13 @@ void Steering::setSpeed(float speed)
     mSpeed = speed;
 }
 
-bool Steering::updatePath()
+bool Steering::updatePath(const WFMath::Point<3>& currentAvatarPosition)
 {
     mPath.clear();
     if (!mAwareness) {
         return false;
     }
-    int result = mAwareness->findPath(mAvatar.m_location.m_pos, mViewDestination, mDestinationRadius, mPath);
+    int result = mAwareness->findPath(currentAvatarPosition, mViewDestination, mDestinationRadius, mPath);
     EventPathUpdated();
     mUpdateNeeded = false;
     return result > 0;
@@ -136,12 +149,18 @@ SteeringResult Steering::update(double currentTimestamp)
 {
     SteeringResult result;
     if (mSteeringEnabled && mAwareness) {
+        auto currentEntityPos = mAvatar.m_location.m_pos;
+        if (mAvatar.m_location.m_velocity.isValid()) {
+            currentEntityPos += (mAvatar.m_location.m_velocity * (currentTimestamp - mAvatar.m_location.timeStamp()));
+        }
+
         if (mUpdateNeeded) {
-            updatePath();
+            updatePath(currentEntityPos);
         }
         if (!mPath.empty()) {
             const auto& finalDestination = mPath.back();
-            const WFMath::Point<2> entityPosition(mAvatar.m_location.m_pos.x(), mAvatar.m_location.m_pos.y());
+
+            const WFMath::Point<2> entityPosition(currentEntityPos.x(), currentEntityPos.y());
             //First check if we've arrived at our actual destination.
             if (WFMath::Distance(WFMath::Point<2>(finalDestination.x(), finalDestination.y()), entityPosition) < 0.1f) {
                 //We've arrived at our destination. If we're moving we should stop.
@@ -155,9 +174,11 @@ SteeringResult Steering::update(double currentTimestamp)
                 //We should send a move op if we're either not moving, or we've reached a waypoint, or we need to divert a lot.
 
                 WFMath::Point<2> nextWaypoint(mPath.front().x(), mPath.front().y());
-                if (WFMath::Distance(nextWaypoint, entityPosition) < 0.1f) {
+                debug_print("distance to next waypoint: " << WFMath::Distance(nextWaypoint, entityPosition));
+                while (WFMath::Distance(nextWaypoint, entityPosition) < 0.1f && mPath.size() > 1) {
                     mPath.pop_front();
                     nextWaypoint = WFMath::Point<2>(mPath.front().x(), mPath.front().y());
+                    debug_print("distance to new waypoint: " << WFMath::Distance(nextWaypoint, entityPosition));
                 }
 
                 WFMath::Vector<2> velocity = nextWaypoint - entityPosition;
@@ -165,16 +186,17 @@ SteeringResult Steering::update(double currentTimestamp)
                 velocity.normalize();
                 velocity *= mSpeed;
 
-                if (mPath.size() == 1) {
+//                if (mPath.size() == 1) {
                     //if the next waypoint is the destination we should send a "move to position" update to the server, to make sure that we stop when we've arrived.
                     //otherwise, if there's too much lag, we might end up overshooting our destination and will have to double back
                     destination = nextWaypoint;
-                }
+//                }
 
                 //Check if we need to divert in order to avoid colliding.
                 WFMath::Vector<2> newVelocity;
                 bool avoiding = mAwareness->avoidObstacles(entityPosition, velocity, newVelocity, currentTimestamp);
                 if (avoiding) {
+                    debug_print("Need to avoid in steering.");
                     velocity = newVelocity;
                     velocity.normalize();
                     velocity *= mSpeed;
@@ -185,7 +207,7 @@ SteeringResult Steering::update(double currentTimestamp)
                 if (velocity.isValid()) {
                     if (mLastSentVelocity.isValid()) {
                         //If the entity has stopped, and we're not waiting for confirmation to a movement request we've made, we need to start moving.
-                        if (mAvatar.m_location.velocity() != WFMath::Vector<3>::ZERO() && !mExpectingServerMovement) {
+                        if (mAvatar.m_location.velocity() == WFMath::Vector<3>::ZERO() && !mExpectingServerMovement) {
                             shouldSend = true;
                         } else {
                             double currentTheta = atan2(mLastSentVelocity.y(), mLastSentVelocity.x());
@@ -219,6 +241,13 @@ SteeringResult Steering::update(double currentTimestamp)
                 mLastSentVelocity = WFMath::Vector<2>::ZERO();
                 mExpectingServerMovement = true;
             }
+        }
+        if (debug_flag) {
+            std::stringstream ss;
+            for (auto& point : mPath) {
+                ss << point << ", ";
+            }
+            debug_print("Path: " << ss.str());
         }
     }
     return result;

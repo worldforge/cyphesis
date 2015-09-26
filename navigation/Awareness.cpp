@@ -66,6 +66,9 @@
 #include "DetourCommon.h"
 #include "DetourObstacleAvoidance.h"
 
+
+#include "common/debug.h"
+
 #include "rulesets/MemEntity.h"
 
 #include <wfmath/wfmath.h>
@@ -83,6 +86,9 @@
 #include <vector>
 #include <cstring>
 #include <queue>
+
+static const bool debug_flag = true;
+
 
 #define MAX_PATHPOLY      256 // max number of polygons in a path
 #define MAX_PATHVERT      512 // most verts in a path
@@ -155,6 +161,7 @@ Awareness::Awareness(const LocatedEntity& domainEntity, float agentRadius, float
         mHeightProvider(heightProvider), mDomainEntity(domainEntity), mTalloc(nullptr), mTcomp(nullptr), mTmproc(nullptr), mAgentRadius(agentRadius), mDesiredTilesAmount(128), mCtx(
                 new AwarenessContext()), mTileCache(nullptr), mNavMesh(nullptr), mNavQuery(dtAllocNavMeshQuery()), mFilter(nullptr), mActiveTileList(nullptr)
 {
+    debug_print("Creating awareness with extent " << extent);
     try {
         mActiveTileList = new MRUList<std::pair<int, int>>();
 
@@ -347,6 +354,8 @@ void Awareness::addEntity(const MemEntity& observer, const LocatedEntity& entity
 
     if (!I->second->isActorOwned || I->first == observer.getIntId()) {
         I->second->location = entity.m_location;
+        //Set the timestamp to zero so that updates are registered
+        I->second->location.update(0);
         if (!I->second->location.bBox().isValid()) {
             I->second->isIgnored = true;
         }
@@ -401,8 +410,11 @@ void Awareness::processEntityMovementChange(EntityEntry& entityEntry, const Loca
         //Only update if timestamp is newer
         if (entityEntry.location.timeStamp() < entity.m_location.timeStamp()) {
 
+            debug_print("Updating entity location for entity " << entityEntry.entityId);
+
             //If an entity which previously didn't move start moving we need to move it to the "movable entities" collection.
             if (entity.m_location.m_velocity.isValid() && entity.m_location.m_velocity != WFMath::Vector<3>::ZERO()) {
+                debug_print("Entity is now moving.");
                 mMovingEntities.insert(&entityEntry);
                 entityEntry.isMoving = true;
                 auto existingI = mEntityAreas.find(&entityEntry);
@@ -416,6 +428,7 @@ void Awareness::processEntityMovementChange(EntityEntry& entityEntry, const Loca
 
                 buildEntityAreas(entityEntry, areas);
 
+
                 for (auto& entry : areas) {
                     markTilesAsDirty(entry.second.boundingBox());
                     auto existingI = mEntityAreas.find(entry.first);
@@ -427,6 +440,7 @@ void Awareness::processEntityMovementChange(EntityEntry& entityEntry, const Loca
                         mEntityAreas.insert(entry);
                     }
                 }
+                debug_print("Entity affects " << areas.size() << " areas. Dirty unaware tiles: " << mDirtyUnwareTiles.size() << " Dirty aware tiles: " << mDirtyAwareTiles.size());
             }
         }
     }
@@ -536,6 +550,7 @@ void Awareness::markTilesAsDirty(int tileMinXIndex, int tileMaxXIndex, int tileM
 size_t Awareness::rebuildDirtyTile()
 {
     if (!mDirtyAwareTiles.empty()) {
+        debug_print("Rebuilding tiles.");
         const auto tileIndexI = mDirtyAwareOrderedTiles.begin();
         const auto& tileIndex = *tileIndexI;
 
@@ -558,6 +573,7 @@ void Awareness::pruneTiles()
     //remove any tiles that aren't used
     if (mActiveTileList->size() > mAwareTiles.size()) {
         if (mActiveTileList->size() > mDesiredTilesAmount) {
+            debug_print("Pruning tiles.");
             auto entry = mActiveTileList->pop_back();
 
             dtCompressedTileRef tilesRefs[MAX_LAYERS];
@@ -627,7 +643,7 @@ void Awareness::findAffectedTiles(const WFMath::AxisBox<2>& area, int& tileMinXI
     tileMaxYIndex = (highCorner.y() - mCfg.bmin[2]) / tilesize;
 }
 
-int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& end, int radius, std::list<WFMath::Point<3>>& path) const
+int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& end, float radius, std::list<WFMath::Point<3>>& path) const
 {
 
     float pStartPos[] { start.x(), start.z(), start.y() };
@@ -781,6 +797,8 @@ void Awareness::setAwarenessArea(const WFMath::RotBox<2>& area, const WFMath::Se
             }
         }
     }
+
+    debug_print("Awareness area set: " << area << ". Dirty unaware tiles: " << mDirtyUnwareTiles.size() << " Dirty aware tiles: " << mDirtyAwareTiles.size());
 
     if (!wereDirtyTiles && !mDirtyAwareTiles.empty()) {
         EventTileDirty();

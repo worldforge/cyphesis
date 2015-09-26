@@ -20,7 +20,7 @@
 #include "config.h"
 #endif
 
-#include "AwarenessStoreProvider.h"
+#include <rulesets/mind/AwarenessStoreProvider.h>
 #include "common/TypeNode.h"
 
 #include "rulesets/BBoxProperty.h"

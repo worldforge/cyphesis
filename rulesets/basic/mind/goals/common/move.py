@@ -44,32 +44,25 @@ class move_me(Goal):
         if me.location is None:
             return 1
         if not location:
-            #print "No location"
+            print "No location"
             return 1
+        print "Distance sqr " + str(square_horizontal_distance(me.location, location))
         if square_horizontal_distance(me.location, location) < 4: # 1.5 * 1.5
-            #print "We are there"
+            print "We are there"
             return 1
         else:
-            #print "We are not there"
+            print "We are not there"
             return 0
     def move_to_loc(self, me):
         #print "Moving to location"
         location=self.get_location_instance(me)
         if not location:
-            #print "but can't - not location"
+            print "but can't - not location"
             return
-        # FIXME Destination based movement - currently won't work if
-        # a LOC change is required.
-        velocity=distance_to(me.location, location).unit_vector()*self.speed
-        if abs(velocity.z) > 0.99:
-            return
-        target=location.copy()
-        target.velocity=velocity
-        if me.location.velocity.is_valid() and me.location.velocity.dot(target.velocity) > 0.8:
-            #print "Already on the way"
-            return
-        return Operation("move", Entity(me.id, location=target))
-
+        print "Moving to location " + str(location)
+        me.destination = location.coordinates
+        return Operation("operation")
+    
 ############################ MOVE ME AREA ####################################
 
 class move_me_area(Goal):
@@ -524,6 +517,7 @@ class patrol(Goal):
         if self.stage >= self.count:
             self.stage = 0
         self.subgoals[0].location = self.list[self.stage]
+        print "Moved to next patrol goal: " + str(self.subgoals[0].location)
 
 ############################## ACCOMPANY ##############################
 

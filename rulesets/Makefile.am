@@ -79,7 +79,10 @@ librulesetmind_a_SOURCES = BaseMind.cpp BaseMind.h \
 			   MindFactory.cpp MindFactory.h \
 			   MindProperty.cpp MindProperty.h \
 			   MemEntity.cpp MemEntity.h \
-			   MemMap.cpp MemMap.h
+			   MemMap.cpp MemMap.h \
+			   mind/AwareMind.cpp mind/AwareMind.h mind/AwareMindFactory.cpp mind/AwareMindFactory.h \
+			   mind/AwarenessStore.cpp mind/AwarenessStore.h mind/AwarenessStoreProvider.cpp \
+			   mind/AwarenessStoreProvider.h mind/SharedTerrain.cpp mind/SharedTerrain.h
 
 libscriptpython_a_SOURCES = Py_Message.cpp Py_Message.h \
 			    Py_Operation.cpp Py_Operation.h \

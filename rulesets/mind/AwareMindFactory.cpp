@@ -15,29 +15,28 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-#ifndef AICLIENT_AWAREMINDFACTORY_H_
-#define AICLIENT_AWAREMINDFACTORY_H_
 
-#include "AwarenessStoreProvider.h"
-#include "SharedTerrain.h"
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
-#include "rulesets/MindFactory.h"
-#include <unordered_map>
+#include <rulesets/mind/AwareMindFactory.h>
+#include <rulesets/mind/AwareMind.h>
 
-class AwarenessStore;
 
-class AwareMindFactory : public MindKit
+AwareMindFactory::AwareMindFactory()
+: mSharedTerrain(new SharedTerrain()), mAwarenessStoreProvider(new AwarenessStoreProvider(*mSharedTerrain))
 {
-    public:
-        AwareMindFactory();
-        virtual ~AwareMindFactory();
 
-        virtual BaseMind * newMind(const std::string & id, long) const;
+}
 
-    protected:
-        SharedTerrain* mSharedTerrain;
-        AwarenessStoreProvider* mAwarenessStoreProvider;
+AwareMindFactory::~AwareMindFactory()
+{
+}
 
-};
+BaseMind * AwareMindFactory::newMind(const std::string & id, long intId) const
+{
+    return new AwareMind(id, intId, *mSharedTerrain, *mAwarenessStoreProvider);
+}
 
-#endif /* AICLIENT_AWAREMINDFACTORY_H_ */
+

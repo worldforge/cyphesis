@@ -15,8 +15,8 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-#ifndef AICLIENT_AWAREMIND_H_
-#define AICLIENT_AWAREMIND_H_
+#ifndef RULESETS_MIND_AWAREMIND_H_
+#define RULESETS_MIND_AWAREMIND_H_
 
 #include "rulesets/BaseMind.h"
 #include "rulesets/MemMap.h"
@@ -27,6 +27,9 @@ class AwarenessStoreProvider;
 class Steering;
 class SharedTerrain;
 
+/**
+ * @brief A Mind which is aware of its surroundings and thus can steer and navigate in the world.
+ */
 class AwareMind: public BaseMind, public MemMap::MapListener
 {
     public:
@@ -53,9 +56,18 @@ class AwareMind: public BaseMind, public MemMap::MapListener
         std::shared_ptr<Awareness> mAwareness;
         Steering* mSteering;
 
+        /**
+         * @brief Difference in time between server time and local time.
+         *
+         * This is used to correctly calculate position of entities when handling steering.
+         */
+        double mServerTimeDiff;
+
         virtual void onContainered(const LocatedEntity * new_loc);
 
         void processMoveTick(const Operation & op, OpVector & res);
+
+        void requestAwareness(const MemEntity& entity);
 };
 
-#endif /* AICLIENT_AWAREMIND_H_ */
+#endif /* RULESETS_MIND_AWAREMIND_H_ */

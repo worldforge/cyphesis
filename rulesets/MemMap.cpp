@@ -76,7 +76,7 @@ MemEntity * MemMap::addEntity(MemEntity * entity)
     return entity;
 }
 
-void MemMap::readEntity(MemEntity * entity, const RootEntity & ent)
+void MemMap::readEntity(MemEntity * entity, const RootEntity & ent, double timestamp)
 // Read the contents of an Atlas message into an entity
 {
     if (ent->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
@@ -113,11 +113,12 @@ void MemMap::readEntity(MemEntity * entity, const RootEntity & ent)
             entity->m_location.m_loc->m_contains->insert(entity);
         }
         entity->m_location.readFromEntity(ent);
+        entity->m_location.update(timestamp);
     }
     addContents(ent);
 }
 
-void MemMap::updateEntity(MemEntity * entity, const RootEntity & ent)
+void MemMap::updateEntity(MemEntity * entity, const RootEntity & ent, double timestamp)
 // Update contents of entity an Atlas message.
 {
     assert(entity != 0);
@@ -125,7 +126,7 @@ void MemMap::updateEntity(MemEntity * entity, const RootEntity & ent)
     debug( std::cout << " got " << entity << std::endl << std::flush;);
 
     auto old_loc = entity->m_location.m_loc;
-    readEntity(entity, ent);
+    readEntity(entity, ent, timestamp);
 
     if (m_script != 0) {
         std::vector<std::string>::const_iterator K = m_updateHooks.begin();
@@ -141,7 +142,7 @@ void MemMap::updateEntity(MemEntity * entity, const RootEntity & ent)
 }
 
 MemEntity * MemMap::newEntity(const std::string & id, long int_id,
-                              const RootEntity & ent)
+                              const RootEntity & ent, double timestamp)
 // Create a new entity from an Atlas message.
 {
     assert(m_entities.find(int_id) == m_entities.end());
@@ -149,7 +150,7 @@ MemEntity * MemMap::newEntity(const std::string & id, long int_id,
     MemEntity * entity = new MemEntity(id, int_id);
     entity->setType(m_entity_type);
 
-    readEntity(entity, ent);
+    readEntity(entity, ent, timestamp);
 
     return addEntity(entity);
 }
@@ -327,10 +328,10 @@ MemEntity * MemMap::updateAdd(const RootEntity & ent, const double & d)
     MemEntityDict::const_iterator I = m_entities.find(int_id);
     MemEntity * entity;
     if (I == m_entities.end()) {
-        entity = newEntity(id, int_id, ent);
+        entity = newEntity(id, int_id, ent, d);
     } else {
         entity = I->second;
-        updateEntity(entity, ent);
+        updateEntity(entity, ent, d);
     }
     entity->update(d);
     return entity;

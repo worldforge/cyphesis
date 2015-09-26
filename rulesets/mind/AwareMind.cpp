@@ -20,10 +20,10 @@
 #include "config.h"
 #endif
 
-#include "AwareMind.h"
-#include "AwarenessStore.h"
-#include "AwarenessStoreProvider.h"
-#include "SharedTerrain.h"
+#include <rulesets/mind/AwareMind.h>
+#include <rulesets/mind/AwarenessStore.h>
+#include <rulesets/mind/AwarenessStoreProvider.h>
+#include <rulesets/mind/SharedTerrain.h>
 
 #include "navigation/Awareness.h"
 #include "navigation/Steering.h"
@@ -31,15 +31,19 @@
 #include "common/log.h"
 #include "common/SystemTime.h"
 #include "common/Tick.h"
+#include "common/debug.h"
 
 #include <Atlas/Objects/RootEntity.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Entity.h>
 
 #include <wfmath/atlasconv.h>
+#include <iostream>
+
+static const bool debug_flag = false;
 
 AwareMind::AwareMind(const std::string &id, long intId, SharedTerrain& sharedTerrain, AwarenessStoreProvider& awarenessStoreProvider) :
-        BaseMind(id, intId), mSharedTerrain(sharedTerrain), mAwarenessStoreProvider(awarenessStoreProvider), mSteering(new Steering(*this))
+        BaseMind(id, intId), mSharedTerrain(sharedTerrain), mAwarenessStoreProvider(awarenessStoreProvider), mSteering(new Steering(*this)), mServerTimeDiff(0)
 {
     m_map.setListener(this);
 }
@@ -59,6 +63,14 @@ void AwareMind::operation(const Operation & op, OpVector & res)
             if (arg->getName() == "move") {
                 processMoveTick(op, res);
             }
+        }
+    } else if (op->getClassNo() == Atlas::Objects::Operation::SIGHT_NO) {
+        if (op->hasAttrFlag(Atlas::Objects::Operation::SECONDS_FLAG)) {
+            double stamp = op->getSeconds();
+
+            SystemTime time;
+            time.update();
+            mServerTimeDiff = stamp - (time.seconds() + (time.microseconds() * 0.000001));
         }
     }
 
@@ -85,7 +97,7 @@ void AwareMind::processMoveTick(const Operation & op, OpVector & res)
     if (mSteering) {
         SystemTime time;
         time.update();
-        SteeringResult result = mSteering->update(time.seconds() + (double)time.microseconds() / 1000000.0);
+        SteeringResult result = mSteering->update(op->getSeconds() + mServerTimeDiff);
         if (result.direction.isValid()) {
             Atlas::Objects::Operation::Move move;
             Atlas::Objects::Entity::Anonymous what;
@@ -99,13 +111,19 @@ void AwareMind::processMoveTick(const Operation & op, OpVector & res)
             move->setFrom(getId());
             move->setArgs1(what);
 
+            if (debug_flag) {
+                std::cout << "Move arg {" << std::endl;
+                debug_dump(what, std::cout);
+                std::cout << "}" << std::endl << std::flush;
+            }
+
             res.push_back(move);
 
         }
     }
 
     Atlas::Objects::Operation::Tick tick;
-    Atlas::Objects::Root arg;
+    Atlas::Objects::Entity::Anonymous arg;
     arg->setName("move");
     tick->setArgs1(arg);
     tick->setFutureSeconds(futureTick);
@@ -118,29 +136,42 @@ Steering& AwareMind::getSteering()
     return *mSteering;
 }
 
-
 void AwareMind::setType(const TypeNode * t)
 {
     BaseMind::setType(t);
-    log(INFO, "Creating store.");
+    //log(INFO, "Creating store.");
     mAwarenessStore = &mAwarenessStoreProvider.getStore(getType());
 }
 
 void AwareMind::entityAdded(const MemEntity& entity)
 {
     if (mAwareness) {
-        log(INFO, "Adding entity.");
+        //log(INFO, "Adding entity.");
         //TODO: check if the entity is dynamic
         if (entity.m_location.m_loc == m_location.m_loc) {
             mAwareness->addEntity(*this, entity, false);
         }
     } else {
         if (this->m_location.m_loc && entity.getIntId() == this->m_location.m_loc->getIntId()) {
-            log(INFO, "Creating awareness.");
-            mAwareness = mAwarenessStore->requestAwareness(entity);
-            mAwareness->addEntity(*this, *this, true);
+            //log(INFO, "Creating awareness.");
+            requestAwareness(entity);
         }
     }
+}
+
+void AwareMind::requestAwareness(const MemEntity& entity)
+{
+    mAwareness = mAwarenessStore->requestAwareness(entity);
+    mAwareness->addEntity(*this, *this, true);
+    auto entities = m_map.getEntities();
+    for (auto entry : entities) {
+        if (entry.first != getIntId()) {
+            if (entry.second->m_location.m_loc == m_location.m_loc) {
+                mAwareness->addEntity(*this, *entry.second, true);
+            }
+        }
+    }
+    mSteering->setAwareness(mAwareness.get());
 }
 
 void AwareMind::entityUpdated(const MemEntity& entity, const Atlas::Objects::Entity::RootEntity & ent, LocatedEntity* oldLocation)
@@ -150,16 +181,16 @@ void AwareMind::entityUpdated(const MemEntity& entity, const Atlas::Objects::Ent
             if (oldLocation == entity.m_location.m_loc) {
                 //Location wasn't changed
                 if (entity.m_location.m_loc == this->m_location.m_loc) {
-                    log(INFO, "Updated entity.");
+                    //log(INFO, "Updated entity.");
                     mAwareness->updateEntityMovement(*this, entity);
                 }
             } else {
                 //Check if new location is the domain, and then add the entity
                 if (entity.m_location.m_loc == this->m_location.m_loc) {
-                    log(INFO, "Adding entity.");
+                    //log(INFO, "Adding entity.");
                     mAwareness->addEntity(*this, entity, false);
                 } else if (oldLocation == this->m_location.m_loc) {
-                    log(INFO, "Removing entity.");
+                    //log(INFO, "Removing entity.");
                     mAwareness->removeEntity(*this, entity);
                 }
             }
@@ -167,10 +198,7 @@ void AwareMind::entityUpdated(const MemEntity& entity, const Atlas::Objects::Ent
     } else {
         if (this->m_location.m_loc && entity.getIntId() == this->m_location.m_loc->getIntId()) {
             if (!mAwareness) {
-                log(INFO, "Creating awareness.");
-                mAwareness = mAwarenessStore->requestAwareness(entity);
-                mAwareness->addEntity(*this, *this, true);
-                mSteering->setAwareness(mAwareness.get());
+                requestAwareness(entity);
             }
         }
     }
@@ -179,7 +207,7 @@ void AwareMind::entityUpdated(const MemEntity& entity, const Atlas::Objects::Ent
 void AwareMind::entityDeleted(const MemEntity& entity)
 {
     if (mAwareness) {
-        log(INFO, "Removed entity.");
+        //log(INFO, "Removed entity.");
         mAwareness->removeEntity(*this, entity);
     }
 }

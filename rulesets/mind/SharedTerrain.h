@@ -15,8 +15,8 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-#ifndef AICLIENT_SHAREDTERRAIN_H_
-#define AICLIENT_SHAREDTERRAIN_H_
+#ifndef RULESETS_MIND_SHAREDTERRAIN_H_
+#define RULESETS_MIND_SHAREDTERRAIN_H_
 
 #include "navigation/IHeightProvider.h"
 
@@ -47,4 +47,4 @@ class SharedTerrain : public IHeightProvider
         std::unique_ptr<Mercator::Terrain> m_terrain;
 };
 
-#endif /* AICLIENT_SHAREDTERRAIN_H_ */
+#endif /* RULESETS_MIND_SHAREDTERRAIN_H_ */
