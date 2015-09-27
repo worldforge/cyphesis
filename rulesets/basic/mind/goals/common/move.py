@@ -515,7 +515,7 @@ class patrol(Goal):
         if self.stage >= self.count:
             self.stage = 0
         self.subgoals[0].location = self.list[self.stage]
-        print "Moved to next patrol goal: " + str(self.subgoals[0].location)
+        #print "Moved to next patrol goal: " + str(self.subgoals[0].location)
 
 ############################## ACCOMPANY ##############################
 

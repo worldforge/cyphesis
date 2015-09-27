@@ -232,7 +232,6 @@ class NPCMind(server.Mind):
                 goal_entity = argEntity.goal
                 return self.commune_goals(op, goal_entity)
             if hasattr(argEntity, "path"):
-                print "returning path"
                 return self.commune_path(op)
 
             #TODO: allow for finer grained query of specific thoughts
@@ -243,8 +242,7 @@ class NPCMind(server.Mind):
         for point in self.path:
             path.append([point.x, point.y, point.z])
         
-        pathOp = Entity(path=path)
-        thinkOp.setArgs([pathOp])
+        thinkOp.setArgs([Entity(path=path)])
         
         res = Oplist()
         res = res + thinkOp
