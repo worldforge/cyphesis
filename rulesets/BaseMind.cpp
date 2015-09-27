@@ -188,6 +188,13 @@ void BaseMind::SightOperation(const Operation & op, OpVector & res)
         std::string event_name("sight_");
         event_name += op2->getParents().front();
 
+        //Check that the argument had seconds set; if not the timestamp of the updates will be wrong.
+        if (!op2->hasAttrFlag(Atlas::Objects::Operation::SECONDS_FLAG)) {
+            //Copy from wrapping op to fix this. This indicates an error in the server.
+            op2->setSeconds(op->getSeconds());
+            log(WARNING, "Sight op argument had no seconds set.");
+        }
+
         if (m_script == 0 || m_script->operation(event_name, op2, res) == 0) {
             callSightOperation(op2, res);
         }
