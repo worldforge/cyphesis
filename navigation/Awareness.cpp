@@ -353,7 +353,6 @@ void Awareness::addEntity(const MemEntity& observer, const LocatedEntity& entity
     }
 
     if (!I->second->isActorOwned || I->first == observer.getIntId()) {
-        I->second->location = entity.m_location;
         //Set the timestamp to zero so that updates are registered
         I->second->location.update(0);
         if (!I->second->location.bBox().isValid()) {
@@ -409,6 +408,7 @@ void Awareness::processEntityMovementChange(EntityEntry& entityEntry, const Loca
     if (!entityEntry.isMoving && !entityEntry.isIgnored) {
         //Only update if timestamp is newer
         if (entityEntry.location.timeStamp() < entity.m_location.timeStamp()) {
+            entityEntry.location = entity.m_location;
 
             debug_print("Updating entity location for entity " << entityEntry.entityId);
 
