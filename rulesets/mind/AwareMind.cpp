@@ -194,6 +194,11 @@ void AwareMind::entityUpdated(const MemEntity& entity, const Atlas::Objects::Ent
                     mAwareness->removeEntity(*this, entity);
                 }
             }
+
+            //If it was ourselves that moved we should notify steering that it shouldn't wait any more for a movement op.
+            if (entity.getIntId() == getIntId()) {
+                mSteering->setIsExpectingServerMovement(false);
+            }
         }
     } else {
         if (this->m_location.m_loc && entity.getIntId() == this->m_location.m_loc->getIntId()) {
