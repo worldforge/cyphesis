@@ -44,22 +44,20 @@ class move_me(Goal):
         if me.location is None:
             return 1
         if not location:
-            print "No location"
+            #print "No location"
             return 1
-        print "Distance sqr " + str(square_horizontal_distance(me.location, location))
         if square_horizontal_distance(me.location, location) < 4: # 1.5 * 1.5
-            print "We are there"
+            #print "We are there"
             return 1
         else:
-            print "We are not there"
+            #print "We are not there"
             return 0
     def move_to_loc(self, me):
-        #print "Moving to location"
         location=self.get_location_instance(me)
         if not location:
-            print "but can't - not location"
+            #print "Can't move - no location"
             return
-        print "Moving to location " + str(location)
+        #print "Moving to location " + str(location)
         me.destination = location.coordinates
         return Operation("operation")
     

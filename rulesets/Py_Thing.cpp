@@ -242,6 +242,7 @@ static PyObject * Entity_getattro(PyEntity *self, PyObject *oname)
         }
         Py_RETURN_FALSE;
     }
+
     Entity * entity = self->m_entity.e;
     PropertyBase * prop = entity->modProperty(name);
     if (prop != 0) {
@@ -468,6 +469,29 @@ static PyObject * Mind_getattro(PyEntity *self, PyObject *oname)
         }
         return list;
     }
+
+    if (strcmp(name, "path") == 0) {
+        AwareMind* awareMind = dynamic_cast<AwareMind*>(self->m_entity.m);
+        if (!awareMind) {
+            return NULL;
+        }
+        const auto& path = awareMind->getSteering().getPath();
+        PyObject * list = PyList_New(0);
+        if (list == NULL) {
+            return NULL;
+        }
+
+        for (auto& point : path) {
+            auto py_point = newPyPoint3D();
+            py_point->coords = point;
+
+            PyList_Append(list, (PyObject*)py_point);
+            Py_DECREF(py_point);
+        }
+
+        return list;
+    }
+
     LocatedEntity * mind = self->m_entity.m;
     Element attr;
     if (mind->getAttr(name, attr) == 0) {

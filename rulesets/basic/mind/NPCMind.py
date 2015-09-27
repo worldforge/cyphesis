@@ -231,8 +231,25 @@ class NPCMind(server.Mind):
             if hasattr(argEntity, "goal"):
                 goal_entity = argEntity.goal
                 return self.commune_goals(op, goal_entity)
+            if hasattr(argEntity, "path"):
+                print "returning path"
+                return self.commune_path(op)
+
             #TODO: allow for finer grained query of specific thoughts
+    def commune_path(self, op):
+        """Sends back information about the path."""
+        thinkOp = Operation("think")
+        path = []
+        for point in self.path:
+            path.append([point.x, point.y, point.z])
         
+        pathOp = Entity(path=path)
+        thinkOp.setArgs([pathOp])
+        
+        res = Oplist()
+        res = res + thinkOp
+        return res
+            
     def commune_goals(self, op, goal_entity):
         """Sends back information about goals only."""
         thinkOp = Operation("think")
