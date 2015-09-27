@@ -150,6 +150,7 @@ SteeringResult Steering::update(double currentTimestamp)
 {
     SteeringResult result;
     if (mSteeringEnabled && mAwareness) {
+
         auto currentEntityPos = mAvatar.m_location.m_pos;
         if (mAvatar.m_location.m_velocity.isValid()) {
             currentEntityPos += (mAvatar.m_location.m_velocity * (currentTimestamp - mAvatar.m_location.timeStamp()));
@@ -180,16 +181,19 @@ SteeringResult Steering::update(double currentTimestamp)
                     nextWaypoint = WFMath::Point<2>(mPath.front().x(), mPath.front().y());
                 }
 
-                WFMath::Vector<2> velocity = nextWaypoint - entityPosition;
+                WFMath::Vector<2> distance = nextWaypoint - entityPosition;
+                WFMath::Vector<2> velocity = distance;
                 WFMath::Point<2> destination;
                 velocity.normalize();
                 velocity *= mSpeed;
 
-//                if (mPath.size() == 1) {
+                result.timeToNextWaypoint = distance.mag() / mSpeed;
+
+                if (mPath.size() == 1) {
                     //if the next waypoint is the destination we should send a "move to position" update to the server, to make sure that we stop when we've arrived.
                     //otherwise, if there's too much lag, we might end up overshooting our destination and will have to double back
                     destination = nextWaypoint;
-//                }
+                }
 
                 //Check if we need to divert in order to avoid colliding.
                 WFMath::Vector<2> newVelocity;

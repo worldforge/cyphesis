@@ -29,14 +29,36 @@
 #include <sigc++/signal.h>
 #include <sigc++/connection.h>
 
+#include <boost/optional.hpp>
+
 
 class Awareness;
 class MemEntity;
 class Loitering;
 
+/**
+ * @brief Results of a steering update.
+ *
+ * A new update should only be sent if direction is a valid vector.
+ */
 struct SteeringResult {
+
+        /**
+         * Next destination, if set.
+         * An invalid destination means that no specific destination should be set for next update.
+         */
         WFMath::Point<3> destination;
+
+        /**
+         * The direction of movement
+         */
         WFMath::Vector<3> direction;
+
+        /**
+         * Time until the next waypoint is reached.
+         * This is used for scheduling the next update tick.
+         */
+        boost::optional<double> timeToNextWaypoint;
 };
 
 /**

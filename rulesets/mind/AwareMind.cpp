@@ -40,10 +40,10 @@
 #include <wfmath/atlasconv.h>
 #include <iostream>
 
-static const bool debug_flag = false;
+static const bool debug_flag = true;
 
 AwareMind::AwareMind(const std::string &id, long intId, SharedTerrain& sharedTerrain, AwarenessStoreProvider& awarenessStoreProvider) :
-        BaseMind(id, intId), mSharedTerrain(sharedTerrain), mAwarenessStoreProvider(awarenessStoreProvider), mSteering(new Steering(*this)), mServerTimeDiff(0)
+        BaseMind(id, intId), mSharedTerrain(sharedTerrain), mAwarenessStoreProvider(awarenessStoreProvider), mAwarenessStore(nullptr), mSteering(new Steering(*this)), mServerTimeDiff(0)
 {
     m_map.setListener(this);
 }
@@ -78,6 +78,7 @@ void AwareMind::operation(const Operation & op, OpVector & res)
 
 void AwareMind::processMoveTick(const Operation & op, OpVector & res)
 {
+    //Default to checking movement every 0.2 seconds, unless steering tells us otherwise
     double futureTick = 0.2;
 
     if (mAwareness) {
@@ -111,14 +112,16 @@ void AwareMind::processMoveTick(const Operation & op, OpVector & res)
             move->setFrom(getId());
             move->setArgs1(what);
 
-            if (debug_flag) {
-                std::cout << "Move arg {" << std::endl;
-                debug_dump(what, std::cout);
-                std::cout << "}" << std::endl << std::flush;
-            }
+//            if (debug_flag) {
+//                std::cout << "Move arg {" << std::endl;
+//                debug_dump(what, std::cout);
+//                std::cout << "}" << std::endl << std::flush;
+//            }
 
             res.push_back(move);
-
+        }
+        if (result.timeToNextWaypoint) {
+            futureTick = std::min(*result.timeToNextWaypoint, futureTick);
         }
     }
 
@@ -146,12 +149,13 @@ void AwareMind::setType(const TypeNode * t)
 void AwareMind::entityAdded(const MemEntity& entity)
 {
     if (mAwareness) {
-        //log(INFO, "Adding entity.");
+//        log(INFO, String::compose("Adding entity %1", entity.getId()));
         //TODO: check if the entity is dynamic
         if (entity.m_location.m_loc == m_location.m_loc) {
             mAwareness->addEntity(*this, entity, false);
         }
     } else {
+        //Check if we've received the current domain entity.
         if (this->m_location.m_loc && entity.getIntId() == this->m_location.m_loc->getIntId()) {
             //log(INFO, "Creating awareness.");
             requestAwareness(entity);
@@ -177,7 +181,9 @@ void AwareMind::requestAwareness(const MemEntity& entity)
 void AwareMind::entityUpdated(const MemEntity& entity, const Atlas::Objects::Entity::RootEntity & ent, LocatedEntity* oldLocation)
 {
     if (mAwareness) {
-        if (ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
+        //Update the awareness if location, position, velocity, orientation or bbox has changed
+        if (ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG) || ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG) || ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)
+                || ent->hasAttr("orientation") || ent->hasAttr("bbox")) {
             if (oldLocation == entity.m_location.m_loc) {
                 //Location wasn't changed
                 if (entity.m_location.m_loc == this->m_location.m_loc) {

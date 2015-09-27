@@ -66,7 +66,6 @@
 #include "DetourCommon.h"
 #include "DetourObstacleAvoidance.h"
 
-
 #include "common/debug.h"
 
 #include "rulesets/MemEntity.h"
@@ -88,7 +87,6 @@
 #include <queue>
 
 static const bool debug_flag = true;
-
 
 #define MAX_PATHPOLY      256 // max number of polygons in a path
 #define MAX_PATHVERT      512 // most verts in a path
@@ -339,10 +337,12 @@ void Awareness::addEntity(const MemEntity& observer, const LocatedEntity& entity
         std::unique_ptr<EntityEntry> entityEntry(new EntityEntry());
         entityEntry->entityId = entity.getIntId();
         entityEntry->numberOfObservers = 1;
-        entityEntry->location = entity.m_location;
+//        entityEntry->location = entity.m_location;
         entityEntry->isIgnored = !entity.m_location.bBox().isValid();
         entityEntry->isMoving = isDynamic;
+        entityEntry->isActorOwned = false;
         I = mObservedEntities.insert(std::make_pair(entity.getIntId(), std::move(entityEntry))).first;
+        debug_print("Creating new entry for " << entity.getId());
     } else {
         I->second->numberOfObservers++;
     }
@@ -352,13 +352,8 @@ void Awareness::addEntity(const MemEntity& observer, const LocatedEntity& entity
         I->second->isActorOwned = true;
     }
 
+    //Only process those entities that aren't owned by another actor, of if that's the case if the entity is ourself
     if (!I->second->isActorOwned || I->first == observer.getIntId()) {
-        //Set the timestamp to zero so that updates are registered
-        I->second->location.update(0);
-        if (!I->second->location.bBox().isValid()) {
-            I->second->isIgnored = true;
-        }
-
         processEntityMovementChange(*I->second.get(), entity);
     }
 }
@@ -367,6 +362,7 @@ void Awareness::removeEntity(const MemEntity& observer, const LocatedEntity& ent
 {
     auto I = mObservedEntities.find(entity.getIntId());
     if (I != mObservedEntities.end()) {
+        debug_print("Removing entity " << entity.getId());
         //Decrease the number of observers, and delete entry if there's none left
         auto& entityEntry = I->second;
         entityEntry->numberOfObservers--;
@@ -395,8 +391,14 @@ void Awareness::updateEntityMovement(const MemEntity& observer, const LocatedEnt
     //This is called when either the position, orientation, location or size of the entity has been altered.
     auto I = mObservedEntities.find(entity.getIntId());
     if (I != mObservedEntities.end()) {
-        auto& entityEntry = I->second;
+        EntityEntry* entityEntry = I->second.get();
         if (!entityEntry->isActorOwned || entityEntry->entityId == observer.getIntId()) {
+            //If an entity was ignored previously because it didn't have a bbox, but now has, it shouldn't be ignored anymore.
+            if (entityEntry->isIgnored && entity.m_location.bBox().isValid()) {
+                debug_print("Stopped ignoring entity " << entity.getId());
+
+                entityEntry->isIgnored = false;
+            }
             processEntityMovementChange(*entityEntry, entity);
         }
     }
@@ -406,41 +408,60 @@ void Awareness::processEntityMovementChange(EntityEntry& entityEntry, const Loca
 {
     //We only need to act if the entity isn't marked as a moving one.
     if (!entityEntry.isMoving && !entityEntry.isIgnored) {
-        //Only update if timestamp is newer
-        if (entityEntry.location.timeStamp() < entity.m_location.timeStamp()) {
-            entityEntry.location = entity.m_location;
 
-            debug_print("Updating entity location for entity " << entityEntry.entityId);
+        //Check if the bbox now is invalid
+        if (!entity.m_location.bBox().isValid()) {
+            debug_print("Ignoring entity " << entity.getId());
+            entityEntry.isIgnored = true;
 
-            //If an entity which previously didn't move start moving we need to move it to the "movable entities" collection.
-            if (entity.m_location.m_velocity.isValid() && entity.m_location.m_velocity != WFMath::Vector<3>::ZERO()) {
-                debug_print("Entity is now moving.");
-                mMovingEntities.insert(&entityEntry);
-                entityEntry.isMoving = true;
-                auto existingI = mEntityAreas.find(&entityEntry);
-                if (existingI != mEntityAreas.end()) {
-                    //The entity already was registered; mark those tiles where the entity previously were as dirty.
-                    markTilesAsDirty(existingI->second.boundingBox());
-                    mEntityAreas.erase(&entityEntry);
-                }
-            } else {
-                std::map<const EntityEntry*, WFMath::RotBox<2>> areas;
+            //We must now mark those areas that the entities used to touch as dirty, as well as remove the entity areas
+            std::map<const EntityEntry*, WFMath::RotBox<2>> areas;
 
-                buildEntityAreas(entityEntry, areas);
+            buildEntityAreas(entityEntry, areas);
 
+            for (auto& entry : areas) {
+                markTilesAsDirty(entry.second.boundingBox());
+            }
+            mEntityAreas.erase(&entityEntry);
 
-                for (auto& entry : areas) {
-                    markTilesAsDirty(entry.second.boundingBox());
-                    auto existingI = mEntityAreas.find(entry.first);
+        } else {
+
+            //Only update if timestamp is newer
+            if (entityEntry.location.timeStamp() < entity.m_location.timeStamp()) {
+                entityEntry.location = entity.m_location;
+
+                debug_print("Updating entity location for entity " << entityEntry.entityId);
+
+                //If an entity which previously didn't move start moving we need to move it to the "movable entities" collection.
+                if (entity.m_location.m_velocity.isValid() && entity.m_location.m_velocity != WFMath::Vector<3>::ZERO()) {
+                    debug_print("Entity is now moving.");
+                    mMovingEntities.insert(&entityEntry);
+                    entityEntry.isMoving = true;
+                    auto existingI = mEntityAreas.find(&entityEntry);
                     if (existingI != mEntityAreas.end()) {
-                        //The entity already was registered; mark both those tiles where the entity previously were as well as the new tiles as dirty.
+                        //The entity already was registered; mark those tiles where the entity previously were as dirty.
                         markTilesAsDirty(existingI->second.boundingBox());
-                        existingI->second = entry.second;
-                    } else {
-                        mEntityAreas.insert(entry);
+                        mEntityAreas.erase(&entityEntry);
                     }
+                } else {
+                    std::map<const EntityEntry*, WFMath::RotBox<2>> areas;
+
+                    buildEntityAreas(entityEntry, areas);
+
+                    for (auto& entry : areas) {
+                        markTilesAsDirty(entry.second.boundingBox());
+                        auto existingI = mEntityAreas.find(entry.first);
+                        if (existingI != mEntityAreas.end()) {
+                            //The entity already was registered; mark both those tiles where the entity previously were as well as the new tiles as dirty.
+                            markTilesAsDirty(existingI->second.boundingBox());
+                            existingI->second = entry.second;
+                        } else {
+                            mEntityAreas.insert(entry);
+                        }
+                    }
+                    debug_print(
+                            "Entity affects " << areas.size() << " areas. Dirty unaware tiles: " << mDirtyUnwareTiles.size() << " Dirty aware tiles: " << mDirtyAwareTiles.size());
                 }
-                debug_print("Entity affects " << areas.size() << " areas. Dirty unaware tiles: " << mDirtyUnwareTiles.size() << " Dirty aware tiles: " << mDirtyAwareTiles.size());
             }
         }
     }
@@ -463,25 +484,24 @@ bool Awareness::avoidObstacles(const WFMath::Point<2>& position, const WFMath::V
 
     for (auto entity : mMovingEntities) {
 
+        //All of the entities have the same location as we have, so we don't need to resolve the position in the world.
 
-            //All of the entities have the same location as we have, so we don't need to resolve the position in the world.
+        double time_diff = currentTimestamp - entity->location.timeStamp();
 
-            double time_diff = currentTimestamp - entity->location.timeStamp();
+        // Update location
+        Point3D pos = entity->location.pos();
+        pos += (entity->location.velocity() * time_diff);
 
-            // Update location
-            Point3D pos = entity->location.pos();
-            pos += (entity->location.velocity() * time_diff);
+        if (!pos.isValid()) {
+            continue;
+        }
 
-            if (!pos.isValid()) {
-                continue;
-            }
+        WFMath::Point<2> entityView2dPos(pos.x(), pos.y());
+        WFMath::Ball<2> entityViewRadius(entityView2dPos, entity->location.radius());
 
-            WFMath::Point<2> entityView2dPos(pos.x(), pos.y());
-            WFMath::Ball<2> entityViewRadius(entityView2dPos, entity->location.radius());
-
-            if (WFMath::Intersect(playerRadius, entityViewRadius, false) || WFMath::Contains(playerRadius, entityViewRadius, false)) {
-                nearestEntities.push(EntityCollisionEntry( { WFMath::Distance(position, entityView2dPos), entity, entityView2dPos, entityViewRadius }));
-            }
+        if (WFMath::Intersect(playerRadius, entityViewRadius, false) || WFMath::Contains(playerRadius, entityViewRadius, false)) {
+            nearestEntities.push(EntityCollisionEntry( { WFMath::Distance(position, entityView2dPos), entity, entityView2dPos, entityViewRadius }));
+        }
 
     }
 
