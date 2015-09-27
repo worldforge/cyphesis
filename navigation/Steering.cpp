@@ -104,6 +104,7 @@ bool Steering::updatePath(const WFMath::Point<3>& currentAvatarPosition)
         return false;
     }
     int result = mAwareness->findPath(currentAvatarPosition, mViewDestination, mDestinationRadius, mPath);
+    debug_print("Updating path, size of new path: " << result << ".");
     EventPathUpdated();
     mUpdateNeeded = false;
     return result > 0;
@@ -174,11 +175,9 @@ SteeringResult Steering::update(double currentTimestamp)
                 //We should send a move op if we're either not moving, or we've reached a waypoint, or we need to divert a lot.
 
                 WFMath::Point<2> nextWaypoint(mPath.front().x(), mPath.front().y());
-                debug_print("distance to next waypoint: " << WFMath::Distance(nextWaypoint, entityPosition));
                 while (WFMath::Distance(nextWaypoint, entityPosition) < 0.1f && mPath.size() > 1) {
                     mPath.pop_front();
                     nextWaypoint = WFMath::Point<2>(mPath.front().x(), mPath.front().y());
-                    debug_print("distance to new waypoint: " << WFMath::Distance(nextWaypoint, entityPosition));
                 }
 
                 WFMath::Vector<2> velocity = nextWaypoint - entityPosition;
@@ -241,13 +240,6 @@ SteeringResult Steering::update(double currentTimestamp)
                 mLastSentVelocity = WFMath::Vector<2>::ZERO();
                 mExpectingServerMovement = true;
             }
-        }
-        if (debug_flag) {
-            std::stringstream ss;
-            for (auto& point : mPath) {
-                ss << point << ", ";
-            }
-            debug_print("Path: " << ss.str());
         }
     }
     return result;
