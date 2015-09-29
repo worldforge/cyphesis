@@ -20,41 +20,21 @@
 
 #include "Vector3D.h"
 
-#include <wfmath/quaternion.h>
+#include "common/log.h"
 
-// The arguments to this function have been swapped over because in
-// the form provided in the example code, the result appeared to be
-// a rotation in the wrong direction. This may be a bug in my apogee
-// code, or it may be this code.
+#include <wfmath/quaternion.h>
+#include <wfmath/error.h>
 
 template<class V>
 const Quaternion quaternionFromTo(const V & from, const V & to)
 {
-    float cosT = Dot(from, to);
-    if (cosT > 0.99999f) {
-        return Quaternion(1.f, 0.f, 0.f, 0.f);
-    } else if (cosT < -0.99999f) {
-        V t(0.0, from.x(), -from.y());
-
-        if (t.sqrMag() < 1e-12) {
-            t = V(-from.z(), 0.0, from.x());
-        }
-
-        t.normalize();
-
-        return Quaternion(0.f, t.x(), t.y(), t.z());
+    Quaternion q;
+    try {
+        q.rotation(from, to);
+    } catch (const WFMath::ColinearVectors<3>& e) {
+        //The vectors are parallel, which causes an error in WFMath. Just ignore here.
     }
-    V t = Cross(from, to);
-
-    t.normalize();
-
-    float ss = std::sqrt(0.5f * (1.0f - cosT));
-
-    float x = t.x() * ss;
-    float y = t.y() * ss;
-    float z = t.z() * ss;
-    float w = std::sqrt(0.5f * (1.0f + cosT));
-    return Quaternion(w, x, y, z);
+    return q;
 }
 
 template

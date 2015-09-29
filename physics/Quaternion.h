@@ -23,6 +23,12 @@
 
 typedef WFMath::Quaternion Quaternion;
 
+/**
+ * @brief Creates a quaternion for rotation from one vector to another.
+ * @param from The from vector.
+ * @param to The to vector.
+ * @return The required rotation.
+ */
 template<class V>
 const Quaternion quaternionFromTo(const V & from, const V & to);
 
