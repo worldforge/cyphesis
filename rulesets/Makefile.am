@@ -56,6 +56,7 @@ librulesetentity_a_SOURCES = \
 			     BiomassProperty.cpp BiomassProperty.h \
 			     BurnSpeedProperty.cpp BurnSpeedProperty.h \
 			     DecaysProperty.cpp DecaysProperty.h \
+			     MetabolizingProperty.cpp MetabolizingProperty.h \
 			     Task.cpp Task.h \
 			     ArithmeticScript.cpp ArithmeticScript.h \
 			     ArithmeticFactory.cpp ArithmeticFactory.h \
