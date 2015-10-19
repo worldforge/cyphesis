@@ -457,12 +457,20 @@
         <float name="min">3</float>
         <string name="visibility">public</string>
       </map>
+      <map name="massreserve">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
       <map name="maxmass">
         <float name="default">30</float>
         <string name="visibility">private</string>
       </map>
       <map name="meat">
         <string name="default">ham</string>
+      </map>
+      <map name="metabolizing">
+        <float name="default">5</float>
+        <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">pig</string>
