@@ -36,6 +36,7 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::Tick;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Update;
+using Atlas::Objects::Root;
 using Atlas::Message::Element;
 
 static const bool debug_flag = true;
@@ -43,6 +44,8 @@ static const bool debug_flag = true;
 static const std::string FOOD = "food";
 static const std::string MASS = "mass";
 static const std::string MAXMASS = "maxmass";
+static const std::string MASSRESERVE = "massreserve";
+static const std::string RESERVELIMIT = "reservelimit";
 static const std::string STATUS = "status";
 
 // This the amount of energy consumed each tick
@@ -52,7 +55,8 @@ const double MetabolizingProperty::energyUnit = 0.0001;
 const double MetabolizingProperty::energyToMass = 10.0;
 
 // How much energy creature is able to store as mass (relative to mass) 
-const double MetabolizingProperty::reserves = 0.5;
+// (used if no reserveLimit provided)
+const double MetabolizingProperty::defaultReserves = 0.5;
 
 // How much mass creature is able to eat per tick, relative to creature's own mass
 const double MetabolizingProperty::biteSize = 0.01;
@@ -85,19 +89,41 @@ HandlerResult MetabolizingProperty::tick_handler(LocatedEntity * e,
                                            const Operation & op,
                                            OpVector & res)
 {
+ 
+    debug(std::cout << "MetabolizingProperty::tick_handler(entId="
+                    << e->getId() << ")" <<std::endl << std::flush;);
 
-    // The value of the property has interpretation of mass reserve
-    // that can be transformed into energy and sustain the entity
-    // that's why the name is changed
-    double & massReserve = data(); 
-    double massReserveChange = 0;
+    // Check if this Tick operation is meant to trigger "metabolism tick"
+    const std::vector<Root> & args = op->getArgs();
+    if (!args.empty()) {
+        const Root & arg = args.front();
+        if (arg->getName() != "metabolize") {
+            return OPERATION_IGNORED;
+        }
+    }
+    else { 
+        return OPERATION_IGNORED;
+    }
 
-    StatusProperty * status_prop = e->requirePropertyClass<StatusProperty>(STATUS);
+    // atm the metabolizng property value has no interpretation
+    double & metabolizing = data(); 
+    
+    StatusProperty * status_prop = e->requirePropertyClass<StatusProperty>(STATUS, 1.0f);
     bool status_changed = false;
     assert(status_prop != 0);
     status_prop->setFlags(flag_unsent);
     double & status = status_prop->data();
 
+    // get mass reserves (new property introduced for metabolism to work)
+    Property<double> * massreserve_prop = e->modPropertyType<double>(MASSRESERVE);
+
+    // get max mass reserves
+    const Property<double> * reservelimit_prop = e->getPropertyType<double>(RESERVELIMIT);
+    double reserveLimit = defaultReserves;
+    if (reservelimit_prop != 0) {
+        reserveLimit = reservelimit_prop->data();
+    }
+  
     // get mass property
     Property<double> * mass_prop = e->modPropertyType<double>(MASS);
 
@@ -115,16 +141,17 @@ HandlerResult MetabolizingProperty::tick_handler(LocatedEntity * e,
         double & mass = mass_prop->data();
 
         // set the food bite size depending on creature size
-        foodConsumed = std::min(food, mass*biteSize);
-        
-        food -= foodConsumed;
+        foodConsumed = mass*biteSize;
+        if (food >= foodConsumed) {
+            food -= foodConsumed;
 
-        food_prop->setFlags(flag_unsent);
-        food_prop->apply(e);
-
-        if (foodConsumed > 0) {
-          status += biteSize*energyToMass;
-          status_changed = true;
+            food_prop->setFlags(flag_unsent);
+            food_prop->apply(e);
+            status += biteSize*energyToMass;
+            status_changed = true;
+        }
+        else {
+            foodConsumed = 0;
         }
     }
 
@@ -133,43 +160,56 @@ HandlerResult MetabolizingProperty::tick_handler(LocatedEntity * e,
     if (status > (1.5 + energyUnit)) {
         status -= energyUnit;
         status_changed = true;
-        if (mass_prop != 0) {
+        if (mass_prop != 0 && massreserve_prop != 0 ) {
             double & mass = mass_prop->data();
+            double & massReserve = massreserve_prop->data();
             double massChange = mass*energyUnit/energyToMass;
-            mass_prop->setFlags(flag_unsent);
+
             Element maxmass_attr;
             if (e->getAttrType(MAXMASS, maxmass_attr, Element::TYPE_FLOAT) == 0) {
                 massChange = std::min(massChange, maxmass_attr.Float()-mass);
             }
             // TODO 
-            // change the portion of massReserve gain depending on current reserves
-            if (massReserve < mass*reserves) {
-              massReserveChange = massChange;
+            // Change the mass reserves depending on how fat we are
+            //
+            // we have small reserves put all mass gain into it
+            if (massReserve < mass*0.5*reserveLimit) {
+              massReserve += reserveLimit * massChange;
             }
+            // normal reserves
+            else if (massReserve < mass*reserveLimit) {
+              massReserve += massChange*reserveLimit * 0.5;
+            } 
             else {
-              massReserveChange = massChange*reserves;
+              massReserve = massChange*reserveLimit;
             }
             mass += massChange;
+
+            mass_prop->setFlags(flag_unsent);
+            massreserve_prop->setFlags(flag_unsent);
             mass_prop->apply(e);
+            massreserve_prop->apply(e);
         }
     }
     // increase energy
     else {
         status -= energyUnit;
         status_changed = true;
-        if (mass_prop != 0) {
+        if (mass_prop != 0 && massreserve_prop != 0) {
             double & mass = mass_prop->data();
+            double & massReserve = massreserve_prop->data();
             double massBurn = mass*energyUnit/energyToMass;
             if (status <= 0.5 && massReserve > massBurn) {
-                // Drain away a little less energy and lose some weight
-                // This ensures there is a long term penalty to allowing
-                // something to starve
+                // all of the burned mass comes from the reserves, 
+                // entity should die if it lose all its mass reserves
                 status += energyUnit;
                 status_changed = true;
                 mass -= massBurn;
-                massReserveChange = -massBurn;
+                massReserve -= massBurn;
                 mass_prop->setFlags(flag_unsent);
+                massreserve_prop->setFlags(flag_unsent);
                 mass_prop->apply(e);
+                massreserve_prop->apply(e);
             }
         }
     }
@@ -178,10 +218,16 @@ HandlerResult MetabolizingProperty::tick_handler(LocatedEntity * e,
         status_prop->apply(e);
     }
 
-    // How to set the value of the property form within itself ?
-    // Should I send send operation instead? Is it the proper way to do it?
-    this->setFlags(flag_unsent);
-    this->apply(e);
+    if (mass_prop != 0 && massreserve_prop != 0) {
+        debug(std::cout << "MetabolizingProperty::tick_handler(entId="
+                    << e->getId() << ") foodConsumed: " << foodConsumed 
+                    << " massReserve: " << massreserve_prop->data()
+                    << " reserveLimit: " << reserveLimit
+                    << " status: " << status
+                    << " mass: " << mass_prop->data()
+                    << std::endl << std::flush;);
+    }
+
 
     Update update;              // do i need to do it?
     update->setTo(e->getId());

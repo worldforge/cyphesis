@@ -41,7 +41,7 @@ class MetabolizingProperty : public Property<double>
 
     /// \brief Relation how much energy creature is able to store as mass
     // relative to mass, one day should be made into atlas property
-    static const double reserves; 
+    static const double defaultReserves; 
  
     /// \brief How much mass creature is able to eat per tick (relative to its mass)
     static const double biteSize;
