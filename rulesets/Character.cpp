@@ -443,6 +443,7 @@ void Character::InfoOperation(const Operation & op, OpVector & res)
 
 void Character::TickOperation(const Operation & op, OpVector & res)
 {
+
     debug(std::cout << "================================" << std::endl
                     << std::flush;);
     const std::vector<Root> & args = op->getArgs();
@@ -484,14 +485,26 @@ void Character::TickOperation(const Operation & op, OpVector & res)
 
         } else if (arg->getName() == "mind") {
             // Do nothing. Passed to mind.
+
+        } else if (arg->getName() == "metabolize") {
+            // Do nothing. Passed to Metabolizing property.
+
         } else {
             debug(std::cout << "Tick to unknown subsystem " << arg->getName()
                             << " arrived" << std::endl << std::flush;);
         }
     } else {
         // METABOLISE
-        metabolise(res);
-        
+        //metabolise(res);
+        //issue instant metabolize tick each time
+        Tick metabolizeOp;
+        metabolizeOp->setTo(getId());
+        // INSTANT tickmetabolizeOp->setFutureSeconds(consts::basic_tick * 30);
+        Anonymous metabolize_arg;
+        metabolize_arg->setName("metabolize");
+        metabolizeOp->setArgs1(metabolize_arg);
+        res.push_back(metabolizeOp);
+ 
         // TICK
         Tick tickOp;
         tickOp->setTo(getId());
