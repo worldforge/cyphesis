@@ -111,7 +111,7 @@ CorePropertyManager::CorePropertyManager()
     installProperty<BiomassProperty>("biomass", "float");
     installProperty<BurnSpeedProperty>("burn_speed", "float");
     installProperty<TransientProperty>("transient", "float");
-    installProperty<Property<double> >("food", "float");
+    installProperty<Property<double> >("nourishment", "float");
     installProperty<Property<double> >("mass", "float");
     installProperty<BBoxProperty>("bbox", "list");
     installProperty<MetabolizingProperty>("metabolizing", "float");

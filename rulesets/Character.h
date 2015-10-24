@@ -83,17 +83,6 @@ class Character : public Thing, public virtual sigc::trackable {
      */
     static long int s_serialNumberNext;
 
-    /// \brief Energy loss by metabolism per tick
-    static const double energyConsumption;
-    /// \brief Food consumed by digestion per tick
-    static const double foodConsumption;
-    /// \brief Proportion of weight converted to energy per tick when starving
-    static const double weightConsumption;
-    /// \brief Energy converted to weight by metabolism per tick
-    static const double energyLaidDown;
-    /// \brief Weight gained from excess energy by metabolism per tick
-    static const double weightGain;
-
     /// \brief Holds a connection to the containered signal of any wielded entity.
     ///
     /// FIXME This is a hack, to be removed once we've migrated to using Outfit
@@ -101,7 +90,6 @@ class Character : public Thing, public virtual sigc::trackable {
     sigc::connection m_rightHandWieldConnection;
 
     void filterExternalOperation(const Operation &);
-    void metabolise(OpVector &, double ammount = 1); 
     void wieldDropped();
     LocatedEntity * findInContains(LocatedEntity * ent, const std::string & id);
     LocatedEntity * findInInventory(const std::string & id);

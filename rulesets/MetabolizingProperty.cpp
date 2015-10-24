@@ -41,7 +41,7 @@ using Atlas::Message::Element;
 
 static const bool debug_flag = true;
 
-static const std::string FOOD = "food";
+static const std::string NOURISHMENT = "nourishment";
 static const std::string MASS = "mass";
 static const std::string MAXMASS = "maxmass";
 static const std::string MASSRESERVE = "massreserve";
@@ -85,6 +85,16 @@ MetabolizingProperty * MetabolizingProperty::copy() const
     return new MetabolizingProperty(*this);
 }
 
+/// \brief Calculate how the Characters metabolism has affected it in the
+/// last tick
+///
+/// This function is called every tick (1 per 90 seconds) It does one of three things.
+/// If energy is very high, it loses some, and gains some weight. Otherwise
+/// it loses some energy, unless energy is very low, in which case loss
+/// is slower, as weight is used to compensate.
+/// A fully healthy Character should take about a week to starve to death.
+/// So 10080 / 90 = 6720 ticks.
+/// @param res Any result of changes is returned here.
 HandlerResult MetabolizingProperty::tick_handler(LocatedEntity * e,
                                            const Operation & op,
                                            OpVector & res)
@@ -127,31 +137,31 @@ HandlerResult MetabolizingProperty::tick_handler(LocatedEntity * e,
     // get mass property
     Property<double> * mass_prop = e->modPropertyType<double>(MASS);
 
-    // get food property
-    Property<double> * food_prop = e->modPropertyType<double>(FOOD); 
-    // TODO later we should use unified nourishment property instead of food
+    // get nourishment property
+    Property<double> * nourishment_prop = e->modPropertyType<double>(NOURISHMENT); 
+    // TODO later we should use unified nourishment property instead of nourishment
     
-    double foodConsumed = 0;
+    double nourishmentConsumed = 0;
     
     // DIGEST FIRST 
     // don't go further if we don't have following properties
-    if (food_prop != 0 && mass_prop != 0) {
+    if (nourishment_prop != 0 && mass_prop != 0) {
 
-        double & food = food_prop->data();
+        double & nourishment = nourishment_prop->data();
         double & mass = mass_prop->data();
 
-        // set the food bite size depending on creature size
-        foodConsumed = mass*biteSize;
-        if (food >= foodConsumed) {
-            food -= foodConsumed;
+        // set the nourishment bite size depending on creature size
+        nourishmentConsumed = mass*biteSize;
+        if (nourishment >= nourishmentConsumed) {
+            nourishment -= nourishmentConsumed;
 
-            food_prop->setFlags(flag_unsent);
-            food_prop->apply(e);
+            nourishment_prop->setFlags(flag_unsent);
+            nourishment_prop->apply(e);
             status += biteSize*energyToMass;
             status_changed = true;
         }
         else {
-            foodConsumed = 0;
+            nourishmentConsumed = 0;
         }
     }
 
@@ -220,7 +230,7 @@ HandlerResult MetabolizingProperty::tick_handler(LocatedEntity * e,
 
     if (mass_prop != 0 && massreserve_prop != 0) {
         debug(std::cout << "MetabolizingProperty::tick_handler(entId="
-                    << e->getId() << ") foodConsumed: " << foodConsumed 
+                    << e->getId() << ") nourishmentConsumed: " << nourishmentConsumed 
                     << " massReserve: " << massreserve_prop->data()
                     << " reserveLimit: " << reserveLimit
                     << " status: " << status
