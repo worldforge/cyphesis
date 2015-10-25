@@ -33,31 +33,18 @@ class Property;
 /// for producing and dropping fruit very simply.
 ///
 /// The basic functionality of Plant is as follows:
-/// 1) The plant receives a tick operation. It checks it's m_nourishment value to see
+/// 1) The plant receives a tick operation. It triggers metabolism code to see
 /// whether it should grow or wither.
 /// If the plant has fruitName set, it will also do a check whether it should drop a fruit or not.
 /// It also sends an Eat operation to it's parent.
 /// 2) If the parent is the world, the world will respond to the Eat operation by checking
 /// if the plant is in a favourable spot (i.e. a place where it can grow, like in the bare ground).
 /// If so, the World will send a Nourishment op to the plant.
-/// 3) The plant receives the Nourishment op and adds its value to m_nourishment.
+/// 3) The plant receives the Nourishment op and adds its value to nourishment property.
 ///
 /// \ingroup EntityClasses
 class Plant : public Thing {
   protected:
-
-    /**
-     * Keeps track of nourishment received.
-     *
-     * Each tick this is checked. If it's zero or less, the plant will wither.
-     * If it's positive the plant will grow.
-     *
-     * The value itself is increased through Nourishment ops.
-     *
-     * Note that we use an "optional" to prevent the first Tick operations to starve the plant
-     * (before it has had time to nourish itself).
-     */
-    boost::optional<double> m_nourishment;
 
     static const int m_speed = 20; // Number of basic_ticks per tick
     static const int m_minuDrop = 0; // min fruit dropped
@@ -65,6 +52,10 @@ class Plant : public Thing {
 
     void handleFruiting(OpVector & res, Property<int>& fruits_prop);
     void dropFruit(OpVector & res, const std::string& fruitName);
+
+    // TODO This is temporary remove this once proper grows property is introduced
+    // Scales the entity by scale factor
+    void grow(float scale);
     /**
      * If there's an area attached to the plant it will be scaled according to the radius of the bounding box.
      */
