@@ -124,8 +124,6 @@ HandlerResult MetabolizingProperty::tick_handler(LocatedEntity * e,
     status_prop->setFlags(flag_unsent);
     double & status = status_prop->data();
 
-    // get mass reserves (new property introduced for metabolism to work)
-    Property<double> * massreserve_prop = e->modPropertyType<double>(MASSRESERVE);
 
     // get max mass reserves
     const Property<double> * reservelimit_prop = e->getPropertyType<double>(RESERVELIMIT);
@@ -136,6 +134,18 @@ HandlerResult MetabolizingProperty::tick_handler(LocatedEntity * e,
   
     // get mass property
     Property<double> * mass_prop = e->modPropertyType<double>(MASS);
+
+    // get mass reserves (new property introduced for metabolism to work)
+    Property<double> * massreserve_prop; 
+    if (mass_prop != 0) {
+        double massreserve = mass_prop->data() * reserveLimit * 0.5;
+        massreserve_prop = e->requirePropertyClass<Property<double> >(MASSRESERVE, massreserve);
+        massreserve_prop->setFlags(flag_unsent);
+    }
+    else {
+        massreserve_prop = nullptr; // FIXME how to tell that its null pointer
+    }
+
 
     // get nourishment property
     Property<double> * nourishment_prop = e->modPropertyType<double>(NOURISHMENT); 
