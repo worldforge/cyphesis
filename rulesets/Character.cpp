@@ -368,16 +368,7 @@ void Character::TickOperation(const Operation & op, OpVector & res)
                             << " arrived" << std::endl << std::flush;);
         }
     } else {
-        // METABOLISE
-        //issue instant metabolize tick each time
-        Tick metabolizeOp;
-        metabolizeOp->setTo(getId());
-        // INSTANT tickmetabolizeOp->setFutureSeconds(consts::basic_tick * 30);
-        Anonymous metabolize_arg;
-        metabolize_arg->setName("metabolize");
-        metabolizeOp->setArgs1(metabolize_arg);
-        res.push_back(metabolizeOp);
- 
+
         // TICK
         Tick tickOp;
         tickOp->setTo(getId());

@@ -113,8 +113,9 @@ void Plant::NourishOperation(const Operation & op, OpVector & res)
     nourishment_ent->setAttr(NOURISHMENT, nourishment);
     
     Set s;
+    s->setTo(getId());
     s->setArgs1(nourishment_ent);
-    // FIXME FROM, SECONDS?
+    // FIXME Do i require sending sight operation?? As it is in Chacter class case?
 
     res.push_back(s);
 

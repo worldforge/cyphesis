@@ -26,6 +26,8 @@
 #include "common/Tick.h"
 #include "common/Update.h"
 
+#include "common/const.h"
+
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h> // why do I need this ?
 #include <Atlas/Objects/SmartPtr.h>
@@ -66,6 +68,18 @@ const double MetabolizingProperty::biteSize = 0.01;
 void MetabolizingProperty::install(LocatedEntity * owner, const std::string & name)
 {
     owner->installDelegate(Atlas::Objects::Operation::TICK_NO, name);
+
+    // Start the metabolize tick loop
+    Tick metabolizeOp;
+    metabolizeOp->setTo(owner->getId());
+    metabolizeOp->setFrom(owner->getId());
+
+    Anonymous metabolize_arg;
+    metabolize_arg->setName("metabolize");
+    metabolizeOp->setArgs1(metabolize_arg);
+
+    //FIXME i hope i'm doing it right ....
+    owner->sendWorld(metabolizeOp);
 }
 
 void MetabolizingProperty::remove(LocatedEntity *owner, const std::string & name)
@@ -253,6 +267,17 @@ HandlerResult MetabolizingProperty::tick_handler(LocatedEntity * e,
     update->setTo(e->getId());
 
     res.push_back(update);
+
+    //Issue new metabolize tick
+    Tick metabolizeOp;
+    metabolizeOp->setTo(e->getId());
+    Anonymous metabolize_arg;
+    metabolize_arg->setName("metabolize");
+    metabolizeOp->setArgs1(metabolize_arg);
+    // TODO  Instead of 30 this should be probably multiplied by metabolism_prop->data()
+    // Do it when there will be such need
+    metabolizeOp->setFutureSeconds(consts::basic_tick * 30); 
+    res.push_back(metabolizeOp);
 
     return OPERATION_IGNORED;
 }
