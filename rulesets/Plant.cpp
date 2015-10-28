@@ -19,9 +19,6 @@
 #include "Plant.h"
 
 #include "StatusProperty.h"
-#include "BBoxProperty.h"
-#include "AreaProperty.h"
-#include "physics/Shape.h"
 
 #include "common/const.h"
 #include "common/debug.h"
@@ -36,7 +33,6 @@
 #include "common/Tick.h"
 #include "common/Update.h"
 
-#include <wfmath/atlasconv.h>
 #include <wfmath/MersenneTwister.h>
 
 #include <Atlas/Objects/Operation.h>
