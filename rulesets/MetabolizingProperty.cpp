@@ -49,10 +49,11 @@ using Atlas::Message::Element;
 
 static const bool debug_flag = true;
 
-static const std::string NOURISHMENT = "nourishment";
-static const std::string MASS = "mass";
+static const std::string GROWS = "grows";
 static const std::string MAXMASS = "maxmass";
+static const std::string MASS = "mass";
 static const std::string MASSRESERVE = "massreserve";
+static const std::string NOURISHMENT = "nourishment";
 static const std::string RESERVELIMIT = "reservelimit";
 static const std::string STATUS = "status";
 
@@ -291,10 +292,15 @@ HandlerResult MetabolizingProperty::tick_handler(LocatedEntity * e,
                     << std::endl << std::flush;);
     }
 
-    // Trigger growth which is currently tied to mass increase
-    if (growth != 1.0f) {
-        grow(e, growth);
+
+    // Decide wether enity should grow
+    const Property<int> * grows_prop = e->getPropertyType<int>(GROWS);
+    if (grows_prop != 0) {
+        if (growth != 1.0f && grows_prop->data() > 0 ) {
+          grow(e, growth);
+        }
     }
+
 
     Update update;              // do i need to do it?
     update->setTo(e->getId());
@@ -323,8 +329,8 @@ void MetabolizingProperty::grow(LocatedEntity * e, float scale) {
     bool isPlant = e->getType()->isTypeOf(PLANTTYPE);
 
     // check the type of an entity to determine proper growth model
-    debug(std::cout << "Is animal: " << isAnimal << ", Is plant: " 
-                        << isPlant << ", scale: " << scale
+    debug(std::cout << "Entity: " << e->getIntId()  << " grows by factor: " 
+                        << scale << ", entity is a plant: " << isPlant 
                         << std::endl << std::flush;);
 
     
