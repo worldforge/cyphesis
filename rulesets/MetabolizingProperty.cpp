@@ -16,17 +16,23 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
+
+#include "physics/Shape.h"
+
+#include "AreaProperty.h"
+#include "BBoxProperty.h"
+
 #include "rulesets/MetabolizingProperty.h"
 #include "rulesets/StatusProperty.h"
-
 #include "rulesets/LocatedEntity.h"
 
+#include "common/const.h"
 #include "common/debug.h"
-
 #include "common/Tick.h"
+#include "common/TypeNode.h"
 #include "common/Update.h"
 
-#include "common/const.h"
+#include <wfmath/atlasconv.h>
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h> // why do I need this ?
@@ -49,6 +55,11 @@ static const std::string MAXMASS = "maxmass";
 static const std::string MASSRESERVE = "massreserve";
 static const std::string RESERVELIMIT = "reservelimit";
 static const std::string STATUS = "status";
+
+// Type names used for comparisions - to distinguish between plant-like
+// entities and animal-like
+static const std::string ANIMALTYPE = "mobile";
+static const std::string PLANTTYPE= "plant";
 
 // This the amount of energy consumed each tick
 const double MetabolizingProperty::energyUnit = 0.0001;
@@ -148,6 +159,9 @@ HandlerResult MetabolizingProperty::tick_handler(LocatedEntity * e,
   
     // get mass property
     Property<double> * mass_prop = e->modPropertyType<double>(MASS);
+ 
+    // the growth factor (1- means no growth)
+    float growth = 1.0f; 
 
     // get mass reserves (new property introduced for metabolism to work)
     Property<double> * massreserve_prop; 
@@ -199,6 +213,10 @@ HandlerResult MetabolizingProperty::tick_handler(LocatedEntity * e,
             double & massReserve = massreserve_prop->data();
             double massChange = mass*energyUnit/energyToMass;
 
+            // when calculating growth take into account only mass that is no reserve
+            // growth factor is always equal to new core mass divided by old one
+            double coreMass = mass-massReserve;
+
             Element maxmass_attr;
             if (e->getAttrType(MAXMASS, maxmass_attr, Element::TYPE_FLOAT) == 0) {
                 massChange = std::min(massChange, maxmass_attr.Float()-mass);
@@ -207,15 +225,26 @@ HandlerResult MetabolizingProperty::tick_handler(LocatedEntity * e,
             // Change the mass reserves depending on how fat we are
             //
             // we have small reserves put all mass gain into it
+            // no growth in size in this case
             if (massReserve < mass*0.5*reserveLimit) {
-              massReserve += reserveLimit * massChange;
+                // growth factor
+                growth = 1.0f + (1.0f - reserveLimit)*massChange/coreMass;
+              
+                massReserve += reserveLimit * massChange;
             }
-            // normal reserves
+            // normal reserves -> grow a little
             else if (massReserve < mass*reserveLimit) {
-              massReserve += massChange*reserveLimit * 0.5;
+                // growth factor
+                growth = 1.0f + (1.0f - 0.5*reserveLimit)*massChange/coreMass; 
+              
+                massReserve += massChange*reserveLimit * 0.5;
             } 
+            // other cases max mass reserve
             else {
-              massReserve = massChange*reserveLimit;
+                // growth factor
+                growth = 1.0f + massChange/coreMass; 
+
+                massReserve = massChange*reserveLimit;
             }
             mass += massChange;
 
@@ -225,7 +254,7 @@ HandlerResult MetabolizingProperty::tick_handler(LocatedEntity * e,
             massreserve_prop->apply(e);
         }
     }
-    // increase energy
+    // increase energy, no mass growth - no growth
     else {
         status -= energyUnit;
         status_changed = true;
@@ -262,6 +291,10 @@ HandlerResult MetabolizingProperty::tick_handler(LocatedEntity * e,
                     << std::endl << std::flush;);
     }
 
+    // Trigger growth which is currently tied to mass increase
+    if (growth != 1.0f) {
+        grow(e, growth);
+    }
 
     Update update;              // do i need to do it?
     update->setTo(e->getId());
@@ -280,4 +313,97 @@ HandlerResult MetabolizingProperty::tick_handler(LocatedEntity * e,
     res.push_back(metabolizeOp);
 
     return OPERATION_IGNORED;
+}
+
+
+void MetabolizingProperty::grow(LocatedEntity * e, float scale) {
+ 
+    // get the necessary class info 
+    bool isAnimal = e->getType()->isTypeOf(ANIMALTYPE);
+    bool isPlant = e->getType()->isTypeOf(PLANTTYPE);
+
+    // check the type of an entity to determine proper growth model
+    debug(std::cout << "Is animal: " << isAnimal << ", Is plant: " 
+                        << isPlant << ", scale: " << scale
+                        << std::endl << std::flush;);
+
+    
+    BBox & bbox = e->m_location.m_bBox;
+    // FIXME Handle the bbox without needing the Set operation.
+    if (scale > 0 && bbox.isValid()) {
+        float height_scale = std::pow(scale, 0.33333f);
+        debug(std::cout << "scale " << scale << ", " << height_scale
+                            << std::endl << std::flush;);
+        debug(std::cout << "Old " << bbox << std::endl << std::flush;);
+        // FIXME Rammming in a bbox without checking if its valid.
+        bbox = BBox(Point3D(bbox.lowCorner().x() * height_scale,
+                                bbox.lowCorner().y() * height_scale,
+                                bbox.lowCorner().z() * height_scale),
+                       Point3D(bbox.highCorner().x() * height_scale,
+                                bbox.highCorner().y() * height_scale,
+                                bbox.highCorner().z() * height_scale));
+        debug(std::cout << "New " << bbox << std::endl << std::flush;);
+        BBoxProperty * box_property = e->modPropertyClass<BBoxProperty>("bbox");
+        if (box_property != nullptr) {
+            box_property->data() = bbox;
+            box_property->setFlags(flag_unsent);
+        } else {
+            log(ERROR, String::compose("Entity %1 type \"%2\" has a valid "
+                "bbox, but no bbox property",
+                e->getIntId(), e->getType()->name()));
+        }
+        // Just to be extra sure check if its plant
+        if (isPlant) { 
+          scaleArea(e);
+        }
+    }
+    // for those changes to have an effect one must send update operation later
+    
+}
+
+void MetabolizingProperty::scaleArea(LocatedEntity * e) {
+    static float AREA_SCALING_FACTOR=3.0f;
+
+    const WFMath::AxisBox<3>& bbox = e->m_location.bBox();
+    if (bbox.isValid()) {
+        //If there's an area we need to scale that with the bbox
+        AreaProperty * area_property = e->modPropertyClass<AreaProperty>("area");
+        if (area_property != nullptr) {
+            WFMath::AxisBox<2> footprint = area_property->shape()->footprint();
+            //We'll make it so that the footprint of the area is AREA_SCALING_FACTOR times the footprint of the bbox
+            auto area_radius = footprint.boundingSphere().radius();
+            if (area_radius != 0.0f) {
+
+                //We're only interested in the horizontal radius of the plant
+                WFMath::AxisBox<2> flat_bbox(WFMath::Point<2>(bbox.lowerBound(0), bbox.lowerBound(1)), WFMath::Point<2>(bbox.upperBound(0), bbox.upperBound(1)));
+                auto plant_radius = flat_bbox.boundingSphere().radius();
+
+                auto desired_radius = plant_radius * AREA_SCALING_FACTOR;
+                auto scaling_factor = desired_radius / area_radius;
+
+                //No need to alter if the scale is the same.
+                //Also don't scale the unless the difference is at least 10% in either direction.
+                //The reason for this is that we don't want to alter the area each tick since
+                //the client often must perform a sometimes expensive material regeneration
+                //calculation every time a terrain area changes. With many plants this runs the
+                //risk of bogging down the client then.
+                if (!WFMath::Equal(scaling_factor, 1.0f)
+                        && (scaling_factor > 1.1f || scaling_factor < 0.9f)) {
+                    std::unique_ptr<Form<2>> new_area_shape(
+                            area_property->shape()->copy());
+                    new_area_shape->scale(scaling_factor);
+                    Atlas::Message::MapType shapeElement;
+                    new_area_shape->toAtlas(shapeElement);
+
+                    Atlas::Message::Element areaElement;
+                    area_property->get(areaElement);
+                    areaElement.asMap()["shape"] = shapeElement;
+
+                    area_property->set(areaElement);
+                    area_property->setFlags(flag_unsent);
+                }
+            }
+        }
+    }
+    // This function should be executed before update operation is issued
 }

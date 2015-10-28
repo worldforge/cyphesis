@@ -189,37 +189,6 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
     res.push_back(update);
 }
 
-void Plant::grow(float scale) {
-
-    BBox & bbox = m_location.m_bBox;
-    // FIXME Handle the bbox without needing the Set operation.
-    if (scale > 0 && bbox.isValid()) {
-        float height_scale = std::pow(scale, 0.33333f);
-        debug(std::cout << "scale " << scale << ", " << height_scale
-                            << std::endl << std::flush;);
-        debug(std::cout << "Old " << bbox << std::endl << std::flush;);
-        // FIXME Rammming in a bbox without checking if its valid.
-        bbox = BBox(Point3D(bbox.lowCorner().x() * height_scale,
-                                bbox.lowCorner().y() * height_scale,
-                                bbox.lowCorner().z() * height_scale),
-                       Point3D(bbox.highCorner().x() * height_scale,
-                                bbox.highCorner().y() * height_scale,
-                                bbox.highCorner().z() * height_scale));
-        debug(std::cout << "New " << bbox << std::endl << std::flush;);
-        BBoxProperty * box_property = modPropertyClass<BBoxProperty>("bbox");
-        if (box_property != nullptr) {
-            box_property->data() = bbox;
-            box_property->apply(this);
-            box_property->setFlags(flag_unsent);
-        } else {
-            log(ERROR, String::compose("Plant %1 type \"%2\" has a valid "
-                "bbox, but no bbox property",
-                getIntId(), getType()->name()));
-        }
-        scaleArea();
-    }
-}
-
 void Plant::handleFruiting(OpVector & res, Property<int>& fruits_prop) {
     Element fruitName;
     if (getAttrType("fruitName", fruitName, Element::TYPE_STRING) != 0) {
@@ -286,54 +255,6 @@ void Plant::TouchOperation(const Operation & op, OpVector & res)
                     res.push_back(update);
                 }
 
-            }
-        }
-    }
-}
-
-
-void Plant::scaleArea() {
-    static float AREA_SCALING_FACTOR=3.0f;
-
-    const WFMath::AxisBox<3>& bbox = m_location.bBox();
-    if (bbox.isValid()) {
-        //If there's an area we need to scale that with the bbox
-        AreaProperty * area_property = modPropertyClass<AreaProperty>("area");
-        if (area_property != nullptr) {
-            WFMath::AxisBox<2> footprint = area_property->shape()->footprint();
-            //We'll make it so that the footprint of the area is AREA_SCALING_FACTOR times the footprint of the bbox
-            auto area_radius = footprint.boundingSphere().radius();
-            if (area_radius != 0.0f) {
-
-                //We're only interested in the horizontal radius of the plant
-                WFMath::AxisBox<2> flat_bbox(WFMath::Point<2>(bbox.lowerBound(0), bbox.lowerBound(1)), WFMath::Point<2>(bbox.upperBound(0), bbox.upperBound(1)));
-                auto plant_radius = flat_bbox.boundingSphere().radius();
-
-                auto desired_radius = plant_radius * AREA_SCALING_FACTOR;
-                auto scaling_factor = desired_radius / area_radius;
-
-                //No need to alter if the scale is the same.
-                //Also don't scale the unless the difference is at least 10% in either direction.
-                //The reason for this is that we don't want to alter the area each tick since
-                //the client often must perform a sometimes expensive material regeneration
-                //calculation every time a terrain area changes. With many plants this runs the
-                //risk of bogging down the client then.
-                if (!WFMath::Equal(scaling_factor, 1.0f)
-                        && (scaling_factor > 1.1f || scaling_factor < 0.9f)) {
-                    std::unique_ptr<Form<2>> new_area_shape(
-                            area_property->shape()->copy());
-                    new_area_shape->scale(scaling_factor);
-                    Atlas::Message::MapType shapeElement;
-                    new_area_shape->toAtlas(shapeElement);
-
-                    Atlas::Message::Element areaElement;
-                    area_property->get(areaElement);
-                    areaElement.asMap()["shape"] = shapeElement;
-
-                    area_property->set(areaElement);
-                    area_property->apply(this);
-                    area_property->setFlags(flag_unsent);
-                }
             }
         }
     }

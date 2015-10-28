@@ -27,6 +27,14 @@
 //
 class MetabolizingProperty : public Property<double>
 {
+  private:
+
+    /// \brief Handles the growth of the entity as an effect of mass increase
+    void grow(LocatedEntity *, float scale);
+    
+    /// \brief Handles the increase of area around plant
+    void scaleArea(LocatedEntity *);
+
   public:
  
     /// \brief How much energy we get burning one unit of mass

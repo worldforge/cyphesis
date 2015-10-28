@@ -53,14 +53,6 @@ class Plant : public Thing {
     void handleFruiting(OpVector & res, Property<int>& fruits_prop);
     void dropFruit(OpVector & res, const std::string& fruitName);
 
-    // TODO This is temporary remove this once proper grows property is introduced
-    // Scales the entity by scale factor
-    void grow(float scale);
-    /**
-     * If there's an area attached to the plant it will be scaled according to the radius of the bounding box.
-     */
-    void scaleArea();
-
   public:
 
     explicit Plant(const std::string & id, long intId);
