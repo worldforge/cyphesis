@@ -27,9 +27,10 @@ typedef WFMath::Quaternion Quaternion;
  * @brief Creates a quaternion for rotation from one vector to another.
  * @param from The from vector.
  * @param to The to vector.
+ * @param fallbackAxis Rotate 180 degrees around this axis if the vectors are anti-parallel.
  * @return The required rotation.
  */
 template<class V>
-const Quaternion quaternionFromTo(const V & from, const V & to);
+const Quaternion quaternionFromTo(const V & from, const V & to, const V& fallbackAxis);
 
 #endif // PHYSICS_QUATERNION_H
