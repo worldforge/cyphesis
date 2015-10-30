@@ -25,6 +25,10 @@
 #include <vector>
 
 
+/**
+ * @brief A terrain representation that's shared between multiple entities.
+ *
+ */
 class SharedTerrain : public IHeightProvider
 {
     public:
@@ -38,6 +42,12 @@ class SharedTerrain : public IHeightProvider
         SharedTerrain();
         virtual ~SharedTerrain();
 
+        /**
+         * @brief Sets base points.
+         *
+         * Only those that have changed are processed. It's thus safe to call this from each entity sharing this instance.
+         * @param basepoints
+         */
         void setBasePoints(const std::vector<BasePointDefinition>& basepoints);
 
         virtual void blitHeights(int xMin, int xMax, int yMin, int yMax, std::vector<float>& heights) const;
