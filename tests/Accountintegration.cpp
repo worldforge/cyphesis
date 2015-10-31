@@ -419,6 +419,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "stubs/rulesets/stubLimboProperty.h"
 #include "stubs/rulesets/stubDomainProperty.h"
 #include "stubs/rulesets/stubSuspendedProperty.h"
+#include "stubs/rulesets/stubPlantableProperty.h"
 #include "stubs/rulesets/stubProxyMind.h"
 #include "stubs/rulesets/stubBaseMind.h"
 #include "stubs/rulesets/stubMemEntity.h"

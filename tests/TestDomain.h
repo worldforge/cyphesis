@@ -35,7 +35,7 @@ class TestDomain : public Domain
         {
         }
 
-        float constrainHeight(LocatedEntity * parent,
+        float constrainHeight(LocatedEntity& entity, LocatedEntity * parent,
                 const Point3D & pos, const std::string & mode)
         {
             return 0.0f;
