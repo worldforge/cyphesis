@@ -38,6 +38,8 @@
 #include <Atlas/Objects/Entity.h>
 #include <Atlas/Objects/objectFactory.h>
 
+#include <wfmath/atlasconv.h>
+
 #include <iostream>
 
 using Atlas::Message::MapType;
@@ -203,17 +205,36 @@ LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId, 
     for (auto& attrI : attrs) {
         //copy all attributes except "parents", since that will point to the name of the archetype
         if (attrI.first != "parents") {
-            attrEntity->setAttr(attrI.first, attrI.second);
+            //Also handle orientation separately.
+            //We want to apply both rotations, both the one in the archetype and the one which was sent.
+            if (attrI.first == "orientation" && attrEntity->hasAttr("orientation")) {
+                Quaternion baseOrienation = Quaternion::Identity();
+                Atlas::Message::Element baseElement;
+                attrEntity->copyAttr("orientation", baseElement);
+
+                if (baseElement.isList() && baseElement.List().size() == 4) {
+                    baseOrienation.fromAtlas(baseElement);
+                }
+
+                Quaternion suppliedOrientation;
+                suppliedOrientation.fromAtlas(attrI.second);
+                if (suppliedOrientation.isValid()) {
+                    baseOrienation.rotate(suppliedOrientation);
+                }
+                //This is slightly inefficient, as we're now converting back again to Element data, which later on will
+                //be parsed into a quaternion again. But the cost isn't overly high.
+                attrEntity->setAttr(attrI.first, baseOrienation.toAtlas());
+            } else {
+                attrEntity->setAttr(attrI.first, attrI.second);
+            }
         }
     }
 
     if (!attributes->isDefaultPos()) {
         attrEntity->modifyPos() = attributes->getPos();
     }
-    if (attributes->hasAttr("orientation")) {
-        attrEntity->setAttr("orientation", attributes->getAttr("orientation"));
-    }
-    LocatedEntity* entity = createEntity(id, intId, entityCreation, location, entities);
+    LocatedEntity* entity = createEntity(id, intId, entityCreation, location,
+            entities);
 
     if (entity != nullptr) {
         processResolvedAttributes(entities);
