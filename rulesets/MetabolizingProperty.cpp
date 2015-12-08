@@ -57,11 +57,6 @@ static const std::string NOURISHMENT = "nourishment";
 static const std::string RESERVELIMIT = "reservelimit";
 static const std::string STATUS = "status";
 
-// Type names used for comparisions - to distinguish between plant-like
-// entities and animal-like
-static const std::string ANIMALTYPE = "mobile";
-static const std::string PLANTTYPE= "plant";
-
 // This the amount of energy consumed each tick
 const double MetabolizingProperty::energyUnit = 0.0001;
 
@@ -302,7 +297,7 @@ HandlerResult MetabolizingProperty::tick_handler(LocatedEntity * e,
     }
 
 
-    Update update;              // do i need to do it?
+    Update update;              
     update->setTo(e->getId());
 
     res.push_back(update);
@@ -313,24 +308,18 @@ HandlerResult MetabolizingProperty::tick_handler(LocatedEntity * e,
     Anonymous metabolize_arg;
     metabolize_arg->setName("metabolize");
     metabolizeOp->setArgs1(metabolize_arg);
-    // TODO  Instead of 30 this should be probably multiplied by metabolism_prop->data()
-    // Do it when there will be such need
+    // this should remain fixed, we should scale metabolism speed using other means
     metabolizeOp->setFutureSeconds(consts::basic_tick * 30); 
     res.push_back(metabolizeOp);
 
-    return OPERATION_IGNORED;
+    return OPERATION_BLOCKED;
 }
 
 
 void MetabolizingProperty::grow(LocatedEntity * e, float scale) {
  
-    // get the necessary class info 
-    bool isAnimal = e->getType()->isTypeOf(ANIMALTYPE);
-    bool isPlant = e->getType()->isTypeOf(PLANTTYPE);
-
-    // check the type of an entity to determine proper growth model
     debug(std::cout << "Entity: " << e->getIntId()  << " grows by factor: " 
-                        << scale << ", entity is a plant: " << isPlant 
+                        << scale << ", entity is of a type: " << e->getType()->name() 
                         << std::endl << std::flush;);
 
     
@@ -350,7 +339,7 @@ void MetabolizingProperty::grow(LocatedEntity * e, float scale) {
                                 bbox.highCorner().z() * height_scale));
         debug(std::cout << "New " << bbox << std::endl << std::flush;);
         BBoxProperty * box_property = e->modPropertyClass<BBoxProperty>("bbox");
-        if (box_property != nullptr) {
+        if (box_property) {
             box_property->data() = bbox;
             box_property->setFlags(flag_unsent);
         } else {
@@ -358,13 +347,12 @@ void MetabolizingProperty::grow(LocatedEntity * e, float scale) {
                 "bbox, but no bbox property",
                 e->getIntId(), e->getType()->name()));
         }
-        // Just to be extra sure check if its plant
-        if (isPlant) { 
-          scaleArea(e);
-        }
+
+        // scale area property (if exists)
+        scaleArea(e);
+       
     }
-    // for those changes to have an effect one must send update operation later
-    
+    // NOTE for those changes to have an effect one must send update operation later
 }
 
 void MetabolizingProperty::scaleArea(LocatedEntity * e) {
