@@ -442,7 +442,8 @@ Charactertest_SOURCES = Charactertest.cpp \
                         IGEntityExerciser.cpp IGEntityExerciser.h \
                         EntityExerciser.cpp EntityExerciser.h
 Charactertest_LDADD = \
-        $(top_builddir)/rulesets/Character.o
+        $(top_builddir)/rulesets/Character.o \
+        $(top_builddir)/physics/Quaternion.o
 
 Creatortest_SOURCES = Creatortest.cpp \
                       TestPropertyManager.cpp TestPropertyManager.h \
@@ -1409,6 +1410,7 @@ ConnectionShakerintegration_LDADD = \
 ConnectionCharacterintegration_SOURCES = \
         ConnectionCharacterintegration.cpp
 ConnectionCharacterintegration_LDADD = \
+        $(top_builddir)/physics/Quaternion.o \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/rulesets/Character.o \
         $(top_builddir)/rulesets/ExternalMind.o
@@ -1416,6 +1418,7 @@ ConnectionCharacterintegration_LDADD = \
 ConnectionCreatorintegration_SOURCES = \
         ConnectionCreatorintegration.cpp
 ConnectionCreatorintegration_LDADD = \
+        $(top_builddir)/physics/Quaternion.o \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/rulesets/Creator.o \
         $(top_builddir)/rulesets/Character.o \
@@ -1424,6 +1427,7 @@ ConnectionCreatorintegration_LDADD = \
 TrustedConnectionCreatorintegration_SOURCES = \
         TrustedConnectionCreatorintegration.cpp
 TrustedConnectionCreatorintegration_LDADD = \
+        $(top_builddir)/physics/Quaternion.o \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/rulesets/Creator.o \
         $(top_builddir)/rulesets/Character.o \
@@ -1432,6 +1436,7 @@ TrustedConnectionCreatorintegration_LDADD = \
 AccountConnectionCharacterintegration_SOURCES = \
         AccountConnectionCharacterintegration.cpp
 AccountConnectionCharacterintegration_LDADD = \
+        $(top_builddir)/physics/Quaternion.o \
         $(top_builddir)/server/Account.o \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/rulesets/Character.o \

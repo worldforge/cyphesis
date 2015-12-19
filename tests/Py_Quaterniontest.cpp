@@ -47,7 +47,7 @@ int main()
     expect_python_error("q=Quaternion(Vector3D(1,0,0),0)",
                         PyExc_TypeError);
     run_python_string("q=Quaternion(Vector3D(1,0,0),0.0)");
-    run_python_string("q=Quaternion(Vector3D(1,0,0),Vector3D(0,1,0))");
+    run_python_string("q=Quaternion(Vector3D(1,0,0),Vector3D(0,1,0), Vector3D(0,1,0))");
     expect_python_error("q=Quaternion(1,0,0)", PyExc_TypeError);
     run_python_string("q=Quaternion(0,0,0,1)");
     run_python_string("q=Quaternion(0.0,0.0,0.0,1.0)");

@@ -183,6 +183,24 @@ static int Quaternion_init(PyQuaternion * self,
             PyObject * v1 = PyTuple_GetItem(args, 0);
             PyObject * v2 = PyTuple_GetItem(args, 1);
             if (!PyVector3D_Check(v1)) {
+                PyErr_SetString(PyExc_TypeError, "Quaternion(a,b) must take a vector as first argument");
+                return -1;
+            }
+            PyVector3D * arg1 = (PyVector3D *)v1;
+            if (PyFloat_Check(v2)) {
+                float angle = PyFloat_AsDouble(v2);
+                self->rotation.rotation(arg1->coords, angle);
+            } else {
+                PyErr_SetString(PyExc_TypeError, "Quaternion(a,b) must take a float as second argument");
+                return -1;
+            }
+            }
+            break;
+        case 3:
+            {
+            PyObject * v1 = PyTuple_GetItem(args, 0);
+            PyObject * v2 = PyTuple_GetItem(args, 1);
+            if (!PyVector3D_Check(v1)) {
                 PyErr_SetString(PyExc_TypeError, "Quaternion(a,b,fallbackAxis) must take a vector as first argument");
                 return -1;
             }
@@ -197,9 +215,6 @@ static int Quaternion_init(PyQuaternion * self,
                 PyVector3D * fallbackVector = (PyVector3D *)fallbackVectorPy;
 
                 self->rotation = quaternionFromTo(arg1->coords, to->coords, fallbackVector->coords);
-            } else if (PyFloat_Check(v2)) {
-                float angle = PyFloat_AsDouble(v2);
-                self->rotation.rotation(arg1->coords, angle);
             } else {
                 PyErr_SetString(PyExc_TypeError, "Quaternion(a,b,fallbackAxis) must take a vector as second argument");
                 return -1;
