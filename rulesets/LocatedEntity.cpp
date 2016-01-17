@@ -18,6 +18,8 @@
 
 #include "LocatedEntity.h"
 
+#include "TransformsProperty.h"
+
 #include "Script.h"
 #include "AtlasProperties.h"
 
@@ -33,7 +35,7 @@ using Atlas::Message::MapType;
 /// The attributes named are special and are modified using high level
 /// operations, such as Move, not via Set operations, or assigned by
 /// normal means.
-std::set<std::string> LocatedEntity::s_immutable = {"id", "parents", "pos", "loc", "velocity", "orientation", "contains", "objtype"};
+std::set<std::string> LocatedEntity::s_immutable = {"id", "parents", "pos", "loc", "velocity", "orientation", "contains", "objtype", "transforms"};
 
 /// \brief Singleton accessor for immutables
 ///
@@ -50,6 +52,8 @@ LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                m_script(0), m_type(0), m_flags(0), m_contains(0)
 {
     m_properties["id"] = new IdProperty(getId());
+    TransformsProperty* transProp = new TransformsProperty();
+    m_properties["transforms"] = transProp;
 }
 
 LocatedEntity::~LocatedEntity()
@@ -298,6 +302,15 @@ void LocatedEntity::removeChild(LocatedEntity& childEntity)
     m_contains->erase(&childEntity);
     if (m_contains->empty()) {
         onUpdated();
+    }
+    //Remove any transforms imposed by this entity, for example terrain transforms
+    auto transProp = childEntity.modPropertyClass<TransformsProperty>();
+    if (transProp) {
+        auto I = transProp->external().find(getId());
+        if (I != transProp->external().end()) {
+            transProp->external().erase(I);
+            transProp->apply(&childEntity);
+        }
     }
 }
 

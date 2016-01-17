@@ -20,6 +20,7 @@
 
 #include "Motion.h"
 #include "Domain.h"
+#include "TransformsProperty.h"
 
 #include "common/BaseWorld.h"
 #include "common/log.h"
@@ -239,7 +240,14 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     const double & current_time = BaseWorld::instance().getTime();
 
     // Update pos
-    fromStdVector(m_location.m_pos, ent->getPos());
+    const auto& posVector = ent->getPos();
+    if (posVector.size() >= 2) {
+        //Only allow translating in horizontal space; terrain will adjust height.
+        Vector3D translate(posVector[0], posVector[1], 0);
+        auto transProp = requirePropertyClass<TransformsProperty>();
+        transProp->getTranslate() = translate;
+        transProp->apply(this);
+    }
 
     //We can only move if there's a domain
     Domain* domain = nullptr;
@@ -267,13 +275,19 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     }
 
     if (domain) {
+        auto transformsProp = requirePropertyClass<TransformsProperty>();
         // FIXME Quick height hack
-        m_location.m_pos.z() = domain->constrainHeight(*this, m_location.m_loc,
-                                                               m_location.pos(),
-                                                               mode);
+        float height = domain->constrainHeight(*this, m_location.m_loc, m_location.pos(), mode);
+        //Translate height in relation to the standard translation as set in "transforms".
+        transformsProp->external()[m_location.m_loc->getId()].translate = Vector3D(0, 0, height - transformsProp->getTranslate().z());
 
-        m_location.update(current_time);
-        m_flags &= ~(entity_pos_clean | entity_clean);
+        Element attr_orientation;
+        if (ent->copyAttr("orientation", attr_orientation) == 0) {
+            // Update orientation
+            transformsProp->getRotate().fromAtlas(attr_orientation.asList());
+        }
+
+        transformsProp->apply(this);
 
         if (ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
             // Update velocity
@@ -281,12 +295,9 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
             // Velocity is not persistent so has no flag
         }
 
-        Element attr_orientation;
-        if (ent->copyAttr("orientation", attr_orientation) == 0) {
-            // Update orientation
-            m_location.m_orientation.fromAtlas(attr_orientation.asList());
-            m_flags &= ~entity_orient_clean;
-        }
+
+        m_location.update(current_time);
+        m_flags &= ~(entity_clean);
 
         // At this point the Location data for this entity has been updated.
 
@@ -552,7 +563,11 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     }
 
     // Update entity position
-    m_location.m_pos += (m_location.velocity() * time_diff);
+    auto transformsProp = requirePropertyClass<TransformsProperty>();
+    transformsProp->getTranslate() += (m_location.velocity() * time_diff);
+
+    //We need to apply transforms here to figure our position in order to adjust height further down
+    transformsProp->apply(this);
 
     // Collision resolution has to occur after position has been updated.
     if (!moving) {
@@ -566,15 +581,15 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     if (m_location.m_loc) {
         domain = m_location.m_loc->getMovementDomain();
         if (domain) {
-            m_location.m_pos.z() = domain->constrainHeight(*this, m_location.m_loc,
-                                                        m_location.pos(),
-                                                        "standing");
+            float z = domain->constrainHeight(*this, m_location.m_loc, m_location.pos(), "standing");
+            transformsProp->external()[m_location.m_loc->getId()].translate = Vector3D(0, 0, z - transformsProp->getTranslate().z());
+            transformsProp->apply(this);
         } else {
 
         }
     }
     m_location.update(current_time);
-    m_flags &= ~(entity_pos_clean | entity_clean);
+    m_flags &= ~entity_clean;
 
     float update_time = consts::move_tick;
 
@@ -736,17 +751,46 @@ void Thing::CreateOperation(const Operation & op, OpVector & res)
             error(op, "Entity to be created has empty parents", res, getId());
             return;
         }
+
+        if (ent->hasAttr("transforms")) {
+            ent->removeAttr("pos");
+            ent->removeAttr("orientation");
+        } else {
+            Atlas::Message::MapType transforms;
+            if (ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
+                //Only copy x and y values; let terrain adjust z.
+                transforms["translate"] = ent->getPosAsList();
+                ent->removeAttr("pos");
+            }
+            Element orientation;
+            if (ent->copyAttr("orientation", orientation) == 0) {
+                transforms["rotate"] = orientation;
+                ent->removeAttr("orientation");
+            }
+            ent->setAttr("transforms", transforms);
+        }
+
+
+
+        //If there's no location set we'll use the same one as the current entity.
         if (!ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG) &&
             (m_location.m_loc != 0)) {
             ent->setLoc(m_location.m_loc->getId());
             if (!ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
-                ::addToEntity(m_location.pos(), ent->modifyPos());
+                //Don't actually set the pos; instead set the transform.
+                //We don't allow external clients to directly set the pos.
+                if (!ent->hasAttr("transforms")) {
+                    Atlas::Message::MapType transforms;
+                    //Only copy x and y values; let terrain adjust z.
+                    transforms["translate"] = Vector3D(m_location.pos().x(), m_location.pos().y(), 0).toAtlas();
+                    ent->setAttr("transforms", transforms);
+                }
             }
         }
         const std::string & type = parents.front();
         debug( std::cout << getId() << " creating " << type;);
 
-        LocatedEntity * obj = BaseWorld::instance().addNewEntity(type,ent);
+        LocatedEntity * obj = BaseWorld::instance().addNewEntity(type, ent);
 
         if (obj == 0) {
             error(op, "Create op failed.", res, op->getFrom());

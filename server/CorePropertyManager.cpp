@@ -49,6 +49,7 @@
 #include "rulesets/DomainProperty.h"
 #include "rulesets/LimboProperty.h"
 #include "rulesets/PlantableProperty.h"
+#include "rulesets/TransformsProperty.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
@@ -88,6 +89,13 @@ void CorePropertyManager::installProperty(const std::string & type_name,
                    atlasType(type_name, parent),
                    new PropertyFactory<PropertyT>);
 }
+
+template<typename PropertyT>
+void CorePropertyManager::installProperty(const std::string & parent)
+{
+    this->installProperty<PropertyT>(PropertyT::property_name, parent);
+}
+
 
 CorePropertyManager::CorePropertyManager()
 {
@@ -135,6 +143,7 @@ CorePropertyManager::CorePropertyManager()
     installProperty<DomainProperty>("domain", "string");
     installProperty<LimboProperty>("limbo", "int");
     installProperty<PlantableProperty>("plantable", "map");
+    installProperty<TransformsProperty>("map");
 
 }
 
