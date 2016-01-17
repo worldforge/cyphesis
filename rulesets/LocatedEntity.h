@@ -183,7 +183,7 @@ class LocatedEntity : public Router {
     virtual PropertyBase* setAttr(const std::string & name,
                                   const Atlas::Message::Element &);
     virtual const PropertyBase * getProperty(const std::string & name) const;
-    // FIXME These should be de-visrtualised and, and implementations moved
+    // FIXME These should be de-virtualised and, and implementations moved
     // from Entity to here.
     virtual PropertyBase * modProperty(const std::string & name);
     virtual PropertyBase * setProperty(const std::string & name, PropertyBase * prop);
@@ -236,6 +236,15 @@ class LocatedEntity : public Router {
         return 0;
     }
 
+    /// \brief Get a property that is required to of a given type.
+    ///
+    /// The specified class must present the "property_name" trait.
+    template <class PropertyT>
+    const PropertyT * getPropertyClass() const
+    {
+        return this->getPropertyClass<PropertyT>(PropertyT::property_name);
+    }
+
     /// \brief Get a property that is a generic property of a given type
     template <typename T>
     const Property<T> * getPropertyType(const std::string & name) const
@@ -256,6 +265,15 @@ class LocatedEntity : public Router {
             return dynamic_cast<PropertyT *>(p);
         }
         return 0;
+    }
+
+    /// \brief Get a property that is required to of a given type.
+    ///
+    /// The specified class must present the "property_name" trait.
+    template <class PropertyT>
+    PropertyT * modPropertyClass()
+    {
+        return this->modPropertyClass<PropertyT>(PropertyT::property_name);
     }
 
     /// \brief Get a modifiable property that is a generic property of a type
@@ -317,6 +335,22 @@ class LocatedEntity : public Router {
             sp->apply(this);
         }
         return sp;
+    }
+
+    /// \brief Require that a property of a given type is set, relying on the "property_name" trait.
+    ///
+    /// If the property is not set on the Entity instance, but has a class
+    /// default, the default is copied to the instance, and a pointer is
+    /// returned if it is a property of the right type. If it does not
+    /// exist, or is not of the right type, a new property is created of
+    /// the right type, and installed on the Entity instance.
+    ///
+    /// The specified class must present the "property_name" trait.
+    template <class PropertyT>
+    PropertyT * requirePropertyClass(const Atlas::Message::Element & def_val
+            = Atlas::Message::Element())
+    {
+        return this->requirePropertyClass<PropertyT>(PropertyT::property_name, def_val);
     }
 
     /**
