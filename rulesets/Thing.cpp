@@ -279,7 +279,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         // FIXME Quick height hack
         float height = domain->constrainHeight(*this, m_location.m_loc, m_location.pos(), mode);
         //Translate height in relation to the standard translation as set in "transforms".
-        transformsProp->external()[m_location.m_loc->getId()].translate = Vector3D(0, 0, height - transformsProp->getTranslate().z());
+        transformsProp->getTranslate().z() = height;
 
         Element attr_orientation;
         if (ent->copyAttr("orientation", attr_orientation) == 0) {
@@ -582,7 +582,7 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
         domain = m_location.m_loc->getMovementDomain();
         if (domain) {
             float z = domain->constrainHeight(*this, m_location.m_loc, m_location.pos(), "standing");
-            transformsProp->external()[m_location.m_loc->getId()].translate = Vector3D(0, 0, z - transformsProp->getTranslate().z());
+            transformsProp->getTranslate().z() = z;
             transformsProp->apply(this);
         } else {
 

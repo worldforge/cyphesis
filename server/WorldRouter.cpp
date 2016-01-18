@@ -180,7 +180,7 @@ LocatedEntity * WorldRouter::addEntity(LocatedEntity * ent)
                   constrainHeight(*ent, ent->m_location.m_loc,
                                   ent->m_location.pos(),
                                   mode);
-            transProp->external()[ent->m_location.m_loc->getId()].translate = Vector3D(0, 0, height - transProp->getTranslate().z());
+            transProp->getTranslate().z() = height;
             transProp->apply(ent);
         }
     }

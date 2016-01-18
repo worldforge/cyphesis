@@ -303,15 +303,6 @@ void LocatedEntity::removeChild(LocatedEntity& childEntity)
     if (m_contains->empty()) {
         onUpdated();
     }
-    //Remove any transforms imposed by this entity, for example terrain transforms
-    auto transProp = childEntity.modPropertyClass<TransformsProperty>();
-    if (transProp) {
-        auto I = transProp->external().find(getId());
-        if (I != transProp->external().end()) {
-            transProp->external().erase(I);
-            transProp->apply(&childEntity);
-        }
-    }
 }
 
 bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* watcher) const
