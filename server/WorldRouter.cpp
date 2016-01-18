@@ -176,10 +176,8 @@ LocatedEntity * WorldRouter::addEntity(LocatedEntity * ent)
     Domain* movementDomain = ent->getMovementDomain();
     if (movementDomain) {
         float height = movementDomain->
-              constrainHeight(*ent, ent->m_location.m_loc,
-                              ent->m_location.pos(),
-                              mode);
-        transProp->external()[ent->m_location.m_loc->getId()].translate = Vector3D(0, 0, height - transProp->getTranslate().z());
+              constrainHeight(*ent, ent->m_location.m_loc, ent->m_location.pos(), mode);
+        transProp->getTranslate().z() = height;
         transProp->apply(ent);
     }
     ent->m_location.m_loc->makeContainer();
