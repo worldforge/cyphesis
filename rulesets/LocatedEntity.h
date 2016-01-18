@@ -231,7 +231,7 @@ class LocatedEntity : public Router {
     ///
     /// The specified class must present the "property_name" trait.
     template <class PropertyT>
-    const PropertyT * getPropertyClass() const
+    const PropertyT * getPropertyClassFixed() const
     {
         return this->getPropertyClass<PropertyT>(PropertyT::property_name);
     }
@@ -262,7 +262,7 @@ class LocatedEntity : public Router {
     ///
     /// The specified class must present the "property_name" trait.
     template <class PropertyT>
-    PropertyT * modPropertyClass()
+    PropertyT * modPropertyClassFixed()
     {
         return this->modPropertyClass<PropertyT>(PropertyT::property_name);
     }
@@ -338,7 +338,7 @@ class LocatedEntity : public Router {
     ///
     /// The specified class must present the "property_name" trait.
     template <class PropertyT>
-    PropertyT * requirePropertyClass(const Atlas::Message::Element & def_val
+    PropertyT * requirePropertyClassFixed(const Atlas::Message::Element & def_val
             = Atlas::Message::Element())
     {
         return this->requirePropertyClass<PropertyT>(PropertyT::property_name, def_val);

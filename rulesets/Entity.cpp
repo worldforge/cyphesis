@@ -273,7 +273,7 @@ void Entity::destroy()
             Location & child = (*I)->m_location;
             // FIXME take account of orientation
             // FIXME velocity and orientation  need to be adjusted
-            TransformsProperty* transformsProp = (*I)->requirePropertyClass<TransformsProperty>();
+            TransformsProperty* transformsProp = (*I)->requirePropertyClassFixed<TransformsProperty>();
 
             if (m_location.orientation().isValid() && m_location.pos().isValid()) {
 

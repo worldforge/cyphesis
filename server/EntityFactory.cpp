@@ -82,7 +82,7 @@ void EntityFactoryBase::initializeEntity(LocatedEntity& thing,
     if (attributes.isValid()) {
         thing.m_location.readFromEntity(attributes);
 
-        auto transProp = thing.requirePropertyClass<TransformsProperty>();
+        auto transProp = thing.requirePropertyClassFixed<TransformsProperty>();
         if (!attributes->hasAttr(TransformsProperty::property_name)) {
             if (thing.m_location.pos().isValid()) {
                 //If a position is provided, but not any transforms, copy the position value into the transforms.
