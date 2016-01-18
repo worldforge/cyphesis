@@ -351,6 +351,8 @@ int main()
 
 #include "common/TypeNode.h"
 
+#include "stubs/rulesets/stubTransformsProperty.h"
+
 namespace Atlas { namespace Objects { namespace Operation {
 int EAT_NO = -1;
 int NOURISH_NO = -1;

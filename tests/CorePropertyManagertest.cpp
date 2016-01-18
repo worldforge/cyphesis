@@ -40,6 +40,7 @@
 #include "TestWorld.h"
 
 #include "stubs/rulesets/stubCharacter.h"
+#include "stubs/rulesets/stubTransformsProperty.h"
 
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Anonymous.h>

@@ -46,6 +46,7 @@
 #include "stubs/rulesets/stubSoftProperty.h"
 #include "stubs/rulesets/stubMotion.h"
 #include "stubs/rulesets/stubDomain.h"
+#include "stubs/rulesets/stubTransformsProperty.h"
 #include "TestDomain.h"
 
 

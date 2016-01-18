@@ -34,6 +34,7 @@
 #include "stubs/common/stubMonitors.h"
 #include "stubs/common/stubTypeNode.h"
 #include "stubs/rulesets/stubDomainProperty.h"
+#include "stubs/rulesets/stubTransformsProperty.h"
 
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;

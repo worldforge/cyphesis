@@ -64,6 +64,8 @@ class TransformsProperty: public PropertyBase {
                 WFMath::Vector<3> translateScaled;
         };
 
+        TransformsProperty();
+
         /**
          * Accessor for the map of external transformations.
          */

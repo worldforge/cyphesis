@@ -486,6 +486,7 @@ int main()
 #include "stubs/common/stubMonitors.h"
 #include "stubs/rulesets/stubDomainProperty.h"
 #include "stubs/rulesets/stubIdProperty.h"
+#include "stubs/rulesets/stubTransformsProperty.h"
 
 ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
         PropertyBase(per_ephem), m_data(data)

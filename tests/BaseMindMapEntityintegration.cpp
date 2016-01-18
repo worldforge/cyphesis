@@ -342,6 +342,7 @@ int main()
 #include "common/TypeNode.h"
 
 #include "stubs/common/stubCustom.h"
+#include "stubs/rulesets/stubTransformsProperty.h"
 
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),

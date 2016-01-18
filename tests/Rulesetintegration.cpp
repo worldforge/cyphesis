@@ -642,6 +642,8 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "rulesets/Plant.h"
 #include "rulesets/Stackable.h"
 
+#include "stubs/rulesets/stubTransformsProperty.h"
+
 Account::Account(Connection * conn,
                  const std::string & uname,
                  const std::string & passwd,
