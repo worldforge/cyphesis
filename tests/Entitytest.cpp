@@ -52,6 +52,7 @@
 #include "stubs/common/stubVariable.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/rulesets/stubDomainProperty.h"
+#include "stubs/rulesets/stubTransformsProperty.h"
 
 #include <cstdlib>
 

@@ -59,7 +59,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  TerrainModtest PythonClasstest \
                  TerrainEffectorPropertytest SuspendedPropertytest \
                  EntityFiltertest EntityFilterParsertest \
-                 EntityFilterProviderstest
+                 EntityFilterProviderstest TransformsPropertytest
 
 RULESETS_INTEGRATION_TESTS = TerrainPropertyintegration \
                              PropertyEntityintegration \
@@ -572,6 +572,12 @@ TerrainModPropertytest_LDADD = \
         $(top_builddir)/rulesets/TerrainProperty.o \
         $(top_builddir)/common/Property.o \
         $(TERRAIN_LIBS)
+
+TransformsPropertytest_SOURCES = TransformsPropertytest.cpp \
+        PropertyCoverage.cpp PropertyCoverage.h
+TransformsPropertytest_LDADD = \
+        $(top_builddir)/rulesets/TransformsProperty.o \
+        $(top_builddir)/common/Property.o
 
 PythonClasstest_SOURCES = PythonClasstest.cpp \
         python_testers.cpp python_testers.h

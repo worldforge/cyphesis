@@ -29,6 +29,9 @@ using Atlas::Objects::Entity::RootEntity;
 
 const std::string TransformsProperty::property_name = "transforms";
 
+TransformsProperty::TransformsProperty() {
+}
+
 WFMath::Vector<3>& TransformsProperty::getTranslate() {
     return mTranslate;
 }
