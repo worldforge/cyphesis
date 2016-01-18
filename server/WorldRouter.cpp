@@ -155,7 +155,7 @@ LocatedEntity * WorldRouter::addEntity(LocatedEntity * ent)
     ++m_entityCount;
     assert(ent->m_location.isValid());
 
-    TransformsProperty* transProp = ent->requirePropertyClass<TransformsProperty>();
+    TransformsProperty* transProp = ent->requirePropertyClassFixed<TransformsProperty>();
     if (!ent->m_location.isValid()) {
         log(ERROR, String::compose("Entity %1 of type %2 added to world with invalid location!", ent->getId(), ent->getType()->name()));
         debug(std::cout << "set loc " << &getDefaultLocation()  << std::endl

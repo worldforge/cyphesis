@@ -244,7 +244,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     if (posVector.size() >= 2) {
         //Only allow translating in horizontal space; terrain will adjust height.
         Vector3D translate(posVector[0], posVector[1], 0);
-        auto transProp = requirePropertyClass<TransformsProperty>();
+        auto transProp = requirePropertyClassFixed<TransformsProperty>();
         transProp->getTranslate() = translate;
         transProp->apply(this);
     }
@@ -275,7 +275,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     }
 
     if (domain) {
-        auto transformsProp = requirePropertyClass<TransformsProperty>();
+        auto transformsProp = requirePropertyClassFixed<TransformsProperty>();
         // FIXME Quick height hack
         float height = domain->constrainHeight(*this, m_location.m_loc, m_location.pos(), mode);
         //Translate height in relation to the standard translation as set in "transforms".
@@ -563,7 +563,7 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     }
 
     // Update entity position
-    auto transformsProp = requirePropertyClass<TransformsProperty>();
+    auto transformsProp = requirePropertyClassFixed<TransformsProperty>();
     transformsProp->getTranslate() += (m_location.velocity() * time_diff);
 
     //We need to apply transforms here to figure our position in order to adjust height further down
