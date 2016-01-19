@@ -48,8 +48,9 @@
 #include "rulesets/DefaultLocationProperty.h"
 #include "rulesets/DomainProperty.h"
 #include "rulesets/LimboProperty.h"
-#include "rulesets/PlantableProperty.h"
 #include "rulesets/TransformsProperty.h"
+#include "rulesets/ModeProperty.h"
+#include "rulesets/ModeSpecProperty.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
@@ -107,7 +108,7 @@ CorePropertyManager::CorePropertyManager()
     installBaseProperty<MapType>("map", "root_type");
 
     installProperty<Property<double>>("stamina", "float");
-    installProperty<Property<std::string>>("mode", "string");
+    installProperty<ModeProperty>("mode", "string");
     installProperty<LineProperty>("coords", "list");
     installProperty<LineProperty>("points", "list");
     installProperty<Property<IdList> >("start_intersections", "list");
@@ -142,8 +143,11 @@ CorePropertyManager::CorePropertyManager()
     installProperty<DefaultLocationProperty>("default_location", "int");
     installProperty<DomainProperty>("domain", "string");
     installProperty<LimboProperty>("limbo", "int");
-    installProperty<PlantableProperty>("plantable", "map");
     installProperty<TransformsProperty>("map");
+    installProperty<ModeProperty>("string");
+    installProperty<ModeSpecProperty>("mode-fixed", "map");
+    installProperty<ModeSpecProperty>("mode-standing", "map");
+    installProperty<ModeSpecProperty>("mode-planted", "map");
 
 }
 

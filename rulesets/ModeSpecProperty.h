@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2015 Erik Ogenvik
+// Copyright (C) 2016 Erik Ogenvik
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,31 +15,36 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-#ifndef RULESETS_PLANTABLEPROPERTY_H_
-#define RULESETS_PLANTABLEPROPERTY_H_
+#ifndef RULESETS_MODESPECPROPERTY_H_
+#define RULESETS_MODESPECPROPERTY_H_
 
 #include "common/Property.h"
-#include "physics/Quaternion.h"
+#include "physics/Transform.h"
 
-#include <wfmath/quaternion.h>
-
-class PlantableProperty: public PropertyBase {
-
-    private:
-        float m_offset;
-        Quaternion m_orientation;
-
+/**
+ * \brief Specifies how the entity should behave when put into different modes.
+ *
+ * Currently we support transformations, as done through the TransformsProperty.
+ *
+ * \ingroup PropertyClasses
+ */
+class ModeSpecProperty : public Property<Atlas::Message::MapType>{
     public:
-        explicit PlantableProperty();
+        ModeSpecProperty();
 
         virtual int get(Atlas::Message::Element & val) const;
-        virtual void set(const Atlas::Message::Element & val);
-        virtual PlantableProperty * copy() const;
+        virtual void set(const Atlas::Message::Element &);
 
-        float getOffset() const;
-        const Quaternion& getOrientation() const;
+        const Transform& getTransform() const;
+
+    private:
+
+        /**
+         * A transformation to apply to the entity when put into a specific mode.
+         */
+        Transform mTransform;
 
 
 };
 
-#endif /* RULESETS_PLANTABLEPROPERTY_H_ */
+#endif /* RULESETS_MODESPECPROPERTY_H_ */

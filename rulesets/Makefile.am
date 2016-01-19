@@ -71,7 +71,9 @@ librulesetentity_a_SOURCES = \
 			     ProxyMind.cpp ProxyMind.h \
 			     InventoryDomain.cpp InventoryDomain.h \
 			     PlantableProperty.cpp PlantableProperty.h \
-			     TransformsProperty.cpp TransformsProperty.h
+			     TransformsProperty.cpp TransformsProperty.h \
+			     ModeProperty.cpp ModeProperty.h \
+			     ModeSpecProperty.cpp ModeSpecProperty.h
 
 libentityfilter_a_SOURCES = entityfilter/Filter.cpp entityfilter/Filter.h \
 			     entityfilter/ParserDefinitions.h \

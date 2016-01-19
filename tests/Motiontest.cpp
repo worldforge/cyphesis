@@ -379,7 +379,6 @@ int main()
 #include "stubs/rulesets/stubDomain.h"
 #include "stubs/rulesets/stubTerrainProperty.h"
 #include "stubs/rulesets/stubOutfitProperty.h"
-#include "stubs/rulesets/stubPlantableProperty.h"
 #include "stubs/common/stubCustom.h"
 
 
