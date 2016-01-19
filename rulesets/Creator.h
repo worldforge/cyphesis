@@ -34,6 +34,13 @@ class Creator : public Character {
 
     virtual void mindLookOperation(const Operation & op, OpVector &);
 
+    /// \brief Filter a Set operation coming from the mind
+    ///
+    /// For the creator any set operation is permitted.
+    /// @param op The operation to be filtered.
+    /// @param res The filtered result is returned here.
+    virtual void mindSetOperation(const Operation &, OpVector &);
+
   protected:
     /**
      * \brief Relays an operation to an entity, expecting a response.
