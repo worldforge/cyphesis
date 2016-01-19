@@ -86,6 +86,11 @@ static const unsigned int entity_domain = 1 << 9;
 /// \ingroup EntityFlags
 static const unsigned int entity_dirty_thoughts = 1 << 10;
 
+/// \brief Flag indicating entity has a location which has been changed since last sent to clients,
+/// and new location data should be sent on the next Update.
+/// \ingroup EntityFlags
+static const unsigned int entity_dirty_location = 1 << 11;
+
 /// \brief This is the base class from which in-game and in-memory objects
 /// inherit.
 ///
