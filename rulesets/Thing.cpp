@@ -409,6 +409,12 @@ void Thing::SetOperation(const Operation & op, OpVector & res)
     if (~m_flags & entity_clean) {
         onUpdated();
     }
+
+    //Send an update in case there are properties that were updated as a side effect of the merge
+    //TODO: only do this if there actually are changes
+    Update update;
+    update->setTo(getId());
+    res.push_back(update);
 }
 
 /// \brief Generate a Sight(Set) operation giving an update on named attributes
@@ -431,37 +437,63 @@ void Thing::updateProperties(const Operation & op, OpVector & res)
     Anonymous set_arg;
     set_arg->setId(getId());
 
-    PropertyDict::const_iterator J = m_properties.begin();
-    PropertyDict::const_iterator Jend = m_properties.end();
 
-    for (; J != Jend; ++J) {
-        PropertyBase * prop = J->second;
+    bool hadChanges = false;
+
+    for (auto entry : m_properties) {
+        PropertyBase * prop = entry.second;
         assert(prop != 0);
         if (prop->flags() & flag_unsent) {
-            debug(std::cout << "UPDATE:  " << flag_unsent << " " << J->first
+            debug(std::cout << "UPDATE:  " << flag_unsent << " " << entry.first
                             << std::endl << std::flush;);
 
-            prop->add(J->first, set_arg);
+            prop->add(entry.first, set_arg);
             prop->resetFlags(flag_unsent | per_clean);
             resetFlags(entity_clean);
+            hadChanges = true;
             // FIXME Make sure we handle separately for private properties
         }
     }
 
-    m_seq++;
-    if (~m_flags & entity_clean) {
-        onUpdated();
+    if (hadChanges) {
+        Set set;
+        set->setTo(getId());
+        set->setFrom(getId());
+        set->setSeconds(op->getSeconds());
+        set->setArgs1(set_arg);
+
+        Sight sight;
+        sight->setArgs1(set);
+        res.push_back(sight);
     }
 
-    Set set;
-    set->setTo(getId());
-    set->setFrom(getId());
-    set->setSeconds(op->getSeconds());
-    set->setArgs1(set_arg);
 
-    Sight sight;
-    sight->setArgs1(set);
-    res.push_back(sight);
+    //Location changes must be communicated through a Move op.
+    if (m_flags & entity_dirty_location) {
+        Move m;
+        Anonymous move_arg;
+        move_arg->setId(getId());
+        m_location.addToEntity(move_arg);
+        m->setArgs1(move_arg);
+        m->setFrom(getId());
+        m->setTo(getId());
+
+        Sight s;
+        s->setArgs1(m);
+
+        res.push_back(s);
+        resetFlags(entity_dirty_location);
+        hadChanges = true;
+    }
+
+
+    //Only change sequence number and call onUpdated if something actually changed.
+    if (hadChanges) {
+        m_seq++;
+        if (~m_flags & entity_clean) {
+            onUpdated();
+        }
+    }
 }
 
 void Thing::UpdateOperation(const Operation & op, OpVector & res)
