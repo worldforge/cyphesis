@@ -17,6 +17,7 @@
 
 #include "TransformsProperty.h"
 #include "LocatedEntity.h"
+#include "common/BaseWorld.h"
 
 #include <wfmath/atlasconv.h>
 
@@ -33,38 +34,40 @@ TransformsProperty::TransformsProperty() {
 }
 
 WFMath::Vector<3>& TransformsProperty::getTranslate() {
-    return mTranslate;
+    return mTransform.translate;
 }
 
 const WFMath::Vector<3>& TransformsProperty::getTranslate() const {
-    return mTranslate;
+    return mTransform.translate;
 }
 
 WFMath::Quaternion& TransformsProperty::getRotate() {
-    return mRotate;
+    return mTransform.rotate;
 }
 const WFMath::Quaternion& TransformsProperty::getRotate() const {
-    return mRotate;
+    return mTransform.rotate;
 }
 
 WFMath::Vector<3>& TransformsProperty::getTranslateScaled() {
-    return mTranslate;
+    return mTransform.translateScaled;
 }
 
 const WFMath::Vector<3>& TransformsProperty::getTranslateScaled() const {
-    return mTranslate;
+    return mTransform.translateScaled;
 }
 
 void TransformsProperty::apply(LocatedEntity *entity) {
-    WFMath::Quaternion rotation = mRotate;
-    WFMath::Point<3> translation = WFMath::Point<3>(mTranslate);
+    WFMath::Quaternion rotation = mTransform.rotate;
+    WFMath::Point<3> translation = WFMath::Point<3>(mTransform.translate);
 
-    if (mTranslateScaled.isValid() && entity->m_location.bBox().isValid()) {
+    if (mTransform.translateScaled.isValid()
+            && entity->m_location.bBox().isValid()) {
         auto size = (entity->m_location.bBox().highCorner()
                 - entity->m_location.bBox().lowCorner());
-        translation += WFMath::Vector<3>(mTranslateScaled.x() * size.x(),
-                mTranslateScaled.y() * size.y(),
-                mTranslateScaled.z() * size.z());
+        translation += WFMath::Vector<3>(
+                mTransform.translateScaled.x() * size.x(),
+                mTransform.translateScaled.y() * size.y(),
+                mTransform.translateScaled.z() * size.z());
     }
 
     for (auto& entry : mExternal) {
@@ -86,23 +89,26 @@ void TransformsProperty::apply(LocatedEntity *entity) {
         }
     }
 
-    entity->m_location.m_pos = translation;
-    entity->m_location.m_orientation = rotation;
+    bool hadChange = false;
+    if (entity->m_location.m_pos != translation) {
+        entity->m_location.m_pos = translation;
+        hadChange = true;
+    }
+    if (entity->m_location.m_orientation != rotation) {
+        entity->m_location.m_orientation = rotation;
+        hadChange = true;
+    }
 
-    entity->setFlags(entity_pos_clean | entity_orient_clean);
+    if (hadChange) {
+        entity->resetFlags(entity_pos_clean | entity_orient_clean);
+        entity->setFlags(entity_dirty_location);
+        //entity->m_location.update(BaseWorld::instance().getTime());
+    }
 }
 
 int TransformsProperty::get(Element & val) const {
     std::map<std::string, Element> valMap;
-    if (mRotate.isValid()) {
-        valMap["rotate"] = mRotate.toAtlas();
-    }
-    if (mTranslate.isValid()) {
-        valMap["translate"] = mTranslate.toAtlas();
-    }
-    if (mTranslateScaled.isValid()) {
-        valMap["translate-scaled"] = mTranslateScaled.toAtlas();
-    }
+    mTransform.get(valMap);
 
     if (!mExternal.empty()) {
         std::map<std::string, Element> externalMap;
@@ -129,22 +135,11 @@ int TransformsProperty::get(Element & val) const {
 
 void TransformsProperty::set(const Element & val) {
 
+    mTransform.set(val);
     if (val.isMap()) {
         auto& valMap = val.Map();
-        auto I = valMap.find("rotate");
-        if (I != valMap.end()) {
-            mRotate = WFMath::Quaternion(I->second);
-        }
-        I = valMap.find("translate");
-        if (I != valMap.end()) {
-            mTranslate = WFMath::Vector<3>(I->second);
-        }
-        I = valMap.find("translate-scaled");
-        if (I != valMap.end()) {
-            mTranslateScaled = WFMath::Vector<3>(I->second);
-        }
 
-        I = valMap.find("external");
+        auto I = valMap.find("external");
         if (I != valMap.end() && I->second.isMap()) {
             const auto& externalMap = I->second.Map();
 
@@ -176,11 +171,11 @@ TransformsProperty * TransformsProperty::copy() const {
     return new TransformsProperty(*this);
 }
 
-std::map<std::string, TransformsProperty::Transform>& TransformsProperty::external() {
+std::map<std::string, Transform>& TransformsProperty::external() {
     return mExternal;
 }
 
-const std::map<std::string, TransformsProperty::Transform>& TransformsProperty::external() const {
+const std::map<std::string, Transform>& TransformsProperty::external() const {
     return mExternal;
 }
 

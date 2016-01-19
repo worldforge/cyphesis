@@ -19,6 +19,7 @@
 #define RULESETS_TRANSFORMSPROPERTY_H_
 
 #include "common/Property.h"
+#include "physics/Transform.h"
 
 #include <wfmath/vector.h>
 #include <wfmath/quaternion.h>
@@ -42,27 +43,6 @@
 class TransformsProperty: public PropertyBase {
     public:
         static const std::string property_name;
-
-        /**
-         * A transformation entry.
-         */
-        struct Transform {
-                /**
-                 * A translation.
-                 */
-                WFMath::Vector<3> translate;
-
-                /**
-                 * A rotation.
-                 */
-                WFMath::Quaternion rotate;
-
-                /**
-                 * A translation dependent on the size of the entity.
-                 * The values are normalized.
-                 */
-                WFMath::Vector<3> translateScaled;
-        };
 
         TransformsProperty();
 
@@ -113,9 +93,7 @@ class TransformsProperty: public PropertyBase {
         virtual TransformsProperty * copy() const;
 
     protected:
-        WFMath::Vector<3> mTranslate;
-        WFMath::Quaternion mRotate;
-        WFMath::Vector<3> mTranslateScaled;
+        Transform mTransform;
 
         std::map<std::string, Transform> mExternal;
 };

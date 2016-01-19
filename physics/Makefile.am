@@ -7,4 +7,5 @@ libphysics_a_SOURCES = Vector3D.cpp Vector3D.h \
                        Course.cpp Course_impl.h Course.h \
                        Quaternion.cpp Quaternion.h \
                        Collision.cpp Collision.h \
-                       Shape.cpp Shape_impl.h Shape.h
+                       Shape.cpp Shape_impl.h Shape.h \
+                       Transform.cpp Transform.h
