@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2015 Erik Ogenvik
+// Copyright (C) 2016 Erik Ogenvik
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -14,34 +14,40 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+#include "ModeSpecProperty.h"
 
-#ifndef STUBPLANTABLEPROPERTY_H_
-#define STUBPLANTABLEPROPERTY_H_
-
-#include "rulesets/PlantableProperty.h"
-
-PlantableProperty::PlantableProperty() :
-        m_offset(0.f) {
+ModeSpecProperty::ModeSpecProperty() {
 }
 
-int PlantableProperty::get(Atlas::Message::Element & ent) const {
-    return 0;
+int ModeSpecProperty::get(Atlas::Message::Element & val) const {
+    Atlas::Message::MapType transformMap;
+    mTransform.get(transformMap);
+
+    if (!transformMap.empty()) {
+        Atlas::Message::MapType map;
+        map.insert(std::make_pair("transform", transformMap));
+        val = map;
+        return 0;
+    }
+
+    return 1;
+
 }
 
-void PlantableProperty::set(const Atlas::Message::Element & ent) {
+void ModeSpecProperty::set(const Atlas::Message::Element & val) {
+
+    if (val.isMap()) {
+        auto valMap = val.Map();
+        auto I = valMap.find("transform");
+        if (I != valMap.end()) {
+            mTransform.set(I->second);
+        }
+    }
 }
 
-PlantableProperty * PlantableProperty::copy() const {
-    return new PlantableProperty(*this);
-}
-
-float PlantableProperty::getOffset() const
+const Transform& ModeSpecProperty::getTransform() const
 {
-    return 0;
+    return mTransform;
 }
 
-const Quaternion& PlantableProperty::getOrientation() const
-{
-    return m_orientation;
-}
-#endif /* STUBPLANTABLEPROPERTY_H_ */
+

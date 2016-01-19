@@ -26,7 +26,6 @@
 #include "LocatedEntity.h"
 #include "OutfitProperty.h"
 #include "EntityProperty.h"
-#include "PlantableProperty.h"
 
 #include "physics/Collision.h"
 
@@ -84,17 +83,6 @@ float PhysicalDomain::constrainHeight(LocatedEntity& entity,
         tp->getHeightAndNormal(pos.x(), pos.y(), h, normal);
         // FIXME Use a virtual movement_domain function to get the constraints
 
-        //If the mode is "planted" we should also look for a "plantable" property, and check if there's any height offset.
-        if (mode == "planted") {
-            const PlantableProperty* plantableProperty = entity.getPropertyClass<PlantableProperty>("plantable");
-            if (plantableProperty) {
-                if (plantableProperty->getOffset() != 0.f) {
-                    //The height offset is scaled against the height of the entity.
-                    float z_offset = (entity.m_location.m_bBox.highCorner().z() - entity.m_location.m_bBox.lowCorner().z()) * plantableProperty->getOffset();
-                    h += z_offset;
-                }
-            }
-        }
         debug(std::cout << "Fix height " << pos.z() << " to " << h
                         << std::endl << std::flush;);
         return h;

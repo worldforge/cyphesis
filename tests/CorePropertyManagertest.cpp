@@ -265,7 +265,6 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "stubs/rulesets/stubLimboProperty.h"
 #include "stubs/rulesets/stubDomainProperty.h"
 #include "stubs/rulesets/stubSuspendedProperty.h"
-#include "stubs/rulesets/stubPlantableProperty.h"
 
 
 Account::Account(Connection * conn,
