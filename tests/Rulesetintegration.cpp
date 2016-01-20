@@ -643,6 +643,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "rulesets/Stackable.h"
 
 #include "stubs/rulesets/stubTransformsProperty.h"
+#include "stubs/rulesets/stubCreator.h"
 
 Account::Account(Connection * conn,
                  const std::string & uname,
@@ -782,24 +783,6 @@ int CorePropertyManager::installFactory(const std::string & type_name,
                                         PropertyKit * factory)
 {
     return 0;
-}
-Creator::Creator(const std::string& id, long idInt)
-:Character::Character(id, idInt)
-{
-}
-
-Creator::~Creator(){}
-
-void Creator::operation(const Operation & op, OpVector &)
-{
-}
-
-void Creator::externalOperation(const Operation & op, Link &)
-{
-}
-
-void Creator::mindLookOperation(const Operation & op, OpVector &)
-{
 }
 
 Plant::Plant(const std::string& id, long idInt)

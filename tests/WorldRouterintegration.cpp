@@ -252,6 +252,7 @@ int main()
 #include "stubs/rulesets/stubMemEntity.h"
 #include "stubs/rulesets/stubMemMap.h"
 #include "stubs/rulesets/stubTransformsProperty.h"
+#include "stubs/rulesets/stubCreator.h"
 
 #include "stubs/server/stubExternalMindsManager.h"
 #include "stubs/server/stubExternalMindsConnection.h"
@@ -314,24 +315,6 @@ LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId,
 
 class World;
 
-Creator::Creator(const std::string& id, long idInt)
-:Character::Character(id, idInt)
-{
-}
-
-Creator::~Creator(){}
-
-void Creator::operation(const Operation & op, OpVector &)
-{
-}
-
-void Creator::externalOperation(const Operation & op, Link &)
-{
-}
-
-void Creator::mindLookOperation(const Operation & op, OpVector &)
-{
-}
 
 Plant::Plant(const std::string& id, long idInt)
 :Thing::Thing(id, idInt)

@@ -41,4 +41,8 @@ void Creator::mindLookOperation(const Operation & op, OpVector & res)
 {
 }
 
+void Creator::mindSetOperation(const Operation & op, OpVector & res)
+{
+}
+
 #endif /* STUBCREATOR_H_ */

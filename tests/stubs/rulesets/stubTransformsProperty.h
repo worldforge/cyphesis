@@ -17,26 +17,26 @@ TransformsProperty::TransformsProperty() {
 }
 
 WFMath::Vector<3>& TransformsProperty::getTranslate() {
-    return mTranslate;
+    return mTransform.translate;
 }
 
 const WFMath::Vector<3>& TransformsProperty::getTranslate() const {
-    return mTranslate;
+    return mTransform.translate;
 }
 
 WFMath::Quaternion& TransformsProperty::getRotate() {
-    return mRotate;
+    return mTransform.rotate;
 }
 const WFMath::Quaternion& TransformsProperty::getRotate() const {
-    return mRotate;
+    return mTransform.rotate;
 }
 
 WFMath::Vector<3>& TransformsProperty::getTranslateScaled() {
-    return mTranslate;
+    return mTransform.translateScaled;
 }
 
 const WFMath::Vector<3>& TransformsProperty::getTranslateScaled() const {
-    return mTranslate;
+    return mTransform.translateScaled;
 }
 
 void TransformsProperty::apply(LocatedEntity *entity) {
@@ -54,11 +54,11 @@ TransformsProperty * TransformsProperty::copy() const {
     return new TransformsProperty(*this);
 }
 
-std::map<std::string, TransformsProperty::Transform>& TransformsProperty::external() {
+std::map<std::string, Transform>& TransformsProperty::external() {
     return mExternal;
 }
 
-const std::map<std::string, TransformsProperty::Transform>& TransformsProperty::external() const {
+const std::map<std::string, Transform>& TransformsProperty::external() const {
     return mExternal;
 }
 

@@ -43,6 +43,7 @@ int main()
 }
 
 #include "TestWorld.h"
+#include "stubs/physics/stubTransform.h"
 
 void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
