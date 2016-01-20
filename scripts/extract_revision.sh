@@ -1,8 +1,6 @@
 #!/bin/bash
 
 TOPSRCDIR="$@"
-CHANGELOG="${TOPSRCDIR}/ChangeLog"
-CVSCHECK="${TOPSRCDIR}/CVS/Root"
 GITCHECK="${TOPSRCDIR}/.git/config"
 OLDBUILDCPP="${TOPSRCDIR}/server/buildid.cpp"
 
@@ -13,22 +11,12 @@ then
     exit 1
 fi
 
-# If sources are under CVS control then the RCS Id in ChangeLog is our build ID.
-if test -f "${CVSCHECK}"
-then
-    if tail -n 1 "${CHANGELOG}"  | sed "s/^.* 1\.\([0-9]*\).*$/\1/"
-    then
-        echo Getting CVS buildid revision from ChangeLog RCS Id >&2
-        exit 0
-    fi
-fi
-
-# If sources are under git control then the number of ChangeLog commits is our build ID.
+# If sources are under git control then use "git describe"
 if test -f "${GITCHECK}"
 then
-    if (cd "${TOPSRCDIR}" && git log ChangeLog | grep "^commit [a-f0-9]\+$" | wc -l)
+    if (cd "${TOPSRCDIR}" && git describe)
     then
-        echo Getting GIT buildid from number of ChangeLog commits >&2
+        echo Getting buildid from Git >&2
         exit 0
     fi
 fi

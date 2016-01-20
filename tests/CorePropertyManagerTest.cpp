@@ -1409,6 +1409,7 @@ bool TypeNode::isTypeOf(const std::string & base_type) const
 }
 
 #include "stubs/common/stubVariable.h"
+#include "stubs/server/stubBuildid.h"
 
 const char * const CYPHESIS = "cyphesis";
 
@@ -1418,12 +1419,6 @@ std::string instance(DEFAULT_INSTANCE);
 int timeoffset = 0;
 bool database_flag = false;
 
-namespace consts {
-
-  const char * buildTime = __TIME__;
-  const char * buildDate = __DATE__;
-  const int buildId = -1;
-}
 
 static long idGenerator = 0;
 

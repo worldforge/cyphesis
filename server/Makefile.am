@@ -149,8 +149,8 @@ cyprox_LDADD = libcomm.a \
                $(top_builddir)/physics/libphysics.a \
                $(FRONTEND_LIBS)
 
-buildid.cpp: $(cyphesis_SOURCES) $(LOCAL_LIBS) \
-             $(top_srcdir)/scripts/gen_buildid.py $(top_srcdir)/ChangeLog
+buildid.cpp: $(SERVER_SOURCES) $(LOCAL_LIBS) \
+             $(top_srcdir)/scripts/gen_buildid.py
 	$(top_srcdir)/scripts/gen_buildid.py `$(top_srcdir)/scripts/extract_revision.sh $(top_srcdir)` buildid.cpp
 
 cyslave_SOURCES = \

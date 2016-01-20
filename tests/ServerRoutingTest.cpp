@@ -453,6 +453,7 @@ void Lobby::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
+#include "stubs/server/stubBuildid.h"
 
 bool_config_register::bool_config_register(bool & var,
                                            const char * section,
@@ -525,10 +526,6 @@ int timeoffset = 0;
 bool database_flag = false;
 
 namespace consts {
-
-  const char * buildTime = __TIME__;
-  const char * buildDate = __DATE__;
-  const int buildId = -1;
   const char * version = "test_version";
 }
 

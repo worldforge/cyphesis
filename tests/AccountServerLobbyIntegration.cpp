@@ -286,6 +286,7 @@ void Persistence::delCharacter(const std::string &)
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
+#include "stubs/server/stubBuildid.h"
 
 
 Connection::Connection(CommSocket & client,
@@ -434,10 +435,6 @@ bool database_flag = false;
 std::string instance("130779df-1e84-4c61-9caf-3e1506597fe1");
 
 namespace consts {
-
-  const char * buildTime = __TIME__;
-  const char * buildDate = __DATE__;
-  const int buildId = -1;
   const char * version = "test_version";
 }
 

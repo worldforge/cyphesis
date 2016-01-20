@@ -287,14 +287,11 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "common/Variable.h"
 
 #include <cstdlib>
+#include "stubs/server/stubBuildid.h"
 
 bool database_flag = false;
 
 namespace consts {
-
-  const char * buildTime = __TIME__;
-  const char * buildDate = __DATE__;
-  const int buildId = -1;
   const char * version = "test_build";
 }
 

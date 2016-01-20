@@ -14,7 +14,7 @@ namespace consts {
 
   const char * buildTime = __TIME__;
   const char * buildDate = __DATE__;
-  const int buildId = %s;
+  const char * buildId = "%s";
 }
 """ % sys.argv[1])
 
