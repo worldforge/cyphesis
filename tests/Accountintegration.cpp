@@ -424,6 +424,10 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "stubs/rulesets/stubMemEntity.h"
 #include "stubs/rulesets/stubMemMap.h"
 #include "stubs/rulesets/stubTransformsProperty.h"
+#include "stubs/rulesets/stubModeProperty.h"
+#include "stubs/rulesets/stubModeSpecProperty.h"
+#include "stubs/rulesets/stubCreator.h"
+
 #include "stubs/server/stubExternalMindsManager.h"
 #include "stubs/server/stubExternalMindsConnection.h"
 #include "stubs/common/stubOperationsDispatcher.h"
@@ -452,25 +456,6 @@ ArithmeticScript * ArithmeticBuilder::newArithmetic(const std::string & name,
     return 0;
 }
 
-
-Creator::Creator(const std::string& id, long idInt)
-:Character::Character(id, idInt)
-{
-}
-
-Creator::~Creator(){}
-
-void Creator::operation(const Operation & op, OpVector &)
-{
-}
-
-void Creator::externalOperation(const Operation & op, Link &)
-{
-}
-
-void Creator::mindLookOperation(const Operation & op, OpVector &)
-{
-}
 
 Plant::Plant(const std::string& id, long idInt)
 :Thing::Thing(id, idInt)
