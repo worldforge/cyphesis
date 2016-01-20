@@ -114,7 +114,7 @@ TOOLS_TESTS = AdminClientTest \
 
 PYTHON_TESTS = python_class
 
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_builddir) \
+AM_CPPFLAGS = -w -I$(top_srcdir) -I$(top_builddir) \
            -DTESTDATADIR=\"$(abs_top_srcdir)/Tests/data\"
 
 LIBS = $(COMMON_LIBS) $(PGSQL_LIBS) $(PYTHON_LIBS) $(PYTHON_UTIL_LIBS) $(MATH_LIBS) pthreadforce.o
