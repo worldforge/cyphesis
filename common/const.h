@@ -70,8 +70,8 @@ namespace consts {
   extern const char * buildTime;
   /// \brief Date this server was built
   extern const char * buildDate;
-  /// \brief Build number of this build, derived from ChangeLog RCS revision
-  extern const int buildId;
+  /// \brief Identifier of this build, taken from "git describe".
+  extern const char * buildId;
 
   // @}
 }

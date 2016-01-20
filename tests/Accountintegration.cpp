@@ -1177,6 +1177,7 @@ void Movement::reset()
 }
 
 #include "stubs/rulesets/stubMotion.h"
+#include "stubs/server/stubBuildid.h"
 
 bool_config_register::bool_config_register(bool & var,
                                            const char * section,
@@ -1326,12 +1327,6 @@ std::string instance(DEFAULT_INSTANCE);
 int timeoffset = 0;
 bool database_flag = false;
 
-namespace consts {
-
-  const char * buildTime = __TIME__;
-  const char * buildDate = __DATE__;
-  const int buildId = -1;
-}
 
 static long idGenerator = 0;
 

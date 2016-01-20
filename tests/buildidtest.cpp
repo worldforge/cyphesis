@@ -66,7 +66,7 @@ void buildidtest::test_date()
 
 void buildidtest::test_id()
 {
-    ASSERT_GREATER(consts::buildId, 0);
+    ASSERT_GREATER(strlen(consts::buildId), 0u);
 }
 
 int main()
