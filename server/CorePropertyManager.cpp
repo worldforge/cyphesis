@@ -51,6 +51,7 @@
 #include "rulesets/TransformsProperty.h"
 #include "rulesets/ModeProperty.h"
 #include "rulesets/ModeSpecProperty.h"
+#include "rulesets/ForcesProperty.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
@@ -148,6 +149,7 @@ CorePropertyManager::CorePropertyManager()
     installProperty<ModeSpecProperty>("mode-fixed", "map");
     installProperty<ModeSpecProperty>("mode-standing", "map");
     installProperty<ModeSpecProperty>("mode-planted", "map");
+    installProperty<ForcesProperty>("map");
 
 }
 
