@@ -50,4 +50,10 @@ const Transform& ModeSpecProperty::getTransform() const
     return mTransform;
 }
 
+ModeSpecProperty * ModeSpecProperty::copy() const
+{
+    return new ModeSpecProperty(*this);
+}
+
+
 

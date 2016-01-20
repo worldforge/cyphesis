@@ -36,6 +36,7 @@ class ModeSpecProperty : public Property<Atlas::Message::MapType>{
         virtual void set(const Atlas::Message::Element &);
 
         const Transform& getTransform() const;
+        virtual ModeSpecProperty * copy() const;
 
     private:
 
