@@ -59,7 +59,8 @@ RULESETS_TESTS = LocatedEntityTest EntityTest PlantTest \
                  TerrainModTest PythonClassTest \
                  TerrainEffectorPropertyTest SuspendedPropertyTest \
                  EntityFilterTest EntityFilterParserTest \
-                 EntityFilterProvidersTest TransformsPropertyTest
+                 EntityFilterProvidersTest TransformsPropertyTest \
+                 ModePropertyTest ModeSpecPropertyTest
 
 RULESETS_INTEGRATION_TESTS = TerrainPropertyintegration \
                              PropertyEntityintegration \
@@ -534,6 +535,18 @@ MindPropertyTest_LDADD = \
         $(top_builddir)/rulesets/MindProperty.o \
         $(top_builddir)/common/Property.o
 
+ModePropertyTest_SOURCES = ModePropertyTest.cpp \
+        PropertyCoverage.cpp PropertyCoverage.h
+ModePropertyTest_LDADD = \
+        $(top_builddir)/rulesets/ModeProperty.o \
+        $(top_builddir)/common/Property.o
+        
+ModeSpecPropertyTest_SOURCES = ModeSpecPropertyTest.cpp \
+        PropertyCoverage.cpp PropertyCoverage.h
+ModeSpecPropertyTest_LDADD = \
+        $(top_builddir)/rulesets/ModeSpecProperty.o \
+        $(top_builddir)/common/Property.o
+                
 OutfitPropertyTest_SOURCES = OutfitPropertyTest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
 OutfitPropertyTest_LDADD = \

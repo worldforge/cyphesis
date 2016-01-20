@@ -36,3 +36,7 @@ const Transform& ModeSpecProperty::getTransform() const
 }
 
 
+ModeSpecProperty * ModeSpecProperty::copy() const
+{
+    return new ModeSpecProperty(*this);
+}

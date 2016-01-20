@@ -28,6 +28,7 @@ class ModeProperty : public Property<std::string> {
         ModeProperty();
         virtual ~ModeProperty();
         virtual void apply(LocatedEntity *);
+        virtual ModeProperty * copy() const;
 
 };
 

@@ -28,3 +28,7 @@ ModeProperty::~ModeProperty() {
 void ModeProperty::apply(LocatedEntity *entity) {
 }
 
+ModeProperty * ModeProperty::copy() const
+{
+    return new ModeProperty(*this);
+}
