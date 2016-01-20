@@ -426,6 +426,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "stubs/rulesets/stubTransformsProperty.h"
 #include "stubs/rulesets/stubModeProperty.h"
 #include "stubs/rulesets/stubModeSpecProperty.h"
+#include "stubs/rulesets/stubForcesProperty.h"
 #include "stubs/rulesets/stubCreator.h"
 
 #include "stubs/server/stubExternalMindsManager.h"

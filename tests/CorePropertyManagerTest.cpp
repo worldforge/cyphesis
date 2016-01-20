@@ -267,6 +267,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "stubs/rulesets/stubSuspendedProperty.h"
 #include "stubs/rulesets/stubModeProperty.h"
 #include "stubs/rulesets/stubModeSpecProperty.h"
+#include "stubs/rulesets/stubForcesProperty.h"
 
 
 Account::Account(Connection * conn,
