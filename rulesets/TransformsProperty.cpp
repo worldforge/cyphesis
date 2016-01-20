@@ -72,7 +72,10 @@ void TransformsProperty::apply(LocatedEntity *entity) {
 
     for (auto& entry : mExternal) {
         if (entry.second.rotate.isValid()) {
-            rotation *= entry.second.rotate;
+            Quaternion localRotation(entry.second.rotate);
+            //normalize to avoid drift
+            localRotation.normalize();
+            rotation = localRotation * rotation;
         }
         if (entry.second.translate.isValid()) {
             translation += entry.second.translate;
