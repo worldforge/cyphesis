@@ -57,12 +57,6 @@
 					<string>carrot</string>
 				</list>
 				<string name="mode">planted</string>
-				<list name="orientation">
-					<float>0</float>
-					<float>0.707107</float>
-					<float>0</float>
-					<float>0.707107</float>
-				</list>
 			</map>
 		</list>
 	</map>
@@ -183,12 +177,6 @@
 					<string>turnip</string>
 				</list>
 				<string name="mode">planted</string>
-				<list name="orientation">
-					<float>0</float>
-					<float>0.707107</float>
-					<float>0</float>
-					<float>0.707107</float>
-				</list>
 			</map>
 		</list>
 	</map>
