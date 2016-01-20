@@ -239,14 +239,38 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
     const double & current_time = BaseWorld::instance().getTime();
 
+    auto transformsProp = requirePropertyClassFixed<TransformsProperty>();
+
     // Update pos
     const auto& posVector = ent->getPos();
-    if (posVector.size() >= 2) {
-        //Only allow translating in horizontal space; terrain will adjust height.
-        Vector3D translate(posVector[0], posVector[1], 0);
-        auto transProp = requirePropertyClassFixed<TransformsProperty>();
-        transProp->getTranslate() = translate;
-        transProp->apply(this);
+    if (posVector.size() == 3) {
+        Vector3D translate;
+        translate.fromAtlas(ent->getPosAsList());
+        //Adjust the supplied position by the inverse of all external transformation.
+        //This is to offset the fact that any client will send an update for position using
+        //the position of the entity as it sees it.
+        //TODO: is this really the best way? Should we allow for clients to specify if they want to set
+        //the position independent of any transformations? Perhaps this is doable if the client
+        //instead sends an update for the "transforms" property?
+        for (auto entry : transformsProp->external()) {
+            if (entry.second.translate.isValid()) {
+                translate -= entry.second.translate;
+            }
+        }
+        if (m_location.bBox().isValid()) {
+            for (auto entry : transformsProp->external()) {
+                if (entry.second.translateScaled.isValid()) {
+                    auto size = m_location.bBox().highCorner() - m_location.bBox().lowCorner();
+                    translate -= WFMath::Vector<3>(
+                        entry.second.translateScaled.x() * size.x(),
+                        entry.second.translateScaled.y() * size.y(),
+                        entry.second.translateScaled.z() * size.z());
+                }
+            }
+        }
+
+        transformsProp->getTranslate() = translate;
+        transformsProp->apply(this);
     }
 
     //We can only move if there's a domain
@@ -272,7 +296,6 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     }
 
     if (domain) {
-        auto transformsProp = requirePropertyClassFixed<TransformsProperty>();
         // FIXME Quick height hack
         float height = domain->constrainHeight(*this, m_location.m_loc, m_location.pos(), mode);
         //Translate height in relation to the standard translation as set in "transforms".
@@ -281,7 +304,27 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         Element attr_orientation;
         if (ent->copyAttr("orientation", attr_orientation) == 0) {
             // Update orientation
-            transformsProp->getRotate().fromAtlas(attr_orientation.asList());
+            Quaternion rotate;
+            rotate.fromAtlas(attr_orientation.asList());
+
+            //Adjust the supplied orientation by the inverse of all external transformation.
+            //This is to offset the fact that any client will send an update for orientation using
+            //the orientation of the entity as it sees it.
+            //TODO: is this really the best way? Should we allow for clients to specify if they want to set
+            //the position independent of any transformations? Perhaps this is doable if the client
+            //instead sends an update for the "transforms" property?
+            for (auto entry : transformsProp->external()) {
+                if (entry.second.rotate.isValid()) {
+
+                    Quaternion localRotation(entry.second.rotate.inverse());
+                    //normalize to avoid drift
+                    localRotation.normalize();
+                    rotate = localRotation * rotate;
+                }
+            }
+
+            transformsProp->getRotate() = rotate;
+
         }
 
         transformsProp->apply(this);
