@@ -10,6 +10,8 @@ Makefile.in
 config.*
 aclocal.m4
 autom4te.cache
+compile
+test-driver
 default.apspec
 configure
 cyphesis.spec
@@ -53,3 +55,7 @@ tags
 .cdtconfig*
 .autotools
 .pydevproject
+#ignore build directories
+builds
+x86
+x86_64
