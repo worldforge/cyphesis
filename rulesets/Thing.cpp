@@ -334,7 +334,8 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
         if (ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
             // Update velocity
-            fromStdVector(m_location.m_velocity, ent->getVelocity());
+            auto propelProp = requirePropertyClassFixed<PropelProperty>();
+            fromStdVector(propelProp->mData, ent->getVelocity());
             // Velocity is not persistent so has no flag
         }
 

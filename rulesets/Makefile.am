@@ -74,7 +74,8 @@ librulesetentity_a_SOURCES = \
 			     TransformsProperty.cpp TransformsProperty.h \
 			     ModeProperty.cpp ModeProperty.h \
 			     ModeSpecProperty.cpp ModeSpecProperty.h \
-			     ForcesProperty.cpp ForcesProperty.h
+			     ForcesProperty.cpp ForcesProperty.h \
+			     PropelProperty.cpp PropelProperty.h
 
 libentityfilter_a_SOURCES = entityfilter/Filter.cpp entityfilter/Filter.h \
 			     entityfilter/ParserDefinitions.h \
