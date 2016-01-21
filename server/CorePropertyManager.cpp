@@ -52,6 +52,7 @@
 #include "rulesets/ModeProperty.h"
 #include "rulesets/ModeSpecProperty.h"
 #include "rulesets/ForcesProperty.h"
+#include "rulesets/PropelProperty.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
@@ -96,6 +97,12 @@ template<typename PropertyT>
 void CorePropertyManager::installProperty(const std::string & parent)
 {
     this->installProperty<PropertyT>(PropertyT::property_name, parent);
+}
+
+template<typename PropertyT>
+void CorePropertyManager::installProperty()
+{
+    this->installProperty<PropertyT>(PropertyT::property_name, PropertyT::property_atlastype);
 }
 
 
@@ -150,6 +157,7 @@ CorePropertyManager::CorePropertyManager()
     installProperty<ModeSpecProperty>("mode-standing", "map");
     installProperty<ModeSpecProperty>("mode-planted", "map");
     installProperty<ForcesProperty>("map");
+    installProperty<PropelProperty>();
 
 }
 
