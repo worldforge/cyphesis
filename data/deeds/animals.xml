@@ -451,6 +451,10 @@
         <float name="default">5</float>
         <string name="visibility">public</string>
       </map>
+      <map name="grows">
+        <int name="default">1</int>
+        <string name="visibility">public</string>
+      </map>
       <map name="mass">
         <float name="default">5</float>
         <float name="max">30</float>
