@@ -38,16 +38,16 @@ int main()
     Quaternion rotation;
 
     // Normal 90 degree rotation
-    rotation = quaternionFromTo(east, north);
+    rotation = quaternionFromTo(east, north, up);
 
     // No rotation to cover special case
-    rotation = quaternionFromTo(east, east);
+    rotation = quaternionFromTo(east, east, up);
 
     // Exact 180 to cover special case
-    rotation = quaternionFromTo(east, west);
+    rotation = quaternionFromTo(east, west, up);
 
     // Exact 180 to cover other part of same case
-    rotation = quaternionFromTo(up, down);
+    rotation = quaternionFromTo(up, down, west);
 
     return 0;
 }

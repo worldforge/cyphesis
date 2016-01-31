@@ -32,6 +32,34 @@ namespace Atlas { namespace Message { class Element; } }
     }\
 }
 
+/**
+ * Prints a string to standard err output.
+ *
+ * The text will be passed to std::cerr, so it's possible to chain the string.
+ * An example:
+ *
+ * debug_print("some text" << someValue << "some more text);
+ *
+ * @param text The text.
+ */
+#define debug_print(text) { if (debug_flag) { \
+        std::cerr << text << std::endl << std::flush;\
+} }
+
+/**
+ * Prints a string to standard err output, appending with the calling function.
+ *
+ * The text will be passed to std::cerr, so it's possible to chain the string.
+ * An example:
+ *
+ * debug_print("some text" << someValue << "some more text);
+ *
+ * @param text The text.
+ */
+#define debug_print_pretty(text) { if (debug_flag) { \
+        std::cerr << text << "     :: " << __PRETTY_FUNCTION__ << std::endl << std::flush;\
+} }
+
 void output_element(std::ostream & out,
                     const Atlas::Message::Element & item,
                     int depth);

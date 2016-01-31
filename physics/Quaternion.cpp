@@ -26,16 +26,12 @@
 #include <wfmath/error.h>
 
 template<class V>
-const Quaternion quaternionFromTo(const V & from, const V & to)
+const Quaternion quaternionFromTo(const V & from, const V & to, const V& fallbackAxis)
 {
     Quaternion q;
-    try {
-        q.rotation(from, to);
-    } catch (const WFMath::ColinearVectors<3>& e) {
-        //The vectors are parallel, which causes an error in WFMath. Just ignore here.
-    }
+    q.rotation(from, to, fallbackAxis);
     return q;
 }
 
 template
-const Quaternion quaternionFromTo<Vector3D>(const Vector3D &, const Vector3D&);
+const Quaternion quaternionFromTo<Vector3D>(const Vector3D &, const Vector3D&, const Vector3D&);

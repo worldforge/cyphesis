@@ -1256,18 +1256,15 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     }
     if (direction.isValid() && (direction.mag() > 0)) {
         direction.normalize();
-        debug( std::cout << "Direction: " << direction << std::endl
-                         << std::flush;);
+        debug_print("Direction: " << direction);
         if (!new_orientation.isValid()) {
             // This is a character walking, so it should stay upright
             Vector3D upright_direction = direction;
             upright_direction[cZ] = 0;
             if (upright_direction.mag() > 0) {
                 upright_direction.normalize();
-                new_orientation = quaternionFromTo(Vector3D(1,0,0),
-                                                   upright_direction);
-                debug( std::cout << "Orientation: " << new_orientation
-                                 << std::endl << std::flush;);
+                new_orientation = quaternionFromTo(Vector3D(1,0,0), upright_direction, Vector3D(0,0,1));
+                debug_print("Orientation: " << new_orientation);
             }
         }
     }
