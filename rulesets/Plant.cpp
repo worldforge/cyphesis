@@ -43,6 +43,7 @@ using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Eat;
 using Atlas::Objects::Operation::Set;
+using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Move;
 using Atlas::Objects::Operation::Tick;
 using Atlas::Objects::Operation::Update;
@@ -109,11 +110,14 @@ void Plant::NourishOperation(const Operation & op, OpVector & res)
     nourishment_ent->setAttr(NOURISHMENT, nourishment);
     
     Set s;
-    s->setTo(getId());
     s->setArgs1(nourishment_ent);
-    // FIXME Do i require sending sight operation?? As it is in Chacter class case?
 
-    res.push_back(s);
+    // FIXME HELP Why do I need to send sight operation?? 
+    // It seems I require for tests to work but I don't know what the logic behind it
+    Sight si;
+    si->setTo(getId());
+    si->setArgs1(s);
+    res.push_back(si);
 
     debug(std::cout << "Nourishment: " << nourishment
                     << std::endl << std::flush;);
