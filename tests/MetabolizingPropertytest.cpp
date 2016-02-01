@@ -1,5 +1,4 @@
-// Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2013 Alistair Riddoch
+// Copyright (C) 2015 Piotr Stępnicki
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,7 +24,10 @@
 
 #include "PropertyCoverage.h"
 
+
 #include "rulesets/MetabolizingProperty.h"
+
+
 
 int main()
 {
@@ -50,9 +52,19 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
     return 0;
 }
 
-// stubs
+// Peter: this is the part I don't really understand
+// why we assign those values to operations?
 
-//namespace Atlas { namespace Objects { namespace Operation {
-//int EAT_NO = -1;
-//int NOURISH_NO = -1;
-//} } }
+namespace Atlas { namespace Objects { namespace Operation {
+int TICK_NO = -1;
+int UPDATE_NO = -1;
+} } }
+
+#include "rulesets/StatusProperty.h"
+#include "rulesets/AreaProperty.h"
+#include "rulesets/BBoxProperty.h"
+
+//#include "stubs/common/stubProperty.h"
+#include "stubs/rulesets/stubStatusProperty.h"
+#include "stubs/rulesets/stubAreaProperty.h"
+#include "stubs/rulesets/stubBBoxProperty.h"
