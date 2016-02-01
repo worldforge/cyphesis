@@ -59,7 +59,7 @@ RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
                  TerrainModtest PythonClasstest \
                  TerrainEffectorPropertytest SuspendedPropertytest \
                  EntityFiltertest EntityFilterParsertest \
-                 EntityFilterProviderstest
+                 EntityFilterProviderstest MetabolizingPropertytest
 
 RULESETS_INTEGRATION_TESTS = TerrainPropertyintegration \
                              PropertyEntityintegration \
@@ -533,6 +533,12 @@ MindPropertytest_SOURCES = MindPropertytest.cpp \
 MindPropertytest_LDADD = \
         $(top_builddir)/rulesets/MindProperty.o \
         $(top_builddir)/common/Property.o
+
+MetabolizingPropertytest_SOURCES = MetabolizingPropertytest.cpp \
+	PropertyCoverage.cpp PropertyCoverage.h
+MetabolizingPropertytest_LDADD = \
+	$(top_builddir)/rulesets/MetabolizingProperty.o \
+	$(top_builddir)/common/Property.o
 
 OutfitPropertytest_SOURCES = OutfitPropertytest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
