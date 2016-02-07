@@ -211,7 +211,7 @@ void MemMaptest::test_readEntity()
     MemEntity * ent = new MemEntity(new_id, 3);
     ent->setType(MemMap::m_entity_type);
 
-    m_memMap->readEntity(ent, data);
+    m_memMap->readEntity(ent, data, 0);
 }
 
 void MemMaptest::test_readEntity_type()
@@ -224,7 +224,7 @@ void MemMaptest::test_readEntity_type()
     MemEntity * ent = new MemEntity(new_id, 3);
     ent->setType(MemMap::m_entity_type);
 
-    m_memMap->readEntity(ent, data);
+    m_memMap->readEntity(ent, data, 0);
 
     ASSERT_NOT_EQUAL(ent->getType(), MemMap::m_entity_type);
     ASSERT_EQUAL(ent->getType(), m_sampleType);
@@ -240,7 +240,7 @@ void MemMaptest::test_readEntity_type_nonexist()
     MemEntity * ent = new MemEntity(new_id, 3);
     ent->setType(MemMap::m_entity_type);
 
-    m_memMap->readEntity(ent, data);
+    m_memMap->readEntity(ent, data, 0);
 
     ASSERT_EQUAL(ent->getType(), MemMap::m_entity_type);
     ASSERT_NOT_EQUAL(ent->getType(), m_sampleType);
