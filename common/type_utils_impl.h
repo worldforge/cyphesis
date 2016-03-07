@@ -43,7 +43,7 @@ inline int objectListFromMessage(const Atlas::Message::ListType & l,
         try {
             ol.push_back(T(I->asList()));
         }
-        catch (Atlas::Message::WrongTypeException) {
+        catch (const Atlas::Message::WrongTypeException&) {
             return -1;
         }
     }
