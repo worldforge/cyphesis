@@ -625,6 +625,12 @@ void Awareness::setDesiredTilesAmount(size_t amount)
     mDesiredTilesAmount = amount;
 }
 
+float Awareness::getTileSizeInMeters() const
+{
+    return mCfg.tileSize * mCfg.cs;
+}
+
+
 void Awareness::findAffectedTiles(const WFMath::AxisBox<2>& area, int& tileMinXIndex, int& tileMaxXIndex, int& tileMinYIndex, int& tileMaxYIndex) const
 {
     float tilesize = mCfg.tileSize * mCfg.cs;

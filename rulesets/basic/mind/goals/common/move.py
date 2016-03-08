@@ -59,6 +59,17 @@ class move_me(Goal):
             return
         #print "Moving to location " + str(location)
         me.destination = location.coordinates
+        result = me.refreshPath()
+        #If result is 0 it means that we're already there
+        if result == 0:
+            return
+        #If result is -1, -2 or -3 it means that we haven't mapped enough of our surroundings to find a path yet.
+        #In this case we should just wait (by sending an empty op back) and let the mind code generate an awareness
+        #If however result is less than -3 it means that we know that we can't reach the location.
+        if result < -3:
+            #print "Could not find any path"
+            return
+         
         return Operation("operation")
     
 ############################ MOVE ME AREA ####################################

@@ -80,16 +80,22 @@ public:
 	 * @param viewPosition
 	 * @param radius The radius around the destination where it's acceptable to end up if we couldn't reach the destination precisely.
 	 */
-	void setDestination(const WFMath::Point<3>& viewPosition, float radius);
+	void setDestination(const WFMath::Point<3>& viewPosition, float radius, double currentServerTimestamp);
 
 	/**
 	 * @brief Updates the path.
 	 * @param currentAvatarPosition The current position of the avatar entity.
-	 * @return True if a path was found.
+	 * @return If >= 0, a path was found. If <0 and >= -3 we couldn't find a path currently because we don't have all data yet. If <= -4 we couldn't find a path.
 	 */
-	bool updatePath(const WFMath::Point<3>& currentAvatarPosition);
+	int updatePath(const WFMath::Point<3>& currentAvatarPosition);
 
-	/**
+    /**
+     * @brief Updates the path.
+     * @return If >= 0, a path was found. If <0 and >= -3 we couldn't find a path currently because we don't have all data yet. If <= -4 we couldn't find a path.
+     */
+    int updatePath(double currentTimestamp);
+
+    /**
 	 * @brief Requests an update of the path.
 	 *
 	 * The actual update will be deferred to when updatePath() is called, which normally happens
@@ -145,6 +151,8 @@ public:
 	 * Call this often when steering is enabled.
 	 */
 	SteeringResult update(double currentTimestamp);
+
+	WFMath::Point<3> getCurrentAvatarPosition(double currentTimestamp);
 
 	/**
 	 * @brief Emitted when the path has been updated.
@@ -205,6 +213,13 @@ private:
 	 * This is mainly used to keep track of if we need to send a stop velocity, once we've reached our destination.
 	 */
 	WFMath::Vector<2> mLastSentVelocity;
+
+	/**
+	 * @brief The position of the avatar when the awareness area was last updated.
+	 *
+	 * We keep track of this in order to know when to update the area again.
+	 */
+	WFMath::Point<3> mAvatarPositionLastUpdate;
 
 	/**
 	 * @brief Sets the awareness to be a corridor between where the avatar currently is and our destination.

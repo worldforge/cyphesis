@@ -44,8 +44,15 @@ class AwareMind: public BaseMind, public MemMap::MapListener
 
         virtual void operation(const Operation & op, OpVector & res);
 
+        int updatePath();
+
         Steering& getSteering();
 
+        double getServerTimeDiff() const;
+
+        double getCurrentLocalTime() const;
+
+        double getCurrentServerTime() const;
 
     protected:
 
@@ -60,6 +67,8 @@ class AwareMind: public BaseMind, public MemMap::MapListener
          * @brief Difference in time between server time and local time.
          *
          * This is used to correctly calculate position of entities when handling steering.
+         *
+         * The value is calculated by substracting the timestamp received from the server from the current local time.
          */
         double mServerTimeDiff;
 
@@ -68,6 +77,7 @@ class AwareMind: public BaseMind, public MemMap::MapListener
         void processMoveTick(const Operation & op, OpVector & res);
 
         void requestAwareness(const MemEntity& entity);
+
 };
 
 #endif /* RULESETS_MIND_AWAREMIND_H_ */

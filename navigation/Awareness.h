@@ -237,6 +237,8 @@ public:
 	 */
 	sigc::signal<void> EventTileDirty;
 
+	float getTileSizeInMeters() const;
+
 protected:
 
 	IHeightProvider& mHeightProvider;

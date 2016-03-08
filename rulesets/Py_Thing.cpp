@@ -155,9 +155,33 @@ static PyObject * Character_mind2body(PyEntity * self, PyOperation * op)
     }
 }
 
+static PyObject * Mind_refreshPath(PyEntity * self)
+{
+#ifndef NDEBUG
+    if (self->m_entity.l == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.mind2body");
+        return NULL;
+    }
+#endif // NDEBUG
+    AwareMind* awareMind = dynamic_cast<AwareMind*>(self->m_entity.m);
+    if (!awareMind) {
+        return NULL;
+    }
+
+    int result = awareMind->updatePath();
+//    int result = awareMind->getSteering().updatePath(awareMind->m_location.m_pos);
+    return Py_BuildValue("i", result);
+}
+
+
 static PyMethodDef Character_methods[] = {
     {"start_task",      (PyCFunction)Character_start_task, METH_VARARGS},
     {"mind2body",       (PyCFunction)Character_mind2body,  METH_O},
+    {NULL,              NULL}           /* sentinel */
+};
+
+static PyMethodDef Mind_methods[] = {
+    {"refreshPath",     (PyCFunction)Mind_refreshPath,  METH_NOARGS},
     {NULL,              NULL}           /* sentinel */
 };
 
@@ -540,7 +564,7 @@ static int Mind_setattro(PyEntity *self, PyObject *oname, PyObject *v)
             return 0;
         }
 
-        awareMind->getSteering().setDestination(point->coords, 1);
+        awareMind->getSteering().setDestination(point->coords, 1, awareMind->getCurrentServerTime());
         awareMind->getSteering().startSteering();
 
         return 0;
@@ -749,7 +773,7 @@ PyTypeObject PyMind_Type = {
         0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
-        0,                              // tp_methods
+        Mind_methods,                   // tp_methods
         0,                              // tp_members
         0,                              // tp_getset
         &PyLocatedEntity_Type,          // tp_base

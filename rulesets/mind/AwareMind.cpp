@@ -43,7 +43,8 @@
 static const bool debug_flag = true;
 
 AwareMind::AwareMind(const std::string &id, long intId, SharedTerrain& sharedTerrain, AwarenessStoreProvider& awarenessStoreProvider) :
-        BaseMind(id, intId), mSharedTerrain(sharedTerrain), mAwarenessStoreProvider(awarenessStoreProvider), mAwarenessStore(nullptr), mSteering(new Steering(*this)), mServerTimeDiff(0)
+        BaseMind(id, intId), mSharedTerrain(sharedTerrain), mAwarenessStoreProvider(awarenessStoreProvider), mAwarenessStore(nullptr), mSteering(new Steering(*this)), mServerTimeDiff(
+                0)
 {
     m_map.setListener(this);
 }
@@ -68,12 +69,22 @@ void AwareMind::operation(const Operation & op, OpVector & res)
         if (op->hasAttrFlag(Atlas::Objects::Operation::SECONDS_FLAG)) {
             double stamp = op->getSeconds();
 
-            SystemTime time;
-            time.update();
-            mServerTimeDiff = stamp - (time.seconds() + (time.microseconds() * 0.000001));
+            mServerTimeDiff = getCurrentLocalTime() - stamp;
         }
     }
 
+}
+
+double AwareMind::getCurrentLocalTime() const
+{
+    SystemTime time;
+    time.update();
+    return (time.seconds() + (time.microseconds() * 0.000001));
+}
+
+double AwareMind::getCurrentServerTime() const
+{
+    return getCurrentLocalTime() - mServerTimeDiff;
 }
 
 void AwareMind::processMoveTick(const Operation & op, OpVector & res)
@@ -98,7 +109,7 @@ void AwareMind::processMoveTick(const Operation & op, OpVector & res)
     if (mSteering) {
         SystemTime time;
         time.update();
-        SteeringResult result = mSteering->update(op->getSeconds() + mServerTimeDiff);
+        SteeringResult result = mSteering->update(getCurrentServerTime());
         if (result.direction.isValid()) {
             Atlas::Objects::Operation::Move move;
             Atlas::Objects::Entity::Anonymous what;
@@ -132,6 +143,11 @@ void AwareMind::processMoveTick(const Operation & op, OpVector & res)
     tick->setFutureSeconds(futureTick);
 
     res.push_back(tick);
+}
+
+int AwareMind::updatePath()
+{
+    return mSteering->updatePath(getCurrentServerTime());
 }
 
 Steering& AwareMind::getSteering()
@@ -225,5 +241,10 @@ void AwareMind::entityDeleted(const MemEntity& entity)
 
 void AwareMind::onContainered(const LocatedEntity * new_loc)
 {
+}
+
+double AwareMind::getServerTimeDiff() const
+{
+    return mServerTimeDiff;
 }
 

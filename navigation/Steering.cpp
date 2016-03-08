@@ -32,7 +32,6 @@
 
 static const bool debug_flag = true;
 
-
 Steering::Steering(MemEntity& avatar) :
         mAwareness(nullptr), mAvatar(avatar), mDestinationRadius(1.0), mSteeringEnabled(false), mUpdateNeeded(false), mPadding(16), mSpeed(2), mExpectingServerMovement(false)
 {
@@ -52,15 +51,20 @@ void Steering::setAwareness(Awareness* awareness)
     }
 }
 
-void Steering::setDestination(const WFMath::Point<3>& viewPosition, float radius)
+void Steering::setDestination(const WFMath::Point<3>& viewPosition, float radius, double currentServerTimestamp)
 {
-    //Only update if destination has changed
-    if (mViewDestination != viewPosition || mDestinationRadius != radius) {
-        mViewDestination = viewPosition;
-        mDestinationRadius = radius;
-        mUpdateNeeded = true;
+    if (mAwareness) {
+        auto currentAvatarPos = getCurrentAvatarPosition(currentServerTimestamp);
+        //Only update if destination or position of the avatar has changed
+        if (mViewDestination != viewPosition || mDestinationRadius != radius
+                || WFMath::Distance(currentAvatarPos, mAvatarPositionLastUpdate) >= (mAwareness->getTileSizeInMeters() * 0.5f)) {
+            mViewDestination = viewPosition;
+            mDestinationRadius = radius;
+            mUpdateNeeded = true;
 
-        setAwarenessArea();
+            setAwarenessArea();
+            mAvatarPositionLastUpdate = currentAvatarPos;
+        }
     }
 }
 
@@ -97,17 +101,30 @@ void Steering::setSpeed(float speed)
     mSpeed = speed;
 }
 
-bool Steering::updatePath(const WFMath::Point<3>& currentAvatarPosition)
+int Steering::updatePath(const WFMath::Point<3>& currentAvatarPosition)
 {
     mPath.clear();
     if (!mAwareness) {
-        return false;
+        return -7;
     }
     int result = mAwareness->findPath(currentAvatarPosition, mViewDestination, mDestinationRadius, mPath);
-    debug_print("Updating path, size of new path: " << result << ".");
+    //debug_print("Updating path, size of new path: " << result << ". Pos: " << currentAvatarPosition);
     EventPathUpdated();
     mUpdateNeeded = false;
-    return result > 0;
+    return result;
+}
+
+int Steering::updatePath(double currentTimestamp)
+{
+    if (!mAwareness) {
+        return -1;
+    }
+    auto currentEntityPos = mAvatar.m_location.m_pos;
+    if (mAvatar.m_location.m_velocity.isValid()) {
+        currentEntityPos += (mAvatar.m_location.m_velocity * (currentTimestamp - mAvatar.m_location.timeStamp()));
+    }
+
+    return updatePath(currentEntityPos);
 }
 
 void Steering::requestUpdate()
@@ -146,19 +163,25 @@ const std::list<WFMath::Point<3>>& Steering::getPath() const
     return mPath;
 }
 
+WFMath::Point<3> Steering::getCurrentAvatarPosition(double currentTimestamp)
+{
+    auto currentEntityPos = mAvatar.m_location.m_pos;
+    if (mAvatar.m_location.m_velocity.isValid()) {
+        currentEntityPos += (mAvatar.m_location.m_velocity * (currentTimestamp - mAvatar.m_location.timeStamp()));
+    }
+    return currentEntityPos;
+}
+
 SteeringResult Steering::update(double currentTimestamp)
 {
     SteeringResult result;
     if (mSteeringEnabled && mAwareness) {
 
-        auto currentEntityPos = mAvatar.m_location.m_pos;
-        if (mAvatar.m_location.m_velocity.isValid()) {
-            currentEntityPos += (mAvatar.m_location.m_velocity * (currentTimestamp - mAvatar.m_location.timeStamp()));
-        }
+        auto currentEntityPos = getCurrentAvatarPosition(currentTimestamp);
 
-        if (mUpdateNeeded) {
+        //if (mUpdateNeeded) {
             updatePath(currentEntityPos);
-        }
+        //}
         if (!mPath.empty()) {
             const auto& finalDestination = mPath.back();
 
