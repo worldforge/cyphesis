@@ -388,7 +388,7 @@ void Awareness::removeEntity(const MemEntity& observer, const LocatedEntity& ent
 
 void Awareness::updateEntityMovement(const MemEntity& observer, const LocatedEntity& entity)
 {
-    //This is called when either the position, orientation, location or size of the entity has been altered.
+    //This is called when either the position, orientation, velocity, location or size of the entity has been altered.
     auto I = mObservedEntities.find(entity.getIntId());
     if (I != mObservedEntities.end()) {
         EntityEntry* entityEntry = I->second.get();
@@ -406,12 +406,16 @@ void Awareness::updateEntityMovement(const MemEntity& observer, const LocatedEnt
 
 void Awareness::processEntityMovementChange(EntityEntry& entityEntry, const LocatedEntity& entity)
 {
-    //We only need to act if the entity isn't marked as a moving one.
-    if (!entityEntry.isMoving && !entityEntry.isIgnored) {
-
+    //If entity already is moving we just need to update its location
+    if (entityEntry.isMoving) {
+        entityEntry.location = entity.m_location;
+        //Otherwise check if the entity already isn't being ignored; if not we need to act as it means that
+        //an entity which wasn't moving is now moving
+    } else if (!entityEntry.isIgnored) {
         //Check if the bbox now is invalid
         if (!entity.m_location.bBox().isValid()) {
             debug_print("Ignoring entity " << entity.getId());
+            entityEntry.location = entity.m_location;
             entityEntry.isIgnored = true;
 
             //We must now mark those areas that the entities used to touch as dirty, as well as remove the entity areas
