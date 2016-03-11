@@ -32,7 +32,7 @@ class VoidDomain : public Domain
         virtual float constrainHeight(LocatedEntity &, LocatedEntity *, const Point3D &,
                 const std::string &);
 
-        virtual void tick(double t);
+        virtual double tick(double t);
 
         virtual void lookAtEntity(const LocatedEntity& observingEntity,
                 const LocatedEntity& observedEntity,
@@ -51,6 +51,10 @@ class VoidDomain : public Domain
 
         virtual float checkCollision(LocatedEntity& entity,
                 CollisionData& collisionData);
+
+        virtual void addEntity(LocatedEntity& entity);
+        virtual void removeEntity(LocatedEntity& entity);
+
 };
 
 #endif /* VOIDDOMAIN_H_ */

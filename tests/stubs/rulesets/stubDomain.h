@@ -34,9 +34,9 @@ float Domain::constrainHeight(LocatedEntity& entity, LocatedEntity * parent,
     return 0.f;
 }
 
-void Domain::tick(double t)
+float Domain::tick(double t)
 {
-
+    return 0;
 }
 
 

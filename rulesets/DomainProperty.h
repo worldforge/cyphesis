@@ -34,8 +34,7 @@ class Domain;
  * * void: no movement or sight allowed
  * * physical: movement and sights behave like in the real world
  */
-class DomainProperty : public Property<std::string>
-{
+class DomainProperty: public Property<std::string> {
     public:
 
         explicit DomainProperty();
@@ -49,9 +48,14 @@ class DomainProperty : public Property<std::string>
 
         Domain* getDomain(const LocatedEntity *) const;
 
+        HandlerResult operation(LocatedEntity * e, const Operation & op, OpVector & res);
+
     private:
 
         static PropertyInstanceState<Domain> sInstanceState;
+
+        void scheduleTick(LocatedEntity& entity, float secondsFromNow);
+        HandlerResult tick_handler(LocatedEntity * e, const Operation & op, OpVector & res);
 
 };
 

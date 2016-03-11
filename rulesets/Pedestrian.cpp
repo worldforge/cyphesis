@@ -127,7 +127,7 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
 
     auto domain = m_body.getMovementDomain();
     if (domain) {
-        float z = m_body.getMovementDomain()->constrainHeight(m_body, new_location.m_loc,
+        float z = domain->constrainHeight(m_body, new_location.m_loc,
                                                               new_location.m_pos,
                                                               "standing");
         debug(std::cout << "Height adjustment " << z << " " << new_location.m_pos.z()

@@ -29,7 +29,6 @@ librulesetentity_a_SOURCES = \
 			     Stackable.cpp Stackable.h \
 			     Motion.cpp Motion.h \
 			     Domain.cpp Domain.h \
-			     BulletDomain.cpp BulletDomain.h \
 			     ExternalMind.cpp ExternalMind.h \
 			     Movement.cpp Movement.h \
 			     Pedestrian.cpp Pedestrian.h \

@@ -25,6 +25,7 @@
 #include "rulesets/LocatedEntity.h"
 #include "rulesets/Character.h"
 #include "rulesets/MindProperty.h"
+#include "rulesets/Domain.h"
 
 #include "common/Database.h"
 #include "common/TypeNode.h"
@@ -251,6 +252,11 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
                 prop->apply(ent);
             }
         }
+    }
+
+    auto domain = ent->getMovementDomain();
+    if (domain) {
+        domain->addEntity(*ent);
     }
 
 

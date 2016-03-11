@@ -314,14 +314,14 @@ void Entity::destroy()
 
 Domain * Entity::getMovementDomain()
 {
-    if (m_flags & entity_domain) {
-        return getPropertyClass<DomainProperty>("domain")->getDomain(this);
-    }
+    //Check if there's a domain on the parent entity.
     if (m_location.m_loc) {
-        return m_location.m_loc->getMovementDomain();
-    } else {
-        return nullptr;
+        if (m_location.m_loc->getFlags() & entity_domain) {
+            return m_location.m_loc->getPropertyClass<DomainProperty>("domain")->getDomain(m_location.m_loc);
+        }
     }
+    return nullptr;
+
 }
 
 void Entity::sendWorld(const Operation & op)
