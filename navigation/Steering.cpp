@@ -226,6 +226,8 @@ SteeringResult Steering::update(double currentTimestamp)
                     velocity = newVelocity;
                     velocity.normalize();
                     velocity *= mSpeed;
+                    //Schedule a new steering op very soon
+                    result.timeToNextWaypoint = 0.05f;
                     mUpdateNeeded = true;
                 }
 
