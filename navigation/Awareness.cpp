@@ -528,7 +528,7 @@ bool Awareness::avoidObstacles(const WFMath::Point<2>& position, const WFMath::V
         float nvel[] { 0, 0, 0 };
         float desiredSpeed = desiredVelocity.mag();
 
-        auto samples = mObstacleAvoidanceQuery->sampleVelocityAdaptive(pos, mAgentRadius, desiredSpeed, vel, dvel, nvel, mObstacleAvoidanceParams, nullptr);
+        auto samples = mObstacleAvoidanceQuery->sampleVelocityGrid(pos, mAgentRadius, desiredSpeed, vel, dvel, nvel, mObstacleAvoidanceParams, nullptr);
         if (samples > 0) {
             if (!WFMath::Equal(vel[0], nvel[0]) || !WFMath::Equal(vel[2], nvel[2])) {
                 newVelocity.x() = nvel[0];
