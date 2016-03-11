@@ -84,7 +84,13 @@ class editor:
         else:
             self._say(target,'know',know[0],know[2],predicate=know[1])
     def _learn(self,target,goal):
-        self._say(target,'learn',goal[0],goal[1])
+        es=Entity(id=goal[1], goal=goal[1])
+        set=Operation("set")
+        set.setArgs([es])
+        think=Operation("think", to=target)
+        think.setArgs([set])
+        
+        self.avatar.send(think)
     #Interlinguish
     def _tell(self,target,string,interlinguish):
         es=Entity(say=string)
