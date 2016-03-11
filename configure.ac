@@ -268,15 +268,14 @@ Please see http://worldforge.org/dev/eng/servers/cyphesis for details of the
 libraries required and where to obtain them.])
     ])
 
-PKG_CHECK_MODULES(BULLET, bullet >= 2.77,
+PKG_CHECK_MODULES(BULLET, bullet >= 2.81,
     [
         CPPFLAGS="$CPPFLAGS $BULLET_CFLAGS"
         TERRAIN_LIBS="$TERRAIN_LIBS $BULLET_LIBS"
-        AC_DEFINE([HAVE_BULLET], [1], [Define to 1 if using bullet])
     ],
     [
         AC_MSG_RESULT([no])
-        AC_MSG_WARN([
+        AC_MSG_ERROR([
 Cannot find valid versions of required physics library, bullet:
 $BULLET_PKG_ERRORS
 Perhaps you should add the directory containing the missing libraries to the

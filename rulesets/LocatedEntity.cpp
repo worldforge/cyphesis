@@ -19,6 +19,8 @@
 #include "LocatedEntity.h"
 
 #include "TransformsProperty.h"
+#include "DomainProperty.h"
+#include "Domain.h"
 
 #include "Script.h"
 #include "AtlasProperties.h"
@@ -292,6 +294,11 @@ void LocatedEntity::addChild(LocatedEntity& childEntity)
     }
 
     childEntity.m_location.m_loc = this;
+
+    if (m_flags & entity_domain) {
+        auto domain = getPropertyClass<DomainProperty>("domain")->getDomain(this);
+        domain->addEntity(childEntity);
+    }
 }
 
 void LocatedEntity::removeChild(LocatedEntity& childEntity)
@@ -299,6 +306,10 @@ void LocatedEntity::removeChild(LocatedEntity& childEntity)
     assert(checkRef() > 0);
     assert(m_contains != 0);
     assert(m_contains->count(&childEntity));
+    if (m_flags & entity_domain) {
+        auto domain = getPropertyClass<DomainProperty>("domain")->getDomain(this);
+        domain->removeEntity(childEntity);
+    }
     m_contains->erase(&childEntity);
     if (m_contains->empty()) {
         onUpdated();

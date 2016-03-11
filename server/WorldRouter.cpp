@@ -182,6 +182,7 @@ LocatedEntity * WorldRouter::addEntity(LocatedEntity * ent)
                                   mode);
             transProp->getTranslate().z() = height;
             transProp->apply(ent);
+            movementDomain->addEntity(*ent);
         }
     }
     ent->m_location.m_loc->makeContainer();

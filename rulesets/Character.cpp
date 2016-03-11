@@ -449,29 +449,29 @@ void Character::TickOperation(const Operation & op, OpVector & res)
     if (!args.empty()) {
         const Root & arg = args.front();
         if (arg->getName() == "move") {
-            // Deal with movement.
-            Element serialno;
-            if (arg->copyAttr(SERIALNO, serialno) == 0 && (serialno.isInt())) {
-                if (serialno.asInt() < m_movement.serialno()) {
-                    debug(std::cout << "Old tick" << std::endl << std::flush;);
-                    return;
-                }
-            } else {
-                log(ERROR, "Character::TickOperation: No serialno in tick arg. " + describeEntity());
-            }
-            Location return_location;
-            if (m_movement.getUpdatedLocation(return_location)) {
-                return;
-            }
-            res.push_back(m_movement.generateMove(return_location));
-            Anonymous tick_arg;
-            tick_arg->setName("move");
-            tick_arg->setAttr(SERIALNO, m_movement.serialno());
-            Tick tickOp;
-            tickOp->setTo(getId());
-            tickOp->setFutureSeconds(m_movement.getTickAddition(return_location.pos(), return_location.velocity()));
-            tickOp->setArgs1(tick_arg);
-            res.push_back(tickOp);
+//            // Deal with movement.
+//            Element serialno;
+//            if (arg->copyAttr(SERIALNO, serialno) == 0 && (serialno.isInt())) {
+//                if (serialno.asInt() < m_movement.serialno()) {
+//                    debug(std::cout << "Old tick" << std::endl << std::flush;);
+//                    return;
+//                }
+//            } else {
+//                log(ERROR, "Character::TickOperation: No serialno in tick arg");
+//            }
+//            Location return_location;
+//            if (m_movement.getUpdatedLocation(return_location)) {
+//                return;
+//            }
+//            res.push_back(m_movement.generateMove(return_location));
+//            Anonymous tick_arg;
+//            tick_arg->setName("move");
+//            tick_arg->setAttr(SERIALNO, m_movement.serialno());
+//            Tick tickOp;
+//            tickOp->setTo(getId());
+//            tickOp->setFutureSeconds(m_movement.getTickAddition(return_location.pos(), return_location.velocity()));
+//            tickOp->setArgs1(tick_arg);
+//            res.push_back(tickOp);
         } else if (arg->getName() == "task") {
             TasksProperty * tp = modPropertyClass<TasksProperty>(TASKS);
 
@@ -1350,14 +1350,14 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     // Movement within current loc. Work out the speed and stuff and
     // use movement object to track movement.
 
-    Location ret_location;
-    int ret = m_movement.getUpdatedLocation(ret_location);
-    if (ret) {
-        ret_location = m_location;
-    }
-
-    // FIXME THis here?
-    m_movement.reset();
+    Location ret_location = m_location;
+//    int ret = m_movement.getUpdatedLocation(ret_location);
+//    if (ret) {
+//        ret_location = m_location;
+//    }
+//
+//    // FIXME THis here?
+//    m_movement.reset();
 
     Vector3D direction;
     if (new_pos.isValid()) {
@@ -1408,18 +1408,18 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     assert(move_op.isValid());
     res.push_back(move_op);
 
-    if (m_movement.hasTarget() && ret_location.velocity().isValid() && ret_location.velocity() != Vector3D::ZERO()) {
-
-        Tick tickOp;
-        Anonymous tick_arg;
-        tick_arg->setAttr(SERIALNO, m_movement.serialno());
-        tick_arg->setName("move");
-        tickOp->setArgs1(tick_arg);
-        tickOp->setTo(getId());
-        tickOp->setFutureSeconds(m_movement.getTickAddition(ret_location.pos(), ret_location.velocity()));
-
-        res.push_back(tickOp);
-    }
+//    if (m_movement.hasTarget() && ret_location.velocity().isValid() && ret_location.velocity() != Vector3D::ZERO()) {
+//
+//        Tick tickOp;
+//        Anonymous tick_arg;
+//        tick_arg->setAttr(SERIALNO, m_movement.serialno());
+//        tick_arg->setName("move");
+//        tickOp->setArgs1(tick_arg);
+//        tickOp->setTo(getId());
+//        tickOp->setFutureSeconds(m_movement.getTickAddition(ret_location.pos(), ret_location.velocity()));
+//
+//        res.push_back(tickOp);
+//    }
 
 }
 

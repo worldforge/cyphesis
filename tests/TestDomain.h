@@ -41,9 +41,9 @@ class TestDomain : public Domain
             return 0.0f;
         }
 
-        void tick(double t)
+        double tick(double t)
         {
-
+            return .0;
         }
 
         bool isEntityVisibleFor(
@@ -71,6 +71,12 @@ class TestDomain : public Domain
             return consts::move_tick;
         }
 
+        void addEntity(LocatedEntity& entity) {
+
+        }
+        void removeEntity(LocatedEntity& entity) {
+
+        }
 };
 
 #endif /* TESTS_TESTDOMAIN_H_ */

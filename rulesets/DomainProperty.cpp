@@ -26,27 +26,33 @@
 #include "InventoryDomain.h"
 #include "LocatedEntity.h"
 
+#include "common/Tick.h"
+
+#include <Atlas/Objects/Anonymous.h>
+
 PropertyInstanceState<Domain> DomainProperty::sInstanceState;
 
 DomainProperty::DomainProperty()
 {
 }
 
-DomainProperty::DomainProperty(const DomainProperty& rhs)
-: Property(rhs)
+DomainProperty::DomainProperty(const DomainProperty& rhs) :
+                Property(rhs)
 {
 }
 
-void DomainProperty::install(LocatedEntity *entity, const std::string &)
+void DomainProperty::install(LocatedEntity *entity, const std::string &name)
 {
     sInstanceState.addState(entity, nullptr);
+
+    entity->installDelegate(Atlas::Objects::Operation::TICK_NO, name);
 }
 
-
-void DomainProperty::remove(LocatedEntity * entity, const std::string &)
+void DomainProperty::remove(LocatedEntity * entity, const std::string &name)
 {
     sInstanceState.removeState(entity);
     entity->setFlags(~entity_domain);
+    entity->removeDelegate(Atlas::Objects::Operation::TICK_NO, name);
 }
 
 void DomainProperty::apply(LocatedEntity * entity)
@@ -58,6 +64,10 @@ void DomainProperty::apply(LocatedEntity * entity)
                 domain = new PhysicalDomain(*entity);
                 sInstanceState.replaceState(entity, domain);
                 entity->setFlags(entity_domain);
+                float timeUntilNextTick = domain->tick(0);
+                if (timeUntilNextTick > 0) {
+                    scheduleTick(*entity, timeUntilNextTick);
+                }
             } else if (m_data == "void") {
                 domain = new VoidDomain(*entity);
                 sInstanceState.replaceState(entity, domain);
@@ -79,7 +89,41 @@ DomainProperty * DomainProperty::copy() const
     return new DomainProperty(*this);
 }
 
-Domain* DomainProperty::getDomain(const LocatedEntity *entity) const {
+Domain* DomainProperty::getDomain(const LocatedEntity *entity) const
+{
     return sInstanceState.getState(entity);
+}
+
+void DomainProperty::scheduleTick(LocatedEntity& entity, float secondsFromNow)
+{
+    Atlas::Objects::Entity::Anonymous tick_arg;
+    tick_arg->setName("domain");
+    Atlas::Objects::Operation::Tick tickOp;
+    tickOp->setTo(entity.getId());
+    tickOp->setFutureSeconds(secondsFromNow);
+    tickOp->setStamp(secondsFromNow);
+    tickOp->setArgs1(tick_arg);
+
+    entity.sendWorld(tickOp);
+}
+
+HandlerResult DomainProperty::operation(LocatedEntity * e, const Operation & op, OpVector & res)
+{
+    return tick_handler(e, op, res);
+}
+
+HandlerResult DomainProperty::tick_handler(LocatedEntity * entity, const Operation & op, OpVector & res)
+{
+    if (!op->getArgs().empty() && op->getArgs().front()->getName() == "domain") {
+        Domain* domain = sInstanceState.getState(entity);
+        if (domain) {
+            float timeUntilNextTick = domain->tick(op->getStamp());
+            if (timeUntilNextTick > 0) {
+                scheduleTick(*entity, timeUntilNextTick);
+            }
+        }
+        return OPERATION_BLOCKED;
+    }
+    return OPERATION_IGNORED;
 }
 

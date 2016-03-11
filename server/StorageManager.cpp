@@ -25,6 +25,7 @@
 #include "rulesets/LocatedEntity.h"
 #include "rulesets/Character.h"
 #include "rulesets/MindProperty.h"
+#include "rulesets/Domain.h"
 
 #include "common/Database.h"
 #include "common/TypeNode.h"
@@ -250,6 +251,13 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
                 // value, so we only apply it the value is still default.
                 prop->apply(ent);
             }
+        }
+    }
+
+    if (ent->m_location.m_loc) {
+        auto domain = ent->m_location.m_loc->getMovementDomain();
+        if (domain) {
+            domain->addEntity(*ent);
         }
     }
 

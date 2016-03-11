@@ -63,7 +63,7 @@ class Domain {
     virtual float constrainHeight(LocatedEntity& entity, LocatedEntity *, const Point3D &,
                                   const std::string &) = 0;
 
-    virtual void tick(double t) = 0;
+    virtual double tick(double t) = 0;
 
     /**
      * @brief Checks if the observing Entity can see the observed entity.
@@ -102,6 +102,20 @@ class Domain {
      * @return Seconds until either a collision will occur, or we should check for collisions again.
      */
     virtual float checkCollision(LocatedEntity& entity, CollisionData& collisionData) = 0;
+
+    virtual void addEntity(LocatedEntity& entity) = 0;
+    virtual void removeEntity(LocatedEntity& entity) = 0;
+
+    void applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos)
+    {
+
+    }
+
+    virtual void setVelocity(LocatedEntity& entity,const WFMath::Vector<3>& velocity)
+    {
+
+    }
+
 
 };
 

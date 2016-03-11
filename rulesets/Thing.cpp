@@ -36,6 +36,7 @@
 #include "common/Pickup.h"
 #include "common/Drop.h"
 #include "common/Unseen.h"
+#include "common/TypeNode.h"
 
 #include <wfmath/atlasconv.h>
 
@@ -63,7 +64,7 @@ using Atlas::Objects::Operation::Unseen;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 
-static const bool debug_flag = true;
+static const bool debug_flag = false;
 
 /// \brief Constructor for physical or tangible entities.
 Thing::Thing(const std::string & id, long intId) :
@@ -242,38 +243,6 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
     auto transformsProp = requirePropertyClassFixed<TransformsProperty>();
 
-    // Update pos
-    const auto& posVector = ent->getPos();
-    if (posVector.size() == 3) {
-        Vector3D translate;
-        translate.fromAtlas(ent->getPosAsList());
-        //Adjust the supplied position by the inverse of all external transformation.
-        //This is to offset the fact that any client will send an update for position using
-        //the position of the entity as it sees it.
-        //TODO: is this really the best way? Should we allow for clients to specify if they want to set
-        //the position independent of any transformations? Perhaps this is doable if the client
-        //instead sends an update for the "transforms" property?
-        for (auto entry : transformsProp->external()) {
-            if (entry.second.translate.isValid()) {
-                translate -= entry.second.translate;
-            }
-        }
-        if (m_location.bBox().isValid()) {
-            for (auto entry : transformsProp->external()) {
-                if (entry.second.translateScaled.isValid()) {
-                    auto size = m_location.bBox().highCorner() - m_location.bBox().lowCorner();
-                    translate -= WFMath::Vector<3>(
-                        entry.second.translateScaled.x() * size.x(),
-                        entry.second.translateScaled.y() * size.y(),
-                        entry.second.translateScaled.z() * size.z());
-                }
-            }
-        }
-
-        transformsProp->getTranslate() = translate;
-        transformsProp->apply(this);
-    }
-
     //We can only move if there's a domain
     Domain* domain = nullptr;
     if (m_location.m_loc) {
@@ -281,29 +250,52 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     }
 
 
-    //Check if we've moved between domains. First check if the location has changed, and if so
-    //check if the domain also has changed.
-    if (new_loc != 0) {
-        if (old_loc.m_loc != m_location.m_loc && old_loc.m_loc) {
-            auto domain_old = old_loc.m_loc->getMovementDomain();
-            if (domain_old && domain_old != domain) {
-                //Everything that saw us at the old domain should get a disappear op.
-                //We shouldn't need to send disappear ops to ourselves though, since the top
-                //level entity will have changed.
-                //TODO: We can't use a broadcast op here, since the broadcast will look at the
-                //location of the entity when it's processed, not when it's created. We should
-                //alter this so that any op that's to be broadcast instead should include
-                //the location data in the op itself.
-                domain_old->processDisappearanceOfEntity(*this, old_loc, res);
-            }
-        }
-    }
+
+
+
+
 
     if (domain) {
-        // FIXME Quick height hack
-        float height = domain->constrainHeight(*this, m_location.m_loc, m_location.pos(), mode);
-        //Translate height in relation to the standard translation as set in "transforms".
-        transformsProp->getTranslate().z() = height;
+
+        bool updatedTransform = false;
+
+        // Update pos
+        const auto& posVector = ent->getPos();
+        if (posVector.size() == 3) {
+            Vector3D translate;
+            translate.fromAtlas(ent->getPosAsList());
+            //Adjust the supplied position by the inverse of all external transformation.
+            //This is to offset the fact that any client will send an update for position using
+            //the position of the entity as it sees it.
+            //TODO: is this really the best way? Should we allow for clients to specify if they want to set
+            //the position independent of any transformations? Perhaps this is doable if the client
+            //instead sends an update for the "transforms" property?
+            for (auto entry : transformsProp->external()) {
+                if (entry.second.translate.isValid()) {
+                    translate -= entry.second.translate;
+                }
+            }
+            if (m_location.bBox().isValid()) {
+                for (auto entry : transformsProp->external()) {
+                    if (entry.second.translateScaled.isValid()) {
+                        auto size = m_location.bBox().highCorner() - m_location.bBox().lowCorner();
+                        translate -= WFMath::Vector<3>(
+                            entry.second.translateScaled.x() * size.x(),
+                            entry.second.translateScaled.y() * size.y(),
+                            entry.second.translateScaled.z() * size.z());
+                    }
+                }
+            }
+
+            transformsProp->getTranslate() = translate;
+            updatedTransform = true;
+        }
+
+
+//        // FIXME Quick height hack
+//        float height = domain->constrainHeight(*this, m_location.m_loc, m_location.pos(), mode);
+//        //Translate height in relation to the standard translation as set in "transforms".
+//        transformsProp->getTranslate().z() = height;
 
         Element attr_orientation;
         if (ent->copyAttr("orientation", attr_orientation) == 0) {
@@ -328,10 +320,14 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
             }
 
             transformsProp->getRotate() = rotate;
+            updatedTransform = true;
 
         }
 
-        transformsProp->apply(this);
+        if (updatedTransform) {
+            transformsProp->apply(this);
+            domain->applyTransform(*this, m_location.m_orientation, m_location.m_pos);
+        }
 
         if (ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
             // Update velocity
@@ -340,6 +336,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
             //FIXME: For now set the velocity directly; in the future we want instead to only set the "propel" property,
             //and have the velocity being calculated by letting Bullet apply all forces.
             fromStdVector(m_location.m_velocity, ent->getVelocity());
+            domain->setVelocity(*this, m_location.m_velocity);
             // Velocity is not persistent so has no flag
         }
 
@@ -369,16 +366,16 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
             }
 
 
-            // If we are moving, check for collisions
-            update_time = m_motion->checkCollisions(*domain);
-
-            if (m_motion->collision()) {
-                if (update_time < WFMath::numeric_constants<WFMath::CoordType>::epsilon()) {
-                    moving = m_motion->resolveCollision();
-                } else {
-                    m_motion->m_collisionTime = current_time + update_time;
-                }
-            }
+//            // If we are moving, check for collisions
+//            update_time = m_motion->checkCollisions(*domain);
+//
+//            if (m_motion->collision()) {
+//                if (update_time < WFMath::numeric_constants<WFMath::CoordType>::epsilon()) {
+//                    moving = m_motion->resolveCollision();
+//                } else {
+//                    m_motion->m_collisionTime = current_time + update_time;
+//                }
+//            }
 
             // Serial number must be changed regardless of whether we will use it
             ++m_motion->serialno();
@@ -422,6 +419,24 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         // must gain/lose sight of this entity if it's moving?
         if (isPerceptive()) {
             checkVisibility(old_loc, res);
+        }
+    }
+
+    //Check if we've moved between domains. First check if the location has changed, and if so
+    //check if the domain also has changed.
+    if (new_loc != 0) {
+        if (old_loc.m_loc != m_location.m_loc && old_loc.m_loc) {
+            auto domain_old = old_loc.m_loc->getMovementDomain();
+            if (domain_old && domain_old != domain) {
+                //Everything that saw us at the old domain should get a disappear op.
+                //We shouldn't need to send disappear ops to ourselves though, since the top
+                //level entity will have changed.
+                //TODO: We can't use a broadcast op here, since the broadcast will look at the
+                //location of the entity when it's processed, not when it's created. We should
+                //alter this so that any op that's to be broadcast instead should include
+                //the location data in the op itself.
+                domain_old->processDisappearanceOfEntity(*this, old_loc, res);
+            }
         }
     }
     m_seq++;
@@ -633,59 +648,58 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     bool moving = true;
 
     // Check if a predicted collision is due.
-    if (m_motion->collision()) {
-        if (current_time >= m_motion->m_collisionTime) {
-            time_diff = (float)(m_motion->m_collisionTime - m_location.timeStamp());
-            // This flag signals that collision resolution is required later.
-            // Whether or not we are actually moving is determined by the
-            // collision resolution.
-            moving = false;
-        }
-    }
-
-    // Update entity position
-    auto transformsProp = requirePropertyClassFixed<TransformsProperty>();
-    transformsProp->getTranslate() += (m_location.velocity() * time_diff);
-
-    //We need to apply transforms here to figure our position in order to adjust height further down
-    transformsProp->apply(this);
-
-    // Collision resolution has to occur after position has been updated.
-    if (!moving) {
-        moving = m_motion->resolveCollision();
-    }
-
-    Domain* domain = nullptr;
-    // Adjust the position to world constraints - essentially fit
-    // to the terrain height at this stage.
-    // FIXME Get the constraints from the movement domain
-    if (m_location.m_loc) {
-        domain = m_location.m_loc->getMovementDomain();
-        if (domain) {
-            float z = domain->constrainHeight(*this, m_location.m_loc, m_location.pos(), "standing");
-            transformsProp->getTranslate().z() = z;
-            transformsProp->apply(this);
-        } else {
-
-        }
-    }
-    m_location.update(current_time);
-    m_flags &= ~entity_clean;
-
+//    if (m_motion->collision()) {
+//        if (current_time >= m_motion->m_collisionTime) {
+//            time_diff = (float)(m_motion->m_collisionTime - m_location.timeStamp());
+//            // This flag signals that collision resolution is required later.
+//            // Whether or not we are actually moving is determined by the
+//            // collision resolution.
+//            moving = false;
+//        }
+//    }
+//
+//    // Update entity position
+//    auto transformsProp = requirePropertyClassFixed<TransformsProperty>();
+//    transformsProp->getTranslate() += (m_location.velocity() * time_diff);
+//
+//    //We need to apply transforms here to figure our position in order to adjust height further down
+//    transformsProp->apply(this);
+//
+//    // Collision resolution has to occur after position has been updated.
+//    if (!moving) {
+//        moving = m_motion->resolveCollision();
+//    }
+//
+//    Domain* domain = nullptr;
+//    // Adjust the position to world constraints - essentially fit
+//    // to the terrain height at this stage.
+//    // FIXME Get the constraints from the movement domain
+//    if (m_location.m_loc) {
+//        domain = m_location.m_loc->getMovementDomain();
+//        if (domain) {
+//            float z = domain->constrainHeight(*this, m_location.m_loc, m_location.pos(), "standing");
+//            transformsProp->getTranslate().z() = z;
+//            transformsProp->apply(this);
+//        } else {
+//
+//        }
+//    }
+//    m_location.update(current_time);
+//    m_flags &= ~entity_clean;
     float update_time = consts::move_tick;
-
-    if (moving && domain) {
-        // If we are moving, check for collisions
-        update_time = m_motion->checkCollisions(*domain);
-
-        if (m_motion->collision()) {
-            if (update_time < WFMath::numeric_constants<WFMath::CoordType>::epsilon()) {
-                moving = m_motion->resolveCollision();
-            } else {
-                m_motion->m_collisionTime = current_time + update_time;
-            }
-        }
-    }
+//
+//    if (moving && domain) {
+//        // If we are moving, check for collisions
+//        update_time = m_motion->checkCollisions(*domain);
+//
+//        if (m_motion->collision()) {
+//            if (update_time < WFMath::numeric_constants<WFMath::CoordType>::epsilon()) {
+//                moving = m_motion->resolveCollision();
+//            } else {
+//                m_motion->m_collisionTime = current_time + update_time;
+//            }
+//        }
+//    }
 
     Move m;
     Anonymous move_arg;

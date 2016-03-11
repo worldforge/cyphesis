@@ -37,7 +37,7 @@ using Atlas::Message::Element;
 //The following are adapters to make the Ember logging syntax work with the Cyphesis log.
 #include "common/log.h"
 #include "common/debug.h"
-static const bool debug_flag = false;
+static const bool debug_flag = true;
 #define S_LOG_VERBOSE(message) \
     { debug(std::stringstream ss;\
     ss << message;\
@@ -775,6 +775,7 @@ EntityImporterBase::~EntityImporterBase()
 
 void EntityImporterBase::start(const std::string& filename)
 {
+    S_LOG_VERBOSE("Starting import from " << filename);
     auto factories = Atlas::Objects::Factories::instance();
 
     auto rootObj = loadFromFile(filename);

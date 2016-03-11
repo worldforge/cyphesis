@@ -328,6 +328,8 @@ const Domain * Entity::getMovementDomain() const
     } else {
         return nullptr;
     }
+    return nullptr;
+
 }
 
 

@@ -41,9 +41,9 @@ float VoidDomain::constrainHeight(LocatedEntity &, LocatedEntity *,
     return 0.0f;
 }
 
-void VoidDomain::tick(double t)
+double VoidDomain::tick(double t)
 {
-
+    return .0;
 }
 
 bool VoidDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const
@@ -66,3 +66,11 @@ float VoidDomain::checkCollision(LocatedEntity& entity, CollisionData& collision
     //Nothing can move
     return consts::move_tick;
 }
+
+void VoidDomain::addEntity(LocatedEntity& entity) {
+
+}
+void VoidDomain::removeEntity(LocatedEntity& entity) {
+
+}
+

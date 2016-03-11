@@ -66,10 +66,21 @@ float InventoryDomain::constrainHeight(LocatedEntity& entity, LocatedEntity * pa
     return 0.0f;
 }
 
-void InventoryDomain::tick(double t)
+double InventoryDomain::tick(double t)
 {
-
+    return 0;
 }
+
+void InventoryDomain::addEntity(LocatedEntity& entity)
+{
+    //Nothing special to do for this domain.
+}
+
+void InventoryDomain::removeEntity(LocatedEntity& entity)
+{
+    //Nothing special to do for this domain.
+}
+
 
 bool InventoryDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const
 {

@@ -34,7 +34,7 @@ class InventoryDomain : public Domain
         virtual float constrainHeight(LocatedEntity& entity, LocatedEntity *, const Point3D &,
                                       const std::string &);
 
-        virtual void tick(double t);
+        virtual double tick(double t);
 
 
         virtual bool isEntityVisibleFor(const LocatedEntity& observingEntity,
@@ -50,6 +50,10 @@ class InventoryDomain : public Domain
 
         virtual float checkCollision(LocatedEntity& entity,
                 CollisionData& collisionData);
+
+        virtual void addEntity(LocatedEntity& entity);
+        virtual void removeEntity(LocatedEntity& entity);
+
     protected:
 
         std::set<std::string> m_lastVisibleEntities;

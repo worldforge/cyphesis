@@ -20,38 +20,66 @@
 
 #include "Domain.h"
 
+#include <map>
+
+class btDefaultCollisionConfiguration;
+class btCollisionDispatcher;
+class btBroadphaseInterface;
+class btCollisionWorld;
+class btSequentialImpulseConstraintSolver;
+class btDiscreteDynamicsWorld;
+class btRigidBody;
+class btCollisionShape;
 /**
  * @brief A regular physical domain, behaving very much like the real world.
  *
  * Things move using physical rules, and sights are calculated using line of sight.
  *
  */
-class PhysicalDomain: public Domain
-{
+class PhysicalDomain: public Domain {
     public:
         PhysicalDomain(LocatedEntity& entity);
         virtual ~PhysicalDomain();
 
-        virtual float constrainHeight(LocatedEntity& entity, LocatedEntity *, const Point3D &,
-                const std::string &);
+        virtual float constrainHeight(LocatedEntity& entity, LocatedEntity *, const Point3D &, const std::string &);
 
-        virtual void tick(double t);
+        virtual double tick(double t);
 
-        virtual bool isEntityVisibleFor(const LocatedEntity& observingEntity,
-                const LocatedEntity& observedEntity) const;
+        virtual bool isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const;
 
-        virtual void processVisibilityForMovedEntity(
-                const LocatedEntity& moved_entity, const Location& old_loc,
-                OpVector & res);
+        virtual void processVisibilityForMovedEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res);
 
-        virtual void processDisappearanceOfEntity(
-                const LocatedEntity& moved_entity, const Location& old_loc,
-                OpVector & res);
+        virtual void processDisappearanceOfEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res);
 
-        virtual float checkCollision(LocatedEntity& entity,
-                CollisionData& collisionData);
+        virtual float checkCollision(LocatedEntity& entity, CollisionData& collisionData);
 
-    private:
+        virtual void addEntity(LocatedEntity& entity);
+        virtual void removeEntity(LocatedEntity& entity);
+
+        void applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos);
+        void setVelocity(LocatedEntity& entity,const WFMath::Vector<3>& velocity);
+
+    protected:
+
+        struct BulletEntry {
+                LocatedEntity* entity;
+                btCollisionShape* collisionShape;
+                btRigidBody* rigidBody;
+        };
+
+        class PhysicalMotionState;
+
+        std::map<int, BulletEntry> m_entries;
+        btDefaultCollisionConfiguration * m_collisionConfiguration;
+        btCollisionDispatcher* m_dispatcher;
+        btSequentialImpulseConstraintSolver* m_constraintSolver;
+        btBroadphaseInterface* m_broadphase;
+        btDiscreteDynamicsWorld * m_dynamicsWorld;
+
+        int m_ticksPerSecond;
+
+        //btCollisionShape* m_groundCollisionShape;
+        //btRigidBody* m_groundBody;
 
         /**
          * @brief Calculates visibility changes for the moved entity, processing the children of the "parent" parameter.
@@ -63,11 +91,7 @@ class PhysicalDomain: public Domain
          * @param old_loc The old location.
          * @param res
          */
-        void calculateVisibility(std::vector<Atlas::Objects::Root>& appear,
-                std::vector<Atlas::Objects::Root>& disappear,
-                Atlas::Objects::Entity::Anonymous& this_ent,
-                const LocatedEntity& parent, const LocatedEntity& moved_entity,
-                const Location& old_loc, OpVector & res) const;
+        void calculateVisibility(std::vector<Atlas::Objects::Root>& appear, std::vector<Atlas::Objects::Root>& disappear, Atlas::Objects::Entity::Anonymous& this_ent, const LocatedEntity& parent, const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res) const;
 
 };
 
