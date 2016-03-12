@@ -38,7 +38,7 @@ class AwarenessStoreProvider
         AwarenessStore& getStore(const TypeNode* type, int tileSize = 64);
 
     protected:
-        std::unordered_map<const TypeNode*, AwarenessStore> m_awarenessStores;
+        std::unordered_map<std::string, AwarenessStore> m_awarenessStores;
         IHeightProvider& m_heightProvider;
 
 };

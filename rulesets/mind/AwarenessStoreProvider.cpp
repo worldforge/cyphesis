@@ -20,13 +20,18 @@
 #include "config.h"
 #endif
 
-#include <rulesets/mind/AwarenessStoreProvider.h>
+#include "AwarenessStoreProvider.h"
 #include "common/TypeNode.h"
+#include "common/log.h"
+#include "common/debug.h"
 
 #include "rulesets/BBoxProperty.h"
 
 #include <wfmath/point.h>
 #include <wfmath/ball.h>
+
+static const bool debug_flag = true;
+
 
 AwarenessStoreProvider::AwarenessStoreProvider(IHeightProvider& heightProvider)
 : m_heightProvider(heightProvider)
@@ -42,8 +47,9 @@ AwarenessStoreProvider::~AwarenessStoreProvider()
 
 AwarenessStore& AwarenessStoreProvider::getStore(const TypeNode* type, int tileSize)
 {
-    auto I = m_awarenessStores.find(type);
+    auto I = m_awarenessStores.find(type->name());
     if (I != m_awarenessStores.end()) {
+        debug_print("Reusing awareness.");
         return I->second;
     }
 
@@ -61,7 +67,7 @@ AwarenessStore& AwarenessStoreProvider::getStore(const TypeNode* type, int tileS
         agentRadius = std::max(0.2f, agent2dBbox.boundingSphere().radius()); //Don't make the radius smaller than 0.2 meters, to avoid too many cells
     }
 
-    return m_awarenessStores.emplace(type, AwarenessStore(agentRadius, agentHeight, m_heightProvider, tileSize)).first->second;
+    return m_awarenessStores.emplace(type->name(), AwarenessStore(agentRadius, agentHeight, m_heightProvider, tileSize)).first->second;
 
 }
 
