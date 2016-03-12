@@ -180,13 +180,14 @@ public:
 
 	/**
 	 * @brief Tries to avoid near obstacles.
+	 * @param avatarEntityId The entity id of the avatar. This is used to filter out the avatar entity itself.
 	 * @param position The position of the avatar.
 	 * @param desiredVelocity The desired velocity.
 	 * @param newVelocity The calculated new velocity.
 	 * @param currentTimestamp The current timestamp. Used to determine positions of moving entities.
 	 * @return True if the velocity had to be changed in order to avoid obstacles.
 	 */
-	bool avoidObstacles(const WFMath::Point<2>& position, const WFMath::Vector<2>& desiredVelocity, WFMath::Vector<2>& newVelocity, double currentTimestamp) const;
+	bool avoidObstacles(int avatarEntityId, const WFMath::Point<2>& position, const WFMath::Vector<2>& desiredVelocity, WFMath::Vector<2>& newVelocity, double currentTimestamp) const;
 
 	/**
 	 * @brief Prunes a tile if possible and needed.
@@ -244,6 +245,11 @@ protected:
 	IHeightProvider& mHeightProvider;
 
 
+	/**
+	 * @brief The entity holding the domain of the awareness.
+	 *
+	 * This is the parent of all the entities contained in this awareness.
+	 */
     const LocatedEntity& mDomainEntity;
 
 	struct LinearAllocator* mTalloc;

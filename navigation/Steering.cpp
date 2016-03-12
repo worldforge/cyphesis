@@ -220,14 +220,14 @@ SteeringResult Steering::update(double currentTimestamp)
 
                 //Check if we need to divert in order to avoid colliding.
                 WFMath::Vector<2> newVelocity;
-                bool avoiding = mAwareness->avoidObstacles(entityPosition, velocity, newVelocity, currentTimestamp);
+                bool avoiding = mAwareness->avoidObstacles(mAvatar.getIntId(), entityPosition, velocity, newVelocity, currentTimestamp);
                 if (avoiding) {
                     //debug_print("Need to avoid in steering.");
                     velocity = newVelocity;
                     velocity.normalize();
                     velocity *= mSpeed;
                     //Schedule a new steering op very soon
-                    result.timeToNextWaypoint = 0.1f;
+                    result.timeToNextWaypoint = 0.2f;
                     mUpdateNeeded = true;
                 }
 

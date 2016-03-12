@@ -341,6 +341,9 @@ void Awareness::addEntity(const MemEntity& observer, const LocatedEntity& entity
         entityEntry->isIgnored = !entity.m_location.bBox().isValid();
         entityEntry->isMoving = isDynamic;
         entityEntry->isActorOwned = false;
+        if (isDynamic) {
+            mMovingEntities.insert(entityEntry.get());
+        }
         I = mObservedEntities.insert(std::make_pair(entity.getIntId(), std::move(entityEntry))).first;
         debug_print("Creating new entry for " << entity.getId());
     } else {
@@ -365,6 +368,9 @@ void Awareness::removeEntity(const MemEntity& observer, const LocatedEntity& ent
         debug_print("Removing entity " << entity.getId());
         //Decrease the number of observers, and delete entry if there's none left
         auto& entityEntry = I->second;
+        if (entityEntry->numberOfObservers == 0) {
+            log(WARNING, String::compose("Entity entry %1 has decreased number of observers to < 0. This indicates an error.", entity.getId()));
+        }
         entityEntry->numberOfObservers--;
         if (entityEntry->numberOfObservers == 0) {
             if (entityEntry->isIgnored) {
@@ -431,7 +437,7 @@ void Awareness::processEntityMovementChange(EntityEntry& entityEntry, const Loca
         } else {
 
             //Only update if there's a change
-            if (((entityEntry.location.bBox().isValid() || entity.m_location.bBox().isValid()) || entityEntry.location.bBox() != entity.m_location.bBox())
+            if (((entityEntry.location.bBox().isValid() || entity.m_location.bBox().isValid()) && entityEntry.location.bBox() != entity.m_location.bBox())
                     || ((entityEntry.location.pos().isValid() || entity.m_location.pos().isValid()) && entityEntry.location.pos() != entity.m_location.pos())
                     || ((entityEntry.location.velocity().isValid() || entity.m_location.velocity().isValid()) && (entityEntry.location.velocity() != entity.m_location.velocity()))
                     || ((entityEntry.location.orientation().isValid() || entity.m_location.orientation().isValid()) && entityEntry.location.orientation() != entity.m_location.orientation())) {
@@ -474,7 +480,7 @@ void Awareness::processEntityMovementChange(EntityEntry& entityEntry, const Loca
     }
 }
 
-bool Awareness::avoidObstacles(const WFMath::Point<2>& position, const WFMath::Vector<2>& desiredVelocity, WFMath::Vector<2>& newVelocity, double currentTimestamp) const
+bool Awareness::avoidObstacles(int avatarEntityId, const WFMath::Point<2>& position, const WFMath::Vector<2>& desiredVelocity, WFMath::Vector<2>& newVelocity, double currentTimestamp) const
 {
     struct EntityCollisionEntry
     {
@@ -492,6 +498,11 @@ bool Awareness::avoidObstacles(const WFMath::Point<2>& position, const WFMath::V
     for (auto entity : mMovingEntities) {
 
         //All of the entities have the same location as we have, so we don't need to resolve the position in the world.
+
+        if (entity->entityId == avatarEntityId) {
+            //Don't avoid ourselves.
+            continue;
+        }
 
         double time_diff = currentTimestamp - entity->location.timeStamp();
 
@@ -520,7 +531,7 @@ bool Awareness::avoidObstacles(const WFMath::Point<2>& position, const WFMath::V
             auto entity = entry.entity;
             float pos[] { entry.viewPosition.x(), 0, entry.viewPosition.y() };
             float vel[] { entity->location.velocity().x(), 0, entity->location.velocity().y() };
-            mObstacleAvoidanceQuery->addCircle(pos, entry.viewRadius.radius() * 1.5, vel, vel);
+            mObstacleAvoidanceQuery->addCircle(pos, entry.viewRadius.radius(), vel, vel);
             nearestEntities.pop();
             ++i;
         }
@@ -601,7 +612,7 @@ void Awareness::pruneTiles()
     //remove any tiles that aren't used
     if (mActiveTileList->size() > mAwareTiles.size()) {
         if (mActiveTileList->size() > mDesiredTilesAmount) {
-            debug_print("Pruning tiles.");
+            debug_print("Pruning tiles. Number of active tiles: " << mActiveTileList->size() << " Desired amount: " << mDesiredTilesAmount);
             auto entry = mActiveTileList->pop_back();
 
             dtCompressedTileRef tilesRefs[MAX_LAYERS];
