@@ -24,6 +24,7 @@
 #include "common/debug.h"
 #include "common/log.h"
 #include "common/op_switch.h"
+#include "common/compose.hpp"
 
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>
@@ -192,7 +193,7 @@ void BaseMind::SightOperation(const Operation & op, OpVector & res)
         if (!op2->hasAttrFlag(Atlas::Objects::Operation::SECONDS_FLAG)) {
             //Copy from wrapping op to fix this. This indicates an error in the server.
             op2->setSeconds(op->getSeconds());
-            log(WARNING, "Sight op argument had no seconds set.");
+            log(WARNING, String::compose("Sight op argument had no seconds set, for argument %1.", op2->getParents().front()));
         }
 
         if (m_script == 0 || m_script->operation(event_name, op2, res) == 0) {
