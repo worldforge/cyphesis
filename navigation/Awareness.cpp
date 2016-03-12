@@ -430,8 +430,11 @@ void Awareness::processEntityMovementChange(EntityEntry& entityEntry, const Loca
 
         } else {
 
-            //Only update if timestamp is newer
-            if (entityEntry.location.timeStamp() < entity.m_location.timeStamp()) {
+            //Only update if there's a change
+            if (((entityEntry.location.bBox().isValid() || entity.m_location.bBox().isValid()) || entityEntry.location.bBox() != entity.m_location.bBox())
+                    || ((entityEntry.location.pos().isValid() || entity.m_location.pos().isValid()) && entityEntry.location.pos() != entity.m_location.pos())
+                    || ((entityEntry.location.velocity().isValid() || entity.m_location.velocity().isValid()) && (entityEntry.location.velocity() != entity.m_location.velocity()))
+                    || ((entityEntry.location.orientation().isValid() || entity.m_location.orientation().isValid()) && entityEntry.location.orientation() != entity.m_location.orientation())) {
                 entityEntry.location = entity.m_location;
 
                 debug_print("Updating entity location for entity " << entityEntry.entityId);
@@ -566,6 +569,7 @@ void Awareness::markTilesAsDirty(int tileMinXIndex, int tileMaxXIndex, int tileM
             }
         }
     }
+    debug_print("Marking tiles as dirty. Aware: " << mDirtyAwareTiles.size() << " Unaware: " << mDirtyUnwareTiles.size());
     if (!wereDirtyTiles && !mDirtyAwareTiles.empty()) {
         EventTileDirty();
     }
