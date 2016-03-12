@@ -520,7 +520,7 @@ bool Awareness::avoidObstacles(const WFMath::Point<2>& position, const WFMath::V
             auto entity = entry.entity;
             float pos[] { entry.viewPosition.x(), 0, entry.viewPosition.y() };
             float vel[] { entity->location.velocity().x(), 0, entity->location.velocity().y() };
-            mObstacleAvoidanceQuery->addCircle(pos, entry.viewRadius.radius(), vel, vel);
+            mObstacleAvoidanceQuery->addCircle(pos, entry.viewRadius.radius() * 1.5, vel, vel);
             nearestEntities.pop();
             ++i;
         }
