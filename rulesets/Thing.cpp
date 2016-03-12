@@ -564,6 +564,7 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     m->setArgs1(move_arg);
     m->setFrom(getId());
     m->setTo(getId());
+    m->setSeconds(current_time);
 
     Sight s;
     s->setArgs1(m);

@@ -146,6 +146,7 @@ Operation Pedestrian::generateMove(const Location & new_location)
     // Create move operation
     Move moveOp;
     moveOp->setTo(m_body.getId());
+    moveOp->setSeconds(BaseWorld::instance().getTime());
 
     // Set up argument for operation
     Anonymous move_arg;
