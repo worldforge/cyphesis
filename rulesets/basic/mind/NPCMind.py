@@ -865,7 +865,10 @@ class NPCMind(server.Mind):
                     goalstring=g.str
                 else:
                     goalstring=g.__class__.__name__
-                print "Error in NPC with id " + self.id + " of type " + str(self.type) + " and name '" + self.name + "' when checking goal " + goalstring + "\n" + stacktrace
+                if hasattr(self, "name"):
+                    print "Error in NPC with id " + self.id + " of type " + str(self.type) + " and name '" + self.name + "' when checking goal " + goalstring + "\n" + stacktrace
+                else:
+                    print "Error in NPC with id " + self.id + " of type " + str(self.type) + " when checking goal " + goalstring + "\n" + stacktrace
                 continue
             # if res!=None: return res
     def teach_children(self, child):
