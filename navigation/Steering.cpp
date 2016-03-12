@@ -222,12 +222,12 @@ SteeringResult Steering::update(double currentTimestamp)
                 WFMath::Vector<2> newVelocity;
                 bool avoiding = mAwareness->avoidObstacles(entityPosition, velocity, newVelocity, currentTimestamp);
                 if (avoiding) {
-                    debug_print("Need to avoid in steering.");
+                    //debug_print("Need to avoid in steering.");
                     velocity = newVelocity;
                     velocity.normalize();
                     velocity *= mSpeed;
                     //Schedule a new steering op very soon
-                    result.timeToNextWaypoint = 0.05f;
+                    result.timeToNextWaypoint = 0.1f;
                     mUpdateNeeded = true;
                 }
 
