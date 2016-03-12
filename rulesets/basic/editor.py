@@ -60,6 +60,12 @@ class editor:
         return self.avatar.look_for(ent)
     def delete(self, id):
         return self.avatar.delete(id)
+    def sanitizeKnowledge(self, knowledge):
+        if type(knowledge)==InstanceType: return knowledge.id
+        elif type(knowledge)==TupleType: return `knowledge`
+        elif type(knowledge)==StringType: return knowledge
+        else: return knowledge.id
+    
     def _say(self,target,verb,subject,object,predicate=None):
 ##         es=Entity(verb=verb,subject=subject,object=object)
 ##         self.avatar.send(Operation("talk",es,to=target))
@@ -79,10 +85,22 @@ class editor:
     def _own(self,target,object):
         self._say(target,'own',target,object)
     def _know(self,target,know):
+        subject = know[0]
+        
         if len(know)==2:
-            self._say(target,'know',know[0],know[1],predicate='location')
+            predicate = 'location'
+            object = know[1]
         else:
-            self._say(target,'know',know[0],know[2],predicate=know[1])
+            predicate = know[1]
+            object = know[2]
+        
+        es=Entity(subject=self.sanitizeKnowledge(subject), object=self.sanitizeKnowledge(object), predicate=predicate)
+
+        set=Operation("set")
+        set.setArgs([es])
+        think=Operation("think", to=target)
+        think.setArgs([set])
+        self.avatar.send(think)
     def _learn(self,target,goal):
         es=Entity(id=goal[1], goal=goal[1])
         set=Operation("set")
