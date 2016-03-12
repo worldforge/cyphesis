@@ -49,7 +49,7 @@ AwarenessStore& AwarenessStoreProvider::getStore(const TypeNode* type, int tileS
 {
     auto I = m_awarenessStores.find(type->name());
     if (I != m_awarenessStores.end()) {
-        debug_print("Reusing awareness.");
+        debug_print("Reusing awareness store for type " << type->name() << ".");
         return I->second;
     }
 
