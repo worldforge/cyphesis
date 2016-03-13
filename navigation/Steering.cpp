@@ -91,10 +91,18 @@ void Steering::setAwarenessArea()
             area.orientation() = WFMath::RotMatrix<2>().identity();
             area.rotatePoint(rm, entityPosition2d);
 
-            mAwareness->setAwarenessArea(area, WFMath::Segment<2>(entityPosition2d, destination2d));
+            mAwareness->setAwarenessArea(mAvatar.getId(), area, WFMath::Segment<2>(entityPosition2d, destination2d));
         }
     }
 }
+
+size_t Steering::unawareAreaCount() const {
+    if (mAwareness) {
+        return mAwareness->unawareTilesInArea(mAvatar.getId());
+    }
+    return 0;
+}
+
 
 void Steering::setSpeed(float speed)
 {

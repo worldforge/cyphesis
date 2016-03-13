@@ -154,6 +154,8 @@ public:
 
 	WFMath::Point<3> getCurrentAvatarPosition(double currentTimestamp);
 
+	size_t unawareAreaCount() const;
+
 	/**
 	 * @brief Emitted when the path has been updated.
 	 */

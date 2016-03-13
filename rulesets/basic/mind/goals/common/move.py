@@ -27,6 +27,7 @@ class move_me(Goal):
         self.location=location
         self.speed=speed
         self.vars=["location", "speed"]
+        self.lastRefreshResult = 0
     def get_location_instance(self, me):
         location_=self.location
         if type(location_)==LambdaType:
@@ -59,14 +60,14 @@ class move_me(Goal):
             return
         #print "Moving to location " + str(location)
         me.destination = location.coordinates
-        result = me.refreshPath()
+        self.lastRefreshResult = me.refreshPath()
         #If result is 0 it means that we're already there
-        if result == 0:
+        if self.lastRefreshResult == 0:
             return
-        #If result is -1, -2 or -3 it means that we haven't mapped enough of our surroundings to find a path yet.
-        #In this case we should just wait (by sending an empty op back) and let the mind code generate an awareness
-        #If however result is less than -3 it means that we know that we can't reach the location.
-        if result < -3:
+        #If result is below zero it means that we couldn't find a path yet.
+        #This can be because we haven't mapped all areas yet; if so one should check with
+        #me.unawareTilesCount
+        if self.lastRefreshResult < -3:
             #print "Could not find any path"
             return
          
@@ -515,17 +516,26 @@ class patrol(Goal):
     def __init__(self, locations):
         Goal.__init__(self, "patrol an area",
                       false,
-                      [move_me(locations[0]),
+                      [self.checkMovementGoalReachable,
+                       move_me(locations[0]),
                        self.increment])
         self.list = locations
         self.stage = 0
         self.count = len(locations)
         self.vars = ["stage", "list"]
+    """ Checks that the movement goal is reachable; if not we should move on to the next patrol goal """
+    def checkMovementGoalReachable(self, me):
+        #print "last result: " + str(self.subgoals[1].lastRefreshResult)
+        if self.subgoals[1].lastRefreshResult < 0:
+            if me.unawareTilesCount == 0:
+                print "Could not reach patrol goal; moving on to next"
+                self.increment(me)
     def increment(self, me):
         self.stage = self.stage + 1
         if self.stage >= self.count:
             self.stage = 0
-        self.subgoals[0].location = self.list[self.stage]
+        self.subgoals[1].location = self.list[self.stage]
+        self.lastRefreshResult = 0
         #print "Moved to next patrol goal: " + str(self.subgoals[0].location)
 
 ############################## ACCOMPANY ##############################

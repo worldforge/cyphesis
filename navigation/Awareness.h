@@ -139,7 +139,9 @@ public:
 	 * @param area The area which makes up the awareness area.
 	 * @param focusLine An optional segment for tile precedence.
 	 */
-	void setAwarenessArea(const WFMath::RotBox<2>& area, const WFMath::Segment<2>& focusLine);
+	void setAwarenessArea(const std::string& areaId, const WFMath::RotBox<2>& area, const WFMath::Segment<2>& focusLine);
+
+	size_t unawareTilesInArea(const std::string& areaId) const;
 
 	/**
 	 * @brief Rebuilds a dirty tile if any such exists.
@@ -348,6 +350,13 @@ protected:
 	 * internally are represented as 2d circles.
 	 */
 	std::set<const EntityEntry*> mMovingEntities;
+
+	/**
+	 * @brief Keeps track of current awareness areas.
+	 *
+	 * Each awareness area is identified by an id. This keeps track of the tiles that belong to each area.
+	 */
+	std::unordered_map<std::string, std::set<std::pair<int, int>>> mAwareAreas;
 
 	/**
 	 * @brief A Most Recently Used list of active tiles.

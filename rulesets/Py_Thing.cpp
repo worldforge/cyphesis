@@ -493,7 +493,16 @@ static PyObject * Mind_getattro(PyEntity *self, PyObject *oname)
         }
         return list;
     }
+    if (strcmp(name, "unawareTilesCount") == 0) {
+        AwareMind* awareMind = dynamic_cast<AwareMind*>(self->m_entity.m);
+        if (!awareMind) {
+            return NULL;
+        }
 
+        size_t count = awareMind->getSteering().unawareAreaCount();
+
+        return PyInt_FromSize_t(count);
+    }
     if (strcmp(name, "path") == 0) {
         AwareMind* awareMind = dynamic_cast<AwareMind*>(self->m_entity.m);
         if (!awareMind) {

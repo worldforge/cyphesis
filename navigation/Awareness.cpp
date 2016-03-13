@@ -735,8 +735,11 @@ int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& e
     return nVertCount;
 }
 
-void Awareness::setAwarenessArea(const WFMath::RotBox<2>& area, const WFMath::Segment<2>& focusLine)
+void Awareness::setAwarenessArea(const std::string& areaId, const WFMath::RotBox<2>& area, const WFMath::Segment<2>& focusLine)
 {
+
+    auto awareAreaSet = mAwareAreas[areaId];
+    awareAreaSet.clear();
 
     WFMath::AxisBox<2> axisbox = area.boundingBox();
 
@@ -794,6 +797,7 @@ void Awareness::setAwarenessArea(const WFMath::RotBox<2>& area, const WFMath::Se
             if (WFMath::Intersect(area, tileBounds, false) || WFMath::Contains(area, tileBounds, false)) {
 
                 std::pair<int, int> index(tx, ty);
+                awareAreaSet.insert(index);
                 //If true we should insert in the front of the dirty tiles list.
                 bool insertFront = false;
                 //If true we should insert in the back of the dirty tiles list.
@@ -849,6 +853,24 @@ void Awareness::setAwarenessArea(const WFMath::RotBox<2>& area, const WFMath::Se
         EventTileDirty();
     }
 }
+
+size_t Awareness::unawareTilesInArea(const std::string& areaId) const
+{
+    auto I = mAwareAreas.find(areaId);
+    if (I == mAwareAreas.end()) {
+        return 0;
+    }
+
+    size_t count = 0;
+    auto tileSet = I->second;
+    for (auto entry : tileSet) {
+        if (mAwareTiles.find(entry) == tileSet.end()) {
+            ++count;
+        }
+    }
+    return count;
+}
+
 
 void Awareness::rebuildTile(int tx, int ty, const std::vector<WFMath::RotBox<2>>& entityAreas)
 {
