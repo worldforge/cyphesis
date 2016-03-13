@@ -159,7 +159,7 @@ Awareness::Awareness(const LocatedEntity& domainEntity, float agentRadius, float
         mHeightProvider(heightProvider), mDomainEntity(domainEntity), mTalloc(nullptr), mTcomp(nullptr), mTmproc(nullptr), mAgentRadius(agentRadius), mDesiredTilesAmount(128), mCtx(
                 new AwarenessContext()), mTileCache(nullptr), mNavMesh(nullptr), mNavQuery(dtAllocNavMeshQuery()), mFilter(nullptr), mActiveTileList(nullptr)
 {
-    debug_print("Creating awareness with extent " << extent);
+    debug_print("Creating awareness with extent " << extent << " and agent radius " << agentRadius);
     try {
         mActiveTileList = new MRUList<std::pair<int, int>>();
 
@@ -589,7 +589,7 @@ void Awareness::markTilesAsDirty(int tileMinXIndex, int tileMaxXIndex, int tileM
 size_t Awareness::rebuildDirtyTile()
 {
     if (!mDirtyAwareTiles.empty()) {
-        debug_print("Rebuilding aware tiles.");
+        debug_print("Rebuilding aware tiles. Number of dirty aware tiles: " << mDirtyAwareTiles.size());
         const auto tileIndexI = mDirtyAwareOrderedTiles.begin();
         const auto& tileIndex = *tileIndexI;
 
@@ -612,7 +612,7 @@ void Awareness::pruneTiles()
     //remove any tiles that aren't used
     if (mActiveTileList->size() > mAwareTiles.size()) {
         if (mActiveTileList->size() > mDesiredTilesAmount) {
-            debug_print("Pruning tiles. Number of active tiles: " << mActiveTileList->size() << " Desired amount: " << mDesiredTilesAmount);
+            //debug_print("Pruning tiles. Number of active tiles: " << mActiveTileList->size() << ". Number of aware tiles: " << mAwareTiles.size() << " Desired amount: " << mDesiredTilesAmount);
             auto entry = mActiveTileList->pop_back();
 
             dtCompressedTileRef tilesRefs[MAX_LAYERS];
