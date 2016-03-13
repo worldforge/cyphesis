@@ -156,6 +156,8 @@ public:
 
 	size_t unawareAreaCount() const;
 
+	int getPathResult() const;
+
 	/**
 	 * @brief Emitted when the path has been updated.
 	 */
@@ -208,6 +210,8 @@ private:
 	 * than if we got a movement update out of the blue.
 	 */
 	bool mExpectingServerMovement;
+
+	int mPathResult;
 
 	/**
 	 * @brief Keep track of the last sent velocity.

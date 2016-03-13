@@ -60,14 +60,14 @@ class move_me(Goal):
             return
         #print "Moving to location " + str(location)
         me.destination = location.coordinates
-        self.lastRefreshResult = me.refreshPath()
+        refreshResult = me.refreshPath()
         #If result is 0 it means that we're already there
-        if self.lastRefreshResult == 0:
+        if refreshResult == 0:
             return
         #If result is below zero it means that we couldn't find a path yet.
         #This can be because we haven't mapped all areas yet; if so one should check with
         #me.unawareTilesCount
-        if self.lastRefreshResult < -3:
+        if refreshResult < 0:
             #print "Could not find any path"
             return
          
@@ -525,17 +525,15 @@ class patrol(Goal):
         self.vars = ["stage", "list"]
     """ Checks that the movement goal is reachable; if not we should move on to the next patrol goal """
     def checkMovementGoalReachable(self, me):
-        #print "last result: " + str(self.subgoals[1].lastRefreshResult)
-        if self.subgoals[1].lastRefreshResult < 0:
+        if me.pathResult < 0 and me.pathResult > -7:
             if me.unawareTilesCount == 0:
-                print "Could not reach patrol goal; moving on to next"
+                #We could not find any path and all tiles have been resolved; we need to skip this waypoint.
                 self.increment(me)
     def increment(self, me):
         self.stage = self.stage + 1
         if self.stage >= self.count:
             self.stage = 0
         self.subgoals[1].location = self.list[self.stage]
-        self.lastRefreshResult = 0
         #print "Moved to next patrol goal: " + str(self.subgoals[0].location)
 
 ############################## ACCOMPANY ##############################

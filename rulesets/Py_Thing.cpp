@@ -525,6 +525,15 @@ static PyObject * Mind_getattro(PyEntity *self, PyObject *oname)
         return list;
     }
 
+    if (strcmp(name, "pathResult") == 0) {
+        AwareMind* awareMind = dynamic_cast<AwareMind*>(self->m_entity.m);
+        if (!awareMind) {
+            return NULL;
+        }
+
+        return PyInt_FromLong(awareMind->getSteering().getPathResult());
+    }
+
     LocatedEntity * mind = self->m_entity.m;
     Element attr;
     if (mind->getAttr(name, attr) == 0) {
