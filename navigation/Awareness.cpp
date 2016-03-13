@@ -693,7 +693,9 @@ int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& e
 
     float pStartPos[] { start.x(), start.z(), start.y() };
     float pEndPos[] { end.x(), end.z(), end.y() };
-    float extent[] { radius, 100, radius }; //Only extend radius in horizontal plane
+    float startExtent[] { mAgentRadius * 2.2f, 100, mAgentRadius  * 2.2f}; //Only extend radius in horizontal plane
+    float endExtent[] { radius * 2.0f, 100, radius * 2.0f }; //Only extend radius in horizontal plane
+
 
     dtStatus status;
     dtPolyRef StartPoly;
@@ -706,12 +708,12 @@ int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& e
     int nVertCount = 0;
 
 // find the start polygon
-    status = mNavQuery->findNearestPoly(pStartPos, extent, mFilter, &StartPoly, StartNearest);
+    status = mNavQuery->findNearestPoly(pStartPos, startExtent, mFilter, &StartPoly, StartNearest);
     if ((status & DT_FAILURE) || (status & DT_STATUS_DETAIL_MASK))
         return -1; // couldn't find a polygon
 
 // find the end polygon
-    status = mNavQuery->findNearestPoly(pEndPos, extent, mFilter, &EndPoly, EndNearest);
+    status = mNavQuery->findNearestPoly(pEndPos, endExtent, mFilter, &EndPoly, EndNearest);
     if ((status & DT_FAILURE) || (status & DT_STATUS_DETAIL_MASK))
         return -2; // couldn't find a polygon
 
