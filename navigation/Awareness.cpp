@@ -866,7 +866,7 @@ size_t Awareness::unawareTilesInArea(const std::string& areaId) const
     size_t count = 0;
     auto tileSet = I->second;
     for (auto entry : tileSet) {
-        if (mAwareTiles.find(entry) == tileSet.end()) {
+        if (mDirtyAwareTiles.find(entry) == tileSet.end()) {
             ++count;
         }
     }
