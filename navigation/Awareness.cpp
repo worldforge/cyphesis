@@ -709,22 +709,22 @@ int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& e
 
 // find the start polygon
     status = mNavQuery->findNearestPoly(pStartPos, startExtent, mFilter, &StartPoly, StartNearest);
-    if ((status & DT_FAILURE) || (status & DT_STATUS_DETAIL_MASK))
+    if ((status & DT_FAILURE) || StartPoly == 0)
         return -1; // couldn't find a polygon
 
 // find the end polygon
     status = mNavQuery->findNearestPoly(pEndPos, endExtent, mFilter, &EndPoly, EndNearest);
-    if ((status & DT_FAILURE) || (status & DT_STATUS_DETAIL_MASK))
+    if ((status & DT_FAILURE) || EndPoly == 0)
         return -2; // couldn't find a polygon
 
     status = mNavQuery->findPath(StartPoly, EndPoly, StartNearest, EndNearest, mFilter, PolyPath, &nPathCount, MAX_PATHPOLY);
-    if ((status & DT_FAILURE) || (status & DT_STATUS_DETAIL_MASK))
+    if ((status & DT_FAILURE))
         return -3; // couldn't create a path
     if (nPathCount == 0)
         return -4; // couldn't find a path
 
     status = mNavQuery->findStraightPath(StartNearest, EndNearest, PolyPath, nPathCount, StraightPath, NULL, NULL, &nVertCount, MAX_PATHVERT);
-    if ((status & DT_FAILURE) || (status & DT_STATUS_DETAIL_MASK))
+    if ((status & DT_FAILURE))
         return -5; // couldn't create a path
     if (nVertCount == 0)
         return -6; // couldn't find a path
