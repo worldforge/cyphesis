@@ -244,6 +244,15 @@ public:
 
 	float getTileSizeInMeters() const;
 
+	/**
+	 * Returns true if the tile at the specified position is marked to be aware
+	 * (even though it might not at the moment have been rasterized)
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	bool isPositionAware(float x, float y) const;
+
 protected:
 
 	IHeightProvider& mHeightProvider;

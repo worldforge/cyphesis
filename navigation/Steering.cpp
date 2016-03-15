@@ -70,9 +70,9 @@ void Steering::setDestination(const WFMath::Point<3>& viewPosition, float radius
             finalRadius = (radius * 10.f);
         }
 
-        //Only update if destination or position of the avatar has changed
+        //Only update if destination or radius has changed, or if the current tile of the avatar isn't known.
         if (mViewDestination != finalPosition || mDestinationRadius != finalRadius
-                || WFMath::Distance(currentAvatarPos, mAvatarPositionLastUpdate) >= (mAwareness->getTileSizeInMeters() * 0.5f)) {
+                || !mAwareness->isPositionAware(currentAvatarPos.x(), currentAvatarPos.y())) {
             mViewDestination = finalPosition;
             mDestinationRadius = finalRadius;
             mUpdateNeeded = true;

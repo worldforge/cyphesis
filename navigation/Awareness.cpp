@@ -653,6 +653,13 @@ float Awareness::getTileSizeInMeters() const
     return mCfg.tileSize * mCfg.cs;
 }
 
+bool Awareness::isPositionAware(float x, float y) const
+{
+    float tilesize = mCfg.tileSize * mCfg.cs;
+    std::pair<int, int> tileIndex((x - mCfg.bmin[0]) / tilesize, (y - mCfg.bmin[2]) / tilesize);
+    return mAwareTiles.find(tileIndex) != mAwareTiles.end();
+}
+
 
 void Awareness::findAffectedTiles(const WFMath::AxisBox<2>& area, int& tileMinXIndex, int& tileMaxXIndex, int& tileMinYIndex, int& tileMaxYIndex) const
 {
