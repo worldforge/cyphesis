@@ -499,7 +499,7 @@ bool Awareness::avoidObstacles(int avatarEntityId, const WFMath::Point<2>& posit
 
     WFMath::Ball<2> playerRadius(position, 5);
 
-    for (auto entity : mMovingEntities) {
+    for (auto& entity : mMovingEntities) {
 
         //All of the entities have the same location as we have, so we don't need to resolve the position in the world.
 
@@ -532,7 +532,7 @@ bool Awareness::avoidObstacles(int avatarEntityId, const WFMath::Point<2>& posit
         int i = 0;
         while (!nearestEntities.empty() && i < MAX_OBSTACLES_CIRCLES) {
             const EntityCollisionEntry& entry = nearestEntities.top();
-            auto entity = entry.entity;
+            auto& entity = entry.entity;
             float pos[] { entry.viewPosition.x(), 0, entry.viewPosition.y() };
             float vel[] { entity->location.velocity().x(), 0, entity->location.velocity().y() };
             mObstacleAvoidanceQuery->addCircle(pos, entry.viewRadius.radius(), vel, vel);
@@ -546,7 +546,7 @@ bool Awareness::avoidObstacles(int avatarEntityId, const WFMath::Point<2>& posit
         float nvel[] { 0, 0, 0 };
         float desiredSpeed = desiredVelocity.mag();
 
-        auto samples = mObstacleAvoidanceQuery->sampleVelocityGrid(pos, mAgentRadius, desiredSpeed, vel, dvel, nvel, mObstacleAvoidanceParams, nullptr);
+        int samples = mObstacleAvoidanceQuery->sampleVelocityGrid(pos, mAgentRadius, desiredSpeed, vel, dvel, nvel, mObstacleAvoidanceParams, nullptr);
         if (samples > 0) {
             if (!WFMath::Equal(vel[0], nvel[0]) || !WFMath::Equal(vel[2], nvel[2])) {
                 newVelocity.x() = nvel[0];
@@ -617,7 +617,7 @@ void Awareness::pruneTiles()
     if (mActiveTileList->size() > mAwareTiles.size()) {
         if (mActiveTileList->size() > mDesiredTilesAmount) {
             //debug_print("Pruning tiles. Number of active tiles: " << mActiveTileList->size() << ". Number of aware tiles: " << mAwareTiles.size() << " Desired amount: " << mDesiredTilesAmount);
-            auto entry = mActiveTileList->pop_back();
+            std::pair<int, int> entry = mActiveTileList->pop_back();
 
             dtCompressedTileRef tilesRefs[MAX_LAYERS];
             const int ntiles = mTileCache->getTilesAt(entry.first, entry.second, tilesRefs, MAX_LAYERS);
@@ -791,10 +791,6 @@ void Awareness::setAwarenessArea(const std::string& areaId, const WFMath::RotBox
     const float tcs = mCfg.tileSize * mCfg.cs;
     const float tileBorderSize = mCfg.borderSize * mCfg.cs;
 
-//    auto oldDirtyAwareTiles = mDirtyAwareTiles;
-//    mDirtyAwareTiles.clear();
-//    mDirtyAwareOrderedTiles.clear();
-//    mAwareTiles.clear();
     bool wereDirtyTiles = !mDirtyAwareTiles.empty();
     for (int tx = tileMinXIndex; tx <= tileMaxXIndex; ++tx) {
         for (int ty = tileMinYIndex; ty <= tileMaxYIndex; ++ty) {
@@ -915,7 +911,7 @@ size_t Awareness::unawareTilesInArea(const std::string& areaId) const
 
     size_t count = 0;
     auto& tileSet = I->second;
-    for (auto entry : tileSet) {
+    for (auto& entry : tileSet) {
         if (mDirtyAwareTiles.find(entry) == tileSet.end()) {
             ++count;
         }
@@ -976,7 +972,7 @@ void Awareness::buildEntityAreas(const EntityEntry& entity, std::map<const Entit
             WFMath::RotMatrix<2> rm;
             rm.rotation(theta);
 
-            auto bbox = entity.location.m_bBox;
+            const BBox& bbox = entity.location.m_bBox;
 
             WFMath::Point<2> highCorner(bbox.highCorner().x(), bbox.highCorner().y());
             WFMath::Point<2> lowCorner(bbox.lowCorner().x(), bbox.lowCorner().y());
