@@ -141,6 +141,8 @@ public:
 	 */
 	void setAwarenessArea(const std::string& areaId, const WFMath::RotBox<2>& area, const WFMath::Segment<2>& focusLine);
 
+	void removeAwarenessArea(const std::string& areaId);
+
 	size_t unawareTilesInArea(const std::string& areaId) const;
 
 	/**
@@ -439,6 +441,7 @@ protected:
 	void findAffectedTiles(const WFMath::AxisBox<2>& area, int& tileMinXIndex, int& tileMaxXIndex, int& tileMinYIndex, int& tileMaxYIndex) const;
 
 
+	void returnAwareTiles(const std::set<std::pair<int,int>>& tileset);
 
 };
 

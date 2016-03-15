@@ -388,6 +388,10 @@ void Awareness::removeEntity(const MemEntity& observer, const LocatedEntity& ent
                 }
                 mObservedEntities.erase(I);
             }
+        } else {
+            if (observer.getIntId() == entity.getIntId()) {
+                entityEntry->isActorOwned = false;
+            }
         }
     }
 }
@@ -862,17 +866,7 @@ void Awareness::setAwarenessArea(const std::string& areaId, const WFMath::RotBox
 
     //All tiles that still are in awareAreaSet are those that aren't active anymore.
     //Aware count should be decreased for each one.
-    for (auto& tileIndex : awareAreaSet) {
-        auto awareEntry = mAwareTiles.find(tileIndex);
-        awareEntry->second--;
-        if (awareEntry->second == 0) {
-            mAwareTiles.erase(awareEntry);
-            if (mDirtyAwareTiles.erase(tileIndex)) {
-                mDirtyAwareOrderedTiles.remove(tileIndex);
-                mDirtyUnwareTiles.insert(tileIndex);
-            }
-        }
-    }
+    returnAwareTiles(awareAreaSet);
 
     //Finally copy the new aware area set into the set
     awareAreaSet = newAwareAreaSet;
@@ -885,6 +879,33 @@ void Awareness::setAwarenessArea(const std::string& areaId, const WFMath::RotBox
     }
 }
 
+void Awareness::returnAwareTiles(const std::set<std::pair<int,int>>& tileset)
+{
+    for (auto& tileIndex : tileset) {
+        auto awareEntry = mAwareTiles.find(tileIndex);
+        awareEntry->second--;
+        if (awareEntry->second == 0) {
+            mAwareTiles.erase(awareEntry);
+            if (mDirtyAwareTiles.erase(tileIndex)) {
+                mDirtyAwareOrderedTiles.remove(tileIndex);
+                mDirtyUnwareTiles.insert(tileIndex);
+            }
+        }
+    }
+}
+
+
+void Awareness::removeAwarenessArea(const std::string& areaId)
+{
+    auto I = mAwareAreas.find(areaId);
+    if (I == mAwareAreas.end()) {
+        return;
+    }
+
+    returnAwareTiles(I->second);
+}
+
+
 size_t Awareness::unawareTilesInArea(const std::string& areaId) const
 {
     auto I = mAwareAreas.find(areaId);
@@ -893,7 +914,7 @@ size_t Awareness::unawareTilesInArea(const std::string& areaId) const
     }
 
     size_t count = 0;
-    auto tileSet = I->second;
+    auto& tileSet = I->second;
     for (auto entry : tileSet) {
         if (mDirtyAwareTiles.find(entry) == tileSet.end()) {
             ++count;

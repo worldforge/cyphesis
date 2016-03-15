@@ -51,6 +51,16 @@ AwareMind::AwareMind(const std::string &id, long intId, SharedTerrain& sharedTer
 
 AwareMind::~AwareMind()
 {
+    if (mAwareness) {
+        auto& entities = m_map.getEntities();
+        //Remove all our still known entities from the awareness
+        for (auto entry : entities) {
+            if (entry.second->m_location.m_loc == m_location.m_loc) {
+                mAwareness->removeEntity(*this, *entry.second);
+            }
+        }
+        mAwareness->removeAwarenessArea(getId());
+    }
     delete mSteering;
 }
 
@@ -183,11 +193,12 @@ void AwareMind::requestAwareness(const MemEntity& entity)
 {
     mAwareness = mAwarenessStore->requestAwareness(entity);
     mAwareness->addEntity(*this, *this, true);
-    auto entities = m_map.getEntities();
+    auto& entities = m_map.getEntities();
+    //Add all existing known entities that have the same parent entity as ourselves.
     for (auto entry : entities) {
         if (entry.first != getIntId()) {
             if (entry.second->m_location.m_loc == m_location.m_loc) {
-                mAwareness->addEntity(*this, *entry.second, true);
+                mAwareness->addEntity(*this, *entry.second, false);
             }
         }
     }
