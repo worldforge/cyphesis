@@ -740,8 +740,9 @@ int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& e
 void Awareness::setAwarenessArea(const std::string& areaId, const WFMath::RotBox<2>& area, const WFMath::Segment<2>& focusLine)
 {
 
-    auto awareAreaSet = mAwareAreas[areaId];
-    awareAreaSet.clear();
+    auto& awareAreaSet = mAwareAreas[areaId];
+
+    std::set<std::pair<int, int>> newAwareAreaSet;
 
     WFMath::AxisBox<2> axisbox = area.boundingBox();
 
@@ -786,10 +787,10 @@ void Awareness::setAwarenessArea(const std::string& areaId, const WFMath::RotBox
     const float tcs = mCfg.tileSize * mCfg.cs;
     const float tileBorderSize = mCfg.borderSize * mCfg.cs;
 
-    auto oldDirtyAwareTiles = mDirtyAwareTiles;
-    mDirtyAwareTiles.clear();
-    mDirtyAwareOrderedTiles.clear();
-    mAwareTiles.clear();
+//    auto oldDirtyAwareTiles = mDirtyAwareTiles;
+//    mDirtyAwareTiles.clear();
+//    mDirtyAwareOrderedTiles.clear();
+//    mAwareTiles.clear();
     bool wereDirtyTiles = !mDirtyAwareTiles.empty();
     for (int tx = tileMinXIndex; tx <= tileMaxXIndex; ++tx) {
         for (int ty = tileMinYIndex; ty <= tileMaxYIndex; ++ty) {
@@ -799,13 +800,14 @@ void Awareness::setAwarenessArea(const std::string& areaId, const WFMath::RotBox
             if (WFMath::Intersect(area, tileBounds, false) || WFMath::Contains(area, tileBounds, false)) {
 
                 std::pair<int, int> index(tx, ty);
-                awareAreaSet.insert(index);
+
+                newAwareAreaSet.insert(index);
                 //If true we should insert in the front of the dirty tiles list.
                 bool insertFront = false;
                 //If true we should insert in the back of the dirty tiles list.
                 bool insertBack = false;
                 //If the tile was marked as dirty in the old aware tiles, retain it as such
-                if (oldDirtyAwareTiles.find(index) != oldDirtyAwareTiles.end()) {
+                if (mDirtyAwareTiles.find(index) != mDirtyAwareTiles.end()) {
                     if (focusLine.isValid() && WFMath::Intersect(focusLine, tileBounds, false)) {
                         insertFront = true;
                     } else {
@@ -842,14 +844,41 @@ void Awareness::setAwarenessArea(const std::string& areaId, const WFMath::RotBox
 
                 mDirtyUnwareTiles.erase(index);
 
-                mAwareTiles.insert(index);
+                auto existingAwareTileI = awareAreaSet.find(index);
+                if (existingAwareTileI == awareAreaSet.end()) {
+                    //Tile wasn't part of the existing set; increase count
+                    mAwareTiles[index]++;
+                } else {
+                    //Tile was part of the existing set. No need to increase aware count,
+                    //but remove from awareAreaSet to avoid count being decreased once we're done
+                    awareAreaSet.erase(existingAwareTileI);
+                }
+                newAwareAreaSet.insert(index);
 
                 mActiveTileList->insert(index);
             }
         }
     }
 
-    debug_print("Awareness area set: " << area << ". Dirty unaware tiles: " << mDirtyUnwareTiles.size() << " Dirty aware tiles: " << mDirtyAwareTiles.size());
+    //All tiles that still are in awareAreaSet are those that aren't active anymore.
+    //Aware count should be decreased for each one.
+    for (auto& tileIndex : awareAreaSet) {
+        auto awareEntry = mAwareTiles.find(tileIndex);
+        awareEntry->second--;
+        if (awareEntry->second == 0) {
+            mAwareTiles.erase(awareEntry);
+            if (mDirtyAwareTiles.erase(tileIndex)) {
+                mDirtyAwareOrderedTiles.remove(tileIndex);
+                mDirtyUnwareTiles.insert(tileIndex);
+            }
+        }
+    }
+
+    //Finally copy the new aware area set into the set
+    awareAreaSet = newAwareAreaSet;
+
+
+    debug_print("Awareness area set: " << area << ". Dirty unaware tiles: " << mDirtyUnwareTiles.size() << " Dirty aware tiles: " << mDirtyAwareTiles.size() << " Aware tile count: " << mAwareTiles.size());
 
     if (!wereDirtyTiles && !mDirtyAwareTiles.empty()) {
         EventTileDirty();

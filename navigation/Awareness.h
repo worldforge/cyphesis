@@ -300,9 +300,10 @@ protected:
 	dtObstacleAvoidanceParams* mObstacleAvoidanceParams;
 
 	/**
-	 * @brief A set of all of the tiles that currently are inside our awareness area.
+	 * @brief A map of all of the tiles that currently are inside our awareness area.
+	 * The value corresponds to the number of observers for the specific tile.
 	 */
-	std::set<std::pair<int, int>> mAwareTiles;
+	std::map<std::pair<int, int>, unsigned int> mAwareTiles;
 
 	/**
 	 * @brief A set of tiles that are dirty, but aren't in our current awareness area.
