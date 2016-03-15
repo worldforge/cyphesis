@@ -43,8 +43,7 @@
 static const bool debug_flag = true;
 
 AwareMind::AwareMind(const std::string &id, long intId, SharedTerrain& sharedTerrain, AwarenessStoreProvider& awarenessStoreProvider) :
-        BaseMind(id, intId), mSharedTerrain(sharedTerrain), mAwarenessStoreProvider(awarenessStoreProvider), mAwarenessStore(nullptr), mSteering(new Steering(*this)), mServerTimeDiff(
-                0)
+        BaseMind(id, intId), mSharedTerrain(sharedTerrain), mAwarenessStoreProvider(awarenessStoreProvider), mAwarenessStore(nullptr), mSteering(new Steering(*this)), mServerTimeDiff(0)
 {
     m_map.setListener(this);
 }
@@ -66,23 +65,26 @@ AwareMind::~AwareMind()
 
 void AwareMind::operation(const Operation & op, OpVector & res)
 {
-    BaseMind::operation(op, res);
 
+    //If it's a "move" tick we'll process it here and won't send it on to the mind.
     if (op->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
         if (!op->getArgs().empty()) {
             auto arg = op->getArgs().front();
             if (arg->getName() == "move") {
                 processMoveTick(op, res);
+                return;
             }
         }
-    } else if (op->getClassNo() == Atlas::Objects::Operation::SIGHT_NO) {
+    }
+
+    if (mServerTimeDiff == 0 && op->getClassNo() == Atlas::Objects::Operation::SIGHT_NO) {
         if (op->hasAttrFlag(Atlas::Objects::Operation::SECONDS_FLAG)) {
             double stamp = op->getSeconds();
-
             mServerTimeDiff = getCurrentLocalTime() - stamp;
         }
     }
 
+    BaseMind::operation(op, res);
 }
 
 double AwareMind::getCurrentLocalTime() const
@@ -117,8 +119,6 @@ void AwareMind::processMoveTick(const Operation & op, OpVector & res)
     }
 
     if (mSteering) {
-        SystemTime time;
-        time.update();
         SteeringResult result = mSteering->update(getCurrentServerTime());
         if (result.direction.isValid()) {
             Atlas::Objects::Operation::Move move;
