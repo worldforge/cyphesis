@@ -53,7 +53,7 @@ class DatabaseFileLoader : public Atlas::Message::DecoderBase {
     Atlas::Codecs::XML m_codec;
     int m_count;
 
-    virtual void messageArrived(const MapType & omap) {
+    virtual void messageArrived(MapType omap) {
         MapType::const_iterator I = omap.find("id");
         if (I == omap.end()) {
             std::cerr << "Found rule with no id" << std::endl << std::flush;
@@ -69,7 +69,7 @@ class DatabaseFileLoader : public Atlas::Message::DecoderBase {
   public:
     DatabaseFileLoader(const std::string & filename, Storage & db) :
                 m_file(filename.c_str(), std::ios::in), m_db(db),
-                m_codec(m_file, *this), m_count(0)
+                m_codec(m_file, m_file, *this), m_count(0)
     {
     }
 

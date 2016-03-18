@@ -53,7 +53,7 @@ void ClientConnection::operation(const RootOperation & op)
         std::stringstream ss;
         ss << "I: " << op->getParents().front() << " : ";
         Atlas::Message::QueuedDecoder decoder;
-        Atlas::Codecs::XML codec(ss, decoder);
+        Atlas::Codecs::XML codec(ss, ss, decoder);
 
         Atlas::Objects::ObjectsEncoder encoder(codec);
         encoder.streamObjectsMessage(op);
@@ -105,7 +105,7 @@ void ClientConnection::send(const RootOperation & op)
         std::stringstream ss;
         ss << "O: " << op->getParents().front() << " : ";
         Atlas::Message::QueuedDecoder decoder;
-        Atlas::Codecs::XML codec(ss, decoder);
+        Atlas::Codecs::XML codec(ss, ss, decoder);
 
         Atlas::Objects::ObjectsEncoder encoder(codec);
         encoder.streamObjectsMessage(op);

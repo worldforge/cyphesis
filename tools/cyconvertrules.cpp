@@ -54,11 +54,11 @@ class FileConverter : public Atlas::Message::DecoderBase {
     /// Counter to keep track of indenting the output
     int m_indent;
 
-    virtual void messageArrived(const MapType &);
+    virtual void messageArrived(MapType);
   public:
     FileConverter(const std::string & filename) :
                 m_file(filename.c_str(), std::ios::in),
-                m_codec(m_file, *this), m_count(0), m_indent(0)
+                m_codec(m_file, m_file, *this), m_count(0), m_indent(0)
     {
     }
 
@@ -102,7 +102,7 @@ class FileConverter : public Atlas::Message::DecoderBase {
     const char * typeToStr(Element::Type t) const;
 };
 
-void FileConverter::messageArrived(const MapType & omap)
+void FileConverter::messageArrived(MapType omap)
 {
     // We have read a map from the file. Old format rules files contained
     // one map, which contained all the rules as maps within the top

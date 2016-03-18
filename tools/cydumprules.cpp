@@ -160,7 +160,7 @@ int main(int argc, char ** argv)
    
         file.open(ruleset.c_str(), std::ios::out);
     
-        Atlas::Codecs::XML codec(file, decoder);
+        Atlas::Codecs::XML codec(file, file, decoder);
         MultiLineListFormatter  formatter(file, codec);
         Atlas::Message::Encoder encoder(formatter);
 

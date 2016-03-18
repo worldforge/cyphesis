@@ -135,7 +135,7 @@ Atlas::Objects::Root EntityImporter::loadFromFile(const std::string& filename)
     std::fstream fileStream(filename, std::ios::in);
     ObjectDecoder atlasLoader;
 
-    Atlas::Codecs::XML codec(fileStream, atlasLoader);
+    Atlas::Codecs::XML codec(fileStream, fileStream, atlasLoader);
     codec.poll(true);
 
     return atlasLoader.get();

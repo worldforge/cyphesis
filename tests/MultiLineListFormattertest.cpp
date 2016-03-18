@@ -41,7 +41,7 @@ int main()
     {
         Atlas::Message::QueuedDecoder decoder;
         std::stringstream str;
-        Atlas::Codecs::XML codec(str, decoder);
+        Atlas::Codecs::XML codec(str, str, decoder);
         MultiLineListFormatter  formatter(str, codec);
         Atlas::Message::Encoder encoder(formatter);
 
