@@ -23,8 +23,7 @@
 #define DEBUG
 #endif
 
-#include "tools/MultiLineListFormatter.h"
-
+#include <Atlas/MultiLineListFormatter.h>
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>
 #include <Atlas/Message/MEncoder.h>
@@ -42,7 +41,7 @@ int main()
         Atlas::Message::QueuedDecoder decoder;
         std::stringstream str;
         Atlas::Codecs::XML codec(str, str, decoder);
-        MultiLineListFormatter  formatter(str, codec);
+        Atlas::MultiLineListFormatter  formatter(str, codec);
         Atlas::Message::Encoder encoder(formatter);
 
         formatter.streamBegin();

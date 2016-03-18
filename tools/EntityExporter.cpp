@@ -18,7 +18,6 @@
 
 #include "EntityExporter.h"
 
-#include "MultiLineListFormatter.h"
 
 #include "common/serialno.h"
 #include "common/log.h"
@@ -26,6 +25,7 @@
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Entity.h>
+#include <Atlas/MultiLineListFormatter.h>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
@@ -128,7 +128,7 @@ void EntityExporter::sendAndAwaitResponse(
 Atlas::Formatter* EntityExporter::createMultiLineFormatter(std::iostream& s,
         Atlas::Bridge& b)
 {
-    return new MultiLineListFormatter(s, b);
+    return new Atlas::MultiLineListFormatter(s, b);
 }
 
 std::string EntityExporter::getCurrentTime()

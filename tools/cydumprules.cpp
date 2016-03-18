@@ -25,8 +25,6 @@
 /// manual page. The manual page is generated from docbook sources, so can
 /// also be converted into other formats.
 
-#include "MultiLineListFormatter.h"
-
 #include "common/Database.h"
 #include "common/globals.h"
 #include "common/log.h"
@@ -36,6 +34,7 @@
 #include <Atlas/Codecs/XML.h>
 #include <Atlas/Message/MEncoder.h>
 #include <Atlas/Message/QueuedDecoder.h>
+#include <Atlas/MultiLineListFormatter.h>
 
 #include <string>
 #include <fstream>
@@ -161,7 +160,7 @@ int main(int argc, char ** argv)
         file.open(ruleset.c_str(), std::ios::out);
     
         Atlas::Codecs::XML codec(file, file, decoder);
-        MultiLineListFormatter  formatter(file, codec);
+        Atlas::MultiLineListFormatter  formatter(file, codec);
         Atlas::Message::Encoder encoder(formatter);
 
         formatter.streamBegin();
