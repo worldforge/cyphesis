@@ -214,6 +214,12 @@ private:
 	int mPathResult;
 
 	/**
+	 * Horizontal radius of the avatar, i.e. radius using only x and y.
+	 * Used to determine how close the avatar should be to things.
+	 */
+	float mAvatarHorizRadius;
+
+	/**
 	 * @brief Keep track of the last sent velocity.
 	 *
 	 * This is mainly used to keep track of if we need to send a stop velocity, once we've reached our destination.

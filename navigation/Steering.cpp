@@ -33,8 +33,9 @@
 static const bool debug_flag = true;
 
 Steering::Steering(MemEntity& avatar) :
-        mAwareness(nullptr), mAvatar(avatar), mDestinationRadius(1.0), mSteeringEnabled(false), mUpdateNeeded(false), mPadding(16), mSpeed(2), mExpectingServerMovement(false), mPathResult(0)
+        mAwareness(nullptr), mAvatar(avatar), mDestinationRadius(1.0), mSteeringEnabled(false), mUpdateNeeded(false), mPadding(16), mSpeed(2), mExpectingServerMovement(false), mPathResult(0), mAvatarHorizRadius(0.4)
 {
+
 }
 
 Steering::~Steering()
@@ -43,6 +44,14 @@ Steering::~Steering()
 
 void Steering::setAwareness(Awareness* awareness)
 {
+    const BBox& bbox = mAvatar.m_location.bBox();
+    if (bbox.isValid()) {
+        WFMath::CoordType squareHorizRadius = std::max(square(bbox.lowCorner().x()) +
+                                  square(bbox.lowCorner().y()),
+                                  square(bbox.highCorner().x()) +
+                                  square(bbox.highCorner().y()));
+        mAvatarHorizRadius = std::sqrt(squareHorizRadius);
+    }
     mAwareness = awareness;
     mTileListenerConnection.disconnect();
     if (mAwareness) {
@@ -221,7 +230,7 @@ SteeringResult Steering::update(double currentTimestamp)
 
             const WFMath::Point<2> entityPosition(currentEntityPos.x(), currentEntityPos.y());
             //First check if we've arrived at our actual destination.
-            if (WFMath::Distance(WFMath::Point<2>(finalDestination.x(), finalDestination.y()), entityPosition) < 0.1f) {
+            if (WFMath::Distance(WFMath::Point<2>(finalDestination.x(), finalDestination.y()), entityPosition) < mAvatarHorizRadius) {
                 //We've arrived at our destination. If we're moving we should stop.
                 if (mLastSentVelocity != WFMath::Vector<2>::ZERO()) {
                     result.direction = WFMath::Vector<3>::ZERO();
@@ -233,7 +242,7 @@ SteeringResult Steering::update(double currentTimestamp)
                 //We should send a move op if we're either not moving, or we've reached a waypoint, or we need to divert a lot.
 
                 WFMath::Point<2> nextWaypoint(mPath.front().x(), mPath.front().y());
-                while (WFMath::Distance(nextWaypoint, entityPosition) < 0.1f && mPath.size() > 1) {
+                while (WFMath::Distance(nextWaypoint, entityPosition) < mAvatarHorizRadius && mPath.size() > 1) {
                     mPath.pop_front();
                     nextWaypoint = WFMath::Point<2>(mPath.front().x(), mPath.front().y());
                 }
