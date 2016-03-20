@@ -719,7 +719,7 @@ int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& e
     float pStartPos[] { start.x(), start.z(), start.y() };
     float pEndPos[] { end.x(), end.z(), end.y() };
     float startExtent[] { mAgentRadius * 2.2f, 100, mAgentRadius  * 2.2f}; //Only extend radius in horizontal plane
-    float endExtent[] { radius * 2.0f, 100, radius * 2.0f }; //Only extend radius in horizontal plane
+    float endExtent[] { radius, 100, radius}; //Only extend radius in horizontal plane
 
 
     dtStatus status;
@@ -756,7 +756,7 @@ int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& e
 
 // At this point we have our path.
     for (int nVert = 0; nVert < nVertCount; nVert++) {
-        path.push_back(WFMath::Point<3>(StraightPath[nVert * 3], StraightPath[(nVert * 3) + 2], StraightPath[(nVert * 3) + 1]));
+        path.emplace_back(StraightPath[nVert * 3], StraightPath[(nVert * 3) + 2], StraightPath[(nVert * 3) + 1]);
     }
 
     return nVertCount;
