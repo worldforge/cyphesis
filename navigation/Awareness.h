@@ -253,6 +253,10 @@ public:
 	 */
 	bool isPositionAware(float x, float y) const;
 
+	void addObserver();
+
+    void removeObserver();
+
 protected:
 
 	IHeightProvider& mHeightProvider;
@@ -273,6 +277,15 @@ protected:
 	 * @brief The radius of the agents.
 	 */
 	float mAgentRadius;
+
+
+	/**
+	 * @brief The desired number of tiles for one observer.
+	 *
+	 * As the number of observers change the value of mDesiredTilesAmount is recalculated using this
+	 * as base.
+	 */
+	size_t mBaseTileAmount;
 
 	/**
 	 * @brief The desired amount of tiles to keep active.
@@ -377,6 +390,13 @@ protected:
 	 * This makes sure that those tiles that are at the back of the list always are the least used ones.
 	 */
 	MRUList<std::pair<int, int>>* mActiveTileList;
+
+	/**
+	 * @brief The number of active observers.
+	 *
+	 * This affects the desired tile count.
+	 */
+	size_t mObserverCount;
 
 	void processEntityMovementChange(EntityEntry& entry, const LocatedEntity& entity);
 

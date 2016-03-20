@@ -156,8 +156,8 @@ class AwarenessContext: public rcContext
 };
 
 Awareness::Awareness(const LocatedEntity& domainEntity, float agentRadius, float agentHeight, IHeightProvider& heightProvider, const WFMath::AxisBox<3>& extent, int tileSize) :
-        mHeightProvider(heightProvider), mDomainEntity(domainEntity), mTalloc(nullptr), mTcomp(nullptr), mTmproc(nullptr), mAgentRadius(agentRadius), mDesiredTilesAmount(128), mCtx(
-                new AwarenessContext()), mTileCache(nullptr), mNavMesh(nullptr), mNavQuery(dtAllocNavMeshQuery()), mFilter(nullptr), mActiveTileList(nullptr)
+        mHeightProvider(heightProvider), mDomainEntity(domainEntity), mTalloc(nullptr), mTcomp(nullptr), mTmproc(nullptr), mAgentRadius(agentRadius), mBaseTileAmount(128), mDesiredTilesAmount(128), mCtx(
+                new AwarenessContext()), mTileCache(nullptr), mNavMesh(nullptr), mNavQuery(dtAllocNavMeshQuery()), mFilter(nullptr), mActiveTileList(nullptr), mObserverCount(0)
 {
     debug_print("Creating awareness with extent " << extent << " and agent radius " << agentRadius);
     try {
@@ -328,6 +328,20 @@ Awareness::~Awareness()
 
     delete mCtx;
     delete mActiveTileList;
+}
+
+void Awareness::addObserver() {
+    mObserverCount++;
+    mDesiredTilesAmount = mBaseTileAmount + ((mObserverCount - 1) * (mBaseTileAmount * 0.4));
+}
+
+void Awareness::removeObserver() {
+    mObserverCount--;
+    if (mObserverCount == 0) {
+        mDesiredTilesAmount = mBaseTileAmount;
+    } else {
+        mDesiredTilesAmount = mBaseTileAmount + ((mObserverCount - 1) * (mBaseTileAmount * 0.4));
+    }
 }
 
 void Awareness::addEntity(const MemEntity& observer, const LocatedEntity& entity, bool isDynamic)

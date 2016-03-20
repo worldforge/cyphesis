@@ -59,6 +59,7 @@ AwareMind::~AwareMind()
             }
         }
         mAwareness->removeAwarenessArea(getId());
+        mAwareness->removeObserver();
     }
     delete mSteering;
 }
@@ -192,6 +193,7 @@ void AwareMind::entityAdded(const MemEntity& entity)
 void AwareMind::requestAwareness(const MemEntity& entity)
 {
     mAwareness = mAwarenessStore->requestAwareness(entity);
+    mAwareness->addObserver();
     mAwareness->addEntity(*this, *this, true);
     auto& entities = m_map.getEntities();
     //Add all existing known entities that have the same parent entity as ourselves.
