@@ -19,15 +19,18 @@ import types
 ############################ MOVE ME ####################################
 
 class move_me(Goal):
-    """Move me to a certain place."""
-    def __init__(self, location, speed=1):
+    """Move me to a certain place.
+    'radius' specifies how close to the location we accept.
+    """
+    def __init__(self, location, radius=0.5, speed=1):
         Goal.__init__(self,"move me to certain place",
                       self.am_I_at_loc,
                       [self.move_to_loc])
         self.location=location
         self.speed=speed
-        self.vars=["location", "speed"]
-        self.lastRefreshResult = 0
+        self.radius=radius
+        self.vars=["location", "speed", "radius"]
+        self.squared_radius = radius * radius
     def get_location_instance(self, me):
         location_=self.location
         if type(location_)==LambdaType:
@@ -47,7 +50,7 @@ class move_me(Goal):
         if not location:
             #print "No location"
             return 1
-        if square_horizontal_distance(me.location, location) < 4: # 1.5 * 1.5
+        if square_horizontal_distance(me.location, location) <= self.squared_radius:
             #print "We are there"
             return 1
         else:
@@ -59,7 +62,7 @@ class move_me(Goal):
             #print "Can't move - no location"
             return
         #print "Moving to location " + str(location)
-        me.destination = location.coordinates
+        me.setDestination(location.coordinates, self.radius)
         refreshResult = me.refreshPath()
         #If result is 0 it means that we're already there
         if refreshResult == 0:

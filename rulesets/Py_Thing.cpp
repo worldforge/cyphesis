@@ -173,6 +173,39 @@ static PyObject * Mind_refreshPath(PyEntity * self)
     return Py_BuildValue("i", result);
 }
 
+static PyObject* Mind_setDestination(PyEntity* self, PyObject* args)
+{
+    AwareMind* awareMind = dynamic_cast<AwareMind*>(self->m_entity.m);
+    if (!awareMind) {
+        return NULL;
+    }
+
+    PyObject * destination_arg;
+    float radius;
+    if (!PyArg_ParseTuple(args, "Of", &destination_arg, &radius)) {
+        awareMind->getSteering().stopSteering();
+        return NULL;
+    }
+    if (!PyPoint3D_Check(destination_arg)) {
+        PyErr_SetString(PyExc_TypeError, "Argument must be a Point3D");
+        awareMind->getSteering().stopSteering();
+        return NULL;
+    }
+    PyPoint3D * destination = (PyPoint3D *)destination_arg;
+
+    if (!destination->coords.isValid()) {
+        awareMind->getSteering().stopSteering();
+        return 0;
+    }
+
+    awareMind->getSteering().setDestination(destination->coords, radius, awareMind->getCurrentServerTime());
+    awareMind->getSteering().startSteering();
+
+    Py_INCREF(Py_None);
+    return Py_None;
+
+}
+
 
 static PyMethodDef Character_methods[] = {
     {"start_task",      (PyCFunction)Character_start_task, METH_VARARGS},
@@ -182,6 +215,7 @@ static PyMethodDef Character_methods[] = {
 
 static PyMethodDef Mind_methods[] = {
     {"refreshPath",     (PyCFunction)Mind_refreshPath,  METH_NOARGS},
+    {"setDestination",     (PyCFunction)Mind_setDestination,  METH_VARARGS},
     {NULL,              NULL}           /* sentinel */
 };
 
@@ -563,31 +597,6 @@ static int Mind_setattro(PyEntity *self, PyObject *oname, PyObject *v)
         PyErr_SetString(PyExc_AttributeError, "Setting map on mind is forbidden");
         return -1;
     }
-
-    if (strcmp(name, "destination") == 0) {
-        AwareMind* awareMind = dynamic_cast<AwareMind*>(self->m_entity.m);
-        if (!awareMind) {
-            return -1;
-        }
-
-        if (!PyPoint3D_Check(v)) {
-            awareMind->getSteering().stopSteering();
-            return 0;
-        }
-
-        PyPoint3D* point = (PyPoint3D*)(v);
-
-        if (!point->coords.isValid()) {
-            awareMind->getSteering().stopSteering();
-            return 0;
-        }
-
-        awareMind->getSteering().setDestination(point->coords, 1, awareMind->getCurrentServerTime());
-        awareMind->getSteering().startSteering();
-
-        return 0;
-    }
-
 
     LocatedEntity * entity = self->m_entity.m;
     // Should we support removal of attributes?
