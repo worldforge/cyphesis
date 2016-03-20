@@ -178,13 +178,6 @@ class NPCMind(server.Mind):
                 result = self.commune_all_thoughts(op, "persistthoughts")
                 return opTick+result
        
-        
-    def unseen_operation(self, op):
-        """This method is automatically invoked by the C++ BaseMind code, due to its *_operation name."""
-    	if len(op) > 0:
-        	obsolete_id = op[0].id
-        	if obsolete_id:
-         		self.map.delete(obsolete_id)
     ########## Sight operations
     def sight_create_operation(self, op):
         """Note our ownership of entities we created.

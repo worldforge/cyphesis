@@ -353,17 +353,20 @@ void BaseMind::operation(const Operation & op, OpVector & res)
     debug(std::cout << "BaseMind::operation("
                     << op->getParents().front() << ")"
                     << std::endl << std::flush;);
+    int op_no = op->getClassNo();
     m_time.update((int)op->getSeconds());
     m_map.check(op->getSeconds());
-    m_map.getAdd(op->getFrom());
+    //Unless it's an Unseen op, we should add the entity the op was from.
+    if (op_no != Atlas::Objects::Operation::UNSEEN_NO) {
+        m_map.getAdd(op->getFrom());
+    }
     m_map.sendLooks(res);
-    if (m_script != 0) {
+    if (m_script) {
         m_script->operation("call_triggers", op, res);
         if (m_script->operation(op->getParents().front(), op, res) != 0) {
             return;
         }
     }
-    auto op_no = op->getClassNo();
     switch (op_no) {
         case Atlas::Objects::Operation::SIGHT_NO:
             SightOperation(op, res);
