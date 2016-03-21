@@ -83,7 +83,7 @@ class move_me_area(Goal):
     def __init__(self, location, range=30):
         Goal.__init__(self, "move me to certain area",
                       self.am_I_in_area,
-                      [move_me(location),self.latch_loc])
+                      [move_me(location, range),self.latch_loc])
         self.location=location
         self.range=range
         self.square_range=range*range
@@ -450,7 +450,7 @@ class search(Goal):
 class pursuit(Goal):
     """avoid or hunt something at range"""
     def __init__(self, desc, what, range, direction):
-        Goal.__init__(self,"avoid something",self.not_visible,[self.run])
+        Goal.__init__(self,"pursue something",self.not_visible,[self.run])
 
         if isinstance(what, str):
             self.what = what
