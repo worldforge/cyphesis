@@ -526,7 +526,9 @@ bool Awareness::avoidObstacles(int avatarEntityId, const WFMath::Point<2>& posit
 
         // Update location
         Point3D pos = entity->location.pos();
-        pos += (entity->location.velocity() * time_diff);
+        if (entity->location.velocity().isValid()) {
+            pos += (entity->location.velocity() * time_diff);
+        }
 
         if (!pos.isValid()) {
             continue;
