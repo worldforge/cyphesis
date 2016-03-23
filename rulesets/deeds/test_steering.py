@@ -13,6 +13,16 @@ from math import *
 
 import server
 
+areaScale = 5
+
+xmin = -30 * areaScale
+xmax = 30 * areaScale
+ymin = -30 * areaScale
+ymax = 30 * areaScale
+defaultZ = 5
+num_humans = 10
+num_obstacles = 400
+
 def default(host='', account='', password='', **args):
     m=create_editor(host, account, password)
     _add_obstacles(m)
@@ -28,14 +38,6 @@ def add_obstacles(host='', account='', password='', **args):
     
 def _add_agents(m):
 
-    defaultZ = 5
-
-    xmin = -30
-    xmax = 30
-    ymin = -30
-    ymax = 30
-    
-    num_humans = 10
     
     for i in range(0, num_humans):
         xpos = uniform(xmin, xmax)
@@ -55,14 +57,7 @@ def _add_agents(m):
 
 def _add_obstacles(m):
 
-    defaultZ = 5
-
-    xmin = -30
-    xmax = 30
-    ymin = -30
-    ymax = 30
-    
-    num_obstacles = 400
+   
 
     for i in range(0, num_obstacles):
         xpos = uniform(xmin, xmax)
