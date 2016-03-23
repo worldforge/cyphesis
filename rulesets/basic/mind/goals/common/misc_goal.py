@@ -851,3 +851,42 @@ class clear_focus(Goal):
             if something:
                 me.remove_knowledge('focus', what)
         return 1
+
+######################## Linger (Wait for a certain time) #######################
+
+class linger(Goal):
+    """Linger for a period of time."""
+    def __init__(self, minTicks, maxTicks):
+        Goal.__init__(self, "linger awhile",
+                      self.activated,
+                      [])
+        self.minTicks = minTicks
+        if maxTicks:
+            self.maxTicks = maxTicks
+        else:
+            self.maxTicks = minTicks
+        self.isWaiting = false
+        self.tickCounter = -1
+        self.vars=["minTicks", "maxTicks", "isWaiting", "tickCounter"]
+    def activated(self, me):
+        if self.tickCounter == 0:
+            return True
+        if self.tickCounter > 0:
+            self.tickCounter = self.tickCounter - 1
+            return False
+        self.tickCounter = randint(self.minTicks, self.maxTicks)
+        return False
+
+
+class iterate(Goal):
+    """Iterate through the goals, moving to next if any is fulfilled"""
+    def __init__(self, goals):
+        Goal.__init__(self, "iterate over goals",
+                      self.check_subgoal,
+                      goals)
+    def check_subgoal(self, me):
+        first_goal = self.subgoals[0]
+        if first_goal.is_fulfilled:
+            self.subgoals.pop(0)
+            self.subgoals.push(first_goal)
+
