@@ -855,27 +855,31 @@ class clear_focus(Goal):
 ######################## Linger (Wait for a certain time) #######################
 
 class linger(Goal):
-    """Linger for a period of time."""
+    """Linger for a period of time.
+    The amount of ticks to wait is randomized as between minTicks and maxTicks.
+    When active, the tickCounter will be decreased and an empty Oplist returned.
+    Once waiting completes, the Goal reports itself as fulfilled, only to reset the
+    tickCounter for next iteration.
+    """
     def __init__(self, minTicks, maxTicks):
         Goal.__init__(self, "linger awhile",
                       self.activated,
-                      [])
+                      [self.wait])
         self.minTicks = minTicks
         if maxTicks:
             self.maxTicks = maxTicks
         else:
             self.maxTicks = minTicks
-        self.isWaiting = false
-        self.tickCounter = -1
-        self.vars=["minTicks", "maxTicks", "isWaiting", "tickCounter"]
-    def activated(self, me):
-        if self.tickCounter == 0:
-            return True
-        if self.tickCounter > 0:
-            self.tickCounter = self.tickCounter - 1
-            return False
         self.tickCounter = randint(self.minTicks, self.maxTicks)
+        self.vars=["minTicks", "maxTicks", "tickCounter"]
+    def activated(self, me):
+        if self.tickCounter <= 0:
+            self.tickCounter = randint(self.minTicks, self.maxTicks)
+            return True
+        self.tickCounter = self.tickCounter - 1
         return False
+    def wait(self, me):
+        return Oplist()
 
 
 class iterate(Goal):

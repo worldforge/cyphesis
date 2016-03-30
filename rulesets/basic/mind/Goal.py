@@ -16,8 +16,10 @@ class Goal:
         #mind sets these:
         #self.str
         #self.key
-        if fulfilled: self.fulfilled=fulfilled
-        else: self.fulfilled=lambda me:0 #false
+        if fulfilled: 
+            self.fulfilled = fulfilled
+        else: 
+            self.fulfilled = lambda me:0 #false
         self.subgoals=subgoals[:]
         self.time=time
         self.debug=debug
@@ -79,6 +81,8 @@ class Goal:
         debugInfo=debugInfo+"."+self.info()
         #Iterate over all subgoals, but break if any goal returns an operation
         for sg in self.subgoals:
+            if sg == None:
+                continue
             if type(sg)==FunctionType or type(sg)==MethodType:
                 if self.debug:
                     log.thinking("\t"*depth+"GOAL: bef function: "+`sg`+" "+`res`)

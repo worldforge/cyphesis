@@ -420,9 +420,10 @@ class pick_up_focus(Goal):
 
 class wander(Goal):
     """Move in a non-specific way."""
-    def __init__(self):
+    def __init__(self, extragoal):
         Goal.__init__(self,"wander randomly",false,
                       [move_me(None),
+                       extragoal,
                        self.do_wandering])
     def do_wandering(self, me):
         loc = me.location.copy()
@@ -516,11 +517,12 @@ class hunt_for(pursuit):
 
 class patrol(Goal):
     """Move around an area defined by some waypoints."""
-    def __init__(self, locations):
+    def __init__(self, locations, extragoal):
         Goal.__init__(self, "patrol an area",
                       false,
                       [self.checkMovementGoalReachable,
                        move_me(locations[0]),
+                       extragoal,
                        self.increment])
         self.list = locations
         self.stage = 0
@@ -594,9 +596,10 @@ class accompany(Goal):
 
 class roam(Goal):
     """Move in a non-specific way within one or many locations."""
-    def __init__(self, radius, locations):
+    def __init__(self, radius, locations, extragoal):
         Goal.__init__(self,"roam randomly",false,
                       [move_me(None),
+                       extragoal,
                        self.do_roaming])
         self.list = locations
         self.radius = radius
