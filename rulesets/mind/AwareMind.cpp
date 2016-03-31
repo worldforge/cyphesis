@@ -24,6 +24,7 @@
 #include <rulesets/mind/AwarenessStore.h>
 #include <rulesets/mind/AwarenessStoreProvider.h>
 #include <rulesets/mind/SharedTerrain.h>
+#include <rulesets/TerrainProperty.h>
 
 #include "navigation/Awareness.h"
 #include "navigation/Steering.h"
@@ -38,12 +39,16 @@
 #include <Atlas/Objects/Entity.h>
 
 #include <wfmath/atlasconv.h>
+
+#include <Mercator/Terrain.h>
+
 #include <iostream>
 
 static const bool debug_flag = true;
 
 AwareMind::AwareMind(const std::string &id, long intId, SharedTerrain& sharedTerrain, AwarenessStoreProvider& awarenessStoreProvider) :
-        BaseMind(id, intId), mSharedTerrain(sharedTerrain), mAwarenessStoreProvider(awarenessStoreProvider), mAwarenessStore(nullptr), mSteering(new Steering(*this)), mServerTimeDiff(0)
+        BaseMind(id, intId), mSharedTerrain(sharedTerrain), mAwarenessStoreProvider(awarenessStoreProvider), mAwarenessStore(nullptr), mSteering(new Steering(*this)), mServerTimeDiff(
+                0)
 {
     m_map.setListener(this);
 }
@@ -186,6 +191,11 @@ void AwareMind::entityAdded(const MemEntity& entity)
         if (this->m_location.m_loc && entity.getIntId() == this->m_location.m_loc->getIntId()) {
             //log(INFO, "Creating awareness.");
             requestAwareness(entity);
+
+            Atlas::Message::Element terrainElem;
+            if (entity.getAttr("terrain", terrainElem) == 0) {
+                parseTerrain(terrainElem);
+            }
         }
     }
 }
@@ -237,11 +247,61 @@ void AwareMind::entityUpdated(const MemEntity& entity, const Atlas::Objects::Ent
         }
     } else {
         if (this->m_location.m_loc && entity.getIntId() == this->m_location.m_loc->getIntId()) {
+            if (ent->hasAttr("terrain")) {
+
+                Atlas::Message::Element terrainElement;
+                if (ent->copyAttr("terrain", terrainElement) == 0) {
+                    parseTerrain(terrainElement);
+                }
+            }
             if (!mAwareness) {
                 requestAwareness(entity);
+
             }
         }
     }
+}
+
+void AwareMind::parseTerrain(const Atlas::Message::Element& terrainElement)
+{
+    if (terrainElement.isMap()) {
+        const Atlas::Message::MapType& terrainMap = terrainElement.Map();
+        auto pointsI = terrainMap.find("points");
+        if (pointsI != terrainMap.end() && pointsI->second.isMap()) {
+
+            std::vector<SharedTerrain::BasePointDefinition> pointDefs;
+
+            auto& pointsMap = pointsI->second.Map();
+            for (auto& pointEntry : pointsMap) {
+                if (pointEntry.second.isList()) {
+                    auto& pointsList = pointEntry.second.List();
+                    if (pointsList.size() == 3) {
+                        if (!pointsList[0].isNum()) {
+                            continue;
+                        }
+                        if (!pointsList[1].isNum()) {
+                            continue;
+                        }
+                        if (!pointsList[2].isNum()) {
+                            continue;
+                        }
+
+                        pointDefs.emplace_back(
+                                SharedTerrain::BasePointDefinition { (int)pointsList[0].asNum(), (int)pointsList[1].asNum(), Mercator::BasePoint(pointsList[2].asNum()) });
+                    }
+                }
+            }
+            std::vector<SharedTerrain::BasePointDefinition> changedPoints = mSharedTerrain.setBasePoints(pointDefs);
+            if (mAwareness) {
+                int res = mSharedTerrain.getTerrain().getResolution();
+                for (auto& entry : changedPoints) {
+                    WFMath::AxisBox<2> area(WFMath::Point<2>(entry.x - res, entry.y - res), WFMath::Point<2>(entry.x + res, entry.y + res));
+                    mAwareness->markTilesAsDirty(std::move(area));
+                }
+            }
+        }
+    }
+
 }
 
 void AwareMind::entityDeleted(const MemEntity& entity)

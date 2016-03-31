@@ -78,6 +78,8 @@ class AwareMind: public BaseMind, public MemMap::MapListener
 
         void requestAwareness(const MemEntity& entity);
 
+        void parseTerrain(const Atlas::Message::Element& terrainElement);
+
 };
 
 #endif /* RULESETS_MIND_AWAREMIND_H_ */

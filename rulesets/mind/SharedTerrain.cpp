@@ -26,7 +26,8 @@
 
 #include <cmath>
 
-SharedTerrain::SharedTerrain() : m_terrain(new Mercator::Terrain())
+SharedTerrain::SharedTerrain() :
+        m_terrain(new Mercator::Terrain())
 {
 }
 
@@ -34,24 +35,23 @@ SharedTerrain::~SharedTerrain()
 {
 }
 
-void SharedTerrain::setBasePoints(const std::vector<BasePointDefinition>& basepoints)
+std::vector<SharedTerrain::BasePointDefinition> SharedTerrain::setBasePoints(const std::vector<BasePointDefinition>& basepoints)
 {
+    std::vector<BasePointDefinition> changedPoints;
     for (auto& basepointDef : basepoints) {
         Mercator::BasePoint existingPoint;
-        if (!m_terrain->getBasePoint(basepointDef.x, basepointDef.y, existingPoint) ||
-                (existingPoint.height() != basepointDef.basePoint.height() || existingPoint.falloff() != basepointDef.basePoint.falloff() || existingPoint.roughness() != basepointDef.basePoint.roughness())) {
+        if (!m_terrain->getBasePoint(basepointDef.x, basepointDef.y, existingPoint)
+                || (existingPoint.height() != basepointDef.basePoint.height() || existingPoint.falloff() != basepointDef.basePoint.falloff()
+                        || existingPoint.roughness() != basepointDef.basePoint.roughness())) {
             m_terrain->setBasePoint(basepointDef.x, basepointDef.y, basepointDef.basePoint);
+            changedPoints.push_back(basepointDef);
         }
     }
+    return std::move(changedPoints);
 }
 
 void SharedTerrain::blitHeights(int xMin, int xMax, int yMin, int yMax, std::vector<float>& heights) const
 {
-    for (int i = 0; i < ((xMax - xMin) * (yMax - yMin)); ++i) {
-        heights[i] = 5;
-    }
-    return;
-
     int segmentResolution = m_terrain->getResolution();
     int xSize = xMax - xMin;
 
@@ -63,11 +63,6 @@ void SharedTerrain::blitHeights(int xMin, int xMax, int yMin, int yMax, std::vec
     for (int segmentX = segmentXMin; segmentX <= segmentXMax; ++segmentX) {
         for (int segmentY = segmentYMin; segmentY <= segmentYMax; ++segmentY) {
 
-            Mercator::Segment* segment = m_terrain->getSegment(segmentX, segmentY);
-            if (!segment->isValid()) {
-                segment->populate();
-            }
-
             int segmentXStart = segmentX * segmentResolution;
             int segmentYStart = segmentY * segmentResolution;
             int dataXOffset = segmentXStart - xMin;
@@ -78,13 +73,33 @@ void SharedTerrain::blitHeights(int xMin, int xMax, int yMin, int yMax, std::vec
             int xEnd = std::min<int>(xMax - segmentXStart, segmentResolution);
             int yEnd = std::min<int>(yMax - segmentYStart, segmentResolution);
 
-            for (int x = xStart; x < xEnd; ++x) {
-                for (int y = yStart; y < yEnd; ++y) {
-                    heights[((dataYOffset + y) * xSize) + (dataXOffset + x)] = segment->get(x, y);
+            Mercator::Segment* segment = m_terrain->getSegment(segmentX, segmentY);
+            if (segment) {
+                if (!segment->isValid()) {
+                    segment->populate();
                 }
+
+                for (int x = xStart; x < xEnd; ++x) {
+                    for (int y = yStart; y < yEnd; ++y) {
+                        heights[((dataYOffset + y) * xSize) + (dataXOffset + x)] = segment->get(x, y);
+                    }
+                }
+            } else {
+                //No valid segment found; fill with default value of -10.
+                for (int x = xStart; x < xEnd; ++x) {
+                    for (int y = yStart; y < yEnd; ++y) {
+                        heights[((dataYOffset + y) * xSize) + (dataXOffset + x)] = -10;
+                    }
+                }
+
             }
         }
     }
+}
+
+const Mercator::Terrain& SharedTerrain::getTerrain() const
+{
+    return *m_terrain.get();
 }
 
 

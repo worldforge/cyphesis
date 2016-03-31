@@ -257,6 +257,14 @@ public:
 
     void removeObserver();
 
+    /**
+     * @brief Marks all tiles within the area as dirty.
+     *
+     * Dirty tiles will be rebuilt.
+     * @param area An area.
+     */
+    void markTilesAsDirty(const WFMath::AxisBox<2>& area);
+
 protected:
 
 	IHeightProvider& mHeightProvider;
@@ -440,13 +448,6 @@ protected:
 	 */
 	void processTiles(std::vector<const dtCompressedTile*> tiles, const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const;
 
-	/**
-	 * @brief Marks all tiles within the area as dirty.
-	 *
-	 * Dirty tiles will be rebuilt.
-	 * @param area An area.
-	 */
-	void markTilesAsDirty(const WFMath::AxisBox<2>& area);
 	/**
 	 * @brief Marks all tiles within an indexed area as dirty.
 	 *

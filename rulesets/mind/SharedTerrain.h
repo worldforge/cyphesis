@@ -48,9 +48,11 @@ class SharedTerrain : public IHeightProvider
          * Only those that have changed are processed. It's thus safe to call this from each entity sharing this instance.
          * @param basepoints
          */
-        void setBasePoints(const std::vector<BasePointDefinition>& basepoints);
+        std::vector<BasePointDefinition> setBasePoints(const std::vector<BasePointDefinition>& basepoints);
 
         virtual void blitHeights(int xMin, int xMax, int yMin, int yMax, std::vector<float>& heights) const;
+
+        const Mercator::Terrain& getTerrain() const;
 
     private:
 
