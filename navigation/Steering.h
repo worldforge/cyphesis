@@ -77,10 +77,10 @@ public:
 	/**
 	 * @brief Sets a new destination, in view position.
 	 * Note that this won't start steering; you need to call startSteering() separately.
-	 * @param viewPosition
+	 * @param entityRelativePosition The position, as relative to the referred entity.
 	 * @param radius The radius around the destination where it's acceptable to end up if we couldn't reach the destination precisely.
 	 */
-	void setDestination(const WFMath::Point<3>& viewPosition, float radius, double currentServerTimestamp);
+	void setDestination(int entityId, const WFMath::Point<3>& entityRelativePosition, float radius, double currentServerTimestamp);
 
 	/**
 	 * @brief Updates the path.
@@ -158,6 +158,8 @@ public:
 
 	int getPathResult() const;
 
+	void removeEntity(MemEntity& entity);
+
 	/**
 	 * @brief Emitted when the path has been updated.
 	 */
@@ -169,6 +171,20 @@ private:
 	MemEntity& mAvatar;
 
 	sigc::connection mTileListenerConnection;
+
+
+	/**
+	 * The id of the entity to which the destination is relative.
+	 * This is either the domain entity, for which the final destination then would be static.
+	 * Or it's the id of an entity contained in the domain. The final destination is then dynamic, and updated as the entity moves.
+	 */
+	int mDestinationEntityId;
+
+	/**
+	 * The destination as relative to the mDestinationEntityId.
+	 */
+    WFMath::Point<3> mEntityRelativeDestination;
+
 
 	/**
 	 * @brief The destination, in view coordinates.
@@ -262,6 +278,9 @@ private:
 	 * @param point The point to move towards.
 	 */
 	void moveToPoint(const WFMath::Point<3>& point);
+
+	void updateDestination(double currentServerTimestamp, int entityId, WFMath::Point<3>& pos);
+
 };
 
 

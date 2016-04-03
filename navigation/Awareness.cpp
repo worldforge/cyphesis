@@ -764,6 +764,22 @@ int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& e
     return nVertCount;
 }
 
+bool Awareness::projectPosition(int entityId, WFMath::Point<3>& pos, double currentServerTimestamp)
+{
+    auto entityI = mObservedEntities.find(entityId);
+    if (entityI != mObservedEntities.end()) {
+        auto& entityEntry = entityI->second;
+        pos = entityEntry->location.m_pos;
+        const auto& velocity = entityEntry->location.m_velocity;
+        if (velocity.isValid() && velocity != WFMath::Vector<3>::ZERO()) {
+            pos += (velocity * (currentServerTimestamp - entityEntry->location.timeStamp()));
+        }
+        return true;
+    }
+    return false;
+}
+
+
 void Awareness::setAwarenessArea(const std::string& areaId, const WFMath::RotBox<2>& area, const WFMath::Segment<2>& focusLine)
 {
 

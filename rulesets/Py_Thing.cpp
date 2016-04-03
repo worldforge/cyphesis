@@ -182,7 +182,8 @@ static PyObject* Mind_setDestination(PyEntity* self, PyObject* args)
 
     PyObject * destination_arg;
     float radius;
-    if (!PyArg_ParseTuple(args, "Of", &destination_arg, &radius)) {
+    const char* entityIdString;
+    if (!PyArg_ParseTuple(args, "Ofz", &destination_arg, &radius, &entityIdString)) {
         awareMind->getSteering().stopSteering();
         return NULL;
     }
@@ -198,7 +199,15 @@ static PyObject* Mind_setDestination(PyEntity* self, PyObject* args)
         return 0;
     }
 
-    awareMind->getSteering().setDestination(destination->coords, radius, awareMind->getCurrentServerTime());
+    int entityId;
+    //If no entity id was specified, the location is relative to the parent entity.
+    if (entityIdString == nullptr) {
+        entityId = awareMind->m_location.m_loc->getIntId();
+    } else {
+        entityId = std::atoi(entityIdString);
+    }
+
+    awareMind->getSteering().setDestination(entityId, destination->coords, radius, awareMind->getCurrentServerTime());
     awareMind->getSteering().startSteering();
 
     Py_INCREF(Py_None);

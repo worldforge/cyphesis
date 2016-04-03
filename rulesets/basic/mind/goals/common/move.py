@@ -62,7 +62,7 @@ class move_me(Goal):
             #print "Can't move - no location"
             return
         #print "Moving to location " + str(location)
-        me.setDestination(location.coordinates, self.radius)
+        me.setDestination(location.coordinates, self.radius, location.parent.id)
         refreshResult = me.refreshPath()
         #If result is 0 it means that we're already there
         if refreshResult == 0:

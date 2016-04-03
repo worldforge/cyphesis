@@ -33,7 +33,7 @@
 static const bool debug_flag = true;
 
 Steering::Steering(MemEntity& avatar) :
-        mAwareness(nullptr), mAvatar(avatar), mDestinationRadius(1.0), mSteeringEnabled(false), mUpdateNeeded(false), mPadding(16), mSpeed(2), mExpectingServerMovement(false), mPathResult(0), mAvatarHorizRadius(0.4)
+        mAwareness(nullptr), mAvatar(avatar), mDestinationEntityId(-1), mDestinationRadius(1.0), mSteeringEnabled(false), mUpdateNeeded(false), mPadding(16), mSpeed(2), mExpectingServerMovement(false), mPathResult(0), mAvatarHorizRadius(0.4)
 {
 
 }
@@ -60,20 +60,25 @@ void Steering::setAwareness(Awareness* awareness)
     }
 }
 
-void Steering::setDestination(const WFMath::Point<3>& viewPosition, float radius, double currentServerTimestamp)
+void Steering::setDestination(int entityId, const WFMath::Point<3>& entityRelativePosition, float radius, double currentServerTimestamp)
 {
     if (mAwareness) {
+        mDestinationEntityId = entityId;
+        mEntityRelativeDestination = entityRelativePosition;
+
         auto currentAvatarPos = getCurrentAvatarPosition(currentServerTimestamp);
 
-        float distanceAvatarDestination = WFMath::Distance(currentAvatarPos, viewPosition);
+        WFMath::Point<3> finalPosition = entityRelativePosition;
+        updateDestination(currentServerTimestamp, entityId, finalPosition);
 
-        WFMath::Point<3> finalPosition = viewPosition;
+        float distanceAvatarDestination = WFMath::Distance(currentAvatarPos, finalPosition);
+
         float finalRadius = radius;
 
         //Check if the destination is too far away. If so we should adjust it closer, and increase the radius.
         //This depends on the AI updating the destination at regular intervals.
         if (distanceAvatarDestination > (mAwareness->getTileSizeInMeters() * 10)) {
-            WFMath::Vector<3> vector = viewPosition - currentAvatarPos;
+            WFMath::Vector<3> vector = finalPosition - currentAvatarPos;
 
             finalPosition = currentAvatarPos + (vector.normalize() * mAwareness->getTileSizeInMeters() * 10);
             finalRadius = (radius * 10.f);
@@ -138,6 +143,14 @@ int Steering::getPathResult() const
     return mPathResult;
 }
 
+void Steering::updateDestination(double currentServerTimestamp, int entityId, WFMath::Point<3>& pos) {
+    if (mAwareness) {
+        if (entityId != mAvatar.m_location.m_loc->getIntId()) {
+            mAwareness->projectPosition(mDestinationEntityId, pos, currentServerTimestamp);
+        }
+    }
+}
+
 
 int Steering::updatePath(const WFMath::Point<3>& currentAvatarPosition)
 {
@@ -166,6 +179,8 @@ int Steering::updatePath(double currentTimestamp)
     if (mAvatar.m_location.m_velocity.isValid()) {
         currentEntityPos += (mAvatar.m_location.m_velocity * (currentTimestamp - mAvatar.m_location.timeStamp()));
     }
+
+    updateDestination(currentTimestamp, mDestinationEntityId, mViewDestination);
 
     return updatePath(currentEntityPos);
 }
@@ -223,6 +238,7 @@ SteeringResult Steering::update(double currentTimestamp)
         auto currentEntityPos = getCurrentAvatarPosition(currentTimestamp);
 
         //if (mUpdateNeeded) {
+            updateDestination(currentTimestamp, mDestinationEntityId, mViewDestination);
             updatePath(currentEntityPos);
         //}
         if (!mPath.empty()) {

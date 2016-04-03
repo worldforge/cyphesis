@@ -265,6 +265,8 @@ public:
      */
     void markTilesAsDirty(const WFMath::AxisBox<2>& area);
 
+    bool projectPosition(int entityId, WFMath::Point<3>& pos, double currentServerTimestamp);
+
 protected:
 
 	IHeightProvider& mHeightProvider;
