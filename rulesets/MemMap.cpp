@@ -437,28 +437,29 @@ void MemMap::check(const double & time)
         assert(me != 0);
         if (!me->isVisible() && (time - me->lastSeen()) > 600 &&
             (me->m_contains == 0 || me->m_contains->empty())) {
-            debug(std::cout << me->getId() << "|" << me->getType()->name()
-                      << " is a waste of space" << std::endl << std::flush;);
-            MemEntityDict::const_iterator J = m_checkIterator;
-            long next = -1;
-            if (++J != entities_end) {
-                next = J->first;
-            }
-            m_entities.erase(m_checkIterator);
-            // Remove deleted entity from its parents contains attribute
-            if (me->m_location.m_loc != 0) {
-                assert(me->m_location.m_loc->m_contains != 0);
-                me->m_location.m_loc->m_contains->erase(me);
-            }
-            
-            // FIXME This is required until MemMap uses parent refcounting
-            me->m_location.m_loc = 0;
-
-            if (next != -1) {
-                m_checkIterator = m_entities.find(next);
-            } else {
-                m_checkIterator = m_entities.begin();
-            }
+            //Don't remove any entities; we need to instead implement reference counted locations
+//            debug(std::cout << me->getId() << "|" << me->getType()->name()
+//                      << " is a waste of space" << std::endl << std::flush;);
+//            MemEntityDict::const_iterator J = m_checkIterator;
+//            long next = -1;
+//            if (++J != entities_end) {
+//                next = J->first;
+//            }
+//            m_entities.erase(m_checkIterator);
+//            // Remove deleted entity from its parents contains attribute
+//            if (me->m_location.m_loc != 0) {
+//                assert(me->m_location.m_loc->m_contains != 0);
+//                me->m_location.m_loc->m_contains->erase(me);
+//            }
+//
+//            // FIXME This is required until MemMap uses parent refcounting
+//            me->m_location.m_loc = 0;
+//
+//            if (next != -1) {
+//                m_checkIterator = m_entities.find(next);
+//            } else {
+//                m_checkIterator = m_entities.begin();
+//            }
             //HACK: We currently do refcounting for Locations kept in the mind as knowledge.
             //The result is that if an entity is removed here, it will be deleted, and any
             //knowledge or goal referring to it will point to an invalid pointer.
