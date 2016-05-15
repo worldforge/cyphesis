@@ -240,9 +240,15 @@ static const Location* distanceToAncestor(const Location & self,
     if (self.m_loc != 0) {
         std::cerr << "Self(" << self.m_loc->getId() << "," << self.m_loc << ")"
                   << std::endl << std::flush;
+    } else {
+        std::cerr << "Self has no location"
+                  << std::endl << std::flush;
     }
     if (other.m_loc != 0) {
         std::cerr << "Other(" << other.m_loc->getId() << "," << other.m_loc << ")"
+                  << std::endl << std::flush;
+    } else {
+        std::cerr << "Other has no location"
                   << std::endl << std::flush;
     }
      
