@@ -265,6 +265,13 @@ public:
      */
     void markTilesAsDirty(const WFMath::AxisBox<2>& area);
 
+    /**
+     * @brief Projects a entity-local position relative to the domain entity of this awareness.
+     * @param entityId The id of the entity. This is either the id of the domain entity, for which the pos will be unchanged, or an id of a child entity.
+     * @param pos Position, to be changed.
+     * @param currentServerTimestamp The current server time stamp, to calculate new positions for moving entities.
+     * @return True if entity could be found.
+     */
     bool projectPosition(int entityId, WFMath::Point<3>& pos, double currentServerTimestamp);
 
 protected:
