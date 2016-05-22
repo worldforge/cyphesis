@@ -144,7 +144,7 @@ int Steering::getPathResult() const
 }
 
 void Steering::updateDestination(double currentServerTimestamp, int entityId, WFMath::Point<3>& pos) {
-    if (mAwareness && mAvatar.m_location) {
+    if (mAwareness && mAvatar.m_location.m_loc) {
         if (entityId != mAvatar.m_location.m_loc->getIntId()) {
             mAwareness->projectPosition(mDestinationEntityId, pos, currentServerTimestamp);
         }
