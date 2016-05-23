@@ -341,11 +341,13 @@ void ArchetypeFactory::sendThoughts(LocatedEntity& entity,
     //many entities (by using the id).
 
     if (!thoughts.empty()) {
+        Atlas::Objects::Operation::Set setOp;
+        setOp->setArgsAsList(thoughts);
         Atlas::Objects::Operation::Think thoughtOp;
-        thoughtOp->setArgsAsList(thoughts);
         //Make the thought come from the entity itself
         thoughtOp->setTo(entity.getId());
         thoughtOp->setFrom(entity.getId());
+        thoughtOp->setArgs1(setOp);
         entity.sendWorld(thoughtOp);
     }
 
