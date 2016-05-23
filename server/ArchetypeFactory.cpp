@@ -63,8 +63,7 @@ ArchetypeFactory::~ArchetypeFactory()
 {
 }
 
-LocatedEntity * ArchetypeFactory::createEntity(const std::string & id,
-        long intId, EntityCreation& entityCreation, LocatedEntity* location,
+LocatedEntity * ArchetypeFactory::createEntity(const std::string & id, long intId, EntityCreation& entityCreation, LocatedEntity* location,
         std::map<std::string, EntityCreation>& entities)
 {
     auto& attributes = entityCreation.definition;
@@ -86,13 +85,10 @@ LocatedEntity * ArchetypeFactory::createEntity(const std::string & id,
         ::addToEntity(Point3D::ZERO(), cleansedAttributes->modifyPos());
     }
 
-    LocatedEntity* entity = EntityBuilder::instance()->newChildEntity(id, intId,
-            concreteType, cleansedAttributes, *location);
+    LocatedEntity* entity = EntityBuilder::instance()->newChildEntity(id, intId, concreteType, cleansedAttributes, *location);
 
     if (entity == nullptr) {
-        log(ERROR,
-                String::compose("Could not create entity of type %1.",
-                        concreteType));
+        log(ERROR, String::compose("Could not create entity of type %1.", concreteType));
         return nullptr;
     }
 
@@ -101,20 +97,14 @@ LocatedEntity * ArchetypeFactory::createEntity(const std::string & id,
     for (auto& childId : attributes->getContains()) {
         auto entityI = entities.find(childId);
         if (entityI == entities.end()) {
-            log(ERROR,
-                    String::compose(
-                            "Referenced child entity with id %1 does not exist.",
-                            childId));
+            log(ERROR, String::compose("Referenced child entity with id %1 does not exist.", childId));
             return nullptr;
         }
         std::string childEntityId;
         long childIntId = newId(childEntityId);
-        LocatedEntity* childEntity = createEntity(childEntityId, childIntId,
-                entityI->second, entity, entities);
+        LocatedEntity* childEntity = createEntity(childEntityId, childIntId, entityI->second, entity, entities);
         if (childEntity == nullptr) {
-            log(ERROR,
-                    String::compose("Could not create child entity with id %1.",
-                            childId));
+            log(ERROR, String::compose("Could not create child entity with id %1.", childId));
             return nullptr;
         }
         entity->makeContainer();
@@ -129,8 +119,7 @@ LocatedEntity * ArchetypeFactory::createEntity(const std::string & id,
     return entity;
 }
 
-bool ArchetypeFactory::parseEntities(const ListType& entitiesElement,
-        std::map<std::string, EntityCreation>& entities)
+bool ArchetypeFactory::parseEntities(const ListType& entitiesElement, std::map<std::string, EntityCreation>& entities)
 {
     std::map<std::string, MapType> entityMap;
     for (auto& entityElem : entitiesElement) {
@@ -146,22 +135,17 @@ bool ArchetypeFactory::parseEntities(const ListType& entitiesElement,
     return parseEntities(entityMap, entities);
 }
 
-bool ArchetypeFactory::parseEntities(
-        const std::map<std::string, MapType>& entitiesElement,
-        std::map<std::string, EntityCreation>& entities)
+bool ArchetypeFactory::parseEntities(const std::map<std::string, MapType>& entitiesElement, std::map<std::string, EntityCreation>& entities)
 {
     for (auto& entityI : entitiesElement) {
 
-        auto entity = smart_dynamic_cast<RootEntity>(
-                Factories::instance()->createObject(entityI.second));
+        auto entity = smart_dynamic_cast<RootEntity>(Factories::instance()->createObject(entityI.second));
         if (!entity.isValid()) {
             log(ERROR, "Entity definition is not in Entity format.");
             return false;
         }
 
-        auto result = entities.insert(
-                std::make_pair(entity->getId(), EntityCreation { entity,
-                        nullptr, Atlas::Message::MapType() }));
+        auto result = entities.insert(std::make_pair(entity->getId(), EntityCreation { entity, nullptr, Atlas::Message::MapType() }));
         if (!result.second) {
             //it already existed; we should update with the attributes
             for (auto& I : entityI.second) {
@@ -172,8 +156,7 @@ bool ArchetypeFactory::parseEntities(
     return true;
 }
 
-LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId,
-        const RootEntity & attributes, LocatedEntity* location)
+LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId, const RootEntity & attributes, LocatedEntity* location)
 {
     //parse entities into RootEntity instances first
     std::map<std::string, EntityCreation> entities;
@@ -185,7 +168,7 @@ LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId,
     }
     MapType attrs;
 
-    //If the object type of the attributes is "archetype" we should merge it's
+    //If the object type of the attributes is "archetype" we should merge its
     //"entities" and "thoughts" attributes.
     if (attributes->getObjtype() == "archetype") {
         if (attributes->hasAttr("entities")) {
@@ -230,16 +213,24 @@ LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId,
     if (attributes->hasAttr("orientation")) {
         attrEntity->setAttr("orientation", attributes->getAttr("orientation"));
     }
-    LocatedEntity* entity = createEntity(id, intId, entityCreation, location,
-            entities);
+    LocatedEntity* entity = createEntity(id, intId, entityCreation, location, entities);
 
     if (entity != nullptr) {
         processResolvedAttributes(entities);
-        if (!m_thoughts.empty() || !extraThoughts.empty()) {
+
+        //If there are thoughts, or if there's a mind, send them.
+        //TODO: perhaps warn if there's thoughts but no "mind" property?
+        if (!m_thoughts.empty() || !extraThoughts.empty() || entity->hasAttr("mind")) {
             //We must send a sight op to the entity informing it of itself before we send any thoughts.
             //Else the mind won't have any information about itself and the thoughts will
             //cause errors.
             sendInitialSight(*entity);
+
+            //Send knowledge about the "origin" location. This is to allow for goals to refer to the "origin" location as
+            //the location where the entity first was created.
+            auto originThoughts = createOriginLocationThought(*entity);
+            sendThoughts(*entity, originThoughts);
+
             sendThoughts(*entity, m_thoughts);
             sendThoughts(*entity, extraThoughts);
         }
@@ -247,12 +238,23 @@ LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId,
     return entity;
 }
 
-void ArchetypeFactory::processResolvedAttributes(
-        std::map<std::string, EntityCreation>& entities)
+std::vector<Atlas::Message::Element> ArchetypeFactory::createOriginLocationThought(const LocatedEntity& entity)
+{
+    if (entity.m_location.pos().isValid()) {
+        Atlas::Message::MapType thought;
+        thought["object"] = String::compose("(%1,%2,%3)", entity.m_location.m_pos.x(), entity.m_location.m_pos.y(), entity.m_location.m_pos.z());
+        thought["predicate"] = "location";
+        thought["subject"] = "origin";
+        return std::vector<Atlas::Message::Element> { thought };
+    } else {
+        return std::vector<Atlas::Message::Element>();
+    }
+}
+
+void ArchetypeFactory::processResolvedAttributes(std::map<std::string, EntityCreation>& entities)
 {
     for (auto& entityI : entities) {
-        if (entityI.second.createdEntity != nullptr
-                && !entityI.second.unresolvedAttributes.empty()) {
+        if (entityI.second.createdEntity != nullptr && !entityI.second.unresolvedAttributes.empty()) {
             for (auto& attrI : entityI.second.unresolvedAttributes) {
                 Atlas::Message::Element& attr = attrI.second;
                 resolveEntityReference(entities, attr);
@@ -262,9 +264,7 @@ void ArchetypeFactory::processResolvedAttributes(
     }
 }
 
-
-bool ArchetypeFactory::isEntityRefAttribute(
-        const Atlas::Message::Element& attr) const
+bool ArchetypeFactory::isEntityRefAttribute(const Atlas::Message::Element& attr) const
 {
     if (attr.isMap()) {
         auto entityRefI = attr.asMap().find("$eid");
@@ -284,9 +284,7 @@ bool ArchetypeFactory::isEntityRefAttribute(
     return false;
 }
 
-void ArchetypeFactory::resolveEntityReference(
-        std::map<std::string, EntityCreation>& entities,
-        Atlas::Message::Element& attr)
+void ArchetypeFactory::resolveEntityReference(std::map<std::string, EntityCreation>& entities, Atlas::Message::Element& attr)
 {
     if (attr.isMap()) {
         auto entityRefI = attr.asMap().find("$eid");
@@ -295,19 +293,13 @@ void ArchetypeFactory::resolveEntityReference(
             auto resolvedI = entities.find(id);
             if (resolvedI != entities.end()) {
                 if (resolvedI->second.createdEntity != nullptr) {
-                    attr = Atlas::Message::Element(
-                            resolvedI->second.createdEntity);
+                    attr = Atlas::Message::Element(resolvedI->second.createdEntity);
                     return;
                 } else {
-                    log(WARNING,
-                            String::compose(
-                                    "Attribute '%1' refers to an entity which wasn't created.",
-                                    id));
+                    log(WARNING, String::compose("Attribute '%1' refers to an entity which wasn't created.", id));
                 }
             } else {
-                log(WARNING,
-                        String::compose("Could not find entity with id '%1'.",
-                                id));
+                log(WARNING, String::compose("Could not find entity with id '%1'.", id));
             }
         }
         //If it's a map we need to process all child elements too
@@ -332,8 +324,7 @@ void ArchetypeFactory::sendInitialSight(LocatedEntity& entity)
     entity.sendWorld(sight);
 }
 
-void ArchetypeFactory::sendThoughts(LocatedEntity& entity,
-        std::vector<Atlas::Message::Element>& thoughts)
+void ArchetypeFactory::sendThoughts(LocatedEntity& entity, std::vector<Atlas::Message::Element>& thoughts)
 {
     //Send any thoughts.
     //Note that we currently only allow for thoughts for the top entity,
@@ -391,9 +382,7 @@ void ArchetypeFactory::updateProperties()
 
     for (auto& child_factory : m_children) {
         child_factory->m_thoughts = m_thoughts;
-        child_factory->m_thoughts.insert(child_factory->m_thoughts.end(),
-                child_factory->m_classThoughts.begin(),
-                child_factory->m_classThoughts.end());
+        child_factory->m_thoughts.insert(child_factory->m_thoughts.end(), child_factory->m_classThoughts.begin(), child_factory->m_classThoughts.end());
 
         child_factory->m_entities = m_entities;
 

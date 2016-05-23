@@ -144,6 +144,16 @@ class ArchetypeFactory: public EntityKit
         bool parseEntities(const Atlas::Message::ListType& entitiesElement,
                 std::map<std::string, EntityCreation>& entities);
 
+        /**
+         * Creates a Think-Set operation which adds knowledge about the "origin" to the entity.
+         * The "origin" is the position where the entity is created.
+         * This only applies if the position of the entity is valid.
+         * @param entity An entity.
+         * @return A list containing one or zero thoughts.
+         */
+        std::vector<Atlas::Message::Element> createOriginLocationThought(const LocatedEntity& entity);
+
+
     public:
         explicit ArchetypeFactory();
         virtual ~ArchetypeFactory();
@@ -172,7 +182,7 @@ class ArchetypeFactory: public EntityKit
 
         /// @brief Thought definitions.
         ///
-        /// This is a combination of the entities defined for this instance
+        /// This is a combination of the thoughts defined for this instance
         /// as well as for all parents.
         /// Note that the thoughts, as of now, only are applied to the first
         /// defined entity.
