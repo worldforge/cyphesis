@@ -480,7 +480,7 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     // we are not moving, then something has gone wrong.
     if (!m_location.velocity().isValid() ||
         m_location.velocity().sqrMag() < WFMath::numeric_constants<WFMath::CoordType>::epsilon()) {
-        log(ERROR, "Update got for entity not moving");
+        log(ERROR, "Update got for entity not moving. " + describeEntity());
         return;
     }
 
@@ -611,7 +611,7 @@ void Thing::LookOperation(const Operation & op, OpVector & res)
 {
     LocatedEntity * from = BaseWorld::instance().getEntity(op->getFrom());
     if (from == nullptr) {
-        log(ERROR, "Look op has invalid from");
+        log(ERROR, "Look op has invalid from." + describeEntity());
         return;
     }
     // Register the entity with the world router as perceptive.
@@ -629,7 +629,7 @@ void Thing::LookOperation(const Operation & op, OpVector & res)
             u->setRefno(op->getSerialno());
         }
         res.push_back(u);
-        log(WARNING, "Entity being looked at don't belong to any Domain, so sights cannot be determined.");
+        log(WARNING, "Entity being looked at don't belong to any Domain, so sights cannot be determined. " + describeEntity());
     }
 }
 

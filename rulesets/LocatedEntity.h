@@ -310,6 +310,13 @@ class LocatedEntity : public Router {
         return sp;
     }
 
+    /**
+     * Generates a string describing this entity, used for debugging.
+     *
+     * @return A string describing the entity in more detail.
+     */
+    std::string describeEntity() const;
+
     /// Signal indicating that this entity has been changed
     sigc::signal<void> updated;
 

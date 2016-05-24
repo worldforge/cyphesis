@@ -308,3 +308,25 @@ void LocatedEntity::merge(const MapType & ent)
         setAttr(key, I->second);
     }
 }
+
+std::string LocatedEntity::describeEntity() const
+{
+    std::stringstream ss;
+    Element nameAttr;
+    int nameResult = getAttrType("name", nameAttr, Element::TYPE_STRING);
+    ss << getId();
+    if (m_type) {
+        ss << "(" << m_type->name();
+        if (nameResult == 0) {
+            ss << ",'" << nameAttr.String() << "'";
+        }
+        ss << ")";
+    } else {
+        if (nameResult == 0) {
+            ss << "('" << nameAttr.String() << "')";
+        }
+    }
+
+    return ss.str();
+}
+

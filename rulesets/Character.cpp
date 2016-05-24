@@ -338,7 +338,7 @@ int Character::linkExternal(Link * link)
 int Character::unlinkExternal(Link * link)
 {
     if (m_externalMind == 0) {
-        log(ERROR, "Character is not connected.");
+        log(ERROR, "Character is not connected. " + describeEntity());
         return -1;
     }
 
@@ -407,7 +407,7 @@ void Character::clearTask(OpVector & res)
     TasksProperty * tp = modPropertyClass<TasksProperty>(TASKS);
 
     if (tp == 0) {
-        log(NOTICE, "Clearing task when no property exists");
+        log(NOTICE, "Clearing task when no property exists. " + describeEntity());
         return;
     }
 
@@ -457,7 +457,7 @@ void Character::TickOperation(const Operation & op, OpVector & res)
                     return;
                 }
             } else {
-                log(ERROR, "Character::TickOperation: No serialno in tick arg");
+                log(ERROR, "Character::TickOperation: No serialno in tick arg. " + describeEntity());
             }
             Location return_location;
             if (m_movement.getUpdatedLocation(return_location)) {
@@ -476,7 +476,7 @@ void Character::TickOperation(const Operation & op, OpVector & res)
             TasksProperty * tp = modPropertyClass<TasksProperty>(TASKS);
 
             if (tp == 0) {
-                log(ERROR, "Tick for task, but not tasks property");
+                log(ERROR, "Tick for task, but not tasks property. " + describeEntity());
                 return;
             }
 
@@ -486,12 +486,13 @@ void Character::TickOperation(const Operation & op, OpVector & res)
             // Do nothing. Passed to mind.
         } else {
             debug(std::cout << "Tick to unknown subsystem " << arg->getName()
-                            << " arrived" << std::endl << std::flush;);
+                            << " arrived. " << describeEntity() << std::endl << std::flush
+            ;);
         }
     } else {
         // METABOLISE
         metabolise(res);
-        
+
         // TICK
         Tick tickOp;
         tickOp->setTo(getId());
@@ -502,7 +503,8 @@ void Character::TickOperation(const Operation & op, OpVector & res)
 
 void Character::TalkOperation(const Operation & op, OpVector & res)
 {
-    debug( std::cout << "Character::Operation(Talk)" << std::endl<<std::flush;);
+    debug(std::cout << "Character::Operation(Talk) " << describeEntity() << std::endl << std::flush
+    ;);
     Sound s;
     s->setArgs1(op);
     res.push_back(s);
@@ -511,7 +513,7 @@ void Character::TalkOperation(const Operation & op, OpVector & res)
 void Character::NourishOperation(const Operation & op, OpVector & res)
 {
     if (op->getArgs().empty()) {
-        error(op, "Nourish has no argument", res, getId());
+        error(op, "Nourish has no argument.", res, getId());
         return;
     }
     const Root & arg = op->getArgs().front();
@@ -542,7 +544,8 @@ void Character::NourishOperation(const Operation & op, OpVector & res)
 
 void Character::UseOperation(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Got Use op" << std::endl << std::flush;);
+    debug(std::cout << "Got Use op. " << describeEntity() << std::endl << std::flush
+    ;);
 
     TasksProperty * tp = modPropertyClass<TasksProperty>(TASKS);
 
@@ -557,13 +560,13 @@ void Character::UseOperation(const Operation & op, OpVector & res)
     // Are we going to modify this really?
     EntityProperty * rhw = modPropertyClass<EntityProperty>(RIGHT_HAND_WIELD);
     if (rhw == 0) {
-        error(op, "Character::UseOp No tool wielded, no right_hand_wield property found.", res, getId());
+        error(op, "Character::UseOp No tool wielded, no right_hand_wield property found", res, getId());
         return;
     }
 
     LocatedEntity * tool = rhw->data().get();
     if (tool == 0) {
-        error(op, "Character::UseOp No tool wielded, no entity found.", res, getId());
+        error(op, "Character::UseOp No tool wielded, no entity found", res, getId());
         return;
     }
     // FIXME Get a tool id from the op attributes?
@@ -574,37 +577,36 @@ void Character::UseOperation(const Operation & op, OpVector & res)
 
     // Determine the operations this tool supports
     if (tool->getAttr("operations", toolOpAttr) != 0) {
-        log(NOTICE, "Character::UseOp Attempt to use something not a tool");
+        log(NOTICE, "Character::UseOp Attempt to use something not a tool. " + describeEntity());
         return;
     }
 
     if (!toolOpAttr.isList()) {
-        log(ERROR, "Character::UseOp Tool has non list operations list");
+        log(ERROR, "Character::UseOp Tool has non list operations list. " + describeEntity());
         return;
     }
     const ListType & toolOpList = toolOpAttr.asList();
     if (toolOpList.empty()) {
-        log(ERROR, "Character::UseOp Tool operation list is empty");
+        log(ERROR, "Character::UseOp Tool operation list is empty. " + describeEntity());
         return;
     }
     ListType::const_iterator J = toolOpList.begin();
     ListType::const_iterator Jend = toolOpList.end();
     assert(J != Jend);
     if (!(*J).isString()) {
-        log(ERROR, "Character::UseOp Tool operation list is malformed");
+        log(ERROR, "Character::UseOp Tool operation list is malformed. " + describeEntity());
         return;
     }
     op_type = (*J).String();
-    debug(std::cout << "default tool op is " << op_type << std::endl
-                                                        << std::flush;);
+    debug(std::cout << "default tool op is " << op_type << std::endl << std::flush
+    ;);
     for (; J != Jend; ++J) {
         if (!(*J).isString()) {
-            log(ERROR, "Character::UseOp Tool has non string in operations list");
+            log(ERROR, "Character::UseOp Tool has non string in operations list." + describeEntity());
         } else {
             toolOps.insert((*J).String());
         }
     }
-
 
     RootEntity entity_arg(0);
 
@@ -617,14 +619,13 @@ void Character::UseOperation(const Operation & op, OpVector & res)
     const Root & arg = args.front();
     const std::string & argtype = arg->getObjtype();
     if (argtype == "op") {
-        if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) ||
-            (arg->getParents().empty())) {
+        if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) || (arg->getParents().empty())) {
             error(op, "Use arg op has malformed parents", res, getId());
             return;
         }
         op_type = arg->getParents().front();
-        debug(std::cout << "Got op type " << op_type << " from arg"
-                        << std::endl << std::flush;);
+        debug(std::cout << "Got op type " << op_type << " from arg" << std::endl << std::flush
+        ;);
         if (toolOps.find(op_type) == toolOps.end()) {
             error(op, "Use op is not permitted by tool", res, getId());
             return;
@@ -676,47 +677,39 @@ void Character::UseOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    debug(std::cout << "Using tool " << tool->getType() << " on "
-                    << target->getId()
-                    << " with " << op_type << " action."
-                    << std::endl << std::flush;);
+    debug(std::cout << "Using tool " << tool->getType() << " on " << target->getId() << " with " << op_type << " action." << std::endl << std::flush
+    ;);
 
     Root obj = Atlas::Objects::Factories::instance()->createObject(op_type);
     if (!obj.isValid()) {
-        log(ERROR,
-            String::compose("Character::UseOperation Unknown op type "
-                            "\"%1\" requested by \"%2\" tool.",
-                            op_type, tool->getType()));
+        log(ERROR, String::compose("Character::UseOperation Unknown op type "
+                "\"%1\" requested by \"%2\" tool. %3", op_type, tool->getType(), describeEntity()));
         return;
     }
     Operation rop = smart_dynamic_cast<Operation>(obj);
     if (!rop.isValid()) {
         log(ERROR, String::compose("Character::UseOperation Op type "
-                                   "\"%1\" requested by %2 tool, "
-                                   "but it is not an operation type",
-                                   op_type, tool->getType()));
+                "\"%1\" requested by %2 tool, "
+                "but it is not an operation type. %3", op_type, tool->getType(), describeEntity()));
         // FIXME Think hard about how this error is reported. Would the error
         // make it back to the client if we made an error response?
         return;
     } else if (!target->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        debug(std::cout << "No target" << std::endl << std::flush;);
+        debug(std::cout << "No target" << std::endl << std::flush
+        ;);
     } else {
         rop->setArgs1(target);
     }
 
     rop->setTo(tool->getId());
 
-    LocatedEntity * target_ent =
-          BaseWorld::instance().getEntity(entity_arg->getId());
+    LocatedEntity * target_ent = BaseWorld::instance().getEntity(entity_arg->getId());
     if (target_ent == 0) {
         error(op, "Character::UseOperation Target does not exist", res, getId());
         return;
     }
 
-    Task * task = BaseWorld::instance().activateTask(tool->getType()->name(),
-                                                     op_type,
-                                                     target_ent,
-                                                     *this);
+    Task * task = BaseWorld::instance().activateTask(tool->getType()->name(), op_type, target_ent, *this);
     if (task != NULL) {
         startTask(task, rop, res);
     }
@@ -766,15 +759,14 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
 
     if (m_contains == 0 || m_contains->find(item) == m_contains->end()) {
         error(op, String::compose("Wield arg %1(%2) is not in inventory "
-                                  "of %3(%4)", 
-                                  item->getType()->name(), id,
-                                  getType()->name(), getId()), res, getId());
+                "of %3(%4)", item->getType()->name(), id, getType()->name(), getId()), res, getId());
         return;
     }
 
     Element worn_attr;
     if (item->getAttr("worn", worn_attr) == 0) {
-        debug(std::cout << "Got wield for a garment" << std::endl << std::flush;);
+        debug(std::cout << "Got wield for a garment" << std::endl << std::flush
+        ;);
 
         if (worn_attr.isString()) {
             OutfitProperty * outfit = requirePropertyClass<OutfitProperty>(OUTFIT);
@@ -783,7 +775,7 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
 
             outfit->setFlags(flag_unsent);
         } else {
-            log(WARNING, "Got clothing with non-string worn attribute.");
+            log(WARNING, "Got clothing with non-string worn attribute. " + describeEntity());
             return;
         }
         // FIXME Implement adding stuff to the outfit propert, as efficiently
@@ -792,7 +784,8 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         // looked up here, and fix the GuiseProperty code so it does not
         // need a repeat lookup
     } else {
-        debug(std::cout << "Got wield for a tool" << std::endl << std::flush;);
+        debug(std::cout << "Got wield for a tool" << std::endl << std::flush
+        ;);
 
         EntityProperty * rhw = requirePropertyClass<EntityProperty>(RIGHT_HAND_WIELD);
         // FIXME Make sure we don't stay linked to the previous wielded
@@ -808,7 +801,8 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
 
         m_rightHandWieldConnection = item->containered.connect(sigc::hide<0>(sigc::mem_fun(this, &Character::wieldDropped)));
 
-        debug(std::cout << "Wielding " << item->getId() << std::endl << std::flush;);
+        debug(std::cout << "Wielding " << item->getId() << std::endl << std::flush
+        ;);
     }
 
     Update update;
@@ -840,16 +834,14 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
     const TasksProperty * atp = attacker->getPropertyClass<TasksProperty>(TASKS);
     if (atp != 0 && atp->busy()) {
         log(ERROR, String::compose("AttackOperation: Attack op aborted "
-                                   "because attacker %1(%2) busy.",
-                                   attacker->getId(), attacker->getType()));
+                "because attacker %1(%2) busy.", attacker->getId(), attacker->getType()));
         return;
     }
 
     TasksProperty * tp = requirePropertyClass<TasksProperty>(TASKS);
     if (tp != 0 && tp->busy()) {
         log(ERROR, String::compose("AttackOperation: Attack op aborted "
-                                   "because defender %1(%2) busy.",
-                                   getId(), getType()));
+                "because defender %1(%2) busy.", getId(), getType()));
         return;
     }
 
@@ -879,14 +871,14 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
 
 void Character::ActuateOperation(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Got Actuate op" << std::endl << std::flush;);
+    debug(std::cout << "Got Actuate op" << std::endl << std::flush
+    ;);
 
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
         error(op, "Character::mindActuateOp No arg.", res, getId());
         return;
     }
-
 
     RootEntity entity_arg(0);
 
@@ -901,14 +893,13 @@ void Character::ActuateOperation(const Operation & op, OpVector & res)
     const Root & arg = args.front();
     const std::string & argtype = arg->getObjtype();
     if (argtype == "op") {
-        if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) ||
-            (arg->getParents().empty())) {
+        if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) || (arg->getParents().empty())) {
             error(op, "Use arg op has malformed parents", res, getId());
             return;
         }
         op_type = arg->getParents().front();
-        debug(std::cout << "Got op type " << op_type << " from arg"
-                        << std::endl << std::flush;);
+        debug(std::cout << "Got op type " << op_type << " from arg" << std::endl << std::flush
+        ;);
         // Check against valid ops
         Operation arg_op = smart_dynamic_cast<Operation>(arg);
         if (!arg_op.isValid()) {
@@ -957,17 +948,17 @@ void Character::ActuateOperation(const Operation & op, OpVector & res)
 
     // Determine the actions this device supports
     if (device->getAttr("actions", deviceOpAttr) != 0) {
-        log(NOTICE, "Character::mindActuateOp Attempt to actuate something not a device");
+        log(NOTICE, "Character::mindActuateOp Attempt to actuate something not a device. " + describeEntity());
         return;
     }
 
     if (!deviceOpAttr.isList()) {
-        log(ERROR, "Character::mindActuateOp device has non list operations list");
+        log(ERROR, "Character::mindActuateOp device has non list operations list. " + describeEntity());
         return;
     }
     const ListType & deviceOpList = deviceOpAttr.asList();
     if (deviceOpList.empty()) {
-        log(ERROR, "Character::mindActuateOp device operation list is empty");
+        log(ERROR, "Character::mindActuateOp device operation list is empty. " + describeEntity());
         return;
     }
     ListType::const_iterator J = deviceOpList.begin();
@@ -976,7 +967,7 @@ void Character::ActuateOperation(const Operation & op, OpVector & res)
 
     for (; J != Jend; ++J) {
         if (!(*J).isString()) {
-            log(ERROR, "Character::mindActuateOp device has non string in operations list");
+            log(ERROR, "Character::mindActuateOp device has non string in operations list. " + describeEntity());
         } else {
             deviceOps.insert((*J).String());
         }
@@ -989,24 +980,20 @@ void Character::ActuateOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    debug(std::cout << "Actuating device " << device->getType()
-                    << " with " << op_type << " action."
-                    << std::endl << std::flush;);
+    debug(std::cout << "Actuating device " << device->getType() << " with " << op_type << " action." << std::endl << std::flush
+    ;);
 
     Root obj = Atlas::Objects::Factories::instance()->createObject(op_type);
     if (!obj.isValid()) {
-        log(ERROR,
-            String::compose("Character::mindActuateOperation Unknown op type "
-                            "\"%1\" requested by \"%2\" device.",
-                            op_type, device->getType()));
+        log(ERROR, String::compose("Character::mindActuateOperation Unknown op type "
+                "\"%1\" requested by \"%2\" device. %3", op_type, device->getType(), describeEntity()));
         return;
     }
     Operation rop = smart_dynamic_cast<Operation>(obj);
     if (!rop.isValid()) {
         log(ERROR, String::compose("Character::mindActuateOperation Op type "
-                                   "\"%1\" requested by %2 device, "
-                                   "but it is not an operation type",
-                                   op_type, device->getType()));
+                "\"%1\" requested by %2 device, "
+                "but it is not an operation type. %3", op_type, device->getType(), describeEntity()));
         // FIXME Think hard about how this error is reported. Would the error
         // make it back to the client if we made an error response?
         return;
@@ -1044,18 +1031,15 @@ void Character::RelayOperation(const Operation & op, OpVector & res)
         }
     } else {
         if (op->getArgs().empty()) {
-            log(ERROR, "Character::RelayOperation no args.");
+            log(ERROR, "Character::RelayOperation no args. " + describeEntity());
             return;
         }
-        Operation relayedOp = Atlas::Objects::smart_dynamic_cast<Operation>(
-                op->getArgs().front());
+        Operation relayedOp = Atlas::Objects::smart_dynamic_cast<Operation>(op->getArgs().front());
 
         if (!relayedOp.isValid()) {
-            log(ERROR,
-                    "Character::RelayOperation first arg is not an operation.");
+            log(ERROR, "Character::RelayOperation first arg is not an operation. " + describeEntity());
             return;
         }
-
 
         //If a relay op has a refno, it's a response to a Relay op previously sent out to another
         //entity, and we should send the incoming relayed operation to the mind.
@@ -1064,15 +1048,13 @@ void Character::RelayOperation(const Operation & op, OpVector & res)
             //from a random entity or its mind.
             auto I = m_relays.find(op->getRefno());
             if (I == m_relays.end()) {
-                log(WARNING,
-                        "Character::RelayOperation could not find registrered Relay with refno.");
+                log(WARNING, "Character::RelayOperation could not find registrered Relay with refno. " + describeEntity());
                 return;
             }
 
             //Make sure that this op really comes from the entity the original Relay op was sent to.
             if (op->getFrom() != I->second.destination) {
-                log(WARNING,
-                        "Character::RelayOperation got relay op with mismatching 'from'.");
+                log(WARNING, "Character::RelayOperation got relay op with mismatching 'from'. " + describeEntity());
                 return;
             }
 
@@ -1097,8 +1079,7 @@ void Character::RelayOperation(const Operation & op, OpVector & res)
 
             //Check if the mind should handle the relayed operation; else we'll just let the
             //standard Entity relay code do it's thing.
-            if (!world2mind(relayedOp))
-            {
+            if (!world2mind(relayedOp)) {
                 //This operation won't be sent to the mind, we'll pass it on to the standard
                 //relay method which will generate a Sight as response.
                 Entity::RelayOperation(op, res);
@@ -1113,7 +1094,7 @@ void Character::RelayOperation(const Operation & op, OpVector & res)
 
             //Extract the contained operation, and register the relay into m_relays
             if (op->isDefaultSerialno()) {
-                log(ERROR, "Character::RelayOperation no serial number.");
+                log(ERROR, "Character::RelayOperation no serial number. " + describeEntity());
                 return;
             }
 
@@ -1147,14 +1128,14 @@ void Character::RelayOperation(const Operation & op, OpVector & res)
     }
 }
 
-
 /// \brief Filter an Actuate operation coming from the mind
 ///
 /// @param op The operation to be filtered.
 /// @param res The filtered result is returned here.
 void Character::mindActuateOperation(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Got Actuate op from mind" << std::endl << std::flush;);
+    debug(std::cout << "Got Actuate op from mind" << std::endl << std::flush
+    ;);
 
     op->setTo(getId());
     res.push_back(op);
@@ -1168,12 +1149,12 @@ void Character::mindAttackOperation(const Operation & op, OpVector & res)
 {
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
-        log(ERROR, "mindAttackOperation: attack op has no argument");
+        log(ERROR, "mindAttackOperation: attack op has no argument. " + describeEntity());
         return;
     }
     const Root & arg = args.front();
     if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        log(ERROR, "mindAttackOperation: attack op arg has no ID");
+        log(ERROR, "mindAttackOperation: attack op arg has no ID. " + describeEntity());
         return;
     }
     const std::string & id = arg->getId();
@@ -1201,7 +1182,8 @@ void Character::mindSetupOperation(const Operation & op, OpVector & res)
 /// @param res The filtered result is returned here.
 void Character::mindUseOperation(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Got Use op from mind" << std::endl << std::flush;);
+    debug(std::cout << "Got Use op from mind" << std::endl << std::flush
+    ;);
     op->setTo(getId());
     res.push_back(op);
 }
@@ -1220,7 +1202,8 @@ void Character::mindUpdateOperation(const Operation & op, OpVector & res)
 /// @param res The filtered result is returned here.
 void Character::mindWieldOperation(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Got Wield op from mind" << std::endl << std::flush;);
+    debug(std::cout << "Got Wield op from mind" << std::endl << std::flush
+    ;);
     op->setTo(getId());
     res.push_back(op);
 }
@@ -1244,19 +1227,20 @@ void Character::mindTickOperation(const Operation & op, OpVector & res)
 /// @param res The filtered result is returned here.
 void Character::mindMoveOperation(const Operation & op, OpVector & res)
 {
-    debug( std::cout << "Character::mind_move_op" << std::endl << std::flush;);
+    debug(std::cout << "Character::mind_move_op" << std::endl << std::flush
+    ;);
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
-        log(ERROR, "mindMoveOperation: move op has no argument");
+        log(ERROR, "mindMoveOperation: move op has no argument. " + describeEntity());
         return;
     }
     const RootEntity arg = smart_dynamic_cast<RootEntity>(args.front());
     if (!arg.isValid()) {
-        log(ERROR, "mindMoveOperation: Arg is not an entity");
+        log(ERROR, "mindMoveOperation: Arg is not an entity. " + describeEntity());
         return;
     }
     if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        log(ERROR, "mindMoveOperation: Arg has no ID");
+        log(ERROR, "mindMoveOperation: Arg has no ID. " + describeEntity());
         return;
     }
     Element stamina_attr;
@@ -1268,7 +1252,8 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     }
     const std::string & other_id = arg->getId();
     if (other_id != getId()) {
-        debug( std::cout << "Moving something else. " << other_id << std::endl << std::flush;);
+        debug(std::cout << "Moving something else. " << other_id << std::endl << std::flush
+        ;);
         LocatedEntity * other = BaseWorld::instance().getEntity(other_id);
         if (other == 0) {
             Unseen u;
@@ -1285,7 +1270,8 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         if (other->getAttr(MASS, mass) != 0 || !mass.isFloat()) {
             // FIXME Check against strength
             // || mass.Float() > m_statistics.get("strength"));
-            debug( std::cout << "We can't move this. Just too heavy" << std::endl << std::flush;);
+            debug(std::cout << "We can't move this. Just too heavy" << std::endl << std::flush
+            ;);
             //TODO: send op back to the mind informing it that it was too heavy to move.
             return;
         }
@@ -1297,7 +1283,8 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     if (arg->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
         new_loc = arg->getLoc();
     } else {
-        debug( std::cout << "Parent not set" << std::endl << std::flush;);
+        debug(std::cout << "Parent not set" << std::endl << std::flush
+        ;);
     }
     Point3D new_pos;
     Vector3D new_velocity;
@@ -1305,37 +1292,38 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     try {
         if (arg->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
             fromStdVector(new_pos, arg->getPos());
-            debug( std::cout << "pos set to " << new_pos << std::endl << std::flush;);
+            debug(std::cout << "pos set to " << new_pos << std::endl << std::flush
+            ;);
         }
 
         if (arg->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
             fromStdVector(new_velocity, arg->getVelocity());
-            debug( std::cout << "vel set to " << new_velocity
-                             << std::endl << std::flush;);
+            debug(std::cout << "vel set to " << new_velocity << std::endl << std::flush
+            ;);
         }
 
         Element orientation_attr;
         if (arg->copyAttr("orientation", orientation_attr) == 0) {
             new_orientation.fromAtlas(orientation_attr);
-            debug( std::cout << "ori set to " << new_orientation << std::endl << std::flush;);
+            debug(std::cout << "ori set to " << new_orientation << std::endl << std::flush
+            ;);
             if (!new_orientation.isValid()) {
                 log(ERROR, "Invalid orientation from client. Ignoring");
             }
         }
-    }
-    catch (Atlas::Message::WrongTypeException&) {
-        log(ERROR, "EXCEPTION: mindMoveOperation: Malformed move operation");
+    } catch (Atlas::Message::WrongTypeException&) {
+        log(ERROR, "EXCEPTION: mindMoveOperation: Malformed move operation. " + describeEntity());
         return;
-    }
-    catch (...) {
-        log(ERROR, "EXCEPTION: mindMoveOperation: Unknown exception thrown");
+    } catch (...) {
+        log(ERROR, "EXCEPTION: mindMoveOperation: Unknown exception thrown. " + describeEntity());
         return;
     }
 
-    debug( std::cout << ":" << new_loc << ":" << m_location.m_loc->getId()
-                     << ":" << std::endl << std::flush;);
+    debug(std::cout << ":" << new_loc << ":" << m_location.m_loc->getId() << ":" << std::endl << std::flush
+    ;);
     if (!new_loc.empty() && (new_loc != m_location.m_loc->getId())) {
-        debug(std::cout << "Changing loc" << std::endl << std::flush;);
+        debug(std::cout << "Changing loc" << std::endl << std::flush
+        ;);
         LocatedEntity * target_loc = BaseWorld::instance().getEntity(new_loc);
         if (target_loc == 0) {
             Unseen u;
@@ -1356,7 +1344,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
             // Convert target into our current frame of reference.
             new_pos = m_location.pos() + distance;
         } else {
-            log(WARNING, "mindMoveOperation: Argument changes LOC, but no POS specified. Not sure this makes any sense");
+            log(WARNING, "mindMoveOperation: Argument changes LOC, but no POS specified. Not sure this makes any sense. " + describeEntity());
         }
     }
     // Movement within current loc. Work out the speed and stuff and
@@ -1386,7 +1374,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
             upright_direction[cZ] = 0;
             if (upright_direction.mag() > 0) {
                 upright_direction.normalize();
-                new_orientation = quaternionFromTo(Vector3D(1,0,0), upright_direction, Vector3D(0,0,1));
+                new_orientation = quaternionFromTo(Vector3D(1, 0, 0), upright_direction, Vector3D(0, 0, 1));
                 debug_print("Orientation: " << new_orientation);
             }
         }
@@ -1403,26 +1391,24 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     // direction is already a unit vector
     if (new_pos.isValid()) {
         m_movement.setTarget(new_pos);
-        debug(std::cout << "Target" << new_pos
-                        << std::endl << std::flush;);
+        debug(std::cout << "Target" << new_pos << std::endl << std::flush
+        ;);
     }
     if (direction.isValid()) {
         ret_location.m_velocity = direction;
         ret_location.m_velocity *= vel_mag;
-        debug(std::cout << "Velocity" << ret_location.velocity()
-                        << std::endl << std::flush;);
+        debug(std::cout << "Velocity" << ret_location.velocity() << std::endl << std::flush
+        ;);
     }
     ret_location.m_orientation = new_orientation;
-    debug(std::cout << "Orientation" << ret_location.orientation()
-                    << std::endl << std::flush;);
+    debug(std::cout << "Orientation" << ret_location.orientation() << std::endl << std::flush
+    ;);
 
     Operation move_op = m_movement.generateMove(ret_location);
     assert(move_op.isValid());
     res.push_back(move_op);
 
-    if (m_movement.hasTarget() &&
-        ret_location.velocity().isValid() &&
-        ret_location.velocity() != Vector3D::ZERO()) {
+    if (m_movement.hasTarget() && ret_location.velocity().isValid() && ret_location.velocity() != Vector3D::ZERO()) {
 
         Tick tickOp;
         Anonymous tick_arg;
@@ -1430,8 +1416,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         tick_arg->setName("move");
         tickOp->setArgs1(tick_arg);
         tickOp->setTo(getId());
-        tickOp->setFutureSeconds(m_movement.getTickAddition(ret_location.pos(),
-                                                     ret_location.velocity()));
+        tickOp->setFutureSeconds(m_movement.getTickAddition(ret_location.pos(), ret_location.velocity()));
 
         res.push_back(tickOp);
     }
@@ -1450,7 +1435,7 @@ void Character::mindSetOperation(const Operation & op, OpVector & res)
     log(WARNING, "Set op from mind");
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
-        log(ERROR, "mindSetOperation: set op has no argument");
+        log(ERROR, "mindSetOperation: set op has no argument. " + describeEntity());
         return;
     }
     const Root & arg = args.front();
@@ -1468,10 +1453,11 @@ void Character::mindSetOperation(const Operation & op, OpVector & res)
 /// @param res The filtered result is returned here.
 void Character::mindCombineOperation(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "mindCombineOperation" << std::endl << std::flush;);
+    debug(std::cout << "mindCombineOperation" << std::endl << std::flush
+    ;);
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
-        log(ERROR, "mindCombineOperation: combine op has no argument");
+        log(ERROR, "mindCombineOperation: combine op has no argument. " + describeEntity());
         return;
     }
     std::vector<Root>::const_iterator I = args.begin();
@@ -1518,7 +1504,7 @@ void Character::mindDivideOperation(const Operation & op, OpVector & res)
 {
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
-        log(ERROR, "mindDivideOperation: op has no argument");
+        log(ERROR, "mindDivideOperation: op has no argument. " + describeEntity());
         return;
     }
     std::vector<Root>::const_iterator I = args.begin();
@@ -1558,8 +1544,8 @@ void Character::mindImaginaryOperation(const Operation & op, OpVector & res)
 /// @param res The filtered result is returned here.
 void Character::mindTalkOperation(const Operation & op, OpVector & res)
 {
-    debug( std::cout << "Character::mindTalkOperation"
-                     << std::endl << std::flush;);
+    debug(std::cout << "Character::mindTalkOperation" << std::endl << std::flush
+    ;);
     op->setTo(getId());
     res.push_back(op);
 }
@@ -1570,8 +1556,8 @@ void Character::mindTalkOperation(const Operation & op, OpVector & res)
 /// @param res The filtered result is returned here.
 void Character::mindLookOperation(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Got look up from mind from [" << op->getFrom()
-               << "] to [" << op->getTo() << "]" << std::endl << std::flush;);
+    debug(std::cout << "Got look up from mind from [" << op->getFrom() << "] to [" << op->getTo() << "]" << std::endl << std::flush
+    ;);
     m_flags |= entity_perceptive;
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
@@ -1584,12 +1570,13 @@ void Character::mindLookOperation(const Operation & op, OpVector & res)
     } else {
         const Root & arg = args.front();
         if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-            log(ERROR, "mindLookOperation: Op has no ID");
+            log(ERROR, describeEntity() + " mindLookOperation: Op has no ID");
             return;
         }
         op->setTo(arg->getId());
     }
-    debug( std::cout <<"  now to ["<<op->getTo()<<"]"<<std::endl<<std::flush;);
+    debug(std::cout << "  now to [" << op->getTo() << "]" << std::endl << std::flush
+    ;);
     res.push_back(op);
 }
 
@@ -1601,12 +1588,12 @@ void Character::mindEatOperation(const Operation & op, OpVector & res)
 {
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
-        log(ERROR, "mindEatOperation: Op has no ARGS");
+        log(ERROR, describeEntity() + " mindEatOperation: Op has no ARGS");
         return;
     }
     const Root & arg = args.front();
     if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        log(ERROR, "mindEatOperation: Arg has no ID");
+        log(ERROR, describeEntity() + " mindEatOperation: Arg has no ID");
         return;
     }
     op->setTo(arg->getId());
@@ -1637,7 +1624,7 @@ void Character::mindTouchOperation(const Operation & op, OpVector & res)
     }
     const Root & arg = args.front();
     if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        log(ERROR, "mindTouchOperation: Op has no ID");
+        log(ERROR, describeEntity() + " mindTouchOperation: Op has no ID");
         return;
     }
     // Pass the modified touch operation on to target.
@@ -1655,7 +1642,7 @@ void Character::mindTouchOperation(const Operation & op, OpVector & res)
 /// @param res The filtered result is returned here.
 void Character::mindOtherOperation(const Operation & op, OpVector & res)
 {
-    log(WARNING, String::compose("Passing %1 op from mind through to world.", op->getParents().front()));
+    log(WARNING, String::compose("Passing '%1' op from mind through to world. %2", op->getParents().front(), describeEntity()));
     op->setTo(getId());
     res.push_back(op);
 }
@@ -1782,7 +1769,6 @@ bool Character::w2mCommuneOperation(const Operation & op)
     return true;
 }
 
-
 /// \brief Filter a Touch operation coming from the world to the mind
 ///
 /// @param op The operation to be filtered.
@@ -1813,19 +1799,20 @@ bool Character::w2mRelayOperation(const Operation & op)
 /// @param res The result of the operation is returned here.
 void Character::sendMind(const Operation & op, OpVector & res)
 {
-    debug( std::cout << "Character::sendMind(" << op->getParents().front() << ")" << std::endl << std::flush;);
+    debug(std::cout << "Character::sendMind(" << op->getParents().front() << ") " << describeEntity() << std::endl << std::flush
+    ;);
 
     if (m_externalMind != nullptr && m_externalMind->isLinked()) {
         OpVector mindRes;
         m_proxyMind->operation(op, mindRes);
         // Discard all the local results
 
-        debug(std::cout << "Sending to external mind" << std::endl
-                         << std::flush;);
+        debug(std::cout << "Sending to external mind" << std::endl << std::flush
+        ;);
         m_externalMind->operation(op, res);
     } else {
-        debug(std::cout << "Using ops from local mind"
-                        << std::endl << std::flush;);
+        debug(std::cout << "Using ops from local mind" << std::endl << std::flush
+        ;);
         m_proxyMind->operation(op, res);
     }
 }
@@ -1842,7 +1829,8 @@ void Character::sendMind(const Operation & op, OpVector & res)
 /// @param res The result of the operation is returned here.
 void Character::mind2body(const Operation & op, OpVector & res)
 {
-    debug( std::cout << "Character::mind2body(" << std::endl << std::flush;);
+    debug(std::cout << "Character::mind2body(" << op->getParents().front() << ") " << describeEntity() << std::endl << std::flush
+    ;);
 
     //Check if we have any relays registered for this op.
     if (!op->isDefaultRefno()) {
@@ -1867,79 +1855,76 @@ void Character::mind2body(const Operation & op, OpVector & res)
         }
     }
 
-
     if (!op->isDefaultTo()) {
 
-        log(ERROR, String::compose("Operation \"%1\" from mind with TO set.",
-                                   op->getParents().front()));
+        log(ERROR, String::compose("Operation \"%1\" from mind with TO set. %2", op->getParents().front(), describeEntity()));
         return;
     }
     if (!op->isDefaultFutureSeconds() && op->getClassNo() != Atlas::Objects::Operation::TICK_NO) {
         log(ERROR, String::compose("Operation \"%1\" from mind with "
-                                   "FUTURE_SECONDS set.",
-                                   op->getParents().front()));
+                "FUTURE_SECONDS set. %2", op->getParents().front(), describeEntity()));
     }
     auto op_no = op->getClassNo();
     switch (op_no) {
-        case Atlas::Objects::Operation::COMBINE_NO:
-            mindCombineOperation(op, res);
-            break;
-        case Atlas::Objects::Operation::CREATE_NO:
-            mindCreateOperation(op, res);
-            break;
-        case Atlas::Objects::Operation::DELETE_NO:
-            mindDeleteOperation(op, res);
-            break;
-        case Atlas::Objects::Operation::DIVIDE_NO:
-            mindDivideOperation(op, res);
-            break;
-        case Atlas::Objects::Operation::IMAGINARY_NO:
-            mindImaginaryOperation(op, res);
-            break;
-        case Atlas::Objects::Operation::LOOK_NO:
-            mindLookOperation(op, res);
-            break;
-        case Atlas::Objects::Operation::MOVE_NO:
-            mindMoveOperation(op, res);
-            break;
-        case Atlas::Objects::Operation::SET_NO:
-            mindSetOperation(op, res);
-            break;
-        case Atlas::Objects::Operation::TALK_NO:
-            mindTalkOperation(op, res);
-            break;
-        case Atlas::Objects::Operation::TOUCH_NO:
-            mindTouchOperation(op, res);
-            break;
-        case Atlas::Objects::Operation::USE_NO:
-            mindUseOperation(op, res);
-            break;
-        case Atlas::Objects::Operation::WIELD_NO:
-            mindWieldOperation(op, res);
-            break;
-        default:
-            if (op_no == Atlas::Objects::Operation::ACTUATE_NO) {
-                mindActuateOperation(op, res);
-            } else if (op_no == Atlas::Objects::Operation::ATTACK_NO) {
-                mindAttackOperation(op, res);
-            } else if (op_no == Atlas::Objects::Operation::EAT_NO) {
-                mindEatOperation(op, res);
-            } else if (op_no == Atlas::Objects::Operation::SETUP_NO) {
-                mindSetupOperation(op, res);
-            } else if (op_no == Atlas::Objects::Operation::TICK_NO) {
-                mindTickOperation(op, res);
-            } else if (op_no == Atlas::Objects::Operation::UPDATE_NO) {
-                mindUpdateOperation(op, res);
-            } else if (op_no == Atlas::Objects::Operation::THOUGHT_NO) {
-                mindThoughtOperation(op, res);
-            } else if (op_no == Atlas::Objects::Operation::GOAL_INFO_NO) {
-                mindGoalInfoOperation(op, res);
-            } else if (op_no == Atlas::Objects::Operation::THINK_NO) {
-                mindThinkOperation(op, res);
-            } else {
-                mindOtherOperation(op, res);
-            }
-            break;
+    case Atlas::Objects::Operation::COMBINE_NO:
+        mindCombineOperation(op, res);
+        break;
+    case Atlas::Objects::Operation::CREATE_NO:
+        mindCreateOperation(op, res);
+        break;
+    case Atlas::Objects::Operation::DELETE_NO:
+        mindDeleteOperation(op, res);
+        break;
+    case Atlas::Objects::Operation::DIVIDE_NO:
+        mindDivideOperation(op, res);
+        break;
+    case Atlas::Objects::Operation::IMAGINARY_NO:
+        mindImaginaryOperation(op, res);
+        break;
+    case Atlas::Objects::Operation::LOOK_NO:
+        mindLookOperation(op, res);
+        break;
+    case Atlas::Objects::Operation::MOVE_NO:
+        mindMoveOperation(op, res);
+        break;
+    case Atlas::Objects::Operation::SET_NO:
+        mindSetOperation(op, res);
+        break;
+    case Atlas::Objects::Operation::TALK_NO:
+        mindTalkOperation(op, res);
+        break;
+    case Atlas::Objects::Operation::TOUCH_NO:
+        mindTouchOperation(op, res);
+        break;
+    case Atlas::Objects::Operation::USE_NO:
+        mindUseOperation(op, res);
+        break;
+    case Atlas::Objects::Operation::WIELD_NO:
+        mindWieldOperation(op, res);
+        break;
+    default:
+        if (op_no == Atlas::Objects::Operation::ACTUATE_NO) {
+            mindActuateOperation(op, res);
+        } else if (op_no == Atlas::Objects::Operation::ATTACK_NO) {
+            mindAttackOperation(op, res);
+        } else if (op_no == Atlas::Objects::Operation::EAT_NO) {
+            mindEatOperation(op, res);
+        } else if (op_no == Atlas::Objects::Operation::SETUP_NO) {
+            mindSetupOperation(op, res);
+        } else if (op_no == Atlas::Objects::Operation::TICK_NO) {
+            mindTickOperation(op, res);
+        } else if (op_no == Atlas::Objects::Operation::UPDATE_NO) {
+            mindUpdateOperation(op, res);
+        } else if (op_no == Atlas::Objects::Operation::THOUGHT_NO) {
+            mindThoughtOperation(op, res);
+        } else if (op_no == Atlas::Objects::Operation::GOAL_INFO_NO) {
+            mindGoalInfoOperation(op, res);
+        } else if (op_no == Atlas::Objects::Operation::THINK_NO) {
+            mindThinkOperation(op, res);
+        } else {
+            mindOtherOperation(op, res);
+        }
+        break;
     }
 }
 
@@ -1951,7 +1936,8 @@ void Character::mind2body(const Operation & op, OpVector & res)
 /// useful information.
 bool Character::world2mind(const Operation & op)
 {
-    debug( std::cout << "Character::world2mind(" << op->getParents().front() << ")" << std::endl << std::flush;);
+    debug(std::cout << "Character::world2mind(" << op->getParents().front() << ") " << describeEntity() << std::endl << std::flush
+    ;);
     auto otype = op->getClassNo();
     POLL_OP_SWITCH(op, otype, w2m)
     return false;
@@ -1961,7 +1947,7 @@ void Character::filterExternalOperation(const Operation & op)
 {
     OpVector mres;
     mind2body(op, mres);
-    
+
     OpVector::const_iterator I = mres.begin();
     OpVector::const_iterator Iend = mres.end();
 
@@ -1979,10 +1965,12 @@ void Character::filterExternalOperation(const Operation & op)
 
 void Character::operation(const Operation & op, OpVector & res)
 {
-    debug( std::cout << "Character::operation(" << op->getParents().front() << ")" << std::endl << std::flush;);
+    debug(std::cout << "Character::operation(" << op->getParents().front() << ") " << describeEntity() << std::endl << std::flush
+    ;);
     Entity::operation(op, res);
     if (world2mind(op)) {
-        debug( std::cout << "Character::operation(" << op->getParents().front() << ") passed to mind" << std::endl << std::flush;);
+        debug(std::cout << "Character::operation(" << op->getParents().front() << ") passed to mind" << std::endl << std::flush
+        ;);
         OpVector mres;
         sendMind(op, mres);
         OpVector::const_iterator Iend = mres.end();
@@ -1994,10 +1982,11 @@ void Character::operation(const Operation & op, OpVector & res)
 
 void Character::externalOperation(const Operation & op, Link & link)
 {
-    debug( std::cout << "Character::externalOperation(" << op->getParents().front() << ")" << std::endl << std::flush;);
+    debug(std::cout << "Character::externalOperation(" << op->getParents().front() << ") " << describeEntity() << std::endl << std::flush
+    ;);
     if (linkExternal(&link) == 0) {
-        debug(std::cout << "Subscribing existing character" << std::endl
-                        << std::flush;);
+        debug(std::cout << "Subscribing existing character" << std::endl << std::flush
+        ;);
 
         Info info;
         Anonymous info_arg;
@@ -2006,9 +1995,7 @@ void Character::externalOperation(const Operation & op, Link & link)
 
         link.send(info);
 
-        logEvent(TAKE_CHAR, String::compose("%1 - %2 Taken character (%3)",
-                                            getId(), getId(),
-                                            getType()));
+        logEvent(TAKE_CHAR, String::compose("%1 - %2 Taken character (%3)", getId(), link.getId(), m_type ? m_type->name() : "none"));
     }
     filterExternalOperation(op);
 }
