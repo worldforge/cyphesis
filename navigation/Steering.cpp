@@ -207,6 +207,7 @@ void Steering::stopSteering()
 
     //reset path
     mPath = std::list<WFMath::Point<3>>();
+    mPathResult = 0;
     EventPathUpdated();
 
 }
