@@ -721,7 +721,10 @@ int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& e
     float pStartPos[] { start.x(), start.z(), start.y() };
     float pEndPos[] { end.x(), end.z(), end.y() };
     float startExtent[] { mAgentRadius * 2.2f, 100, mAgentRadius  * 2.2f}; //Only extend radius in horizontal plane
-    float endExtent[] { radius, 100, radius}; //Only extend radius in horizontal plane
+    //To make sure that the agent can move close enough we need to subtract the agent's radius from the destination radius.
+    //We'll also adjust with 0.95 to allow for some padding.
+    float destinationRadius = (radius - mAgentRadius) * 0.95f;
+    float endExtent[] { destinationRadius, 100, destinationRadius}; //Only extend radius in horizontal plane
 
 
     dtStatus status;
