@@ -310,7 +310,7 @@ class NPCMind(server.Mind):
         else:
             for arg in op.getArgs():
                 goal = self.find_goal(arg.id)
-                if goal:
+                if goal and goal is not None:
                     goal_infos.append(Entity(id=goal.str, report=goal.report()))
         
         goalInfoOp.setArgs(goal_infos)

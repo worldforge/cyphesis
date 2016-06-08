@@ -118,7 +118,7 @@ class Goal:
         if len(self.subgoals) > 0:
             subgoals=[]
             for sg in self.subgoals:
-                if type(sg)!=FunctionType and type(sg)!=MethodType:
+                if type(sg)!=FunctionType and type(sg)!=MethodType and sg is not None:
                     subgoals.append(sg.report())
             map["subgoals"]=subgoals
         
