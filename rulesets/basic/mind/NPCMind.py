@@ -73,6 +73,9 @@ class NPCMind(server.Mind):
         self.map.update_hooks_append("update_map")
         self.map.delete_hooks_append("delete_map")
         self.goal_id_counter=0
+    def print_debug(self, message):
+        """Prints a debug message using 'print', prepending the message with a description of the entity."""
+        print self.describeEntity() + ": " + message
     def find_op_method(self, op_id, prefix="",undefined_op_method=None):
         """find right operation to invoke"""
         if not undefined_op_method: undefined_op_method=self.undefined_op_method
@@ -232,7 +235,9 @@ class NPCMind(server.Mind):
         """Sends back information about the path."""
         thinkOp = Operation("think")
         path = []
-        for point in self.path:
+        myPath = self.path
+        #self.print_debug("path size: " + str(len(myPath)))
+        for point in myPath:
             path.append([point.x, point.y, point.z])
         
         thinkOp.setArgs([Entity(path=path)])

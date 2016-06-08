@@ -159,7 +159,7 @@ static PyObject * Mind_refreshPath(PyEntity * self)
 {
 #ifndef NDEBUG
     if (self->m_entity.l == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.mind2body");
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.refreshPath");
         return NULL;
     }
 #endif // NDEBUG
@@ -172,6 +172,24 @@ static PyObject * Mind_refreshPath(PyEntity * self)
 //    int result = awareMind->getSteering().updatePath(awareMind->m_location.m_pos);
     return Py_BuildValue("i", result);
 }
+
+static PyObject * Mind_describeEntity(PyEntity * self)
+{
+#ifndef NDEBUG
+    if (self->m_entity.l == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.mind2body");
+        return NULL;
+    }
+#endif // NDEBUG
+    AwareMind* awareMind = dynamic_cast<AwareMind*>(self->m_entity.m);
+    if (!awareMind) {
+        return NULL;
+    }
+
+    std::string result = awareMind->describeEntity();
+    return PyString_FromString(result.c_str());
+}
+
 
 static PyObject* Mind_setDestination(PyEntity* self, PyObject* args)
 {
@@ -225,6 +243,7 @@ static PyMethodDef Character_methods[] = {
 static PyMethodDef Mind_methods[] = {
     {"refreshPath",     (PyCFunction)Mind_refreshPath,  METH_NOARGS},
     {"setDestination",     (PyCFunction)Mind_setDestination,  METH_VARARGS},
+    {"describeEntity",     (PyCFunction)Mind_describeEntity,  METH_NOARGS},
     {NULL,              NULL}           /* sentinel */
 };
 
