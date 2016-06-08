@@ -25,7 +25,8 @@ class move_me(Goal):
     def __init__(self, location, radius=0.5, speed=1):
         Goal.__init__(self,"move me to certain place",
                       self.am_I_at_loc,
-                      [self.move_to_loc])
+                      [self.move_to_loc],
+                      self.is_reachable)
         self.location=location
         self.speed=speed
         self.radius=radius
@@ -78,7 +79,7 @@ class move_me(Goal):
     
     """ Checks that the movement goal is reachable. This will return true if the goal currently can't be reached, but there are still
     unaware tiles."""
-    def isMovementGoalReachable(self, me):
+    def is_reachable(self, me):
         pathResult = me.pathResult
         
         #me.print_debug("pathResult " + str(pathResult))
@@ -101,7 +102,8 @@ class move_me_area(Goal):
     def __init__(self, location, range=30):
         Goal.__init__(self, "move me to certain area",
                       self.am_I_in_area,
-                      [move_me(location, range),self.latch_loc])
+                      [move_me(location, range),self.latch_loc],
+                      self.is_reachable)
         self.location=location
         self.range=range
         self.square_range=range*range
@@ -140,6 +142,23 @@ class move_me_area(Goal):
     def latch_loc(self, me):
         #print "Latching at location"
         self.arrived=1
+        
+    """ Checks that the movement goal is reachable. This will return true if the goal currently can't be reached, but there are still
+    unaware tiles."""
+    def is_reachable(self, me):
+        pathResult = me.pathResult
+        
+        #me.print_debug("pathResult " + str(pathResult))
+        if pathResult < 0 and pathResult > -7:
+            #me.print_debug("unawareTilesCount " + str(me.unawareTilesCount))
+            
+            if me.unawareTilesCount == 0:
+                return False
+        elif pathResult == 0 and not self.am_I_at_loc(me):
+            #If there are no more segments in the path, but we haven't yet reached the destination then something is preventing us from reaching it
+            return False
+        
+        return True
 
 ############################ MOVE ME PLACE ####################################
 
@@ -538,7 +557,7 @@ class patrol(Goal):
     def __init__(self, locations, extragoal):
         Goal.__init__(self, "patrol an area",
                       false,
-                      [self.checkMovementGoalReachable,
+                      [self.check_move_valid,
                        move_me(locations[0]),
                        extragoal,
                        self.increment])
@@ -547,8 +566,8 @@ class patrol(Goal):
         self.count = len(locations)
         self.vars = ["stage", "list"]
     """ Checks that the movement goal is reachable; if not we should move on to the next patrol goal """
-    def checkMovementGoalReachable(self, me):
-        return self.subgoals[1].isMovementGoalReachable(me)
+    def check_move_valid(self, me):
+        return self.subgoals[1].is_valid(me)
     def increment(self, me):
         self.stage = self.stage + 1
         if self.stage >= self.count:
@@ -613,7 +632,7 @@ class roam(Goal):
     """Move in a non-specific way within one or many locations."""
     def __init__(self, radius, locations, extragoal=None):
         Goal.__init__(self,"roam randomly",false,
-                      [self.check_goal_reachable,
+                      [self.check_move_valid,
                        move_me(None),
                        extragoal,
                        self.do_roaming])
@@ -624,12 +643,12 @@ class roam(Goal):
     def do_roaming(self, me):
         move_me_goal = self.subgoals[1]
         #We need to set a new direction if we've either haven't set one, or if we've arrived.
-        if move_me_goal.location == None or move_me_goal.fulfilled(me) == True or move_me_goal.isMovementGoalReachable(me) == False:
+        if move_me_goal.location == None or move_me_goal.fulfilled(me) == True or move_me_goal.is_valid(me) == False:
             self.set_new_target(me, move_me_goal)
-    def check_goal_reachable(self, me):
+    def check_move_valid(self, me):
         move_me_goal = self.subgoals[1]
         #Check that the goal is reachable, and if not skip to a new goal
-        if move_me_goal.isMovementGoalReachable(me) == False:
+        if move_me_goal.is_valid(me) == False:
             self.set_new_target(me, move_me_goal)
     def set_new_target(self, me, move_me_goal):
         #me.print_debug("setting new target")
