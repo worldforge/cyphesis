@@ -76,6 +76,24 @@ class move_me(Goal):
          
         return Operation("operation")
     
+    """ Checks that the movement goal is reachable. This will return true if the goal currently can't be reached, but there are still
+    unaware tiles."""
+    def isMovementGoalReachable(self, me):
+        pathResult = me.pathResult
+        
+        #me.print_debug("pathResult " + str(pathResult))
+        if pathResult < 0 and pathResult > -7:
+            #me.print_debug("unawareTilesCount " + str(me.unawareTilesCount))
+            
+            if me.unawareTilesCount == 0:
+                return False
+        elif pathResult == 0 and not self.am_I_at_loc(me):
+            #If there are no more segments in the path, but we haven't yet reached the destination then something is preventing us from reaching it
+            return False
+        
+        return True
+    
+    
 ############################ MOVE ME AREA ####################################
 
 class move_me_area(Goal):
@@ -530,10 +548,7 @@ class patrol(Goal):
         self.vars = ["stage", "list"]
     """ Checks that the movement goal is reachable; if not we should move on to the next patrol goal """
     def checkMovementGoalReachable(self, me):
-        if me.pathResult < 0 and me.pathResult > -7:
-            if me.unawareTilesCount == 0:
-                #We could not find any path and all tiles have been resolved; we need to skip this waypoint.
-                self.increment(me)
+        return self.subgoals[1].isMovementGoalReachable(me)
     def increment(self, me):
         self.stage = self.stage + 1
         if self.stage >= self.count:
@@ -596,9 +611,10 @@ class accompany(Goal):
 
 class roam(Goal):
     """Move in a non-specific way within one or many locations."""
-    def __init__(self, radius, locations, extragoal):
+    def __init__(self, radius, locations, extragoal=None):
         Goal.__init__(self,"roam randomly",false,
-                      [move_me(None),
+                      [self.check_goal_reachable,
+                       move_me(None),
                        extragoal,
                        self.do_roaming])
         self.list = locations
@@ -606,13 +622,21 @@ class roam(Goal):
         self.count = len(locations)
         self.vars = ["radius", "list"]
     def do_roaming(self, me):
-        move_me_goal = self.subgoals[0]
+        move_me_goal = self.subgoals[1]
         #We need to set a new direction if we've either haven't set one, or if we've arrived.
-        if move_me_goal.location == None or move_me_goal.fulfilled(me) == True:
-            waypointName = self.list[randint(0, self.count - 1  )]
-            waypoint = me.get_knowledge("location",waypointName)
-            
-            loc = me.location.copy()
-            loc.coordinates=Point3D(map(lambda c:c+uniform(-self.radius,self.radius),
-                                         waypoint.coordinates))
-            move_me_goal.location = loc
+        if move_me_goal.location == None or move_me_goal.fulfilled(me) == True or move_me_goal.isMovementGoalReachable(me) == False:
+            self.set_new_target(me, move_me_goal)
+    def check_goal_reachable(self, me):
+        move_me_goal = self.subgoals[1]
+        #Check that the goal is reachable, and if not skip to a new goal
+        if move_me_goal.isMovementGoalReachable(me) == False:
+            self.set_new_target(me, move_me_goal)
+    def set_new_target(self, me, move_me_goal):
+        #me.print_debug("setting new target")
+        waypointName = self.list[randint(0, self.count - 1)]
+        waypoint = me.get_knowledge("location",waypointName)
+        
+        loc = me.location.copy()
+        loc.coordinates=Point3D(map(lambda c:c+uniform(-self.radius,self.radius),
+                                     waypoint.coordinates))
+        move_me_goal.location = loc
