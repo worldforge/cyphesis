@@ -33,6 +33,9 @@
 #include "rulesets/Python_Script_Utils.h"
 #include "rulesets/Py_Location.h"
 
+#include "stubs/navigation/stubAwareness.h"
+#include "stubs/navigation/stubSteering.h"
+
 #include <cassert>
 
 static PyObject * null_wrapper(PyObject * self, PyLocation * o)

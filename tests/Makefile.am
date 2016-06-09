@@ -108,8 +108,7 @@ SERVER_INTEGRATION_TESTS = WorldRouterintegration Rulesetintegration \
                            AccountConnectionCharacterintegration
 
 TOOLS_TESTS = AdminClienttest \
-              Flushertest OperationMonitortest \
-              MultiLineListFormattertest
+              Flushertest OperationMonitortest 
 
 PYTHON_TESTS = python_class
 
@@ -138,8 +137,22 @@ dist-hook:
 	(cd $(top_srcdir)/tests && tar cf - data) | (cd $(distdir) && tar xf -)
 
 #We want to build our object file which forces inclusion of pthreads
-noinst_LIBRARIES = libpthreadforce.a
+noinst_LIBRARIES = libpthreadforce.a libstubnavigation.a
 libpthreadforce_a_SOURCES = pthreadforce.cpp
+
+libstubnavigation_a_SOURCES = stubs/navigation/libstub.cpp
+
+PYTHON_TESTS_LIBS = $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/rulesets/libentityfilter.a \
+        libstubnavigation.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
 
 # TEST_TESTS
 
@@ -689,264 +702,84 @@ ExternalMindtest_LDADD = \
 
 Python_APItest_SOURCES = Python_APItest.cpp \
         python_testers.cpp python_testers.h
-Python_APItest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Python_APItest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_Quaterniontest_SOURCES = Py_Quaterniontest.cpp \
         python_testers.cpp python_testers.h
-Py_Quaterniontest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_Quaterniontest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_Vector3Dtest_SOURCES = Py_Vector3Dtest.cpp \
         python_testers.cpp python_testers.h
-Py_Vector3Dtest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_Vector3Dtest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_Point3Dtest_SOURCES = Py_Point3Dtest.cpp \
         python_testers.cpp python_testers.h
-Py_Point3Dtest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_Point3Dtest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_BBoxtest_SOURCES = Py_BBoxtest.cpp \
         python_testers.cpp python_testers.h
-Py_BBoxtest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_BBoxtest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_Locationtest_SOURCES = Py_Locationtest.cpp \
         python_testers.cpp python_testers.h
-Py_Locationtest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_Locationtest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_RootEntitytest_SOURCES = Py_RootEntitytest.cpp \
         python_testers.cpp python_testers.h
-Py_RootEntitytest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_RootEntitytest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_Operationtest_SOURCES = Py_Operationtest.cpp \
         python_testers.cpp python_testers.h
-Py_Operationtest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_Operationtest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_Oplisttest_SOURCES = Py_Oplisttest.cpp \
         python_testers.cpp python_testers.h
-Py_Oplisttest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_Oplisttest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_Thingtest_SOURCES = Py_Thingtest.cpp \
         TestPropertyManager.cpp TestPropertyManager.h \
         python_testers.cpp python_testers.h
-Py_Thingtest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_Thingtest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_Maptest_SOURCES = Py_Maptest.cpp \
         python_testers.cpp python_testers.h
-Py_Maptest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_Maptest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_Tasktest_SOURCES = Py_Tasktest.cpp \
         python_testers.cpp python_testers.h
-Py_Tasktest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_Tasktest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_Worldtest_SOURCES = Py_Worldtest.cpp \
         python_testers.cpp python_testers.h
-Py_Worldtest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_Worldtest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_Messagetest_SOURCES = Py_Messagetest.cpp \
         python_testers.cpp python_testers.h
-Py_Messagetest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_Messagetest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_WorldTimetest_SOURCES = Py_WorldTimetest.cpp \
         python_testers.cpp python_testers.h
-Py_WorldTimetest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_WorldTimetest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_Propertytest_SOURCES = Py_Propertytest.cpp \
         python_testers.cpp python_testers.h
-Py_Propertytest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_Propertytest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_TerrainPropertytest_SOURCES = Py_TerrainPropertytest.cpp \
         python_testers.cpp python_testers.h
-Py_TerrainPropertytest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_TerrainPropertytest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_TerrainModPropertytest_SOURCES = Py_TerrainModPropertytest.cpp \
         python_testers.cpp python_testers.h
-Py_TerrainModPropertytest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_TerrainModPropertytest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_Shapetest_SOURCES = Py_Shapetest.cpp \
         python_testers.cpp python_testers.h
-Py_Shapetest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_Shapetest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_Filtertest_SOURCES = Py_Filtertest.cpp \
 		python_testers.cpp python_testers.h
-Py_Filtertest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_Filtertest_LDADD = $(PYTHON_TESTS_LIBS)
 
 PythonWrappertest_SOURCES = PythonWrappertest.cpp
 PythonWrappertest_LDADD = \
@@ -954,16 +787,7 @@ PythonWrappertest_LDADD = \
 
 PythonEntityScripttest_SOURCES = PythonEntityScripttest.cpp \
         python_testers.cpp python_testers.h
-PythonEntityScripttest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+PythonEntityScripttest_LDADD = $(PYTHON_TESTS_LIBS)
 
 MindFactorytest_SOURCES = MindFactorytest.cpp
 MindFactorytest_LDADD = \
@@ -1142,15 +966,8 @@ Py_CreatorClienttest_LDADD = \
         $(top_builddir)/client/Py_CreatorClient.o \
         $(top_builddir)/client/Py_ObserverClient.o \
         $(top_builddir)/client/Python_ClientAPI.o \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS) $(NETWORK_LIBS)
+        $(PYTHON_TESTS_LIBS) \
+        $(NETWORK_LIBS)
 
 
 Py_ObserverClienttest_SOURCES = Py_ObserverClienttest.cpp \
@@ -1159,15 +976,8 @@ Py_ObserverClienttest_LDADD = \
         $(top_builddir)/client/Py_CreatorClient.o \
         $(top_builddir)/client/Py_ObserverClient.o \
         $(top_builddir)/client/Python_ClientAPI.o \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS) $(NETWORK_LIBS)
+        $(PYTHON_TESTS_LIBS) \
+         $(NETWORK_LIBS)
 
 ClientConnectiontest_SOURCES = ClientConnectiontest.cpp
 ClientConnectiontest_LDADD = \
@@ -1539,11 +1349,6 @@ OperationMonitortest_SOURCES = OperationMonitortest.cpp
 OperationMonitortest_LDADD = \
         $(top_builddir)/tools/OperationMonitor.o \
         $(top_builddir)/common/ClientTask.o
-
-MultiLineListFormattertest_SOURCES = MultiLineListFormattertest.cpp
-MultiLineListFormattertest_LDADD = \
-        $(top_builddir)/tools/MultiLineListFormatter.o
-
 
 # PYTHON_TESTS
 

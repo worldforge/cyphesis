@@ -201,7 +201,7 @@ void BaseMindMapEntityintegration::test_MemMapreadEntity_noloc()
     data->setLoc(tlve->getId());
 
     // Read in entity data the sets the LOC of e3 to tlve
-    m_mind->m_map.readEntity(e3, data);
+    m_mind->m_map.readEntity(e3, data, 0);
 
     ASSERT_EQUAL(e3->m_location.m_loc, tlve)
     ASSERT_TRUE(tlve->m_contains->find(e3) != tlve->m_contains->end());
@@ -231,7 +231,7 @@ void BaseMindMapEntityintegration::test_MemMapreadEntity_changeloc()
     data->setLoc(tlve->getId());
 
     // Read in entity data that changes the LOC of e3 from e2 to TLVE
-    m_mind->m_map.readEntity(e3, data);
+    m_mind->m_map.readEntity(e3, data, 0);
 
     ASSERT_EQUAL(e3->m_location.m_loc, tlve)
     ASSERT_TRUE(e2->m_contains->find(e3) == e2->m_contains->end());
@@ -312,12 +312,14 @@ void BaseMindMapEntityintegration::test_MemMapcheck()
     // We have set up e3 so it is due to be purged from memory.
     m_mind->m_map.check(time);
 
+    //TODO: Enable this check again, as we've disabled removal of entities from MemMap since there are issues
     // Check it has been removed
-    ASSERT_TRUE(e2->m_contains->find(e3) == e2->m_contains->end());
-    ASSERT_TRUE(tlve->m_contains->find(e3) == tlve->m_contains->end());
+    //ASSERT_TRUE(e2->m_contains->find(e3) == e2->m_contains->end());
+    //ASSERT_TRUE(tlve->m_contains->find(e3) == tlve->m_contains->end());
 
+    //TODO: Enable this check again, as we've disabled removal of entities from MemMap since there are issues
     // Check the reference we have is the only one remaining
-    ASSERT_NULL(e3->m_location.m_loc)
+    //ASSERT_NULL(e3->m_location.m_loc)
 
     //TODO: Enable this check again; it's disabled since we've disabled ref decrements in MemMap, since the knowledge code doesn't handle entity references correctly.
     //ASSERT_EQUAL(e3->checkRef(), 0);

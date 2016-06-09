@@ -130,4 +130,9 @@ std::vector<Atlas::Objects::Root> LocatedEntity::getThoughts() const
     return std::vector<Atlas::Objects::Root>();
 }
 
+std::string LocatedEntity::describeEntity() const
+{
+    return "";
+}
+
 #endif /* STUBLOCATEDENTITY_H_ */

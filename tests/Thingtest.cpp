@@ -413,6 +413,10 @@ std::vector<Atlas::Objects::Root> LocatedEntity::getThoughts() const
     return std::vector<Atlas::Objects::Root>();
 }
 
+std::string LocatedEntity::describeEntity() const
+{
+    return "";
+}
 
 void addToEntity(const Point3D & p, std::vector<double> & vd)
 {

@@ -24,6 +24,7 @@
 #include "modules/Location.h"
 
 #include <wfmath/axisbox.h>
+#include <wfmath/rotbox.h>
 #include <wfmath/point.h>
 
 #include <sigc++/signal.h>
