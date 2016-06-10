@@ -90,7 +90,10 @@ void World::LookOperation(const Operation & op, OpVector & res)
     // Register the entity with the world router as perceptive.
     BaseWorld::instance().addPerceptive(from);
 
-    auto domain = getMovementDomain();
+    Domain* domain = nullptr;
+    if (m_location.m_loc) {
+        domain = m_location.m_loc->getMovementDomain();
+    }
     if (domain) {
         domain->lookAtEntity(*from, *this, op, res);
     } else {

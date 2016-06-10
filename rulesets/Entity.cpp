@@ -310,9 +310,6 @@ Domain * Entity::getMovementDomain()
 {
     if (m_flags & entity_domain) {
         return getPropertyClass<DomainProperty>("domain")->getDomain(this);
-    }
-    if (m_location.m_loc) {
-        return m_location.m_loc->getMovementDomain();
     } else {
         return nullptr;
     }

@@ -242,7 +242,10 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     fromStdVector(m_location.m_pos, ent->getPos());
 
     //We can only move if there's a domain
-    auto domain = getMovementDomain();
+    Domain* domain = nullptr;
+    if (m_location.m_loc) {
+        domain = m_location.m_loc->getMovementDomain();
+    }
 
 
     //Check if we've moved between domains. First check if the location has changed, and if so
@@ -375,9 +378,11 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 /// @param res Resulting operations are returned here
 void Thing::checkVisibility(const Location & old_loc, OpVector & res)
 {
-    auto domain = getMovementDomain();
-    if (domain) {
-        domain->processVisibilityForMovedEntity(*this, old_loc, res);
+    if (m_location.m_loc) {
+        auto domain = m_location.m_loc->getMovementDomain();
+        if (domain) {
+            domain->processVisibilityForMovedEntity(*this, old_loc, res);
+        }
     }
 }
 
@@ -528,16 +533,19 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
         moving = m_motion->resolveCollision();
     }
 
+    Domain* domain = nullptr;
     // Adjust the position to world constraints - essentially fit
     // to the terrain height at this stage.
     // FIXME Get the constraints from the movement domain
-    auto domain = getMovementDomain();
-    if (domain) {
-        m_location.m_pos.z() = domain->constrainHeight(m_location.m_loc,
-                                                    m_location.pos(),
-                                                    "standing");
-    } else {
+    if (m_location.m_loc) {
+        domain = m_location.m_loc->getMovementDomain();
+        if (domain) {
+            m_location.m_pos.z() = domain->constrainHeight(m_location.m_loc,
+                                                        m_location.pos(),
+                                                        "standing");
+        } else {
 
+        }
     }
     m_location.update(current_time);
     m_flags &= ~(entity_pos_clean | entity_clean);
@@ -618,7 +626,17 @@ void Thing::LookOperation(const Operation & op, OpVector & res)
     BaseWorld::instance().addPerceptive(from);
 
     //Let the domain handle the Look op.
-    auto domain = getMovementDomain();
+    Domain* domain = nullptr;
+
+    //If the entity doing the looking is a direct child, use our domain.
+    //Otherwise use the domain of our parent.
+    if (from->m_location.m_loc == this) {
+        domain = getMovementDomain();
+    } else {
+        if (m_location.m_loc) {
+            domain = m_location.m_loc->getMovementDomain();
+        }
+    }
     if (domain) {
         domain->lookAtEntity(*from, *this, op, res);
     } else {

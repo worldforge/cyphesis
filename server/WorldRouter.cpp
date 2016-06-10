@@ -170,12 +170,14 @@ LocatedEntity * WorldRouter::addEntity(LocatedEntity * ent)
     if (ent->getAttrType("mode", mode_attr, Element::TYPE_STRING) == 0) {
         mode = mode_attr.String();
     }
-    Domain* movementDomain = ent->getMovementDomain();
-    if (movementDomain) {
-        ent->m_location.m_pos.z() = movementDomain->
-              constrainHeight(ent->m_location.m_loc,
-                              ent->m_location.pos(),
-                              mode);
+    if (ent->m_location.m_loc) {
+        Domain* movementDomain = ent->m_location.m_loc->getMovementDomain();
+        if (movementDomain) {
+            ent->m_location.m_pos.z() = movementDomain->
+                  constrainHeight(ent->m_location.m_loc,
+                                  ent->m_location.pos(),
+                                  mode);
+        }
     }
     ent->m_location.m_loc->makeContainer();
     bool cont_change = ent->m_location.m_loc->m_contains->empty();
@@ -521,13 +523,15 @@ void WorldRouter::operation(const Operation & op, LocatedEntity & from)
         deliverTo(op, *to_entity);
 
     } else if (broadcastPerception(op)) {
-        auto fromDomain = from.getMovementDomain();
-        if (fromDomain) {
-            // Where broadcasts go depends on type of op
-            for (auto& entity : m_perceptives) {
-                if (fromDomain->isEntityVisibleFor(*entity, from)) {
-                    op->setTo(entity->getId());
-                    deliverTo(op, *entity);
+        if (from.m_location.m_loc) {
+            Domain* fromDomain = from.m_location.m_loc->getMovementDomain();
+            if (fromDomain) {
+                // Where broadcasts go depends on type of op
+                for (auto& entity : m_perceptives) {
+                    if (fromDomain->isEntityVisibleFor(*entity, from)) {
+                        op->setTo(entity->getId());
+                        deliverTo(op, *entity);
+                    }
                 }
             }
         }
