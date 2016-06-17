@@ -23,6 +23,7 @@
 #include "DomainProperty.h"
 #include "PhysicalDomain.h"
 #include "VoidDomain.h"
+#include "InventoryDomain.h"
 #include "LocatedEntity.h"
 
 PropertyInstanceState<Domain> DomainProperty::sInstanceState;
@@ -59,6 +60,10 @@ void DomainProperty::apply(LocatedEntity * entity)
                 entity->setFlags(entity_domain);
             } else if (m_data == "void") {
                 domain = new VoidDomain(*entity);
+                sInstanceState.replaceState(entity, domain);
+                entity->setFlags(entity_domain);
+            } else if (m_data == "inventory") {
+                domain = new InventoryDomain(*entity);
                 sInstanceState.replaceState(entity, domain);
                 entity->setFlags(entity_domain);
             }

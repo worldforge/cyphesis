@@ -32,6 +32,8 @@ class Thing : public Entity {
   protected:
     void checkVisibility(const Location &, OpVector &);
     void updateProperties(const Operation & op, OpVector & res);
+
+    bool is
   public:
 
     explicit Thing(const std::string & id, long intId);

@@ -86,6 +86,10 @@
         <float name="default">0</float>
         <string name="visibility">public</string>
       </map>
+      <map name="domain">
+        <string name="default">inventory</string>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">mobile</string>
     <string name="objtype">class</string>
