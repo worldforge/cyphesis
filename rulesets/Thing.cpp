@@ -61,7 +61,7 @@ using Atlas::Objects::Operation::Unseen;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 
-static const bool debug_flag = false;
+static const bool debug_flag = true;
 
 /// \brief Constructor for physical or tangible entities.
 Thing::Thing(const std::string & id, long intId) :
@@ -421,6 +421,7 @@ void Thing::updateProperties(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Generating property update" << std::endl << std::flush;);
 
+    bool updateContains = false;
     Anonymous set_arg;
     set_arg->setId(getId());
 
@@ -436,8 +437,32 @@ void Thing::updateProperties(const Operation & op, OpVector & res)
 
             prop->add(J->first, set_arg);
             prop->resetFlags(flag_unsent | per_clean);
-            resetFlags(entity_clean);
+
+            if (J->first == "outfit" || J->first == "right_hand_wield") {
+                updateContains = true;
+            }
             // FIXME Make sure we handle separately for private properties
+        }
+    }
+
+    resetFlags(entity_clean);
+
+    if (updateContains) {
+        if (m_contains != nullptr) {
+
+            //If the observed entity has a domain, let it decide child visibility.
+            //Otherwise show all children.
+            Domain* domain = getMovementDomain();
+            if (domain) {
+                domain->processVisibilityForMovedEntity(*this, m_location, res);
+//                Atlas::Message::ListType containsList;
+//                for (auto& entry : *m_contains) {
+//                    if (domain->isEntityVisibleFor(*m_location.m_loc, *entry)) {
+//                        containsList.push_back(entry->getId());
+//                    }
+//                }
+//                set_arg->setAttr("contains", containsList);
+            }
         }
     }
 
@@ -615,6 +640,104 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     onUpdated();
 }
 
+bool Thing::lookAtEntity(const Operation & op, OpVector & res, LocatedEntity* watcher) const {
+    //First find the domain which contains the watcher, as well as if the watcher has a domain itself.
+    LocatedEntity* domainEntity = watcher->m_location.m_loc;
+    Domain* watcherParentDomain = nullptr;
+
+    while (domainEntity != nullptr) {
+        watcherParentDomain = domainEntity->getMovementDomain();
+        if (watcherParentDomain) {
+            break;
+        }
+    }
+
+    Domain* watcherOwnDomain = watcher->getMovementDomain();
+
+    //Now walk upwards from the entity being looked at until we reach either the watcher's parent domain entity,
+    //or the watcher itself if it has a domain
+    std::vector<const LocatedEntity*> toAncestors;
+    toAncestors.reserve(4);
+    const LocatedEntity* ancestorEntity = this;
+    const Domain* ancestorDomain = nullptr;
+
+
+    while (true) {
+
+        if (ancestorEntity == watcher && watcherOwnDomain) {
+            ancestorDomain = watcherOwnDomain;
+            break;
+        }
+        if (ancestorEntity == domainEntity) {
+            ancestorDomain = watcherParentDomain;
+            break;
+        }
+        ancestorEntity = ancestorEntity->m_location.m_loc;
+        if (ancestorEntity == nullptr) {
+            //Could find no common domain ancestor; can't be seen.
+            return false;
+        }
+        toAncestors.push_back(ancestorEntity);
+    }
+
+    //Now walk back down the toAncestors list, checking if all entities on the way can be seen.
+    for (auto I = toAncestors.rbegin(); I != toAncestors.rend(); ++I) {
+        const LocatedEntity* ancestor = *I;
+        if (!ancestorDomain->isEntityVisibleFor(*watcher, *ancestor)) {
+            return false;
+        }
+        if (ancestor->getFlags() & entity_domain) {
+            ancestorDomain = ancestor->getMovementDomain();
+        }
+    }
+
+    generateSightOp(*watcher, *ancestorDomain, op, res);
+    return true;
+}
+
+void Thing::generateSightOp(const LocatedEntity& observingEntity, const Domain& domain, const Operation & originalLookOp, OpVector& res) const
+{
+    debug_print("Thing::generateSightOp() observer " << observingEntity.describeEntity() << " observed " << this->describeEntity());
+
+    Sight s;
+
+    Anonymous sarg;
+    addToEntity(sarg);
+    s->setArgs1(sarg);
+
+    if (m_contains != nullptr) {
+
+        //If the observed entity has a domain, let it decide child visibility.
+        //Otherwise show all children.
+        const Domain* observedEntityDomain = getMovementDomain();
+        std::list<std::string> & contlist = sarg->modifyContains();
+        if (observedEntityDomain) {
+            contlist.clear();
+            for (auto& entry : *m_contains) {
+                if (observedEntityDomain->isEntityVisibleFor(observingEntity, *entry)) {
+                    debug_print("child entity " << entry->describeEntity() << " of entity " << describeEntity() << " visible to observer " << observingEntity.describeEntity());
+                    contlist.push_back(entry->getId());
+                }
+            }
+        }
+//            if (contlist.empty()) {
+//                sarg->removeAttr("contains");
+//            }
+    }
+
+    //If the observer is looking at the domain entity we should hide anything above it, since the observer won't be able to see that anyway.
+    if (&domain == getMovementDomain()) {
+        sarg->removeAttr("loc");
+    }
+
+    s->setTo(originalLookOp->getFrom());
+    if (!originalLookOp->isDefaultSerialno()) {
+        s->setRefno(originalLookOp->getSerialno());
+    }
+    res.push_back(s);
+
+}
+
 void Thing::LookOperation(const Operation & op, OpVector & res)
 {
     LocatedEntity * from = BaseWorld::instance().getEntity(op->getFrom());
@@ -625,147 +748,218 @@ void Thing::LookOperation(const Operation & op, OpVector & res)
     // Register the entity with the world router as perceptive.
     BaseWorld::instance().addPerceptive(from);
 
-    //If the entity doing looking is the parent of this entity, allow it
-    if (m_location.m_loc == from) {
-        //TODO: generate op
-        return;
-    } else {
-        //A common case is child entities looking at parents, so check for that
-        if (from->m_location.m_loc == this) {
-            //Sight is allowed
-            //TODO: generate op
-            return;
-        } else {
-            //Another common case is entities with the same parent. Check for that
-            if (from->m_location.m_loc && from->m_location.m_loc == m_location.m_loc) {
-                Domain* domain = getMovementDomain();
-                domain->lookAtEntity(from, *this, op, res);
-                return;
-            }
-
-            Domain* parentDomain = nullptr;
-            LocatedEntity* parentEntityWithDomain = from->m_location.m_loc;
-            while (parentEntityWithDomain != nullptr) {
-                parentDomain = parentEntityWithDomain->getMovementDomain();
-                if (parentDomain) {
-                    break;
-                }
-            }
-
-            //Now we need to walk upwards from the entity being looked at ("this") and see if any ancestor is either
-            //the observing entity ("from") or the parent domain entity.
-            std::vector<LocatedEntity*> toAncestors(4);
-            LocatedEntity* toAncestor = this->m_location.m_loc;
-            while (toAncestor != nullptr) {
-                if (toAncestor == from) {
-                    //The entity being looked at ("this") is a direct child of the entity doing the looking ("from").
-                    return;
-                } else if (toAncestor == parentEntityWithDomain) {
-                    //The entity being looked at ("this") belongs to the same domain as the entity doing the looking ("from").
-                    return;
-                }
-                toAncestors.push_back(toAncestor);
-            }
-
-
-
-
-
-
-
-
-
-
-
-
-
-            //Now we need to find a common ancestor and work with that.
-
-            //First build a list of all ancestors of the entity being looked at
-            std::vector<LocatedEntity*> toAncestors(10);
-            LocatedEntity* toAncestor = m_location.m_loc;
-            while (toAncestor != nullptr) {
-                if (toAncestor == from) {
-                    //A special case; the entity doing the looking is one of the direct ancestors.
-                    //We now just have to walk through the list of toAncestors and verify that we can watch them.
-                    return;
-                }
-                toAncestors.push_back(toAncestor);
-                toAncestor = toAncestor->m_location.m_loc;
-            }
-
-            //Now walk upwards from the entity doing the looking, looking for a common ancestor
-            //And checking on the way if it's allowed to see the ancestor entity
-            LocatedEntity* fromAncestor = from->m_location.m_loc;
-            while (fromAncestor != nullptr) {
-                LocatedEntity* parent = from->m_location.m_loc;
-                if (parent) {
-                    Domain* domain = parent->getMovementDomain();
-
-                    auto I = std::find(toAncestors.begin(), toAncestors.end(), parent);
-                    if (I != toAncestors.end()) {
-                        //Found an ancestor
-
-                        LocatedEntity* childEntity = nullptr;
-                        do {
-                            I--;
-                            if (I != toAncestors.begin()) {
-                                childEntity = *I;
-                            } else {
-                                childEntity = this;
-                            }
-                            if (domain && !domain->isEntityVisibleFor(fromAncestor, childEntity)) {
-                                return false;
-                            }
-                        } while (childEntity != nullptr);
-                    }
-
-                    //If the parent has a domain we stop here. If the parent is an ancestor we can go back down the toAncestors chain.
-                    //But we don't allow visibility up to the parent of a domain entity.
-                    if (domain) {
-                        return false;
-                    }
-                }
-                fromAncestor = parent;
-            }
-
-
-
-
-
-//            LocatedEntity* fromAncestor = &from;
-//            toAncestors.push_back(toAncestor);
-//            while (fromAncestor != nullptr) {
-//                while (toAncestor != nullptr) {
-//                    if (toAncestor == fromAncestor) {
+//    //If the entity doing the looking is the parent of this entity, allow it
+//    if (m_location.m_loc == from) {
+//        //TODO: generate op
+//        return;
+//    } else {
 //
-//                    }
-//                    toAncestor = toAncestor->m_location.m_loc;
-//                    toAncestors.push_back(toAncestor);
-//                }
-//                toAncestor = m_location.m_loc;
-//                toAncestors.clear();
+//
+//        //First find the domain which contains the watcher, as well as if the watcher has a domain itself.
+//        LocatedEntity* domainEntity = from->m_location.m_loc;
+//        Domain* watcherParentDomain = nullptr;
+//
+//        while (domainEntity != nullptr) {
+//            watcherParentDomain = domainEntity->getMovementDomain();
+//            if (watcherParentDomain) {
+//                break;
 //            }
-        }
-    }
+//        }
+//
+//        Domain* watcherOwnDomain = from->getMovementDomain();
+//
+//        //Now walk upwards from the entity being looked at until we reach either the watcher's parent domain entity,
+//        //or the watcher itself if it has a domain
+//        std::vector<LocatedEntity*> toAncestors(4);
+//        LocatedEntity* ancestorEntity = this;
+//        Domain* ancestorDomain = nullptr;
+//
+//
+//        while (true) {
+//            toAncestors.push_back(ancestorEntity);
+//
+//            if (ancestorEntity == from && watcherOwnDomain) {
+//                ancestorDomain = watcherOwnDomain;
+//                break;
+//            }
+//            if (ancestorEntity == domainEntity) {
+//                ancestorDomain = watcherParentDomain;
+//                break;
+//            }
+//            ancestorEntity = ancestorEntity->m_location.m_loc;
+//            if (ancestorEntity == nullptr) {
+//                //Could find no common domain ancestor; can't be seen.
+//                return;
+//            }
+//        }
+//
+//        //Now walk back down the toAncestors list, checking if all entities on the way can be seen.
+//        for (auto I = toAncestors.rbegin(); I != toAncestors.rend(); ++I) {
+//            LocatedEntity* ancestor = *I;
+//            if (!ancestorDomain->isEntityVisibleFor(*from, *ancestor)) {
+//                return;
+//            }
+//            if (ancestor->getFlags() & entity_domain) {
+//                ancestorDomain = ancestor->getMovementDomain();
+//            }
+//        }
+//
+//        ancestorDomain->lookAtEntity(*from, *this, op, res);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//        //A common case is child entities looking at parents, so check for that
+//        if (from->m_location.m_loc == this) {
+//            //Sight is allowed
+//            //TODO: generate op
+//            return;
+//        } else {
+//            //Another common case is entities with the same parent. Check for that
+//            if (from->m_location.m_loc && from->m_location.m_loc == m_location.m_loc) {
+//                Domain* domain = getMovementDomain();
+//                domain->lookAtEntity(from, *this, op, res);
+//                return;
+//            }
+//
+//            Domain* parentDomain = nullptr;
+//            LocatedEntity* parentEntityWithDomain = from->m_location.m_loc;
+//            while (parentEntityWithDomain != nullptr) {
+//                parentDomain = parentEntityWithDomain->getMovementDomain();
+//                if (parentDomain) {
+//                    break;
+//                }
+//            }
+//
+//            //Now we need to walk upwards from the entity being looked at ("this") and see if any ancestor is either
+//            //the observing entity ("from") or the parent domain entity.
+//            std::vector<LocatedEntity*> toAncestors(4);
+//            LocatedEntity* toAncestor = this->m_location.m_loc;
+//            while (toAncestor != nullptr) {
+//                if (toAncestor == from) {
+//                    //The entity being looked at ("this") is a direct child of the entity doing the looking ("from").
+//                    return;
+//                } else if (toAncestor == parentEntityWithDomain) {
+//                    //The entity being looked at ("this") belongs to the same domain as the entity doing the looking ("from").
+//                    return;
+//                }
+//                toAncestors.push_back(toAncestor);
+//            }
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//            //Now we need to find a common ancestor and work with that.
+//
+//            //First build a list of all ancestors of the entity being looked at
+//            std::vector<LocatedEntity*> toAncestors(10);
+//            LocatedEntity* toAncestor = m_location.m_loc;
+//            while (toAncestor != nullptr) {
+//                if (toAncestor == from) {
+//                    //A special case; the entity doing the looking is one of the direct ancestors.
+//                    //We now just have to walk through the list of toAncestors and verify that we can watch them.
+//                    return;
+//                }
+//                toAncestors.push_back(toAncestor);
+//                toAncestor = toAncestor->m_location.m_loc;
+//            }
+//
+//            //Now walk upwards from the entity doing the looking, looking for a common ancestor
+//            //And checking on the way if it's allowed to see the ancestor entity
+//            LocatedEntity* fromAncestor = from->m_location.m_loc;
+//            while (fromAncestor != nullptr) {
+//                LocatedEntity* parent = from->m_location.m_loc;
+//                if (parent) {
+//                    Domain* domain = parent->getMovementDomain();
+//
+//                    auto I = std::find(toAncestors.begin(), toAncestors.end(), parent);
+//                    if (I != toAncestors.end()) {
+//                        //Found an ancestor
+//
+//                        LocatedEntity* childEntity = nullptr;
+//                        do {
+//                            I--;
+//                            if (I != toAncestors.begin()) {
+//                                childEntity = *I;
+//                            } else {
+//                                childEntity = this;
+//                            }
+//                            if (domain && !domain->isEntityVisibleFor(fromAncestor, childEntity)) {
+//                                return false;
+//                            }
+//                        } while (childEntity != nullptr);
+//                    }
+//
+//                    //If the parent has a domain we stop here. If the parent is an ancestor we can go back down the toAncestors chain.
+//                    //But we don't allow visibility up to the parent of a domain entity.
+//                    if (domain) {
+//                        return false;
+//                    }
+//                }
+//                fromAncestor = parent;
+//            }
+//
+//
+//
+//
+//
+////            LocatedEntity* fromAncestor = &from;
+////            toAncestors.push_back(toAncestor);
+////            while (fromAncestor != nullptr) {
+////                while (toAncestor != nullptr) {
+////                    if (toAncestor == fromAncestor) {
+////
+////                    }
+////                    toAncestor = toAncestor->m_location.m_loc;
+////                    toAncestors.push_back(toAncestor);
+////                }
+////                toAncestor = m_location.m_loc;
+////                toAncestors.clear();
+////            }
+//        }
+//    }
+//
+//
+//
+//    //Let the domain handle the Look op.
+//    Domain* domain = nullptr;
+//
+//    //If the entity doing the looking is a direct child, use our domain.
+//    //Otherwise use the domain of our parent.
+//    if (from->m_location.m_loc == this) {
+//        domain = getMovementDomain();
+//    } else {
+//        if (m_location.m_loc) {
+//            domain = m_location.m_loc->getMovementDomain();
+//        }
+//    }
+
+    bool result = lookAtEntity(op, res, from);
 
 
-
-    //Let the domain handle the Look op.
-    Domain* domain = nullptr;
-
-    //If the entity doing the looking is a direct child, use our domain.
-    //Otherwise use the domain of our parent.
-    if (from->m_location.m_loc == this) {
-        domain = getMovementDomain();
-    } else {
-        if (m_location.m_loc) {
-            domain = m_location.m_loc->getMovementDomain();
-        }
-    }
-    if (domain) {
-        domain->lookAtEntity(*from, *this, op, res);
-    } else {
+    if (!result) {
         Unseen u;
         u->setTo(op->getFrom());
         u->setArgs(op->getArgs());
@@ -773,7 +967,6 @@ void Thing::LookOperation(const Operation & op, OpVector & res)
             u->setRefno(op->getSerialno());
         }
         res.push_back(u);
-        log(WARNING, "Entity being looked at don't belong to any Domain, so sights cannot be determined. " + describeEntity());
     }
 }
 

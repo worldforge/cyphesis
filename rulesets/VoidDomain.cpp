@@ -46,11 +46,6 @@ void VoidDomain::tick(double t)
 
 }
 
-void VoidDomain::lookAtEntity(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity, const Operation & originalLookOp, OpVector& res) const
-{
-    //Nothing can be seen
-}
-
 bool VoidDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const
 {
     //Nothing can be seen

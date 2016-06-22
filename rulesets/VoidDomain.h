@@ -34,10 +34,6 @@ class VoidDomain : public Domain
 
         virtual void tick(double t);
 
-        virtual void lookAtEntity(const LocatedEntity& observingEntity,
-                const LocatedEntity& observedEntity,
-                const Operation & originalLookOp, OpVector& res) const;
-
         virtual bool isEntityVisibleFor(const LocatedEntity& observingEntity,
                 const LocatedEntity& observedEntity) const;
 

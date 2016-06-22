@@ -95,7 +95,7 @@ void World::LookOperation(const Operation & op, OpVector & res)
         domain = m_location.m_loc->getMovementDomain();
     }
     if (domain) {
-        domain->lookAtEntity(*from, *this, op, res);
+        generateSightOp(*from, *domain, op, res);
     } else {
         Sight s;
 

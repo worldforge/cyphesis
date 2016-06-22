@@ -46,12 +46,6 @@ class TestDomain : public Domain
 
         }
 
-        void lookAtEntity(const LocatedEntity& observingEntity,
-                const LocatedEntity& observedEntity,
-                const Operation & originalLookOp, OpVector& res) const
-        {
-        }
-
         bool isEntityVisibleFor(
                 const LocatedEntity& observingEntity,
                 const LocatedEntity& observedEntity) const
