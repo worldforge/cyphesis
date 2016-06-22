@@ -504,6 +504,11 @@ Domain * Entity::getMovementDomain()
     return 0;
 }
 
+const Domain * Entity::getMovementDomain() const
+{
+    return 0;
+}
+
 void Entity::setType(const TypeNode* t)
 {
 

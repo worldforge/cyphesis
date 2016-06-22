@@ -285,6 +285,11 @@ Domain * LocatedEntity::getMovementDomain()
     return 0;
 }
 
+const Domain * LocatedEntity::getMovementDomain() const
+{
+    return 0;
+}
+
 void LocatedEntity::sendWorld(const Operation & op)
 {
 }

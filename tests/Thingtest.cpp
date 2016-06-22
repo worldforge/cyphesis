@@ -252,6 +252,12 @@ Domain * Entity::getMovementDomain()
     return new TestDomain(*this);
 }
 
+const Domain * Entity::getMovementDomain() const
+{
+    return nullptr;
+}
+
+
 void Entity::sendWorld(const Operation & op)
 {
 }
@@ -342,6 +348,11 @@ void LocatedEntity::destroy()
 }
 
 Domain * LocatedEntity::getMovementDomain()
+{
+    return 0;
+}
+
+const Domain * LocatedEntity::getMovementDomain() const
 {
     return 0;
 }
