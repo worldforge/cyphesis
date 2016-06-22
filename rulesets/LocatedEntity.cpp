@@ -214,8 +214,14 @@ void LocatedEntity::destroy()
 
 Domain * LocatedEntity::getMovementDomain()
 {
-    return 0;
+    return nullptr;
 }
+
+const Domain * LocatedEntity::getMovementDomain() const
+{
+    return nullptr;
+}
+
 
 /// \brief Send an operation to the world for dispatch.
 ///

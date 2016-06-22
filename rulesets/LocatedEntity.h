@@ -197,6 +197,7 @@ class LocatedEntity : public Router {
     virtual void destroy() = 0;
 
     virtual Domain * getMovementDomain();
+    virtual const Domain * getMovementDomain() const;
 
     virtual void sendWorld(const Operation & op);
 

@@ -315,6 +315,16 @@ Domain * Entity::getMovementDomain()
     }
 }
 
+const Domain * Entity::getMovementDomain() const
+{
+    if (m_flags & entity_domain) {
+        return getPropertyClass<DomainProperty>("domain")->getDomain(this);
+    } else {
+        return nullptr;
+    }
+}
+
+
 void Entity::sendWorld(const Operation & op)
 {
     BaseWorld::instance().message(op, *this);
