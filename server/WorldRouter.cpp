@@ -524,14 +524,15 @@ void WorldRouter::operation(const Operation & op, LocatedEntity & from)
 
     } else if (broadcastPerception(op)) {
         if (from.m_location.m_loc) {
-            Domain* fromDomain = from.m_location.m_loc->getMovementDomain();
-            if (fromDomain) {
-                // Where broadcasts go depends on type of op
-                for (auto& entity : m_perceptives) {
-                    if (fromDomain->isEntityVisibleFor(*entity, from)) {
+            // Where broadcasts go depends on type of op
+            for (auto& entity : m_perceptives) {
+                if (entity->m_location.m_loc) {
+                    Domain* entityDomain = entity->m_location.m_loc->getMovementDomain();
+                    if (entityDomain && entityDomain->isEntityVisibleFor(*entity, from)) {
                         op->setTo(entity->getId());
                         deliverTo(op, *entity);
                     }
+
                 }
             }
         }
