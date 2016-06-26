@@ -130,7 +130,7 @@ CorePropertyManager::CorePropertyManager()
     installProperty<ImmortalProperty>("immortal", "int");
     installProperty<RespawningProperty>("respawning", "string");
     installProperty<DefaultLocationProperty>("default_location", "int");
-    installProperty<DomainProperty>("domain", "int");
+    installProperty<DomainProperty>("domain", "string");
     installProperty<LimboProperty>("limbo", "int");
 
 }
