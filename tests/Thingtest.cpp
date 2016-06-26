@@ -257,6 +257,10 @@ const Domain * Entity::getMovementDomain() const
     return nullptr;
 }
 
+bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* watcher) const
+{
+    return true;
+}
 
 void Entity::sendWorld(const Operation & op)
 {

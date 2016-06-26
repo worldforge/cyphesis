@@ -33,8 +33,8 @@ class Thing : public Entity {
     void checkVisibility(const Location &, OpVector &);
     void updateProperties(const Operation & op, OpVector & res);
 
-    bool lookAtEntity(const Operation & op, OpVector & res, LocatedEntity* watcher) const;
-    void generateSightOp(const LocatedEntity& observingEntity, const Domain* domain, const Operation & originalLookOp, OpVector& res) const;
+    bool lookAtEntity(const Operation & op, OpVector & res, const LocatedEntity* watcher) const;
+    void generateSightOp(const LocatedEntity& observingEntity, const Operation & originalLookOp, OpVector& res) const;
 
   public:
 

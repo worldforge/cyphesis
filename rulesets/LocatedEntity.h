@@ -217,6 +217,14 @@ class LocatedEntity : public Router {
     /// \brief Removes a child from this entity.
     virtual void removeChild(LocatedEntity& childEntity);
 
+    /**
+     * @brief Determines if this entity is visible to another entity.
+     *
+     * @param watcher The other entity observing this entity, for which we want to determine visibility.
+     * @return True if this entity is visible to another entity.
+     */
+    bool isVisibleForOtherEntity(const LocatedEntity* watcher) const;
+
     /// \brief Get a property that is required to of a given type.
     template <class PropertyT>
     const PropertyT * getPropertyClass(const std::string & name) const
