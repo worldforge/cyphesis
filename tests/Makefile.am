@@ -69,7 +69,8 @@ RULESETS_INTEGRATION_TESTS = TerrainPropertyintegration \
                              StatisticsPropertyintegration \
                              BaseMindMapEntityintegration \
                              AreaPropertyintegration \
-                             SuspendedPropertyintegration
+                             SuspendedPropertyintegration \
+                             ThingIntegration
 
 CLIENT_TESTS = Py_CreatorClienttest Py_ObserverClienttest \
                ClientConnectiontest BaseClienttest \
@@ -958,6 +959,16 @@ SuspendedPropertyintegration_LDADD = \
         $(top_builddir)/rulesets/Entity.o \
         $(top_builddir)/rulesets/LocatedEntity.o \
         $(top_builddir)/common/libcommon.a
+        
+        
+ThingIntegration_SOURCES = ThingIntegration.cpp
+ThingIntegration_LDADD = \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS) $(NETWORK_LIBS)       
+        
 # CLIENT_TESTS
 
 Py_CreatorClienttest_SOURCES = Py_CreatorClienttest.cpp \
