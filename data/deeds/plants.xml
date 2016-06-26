@@ -177,7 +177,7 @@
 	          <!-- <float name="offset">0.5</float>  -->
 	          <list name="rotate">
 	              <float>0</float>
-	              <float>-0.7071</float>
+	              <float>0.7071</float>
 	              <float>0</float>
 	              <float>0.7071</float>
 	          </list>
@@ -645,7 +645,7 @@
 	          <!-- <float name="offset">0.5</float>  -->
 	          <list name="rotate">
 	              <float>0</float>
-	              <float>-0.7071</float>
+	              <float>0.7071</float>
 	              <float>0</float>
 	              <float>0.7071</float>
 	          </list>
