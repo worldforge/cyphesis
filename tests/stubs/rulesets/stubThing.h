@@ -57,7 +57,7 @@ bool Thing::lookAtEntity(const Operation & op, OpVector & res, LocatedEntity* wa
     return true;
 }
 
-void Thing::generateSightOp(const LocatedEntity& observingEntity, const Domain& domain, const Operation & originalLookOp, OpVector& res) const
+void Thing::generateSightOp(const LocatedEntity& observingEntity, const Domain* domain, const Operation & originalLookOp, OpVector& res) const
 {
 }
 

@@ -641,8 +641,16 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
 }
 
 bool Thing::lookAtEntity(const Operation & op, OpVector & res, LocatedEntity* watcher) const {
+
+    //Are we looking at ourselves?
+    if (watcher == this) {
+        generateSightOp(*watcher, nullptr, op, res);
+        return true;
+    }
+
     //First find the domain which contains the watcher, as well as if the watcher has a domain itself.
     LocatedEntity* domainEntity = watcher->m_location.m_loc;
+    LocatedEntity* topWatcherEntity = watcher;
     Domain* watcherParentDomain = nullptr;
 
     while (domainEntity != nullptr) {
@@ -650,12 +658,15 @@ bool Thing::lookAtEntity(const Operation & op, OpVector & res, LocatedEntity* wa
         if (watcherParentDomain) {
             break;
         }
+        topWatcherEntity = domainEntity;
+        domainEntity = domainEntity->m_location.m_loc;
     }
 
+    domainEntity = watcher->m_location.m_loc;
     Domain* watcherOwnDomain = watcher->getMovementDomain();
 
     //Now walk upwards from the entity being looked at until we reach either the watcher's parent domain entity,
-    //or the watcher itself if it has a domain
+    //or the watcher itself
     std::vector<const LocatedEntity*> toAncestors;
     toAncestors.reserve(4);
     const LocatedEntity* ancestorEntity = this;
@@ -663,8 +674,9 @@ bool Thing::lookAtEntity(const Operation & op, OpVector & res, LocatedEntity* wa
 
 
     while (true) {
+        toAncestors.push_back(ancestorEntity);
 
-        if (ancestorEntity == watcher && watcherOwnDomain) {
+        if (ancestorEntity == watcher) {
             ancestorDomain = watcherOwnDomain;
             break;
         }
@@ -672,30 +684,35 @@ bool Thing::lookAtEntity(const Operation & op, OpVector & res, LocatedEntity* wa
             ancestorDomain = watcherParentDomain;
             break;
         }
+        if (ancestorEntity == topWatcherEntity) {
+            break;
+        }
         ancestorEntity = ancestorEntity->m_location.m_loc;
         if (ancestorEntity == nullptr) {
-            //Could find no common domain ancestor; can't be seen.
+            //Could find no common ancestor; can't be seen.
             return false;
         }
-        toAncestors.push_back(ancestorEntity);
     }
 
     //Now walk back down the toAncestors list, checking if all entities on the way can be seen.
+    //Visibility is only checked for the first immediate child of a domain entity, further grandchildren are considered visible if the top one is, until
+    //another domain is reached.
     for (auto I = toAncestors.rbegin(); I != toAncestors.rend(); ++I) {
         const LocatedEntity* ancestor = *I;
-        if (!ancestorDomain->isEntityVisibleFor(*watcher, *ancestor)) {
-            return false;
+        if (ancestorDomain) {
+            if (!ancestorDomain->isEntityVisibleFor(*watcher, *ancestor)) {
+                return false;
+            }
         }
-        if (ancestor->getFlags() & entity_domain) {
-            ancestorDomain = ancestor->getMovementDomain();
-        }
+
+        ancestorDomain = ancestor->getMovementDomain();
     }
 
-    generateSightOp(*watcher, *ancestorDomain, op, res);
+    generateSightOp(*watcher, ancestorDomain, op, res);
     return true;
 }
 
-void Thing::generateSightOp(const LocatedEntity& observingEntity, const Domain& domain, const Operation & originalLookOp, OpVector& res) const
+void Thing::generateSightOp(const LocatedEntity& observingEntity, const Domain* domain, const Operation & originalLookOp, OpVector& res) const
 {
     debug_print("Thing::generateSightOp() observer " << observingEntity.describeEntity() << " observed " << this->describeEntity());
 
@@ -726,7 +743,7 @@ void Thing::generateSightOp(const LocatedEntity& observingEntity, const Domain& 
     }
 
     //If the observer is looking at the domain entity we should hide anything above it, since the observer won't be able to see that anyway.
-    if (&domain == getMovementDomain()) {
+    if (domain && domain == getMovementDomain()) {
         sarg->removeAttr("loc");
     }
 
