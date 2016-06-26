@@ -337,6 +337,9 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
             // Update velocity
             auto propelProp = requirePropertyClassFixed<PropelProperty>();
             fromStdVector(propelProp->data(), ent->getVelocity());
+            //FIXME: For now set the velocity directly; in the future we want instead to only set the "propel" property,
+            //and have the velocity being calculated by letting Bullet apply all forces.
+            fromStdVector(m_location.m_velocity, ent->getVelocity());
             // Velocity is not persistent so has no flag
         }
 
