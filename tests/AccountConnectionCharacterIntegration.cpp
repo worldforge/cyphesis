@@ -298,6 +298,7 @@ bool restricted_flag;
 #include "stubs/rulesets/stubBaseMind.h"
 #include "stubs/rulesets/stubMemEntity.h"
 #include "stubs/rulesets/stubMemMap.h"
+#include "stubs/rulesets/stubPropelProperty.h"
 #include "stubs/server/stubExternalMindsManager.h"
 #include "stubs/server/stubExternalMindsConnection.h"
 #include "stubs/common/stubOperationsDispatcher.h"

@@ -148,6 +148,7 @@ int main()
 #include "stubs/common/stubBaseWorld.h"
 #include "stubs/modules/stubLocation.h"
 #include "stubs/rulesets/stubTransformsProperty.h"
+#include "stubs/rulesets/stubPropelProperty.h"
 
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),

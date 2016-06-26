@@ -60,7 +60,7 @@ InventoryDomain::~InventoryDomain()
 {
 }
 
-float InventoryDomain::constrainHeight(LocatedEntity * parent, const Point3D & pos, const std::string & mode)
+float InventoryDomain::constrainHeight(LocatedEntity& entity, LocatedEntity * parent, const Point3D & pos, const std::string & mode)
 {
     //Nothing can move
     return 0.0f;

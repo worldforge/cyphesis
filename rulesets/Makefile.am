@@ -70,7 +70,6 @@ librulesetentity_a_SOURCES = \
 			     VoidDomain.cpp VoidDomain.h \
 			     ProxyMind.cpp ProxyMind.h \
 			     InventoryDomain.cpp InventoryDomain.h \
-			     PlantableProperty.cpp PlantableProperty.h \
 			     TransformsProperty.cpp TransformsProperty.h \
 			     ModeProperty.cpp ModeProperty.h \
 			     ModeSpecProperty.cpp ModeSpecProperty.h \

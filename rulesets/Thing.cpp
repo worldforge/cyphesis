@@ -21,6 +21,7 @@
 #include "Motion.h"
 #include "Domain.h"
 #include "TransformsProperty.h"
+#include "PropelProperty.h"
 
 #include "common/BaseWorld.h"
 #include "common/log.h"
@@ -335,7 +336,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         if (ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
             // Update velocity
             auto propelProp = requirePropertyClassFixed<PropelProperty>();
-            fromStdVector(propelProp->mData, ent->getVelocity());
+            fromStdVector(propelProp->data(), ent->getVelocity());
             // Velocity is not persistent so has no flag
         }
 

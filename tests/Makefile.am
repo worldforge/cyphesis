@@ -109,9 +109,8 @@ SERVER_INTEGRATION_TESTS = WorldRouterintegration Rulesetintegration \
                            TrustedConnectionCreatorintegration \
                            AccountConnectionCharacterintegration
 
-TOOLS_TESTS = AdminClienttest \
-              Flushertest OperationMonitortest \
-              MultiLineListFormatterTest
+TOOLS_TESTS = AdminClientTest \
+              FlusherTest OperationMonitorTest
 
 PYTHON_TESTS = python_class
 
@@ -723,83 +722,83 @@ ExternalMindTest_LDADD = \
 
 Python_APITest_SOURCES = Python_APITest.cpp \
         python_testers.cpp python_testers.h
-Python_APItest_LDADD = $(PYTHON_TESTS_LIBS)
+Python_APITest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_QuaternionTest_SOURCES = Py_QuaternionTest.cpp \
         python_testers.cpp python_testers.h
-Py_Quaterniontest_LDADD = $(PYTHON_TESTS_LIBS)
+Py_QuaternionTest_LDADD = $(PYTHON_TESTS_LIBS)
 Py_Vector3DTest_SOURCES = Py_Vector3DTest.cpp \
         python_testers.cpp python_testers.h
-Py_Vector3Dtest_LDADD = $(PYTHON_TESTS_LIBS)
+Py_Vector3DTest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_Point3DTest_SOURCES = Py_Point3DTest.cpp \
         python_testers.cpp python_testers.h
-Py_Point3Dtest_LDADD = $(PYTHON_TESTS_LIBS)
+Py_Point3DTest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_BBoxTest_SOURCES = Py_BBoxTest.cpp \
         python_testers.cpp python_testers.h
-Py_BBoxtest_LDADD = $(PYTHON_TESTS_LIBS)
+Py_BBoxTest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_LocationTest_SOURCES = Py_LocationTest.cpp \
         python_testers.cpp python_testers.h
-Py_Locationtest_LDADD = $(PYTHON_TESTS_LIBS)
+Py_LocationTest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_RootEntityTest_SOURCES = Py_RootEntityTest.cpp \
         python_testers.cpp python_testers.h
-Py_RootEntitytest_LDADD = $(PYTHON_TESTS_LIBS)
+Py_RootEntityTest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_OperationTest_SOURCES = Py_OperationTest.cpp \
         python_testers.cpp python_testers.h
-Py_Operationtest_LDADD = $(PYTHON_TESTS_LIBS)
+Py_OperationTest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_OplistTest_SOURCES = Py_OplistTest.cpp \
         python_testers.cpp python_testers.h
-Py_Oplisttest_LDADD = $(PYTHON_TESTS_LIBS)
+Py_OplistTest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_ThingTest_SOURCES = Py_ThingTest.cpp \
         TestPropertyManager.cpp TestPropertyManager.h \
         python_testers.cpp python_testers.h
-Py_Thingtest_LDADD = $(PYTHON_TESTS_LIBS)
+Py_ThingTest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_MapTest_SOURCES = Py_MapTest.cpp \
         python_testers.cpp python_testers.h
-Py_Maptest_LDADD = $(PYTHON_TESTS_LIBS)
+Py_MapTest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_TaskTest_SOURCES = Py_TaskTest.cpp \
         python_testers.cpp python_testers.h
-Py_Tasktest_LDADD = $(PYTHON_TESTS_LIBS)
+Py_TaskTest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_WorldTest_SOURCES = Py_WorldTest.cpp \
         python_testers.cpp python_testers.h
-Py_Worldtest_LDADD = $(PYTHON_TESTS_LIBS)
+Py_WorldTest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_MessageTest_SOURCES = Py_MessageTest.cpp \
         python_testers.cpp python_testers.h
-Py_Messagetest_LDADD = $(PYTHON_TESTS_LIBS)
+Py_MessageTest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_WorldTimeTest_SOURCES = Py_WorldTimeTest.cpp \
         python_testers.cpp python_testers.h
-Py_WorldTimetest_LDADD = $(PYTHON_TESTS_LIBS)
+Py_WorldTimeTest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_PropertyTest_SOURCES = Py_PropertyTest.cpp \
         python_testers.cpp python_testers.h
-Py_Propertytest_LDADD = $(PYTHON_TESTS_LIBS)
+Py_PropertyTest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_TerrainPropertyTest_SOURCES = Py_TerrainPropertyTest.cpp \
         python_testers.cpp python_testers.h
-Py_TerrainPropertytest_LDADD = $(PYTHON_TESTS_LIBS)
+Py_TerrainPropertyTest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_TerrainModPropertyTest_SOURCES = Py_TerrainModPropertyTest.cpp \
         python_testers.cpp python_testers.h
-Py_TerrainModPropertytest_LDADD = $(PYTHON_TESTS_LIBS)
+Py_TerrainModPropertyTest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_ShapeTest_SOURCES = Py_ShapeTest.cpp \
         python_testers.cpp python_testers.h
-Py_Shapetest_LDADD = $(PYTHON_TESTS_LIBS)
+Py_ShapeTest_LDADD = $(PYTHON_TESTS_LIBS)
 
 Py_FilterTest_SOURCES = Py_FilterTest.cpp \
 		python_testers.cpp python_testers.h
-Py_Filtertest_LDADD = $(PYTHON_TESTS_LIBS)
+Py_FilterTest_LDADD = $(PYTHON_TESTS_LIBS)
 
 PythonWrapperTest_SOURCES = PythonWrapperTest.cpp
 PythonWrapperTest_LDADD = \
@@ -807,7 +806,7 @@ PythonWrapperTest_LDADD = \
 
 PythonEntityScriptTest_SOURCES = PythonEntityScriptTest.cpp \
         python_testers.cpp python_testers.h
-PythonEntityScripttest_LDADD = $(PYTHON_TESTS_LIBS)
+PythonEntityScriptTest_LDADD = $(PYTHON_TESTS_LIBS)
 
 MindFactoryTest_SOURCES = MindFactoryTest.cpp
 MindFactoryTest_LDADD = \
@@ -986,6 +985,7 @@ ThingIntegration_LDADD = \
         $(top_builddir)/rulesets/librulesetbase.a \
         $(top_builddir)/modules/libmodules.a \
         $(top_builddir)/common/libcommon.a \
+        $(top_builddir)/physics/libphysics.a \
         $(TERRAIN_LIBS) $(NETWORK_LIBS)       
         
 # CLIENT_TESTS
@@ -1379,11 +1379,6 @@ OperationMonitorTest_SOURCES = OperationMonitorTest.cpp
 OperationMonitorTest_LDADD = \
         $(top_builddir)/tools/OperationMonitor.o \
         $(top_builddir)/common/ClientTask.o
-
-MultiLineListFormatterTest_SOURCES = MultiLineListFormatterTest.cpp
-MultiLineListFormatterTest_LDADD = \
-        $(top_builddir)/tools/MultiLineListFormatter.o
-
 
 # PYTHON_TESTS
 

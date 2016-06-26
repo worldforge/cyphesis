@@ -41,6 +41,7 @@
 
 #include "stubs/rulesets/stubCharacter.h"
 #include "stubs/rulesets/stubTransformsProperty.h"
+#include "stubs/rulesets/stubPropelProperty.h"
 
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Anonymous.h>

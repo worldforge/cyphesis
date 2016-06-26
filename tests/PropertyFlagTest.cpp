@@ -116,6 +116,7 @@ using Atlas::Objects::Entity::RootEntity;
 #include "stubs/common/stubMonitors.h"
 #include "stubs/common/stubVariable.h"
 #include "stubs/rulesets/stubTransformsProperty.h"
+#include "stubs/rulesets/stubPropelProperty.h"
 
 
 Motion::Motion(LocatedEntity & body) : m_entity(body), m_serialno(0),

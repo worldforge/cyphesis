@@ -252,6 +252,7 @@ int main()
 #include "stubs/rulesets/stubMemEntity.h"
 #include "stubs/rulesets/stubMemMap.h"
 #include "stubs/rulesets/stubTransformsProperty.h"
+#include "stubs/rulesets/stubPropelProperty.h"
 #include "stubs/rulesets/stubCreator.h"
 
 #include "stubs/server/stubExternalMindsManager.h"
