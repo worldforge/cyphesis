@@ -85,6 +85,9 @@ class TerrainProperty : public PropertyBase {
                               const Operation & op,
                               OpVector & res);
 
+    Mercator::Terrain& getData();
+    const Mercator::Terrain& getData() const;
+
 };
 
 #endif // RULESETS_TERRAIN_PROPERTY_H

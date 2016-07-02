@@ -68,10 +68,15 @@ MemEntity * MemMap::addEntity(MemEntity * entity)
             m_script->hook(*I, entity);
         }
     }
+
+    if (m_listener) {
+        m_listener->entityAdded(*entity);
+    }
+
     return entity;
 }
 
-void MemMap::readEntity(MemEntity * entity, const RootEntity & ent)
+void MemMap::readEntity(MemEntity * entity, const RootEntity & ent, double timestamp)
 // Read the contents of an Atlas message into an entity
 {
     if (ent->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
@@ -108,18 +113,20 @@ void MemMap::readEntity(MemEntity * entity, const RootEntity & ent)
             entity->m_location.m_loc->m_contains->insert(entity);
         }
         entity->m_location.readFromEntity(ent);
+        entity->m_location.update(timestamp);
     }
     addContents(ent);
 }
 
-void MemMap::updateEntity(MemEntity * entity, const RootEntity & ent)
+void MemMap::updateEntity(MemEntity * entity, const RootEntity & ent, double timestamp)
 // Update contents of entity an Atlas message.
 {
     assert(entity != 0);
 
     debug( std::cout << " got " << entity << std::endl << std::flush;);
 
-    readEntity(entity, ent);
+    auto old_loc = entity->m_location.m_loc;
+    readEntity(entity, ent, timestamp);
 
     if (m_script != 0) {
         std::vector<std::string>::const_iterator K = m_updateHooks.begin();
@@ -128,10 +135,14 @@ void MemMap::updateEntity(MemEntity * entity, const RootEntity & ent)
             m_script->hook(*K, entity);
         }
     }
+    if (m_listener) {
+        m_listener->entityUpdated(*entity, ent, old_loc);
+    }
+
 }
 
 MemEntity * MemMap::newEntity(const std::string & id, long int_id,
-                              const RootEntity & ent)
+                              const RootEntity & ent, double timestamp)
 // Create a new entity from an Atlas message.
 {
     assert(m_entities.find(int_id) == m_entities.end());
@@ -139,12 +150,12 @@ MemEntity * MemMap::newEntity(const std::string & id, long int_id,
     MemEntity * entity = new MemEntity(id, int_id);
     entity->setType(m_entity_type);
 
-    readEntity(entity, ent);
+    readEntity(entity, ent, timestamp);
 
     return addEntity(entity);
 }
 
-MemMap::MemMap(Script *& s) : m_checkIterator(m_entities.begin()), m_script(s)
+MemMap::MemMap(Script *& s) : m_checkIterator(m_entities.begin()), m_script(s), m_listener(nullptr)
 {
     if (m_entity_type == 0) {
         // m_entity_type = Inheritance::instance().getType("game_entity");
@@ -222,6 +233,11 @@ void MemMap::del(const std::string & id)
                 m_script->hook(*J, ent);
             }
         }
+
+        if (m_listener) {
+            m_listener->entityDeleted(*ent);
+        }
+
 //        ent->decRef();
     }
 }
@@ -312,10 +328,10 @@ MemEntity * MemMap::updateAdd(const RootEntity & ent, const double & d)
     MemEntityDict::const_iterator I = m_entities.find(int_id);
     MemEntity * entity;
     if (I == m_entities.end()) {
-        entity = newEntity(id, int_id, ent);
+        entity = newEntity(id, int_id, ent, d);
     } else {
         entity = I->second;
-        updateEntity(entity, ent);
+        updateEntity(entity, ent, d);
     }
     entity->update(d);
     return entity;
@@ -421,28 +437,29 @@ void MemMap::check(const double & time)
         assert(me != 0);
         if (!me->isVisible() && (time - me->lastSeen()) > 600 &&
             (me->m_contains == 0 || me->m_contains->empty())) {
-            debug(std::cout << me->getId() << "|" << me->getType()->name()
-                      << " is a waste of space" << std::endl << std::flush;);
-            MemEntityDict::const_iterator J = m_checkIterator;
-            long next = -1;
-            if (++J != entities_end) {
-                next = J->first;
-            }
-            m_entities.erase(m_checkIterator);
-            // Remove deleted entity from its parents contains attribute
-            if (me->m_location.m_loc != 0) {
-                assert(me->m_location.m_loc->m_contains != 0);
-                me->m_location.m_loc->m_contains->erase(me);
-            }
-            
-            // FIXME This is required until MemMap uses parent refcounting
-            me->m_location.m_loc = 0;
-
-            if (next != -1) {
-                m_checkIterator = m_entities.find(next);
-            } else {
-                m_checkIterator = m_entities.begin();
-            }
+            //Don't remove any entities; we need to instead implement reference counted locations
+//            debug(std::cout << me->getId() << "|" << me->getType()->name()
+//                      << " is a waste of space" << std::endl << std::flush;);
+//            MemEntityDict::const_iterator J = m_checkIterator;
+//            long next = -1;
+//            if (++J != entities_end) {
+//                next = J->first;
+//            }
+//            m_entities.erase(m_checkIterator);
+//            // Remove deleted entity from its parents contains attribute
+//            if (me->m_location.m_loc != 0) {
+//                assert(me->m_location.m_loc->m_contains != 0);
+//                me->m_location.m_loc->m_contains->erase(me);
+//            }
+//
+//            // FIXME This is required until MemMap uses parent refcounting
+//            me->m_location.m_loc = 0;
+//
+//            if (next != -1) {
+//                m_checkIterator = m_entities.find(next);
+//            } else {
+//                m_checkIterator = m_entities.begin();
+//            }
             //HACK: We currently do refcounting for Locations kept in the mind as knowledge.
             //The result is that if an entity is removed here, it will be deleted, and any
             //knowledge or goal referring to it will point to an invalid pointer.
@@ -473,3 +490,9 @@ void MemMap::flush()
         I->second->decRef();
     }
 }
+
+void MemMap::setListener(MapListener* listener)
+{
+    m_listener = listener;
+}
+

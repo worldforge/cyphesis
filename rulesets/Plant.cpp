@@ -159,12 +159,15 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
         }
     }
 
-    // Log an error perhaps?
-    // FIXME This causes a character holding an uprooted plant to die.
     if (m_location.m_loc != nullptr) {
-        Eat eat_op;
-        eat_op->setTo(m_location.m_loc->getId());
-        res.push_back(eat_op);
+        Element mode_attr;
+        if (getAttrType("mode", mode_attr, Element::TYPE_STRING) == 0 && mode_attr.String() == "planted") {
+        	//Only send eat ops if we're planted.
+        	Eat eat_op;
+            eat_op->setTo(m_location.m_loc->getId());
+            res.push_back(eat_op);
+        }
+
     }
 
 

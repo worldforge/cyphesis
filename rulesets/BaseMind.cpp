@@ -24,6 +24,7 @@
 #include "common/debug.h"
 #include "common/log.h"
 #include "common/op_switch.h"
+#include "common/compose.hpp"
 
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>
@@ -188,6 +189,13 @@ void BaseMind::SightOperation(const Operation & op, OpVector & res)
         std::string event_name("sight_");
         event_name += op2->getParents().front();
 
+        //Check that the argument had seconds set; if not the timestamp of the updates will be wrong.
+        if (!op2->hasAttrFlag(Atlas::Objects::Operation::SECONDS_FLAG)) {
+            //Copy from wrapping op to fix this. This indicates an error in the server.
+            op2->setSeconds(op->getSeconds());
+            log(WARNING, String::compose("Sight op argument had no seconds set, for argument %1.", op2->getParents().front()));
+        }
+
         if (m_script == 0 || m_script->operation(event_name, op2, res) == 0) {
             callSightOperation(op2, res);
         }
@@ -242,7 +250,7 @@ void BaseMind::ThinkOperation(const Operation &op, OpVector &res)
                 thinkLookOperation(op2, mres);
                 break;
             default:
-                log(WARNING, "Got invalid Think operation. We only support 'Set' and 'Delete'.");
+                log(WARNING, "Got invalid Think operation. We only support 'Set', 'Delete', 'Get' and 'Look'.");
                 break;
             }
         }
@@ -345,17 +353,20 @@ void BaseMind::operation(const Operation & op, OpVector & res)
     debug(std::cout << "BaseMind::operation("
                     << op->getParents().front() << ")"
                     << std::endl << std::flush;);
+    int op_no = op->getClassNo();
     m_time.update((int)op->getSeconds());
     m_map.check(op->getSeconds());
-    m_map.getAdd(op->getFrom());
+    //Unless it's an Unseen op, we should add the entity the op was from.
+    if (op_no != Atlas::Objects::Operation::UNSEEN_NO) {
+        m_map.getAdd(op->getFrom());
+    }
     m_map.sendLooks(res);
-    if (m_script != 0) {
+    if (m_script) {
         m_script->operation("call_triggers", op, res);
         if (m_script->operation(op->getParents().front(), op, res) != 0) {
             return;
         }
     }
-    auto op_no = op->getClassNo();
     switch (op_no) {
         case Atlas::Objects::Operation::SIGHT_NO:
             SightOperation(op, res);

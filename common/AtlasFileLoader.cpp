@@ -51,7 +51,7 @@ AtlasFileLoader::AtlasFileLoader(const std::string & filename,
                 m_file(filename.c_str(), std::ios::in),
                 m_count(0), m_messages(m)
 {
-    m_codec = new Atlas::Codecs::XML(m_file, *this);
+    m_codec = new Atlas::Codecs::XML(m_file, m_file, *this);
 }
 
 AtlasFileLoader::~AtlasFileLoader()

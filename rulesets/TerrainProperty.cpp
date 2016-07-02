@@ -450,3 +450,14 @@ HandlerResult TerrainProperty::eat_handler(LocatedEntity * e,
     return OPERATION_HANDLED;
 }
 
+Mercator::Terrain& TerrainProperty::getData()
+{
+    return m_data;
+}
+
+const Mercator::Terrain& TerrainProperty::getData() const
+{
+    return m_data;
+}
+
+

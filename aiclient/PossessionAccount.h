@@ -23,13 +23,13 @@
 #include <memory>
 #include <unordered_set>
 
-class MindFactory;
+class MindKit;
 class LocatedEntityRegistry;
 
 class PossessionAccount: public Router
 {
     public:
-        PossessionAccount(const std::string& id, int intId, LocatedEntityRegistry& locatedEntityRegistry, const MindFactory& mindFactory);
+        PossessionAccount(const std::string& id, int intId, LocatedEntityRegistry& locatedEntityRegistry, const MindKit& mindFactory);
         virtual ~PossessionAccount();
 
         /**
@@ -42,7 +42,7 @@ class PossessionAccount: public Router
 
     protected:
         LocatedEntityRegistry& mLocatedEntityRegistry;
-        const MindFactory& m_mindFactory;
+        const MindKit& m_mindFactory;
 
         int m_serialNoCounter;
 

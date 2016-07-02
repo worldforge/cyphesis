@@ -20,6 +20,8 @@
 
 #include "Motion.h"
 #include "Domain.h"
+#include "TransformsProperty.h"
+#include "PropelProperty.h"
 
 #include "common/BaseWorld.h"
 #include "common/log.h"
@@ -61,7 +63,7 @@ using Atlas::Objects::Operation::Unseen;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 
-static const bool debug_flag = false;
+static const bool debug_flag = true;
 
 /// \brief Constructor for physical or tangible entities.
 Thing::Thing(const std::string & id, long intId) :
@@ -238,11 +240,45 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
     const double & current_time = BaseWorld::instance().getTime();
 
+    auto transformsProp = requirePropertyClassFixed<TransformsProperty>();
+
     // Update pos
-    fromStdVector(m_location.m_pos, ent->getPos());
+    const auto& posVector = ent->getPos();
+    if (posVector.size() == 3) {
+        Vector3D translate;
+        translate.fromAtlas(ent->getPosAsList());
+        //Adjust the supplied position by the inverse of all external transformation.
+        //This is to offset the fact that any client will send an update for position using
+        //the position of the entity as it sees it.
+        //TODO: is this really the best way? Should we allow for clients to specify if they want to set
+        //the position independent of any transformations? Perhaps this is doable if the client
+        //instead sends an update for the "transforms" property?
+        for (auto entry : transformsProp->external()) {
+            if (entry.second.translate.isValid()) {
+                translate -= entry.second.translate;
+            }
+        }
+        if (m_location.bBox().isValid()) {
+            for (auto entry : transformsProp->external()) {
+                if (entry.second.translateScaled.isValid()) {
+                    auto size = m_location.bBox().highCorner() - m_location.bBox().lowCorner();
+                    translate -= WFMath::Vector<3>(
+                        entry.second.translateScaled.x() * size.x(),
+                        entry.second.translateScaled.y() * size.y(),
+                        entry.second.translateScaled.z() * size.z());
+                }
+            }
+        }
+
+        transformsProp->getTranslate() = translate;
+        transformsProp->apply(this);
+    }
 
     //We can only move if there's a domain
-    auto domain = getMovementDomain();
+    Domain* domain = nullptr;
+    if (m_location.m_loc) {
+        domain = m_location.m_loc->getMovementDomain();
+    }
 
 
     //Check if we've moved between domains. First check if the location has changed, and if so
@@ -265,24 +301,51 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
     if (domain) {
         // FIXME Quick height hack
-        m_location.m_pos.z() = domain->constrainHeight(m_location.m_loc,
-                                                               m_location.pos(),
-                                                               mode);
-        m_location.update(current_time);
-        m_flags &= ~(entity_pos_clean | entity_clean);
-
-        if (ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
-            // Update velocity
-            fromStdVector(m_location.m_velocity, ent->getVelocity());
-            // Velocity is not persistent so has no flag
-        }
+        float height = domain->constrainHeight(*this, m_location.m_loc, m_location.pos(), mode);
+        //Translate height in relation to the standard translation as set in "transforms".
+        transformsProp->getTranslate().z() = height;
 
         Element attr_orientation;
         if (ent->copyAttr("orientation", attr_orientation) == 0) {
             // Update orientation
-            m_location.m_orientation.fromAtlas(attr_orientation.asList());
-            m_flags &= ~entity_orient_clean;
+            Quaternion rotate;
+            rotate.fromAtlas(attr_orientation.asList());
+
+            //Adjust the supplied orientation by the inverse of all external transformation.
+            //This is to offset the fact that any client will send an update for orientation using
+            //the orientation of the entity as it sees it.
+            //TODO: is this really the best way? Should we allow for clients to specify if they want to set
+            //the position independent of any transformations? Perhaps this is doable if the client
+            //instead sends an update for the "transforms" property?
+            for (auto entry : transformsProp->external()) {
+                if (entry.second.rotate.isValid()) {
+
+                    Quaternion localRotation(entry.second.rotate.inverse());
+                    //normalize to avoid drift
+                    localRotation.normalize();
+                    rotate = localRotation * rotate;
+                }
+            }
+
+            transformsProp->getRotate() = rotate;
+
         }
+
+        transformsProp->apply(this);
+
+        if (ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
+            // Update velocity
+            auto propelProp = requirePropertyClassFixed<PropelProperty>();
+            fromStdVector(propelProp->data(), ent->getVelocity());
+            //FIXME: For now set the velocity directly; in the future we want instead to only set the "propel" property,
+            //and have the velocity being calculated by letting Bullet apply all forces.
+            fromStdVector(m_location.m_velocity, ent->getVelocity());
+            // Velocity is not persistent so has no flag
+        }
+
+
+        m_location.update(current_time);
+        m_flags &= ~(entity_clean);
 
         // At this point the Location data for this entity has been updated.
 
@@ -375,9 +438,11 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 /// @param res Resulting operations are returned here
 void Thing::checkVisibility(const Location & old_loc, OpVector & res)
 {
-    auto domain = getMovementDomain();
-    if (domain) {
-        domain->processVisibilityForMovedEntity(*this, old_loc, res);
+    if (m_location.m_loc) {
+        auto domain = m_location.m_loc->getMovementDomain();
+        if (domain) {
+            domain->processVisibilityForMovedEntity(*this, old_loc, res);
+        }
     }
 }
 
@@ -397,6 +462,12 @@ void Thing::SetOperation(const Operation & op, OpVector & res)
     if (~m_flags & entity_clean) {
         onUpdated();
     }
+
+    //Send an update in case there are properties that were updated as a side effect of the merge
+    //TODO: only do this if there actually are changes
+    Update update;
+    update->setTo(getId());
+    res.push_back(update);
 }
 
 /// \brief Generate a Sight(Set) operation giving an update on named attributes
@@ -416,40 +487,92 @@ void Thing::updateProperties(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Generating property update" << std::endl << std::flush;);
 
+    bool updateContains = false;
     Anonymous set_arg;
     set_arg->setId(getId());
 
-    PropertyDict::const_iterator J = m_properties.begin();
-    PropertyDict::const_iterator Jend = m_properties.end();
 
-    for (; J != Jend; ++J) {
-        PropertyBase * prop = J->second;
+    bool hadChanges = false;
+
+    for (auto entry : m_properties) {
+        PropertyBase * prop = entry.second;
         assert(prop != 0);
         if (prop->flags() & flag_unsent) {
-            debug(std::cout << "UPDATE:  " << flag_unsent << " " << J->first
+            debug(std::cout << "UPDATE:  " << flag_unsent << " " << entry.first
                             << std::endl << std::flush;);
 
-            prop->add(J->first, set_arg);
+            prop->add(entry.first, set_arg);
             prop->resetFlags(flag_unsent | per_clean);
+
+            if (entry.first == "outfit" || entry.first == "right_hand_wield") {
+                updateContains = true;
+            }
             resetFlags(entity_clean);
+            hadChanges = true;
             // FIXME Make sure we handle separately for private properties
         }
     }
 
-    m_seq++;
-    if (~m_flags & entity_clean) {
-        onUpdated();
+    resetFlags(entity_clean);
+
+    if (updateContains) {
+        if (m_contains != nullptr) {
+
+            //If the observed entity has a domain, let it decide child visibility.
+            //Otherwise show all children.
+            Domain* domain = getMovementDomain();
+            if (domain) {
+                domain->processVisibilityForMovedEntity(*this, m_location, res);
+//                Atlas::Message::ListType containsList;
+//                for (auto& entry : *m_contains) {
+//                    if (domain->isEntityVisibleFor(*m_location.m_loc, *entry)) {
+//                        containsList.push_back(entry->getId());
+//                    }
+//                }
+//                set_arg->setAttr("contains", containsList);
+            }
+        }
     }
 
-    Set set;
-    set->setTo(getId());
-    set->setFrom(getId());
-    set->setSeconds(op->getSeconds());
-    set->setArgs1(set_arg);
+    if (hadChanges) {
+        Set set;
+        set->setTo(getId());
+        set->setFrom(getId());
+        set->setSeconds(op->getSeconds());
+        set->setArgs1(set_arg);
 
-    Sight sight;
-    sight->setArgs1(set);
-    res.push_back(sight);
+        Sight sight;
+        sight->setArgs1(set);
+        res.push_back(sight);
+    }
+
+
+    //Location changes must be communicated through a Move op.
+    if (m_flags & entity_dirty_location) {
+        Move m;
+        Anonymous move_arg;
+        move_arg->setId(getId());
+        m_location.addToEntity(move_arg);
+        m->setArgs1(move_arg);
+        m->setFrom(getId());
+        m->setTo(getId());
+
+        Sight s;
+        s->setArgs1(m);
+
+        res.push_back(s);
+        resetFlags(entity_dirty_location);
+        hadChanges = true;
+    }
+
+
+    //Only change sequence number and call onUpdated if something actually changed.
+    if (hadChanges) {
+        m_seq++;
+        if (~m_flags & entity_clean) {
+            onUpdated();
+        }
+    }
 }
 
 void Thing::UpdateOperation(const Operation & op, OpVector & res)
@@ -480,7 +603,7 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     // we are not moving, then something has gone wrong.
     if (!m_location.velocity().isValid() ||
         m_location.velocity().sqrMag() < WFMath::numeric_constants<WFMath::CoordType>::epsilon()) {
-        log(ERROR, "Update got for entity not moving");
+        log(ERROR, "Update got for entity not moving. " + describeEntity());
         return;
     }
 
@@ -521,26 +644,33 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     }
 
     // Update entity position
-    m_location.m_pos += (m_location.velocity() * time_diff);
+    auto transformsProp = requirePropertyClassFixed<TransformsProperty>();
+    transformsProp->getTranslate() += (m_location.velocity() * time_diff);
+
+    //We need to apply transforms here to figure our position in order to adjust height further down
+    transformsProp->apply(this);
 
     // Collision resolution has to occur after position has been updated.
     if (!moving) {
         moving = m_motion->resolveCollision();
     }
 
+    Domain* domain = nullptr;
     // Adjust the position to world constraints - essentially fit
     // to the terrain height at this stage.
     // FIXME Get the constraints from the movement domain
-    auto domain = getMovementDomain();
-    if (domain) {
-        m_location.m_pos.z() = domain->constrainHeight(m_location.m_loc,
-                                                    m_location.pos(),
-                                                    "standing");
-    } else {
+    if (m_location.m_loc) {
+        domain = m_location.m_loc->getMovementDomain();
+        if (domain) {
+            float z = domain->constrainHeight(*this, m_location.m_loc, m_location.pos(), "standing");
+            transformsProp->getTranslate().z() = z;
+            transformsProp->apply(this);
+        } else {
 
+        }
     }
     m_location.update(current_time);
-    m_flags &= ~(entity_pos_clean | entity_clean);
+    m_flags &= ~entity_clean;
 
     float update_time = consts::move_tick;
 
@@ -564,6 +694,7 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     m->setArgs1(move_arg);
     m->setFrom(getId());
     m->setTo(getId());
+    m->setSeconds(current_time);
 
     Sight s;
     s->setArgs1(m);
@@ -606,21 +737,74 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     onUpdated();
 }
 
+bool Thing::lookAtEntity(const Operation & op, OpVector & res, const LocatedEntity* watcher) const {
+
+    if (isVisibleForOtherEntity(watcher)) {
+        generateSightOp(*watcher, op, res);
+        return true;
+    }
+    return false;
+}
+
+
+
+void Thing::generateSightOp(const LocatedEntity& observingEntity, const Operation & originalLookOp, OpVector& res) const
+{
+    debug_print("Thing::generateSightOp() observer " << observingEntity.describeEntity() << " observed " << this->describeEntity());
+
+    Sight s;
+
+    Anonymous sarg;
+    addToEntity(sarg);
+    s->setArgs1(sarg);
+
+    if (m_contains != nullptr) {
+
+        //If the observed entity has a domain, let it decide child visibility.
+        //Otherwise show all children.
+        const Domain* observedEntityDomain = getMovementDomain();
+        std::list<std::string> & contlist = sarg->modifyContains();
+        if (observedEntityDomain) {
+            contlist.clear();
+            for (auto& entry : *m_contains) {
+                if (observedEntityDomain->isEntityVisibleFor(observingEntity, *entry)) {
+                    debug_print("child entity " << entry->describeEntity() << " of entity " << describeEntity() << " visible to observer " << observingEntity.describeEntity());
+                    contlist.push_back(entry->getId());
+                }
+            }
+        }
+//            if (contlist.empty()) {
+//                sarg->removeAttr("contains");
+//            }
+    }
+
+    if (m_location.m_loc) {
+        if (!m_location.m_loc->isVisibleForOtherEntity(&observingEntity)) {
+            sarg->removeAttr("loc");
+        }
+    }
+
+    s->setTo(originalLookOp->getFrom());
+    if (!originalLookOp->isDefaultSerialno()) {
+        s->setRefno(originalLookOp->getSerialno());
+    }
+    res.push_back(s);
+
+}
+
 void Thing::LookOperation(const Operation & op, OpVector & res)
 {
     LocatedEntity * from = BaseWorld::instance().getEntity(op->getFrom());
     if (from == nullptr) {
-        log(ERROR, "Look op has invalid from");
+        log(ERROR, String::compose("Look op has invalid from %1. %2", op->getFrom(), describeEntity()));
         return;
     }
     // Register the entity with the world router as perceptive.
     BaseWorld::instance().addPerceptive(from);
 
-    //Let the domain handle the Look op.
-    auto domain = getMovementDomain();
-    if (domain) {
-        domain->lookAtEntity(*from, *this, op, res);
-    } else {
+    bool result = lookAtEntity(op, res, from);
+
+    if (!result) {
         Unseen u;
         u->setTo(op->getFrom());
         u->setArgs(op->getArgs());
@@ -628,7 +812,6 @@ void Thing::LookOperation(const Operation & op, OpVector & res)
             u->setRefno(op->getSerialno());
         }
         res.push_back(u);
-        log(WARNING, "Entity being looked at don't belong to any Domain, so sights cannot be determined.");
     }
 }
 
@@ -649,17 +832,46 @@ void Thing::CreateOperation(const Operation & op, OpVector & res)
             error(op, "Entity to be created has empty parents", res, getId());
             return;
         }
+
+        if (ent->hasAttr("transforms")) {
+            ent->removeAttr("pos");
+            ent->removeAttr("orientation");
+        } else {
+            Atlas::Message::MapType transforms;
+            if (ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
+                //Only copy x and y values; let terrain adjust z.
+                transforms["translate"] = ent->getPosAsList();
+                ent->removeAttr("pos");
+            }
+            Element orientation;
+            if (ent->copyAttr("orientation", orientation) == 0) {
+                transforms["rotate"] = orientation;
+                ent->removeAttr("orientation");
+            }
+            ent->setAttr("transforms", transforms);
+        }
+
+
+
+        //If there's no location set we'll use the same one as the current entity.
         if (!ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG) &&
             (m_location.m_loc != 0)) {
             ent->setLoc(m_location.m_loc->getId());
             if (!ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
-                ::addToEntity(m_location.pos(), ent->modifyPos());
+                //Don't actually set the pos; instead set the transform.
+                //We don't allow external clients to directly set the pos.
+                if (!ent->hasAttr("transforms")) {
+                    Atlas::Message::MapType transforms;
+                    //Only copy x and y values; let terrain adjust z.
+                    transforms["translate"] = Vector3D(m_location.pos().x(), m_location.pos().y(), 0).toAtlas();
+                    ent->setAttr("transforms", transforms);
+                }
             }
         }
         const std::string & type = parents.front();
         debug( std::cout << getId() << " creating " << type;);
 
-        LocatedEntity * obj = BaseWorld::instance().addNewEntity(type,ent);
+        LocatedEntity * obj = BaseWorld::instance().addNewEntity(type, ent);
 
         if (obj == 0) {
             error(op, "Create op failed.", res, op->getFrom());

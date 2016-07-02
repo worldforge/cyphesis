@@ -68,11 +68,11 @@ BulletDomain::~BulletDomain()
 {
 }
 
-float BulletDomain::constrainHeight(LocatedEntity * parent,
+float BulletDomain::constrainHeight(LocatedEntity& entity, LocatedEntity * parent,
                               const Point3D & pos,
                               const std::string & mode)
 {
-    return Domain::constrainHeight(parent, pos, mode);
+    return Domain::constrainHeight(entity, parent, pos, mode);
 }
 
 void BulletDomain::tick(double t)

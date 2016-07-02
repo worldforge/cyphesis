@@ -32,6 +32,10 @@ class Thing : public Entity {
   protected:
     void checkVisibility(const Location &, OpVector &);
     void updateProperties(const Operation & op, OpVector & res);
+
+    bool lookAtEntity(const Operation & op, OpVector & res, const LocatedEntity* watcher) const;
+    void generateSightOp(const LocatedEntity& observingEntity, const Operation & originalLookOp, OpVector& res) const;
+
   public:
 
     explicit Thing(const std::string & id, long intId);

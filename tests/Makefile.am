@@ -1,65 +1,67 @@
-TEST_TESTS = TestBasetest
+TEST_TESTS = TestBaseTest
 
-COMMON_TESTS = logtest Inheritancetest Propertytest \
-               systemtest system_nettest system_uidtest \
-               type_utilstest \
-               consttest randomtest Addtest Attacktest Burntest \
-               Connecttest Droptest Eattest \
-               Monitortest Nourishtest Pickuptest Setuptest \
-               Ticktest Unseentest Updatetest AtlasFileLoadertest \
-               BaseWorldtest Databasetest idtest Storagetest \
-               debugtest globalstest OperationRoutertest Routertest \
-               client_sockettest customtest Monitorstest \
-               operationstest serialnotest newidtest TypeNodetest \
-               FormattedXMLWritertest PropertyFactorytest \
-               PropertyManagertest Variabletest AtlasStreamClienttest \
-               ClientTasktest utilstest SystemTimetest \
-               TaskKittest EntityKittest ScriptKittest atlas_helperstest \
-               Shakertest CommSockettest Linktest composetest
+COMMON_TESTS = logTest InheritanceTest PropertyTest \
+               systemTest system_netTest system_uidTest \
+               type_utilsTest \
+               constTest randomTest AddTest AttackTest BurnTest \
+               ConnectTest DropTest EatTest \
+               MonitorTest NourishTest PickupTest SetupTest \
+               TickTest UnseenTest UpdateTest AtlasFileLoaderTest \
+               BaseWorldTest DatabaseTest idTest StorageTest \
+               debugTest globalsTest OperationRouterTest RouterTest \
+               client_socketTest customTest MonitorsTest \
+               operationsTest serialnoTest newidTest TypeNodeTest \
+               FormattedXMLWriterTest PropertyFactoryTest \
+               PropertyManagerTest VariableTest AtlasStreamClientTest \
+               ClientTaskTest utilsTest SystemTimeTest \
+               TaskKitTest EntityKitTest ScriptKitTest atlas_helpersTest \
+               ShakerTest CommSocketTest LinkTest composeTest
 
-PHYSICS_TESTS = BBoxtest Vector3Dtest Quaterniontest \
-                transformtest Collisiontest emergencetest distancetest \
-                Shapetest Coursetest
+PHYSICS_TESTS = BBoxTest Vector3DTest QuaternionTest \
+                transformTest CollisionTest emergenceTest distanceTest \
+                ShapeTest CourseTest
 
-MODULE_TESTS = Locationtest WorldTimetest EntityReftest DateTimetest \
-               TerrainContexttest
+MODULE_TESTS = LocationTest WorldTimeTest EntityRefTest DateTimeTest \
+               TerrainContextTest
 
-RULESETS_TESTS = LocatedEntitytest Entitytest Planttest \
-                 Stackabletest Thingtest Worldtest \
-                 Charactertest Creatortest ThingupdatePropertiestest \
-                 Containertest Tasktest EntityPropertytest \
-                 AllPropertytest Scripttest Motiontest AreaPropertytest \
-                 BBoxPropertytest CalendarPropertytest \
-                 LinePropertytest MindPropertytest \
-                 OutfitPropertytest SolidPropertytest \
-                 StatisticsPropertytest StatusPropertytest \
-                 TerrainModPropertytest TerrainPropertytest \
-                 TransientPropertytest TasksPropertytest \
-                 InternalPropertiestest EntityPropertiestest \
-                 SpawnPropertytest VisibilityPropertytest \
-                 ExternalPropertytest BurnSpeedPropertytest \
-                 BiomassPropertytest DecaysPropertytest \
-                 BulletDomaintest AtlasPropertiestest \
-                 SpawnerPropertytest \
-                 BaseMindtest MemEntitytest MemMaptest Movementtest \
-                 Pedestriantest \
-                 ExternalMindtest \
-                 Python_APItest Py_Quaterniontest Py_Vector3Dtest \
-                 Py_Point3Dtest Py_BBoxtest Py_Locationtest \
-                 Py_RootEntitytest Py_Operationtest Py_Oplisttest \
-                 Py_Thingtest Py_Maptest Py_Tasktest \
-                 Py_Worldtest Py_Messagetest Py_WorldTimetest \
-                 Py_Propertytest Py_TerrainPropertytest \
-                 Py_TerrainModPropertytest Py_Shapetest \
-                 Py_Filtertest \
-                 PythonWrappertest PythonEntityScripttest \
-                 MindFactorytest PythonContexttest \
-                 ArithmeticScripttest PythonArithmeticScripttest \
-                 ArithmeticFactorytest PythonArithmeticFactorytest \
-                 TerrainModtest PythonClasstest \
-                 TerrainEffectorPropertytest SuspendedPropertytest \
-                 EntityFiltertest EntityFilterParsertest \
-                 EntityFilterProviderstest MetabolizingPropertytest
+RULESETS_TESTS = LocatedEntityTest EntityTest PlantTest \
+                 StackableTest ThingTest WorldTest \
+                 CharacterTest CreatorTest ThingupdatePropertiesTest \
+                 ContainerTest TaskTest EntityPropertyTest \
+                 AllPropertyTest ScriptTest MotionTest AreaPropertyTest \
+                 BBoxPropertyTest CalendarPropertyTest \
+                 LinePropertyTest MindPropertyTest \
+                 OutfitPropertyTest SolidPropertyTest \
+                 StatisticsPropertyTest StatusPropertyTest \
+                 TerrainModPropertyTest TerrainPropertyTest \
+                 TransientPropertyTest TasksPropertyTest \
+                 InternalPropertiesTest EntityPropertiesTest \
+                 SpawnPropertyTest VisibilityPropertyTest \
+                 ExternalPropertyTest BurnSpeedPropertyTest \
+                 BiomassPropertyTest DecaysPropertyTest \
+                 BulletDomainTest AtlasPropertiesTest \
+                 SpawnerPropertyTest \
+                 BaseMindTest MemEntityTest MemMapTest MovementTest \
+                 PedestrianTest \
+                 ExternalMindTest \
+                 Python_APITest Py_QuaternionTest Py_Vector3DTest \
+                 Py_Point3DTest Py_BBoxTest Py_LocationTest \
+                 Py_RootEntityTest Py_OperationTest Py_OplistTest \
+                 Py_ThingTest Py_MapTest Py_TaskTest \
+                 Py_WorldTest Py_MessageTest Py_WorldTimeTest \
+                 Py_PropertyTest Py_TerrainPropertyTest \
+                 Py_TerrainModPropertyTest Py_ShapeTest \
+                 Py_FilterTest \
+                 PythonWrapperTest PythonEntityScriptTest \
+                 MindFactoryTest PythonContextTest \
+                 ArithmeticScriptTest PythonArithmeticScriptTest \
+                 ArithmeticFactoryTest PythonArithmeticFactoryTest \
+                 TerrainModTest PythonClassTest \
+                 TerrainEffectorPropertyTest SuspendedPropertyTest \
+                 EntityFilterTest EntityFilterParserTest \
+                 EntityFilterProvidersTest TransformsPropertyTest \
+                 ModePropertyTest ModeSpecPropertyTest \
+		 MetabolizingPropertytest
 
 RULESETS_INTEGRATION_TESTS = TerrainPropertyintegration \
                              PropertyEntityintegration \
@@ -69,32 +71,33 @@ RULESETS_INTEGRATION_TESTS = TerrainPropertyintegration \
                              StatisticsPropertyintegration \
                              BaseMindMapEntityintegration \
                              AreaPropertyintegration \
-                             SuspendedPropertyintegration
+                             SuspendedPropertyintegration \
+                             ThingIntegration
 
-CLIENT_TESTS = Py_CreatorClienttest Py_ObserverClienttest \
-               ClientConnectiontest BaseClienttest \
-               ClientPropertyManagertest
+CLIENT_TESTS = Py_CreatorClientTest Py_ObserverClientTest \
+               ClientConnectionTest BaseClientTest \
+               ClientPropertyManagerTest
 
 CLIENT_INTEGRATION_TESTS = ClientConnectionintegration
 
-SERVER_TESTS = Rulesettest EntityBuildertest PropertyFlagtest \
-               Accounttest Admintest Playertest buildidtest \
-               EntityFactorytest TaskFactorytest Connectiontest \
-               TrustedConnectiontest WorldRoutertest Peertest Lobbytest \
-               Spawntest SpawnEntitytest ArithmeticBuildertest \
-               ServerRoutingtest \
-               StorageManagertest HttpCachetest \
-               ServerAccounttest TeleportAuthenticatortest \
-               TeleportStatetest PendingTeleporttest Juncturetest \
-               ConnectableRoutertest RuleHandlertest OpRuleHandlertest \
-               EntityRuleHandlertest TaskRuleHandlertest \
-               PropertyRuleHandlertest \
-               IdleConnectortest CommPSQLSockettest \
-               Persistencetest \
-               SystemAccounttest CorePropertyManagertest
+SERVER_TESTS = RulesetTest EntityBuilderTest PropertyFlagTest \
+               AccountTest AdminTest PlayerTest buildidTest \
+               EntityFactoryTest TaskFactoryTest ConnectionTest \
+               TrustedConnectionTest WorldRouterTest PeerTest LobbyTest \
+               SpawnTest SpawnEntityTest ArithmeticBuilderTest \
+               ServerRoutingTest \
+               StorageManagerTest HttpCacheTest \
+               ServerAccountTest TeleportAuthenticatorTest \
+               TeleportStateTest PendingTeleportTest JunctureTest \
+               ConnectableRouterTest RuleHandlerTest OpRuleHandlerTest \
+               EntityRuleHandlerTest TaskRuleHandlerTest \
+               PropertyRuleHandlerTest \
+               IdleConnectorTest CommPSQLSocketTest \
+               PersistenceTest \
+               SystemAccountTest CorePropertyManagerTest
 
-SERVER_COMM_TESTS = CommPeertest \
-                    CommMDNSPublishertest
+SERVER_COMM_TESTS = CommPeerTest \
+                    CommMDNSPublisherTest
 
 SERVER_INTEGRATION_TESTS = WorldRouterintegration Rulesetintegration \
                            Accountintegration \
@@ -107,13 +110,12 @@ SERVER_INTEGRATION_TESTS = WorldRouterintegration Rulesetintegration \
                            TrustedConnectionCreatorintegration \
                            AccountConnectionCharacterintegration
 
-TOOLS_TESTS = AdminClienttest \
-              Flushertest OperationMonitortest \
-              MultiLineListFormattertest
+TOOLS_TESTS = AdminClientTest \
+              FlusherTest OperationMonitorTest
 
 PYTHON_TESTS = python_class
 
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_builddir) \
+AM_CPPFLAGS = -w -I$(top_srcdir) -I$(top_builddir) \
            -DTESTDATADIR=\"$(abs_top_srcdir)/tests/data\"
 
 LIBS = $(COMMON_LIBS) $(PGSQL_LIBS) $(PYTHON_LIBS) $(PYTHON_UTIL_LIBS) $(MATH_LIBS) pthreadforce.o
@@ -126,7 +128,7 @@ TESTS = $(TEST_TESTS) \
 
 RECHECK_LOGS =
 
-EXTRA_PROGRAMS = $(PYTHON_TESTS) Mastertest
+EXTRA_PROGRAMS = $(PYTHON_TESTS) MasterTest
 
 check_PROGRAMS = $(TESTS)
 
@@ -135,344 +137,358 @@ noinst_HEADERS = TestBase.h null_stream.h \
                  allOperations.h TestWorld.h \
                  Sink.h Property_stub_impl.h
 dist-hook:
-	(cd $(top_srcdir)/tests && tar cf - data) | (cd $(distdir) && tar xf -)
+	(cd $(top_srcdir)/Tests && tar cf - data) | (cd $(distdir) && tar xf -)
 
 #We want to build our object file which forces inclusion of pthreads
-noinst_LIBRARIES = libpthreadforce.a
+noinst_LIBRARIES = libpthreadforce.a libstubnavigation.a
 libpthreadforce_a_SOURCES = pthreadforce.cpp
+
+libstubnavigation_a_SOURCES = stubs/navigation/libstub.cpp
+
+PYTHON_TESTS_LIBS = $(top_builddir)/rulesets/libscriptpython.a \
+        $(top_builddir)/rulesets/librulesetmind.a \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/rulesets/libentityfilter.a \
+        libstubnavigation.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(top_builddir)/common/libcommon.a \
+        $(TERRAIN_LIBS)
+
 
 # TEST_TESTS
 
-TestBasetest_SOURCES = TestBasetest.cpp
+TestBaseTest_SOURCES = TestBaseTest.cpp
 
 # COMMON_TESTS
 
-logtest_SOURCES = logtest.cpp
-logtest_LDADD = \
+logTest_SOURCES = logTest.cpp
+logTest_LDADD = \
         $(top_builddir)/common/log.o
 
-Inheritancetest_SOURCES = Inheritancetest.cpp
-Inheritancetest_LDADD = \
+InheritanceTest_SOURCES = InheritanceTest.cpp
+InheritanceTest_LDADD = \
         $(top_builddir)/common/Inheritance.o \
         $(top_builddir)/common/custom.o
 
-Propertytest_SOURCES = Propertytest.cpp
-Propertytest_LDADD = $(top_builddir)/common/Property.o
+PropertyTest_SOURCES = PropertyTest.cpp
+PropertyTest_LDADD = $(top_builddir)/common/Property.o
 
-systemtest_SOURCES = systemtest.cpp
-systemtest_LDADD = \
+systemTest_SOURCES = systemTest.cpp
+systemTest_LDADD = \
         $(top_builddir)/common/system.o
 
-system_nettest_SOURCES = system_nettest.cpp
-system_nettest_LDADD = \
+system_netTest_SOURCES = system_netTest.cpp
+system_netTest_LDADD = \
         $(top_builddir)/common/system_net.o
 
-system_uidtest_SOURCES = system_uidtest.cpp
-system_uidtest_LDADD = \
+system_uidTest_SOURCES = system_uidTest.cpp
+system_uidTest_LDADD = \
         $(top_builddir)/common/system_uid.o
 
-type_utilstest_SOURCES = type_utilstest.cpp
-type_utilstest_LDADD = $(top_builddir)/common/type_utils.o
+type_utilsTest_SOURCES = type_utilsTest.cpp
+type_utilsTest_LDADD = $(top_builddir)/common/type_utils.o
 
-consttest_SOURCES = consttest.cpp
-consttest_LDADD = $(top_builddir)/common/const.o
+constTest_SOURCES = constTest.cpp
+constTest_LDADD = $(top_builddir)/common/const.o
 
-randomtest_SOURCES = randomtest.cpp
+randomTest_SOURCES = randomTest.cpp
 
-Addtest_SOURCES = Addtest.cpp OperationExerciser.cpp
+AddTest_SOURCES = AddTest.cpp OperationExerciser.cpp
 
-Attacktest_SOURCES = Attacktest.cpp
+AttackTest_SOURCES = AttackTest.cpp
 
-Burntest_SOURCES = Burntest.cpp
+BurnTest_SOURCES = BurnTest.cpp
 
-Connecttest_SOURCES = Connecttest.cpp
+ConnectTest_SOURCES = ConnectTest.cpp
 
-Droptest_SOURCES = Droptest.cpp
+DropTest_SOURCES = DropTest.cpp
 
-Eattest_SOURCES = Eattest.cpp
+EatTest_SOURCES = EatTest.cpp
 
-Monitortest_SOURCES = Monitortest.cpp
+MonitorTest_SOURCES = MonitorTest.cpp
 
-Nourishtest_SOURCES = Nourishtest.cpp
+NourishTest_SOURCES = NourishTest.cpp
 
-Pickuptest_SOURCES = Pickuptest.cpp
+PickupTest_SOURCES = PickupTest.cpp
 
-Setuptest_SOURCES = Setuptest.cpp
+SetupTest_SOURCES = SetupTest.cpp
 
-Ticktest_SOURCES = Ticktest.cpp
+TickTest_SOURCES = TickTest.cpp
 
-Unseentest_SOURCES = Unseentest.cpp
+UnseenTest_SOURCES = UnseenTest.cpp
 
-Updatetest_SOURCES = Updatetest.cpp
+UpdateTest_SOURCES = UpdateTest.cpp
 
-AtlasFileLoadertest_SOURCES = AtlasFileLoadertest.cpp
-AtlasFileLoadertest_LDADD = \
+AtlasFileLoaderTest_SOURCES = AtlasFileLoaderTest.cpp
+AtlasFileLoaderTest_LDADD = \
         $(top_builddir)/common/AtlasFileLoader.o
 
-BaseWorldtest_SOURCES = BaseWorldtest.cpp
-BaseWorldtest_LDADD = \
+BaseWorldTest_SOURCES = BaseWorldTest.cpp
+BaseWorldTest_LDADD = \
         $(top_builddir)/common/BaseWorld.o
 
-Databasetest_SOURCES = Databasetest.cpp
-Databasetest_LDADD = \
+DatabaseTest_SOURCES = DatabaseTest.cpp
+DatabaseTest_LDADD = \
         $(top_builddir)/common/Database.o
 
-idtest_SOURCES = idtest.cpp
-idtest_LDADD = \
+idTest_SOURCES = idTest.cpp
+idTest_LDADD = \
         $(top_builddir)/common/id.o
 
-Storagetest_SOURCES = Storagetest.cpp
-Storagetest_LDADD = \
+StorageTest_SOURCES = StorageTest.cpp
+StorageTest_LDADD = \
         $(top_builddir)/common/Storage.o
 
-debugtest_SOURCES = debugtest.cpp
-debugtest_LDADD = $(top_builddir)/common/debug.o
+debugTest_SOURCES = debugTest.cpp
+debugTest_LDADD = $(top_builddir)/common/debug.o
 
-globalstest_SOURCES = globalstest.cpp
-globalstest_LDADD = \
+globalsTest_SOURCES = globalsTest.cpp
+globalsTest_LDADD = \
         $(top_builddir)/common/globals.o
 
-OperationRoutertest_SOURCES = OperationRoutertest.cpp
-OperationRoutertest_LDADD = $(top_builddir)/common/OperationRouter.o
+OperationRouterTest_SOURCES = OperationRouterTest.cpp
+OperationRouterTest_LDADD = $(top_builddir)/common/OperationRouter.o
 
-Routertest_SOURCES = Routertest.cpp
-Routertest_LDADD = \
+RouterTest_SOURCES = RouterTest.cpp
+RouterTest_LDADD = \
         $(top_builddir)/common/Router.o
 
-client_sockettest_SOURCES = client_sockettest.cpp
-client_sockettest_LDADD = \
+client_socketTest_SOURCES = client_socketTest.cpp
+client_socketTest_LDADD = \
         $(top_builddir)/common/client_socket.o
 
-customtest_SOURCES = customtest.cpp
-customtest_LDADD = \
+customTest_SOURCES = customTest.cpp
+customTest_LDADD = \
         $(top_builddir)/common/custom.o
 
-Monitorstest_SOURCES = Monitorstest.cpp
-Monitorstest_LDADD = \
+MonitorsTest_SOURCES = MonitorsTest.cpp
+MonitorsTest_LDADD = \
         $(top_builddir)/common/Monitors.o \
         $(top_builddir)/common/Variable.o
 
-operationstest_SOURCES = operationstest.cpp
-operationstest_LDADD = $(top_builddir)/common/const.o
+operationsTest_SOURCES = operationsTest.cpp
+operationsTest_LDADD = $(top_builddir)/common/const.o
 
-serialnotest_SOURCES = serialnotest.cpp
+serialnoTest_SOURCES = serialnoTest.cpp
 
-newidtest_SOURCES = newidtest.cpp
-newidtest_LDADD = \
+newidTest_SOURCES = newidTest.cpp
+newidTest_LDADD = \
         $(top_builddir)/common/newid.o
 
-TypeNodetest_SOURCES = TypeNodetest.cpp
-TypeNodetest_LDADD = \
+TypeNodeTest_SOURCES = TypeNodeTest.cpp
+TypeNodeTest_LDADD = \
         $(top_builddir)/common/TypeNode.o \
         $(top_builddir)/common/Property.o
 
-FormattedXMLWritertest_SOURCES = FormattedXMLWritertest.cpp
-FormattedXMLWritertest_LDADD = $(top_builddir)/common/FormattedXMLWriter.o
+FormattedXMLWriterTest_SOURCES = FormattedXMLWriterTest.cpp
+FormattedXMLWriterTest_LDADD = $(top_builddir)/common/FormattedXMLWriter.o
 
-PropertyFactorytest_SOURCES = PropertyFactorytest.cpp
-PropertyFactorytest_LDADD = \
+PropertyFactoryTest_SOURCES = PropertyFactoryTest.cpp
+PropertyFactoryTest_LDADD = \
         $(top_builddir)/common/PropertyFactory.o \
         $(top_builddir)/common/Property.o
 
-PropertyManagertest_SOURCES = PropertyManagertest.cpp
-PropertyManagertest_LDADD = $(top_builddir)/common/PropertyManager.o
+PropertyManagerTest_SOURCES = PropertyManagerTest.cpp
+PropertyManagerTest_LDADD = $(top_builddir)/common/PropertyManager.o
 
-Variabletest_SOURCES = Variabletest.cpp
-Variabletest_LDADD = \
+VariableTest_SOURCES = VariableTest.cpp
+VariableTest_LDADD = \
         $(top_builddir)/common/Variable.o
 
-AtlasStreamClienttest_SOURCES = AtlasStreamClienttest.cpp
-AtlasStreamClienttest_LDADD = \
+AtlasStreamClientTest_SOURCES = AtlasStreamClientTest.cpp
+AtlasStreamClientTest_LDADD = \
         $(top_builddir)/common/AtlasStreamClient.o \
         $(NETWORK_LIBS)
 
-ClientTasktest_SOURCES = ClientTasktest.cpp
-ClientTasktest_LDADD = \
+ClientTaskTest_SOURCES = ClientTaskTest.cpp
+ClientTaskTest_LDADD = \
         $(top_builddir)/common/ClientTask.o
 
-utilstest_SOURCES = utilstest.cpp
-utilstest_LDADD = \
+utilsTest_SOURCES = utilsTest.cpp
+utilsTest_LDADD = \
         $(top_builddir)/common/utils.o
 
-SystemTimetest_SOURCES = SystemTimetest.cpp
-SystemTimetest_LDADD = \
+SystemTimeTest_SOURCES = SystemTimeTest.cpp
+SystemTimeTest_LDADD = \
         $(top_builddir)/common/SystemTime.o
 
-TaskKittest_SOURCES = TaskKittest.cpp
-TaskKittest_LDADD = \
+TaskKitTest_SOURCES = TaskKitTest.cpp
+TaskKitTest_LDADD = \
         $(top_builddir)/common/TaskKit.o
         
-Shakertest_SOURCES = Shakertest.cpp
-Shakertest_LDADD = \
+ShakerTest_SOURCES = ShakerTest.cpp
+ShakerTest_LDADD = \
         $(top_builddir)/common/Shaker.o
 
-ScriptKittest_SOURCES = ScriptKittest.cpp
-ScriptKittest_LDADD = \
+ScriptKitTest_SOURCES = ScriptKitTest.cpp
+ScriptKitTest_LDADD = \
         $(top_builddir)/common/ScriptKit.o
 
-EntityKittest_SOURCES = EntityKittest.cpp
-EntityKittest_LDADD = \
+EntityKitTest_SOURCES = EntityKitTest.cpp
+EntityKitTest_LDADD = \
         $(top_builddir)/common/EntityKit.o
 
-atlas_helperstest_SOURCES = atlas_helperstest.cpp
-atlas_helperstest_LDADD = \
+atlas_helpersTest_SOURCES = atlas_helpersTest.cpp
+atlas_helpersTest_LDADD = \
         $(top_builddir)/common/atlas_helpers.o
 
-Linktest_SOURCES = Linktest.cpp
-Linktest_LDADD = \
+LinkTest_SOURCES = LinkTest.cpp
+LinkTest_LDADD = \
         $(top_builddir)/common/Link.o
 
-CommSockettest_SOURCES = CommSockettest.cpp
-CommSockettest_LDADD = \
+CommSocketTest_SOURCES = CommSocketTest.cpp
+CommSocketTest_LDADD = \
         $(top_builddir)/common/CommSocket.o
 
-composetest_SOURCES = composetest.cpp
+composeTest_SOURCES = composeTest.cpp
 
 # PHYSICS_TESTS
 
-BBoxtest_SOURCES = BBoxtest.cpp
-BBoxtest_LDADD = \
+BBoxTest_SOURCES = BBoxTest.cpp
+BBoxTest_LDADD = \
         $(top_builddir)/physics/BBox.o \
         $(top_builddir)/common/const.o
 
-Vector3Dtest_SOURCES = Vector3Dtest.cpp
-Vector3Dtest_LDADD = $(top_builddir)/physics/Vector3D.o
+Vector3DTest_SOURCES = Vector3DTest.cpp
+Vector3DTest_LDADD = $(top_builddir)/physics/Vector3D.o
 
-Quaterniontest_SOURCES = Quaterniontest.cpp
-Quaterniontest_LDADD = $(top_builddir)/physics/Quaternion.o
+QuaternionTest_SOURCES = QuaternionTest.cpp
+QuaternionTest_LDADD = $(top_builddir)/physics/Quaternion.o
 
-Collisiontest_SOURCES = Collisiontest.cpp
-Collisiontest_LDADD = \
+CollisionTest_SOURCES = CollisionTest.cpp
+CollisionTest_LDADD = \
         $(top_builddir)/physics/Collision.o \
         $(top_builddir)/physics/BBox.o \
         $(top_builddir)/physics/Vector3D.o \
         $(top_builddir)/modules/Location.o
 
-emergencetest_SOURCES = emergencetest.cpp
-emergencetest_LDADD = \
+emergenceTest_SOURCES = emergenceTest.cpp
+emergenceTest_LDADD = \
         $(top_builddir)/physics/Collision.o \
         $(top_builddir)/physics/BBox.o \
         $(top_builddir)/physics/Vector3D.o \
         $(top_builddir)/modules/Location.o
 
-transformtest_SOURCES = transformtest.cpp
+transformTest_SOURCES = transformTest.cpp
 
-distancetest_SOURCES = distancetest.cpp
-distancetest_LDADD = \
+distanceTest_SOURCES = distanceTest.cpp
+distanceTest_LDADD = \
         $(top_builddir)/physics/Vector3D.o \
         $(top_builddir)/modules/Location.o
 
-Shapetest_SOURCES = Shapetest.cpp
-Shapetest_LDADD = \
+ShapeTest_SOURCES = ShapeTest.cpp
+ShapeTest_LDADD = \
         $(top_builddir)/physics/Shape.o \
         $(top_builddir)/physics/Course.o
 
-Coursetest_SOURCES = Coursetest.cpp
-Coursetest_LDADD = \
+CourseTest_SOURCES = CourseTest.cpp
+CourseTest_LDADD = \
         $(top_builddir)/physics/Course.o
 
 # MODULE_TESTS
 
-DateTimetest_SOURCES = DateTimetest.cpp
-DateTimetest_LDADD = $(top_builddir)/modules/DateTime.o
+DateTimeTest_SOURCES = DateTimeTest.cpp
+DateTimeTest_LDADD = $(top_builddir)/modules/DateTime.o
 
-Locationtest_SOURCES = Locationtest.cpp
-Locationtest_LDADD = \
+LocationTest_SOURCES = LocationTest.cpp
+LocationTest_LDADD = \
         $(top_builddir)/modules/Location.o \
         $(top_builddir)/physics/libphysics.a
 
-WorldTimetest_SOURCES = WorldTimetest.cpp
-WorldTimetest_LDADD = \
+WorldTimeTest_SOURCES = WorldTimeTest.cpp
+WorldTimeTest_LDADD = \
         $(top_builddir)/modules/WorldTime.o \
         $(top_builddir)/modules/DateTime.o
 
-EntityReftest_SOURCES = EntityReftest.cpp
-EntityReftest_LDADD = \
+EntityRefTest_SOURCES = EntityRefTest.cpp
+EntityRefTest_LDADD = \
         $(top_builddir)/modules/EntityRef.o
 
-TerrainContexttest_SOURCES = TerrainContexttest.cpp
-TerrainContexttest_LDADD = \
+TerrainContextTest_SOURCES = TerrainContextTest.cpp
+TerrainContextTest_LDADD = \
         $(top_builddir)/modules/TerrainContext.o \
         $(TERRAIN_LIBS)
 
 # RULESETS_TESTS
 
-LocatedEntitytest_SOURCES = LocatedEntitytest.cpp \
+LocatedEntityTest_SOURCES = LocatedEntityTest.cpp \
                             EntityExerciser.cpp EntityExerciser.h
-LocatedEntitytest_LDADD = \
+LocatedEntityTest_LDADD = \
         $(top_builddir)/rulesets/LocatedEntity.o
 
-Entitytest_SOURCES = Entitytest.cpp \
+EntityTest_SOURCES = EntityTest.cpp \
                      TestPropertyManager.cpp TestPropertyManager.h \
                      IGEntityExerciser.cpp IGEntityExerciser.h \
                      EntityExerciser.cpp EntityExerciser.h
-Entitytest_LDADD = \
+EntityTest_LDADD = \
         $(top_builddir)/rulesets/Entity.o
 
-Planttest_SOURCES = Planttest.cpp \
+PlantTest_SOURCES = PlantTest.cpp \
                     TestPropertyManager.cpp TestPropertyManager.h \
                     IGEntityExerciser.cpp IGEntityExerciser.h \
                     EntityExerciser.cpp EntityExerciser.h
-Planttest_LDADD = \
+PlantTest_LDADD = \
         $(top_builddir)/rulesets/Plant.o
 
-Stackabletest_SOURCES = Stackabletest.cpp \
+StackableTest_SOURCES = StackableTest.cpp \
                         TestPropertyManager.cpp TestPropertyManager.h \
                         IGEntityExerciser.cpp IGEntityExerciser.h \
                         EntityExerciser.cpp EntityExerciser.h
-Stackabletest_LDADD = \
+StackableTest_LDADD = \
         $(top_builddir)/rulesets/Stackable.o
 
-Thingtest_SOURCES = Thingtest.cpp \
+ThingTest_SOURCES = ThingTest.cpp \
                     TestPropertyManager.cpp TestPropertyManager.h \
                     IGEntityExerciser.cpp IGEntityExerciser.h \
                     EntityExerciser.cpp EntityExerciser.h
-Thingtest_LDADD = \
+ThingTest_LDADD = \
         $(top_builddir)/rulesets/Thing.o
 
-Worldtest_SOURCES = Worldtest.cpp \
+WorldTest_SOURCES = WorldTest.cpp \
                     TestPropertyManager.cpp TestPropertyManager.h \
                     IGEntityExerciser.cpp IGEntityExerciser.h \
                     EntityExerciser.cpp EntityExerciser.h
-Worldtest_LDADD = \
+WorldTest_LDADD = \
         $(top_builddir)/rulesets/World.o
 
-Charactertest_SOURCES = Charactertest.cpp \
+CharacterTest_SOURCES = CharacterTest.cpp \
                         TestPropertyManager.cpp TestPropertyManager.h \
                         IGEntityExerciser.cpp IGEntityExerciser.h \
                         EntityExerciser.cpp EntityExerciser.h
-Charactertest_LDADD = \
+CharacterTest_LDADD = \
         $(top_builddir)/rulesets/Character.o \
         $(top_builddir)/physics/Quaternion.o
 
-Creatortest_SOURCES = Creatortest.cpp \
+CreatorTest_SOURCES = CreatorTest.cpp \
                       TestPropertyManager.cpp TestPropertyManager.h \
                       IGEntityExerciser.cpp IGEntityExerciser.h \
                       EntityExerciser.cpp EntityExerciser.h
-Creatortest_LDADD = \
+CreatorTest_LDADD = \
         $(top_builddir)/rulesets/Creator.o
 
-ThingupdatePropertiestest_SOURCES = ThingupdatePropertiestest.cpp
-ThingupdatePropertiestest_LDADD = \
+ThingupdatePropertiesTest_SOURCES = ThingupdatePropertiesTest.cpp
+ThingupdatePropertiesTest_LDADD = \
         $(top_builddir)/rulesets/Thing.o \
         $(top_builddir)/common/Property.o
 
-Containertest_SOURCES = Containertest.cpp
-Containertest_LDADD = $(top_builddir)/rulesets/Container.o
+ContainerTest_SOURCES = ContainerTest.cpp
+ContainerTest_LDADD = $(top_builddir)/rulesets/Container.o
 
-Tasktest_SOURCES = Tasktest.cpp
-Tasktest_LDADD = \
+TaskTest_SOURCES = TaskTest.cpp
+TaskTest_LDADD = \
         $(top_builddir)/rulesets/Task.o
 
-EntityPropertytest_SOURCES = EntityPropertytest.cpp
-EntityPropertytest_LDADD = \
+EntityPropertyTest_SOURCES = EntityPropertyTest.cpp
+EntityPropertyTest_LDADD = \
         $(top_builddir)/rulesets/EntityProperty.o \
         $(top_builddir)/modules/EntityRef.o \
         $(top_builddir)/common/Property.o
 
-AllPropertytest_SOURCES = AllPropertytest.cpp \
+AllPropertyTest_SOURCES = AllPropertyTest.cpp \
                           PropertyExerciser.cpp PropertyExerciser.h
-AllPropertytest_LDADD = \
+AllPropertyTest_LDADD = \
         $(top_builddir)/rulesets/AreaProperty.o \
         $(top_builddir)/rulesets/AtlasProperties.o \
         $(top_builddir)/rulesets/CalendarProperty.o \
@@ -493,44 +509,44 @@ AllPropertytest_LDADD = \
         $(top_builddir)/physics/Course.o \
         $(TERRAIN_LIBS)
 
-Scripttest_SOURCES = Scripttest.cpp
-Scripttest_LDADD = $(top_builddir)/rulesets/Script.o
+ScriptTest_SOURCES = ScriptTest.cpp
+ScriptTest_LDADD = $(top_builddir)/rulesets/Script.o
 
-Motiontest_SOURCES = Motiontest.cpp
-Motiontest_LDADD = \
+MotionTest_SOURCES = MotionTest.cpp
+MotionTest_LDADD = \
         $(top_builddir)/rulesets/Motion.o \
         $(top_builddir)/rulesets/PhysicalDomain.o \
         $(top_builddir)/physics/BBox.o \
         $(top_builddir)/physics/Collision.o
 
-AreaPropertytest_SOURCES = AreaPropertytest.cpp \
+AreaPropertyTest_SOURCES = AreaPropertyTest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
-AreaPropertytest_LDADD = \
+AreaPropertyTest_LDADD = \
         $(top_builddir)/rulesets/AreaProperty.o \
         $(top_builddir)/common/Property.o
 
-BBoxPropertytest_SOURCES = BBoxPropertytest.cpp \
+BBoxPropertyTest_SOURCES = BBoxPropertyTest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
-BBoxPropertytest_LDADD = \
+BBoxPropertyTest_LDADD = \
         $(top_builddir)/rulesets/BBoxProperty.o \
         $(top_builddir)/common/Property.o
 
-CalendarPropertytest_SOURCES = CalendarPropertytest.cpp \
+CalendarPropertyTest_SOURCES = CalendarPropertyTest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
-CalendarPropertytest_LDADD = \
+CalendarPropertyTest_LDADD = \
         $(top_builddir)/rulesets/CalendarProperty.o \
         $(top_builddir)/modules/DateTime.o \
         $(top_builddir)/common/Property.o
 
-LinePropertytest_SOURCES = LinePropertytest.cpp \
+LinePropertyTest_SOURCES = LinePropertyTest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
-LinePropertytest_LDADD = \
+LinePropertyTest_LDADD = \
         $(top_builddir)/rulesets/LineProperty.o \
         $(top_builddir)/common/Property.o
 
-MindPropertytest_SOURCES = MindPropertytest.cpp \
+MindPropertyTest_SOURCES = MindPropertyTest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
-MindPropertytest_LDADD = \
+MindPropertyTest_LDADD = \
         $(top_builddir)/rulesets/MindProperty.o \
         $(top_builddir)/common/Property.o
 
@@ -540,477 +556,305 @@ MetabolizingPropertytest_LDADD = \
 	$(top_builddir)/rulesets/MetabolizingProperty.o \
 	$(top_builddir)/common/Property.o
 
-OutfitPropertytest_SOURCES = OutfitPropertytest.cpp \
+ModePropertyTest_SOURCES = ModePropertyTest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
-OutfitPropertytest_LDADD = \
+ModePropertyTest_LDADD = \
+        $(top_builddir)/rulesets/ModeProperty.o \
+        $(top_builddir)/common/Property.o
+        
+ModeSpecPropertyTest_SOURCES = ModeSpecPropertyTest.cpp \
+        PropertyCoverage.cpp PropertyCoverage.h
+ModeSpecPropertyTest_LDADD = \
+        $(top_builddir)/rulesets/ModeSpecProperty.o \
+        $(top_builddir)/common/Property.o
+                
+OutfitPropertyTest_SOURCES = OutfitPropertyTest.cpp \
+        PropertyCoverage.cpp PropertyCoverage.h
+OutfitPropertyTest_LDADD = \
         $(top_builddir)/rulesets/OutfitProperty.o \
         $(top_builddir)/modules/EntityRef.o \
         $(top_builddir)/common/Property.o
 
-SolidPropertytest_SOURCES = SolidPropertytest.cpp \
+SolidPropertyTest_SOURCES = SolidPropertyTest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
-SolidPropertytest_LDADD = \
+SolidPropertyTest_LDADD = \
         $(top_builddir)/rulesets/SolidProperty.o \
         $(top_builddir)/common/Property.o
 
-StatisticsPropertytest_SOURCES = StatisticsPropertytest.cpp \
+StatisticsPropertyTest_SOURCES = StatisticsPropertyTest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
-StatisticsPropertytest_LDADD = \
+StatisticsPropertyTest_LDADD = \
         $(top_builddir)/rulesets/StatisticsProperty.o \
         $(top_builddir)/common/Property.o
 
-StatusPropertytest_SOURCES = StatusPropertytest.cpp \
+StatusPropertyTest_SOURCES = StatusPropertyTest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
-StatusPropertytest_LDADD = \
+StatusPropertyTest_LDADD = \
         $(top_builddir)/rulesets/StatusProperty.o \
         $(top_builddir)/common/Property.o
 
-SuspendedPropertytest_SOURCES = SuspendedPropertytest.cpp \
+SuspendedPropertyTest_SOURCES = SuspendedPropertyTest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
-SuspendedPropertytest_LDADD = \
+SuspendedPropertyTest_LDADD = \
         $(top_builddir)/rulesets/SuspendedProperty.o \
         $(top_builddir)/common/Property.o
         
-TerrainModPropertytest_SOURCES = TerrainModPropertytest.cpp \
+TerrainModPropertyTest_SOURCES = TerrainModPropertyTest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
-TerrainModPropertytest_LDADD = \
+TerrainModPropertyTest_LDADD = \
         $(top_builddir)/rulesets/TerrainModProperty.o \
         $(top_builddir)/rulesets/TerrainProperty.o \
         $(top_builddir)/common/Property.o \
         $(TERRAIN_LIBS)
 
-PythonClasstest_SOURCES = PythonClasstest.cpp \
+TransformsPropertyTest_SOURCES = TransformsPropertyTest.cpp \
+        PropertyCoverage.cpp PropertyCoverage.h
+TransformsPropertyTest_LDADD = \
+        $(top_builddir)/rulesets/TransformsProperty.o \
+        $(top_builddir)/common/Property.o
+
+PythonClassTest_SOURCES = PythonClassTest.cpp \
         python_testers.cpp python_testers.h
-PythonClasstest_LDADD = \
+PythonClassTest_LDADD = \
         $(top_builddir)/rulesets/PythonClass.o
 
-TerrainPropertytest_SOURCES = TerrainPropertytest.cpp \
+TerrainPropertyTest_SOURCES = TerrainPropertyTest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
-TerrainPropertytest_LDADD = \
+TerrainPropertyTest_LDADD = \
         $(top_builddir)/rulesets/TerrainProperty.o \
         $(top_builddir)/common/Property.o \
         $(TERRAIN_LIBS)
 
-TransientPropertytest_SOURCES = TransientPropertytest.cpp \
+TransientPropertyTest_SOURCES = TransientPropertyTest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
-TransientPropertytest_LDADD = \
+TransientPropertyTest_LDADD = \
         $(top_builddir)/rulesets/TransientProperty.o \
         $(top_builddir)/common/Property.o
 
-TasksPropertytest_SOURCES = TasksPropertytest.cpp \
+TasksPropertyTest_SOURCES = TasksPropertyTest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
-TasksPropertytest_LDADD = \
+TasksPropertyTest_LDADD = \
         $(top_builddir)/rulesets/TasksProperty.o \
         $(top_builddir)/common/Property.o
 
-InternalPropertiestest_SOURCES = InternalPropertiestest.cpp \
+InternalPropertiesTest_SOURCES = InternalPropertiesTest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
-InternalPropertiestest_LDADD = \
+InternalPropertiesTest_LDADD = \
         $(top_builddir)/rulesets/InternalProperties.o \
         $(top_builddir)/common/Property.o
 
-EntityPropertiestest_SOURCES = EntityPropertiestest.cpp \
+EntityPropertiesTest_SOURCES = EntityPropertiesTest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
-EntityPropertiestest_LDADD = \
+EntityPropertiesTest_LDADD = \
         $(top_builddir)/rulesets/EntityProperties.o \
         $(top_builddir)/common/Property.o
 
-AtlasPropertiestest_SOURCES = AtlasPropertiestest.cpp \
+AtlasPropertiesTest_SOURCES = AtlasPropertiesTest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
-AtlasPropertiestest_LDADD = \
+AtlasPropertiesTest_LDADD = \
         $(top_builddir)/rulesets/AtlasProperties.o \
         $(top_builddir)/common/Property.o
 
-SpawnPropertytest_SOURCES = SpawnPropertytest.cpp \
+SpawnPropertyTest_SOURCES = SpawnPropertyTest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
-SpawnPropertytest_LDADD = \
+SpawnPropertyTest_LDADD = \
         $(top_builddir)/rulesets/SpawnProperty.o \
         $(top_builddir)/common/Property.o
 
-SpawnerPropertytest_SOURCES = SpawnerPropertytest.cpp \
+SpawnerPropertyTest_SOURCES = SpawnerPropertyTest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
-SpawnerPropertytest_LDADD = \
+SpawnerPropertyTest_LDADD = \
         $(top_builddir)/rulesets/SpawnerProperty.o \
         $(top_builddir)/common/Property.o
 
-VisibilityPropertytest_SOURCES = VisibilityPropertytest.cpp \
+VisibilityPropertyTest_SOURCES = VisibilityPropertyTest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
-VisibilityPropertytest_LDADD = \
+VisibilityPropertyTest_LDADD = \
         $(top_builddir)/rulesets/VisibilityProperty.o \
         $(top_builddir)/common/Property.o
 
-ExternalPropertytest_SOURCES = ExternalPropertytest.cpp
-ExternalPropertytest_LDADD = \
+ExternalPropertyTest_SOURCES = ExternalPropertyTest.cpp
+ExternalPropertyTest_LDADD = \
         $(top_builddir)/rulesets/ExternalProperty.o \
         $(top_builddir)/common/Property.o
 
-BurnSpeedPropertytest_SOURCES = BurnSpeedPropertytest.cpp \
+BurnSpeedPropertyTest_SOURCES = BurnSpeedPropertyTest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
-BurnSpeedPropertytest_LDADD = \
+BurnSpeedPropertyTest_LDADD = \
         $(top_builddir)/rulesets/BurnSpeedProperty.o \
         $(top_builddir)/common/Property.o
 
-BiomassPropertytest_SOURCES = BiomassPropertytest.cpp \
+BiomassPropertyTest_SOURCES = BiomassPropertyTest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
-BiomassPropertytest_LDADD = \
+BiomassPropertyTest_LDADD = \
         $(top_builddir)/rulesets/BiomassProperty.o \
         $(top_builddir)/common/Property.o
 
-DecaysPropertytest_SOURCES = DecaysPropertytest.cpp \
+DecaysPropertyTest_SOURCES = DecaysPropertyTest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
-DecaysPropertytest_LDADD = \
+DecaysPropertyTest_LDADD = \
         $(top_builddir)/rulesets/DecaysProperty.o \
         $(top_builddir)/common/Property.o
 
-BulletDomaintest_SOURCES = BulletDomaintest.cpp
-BulletDomaintest_LDADD = \
+BulletDomainTest_SOURCES = BulletDomainTest.cpp
+BulletDomainTest_LDADD = \
         $(top_builddir)/rulesets/BulletDomain.o \
         $(TERRAIN_LIBS)
 
-BaseMindtest_SOURCES = BaseMindtest.cpp
-BaseMindtest_LDADD = \
+BaseMindTest_SOURCES = BaseMindTest.cpp
+BaseMindTest_LDADD = \
         $(top_builddir)/rulesets/BaseMind.o \
         $(top_builddir)/rulesets/MemMap.o
 
-MemEntitytest_SOURCES = MemEntitytest.cpp
-MemEntitytest_LDADD = \
+MemEntityTest_SOURCES = MemEntityTest.cpp
+MemEntityTest_LDADD = \
         $(top_builddir)/rulesets/MemEntity.o
 
-MemMaptest_SOURCES = MemMaptest.cpp
-MemMaptest_LDADD = \
+MemMapTest_SOURCES = MemMapTest.cpp
+MemMapTest_LDADD = \
         $(top_builddir)/rulesets/MemMap.o
 
-Movementtest_SOURCES = Movementtest.cpp
-Movementtest_LDADD = \
+MovementTest_SOURCES = MovementTest.cpp
+MovementTest_LDADD = \
         $(top_builddir)/rulesets/Movement.o
 
-Pedestriantest_SOURCES = Pedestriantest.cpp
-Pedestriantest_LDADD = \
+PedestrianTest_SOURCES = PedestrianTest.cpp
+PedestrianTest_LDADD = \
         $(top_builddir)/rulesets/Pedestrian.o \
         $(top_builddir)/rulesets/Movement.o
 
-ExternalMindtest_SOURCES = ExternalMindtest.cpp
-ExternalMindtest_LDADD = \
+ExternalMindTest_SOURCES = ExternalMindTest.cpp
+ExternalMindTest_LDADD = \
         $(top_builddir)/rulesets/ExternalMind.o
 
-Python_APItest_SOURCES = Python_APItest.cpp \
+Python_APITest_SOURCES = Python_APITest.cpp \
         python_testers.cpp python_testers.h
-Python_APItest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Python_APITest_LDADD = $(PYTHON_TESTS_LIBS)
 
-Py_Quaterniontest_SOURCES = Py_Quaterniontest.cpp \
+Py_QuaternionTest_SOURCES = Py_QuaternionTest.cpp \
         python_testers.cpp python_testers.h
-Py_Quaterniontest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
-
-Py_Vector3Dtest_SOURCES = Py_Vector3Dtest.cpp \
+Py_QuaternionTest_LDADD = $(PYTHON_TESTS_LIBS)
+Py_Vector3DTest_SOURCES = Py_Vector3DTest.cpp \
         python_testers.cpp python_testers.h
-Py_Vector3Dtest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_Vector3DTest_LDADD = $(PYTHON_TESTS_LIBS)
 
-Py_Point3Dtest_SOURCES = Py_Point3Dtest.cpp \
+Py_Point3DTest_SOURCES = Py_Point3DTest.cpp \
         python_testers.cpp python_testers.h
-Py_Point3Dtest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_Point3DTest_LDADD = $(PYTHON_TESTS_LIBS)
 
-Py_BBoxtest_SOURCES = Py_BBoxtest.cpp \
+Py_BBoxTest_SOURCES = Py_BBoxTest.cpp \
         python_testers.cpp python_testers.h
-Py_BBoxtest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_BBoxTest_LDADD = $(PYTHON_TESTS_LIBS)
 
-Py_Locationtest_SOURCES = Py_Locationtest.cpp \
+Py_LocationTest_SOURCES = Py_LocationTest.cpp \
         python_testers.cpp python_testers.h
-Py_Locationtest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_LocationTest_LDADD = $(PYTHON_TESTS_LIBS)
 
-Py_RootEntitytest_SOURCES = Py_RootEntitytest.cpp \
+Py_RootEntityTest_SOURCES = Py_RootEntityTest.cpp \
         python_testers.cpp python_testers.h
-Py_RootEntitytest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_RootEntityTest_LDADD = $(PYTHON_TESTS_LIBS)
 
-Py_Operationtest_SOURCES = Py_Operationtest.cpp \
+Py_OperationTest_SOURCES = Py_OperationTest.cpp \
         python_testers.cpp python_testers.h
-Py_Operationtest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_OperationTest_LDADD = $(PYTHON_TESTS_LIBS)
 
-Py_Oplisttest_SOURCES = Py_Oplisttest.cpp \
+Py_OplistTest_SOURCES = Py_OplistTest.cpp \
         python_testers.cpp python_testers.h
-Py_Oplisttest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_OplistTest_LDADD = $(PYTHON_TESTS_LIBS)
 
-Py_Thingtest_SOURCES = Py_Thingtest.cpp \
+Py_ThingTest_SOURCES = Py_ThingTest.cpp \
         TestPropertyManager.cpp TestPropertyManager.h \
         python_testers.cpp python_testers.h
-Py_Thingtest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_ThingTest_LDADD = $(PYTHON_TESTS_LIBS)
 
-Py_Maptest_SOURCES = Py_Maptest.cpp \
+Py_MapTest_SOURCES = Py_MapTest.cpp \
         python_testers.cpp python_testers.h
-Py_Maptest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_MapTest_LDADD = $(PYTHON_TESTS_LIBS)
 
-Py_Tasktest_SOURCES = Py_Tasktest.cpp \
+Py_TaskTest_SOURCES = Py_TaskTest.cpp \
         python_testers.cpp python_testers.h
-Py_Tasktest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_TaskTest_LDADD = $(PYTHON_TESTS_LIBS)
 
-Py_Worldtest_SOURCES = Py_Worldtest.cpp \
+Py_WorldTest_SOURCES = Py_WorldTest.cpp \
         python_testers.cpp python_testers.h
-Py_Worldtest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_WorldTest_LDADD = $(PYTHON_TESTS_LIBS)
 
-Py_Messagetest_SOURCES = Py_Messagetest.cpp \
+Py_MessageTest_SOURCES = Py_MessageTest.cpp \
         python_testers.cpp python_testers.h
-Py_Messagetest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_MessageTest_LDADD = $(PYTHON_TESTS_LIBS)
 
-Py_WorldTimetest_SOURCES = Py_WorldTimetest.cpp \
+Py_WorldTimeTest_SOURCES = Py_WorldTimeTest.cpp \
         python_testers.cpp python_testers.h
-Py_WorldTimetest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_WorldTimeTest_LDADD = $(PYTHON_TESTS_LIBS)
 
-Py_Propertytest_SOURCES = Py_Propertytest.cpp \
+Py_PropertyTest_SOURCES = Py_PropertyTest.cpp \
         python_testers.cpp python_testers.h
-Py_Propertytest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_PropertyTest_LDADD = $(PYTHON_TESTS_LIBS)
 
-Py_TerrainPropertytest_SOURCES = Py_TerrainPropertytest.cpp \
+Py_TerrainPropertyTest_SOURCES = Py_TerrainPropertyTest.cpp \
         python_testers.cpp python_testers.h
-Py_TerrainPropertytest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_TerrainPropertyTest_LDADD = $(PYTHON_TESTS_LIBS)
 
-Py_TerrainModPropertytest_SOURCES = Py_TerrainModPropertytest.cpp \
+Py_TerrainModPropertyTest_SOURCES = Py_TerrainModPropertyTest.cpp \
         python_testers.cpp python_testers.h
-Py_TerrainModPropertytest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_TerrainModPropertyTest_LDADD = $(PYTHON_TESTS_LIBS)
 
-Py_Shapetest_SOURCES = Py_Shapetest.cpp \
+Py_ShapeTest_SOURCES = Py_ShapeTest.cpp \
         python_testers.cpp python_testers.h
-Py_Shapetest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_ShapeTest_LDADD = $(PYTHON_TESTS_LIBS)
 
-Py_Filtertest_SOURCES = Py_Filtertest.cpp \
+Py_FilterTest_SOURCES = Py_FilterTest.cpp \
 		python_testers.cpp python_testers.h
-Py_Filtertest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+Py_FilterTest_LDADD = $(PYTHON_TESTS_LIBS)
 
-PythonWrappertest_SOURCES = PythonWrappertest.cpp
-PythonWrappertest_LDADD = \
+PythonWrapperTest_SOURCES = PythonWrapperTest.cpp
+PythonWrapperTest_LDADD = \
         $(top_builddir)/rulesets/PythonWrapper.o
 
-PythonEntityScripttest_SOURCES = PythonEntityScripttest.cpp \
+PythonEntityScriptTest_SOURCES = PythonEntityScriptTest.cpp \
         python_testers.cpp python_testers.h
-PythonEntityScripttest_LDADD = \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS)
+PythonEntityScriptTest_LDADD = $(PYTHON_TESTS_LIBS)
 
-MindFactorytest_SOURCES = MindFactorytest.cpp
-MindFactorytest_LDADD = \
+MindFactoryTest_SOURCES = MindFactoryTest.cpp
+MindFactoryTest_LDADD = \
         $(top_builddir)/rulesets/MindFactory.o
 
-PythonContexttest_SOURCES = PythonContexttest.cpp
-PythonContexttest_LDADD = \
+PythonContextTest_SOURCES = PythonContextTest.cpp
+PythonContextTest_LDADD = \
         $(top_builddir)/rulesets/PythonContext.o
 
-ArithmeticScripttest_SOURCES = ArithmeticScripttest.cpp
-ArithmeticScripttest_LDADD = \
+ArithmeticScriptTest_SOURCES = ArithmeticScriptTest.cpp
+ArithmeticScriptTest_LDADD = \
         $(top_builddir)/rulesets/ArithmeticScript.o
 
-PythonArithmeticScripttest_SOURCES = PythonArithmeticScripttest.cpp \
+PythonArithmeticScriptTest_SOURCES = PythonArithmeticScriptTest.cpp \
         python_testers.cpp python_testers.h
-PythonArithmeticScripttest_LDADD = \
+PythonArithmeticScriptTest_LDADD = \
         $(top_builddir)/rulesets/PythonArithmeticScript.o
 
-ArithmeticFactorytest_SOURCES = ArithmeticFactorytest.cpp
-ArithmeticFactorytest_LDADD = \
+ArithmeticFactoryTest_SOURCES = ArithmeticFactoryTest.cpp
+ArithmeticFactoryTest_LDADD = \
         $(top_builddir)/rulesets/ArithmeticFactory.o
 
-PythonArithmeticFactorytest_SOURCES = PythonArithmeticFactorytest.cpp \
+PythonArithmeticFactoryTest_SOURCES = PythonArithmeticFactoryTest.cpp \
         python_testers.cpp python_testers.h
-PythonArithmeticFactorytest_LDADD = \
+PythonArithmeticFactoryTest_LDADD = \
         $(top_builddir)/rulesets/PythonArithmeticFactory.o \
         $(top_builddir)/rulesets/PythonClass.o
 
-TerrainModtest_SOURCES = TerrainModtest.cpp
-TerrainModtest_LDADD = \
+TerrainModTest_SOURCES = TerrainModTest.cpp
+TerrainModTest_LDADD = \
         $(top_builddir)/rulesets/TerrainModTranslator.o \
         $(TERRAIN_LIBS)
 
 
-TerrainEffectorPropertytest_SOURCES = TerrainEffectorPropertytest.cpp
-TerrainEffectorPropertytest_LDADD = \
+TerrainEffectorPropertyTest_SOURCES = TerrainEffectorPropertyTest.cpp
+TerrainEffectorPropertyTest_LDADD = \
         $(top_builddir)/rulesets/TerrainEffectorProperty.o \
         $(TERRAIN_LIBS)
 
-EntityFiltertest_SOURCES = EntityFiltertest.cpp
-EntityFiltertest_LDADD = \
+EntityFilterTest_SOURCES = EntityFilterTest.cpp
+EntityFilterTest_LDADD = \
         $(top_builddir)/rulesets/libentityfilter.a \
         $(top_builddir)/rulesets/EntityProperty.o \
         $(top_builddir)/rulesets/Entity.o \
@@ -1022,8 +866,8 @@ EntityFiltertest_LDADD = \
         $(top_builddir)/common/TypeNode.o \
         $(top_builddir)/common/PropertyManager.o
         
-EntityFilterParsertest_SOURCES = EntityFilterParsertest.cpp
-EntityFilterParsertest_LDADD = \
+EntityFilterParserTest_SOURCES = EntityFilterParserTest.cpp
+EntityFilterParserTest_LDADD = \
         $(top_builddir)/rulesets/libentityfilter.a \
         $(top_builddir)/rulesets/EntityProperty.o \
         $(top_builddir)/rulesets/Entity.o \
@@ -1035,8 +879,8 @@ EntityFilterParsertest_LDADD = \
         $(top_builddir)/common/TypeNode.o \
         $(top_builddir)/common/PropertyManager.o
         
-EntityFilterProviderstest_SOURCES = EntityFilterProviderstest.cpp
-EntityFilterProviderstest_LDADD = \
+EntityFilterProvidersTest_SOURCES = EntityFilterProvidersTest.cpp
+EntityFilterProvidersTest_LDADD = \
         $(top_builddir)/rulesets/libentityfilter.a \
         $(top_builddir)/rulesets/EntityProperty.o \
         $(top_builddir)/rulesets/Entity.o \
@@ -1050,7 +894,7 @@ EntityFilterProviderstest_LDADD = \
 
 # RULESETS_INTEGRATION
 
-TerrainPropertyintegration_SOURCES = TerrainPropertyintegration.cpp
+TerrainPropertyintegration_SOURCES = TerrainPropertyIntegration.cpp
 TerrainPropertyintegration_LDADD = \
         $(top_builddir)/rulesets/TerrainModProperty.o \
         $(top_builddir)/rulesets/TerrainEffectorProperty.o \
@@ -1070,14 +914,14 @@ TerrainPropertyintegration_LDADD = \
         $(top_builddir)/common/id.o \
         $(TERRAIN_LIBS)
 
-PropertyEntityintegration_SOURCES = PropertyEntityintegration.cpp
+PropertyEntityintegration_SOURCES = PropertyEntityIntegration.cpp
 PropertyEntityintegration_LDADD = \
         $(top_builddir)/rulesets/Entity.o \
         $(top_builddir)/rulesets/LocatedEntity.o \
         $(top_builddir)/common/Property.o \
         $(top_builddir)/common/TypeNode.o
 
-DecaysPropertyintegration_SOURCES = DecaysPropertyintegration.cpp
+DecaysPropertyintegration_SOURCES = DecaysPropertyIntegration.cpp
 DecaysPropertyintegration_LDADD = \
         $(top_builddir)/rulesets/Entity.o \
         $(top_builddir)/rulesets/DecaysProperty.o \
@@ -1085,7 +929,7 @@ DecaysPropertyintegration_LDADD = \
         $(top_builddir)/common/Property.o \
         $(top_builddir)/common/TypeNode.o
 
-BiomassPropertyintegration_SOURCES = BiomassPropertyintegration.cpp
+BiomassPropertyintegration_SOURCES = BiomassPropertyIntegration.cpp
 BiomassPropertyintegration_LDADD = \
         $(top_builddir)/rulesets/Entity.o \
         $(top_builddir)/rulesets/BiomassProperty.o \
@@ -1093,7 +937,7 @@ BiomassPropertyintegration_LDADD = \
         $(top_builddir)/common/Property.o \
         $(top_builddir)/common/TypeNode.o
 
-TerrainModPropertyintegration_SOURCES = TerrainModPropertyintegration.cpp
+TerrainModPropertyintegration_SOURCES = TerrainModPropertyIntegration.cpp
 TerrainModPropertyintegration_LDADD = \
         $(top_builddir)/rulesets/Entity.o \
         $(top_builddir)/rulesets/LocatedEntity.o \
@@ -1107,13 +951,13 @@ TerrainModPropertyintegration_LDADD = \
         $(top_builddir)/common/TypeNode.o \
         $(TERRAIN_LIBS)
 
-StatisticsPropertyintegration_SOURCES = StatisticsPropertyintegration.cpp
+StatisticsPropertyintegration_SOURCES = StatisticsPropertyIntegration.cpp
 StatisticsPropertyintegration_LDADD = \
         $(top_builddir)/rulesets/StatisticsProperty.o \
         $(top_builddir)/rulesets/Entity.o \
         $(top_builddir)/rulesets/LocatedEntity.o
 
-BaseMindMapEntityintegration_SOURCES = BaseMindMapEntityintegration.cpp
+BaseMindMapEntityintegration_SOURCES = BaseMindMapEntityIntegration.cpp
 BaseMindMapEntityintegration_LDADD = \
         $(top_builddir)/rulesets/BaseMind.o \
         $(top_builddir)/rulesets/MemEntity.o \
@@ -1126,7 +970,7 @@ BaseMindMapEntityintegration_LDADD = \
         
         
 
-AreaPropertyintegration_SOURCES = AreaPropertyintegration.cpp
+AreaPropertyintegration_SOURCES = AreaPropertyIntegration.cpp
 AreaPropertyintegration_LDADD = \
         $(top_builddir)/rulesets/AreaProperty.o \
         $(top_builddir)/rulesets/Entity.o \
@@ -1134,63 +978,60 @@ AreaPropertyintegration_LDADD = \
         $(top_builddir)/physics/Course.o \
         $(top_builddir)/physics/Shape.o
 
-SuspendedPropertyintegration_SOURCES = SuspendedPropertyintegration.cpp
+SuspendedPropertyintegration_SOURCES = SuspendedPropertyIntegration.cpp
 SuspendedPropertyintegration_LDADD = \
         $(top_builddir)/rulesets/SuspendedProperty.o \
         $(top_builddir)/rulesets/Entity.o \
         $(top_builddir)/rulesets/LocatedEntity.o \
         $(top_builddir)/common/libcommon.a
+        
+        
+ThingIntegration_SOURCES = ThingIntegration.cpp
+ThingIntegration_LDADD = \
+        $(top_builddir)/rulesets/librulesetentity.a \
+        $(top_builddir)/rulesets/librulesetbase.a \
+        $(top_builddir)/modules/libmodules.a \
+        $(top_builddir)/common/libcommon.a \
+        $(top_builddir)/physics/libphysics.a \
+        $(TERRAIN_LIBS) $(NETWORK_LIBS)       
+        
 # CLIENT_TESTS
 
-Py_CreatorClienttest_SOURCES = Py_CreatorClienttest.cpp \
+Py_CreatorClientTest_SOURCES = Py_CreatorClientTest.cpp \
         python_testers.cpp python_testers.h
-Py_CreatorClienttest_LDADD = \
+Py_CreatorClientTest_LDADD = \
         $(top_builddir)/client/Py_CreatorClient.o \
         $(top_builddir)/client/Py_ObserverClient.o \
         $(top_builddir)/client/Python_ClientAPI.o \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS) $(NETWORK_LIBS)
+        $(PYTHON_TESTS_LIBS) \
+        $(NETWORK_LIBS)
 
 
-Py_ObserverClienttest_SOURCES = Py_ObserverClienttest.cpp \
+Py_ObserverClientTest_SOURCES = Py_ObserverClientTest.cpp \
         python_testers.cpp python_testers.h
-Py_ObserverClienttest_LDADD = \
+Py_ObserverClientTest_LDADD = \
         $(top_builddir)/client/Py_CreatorClient.o \
         $(top_builddir)/client/Py_ObserverClient.o \
         $(top_builddir)/client/Python_ClientAPI.o \
-        $(top_builddir)/rulesets/libscriptpython.a \
-        $(top_builddir)/rulesets/librulesetmind.a \
-        $(top_builddir)/rulesets/librulesetentity.a \
-        $(top_builddir)/rulesets/librulesetbase.a \
-        $(top_builddir)/rulesets/libentityfilter.a \
-        $(top_builddir)/modules/libmodules.a \
-        $(top_builddir)/physics/libphysics.a \
-        $(top_builddir)/common/libcommon.a \
-        $(TERRAIN_LIBS) $(NETWORK_LIBS)
+        $(PYTHON_TESTS_LIBS) \
+         $(NETWORK_LIBS)
 
-ClientConnectiontest_SOURCES = ClientConnectiontest.cpp
-ClientConnectiontest_LDADD = \
+ClientConnectionTest_SOURCES = ClientConnectionTest.cpp
+ClientConnectionTest_LDADD = \
         $(top_builddir)/client/ClientConnection.o $(NETWORK_LIBS)
 
-BaseClienttest_SOURCES = BaseClienttest.cpp
-BaseClienttest_LDADD = \
+BaseClientTest_SOURCES = BaseClientTest.cpp
+BaseClientTest_LDADD = \
         $(top_builddir)/client/BaseClient.o $(NETWORK_LIBS)
 
-ClientPropertyManagertest_SOURCES = ClientPropertyManagertest.cpp
-ClientPropertyManagertest_LDADD = \
+ClientPropertyManagerTest_SOURCES = ClientPropertyManagerTest.cpp
+ClientPropertyManagerTest_LDADD = \
         $(top_builddir)/client/ClientPropertyManager.o \
         $(top_builddir)/common/PropertyManager.o
 
 # CLIENT_INTEGRATION_TESTS
 
-ClientConnectionintegration_SOURCES = ClientConnectionintegration.cpp
+ClientConnectionintegration_SOURCES = ClientConnectionIntegration.cpp
 ClientConnectionintegration_LDADD = \
         $(top_builddir)/client/ClientConnection.o \
         $(top_builddir)/common/AtlasStreamClient.o \
@@ -1198,180 +1039,180 @@ ClientConnectionintegration_LDADD = \
 
 # SERVER_TESTS
 
-Rulesettest_SOURCES = Rulesettest.cpp
-Rulesettest_LDADD = \
+RulesetTest_SOURCES = RulesetTest.cpp
+RulesetTest_LDADD = \
         $(top_builddir)/server/Ruleset.o
 
-EntityBuildertest_SOURCES = EntityBuildertest.cpp
-EntityBuildertest_LDADD = \
+EntityBuilderTest_SOURCES = EntityBuilderTest.cpp
+EntityBuilderTest_LDADD = \
         $(top_builddir)/server/EntityBuilder.o
 
-PropertyFlagtest_SOURCES = \
-        PropertyFlagtest.cpp \
+PropertyFlagTest_SOURCES = \
+        PropertyFlagTest.cpp \
         TestPropertyManager.cpp
-PropertyFlagtest_LDADD = \
+PropertyFlagTest_LDADD = \
         $(top_builddir)/rulesets/Thing.o \
         $(top_builddir)/rulesets/Entity.o \
         $(top_builddir)/rulesets/LocatedEntity.o \
         $(top_builddir)/common/Property.o
 
-Accounttest_SOURCES = Accounttest.cpp
-Accounttest_LDADD = \
+AccountTest_SOURCES = AccountTest.cpp
+AccountTest_LDADD = \
         $(top_builddir)/server/Account.o \
         $(top_builddir)/common/debug.o
 
-Admintest_SOURCES = Admintest.cpp
-Admintest_LDADD = \
+AdminTest_SOURCES = AdminTest.cpp
+AdminTest_LDADD = \
         $(top_builddir)/server/Admin.o \
         $(top_builddir)/common/debug.o
 
-ServerAccounttest_SOURCES = ServerAccounttest.cpp
-ServerAccounttest_LDADD = \
+ServerAccountTest_SOURCES = ServerAccountTest.cpp
+ServerAccountTest_LDADD = \
         $(top_builddir)/server/ServerAccount.o
 
-Playertest_SOURCES = Playertest.cpp
-Playertest_LDADD = \
+PlayerTest_SOURCES = PlayerTest.cpp
+PlayerTest_LDADD = \
         $(top_builddir)/server/Player.o \
         $(top_builddir)/common/debug.o
 
-EntityFactorytest_SOURCES = EntityFactorytest.cpp
-EntityFactorytest_LDADD = \
+EntityFactoryTest_SOURCES = EntityFactoryTest.cpp
+EntityFactoryTest_LDADD = \
         $(top_builddir)/server/EntityFactory.o \
         $(top_builddir)/common/EntityKit.o
 
-TaskFactorytest_SOURCES = TaskFactorytest.cpp
-TaskFactorytest_LDADD = \
+TaskFactoryTest_SOURCES = TaskFactoryTest.cpp
+TaskFactoryTest_LDADD = \
         $(top_builddir)/server/TaskFactory.o
 
-buildidtest_SOURCES = buildidtest.cpp
-buildidtest_LDADD = \
+buildidTest_SOURCES = buildidTest.cpp
+buildidTest_LDADD = \
         $(top_builddir)/server/buildid.o
 
-Connectiontest_SOURCES = \
-        Connectiontest.cpp        
-Connectiontest_LDADD = \
+ConnectionTest_SOURCES = \
+        ConnectionTest.cpp        
+ConnectionTest_LDADD = \
         $(top_builddir)/server/Connection.o \
         $(NETWORK_LIBS)
 
-TrustedConnectiontest_SOURCES = \
-        TrustedConnectiontest.cpp
-TrustedConnectiontest_LDADD = \
+TrustedConnectionTest_SOURCES = \
+        TrustedConnectionTest.cpp
+TrustedConnectionTest_LDADD = \
         $(top_builddir)/server/TrustedConnection.o \
         $(NETWORK_LIBS)
 
-WorldRoutertest_SOURCES = WorldRoutertest.cpp
-WorldRoutertest_LDADD = \
+WorldRouterTest_SOURCES = WorldRouterTest.cpp
+WorldRouterTest_LDADD = \
         $(top_builddir)/server/WorldRouter.o
 
-Peertest_SOURCES = \
-        Peertest.cpp 
-Peertest_LDADD = \
+PeerTest_SOURCES = \
+        PeerTest.cpp 
+PeerTest_LDADD = \
         $(top_builddir)/server/Peer.o \
         $(NETWORK_LIBS)
 
-Lobbytest_SOURCES = Lobbytest.cpp
-Lobbytest_LDADD = \
+LobbyTest_SOURCES = LobbyTest.cpp
+LobbyTest_LDADD = \
         $(top_builddir)/server/Lobby.o
 
-Spawntest_SOURCES = Spawntest.cpp
+SpawnTest_SOURCES = SpawnTest.cpp
 
-SpawnEntitytest_SOURCES = SpawnEntitytest.cpp
-SpawnEntitytest_LDADD = \
+SpawnEntityTest_SOURCES = SpawnEntityTest.cpp
+SpawnEntityTest_LDADD = \
         $(top_builddir)/server/SpawnEntity.o
 
-ArithmeticBuildertest_SOURCES = ArithmeticBuildertest.cpp
-ArithmeticBuildertest_LDADD = \
+ArithmeticBuilderTest_SOURCES = ArithmeticBuilderTest.cpp
+ArithmeticBuilderTest_LDADD = \
         $(top_builddir)/server/ArithmeticBuilder.o
 
-ServerRoutingtest_SOURCES = ServerRoutingtest.cpp
-ServerRoutingtest_LDADD = \
+ServerRoutingTest_SOURCES = ServerRoutingTest.cpp
+ServerRoutingTest_LDADD = \
         $(top_builddir)/server/ServerRouting.o
 
-StorageManagertest_SOURCES = StorageManagertest.cpp
-StorageManagertest_LDADD = \
+StorageManagerTest_SOURCES = StorageManagerTest.cpp
+StorageManagerTest_LDADD = \
         $(top_builddir)/server/StorageManager.o
 
-HttpCachetest_SOURCES = HttpCachetest.cpp
-HttpCachetest_LDADD = \
+HttpCacheTest_SOURCES = HttpCacheTest.cpp
+HttpCacheTest_LDADD = \
         $(top_builddir)/server/HttpCache.o
 
 # SERVER_COMM_TESTS
 
-CommPeertest_SOURCES = CommPeertest.cpp
-CommPeertest_LDADD = \
+CommPeerTest_SOURCES = CommPeerTest.cpp
+CommPeerTest_LDADD = \
         $(top_builddir)/server/CommPeer.o \
         $(NETWORK_LIBS)
 
-CommMDNSPublishertest_SOURCES = CommMDNSPublishertest.cpp
-CommMDNSPublishertest_LDADD = \
+CommMDNSPublisherTest_SOURCES = CommMDNSPublisherTest.cpp
+CommMDNSPublisherTest_LDADD = \
         $(top_builddir)/server/CommMDNSPublisher.o $(NETWORK_LIBS)
 
-TeleportAuthenticatortest_SOURCES = TeleportAuthenticatortest.cpp
-TeleportAuthenticatortest_LDADD = \
+TeleportAuthenticatorTest_SOURCES = TeleportAuthenticatorTest.cpp
+TeleportAuthenticatorTest_LDADD = \
         $(top_builddir)/server/PossessionAuthenticator.o
 
-TeleportStatetest_SOURCES = TeleportStatetest.cpp
-TeleportStatetest_LDADD = \
+TeleportStateTest_SOURCES = TeleportStateTest.cpp
+TeleportStateTest_LDADD = \
         $(top_builddir)/server/TeleportState.o
 
-PendingTeleporttest_SOURCES = PendingTeleporttest.cpp
-PendingTeleporttest_LDADD = \
+PendingTeleportTest_SOURCES = PendingTeleportTest.cpp
+PendingTeleportTest_LDADD = \
         $(top_builddir)/server/PendingPossession.o
 
-Juncturetest_SOURCES = Juncturetest.cpp
-Juncturetest_LDADD = \
+JunctureTest_SOURCES = JunctureTest.cpp
+JunctureTest_LDADD = \
         $(top_builddir)/server/Juncture.o \
         $(NETWORK_LIBS)
 
-ConnectableRoutertest_SOURCES = ConnectableRoutertest.cpp
-ConnectableRoutertest_LDADD = \
+ConnectableRouterTest_SOURCES = ConnectableRouterTest.cpp
+ConnectableRouterTest_LDADD = \
         $(top_builddir)/server/ConnectableRouter.o
 
-RuleHandlertest_SOURCES = RuleHandlertest.cpp
-RuleHandlertest_LDADD = \
+RuleHandlerTest_SOURCES = RuleHandlerTest.cpp
+RuleHandlerTest_LDADD = \
         $(top_builddir)/server/RuleHandler.o
 
-OpRuleHandlertest_SOURCES = OpRuleHandlertest.cpp
-OpRuleHandlertest_LDADD = \
+OpRuleHandlerTest_SOURCES = OpRuleHandlerTest.cpp
+OpRuleHandlerTest_LDADD = \
         $(top_builddir)/server/OpRuleHandler.o
 
-EntityRuleHandlertest_SOURCES = EntityRuleHandlertest.cpp
-EntityRuleHandlertest_LDADD = \
+EntityRuleHandlerTest_SOURCES = EntityRuleHandlerTest.cpp
+EntityRuleHandlerTest_LDADD = \
         $(top_builddir)/server/EntityRuleHandler.o \
         $(top_builddir)/server/RuleHandler.o
 
-TaskRuleHandlertest_SOURCES = TaskRuleHandlertest.cpp
-TaskRuleHandlertest_LDADD = \
+TaskRuleHandlerTest_SOURCES = TaskRuleHandlerTest.cpp
+TaskRuleHandlerTest_LDADD = \
         $(top_builddir)/server/TaskRuleHandler.o \
         $(top_builddir)/server/RuleHandler.o
 
-PropertyRuleHandlertest_SOURCES = PropertyRuleHandlertest.cpp
-PropertyRuleHandlertest_LDADD = \
+PropertyRuleHandlerTest_SOURCES = PropertyRuleHandlerTest.cpp
+PropertyRuleHandlerTest_LDADD = \
         $(top_builddir)/server/PropertyRuleHandler.o
 
-IdleConnectortest_SOURCES = IdleConnectortest.cpp
-IdleConnectortest_LDADD = \
+IdleConnectorTest_SOURCES = IdleConnectorTest.cpp
+IdleConnectorTest_LDADD = \
         $(top_builddir)/server/IdleConnector.o $(NETWORK_LIBS)
 
-CommPSQLSockettest_SOURCES = CommPSQLSockettest.cpp
-CommPSQLSockettest_LDADD = \
+CommPSQLSocketTest_SOURCES = CommPSQLSocketTest.cpp
+CommPSQLSocketTest_LDADD = \
         $(top_builddir)/server/CommPSQLSocket.o $(NETWORK_LIBS)
 
-Persistencetest_SOURCES = Persistencetest.cpp
-Persistencetest_LDADD = \
+PersistenceTest_SOURCES = PersistenceTest.cpp
+PersistenceTest_LDADD = \
         $(top_builddir)/server/Persistence.o
 
-SystemAccounttest_SOURCES = SystemAccounttest.cpp
-SystemAccounttest_LDADD = \
+SystemAccountTest_SOURCES = SystemAccountTest.cpp
+SystemAccountTest_LDADD = \
         $(top_builddir)/server/SystemAccount.o
 
-CorePropertyManagertest_SOURCES = CorePropertyManagertest.cpp
-CorePropertyManagertest_LDADD = \
+CorePropertyManagerTest_SOURCES = CorePropertyManagerTest.cpp
+CorePropertyManagerTest_LDADD = \
         $(top_builddir)/server/CorePropertyManager.o
 
 # SERVER_INTEGRATION_TESTS
 
-WorldRouterintegration_SOURCES = WorldRouterintegration.cpp
+WorldRouterintegration_SOURCES = WorldRouterIntegration.cpp
 WorldRouterintegration_LDADD = \
         $(top_builddir)/server/WorldRouter.o \
         $(top_builddir)/server/EntityBuilder.o \
@@ -1389,7 +1230,7 @@ WorldRouterintegration_LDADD = \
         $(top_builddir)/physics/libphysics.a \
         $(top_builddir)/common/libcommon.a
 
-Rulesetintegration_SOURCES = Rulesetintegration.cpp
+Rulesetintegration_SOURCES = RulesetIntegration.cpp
 Rulesetintegration_LDADD = \
         $(top_builddir)/server/Ruleset.o \
         $(top_builddir)/server/EntityBuilder.o \
@@ -1408,13 +1249,13 @@ Rulesetintegration_LDADD = \
 Rulesetintegration_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 
 ConnectionShakerintegration_SOURCES = \
-        ConnectionShakerintegration.cpp
+        ConnectionShakerIntegration.cpp
 ConnectionShakerintegration_LDADD = \
         $(top_builddir)/server/Connection.o \
         $(top_builddir)/common/Shaker.o
         
 ConnectionCharacterintegration_SOURCES = \
-        ConnectionCharacterintegration.cpp
+        ConnectionCharacterIntegration.cpp
 ConnectionCharacterintegration_LDADD = \
         $(top_builddir)/physics/Quaternion.o \
         $(top_builddir)/server/Connection.o \
@@ -1422,7 +1263,7 @@ ConnectionCharacterintegration_LDADD = \
         $(top_builddir)/rulesets/ExternalMind.o
         
 ConnectionCreatorintegration_SOURCES = \
-        ConnectionCreatorintegration.cpp
+        ConnectionCreatorIntegration.cpp
 ConnectionCreatorintegration_LDADD = \
         $(top_builddir)/physics/Quaternion.o \
         $(top_builddir)/server/Connection.o \
@@ -1431,7 +1272,7 @@ ConnectionCreatorintegration_LDADD = \
         $(top_builddir)/rulesets/ExternalMind.o
         
 TrustedConnectionCreatorintegration_SOURCES = \
-        TrustedConnectionCreatorintegration.cpp
+        TrustedConnectionCreatorIntegration.cpp
 TrustedConnectionCreatorintegration_LDADD = \
         $(top_builddir)/physics/Quaternion.o \
         $(top_builddir)/server/Connection.o \
@@ -1440,7 +1281,7 @@ TrustedConnectionCreatorintegration_LDADD = \
         $(top_builddir)/rulesets/ExternalMind.o
         
 AccountConnectionCharacterintegration_SOURCES = \
-        AccountConnectionCharacterintegration.cpp
+        AccountConnectionCharacterIntegration.cpp
 AccountConnectionCharacterintegration_LDADD = \
         $(top_builddir)/physics/Quaternion.o \
         $(top_builddir)/server/Account.o \
@@ -1449,7 +1290,7 @@ AccountConnectionCharacterintegration_LDADD = \
         $(top_builddir)/rulesets/ExternalMind.o
         
 Accountintegration_SOURCES = \
-        Accountintegration.cpp
+        AccountIntegration.cpp
 Accountintegration_LDADD = \
         $(top_builddir)/server/EntityBuilder.o \
         $(top_builddir)/server/EntityFactory.o \
@@ -1484,7 +1325,7 @@ Accountintegration_LDADD = \
         $(TERRAIN_LIBS)
 
 EntityFactoryTypeNodeintegration_SOURCES = \
-        EntityFactoryTypeNodeintegration.cpp \
+        EntityFactoryTypeNodeIntegration.cpp \
         TestPropertyManager.cpp
 EntityFactoryTypeNodeintegration_LDADD = \
         $(top_builddir)/server/EntityFactory.o \
@@ -1494,7 +1335,7 @@ EntityFactoryTypeNodeintegration_LDADD = \
         $(top_builddir)/common/Property.o
 
 AccountConnectionintegration_SOURCES = \
-        AccountConnectionintegration.cpp
+        AccountConnectionIntegration.cpp
 AccountConnectionintegration_LDADD = \
         $(top_builddir)/server/Account.o \
         $(top_builddir)/server/Admin.o \
@@ -1516,7 +1357,7 @@ AccountConnectionintegration_LDADD = \
         $(NETWORK_LIBS)
 
 AccountServerLobbyintegration_SOURCES = \
-        AccountServerLobbyintegration.cpp
+        AccountServerLobbyIntegration.cpp
 AccountServerLobbyintegration_LDADD = \
         $(top_builddir)/server/Account.o \
         $(top_builddir)/server/ServerRouting.o \
@@ -1524,32 +1365,27 @@ AccountServerLobbyintegration_LDADD = \
 
 # Other TESTS
 
-Mastertest_SOURCES = Mastertest.cpp
-Mastertest_LDADD = \
+MasterTest_SOURCES = MasterTest.cpp
+MasterTest_LDADD = \
         $(top_builddir)/server/Master.o \
         $(top_builddir)/common/libcommon.a
 
 
 # TOOLS_TESTS
 
-AdminClienttest_SOURCES = AdminClienttest.cpp
-AdminClienttest_LDADD = \
+AdminClientTest_SOURCES = AdminClientTest.cpp
+AdminClientTest_LDADD = \
         $(top_builddir)/tools/AdminClient.o $(NETWORK_LIBS)
 
-Flushertest_SOURCES = Flushertest.cpp
-Flushertest_LDADD = \
+FlusherTest_SOURCES = FlusherTest.cpp
+FlusherTest_LDADD = \
         $(top_builddir)/tools/Flusher.o \
         $(top_builddir)/common/ClientTask.o
 
-OperationMonitortest_SOURCES = OperationMonitortest.cpp
-OperationMonitortest_LDADD = \
+OperationMonitorTest_SOURCES = OperationMonitorTest.cpp
+OperationMonitorTest_LDADD = \
         $(top_builddir)/tools/OperationMonitor.o \
         $(top_builddir)/common/ClientTask.o
-
-MultiLineListFormattertest_SOURCES = MultiLineListFormattertest.cpp
-MultiLineListFormattertest_LDADD = \
-        $(top_builddir)/tools/MultiLineListFormatter.o
-
 
 # PYTHON_TESTS
 

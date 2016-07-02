@@ -24,6 +24,7 @@
 
 #include "rulesets/World.h"
 #include "rulesets/Domain.h"
+#include "rulesets/TransformsProperty.h"
 
 #include "common/id.h"
 #include "common/log.h"
@@ -154,12 +155,14 @@ LocatedEntity * WorldRouter::addEntity(LocatedEntity * ent)
     ++m_entityCount;
     assert(ent->m_location.isValid());
 
+    TransformsProperty* transProp = ent->requirePropertyClassFixed<TransformsProperty>();
     if (!ent->m_location.isValid()) {
-        log(ERROR, "Entity added to world with invalid location!");
+        log(ERROR, String::compose("Entity %1 of type %2 added to world with invalid location!", ent->getId(), ent->getType()->name()));
         debug(std::cout << "set loc " << &getDefaultLocation()  << std::endl
                         << std::flush;);
         ent->m_location.m_loc = &getDefaultLocation();
-        ent->m_location.m_pos = Point3D(uniform(-8,8), uniform(-8,8), 0);
+        transProp->getTranslate() = Vector3D(uniform(-8,8), uniform(-8,8), 0);
+        transProp->apply(ent);
         debug(std::cout << "loc set with loc " << ent->m_location.m_loc->getId()
                         << std::endl << std::flush;);
     }
@@ -170,12 +173,16 @@ LocatedEntity * WorldRouter::addEntity(LocatedEntity * ent)
     if (ent->getAttrType("mode", mode_attr, Element::TYPE_STRING) == 0) {
         mode = mode_attr.String();
     }
-    Domain* movementDomain = ent->getMovementDomain();
-    if (movementDomain) {
-        ent->m_location.m_pos.z() = movementDomain->
-              constrainHeight(ent->m_location.m_loc,
-                              ent->m_location.pos(),
-                              mode);
+    if (ent->m_location.m_loc) {
+        Domain* movementDomain = ent->m_location.m_loc->getMovementDomain();
+        if (movementDomain) {
+            float height = movementDomain->
+                  constrainHeight(*ent, ent->m_location.m_loc,
+                                  ent->m_location.pos(),
+                                  mode);
+            transProp->getTranslate().z() = height;
+            transProp->apply(ent);
+        }
     }
     ent->m_location.m_loc->makeContainer();
     bool cont_change = ent->m_location.m_loc->m_contains->empty();
@@ -521,13 +528,16 @@ void WorldRouter::operation(const Operation & op, LocatedEntity & from)
         deliverTo(op, *to_entity);
 
     } else if (broadcastPerception(op)) {
-        auto fromDomain = from.getMovementDomain();
-        if (fromDomain) {
+        if (from.m_location.m_loc) {
             // Where broadcasts go depends on type of op
             for (auto& entity : m_perceptives) {
-                if (fromDomain->isEntityVisibleFor(*entity, from)) {
-                    op->setTo(entity->getId());
-                    deliverTo(op, *entity);
+                if (entity->m_location.m_loc) {
+                    Domain* entityDomain = entity->m_location.m_loc->getMovementDomain();
+                    if (entityDomain && entityDomain->isEntityVisibleFor(*entity, from)) {
+                        op->setTo(entity->getId());
+                        deliverTo(op, *entity);
+                    }
+
                 }
             }
         }

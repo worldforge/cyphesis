@@ -46,7 +46,7 @@ using Atlas::Objects::Root;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::RootOperation;
 
-PossessionClient::PossessionClient(MindFactory& mindFactory) :
+PossessionClient::PossessionClient(MindKit& mindFactory) :
         m_mindFactory(mindFactory), m_account(nullptr), m_operationsDispatcher([&](const Operation & op, LocatedEntity & from) {this->operationFromEntity(op, from);},
                 [&]()->double {return getTime();})
 {

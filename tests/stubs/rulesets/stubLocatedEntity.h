@@ -89,6 +89,17 @@ Domain * LocatedEntity::getMovementDomain()
     return 0;
 }
 
+const Domain * LocatedEntity::getMovementDomain() const
+{
+    return 0;
+}
+
+bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* watcher) const
+{
+    return true;
+}
+
+
 void LocatedEntity::sendWorld(const Operation & op)
 {
 }
@@ -128,6 +139,11 @@ void LocatedEntity::setType(const TypeNode * t) {
 std::vector<Atlas::Objects::Root> LocatedEntity::getThoughts() const
 {
     return std::vector<Atlas::Objects::Root>();
+}
+
+std::string LocatedEntity::describeEntity() const
+{
+    return "";
 }
 
 #endif /* STUBLOCATEDENTITY_H_ */

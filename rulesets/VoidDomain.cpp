@@ -33,9 +33,9 @@ VoidDomain::~VoidDomain()
 {
 }
 
-float VoidDomain::constrainHeight(LocatedEntity * parent,
-                              const Point3D & pos,
-                              const std::string & mode)
+float VoidDomain::constrainHeight(LocatedEntity &, LocatedEntity *,
+                              const Point3D &,
+                              const std::string &)
 {
     //Nothing can move
     return 0.0f;
@@ -44,11 +44,6 @@ float VoidDomain::constrainHeight(LocatedEntity * parent,
 void VoidDomain::tick(double t)
 {
 
-}
-
-void VoidDomain::lookAtEntity(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity, const Operation & originalLookOp, OpVector& res) const
-{
-    //Nothing can be seen
 }
 
 bool VoidDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const

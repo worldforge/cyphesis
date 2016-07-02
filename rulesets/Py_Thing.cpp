@@ -1,4 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
+#include <rulesets/mind/AwareMind.h>
 // Copyright (C) 2000 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
@@ -33,6 +34,8 @@
 
 #include "BaseMind.h"
 #include "Character.h"
+
+#include "navigation/Steering.h"
 
 #include "common/id.h"
 #include "common/log.h"
@@ -152,9 +155,95 @@ static PyObject * Character_mind2body(PyEntity * self, PyOperation * op)
     }
 }
 
+static PyObject * Mind_refreshPath(PyEntity * self)
+{
+#ifndef NDEBUG
+    if (self->m_entity.l == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.refreshPath");
+        return NULL;
+    }
+#endif // NDEBUG
+    AwareMind* awareMind = dynamic_cast<AwareMind*>(self->m_entity.m);
+    if (!awareMind) {
+        return NULL;
+    }
+
+    int result = awareMind->updatePath();
+//    int result = awareMind->getSteering().updatePath(awareMind->m_location.m_pos);
+    return Py_BuildValue("i", result);
+}
+
+static PyObject * Mind_describeEntity(PyEntity * self)
+{
+#ifndef NDEBUG
+    if (self->m_entity.l == NULL) {
+        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.mind2body");
+        return NULL;
+    }
+#endif // NDEBUG
+    AwareMind* awareMind = dynamic_cast<AwareMind*>(self->m_entity.m);
+    if (!awareMind) {
+        return NULL;
+    }
+
+    std::string result = awareMind->describeEntity();
+    return PyString_FromString(result.c_str());
+}
+
+
+static PyObject* Mind_setDestination(PyEntity* self, PyObject* args)
+{
+    AwareMind* awareMind = dynamic_cast<AwareMind*>(self->m_entity.m);
+    if (!awareMind) {
+        return NULL;
+    }
+
+    PyObject * destination_arg;
+    float radius;
+    const char* entityIdString;
+    if (!PyArg_ParseTuple(args, "Ofz", &destination_arg, &radius, &entityIdString)) {
+        awareMind->getSteering().stopSteering();
+        return NULL;
+    }
+    if (!PyPoint3D_Check(destination_arg)) {
+        PyErr_SetString(PyExc_TypeError, "Argument must be a Point3D");
+        awareMind->getSteering().stopSteering();
+        return NULL;
+    }
+    PyPoint3D * destination = (PyPoint3D *)destination_arg;
+
+    if (!destination->coords.isValid()) {
+        awareMind->getSteering().stopSteering();
+        return 0;
+    }
+
+    int entityId;
+    //If no entity id was specified, the location is relative to the parent entity.
+    if (entityIdString == nullptr) {
+        entityId = awareMind->m_location.m_loc->getIntId();
+    } else {
+        entityId = std::atoi(entityIdString);
+    }
+
+    awareMind->getSteering().setDestination(entityId, destination->coords, radius, awareMind->getCurrentServerTime());
+    awareMind->getSteering().startSteering();
+
+    Py_INCREF(Py_None);
+    return Py_None;
+
+}
+
+
 static PyMethodDef Character_methods[] = {
     {"start_task",      (PyCFunction)Character_start_task, METH_VARARGS},
     {"mind2body",       (PyCFunction)Character_mind2body,  METH_O},
+    {NULL,              NULL}           /* sentinel */
+};
+
+static PyMethodDef Mind_methods[] = {
+    {"refreshPath",     (PyCFunction)Mind_refreshPath,  METH_NOARGS},
+    {"setDestination",     (PyCFunction)Mind_setDestination,  METH_VARARGS},
+    {"describeEntity",     (PyCFunction)Mind_describeEntity,  METH_NOARGS},
     {NULL,              NULL}           /* sentinel */
 };
 
@@ -239,6 +328,7 @@ static PyObject * Entity_getattro(PyEntity *self, PyObject *oname)
         }
         Py_RETURN_FALSE;
     }
+
     Entity * entity = self->m_entity.e;
     PropertyBase * prop = entity->modProperty(name);
     if (prop != 0) {
@@ -465,6 +555,47 @@ static PyObject * Mind_getattro(PyEntity *self, PyObject *oname)
         }
         return list;
     }
+    if (strcmp(name, "unawareTilesCount") == 0) {
+        AwareMind* awareMind = dynamic_cast<AwareMind*>(self->m_entity.m);
+        if (!awareMind) {
+            return NULL;
+        }
+
+        size_t count = awareMind->getSteering().unawareAreaCount();
+
+        return PyInt_FromSize_t(count);
+    }
+    if (strcmp(name, "path") == 0) {
+        AwareMind* awareMind = dynamic_cast<AwareMind*>(self->m_entity.m);
+        if (!awareMind) {
+            return NULL;
+        }
+        const auto& path = awareMind->getSteering().getPath();
+        PyObject * list = PyList_New(0);
+        if (list == NULL) {
+            return NULL;
+        }
+
+        for (auto& point : path) {
+            auto py_point = newPyPoint3D();
+            py_point->coords = point;
+
+            PyList_Append(list, (PyObject*)py_point);
+            Py_DECREF(py_point);
+        }
+
+        return list;
+    }
+
+    if (strcmp(name, "pathResult") == 0) {
+        AwareMind* awareMind = dynamic_cast<AwareMind*>(self->m_entity.m);
+        if (!awareMind) {
+            return NULL;
+        }
+
+        return PyInt_FromLong(awareMind->getSteering().getPathResult());
+    }
+
     LocatedEntity * mind = self->m_entity.m;
     Element attr;
     if (mind->getAttr(name, attr) == 0) {
@@ -494,6 +625,7 @@ static int Mind_setattro(PyEntity *self, PyObject *oname, PyObject *v)
         PyErr_SetString(PyExc_AttributeError, "Setting map on mind is forbidden");
         return -1;
     }
+
     LocatedEntity * entity = self->m_entity.m;
     // Should we support removal of attributes?
     //std::string attr(name);
@@ -696,7 +828,7 @@ PyTypeObject PyMind_Type = {
         0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
-        0,                              // tp_methods
+        Mind_methods,                   // tp_methods
         0,                              // tp_members
         0,                              // tp_getset
         &PyLocatedEntity_Type,          // tp_base

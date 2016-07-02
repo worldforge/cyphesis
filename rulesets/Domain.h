@@ -60,20 +60,10 @@ class Domain {
 
     virtual ~Domain();
 
-    virtual float constrainHeight(LocatedEntity *, const Point3D &,
+    virtual float constrainHeight(LocatedEntity& entity, LocatedEntity *, const Point3D &,
                                   const std::string &) = 0;
 
     virtual void tick(double t) = 0;
-
-    /**
-     * @brief Lets one entity look at another, calculating whether this can be done, and what children also can be seen.
-     *
-     * @param observingEntity The observer entity.
-     * @param observedEntity The entity being looked at.
-     * @param originalLookOp The originating Look operation.
-     * @param res
-     */
-    virtual void lookAtEntity(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity, const Operation & originalLookOp, OpVector& res) const = 0;
 
     /**
      * @brief Checks if the observing Entity can see the observed entity.

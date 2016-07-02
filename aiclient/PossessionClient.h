@@ -25,7 +25,7 @@
 #include <map>
 #include <unordered_map>
 
-class MindFactory;
+class MindKit;
 class PossessionAccount;
 
 /**
@@ -34,7 +34,7 @@ class PossessionAccount;
 class PossessionClient: public BaseClient, public LocatedEntityRegistry
 {
     public:
-        PossessionClient(MindFactory& mindFactory);
+        PossessionClient(MindKit& mindFactory);
         virtual ~PossessionClient();
 
         bool idle();
@@ -54,7 +54,7 @@ class PossessionClient: public BaseClient, public LocatedEntityRegistry
         double getTime() const;
 
 
-        MindFactory& m_mindFactory;
+        MindKit& m_mindFactory;
 
         PossessionAccount* m_account;
 

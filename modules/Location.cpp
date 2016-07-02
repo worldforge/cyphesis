@@ -207,6 +207,10 @@ static const Location* distanceFromAncestor(const Location & self,
         return nullptr;
     }
 
+    if (!other.m_pos.isValid()) {
+        return nullptr;
+    }
+
     if (other.orientation().isValid()) {
         c = c.toParentCoords(other.m_pos, other.orientation());
     } else {
@@ -220,6 +224,10 @@ static const Location* distanceFromAncestor(const Location & self,
 static const Location* distanceToAncestor(const Location & self,
                                const Location & other, Point3D & c)
 {
+    if (!self.m_pos.isValid()) {
+        return nullptr;
+    }
+
     c.setToOrigin();
     const Location* ancestor = distanceFromAncestor(self, other, c);
     if (ancestor) {
@@ -240,9 +248,15 @@ static const Location* distanceToAncestor(const Location & self,
     if (self.m_loc != 0) {
         std::cerr << "Self(" << self.m_loc->getId() << "," << self.m_loc << ")"
                   << std::endl << std::flush;
+    } else {
+        std::cerr << "Self has no location"
+                  << std::endl << std::flush;
     }
     if (other.m_loc != 0) {
         std::cerr << "Other(" << other.m_loc->getId() << "," << other.m_loc << ")"
+                  << std::endl << std::flush;
+    } else {
+        std::cerr << "Other has no location"
                   << std::endl << std::flush;
     }
      

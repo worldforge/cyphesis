@@ -25,17 +25,17 @@ MemEntity * MemMap::addEntity(MemEntity * entity)
     return nullptr;
 }
 
-void MemMap::readEntity(MemEntity * entity, const RootEntity & ent)
+void MemMap::readEntity(MemEntity * entity, const RootEntity & ent, double timestamp)
 {
 
 }
 
-void MemMap::updateEntity(MemEntity * entity, const RootEntity & ent)
+void MemMap::updateEntity(MemEntity * entity, const RootEntity & ent, double timestamp)
 {
 }
 
 MemEntity * MemMap::newEntity(const std::string & id, long int_id,
-                              const RootEntity & ent)
+                              const RootEntity & ent, double timestamp)
 {
     return nullptr;
 }

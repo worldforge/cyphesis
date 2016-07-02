@@ -49,6 +49,11 @@
 #include "rulesets/DefaultLocationProperty.h"
 #include "rulesets/DomainProperty.h"
 #include "rulesets/LimboProperty.h"
+#include "rulesets/TransformsProperty.h"
+#include "rulesets/ModeProperty.h"
+#include "rulesets/ModeSpecProperty.h"
+#include "rulesets/ForcesProperty.h"
+#include "rulesets/PropelProperty.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
@@ -89,6 +94,19 @@ void CorePropertyManager::installProperty(const std::string & type_name,
                    new PropertyFactory<PropertyT>);
 }
 
+template<typename PropertyT>
+void CorePropertyManager::installProperty(const std::string & parent)
+{
+    this->installProperty<PropertyT>(PropertyT::property_name, parent);
+}
+
+template<typename PropertyT>
+void CorePropertyManager::installProperty()
+{
+    this->installProperty<PropertyT>(PropertyT::property_name, PropertyT::property_atlastype);
+}
+
+
 CorePropertyManager::CorePropertyManager()
 {
     // Core types, for inheritence only generally.
@@ -99,6 +117,7 @@ CorePropertyManager::CorePropertyManager()
     installBaseProperty<MapType>("map", "root_type");
 
     installProperty<Property<double>>("stamina", "float");
+    installProperty<ModeProperty>("mode", "string");
     installProperty<LineProperty>("coords", "list");
     installProperty<LineProperty>("points", "list");
     installProperty<Property<IdList> >("start_intersections", "list");
@@ -133,8 +152,15 @@ CorePropertyManager::CorePropertyManager()
     installProperty<ImmortalProperty>("immortal", "int");
     installProperty<RespawningProperty>("respawning", "string");
     installProperty<DefaultLocationProperty>("default_location", "int");
-    installProperty<DomainProperty>("domain", "int");
+    installProperty<DomainProperty>("domain", "string");
     installProperty<LimboProperty>("limbo", "int");
+    installProperty<TransformsProperty>("map");
+    installProperty<ModeProperty>("string");
+    installProperty<ModeSpecProperty>("mode-fixed", "map");
+    installProperty<ModeSpecProperty>("mode-standing", "map");
+    installProperty<ModeSpecProperty>("mode-planted", "map");
+    installProperty<ForcesProperty>("map");
+    installProperty<PropelProperty>();
 
 }
 

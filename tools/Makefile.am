@@ -82,7 +82,6 @@ cycmd_SOURCES = cycmd.cpp \
         EntityExporter.cpp EntityExporter.h \
         EntityImporterBase.cpp EntityImporterBase.h \
         EntityImporter.cpp EntityImporter.h \
-        MultiLineListFormatter.cpp MultiLineListFormatter.h \
         AdminClient.cpp AdminClient.h \
         ObjectContext.cpp ObjectContext.h \
         IdContext.cpp IdContext.h \
@@ -158,8 +157,7 @@ cyloadrules_LDADD = \
     $(MATHTOOL_LIBS) \
     $(DBTOOL_LIBS)
 
-cydumprules_SOURCES = cydumprules.cpp \
-        MultiLineListFormatter.cpp MultiLineListFormatter.h
+cydumprules_SOURCES = cydumprules.cpp
 
 cydumprules_LDADD = $(top_builddir)/common/Database.o \
                     $(top_builddir)/common/globals.o \
@@ -215,7 +213,7 @@ cypython_LDADD = $(top_builddir)/common/client_socket.o \
                  
 cyexport_SOURCES = cyexport.cpp EntityExporterBase.cpp  EntityExporterBase.h \
                    EntityExporter.cpp EntityExporter.h AgentCreationTask.cpp AgentCreationTask.h \
-                   MultiLineListFormatter.cpp MultiLineListFormatter.h WaitForDeletionTask.cpp WaitForDeletionTask.h
+                   WaitForDeletionTask.cpp WaitForDeletionTask.h
 
 cyexport_LDADD = $(top_builddir)/common/operations.o \
                  $(top_builddir)/common/client_socket.o \

@@ -286,3 +286,20 @@ void Creator::mindLookOperation(const Operation & op, OpVector & res)
     debug( std::cout <<"  now to ["<<op->getTo()<<"]"<<std::endl<<std::flush;);
     res.push_back(op);
 }
+
+
+void Creator::mindSetOperation(const Operation & op, OpVector & res)
+{
+    const std::vector<Root> & args = op->getArgs();
+    if (args.empty()) {
+        log(ERROR, "Creator::mindSetOperation: set op has no argument");
+        return;
+    }
+    const Root & arg = args.front();
+    if (arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+        op->setTo(arg->getId());
+    } else {
+        op->setTo(getId());
+    }
+    res.push_back(op);
+}

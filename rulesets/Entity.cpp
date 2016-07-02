@@ -21,6 +21,7 @@
 #include "Script.h"
 #include "Domain.h"
 #include "DomainProperty.h"
+#include "TransformsProperty.h"
 #include "Motion.h"
 
 #include "common/BaseWorld.h"
@@ -272,20 +273,25 @@ void Entity::destroy()
             Location & child = (*I)->m_location;
             // FIXME take account of orientation
             // FIXME velocity and orientation  need to be adjusted
+            TransformsProperty* transformsProp = (*I)->requirePropertyClassFixed<TransformsProperty>();
+
             if (m_location.orientation().isValid() && m_location.pos().isValid()) {
-                child.m_pos = child.m_pos.toParentCoords(m_location.pos(),
-                                                         m_location.orientation());
+
+                transformsProp->getTranslate() = WFMath::Vector<3>(child.m_pos.toParentCoords(m_location.pos(),
+                                                         m_location.orientation()));
+                if (transformsProp->getRotate().isValid()) {
+                    transformsProp->getRotate() *= m_location.orientation();
+                }
+
                 if (child.m_velocity.isValid()) {
                     child.m_velocity.rotate(m_location.orientation());
                 }
-                if (child.m_orientation.isValid()) {
-                    child.m_orientation *= m_location.orientation();
-                }
             } else {
                 static const Quaternion identity(1, 0, 0, 0);
-                child.m_pos = child.m_pos.toParentCoords(m_location.pos(),
-                                                         identity);
+                transformsProp->getTranslate() = WFMath::Vector<3>(child.m_pos.toParentCoords(m_location.pos(),
+                                                         identity));
             }
+            transformsProp->apply(*I);
             // Remove the reference to ourself.
             decRef();
             m_location.m_loc->addChild(**I);
@@ -310,13 +316,20 @@ Domain * Entity::getMovementDomain()
 {
     if (m_flags & entity_domain) {
         return getPropertyClass<DomainProperty>("domain")->getDomain(this);
-    }
-    if (m_location.m_loc) {
-        return m_location.m_loc->getMovementDomain();
     } else {
         return nullptr;
     }
 }
+
+const Domain * Entity::getMovementDomain() const
+{
+    if (m_flags & entity_domain) {
+        return getPropertyClass<DomainProperty>("domain")->getDomain(this);
+    } else {
+        return nullptr;
+    }
+}
+
 
 void Entity::sendWorld(const Operation & op)
 {

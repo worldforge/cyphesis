@@ -64,7 +64,8 @@ PhysicalDomain::~PhysicalDomain()
 {
 }
 
-float PhysicalDomain::constrainHeight(LocatedEntity * parent,
+float PhysicalDomain::constrainHeight(LocatedEntity& entity,
+                              LocatedEntity * parent,
                               const Point3D & pos,
                               const std::string & mode)
 {
@@ -73,7 +74,7 @@ float PhysicalDomain::constrainHeight(LocatedEntity * parent,
         return pos.z();
     }
     const TerrainProperty * tp = parent->getPropertyClass<TerrainProperty>("terrain");
-    if (tp != 0) {
+    if (tp) {
         if (mode == "floating") {
             return 0.f;
         }
@@ -81,6 +82,7 @@ float PhysicalDomain::constrainHeight(LocatedEntity * parent,
         Vector3D normal;
         tp->getHeightAndNormal(pos.x(), pos.y(), h, normal);
         // FIXME Use a virtual movement_domain function to get the constraints
+
         debug(std::cout << "Fix height " << pos.z() << " to " << h
                         << std::endl << std::flush;);
         return h;
@@ -93,7 +95,7 @@ float PhysicalDomain::constrainHeight(LocatedEntity * parent,
                         << std::endl << std::flush;);
         float h;
         const Quaternion & parent_orientation = parent->m_location.orientation().isValid() ? parent->m_location.orientation() : identity;
-        h =  constrainHeight(parent->m_location.m_loc,
+        h =  constrainHeight(entity, parent->m_location.m_loc,
                              pos.toParentCoords(parent->m_location.pos(),
                                                 parent_orientation),
                              mode) - ppos.z();
@@ -107,80 +109,6 @@ float PhysicalDomain::constrainHeight(LocatedEntity * parent,
 void PhysicalDomain::tick(double t)
 {
 
-}
-
-void PhysicalDomain::lookAtEntity(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity, const Operation & originalLookOp, OpVector& res) const
-{
-    debug(std::cout << "PhysicalDomain::lookAtEntity()" << std::endl << std::flush;);
-
-    if (isEntityVisibleFor(observingEntity, observedEntity)) {
-        Sight s;
-
-        Anonymous sarg;
-        observedEntity.addToEntity(sarg);
-        s->setArgs1(sarg);
-
-        if (observedEntity.m_contains != nullptr) {
-            //If the entity has any outfitted or wielded entities these should always be shown.
-            const OutfitProperty* outfitProperty = observedEntity.getPropertyClass<OutfitProperty>("outfit");
-            std::unordered_set<std::string> outfittedEntities;
-            if (outfitProperty) {
-                for (auto& entry : outfitProperty->data()) {
-                    auto outfittedEntity = entry.second.get();
-                    if (outfittedEntity) {
-                        outfittedEntities.insert(outfittedEntity->getId());
-                    }
-                }
-            }
-
-            const EntityProperty* rightHandWieldProperty = observedEntity.getPropertyClass<EntityProperty>("right_hand_wield");
-            if (rightHandWieldProperty) {
-                auto entity = rightHandWieldProperty->data().get();
-                if (entity) {
-                    outfittedEntities.insert(entity->getId());
-                }
-            }
-
-            std::list<std::string> & contlist = sarg->modifyContains();
-            contlist.clear();
-            for (auto& entry : *observedEntity.m_contains) {
-                //If the entity is outfitted or wielded we should include it.
-                if (outfittedEntities.count(entry->getId())) {
-                    contlist.push_back(entry->getId());
-                } else {
-                    float fromSquSize = entry->m_location.squareBoxSize();
-                    //TODO: make this much smarter by only using the local position of the child along with the position of the looked at entity
-                    float dist = squareDistance(observingEntity.m_location, entry->m_location);
-                    float view_factor = fromSquSize / dist;
-                    if (view_factor > consts::square_sight_factor) {
-                        contlist.push_back(entry->getId());
-                    }
-                }
-            }
-            if (contlist.empty()) {
-                sarg->removeAttr("contains");
-            }
-        }
-
-        //If the observer is looking at the domain entity we should hide anything above it, since the observer won't be able to see that anyway.
-        if (&m_entity == &observedEntity) {
-            sarg->removeAttr("loc");
-        }
-
-        s->setTo(originalLookOp->getFrom());
-        if (!originalLookOp->isDefaultSerialno()) {
-            s->setRefno(originalLookOp->getSerialno());
-        }
-        res.push_back(s);
-    } else {
-        Unseen u;
-        u->setTo(originalLookOp->getFrom());
-        u->setArgs(originalLookOp->getArgs());
-        if (!originalLookOp->isDefaultSerialno()) {
-            u->setRefno(originalLookOp->getSerialno());
-        }
-        res.push_back(u);
-    }
 }
 
 bool PhysicalDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const
@@ -215,28 +143,7 @@ bool PhysicalDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, co
     if ((observedEntity.m_location.squareBoxSize() / distance) > consts::square_sight_factor) {
         return true;
     }
-    //The entity couldn't be seen just from its size; now check if it's outfitted or wielded.
-    if (observedEntity.m_location.m_loc != nullptr) {
-        const OutfitProperty* outfitProperty =
-                observedEntity.m_location.m_loc->getPropertyClass<OutfitProperty>(
-                        "outfit");
-        if (outfitProperty) {
-            for (auto& entry : outfitProperty->data()) {
-                auto outfittedEntity = entry.second.get();
-                if (outfittedEntity && outfittedEntity == &observedEntity) {
-                    return true;
-                }
-            }
-        }
-        //If the entity isn't large enough, and isn't outfitted, perhaps it's wielded?
-        const EntityProperty* rightHandWieldProperty = observedEntity.m_location.m_loc->getPropertyClass<EntityProperty>("right_hand_wield");
-        if (rightHandWieldProperty) {
-            auto entity = rightHandWieldProperty->data().get();
-            if (entity && entity == &observedEntity) {
-                return true;
-            }
-        }
-    }
+
     return false;
 }
 
@@ -298,18 +205,18 @@ void PhysicalDomain::calculateVisibility(std::vector<Root>& appear, std::vector<
                 debug(std::cout << moved_entity.getId() << ": gaining sight of "
                                 << other->getId() << std::endl;);
             }
-        } else {
-            //We've seen this entity before, and we're still seeing it. Check if there are any children that's now changing visibility.
-            if (other->m_contains && !other->m_contains->empty()) {
-                calculateVisibility(appear, disappear, this_ent, *other, moved_entity, old_loc, res);
-            }
+//        } else {
+//            //We've seen this entity before, and we're still seeing it. Check if there are any children that's now changing visibility.
+//            if (other->m_contains && !other->m_contains->empty()) {
+//                calculateVisibility(appear, disappear, this_ent, *other, moved_entity, old_loc, res);
+//            }
         }
     }
 }
 
 
 void PhysicalDomain::processVisibilityForMovedEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res) {
-    debug(std::cout << "testing range" << std::endl;);
+    debug_print("testing range for " << moved_entity.describeEntity());
     std::vector<Root> appear, disappear;
 
     Anonymous this_ent;
@@ -378,11 +285,11 @@ float PhysicalDomain::checkCollision(LocatedEntity& entity, CollisionData& colli
     // Check to see whether a collision is going to occur from now until the
     // the next tick in consts::move_tick seconds
     float coll_time = consts::move_tick;
-    debug( std::cout << "checking " << entity.getId()
+    debug_print( "checking " << entity.getId()
                      << entity.m_location.pos()
                      << entity.m_location.velocity() << " in "
                      << entity.m_location.m_loc->getId()
-                     << " against"; );
+                     << " against");
     collisionData.collEntity = nullptr;
     collisionData.isCollision = false;
     // Check against everything within the current container

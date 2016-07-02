@@ -32,6 +32,13 @@ class CorePropertyManager : public PropertyManager {
     template<class PropertyT>
     void installProperty(const std::string & type_name,
                          const std::string & parent);
+
+    template<class PropertyT>
+    void installProperty(const std::string & parent);
+
+    template<class PropertyT>
+    void installProperty();
+
   public:
     CorePropertyManager();
     virtual ~CorePropertyManager();

@@ -6,6 +6,10 @@ EXTRA_PROGRAMS = cyslave cyprox
 
 LOCAL_LIBS = libcomm.a \
              $(top_builddir)/rulesets/libscriptpython.a \
+             $(top_builddir)/navigation/libnavigation.a \
+             $(top_builddir)/navigation/external/RecastDetour/DetourTileCache/libDetourTileCache.a \
+             $(top_builddir)/navigation/external/RecastDetour/Detour/libDetour.a \
+             $(top_builddir)/navigation/external/RecastDetour/Recast/libRecast.a \
              $(top_builddir)/rulesets/librulesetmind.a \
              $(top_builddir)/rulesets/librulesetentity.a \
              $(top_builddir)/rulesets/libentityfilter.a \
@@ -149,7 +153,7 @@ cyprox_LDADD = libcomm.a \
                $(top_builddir)/physics/libphysics.a \
                $(FRONTEND_LIBS)
 
-buildid.cpp: $(cyphesis_SOURCES) $(LOCAL_LIBS) \
+buildid.cpp: $(SERVER_SOURCES) $(LOCAL_LIBS) \
              $(top_srcdir)/scripts/gen_buildid.py $(top_srcdir)/ChangeLog
 	$(top_srcdir)/scripts/gen_buildid.py `$(top_srcdir)/scripts/extract_revision.sh $(top_srcdir)` buildid.cpp
 

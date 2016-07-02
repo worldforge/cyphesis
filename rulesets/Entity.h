@@ -112,6 +112,7 @@ class Entity : public LocatedEntity {
     virtual void destroy();
 
     virtual Domain * getMovementDomain();
+    virtual const Domain * getMovementDomain() const;
 
     virtual void sendWorld(const Operation & op);
 

@@ -83,21 +83,25 @@ void World::LookOperation(const Operation & op, OpVector & res)
     //First check if there's a movement domain. If so we'll handle Look ops just like usually. However, if not we'll send the properties sans the "contains" property.
     LocatedEntity * from = BaseWorld::instance().getEntity(op->getFrom());
     if (from == nullptr) {
-        log(ERROR, "Look op has invalid from");
+        log(ERROR, String::compose("Look op has invalid from %1. %2", op->getFrom(), describeEntity()));
         return;
     }
 
     // Register the entity with the world router as perceptive.
     BaseWorld::instance().addPerceptive(from);
 
-    auto domain = getMovementDomain();
+    Domain* domain = nullptr;
+    if (m_location.m_loc) {
+        domain = m_location.m_loc->getMovementDomain();
+    }
     if (domain) {
-        domain->lookAtEntity(*from, *this, op, res);
+        generateSightOp(*from, op, res);
     } else {
         Sight s;
 
         Anonymous sarg;
         addToEntity(sarg);
+        //Hide all contents of the root entity.
         sarg->removeAttr("contains");
         s->setArgs1(sarg);
         s->setTo(op->getFrom());

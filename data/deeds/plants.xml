@@ -160,6 +160,31 @@
         <float name="default">0.5</float>
         <string name="visibility">public</string>
       </map>
+      <map name="bbox">
+        <list name="default">
+          <float>-0.4</float>
+          <float>-0.1</float>
+          <float>-0.1</float>
+          <float>0.4</float>
+          <float>0.1</float>
+          <float>0.1</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mode-planted">
+        <map name="default">
+          <map name="transform">
+	          <!-- <float name="offset">0.5</float>  -->
+	          <list name="rotate">
+	              <float>0</float>
+	              <float>0.7071</float>
+	              <float>0</float>
+	              <float>0.7071</float>
+	          </list>
+          </map>
+        </map>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">carrot</string>
     <string name="objtype">class</string>
@@ -452,6 +477,18 @@
         <int name="default">4</int>
         <string name="visibility">public</string>
       </map>
+      <map name="mode-planted">
+        <map name="default">
+          <map name="transform">
+            <list name="translate-scaled">
+	          <float>0</float>
+	          <float>0</float>
+	          <float>-0.1</float>
+	        </list>
+          </map>
+        </map>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">oak</string>
     <string name="objtype">class</string>
@@ -577,7 +614,7 @@
     <string name="id">tuber</string>
     <string name="objtype">class</string>
     <list name="parents">
-      <string>thing</string>
+      <string>plant</string>
     </list>
   </map>
 
@@ -589,6 +626,31 @@
       </map>
       <map name="mass">
         <float name="default">0.5</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="bbox">
+        <list name="default">
+          <float>-0.3</float>
+          <float>-0.2</float>
+          <float>-0.2</float>
+          <float>0.3</float>
+          <float>0.2</float>
+          <float>0.2</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="mode-planted">
+        <map name="default">
+           <map name="transform">
+	          <!-- <float name="offset">0.5</float>  -->
+	          <list name="rotate">
+	              <float>0</float>
+	              <float>0.7071</float>
+	              <float>0</float>
+	              <float>0.7071</float>
+	          </list>
+          </map>
+        </map>
         <string name="visibility">public</string>
       </map>
     </map>

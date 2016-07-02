@@ -52,6 +52,16 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
 {
 }
 
+bool Thing::lookAtEntity(const Operation & op, OpVector & res, const LocatedEntity* watcher) const
+{
+    return true;
+}
+
+void Thing::generateSightOp(const LocatedEntity& observingEntity, const Operation & originalLookOp, OpVector& res) const
+{
+}
+
+
 
 
 #endif /* STUBTHING_H_ */

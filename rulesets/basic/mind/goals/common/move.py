@@ -1,4 +1,4 @@
-#This file is distributed under the terms of the GNU General Public license.
+    #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 
 from common import const
@@ -19,14 +19,19 @@ import types
 ############################ MOVE ME ####################################
 
 class move_me(Goal):
-    """Move me to a certain place."""
-    def __init__(self, location, speed=1):
+    """Move me to a certain place.
+    'radius' specifies how close to the location we accept.
+    """
+    def __init__(self, location, radius=0.5, speed=1):
         Goal.__init__(self,"move me to certain place",
                       self.am_I_at_loc,
-                      [self.move_to_loc])
+                      [self.move_to_loc],
+                      self.is_reachable)
         self.location=location
         self.speed=speed
-        self.vars=["location", "speed"]
+        self.radius=radius
+        self.vars=["location", "speed", "radius"]
+        self.squared_radius = radius * radius
     def get_location_instance(self, me):
         location_=self.location
         if type(location_)==LambdaType:
@@ -46,30 +51,50 @@ class move_me(Goal):
         if not location:
             #print "No location"
             return 1
-        if square_horizontal_distance(me.location, location) < 4: # 1.5 * 1.5
+        if square_horizontal_distance(me.location, location) <= self.squared_radius:
             #print "We are there"
             return 1
         else:
             #print "We are not there"
             return 0
     def move_to_loc(self, me):
-        #print "Moving to location"
         location=self.get_location_instance(me)
         if not location:
-            #print "but can't - not location"
+            #print "Can't move - no location"
             return
-        # FIXME Destination based movement - currently won't work if
-        # a LOC change is required.
-        velocity=distance_to(me.location, location).unit_vector()*self.speed
-        if abs(velocity.z) > 0.99:
+        #print "Moving to location " + str(location)
+        me.setDestination(location.coordinates, self.radius, location.parent.id)
+        refreshResult = me.refreshPath()
+        #If result is 0 it means that we're already there
+        if refreshResult == 0:
             return
-        target=location.copy()
-        target.velocity=velocity
-        if me.location.velocity.is_valid() and me.location.velocity.dot(target.velocity) > 0.8:
-            #print "Already on the way"
+        #If result is below zero it means that we couldn't find a path yet.
+        #This can be because we haven't mapped all areas yet; if so one should check with
+        #me.unawareTilesCount
+        if refreshResult < 0:
+            #print "Could not find any path"
             return
-        return Operation("move", Entity(me.id, location=target))
-
+         
+        return Operation("operation")
+    
+    """ Checks that the movement goal is reachable. This will return true if the goal currently can't be reached, but there are still
+    unaware tiles."""
+    def is_reachable(self, me):
+        pathResult = me.pathResult
+        
+        #me.print_debug("pathResult " + str(pathResult))
+        if pathResult < 0 and pathResult > -7:
+            #me.print_debug("unawareTilesCount " + str(me.unawareTilesCount))
+            
+            if me.unawareTilesCount == 0:
+                return False
+        elif pathResult == 0 and not self.am_I_at_loc(me):
+            #If there are no more segments in the path, but we haven't yet reached the destination then something is preventing us from reaching it
+            return False
+        
+        return True
+    
+    
 ############################ MOVE ME AREA ####################################
 
 class move_me_area(Goal):
@@ -77,7 +102,8 @@ class move_me_area(Goal):
     def __init__(self, location, range=30):
         Goal.__init__(self, "move me to certain area",
                       self.am_I_in_area,
-                      [move_me(location),self.latch_loc])
+                      [move_me(location, range),self.latch_loc],
+                      self.is_reachable)
         self.location=location
         self.range=range
         self.square_range=range*range
@@ -116,6 +142,23 @@ class move_me_area(Goal):
     def latch_loc(self, me):
         #print "Latching at location"
         self.arrived=1
+        
+    """ Checks that the movement goal is reachable. This will return true if the goal currently can't be reached, but there are still
+    unaware tiles."""
+    def is_reachable(self, me):
+        pathResult = me.pathResult
+        
+        #me.print_debug("pathResult " + str(pathResult))
+        if pathResult < 0 and pathResult > -7:
+            #me.print_debug("unawareTilesCount " + str(me.unawareTilesCount))
+            
+            if me.unawareTilesCount == 0:
+                return False
+        elif pathResult == 0 and not self.am_I_at_loc(me):
+            #If there are no more segments in the path, but we haven't yet reached the destination then something is preventing us from reaching it
+            return False
+        
+        return True
 
 ############################ MOVE ME PLACE ####################################
 
@@ -414,9 +457,10 @@ class pick_up_focus(Goal):
 
 class wander(Goal):
     """Move in a non-specific way."""
-    def __init__(self):
+    def __init__(self, extragoal):
         Goal.__init__(self,"wander randomly",false,
                       [move_me(None),
+                       extragoal,
                        self.do_wandering])
     def do_wandering(self, me):
         loc = me.location.copy()
@@ -444,7 +488,7 @@ class search(Goal):
 class pursuit(Goal):
     """avoid or hunt something at range"""
     def __init__(self, desc, what, range, direction):
-        Goal.__init__(self,"avoid something",self.not_visible,[self.run])
+        Goal.__init__(self,"pursue something",self.not_visible,[self.run])
 
         if isinstance(what, str):
             self.what = what
@@ -510,20 +554,26 @@ class hunt_for(pursuit):
 
 class patrol(Goal):
     """Move around an area defined by some waypoints."""
-    def __init__(self, locations):
+    def __init__(self, locations, extragoal):
         Goal.__init__(self, "patrol an area",
                       false,
-                      [move_me(locations[0]),
+                      [self.check_move_valid,
+                       move_me(locations[0]),
+                       extragoal,
                        self.increment])
         self.list = locations
         self.stage = 0
         self.count = len(locations)
         self.vars = ["stage", "list"]
+    """ Checks that the movement goal is reachable; if not we should move on to the next patrol goal """
+    def check_move_valid(self, me):
+        return self.subgoals[1].is_valid(me)
     def increment(self, me):
         self.stage = self.stage + 1
         if self.stage >= self.count:
             self.stage = 0
-        self.subgoals[0].location = self.list[self.stage]
+        self.subgoals[1].location = self.list[self.stage]
+        #print "Moved to next patrol goal: " + str(self.subgoals[0].location)
 
 ############################## ACCOMPANY ##############################
 
@@ -580,22 +630,32 @@ class accompany(Goal):
 
 class roam(Goal):
     """Move in a non-specific way within one or many locations."""
-    def __init__(self, radius, locations):
+    def __init__(self, radius, locations, extragoal=None):
         Goal.__init__(self,"roam randomly",false,
-                      [move_me(None),
+                      [self.check_move_valid,
+                       move_me(None),
+                       extragoal,
                        self.do_roaming])
         self.list = locations
         self.radius = radius
         self.count = len(locations)
         self.vars = ["radius", "list"]
     def do_roaming(self, me):
-        move_me_goal = self.subgoals[0]
+        move_me_goal = self.subgoals[1]
         #We need to set a new direction if we've either haven't set one, or if we've arrived.
-        if move_me_goal.location == None or move_me_goal.fulfilled(me) == True:
-            waypointName = self.list[randint(0, self.count - 1  )]
-            waypoint = me.get_knowledge("location",waypointName)
-            
-            loc = me.location.copy()
-            loc.coordinates=Point3D(map(lambda c:c+uniform(-self.radius,self.radius),
-                                         waypoint.coordinates))
-            move_me_goal.location = loc
+        if move_me_goal.location == None or move_me_goal.fulfilled(me) == True or move_me_goal.is_valid(me) == False:
+            self.set_new_target(me, move_me_goal)
+    def check_move_valid(self, me):
+        move_me_goal = self.subgoals[1]
+        #Check that the goal is reachable, and if not skip to a new goal
+        if move_me_goal.is_valid(me) == False:
+            self.set_new_target(me, move_me_goal)
+    def set_new_target(self, me, move_me_goal):
+        #me.print_debug("setting new target")
+        waypointName = self.list[randint(0, self.count - 1)]
+        waypoint = me.get_knowledge("location",waypointName)
+        
+        loc = me.location.copy()
+        loc.coordinates=Point3D(map(lambda c:c+uniform(-self.radius,self.radius),
+                                     waypoint.coordinates))
+        move_me_goal.location = loc

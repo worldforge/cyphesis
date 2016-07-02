@@ -18,11 +18,14 @@
 
 #include "LocatedEntity.h"
 
+#include "TransformsProperty.h"
+
 #include "Script.h"
 #include "AtlasProperties.h"
 
 #include "common/Property.h"
 #include "common/TypeNode.h"
+#include "Domain.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -32,7 +35,7 @@ using Atlas::Message::MapType;
 /// The attributes named are special and are modified using high level
 /// operations, such as Move, not via Set operations, or assigned by
 /// normal means.
-std::set<std::string> LocatedEntity::s_immutable = {"id", "parents", "pos", "loc", "velocity", "orientation", "contains", "objtype"};
+std::set<std::string> LocatedEntity::s_immutable = {"id", "parents", "pos", "loc", "velocity", "orientation", "contains", "objtype", "transforms"};
 
 /// \brief Singleton accessor for immutables
 ///
@@ -49,6 +52,8 @@ LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                m_script(0), m_type(0), m_flags(0), m_contains(0)
 {
     m_properties["id"] = new IdProperty(getId());
+    TransformsProperty* transProp = new TransformsProperty();
+    m_properties["transforms"] = transProp;
 }
 
 LocatedEntity::~LocatedEntity()
@@ -214,8 +219,14 @@ void LocatedEntity::destroy()
 
 Domain * LocatedEntity::getMovementDomain()
 {
-    return 0;
+    return nullptr;
 }
+
+const Domain * LocatedEntity::getMovementDomain() const
+{
+    return nullptr;
+}
+
 
 /// \brief Send an operation to the world for dispatch.
 ///
@@ -294,6 +305,74 @@ void LocatedEntity::removeChild(LocatedEntity& childEntity)
     }
 }
 
+bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* watcher) const
+{
+    //Are we looking at ourselves?
+    if (watcher == this) {
+        return true;
+    }
+
+    //First find the domain which contains the watcher, as well as if the watcher has a domain itself.
+    const LocatedEntity* domainEntity = watcher->m_location.m_loc;
+    const LocatedEntity* topWatcherEntity = watcher;
+    const Domain* watcherParentDomain = nullptr;
+
+    while (domainEntity != nullptr) {
+        watcherParentDomain = domainEntity->getMovementDomain();
+        if (watcherParentDomain) {
+            break;
+        }
+        topWatcherEntity = domainEntity;
+        domainEntity = domainEntity->m_location.m_loc;
+    }
+
+    domainEntity = watcher->m_location.m_loc;
+    const Domain* watcherOwnDomain = watcher->getMovementDomain();
+
+    //Now walk upwards from the entity being looked at until we reach either the watcher's parent domain entity,
+    //or the watcher itself
+    std::vector<const LocatedEntity*> toAncestors;
+    toAncestors.reserve(4);
+    const LocatedEntity* ancestorEntity = this;
+    const Domain* ancestorDomain = nullptr;
+
+
+    while (true) {
+        toAncestors.push_back(ancestorEntity);
+
+        if (ancestorEntity == watcher) {
+            ancestorDomain = watcherOwnDomain;
+            break;
+        }
+        if (ancestorEntity == domainEntity) {
+            ancestorDomain = watcherParentDomain;
+            break;
+        }
+        if (ancestorEntity == topWatcherEntity) {
+            break;
+        }
+        ancestorEntity = ancestorEntity->m_location.m_loc;
+        if (ancestorEntity == nullptr) {
+            //Could find no common ancestor; can't be seen.
+            return false;
+        }
+    }
+
+    //Now walk back down the toAncestors list, checking if all entities on the way can be seen.
+    //Visibility is only checked for the first immediate child of a domain entity, further grandchildren are considered visible if the top one is, until
+    //another domain is reached.
+    for (auto I = toAncestors.rbegin(); I != toAncestors.rend(); ++I) {
+        const LocatedEntity* ancestor = *I;
+        if (ancestorDomain) {
+            if (!ancestorDomain->isEntityVisibleFor(*watcher, *ancestor)) {
+                return false;
+            }
+        }
+
+        ancestorDomain = ancestor->getMovementDomain();
+    }
+    return true;
+}
 
 /// \brief Read attributes from an Atlas element
 ///
@@ -308,3 +387,25 @@ void LocatedEntity::merge(const MapType & ent)
         setAttr(key, I->second);
     }
 }
+
+std::string LocatedEntity::describeEntity() const
+{
+    std::stringstream ss;
+    Element nameAttr;
+    int nameResult = getAttrType("name", nameAttr, Element::TYPE_STRING);
+    ss << getId();
+    if (m_type) {
+        ss << "(" << m_type->name();
+        if (nameResult == 0) {
+            ss << ",'" << nameAttr.String() << "'";
+        }
+        ss << ")";
+    } else {
+        if (nameResult == 0) {
+            ss << "('" << nameAttr.String() << "')";
+        }
+    }
+
+    return ss.str();
+}
+

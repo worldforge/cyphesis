@@ -33,9 +33,9 @@
 /// \brief Class to handle decoding Atlas encoded database records
 class Decoder : public Atlas::Message::DecoderBase {
   private:
-    virtual void messageArrived(const Atlas::Message::MapType & msg) {
+    virtual void messageArrived(Atlas::Message::MapType msg) {
         m_check = true;
-        m_msg = msg;
+        m_msg = std::move(msg);
     }
 
     bool m_check;

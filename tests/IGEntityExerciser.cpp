@@ -336,9 +336,7 @@ void IGEntityExerciser::runOperations()
         this->m_ent.SetOperation(op, ov);
         if (!ov.empty()) {
             assert(ov.front()->getClassNo() == Atlas::Objects::Operation::SIGHT_NO);
-            if (ov.size() > 1) {
-                assert(ov[1]->getClassNo() == Atlas::Objects::Operation::DELETE_NO);
-            }
+            assert(ov[1]->getClassNo() == Atlas::Objects::Operation::UPDATE_NO);
         }
         this->flushOperations(ov);
     }

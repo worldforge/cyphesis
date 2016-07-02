@@ -11,13 +11,22 @@ from common import log
 ## \ingroup PythonGoals
 class Goal:
     def __init__(self,desc="some goal",fulfilled=None,subgoals=[],
-                 time=None, debug=0):
+                 validity=None,time=None, debug=0):
         self.desc=desc
         #mind sets these:
         #self.str
         #self.key
-        if fulfilled: self.fulfilled=fulfilled
-        else: self.fulfilled=lambda me:0 #false
+        if fulfilled: 
+            self.fulfilled = fulfilled
+        else: 
+            self.fulfilled = lambda me:0 #false
+            
+        #If no validity function is supplied the goal is always considered valid
+        if validity:
+            self.validity = validity
+        else:
+            self.validity = lambda me:True
+            
         self.subgoals=subgoals[:]
         self.time=time
         self.debug=debug
@@ -46,6 +55,11 @@ class Goal:
             if var: var=var+","
             var=var+`getattr(self,v)`
         return name+"("+var+")"
+    def is_valid(self, me):
+        """Checks if this goal is valid. By this we mean whether the goal is possible to fulfill. 
+        If no validity function was supplied at goal creation time the goal is always considered valid. """
+        return self.validity(me)
+    
     def check_goal(self, me, time):
         "executes goal, see top of file"
         if self.debug:
@@ -79,6 +93,8 @@ class Goal:
         debugInfo=debugInfo+"."+self.info()
         #Iterate over all subgoals, but break if any goal returns an operation
         for sg in self.subgoals:
+            if sg == None:
+                continue
             if type(sg)==FunctionType or type(sg)==MethodType:
                 if self.debug:
                     log.thinking("\t"*depth+"GOAL: bef function: "+`sg`+" "+`res`)
@@ -114,7 +130,7 @@ class Goal:
         if len(self.subgoals) > 0:
             subgoals=[]
             for sg in self.subgoals:
-                if type(sg)!=FunctionType and type(sg)!=MethodType:
+                if type(sg)!=FunctionType and type(sg)!=MethodType and sg is not None:
                     subgoals.append(sg.report())
             map["subgoals"]=subgoals
         

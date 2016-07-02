@@ -73,6 +73,9 @@ class NPCMind(server.Mind):
         self.map.update_hooks_append("update_map")
         self.map.delete_hooks_append("delete_map")
         self.goal_id_counter=0
+    def print_debug(self, message):
+        """Prints a debug message using 'print', prepending the message with a description of the entity."""
+        print self.describeEntity() + ": " + message
     def find_op_method(self, op_id, prefix="",undefined_op_method=None):
         """find right operation to invoke"""
         if not undefined_op_method: undefined_op_method=self.undefined_op_method
@@ -131,13 +134,18 @@ class NPCMind(server.Mind):
         #Setup a tick operation for thinking
         thinkTickOp = Operation("tick")
         thinkTickOp.setArgs([Entity(name="think")])
+
+        #Setup a tick operation for moving
+        moveTickOp = Operation("tick")
+        moveTickOp.setArgs([Entity(name="move")])
+        moveTickOp.setFutureSeconds(0.2)
         
         #Setup a tick operation for periodical persistence of thoughts to the server
         sendThoughtsTickOp = Operation("tick")
         sendThoughtsTickOp.setArgs([Entity(name="persistthoughts")])
         sendThoughtsTickOp.setFutureSeconds(5)
         
-        return Operation("look")+thinkTickOp+sendThoughtsTickOp
+        return Operation("look")+thinkTickOp+moveTickOp+sendThoughtsTickOp
     def tick_operation(self, op):
         """periodically reasses situation
         
@@ -173,13 +181,6 @@ class NPCMind(server.Mind):
                 result = self.commune_all_thoughts(op, "persistthoughts")
                 return opTick+result
        
-        
-    def unseen_operation(self, op):
-        """This method is automatically invoked by the C++ BaseMind code, due to its *_operation name."""
-    	if len(op) > 0:
-        	obsolete_id = op[0].id
-        	if obsolete_id:
-         		self.map.delete(obsolete_id)
     ########## Sight operations
     def sight_create_operation(self, op):
         """Note our ownership of entities we created.
@@ -226,8 +227,25 @@ class NPCMind(server.Mind):
             if hasattr(argEntity, "goal"):
                 goal_entity = argEntity.goal
                 return self.commune_goals(op, goal_entity)
+            if hasattr(argEntity, "path"):
+                return self.commune_path(op)
+
             #TODO: allow for finer grained query of specific thoughts
+    def commune_path(self, op):
+        """Sends back information about the path."""
+        thinkOp = Operation("think")
+        path = []
+        myPath = self.path
+        #self.print_debug("path size: " + str(len(myPath)))
+        for point in myPath:
+            path.append([point.x, point.y, point.z])
         
+        thinkOp.setArgs([Entity(path=path)])
+        
+        res = Oplist()
+        res = res + thinkOp
+        return res
+            
     def commune_goals(self, op, goal_entity):
         """Sends back information about goals only."""
         thinkOp = Operation("think")
@@ -297,7 +315,7 @@ class NPCMind(server.Mind):
         else:
             for arg in op.getArgs():
                 goal = self.find_goal(arg.id)
-                if goal:
+                if goal and goal is not None:
                     goal_infos.append(Entity(id=goal.str, report=goal.report()))
         
         goalInfoOp.setArgs(goal_infos)
@@ -845,7 +863,10 @@ class NPCMind(server.Mind):
                     goalstring=g.str
                 else:
                     goalstring=g.__class__.__name__
-                print "Error in NPC with id " + self.id + " of type " + str(self.type) + " and name '" + self.name + "' when checking goal " + goalstring + "\n" + stacktrace
+                if hasattr(self, "name"):
+                    print "Error in NPC with id " + self.id + " of type " + str(self.type) + " and name '" + self.name + "' when checking goal " + goalstring + "\n" + stacktrace
+                else:
+                    print "Error in NPC with id " + self.id + " of type " + str(self.type) + " when checking goal " + goalstring + "\n" + stacktrace
                 continue
             # if res!=None: return res
     def teach_children(self, child):

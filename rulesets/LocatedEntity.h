@@ -86,6 +86,11 @@ static const unsigned int entity_domain = 1 << 9;
 /// \ingroup EntityFlags
 static const unsigned int entity_dirty_thoughts = 1 << 10;
 
+/// \brief Flag indicating entity has a location which has been changed since last sent to clients,
+/// and new location data should be sent on the next Update.
+/// \ingroup EntityFlags
+static const unsigned int entity_dirty_location = 1 << 11;
+
 /// \brief This is the base class from which in-game and in-memory objects
 /// inherit.
 ///
@@ -183,7 +188,7 @@ class LocatedEntity : public Router {
     virtual PropertyBase* setAttr(const std::string & name,
                                   const Atlas::Message::Element &);
     virtual const PropertyBase * getProperty(const std::string & name) const;
-    // FIXME These should be de-visrtualised and, and implementations moved
+    // FIXME These should be de-virtualised and, and implementations moved
     // from Entity to here.
     virtual PropertyBase * modProperty(const std::string & name);
     virtual PropertyBase * setProperty(const std::string & name, PropertyBase * prop);
@@ -197,6 +202,7 @@ class LocatedEntity : public Router {
     virtual void destroy() = 0;
 
     virtual Domain * getMovementDomain();
+    virtual const Domain * getMovementDomain() const;
 
     virtual void sendWorld(const Operation & op);
 
@@ -216,6 +222,14 @@ class LocatedEntity : public Router {
     /// \brief Removes a child from this entity.
     virtual void removeChild(LocatedEntity& childEntity);
 
+    /**
+     * @brief Determines if this entity is visible to another entity.
+     *
+     * @param watcher The other entity observing this entity, for which we want to determine visibility.
+     * @return True if this entity is visible to another entity.
+     */
+    bool isVisibleForOtherEntity(const LocatedEntity* watcher) const;
+
     /// \brief Get a property that is required to of a given type.
     template <class PropertyT>
     const PropertyT * getPropertyClass(const std::string & name) const
@@ -225,6 +239,15 @@ class LocatedEntity : public Router {
             return dynamic_cast<const PropertyT *>(p);
         }
         return 0;
+    }
+
+    /// \brief Get a property that is required to of a given type.
+    ///
+    /// The specified class must present the "property_name" trait.
+    template <class PropertyT>
+    const PropertyT * getPropertyClassFixed() const
+    {
+        return this->getPropertyClass<PropertyT>(PropertyT::property_name);
     }
 
     /// \brief Get a property that is a generic property of a given type
@@ -247,6 +270,15 @@ class LocatedEntity : public Router {
             return dynamic_cast<PropertyT *>(p);
         }
         return 0;
+    }
+
+    /// \brief Get a property that is required to of a given type.
+    ///
+    /// The specified class must present the "property_name" trait.
+    template <class PropertyT>
+    PropertyT * modPropertyClassFixed()
+    {
+        return this->modPropertyClass<PropertyT>(PropertyT::property_name);
     }
 
     /// \brief Get a modifiable property that is a generic property of a type
@@ -309,6 +341,29 @@ class LocatedEntity : public Router {
         }
         return sp;
     }
+
+    /// \brief Require that a property of a given type is set, relying on the "property_name" trait.
+    ///
+    /// If the property is not set on the Entity instance, but has a class
+    /// default, the default is copied to the instance, and a pointer is
+    /// returned if it is a property of the right type. If it does not
+    /// exist, or is not of the right type, a new property is created of
+    /// the right type, and installed on the Entity instance.
+    ///
+    /// The specified class must present the "property_name" trait.
+    template <class PropertyT>
+    PropertyT * requirePropertyClassFixed(const Atlas::Message::Element & def_val
+            = Atlas::Message::Element())
+    {
+        return this->requirePropertyClass<PropertyT>(PropertyT::property_name, def_val);
+    }
+
+    /**
+     * Generates a string describing this entity, used for debugging.
+     *
+     * @return A string describing the entity in more detail.
+     */
+    std::string describeEntity() const;
 
     /// Signal indicating that this entity has been changed
     sigc::signal<void> updated;

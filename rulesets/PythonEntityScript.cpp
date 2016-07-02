@@ -96,14 +96,20 @@ bool PythonEntityScript::operation(const std::string & op_type,
     } else if (PyOperation_Check(ret)) {
         PyOperation * op = (PyOperation*)ret;
         assert(op->operation.isValid());
-        res.push_back(op->operation);
+        //Filter out raw operations, as these are meant to be used to short circuit goals. They should thus never be sent on.
+        if (!op->operation->getParents().empty() && op->operation->getParents().front() != "operation") {
+            res.push_back(op->operation);
+        }
     } else if (PyOplist_Check(ret)) {
         PyOplist * op = (PyOplist*)ret;
         assert(op->ops != NULL);
         const OpVector & o = *op->ops;
         OpVector::const_iterator Iend = o.end();
         for (OpVector::const_iterator I = o.begin(); I != Iend; ++I) {
-            res.push_back(*I);
+            //Filter out raw operations, as these are meant to be used to short circuit goals. They should thus never be sent on.
+            if (!(*I)->getParents().empty() && (*I)->getParents().front() != "operation") {
+                res.push_back(*I);
+            }
         }
     } else {
         log(ERROR, String::compose("Python script \"%1\" returned an invalid "

@@ -7,6 +7,7 @@ Welcome to the Cyphesis documentation.
 
 * [Architecture](@ref architecture)
 * [Minds](@ref minds)
+* [Movement and sights](@ref movement_sights)
 
 # Introduction
 

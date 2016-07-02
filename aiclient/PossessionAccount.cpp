@@ -52,7 +52,7 @@ using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
 
-PossessionAccount::PossessionAccount(const std::string& id, int intId, LocatedEntityRegistry& locatedEntityRegistry, const MindFactory& mindFactory) :
+PossessionAccount::PossessionAccount(const std::string& id, int intId, LocatedEntityRegistry& locatedEntityRegistry, const MindKit& mindFactory) :
         Router(id, intId), mLocatedEntityRegistry(locatedEntityRegistry), m_mindFactory(mindFactory), m_serialNoCounter(1)
 {
 }

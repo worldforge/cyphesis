@@ -76,6 +76,17 @@ void output_element(std::ostream & out, const Element & item, int depth)
             break;
     }
 }
+
+template <>
+void debug_dump(const Atlas::Objects::Operation::RootOperation & t, std::ostream & os)
+{
+    std::stringstream ss;
+    Atlas::PresentationBridge bridge(ss);
+    Atlas::Objects::ObjectsEncoder encoder(bridge);
+    encoder.streamObjectsMessage(t);
+    os << ss.str();
+}
+
 template <>
 void debug_dump(const Atlas::Objects::Root & t, std::ostream & os)
 {

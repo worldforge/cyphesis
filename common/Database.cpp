@@ -280,7 +280,7 @@ int Database::decodeObject(const std::string & data,
 
     std::stringstream str(data, std::ios::in);
 
-    Serialiser codec(str, m_od);
+    Serialiser codec(str, str, m_od);
     Atlas::Message::Encoder enc(codec);
 
     // Clear the decoder
@@ -306,7 +306,7 @@ int Database::decodeMessage(const std::string & data,
 
     std::stringstream str(data, std::ios::in);
 
-    Serialiser codec(str, m_d);
+    Serialiser codec(str, str, m_d);
     Atlas::Message::Encoder enc(codec);
 
     // Clear the decoder
@@ -328,7 +328,7 @@ int Database::encodeObject(const MapType & o,
 {
     std::stringstream str;
 
-    Serialiser codec(str, m_d);
+    Serialiser codec(str, str, m_d);
     Atlas::Message::Encoder enc(codec);
 
     codec.streamBegin();
@@ -406,7 +406,7 @@ int Database::putObject(const std::string & table,
                     << std::endl << std::flush;);
     std::stringstream str;
 
-    Serialiser codec(str, m_d);
+    Serialiser codec(str, str, m_d);
     Atlas::Message::Encoder enc(codec);
 
     codec.streamBegin();
@@ -435,7 +435,7 @@ int Database::updateObject(const std::string & table,
                     << std::endl << std::flush;);
     std::stringstream str;
 
-    Serialiser codec(str, m_d);
+    Serialiser codec(str, str, m_d);
     Atlas::Message::Encoder enc(codec);
 
     codec.streamBegin();

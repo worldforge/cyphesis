@@ -35,7 +35,7 @@ class TestDomain : public Domain
         {
         }
 
-        float constrainHeight(LocatedEntity * parent,
+        float constrainHeight(LocatedEntity& entity, LocatedEntity * parent,
                 const Point3D & pos, const std::string & mode)
         {
             return 0.0f;
@@ -44,12 +44,6 @@ class TestDomain : public Domain
         void tick(double t)
         {
 
-        }
-
-        void lookAtEntity(const LocatedEntity& observingEntity,
-                const LocatedEntity& observedEntity,
-                const Operation & originalLookOp, OpVector& res) const
-        {
         }
 
         bool isEntityVisibleFor(

@@ -1,4 +1,6 @@
 // Cyphesis Online RPG Server and AI Engine
+#include <rulesets/mind/AwareMindFactory.h>
+#include <rulesets/mind/SharedTerrain.h>
 // Copyright (C) 2001 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
@@ -17,7 +19,6 @@
 
 #include "ClientConnection.h"
 #include "PossessionClient.h"
-
 #include "rulesets/Python_API.h"
 #include "rulesets/MindFactory.h"
 #include "rulesets/PythonScriptFactory.h"
@@ -137,7 +138,9 @@ int main(int argc, char ** argv)
     SystemTime time;
     time.update();
 
-    MindFactory mindFactory;
+    AwareMindFactory mindFactory;
+//    MindFactory mindFactory;
+//    AwareMindFactory awareMindFactory;
 
     //TODO: perhaps don't hardcode this; instead allowing for different classes for different minds?
     std::string script_package = "mind.NPCMind";

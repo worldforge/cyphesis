@@ -67,7 +67,7 @@ ServerRouting::ServerRouting(BaseWorld & wrld,
     monitors->watch("name", new Variable<std::string>(m_svrName));
     monitors->watch("ruleset", new Variable<std::string>(m_svrRuleset));
     monitors->watch("version", new Variable<const char *>(consts::version));
-    monitors->watch("buildid", new Variable<int>(consts::buildId));
+    monitors->watch("buildid", new Variable<const char *>(consts::buildId));
     monitors->watch("clients", new Variable<int>(m_numClients));
 
     m_instance = this;
