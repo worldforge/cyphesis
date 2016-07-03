@@ -42,7 +42,8 @@ class MetabolizingProperty : public Property<double>
 
     /// \brief Energy unit for metabolism per tick
     // How much energy we consume (relative to our mass) to sustain ourselves per tick
-    static const double energyUnit;  
+    ///        Base value, modifed by metabolism speed.
+    static const double energyUnitBase;  
 
     /// \brief Efficiency of digestion
     //static const double digsetEfficiency;
@@ -52,7 +53,8 @@ class MetabolizingProperty : public Property<double>
     static const double defaultReserves; 
  
     /// \brief How much mass creature is able to eat per tick (relative to its mass)
-    static const double biteSize;
+    ///        Base value, modifed by metabolism speed.
+    static const double biteSizeBase;
 
     virtual void install(LocatedEntity *, const std::string &);
     virtual void remove(LocatedEntity *, const std::string &);

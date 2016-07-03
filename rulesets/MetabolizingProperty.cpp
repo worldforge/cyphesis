@@ -58,7 +58,7 @@ static const std::string RESERVELIMIT = "reservelimit";
 static const std::string STATUS = "status";
 
 // This the amount of energy consumed each tick
-const double MetabolizingProperty::energyUnit = 0.0001;
+const double MetabolizingProperty::energyUnitBase = 0.0001;
 
 // How much energy we get burning one unit of mass
 const double MetabolizingProperty::energyToMass = 10.0;
@@ -68,7 +68,7 @@ const double MetabolizingProperty::energyToMass = 10.0;
 const double MetabolizingProperty::defaultReserves = 0.5;
 
 // How much mass creature is able to eat per tick, relative to creature's own mass
-const double MetabolizingProperty::biteSize = 0.01;
+const double MetabolizingProperty::biteSizeBase = 0.01;
 
 
 
@@ -136,9 +136,12 @@ HandlerResult MetabolizingProperty::tick_handler(LocatedEntity * e,
         return OPERATION_IGNORED;
     }
 
-    // atm the metabolizng property value has no interpretation
-    double & metabolizing = data(); 
-    
+    // atm the metabolizng property has interpretation of metabolism speed
+    // Should be 1 for human, around 2 for wolf and 0.9 for deer
+    // faster metabolism increase both status regeneration and status usage
+    double & metabolizingSpeed = data(); 
+    double energyUnit = energyUnitBase * metabolizingSpeed;    
+
     StatusProperty * status_prop = e->requirePropertyClass<StatusProperty>(STATUS, 1.0f);
     bool status_changed = false;
     assert(status_prop != 0);
@@ -176,6 +179,7 @@ HandlerResult MetabolizingProperty::tick_handler(LocatedEntity * e,
     // TODO later we should use unified nourishment property instead of nourishment
     
     double nourishmentConsumed = 0;
+    double biteSize = biteSizeBase * metabolizingSpeed;
     
     // DIGEST FIRST 
     // don't go further if we don't have following properties
@@ -184,7 +188,7 @@ HandlerResult MetabolizingProperty::tick_handler(LocatedEntity * e,
         double & nourishment = nourishment_prop->data();
         double & mass = mass_prop->data();
 
-        // set the nourishment bite size depending on creature size
+        // set the nourishment bite size depending on creature size and metabolizingSpeed
         nourishmentConsumed = mass*biteSize;
         if (nourishment >= nourishmentConsumed) {
             nourishment -= nourishmentConsumed;
