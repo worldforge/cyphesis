@@ -147,47 +147,56 @@ AC_CHECK_HEADERS(termios.h signal.h syslog.h sys/utsname.h sys/wait.h)
 AC_CHECK_HEADERS(winsock.h arpa/inet.h sys/un.h dirent.h io.h sys/ucred.h)
 AC_CHECK_HEADERS(windows.h getopt.h)
 
-PKG_CHECK_MODULES(PYTHON, python >= 2.6,
+PYTHON_UTIL_LIBS=
+
+AC_CHECK_LIB(dl,dlopen,
+[
+    PYTHON_UTIL_LIBS="$PYTHON_UTIL_LIBS -ldl"
+])
+
+AC_CHECK_LIB(util,openpty,
+[
+    PYTHON_UTIL_LIBS="$PYTHON_UTIL_LIBS -lutil"
+])
+
+AC_CHECK_FUNC(pthread_mutex_trylock, ,
+[
+    ac_save_CXXFLAGS="$CXXFLAGS"
+    CXXFLAGS="$CXXFLAGS -pthread"
+    AC_CHECK_FUNC(pthread_create, ,
+    [
+	CXXFLAGS="$ac_save_CXXFLAGS"
+	AC_CHECK_LIB(pthread, pthread_create, ,
+	[
+	    AC_MSG_WARN([Cannot find pthread library. Python lib check may fail])
+	])
+    ])
+])	
+
+dnl Check first for python2 to differentiate between Python 2 and Python 3.
+PKG_CHECK_MODULES(PYTHON, python2 >= 2.6,
     [
         CPPFLAGS="$CPPFLAGS $PYTHON_CFLAGS"
-        
-	PYTHON_UTIL_LIBS=
-
-	AC_CHECK_LIB(dl,dlopen,
-	[
-	    PYTHON_UTIL_LIBS="$PYTHON_UTIL_LIBS -ldl"
-	])
-
-	AC_CHECK_LIB(util,openpty,
-	[
-	    PYTHON_UTIL_LIBS="$PYTHON_UTIL_LIBS -lutil"
-	])
-	
-	AC_CHECK_FUNC(pthread_mutex_trylock, ,
-	[
-	    ac_save_CXXFLAGS="$CXXFLAGS"
-	    CXXFLAGS="$CXXFLAGS -pthread"
-	    AC_CHECK_FUNC(pthread_create, ,
-	    [
-		CXXFLAGS="$ac_save_CXXFLAGS"
-		AC_CHECK_LIB(pthread, pthread_create, ,
-		[
-		    AC_MSG_WARN([Cannot find pthread library. Python lib check may fail])
-		])
-	    ])
-	])	
-	
         COMMON_LIBS="$COMMON_LIBS $PYTHON_LIBS $PYTHON_UTIL_LIBS"
         PYTHON_LINKER_FLAGS="-export-dynamic"
     ],
     [
-        AC_MSG_RESULT([no])
-        AC_MSG_ERROR([
-        Cannot find python headers for Python 2.6 or later.
-        $PYTHON_PKG_ERRORS
-Please see http://www.python.org/ for details of how to download and install
-Python. If Python is installed somewhere other than in /usr then please use the
-PKG_CONFIG_PATH environment variable to point out where.])
+		PKG_CHECK_MODULES(PYTHON, python >= 2.6,
+		    [
+		        CPPFLAGS="$CPPFLAGS $PYTHON_CFLAGS"
+		        COMMON_LIBS="$COMMON_LIBS $PYTHON_LIBS $PYTHON_UTIL_LIBS"
+		        PYTHON_LINKER_FLAGS="-export-dynamic"
+		    ],
+		    [
+		        AC_MSG_RESULT([no])
+		        AC_MSG_ERROR([
+		        Cannot find python headers for Python 2.6 or later.
+		        $PYTHON_PKG_ERRORS
+				Please see http://www.python.org/ for details of how to download and install
+				Python. If Python is installed somewhere other than in /usr then please use the
+				PKG_CONFIG_PATH environment variable to point out where.])
+		    ]
+		)
     ]
 )
 
