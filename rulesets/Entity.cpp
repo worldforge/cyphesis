@@ -308,6 +308,9 @@ void Entity::destroy()
     // It will be decRef()ed automatically from our (LocatedEntity)
     // destructor
     m_location.m_loc->removeChild(*this);
+
+    LocatedEntity::destroy();
+
     m_flags |= entity_destroyed;
     destroyed.emit();
 }

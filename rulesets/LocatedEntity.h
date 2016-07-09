@@ -122,6 +122,8 @@ class LocatedEntity : public Router {
     /// Flags indicating changes to attributes
     unsigned int m_flags;
 
+    void clearProperties();
+
   public:
     /// Full details of location
     Location m_location;

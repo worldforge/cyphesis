@@ -60,6 +60,16 @@ LocatedEntity::LocatedEntity(const std::string & id, long intId) :
 
 LocatedEntity::~LocatedEntity()
 {
+    clearProperties();
+
+    delete m_script;
+    if (m_location.m_loc != 0) {
+        m_location.m_loc->decRef();
+    }
+    delete m_contains;
+}
+
+void LocatedEntity::clearProperties() {
 
     if (m_type) {
         for (auto entry : m_type->defaults()) {
@@ -74,11 +84,8 @@ LocatedEntity::~LocatedEntity()
         entry.second->remove(this, entry.first);
         delete entry.second;
     }
-    delete m_script;
-    if (m_location.m_loc != 0) {
-        m_location.m_loc->decRef();
-    }
-    delete m_contains;
+    m_properties.clear();
+
 }
 
 void LocatedEntity::setType(const TypeNode * t) {
@@ -217,6 +224,7 @@ void LocatedEntity::onUpdated()
 /// \brief Called when the entity needs to be removed from its context
 void LocatedEntity::destroy()
 {
+    clearProperties();
 }
 
 Domain * LocatedEntity::getMovementDomain()
