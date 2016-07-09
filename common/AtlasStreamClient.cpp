@@ -52,6 +52,8 @@ using Atlas::Objects::Operation::RootOperation;
 
 using namespace boost::asio;
 
+static const bool debug_flag = false;
+
 
 StreamClientSocketBase::StreamClientSocketBase(boost::asio::io_service& io_service, std::function<void()>& dispatcher)
 : m_io_service(io_service), mDispatcher(dispatcher), m_ios(&mBuffer), m_codec(nullptr), m_encoder(nullptr), m_is_connected(false)
@@ -321,6 +323,10 @@ void AtlasStreamClient::dispatch()
 
 void AtlasStreamClient::operation(const RootOperation & op)
 {
+    if (debug_flag) {
+        debug_print("Received:");
+        debug_dump(op, std::cout);
+    }
     if (m_currentTask != 0) {
         OpVector res;
         m_currentTask->operation(op, res);
@@ -431,6 +437,11 @@ void AtlasStreamClient::send(const RootOperation & op)
 {
     if (m_socket == 0) {
         return;
+    }
+
+    if (debug_flag) {
+        debug_print("Sending:");
+        debug_dump(op, std::cout);
     }
 
     reply_flag = false;
