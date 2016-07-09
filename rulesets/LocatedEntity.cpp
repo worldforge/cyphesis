@@ -402,6 +402,9 @@ void LocatedEntity::merge(const MapType & ent)
     MapType::const_iterator Iend = ent.end();
     for (MapType::const_iterator I = ent.begin(); I != Iend; ++I) {
         const std::string & key = I->first;
+        if (key.empty()) {
+            continue;
+        }
         if (imm.find(key) != imm.end()) continue;
         setAttr(key, I->second);
     }
