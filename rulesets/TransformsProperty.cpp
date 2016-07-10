@@ -93,11 +93,11 @@ void TransformsProperty::apply(LocatedEntity *entity) {
     }
 
     bool hadChange = false;
-    if (entity->m_location.m_pos != translation) {
+    if (entity->m_location.m_pos.isValid() != translation.isValid() || (translation.isValid() && entity->m_location.m_pos != translation)) {
         entity->m_location.m_pos = translation;
         hadChange = true;
     }
-    if (entity->m_location.m_orientation != rotation) {
+    if (entity->m_location.m_orientation.isValid() != rotation.isValid() || (rotation.isValid() && entity->m_location.m_orientation != rotation)) {
         entity->m_location.m_orientation = rotation;
         hadChange = true;
     }
