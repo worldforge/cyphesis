@@ -117,10 +117,12 @@ LocatedEntity * Admin::createCharacterEntity(const std::string & typestr,
     Element spawn;
     if (arg->copyAttr("spawn_name", spawn) == 0 && spawn.isString()) {
         BaseWorld & world = m_connection->m_server.m_world;
+
+        Location new_loc;
+        world.moveToSpawn(spawn.String(), new_loc);
+        new_loc.addToEntity(ent);
+
         entity = world.addNewEntity(typestr, ent);
-        if (entity) {
-            world.moveToSpawn(spawn.asString(), entity->m_location);
-        }
     }
     return entity;
 }
