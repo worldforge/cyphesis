@@ -372,6 +372,16 @@ int Character::unlinkExternal(Link * link)
     // character.
     m_externalMind->linkUp(0);
     externalLinkChanged.emit();
+
+    //If the entity is marked as "transient" we should remove it from the world once it's not controlled anymore.
+    if (getProperty("transient")) {
+        log(INFO, "Removing entity marked as transient when mind disconnected. " + describeEntity());
+
+        Atlas::Objects::Operation::Delete delOp;
+        delOp->setTo(getId());
+
+        sendWorld(delOp);
+    }
     return 0;
 }
 
