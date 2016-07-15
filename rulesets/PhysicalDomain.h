@@ -21,6 +21,8 @@
 #include "Domain.h"
 
 #include <map>
+#include <unordered_map>
+#include <array>
 
 class btDefaultCollisionConfiguration;
 class btCollisionDispatcher;
@@ -56,8 +58,8 @@ class PhysicalDomain: public Domain {
         virtual void addEntity(LocatedEntity& entity);
         virtual void removeEntity(LocatedEntity& entity);
 
-        void applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos);
-        void setVelocity(LocatedEntity& entity,const WFMath::Vector<3>& velocity);
+        virtual void applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity, const WFMath::AxisBox<3>& bbox);
+        virtual void setVelocity(LocatedEntity& entity,const WFMath::Vector<3>& velocity);
 
     protected:
 
@@ -78,6 +80,10 @@ class PhysicalDomain: public Domain {
 
         int m_ticksPerSecond;
 
+        std::unordered_map<std::string, std::array<float, 65*65>> m_terrainSegments;
+
+        std::vector<btRigidBody*> m_borderPlanes;
+
         //btCollisionShape* m_groundCollisionShape;
         //btRigidBody* m_groundBody;
 
@@ -92,6 +98,13 @@ class PhysicalDomain: public Domain {
          * @param res
          */
         void calculateVisibility(std::vector<Atlas::Objects::Root>& appear, std::vector<Atlas::Objects::Root>& disappear, Atlas::Objects::Entity::Anonymous& this_ent, const LocatedEntity& parent, const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res) const;
+
+        /**
+         * @brief Creates borders around the domain, which prevents entities from "escaping".
+         *
+         * This will be done by adding planes matching the bbox of the entity to which the domain belongs.
+         */
+        void createDomainBorders();
 
 };
 

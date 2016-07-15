@@ -106,7 +106,7 @@ class Domain {
     virtual void addEntity(LocatedEntity& entity) = 0;
     virtual void removeEntity(LocatedEntity& entity) = 0;
 
-    void applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos)
+    virtual void applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity, const WFMath::AxisBox<3>& bbox)
     {
 
     }
