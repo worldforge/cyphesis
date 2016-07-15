@@ -678,6 +678,8 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
         delete I->second.collisionShape;
     }
     m_entries.erase(I);
+
+    m_propellingEntries.erase(entity.getIntId());
 }
 
 void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity,
@@ -704,17 +706,24 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
             assert(I != m_entries.end());
             auto& entry = I->second;
             if (entry.rigidBody) {
-                if (velocity.isValid()) {
-                    if (velocity != WFMath::Vector<3>::ZERO()) {
-                        entry.rigidBody->activate(true);
+                btVector3 btVelocity = Convert::toBullet(velocity * 10.0f);
+
+                if (!btVelocity.isZero()) {
+                    entry.rigidBody->activate(true);
+                    auto I = m_propellingEntries.find(entity.getIntId());
+                    if (I == m_propellingEntries.end()) {
+                        m_propellingEntries.insert(std::make_pair(entity.getIntId(), std::make_pair(&entry, btVelocity)));
+                    } else {
+                        I->second.second = btVelocity;
                     }
-                    entry.rigidBody->setLinearVelocity(Convert::toBullet(velocity * 10.0f));
-                    //            entry.rigidBody->applyCentralForce(Convert::toBullet(velocity * 10.0f));
+
                 } else {
-                    entry.rigidBody->setLinearVelocity(btVector3(0, 0, 0));
-                    //            entry.rigidBody->applyCentralForce(btVector3(0, 0, 0));
+                    m_propellingEntries.erase(entity.getIntId());
                 }
+                entry.rigidBody->setLinearVelocity(btVelocity);
+                //            entry.rigidBody->applyCentralForce(Convert::toBullet(velocity * 10.0f));
             }
+
         }
 
         //TODO: handle scaling of bbox
@@ -727,6 +736,10 @@ void PhysicalDomain::setVelocity(LocatedEntity& entity, const WFMath::Vector<3>&
 
 double PhysicalDomain::tick(double t)
 {
+    for (auto& entry : m_propellingEntries) {
+        entry.second.first->rigidBody->setLinearVelocity(entry.second.second);
+    }
+
     m_dynamicsWorld->stepSimulation(t, 10);
     return 1.0 / m_ticksPerSecond;
 }

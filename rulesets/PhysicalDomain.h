@@ -32,13 +32,16 @@ class btSequentialImpulseConstraintSolver;
 class btDiscreteDynamicsWorld;
 class btRigidBody;
 class btCollisionShape;
+class btVector3;
+
 /**
  * @brief A regular physical domain, behaving very much like the real world.
  *
  * Things move using physical rules, and sights are calculated using line of sight.
  *
  */
-class PhysicalDomain: public Domain {
+class PhysicalDomain: public Domain
+{
     public:
         PhysicalDomain(LocatedEntity& entity);
         virtual ~PhysicalDomain();
@@ -58,12 +61,14 @@ class PhysicalDomain: public Domain {
         virtual void addEntity(LocatedEntity& entity);
         virtual void removeEntity(LocatedEntity& entity);
 
-        virtual void applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity, const WFMath::AxisBox<3>& bbox);
-        virtual void setVelocity(LocatedEntity& entity,const WFMath::Vector<3>& velocity);
+        virtual void applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity,
+                const WFMath::AxisBox<3>& bbox);
+        virtual void setVelocity(LocatedEntity& entity, const WFMath::Vector<3>& velocity);
 
     protected:
 
-        struct BulletEntry {
+        struct BulletEntry
+        {
                 LocatedEntity* entity;
                 btCollisionShape* collisionShape;
                 btRigidBody* rigidBody;
@@ -71,7 +76,14 @@ class PhysicalDomain: public Domain {
 
         class PhysicalMotionState;
 
-        std::map<int, BulletEntry> m_entries;
+        std::unordered_map<int, BulletEntry> m_entries;
+
+        /**
+         * @brief A map of all entities that currently are self-propelling.
+         *
+         * Each tick the propel force will be applied to these entities.
+         */
+        std::map<int, std::pair<BulletEntry*, btVector3>> m_propellingEntries;
         btDefaultCollisionConfiguration * m_collisionConfiguration;
         btCollisionDispatcher* m_dispatcher;
         btSequentialImpulseConstraintSolver* m_constraintSolver;
@@ -80,7 +92,7 @@ class PhysicalDomain: public Domain {
 
         int m_ticksPerSecond;
 
-        std::unordered_map<std::string, std::array<float, 65*65>> m_terrainSegments;
+        std::unordered_map<std::string, std::array<float, 65 * 65>> m_terrainSegments;
 
         std::vector<btRigidBody*> m_borderPlanes;
 
@@ -97,7 +109,8 @@ class PhysicalDomain: public Domain {
          * @param old_loc The old location.
          * @param res
          */
-        void calculateVisibility(std::vector<Atlas::Objects::Root>& appear, std::vector<Atlas::Objects::Root>& disappear, Atlas::Objects::Entity::Anonymous& this_ent, const LocatedEntity& parent, const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res) const;
+        void calculateVisibility(std::vector<Atlas::Objects::Root>& appear, std::vector<Atlas::Objects::Root>& disappear, Atlas::Objects::Entity::Anonymous& this_ent,
+                const LocatedEntity& parent, const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res) const;
 
         /**
          * @brief Creates borders around the domain, which prevents entities from "escaping".
