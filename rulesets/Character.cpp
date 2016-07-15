@@ -1397,26 +1397,42 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         vel_mag = consts::base_velocity;
     }
 
+    // Set up argument for operation
+    Anonymous move_arg;
+    move_arg->setId(getId());
+
     // Need to add the arguments to this op before we return it
     // direction is already a unit vector
     if (new_pos.isValid()) {
         m_movement.setTarget(new_pos);
         debug(std::cout << "Target" << new_pos << std::endl << std::flush
         ;);
+
+        ::addToEntity(new_pos, move_arg->modifyPos());
     }
     if (direction.isValid()) {
         ret_location.m_velocity = direction;
         ret_location.m_velocity *= vel_mag;
+
+        ::addToEntity(direction * vel_mag, move_arg->modifyVelocity());
         debug(std::cout << "Velocity" << ret_location.velocity() << std::endl << std::flush
         ;);
+    }
+
+    if (new_orientation.isValid()) {
+        move_arg->setAttr("orientation", new_orientation.toAtlas());
     }
     ret_location.m_orientation = new_orientation;
     debug(std::cout << "Orientation" << ret_location.orientation() << std::endl << std::flush
     ;);
 
-    Operation move_op = m_movement.generateMove(ret_location);
-    assert(move_op.isValid());
-    res.push_back(move_op);
+    // Create move operation
+    Move moveOp;
+    moveOp->setTo(getId());
+    moveOp->setSeconds(BaseWorld::instance().getTime());
+    moveOp->setArgs1(move_arg);
+
+    res.push_back(moveOp);
 
 //    if (m_movement.hasTarget() && ret_location.velocity().isValid() && ret_location.velocity() != Vector3D::ZERO()) {
 //

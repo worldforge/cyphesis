@@ -131,36 +131,36 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    if (!ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
-        error(op, "Move op has no loc", res, getId());
-        return;
-    }
-    const std::string & new_loc_id = ent->getLoc();
     LocatedEntity * new_loc = 0;
-    if (new_loc_id != m_location.m_loc->getId()) {
-        // If the LOC has not changed, we don't need to look it up, or do
-        // any of the following checks.
-        new_loc = BaseWorld::instance().getEntity(new_loc_id);
-        if (new_loc == 0) {
-            error(op, "Move op loc does not exist", res, getId());
-            return;
-        }
-        debug(std::cout << "LOC: " << new_loc_id << std::endl << std::flush;);
-        LocatedEntity * test_loc = new_loc;
-        for (; test_loc != 0; test_loc = test_loc->m_location.m_loc) {
-            if (test_loc == this) {
-                error(op, "Attempt to move into itself", res, getId());
+    if (ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
+        const std::string & new_loc_id = ent->getLoc();
+        if (new_loc_id != m_location.m_loc->getId()) {
+            // If the LOC has not changed, we don't need to look it up, or do
+            // any of the following checks.
+            new_loc = BaseWorld::instance().getEntity(new_loc_id);
+            if (new_loc == 0) {
+                error(op, "Move op loc does not exist", res, getId());
                 return;
             }
+            debug(std::cout << "LOC: " << new_loc_id << std::endl << std::flush;);
+            LocatedEntity * test_loc = new_loc;
+            for (; test_loc != 0; test_loc = test_loc->m_location.m_loc) {
+                if (test_loc == this) {
+                    error(op, "Attempt to move into itself", res, getId());
+                    return;
+                }
+            }
+            assert(new_loc != 0);
+            assert(m_location.m_loc != new_loc);
         }
-        assert(new_loc != 0);
-        assert(m_location.m_loc != new_loc);
+
     }
 
-    if (!ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
-        error(op, "Move op has no pos", res, getId());
-        return;
-    }
+
+//    if (!ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
+//        error(op, "Move op has no pos", res, getId());
+//        return;
+//    }
 
     // Up until this point nothing should have changed, but the changes
     // have all now been checked for validity.
@@ -250,47 +250,49 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     }
 
 
-
-
-
-
-
     if (domain) {
+
+        WFMath::AxisBox<3> newBbox;
+        WFMath::Vector<3> newVelocity;
+        WFMath::Point<3> newPos;
+        WFMath::Quaternion newOrientation;
 
         bool updatedTransform = false;
 
-        // Update pos
-        const auto& posVector = ent->getPos();
-        if (posVector.size() == 3) {
-            Vector3D translate;
-            translate.fromAtlas(ent->getPosAsList());
-            //Adjust the supplied position by the inverse of all external transformation.
-            //This is to offset the fact that any client will send an update for position using
-            //the position of the entity as it sees it.
-            //TODO: is this really the best way? Should we allow for clients to specify if they want to set
-            //the position independent of any transformations? Perhaps this is doable if the client
-            //instead sends an update for the "transforms" property?
-            for (auto entry : transformsProp->external()) {
-                if (entry.second.translate.isValid()) {
-                    translate -= entry.second.translate;
-                }
-            }
-            if (m_location.bBox().isValid()) {
+        if (ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
+            // Update pos
+            const auto& posVector = ent->getPos();
+            if (posVector.size() == 3) {
+                WFMath::Vector<3> translate;
+                translate.fromAtlas(ent->getPosAsList());
+                //Adjust the supplied position by the inverse of all external transformation.
+                //This is to offset the fact that any client will send an update for position using
+                //the position of the entity as it sees it.
+                //TODO: is this really the best way? Should we allow for clients to specify if they want to set
+                //the position independent of any transformations? Perhaps this is doable if the client
+                //instead sends an update for the "transforms" property?
                 for (auto entry : transformsProp->external()) {
-                    if (entry.second.translateScaled.isValid()) {
-                        auto size = m_location.bBox().highCorner() - m_location.bBox().lowCorner();
-                        translate -= WFMath::Vector<3>(
-                            entry.second.translateScaled.x() * size.x(),
-                            entry.second.translateScaled.y() * size.y(),
-                            entry.second.translateScaled.z() * size.z());
+                    if (entry.second.translate.isValid()) {
+                        translate -= entry.second.translate;
                     }
                 }
+                if (m_location.bBox().isValid()) {
+                    for (auto entry : transformsProp->external()) {
+                        if (entry.second.translateScaled.isValid()) {
+                            auto size = m_location.bBox().highCorner() - m_location.bBox().lowCorner();
+                            translate -= WFMath::Vector<3>(
+                                entry.second.translateScaled.x() * size.x(),
+                                entry.second.translateScaled.y() * size.y(),
+                                entry.second.translateScaled.z() * size.z());
+                        }
+                    }
+                }
+
+                transformsProp->getTranslate() = translate;
+                newPos = WFMath::Point<3>(translate);
+                updatedTransform = true;
             }
-
-            transformsProp->getTranslate() = translate;
-            updatedTransform = true;
         }
-
 
 //        // FIXME Quick height hack
 //        float height = domain->constrainHeight(*this, m_location.m_loc, m_location.pos(), mode);
@@ -300,8 +302,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         Element attr_orientation;
         if (ent->copyAttr("orientation", attr_orientation) == 0) {
             // Update orientation
-            Quaternion rotate;
-            rotate.fromAtlas(attr_orientation.asList());
+            newOrientation.fromAtlas(attr_orientation.asList());
 
             //Adjust the supplied orientation by the inverse of all external transformation.
             //This is to offset the fact that any client will send an update for orientation using
@@ -315,30 +316,31 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
                     Quaternion localRotation(entry.second.rotate.inverse());
                     //normalize to avoid drift
                     localRotation.normalize();
-                    rotate = localRotation * rotate;
+                    newOrientation = localRotation * newOrientation;
                 }
             }
 
-            transformsProp->getRotate() = rotate;
+            transformsProp->getRotate() = newOrientation;
             updatedTransform = true;
 
         }
 
-        if (updatedTransform) {
-            transformsProp->apply(this);
-            domain->applyTransform(*this, m_location.m_orientation, m_location.m_pos);
-        }
+        auto propelProp = requirePropertyClassFixed<PropelProperty>();
 
         if (ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
             // Update velocity
-            auto propelProp = requirePropertyClassFixed<PropelProperty>();
-            fromStdVector(propelProp->data(), ent->getVelocity());
-            //FIXME: For now set the velocity directly; in the future we want instead to only set the "propel" property,
-            //and have the velocity being calculated by letting Bullet apply all forces.
-            fromStdVector(m_location.m_velocity, ent->getVelocity());
-            domain->setVelocity(*this, m_location.m_velocity);
+            fromStdVector(newVelocity, ent->getVelocity());
+            propelProp->data() = newVelocity;
+//            domain->setVelocity(*this, propelProp->data());
             // Velocity is not persistent so has no flag
+            updatedTransform = true;
         }
+
+        if (updatedTransform) {
+            transformsProp->apply(this);
+            domain->applyTransform(*this, newOrientation, newPos, newVelocity, newBbox);
+        }
+
 
 
         m_location.update(current_time);
@@ -627,7 +629,7 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     // of object which will handle the specifics.
 
     const double & current_time = BaseWorld::instance().getTime();
-    float time_diff = (float)(current_time - m_location.timeStamp());
+   // float time_diff = (float)(current_time - m_location.timeStamp());
 
     std::string mode;
 
