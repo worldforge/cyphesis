@@ -58,7 +58,7 @@ inline btVector3 Convert::toBullet(const WFMath::Point<3>& p)
 inline btQuaternion Convert::toBullet(const WFMath::Quaternion& aq)
 {
     assert(aq.isValid() && "Never convert an invalid WFMath quaternion into Bullet as there will only be pain on the other side.");
-    return btQuaternion(aq.scalar(), aq.vector().x(), aq.vector().z(), -aq.vector().y());
+    return btQuaternion(aq.vector().x(), aq.vector().z(), -aq.vector().y(), aq.scalar());
 }
 
 template<>
