@@ -96,6 +96,8 @@ class PhysicalDomain: public Domain
 
         std::vector<btRigidBody*> m_borderPlanes;
 
+        float m_currentTickSize;
+
         //btCollisionShape* m_groundCollisionShape;
         //btRigidBody* m_groundBody;
 
