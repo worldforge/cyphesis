@@ -94,14 +94,13 @@ Domain* DomainProperty::getDomain(const LocatedEntity *entity) const
     return sInstanceState.getState(entity);
 }
 
-void DomainProperty::scheduleTick(LocatedEntity& entity, float secondsFromNow)
+void DomainProperty::scheduleTick(LocatedEntity& entity, float timeForNextTick)
 {
     Atlas::Objects::Entity::Anonymous tick_arg;
     tick_arg->setName("domain");
     Atlas::Objects::Operation::Tick tickOp;
     tickOp->setTo(entity.getId());
-    tickOp->setFutureSeconds(secondsFromNow);
-    tickOp->setStamp(secondsFromNow);
+    tickOp->setSeconds(timeForNextTick);
     tickOp->setArgs1(tick_arg);
 
     entity.sendWorld(tickOp);
@@ -117,9 +116,12 @@ HandlerResult DomainProperty::tick_handler(LocatedEntity * entity, const Operati
     if (!op->getArgs().empty() && op->getArgs().front()->getName() == "domain") {
         Domain* domain = sInstanceState.getState(entity);
         if (domain) {
-            float timeUntilNextTick = domain->tick(op->getStamp());
-            if (timeUntilNextTick > 0) {
-                scheduleTick(*entity, timeUntilNextTick);
+
+            float timeNow = op->getSeconds();
+
+            float timeForNextTick = domain->tick(timeNow);
+            if (timeForNextTick > 0) {
+                scheduleTick(*entity, timeForNextTick);
             }
         }
         return OPERATION_BLOCKED;

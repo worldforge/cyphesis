@@ -92,6 +92,7 @@ class PhysicalDomain: public Domain
 
         int m_ticksPerSecond;
 
+        float m_lastTickTime;
         std::unordered_map<std::string, std::array<float, 65 * 65>> m_terrainSegments;
 
         std::vector<btRigidBody*> m_borderPlanes;
