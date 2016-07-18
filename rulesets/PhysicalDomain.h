@@ -24,6 +24,11 @@
 #include <unordered_map>
 #include <array>
 
+namespace Mercator
+{
+class Segment;
+}
+
 class btDefaultCollisionConfiguration;
 class btCollisionDispatcher;
 class btBroadphaseInterface;
@@ -93,8 +98,18 @@ class PhysicalDomain: public Domain
         int m_ticksPerSecond;
 
         float m_lastTickTime;
+
+        /**
+         * @brief Contains all terrain segments, as height fields.
+         *
+         * Each segment is 65*65 points.
+         */
         std::unordered_map<std::string, std::array<float, 65 * 65>> m_terrainSegments;
 
+        /**
+         * Contains the six planes that make out the border, which matches the bounding box of the entity to which this
+         * property belongs.
+         */
         std::vector<btRigidBody*> m_borderPlanes;
 
         float m_currentTickSize;
@@ -121,6 +136,17 @@ class PhysicalDomain: public Domain
          * This will be done by adding planes matching the bbox of the entity to which the domain belongs.
          */
         void createDomainBorders();
+
+        /**
+         * @brief Build all terrain pages.
+         */
+        void buildTerrainPages();
+
+        /**
+         * @brief Builds one terrain page from a Mercator segment.
+         * @param segment
+         */
+        void buildTerrainPage(Mercator::Segment& segment);
 
 };
 
