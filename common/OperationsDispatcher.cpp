@@ -66,6 +66,9 @@ void OperationsDispatcher::clearQueues()
 
 void OperationsDispatcher::dispatchOperation(const OpQueEntry& oqe)
 {
+    //Set the time of when this op is dispatched. That way, other components in the system can
+    //always use the seconds set on the op to know the current time.
+    oqe.op->setSeconds(getTime());
     try {
         m_operationProcessor(oqe.op, *oqe.from);
     }
@@ -86,7 +89,7 @@ void OperationsDispatcher::dispatchOperation(const OpQueEntry& oqe)
 /// \brief Add an operation to the ordered op queue.
 ///
 /// Any time adjustment required is made to the operation, and it
-/// is added to the apropriate place in the chronologically ordered
+/// is added to the appropriate place in the chronologically ordered
 /// queue. The From attribute of the operation is set to the id of
 /// the entity that is responsible for adding the operation to the
 /// queue.
@@ -97,14 +100,16 @@ void OperationsDispatcher::addOperationToQueue(const Operation & op, LocatedEnti
 
     m_operation_queues_dirty = true;
     op->setFrom(ent.getId());
-    if (!op->hasAttrFlag(Atlas::Objects::Operation::FUTURE_SECONDS_FLAG)) {
-        op->setSeconds(getTime());
-        m_immediateQueue.push(OpQueEntry(op, ent));
-        return;
+    if (!op->hasAttrFlag(Atlas::Objects::Operation::SECONDS_FLAG)) {
+        if (!op->hasAttrFlag(Atlas::Objects::Operation::FUTURE_SECONDS_FLAG)) {
+            op->setSeconds(getTime());
+            m_immediateQueue.push(OpQueEntry(op, ent));
+            return;
+        }
+        double t = getTime() + (op->getFutureSeconds() * consts::time_multiplier);
+        op->setSeconds(t);
+        op->setFutureSeconds(0.);
     }
-    double t = getTime() + (op->getFutureSeconds() * consts::time_multiplier);
-    op->setSeconds(t);
-    op->setFutureSeconds(0.);
     m_operationQueue.push(OpQueEntry(op, ent));
     if (debug_flag) {
         std::cout << "WorldRouter::addOperationToQueue {" << std::endl;
@@ -175,8 +180,6 @@ void OperationsDispatcher::markQueueAsClean()
 double OperationsDispatcher::getTime() const
 {
     return m_timeProviderFn();
-    //TODO: remove this tangle somehow
-//    return BaseWorld::instance().getTime();
 }
 
 double OperationsDispatcher::secondsUntilNextOp() const {
