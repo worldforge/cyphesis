@@ -20,6 +20,8 @@
 
 #include "Domain.h"
 
+#include <sigc++/connection.h>
+
 #include <map>
 #include <unordered_map>
 #include <array>
@@ -38,6 +40,8 @@ class btDiscreteDynamicsWorld;
 class btRigidBody;
 class btCollisionShape;
 class btVector3;
+
+class PropertyBase;
 
 /**
  * @brief A regular physical domain, behaving very much like the real world.
@@ -77,11 +81,12 @@ class PhysicalDomain: public Domain
                 LocatedEntity* entity;
                 btCollisionShape* collisionShape;
                 btRigidBody* rigidBody;
+                sigc::connection propertyUpdatedConnection;
         };
 
         class PhysicalMotionState;
 
-        std::unordered_map<int, BulletEntry> m_entries;
+        std::unordered_map<int, BulletEntry*> m_entries;
 
         /**
          * @brief A map of all entities that currently are self-propelling.
@@ -147,6 +152,14 @@ class PhysicalDomain: public Domain
          * @param segment
          */
         void buildTerrainPage(Mercator::Segment& segment);
+
+        /**
+         * Listener method for all child entities, called when their properties change.
+         * @param name
+         * @param prop
+         * @param bulletEntry
+         */
+        void propertyApplied(const std::string& name, PropertyBase& prop, BulletEntry * bulletEntry);
 
 };
 

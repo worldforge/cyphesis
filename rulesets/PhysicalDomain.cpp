@@ -50,6 +50,8 @@
 #include <bullet/BulletCollision/CollisionShapes/btStaticPlaneShape.h>
 #include <bullet/BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h>
 
+#include <sigc++/bind.h>
+
 #include <iostream>
 #include <unordered_set>
 
@@ -566,15 +568,15 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         bbox = WFMath::AxisBox<3>(WFMath::Point<3>(-0.25, -0.25, 0), WFMath::Point<3>(0.25, 0.25, 1.5));
     }
 
-    BulletEntry entry;
-    entry.entity = &entity;
+    BulletEntry* entry = new BulletEntry();
+    entry->entity = &entity;
 
     //TODO: Use properties for geometry instead.
     if (entity.getType()->isTypeOf("mobile") || entity.getType()->isTypeOf("creator")) {
         float radius = (bbox.highCorner().x() - bbox.lowCorner().x()) * 0.5f;
         //subtract the radius times 2 from the height
         float height = bbox.highCorner().z() - bbox.lowCorner().z() - (radius * 2.0f);
-        entry.collisionShape = new btCapsuleShape(radius, height);
+        entry->collisionShape = new btCapsuleShape(radius, height);
     } else {
         if (bbox.isValid()) {
             size = bbox.highCorner() - bbox.lowCorner();
@@ -586,11 +588,11 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
 
         auto btSize = Convert::toBullet(size);
         btSize.m_floats[2] = -btSize.z(); //Invert the z since it should be positive for the size.
-        entry.collisionShape = new btBoxShape(btSize);
+        entry->collisionShape = new btBoxShape(btSize);
     }
 
     btVector3 inertia;
-    entry.collisionShape->calculateLocalInertia(mass, inertia);
+    entry->collisionShape->calculateLocalInertia(mass, inertia);
 
     auto modeProp = entity.getPropertyClassFixed<ModeProperty>();
     if (modeProp) {
@@ -605,7 +607,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
 
     btQuaternion orientation = entity.m_location.m_orientation.isValid() ? Convert::toBullet(entity.m_location.m_orientation) : btQuaternion(0, 0, 0, 1);
     btVector3 pos = entity.m_location.m_pos.isValid() ? Convert::toBullet(entity.m_location.m_pos) : btVector3(0, 0, 0);
-    btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(mass, nullptr, entry.collisionShape, inertia);
+    btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(mass, nullptr, entry->collisionShape, inertia);
 
     const Property<float>* frictionProp = entity.getPropertyType<float>("friction");
     if (frictionProp) {
@@ -617,23 +619,25 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     debug_print(
             "PhysicsDomain adding entity " << entity.describeEntity() << " with mass " << mass << " and inertia ("<< inertia.x() << ","<< inertia.y() << ","<< inertia.z() << ")");
 
-    entry.rigidBody = new btRigidBody(rigidBodyCI);
-    entry.rigidBody->setMotionState(
-            new PhysicalMotionState(m_currentTickSize, *entry.rigidBody, entity, *this, btTransform(orientation, pos),
+    entry->rigidBody = new btRigidBody(rigidBodyCI);
+    entry->rigidBody->setMotionState(
+            new PhysicalMotionState(m_currentTickSize, *entry->rigidBody, entity, *this, btTransform(orientation, pos),
                     btTransform(btQuaternion::getIdentity(), centerOfMassOffset)));
-    entry.rigidBody->setAngularFactor(btVector3(0, 0, 0)); //TODO: only apply for characters
+    entry->rigidBody->setAngularFactor(btVector3(0, 0, 0)); //TODO: only apply for characters
 
     const PropelProperty* propelProp = entity.getPropertyClassFixed<PropelProperty>();
     if (propelProp && propelProp->data().isValid()) {
-        entry.rigidBody->setLinearVelocity(Convert::toBullet(propelProp->data()));
+        entry->rigidBody->setLinearVelocity(Convert::toBullet(propelProp->data()));
     }
 
-    //entry.rigidBody->setLinearVelocity(btVector3(100, 0, 0));
+    //entry->rigidBody->setLinearVelocity(btVector3(100, 0, 0));
 
-    m_dynamicsWorld->addRigidBody(entry.rigidBody);
+    m_dynamicsWorld->addRigidBody(entry->rigidBody);
 
     //Should all entities be active when added?
-    entry.rigidBody->activate();
+    entry->rigidBody->activate();
+
+    entry->propertyUpdatedConnection = entity.propertyApplied.connect(sigc::bind(sigc::mem_fun(this, &PhysicalDomain::propertyApplied), entry));
 
     m_entries.insert(std::make_pair(entity.getIntId(), entry));
 
@@ -644,17 +648,28 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
     debug_print("PhysicalDomain::removeEntity " << entity.describeEntity());
     auto I = m_entries.find(entity.getIntId());
     assert(I != m_entries.end());
-    if (I->second.rigidBody) {
-        m_dynamicsWorld->removeRigidBody(I->second.rigidBody);
-        delete I->second.rigidBody->getMotionState();
-        delete I->second.rigidBody;
+    if (I->second->rigidBody) {
+        m_dynamicsWorld->removeRigidBody(I->second->rigidBody);
+        delete I->second->rigidBody->getMotionState();
+        delete I->second->rigidBody;
     }
-    if (I->second.collisionShape) {
-        delete I->second.collisionShape;
+    if (I->second->collisionShape) {
+        delete I->second->collisionShape;
     }
+    I->second->propertyUpdatedConnection.disconnect();
+    delete I->second;
     m_entries.erase(I);
 
     m_propellingEntries.erase(entity.getIntId());
+}
+
+void PhysicalDomain::propertyApplied(const std::string& name, PropertyBase& prop, BulletEntry* bulletEntry)
+{
+    if (name == "friction") {
+        Property<float>* frictionProp = static_cast<Property<float>*>(&prop);
+        bulletEntry->rigidBody->setFriction(frictionProp->data());
+        return;
+    }
 }
 
 void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity,
@@ -662,39 +677,39 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
 {
     auto I = m_entries.find(entity.getIntId());
     assert(I != m_entries.end());
-    auto& entry = I->second;
-    if (entry.rigidBody) {
+    auto* entry = I->second;
+    if (entry->rigidBody) {
         if (orientation.isValid() || pos.isValid()) {
-            btTransform transform = entry.rigidBody->getWorldTransform();
+            btTransform transform = entry->rigidBody->getWorldTransform();
             if (orientation.isValid()) {
                 transform.setRotation(Convert::toBullet(orientation));
             }
             if (pos.isValid()) {
                 transform.setOrigin(Convert::toBullet(pos));
             }
-            entry.rigidBody->setWorldTransform(transform);
+            entry->rigidBody->setWorldTransform(transform);
         }
 
         if (velocity.isValid()) {
             debug_print("PhysicalDomain::setVelocity " << entity.describeEntity() << " " << velocity << " " << velocity.mag());
             auto I = m_entries.find(entity.getIntId());
             assert(I != m_entries.end());
-            auto& entry = I->second;
-            if (entry.rigidBody) {
+            auto* entry = I->second;
+            if (entry->rigidBody) {
                 btVector3 btVelocity = Convert::toBullet(velocity);
 
-                entry.rigidBody->setLinearVelocity(btVelocity);
+                entry->rigidBody->setLinearVelocity(btVelocity);
                 if (!btVelocity.isZero()) {
-                    entry.rigidBody->activate();
+                    entry->rigidBody->activate();
                     auto I = m_propellingEntries.find(entity.getIntId());
                     if (I == m_propellingEntries.end()) {
-                        m_propellingEntries.insert(std::make_pair(entity.getIntId(), std::make_pair(&entry, btVelocity)));
+                        m_propellingEntries.insert(std::make_pair(entity.getIntId(), std::make_pair(entry, btVelocity)));
                     } else {
                         I->second.second = btVelocity;
                     }
 
                 } else {
-                    entry.rigidBody->clearForces();
+                    entry->rigidBody->clearForces();
                     m_propellingEntries.erase(entity.getIntId());
                 }
             }
