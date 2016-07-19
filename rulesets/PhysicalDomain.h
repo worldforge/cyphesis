@@ -72,7 +72,6 @@ class PhysicalDomain: public Domain
 
         virtual void applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity,
                 const WFMath::AxisBox<3>& bbox);
-        virtual void setVelocity(LocatedEntity& entity, const WFMath::Vector<3>& velocity);
 
     protected:
 
@@ -82,6 +81,11 @@ class PhysicalDomain: public Domain
                 btCollisionShape* collisionShape;
                 btRigidBody* rigidBody;
                 sigc::connection propertyUpdatedConnection;
+        };
+
+        struct TerrainEntry {
+                std::array<float, 65 * 65>* data;
+                btRigidBody* rigidBody;
         };
 
         class PhysicalMotionState;
@@ -100,6 +104,8 @@ class PhysicalDomain: public Domain
         btBroadphaseInterface* m_broadphase;
         btDiscreteDynamicsWorld * m_dynamicsWorld;
 
+        sigc::connection m_propertyAppliedConnection;
+
         int m_ticksPerSecond;
 
         float m_lastTickTime;
@@ -109,7 +115,7 @@ class PhysicalDomain: public Domain
          *
          * Each segment is 65*65 points.
          */
-        std::unordered_map<std::string, std::array<float, 65 * 65>> m_terrainSegments;
+        std::unordered_map<std::string, TerrainEntry> m_terrainSegments;
 
         /**
          * Contains the six planes that make out the border, which matches the bounding box of the entity to which this
@@ -151,7 +157,7 @@ class PhysicalDomain: public Domain
          * @brief Builds one terrain page from a Mercator segment.
          * @param segment
          */
-        void buildTerrainPage(Mercator::Segment& segment);
+        void buildTerrainPage(Mercator::Segment& segment, float friction);
 
         /**
          * Listener method for all child entities, called when their properties change.
@@ -159,7 +165,15 @@ class PhysicalDomain: public Domain
          * @param prop
          * @param bulletEntry
          */
-        void propertyApplied(const std::string& name, PropertyBase& prop, BulletEntry * bulletEntry);
+        void childEntityPropertyApplied(const std::string& name, PropertyBase& prop, BulletEntry * bulletEntry);
+
+        /**
+         * Listener method for changes to properties on the entity to which the property belongs.
+         * @param name
+         * @param prop
+         * @param bulletEntry
+         */
+        void entityPropertyApplied(const std::string& name, PropertyBase& prop);
 
 };
 

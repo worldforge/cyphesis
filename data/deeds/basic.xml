@@ -142,6 +142,10 @@
         <string name="default">physical</string>
         <string name="visibility">public</string>
       </map>
+      <map name="friction">
+      	<float name="default">1.0</float>
+        <string name="visibility">public</string>
+      </map>
       <map name="terrain">
         <int name="default">0</int>
         <string name="visibility">public</string>

@@ -237,8 +237,53 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
 //m_dynamicsWorld->setGravity(btVector3(0, -10, 0));
 }
 
+PhysicalDomain::~PhysicalDomain()
+{
+    for (btRigidBody* planeBody : m_borderPlanes) {
+        delete planeBody->getMotionState();
+        delete planeBody->getCollisionShape();
+        delete planeBody;
+    }
+
+    for (auto& entry : m_terrainSegments) {
+        delete entry.second.data;
+        delete entry.second.rigidBody->getMotionState();
+        delete entry.second.rigidBody->getCollisionShape();
+        delete entry.second.rigidBody;
+    }
+
+    for (auto& entry : m_entries) {
+        if (entry.second->rigidBody) {
+            m_dynamicsWorld->removeRigidBody(entry.second->rigidBody);
+            delete entry.second->rigidBody->getMotionState();
+            delete entry.second->rigidBody;
+        }
+        if (entry.second->collisionShape) {
+            delete entry.second->collisionShape;
+        }
+        entry.second->propertyUpdatedConnection.disconnect();
+        delete entry.second;
+
+    }
+
+    delete m_dynamicsWorld;
+    delete m_broadphase;
+    delete m_constraintSolver;
+    delete m_dispatcher;
+    delete m_collisionConfiguration;
+    m_propertyAppliedConnection.disconnect();
+}
+
 void PhysicalDomain::buildTerrainPages()
 {
+    float friction = 1.0f;
+
+    const Property<float>* frictionProp = m_entity.getPropertyType<float>("friction");
+
+    if (frictionProp) {
+        friction = frictionProp->data();
+    }
+
     const TerrainProperty* terrainProperty = m_entity.getPropertyClass<TerrainProperty>("terrain");
     if (terrainProperty) {
         auto& terrain = terrainProperty->getData();
@@ -246,13 +291,13 @@ void PhysicalDomain::buildTerrainPages()
         for (auto& row : segments) {
             for (auto& entry : row.second) {
                 Mercator::Segment* segment = entry.second;
-                buildTerrainPage(*segment);
+                buildTerrainPage(*segment, friction);
             }
         }
     }
 }
 
-void PhysicalDomain::buildTerrainPage(Mercator::Segment& segment)
+void PhysicalDomain::buildTerrainPage(Mercator::Segment& segment, float friction)
 {
     if (!segment.isValid()) {
         segment.populate();
@@ -262,8 +307,11 @@ void PhysicalDomain::buildTerrainPage(Mercator::Segment& segment)
 
     std::stringstream ss;
     ss << segment.getXRef() << ":" << segment.getYRef();
-    auto& arrayEntry = m_terrainSegments[ss.str()];
-    float* data = arrayEntry.data();
+    TerrainEntry& terrainEntry = m_terrainSegments[ss.str()];
+    if (!terrainEntry.data) {
+        terrainEntry.data = new std::array<float, 65 * 65>();
+    }
+    float* data = terrainEntry.data->data();
     const float* mercatorData = segment.getPoints();
     //Need to rotate to fit Bullet coord space.
     for (int y = 0; y < vertexCountOneSide; ++y) {
@@ -289,26 +337,13 @@ void PhysicalDomain::buildTerrainPage(Mercator::Segment& segment)
 
     btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(btQuaternion::getIdentity(), btPos));
     btRigidBody::btRigidBodyConstructionInfo segmentCI(.0f, motionState, terrainShape);
-    //segmentCI.m_friction = 1.0f;
+    segmentCI.m_friction = friction;
     btRigidBody* segmentBody = new btRigidBody(segmentCI);
 
     m_dynamicsWorld->addRigidBody(segmentBody);
 
-}
+    terrainEntry.rigidBody = segmentBody;
 
-PhysicalDomain::~PhysicalDomain()
-{
-    for (btRigidBody* planeBody : m_borderPlanes) {
-        delete planeBody->getMotionState();
-        delete planeBody->getCollisionShape();
-        delete planeBody;
-    }
-
-    delete m_dynamicsWorld;
-    delete m_broadphase;
-    delete m_constraintSolver;
-    delete m_dispatcher;
-    delete m_collisionConfiguration;
 }
 
 void PhysicalDomain::createDomainBorders()
@@ -637,7 +672,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     //Should all entities be active when added?
     entry->rigidBody->activate();
 
-    entry->propertyUpdatedConnection = entity.propertyApplied.connect(sigc::bind(sigc::mem_fun(this, &PhysicalDomain::propertyApplied), entry));
+    entry->propertyUpdatedConnection = entity.propertyApplied.connect(sigc::bind(sigc::mem_fun(this, &PhysicalDomain::childEntityPropertyApplied), entry));
 
     m_entries.insert(std::make_pair(entity.getIntId(), entry));
 
@@ -663,11 +698,22 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
     m_propellingEntries.erase(entity.getIntId());
 }
 
-void PhysicalDomain::propertyApplied(const std::string& name, PropertyBase& prop, BulletEntry* bulletEntry)
+void PhysicalDomain::childEntityPropertyApplied(const std::string& name, PropertyBase& prop, BulletEntry* bulletEntry)
 {
     if (name == "friction") {
         Property<float>* frictionProp = static_cast<Property<float>*>(&prop);
         bulletEntry->rigidBody->setFriction(frictionProp->data());
+        return;
+    }
+}
+
+void PhysicalDomain::entityPropertyApplied(const std::string& name, PropertyBase& prop)
+{
+    if (name == "friction") {
+        Property<float>* frictionProp = static_cast<Property<float>*>(&prop);
+        for (auto& entry : m_terrainSegments) {
+            entry.second.rigidBody->setFriction(frictionProp->data());
+        }
         return;
     }
 }
@@ -718,10 +764,6 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
 
         //TODO: handle scaling of bbox
     }
-}
-
-void PhysicalDomain::setVelocity(LocatedEntity& entity, const WFMath::Vector<3>& velocity)
-{
 }
 
 double PhysicalDomain::tick(double timeNow)
