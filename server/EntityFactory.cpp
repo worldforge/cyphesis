@@ -121,6 +121,7 @@ void EntityFactoryBase::initializeEntity(LocatedEntity& thing,
             // value, so we only apply it the value is still default.
             if (attrs.find(propIter.first) == attrs.end()) {
                 prop->apply(&thing);
+                thing.propertyApplied(propIter.first, *prop);
             }
         }
     }

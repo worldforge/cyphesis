@@ -237,6 +237,7 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
         prop->set(val);
         prop->setFlags(per_clean | per_seen);
         prop->apply(ent);
+        ent->propertyApplied(name, *prop);
         instanceProperties.insert(name);
     }
 
@@ -250,6 +251,7 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
                 // The property will have been applied if it has an overridden
                 // value, so we only apply it the value is still default.
                 prop->apply(ent);
+                ent->propertyApplied(propIter.first, *prop);
             }
         }
     }

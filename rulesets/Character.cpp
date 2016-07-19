@@ -154,6 +154,8 @@ void Character::metabolise(OpVector & res, double ammount)
 
             food_prop->setFlags(flag_unsent);
             food_prop->apply(this);
+            propertyApplied(FOOD, *food_prop);
+
         }
     }
 
@@ -171,6 +173,7 @@ void Character::metabolise(OpVector & res, double ammount)
                 mass = std::min(mass, maxmass_attr.Float());
             }
             mass_prop->apply(this);
+            propertyApplied(MASS, *mass_prop);
         }
     } else {
         // If status is relatively is not very high, then energy is burned
@@ -189,7 +192,8 @@ void Character::metabolise(OpVector & res, double ammount)
                 mass -= weight_used;
                 mass_prop->setFlags(flag_unsent);
                 mass_prop->apply(this);
-            }
+                propertyApplied(MASS, *mass_prop);
+           }
         }
     }
     // FIXME Stamina property?
@@ -203,6 +207,7 @@ void Character::metabolise(OpVector & res, double ammount)
                 stamina = 1.f;
                 stamina_prop->setFlags(flag_unsent);
                 stamina_prop->apply(this);
+                propertyApplied(STAMINA, *stamina_prop);
             }
         }
     }

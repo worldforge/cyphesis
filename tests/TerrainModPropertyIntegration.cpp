@@ -121,11 +121,13 @@ void TerrainModPropertyintegration::setup()
     m_terrainProperty->install(m_world, "terrain");
     m_world->setProperty("terrain", m_terrainProperty);
     m_terrainProperty->apply(m_world);
+    m_world->propertyApplied("terrain", *m_terrainProperty);
 
     m_property = terrainmod_property_factory.newProperty();
     m_property->install(m_entity, "terrainmod");
     m_entity->setProperty("terrainmod", m_property);
     m_property->apply(m_entity);
+    m_entity->propertyApplied("terrainmod", *m_property);
 }
 
 void TerrainModPropertyintegration::teardown()

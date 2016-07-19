@@ -381,6 +381,11 @@ class LocatedEntity : public Router {
     /// represents, not the destruction of this object.
     sigc::signal<void> destroyed;
 
+    /// @brief Signal emitted whenever a property update is applied.
+    ///
+    /// The first parameter is the name of the property, the second is the updated property.
+    sigc::signal<void, const std::string&, PropertyBase&> propertyApplied;
+
     friend class LocatedEntitytest;
 };
 

@@ -144,6 +144,7 @@ PropertyBase * Entity::setAttr(const std::string & name, const Element & attr)
     prop->set(attr);
     // Allow the value to take effect.
     prop->apply(this);
+    propertyApplied(name, *prop);
     // Mark the Entity as unclean
     resetFlags(entity_clean);
     return prop;
@@ -180,6 +181,7 @@ PropertyBase * Entity::modProperty(const std::string & name)
             new_prop->flags() &= ~flag_class;
             m_properties[name] = new_prop;
             new_prop->apply(this);
+            propertyApplied(name, *new_prop);
             new_prop->install(this, name);
             return new_prop;
         }

@@ -106,6 +106,7 @@ void PropertyCoverage::basicCoverage()
     for (; I != Iend; ++I) {
         m_prop->set(*I);
         m_prop->apply(m_ent);
+        m_ent->propertyApplied("test_prop", *m_prop);
     }
 
     MapType map;
