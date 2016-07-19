@@ -158,6 +158,10 @@ CorePropertyManager::CorePropertyManager()
     installProperty<ModeSpecProperty>("mode-planted", "map");
     installProperty<ForcesProperty>("map");
     installProperty<PropelProperty>();
+    /**
+     * Friction is used by the physics system. 0 is no friction, 1 is full friction.
+     */
+    installProperty<Property<float> >("friction", "float");
 
 }
 

@@ -606,6 +606,12 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     btQuaternion orientation = entity.m_location.m_orientation.isValid() ? Convert::toBullet(entity.m_location.m_orientation) : btQuaternion(0, 0, 0, 1);
     btVector3 pos = entity.m_location.m_pos.isValid() ? Convert::toBullet(entity.m_location.m_pos) : btVector3(0, 0, 0);
     btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(mass, nullptr, entry.collisionShape, inertia);
+
+    const Property<float>* frictionProp = entity.getPropertyType<float>("friction");
+    if (frictionProp) {
+        rigidBodyCI.m_friction = frictionProp->data();
+    }
+
     //rigidBodyCI.m_friction = .0f;
 
     debug_print(
