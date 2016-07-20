@@ -95,6 +95,19 @@ bool fuzzyEquals(const WFMath::Vector<3>& a, const WFMath::Vector<3>& b, float e
     return fuzzyEquals(a.x(), b.x(), epsilon) && fuzzyEquals(a.y(), b.y(), epsilon) && fuzzyEquals(a.z(), b.z(), epsilon);
 }
 
+/**
+ * Mask used by all physical items. They should collide with other physical items, and with the terrain.
+ */
+int COLLISION_MASK_PHYSICAL = 1;
+/**
+ * Mask used by the terrain. It's static.
+ */
+int COLLISION_MASK_NON_PHYSICAL = 2;
+/**
+ * Mask used by all non-physical items. These should only collide with the terrain.
+ */
+int COLLISION_MASK_TERRAIN = 4;
+
 class PhysicalDomain::PhysicalMotionState: public btMotionState
 {
     public:
@@ -155,8 +168,12 @@ class PhysicalDomain::PhysicalMotionState: public btMotionState
 //                    "setWorldTransform: "<< m_entity.describeEntity() << " (" << centerOfMassWorldTrans.getOrigin().x() << "," << centerOfMassWorldTrans.getOrigin().y() << "," << centerOfMassWorldTrans.getOrigin().z() << ")");
 
             btTransform newTransform = m_rigidBody.getCenterOfMassTransform() * m_centerOfMassOffset;
+
             m_entity.m_location.m_pos = Convert::toWF<WFMath::Point<3>>(newTransform.getOrigin());
             m_entity.m_location.m_orientation = Convert::toWF(newTransform.getRotation());
+
+            m_entity.resetFlags(entity_pos_clean | entity_orient_clean);
+            m_entity.setFlags(entity_dirty_location);
 
             TransformsProperty* transProp = m_entity.modPropertyClassFixed<TransformsProperty>();
 
@@ -340,7 +357,8 @@ void PhysicalDomain::buildTerrainPage(Mercator::Segment& segment, float friction
     segmentCI.m_friction = friction;
     btRigidBody* segmentBody = new btRigidBody(segmentCI);
 
-    m_dynamicsWorld->addRigidBody(segmentBody);
+    m_dynamicsWorld->addRigidBody(segmentBody, COLLISION_MASK_NON_PHYSICAL | COLLISION_MASK_PHYSICAL | COLLISION_MASK_TERRAIN,
+            COLLISION_MASK_NON_PHYSICAL | COLLISION_MASK_PHYSICAL | COLLISION_MASK_TERRAIN);
 
     terrainEntry.rigidBody = segmentBody;
 
@@ -350,24 +368,25 @@ void PhysicalDomain::createDomainBorders()
 {
     auto& bbox = m_entity.m_location.bBox();
     if (bbox.isValid()) {
-//We'll now place six planes representing the bounding box.
+        //We'll now place six planes representing the bounding box.
 
         m_borderPlanes.reserve(6);
-        auto createPlane = [&](const btVector3& normal, const btVector3& translate) {
-            btStaticPlaneShape *plane = new btStaticPlaneShape(normal, 0);
-            btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(btQuaternion::getIdentity(), translate));
-            btRigidBody* planeBody = new btRigidBody(btRigidBody::btRigidBodyConstructionInfo(0, motionState, plane));
-            m_dynamicsWorld->addRigidBody(planeBody);
-            m_borderPlanes.push_back(planeBody);
-        };
+        auto createPlane =
+                [&](const btVector3& normal, const btVector3& translate) {
+                    btStaticPlaneShape *plane = new btStaticPlaneShape(normal, 0);
+                    btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(btQuaternion::getIdentity(), translate));
+                    btRigidBody* planeBody = new btRigidBody(btRigidBody::btRigidBodyConstructionInfo(0, motionState, plane));
+                    m_dynamicsWorld->addRigidBody(planeBody, COLLISION_MASK_NON_PHYSICAL | COLLISION_MASK_PHYSICAL | COLLISION_MASK_TERRAIN, COLLISION_MASK_NON_PHYSICAL | COLLISION_MASK_PHYSICAL | COLLISION_MASK_TERRAIN);
+                    m_borderPlanes.push_back(planeBody);
+                };
 
-//Bottom plane
+        //Bottom plane
         createPlane(btVector3(0, 1, 0), btVector3(0, bbox.lowerBound(2), 0));
 
-//Top plane
+        //Top plane
         createPlane(btVector3(0, -1, 0), btVector3(0, bbox.upperBound(2), 0));
 
-//Crate surrounding planes
+        //Crate surrounding planes
         createPlane(btVector3(1, 0, 0), btVector3(bbox.lowerBound(0), 0, 0));
         createPlane(btVector3(-1, 0, 0), btVector3(bbox.upperBound(0), 0, 0));
         createPlane(btVector3(0, 0, 1), btVector3(0, 0, bbox.lowerBound(1)));
@@ -595,6 +614,8 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         return;
     }
 
+    entity.m_location.isSolid();
+
     WFMath::Vector<3> size;
     WFMath::AxisBox<3> bbox = entity.m_location.bBox();
 
@@ -606,12 +627,23 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     BulletEntry* entry = new BulletEntry();
     entry->entity = &entity;
 
+    btVector3 angularFactor(1, 1, 1);
+    short collisionMask = COLLISION_MASK_PHYSICAL | COLLISION_MASK_TERRAIN;
+    short collisionGroup = COLLISION_MASK_PHYSICAL;
+
+    //Non solid objects should collide with the terrain only.
+    if (!entity.m_location.isSolid()) {
+        collisionMask = COLLISION_MASK_TERRAIN;
+        collisionGroup = COLLISION_MASK_NON_PHYSICAL;
+    }
+
     //TODO: Use properties for geometry instead.
     if (entity.getType()->isTypeOf("mobile") || entity.getType()->isTypeOf("creator")) {
         float radius = (bbox.highCorner().x() - bbox.lowCorner().x()) * 0.5f;
         //subtract the radius times 2 from the height
         float height = bbox.highCorner().z() - bbox.lowCorner().z() - (radius * 2.0f);
         entry->collisionShape = new btCapsuleShape(radius, height);
+        angularFactor = btVector3(0, 0, 0);
     } else {
         if (bbox.isValid()) {
             size = bbox.highCorner() - bbox.lowCorner();
@@ -658,16 +690,14 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     entry->rigidBody->setMotionState(
             new PhysicalMotionState(m_currentTickSize, *entry->rigidBody, entity, *this, btTransform(orientation, pos),
                     btTransform(btQuaternion::getIdentity(), centerOfMassOffset)));
-    entry->rigidBody->setAngularFactor(btVector3(0, 0, 0)); //TODO: only apply for characters
+    entry->rigidBody->setAngularFactor(angularFactor);
 
     const PropelProperty* propelProp = entity.getPropertyClassFixed<PropelProperty>();
     if (propelProp && propelProp->data().isValid()) {
         entry->rigidBody->setLinearVelocity(Convert::toBullet(propelProp->data()));
     }
 
-    //entry->rigidBody->setLinearVelocity(btVector3(100, 0, 0));
-
-    m_dynamicsWorld->addRigidBody(entry->rigidBody);
+    m_dynamicsWorld->addRigidBody(entry->rigidBody, collisionGroup, collisionMask);
 
     //Should all entities be active when added?
     entry->rigidBody->activate();
@@ -703,6 +733,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
     if (name == "friction") {
         Property<float>* frictionProp = static_cast<Property<float>*>(&prop);
         bulletEntry->rigidBody->setFriction(frictionProp->data());
+        bulletEntry->rigidBody->activate();
         return;
     }
 }
@@ -713,6 +744,7 @@ void PhysicalDomain::entityPropertyApplied(const std::string& name, PropertyBase
         Property<float>* frictionProp = static_cast<Property<float>*>(&prop);
         for (auto& entry : m_terrainSegments) {
             entry.second.rigidBody->setFriction(frictionProp->data());
+            entry.second.rigidBody->activate();
         }
         return;
     }
