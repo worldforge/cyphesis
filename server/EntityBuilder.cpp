@@ -68,17 +68,27 @@ EntityBuilder * EntityBuilder::m_instance = NULL;
 
 EntityBuilder::EntityBuilder()
 {
+    // The property manager instance installs itself at construction time.
+    new CorePropertyManager();
+
     installBaseFactory("world", "game_entity", new EntityFactory<World>());
     EntityFactory<Thing> * tft = new EntityFactory<Thing>();
     installBaseFactory("thing", "game_entity", tft);
     installBaseFactory("character", "thing", new EntityFactory<Character>());
-    installBaseFactory("creator", "character", new EntityFactory<Creator>());
-    installBaseFactory("plant", "thing", new EntityFactory<Plant>());
+    auto creatorFactory = new EntityFactory<Creator>();
+    creatorFactory->m_attributes["transient"] = -1;
+    creatorFactory->m_attributes["solid"] = 0;
+    installBaseFactory("creator", "character", creatorFactory);
+    creatorFactory->addProperties();
+    auto plantFactory = new EntityFactory<Plant>();
+    plantFactory->m_attributes["friction"] = 1.0f;
+    plantFactory->m_attributes["mode"] = "planted";
+    installBaseFactory("plant", "thing", plantFactory);
+    plantFactory->addProperties();
+
     installBaseFactory("stackable", "thing", new EntityFactory<Stackable>());
     installBaseFactory("archetype", "root_entity", new ArchetypeFactory());
 
-    // The property manager instance installs itself at construction time.
-    new CorePropertyManager();
 }
 
 EntityBuilder::~EntityBuilder()
