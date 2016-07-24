@@ -85,6 +85,9 @@ void Location::addToMessage(MapType & omap) const
     if (bBox().isValid()) {
         omap["bbox"] = bBox().toAtlas();
     }
+    if (m_angularVelocity.isValid()) {
+        omap["angular"] = m_angularVelocity.toAtlas();
+    }
 }
 
 void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
@@ -103,6 +106,9 @@ void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
     }
     if (bBox().isValid()) {
         ent->setAttr("bbox", bBox().toAtlas());
+    }
+    if (m_angularVelocity.isValid()) {
+        ent->setAttr("angular", m_angularVelocity.toAtlas());
     }
 }
 
@@ -128,6 +134,17 @@ int Location::readFromMessage(const MapType & msg)
                 log(ERROR, "Malformed ORIENTATION data");
             }
         }
+        I = msg.find("angular");
+        if (I != Iend) {
+            const Element & angular = I->second;
+            if (angular.isList() && angular.List().size() == 3) {
+                m_angularVelocity.fromAtlas(angular);
+            } else {
+                log(ERROR, "Malformed angular velocity data");
+            }
+        }
+
+
     }
     catch (Atlas::Message::WrongTypeException&) {
         log(ERROR, "Location::readFromMessage: Bad location data");
@@ -146,12 +163,19 @@ int Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent)
         if (ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
             fromStdVector(m_velocity, ent->getVelocity());
         }
-        Element orientation;
-        if (ent->copyAttr("orientation", orientation) == 0) {
-            if (orientation.isList() && orientation.List().size() == 4) {
-                m_orientation.fromAtlas(orientation);
+        Element element;
+        if (ent->copyAttr("orientation", element) == 0) {
+            if (element.isList() && element.List().size() == 4) {
+                m_orientation.fromAtlas(element);
             } else {
-                log(ERROR, "Malformed ORIENTATION data");
+                log(ERROR, "Malformed ORIENTATION data.");
+            }
+        }
+        if (ent->copyAttr("angular", element) == 0) {
+            if (element.isList() && element.List().size() == 3 && element.List()[0].isNum() && element.List()[1].isNum() && element.List()[2].isNum()) {
+                m_angularVelocity = WFMath::Vector<3>(element.List()[0].asNum(), element.List()[1].asNum(), element.List()[2].asNum());
+            } else {
+                log(ERROR, "Malformed angular velocity data.");
             }
         }
     }
