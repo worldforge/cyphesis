@@ -176,12 +176,12 @@ LocatedEntity * WorldRouter::addEntity(LocatedEntity * ent)
     if (ent->m_location.m_loc) {
         Domain* movementDomain = ent->m_location.m_loc->getMovementDomain();
         if (movementDomain) {
-            float height = movementDomain->
-                  constrainHeight(*ent, ent->m_location.m_loc,
-                                  ent->m_location.pos(),
-                                  mode);
-            transProp->getTranslate().z() = height;
-            transProp->apply(ent);
+//            float height = movementDomain->
+//                  constrainHeight(*ent, ent->m_location.m_loc,
+//                                  ent->m_location.pos(),
+//                                  mode);
+//            transProp->getTranslate().z() = height;
+//            transProp->apply(ent);
             movementDomain->addEntity(*ent);
         }
     }

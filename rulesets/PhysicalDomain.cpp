@@ -171,6 +171,7 @@ class PhysicalDomain::PhysicalMotionState: public btMotionState
 
             m_entity.m_location.m_pos = Convert::toWF<WFMath::Point<3>>(newTransform.getOrigin());
             m_entity.m_location.m_orientation = Convert::toWF(newTransform.getRotation());
+            m_entity.m_location.m_angularVelocity = Convert::toWF<WFMath::Vector<3>>(m_rigidBody.getAngularVelocity());
 
             m_entity.resetFlags(entity_pos_clean | entity_orient_clean);
             m_entity.setFlags(entity_dirty_location);
@@ -183,10 +184,16 @@ class PhysicalDomain::PhysicalMotionState: public btMotionState
 
             Location old_loc = m_entity.m_location;
 
-            //debug_print("delta: " << delta);
-            WFMath::Vector<3> wfBodyVelocity = Convert::toWF<WFMath::Vector<3>>(m_rigidBody.getLinearVelocity());
+            const btVector3& linearVel = m_rigidBody.getLinearVelocity();
+            WFMath::Vector<3> wfBodyVelocity = Convert::toWF<WFMath::Vector<3>>(linearVel);
+            debug_print("velocity: " << wfBodyVelocity);
+            //If the magnitude is small enough, consider the velocity to be zero.
+            if (wfBodyVelocity.sqrMag() < 0.001f) {
+                wfBodyVelocity.zero();
+            }
+
             bool hadValidVelocity = m_entity.m_location.m_velocity.isValid();
-            bool hadZeroVelocity = fuzzyEquals(m_entity.m_location.m_velocity, WFMath::Vector<3>::ZERO(), 0.001f);
+            bool hadZeroVelocity = m_entity.m_location.m_velocity.isEqualTo(WFMath::Vector<3>::ZERO());
             bool xChange = fuzzyEquals(wfBodyVelocity.x(), m_entity.m_location.m_velocity.x(), 0.01f);
             bool yChange = fuzzyEquals(wfBodyVelocity.y(), m_entity.m_location.m_velocity.y(), 0.01f);
             bool zChange = fuzzyEquals(wfBodyVelocity.z(), m_entity.m_location.m_velocity.z(), 0.01f);
@@ -203,28 +210,21 @@ class PhysicalDomain::PhysicalMotionState: public btMotionState
                     debug_print("Velocity changed" << wfBodyVelocity);
 
                     sendMoveSight(wfBodyVelocity, old_loc);
-                } else if (fuzzyEquals(wfBodyVelocity, WFMath::Vector<3>::ZERO(), 0.01f) && !hadZeroVelocity) {
+                } else if (wfBodyVelocity.isEqualTo(WFMath::Vector<3>::ZERO()) && !hadZeroVelocity) {
                     debug_print("Old or new velocity zero " << wfBodyVelocity);
 
                     sendMoveSight(wfBodyVelocity, old_loc);
                 }
             }
-//
-//                if (!hadValidVelocity || xChange || yChange || zChange || (wfBodyVelocity.isEqualTo(WFMath::Vector<3>::ZERO(), 0.01f) && !hadZeroVelocity)) {
-//                    debug_print("Change direction " << wfBodyVelocity);
-//
-//                    sendMoveSight(wfBodyVelocity, old_loc);
-//                }
         }
-
 };
 
 PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
         Domain(entity),
-//default config for now
+        //default config for now
         m_collisionConfiguration(new btDefaultCollisionConfiguration()), m_dispatcher(new btCollisionDispatcher(m_collisionConfiguration)), m_constraintSolver(
                 new btSequentialImpulseConstraintSolver()),
-//Use a dynamic broadphase; this might be worth revisiting for optimizations
+        //Use a dynamic broadphase; this might be worth revisiting for optimizations
         m_broadphase(new btDbvtBroadphase()), m_dynamicsWorld(new btDiscreteDynamicsWorld(m_dispatcher, m_broadphase, m_constraintSolver, m_collisionConfiguration)), m_ticksPerSecond(
                 15), m_currentTickSize(0)
 {
@@ -394,39 +394,39 @@ void PhysicalDomain::createDomainBorders()
     }
 }
 
-float PhysicalDomain::constrainHeight(LocatedEntity& entity, LocatedEntity * parent, const Point3D & pos, const std::string & mode)
-{
-    assert(parent != 0);
-    if (mode == "fixed") {
-        return pos.z();
-    }
-    const TerrainProperty * tp = parent->getPropertyClass<TerrainProperty>("terrain");
-    if (tp) {
-        if (mode == "floating") {
-            return 0.f;
-        }
-        float h = pos.z();
-        Vector3D normal;
-        tp->getHeightAndNormal(pos.x(), pos.y(), h, normal);
-        // FIXME Use a virtual movement_domain function to get the constraints
-
-        debug(std::cout << "Fix height " << pos.z() << " to " << h << std::endl << std::flush
-        ;);
-        return h + 10;
-    } else if (parent->m_location.m_loc != 0) {
-        static const Quaternion identity(Quaternion().identity());
-        const Point3D & ppos = parent->m_location.pos();
-        debug(std::cout << "parent " << parent->getId() << " of type " << parent->getType() << " pos " << ppos.z() << " my pos " << pos.z() << std::endl << std::flush
-        ;);
-        float h;
-        const Quaternion & parent_orientation = parent->m_location.orientation().isValid() ? parent->m_location.orientation() : identity;
-        h = constrainHeight(entity, parent->m_location.m_loc, pos.toParentCoords(parent->m_location.pos(), parent_orientation), mode) - ppos.z();
-        debug(std::cout << "Correcting height from " << pos.z() << " to " << h << std::endl << std::flush
-        ;);
-        return h;
-    }
-    return pos.z();
-}
+//float PhysicalDomain::constrainHeight(LocatedEntity& entity, LocatedEntity * parent, const Point3D & pos, const std::string & mode)
+//{
+//    assert(parent != 0);
+//    if (mode == "fixed") {
+//        return pos.z();
+//    }
+//    const TerrainProperty * tp = parent->getPropertyClass<TerrainProperty>("terrain");
+//    if (tp) {
+//        if (mode == "floating") {
+//            return 0.f;
+//        }
+//        float h = pos.z();
+//        Vector3D normal;
+//        tp->getHeightAndNormal(pos.x(), pos.y(), h, normal);
+//        // FIXME Use a virtual movement_domain function to get the constraints
+//
+//        debug(std::cout << "Fix height " << pos.z() << " to " << h << std::endl << std::flush
+//        ;);
+//        return h;
+//    } else if (parent->m_location.m_loc != 0) {
+//        static const Quaternion identity(Quaternion().identity());
+//        const Point3D & ppos = parent->m_location.pos();
+//        debug(std::cout << "parent " << parent->getId() << " of type " << parent->getType() << " pos " << ppos.z() << " my pos " << pos.z() << std::endl << std::flush
+//        ;);
+//        float h;
+//        const Quaternion & parent_orientation = parent->m_location.orientation().isValid() ? parent->m_location.orientation() : identity;
+//        h = constrainHeight(entity, parent->m_location.m_loc, pos.toParentCoords(parent->m_location.pos(), parent_orientation), mode) - ppos.z();
+//        debug(std::cout << "Correcting height from " << pos.z() << " to " << h << std::endl << std::flush
+//        ;);
+//        return h;
+//    }
+//    return pos.z();
+//}
 
 bool PhysicalDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const
 {
@@ -610,13 +610,10 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         mass = massProp->data();
     }
 
-    if (mass == 0) {
-        return;
-    }
+//    if (mass == 0) {
+//        return;
+//    }
 
-    entity.m_location.isSolid();
-
-    WFMath::Vector<3> size;
     WFMath::AxisBox<3> bbox = entity.m_location.bBox();
 
     //Handle the special case of the entity being a "creator".
@@ -645,6 +642,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         entry->collisionShape = new btCapsuleShape(radius, height);
         angularFactor = btVector3(0, 0, 0);
     } else {
+        WFMath::Vector<3> size;
         if (bbox.isValid()) {
             size = bbox.highCorner() - bbox.lowCorner();
             size *= 0.5;
@@ -661,12 +659,38 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     btVector3 inertia;
     entry->collisionShape->calculateLocalInertia(mass, inertia);
 
+    std::string mode;
     auto modeProp = entity.getPropertyClassFixed<ModeProperty>();
     if (modeProp) {
-        if (modeProp->data() == "fixed" || modeProp->data() == "planted") {
-            //Zero mass makes the rigid body static
-            mass = .0f;
-        }
+        mode = modeProp->data();
+    }
+
+    auto adjustHeightFn = [&]() {
+        const TerrainProperty * tp = m_entity.getPropertyClass<TerrainProperty>("terrain");
+        if (tp) {
+            TransformsProperty* transProp = entity.modPropertyClassFixed<TransformsProperty>();
+            const WFMath::Point<3>& pos = entity.m_location.pos();
+
+            float h = pos.z();
+            Vector3D normal;
+            tp->getHeightAndNormal(pos.x(), pos.y(), h, normal);
+            transProp->getTranslate().z() = h;
+            transProp->apply(&entity);
+        }};
+
+    if (mode == "") {
+        adjustHeightFn();
+    } else if (mode == "fixed") {
+        //"fixed" mode means that the entity stays in place, always
+        //Zero mass makes the rigid body static
+        mass = .0f;
+    } else if (mode == "planted") {
+        //"planted" mode means it's planted in the ground
+
+        //Zero mass makes the rigid body static
+        mass = .0f;
+
+        adjustHeightFn();
     }
 
     //"Center of mass offset" is the inverse of the center of the object in relation to origo.

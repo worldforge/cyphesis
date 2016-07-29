@@ -33,14 +33,6 @@ VoidDomain::~VoidDomain()
 {
 }
 
-float VoidDomain::constrainHeight(LocatedEntity &, LocatedEntity *,
-                              const Point3D &,
-                              const std::string &)
-{
-    //Nothing can move
-    return 0.0f;
-}
-
 double VoidDomain::tick(double t)
 {
     return .0;

@@ -31,9 +31,6 @@ class InventoryDomain : public Domain
         InventoryDomain(LocatedEntity& entity);
         virtual ~InventoryDomain();
 
-        virtual float constrainHeight(LocatedEntity& entity, LocatedEntity *, const Point3D &,
-                                      const std::string &);
-
         virtual double tick(double t);
 
 

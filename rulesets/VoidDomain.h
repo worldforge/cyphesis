@@ -29,9 +29,6 @@ class VoidDomain : public Domain
         VoidDomain(LocatedEntity& entity);
         virtual ~VoidDomain();
 
-        virtual float constrainHeight(LocatedEntity &, LocatedEntity *, const Point3D &,
-                const std::string &);
-
         virtual double tick(double t);
 
         virtual bool isEntityVisibleFor(const LocatedEntity& observingEntity,

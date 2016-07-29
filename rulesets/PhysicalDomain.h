@@ -55,8 +55,6 @@ class PhysicalDomain: public Domain
         PhysicalDomain(LocatedEntity& entity);
         virtual ~PhysicalDomain();
 
-        virtual float constrainHeight(LocatedEntity& entity, LocatedEntity *, const Point3D &, const std::string &);
-
         virtual double tick(double t);
 
         virtual bool isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const;

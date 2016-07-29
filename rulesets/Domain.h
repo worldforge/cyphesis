@@ -60,9 +60,6 @@ class Domain {
 
     virtual ~Domain();
 
-    virtual float constrainHeight(LocatedEntity& entity, LocatedEntity *, const Point3D &,
-                                  const std::string &) = 0;
-
     virtual double tick(double t) = 0;
 
     /**
