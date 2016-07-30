@@ -73,6 +73,7 @@ EntityBuilder::EntityBuilder()
 
     installBaseFactory("world", "game_entity", new EntityFactory<World>());
     EntityFactory<Thing> * tft = new EntityFactory<Thing>();
+    tft->m_attributes["mode"] = "planted";
     installBaseFactory("thing", "game_entity", tft);
     installBaseFactory("character", "thing", new EntityFactory<Character>());
     auto creatorFactory = new EntityFactory<Creator>();
