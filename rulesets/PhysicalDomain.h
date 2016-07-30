@@ -121,11 +121,6 @@ class PhysicalDomain: public Domain
          */
         std::vector<btRigidBody*> m_borderPlanes;
 
-        float m_currentTickSize;
-
-        //btCollisionShape* m_groundCollisionShape;
-        //btRigidBody* m_groundBody;
-
         /**
          * @brief Calculates visibility changes for the moved entity, processing the children of the "parent" parameter.
          * @param appear A list of appear ops, to be filled.

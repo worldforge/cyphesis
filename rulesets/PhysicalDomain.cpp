@@ -116,18 +116,17 @@ class PhysicalDomain::PhysicalMotionState: public btMotionState
         PhysicalDomain& m_domain;
         btTransform m_worldTrans;
         btTransform m_centerOfMassOffset;
-        const float& m_currentTickSize;
 
-        PhysicalMotionState(const float& currentTickSize, btRigidBody& rigidBody, LocatedEntity& entity, PhysicalDomain& domain, const btTransform& startTrans,
+        PhysicalMotionState(btRigidBody& rigidBody, LocatedEntity& entity, PhysicalDomain& domain, const btTransform& startTrans,
                 const btTransform& centerOfMassOffset = btTransform::getIdentity()) :
-                m_rigidBody(rigidBody), m_entity(entity), m_domain(domain), m_worldTrans(startTrans), m_centerOfMassOffset(centerOfMassOffset), m_currentTickSize(currentTickSize)
+                m_rigidBody(rigidBody), m_entity(entity), m_domain(domain), m_worldTrans(startTrans), m_centerOfMassOffset(centerOfMassOffset)
 
         {
         }
 
         void sendMoveSight(const WFMath::Vector<3>& wfBodyVelocity, const Location& old_loc)
         {
-            debug_print("new velocity: " << wfBodyVelocity << " " << wfBodyVelocity.mag() << " ticksize: " << m_currentTickSize);
+            debug_print("new velocity: " << wfBodyVelocity << " " << wfBodyVelocity.mag());
             Move m;
             Anonymous move_arg;
             move_arg->setId(m_entity.getId());
@@ -226,7 +225,7 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
                 new btSequentialImpulseConstraintSolver()),
         //Use a dynamic broadphase; this might be worth revisiting for optimizations
         m_broadphase(new btDbvtBroadphase()), m_dynamicsWorld(new btDiscreteDynamicsWorld(m_dispatcher, m_broadphase, m_constraintSolver, m_collisionConfiguration)), m_ticksPerSecond(
-                15), m_currentTickSize(0)
+                15)
 {
 
     createDomainBorders();
@@ -709,7 +708,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
 
     entry->rigidBody = new btRigidBody(rigidBodyCI);
     entry->rigidBody->setMotionState(
-            new PhysicalMotionState(m_currentTickSize, *entry->rigidBody, entity, *this, btTransform(orientation, pos),
+            new PhysicalMotionState(*entry->rigidBody, entity, *this, btTransform(orientation, pos),
                     btTransform(btQuaternion::getIdentity(), centerOfMassOffset)));
     entry->rigidBody->setAngularFactor(angularFactor);
 
@@ -883,10 +882,10 @@ double PhysicalDomain::tick(double timeNow)
         m_lastTickTime = timeNow;
     }
 
-    m_currentTickSize = timeNow - m_lastTickTime;
+    float currentTickSize = timeNow - m_lastTickTime;
     m_lastTickTime = timeNow;
 
-    m_dynamicsWorld->stepSimulation(m_currentTickSize, 10);
+    m_dynamicsWorld->stepSimulation(currentTickSize, 10);
 
     return timeNow + (1.0 / m_ticksPerSecond);
 }
