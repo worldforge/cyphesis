@@ -173,6 +173,9 @@ class PhysicalDomain: public Domain
          */
         void entityPropertyApplied(const std::string& name, PropertyBase& prop);
 
+        float getMassForEntity(const LocatedEntity& entity) const;
+
+
 };
 
 #endif /* PHYSICALDOMAIN_H_ */

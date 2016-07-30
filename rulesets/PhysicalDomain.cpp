@@ -595,10 +595,8 @@ float PhysicalDomain::checkCollision(LocatedEntity& entity, CollisionData& colli
     return 0;
 }
 
-void PhysicalDomain::addEntity(LocatedEntity& entity)
+float PhysicalDomain::getMassForEntity(const LocatedEntity& entity) const
 {
-    assert(m_entries.find(entity.getIntId()) == m_entries.end());
-
     float mass = 0;
 
     if (entity.getType()->isTypeOf("creator")) {
@@ -609,10 +607,14 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     if (massProp) {
         mass = massProp->data();
     }
+    return mass;
+}
 
-//    if (mass == 0) {
-//        return;
-//    }
+void PhysicalDomain::addEntity(LocatedEntity& entity)
+{
+    assert(m_entries.find(entity.getIntId()) == m_entries.end());
+
+    float mass = getMassForEntity(entity);
 
     WFMath::AxisBox<3> bbox = entity.m_location.bBox();
 
@@ -718,8 +720,10 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
 
     m_dynamicsWorld->addRigidBody(entry->rigidBody, collisionGroup, collisionMask);
 
-    //Should all entities be active when added?
-    entry->rigidBody->activate();
+    if (mass != 0) {
+        //Should all entities be active when added?
+        entry->rigidBody->activate();
+    }
 
     entry->propertyUpdatedConnection = entity.propertyApplied.connect(sigc::bind(sigc::mem_fun(this, &PhysicalDomain::childEntityPropertyApplied), entry));
 
@@ -753,6 +757,60 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
         Property<float>* frictionProp = static_cast<Property<float>*>(&prop);
         bulletEntry->rigidBody->setFriction(frictionProp->data());
         bulletEntry->rigidBody->activate();
+        return;
+    } else if (name == "mode") {
+        LocatedEntity& entity = *bulletEntry->entity;
+
+        ModeProperty* modeProp = static_cast<ModeProperty*>(&prop);
+
+        const std::string& mode = modeProp->data();
+
+        if (mode != "fixed") {
+            const TerrainProperty * tp = m_entity.getPropertyClass<TerrainProperty>("terrain");
+            if (tp) {
+                TransformsProperty* transProp = entity.modPropertyClassFixed<TransformsProperty>();
+                const WFMath::Point<3>& wfPos = entity.m_location.pos();
+
+                float h = wfPos.z();
+                Vector3D normal;
+                tp->getHeightAndNormal(wfPos.x(), wfPos.y(), h, normal);
+                transProp->getTranslate().z() = h;
+                transProp->apply(&entity);
+
+                btQuaternion orientation = entity.m_location.m_orientation.isValid() ? Convert::toBullet(entity.m_location.m_orientation) : btQuaternion::getIdentity();
+                btVector3 pos = wfPos.isValid() ? Convert::toBullet(wfPos) : btVector3(0, 0, 0);
+
+                //"Center of mass offset" is the inverse of the center of the object in relation to origo.
+                btVector3 centerOfMassOffset = -Convert::toBullet(entity.m_location.m_bBox.getCenter());
+
+                bulletEntry->rigidBody->setWorldTransform(btTransform(orientation, pos - centerOfMassOffset));
+            }
+        }
+
+        //When altering mass we need to first remove and then re-add the body, for some reason.
+        m_dynamicsWorld->removeRigidBody(bulletEntry->rigidBody);
+
+        if (modeProp->data() == "planted" || modeProp->data() == "fixed") {
+            //"fixed" mode means that the entity stays in place, always
+            //"planted" mode means it's planted in the ground
+            //Zero mass makes the rigid body static
+            bulletEntry->rigidBody->setMassProps(0, btVector3(0, 0, 0));
+        } else {
+            float mass = getMassForEntity(*bulletEntry->entity);
+            btVector3 inertia;
+            bulletEntry->collisionShape->calculateLocalInertia(mass, inertia);
+
+            bulletEntry->rigidBody->setMassProps(mass, inertia);
+
+            const PropelProperty* propelProp = bulletEntry->entity->getPropertyClassFixed<PropelProperty>();
+            if (propelProp && propelProp->data().isValid()) {
+                bulletEntry->rigidBody->setLinearVelocity(Convert::toBullet(propelProp->data()));
+            }
+        }
+        m_dynamicsWorld->addRigidBody(bulletEntry->rigidBody);
+
+        bulletEntry->rigidBody->activate();
+
         return;
     }
 }
