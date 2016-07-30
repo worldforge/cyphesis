@@ -186,7 +186,7 @@ class PhysicalDomain::PhysicalMotionState: public btMotionState
 
             const btVector3& linearVel = m_rigidBody.getLinearVelocity();
             WFMath::Vector<3> wfBodyVelocity = Convert::toWF<WFMath::Vector<3>>(linearVel);
-            debug_print("velocity: " << wfBodyVelocity);
+//            debug_print("velocity: " << wfBodyVelocity);
             //If the magnitude is small enough, consider the velocity to be zero.
             if (wfBodyVelocity.sqrMag() < 0.001f) {
                 wfBodyVelocity.zero();
@@ -651,8 +651,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
             return;
         }
 
-        auto btSize = Convert::toBullet(size);
-        btSize.m_floats[2] = -btSize.z(); //Invert the z since it should be positive for the size.
+        auto btSize = Convert::toBullet(size).absolute();
         entry->collisionShape = new btBoxShape(btSize);
     }
 
@@ -678,19 +677,15 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
             transProp->apply(&entity);
         }};
 
-    if (mode == "") {
+    if (mode != "fixed") {
         adjustHeightFn();
-    } else if (mode == "fixed") {
+    }
+
+    if (mode == "planted" || mode == "fixed") {
         //"fixed" mode means that the entity stays in place, always
-        //Zero mass makes the rigid body static
-        mass = .0f;
-    } else if (mode == "planted") {
         //"planted" mode means it's planted in the ground
-
         //Zero mass makes the rigid body static
         mass = .0f;
-
-        adjustHeightFn();
     }
 
     //"Center of mass offset" is the inverse of the center of the object in relation to origo.
@@ -784,9 +779,11 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
         if (orientation.isValid() || pos.isValid()) {
             btTransform transform = entry->rigidBody->getWorldTransform();
             if (orientation.isValid()) {
+                debug_print("PhysicalDomain::new orientation " << entity.describeEntity() << " " << orientation);
                 transform.setRotation(Convert::toBullet(orientation));
             }
             if (pos.isValid()) {
+                debug_print("PhysicalDomain::new pos " << entity.describeEntity() << " " << pos);
                 transform.setOrigin(Convert::toBullet(pos));
             }
             entry->rigidBody->setWorldTransform(transform);
