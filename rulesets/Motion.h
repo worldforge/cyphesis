@@ -120,9 +120,6 @@ class Motion {
     /// its location data, and broadcasts that info
     virtual Atlas::Objects::Operation::RootOperation * genMoveOperation();
 
-    // Collision bullshit?
-    float checkCollisions(Domain& domain);
-
     // More Collision bullshit
     bool resolveCollision();
 

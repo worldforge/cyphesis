@@ -92,14 +92,6 @@ class Domain {
      */
     virtual void processDisappearanceOfEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res) = 0;
 
-    /**
-     * Checks any upcoming collisions for the supplied entity.
-     * @param entity The entity which is moving.
-     * @param collisionData Collision data, to be populated.
-     * @return Seconds until either a collision will occur, or we should check for collisions again.
-     */
-    virtual float checkCollision(LocatedEntity& entity, CollisionData& collisionData) = 0;
-
     virtual void addEntity(LocatedEntity& entity) = 0;
     virtual void removeEntity(LocatedEntity& entity) = 0;
 

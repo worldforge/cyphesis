@@ -66,17 +66,6 @@ Operation * Motion::genMoveOperation()
     return 0;
 }
 
-float Motion::checkCollisions(Domain& domain)
-{
-    Domain::CollisionData collData;
-    float collision_time = domain.checkCollision(m_entity, collData);
-    m_collEntity = collData.collEntity;
-    m_collision = collData.isCollision;
-    m_collNormal = collData.collNormal;
-    return collision_time;
-
-}
-
 bool Motion::resolveCollision()
 {
     Location & location(m_entity.m_location);

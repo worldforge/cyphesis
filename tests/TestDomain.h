@@ -59,12 +59,6 @@ class TestDomain : public Domain
         {
         }
 
-        float checkCollision(LocatedEntity& entity,
-                CollisionData& collisionData)
-        {
-            return consts::move_tick;
-        }
-
         void addEntity(LocatedEntity& entity) {
 
         }

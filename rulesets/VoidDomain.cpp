@@ -52,13 +52,6 @@ void VoidDomain::processDisappearanceOfEntity(const LocatedEntity& moved_entity,
     //Nothing can be seen
 }
 
-
-float VoidDomain::checkCollision(LocatedEntity& entity, CollisionData& collisionData)
-{
-    //Nothing can move
-    return consts::move_tick;
-}
-
 void VoidDomain::addEntity(LocatedEntity& entity) {
 
 }
