@@ -53,6 +53,7 @@
 #include "rulesets/ModeSpecProperty.h"
 #include "rulesets/ForcesProperty.h"
 #include "rulesets/PropelProperty.h"
+#include "rulesets/DensityProperty.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
@@ -158,6 +159,7 @@ CorePropertyManager::CorePropertyManager()
     installProperty<ModeSpecProperty>("mode-planted", "map");
     installProperty<ForcesProperty>("map");
     installProperty<PropelProperty>();
+    installProperty<DensityProperty>();
     /**
      * Friction is used by the physics system. 0 is no friction, 1 is full friction.
      */

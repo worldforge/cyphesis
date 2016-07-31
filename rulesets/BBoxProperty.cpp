@@ -20,6 +20,7 @@
 
 #include "LocatedEntity.h"
 #include "TransformsProperty.h"
+#include "DensityProperty.h"
 
 #include "common/log.h"
 
@@ -43,6 +44,11 @@ void BBoxProperty::apply(LocatedEntity * ent)
     auto transProperty = ent->modPropertyClassFixed<TransformsProperty>();
     if (transProperty) {
         transProperty->apply(ent);
+    }
+
+    auto densityProp = ent->getPropertyClassFixed<DensityProperty>();
+    if (densityProp) {
+        densityProp->updateMass(ent);
     }
 }
 

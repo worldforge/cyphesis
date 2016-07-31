@@ -41,12 +41,14 @@ void ModeProperty::apply(LocatedEntity *entity) {
         transformsProp->apply(entity);
         transformsProp->resetFlags(per_clean);
         transformsProp->setFlags(flag_unsent);
+        entity->propertyApplied(TransformsProperty::property_name, *transformsProp);
     } else {
         if (existed) {
             transformsProp->external().erase("mode");
             transformsProp->apply(entity);
             transformsProp->resetFlags(per_clean);
             transformsProp->setFlags(flag_unsent);
+            entity->propertyApplied(TransformsProperty::property_name, *transformsProp);
         }
     }
 }
