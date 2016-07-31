@@ -119,9 +119,10 @@ class PhysicalDomain::PhysicalMotionState: public btMotionState
 
         Location m_lastSentLocation;
 
-        PhysicalMotionState(btRigidBody& rigidBody, LocatedEntity& entity, PhysicalDomain& domain, const btTransform& startTrans,
-                const btTransform& centerOfMassOffset = btTransform::getIdentity()) :
-                m_rigidBody(rigidBody), m_entity(entity), m_domain(domain), m_worldTrans(startTrans), m_centerOfMassOffset(centerOfMassOffset), m_lastSentLocation(m_entity.m_location)
+        PhysicalMotionState(btRigidBody& rigidBody, LocatedEntity& entity, PhysicalDomain& domain, const btTransform& startTrans, const btTransform& centerOfMassOffset =
+                btTransform::getIdentity()) :
+                m_rigidBody(rigidBody), m_entity(entity), m_domain(domain), m_worldTrans(startTrans), m_centerOfMassOffset(centerOfMassOffset), m_lastSentLocation(
+                        m_entity.m_location)
 
         {
         }
@@ -193,7 +194,6 @@ class PhysicalDomain::PhysicalMotionState: public btMotionState
             transProp->getRotate() = m_entity.m_location.m_orientation;
 
             Location old_loc = m_entity.m_location;
-
 
             bool hadValidVelocity = m_lastSentLocation.m_velocity.isValid();
             bool hadZeroVelocity = m_lastSentLocation.m_velocity.isEqualTo(WFMath::Vector<3>::ZERO());
@@ -639,14 +639,9 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     entry->entity = &entity;
 
     btVector3 angularFactor(1, 1, 1);
-    short collisionMask = COLLISION_MASK_PHYSICAL | COLLISION_MASK_TERRAIN;
-    short collisionGroup = COLLISION_MASK_PHYSICAL;
-
-    //Non solid objects should collide with the terrain only.
-    if (!entity.m_location.isSolid()) {
-        collisionMask = COLLISION_MASK_TERRAIN;
-        collisionGroup = COLLISION_MASK_NON_PHYSICAL;
-    }
+    short collisionMask;
+    short collisionGroup;
+    getCollisionFlagsForEntity(entity, collisionGroup, collisionMask);
 
     //TODO: Use properties for geometry instead.
     if (entity.getType()->isTypeOf("mobile") || entity.getType()->isTypeOf("creator")) {
@@ -721,8 +716,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
 
     entry->rigidBody = new btRigidBody(rigidBodyCI);
     entry->rigidBody->setMotionState(
-            new PhysicalMotionState(*entry->rigidBody, entity, *this, btTransform(orientation, pos),
-                    btTransform(btQuaternion::getIdentity(), centerOfMassOffset)));
+            new PhysicalMotionState(*entry->rigidBody, entity, *this, btTransform(orientation, pos), btTransform(btQuaternion::getIdentity(), centerOfMassOffset)));
     entry->rigidBody->setAngularFactor(angularFactor);
 
     const PropelProperty* propelProp = entity.getPropertyClassFixed<PropelProperty>();
@@ -819,11 +813,60 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
                 bulletEntry->rigidBody->setLinearVelocity(Convert::toBullet(propelProp->data()));
             }
         }
-        m_dynamicsWorld->addRigidBody(bulletEntry->rigidBody);
+
+        short collisionMask;
+        short collisionGroup;
+        getCollisionFlagsForEntity(*bulletEntry->entity, collisionGroup, collisionMask);
+
+        m_dynamicsWorld->addRigidBody(bulletEntry->rigidBody, collisionGroup, collisionMask);
 
         bulletEntry->rigidBody->activate();
 
         return;
+    } else if (name == "solid") {
+        short collisionMask;
+        short collisionGroup;
+        getCollisionFlagsForEntity(*bulletEntry->entity, collisionGroup, collisionMask);
+        m_dynamicsWorld->removeRigidBody(bulletEntry->rigidBody);
+        m_dynamicsWorld->addRigidBody(bulletEntry->rigidBody, collisionGroup, collisionMask);
+
+        bulletEntry->rigidBody->activate();
+    } else if (name == "mass") {
+
+        ModeProperty* modeProp = bulletEntry->entity->requirePropertyClassFixed<ModeProperty>();
+
+        if (modeProp->data() == "planted" || modeProp->data() == "fixed") {
+            //"fixed" mode means that the entity stays in place, always
+            //"planted" mode means it's planted in the ground
+            //Zero mass makes the rigid body static
+        } else {
+            //When altering mass we need to first remove and then re-add the body, for some reason.
+            m_dynamicsWorld->removeRigidBody(bulletEntry->rigidBody);
+
+            short collisionMask;
+            short collisionGroup;
+            getCollisionFlagsForEntity(*bulletEntry->entity, collisionGroup, collisionMask);
+
+            float mass = getMassForEntity(*bulletEntry->entity);
+            btVector3 inertia;
+            bulletEntry->collisionShape->calculateLocalInertia(mass, inertia);
+
+            bulletEntry->rigidBody->setMassProps(mass, inertia);
+            m_dynamicsWorld->addRigidBody(bulletEntry->rigidBody, collisionGroup, collisionMask);
+        }
+
+    }
+}
+
+void PhysicalDomain::getCollisionFlagsForEntity(const LocatedEntity& entity, short& collisionGroup, short& collisionMask) const
+{
+    collisionMask = COLLISION_MASK_PHYSICAL | COLLISION_MASK_TERRAIN;
+    collisionGroup = COLLISION_MASK_PHYSICAL;
+
+    //Non solid objects should collide with the terrain only.
+    if (!entity.m_location.isSolid()) {
+        collisionMask = COLLISION_MASK_TERRAIN;
+        collisionGroup = COLLISION_MASK_NON_PHYSICAL;
     }
 }
 

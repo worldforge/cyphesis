@@ -81,7 +81,8 @@ class PhysicalDomain: public Domain
                 sigc::connection propertyUpdatedConnection;
         };
 
-        struct TerrainEntry {
+        struct TerrainEntry
+        {
                 std::array<float, 65 * 65>* data;
                 btRigidBody* rigidBody;
         };
@@ -170,6 +171,7 @@ class PhysicalDomain: public Domain
 
         float getMassForEntity(const LocatedEntity& entity) const;
 
+        void getCollisionFlagsForEntity(const LocatedEntity& entity, short& collisionGroup, short& collisionMask) const;
 
 };
 
