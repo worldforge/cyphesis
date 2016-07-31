@@ -117,24 +117,22 @@ class PhysicalDomain::PhysicalMotionState: public btMotionState
         btTransform m_worldTrans;
         btTransform m_centerOfMassOffset;
 
+        Location m_lastSentLocation;
+
         PhysicalMotionState(btRigidBody& rigidBody, LocatedEntity& entity, PhysicalDomain& domain, const btTransform& startTrans,
                 const btTransform& centerOfMassOffset = btTransform::getIdentity()) :
-                m_rigidBody(rigidBody), m_entity(entity), m_domain(domain), m_worldTrans(startTrans), m_centerOfMassOffset(centerOfMassOffset)
+                m_rigidBody(rigidBody), m_entity(entity), m_domain(domain), m_worldTrans(startTrans), m_centerOfMassOffset(centerOfMassOffset), m_lastSentLocation(m_entity.m_location)
 
         {
         }
 
-        void sendMoveSight(const WFMath::Vector<3>& wfBodyVelocity, const Location& old_loc)
+        void sendMoveSight()
         {
-            debug_print("new velocity: " << wfBodyVelocity << " " << wfBodyVelocity.mag());
+            debug_print("new velocity: " << m_entity.m_location.velocity() << " " << m_entity.m_location.velocity().mag());
             Move m;
             Anonymous move_arg;
             move_arg->setId(m_entity.getId());
             m_entity.m_location.addToEntity(move_arg);
-            if (false) {
-                move_arg->removeAttr(Atlas::Objects::Entity::POS_ATTR);
-                move_arg->removeAttrFlag(Atlas::Objects::Entity::POS_FLAG);
-            }
             m->setArgs1(move_arg);
             m->setFrom(m_entity.getId());
             m->setTo(m_entity.getId());
@@ -145,11 +143,12 @@ class PhysicalDomain::PhysicalMotionState: public btMotionState
             m_entity.sendWorld(s);
 
             std::vector<Operation> res;
-            m_domain.processVisibilityForMovedEntity(m_entity, old_loc, res);
+            m_domain.processVisibilityForMovedEntity(m_entity, m_lastSentLocation, res);
             for (auto& op : res) {
                 m_entity.sendWorld(op);
             }
             m_entity.onUpdated();
+            m_lastSentLocation = m_entity.m_location;
         }
 
         ///synchronizes world transform from user to physics
@@ -168,9 +167,21 @@ class PhysicalDomain::PhysicalMotionState: public btMotionState
 
             btTransform newTransform = m_rigidBody.getCenterOfMassTransform() * m_centerOfMassOffset;
 
+            const btVector3& linearVel = m_rigidBody.getLinearVelocity();
+            WFMath::Vector<3> wfBodyVelocity = Convert::toWF<WFMath::Vector<3>>(linearVel);
+//            debug_print("velocity: " << wfBodyVelocity);
+            //If the magnitude is small enough, consider the velocity to be zero.
+            if (wfBodyVelocity.sqrMag() < 0.001f) {
+                wfBodyVelocity.zero();
+            }
+
             m_entity.m_location.m_pos = Convert::toWF<WFMath::Point<3>>(newTransform.getOrigin());
             m_entity.m_location.m_orientation = Convert::toWF(newTransform.getRotation());
             m_entity.m_location.m_angularVelocity = Convert::toWF<WFMath::Vector<3>>(m_rigidBody.getAngularVelocity());
+            m_entity.m_location.m_velocity = wfBodyVelocity;
+
+            bool orientationChange = m_entity.m_location.m_orientation != m_lastSentLocation.m_orientation;
+            bool angularChange = m_entity.m_location.m_angularVelocity != m_lastSentLocation.m_angularVelocity;
 
             m_entity.resetFlags(entity_pos_clean | entity_orient_clean);
             m_entity.setFlags(entity_dirty_location);
@@ -183,36 +194,38 @@ class PhysicalDomain::PhysicalMotionState: public btMotionState
 
             Location old_loc = m_entity.m_location;
 
-            const btVector3& linearVel = m_rigidBody.getLinearVelocity();
-            WFMath::Vector<3> wfBodyVelocity = Convert::toWF<WFMath::Vector<3>>(linearVel);
-//            debug_print("velocity: " << wfBodyVelocity);
-            //If the magnitude is small enough, consider the velocity to be zero.
-            if (wfBodyVelocity.sqrMag() < 0.001f) {
-                wfBodyVelocity.zero();
-            }
 
-            bool hadValidVelocity = m_entity.m_location.m_velocity.isValid();
-            bool hadZeroVelocity = m_entity.m_location.m_velocity.isEqualTo(WFMath::Vector<3>::ZERO());
-            bool xChange = fuzzyEquals(wfBodyVelocity.x(), m_entity.m_location.m_velocity.x(), 0.01f);
-            bool yChange = fuzzyEquals(wfBodyVelocity.y(), m_entity.m_location.m_velocity.y(), 0.01f);
-            bool zChange = fuzzyEquals(wfBodyVelocity.z(), m_entity.m_location.m_velocity.z(), 0.01f);
-            m_entity.m_location.m_velocity = wfBodyVelocity;
+            bool hadValidVelocity = m_lastSentLocation.m_velocity.isValid();
+            bool hadZeroVelocity = m_lastSentLocation.m_velocity.isEqualTo(WFMath::Vector<3>::ZERO());
+            bool xChange = fuzzyEquals(wfBodyVelocity.x(), m_lastSentLocation.m_velocity.x(), 0.01f);
+            bool yChange = fuzzyEquals(wfBodyVelocity.y(), m_lastSentLocation.m_velocity.y(), 0.01f);
+            bool zChange = fuzzyEquals(wfBodyVelocity.z(), m_lastSentLocation.m_velocity.z(), 0.01f);
+
             if (false) {
-                sendMoveSight(wfBodyVelocity, old_loc);
+                sendMoveSight();
             } else {
                 //Send an update if either the previous velocity was invalid, or any of the velocity components have changed enough, or if either the new or the old velocity is zero.
                 if (!hadValidVelocity) {
                     debug_print("No previous valid velocity" << wfBodyVelocity);
 
-                    sendMoveSight(wfBodyVelocity, old_loc);
+                    sendMoveSight();
                 } else if (xChange || yChange || zChange) {
                     debug_print("Velocity changed" << wfBodyVelocity);
 
-                    sendMoveSight(wfBodyVelocity, old_loc);
+                    sendMoveSight();
                 } else if (wfBodyVelocity.isEqualTo(WFMath::Vector<3>::ZERO()) && !hadZeroVelocity) {
                     debug_print("Old or new velocity zero " << wfBodyVelocity);
 
-                    sendMoveSight(wfBodyVelocity, old_loc);
+                    sendMoveSight();
+                } else if (orientationChange) {
+                    debug_print("Orientation changed" << m_entity.m_location.orientation());
+
+                    sendMoveSight();
+                } else if (angularChange) {
+                    debug_print("Angular changed" << m_entity.m_location.m_angularVelocity);
+
+                    sendMoveSight();
+
                 }
             }
         }
