@@ -82,7 +82,7 @@ using Atlas::Objects::Operation::Unseen;
 
 bool fuzzyEquals(float a, float b, float epsilon)
 {
-    return std::abs(a - b) > epsilon;
+    return std::abs(a - b) < epsilon;
 }
 
 bool fuzzyEquals(const WFMath::Point<3>& a, const WFMath::Point<3>& b, float epsilon)
@@ -111,45 +111,15 @@ int COLLISION_MASK_TERRAIN = 4;
 class PhysicalDomain::PhysicalMotionState: public btMotionState
 {
     public:
-        btRigidBody& m_rigidBody;
-        LocatedEntity& m_entity;
+        BulletEntry& m_bulletEntry;
         PhysicalDomain& m_domain;
         btTransform m_worldTrans;
         btTransform m_centerOfMassOffset;
 
-        Location m_lastSentLocation;
-
-        PhysicalMotionState(btRigidBody& rigidBody, LocatedEntity& entity, PhysicalDomain& domain, const btTransform& startTrans, const btTransform& centerOfMassOffset =
-                btTransform::getIdentity()) :
-                m_rigidBody(rigidBody), m_entity(entity), m_domain(domain), m_worldTrans(startTrans), m_centerOfMassOffset(centerOfMassOffset), m_lastSentLocation(
-                        m_entity.m_location)
+        PhysicalMotionState(BulletEntry& bulletEntry, PhysicalDomain& domain, const btTransform& startTrans, const btTransform& centerOfMassOffset = btTransform::getIdentity()) :
+                m_bulletEntry(bulletEntry), m_domain(domain), m_worldTrans(startTrans), m_centerOfMassOffset(centerOfMassOffset)
 
         {
-        }
-
-        void sendMoveSight()
-        {
-            debug_print("new velocity: " << m_entity.m_location.velocity() << " " << m_entity.m_location.velocity().mag());
-            Move m;
-            Anonymous move_arg;
-            move_arg->setId(m_entity.getId());
-            m_entity.m_location.addToEntity(move_arg);
-            m->setArgs1(move_arg);
-            m->setFrom(m_entity.getId());
-            m->setTo(m_entity.getId());
-
-            Sight s;
-            s->setArgs1(m);
-
-            m_entity.sendWorld(s);
-
-            std::vector<Operation> res;
-            m_domain.processVisibilityForMovedEntity(m_entity, m_lastSentLocation, res);
-            for (auto& op : res) {
-                m_entity.sendWorld(op);
-            }
-            m_entity.onUpdated();
-            m_lastSentLocation = m_entity.m_location;
         }
 
         ///synchronizes world transform from user to physics
@@ -163,80 +133,36 @@ class PhysicalDomain::PhysicalMotionState: public btMotionState
         ///Bullet only calls the update of worldtransform for active objects
         virtual void setWorldTransform(const btTransform& /* centerOfMassWorldTrans */)
         {
+
+            LocatedEntity& entity = *m_bulletEntry.entity;
+            m_domain.m_movingEntities.insert(&m_bulletEntry);
+
 //            debug_print(
 //                    "setWorldTransform: "<< m_entity.describeEntity() << " (" << centerOfMassWorldTrans.getOrigin().x() << "," << centerOfMassWorldTrans.getOrigin().y() << "," << centerOfMassWorldTrans.getOrigin().z() << ")");
 
-            btTransform newTransform = m_rigidBody.getCenterOfMassTransform() * m_centerOfMassOffset;
+            btTransform newTransform = m_bulletEntry.rigidBody->getCenterOfMassTransform() * m_centerOfMassOffset;
 
-            const btVector3& linearVel = m_rigidBody.getLinearVelocity();
-            WFMath::Vector<3> wfBodyVelocity = Convert::toWF<WFMath::Vector<3>>(linearVel);
-//            debug_print("velocity: " << wfBodyVelocity);
+            entity.m_location.m_pos = Convert::toWF<WFMath::Point<3>>(newTransform.getOrigin());
+            entity.m_location.m_orientation = Convert::toWF(newTransform.getRotation());
+            entity.m_location.m_angularVelocity = Convert::toWF<WFMath::Vector<3>>(m_bulletEntry.rigidBody->getAngularVelocity());
+            entity.m_location.m_velocity = Convert::toWF<WFMath::Vector<3>>(m_bulletEntry.rigidBody->getLinearVelocity());
+
             //If the magnitude is small enough, consider the velocity to be zero.
-            if (wfBodyVelocity.sqrMag() < 0.001f) {
-                wfBodyVelocity.zero();
+            if (entity.m_location.m_velocity.sqrMag() < 0.001f) {
+                entity.m_location.m_velocity.zero();
             }
-
-            m_entity.m_location.m_pos = Convert::toWF<WFMath::Point<3>>(newTransform.getOrigin());
-            m_entity.m_location.m_orientation = Convert::toWF(newTransform.getRotation());
-            m_entity.m_location.m_angularVelocity = Convert::toWF<WFMath::Vector<3>>(m_rigidBody.getAngularVelocity());
-            if (m_entity.m_location.m_angularVelocity.sqrMag() < 0.001f) {
-                m_entity.m_location.m_angularVelocity.zero();
+            if (entity.m_location.m_angularVelocity.sqrMag() < 0.001f) {
+                entity.m_location.m_angularVelocity.zero();
             }
-            m_entity.m_location.m_velocity = wfBodyVelocity;
+            entity.resetFlags(entity_pos_clean | entity_orient_clean);
+            entity.setFlags(entity_dirty_location);
 
-            bool orientationChange = m_entity.m_location.m_orientation != m_lastSentLocation.m_orientation;
-            bool angularChange = m_entity.m_location.m_angularVelocity != m_lastSentLocation.m_angularVelocity;
-
-            m_entity.resetFlags(entity_pos_clean | entity_orient_clean);
-            m_entity.setFlags(entity_dirty_location);
-
-            TransformsProperty* transProp = m_entity.modPropertyClassFixed<TransformsProperty>();
+            TransformsProperty* transProp = entity.modPropertyClassFixed<TransformsProperty>();
 
             //Set here, but don't apply yet.
-            transProp->getTranslate() = WFMath::Vector<3>(m_entity.m_location.m_pos);
-            transProp->getRotate() = m_entity.m_location.m_orientation;
+            transProp->getTranslate() = WFMath::Vector<3>(entity.m_location.m_pos);
+            transProp->getRotate() = entity.m_location.m_orientation;
 
-            Location old_loc = m_entity.m_location;
-
-            bool hadValidVelocity = m_lastSentLocation.m_velocity.isValid();
-            bool hadZeroVelocity = m_lastSentLocation.m_velocity.isEqualTo(WFMath::Vector<3>::ZERO());
-            bool hadValidAngular = m_lastSentLocation.m_angularVelocity.isValid();
-            bool hadZeroAngular = m_lastSentLocation.m_angularVelocity.isEqualTo(WFMath::Vector<3>::ZERO());
-            bool xChange = fuzzyEquals(wfBodyVelocity.x(), m_lastSentLocation.m_velocity.x(), 0.01f);
-            bool yChange = fuzzyEquals(wfBodyVelocity.y(), m_lastSentLocation.m_velocity.y(), 0.01f);
-            bool zChange = fuzzyEquals(wfBodyVelocity.z(), m_lastSentLocation.m_velocity.z(), 0.01f);
-
-            if (false) {
-                sendMoveSight();
-            } else {
-                //Send an update if either the previous velocity was invalid, or any of the velocity components have changed enough, or if either the new or the old velocity is zero.
-                if (!hadValidVelocity) {
-                    debug_print("No previous valid velocity" << wfBodyVelocity);
-
-                    sendMoveSight();
-                } else if (xChange || yChange || zChange) {
-                    debug_print("Velocity changed" << wfBodyVelocity);
-
-                    sendMoveSight();
-                } else if (wfBodyVelocity.isEqualTo(WFMath::Vector<3>::ZERO()) && !hadZeroVelocity) {
-                    debug_print("Old or new velocity zero " << wfBodyVelocity);
-
-                    sendMoveSight();
-                } else if (orientationChange) {
-                    debug_print("Orientation changed" << m_entity.m_location.orientation());
-
-                    sendMoveSight();
-                } else if (angularChange) {
-                    debug_print("Angular changed" << m_entity.m_location.m_angularVelocity);
-
-                    sendMoveSight();
-                } else if (m_entity.m_location.m_angularVelocity.isEqualTo(WFMath::Vector<3>::ZERO()) && !hadZeroAngular) {
-                    debug_print("Angular changed" << m_entity.m_location.m_angularVelocity);
-
-                    sendMoveSight();
-                }
-
-            }
         }
 };
 
@@ -425,40 +351,6 @@ void PhysicalDomain::createDomainBorders()
     }
 }
 
-//float PhysicalDomain::constrainHeight(LocatedEntity& entity, LocatedEntity * parent, const Point3D & pos, const std::string & mode)
-//{
-//    assert(parent != 0);
-//    if (mode == "fixed") {
-//        return pos.z();
-//    }
-//    const TerrainProperty * tp = parent->getPropertyClass<TerrainProperty>("terrain");
-//    if (tp) {
-//        if (mode == "floating") {
-//            return 0.f;
-//        }
-//        float h = pos.z();
-//        Vector3D normal;
-//        tp->getHeightAndNormal(pos.x(), pos.y(), h, normal);
-//        // FIXME Use a virtual movement_domain function to get the constraints
-//
-//        debug(std::cout << "Fix height " << pos.z() << " to " << h << std::endl << std::flush
-//        ;);
-//        return h;
-//    } else if (parent->m_location.m_loc != 0) {
-//        static const Quaternion identity(Quaternion().identity());
-//        const Point3D & ppos = parent->m_location.pos();
-//        debug(std::cout << "parent " << parent->getId() << " of type " << parent->getType() << " pos " << ppos.z() << " my pos " << pos.z() << std::endl << std::flush
-//        ;);
-//        float h;
-//        const Quaternion & parent_orientation = parent->m_location.orientation().isValid() ? parent->m_location.orientation() : identity;
-//        h = constrainHeight(entity, parent->m_location.m_loc, pos.toParentCoords(parent->m_location.pos(), parent_orientation), mode) - ppos.z();
-//        debug(std::cout << "Correcting height from " << pos.z() << " to " << h << std::endl << std::flush
-//        ;);
-//        return h;
-//    }
-//    return pos.z();
-//}
-
 bool PhysicalDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const
 {
     if (&observedEntity == &m_entity) {
@@ -542,13 +434,13 @@ void PhysicalDomain::calculateVisibility(std::vector<Root>& appear, std::vector<
             if (could_see) {
                 // We are losing sight of that object
                 disappear.push_back(that_ent);
-                debug(std::cout << moved_entity.getId() << ": losing sight of " << other->getId() << std::endl
-                ;);
+//                debug(std::cout << moved_entity.getId() << ": losing sight of " << other->getId() << std::endl
+//                ;);
             } else /*if (can_see)*/{
                 // We are gaining sight of that object
                 appear.push_back(that_ent);
-                debug(std::cout << moved_entity.getId() << ": gaining sight of " << other->getId() << std::endl
-                ;);
+//                debug(std::cout << moved_entity.getId() << ": gaining sight of " << other->getId() << std::endl
+//                ;);
             }
             //        } else {
             //            //We've seen this entity before, and we're still seeing it. Check if there are any children that's now changing visibility.
@@ -732,8 +624,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
             "PhysicsDomain adding entity " << entity.describeEntity() << " with mass " << mass << " and inertia ("<< inertia.x() << ","<< inertia.y() << ","<< inertia.z() << ")");
 
     entry->rigidBody = new btRigidBody(rigidBodyCI);
-    entry->rigidBody->setMotionState(
-            new PhysicalMotionState(*entry->rigidBody, entity, *this, btTransform(orientation, pos), btTransform(btQuaternion::getIdentity(), centerOfMassOffset)));
+    entry->rigidBody->setMotionState(new PhysicalMotionState(*entry, *this, btTransform(orientation, pos), btTransform(btQuaternion::getIdentity(), centerOfMassOffset)));
     entry->rigidBody->setAngularFactor(angularFactor);
 
     m_dynamicsWorld->addRigidBody(entry->rigidBody, collisionGroup, collisionMask);
@@ -958,16 +849,120 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
     }
 }
 
+void PhysicalDomain::sendMoveSight(BulletEntry& entry)
+{
+    LocatedEntity& entity = *entry.entity;
+    debug_print("new velocity: " << entity.m_location.velocity() << " " << entity.m_location.velocity().mag());
+    Move m;
+    Anonymous move_arg;
+    move_arg->setId(m_entity.getId());
+    entity.m_location.addToEntity(move_arg);
+    m->setArgs1(move_arg);
+    m->setFrom(entity.getId());
+    m->setTo(entity.getId());
+
+    Sight s;
+    s->setArgs1(m);
+
+    entity.sendWorld(s);
+
+    std::vector<Operation> res;
+    processVisibilityForMovedEntity(entity, entry.lastSentLocation, res);
+    for (auto& op : res) {
+        entity.sendWorld(op);
+    }
+    entity.onUpdated();
+    entry.lastSentLocation = entity.m_location;
+}
+
+void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry)
+{
+    LocatedEntity& entity = *bulletEntry.entity;
+    const Location& lastSentLocation = bulletEntry.lastSentLocation;
+    const Location& location = entity.m_location;
+
+//    bool orientationChange = entity.m_location.m_orientation != lastSentLocation.m_orientation;
+    bool orientationChange = !location.m_orientation.isEqualTo(lastSentLocation.m_orientation, 0.1f);
+
+    bool hadValidVelocity = lastSentLocation.m_velocity.isValid();
+    bool hadZeroVelocity = lastSentLocation.m_velocity.isEqualTo(WFMath::Vector<3>::ZERO());
+    bool hadZeroAngular = lastSentLocation.m_angularVelocity.isEqualTo(WFMath::Vector<3>::ZERO());
+    bool xChange = !fuzzyEquals(location.m_velocity.x(), lastSentLocation.m_velocity.x(), 0.01f);
+    bool yChange = !fuzzyEquals(location.m_velocity.y(), lastSentLocation.m_velocity.y(), 0.01f);
+    bool zChange = !fuzzyEquals(location.m_velocity.z(), lastSentLocation.m_velocity.z(), 0.01f);
+
+    if (false) {
+        sendMoveSight(bulletEntry);
+    } else {
+        //Send an update if either the previous velocity was invalid, or any of the velocity components have changed enough, or if either the new or the old velocity is zero.
+        if (!hadValidVelocity) {
+            debug_print("No previous valid velocity " << entity.describeEntity() << " " << lastSentLocation.m_velocity);
+
+            sendMoveSight(bulletEntry);
+        } else if (xChange || yChange || zChange) {
+            debug_print("Velocity changed " << entity.describeEntity() << " " << location.m_velocity);
+
+            sendMoveSight(bulletEntry);
+        } else if (entity.m_location.m_velocity.isEqualTo(WFMath::Vector<3>::ZERO()) && !hadZeroVelocity) {
+            debug_print("Old or new velocity zero " << entity.describeEntity() << " " << location.m_velocity);
+
+            sendMoveSight(bulletEntry);
+        } else if (orientationChange) {
+            debug_print("Orientation changed " << entity.describeEntity() << " " << location.orientation());
+
+            sendMoveSight(bulletEntry);
+        } else {
+            bool angularChange = !fuzzyEquals(lastSentLocation.m_angularVelocity, location.m_angularVelocity, 0.01f);
+            if (angularChange) {
+                debug_print("Angular changed " << entity.describeEntity() << " " << location.m_angularVelocity);
+
+                sendMoveSight(bulletEntry);
+            } else if (entity.m_location.m_angularVelocity.isEqualTo(WFMath::Vector<3>::ZERO()) && !hadZeroAngular) {
+                debug_print("Angular changed " << entity.describeEntity() << " " << location.m_angularVelocity);
+
+                sendMoveSight(bulletEntry);
+            }
+        }
+    }
+
+}
+
 double PhysicalDomain::tick(double timeNow)
 {
     if (m_lastTickTime == 0) {
         m_lastTickTime = timeNow;
     }
 
+    m_movingEntities.clear();
+
     float currentTickSize = timeNow - m_lastTickTime;
     m_lastTickTime = timeNow;
 
     m_dynamicsWorld->stepSimulation(currentTickSize, 10);
+
+    //Check all entities that moved this tick.
+    for (BulletEntry* entry : m_movingEntities) {
+        //Check if the entity also moved last tick.
+        if (m_lastMovingEntities.find(entry) == m_lastMovingEntities.end()) {
+            //Didn't move before
+            sendMoveSight(*entry);
+        } else {
+            processMovedEntity(*entry);
+            //Erase from last moving entities, so we can find those that moved last tick, but not this.
+            m_lastMovingEntities.erase(entry);
+        }
+    }
+
+    for (BulletEntry* entry : m_lastMovingEntities) {
+        //Stopped moving
+        debug_print("Stopped moving " << entry->entity->describeEntity());
+        entry->entity->m_location.m_angularVelocity.zero();
+        entry->entity->m_location.m_velocity.zero();
+        processMovedEntity(*entry);
+    }
+
+    //Stash those entities that moved this tick for checking next tick.
+    std::swap(m_movingEntities, m_lastMovingEntities);
 
     return timeNow + (1.0 / m_ticksPerSecond);
 }

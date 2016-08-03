@@ -19,12 +19,14 @@
 #define PHYSICALDOMAIN_H_
 
 #include "Domain.h"
+#include "modules/Location.h"
 
 #include <sigc++/connection.h>
 
 #include <map>
 #include <unordered_map>
 #include <array>
+#include <set>
 
 namespace Mercator
 {
@@ -79,6 +81,7 @@ class PhysicalDomain: public Domain
                 btCollisionShape* collisionShape;
                 btRigidBody* rigidBody;
                 sigc::connection propertyUpdatedConnection;
+                Location lastSentLocation;
         };
 
         struct TerrainEntry
@@ -90,6 +93,9 @@ class PhysicalDomain: public Domain
         class PhysicalMotionState;
 
         std::unordered_map<int, BulletEntry*> m_entries;
+
+        std::set<BulletEntry*> m_movingEntities;
+        std::set<BulletEntry*> m_lastMovingEntities;
 
         /**
          * @brief A map of all entities that currently are self-propelling.
@@ -172,6 +178,9 @@ class PhysicalDomain: public Domain
         float getMassForEntity(const LocatedEntity& entity) const;
 
         void getCollisionFlagsForEntity(const LocatedEntity& entity, short& collisionGroup, short& collisionMask) const;
+
+        void sendMoveSight(BulletEntry& bulletEntry);
+        void processMovedEntity(BulletEntry& bulletEntry);
 
 };
 
