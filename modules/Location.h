@@ -58,7 +58,7 @@ class Location {
      */
     Vector3D m_velocity;
     /**
-     * Angular velocity of the entity, i.e. how it's being continously rotated.
+     * Angular velocity of the entity, i.e. how it's being continuously rotated.
      */
     Vector3D m_angularVelocity;
     Quaternion m_orientation;
