@@ -179,6 +179,9 @@ class PhysicalDomain::PhysicalMotionState: public btMotionState
             m_entity.m_location.m_pos = Convert::toWF<WFMath::Point<3>>(newTransform.getOrigin());
             m_entity.m_location.m_orientation = Convert::toWF(newTransform.getRotation());
             m_entity.m_location.m_angularVelocity = Convert::toWF<WFMath::Vector<3>>(m_rigidBody.getAngularVelocity());
+            if (m_entity.m_location.m_angularVelocity.sqrMag() < 0.001f) {
+                m_entity.m_location.m_angularVelocity.zero();
+            }
             m_entity.m_location.m_velocity = wfBodyVelocity;
 
             bool orientationChange = m_entity.m_location.m_orientation != m_lastSentLocation.m_orientation;
@@ -197,6 +200,8 @@ class PhysicalDomain::PhysicalMotionState: public btMotionState
 
             bool hadValidVelocity = m_lastSentLocation.m_velocity.isValid();
             bool hadZeroVelocity = m_lastSentLocation.m_velocity.isEqualTo(WFMath::Vector<3>::ZERO());
+            bool hadValidAngular = m_lastSentLocation.m_angularVelocity.isValid();
+            bool hadZeroAngular = m_lastSentLocation.m_angularVelocity.isEqualTo(WFMath::Vector<3>::ZERO());
             bool xChange = fuzzyEquals(wfBodyVelocity.x(), m_lastSentLocation.m_velocity.x(), 0.01f);
             bool yChange = fuzzyEquals(wfBodyVelocity.y(), m_lastSentLocation.m_velocity.y(), 0.01f);
             bool zChange = fuzzyEquals(wfBodyVelocity.z(), m_lastSentLocation.m_velocity.z(), 0.01f);
@@ -225,8 +230,12 @@ class PhysicalDomain::PhysicalMotionState: public btMotionState
                     debug_print("Angular changed" << m_entity.m_location.m_angularVelocity);
 
                     sendMoveSight();
+                } else if (m_entity.m_location.m_angularVelocity.isEqualTo(WFMath::Vector<3>::ZERO()) && !hadZeroAngular) {
+                    debug_print("Angular changed" << m_entity.m_location.m_angularVelocity);
 
+                    sendMoveSight();
                 }
+
             }
         }
 };
