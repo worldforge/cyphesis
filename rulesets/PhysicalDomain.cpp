@@ -247,7 +247,17 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
     auto tickCallback = [](btDynamicsWorld *world, btScalar timeStep) {
         std::map<int, std::pair<BulletEntry*, btVector3>>* propellingEntries = static_cast<std::map<int, std::pair<BulletEntry*, btVector3>>*>(world->getWorldUserInfo());
         for (auto& entry : *propellingEntries) {
-            entry.second.first->rigidBody->setLinearVelocity(entry.second.second);
+            float verticalVelocity = entry.second.first->rigidBody->getLinearVelocity().y();
+
+            //Apply gravity
+            if (verticalVelocity != 0) {
+                verticalVelocity += world->getGravity().y() * timeStep;
+                entry.second.first->rigidBody->setLinearVelocity(entry.second.second + btVector3(0, verticalVelocity, 0));
+            } else {
+                entry.second.first->rigidBody->setLinearVelocity(entry.second.second);
+
+            }
+
             entry.second.first->rigidBody->activate();
         }
     };
@@ -709,8 +719,6 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         rigidBodyCI.m_friction = frictionProp->data();
     }
 
-    //rigidBodyCI.m_friction = .0f;
-
     debug_print(
             "PhysicsDomain adding entity " << entity.describeEntity() << " with mass " << mass << " and inertia ("<< inertia.x() << ","<< inertia.y() << ","<< inertia.z() << ")");
 
@@ -718,11 +726,6 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     entry->rigidBody->setMotionState(
             new PhysicalMotionState(*entry->rigidBody, entity, *this, btTransform(orientation, pos), btTransform(btQuaternion::getIdentity(), centerOfMassOffset)));
     entry->rigidBody->setAngularFactor(angularFactor);
-
-    const PropelProperty* propelProp = entity.getPropertyClassFixed<PropelProperty>();
-    if (propelProp && propelProp->data().isValid()) {
-        entry->rigidBody->setLinearVelocity(Convert::toBullet(propelProp->data()));
-    }
 
     m_dynamicsWorld->addRigidBody(entry->rigidBody, collisionGroup, collisionMask);
 
@@ -735,6 +738,18 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
 
     m_entries.insert(std::make_pair(entity.getIntId(), entry));
 
+    const PropelProperty* propelProp = entity.getPropertyClassFixed<PropelProperty>();
+    if (propelProp && propelProp->data().isValid() && propelProp->data() != WFMath::Vector<3>::ZERO()) {
+        btVector3 btVelocity = Convert::toBullet(propelProp->data());
+
+        auto I = m_propellingEntries.find(entity.getIntId());
+        if (I == m_propellingEntries.end()) {
+            m_propellingEntries.insert(std::make_pair(entity.getIntId(), std::make_pair(entry, btVelocity)));
+        } else {
+            I->second.second = btVelocity;
+        }
+
+    }
 }
 
 void PhysicalDomain::removeEntity(LocatedEntity& entity)
@@ -808,10 +823,6 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
 
             bulletEntry->rigidBody->setMassProps(mass, inertia);
 
-            const PropelProperty* propelProp = bulletEntry->entity->getPropertyClassFixed<PropelProperty>();
-            if (propelProp && propelProp->data().isValid()) {
-                bulletEntry->rigidBody->setLinearVelocity(Convert::toBullet(propelProp->data()));
-            }
         }
 
         short collisionMask;
@@ -910,9 +921,7 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
             if (entry->rigidBody) {
                 btVector3 btVelocity = Convert::toBullet(velocity);
 
-                entry->rigidBody->setLinearVelocity(btVelocity);
                 if (!btVelocity.isZero()) {
-                    entry->rigidBody->activate();
                     auto I = m_propellingEntries.find(entity.getIntId());
                     if (I == m_propellingEntries.end()) {
                         m_propellingEntries.insert(std::make_pair(entity.getIntId(), std::make_pair(entry, btVelocity)));
@@ -921,7 +930,15 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
                     }
 
                 } else {
-                    entry->rigidBody->clearForces();
+                    btVector3 velocity = entry->rigidBody->getLinearVelocity();
+                    velocity.setX(0);
+                    velocity.setZ(0);
+                    //Take gravity into account
+                    if (velocity.getY() > 0) {
+                        velocity.setY(0);
+                    }
+                    entry->rigidBody->setLinearVelocity(velocity);
+
                     m_propellingEntries.erase(entity.getIntId());
                 }
             }
