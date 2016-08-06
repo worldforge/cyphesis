@@ -17,8 +17,8 @@
         <float name="default">0.25</float>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">20</float>
+      <map name="density">
+        <float name="default">50</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -40,6 +40,10 @@
           <float>4.45084</float>
           <float>2.97412</float>
         </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="density">
+        <float name="default">500</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -67,8 +71,8 @@
         <float name="default">0.1</float>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">250</float>
+      <map name="density">
+        <float name="default">100</float>
         <string name="visibility">public</string>
       </map>
       <map name="mode">
@@ -87,6 +91,10 @@
     <map name="attributes">
       <map name="mass">
         <float name="default">0.2</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="density">
+        <float name="default">2600</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -110,8 +118,8 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">0.5</float>
+      <map name="density">
+        <float name="default">100</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -135,8 +143,8 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">5</float>
+      <map name="density">
+        <float name="default">500</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -164,6 +172,10 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="density">
+        <float name="default">500</float>
+        <string name="visibility">public</string>
+      </map>
       <map name="style">
         <string name="default">1</string>
         <string name="visibility">public</string>
@@ -189,6 +201,10 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="density">
+        <float name="default">500</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">chair</string>
     <string name="objtype">class</string>
@@ -208,6 +224,10 @@
           <float>0.406991</float>
           <float>0.670116</float>
         </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="density">
+        <float name="default">500</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -231,6 +251,10 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="density">
+        <float name="default">500</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">choppingblock</string>
     <string name="objtype">class</string>
@@ -250,6 +274,10 @@
           <float>1.2</float>
           <float>1.2</float>
         </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="density">
+        <float name="default">200</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -273,6 +301,10 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="density">
+        <float name="default">500</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">crate_lid</string>
     <string name="objtype">class</string>
@@ -292,6 +324,10 @@
           <float>0.31</float>
           <float>0.252759</float>
         </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="density">
+        <float name="default">200</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -317,6 +353,10 @@
       </map>
       <map name="burn_speed">
         <float name="default">0.25</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="density">
+        <float name="default">500</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -348,6 +388,10 @@
         <string name="default">simple</string>
         <string name="visibility">public</string>
       </map>
+      <map name="density">
+        <float name="default">2000</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">gravestone</string>
     <string name="objtype">class</string>
@@ -373,6 +417,10 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="density">
+        <float name="default">500</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">long_table</string>
     <string name="objtype">class</string>
@@ -394,8 +442,8 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">40</float>
+      <map name="density">
+        <float name="default">500</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -419,8 +467,8 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">40</float>
+      <map name="density">
+        <float name="default">2000</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -442,6 +490,10 @@
           <float>1</float>
           <float>1.28486</float>
         </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="density">
+        <float name="default">500</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -469,6 +521,10 @@
         <string name="default"></string>
         <string name="visibility">public</string>
       </map>
+      <map name="density">
+        <float name="default">500</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">signpost</string>
     <string name="objtype">class</string>
@@ -488,6 +544,10 @@
           <float>1.11642</float>
           <float>4.28281</float>
         </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="density">
+        <float name="default">500</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -511,8 +571,8 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">40</float>
+      <map name="density">
+        <float name="default">2000</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -536,6 +596,10 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="density">
+        <float name="default">500</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">stool</string>
     <string name="objtype">class</string>
@@ -555,6 +619,10 @@
           <float>1</float>
           <float>1.28486</float>
         </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="density">
+        <float name="default">500</float>
         <string name="visibility">public</string>
       </map>
     </map>

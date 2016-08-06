@@ -74,7 +74,9 @@ EntityBuilder::EntityBuilder()
     EntityFactory<Thing> * tft = new EntityFactory<Thing>();
     tft->m_attributes["mode"] = "planted";
     installBaseFactory("thing", "game_entity", tft);
-    installBaseFactory("character", "thing", new EntityFactory<Character>());
+    auto characterFactory = new EntityFactory<Character>();
+    characterFactory->m_attributes["density"] = 125;
+    installBaseFactory("character", "thing", characterFactory);
     auto creatorFactory = new EntityFactory<Creator>();
     creatorFactory->m_attributes["transient"] = -1;
     creatorFactory->m_attributes["solid"] = 0;

@@ -13,10 +13,6 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">80</float>
-        <string name="visibility">public</string>
-      </map>
     </map>
     <string name="id">armory</string>
     <string name="objtype">class</string>
@@ -38,10 +34,6 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">80</float>
-        <string name="visibility">public</string>
-      </map>
     </map>
     <string name="id">bailey1</string>
     <string name="objtype">class</string>
@@ -61,10 +53,6 @@
           <float>10</float>
           <float>45</float>
         </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">80</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -113,10 +101,6 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">400</float>
-        <string name="visibility">public</string>
-      </map>
     </map>
     <string name="id">bloomery</string>
     <string name="objtype">class</string>
@@ -163,10 +147,6 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">80000</float>
-        <string name="visibility">public</string>
-      </map>
     </map>
     <string name="id">castle_don_jon</string>
     <string name="objtype">class</string>
@@ -186,10 +166,6 @@
           <float>5.90999</float>
           <float>5.38026</float>
         </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">8000</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -213,10 +189,6 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">8000</float>
-        <string name="visibility">public</string>
-      </map>
     </map>
     <string name="id">castle_house_b</string>
     <string name="objtype">class</string>
@@ -236,10 +208,6 @@
           <float>5.41143</float>
           <float>9.21597</float>
         </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">8000</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -263,10 +231,6 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">8000</float>
-        <string name="visibility">public</string>
-      </map>
     </map>
     <string name="id">castle_house_d</string>
     <string name="objtype">class</string>
@@ -286,10 +250,6 @@
           <float>1.63569</float>
           <float>2.93437</float>
         </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">8000</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -317,10 +277,6 @@
         <float name="default">0.15</float>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">10000</float>
-        <string name="visibility">public</string>
-      </map>
     </map>
     <string name="id">castle_inn</string>
     <string name="objtype">class</string>
@@ -340,10 +296,6 @@
           <float>6.88367</float>
           <float>8.51144</float>
         </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">10000</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -367,10 +319,6 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">10000</float>
-        <string name="visibility">public</string>
-      </map>
     </map>
     <string name="id">castle_wall_corner</string>
     <string name="objtype">class</string>
@@ -390,10 +338,6 @@
           <float>10</float>
           <float>8.23158</float>
         </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">10000</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -417,10 +361,6 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">10000</float>
-        <string name="visibility">public</string>
-      </map>
     </map>
     <string name="id">castle_wall_run</string>
     <string name="objtype">class</string>
@@ -442,10 +382,6 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">10000</float>
-        <string name="visibility">public</string>
-      </map>
     </map>
     <string name="id">castle_wall_stairs</string>
     <string name="objtype">class</string>
@@ -465,10 +401,6 @@
           <float>0.0188072</float>
           <float>2.08025</float>
         </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">2000</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -542,10 +474,6 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">80</float>
-        <string name="visibility">public</string>
-      </map>
     </map>
     <string name="id">gateway</string>
     <string name="objtype">class</string>
@@ -570,45 +498,8 @@
         <float name="default">0.15</float>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">2000</float>
-        <string name="visibility">public</string>
-      </map>
     </map>
     <string name="id">house</string>
-    <string name="objtype">class</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>0</float>
-          <float>0</float>
-          <float>-1</float>
-          <float>9.5</float>
-          <float>6</float>
-          <float>3</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="burn_speed">
-        <float name="default">0.15</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">2000</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="init">
-        <int name="default">0</int>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">house3</string>
     <string name="objtype">class</string>
     <list name="parents">
       <string>structure</string>
@@ -632,10 +523,6 @@
         <float name="default">0.05</float>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">500</float>
-        <string name="visibility">public</string>
-      </map>
     </map>
     <string name="id">jetty</string>
     <string name="objtype">class</string>
@@ -657,10 +544,6 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">80</float>
-        <string name="visibility">public</string>
-      </map>
     </map>
     <string name="id">keep</string>
     <string name="objtype">class</string>
@@ -680,10 +563,6 @@
           <float>6</float>
           <float>8</float>
         </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">100000</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -770,10 +649,6 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">80</float>
-        <string name="visibility">public</string>
-      </map>
     </map>
     <string name="id">stall</string>
     <string name="objtype">class</string>
@@ -829,6 +704,10 @@
     <map name="attributes">
       <map name="simple">
         <int name="default">0</int>
+        <string name="visibility">public</string>
+      </map>
+      <map name="density">
+        <float name="default">2000</float>
         <string name="visibility">public</string>
       </map>
     </map>

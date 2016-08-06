@@ -10,8 +10,8 @@
         <string name="default">oak</string>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">0.05</float>
+      <map name="density">
+        <float name="default">600</float>
         <string name="visibility">public</string>
       </map>
       <map name="transient">
@@ -40,8 +40,8 @@
         <string name="default">appletree</string>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">0.2</float>
+      <map name="density">
+        <float name="default">900</float>
         <string name="visibility">public</string>
       </map>
       <map name="ticks">
@@ -93,8 +93,8 @@
         <int name="default">3</int>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">3000</float>
+      <map name="density">
+        <float name="default">750</float>
         <string name="visibility">public</string>
       </map>
       <map name="maxmass">
@@ -134,12 +134,12 @@
         <float name="default">6</float>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">1000</float>
+      <map name="density">
+        <float name="default">600</float>
         <string name="visibility">public</string>
       </map>
       <map name="maxmass">
-        <float name="default">2000</float>
+        <float name="default">670</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -156,8 +156,8 @@
         <float name="default">0.5</float>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">0.5</float>
+      <map name="density">
+        <float name="default">800</float>
         <string name="visibility">public</string>
       </map>
       <map name="bbox">
@@ -206,8 +206,8 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">0.5</float>
+      <map name="density">
+        <float name="default">100</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -235,12 +235,12 @@
         <float name="default">8</float>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">150</float>
+      <map name="density">
+        <float name="default">600</float>
         <string name="visibility">public</string>
       </map>
       <map name="maxmass">
-        <float name="default">300</float>
+        <float name="default">530</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -265,8 +265,8 @@
         <string name="default">fir</string>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">0.1</float>
+      <map name="density">
+        <float name="default">530</float>
         <string name="visibility">public</string>
       </map>
       <map name="transient">
@@ -294,8 +294,8 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">0.5</float>
+      <map name="density">
+        <float name="default">200</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -323,8 +323,8 @@
         <float name="default">0.7</float>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">1</float>
+      <map name="density">
+        <float name="default">200</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -348,8 +348,8 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">0.5</float>
+      <map name="density">
+        <float name="default">200</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -377,8 +377,8 @@
         <float name="default">0.1</float>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">0.1</float>
+      <map name="density">
+        <float name="default">900</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -465,12 +465,12 @@
         <int name="default">10</int>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">5000</float>
+      <map name="density">
+        <float name="default">600</float>
         <string name="visibility">public</string>
       </map>
       <map name="maxmass">
-        <float name="default">6000</float>
+        <float name="default">800</float>
         <string name="visibility">public</string>
       </map>
       <map name="sizeAdult">
@@ -515,8 +515,8 @@
         <float name="default">6</float>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">5000</float>
+      <map name="density">
+        <float name="default">400</float>
         <string name="visibility">public</string>
       </map>
       <map name="maxmass">
@@ -541,8 +541,8 @@
         <string name="default">plant</string>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">0.05</float>
+      <map name="density">
+        <float name="default">600</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -568,6 +568,10 @@
           <float>0.1</float>
           <float>1.6</float>
         </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="density">
+        <float name="default">400</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -596,6 +600,10 @@
         <float name="default">0</float>
         <string name="visibility">public</string>
       </map>
+      <map name="density">
+        <float name="default">600</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">tree</string>
     <string name="objtype">class</string>
@@ -608,6 +616,10 @@
     <map name="attributes">
       <map name="biomass">
         <float name="default">0.5</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="density">
+        <float name="default">800</float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -675,12 +687,12 @@
         <float name="default">6</float>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">3000</float>
+      <map name="density">
+        <float name="default">600</float>
         <string name="visibility">public</string>
       </map>
       <map name="maxmass">
-        <float name="default">5000</float>
+        <float name="default">500</float>
         <string name="visibility">public</string>
       </map>
     </map>

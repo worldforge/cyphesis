@@ -13,8 +13,8 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">50</float>
+      <map name="density">
+        <float name="default">2500</float>
         <string name="visibility">public</string>
       </map>
     </map>
