@@ -89,6 +89,7 @@ EntityBuilder::EntityBuilder()
     auto plantFactory = new EntityFactory<Plant>();
     plantFactory->m_attributes["friction"] = 1.0f;
     plantFactory->m_attributes["mode"] = "planted";
+    plantFactory->m_attributes["status"] = 1.0f;
     installBaseFactory("plant", "thing", plantFactory);
     plantFactory->addProperties();
 
