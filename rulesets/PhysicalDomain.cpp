@@ -229,7 +229,7 @@ PhysicalDomain::~PhysicalDomain()
     for (auto& entry : m_entries) {
         if (entry.second->rigidBody) {
             m_dynamicsWorld->removeRigidBody(entry.second->rigidBody);
-            delete entry.second->rigidBody->getMotionState();
+            delete entry.second->motionState;
             delete entry.second->rigidBody;
         }
         if (entry.second->collisionShape) {
@@ -624,7 +624,8 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
             "PhysicsDomain adding entity " << entity.describeEntity() << " with mass " << mass << " and inertia ("<< inertia.x() << ","<< inertia.y() << ","<< inertia.z() << ")");
 
     entry->rigidBody = new btRigidBody(rigidBodyCI);
-    entry->rigidBody->setMotionState(new PhysicalMotionState(*entry, *this, btTransform(orientation, pos), btTransform(btQuaternion::getIdentity(), centerOfMassOffset)));
+    entry->motionState = new PhysicalMotionState(*entry, *this, btTransform(orientation, pos), btTransform(btQuaternion::getIdentity(), centerOfMassOffset));
+    entry->rigidBody->setMotionState(entry->motionState);
     entry->rigidBody->setAngularFactor(angularFactor);
 
     m_dynamicsWorld->addRigidBody(entry->rigidBody, collisionGroup, collisionMask);
@@ -657,9 +658,10 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
     debug_print("PhysicalDomain::removeEntity " << entity.describeEntity());
     auto I = m_entries.find(entity.getIntId());
     assert(I != m_entries.end());
+    m_lastMovingEntities.erase(I->second);
     if (I->second->rigidBody) {
         m_dynamicsWorld->removeRigidBody(I->second->rigidBody);
-        delete I->second->rigidBody->getMotionState();
+        delete I->second->motionState;
         delete I->second->rigidBody;
     }
     if (I->second->collisionShape) {
@@ -674,38 +676,44 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
 
 void PhysicalDomain::childEntityPropertyApplied(const std::string& name, PropertyBase& prop, BulletEntry* bulletEntry)
 {
+
+    auto adjustToTerrainFn = [&]() {
+        LocatedEntity& entity = *bulletEntry->entity;
+
+        const TerrainProperty * tp = m_entity.getPropertyClass<TerrainProperty>("terrain");
+        if (tp) {
+            TransformsProperty* transProp = entity.modPropertyClassFixed<TransformsProperty>();
+            const WFMath::Point<3>& wfPos = entity.m_location.pos();
+
+            float h = wfPos.z();
+            Vector3D normal;
+            tp->getHeightAndNormal(wfPos.x(), wfPos.y(), h, normal);
+            transProp->getTranslate().z() = h;
+            transProp->apply(&entity);
+
+            btQuaternion orientation = entity.m_location.m_orientation.isValid() ? Convert::toBullet(entity.m_location.m_orientation) : btQuaternion::getIdentity();
+            btVector3 pos = wfPos.isValid() ? Convert::toBullet(wfPos) : btVector3(0, 0, 0);
+
+            //"Center of mass offset" is the inverse of the center of the object in relation to origo.
+            btVector3 centerOfMassOffset = -Convert::toBullet(entity.m_location.m_bBox.getCenter());
+
+            bulletEntry->rigidBody->setWorldTransform(btTransform(orientation, pos - centerOfMassOffset));
+        }
+    };
+
     if (name == "friction") {
         Property<float>* frictionProp = static_cast<Property<float>*>(&prop);
         bulletEntry->rigidBody->setFriction(frictionProp->data());
         bulletEntry->rigidBody->activate();
         return;
     } else if (name == "mode") {
-        LocatedEntity& entity = *bulletEntry->entity;
 
         ModeProperty* modeProp = static_cast<ModeProperty*>(&prop);
 
         const std::string& mode = modeProp->data();
 
         if (mode != "fixed") {
-            const TerrainProperty * tp = m_entity.getPropertyClass<TerrainProperty>("terrain");
-            if (tp) {
-                TransformsProperty* transProp = entity.modPropertyClassFixed<TransformsProperty>();
-                const WFMath::Point<3>& wfPos = entity.m_location.pos();
-
-                float h = wfPos.z();
-                Vector3D normal;
-                tp->getHeightAndNormal(wfPos.x(), wfPos.y(), h, normal);
-                transProp->getTranslate().z() = h;
-                transProp->apply(&entity);
-
-                btQuaternion orientation = entity.m_location.m_orientation.isValid() ? Convert::toBullet(entity.m_location.m_orientation) : btQuaternion::getIdentity();
-                btVector3 pos = wfPos.isValid() ? Convert::toBullet(wfPos) : btVector3(0, 0, 0);
-
-                //"Center of mass offset" is the inverse of the center of the object in relation to origo.
-                btVector3 centerOfMassOffset = -Convert::toBullet(entity.m_location.m_bBox.getCenter());
-
-                bulletEntry->rigidBody->setWorldTransform(btTransform(orientation, pos - centerOfMassOffset));
-            }
+            adjustToTerrainFn();
         }
 
         //When altering mass we need to first remove and then re-add the body, for some reason.
@@ -766,6 +774,33 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
             m_dynamicsWorld->addRigidBody(bulletEntry->rigidBody, collisionGroup, collisionMask);
         }
 
+    } else if (name == "bbox") {
+        const auto& bbox = bulletEntry->entity->m_location.bBox();
+        if (bbox.isValid()) {
+            if (bulletEntry->rigidBody) {
+                btCollisionShape* collisionShape = bulletEntry->collisionShape;
+                btVector3 aabbMin, aabbMax;
+                collisionShape->getAabb(btTransform::getIdentity(), aabbMin, aabbMax);
+                btVector3 originalSize = (aabbMax - aabbMin) / collisionShape->getLocalScaling();
+                btVector3 newSize = Convert::toBullet(bbox.highCorner() - bbox.lowCorner());
+
+                collisionShape->setLocalScaling(newSize / originalSize);
+
+                //"Center of mass offset" is the inverse of the center of the object in relation to origo.
+                btVector3 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
+                bulletEntry->motionState->m_centerOfMassOffset = btTransform(btQuaternion::getIdentity(), centerOfMassOffset);
+
+                ModeProperty* modeProp = bulletEntry->entity->requirePropertyClassFixed<ModeProperty>();
+
+                if (modeProp->data() != "fixed") {
+                    adjustToTerrainFn();
+                }
+
+                if (bulletEntry->rigidBody->getInvMass() != 0) {
+                    bulletEntry->rigidBody->activate();
+                }
+            }
+        }
     }
 }
 
@@ -798,7 +833,7 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
 {
     auto I = m_entries.find(entity.getIntId());
     assert(I != m_entries.end());
-    auto* entry = I->second;
+    BulletEntry* entry = I->second;
     if (entry->rigidBody) {
         if (orientation.isValid() || pos.isValid()) {
             btTransform transform = entry->rigidBody->getWorldTransform();

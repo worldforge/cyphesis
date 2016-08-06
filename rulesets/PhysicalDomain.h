@@ -75,6 +75,7 @@ class PhysicalDomain: public Domain
 
     protected:
 
+        class PhysicalMotionState;
         struct BulletEntry
         {
                 LocatedEntity* entity;
@@ -82,6 +83,7 @@ class PhysicalDomain: public Domain
                 btRigidBody* rigidBody;
                 sigc::connection propertyUpdatedConnection;
                 Location lastSentLocation;
+                PhysicalMotionState* motionState;
         };
 
         struct TerrainEntry
@@ -90,7 +92,6 @@ class PhysicalDomain: public Domain
                 btRigidBody* rigidBody;
         };
 
-        class PhysicalMotionState;
 
         std::unordered_map<int, BulletEntry*> m_entries;
 
