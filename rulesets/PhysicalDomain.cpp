@@ -576,7 +576,11 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     }
 
     btVector3 inertia;
-    entry->collisionShape->calculateLocalInertia(mass, inertia);
+    if (mass == 0) {
+        inertia = btVector3(0, 0, 0);
+    } else {
+        entry->collisionShape->calculateLocalInertia(mass, inertia);
+    }
 
     std::string mode;
     auto modeProp = entity.getPropertyClassFixed<ModeProperty>();
@@ -642,6 +646,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     const PropelProperty* propelProp = entity.getPropertyClassFixed<PropelProperty>();
     if (propelProp && propelProp->data().isValid() && propelProp->data() != WFMath::Vector<3>::ZERO()) {
         btVector3 btVelocity = Convert::toBullet(propelProp->data());
+        btVelocity.m_floats[1] = 0; //Don't allow vertical velocity to be set.
 
         auto I = m_propellingEntries.find(entity.getIntId());
         if (I == m_propellingEntries.end()) {
@@ -857,6 +862,8 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
                 btVector3 btVelocity = Convert::toBullet(velocity);
 
                 if (!btVelocity.isZero()) {
+                    btVelocity.m_floats[1] = 0; //Don't allow vertical velocity to be set.
+
                     auto I = m_propellingEntries.find(entity.getIntId());
                     if (I == m_propellingEntries.end()) {
                         m_propellingEntries.insert(std::make_pair(entity.getIntId(), std::make_pair(entry, btVelocity)));
