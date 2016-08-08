@@ -559,7 +559,12 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         float radius = (bbox.highCorner().x() - bbox.lowCorner().x()) * 0.5f;
         //subtract the radius times 2 from the height
         float height = bbox.highCorner().z() - bbox.lowCorner().z() - (radius * 2.0f);
-        entry->collisionShape = new btCapsuleShape(radius, height);
+        //If the resulting height is negative we need to use a sphere instead.
+        if (height > 0) {
+            entry->collisionShape = new btCapsuleShape(radius, height);
+        } else {
+            entry->collisionShape = new btSphereShape(radius);
+        }
         angularFactor = btVector3(0, 0, 0);
     } else {
         WFMath::Vector<3> size;
