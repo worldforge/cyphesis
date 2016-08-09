@@ -245,9 +245,9 @@ void SpawnerProperty::createNewEntity(LocatedEntity * e, const Operation & op,
             return;
         }
         //randomize position and rotation
-        float angle = rand.randf(WFMath::numeric_constants<float>::pi() * 2);
+        float angle = rand.rand<float>() * WFMath::numeric_constants<float>::pi() * 2;
         //place it between 0 and 2 meters away
-        float distance = rand.randf(2.0f);
+        float distance = rand.rand<float>() * 2.0f;
         //if we're solid we should make sure it's not within our own radius
         if (e->m_location.isSolid() && e->m_location.bBox().isValid()) {
             distance += e->m_location.radius();
@@ -276,7 +276,7 @@ void SpawnerProperty::createNewEntity(LocatedEntity * e, const Operation & op,
             ::addToEntity(WFMath::Point<3>::ZERO(), create_arg->modifyPos());
         }
     }
-    float rotation = rand.randf(WFMath::numeric_constants<float>::pi() * 2);
+    float rotation = rand.rand<float>() * WFMath::numeric_constants<float>::pi() * 2;
     WFMath::Quaternion orientation(WFMath::Vector<3>(0, 0, 1), rotation);
     create_arg->setAttr("orientation", orientation.toAtlas());
 
