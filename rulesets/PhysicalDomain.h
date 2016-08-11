@@ -183,6 +183,8 @@ class PhysicalDomain: public Domain
         void sendMoveSight(BulletEntry& bulletEntry);
         void processMovedEntity(BulletEntry& bulletEntry);
 
+        btCollisionShape* createCollisionShape(const Atlas::Message::MapType& map, const WFMath::Vector<3>& size);
+
 };
 
 #endif /* PHYSICALDOMAIN_H_ */

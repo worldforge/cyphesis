@@ -54,6 +54,8 @@
 #include "rulesets/ForcesProperty.h"
 #include "rulesets/PropelProperty.h"
 #include "rulesets/DensityProperty.h"
+#include "rulesets/AngularFactorProperty.h"
+#include "rulesets/GeometryProperty.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
@@ -164,6 +166,8 @@ CorePropertyManager::CorePropertyManager()
      * Friction is used by the physics system. 0 is no friction, 1 is full friction.
      */
     installProperty<Property<float> >("friction", "float");
+    installProperty<AngularFactorProperty>();
+    installProperty<GeometryProperty>();
 
 }
 

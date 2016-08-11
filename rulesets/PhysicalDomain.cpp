@@ -29,6 +29,8 @@
 #include "ModeProperty.h"
 #include "PropelProperty.h"
 #include "TransformsProperty.h"
+#include "GeometryProperty.h"
+#include "AngularFactorProperty.h"
 
 #include "physics/Collision.h"
 #include "physics/Convert.h"
@@ -533,6 +535,57 @@ float PhysicalDomain::getMassForEntity(const LocatedEntity& entity) const
     return mass;
 }
 
+btCollisionShape* PhysicalDomain::createCollisionShape(const Atlas::Message::MapType& map, const WFMath::Vector<3>& size)
+{
+    auto createBoxFn = [&]() -> btBoxShape* {
+        auto btSize = Convert::toBullet(size * 0.5).absolute();
+        return new btBoxShape(btSize);
+    };
+
+    auto I = map.find("shape");
+    if (I != map.end() && I->second.isString()) {
+        const std::string& shape = I->second.String();
+        if (shape == "sphere") {
+            float minRadius = std::min(size.x(), std::min(size.y(), size.z())) * 0.5f;
+            return new btSphereShape(minRadius);
+        } else if (shape == "capsule-z") {
+            float minRadius = std::min(size.x(), size.y()) * 0.5f;
+            //subtract the radius times 2 from the height
+            float height = size.z() - (minRadius * 2.0f);
+            //If the resulting height is negative we need to use a sphere instead.
+            if (height > 0) {
+                return new btCapsuleShape(minRadius, height);
+            } else {
+                return new btSphereShape(minRadius);
+            }
+        } else if (shape == "capsule-x") {
+            float minRadius = std::min(size.z(), size.y()) * 0.5f;
+            //subtract the radius times 2 from the height
+            float height = size.x() - (minRadius * 2.0f);
+            //If the resulting height is negative we need to use a sphere instead.
+            if (height > 0) {
+                return new btCapsuleShapeX(minRadius, height);
+            } else {
+                return new btSphereShape(minRadius);
+            }
+        } else if (shape == "capsule-y") {
+            float minRadius = std::min(size.x(), size.z()) * 0.5f;
+            //subtract the radius times 2 from the height
+            float height = size.y() - (minRadius * 2.0f);
+            //If the resulting height is negative we need to use a sphere instead.
+            if (height > 0) {
+                return new btCapsuleShapeZ(minRadius, height);
+            } else {
+                return new btSphereShape(minRadius);
+            }
+        } else if (shape == "box") {
+            return createBoxFn();
+        }
+    }
+
+    return createBoxFn();
+}
+
 void PhysicalDomain::addEntity(LocatedEntity& entity)
 {
     assert(m_entries.find(entity.getIntId()) == m_entries.end());
@@ -540,45 +593,72 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     float mass = getMassForEntity(entity);
 
     WFMath::AxisBox<3> bbox = entity.m_location.bBox();
-
-    //Handle the special case of the entity being a "creator".
-    if (entity.getType()->isTypeOf("creator") && !bbox.isValid()) {
-        bbox = WFMath::AxisBox<3>(WFMath::Point<3>(-0.25, -0.25, 0), WFMath::Point<3>(0.25, 0.25, 1.5));
-    }
+    btVector3 angularFactor(1, 1, 1);
 
     BulletEntry* entry = new BulletEntry();
     entry->entity = &entity;
 
-    btVector3 angularFactor(1, 1, 1);
+    //Handle the special case of the entity being a "creator".
+    if (entity.getType()->isTypeOf("creator")) {
+        if (!bbox.isValid()) {
+            bbox = WFMath::AxisBox<3>(WFMath::Point<3>(-0.25, -0.25, 0), WFMath::Point<3>(0.25, 0.25, 1.5));
+        }
+        angularFactor = btVector3(0, 0, 0);
+    }
+
+    const AngularFactorProperty* angularFactorProp = entity.getPropertyClassFixed<AngularFactorProperty>();
+    if (angularFactorProp && angularFactorProp->data().isValid()) {
+        angularFactor = Convert::toBullet(angularFactorProp->data());
+    }
+
     short collisionMask;
     short collisionGroup;
     getCollisionFlagsForEntity(entity, collisionGroup, collisionMask);
 
-    //TODO: Use properties for geometry instead.
-    if (entity.getType()->isTypeOf("mobile") || entity.getType()->isTypeOf("creator")) {
-        float radius = (bbox.highCorner().x() - bbox.lowCorner().x()) * 0.5f;
-        //subtract the radius times 2 from the height
-        float height = bbox.highCorner().z() - bbox.lowCorner().z() - (radius * 2.0f);
-        //If the resulting height is negative we need to use a sphere instead.
-        if (height > 0) {
-            entry->collisionShape = new btCapsuleShape(radius, height);
-        } else {
-            entry->collisionShape = new btSphereShape(radius);
-        }
-        angularFactor = btVector3(0, 0, 0);
-    } else {
-        WFMath::Vector<3> size;
-        if (bbox.isValid()) {
-            size = bbox.highCorner() - bbox.lowCorner();
-            size *= 0.5;
-        } else {
-            //No bbox, and no "creator" entity
-            return;
-        }
+//TODO: Use properties for geometry instead.
 
-        auto btSize = Convert::toBullet(size).absolute();
+    if (!bbox.isValid()) {
+        return;
+    }
+
+    auto size = bbox.highCorner() - bbox.lowCorner();
+    const GeometryProperty* geometryProp = entity.getPropertyClassFixed<GeometryProperty>();
+    if (geometryProp) {
+        auto& geometryMap = geometryProp->data();
+        entry->collisionShape = createCollisionShape(geometryMap, size);
+    } else {
+        auto btSize = Convert::toBullet(size * 0.5).absolute();
         entry->collisionShape = new btBoxShape(btSize);
     }
+//
+//    if (entity.getType()->isTypeOf("mobile") || entity.getType()->isTypeOf("creator")) {
+//        float radiusX = (bbox.highCorner().x() - bbox.lowCorner().x()) * 0.5f;
+//        float radiusY = (bbox.highCorner().y() - bbox.lowCorner().y()) * 0.5f;
+//        float radiusZ = (bbox.highCorner().z() - bbox.lowCorner().z()) * 0.5f;
+//        //subtract the radius times 2 from the height
+//        float height = bbox.highCorner().z() - bbox.lowCorner().z() - (radiusX * 2.0f);
+//        //If the resulting height is negative we need to use a sphere instead.
+//        if (height > 0) {
+//            entry->collisionShape = new btCapsuleShape(radiusX, height);
+//            entry->collisionShape->setLocalScaling(btVector3(1, 1, radiusY / radiusX));
+//        } else {
+//            entry->collisionShape = new btSphereShape(radiusX);
+//            entry->collisionShape->setLocalScaling(btVector3(1, radiusZ / radiusX, radiusY / radiusX));
+//        }
+//        angularFactor = btVector3(0, 0, 0);
+//    } else {
+//        WFMath::Vector<3> size;
+//        if (bbox.isValid()) {
+//            size = bbox.highCorner() - bbox.lowCorner();
+//            size *= 0.5;
+//        } else {
+//            //No bbox, and no "creator" entity
+//            return;
+//        }
+//
+//        auto btSize = Convert::toBullet(size).absolute();
+//        entry->collisionShape = new btBoxShape(btSize);
+//    }
 
     btVector3 inertia;
     if (mass == 0) {
@@ -617,7 +697,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         mass = .0f;
     }
 
-    //"Center of mass offset" is the inverse of the center of the object in relation to origo.
+//"Center of mass offset" is the inverse of the center of the object in relation to origo.
     btVector3 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
 
     btQuaternion orientation = entity.m_location.m_orientation.isValid() ? Convert::toBullet(entity.m_location.m_orientation) : btQuaternion(0, 0, 0, 1);
@@ -819,7 +899,7 @@ void PhysicalDomain::getCollisionFlagsForEntity(const LocatedEntity& entity, sho
     collisionMask = COLLISION_MASK_PHYSICAL | COLLISION_MASK_TERRAIN;
     collisionGroup = COLLISION_MASK_PHYSICAL;
 
-    //Non solid objects should collide with the terrain only.
+//Non solid objects should collide with the terrain only.
     if (!entity.m_location.isSolid()) {
         collisionMask = COLLISION_MASK_TERRAIN;
         collisionGroup = COLLISION_MASK_NON_PHYSICAL;
@@ -987,7 +1067,7 @@ double PhysicalDomain::tick(double timeNow)
 
     m_dynamicsWorld->stepSimulation(currentTickSize, 10);
 
-    //Check all entities that moved this tick.
+//Check all entities that moved this tick.
     for (BulletEntry* entry : m_movingEntities) {
         //Check if the entity also moved last tick.
         if (m_lastMovingEntities.find(entry) == m_lastMovingEntities.end()) {
@@ -1008,7 +1088,7 @@ double PhysicalDomain::tick(double timeNow)
         processMovedEntity(*entry);
     }
 
-    //Stash those entities that moved this tick for checking next tick.
+//Stash those entities that moved this tick for checking next tick.
     std::swap(m_movingEntities, m_lastMovingEntities);
 
     return timeNow + (1.0 / m_ticksPerSecond);
