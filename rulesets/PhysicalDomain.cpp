@@ -175,7 +175,7 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
                 new btSequentialImpulseConstraintSolver()),
         //Use a dynamic broadphase; this might be worth revisiting for optimizations
         m_broadphase(new btDbvtBroadphase()), m_dynamicsWorld(new btDiscreteDynamicsWorld(m_dispatcher, m_broadphase, m_constraintSolver, m_collisionConfiguration)), m_ticksPerSecond(
-                15)
+                15), m_lastTickTime(0)
 {
 
     createDomainBorders();
