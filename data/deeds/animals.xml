@@ -454,49 +454,7 @@
             </map>
             <map name="geometry">
                 <map name="default">
-                    <string name="shape">compound</string>
-                    <list name="children">
-                        <map>
-                            <map name="child">
-                                <string name="shape">capsule-y</string>
-                                <float name="radius">0.25</float>
-                                <float name="length">0.5</float>
-                            </map>
-                            <map name="transforms">
-                                <list name="pos">
-                                    <float>0.5</float>
-                                    <float>0.5</float>
-                                    <float>0.75</float>
-                                </list>
-                            </map>
-                        </map>
-                        <map>
-                            <map name="child">
-                                <string name="shape">sphere</string>
-                                <float name="radius">0.25</float>
-                            </map>
-                            <map name="transforms">
-                                <list name="pos">
-                                    <float>0.5</float>
-                                    <float>0.5</float>
-                                    <float>0.75</float>
-                                </list>
-                            </map>
-                        </map>
-                        <map>
-                            <map name="child">
-                                <string name="shape">sphere</string>
-                                <float name="radius">0.25</float>
-                            </map>
-                            <map name="transforms">
-                                <list name="pos">
-                                    <float>0.75</float>
-                                    <float>0.5</float>
-                                    <float>0.25</float>
-                                </list>
-                            </map>
-                        </map>
-                    </list>
+                    <string name="shape">capsule-x</string>
                 </map>
             </map>
             <map name="biomass">
