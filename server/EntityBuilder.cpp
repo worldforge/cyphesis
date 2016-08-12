@@ -41,6 +41,7 @@
 #include <Atlas/Objects/RootOperation.h>
 
 using Atlas::Message::MapType;
+using Atlas::Message::ListType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
 
@@ -82,7 +83,8 @@ EntityBuilder::EntityBuilder()
     creatorFactory->m_attributes["solid"] = 0;
 
     //Creator agents should have a bbox, so that they easily can be made solid for testing purposes.
-    creatorFactory->m_attributes["bbox"] = Atlas::Message::ListType { -.25, -0.25, 0, .25, .25, .5 };
+    creatorFactory->m_attributes["bbox"] = ListType { -.25, -0.25, 0, .25, .25, .5 };
+    creatorFactory->m_attributes["geometry"] = MapType { { "shape", "capsule-z" } };
 
     installBaseFactory("creator", "character", creatorFactory);
     creatorFactory->addProperties();
