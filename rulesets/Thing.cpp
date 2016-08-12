@@ -601,155 +601,155 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    // If LOC is null, this cannot be part of the world, or must be the
-    // world itself, so should not be involved in any movement.
-    if (m_location.m_loc == 0) {
-        log(ERROR, String::compose("Updating %1(%2) when it is not in the world.",
-                                   getType(), getId()));
-        return;
-    }
-
-    // If it has a refno, then it is a movement update. If it does not
-    // match the current movement serialno, then its obsolete, and can
-    // be discarded.
-    if (m_motion == nullptr || op->getRefno() != m_motion->serialno()) {
-        return;
-    }
-
-    // If somehow a movement update arrives with the correct refno, but
-    // we are not moving, then something has gone wrong.
-    if (!m_location.velocity().isValid() ||
-        m_location.velocity().sqrMag() < WFMath::numeric_constants<WFMath::CoordType>::epsilon()) {
-        log(ERROR, "Update got for entity not moving. " + describeEntity());
-        return;
-    }
-
-    // This is where we will handle movement simulation from now on, rather
-    // than in the mind interface. The details will be sorted by a new type
-    // of object which will handle the specifics.
-
-    const double & current_time = BaseWorld::instance().getTime();
-   // float time_diff = (float)(current_time - m_location.timeStamp());
-
-    std::string mode;
-
-    if (hasAttr("mode")) {
-        Element mode_attr;
-        getAttr("mode", mode_attr);
-        if (mode_attr.isString()) {
-            mode = mode_attr.String();
-        } else {
-            log(ERROR, String::compose("Mode on entity is a \"%1\" "
-                                       "in Thing::UpdateOperation",
-                                       Element::typeName(mode_attr.getType())));
-        }
-    }
-
-    const Location old_loc = m_location;
-
-    bool moving = true;
-
-    // Check if a predicted collision is due.
-//    if (m_motion->collision()) {
-//        if (current_time >= m_motion->m_collisionTime) {
-//            time_diff = (float)(m_motion->m_collisionTime - m_location.timeStamp());
-//            // This flag signals that collision resolution is required later.
-//            // Whether or not we are actually moving is determined by the
-//            // collision resolution.
-//            moving = false;
-//        }
+//    // If LOC is null, this cannot be part of the world, or must be the
+//    // world itself, so should not be involved in any movement.
+//    if (m_location.m_loc == 0) {
+//        log(ERROR, String::compose("Updating %1(%2) when it is not in the world.",
+//                                   getType(), getId()));
+//        return;
 //    }
 //
-//    // Update entity position
-//    auto transformsProp = requirePropertyClassFixed<TransformsProperty>();
-//    transformsProp->getTranslate() += (m_location.velocity() * time_diff);
-//
-//    //We need to apply transforms here to figure our position in order to adjust height further down
-//    transformsProp->apply(this);
-//
-//    // Collision resolution has to occur after position has been updated.
-//    if (!moving) {
-//        moving = m_motion->resolveCollision();
+//    // If it has a refno, then it is a movement update. If it does not
+//    // match the current movement serialno, then its obsolete, and can
+//    // be discarded.
+//    if (m_motion == nullptr || op->getRefno() != m_motion->serialno()) {
+//        return;
 //    }
 //
-//    Domain* domain = nullptr;
-//    // Adjust the position to world constraints - essentially fit
-//    // to the terrain height at this stage.
-//    // FIXME Get the constraints from the movement domain
-//    if (m_location.m_loc) {
-//        domain = m_location.m_loc->getMovementDomain();
-//        if (domain) {
-//            float z = domain->constrainHeight(*this, m_location.m_loc, m_location.pos(), "standing");
-//            transformsProp->getTranslate().z() = z;
-//            transformsProp->apply(this);
+//    // If somehow a movement update arrives with the correct refno, but
+//    // we are not moving, then something has gone wrong.
+//    if (!m_location.velocity().isValid() ||
+//        m_location.velocity().sqrMag() < WFMath::numeric_constants<WFMath::CoordType>::epsilon()) {
+//        log(ERROR, "Update got for entity not moving. " + describeEntity());
+//        return;
+//    }
+//
+//    // This is where we will handle movement simulation from now on, rather
+//    // than in the mind interface. The details will be sorted by a new type
+//    // of object which will handle the specifics.
+//
+//    const double & current_time = BaseWorld::instance().getTime();
+//   // float time_diff = (float)(current_time - m_location.timeStamp());
+//
+//    std::string mode;
+//
+//    if (hasAttr("mode")) {
+//        Element mode_attr;
+//        getAttr("mode", mode_attr);
+//        if (mode_attr.isString()) {
+//            mode = mode_attr.String();
 //        } else {
-//
+//            log(ERROR, String::compose("Mode on entity is a \"%1\" "
+//                                       "in Thing::UpdateOperation",
+//                                       Element::typeName(mode_attr.getType())));
 //        }
 //    }
-//    m_location.update(current_time);
-//    m_flags &= ~entity_clean;
-    float update_time = consts::move_tick;
 //
-//    if (moving && domain) {
-//        // If we are moving, check for collisions
-//        update_time = m_motion->checkCollisions(*domain);
+//    const Location old_loc = m_location;
 //
-//        if (m_motion->collision()) {
-//            if (update_time < WFMath::numeric_constants<WFMath::CoordType>::epsilon()) {
-//                moving = m_motion->resolveCollision();
-//            } else {
-//                m_motion->m_collisionTime = current_time + update_time;
-//            }
+//    bool moving = true;
+//
+//    // Check if a predicted collision is due.
+////    if (m_motion->collision()) {
+////        if (current_time >= m_motion->m_collisionTime) {
+////            time_diff = (float)(m_motion->m_collisionTime - m_location.timeStamp());
+////            // This flag signals that collision resolution is required later.
+////            // Whether or not we are actually moving is determined by the
+////            // collision resolution.
+////            moving = false;
+////        }
+////    }
+////
+////    // Update entity position
+////    auto transformsProp = requirePropertyClassFixed<TransformsProperty>();
+////    transformsProp->getTranslate() += (m_location.velocity() * time_diff);
+////
+////    //We need to apply transforms here to figure our position in order to adjust height further down
+////    transformsProp->apply(this);
+////
+////    // Collision resolution has to occur after position has been updated.
+////    if (!moving) {
+////        moving = m_motion->resolveCollision();
+////    }
+////
+////    Domain* domain = nullptr;
+////    // Adjust the position to world constraints - essentially fit
+////    // to the terrain height at this stage.
+////    // FIXME Get the constraints from the movement domain
+////    if (m_location.m_loc) {
+////        domain = m_location.m_loc->getMovementDomain();
+////        if (domain) {
+////            float z = domain->constrainHeight(*this, m_location.m_loc, m_location.pos(), "standing");
+////            transformsProp->getTranslate().z() = z;
+////            transformsProp->apply(this);
+////        } else {
+////
+////        }
+////    }
+////    m_location.update(current_time);
+////    m_flags &= ~entity_clean;
+//    float update_time = consts::move_tick;
+////
+////    if (moving && domain) {
+////        // If we are moving, check for collisions
+////        update_time = m_motion->checkCollisions(*domain);
+////
+////        if (m_motion->collision()) {
+////            if (update_time < WFMath::numeric_constants<WFMath::CoordType>::epsilon()) {
+////                moving = m_motion->resolveCollision();
+////            } else {
+////                m_motion->m_collisionTime = current_time + update_time;
+////            }
+////        }
+////    }
+//
+//    Move m;
+//    Anonymous move_arg;
+//    move_arg->setId(getId());
+//    m_location.addToEntity(move_arg);
+//    m->setArgs1(move_arg);
+//    m->setFrom(getId());
+//    m->setTo(getId());
+//    m->setSeconds(current_time);
+//
+//    Sight s;
+//    s->setArgs1(m);
+//
+//    res.push_back(s);
+//
+//    if (moving) {
+//        debug(std::cout << "New Update in " << update_time << std::endl << std::flush;);
+//
+//        Update u;
+//        u->setFutureSeconds(update_time);
+//        u->setTo(getId());
+//
+//        // If the update op has no serial number, we need our own
+//        // ref number
+//        if (op->isDefaultSerialno()) {
+//            u->setRefno(++m_motion->serialno());
+//        } else {
+//            // We should respect the serial number if it is present
+//            // as the core code will set the reference number
+//            // correctly.
+//            m_motion->serialno() = op->getSerialno();
 //        }
+//
+//        res.push_back(u);
+//    } else {
+//        delete m_motion;
+//        m_motion = nullptr;
 //    }
-
-    Move m;
-    Anonymous move_arg;
-    move_arg->setId(getId());
-    m_location.addToEntity(move_arg);
-    m->setArgs1(move_arg);
-    m->setFrom(getId());
-    m->setTo(getId());
-    m->setSeconds(current_time);
-
-    Sight s;
-    s->setArgs1(m);
-
-    res.push_back(s);
-
-    if (moving) {
-        debug(std::cout << "New Update in " << update_time << std::endl << std::flush;);
-
-        Update u;
-        u->setFutureSeconds(update_time);
-        u->setTo(getId());
-
-        // If the update op has no serial number, we need our own
-        // ref number
-        if (op->isDefaultSerialno()) {
-            u->setRefno(++m_motion->serialno());
-        } else {
-            // We should respect the serial number if it is present
-            // as the core code will set the reference number
-            // correctly.
-            m_motion->serialno() = op->getSerialno();
-        }
-
-        res.push_back(u);
-    } else {
-        delete m_motion;
-        m_motion = nullptr;
-    }
-
-    // This code handles sending Appearance and Disappearance operations
-    // to this entity and others to indicate if one has gained or lost
-    // sight of the other because of this movement
-
-    // FIXME Why only for a perceptive moving entity? Surely other entities
-    // must gain/lose sight of this entity if it's moving?
-    if (isPerceptive()) {
-        checkVisibility(old_loc, res);
-    }
+//
+//    // This code handles sending Appearance and Disappearance operations
+//    // to this entity and others to indicate if one has gained or lost
+//    // sight of the other because of this movement
+//
+//    // FIXME Why only for a perceptive moving entity? Surely other entities
+//    // must gain/lose sight of this entity if it's moving?
+//    if (isPerceptive()) {
+//        checkVisibility(old_loc, res);
+//    }
     onUpdated();
 }
 

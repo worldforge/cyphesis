@@ -630,35 +630,6 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         auto btSize = Convert::toBullet(size * 0.5).absolute();
         entry->collisionShape = new btBoxShape(btSize);
     }
-//
-//    if (entity.getType()->isTypeOf("mobile") || entity.getType()->isTypeOf("creator")) {
-//        float radiusX = (bbox.highCorner().x() - bbox.lowCorner().x()) * 0.5f;
-//        float radiusY = (bbox.highCorner().y() - bbox.lowCorner().y()) * 0.5f;
-//        float radiusZ = (bbox.highCorner().z() - bbox.lowCorner().z()) * 0.5f;
-//        //subtract the radius times 2 from the height
-//        float height = bbox.highCorner().z() - bbox.lowCorner().z() - (radiusX * 2.0f);
-//        //If the resulting height is negative we need to use a sphere instead.
-//        if (height > 0) {
-//            entry->collisionShape = new btCapsuleShape(radiusX, height);
-//            entry->collisionShape->setLocalScaling(btVector3(1, 1, radiusY / radiusX));
-//        } else {
-//            entry->collisionShape = new btSphereShape(radiusX);
-//            entry->collisionShape->setLocalScaling(btVector3(1, radiusZ / radiusX, radiusY / radiusX));
-//        }
-//        angularFactor = btVector3(0, 0, 0);
-//    } else {
-//        WFMath::Vector<3> size;
-//        if (bbox.isValid()) {
-//            size = bbox.highCorner() - bbox.lowCorner();
-//            size *= 0.5;
-//        } else {
-//            //No bbox, and no "creator" entity
-//            return;
-//        }
-//
-//        auto btSize = Convert::toBullet(size).absolute();
-//        entry->collisionShape = new btBoxShape(btSize);
-//    }
 
     btVector3 inertia;
     if (mass == 0) {
