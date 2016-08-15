@@ -134,6 +134,8 @@ class PhysicalDomain: public Domain
         int m_ticksPerSecond;
 
         float m_lastTickTime;
+        float m_visibilityCheckCountdown;
+
 
         /**
          * @brief Contains all terrain segments, as height fields.

@@ -120,6 +120,11 @@ int COLLISION_MASK_NON_PHYSICAL = 2;
  */
 int COLLISION_MASK_TERRAIN = 4;
 
+/**
+ * Interval, in seconds, for doing visibility checks.
+ */
+float VISIBILITY_CHECK_INTERVAL_SECONDS = 2.0f;
+
 class PhysicalDomain::PhysicalMotionState: public btMotionState
 {
     public:
@@ -195,7 +200,7 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
         //Use a dynamic broadphase; this might be worth revisiting for optimizations
         m_broadphase(new btDbvtBroadphase()), m_dynamicsWorld(new btDiscreteDynamicsWorld(m_dispatcher, m_broadphase, m_constraintSolver, m_collisionConfiguration)), m_visibilityWorld(
                 new btCollisionWorld(new btCollisionDispatcher(new btDefaultCollisionConfiguration()), new btDbvtBroadphase(), new btDefaultCollisionConfiguration())), m_ticksPerSecond(
-                15), m_lastTickTime(0)
+                15), m_lastTickTime(0), m_visibilityCheckCountdown(0)
 {
 
     createDomainBorders();
@@ -432,8 +437,7 @@ bool PhysicalDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, co
     //    return false;
 }
 
-void PhysicalDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity,
-         std::list<std::string>& entityIdList) const
+void PhysicalDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<std::string>& entityIdList) const
 {
 
     auto observingI = m_entries.find(observingEntity.getIntId());
@@ -447,12 +451,11 @@ void PhysicalDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity,
     }
 }
 
-
 class PhysicalDomain::VisibilityCallback: public btCollisionWorld::ContactResultCallback
 {
     public:
 
-       // BulletEntry* m_filterOutEntry;
+        // BulletEntry* m_filterOutEntry;
 
         std::set<BulletEntry*> m_entries;
 
@@ -1266,8 +1269,12 @@ double PhysicalDomain::tick(double timeNow, OpVector& res)
 
     m_dynamicsWorld->stepSimulation(currentTickSize, 10);
 
-    //Perhaps not do this each tick?
-    updateVisibilityOfDirtyEntities(res);
+    //Don't do visibility checks each tick; instead use m_visibilityCheckCountdown to count down to next
+    m_visibilityCheckCountdown -= currentTickSize;
+    if (m_visibilityCheckCountdown <= 0) {
+        updateVisibilityOfDirtyEntities(res);
+        m_visibilityCheckCountdown = VISIBILITY_CHECK_INTERVAL_SECONDS;
+    }
 
     //Check all entities that moved this tick.
     for (BulletEntry* entry : m_movingEntities) {
