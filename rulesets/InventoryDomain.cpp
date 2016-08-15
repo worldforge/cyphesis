@@ -51,7 +51,7 @@ using Atlas::Objects::Operation::Disappearance;
 using Atlas::Objects::Operation::Unseen;
 
 InventoryDomain::InventoryDomain(LocatedEntity& entity) :
-                Domain(entity)
+        Domain(entity)
 {
     entity.makeContainer();
 }
@@ -74,7 +74,6 @@ void InventoryDomain::removeEntity(LocatedEntity& entity)
 {
     //Nothing special to do for this domain.
 }
-
 
 bool InventoryDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const
 {
@@ -103,6 +102,17 @@ bool InventoryDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, c
     }
 
     return false;
+}
+
+void InventoryDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<std::string>& entityIdList) const
+{
+    if (m_entity.m_contains) {
+        for (auto& entity : *m_entity.m_contains) {
+            if (isEntityVisibleFor(observingEntity, *entity)) {
+                entityIdList.push_back(entity->getId());
+            }
+        }
+    }
 }
 
 void InventoryDomain::processVisibilityForMovedEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res)

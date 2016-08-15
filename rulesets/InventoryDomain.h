@@ -37,6 +37,9 @@ class InventoryDomain : public Domain
         virtual bool isEntityVisibleFor(const LocatedEntity& observingEntity,
                 const LocatedEntity& observedEntity) const;
 
+        virtual void getVisibleEntitiesFor(const LocatedEntity& observingEntity,
+                std::list<std::string>& entityIdList) const;
+
         virtual void processVisibilityForMovedEntity(
                 const LocatedEntity& moved_entity, const Location& old_loc,
                 OpVector & res);

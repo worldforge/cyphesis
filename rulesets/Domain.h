@@ -25,6 +25,7 @@
 #include <wfmath/vector.h>
 
 #include <string>
+#include <list>
 
 class LocatedEntity;
 class Location;
@@ -94,6 +95,7 @@ class Domain {
 
     virtual void addEntity(LocatedEntity& entity) = 0;
     virtual void removeEntity(LocatedEntity& entity) = 0;
+    virtual void getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<std::string>& entityIdList) const = 0;
 
     virtual void applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity, const WFMath::AxisBox<3>& bbox)
     {

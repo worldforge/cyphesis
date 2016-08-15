@@ -47,6 +47,12 @@ class TestDomain : public Domain
             return true;
         }
 
+        virtual void getVisibleEntitiesFor(const LocatedEntity& observingEntity,
+                 std::list<std::string>& entityIdList) const
+        {
+
+        }
+
         void processVisibilityForMovedEntity(
                 const LocatedEntity& moved_entity, const Location& old_loc,
                 OpVector & res)

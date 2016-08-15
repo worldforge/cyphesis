@@ -44,6 +44,13 @@ bool VoidDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, const 
     return false;
 }
 
+void VoidDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity,
+         std::list<std::string>& entityIdList) const
+{
+
+}
+
+
 void VoidDomain::processVisibilityForMovedEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res) {
     //Nothing can be seen
 }

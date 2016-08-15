@@ -432,11 +432,27 @@ bool PhysicalDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, co
     //    return false;
 }
 
+void PhysicalDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity,
+         std::list<std::string>& entityIdList) const
+{
+
+    auto observingI = m_entries.find(observingEntity.getIntId());
+    if (observingI == m_entries.end()) {
+        return;
+    }
+
+    const BulletEntry* bulletEntry = observingI->second;
+    for (auto& observedEntry : bulletEntry->observedByThis) {
+        entityIdList.push_back(observedEntry->entity->getId());
+    }
+}
+
+
 class PhysicalDomain::VisibilityCallback: public btCollisionWorld::ContactResultCallback
 {
     public:
 
-        BulletEntry* m_filterOutEntry;
+       // BulletEntry* m_filterOutEntry;
 
         std::set<BulletEntry*> m_entries;
 
@@ -444,9 +460,9 @@ class PhysicalDomain::VisibilityCallback: public btCollisionWorld::ContactResult
                 int partId1, int index1)
         {
             BulletEntry* bulletEntry = static_cast<BulletEntry*>(colObj1Wrap->m_collisionObject->getUserPointer());
-            if (m_filterOutEntry == bulletEntry) {
-                return 0;
-            }
+//            if (m_filterOutEntry == bulletEntry) {
+//                return 0;
+//            }
             m_entries.insert(bulletEntry);
             return btScalar(1.0);
         }
@@ -456,13 +472,11 @@ class PhysicalDomain::VisibilityCallback: public btCollisionWorld::ContactResult
 void PhysicalDomain::updateVisibilityOfEntry(BulletEntry* bulletEntry, OpVector& res)
 {
     VisibilityCallback callback;
-    callback.m_filterOutEntry = bulletEntry;
+    //callback.m_filterOutEntry = bulletEntry;
 
     //This entry is an observer; check what it can see after it has moved
     if (bulletEntry->viewSphere) {
         callback.m_entries.clear();
-
-        // std::vector<Root> appear, disappear;
 
         callback.m_collisionFilterGroup = VISIBILITY_MASK_OBSERVABLE;
         callback.m_collisionFilterMask = VISIBILITY_MASK_OBSERVER;

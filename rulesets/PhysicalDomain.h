@@ -63,6 +63,8 @@ class PhysicalDomain: public Domain
 
         virtual bool isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const;
 
+        virtual void getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<std::string>& entityIdList) const;
+
         virtual void processVisibilityForMovedEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res);
 
         virtual void processDisappearanceOfEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res);
@@ -106,7 +108,6 @@ class PhysicalDomain: public Domain
                 std::array<float, 65 * 65>* data;
                 btRigidBody* rigidBody;
         };
-
 
         std::unordered_map<int, BulletEntry*> m_entries;
 
