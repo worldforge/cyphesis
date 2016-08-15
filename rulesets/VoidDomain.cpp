@@ -33,7 +33,7 @@ VoidDomain::~VoidDomain()
 {
 }
 
-double VoidDomain::tick(double t)
+double VoidDomain::tick(double t, OpVector& res)
 {
     return .0;
 }

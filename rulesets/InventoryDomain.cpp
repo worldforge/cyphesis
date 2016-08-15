@@ -60,7 +60,7 @@ InventoryDomain::~InventoryDomain()
 {
 }
 
-double InventoryDomain::tick(double t)
+double InventoryDomain::tick(double t, OpVector& res)
 {
     return 0;
 }

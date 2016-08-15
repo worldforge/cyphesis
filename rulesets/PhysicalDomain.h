@@ -42,6 +42,8 @@ class btDiscreteDynamicsWorld;
 class btRigidBody;
 class btCollisionShape;
 class btVector3;
+class btSphereShape;
+class btCollisionObject;
 
 class PropertyBase;
 
@@ -57,7 +59,7 @@ class PhysicalDomain: public Domain
         PhysicalDomain(LocatedEntity& entity);
         virtual ~PhysicalDomain();
 
-        virtual double tick(double t);
+        virtual double tick(double t, OpVector& res);
 
         virtual bool isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const;
 
@@ -76,6 +78,7 @@ class PhysicalDomain: public Domain
     protected:
 
         class PhysicalMotionState;
+        class VisibilityCallback;
         struct BulletEntry
         {
                 LocatedEntity* entity;
@@ -84,6 +87,18 @@ class PhysicalDomain: public Domain
                 sigc::connection propertyUpdatedConnection;
                 Location lastSentLocation;
                 PhysicalMotionState* motionState;
+
+                btCollisionObject* visibilitySphere;
+                btCollisionObject* viewSphere;
+
+                /**
+                 * Set of entries which are observing by this.
+                 */
+                std::set<BulletEntry*> observedByThis;
+                /**
+                 * Set of entries which are observing this.
+                 */
+                std::set<BulletEntry*> observingThis;
         };
 
         struct TerrainEntry
@@ -97,6 +112,7 @@ class PhysicalDomain: public Domain
 
         std::set<BulletEntry*> m_movingEntities;
         std::set<BulletEntry*> m_lastMovingEntities;
+        std::set<BulletEntry*> m_dirtyEntries;
 
         /**
          * @brief A map of all entities that currently are self-propelling.
@@ -109,6 +125,8 @@ class PhysicalDomain: public Domain
         btSequentialImpulseConstraintSolver* m_constraintSolver;
         btBroadphaseInterface* m_broadphase;
         btDiscreteDynamicsWorld * m_dynamicsWorld;
+
+        btCollisionWorld* m_visibilityWorld;
 
         sigc::connection m_propertyAppliedConnection;
 
@@ -184,6 +202,9 @@ class PhysicalDomain: public Domain
         void processMovedEntity(BulletEntry& bulletEntry);
 
         btCollisionShape* createCollisionShape(const Atlas::Message::MapType& map, const WFMath::Vector<3>& size);
+
+        void updateVisibilityOfDirtyEntities(OpVector& res);
+        void updateVisibilityOfEntry(BulletEntry* entry, OpVector& res);
 
 };
 

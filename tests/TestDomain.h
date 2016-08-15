@@ -35,7 +35,7 @@ class TestDomain : public Domain
         {
         }
 
-        double tick(double t)
+        double tick(double t, OpVector& res)
         {
             return .0;
         }

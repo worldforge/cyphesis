@@ -64,7 +64,11 @@ void DomainProperty::apply(LocatedEntity * entity)
                 domain = new PhysicalDomain(*entity);
                 sInstanceState.replaceState(entity, domain);
                 entity->setFlags(entity_domain);
-                float timeUntilNextTick = domain->tick(0);
+                OpVector res;
+                float timeUntilNextTick = domain->tick(0, res);
+                for (auto& op : res) {
+                    entity->sendWorld(op);
+                }
                 if (timeUntilNextTick > 0) {
                     scheduleTick(*entity, timeUntilNextTick);
                 }
@@ -119,7 +123,7 @@ HandlerResult DomainProperty::tick_handler(LocatedEntity * entity, const Operati
 
             float timeNow = op->getSeconds();
 
-            float timeForNextTick = domain->tick(timeNow);
+            float timeForNextTick = domain->tick(timeNow, res);
             if (timeForNextTick > 0) {
                 scheduleTick(*entity, timeForNextTick);
             }

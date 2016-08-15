@@ -31,7 +31,7 @@ class InventoryDomain : public Domain
         InventoryDomain(LocatedEntity& entity);
         virtual ~InventoryDomain();
 
-        virtual double tick(double t);
+        virtual double tick(double t, OpVector& res);
 
 
         virtual bool isEntityVisibleFor(const LocatedEntity& observingEntity,

@@ -98,6 +98,16 @@ bool fuzzyEquals(const WFMath::Vector<3>& a, const WFMath::Vector<3>& b, float e
 }
 
 /**
+ * Mask used by visibility checks for observing entries (i.e. creatures etc.).
+ */
+int VISIBILITY_MASK_OBSERVER = 1;
+
+/**
+ * Mask used by visibility checks for entries that can be observed (i.e. most entities).
+ */
+int VISIBILITY_MASK_OBSERVABLE = 2;
+
+/**
  * Mask used by all physical items. They should collide with other physical items, and with the terrain.
  */
 int COLLISION_MASK_PHYSICAL = 1;
@@ -127,7 +137,7 @@ class PhysicalDomain::PhysicalMotionState: public btMotionState
         ///synchronizes world transform from user to physics
         virtual void getWorldTransform(btTransform& centerOfMassWorldTrans) const
         {
-//            debug_print("getWorldTransform: "<< m_entity.describeEntity());
+            //            debug_print("getWorldTransform: "<< m_entity.describeEntity());
             centerOfMassWorldTrans = m_worldTrans * m_centerOfMassOffset.inverse();
         }
 
@@ -138,9 +148,10 @@ class PhysicalDomain::PhysicalMotionState: public btMotionState
 
             LocatedEntity& entity = *m_bulletEntry.entity;
             m_domain.m_movingEntities.insert(&m_bulletEntry);
+            m_domain.m_dirtyEntries.insert(&m_bulletEntry);
 
-//            debug_print(
-//                    "setWorldTransform: "<< m_entity.describeEntity() << " (" << centerOfMassWorldTrans.getOrigin().x() << "," << centerOfMassWorldTrans.getOrigin().y() << "," << centerOfMassWorldTrans.getOrigin().z() << ")");
+            //            debug_print(
+            //                    "setWorldTransform: "<< m_entity.describeEntity() << " (" << centerOfMassWorldTrans.getOrigin().x() << "," << centerOfMassWorldTrans.getOrigin().y() << "," << centerOfMassWorldTrans.getOrigin().z() << ")");
 
             btTransform newTransform = m_bulletEntry.rigidBody->getCenterOfMassTransform() * m_centerOfMassOffset;
 
@@ -165,6 +176,14 @@ class PhysicalDomain::PhysicalMotionState: public btMotionState
             transProp->getTranslate() = WFMath::Vector<3>(entity.m_location.m_pos);
             transProp->getRotate() = entity.m_location.m_orientation;
 
+            if (m_bulletEntry.visibilitySphere) {
+                m_bulletEntry.visibilitySphere->setWorldTransform(m_bulletEntry.rigidBody->getWorldTransform());
+            }
+
+            if (m_bulletEntry.viewSphere) {
+                m_bulletEntry.viewSphere->setWorldTransform(m_bulletEntry.rigidBody->getWorldTransform());
+            }
+
         }
 };
 
@@ -174,7 +193,8 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
         m_collisionConfiguration(new btDefaultCollisionConfiguration()), m_dispatcher(new btCollisionDispatcher(m_collisionConfiguration)), m_constraintSolver(
                 new btSequentialImpulseConstraintSolver()),
         //Use a dynamic broadphase; this might be worth revisiting for optimizations
-        m_broadphase(new btDbvtBroadphase()), m_dynamicsWorld(new btDiscreteDynamicsWorld(m_dispatcher, m_broadphase, m_constraintSolver, m_collisionConfiguration)), m_ticksPerSecond(
+        m_broadphase(new btDbvtBroadphase()), m_dynamicsWorld(new btDiscreteDynamicsWorld(m_dispatcher, m_broadphase, m_constraintSolver, m_collisionConfiguration)), m_visibilityWorld(
+                new btCollisionWorld(new btCollisionDispatcher(new btDefaultCollisionConfiguration()), new btDbvtBroadphase(), new btDefaultCollisionConfiguration())), m_ticksPerSecond(
                 15), m_lastTickTime(0)
 {
 
@@ -210,7 +230,7 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
         //planeBody->setFriction(.0f);
         m_dynamicsWorld->addRigidBody(planeBody);
     }
-//m_dynamicsWorld->setGravity(btVector3(0, -10, 0));
+    //m_dynamicsWorld->setGravity(btVector3(0, -10, 0));
 }
 
 PhysicalDomain::~PhysicalDomain()
@@ -247,6 +267,8 @@ PhysicalDomain::~PhysicalDomain()
     delete m_constraintSolver;
     delete m_dispatcher;
     delete m_collisionConfiguration;
+    // delete m_visibilityWorld->getBroadphase();
+    delete m_visibilityWorld;
     m_propertyAppliedConnection.disconnect();
 }
 
@@ -355,37 +377,194 @@ void PhysicalDomain::createDomainBorders()
 
 bool PhysicalDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const
 {
+    //Is it observing the domain entity?
     if (&observedEntity == &m_entity) {
         return true;
     }
 
-    //We need to check the distance to the entity being looked at, and make sure that both the looking entity and
-    //the entity being looked at belong to the same domain
-    const Location* ancestor;
-    //We'll optimize for the case when a child entity is looking at the domain entity, by sending the looked at entity first, since this is the most common case.
-    //The squareDistanceWithAncestor() method will first try to find the first entity being sent by walking upwards from the second entity being sent (if
-    //it fails it will try other approaches).
-    float distance = squareDistanceWithAncestor(observedEntity.m_location, observingEntity.m_location, &ancestor);
-    if (ancestor == nullptr) {
-        //No common ancestor found
-        return false;
-    } else {
-        //Make sure that the ancestor is the domain entity, or a child entity.
-        while (ancestor != &m_entity.m_location) {
-            if (ancestor->m_loc == nullptr) {
-                //We've reached the top of the parents chain without hitting our domain entity; the ancestor isn't a child of the domain entity.
-                return false;
-            }
-            ancestor = &ancestor->m_loc->m_location;
-        }
-    }
-    //If we get here we know that the ancestor is a child of the domain entity.
-    //Now we need to determine if the looking entity can see the looked at entity. The default way of doing this is by comparing the size of the looked at entity with the distance,
-    //but this check can be overridden if the looked at entity is either wielded or outfitted by a parent entity.
-    if ((observedEntity.m_location.squareBoxSize() / distance) > consts::square_sight_factor) {
+    //Is it observing itself?
+    if (&observingEntity == &observedEntity) {
         return true;
     }
-    return false;
+
+    auto observingI = m_entries.find(observingEntity.getIntId());
+    if (observingI == m_entries.end()) {
+        return false;
+    }
+    auto observedI = m_entries.find(observedEntity.getIntId());
+    if (observedI == m_entries.end()) {
+        return false;
+    }
+
+    BulletEntry* observedEntry = observedI->second;
+    BulletEntry* observingEntry = observingI->second;
+    return observedEntry->observingThis.find(observingEntry) != observedEntry->observingThis.end();
+
+    //    observedI->second.
+    //
+    //
+    //    //We need to check the distance to the entity being looked at, and make sure that both the looking entity and
+    //    //the entity being looked at belong to the same domain
+    //    const Location* ancestor;
+    //    //We'll optimize for the case when a child entity is looking at the domain entity, by sending the looked at entity first, since this is the most common case.
+    //    //The squareDistanceWithAncestor() method will first try to find the first entity being sent by walking upwards from the second entity being sent (if
+    //    //it fails it will try other approaches).
+    //    float distance = squareDistanceWithAncestor(observedEntity.m_location, observingEntity.m_location, &ancestor);
+    //    if (ancestor == nullptr) {
+    //        //No common ancestor found
+    //        return false;
+    //    } else {
+    //        //Make sure that the ancestor is the domain entity, or a child entity.
+    //        while (ancestor != &m_entity.m_location) {
+    //            if (ancestor->m_loc == nullptr) {
+    //                //We've reached the top of the parents chain without hitting our domain entity; the ancestor isn't a child of the domain entity.
+    //                return false;
+    //            }
+    //            ancestor = &ancestor->m_loc->m_location;
+    //        }
+    //    }
+    //    //If we get here we know that the ancestor is a child of the domain entity.
+    //    //Now we need to determine if the looking entity can see the looked at entity. The default way of doing this is by comparing the size of the looked at entity with the distance,
+    //    //but this check can be overridden if the looked at entity is either wielded or outfitted by a parent entity.
+    //    if ((observedEntity.m_location.squareBoxSize() / distance) > consts::square_sight_factor) {
+    //        return true;
+    //    }
+    //    return false;
+}
+
+class PhysicalDomain::VisibilityCallback: public btCollisionWorld::ContactResultCallback
+{
+    public:
+
+        BulletEntry* m_filterOutEntry;
+
+        std::set<BulletEntry*> m_entries;
+
+        virtual btScalar addSingleResult(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap,
+                int partId1, int index1)
+        {
+            BulletEntry* bulletEntry = static_cast<BulletEntry*>(colObj1Wrap->m_collisionObject->getUserPointer());
+            if (m_filterOutEntry == bulletEntry) {
+                return 0;
+            }
+            m_entries.insert(bulletEntry);
+            return btScalar(1.0);
+        }
+
+};
+
+void PhysicalDomain::updateVisibilityOfEntry(BulletEntry* bulletEntry, OpVector& res)
+{
+    VisibilityCallback callback;
+    callback.m_filterOutEntry = bulletEntry;
+
+    //This entry is an observer; check what it can see after it has moved
+    if (bulletEntry->viewSphere) {
+        callback.m_entries.clear();
+
+        // std::vector<Root> appear, disappear;
+
+        callback.m_collisionFilterGroup = VISIBILITY_MASK_OBSERVABLE;
+        callback.m_collisionFilterMask = VISIBILITY_MASK_OBSERVER;
+        m_visibilityWorld->contactTest(bulletEntry->viewSphere, callback);
+        debug_print("observed by "<< bulletEntry->entity->describeEntity() << ": " << callback.m_entries.size());
+
+        auto& observed = bulletEntry->observedByThis;
+
+        //See which entities became visible, and which sight was lost of.
+        for (BulletEntry* viewedEntry : callback.m_entries) {
+            auto I = observed.find(viewedEntry);
+            if (I != observed.end()) {
+                //It was already seen; do nothing special
+                observed.erase(I);
+            } else {
+                //Send Appear
+                debug_print("appear: " << viewedEntry->entity->describeEntity() << " for " << bulletEntry->entity->describeEntity());
+                Appearance appear;
+                Anonymous that_ent;
+                that_ent->setId(viewedEntry->entity->getId());
+                that_ent->setStamp(viewedEntry->entity->getSeq());
+                appear->setArgs1(that_ent);
+                appear->setTo(bulletEntry->entity->getId());
+                res.push_back(appear);
+
+                viewedEntry->observingThis.insert(bulletEntry);
+            }
+        }
+
+        for (BulletEntry* disappearedEntry : observed) {
+            //Send disappearence
+            debug_print("disappear: " << disappearedEntry->entity->describeEntity() << " for " << bulletEntry->entity->describeEntity());
+            Disappearance disappear;
+            Anonymous that_ent;
+            that_ent->setId(disappearedEntry->entity->getId());
+            that_ent->setStamp(disappearedEntry->entity->getSeq());
+            disappear->setArgs1(that_ent);
+            disappear->setTo(bulletEntry->entity->getId());
+            res.push_back(disappear);
+
+            disappearedEntry->observingThis.erase(bulletEntry);
+        }
+
+        bulletEntry->observedByThis = std::move(callback.m_entries);
+    }
+
+    //This entry is something which can be observed; check what can see it after it has moved
+    if (bulletEntry->visibilitySphere) {
+        callback.m_collisionFilterGroup = VISIBILITY_MASK_OBSERVER;
+        callback.m_collisionFilterMask = VISIBILITY_MASK_OBSERVABLE;
+        callback.m_entries.clear();
+
+        m_visibilityWorld->contactTest(bulletEntry->visibilitySphere, callback);
+        debug_print("observing " << bulletEntry->entity->describeEntity() << ": " << callback.m_entries.size());
+
+        auto& observing = bulletEntry->observingThis;
+        //See which entities got sight of this, and for which sight was lost.
+        for (BulletEntry* viewingEntry : callback.m_entries) {
+            auto I = observing.find(viewingEntry);
+            if (I != observing.end()) {
+                //It was already seen; do nothing special
+                observing.erase(I);
+            } else {
+                //Send appear
+                debug_print("appear: " << bulletEntry->entity->describeEntity() << " for " << viewingEntry->entity->describeEntity());
+                Appearance appear;
+                Anonymous that_ent;
+                that_ent->setId(bulletEntry->entity->getId());
+                that_ent->setStamp(bulletEntry->entity->getSeq());
+                appear->setArgs1(that_ent);
+                appear->setTo(viewingEntry->entity->getId());
+                res.push_back(appear);
+
+                viewingEntry->observedByThis.insert(bulletEntry);
+            }
+        }
+
+        for (BulletEntry* noLongerObservingEntry : observing) {
+            //Send disappearence
+            debug_print("disappear: " << bulletEntry->entity->describeEntity() << " for " << noLongerObservingEntry->entity->describeEntity());
+            Disappearance disappear;
+            Anonymous that_ent;
+            that_ent->setId(bulletEntry->entity->getId());
+            that_ent->setStamp(bulletEntry->entity->getSeq());
+            disappear->setArgs1(that_ent);
+            disappear->setTo(noLongerObservingEntry->entity->getId());
+            res.push_back(disappear);
+
+            noLongerObservingEntry->observedByThis.erase(bulletEntry);
+        }
+
+        bulletEntry->observingThis = std::move(callback.m_entries);
+
+    }
+}
+
+void PhysicalDomain::updateVisibilityOfDirtyEntities(OpVector& res)
+{
+    for (auto& bulletEntry : m_dirtyEntries) {
+        updateVisibilityOfEntry(bulletEntry, res);
+    }
+    m_dirtyEntries.clear();
 }
 
 void PhysicalDomain::calculateVisibility(std::vector<Root>& appear, std::vector<Root>& disappear, Anonymous& this_ent, const LocatedEntity& parent,
@@ -436,13 +615,13 @@ void PhysicalDomain::calculateVisibility(std::vector<Root>& appear, std::vector<
             if (could_see) {
                 // We are losing sight of that object
                 disappear.push_back(that_ent);
-//                debug(std::cout << moved_entity.getId() << ": losing sight of " << other->getId() << std::endl
-//                ;);
+                //                debug(std::cout << moved_entity.getId() << ": losing sight of " << other->getId() << std::endl
+                //                ;);
             } else /*if (can_see)*/{
                 // We are gaining sight of that object
                 appear.push_back(that_ent);
-//                debug(std::cout << moved_entity.getId() << ": gaining sight of " << other->getId() << std::endl
-//                ;);
+                //                debug(std::cout << moved_entity.getId() << ": gaining sight of " << other->getId() << std::endl
+                //                ;);
             }
             //        } else {
             //            //We've seen this entity before, and we're still seeing it. Check if there are any children that's now changing visibility.
@@ -455,64 +634,64 @@ void PhysicalDomain::calculateVisibility(std::vector<Root>& appear, std::vector<
 
 void PhysicalDomain::processVisibilityForMovedEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res)
 {
-    debug_print("PhysicalDomain::processVisibilityForMovedEntity testing range for " << moved_entity.describeEntity());
-    std::vector<Root> appear, disappear;
-
-    Anonymous this_ent;
-    this_ent->setId(moved_entity.getId());
-    this_ent->setStamp(moved_entity.getSeq());
-
-    calculateVisibility(appear, disappear, this_ent, m_entity, moved_entity, old_loc, res);
-
-    if (!appear.empty()) {
-        // Send an operation to ourselves with a list of entities
-        // we are gaining sight of
-        Appearance a;
-        a->setArgs(appear);
-        a->setTo(moved_entity.getId());
-        res.push_back(a);
-    }
-    if (!disappear.empty()) {
-        // Send an operation to ourselves with a list of entities
-        // we are losing sight of
-        Disappearance d;
-        d->setArgs(disappear);
-        d->setTo(moved_entity.getId());
-        res.push_back(d);
-    }
+//    debug_print("PhysicalDomain::processVisibilityForMovedEntity testing range for " << moved_entity.describeEntity());
+//    std::vector<Root> appear, disappear;
+//
+//    Anonymous this_ent;
+//    this_ent->setId(moved_entity.getId());
+//    this_ent->setStamp(moved_entity.getSeq());
+//
+//    calculateVisibility(appear, disappear, this_ent, m_entity, moved_entity, old_loc, res);
+//
+//    if (!appear.empty()) {
+//        // Send an operation to ourselves with a list of entities
+//        // we are gaining sight of
+//        Appearance a;
+//        a->setArgs(appear);
+//        a->setTo(moved_entity.getId());
+//        res.push_back(a);
+//    }
+//    if (!disappear.empty()) {
+//        // Send an operation to ourselves with a list of entities
+//        // we are losing sight of
+//        Disappearance d;
+//        d->setArgs(disappear);
+//        d->setTo(moved_entity.getId());
+//        res.push_back(d);
+//    }
 }
 
 void PhysicalDomain::processDisappearanceOfEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res)
 {
 
-    float fromSquSize = old_loc.squareBoxSize();
-    Anonymous this_ent;
-    this_ent->setId(moved_entity.getId());
-    this_ent->setStamp(moved_entity.getSeq());
-
-    //We need to get the position of the moved entity in relation to the parent.
-    const Point3D old_pos = relativePos(m_entity.m_location, old_loc);
-
-    assert(m_entity.m_contains != nullptr);
-    for (const LocatedEntity* other : *m_entity.m_contains) {
-        //No need to check if we iterate over ourselved; that won't happen if we've disappeared
-
-        assert(other != nullptr);
-
-        // Build appear and disappear lists, and send disappear operations
-        // to perceptive entities saying that we are disappearing
-        if (other->isPerceptive()) {
-            float old_dist = squareDistance(other->m_location.pos(), old_pos);
-            if ((fromSquSize / old_dist) > consts::square_sight_factor) {
-                // Send operation to the entity in question so it
-                // knows it is losing sight of us.
-                Disappearance d;
-                d->setArgs1(this_ent);
-                d->setTo(other->getId());
-                res.push_back(d);
-            }
-        }
-    }
+//    float fromSquSize = old_loc.squareBoxSize();
+//    Anonymous this_ent;
+//    this_ent->setId(moved_entity.getId());
+//    this_ent->setStamp(moved_entity.getSeq());
+//
+//    //We need to get the position of the moved entity in relation to the parent.
+//    const Point3D old_pos = relativePos(m_entity.m_location, old_loc);
+//
+//    assert(m_entity.m_contains != nullptr);
+//    for (const LocatedEntity* other : *m_entity.m_contains) {
+//        //No need to check if we iterate over ourselved; that won't happen if we've disappeared
+//
+//        assert(other != nullptr);
+//
+//        // Build appear and disappear lists, and send disappear operations
+//        // to perceptive entities saying that we are disappearing
+//        if (other->isPerceptive()) {
+//            float old_dist = squareDistance(other->m_location.pos(), old_pos);
+//            if ((fromSquSize / old_dist) > consts::square_sight_factor) {
+//                // Send operation to the entity in question so it
+//                // knows it is losing sight of us.
+//                Disappearance d;
+//                d->setArgs1(this_ent);
+//                d->setTo(other->getId());
+//                res.push_back(d);
+//            }
+//        }
+//    }
 }
 
 float PhysicalDomain::checkCollision(LocatedEntity& entity, CollisionData& collisionData)
@@ -615,7 +794,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     short collisionGroup;
     getCollisionFlagsForEntity(entity, collisionGroup, collisionMask);
 
-//TODO: Use properties for geometry instead.
+    //TODO: Use properties for geometry instead.
 
     if (!bbox.isValid()) {
         return;
@@ -668,7 +847,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         mass = .0f;
     }
 
-//"Center of mass offset" is the inverse of the center of the object in relation to origo.
+    //"Center of mass offset" is the inverse of the center of the object in relation to origo.
     btVector3 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
 
     btQuaternion orientation = entity.m_location.m_orientation.isValid() ? Convert::toBullet(entity.m_location.m_orientation) : btQuaternion(0, 0, 0, 1);
@@ -710,7 +889,34 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         } else {
             I->second.second = btVelocity;
         }
+    }
 
+    float radius = entity.m_location.radius();
+    {
+        btSphereShape* visSphere = new btSphereShape(radius * 100);
+        btCollisionObject* visObject = new btCollisionObject();
+        visObject->setCollisionShape(visSphere);
+        visObject->setWorldTransform(btTransform(btQuaternion::getIdentity(), pos));
+        visObject->setUserPointer(entry);
+
+        m_visibilityWorld->addCollisionObject(visObject, VISIBILITY_MASK_OBSERVER, VISIBILITY_MASK_OBSERVABLE);
+//        m_visibilityWorld->addCollisionObject(visObject);
+        entry->visibilitySphere = visObject;
+    }
+    if (entity.isPerceptive()) {
+        btSphereShape* viewSphere = new btSphereShape(0.5);
+        btCollisionObject* visObject = new btCollisionObject();
+        visObject->setCollisionShape(viewSphere);
+        visObject->setWorldTransform(btTransform(btQuaternion::getIdentity(), pos));
+        visObject->setUserPointer(entry);
+        m_visibilityWorld->addCollisionObject(visObject, VISIBILITY_MASK_OBSERVABLE, VISIBILITY_MASK_OBSERVER);
+//        m_visibilityWorld->addCollisionObject(visObject);
+        entry->viewSphere = visObject;
+    }
+    OpVector res;
+    updateVisibilityOfEntry(entry, res);
+    for (auto& op : res) {
+        m_entity.sendWorld(op);
     }
 }
 
@@ -870,7 +1076,7 @@ void PhysicalDomain::getCollisionFlagsForEntity(const LocatedEntity& entity, sho
     collisionMask = COLLISION_MASK_PHYSICAL | COLLISION_MASK_TERRAIN;
     collisionGroup = COLLISION_MASK_PHYSICAL;
 
-//Non solid objects should collide with the terrain only.
+    //Non solid objects should collide with the terrain only.
     if (!entity.m_location.isSolid()) {
         collisionMask = COLLISION_MASK_TERRAIN;
         collisionGroup = COLLISION_MASK_NON_PHYSICAL;
@@ -905,6 +1111,14 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
             if (pos.isValid()) {
                 debug_print("PhysicalDomain::new pos " << entity.describeEntity() << " " << pos);
                 transform.setOrigin(Convert::toBullet(pos));
+                if (entry->viewSphere) {
+                    entry->viewSphere->setWorldTransform(transform);
+                }
+                if (entry->visibilitySphere) {
+                    entry->visibilitySphere->setWorldTransform(transform);
+                }
+
+                m_dirtyEntries.insert(entry);
             }
             entry->rigidBody->setWorldTransform(transform);
         }
@@ -964,11 +1178,11 @@ void PhysicalDomain::sendMoveSight(BulletEntry& entry)
 
     entity.sendWorld(s);
 
-    std::vector<Operation> res;
-    processVisibilityForMovedEntity(entity, entry.lastSentLocation, res);
-    for (auto& op : res) {
-        entity.sendWorld(op);
-    }
+//    std::vector<Operation> res;
+//    processVisibilityForMovedEntity(entity, entry.lastSentLocation, res);
+//    for (auto& op : res) {
+//        entity.sendWorld(op);
+//    }
     entity.onUpdated();
     entry.lastSentLocation = entity.m_location;
 }
@@ -979,7 +1193,7 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry)
     const Location& lastSentLocation = bulletEntry.lastSentLocation;
     const Location& location = entity.m_location;
 
-//    bool orientationChange = entity.m_location.m_orientation != lastSentLocation.m_orientation;
+    //    bool orientationChange = entity.m_location.m_orientation != lastSentLocation.m_orientation;
     bool orientationChange = !location.m_orientation.isEqualTo(lastSentLocation.m_orientation, 0.1f);
 
     bool hadValidVelocity = lastSentLocation.m_velocity.isValid();
@@ -1025,7 +1239,7 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry)
 
 }
 
-double PhysicalDomain::tick(double timeNow)
+double PhysicalDomain::tick(double timeNow, OpVector& res)
 {
     if (m_lastTickTime == 0) {
         m_lastTickTime = timeNow;
@@ -1038,7 +1252,10 @@ double PhysicalDomain::tick(double timeNow)
 
     m_dynamicsWorld->stepSimulation(currentTickSize, 10);
 
-//Check all entities that moved this tick.
+    //Perhaps not do this each tick?
+    updateVisibilityOfDirtyEntities(res);
+
+    //Check all entities that moved this tick.
     for (BulletEntry* entry : m_movingEntities) {
         //Check if the entity also moved last tick.
         if (m_lastMovingEntities.find(entry) == m_lastMovingEntities.end()) {
@@ -1059,7 +1276,7 @@ double PhysicalDomain::tick(double timeNow)
         processMovedEntity(*entry);
     }
 
-//Stash those entities that moved this tick for checking next tick.
+    //Stash those entities that moved this tick for checking next tick.
     std::swap(m_movingEntities, m_lastMovingEntities);
 
     return timeNow + (1.0 / m_ticksPerSecond);

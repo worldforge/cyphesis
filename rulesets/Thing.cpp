@@ -419,28 +419,28 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
         // FIXME Why only for a perceptive moving entity? Surely other entities
         // must gain/lose sight of this entity if it's moving?
-        if (isPerceptive()) {
-            checkVisibility(old_loc, res);
-        }
+//        if (isPerceptive()) {
+//            checkVisibility(old_loc, res);
+//        }
     }
 
     //Check if we've moved between domains. First check if the location has changed, and if so
     //check if the domain also has changed.
-    if (new_loc != 0) {
-        if (old_loc.m_loc != m_location.m_loc && old_loc.m_loc) {
-            auto domain_old = old_loc.m_loc->getMovementDomain();
-            if (domain_old && domain_old != domain) {
-                //Everything that saw us at the old domain should get a disappear op.
-                //We shouldn't need to send disappear ops to ourselves though, since the top
-                //level entity will have changed.
-                //TODO: We can't use a broadcast op here, since the broadcast will look at the
-                //location of the entity when it's processed, not when it's created. We should
-                //alter this so that any op that's to be broadcast instead should include
-                //the location data in the op itself.
-                domain_old->processDisappearanceOfEntity(*this, old_loc, res);
-            }
-        }
-    }
+//    if (new_loc != 0) {
+//        if (old_loc.m_loc != m_location.m_loc && old_loc.m_loc) {
+//            auto domain_old = old_loc.m_loc->getMovementDomain();
+//            if (domain_old && domain_old != domain) {
+//                //Everything that saw us at the old domain should get a disappear op.
+//                //We shouldn't need to send disappear ops to ourselves though, since the top
+//                //level entity will have changed.
+//                //TODO: We can't use a broadcast op here, since the broadcast will look at the
+//                //location of the entity when it's processed, not when it's created. We should
+//                //alter this so that any op that's to be broadcast instead should include
+//                //the location data in the op itself.
+//                domain_old->processDisappearanceOfEntity(*this, old_loc, res);
+//            }
+//        }
+//    }
     m_seq++;
 
     onUpdated();
@@ -455,12 +455,12 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 /// @param res Resulting operations are returned here
 void Thing::checkVisibility(const Location & old_loc, OpVector & res)
 {
-    if (m_location.m_loc) {
-        auto domain = m_location.m_loc->getMovementDomain();
-        if (domain) {
-            domain->processVisibilityForMovedEntity(*this, old_loc, res);
-        }
-    }
+//    if (m_location.m_loc) {
+//        auto domain = m_location.m_loc->getMovementDomain();
+//        if (domain) {
+//            domain->processVisibilityForMovedEntity(*this, old_loc, res);
+//        }
+//    }
 }
 
 void Thing::SetOperation(const Operation & op, OpVector & res)
