@@ -942,16 +942,31 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
     debug_print("PhysicalDomain::removeEntity " << entity.describeEntity());
     auto I = m_entries.find(entity.getIntId());
     assert(I != m_entries.end());
-    m_lastMovingEntities.erase(I->second);
-    if (I->second->rigidBody) {
-        m_dynamicsWorld->removeRigidBody(I->second->rigidBody);
-        delete I->second->motionState;
-        delete I->second->rigidBody;
+    BulletEntry* entry = I->second;
+
+    m_lastMovingEntities.erase(entry);
+    if (entry->rigidBody) {
+        m_dynamicsWorld->removeRigidBody(entry->rigidBody);
+        delete entry->motionState;
+        delete entry->rigidBody;
     }
-    if (I->second->collisionShape) {
-        delete I->second->collisionShape;
+    if (entry->collisionShape) {
+        delete entry->collisionShape;
     }
-    I->second->propertyUpdatedConnection.disconnect();
+    entry->propertyUpdatedConnection.disconnect();
+    if (entry->viewSphere) {
+        m_visibilityWorld->removeCollisionObject(entry->viewSphere);
+        delete entry->viewSphere;
+    }
+    if (entry->visibilitySphere) {
+        m_visibilityWorld->removeCollisionObject(entry->visibilitySphere);
+        delete entry->visibilitySphere;
+    }
+    for (BulletEntry* observer : entry->observingThis) {
+        observer->observedByThis.erase(entry);
+    }
+    m_dirtyEntries.erase(entry);
+
     delete I->second;
     m_entries.erase(I);
 
