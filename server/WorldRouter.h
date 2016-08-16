@@ -51,7 +51,11 @@ class WorldRouter : public BaseWorld {
     /// Map of spawns
     SpawnDict m_spawns;
   protected:
-    bool broadcastPerception(const Atlas::Objects::Operation::RootOperation &) const;
+    /// \brief Determine if the broadcast is allowed.
+    ///
+    /// Check the type of operation, and work out if broadcasting is allowed.
+    /// @return True if broadcasting is allowed.
+    bool shouldBroadcastPerception(const Atlas::Objects::Operation::RootOperation &) const;
     void deliverTo(const Atlas::Objects::Operation::RootOperation &,
                    LocatedEntity &);
     void resumeWorld();

@@ -418,15 +418,7 @@ void WorldRouter::message(const Operation & op, LocatedEntity & ent)
                     << std::flush;);
 }
 
-/// \brief Determine the broadcast list to be used to broadcast an operation.
-///
-/// Check the type of operation, and work out which list of entities
-/// it should be broadcast to. This will be perceptives in case 
-/// a perception operation, or all entities in any other case.
-/// This should probably go, as there is essentially no sane reason
-/// for broadcasting a random op to all entities.
-/// @return a reference to the list of entities to be used for braodcast.
-bool WorldRouter::broadcastPerception(const Operation & op) const
+bool WorldRouter::shouldBroadcastPerception(const Operation & op) const
 {
     int op_class = op->getClassNo();
     if (op_class == Atlas::Objects::Operation::SIGHT_NO ||
@@ -528,7 +520,7 @@ void WorldRouter::operation(const Operation & op, LocatedEntity & from)
 
         deliverTo(op, *to_entity);
 
-    } else if (broadcastPerception(op)) {
+    } else if (shouldBroadcastPerception(op)) {
         if (from.m_location.m_loc) {
             // Where broadcasts go depends on type of op
             for (auto& entity : m_perceptives) {
