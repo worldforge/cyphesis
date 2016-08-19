@@ -195,5 +195,19 @@
 			</map>
 		</list>
 	</map>
-
+	<map>
+		<string name="id">apple_free</string>
+		<string name="objtype">archetype</string>
+		<list name="parents">
+			<string>archetype</string>
+		</list>
+		<list name="entities">
+			<map>
+				<list name="parents">
+					<string>apple</string>
+				</list>
+				<string name="mode">none</string>
+			</map>
+		</list>
+	</map>
 </atlas>
