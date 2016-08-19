@@ -151,19 +151,6 @@ class PhysicalDomain: public Domain
         std::vector<btRigidBody*> m_borderPlanes;
 
         /**
-         * @brief Calculates visibility changes for the moved entity, processing the children of the "parent" parameter.
-         * @param appear A list of appear ops, to be filled.
-         * @param disappear A list of disappear ops, to be filled.
-         * @param this_ent Atlas entity representing the entity that was moved.
-         * @param parent The parent entity, which children will be iterated over.
-         * @param moved_entity The entity that was moved.
-         * @param old_loc The old location.
-         * @param res
-         */
-        void calculateVisibility(std::vector<Atlas::Objects::Root>& appear, std::vector<Atlas::Objects::Root>& disappear, Atlas::Objects::Entity::Anonymous& this_ent,
-                const LocatedEntity& parent, const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res) const;
-
-        /**
          * @brief Creates borders around the domain, which prevents entities from "escaping".
          *
          * This will be done by adding planes matching the bbox of the entity to which the domain belongs.

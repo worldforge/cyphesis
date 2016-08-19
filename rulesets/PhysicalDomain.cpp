@@ -31,6 +31,7 @@
 #include "TransformsProperty.h"
 #include "GeometryProperty.h"
 #include "AngularFactorProperty.h"
+#include "VisibilityProperty.h"
 
 #include "physics/Collision.h"
 #include "physics/Convert.h"
@@ -96,6 +97,11 @@ bool fuzzyEquals(const WFMath::Vector<3>& a, const WFMath::Vector<3>& b, float e
 {
     return fuzzyEquals(a.x(), b.x(), epsilon) && fuzzyEquals(a.y(), b.y(), epsilon) && fuzzyEquals(a.z(), b.z(), epsilon);
 }
+
+/**
+ * How much the visibility sphere should be scaled against the size of the bbox.
+ */
+float VISIBILITY_SCALING_FACTOR = 100;
 
 /**
  * Mask used by visibility checks for observing entries (i.e. creatures etc.).
@@ -404,37 +410,6 @@ bool PhysicalDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, co
     BulletEntry* observedEntry = observedI->second;
     BulletEntry* observingEntry = observingI->second;
     return observedEntry->observingThis.find(observingEntry) != observedEntry->observingThis.end();
-
-    //    observedI->second.
-    //
-    //
-    //    //We need to check the distance to the entity being looked at, and make sure that both the looking entity and
-    //    //the entity being looked at belong to the same domain
-    //    const Location* ancestor;
-    //    //We'll optimize for the case when a child entity is looking at the domain entity, by sending the looked at entity first, since this is the most common case.
-    //    //The squareDistanceWithAncestor() method will first try to find the first entity being sent by walking upwards from the second entity being sent (if
-    //    //it fails it will try other approaches).
-    //    float distance = squareDistanceWithAncestor(observedEntity.m_location, observingEntity.m_location, &ancestor);
-    //    if (ancestor == nullptr) {
-    //        //No common ancestor found
-    //        return false;
-    //    } else {
-    //        //Make sure that the ancestor is the domain entity, or a child entity.
-    //        while (ancestor != &m_entity.m_location) {
-    //            if (ancestor->m_loc == nullptr) {
-    //                //We've reached the top of the parents chain without hitting our domain entity; the ancestor isn't a child of the domain entity.
-    //                return false;
-    //            }
-    //            ancestor = &ancestor->m_loc->m_location;
-    //        }
-    //    }
-    //    //If we get here we know that the ancestor is a child of the domain entity.
-    //    //Now we need to determine if the looking entity can see the looked at entity. The default way of doing this is by comparing the size of the looked at entity with the distance,
-    //    //but this check can be overridden if the looked at entity is either wielded or outfitted by a parent entity.
-    //    if ((observedEntity.m_location.squareBoxSize() / distance) > consts::square_sight_factor) {
-    //        return true;
-    //    }
-    //    return false;
 }
 
 void PhysicalDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<std::string>& entityIdList) const
@@ -584,131 +559,13 @@ void PhysicalDomain::updateVisibilityOfDirtyEntities(OpVector& res)
     m_dirtyEntries.clear();
 }
 
-void PhysicalDomain::calculateVisibility(std::vector<Root>& appear, std::vector<Root>& disappear, Anonymous& this_ent, const LocatedEntity& parent,
-        const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res) const
-{
-
-    float fromSquSize = moved_entity.m_location.squareBoxSize();
-
-    //We need to get the position of the moved entity in relation to the parent.
-    const Point3D new_pos = relativePos(parent.m_location, moved_entity.m_location);
-    const Point3D old_pos = relativePos(parent.m_location, old_loc);
-
-    //For now we'll only consider movement within the same loc. This should change as we extend the domain code.
-    assert(parent.m_contains != nullptr);
-    for (const LocatedEntity* other : *parent.m_contains) {
-        if (other == &moved_entity) {
-            continue;
-        }
-
-        assert(other != nullptr);
-        float old_dist = squareDistance(other->m_location.pos(), old_pos), new_dist = squareDistance(other->m_location.pos(), new_pos), squ_size =
-                other->m_location.squareBoxSize();
-
-        // Build appear and disappear lists, and send disappear operations
-        // to perceptive entities saying that we are disappearing
-        if (other->isPerceptive()) {
-            bool was_in_range = ((fromSquSize / old_dist) > consts::square_sight_factor), is_in_range = ((fromSquSize / new_dist) > consts::square_sight_factor);
-            if (was_in_range != is_in_range) {
-                if (was_in_range) {
-                    // Send operation to the entity in question so it
-                    // knows it is losing sight of us.
-                    Disappearance d;
-                    d->setArgs1(this_ent);
-                    d->setTo(other->getId());
-                    res.push_back(d);
-                }
-                //Note that we don't send any Appear ops for those entities that we now move within sight range of.
-                //This is because these will receive a Move op anyway as part of the broadcast, which informs them
-                //that an entity has moved within sight range anyway.
-            }
-        }
-
-        bool could_see = ((squ_size / old_dist) > consts::square_sight_factor), can_see = ((squ_size / new_dist) > consts::square_sight_factor);
-        if (could_see ^ can_see) {
-            Anonymous that_ent;
-            that_ent->setId(other->getId());
-            that_ent->setStamp(other->getSeq());
-            if (could_see) {
-                // We are losing sight of that object
-                disappear.push_back(that_ent);
-                //                debug(std::cout << moved_entity.getId() << ": losing sight of " << other->getId() << std::endl
-                //                ;);
-            } else /*if (can_see)*/{
-                // We are gaining sight of that object
-                appear.push_back(that_ent);
-                //                debug(std::cout << moved_entity.getId() << ": gaining sight of " << other->getId() << std::endl
-                //                ;);
-            }
-            //        } else {
-            //            //We've seen this entity before, and we're still seeing it. Check if there are any children that's now changing visibility.
-            //            if (other->m_contains && !other->m_contains->empty()) {
-            //                calculateVisibility(appear, disappear, this_ent, *other, moved_entity, old_loc, res);
-            //            }
-        }
-    }
-}
 
 void PhysicalDomain::processVisibilityForMovedEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res)
 {
-//    debug_print("PhysicalDomain::processVisibilityForMovedEntity testing range for " << moved_entity.describeEntity());
-//    std::vector<Root> appear, disappear;
-//
-//    Anonymous this_ent;
-//    this_ent->setId(moved_entity.getId());
-//    this_ent->setStamp(moved_entity.getSeq());
-//
-//    calculateVisibility(appear, disappear, this_ent, m_entity, moved_entity, old_loc, res);
-//
-//    if (!appear.empty()) {
-//        // Send an operation to ourselves with a list of entities
-//        // we are gaining sight of
-//        Appearance a;
-//        a->setArgs(appear);
-//        a->setTo(moved_entity.getId());
-//        res.push_back(a);
-//    }
-//    if (!disappear.empty()) {
-//        // Send an operation to ourselves with a list of entities
-//        // we are losing sight of
-//        Disappearance d;
-//        d->setArgs(disappear);
-//        d->setTo(moved_entity.getId());
-//        res.push_back(d);
-//    }
 }
 
 void PhysicalDomain::processDisappearanceOfEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res)
 {
-
-//    float fromSquSize = old_loc.squareBoxSize();
-//    Anonymous this_ent;
-//    this_ent->setId(moved_entity.getId());
-//    this_ent->setStamp(moved_entity.getSeq());
-//
-//    //We need to get the position of the moved entity in relation to the parent.
-//    const Point3D old_pos = relativePos(m_entity.m_location, old_loc);
-//
-//    assert(m_entity.m_contains != nullptr);
-//    for (const LocatedEntity* other : *m_entity.m_contains) {
-//        //No need to check if we iterate over ourselved; that won't happen if we've disappeared
-//
-//        assert(other != nullptr);
-//
-//        // Build appear and disappear lists, and send disappear operations
-//        // to perceptive entities saying that we are disappearing
-//        if (other->isPerceptive()) {
-//            float old_dist = squareDistance(other->m_location.pos(), old_pos);
-//            if ((fromSquSize / old_dist) > consts::square_sight_factor) {
-//                // Send operation to the entity in question so it
-//                // knows it is losing sight of us.
-//                Disappearance d;
-//                d->setArgs1(this_ent);
-//                d->setTo(other->getId());
-//                res.push_back(d);
-//            }
-//        }
-//    }
 }
 
 float PhysicalDomain::checkCollision(LocatedEntity& entity, CollisionData& collisionData)
@@ -792,6 +649,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     btVector3 angularFactor(1, 1, 1);
 
     BulletEntry* entry = new BulletEntry();
+    m_entries.insert(std::make_pair(entity.getIntId(), entry));
     entry->entity = &entity;
 
     //Handle the special case of the entity being a "creator".
@@ -810,29 +668,6 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     short collisionMask;
     short collisionGroup;
     getCollisionFlagsForEntity(entity, collisionGroup, collisionMask);
-
-    //TODO: Use properties for geometry instead.
-
-    if (!bbox.isValid()) {
-        return;
-    }
-
-    auto size = bbox.highCorner() - bbox.lowCorner();
-    const GeometryProperty* geometryProp = entity.getPropertyClassFixed<GeometryProperty>();
-    if (geometryProp) {
-        auto& geometryMap = geometryProp->data();
-        entry->collisionShape = createCollisionShape(geometryMap, size);
-    } else {
-        auto btSize = Convert::toBullet(size * 0.5).absolute();
-        entry->collisionShape = new btBoxShape(btSize);
-    }
-
-    btVector3 inertia;
-    if (mass == 0) {
-        inertia = btVector3(0, 0, 0);
-    } else {
-        entry->collisionShape->calculateLocalInertia(mass, inertia);
-    }
 
     std::string mode;
     auto modeProp = entity.getPropertyClassFixed<ModeProperty>();
@@ -864,53 +699,81 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         mass = .0f;
     }
 
-    //"Center of mass offset" is the inverse of the center of the object in relation to origo.
-    btVector3 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
-
     btQuaternion orientation = entity.m_location.m_orientation.isValid() ? Convert::toBullet(entity.m_location.m_orientation) : btQuaternion(0, 0, 0, 1);
     btVector3 pos = entity.m_location.m_pos.isValid() ? Convert::toBullet(entity.m_location.m_pos) : btVector3(0, 0, 0);
-    btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(mass, nullptr, entry->collisionShape, inertia);
 
-    const Property<float>* frictionProp = entity.getPropertyType<float>("friction");
-    if (frictionProp) {
-        rigidBodyCI.m_friction = frictionProp->data();
-    }
+    if (bbox.isValid()) {
+        //"Center of mass offset" is the inverse of the center of the object in relation to origo.
+        btVector3 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
 
-    debug_print(
-            "PhysicsDomain adding entity " << entity.describeEntity() << " with mass " << mass << " and inertia ("<< inertia.x() << ","<< inertia.y() << ","<< inertia.z() << ")");
-
-    entry->rigidBody = new btRigidBody(rigidBodyCI);
-    entry->motionState = new PhysicalMotionState(*entry, *this, btTransform(orientation, pos), btTransform(btQuaternion::getIdentity(), centerOfMassOffset));
-    entry->rigidBody->setMotionState(entry->motionState);
-    entry->rigidBody->setAngularFactor(angularFactor);
-
-    m_dynamicsWorld->addRigidBody(entry->rigidBody, collisionGroup, collisionMask);
-
-    if (mass != 0) {
-        //Should all entities be active when added?
-        entry->rigidBody->activate();
-    }
-
-    entry->propertyUpdatedConnection = entity.propertyApplied.connect(sigc::bind(sigc::mem_fun(this, &PhysicalDomain::childEntityPropertyApplied), entry));
-
-    m_entries.insert(std::make_pair(entity.getIntId(), entry));
-
-    const PropelProperty* propelProp = entity.getPropertyClassFixed<PropelProperty>();
-    if (propelProp && propelProp->data().isValid() && propelProp->data() != WFMath::Vector<3>::ZERO()) {
-        btVector3 btVelocity = Convert::toBullet(propelProp->data());
-        btVelocity.m_floats[1] = 0; //Don't allow vertical velocity to be set.
-
-        auto I = m_propellingEntries.find(entity.getIntId());
-        if (I == m_propellingEntries.end()) {
-            m_propellingEntries.insert(std::make_pair(entity.getIntId(), std::make_pair(entry, btVelocity)));
+        auto size = bbox.highCorner() - bbox.lowCorner();
+        const GeometryProperty* geometryProp = entity.getPropertyClassFixed<GeometryProperty>();
+        if (geometryProp) {
+            auto& geometryMap = geometryProp->data();
+            entry->collisionShape = createCollisionShape(geometryMap, size);
         } else {
-            I->second.second = btVelocity;
+            auto btSize = Convert::toBullet(size * 0.5).absolute();
+            entry->collisionShape = new btBoxShape(btSize);
+        }
+
+        btVector3 inertia;
+        if (mass == 0) {
+            inertia = btVector3(0, 0, 0);
+        } else {
+            entry->collisionShape->calculateLocalInertia(mass, inertia);
+        }
+
+        btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(mass, nullptr, entry->collisionShape, inertia);
+
+        const Property<float>* frictionProp = entity.getPropertyType<float>("friction");
+        if (frictionProp) {
+            rigidBodyCI.m_friction = frictionProp->data();
+        }
+
+        debug_print(
+                "PhysicsDomain adding entity " << entity.describeEntity() << " with mass " << mass << " and inertia ("<< inertia.x() << ","<< inertia.y() << ","<< inertia.z() << ")");
+
+        entry->rigidBody = new btRigidBody(rigidBodyCI);
+        entry->motionState = new PhysicalMotionState(*entry, *this, btTransform(orientation, pos), btTransform(btQuaternion::getIdentity(), centerOfMassOffset));
+        entry->rigidBody->setMotionState(entry->motionState);
+        entry->rigidBody->setAngularFactor(angularFactor);
+
+        m_dynamicsWorld->addRigidBody(entry->rigidBody, collisionGroup, collisionMask);
+
+        if (mass != 0) {
+            //Should all entities be active when added?
+            entry->rigidBody->activate();
+        }
+
+        entry->propertyUpdatedConnection = entity.propertyApplied.connect(sigc::bind(sigc::mem_fun(this, &PhysicalDomain::childEntityPropertyApplied), entry));
+
+        const PropelProperty* propelProp = entity.getPropertyClassFixed<PropelProperty>();
+        if (propelProp && propelProp->data().isValid() && propelProp->data() != WFMath::Vector<3>::ZERO()) {
+            btVector3 btVelocity = Convert::toBullet(propelProp->data());
+            btVelocity.m_floats[1] = 0; //Don't allow vertical velocity to be set.
+
+            auto I = m_propellingEntries.find(entity.getIntId());
+            if (I == m_propellingEntries.end()) {
+                m_propellingEntries.insert(std::make_pair(entity.getIntId(), std::make_pair(entry, btVelocity)));
+            } else {
+                I->second.second = btVelocity;
+            }
         }
     }
 
-    float radius = entity.m_location.radius();
     {
-        btSphereShape* visSphere = new btSphereShape(radius * 100);
+
+        btSphereShape* visSphere = new btSphereShape(0);
+        const VisibilityProperty* visProp = entity.getPropertyClass<VisibilityProperty>("visibility");
+        if (visProp) {
+            visSphere->setUnscaledRadius(visProp->data());
+        } else if (entity.m_location.bBox().isValid() && entity.m_location.radius() > 0) {
+            float radius = entity.m_location.radius();
+            visSphere->setUnscaledRadius(radius * 100);
+        } else {
+            visSphere->setUnscaledRadius(0.25 * VISIBILITY_SCALING_FACTOR);
+        }
+
         btCollisionObject* visObject = new btCollisionObject();
         visObject->setCollisionShape(visSphere);
         visObject->setWorldTransform(btTransform(btQuaternion::getIdentity(), pos));
@@ -1153,6 +1016,9 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
                 m_dirtyEntries.insert(entry);
             }
             entry->rigidBody->setWorldTransform(transform);
+            if (entry->rigidBody->getInvMass() != 0) {
+                entry->rigidBody->activate();
+            }
         }
 
         if (velocity.isValid()) {
@@ -1279,7 +1145,7 @@ double PhysicalDomain::tick(double timeNow, OpVector& res)
 
     m_movingEntities.clear();
 
-    float currentTickSize = timeNow - m_lastTickTime;
+    float currentTickSize = (timeNow - m_lastTickTime) * consts::time_multiplier;
     m_lastTickTime = timeNow;
 
     m_dynamicsWorld->stepSimulation(currentTickSize, 10);
@@ -1315,5 +1181,5 @@ double PhysicalDomain::tick(double timeNow, OpVector& res)
     //Stash those entities that moved this tick for checking next tick.
     std::swap(m_movingEntities, m_lastMovingEntities);
 
-    return timeNow + (1.0 / m_ticksPerSecond);
+    return timeNow + (1.0 / (m_ticksPerSecond * consts::time_multiplier));
 }
