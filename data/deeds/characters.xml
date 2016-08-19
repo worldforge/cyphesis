@@ -71,6 +71,7 @@
         <map name="default">
           <string name="shape">capsule-z</string>
         </map>
+        <string name="visibility">public</string>
       </map>
       <map name="angularfactor">
         <list name="default">
