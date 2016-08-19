@@ -1,5 +1,4 @@
 // Cyphesis Online RPG Server and AI Engine
-#include <rulesets/mind/AwareMind.h>
 // Copyright (C) 2000 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
@@ -34,6 +33,7 @@
 
 #include "BaseMind.h"
 #include "Character.h"
+#include "rulesets/mind/AwareMind.h"
 
 #include "navigation/Steering.h"
 
