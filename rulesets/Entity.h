@@ -24,8 +24,6 @@
 #include <iostream>
 #include <unordered_map>
 
-class Motion;
-
 /// \brief This is the base class from which all in-game objects inherit.
 ///
 /// This class should not normally be instantiated directly.
@@ -37,8 +35,7 @@ class Motion;
 /// \ingroup EntityClasses
 class Entity : public LocatedEntity {
   protected:
-    /// Motion behavior of this entity
-    Motion * m_motion;
+
     /// Map of delegate properties.
     std::multimap<int, std::string> m_delegates;
 
@@ -51,13 +48,7 @@ class Entity : public LocatedEntity {
     explicit Entity(const std::string & id, long intId);
     virtual ~Entity();
 
-    /// \brief Accessor for pointer to motion object
-    Motion * motion() const {
-        return m_motion;
-    }
-
     virtual void setType(const TypeNode * t);
-
 
     virtual PropertyBase * setAttr(const std::string & name,
                                    const Atlas::Message::Element &);

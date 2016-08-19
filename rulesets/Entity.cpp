@@ -80,7 +80,7 @@ std::unordered_map<const TypeNode*, std::unique_ptr<int>> Entity::s_monitorsMap;
 
 /// \brief Entity constructor
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(nullptr)
+        LocatedEntity(id, intId)
 {
 }
 
@@ -94,7 +94,6 @@ Entity::~Entity()
         }
     }
 
-    delete m_motion;
 }
 
 void Entity::setType(const TypeNode * t) {
