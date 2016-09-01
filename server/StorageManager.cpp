@@ -500,7 +500,7 @@ void StorageManager::restoreChildren(LocatedEntity * parent)
         if (!child->m_location.pos().isValid()) {
             std::cout << "No pos data" << std::endl << std::flush;
             log(ERROR, compose("Entity %1 restored from database has no "
-                               "POS data. Ignored.", child->getId()));
+                               "POS data. Ignored.", child->describeEntity()));
             delete child;
             continue;
         }
