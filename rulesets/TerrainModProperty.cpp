@@ -21,6 +21,7 @@
 #include "LocatedEntity.h"
 #include "TerrainModTranslator.h"
 #include "TerrainProperty.h"
+#include "Domain.h"
 
 #include "common/compose.hpp"
 #include "common/log.h"
@@ -85,12 +86,24 @@ void TerrainModProperty::remove(LocatedEntity *owner, const std::string & name)
 
 void TerrainModProperty::apply(LocatedEntity * owner)
 {
+    if (!owner->m_location.pos().isValid()) {
+        log(ERROR, "Terrain Modifier applied to entity with no valid position. " + owner->describeEntity());
+        return;
+    }
+
     // Find the terrain
-    const TerrainProperty * terrain = getTerrain(owner);
+    LocatedEntity* terrainHolder;
+    const TerrainProperty * terrain = getTerrain(owner, &terrainHolder);
 
     if (terrain == 0) {
         log(ERROR, "Terrain Modifier could not find terrain");
         return;
+    }
+
+    std::vector<WFMath::AxisBox<2>> terrainAreas;
+
+    if (m_modptr) {
+        terrainAreas.push_back(m_modptr->bbox());
     }
 
     // Parse the Atlas data for our mod
@@ -101,14 +114,19 @@ void TerrainModProperty::apply(LocatedEntity * owner)
         return;
     }
 
+    terrainAreas.push_back(mod->bbox());
+
     // If there is an old mod ...
     if (m_modptr != 0) {
         // and the new one is the same, just update
         if (mod == m_modptr) {
             terrain->updateMod(m_modptr);
+            if (terrainHolder->getMovementDomain()) {
+                terrainHolder->getMovementDomain()->refreshTerrain(terrainAreas);
+            }
             return;
         }
-        // If the mod has changed then remove the old one and dlete it.
+        // If the mod has changed then remove the old one and delete it.
         terrain->removeMod(m_modptr);
         delete m_modptr;
     }
@@ -119,6 +137,9 @@ void TerrainModProperty::apply(LocatedEntity * owner)
     terrain->addMod(m_modptr);
     m_modptr->setContext(new TerrainContext(owner));
     m_modptr->context()->setId(owner->getId());
+    if (terrainHolder->getMovementDomain()) {
+        terrainHolder->getMovementDomain()->refreshTerrain(terrainAreas);
+    }
 }
 
 HandlerResult TerrainModProperty::operation(LocatedEntity * ent,
@@ -135,7 +156,8 @@ HandlerResult TerrainModProperty::operation(LocatedEntity * ent,
 
 void TerrainModProperty::move(LocatedEntity* owner)
 {
-    const TerrainProperty* terrain = getTerrain(owner);
+    LocatedEntity* terrainHolder;
+    const TerrainProperty * terrain = getTerrain(owner, &terrainHolder);
 
     if (terrain == 0) {
         log(ERROR, "Terrain Modifier could not find terrain");
@@ -153,17 +175,30 @@ void TerrainModProperty::move(LocatedEntity* owner)
         log(ERROR, "Terrain Modifier mysteriously changed when moved!");
         return;
     }
+
     terrain->updateMod(mod);
+    if (terrainHolder->getMovementDomain()) {
+        terrainHolder->getMovementDomain()->refreshTerrain(std::vector<WFMath::AxisBox<2>>{mod->bbox()});
+    }
+
 }
 
 void TerrainModProperty::remove(LocatedEntity * owner)
 {
     if (m_modptr) {
-        const TerrainProperty* terrain = getTerrain(owner);
+        LocatedEntity* terrainHolder;
+        const TerrainProperty * terrain = getTerrain(owner, &terrainHolder);
         if (terrain) {
+            std::vector<WFMath::AxisBox<2>> terrainAreas;
+            terrainAreas.push_back(m_modptr->bbox());
             terrain->removeMod(m_modptr);
             delete m_modptr;
-            m_modptr = 0;
+            m_modptr = nullptr;
+
+            if (terrainHolder->getMovementDomain()) {
+                terrainHolder->getMovementDomain()->refreshTerrain(terrainAreas);
+            }
+
         } else {
             log(WARNING, "Terrain property was removed from an entity from which no terrain was available.");
         }

@@ -51,6 +51,8 @@ class TerrainProperty : public PropertyBase {
     /// \brief Reference to variable storing the set of newly created points
     PointSet m_createdTerrain;
 
+    std::vector<WFMath::AxisBox<2>> m_changedAreas;
+
     Mercator::TileShader* createShaders(const Atlas::Message::ListType& surfaceList);
 
   public:
@@ -66,6 +68,7 @@ class TerrainProperty : public PropertyBase {
     virtual HandlerResult operation(LocatedEntity *,
                                     const Operation &,
                                     OpVector &);
+    void apply(LocatedEntity* entity);
 
     // Applies a Mercator::TerrainMod to the terrain
     void addMod(const Mercator::TerrainMod *) const;

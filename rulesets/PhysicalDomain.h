@@ -77,6 +77,8 @@ class PhysicalDomain: public Domain
         virtual void applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity,
                 const WFMath::AxisBox<3>& bbox);
 
+        virtual void refreshTerrain(const std::vector<WFMath::AxisBox<2>>& areas);
+
     protected:
 
         class PhysicalMotionState;

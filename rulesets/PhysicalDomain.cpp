@@ -872,11 +872,13 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
 
         ModeProperty* modeProp = static_cast<ModeProperty*>(&prop);
 
-        const std::string& mode = modeProp->data();
+//        const std::string& mode = modeProp->data();
 
-        if (mode != "fixed") {
-            adjustToTerrainFn();
-        }
+        applyNewPositionForEntity(bulletEntry, bulletEntry->entity->m_location.m_pos);
+
+//        if (mode != "fixed") {
+//            adjustToTerrainFn();
+//        }
 
         //When altering mass we need to first remove and then re-add the body, for some reason.
         m_dynamicsWorld->removeRigidBody(bulletEntry->rigidBody);
@@ -1056,6 +1058,73 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
         }
 
         //TODO: handle scaling of bbox
+    }
+}
+
+void PhysicalDomain::refreshTerrain(const std::vector<WFMath::AxisBox<2>>& areas)
+{
+
+    std::set<Mercator::Segment*> dirtySegments;
+
+    const TerrainProperty* terrainProperty = m_entity.getPropertyClass<TerrainProperty>("terrain");
+    if (terrainProperty) {
+        const Mercator::Terrain& terrain = terrainProperty->getData();
+        float res = terrain.getSpacing();
+        for (auto& area : areas) {
+            for (float x = area.lowCorner().x(); x <= area.highCorner().x(); x += res) {
+                for (float y = area.lowCorner().y(); y <= area.highCorner().y(); y += res) {
+                    int ix = std::lround(std::floor(x / res));
+                    int iy = std::lround(std::floor(y / res));
+                    Mercator::Segment* segment = terrain.getSegment(ix, iy);
+                    if (segment) {
+                        dirtySegments.insert(segment);
+                    }
+                }
+            }
+        }
+    }
+
+    float friction = 1.0f;
+    const Property<float>* frictionProp = m_entity.getPropertyType<float>("friction");
+    if (frictionProp) {
+        friction = frictionProp->data();
+    }
+
+    float worldHeight = m_entity.m_location.bBox().highCorner().z() - m_entity.m_location.bBox().lowCorner().z();
+
+    for (auto& segment : dirtySegments) {
+
+        debug_print("rebuilding segment at x: " << segment->getXRef() << " y: " << segment->getYRef());
+
+        buildTerrainPage(*segment, friction);
+
+        VisibilityCallback callback;
+
+        auto area = segment->getRect();
+        WFMath::Vector<2> size = area.highCorner() - area.lowCorner();
+
+        btBoxShape boxShape(btVector3(size.x() * 0.5, worldHeight, size.y() * 0.5));
+        btCollisionObject collObject;
+        collObject.setCollisionShape(&boxShape);
+        auto center = area.getCenter();
+        collObject.setWorldTransform(btTransform(btQuaternion::getIdentity(), btVector3(center.x(), 0, -center.y())));
+        m_dynamicsWorld->contactTest(&collObject, callback);
+
+        debug_print("Matched "<< callback.m_entries.size() << " entries");
+        for (BulletEntry* entry : callback.m_entries) {
+            debug_print("Adjusting " << entry->entity->describeEntity());
+            Anonymous anon;
+            anon->setId(entry->entity->getId());
+            std::vector<double> posList;
+            addToEntity(entry->entity->m_location.m_pos, posList);
+            anon->setPos(posList);
+            Move move;
+            move->setTo(entry->entity->getId());
+            move->setFrom(entry->entity->getId());
+            move->setArgs1(anon);
+            entry->entity->sendWorld(move);
+        }
+
     }
 }
 

@@ -18,6 +18,7 @@
 
 #include "TerrainProperty.h"
 #include "LocatedEntity.h"
+#include "Domain.h"
 
 #include "common/BaseWorld.h"
 #include "common/log.h"
@@ -141,6 +142,11 @@ void TerrainProperty::set(const Element & ent)
 
     const Pointstore & base_points = m_data.getPoints();
 
+    int minX = std::numeric_limits<int>::max();
+    int maxX = std::numeric_limits<int>::min();
+    int minY = std::numeric_limits<int>::max();
+    int maxY = std::numeric_limits<int>::min();
+
     MapType::const_iterator I = t.find("points");
     if (I != t.end() && I->second.isMap()) {
         const MapType & points = I->second.asMap();
@@ -173,12 +179,27 @@ void TerrainProperty::set(const Element & ent)
                 // else do nothing, as its currently waiting to be added.
             }
             
+
+            minX = std::min(minX, x);
+            maxX = std::max(maxX, x);
+            minY = std::min(minY, y);
+            maxY = std::max(maxY, y);
+
             m_data.setBasePoint(x, y, point[2].asNum());
+
             // FIXME Add support for roughness and falloff, as done
             // by damien in equator and FIXMEd out by me
 
             
         }
+    }
+
+    if (minX != std::numeric_limits<int>::max()) {
+        float spacing = m_data.getSpacing();
+        WFMath::Point<2> minCorner(minX * spacing, minY * spacing);
+        WFMath::Point<2> maxCorner(maxX * spacing, maxY * spacing);
+        WFMath::AxisBox<2> changedArea(minCorner, maxCorner);
+        m_changedAreas.push_back(changedArea);
     }
 
     I = t.find("surfaces");
@@ -198,6 +219,17 @@ void TerrainProperty::set(const Element & ent)
         }
     }
 
+}
+
+void TerrainProperty::apply(LocatedEntity* entity) {
+
+    if (!m_changedAreas.empty()) {
+        Domain* domain = entity->getMovementDomain();
+        if (domain) {
+            domain->refreshTerrain(m_changedAreas);
+            m_changedAreas.clear();
+        }
+    }
 }
 
 Mercator::TileShader* TerrainProperty::createShaders(const Atlas::Message::ListType& surfaceList) {

@@ -107,6 +107,10 @@ class Domain {
 
     }
 
+    virtual void refreshTerrain(const std::vector<WFMath::AxisBox<2>>& areas)
+    {
+
+    }
 
 };
 
