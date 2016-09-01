@@ -36,8 +36,6 @@ class buildidtest : public Cyphesis::TestBase
   public:
     buildidtest()
     {
-        ADD_TEST(buildidtest::test_time);
-        ADD_TEST(buildidtest::test_date);
         ADD_TEST(buildidtest::test_id);
     }
 
@@ -49,20 +47,8 @@ class buildidtest : public Cyphesis::TestBase
     {
     }
 
-    void test_time();
-    void test_date();
     void test_id();
 };
-
-void buildidtest::test_time()
-{
-    ASSERT_GREATER(strlen(consts::buildTime), 0u);
-}
-
-void buildidtest::test_date()
-{
-    ASSERT_GREATER(strlen(consts::buildDate), 0u);
-}
 
 void buildidtest::test_id()
 {

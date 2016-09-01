@@ -30,8 +30,5 @@ namespace consts {
   const long rootWorldIntId = 0L;
   // Version of the software we are running
   const char * version = PACKAGE_VERSION;
-  // Time this server was built
-  // const char * buildTime = __TIME__;
-  // const char * buildDate = __DATE__;
 
 }
