@@ -27,17 +27,9 @@ Domain::~Domain()
 {
 }
 
-float Domain::constrainHeight(LocatedEntity& entity, LocatedEntity * parent,
-                              const Point3D & pos,
-                              const std::string & mode)
-{
-    return 0.f;
-}
-
-float Domain::tick(double t)
+double Domain::tick(double t, OpVector& res)
 {
     return 0;
 }
-
 
 #endif /* STUBDOMAIN_H_ */

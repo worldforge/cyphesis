@@ -115,10 +115,10 @@ int main()
 
 // stubs
 
-#include "Property_stub_impl.h"
+//#include "Property_stub_impl.h"
 
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0)
+        LocatedEntity(id, intId)
 {
 }
 

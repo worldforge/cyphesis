@@ -151,7 +151,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 
 #include <Mercator/TerrainMod.h>
 
-const TerrainProperty * TerrainEffectorProperty::getTerrain(LocatedEntity * owner)
+const TerrainProperty * TerrainEffectorProperty::getTerrain(LocatedEntity * owner, LocatedEntity**)
 {
     return stub_getTerrain_return;
 }

@@ -144,7 +144,7 @@ void PropertyCoverage::testDataAppend(const Element & o)
 
 
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0)
+        LocatedEntity(id, intId)
 {
 }
 

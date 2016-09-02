@@ -28,7 +28,7 @@ RULESETS_TESTS = LocatedEntityTest EntityTest PlantTest \
                  StackableTest ThingTest WorldTest \
                  CharacterTest CreatorTest ThingupdatePropertiesTest \
                  ContainerTest TaskTest EntityPropertyTest \
-                 AllPropertyTest ScriptTest MotionTest AreaPropertyTest \
+                 AllPropertyTest ScriptTest AreaPropertyTest \
                  BBoxPropertyTest CalendarPropertyTest \
                  LinePropertyTest MindPropertyTest \
                  OutfitPropertyTest SolidPropertyTest \
@@ -39,7 +39,7 @@ RULESETS_TESTS = LocatedEntityTest EntityTest PlantTest \
                  SpawnPropertyTest VisibilityPropertyTest \
                  ExternalPropertyTest BurnSpeedPropertyTest \
                  BiomassPropertyTest DecaysPropertyTest \
-                 BulletDomainTest AtlasPropertiesTest \
+                 AtlasPropertiesTest \
                  SpawnerPropertyTest \
                  BaseMindTest MemEntityTest MemMapTest MovementTest \
                  PedestrianTest \
@@ -59,8 +59,8 @@ RULESETS_TESTS = LocatedEntityTest EntityTest PlantTest \
                  TerrainModTest PythonClassTest \
                  TerrainEffectorPropertyTest SuspendedPropertyTest \
                  EntityFilterTest EntityFilterParserTest \
-                 EntityFilterProvidersTest TransformsPropertyTest \
-                 ModePropertyTest ModeSpecPropertyTest
+                 EntityFilterProvidersTest \
+                 ModePropertyTest 
 
 RULESETS_INTEGRATION_TESTS = TerrainPropertyintegration \
                              PropertyEntityintegration \
@@ -554,12 +554,6 @@ ModePropertyTest_SOURCES = ModePropertyTest.cpp \
 ModePropertyTest_LDADD = \
         $(top_builddir)/rulesets/ModeProperty.o \
         $(top_builddir)/common/Property.o
-        
-ModeSpecPropertyTest_SOURCES = ModeSpecPropertyTest.cpp \
-        PropertyCoverage.cpp PropertyCoverage.h
-ModeSpecPropertyTest_LDADD = \
-        $(top_builddir)/rulesets/ModeSpecProperty.o \
-        $(top_builddir)/common/Property.o
                 
 OutfitPropertyTest_SOURCES = OutfitPropertyTest.cpp \
         PropertyCoverage.cpp PropertyCoverage.h
@@ -599,12 +593,6 @@ TerrainModPropertyTest_LDADD = \
         $(top_builddir)/rulesets/TerrainProperty.o \
         $(top_builddir)/common/Property.o \
         $(TERRAIN_LIBS)
-
-TransformsPropertyTest_SOURCES = TransformsPropertyTest.cpp \
-        PropertyCoverage.cpp PropertyCoverage.h
-TransformsPropertyTest_LDADD = \
-        $(top_builddir)/rulesets/TransformsProperty.o \
-        $(top_builddir)/common/Property.o
 
 PythonClassTest_SOURCES = PythonClassTest.cpp \
         python_testers.cpp python_testers.h

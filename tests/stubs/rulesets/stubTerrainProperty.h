@@ -68,3 +68,8 @@ bool TerrainProperty::getHeightAndNormal(float x,
 {
     return true;
 }
+
+void TerrainProperty::apply(LocatedEntity* entity) {
+
+}
+

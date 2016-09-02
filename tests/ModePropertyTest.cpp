@@ -25,6 +25,7 @@
 
 #include "PropertyCoverage.h"
 #include "stubs/common/stubCustom.h"
+#include "stubs/rulesets/stubQuaternionProperty.h"
 
 #include "rulesets/ModeProperty.h"
 
@@ -43,8 +44,6 @@ int main()
 }
 
 #include "TestWorld.h"
-#include "stubs/rulesets/stubTransformsProperty.h"
-#include "stubs/rulesets/stubModeSpecProperty.h"
 
 void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {

@@ -42,13 +42,17 @@ void DomainProperty::apply(LocatedEntity * entity)
 
 DomainProperty * DomainProperty::copy() const
 {
-    return nullptr;
+    return new DomainProperty();
 }
 
 Domain* DomainProperty::getDomain(const LocatedEntity *) const {
     return nullptr;
 }
 
+HandlerResult DomainProperty::operation(LocatedEntity * e, const Operation & op, OpVector & res)
+{
+    return OPERATION_IGNORED;
+}
 
 
 

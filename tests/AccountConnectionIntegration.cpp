@@ -508,12 +508,10 @@ void logEvent(LogEvent lev, const std::string & msg)
 #include "stubs/server/stubExternalMindsManager.h"
 #include "stubs/server/stubExternalMindsConnection.h"
 #include "stubs/common/stubOperationsDispatcher.h"
+#include "stubs/modules/stubLocation.h"
 
 PropertyManager * PropertyManager::m_instance = 0;
 
-Location::Location() : m_loc(0)
-{
-}
 
 long integerId(const std::string & id)
 {

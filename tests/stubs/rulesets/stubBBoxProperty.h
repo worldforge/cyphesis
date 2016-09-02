@@ -48,7 +48,7 @@ void BBoxProperty::add(const std::string & key,
 
 BBoxProperty * BBoxProperty::copy() const
 {
-    return 0;
+    return new BBoxProperty();
 }
 
 

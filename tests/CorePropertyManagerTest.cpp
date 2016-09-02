@@ -40,7 +40,6 @@
 #include "TestWorld.h"
 
 #include "stubs/rulesets/stubCharacter.h"
-#include "stubs/rulesets/stubTransformsProperty.h"
 #include "stubs/rulesets/stubPropelProperty.h"
 
 #include <Atlas/Objects/SmartPtr.h>
@@ -267,8 +266,11 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "stubs/rulesets/stubDomainProperty.h"
 #include "stubs/rulesets/stubSuspendedProperty.h"
 #include "stubs/rulesets/stubModeProperty.h"
-#include "stubs/rulesets/stubModeSpecProperty.h"
 #include "stubs/rulesets/stubForcesProperty.h"
+#include "stubs/rulesets/stubQuaternionProperty.h"
+#include "stubs/rulesets/stubAngularFactorProperty.h"
+#include "stubs/rulesets/stubGeometryProperty.h"
+#include "stubs/rulesets/stubDensityProperty.h"
 
 
 Account::Account(Connection * conn,
@@ -650,7 +652,7 @@ ExternalProperty * ExternalProperty::copy() const
 }
 
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0)
+        LocatedEntity(id, intId)
 {
 }
 

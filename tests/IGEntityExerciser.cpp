@@ -206,13 +206,6 @@ void IGEntityExerciser::runOperations()
         }
         this->flushOperations(ov);
 
-        move_arg->setId(this->m_ent.getId());
-        this->m_ent.MoveOperation(op, ov);
-        if (!ov.empty()) {
-            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
-        }
-        this->flushOperations(ov);
-
         move_arg->setLoc("242");
         this->m_ent.MoveOperation(op, ov);
         if (!ov.empty()) {
@@ -471,9 +464,6 @@ void IGEntityExerciser::runOperations()
         this->flushOperations(ov);
 
         this->m_ent.m_location.m_velocity = Vector3D();
-        if (this->m_ent.motion() != 0) {
-            op->setRefno(this->m_ent.motion()->serialno());
-        }
         this->m_ent.UpdateOperation(op, ov);
         this->flushOperations(ov);
 

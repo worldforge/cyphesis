@@ -40,6 +40,7 @@
 #include "common/SystemTime.h"
 #include "common/Tick.h"
 #include "common/Variable.h"
+#include "common/TypeNode.h"
 
 #include <Atlas/Objects/Anonymous.h>
 
@@ -54,7 +55,8 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Operation::Tick;
 
-class ThingIntegration: public Cyphesis::TestBase {
+class ThingIntegration: public Cyphesis::TestBase
+{
     public:
         ThingIntegration();
 
@@ -64,14 +66,16 @@ class ThingIntegration: public Cyphesis::TestBase {
         void test_visibility();
 };
 
-class ThingExt: public Thing {
+class ThingExt: public Thing
+{
     public:
         Domain* domain;
 
         explicit ThingExt(const std::string & id, long intId) :
-                        Thing::Thing(id, intId),
-                        domain(nullptr)
+                Thing::Thing(id, intId), domain(nullptr)
         {
+            m_type = new TypeNode(id);
+            setFlags(entity_perceptive);
         }
 
         bool test_lookAtEntity(const Operation & op, OpVector & res, LocatedEntity* watcher) const
@@ -88,6 +92,12 @@ class ThingExt: public Thing {
         {
             return domain;
         }
+
+        virtual void sendWorld(const Operation & op)
+        {
+
+        }
+
 
 };
 
@@ -106,6 +116,8 @@ void ThingIntegration::teardown()
 
 void ThingIntegration::test_visibility()
 {
+    WFMath::AxisBox<3> bbox(WFMath::Point<3>(-10, -10, -10), WFMath::Point<3>(10, 10, 10));
+
     /**
      * First handle the case where there's no domains at all.
      *
@@ -205,16 +217,24 @@ void ThingIntegration::test_visibility()
      */
     {
         ThingExt* t1 = new ThingExt("1", 1);
+//        t1->setAttr()
         ThingExt* t2 = new ThingExt("2", 2);
         t2->m_location.m_pos = WFMath::Point<3>::ZERO();
+        t2->m_location.setBBox(bbox);
         ThingExt* t3 = new ThingExt("3", 3);
         t3->m_location.m_pos = WFMath::Point<3>::ZERO();
+        t3->m_location.setBBox(bbox);
         ThingExt* t4 = new ThingExt("4", 4);
         t4->m_location.m_pos = WFMath::Point<3>::ZERO();
+        t4->m_location.setBBox(bbox);
         ThingExt* t5 = new ThingExt("5", 5);
         t5->m_location.m_pos = WFMath::Point<3>::ZERO();
+        t5->m_location.setBBox(bbox);
         ThingExt* t6 = new ThingExt("6", 6);
         ThingExt* t7 = new ThingExt("7", 7);
+
+        t2->domain = new PhysicalDomain(*t2);
+        t2->setFlags(entity_domain);
 
         t1->addChild(*t2);
         t2->addChild(*t3);
@@ -223,8 +243,6 @@ void ThingIntegration::test_visibility()
         t5->addChild(*t6);
         t3->addChild(*t4);
 
-        t2->domain = new PhysicalDomain(*t2);
-        t2->setFlags(entity_domain);
 
         Operation sightOp;
         OpVector res;
@@ -251,126 +269,129 @@ void ThingIntegration::test_visibility()
 
         //T2 can see T6 since the parent of T6 is T5, which can be seen and has no domain.
         ASSERT_TRUE(t6->test_lookAtEntity(sightOp, res, t2));
-        //T2 can't see T7 since T2 has a Physical domain and T7 has an invalid pos.
-        ASSERT_TRUE(!t7->test_lookAtEntity(sightOp, res, t2));
+        //T3 can't see T7 since T2 has a Physical domain and T7 has an invalid pos.
+        ASSERT_TRUE(!t7->test_lookAtEntity(sightOp, res, t3));
     }
 
+    /**
+     * Then handle the case where there's an Inventory domain.
+     *
+     * All entities are placed at origo
+     * Hierarchy looks like this:
+     *
+     *              T1
+     *              T2*    T6
+     *         T3**     T5
+     *         T4
+     *
+     * With T2 having an inventory domain.
+     * And T3 being wielded
+     */
+    {
+        ThingExt* t1 = new ThingExt("1", 1);
+        ThingExt* t2 = new ThingExt("2", 2);
+        ThingExt* t3 = new ThingExt("3", 3);
+        ThingExt* t4 = new ThingExt("4", 4);
+        ThingExt* t5 = new ThingExt("5", 5);
+        ThingExt* t6 = new ThingExt("6", 6);
+
+        t1->addChild(*t2);
+        t1->addChild(*t6);
+        t2->addChild(*t3);
+        t2->addChild(*t5);
+        t3->addChild(*t4);
+
+        t2->domain = new InventoryDomain(*t2);
+        t2->setFlags(entity_domain);
+        auto entityProp = new EntityProperty();
+        entityProp->data() = EntityRef(t3);
+        t2->setProperty("right_hand_wield", entityProp);
+
+        Operation sightOp;
+        OpVector res;
+        //T1 can see itself
+        ASSERT_TRUE(t1->test_lookAtEntity(sightOp, res, t1));
+        //T1 can see T2 since it's a child and there's no domain
+        ASSERT_TRUE(t2->test_lookAtEntity(sightOp, res, t1));
+        //T1 can see T3 since T2 has an Inventory domain and T3 is wielded.
+        ASSERT_TRUE(t3->test_lookAtEntity(sightOp, res, t1));
+        //T1 can see T4 since T2 has an Inventory domain and T3 is wielded, and T4 is a child.
+        ASSERT_TRUE(t4->test_lookAtEntity(sightOp, res, t1));
+        //T1 can't see T5 since T2 has an Inventory domain and T5 isn't wielded.
+        ASSERT_TRUE(!t5->test_lookAtEntity(sightOp, res, t1));
+
+        //T6 can see T3 since T2 has an Inventory domain and T3 is wielded.
+        ASSERT_TRUE(t3->test_lookAtEntity(sightOp, res, t6));
+        //T6 can see T4 since T2 has an Inventory domain and T3 is wielded, and T4 is a child.
+        ASSERT_TRUE(t4->test_lookAtEntity(sightOp, res, t6));
+        //T6 can't see T5 since T2 has an Inventory domain and T5 isn't wielded.
+        ASSERT_TRUE(!t5->test_lookAtEntity(sightOp, res, t6));
+    }
 
     /**
-      * Then handle the case where there's an Inventory domain.
-      *
-      * All entities are placed at origo
-      * Hierarchy looks like this:
-      *
-      *              T1
-      *              T2*    T6
-      *         T3**     T5
-      *         T4
-      *
-      * With T2 having an inventory domain.
-      * And T3 being wielded
-      */
-     {
-         ThingExt* t1 = new ThingExt("1", 1);
-         ThingExt* t2 = new ThingExt("2", 2);
-         ThingExt* t3 = new ThingExt("3", 3);
-         ThingExt* t4 = new ThingExt("4", 4);
-         ThingExt* t5 = new ThingExt("5", 5);
-         ThingExt* t6 = new ThingExt("6", 6);
+     * And then a more complex case, involving multiple domains.
+     *
+     * All entities are placed at origo
+     * Hierarchy looks like this:
+     *
+     *                T1
+     *                T2*
+     *          T3*       T5
+     *       T4*   T6
+     *
+     * With T2 having a Physical domain.
+     * With T3 having an Inventory domain.
+     * And T4 being wielded
+     */
+    {
+        ThingExt* t1 = new ThingExt("1", 1);
+        ThingExt* t2 = new ThingExt("2", 2);
+        t2->m_location.m_pos = WFMath::Point<3>::ZERO();
+        t2->m_location.setBBox(bbox);
+        ThingExt* t3 = new ThingExt("3", 3);
+        t3->m_location.m_pos = WFMath::Point<3>::ZERO();
+        t3->m_location.setBBox(bbox);
+        ThingExt* t4 = new ThingExt("4", 4);
+        ThingExt* t5 = new ThingExt("5", 5);
+        t5->m_location.m_pos = WFMath::Point<3>::ZERO();
+        t5->m_location.setBBox(bbox);
+        ThingExt* t6 = new ThingExt("6", 6);
 
-         t1->addChild(*t2);
-         t1->addChild(*t6);
-         t2->addChild(*t3);
-         t2->addChild(*t5);
-         t3->addChild(*t4);
+        t2->domain = new PhysicalDomain(*t2);
+        t2->setFlags(entity_domain);
 
-         t2->domain = new InventoryDomain(*t2);
-         t2->setFlags(entity_domain);
-         auto entityProp = new EntityProperty();
-         entityProp->data() = EntityRef(t3);
-         t2->setProperty("right_hand_wield", entityProp);
+        t3->domain = new InventoryDomain(*t3);
+        t3->setFlags(entity_domain);
 
-         Operation sightOp;
-         OpVector res;
-         //T1 can see itself
-         ASSERT_TRUE(t1->test_lookAtEntity(sightOp, res, t1));
-         //T1 can see T2 since it's a child and there's no domain
-         ASSERT_TRUE(t2->test_lookAtEntity(sightOp, res, t1));
-         //T1 can see T3 since T2 has an Inventory domain and T3 is wielded.
-         ASSERT_TRUE(t3->test_lookAtEntity(sightOp, res, t1));
-         //T1 can see T4 since T2 has an Inventory domain and T3 is wielded, and T4 is a child.
-         ASSERT_TRUE(t4->test_lookAtEntity(sightOp, res, t1));
-         //T1 can't see T5 since T2 has an Inventory domain and T5 isn't wielded.
-         ASSERT_TRUE(!t5->test_lookAtEntity(sightOp, res, t1));
+        t1->addChild(*t2);
+        t2->addChild(*t3);
+        t2->addChild(*t5);
+        t3->addChild(*t4);
+        t3->addChild(*t6);
 
-         //T6 can see T3 since T2 has an Inventory domain and T3 is wielded.
-         ASSERT_TRUE(t3->test_lookAtEntity(sightOp, res, t6));
-         //T6 can see T4 since T2 has an Inventory domain and T3 is wielded, and T4 is a child.
-         ASSERT_TRUE(t4->test_lookAtEntity(sightOp, res, t6));
-         //T6 can't see T5 since T2 has an Inventory domain and T5 isn't wielded.
-         ASSERT_TRUE(!t5->test_lookAtEntity(sightOp, res, t6));
-     }
+        auto entityProp = new EntityProperty();
+        entityProp->data() = EntityRef(t4);
+        t3->setProperty("right_hand_wield", entityProp);
 
-     /**
-       * And then a more complex case, involving multiple domains.
-       *
-       * All entities are placed at origo
-       * Hierarchy looks like this:
-       *
-       *                T1
-       *                T2*
-       *          T3*       T5
-       *       T4*   T6
-       *
-       * With T2 having a Physical domain.
-       * With T3 having an Inventory domain.
-       * And T4 being wielded
-       */
-      {
-          ThingExt* t1 = new ThingExt("1", 1);
-          ThingExt* t2 = new ThingExt("2", 2);
-          t2->m_location.m_pos = WFMath::Point<3>::ZERO();
-          ThingExt* t3 = new ThingExt("3", 3);
-          t3->m_location.m_pos = WFMath::Point<3>::ZERO();
-          ThingExt* t4 = new ThingExt("4", 4);
-          ThingExt* t5 = new ThingExt("5", 5);
-          t5->m_location.m_pos = WFMath::Point<3>::ZERO();
-          ThingExt* t6 = new ThingExt("6", 6);
+        Operation sightOp;
+        OpVector res;
+        //T1 can see itself
+        ASSERT_TRUE(t1->test_lookAtEntity(sightOp, res, t1));
+        //T1 can see T2 since it's a child and there's no domain
+        ASSERT_TRUE(t2->test_lookAtEntity(sightOp, res, t1));
+        //T1 can't see T3 since T2 has an Physical domain and T1 is a parent.
+        ASSERT_TRUE(!t3->test_lookAtEntity(sightOp, res, t1));
+        //T1 can't see T4 since T2 has an Physical domain and T1 is a parent.
+        ASSERT_TRUE(!t4->test_lookAtEntity(sightOp, res, t1));
 
-          t1->addChild(*t2);
-          t2->addChild(*t3);
-          t2->addChild(*t5);
-          t3->addChild(*t4);
-          t3->addChild(*t6);
+        //T5 can see T3 since T2 has an Physical domain .
+        ASSERT_TRUE(t3->test_lookAtEntity(sightOp, res, t5));
+        //T5 can see T4 since T2 has an Physical domain, T3 has an Inventory Domain and is close, and T4 is wielded.
+        ASSERT_TRUE(t4->test_lookAtEntity(sightOp, res, t5));
+        //T5 can't see T6 since T2 has an Physical domain, T3 has an Inventory Domain and is close, and T6 isn't wielded.
+        ASSERT_TRUE(!t6->test_lookAtEntity(sightOp, res, t5));
 
-          t2->domain = new PhysicalDomain(*t2);
-          t2->setFlags(entity_domain);
-
-          t3->domain = new InventoryDomain(*t3);
-          t3->setFlags(entity_domain);
-          auto entityProp = new EntityProperty();
-          entityProp->data() = EntityRef(t4);
-          t3->setProperty("right_hand_wield", entityProp);
-
-          Operation sightOp;
-          OpVector res;
-          //T1 can see itself
-          ASSERT_TRUE(t1->test_lookAtEntity(sightOp, res, t1));
-          //T1 can see T2 since it's a child and there's no domain
-          ASSERT_TRUE(t2->test_lookAtEntity(sightOp, res, t1));
-          //T1 can't see T3 since T2 has an Physical domain and T1 is a parent.
-          ASSERT_TRUE(!t3->test_lookAtEntity(sightOp, res, t1));
-          //T1 can't see T4 since T2 has an Physical domain and T1 is a parent.
-          ASSERT_TRUE(!t4->test_lookAtEntity(sightOp, res, t1));
-
-          //T5 can see T3 since T2 has an Physical domain .
-          ASSERT_TRUE(t3->test_lookAtEntity(sightOp, res, t5));
-          //T5 can see T4 since T2 has an Physical domain, T3 has an Inventory Domain and is close, and T4 is wielded.
-          ASSERT_TRUE(t4->test_lookAtEntity(sightOp, res, t5));
-          //T5 can't see T6 since T2 has an Physical domain, T3 has an Inventory Domain and is close, and T6 isn't wielded.
-          ASSERT_TRUE(!t6->test_lookAtEntity(sightOp, res, t5));
-
-      }
+    }
 }
 
 int main()
@@ -431,10 +452,10 @@ WFMath::CoordType sqrMag(const Point3D & p)
     return 0;
 }
 
-bool predictCollision(const Location & l,  // This location
-        const Location & o,  // Other location
-        float & time,       // Returned time to collision
-        Vector3D & normal)   // Returned normal acting on l
+bool predictCollision(const Location & l, // This location
+        const Location & o, // Other location
+        float & time, // Returned time to collision
+        Vector3D & normal) // Returned normal acting on l
 {
     return false;
 }

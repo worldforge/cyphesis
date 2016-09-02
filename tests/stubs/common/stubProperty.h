@@ -18,6 +18,7 @@
 #ifndef STUBPROPERTY_H_
 #define STUBPROPERTY_H_
 
+#include "common/Property_impl.h"
 
 PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
 {

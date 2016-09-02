@@ -185,7 +185,7 @@ int main()
 
 // stubs
 
-#include "Property_stub_impl.h"
+//#include "Property_stub_impl.h"
 #include "stubs/modules/stubLocation.h"
 #include "stubs/common/stubProperty.h"
 #include "stubs/common/stubPropertyManager.h"
@@ -194,7 +194,6 @@ int main()
 #include "stubs/rulesets/stubSoftProperty.h"
 #include "stubs/rulesets/stubIdProperty.h"
 #include "stubs/rulesets/stubContainsProperty.h"
-#include "stubs/rulesets/stubTransformsProperty.h"
 
 
 long integerId(const std::string & id)

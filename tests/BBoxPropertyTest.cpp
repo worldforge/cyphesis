@@ -50,7 +50,7 @@ int main()
 // stubs
 
 #include "TestWorld.h"
-#include "stubs/rulesets/stubTransformsProperty.h"
+#include "stubs/rulesets/stubDensityProperty.h"
 
 void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {

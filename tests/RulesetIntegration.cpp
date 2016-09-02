@@ -642,8 +642,8 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "rulesets/Plant.h"
 #include "rulesets/Stackable.h"
 
-#include "stubs/rulesets/stubTransformsProperty.h"
 #include "stubs/rulesets/stubCreator.h"
+#include "stubs/modules/stubLocation.h"
 
 Account::Account(Connection * conn,
                  const std::string & uname,
@@ -956,7 +956,7 @@ Router * ServerRouting::getObject(const std::string & id) const
 }
 
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0)
+        LocatedEntity(id, intId)
 {
 }
 
@@ -1406,14 +1406,6 @@ void World::RelayOperation(const Operation & op, OpVector & res)
 {
 }
 
-Location::Location() : m_loc(0)
-{
-}
-
-int Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent)
-{
-    return 0;
-}
 
 Character::Character(const std::string& id, long int intId) :
         Thing(id, intId), m_movement(*(Movement*)(nullptr)){

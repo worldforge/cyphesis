@@ -251,7 +251,6 @@ int main()
 #include "stubs/rulesets/stubBaseMind.h"
 #include "stubs/rulesets/stubMemEntity.h"
 #include "stubs/rulesets/stubMemMap.h"
-#include "stubs/rulesets/stubTransformsProperty.h"
 #include "stubs/rulesets/stubPropelProperty.h"
 #include "stubs/rulesets/stubCreator.h"
 
@@ -272,7 +271,7 @@ CorePropertyManager::~CorePropertyManager()
 PropertyBase * CorePropertyManager::addProperty(const std::string & name,
                                                 int type)
 {
-    return 0;
+    return new Property<float>();
 }
 
 int CorePropertyManager::installFactory(const std::string & type_name,

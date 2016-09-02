@@ -321,6 +321,8 @@ bool restricted_flag;
 #include "stubs/common/stubOperationsDispatcher.h"
 #include "stubs/modules/stubDateTime.h"
 #include "stubs/modules/stubWorldTime.h"
+#include "stubs/modules/stubLocation.h"
+#include "stubs/physics/stubVector3D.h"
 
 namespace Atlas { namespace Objects { namespace Operation {
 int ACTUATE_NO = -1;
@@ -628,7 +630,7 @@ ExternalProperty * ExternalProperty::copy() const
 
 #include "stubs/rulesets/stubThing.h"
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0)
+        LocatedEntity(id, intId)
 {
 }
 
@@ -1199,14 +1201,6 @@ void Router::clientError(const Operation & op,
 {
 }
 
-Location::Location() : m_loc(0)
-{
-}
-
-Location::Location(LocatedEntity * rf, const Point3D & pos)
-{
-}
-
 TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
 {
 }
@@ -1321,11 +1315,6 @@ void EntityRef::onEntityDeleted()
 {
 }
 
-const Vector3D distanceTo(const Location & self, const Location & other)
-{
-    return Vector3D(1,0,0);
-}
-
 template<class V>
 const Quaternion quaternionFromTo(const V & from, const V & to)
 {
@@ -1366,14 +1355,6 @@ long newId(std::string & id)
     return new_id;
 }
 
-void addToEntity(const Vector3D & v, std::vector<double> & vd)
-{
-    vd.resize(3);
-    vd[0] = v[0];
-    vd[1] = v[1];
-    vd[2] = v[2];
-}
-
 Shaker::Shaker()
 {
 }
@@ -1382,22 +1363,6 @@ std::string Shaker::generateSalt(size_t length)
 {
     return "";
 }
-
-template <typename FloatT>
-int fromStdVector(Point3D & p, const std::vector<FloatT> & vf)
-{
-    return 0;
-}
-
-template <typename FloatT>
-int fromStdVector(Vector3D & v, const std::vector<FloatT> & vf)
-{
-    return 0;
-}
-
-template int fromStdVector<double>(Point3D & p, const std::vector<double> & vf);
-template int fromStdVector<double>(Vector3D & v, const std::vector<double> & vf);
-
 
 void hash_password(const std::string & pwd, const std::string & salt,
                    std::string & hash )

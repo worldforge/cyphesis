@@ -445,7 +445,7 @@ void addToEntity(const Point3D & p, std::vector<double> & vd)
 }
 
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0)
+        LocatedEntity(id, intId)
 {
 }
 
@@ -671,6 +671,11 @@ LocatedEntity * BaseWorld::getEntity(long id) const
         return 0;
     }
 }
+
+double BaseWorld::getTime() const {
+   return 0;
+}
+
 
 
 

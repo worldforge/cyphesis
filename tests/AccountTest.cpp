@@ -1811,7 +1811,7 @@ void Lobby::operation(const Operation & op, OpVector & res)
 
 
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0)
+        LocatedEntity(id, intId)
 {
 }
 

@@ -28,11 +28,6 @@ Motion::~Motion()
 {
 }
 
-float Motion::checkCollisions(Domain&)
-{
-    return consts::move_tick;
-}
-
 bool Motion::resolveCollision()
 {
     return true;

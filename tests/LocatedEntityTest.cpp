@@ -351,7 +351,8 @@ int main()
 
 #include "common/TypeNode.h"
 
-#include "stubs/rulesets/stubTransformsProperty.h"
+#include "stubs/rulesets/stubDomainProperty.h"
+#include "stubs/common/stubProperty.h"
 
 namespace Atlas { namespace Objects { namespace Operation {
 int EAT_NO = -1;
@@ -434,43 +435,6 @@ void IdProperty::add(const std::string & key,
 IdProperty * IdProperty::copy() const
 {
     return 0;
-}
-
-PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
-{
-}
-
-PropertyBase::~PropertyBase()
-{
-}
-
-void PropertyBase::install(LocatedEntity *, const std::string & name)
-{
-}
-
-void PropertyBase::remove(LocatedEntity *, const std::string & name)
-{
-}
-
-void PropertyBase::apply(LocatedEntity *)
-{
-}
-
-void PropertyBase::add(const std::string & s,
-                       Atlas::Message::MapType & ent) const
-{
-}
-
-void PropertyBase::add(const std::string & s,
-                       const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-HandlerResult PropertyBase::operation(LocatedEntity *,
-                                      const Operation &,
-                                      OpVector &)
-{
-    return OPERATION_IGNORED;
 }
 
 SoftProperty::SoftProperty()

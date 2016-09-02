@@ -46,7 +46,6 @@
 #include "stubs/rulesets/stubSoftProperty.h"
 #include "stubs/rulesets/stubMotion.h"
 #include "stubs/rulesets/stubDomain.h"
-#include "stubs/rulesets/stubTransformsProperty.h"
 #include "stubs/rulesets/stubPropelProperty.h"
 #include "TestDomain.h"
 
@@ -95,7 +94,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 
 
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0)
+        LocatedEntity(id, intId)
 {
 }
 

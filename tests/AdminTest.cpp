@@ -1499,6 +1499,7 @@ void Account::OtherOperation(const Operation &, OpVector &)
 }
 
 #include "stubs/server/stubConnection.h"
+#include "stubs/modules/stubLocation.h"
 
 
 ConnectableRouter::ConnectableRouter(const std::string & id,
@@ -1662,7 +1663,7 @@ void Persistence::putAccount(const Account & ac)
 #include "stubs/rulesets/stubThing.h"
 
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0)
+        LocatedEntity(id, intId)
 {
 }
 
@@ -2045,9 +2046,6 @@ void Router::error(const Operation & op,
     res.push_back(Atlas::Objects::Operation::Error());
 }
 
-Location::Location() : m_loc(0)
-{
-}
 
 long newId(std::string & id)
 {

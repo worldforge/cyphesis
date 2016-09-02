@@ -340,7 +340,7 @@ using Atlas::Message::MapType;
 
 #include "stubs/server/stubConnection.h"
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0)
+        LocatedEntity(id, intId)
 {
 }
 
