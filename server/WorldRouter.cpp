@@ -24,7 +24,6 @@
 
 #include "rulesets/World.h"
 #include "rulesets/Domain.h"
-#include "rulesets/TransformsProperty.h"
 
 #include "common/id.h"
 #include "common/log.h"
@@ -155,14 +154,12 @@ LocatedEntity * WorldRouter::addEntity(LocatedEntity * ent)
     ++m_entityCount;
     assert(ent->m_location.isValid());
 
-    TransformsProperty* transProp = ent->requirePropertyClassFixed<TransformsProperty>();
     if (!ent->m_location.isValid()) {
         log(ERROR, String::compose("Entity %1 of type %2 added to world with invalid location!", ent->getId(), ent->getType()->name()));
         debug(std::cout << "set loc " << &getDefaultLocation()  << std::endl
                         << std::flush;);
         ent->m_location.m_loc = &getDefaultLocation();
-        transProp->getTranslate() = Vector3D(uniform(-8,8), uniform(-8,8), 0);
-        transProp->apply(ent);
+        ent->m_location.m_pos = Point3D(uniform(-8,8), uniform(-8,8), 0);
         debug(std::cout << "loc set with loc " << ent->m_location.m_loc->getId()
                         << std::endl << std::flush;);
     }

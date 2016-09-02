@@ -18,37 +18,89 @@
 #include "ModeProperty.h"
 #include "LocatedEntity.h"
 
-#include "ModeSpecProperty.h"
-#include "TransformsProperty.h"
+#include "QuaternionProperty.h"
+
+#include "common/BaseWorld.h"
+
+#include <Atlas/Objects/Entity.h>
+#include <Atlas/Objects/Operation.h>
+#include <wfmath/atlasconv.h>
 
 const std::string ModeProperty::property_name = "mode";
 
-ModeProperty::ModeProperty() {
+ModeProperty::ModeProperty()
+{
 }
 
-ModeProperty::~ModeProperty() {
+ModeProperty::~ModeProperty()
+{
 }
 
-void ModeProperty::apply(LocatedEntity *entity) {
-    std::string modeSpecName = "mode-" + m_data;
-    auto specProp = entity->getPropertyClass<ModeSpecProperty>(modeSpecName);
-    auto transformsProp =
-            entity->requirePropertyClassFixed<TransformsProperty>();
-    bool existed = transformsProp->external().find("mode")
-            != transformsProp->external().end();
-    if (specProp) {
-        transformsProp->external()["mode"] = specProp->getTransform();
-        transformsProp->apply(entity);
-        transformsProp->resetFlags(per_clean);
-        transformsProp->setFlags(flag_unsent);
-        entity->propertyApplied(TransformsProperty::property_name, *transformsProp);
+void ModeProperty::apply(LocatedEntity *entity)
+{
+
+    if (m_data == "planted") {
+        //See if there's a rotation we should apply
+        const QuaternionProperty* plantedRotation = entity->getPropertyClass<QuaternionProperty>("planted-rotation");
+        if (plantedRotation && plantedRotation->data().isValid()) {
+            //Check that the rotation is applied already, otherwise apply it.
+            QuaternionProperty* activeRotationProp = entity->requirePropertyClass<QuaternionProperty>("active-rotation");
+            if (activeRotationProp->data() != plantedRotation->data()) {
+                WFMath::Quaternion currentOrientation = entity->m_location.orientation();
+
+                if (activeRotationProp->data().isValid() && activeRotationProp->data() != WFMath::Quaternion::Identity()) {
+                    WFMath::Quaternion rotation = activeRotationProp->data().inverse();
+                    //normalize to avoid drift
+                    rotation.normalize();
+                    currentOrientation = rotation * currentOrientation;
+                }
+
+                WFMath::Quaternion rotation = plantedRotation->data();
+                //normalize to avoid drift
+                rotation.normalize();
+                currentOrientation = rotation * currentOrientation;
+
+                activeRotationProp->data() = plantedRotation->data();
+                activeRotationProp->apply(entity);
+                activeRotationProp->resetFlags(per_clean);
+                activeRotationProp->setFlags(flag_unsent);
+
+                Atlas::Objects::Entity::Anonymous move_arg;
+                move_arg->setId(entity->getId());
+                move_arg->setAttr("orientation", currentOrientation.toAtlas());
+
+                Atlas::Objects::Operation::Move moveOp;
+                moveOp->setTo(entity->getId());
+                moveOp->setSeconds(BaseWorld::instance().getTime());
+                moveOp->setArgs1(move_arg);
+                entity->sendWorld(moveOp);
+            }
+        }
     } else {
-        if (existed) {
-            transformsProp->external().erase("mode");
-            transformsProp->apply(entity);
-            transformsProp->resetFlags(per_clean);
-            transformsProp->setFlags(flag_unsent);
-            entity->propertyApplied(TransformsProperty::property_name, *transformsProp);
+        QuaternionProperty* activeRotationProp = entity->requirePropertyClass<QuaternionProperty>("active-rotation");
+        if (activeRotationProp->data().isValid()) {
+            WFMath::Quaternion currentOrientation = entity->m_location.orientation();
+
+            WFMath::Quaternion rotation = activeRotationProp->data().inverse();
+            //normalize to avoid drift
+            rotation.normalize();
+            currentOrientation = rotation * currentOrientation;
+
+            activeRotationProp->data() = WFMath::Quaternion::Identity();
+            activeRotationProp->apply(entity);
+            activeRotationProp->resetFlags(per_clean);
+            activeRotationProp->setFlags(flag_unsent);
+
+            Atlas::Objects::Entity::Anonymous move_arg;
+            move_arg->setId(entity->getId());
+            move_arg->setAttr("orientation", currentOrientation.toAtlas());
+
+            Atlas::Objects::Operation::Move moveOp;
+            moveOp->setTo(entity->getId());
+            moveOp->setSeconds(BaseWorld::instance().getTime());
+            moveOp->setArgs1(move_arg);
+            entity->sendWorld(moveOp);
+
         }
     }
 }

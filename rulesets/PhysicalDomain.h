@@ -198,6 +198,8 @@ class PhysicalDomain: public Domain
         void updateVisibilityOfDirtyEntities(OpVector& res);
         void updateVisibilityOfEntry(BulletEntry* entry, OpVector& res);
 
+        void applyNewPositionForEntity(BulletEntry* entry, const WFMath::Point<3>& pos);
+
 };
 
 #endif /* PHYSICALDOMAIN_H_ */

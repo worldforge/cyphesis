@@ -48,14 +48,13 @@
 #include "rulesets/DefaultLocationProperty.h"
 #include "rulesets/DomainProperty.h"
 #include "rulesets/LimboProperty.h"
-#include "rulesets/TransformsProperty.h"
 #include "rulesets/ModeProperty.h"
-#include "rulesets/ModeSpecProperty.h"
 #include "rulesets/ForcesProperty.h"
 #include "rulesets/PropelProperty.h"
 #include "rulesets/DensityProperty.h"
 #include "rulesets/AngularFactorProperty.h"
 #include "rulesets/GeometryProperty.h"
+#include "rulesets/QuaternionProperty.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
@@ -111,7 +110,7 @@ void CorePropertyManager::installProperty()
 
 CorePropertyManager::CorePropertyManager()
 {
-    // Core types, for inheritence only generally.
+    // Core types, for inheritance only generally.
     installBaseProperty<int>("int", "root_type");
     installBaseProperty<double>("float", "root_type");
     installBaseProperty<std::string>("string", "root_type");
@@ -154,11 +153,7 @@ CorePropertyManager::CorePropertyManager()
     installProperty<DefaultLocationProperty>("default_location", "int");
     installProperty<DomainProperty>("domain", "string");
     installProperty<LimboProperty>("limbo", "int");
-    installProperty<TransformsProperty>("map");
     installProperty<ModeProperty>("string");
-    installProperty<ModeSpecProperty>("mode-fixed", "map");
-    installProperty<ModeSpecProperty>("mode-standing", "map");
-    installProperty<ModeSpecProperty>("mode-planted", "map");
     installProperty<ForcesProperty>("map");
     installProperty<PropelProperty>();
     installProperty<DensityProperty>();
@@ -168,6 +163,27 @@ CorePropertyManager::CorePropertyManager()
     installProperty<Property<float> >("friction", "float");
     installProperty<AngularFactorProperty>();
     installProperty<GeometryProperty>();
+
+    /**
+     * Vertical offset to use when entity is planted, and adjusted to the height of the terrain.
+     */
+    installProperty<Property<double>>("planted-offset", "float");
+
+    /**
+     * Vertical scaled offset to use when entity is planted, and adjusted to the height of the terrain.
+     * The resulting offset is a product of this value and the height of the entity.
+     */
+    installProperty<Property<double>>("planted-scaled-offset", "float");
+
+    /**
+     * The rotation applied to the entity when it's planted.
+     */
+    installProperty<QuaternionProperty>("planted-rotation", QuaternionProperty::property_atlastype);
+    /**
+     * The current extra rotation applied to the entity.
+     * This is closely matched with "planted-rotation" to keep track of when the entity has the planted rotation applied and not.
+     */
+    installProperty<QuaternionProperty>("active-rotation", QuaternionProperty::property_atlastype);
 
 }
 

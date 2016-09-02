@@ -28,7 +28,6 @@
 #include "EntityProperty.h"
 #include "ModeProperty.h"
 #include "PropelProperty.h"
-#include "TransformsProperty.h"
 #include "GeometryProperty.h"
 #include "AngularFactorProperty.h"
 #include "VisibilityProperty.h"
@@ -41,12 +40,16 @@
 #include "common/Unseen.h"
 #include "common/log.h"
 #include "common/TypeNode.h"
+#include "common/Update.h"
+#include "common/BaseWorld.h"
 
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
+
+#include <wfmath/atlasconv.h>
 
 #include <bullet/btBulletDynamicsCommon.h>
 #include <bullet/BulletCollision/CollisionShapes/btBoxShape.h>
@@ -181,12 +184,6 @@ class PhysicalDomain::PhysicalMotionState: public btMotionState
             entity.resetFlags(entity_pos_clean | entity_orient_clean);
             entity.setFlags(entity_dirty_location);
 
-            TransformsProperty* transProp = entity.modPropertyClassFixed<TransformsProperty>();
-
-            //Set here, but don't apply yet.
-            transProp->getTranslate() = WFMath::Vector<3>(entity.m_location.m_pos);
-            transProp->getRotate() = entity.m_location.m_orientation;
-
             if (m_bulletEntry.visibilitySphere) {
                 m_bulletEntry.visibilitySphere->setWorldTransform(m_bulletEntry.rigidBody->getWorldTransform());
             }
@@ -320,6 +317,11 @@ void PhysicalDomain::buildTerrainPage(Mercator::Segment& segment, float friction
     if (!terrainEntry.data) {
         terrainEntry.data = new std::array<float, 65 * 65>();
     }
+    if (terrainEntry.rigidBody) {
+        m_dynamicsWorld->removeRigidBody(terrainEntry.rigidBody);
+        delete terrainEntry.rigidBody->getCollisionShape();
+        delete terrainEntry.rigidBody;
+    }
     float* data = terrainEntry.data->data();
     const float* mercatorData = segment.getPoints();
     //Need to rotate to fit Bullet coord space.
@@ -398,6 +400,11 @@ bool PhysicalDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, co
         return true;
     }
 
+    //Is it the domain entity?
+    if (&observingEntity == &m_entity) {
+        return true;
+    }
+
     auto observingI = m_entries.find(observingEntity.getIntId());
     if (observingI == m_entries.end()) {
         return false;
@@ -438,10 +445,12 @@ class PhysicalDomain::VisibilityCallback: public btCollisionWorld::ContactResult
                 int partId1, int index1)
         {
             BulletEntry* bulletEntry = static_cast<BulletEntry*>(colObj1Wrap->m_collisionObject->getUserPointer());
+            if (bulletEntry) {
+                m_entries.insert(bulletEntry);
+            }
 //            if (m_filterOutEntry == bulletEntry) {
 //                return 0;
 //            }
-            m_entries.insert(bulletEntry);
             return btScalar(1.0);
         }
 
@@ -456,9 +465,12 @@ void PhysicalDomain::updateVisibilityOfEntry(BulletEntry* bulletEntry, OpVector&
     if (bulletEntry->viewSphere) {
         callback.m_entries.clear();
 
-        callback.m_collisionFilterGroup = VISIBILITY_MASK_OBSERVABLE;
-        callback.m_collisionFilterMask = VISIBILITY_MASK_OBSERVER;
-        m_visibilityWorld->contactTest(bulletEntry->viewSphere, callback);
+        if (bulletEntry->entity->m_location.m_pos.isValid()) {
+            callback.m_collisionFilterGroup = VISIBILITY_MASK_OBSERVABLE;
+            callback.m_collisionFilterMask = VISIBILITY_MASK_OBSERVER;
+            m_visibilityWorld->contactTest(bulletEntry->viewSphere, callback);
+        }
+
         debug_print("observed by "<< bulletEntry->entity->describeEntity() << ": " << callback.m_entries.size());
 
         auto& observed = bulletEntry->observedByThis;
@@ -503,11 +515,14 @@ void PhysicalDomain::updateVisibilityOfEntry(BulletEntry* bulletEntry, OpVector&
 
     //This entry is something which can be observed; check what can see it after it has moved
     if (bulletEntry->visibilitySphere) {
-        callback.m_collisionFilterGroup = VISIBILITY_MASK_OBSERVER;
-        callback.m_collisionFilterMask = VISIBILITY_MASK_OBSERVABLE;
         callback.m_entries.clear();
 
-        m_visibilityWorld->contactTest(bulletEntry->visibilitySphere, callback);
+        if (bulletEntry->entity->m_location.m_pos.isValid()) {
+            callback.m_collisionFilterGroup = VISIBILITY_MASK_OBSERVER;
+            callback.m_collisionFilterMask = VISIBILITY_MASK_OBSERVABLE;
+            m_visibilityWorld->contactTest(bulletEntry->visibilitySphere, callback);
+        }
+
         debug_print("observing " << bulletEntry->entity->describeEntity() << ": " << callback.m_entries.size());
 
         auto& observing = bulletEntry->observingThis;
@@ -558,7 +573,6 @@ void PhysicalDomain::updateVisibilityOfDirtyEntities(OpVector& res)
     }
     m_dirtyEntries.clear();
 }
-
 
 void PhysicalDomain::processVisibilityForMovedEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res)
 {
@@ -665,10 +679,6 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         angularFactor = Convert::toBullet(angularFactorProp->data());
     }
 
-    short collisionMask;
-    short collisionGroup;
-    getCollisionFlagsForEntity(entity, collisionGroup, collisionMask);
-
     std::string mode;
     auto modeProp = entity.getPropertyClassFixed<ModeProperty>();
     if (modeProp) {
@@ -678,14 +688,12 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     auto adjustHeightFn = [&]() {
         const TerrainProperty * tp = m_entity.getPropertyClass<TerrainProperty>("terrain");
         if (tp) {
-            TransformsProperty* transProp = entity.modPropertyClassFixed<TransformsProperty>();
-            const WFMath::Point<3>& pos = entity.m_location.pos();
+            WFMath::Point<3>& pos = entity.m_location.m_pos;
 
             float h = pos.z();
             Vector3D normal;
             tp->getHeightAndNormal(pos.x(), pos.y(), h, normal);
-            transProp->getTranslate().z() = h;
-            transProp->apply(&entity);
+            pos.z() = h;
         }};
 
     if (mode != "fixed") {
@@ -737,9 +745,16 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         entry->motionState = new PhysicalMotionState(*entry, *this, btTransform(orientation, pos), btTransform(btQuaternion::getIdentity(), centerOfMassOffset));
         entry->rigidBody->setMotionState(entry->motionState);
         entry->rigidBody->setAngularFactor(angularFactor);
+        entry->rigidBody->setUserPointer(entry);
 
-        m_dynamicsWorld->addRigidBody(entry->rigidBody, collisionGroup, collisionMask);
+        short collisionMask;
+        short collisionGroup;
+        getCollisionFlagsForEntity(entity, collisionGroup, collisionMask);
 
+        //Only add to world if position is valid. Otherwise this will be done when a new valid position is applied in applyNewPositionForEntity
+        if (entity.m_location.m_pos.isValid()) {
+            m_dynamicsWorld->addRigidBody(entry->rigidBody, collisionGroup, collisionMask);
+        }
         if (mass != 0) {
             //Should all entities be active when added?
             entry->rigidBody->activate();
@@ -778,10 +793,10 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         visObject->setCollisionShape(visSphere);
         visObject->setWorldTransform(btTransform(btQuaternion::getIdentity(), pos));
         visObject->setUserPointer(entry);
-
-        m_visibilityWorld->addCollisionObject(visObject, VISIBILITY_MASK_OBSERVER, VISIBILITY_MASK_OBSERVABLE);
-//        m_visibilityWorld->addCollisionObject(visObject);
         entry->visibilitySphere = visObject;
+        if (entity.m_location.m_pos.isValid()) {
+            m_visibilityWorld->addCollisionObject(visObject, VISIBILITY_MASK_OBSERVER, VISIBILITY_MASK_OBSERVABLE);
+        }
     }
     if (entity.isPerceptive()) {
         btSphereShape* viewSphere = new btSphereShape(0.5);
@@ -789,9 +804,10 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         visObject->setCollisionShape(viewSphere);
         visObject->setWorldTransform(btTransform(btQuaternion::getIdentity(), pos));
         visObject->setUserPointer(entry);
-        m_visibilityWorld->addCollisionObject(visObject, VISIBILITY_MASK_OBSERVABLE, VISIBILITY_MASK_OBSERVER);
-//        m_visibilityWorld->addCollisionObject(visObject);
         entry->viewSphere = visObject;
+        if (entity.m_location.m_pos.isValid()) {
+            m_visibilityWorld->addCollisionObject(visObject, VISIBILITY_MASK_OBSERVABLE, VISIBILITY_MASK_OBSERVER);
+        }
     }
     OpVector res;
     updateVisibilityOfEntry(entry, res);
@@ -828,6 +844,10 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
     for (BulletEntry* observer : entry->observingThis) {
         observer->observedByThis.erase(entry);
     }
+    for (BulletEntry* observedEntry : entry->observedByThis) {
+        observedEntry->observingThis.erase(entry);
+    }
+
     m_dirtyEntries.erase(entry);
 
     delete I->second;
@@ -844,14 +864,12 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
 
         const TerrainProperty * tp = m_entity.getPropertyClass<TerrainProperty>("terrain");
         if (tp) {
-            TransformsProperty* transProp = entity.modPropertyClassFixed<TransformsProperty>();
-            const WFMath::Point<3>& wfPos = entity.m_location.pos();
+            WFMath::Point<3>& wfPos = entity.m_location.m_pos;
 
             float h = wfPos.z();
             Vector3D normal;
             tp->getHeightAndNormal(wfPos.x(), wfPos.y(), h, normal);
-            transProp->getTranslate().z() = h;
-            transProp->apply(&entity);
+            wfPos.z() = h;
 
             btQuaternion orientation = entity.m_location.m_orientation.isValid() ? Convert::toBullet(entity.m_location.m_orientation) : btQuaternion::getIdentity();
             btVector3 pos = wfPos.isValid() ? Convert::toBullet(wfPos) : btVector3(0, 0, 0);
@@ -904,7 +922,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
         m_dynamicsWorld->addRigidBody(bulletEntry->rigidBody, collisionGroup, collisionMask);
 
         bulletEntry->rigidBody->activate();
-
+        sendMoveSight(*bulletEntry);
         return;
     } else if (name == "solid") {
         short collisionMask;
@@ -965,6 +983,15 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
                 }
             }
         }
+    } else if (name == "planted-offset" || name == "planted-scaled-offset") {
+        applyNewPositionForEntity(bulletEntry, bulletEntry->entity->m_location.m_pos);
+        bulletEntry->entity->m_location.update(BaseWorld::instance().getTime());
+        bulletEntry->entity->setFlags(~(entity_clean));
+        sendMoveSight(*bulletEntry);
+//        m_movingEntities.insert(bulletEntry);
+//        Atlas::Objects::Operation::Update update;
+//        update->setTo(bulletEntry->entity->getId());
+//        bulletEntry->entity->sendWorld(update);
     }
 }
 
@@ -992,6 +1019,73 @@ void PhysicalDomain::entityPropertyApplied(const std::string& name, PropertyBase
     }
 }
 
+void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath::Point<3>& pos)
+{
+    btTransform& transform = entry->rigidBody->getWorldTransform();
+    LocatedEntity& entity = *entry->entity;
+
+    std::string mode;
+    auto modeProp = entity.getPropertyClassFixed<ModeProperty>();
+    if (modeProp) {
+        mode = modeProp->data();
+    }
+
+    WFMath::Point<3> newPos = pos;
+
+    auto adjustHeightFn = [&]() {
+        const TerrainProperty * tp = m_entity.getPropertyClass<TerrainProperty>("terrain");
+        if (tp) {
+            float h = pos.z();
+            Vector3D normal;
+            tp->getHeightAndNormal(pos.x(), pos.y(), h, normal);
+            newPos.z() = h;
+        }};
+
+    if (mode == "planted") {
+        adjustHeightFn();
+        auto plantedOffsetProp = entity.getPropertyType<double>("planted-offset");
+        if (plantedOffsetProp) {
+            newPos.z() += plantedOffsetProp->data();
+        }
+        auto plantedScaledOffsetProp = entity.getPropertyType<double>("planted-scaled-offset");
+        if (plantedScaledOffsetProp && entity.m_location.bBox().isValid()) {
+            auto size = entity.m_location.bBox().highCorner() - entity.m_location.bBox().lowCorner();
+
+            newPos.z() += (plantedScaledOffsetProp->data() * size.z());
+        }
+    } else if (mode != "fixed") {
+        adjustHeightFn();
+    }
+
+    if (!entity.m_location.m_pos.isValid() && newPos.isValid()) {
+        short collisionMask;
+        short collisionGroup;
+        getCollisionFlagsForEntity(entity, collisionGroup, collisionMask);
+        m_dynamicsWorld->addRigidBody(entry->rigidBody, collisionGroup, collisionMask);
+        if (entry->viewSphere) {
+            m_visibilityWorld->addCollisionObject(entry->viewSphere, VISIBILITY_MASK_OBSERVABLE, VISIBILITY_MASK_OBSERVER);
+        }
+        if (entry->visibilitySphere) {
+            m_visibilityWorld->addCollisionObject(entry->visibilitySphere, VISIBILITY_MASK_OBSERVER, VISIBILITY_MASK_OBSERVABLE);
+        }
+    }
+
+    entity.m_location.m_pos = newPos;
+
+    debug_print("PhysicalDomain::new pos " << entity.describeEntity() << " " << pos);
+    transform.setOrigin(Convert::toBullet(newPos) + Convert::toBullet(entity.m_location.bBox().getCenter()));
+    if (entry->viewSphere) {
+        entry->viewSphere->setWorldTransform(transform);
+    }
+    if (entry->visibilitySphere) {
+        entry->visibilitySphere->setWorldTransform(transform);
+    }
+
+//    m_movingEntities.insert(entry);
+    m_dirtyEntries.insert(entry);
+
+}
+
 void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity,
         const WFMath::AxisBox<3>& bbox)
 {
@@ -1004,18 +1098,10 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
             if (orientation.isValid()) {
                 debug_print("PhysicalDomain::new orientation " << entity.describeEntity() << " " << orientation);
                 transform.setRotation(Convert::toBullet(orientation));
+                entity.m_location.m_orientation = orientation;
             }
             if (pos.isValid()) {
-                debug_print("PhysicalDomain::new pos " << entity.describeEntity() << " " << pos);
-                transform.setOrigin(Convert::toBullet(pos));
-                if (entry->viewSphere) {
-                    entry->viewSphere->setWorldTransform(transform);
-                }
-                if (entry->visibilitySphere) {
-                    entry->visibilitySphere->setWorldTransform(transform);
-                }
-
-                m_dirtyEntries.insert(entry);
+                applyNewPositionForEntity(entry, pos);
             }
             entry->rigidBody->setWorldTransform(transform);
             if (entry->rigidBody->getInvMass() != 0) {

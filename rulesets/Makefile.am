@@ -38,7 +38,7 @@ librulesetentity_a_SOURCES = \
 			     AreaProperty.cpp AreaProperty.h \
 			     TerrainProperty.cpp TerrainProperty.h \
 			     TerrainEffectorProperty.cpp \
-                             TerrainEffectorProperty.h \
+                 TerrainEffectorProperty.h \
 			     TerrainModProperty.cpp TerrainModProperty.h \
 			     TerrainModTranslator.cpp TerrainModTranslator.h \
 			     CalendarProperty.cpp CalendarProperty.h \
@@ -69,14 +69,13 @@ librulesetentity_a_SOURCES = \
 			     VoidDomain.cpp VoidDomain.h \
 			     ProxyMind.cpp ProxyMind.h \
 			     InventoryDomain.cpp InventoryDomain.h \
-			     TransformsProperty.cpp TransformsProperty.h \
 			     ModeProperty.cpp ModeProperty.h \
-			     ModeSpecProperty.cpp ModeSpecProperty.h \
 			     ForcesProperty.cpp ForcesProperty.h \
 			     PropelProperty.cpp PropelProperty.h \
 			     DensityProperty.cpp DensityProperty.h \
 			     GeometryProperty.cpp GeometryProperty.h \
-			     AngularFactorProperty.cpp AngularFactorProperty.h
+			     AngularFactorProperty.cpp AngularFactorProperty.h \
+			     QuaternionProperty.cpp QuaternionProperty.h
 
 libentityfilter_a_SOURCES = entityfilter/Filter.cpp entityfilter/Filter.h \
 			     entityfilter/ParserDefinitions.h \

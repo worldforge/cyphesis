@@ -188,18 +188,13 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mode-planted">
-        <map name="default">
-          <map name="transform">
-	          <!-- <float name="offset">0.5</float>  -->
-	          <list name="rotate">
-	              <float>0</float>
-	              <float>0.7071</float>
-	              <float>0</float>
-	              <float>0.7071</float>
-	          </list>
-          </map>
-        </map>
+      <map name="planted-rotation">
+        <list name="default">
+          <float>0</float>
+          <float>0.7071</float>
+          <float>0</float>
+          <float>0.7071</float>
+        </list>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -494,16 +489,10 @@
         <int name="default">4</int>
         <string name="visibility">public</string>
       </map>
-      <map name="mode-planted">
-        <map name="default">
-          <map name="transform">
-            <list name="translate-scaled">
-	          <float>0</float>
-	          <float>0</float>
-	          <float>-0.1</float>
-	        </list>
-          </map>
-        </map>
+      <map name="planted-scaled-offset">
+        <float name="default">
+          -0.1
+        </float>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -668,18 +657,13 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mode-planted">
-        <map name="default">
-           <map name="transform">
-	          <!-- <float name="offset">0.5</float>  -->
-	          <list name="rotate">
-	              <float>0</float>
-	              <float>0.7071</float>
-	              <float>0</float>
-	              <float>0.7071</float>
-	          </list>
-          </map>
-        </map>
+      <map name="planted-rotation">
+        <list name="default">
+            <float>0</float>
+            <float>0.7071</float>
+            <float>0</float>
+            <float>0.7071</float>
+        </list>
         <string name="visibility">public</string>
       </map>
     </map>

@@ -15,37 +15,36 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-#ifndef RULESETS_MODESPECPROPERTY_H_
-#define RULESETS_MODESPECPROPERTY_H_
+#ifndef RULESETS_QUATERNIONPROPERTY_H_
+#define RULESETS_QUATERNIONPROPERTY_H_
 
 #include "common/Property.h"
-#include "physics/Transform.h"
+#include <wfmath/quaternion.h>
 
 /**
- * \brief Specifies how the entity should behave when put into different modes.
- *
- * Currently we support transformations, as done through the TransformsProperty.
+ * \brief A property containing a WFMath::Quaternion.
  *
  * \ingroup PropertyClasses
  */
-class ModeSpecProperty : public Property<Atlas::Message::MapType>{
+class QuaternionProperty: public PropertyBase
+{
     public:
-        ModeSpecProperty();
+
+        static const std::string property_atlastype;
+
+        explicit QuaternionProperty();
+        explicit QuaternionProperty(const QuaternionProperty& rhs);
+        virtual ~QuaternionProperty();
 
         virtual int get(Atlas::Message::Element & val) const;
         virtual void set(const Atlas::Message::Element &);
 
-        const Transform& getTransform() const;
-        virtual ModeSpecProperty * copy() const;
+        const WFMath::Quaternion& data() const { return m_data; }
+        WFMath::Quaternion& data() { return m_data; }
 
-    private:
-
-        /**
-         * A transformation to apply to the entity when put into a specific mode.
-         */
-        Transform mTransform;
-
-
+        virtual QuaternionProperty * copy() const;
+    protected:
+        WFMath::Quaternion m_data;
 };
 
-#endif /* RULESETS_MODESPECPROPERTY_H_ */
+#endif /* RULESETS_QUATERNIONPROPERTY_H_ */

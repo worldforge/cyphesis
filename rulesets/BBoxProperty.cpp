@@ -19,7 +19,6 @@
 #include "BBoxProperty.h"
 
 #include "LocatedEntity.h"
-#include "TransformsProperty.h"
 #include "DensityProperty.h"
 
 #include "common/log.h"
@@ -40,11 +39,6 @@ BBoxProperty::BBoxProperty()
 void BBoxProperty::apply(LocatedEntity * ent)
 {
     ent->m_location.setBBox(m_data);
-    //If the size of the bbox has changes we might also need to adjust position if there's any scaled transforms.
-    auto transProperty = ent->modPropertyClassFixed<TransformsProperty>();
-    if (transProperty) {
-        transProperty->apply(ent);
-    }
 
     auto densityProp = ent->getPropertyClassFixed<DensityProperty>();
     if (densityProp) {

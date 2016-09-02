@@ -21,7 +21,6 @@
 #include "Script.h"
 #include "Domain.h"
 #include "DomainProperty.h"
-#include "TransformsProperty.h"
 #include "Motion.h"
 
 #include "common/BaseWorld.h"
@@ -274,14 +273,12 @@ void Entity::destroy()
             Location & child = (*I)->m_location;
             // FIXME take account of orientation
             // FIXME velocity and orientation  need to be adjusted
-            TransformsProperty* transformsProp = (*I)->requirePropertyClassFixed<TransformsProperty>();
 
             if (m_location.orientation().isValid() && m_location.pos().isValid()) {
 
-                transformsProp->getTranslate() = WFMath::Vector<3>(child.m_pos.toParentCoords(m_location.pos(),
-                                                         m_location.orientation()));
-                if (transformsProp->getRotate().isValid()) {
-                    transformsProp->getRotate() *= m_location.orientation();
+                m_location.m_pos = child.m_pos.toParentCoords(m_location.pos(), m_location.orientation());
+                if (m_location.m_orientation.isValid()) {
+                    m_location.m_orientation *= m_location.orientation();
                 }
 
                 if (child.m_velocity.isValid()) {
@@ -289,10 +286,8 @@ void Entity::destroy()
                 }
             } else {
                 static const Quaternion identity(1, 0, 0, 0);
-                transformsProp->getTranslate() = WFMath::Vector<3>(child.m_pos.toParentCoords(m_location.pos(),
-                                                         identity));
+                m_location.m_pos = child.m_pos.toParentCoords(m_location.pos(), identity);
             }
-            transformsProp->apply(*I);
             // Remove the reference to ourself.
             decRef();
             m_location.m_loc->addChild(**I);

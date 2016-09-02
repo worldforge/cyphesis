@@ -18,7 +18,6 @@
 
 #include "LocatedEntity.h"
 
-#include "TransformsProperty.h"
 #include "DomainProperty.h"
 #include "Domain.h"
 
@@ -37,7 +36,7 @@ using Atlas::Message::MapType;
 /// The attributes named are special and are modified using high level
 /// operations, such as Move, not via Set operations, or assigned by
 /// normal means.
-std::set<std::string> LocatedEntity::s_immutable = {"id", "parents", "pos", "loc", "velocity", "orientation", "contains", "objtype", "transforms"};
+std::set<std::string> LocatedEntity::s_immutable = {"id", "parents", "pos", "loc", "velocity", "orientation", "contains", "objtype"};
 
 /// \brief Singleton accessor for immutables
 ///
@@ -54,8 +53,6 @@ LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                m_script(0), m_type(0), m_flags(0), m_contains(0)
 {
     m_properties["id"] = new IdProperty(getId());
-    TransformsProperty* transProp = new TransformsProperty();
-    m_properties["transforms"] = transProp;
 }
 
 LocatedEntity::~LocatedEntity()
@@ -303,8 +300,8 @@ void LocatedEntity::addChild(LocatedEntity& childEntity)
 
     childEntity.m_location.m_loc = this;
 
-    if (m_flags & entity_domain) {
-        auto domain = getPropertyClass<DomainProperty>("domain")->getDomain(this);
+    auto domain = getMovementDomain();
+    if (domain) {
         domain->addEntity(childEntity);
     }
 }

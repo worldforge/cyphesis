@@ -20,7 +20,6 @@
 
 #include "Motion.h"
 #include "Domain.h"
-#include "TransformsProperty.h"
 #include "PropelProperty.h"
 
 #include "common/BaseWorld.h"
@@ -233,8 +232,6 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
     const double & current_time = BaseWorld::instance().getTime();
 
-    auto transformsProp = requirePropertyClassFixed<TransformsProperty>();
-
     //We can only move if there's a domain
     Domain* domain = nullptr;
     if (m_location.m_loc) {
@@ -253,34 +250,32 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
         if (ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
             // Update pos
-            const auto& posVector = ent->getPos();
-            if (posVector.size() == 3) {
-                WFMath::Vector<3> translate;
-                translate.fromAtlas(ent->getPosAsList());
+            WFMath::Vector<3> translate;
+            if (fromStdVector(translate, ent->getPos()) ==0) {
                 //Adjust the supplied position by the inverse of all external transformation.
                 //This is to offset the fact that any client will send an update for position using
                 //the position of the entity as it sees it.
                 //TODO: is this really the best way? Should we allow for clients to specify if they want to set
                 //the position independent of any transformations? Perhaps this is doable if the client
                 //instead sends an update for the "transforms" property?
-                for (auto entry : transformsProp->external()) {
-                    if (entry.second.translate.isValid()) {
-                        translate -= entry.second.translate;
-                    }
-                }
-                if (m_location.bBox().isValid()) {
-                    for (auto entry : transformsProp->external()) {
-                        if (entry.second.translateScaled.isValid()) {
-                            auto size = m_location.bBox().highCorner() - m_location.bBox().lowCorner();
-                            translate -= WFMath::Vector<3>(
-                                entry.second.translateScaled.x() * size.x(),
-                                entry.second.translateScaled.y() * size.y(),
-                                entry.second.translateScaled.z() * size.z());
-                        }
-                    }
-                }
-
-                transformsProp->getTranslate() = translate;
+//                for (auto entry : transformsProp->external()) {
+//                    if (entry.second.translate.isValid()) {
+//                        translate -= entry.second.translate;
+//                    }
+//                }
+//                if (m_location.bBox().isValid()) {
+//                    for (auto entry : transformsProp->external()) {
+//                        if (entry.second.translateScaled.isValid()) {
+//                            auto size = m_location.bBox().highCorner() - m_location.bBox().lowCorner();
+//                            translate -= WFMath::Vector<3>(
+//                                entry.second.translateScaled.x() * size.x(),
+//                                entry.second.translateScaled.y() * size.y(),
+//                                entry.second.translateScaled.z() * size.z());
+//                        }
+//                    }
+//                }
+//
+//                transformsProp->getTranslate() = translate;
                 newPos = WFMath::Point<3>(translate);
                 updatedTransform = true;
             }
@@ -296,39 +291,40 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
             // Update orientation
             newOrientation.fromAtlas(attr_orientation.asList());
 
-            //Adjust the supplied orientation by the inverse of all external transformation.
-            //This is to offset the fact that any client will send an update for orientation using
-            //the orientation of the entity as it sees it.
-            //TODO: is this really the best way? Should we allow for clients to specify if they want to set
-            //the position independent of any transformations? Perhaps this is doable if the client
-            //instead sends an update for the "transforms" property?
-            for (auto entry : transformsProp->external()) {
-                if (entry.second.rotate.isValid()) {
-
-                    Quaternion localRotation(entry.second.rotate.inverse());
-                    //normalize to avoid drift
-                    localRotation.normalize();
-                    newOrientation = localRotation * newOrientation;
-                }
-            }
-
-            transformsProp->getRotate() = newOrientation;
+//            //Adjust the supplied orientation by the inverse of all external transformation.
+//            //This is to offset the fact that any client will send an update for orientation using
+//            //the orientation of the entity as it sees it.
+//            //TODO: is this really the best way? Should we allow for clients to specify if they want to set
+//            //the position independent of any transformations? Perhaps this is doable if the client
+//            //instead sends an update for the "transforms" property?
+//            for (auto entry : transformsProp->external()) {
+//                if (entry.second.rotate.isValid()) {
+//
+//                    Quaternion localRotation(entry.second.rotate.inverse());
+//                    //normalize to avoid drift
+//                    localRotation.normalize();
+//                    newOrientation = localRotation * newOrientation;
+//                }
+//            }
+//
+//            transformsProp->getRotate() = newOrientation;
             updatedTransform = true;
 
         }
 
-        auto propelProp = requirePropertyClassFixed<PropelProperty>();
 
         if (ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
             // Update velocity
-            fromStdVector(newVelocity, ent->getVelocity());
-            propelProp->data() = newVelocity;
-            // Velocity is not persistent so has no flag
-            updatedTransform = true;
+            if (fromStdVector(newVelocity, ent->getVelocity()) == 0) {
+                auto propelProp = requirePropertyClassFixed<PropelProperty>();
+                propelProp->data() = newVelocity;
+                // Velocity is not persistent so has no flag
+                updatedTransform = true;
+            }
         }
 
         if (updatedTransform) {
-            transformsProp->apply(this);
+           // transformsProp->apply(this);
             domain->applyTransform(*this, newOrientation, newPos, newVelocity, newBbox);
         }
 
@@ -338,10 +334,6 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         m_flags &= ~(entity_clean);
 
         // At this point the Location data for this entity has been updated.
-
-        if (m_location.velocity().isValid() &&
-            m_location.velocity().sqrMag() > WFMath::numeric_constants<WFMath::CoordType>::epsilon()) {
-        }
 
         Operation m(op.copy());
         RootEntity marg = smart_dynamic_cast<RootEntity>(m->getArgs().front());
@@ -633,23 +625,23 @@ void Thing::CreateOperation(const Operation & op, OpVector & res)
             return;
         }
 
-        if (ent->hasAttr("transforms")) {
-            ent->removeAttr("pos");
-            ent->removeAttr("orientation");
-        } else {
-            Atlas::Message::MapType transforms;
-            if (ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
-                //Only copy x and y values; let terrain adjust z.
-                transforms["translate"] = ent->getPosAsList();
-                ent->removeAttr("pos");
-            }
-            Element orientation;
-            if (ent->copyAttr("orientation", orientation) == 0) {
-                transforms["rotate"] = orientation;
-                ent->removeAttr("orientation");
-            }
-            ent->setAttr("transforms", transforms);
-        }
+//        if (ent->hasAttr("transforms")) {
+//            ent->removeAttr("pos");
+//            ent->removeAttr("orientation");
+//        } else {
+//            Atlas::Message::MapType transforms;
+//            if (ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
+//                //Only copy x and y values; let terrain adjust z.
+//                transforms["translate"] = ent->getPosAsList();
+//                ent->removeAttr("pos");
+//            }
+//            Element orientation;
+//            if (ent->copyAttr("orientation", orientation) == 0) {
+//                transforms["rotate"] = orientation;
+//                ent->removeAttr("orientation");
+//            }
+//            ent->setAttr("transforms", transforms);
+//        }
 
 
 
@@ -657,16 +649,16 @@ void Thing::CreateOperation(const Operation & op, OpVector & res)
         if (!ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG) &&
             (m_location.m_loc != 0)) {
             ent->setLoc(m_location.m_loc->getId());
-            if (!ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
-                //Don't actually set the pos; instead set the transform.
-                //We don't allow external clients to directly set the pos.
-                if (!ent->hasAttr("transforms")) {
-                    Atlas::Message::MapType transforms;
-                    //Only copy x and y values; let terrain adjust z.
-                    transforms["translate"] = Vector3D(m_location.pos().x(), m_location.pos().y(), 0).toAtlas();
-                    ent->setAttr("transforms", transforms);
-                }
-            }
+//            if (!ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
+//                //Don't actually set the pos; instead set the transform.
+//                //We don't allow external clients to directly set the pos.
+//                if (!ent->hasAttr("transforms")) {
+//                    Atlas::Message::MapType transforms;
+//                    //Only copy x and y values; let terrain adjust z.
+//                    transforms["translate"] = Vector3D(m_location.pos().x(), m_location.pos().y(), 0).toAtlas();
+//                    ent->setAttr("transforms", transforms);
+//                }
+//            }
         }
         const std::string & type = parents.front();
         debug( std::cout << getId() << " creating " << type;);

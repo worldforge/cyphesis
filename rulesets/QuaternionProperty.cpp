@@ -14,29 +14,45 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-#include "rulesets/ModeSpecProperty.h"
 
-ModeSpecProperty::ModeSpecProperty() {
+#include "QuaternionProperty.h"
+
+#include <wfmath/atlasconv.h>
+
+const std::string QuaternionProperty::property_atlastype = "list";
+
+QuaternionProperty::QuaternionProperty()
+{
 }
 
-int ModeSpecProperty::get(Atlas::Message::Element & val) const {
+QuaternionProperty::QuaternionProperty(const QuaternionProperty& rhs)
+{
+    m_data = rhs.m_data;
+}
 
+QuaternionProperty::~QuaternionProperty()
+{
+}
 
+int QuaternionProperty::get(Atlas::Message::Element & val) const
+{
+    if (m_data.isValid()) {
+        val = m_data.toAtlas();
+        return 0;
+    }
     return 1;
 
 }
 
-void ModeSpecProperty::set(const Atlas::Message::Element & val) {
-
-}
-
-const Transform& ModeSpecProperty::getTransform() const
+void QuaternionProperty::set(const Atlas::Message::Element & val)
 {
-    return mTransform;
+    if (val.isList()) {
+        m_data.fromAtlas(val.List());
+    }
 }
 
-
-ModeSpecProperty * ModeSpecProperty::copy() const
+QuaternionProperty * QuaternionProperty::copy() const
 {
-    return new ModeSpecProperty(*this);
+    return new QuaternionProperty(*this);
 }
+
