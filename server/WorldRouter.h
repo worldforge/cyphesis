@@ -44,8 +44,6 @@ class WorldRouter : public BaseWorld {
     OperationsDispatcher m_operationsDispatcher;
     /// An ordered queue of suspended operations to be dispatched when resumed.
     OpQueue m_suspendedQueue;
-    /// List of perceptive entities.
-    EntitySet m_perceptives;
     /// Count of in world entities
     int m_entityCount;
     /// Map of spawns

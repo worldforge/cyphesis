@@ -92,7 +92,6 @@ WorldRouter::WorldRouter(const SystemTime & time) :
     EntityBuilder::init();
     m_gameWorld.setType(Inheritance::instance().getType("world"));
     m_eobjects[m_gameWorld.getIntId()] = &m_gameWorld;
-    m_perceptives.insert(&m_gameWorld);
     //WorldTime tmp_date("612-1-1 08:57:00");
     Monitors::instance()->watch("entities", new Variable<int>(m_entityCount));
 }
@@ -383,7 +382,6 @@ void WorldRouter::delEntity(LocatedEntity * ent)
         return;
     }
     assert(ent->getIntId() != 0);
-    m_perceptives.erase(ent);
     m_eobjects.erase(ent->getIntId());
     --m_entityCount;
     ent->destroy();
@@ -406,9 +404,26 @@ void WorldRouter::resumeWorld()
 ///
 /// Pass an operation to addOperationToQueue()
 /// so it gets added to the queue for dispatch.
-void WorldRouter::message(const Operation & op, LocatedEntity & ent)
+/// If the op is a broadcast op, it will be split up into separate ops
+/// for each observer.
+void WorldRouter::message(const Operation & op, LocatedEntity & fromEntity)
 {
-    m_operationsDispatcher.addOperationToQueue(op, ent);
+    if (op->isDefaultTo() && shouldBroadcastPerception(op)) {
+        if (fromEntity.m_location.m_loc) {
+            Domain* domain = fromEntity.m_location.m_loc->getMovementDomain();
+            if (domain) {
+                std::list<LocatedEntity*> entities;
+                domain->getObservingEntitiesFor(fromEntity, entities);
+                for (auto& entity : entities) {
+                    auto opCopy = op.copy();
+                    opCopy->setTo(entity->getId());
+                    message(opCopy, fromEntity);
+                }
+            }
+        }
+    } else {
+        m_operationsDispatcher.addOperationToQueue(op, fromEntity);
+    }
     debug(std::cout << "WorldRouter::message {"
                     << op->getParents().front() << ":"
                     << op->getFrom() << ":" << op->getTo() << "}" << std::endl
@@ -471,15 +486,10 @@ void WorldRouter::deliverTo(const Operation & op, LocatedEntity & ent)
 /// \brief Main in-game operation dispatch function.
 ///
 /// Operations are passed here when they are due for dispatch.
-/// Determine the target of the operation and deliver it directly,
-/// or broadcast if broadcast is required. This function implements
-/// sight ranges for perception operations.
-/// @param op operation to be dispatched to the world. This is non-const
-/// so that broadcast ops can have their TO set correctly for each target.
+/// Determine the target of the operation and deliver it directly.
+/// @param op operation to be dispatched to the world.
 /// @param from entity the operation to be dispatched was send from. Note
-/// that it is possible that this entity has been destroyed, but it
-/// should still have a valid location, so can be used for range
-/// calculations.
+/// that it is possible that this entity has been destroyed.
 void WorldRouter::operation(const Operation & op, LocatedEntity & from)
 {
     debug(std::cout << "WorldRouter::operation {"
@@ -517,20 +527,6 @@ void WorldRouter::operation(const Operation & op, LocatedEntity & from)
 
         deliverTo(op, *to_entity);
 
-    } else if (shouldBroadcastPerception(op)) {
-        if (from.m_location.m_loc) {
-            // Where broadcasts go depends on type of op
-            for (auto& entity : m_perceptives) {
-                if (entity->m_location.m_loc) {
-                    Domain* entityDomain = entity->m_location.m_loc->getMovementDomain();
-                    if (entityDomain && entityDomain->isEntityVisibleFor(*entity, from)) {
-                        op->setTo(entity->getId());
-                        deliverTo(op, *entity);
-                    }
-
-                }
-            }
-        }
     } else {
         EntityDict::const_iterator I = m_eobjects.begin();
         EntityDict::const_iterator Iend = m_eobjects.end();
@@ -549,7 +545,6 @@ void WorldRouter::operation(const Operation & op, LocatedEntity & from)
 void WorldRouter::addPerceptive(LocatedEntity * perceptive)
 {
     debug(std::cout << "WorldRouter::addPerceptive" << std::endl << std::flush;);
-    m_perceptives.insert(perceptive);
 }
 
 /// Main world loop function.

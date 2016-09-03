@@ -98,7 +98,9 @@ void Thing::DeleteOperation(const Operation & op, OpVector & res)
 
     Sight s;
     s->setArgs1(op);
-    res.push_back(s);
+
+    //Important to send directly before this entity is deleted, so that broadcasts gets right.
+    sendWorld(s);
 
     Entity::DeleteOperation(op, res);
 }
