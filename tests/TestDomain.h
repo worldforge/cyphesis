@@ -48,7 +48,7 @@ class TestDomain : public Domain
         }
 
         virtual void getVisibleEntitiesFor(const LocatedEntity& observingEntity,
-                 std::list<std::string>& entityIdList) const
+                std::list<LocatedEntity*>& entityList) const
         {
 
         }

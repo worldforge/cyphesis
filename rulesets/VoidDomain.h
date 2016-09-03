@@ -35,7 +35,7 @@ class VoidDomain : public Domain
                 const LocatedEntity& observedEntity) const;
 
         virtual void getVisibleEntitiesFor(const LocatedEntity& observingEntity,
-                 std::list<std::string>& entityIdList) const;
+                std::list<LocatedEntity*>& entityList) const;
 
         virtual void processVisibilityForMovedEntity(
                 const LocatedEntity& moved_entity, const Location& old_loc,

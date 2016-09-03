@@ -558,14 +558,11 @@ void Thing::generateSightOp(const LocatedEntity& observingEntity, const Operatio
         std::list<std::string> & contlist = sarg->modifyContains();
         if (observedEntityDomain) {
             contlist.clear();
-            observedEntityDomain->getVisibleEntitiesFor(observingEntity, contlist);
-
-//            for (auto& entry : *m_contains) {
-//                if (observedEntityDomain->isEntityVisibleFor(observingEntity, *entry)) {
-//                    debug_print("child entity " << entry->describeEntity() << " of entity " << describeEntity() << " visible to observer " << observingEntity.describeEntity());
-//                    contlist.push_back(entry->getId());
-//                }
-//            }
+            std::list<LocatedEntity*> entityList;
+            observedEntityDomain->getVisibleEntitiesFor(observingEntity, entityList);
+            for (auto& entity : entityList) {
+                contlist.push_back(entity->getId());
+            }
         }
 //            if (contlist.empty()) {
 //                sarg->removeAttr("contains");

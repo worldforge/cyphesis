@@ -419,13 +419,13 @@ bool PhysicalDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, co
     return observedEntry->observingThis.find(observingEntry) != observedEntry->observingThis.end();
 }
 
-void PhysicalDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<std::string>& entityIdList) const
+void PhysicalDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<LocatedEntity*>& entityList) const
 {
     auto observingI = m_entries.find(observingEntity.getIntId());
     if (observingI != m_entries.end()) {
         const BulletEntry* bulletEntry = observingI->second;
         for (const auto& observedEntry : bulletEntry->observedByThis) {
-            entityIdList.push_back(observedEntry->entity->getId());
+            entityList.push_back(observedEntry->entity);
         }
     }
 }

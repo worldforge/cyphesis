@@ -95,7 +95,7 @@ class Domain {
 
     virtual void addEntity(LocatedEntity& entity) = 0;
     virtual void removeEntity(LocatedEntity& entity) = 0;
-    virtual void getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<std::string>& entityIdList) const = 0;
+    virtual void getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<LocatedEntity*>& entityList) const = 0;
     virtual void getObservingEntitiesFor(const LocatedEntity& observedEntity, std::list<LocatedEntity*>& entityList) const
     {
 

@@ -45,7 +45,7 @@ bool VoidDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, const 
 }
 
 void VoidDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity,
-         std::list<std::string>& entityIdList) const
+        std::list<LocatedEntity*>& entityList) const
 {
 
 }

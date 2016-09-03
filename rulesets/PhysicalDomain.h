@@ -63,7 +63,7 @@ class PhysicalDomain: public Domain
 
         virtual bool isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const;
 
-        virtual void getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<std::string>& entityIdList) const;
+        virtual void getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<LocatedEntity*>& entityList) const;
 
         virtual void getObservingEntitiesFor(const LocatedEntity& observedEntity, std::list<LocatedEntity*>& entityList) const;
 

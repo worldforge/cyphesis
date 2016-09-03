@@ -104,12 +104,12 @@ bool InventoryDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, c
     return false;
 }
 
-void InventoryDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<std::string>& entityIdList) const
+void InventoryDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<LocatedEntity*>& entityList) const
 {
     if (m_entity.m_contains) {
         for (auto& entity : *m_entity.m_contains) {
             if (isEntityVisibleFor(observingEntity, *entity)) {
-                entityIdList.push_back(entity->getId());
+                entityList.push_back(entity);
             }
         }
     }
