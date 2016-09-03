@@ -238,7 +238,6 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
         //planeBody->setFriction(.0f);
         m_dynamicsWorld->addRigidBody(planeBody);
     }
-    //m_dynamicsWorld->setGravity(btVector3(0, -10, 0));
 }
 
 PhysicalDomain::~PhysicalDomain()
@@ -440,7 +439,6 @@ void PhysicalDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity
         }
     }
 }
-
 
 class PhysicalDomain::VisibilityCallback: public btCollisionWorld::ContactResultCallback
 {
@@ -899,8 +897,6 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
 
         ModeProperty* modeProp = static_cast<ModeProperty*>(&prop);
 
-//        const std::string& mode = modeProp->data();
-
         applyNewPositionForEntity(bulletEntry, bulletEntry->entity->m_location.m_pos);
 
 //        if (mode != "fixed") {
@@ -997,10 +993,6 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
         bulletEntry->entity->m_location.update(BaseWorld::instance().getTime());
         bulletEntry->entity->setFlags(~(entity_clean));
         sendMoveSight(*bulletEntry);
-//        m_movingEntities.insert(bulletEntry);
-//        Atlas::Objects::Operation::Update update;
-//        update->setTo(bulletEntry->entity->getId());
-//        bulletEntry->entity->sendWorld(update);
     }
 }
 

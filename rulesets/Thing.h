@@ -30,7 +30,6 @@
 /// changing, and combustion.
 class Thing : public Entity {
   protected:
-    void checkVisibility(const Location &, OpVector &);
     void updateProperties(const Operation & op, OpVector & res);
 
     bool lookAtEntity(const Operation & op, OpVector & res, const LocatedEntity* watcher) const;

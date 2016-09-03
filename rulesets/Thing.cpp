@@ -252,66 +252,15 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
         if (ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
             // Update pos
-            WFMath::Vector<3> translate;
-            if (fromStdVector(translate, ent->getPos()) ==0) {
-                //Adjust the supplied position by the inverse of all external transformation.
-                //This is to offset the fact that any client will send an update for position using
-                //the position of the entity as it sees it.
-                //TODO: is this really the best way? Should we allow for clients to specify if they want to set
-                //the position independent of any transformations? Perhaps this is doable if the client
-                //instead sends an update for the "transforms" property?
-//                for (auto entry : transformsProp->external()) {
-//                    if (entry.second.translate.isValid()) {
-//                        translate -= entry.second.translate;
-//                    }
-//                }
-//                if (m_location.bBox().isValid()) {
-//                    for (auto entry : transformsProp->external()) {
-//                        if (entry.second.translateScaled.isValid()) {
-//                            auto size = m_location.bBox().highCorner() - m_location.bBox().lowCorner();
-//                            translate -= WFMath::Vector<3>(
-//                                entry.second.translateScaled.x() * size.x(),
-//                                entry.second.translateScaled.y() * size.y(),
-//                                entry.second.translateScaled.z() * size.z());
-//                        }
-//                    }
-//                }
-//
-//                transformsProp->getTranslate() = translate;
-                newPos = WFMath::Point<3>(translate);
+            if (fromStdVector(newPos, ent->getPos()) ==0) {
                 updatedTransform = true;
             }
         }
-
-//        // FIXME Quick height hack
-//        float height = domain->constrainHeight(*this, m_location.m_loc, m_location.pos(), mode);
-//        //Translate height in relation to the standard translation as set in "transforms".
-//        transformsProp->getTranslate().z() = height;
-
         Element attr_orientation;
         if (ent->copyAttr("orientation", attr_orientation) == 0) {
             // Update orientation
             newOrientation.fromAtlas(attr_orientation.asList());
-
-//            //Adjust the supplied orientation by the inverse of all external transformation.
-//            //This is to offset the fact that any client will send an update for orientation using
-//            //the orientation of the entity as it sees it.
-//            //TODO: is this really the best way? Should we allow for clients to specify if they want to set
-//            //the position independent of any transformations? Perhaps this is doable if the client
-//            //instead sends an update for the "transforms" property?
-//            for (auto entry : transformsProp->external()) {
-//                if (entry.second.rotate.isValid()) {
-//
-//                    Quaternion localRotation(entry.second.rotate.inverse());
-//                    //normalize to avoid drift
-//                    localRotation.normalize();
-//                    newOrientation = localRotation * newOrientation;
-//                }
-//            }
-//
-//            transformsProp->getRotate() = newOrientation;
             updatedTransform = true;
-
         }
 
 
@@ -326,7 +275,6 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         }
 
         if (updatedTransform) {
-           // transformsProp->apply(this);
             domain->applyTransform(*this, newOrientation, newPos, newVelocity, newBbox);
         }
 
@@ -371,22 +319,6 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     onUpdated();
 }
 
-/// \brief Check changes in visibility of this entity
-///
-/// Check how this entity's position has changed since the last update
-/// and how this has affected which entities it can see, and which can see
-/// it. Return Appearance and Disappearance operations as required.
-/// @param old_pos The coordinates of this entity before the update
-/// @param res Resulting operations are returned here
-void Thing::checkVisibility(const Location & old_loc, OpVector & res)
-{
-//    if (m_location.m_loc) {
-//        auto domain = m_location.m_loc->getMovementDomain();
-//        if (domain) {
-//            domain->processVisibilityForMovedEntity(*this, old_loc, res);
-//        }
-//    }
-}
 
 void Thing::SetOperation(const Operation & op, OpVector & res)
 {
@@ -624,43 +556,12 @@ void Thing::CreateOperation(const Operation & op, OpVector & res)
             return;
         }
 
-//        if (ent->hasAttr("transforms")) {
-//            ent->removeAttr("pos");
-//            ent->removeAttr("orientation");
-//        } else {
-//            Atlas::Message::MapType transforms;
-//            if (ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
-//                //Only copy x and y values; let terrain adjust z.
-//                transforms["translate"] = ent->getPosAsList();
-//                ent->removeAttr("pos");
-//            }
-//            Element orientation;
-//            if (ent->copyAttr("orientation", orientation) == 0) {
-//                transforms["rotate"] = orientation;
-//                ent->removeAttr("orientation");
-//            }
-//            ent->setAttr("transforms", transforms);
-//        }
-
-
-
         //If there's no location set we'll use the same one as the current entity.
-        if (!ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG) &&
-            (m_location.m_loc != 0)) {
+        if (!ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG) && (m_location.m_loc != 0)) {
             ent->setLoc(m_location.m_loc->getId());
-//            if (!ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
-//                //Don't actually set the pos; instead set the transform.
-//                //We don't allow external clients to directly set the pos.
-//                if (!ent->hasAttr("transforms")) {
-//                    Atlas::Message::MapType transforms;
-//                    //Only copy x and y values; let terrain adjust z.
-//                    transforms["translate"] = Vector3D(m_location.pos().x(), m_location.pos().y(), 0).toAtlas();
-//                    ent->setAttr("transforms", transforms);
-//                }
-//            }
         }
         const std::string & type = parents.front();
-        debug( std::cout << getId() << " creating " << type;);
+        debug_print(getId() << " creating " << type);
 
         LocatedEntity * obj = BaseWorld::instance().addNewEntity(type, ent);
 
