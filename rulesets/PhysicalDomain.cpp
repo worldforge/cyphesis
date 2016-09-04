@@ -1217,26 +1217,29 @@ void PhysicalDomain::refreshTerrain(const std::vector<WFMath::AxisBox<2>>& areas
 
 void PhysicalDomain::sendMoveSight(BulletEntry& entry)
 {
+
     LocatedEntity& entity = *entry.entity;
     debug_print("new velocity: " << entity.m_location.velocity() << " " << entity.m_location.velocity().mag());
-    Move m;
-    Anonymous move_arg;
-    move_arg->setId(m_entity.getId());
-    entity.m_location.addToEntity(move_arg);
-    m->setArgs1(move_arg);
-    m->setFrom(entity.getId());
-    m->setTo(entity.getId());
 
-    Sight s;
-    s->setArgs1(m);
+    if (!entry.observingThis.empty()) {
+        Move m;
+        Anonymous move_arg;
+        move_arg->setId(m_entity.getId());
+        entity.m_location.addToEntity(move_arg);
+        m->setArgs1(move_arg);
+        m->setFrom(entity.getId());
+        m->setTo(entity.getId());
 
-    entity.sendWorld(s);
+        for (BulletEntry* observer : entry.observingThis) {
+            Sight s;
+            s->setArgs1(m);
+            s->setTo(observer->entity->getId());
+            s->setFrom(entity.getId());
 
-//    std::vector<Operation> res;
-//    processVisibilityForMovedEntity(entity, entry.lastSentLocation, res);
-//    for (auto& op : res) {
-//        entity.sendWorld(op);
-//    }
+            entity.sendWorld(s);
+        }
+    }
+
     entity.onUpdated();
     entry.lastSentLocation = entity.m_location;
 }
