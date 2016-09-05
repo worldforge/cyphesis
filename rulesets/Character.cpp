@@ -1413,8 +1413,6 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         m_movement.setTarget(new_pos);
         debug(std::cout << "Target" << new_pos << std::endl << std::flush
         ;);
-
-        ::addToEntity(new_pos, move_arg->modifyPos());
     }
     if (direction.isValid()) {
         ret_location.m_velocity = direction;
