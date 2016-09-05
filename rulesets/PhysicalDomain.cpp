@@ -1107,6 +1107,7 @@ void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath:
 
     debug_print("PhysicalDomain::new pos " << entity.describeEntity() << " " << pos);
     transform.setOrigin(Convert::toBullet(newPos) + Convert::toBullet(entity.m_location.bBox().getCenter()));
+    entry->rigidBody->setWorldTransform(transform);
     if (entry->viewSphere) {
         entry->viewSphere->setWorldTransform(transform);
     }
@@ -1127,16 +1128,16 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
     BulletEntry* entry = I->second;
     if (entry->rigidBody) {
         if (orientation.isValid() || pos.isValid()) {
-            btTransform transform = entry->rigidBody->getWorldTransform();
             if (orientation.isValid()) {
                 debug_print("PhysicalDomain::new orientation " << entity.describeEntity() << " " << orientation);
+                btTransform& transform = entry->rigidBody->getWorldTransform();
                 transform.setRotation(Convert::toBullet(orientation));
+                entry->rigidBody->setWorldTransform(transform);
                 entity.m_location.m_orientation = orientation;
             }
             if (pos.isValid()) {
                 applyNewPositionForEntity(entry, pos);
             }
-            entry->rigidBody->setWorldTransform(transform);
             if (entry->rigidBody->getInvMass() != 0) {
                 entry->rigidBody->activate();
             }
