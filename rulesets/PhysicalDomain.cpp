@@ -55,6 +55,7 @@
 #include <bullet/BulletCollision/CollisionShapes/btBoxShape.h>
 #include <bullet/BulletCollision/CollisionShapes/btStaticPlaneShape.h>
 #include <bullet/BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h>
+#include <bullet/BulletCollision/CollisionShapes/btCylinderShape.h>
 
 #include <sigc++/bind.h>
 
@@ -654,6 +655,18 @@ btCollisionShape* PhysicalDomain::createCollisionShape(const Atlas::Message::Map
             }
         } else if (shape == "box") {
             return createBoxFn();
+        } else if (shape == "cylinder-z") {
+            btCylinderShape* shape = new btCylinderShape(btVector3(1, 1, 1));
+            shape->setLocalScaling(Convert::toBullet(size * 0.5f));
+            return shape;
+        } else if (shape == "cylinder-x") {
+            btCylinderShape* shape = new btCylinderShapeX(btVector3(1, 1, 1));
+            shape->setLocalScaling(Convert::toBullet(size * 0.5f));
+            return shape;
+        } else if (shape == "cylinder-y") {
+            btCylinderShape* shape = new btCylinderShapeZ(btVector3(1, 1, 1));
+            shape->setLocalScaling(Convert::toBullet(size * 0.5f));
+            return shape;
         }
     }
 

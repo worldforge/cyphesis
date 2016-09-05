@@ -20,6 +20,23 @@
 
 #include "common/Property.h"
 
+/**
+ * @brief Specifies geometry of an entity.
+ *
+ * The property "shape" defines the shape of the geometry.
+ * Possible values:
+ *
+ * "sphere"
+ * "box"
+ * "capsule-z": A capsule, oriented along the z axis
+ * "capsule-x": A capsule, oriented along the x axis
+ * "capsule-y": A capsule, oriented along the y axis
+ * "cylinder-z": A cylinder, oriented along the z axis
+ * "cylinder-x": A cylinder, oriented along the x axis
+ * "cylinder-y": A cylinder, oriented along the y axis
+ *
+ * @ingroup PropertyClasses
+ */
 class GeometryProperty: public Property<Atlas::Message::MapType>
 {
     public:
