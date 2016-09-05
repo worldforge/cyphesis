@@ -81,6 +81,8 @@ class PhysicalDomain: public Domain
 
         virtual void refreshTerrain(const std::vector<WFMath::AxisBox<2>>& areas);
 
+        virtual void toggleChildPerception(LocatedEntity& entity);
+
     protected:
 
         class PhysicalMotionState;

@@ -116,6 +116,12 @@ class Domain {
 
     }
 
+    virtual void toggleChildPerception(LocatedEntity& entity)
+    {
+
+    }
+
+
 };
 
 #endif // RULESETS_DOMAIN_H

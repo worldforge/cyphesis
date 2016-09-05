@@ -823,6 +823,38 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     }
 }
 
+void PhysicalDomain::toggleChildPerception(LocatedEntity& entity)
+{
+    auto I = m_entries.find(entity.getIntId());
+    assert(I != m_entries.end());
+    BulletEntry* entry = I->second;
+    if (entity.isPerceptive()) {
+        if (!entry->viewSphere) {
+            btSphereShape* viewSphere = new btSphereShape(0.5);
+            btCollisionObject* visObject = new btCollisionObject();
+            visObject->setCollisionShape(viewSphere);
+            visObject->setUserPointer(entry);
+            entry->viewSphere = visObject;
+            if (entity.m_location.m_pos.isValid()) {
+                visObject->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(entity.m_location.m_pos)));
+                m_visibilityWorld->addCollisionObject(visObject, VISIBILITY_MASK_OBSERVABLE, VISIBILITY_MASK_OBSERVER);
+            }
+            OpVector res;
+            updateVisibilityOfEntry(entry, res);
+            for (auto& op : res) {
+                m_entity.sendWorld(op);
+            }
+        }
+    } else {
+        if (entry->viewSphere) {
+            m_visibilityWorld->removeCollisionObject(entry->viewSphere);
+            delete entry->viewSphere->getCollisionShape();
+            delete entry->viewSphere;
+            entry->viewSphere = nullptr;
+        }
+    }
+}
+
 void PhysicalDomain::removeEntity(LocatedEntity& entity)
 {
     debug_print("PhysicalDomain::removeEntity " << entity.describeEntity());

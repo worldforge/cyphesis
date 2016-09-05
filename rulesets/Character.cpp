@@ -26,6 +26,7 @@
 #include "OutfitProperty.h"
 #include "StatusProperty.h"
 #include "TasksProperty.h"
+#include "Domain.h"
 
 #include "common/BaseWorld.h"
 #include "common/op_switch.h"
@@ -1590,6 +1591,13 @@ void Character::mindLookOperation(const Operation & op, OpVector & res)
     debug(std::cout << "Got look up from mind from [" << op->getFrom() << "] to [" << op->getTo() << "]" << std::endl << std::flush
     ;);
     m_flags |= entity_perceptive;
+    if (m_location.m_loc) {
+        Domain* domain = m_location.m_loc->getMovementDomain();
+        if (domain) {
+            domain->toggleChildPerception(*this);
+        }
+    }
+
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
         //If nothing is specified, send to parent, if available.
