@@ -60,9 +60,6 @@ ServerRouting::ServerRouting(BaseWorld & wrld,
 {
     Monitors * monitors = Monitors::instance();
     monitors->insert("server", "cyphesis");
-    monitors->insert("builddate", String::compose("%1, %2",
-                                                  consts::buildDate,
-                                                  consts::buildTime));
     monitors->watch("instance", new Variable<std::string>(::instance));
     monitors->watch("name", new Variable<std::string>(m_svrName));
     monitors->watch("ruleset", new Variable<std::string>(m_svrRuleset));
@@ -153,7 +150,6 @@ void ServerRouting::addToMessage(MapType & omap) const
     omap["parents"] = ListType(1, "server");
     omap["clients"] = m_numClients;
     omap["uptime"] = m_world.upTime();
-    omap["builddate"] = std::string(consts::buildTime)+", "+std::string(consts::buildDate);
     omap["buildid"] = consts::buildId;
     omap["version"] = std::string(consts::version);
     if (restricted_flag) {
@@ -173,7 +169,6 @@ void ServerRouting::addToEntity(const RootEntity & ent) const
     ent->setParents(std::list<std::string>(1, "server"));
     ent->setAttr("clients", m_numClients);
     ent->setAttr("uptime", m_world.upTime());
-    ent->setAttr("builddate", std::string(consts::buildTime)+", "+std::string(consts::buildDate));
     ent->setAttr("buildid", consts::buildId);
     ent->setAttr("version", std::string(consts::version));
     if (restricted_flag) {

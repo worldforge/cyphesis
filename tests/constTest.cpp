@@ -80,23 +80,5 @@ int main()
     versions = consts::version;
     assert(versions.size() > 0);
 
-#if 0
-// For the time being, as these are now in the server/buildid.cpp
-// we are leaving the out
-    const char * buildTime;
-    buildTime = consts::buildTime;
-    assert(buildTime != 0);
-    std::string buildTimes;
-    buildTimes = consts::buildTime;
-    assert(buildTimes.size() > 0);
-
-    const char * buildDate;
-    buildDate = consts::buildDate;
-    assert(buildDate != 0);
-    std::string buildDates;
-    buildDates = consts::buildDate;
-    assert(buildDates.size() > 0);
-#endif
-
     return 0;
 }

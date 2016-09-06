@@ -451,7 +451,6 @@ the lobby to see if any users are logged in.
   <programlisting>
 cyphesis> stat
 Info(
-     builddate:  11:32:45, Sep 27 2004
      clients:  1
      name:  calcitration.ecs.soton.ac.uk
      objtype:  obj

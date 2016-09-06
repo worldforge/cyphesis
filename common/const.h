@@ -66,11 +66,7 @@ namespace consts {
   extern const long rootWorldIntId;
   /// \brief Version of the software we are running
   extern const char * version;
-  /// \brief Time this server was built
-  extern const char * buildTime;
-  /// \brief Date this server was built
-  extern const char * buildDate;
-  /// \brief Identifier of this build, taken from "git describe".
+  /// \brief Identifier of this build, taken from "git rev-parse".
   extern const char * buildId;
 
   // @}

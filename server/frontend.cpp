@@ -68,7 +68,7 @@ int main(int argc, char ** argv)
     if (config_status < 0) {
         if (config_status == CONFIG_VERSION) {
             std::cout << argv[0] << " (cyphesis) " << consts::version
-                      << " (Cyphesis build " << consts::buildId << ")"
+                      << " (Cyphesis build: " << consts::buildId << ")"
                       << std::endl << std::flush;
 
             return 0;
