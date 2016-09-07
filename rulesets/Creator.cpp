@@ -205,7 +205,7 @@ void Creator::relayOperationTo(const Operation & op, LocatedEntity& to)
 
 void Creator::mindLookOperation(const Operation & op, OpVector & res)
 {
-    // This overriden version allows the Creator to search the world for
+    // This overridden version allows the Creator to search the world for
     // entities by type or by name.
     //FIXME: This scheme makes for some strange operations, since the sight check will be
     //ignored if searching by type or name, but not by id.

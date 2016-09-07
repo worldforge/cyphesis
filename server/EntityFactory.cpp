@@ -117,7 +117,7 @@ void EntityFactoryBase::initializeEntity(LocatedEntity& thing,
             // If a property is in the class it won't have been installed
             // as setAttr() checks
             prop->install(&thing, propIter.first);
-            // The property will have been applied if it has an overriden
+            // The property will have been applied if it has an overridden
             // value, so we only apply it the value is still default.
             if (attrs.find(propIter.first) == attrs.end()) {
                 prop->apply(&thing);

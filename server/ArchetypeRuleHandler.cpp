@@ -122,7 +122,7 @@ int ArchetypeRuleHandler::modifyArchetypeClass(const std::string & class_name,
     auto backup_thoughts = factory->m_thoughts;
 
     // Copy the defaults from the parent. In populateArchetypeFactory this may be
-    // overriden with the defaults for this class.
+    // overridden with the defaults for this class.
     if (factory->m_parent != 0) {
         factory->m_entities = factory->m_parent->m_entities;
         factory->m_thoughts = factory->m_parent->m_thoughts;

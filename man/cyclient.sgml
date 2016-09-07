@@ -36,7 +36,7 @@ beginning of the option specification, as shown in the synopsis above.
   <refsect2><title>Client Options</title>
    <para>
 The following options are present in the client section of the config file,
-and overriden by specifying the client section name on the command line.
+and overridden by specifying the client section name on the command line.
    </para>
    <variablelist>
 
@@ -78,7 +78,7 @@ This setting provides the Python function which should be run by the client.
   <refsect2><title>Server Options</title>
    <para>
 The following options are present in the cyphesis section of the config
-file, and overriden by specifying the cyphesis section name on the
+file, and overridden by specifying the cyphesis section name on the
 command line. These options apply to the server, but are also required
 by the client to ensure that the client can connect.
    </para>

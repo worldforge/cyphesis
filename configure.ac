@@ -372,7 +372,7 @@ details of how to download and install the missing library.])
     ],[ $READLINE_LIBS ]
 )
 
-AC_MSG_CHECKING([whether tar allows permissions to be overriden])
+AC_MSG_CHECKING([whether tar allows permissions to be overridden])
 if tar cf /dev/null --mode o+rX /dev/null 2> /dev/null ; then
     TAR_PERM_FLAGS="--mode o+rX"
     AC_MSG_RESULT([yes])

@@ -327,7 +327,7 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
               res, getId());
         return;
     } else {
-        error(op, "Unknow object type set", res, getId());
+        error(op, "Unknown object type set", res, getId());
         return;
     }
 }

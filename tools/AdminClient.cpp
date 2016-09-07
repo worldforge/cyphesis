@@ -107,7 +107,7 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
                             const MapType & rule)
 {
     if (m_uploadedRules.find(id) != m_uploadedRules.end()) {
-        std::cout << "Overriden rule " << id << " ignored."
+        std::cout << "Overridden rule " << id << " ignored."
                   << std::endl << std::flush;
 
         return -1;
