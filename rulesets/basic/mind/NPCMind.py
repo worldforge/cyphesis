@@ -521,7 +521,7 @@ class NPCMind(server.Mind):
         if res:
             return self.add_importance(res['sub'].id,'>',res['obj'].id)
         else:
-            return self.interlinguish_warning(op,say,"Unkown assertion")
+            return self.interlinguish_warning(op,say,"Unknown assertion")
     def interlinguish_know_verb1_operation(self, op, say):
         """Handle a sentence of the form 'know subject predicate object'
 

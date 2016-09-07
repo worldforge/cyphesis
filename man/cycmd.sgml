@@ -36,7 +36,7 @@ beginning of the option specification, as shown in the synopsis above.
   <refsect2><title>Client Options</title>
    <para>
 The following options used by <command>cycmd</command> are present in the
-client section of the config file, and overriden by specifying the client
+client section of the config file, and overridden by specifying the client
 section name on the command line.
    </para>
    <variablelist>
@@ -62,7 +62,7 @@ that <command>cycmd</command> should try and connect to.
   <refsect2><title>Server Options</title>
    <para>
 The following options are present in the cyphesis section of the config
-file, and overriden by specifying the cyphesis section name on the
+file, and overridden by specifying the cyphesis section name on the
 command line. These options apply to the server, but are also required
 by the client to ensure that the client can connect.
    </para>
@@ -499,7 +499,7 @@ cyphesis>
   <para>
 The third example shows server monitoring being enable, followed by information
 of a series of in-game operations. The flow of messages in while monitoring the
-server can be large. In order to supress the flow, the
+server can be large. In order to suppress the flow, the
 <command>unmonitor</command> command must be used.
   </para>
   <programlisting>

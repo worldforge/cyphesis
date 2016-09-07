@@ -111,7 +111,7 @@ int EntityRuleHandler::modifyEntityClass(const std::string & class_name,
             backup_class_attributes = factory->m_classAttributes;
 
     // Copy the defaults from the parent. In populateEntityFactory this may be
-    // overriden with the defaults for this class.
+    // overridden with the defaults for this class.
     if (factory->m_parent != 0) {
         factory->m_attributes = factory->m_parent->m_attributes;
     } else {

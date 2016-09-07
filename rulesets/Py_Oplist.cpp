@@ -94,7 +94,7 @@ static PyObject * Oplist_num_add(PyOplist *self, PyObject *other)
         }
         return (PyObject*)res;
     }
-    PyErr_SetString(PyExc_TypeError, "Unkown other in Oplist.num_add");
+    PyErr_SetString(PyExc_TypeError, "Unknown other in Oplist.num_add");
     return NULL;
 }
 
@@ -141,7 +141,7 @@ static PyObject * Oplist_num_inplace_add(PyOplist * self, PyObject * other)
         Py_INCREF(self);
         return (PyObject*)self;
     }
-    PyErr_SetString(PyExc_TypeError, "Unkown other in Oplist.num_inplace_add");
+    PyErr_SetString(PyExc_TypeError, "Unknown other in Oplist.num_inplace_add");
     return NULL;
 }
 
