@@ -120,21 +120,21 @@ void TerrainModProperty::apply(LocatedEntity * owner)
     if (m_modptr != 0) {
         // and the new one is the same, just update
         if (mod == m_modptr) {
-            terrain->updateMod(m_modptr);
+            terrain->updateMod(owner->getIntId(), m_modptr);
             if (terrainHolder->getMovementDomain()) {
                 terrainHolder->getMovementDomain()->refreshTerrain(terrainAreas);
             }
             return;
         }
         // If the mod has changed then remove the old one and delete it.
-        terrain->removeMod(m_modptr);
+        terrain->removeMod(owner->getIntId());
         delete m_modptr;
     }
 
     m_modptr = mod;
 
     // Apply the new mod to the terrain; retain the returned pointer
-    terrain->addMod(m_modptr);
+    terrain->addMod(owner->getIntId(), m_modptr);
     m_modptr->setContext(new TerrainContext(owner));
     m_modptr->context()->setId(owner->getId());
     if (terrainHolder->getMovementDomain()) {
@@ -176,7 +176,7 @@ void TerrainModProperty::move(LocatedEntity* owner)
         return;
     }
 
-    terrain->updateMod(mod);
+    terrain->updateMod(owner->getIntId(), mod);
     if (terrainHolder->getMovementDomain()) {
         terrainHolder->getMovementDomain()->refreshTerrain(std::vector<WFMath::AxisBox<2>>{mod->bbox()});
     }
@@ -191,7 +191,7 @@ void TerrainModProperty::remove(LocatedEntity * owner)
         if (terrain) {
             std::vector<WFMath::AxisBox<2>> terrainAreas;
             terrainAreas.push_back(m_modptr->bbox());
-            terrain->removeMod(m_modptr);
+            terrain->removeMod(owner->getIntId());
             delete m_modptr;
             m_modptr = nullptr;
 

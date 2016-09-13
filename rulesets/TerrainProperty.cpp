@@ -318,19 +318,19 @@ HandlerResult TerrainProperty::operation(LocatedEntity * e,
     return eat_handler(e, op, res);
 }
 
-void TerrainProperty::addMod(const Mercator::TerrainMod *mod) const
+void TerrainProperty::addMod(long id, const Mercator::TerrainMod *mod) const
 {
-    m_data.addMod(mod);
+    m_data.updateMod(id, mod);
 }
 
-void TerrainProperty::updateMod(const Mercator::TerrainMod *mod) const
+void TerrainProperty::updateMod(long id, const Mercator::TerrainMod *mod) const
 {
-    m_data.updateMod(mod);
+    m_data.updateMod(id, mod);
 }
 
-void TerrainProperty::removeMod(const Mercator::TerrainMod *mod) const
+void TerrainProperty::removeMod(long id) const
 {
-    m_data.removeMod(mod);
+    m_data.updateMod(id, nullptr);
 }
 
 void TerrainProperty::clearMods(float x, float y)
@@ -407,11 +407,9 @@ void TerrainProperty::findMods(const Point3D & pos,
     if (seg == 0) {
         return;
     }
-    const Mercator::ModList & seg_mods = seg->getMods();
-    Mercator::ModList::const_iterator I = seg_mods.begin();
-    Mercator::ModList::const_iterator Iend = seg_mods.end();
-    for (; I != Iend; ++I) {
-        const Mercator::TerrainMod * mod = *I;
+    auto& seg_mods = seg->getMods();
+    for (auto& entry : seg_mods) {
+        const Mercator::TerrainMod * mod = entry.second;
         WFMath::AxisBox<2> mod_box = mod->bbox();
         if (pos.x() > mod_box.lowCorner().x() && pos.x() < mod_box.highCorner().x() &&
             pos.y() > mod_box.lowCorner().y() && pos.y() < mod_box.highCorner().y()) {
