@@ -485,7 +485,7 @@ Mercator::Terrain& TerrainProperty::getData()
     return m_data;
 }
 
-const Mercator::Terrain& TerrainProperty::getData() const
+Mercator::Terrain& TerrainProperty::getData() const
 {
     return m_data;
 }

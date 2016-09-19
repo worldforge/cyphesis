@@ -89,7 +89,7 @@ class TerrainProperty : public PropertyBase {
                               OpVector & res);
 
     Mercator::Terrain& getData();
-    const Mercator::Terrain& getData() const;
+    Mercator::Terrain& getData() const;
 
 };
 

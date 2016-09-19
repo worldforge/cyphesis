@@ -25,12 +25,15 @@
 
 #include <map>
 #include <unordered_map>
+#include <tuple>
 #include <array>
 #include <set>
 
 namespace Mercator
 {
 class Segment;
+class Terrain;
+class TerrainMod;
 }
 
 class btDefaultCollisionConfiguration;
@@ -121,6 +124,8 @@ class PhysicalDomain: public Domain
         std::set<BulletEntry*> m_lastMovingEntities;
         std::set<BulletEntry*> m_dirtyEntries;
 
+        std::unordered_map<long, std::tuple<Mercator::TerrainMod*, WFMath::Point<3>, WFMath::Quaternion, WFMath::AxisBox<2>>> m_terrainMods;
+
         /**
          * @brief A map of all entities that currently are self-propelling.
          *
@@ -142,6 +147,7 @@ class PhysicalDomain: public Domain
         float m_lastTickTime;
         float m_visibilityCheckCountdown;
 
+        Mercator::Terrain* m_terrain;
 
         /**
          * @brief Contains all terrain segments, as height fields.
@@ -203,6 +209,8 @@ class PhysicalDomain: public Domain
         void updateVisibilityOfEntry(BulletEntry* entry, OpVector& res);
 
         void applyNewPositionForEntity(BulletEntry* entry, const WFMath::Point<3>& pos);
+        bool getTerrainHeightAndNormal(float x, float y, float& height, Vector3D& normal) const;
+        void updateTerrainMod(const LocatedEntity& entity);
 
 };
 

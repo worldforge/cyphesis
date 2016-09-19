@@ -33,18 +33,10 @@ class TerrainModTranslator;
 /// \brief Class to handle Entity terrain modifier property
 /// \ingroup PropertyClasses
 class TerrainModProperty : public TerrainEffectorProperty {
-  protected:
-
-    /// \brief A pointer to the modifier returned by a call to Terrain::addMod()
-    Mercator::TerrainMod *m_modptr;
-
-    /**
-     * @brief The inner terrain mod instance which holds the actual Mercator::TerrainMod instance and handles the parsing of it.
-     * In order to be able to better support different types of mods the actual instance will be any of the subclasses of InnerTerrainMod, depending on the type of the mod.
-     */
-    TerrainModTranslator* m_innerMod;
-
   public:
+    static const std::string property_name;
+    static const std::string property_atlastype;
+
     TerrainModProperty();
     ~TerrainModProperty();
 
@@ -62,9 +54,13 @@ class TerrainModProperty : public TerrainEffectorProperty {
         return m_modptr;
     }
 
+    const Mercator::TerrainMod * getModifier() const {
+        return m_modptr;
+    }
+
     /// \brief Constructs a Mercator::TerrainMod from Atlas data
-    Mercator::TerrainMod * parseModData(LocatedEntity * owner,
-                                        const Atlas::Message::MapType &);
+    Mercator::TerrainMod * parseModData(const WFMath::Point<3>& pos,
+                                        const WFMath::Quaternion& orientation) const;
 
     /// \brief Changes a modifier's position
     void move(LocatedEntity*);
@@ -85,6 +81,17 @@ class TerrainModProperty : public TerrainEffectorProperty {
     HandlerResult delete_handler(LocatedEntity * e,
                                  const Operation & op,
                                  OpVector & res);
+  protected:
+
+    /// \brief A pointer to the modifier returned by a call to Terrain::addMod()
+    Mercator::TerrainMod *m_modptr;
+
+    /**
+     * @brief The inner terrain mod instance which holds the actual Mercator::TerrainMod instance and handles the parsing of it.
+     * In order to be able to better support different types of mods the actual instance will be any of the subclasses of InnerTerrainMod, depending on the type of the mod.
+     */
+    TerrainModTranslator* m_innerMod;
+
 };
 
 

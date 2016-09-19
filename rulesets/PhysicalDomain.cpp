@@ -31,6 +31,7 @@
 #include "GeometryProperty.h"
 #include "AngularFactorProperty.h"
 #include "VisibilityProperty.h"
+#include "TerrainModProperty.h"
 
 #include "physics/Collision.h"
 #include "physics/Convert.h"
@@ -45,11 +46,13 @@
 
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>
+#include <Mercator/TerrainMod.h>
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
 #include <wfmath/atlasconv.h>
+#include <wfmath/axisbox.h>
 
 #include <bullet/btBulletDynamicsCommon.h>
 #include <bullet/BulletCollision/CollisionShapes/btBoxShape.h>
@@ -61,6 +64,7 @@
 
 #include <iostream>
 #include <unordered_set>
+#include <vector>
 
 #include <cassert>
 
@@ -204,8 +208,13 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
         //Use a dynamic broadphase; this might be worth revisiting for optimizations
         m_broadphase(new btDbvtBroadphase()), m_dynamicsWorld(new btDiscreteDynamicsWorld(m_dispatcher, m_broadphase, m_constraintSolver, m_collisionConfiguration)), m_visibilityWorld(
                 new btCollisionWorld(new btCollisionDispatcher(new btDefaultCollisionConfiguration()), new btDbvtBroadphase(), new btDefaultCollisionConfiguration())), m_ticksPerSecond(
-                15), m_lastTickTime(0), m_visibilityCheckCountdown(0)
+                15), m_lastTickTime(0), m_visibilityCheckCountdown(0), m_terrain(nullptr)
 {
+
+    const TerrainProperty* terrainProperty = m_entity.getPropertyClass<TerrainProperty>("terrain");
+    if (terrainProperty) {
+        m_terrain = &terrainProperty->getData();
+    }
 
     createDomainBorders();
 
@@ -699,28 +708,26 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         angularFactor = Convert::toBullet(angularFactorProp->data());
     }
 
-    std::string mode;
+    ModeProperty::Mode mode = ModeProperty::Mode::Free;
     auto modeProp = entity.getPropertyClassFixed<ModeProperty>();
     if (modeProp) {
-        mode = modeProp->data();
+        mode = modeProp->getMode();
     }
 
     auto adjustHeightFn = [&]() {
-        const TerrainProperty * tp = m_entity.getPropertyClass<TerrainProperty>("terrain");
-        if (tp) {
-            WFMath::Point<3>& pos = entity.m_location.m_pos;
+        WFMath::Point<3>& pos = entity.m_location.m_pos;
 
-            float h = pos.z();
-            Vector3D normal;
-            tp->getHeightAndNormal(pos.x(), pos.y(), h, normal);
-            pos.z() = h;
-        }};
+        float h = pos.z();
+        Vector3D normal;
+        getTerrainHeightAndNormal(pos.x(), pos.y(), h, normal);
+        pos.z() = h;
+    };
 
-    if (mode != "fixed") {
+    if (mode != ModeProperty::Mode::Fixed) {
         adjustHeightFn();
     }
 
-    if (mode == "planted" || mode == "fixed") {
+    if (mode == ModeProperty::Mode::Planted || mode == ModeProperty::Mode::Fixed) {
         //"fixed" mode means that the entity stays in place, always
         //"planted" mode means it's planted in the ground
         //Zero mass makes the rigid body static
@@ -875,6 +882,11 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
     assert(I != m_entries.end());
     BulletEntry* entry = I->second;
 
+    const TerrainModProperty* terrainModProp = entry->entity->getPropertyClassFixed<TerrainModProperty>();
+    if (terrainModProp && m_terrain && terrainModProp->getModifier()) {
+        m_terrain->updateMod(entity.getIntId(), nullptr);
+    }
+
     m_lastMovingEntities.erase(entry);
     if (entry->rigidBody) {
         m_dynamicsWorld->removeRigidBody(entry->rigidBody);
@@ -914,13 +926,12 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
     auto adjustToTerrainFn = [&]() {
         LocatedEntity& entity = *bulletEntry->entity;
 
-        const TerrainProperty * tp = m_entity.getPropertyClass<TerrainProperty>("terrain");
-        if (tp) {
+        if (m_terrain) {
             WFMath::Point<3>& wfPos = entity.m_location.m_pos;
 
             float h = wfPos.z();
             Vector3D normal;
-            tp->getHeightAndNormal(wfPos.x(), wfPos.y(), h, normal);
+            getTerrainHeightAndNormal(wfPos.x(), wfPos.y(), h, normal);
             wfPos.z() = h;
 
             btQuaternion orientation = entity.m_location.m_orientation.isValid() ? Convert::toBullet(entity.m_location.m_orientation) : btQuaternion::getIdentity();
@@ -951,11 +962,12 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
         //When altering mass we need to first remove and then re-add the body, for some reason.
         m_dynamicsWorld->removeRigidBody(bulletEntry->rigidBody);
 
-        if (modeProp->data() == "planted" || modeProp->data() == "fixed") {
+        if (modeProp->getMode() == ModeProperty::Mode::Planted || modeProp->getMode() == ModeProperty::Mode::Fixed) {
             //"fixed" mode means that the entity stays in place, always
             //"planted" mode means it's planted in the ground
             //Zero mass makes the rigid body static
             bulletEntry->rigidBody->setMassProps(0, btVector3(0, 0, 0));
+            updateTerrainMod(*bulletEntry->entity);
         } else {
             float mass = getMassForEntity(*bulletEntry->entity);
             btVector3 inertia;
@@ -986,7 +998,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
 
         ModeProperty* modeProp = bulletEntry->entity->requirePropertyClassFixed<ModeProperty>();
 
-        if (modeProp->data() == "planted" || modeProp->data() == "fixed") {
+        if (modeProp->getMode() == ModeProperty::Mode::Planted || modeProp->getMode() == ModeProperty::Mode::Fixed) {
             //"fixed" mode means that the entity stays in place, always
             //"planted" mode means it's planted in the ground
             //Zero mass makes the rigid body static
@@ -1038,6 +1050,77 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
         bulletEntry->entity->m_location.update(BaseWorld::instance().getTime());
         bulletEntry->entity->setFlags(~(entity_clean));
         sendMoveSight(*bulletEntry);
+    } else if (name == TerrainModProperty::property_name) {
+        updateTerrainMod(*bulletEntry->entity);
+    }
+}
+
+void PhysicalDomain::updateTerrainMod(const LocatedEntity& entity)
+{
+    auto modeProp = entity.getPropertyClassFixed<ModeProperty>();
+    if (modeProp) {
+        if (modeProp->getMode() == ModeProperty::Mode::Planted) {
+            auto terrainModProperty = entity.getPropertyClassFixed<TerrainModProperty>();
+            if (terrainModProperty && m_terrain) {
+//                auto modifier = terrainModProperty->getModifier();
+//                if (modifier && modifier->bbox().isValid()) {
+                //We need to get the vertical position in the terrain, without any mods.
+                Mercator::Segment* segment = m_terrain->getSegment(entity.m_location.m_pos.x(), entity.m_location.m_pos.y());
+                WFMath::Point<3> modPos = entity.m_location.m_pos;
+                if (segment) {
+                    std::vector<WFMath::AxisBox<2>> terrainAreas;
+                    bool updateMod = false;
+
+                    //If there's no mods we can just use position right away
+                    if (segment->getMods().empty()) {
+                        if (!segment->isValid()) {
+                            segment->populate();
+                        }
+                        segment->getHeight(modPos.x() - (segment->getXRef()), modPos.y() - (segment->getYRef()), modPos.z());
+                    } else {
+                        Mercator::HeightMap heightMap(segment->getResolution(), segment->getMin(), segment->getMax());
+                        segment->populateHeightMap(heightMap);
+
+                        heightMap.getHeight(modPos.x() - (segment->getXRef()), modPos.y() - (segment->getYRef()), modPos.z());
+                    }
+
+                    auto I = m_terrainMods.find(entity.getIntId());
+                    Mercator::TerrainMod* oldMod = nullptr;
+                    if (I != m_terrainMods.end()) {
+                        oldMod = std::get<0>(I->second);
+                        const WFMath::Point<3>& oldPos = std::get<1>(I->second);
+                        const WFMath::Quaternion& oldOrient = std::get<2>(I->second);
+
+                        if (!oldOrient.isEqualTo(entity.m_location.m_orientation) || !oldPos.isEqualTo(modPos)) {
+                            //Need to update terrain mod
+                            updateMod = true;
+                            const WFMath::AxisBox<2>& oldArea = std::get<3>(I->second);
+                            if (oldArea.isValid()) {
+                                terrainAreas.push_back(oldArea);
+                            }
+                        }
+                    } else {
+                        updateMod = true;
+                    }
+
+                    if (updateMod) {
+                        Mercator::TerrainMod* modifier = terrainModProperty->parseModData(modPos, entity.m_location.m_orientation);
+
+                        m_terrain->updateMod(entity.getIntId(), modifier);
+                        delete oldMod;
+                        if (modifier) {
+                            m_terrainMods[entity.getIntId()] = std::make_tuple(modifier, modPos, entity.m_location.m_orientation, modifier->bbox());
+                            terrainAreas.push_back(modifier->bbox());
+                        } else {
+                            m_terrainMods.erase(entity.getIntId());
+                        }
+
+                        refreshTerrain(terrainAreas);
+                    }
+                }
+            }
+//            }
+        }
     }
 }
 
@@ -1062,6 +1145,11 @@ void PhysicalDomain::entityPropertyApplied(const std::string& name, PropertyBase
             entry.second.rigidBody->activate();
         }
         return;
+    } else if (name == "terrain") {
+        const TerrainProperty* terrainProperty = m_entity.getPropertyClass<TerrainProperty>("terrain");
+        if (terrainProperty) {
+            m_terrain = &terrainProperty->getData();
+        }
     }
 }
 
@@ -1070,24 +1158,22 @@ void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath:
     btTransform& transform = entry->rigidBody->getWorldTransform();
     LocatedEntity& entity = *entry->entity;
 
-    std::string mode;
+    ModeProperty::Mode mode = ModeProperty::Mode::Free;
     auto modeProp = entity.getPropertyClassFixed<ModeProperty>();
     if (modeProp) {
-        mode = modeProp->data();
+        mode = modeProp->getMode();
     }
 
     WFMath::Point<3> newPos = pos;
 
     auto adjustHeightFn = [&]() {
-        const TerrainProperty * tp = m_entity.getPropertyClass<TerrainProperty>("terrain");
-        if (tp) {
-            float h = pos.z();
-            Vector3D normal;
-            tp->getHeightAndNormal(pos.x(), pos.y(), h, normal);
-            newPos.z() = h;
-        }};
+        float h = pos.z();
+        Vector3D normal;
+        getTerrainHeightAndNormal(pos.x(), pos.y(), h, normal);
+        newPos.z() = h;
+    };
 
-    if (mode == "planted") {
+    if (mode == ModeProperty::Mode::Planted) {
         adjustHeightFn();
         auto plantedOffsetProp = entity.getPropertyType<double>("planted-offset");
         if (plantedOffsetProp) {
@@ -1099,7 +1185,7 @@ void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath:
 
             newPos.z() += (plantedScaledOffsetProp->data() * size.z());
         }
-    } else if (mode != "fixed") {
+    } else if (mode != ModeProperty::Mode::Fixed) {
         adjustHeightFn();
     }
 
@@ -1151,6 +1237,7 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
             if (pos.isValid()) {
                 applyNewPositionForEntity(entry, pos);
             }
+            updateTerrainMod(entity);
             if (entry->rigidBody->getInvMass() != 0) {
                 entry->rigidBody->activate();
             }
@@ -1340,6 +1427,7 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry)
         }
     }
 
+    updateTerrainMod(entity);
 }
 
 double PhysicalDomain::tick(double timeNow, OpVector& res)
@@ -1388,3 +1476,16 @@ double PhysicalDomain::tick(double timeNow, OpVector& res)
 
     return timeNow + (1.0 / (m_ticksPerSecond * consts::time_multiplier));
 }
+
+bool PhysicalDomain::getTerrainHeightAndNormal(float x, float y, float& height, Vector3D& normal) const
+{
+    if (m_terrain) {
+        Mercator::Segment * s = m_terrain->getSegment(x, y);
+        if (s != 0 && !s->isValid()) {
+            s->populate();
+        }
+        return m_terrain->getHeightAndNormal(x, y, height, normal);
+    }
+    return false;
+}
+

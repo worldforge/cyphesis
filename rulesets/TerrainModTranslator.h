@@ -36,7 +36,7 @@ class TerrainModTranslator
 {
 protected:
     template <template <int> class Shape>
-    bool parseStuff(const WFMath::Point<3> & pos,
+    Mercator::TerrainMod* parseStuff(const WFMath::Point<3> & pos,
                     const WFMath::Quaternion & orientation,
                     const Atlas::Message::MapType& modElement,
                     const std::string & typeName,
@@ -45,7 +45,7 @@ protected:
 
 public:
 
-    bool parseData(const WFMath::Point<3> & pos,
+    Mercator::TerrainMod* parseData(const WFMath::Point<3> & pos,
                    const WFMath::Quaternion &,
                    const Atlas::Message::MapType &);
     
@@ -54,7 +54,7 @@ public:
      * If no terrain mod could be created, such as with faulty Atlas data, or if parseData() hasn't been called yet, this will return a null pointer.
      * @return A pointer to the TerrainMod held by this instance, or null if none created.
      */
-    Mercator::TerrainMod* getModifier();
+//    Mercator::TerrainMod* getModifier();
 
     TerrainModTranslator();
     
@@ -70,7 +70,7 @@ protected:
 
     template <template <template <int> class Shape> class Mod,
               template <int> class Shape>
-    bool createInstance(Shape<2> & shape,
+    Mercator::TerrainMod* createInstance(Shape<2> & shape,
                         const WFMath::Point<3>& pos,
                         const Atlas::Message::MapType &,
                         float,
@@ -78,11 +78,10 @@ protected:
 
     template <template <template <int> class Shape> class Mod,
               template <int> class Shape>
-    bool createInstance(Shape<2> & shape,
+    Mercator::TerrainMod* createInstance(Shape<2> & shape,
                         const WFMath::Point<3>& pos,
                         const Atlas::Message::MapType &);
 
-    Mercator::TerrainMod * m_mod;
 };
 
 #endif // RULESETS_TERRAIN_MOD_TRANSLATOR_H

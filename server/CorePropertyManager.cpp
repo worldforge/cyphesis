@@ -141,7 +141,7 @@ CorePropertyManager::CorePropertyManager()
     installProperty<SpawnProperty>("spawn", "map");
     installProperty<AreaProperty>("area", "map");
     installProperty<VisibilityProperty>("visibility", "float");
-    installProperty<TerrainModProperty>("terrainmod", "map");
+    installProperty<TerrainModProperty>();
     installProperty<TerrainProperty>("terrain", "map");
     installProperty<TeleportProperty>("linked", "string");
     installProperty<SuspendedProperty>("suspended", "int");

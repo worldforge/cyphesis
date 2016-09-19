@@ -35,7 +35,7 @@ using Atlas::Message::FloatType;
 /**
  * @brief Ctor.
  */
-TerrainModTranslator::TerrainModTranslator() : m_mod(0)
+TerrainModTranslator::TerrainModTranslator()
 {
 }
 
@@ -49,7 +49,7 @@ TerrainModTranslator::TerrainModTranslator() : m_mod(0)
  * @param shapeMap Atlas data containing the shape parameters
  */
 template <template <int> class Shape>
-bool TerrainModTranslator::parseStuff(
+Mercator::TerrainMod* TerrainModTranslator::parseStuff(
       const WFMath::Point<3> & pos,
       const WFMath::Quaternion & orientation,
       const MapType& modElement,
@@ -58,7 +58,7 @@ bool TerrainModTranslator::parseStuff(
       const Element & shapeMap)
 {
     if (!parseShape(shapeMap, pos, orientation, shape)) {
-        return false;
+        return nullptr;
     }
     if (typeName == "slopemod") {
         return createInstance<Mercator::SlopeTerrainMod>(shape, pos, modElement, 0, 0);
@@ -69,7 +69,7 @@ bool TerrainModTranslator::parseStuff(
     } else if (typeName == "cratermod") {
         return createInstance<Mercator::CraterTerrainMod>(shape, pos, modElement);
     }
-    return false;
+    return nullptr;
 }
 
 /** 
@@ -79,27 +79,27 @@ bool TerrainModTranslator::parseStuff(
  * @param modElement Atlas data describing the mod
  * @return true if translation succeeds
  */
-bool TerrainModTranslator::parseData(
+Mercator::TerrainMod* TerrainModTranslator::parseData(
       const WFMath::Point<3> & pos,
       const WFMath::Quaternion & orientation,
       const MapType& modElement)
 {
     MapType::const_iterator I = modElement.find("type");
     if (I == modElement.end() || !I->second.isString()) {
-        return false;
+        return nullptr;
     }
     const std::string& modType = I->second.String();
 
     I = modElement.find("shape");
     if (I == modElement.end() || !I->second.isMap()) {
-        return false;
+        return nullptr;
     }
     const MapType& shapeMap = I->second.Map();
 
     // Get shape's type
     I = shapeMap.find("type");
     if (I == shapeMap.end() || !I->second.isString()) {
-        return false;
+        return nullptr;
     }
     const std::string& shapeType = I->second.String();
     if (shapeType == "ball") {
@@ -112,13 +112,7 @@ bool TerrainModTranslator::parseData(
         WFMath::Polygon<2> shape;
         return parseStuff(pos, orientation, modElement, modType, shape, shapeMap);
     }
-    return false;
-}
-
-
-Mercator::TerrainMod* TerrainModTranslator::getModifier()
-{
-    return m_mod;
+    return nullptr;
 }
 
 /**
@@ -214,7 +208,7 @@ bool TerrainModTranslator::parseShape(
  */
 template <template <template <int> class Shape> class Mod,
           template <int> class Shape>
-bool TerrainModTranslator::createInstance(
+Mercator::TerrainMod* TerrainModTranslator::createInstance(
       Shape <2> & shape,
       const WFMath::Point<3>& pos,
       const MapType& modElement,
@@ -225,29 +219,21 @@ bool TerrainModTranslator::createInstance(
     MapType::const_iterator I = modElement.find("slopes");
     if (I == modElement.end()) {
         log(ERROR, "SlopeTerrainMod defined without slopes");
-        return false;
+        return nullptr;
     }
     const Element& modSlopeElem = I->second;
     if (!modSlopeElem.isList()) {
         log(ERROR, "SlopeTerrainMod defined with malformed slopes");
-        return false;
+        return nullptr;
     }
     const ListType & slopes = modSlopeElem.asList();
     if (slopes.size() < 2 || !slopes[0].isNum() || !slopes[1].isNum()) {
         log(ERROR, "SlopeTerrainMod defined without slopes");
-        return false;
+        return nullptr;
     }
     const float dx = slopes[0].asNum();
     const float dy = slopes[1].asNum();
-    if (m_mod != 0) {
-        Mod<Shape> * mod = dynamic_cast<Mod<Shape>*>(m_mod);
-        if (mod != 0) {
-            mod->setShape(level, dx, dy, shape);
-            return true;
-        }
-    }
-    m_mod = new Mod<Shape>(level, dx, dy, shape);
-    return true;
+    return new Mod<Shape>(level, dx, dy, shape);
 }
 
 /**
@@ -258,19 +244,11 @@ bool TerrainModTranslator::createInstance(
  */
 template <template <template <int> class S> class Mod,
           template <int> class Shape>
-bool TerrainModTranslator::createInstance(
+Mercator::TerrainMod* TerrainModTranslator::createInstance(
       Shape <2> & shape,
       const WFMath::Point<3>& pos,
       const MapType& modElement)
 {
     float level = parsePosition(pos, modElement);
-    if (m_mod != 0) {
-        Mod<Shape> * mod = dynamic_cast<Mod<Shape>*>(m_mod);
-        if (mod != 0) {
-            mod->setShape(level, shape);
-            return true;
-        }
-    }
-    m_mod = new Mod<Shape>(level, shape);
-    return true;
+    return new Mod<Shape>(level, shape);
 }
