@@ -23,12 +23,44 @@
 class ModeProperty : public Property<std::string> {
     public:
 
+        enum class Mode {
+            /**
+             * Planted entities are stuck to the terrain. Their z-position is determined by the terrain at their origo.
+             * They can optionally also have an offset, specified in "planted-offset" or "planted-scaled-offset".
+             * Planted entities are not affected by physics.
+             */
+            Planted,
+
+            /**
+             * Fixed entities are fixed in the world. They are not affected by terrain.
+             * Fixed entities are not affected by physics.
+             */
+            Fixed,
+
+            /**
+             * Free entities are handled by the physics engine.
+             */
+            Free,
+
+            /**
+             * This mode is used when the mode string isn't recognized.
+             */
+            Unknown
+        };
+
         static const std::string property_name;
 
         ModeProperty();
         virtual ~ModeProperty();
         virtual void apply(LocatedEntity *);
         virtual ModeProperty * copy() const;
+        virtual void set(const Atlas::Message::Element & val);
+
+        Mode getMode() const {
+            return m_mode;
+        }
+    private:
+        Mode m_mode;
 
 };
 

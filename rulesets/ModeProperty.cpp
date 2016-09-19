@@ -29,6 +29,7 @@
 const std::string ModeProperty::property_name = "mode";
 
 ModeProperty::ModeProperty()
+: m_mode(Mode::Free)
 {
 }
 
@@ -109,3 +110,18 @@ ModeProperty * ModeProperty::copy() const
 {
     return new ModeProperty(*this);
 }
+
+void ModeProperty::set(const Atlas::Message::Element & val)
+{
+    Property<std::string>::set(val);
+    if (m_data == "free" || m_data == "") {
+        m_mode = Mode::Free;
+    } else if (m_data == "planted") {
+        m_mode = Mode::Planted;
+    } else if (m_data == "fixed") {
+        m_mode = Mode::Fixed;
+    } else {
+        m_mode = Mode::Unknown;
+    }
+}
+
