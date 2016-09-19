@@ -17,6 +17,8 @@
  */
 
 
+const std::string TerrainModProperty::property_name = "terrainmod";
+const std::string TerrainModProperty::property_atlastype = "map";
 
 TerrainModProperty::TerrainModProperty()
 {
@@ -58,8 +60,7 @@ void TerrainModProperty::remove(LocatedEntity * owner)
 
 
 
-Mercator::TerrainMod * TerrainModProperty::parseModData(LocatedEntity * owner,
-                                                        const MapType & modMap)
+Mercator::TerrainMod * TerrainModProperty::parseModData(const WFMath::Point<3>&, const WFMath::Quaternion&) const
 {
     return 0;
 }

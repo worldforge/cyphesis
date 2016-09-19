@@ -882,9 +882,10 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
     assert(I != m_entries.end());
     BulletEntry* entry = I->second;
 
-    const TerrainModProperty* terrainModProp = entry->entity->getPropertyClassFixed<TerrainModProperty>();
-    if (terrainModProp && m_terrain && terrainModProp->getModifier()) {
+    auto modI = m_terrainMods.find(entity.getIntId());
+    if (modI != m_terrainMods.end()) {
         m_terrain->updateMod(entity.getIntId(), nullptr);
+        m_terrainMods.erase(modI);
     }
 
     m_lastMovingEntities.erase(entry);

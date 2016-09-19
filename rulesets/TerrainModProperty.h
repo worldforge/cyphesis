@@ -50,14 +50,6 @@ class TerrainModProperty : public TerrainEffectorProperty {
                                     const Operation &,
                                     OpVector &);
 
-    Mercator::TerrainMod * getModifier() {
-        return m_modptr;
-    }
-
-    const Mercator::TerrainMod * getModifier() const {
-        return m_modptr;
-    }
-
     /// \brief Constructs a Mercator::TerrainMod from Atlas data
     Mercator::TerrainMod * parseModData(const WFMath::Point<3>& pos,
                                         const WFMath::Quaternion& orientation) const;
@@ -83,14 +75,7 @@ class TerrainModProperty : public TerrainEffectorProperty {
                                  OpVector & res);
   protected:
 
-    /// \brief A pointer to the modifier returned by a call to Terrain::addMod()
-    Mercator::TerrainMod *m_modptr;
-
-    /**
-     * @brief The inner terrain mod instance which holds the actual Mercator::TerrainMod instance and handles the parsing of it.
-     * In order to be able to better support different types of mods the actual instance will be any of the subclasses of InnerTerrainMod, depending on the type of the mod.
-     */
-    TerrainModTranslator* m_innerMod;
+    TerrainModTranslator* m_translator;
 
 };
 

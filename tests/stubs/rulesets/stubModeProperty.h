@@ -32,3 +32,7 @@ ModeProperty * ModeProperty::copy() const
 {
     return new ModeProperty(*this);
 }
+
+void ModeProperty::set(const Atlas::Message::Element & val)
+{
+}

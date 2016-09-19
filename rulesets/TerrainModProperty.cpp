@@ -15,7 +15,6 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-
 #include "TerrainModProperty.h"
 
 #include "LocatedEntity.h"
@@ -52,10 +51,10 @@ using Atlas::Objects::Root;
 const std::string TerrainModProperty::property_name = "terrainmod";
 const std::string TerrainModProperty::property_atlastype = "map";
 
-
 /// \brief TerrainModProperty constructor
 ///
-TerrainModProperty::TerrainModProperty() : m_modptr(0), m_innerMod(0)
+TerrainModProperty::TerrainModProperty() :
+        m_translator(nullptr)
 {
 }
 
@@ -64,7 +63,7 @@ TerrainModProperty::~TerrainModProperty()
     // TODO remove the mod from the terrain
     // This is already covered from the Delete op handler when
     // the entity is deleted
-    delete m_innerMod;
+    delete m_translator;
 }
 
 TerrainModProperty * TerrainModProperty::copy() const
@@ -77,153 +76,43 @@ TerrainModProperty * TerrainModProperty::copy() const
 
 void TerrainModProperty::install(LocatedEntity * owner, const std::string & name)
 {
-//    owner->installDelegate(Atlas::Objects::Operation::DELETE_NO, name);
-//    owner->installDelegate(Atlas::Objects::Operation::MOVE_NO, name);
 }
 
 void TerrainModProperty::remove(LocatedEntity *owner, const std::string & name)
 {
-//    owner->removeDelegate(Atlas::Objects::Operation::DELETE_NO, name);
-//    owner->removeDelegate(Atlas::Objects::Operation::MOVE_NO, name);
 }
-
 
 void TerrainModProperty::apply(LocatedEntity * owner)
 {
-    if (!m_innerMod) {
-        m_innerMod = new TerrainModTranslator;
-    }
+    delete m_translator;
 
-//    if (!owner->m_location.pos().isValid()) {
-//        log(ERROR, "Terrain Modifier applied to entity with no valid position. " + owner->describeEntity());
-//        return;
-//    }
-//
-//    // Find the terrain
-//    LocatedEntity* terrainHolder;
-//    const TerrainProperty * terrain = getTerrain(owner, &terrainHolder);
-//
-//    if (terrain == 0) {
-//        log(ERROR, "Terrain Modifier could not find terrain");
-//        return;
-//    }
-//
-////    std::vector<WFMath::AxisBox<2>> terrainAreas;
-////
-////    if (m_modptr) {
-////        terrainAreas.push_back(m_modptr->bbox());
-////    }
-//
-//    // Parse the Atlas data for our mod
-//    Mercator::TerrainMod * mod = parseModData(owner, m_data);
-//
-//    if (mod == 0) {
-//        log(ERROR, "Terrain Modifier could not be parsed!");
-//        return;
-//    }
-//
-////    terrainAreas.push_back(mod->bbox());
-////
-////    // If there is an old mod ...
-////    if (m_modptr != 0) {
-////        // and the new one is the same, just update
-////        if (mod == m_modptr) {
-////            terrain->updateMod(owner->getIntId(), m_modptr);
-////            if (terrainHolder->getMovementDomain()) {
-////                terrainHolder->getMovementDomain()->refreshTerrain(terrainAreas);
-////            }
-////            return;
-////        }
-////        // If the mod has changed then remove the old one and delete it.
-////        terrain->removeMod(owner->getIntId());
-////        delete m_modptr;
-////    }
-//
-//    m_modptr = mod;
-//
-//    // Apply the new mod to the terrain; retain the returned pointer
-////    terrain->addMod(owner->getIntId(), m_modptr);
-//    m_modptr->setContext(new TerrainContext(owner));
-//    m_modptr->context()->setId(owner->getId());
-////    if (terrainHolder->getMovementDomain()) {
-////        terrainHolder->getMovementDomain()->refreshTerrain(terrainAreas);
-////    }
+    m_translator = new TerrainModTranslator(m_data);
+
 }
 
-HandlerResult TerrainModProperty::operation(LocatedEntity * ent,
-                                            const Operation & op,
-                                            OpVector & res)
+HandlerResult TerrainModProperty::operation(LocatedEntity * ent, const Operation & op, OpVector & res)
 {
-//    if (op->getClassNo() == Atlas::Objects::Operation::DELETE_NO) {
-//        return delete_handler(ent, op, res);
-//    } else if (op->getClassNo() == Atlas::Objects::Operation::MOVE_NO) {
-//        return move_handler(ent, op, res);
-//    }
+
     return OPERATION_IGNORED;
 }
 
 void TerrainModProperty::move(LocatedEntity* owner)
 {
-//    LocatedEntity* terrainHolder;
-//    const TerrainProperty * terrain = getTerrain(owner, &terrainHolder);
-//
-//    if (terrain == 0) {
-//        log(ERROR, "Terrain Modifier could not find terrain");
-//        return;
-//    }
-//
-//    Mercator::TerrainMod* mod = parseModData(owner, m_data);
-//
-//    if (mod == 0) {
-//        log(ERROR, "Terrain Modifier could not be parsed!");
-//        return;
-//    }
-//
-//    if (mod != m_modptr) {
-//        log(ERROR, "Terrain Modifier mysteriously changed when moved!");
-//        return;
-//    }
-//
-//    terrain->updateMod(owner->getIntId(), mod);
-//    if (terrainHolder->getMovementDomain()) {
-//        terrainHolder->getMovementDomain()->refreshTerrain(std::vector<WFMath::AxisBox<2>>{mod->bbox()});
-//    }
-
 }
 
 void TerrainModProperty::remove(LocatedEntity * owner)
 {
-//    if (m_modptr) {
-//        LocatedEntity* terrainHolder;
-//        const TerrainProperty * terrain = getTerrain(owner, &terrainHolder);
-//        if (terrain) {
-//            std::vector<WFMath::AxisBox<2>> terrainAreas;
-//            terrainAreas.push_back(m_modptr->bbox());
-//            terrain->removeMod(owner->getIntId());
-//            delete m_modptr;
-//            m_modptr = nullptr;
-//
-//            if (terrainHolder->getMovementDomain()) {
-//                terrainHolder->getMovementDomain()->refreshTerrain(terrainAreas);
-//            }
-//
-//        } else {
-//            log(WARNING, "Terrain property was removed from an entity from which no terrain was available.");
-//        }
-//    }
 }
 
-Mercator::TerrainMod * TerrainModProperty::parseModData(const WFMath::Point<3>& pos,
-                                                        const WFMath::Quaternion& orientation) const
+Mercator::TerrainMod * TerrainModProperty::parseModData(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation) const
 {
-    if (m_innerMod) {
-        return m_innerMod->parseData(pos, orientation, m_data);
+    if (m_translator) {
+        return m_translator->parseData(pos, orientation);
     }
     return nullptr;
 }
 
-int TerrainModProperty::getAttr(const std::string & name,
-                                Element & val)
+int TerrainModProperty::getAttr(const std::string & name, Element & val)
 {
     MapType::const_iterator I = m_data.find(name);
     if (I != m_data.end()) {
@@ -233,15 +122,12 @@ int TerrainModProperty::getAttr(const std::string & name,
     return -1;
 }
 
-void TerrainModProperty::setAttr(const std::string & name,
-                                 const Element & val)
+void TerrainModProperty::setAttr(const std::string & name, const Element & val)
 {
     m_data[name] = val;
 }
 
-HandlerResult TerrainModProperty::move_handler(LocatedEntity * e,
-                                               const Operation & op,
-                                               OpVector & res)
+HandlerResult TerrainModProperty::move_handler(LocatedEntity * e, const Operation & op, OpVector & res)
 {
 //    // FIXME Force instantiation of a class property?
 //
@@ -263,9 +149,7 @@ HandlerResult TerrainModProperty::move_handler(LocatedEntity * e,
     return OPERATION_IGNORED;
 }
 
-HandlerResult TerrainModProperty::delete_handler(LocatedEntity * e,
-                                                 const Operation & op,
-                                                 OpVector & res)
+HandlerResult TerrainModProperty::delete_handler(LocatedEntity * e, const Operation & op, OpVector & res)
 {
 //    remove(e);
 
