@@ -804,6 +804,8 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         }
     }
 
+    updateTerrainMod(entity, true);
+
     {
 
         btSphereShape* visSphere = new btSphereShape(0);
