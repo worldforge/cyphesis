@@ -1066,7 +1066,7 @@ void PhysicalDomain::updateTerrainMod(const LocatedEntity& entity)
 //                auto modifier = terrainModProperty->getModifier();
 //                if (modifier && modifier->bbox().isValid()) {
                 //We need to get the vertical position in the terrain, without any mods.
-                Mercator::Segment* segment = m_terrain->getSegment(entity.m_location.m_pos.x(), entity.m_location.m_pos.y());
+                Mercator::Segment* segment = m_terrain->getSegmentAtPos(entity.m_location.m_pos.x(), entity.m_location.m_pos.y());
                 WFMath::Point<3> modPos = entity.m_location.m_pos;
                 if (segment) {
                     std::vector<WFMath::AxisBox<2>> terrainAreas;
@@ -1481,7 +1481,7 @@ double PhysicalDomain::tick(double timeNow, OpVector& res)
 bool PhysicalDomain::getTerrainHeightAndNormal(float x, float y, float& height, Vector3D& normal) const
 {
     if (m_terrain) {
-        Mercator::Segment * s = m_terrain->getSegment(x, y);
+        Mercator::Segment * s = m_terrain->getSegmentAtPos(x, y);
         if (s != 0 && !s->isValid()) {
             s->populate();
         }

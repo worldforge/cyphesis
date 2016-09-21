@@ -335,7 +335,7 @@ void TerrainProperty::removeMod(long id) const
 
 void TerrainProperty::clearMods(float x, float y)
 {
-    Mercator::Segment *s = m_data.getSegment(x,y);
+    Mercator::Segment *s = m_data.getSegmentAtPos(x,y);
     if(s != NULL) {
         s->clearMods();
         //log(INFO, "Mods cleared!");
@@ -348,7 +348,7 @@ bool TerrainProperty::getHeightAndNormal(float x,
                                          float & height,
                                          Vector3D & normal) const
 {
-    Mercator::Segment * s = m_data.getSegment(x, y);
+    Mercator::Segment * s = m_data.getSegmentAtPos(x, y);
     if (s != 0 && !s->isValid()) {
         s->populate();
     }
@@ -364,7 +364,7 @@ int TerrainProperty::getSurface(const Point3D & pos, int & material)
 {
     float x = pos.x(),
           y = pos.y();
-    Mercator::Segment * segment = m_data.getSegment(x, y);
+    Mercator::Segment * segment = m_data.getSegmentAtPos(x, y);
     if (segment == 0) {
         debug(std::cerr << "No terrain at this point" << std::endl << std::flush;);
         return -1;
@@ -403,7 +403,7 @@ int TerrainProperty::getSurface(const Point3D & pos, int & material)
 void TerrainProperty::findMods(const Point3D & pos,
                                std::vector<LocatedEntity *> & ret)
 {
-    Mercator::Segment * seg = m_data.getSegment(pos.x(), pos.y());
+    Mercator::Segment * seg = m_data.getSegmentAtPos(pos.x(), pos.y());
     if (seg == 0) {
         return;
     }

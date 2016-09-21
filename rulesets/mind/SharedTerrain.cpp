@@ -73,7 +73,7 @@ void SharedTerrain::blitHeights(int xMin, int xMax, int yMin, int yMax, std::vec
             int xEnd = std::min<int>(xMax - segmentXStart, segmentResolution);
             int yEnd = std::min<int>(yMax - segmentYStart, segmentResolution);
 
-            Mercator::Segment* segment = m_terrain->getSegment(segmentX, segmentY);
+            Mercator::Segment* segment = m_terrain->getSegmentAtIndex(segmentX, segmentY);
             if (segment) {
                 if (!segment->isValid()) {
                     segment->populate();
