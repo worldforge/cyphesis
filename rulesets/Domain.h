@@ -85,14 +85,6 @@ class Domain {
      */
     virtual void processVisibilityForMovedEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res) = 0;
 
-    /**
-     * @brief Process an entity being moved out of the domain, and thus disappearing.
-     * @param moved_entity
-     * @param old_loc
-     * @param res
-     */
-    virtual void processDisappearanceOfEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res) = 0;
-
     virtual void addEntity(LocatedEntity& entity) = 0;
     virtual void removeEntity(LocatedEntity& entity) = 0;
     virtual void getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<LocatedEntity*>& entityList) const = 0;

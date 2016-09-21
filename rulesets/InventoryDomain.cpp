@@ -172,6 +172,3 @@ void InventoryDomain::processVisibilityForMovedEntity(const LocatedEntity& moved
     }
 }
 
-void InventoryDomain::processDisappearanceOfEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res)
-{
-}

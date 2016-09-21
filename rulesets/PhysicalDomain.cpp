@@ -596,10 +596,6 @@ void PhysicalDomain::processVisibilityForMovedEntity(const LocatedEntity& moved_
 {
 }
 
-void PhysicalDomain::processDisappearanceOfEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res)
-{
-}
-
 float PhysicalDomain::checkCollision(LocatedEntity& entity, CollisionData& collisionData)
 {
     return 0;

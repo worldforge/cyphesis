@@ -72,8 +72,6 @@ class PhysicalDomain: public Domain
 
         virtual void processVisibilityForMovedEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res);
 
-        virtual void processDisappearanceOfEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res);
-
         virtual float checkCollision(LocatedEntity& entity, CollisionData& collisionData);
 
         virtual void addEntity(LocatedEntity& entity);

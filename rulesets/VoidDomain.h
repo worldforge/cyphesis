@@ -41,10 +41,6 @@ class VoidDomain : public Domain
                 const LocatedEntity& moved_entity, const Location& old_loc,
                 OpVector & res);
 
-        virtual void processDisappearanceOfEntity(
-                const LocatedEntity& moved_entity, const Location& old_loc,
-                OpVector & res);
-
         virtual void addEntity(LocatedEntity& entity);
         virtual void removeEntity(LocatedEntity& entity);
 

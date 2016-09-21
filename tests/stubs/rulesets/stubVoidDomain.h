@@ -51,10 +51,6 @@ bool VoidDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, const 
 void VoidDomain::processVisibilityForMovedEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res) {
 }
 
-void VoidDomain::processDisappearanceOfEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res) {
-}
-
-
 float VoidDomain::checkCollision(LocatedEntity& entity, CollisionData& collisionData)
 {
     return consts::move_tick;

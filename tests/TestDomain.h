@@ -59,12 +59,6 @@ class TestDomain : public Domain
         {
         }
 
-        void processDisappearanceOfEntity(
-                const LocatedEntity& moved_entity, const Location& old_loc,
-                OpVector & res)
-        {
-        }
-
         void addEntity(LocatedEntity& entity) {
 
         }
