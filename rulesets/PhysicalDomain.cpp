@@ -191,10 +191,12 @@ class PhysicalDomain::PhysicalMotionState: public btMotionState
 
             if (m_bulletEntry.visibilitySphere) {
                 m_bulletEntry.visibilitySphere->setWorldTransform(m_bulletEntry.rigidBody->getWorldTransform());
+                m_domain.m_visibilityWorld->updateSingleAabb(m_bulletEntry.visibilitySphere);
             }
 
             if (m_bulletEntry.viewSphere) {
                 m_bulletEntry.viewSphere->setWorldTransform(m_bulletEntry.rigidBody->getWorldTransform());
+                m_domain.m_visibilityWorld->updateSingleAabb(m_bulletEntry.viewSphere);
             }
 
         }
@@ -473,9 +475,12 @@ void PhysicalDomain::updateVisibilityOfEntry(BulletEntry* bulletEntry, OpVector&
     VisibilityCallback callback;
     //callback.m_filterOutEntry = bulletEntry;
 
+    debug_print("Updating visibility of entity " << bulletEntry->entity->describeEntity());
     //This entry is an observer; check what it can see after it has moved
     if (bulletEntry->viewSphere) {
         callback.m_entries.clear();
+
+        debug_print(" " << bulletEntry->entity->describeEntity() << " viewSphere: " << bulletEntry->viewSphere->getWorldTransform().getOrigin());
 
         if (bulletEntry->entity->m_location.m_pos.isValid()) {
             callback.m_collisionFilterGroup = VISIBILITY_MASK_OBSERVABLE;
@@ -483,7 +488,7 @@ void PhysicalDomain::updateVisibilityOfEntry(BulletEntry* bulletEntry, OpVector&
             m_visibilityWorld->contactTest(bulletEntry->viewSphere, callback);
         }
 
-        debug_print("observed by "<< bulletEntry->entity->describeEntity() << ": " << callback.m_entries.size());
+        debug_print(" observed by "<< bulletEntry->entity->describeEntity() << ": " << callback.m_entries.size());
 
         auto& observed = bulletEntry->observedByThis;
 
@@ -495,7 +500,7 @@ void PhysicalDomain::updateVisibilityOfEntry(BulletEntry* bulletEntry, OpVector&
                 observed.erase(I);
             } else {
                 //Send Appear
-                debug_print("appear: " << viewedEntry->entity->describeEntity() << " for " << bulletEntry->entity->describeEntity());
+                debug_print(" appear: " << viewedEntry->entity->describeEntity() << " for " << bulletEntry->entity->describeEntity());
                 Appearance appear;
                 Anonymous that_ent;
                 that_ent->setId(viewedEntry->entity->getId());
@@ -510,7 +515,7 @@ void PhysicalDomain::updateVisibilityOfEntry(BulletEntry* bulletEntry, OpVector&
 
         for (BulletEntry* disappearedEntry : observed) {
             //Send disappearence
-            debug_print("disappear: " << disappearedEntry->entity->describeEntity() << " for " << bulletEntry->entity->describeEntity());
+            debug_print(" disappear: " << disappearedEntry->entity->describeEntity() << " for " << bulletEntry->entity->describeEntity());
             Disappearance disappear;
             Anonymous that_ent;
             that_ent->setId(disappearedEntry->entity->getId());
@@ -527,6 +532,7 @@ void PhysicalDomain::updateVisibilityOfEntry(BulletEntry* bulletEntry, OpVector&
 
     //This entry is something which can be observed; check what can see it after it has moved
     if (bulletEntry->visibilitySphere) {
+        debug_print(" " << bulletEntry->entity->describeEntity() << " visibilitySphere: " << bulletEntry->visibilitySphere->getWorldTransform().getOrigin());
         callback.m_entries.clear();
 
         if (bulletEntry->entity->m_location.m_pos.isValid()) {
@@ -535,7 +541,7 @@ void PhysicalDomain::updateVisibilityOfEntry(BulletEntry* bulletEntry, OpVector&
             m_visibilityWorld->contactTest(bulletEntry->visibilitySphere, callback);
         }
 
-        debug_print("observing " << bulletEntry->entity->describeEntity() << ": " << callback.m_entries.size());
+        debug_print(" observing " << bulletEntry->entity->describeEntity() << ": " << callback.m_entries.size());
 
         auto& observing = bulletEntry->observingThis;
         //See which entities got sight of this, and for which sight was lost.
@@ -546,7 +552,7 @@ void PhysicalDomain::updateVisibilityOfEntry(BulletEntry* bulletEntry, OpVector&
                 observing.erase(I);
             } else {
                 //Send appear
-                debug_print("appear: " << bulletEntry->entity->describeEntity() << " for " << viewingEntry->entity->describeEntity());
+                debug_print(" appear: " << bulletEntry->entity->describeEntity() << " for " << viewingEntry->entity->describeEntity());
                 Appearance appear;
                 Anonymous that_ent;
                 that_ent->setId(bulletEntry->entity->getId());
@@ -561,7 +567,7 @@ void PhysicalDomain::updateVisibilityOfEntry(BulletEntry* bulletEntry, OpVector&
 
         for (BulletEntry* noLongerObservingEntry : observing) {
             //Send disappearence
-            debug_print("disappear: " << bulletEntry->entity->describeEntity() << " for " << noLongerObservingEntry->entity->describeEntity());
+            debug_print(" disappear: " << bulletEntry->entity->describeEntity() << " for " << noLongerObservingEntry->entity->describeEntity());
             Disappearance disappear;
             Anonymous that_ent;
             that_ent->setId(bulletEntry->entity->getId());
@@ -1201,9 +1207,11 @@ void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath:
     entry->rigidBody->setWorldTransform(transform);
     if (entry->viewSphere) {
         entry->viewSphere->setWorldTransform(transform);
+        m_visibilityWorld->updateSingleAabb(entry->viewSphere);
     }
     if (entry->visibilitySphere) {
         entry->visibilitySphere->setWorldTransform(transform);
+        m_visibilityWorld->updateSingleAabb(entry->visibilitySphere);
     }
 
 //    m_movingEntities.insert(entry);
@@ -1306,7 +1314,6 @@ void PhysicalDomain::refreshTerrain(const std::vector<WFMath::AxisBox<2>>& areas
 
         callback.m_collisionFilterGroup = COLLISION_MASK_TERRAIN;
         callback.m_collisionFilterMask = COLLISION_MASK_PHYSICAL | COLLISION_MASK_NON_PHYSICAL;
-
 
         auto area = segment->getRect();
         WFMath::Vector<2> size = area.highCorner() - area.lowCorner();
