@@ -123,6 +123,7 @@ class PhysicalDomain: public Domain
         std::set<BulletEntry*> m_movingEntities;
         std::set<BulletEntry*> m_lastMovingEntities;
         std::set<BulletEntry*> m_dirtyEntries;
+        std::vector<WFMath::AxisBox<2>> m_dirtyTerrainAreas;
 
         std::unordered_map<long, std::tuple<Mercator::TerrainMod*, WFMath::Point<3>, WFMath::Quaternion, WFMath::AxisBox<2>>> m_terrainMods;
 
@@ -211,6 +212,8 @@ class PhysicalDomain: public Domain
         void applyNewPositionForEntity(BulletEntry* entry, const WFMath::Point<3>& pos);
         bool getTerrainHeightAndNormal(float x, float y, float& height, Vector3D& normal) const;
         void updateTerrainMod(const LocatedEntity& entity, bool forceUpdate = false);
+
+        void processDirtyTerrainAreas();
 
 };
 

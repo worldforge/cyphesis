@@ -1285,17 +1285,27 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
 
 void PhysicalDomain::refreshTerrain(const std::vector<WFMath::AxisBox<2>>& areas)
 {
+    //Schedule dirty terrain areas for update in processDirtyTerrainAreas() which is called for each tick.
+    m_dirtyTerrainAreas.insert(m_dirtyTerrainAreas.end(), areas.begin(), areas.end());
+}
+
+void PhysicalDomain::processDirtyTerrainAreas()
+{
+
+    if (!m_terrain) {
+        m_dirtyTerrainAreas.clear();
+        return;
+    }
+
+    if (m_dirtyTerrainAreas.empty()) {
+        return;
+    }
 
     std::set<Mercator::Segment*> dirtySegments;
-
-    const TerrainProperty* terrainProperty = m_entity.getPropertyClass<TerrainProperty>("terrain");
-    if (terrainProperty) {
-        const Mercator::Terrain& terrain = terrainProperty->getData();
-
-        for (auto& area : areas) {
-            terrain.processSegments(area, [&](Mercator::Segment& s) {dirtySegments.insert(&s);});
-        }
+    for (auto& area : m_dirtyTerrainAreas) {
+        m_terrain->processSegments(area, [&](Mercator::Segment& s) {dirtySegments.insert(&s);});
     }
+    m_dirtyTerrainAreas.clear();
 
     float friction = 1.0f;
     const Property<float>* frictionProp = m_entity.getPropertyType<float>("friction");
@@ -1432,6 +1442,8 @@ double PhysicalDomain::tick(double timeNow, OpVector& res)
     if (m_lastTickTime == 0) {
         m_lastTickTime = timeNow;
     }
+
+    processDirtyTerrainAreas();
 
     m_movingEntities.clear();
 
