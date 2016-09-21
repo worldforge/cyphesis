@@ -92,6 +92,8 @@ EntityBuilder::EntityBuilder()
     plantFactory->m_attributes["friction"] = 1.0f;
     plantFactory->m_attributes["mode"] = "planted";
     plantFactory->m_attributes["status"] = 1.0f;
+    //Plants should by default be represented by an upright cylinder.
+    plantFactory->m_attributes["geometry"] = MapType { { "shape", "cylinder-z" } };
     installBaseFactory("plant", "thing", plantFactory);
     plantFactory->addProperties();
 
