@@ -28,6 +28,11 @@
 #include <bullet/LinearMath/btQuaternion.h>
 #include <cassert>
 
+/**
+ * Output operator for streams, to help with logging only.
+ */
+std::ostream& operator<<(std::ostream& os, const btVector3& m);
+
 class Convert {
     public:
         static btVector3 toBullet(const WFMath::Vector<3>& p);
@@ -77,5 +82,12 @@ inline WFMath::Quaternion Convert::toWF(const btQuaternion& aq)
 {
     return WFMath::Quaternion(aq.w(), aq.x(), -aq.z(), aq.y());
 }
+
+inline std::ostream& operator<<(std::ostream& os, const btVector3& m)
+{
+  os << "x: " << m.x() << " y: " << m.y() << " z: " << m.z();
+  return os;
+}
+
 
 #endif //PHYSICS_CONVERT_H
