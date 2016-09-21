@@ -1359,9 +1359,14 @@ void PhysicalDomain::sendMoveSight(BulletEntry& entry)
 {
 
     LocatedEntity& entity = *entry.entity;
-    debug_print("new velocity: " << entity.m_location.velocity() << " " << entity.m_location.velocity().mag());
 
     if (!entry.observingThis.empty()) {
+        if (debug_flag) {
+            debug_print("Sending move op.");
+            if (entity.m_location.velocity().isValid()) {
+                debug_print("new velocity: " << entity.m_location.velocity() << " " << entity.m_location.velocity().mag());
+            }
+        }
         Move m;
         Anonymous move_arg;
         move_arg->setId(m_entity.getId());
