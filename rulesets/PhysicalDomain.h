@@ -210,7 +210,7 @@ class PhysicalDomain: public Domain
 
         void applyNewPositionForEntity(BulletEntry* entry, const WFMath::Point<3>& pos);
         bool getTerrainHeightAndNormal(float x, float y, float& height, Vector3D& normal) const;
-        void updateTerrainMod(const LocatedEntity& entity);
+        void updateTerrainMod(const LocatedEntity& entity, bool forceUpdate = false);
 
 };
 

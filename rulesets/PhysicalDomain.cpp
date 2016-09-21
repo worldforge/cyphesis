@@ -454,8 +454,6 @@ class PhysicalDomain::VisibilityCallback: public btCollisionWorld::ContactResult
 {
     public:
 
-        // BulletEntry* m_filterOutEntry;
-
         std::set<BulletEntry*> m_entries;
 
         virtual btScalar addSingleResult(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap,
@@ -465,9 +463,6 @@ class PhysicalDomain::VisibilityCallback: public btCollisionWorld::ContactResult
             if (bulletEntry) {
                 m_entries.insert(bulletEntry);
             }
-//            if (m_filterOutEntry == bulletEntry) {
-//                return 0;
-//            }
             return btScalar(1.0);
         }
 
@@ -1052,25 +1047,22 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
         bulletEntry->entity->setFlags(~(entity_clean));
         sendMoveSight(*bulletEntry);
     } else if (name == TerrainModProperty::property_name) {
-        updateTerrainMod(*bulletEntry->entity);
+        updateTerrainMod(*bulletEntry->entity, true);
     }
 }
 
-void PhysicalDomain::updateTerrainMod(const LocatedEntity& entity)
+void PhysicalDomain::updateTerrainMod(const LocatedEntity& entity, bool forceUpdate)
 {
     auto modeProp = entity.getPropertyClassFixed<ModeProperty>();
     if (modeProp) {
         if (modeProp->getMode() == ModeProperty::Mode::Planted) {
             auto terrainModProperty = entity.getPropertyClassFixed<TerrainModProperty>();
             if (terrainModProperty && m_terrain) {
-//                auto modifier = terrainModProperty->getModifier();
-//                if (modifier && modifier->bbox().isValid()) {
                 //We need to get the vertical position in the terrain, without any mods.
                 Mercator::Segment* segment = m_terrain->getSegmentAtPos(entity.m_location.m_pos.x(), entity.m_location.m_pos.y());
                 WFMath::Point<3> modPos = entity.m_location.m_pos;
                 if (segment) {
                     std::vector<WFMath::AxisBox<2>> terrainAreas;
-                    bool updateMod = false;
 
                     //If there's no mods we can just use position right away
                     if (segment->getMods().empty()) {
@@ -1094,17 +1086,17 @@ void PhysicalDomain::updateTerrainMod(const LocatedEntity& entity)
 
                         if (!oldOrient.isEqualTo(entity.m_location.m_orientation) || !oldPos.isEqualTo(modPos)) {
                             //Need to update terrain mod
-                            updateMod = true;
+                            forceUpdate = true;
                             const WFMath::AxisBox<2>& oldArea = std::get<3>(I->second);
                             if (oldArea.isValid()) {
                                 terrainAreas.push_back(oldArea);
                             }
                         }
                     } else {
-                        updateMod = true;
+                        forceUpdate = true;
                     }
 
-                    if (updateMod) {
+                    if (forceUpdate) {
                         Mercator::TerrainMod* modifier = terrainModProperty->parseModData(modPos, entity.m_location.m_orientation);
 
                         m_terrain->updateMod(entity.getIntId(), modifier);
@@ -1120,7 +1112,6 @@ void PhysicalDomain::updateTerrainMod(const LocatedEntity& entity)
                     }
                 }
             }
-//            }
         }
     }
 }
@@ -1290,18 +1281,9 @@ void PhysicalDomain::refreshTerrain(const std::vector<WFMath::AxisBox<2>>& areas
     const TerrainProperty* terrainProperty = m_entity.getPropertyClass<TerrainProperty>("terrain");
     if (terrainProperty) {
         const Mercator::Terrain& terrain = terrainProperty->getData();
-        float res = terrain.getSpacing();
+
         for (auto& area : areas) {
-            for (float x = area.lowCorner().x(); x <= area.highCorner().x(); x += res) {
-                for (float y = area.lowCorner().y(); y <= area.highCorner().y(); y += res) {
-                    int ix = std::lround(std::floor(x / res));
-                    int iy = std::lround(std::floor(y / res));
-                    Mercator::Segment* segment = terrain.getSegment(ix, iy);
-                    if (segment) {
-                        dirtySegments.insert(segment);
-                    }
-                }
-            }
+            terrain.processSegments(area, [&](Mercator::Segment& s) {dirtySegments.insert(&s);});
         }
     }
 
@@ -1313,6 +1295,7 @@ void PhysicalDomain::refreshTerrain(const std::vector<WFMath::AxisBox<2>>& areas
 
     float worldHeight = m_entity.m_location.bBox().highCorner().z() - m_entity.m_location.bBox().lowCorner().z();
 
+    debug_print("dirty segments: " << dirtySegments.size());
     for (auto& segment : dirtySegments) {
 
         debug_print("rebuilding segment at x: " << segment->getXRef() << " y: " << segment->getYRef());
@@ -1320,6 +1303,10 @@ void PhysicalDomain::refreshTerrain(const std::vector<WFMath::AxisBox<2>>& areas
         buildTerrainPage(*segment, friction);
 
         VisibilityCallback callback;
+
+        callback.m_collisionFilterGroup = COLLISION_MASK_TERRAIN;
+        callback.m_collisionFilterMask = COLLISION_MASK_PHYSICAL | COLLISION_MASK_NON_PHYSICAL;
+
 
         auto area = segment->getRect();
         WFMath::Vector<2> size = area.highCorner() - area.lowCorner();
