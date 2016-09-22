@@ -1370,6 +1370,7 @@ void PhysicalDomain::sendMoveSight(BulletEntry& entry)
         m->setArgs1(move_arg);
         m->setFrom(entity.getId());
         m->setTo(entity.getId());
+        m->setSeconds(BaseWorld::instance().getTime());
 
         for (BulletEntry* observer : entry.observingThis) {
             Sight s;
