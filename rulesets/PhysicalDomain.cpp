@@ -1365,18 +1365,20 @@ void PhysicalDomain::sendMoveSight(BulletEntry& entry)
         }
         Move m;
         Anonymous move_arg;
-        move_arg->setId(m_entity.getId());
+        move_arg->setId(entity.getId());
         entity.m_location.addToEntity(move_arg);
         m->setArgs1(move_arg);
         m->setFrom(entity.getId());
         m->setTo(entity.getId());
-        m->setSeconds(BaseWorld::instance().getTime());
+        float seconds = BaseWorld::instance().getTime();
+        m->setSeconds(seconds);
 
         for (BulletEntry* observer : entry.observingThis) {
             Sight s;
             s->setArgs1(m);
             s->setTo(observer->entity->getId());
             s->setFrom(entity.getId());
+            s->setSeconds(seconds);
 
             entity.sendWorld(s);
         }
