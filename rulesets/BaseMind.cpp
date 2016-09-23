@@ -193,7 +193,7 @@ void BaseMind::SightOperation(const Operation & op, OpVector & res)
         if (!op2->hasAttrFlag(Atlas::Objects::Operation::SECONDS_FLAG)) {
             //Copy from wrapping op to fix this. This indicates an error in the server.
             op2->setSeconds(op->getSeconds());
-            log(WARNING, String::compose("Sight op argument had no seconds set, for argument %1.", op2->getParents().front()));
+            log(WARNING, String::compose("Sight op argument ('%1') had no seconds set.", op2->getParents().front()));
         }
 
         if (m_script == 0 || m_script->operation(event_name, op2, res) == 0) {
