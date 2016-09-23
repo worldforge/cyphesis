@@ -248,15 +248,14 @@ static const Location* distanceFromAncestor(const Location & self,
 static const Location* distanceToAncestor(const Location & self,
                                const Location & other, Point3D & c)
 {
-    if (!self.m_pos.isValid()) {
-        return nullptr;
-    }
-
     c.setToOrigin();
     const Location* ancestor = distanceFromAncestor(self, other, c);
     if (ancestor) {
         return ancestor;
-    } else if ((self.m_loc != 0)) {
+    } else if ((self.m_loc != nullptr)) {
+        if (!self.m_pos.isValid()) {
+            return nullptr;
+        }
         ancestor = distanceToAncestor(self.m_loc->m_location, other, c);
         if (ancestor) {
             if (self.orientation().isValid()) {
@@ -269,15 +268,15 @@ static const Location* distanceToAncestor(const Location & self,
         }
     }
     log(ERROR, "Broken entity hierarchy doing distance calculation");
-    if (self.m_loc != 0) {
-        std::cerr << "Self(" << self.m_loc->getId() << "," << self.m_loc << ")"
+    if (self.m_loc != nullptr) {
+        std::cerr << "Self("<< &self << ", loc:" << self.m_loc->getId() << "," << self.m_loc << ",pos:" << self.m_pos << ":" << self.m_pos.isValid() << ", orient:" << self.m_orientation << ")"
                   << std::endl << std::flush;
     } else {
         std::cerr << "Self has no location"
                   << std::endl << std::flush;
     }
-    if (other.m_loc != 0) {
-        std::cerr << "Other(" << other.m_loc->getId() << "," << other.m_loc << ")"
+    if (other.m_loc != nullptr) {
+        std::cerr << "Other("<< &other << ", loc:" << other.m_loc->getId() << "," << other.m_loc << ",pos:" << other.m_pos << ":" << self.m_pos.isValid() << ", orient:" << other.m_orientation << ")"
                   << std::endl << std::flush;
     } else {
         std::cerr << "Other has no location"
