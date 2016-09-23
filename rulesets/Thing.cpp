@@ -290,6 +290,10 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         assert(marg.isValid());
         m_location.addToEntity(marg);
 
+        if (!m->hasAttrFlag(Atlas::Objects::Operation::SECONDS_FLAG)) {
+            m->setSeconds(current_time);
+        }
+
         Sight s;
         s->setArgs1(m);
 
@@ -430,6 +434,7 @@ void Thing::updateProperties(const Operation & op, OpVector & res)
         m->setArgs1(move_arg);
         m->setFrom(getId());
         m->setTo(getId());
+        m->setSeconds(op->getSeconds());
 
         Sight s;
         s->setArgs1(m);
