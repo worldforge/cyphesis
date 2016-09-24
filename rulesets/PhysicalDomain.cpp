@@ -1036,7 +1036,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
 
                 ModeProperty* modeProp = bulletEntry->entity->requirePropertyClassFixed<ModeProperty>();
 
-                if (modeProp->data() != "fixed") {
+                if (modeProp->getMode() != ModeProperty::Mode::Fixed) {
                     adjustToTerrainFn();
                 }
 
@@ -1217,8 +1217,7 @@ void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath:
 
 }
 
-void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity,
-        const WFMath::AxisBox<3>& bbox)
+void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity)
 {
     auto I = m_entries.find(entity.getIntId());
     assert(I != m_entries.end());
@@ -1272,10 +1271,7 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
                     m_propellingEntries.erase(entity.getIntId());
                 }
             }
-
         }
-
-        //TODO: handle scaling of bbox
     }
 }
 

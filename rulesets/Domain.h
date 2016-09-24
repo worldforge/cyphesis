@@ -93,7 +93,7 @@ class Domain {
 
     }
 
-    virtual void applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity, const WFMath::AxisBox<3>& bbox)
+    virtual void applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity)
     {
 
     }
