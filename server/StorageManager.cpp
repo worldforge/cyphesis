@@ -554,7 +554,7 @@ void StorageManager::tick()
         }
         const EntityRef & ent = m_dirtyEntities.front();
         if (ent.get() != 0) {
-            if ((ent->getFlags() & entity_clean_mask) == 0) {
+            if ((ent->getFlags() & entity_clean_mask) != entity_clean_mask) {
                 debug( std::cout << "updating " << ent->getId() << std::endl << std::flush; );
                 updateEntity(ent.get());
                 ++updates;
