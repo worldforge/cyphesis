@@ -187,7 +187,7 @@ class PhysicalDomain::PhysicalMotionState: public btMotionState
                 entity.m_location.m_angularVelocity.zero();
             }
             entity.resetFlags(entity_pos_clean | entity_orient_clean);
-            entity.setFlags(entity_dirty_location);
+            //entity.setFlags(entity_dirty_location);
 
             if (m_bulletEntry.visibilitySphere) {
                 m_bulletEntry.visibilitySphere->setWorldTransform(m_bulletEntry.rigidBody->getWorldTransform());
@@ -588,6 +588,7 @@ void PhysicalDomain::updateVisibilityOfDirtyEntities(OpVector& res)
 {
     for (auto& bulletEntry : m_dirtyEntries) {
         updateVisibilityOfEntry(bulletEntry, res);
+        bulletEntry->entity->onUpdated();
     }
     m_dirtyEntries.clear();
 }
@@ -1387,7 +1388,6 @@ void PhysicalDomain::sendMoveSight(BulletEntry& entry)
         }
     }
 
-    entity.onUpdated();
     entry.lastSentLocation = entity.m_location;
 }
 

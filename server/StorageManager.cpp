@@ -465,7 +465,7 @@ void StorageManager::updateEntity(LocatedEntity * ent)
         Database::instance()->updateProperties(ent->getId(),
                                                upd_property_tuples);
     }
-    ent->setFlags(entity_clean);
+    ent->setFlags(entity_clean_mask);
 }
 
 void StorageManager::restoreChildren(LocatedEntity * parent)

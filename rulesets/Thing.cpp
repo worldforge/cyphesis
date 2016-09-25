@@ -389,13 +389,10 @@ void Thing::updateProperties(const Operation & op, OpVector & res)
             if (entry.first == "outfit" || entry.first == "right_hand_wield") {
                 updateContains = true;
             }
-            resetFlags(entity_clean);
             hadChanges = true;
             // FIXME Make sure we handle separately for private properties
         }
     }
-
-    resetFlags(entity_clean);
 
     if (updateContains) {
         if (m_contains != nullptr) {
@@ -417,6 +414,9 @@ void Thing::updateProperties(const Operation & op, OpVector & res)
     }
 
     if (hadChanges) {
+        //Mark that entity needs to be written to storage.
+        resetFlags(entity_clean);
+
         Set set;
         set->setTo(getId());
         set->setFrom(getId());
