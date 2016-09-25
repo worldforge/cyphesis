@@ -243,7 +243,6 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
     if (domain) {
 
-        WFMath::AxisBox<3> newBbox;
         WFMath::Vector<3> newVelocity;
         WFMath::Point<3> newPos;
         WFMath::Quaternion newOrientation;
@@ -268,14 +267,19 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
             // Update velocity
             if (fromStdVector(newVelocity, ent->getVelocity()) == 0) {
                 auto propelProp = requirePropertyClassFixed<PropelProperty>();
-                propelProp->data() = newVelocity;
-                // Velocity is not persistent so has no flag
-                updatedTransform = true;
+                if (!newVelocity.isEqualTo(propelProp->data())) {
+                    propelProp->data() = newVelocity;
+                    // Velocity is not persistent so has no flag
+                    updatedTransform = true;
+                } else {
+                    //Velocity wasn't changed, so we can make newVelocity invalid and it won't be applied.
+                    newVelocity.setValid(false);
+                }
             }
         }
 
         if (updatedTransform) {
-            domain->applyTransform(*this, newOrientation, newPos, newVelocity, newBbox);
+            domain->applyTransform(*this, newOrientation, newPos, newVelocity);
         }
 
 

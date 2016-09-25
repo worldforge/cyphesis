@@ -1224,19 +1224,26 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
     BulletEntry* entry = I->second;
     if (entry->rigidBody) {
         if (orientation.isValid() || pos.isValid()) {
-            if (orientation.isValid()) {
+            bool hadChange = false;
+            if (orientation.isValid() && !orientation.isEqualTo(entity.m_location.m_orientation)) {
                 debug_print("PhysicalDomain::new orientation " << entity.describeEntity() << " " << orientation);
                 btTransform& transform = entry->rigidBody->getWorldTransform();
                 transform.setRotation(Convert::toBullet(orientation));
                 entry->rigidBody->setWorldTransform(transform);
                 entity.m_location.m_orientation = orientation;
+                entity.resetFlags(entity_orient_clean);
+                hadChange = true;
             }
-            if (pos.isValid()) {
+            if (pos.isValid() && !pos.isEqualTo(entity.m_location.m_pos)) {
                 applyNewPositionForEntity(entry, pos);
+                entity.resetFlags(entity_pos_clean);
+                hadChange = true;
             }
-            updateTerrainMod(entity);
-            if (entry->rigidBody->getInvMass() != 0) {
-                entry->rigidBody->activate();
+            if (hadChange) {
+                updateTerrainMod(entity);
+                if (entry->rigidBody->getInvMass() != 0) {
+                    entry->rigidBody->activate();
+                }
             }
         }
 
