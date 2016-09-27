@@ -196,8 +196,8 @@ void TerrainProperty::set(const Element & ent)
 
     if (minX != std::numeric_limits<int>::max()) {
         float spacing = m_data.getSpacing();
-        WFMath::Point<2> minCorner(minX * spacing, minY * spacing);
-        WFMath::Point<2> maxCorner(maxX * spacing, maxY * spacing);
+        WFMath::Point<2> minCorner((minX * spacing) - (spacing * 0.5f), (minY * spacing)  - (spacing * 0.5f));
+        WFMath::Point<2> maxCorner((maxX * spacing) + (spacing * 0.5f), (maxY * spacing) + (spacing * 0.5f));
         WFMath::AxisBox<2> changedArea(minCorner, maxCorner);
         m_changedAreas.push_back(changedArea);
     }

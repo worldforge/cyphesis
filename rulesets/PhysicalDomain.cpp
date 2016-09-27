@@ -335,6 +335,7 @@ void PhysicalDomain::buildTerrainPage(Mercator::Segment& segment, float friction
     }
     float* data = terrainEntry.data->data();
     const float* mercatorData = segment.getPoints();
+
     //Need to rotate to fit Bullet coord space.
     for (int y = 0; y < vertexCountOneSide; ++y) {
         for (int x = 0; x < vertexCountOneSide; ++x) {
@@ -344,6 +345,7 @@ void PhysicalDomain::buildTerrainPage(Mercator::Segment& segment, float friction
 
     float min = segment.getMin();
     float max = segment.getMax();
+
     btHeightfieldTerrainShape* terrainShape = new btHeightfieldTerrainShape(vertexCountOneSide, vertexCountOneSide, data, 1.0f, min, max, 1, PHY_FLOAT, false);
 
     terrainShape->setLocalScaling(btVector3(1, 1, 1));
@@ -352,7 +354,7 @@ void PhysicalDomain::buildTerrainPage(Mercator::Segment& segment, float friction
 
     float xPos = segment.getXRef() + (res / 2);
     float yPos = segment.getYRef() + (res / 2);
-    float zPos = segment.getMin() + ((segment.getMax() - segment.getMin()) * 0.5f);
+    float zPos = min + ((max - min) * 0.5f);
 
     WFMath::Point<3> pos(xPos, yPos, zPos);
     btVector3 btPos = Convert::toBullet(pos);
@@ -716,8 +718,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         WFMath::Point<3>& pos = entity.m_location.m_pos;
 
         float h = pos.z();
-        Vector3D normal;
-        getTerrainHeightAndNormal(pos.x(), pos.y(), h, normal);
+        getTerrainHeight(pos.x(), pos.y(), h);
         pos.z() = h;
     };
 
@@ -932,7 +933,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
 
             float h = wfPos.z();
             Vector3D normal;
-            getTerrainHeightAndNormal(wfPos.x(), wfPos.y(), h, normal);
+            getTerrainHeight(wfPos.x(), wfPos.y(), h);
             wfPos.z() = h;
 
             btQuaternion orientation = entity.m_location.m_orientation.isValid() ? Convert::toBullet(entity.m_location.m_orientation) : btQuaternion::getIdentity();
@@ -1076,7 +1077,8 @@ void PhysicalDomain::updateTerrainMod(const LocatedEntity& entity, bool forceUpd
                         }
                         segment->getHeight(modPos.x() - (segment->getXRef()), modPos.y() - (segment->getYRef()), modPos.z());
                     } else {
-                        Mercator::HeightMap heightMap(segment->getResolution(), segment->getMin(), segment->getMax());
+                        Mercator::HeightMap heightMap(segment->getResolution());
+                        heightMap.allocate();
                         segment->populateHeightMap(heightMap);
 
                         heightMap.getHeight(modPos.x() - (segment->getXRef()), modPos.y() - (segment->getYRef()), modPos.z());
@@ -1165,8 +1167,7 @@ void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath:
 
     auto adjustHeightFn = [&]() {
         float h = pos.z();
-        Vector3D normal;
-        getTerrainHeightAndNormal(pos.x(), pos.y(), h, normal);
+        getTerrainHeight(pos.x(), pos.y(), h);
         newPos.z() = h;
     };
 
@@ -1186,6 +1187,7 @@ void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath:
         adjustHeightFn();
     }
 
+    //Check if there previously wasn't any valid pos, and thus no valid collision instances.
     if (!entity.m_location.m_pos.isValid() && newPos.isValid()) {
         short collisionMask;
         short collisionGroup;
@@ -1235,10 +1237,12 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
                 entity.resetFlags(entity_orient_clean);
                 hadChange = true;
             }
-            if (pos.isValid() && !pos.isEqualTo(entity.m_location.m_pos)) {
+            if (pos.isValid()) {
                 applyNewPositionForEntity(entry, pos);
-                entity.resetFlags(entity_pos_clean);
-                hadChange = true;
+                if (!pos.isEqualTo(entity.m_location.m_pos)) {
+                    entity.resetFlags(entity_pos_clean);
+                    hadChange = true;
+                }
             }
             if (hadChange) {
                 updateTerrainMod(entity);
@@ -1303,7 +1307,7 @@ void PhysicalDomain::processDirtyTerrainAreas()
 
     std::set<Mercator::Segment*> dirtySegments;
     for (auto& area : m_dirtyTerrainAreas) {
-        m_terrain->processSegments(area, [&](Mercator::Segment& s) {dirtySegments.insert(&s);});
+        m_terrain->processSegments(area, [&](Mercator::Segment& s, int, int) {dirtySegments.insert(&s);});
     }
     m_dirtyTerrainAreas.clear();
 
@@ -1493,14 +1497,14 @@ double PhysicalDomain::tick(double timeNow, OpVector& res)
     return timeNow + (1.0 / (m_ticksPerSecond * consts::time_multiplier));
 }
 
-bool PhysicalDomain::getTerrainHeightAndNormal(float x, float y, float& height, Vector3D& normal) const
+bool PhysicalDomain::getTerrainHeight(float x, float y, float& height) const
 {
     if (m_terrain) {
         Mercator::Segment * s = m_terrain->getSegmentAtPos(x, y);
         if (s != 0 && !s->isValid()) {
             s->populate();
         }
-        return m_terrain->getHeightAndNormal(x, y, height, normal);
+        return m_terrain->getHeight(x, y, height);
     }
     return false;
 }
