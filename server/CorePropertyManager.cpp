@@ -55,6 +55,7 @@
 #include "rulesets/AngularFactorProperty.h"
 #include "rulesets/GeometryProperty.h"
 #include "rulesets/QuaternionProperty.h"
+#include "rulesets/Vector3Property.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
@@ -185,6 +186,10 @@ CorePropertyManager::CorePropertyManager()
      */
     installProperty<QuaternionProperty>("active-rotation", QuaternionProperty::property_atlastype);
 
+    /**
+     * Used for things that grows, to limit the size.
+     */
+    installProperty<Vector3Property>("maxsize", Vector3Property::property_atlastype);
 }
 
 CorePropertyManager::~CorePropertyManager()

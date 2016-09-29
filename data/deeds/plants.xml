@@ -114,8 +114,12 @@
         <float name="default">750</float>
         <string name="visibility">public</string>
       </map>
-      <map name="maxmass">
-        <float name="default">5000</float>
+      <map name="maxsize">
+        <list name="default">
+            <float>0</float>
+            <float>0</float>
+            <float>4</float>
+        </list>
         <string name="visibility">public</string>
       </map>
       <map name="sizeAdult">
@@ -155,8 +159,12 @@
         <float name="default">600</float>
         <string name="visibility">public</string>
       </map>
-      <map name="maxmass">
-        <float name="default">670</float>
+      <map name="maxsize">
+        <list name="default">
+            <float>0</float>
+            <float>0</float>
+            <float>15</float>
+        </list>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -251,8 +259,12 @@
         <float name="default">600</float>
         <string name="visibility">public</string>
       </map>
-      <map name="maxmass">
-        <float name="default">530</float>
+      <map name="maxsize">
+        <list name="default">
+            <float>0</float>
+            <float>0</float>
+            <float>15</float>
+        </list>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -481,8 +493,12 @@
         <float name="default">600</float>
         <string name="visibility">public</string>
       </map>
-      <map name="maxmass">
-        <float name="default">800</float>
+      <map name="maxsize">
+        <list name="default">
+            <float>0</float>
+            <float>0</float>
+            <float>15</float>
+        </list>
         <string name="visibility">public</string>
       </map>
       <map name="sizeAdult">
@@ -525,8 +541,12 @@
         <float name="default">400</float>
         <string name="visibility">public</string>
       </map>
-      <map name="maxmass">
-        <float name="default">6000</float>
+      <map name="maxsize">
+        <list name="default">
+            <float>0</float>
+            <float>0</float>
+            <float>15</float>
+        </list>
         <string name="visibility">public</string>
       </map>
     </map>
@@ -692,8 +712,12 @@
         <float name="default">600</float>
         <string name="visibility">public</string>
       </map>
-      <map name="maxmass">
-        <float name="default">500</float>
+      <map name="maxsize">
+        <list name="default">
+            <float>0</float>
+            <float>0</float>
+            <float>15</float>
+        </list>
         <string name="visibility">public</string>
       </map>
     </map>

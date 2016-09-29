@@ -21,6 +21,8 @@
 #include "StatusProperty.h"
 #include "BBoxProperty.h"
 #include "AreaProperty.h"
+#include "DensityProperty.h"
+#include "Vector3Property.h"
 #include "physics/Shape.h"
 
 #include "common/const.h"
@@ -143,54 +145,112 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
             }
 
             Property<double> * mass_prop = requirePropertyClass<Property<double> >("mass", 0.);
+            PropertyBase * biomass = modPropertyType<double>("biomass");
+            BBoxProperty * box_property = requirePropertyClass<BBoxProperty>("bbox");
+            BBox & bbox = m_location.m_bBox;
             double & mass = mass_prop->data();
             double old_mass = mass;
-            mass += *m_nourishment;
 
-            *m_nourishment = 0;
-            Element maxmass_attr;
-            if (getAttrType("maxmass", maxmass_attr, Element::TYPE_FLOAT) == 0) {
-                mass = std::min(mass, maxmass_attr.Float());
-            }
-            PropertyBase * biomass = modPropertyType<double>("biomass");
-            if (biomass != nullptr) {
-                biomass->set(mass);
-                biomass->setFlags(flag_unsent);
-            }
-            //TODO: we need to sort out how to handle mass and biomass
-            mass_prop->set(mass);
-            mass_prop->setFlags(flag_unsent);
+            const DensityProperty* densityProperty = getPropertyClassFixed<DensityProperty>();
+            if (densityProperty) {
+                //There's a density property; we shouldn't change mass directly, instead we should change the size of the entity.
+                double newMass = mass + *m_nourishment;
 
-            BBox & bbox = m_location.m_bBox;
-            // FIXME Handle the bbox without needing the Set operation.
-            if (old_mass != 0 && bbox.isValid()) {
-                float scale = (float)(mass / old_mass);
-                float height_scale = std::pow(scale, 0.33333f);
-                debug(std::cout << "scale " << scale << ", " << height_scale
-                                << std::endl << std::flush;);
-                debug(std::cout << "Old " << bbox << std::endl << std::flush;);
-                // FIXME Rammming in a bbox without checking if its valid.
-                bbox = BBox(Point3D(bbox.lowCorner().x() * height_scale,
-                                    bbox.lowCorner().y() * height_scale,
-                                    bbox.lowCorner().z() * height_scale),
-                            Point3D(bbox.highCorner().x() * height_scale,
-                                    bbox.highCorner().y() * height_scale,
-                                    bbox.highCorner().z() * height_scale));
-                debug(std::cout << "New " << bbox << std::endl << std::flush;);
-                BBoxProperty * box_property = modPropertyClass<BBoxProperty>("bbox");
-                if (box_property != nullptr) {
+                //Check if there's a maxsize prop, otherwise check with maxmass
+                const Vector3Property* maxSizeProp = getPropertyClass<Vector3Property>("maxsize");
+                if (maxSizeProp && maxSizeProp->data().isValid() && bbox.isValid() && densityProperty->data() != 0) {
+                    WFMath::Vector<3> volumeVector = bbox.highCorner() - bbox.lowCorner();
+                    float volume = volumeVector.x() * volumeVector.y() * volumeVector.z();
+                    float volumeNew = newMass / densityProperty->data();
+                    float scale = volumeNew / volume;
+                    boxScale(bbox, scale);
+
+                    //We've scaled the bbox; now check if it exceeds the max size.
+                    //0 is ignored.
+                    WFMath::Vector<3> newSize = bbox.highCorner() - bbox.lowCorner();
+                    const WFMath::Vector<3>& maxSize = maxSizeProp->data();
+                    scale = 1.0f;
+                    if (maxSize.x() != 0 && newSize.x() > maxSize.x()) {
+                        scale = std::min(scale, maxSize.x() / newSize.x());
+                    }
+                    if (maxSize.y() != 0 && newSize.y() > maxSize.y()) {
+                        scale = std::min(scale, maxSize.y() / newSize.y());
+                    }
+                    if (maxSize.z() != 0 && newSize.z() > maxSize.z()) {
+                        scale = std::min(scale, maxSize.z() / newSize.z());
+                    }
+
+                    //New box needs to be scaled again to fit with max size.
+                    if (scale != 1.0f) {
+                        boxScale(bbox, scale);
+                    }
+
                     box_property->data() = bbox;
                     box_property->apply(this);
                     box_property->setFlags(flag_unsent);
+
+                    scaleArea();
                 } else {
-                    log(ERROR, String::compose("Plant %1 type \"%2\" has a valid "
-                                               "bbox, but no bbox property",
-                                               getIntId(), getType()->name()));
+                    Element maxmass_attr;
+                    if (getAttrType("maxmass", maxmass_attr, Element::TYPE_FLOAT) == 0) {
+                        newMass = std::min(newMass, maxmass_attr.Float());
+                    }
+
+                    if (old_mass != 0 && bbox.isValid()) {
+                        float scale = (float)(newMass / old_mass);
+                        float height_scale = std::pow(scale, 0.33333f);
+                        debug(std::cout << "scale " << scale << ", " << height_scale
+                                        << std::endl << std::flush;);
+                        debug(std::cout << "Old " << bbox << std::endl << std::flush;);
+                        boxScale(bbox, scale);
+                        debug(std::cout << "New " << bbox << std::endl << std::flush;);
+
+                        box_property->data() = bbox;
+                        box_property->apply(this);
+                        box_property->setFlags(flag_unsent);
+
+                        scaleArea();
+                    }
                 }
 
-                scaleArea();
 
+
+                if (biomass != nullptr) {
+                    biomass->set(mass);
+                    biomass->setFlags(flag_unsent);
+                }
+
+            } else {
+                mass += *m_nourishment;
+
+                Element maxmass_attr;
+                if (getAttrType("maxmass", maxmass_attr, Element::TYPE_FLOAT) == 0) {
+                    mass = std::min(mass, maxmass_attr.Float());
+                }
+                if (biomass != nullptr) {
+                    biomass->set(mass);
+                    biomass->setFlags(flag_unsent);
+                }
+                //TODO: we need to sort out how to handle mass and biomass
+                mass_prop->set(mass);
+                mass_prop->setFlags(flag_unsent);
+
+                // FIXME Handle the bbox without needing the Set operation.
+                if (old_mass != 0 && bbox.isValid()) {
+                    float scale = (float)(mass / old_mass);
+
+                    debug(std::cout << "Old " << bbox << std::endl << std::flush;);
+                    boxScale(bbox, scale);
+                    debug(std::cout << "New " << bbox << std::endl << std::flush;);
+
+                    box_property->data() = bbox;
+                    box_property->apply(this);
+                    box_property->setFlags(flag_unsent);
+
+                    scaleArea();
+                }
             }
+            *m_nourishment = 0;
         }
         status->apply(this);
     }

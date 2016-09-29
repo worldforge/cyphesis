@@ -75,7 +75,8 @@ librulesetentity_a_SOURCES = \
 			     DensityProperty.cpp DensityProperty.h \
 			     GeometryProperty.cpp GeometryProperty.h \
 			     AngularFactorProperty.cpp AngularFactorProperty.h \
-			     QuaternionProperty.cpp QuaternionProperty.h
+			     QuaternionProperty.cpp QuaternionProperty.h \
+			     Vector3Property.cpp Vector3Property.h
 
 libentityfilter_a_SOURCES = entityfilter/Filter.cpp entityfilter/Filter.h \
 			     entityfilter/ParserDefinitions.h \
