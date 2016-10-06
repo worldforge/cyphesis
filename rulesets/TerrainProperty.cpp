@@ -112,18 +112,32 @@ int TerrainProperty::get(Element & ent) const
     MapType & terrain = (t["points"] = MapType()).asMap();
 
     const Pointstore & points = m_data.getPoints();
-    Pointstore::const_iterator Iend = points.end();
-    for (Pointstore::const_iterator I = points.begin(); I != Iend; ++I) {
-        const Pointcolumn & pointcol = I->second;
-        Pointcolumn::const_iterator J = pointcol.begin();
-        Pointcolumn::const_iterator Jend = pointcol.end();
-        for (; J != Jend; ++J) {
+    for (const auto& column : points) {
+        for (const auto point : column.second) {
+            const Mercator::BasePoint& bp = point.second;
             std::stringstream key;
-            key << I->first << "x" << J->first;
-            ListType & point = (terrain[key.str()] = ListType(3)).asList();
-            point[0] = (FloatType)(I->first);
-            point[1] = (FloatType)(J->first);
-            point[2] = (FloatType)(J->second.height());
+            key << column.first << "x" << point.first;
+            size_t size = 3;
+            bool sendRoughness = false;
+            bool sendFalloff = false;
+            if (bp.falloff() != Mercator::BasePoint::FALLOFF) {
+                size = 5;
+                sendRoughness = true;
+                sendFalloff = true;
+            } else if (bp.roughness() != Mercator::BasePoint::ROUGHNESS) {
+                size = 4;
+                sendRoughness = true;
+            }
+            ListType & pointElem = (terrain[key.str()] = ListType(size)).List();
+            pointElem[0] = (FloatType)(column.first);
+            pointElem[1] = (FloatType)(point.first);
+            pointElem[2] = (FloatType)(bp.height());
+            if (sendRoughness) {
+                pointElem[3] = bp.roughness();
+            }
+            if (sendFalloff) {
+                pointElem[4] = bp.falloff();
+            }
         }
     }
 
@@ -156,12 +170,27 @@ void TerrainProperty::set(const Element & ent)
                 continue;
             }
             const ListType & point = I->second.asList();
-            if (point.size() != 3) {
+            if (point.size() < 3) {
                 continue;
             }
 
             int x = (int)point[0].asNum();
             int y = (int)point[1].asNum();
+            double h = point[2].asFloat();
+            double roughness;
+            double falloff;
+            if (point.size() > 3) {
+                roughness = point[3].asFloat();
+            } else {
+                roughness = Mercator::BasePoint::ROUGHNESS;
+            }
+            if (point.size() > 4) {
+                falloff = point[4].asFloat();
+            } else {
+                falloff = Mercator::BasePoint::FALLOFF;
+            }
+
+            Mercator::BasePoint bp(h, roughness, falloff);
 
             Pointstore::const_iterator J = base_points.find(x);
             if (J == base_points.end() ||
@@ -185,12 +214,8 @@ void TerrainProperty::set(const Element & ent)
             minY = std::min(minY, y);
             maxY = std::max(maxY, y);
 
-            m_data.setBasePoint(x, y, point[2].asNum());
+            m_data.setBasePoint(x, y, bp);
 
-            // FIXME Add support for roughness and falloff, as done
-            // by damien in equator and FIXMEd out by me
-
-            
         }
     }
 
