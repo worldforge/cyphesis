@@ -54,6 +54,8 @@
 #include <btBulletDynamicsCommon.h>
 #include <BulletCollision/CollisionShapes/btStaticPlaneShape.h>
 #include <BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h>
+#include <BulletCollision/CollisionDispatch/btGhostObject.h>
+#include <BulletDynamics/Character/btKinematicCharacterController.h>
 
 #include <sigc++/bind.h>
 
@@ -204,6 +206,9 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
                 new btCollisionWorld(new btCollisionDispatcher(new btDefaultCollisionConfiguration()), new btDbvtBroadphase(), new btDefaultCollisionConfiguration())), m_ticksPerSecond(
                 15), m_lastTickTime(0), m_visibilityCheckCountdown(0), m_terrain(nullptr)
 {
+
+    m_dynamicsWorld->getDispatchInfo().m_allowedCcdPenetration = 0.0001f;
+    m_broadphase->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
 
     const TerrainProperty* terrainProperty = m_entity.getPropertyClass<TerrainProperty>("terrain");
     if (terrainProperty) {
@@ -671,57 +676,77 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
             entry->collisionShape = new btBoxShape(btSize);
         }
 
-        btVector3 inertia;
-        if (mass == 0) {
-            inertia = btVector3(0, 0, 0);
-        } else {
-            entry->collisionShape->calculateLocalInertia(mass, inertia);
-        }
-
-        btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(mass, nullptr, entry->collisionShape, inertia);
-
-        const Property<float>* frictionProp = entity.getPropertyType<float>("friction");
-        if (frictionProp) {
-            rigidBodyCI.m_friction = frictionProp->data();
-        }
-
-        debug_print(
-                "PhysicsDomain adding entity " << entity.describeEntity() << " with mass " << mass << " and inertia ("<< inertia.x() << ","<< inertia.y() << ","<< inertia.z() << ")");
-
-        entry->rigidBody = new btRigidBody(rigidBodyCI);
-        //btQuaternion rotation(btVector3(0, 1, 0), btRadians(90));
-        entry->motionState = new PhysicalMotionState(*entry, *this, btTransform(orientation, pos), btTransform(btQuaternion::getIdentity(), centerOfMassOffset));
-        entry->rigidBody->setMotionState(entry->motionState);
-        entry->rigidBody->setAngularFactor(angularFactor);
-        entry->rigidBody->setUserPointer(entry);
-
         short collisionMask;
         short collisionGroup;
         getCollisionFlagsForEntity(entity, collisionGroup, collisionMask);
 
-        //Only add to world if position is valid. Otherwise this will be done when a new valid position is applied in applyNewPositionForEntity
-        if (entity.m_location.m_pos.isValid()) {
-            m_dynamicsWorld->addRigidBody(entry->rigidBody, collisionGroup, collisionMask);
-        }
-        if (mass != 0) {
-            //Should all entities be active when added?
-            entry->rigidBody->activate();
+        if ((entity.getType()->isTypeOf("mobile") || entity.getType()->isTypeOf("creator")) && dynamic_cast<btConvexShape*>(entry->collisionShape) != nullptr) {
+            btPairCachingGhostObject* ghostObject = new btPairCachingGhostObject();
+
+            ghostObject->setWorldTransform(btTransform(orientation, pos - centerOfMassOffset));
+
+            ghostObject->setCollisionShape(entry->collisionShape);
+            ghostObject->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
+
+            btScalar stepHeight = btScalar(0.35);
+            entry->character = new btKinematicCharacterController(ghostObject, dynamic_cast<btConvexShape*>(entry->collisionShape), stepHeight);
+            entry->character->setMaxSlope(btRadians(60));
+
+            if (entity.m_location.m_pos.isValid()) {
+                m_dynamicsWorld->addCollisionObject(ghostObject, collisionGroup, collisionMask);
+                m_dynamicsWorld->addAction(entry->character);
+            }
+            m_characterEntries.insert(entry);
+        } else {
+            btVector3 inertia;
+            if (mass == 0) {
+                inertia = btVector3(0, 0, 0);
+            } else {
+                entry->collisionShape->calculateLocalInertia(mass, inertia);
+            }
+
+            debug_print(
+                    "PhysicsDomain adding entity " << entity.describeEntity() << " with mass " << mass << " and inertia ("<< inertia.x() << ","<< inertia.y() << ","<< inertia.z() << ")");
+
+            btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(mass, nullptr, entry->collisionShape, inertia);
+
+            const Property<float>* frictionProp = entity.getPropertyType<float>("friction");
+            if (frictionProp) {
+                rigidBodyCI.m_friction = frictionProp->data();
+            }
+
+            entry->rigidBody = new btRigidBody(rigidBodyCI);
+            entry->motionState = new PhysicalMotionState(*entry, *this, btTransform(orientation, pos), btTransform(btQuaternion::getIdentity(), centerOfMassOffset));
+            entry->rigidBody->setMotionState(entry->motionState);
+            entry->rigidBody->setAngularFactor(angularFactor);
+            entry->rigidBody->setUserPointer(entry);
+
+            //Only add to world if position is valid. Otherwise this will be done when a new valid position is applied in applyNewPositionForEntity
+            if (entity.m_location.m_pos.isValid()) {
+                m_dynamicsWorld->addRigidBody(entry->rigidBody, collisionGroup, collisionMask);
+            }
+
+            if (mass != 0) {
+                //Should all entities be active when added?
+                entry->rigidBody->activate();
+            }
+
+            const PropelProperty* propelProp = entity.getPropertyClassFixed<PropelProperty>();
+            if (propelProp && propelProp->data().isValid() && propelProp->data() != WFMath::Vector<3>::ZERO()) {
+                btVector3 btVelocity = Convert::toBullet(propelProp->data());
+                btVelocity.m_floats[1] = 0; //Don't allow vertical velocity to be set.
+
+                auto I = m_propellingEntries.find(entity.getIntId());
+                if (I == m_propellingEntries.end()) {
+                    m_propellingEntries.insert(std::make_pair(entity.getIntId(), std::make_pair(entry, btVelocity)));
+                } else {
+                    I->second.second = btVelocity;
+                }
+            }
         }
 
         entry->propertyUpdatedConnection = entity.propertyApplied.connect(sigc::bind(sigc::mem_fun(this, &PhysicalDomain::childEntityPropertyApplied), entry));
 
-        const PropelProperty* propelProp = entity.getPropertyClassFixed<PropelProperty>();
-        if (propelProp && propelProp->data().isValid() && propelProp->data() != WFMath::Vector<3>::ZERO()) {
-            btVector3 btVelocity = Convert::toBullet(propelProp->data());
-            btVelocity.m_floats[1] = 0; //Don't allow vertical velocity to be set.
-
-            auto I = m_propellingEntries.find(entity.getIntId());
-            if (I == m_propellingEntries.end()) {
-                m_propellingEntries.insert(std::make_pair(entity.getIntId(), std::make_pair(entry, btVelocity)));
-            } else {
-                I->second.second = btVelocity;
-            }
-        }
     }
 
     updateTerrainMod(entity, true);
@@ -836,6 +861,13 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
         observedEntry->observingThis.erase(entry);
     }
 
+    if (entry->character) {
+        m_characterEntries.erase(entry);
+        m_dynamicsWorld->removeAction(entry->character);
+        m_dynamicsWorld->removeCollisionObject(entry->character->getGhostObject());
+        delete entry->character->getGhostObject();
+        delete entry->character;
+    }
     m_dirtyEntries.erase(entry);
 
     delete I->second;
@@ -869,55 +901,61 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
     };
 
     if (name == "friction") {
-        Property<float>* frictionProp = static_cast<Property<float>*>(&prop);
-        bulletEntry->rigidBody->setFriction(frictionProp->data());
-        bulletEntry->rigidBody->activate();
+        if (bulletEntry->rigidBody) {
+            Property<float>* frictionProp = static_cast<Property<float>*>(&prop);
+            bulletEntry->rigidBody->setFriction(frictionProp->data());
+            bulletEntry->rigidBody->activate();
+        }
         return;
     } else if (name == "mode") {
 
-        ModeProperty* modeProp = static_cast<ModeProperty*>(&prop);
+        if (bulletEntry->rigidBody) {
+            ModeProperty* modeProp = static_cast<ModeProperty*>(&prop);
 
-        applyNewPositionForEntity(bulletEntry, bulletEntry->entity->m_location.m_pos);
+            applyNewPositionForEntity(bulletEntry, bulletEntry->entity->m_location.m_pos);
 
 //        if (mode != "fixed") {
 //            adjustToTerrainFn();
 //        }
 
-        //When altering mass we need to first remove and then re-add the body, for some reason.
-        m_dynamicsWorld->removeRigidBody(bulletEntry->rigidBody);
+            //When altering mass we need to first remove and then re-add the body, for some reason.
+            m_dynamicsWorld->removeRigidBody(bulletEntry->rigidBody);
 
-        if (modeProp->getMode() == ModeProperty::Mode::Planted || modeProp->getMode() == ModeProperty::Mode::Fixed) {
-            //"fixed" mode means that the entity stays in place, always
-            //"planted" mode means it's planted in the ground
-            //Zero mass makes the rigid body static
-            bulletEntry->rigidBody->setMassProps(0, btVector3(0, 0, 0));
-            updateTerrainMod(*bulletEntry->entity);
-        } else {
-            float mass = getMassForEntity(*bulletEntry->entity);
-            btVector3 inertia;
-            bulletEntry->collisionShape->calculateLocalInertia(mass, inertia);
+            if (modeProp->getMode() == ModeProperty::Mode::Planted || modeProp->getMode() == ModeProperty::Mode::Fixed) {
+                //"fixed" mode means that the entity stays in place, always
+                //"planted" mode means it's planted in the ground
+                //Zero mass makes the rigid body static
+                bulletEntry->rigidBody->setMassProps(0, btVector3(0, 0, 0));
+                updateTerrainMod(*bulletEntry->entity);
+            } else {
+                float mass = getMassForEntity(*bulletEntry->entity);
+                btVector3 inertia;
+                bulletEntry->collisionShape->calculateLocalInertia(mass, inertia);
 
-            bulletEntry->rigidBody->setMassProps(mass, inertia);
+                bulletEntry->rigidBody->setMassProps(mass, inertia);
 
+            }
+
+            short collisionMask;
+            short collisionGroup;
+            getCollisionFlagsForEntity(*bulletEntry->entity, collisionGroup, collisionMask);
+
+            m_dynamicsWorld->addRigidBody(bulletEntry->rigidBody, collisionGroup, collisionMask);
+
+            bulletEntry->rigidBody->activate();
+            sendMoveSight(*bulletEntry);
         }
-
-        short collisionMask;
-        short collisionGroup;
-        getCollisionFlagsForEntity(*bulletEntry->entity, collisionGroup, collisionMask);
-
-        m_dynamicsWorld->addRigidBody(bulletEntry->rigidBody, collisionGroup, collisionMask);
-
-        bulletEntry->rigidBody->activate();
-        sendMoveSight(*bulletEntry);
         return;
     } else if (name == "solid") {
-        short collisionMask;
-        short collisionGroup;
-        getCollisionFlagsForEntity(*bulletEntry->entity, collisionGroup, collisionMask);
-        m_dynamicsWorld->removeRigidBody(bulletEntry->rigidBody);
-        m_dynamicsWorld->addRigidBody(bulletEntry->rigidBody, collisionGroup, collisionMask);
+        if (bulletEntry->rigidBody) {
+            short collisionMask;
+            short collisionGroup;
+            getCollisionFlagsForEntity(*bulletEntry->entity, collisionGroup, collisionMask);
+            m_dynamicsWorld->removeRigidBody(bulletEntry->rigidBody);
+            m_dynamicsWorld->addRigidBody(bulletEntry->rigidBody, collisionGroup, collisionMask);
 
-        bulletEntry->rigidBody->activate();
+            bulletEntry->rigidBody->activate();
+        }
     } else if (name == "mass") {
 
         ModeProperty* modeProp = bulletEntry->entity->requirePropertyClassFixed<ModeProperty>();
@@ -927,19 +965,21 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
             //"planted" mode means it's planted in the ground
             //Zero mass makes the rigid body static
         } else {
-            //When altering mass we need to first remove and then re-add the body, for some reason.
-            m_dynamicsWorld->removeRigidBody(bulletEntry->rigidBody);
+            if (bulletEntry->rigidBody) {
+                //When altering mass we need to first remove and then re-add the body, for some reason.
+                m_dynamicsWorld->removeRigidBody(bulletEntry->rigidBody);
 
-            short collisionMask;
-            short collisionGroup;
-            getCollisionFlagsForEntity(*bulletEntry->entity, collisionGroup, collisionMask);
+                short collisionMask;
+                short collisionGroup;
+                getCollisionFlagsForEntity(*bulletEntry->entity, collisionGroup, collisionMask);
 
-            float mass = getMassForEntity(*bulletEntry->entity);
-            btVector3 inertia;
-            bulletEntry->collisionShape->calculateLocalInertia(mass, inertia);
+                float mass = getMassForEntity(*bulletEntry->entity);
+                btVector3 inertia;
+                bulletEntry->collisionShape->calculateLocalInertia(mass, inertia);
 
-            bulletEntry->rigidBody->setMassProps(mass, inertia);
-            m_dynamicsWorld->addRigidBody(bulletEntry->rigidBody, collisionGroup, collisionMask);
+                bulletEntry->rigidBody->setMassProps(mass, inertia);
+                m_dynamicsWorld->addRigidBody(bulletEntry->rigidBody, collisionGroup, collisionMask);
+            }
         }
 
     } else if (name == "bbox") {
@@ -1076,70 +1116,74 @@ void PhysicalDomain::entityPropertyApplied(const std::string& name, PropertyBase
 
 void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath::Point<3>& pos)
 {
-    PhysicalMotionState* physicalMotionState = static_cast<PhysicalMotionState*>(entry->rigidBody->getMotionState());
-    btTransform& transform = entry->rigidBody->getWorldTransform();
-    LocatedEntity& entity = *entry->entity;
+    if (entry->rigidBody) {
+        PhysicalMotionState* physicalMotionState = static_cast<PhysicalMotionState*>(entry->rigidBody->getMotionState());
+        btTransform& transform = entry->rigidBody->getWorldTransform();
+        LocatedEntity& entity = *entry->entity;
 
-    ModeProperty::Mode mode = ModeProperty::Mode::Free;
-    auto modeProp = entity.getPropertyClassFixed<ModeProperty>();
-    if (modeProp) {
-        mode = modeProp->getMode();
-    }
-
-    WFMath::Point<3> newPos = pos;
-
-    auto adjustHeightFn = [&]() {
-        float h = pos.z();
-        getTerrainHeight(pos.x(), pos.y(), h);
-        newPos.z() = h;
-    };
-
-    if (mode == ModeProperty::Mode::Planted) {
-        adjustHeightFn();
-        auto plantedOffsetProp = entity.getPropertyType<double>("planted-offset");
-        if (plantedOffsetProp) {
-            newPos.z() += plantedOffsetProp->data();
+        ModeProperty::Mode mode = ModeProperty::Mode::Free;
+        auto modeProp = entity.getPropertyClassFixed<ModeProperty>();
+        if (modeProp) {
+            mode = modeProp->getMode();
         }
-        auto plantedScaledOffsetProp = entity.getPropertyType<double>("planted-scaled-offset");
-        if (plantedScaledOffsetProp && entity.m_location.bBox().isValid()) {
-            auto size = entity.m_location.bBox().highCorner() - entity.m_location.bBox().lowCorner();
 
-            newPos.z() += (plantedScaledOffsetProp->data() * size.z());
+        WFMath::Point<3> newPos = pos;
+
+        auto adjustHeightFn = [&]() {
+            float h = pos.z();
+            getTerrainHeight(pos.x(), pos.y(), h);
+            newPos.z() = h;
+        };
+
+        if (mode == ModeProperty::Mode::Planted) {
+            adjustHeightFn();
+            auto plantedOffsetProp = entity.getPropertyType<double>("planted-offset");
+            if (plantedOffsetProp) {
+                newPos.z() += plantedOffsetProp->data();
+            }
+            auto plantedScaledOffsetProp = entity.getPropertyType<double>("planted-scaled-offset");
+            if (plantedScaledOffsetProp && entity.m_location.bBox().isValid()) {
+                auto size = entity.m_location.bBox().highCorner() - entity.m_location.bBox().lowCorner();
+
+                newPos.z() += (plantedScaledOffsetProp->data() * size.z());
+            }
+        } else if (mode != ModeProperty::Mode::Fixed) {
+            adjustHeightFn();
         }
-    } else if (mode != ModeProperty::Mode::Fixed) {
-        adjustHeightFn();
-    }
 
-    //Check if there previously wasn't any valid pos, and thus no valid collision instances.
-    if (!entity.m_location.m_pos.isValid() && newPos.isValid()) {
-        short collisionMask;
-        short collisionGroup;
-        getCollisionFlagsForEntity(entity, collisionGroup, collisionMask);
-        m_dynamicsWorld->addRigidBody(entry->rigidBody, collisionGroup, collisionMask);
+        //Check if there previously wasn't any valid pos, and thus no valid collision instances.
+        if (!entity.m_location.m_pos.isValid() && newPos.isValid()) {
+            short collisionMask;
+            short collisionGroup;
+            getCollisionFlagsForEntity(entity, collisionGroup, collisionMask);
+            if (entry->rigidBody) {
+                m_dynamicsWorld->addRigidBody(entry->rigidBody, collisionGroup, collisionMask);
+            }
+            if (entry->viewSphere) {
+                m_visibilityWorld->addCollisionObject(entry->viewSphere, VISIBILITY_MASK_OBSERVABLE, VISIBILITY_MASK_OBSERVER);
+            }
+            if (entry->visibilitySphere) {
+                m_visibilityWorld->addCollisionObject(entry->visibilitySphere, VISIBILITY_MASK_OBSERVER, VISIBILITY_MASK_OBSERVABLE);
+            }
+        }
+
+        entity.m_location.m_pos = newPos;
+
+        debug_print("PhysicalDomain::new pos " << entity.describeEntity() << " " << pos);
+        transform.setOrigin(Convert::toBullet(newPos) - physicalMotionState->m_centerOfMassOffset.getOrigin());
+        entry->rigidBody->setWorldTransform(transform);
         if (entry->viewSphere) {
-            m_visibilityWorld->addCollisionObject(entry->viewSphere, VISIBILITY_MASK_OBSERVABLE, VISIBILITY_MASK_OBSERVER);
+            entry->viewSphere->setWorldTransform(transform);
+            m_visibilityWorld->updateSingleAabb(entry->viewSphere);
         }
         if (entry->visibilitySphere) {
-            m_visibilityWorld->addCollisionObject(entry->visibilitySphere, VISIBILITY_MASK_OBSERVER, VISIBILITY_MASK_OBSERVABLE);
+            entry->visibilitySphere->setWorldTransform(transform);
+            m_visibilityWorld->updateSingleAabb(entry->visibilitySphere);
         }
-    }
-
-    entity.m_location.m_pos = newPos;
-
-    debug_print("PhysicalDomain::new pos " << entity.describeEntity() << " " << pos);
-    transform.setOrigin(Convert::toBullet(newPos) - physicalMotionState->m_centerOfMassOffset.getOrigin());
-    entry->rigidBody->setWorldTransform(transform);
-    if (entry->viewSphere) {
-        entry->viewSphere->setWorldTransform(transform);
-        m_visibilityWorld->updateSingleAabb(entry->viewSphere);
-    }
-    if (entry->visibilitySphere) {
-        entry->visibilitySphere->setWorldTransform(transform);
-        m_visibilityWorld->updateSingleAabb(entry->visibilitySphere);
-    }
 
 //    m_movingEntities.insert(entry);
-    m_dirtyEntries.insert(entry);
+        m_dirtyEntries.insert(entry);
+    }
 
 }
 
@@ -1148,7 +1192,56 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
     auto I = m_entries.find(entity.getIntId());
     assert(I != m_entries.end());
     BulletEntry* entry = I->second;
-    if (entry->rigidBody) {
+    if (entry->character) {
+        btKinematicCharacterController* character = entry->character;
+        btPairCachingGhostObject* ghostObject = character->getGhostObject();
+        if (orientation.isValid() || pos.isValid()) {
+            bool hadChange = false;
+            if (orientation.isValid() && !orientation.isEqualTo(entity.m_location.m_orientation)) {
+                debug_print("PhysicalDomain::new orientation " << entity.describeEntity() << " " << orientation);
+                btTransform& transform = ghostObject->getWorldTransform();
+                transform.setRotation(Convert::toBullet(orientation));
+                ghostObject->setWorldTransform(transform);
+                entity.m_location.m_orientation = orientation;
+                entity.resetFlags(entity_orient_clean);
+                hadChange = true;
+            }
+//            if (pos.isValid()) {
+//                applyNewPositionForEntity(entry, pos);
+//                if (!pos.isEqualTo(entity.m_location.m_pos)) {
+//                    entity.resetFlags(entity_pos_clean);
+//                    hadChange = true;
+//                }
+//            }
+            if (hadChange) {
+//                updateTerrainMod(entity);
+//                if (entry->rigidBody->getInvMass() != 0) {
+//                    entry->rigidBody->activate();
+//                }
+            }
+        }
+
+        if (velocity.isValid()) {
+            debug_print("PhysicalDomain::setVelocity " << entity.describeEntity() << " " << velocity << " " << velocity.mag());
+            btVector3 btVelocity = Convert::toBullet(velocity);
+
+            if (!btVelocity.isZero()) {
+                btVelocity.m_floats[1] = 0; //Don't allow vertical velocity to be set.
+                character->setWalkDirection(btVelocity / 60.0f);
+            } else {
+                character->setWalkDirection(btVector3(0, 0, 0));
+//                btVector3 velocity = entry->rigidBody->getLinearVelocity();
+//                velocity.setX(0);
+//                velocity.setZ(0);
+//                //Take gravity into account
+//                if (velocity.getY() > 0) {
+//                    velocity.setY(0);
+//                }
+            }
+
+        }
+
+    } else if (entry->rigidBody) {
         if (orientation.isValid() || pos.isValid()) {
             bool hadChange = false;
             if (orientation.isValid() && !orientation.isEqualTo(entity.m_location.m_orientation)) {
@@ -1177,32 +1270,32 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
 
         if (velocity.isValid()) {
             debug_print("PhysicalDomain::setVelocity " << entity.describeEntity() << " " << velocity << " " << velocity.mag());
-            if (entry->rigidBody) {
-                btVector3 btVelocity = Convert::toBullet(velocity);
 
-                if (!btVelocity.isZero()) {
-                    btVelocity.m_floats[1] = 0; //Don't allow vertical velocity to be set.
+            btVector3 btVelocity = Convert::toBullet(velocity);
 
-                    auto K = m_propellingEntries.find(entity.getIntId());
-                    if (K == m_propellingEntries.end()) {
-                        m_propellingEntries.insert(std::make_pair(entity.getIntId(), std::make_pair(entry, btVelocity)));
-                    } else {
-                        K->second.second = btVelocity;
-                    }
+            if (!btVelocity.isZero()) {
+                btVelocity.m_floats[1] = 0; //Don't allow vertical velocity to be set.
 
+                auto K = m_propellingEntries.find(entity.getIntId());
+                if (K == m_propellingEntries.end()) {
+                    m_propellingEntries.insert(std::make_pair(entity.getIntId(), std::make_pair(entry, btVelocity)));
                 } else {
-                    btVector3 bodyVelocity = entry->rigidBody->getLinearVelocity();
-                    bodyVelocity.setX(0);
-                    bodyVelocity.setZ(0);
-                    //Take gravity into account
-                    if (bodyVelocity.getY() > 0) {
-                        bodyVelocity.setY(0);
-                    }
-                    entry->rigidBody->setLinearVelocity(bodyVelocity);
-
-                    m_propellingEntries.erase(entity.getIntId());
+                    K->second.second = btVelocity;
                 }
+            } else {
+                btVector3 bodyVelocity = entry->rigidBody->getLinearVelocity();
+                bodyVelocity.setX(0);
+                bodyVelocity.setZ(0);
+                //Take gravity into account
+                if (bodyVelocity.getY() > 0) {
+                    bodyVelocity.setY(0);
+                }
+                entry->rigidBody->setLinearVelocity(bodyVelocity);
+
+                m_propellingEntries.erase(entity.getIntId());
+
             }
+
         }
     }
 }
@@ -1382,6 +1475,9 @@ double PhysicalDomain::tick(double timeNow, OpVector& res)
     m_lastTickTime = timeNow;
 
     m_dynamicsWorld->stepSimulation((float)currentTickSize, 10);
+//    m_dynamicsWorld->stepSimulation(currentTickSize, 0);
+
+    processCharacters((float) currentTickSize);
 
     //Don't do visibility checks each tick; instead use m_visibilityCheckCountdown to count down to next
     m_visibilityCheckCountdown -= currentTickSize;
@@ -1415,6 +1511,57 @@ double PhysicalDomain::tick(double timeNow, OpVector& res)
     std::swap(m_movingEntities, m_lastMovingEntities);
 
     return timeNow + (1.0 / (m_ticksPerSecond * consts::time_multiplier));
+}
+
+void PhysicalDomain::processCharacters(float tickSize)
+{
+    for (BulletEntry* entry : m_characterEntries) {
+        LocatedEntity& entity = *entry->entity;
+
+        const btPairCachingGhostObject* ghostObject = entry->character->getGhostObject();
+        const btTransform& newTransform = ghostObject->getWorldTransform();
+        btVector3 centerOfMassOffset = -Convert::toBullet(entity.m_location.m_bBox.getCenter());
+
+//                   btTransform newTransform = m_bulletEntry.rigidBody->getCenterOfMassTransform() * m_centerOfMassOffset;
+
+        WFMath::Point<3> newPos = Convert::toWF<WFMath::Point<3>>(newTransform.getOrigin() + centerOfMassOffset);
+
+        WFMath::Quaternion newOrient = Convert::toWF(newTransform.getRotation());
+        if (!newOrient.isEqualTo(entity.m_location.m_orientation)) {
+            entity.m_location.m_orientation = newOrient;
+            entity.resetFlags(entity_orient_clean);
+        }
+//        entity.m_location.m_angularVelocity = Convert::toWF<WFMath::Vector<3>>(m_bulletEntry.rigidBody->getAngularVelocity());
+
+        entity.m_location.m_velocity = (newPos - entity.m_location.m_pos) / tickSize;
+
+        if (!newPos.isEqualTo(entity.m_location.m_pos)) {
+            entity.m_location.m_pos = newPos;
+            m_movingEntities.insert(entry);
+            m_dirtyEntries.insert(entry);
+
+            if (entry->visibilitySphere) {
+                entry->visibilitySphere->setWorldTransform(newTransform);
+                m_visibilityWorld->updateSingleAabb(entry->visibilitySphere);
+            }
+
+            if (entry->viewSphere) {
+                entry->viewSphere->setWorldTransform(newTransform);
+                m_visibilityWorld->updateSingleAabb(entry->viewSphere);
+            }
+            entity.resetFlags(entity_pos_clean);
+        }
+
+        //If the magnitude is small enough, consider the velocity to be zero.
+        if (entity.m_location.m_velocity.sqrMag() < 0.001f) {
+            entity.m_location.m_velocity.zero();
+        }
+        if (entity.m_location.m_angularVelocity.sqrMag() < 0.001f) {
+            entity.m_location.m_angularVelocity.zero();
+        }
+        //entity.setFlags(entity_dirty_location);
+    }
+
 }
 
 bool PhysicalDomain::getTerrainHeight(float x, float y, float& height) const

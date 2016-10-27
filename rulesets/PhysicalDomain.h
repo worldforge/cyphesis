@@ -47,6 +47,7 @@ class btCollisionShape;
 class btVector3;
 class btSphereShape;
 class btCollisionObject;
+class btKinematicCharacterController;
 
 class PropertyBase;
 
@@ -107,6 +108,8 @@ class PhysicalDomain: public Domain
                  * Set of entries which are observing this.
                  */
                 std::set<BulletEntry*> observingThis;
+
+                btKinematicCharacterController* character;
         };
 
         struct TerrainEntry
@@ -120,6 +123,7 @@ class PhysicalDomain: public Domain
         std::set<BulletEntry*> m_movingEntities;
         std::set<BulletEntry*> m_lastMovingEntities;
         std::set<BulletEntry*> m_dirtyEntries;
+        std::set<BulletEntry*> m_characterEntries;
         std::vector<WFMath::AxisBox<2>> m_dirtyTerrainAreas;
 
         std::unordered_map<long, std::tuple<Mercator::TerrainMod*, WFMath::Point<3>, WFMath::Quaternion, WFMath::AxisBox<2>>> m_terrainMods;
@@ -209,6 +213,9 @@ class PhysicalDomain: public Domain
         void updateTerrainMod(const LocatedEntity& entity, bool forceUpdate = false);
 
         void processDirtyTerrainAreas();
+
+        void processCharacters(float tickSize);
+
 
 };
 
