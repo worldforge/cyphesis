@@ -62,7 +62,6 @@ void TypeNode::addProperties(const MapType & attributes)
     for (; J != Jend; ++J) {
         p = PropertyManager::instance()->addProperty(J->first,
                                                      J->second.getType());
-        std::cout << J->first << std::endl << std::flush;
         assert(p != 0);
         p->set(J->second);
         p->setFlags(flag_class);
