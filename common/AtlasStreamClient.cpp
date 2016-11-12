@@ -74,7 +74,7 @@ std::iostream& StreamClientSocketBase::getIos()
 int StreamClientSocketBase::negotiate(Atlas::Objects::ObjectsDecoder& decoder)
 {
 
-    Atlas::Net::StreamConnect conn("cyphesis_client", m_ios);
+    Atlas::Net::StreamConnect conn("cyphesis_client", m_ios, m_ios);
 
     while (conn.getState() == Atlas::Net::StreamConnect::IN_PROGRESS) {
       write();

@@ -45,9 +45,9 @@ template<class ProtocolT>
 CommAsioClient<ProtocolT>::CommAsioClient(const std::string & name,
         boost::asio::io_service& io_service) :
         CommSocket(io_service), mSocket(io_service), mWriteBuffer(
-                new boost::asio::streambuf()), mStream(mWriteBuffer), mNegotiateTimer(
-                io_service, boost::posix_time::seconds(1)), m_codec(nullptr), m_encoder(
-                nullptr), m_negotiate(nullptr), m_link(nullptr), mName(name)
+                new boost::asio::streambuf()), mSendBuffer(new boost::asio::streambuf()), mInStream(&mReadBuffer),
+                mOutStream(mWriteBuffer), mNegotiateTimer(io_service, boost::posix_time::seconds(1)), mIsSending(false), mShouldSend(false),
+                m_codec(nullptr), m_encoder(nullptr), m_negotiate(nullptr), m_link(nullptr), mName(name)
 {
 }
 
@@ -59,6 +59,7 @@ CommAsioClient<ProtocolT>::~CommAsioClient()
     delete m_encoder;
     delete m_codec;
     delete mWriteBuffer;
+    delete mSendBuffer;
     try {
         mSocket.shutdown(ProtocolT::socket::shutdown_both);
     } catch (const std::exception& e) {
@@ -85,9 +86,7 @@ void CommAsioClient<ProtocolT>::do_read()
                 if (!ec)
                 {
                     mReadBuffer.commit(length);
-                    mStream.rdbuf(&mReadBuffer);
                     m_codec->poll();
-                    mStream.rdbuf(mWriteBuffer);
                     this->dispatch();
                     //By calling do_read again we make sure that the instance
                     //doesn't go out of scope ("shared_from this"). As soon as that
@@ -105,40 +104,44 @@ void CommAsioClient<ProtocolT>::do_read()
 template<class ProtocolT>
 void CommAsioClient<ProtocolT>::write()
 {
-    auto self(this->shared_from_this());
+    if (mIsSending) {
+        //We're already sending in the background.
+        //Make that we should send again once we've completed sending.
+//        std::cerr << "Delaying send." << std::endl << std::flush;
+//        if (!mShouldSend) {
+//            start = boost::posix_time::microsec_clock::local_time();
+//        }
+        mShouldSend = true;
+        return;
+    }
 
-    //When sending data we need to make sure that nothing else writes to the streambuf (mWriteBuffer).
-    //We do this by creating a new streambuf instance. The one containing the data to be sent is
-    //then contained in a shared_ptr. When the async write operation is done the shared_ptr will
-    //be deleted. However, in order to make this a bit more efficient we'll use a custom deletor
-    //in which we'll check if the new buffer has had anything written to it. If not, we'll reuse
-    //the buffer just used for writing, as this will already have had memory allocated.
-    std::function<void(boost::asio::streambuf*)> bufferDeleter =
-            [&, self](boost::asio::streambuf* p) {
-                //Check if the existing writebuffer has had anything written to it.
-                if (this->mWriteBuffer->size() > 0) {
-                    delete p;
-                } else {
-                    //If the existing writebuffer hasn't had anything written to it we'll reuse the previous
-                    //one instead since it already have had memory allocated. This prevents unnecessary release
-                    //and re-allocation of memory.
-                    delete this->mWriteBuffer;
-                    this->mWriteBuffer = p;
-                    this->mStream.rdbuf(this->mWriteBuffer);
+    mShouldSend = false;
 
-                }
-            };
-    std::shared_ptr<boost::asio::streambuf> buffer(mWriteBuffer, bufferDeleter);
-    mWriteBuffer = new boost::asio::streambuf();
-    mStream.rdbuf(mWriteBuffer);
+    if (mWriteBuffer->size() != 0) {
+        //We'll use a self reference to make sure that the client isn't deleted while sending.
+        auto self(this->shared_from_this());
+        //Swap places between writing buffer and sending buffer, and attach new writing to the out stream.
+        std::swap(mWriteBuffer, mSendBuffer);
+        mOutStream.rdbuf(mWriteBuffer);
+        mIsSending = true;
 
-    if (buffer->size() != 0) {
-        boost::asio::async_write(mSocket, buffer->data(),
-                [this, self, buffer](boost::system::error_code ec, std::size_t length)
+        boost::asio::async_write(mSocket, *mSendBuffer,
+                [this, self](boost::system::error_code ec, std::size_t length)
                 {
+                    mIsSending = false;
                     if (!ec)
                     {
-                        buffer->consume(length);
+                        mSendBuffer->consume(length);
+                        //Is there data queued for transmission which we should send right away?
+                        if (mShouldSend) {
+//                            auto diff = boost::posix_time::microsec_clock::local_time() - start;
+//                            std::cerr << "Sending delayed "<< diff.total_microseconds() <<" microseconds." << std::endl << std::flush;
+                            this->write();
+                        }
+                    } else {
+                        std::stringstream ss;
+                        ss << "Error when writing to socket: " << ec;
+                        log(WARNING, ss.str());
                     }
                 });
     }
@@ -148,12 +151,12 @@ template<class ProtocolT>
 void CommAsioClient<ProtocolT>::negotiate_read()
 {
     auto self(this->shared_from_this());
-    mSocket.async_read_some(mWriteBuffer->prepare(read_buffer_size),
+    mSocket.async_read_some(mReadBuffer.prepare(read_buffer_size),
             [this, self](boost::system::error_code ec, std::size_t length)
             {
                 if (!ec)
                 {
-                    mWriteBuffer->commit(length);
+                    mReadBuffer.commit(length);
                     if (length > 0) {
                         int negotiateResult = this->negotiate();
                         if (negotiateResult < 0) {
@@ -195,7 +198,7 @@ template<class ProtocolT>
 void CommAsioClient<ProtocolT>::startAccept(Link * connection)
 {
     // Create the server side negotiator
-    m_negotiate = new Atlas::Net::StreamAccept("cyphesis " + mName, mStream);
+    m_negotiate = new Atlas::Net::StreamAccept("cyphesis " + mName, mInStream, mOutStream);
 
     m_link = connection;
 
@@ -206,7 +209,7 @@ template<class ProtocolT>
 void CommAsioClient<ProtocolT>::startConnect(Link * connection)
 {
     // Create the client side negotiator
-    m_negotiate = new Atlas::Net::StreamConnect("cyphesis " + mName, mStream);
+    m_negotiate = new Atlas::Net::StreamConnect("cyphesis " + mName, mInStream, mOutStream);
 
     m_link = connection;
 
@@ -345,6 +348,7 @@ int CommAsioClient<ProtocolT>::send(
 //        log(ERROR, "Encoder not initialized");
 //        return -1;
 //    }
+
     if (comm_asio_client_debug_flag) {
         std::stringstream debugStream;
 
