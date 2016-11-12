@@ -25,6 +25,7 @@
 
 #include "common/log.h"
 #include "common/compose.hpp"
+#include "common/debug.h"
 
 #include "CommAsioClient.h"
 
@@ -32,6 +33,13 @@
 #include <Atlas/Objects/RootOperation.h>
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Net/Stream.h>
+
+#include <Atlas/Codecs/Bach.h>
+
+#include <sstream>
+#include <iostream>
+
+static const bool comm_asio_client_debug_flag = false;
 
 template<class ProtocolT>
 CommAsioClient<ProtocolT>::CommAsioClient(const std::string & name,
@@ -86,6 +94,10 @@ void CommAsioClient<ProtocolT>::do_read()
                     //doesn't happen, and there's no write in progress, the instance
                     //will be deleted since there's no more references to it.
                     this->do_read();
+                } else {
+                    std::stringstream ss;
+                    ss << "Error when reading from socket: " << ec;
+                    log(WARNING, ss.str());
                 }
             });
 }
@@ -287,6 +299,17 @@ void CommAsioClient<ProtocolT>::dispatch()
 template<class ProtocolT>
 void CommAsioClient<ProtocolT>::objectArrived(const Atlas::Objects::Root & obj)
 {
+    if (comm_asio_client_debug_flag) {
+        std::stringstream debugStream;
+
+        Atlas::Codecs::Bach debugCodec(debugStream, debugStream, *this /*dummy*/);
+        Atlas::Objects::ObjectsEncoder debugEncoder(debugCodec);
+        debugEncoder.streamObjectsMessage(obj);
+        debugStream << std::flush;
+
+        std::cerr << "received: " << debugStream.str() << std::endl << std::flush;
+    }
+
     Atlas::Objects::Operation::RootOperation op =
             Atlas::Objects::smart_dynamic_cast<
                     Atlas::Objects::Operation::RootOperation>(obj);
@@ -322,7 +345,19 @@ int CommAsioClient<ProtocolT>::send(
 //        log(ERROR, "Encoder not initialized");
 //        return -1;
 //    }
+    if (comm_asio_client_debug_flag) {
+        std::stringstream debugStream;
+
+        Atlas::Codecs::Bach debugCodec(debugStream, debugStream, *this /*dummy*/);
+        Atlas::Objects::ObjectsEncoder debugEncoder(debugCodec);
+        debugEncoder.streamObjectsMessage(op);
+        debugStream << std::flush;
+
+        std::cerr << "sending: " << debugStream.str() << std::endl << std::flush;
+    }
+
     m_encoder->streamObjectsMessage(op);
+
     return flush();
 }
 

@@ -19,11 +19,15 @@
 #include "Link.h"
 
 #include "common/CommSocket.h"
+#include "common/debug.h"
 
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Objects/Operation.h>
+#include <Atlas/Codecs/Bach.h>
 
 #include <cassert>
+#include <sstream>
+#include <iostream>
 
 static const bool debug_flag = false;
 
@@ -39,6 +43,17 @@ Link::~Link()
 void Link::send(const Operation & op) const
 {
     if (m_encoder != 0) {
+        if (debug_flag) {
+            std::stringstream debugStream;
+
+            Atlas::Codecs::Bach debugCodec(debugStream, debugStream, *((Atlas::Bridge*)this) /*dummy*/);
+            Atlas::Objects::ObjectsEncoder debugEncoder(debugCodec);
+            debugEncoder.streamObjectsMessage(op);
+            debugStream << std::flush;
+
+            std::cerr << "sending: " << debugStream.str() << std::endl << std::flush;
+        }
+
         m_encoder->streamObjectsMessage(op);
         m_commSocket.flush();
     }
