@@ -23,7 +23,6 @@
 
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Objects/Operation.h>
-#include <Atlas/Codecs/Bach.h>
 
 #include <cassert>
 #include <sstream>
@@ -42,22 +41,34 @@ Link::~Link()
 
 void Link::send(const Operation & op) const
 {
-    if (m_encoder != 0) {
+    if (m_encoder) {
         if (debug_flag) {
-            std::stringstream debugStream;
-
-            Atlas::Codecs::Bach debugCodec(debugStream, debugStream, *((Atlas::Bridge*)this) /*dummy*/);
-            Atlas::Objects::ObjectsEncoder debugEncoder(debugCodec);
-            debugEncoder.streamObjectsMessage(op);
-            debugStream << std::flush;
-
-            std::cerr << "sending: " << debugStream.str() << std::endl << std::flush;
+            std::cerr << "sending: ";
+            debug_dump(op, std::cerr);
+            std::cerr << std::endl << std::flush;
         }
 
         m_encoder->streamObjectsMessage(op);
         m_commSocket.flush();
     }
 }
+
+void Link::send(const OpVector& opVector) const
+{
+    if (m_encoder) {
+        for (const auto& op : opVector) {
+            if (debug_flag) {
+                std::cerr << "sending: ";
+                debug_dump(op, std::cerr);
+                std::cerr << std::endl << std::flush;
+            }
+
+            m_encoder->streamObjectsMessage(op);
+        }
+        m_commSocket.flush();
+    }
+}
+
 
 void Link::sendError(const Operation & op,
                      const std::string & errstring,

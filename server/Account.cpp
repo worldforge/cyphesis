@@ -297,16 +297,17 @@ void Account::externalOperation(const Operation & op, Link &)
     OpVector reply;
     long serialno = op->getSerialno();
     operation(op, reply);
-    OpVector::const_iterator Iend = reply.end();
-    for(OpVector::const_iterator I = reply.begin(); I != Iend; ++I) {
-        if (!op->isDefaultSerialno()) {
-            // Should we respect existing refnos?
-            if ((*I)->isDefaultRefno()) {
-                (*I)->setRefno(serialno);
+    if (!reply.empty()) {
+        for(auto& replyOp : reply) {
+            if (!op->isDefaultSerialno()) {
+                // Should we respect existing refnos?
+                if (replyOp->isDefaultRefno()) {
+                    replyOp->setRefno(serialno);
+                }
             }
         }
         // FIXME detect socket failure here
-        m_connection->send(*I);
+        m_connection->send(reply);
     }
 }
 

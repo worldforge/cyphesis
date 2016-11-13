@@ -44,7 +44,22 @@ class Link : public Router {
         m_encoder = e;
     }
 
+    /**
+     * Sends an op and flushes the socket.
+     *
+     * If you intend to send multiple ops, consider using the overload which
+     * accepts an OpVector instead, since the socket will be flushed in this call.
+     * @param op An op to send.
+     */
     void send(const Operation & op) const;
+
+    /**
+     * Sends multiple ops, and flushes the socket.
+     *
+     * @param opVector A vector of ops to send.
+     */
+    void send(const OpVector& opVector) const;
+
     void sendError(const Operation & op,
                    const std::string &,
                    const std::string &) const;
