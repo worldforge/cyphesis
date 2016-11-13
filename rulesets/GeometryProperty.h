@@ -34,6 +34,7 @@
  * "cylinder-z": A cylinder, oriented along the z axis
  * "cylinder-x": A cylinder, oriented along the x axis
  * "cylinder-y": A cylinder, oriented along the y axis
+ * "mesh"      : An arbitrary mesh, using vertices and indices.
  *
  * @ingroup PropertyClasses
  */

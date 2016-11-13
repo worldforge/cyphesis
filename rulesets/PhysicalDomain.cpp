@@ -59,6 +59,8 @@
 #include <bullet/BulletCollision/CollisionShapes/btStaticPlaneShape.h>
 #include <bullet/BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h>
 #include <bullet/BulletCollision/CollisionShapes/btCylinderShape.h>
+#include <bullet/BulletCollision/CollisionShapes/btTriangleIndexVertexArray.h>
+#include <bullet/BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h>
 
 #include <sigc++/bind.h>
 
@@ -619,10 +621,13 @@ float PhysicalDomain::getMassForEntity(const LocatedEntity& entity) const
     return mass;
 }
 
-btCollisionShape* PhysicalDomain::createCollisionShape(const Atlas::Message::MapType& map, const WFMath::Vector<3>& size)
+btCollisionShape* PhysicalDomain::createCollisionShape(const Atlas::Message::MapType& map, const WFMath::AxisBox<3>& bbox, btVector3& centerOfMassOffset)
 {
+    auto size = bbox.highCorner() - bbox.lowCorner();
+
     auto createBoxFn = [&]() -> btBoxShape* {
         auto btSize = Convert::toBullet(size * 0.5).absolute();
+        centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
         return new btBoxShape(btSize);
     };
 
@@ -630,9 +635,11 @@ btCollisionShape* PhysicalDomain::createCollisionShape(const Atlas::Message::Map
     if (I != map.end() && I->second.isString()) {
         const std::string& shape = I->second.String();
         if (shape == "sphere") {
+            centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
             float minRadius = std::min(size.x(), std::min(size.y(), size.z())) * 0.5f;
             return new btSphereShape(minRadius);
         } else if (shape == "capsule-z") {
+            centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
             float minRadius = std::min(size.x(), size.y()) * 0.5f;
             //subtract the radius times 2 from the height
             float height = size.z() - (minRadius * 2.0f);
@@ -643,6 +650,7 @@ btCollisionShape* PhysicalDomain::createCollisionShape(const Atlas::Message::Map
                 return new btSphereShape(minRadius);
             }
         } else if (shape == "capsule-x") {
+            centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
             float minRadius = std::min(size.z(), size.y()) * 0.5f;
             //subtract the radius times 2 from the height
             float height = size.x() - (minRadius * 2.0f);
@@ -653,6 +661,7 @@ btCollisionShape* PhysicalDomain::createCollisionShape(const Atlas::Message::Map
                 return new btSphereShape(minRadius);
             }
         } else if (shape == "capsule-y") {
+            centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
             float minRadius = std::min(size.x(), size.z()) * 0.5f;
             //subtract the radius times 2 from the height
             float height = size.y() - (minRadius * 2.0f);
@@ -665,21 +674,125 @@ btCollisionShape* PhysicalDomain::createCollisionShape(const Atlas::Message::Map
         } else if (shape == "box") {
             return createBoxFn();
         } else if (shape == "cylinder-z") {
+            centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
             btCylinderShape* shape = new btCylinderShape(btVector3(1, 1, 1));
             shape->setLocalScaling(Convert::toBullet(size * 0.5f));
             return shape;
         } else if (shape == "cylinder-x") {
+            centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
             btCylinderShape* shape = new btCylinderShapeX(btVector3(1, 1, 1));
             shape->setLocalScaling(Convert::toBullet(size * 0.5f));
             return shape;
         } else if (shape == "cylinder-y") {
+            centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
             btCylinderShape* shape = new btCylinderShapeZ(btVector3(1, 1, 1));
             shape->setLocalScaling(Convert::toBullet(size * 0.5f));
             return shape;
+        } else if (shape == "mesh") {
+            return createMeshShape(map, bbox);
         }
     }
 
+    centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
     return createBoxFn();
+}
+
+btCollisionShape* PhysicalDomain::createMeshShape(const Atlas::Message::MapType& map, const WFMath::AxisBox<3>& bbox)
+{
+    auto vertsI = map.find("vertices");
+    if (vertsI != map.end() && vertsI->second.isList()) {
+        auto trisI = map.find("indices");
+        if (trisI != map.end() && trisI->second.isList()) {
+            auto& vertsList = vertsI->second.List();
+            auto& trisList = trisI->second.List();
+
+            if (vertsList.empty()) {
+                log(ERROR, "Vertices is empty for mesh.");
+                return nullptr;
+            }
+
+            if (vertsList.size() % 3 != 0) {
+                log(ERROR, "Vertices is not even with 3.");
+                return nullptr;
+            }
+
+            if (trisList.empty()) {
+                log(ERROR, "Triangles is empty for mesh.");
+                return nullptr;
+            }
+
+            if (trisList.size() % 3 != 0) {
+                log(ERROR, "Triangles is not even with 3.");
+                return nullptr;
+            }
+
+            int numberOfVertices = vertsList.size() / 3;
+            size_t numberOfTriangles = trisList.size() / 3;
+
+            float* verts = new float[vertsList.size()];
+
+            for (size_t i = 0; i < vertsList.size(); i += 3) {
+                if (!vertsList[i].isFloat() || !vertsList[i + 1].isFloat() || !vertsList[i + 2].isFloat()) {
+                    log(ERROR, "Vertex data was not a float for mesh.");
+                    delete[] verts;
+                    return nullptr;
+                }
+                verts[i] = vertsList[i].Float();
+                verts[i + 1] = vertsList[i + 2].Float(); //Convert from WF coord to Bullet coord
+                verts[i + 2] = -vertsList[i + 1].Float(); //Convert from WF coord to Bullet coord
+
+//                verts[i] = vertsList[i].Float();
+//                verts[i + 1] = vertsList[i + 1].Float();
+//                verts[i + 2] = vertsList[i + 2].Float();
+
+            }
+
+            int* indices = new int[trisList.size()];
+            for (size_t i = 0; i < trisList.size(); i += 3) {
+                if (!trisList[i].isInt() || !trisList[i + 1].isInt() || !trisList[i + 2].isInt()) {
+                    log(ERROR, "Index data was not an int for mesh.");
+                    delete[] verts;
+                    delete[] indices;
+                    return nullptr;
+                }
+                if (trisList[i].Int() >= numberOfVertices || trisList[i + 1].Int() >= numberOfVertices || trisList[i + 1].Int() >= numberOfVertices) {
+                    log(ERROR, "Index data was out of bounds for vertices for mesh.");
+                    delete[] verts;
+                    delete[] indices;
+                    return nullptr;
+                }
+                indices[i] = trisList[i].Int();
+                indices[i + 1] = trisList[i + 1].Int();
+                indices[i + 2] = trisList[i + 2].Int();
+//                indices[i] = trisList[i].Int();
+//                indices[i + 1] = trisList[i + 1].Int();
+//                indices[i + 2] = trisList[i + 2].Int();
+            }
+
+            int vertStride = sizeof(float) * 3;
+            int indexStride = sizeof(int) * 3;
+
+            btTriangleIndexVertexArray* triangleVertexArray = new btTriangleIndexVertexArray(numberOfTriangles, indices, indexStride, numberOfVertices, verts, vertStride);
+
+            btVector3 aabbMin(bbox.lowCorner().x(), bbox.lowCorner().z(), -bbox.highCorner().y());
+            btVector3 aabbMax(bbox.highCorner().x(), bbox.highCorner().z(), -bbox.lowCorner().y());
+//            btBvhTriangleMeshShape* meshShape = new btBvhTriangleMeshShape(triangleVertexArray, true, aabbMin, aabbMax, true);
+            btBvhTriangleMeshShape* meshShape = new btBvhTriangleMeshShape(triangleVertexArray, true, true);
+            meshShape = new btBvhTriangleMeshShape(triangleVertexArray, true, true);
+
+            //btVector3 meshSize = meshShape->getLocalAabbMax() - meshShape->getLocalAabbMin();
+            //btVector3 scaling(size.x() / meshSize.x(), size.z() / meshSize.y(), size.y() / meshSize.z());
+            //meshShape->setLocalScaling(scaling);
+            return meshShape;
+        } else {
+            log(ERROR, "Could not find list of triangles for mesh.");
+        }
+
+    } else {
+        log(ERROR, "Could not find list of vertices for mesh.");
+    }
+    return nullptr;
+
 }
 
 void PhysicalDomain::addEntity(LocatedEntity& entity)
@@ -738,15 +851,16 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
 
     if (bbox.isValid()) {
         //"Center of mass offset" is the inverse of the center of the object in relation to origo.
-        btVector3 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
+        btVector3 centerOfMassOffset(0, 0, 0);
 
-        auto size = bbox.highCorner() - bbox.lowCorner();
         const GeometryProperty* geometryProp = entity.getPropertyClassFixed<GeometryProperty>();
         if (geometryProp) {
             auto& geometryMap = geometryProp->data();
-            entry->collisionShape = createCollisionShape(geometryMap, size);
+            entry->collisionShape = createCollisionShape(geometryMap, bbox, centerOfMassOffset);
         } else {
+            auto size = bbox.highCorner() - bbox.lowCorner();
             auto btSize = Convert::toBullet(size * 0.5).absolute();
+            centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
             entry->collisionShape = new btBoxShape(btSize);
         }
 
@@ -768,6 +882,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
                 "PhysicsDomain adding entity " << entity.describeEntity() << " with mass " << mass << " and inertia ("<< inertia.x() << ","<< inertia.y() << ","<< inertia.z() << ")");
 
         entry->rigidBody = new btRigidBody(rigidBodyCI);
+        //btQuaternion rotation(btVector3(0, 1, 0), btRadians(90));
         entry->motionState = new PhysicalMotionState(*entry, *this, btTransform(orientation, pos), btTransform(btQuaternion::getIdentity(), centerOfMassOffset));
         entry->rigidBody->setMotionState(entry->motionState);
         entry->rigidBody->setAngularFactor(angularFactor);
