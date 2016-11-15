@@ -104,23 +104,23 @@ void CommAsioClient<ProtocolT>::do_read()
 template<class ProtocolT>
 void CommAsioClient<ProtocolT>::write()
 {
-    if (mIsSending) {
-        //We're already sending in the background.
-        //Make that we should send again once we've completed sending.
-//        std::cerr << "Delaying send." << std::endl << std::flush;
-//        if (!mShouldSend) {
-//            start = boost::posix_time::microsec_clock::local_time();
-//        }
-        mShouldSend = true;
-        return;
-    }
-
-    mShouldSend = false;
-
     if (mWriteBuffer->size() != 0) {
+        if (mIsSending) {
+            //We're already sending in the background.
+            //Make that we should send again once we've completed sending.
+    //        std::cerr << "Delaying send." << std::endl << std::flush;
+    //        if (!mShouldSend) {
+    //            start = boost::posix_time::microsec_clock::local_time();
+    //        }
+            mShouldSend = true;
+            return;
+        }
+
+        mShouldSend = false;
+
         //We'll use a self reference to make sure that the client isn't deleted while sending.
         auto self(this->shared_from_this());
-        //Swap places between writing buffer and sending buffer, and attach new writing to the out stream.
+        //Swap places between writing buffer and sending buffer, and attach new write buffer to the out stream.
         std::swap(mWriteBuffer, mSendBuffer);
         mOutStream.rdbuf(mWriteBuffer);
         mIsSending = true;
