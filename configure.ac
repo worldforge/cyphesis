@@ -107,18 +107,21 @@ AC_LINK_IFELSE(
 )
 
 AX_BOOST_BASE(
-    [1.40],
+    [1.46],
     [],
     [
         AC_MSG_ERROR([
-Cannot find Boost library 1.40 or later.
+Cannot find Boost library 1.46 or later.
 Please see http://www.boost.org/ for details of how to download and install
 Boost.])
     ]
 )
-NETWORK_LIBS="$NETWORK_LIBS -lboost_system"
+NETWORK_LIBS="$NETWORK_LIBS -lboost_system -lboost_filesystem"
 AC_CHECK_LIB(boost_system, main, , [
 	AC_MSG_ERROR("Linking against boost::system library failed.")
+])
+AC_CHECK_LIB(boost_filesystem, main, , [
+	AC_MSG_ERROR("Linking against boost::filesystem library failed.")
 ])
 
 AC_MSG_CHECKING([whether we should link to MacOS-X frameworks])

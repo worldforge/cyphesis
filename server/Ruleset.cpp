@@ -41,6 +41,8 @@
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/objectFactory.h>
 
+#include <boost/filesystem.hpp>
+
 #include <iostream>
 
 #include <sys/types.h>
@@ -235,7 +237,7 @@ int Ruleset::modifyRule(const std::string & class_name,
 /// \brief Mark a rule down as waiting for another.
 ///
 /// Note that a rule cannot yet be installed because it depends on something
-/// that has not yet occured, or a more fatal condition has occured.
+/// that has not yet occurred, or a more fatal condition has occurred.
 void Ruleset::waitForRule(const std::string & rulename,
                           const Root & ruledesc,
                           const std::string & dependent,
@@ -252,41 +254,42 @@ void Ruleset::waitForRule(const std::string & rulename,
 void Ruleset::getRulesFromFiles(const std::string & ruleset,
                                 RootDict & rules)
 {
+
     std::string filename;
 
     std::string dirname = etc_directory + "/cyphesis/" + ruleset + ".d";
-    DIR * rules_dir = ::opendir(dirname.c_str());
-    if (rules_dir == 0) {
-        filename = etc_directory + "/cyphesis/" + ruleset + ".xml";
-        AtlasFileLoader f(filename, rules);
-        if (f.isOpen()) {
-            log(WARNING, compose("Reading legacy rule data from \"%1\".",
-                                 filename));
-            f.read();
+    boost::filesystem::recursive_directory_iterator dir(dirname), end;
+
+    log(INFO, compose("Trying to load rules from directory '%1'", dirname));
+
+    int count = 0;
+    while (dir != end) {
+        if (boost::filesystem::is_regular_file(dir->status())) {
+            auto filename = dir->path().native();
+            AtlasFileLoader f(filename, rules);
+            if (!f.isOpen()) {
+                log(ERROR, compose("Unable to open rule file \"%1\".", filename));
+            } else {
+                f.read();
+                count += f.count();
+            }
         }
-        return;
+        ++dir;
     }
-    while (struct dirent * rules_entry = ::readdir(rules_dir)) {
-        if (rules_entry->d_name[0] == '.') {
-            continue;
-        }
-        filename = dirname + "/" + rules_entry->d_name;
-        
-        AtlasFileLoader f(filename, rules);
-        if (!f.isOpen()) {
-            log(ERROR, compose("Unable to open rule file \"%1\".", filename));
-        } else {
-            f.read();
-        }
-    }
-    ::closedir(rules_dir);
+
+    log(INFO, compose("Loaded %1 rules.", count));
+
+
 }
 
 void Ruleset::loadRules(const std::string & ruleset)
 {
     RootDict ruleTable;
 
-    if (database_flag) {
+    bool loadFromDatabase = database_flag;
+    loadFromDatabase = false;
+
+    if (loadFromDatabase) {
         Persistence * p = Persistence::instance();
         p->getRules(ruleTable);
     } else {
@@ -295,7 +298,7 @@ void Ruleset::loadRules(const std::string & ruleset)
 
     if (ruleTable.empty()) {
         log(ERROR, "Rule database table contains no rules.");
-        if (database_flag) {
+        if (loadFromDatabase) {
             log(NOTICE, "Attempting to load temporary ruleset from files.");
             getRulesFromFiles(ruleset, ruleTable);
         }
