@@ -173,10 +173,13 @@ void TerrainProperty::set(const Element & ent)
             if (point.size() < 3) {
                 continue;
             }
+            if (!point[0].isNum() || !point[1].isNum() || !point[2].isNum()) {
+                continue;
+            }
 
             int x = (int)point[0].asNum();
             int y = (int)point[1].asNum();
-            double h = point[2].asFloat();
+            double h = point[2].asNum();
             double roughness;
             double falloff;
             if (point.size() > 3) {
