@@ -404,6 +404,13 @@ Link::~Link()
 {
 }
 
+void Link::send(const OpVector& opVector) const
+{
+    for (const auto& op : opVector) {
+        test_sent_ops.push_back(op);
+    }
+}
+
 void Link::send(const Operation & op) const
 {
     test_sent_ops.push_back(op);

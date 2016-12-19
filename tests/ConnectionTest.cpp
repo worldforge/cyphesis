@@ -832,30 +832,7 @@ void ExternalMind::linkUp(Link * c)
 #include "stubs/rulesets/stubThing.h"
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
-
-
-Link::Link(CommSocket & socket, const std::string & id, long iid) :
-            Router(id, iid), m_encoder(0), m_commSocket(socket)
-{
-}
-
-Link::~Link()
-{
-}
-
-void Link::send(const Operation & op) const
-{
-}
-
-void Link::sendError(const Operation & op,
-                     const std::string &,
-                     const std::string &) const
-{
-}
-
-void Link::disconnect()
-{
-}
+#include "stubs/common/stubLink.h"
 
 Router::Router(const std::string & id, long intId) : m_id(id),
                                                              m_intId(intId)

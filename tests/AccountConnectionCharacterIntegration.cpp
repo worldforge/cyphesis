@@ -897,6 +897,10 @@ void Link::send(const Operation & op) const
     AccountConnectionCharacterintegration::Link_send_sent(op);
 }
 
+void Link::send(const OpVector & ops) const
+{
+}
+
 void Link::sendError(const Operation & op,
                      const std::string &,
                      const std::string &) const

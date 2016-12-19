@@ -18,6 +18,7 @@
 #ifndef STUBADMIN_H_
 #define STUBADMIN_H_
 
+#include "server/Admin.h"
 
 Admin::Admin(Connection * conn,
              const std::string & username,

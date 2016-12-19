@@ -113,6 +113,7 @@ int main()
 #include "server/Player.h"
 
 #include "common/Inheritance.h"
+#include "stubs/common/stubLink.h"
 
 using Atlas::Objects::Root;
 
@@ -405,28 +406,6 @@ void ExternalMind::linkUp(Link * c)
 #include "stubs/server/stubExternalMindsConnection.h"
 #include "stubs/common/stubOperationsDispatcher.h"
 
-Link::Link(CommSocket & socket, const std::string & id, long iid) :
-            Router(id, iid), m_encoder(0), m_commSocket(socket)
-{
-}
-
-Link::~Link()
-{
-}
-
-void Link::send(const Operation & op) const
-{
-}
-
-void Link::sendError(const Operation & op,
-                     const std::string &,
-                     const std::string &) const
-{
-}
-
-void Link::disconnect()
-{
-}
 
 Router::Router(const std::string & id, long intId) : m_id(id),
                                                              m_intId(intId)

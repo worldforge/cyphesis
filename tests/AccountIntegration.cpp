@@ -431,6 +431,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "stubs/rulesets/stubDensityProperty.h"
 #include "stubs/rulesets/stubAngularFactorProperty.h"
 #include "stubs/rulesets/stubGeometryProperty.h"
+#include "stubs/rulesets/stubVector3Property.h"
 
 #include "stubs/server/stubExternalMindsManager.h"
 #include "stubs/server/stubExternalMindsConnection.h"

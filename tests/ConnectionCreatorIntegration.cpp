@@ -1155,6 +1155,10 @@ Link::~Link()
 {
 }
 
+void Link::send(const OpVector& opVector) const
+{
+}
+
 void Link::send(const Operation & op) const
 {
     ConnectionCreatorintegration::Link_send_sent(op);

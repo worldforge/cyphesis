@@ -1159,6 +1159,10 @@ void Link::send(const Operation & op) const
     TrustedConnectionCreatorintegration::Link_send_sent(op);
 }
 
+void Link::send(const OpVector& opVector) const
+{
+}
+
 void Link::sendError(const Operation & op,
                      const std::string &,
                      const std::string &) const

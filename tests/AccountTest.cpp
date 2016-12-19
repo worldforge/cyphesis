@@ -2017,6 +2017,11 @@ void Link::send(const Operation & op) const
     Accounttest::append_Link_send_sent(op);
 }
 
+void Link::send(const OpVector& opVector) const
+{
+}
+
+
 void Link::disconnect()
 {
 }

@@ -643,6 +643,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "rulesets/Stackable.h"
 
 #include "stubs/rulesets/stubCreator.h"
+#include "stubs/server/stubAdmin.h"
 #include "stubs/modules/stubLocation.h"
 
 Account::Account(Connection * conn,

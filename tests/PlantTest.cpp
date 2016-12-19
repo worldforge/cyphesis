@@ -56,6 +56,8 @@
 #include "stubs/rulesets/stubAreaProperty.h"
 #include "stubs/rulesets/stubTerrainEffectorProperty.h"
 #include "stubs/rulesets/stubDomain.h"
+#include "stubs/rulesets/stubVector3Property.h"
+
 
 
 #include <cstdlib>

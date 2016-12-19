@@ -32,5 +32,20 @@ void Link::send(const Operation & op) const
 {
 }
 
+void Link::send(const OpVector& opVector) const
+{
+}
+
+
+void Link::sendError(const Operation & op,
+                     const std::string & errstring,
+                     const std::string & to) const
+{
+}
+
+void Link::disconnect()
+{
+}
+
 
 #endif /* STUBLINK_H_ */
