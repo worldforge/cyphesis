@@ -1,0 +1,115 @@
+configure_file(buildid.cpp.in buildid.cpp)
+
+add_library(comm
+        CommHttpClient.cpp
+        CommMetaClient.cpp
+        CommMDNSPublisher.cpp
+        HttpCache.cpp
+        CommAsioListener.cpp
+        CommAsioClient.cpp
+        IdleConnector.cpp)
+
+add_executable(cyphesis
+        Account.cpp
+        Player.cpp
+        Admin.cpp
+        SystemAccount.cpp
+        ServerAccount.cpp
+        Persistence.cpp
+        EntityFactory.cpp
+        ServerRouting.cpp
+        SpawnEntity.cpp
+        WorldRouter.cpp
+        StorageManager.cpp
+        TaskFactory.cpp
+        CorePropertyManager.cpp
+        Ruleset.cpp
+        RuleHandler.cpp
+        EntityRuleHandler.cpp
+        ArchetypeRuleHandler.cpp
+        ArchetypeFactory.cpp
+        OpRuleHandler.cpp
+        PropertyRuleHandler.cpp
+        TaskRuleHandler.cpp
+        EntityBuilder.cpp
+        ArithmeticBuilder.cpp
+        Lobby.cpp
+        ConnectableRouter.cpp
+        Connection.cpp
+        TrustedConnection.cpp
+        Peer.cpp
+        Juncture.cpp
+        CommPSQLSocket.cpp
+        TeleportState.cpp
+        PossessionAuthenticator.cpp
+        TeleportProperty.cpp
+        PendingPossession.cpp
+        CommPeer.cpp
+        CommPythonClient.cpp
+        server.cpp
+        MindInspector.cpp
+        ExternalMindsConnection.cpp
+        ExternalMindsManager.cpp
+        ${CMAKE_CURRENT_BINARY_DIR}/buildid.cpp)
+
+
+target_link_libraries(cyphesis
+        scriptpython
+        navigation
+        DetourTileCache
+        Detour
+        Recast
+        rulesetmind
+        rulesetentity
+        entityfilter
+        rulesetbase
+        modules
+        common
+        physics
+        comm
+        metaserverapi
+        )
+
+install(TARGETS cyphesis DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
+
+
+
+#add_executable(cyslave
+#        Account.cpp
+#        Player.cpp
+#        Admin.cpp
+#        Persistence.cpp
+#        EntityFactory.cpp
+#        ServerRouting.cpp
+#        WorldRouter.cpp
+#        TaskFactory.cpp
+#        CorePropertyManager.cpp
+#        EntityBuilder.cpp
+#        Lobby.cpp
+#        Connection.cpp
+#        TrustedConnection.cpp
+#        SlaveClientConnection.cpp
+#        Peer.cpp
+#        Master.cpp
+#        HttpCache.cpp
+#        CommPeer.cpp
+#        CommHttpClient.cpp
+#        CommMaster.cpp
+#        TeleportState.cpp
+#        slave.cpp)
+#
+#target_link_libraries(cyslave
+#        scriptpython
+#        navigation
+#        DetourTileCache
+#        Detour
+#        Recast
+#        rulesetmind
+#        rulesetentity
+#        entityfilter
+#        rulesetbase
+#        modules
+#        common
+#        physics
+#        metaserverapi
+#        comm)

@@ -29,6 +29,6 @@ namespace consts {
   // Integer id of root world entity
   const long rootWorldIntId = 0L;
   // Version of the software we are running
-  const char * version = PACKAGE_VERSION;
+  const char * version = VERSION;
 
 }

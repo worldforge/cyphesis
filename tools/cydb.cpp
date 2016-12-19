@@ -42,16 +42,12 @@
 #include <getopt.h>
 #endif // HAVE_GETOPT_H
 
-#ifndef READLINE_CXX_SANE   // defined in config.h
-extern "C" {
-#endif
 #define USE_VARARGS
 #define PREFER_STDARG
 #include <readline/readline.h>
 #include <readline/history.h>
-#ifndef READLINE_CXX_SANE
-}
-#endif
+
+#include <cstring>
 
 typedef int (*dbcmd_function)(Storage & ab, struct dbsys * system,
                               int argc, char ** argv);
