@@ -258,26 +258,29 @@ void Ruleset::getRulesFromFiles(const std::string & ruleset,
     std::string filename;
 
     std::string dirname = etc_directory + "/cyphesis/" + ruleset + ".d";
+
+    if (boost::filesystem::is_directory(dirname)) {
+
     boost::filesystem::recursive_directory_iterator dir(dirname), end;
+        log(INFO, compose("Trying to load rules from directory '%1'", dirname));
 
-    log(INFO, compose("Trying to load rules from directory '%1'", dirname));
-
-    int count = 0;
-    while (dir != end) {
-        if (boost::filesystem::is_regular_file(dir->status())) {
-            auto filename = dir->path().native();
-            AtlasFileLoader f(filename, rules);
-            if (!f.isOpen()) {
-                log(ERROR, compose("Unable to open rule file \"%1\".", filename));
-            } else {
-                f.read();
-                count += f.count();
+        int count = 0;
+        while (dir != end) {
+            if (boost::filesystem::is_regular_file(dir->status())) {
+                auto filename = dir->path().native();
+                AtlasFileLoader f(filename, rules);
+                if (!f.isOpen()) {
+                    log(ERROR, compose("Unable to open rule file \"%1\".", filename));
+                } else {
+                    f.read();
+                    count += f.count();
+                }
             }
+            ++dir;
         }
-        ++dir;
-    }
 
-    log(INFO, compose("Loaded %1 rules.", count));
+        log(INFO, compose("Loaded %1 rules.", count));
+    }
 
 
 }
