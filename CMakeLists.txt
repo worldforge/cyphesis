@@ -21,8 +21,6 @@ set(VERSION ${CYPHESIS_VERSION_MAJOR}.${CYPHESIS_VERSION_MINOR}.${CYPHESIS_VERSI
 # Set compiler flags
 # Prevent GCC from messing up Python pointer handling
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -fno-strict-aliasing")
-add_definitions(-DVERSION="${VERSION}")
-add_definitions(-DPACKAGE_BUGREPORT="erik@ogenvik.org")
 add_definitions(-DHAVE_CONFIG_H)
 
 include_directories("${PROJECT_SOURCE_DIR};${PROJECT_BINARY_DIR}")
@@ -33,6 +31,7 @@ enable_testing()
 get_git_head_revision(GIT_REFSPEC GIT_SHA1)
 set(DESCRIPTION "A complete server for the Worldforge system.")
 set(SOCKET_DIR ${CMAKE_INSTALL_FULL_LOCALSTATEDIR}/tmp)
+set(PACKAGE_BUGREPORT "erik@ogenvik.org")
 
 #Macro for adding a test
 macro(wf_add_test _TEST_NAME)

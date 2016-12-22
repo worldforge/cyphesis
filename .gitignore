@@ -4,22 +4,9 @@
 *.gcno
 *.gcov
 .*.swp
-.deps
-Makefile
-Makefile.in
-config.*
-aclocal.m4
-autom4te.cache
-compile
-test-driver
 default.apspec
-configure
 cyphesis.spec
 cyphesis.iss
-depcomp
-install-sh
-missing
-stamp-h1
 server/buildid.cpp
 server/cyphesis
 client/cyclient
@@ -53,7 +40,6 @@ tags
 .cproject
 .settings
 .cdtconfig*
-.autotools
 .pydevproject
 #ignore build directories
 builds
