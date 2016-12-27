@@ -34,6 +34,7 @@
 #include <Atlas/Codecs/XML.h>
 
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string/erase.hpp>
 
 #include <string>
 #include <fstream>
@@ -141,7 +142,6 @@ int main(int argc, char ** argv)
         f.report(argv[optind]);
     } else if (optind == argc) {
         storage->clearRules();
-        std::string filename;
 
         std::string dirname = etc_directory + "/cyphesis/" + ruleset_name + ".d";
 
@@ -158,7 +158,7 @@ int main(int argc, char ** argv)
                 if (!f.isOpen()) {
                     std::cerr << "Unable to open rule file \"" << filename << "\"." << std::endl << std::flush;
                 } else {
-                    auto relativePath = dir->path().lexically_relative(rulesPath).relative_path().native();
+                    auto relativePath = boost::erase_first_copy(dir->path().native(), rulesPath.native() + "/");
                     storage->setRuleset(relativePath);
                     f.read();
                     f.report(relativePath);
