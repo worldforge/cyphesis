@@ -88,8 +88,12 @@ link_directories(${GCRYPT_LIBRARY_DIRS})
 include_directories(${GCRYPT_INCLUDE_DIRS})
 link_libraries(${GCRYPT_LIBRARIES})
 
+#The default FindBullet.cmake macro doesn't look in pkg-config first, so we'll do that ourselves.
+pkg_check_modules(BULLET bullet>=2.81)
+if (NOT BULLET_FOUND)
+       find_package(Bullet 2.81 REQUIRED)
+endif (NOT BULLET_FOUND)
 
-find_package(Bullet 2.81 REQUIRED)
 link_directories(${BULLET_LIBRARY_DIRS})
 include_directories(${BULLET_INCLUDE_DIRS})
 link_libraries(${BULLET_LIBRARIES})
