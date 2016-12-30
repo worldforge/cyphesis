@@ -126,8 +126,6 @@ class OperationsDispatcher
 
         /// An ordered queue of operations to be dispatched in the future
         OpPriorityQueue m_operationQueue;
-        /// An ordered queue of operations to be dispatched now
-        OpQueue m_immediateQueue;
         /// Keeps track of if the operation queues are dirty.
         bool m_operation_queues_dirty;
 
