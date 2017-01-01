@@ -1269,6 +1269,7 @@ void PhysicalDomain::entityPropertyApplied(const std::string& name, PropertyBase
 
 void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath::Point<3>& pos)
 {
+    PhysicalMotionState* physicalMotionState = static_cast<PhysicalMotionState*>(entry->rigidBody->getMotionState());
     btTransform& transform = entry->rigidBody->getWorldTransform();
     LocatedEntity& entity = *entry->entity;
 
@@ -1319,7 +1320,7 @@ void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath:
     entity.m_location.m_pos = newPos;
 
     debug_print("PhysicalDomain::new pos " << entity.describeEntity() << " " << pos);
-    transform.setOrigin(Convert::toBullet(newPos) + Convert::toBullet(entity.m_location.bBox().getCenter()));
+    transform.setOrigin(Convert::toBullet(newPos) - physicalMotionState->m_centerOfMassOffset.getOrigin());
     entry->rigidBody->setWorldTransform(transform);
     if (entry->viewSphere) {
         entry->viewSphere->setWorldTransform(transform);
