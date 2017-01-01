@@ -243,15 +243,7 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
 
     m_dynamicsWorld->setInternalTickCallback(tickCallback, &m_propellingEntries, true);
 
-    if (true) {
-        buildTerrainPages();
-    } else {
-        btStaticPlaneShape *plane = new btStaticPlaneShape(btVector3(0, 1, 0), 0);
-        btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(btQuaternion::getIdentity(), btVector3(0, 5, 0)));
-        btRigidBody* planeBody = new btRigidBody(btRigidBody::btRigidBodyConstructionInfo(0, motionState, plane));
-        //planeBody->setFriction(.0f);
-        m_dynamicsWorld->addRigidBody(planeBody);
-    }
+    buildTerrainPages();
 }
 
 PhysicalDomain::~PhysicalDomain()
@@ -616,7 +608,7 @@ float PhysicalDomain::getMassForEntity(const LocatedEntity& entity) const
 
     auto massProp = entity.getPropertyType<double>("mass");
     if (massProp) {
-        mass = massProp->data();
+        mass = (float) massProp->data();
     }
     return mass;
 }
@@ -633,12 +625,12 @@ btCollisionShape* PhysicalDomain::createCollisionShape(const Atlas::Message::Map
 
     auto I = map.find("shape");
     if (I != map.end() && I->second.isString()) {
-        const std::string& shape = I->second.String();
-        if (shape == "sphere") {
+        const std::string& shapeType = I->second.String();
+        if (shapeType == "sphere") {
             centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
             float minRadius = std::min(size.x(), std::min(size.y(), size.z())) * 0.5f;
             return new btSphereShape(minRadius);
-        } else if (shape == "capsule-z") {
+        } else if (shapeType == "capsule-z") {
             centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
             float minRadius = std::min(size.x(), size.y()) * 0.5f;
             //subtract the radius times 2 from the height
@@ -649,7 +641,7 @@ btCollisionShape* PhysicalDomain::createCollisionShape(const Atlas::Message::Map
             } else {
                 return new btSphereShape(minRadius);
             }
-        } else if (shape == "capsule-x") {
+        } else if (shapeType == "capsule-x") {
             centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
             float minRadius = std::min(size.z(), size.y()) * 0.5f;
             //subtract the radius times 2 from the height
@@ -660,7 +652,7 @@ btCollisionShape* PhysicalDomain::createCollisionShape(const Atlas::Message::Map
             } else {
                 return new btSphereShape(minRadius);
             }
-        } else if (shape == "capsule-y") {
+        } else if (shapeType == "capsule-y") {
             centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
             float minRadius = std::min(size.x(), size.z()) * 0.5f;
             //subtract the radius times 2 from the height
@@ -671,24 +663,24 @@ btCollisionShape* PhysicalDomain::createCollisionShape(const Atlas::Message::Map
             } else {
                 return new btSphereShape(minRadius);
             }
-        } else if (shape == "box") {
+        } else if (shapeType == "box") {
             return createBoxFn();
-        } else if (shape == "cylinder-z") {
+        } else if (shapeType == "cylinder-z") {
             centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
             btCylinderShape* shape = new btCylinderShape(btVector3(1, 1, 1));
             shape->setLocalScaling(Convert::toBullet(size * 0.5f));
             return shape;
-        } else if (shape == "cylinder-x") {
+        } else if (shapeType == "cylinder-x") {
             centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
             btCylinderShape* shape = new btCylinderShapeX(btVector3(1, 1, 1));
             shape->setLocalScaling(Convert::toBullet(size * 0.5f));
             return shape;
-        } else if (shape == "cylinder-y") {
+        } else if (shapeType == "cylinder-y") {
             centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
             btCylinderShape* shape = new btCylinderShapeZ(btVector3(1, 1, 1));
             shape->setLocalScaling(Convert::toBullet(size * 0.5f));
             return shape;
-        } else if (shape == "mesh") {
+        } else if (shapeType == "mesh") {
             return createMeshShape(map, bbox);
         }
     }
@@ -737,9 +729,9 @@ btCollisionShape* PhysicalDomain::createMeshShape(const Atlas::Message::MapType&
                     delete[] verts;
                     return nullptr;
                 }
-                verts[i] = vertsList[i].Float();
-                verts[i + 1] = vertsList[i + 2].Float(); //Convert from WF coord to Bullet coord
-                verts[i + 2] = -vertsList[i + 1].Float(); //Convert from WF coord to Bullet coord
+                verts[i] = (float) vertsList[i].Float();
+                verts[i + 1] = (float) vertsList[i + 2].Float(); //Convert from WF coord to Bullet coord
+                verts[i + 2] = (float) -vertsList[i + 1].Float(); //Convert from WF coord to Bullet coord
 
 //                verts[i] = vertsList[i].Float();
 //                verts[i + 1] = vertsList[i + 1].Float();
@@ -761,9 +753,9 @@ btCollisionShape* PhysicalDomain::createMeshShape(const Atlas::Message::MapType&
                     delete[] indices;
                     return nullptr;
                 }
-                indices[i] = trisList[i].Int();
-                indices[i + 1] = trisList[i + 1].Int();
-                indices[i + 2] = trisList[i + 2].Int();
+                indices[i] = (int) trisList[i].Int();
+                indices[i + 1] = (int) trisList[i + 1].Int();
+                indices[i + 2] = (int) trisList[i + 2].Int();
 //                indices[i] = trisList[i].Int();
 //                indices[i + 1] = trisList[i + 1].Int();
 //                indices[i + 2] = trisList[i + 2].Int();
@@ -811,7 +803,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     //Handle the special case of the entity being a "creator".
     if (entity.getType()->isTypeOf("creator")) {
         if (!bbox.isValid()) {
-            bbox = WFMath::AxisBox<3>(WFMath::Point<3>(-0.25, -0.25, 0), WFMath::Point<3>(0.25, 0.25, 1.5));
+            bbox = WFMath::AxisBox<3>(WFMath::Point<3>(-0.25f, -0.25f, .0f), WFMath::Point<3>(0.25f, 0.25f, 1.5f));
         }
         angularFactor = btVector3(0, 0, 0);
     }
@@ -929,7 +921,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
             float radius = entity.m_location.radius();
             visSphere->setUnscaledRadius(radius * 100);
         } else {
-            visSphere->setUnscaledRadius(0.25 * VISIBILITY_SCALING_FACTOR);
+            visSphere->setUnscaledRadius(0.25f * VISIBILITY_SCALING_FACTOR);
         }
 
         btCollisionObject* visObject = new btCollisionObject();
@@ -1192,7 +1184,7 @@ void PhysicalDomain::updateTerrainMod(const LocatedEntity& entity, bool forceUpd
                         }
                         segment->getHeight(modPos.x() - (segment->getXRef()), modPos.y() - (segment->getYRef()), modPos.z());
                     } else {
-                        Mercator::HeightMap heightMap(segment->getResolution());
+                        Mercator::HeightMap heightMap((unsigned int) segment->getResolution());
                         heightMap.allocate();
                         segment->populateHeightMap(heightMap);
 
@@ -1370,31 +1362,28 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
 
         if (velocity.isValid()) {
             debug_print("PhysicalDomain::setVelocity " << entity.describeEntity() << " " << velocity << " " << velocity.mag());
-            auto I = m_entries.find(entity.getIntId());
-            assert(I != m_entries.end());
-            auto* entry = I->second;
             if (entry->rigidBody) {
                 btVector3 btVelocity = Convert::toBullet(velocity);
 
                 if (!btVelocity.isZero()) {
                     btVelocity.m_floats[1] = 0; //Don't allow vertical velocity to be set.
 
-                    auto I = m_propellingEntries.find(entity.getIntId());
-                    if (I == m_propellingEntries.end()) {
+                    auto K = m_propellingEntries.find(entity.getIntId());
+                    if (K == m_propellingEntries.end()) {
                         m_propellingEntries.insert(std::make_pair(entity.getIntId(), std::make_pair(entry, btVelocity)));
                     } else {
-                        I->second.second = btVelocity;
+                        K->second.second = btVelocity;
                     }
 
                 } else {
-                    btVector3 velocity = entry->rigidBody->getLinearVelocity();
-                    velocity.setX(0);
-                    velocity.setZ(0);
+                    btVector3 bodyVelocity = entry->rigidBody->getLinearVelocity();
+                    bodyVelocity.setX(0);
+                    bodyVelocity.setZ(0);
                     //Take gravity into account
-                    if (velocity.getY() > 0) {
-                        velocity.setY(0);
+                    if (bodyVelocity.getY() > 0) {
+                        bodyVelocity.setY(0);
                     }
-                    entry->rigidBody->setLinearVelocity(velocity);
+                    entry->rigidBody->setLinearVelocity(bodyVelocity);
 
                     m_propellingEntries.erase(entity.getIntId());
                 }
@@ -1450,7 +1439,7 @@ void PhysicalDomain::processDirtyTerrainAreas()
         auto area = segment->getRect();
         WFMath::Vector<2> size = area.highCorner() - area.lowCorner();
 
-        btBoxShape boxShape(btVector3(size.x() * 0.5, worldHeight, size.y() * 0.5));
+        btBoxShape boxShape(btVector3(size.x() * 0.5f, worldHeight, size.y() * 0.5f));
         btCollisionObject collObject;
         collObject.setCollisionShape(&boxShape);
         auto center = area.getCenter();
@@ -1494,7 +1483,7 @@ void PhysicalDomain::sendMoveSight(BulletEntry& entry)
         m->setArgs1(move_arg);
         m->setFrom(entity.getId());
         m->setTo(entity.getId());
-        float seconds = BaseWorld::instance().getTime();
+        double seconds = BaseWorld::instance().getTime();
         m->setSeconds(seconds);
 
         for (BulletEntry* observer : entry.observingThis) {
@@ -1574,10 +1563,10 @@ double PhysicalDomain::tick(double timeNow, OpVector& res)
 
     m_movingEntities.clear();
 
-    float currentTickSize = (timeNow - m_lastTickTime) * consts::time_multiplier;
+    double currentTickSize = (timeNow - m_lastTickTime) * consts::time_multiplier;
     m_lastTickTime = timeNow;
 
-    m_dynamicsWorld->stepSimulation(currentTickSize, 10);
+    m_dynamicsWorld->stepSimulation((float)currentTickSize, 10);
 
     //Don't do visibility checks each tick; instead use m_visibilityCheckCountdown to count down to next
     m_visibilityCheckCountdown -= currentTickSize;

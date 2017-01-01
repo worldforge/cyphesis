@@ -115,7 +115,7 @@ class PhysicalDomain: public Domain
                 btRigidBody* rigidBody;
         };
 
-        std::unordered_map<int, BulletEntry*> m_entries;
+        std::unordered_map<long, BulletEntry*> m_entries;
 
         std::set<BulletEntry*> m_movingEntities;
         std::set<BulletEntry*> m_lastMovingEntities;
@@ -129,7 +129,7 @@ class PhysicalDomain: public Domain
          *
          * Each tick the propel force will be applied to these entities.
          */
-        std::map<int, std::pair<BulletEntry*, btVector3>> m_propellingEntries;
+        std::map<long, std::pair<BulletEntry*, btVector3>> m_propellingEntries;
         btDefaultCollisionConfiguration * m_collisionConfiguration;
         btCollisionDispatcher* m_dispatcher;
         btSequentialImpulseConstraintSolver* m_constraintSolver;
@@ -142,7 +142,7 @@ class PhysicalDomain: public Domain
 
         int m_ticksPerSecond;
 
-        float m_lastTickTime;
+        double m_lastTickTime;
         float m_visibilityCheckCountdown;
 
         Mercator::Terrain* m_terrain;
