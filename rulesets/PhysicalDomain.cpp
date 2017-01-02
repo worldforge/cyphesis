@@ -51,24 +51,14 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
-#include <wfmath/atlasconv.h>
-#include <wfmath/axisbox.h>
-
-#include <bullet/btBulletDynamicsCommon.h>
-#include <bullet/BulletCollision/CollisionShapes/btBoxShape.h>
-#include <bullet/BulletCollision/CollisionShapes/btStaticPlaneShape.h>
-#include <bullet/BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h>
-#include <bullet/BulletCollision/CollisionShapes/btCylinderShape.h>
-#include <bullet/BulletCollision/CollisionShapes/btTriangleIndexVertexArray.h>
-#include <bullet/BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h>
+#include <btBulletDynamicsCommon.h>
+#include <BulletCollision/CollisionShapes/btStaticPlaneShape.h>
+#include <BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h>
 
 #include <sigc++/bind.h>
 
-#include <iostream>
 #include <unordered_set>
-#include <vector>
 
-#include <cassert>
 
 static const bool debug_flag = true;
 
@@ -374,7 +364,7 @@ void PhysicalDomain::createDomainBorders()
         m_borderPlanes.reserve(6);
         auto createPlane =
                 [&](const btVector3& normal, const btVector3& translate) {
-                    btStaticPlaneShape *plane = new btStaticPlaneShape(normal, 0);
+                    btStaticPlaneShape *plane = new btStaticPlaneShape(normal, .0f);
                     btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(btQuaternion::getIdentity(), translate));
                     btRigidBody* planeBody = new btRigidBody(btRigidBody::btRigidBodyConstructionInfo(0, motionState, plane));
                     m_dynamicsWorld->addRigidBody(planeBody, COLLISION_MASK_NON_PHYSICAL | COLLISION_MASK_PHYSICAL | COLLISION_MASK_TERRAIN, COLLISION_MASK_NON_PHYSICAL | COLLISION_MASK_PHYSICAL | COLLISION_MASK_TERRAIN);
@@ -613,180 +603,6 @@ float PhysicalDomain::getMassForEntity(const LocatedEntity& entity) const
     return mass;
 }
 
-btCollisionShape* PhysicalDomain::createCollisionShape(const Atlas::Message::MapType& map, const WFMath::AxisBox<3>& bbox, btVector3& centerOfMassOffset)
-{
-    auto size = bbox.highCorner() - bbox.lowCorner();
-
-    auto createBoxFn = [&]() -> btBoxShape* {
-        auto btSize = Convert::toBullet(size * 0.5).absolute();
-        centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
-        return new btBoxShape(btSize);
-    };
-
-    auto I = map.find("shape");
-    if (I != map.end() && I->second.isString()) {
-        const std::string& shapeType = I->second.String();
-        if (shapeType == "sphere") {
-            centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
-            float minRadius = std::min(size.x(), std::min(size.y(), size.z())) * 0.5f;
-            return new btSphereShape(minRadius);
-        } else if (shapeType == "capsule-z") {
-            centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
-            float minRadius = std::min(size.x(), size.y()) * 0.5f;
-            //subtract the radius times 2 from the height
-            float height = size.z() - (minRadius * 2.0f);
-            //If the resulting height is negative we need to use a sphere instead.
-            if (height > 0) {
-                return new btCapsuleShape(minRadius, height);
-            } else {
-                return new btSphereShape(minRadius);
-            }
-        } else if (shapeType == "capsule-x") {
-            centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
-            float minRadius = std::min(size.z(), size.y()) * 0.5f;
-            //subtract the radius times 2 from the height
-            float height = size.x() - (minRadius * 2.0f);
-            //If the resulting height is negative we need to use a sphere instead.
-            if (height > 0) {
-                return new btCapsuleShapeX(minRadius, height);
-            } else {
-                return new btSphereShape(minRadius);
-            }
-        } else if (shapeType == "capsule-y") {
-            centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
-            float minRadius = std::min(size.x(), size.z()) * 0.5f;
-            //subtract the radius times 2 from the height
-            float height = size.y() - (minRadius * 2.0f);
-            //If the resulting height is negative we need to use a sphere instead.
-            if (height > 0) {
-                return new btCapsuleShapeZ(minRadius, height);
-            } else {
-                return new btSphereShape(minRadius);
-            }
-        } else if (shapeType == "box") {
-            return createBoxFn();
-        } else if (shapeType == "cylinder-z") {
-            centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
-            btCylinderShape* shape = new btCylinderShape(btVector3(1, 1, 1));
-            shape->setLocalScaling(Convert::toBullet(size * 0.5f));
-            return shape;
-        } else if (shapeType == "cylinder-x") {
-            centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
-            btCylinderShape* shape = new btCylinderShapeX(btVector3(1, 1, 1));
-            shape->setLocalScaling(Convert::toBullet(size * 0.5f));
-            return shape;
-        } else if (shapeType == "cylinder-y") {
-            centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
-            btCylinderShape* shape = new btCylinderShapeZ(btVector3(1, 1, 1));
-            shape->setLocalScaling(Convert::toBullet(size * 0.5f));
-            return shape;
-        } else if (shapeType == "mesh") {
-            return createMeshShape(map, bbox);
-        }
-    }
-
-    centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
-    return createBoxFn();
-}
-
-btCollisionShape* PhysicalDomain::createMeshShape(const Atlas::Message::MapType& map, const WFMath::AxisBox<3>& bbox)
-{
-    auto vertsI = map.find("vertices");
-    if (vertsI != map.end() && vertsI->second.isList()) {
-        auto trisI = map.find("indices");
-        if (trisI != map.end() && trisI->second.isList()) {
-            auto& vertsList = vertsI->second.List();
-            auto& trisList = trisI->second.List();
-
-            if (vertsList.empty()) {
-                log(ERROR, "Vertices is empty for mesh.");
-                return nullptr;
-            }
-
-            if (vertsList.size() % 3 != 0) {
-                log(ERROR, "Vertices is not even with 3.");
-                return nullptr;
-            }
-
-            if (trisList.empty()) {
-                log(ERROR, "Triangles is empty for mesh.");
-                return nullptr;
-            }
-
-            if (trisList.size() % 3 != 0) {
-                log(ERROR, "Triangles is not even with 3.");
-                return nullptr;
-            }
-
-            int numberOfVertices = vertsList.size() / 3;
-            size_t numberOfTriangles = trisList.size() / 3;
-
-            float* verts = new float[vertsList.size()];
-
-            for (size_t i = 0; i < vertsList.size(); i += 3) {
-                if (!vertsList[i].isFloat() || !vertsList[i + 1].isFloat() || !vertsList[i + 2].isFloat()) {
-                    log(ERROR, "Vertex data was not a float for mesh.");
-                    delete[] verts;
-                    return nullptr;
-                }
-                verts[i] = (float) vertsList[i].Float();
-                verts[i + 1] = (float) vertsList[i + 2].Float(); //Convert from WF coord to Bullet coord
-                verts[i + 2] = (float) -vertsList[i + 1].Float(); //Convert from WF coord to Bullet coord
-
-//                verts[i] = vertsList[i].Float();
-//                verts[i + 1] = vertsList[i + 1].Float();
-//                verts[i + 2] = vertsList[i + 2].Float();
-
-            }
-
-            int* indices = new int[trisList.size()];
-            for (size_t i = 0; i < trisList.size(); i += 3) {
-                if (!trisList[i].isInt() || !trisList[i + 1].isInt() || !trisList[i + 2].isInt()) {
-                    log(ERROR, "Index data was not an int for mesh.");
-                    delete[] verts;
-                    delete[] indices;
-                    return nullptr;
-                }
-                if (trisList[i].Int() >= numberOfVertices || trisList[i + 1].Int() >= numberOfVertices || trisList[i + 1].Int() >= numberOfVertices) {
-                    log(ERROR, "Index data was out of bounds for vertices for mesh.");
-                    delete[] verts;
-                    delete[] indices;
-                    return nullptr;
-                }
-                indices[i] = (int) trisList[i].Int();
-                indices[i + 1] = (int) trisList[i + 1].Int();
-                indices[i + 2] = (int) trisList[i + 2].Int();
-//                indices[i] = trisList[i].Int();
-//                indices[i + 1] = trisList[i + 1].Int();
-//                indices[i + 2] = trisList[i + 2].Int();
-            }
-
-            int vertStride = sizeof(float) * 3;
-            int indexStride = sizeof(int) * 3;
-
-            btTriangleIndexVertexArray* triangleVertexArray = new btTriangleIndexVertexArray(numberOfTriangles, indices, indexStride, numberOfVertices, verts, vertStride);
-
-            btVector3 aabbMin(bbox.lowCorner().x(), bbox.lowCorner().z(), -bbox.highCorner().y());
-            btVector3 aabbMax(bbox.highCorner().x(), bbox.highCorner().z(), -bbox.lowCorner().y());
-//            btBvhTriangleMeshShape* meshShape = new btBvhTriangleMeshShape(triangleVertexArray, true, aabbMin, aabbMax, true);
-            btBvhTriangleMeshShape* meshShape = new btBvhTriangleMeshShape(triangleVertexArray, true, true);
-            meshShape = new btBvhTriangleMeshShape(triangleVertexArray, true, true);
-
-            //btVector3 meshSize = meshShape->getLocalAabbMax() - meshShape->getLocalAabbMin();
-            //btVector3 scaling(size.x() / meshSize.x(), size.z() / meshSize.y(), size.y() / meshSize.z());
-            //meshShape->setLocalScaling(scaling);
-            return meshShape;
-        } else {
-            log(ERROR, "Could not find list of triangles for mesh.");
-        }
-
-    } else {
-        log(ERROR, "Could not find list of vertices for mesh.");
-    }
-    return nullptr;
-
-}
-
 void PhysicalDomain::addEntity(LocatedEntity& entity)
 {
     assert(m_entries.find(entity.getIntId()) == m_entries.end());
@@ -847,8 +663,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
 
         const GeometryProperty* geometryProp = entity.getPropertyClassFixed<GeometryProperty>();
         if (geometryProp) {
-            auto& geometryMap = geometryProp->data();
-            entry->collisionShape = createCollisionShape(geometryMap, bbox, centerOfMassOffset);
+            entry->collisionShape = geometryProp->createShape(bbox, centerOfMassOffset);
         } else {
             auto size = bbox.highCorner() - bbox.lowCorner();
             auto btSize = Convert::toBullet(size * 0.5).absolute();

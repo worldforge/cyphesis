@@ -19,6 +19,13 @@
 #define RULESETS_GEOMETRYPROPERTY_H_
 
 #include "common/Property.h"
+#include <wfmath/axisbox.h>
+#include <wfmath/vector.h>
+#include <functional>
+
+class btCollisionShape;
+
+class btVector3;
 
 /**
  * @brief Specifies geometry of an entity.
@@ -28,9 +35,9 @@
  *
  * "sphere"
  * "box"
- * "capsule-z": A capsule, oriented along the z axis
- * "capsule-x": A capsule, oriented along the x axis
- * "capsule-y": A capsule, oriented along the y axis
+ * "capsule-z" : A capsule, oriented along the z axis
+ * "capsule-x" : A capsule, oriented along the x axis
+ * "capsule-y" : A capsule, oriented along the y axis
  * "cylinder-z": A cylinder, oriented along the z axis
  * "cylinder-x": A cylinder, oriented along the x axis
  * "cylinder-y": A cylinder, oriented along the y axis
@@ -38,14 +45,34 @@
  *
  * @ingroup PropertyClasses
  */
-class GeometryProperty: public Property<Atlas::Message::MapType>
+class GeometryProperty : public Property<Atlas::Message::MapType>
 {
     public:
         static const std::string property_name;
         static const std::string property_atlastype;
 
         GeometryProperty();
+
         virtual ~GeometryProperty();
+
+        virtual void set(const Atlas::Message::Element &);
+
+        /**
+         * Creates a new shape instance for the supplied bounding box, and setting the center of mass offset.
+         * @param bbox The bounding box of the entity for which the shape will be used.
+         * @param centerOfMassOffset Out parameter for the center of mass offset.
+         * @return A new collision shape. Ownership is passed to the caller.
+         */
+        btCollisionShape * createShape(const WFMath::AxisBox<3> & bbox, btVector3 & centerOfMassOffset) const;
+
+    private:
+
+        /**
+         * Creator function used for creating a new shape instance.
+         */
+        std::function<btCollisionShape *(const WFMath::AxisBox<3> & bbox, const WFMath::Vector<3> & size, btVector3 & centerOfMassOffset)> mShapeCreator;
+
+        void buildMeshCreator();
 };
 
 #endif /* RULESETS_GEOMETRYPROPERTY_H_ */

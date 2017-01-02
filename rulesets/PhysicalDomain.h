@@ -201,9 +201,6 @@ class PhysicalDomain: public Domain
         void sendMoveSight(BulletEntry& bulletEntry);
         void processMovedEntity(BulletEntry& bulletEntry);
 
-        btCollisionShape* createCollisionShape(const Atlas::Message::MapType& map, const WFMath::AxisBox<3>& size, btVector3& centerOfMassOffset);
-        btCollisionShape* createMeshShape(const Atlas::Message::MapType& map, const WFMath::AxisBox<3>& size);
-
         void updateVisibilityOfDirtyEntities(OpVector& res);
         void updateVisibilityOfEntry(BulletEntry* entry, OpVector& res);
 
