@@ -27,8 +27,6 @@
 #include <BulletCollision/CollisionShapes/btCapsuleShape.h>
 #include <BulletCollision/CollisionShapes/btScaledBvhTriangleMeshShape.h>
 
-#include <memory>
-
 const std::string GeometryProperty::property_name = "geometry";
 const std::string GeometryProperty::property_atlastype = "map";
 
@@ -173,8 +171,8 @@ void GeometryProperty::buildMeshCreator()
                 return;
             }
 
-            int numberOfVertices = vertsList.size() / 3;
-            int numberOfTriangles = trisList.size() / 3;
+            int numberOfVertices = (int) (vertsList.size() / 3);
+            int numberOfTriangles = (int) (trisList.size() / 3);
 
             float * verts = new float[vertsList.size()];
 
