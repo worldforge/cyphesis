@@ -207,6 +207,7 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
                 15), m_lastTickTime(0), m_visibilityCheckCountdown(0), m_terrain(nullptr)
 {
 
+    //This is to prevent us from sliding down slopes.
     m_dynamicsWorld->getDispatchInfo().m_allowedCcdPenetration = 0.0001f;
     m_broadphase->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
 
@@ -664,15 +665,14 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
 
     if (bbox.isValid()) {
         //"Center of mass offset" is the inverse of the center of the object in relation to origo.
-        btVector3 centerOfMassOffset(0, 0, 0);
 
         const GeometryProperty* geometryProp = entity.getPropertyClassFixed<GeometryProperty>();
         if (geometryProp) {
-            entry->collisionShape = geometryProp->createShape(bbox, centerOfMassOffset);
+            entry->collisionShape = geometryProp->createShape(bbox, entry->centerOfMassOffset);
         } else {
             auto size = bbox.highCorner() - bbox.lowCorner();
             auto btSize = Convert::toBullet(size * 0.5).absolute();
-            centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
+            entry->centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
             entry->collisionShape = new btBoxShape(btSize);
         }
 
@@ -683,7 +683,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         if ((entity.getType()->isTypeOf("mobile") || entity.getType()->isTypeOf("creator")) && dynamic_cast<btConvexShape*>(entry->collisionShape) != nullptr) {
             btPairCachingGhostObject* ghostObject = new btPairCachingGhostObject();
 
-            ghostObject->setWorldTransform(btTransform(orientation, pos - centerOfMassOffset));
+            ghostObject->setWorldTransform(btTransform(orientation, pos - entry->centerOfMassOffset));
 
             ghostObject->setCollisionShape(entry->collisionShape);
             ghostObject->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
@@ -716,7 +716,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
             }
 
             entry->rigidBody = new btRigidBody(rigidBodyCI);
-            entry->motionState = new PhysicalMotionState(*entry, *this, btTransform(orientation, pos), btTransform(btQuaternion::getIdentity(), centerOfMassOffset));
+            entry->motionState = new PhysicalMotionState(*entry, *this, btTransform(orientation, pos), btTransform(btQuaternion::getIdentity(), entry->centerOfMassOffset));
             entry->rigidBody->setMotionState(entry->motionState);
             entry->rigidBody->setAngularFactor(angularFactor);
             entry->rigidBody->setUserPointer(entry);
@@ -901,14 +901,18 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
     };
 
     if (name == "friction") {
-        if (bulletEntry->rigidBody) {
-            Property<float>* frictionProp = static_cast<Property<float>*>(&prop);
-            bulletEntry->rigidBody->setFriction(frictionProp->data());
-            bulletEntry->rigidBody->activate();
+        btCollisionObject* collisionObject = bulletEntry->rigidBody;
+        if (!collisionObject) {
+            collisionObject = bulletEntry->character->getGhostObject();
         }
+        Property<float>* frictionProp = static_cast<Property<float>*>(&prop);
+        collisionObject->setFriction(frictionProp->data());
+        collisionObject->activate();
         return;
     } else if (name == "mode") {
 
+        //TODO: perhaps add support for changing mode for characters?
+        //The behaviour should be that any other modes than "free" should result in the character is replaced with a rigidbody.
         if (bulletEntry->rigidBody) {
             ModeProperty* modeProp = static_cast<ModeProperty*>(&prop);
 
@@ -947,14 +951,20 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
         }
         return;
     } else if (name == "solid") {
+        short collisionMask;
+        short collisionGroup;
+        getCollisionFlagsForEntity(*bulletEntry->entity, collisionGroup, collisionMask);
         if (bulletEntry->rigidBody) {
-            short collisionMask;
-            short collisionGroup;
-            getCollisionFlagsForEntity(*bulletEntry->entity, collisionGroup, collisionMask);
             m_dynamicsWorld->removeRigidBody(bulletEntry->rigidBody);
             m_dynamicsWorld->addRigidBody(bulletEntry->rigidBody, collisionGroup, collisionMask);
 
             bulletEntry->rigidBody->activate();
+        } else {
+            btCollisionObject* collisionObject = bulletEntry->character->getGhostObject();
+            m_dynamicsWorld->removeCollisionObject(collisionObject);
+            m_dynamicsWorld->addCollisionObject(collisionObject, collisionGroup, collisionMask);
+
+            collisionObject->activate();
         }
     } else if (name == "mass") {
 
@@ -1116,9 +1126,12 @@ void PhysicalDomain::entityPropertyApplied(const std::string& name, PropertyBase
 
 void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath::Point<3>& pos)
 {
-    if (entry->rigidBody) {
-        PhysicalMotionState* physicalMotionState = static_cast<PhysicalMotionState*>(entry->rigidBody->getMotionState());
-        btTransform& transform = entry->rigidBody->getWorldTransform();
+    btCollisionObject* collObject = entry->rigidBody;
+    if (entry->character) {
+        collObject = entry->character->getGhostObject();
+    }
+    if (collObject) {
+        btTransform& transform = collObject->getWorldTransform();
         LocatedEntity& entity = *entry->entity;
 
         ModeProperty::Mode mode = ModeProperty::Mode::Free;
@@ -1151,27 +1164,11 @@ void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath:
             adjustHeightFn();
         }
 
-        //Check if there previously wasn't any valid pos, and thus no valid collision instances.
-        if (!entity.m_location.m_pos.isValid() && newPos.isValid()) {
-            short collisionMask;
-            short collisionGroup;
-            getCollisionFlagsForEntity(entity, collisionGroup, collisionMask);
-            if (entry->rigidBody) {
-                m_dynamicsWorld->addRigidBody(entry->rigidBody, collisionGroup, collisionMask);
-            }
-            if (entry->viewSphere) {
-                m_visibilityWorld->addCollisionObject(entry->viewSphere, VISIBILITY_MASK_OBSERVABLE, VISIBILITY_MASK_OBSERVER);
-            }
-            if (entry->visibilitySphere) {
-                m_visibilityWorld->addCollisionObject(entry->visibilitySphere, VISIBILITY_MASK_OBSERVER, VISIBILITY_MASK_OBSERVABLE);
-            }
-        }
-
         entity.m_location.m_pos = newPos;
 
         debug_print("PhysicalDomain::new pos " << entity.describeEntity() << " " << pos);
-        transform.setOrigin(Convert::toBullet(newPos) - physicalMotionState->m_centerOfMassOffset.getOrigin());
-        entry->rigidBody->setWorldTransform(transform);
+        transform.setOrigin(Convert::toBullet(newPos) - entry->centerOfMassOffset);
+        collObject->setWorldTransform(transform);
         if (entry->viewSphere) {
             entry->viewSphere->setWorldTransform(transform);
             m_visibilityWorld->updateSingleAabb(entry->viewSphere);
@@ -1184,7 +1181,6 @@ void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath:
 //    m_movingEntities.insert(entry);
         m_dirtyEntries.insert(entry);
     }
-
 }
 
 void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity)
@@ -1206,18 +1202,15 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
                 entity.resetFlags(entity_orient_clean);
                 hadChange = true;
             }
-//            if (pos.isValid()) {
-//                applyNewPositionForEntity(entry, pos);
-//                if (!pos.isEqualTo(entity.m_location.m_pos)) {
-//                    entity.resetFlags(entity_pos_clean);
-//                    hadChange = true;
-//                }
-//            }
+            if (pos.isValid()) {
+                applyNewPositionForEntity(entry, pos);
+                if (!pos.isEqualTo(entity.m_location.m_pos)) {
+                    entity.resetFlags(entity_pos_clean);
+                    hadChange = true;
+                }
+            }
             if (hadChange) {
-//                updateTerrainMod(entity);
-//                if (entry->rigidBody->getInvMass() != 0) {
-//                    entry->rigidBody->activate();
-//                }
+                ghostObject->activate();
             }
         }
 
@@ -1230,13 +1223,6 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
                 character->setWalkDirection(btVelocity / 60.0f);
             } else {
                 character->setWalkDirection(btVector3(0, 0, 0));
-//                btVector3 velocity = entry->rigidBody->getLinearVelocity();
-//                velocity.setX(0);
-//                velocity.setZ(0);
-//                //Take gravity into account
-//                if (velocity.getY() > 0) {
-//                    velocity.setY(0);
-//                }
             }
 
         }
@@ -1254,10 +1240,26 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
                 hadChange = true;
             }
             if (pos.isValid()) {
+                WFMath::Point<3> oldPos = entity.m_location.m_pos;
                 applyNewPositionForEntity(entry, pos);
-                if (!pos.isEqualTo(entity.m_location.m_pos)) {
+                if (!oldPos.isEqualTo(entity.m_location.m_pos)) {
                     entity.resetFlags(entity_pos_clean);
                     hadChange = true;
+                    //Check if there previously wasn't any valid pos, and thus no valid collision instances.
+                    if (entity.m_location.m_pos.isValid() && !oldPos.isValid()) {
+                        short collisionMask;
+                        short collisionGroup;
+                        getCollisionFlagsForEntity(entity, collisionGroup, collisionMask);
+                        if (entry->rigidBody) {
+                            m_dynamicsWorld->addRigidBody(entry->rigidBody, collisionGroup, collisionMask);
+                        }
+                        if (entry->viewSphere) {
+                            m_visibilityWorld->addCollisionObject(entry->viewSphere, VISIBILITY_MASK_OBSERVABLE, VISIBILITY_MASK_OBSERVER);
+                        }
+                        if (entry->visibilitySphere) {
+                            m_visibilityWorld->addCollisionObject(entry->visibilitySphere, VISIBILITY_MASK_OBSERVER, VISIBILITY_MASK_OBSERVABLE);
+                        }
+                    }
                 }
             }
             if (hadChange) {
