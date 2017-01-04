@@ -1219,7 +1219,12 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
             btVector3 btVelocity = Convert::toBullet(velocity);
 
             if (!btVelocity.isZero()) {
-                btVelocity.m_floats[1] = 0; //Don't allow vertical velocity to be set.
+                if (btVelocity.m_floats[1] > 0) {
+                    if (character->canJump()) {
+                        character->jump();
+                    }
+                }
+
                 character->setWalkDirection(btVelocity / 60.0f);
             } else {
                 character->setWalkDirection(btVector3(0, 0, 0));
