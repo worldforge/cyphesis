@@ -95,7 +95,7 @@ void CommAsioClient<ProtocolT>::do_read()
                     this->do_read();
                 } else {
                     std::stringstream ss;
-                    ss << "Error when reading from socket: " << ec;
+                    ss << "Error when reading from socket: (" << ec << ") " << ec.message();
                     log(WARNING, ss.str());
                 }
             });
@@ -140,7 +140,7 @@ void CommAsioClient<ProtocolT>::write()
                         }
                     } else {
                         std::stringstream ss;
-                        ss << "Error when writing to socket: " << ec;
+                        ss << "Error when writing to socket: (" << ec << ") " << ec.message();
                         log(WARNING, ss.str());
                     }
                 });
