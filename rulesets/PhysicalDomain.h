@@ -30,6 +30,7 @@
 #include <tuple>
 #include <array>
 #include <set>
+#include <BulletCollision/CollisionDispatch/btGhostObject.h>
 
 namespace Mercator {
     class Segment;
@@ -127,6 +128,7 @@ class PhysicalDomain : public Domain
 
             btKinematicCharacterController * character;
             btVector3 centerOfMassOffset;
+
         };
 
         struct TerrainEntry
@@ -219,7 +221,7 @@ class PhysicalDomain : public Domain
 
         void getCollisionFlagsForEntity(const LocatedEntity & entity, short & collisionGroup, short & collisionMask) const;
 
-        void sendMoveSight(BulletEntry & bulletEntry);
+        void sendMoveSight(BulletEntry & bulletEntry, bool posChange, bool velocityChange, bool orientationChange, bool angularChange);
 
         void processMovedEntity(BulletEntry & bulletEntry);
 
