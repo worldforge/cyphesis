@@ -1112,13 +1112,15 @@ void PhysicalDomain::updateTerrainMod(const LocatedEntity& entity, bool forceUpd
 
 void PhysicalDomain::getCollisionFlagsForEntity(const LocatedEntity& entity, short& collisionGroup, short& collisionMask) const
 {
-    collisionMask = COLLISION_MASK_PHYSICAL | COLLISION_MASK_TERRAIN;
+    //The "group" defines the features of this object, which other bodies can mask out.
     collisionGroup = COLLISION_MASK_PHYSICAL;
+    //The "mask" defines the other kind of object this body will react with.
+    collisionMask = COLLISION_MASK_PHYSICAL | COLLISION_MASK_TERRAIN;
 
     //Non solid objects should collide with the terrain only.
     if (!entity.m_location.isSolid()) {
-        collisionMask = COLLISION_MASK_TERRAIN;
         collisionGroup = COLLISION_MASK_NON_PHYSICAL;
+        collisionMask = COLLISION_MASK_TERRAIN;
     }
 }
 
