@@ -17,7 +17,9 @@
  */
 
 #ifdef HAVE_CONFIG_H
+
 #include "config.h"
+
 #endif
 
 #include "DomainProperty.h"
@@ -26,9 +28,11 @@
 #include "InventoryDomain.h"
 #include "LocatedEntity.h"
 
+#include "common/const.h"
 #include "common/Tick.h"
 
 #include <Atlas/Objects/Anonymous.h>
+#include <common/BaseWorld.h>
 
 PropertyInstanceState<Domain> DomainProperty::sInstanceState;
 
@@ -37,25 +41,25 @@ DomainProperty::DomainProperty()
 }
 
 DomainProperty::DomainProperty(const DomainProperty& rhs) :
-                Property(rhs)
+    Property(rhs)
 {
 }
 
-void DomainProperty::install(LocatedEntity *entity, const std::string &name)
+void DomainProperty::install(LocatedEntity* entity, const std::string& name)
 {
     sInstanceState.addState(entity, nullptr);
 
     entity->installDelegate(Atlas::Objects::Operation::TICK_NO, name);
 }
 
-void DomainProperty::remove(LocatedEntity * entity, const std::string &name)
+void DomainProperty::remove(LocatedEntity* entity, const std::string& name)
 {
     sInstanceState.removeState(entity);
     entity->setFlags(~entity_domain);
     entity->removeDelegate(Atlas::Objects::Operation::TICK_NO, name);
 }
 
-void DomainProperty::apply(LocatedEntity * entity)
+void DomainProperty::apply(LocatedEntity* entity)
 {
     if (m_data != "") {
         Domain* domain = sInstanceState.getState(entity);
@@ -65,13 +69,12 @@ void DomainProperty::apply(LocatedEntity * entity)
                 sInstanceState.replaceState(entity, domain);
                 entity->setFlags(entity_domain);
                 OpVector res;
-                float timeUntilNextTick = domain->tick(0, res);
+                double tickSize = 1.0 / 15.0;
+                domain->tick(tickSize, res);
                 for (auto& op : res) {
                     entity->sendWorld(op);
                 }
-                if (timeUntilNextTick > 0) {
-                    scheduleTick(*entity, timeUntilNextTick);
-                }
+                scheduleTick(*entity, BaseWorld::instance().getTime());
             } else if (m_data == "void") {
                 domain = new VoidDomain(*entity);
                 sInstanceState.replaceState(entity, domain);
@@ -88,45 +91,50 @@ void DomainProperty::apply(LocatedEntity * entity)
     }
 }
 
-DomainProperty * DomainProperty::copy() const
+DomainProperty* DomainProperty::copy() const
 {
     return new DomainProperty(*this);
 }
 
-Domain* DomainProperty::getDomain(const LocatedEntity *entity) const
+Domain* DomainProperty::getDomain(const LocatedEntity* entity) const
 {
     return sInstanceState.getState(entity);
 }
 
-void DomainProperty::scheduleTick(LocatedEntity& entity, float timeForNextTick)
+void DomainProperty::scheduleTick(LocatedEntity& entity, double timeNow)
 {
     Atlas::Objects::Entity::Anonymous tick_arg;
     tick_arg->setName("domain");
     Atlas::Objects::Operation::Tick tickOp;
     tickOp->setTo(entity.getId());
-    tickOp->setSeconds(timeForNextTick);
+    tickOp->setSeconds(timeNow + ((1.0 / 15.0) / consts::time_multiplier));
+    tickOp->setAttr("lastTick", timeNow);
     tickOp->setArgs1(tick_arg);
 
     entity.sendWorld(tickOp);
 }
 
-HandlerResult DomainProperty::operation(LocatedEntity * e, const Operation & op, OpVector & res)
+HandlerResult DomainProperty::operation(LocatedEntity* e, const Operation& op, OpVector& res)
 {
     return tick_handler(e, op, res);
 }
 
-HandlerResult DomainProperty::tick_handler(LocatedEntity * entity, const Operation & op, OpVector & res)
+HandlerResult DomainProperty::tick_handler(LocatedEntity* entity, const Operation& op, OpVector& res)
 {
     if (!op->getArgs().empty() && op->getArgs().front()->getName() == "domain") {
         Domain* domain = sInstanceState.getState(entity);
         if (domain) {
 
-            float timeNow = op->getSeconds();
+            double timeNow = op->getSeconds();
+            double tickSize = 1.0 / 15.0;
+            Atlas::Message::Element elem;
+            if (op->copyAttr("lastTick", elem) != 0 && elem.isFloat()) {
+                tickSize = timeNow - elem.Float();
 
-            float timeForNextTick = domain->tick(timeNow, res);
-            if (timeForNextTick > 0) {
-                scheduleTick(*entity, timeForNextTick);
             }
+
+            domain->tick(tickSize, res);
+            scheduleTick(*entity, timeNow);
         }
         return OPERATION_BLOCKED;
     }

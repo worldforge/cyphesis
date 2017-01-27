@@ -64,6 +64,7 @@
 #include <sigc++/bind.h>
 
 #include <unordered_set>
+#include <chrono>
 
 
 static const bool debug_flag = true;
@@ -112,25 +113,25 @@ float VISIBILITY_SCALING_FACTOR = 100;
 /**
  * Mask used by visibility checks for observing entries (i.e. creatures etc.).
  */
-int VISIBILITY_MASK_OBSERVER = 1;
+short VISIBILITY_MASK_OBSERVER = 1;
 
 /**
  * Mask used by visibility checks for entries that can be observed (i.e. most entities).
  */
-int VISIBILITY_MASK_OBSERVABLE = 2;
+short VISIBILITY_MASK_OBSERVABLE = 2;
 
 /**
  * Mask used by all physical items. They should collide with other physical items, and with the terrain.
  */
-int COLLISION_MASK_PHYSICAL = 1;
+short COLLISION_MASK_PHYSICAL = 1;
 /**
  * Mask used by the terrain. It's static.
  */
-int COLLISION_MASK_NON_PHYSICAL = 2;
+short COLLISION_MASK_NON_PHYSICAL = 2;
 /**
  * Mask used by all non-physical items. These should only collide with the terrain.
  */
-int COLLISION_MASK_TERRAIN = 4;
+short COLLISION_MASK_TERRAIN = 4;
 
 /**
  * Interval, in seconds, for doing visibility checks.
@@ -153,7 +154,6 @@ class PhysicalDomain::PhysicalMotionState : public btMotionState
         ///synchronizes world transform from user to physics
         virtual void getWorldTransform(btTransform& centerOfMassWorldTrans) const
         {
-            //            debug_print("getWorldTransform: "<< m_entity.describeEntity());
             centerOfMassWorldTrans = m_worldTrans * m_centerOfMassOffset.inverse();
         }
 
@@ -206,8 +206,8 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
     new btSequentialImpulseConstraintSolver()),
     //Use a dynamic broadphase; this might be worth revisiting for optimizations
     m_broadphase(new btDbvtBroadphase()), m_dynamicsWorld(new btDiscreteDynamicsWorld(m_dispatcher, m_broadphase, m_constraintSolver, m_collisionConfiguration)), m_visibilityWorld(
-    new btCollisionWorld(new btCollisionDispatcher(new btDefaultCollisionConfiguration()), new btDbvtBroadphase(), new btDefaultCollisionConfiguration())), m_ticksPerSecond(
-    15), m_lastTickTime(0), m_visibilityCheckCountdown(0), m_terrain(nullptr)
+    new btCollisionWorld(new btCollisionDispatcher(new btDefaultCollisionConfiguration()), new btDbvtBroadphase(), new btDefaultCollisionConfiguration())), m_visibilityCheckCountdown(0),
+    m_terrain(nullptr)
 {
 
     //This is to prevent us from sliding down slopes.
@@ -670,11 +670,11 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     if (bbox.isValid()) {
         //"Center of mass offset" is the inverse of the center of the object in relation to origo.
 
+        auto size = bbox.highCorner() - bbox.lowCorner();
         const GeometryProperty* geometryProp = entity.getPropertyClassFixed<GeometryProperty>();
         if (geometryProp) {
             entry->collisionShape = geometryProp->createShape(bbox, entry->centerOfMassOffset);
         } else {
-            auto size = bbox.highCorner() - bbox.lowCorner();
             auto btSize = Convert::toBullet(size * 0.5).absolute();
             entry->centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
             entry->collisionShape = new btBoxShape(btSize);
@@ -1530,25 +1530,25 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry)
     updateTerrainMod(entity);
 }
 
-double PhysicalDomain::tick(double timeNow, OpVector& res)
+void PhysicalDomain::tick(double tickSize, OpVector& res)
 {
-    if (m_lastTickTime == 0) {
-        m_lastTickTime = timeNow;
-    }
-
     processDirtyTerrainAreas();
 
+    CProfileManager::Reset();
+    CProfileManager::Increment_Frame_Counter();
 
-    double currentTickSize = (timeNow - m_lastTickTime) * consts::time_multiplier;
-    m_lastTickTime = timeNow;
+    auto start = std::chrono::high_resolution_clock::now();
+    m_dynamicsWorld->stepSimulation((float) tickSize, 10);
 
-    m_dynamicsWorld->stepSimulation((float) currentTickSize, 10);
-//    m_dynamicsWorld->stepSimulation(currentTickSize, 0);
+    std::stringstream ss;
+    ss << "Tick: " << tickSize << " Time: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start).count() << " ms";
+    log(INFO, ss.str());
 
-    processCharacters((float) currentTickSize);
+    //processCharacters((float) currentTickSize);
+    //CProfileManager::dumpAll();
 
     //Don't do visibility checks each tick; instead use m_visibilityCheckCountdown to count down to next
-    m_visibilityCheckCountdown -= currentTickSize;
+    m_visibilityCheckCountdown -= tickSize;
     if (m_visibilityCheckCountdown <= 0) {
         updateVisibilityOfDirtyEntities(res);
         m_visibilityCheckCountdown = VISIBILITY_CHECK_INTERVAL_SECONDS;
@@ -1583,8 +1583,6 @@ double PhysicalDomain::tick(double timeNow, OpVector& res)
     //Stash those entities that moved this tick for checking next tick.
     std::swap(m_movingEntities, m_lastMovingEntities);
     m_movingEntities.clear();
-
-    return timeNow + (1.0 / (m_ticksPerSecond * consts::time_multiplier));
 }
 
 void PhysicalDomain::processCharacters(float tickSize)
@@ -1597,10 +1595,9 @@ void PhysicalDomain::processCharacters(float tickSize)
         auto& velocity = ghostObject->getInterpolationLinearVelocity();
         auto& angularVelocity = ghostObject->getInterpolationAngularVelocity();
 
-        const btTransform& newTransform = ghostObject->getWorldTransform();
-//                   btTransform newTransform = m_bulletEntry.rigidBody->getCenterOfMassTransform() * m_centerOfMassOffset;
+        btTransform newTransform = ghostObject->getWorldTransform() * btTransform(btQuaternion::getIdentity(), entry->centerOfMassOffset);
 
-        WFMath::Point<3> newPos = Convert::toWF<WFMath::Point<3>>(newTransform.getOrigin() + entry->centerOfMassOffset);
+        WFMath::Point<3> newPos = Convert::toWF<WFMath::Point<3>>(newTransform.getOrigin());
 
         WFMath::Quaternion newOrient = Convert::toWF(newTransform.getRotation());
         if (!newOrient.isEqualTo(entity.m_location.m_orientation)) {

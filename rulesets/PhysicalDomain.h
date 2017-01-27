@@ -77,7 +77,7 @@ class PhysicalDomain : public Domain
 
         virtual ~PhysicalDomain();
 
-        virtual double tick(double t, OpVector & res);
+        virtual void tick(double t, OpVector & res);
 
         virtual bool isEntityVisibleFor(const LocatedEntity & observingEntity, const LocatedEntity & observedEntity) const;
 
@@ -163,9 +163,6 @@ class PhysicalDomain : public Domain
 
         sigc::connection m_propertyAppliedConnection;
 
-        int m_ticksPerSecond;
-
-        double m_lastTickTime;
         float m_visibilityCheckCountdown;
 
         Mercator::Terrain * m_terrain;

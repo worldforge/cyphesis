@@ -54,7 +54,7 @@ class DomainProperty: public Property<std::string> {
 
         static PropertyInstanceState<Domain> sInstanceState;
 
-        void scheduleTick(LocatedEntity& entity, float secondsFromNow);
+        void scheduleTick(LocatedEntity& entity, double timeNow);
         HandlerResult tick_handler(LocatedEntity * e, const Operation & op, OpVector & res);
 
 };

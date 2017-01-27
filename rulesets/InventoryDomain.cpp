@@ -60,9 +60,8 @@ InventoryDomain::~InventoryDomain()
 {
 }
 
-double InventoryDomain::tick(double t, OpVector& res)
+void InventoryDomain::tick(double t, OpVector& res)
 {
-    return 0;
 }
 
 void InventoryDomain::addEntity(LocatedEntity& entity)

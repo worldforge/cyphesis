@@ -33,9 +33,8 @@ VoidDomain::~VoidDomain()
 {
 }
 
-double VoidDomain::tick(double t, OpVector& res)
+void VoidDomain::tick(double t, OpVector& res)
 {
-    return .0;
 }
 
 bool VoidDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const

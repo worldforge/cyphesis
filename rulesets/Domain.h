@@ -61,7 +61,7 @@ class Domain {
 
     virtual ~Domain();
 
-    virtual double tick(double t, OpVector& res) = 0;
+    virtual void tick(double t, OpVector& res) = 0;
 
     /**
      * @brief Checks if the observing Entity can see the observed entity.

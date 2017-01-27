@@ -29,7 +29,7 @@ class VoidDomain : public Domain
         VoidDomain(LocatedEntity& entity);
         virtual ~VoidDomain();
 
-        virtual double tick(double t, OpVector& res);
+        virtual void tick(double t, OpVector& res);
 
         virtual bool isEntityVisibleFor(const LocatedEntity& observingEntity,
                 const LocatedEntity& observedEntity) const;
