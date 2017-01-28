@@ -645,16 +645,18 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         mode = modeProp->getMode();
     }
 
-    auto adjustHeightFn = [&]() {
+    if (mode == ModeProperty::Mode::Planted || mode == ModeProperty::Mode::Free) {
         WFMath::Point<3>& pos = entity.m_location.m_pos;
 
         float h = pos.z();
         getTerrainHeight(pos.x(), pos.y(), h);
-        pos.z() = h;
-    };
 
-    if (mode != ModeProperty::Mode::Fixed) {
-        adjustHeightFn();
+        if (mode == ModeProperty::Mode::Planted) {
+            pos.z() = h;
+        } else if (mode == ModeProperty::Mode::Free) {
+            //For free entitites we only want to clamp to terrain if the entity is below it
+            pos.z() = std::max(pos.z(), h);
+        }
     }
 
     if (mode == ModeProperty::Mode::Planted || mode == ModeProperty::Mode::Fixed) {
