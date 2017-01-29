@@ -729,14 +729,22 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
             entry->rigidBody->setAngularFactor(angularFactor);
             entry->rigidBody->setUserPointer(entry);
 
+            //To prevent tunneling we'll turn on CCD with suitable values.
+            float minSize = std::min(size.x(), std::min(size.y(), size.z()));
+            entry->rigidBody->setCcdMotionThreshold(minSize * 0.2f);
+            entry->rigidBody->setCcdSweptSphereRadius(minSize * 0.2f);
+
+            if (mass == 0) {
+                entry->rigidBody->setCollisionFlags(entry->rigidBody->getCollisionFlags() | btCollisionObject::CF_STATIC_OBJECT);
+            }
+
             //Only add to world if position is valid. Otherwise this will be done when a new valid position is applied in applyNewPositionForEntity
             if (entity.m_location.m_pos.isValid()) {
                 m_dynamicsWorld->addRigidBody(entry->rigidBody, collisionGroup, collisionMask);
             }
 
-            if (mass != 0) {
-                entry->rigidBody->activate();
-            }
+            //Call to "activate" will be ignored for bodies marked with CF_STATIC_OBJECT
+            entry->rigidBody->activate();
 
             const PropelProperty* propelProp = entity.getPropertyClassFixed<PropelProperty>();
             if (propelProp && propelProp->data().isValid() && propelProp->data() != WFMath::Vector<3>::ZERO()) {
