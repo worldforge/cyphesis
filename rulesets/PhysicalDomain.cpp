@@ -132,6 +132,10 @@ short COLLISION_MASK_NON_PHYSICAL = 2;
  * Mask used by all non-physical items. These should only collide with the terrain.
  */
 short COLLISION_MASK_TERRAIN = 4;
+/**
+ * Mask used by static items (i.e. those with mode "fixed" and "planted").
+ */
+short COLLISION_MASK_STATIC = 8;
 
 /**
  * Interval, in seconds, for doing visibility checks.
@@ -211,7 +215,10 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
 {
 
     //This is to prevent us from sliding down slopes.
-    m_dynamicsWorld->getDispatchInfo().m_allowedCcdPenetration = 0.0001f;
+    //m_dynamicsWorld->getDispatchInfo().m_allowedCcdPenetration = 0.0001f;
+
+    //By default all collision objects have their aabbs updated each tick; we'll disable it for performance.
+    m_dynamicsWorld->setForceUpdateAllAabbs(false);
     m_broadphase->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
 
     const TerrainProperty* terrainProperty = m_entity.getPropertyClass<TerrainProperty>("terrain");
@@ -233,7 +240,6 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
                 entry.second.first->rigidBody->setLinearVelocity(entry.second.second + btVector3(0, verticalVelocity, 0));
             } else {
                 entry.second.first->rigidBody->setLinearVelocity(entry.second.second);
-
             }
 
             entry.second.first->rigidBody->activate();
@@ -682,7 +688,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         short collisionGroup;
         getCollisionFlagsForEntity(entity, collisionGroup, collisionMask);
 
-        if ((entity.getType()->isTypeOf("mobile") || entity.getType()->isTypeOf("creator")) && dynamic_cast<btConvexShape*>(entry->collisionShape) != nullptr) {
+        if (false && (entity.getType()->isTypeOf("mobile") || entity.getType()->isTypeOf("creator")) && dynamic_cast<btConvexShape*>(entry->collisionShape) != nullptr) {
             btPairCachingGhostObject* ghostObject = new btPairCachingGhostObject();
 
             ghostObject->setWorldTransform(btTransform(orientation, pos - entry->centerOfMassOffset));
@@ -924,10 +930,6 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
 
             applyNewPositionForEntity(bulletEntry, bulletEntry->entity->m_location.m_pos);
 
-//        if (mode != "fixed") {
-//            adjustToTerrainFn();
-//        }
-
             //When altering mass we need to first remove and then re-add the body, for some reason.
             m_dynamicsWorld->removeRigidBody(bulletEntry->rigidBody);
 
@@ -953,9 +955,8 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
 
             m_dynamicsWorld->addRigidBody(bulletEntry->rigidBody, collisionGroup, collisionMask);
 
-            if (mass != 0) {
-                bulletEntry->rigidBody->activate();
-            }
+            bulletEntry->rigidBody->activate();
+
             m_movingEntities.insert(bulletEntry);
             //sendMoveSight(*bulletEntry);
         }
@@ -964,22 +965,17 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
         short collisionMask;
         short collisionGroup;
         getCollisionFlagsForEntity(*bulletEntry->entity, collisionGroup, collisionMask);
-        float mass = getMassForEntity(*bulletEntry->entity);
         if (bulletEntry->rigidBody) {
             m_dynamicsWorld->removeRigidBody(bulletEntry->rigidBody);
             m_dynamicsWorld->addRigidBody(bulletEntry->rigidBody, collisionGroup, collisionMask);
 
-            if (mass != 0) {
-                bulletEntry->rigidBody->activate();
-            }
+            bulletEntry->rigidBody->activate();
         } else {
             btCollisionObject* collisionObject = bulletEntry->character->getGhostObject();
             m_dynamicsWorld->removeCollisionObject(collisionObject);
             m_dynamicsWorld->addCollisionObject(collisionObject, collisionGroup, collisionMask);
 
-            if (mass != 0) {
-                collisionObject->activate();
-            }
+            collisionObject->activate();
         }
     } else if (name == "mass") {
 
@@ -1113,14 +1109,33 @@ void PhysicalDomain::updateTerrainMod(const LocatedEntity& entity, bool forceUpd
 void PhysicalDomain::getCollisionFlagsForEntity(const LocatedEntity& entity, short& collisionGroup, short& collisionMask) const
 {
     //The "group" defines the features of this object, which other bodies can mask out.
-    collisionGroup = COLLISION_MASK_PHYSICAL;
     //The "mask" defines the other kind of object this body will react with.
-    collisionMask = COLLISION_MASK_PHYSICAL | COLLISION_MASK_TERRAIN;
 
-    //Non solid objects should collide with the terrain only.
-    if (!entity.m_location.isSolid()) {
-        collisionGroup = COLLISION_MASK_NON_PHYSICAL;
-        collisionMask = COLLISION_MASK_TERRAIN;
+    auto modeProp = entity.getPropertyClassFixed<ModeProperty>();
+    if (modeProp && (modeProp->getMode() == ModeProperty::Mode::Fixed || modeProp->getMode() == ModeProperty::Mode::Planted)) {
+        if (entity.m_location.isSolid()) {
+            collisionGroup = COLLISION_MASK_STATIC;
+            //Planted and fixed entities shouldn't collide with anything themselves.
+            //Other physical entities should however collide with them.
+            collisionMask = COLLISION_MASK_PHYSICAL;
+        } else {
+            //The object is both fixed/planted and not solid. It shouldn't collide with anything at all.
+            collisionGroup = 0;
+            collisionMask = 0;
+        }
+    } else {
+        if (entity.m_location.isSolid()) {
+            //This is a physical object
+            collisionGroup = COLLISION_MASK_PHYSICAL;
+            //In this case other physical moving object, the terrain and all static objects.
+            collisionMask = COLLISION_MASK_PHYSICAL | COLLISION_MASK_TERRAIN | COLLISION_MASK_STATIC;
+        } else {
+            //Non solid objects should collide with the terrain only.
+            //Mark the object as non-physical
+            collisionGroup = COLLISION_MASK_NON_PHYSICAL;
+            //And only collide with the terrain.
+            collisionMask = COLLISION_MASK_TERRAIN;
+        }
     }
 }
 
@@ -1185,6 +1200,10 @@ void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath:
         debug_print("PhysicalDomain::new pos " << entity.describeEntity() << " " << pos);
         transform.setOrigin(Convert::toBullet(newPos) - entry->centerOfMassOffset);
         collObject->setWorldTransform(transform);
+        //Since we've deactivated automatic updating of all aabbs each tick we need to do it ourselves when updating the position of a non-active object.
+        if (!collObject->isActive()) {
+            m_dynamicsWorld->updateSingleAabb(collObject);
+        }
         if (entry->viewSphere) {
             entry->viewSphere->setWorldTransform(transform);
             m_visibilityWorld->updateSingleAabb(entry->viewSphere);
@@ -1539,14 +1558,14 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
 {
     processDirtyTerrainAreas();
 
-    CProfileManager::Reset();
-    CProfileManager::Increment_Frame_Counter();
+//    CProfileManager::Reset();
+//    CProfileManager::Increment_Frame_Counter();
 
     auto start = std::chrono::high_resolution_clock::now();
     m_dynamicsWorld->stepSimulation((float) tickSize, 10);
 
     std::stringstream ss;
-    ss << "Tick: " << tickSize << " Time: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start).count() << " ms";
+    ss << "Tick: " << (tickSize * 1000) << " ms Time: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start).count() << " ms";
     log(INFO, ss.str());
 
     //processCharacters((float) currentTickSize);
@@ -1597,8 +1616,8 @@ void PhysicalDomain::processCharacters(float tickSize)
 
         const btPairCachingGhostObject* ghostObject = entry->character->getGhostObject();
 
-        auto& velocity = ghostObject->getInterpolationLinearVelocity();
-        auto& angularVelocity = ghostObject->getInterpolationAngularVelocity();
+//        auto& velocity = ghostObject->getInterpolationLinearVelocity();
+//        auto& angularVelocity = ghostObject->getInterpolationAngularVelocity();
 
         btTransform newTransform = ghostObject->getWorldTransform() * btTransform(btQuaternion::getIdentity(), entry->centerOfMassOffset);
 

@@ -112,6 +112,8 @@ class PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
         void test_mode();
 
+        void test_static_entities();
+
         void test_determinism();
 };
 
@@ -124,6 +126,7 @@ PhysicalDomainIntegrationTest::PhysicalDomainIntegrationTest()
     ADD_TEST(PhysicalDomainIntegrationTest::test_fallToTerrain);
     ADD_TEST(PhysicalDomainIntegrationTest::test_collision);
     ADD_TEST(PhysicalDomainIntegrationTest::test_mode);
+    ADD_TEST(PhysicalDomainIntegrationTest::test_static_entities);
     ADD_TEST(PhysicalDomainIntegrationTest::test_determinism);
 }
 
@@ -459,6 +462,69 @@ void PhysicalDomainIntegrationTest::test_mode()
     ASSERT_EQUAL(fixedEntity->m_location.m_pos, WFMath::Point<3>(40, 40, 50));
 }
 
+
+void PhysicalDomainIntegrationTest::test_static_entities()
+{
+
+    double tickSize = 1.0 / 15.0;
+
+    TypeNode* rockType = new TypeNode("rock");
+    ModeProperty* modePlantedProperty = new ModeProperty();
+    modePlantedProperty->set("planted");
+
+    Entity* rootEntity = new Entity("0", newId());
+    TerrainProperty* terrainProperty = new TerrainProperty();
+    Mercator::Terrain& terrain = terrainProperty->getData();
+    terrain.setBasePoint(0, 0, Mercator::BasePoint(40));
+    terrain.setBasePoint(0, 1, Mercator::BasePoint(40));
+    terrain.setBasePoint(1, 0, Mercator::BasePoint(10));
+    terrain.setBasePoint(1, 1, Mercator::BasePoint(10));
+    rootEntity->setProperty("terrain", terrainProperty);
+    rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
+    rootEntity->m_location.m_bBox = WFMath::AxisBox<3>(WFMath::Point<3>(0, 0, -64), WFMath::Point<3>(64, 64, 64));
+    PhysicalDomain* domain = new PhysicalDomain(*rootEntity);
+
+    Property<double>* massProp = new Property<double>();
+    massProp->data() = 100;
+
+    std::vector<Entity*> entities;
+
+    for (size_t i = 0; i < 60; ++i) {
+        for (size_t j = 0; j < 60; ++j) {
+            long id = newId();
+            std::stringstream ss;
+            ss << "planted" << id;
+            Entity* entity = new Entity(ss.str(), id);
+            entity->setProperty("mass", massProp);
+            entity->setType(rockType);
+            entity->setProperty(ModeProperty::property_name, modePlantedProperty);
+            entity->m_location.m_pos = WFMath::Point<3>(i, j, i + j);
+            entity->m_location.m_bBox = WFMath::AxisBox<3>(WFMath::Point<3>(-0.25f, -0.25f, 0), WFMath::Point<3>(-0.25f, -0.25f, 0.5f));
+            domain->addEntity(*entity);
+            entities.push_back(entity);
+        }
+    }
+
+    OpVector res;
+
+    //First tick is setup, so we'll exclude that from time measurement
+    domain->tick(tickSize, res);
+    auto start = std::chrono::high_resolution_clock::now();
+    //Inject ticks for two seconds
+    for (int i = 0; i < 29; ++i) {
+        domain->tick(tickSize, res);
+    }
+
+    std::stringstream ss;
+    long milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start).count();
+    ss << "Average tick duration: " << milliseconds / 30.0 << " ms";
+    log(INFO, ss.str());
+    ss = std::stringstream();
+    ss << "Physics per second: " << (milliseconds / 2.0) / 10.0 << " %";
+    log(INFO, ss.str());
+
+}
+
 void PhysicalDomainIntegrationTest::test_determinism()
 {
 
@@ -500,11 +566,11 @@ void PhysicalDomainIntegrationTest::test_determinism()
 
     OpVector res;
 
+    //First tick is setup, so we'll exclude that from time measurement
+    domain->tick(tickSize, res);
     auto start = std::chrono::high_resolution_clock::now();
-
-
     //Inject ticks for two seconds
-    for (int i = 0; i < 30; ++i) {
+    for (int i = 0; i < 29; ++i) {
         domain->tick(tickSize, res);
     }
     std::stringstream ss;
@@ -521,7 +587,7 @@ void PhysicalDomainIntegrationTest::test_determinism()
     ASSERT_EQUAL(entities[10]->m_location.m_pos, WFMath::Point<3>(1, -0, 18.0217));
     ASSERT_EQUAL(entities[15]->m_location.m_pos, WFMath::Point<3>(2.61429, 0.0884429, 26.4489));
     ASSERT_EQUAL(entities[16]->m_location.m_pos, WFMath::Point<3>(0.948305, 0.105805, 18.7352));
-    ASSERT_EQUAL(entities[55]->m_location.m_pos, WFMath::Point<3>(6.27743, -1.15872f, 27.0867));
+    ASSERT_EQUAL(entities[55]->m_location.m_pos, WFMath::Point<3>(6.30361, -1.19749f, 28.0569));
 
 }
 
