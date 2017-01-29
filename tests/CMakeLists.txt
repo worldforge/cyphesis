@@ -16,7 +16,7 @@ set(PYTHON_TESTS_LIBS
 #Macro for adding a test
 macro(wf_add_test TEST_FILE)
     get_filename_component(TEST_NAME ${TEST_FILE} NAME_WE)
-    add_executable(${TEST_NAME} ${TEST_FILE} ${ARGN})
+    add_executable(${TEST_NAME} ${TEST_FILE} ${PROJECT_SOURCE_DIR}/common/debug.cpp ${ARGN})
     add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
 
     add_dependencies(check ${TEST_NAME})
@@ -313,6 +313,9 @@ target_link_libraries(EntityFilterProvidersTest entityfilter)
 
 
 # RULESETS_INTEGRATION
+
+wf_add_test(PhysicalDomainIntegrationTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/PhysicalDomain.cpp)
+target_link_libraries(PhysicalDomainIntegrationTest rulesetentity rulesetbase physics modules common)
 
 wf_add_test(TerrainPropertyIntegration.cpp ${PROJECT_SOURCE_DIR}/rulesets/TerrainModProperty.cpp
         ${PROJECT_SOURCE_DIR}/rulesets/TerrainEffectorProperty.cpp
