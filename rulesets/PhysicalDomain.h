@@ -236,6 +236,8 @@ class PhysicalDomain : public Domain
 
         void processCharacters(float tickSize);
 
+        void applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& velocity);
+
 
 };
 

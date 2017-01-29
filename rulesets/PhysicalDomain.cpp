@@ -746,19 +746,13 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
             //Call to "activate" will be ignored for bodies marked with CF_STATIC_OBJECT
             entry->rigidBody->activate();
 
-            const PropelProperty* propelProp = entity.getPropertyClassFixed<PropelProperty>();
-            if (propelProp && propelProp->data().isValid() && propelProp->data() != WFMath::Vector<3>::ZERO()) {
-                btVector3 btVelocity = Convert::toBullet(propelProp->data());
-                btVelocity.m_floats[1] = 0; //Don't allow vertical velocity to be set.
-
-                auto I = m_propellingEntries.find(entity.getIntId());
-                if (I == m_propellingEntries.end()) {
-                    m_propellingEntries.insert(std::make_pair(entity.getIntId(), std::make_pair(entry, btVelocity)));
-                } else {
-                    I->second.second = btVelocity;
-                }
-            }
         }
+
+        const PropelProperty* propelProp = entity.getPropertyClassFixed<PropelProperty>();
+        if (propelProp && propelProp->data().isValid() && propelProp->data() != WFMath::Vector<3>::ZERO()) {
+            applyVelocity(*entry, propelProp->data());
+        }
+
 
         entry->propertyUpdatedConnection = entity.propertyApplied.connect(sigc::bind(sigc::mem_fun(this, &PhysicalDomain::childEntityPropertyApplied), entry));
 
@@ -1140,7 +1134,6 @@ void PhysicalDomain::entityPropertyApplied(const std::string& name, PropertyBase
         Property<float>* frictionProp = static_cast<Property<float>*>(&prop);
         for (auto& entry : m_terrainSegments) {
             entry.second.rigidBody->setFriction(frictionProp->data());
-            //entry.second.rigidBody->activate();
         }
         return;
     } else if (name == "terrain") {
@@ -1210,11 +1203,66 @@ void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath:
     }
 }
 
+void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& velocity)
+{
+    if (velocity.isValid()) {
+        LocatedEntity* entity = entry.entity;
+        if (entry.character) {
+            btKinematicCharacterController* character = entry.character;
+
+            debug_print("PhysicalDomain::setVelocity " << entity->describeEntity() << " " << velocity << " " << velocity.mag());
+            btVector3 btVelocity = Convert::toBullet(velocity);
+
+            if (!btVelocity.isZero()) {
+                if (btVelocity.m_floats[1] > 0) {
+                    if (character->canJump()) {
+                        character->jump();
+                    }
+                }
+                character->setWalkDirection(btVelocity / 60.0f);
+            } else {
+                character->setWalkDirection(btVector3(0, 0, 0));
+            }
+
+
+        } else if (entry.rigidBody) {
+
+            debug_print("PhysicalDomain::setVelocity " << entity->describeEntity() << " " << velocity << " " << velocity.mag());
+
+            btVector3 btVelocity = Convert::toBullet(velocity);
+
+            if (!btVelocity.isZero()) {
+                btVelocity.m_floats[1] = 0; //Don't allow vertical velocity to be set.
+
+                auto K = m_propellingEntries.find(entity->getIntId());
+                if (K == m_propellingEntries.end()) {
+                    m_propellingEntries.insert(std::make_pair(entity->getIntId(), std::make_pair(&entry, btVelocity)));
+                } else {
+                    K->second.second = btVelocity;
+                }
+            } else {
+                btVector3 bodyVelocity = entry.rigidBody->getLinearVelocity();
+                bodyVelocity.setX(0);
+                bodyVelocity.setZ(0);
+                //Take gravity into account
+                if (bodyVelocity.getY() > 0) {
+                    bodyVelocity.setY(0);
+                }
+                entry.rigidBody->setLinearVelocity(bodyVelocity);
+
+                m_propellingEntries.erase(entity->getIntId());
+
+            }
+        }
+    }
+}
+
 void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity)
 {
     auto I = m_entries.find(entity.getIntId());
     assert(I != m_entries.end());
     BulletEntry* entry = I->second;
+    applyVelocity(*entry, velocity);
     if (entry->character) {
         btKinematicCharacterController* character = entry->character;
         btPairCachingGhostObject* ghostObject = character->getGhostObject();
@@ -1240,25 +1288,6 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
                 ghostObject->activate();
             }
         }
-
-        if (velocity.isValid()) {
-            debug_print("PhysicalDomain::setVelocity " << entity.describeEntity() << " " << velocity << " " << velocity.mag());
-            btVector3 btVelocity = Convert::toBullet(velocity);
-
-            if (!btVelocity.isZero()) {
-                if (btVelocity.m_floats[1] > 0) {
-                    if (character->canJump()) {
-                        character->jump();
-                    }
-                }
-
-                character->setWalkDirection(btVelocity / 60.0f);
-            } else {
-                character->setWalkDirection(btVector3(0, 0, 0));
-            }
-
-        }
-
     } else if (entry->rigidBody) {
         if (orientation.isValid() || pos.isValid()) {
             bool hadChange = false;
@@ -1300,36 +1329,6 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
                     entry->rigidBody->activate();
                 }
             }
-        }
-
-        if (velocity.isValid()) {
-            debug_print("PhysicalDomain::setVelocity " << entity.describeEntity() << " " << velocity << " " << velocity.mag());
-
-            btVector3 btVelocity = Convert::toBullet(velocity);
-
-            if (!btVelocity.isZero()) {
-                btVelocity.m_floats[1] = 0; //Don't allow vertical velocity to be set.
-
-                auto K = m_propellingEntries.find(entity.getIntId());
-                if (K == m_propellingEntries.end()) {
-                    m_propellingEntries.insert(std::make_pair(entity.getIntId(), std::make_pair(entry, btVelocity)));
-                } else {
-                    K->second.second = btVelocity;
-                }
-            } else {
-                btVector3 bodyVelocity = entry->rigidBody->getLinearVelocity();
-                bodyVelocity.setX(0);
-                bodyVelocity.setZ(0);
-                //Take gravity into account
-                if (bodyVelocity.getY() > 0) {
-                    bodyVelocity.setY(0);
-                }
-                entry->rigidBody->setLinearVelocity(bodyVelocity);
-
-                m_propellingEntries.erase(entity.getIntId());
-
-            }
-
         }
     }
 }
