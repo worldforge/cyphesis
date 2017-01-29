@@ -247,15 +247,13 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
 
 PhysicalDomain::~PhysicalDomain()
 {
-    for (btRigidBody* planeBody : m_borderPlanes) {
-        delete planeBody->getMotionState();
+    for (auto planeBody : m_borderPlanes) {
         delete planeBody->getCollisionShape();
         delete planeBody;
     }
 
     for (auto& entry : m_terrainSegments) {
         delete entry.second.data;
-        delete entry.second.rigidBody->getMotionState();
         delete entry.second.rigidBody->getCollisionShape();
         delete entry.second.rigidBody;
     }
@@ -352,16 +350,14 @@ void PhysicalDomain::buildTerrainPage(Mercator::Segment& segment, float friction
     WFMath::Point<3> pos(xPos, yPos, zPos);
     btVector3 btPos = Convert::toBullet(pos);
 
-    btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(btQuaternion::getIdentity(), btPos));
-    btRigidBody::btRigidBodyConstructionInfo segmentCI(.0f, motionState, terrainShape);
+    btRigidBody::btRigidBodyConstructionInfo segmentCI(.0f, nullptr, terrainShape);
     segmentCI.m_friction = friction;
     btRigidBody* segmentBody = new btRigidBody(segmentCI);
+    segmentBody->setWorldTransform(btTransform(btQuaternion::getIdentity(), btPos));
 
-    m_dynamicsWorld->addRigidBody(segmentBody, COLLISION_MASK_NON_PHYSICAL | COLLISION_MASK_PHYSICAL | COLLISION_MASK_TERRAIN,
-                                  COLLISION_MASK_NON_PHYSICAL | COLLISION_MASK_PHYSICAL | COLLISION_MASK_TERRAIN);
+    m_dynamicsWorld->addRigidBody(segmentBody, COLLISION_MASK_TERRAIN, COLLISION_MASK_NON_PHYSICAL | COLLISION_MASK_PHYSICAL);
 
     terrainEntry.rigidBody = segmentBody;
-
 }
 
 void PhysicalDomain::createDomainBorders()
@@ -373,11 +369,11 @@ void PhysicalDomain::createDomainBorders()
         m_borderPlanes.reserve(6);
         auto createPlane =
             [&](const btVector3& normal, const btVector3& translate) {
-                btStaticPlaneShape * plane = new btStaticPlaneShape(normal, .0f);
-                btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(btQuaternion::getIdentity(), translate));
-                btRigidBody* planeBody = new btRigidBody(btRigidBody::btRigidBodyConstructionInfo(0, motionState, plane));
-                m_dynamicsWorld->addRigidBody(planeBody, COLLISION_MASK_NON_PHYSICAL | COLLISION_MASK_PHYSICAL | COLLISION_MASK_TERRAIN,
-                                              COLLISION_MASK_NON_PHYSICAL | COLLISION_MASK_PHYSICAL | COLLISION_MASK_TERRAIN);
+                btStaticPlaneShape* plane = new btStaticPlaneShape(normal, .0f);
+                btRigidBody* planeBody = new btRigidBody(btRigidBody::btRigidBodyConstructionInfo(0, nullptr, plane));
+                planeBody->setWorldTransform(btTransform(btQuaternion::getIdentity(), translate));
+
+                m_dynamicsWorld->addRigidBody(planeBody, COLLISION_MASK_TERRAIN, COLLISION_MASK_NON_PHYSICAL | COLLISION_MASK_PHYSICAL);
                 m_borderPlanes.push_back(planeBody);
             };
 
