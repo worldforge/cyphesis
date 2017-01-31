@@ -28,3 +28,13 @@ GeometryProperty::~GeometryProperty()
 {
 }
 
+void GeometryProperty::set(const Atlas::Message::Element& data)
+{
+
+}
+
+btCollisionShape* GeometryProperty::createShape(const WFMath::AxisBox<3>& bbox, btVector3& centerOfMassOffset) const
+{
+    return nullptr;
+}
+

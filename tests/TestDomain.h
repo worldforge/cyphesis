@@ -35,9 +35,8 @@ class TestDomain : public Domain
         {
         }
 
-        double tick(double t, OpVector& res)
+        void tick(double t, OpVector& res)
         {
-            return .0;
         }
 
         bool isEntityVisibleFor(

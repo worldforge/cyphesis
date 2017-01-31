@@ -27,9 +27,8 @@ Domain::~Domain()
 {
 }
 
-double Domain::tick(double t, OpVector& res)
+void Domain::tick(double t, OpVector& res)
 {
-    return 0;
 }
 
 #endif /* STUBDOMAIN_H_ */

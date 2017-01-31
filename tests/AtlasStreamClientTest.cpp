@@ -188,10 +188,6 @@ int main()
 
 using Atlas::Message::Element;
 
-void output_element(std::ostream & out, const Element & item, int depth)
-{
-}
-
 ClientTask::ClientTask() : m_complete(false)
 {
 }
