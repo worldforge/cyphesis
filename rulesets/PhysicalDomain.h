@@ -60,8 +60,6 @@ class btSphereShape;
 
 class btCollisionObject;
 
-class btKinematicCharacterController;
-
 class PropertyBase;
 
 /**
@@ -124,7 +122,6 @@ class PhysicalDomain : public Domain
              */
             std::set<BulletEntry *> observingThis;
 
-            btKinematicCharacterController * character;
             btVector3 centerOfMassOffset;
 
         };
@@ -231,8 +228,6 @@ class PhysicalDomain : public Domain
         void updateTerrainMod(const LocatedEntity & entity, bool forceUpdate = false);
 
         void processDirtyTerrainAreas();
-
-        void processCharacters(float tickSize);
 
         void applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& velocity);
 
