@@ -242,6 +242,7 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
                 entry.second.first->rigidBody->setLinearVelocity(entry.second.second);
             }
 
+            //entry.second.first->rigidBody->setFriction(0.1);
             entry.second.first->rigidBody->activate();
         }
     };
@@ -593,11 +594,6 @@ void PhysicalDomain::updateVisibilityOfDirtyEntities(OpVector& res)
 
 void PhysicalDomain::processVisibilityForMovedEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector& res)
 {
-}
-
-float PhysicalDomain::checkCollision(LocatedEntity& entity, CollisionData& collisionData)
-{
-    return 0;
 }
 
 float PhysicalDomain::getMassForEntity(const LocatedEntity& entity) const
@@ -1247,7 +1243,58 @@ void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& 
             btVector3 btVelocity = Convert::toBullet(velocity);
 
             if (!btVelocity.isZero()) {
-                btVelocity.m_floats[1] = 0; //Don't allow vertical velocity to be set.
+
+                /**
+                 * A callback which checks if the instance is "grounded", i.e. that there's a contact point which is below its center.
+                 */
+                struct IsGroundedCallback : public btCollisionWorld::ContactResultCallback
+                {
+                    const btRigidBody& m_body;
+                    bool& m_isGrounded;
+
+                    IsGroundedCallback(const btRigidBody& body, bool& isGrounded)
+                        : btCollisionWorld::ContactResultCallback(), m_body(body), m_isGrounded(isGrounded)
+                    {
+                        m_collisionFilterGroup = body.getBroadphaseHandle()->m_collisionFilterGroup;
+                        m_collisionFilterMask = body.getBroadphaseHandle()->m_collisionFilterMask;
+                    }
+
+
+                    virtual btScalar addSingleResult(btManifoldPoint& cp,
+                                                     const btCollisionObjectWrapper* colObj0, int partId0, int index0,
+                                                     const btCollisionObjectWrapper* colObj1, int partId1, int index1)
+                    {
+                        btVector3 point;
+                        if (colObj0->m_collisionObject == &m_body) {
+                            point = cp.m_localPointA;
+                        } else {
+                            point = cp.m_localPointB;
+                        }
+
+                        if (point.z() <= m_body.getWorldTransform().getOrigin().z()) {
+                            m_isGrounded = true;
+                        }
+
+                        //Returned result is ignored.
+                        return 0;
+                    }
+                };
+
+
+                //Check if we're trying to jump
+                if (btVelocity.m_floats[1] > 0) {
+                    bool isGrounded = false;
+                    IsGroundedCallback groundedCallback(*entry.rigidBody, isGrounded);
+                    m_dynamicsWorld->contactTest(entry.rigidBody, groundedCallback);
+                    if (isGrounded) {
+                        //If the entity is grounded, allow it to jump by setting the vertical velocity.
+                        btVector3 newVelocity = entry.rigidBody->getLinearVelocity();
+                        newVelocity.m_floats[1] = btVelocity.m_floats[1] * 2.0f;
+                        entry.rigidBody->setLinearVelocity(newVelocity);
+                    }
+                }
+                btVelocity.m_floats[1] = 0; //Don't allow vertical velocity to be set for the continuous velocity.
+
 
                 auto K = m_propellingEntries.find(entity->getIntId());
                 if (K == m_propellingEntries.end()) {
@@ -1264,6 +1311,7 @@ void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& 
                     bodyVelocity.setY(0);
                 }
                 entry.rigidBody->setLinearVelocity(bodyVelocity);
+               // entry.rigidBody->setFriction(100);
 
                 m_propellingEntries.erase(entity->getIntId());
 
@@ -1492,7 +1540,6 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry)
     Location& lastSentLocation = bulletEntry.lastSentLocation;
     const Location& location = entity.m_location;
 
-    //    bool orientationChange = entity.m_location.m_orientation != lastSentLocation.m_orientation;
     bool orientationChange = location.m_orientation.isValid() && !location.m_orientation.isEqualTo(lastSentLocation.m_orientation, 0.1f);
 
 
@@ -1509,7 +1556,6 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry)
                 debug_print("No previous valid velocity " << entity.describeEntity() << " " << lastSentLocation.m_velocity);
                 velocityChange = true;
                 lastSentLocation.m_velocity = entity.m_location.m_velocity;
-//            sendMoveSight(bulletEntry);
             } else {
                 bool xChange = !fuzzyEquals(location.m_velocity.x(), lastSentLocation.m_velocity.x(), 0.01f);
                 bool yChange = !fuzzyEquals(location.m_velocity.y(), lastSentLocation.m_velocity.y(), 0.01f);
@@ -1519,16 +1565,10 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry)
                     debug_print("Velocity changed " << entity.describeEntity() << " " << location.m_velocity);
                     velocityChange = true;
                     lastSentLocation.m_velocity = entity.m_location.velocity();
-                    //sendMoveSight(bulletEntry);
                 } else if (entity.m_location.m_velocity.isEqualTo(WFMath::Vector<3>::ZERO()) && !hadZeroVelocity) {
                     debug_print("Old or new velocity zero " << entity.describeEntity() << " " << location.m_velocity);
                     velocityChange = true;
                     lastSentLocation.m_velocity = entity.m_location.velocity();
-                    //sendMoveSight(bulletEntry);
-//        } else if (orientationChange) {
-//            debug_print("Orientation changed " << entity.describeEntity() << " " << location.orientation());
-//
-//            sendMoveSight(bulletEntry);
                 }
             }
         }
@@ -1541,7 +1581,6 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry)
                 debug_print("Angular changed " << entity.describeEntity() << " " << location.m_angularVelocity);
                 angularChange = true;
                 lastSentLocation.m_angularVelocity = entity.m_location.m_angularVelocity;
-                //sendMoveSight(bulletEntry);
             }
         }
         if (velocityChange || orientationChange || angularChange) {
@@ -1565,10 +1604,10 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
     m_dynamicsWorld->stepSimulation((float) tickSize, 10);
 
     std::stringstream ss;
-    ss << "Tick: " << (tickSize * 1000) << " ms Time: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start).count() << " ms";
-    log(INFO, ss.str());
+    ss << "Tick: " << (tickSize * 1000) << " ms Time: " << (std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count() / 1000.f) << " ms";
+    debug_print(ss.str());
 
-    //processCharacters((float) currentTickSize);
+    processCharacters((float) tickSize);
     //CProfileManager::dumpAll();
 
     //Don't do visibility checks each tick; instead use m_visibilityCheckCountdown to count down to next
@@ -1584,7 +1623,6 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
         if (m_lastMovingEntities.find(entry) == m_lastMovingEntities.end()) {
             //Didn't move before
             processMovedEntity(*entry);
-//            sendMoveSight(*entry, true, true, );
         } else {
             processMovedEntity(*entry);
             //Erase from last moving entities, so we can find those that moved last tick, but not this.
