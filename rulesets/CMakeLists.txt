@@ -55,7 +55,6 @@ add_library(rulesetentity
         ProxyMind.cpp
         InventoryDomain.cpp
         ModeProperty.cpp
-        ForcesProperty.cpp
         PropelProperty.cpp
         DensityProperty.cpp
         GeometryProperty.cpp

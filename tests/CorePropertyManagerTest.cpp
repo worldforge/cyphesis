@@ -266,7 +266,6 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "stubs/rulesets/stubDomainProperty.h"
 #include "stubs/rulesets/stubSuspendedProperty.h"
 #include "stubs/rulesets/stubModeProperty.h"
-#include "stubs/rulesets/stubForcesProperty.h"
 #include "stubs/rulesets/stubQuaternionProperty.h"
 #include "stubs/rulesets/stubAngularFactorProperty.h"
 #include "stubs/rulesets/stubGeometryProperty.h"

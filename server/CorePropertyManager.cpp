@@ -49,7 +49,6 @@
 #include "rulesets/DomainProperty.h"
 #include "rulesets/LimboProperty.h"
 #include "rulesets/ModeProperty.h"
-#include "rulesets/ForcesProperty.h"
 #include "rulesets/PropelProperty.h"
 #include "rulesets/DensityProperty.h"
 #include "rulesets/AngularFactorProperty.h"
@@ -155,7 +154,6 @@ CorePropertyManager::CorePropertyManager()
     installProperty<DomainProperty>("domain", "string");
     installProperty<LimboProperty>("limbo", "int");
     installProperty<ModeProperty>("string");
-    installProperty<ForcesProperty>("map");
     installProperty<PropelProperty>();
     installProperty<DensityProperty>();
     /**
