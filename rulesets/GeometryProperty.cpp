@@ -211,13 +211,12 @@ void GeometryProperty::buildMeshCreator()
 
             btTriangleIndexVertexArray * triangleVertexArray = new btTriangleIndexVertexArray(numberOfTriangles, indices, indexStride, numberOfVertices, verts, vertStride);
 
-//            btVector3 aabbMin(bbox.lowCorner().x(), bbox.lowCorner().z(), -bbox.highCorner().y());
-//            btVector3 aabbMax(bbox.highCorner().x(), bbox.highCorner().z(), -bbox.lowCorner().y());
             std::shared_ptr<btBvhTriangleMeshShape> meshShape = std::make_shared<btBvhTriangleMeshShape>(triangleVertexArray, true, true);
 
             mShapeCreator = [meshShape](const WFMath::AxisBox<3> & bbox, const WFMath::Vector<3> & size, btVector3 & centerOfMassOffset) -> btCollisionShape*{
                 btVector3 meshSize = meshShape->getLocalAabbMax() - meshShape->getLocalAabbMin();
                 btVector3 scaling(size.x() / meshSize.x(), size.z() / meshSize.y(), size.y() / meshSize.z());
+                centerOfMassOffset = -Convert::toBullet(bbox.getCenter()) * scaling;
                 return new btScaledBvhTriangleMeshShape(meshShape.get(), scaling);
             };
         } else {
@@ -226,5 +225,10 @@ void GeometryProperty::buildMeshCreator()
     } else {
         log(ERROR, "Could not find list of vertices for mesh.");
     }
+}
+
+GeometryProperty * GeometryProperty::copy() const
+{
+    return new GeometryProperty(*this);
 }
 

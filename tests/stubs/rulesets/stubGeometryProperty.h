@@ -38,3 +38,7 @@ btCollisionShape* GeometryProperty::createShape(const WFMath::AxisBox<3>& bbox, 
     return nullptr;
 }
 
+GeometryProperty * GeometryProperty::copy() const
+{
+    return new GeometryProperty(*this);
+}

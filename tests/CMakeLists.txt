@@ -206,7 +206,8 @@ wf_add_test(PythonArithmeticFactoryTest.cpp python_testers.cpp ${PROJECT_SOURCE_
         ${PROJECT_SOURCE_DIR}/rulesets/PythonClass.cpp)
 wf_add_test(TerrainModTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/TerrainModTranslator.cpp)
 wf_add_test(TerrainEffectorPropertyTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/TerrainEffectorProperty.cpp)
-
+wf_add_test(GeometryPropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/GeometryProperty.cpp
+    ${PROJECT_SOURCE_DIR}/common/Property.cpp)
 #Python ruleset tests
 
 wf_add_test(Python_APITest.cpp python_testers.cpp)
@@ -313,6 +314,10 @@ target_link_libraries(EntityFilterProvidersTest entityfilter)
 
 
 # RULESETS_INTEGRATION
+
+wf_add_test(GeometryPropertyIntegration.cpp ${PROJECT_SOURCE_DIR}/rulesets/GeometryProperty.cpp)
+target_link_libraries(GeometryPropertyIntegration rulesetentity rulesetbase physics modules common)
+
 
 wf_add_test(PhysicalDomainIntegrationTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/PhysicalDomain.cpp)
 target_link_libraries(PhysicalDomainIntegrationTest rulesetentity rulesetbase physics modules common)

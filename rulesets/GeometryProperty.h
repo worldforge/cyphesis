@@ -20,6 +20,7 @@
 
 #include "common/Property.h"
 #include <wfmath/axisbox.h>
+#include <wfmath/point.h>
 #include <wfmath/vector.h>
 #include <functional>
 
@@ -57,6 +58,7 @@ class GeometryProperty : public Property<Atlas::Message::MapType>
 
         virtual void set(const Atlas::Message::Element &);
 
+        virtual GeometryProperty * copy() const;
         /**
          * Creates a new shape instance for the supplied bounding box, and setting the center of mass offset.
          * @param bbox The bounding box of the entity for which the shape will be used.
