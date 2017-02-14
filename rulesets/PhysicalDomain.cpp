@@ -643,26 +643,15 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         mode = modeProp->getMode();
     }
 
-    if (mode == ModeProperty::Mode::Planted || mode == ModeProperty::Mode::Free) {
-        WFMath::Point<3>& pos = entity.m_location.m_pos;
-
-        float h = pos.z();
-        getTerrainHeight(pos.x(), pos.y(), h);
-
-        if (mode == ModeProperty::Mode::Planted) {
-            pos.z() = h;
-        } else if (mode == ModeProperty::Mode::Free) {
-            //For free entitites we only want to clamp to terrain if the entity is below it
-            pos.z() = std::max(pos.z(), h);
-        }
-    }
-
     if (mode == ModeProperty::Mode::Planted || mode == ModeProperty::Mode::Fixed) {
         //"fixed" mode means that the entity stays in place, always
         //"planted" mode means it's planted in the ground
         //Zero mass makes the rigid body static
         mass = .0f;
     }
+
+    calculatePositionForEntity(mode, entity, entity.m_location.m_pos);
+
 
     btQuaternion orientation = entity.m_location.m_orientation.isValid() ? Convert::toBullet(entity.m_location.m_orientation) : btQuaternion(0, 0, 0, 1);
     btVector3 pos = entity.m_location.m_pos.isValid() ? Convert::toBullet(entity.m_location.m_pos) : btVector3(0, 0, 0);
@@ -769,6 +758,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
             m_visibilityWorld->addCollisionObject(visObject, VISIBILITY_MASK_OBSERVABLE, VISIBILITY_MASK_OBSERVER);
         }
     }
+
     OpVector res;
     updateVisibilityOfEntry(entry, res);
     for (auto& op : res) {
@@ -1112,6 +1102,36 @@ void PhysicalDomain::entityPropertyApplied(const std::string& name, PropertyBase
     }
 }
 
+void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, LocatedEntity& entity, WFMath::Point<3>& pos)
+{
+    if (mode == ModeProperty::Mode::Planted || mode == ModeProperty::Mode::Free) {
+        float h = pos.z();
+        getTerrainHeight(pos.x(), pos.y(), h);
+
+        if (mode == ModeProperty::Mode::Planted) {
+            pos.z() = h;
+
+            auto plantedOffsetProp = entity.getPropertyType<double>("planted-offset");
+            if (plantedOffsetProp) {
+                pos.z() += plantedOffsetProp->data();
+            }
+            auto plantedScaledOffsetProp = entity.getPropertyType<double>("planted-scaled-offset");
+            if (plantedScaledOffsetProp && entity.m_location.bBox().isValid()) {
+                auto size = entity.m_location.bBox().highCorner() - entity.m_location.bBox().lowCorner();
+
+                pos.z() += (plantedScaledOffsetProp->data() * size.z());
+            }
+        } else if (mode == ModeProperty::Mode::Free) {
+            //For free entities we only want to clamp to terrain if the entity is below it
+            pos.z() = std::max(pos.z(), h);
+        }
+    } else if (mode != ModeProperty::Mode::Fixed) {
+        float h = pos.z();
+        getTerrainHeight(pos.x(), pos.y(), h);
+        pos.z() = h;
+    }
+}
+
 void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath::Point<3>& pos)
 {
     btCollisionObject* collObject = entry->rigidBody;
@@ -1127,27 +1147,7 @@ void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath:
 
         WFMath::Point<3> newPos = pos;
 
-        auto adjustHeightFn = [&]() {
-            float h = pos.z();
-            getTerrainHeight(pos.x(), pos.y(), h);
-            newPos.z() = h;
-        };
-
-        if (mode == ModeProperty::Mode::Planted) {
-            adjustHeightFn();
-            auto plantedOffsetProp = entity.getPropertyType<double>("planted-offset");
-            if (plantedOffsetProp) {
-                newPos.z() += plantedOffsetProp->data();
-            }
-            auto plantedScaledOffsetProp = entity.getPropertyType<double>("planted-scaled-offset");
-            if (plantedScaledOffsetProp && entity.m_location.bBox().isValid()) {
-                auto size = entity.m_location.bBox().highCorner() - entity.m_location.bBox().lowCorner();
-
-                newPos.z() += (plantedScaledOffsetProp->data() * size.z());
-            }
-        } else if (mode != ModeProperty::Mode::Fixed) {
-            adjustHeightFn();
-        }
+        calculatePositionForEntity(mode, entity, newPos);
 
         entity.m_location.m_pos = newPos;
 

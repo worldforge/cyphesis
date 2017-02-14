@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2009 Alistair Riddoch
+// Copyright (C) 2017 Erik Ogenvik
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -26,15 +26,11 @@
 #include "TestBase.h"
 #include "TestWorld.h"
 
-#include "server/Player.h"
-
-#include "server/Connection.h"
 #include "server/Ruleset.h"
 #include "server/ServerRouting.h"
 
 #include "rulesets/Entity.h"
 
-#include "common/CommSocket.h"
 #include "common/compose.hpp"
 #include "common/debug.h"
 
@@ -64,29 +60,6 @@ using Atlas::Objects::Entity::RootEntity;
 
 using String::compose;
 
-std::ostream& operator<<(std::ostream& os,
-                         const Element& e)
-{
-    debug_dump(e, os);
-    return os;
-}
-
-template<typename T>
-std::ostream& operator<<(std::ostream& os,
-                         const std::list<T>& sl)
-{
-    typename std::list<T>::const_iterator I = sl.begin();
-    typename std::list<T>::const_iterator Iend = sl.end();
-    os << "[";
-    for (; I != Iend; ++I) {
-        if (I != sl.begin()) {
-            os << ", ";
-        }
-        os << *I;
-    }
-    os << "]";
-    return os;
-}
 
 class PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 {
@@ -112,9 +85,13 @@ class PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
         void test_mode();
 
-        void test_static_entities();
+        void test_static_entities_no_move();
 
         void test_determinism();
+
+        void test_zoffset();
+
+        void test_zscaledoffset();
 };
 
 long PhysicalDomainIntegrationTest::m_id_counter = 0L;
@@ -126,8 +103,11 @@ PhysicalDomainIntegrationTest::PhysicalDomainIntegrationTest()
     ADD_TEST(PhysicalDomainIntegrationTest::test_fallToTerrain);
     ADD_TEST(PhysicalDomainIntegrationTest::test_collision);
     ADD_TEST(PhysicalDomainIntegrationTest::test_mode);
-    ADD_TEST(PhysicalDomainIntegrationTest::test_static_entities);
+    ADD_TEST(PhysicalDomainIntegrationTest::test_static_entities_no_move);
     ADD_TEST(PhysicalDomainIntegrationTest::test_determinism);
+    ADD_TEST(PhysicalDomainIntegrationTest::test_zoffset);
+    ADD_TEST(PhysicalDomainIntegrationTest::test_zscaledoffset);
+
 }
 
 long PhysicalDomainIntegrationTest::newId()
@@ -316,6 +296,7 @@ void PhysicalDomainIntegrationTest::test_collision()
     terrain.setBasePoint(1, 0, Mercator::BasePoint(10));
     terrain.setBasePoint(1, 1, Mercator::BasePoint(10));
     rootEntity->setProperty("terrain", terrainProperty);
+    rootEntity->setProperty("friction", zeroFrictionProperty);
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.m_bBox = WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64));
     PhysicalDomain* domain = new PhysicalDomain(*rootEntity);
@@ -381,6 +362,15 @@ void PhysicalDomainIntegrationTest::test_collision()
     //Should have stopped at planted entity
     ASSERT_FUZZY_EQUAL(freeEntity->m_location.m_pos.y(), 13, 0.01f);
     ASSERT_EQUAL(plantedEntity->m_location.m_pos, plantedPos);
+
+    domain->removeEntity(*plantedEntity);
+    for (int i = 0; i < 15; ++i) {
+        domain->tick(tickSize, res);
+    }
+
+    //Should have moved two more meters as planted entity was removed.
+    ASSERT_FUZZY_EQUAL(freeEntity->m_location.m_pos.y(), 15, 0.1f);
+
 }
 
 void PhysicalDomainIntegrationTest::test_mode()
@@ -463,7 +453,7 @@ void PhysicalDomainIntegrationTest::test_mode()
 }
 
 
-void PhysicalDomainIntegrationTest::test_static_entities()
+void PhysicalDomainIntegrationTest::test_static_entities_no_move()
 {
 
     double tickSize = 1.0 / 15.0;
@@ -589,6 +579,100 @@ void PhysicalDomainIntegrationTest::test_determinism()
     ASSERT_EQUAL(entities[16]->m_location.m_pos, WFMath::Point<3>(0.948305, 0.105805, 18.7352));
     ASSERT_EQUAL(entities[55]->m_location.m_pos, WFMath::Point<3>(6.30361, -1.19749f, 28.0569));
 
+}
+
+void PhysicalDomainIntegrationTest::test_zoffset()
+{
+
+
+    TypeNode* rockType = new TypeNode("rock");
+    ModeProperty* modePlantedProperty = new ModeProperty();
+    modePlantedProperty->set("planted");
+
+    Property<double>* plantedOffset = new Property<double>();
+    plantedOffset->data() = -2;
+
+    Entity* rootEntity = new Entity("0", newId());
+    TerrainProperty* terrainProperty = new TerrainProperty();
+    Mercator::Terrain& terrain = terrainProperty->getData();
+    terrain.setBasePoint(0, 0, Mercator::BasePoint(10));
+    terrain.setBasePoint(0, 1, Mercator::BasePoint(10));
+    terrain.setBasePoint(1, 0, Mercator::BasePoint(10));
+    terrain.setBasePoint(1, 1, Mercator::BasePoint(10));
+    rootEntity->setProperty("terrain", terrainProperty);
+    rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
+    rootEntity->m_location.m_bBox = WFMath::AxisBox<3>(WFMath::Point<3>(0, 0, -64), WFMath::Point<3>(64, 64, 64));
+    PhysicalDomain* domain = new PhysicalDomain(*rootEntity);
+
+    TestWorld testWorld(*rootEntity);
+
+
+    Entity* plantedEntity = new Entity("planted", newId());
+    plantedEntity->setProperty(ModeProperty::property_name, modePlantedProperty);
+    plantedEntity->setType(rockType);
+    plantedEntity->m_location.m_pos = WFMath::Point<3>(30, 30, 10);
+    plantedEntity->m_location.m_bBox = WFMath::AxisBox<3>(WFMath::Point<3>(-1, -1, 0), WFMath::Point<3>(1, 1, 10));
+    plantedEntity->setProperty("planted-offset", plantedOffset);
+    domain->addEntity(*plantedEntity);
+    ASSERT_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(30, 30, 8.01695));
+
+    plantedOffset->data() = -3;
+    plantedOffset->apply(plantedEntity);
+    plantedEntity->propertyApplied.emit("planted-offset", *plantedOffset);
+    ASSERT_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(30, 30, 7.01695));
+
+}
+
+
+void PhysicalDomainIntegrationTest::test_zscaledoffset()
+{
+    TypeNode* rockType = new TypeNode("rock");
+    ModeProperty* modePlantedProperty = new ModeProperty();
+    modePlantedProperty->set("planted");
+
+    Property<double>* plantedScaledOffset = new Property<double>();
+    plantedScaledOffset->data() = -0.2;
+
+    Entity* rootEntity = new Entity("0", newId());
+    TerrainProperty* terrainProperty = new TerrainProperty();
+    Mercator::Terrain& terrain = terrainProperty->getData();
+    terrain.setBasePoint(0, 0, Mercator::BasePoint(10));
+    terrain.setBasePoint(0, 1, Mercator::BasePoint(10));
+    terrain.setBasePoint(1, 0, Mercator::BasePoint(10));
+    terrain.setBasePoint(1, 1, Mercator::BasePoint(10));
+    rootEntity->setProperty("terrain", terrainProperty);
+    rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
+    rootEntity->m_location.m_bBox = WFMath::AxisBox<3>(WFMath::Point<3>(0, 0, -64), WFMath::Point<3>(64, 64, 64));
+    PhysicalDomain* domain = new PhysicalDomain(*rootEntity);
+
+    TestWorld testWorld(*rootEntity);
+
+
+    Entity* plantedEntity = new Entity("planted", newId());
+    plantedEntity->setProperty(ModeProperty::property_name, modePlantedProperty);
+    plantedEntity->setType(rockType);
+    plantedEntity->m_location.m_pos = WFMath::Point<3>(30, 30, 10);
+    plantedEntity->m_location.m_bBox = WFMath::AxisBox<3>(WFMath::Point<3>(-1, -1, 0), WFMath::Point<3>(1, 1, 10));
+    plantedEntity->setProperty("planted-scaled-offset", plantedScaledOffset);
+    domain->addEntity(*plantedEntity);
+    ASSERT_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(30, 30, 8.01695));
+
+    plantedScaledOffset->data() = -0.3;
+    plantedScaledOffset->apply(plantedEntity);
+    plantedEntity->propertyApplied.emit("planted-offset", *plantedScaledOffset);
+    ASSERT_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(30, 30, 7.01695));
+
+}
+
+
+void TestWorld::message(const Operation & op, LocatedEntity & ent)
+{
+}
+
+LocatedEntity * TestWorld::addNewEntity(const std::string &,
+                                        const Atlas::Objects::Entity::RootEntity &)
+{
+    return 0;
 }
 
 int main()
