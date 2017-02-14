@@ -68,6 +68,10 @@ class TestBase
     int assertTrue(const char * n, const V & val,
                    const char * func, const char * file, int line);
 
+    template <typename V>
+    int assertFalse(const char * n, const V & val,
+                   const char * func, const char * file, int line);
+
     template <typename L, typename R>
     int assertEqual(const char * l, const L & lval,
                     const char * r, const R & rval,
@@ -159,6 +163,18 @@ int TestBase::assertTrue(const char * n, const V & val,
                          const char * func, const char * file, int line)
 {
     if (!val) {
+        addFailure(String::compose("%1:%2: %3: Assertion '%4' failed.",
+                                   file, line, func, n));
+        return -1;
+    }
+    return 0;
+}
+
+template <typename V>
+int TestBase::assertFalse(const char * n, const V & val,
+                         const char * func, const char * file, int line)
+{
+    if (val) {
         addFailure(String::compose("%1:%2: %3: Assertion '%4' failed.",
                                    file, line, func, n));
         return -1;
@@ -272,6 +288,11 @@ int TestBase::assertNotNull(const char * n, const T * ptr,
 
 #define ASSERT_TRUE(_expr) {\
     if (this->assertTrue(#_expr, _expr, __PRETTY_FUNCTION__,\
+                         __FILE__, __LINE__) != 0) return;\
+}
+
+#define ASSERT_FALSE(_expr) {\
+    if (this->assertFalse(#_expr, _expr, __PRETTY_FUNCTION__,\
                          __FILE__, __LINE__) != 0) return;\
 }
 
