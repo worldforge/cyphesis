@@ -23,6 +23,16 @@ macro(wf_add_test TEST_FILE)
 
 endmacro()
 
+macro(wf_add_benchmark TEST_FILE)
+    get_filename_component(TEST_NAME ${TEST_FILE} NAME_WE)
+    add_executable(${TEST_NAME} ${TEST_FILE} ${PROJECT_SOURCE_DIR}/common/debug.cpp ${ARGN})
+    add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
+
+    add_dependencies(benchmark ${TEST_NAME})
+
+endmacro()
+
+
 #### Common tests #####
 wf_add_test(TestBaseTest.cpp)
 wf_add_test(logTest.cpp ${PROJECT_SOURCE_DIR}/common/log.cpp)
@@ -318,6 +328,8 @@ target_link_libraries(EntityFilterProvidersTest entityfilter)
 wf_add_test(GeometryPropertyIntegration.cpp ${PROJECT_SOURCE_DIR}/rulesets/GeometryProperty.cpp)
 target_link_libraries(GeometryPropertyIntegration rulesetentity rulesetbase physics modules common)
 
+wf_add_benchmark(PhysicalDomainBenchmark.cpp ${PROJECT_SOURCE_DIR}/rulesets/PhysicalDomain.cpp)
+target_link_libraries(PhysicalDomainBenchmark rulesetentity rulesetbase physics modules common)
 
 wf_add_test(PhysicalDomainIntegrationTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/PhysicalDomain.cpp)
 target_link_libraries(PhysicalDomainIntegrationTest rulesetentity rulesetbase physics modules common)

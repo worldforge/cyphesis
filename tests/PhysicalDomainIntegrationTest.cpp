@@ -103,17 +103,15 @@ long PhysicalDomainIntegrationTest::m_id_counter = 0L;
 
 PhysicalDomainIntegrationTest::PhysicalDomainIntegrationTest()
 {
-//    ADD_TEST(PhysicalDomainIntegrationTest::test_fallToBottom);
-//    ADD_TEST(PhysicalDomainIntegrationTest::test_standOnFixed);
-//    ADD_TEST(PhysicalDomainIntegrationTest::test_fallToTerrain);
-//    ADD_TEST(PhysicalDomainIntegrationTest::test_collision);
-//    ADD_TEST(PhysicalDomainIntegrationTest::test_mode);
-//    ADD_TEST(PhysicalDomainIntegrationTest::test_static_entities_no_move);
-//    ADD_TEST(PhysicalDomainIntegrationTest::test_determinism);
-//    ADD_TEST(PhysicalDomainIntegrationTest::test_zoffset);
-//    ADD_TEST(PhysicalDomainIntegrationTest::test_zscaledoffset);
-//    ADD_TEST(PhysicalDomainIntegrationTest::test_visibility);
-    ADD_TEST(PhysicalDomainIntegrationTest::test_visibilityPerformance);
+    ADD_TEST(PhysicalDomainIntegrationTest::test_fallToBottom);
+    ADD_TEST(PhysicalDomainIntegrationTest::test_standOnFixed);
+    ADD_TEST(PhysicalDomainIntegrationTest::test_fallToTerrain);
+    ADD_TEST(PhysicalDomainIntegrationTest::test_collision);
+    ADD_TEST(PhysicalDomainIntegrationTest::test_mode);
+    ADD_TEST(PhysicalDomainIntegrationTest::test_determinism);
+    ADD_TEST(PhysicalDomainIntegrationTest::test_zoffset);
+    ADD_TEST(PhysicalDomainIntegrationTest::test_zscaledoffset);
+    ADD_TEST(PhysicalDomainIntegrationTest::test_visibility);
 
 }
 
@@ -460,68 +458,6 @@ void PhysicalDomainIntegrationTest::test_mode()
 }
 
 
-void PhysicalDomainIntegrationTest::test_static_entities_no_move()
-{
-
-    double tickSize = 1.0 / 15.0;
-
-    TypeNode* rockType = new TypeNode("rock");
-    ModeProperty* modePlantedProperty = new ModeProperty();
-    modePlantedProperty->set("planted");
-
-    Entity* rootEntity = new Entity("0", newId());
-    TerrainProperty* terrainProperty = new TerrainProperty();
-    Mercator::Terrain& terrain = terrainProperty->getData();
-    terrain.setBasePoint(0, 0, Mercator::BasePoint(40));
-    terrain.setBasePoint(0, 1, Mercator::BasePoint(40));
-    terrain.setBasePoint(1, 0, Mercator::BasePoint(10));
-    terrain.setBasePoint(1, 1, Mercator::BasePoint(10));
-    rootEntity->setProperty("terrain", terrainProperty);
-    rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
-    rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(0, 0, -64), WFMath::Point<3>(64, 64, 64)));
-    PhysicalDomain* domain = new PhysicalDomain(*rootEntity);
-
-    Property<double>* massProp = new Property<double>();
-    massProp->data() = 100;
-
-    std::vector<Entity*> entities;
-
-    for (size_t i = 0; i < 60; ++i) {
-        for (size_t j = 0; j < 60; ++j) {
-            long id = newId();
-            std::stringstream ss;
-            ss << "planted" << id;
-            Entity* entity = new Entity(ss.str(), id);
-            entity->setProperty("mass", massProp);
-            entity->setType(rockType);
-            entity->setProperty(ModeProperty::property_name, modePlantedProperty);
-            entity->m_location.m_pos = WFMath::Point<3>(i, j, i + j);
-            entity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.25f, -0.25f, 0), WFMath::Point<3>(-0.25f, -0.25f, 0.5f)));
-            domain->addEntity(*entity);
-            entities.push_back(entity);
-        }
-    }
-
-    OpVector res;
-
-    //First tick is setup, so we'll exclude that from time measurement
-    domain->tick(tickSize, res);
-    auto start = std::chrono::high_resolution_clock::now();
-    //Inject ticks for two seconds
-    for (int i = 0; i < 30; ++i) {
-        domain->tick(tickSize, res);
-    }
-
-    std::stringstream ss;
-    long milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start).count();
-    ss << "Average tick duration: " << milliseconds / 30.0 << " ms";
-    log(INFO, ss.str());
-    ss = std::stringstream();
-    ss << "Physics per second: " << (milliseconds / 2.0) / 10.0 << " %";
-    log(INFO, ss.str());
-
-}
-
 void PhysicalDomainIntegrationTest::test_determinism()
 {
 
@@ -565,18 +501,10 @@ void PhysicalDomainIntegrationTest::test_determinism()
 
     //First tick is setup, so we'll exclude that from time measurement
     domain->tick(tickSize, res);
-    auto start = std::chrono::high_resolution_clock::now();
     //Inject ticks for two seconds
-    for (int i = 0; i < 30; ++i) {
+    for (int i = 0; i < 29; ++i) {
         domain->tick(tickSize, res);
     }
-    std::stringstream ss;
-    long milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start).count();
-    ss << "Average tick duration: " << milliseconds / 30.0 << " ms";
-    log(INFO, ss.str());
-    ss = std::stringstream();
-    ss << "Physics per second: " << (milliseconds / 2.0) / 10.0 << " %";
-    log(INFO, ss.str());
 
     //Sample a couple of selected entities
     //Note: this perhaps differs depending on version of Bullet and machine setup?
@@ -773,116 +701,6 @@ void PhysicalDomainIntegrationTest::test_visibility()
         ASSERT_EQUAL("large1", (*I)->getId());
         ++I;
         ASSERT_EQUAL("observer", (*I)->getId());
-    }
-}
-
-void PhysicalDomainIntegrationTest::test_visibilityPerformance()
-{
-
-    double tickSize = 1.0 / 15.0;
-
-    TypeNode* rockType = new TypeNode("rock");
-    TypeNode* humanType = new TypeNode("human");
-
-    PropelProperty* propelProperty = new PropelProperty();
-    ////Move diagonally up
-    propelProperty->data() = WFMath::Vector<3>(5, 5, 0);
-
-    Property<double>* massProp = new Property<double>();
-    massProp->data() = 10000;
-
-    Entity* rootEntity = new Entity("0", newId());
-    rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
-    rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-128, -128, 0), WFMath::Point<3>(128, 128, 64)));
-    PhysicalDomain* domain = new PhysicalDomain(*rootEntity);
-
-    TestWorld testWorld(*rootEntity);
-
-    ModeProperty* modePlantedProperty = new ModeProperty();
-    modePlantedProperty->set("planted");
-
-    std::vector<Entity*> entities;
-
-    int counter = 0;
-
-    for (int i = -100; i <= 100; i = i + 2) {
-        for (int j = -100; j <= 100; j = j + 2) {
-            counter++;
-            long id = newId();
-            std::stringstream ss;
-            ss << "planted" << id;
-            Entity* plantedEntity = new Entity(ss.str(), id);
-            plantedEntity->setProperty(ModeProperty::property_name, modePlantedProperty);
-            plantedEntity->setType(rockType);
-            plantedEntity->m_location.m_pos = WFMath::Point<3>(i, j, 0);
-            plantedEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.25f, -0.25f, 0), WFMath::Point<3>(-0.25f, -0.25f, .2f)));
-            domain->addEntity(*plantedEntity);
-            entities.push_back(plantedEntity);
-        }
-    }
-
-    {
-        std::stringstream ss;
-        ss << "Added " << counter << " planted entities.";
-        log(INFO, ss.str());
-    }
-
-    int numberOfObservers = 10;
-
-    std::vector<Entity*> observers;
-    for (int i = 0; i < numberOfObservers; ++i) {
-        long id = newId();
-        std::stringstream ss;
-        ss << "observer" << id;
-        Entity* observerEntity = new Entity(ss.str(), id);
-        observers.push_back(observerEntity);
-        observerEntity->m_location.setSolid(false);
-        observerEntity->setType(humanType);
-        observerEntity->m_location.m_pos = WFMath::Point<3>(-100 + i, -100, 0);
-        observerEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.1f, -0.1f, 0), WFMath::Point<3>(0.1, 0.1, 2)));
-        observerEntity->setProperty(PropelProperty::property_name, propelProperty);
-        observerEntity->setFlags(entity_perceptive);
-        observerEntity->setProperty("mass", massProp);
-        domain->addEntity(*observerEntity);
-    }
-
-
-    OpVector res;
-
-    //First tick is setup, so we'll exclude that from time measurement
-    domain->tick(2, res);
-    {
-        auto start = std::chrono::high_resolution_clock::now();
-        //Inject ticks for 20 seconds
-        for (int i = 0; i < 15 * 20; ++i) {
-            domain->tick(tickSize, res);
-        }
-        std::stringstream ss;
-        long milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start).count();
-        ss << "Average tick duration with " << numberOfObservers << " moving observers: " << milliseconds / (15. * 20.0) << " ms";
-        log(INFO, ss.str());
-        ss = std::stringstream();
-        ss << "Physics per second with " << numberOfObservers << " moving observers: " << (milliseconds / 20.0) / 10.0 << " %";
-        log(INFO, ss.str());
-    }
-    //Now stop the observers from moving, and measure again
-    for (Entity* observer : observers) {
-        domain->applyTransform(*observer, WFMath::Quaternion(), WFMath::Point<3>(), WFMath::Vector<3>::ZERO());
-    }
-    domain->tick(3, res);
-    {
-        auto start = std::chrono::high_resolution_clock::now();
-        //Inject ticks for 1 seconds
-        for (int i = 0; i < 15; ++i) {
-            domain->tick(tickSize, res);
-        }
-        std::stringstream ss;
-        long milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start).count();
-        ss << "Average tick duration without moving observer: " << milliseconds / 15. << " ms";
-        log(INFO, ss.str());
-        ss = std::stringstream();
-        ss << "Physics per second without moving observer: " << (milliseconds / 1.0) / 10.0 << " %";
-        log(INFO, ss.str());
     }
 }
 
