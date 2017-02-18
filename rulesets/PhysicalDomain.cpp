@@ -67,7 +67,7 @@
 #include <chrono>
 
 
-static const bool debug_flag = true;
+static const bool debug_flag = false;
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -190,14 +190,17 @@ class PhysicalDomain::PhysicalMotionState : public btMotionState
             entity.resetFlags(entity_pos_clean | entity_orient_clean);
             //entity.setFlags(entity_dirty_location);
 
-            if (m_bulletEntry.visibilitySphere) {
-                m_bulletEntry.visibilitySphere->setWorldTransform(m_bulletEntry.rigidBody->getWorldTransform());
-                m_domain.m_visibilityWorld->updateSingleAabb(m_bulletEntry.visibilitySphere);
+            btCollisionObject* visibilitySphere = m_bulletEntry.visibilitySphere;
+            if (visibilitySphere) {
+                visibilitySphere->setWorldTransform(
+                    btTransform(visibilitySphere->getWorldTransform().getBasis(), m_bulletEntry.rigidBody->getWorldTransform().getOrigin() / VISIBILITY_SCALING_FACTOR));
+                m_domain.m_visibilityWorld->updateSingleAabb(visibilitySphere);
             }
 
-            if (m_bulletEntry.viewSphere) {
-                m_bulletEntry.viewSphere->setWorldTransform(m_bulletEntry.rigidBody->getWorldTransform());
-                m_domain.m_visibilityWorld->updateSingleAabb(m_bulletEntry.viewSphere);
+            btCollisionObject* viewSphere = m_bulletEntry.viewSphere;
+            if (viewSphere) {
+                viewSphere->setWorldTransform(btTransform(viewSphere->getWorldTransform().getBasis(), m_bulletEntry.rigidBody->getWorldTransform().getOrigin() / VISIBILITY_SCALING_FACTOR));
+                m_domain.m_visibilityWorld->updateSingleAabb(viewSphere);
             }
 
         }
@@ -206,11 +209,15 @@ class PhysicalDomain::PhysicalMotionState : public btMotionState
 PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
     Domain(entity),
     //default config for now
-    m_collisionConfiguration(new btDefaultCollisionConfiguration()), m_dispatcher(new btCollisionDispatcher(m_collisionConfiguration)), m_constraintSolver(
-    new btSequentialImpulseConstraintSolver()),
-    //Use a dynamic broadphase; this might be worth revisiting for optimizations
-    m_broadphase(new btDbvtBroadphase()), m_dynamicsWorld(new btDiscreteDynamicsWorld(m_dispatcher, m_broadphase, m_constraintSolver, m_collisionConfiguration)), m_visibilityWorld(
-    new btCollisionWorld(new btCollisionDispatcher(new btDefaultCollisionConfiguration()), new btDbvtBroadphase(), new btDefaultCollisionConfiguration())), m_visibilityCheckCountdown(0),
+    m_collisionConfiguration(new btDefaultCollisionConfiguration()), m_dispatcher(new btCollisionDispatcher(m_collisionConfiguration)), m_constraintSolver(new btSequentialImpulseConstraintSolver()),
+    //We'll use a dynamic broadphase for the main world. It's not as fast as SAP variants, but it's faster when dynamic objects are at rest.
+    m_broadphase(new btDbvtBroadphase()),
+    m_dynamicsWorld(new btDiscreteDynamicsWorld(m_dispatcher, m_broadphase, m_constraintSolver, m_collisionConfiguration)), m_visibilityWorld(
+    //We'll use a SAP broadphase for the visibility. This is more efficient than a dynamic one.
+    new btCollisionWorld(new btCollisionDispatcher(new btDefaultCollisionConfiguration()),
+                         new bt32BitAxisSweep3(Convert::toBullet(entity.m_location.bBox().lowCorner()), Convert::toBullet(entity.m_location.bBox().highCorner())),
+                         new btDefaultCollisionConfiguration())),
+    m_visibilityCheckCountdown(0),
     m_terrain(nullptr)
 {
 
@@ -220,6 +227,8 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
     //By default all collision objects have their aabbs updated each tick; we'll disable it for performance.
     m_dynamicsWorld->setForceUpdateAllAabbs(false);
     m_broadphase->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
+
+    m_visibilityWorld->setForceUpdateAllAabbs(false);
 
     const TerrainProperty* terrainProperty = m_entity.getPropertyClass<TerrainProperty>("terrain");
     if (terrainProperty) {
@@ -499,7 +508,7 @@ void PhysicalDomain::updateVisibilityOfEntry(BulletEntry* bulletEntry, OpVector&
                 observed.erase(I);
             } else {
                 //Send Appear
-                debug_print(" appear: " << viewedEntry->entity->describeEntity() << " for " << bulletEntry->entity->describeEntity());
+                // debug_print(" appear: " << viewedEntry->entity->describeEntity() << " for " << bulletEntry->entity->describeEntity());
                 Appearance appear;
                 Anonymous that_ent;
                 that_ent->setId(viewedEntry->entity->getId());
@@ -514,7 +523,7 @@ void PhysicalDomain::updateVisibilityOfEntry(BulletEntry* bulletEntry, OpVector&
 
         for (BulletEntry* disappearedEntry : observed) {
             //Send disappearence
-            debug_print(" disappear: " << disappearedEntry->entity->describeEntity() << " for " << bulletEntry->entity->describeEntity());
+            //debug_print(" disappear: " << disappearedEntry->entity->describeEntity() << " for " << bulletEntry->entity->describeEntity());
             Disappearance disappear;
             Anonymous that_ent;
             that_ent->setId(disappearedEntry->entity->getId());
@@ -551,7 +560,7 @@ void PhysicalDomain::updateVisibilityOfEntry(BulletEntry* bulletEntry, OpVector&
                 observing.erase(I);
             } else {
                 //Send appear
-                debug_print(" appear: " << bulletEntry->entity->describeEntity() << " for " << viewingEntry->entity->describeEntity());
+                // debug_print(" appear: " << bulletEntry->entity->describeEntity() << " for " << viewingEntry->entity->describeEntity());
                 Appearance appear;
                 Anonymous that_ent;
                 that_ent->setId(bulletEntry->entity->getId());
@@ -566,7 +575,7 @@ void PhysicalDomain::updateVisibilityOfEntry(BulletEntry* bulletEntry, OpVector&
 
         for (BulletEntry* noLongerObservingEntry : observing) {
             //Send disappearence
-            debug_print(" disappear: " << bulletEntry->entity->describeEntity() << " for " << noLongerObservingEntry->entity->describeEntity());
+            // debug_print(" disappear: " << bulletEntry->entity->describeEntity() << " for " << noLongerObservingEntry->entity->describeEntity());
             Disappearance disappear;
             Anonymous that_ent;
             that_ent->setId(bulletEntry->entity->getId());
@@ -730,17 +739,17 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         btSphereShape* visSphere = new btSphereShape(0);
         const VisibilityProperty* visProp = entity.getPropertyClass<VisibilityProperty>("visibility");
         if (visProp) {
-            visSphere->setUnscaledRadius(visProp->data());
+            visSphere->setUnscaledRadius(visProp->data() / VISIBILITY_SCALING_FACTOR);
         } else if (entity.m_location.bBox().isValid() && entity.m_location.radius() > 0) {
             float radius = entity.m_location.radius();
-            visSphere->setUnscaledRadius(radius * 100);
+            visSphere->setUnscaledRadius(radius);
         } else {
-            visSphere->setUnscaledRadius(0.25f * VISIBILITY_SCALING_FACTOR);
+            visSphere->setUnscaledRadius(0.25f);
         }
 
         btCollisionObject* visObject = new btCollisionObject();
         visObject->setCollisionShape(visSphere);
-        visObject->setWorldTransform(btTransform(btQuaternion::getIdentity(), pos));
+        visObject->setWorldTransform(btTransform(btQuaternion::getIdentity(), pos / VISIBILITY_SCALING_FACTOR));
         visObject->setUserPointer(entry);
         entry->visibilitySphere = visObject;
         if (entity.m_location.m_pos.isValid()) {
@@ -748,10 +757,10 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         }
     }
     if (entity.isPerceptive()) {
-        btSphereShape* viewSphere = new btSphereShape(0.5);
+        btSphereShape* viewSphere = new btSphereShape(0.5f / VISIBILITY_SCALING_FACTOR);
         btCollisionObject* visObject = new btCollisionObject();
         visObject->setCollisionShape(viewSphere);
-        visObject->setWorldTransform(btTransform(btQuaternion::getIdentity(), pos));
+        visObject->setWorldTransform(btTransform(btQuaternion::getIdentity(), pos / VISIBILITY_SCALING_FACTOR));
         visObject->setUserPointer(entry);
         entry->viewSphere = visObject;
         if (entity.m_location.m_pos.isValid()) {
@@ -1159,11 +1168,11 @@ void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath:
             m_dynamicsWorld->updateSingleAabb(collObject);
         }
         if (entry->viewSphere) {
-            entry->viewSphere->setWorldTransform(transform);
+            entry->viewSphere->setWorldTransform(btTransform(transform.getBasis(), transform.getOrigin() / VISIBILITY_SCALING_FACTOR));
             m_visibilityWorld->updateSingleAabb(entry->viewSphere);
         }
         if (entry->visibilitySphere) {
-            entry->visibilitySphere->setWorldTransform(transform);
+            entry->visibilitySphere->setWorldTransform(btTransform(transform.getBasis(), transform.getOrigin() / VISIBILITY_SCALING_FACTOR));
             m_visibilityWorld->updateSingleAabb(entry->visibilitySphere);
         }
 
