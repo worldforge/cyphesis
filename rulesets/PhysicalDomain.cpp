@@ -226,7 +226,6 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
 
     //By default all collision objects have their aabbs updated each tick; we'll disable it for performance.
     m_dynamicsWorld->setForceUpdateAllAabbs(false);
-    m_broadphase->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
 
     m_visibilityWorld->setForceUpdateAllAabbs(false);
 
@@ -1525,7 +1524,8 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
 //    CProfileManager::Increment_Frame_Counter();
 
     auto start = std::chrono::high_resolution_clock::now();
-    m_dynamicsWorld->stepSimulation((float) tickSize, 10);
+    //Step simulations with 60 hz.
+    m_dynamicsWorld->stepSimulation((float) tickSize, static_cast<int>(60 * tickSize));
 
     std::stringstream ss;
     ss << "Tick: " << (tickSize * 1000) << " ms Time: " << (std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count() / 1000.f) << " ms";
