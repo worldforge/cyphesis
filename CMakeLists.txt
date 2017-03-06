@@ -64,7 +64,7 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 link_libraries(Threads::Threads)
 
-pkg_check_modules(WF REQUIRED varconf-1.0>=0.6.7 mercator-0.4>=0.4.0 atlascpp-0.7>=0.7.0 wfmath-1.0>=1.0.3 libwfut-0.2>=0.2.2)
+pkg_check_modules(WF REQUIRED varconf-1.0>=0.6.7 mercator-0.4>=0.4.0 atlascpp-0.7>=0.7.0 wfmath-1.0>=1.0.3)
 link_directories(${WF_LIBRARY_DIRS})
 include_directories(${WF_INCLUDE_DIRS})
 link_libraries(${WF_LIBRARIES})
