@@ -53,8 +53,8 @@ void GeometryProperty::set(const Atlas::Message::Element & data)
         const std::string & shapeType = I->second.String();
         if (shapeType == "sphere") {
             mShapeCreator = [&](const WFMath::AxisBox<3> & bbox, const WFMath::Vector<3> & size, btVector3 & centerOfMassOffset) -> btCollisionShape* {
-                centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
                 float minRadius = std::min(size.x(), std::min(size.y(), size.z())) * 0.5f;
+                centerOfMassOffset = -btVector3(minRadius, minRadius, minRadius);
                 return new btSphereShape(minRadius);
             };
         } else if (shapeType == "capsule-z") {
