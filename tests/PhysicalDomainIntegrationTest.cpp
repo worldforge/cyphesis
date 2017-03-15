@@ -31,17 +31,13 @@
 
 #include "rulesets/Entity.h"
 
-#include "common/compose.hpp"
 #include "common/debug.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/SmartPtr.h>
 
-#include <cassert>
 #include <rulesets/PhysicalDomain.h>
 #include <common/TypeNode.h>
-#include <rulesets/ModeProperty.h>
 #include <rulesets/TerrainProperty.h>
 #include <Mercator/BasePoint.h>
 #include <Mercator/Terrain.h>
@@ -49,8 +45,7 @@
 #include <rulesets/AngularFactorProperty.h>
 #include <chrono>
 #include <rulesets/VisibilityProperty.h>
-
-#include "stubs/common/stubLog.h"
+#include <rulesets/GeometryProperty.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -97,6 +92,8 @@ class PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         void test_visibility();
 
         void test_visibilityPerformance();
+
+        void test_tunneling();
 };
 
 long PhysicalDomainIntegrationTest::m_id_counter = 0L;
@@ -112,7 +109,7 @@ PhysicalDomainIntegrationTest::PhysicalDomainIntegrationTest()
     ADD_TEST(PhysicalDomainIntegrationTest::test_zoffset);
     ADD_TEST(PhysicalDomainIntegrationTest::test_zscaledoffset);
     ADD_TEST(PhysicalDomainIntegrationTest::test_visibility);
-
+    ADD_TEST(PhysicalDomainIntegrationTest::test_tunneling);
 }
 
 long PhysicalDomainIntegrationTest::newId()
@@ -617,12 +614,12 @@ void PhysicalDomainIntegrationTest::test_visibility()
 
     TestWorld testWorld(*rootEntity);
 
-    Entity* smallEntity1 = new Entity("small1", newId());
-    smallEntity1->setProperty(ModeProperty::property_name, modePlantedProperty);
-    smallEntity1->setType(rockType);
-    smallEntity1->m_location.m_pos = WFMath::Point<3>(30, 30, 0);
-    smallEntity1->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.2f, -0.2f, 0), WFMath::Point<3>(0.2, 0.2, 0.4)));
-    domain->addEntity(*smallEntity1);
+    Entity* entity = new Entity("small1", newId());
+    entity->setProperty(ModeProperty::property_name, modePlantedProperty);
+    entity->setType(rockType);
+    entity->m_location.m_pos = WFMath::Point<3>(30, 30, 0);
+    entity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.2f, -0.2f, 0), WFMath::Point<3>(0.2, 0.2, 0.4)));
+    domain->addEntity(*entity);
 
     Entity* smallEntity2 = new Entity("small2", newId());
     smallEntity2->setProperty(ModeProperty::property_name, modePlantedProperty);
@@ -663,7 +660,7 @@ void PhysicalDomainIntegrationTest::test_visibility()
         ASSERT_TRUE(domain->isEntityVisibleFor(*observerEntity, *smallVisibleEntity));
         ASSERT_TRUE(domain->isEntityVisibleFor(*observerEntity, *smallEntity2));
         ASSERT_TRUE(domain->isEntityVisibleFor(*observerEntity, *largeEntity1));
-        ASSERT_FALSE(domain->isEntityVisibleFor(*observerEntity, *smallEntity1));
+        ASSERT_FALSE(domain->isEntityVisibleFor(*observerEntity, *entity));
 
         std::list<LocatedEntity*> observedList;
         domain->getVisibleEntitiesFor(*observerEntity, observedList);
@@ -684,7 +681,7 @@ void PhysicalDomainIntegrationTest::test_visibility()
     domain->tick(2, res);
     {
         ASSERT_TRUE(domain->isEntityVisibleFor(*observerEntity, *smallVisibleEntity));
-        ASSERT_TRUE(domain->isEntityVisibleFor(*observerEntity, *smallEntity1));
+        ASSERT_TRUE(domain->isEntityVisibleFor(*observerEntity, *entity));
         ASSERT_TRUE(domain->isEntityVisibleFor(*observerEntity, *largeEntity1));
         ASSERT_FALSE(domain->isEntityVisibleFor(*observerEntity, *smallEntity2));
 
@@ -703,6 +700,117 @@ void PhysicalDomainIntegrationTest::test_visibility()
         ASSERT_EQUAL("observer", (*I)->getId());
     }
 }
+
+
+void PhysicalDomainIntegrationTest::test_tunneling()
+{
+
+    OpVector res;
+
+    TypeNode* rockType = new TypeNode("rock");
+    TypeNode* humanType = new TypeNode("human");
+
+    Property<double>* massProp = new Property<double>();
+    massProp->data() = 10;
+
+    AngularFactorProperty angularFactorProperty;
+    angularFactorProperty.data() = WFMath::Vector<3>::ZERO();
+
+    GeometryProperty geometrySphereProperty;
+    geometrySphereProperty.set(Atlas::Message::MapType({{"shape", "sphere"}}));
+
+    Entity* rootEntity = new Entity("0", newId());
+    TerrainProperty* terrainProperty = new TerrainProperty();
+    Mercator::Terrain& terrain = terrainProperty->getData();
+    terrain.setBasePoint(0, 0, Mercator::BasePoint(10));
+    terrain.setBasePoint(0, 1, Mercator::BasePoint(10));
+    terrain.setBasePoint(1, 0, Mercator::BasePoint(10));
+    terrain.setBasePoint(1, 1, Mercator::BasePoint(10));
+    rootEntity->setProperty("terrain", terrainProperty);
+    rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
+    rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 512)));
+    PhysicalDomain* domain = new PhysicalDomain(*rootEntity);
+
+    TestWorld testWorld(*rootEntity);
+
+
+    for (int i = 0; i < 10; ++i) {
+        long id = newId();
+        std::stringstream ss;
+        ss << "small" << id;
+
+        Entity* entity = new Entity(ss.str(), id);
+        entity->setProperty("mass", massProp);
+        entity->setProperty(AngularFactorProperty::property_name, &angularFactorProperty);
+        entity->setType(rockType);
+        entity->m_location.m_pos = WFMath::Point<3>(10, 10, 20 + (i * 5));
+        entity->m_location.setBBox(
+            WFMath::AxisBox<3>(WFMath::Point<3>(-0.2f, -0.2f, 0), WFMath::Point<3>(0.2, 0.2, 0.4)));
+        domain->addEntity(*entity);
+
+        domain->tick(10, res);
+
+        std::string s = "(" + entity->getId() + ")entity->m_location.m_pos.z()";
+        this->assertFuzzyEqual("10", 10, s.c_str(), entity->m_location.m_pos.z(), "0.5", 0.5, __PRETTY_FUNCTION__, \
+                          __FILE__, __LINE__);
+        domain->removeEntity(*entity);
+    }
+
+
+    for (int i = 0; i < 10; ++i) {
+        long id = newId();
+        std::stringstream ss;
+        ss << "sphere" << id;
+
+        Entity* entity = new Entity(ss.str(), id);
+        entity->setProperty("mass", massProp);
+        entity->setProperty(GeometryProperty::property_name, &geometrySphereProperty);
+        entity->setProperty(AngularFactorProperty::property_name, &angularFactorProperty);
+        entity->setType(humanType);
+        entity->m_location.m_pos = WFMath::Point<3>(10, 10, 20 + (i * 5));
+        std::stringstream ss2;
+        ss2 << ss.str() << " " << entity->m_location.m_pos;
+        log(INFO, ss2.str());
+        entity->m_location.setBBox(
+            WFMath::AxisBox<3>(WFMath::Point<3>(-0.2f, -0.2f, 0), WFMath::Point<3>(0.2, 0.2, 0.4)));
+        domain->addEntity(*entity);
+
+        domain->tick(15, res);
+
+        std::string s = "(" + entity->getId() + ")entity->m_location.m_pos.z()";
+        this->assertFuzzyEqual("10", 10, s.c_str(), entity->m_location.m_pos.z(), "0.5", 0.5, __PRETTY_FUNCTION__, \
+                          __FILE__, __LINE__);
+        domain->removeEntity(*entity);
+    }
+
+    for (int i = 0; i < 10; ++i) {
+        long id = newId();
+        std::stringstream ss;
+        ss << "human" << id;
+
+        Entity* entity = new Entity(ss.str(), id);
+        entity->setProperty("mass", massProp);
+        entity->setProperty(AngularFactorProperty::property_name, &angularFactorProperty);
+        entity->setType(humanType);
+        entity->m_location.m_pos = WFMath::Point<3>(10, 10, 20 + (i * 5));
+        std::stringstream ss2;
+        ss2 << ss.str() << " " << entity->m_location.m_pos;
+        log(INFO, ss2.str());
+        entity->m_location.setBBox(
+            WFMath::AxisBox<3>(WFMath::Point<3>(-0.2f, -0.2f, 0), WFMath::Point<3>(0.2, 0.2, 2)));
+        domain->addEntity(*entity);
+
+        domain->tick(10, res);
+
+        std::string s = "(" + entity->getId() + ")entity->m_location.m_pos.z()";
+        this->assertFuzzyEqual("10", 10, s.c_str(), entity->m_location.m_pos.z(), "0.5", 0.5, __PRETTY_FUNCTION__, \
+                          __FILE__, __LINE__);
+        domain->removeEntity(*entity);
+    }
+
+
+}
+
 
 void TestWorld::message(const Operation& op, LocatedEntity& ent)
 {
