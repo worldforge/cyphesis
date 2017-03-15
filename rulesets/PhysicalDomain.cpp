@@ -142,6 +142,10 @@ short COLLISION_MASK_STATIC = 8;
  */
 float VISIBILITY_CHECK_INTERVAL_SECONDS = 2.0f;
 
+float CCD_MOTION_FACTOR = 0.2f;
+
+float CCD_SPHERE_FACTOR = 0.2f;
+
 class PhysicalDomain::PhysicalMotionState : public btMotionState
 {
     public:
@@ -165,6 +169,7 @@ class PhysicalDomain::PhysicalMotionState : public btMotionState
         ///Bullet only calls the update of worldtransform for active objects
         virtual void setWorldTransform(const btTransform& /* centerOfMassWorldTrans */)
         {
+
 
             LocatedEntity& entity = *m_bulletEntry.entity;
             m_domain.m_movingEntities.insert(&m_bulletEntry);
@@ -209,13 +214,16 @@ class PhysicalDomain::PhysicalMotionState : public btMotionState
 PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
     Domain(entity),
     //default config for now
-    m_collisionConfiguration(new btDefaultCollisionConfiguration()), m_dispatcher(new btCollisionDispatcher(m_collisionConfiguration)), m_constraintSolver(new btSequentialImpulseConstraintSolver()),
+    m_collisionConfiguration(new btDefaultCollisionConfiguration()),
+    m_dispatcher(new btCollisionDispatcher(m_collisionConfiguration)),
+    m_constraintSolver(new btSequentialImpulseConstraintSolver()),
     //We'll use a dynamic broadphase for the main world. It's not as fast as SAP variants, but it's faster when dynamic objects are at rest.
     m_broadphase(new btDbvtBroadphase()),
     m_dynamicsWorld(new btDiscreteDynamicsWorld(m_dispatcher, m_broadphase, m_constraintSolver, m_collisionConfiguration)), m_visibilityWorld(
     //We'll use a SAP broadphase for the visibility. This is more efficient than a dynamic one.
     new btCollisionWorld(new btCollisionDispatcher(new btDefaultCollisionConfiguration()),
-                         new bt32BitAxisSweep3(Convert::toBullet(entity.m_location.bBox().lowCorner()), Convert::toBullet(entity.m_location.bBox().highCorner())),
+                         new bt32BitAxisSweep3(Convert::toBullet(entity.m_location.bBox().lowCorner()),
+                                               Convert::toBullet(entity.m_location.bBox().highCorner())),
                          new btDefaultCollisionConfiguration())),
     m_visibilityCheckCountdown(0),
     m_terrain(nullptr)
@@ -364,6 +372,7 @@ void PhysicalDomain::buildTerrainPage(Mercator::Segment& segment, float friction
 
     WFMath::Point<3> pos(xPos, yPos, zPos);
     btVector3 btPos = Convert::toBullet(pos);
+
 
     btRigidBody::btRigidBodyConstructionInfo segmentCI(.0f, nullptr, terrainShape);
     segmentCI.m_friction = friction;
@@ -706,8 +715,9 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
 
         //To prevent tunneling we'll turn on CCD with suitable values.
         float minSize = std::min(size.x(), std::min(size.y(), size.z()));
-        entry->rigidBody->setCcdMotionThreshold(minSize * 0.2f);
-        entry->rigidBody->setCcdSweptSphereRadius(minSize * 0.2f);
+        float maxSize = std::max(size.x(), std::max(size.y(), size.z()));
+        entry->rigidBody->setCcdMotionThreshold(minSize * CCD_MOTION_FACTOR);
+        entry->rigidBody->setCcdSweptSphereRadius(minSize * CCD_SPHERE_FACTOR);
 
         if (mass == 0) {
             entry->rigidBody->setCollisionFlags(entry->rigidBody->getCollisionFlags() | btCollisionObject::CF_STATIC_OBJECT);
