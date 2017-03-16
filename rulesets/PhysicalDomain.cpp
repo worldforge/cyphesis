@@ -258,7 +258,8 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
                 entry.second.first->rigidBody->setLinearVelocity(entry.second.second);
             }
 
-            //entry.second.first->rigidBody->setFriction(0.1);
+            //When entities are being propelled they will have low friction. When propelling stop the friction will be returned in setVelocity.
+            entry.second.first->rigidBody->setFriction(0.1);
             entry.second.first->rigidBody->activate();
         }
     };
@@ -1277,7 +1278,12 @@ void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& 
                     bodyVelocity.setY(0);
                 }
                 entry.rigidBody->setLinearVelocity(bodyVelocity);
-                // entry.rigidBody->setFriction(100);
+                float friction = 1.0f;
+                const Property<float>* frictionProp = m_entity.getPropertyType<float>("friction");
+                if (frictionProp) {
+                    friction = frictionProp->data();
+                }
+                entry.rigidBody->setFriction(friction);
 
                 m_propellingEntries.erase(entity->getIntId());
 
