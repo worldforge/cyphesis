@@ -510,6 +510,9 @@ void PhysicalDomain::updateVisibilityOfEntry(BulletEntry* bulletEntry, OpVector&
 
         //See which entities became visible, and which sight was lost of.
         for (BulletEntry* viewedEntry : callback.m_entries) {
+            if (viewedEntry == bulletEntry) {
+                continue;
+            }
             auto I = observed.find(viewedEntry);
             if (I != observed.end()) {
                 //It was already seen; do nothing special
@@ -530,6 +533,9 @@ void PhysicalDomain::updateVisibilityOfEntry(BulletEntry* bulletEntry, OpVector&
         }
 
         for (BulletEntry* disappearedEntry : observed) {
+            if (disappearedEntry == bulletEntry) {
+                continue;
+            }
             //Send disappearence
             //debug_print(" disappear: " << disappearedEntry->entity->describeEntity() << " for " << bulletEntry->entity->describeEntity());
             Disappearance disappear;
@@ -544,6 +550,8 @@ void PhysicalDomain::updateVisibilityOfEntry(BulletEntry* bulletEntry, OpVector&
         }
 
         bulletEntry->observedByThis = std::move(callback.m_entries);
+        //Make sure ourselves is in the list
+        bulletEntry->observedByThis.insert(bulletEntry);
     }
 
     //This entry is something which can be observed; check what can see it after it has moved
@@ -791,13 +799,13 @@ void PhysicalDomain::toggleChildPerception(LocatedEntity& entity)
     BulletEntry* entry = I->second;
     if (entity.isPerceptive()) {
         if (!entry->viewSphere) {
-            btSphereShape* viewSphere = new btSphereShape(0.5);
+            btSphereShape* viewSphere = new btSphereShape(0.5f / VISIBILITY_SCALING_FACTOR);
             btCollisionObject* visObject = new btCollisionObject();
             visObject->setCollisionShape(viewSphere);
             visObject->setUserPointer(entry);
             entry->viewSphere = visObject;
             if (entity.m_location.m_pos.isValid()) {
-                visObject->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(entity.m_location.m_pos)));
+                visObject->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(entity.m_location.m_pos) / VISIBILITY_SCALING_FACTOR));
                 m_visibilityWorld->addCollisionObject(visObject, VISIBILITY_MASK_OBSERVABLE, VISIBILITY_MASK_OBSERVER);
             }
             OpVector res;
