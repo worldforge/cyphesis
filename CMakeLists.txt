@@ -79,14 +79,12 @@ link_libraries(${SIGCPP_LIBRARIES})
 find_package(PythonLibs 2.6 REQUIRED)
 link_directories(${PYTHON_LIBRARY_DIRS})
 include_directories(${PYTHON_INCLUDE_DIRS})
-link_libraries(${PYTHON_LIBRARIES})
 
 find_package(PythonInterp 2.6 REQUIRED)
 
 find_package(GCrypt 1.2 REQUIRED)
 link_directories(${GCRYPT_LIBRARY_DIRS})
 include_directories(${GCRYPT_INCLUDE_DIRS})
-link_libraries(${GCRYPT_LIBRARIES})
 
 #The default FindBullet.cmake macro doesn't look in pkg-config first, so we'll do that ourselves.
 pkg_check_modules(BULLET bullet>=2.81)
@@ -96,14 +94,11 @@ endif (NOT BULLET_FOUND)
 
 link_directories(${BULLET_LIBRARY_DIRS})
 include_directories(${BULLET_INCLUDE_DIRS})
-link_libraries(${BULLET_LIBRARIES})
 
 find_package(Avahi)
 if (AVAHI_FOUND)
     link_directories(${AVAHI_LIBRARY_DIRS})
     include_directories(${AVAHI_INCLUDE_DIR})
-    #For some reason it seems we need to also link to avahi-common
-    link_libraries(${AVAHI_LIBRARIES} -lavahi-common)
     set(HAVE_AVAHI 1)
 endif (AVAHI_FOUND)
 
@@ -111,12 +106,10 @@ endif (AVAHI_FOUND)
 find_package(PostgreSQL 7.1 REQUIRED)
 link_directories(${PostgreSQL_LIBRARY_DIRS})
 include_directories(${PostgreSQL_INCLUDE_DIRS})
-link_libraries(${PostgreSQL_LIBRARIES})
 
 find_package(Readline REQUIRED)
 link_directories(${READLINE_LIBRARY_DIRS})
 include_directories(${READLINE_INCLUDE_DIRS})
-link_libraries(${READLINE_LIBRARY})
 
 find_package(Boost
         1.46.0

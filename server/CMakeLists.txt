@@ -9,6 +9,11 @@ add_library(comm
         CommAsioClient.cpp
         IdleConnector.cpp)
 
+if (AVAHI_FOUND)
+    #For some reason it seems we need to also link to avahi-common
+    target_link_libraries(comm ${AVAHI_LIBRARIES} -lavahi-common)
+endif (AVAHI_FOUND)
+
 add_executable(cyphesis
         Account.cpp
         Player.cpp

@@ -39,6 +39,9 @@ add_library(common
         OperationsDispatcher.cpp
         RuleTraversalTask.cpp)
 
+target_link_libraries(common ${PostgreSQL_LIBRARIES})
+target_link_libraries(common ${GCRYPT_LIBRARIES})
+
 target_compile_definitions(common PUBLIC -DBINDIR="${CMAKE_INSTALL_FULL_BINDIR}" -DDATADIR="${CMAKE_INSTALL_FULL_DATADIR}" -DSYSCONFDIR="${CMAKE_INSTALL_FULL_SYSCONFDIR}" -DLOCALSTATEDIR="${CMAKE_INSTALL_FULL_LOCALSTATEDIR}")
 
 add_library(tools

@@ -2,6 +2,16 @@ add_definitions(-DTESTDATADIR="${CMAKE_CURRENT_SOURCE_DIR}/data")
 
 add_library(stubnavigation stubs/navigation/libstub.cpp)
 
+link_libraries(${PYTHON_LIBRARIES})
+link_libraries(${GCRYPT_LIBRARIES})
+link_libraries(${BULLET_LIBRARIES})
+if (AVAHI_FOUND)
+    link_libraries(${AVAHI_LIBRARIES} -lavahi-common)
+endif (AVAHI_FOUND)
+link_libraries(${PostgreSQL_LIBRARIES})
+link_libraries(${READLINE_LIBRARY})
+
+
 set(PYTHON_TESTS_LIBS
         scriptpython
         rulesetmind

@@ -11,6 +11,7 @@ add_executable(cyclient
         ClientPropertyManager.cpp
         client.cpp)
 
+target_link_libraries(cyclient ${PYTHON_LIBRARIES})
 
 target_link_libraries(cyclient
         scriptpython

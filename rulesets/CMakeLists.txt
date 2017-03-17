@@ -62,6 +62,8 @@ add_library(rulesetentity
         QuaternionProperty.cpp
         Vector3Property.cpp)
 
+target_link_libraries(rulesetentity ${BULLET_LIBRARIES})
+
 add_library(entityfilter
         entityfilter/Filter.cpp
         entityfilter/Providers.cpp
@@ -106,6 +108,7 @@ add_library(scriptpython
         PythonArithmeticFactory.cpp
         PythonScriptFactory.cpp)
 
+target_link_libraries(scriptpython ${PYTHON_LIBRARIES})
 
 install(FILES
         basic/world/objects/Thing.py
