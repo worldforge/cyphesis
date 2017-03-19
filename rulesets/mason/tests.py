@@ -4,13 +4,11 @@
 
 from atlas import *
 from random import *
+
 from mind.panlingua import interlinguish
+
 il=interlinguish
 from cyphesis import probability
-from cyphesis.editor import editor
-from physics import Quaternion
-from physics import Vector3D
-import time
 from math import *
 
 from define_world import *

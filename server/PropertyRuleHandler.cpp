@@ -19,13 +19,9 @@
 #include "PropertyRuleHandler.h"
 
 #include "EntityBuilder.h"
-#include "TaskFactory.h"
-
-#include "rulesets/PythonScriptFactory.h"
 
 #include "common/log.h"
 #include "common/debug.h"
-#include "common/Inheritance.h"
 #include "common/compose.hpp"
 #include "common/PropertyManager.h"
 #include "common/PropertyFactory.h"

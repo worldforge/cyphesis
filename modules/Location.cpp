@@ -18,7 +18,6 @@
 
 #include "rulesets/LocatedEntity.h"
 
-#include "common/log.h"
 #include "common/const.h"
 #include "common/debug.h"
 

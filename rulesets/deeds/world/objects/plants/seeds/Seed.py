@@ -1,6 +1,5 @@
 from atlas import *
 
-from common import log,const
 from random import *
 
 import atlas

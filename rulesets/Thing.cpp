@@ -19,15 +19,10 @@
 #include "Thing.h"
 
 #include "Motion.h"
-#include "Domain.h"
 #include "PropelProperty.h"
 
 #include "common/BaseWorld.h"
-#include "common/log.h"
-#include "common/const.h"
 #include "common/debug.h"
-#include "common/compose.hpp"
-#include "common/Property.h"
 
 #include "common/Burn.h"
 #include "common/Nourish.h"

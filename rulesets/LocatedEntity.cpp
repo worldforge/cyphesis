@@ -24,9 +24,7 @@
 #include "Script.h"
 #include "AtlasProperties.h"
 
-#include "common/Property.h"
 #include "common/TypeNode.h"
-#include "Domain.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;

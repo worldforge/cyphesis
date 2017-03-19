@@ -17,28 +17,22 @@
 
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
 #endif // HAVE_CONFIG_H
 
 #include "common/AtlasStreamClient.h"
 #include "common/ClientTask.h"
-#include "common/system.h"
 
 #include "common/debug.h"
 
 #include <Atlas/Codec.h>
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Encoder.h>
-#include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Net/Stream.h>
 
 #ifdef _WIN32
 #undef DATADIR
 #endif // _WIN32
 
-#include <boost/asio/deadline_timer.hpp>
-
-#include <cstdio>
 #include <iostream>
 
 using Atlas::Message::Element;

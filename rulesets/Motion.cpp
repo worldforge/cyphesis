@@ -18,19 +18,12 @@
 
 #include "Motion.h"
 
-#include "Domain.h"
-
 #include "rulesets/LocatedEntity.h"
 
 #include "physics/Collision.h"
 
-#include "common/compose.hpp"
-#include "common/debug.h"
 #include "common/const.h"
-#include "common/log.h"
 #include "common/TypeNode.h"
-
-#include <iostream>
 
 using String::compose;
 

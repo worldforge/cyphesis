@@ -19,18 +19,12 @@
 #include "AdminClient.h"
 
 #include "common/debug.h"
-#include "common/sockets.h"
 
-#include <Atlas/Codec.h>
 #include <Atlas/Net/Stream.h>
 
 #include <Atlas/Objects/Encoder.h>
-#include <Atlas/Objects/objectFactory.h>
 
 #include <Atlas/Objects/Entity.h>
-#include <Atlas/Objects/Anonymous.h>
-
-#include <Atlas/Objects/Operation.h>
 
 #include <iostream>
 

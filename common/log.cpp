@@ -34,7 +34,6 @@ extern "C" {
 #ifdef HAVE_SYSLOG_H
   #include <syslog.h>
 #endif // HAVE_SYSLOG_H
-  #include <errno.h>
 }
 
 #ifndef _WIN32

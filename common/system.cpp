@@ -23,7 +23,6 @@
 #include "system.h"
 
 #include "log.h"
-#include "debug.h"
 #include "globals.h"
 #include "compose.hpp"
 
@@ -43,16 +42,11 @@
 
 extern "C" {
 #ifdef HAVE_SYS_UTSNAME_H
-    #include <sys/utsname.h>
 #endif // HAVE_SYS_UTSNAME_H
-    #include <sys/types.h>
 #ifdef HAVE_SYS_WAIT_H
     #include <sys/wait.h>
 #endif // HAVE_SYS_WAIT_H
-    #include <signal.h>
-    #include <fcntl.h>
-    #include <unistd.h>
-    #include <stdio.h>
+#include <fcntl.h>
 }
 
 #ifdef HAVE_WINSOCK_H

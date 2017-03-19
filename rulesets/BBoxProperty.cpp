@@ -21,8 +21,6 @@
 #include "LocatedEntity.h"
 #include "DensityProperty.h"
 
-#include "common/log.h"
-
 #include <wfmath/atlasconv.h>
 
 #include <Atlas/Objects/SmartPtr.h>

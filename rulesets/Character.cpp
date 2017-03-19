@@ -33,12 +33,8 @@
 #include "common/const.h"
 #include "common/custom.h"
 #include "common/debug.h"
-#include "common/globals.h"
-#include "common/log.h"
 #include "common/Link.h"
 #include "common/TypeNode.h"
-#include "common/serialno.h"
-#include "common/compose.hpp"
 #include "common/PropertyManager.h"
 
 #include "common/Actuate.h"
@@ -55,10 +51,7 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
-#include <sigc++/functors/mem_fun.h>
 #include <sigc++/adaptors/hide.h>
-
-#include <cassert>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;

@@ -18,7 +18,6 @@
 
 #include "OpRuleHandler.h"
 
-#include "common/log.h"
 #include "common/debug.h"
 #include "common/Inheritance.h"
 #include "common/compose.hpp"

@@ -20,9 +20,6 @@
 
 #include "common/globals.h"
 
-#include <cstdio>
-#include <cstdlib>
-
 // date_pat=re.compile("^|[-:]|\s+");
 
 // unsigned int DateTime::m_spm = 60; // seconds per minute

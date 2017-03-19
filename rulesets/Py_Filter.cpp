@@ -1,8 +1,5 @@
 #include "Py_Filter.h"
 #include "Py_Thing.h"
-#include "entityfilter/Filter.h"
-
-#include "common/compose.hpp"
 
 ///\brief Create a new Filter object for a given query
 PyObject * get_filter(PyObject * self, PyObject* query){

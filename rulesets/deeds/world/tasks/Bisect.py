@@ -2,12 +2,11 @@
 #Copyright (C) 2006 Al Riddoch (See the file COPYING for details)
 #Copyright (C) 2011 Jekin Trivedi <jekintrivedi@gmail.com> (See the file COPYING for details).
 
+import server
 from atlas import *
 from physics import *
-from physics import Quaternion
 from physics import Vector3D
 
-import server
 
 class Bisect(server.Task):
     """ A task for cutting a section of material in two."""

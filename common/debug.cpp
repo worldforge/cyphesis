@@ -27,7 +27,6 @@
 #include <Atlas/Objects/Entity.h>
 
 #include <iostream>
-#include <sstream>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;

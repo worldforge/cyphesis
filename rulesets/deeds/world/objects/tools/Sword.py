@@ -2,9 +2,8 @@
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 #return Operation("create",Entity(name='wood',type=['lumber'],location=self.location.parent.location.copy()),to=self)
 
-from atlas import *
-
 import server
+from atlas import *
 
 class Sword(server.Thing):
     """This is base class for swords, this one just ordinary sword"""

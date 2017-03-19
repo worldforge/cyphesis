@@ -24,11 +24,9 @@
 #include "Motion.h"
 
 #include "common/BaseWorld.h"
-#include "common/log.h"
 #include "common/debug.h"
 #include "common/op_switch.h"
 #include "common/TypeNode.h"
-#include "common/Property.h"
 #include "common/PropertyManager.h"
 
 #include "common/Actuate.h"
@@ -42,16 +40,9 @@
 
 #include "common/Monitors.h"
 #include "common/Variable.h"
-#include "common/compose.hpp"
-
-#include <wfmath/atlasconv.h>
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
-
-#include <sigc++/functors/mem_fun.h>
-
-#include <cassert>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;

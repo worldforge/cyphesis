@@ -20,13 +20,10 @@
 
 #include "LocatedEntity.h"
 
-#include "common/type_utils.h"
 #include "common/debug.h"
 
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/RootEntity.h>
-
-#include <cassert>
 
 static const bool debug_flag = false;
 

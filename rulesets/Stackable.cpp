@@ -24,8 +24,6 @@
 #include "Script.h"
 
 #include "common/BaseWorld.h"
-#include "common/log.h"
-#include "common/Property.h"
 #include "common/TypeNode.h"
 
 #include <Atlas/Objects/Operation.h>

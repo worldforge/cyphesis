@@ -1,14 +1,13 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 2009 Amey Parulekar (See the file COPYING for details).
 
+import server
+import weakref
 from atlas import *
 from physics import *
-from physics import Quaternion
 from physics import Point3D
 from physics import Vector3D
 
-import server
-import weakref
 
 class Fishing(server.Task):
     """A task for fishing in the ocean"""

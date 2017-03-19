@@ -29,30 +29,22 @@
 
 #include "common/Database.h"
 #include "common/TypeNode.h"
-#include "common/Property.h"
 #include "common/debug.h"
 #include "common/Monitors.h"
 #include "common/PropertyManager.h"
 #include "common/id.h"
-#include "common/log.h"
-#include "common/compose.hpp"
 #include "common/Variable.h"
 #include "common/custom.h"
 #include "common/Think.h"
 #include "common/Commune.h"
-#include "common/SystemTime.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/SmartPtr.h>
-#include <Atlas/Message/Element.h>
 
 #include <wfmath/atlasconv.h>
 
 #include <sigc++/adaptors/bind.h>
-#include <sigc++/functors/mem_fun.h>
 
-#include <iostream>
 #include <unordered_set>
 
 using Atlas::Message::MapType;

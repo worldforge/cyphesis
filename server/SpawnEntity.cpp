@@ -20,16 +20,12 @@
 #include "rulesets/LocatedEntity.h"
 #include "rulesets/AreaProperty.h"
 
-#include "common/log.h"
 #include "common/random.h"
-#include "common/type_utils_impl.h"
 
 #include "physics/Shape.h"
 
-#include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/SmartPtr.h>
 
 #include <wfmath/polygon.h>
 

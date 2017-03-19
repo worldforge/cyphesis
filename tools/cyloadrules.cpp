@@ -30,19 +30,14 @@
 #include "common/globals.h"
 #include "common/log.h"
 
-#include <Atlas/Message/DecoderBase.h>
 #include <Atlas/Codecs/XML.h>
 
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string/erase.hpp>
 
-#include <string>
-#include <fstream>
 #include <iostream>
 
-#include <sys/types.h>
 // #ifdef HAVE_DIRENT_H
-#include <dirent.h>
 // #endif // HAS_DIRENT_H
 
 using Atlas::Message::Element;

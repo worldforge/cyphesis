@@ -22,14 +22,10 @@
 #include "Player.h"
 #include "ArchetypeFactory.h"
 
-#include "rulesets/PythonScriptFactory.h"
-
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/compose.hpp"
-#include "common/EntityKit.h"
 
-#include <Atlas/Objects/Entity.h>
 #include <Atlas/Objects/objectFactory.h>
 
 #include <iostream>

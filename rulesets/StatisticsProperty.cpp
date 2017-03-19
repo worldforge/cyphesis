@@ -23,8 +23,6 @@
 #include "common/log.h"
 #include "common/BaseWorld.h"
 
-#include <cassert>
-
 static const bool debug_flag = false;
 
 using Atlas::Message::Element;

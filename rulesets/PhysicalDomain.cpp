@@ -18,8 +18,6 @@
 
 #ifdef HAVE_CONFIG_H
 
-#include "config.h"
-
 #endif
 
 #include "PhysicalDomain.h"
@@ -27,8 +25,6 @@
 #include "TerrainProperty.h"
 #include "LocatedEntity.h"
 #include "OutfitProperty.h"
-#include "EntityProperty.h"
-#include "ModeProperty.h"
 #include "PropelProperty.h"
 #include "GeometryProperty.h"
 #include "AngularFactorProperty.h"
@@ -39,9 +35,7 @@
 #include "physics/Convert.h"
 
 #include "common/debug.h"
-#include "common/const.h"
 #include "common/Unseen.h"
-#include "common/log.h"
 #include "common/TypeNode.h"
 #include "common/Update.h"
 #include "common/BaseWorld.h"
@@ -56,9 +50,7 @@
 #include <wfmath/atlasconv.h>
 
 #include <btBulletDynamicsCommon.h>
-#include <BulletCollision/CollisionShapes/btStaticPlaneShape.h>
 #include <BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h>
-#include <BulletCollision/CollisionDispatch/btGhostObject.h>
 #include <BulletDynamics/Character/btKinematicCharacterController.h>
 
 #include <sigc++/bind.h>

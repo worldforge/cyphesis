@@ -21,20 +21,12 @@
 #include "server/ExternalMindsManager.h"
 
 #include "rulesets/Character.h"
-#include "rulesets/MindFactory.h"
-#include "rulesets/PythonScriptFactory.h"
 #include "rulesets/BaseMind.h"
 
-#include "common/atlas_helpers.h"
-#include "common/compose.hpp"
-#include "common/log.h"
 #include "common/Setup.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/SmartPtr.h>
-
-#include <iostream>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;

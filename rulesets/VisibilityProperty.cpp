@@ -20,8 +20,6 @@
 
 #include "rulesets/LocatedEntity.h"
 
-#include "common/log.h"
-
 VisibilityProperty::VisibilityProperty()
 {
 }

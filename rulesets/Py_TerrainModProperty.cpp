@@ -22,7 +22,6 @@
 #include "Py_Point3D.h"
 #include "Py_Shape.h"
 #include "Py_Thing.h"
-#include "Py_Vector3D.h"
 
 #include "rulesets/TerrainModProperty.h"
 

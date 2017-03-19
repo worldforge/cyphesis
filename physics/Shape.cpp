@@ -19,10 +19,6 @@
 #include "Shape_impl.h"
 #include "Course.h"
 
-#include <Atlas/Message/Element.h>
-
-#include <wfmath/line.h>
-#include <wfmath/polygon.h>
 #include <wfmath/stream.h>
 
 using Atlas::Message::Element;

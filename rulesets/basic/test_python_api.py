@@ -1,10 +1,10 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 2006 Al Riddoch (See the file COPYING for details).
 
-import sys
-import atlas
-import Vector3D
 import Point3D
+import Vector3D
+import atlas
+import sys
 
 
 def default(mapeditor):

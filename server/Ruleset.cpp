@@ -38,16 +38,13 @@
 #include "common/AtlasFileLoader.h"
 #include "common/compose.hpp"
 
-#include <Atlas/Message/Element.h>
 #include <Atlas/Objects/objectFactory.h>
 
 #include <boost/filesystem.hpp>
 
 #include <iostream>
 
-#include <sys/types.h>
 #ifdef HAVE_DIRENT_H
-#include <dirent.h>
 #endif // HAS_DIRENT_H
 
 using Atlas::Message::Element;

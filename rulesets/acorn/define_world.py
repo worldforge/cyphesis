@@ -2,12 +2,12 @@
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 
 from atlas import *
-from whrandom import *
 from mind.panlingua import interlinguish
+from whrandom import *
+
 il=interlinguish
 from world import probability
 from editor import editor
-import time
 
 #goal priority
 #1) eating: certain times

@@ -1,14 +1,12 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 2008 Alistair Riddoch (See the file COPYING for details).
 
-from atlas import *
-from random import *
-from cyphesis.editor import create_editor
-from physics import Quaternion
-from physics import Vector3D
-from math import *
-
 import time
+from atlas import *
+from cyphesis.editor import create_editor
+from math import *
+from random import *
+
 
 def default(host='', account='', password='', **args):
     # Spray the world with rubbish

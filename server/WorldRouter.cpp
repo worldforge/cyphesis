@@ -26,15 +26,11 @@
 #include "rulesets/Domain.h"
 
 #include "common/id.h"
-#include "common/log.h"
 #include "common/debug.h"
 #include "common/const.h"
-#include "common/globals.h"
 #include "common/random.h"
 #include "common/system.h"
 #include "common/TypeNode.h"
-#include "common/serialno.h"
-#include "common/compose.hpp"
 #include "common/Inheritance.h"
 #include "common/Monitors.h"
 #include "common/SystemTime.h"
@@ -44,7 +40,6 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
-#include <sstream>
 #include <algorithm>
 
 using Atlas::Message::Element;

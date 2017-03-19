@@ -28,11 +28,7 @@
 #include "common/const.h"
 #include "common/debug.h"
 #include "common/random.h"
-#include "common/compose.hpp"
 #include "common/TypeNode.h"
-#include "common/Property.h"
-
-#include "common/log.h"
 
 #include "common/Eat.h"
 #include "common/Tick.h"

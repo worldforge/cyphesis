@@ -1,15 +1,13 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 2011 Jekin Trivedi <jekintrivedi@gmail.com> (See the file COPYING for details).
 
+import server
 from atlas import *
 from physics import *
-from physics import Quaternion
-from physics import Vector3D
 from physics import Point3D
-
+from physics import Vector3D
 from random import *
 
-import server
 
 class Pulling(server.Task):
     """ A task for pulling objects vertically using simple rope mechanism."""

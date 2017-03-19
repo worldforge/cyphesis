@@ -20,7 +20,6 @@
 
 #include "BaseMind.h"
 
-#include "common/debug.h"
 #include "common/ScriptKit.h"
 
 static const bool debug_flag = false;

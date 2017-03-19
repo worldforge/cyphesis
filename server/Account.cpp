@@ -29,11 +29,7 @@
 
 #include "common/BaseWorld.h"
 #include "common/id.h"
-#include "common/log.h"
-#include "common/const.h"
 #include "common/debug.h"
-#include "common/serialno.h"
-#include "common/compose.hpp"
 
 #include <wfmath/atlasconv.h>
 
@@ -41,7 +37,6 @@
 #include <Atlas/Objects/Anonymous.h>
 
 #include <sigc++/adaptors/bind.h>
-#include <sigc++/functors/mem_fun.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;

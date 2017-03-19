@@ -1,14 +1,13 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 2006 Al Riddoch (See the file COPYING for details).
 
+import math
+import server
+import sys
+import weakref
 from atlas import *
 from physics import *
 
-import math
-import sys
-import weakref
-
-import server
 
 class Heaping(server.Task):
     """ A task for laying down built up terrain with a digging implement."""

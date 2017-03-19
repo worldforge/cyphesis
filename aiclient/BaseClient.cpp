@@ -18,16 +18,13 @@
 
 #include "BaseClient.h"
 
-#include "common/id.h"
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/compose.hpp"
 #include "common/system.h"
 
-#include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
-#include <cstdlib>
 #include <iostream>
 
 using Atlas::Message::MapType;

@@ -25,10 +25,7 @@
 #include "rulesets/LocatedEntity.h"
 
 #include "common/BaseWorld.h"
-#include "common/id.h"
-#include "common/log.h"
 #include "common/debug.h"
-#include "common/compose.hpp"
 
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>

@@ -1,13 +1,12 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 2011 Jekin Trivedi <jekintrivedi@gmail.com> (See the file COPYING for details).
 
+import server
 from atlas import *
 from physics import *
-from physics import Quaternion
 from physics import Point3D
 from physics import Vector3D
 
-import server
 
 class Trenching(server.Task):
     """ A task for creating Trench with a pickaxe."""

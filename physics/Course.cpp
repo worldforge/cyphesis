@@ -18,8 +18,4 @@
 
 #include "Course_impl.h"
 
-#include <wfmath/axisbox.h>
-#include <wfmath/line.h>
-#include <wfmath/vector.h>
-
 template class Course<2, WFMath::Line>;

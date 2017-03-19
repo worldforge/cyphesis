@@ -20,13 +20,6 @@
 
 #include "common/debug.h"
 
-#include <iostream>
-
-#include <list>
-#include <map>
-#include <string>
-#include <stdio.h>
-
 //timedata time2type(const std::string & t) {
     //return timeInfo[t][1];
 //}

@@ -17,7 +17,6 @@
 
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
 #endif
 
 /*
@@ -34,10 +33,6 @@
 #include "common/compose.hpp"
 #include <varconf/config.h>
 
-#include <cstring>
-#include <iostream>
-#include <memory>
-#include <vector>
 #include <boost/algorithm/string.hpp>
 
 

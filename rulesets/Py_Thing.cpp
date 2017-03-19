@@ -23,7 +23,6 @@
 #include "Py_Vector3D.h"
 #include "Py_Point3D.h"
 #include "Py_Location.h"
-#include "Py_World.h"
 #include "Py_Property.h"
 #include "Py_Operation.h"
 #include "Py_Oplist.h"
@@ -38,8 +37,6 @@
 #include "navigation/Steering.h"
 
 #include "common/id.h"
-#include "common/log.h"
-#include "common/Property.h"
 #include "common/TypeNode.h"
 #include "common/Inheritance.h"
 

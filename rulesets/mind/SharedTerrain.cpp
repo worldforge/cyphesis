@@ -17,14 +17,11 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
 #endif
 
 #include <rulesets/mind/SharedTerrain.h>
 
 #include <Mercator/Segment.h>
-
-#include <cmath>
 
 SharedTerrain::SharedTerrain() :
         m_terrain(new Mercator::Terrain())

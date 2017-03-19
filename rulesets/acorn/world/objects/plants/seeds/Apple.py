@@ -2,12 +2,8 @@
 #Copyright (C) 1999 Al Riddoch (See the file COPYING for details).
 
 from atlas import *
-
-from cyphesis.Thing import Thing
-from world.objects.plants.seeds.Seed import Seed
 from misc import set_kw
-
-import atlas
+from world.objects.plants.seeds.Seed import Seed
 
 
 class Apple(Seed):

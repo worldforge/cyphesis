@@ -17,7 +17,6 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
 #endif
 
 #include "InventoryDomain.h"
@@ -25,10 +24,7 @@
 #include "EntityProperty.h"
 #include "LocatedEntity.h"
 
-#include "common/const.h"
-
 #include "common/debug.h"
-#include "common/const.h"
 #include "common/Unseen.h"
 
 #include <Atlas/Objects/Operation.h>

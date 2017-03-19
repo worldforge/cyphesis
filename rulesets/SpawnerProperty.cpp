@@ -17,7 +17,6 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
 #endif
 
 #include "SpawnerProperty.h"
@@ -34,8 +33,6 @@
 #include <Atlas/Objects/Operation.h>
 
 #include <wfmath/MersenneTwister.h>
-#include <wfmath/quaternion.h>
-#include <wfmath/const.h>
 #include <wfmath/atlasconv.h>
 
 static const bool debug_flag = false;

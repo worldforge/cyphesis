@@ -27,13 +27,10 @@
 
 #include "common/compose.hpp"
 #include "common/debug.h"
-#include "common/id.h"
 #include "common/log.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
-
-#include <boost/asio.hpp>
 
 #include <iostream>
 

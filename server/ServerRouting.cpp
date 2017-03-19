@@ -30,7 +30,6 @@
 #include "common/Monitors.h"
 #include "common/Variable.h"
 
-#include <Atlas/Message/Element.h>
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/RootEntity.h>
 

@@ -2,9 +2,8 @@
 #Copyright (C) 1999 Al Riddoch (See the file COPYING for details).
 
 from atlas import *
-
-from world.objects.plants.Tree import Tree
 from misc import set_kw
+from world.objects.plants.Tree import Tree
 
 """
 This is a special tree which is the actual tree from which apples will

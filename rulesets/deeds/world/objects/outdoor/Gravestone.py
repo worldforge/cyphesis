@@ -2,7 +2,6 @@
 #Copyright (C) 2005 Erik Hjortsberg (See the file COPYING for details).
 
 from atlas import *
-from common import log,const
 from physics import Vector3D
 from random import *
 

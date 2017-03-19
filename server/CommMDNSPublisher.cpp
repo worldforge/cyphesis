@@ -48,8 +48,6 @@
 
 #include <avahi-common/error.h>
 
-#include <cassert>
-
 static const bool debug_flag = false;
 
 static void client_callback(AvahiClient * s,

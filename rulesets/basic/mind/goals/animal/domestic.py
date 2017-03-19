@@ -1,11 +1,10 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 2007 Al Riddoch (See the file COPYING for details).
 
+import re
 from atlas import *
 from physics import *
 from physics import Vector3D
-
-import re
 
 sowee_pattern = re.compile("[Ss]owee")
 

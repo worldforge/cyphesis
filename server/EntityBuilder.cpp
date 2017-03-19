@@ -24,20 +24,14 @@
 #include "rulesets/LocatedEntity.h"
 
 #include "common/BaseWorld.h"
-#include "common/id.h"
-#include "common/log.h"
 #include "common/debug.h"
 #include "common/Inheritance.h"
-#include "common/random.h"
-#include "common/compose.hpp"
 #include "common/Monitors.h"
 #include "common/ScriptKit.h"
 #include "common/TaskKit.h"
 #include "common/TypeNode.h"
 #include "common/Variable.h"
 
-#include <Atlas/Message/Element.h>
-#include <Atlas/Objects/Entity.h>
 #include <Atlas/Objects/RootOperation.h>
 
 using Atlas::Message::MapType;

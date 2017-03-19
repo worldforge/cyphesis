@@ -2,10 +2,7 @@ from atlas import *
 
 from cyphesis.Thing import Thing
 from misc import set_kw
-from common import log,const
 from whrandom import *
-
-import atlas
 
 debug_seed = 0
 

@@ -1,8 +1,7 @@
-from atlas import *
-from Vector3D import Vector3D
-from mind.NPCMind import NPCMind
-
 import re
+from Vector3D import Vector3D
+from atlas import *
+from mind.NPCMind import NPCMind
 
 sowee_pattern = re.compile("[Ss]owee")
 

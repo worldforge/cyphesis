@@ -21,10 +21,7 @@
 #include "BaseMind.h"
 
 #include "common/BaseWorld.h"
-#include "common/log.h"
 #include "common/debug.h"
-#include "common/serialno.h"
-#include "common/compose.hpp"
 
 #include "common/Setup.h"
 #include "common/Tick.h"

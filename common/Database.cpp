@@ -25,16 +25,11 @@
 #include "compose.hpp"
 #include "const.h"
 
-#include <Atlas/Message/MEncoder.h>
-#include <Atlas/Message/Element.h>
 #include <Atlas/Codecs/XML.h>
 
 #include <varconf/config.h>
 
-#include <sstream>
-
 #include <cstring>
-#include <cstdlib>
 
 #include <cassert>
 

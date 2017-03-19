@@ -26,7 +26,6 @@
 
 #include "common/log.h"
 #include "common/debug.h"
-#include "common/EntityKit.h"
 #include "common/Inheritance.h"
 #include "common/compose.hpp"
 

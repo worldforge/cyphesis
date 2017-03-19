@@ -24,7 +24,6 @@
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Objects/Operation.h>
 
-#include <cassert>
 #include <sstream>
 #include <iostream>
 

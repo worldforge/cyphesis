@@ -8,16 +8,10 @@
 #              be advanced by way of tutorial to illustrate how features work
 
 from atlas import *
-from random import *
-#from mind.panlingua import interlinguish
-#il=interlinguish
-from cyphesis import probability
-from cyphesis.editor import editor, create_editor
-from physics import Quaternion
-from physics import Vector3D
+from cyphesis.editor import create_editor
 from math import *
+from random import *
 
-import server
 
 #spawn_pos=(0,0,0)
 

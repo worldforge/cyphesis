@@ -29,9 +29,6 @@
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
-#include <sstream>
-#include <cassert>
-
 using Atlas::Objects::Root;
 using Atlas::Objects::smart_dynamic_cast;
 using Atlas::Objects::Entity::Anonymous;

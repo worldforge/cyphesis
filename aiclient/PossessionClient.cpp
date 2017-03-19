@@ -17,7 +17,6 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
 #endif
 
 #include "PossessionClient.h"
@@ -26,9 +25,6 @@
 #include "rulesets/BaseMind.h"
 
 #include "common/Possess.h"
-#include "common/log.h"
-#include "common/compose.hpp"
-#include "common/sockets.h"
 #include "common/id.h"
 #include "common/custom.h"
 #include "common/SystemTime.h"
@@ -36,7 +32,6 @@
 
 #include "common/debug.h"
 
-#include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Entity.h>
 
 static const bool debug_flag = false;

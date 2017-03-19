@@ -17,7 +17,6 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
 #endif
 
 #include <rulesets/mind/AwareMind.h>
@@ -29,7 +28,6 @@
 #include "navigation/Awareness.h"
 #include "navigation/Steering.h"
 
-#include "common/log.h"
 #include "common/SystemTime.h"
 #include "common/Tick.h"
 #include "common/debug.h"
@@ -39,10 +37,6 @@
 #include <Atlas/Objects/Entity.h>
 
 #include <wfmath/atlasconv.h>
-
-#include <Mercator/Terrain.h>
-
-#include <iostream>
 
 static const bool debug_flag = true;
 

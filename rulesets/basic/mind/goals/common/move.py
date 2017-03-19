@@ -1,22 +1,20 @@
     #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 
-from common import const
-from physics import *
+    import types
+    from entity_filter import *
+    from mind.Goal import Goal
+    from mind.goals.common.common import *
+    from mind.goals.common.misc_goal import *
+    from physics import *
+    from physics import Point3D
+    from physics import Vector3D
+    from random import *
 
-from physics import Vector3D
-from physics import Point3D
+    from common import const
 
-from entity_filter import *
 
-from mind.Goal import Goal
-from mind.goals.common.common import *
-from mind.goals.common.misc_goal import *
-from random import *
-
-import types
-
-############################ MOVE ME ####################################
+    ############################ MOVE ME ####################################
 
 class move_me(Goal):
     """Move me to a certain place.

@@ -28,8 +28,6 @@
 #include "common/Update.h"
 
 #include <Atlas/Objects/Anonymous.h>
-#include <Atlas/Objects/RootOperation.h>
-#include <Atlas/Objects/SmartPtr.h>
 
 #include <iostream>
 

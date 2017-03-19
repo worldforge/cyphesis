@@ -24,7 +24,6 @@
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/SmartPtr.h>
 
 #include <wfmath/atlasconv.h>
 

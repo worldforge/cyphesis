@@ -24,8 +24,6 @@
 #include "common/BaseWorld.h"
 #include "common/const.h"
 #include "common/debug.h"
-#include "common/log.h"
-#include "common/compose.hpp"
 
 #include "common/Tick.h"
 

@@ -17,7 +17,6 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
 #endif
 
 #include "PossessionAccount.h"
@@ -27,8 +26,6 @@
 #include "rulesets/BaseMind.h"
 
 #include "common/Possess.h"
-#include "common/log.h"
-#include "common/compose.hpp"
 #include "common/id.h"
 #include "common/custom.h"
 #include "common/TypeNode.h"
@@ -38,7 +35,6 @@
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Entity.h>
-#include <Atlas/Objects/SmartPtr.h>
 
 
 static const bool debug_flag = false;

@@ -31,7 +31,6 @@
 #include <Atlas/Message/Element.h>
 #include <Atlas/Codecs/XML.h>
 
-#include <string>
 #include <fstream>
 #include <iostream>
 

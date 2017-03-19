@@ -2,9 +2,8 @@
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 #Copyright (C) 2004 Al Riddoch (See the file COPYING for details).
 
-from atlas import *
-
 import server
+from atlas import *
 
 class Pickaxe(server.Thing):
     """This is a pickaxe for heavy digging and quarrying """

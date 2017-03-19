@@ -25,7 +25,6 @@
 #include "CommMetaClient.h"
 #include "CommMDNSPublisher.h"
 #include "CommAsioListener_impl.h"
-#include "CommAsioClient.h"
 #include "Connection.h"
 #include "ServerRouting.h"
 #include "EntityBuilder.h"
@@ -44,34 +43,16 @@
 #include "rulesets/LocatedEntity.h"
 
 #include "common/id.h"
-#include "common/log.h"
 #include "common/const.h"
-#include "common/debug.h"
-#include "common/globals.h"
 #include "common/Inheritance.h"
-#include "common/compose.hpp"
 #include "common/system.h"
-#include "common/nls.h"
 #include "common/sockets.h"
-#include "common/utils.h"
-#include "common/serialno.h"
 #include "common/SystemTime.h"
 #include "common/Monitors.h"
 
 #include <varconf/config.h>
 
-#include <sigc++/functors/mem_fun.h>
-
-#include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/Anonymous.h>
-
-#include <boost/asio/io_service.hpp>
-#include <boost/asio/local/stream_protocol.hpp>
-#include <boost/asio/ip/tcp.hpp>
-#include <boost/asio/deadline_timer.hpp>
-
 #include <thread>
-#include <cstdlib>
 #include <fstream>
 
 using String::compose;

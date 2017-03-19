@@ -1,9 +1,8 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 2005 Al Riddoch (See the file COPYING for details).
 
-from atlas import *
-
 import server
+from atlas import *
 
 class Trowel(server.Thing):
     """This is tool for planting seeds"""

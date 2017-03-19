@@ -20,10 +20,7 @@
 
 #include "ClientConnection.h"
 
-#include "common/debug.h"
-
 #include <Atlas/Objects/Anonymous.h>
-#include <Atlas/Objects/Operation.h>
 
 using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Entity::Anonymous;

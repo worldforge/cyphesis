@@ -17,17 +17,14 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
 #endif
 
 #include "AwarenessStoreProvider.h"
 #include "common/TypeNode.h"
-#include "common/log.h"
 #include "common/debug.h"
 
 #include "rulesets/BBoxProperty.h"
 
-#include <wfmath/point.h>
 #include <wfmath/ball.h>
 
 static const bool debug_flag = true;

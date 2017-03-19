@@ -21,11 +21,9 @@
 #include "LocatedEntity.h"
 #include "Script.h"
 
-#include "common/log.h"
 #include "common/Tick.h"
 
 #include <Atlas/Objects/Anonymous.h>
-#include <Atlas/Objects/SmartPtr.h>
 
 using Atlas::Objects::Operation::Tick;
 using Atlas::Objects::Entity::Anonymous;

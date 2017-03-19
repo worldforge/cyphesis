@@ -1,10 +1,10 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 2001 Al Riddoch (See the file COPYING for details).
 
-from cyphesis.Thing import Thing
-from misc import set_kw
-from atlas import *
 from Vector3D import Vector3D
+from atlas import *
+from cyphesis.Thing import Thing
+
 
 # bbox = 5,7,z
 # bmedian = 5.5,5.5,z

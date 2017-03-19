@@ -2,7 +2,6 @@
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 
 from atlas import *
-from common import log,const
 
 import server
 

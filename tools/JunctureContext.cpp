@@ -20,7 +20,6 @@
 #include "common/debug.h"
 
 #include <Atlas/Objects/RootOperation.h>
-#include <Atlas/Objects/SmartPtr.h>
 
 #include <iostream>
 

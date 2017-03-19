@@ -22,16 +22,12 @@
 #include "Script.h"
 
 #include "common/id.h"
-#include "common/log.h"
 #include "common/debug.h"
 #include "common/TypeNode.h"
-#include "common/compose.hpp"
 #include "common/Inheritance.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
-
-#include <sstream>
 
 static const bool debug_flag = false;
 

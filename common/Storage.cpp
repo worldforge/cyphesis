@@ -20,8 +20,6 @@
 
 #include "system.h"
 
-#include <Atlas/Message/Element.h>
-
 #include <iostream>
 
 /// \brief Initialise a connection to the accounts database

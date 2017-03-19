@@ -21,7 +21,6 @@
 #include "log.h"
 #include "TypeNode.h"
 #include "compose.hpp"
-#include "OperationRouter.h"
 
 #include <Atlas/Objects/Operation.h>
 

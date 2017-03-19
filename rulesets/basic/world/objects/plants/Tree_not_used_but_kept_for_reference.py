@@ -1,11 +1,7 @@
-from atlas import *
-
-from common import log,const
-#from world.objects.plants import prob
-from random import *
-from Vector3D import Vector3D
-
 import server
+from atlas import *
+from common import const
+from random import *
 
 debug_tree = 0
 

@@ -29,21 +29,15 @@
 
 #include "common/BaseWorld.h"
 #include "common/id.h"
-#include "common/log.h"
 #include "common/debug.h"
-#include "common/serialno.h"
 #include "common/custom.h"
 #include "common/Inheritance.h"
-#include "common/compose.hpp"
 
 #include "common/Connect.h"
 #include "common/Monitor.h"
 
-#include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
-
-#include <sigc++/functors/mem_fun.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;

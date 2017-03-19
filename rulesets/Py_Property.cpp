@@ -25,8 +25,6 @@
 
 #include "common/log.h"
 
-#include <iostream>
-
 PyObject * Property_asPyObject(PropertyBase * property, Entity * owner)
 {
     StatisticsProperty * sp = dynamic_cast<StatisticsProperty *>(property);

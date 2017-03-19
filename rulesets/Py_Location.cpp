@@ -28,8 +28,6 @@
 
 #include "common/BaseWorld.h"
 
-#include <sstream>
-
 static PyObject * Location_copy(PyLocation *self)
 {
 #ifndef NDEBUG

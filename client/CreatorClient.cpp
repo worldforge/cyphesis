@@ -18,8 +18,6 @@
 
 #include "CreatorClient.h"
 
-#include "common/debug.h"
-
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 

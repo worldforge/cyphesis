@@ -3,7 +3,6 @@
 
 from atlas import *
 from cyphesis.Thing import Thing
-from common import log,const
 from misc import set_kw
 from whrandom import *
 

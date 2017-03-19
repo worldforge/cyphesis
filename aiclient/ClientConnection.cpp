@@ -19,12 +19,9 @@
 
 #include "ClientConnection.h"
 
-#include "common/log.h"
 #include "common/debug.h"
-#include "common/compose.hpp"
 
 #include <Atlas/Codec.h>
-#include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
 #include <Atlas/Message/QueuedDecoder.h>

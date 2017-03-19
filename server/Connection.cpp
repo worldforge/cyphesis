@@ -28,23 +28,17 @@
 #include "rulesets/ExternalMind.h"
 
 #include "common/id.h"
-#include "common/log.h"
 #include "common/debug.h"
 #include "common/Update.h"
-#include "common/globals.h"
-#include "common/serialno.h"
 #include "common/Inheritance.h"
 #include "common/system.h"
 #include "common/TypeNode.h"
-#include "common/compose.hpp"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
 
 #include <sigc++/adaptors/bind.h>
-#include <sigc++/functors/mem_fun.h>
 
-#include <cassert>
 #include <algorithm>
 
 using Atlas::Message::Element;

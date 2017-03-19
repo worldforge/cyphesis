@@ -1,14 +1,11 @@
+import server
+from Vector3D import Vector3D
 from atlas import *
-
+from common import const
 from cyphesis.Thing import Thing
-from world.objects.plants.seeds.Seed import *
-from common import log,const
-#from world.objects.plants import prob
 from misc import set_kw
 from whrandom import *
-from Vector3D import Vector3D
-
-import server
+from world.objects.plants.seeds.Seed import *
 
 debug_tree = 0
 

@@ -24,8 +24,6 @@
 
 #include <varconf/config.h>
 
-#include <iostream>
-
 HttpCache * HttpCache::m_instance = 0;
 
 HttpCache::HttpCache()

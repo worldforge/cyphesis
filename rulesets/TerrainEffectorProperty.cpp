@@ -20,10 +20,7 @@
 #include "rulesets/LocatedEntity.h"
 #include "rulesets/TerrainProperty.h"
 
-#include "modules/Location.h"
 #include "modules/TerrainContext.h"
-
-#include <Mercator/TerrainMod.h>
 
 const TerrainProperty * TerrainEffectorProperty::getTerrain(LocatedEntity * owner, LocatedEntity** terrainHolder)
 {

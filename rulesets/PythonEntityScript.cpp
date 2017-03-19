@@ -31,8 +31,6 @@
 #include "common/compose.hpp"
 #include "common/OperationRouter.h"
 
-#include <Atlas/Objects/RootOperation.h>
-
 #include <iostream>
 
 static const bool debug_flag = false;

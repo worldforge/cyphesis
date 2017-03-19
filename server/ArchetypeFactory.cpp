@@ -20,27 +20,16 @@
 #include "WorldRouter.h"
 
 #include "rulesets/Character.h"
-#include "rulesets/Creator.h"
 #include "rulesets/Plant.h"
-#include "rulesets/Stackable.h"
-#include "rulesets/World.h"
 
-#include "rulesets/LocatedEntity.h"
 #include "common/debug.h"
-#include "common/log.h"
-#include "common/ScriptKit.h"
 #include "common/TypeNode.h"
-#include "common/random.h"
 #include "common/id.h"
 #include "common/Think.h"
 
 #include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/Entity.h>
-#include <Atlas/Objects/objectFactory.h>
 
 #include <wfmath/atlasconv.h>
-
-#include <iostream>
 
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;

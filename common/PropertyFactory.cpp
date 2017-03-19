@@ -18,8 +18,6 @@
 
 #include "PropertyFactory_impl.h"
 
-#include "Property.h"
-
 PropertyKit::~PropertyKit()
 {
 }

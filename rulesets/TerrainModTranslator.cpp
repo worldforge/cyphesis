@@ -22,7 +22,6 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.//
 //
 #ifdef HAVE_CONFIG_H
-#include "config.h"
 #endif
 
 #include "TerrainModTranslator.h"
@@ -31,8 +30,6 @@
 #include <Mercator/TerrainMod.h>
 
 #include <wfmath/atlasconv.h>
-
-#include <cassert>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;

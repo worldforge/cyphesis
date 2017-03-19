@@ -17,7 +17,6 @@
 
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
 #endif
 
 #include "Interactive.h"
@@ -28,25 +27,13 @@
 #include "EntityImporter.h"
 
 #include "tools/AccountContext.h"
-#include "tools/AvatarContext.h"
 #include "tools/ConnectionContext.h"
-#include "tools/JunctureContext.h"
-
-#include "common/AtlasStreamClient.h"
-#include "common/log.h"
-#include "common/OperationRouter.h"
-#include "common/globals.h"
-#include "common/sockets.h"
 
 #include "common/Tick.h"
 
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Net/Stream.h>
-#include <Atlas/Objects/Decoder.h>
-#include <Atlas/Codec.h>
 #include <Atlas/Objects/Entity.h>
-#include <Atlas/Objects/Anonymous.h>
-#include <Atlas/Objects/Operation.h>
 
 #include "common/Monitor.h"
 #include "common/Connect.h"

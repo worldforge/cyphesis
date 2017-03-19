@@ -26,7 +26,6 @@
 /// also be converted into other formats.
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
 #endif
 
 #include "common/Storage.h"
@@ -35,9 +34,6 @@
 #include "common/system.h"
 
 #include <varconf/config.h>
-
-#include <string>
-#include <iostream>
 
 #include <cstring>
 

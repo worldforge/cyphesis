@@ -21,9 +21,7 @@
 #include "Domain.h"
 
 #include "common/BaseWorld.h"
-#include "common/log.h"
 #include "common/debug.h"
-#include "common/compose.hpp"
 #include "common/custom.h"
 #include "common/TypeNode.h"
 #include "common/Nourish.h"
@@ -33,21 +31,13 @@
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>
 #include <Mercator/Surface.h>
-#include <Mercator/TerrainMod.h>
 #include <Mercator/TileShader.h>
 #include <Mercator/FillShader.h>
 #include <Mercator/ThresholdShader.h>
 #include <Mercator/DepthShader.h>
 #include <Mercator/GrassShader.h>
 
-#include <wfmath/intersect.h>
-
-#include <Atlas/Objects/RootOperation.h>
 #include <Atlas/Objects/Anonymous.h>
-
-#include <sstream>
-
-#include <cassert>
 
 static const bool debug_flag = false;
 

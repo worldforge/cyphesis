@@ -20,7 +20,6 @@
 #include "Py_RootEntity.h"
 #include "Py_Oplist.h"
 #include "Py_Message.h"
-#include "Py_Thing.h"
 
 #include "common/log.h"
 

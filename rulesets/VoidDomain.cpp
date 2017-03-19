@@ -17,12 +17,9 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
 #endif
 
 #include "VoidDomain.h"
-
-#include "common/const.h"
 
 VoidDomain::VoidDomain(LocatedEntity& entity)
 : Domain(entity)

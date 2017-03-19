@@ -20,8 +20,6 @@
 
 #include "rulesets/LocatedEntity.h"
 
-#include <sigc++/slot.h>
-
 void EntityRef::setup()
 {
     if (m_inner) {

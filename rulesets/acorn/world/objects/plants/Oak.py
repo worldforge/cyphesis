@@ -1,9 +1,7 @@
-
 from atlas import *
-
-from world.objects.plants.Tree import Tree
 from misc import set_kw
 from whrandom import *
+from world.objects.plants.Tree import Tree
 
 
 debug_oak = 0

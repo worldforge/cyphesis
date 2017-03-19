@@ -17,7 +17,6 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
 #endif
 
 #include "Providers.h"
@@ -26,11 +25,9 @@
 #include "../BBoxProperty.h"
 #include "../EntityProperty.h"
 #include "../../common/TypeNode.h"
-#include "../../common/compose.hpp"
 #include "../../common/Inheritance.h"
 
 #include <algorithm>
-#include <stdexcept>
 
 namespace EntityFilter
 {

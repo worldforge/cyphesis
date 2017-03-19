@@ -24,9 +24,6 @@
 
 #include "common/debug.h"
 
-#include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/SmartPtr.h>
-
 #include <iostream>
 
 static const bool debug_flag = false;

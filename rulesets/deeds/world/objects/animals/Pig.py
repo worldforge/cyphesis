@@ -1,12 +1,8 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
-from atlas import *
-
-from random import *
-from physics import Vector3D
-
-import atlas
 import server
+from atlas import *
+from random import *
 
 class Pig(server.Thing):
     """ A pig """

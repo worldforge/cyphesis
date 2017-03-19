@@ -22,17 +22,13 @@
 #include "Py_Message.h"
 #include "Py_Point3D.h"
 
-#include "common/log.h"
-
 #include "physics/Shape.h"
 
 #include "physics/Course.h"
 
 #include <Atlas/Message/Element.h>
 
-#include <wfmath/axisbox.h>
 #include <wfmath/line.h>
-#include <wfmath/point.h>
 #include <wfmath/polygon.h>
 
 #include <sstream>

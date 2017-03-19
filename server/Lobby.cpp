@@ -25,7 +25,6 @@
 #include "common/compose.hpp"
 #include "common/debug.h"
 #include "common/log.h"
-#include "common/serialno.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>

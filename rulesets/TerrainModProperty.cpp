@@ -22,22 +22,12 @@
 #include "TerrainProperty.h"
 #include "Domain.h"
 
-#include "common/compose.hpp"
-#include "common/log.h"
 #include "common/debug.h"
 
-#include "modules/Location.h"
 #include "modules/TerrainContext.h"
-
-#include <Mercator/TerrainMod.h>
 
 #include <Atlas/Objects/RootEntity.h>
 #include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/SmartPtr.h>
-
-#include <sstream>
-
-#include <cassert>
 
 static const bool debug_flag = false;
 

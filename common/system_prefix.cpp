@@ -17,20 +17,16 @@
 
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
 #endif
 
 #include "binreloc.h"
 #include "compose.hpp"
 #include "globals.h"
-#include "log.h"
 #include "system.h"
 
 #ifdef _WIN32
 #undef DATADIR
 #endif // _WIN32
-
-#include <cassert>
 
 #ifdef HAVE_WINDOWS_H
 #include <windows.h>
