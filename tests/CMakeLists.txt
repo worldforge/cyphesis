@@ -11,6 +11,11 @@ endif (AVAHI_FOUND)
 link_libraries(${PostgreSQL_LIBRARIES})
 link_libraries(${READLINE_LIBRARY})
 
+#On platforms which supports it, link the "libSegFault" library which provides nice stack traces
+find_library(SEGFAULT_LIBRARY SegFault)
+if (SEGFAULT_LIBRARY)
+    link_libraries(${SEGFAULT_LIBRARY})
+endif(SEGFAULT_LIBRARY)
 
 set(PYTHON_TESTS_LIBS
         scriptpython
