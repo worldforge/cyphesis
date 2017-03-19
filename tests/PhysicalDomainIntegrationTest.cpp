@@ -177,7 +177,7 @@ void PhysicalDomainIntegrationTest::test_fallToBottom()
         time += tickSize;
         domain->tick(tickSize, res);
     }
-    ASSERT_EQUAL(freeEntity->m_location.m_pos.z(), -64);
+    ASSERT_FUZZY_EQUAL(freeEntity->m_location.m_pos.z(), -64, 0.1);
     //Fixed entity should not move
     ASSERT_EQUAL(fixedEntity->m_location.m_pos, WFMath::Point<3>(10, 10, 0));
 }
@@ -349,12 +349,10 @@ void PhysicalDomainIntegrationTest::test_collision()
     domain->tick(tickSize, res);
 
     //Should have moved 2/15 meters
-    ASSERT_FUZZY_EQUAL(freeEntity->m_location.m_pos.y(), 10 + (2.0 / 15.0), 0.01f);
+    ASSERT_FUZZY_EQUAL(freeEntity->m_location.m_pos.y(), 10 + (2.0 / 15.0), 0.1f);
 
     //Inject ticks for one second
-    for (int i = 0; i < 14; ++i) {
-        domain->tick(tickSize, res);
-    }
+    domain->tick(14.0/ 15.0, res);
 
     //Should have moved 2 meters in y axis
     ASSERT_FUZZY_EQUAL(freeEntity->m_location.m_pos.y(), 12, 0.1f);
@@ -365,13 +363,11 @@ void PhysicalDomainIntegrationTest::test_collision()
     }
 
     //Should have stopped at planted entity
-    ASSERT_FUZZY_EQUAL(freeEntity->m_location.m_pos.y(), 13, 0.01f);
+    ASSERT_FUZZY_EQUAL(freeEntity->m_location.m_pos.y(), 13, 0.1f);
     ASSERT_EQUAL(plantedEntity->m_location.m_pos, plantedPos);
 
     domain->removeEntity(*plantedEntity);
-    for (int i = 0; i < 15; ++i) {
-        domain->tick(tickSize, res);
-    }
+    domain->tick(1.0, res);
 
     //Should have moved two more meters as planted entity was removed.
     ASSERT_FUZZY_EQUAL(freeEntity->m_location.m_pos.y(), 15, 0.1f);
