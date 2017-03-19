@@ -33,9 +33,9 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
 
 }
 
-btCollisionShape* GeometryProperty::createShape(const WFMath::AxisBox<3>& bbox, btVector3& centerOfMassOffset) const
+std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> GeometryProperty::createShape(const WFMath::AxisBox<3>& bbox, btVector3& centerOfMassOffset) const
 {
-    return nullptr;
+    return std::make_pair(nullptr, std::shared_ptr<btCollisionShape>());
 }
 
 GeometryProperty * GeometryProperty::copy() const

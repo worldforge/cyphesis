@@ -49,6 +49,7 @@ class btVector3;
 class GeometryProperty : public Property<Atlas::Message::MapType>
 {
     public:
+
         static const std::string property_name;
         static const std::string property_atlastype;
 
@@ -56,23 +57,26 @@ class GeometryProperty : public Property<Atlas::Message::MapType>
 
         virtual ~GeometryProperty();
 
-        virtual void set(const Atlas::Message::Element &);
+        virtual void set(const Atlas::Message::Element&);
 
-        virtual GeometryProperty * copy() const;
+        virtual GeometryProperty* copy() const;
+
         /**
          * Creates a new shape instance for the supplied bounding box, and setting the center of mass offset.
          * @param bbox The bounding box of the entity for which the shape will be used.
          * @param centerOfMassOffset Out parameter for the center of mass offset.
-         * @return A new collision shape. Ownership is passed to the caller.
+         * @return A pair containing at least a collision shape as first entry. Ownership of this shape is passed to the caller.
+         * Optionally there can also be as a second entry a shared pointer to a "backing" shape. Such a shape is shared between multiple instances, and deleted only
+         * when all instances are deleted. Calling code needs to retain the shared pointer as long as the first collision shape is in use.
          */
-        btCollisionShape * createShape(const WFMath::AxisBox<3> & bbox, btVector3 & centerOfMassOffset) const;
+        std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> createShape(const WFMath::AxisBox<3>& bbox, btVector3& centerOfMassOffset) const;
 
     private:
 
         /**
          * Creator function used for creating a new shape instance.
          */
-        std::function<btCollisionShape *(const WFMath::AxisBox<3> & bbox, const WFMath::Vector<3> & size, btVector3 & centerOfMassOffset)> mShapeCreator;
+        std::function<std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>>(const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset)> mShapeCreator;
 
         void buildMeshCreator();
 };

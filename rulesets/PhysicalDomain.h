@@ -106,6 +106,7 @@ class PhysicalDomain : public Domain
         {
             LocatedEntity* entity;
             btCollisionShape* collisionShape;
+            std::shared_ptr<btCollisionShape> backingShape;
             btRigidBody* rigidBody;
             sigc::connection propertyUpdatedConnection;
             Location lastSentLocation;

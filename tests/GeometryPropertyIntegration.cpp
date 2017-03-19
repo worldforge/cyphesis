@@ -102,7 +102,7 @@ void GeometryPropertyIntegrationTest::test_createShapes()
     btVector3 massOffset;
     {
         GeometryProperty g1;
-        btCollisionShape* shape = g1.createShape(aabb, massOffset);
+        btCollisionShape* shape = g1.createShape(aabb, massOffset).first;
         ASSERT_EQUAL(btVector3(-2, -3, 2.5), massOffset);
         btBoxShape* box = dynamic_cast<btBoxShape*>(shape);
         ASSERT_NOT_NULL(box);
@@ -111,7 +111,7 @@ void GeometryPropertyIntegrationTest::test_createShapes()
     {
         GeometryProperty g1;
         g1.set(Atlas::Message::MapType({{"shape", "box"}}));
-        btCollisionShape* shape = g1.createShape(aabb, massOffset);
+        btCollisionShape* shape = g1.createShape(aabb, massOffset).first;
         ASSERT_EQUAL(btVector3(-2, -3, 2.5), massOffset);
         btBoxShape* box = dynamic_cast<btBoxShape*>(shape);
         ASSERT_NOT_NULL(box);
@@ -120,8 +120,8 @@ void GeometryPropertyIntegrationTest::test_createShapes()
     {
         GeometryProperty g1;
         g1.set(Atlas::Message::MapType({{"shape", "sphere"}}));
-        btCollisionShape* shape = g1.createShape(aabb, massOffset);
-        ASSERT_EQUAL(btVector3(-2, -3, 2.5), massOffset);
+        btCollisionShape* shape = g1.createShape(aabb, massOffset).first;
+        ASSERT_EQUAL(btVector3(-4, -4, -4), massOffset);
         btSphereShape* sphere = dynamic_cast<btSphereShape*>(shape);
         ASSERT_NOT_NULL(sphere);
         //Min radius is used
@@ -131,7 +131,7 @@ void GeometryPropertyIntegrationTest::test_createShapes()
         WFMath::AxisBox<3> characterAabb(WFMath::Point<3>(-2, -3, -4), WFMath::Point<3>(2, 3, 10));
         GeometryProperty g1;
         g1.set(Atlas::Message::MapType({{"shape", "capsule-z"}}));
-        btCollisionShape* shape = g1.createShape(characterAabb, massOffset);
+        btCollisionShape* shape = g1.createShape(characterAabb, massOffset).first;
         ASSERT_EQUAL(btVector3(0, -3, 0), massOffset);
         btCapsuleShape* capsule = dynamic_cast<btCapsuleShape*>(shape);
         ASSERT_NOT_NULL(capsule);
@@ -142,7 +142,7 @@ void GeometryPropertyIntegrationTest::test_createShapes()
         WFMath::AxisBox<3> characterAabb(WFMath::Point<3>(-10, -3, -4), WFMath::Point<3>(2, 3, 2));
         GeometryProperty g1;
         g1.set(Atlas::Message::MapType({{"shape", "capsule-x"}}));
-        btCollisionShape* shape = g1.createShape(characterAabb, massOffset);
+        btCollisionShape* shape = g1.createShape(characterAabb, massOffset).first;
         ASSERT_EQUAL(btVector3(4, 1, 0), massOffset);
         btCapsuleShapeX* capsule = dynamic_cast<btCapsuleShapeX*>(shape);
         ASSERT_NOT_NULL(capsule);
@@ -153,7 +153,7 @@ void GeometryPropertyIntegrationTest::test_createShapes()
         WFMath::AxisBox<3> characterAabb(WFMath::Point<3>(-3, -10, -4), WFMath::Point<3>(3, 2, 2));
         GeometryProperty g1;
         g1.set(Atlas::Message::MapType({{"shape", "capsule-y"}}));
-        btCollisionShape* shape = g1.createShape(characterAabb, massOffset);
+        btCollisionShape* shape = g1.createShape(characterAabb, massOffset).first;
         ASSERT_EQUAL(btVector3(0, 1, -4), massOffset);
         btCapsuleShapeZ* capsule = dynamic_cast<btCapsuleShapeZ*>(shape);
         ASSERT_NOT_NULL(capsule);
@@ -165,7 +165,7 @@ void GeometryPropertyIntegrationTest::test_createShapes()
         WFMath::AxisBox<3> characterAabb(WFMath::Point<3>(-2, -3, -4), WFMath::Point<3>(2, 3, 10));
         GeometryProperty g1;
         g1.set(Atlas::Message::MapType({{"shape", "cylinder-z"}}));
-        btCollisionShape* shape = g1.createShape(characterAabb, massOffset);
+        btCollisionShape* shape = g1.createShape(characterAabb, massOffset).first;
         ASSERT_EQUAL(btVector3(0, -3, 0), massOffset);
         btCylinderShape* cylinder = dynamic_cast<btCylinderShape*>(shape);
         ASSERT_NOT_NULL(cylinder);
@@ -176,7 +176,7 @@ void GeometryPropertyIntegrationTest::test_createShapes()
         WFMath::AxisBox<3> characterAabb(WFMath::Point<3>(-10, -3, -4), WFMath::Point<3>(2, 3, 2));
         GeometryProperty g1;
         g1.set(Atlas::Message::MapType({{"shape", "cylinder-x"}}));
-        btCollisionShape* shape = g1.createShape(characterAabb, massOffset);
+        btCollisionShape* shape = g1.createShape(characterAabb, massOffset).first;
         ASSERT_EQUAL(btVector3(4, 1, 0), massOffset);
         btCylinderShapeX* cylinder = dynamic_cast<btCylinderShapeX*>(shape);
         ASSERT_NOT_NULL(cylinder);
@@ -187,7 +187,7 @@ void GeometryPropertyIntegrationTest::test_createShapes()
         WFMath::AxisBox<3> characterAabb(WFMath::Point<3>(-3, -10, -4), WFMath::Point<3>(3, 2, 2));
         GeometryProperty g1;
         g1.set(Atlas::Message::MapType({{"shape", "cylinder-y"}}));
-        btCollisionShape* shape = g1.createShape(characterAabb, massOffset);
+        btCollisionShape* shape = g1.createShape(characterAabb, massOffset).first;
         ASSERT_EQUAL(btVector3(0, 1, -4), massOffset);
         btCylinderShapeZ* cylinder = dynamic_cast<btCylinderShapeZ*>(shape);
         ASSERT_NOT_NULL(cylinder);
@@ -351,7 +351,7 @@ void GeometryPropertyIntegrationTest::test_createMesh()
     {
         WFMath::AxisBox<3> aabb(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1, 1, 1));
 
-        btCollisionShape* shape = g1.createShape(aabb, massOffset);
+        btCollisionShape* shape = g1.createShape(aabb, massOffset).first;
         ASSERT_EQUAL(btVector3(0, 0, 0), massOffset);
         btScaledBvhTriangleMeshShape* mesh = dynamic_cast<btScaledBvhTriangleMeshShape*>(shape);
         ASSERT_NOT_NULL(mesh);
@@ -362,8 +362,8 @@ void GeometryPropertyIntegrationTest::test_createMesh()
     {
         WFMath::AxisBox<3> aabb(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1, 1, 3));
 
-        btCollisionShape* shape = g1.createShape(aabb, massOffset);
-        ASSERT_EQUAL(btVector3(0, -2, 0), massOffset);
+        btCollisionShape* shape = g1.createShape(aabb, massOffset).first;
+        ASSERT_EQUAL(btVector3(0, 0, 0), massOffset);
         btScaledBvhTriangleMeshShape* mesh = dynamic_cast<btScaledBvhTriangleMeshShape*>(shape);
         ASSERT_NOT_NULL(mesh);
         ASSERT_EQUAL(btVector3(1, 2, 1), mesh->getLocalScaling());
@@ -397,7 +397,7 @@ void GeometryPropertyIntegrationTest::test_createMeshInvalidData()
 
         WFMath::AxisBox<3> aabb(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1, 1, 1));
 
-        btCollisionShape* shape = g1.createShape(aabb, massOffset);
+        btCollisionShape* shape = g1.createShape(aabb, massOffset).first;
         btBoxShape* box = dynamic_cast<btBoxShape*>(shape);
         ASSERT_NOT_NULL(box);
     }
@@ -422,7 +422,7 @@ void GeometryPropertyIntegrationTest::test_createMeshInvalidData()
 
         WFMath::AxisBox<3> aabb(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1, 1, 1));
 
-        btCollisionShape* shape = g1.createShape(aabb, massOffset);
+        btCollisionShape* shape = g1.createShape(aabb, massOffset).first;
         btBoxShape* box = dynamic_cast<btBoxShape*>(shape);
         ASSERT_NOT_NULL(box);
     }
@@ -448,7 +448,7 @@ void GeometryPropertyIntegrationTest::test_createMeshInvalidData()
 
         WFMath::AxisBox<3> aabb(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1, 1, 1));
 
-        btCollisionShape* shape = g1.createShape(aabb, massOffset);
+        btCollisionShape* shape = g1.createShape(aabb, massOffset).first;
         btBoxShape* box = dynamic_cast<btBoxShape*>(shape);
         ASSERT_NOT_NULL(box);
     }
@@ -474,7 +474,7 @@ void GeometryPropertyIntegrationTest::test_createMeshInvalidData()
 
         WFMath::AxisBox<3> aabb(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1, 1, 1));
 
-        btCollisionShape* shape = g1.createShape(aabb, massOffset);
+        btCollisionShape* shape = g1.createShape(aabb, massOffset).first;
         btBoxShape* box = dynamic_cast<btBoxShape*>(shape);
         ASSERT_NOT_NULL(box);
     }
@@ -501,7 +501,7 @@ void GeometryPropertyIntegrationTest::test_createMeshInvalidData()
 
         WFMath::AxisBox<3> aabb(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1, 1, 1));
 
-        btCollisionShape* shape = g1.createShape(aabb, massOffset);
+        btCollisionShape* shape = g1.createShape(aabb, massOffset).first;
         btBoxShape* box = dynamic_cast<btBoxShape*>(shape);
         ASSERT_NOT_NULL(box);
     }

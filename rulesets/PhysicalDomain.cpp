@@ -688,7 +688,9 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         auto size = bbox.highCorner() - bbox.lowCorner();
         const GeometryProperty* geometryProp = entity.getPropertyClassFixed<GeometryProperty>();
         if (geometryProp) {
-            entry->collisionShape = geometryProp->createShape(bbox, entry->centerOfMassOffset);
+            std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> instance = geometryProp->createShape(bbox, entry->centerOfMassOffset);
+            entry->collisionShape = instance.first;
+            entry->backingShape = instance.second;
         } else {
             auto btSize = Convert::toBullet(size * 0.5).absolute();
             entry->centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
