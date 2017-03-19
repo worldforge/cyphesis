@@ -419,7 +419,7 @@ Consumer<LocatedEntity>* ProviderFactory::createPropertyProvider(SegmentsList se
         return nullptr;
     }
 
-    auto& segment = segments.front();
+    auto segment = segments.front();
     auto attr = segment.attribute;
 
     segments.pop_front();
