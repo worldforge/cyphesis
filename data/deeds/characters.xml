@@ -108,6 +108,11 @@
         <string name="default">10</string>
         <string name="visibility">public</string>
       </map>
+      <!-- By default mobile entities should step up 30% of their height. This is based on humans. -->
+      <map name="step_factor">
+        <float name="default">0.3</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">mobile</string>
     <string name="objtype">class</string>

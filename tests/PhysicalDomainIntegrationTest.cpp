@@ -97,22 +97,24 @@ class PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         void test_visibility();
 
         void test_visibilityPerformance();
+
+        void test_stairs();
 };
 
 long PhysicalDomainIntegrationTest::m_id_counter = 0L;
 
 PhysicalDomainIntegrationTest::PhysicalDomainIntegrationTest()
 {
-    ADD_TEST(PhysicalDomainIntegrationTest::test_fallToBottom);
-    ADD_TEST(PhysicalDomainIntegrationTest::test_standOnFixed);
-    ADD_TEST(PhysicalDomainIntegrationTest::test_fallToTerrain);
-    ADD_TEST(PhysicalDomainIntegrationTest::test_collision);
-    ADD_TEST(PhysicalDomainIntegrationTest::test_mode);
-    ADD_TEST(PhysicalDomainIntegrationTest::test_determinism);
-    ADD_TEST(PhysicalDomainIntegrationTest::test_zoffset);
-    ADD_TEST(PhysicalDomainIntegrationTest::test_zscaledoffset);
-    ADD_TEST(PhysicalDomainIntegrationTest::test_visibility);
-
+//    ADD_TEST(PhysicalDomainIntegrationTest::test_fallToBottom);
+//    ADD_TEST(PhysicalDomainIntegrationTest::test_standOnFixed);
+//    ADD_TEST(PhysicalDomainIntegrationTest::test_fallToTerrain);
+//    ADD_TEST(PhysicalDomainIntegrationTest::test_collision);
+//    ADD_TEST(PhysicalDomainIntegrationTest::test_mode);
+//    ADD_TEST(PhysicalDomainIntegrationTest::test_determinism);
+//    ADD_TEST(PhysicalDomainIntegrationTest::test_zoffset);
+//    ADD_TEST(PhysicalDomainIntegrationTest::test_zscaledoffset);
+//    ADD_TEST(PhysicalDomainIntegrationTest::test_visibility);
+    ADD_TEST(PhysicalDomainIntegrationTest::test_stairs);
 }
 
 long PhysicalDomainIntegrationTest::newId()
@@ -352,7 +354,7 @@ void PhysicalDomainIntegrationTest::test_collision()
     ASSERT_FUZZY_EQUAL(freeEntity->m_location.m_pos.y(), 10 + (2.0 / 15.0), 0.1f);
 
     //Inject ticks for one second
-    domain->tick(14.0/ 15.0, res);
+    domain->tick(14.0 / 15.0, res);
 
     //Should have moved 2 meters in y axis
     ASSERT_FUZZY_EQUAL(freeEntity->m_location.m_pos.y(), 12, 0.1f);
@@ -698,6 +700,123 @@ void PhysicalDomainIntegrationTest::test_visibility()
         ++I;
         ASSERT_EQUAL("observer", (*I)->getId());
     }
+}
+
+void PhysicalDomainIntegrationTest::test_stairs()
+{
+    TypeNode* rockType = new TypeNode("rock");
+    TypeNode* humanType = new TypeNode("human");
+    ModeProperty* modePlantedProperty = new ModeProperty();
+    modePlantedProperty->set("planted");
+    Property<double>* massProp = new Property<double>();
+    massProp->data() = 100;
+    PropelProperty* propelProperty = new PropelProperty();
+    propelProperty->data() = WFMath::Vector<3>(0, 1, 0);
+    AngularFactorProperty angularZeroFactorProperty;
+    angularZeroFactorProperty.data() = WFMath::Vector<3>::ZERO();
+    Property<double>* stepFactorProp = new Property<double>();
+    stepFactorProp->data() = 0.3;
+
+
+    Entity* rootEntity = new Entity("0", newId());
+    rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
+    rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, 0), WFMath::Point<3>(64, 64, 64)));
+    PhysicalDomain* domain = new PhysicalDomain(*rootEntity);
+
+    TestWorld testWorld(*rootEntity);
+
+
+    //Create 10 entities at increasing height, forming a stair.
+    for (int i = 0; i < 10; ++i) {
+        std::stringstream ss;
+        long id = newId();
+        ss << "step" << id;
+        Entity* stepElement = new Entity(ss.str(), id);
+        stepElement->setProperty(ModeProperty::property_name, modePlantedProperty);
+        float height = 0.1f + (i * 0.1f);
+        float yPos = i * 0.2f;
+        WFMath::Point<3> pos(0, yPos, 0);
+        WFMath::AxisBox<3> bbox(WFMath::Point<3>(-0.4f, -0.1f, 0), WFMath::Point<3>(0.4f, 0.1f, height));
+        stepElement->m_location.setBBox(bbox);
+        stepElement->m_location.m_pos = pos;
+        stepElement->setType(rockType);
+
+
+        domain->addEntity(*stepElement);
+    }
+
+    //First with an entity which doesn't step; it should collide and be kept in place
+    {
+        Entity* human = new Entity("human", newId());
+        human->setProperty(AngularFactorProperty::property_name, &angularZeroFactorProperty);
+        human->setProperty("mass", massProp);
+        human->setProperty(PropelProperty::property_name, propelProperty);
+        human->setType(humanType);
+        human->m_location.m_pos = WFMath::Point<3>(0, -1, 0);
+        human->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.2f, -0.2f, 0), WFMath::Point<3>(0.2, 0.2, 1.8)));
+        domain->addEntity(*human);
+
+        OpVector res;
+        domain->tick(2, res);
+
+        ASSERT_FUZZY_EQUAL(-0.3f, human->m_location.m_pos.y(), 0.1f);
+        domain->removeEntity(*human);
+    }
+
+    //Then with an entity with a step_factor; it should step up on the stairs
+    {
+        Entity* human = new Entity("human", newId());
+        human->setProperty("step_factor", stepFactorProp);
+        human->setProperty(AngularFactorProperty::property_name, &angularZeroFactorProperty);
+        human->setProperty("mass", massProp);
+        human->setProperty(PropelProperty::property_name, propelProperty);
+        human->setType(humanType);
+        human->m_location.m_pos = WFMath::Point<3>(0, -1, 0);
+        human->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.2f, -0.2f, 0), WFMath::Point<3>(0.2, 0.2, 1.8)));
+        domain->addEntity(*human);
+
+        OpVector res;
+        domain->tick(2, res);
+
+        ASSERT_FUZZY_EQUAL(0.8, human->m_location.m_pos.y(), 0.1f);
+        domain->removeEntity(*human);
+    }
+
+    //Also place a tilted square entity, which is too tilted to allow for stepping on
+    //The human entity shouldn't step up on the tilted entity
+    {
+
+        long id = newId();
+        Entity* stepElement = new Entity("tilted", id);
+        stepElement->setProperty(ModeProperty::property_name, modePlantedProperty);
+        WFMath::Point<3> pos(20, 0, 0);
+        WFMath::AxisBox<3> bbox(WFMath::Point<3>(-0.4f, 0.f, 0), WFMath::Point<3>(0.4f, 0.4f, 1));
+        stepElement->m_location.m_orientation.rotate(WFMath::Quaternion(0, WFMath::numeric_constants<float>::pi() * 0.2f));
+        stepElement->m_location.setBBox(bbox);
+        stepElement->m_location.m_pos = pos;
+        stepElement->setType(rockType);
+
+
+        domain->addEntity(*stepElement);
+
+        Entity* human = new Entity("human", newId());
+        human->setProperty("step_factor", stepFactorProp);
+        human->setProperty(AngularFactorProperty::property_name, &angularZeroFactorProperty);
+        human->setProperty("mass", massProp);
+        human->setProperty(PropelProperty::property_name, propelProperty);
+        human->setType(humanType);
+        human->m_location.m_pos = WFMath::Point<3>(20, -1, 0);
+        human->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.2f, -0.2f, 0), WFMath::Point<3>(0.2, 0.2, 1.8)));
+        domain->addEntity(*human);
+
+        OpVector res;
+        domain->tick(2, res);
+
+        ASSERT_FUZZY_EQUAL(0, human->m_location.m_pos.z(), 0.01f);
+        ASSERT_FUZZY_EQUAL(-0.2f, human->m_location.m_pos.y(), 0.1f);
+    }
+
+
 }
 
 void TestWorld::message(const Operation& op, LocatedEntity& ent)

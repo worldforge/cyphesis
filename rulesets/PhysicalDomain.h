@@ -98,6 +98,8 @@ class PhysicalDomain : public Domain
 
     protected:
 
+        friend class SteppingCallback;
+
         class PhysicalMotionState;
 
         class VisibilityCallback;
@@ -144,12 +146,19 @@ class PhysicalDomain : public Domain
 
         std::unordered_map<long, std::tuple<Mercator::TerrainMod*, WFMath::Point<3>, WFMath::Quaternion, WFMath::AxisBox<2>>> m_terrainMods;
 
+
+        struct PropelEntry
+        {
+            BulletEntry* bulletEntry;
+            btVector3 velocity;
+            float stepHeight;
+        };
         /**
          * @brief A map of all entities that currently are self-propelling.
          *
          * Each tick the propel force will be applied to these entities.
          */
-        std::map<long, std::pair<BulletEntry*, btVector3>> m_propellingEntries;
+        std::map<long, PropelEntry> m_propellingEntries;
         btDefaultCollisionConfiguration* m_collisionConfiguration;
         btCollisionDispatcher* m_dispatcher;
         btSequentialImpulseConstraintSolver* m_constraintSolver;

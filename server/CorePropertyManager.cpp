@@ -188,6 +188,12 @@ CorePropertyManager::CorePropertyManager()
      * Used for things that grows, to limit the size.
      */
     installProperty<Vector3Property>("maxsize", Vector3Property::property_atlastype);
+
+    /**
+     * Specifies how much the entity is allowed to step onto things when moving, as a factor of the entity's height.
+     */
+    installProperty<Property<double>>("step_factor", "float");
+
 }
 
 CorePropertyManager::~CorePropertyManager()

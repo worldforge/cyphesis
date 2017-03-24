@@ -237,26 +237,127 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
     createDomainBorders();
 
     //Update the linear velocity of all self propelling entities each tick.
-    auto tickCallback = [](btDynamicsWorld* world, btScalar timeStep) {
-        std::map<int, std::pair<BulletEntry*, btVector3>>* propellingEntries = static_cast<std::map<int, std::pair<BulletEntry*, btVector3>>*>(world->getWorldUserInfo());
+    auto preTickCallback = [](btDynamicsWorld* world, btScalar timeStep) {
+
+        std::map<int, PropelEntry>* propellingEntries = static_cast<std::map<int, PropelEntry>*>(world->getWorldUserInfo());
         for (auto& entry : *propellingEntries) {
-            float verticalVelocity = entry.second.first->rigidBody->getLinearVelocity().y();
+//            const btVector3& velocity = entry.second.bulletEntry->rigidBody->getLinearVelocity();
+//            entry.second.bulletEntry->rigidBody->setLinearVelocity(btVector3(entry.second.velocity.x(), velocity.y()+ (world->getGravity().y() * timeStep), entry.second.velocity.z()));
+
+            float verticalVelocity = entry.second.bulletEntry->rigidBody->getLinearVelocity().y();
 
             //Apply gravity
             if (verticalVelocity != 0) {
                 verticalVelocity += world->getGravity().y() * timeStep;
-                entry.second.first->rigidBody->setLinearVelocity(entry.second.second + btVector3(0, verticalVelocity, 0));
+                entry.second.bulletEntry->rigidBody->setLinearVelocity(entry.second.velocity + btVector3(0, verticalVelocity, 0));
             } else {
-                entry.second.first->rigidBody->setLinearVelocity(entry.second.second);
+                entry.second.bulletEntry->rigidBody->setLinearVelocity(entry.second.velocity);
             }
 
             //When entities are being propelled they will have low friction. When propelling stop the friction will be returned in setVelocity.
-            entry.second.first->rigidBody->setFriction(0.1);
-            entry.second.first->rigidBody->activate();
+            entry.second.bulletEntry->rigidBody->setFriction(0.5);
+            entry.second.bulletEntry->rigidBody->activate();
         }
     };
 
-    m_dynamicsWorld->setInternalTickCallback(tickCallback, &m_propellingEntries, true);
+    m_dynamicsWorld->setInternalTickCallback(preTickCallback, &m_propellingEntries, true);
+
+    auto tickCallback = [](btDynamicsWorld* world, btScalar timeStep) {
+        std::map<int, PropelEntry>* propellingEntries = static_cast<std::map<int, PropelEntry>*>(world->getWorldUserInfo());
+        for (auto& entry : *propellingEntries) {
+
+            /**
+             * Checks whether the entity can step up on an obstacle which otherwise is preventing it from moving.
+             */
+            struct SteppingCallback : public btCollisionWorld::ContactResultCallback
+            {
+                const btRigidBody& m_body;
+                float m_highestYPoint;
+                float m_adjustY;
+                bool m_canStep;
+                float m_aabbMinY;
+                float m_stepHeight;
+
+                SteppingCallback(const btRigidBody& body, float stepHeight)
+                    : btCollisionWorld::ContactResultCallback(), m_body(body), m_canStep(true), m_stepHeight(stepHeight)
+                {
+                    m_collisionFilterGroup = body.getBroadphaseHandle()->m_collisionFilterGroup;
+                    m_collisionFilterMask = body.getBroadphaseHandle()->m_collisionFilterMask;
+
+                    btVector3 aabbMin, aabbMax;
+                    m_body.getAabb(aabbMin, aabbMax);
+                    m_aabbMinY = aabbMin.y();
+                    m_highestYPoint = m_aabbMinY;
+
+                }
+
+
+                virtual btScalar addSingleResult(btManifoldPoint& cp,
+                                                 const btCollisionObjectWrapper* colObj0, int partId0, int index0,
+                                                 const btCollisionObjectWrapper* colObj1, int partId1, int index1)
+                {
+                    //Bail out if we've already decided we can't step
+                    if (!m_canStep) {
+                        return 0;
+                    }
+                    btVector3 point;
+                    if (colObj0->m_collisionObject == &m_body) {
+                        point = cp.getPositionWorldOnA();
+                    } else {
+                        point = cp.getPositionWorldOnB();
+                    }
+
+                    float allowedHeight = m_aabbMinY + m_stepHeight;
+
+                    if (point.y() > allowedHeight) {
+                        //Colliding with something above the step height; we can't step
+                        m_canStep = false;
+                    } else {
+                        m_highestYPoint = std::max(m_highestYPoint, point.y());
+                        m_adjustY = m_highestYPoint - m_aabbMinY;
+                    }
+
+                    //Returned result is ignored.
+                    return 0;
+                }
+            };
+
+            //Only do stepping if there's a step height
+            if (entry.second.stepHeight == 0) {
+                continue;
+            }
+
+            btRigidBody* rigidBody = entry.second.bulletEntry->rigidBody;
+
+            //Check if we should step if the difference between the resulting velocity and the expected velocity (which indicates that we couldn't move).
+            float actualSpeedSq = rigidBody->getLinearVelocity().length2();
+            float expectedSpeedSq = entry.second.velocity.length2();
+            //If the difference is larger than half we'll try to step.
+            if (actualSpeedSq / expectedSpeedSq < 0.5) {
+
+
+                //Move the rigid body to the projected position, and check if it could be shifted upwards by the step height. If that's possible, put it there.
+                btTransform existingTransform = rigidBody->getWorldTransform();
+                btVector3 positionAtStartOfTick = existingTransform.getOrigin() - (rigidBody->getLinearVelocity() * timeStep);
+                btTransform newTransform(existingTransform.getBasis(), positionAtStartOfTick + (entry.second.velocity * timeStep));
+                rigidBody->setWorldTransform(newTransform);
+
+                SteppingCallback callback(*rigidBody, entry.second.stepHeight);
+                world->contactTest(rigidBody, callback);
+
+                if (callback.m_canStep) {
+                    //If we could step, adjust the position of the body.
+                    newTransform.getOrigin().setY(newTransform.getOrigin().getY() + callback.m_adjustY);
+                    rigidBody->setWorldTransform(newTransform);
+                    // rigidBody->getMotionState()->setWorldTransform(newTransform);
+                } else {
+                    rigidBody->setWorldTransform(existingTransform);
+                }
+            }
+        }
+    };
+
+    m_dynamicsWorld->setInternalTickCallback(tickCallback, &m_propellingEntries, false);
 
     buildTerrainPages();
 }
@@ -1225,6 +1326,7 @@ void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& 
                                                      const btCollisionObjectWrapper* colObj0, int partId0, int index0,
                                                      const btCollisionObjectWrapper* colObj1, int partId1, int index1)
                     {
+                        //Local collision point, in the body's space
                         btVector3 point;
                         if (colObj0->m_collisionObject == &m_body) {
                             point = cp.m_localPointA;
@@ -1232,7 +1334,7 @@ void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& 
                             point = cp.m_localPointB;
                         }
 
-                        if (point.z() <= m_body.getWorldTransform().getOrigin().z()) {
+                        if (point.y() <= 0) {
                             m_isGrounded = true;
                         }
 
@@ -1259,18 +1361,20 @@ void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& 
 
                 auto K = m_propellingEntries.find(entity->getIntId());
                 if (K == m_propellingEntries.end()) {
-                    m_propellingEntries.insert(std::make_pair(entity->getIntId(), std::make_pair(&entry, btVelocity)));
+                    const Property<double>* stepFactorProp = entity->getPropertyType<double>("step_factor");
+                    if (stepFactorProp && entity->m_location.bBox().isValid()) {
+                        float height = entity->m_location.bBox().upperBound(2) - entity->m_location.bBox().lowerBound(2);
+                        m_propellingEntries.insert(std::make_pair(entity->getIntId(), PropelEntry{&entry, btVelocity, height * (float) stepFactorProp->data()}));
+                    } else {
+                        m_propellingEntries.insert(std::make_pair(entity->getIntId(), PropelEntry{&entry, btVelocity, 0}));
+                    }
                 } else {
-                    K->second.second = btVelocity;
+                    K->second.velocity = btVelocity;
                 }
             } else {
                 btVector3 bodyVelocity = entry.rigidBody->getLinearVelocity();
                 bodyVelocity.setX(0);
                 bodyVelocity.setZ(0);
-                //Take gravity into account
-                if (bodyVelocity.getY() > 0) {
-                    bodyVelocity.setY(0);
-                }
                 entry.rigidBody->setLinearVelocity(bodyVelocity);
                 float friction = 1.0f;
                 const Property<float>* frictionProp = m_entity.getPropertyType<float>("friction");
