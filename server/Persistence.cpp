@@ -53,8 +53,6 @@ Persistence * Persistence::instance()
 
 int Persistence::init()
 {
-    assert(this != 0);
-
     if (m_db.initConnection() != 0) {
         if (::instance == CYPHESIS) {
             return DATABASE_CONERR;
