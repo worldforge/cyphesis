@@ -74,22 +74,17 @@ void TypeNode::updateProperties(const MapType & attributes)
     // Discover the default attributes which are no longer
     // present after the update.
     std::set<std::string> removed_properties;
-    PropertyDict::const_iterator I = m_defaults.begin();
-    PropertyDict::const_iterator Iend = m_defaults.end();
-    MapType::const_iterator Jend = attributes.end();
-    for (; I != Iend; ++I) {
-        if (attributes.find(I->first) == Jend) {
-            debug( std::cout << I->first << " removed" << std::endl; );
-            removed_properties.insert(I->first);
+    for (auto& entry : m_defaults) {
+        if (attributes.find(entry.first) == attributes.end()) {
+            debug( std::cout << entry.first << " removed" << std::endl; );
+            removed_properties.insert(entry.first);
         }
     }
 
     // Remove the class properties for the default attributes that
     // no longer exist
-    std::set<std::string>::const_iterator L = removed_properties.begin();
-    std::set<std::string>::const_iterator Lend = removed_properties.end();
-    for (; L != Lend; ++L) {
-        PropertyDict::iterator M = m_defaults.find(*L);
+    for (auto& entry : removed_properties) {
+        PropertyDict::iterator M = m_defaults.find(entry);
         delete M->second;
         m_defaults.erase(M);
     }
@@ -98,18 +93,17 @@ void TypeNode::updateProperties(const MapType & attributes)
     // properties for added default attributes.
     MapType::const_iterator J = attributes.begin();
     PropertyBase * p;
-    for (; J != Jend; ++J) {
-        PropertyDict::const_iterator I = m_defaults.find(J->first);
-        if (I == Iend) {
-            p = PropertyManager::instance()->addProperty(J->first,
-                                                         J->second.getType());
-            assert(p != 0);
+    for (auto& entry : attributes) {
+        auto I = m_defaults.find(entry.first);
+        if (I == m_defaults.end()) {
+            p = PropertyManager::instance()->addProperty(entry.first, entry.second.getType());
+            assert(p != nullptr);
             p->setFlags(flag_class);
-            m_defaults[J->first] = p;
+            m_defaults[entry.first] = p;
         } else {
             p = I->second;
         }
-        p->set(J->second);
+        p->set(entry.second);
     }
 }
 
