@@ -173,10 +173,10 @@ void TcpStreamClientSocket::do_read()
             });
 }
 
-int TcpStreamClientSocket::read_blocking()
+size_t TcpStreamClientSocket::read_blocking()
 {
     if (!m_socket.is_open()) {
-        return -1;
+        return 0;
     }
     if (m_socket.available() > 0) {
         auto received = m_socket.read_some(mBuffer.prepare(m_socket.available()));
@@ -188,10 +188,10 @@ int TcpStreamClientSocket::read_blocking()
     return 0;
 }
 
-int TcpStreamClientSocket::write()
+size_t TcpStreamClientSocket::write()
 {
     if (!m_socket.is_open()) {
-        return -1;
+        return 0;
     }
     if (mBuffer.size() == 0) {
         return 0;
@@ -231,13 +231,13 @@ void LocalStreamClientSocket::do_read()
             });
 }
 
-int LocalStreamClientSocket::read_blocking()
+size_t LocalStreamClientSocket::read_blocking()
 {
     if (!m_socket.is_open()) {
-        return -1;
+        return 0;
     }
     if (m_socket.available() > 0) {
-        int received = m_socket.read_some(mBuffer.prepare(m_socket.available()));
+        size_t received = m_socket.read_some(mBuffer.prepare(m_socket.available()));
         if (received > 0) {
             mBuffer.commit(received);
         }
@@ -246,10 +246,10 @@ int LocalStreamClientSocket::read_blocking()
     return 0;
 }
 
-int LocalStreamClientSocket::write()
+size_t LocalStreamClientSocket::write()
 {
     if (!m_socket.is_open()) {
-        return -1;
+        return 0;
     }
     if (mBuffer.size() == 0) {
         return 0;

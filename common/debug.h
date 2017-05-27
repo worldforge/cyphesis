@@ -62,7 +62,7 @@ namespace Atlas { namespace Message { class Element; } }
 
 void output_element(std::ostream & out,
                     const Atlas::Message::Element & item,
-                    int depth);
+                    size_t depth);
 
 template <typename T>
 void debug_dump(const T & t, std::ostream &);

@@ -472,7 +472,7 @@ void StorageManager::restoreChildren(LocatedEntity * parent)
     DatabaseResult::const_iterator Iend = res.end();
     for (; I != Iend; ++I) {
         const std::string id = I.column("id");
-        const int int_id = forceIntegerId(id);
+        const long int_id = forceIntegerId(id);
         const std::string type = I.column("type");
         //By sending an empty attributes pointer we're telling the builder not to apply any default
         //attributes. We will instead apply all attributes ourselves when we later on restore attributes.

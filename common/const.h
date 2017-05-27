@@ -42,9 +42,9 @@ namespace consts {
   /// \brief Scale factor for time. The may become non-constant
   static const float time_multiplier = 1.0;
   /// \brief In Real time how many seconds between ticks
-  static const float basic_tick = time_multiplier * 3.0;
+  static const float basic_tick = time_multiplier * 3.0f;
   /// \brief In Real time how many seconds between movement updates
-  static const float move_tick = time_multiplier * 2.0;
+  static const float move_tick = time_multiplier * 2.0f;
   /// \brief Highest possible person velocity
   static const float base_velocity_coefficient = 5.0;
   static const float base_velocity = base_velocity_coefficient/time_multiplier;

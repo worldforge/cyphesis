@@ -87,7 +87,7 @@ template<>
 void Property<int>::set(const Atlas::Message::Element & e)
 {
     if (e.isInt()) {
-        this->m_data = e.Int();
+        this->m_data = static_cast<int>(e.Int());
     }
 }
 
@@ -103,7 +103,7 @@ template<>
 void Property<float>::set(const Atlas::Message::Element & e)
 {
     if (e.isNum()) {
-        this->m_data = e.asNum();
+        this->m_data = static_cast<float>(e.asNum());
     }
 }
 

@@ -1466,7 +1466,6 @@ void Database::queryComplete()
     }
     DatabaseQuery & q = pendingQueries.front();
     if (q.second != PGRES_EMPTY_QUERY) {
-        abort();
         log(ERROR, "Got database query complete when query was not done");
         return;
     }
@@ -1592,7 +1591,7 @@ void DatabaseResult::const_iterator::readColumn(const char * column,
         return;
     }
     const char * v = PQgetvalue(m_dr.m_res.get(), m_row, col_num);
-    val = strtol(v, 0, 10);
+    val = static_cast<int>(strtol(v, 0, 10));
 }
 
 void DatabaseResult::const_iterator::readColumn(const char * column,

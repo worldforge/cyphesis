@@ -537,7 +537,7 @@ int main(int argc, char ** argv)
                         io_service->poll();
                     } else {
                         bool nextOpTimeExpired = false;
-                        boost::posix_time::microseconds waitTime((long long)(secondsUntilNextOp * 1000000));
+                        boost::posix_time::microseconds waitTime((int64_t)(secondsUntilNextOp * 1000000L));
                         nextOpTimer.expires_from_now(waitTime);
                         nextOpTimer.async_wait([&](boost::system::error_code ec){
                             if (ec != boost::asio::error::operation_aborted) {
