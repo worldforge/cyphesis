@@ -51,7 +51,7 @@ class btCollisionWorld;
 
 class btSequentialImpulseConstraintSolver;
 
-class btDiscreteDynamicsWorld;
+class PhysicalWorld;
 
 class btRigidBody;
 
@@ -163,7 +163,7 @@ class PhysicalDomain : public Domain
         btCollisionDispatcher* m_dispatcher;
         btSequentialImpulseConstraintSolver* m_constraintSolver;
         btBroadphaseInterface* m_broadphase;
-        btDiscreteDynamicsWorld* m_dynamicsWorld;
+        PhysicalWorld* m_dynamicsWorld;
 
         btCollisionWorld* m_visibilityWorld;
 

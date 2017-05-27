@@ -60,7 +60,7 @@ add_library(rulesetentity
         GeometryProperty.cpp
         AngularFactorProperty.cpp
         QuaternionProperty.cpp
-        Vector3Property.cpp)
+        Vector3Property.cpp PhysicalWorld.cpp PhysicalWorld.h)
 
 target_link_libraries(rulesetentity ${BULLET_LIBRARIES})
 

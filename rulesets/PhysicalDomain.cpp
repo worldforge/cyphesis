@@ -30,6 +30,7 @@
 #include "AngularFactorProperty.h"
 #include "VisibilityProperty.h"
 #include "TerrainModProperty.h"
+#include "PhysicalWorld.h"
 
 #include "physics/Collision.h"
 #include "physics/Convert.h"
@@ -211,7 +212,7 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
     m_constraintSolver(new btSequentialImpulseConstraintSolver()),
     //We'll use a dynamic broadphase for the main world. It's not as fast as SAP variants, but it's faster when dynamic objects are at rest.
     m_broadphase(new btDbvtBroadphase()),
-    m_dynamicsWorld(new btDiscreteDynamicsWorld(m_dispatcher, m_broadphase, m_constraintSolver, m_collisionConfiguration)), m_visibilityWorld(
+    m_dynamicsWorld(new PhysicalWorld(m_dispatcher, m_broadphase, m_constraintSolver, m_collisionConfiguration)), m_visibilityWorld(
     //We'll use a SAP broadphase for the visibility. This is more efficient than a dynamic one.
     new btCollisionWorld(new btCollisionDispatcher(new btDefaultCollisionConfiguration()),
                          new bt32BitAxisSweep3(Convert::toBullet(entity.m_location.bBox().lowCorner()),
