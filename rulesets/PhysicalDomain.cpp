@@ -1378,7 +1378,7 @@ void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& 
                 bodyVelocity.setZ(0);
                 entry.rigidBody->setLinearVelocity(bodyVelocity);
                 float friction = 1.0f;
-                const Property<float>* frictionProp = m_entity.getPropertyType<float>("friction");
+                const Property<float>* frictionProp = entity->getPropertyType<float>("friction");
                 if (frictionProp) {
                     friction = frictionProp->data();
                 }
