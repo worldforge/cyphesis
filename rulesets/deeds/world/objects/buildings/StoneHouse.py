@@ -3,6 +3,7 @@
 
 from atlas import *
 
+from common import const
 from world.objects.buildings.House import House
 
 class Stonehouse(House):

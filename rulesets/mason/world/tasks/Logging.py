@@ -1,14 +1,16 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 2005 Al Riddoch (See the file COPYING for details).
 
-import math
-import server
 from atlas import *
 from physics import *
 from physics import Quaternion
 from physics import Vector3D
+
+import math
+
 from random import *
 
+import server
 
 class Logging(server.Task):
     """ A proof of concept task for logging."""

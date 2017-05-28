@@ -2,13 +2,12 @@
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 #Copyright (C) 2001 Al Riddoch (See the file COPYING for details).
 
-from atlas import *
-from entity_filter import *
 from mind.Goal import Goal
 from mind.goals.common.misc_goal import keep
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
 from mind.goals.dynamic.add_unique_goal import add_unique_goal
-
+from entity_filter import *
+from atlas import *
 
 class keep_livestock(keep):
     """Keep livestock that we own in a given location, calling them if 

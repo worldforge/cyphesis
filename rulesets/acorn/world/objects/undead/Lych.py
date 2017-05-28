@@ -3,6 +3,7 @@
 
 from atlas import *
 from world.objects.undead.Undead import Undead
-
+from common import log,const
+from misc import set_kw
 
 class Lych(Undead): pass

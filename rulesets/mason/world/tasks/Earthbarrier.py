@@ -1,13 +1,14 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 2011 Jekin Trivedi <jekintrivedi@gmail.com> (See the file COPYING for details).
 
-import math
-import server
-import sys
-import weakref
 from atlas import *
 from physics import *
 
+import math
+import sys
+import weakref
+
+import server
 
 class Earthbarrier(server.Task):
     """ A task for creating Earthbarrier with a shovel."""

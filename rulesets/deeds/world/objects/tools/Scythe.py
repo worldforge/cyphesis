@@ -2,8 +2,9 @@
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 #Copyright (C) 2004 Al Riddoch (See the file COPYING for details).
 
-import server
 from atlas import *
+
+import server
 
 class Scythe(server.Thing):
     """This is a scythe for light cutting vegetation"""

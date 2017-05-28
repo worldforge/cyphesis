@@ -1,7 +1,4 @@
-import re
-import string
-import sys
-
+import sys,re,string
 syntax_desc=re.compile("(\S+)\s+(\d+)\s*([^,]*)\s*,\s*(.*?)\s*$")
 
 class atom:

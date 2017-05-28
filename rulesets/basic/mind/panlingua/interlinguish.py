@@ -1,11 +1,8 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 
-import re
-import string
-
+import string,re
 from mind.panlingua import panlingua
-
 p=panlingua
 
 #semnode ids from WordNet (english word+type+sense no)

@@ -4,6 +4,7 @@ from atlas import *
 
 from cyphesis.Thing import Thing
 
+import atlas
 
 class Squirrel(Thing):
     def __init__(self, cppthing, **kw):

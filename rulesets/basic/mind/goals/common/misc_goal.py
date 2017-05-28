@@ -2,14 +2,15 @@
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 #Al Riddoch - Added transport_something() goal
 
-import time
-from entity_filter import *
+from physics import *
 from mind.Goal import Goal
 from mind.goals.common.common import *
 from mind.goals.common.move import *
-from physics import *
 from random import *
+from entity_filter import *
 
+import time
+import types
 
 ######################## MAKE LOTS OF SOMETHING ###############################
 

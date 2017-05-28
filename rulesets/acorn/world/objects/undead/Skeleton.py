@@ -3,6 +3,8 @@
 
 from atlas import *
 from world.objects.undead.Undead import Undead
+from common import log,const
+from misc import set_kw
 from Vector3D import Vector3D
 from whrandom import *
 

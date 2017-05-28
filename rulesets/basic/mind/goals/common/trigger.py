@@ -2,10 +2,12 @@
 #Copyright (C) 2007 Al Riddoch (See the file COPYING for details).
 
 from atlas import *
-from mind.goals.dynamic.DynamicGoal import DynamicGoal
 from physics import *
+from physics import Vector3D
+
 from random import *
 
+from mind.goals.dynamic.DynamicGoal import DynamicGoal
 
 class chase(DynamicGoal):
     """Chase after something that has moved."""

@@ -1,8 +1,9 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 1999 Al Riddoch (See the file COPYING for details).
 
-import server
 from atlas import *
+
+import server
 
 class Campfire(server.Thing):
     def burn_operation(self, op):

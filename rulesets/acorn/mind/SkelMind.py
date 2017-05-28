@@ -1,6 +1,6 @@
 from atlas import *
-from cyphesis.Thing import Thing
 from whrandom import *
+from cyphesis.Thing import Thing
 
 BaseMind = Thing
 

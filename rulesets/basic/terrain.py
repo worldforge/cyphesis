@@ -3,11 +3,13 @@
 
 from atlas import *
 from random import *
-
 from mind.panlingua import interlinguish
-
 il=interlinguish
+from world import probability
 from editor import editor
+from physics import Quaternion
+from Vector3D import Vector3D
+import time
 from math import *
 
 def plain(mapeditor):

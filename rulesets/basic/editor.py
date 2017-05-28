@@ -2,9 +2,7 @@
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 from atlas import *
 from types import *
-
 from mind.panlingua import interlinguish
-
 il=interlinguish
 
 import server

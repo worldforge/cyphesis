@@ -2,10 +2,13 @@
 #Copyright (C) 1999 Al Riddoch (See the file COPYING for details).
 
 from atlas import *
-from mind.goals.dynamic.DynamicGoal import DynamicGoal
-from physics import Point3D
 from types import *
+from common import const
 
+from physics import Vector3D
+from physics import Point3D
+
+from mind.goals.dynamic.DynamicGoal import DynamicGoal
 
 class school(DynamicGoal):
     """Move in a shoal with other animals of the same type"""

@@ -3,11 +3,13 @@
 
 #NOT YET READY
 
-import server
 from atlas import *
 from physics import *
+from physics import Quaternion
 from physics import Point3D
+from physics import Vector3D
 
+import server
 
 class BuildBloomery(server.Task):
     """A task for creating a Bloomery by consuming 1 charcoal, 1 hematite and 1 pile of earth"""

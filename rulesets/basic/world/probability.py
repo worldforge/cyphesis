@@ -1,8 +1,9 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 
-import random
 from common import log,const
+
+import random
 
 fertility_age=const.basic_tick*30
 

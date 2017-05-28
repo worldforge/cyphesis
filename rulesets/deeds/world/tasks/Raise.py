@@ -1,14 +1,16 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 2006 Al Riddoch (See the file COPYING for details).
 
-import server
 from atlas import *
-from common import const
 from physics import *
 from physics import Quaternion
 from physics import Vector3D
-from random import *
 
+from common import const
+
+import server
+
+from random import *
 
 class Raise(server.Task):
     """ A proof of concept task for raiseing a heavy item from the ground."""

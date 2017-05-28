@@ -1,11 +1,15 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 
-import server
 from atlas import *
-from common import const
+
 from cyphesis import probability
+from common import log,const
+
+from physics import Vector3D
 from physics import Point3D
+
+import server
 
 class House(server.Thing):
     """This base class for houses, building material is wood"""

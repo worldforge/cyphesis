@@ -5,7 +5,9 @@ from atlas import *
 from cyphesis.Thing import Thing
 from misc import set_kw
 from whrandom import *
+from Vector3D import Vector3D
 
+import atlas
 
 class Pig(Thing):
     def __init__(self, cppthing, **kw):

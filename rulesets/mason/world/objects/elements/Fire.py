@@ -1,9 +1,11 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 
-import server
 from atlas import *
+
 from common import const
+
+import server
 
 class Fire(server.Thing):
     """fire to burn things up"""

@@ -1,5 +1,6 @@
-import server
 from atlas import *
+
+import server
 
 class Fir(server.Thing):
     def eat_operation(self, op):

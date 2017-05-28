@@ -1,12 +1,15 @@
 #This file is distributed under the terms of the GNU General Public license.
 from atlas import *
 from random import *
-
 from mind.panlingua import interlinguish
-
 il=interlinguish
-from cyphesis.editor import create_editor
+from cyphesis import probability
+from cyphesis.editor import editor, create_editor
+from physics import Quaternion
+from physics import Vector3D
 from math import *
+import server
+
 
 
 def create_island_terrain(host='', account='', password='', **args):

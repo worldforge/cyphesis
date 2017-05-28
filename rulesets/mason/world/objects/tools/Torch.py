@@ -1,10 +1,12 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 2005 Al Riddoch (See the file COPYING for details).
 
-import server
 from atlas import *
-from physics import BBox
+
 from physics import Point3D
+from physics import BBox
+
+import server
 
 class Torch(server.Thing):
     """This is base class for axes, this one just ordinary axe"""

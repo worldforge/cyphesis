@@ -2,6 +2,7 @@
 #Copyright (C) 1999 Al Riddoch (See the file COPYING for details).
 
 from atlas import *
+from common import log,const
 from physics import Vector3D
 from random import *
 

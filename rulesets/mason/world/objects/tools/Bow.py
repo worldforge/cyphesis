@@ -2,9 +2,11 @@
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 #return Operation("create",Entity(name='wood',type=['lumber'],location=self.location.parent.location.copy()),to=self)
 
-import server
 from atlas import *
+
 from physics import Vector3D
+
+import server
 
 class Bow(server.Thing):
     """This is base class for bows, this one just ordinary bow"""

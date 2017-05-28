@@ -1,11 +1,12 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 2004 Al Riddoch (See the file COPYING for details).
 
+from physics import *
 from entity_filter import *
 from mind.goals.common.misc_goal import *
 from mind.goals.common.move import *
-from physics import *
 
+import types
 
 # Gather a resource from nearby
 # This is designed to be placed early in a complex goal, so it returns

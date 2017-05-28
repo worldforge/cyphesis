@@ -1,10 +1,9 @@
 #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 2001 Al Riddoch (See the file COPYING for details).
 
-from Vector3D import Vector3D
-from atlas import *
 from cyphesis.Thing import Thing
-
+from atlas import *
+from Vector3D import Vector3D
 
 # bbox = 4,8,2.5
 # bmedian = 6,6,2.5
