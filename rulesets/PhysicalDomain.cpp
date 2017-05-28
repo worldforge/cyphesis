@@ -1200,6 +1200,43 @@ void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath:
 
 void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& velocity)
 {
+    /**
+                 * A callback which checks if the instance is "grounded", i.e. that there's a contact point which is below its center.
+                 */
+    struct IsGroundedCallback : public btCollisionWorld::ContactResultCallback
+    {
+        const btRigidBody& m_body;
+        bool& m_isGrounded;
+
+        IsGroundedCallback(const btRigidBody& body, bool& isGrounded)
+            : btCollisionWorld::ContactResultCallback(), m_body(body), m_isGrounded(isGrounded)
+        {
+            m_collisionFilterGroup = body.getBroadphaseHandle()->m_collisionFilterGroup;
+            m_collisionFilterMask = body.getBroadphaseHandle()->m_collisionFilterMask;
+        }
+
+
+        virtual btScalar addSingleResult(btManifoldPoint& cp,
+                                         const btCollisionObjectWrapper* colObj0, int partId0, int index0,
+                                         const btCollisionObjectWrapper* colObj1, int partId1, int index1)
+        {
+            //Local collision point, in the body's space
+            btVector3 point;
+            if (colObj0->m_collisionObject == &m_body) {
+                point = cp.m_localPointA;
+            } else {
+                point = cp.m_localPointB;
+            }
+
+            if (point.y() <= 0) {
+                m_isGrounded = true;
+            }
+
+            //Returned result is ignored.
+            return 0;
+        }
+    };
+
     if (velocity.isValid()) {
         LocatedEntity* entity = entry.entity;
         if (entry.rigidBody) {
@@ -1209,44 +1246,6 @@ void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& 
             btVector3 btVelocity = Convert::toBullet(velocity);
 
             if (!btVelocity.isZero()) {
-
-                /**
-                 * A callback which checks if the instance is "grounded", i.e. that there's a contact point which is below its center.
-                 */
-                struct IsGroundedCallback : public btCollisionWorld::ContactResultCallback
-                {
-                    const btRigidBody& m_body;
-                    bool& m_isGrounded;
-
-                    IsGroundedCallback(const btRigidBody& body, bool& isGrounded)
-                        : btCollisionWorld::ContactResultCallback(), m_body(body), m_isGrounded(isGrounded)
-                    {
-                        m_collisionFilterGroup = body.getBroadphaseHandle()->m_collisionFilterGroup;
-                        m_collisionFilterMask = body.getBroadphaseHandle()->m_collisionFilterMask;
-                    }
-
-
-                    virtual btScalar addSingleResult(btManifoldPoint& cp,
-                                                     const btCollisionObjectWrapper* colObj0, int partId0, int index0,
-                                                     const btCollisionObjectWrapper* colObj1, int partId1, int index1)
-                    {
-                        //Local collision point, in the body's space
-                        btVector3 point;
-                        if (colObj0->m_collisionObject == &m_body) {
-                            point = cp.m_localPointA;
-                        } else {
-                            point = cp.m_localPointB;
-                        }
-
-                        if (point.y() <= 0) {
-                            m_isGrounded = true;
-                        }
-
-                        //Returned result is ignored.
-                        return 0;
-                    }
-                };
-
 
                 //Check if we're trying to jump
                 if (btVelocity.m_floats[1] > 0) {
@@ -1279,8 +1278,17 @@ void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& 
                 btVector3 bodyVelocity = entry.rigidBody->getLinearVelocity();
                 bodyVelocity.setX(0);
                 bodyVelocity.setZ(0);
+
+                //When a character stops moving, we'll also stop any vertical movement only if the character is touching the ground.
+                bool isGrounded = false;
+                IsGroundedCallback groundedCallback(*entry.rigidBody, isGrounded);
+                m_dynamicsWorld->contactTest(entry.rigidBody, groundedCallback);
+                if (isGrounded) {
+                    bodyVelocity.setY(0);
+                }
+
                 entry.rigidBody->setLinearVelocity(bodyVelocity);
-                float friction = 1.0f;
+                float friction = 1.0f; //Default to 1 if no "friction" prop is present.
                 const Property<float>* frictionProp = entity->getPropertyType<float>("friction");
                 if (frictionProp) {
                     friction = frictionProp->data();
