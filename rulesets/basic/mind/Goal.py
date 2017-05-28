@@ -26,8 +26,9 @@ class Goal:
             self.validity = validity
         else:
             self.validity = lambda me:True
-            
-        self.subgoals=subgoals[:]
+
+        #filter out any None subgoals
+        self.subgoals=[item for item in subgoals if item is not None]
         self.time=time
         self.debug=debug
         self.vars=[]
