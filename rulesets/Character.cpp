@@ -378,6 +378,9 @@ int Character::unlinkExternal(Link * link)
 
         Atlas::Objects::Operation::Delete delOp;
         delOp->setTo(getId());
+        Anonymous anon;
+        anon->setId(getId());
+        delOp->setArgs1(anon);
 
         sendWorld(delOp);
     }
