@@ -21,7 +21,8 @@
 
 #include "PythonScriptFactory.h"
 
-#include "rulesets/PythonEntityScript.h"
+#include "PythonEntityScript.h"
+#include "Python_Script_Utils.h"
 
 /// \brief PythonScriptFactory constructor
 ///
