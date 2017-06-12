@@ -382,7 +382,7 @@ protected:
 	/**
 	 * @brief Keeps track of all currently observed entities.
 	 */
-	std::unordered_map<int, std::unique_ptr<EntityEntry>> mObservedEntities;
+	std::unordered_map<long, std::unique_ptr<EntityEntry>> mObservedEntities;
 
 	/**
 	 * @brief Keeps track of all entities that are moving.
