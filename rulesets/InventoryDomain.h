@@ -44,6 +44,8 @@ class InventoryDomain : public Domain
                 const LocatedEntity& moved_entity, const Location& old_loc,
                 OpVector & res);
 
+        std::list<LocatedEntity*> getObservingEntitiesFor(const LocatedEntity& observedEntity) const override;
+
         virtual void addEntity(LocatedEntity& entity);
         virtual void removeEntity(LocatedEntity& entity);
 

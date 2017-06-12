@@ -407,8 +407,7 @@ void WorldRouter::message(const Operation & op, LocatedEntity & fromEntity)
         if (fromEntity.m_location.m_loc) {
             Domain* domain = fromEntity.m_location.m_loc->getMovementDomain();
             if (domain) {
-                std::list<LocatedEntity*> entities;
-                domain->getObservingEntitiesFor(fromEntity, entities);
+                std::list<LocatedEntity*> entities = domain->getObservingEntitiesFor(fromEntity);
                 for (auto& entity : entities) {
                     auto opCopy = op.copy();
                     opCopy->setTo(entity->getId());

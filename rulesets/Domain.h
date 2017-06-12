@@ -99,11 +99,11 @@ class Domain
         /**
          * Fills the supplied list with all entities in the domain that are currently observing the supplied entity.
          * @param observedEntity The entity which is being observed.
-         * @param entityList A list of entities.
+         * @return A list of entities.
          */
-        virtual void getObservingEntitiesFor(const LocatedEntity& observedEntity, std::list<LocatedEntity*>& entityList) const
+        virtual std::list<LocatedEntity*> getObservingEntitiesFor(const LocatedEntity& observedEntity) const
         {
-
+            return std::list<LocatedEntity*>();
         }
 
         /**

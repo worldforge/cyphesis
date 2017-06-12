@@ -32,6 +32,7 @@
 
 #include <iostream>
 #include <unordered_set>
+#include <common/BaseWorld.h>
 
 static const bool debug_flag = true;
 
@@ -62,6 +63,11 @@ void InventoryDomain::tick(double t, OpVector& res)
 
 void InventoryDomain::addEntity(LocatedEntity& entity)
 {
+    entity.m_location.m_pos = WFMath::Point<3>::ZERO();
+    entity.m_location.m_orientation = WFMath::Quaternion::IDENTITY();
+    entity.m_location.update(BaseWorld::instance().getTime());
+    entity.setFlags(~(entity_clean));
+
     //Nothing special to do for this domain.
 }
 
@@ -165,5 +171,12 @@ void InventoryDomain::processVisibilityForMovedEntity(const LocatedEntity& moved
 
         m_lastVisibleEntities = std::move(newVisibleEntities);
     }
+}
+
+std::list<LocatedEntity*> InventoryDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity) const
+{
+    std::list<LocatedEntity*> list;
+    list.push_back(&m_entity);
+    return std::move(list);
 }
 

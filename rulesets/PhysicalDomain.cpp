@@ -455,8 +455,9 @@ void PhysicalDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity,
     }
 }
 
-void PhysicalDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity, std::list<LocatedEntity*>& entityList) const
+std::list<LocatedEntity*> PhysicalDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity) const
 {
+    std::list<LocatedEntity*> entityList;
     auto observedI = m_entries.find(observedEntity.getIntId());
     if (observedI != m_entries.end()) {
         const BulletEntry* bulletEntry = observedI->second;
@@ -464,6 +465,7 @@ void PhysicalDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity
             entityList.push_back(observingEntry->entity);
         }
     }
+    return std::move(entityList);
 }
 
 class PhysicalDomain::VisibilityCallback : public btCollisionWorld::ContactResultCallback

@@ -82,7 +82,7 @@ class PhysicalDomain : public Domain
 
         virtual void getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<LocatedEntity*>& entityList) const;
 
-        virtual void getObservingEntitiesFor(const LocatedEntity& observedEntity, std::list<LocatedEntity*>& entityList) const;
+        std::list<LocatedEntity*> getObservingEntitiesFor(const LocatedEntity& observedEntity) const override;
 
         virtual void processVisibilityForMovedEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector& res);
 

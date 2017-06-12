@@ -168,12 +168,25 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         if (new_loc->getId() == op->getFrom() &&
             m_location.m_loc == new_loc->m_location.m_loc) {
 
-            Pickup p;
-            p->setFrom(op->getFrom());
-            p->setTo(getId());
-            Sight s;
-            s->setArgs1(p);
-            res.push_back(s);
+            //Send Pickup to those entities which are currently observing
+            Domain* domain = nullptr;
+            if (m_location.m_loc) {
+
+                domain = m_location.m_loc->getMovementDomain();
+                if (domain) {
+                    Pickup p;
+                    p->setFrom(op->getFrom());
+                    p->setTo(getId());
+
+                    auto observingEntities = domain->getObservingEntitiesFor(*this);
+                    for (auto entity : observingEntities) {
+                        Sight s;
+                        s->setArgs1(p);
+                        s->setTo(entity->getId());
+                        res.push_back(s);
+                    }
+                }
+            }
 
             Anonymous wield_arg;
             wield_arg->setId(getId());
@@ -280,7 +293,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
 
         m_location.update(current_time);
-        m_flags &= ~(entity_clean);
+        resetFlags(entity_clean);
 
         // At this point the Location data for this entity has been updated.
 
