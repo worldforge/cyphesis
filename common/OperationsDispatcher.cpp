@@ -105,8 +105,8 @@ void OperationsDispatcher::addOperationToQueue(const Operation & op, LocatedEnti
         } else {
             double t = getTime() + (op->getFutureSeconds() * consts::time_multiplier);
             op->setSeconds(t);
+            op->removeAttrFlag(Atlas::Objects::Operation::FUTURE_SECONDS_FLAG);
         }
-        op->setFutureSeconds(0.);
     }
     m_operationQueue.push(OpQueEntry(op, ent));
     if (debug_flag) {
