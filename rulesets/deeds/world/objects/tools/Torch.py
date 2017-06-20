@@ -29,5 +29,5 @@ class Torch(server.Thing):
             ret = ret + Operation("nourish", Entity(op[0].id, mass=(0.5 - fire_status)), to=to_)
         fire_loc = Location(self, Point3D(0,0,0.75))
         fire_loc.bbox = BBox(0.05, 0.05, 0.5)
-        ret = ret + Operation("move", Entity(to_, location=fire_loc, mode='fixed'), to=to_)
+        ret = ret + Operation("move", Entity(to_, location=fire_loc, mode='planted'), to=to_)
         return ret
