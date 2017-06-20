@@ -49,6 +49,7 @@
 #include <rulesets/AngularFactorProperty.h>
 #include <chrono>
 #include <rulesets/VisibilityProperty.h>
+#include <rulesets/GeometryProperty.h>
 
 #include "stubs/common/stubLog.h"
 
@@ -714,8 +715,10 @@ void PhysicalDomainIntegrationTest::test_stairs()
     propelProperty->data() = WFMath::Vector<3>(0, 1, 0);
     AngularFactorProperty angularZeroFactorProperty;
     angularZeroFactorProperty.data() = WFMath::Vector<3>::ZERO();
-    Property<double>* stepFactorProp = new Property<double>();
-    stepFactorProp->data() = 0.3;
+    GeometryProperty capsuleProperty;
+    capsuleProperty.set(Atlas::Message::MapType({{"shape", "capsule-z"}}));
+//    Property<double>* stepFactorProp = new Property<double>();
+//    stepFactorProp->data() = 0.3;
 
 
     Entity* rootEntity = new Entity("0", newId());
@@ -753,32 +756,33 @@ void PhysicalDomainIntegrationTest::test_stairs()
         human->setProperty(PropelProperty::property_name, propelProperty);
         human->setType(humanType);
         human->m_location.m_pos = WFMath::Point<3>(0, -1, 0);
-        human->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.2f, -0.2f, 0), WFMath::Point<3>(0.2, 0.2, 1.8)));
+        human->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.4f, -0.4f, 0), WFMath::Point<3>(0.4, 0.4, 1.8)));
         domain->addEntity(*human);
 
         OpVector res;
         domain->tick(2, res);
 
-        ASSERT_FUZZY_EQUAL(-0.3f, human->m_location.m_pos.y(), 0.1f);
+        ASSERT_FUZZY_EQUAL(-0.5f, human->m_location.m_pos.y(), 0.1f);
         domain->removeEntity(*human);
     }
 
-    //Then with an entity with a step_factor; it should step up on the stairs
+    //Then with an entity with a capsule geometry, it should step
     {
         Entity* human = new Entity("human", newId());
-        human->setProperty("step_factor", stepFactorProp);
+        //human->setProperty("step_factor", stepFactorProp);
         human->setProperty(AngularFactorProperty::property_name, &angularZeroFactorProperty);
         human->setProperty("mass", massProp);
         human->setProperty(PropelProperty::property_name, propelProperty);
+        human->setProperty(GeometryProperty::property_name, &capsuleProperty);
         human->setType(humanType);
         human->m_location.m_pos = WFMath::Point<3>(0, -1, 0);
-        human->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.2f, -0.2f, 0), WFMath::Point<3>(0.2, 0.2, 1.8)));
+        human->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.4f, -0.4f, 0), WFMath::Point<3>(0.4, 0.4, 1.8)));
         domain->addEntity(*human);
 
         OpVector res;
         domain->tick(2, res);
 
-        ASSERT_FUZZY_EQUAL(0.8, human->m_location.m_pos.y(), 0.1f);
+        ASSERT_FUZZY_EQUAL(0.5, human->m_location.m_pos.y(), 0.3f);
         domain->removeEntity(*human);
     }
 
@@ -800,20 +804,21 @@ void PhysicalDomainIntegrationTest::test_stairs()
         domain->addEntity(*stepElement);
 
         Entity* human = new Entity("human", newId());
-        human->setProperty("step_factor", stepFactorProp);
+        //human->setProperty("step_factor", stepFactorProp);
         human->setProperty(AngularFactorProperty::property_name, &angularZeroFactorProperty);
         human->setProperty("mass", massProp);
         human->setProperty(PropelProperty::property_name, propelProperty);
+        human->setProperty(GeometryProperty::property_name, &capsuleProperty);
         human->setType(humanType);
         human->m_location.m_pos = WFMath::Point<3>(20, -1, 0);
-        human->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.2f, -0.2f, 0), WFMath::Point<3>(0.2, 0.2, 1.8)));
+        human->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.4f, -0.4f, 0), WFMath::Point<3>(0.4, 0.4, 1.8)));
         domain->addEntity(*human);
 
         OpVector res;
         domain->tick(2, res);
 
         ASSERT_FUZZY_EQUAL(0, human->m_location.m_pos.z(), 0.01f);
-        ASSERT_FUZZY_EQUAL(-0.2f, human->m_location.m_pos.y(), 0.1f);
+        ASSERT_FUZZY_EQUAL(-0.4f, human->m_location.m_pos.y(), 0.1f);
     }
 
 
