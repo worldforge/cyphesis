@@ -283,65 +283,22 @@ int main(int argc, char ** argv)
     ServerRouting * server = new ServerRouting(*world, ruleset_name,
             server_name, server_id, int_id, lobby_id, lobby_int_id);
 
-    // This is where we should restore the database, before
-    // the listen sockets are open. Unlike earlier code, we are
-    // attempting to construct the internal state from the database,
-    // not creating a new world using the contents of the database as a
-    // template
+    std::function<void(CommAsioClient<ip::tcp>&)> tcpAtlasStarter = [&](CommAsioClient<ip::tcp>& client) {
+        std::string connection_id;
+        long c_iid = newId(connection_id);
+        //Turn off Nagle's algorithm to increase responsiveness.
+        client.getSocket().set_option(ip::tcp::no_delay(true));
+        client.startAccept(new Connection(client, *server, "", connection_id, c_iid));
+    };
 
-    IdleConnector* storage_idle = nullptr;
-
-    CommPSQLSocket * dbsocket = nullptr;
-    if (database_flag) {
-        // log(INFO, _("Restoring world from database..."));
-
-        store->restoreWorld();
-        // FIXME Do the following steps.
-        // Read the world entity if any from the database, or set it up.
-        // If it was there, make sure it did not get any of the wrong
-        // position or orientation data.
-        store->initWorld();
-
-        // log(INFO, _("Restored world."));
-
-        dbsocket = new CommPSQLSocket(*io_service,
-                Persistence::instance()->m_db);
-
-        storage_idle = new IdleConnector(*io_service);
-        storage_idle->idling.connect(
-                sigc::mem_fun(store, &StorageManager::tick));
-    } else {
-        std::string adminId;
-        long intId = newId(adminId);
-        assert(intId >= 0);
-
-        Admin * admin = new Admin(0, "admin", "BAD_HASH", adminId, intId);
-        server->addAccount(admin);
-    }
-
-    std::function<void(CommAsioClient<ip::tcp>&)> tcpAtlasStarter =
-            [&](CommAsioClient<ip::tcp>& client) {
-
-                std::string connection_id;
-                long c_iid = newId(connection_id);
-                //Turn off Nagle's algorithm to increase responsiveness.
-                client.getSocket().set_option(ip::tcp::no_delay(true));
-                client.startAccept(
-                        new Connection(client, *server, "", connection_id, c_iid));
-            };
-
-    std::list<
-            CommAsioListener<ip::tcp,
-                    CommAsioClient<ip::tcp>> > tcp_atlas_clients;
+    std::list<CommAsioListener<ip::tcp, CommAsioClient<ip::tcp>>> tcp_atlas_clients;
 
     if (client_port_num < 0) {
         client_port_num = dynamic_port_start;
         for (; client_port_num <= dynamic_port_end; client_port_num++) {
             try {
-                tcp_atlas_clients.emplace_back(tcpAtlasStarter,
-                        server->getName(), *io_service,
-                        ip::tcp::endpoint(
-                                ip::tcp::v4(), client_port_num));
+                tcp_atlas_clients.emplace_back(tcpAtlasStarter, server->getName(), *io_service,
+                                               ip::tcp::endpoint(ip::tcp::v4(), client_port_num));
             } catch (const std::exception& e) {
                 break;
             }
@@ -366,10 +323,7 @@ int main(int argc, char ** argv)
                 client_port_num + 1, varconf::USER);
     } else {
         try {
-            tcp_atlas_clients.emplace_back(tcpAtlasStarter, server->getName(),
-                    *io_service,
-                    ip::tcp::endpoint(ip::tcp::v4(),
-                            client_port_num));
+            tcp_atlas_clients.emplace_back(tcpAtlasStarter, server->getName(), *io_service, ip::tcp::endpoint(ip::tcp::v4(), client_port_num));
         } catch (const std::exception& e) {
             log(ERROR, String::compose("Could not create client listen socket "
                     "on port %1. Init failed. The most common reason for this "
@@ -384,36 +338,27 @@ int main(int argc, char ** argv)
             [&](CommPythonClient& client) {
                 client.startAccept();
             };
-    auto pythonListener = new CommAsioListener<local::stream_protocol,
-            CommPythonClient>(pythonStarter,
-            server->getName(), *io_service,
-            local::stream_protocol::endpoint(python_socket_name));
+    auto pythonListener = new CommAsioListener<local::stream_protocol, CommPythonClient>(pythonStarter, server->getName(), *io_service,
+                                                                                         local::stream_protocol::endpoint(python_socket_name));
 
     remove(client_socket_name.c_str());
-    std::function<void(CommAsioClient<local::stream_protocol>&)> localStarter =
-            [&](CommAsioClient<local::stream_protocol>& client) {
-
-                std::string connection_id;
-                long c_iid = newId(connection_id);
-                client.startAccept(
-                        new TrustedConnection(client, *server, "", connection_id, c_iid));
-            };
-    auto localListener = new CommAsioListener<local::stream_protocol,
-            CommAsioClient<local::stream_protocol>>(localStarter,
-            server->getName(), *io_service,
-            local::stream_protocol::endpoint(client_socket_name));
+    std::function<void(CommAsioClient<local::stream_protocol>&)> localStarter = [&](CommAsioClient<local::stream_protocol>& client) {
+        std::string connection_id;
+        long c_iid = newId(connection_id);
+        client.startAccept(new TrustedConnection(client, *server, "", connection_id, c_iid));
+    };
+    auto localListener = new CommAsioListener<local::stream_protocol, CommAsioClient<local::stream_protocol>>(localStarter, server->getName(), *io_service,
+                                                                                                              local::stream_protocol::endpoint(client_socket_name));
 
 
     //Instantiate at startup
     HttpCache::instance();
-    std::function<void(CommHttpClient&)> httpStarter =
-            [&](CommHttpClient& client) {
-                client.serveRequest();
-            };
+    std::function<void(CommHttpClient&)> httpStarter = [&](CommHttpClient& client) {
+        client.serveRequest();
+    };
 
-    auto httpListener = new CommAsioListener<ip::tcp, CommHttpClient>(httpStarter,
-            server->getName(), *io_service,
-            ip::tcp::endpoint(ip::tcp::v4(), http_port_num));
+    auto httpListener = new CommAsioListener<ip::tcp, CommHttpClient>(httpStarter, server->getName(), *io_service,
+                                                                      ip::tcp::endpoint(ip::tcp::v4(), http_port_num));
 
     log(INFO, compose("Http service. The following endpoints are available over port %1.", http_port_num));
     log(INFO, " /config : shows server configuration");
@@ -442,6 +387,36 @@ int main(int argc, char ** argv)
 #endif // defined(HAVE_AVAHI)
     // Configuration is now complete, and verified as somewhat sane, so
     // we save the updated user config.
+
+
+    IdleConnector* storage_idle = nullptr;
+
+    CommPSQLSocket * dbsocket = nullptr;
+    if (database_flag) {
+        log(INFO, "Restoring world from database...");
+
+        store->restoreWorld();
+        // Read the world entity if any from the database, or set it up.
+        // If it was there, make sure it did not get any of the wrong
+        // position or orientation data.
+        store->initWorld();
+
+        log(INFO, "Restored world.");
+
+        dbsocket = new CommPSQLSocket(*io_service,
+                                      Persistence::instance()->m_db);
+
+        storage_idle = new IdleConnector(*io_service);
+        storage_idle->idling.connect(
+            sigc::mem_fun(store, &StorageManager::tick));
+    } else {
+        std::string adminId;
+        long intId = newId(adminId);
+        assert(intId >= 0);
+
+        Admin * admin = new Admin(0, "admin", "BAD_HASH", adminId, intId);
+        server->addAccount(admin);
+    }
 
     updateUserConfiguration();
 
