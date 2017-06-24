@@ -263,6 +263,9 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
 
     m_dynamicsWorld->setInternalTickCallback(preTickCallback, &m_propellingEntries, true);
 
+    mContainingEntityEntry.entity = &entity;
+    m_entries.insert(std::make_pair(entity.getIntId(), &mContainingEntityEntry));
+
     buildTerrainPages();
 }
 
@@ -458,6 +461,7 @@ void PhysicalDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity,
 std::list<LocatedEntity*> PhysicalDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity) const
 {
     std::list<LocatedEntity*> entityList;
+
     auto observedI = m_entries.find(observedEntity.getIntId());
     if (observedI != m_entries.end()) {
         const BulletEntry* bulletEntry = observedI->second;
@@ -465,6 +469,7 @@ std::list<LocatedEntity*> PhysicalDomain::getObservingEntitiesFor(const LocatedE
             entityList.push_back(observingEntry->entity);
         }
     }
+
     return std::move(entityList);
 }
 
@@ -782,9 +787,15 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         visObject->setWorldTransform(btTransform(btQuaternion::getIdentity(), pos / VISIBILITY_SCALING_FACTOR));
         visObject->setUserPointer(entry);
         entry->viewSphere = visObject;
+        mContainingEntityEntry.observingThis.insert(entry);
         if (entity.m_location.m_pos.isValid()) {
             m_visibilityWorld->addCollisionObject(visObject, VISIBILITY_MASK_OBSERVABLE, VISIBILITY_MASK_OBSERVER);
         }
+    }
+
+    if (m_entity.isPerceptive()) {
+        entry->observingThis.insert(&mContainingEntityEntry);
+        mContainingEntityEntry.observedByThis.insert(entry);
     }
 
     OpVector res;
@@ -801,6 +812,7 @@ void PhysicalDomain::toggleChildPerception(LocatedEntity& entity)
     BulletEntry* entry = I->second;
     if (entity.isPerceptive()) {
         if (!entry->viewSphere) {
+            mContainingEntityEntry.observingThis.insert(entry);
             btSphereShape* viewSphere = new btSphereShape(0.5f / VISIBILITY_SCALING_FACTOR);
             btCollisionObject* visObject = new btCollisionObject();
             visObject->setCollisionShape(viewSphere);
@@ -822,6 +834,7 @@ void PhysicalDomain::toggleChildPerception(LocatedEntity& entity)
             delete entry->viewSphere->getCollisionShape();
             delete entry->viewSphere;
             entry->viewSphere = nullptr;
+            mContainingEntityEntry.observingThis.erase(entry);
         }
     }
 }
@@ -865,6 +878,12 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
     }
 
     m_dirtyEntries.erase(entry);
+    mContainingEntityEntry.observingThis.erase(entry);
+
+    //The entity owning the domain should normally not be perceptive, so we'll check first to optimize a bit.
+    if (m_entity.isPerceptive()) {
+        mContainingEntityEntry.observedByThis.insert(entry);
+    }
 
     delete I->second;
     m_entries.erase(I);
@@ -1008,7 +1027,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
     } else if (name == "planted-offset" || name == "planted-scaled-offset") {
         applyNewPositionForEntity(bulletEntry, bulletEntry->entity->m_location.m_pos);
         bulletEntry->entity->m_location.update(BaseWorld::instance().getTime());
-        bulletEntry->entity->setFlags(~(entity_clean));
+        bulletEntry->entity->resetFlags(entity_clean);
         //sendMoveSight(*bulletEntry);
     } else if (name == TerrainModProperty::property_name) {
         updateTerrainMod(*bulletEntry->entity, true);

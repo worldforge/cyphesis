@@ -124,7 +124,16 @@ class LocatedEntity : public Router {
 
     void clearProperties();
 
-  public:
+    /**
+     * Handles an op being broadcast from a child (originating not specifically from a direct child).
+     * @param child The child entity which wants to send the op.
+     * @param op
+     * @param res
+     */
+    void broadcastFromChild(const LocatedEntity& child, const Atlas::Objects::Operation::RootOperation& op, std::set<const LocatedEntity*>& receivers) const;
+
+
+    public:
     /// Full details of location
     Location m_location;
     /// List of entities which use this as ref
@@ -225,6 +234,16 @@ class LocatedEntity : public Router {
     virtual void removeChild(LocatedEntity& childEntity);
 
     /**
+     * Broadcasts an op.
+     *
+     * If this entity has a domain, the op is broadcast to all observers in the domain.
+     * In addition, broadcastFromChild will be called on any parent entity, to make it broadcast to entities in the same domain, or in domains above.
+     * @param op
+     * @param res
+     */
+    void broadcast(const Atlas::Objects::Operation::RootOperation& op, OpVector& res) const;
+
+        /**
      * @brief Determines if this entity is visible to another entity.
      *
      * @param watcher The other entity observing this entity, for which we want to determine visibility.

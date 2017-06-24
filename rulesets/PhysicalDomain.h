@@ -171,6 +171,8 @@ class PhysicalDomain : public Domain
 
         float m_visibilityCheckCountdown;
 
+        BulletEntry mContainingEntityEntry;
+
         Mercator::Terrain* m_terrain;
 
         /**

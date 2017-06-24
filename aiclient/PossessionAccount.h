@@ -29,7 +29,7 @@ class LocatedEntityRegistry;
 class PossessionAccount: public Router
 {
     public:
-        PossessionAccount(const std::string& id, int intId, LocatedEntityRegistry& locatedEntityRegistry, const MindKit& mindFactory);
+        PossessionAccount(const std::string& id, long intId, LocatedEntityRegistry& locatedEntityRegistry, const MindKit& mindFactory);
         virtual ~PossessionAccount();
 
         /**
@@ -46,7 +46,7 @@ class PossessionAccount: public Router
 
         int m_serialNoCounter;
 
-        std::unordered_set<int> m_possessionRefNumbers;
+        std::unordered_set<long> m_possessionRefNumbers;
 
         void PossessOperation(const Operation & op, OpVector & res);
 

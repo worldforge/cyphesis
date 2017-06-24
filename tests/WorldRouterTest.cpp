@@ -408,6 +408,15 @@ std::vector<Atlas::Objects::Root> LocatedEntity::getThoughts() const
 {
     return std::vector<Atlas::Objects::Root>();
 }
+
+void LocatedEntity::broadcast(const Atlas::Objects::Operation::RootOperation& op, OpVector& res) const
+{
+}
+
+void LocatedEntity::broadcastFromChild(const LocatedEntity& child, const Atlas::Objects::Operation::RootOperation& op, std::set<const LocatedEntity*>& receivers) const
+{
+}
+
 #include "stubs/common/stubRouter.h"
 
 

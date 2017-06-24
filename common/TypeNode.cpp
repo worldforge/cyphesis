@@ -91,7 +91,6 @@ void TypeNode::updateProperties(const MapType & attributes)
 
     // Update the values of existing class properties, and add new class
     // properties for added default attributes.
-    MapType::const_iterator J = attributes.begin();
     PropertyBase * p;
     for (auto& entry : attributes) {
         auto I = m_defaults.find(entry.first);

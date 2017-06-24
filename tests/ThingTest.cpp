@@ -434,6 +434,18 @@ std::string LocatedEntity::describeEntity() const
     return "";
 }
 
+void LocatedEntity::broadcast(const Atlas::Objects::Operation::RootOperation& op, OpVector& res) const
+{
+    auto copy = op.copy();
+    copy->setTo(getId());
+    res.push_back(copy);
+}
+
+void LocatedEntity::broadcastFromChild(const LocatedEntity& child, const Atlas::Objects::Operation::RootOperation& op, std::set<const LocatedEntity*>& receivers) const
+{
+}
+
+
 void addToEntity(const Point3D & p, std::vector<double> & vd)
 {
     vd.resize(3);

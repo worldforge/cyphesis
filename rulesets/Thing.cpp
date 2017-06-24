@@ -93,9 +93,10 @@ void Thing::DeleteOperation(const Operation & op, OpVector & res)
 
     Sight s;
     s->setArgs1(op);
+    broadcast(s, res);
 
-    //Important to send directly before this entity is deleted, so that broadcasts gets right.
-    sendWorld(s);
+//    //Important to send directly before this entity is deleted, so that broadcasts gets right.
+//    sendWorld(s);
 
     Entity::DeleteOperation(op, res);
 }
@@ -205,7 +206,8 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
             d->setTo(getId());
             Sight s;
             s->setArgs1(d);
-            res.push_back(s);
+            broadcast(s, res);
+            //res.push_back(s);
         }
 
         // Update loc
@@ -309,7 +311,8 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         Sight s;
         s->setArgs1(m);
 
-        res.push_back(s);
+        broadcast(s, res);
+        //res.push_back(s);
 
     }
 
@@ -347,7 +350,8 @@ void Thing::SetOperation(const Operation & op, OpVector & res)
     merge(ent->asMessage());
     Sight s;
     s->setArgs1(op);
-    res.push_back(s);
+    broadcast(s, res);
+    //res.push_back(s);
     m_seq++;
     if (~m_flags & entity_clean) {
         onUpdated();
@@ -433,7 +437,8 @@ void Thing::updateProperties(const Operation & op, OpVector & res)
 
         Sight sight;
         sight->setArgs1(set);
-        res.push_back(sight);
+        broadcast(sight, res);
+        //res.push_back(sight);
     }
 
 
@@ -451,7 +456,8 @@ void Thing::updateProperties(const Operation & op, OpVector & res)
         Sight s;
         s->setArgs1(m);
 
-        res.push_back(s);
+        broadcast(s, res);
+        //res.push_back(s);
         resetFlags(entity_dirty_location);
         hadChanges = true;
     }
@@ -604,7 +610,8 @@ void Thing::CreateOperation(const Operation & op, OpVector & res)
 
         Sight s;
         s->setArgs1(c);
-        res.push_back(s);
+        broadcast(s, res);
+        //res.push_back(s);
     }
     catch (Atlas::Message::WrongTypeException&) {
         log(ERROR, "EXCEPTION: Malformed object to be created");

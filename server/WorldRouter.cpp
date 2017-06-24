@@ -404,16 +404,10 @@ void WorldRouter::resumeWorld()
 void WorldRouter::message(const Operation & op, LocatedEntity & fromEntity)
 {
     if (op->isDefaultTo() && shouldBroadcastPerception(op)) {
-        if (fromEntity.m_location.m_loc) {
-            Domain* domain = fromEntity.m_location.m_loc->getMovementDomain();
-            if (domain) {
-                std::list<LocatedEntity*> entities = domain->getObservingEntitiesFor(fromEntity);
-                for (auto& entity : entities) {
-                    auto opCopy = op.copy();
-                    opCopy->setTo(entity->getId());
-                    message(opCopy, fromEntity);
-                }
-            }
+        OpVector res;
+        fromEntity.broadcast(op, res);
+        for (auto& broadcastedOp : res) {
+            m_operationsDispatcher.addOperationToQueue(broadcastedOp, fromEntity);
         }
     } else {
         m_operationsDispatcher.addOperationToQueue(op, fromEntity);

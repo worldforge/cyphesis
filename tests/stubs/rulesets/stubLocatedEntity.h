@@ -146,4 +146,12 @@ std::string LocatedEntity::describeEntity() const
     return "";
 }
 
+void LocatedEntity::broadcast(const Atlas::Objects::Operation::RootOperation& op, OpVector& res) const
+{
+}
+
+void LocatedEntity::broadcastFromChild(const LocatedEntity& child, const Atlas::Objects::Operation::RootOperation& op, std::set<const LocatedEntity*>& receivers) const
+{
+}
+
 #endif /* STUBLOCATEDENTITY_H_ */

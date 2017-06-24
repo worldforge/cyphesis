@@ -102,10 +102,10 @@ class Entity : public LocatedEntity {
 
     virtual void destroy();
 
-    virtual Domain * getMovementDomain();
-    virtual const Domain * getMovementDomain() const;
+    Domain * getMovementDomain() override ;
+    const Domain * getMovementDomain() const override ;
 
-    virtual void sendWorld(const Operation & op);
+    void sendWorld(const Operation & op) override;
 
     friend class Entitytest;
     friend class PropertyEntityintegration;
