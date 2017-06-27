@@ -76,25 +76,23 @@ class PhysicalDomain : public Domain
 
         virtual ~PhysicalDomain();
 
-        virtual void tick(double t, OpVector& res);
+        void tick(double t, OpVector& res) override;
 
-        virtual bool isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const;
+        bool isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const override;
 
-        virtual void getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<LocatedEntity*>& entityList) const;
+        void getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<LocatedEntity*>& entityList) const override;
 
         std::list<LocatedEntity*> getObservingEntitiesFor(const LocatedEntity& observedEntity) const override;
 
-        virtual void processVisibilityForMovedEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector& res);
+        void addEntity(LocatedEntity& entity) override;
 
-        virtual void addEntity(LocatedEntity& entity);
+        void removeEntity(LocatedEntity& entity) override;
 
-        virtual void removeEntity(LocatedEntity& entity);
+        void applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity) override;
 
-        virtual void applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity);
+        void refreshTerrain(const std::vector<WFMath::AxisBox<2>>& areas) override;
 
-        virtual void refreshTerrain(const std::vector<WFMath::AxisBox<2>>& areas);
-
-        virtual void toggleChildPerception(LocatedEntity& entity);
+        void toggleChildPerception(LocatedEntity& entity) override;
 
     protected:
 
@@ -106,16 +104,16 @@ class PhysicalDomain : public Domain
 
         struct BulletEntry
         {
-            LocatedEntity* entity;
-            btCollisionShape* collisionShape;
+            LocatedEntity* entity = nullptr;
+            btCollisionShape* collisionShape = nullptr;
             std::shared_ptr<btCollisionShape> backingShape;
-            btRigidBody* rigidBody;
+            btRigidBody* rigidBody = nullptr;
             sigc::connection propertyUpdatedConnection;
             Location lastSentLocation;
-            PhysicalMotionState* motionState;
+            PhysicalMotionState* motionState = nullptr;
 
-            btCollisionObject* visibilitySphere;
-            btCollisionObject* viewSphere;
+            btCollisionObject* visibilitySphere = nullptr;
+            btCollisionObject* viewSphere = nullptr;
 
             /**
              * Set of entries which are observing by this.
@@ -232,7 +230,9 @@ class PhysicalDomain : public Domain
 
         void updateVisibilityOfDirtyEntities(OpVector& res);
 
-        void updateVisibilityOfEntry(BulletEntry* entry, OpVector& res);
+        void updateObservedEntry(BulletEntry* entry, OpVector& res, bool generateOps = true);
+
+        void updateObserverEntry(BulletEntry* bulletEntry, OpVector& res);
 
         void applyNewPositionForEntity(BulletEntry* entry, const WFMath::Point<3>& pos);
 

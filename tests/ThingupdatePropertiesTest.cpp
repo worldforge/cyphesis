@@ -308,10 +308,15 @@ void LocatedEntity::broadcast(const Atlas::Objects::Operation::RootOperation& op
     res.push_back(copy);
 }
 
-void LocatedEntity::broadcastFromChild(const LocatedEntity& child, const Atlas::Objects::Operation::RootOperation& op, std::set<const LocatedEntity*>& receivers) const
+void LocatedEntity::collectObservers(std::set<const LocatedEntity*>& observers) const
 {
+
 }
 
+void LocatedEntity::processAppearDisappear(std::set<const LocatedEntity*> previousObserving, OpVector& res) const
+{
+
+}
 void addToEntity(const Point3D & p, std::vector<double> & vd)
 {
     vd.resize(3);

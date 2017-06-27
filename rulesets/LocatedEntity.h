@@ -125,12 +125,13 @@ class LocatedEntity : public Router {
     void clearProperties();
 
     /**
-     * Handles an op being broadcast from a child (originating not specifically from a direct child).
-     * @param child The child entity which wants to send the op.
+     * Collects all observers of the child, i.e. all entities that are currently observing it.
+     * This method will walk upwards the entity chain.
+     * @param child The child entity that's being observed.
      * @param op
      * @param res
      */
-    void broadcastFromChild(const LocatedEntity& child, const Atlas::Objects::Operation::RootOperation& op, std::set<const LocatedEntity*>& receivers) const;
+    void collectObserversForChild(const LocatedEntity& child, std::set<const LocatedEntity*>& receivers) const;
 
 
     public:
@@ -233,6 +234,13 @@ class LocatedEntity : public Router {
     /// \brief Removes a child from this entity.
     virtual void removeChild(LocatedEntity& childEntity);
 
+
+    /**
+     * Collects all entities that are observing this entity.
+     * @param observers A set which will be filled with observing entities.
+     */
+    void collectObservers(std::set<const LocatedEntity*>& observers) const;
+
     /**
      * Broadcasts an op.
      *
@@ -243,7 +251,17 @@ class LocatedEntity : public Router {
      */
     void broadcast(const Atlas::Objects::Operation::RootOperation& op, OpVector& res) const;
 
-        /**
+    /**
+     * Processes appearance and disappearance of this entity for other observing entities. This is done by matching the supplied list of entities that previously
+     * observed the entity. When called, a list of entities that are currently observing it will be created, and the two lists will be compared.
+     *
+     * Any new entity gets a "Appearance" op, and any old entity which wasn't present in the new list will get a "Disappearance" op.
+     * @param previousObserving
+     * @param res
+     */
+    void processAppearDisappear(std::set<const LocatedEntity*> previousObserving, OpVector& res) const;
+
+     /**
      * @brief Determines if this entity is visible to another entity.
      *
      * @param watcher The other entity observing this entity, for which we want to determine visibility.

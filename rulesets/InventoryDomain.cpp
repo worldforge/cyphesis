@@ -116,63 +116,6 @@ void InventoryDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity
     }
 }
 
-void InventoryDomain::processVisibilityForMovedEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res)
-{
-    if (m_entity.m_contains) {
-
-        std::vector<LocatedEntity*> visibleEntities;
-
-        std::unordered_set<long> outfitted;
-        LocatedEntity* rightHandWieldedEntity = nullptr;
-        const OutfitProperty* outfitProperty = m_entity.getPropertyClass<OutfitProperty>("outfit");
-
-        if (outfitProperty) {
-            for (auto& entry : outfitProperty->data()) {
-                outfitted.insert(entry.second->getIntId());
-            }
-        }
-        const EntityProperty* rightHandWieldProperty = m_entity.getPropertyClass<EntityProperty>("right_hand_wield");
-        if (rightHandWieldProperty) {
-            rightHandWieldedEntity = rightHandWieldProperty->data().get();
-        }
-
-        for (auto childEntity : *m_entity.m_contains) {
-            if (childEntity == rightHandWieldedEntity) {
-                visibleEntities.push_back(childEntity);
-            } else if (outfitted.find(childEntity->getIntId()) != outfitted.end()) {
-                visibleEntities.push_back(childEntity);
-            }
-        }
-
-        std::set<std::string> newVisibleEntities;
-        for (auto visibleEntity : visibleEntities) {
-            if (m_lastVisibleEntities.find(visibleEntity->getId()) == m_lastVisibleEntities.end()) {
-                Anonymous ent;
-                ent->setId(visibleEntity->getId());
-                ent->setStamp(visibleEntity->getSeq());
-
-                Appearance d;
-                d->setArgs1(ent);
-                res.push_back(d);
-            } else {
-                m_lastVisibleEntities.erase(visibleEntity->getId());
-            }
-            newVisibleEntities.insert(visibleEntity->getId());
-        }
-        for (auto entityId : m_lastVisibleEntities) {
-            Anonymous ent;
-            ent->setId(entityId);
-
-            Disappearance d;
-            d->setArgs1(ent);
-            res.push_back(d);
-
-        }
-
-        m_lastVisibleEntities = std::move(newVisibleEntities);
-    }
-}
-
 std::list<LocatedEntity*> InventoryDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity) const
 {
     std::list<LocatedEntity*> list;

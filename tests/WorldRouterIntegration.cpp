@@ -253,6 +253,7 @@ int main()
 #include "stubs/rulesets/stubMemMap.h"
 #include "stubs/rulesets/stubPropelProperty.h"
 #include "stubs/rulesets/stubCreator.h"
+#include "stubs/rulesets/stubOutfitProperty.h"
 
 #include "stubs/server/stubExternalMindsManager.h"
 #include "stubs/server/stubExternalMindsConnection.h"
@@ -473,52 +474,6 @@ void IdProperty::add(const std::string & key,
 IdProperty * IdProperty::copy() const
 {
     return 0;
-}
-
-OutfitProperty::OutfitProperty()
-{
-}
-
-OutfitProperty::~OutfitProperty()
-{
-}
-
-int OutfitProperty::get(Element & val) const
-{
-    return 0;
-}
-
-void OutfitProperty::set(const Element & val)
-{
-}
-
-void OutfitProperty::add(const std::string & key,
-                         MapType & map) const
-{
-}
-
-void OutfitProperty::add(const std::string & key,
-                         const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-OutfitProperty * OutfitProperty::copy() const
-{
-    return 0;
-}
-
-void OutfitProperty::cleanUp()
-{
-}
-
-void OutfitProperty::wear(LocatedEntity * wearer,
-                          const std::string & location,
-                          LocatedEntity * garment)
-{
-}
-
-void OutfitProperty::itemRemoved(LocatedEntity * garment, LocatedEntity * wearer)
-{
 }
 
 

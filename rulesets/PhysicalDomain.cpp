@@ -73,15 +73,12 @@ using Atlas::Objects::Operation::Appearance;
 using Atlas::Objects::Operation::Disappearance;
 using Atlas::Objects::Operation::Unseen;
 using Atlas::Objects::Operation::Move;
+using Atlas::Objects::Operation::Delete;
+using Atlas::Objects::Operation::Info;
+using Atlas::Objects::Operation::Wield;
 
 using Atlas::Objects::smart_dynamic_cast;
 
-using Atlas::Objects::Operation::Delete;
-using Atlas::Objects::Operation::Info;
-using Atlas::Objects::Operation::Appearance;
-using Atlas::Objects::Operation::Disappearance;
-using Atlas::Objects::Operation::Wield;
-using Atlas::Objects::Operation::Unseen;
 
 bool fuzzyEquals(float a, float b, float epsilon)
 {
@@ -264,6 +261,7 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
     m_dynamicsWorld->setInternalTickCallback(preTickCallback, &m_propellingEntries, true);
 
     mContainingEntityEntry.entity = &entity;
+
     m_entries.insert(std::make_pair(entity.getIntId(), &mContainingEntityEntry));
 
     buildTerrainPages();
@@ -281,6 +279,9 @@ PhysicalDomain::~PhysicalDomain()
         delete entry.second.rigidBody->getCollisionShape();
         delete entry.second.rigidBody;
     }
+
+    //Remove our own entry first, since we own the memory
+    m_entries.erase(m_entity.getIntId());
 
     for (auto& entry : m_entries) {
         if (entry.second->rigidBody) {
@@ -491,14 +492,15 @@ class PhysicalDomain::VisibilityCallback : public btCollisionWorld::ContactResul
 
 };
 
-void PhysicalDomain::updateVisibilityOfEntry(BulletEntry* bulletEntry, OpVector& res)
+void PhysicalDomain::updateObserverEntry(BulletEntry* bulletEntry, OpVector& res)
 {
-    VisibilityCallback callback;
-    //callback.m_filterOutEntry = bulletEntry;
 
-    debug_print("Updating visibility of entity " << bulletEntry->entity->describeEntity());
-    //This entry is an observer; check what it can see after it has moved
     if (bulletEntry->viewSphere) {
+        //This entry is an observer; check what it can see after it has moved
+        VisibilityCallback callback;
+
+        //callback.m_filterOutEntry = bulletEntry;
+        debug_print("Updating what can be observed by entity " << bulletEntry->entity->describeEntity());
         callback.m_entries.clear();
 
         debug_print(" " << bulletEntry->entity->describeEntity() << " viewSphere: " << bulletEntry->viewSphere->getWorldTransform().getOrigin());
@@ -558,9 +560,17 @@ void PhysicalDomain::updateVisibilityOfEntry(BulletEntry* bulletEntry, OpVector&
         //Make sure ourselves is in the list
         bulletEntry->observedByThis.insert(bulletEntry);
     }
+}
 
-    //This entry is something which can be observed; check what can see it after it has moved
+
+void PhysicalDomain::updateObservedEntry(BulletEntry* bulletEntry, OpVector& res, bool generateOps)
+{
     if (bulletEntry->visibilitySphere) {
+        //This entry is something which can be observed; check what can see it after it has moved
+
+        VisibilityCallback callback;
+
+        debug_print("Updating what is observing entity " << bulletEntry->entity->describeEntity());
         debug_print(" " << bulletEntry->entity->describeEntity() << " visibilitySphere: " << bulletEntry->visibilitySphere->getWorldTransform().getOrigin());
         callback.m_entries.clear();
 
@@ -580,30 +590,35 @@ void PhysicalDomain::updateVisibilityOfEntry(BulletEntry* bulletEntry, OpVector&
                 //It was already seen; do nothing special
                 observing.erase(I);
             } else {
-                //Send appear
-                // debug_print(" appear: " << bulletEntry->entity->describeEntity() << " for " << viewingEntry->entity->describeEntity());
-                Appearance appear;
-                Anonymous that_ent;
-                that_ent->setId(bulletEntry->entity->getId());
-                that_ent->setStamp(bulletEntry->entity->getSeq());
-                appear->setArgs1(that_ent);
-                appear->setTo(viewingEntry->entity->getId());
-                res.push_back(appear);
+                if (generateOps) {
+                    //Send appear
+                    // debug_print(" appear: " << bulletEntry->entity->describeEntity() << " for " << viewingEntry->entity->describeEntity());
+                    Appearance appear;
+                    Anonymous that_ent;
+                    that_ent->setId(bulletEntry->entity->getId());
+                    that_ent->setStamp(bulletEntry->entity->getSeq());
+                    appear->setArgs1(that_ent);
+                    appear->setTo(viewingEntry->entity->getId());
+                    res.push_back(appear);
+                }
 
                 viewingEntry->observedByThis.insert(bulletEntry);
             }
         }
 
         for (BulletEntry* noLongerObservingEntry : observing) {
-            //Send disappearence
-            // debug_print(" disappear: " << bulletEntry->entity->describeEntity() << " for " << noLongerObservingEntry->entity->describeEntity());
-            Disappearance disappear;
-            Anonymous that_ent;
-            that_ent->setId(bulletEntry->entity->getId());
-            that_ent->setStamp(bulletEntry->entity->getSeq());
-            disappear->setArgs1(that_ent);
-            disappear->setTo(noLongerObservingEntry->entity->getId());
-            res.push_back(disappear);
+
+            if (generateOps) {
+                //Send disappearence
+                // debug_print(" disappear: " << bulletEntry->entity->describeEntity() << " for " << noLongerObservingEntry->entity->describeEntity());
+                Disappearance disappear;
+                Anonymous that_ent;
+                that_ent->setId(bulletEntry->entity->getId());
+                that_ent->setStamp(bulletEntry->entity->getSeq());
+                disappear->setArgs1(that_ent);
+                disappear->setTo(noLongerObservingEntry->entity->getId());
+                res.push_back(disappear);
+            }
 
             noLongerObservingEntry->observedByThis.erase(bulletEntry);
         }
@@ -616,14 +631,11 @@ void PhysicalDomain::updateVisibilityOfEntry(BulletEntry* bulletEntry, OpVector&
 void PhysicalDomain::updateVisibilityOfDirtyEntities(OpVector& res)
 {
     for (auto& bulletEntry : m_dirtyEntries) {
-        updateVisibilityOfEntry(bulletEntry, res);
+        updateObservedEntry(bulletEntry, res);
+        updateObserverEntry(bulletEntry, res);
         bulletEntry->entity->onUpdated();
     }
     m_dirtyEntries.clear();
-}
-
-void PhysicalDomain::processVisibilityForMovedEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector& res)
-{
 }
 
 float PhysicalDomain::getMassForEntity(const LocatedEntity& entity) const
@@ -799,7 +811,8 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     }
 
     OpVector res;
-    updateVisibilityOfEntry(entry, res);
+    updateObserverEntry(entry, res);
+    updateObservedEntry(entry, res, false); //Don't send any ops, since that will be handled by the calling code when changing locations.
     for (auto& op : res) {
         m_entity.sendWorld(op);
     }
@@ -823,7 +836,7 @@ void PhysicalDomain::toggleChildPerception(LocatedEntity& entity)
                 m_visibilityWorld->addCollisionObject(visObject, VISIBILITY_MASK_OBSERVABLE, VISIBILITY_MASK_OBSERVER);
             }
             OpVector res;
-            updateVisibilityOfEntry(entry, res);
+            updateObserverEntry(entry, res);
             for (auto& op : res) {
                 m_entity.sendWorld(op);
             }

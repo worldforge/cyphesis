@@ -38,6 +38,10 @@ using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
 
+const std::string OutfitProperty::property_name = "outfit";
+const std::string OutfitProperty::property_atlastype = "map";
+
+
 /// \brief OutfitProperty constructor
 OutfitProperty::OutfitProperty()
 {

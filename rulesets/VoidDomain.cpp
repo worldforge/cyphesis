@@ -52,10 +52,6 @@ void VoidDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity,
 }
 
 
-void VoidDomain::processVisibilityForMovedEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res) {
-    //Nothing can be seen
-}
-
 void VoidDomain::addEntity(LocatedEntity& entity) {
 
 }

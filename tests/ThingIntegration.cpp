@@ -121,7 +121,7 @@ void ThingIntegration::test_visibility()
         thing->broadcast(s, res);
 
         for (auto expectedThing : expectedThings) {
-            auto I = std::find_if(std::begin(res), std::end(res), [&](auto entry){return entry->getTo() == expectedThing->getId();});
+            auto I = std::find_if(std::begin(res), std::end(res), [&](auto entry) { return entry->getTo() == expectedThing->getId(); });
             if (I == std::end(res)) {
                 addFailure(String::compose("Could not find entity id '%1' in list of broadcasts.", expectedThing->getId()));
                 return false;
@@ -267,6 +267,8 @@ void ThingIntegration::test_visibility()
         ThingExt* t6 = new ThingExt("6", 6);
         ThingExt* t7 = new ThingExt("7", 7);
         ThingExt* t8 = new ThingExt("8", 8);
+        t8->m_location.m_pos = WFMath::Point<3>::ZERO();
+        t8->m_location.setBBox(bbox);
         t8->resetFlags(entity_perceptive);
 
         t2->domain = new PhysicalDomain(*t2);
@@ -313,12 +315,13 @@ void ThingIntegration::test_visibility()
 
         ASSERT_TRUE(verifyBroadcastContains(t1, {t1}));
         ASSERT_TRUE(verifyBroadcastContains(t2, {t2, t3, t5, t7, t1}));
-        ASSERT_TRUE(verifyBroadcastContains(t3, {t2, t3, t5, t7}));
-        ASSERT_TRUE(verifyBroadcastContains(t4, {t2, t3, t5, t7, t4}));
-        ASSERT_TRUE(verifyBroadcastContains(t5, {t2, t3, t5, t7}));
-        ASSERT_TRUE(verifyBroadcastContains(t6, {t2, t6, t3, t5, t7}));
-        ASSERT_TRUE(verifyBroadcastContains(t7, {t2, t3, t5, t7}));
-        ASSERT_TRUE(verifyBroadcastContains(t8, {t2, t3, t5, t7}));
+        //T7 should not be visible since it has an invalid position
+        ASSERT_TRUE(verifyBroadcastContains(t3, {t2, t3, t5,}));
+        ASSERT_TRUE(verifyBroadcastContains(t4, {t2, t3, t5, t4}));
+        ASSERT_TRUE(verifyBroadcastContains(t5, {t2, t3, t5}));
+        ASSERT_TRUE(verifyBroadcastContains(t6, {t2, t6, t3, t5}));
+        ASSERT_TRUE(verifyBroadcastContains(t7, {t2, t7}));
+        ASSERT_TRUE(verifyBroadcastContains(t8, {t2, t3, t5}));
 
     }
 

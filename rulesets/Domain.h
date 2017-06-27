@@ -65,17 +65,6 @@ class Domain
         virtual bool isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const = 0;
 
         /**
-         * @brief Process visibility operation for an entity that has been moved.
-         *
-         * This mainly involves calculating visibility changes, generating Appear and Disappear ops.
-         *
-         * @param moved_entity The entity that was moved.
-         * @param old_loc The old location of the entity.
-         * @param res
-         */
-        virtual void processVisibilityForMovedEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector& res) = 0;
-
-        /**
          * Adds a child entity to this domain. The child entity is guaranteed to be a direct child of the entity to which the domain belongs.
          *
          * @param entity A child entity.

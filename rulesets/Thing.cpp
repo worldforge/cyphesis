@@ -61,8 +61,8 @@ using Atlas::Objects::Entity::RootEntity;
 static const bool debug_flag = false;
 
 /// \brief Constructor for physical or tangible entities.
-Thing::Thing(const std::string & id, long intId) :
-       Entity(id, intId)
+Thing::Thing(const std::string& id, long intId) :
+    Entity(id, intId)
 {
 }
 
@@ -70,11 +70,11 @@ Thing::~Thing()
 {
 }
 
-void Thing::DeleteOperation(const Operation & op, OpVector & res)
+void Thing::DeleteOperation(const Operation& op, OpVector& res)
 {
     if (m_location.m_loc == 0) {
         log(ERROR, String::compose("Deleting %1(%2) when it is not "
-                                   "in the world.", getType(), getId()));
+                                       "in the world.", getType(), getId()));
         assert(m_location.m_loc != 0);
         return;
     }
@@ -101,9 +101,9 @@ void Thing::DeleteOperation(const Operation & op, OpVector & res)
     Entity::DeleteOperation(op, res);
 }
 
-void Thing::MoveOperation(const Operation & op, OpVector & res)
+void Thing::MoveOperation(const Operation& op, OpVector& res)
 {
-    debug( std::cout << "Thing::move_operation" << std::endl << std::flush;);
+    debug(std::cout << "Thing::move_operation" << std::endl << std::flush;);
 
     if (m_location.m_loc == 0) {
         log(ERROR, String::compose("Moving %1(%2) when it is not in the world.",
@@ -113,7 +113,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
     }
 
     // Check the validity of the operation.
-    const std::vector<Root> & args = op->getArgs();
+    const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
         error(op, "Move has no argument", res, getId());
         return;
@@ -128,26 +128,26 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    LocatedEntity * new_loc = 0;
+    LocatedEntity* new_loc = nullptr;
     if (ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
-        const std::string & new_loc_id = ent->getLoc();
+        const std::string& new_loc_id = ent->getLoc();
         if (new_loc_id != m_location.m_loc->getId()) {
             // If the LOC has not changed, we don't need to look it up, or do
             // any of the following checks.
             new_loc = BaseWorld::instance().getEntity(new_loc_id);
-            if (new_loc == 0) {
+            if (new_loc == nullptr) {
                 error(op, "Move op loc does not exist", res, getId());
                 return;
             }
             debug(std::cout << "LOC: " << new_loc_id << std::endl << std::flush;);
-            LocatedEntity * test_loc = new_loc;
-            for (; test_loc != 0; test_loc = test_loc->m_location.m_loc) {
+            LocatedEntity* test_loc = new_loc;
+            for (; test_loc != nullptr; test_loc = test_loc->m_location.m_loc) {
                 if (test_loc == this) {
                     error(op, "Attempt to move into itself", res, getId());
                     return;
                 }
             }
-            assert(new_loc != 0);
+            assert(new_loc != nullptr);
             assert(m_location.m_loc != new_loc);
         }
 
@@ -159,60 +159,6 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
     const Location old_loc = m_location;
 
-    // Check if the location has changed
-    if (new_loc != 0) {
-        // new_loc should only be non-null if the LOC specified is
-        // different from the current LOC
-        assert(m_location.m_loc != new_loc);
-        // Check for pickup, ie if the new LOC is the actor, and the
-        // previous LOC is the actor's LOC.
-        if (new_loc->getId() == op->getFrom() &&
-            m_location.m_loc == new_loc->m_location.m_loc) {
-
-            //Send Pickup to those entities which are currently observing
-            Domain* domain = nullptr;
-            if (m_location.m_loc) {
-
-                domain = m_location.m_loc->getMovementDomain();
-                if (domain) {
-                    Pickup p;
-                    p->setFrom(op->getFrom());
-                    p->setTo(getId());
-
-                    auto observingEntities = domain->getObservingEntitiesFor(*this);
-                    for (auto entity : observingEntities) {
-                        Sight s;
-                        s->setArgs1(p);
-                        s->setTo(entity->getId());
-                        res.push_back(s);
-                    }
-                }
-            }
-
-            Anonymous wield_arg;
-            wield_arg->setId(getId());
-            Wield w;
-            w->setTo(op->getFrom());
-            w->setArgs1(wield_arg);
-            res.push_back(w);
-        }
-        // Check for drop, ie if the old LOC is the actor, and the
-        // new LOC is the actor's LOC.
-        if (m_location.m_loc->getId() == op->getFrom() &&
-            new_loc == m_location.m_loc->m_location.m_loc) {
-
-            Drop d;
-            d->setFrom(op->getFrom());
-            d->setTo(getId());
-            Sight s;
-            s->setArgs1(d);
-            broadcast(s, res);
-            //res.push_back(s);
-        }
-
-        // Update loc
-        changeContainer(new_loc);
-    }
 
     std::string mode;
 
@@ -223,7 +169,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
             mode = mode_attr.String();
         } else {
             log(ERROR, String::compose("Mode on entity is a \"%1\" in "
-                                       "Thing::MoveOperation",
+                                           "Thing::MoveOperation",
                                        Element::typeName(mode_attr.getType())));
         }
     }
@@ -242,7 +188,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
         }
     }
 
-    const double & current_time = BaseWorld::instance().getTime();
+    const double& current_time = BaseWorld::instance().getTime();
 
     //We can only move if there's a domain
     Domain* domain = nullptr;
@@ -261,7 +207,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
         if (ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
             // Update pos
-            if (fromStdVector(newPos, ent->getPos()) ==0) {
+            if (fromStdVector(newPos, ent->getPos()) == 0) {
                 updatedTransform = true;
             }
         }
@@ -288,10 +234,70 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
             }
         }
 
-        if (updatedTransform) {
-            domain->applyTransform(*this, newOrientation, newPos, newVelocity);
-        }
 
+        // Check if the location has changed
+        if (new_loc != nullptr) {
+            // new_loc should only be non-null if the LOC specified is
+            // different from the current LOC
+            assert(m_location.m_loc != new_loc);
+            // Check for pickup, ie if the new LOC is the actor, and the
+            // previous LOC is the actor's LOC.
+            if (new_loc->getId() == op->getFrom() &&
+                m_location.m_loc == new_loc->m_location.m_loc) {
+
+                //Send Pickup to those entities which are currently observing
+                if (m_location.m_loc) {
+
+                    Pickup p;
+                    p->setFrom(op->getFrom());
+                    p->setTo(getId());
+
+                    Sight s;
+                    s->setArgs1(p);
+                    m_location.m_loc->broadcast(s, res);
+                }
+
+                Anonymous wield_arg;
+                wield_arg->setId(getId());
+                Wield w;
+                w->setTo(op->getFrom());
+                w->setArgs1(wield_arg);
+                res.push_back(w);
+            }
+            // Check for drop, ie if the old LOC is the actor, and the
+            // new LOC is the actor's LOC.
+            if (m_location.m_loc->getId() == op->getFrom() &&
+                new_loc == m_location.m_loc->m_location.m_loc) {
+
+                Drop d;
+                d->setFrom(op->getFrom());
+                d->setTo(getId());
+                Sight s;
+                s->setArgs1(d);
+                m_location.m_loc->broadcast(s, res);
+            }
+
+            // Update loc
+
+            std::set<const LocatedEntity*> previousObserving;
+            collectObservers(previousObserving);
+
+            if (updatedTransform) {
+                if (newOrientation.isValid()) {
+                    m_location.m_orientation = newOrientation;
+                }
+                if (newPos.isValid()) {
+                    m_location.m_pos = newPos;
+                }
+            }
+
+            changeContainer(new_loc);
+            processAppearDisappear(std::move(previousObserving), res);
+        } else {
+            if (updatedTransform) {
+                domain->applyTransform(*this, newOrientation, newPos, newVelocity);
+            }
+        }
 
 
         m_location.update(current_time);
@@ -299,7 +305,7 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
         // At this point the Location data for this entity has been updated.
 
-        Operation m(op.copy());
+        Operation m = op.copy();
         RootEntity marg = smart_dynamic_cast<RootEntity>(m->getArgs().front());
         assert(marg.isValid());
         m_location.addToEntity(marg);
@@ -310,43 +316,24 @@ void Thing::MoveOperation(const Operation & op, OpVector & res)
 
         Sight s;
         s->setArgs1(m);
-
         broadcast(s, res);
-        //res.push_back(s);
 
     }
 
-    //Check if we've moved between domains. First check if the location has changed, and if so
-    //check if the domain also has changed.
-//    if (new_loc != 0) {
-//        if (old_loc.m_loc != m_location.m_loc && old_loc.m_loc) {
-//            auto domain_old = old_loc.m_loc->getMovementDomain();
-//            if (domain_old && domain_old != domain) {
-//                //Everything that saw us at the old domain should get a disappear op.
-//                //We shouldn't need to send disappear ops to ourselves though, since the top
-//                //level entity will have changed.
-//                //TODO: We can't use a broadcast op here, since the broadcast will look at the
-//                //location of the entity when it's processed, not when it's created. We should
-//                //alter this so that any op that's to be broadcast instead should include
-//                //the location data in the op itself.
-//                domain_old->processDisappearanceOfEntity(*this, old_loc, res);
-//            }
-//        }
-//    }
     m_seq++;
 
     onUpdated();
 }
 
 
-void Thing::SetOperation(const Operation & op, OpVector & res)
+void Thing::SetOperation(const Operation& op, OpVector& res)
 {
-    const std::vector<Root> & args = op->getArgs();
+    const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
         error(op, "Set has no argument", res, getId());
         return;
     }
-    const Root & ent = args.front();
+    const Root& ent = args.front();
     merge(ent->asMessage());
     Sight s;
     s->setArgs1(op);
@@ -377,11 +364,10 @@ void Thing::SetOperation(const Operation & op, OpVector & res)
 /// place.
 /// @param op Update operation that notifies of the changes.
 /// @param res The result of the operation is returned here.
-void Thing::updateProperties(const Operation & op, OpVector & res)
+void Thing::updateProperties(const Operation& op, OpVector& res)
 {
     debug(std::cout << "Generating property update" << std::endl << std::flush;);
 
-    bool updateContains = false;
     Anonymous set_arg;
     set_arg->setId(getId());
 
@@ -389,7 +375,7 @@ void Thing::updateProperties(const Operation & op, OpVector & res)
     bool hadChanges = false;
 
     for (auto entry : m_properties) {
-        PropertyBase * prop = entry.second;
+        PropertyBase* prop = entry.second;
         assert(prop != 0);
         if (prop->flags() & flag_unsent) {
             debug(std::cout << "UPDATE:  " << flag_unsent << " " << entry.first
@@ -398,30 +384,8 @@ void Thing::updateProperties(const Operation & op, OpVector & res)
             prop->add(entry.first, set_arg);
             prop->resetFlags(flag_unsent | per_clean);
 
-            if (entry.first == "outfit" || entry.first == "right_hand_wield") {
-                updateContains = true;
-            }
             hadChanges = true;
             // FIXME Make sure we handle separately for private properties
-        }
-    }
-
-    if (updateContains) {
-        if (m_contains != nullptr) {
-
-            //If the observed entity has a domain, let it decide child visibility.
-            //Otherwise show all children.
-            Domain* domain = getMovementDomain();
-            if (domain) {
-                domain->processVisibilityForMovedEntity(*this, m_location, res);
-//                Atlas::Message::ListType containsList;
-//                for (auto& entry : *m_contains) {
-//                    if (domain->isEntityVisibleFor(*m_location.m_loc, *entry)) {
-//                        containsList.push_back(entry->getId());
-//                    }
-//                }
-//                set_arg->setAttr("contains", containsList);
-            }
         }
     }
 
@@ -438,7 +402,6 @@ void Thing::updateProperties(const Operation & op, OpVector & res)
         Sight sight;
         sight->setArgs1(set);
         broadcast(sight, res);
-        //res.push_back(sight);
     }
 
 
@@ -457,7 +420,6 @@ void Thing::updateProperties(const Operation & op, OpVector & res)
         s->setArgs1(m);
 
         broadcast(s, res);
-        //res.push_back(s);
         resetFlags(entity_dirty_location);
         hadChanges = true;
     }
@@ -472,7 +434,7 @@ void Thing::updateProperties(const Operation & op, OpVector & res)
     }
 }
 
-void Thing::UpdateOperation(const Operation & op, OpVector & res)
+void Thing::UpdateOperation(const Operation& op, OpVector& res)
 {
     // If it has no refno, then it is a generic request to broadcast
     // an update of some properties which have changed.
@@ -484,7 +446,8 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
     onUpdated();
 }
 
-bool Thing::lookAtEntity(const Operation & op, OpVector & res, const LocatedEntity* watcher) const {
+bool Thing::lookAtEntity(const Operation& op, OpVector& res, const LocatedEntity* watcher) const
+{
 
     if (isVisibleForOtherEntity(watcher)) {
         generateSightOp(*watcher, op, res);
@@ -494,8 +457,7 @@ bool Thing::lookAtEntity(const Operation & op, OpVector & res, const LocatedEnti
 }
 
 
-
-void Thing::generateSightOp(const LocatedEntity& observingEntity, const Operation & originalLookOp, OpVector& res) const
+void Thing::generateSightOp(const LocatedEntity& observingEntity, const Operation& originalLookOp, OpVector& res) const
 {
     debug_print("Thing::generateSightOp() observer " << observingEntity.describeEntity() << " observed " << this->describeEntity());
 
@@ -510,7 +472,7 @@ void Thing::generateSightOp(const LocatedEntity& observingEntity, const Operatio
         //If the observed entity has a domain, let it decide child visibility.
         //Otherwise show all children.
         const Domain* observedEntityDomain = getMovementDomain();
-        std::list<std::string> & contlist = sarg->modifyContains();
+        std::list<std::string>& contlist = sarg->modifyContains();
         if (observedEntityDomain) {
             contlist.clear();
             std::list<LocatedEntity*> entityList;
@@ -538,9 +500,9 @@ void Thing::generateSightOp(const LocatedEntity& observingEntity, const Operatio
 
 }
 
-void Thing::LookOperation(const Operation & op, OpVector & res)
+void Thing::LookOperation(const Operation& op, OpVector& res)
 {
-    LocatedEntity * from = BaseWorld::instance().getEntity(op->getFrom());
+    LocatedEntity* from = BaseWorld::instance().getEntity(op->getFrom());
     if (from == nullptr) {
         log(ERROR, String::compose("Look op has invalid from %1. %2", op->getFrom(), describeEntity()));
         return;
@@ -561,11 +523,11 @@ void Thing::LookOperation(const Operation & op, OpVector & res)
     }
 }
 
-void Thing::CreateOperation(const Operation & op, OpVector & res)
+void Thing::CreateOperation(const Operation& op, OpVector& res)
 {
-    const std::vector<Root> & args = op->getArgs();
+    const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
-       return;
+        return;
     }
     try {
         RootEntity ent = smart_dynamic_cast<RootEntity>(args.front());
@@ -573,7 +535,7 @@ void Thing::CreateOperation(const Operation & op, OpVector & res)
             error(op, "Entity to be created is malformed", res, getId());
             return;
         }
-        const std::list<std::string> & parents = ent->getParents();
+        const std::list<std::string>& parents = ent->getParents();
         if (parents.empty()) {
             error(op, "Entity to be created has empty parents", res, getId());
             return;
@@ -583,10 +545,10 @@ void Thing::CreateOperation(const Operation & op, OpVector & res)
         if (!ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG) && (m_location.m_loc != 0)) {
             ent->setLoc(m_location.m_loc->getId());
         }
-        const std::string & type = parents.front();
+        const std::string& type = parents.front();
         debug_print(getId() << " creating " << type);
 
-        LocatedEntity * obj = BaseWorld::instance().addNewEntity(type, ent);
+        LocatedEntity* obj = BaseWorld::instance().addNewEntity(type, ent);
 
         if (obj == 0) {
             error(op, "Create op failed.", res, op->getFrom());

@@ -55,6 +55,9 @@ class OutfitProperty : public PropertyBase, virtual public sigc::trackable {
 
     void itemRemoved(LocatedEntity * garment, LocatedEntity * wearer);
   public:
+    static const std::string property_name;
+    static const std::string property_atlastype;
+
     explicit OutfitProperty();
     virtual ~OutfitProperty();
 

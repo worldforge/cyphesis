@@ -736,9 +736,15 @@ void Character::UseOperation(const Operation & op, OpVector & res)
 void Character::WieldOperation(const Operation & op, OpVector & res)
 {
     if (op->getArgs().empty()) {
+        std::set<const LocatedEntity*> prevObserving, newObserving;
         EntityProperty * rhw = modPropertyClass<EntityProperty>(RIGHT_HAND_WIELD);
-        if (rhw == 0) {
+        if (rhw == nullptr) {
             return;
+        }
+
+        auto wieldedEntity = rhw->data().get();
+        if (wieldedEntity) {
+            wieldedEntity->collectObservers(prevObserving);
         }
 
         rhw->data() = EntityRef(0);
@@ -755,6 +761,10 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         update->setTo(getId());
         res.push_back(update);
 
+        if (wieldedEntity) {
+            wieldedEntity->processAppearDisappear(std::move(prevObserving), res);
+        }
+
         return;
     }
     const Root & arg = op->getArgs().front();
@@ -764,7 +774,7 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
     }
     const std::string & id = arg->getId();
     LocatedEntity * item = BaseWorld::instance().getEntity(id);
-    if (item == 0) {
+    if (item == nullptr) {
         error(op, "Wield arg does not exist", res, getId());
         return;
     }
@@ -781,11 +791,24 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         ;);
 
         if (worn_attr.isString()) {
-            OutfitProperty * outfit = requirePropertyClass<OutfitProperty>(OUTFIT);
+            std::set<const LocatedEntity*> oldEntityPrevObserving, newEntityPrevObserving;
+
+            OutfitProperty * outfit = requirePropertyClassFixed<OutfitProperty>();
+            LocatedEntity* prevEntity = outfit->getEntity(worn_attr.String());
+            if (prevEntity) {
+                prevEntity->collectObservers(oldEntityPrevObserving);
+            }
+            item->collectObservers(newEntityPrevObserving);
             outfit->wear(this, worn_attr.String(), item);
             outfit->cleanUp();
 
             outfit->setFlags(flag_unsent);
+
+            if (prevEntity) {
+                prevEntity->processAppearDisappear(std::move(oldEntityPrevObserving), res);
+            }
+            item->processAppearDisappear(std::move(newEntityPrevObserving), res);
+
         } else {
             log(WARNING, "Got clothing with non-string worn attribute. " + describeEntity());
             return;
@@ -796,10 +819,16 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         // looked up here, and fix the GuiseProperty code so it does not
         // need a repeat lookup
     } else {
+        std::set<const LocatedEntity*> oldEntityPrevObserving, newEntityPrevObserving;
         debug(std::cout << "Got wield for a tool" << std::endl << std::flush
         ;);
 
         EntityProperty * rhw = requirePropertyClass<EntityProperty>(RIGHT_HAND_WIELD);
+        LocatedEntity* prevEntity = rhw->data().get();
+        if (prevEntity) {
+            prevEntity->collectObservers(oldEntityPrevObserving);
+        }
+        item->collectObservers(newEntityPrevObserving);
         // FIXME Make sure we don't stay linked to the previous wielded
         // tool.
         if (m_rightHandWieldConnection.connected()) {
@@ -812,6 +841,11 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         rhw->setFlags(flag_unsent);
 
         m_rightHandWieldConnection = item->containered.connect(sigc::hide<0>(sigc::mem_fun(this, &Character::wieldDropped)));
+
+        if (prevEntity) {
+            prevEntity->processAppearDisappear(std::move(oldEntityPrevObserving), res);
+        }
+        item->processAppearDisappear(std::move(newEntityPrevObserving), res);
 
         debug(std::cout << "Wielding " << item->getId() << std::endl << std::flush
         ;);

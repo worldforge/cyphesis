@@ -27,6 +27,8 @@
 #include "common/TypeNode.h"
 
 #include <Atlas/Objects/RootOperation.h>
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Anonymous.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -276,7 +278,7 @@ void LocatedEntity::makeContainer()
 
 /// \brief Change the container of an entity
 ///
-/// @param new_loc The entity which is to become this entities new
+/// @param new_loc The entity which is to become this entity's new
 /// container.
 void LocatedEntity::changeContainer(LocatedEntity* new_loc)
 {
@@ -288,23 +290,12 @@ void LocatedEntity::changeContainer(LocatedEntity* new_loc)
 
     onContainered(oldLoc);
     oldLoc->decRef();
-
 }
 
 void LocatedEntity::broadcast(const Atlas::Objects::Operation::RootOperation& op, OpVector& res) const
 {
     std::set<const LocatedEntity*> receivers;
-    if (isPerceptive()) {
-        receivers.insert(this);
-    }
-    const Domain* domain = getMovementDomain();
-    if (domain) {
-        auto observingEntities = domain->getObservingEntitiesFor(*this);
-        receivers.insert(observingEntities.begin(), observingEntities.end());
-    }
-    if (m_location.m_loc) {
-        m_location.m_loc->broadcastFromChild(*this, op, receivers);
-    }
+    collectObservers(receivers);
 
     for (auto& entity : receivers) {
         auto newOp = op.copy();
@@ -315,7 +306,24 @@ void LocatedEntity::broadcast(const Atlas::Objects::Operation::RootOperation& op
 
 }
 
-void LocatedEntity::broadcastFromChild(const LocatedEntity& child, const Atlas::Objects::Operation::RootOperation& op, std::set<const LocatedEntity*>& receivers) const
+void LocatedEntity::collectObservers(std::set<const LocatedEntity*>& receivers) const
+{
+    if (isPerceptive()) {
+        receivers.insert(this);
+    }
+    const Domain* domain = getMovementDomain();
+    if (domain) {
+        auto observingEntities = domain->getObservingEntitiesFor(*this);
+        receivers.insert(observingEntities.begin(), observingEntities.end());
+    }
+    if (m_location.m_loc) {
+        m_location.m_loc->collectObserversForChild(*this, receivers);
+    }
+
+}
+
+
+void LocatedEntity::collectObserversForChild(const LocatedEntity& child, std::set<const LocatedEntity*>& receivers) const
 {
     const Domain* domain = getMovementDomain();
 
@@ -324,7 +332,7 @@ void LocatedEntity::broadcastFromChild(const LocatedEntity& child, const Atlas::
     }
 
     if (domain) {
-        auto observingEntities = domain->getObservingEntitiesFor(*this);
+        auto observingEntities = domain->getObservingEntitiesFor(child);
         receivers.insert(observingEntities.begin(), observingEntities.end());
     }
     if (m_location.m_loc) {
@@ -332,9 +340,38 @@ void LocatedEntity::broadcastFromChild(const LocatedEntity& child, const Atlas::
         if (domain && !domain->isEntityVisibleFor(*m_location.m_loc, child)) {
             return;
         }
-        m_location.m_loc->broadcastFromChild(*this, op, receivers);
+        m_location.m_loc->collectObserversForChild(*this, receivers);
     }
 }
+
+void LocatedEntity::processAppearDisappear(std::set<const LocatedEntity*> previousObserving, OpVector& res) const
+{
+    std::set<const LocatedEntity*> nowObservers;
+    collectObservers(nowObservers);
+    for (auto entity : nowObservers) {
+        auto numberErased = previousObserving.erase(entity);
+        if (numberErased == 0) {
+            Atlas::Objects::Operation::Appearance appear;
+            Atlas::Objects::Entity::Anonymous that_ent;
+            that_ent->setId(getId());
+            that_ent->setStamp(getSeq());
+            appear->setArgs1(that_ent);
+            appear->setTo(entity->getId());
+            res.push_back(appear);
+        }
+    }
+
+    for (auto entity : previousObserving) {
+        Atlas::Objects::Operation::Disappearance disappear;
+        Atlas::Objects::Entity::Anonymous that_ent;
+        that_ent->setId(getId());
+        that_ent->setStamp(getSeq());
+        disappear->setArgs1(that_ent);
+        disappear->setTo(entity->getId());
+        res.push_back(disappear);
+    }
+}
+
 
 
 void LocatedEntity::addChild(LocatedEntity& childEntity)

@@ -27,22 +27,18 @@ class VoidDomain : public Domain
 {
     public:
         VoidDomain(LocatedEntity& entity);
+
         virtual ~VoidDomain();
 
-        virtual void tick(double t, OpVector& res);
+        void tick(double t, OpVector& res) override;
 
-        virtual bool isEntityVisibleFor(const LocatedEntity& observingEntity,
-                const LocatedEntity& observedEntity) const;
+        bool isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const override;
 
-        virtual void getVisibleEntitiesFor(const LocatedEntity& observingEntity,
-                std::list<LocatedEntity*>& entityList) const;
+        void getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<LocatedEntity*>& entityList) const override;
 
-        virtual void processVisibilityForMovedEntity(
-                const LocatedEntity& moved_entity, const Location& old_loc,
-                OpVector & res);
+        void addEntity(LocatedEntity& entity) override;
 
-        virtual void addEntity(LocatedEntity& entity);
-        virtual void removeEntity(LocatedEntity& entity);
+        void removeEntity(LocatedEntity& entity) override;
 
 };
 

@@ -37,6 +37,9 @@ class Domain;
 class DomainProperty: public Property<std::string> {
     public:
 
+        static const std::string property_name;
+        static const std::string property_atlastype;
+
         explicit DomainProperty();
         explicit DomainProperty(const DomainProperty& rhs);
 

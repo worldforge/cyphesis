@@ -18,6 +18,9 @@
 #ifndef STUBOUTFITPROPERTY_H_
 #define STUBOUTFITPROPERTY_H_
 
+const std::string OutfitProperty::property_name = "outfit";
+const std::string OutfitProperty::property_atlastype = "map";
+
 
 OutfitProperty::OutfitProperty()
 {
@@ -70,6 +73,10 @@ const EntityRefMap& OutfitProperty::data() const
     return m_data;
 }
 
+LocatedEntity* OutfitProperty::getEntity(const std::string& key) const
+{
+    return nullptr;
+}
 
 
 #endif /* STUBOUTFITPROPERTY_H_ */

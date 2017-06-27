@@ -29,29 +29,22 @@ class InventoryDomain : public Domain
 {
     public:
         InventoryDomain(LocatedEntity& entity);
+
         virtual ~InventoryDomain();
 
-        virtual void tick(double t, OpVector& res);
+        void tick(double t, OpVector& res) override;
 
+        bool isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const override;
 
-        virtual bool isEntityVisibleFor(const LocatedEntity& observingEntity,
-                const LocatedEntity& observedEntity) const;
-
-        virtual void getVisibleEntitiesFor(const LocatedEntity& observingEntity,
-                std::list<LocatedEntity*>& entityList) const;
-
-        virtual void processVisibilityForMovedEntity(
-                const LocatedEntity& moved_entity, const Location& old_loc,
-                OpVector & res);
+        void getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<LocatedEntity*>& entityList) const override;
 
         std::list<LocatedEntity*> getObservingEntitiesFor(const LocatedEntity& observedEntity) const override;
 
-        virtual void addEntity(LocatedEntity& entity);
-        virtual void removeEntity(LocatedEntity& entity);
+        void addEntity(LocatedEntity& entity) override;
+
+        void removeEntity(LocatedEntity& entity) override;
 
     protected:
-
-        std::set<std::string> m_lastVisibleEntities;
 
 };
 
