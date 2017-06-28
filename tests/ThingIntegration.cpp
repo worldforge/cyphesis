@@ -459,6 +459,69 @@ void ThingIntegration::test_visibility()
         ASSERT_TRUE(verifyBroadcastContains(t6, {t6, t3}));
 
     }
+
+    /**
+    * Handle "creator" entities which allows more access.
+    *
+    * All entities are placed at origo
+    * Hierarchy looks like this:
+    *
+    *                T1*
+    *       T2*** creator*   T3
+    *    T4**  T5
+    *
+    * With T1 having a Physical domain.
+    * With T2 having an Inventory domain.
+    * With "creator" being a "creator"
+    * And T4 being wielded
+    */
+    {
+        ThingExt* t1 = new ThingExt("1", 1);
+        t1->m_location.m_pos = WFMath::Point<3>::ZERO();
+        t1->m_location.setBBox(bbox);
+        ThingExt* t2 = new ThingExt("2", 2);
+        t2->m_location.m_pos = WFMath::Point<3>::ZERO();
+        t2->m_location.setBBox(bbox);
+        ThingExt* creator = new ThingExt("creator", 10);
+        creator->m_location.m_pos = WFMath::Point<3>::ZERO();
+        creator->m_location.setBBox(bbox);
+        ThingExt* t3 = new ThingExt("3", 3);
+        t3->m_location.m_pos = WFMath::Point<3>::ZERO();
+        t3->m_location.setBBox(bbox);
+        ThingExt* t4 = new ThingExt("4", 4);
+        ThingExt* t5 = new ThingExt("5", 5);
+
+        t1->domain = new PhysicalDomain(*t1);
+        t1->setFlags(entity_domain);
+
+        t2->domain = new InventoryDomain(*t2);
+        t2->setFlags(entity_domain);
+
+        t1->addChild(*t2);
+        t1->addChild(*creator);
+        t1->addChild(*t3);
+        t2->addChild(*t4);
+        t2->addChild(*t5);
+
+        auto entityProp = new EntityProperty();
+        entityProp->data() = EntityRef(t4);
+        t2->setProperty("right_hand_wield", entityProp);
+
+        Operation sightOp;
+        OpVector res;
+        //T3 can see t4 since it's wielded
+        ASSERT_TRUE(t4->test_lookAtEntity(sightOp, res, t3));
+        //"creator" can see t4 since it's wielded
+        ASSERT_TRUE(t4->test_lookAtEntity(sightOp, res, creator));
+        //T3 can't see t5 since it's not wielded
+        ASSERT_FALSE(t5->test_lookAtEntity(sightOp, res, t3));
+        //"creator" can see t5 since it's a "creator"
+        ASSERT_TRUE(t5->test_lookAtEntity(sightOp, res, creator));
+
+        ASSERT_TRUE(verifyBroadcastContains(t4, {t1, t2, t3, t4, creator}));
+        ASSERT_TRUE(verifyBroadcastContains(t5, {t2, t5})); //broadcasts won't be sent to creator, since they will be stopped at T2
+
+    }
 }
 
 int main()

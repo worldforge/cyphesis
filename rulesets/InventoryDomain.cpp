@@ -24,6 +24,7 @@
 #include "EntityProperty.h"
 #include "LocatedEntity.h"
 
+#include "common/TypeNode.h"
 #include "common/debug.h"
 #include "common/Unseen.h"
 
@@ -80,6 +81,10 @@ bool InventoryDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, c
 {
     //If the observing entity is the same as the one the domain belongs to it can see everything.
     if (&observingEntity == &m_entity) {
+        return true;
+    }
+
+    if (observingEntity.getType()->isTypeOf("creator")) {
         return true;
     }
 
