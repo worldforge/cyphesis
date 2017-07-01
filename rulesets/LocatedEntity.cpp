@@ -18,7 +18,6 @@
 
 #include "LocatedEntity.h"
 
-#include "DomainProperty.h"
 #include "Domain.h"
 
 #include "Script.h"
@@ -228,12 +227,12 @@ void LocatedEntity::destroy()
     clearProperties();
 }
 
-Domain* LocatedEntity::getMovementDomain()
+Domain* LocatedEntity::getDomain()
 {
     return nullptr;
 }
 
-const Domain* LocatedEntity::getMovementDomain() const
+const Domain* LocatedEntity::getDomain() const
 {
     return nullptr;
 }
@@ -311,7 +310,7 @@ void LocatedEntity::collectObservers(std::set<const LocatedEntity*>& receivers) 
     if (isPerceptive()) {
         receivers.insert(this);
     }
-    const Domain* domain = getMovementDomain();
+    const Domain* domain = getDomain();
     if (domain) {
         auto observingEntities = domain->getObservingEntitiesFor(*this);
         receivers.insert(observingEntities.begin(), observingEntities.end());
@@ -325,7 +324,7 @@ void LocatedEntity::collectObservers(std::set<const LocatedEntity*>& receivers) 
 
 void LocatedEntity::collectObserversForChild(const LocatedEntity& child, std::set<const LocatedEntity*>& receivers) const
 {
-    const Domain* domain = getMovementDomain();
+    const Domain* domain = getDomain();
 
     if (isPerceptive()) {
         receivers.insert(this);
@@ -384,11 +383,6 @@ void LocatedEntity::addChild(LocatedEntity& childEntity)
     }
 
     childEntity.m_location.m_loc = this;
-
-    auto domain = getMovementDomain();
-    if (domain) {
-        domain->addEntity(childEntity);
-    }
 }
 
 void LocatedEntity::removeChild(LocatedEntity& childEntity)
@@ -396,10 +390,6 @@ void LocatedEntity::removeChild(LocatedEntity& childEntity)
     assert(checkRef() > 0);
     assert(m_contains != 0);
     assert(m_contains->count(&childEntity));
-    if (m_flags & entity_domain) {
-        auto domain = getPropertyClass<DomainProperty>("domain")->getDomain(this);
-        domain->removeEntity(childEntity);
-    }
     m_contains->erase(&childEntity);
     if (m_contains->empty()) {
         onUpdated();
@@ -419,7 +409,7 @@ bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* watcher) const
     const Domain* watcherParentDomain = nullptr;
 
     while (domainEntity != nullptr) {
-        watcherParentDomain = domainEntity->getMovementDomain();
+        watcherParentDomain = domainEntity->getDomain();
         if (watcherParentDomain) {
             break;
         }
@@ -428,7 +418,7 @@ bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* watcher) const
     }
 
     domainEntity = watcher->m_location.m_loc;
-    const Domain* watcherOwnDomain = watcher->getMovementDomain();
+    const Domain* watcherOwnDomain = watcher->getDomain();
 
     //Now walk upwards from the entity being looked at until we reach either the watcher's parent domain entity,
     //or the watcher itself
@@ -470,7 +460,7 @@ bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* watcher) const
             }
         }
 
-        ancestorDomain = ancestor->getMovementDomain();
+        ancestorDomain = ancestor->getDomain();
     }
     return true;
 }

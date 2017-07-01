@@ -193,7 +193,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
     //We can only move if there's a domain
     Domain* domain = nullptr;
     if (m_location.m_loc) {
-        domain = m_location.m_loc->getMovementDomain();
+        domain = m_location.m_loc->getDomain();
     }
 
 
@@ -471,7 +471,7 @@ void Thing::generateSightOp(const LocatedEntity& observingEntity, const Operatio
 
         //If the observed entity has a domain, let it decide child visibility.
         //Otherwise show all children.
-        const Domain* observedEntityDomain = getMovementDomain();
+        const Domain* observedEntityDomain = getDomain();
         std::list<std::string>& contlist = sarg->modifyContains();
         if (observedEntityDomain) {
             contlist.clear();

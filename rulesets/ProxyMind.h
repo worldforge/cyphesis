@@ -51,14 +51,14 @@ class ProxyMind : public BaseMind
          * Gets all registered thoughts.
          * @return All registered thoughts.
          */
-        virtual std::vector<Atlas::Objects::Root> getThoughts() const;
+        std::vector<Atlas::Objects::Root> getThoughts() const override;
 
         /**
          * Clear all registered thoughts.
          */
         void clearThoughts();
 
-        void operation(const Operation & op, OpVector & res);
+        void operation(const Operation & op, OpVector & res) override;
 
     private:
 
@@ -80,10 +80,10 @@ class ProxyMind : public BaseMind
          */
         std::vector<Atlas::Objects::Root> m_randomThoughts;
 
-        virtual void thinkSetOperation(const Operation & op, OpVector & res);
-        virtual void thinkDeleteOperation(const Operation & op, OpVector & res);
-        virtual void thinkGetOperation(const Operation & op, OpVector & res);
-        virtual void thinkLookOperation(const Operation & op, OpVector & res);
+        void thinkSetOperation(const Operation & op, OpVector & res) override;
+        void thinkDeleteOperation(const Operation & op, OpVector & res) override;
+        void thinkGetOperation(const Operation & op, OpVector & res) override;
+        void thinkLookOperation(const Operation & op, OpVector & res) override;
 
 };
 

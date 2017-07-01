@@ -69,11 +69,10 @@ class Peer : public Link {
     void setAuthState(PeerAuthState state);
     PeerAuthState getAuthState();
 
-    virtual void externalOperation(const Operation & op, Link &);
-    virtual void operation(const Operation &, OpVector &);
+    void externalOperation(const Operation & op, Link &) override;
+    void operation(const Operation &, OpVector &) override;
     
     int teleportEntity(const LocatedEntity *);
-    TeleportState *getTeleportState(const std::string & id);
     void peerTeleportResponse(const Operation &op, OpVector &res);
 
     void cleanTeleports();

@@ -249,7 +249,7 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
     }
 
     if (ent->m_location.m_loc) {
-        auto domain = ent->m_location.m_loc->getMovementDomain();
+        auto domain = ent->m_location.m_loc->getDomain();
         if (domain) {
             domain->addEntity(*ent);
         }

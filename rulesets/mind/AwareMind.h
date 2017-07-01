@@ -40,9 +40,9 @@ class AwareMind: public BaseMind, public MemMap::MapListener
         void entityUpdated(const MemEntity& entity, const Atlas::Objects::Entity::RootEntity & ent, LocatedEntity* oldLocation);
         void entityDeleted(const MemEntity& entity);
 
-        virtual void setType(const TypeNode * t);
+        void setType(const TypeNode * t) override;
 
-        virtual void operation(const Operation & op, OpVector & res);
+        void operation(const Operation & op, OpVector & res) override;
 
         int updatePath();
 
@@ -72,7 +72,7 @@ class AwareMind: public BaseMind, public MemMap::MapListener
          */
         double mServerTimeDiff;
 
-        virtual void onContainered(const LocatedEntity * new_loc);
+        void onContainered(const LocatedEntity * new_loc) override;
 
         void processMoveTick(const Operation & op, OpVector & res);
 

@@ -1620,7 +1620,7 @@ void Character::mindLookOperation(const Operation & op, OpVector & res)
     ;);
     m_flags |= entity_perceptive;
     if (m_location.m_loc) {
-        Domain* domain = m_location.m_loc->getMovementDomain();
+        Domain* domain = m_location.m_loc->getDomain();
         if (domain) {
             domain->toggleChildPerception(*this);
         }

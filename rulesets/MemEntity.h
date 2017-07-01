@@ -52,11 +52,11 @@ class MemEntity : public LocatedEntity {
         }
     }
 
-    virtual void externalOperation(const Operation & op, Link &);
-    virtual void operation(const Operation &, OpVector &);
-    virtual PropertyBase * setAttr(const std::string & name, const Atlas::Message::Element & attr);
+    void externalOperation(const Operation & op, Link &) override;
+    void operation(const Operation &, OpVector &) override;
+    PropertyBase * setAttr(const std::string & name, const Atlas::Message::Element & attr) override;
 
-    virtual void destroy();
+    void destroy() override;
 };
 
 #endif // RULESETS_MEM_ENTITY_H

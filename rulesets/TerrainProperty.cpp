@@ -242,7 +242,7 @@ void TerrainProperty::set(const Element & ent)
 void TerrainProperty::apply(LocatedEntity* entity) {
 
     if (!m_changedAreas.empty()) {
-        Domain* domain = entity->getMovementDomain();
+        Domain* domain = entity->getDomain();
         if (domain) {
             domain->refreshTerrain(m_changedAreas);
             m_changedAreas.clear();

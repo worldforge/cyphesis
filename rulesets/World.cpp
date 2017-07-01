@@ -83,7 +83,7 @@ void World::LookOperation(const Operation & op, OpVector & res)
 
     Domain* domain = nullptr;
     if (m_location.m_loc) {
-        domain = m_location.m_loc->getMovementDomain();
+        domain = m_location.m_loc->getDomain();
     }
     if (domain) {
         generateSightOp(*from, op, res);

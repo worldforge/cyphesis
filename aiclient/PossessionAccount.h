@@ -37,8 +37,8 @@ class PossessionAccount: public Router
          */
         void enablePossession(OpVector& res);
 
-        virtual void operation(const Operation & op, OpVector & res);
-        virtual void externalOperation(const Operation & op, Link &);
+        void operation(const Operation & op, OpVector & res) override;
+        void externalOperation(const Operation & op, Link &) override;
 
     protected:
         LocatedEntityRegistry& mLocatedEntityRegistry;

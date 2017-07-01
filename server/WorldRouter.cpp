@@ -165,7 +165,7 @@ LocatedEntity * WorldRouter::addEntity(LocatedEntity * ent)
         mode = mode_attr.String();
     }
     if (ent->m_location.m_loc) {
-        Domain* movementDomain = ent->m_location.m_loc->getMovementDomain();
+        Domain* movementDomain = ent->m_location.m_loc->getDomain();
         if (movementDomain) {
 //            float height = movementDomain->
 //                  constrainHeight(*ent, ent->m_location.m_loc,

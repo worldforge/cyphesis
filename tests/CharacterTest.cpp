@@ -604,12 +604,12 @@ void Entity::removeDelegate(int class_no, const std::string & delegate)
 {
 }
 
-Domain * Entity::getMovementDomain()
+Domain * Entity::getDomain()
 {
     return 0;
 }
 
-const Domain * Entity::getMovementDomain() const
+const Domain * Entity::getDomain() const
 {
     return 0;
 }

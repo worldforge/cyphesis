@@ -80,17 +80,17 @@ class ThingExt : public Thing
             return lookAtEntity(op, res, watcher);
         }
 
-        virtual Domain* getMovementDomain()
+        Domain* getDomain() override
         {
             return domain;
         }
 
-        virtual const Domain* getMovementDomain() const
+        const Domain* getDomain() const override
         {
             return domain;
         }
 
-        virtual void sendWorld(const Operation& op)
+        void sendWorld(const Operation& op) override
         {
 
         }
@@ -580,12 +580,4 @@ int fromStdVector<double>(Vector3D& v, const std::vector<double>& vf)
 WFMath::CoordType sqrMag(const Point3D& p)
 {
     return 0;
-}
-
-bool predictCollision(const Location& l, // This location
-                      const Location& o, // Other location
-                      float& time, // Returned time to collision
-                      Vector3D& normal) // Returned normal acting on l
-{
-    return false;
 }

@@ -105,6 +105,25 @@ void Entity::setType(const TypeNode * t) {
 }
 
 
+void Entity::addChild(LocatedEntity& childEntity)
+{
+    LocatedEntity::addChild(childEntity);
+    auto domain = getDomain();
+    if (domain) {
+        domain->addEntity(childEntity);
+    }
+}
+
+void Entity::removeChild(LocatedEntity& childEntity)
+{
+    if (m_flags & entity_domain) {
+        auto domain = getPropertyClass<DomainProperty>("domain")->getDomain(this);
+        domain->removeEntity(childEntity);
+    }
+    LocatedEntity::removeChild(childEntity);
+}
+
+
 PropertyBase * Entity::setAttr(const std::string & name, const Element & attr)
 {
     PropertyBase * prop;
@@ -302,7 +321,7 @@ void Entity::destroy()
     destroyed.emit();
 }
 
-Domain * Entity::getMovementDomain()
+Domain * Entity::getDomain()
 {
     if (m_flags & entity_domain) {
         return getPropertyClass<DomainProperty>("domain")->getDomain(this);
@@ -311,7 +330,7 @@ Domain * Entity::getMovementDomain()
     }
 }
 
-const Domain * Entity::getMovementDomain() const
+const Domain * Entity::getDomain() const
 {
     if (m_flags & entity_domain) {
         return getPropertyClass<DomainProperty>("domain")->getDomain(this);

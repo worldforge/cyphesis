@@ -40,12 +40,12 @@ class Thing : public Entity {
     explicit Thing(const std::string & id, long intId);
     virtual ~Thing();
 
-    virtual void DeleteOperation(const Operation & op, OpVector &);
-    virtual void MoveOperation(const Operation & op, OpVector &);
-    virtual void SetOperation(const Operation & op, OpVector &);
-    virtual void UpdateOperation(const Operation & op, OpVector &);
-    virtual void LookOperation(const Operation & op, OpVector &);
-    virtual void CreateOperation(const Operation & op, OpVector &);
+    void DeleteOperation(const Operation & op, OpVector &) override;
+    void MoveOperation(const Operation & op, OpVector &) override;
+    void SetOperation(const Operation & op, OpVector &) override;
+    void UpdateOperation(const Operation & op, OpVector &) override;
+    void LookOperation(const Operation & op, OpVector &) override;
+    void CreateOperation(const Operation & op, OpVector &) override;
 
     friend class ThingupdatePropertiestest;
 };
