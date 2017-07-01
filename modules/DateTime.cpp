@@ -33,7 +33,7 @@ unsigned int DateTime::m_hpd = HPD; // hours per day
 unsigned int DateTime::m_dpm = DPM; // days per month
 unsigned int DateTime::m_mpy = MPY; // months per year
 
-inline void DateTime::set(int t)
+inline void DateTime::set(unsigned int t)
 {
     m_second = t % m_spm;
     t /= m_spm;

@@ -56,9 +56,9 @@ Polygon<2> MathShape<Ball, 2>::outline(CoordType precision) const
     CoordType radius = m_shape.radius();
     CoordType segments = radius * numeric_constants<CoordType>::pi() * 2.f / precision;
     // FIXME lrint this properly
-    int count = (int)std::ceil(segments);
+    size_t count = (size_t)std::ceil(segments);
     CoordType seg = numeric_constants<CoordType>::pi() * 2.f / count;
-    for (int i = 0; i < count; ++i) {
+    for (size_t i = 0; i < count; ++i) {
         shape_outline.addCorner(i, Point<2>(radius * std::cos(seg * i),
                                             radius * std::sin(seg * i)));
     }

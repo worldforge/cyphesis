@@ -18,6 +18,7 @@
 #ifndef STUBDOMAIN_H_
 #define STUBDOMAIN_H_
 
+#include "rulesets/Domain.h"
 
 Domain::Domain(LocatedEntity& entity) : m_entity(entity)
 {

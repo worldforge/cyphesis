@@ -39,7 +39,7 @@ class EntityRef : public sigc::trackable
 
     explicit EntityRef(LocatedEntity*);
 
-    ~EntityRef()
+    virtual ~EntityRef()
     {
     }
 

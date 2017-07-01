@@ -4,7 +4,6 @@ add_library(physics
         BBox.h
         Course.cpp
         Quaternion.cpp
-        Collision.cpp
         Shape.cpp
         Transform.cpp)
 

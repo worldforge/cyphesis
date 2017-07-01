@@ -685,6 +685,14 @@ void Entity::removeDelegate(int class_no, const std::string & delegate)
 {
 }
 
+void Entity::addChild(LocatedEntity& childEntity)
+{
+}
+
+void Entity::removeChild(LocatedEntity& childEntity)
+{
+}
+
 Domain * Entity::getDomain()
 {
     return 0;

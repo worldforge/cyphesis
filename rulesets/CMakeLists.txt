@@ -13,7 +13,6 @@ add_library(rulesetentity
         Creator.cpp
         Plant.cpp
         Stackable.cpp
-        Motion.cpp
         Domain.cpp
         ExternalMind.cpp
         Movement.cpp

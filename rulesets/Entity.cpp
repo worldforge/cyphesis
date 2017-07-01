@@ -21,7 +21,6 @@
 #include "Script.h"
 #include "Domain.h"
 #include "DomainProperty.h"
-#include "Motion.h"
 
 #include "common/BaseWorld.h"
 #include "common/debug.h"

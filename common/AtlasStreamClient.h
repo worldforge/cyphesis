@@ -130,7 +130,6 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
 
     // void objectArrived(const Atlas::Objects::Root &);
     int waitForLoginResponse();
-    int negotiate();
     void dispatch();
 
     virtual void objectArrived(const Atlas::Objects::Root &);
@@ -166,8 +165,8 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
         return m_spacing;
     }
 
-    void send(const Atlas::Objects::Operation::RootOperation & op);
-    int connect(const std::string & host, int port = 6767);
+    virtual void send(const Atlas::Objects::Operation::RootOperation & op);
+    int connect(const std::string & host, unsigned short port = 6767);
     int connectLocal(const std::string & host);
     int cleanDisconnect();
     int login(const std::string & username, const std::string & password);
@@ -177,7 +176,7 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     int pollOne(const boost::posix_time::time_duration& duration);
     int poll(const boost::posix_time::time_duration& duration);
     int poll(int seconds = 0, int microseconds = 0);
-    void output(const Atlas::Message::Element & item, int depth = 0) const;
+    void output(const Atlas::Message::Element & item, size_t depth = 0) const;
     void output(const Atlas::Objects::Root & item) const;
 
     int runTask(ClientTask * task, const std::string & arg);

@@ -526,6 +526,15 @@ void Entity::onContainered(const LocatedEntity*)
 void Entity::onUpdated()
 {
 }
+
+void Entity::addChild(LocatedEntity& childEntity)
+{
+}
+
+void Entity::removeChild(LocatedEntity& childEntity)
+{
+}
+
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/rulesets/stubScript.h"
 

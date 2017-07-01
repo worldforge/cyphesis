@@ -38,7 +38,7 @@ static inline double years(const double & n) { return months(12)*n; }
 inline const std::string seconds2string(double seconds) {
     char buffer[ 100 ];
     snprintf( buffer, 100, "%f", seconds );
-    return buffer;
+    return std::string(buffer);
 }
 
 void WorldTime::initTimeInfo()

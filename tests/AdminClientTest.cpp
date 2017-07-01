@@ -306,7 +306,7 @@ using Atlas::Message::Element;
 using Atlas::Objects::Operation::RootOperation;
 using Atlas::Objects::Root;
 
-void AtlasStreamClient::output(const Element & item, int depth) const
+void AtlasStreamClient::output(const Element & item, size_t depth) const
 {
 }
 

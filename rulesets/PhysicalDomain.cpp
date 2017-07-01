@@ -32,7 +32,6 @@
 #include "TerrainModProperty.h"
 #include "PhysicalWorld.h"
 
-#include "physics/Collision.h"
 #include "physics/Convert.h"
 
 #include "common/debug.h"

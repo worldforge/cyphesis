@@ -28,7 +28,6 @@
 #include "TestPropertyManager.h"
 #include "TestWorld.h"
 
-#include "rulesets/Motion.h"
 #include "rulesets/Entity.h"
 
 #include "common/TypeNode.h"

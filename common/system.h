@@ -69,11 +69,6 @@ void getinstallprefix();
 
 #include <unistd.h>
 
-static inline int closesocket(int sock)
-{   
-    return ::close(sock);
-}
-
 #endif // _WIN32
 
 #endif // COMMON_SYSTEM_H

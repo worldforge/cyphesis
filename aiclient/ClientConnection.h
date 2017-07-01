@@ -35,11 +35,11 @@ class ClientConnection : public AtlasStreamClient {
     /// \brief Store for operations arrived from the server
     std::deque<Atlas::Objects::Operation::RootOperation> operationQueue;
 
-    virtual void operation(const Atlas::Objects::Operation::RootOperation&);
+    void operation(const Atlas::Objects::Operation::RootOperation&) override;
 
   public:
     ClientConnection();
-    ~ClientConnection();
+    virtual ~ClientConnection();
 
     int wait();
     int sendAndWaitReply(const Operation & op, OpVector & res);
@@ -47,7 +47,7 @@ class ClientConnection : public AtlasStreamClient {
     Atlas::Objects::Operation::RootOperation pop();
     bool pending();
 
-    void send(const Operation & op);
+    void send(const Operation & op) override;
 
 
     friend class ClientConnectionintegration;

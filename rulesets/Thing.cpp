@@ -18,8 +18,8 @@
 
 #include "Thing.h"
 
-#include "Motion.h"
 #include "PropelProperty.h"
+#include "Domain.h"
 
 #include "common/BaseWorld.h"
 #include "common/debug.h"

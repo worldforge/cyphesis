@@ -332,6 +332,15 @@ void Entity::onUpdated()
 void Entity::setType(const TypeNode * t) {
     LocatedEntity::setType(t);
 }
+
+void Entity::addChild(LocatedEntity& childEntity)
+{
+}
+
+void Entity::removeChild(LocatedEntity& childEntity)
+{
+}
+
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubBaseWorld.h"

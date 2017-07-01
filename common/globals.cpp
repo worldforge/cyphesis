@@ -210,11 +210,11 @@ class DumbOption : public Option {
 
     virtual ~DumbOption() { }
 
-    virtual void read(varconf::Variable var) { }
-  
-    virtual const std::string repr() const;
+    void read(varconf::Variable var) override { }
 
-    virtual size_t size() const;
+    const std::string repr() const override;
+
+    size_t size() const override;
 };
 
 /// \brief Basic varconf option declared as a variable inline
@@ -230,11 +230,11 @@ class StaticOption : public Option {
                  ValueT & data) :
         Option(val, descr), m_data(data), m_default(data) { }
 
-    virtual void read(varconf::Variable var);
+    void read(varconf::Variable var) override;
 
-    virtual const std::string repr() const;
+    const std::string repr() const override;
 
-    virtual size_t size() const;
+    size_t size() const override;
     
 };
 

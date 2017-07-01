@@ -263,7 +263,7 @@ size_t LocalStreamClientSocket::write()
 
 
 
-void AtlasStreamClient::output(const Element & item, int depth) const
+void AtlasStreamClient::output(const Element & item, size_t depth) const
 {
     output_element(std::cout, item, depth);
 }
@@ -444,7 +444,7 @@ void AtlasStreamClient::send(const RootOperation & op)
     m_socket->write();
 }
 
-int AtlasStreamClient::connect(const std::string & host, int port)
+int AtlasStreamClient::connect(const std::string & host, unsigned short port)
 {
     delete m_socket;
     m_socket = nullptr;

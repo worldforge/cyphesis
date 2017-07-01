@@ -236,7 +236,7 @@ extern "C" void soft_shutdown_on_signal(int signo)
 #endif
 }
 
-extern "C" void report_segfault(int signo)
+extern "C" void report_segfault(int)
 {
     //Don't print to the log at segfault, as that involves memory allocation.
     //And with a segfault we might have gotten a tainted stack, which might cause that call to hang.
@@ -248,7 +248,7 @@ extern "C" void report_segfault(int signo)
 #endif
 }
 
-extern "C" void report_abort(int signo)
+extern "C" void report_abort(int)
 {
     //Don't print to the log in signal handler, as that involves memory allocation.
     fprintf(stderr, "Aborted");
@@ -447,7 +447,7 @@ int daemonise()
                 pid = -1;
             }
 
-            if (running == true) {
+            if (running) {
                 log(INFO, "Running");
             } else {
                 int estatus = WEXITSTATUS(status);

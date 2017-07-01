@@ -192,6 +192,14 @@ PropertyBase * Entity::modProperty(const std::string & name)
     return 0;
 }
 
+void Entity::addChild(LocatedEntity& childEntity)
+{
+}
+
+void Entity::removeChild(LocatedEntity& childEntity)
+{
+}
+
 void Entity::onContainered(const LocatedEntity*)
 {
 }
