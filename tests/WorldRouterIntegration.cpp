@@ -238,7 +238,6 @@ int main()
 #include "rulesets/Plant.h"
 #include "rulesets/Stackable.h"
 #include "rulesets/ExternalMind.h"
-#include "rulesets/Motion.h"
 #include "rulesets/Pedestrian.h"
 #include "rulesets/PythonArithmeticFactory.h"
 #include "rulesets/Task.h"
@@ -566,8 +565,6 @@ void ExternalMind::operation(const Operation & op, OpVector & res)
 ArithmeticKit::~ArithmeticKit()
 {
 }
-
-#include "stubs/rulesets/stubMotion.h"
 
 Pedestrian::Pedestrian(LocatedEntity & body) : Movement(body)
 {

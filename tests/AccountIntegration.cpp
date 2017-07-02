@@ -361,7 +361,6 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "server/Ruleset.h"
 #include "server/TeleportProperty.h"
 
-#include "rulesets/Motion.h"
 #include "rulesets/Pedestrian.h"
 #include "rulesets/AreaProperty.h"
 #include "rulesets/AtlasProperties.h"
@@ -1121,7 +1120,6 @@ void Movement::reset()
 {
 }
 
-#include "stubs/rulesets/stubMotion.h"
 #include "stubs/server/stubBuildid.h"
 
 bool_config_register::bool_config_register(bool & var,

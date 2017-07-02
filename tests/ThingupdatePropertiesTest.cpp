@@ -134,14 +134,12 @@ int main()
 // stubs
 
 #include "rulesets/Domain.h"
-#include "rulesets/Motion.h"
 
 #include "common/BaseWorld.h"
 #include "common/const.h"
 #include "common/log.h"
 
 #include "stubs/common/stubCustom.h"
-#include "stubs/rulesets/stubMotion.h"
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubDomain.h"
 #include "stubs/common/stubRouter.h"

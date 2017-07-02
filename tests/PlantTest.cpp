@@ -46,6 +46,22 @@
 #include "stubs/modules/stubLocation.h"
 #include "stubs/rulesets/stubThing.h"
 #include "stubs/rulesets/stubEntity.h"
+
+#define STUB_LocatedEntity_getAttr
+int LocatedEntity::getAttr(const std::string & name,
+                           Atlas::Message::Element & attr) const
+{
+    return -1;
+}
+
+#define STUB_LocatedEntity_getAttrType
+int LocatedEntity::getAttrType(const std::string & name,
+                               Atlas::Message::Element & attr,
+                               int type) const
+{
+    return -1;
+}
+
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/rulesets/stubIdProperty.h"
 #include "stubs/common/stubProperty.h"

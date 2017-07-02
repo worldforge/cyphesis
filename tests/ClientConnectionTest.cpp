@@ -113,7 +113,7 @@ int main()
 
 #include "common/AtlasStreamClient.h"
 
-void AtlasStreamClient::output(const Element & item, int depth) const
+void AtlasStreamClient::output(const Element & item, size_t depth) const
 {
 }
 
@@ -174,7 +174,7 @@ void AtlasStreamClient::send(const RootOperation & op)
 {
 }
 
-int AtlasStreamClient::connect(const std::string & host, int port)
+int AtlasStreamClient::connect(const std::string & host, unsigned short port)
 {
     return 0;
 }
@@ -185,11 +185,6 @@ int AtlasStreamClient::connectLocal(const std::string & filename)
 }
 
 int AtlasStreamClient::cleanDisconnect()
-{
-    return 0;
-}
-
-int AtlasStreamClient::negotiate()
 {
     return 0;
 }
