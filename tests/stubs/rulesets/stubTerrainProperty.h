@@ -19,6 +19,7 @@
 //#define STUB_TerrainProperty_TerrainProperty
    TerrainProperty::TerrainProperty(const TerrainProperty& rhs)
     : PropertyBase(rhs)
+    , m_tileShader(nullptr)
   {
     
   }
@@ -28,6 +29,7 @@
 //#define STUB_TerrainProperty_TerrainProperty
    TerrainProperty::TerrainProperty()
     : PropertyBase()
+    , m_tileShader(nullptr)
   {
     
   }

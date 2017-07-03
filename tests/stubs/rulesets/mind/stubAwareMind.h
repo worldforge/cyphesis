@@ -11,6 +11,7 @@
 //#define STUB_AwareMind_AwareMind
    AwareMind::AwareMind(const std::string &id, long intId, SharedTerrain& sharedTerrain, AwarenessStoreProvider& awarenessStoreProvider)
     : BaseMind(id, intId, sharedTerrain, awarenessStoreProvider)
+    , mAwarenessStore(nullptr),mSteering(nullptr)
   {
     
   }

@@ -10,6 +10,7 @@
 #ifndef STUB_MindKit_MindKit
 //#define STUB_MindKit_MindKit
    MindKit::MindKit()
+    : m_scriptFactory(nullptr)
   {
     
   }

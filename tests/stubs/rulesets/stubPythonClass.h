@@ -10,6 +10,7 @@
 #ifndef STUB_PythonClass_PythonClass
 //#define STUB_PythonClass_PythonClass
    PythonClass::PythonClass(const std::string & package, const std::string & type, struct _typeobject * base)
+    : m_base(nullptr),m_module(nullptr),m_class(nullptr)
   {
     
   }

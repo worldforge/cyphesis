@@ -10,6 +10,7 @@
 #ifndef STUB_Statistics_Statistics
 //#define STUB_Statistics_Statistics
    Statistics::Statistics(Character & chr)
+    : m_script(nullptr)
   {
     
   }

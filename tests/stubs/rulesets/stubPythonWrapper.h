@@ -11,6 +11,7 @@
 //#define STUB_PythonWrapper_PythonWrapper
    PythonWrapper::PythonWrapper(struct _object * wrapper)
     : Script(wrapper)
+    , m_wrapper(nullptr)
   {
     
   }

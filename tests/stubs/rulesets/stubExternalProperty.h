@@ -11,6 +11,7 @@
 //#define STUB_ExternalProperty_ExternalProperty
    ExternalProperty::ExternalProperty(ExternalMind * & data)
     : PropertyBase(data)
+    , m_data(nullptr)
   {
     
   }

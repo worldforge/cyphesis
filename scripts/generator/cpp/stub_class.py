@@ -62,6 +62,17 @@ def _GenerateMethods(output_lines, source, class_node):
     deleted_or_defaulted = ast.FUNCTION_DEFAULTED | ast.FUNCTION_DELETED
     indent = ' ' * _INDENT
 
+    #Create Ctor instantiation list
+
+    ctor_inits = []
+    for node in class_node.body:
+        if (isinstance(node, ast.VariableDeclaration)):
+            if node.type.pointer:
+                ctor_inits.append("%s(nullptr)" % node.name)
+
+
+
+
     for node in class_node.body:
 
         if (isinstance(node, ast.Function)
@@ -150,6 +161,11 @@ def _GenerateMethods(output_lines, source, class_node):
                 output_lines.extend(['%s%s %s::%s(%s)%s' % (indent, return_type, class_node.name, methodName, args, const)])
                 if class_node.bases is not None and len(class_node.bases) > 0:
                     output_lines.extend(['%s: %s(%s)' % (indent * 2, class_node.bases[0].name, ', '.join(param.name for param in node.parameters))])
+                    if len(ctor_inits) != 0:
+                        output_lines.extend(["%s, %s" % (indent * 2, ','.join(ctor_inits))])
+                else:
+                    if len(ctor_inits) != 0:
+                        output_lines.extend(["%s: %s" % (indent * 2, ','.join(ctor_inits))])
                 output_lines.extend(['%s{' % (indent), (indent * 2) + return_statement, '%s}' % (indent)])
             else:
                 output_lines.extend(['%s%s %s::%s(%s)%s' % (indent, return_type, class_node.name, methodName, args, const), '%s{' % (indent), (indent * 2) + return_statement, '%s}' % (indent)])

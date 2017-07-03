@@ -11,6 +11,7 @@
 //#define STUB_TasksProperty_TasksProperty
    TasksProperty::TasksProperty()
     : PropertyBase()
+    , m_task(nullptr)
   {
     
   }

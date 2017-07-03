@@ -51,6 +51,7 @@
 //#define STUB_Character_Character
    Character::Character(const std::string & id, long intId)
     : Thing(id, intId)
+    , m_proxyMind(nullptr),m_externalMind(nullptr)
   {
     
   }

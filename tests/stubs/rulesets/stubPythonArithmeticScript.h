@@ -11,6 +11,7 @@
 //#define STUB_PythonArithmeticScript_PythonArithmeticScript
    PythonArithmeticScript::PythonArithmeticScript(struct _object * script)
     : ArithmeticScript(script)
+    , m_script(nullptr)
   {
     
   }

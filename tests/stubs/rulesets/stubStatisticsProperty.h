@@ -11,6 +11,7 @@
 //#define STUB_StatisticsProperty_StatisticsProperty
    StatisticsProperty::StatisticsProperty(const StatisticsProperty &)
     : PropertyBase(StatisticsProperty)
+    , m_script(nullptr)
   {
     
   }
@@ -20,6 +21,7 @@
 //#define STUB_StatisticsProperty_StatisticsProperty
    StatisticsProperty::StatisticsProperty()
     : PropertyBase()
+    , m_script(nullptr)
   {
     
   }

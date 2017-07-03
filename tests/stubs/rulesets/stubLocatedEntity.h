@@ -35,6 +35,7 @@
 //#define STUB_LocatedEntity_LocatedEntity
    LocatedEntity::LocatedEntity(const std::string & id, long intId)
     : Router(id, intId)
+    , m_script(nullptr),m_type(nullptr),m_contains(nullptr)
   {
     
   }

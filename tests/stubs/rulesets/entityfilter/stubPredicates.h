@@ -26,6 +26,7 @@ namespace EntityFilter {
 //#define STUB_ComparePredicate_ComparePredicate
    ComparePredicate::ComparePredicate(const Consumer<QueryContext>* lhs, const Consumer<QueryContext>* rhs, Comparator comparator)
     : Predicate(lhs, rhs, comparator)
+    , m_lhs(nullptr),m_rhs(nullptr)
   {
     
   }
@@ -48,6 +49,7 @@ namespace EntityFilter {
 //#define STUB_AndPredicate_AndPredicate
    AndPredicate::AndPredicate(const Predicate* lhs, const Predicate* rhs)
     : Predicate(lhs, rhs)
+    , m_lhs(nullptr),m_rhs(nullptr)
   {
     
   }
@@ -70,6 +72,7 @@ namespace EntityFilter {
 //#define STUB_OrPredicate_OrPredicate
    OrPredicate::OrPredicate(const Predicate* lhs, const Predicate* rhs)
     : Predicate(lhs, rhs)
+    , m_lhs(nullptr),m_rhs(nullptr)
   {
     
   }
@@ -92,6 +95,7 @@ namespace EntityFilter {
 //#define STUB_NotPredicate_NotPredicate
    NotPredicate::NotPredicate(const Predicate* pred)
     : Predicate(pred)
+    , m_pred(nullptr)
   {
     
   }

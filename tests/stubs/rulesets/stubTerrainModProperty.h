@@ -11,6 +11,7 @@
 //#define STUB_TerrainModProperty_TerrainModProperty
    TerrainModProperty::TerrainModProperty()
     : TerrainEffectorProperty()
+    , m_translator(nullptr)
   {
     
   }

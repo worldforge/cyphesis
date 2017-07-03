@@ -27,6 +27,7 @@
 //#define STUB_ExternalMind_ExternalMind
    ExternalMind::ExternalMind(LocatedEntity &)
     : Router(LocatedEntity)
+    , m_external(nullptr)
   {
     
   }

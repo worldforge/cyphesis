@@ -51,6 +51,7 @@ namespace EntityFilter {
 #ifndef STUB_ProviderBase_ProviderBase
 //#define STUB_ProviderBase_ProviderBase
    ProviderBase::ProviderBase(Consumer<T>* consumer)
+    : m_consumer(nullptr)
   {
     
   }
@@ -491,6 +492,7 @@ namespace EntityFilter {
 //#define STUB_ContainsRecursiveFunctionProvider_ContainsRecursiveFunctionProvider
    ContainsRecursiveFunctionProvider::ContainsRecursiveFunctionProvider(Consumer<QueryContext>* container, Predicate* condition)
     : Consumer(container, condition)
+    , m_condition(nullptr),m_consumer(nullptr)
   {
     
   }
