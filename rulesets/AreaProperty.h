@@ -31,7 +31,7 @@ class AreaProperty : public TerrainEffectorProperty {
     int m_layer;
     Form<2> * m_shape;
 
-    AreaProperty(const AreaProperty &);
+    AreaProperty(const AreaProperty & other);
     // Assignment isn't banned, but it's gotta be implemented before it'll
     // work. Default should not be used.
     AreaProperty & operator=(const AreaProperty &) = delete;

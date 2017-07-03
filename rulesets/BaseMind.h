@@ -37,7 +37,7 @@ class BaseMind : public MemEntity {
     /// \brief World time as far as this mind is aware
     WorldTime m_time;
   public:
-    BaseMind(const std::string &, long);
+    BaseMind(const std::string & id, long intId);
     virtual ~BaseMind();
 
     /// \brief Accessor for the memory map of world entities

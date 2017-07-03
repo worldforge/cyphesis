@@ -101,7 +101,7 @@ class Character : public Thing, public virtual sigc::trackable {
     sigc::connection m_rightHandWieldConnection;
 
     void filterExternalOperation(const Operation &);
-    void metabolise(OpVector &, double ammount = 1); 
+    void metabolise(OpVector &, double ammount = 1);
     void wieldDropped();
     LocatedEntity * findInContains(LocatedEntity * ent, const std::string & id);
     LocatedEntity * findInInventory(const std::string & id);
