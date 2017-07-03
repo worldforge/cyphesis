@@ -46,3 +46,4 @@ builds
 x86
 x86_64
 .idea
+*.pyc
