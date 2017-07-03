@@ -71,6 +71,8 @@ FUNCTION_ATTRIBUTE = 0x20
 FUNCTION_UNKNOWN_ANNOTATION = 0x40
 FUNCTION_THROW = 0x80
 FUNCTION_OVERRIDE = 0x100
+FUNCTION_DEFAULTED = 0x200
+FUNCTION_DELETED = 0x400
 
 """
 These are currently unused.  Should really handle these properly at some point.
@@ -720,7 +722,8 @@ class AstBuilder(object):
                 result = self._GenerateOne(token)
                 if result is not None:
                     yield result
-            except:
+            except Exception as ex:
+                print(ex)
                 self.HandleError('exception', token)
                 raise
 
@@ -852,8 +855,15 @@ class AstBuilder(object):
     def _GetVarTokensUpTo(self, expected_token_type, *expected_tokens):
         last_token = self._GetNextToken()
         tokens = []
+        openTemplateCount = 0
         while (last_token.token_type != expected_token_type or
-               last_token.name not in expected_tokens):
+               last_token.name not in expected_tokens or
+               openTemplateCount > 0):
+            if last_token.name == '<':
+                openTemplateCount += 1
+            if last_token.name == '>':
+                openTemplateCount -= 1
+
             tokens.append(last_token)
             last_token = self._GetNextToken()
         return tokens, last_token
@@ -1083,9 +1093,13 @@ class AstBuilder(object):
             if token.name == '=':
                 token = self._GetNextToken()
 
-                if token.name == 'default' or token.name == 'delete':
-                    # Ignore explicitly defaulted and deleted special members
-                    # in C++11.
+                # Ignore explicitly defaulted and deleted special members
+                # in C++11.
+                if token.name == 'default':
+                    modifiers |= FUNCTION_DEFAULTED
+                    token = self._GetNextToken()
+                elif token.name == 'delete':
+                    modifiers |= FUNCTION_DELETED
                     token = self._GetNextToken()
                 else:
                     # Handle pure-virtual declarations.
@@ -1194,6 +1208,9 @@ class AstBuilder(object):
         name = None
         name_tokens, token = self.GetName()
         if name_tokens:
+            #Handle C++11 class enums
+            if ctor == Enum and len(name_tokens) > 0 and name_tokens[0].name == 'class':
+                name_token, token = self.GetName()
             name = ''.join([t.name for t in name_tokens])
 
         # Handle forward declarations.
@@ -1461,7 +1478,7 @@ class AstBuilder(object):
             token = self._GetNextToken()
             assert token.token_type == tokenize.NAME, token
             # TODO(nnorwitz): store kind of inheritance...maybe.
-            if token.name not in ('public', 'protected', 'private'):
+            if token.name not in ('public', 'protected', 'private', 'virtual'):
                 # If inheritance type is not specified, it is private.
                 # Just put the token back so we can form a name.
                 # TODO(nnorwitz): it would be good to warn about this.
@@ -1469,7 +1486,7 @@ class AstBuilder(object):
             else:
                 # Check for virtual inheritance.
                 token = self._GetNextToken()
-                if token.name != 'virtual':
+                if token.name not in ('public', 'protected', 'private', 'virtual'):
                     self._AddBackToken(token)
                 else:
                     # TODO(nnorwitz): store that we got virtual for this base.

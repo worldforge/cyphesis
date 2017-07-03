@@ -29,6 +29,7 @@ __author__ = 'nnorwitz@google.com (Neal Norwitz)'
 import os
 import re
 import sys
+import errno
 
 from cpp import ast
 from cpp import utils
@@ -44,14 +45,28 @@ _VERSION = (1, 0, 1)  # The version of this script.
 # How many spaces to indent.  Can set me with the INDENT environment variable.
 _INDENT = 2
 
+def buildTemplatedArgs(node):
+    template_args = [buildTemplatedArgs(arg) for arg in node.templated_types]
+    arg = ""
+    if template_args:
+        arg = node.name + '<' + ', '.join(template_args) + '>'
+    else:
+        arg = node.name
+    if node.pointer:
+        arg += "*"
+    return arg
+
 
 def _GenerateMethods(output_lines, source, class_node):
     ctor_or_dtor = ast.FUNCTION_CTOR | ast.FUNCTION_DTOR
+    deleted_or_defaulted = ast.FUNCTION_DEFAULTED | ast.FUNCTION_DELETED
     indent = ' ' * _INDENT
 
     for node in class_node.body:
 
-        if (isinstance(node, ast.Function) and not node.IsDefinition()):
+        if (isinstance(node, ast.Function)
+            and not node.IsDefinition()
+            and not node.modifiers & deleted_or_defaulted):
             # Pick out all the elements we need from the original function.
             const = ''
             methodName = node.name
@@ -69,18 +84,9 @@ def _GenerateMethods(output_lines, source, class_node):
                 if node.return_type.modifiers:
                     # Ignore 'static'
                     modifiers = ' '.join([i for i in node.return_type.modifiers if i != 'static']) + ' '
-                return_type = modifiers + node.return_type.name
-                template_args = [arg.name for arg in node.return_type.templated_types]
-                if template_args:
-                    return_type += '<' + ', '.join(template_args) + '>'
-                    if len(template_args) > 1:
-                        for line in [
-                            '// The following line won\'t really compile, as the return',
-                            '// type has multiple template arguments.  To fix it, use a',
-                            '// typedef for the return type.']:
-                            output_lines.append(indent + line)
+                raw_return_type = buildTemplatedArgs(node.return_type)
+                return_type = modifiers + raw_return_type
                 if node.return_type.pointer:
-                    return_type += '*'
                     return_statement = 'return nullptr;'
                 elif node.return_type.name != 'void':
                     if node.return_type.name in ['int', 'unsigned int', 'long', 'unsigned long', 'size_t', 'float', 'double', 'short', 'unsigned short']:
@@ -90,13 +96,10 @@ def _GenerateMethods(output_lines, source, class_node):
                     elif node.return_type.name in ['std::string', 'char*', 'const char*']:
                         return_statement = 'return "";'
                     elif node.return_type.name in ['std::vector', 'std::set', 'std::list', 'std::map']:
-                        container_type = node.return_type.name
-                        if template_args:
-                            container_type += '<' + ', '.join(template_args) + '>'
                         if node.return_type.reference:
-                            return_statement = 'static %s instance; return instance;' % container_type
+                            return_statement = 'static %s instance; return instance;' % raw_return_type
                         else:
-                            return_statement = 'return %s();' % container_type
+                            return_statement = 'return %s();' % raw_return_type
                     else:
                         return_statement = 'return *static_cast<%s*>(nullptr);' % (return_type)
                 if node.return_type.reference:
@@ -120,32 +123,37 @@ def _GenerateMethods(output_lines, source, class_node):
                 # TODO(nnorwitz@google.com): Investigate whether it is possible to
                 # preserve parameter name when reconstructing parameter text from
                 # the AST.
-                if len([param for param in node.parameters if param.default]) > 0:
-                    args = ', '.join(param.type.name for param in node.parameters)
-                else:
-                    # Get the full text of the parameters from the start
-                    # of the first parameter to the end of the last parameter.
-                    start = node.parameters[0].start
-                    end = node.parameters[-1].end
-                    # Remove // comments.
-                    args_strings = re.sub(r'//.*', '', source[start:end])
-                    # Condense multiple spaces and eliminate newlines putting the
-                    # parameters together on a single line.  Ensure there is a
-                    # space in an argument which is split by a newline without
-                    # intervening whitespace, e.g.: int\nBar
-                    args = re.sub('  +', ' ', args_strings.replace('\n', ' '))
+
+                # Get the full text of the parameters from the start
+                # of the first parameter to the end of the last parameter.
+                start = node.parameters[0].start
+                end = node.parameters[-1].end
+                # Remove // comments.
+                args_strings = re.sub(r'//.*', '', source[start:end])
+                # Remove default values
+                args_strings = re.sub(r'=[^\),]*', '', args_strings)
+                # Condense multiple spaces and eliminate newlines putting the
+                # parameters together on a single line.  Ensure there is a
+                # space in an argument which is split by a newline without
+                # intervening whitespace, e.g.: int\nBar
+                args = re.sub('  +', ' ', args_strings.replace('\n', ' '))
+
+            guard = 'STUB_%s_%s' % (class_node.name, node.name)
+            if node.modifiers & ast.FUNCTION_DTOR:
+                guard += "_DTOR"
 
             # Create the mock method definition.
-            output_lines.extend(['#ifndef STUB_%s_%s' % (class_node.name, node.name)])
+            output_lines.extend(['#ifndef %s' % guard])
             # Add a commented out line to allow for easily copying to the "custom" file if needed.
-            output_lines.extend(['//#define STUB_%s_%s' % (class_node.name, node.name)])
+            output_lines.extend(['//#define %s' % guard])
             if node.modifiers & ast.FUNCTION_CTOR:
                 output_lines.extend(['%s%s %s::%s(%s)%s' % (indent, return_type, class_node.name, methodName, args, const)])
-                output_lines.extend(['%s: %s(%s)' % (indent * 2, class_node.bases[0].name, ', '.join(param.name for param in node.parameters))])
+                if class_node.bases is not None and len(class_node.bases) > 0:
+                    output_lines.extend(['%s: %s(%s)' % (indent * 2, class_node.bases[0].name, ', '.join(param.name for param in node.parameters))])
                 output_lines.extend(['%s{' % (indent), (indent * 2) + return_statement, '%s}' % (indent)])
             else:
                 output_lines.extend(['%s%s %s::%s(%s)%s' % (indent, return_type, class_node.name, methodName, args, const), '%s{' % (indent), (indent * 2) + return_statement, '%s}' % (indent)])
-            output_lines.extend(['#endif', ''])
+            output_lines.extend(['#endif //%s' % guard, ''])
 
 
 def _GenerateStubs(filename, source, ast_list):
@@ -232,15 +240,26 @@ def main(argv=sys.argv):
         # An error message was already printed since we couldn't parse.
         sys.exit(1)
     else:
+
         filenameSegments = filename.split("/")
         customFileName = 'stub' + ''.join(filenameSegments[-1].split('.')[0:-1]) + '_custom.h'
 
         if len(filenameSegments) > 1:
-            stubpath = stubdirectory + '/'.join(filenameSegments[0:-1]) + "/stub" + filenameSegments[-1]
-            stubCustomPath = stubdirectory + '/'.join(filenameSegments[0:-1]) + "/" + customFileName
+            stubpath = stubdirectory + '/' + '/'.join(filenameSegments[0:-1]) + "/stub" + filenameSegments[-1]
+            stubCustomPath = stubdirectory + '/' + '/'.join(filenameSegments[0:-1]) + "/" + customFileName
         else:
             stubpath = stubdirectory + "/stub" + filenameSegments[-1]
             stubCustomPath = stubdirectory + "/" + customFileName
+
+        try:
+            os.makedirs(os.path.dirname(stubpath))
+        except OSError as exc:  # Python >2.5
+            if exc.errno == errno.EEXIST and os.path.isdir(os.path.dirname(stubpath)):
+                pass
+            else:
+                raise
+
+
         lines = _GenerateStubs(filename, source, entire_ast)
         with open(stubpath, 'w') as stubFile:
             stubFile.write('\n'.join(lines))
