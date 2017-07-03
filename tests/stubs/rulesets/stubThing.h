@@ -13,7 +13,7 @@
   {
     
   }
-#endif
+#endif //STUB_Thing_updateProperties
 
 #ifndef STUB_Thing_lookAtEntity
 //#define STUB_Thing_lookAtEntity
@@ -21,7 +21,7 @@
   {
     return false;
   }
-#endif
+#endif //STUB_Thing_lookAtEntity
 
 #ifndef STUB_Thing_generateSightOp
 //#define STUB_Thing_generateSightOp
@@ -29,7 +29,7 @@
   {
     
   }
-#endif
+#endif //STUB_Thing_generateSightOp
 
 #ifndef STUB_Thing_Thing
 //#define STUB_Thing_Thing
@@ -38,15 +38,15 @@
   {
     
   }
-#endif
+#endif //STUB_Thing_Thing
 
-#ifndef STUB_Thing_Thing
-//#define STUB_Thing_Thing
+#ifndef STUB_Thing_Thing_DTOR
+//#define STUB_Thing_Thing_DTOR
    Thing::~Thing()
   {
     
   }
-#endif
+#endif //STUB_Thing_Thing_DTOR
 
 #ifndef STUB_Thing_DeleteOperation
 //#define STUB_Thing_DeleteOperation
@@ -54,7 +54,7 @@
   {
     
   }
-#endif
+#endif //STUB_Thing_DeleteOperation
 
 #ifndef STUB_Thing_MoveOperation
 //#define STUB_Thing_MoveOperation
@@ -62,7 +62,7 @@
   {
     
   }
-#endif
+#endif //STUB_Thing_MoveOperation
 
 #ifndef STUB_Thing_SetOperation
 //#define STUB_Thing_SetOperation
@@ -70,7 +70,7 @@
   {
     
   }
-#endif
+#endif //STUB_Thing_SetOperation
 
 #ifndef STUB_Thing_UpdateOperation
 //#define STUB_Thing_UpdateOperation
@@ -78,7 +78,7 @@
   {
     
   }
-#endif
+#endif //STUB_Thing_UpdateOperation
 
 #ifndef STUB_Thing_LookOperation
 //#define STUB_Thing_LookOperation
@@ -86,7 +86,7 @@
   {
     
   }
-#endif
+#endif //STUB_Thing_LookOperation
 
 #ifndef STUB_Thing_CreateOperation
 //#define STUB_Thing_CreateOperation
@@ -94,7 +94,7 @@
   {
     
   }
-#endif
+#endif //STUB_Thing_CreateOperation
 
 
 #endif

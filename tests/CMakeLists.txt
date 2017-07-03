@@ -28,6 +28,7 @@ set(PYTHON_TESTS_LIBS
         physics
         common)
 
+
 #Macro for adding a test
 macro(wf_add_test TEST_FILE)
     get_filename_component(TEST_NAME ${TEST_FILE} NAME_WE)

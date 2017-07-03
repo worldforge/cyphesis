@@ -13,7 +13,7 @@
   {
     static std::set<std::string> instance; return instance;
   }
-#endif
+#endif //STUB_LocatedEntity_immutables
 
 #ifndef STUB_LocatedEntity_clearProperties
 //#define STUB_LocatedEntity_clearProperties
@@ -21,7 +21,7 @@
   {
     
   }
-#endif
+#endif //STUB_LocatedEntity_clearProperties
 
 #ifndef STUB_LocatedEntity_collectObserversForChild
 //#define STUB_LocatedEntity_collectObserversForChild
@@ -29,7 +29,7 @@
   {
     
   }
-#endif
+#endif //STUB_LocatedEntity_collectObserversForChild
 
 #ifndef STUB_LocatedEntity_LocatedEntity
 //#define STUB_LocatedEntity_LocatedEntity
@@ -38,15 +38,15 @@
   {
     
   }
-#endif
+#endif //STUB_LocatedEntity_LocatedEntity
 
-#ifndef STUB_LocatedEntity_LocatedEntity
-//#define STUB_LocatedEntity_LocatedEntity
+#ifndef STUB_LocatedEntity_LocatedEntity_DTOR
+//#define STUB_LocatedEntity_LocatedEntity_DTOR
    LocatedEntity::~LocatedEntity()
   {
     
   }
-#endif
+#endif //STUB_LocatedEntity_LocatedEntity_DTOR
 
 #ifndef STUB_LocatedEntity_setType
 //#define STUB_LocatedEntity_setType
@@ -54,7 +54,7 @@
   {
     
   }
-#endif
+#endif //STUB_LocatedEntity_setType
 
 #ifndef STUB_LocatedEntity_hasAttr
 //#define STUB_LocatedEntity_hasAttr
@@ -62,7 +62,7 @@
   {
     return false;
   }
-#endif
+#endif //STUB_LocatedEntity_hasAttr
 
 #ifndef STUB_LocatedEntity_getAttr
 //#define STUB_LocatedEntity_getAttr
@@ -70,7 +70,7 @@
   {
     return 0;
   }
-#endif
+#endif //STUB_LocatedEntity_getAttr
 
 #ifndef STUB_LocatedEntity_getAttrType
 //#define STUB_LocatedEntity_getAttrType
@@ -78,7 +78,7 @@
   {
     return 0;
   }
-#endif
+#endif //STUB_LocatedEntity_getAttrType
 
 #ifndef STUB_LocatedEntity_setAttr
 //#define STUB_LocatedEntity_setAttr
@@ -86,7 +86,7 @@
   {
     return nullptr;
   }
-#endif
+#endif //STUB_LocatedEntity_setAttr
 
 #ifndef STUB_LocatedEntity_getProperty
 //#define STUB_LocatedEntity_getProperty
@@ -94,7 +94,7 @@
   {
     return nullptr;
   }
-#endif
+#endif //STUB_LocatedEntity_getProperty
 
 #ifndef STUB_LocatedEntity_modProperty
 //#define STUB_LocatedEntity_modProperty
@@ -102,7 +102,7 @@
   {
     return nullptr;
   }
-#endif
+#endif //STUB_LocatedEntity_modProperty
 
 #ifndef STUB_LocatedEntity_setProperty
 //#define STUB_LocatedEntity_setProperty
@@ -110,7 +110,7 @@
   {
     return nullptr;
   }
-#endif
+#endif //STUB_LocatedEntity_setProperty
 
 #ifndef STUB_LocatedEntity_installDelegate
 //#define STUB_LocatedEntity_installDelegate
@@ -118,7 +118,7 @@
   {
     
   }
-#endif
+#endif //STUB_LocatedEntity_installDelegate
 
 #ifndef STUB_LocatedEntity_removeDelegate
 //#define STUB_LocatedEntity_removeDelegate
@@ -126,7 +126,7 @@
   {
     
   }
-#endif
+#endif //STUB_LocatedEntity_removeDelegate
 
 #ifndef STUB_LocatedEntity_onContainered
 //#define STUB_LocatedEntity_onContainered
@@ -134,7 +134,7 @@
   {
     
   }
-#endif
+#endif //STUB_LocatedEntity_onContainered
 
 #ifndef STUB_LocatedEntity_onUpdated
 //#define STUB_LocatedEntity_onUpdated
@@ -142,7 +142,7 @@
   {
     
   }
-#endif
+#endif //STUB_LocatedEntity_onUpdated
 
 #ifndef STUB_LocatedEntity_destroy
 //#define STUB_LocatedEntity_destroy
@@ -150,7 +150,7 @@
   {
     
   }
-#endif
+#endif //STUB_LocatedEntity_destroy
 
 #ifndef STUB_LocatedEntity_getDomain
 //#define STUB_LocatedEntity_getDomain
@@ -158,7 +158,7 @@
   {
     return nullptr;
   }
-#endif
+#endif //STUB_LocatedEntity_getDomain
 
 #ifndef STUB_LocatedEntity_getDomain
 //#define STUB_LocatedEntity_getDomain
@@ -166,7 +166,7 @@
   {
     return nullptr;
   }
-#endif
+#endif //STUB_LocatedEntity_getDomain
 
 #ifndef STUB_LocatedEntity_sendWorld
 //#define STUB_LocatedEntity_sendWorld
@@ -174,7 +174,7 @@
   {
     
   }
-#endif
+#endif //STUB_LocatedEntity_sendWorld
 
 #ifndef STUB_LocatedEntity_setScript
 //#define STUB_LocatedEntity_setScript
@@ -182,7 +182,7 @@
   {
     
   }
-#endif
+#endif //STUB_LocatedEntity_setScript
 
 #ifndef STUB_LocatedEntity_makeContainer
 //#define STUB_LocatedEntity_makeContainer
@@ -190,7 +190,7 @@
   {
     
   }
-#endif
+#endif //STUB_LocatedEntity_makeContainer
 
 #ifndef STUB_LocatedEntity_changeContainer
 //#define STUB_LocatedEntity_changeContainer
@@ -198,7 +198,7 @@
   {
     
   }
-#endif
+#endif //STUB_LocatedEntity_changeContainer
 
 #ifndef STUB_LocatedEntity_merge
 //#define STUB_LocatedEntity_merge
@@ -206,7 +206,7 @@
   {
     
   }
-#endif
+#endif //STUB_LocatedEntity_merge
 
 #ifndef STUB_LocatedEntity_getThoughts
 //#define STUB_LocatedEntity_getThoughts
@@ -214,7 +214,7 @@
   {
     return std::vector<Atlas::Objects::Root>();
   }
-#endif
+#endif //STUB_LocatedEntity_getThoughts
 
 #ifndef STUB_LocatedEntity_addChild
 //#define STUB_LocatedEntity_addChild
@@ -222,7 +222,7 @@
   {
     
   }
-#endif
+#endif //STUB_LocatedEntity_addChild
 
 #ifndef STUB_LocatedEntity_removeChild
 //#define STUB_LocatedEntity_removeChild
@@ -230,7 +230,7 @@
   {
     
   }
-#endif
+#endif //STUB_LocatedEntity_removeChild
 
 #ifndef STUB_LocatedEntity_collectObservers
 //#define STUB_LocatedEntity_collectObservers
@@ -238,7 +238,7 @@
   {
     
   }
-#endif
+#endif //STUB_LocatedEntity_collectObservers
 
 #ifndef STUB_LocatedEntity_broadcast
 //#define STUB_LocatedEntity_broadcast
@@ -246,7 +246,7 @@
   {
     
   }
-#endif
+#endif //STUB_LocatedEntity_broadcast
 
 #ifndef STUB_LocatedEntity_processAppearDisappear
 //#define STUB_LocatedEntity_processAppearDisappear
@@ -254,7 +254,7 @@
   {
     
   }
-#endif
+#endif //STUB_LocatedEntity_processAppearDisappear
 
 #ifndef STUB_LocatedEntity_isVisibleForOtherEntity
 //#define STUB_LocatedEntity_isVisibleForOtherEntity
@@ -262,7 +262,7 @@
   {
     return false;
   }
-#endif
+#endif //STUB_LocatedEntity_isVisibleForOtherEntity
 
 #ifndef STUB_LocatedEntity_describeEntity
 //#define STUB_LocatedEntity_describeEntity
@@ -270,7 +270,7 @@
   {
     return "";
   }
-#endif
+#endif //STUB_LocatedEntity_describeEntity
 
 
 #endif

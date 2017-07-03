@@ -14,15 +14,15 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_Entity
 
-#ifndef STUB_Entity_Entity
-//#define STUB_Entity_Entity
+#ifndef STUB_Entity_Entity_DTOR
+//#define STUB_Entity_Entity_DTOR
    Entity::~Entity()
   {
     
   }
-#endif
+#endif //STUB_Entity_Entity_DTOR
 
 #ifndef STUB_Entity_setType
 //#define STUB_Entity_setType
@@ -30,7 +30,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_setType
 
 #ifndef STUB_Entity_setAttr
 //#define STUB_Entity_setAttr
@@ -38,7 +38,7 @@
   {
     return nullptr;
   }
-#endif
+#endif //STUB_Entity_setAttr
 
 #ifndef STUB_Entity_getProperty
 //#define STUB_Entity_getProperty
@@ -46,7 +46,7 @@
   {
     return nullptr;
   }
-#endif
+#endif //STUB_Entity_getProperty
 
 #ifndef STUB_Entity_modProperty
 //#define STUB_Entity_modProperty
@@ -54,7 +54,7 @@
   {
     return nullptr;
   }
-#endif
+#endif //STUB_Entity_modProperty
 
 #ifndef STUB_Entity_setProperty
 //#define STUB_Entity_setProperty
@@ -62,7 +62,7 @@
   {
     return nullptr;
   }
-#endif
+#endif //STUB_Entity_setProperty
 
 #ifndef STUB_Entity_addToMessage
 //#define STUB_Entity_addToMessage
@@ -70,7 +70,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_addToMessage
 
 #ifndef STUB_Entity_addToEntity
 //#define STUB_Entity_addToEntity
@@ -78,7 +78,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_addToEntity
 
 #ifndef STUB_Entity_ActuateOperation
 //#define STUB_Entity_ActuateOperation
@@ -86,7 +86,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_ActuateOperation
 
 #ifndef STUB_Entity_AppearanceOperation
 //#define STUB_Entity_AppearanceOperation
@@ -94,7 +94,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_AppearanceOperation
 
 #ifndef STUB_Entity_AttackOperation
 //#define STUB_Entity_AttackOperation
@@ -102,7 +102,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_AttackOperation
 
 #ifndef STUB_Entity_CombineOperation
 //#define STUB_Entity_CombineOperation
@@ -110,7 +110,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_CombineOperation
 
 #ifndef STUB_Entity_CreateOperation
 //#define STUB_Entity_CreateOperation
@@ -118,7 +118,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_CreateOperation
 
 #ifndef STUB_Entity_DeleteOperation
 //#define STUB_Entity_DeleteOperation
@@ -126,7 +126,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_DeleteOperation
 
 #ifndef STUB_Entity_DisappearanceOperation
 //#define STUB_Entity_DisappearanceOperation
@@ -134,7 +134,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_DisappearanceOperation
 
 #ifndef STUB_Entity_DivideOperation
 //#define STUB_Entity_DivideOperation
@@ -142,7 +142,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_DivideOperation
 
 #ifndef STUB_Entity_EatOperation
 //#define STUB_Entity_EatOperation
@@ -150,7 +150,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_EatOperation
 
 #ifndef STUB_Entity_GetOperation
 //#define STUB_Entity_GetOperation
@@ -158,7 +158,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_GetOperation
 
 #ifndef STUB_Entity_ImaginaryOperation
 //#define STUB_Entity_ImaginaryOperation
@@ -166,7 +166,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_ImaginaryOperation
 
 #ifndef STUB_Entity_InfoOperation
 //#define STUB_Entity_InfoOperation
@@ -174,7 +174,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_InfoOperation
 
 #ifndef STUB_Entity_LookOperation
 //#define STUB_Entity_LookOperation
@@ -182,7 +182,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_LookOperation
 
 #ifndef STUB_Entity_MoveOperation
 //#define STUB_Entity_MoveOperation
@@ -190,7 +190,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_MoveOperation
 
 #ifndef STUB_Entity_NourishOperation
 //#define STUB_Entity_NourishOperation
@@ -198,7 +198,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_NourishOperation
 
 #ifndef STUB_Entity_SetOperation
 //#define STUB_Entity_SetOperation
@@ -206,7 +206,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_SetOperation
 
 #ifndef STUB_Entity_SightOperation
 //#define STUB_Entity_SightOperation
@@ -214,7 +214,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_SightOperation
 
 #ifndef STUB_Entity_SoundOperation
 //#define STUB_Entity_SoundOperation
@@ -222,7 +222,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_SoundOperation
 
 #ifndef STUB_Entity_TalkOperation
 //#define STUB_Entity_TalkOperation
@@ -230,7 +230,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_TalkOperation
 
 #ifndef STUB_Entity_TickOperation
 //#define STUB_Entity_TickOperation
@@ -238,7 +238,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_TickOperation
 
 #ifndef STUB_Entity_TouchOperation
 //#define STUB_Entity_TouchOperation
@@ -246,7 +246,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_TouchOperation
 
 #ifndef STUB_Entity_UpdateOperation
 //#define STUB_Entity_UpdateOperation
@@ -254,7 +254,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_UpdateOperation
 
 #ifndef STUB_Entity_UseOperation
 //#define STUB_Entity_UseOperation
@@ -262,7 +262,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_UseOperation
 
 #ifndef STUB_Entity_WieldOperation
 //#define STUB_Entity_WieldOperation
@@ -270,7 +270,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_WieldOperation
 
 #ifndef STUB_Entity_RelayOperation
 //#define STUB_Entity_RelayOperation
@@ -278,7 +278,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_RelayOperation
 
 #ifndef STUB_Entity_externalOperation
 //#define STUB_Entity_externalOperation
@@ -286,7 +286,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_externalOperation
 
 #ifndef STUB_Entity_operation
 //#define STUB_Entity_operation
@@ -294,7 +294,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_operation
 
 #ifndef STUB_Entity_callDelegate
 //#define STUB_Entity_callDelegate
@@ -302,7 +302,7 @@
   {
     return *static_cast<HandlerResult*>(nullptr);
   }
-#endif
+#endif //STUB_Entity_callDelegate
 
 #ifndef STUB_Entity_callOperation
 //#define STUB_Entity_callOperation
@@ -310,7 +310,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_callOperation
 
 #ifndef STUB_Entity_installDelegate
 //#define STUB_Entity_installDelegate
@@ -318,7 +318,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_installDelegate
 
 #ifndef STUB_Entity_removeDelegate
 //#define STUB_Entity_removeDelegate
@@ -326,7 +326,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_removeDelegate
 
 #ifndef STUB_Entity_addChild
 //#define STUB_Entity_addChild
@@ -334,7 +334,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_addChild
 
 #ifndef STUB_Entity_removeChild
 //#define STUB_Entity_removeChild
@@ -342,7 +342,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_removeChild
 
 #ifndef STUB_Entity_onContainered
 //#define STUB_Entity_onContainered
@@ -350,7 +350,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_onContainered
 
 #ifndef STUB_Entity_onUpdated
 //#define STUB_Entity_onUpdated
@@ -358,7 +358,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_onUpdated
 
 #ifndef STUB_Entity_destroy
 //#define STUB_Entity_destroy
@@ -366,7 +366,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_destroy
 
 #ifndef STUB_Entity_getDomain
 //#define STUB_Entity_getDomain
@@ -374,7 +374,7 @@
   {
     return nullptr;
   }
-#endif
+#endif //STUB_Entity_getDomain
 
 #ifndef STUB_Entity_getDomain
 //#define STUB_Entity_getDomain
@@ -382,7 +382,7 @@
   {
     return nullptr;
   }
-#endif
+#endif //STUB_Entity_getDomain
 
 #ifndef STUB_Entity_sendWorld
 //#define STUB_Entity_sendWorld
@@ -390,7 +390,7 @@
   {
     
   }
-#endif
+#endif //STUB_Entity_sendWorld
 
 
 #endif
