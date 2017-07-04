@@ -618,36 +618,37 @@ class TypeConverter(object):
         for s in tokens:
             if not first_token:
                 first_token = s
-            if s.name == '<':
-                template_count += 1
-            elif s.name == '>':
-                template_count -= 1
-            if template_count > 0:
-                type_modifiers.append(s)
-                continue
-
-            if s.name == ',':
-                AddParameter(s.start)
-                name = type_name = ''
-                type_modifiers = []
-                pointer = reference = array = False
-                first_token = None
-                default = []
-            elif s.name == '*':
-                pointer = True
-            elif s.name == '&':
-                reference = True
-            elif s.name == '[':
-                array = True
-            elif s.name == ']':
-                pass  # Just don't add to type_modifiers.
-            elif s.name == '=':
-                # Got a default value.  Add any value (None) as a flag.
-                default.append(None)
-            elif default:
+            if default:
                 default.append(s)
             else:
-                type_modifiers.append(s)
+                if s.name == '<':
+                    template_count += 1
+                elif s.name == '>':
+                    template_count -= 1
+                if template_count > 0:
+                    type_modifiers.append(s)
+                    continue
+
+                if s.name == ',':
+                    AddParameter(s.start)
+                    name = type_name = ''
+                    type_modifiers = []
+                    pointer = reference = array = False
+                    first_token = None
+                    default = []
+                elif s.name == '*':
+                    pointer = True
+                elif s.name == '&':
+                    reference = True
+                elif s.name == '[':
+                    array = True
+                elif s.name == ']':
+                    pass  # Just don't add to type_modifiers.
+                elif s.name == '=':
+                    # Got a default value.  Add any value (None) as a flag.
+                    default.append(None)
+                else:
+                    type_modifiers.append(s)
         AddParameter(tokens[-1].end)
         return result
 
@@ -853,18 +854,20 @@ class AstBuilder(object):
         return self._GetVarTokensUpTo(expected_token_type, expected_token)[0]
 
     def _GetVarTokensUpTo(self, expected_token_type, *expected_tokens):
+        previous_token=""
         last_token = self._GetNextToken()
         tokens = []
         openTemplateCount = 0
         while (last_token.token_type != expected_token_type or
                last_token.name not in expected_tokens or
                openTemplateCount > 0):
-            if last_token.name == '<':
+            if last_token.name == '<' and previous_token != "operator":
                 openTemplateCount += 1
-            if last_token.name == '>':
+            if last_token.name == '>' and previous_token != "operator":
                 openTemplateCount -= 1
 
             tokens.append(last_token)
+            previous_token = last_token.name
             last_token = self._GetNextToken()
         return tokens, last_token
 
@@ -980,7 +983,14 @@ class AstBuilder(object):
             assert token.token_type == tokenize.SYNTAX, token
             assert token.name == '(', token
 
-        name = return_type_and_name.pop()
+        if len(return_type_and_name) == 3 and return_type_and_name[1].name == 'operator':
+            name = tokenize.Token(tokenize.NAME, return_type_and_name[1].name + return_type_and_name[2].name,
+                                  return_type_and_name[1].start, return_type_and_name[2].end)
+            return_type_and_name.pop()
+            return_type_and_name.pop()
+        else:
+            name = return_type_and_name.pop()
+
         # Handle templatized ctors.
         if name.name == '>':
             index = 1

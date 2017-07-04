@@ -67,7 +67,7 @@ def _GenerateMethods(output_lines, source, class_node):
     ctor_inits = []
     for node in class_node.body:
         if (isinstance(node, ast.VariableDeclaration)):
-            if node.type.pointer:
+            if node.type.pointer and not 'static' in node.type.modifiers:
                 ctor_inits.append("%s(nullptr)" % node.name)
 
 
@@ -149,7 +149,7 @@ def _GenerateMethods(output_lines, source, class_node):
                 # intervening whitespace, e.g.: int\nBar
                 args = re.sub('  +', ' ', args_strings.replace('\n', ' '))
 
-            guard = 'STUB_%s_%s' % (class_node.name, node.name)
+            guard = 'STUB_%s_%s' % (class_node.name, node.name.replace('=', ''))
             if node.modifiers & ast.FUNCTION_DTOR:
                 guard += "_DTOR"
 
