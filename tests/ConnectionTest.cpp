@@ -833,6 +833,7 @@ void ExternalMind::linkUp(Link * c)
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/common/stubLink.h"
+#include "stubs/common/stubid.h"
 
 Router::Router(const std::string & id, long intId) : m_id(id),
                                                              m_intId(intId)

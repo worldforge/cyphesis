@@ -191,7 +191,6 @@ int main()
 #include "stubs/common/stubPropertyManager.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/rulesets/stubDomainProperty.h"
-#include "stubs/rulesets/stubSoftProperty.h"
 #include "stubs/rulesets/stubIdProperty.h"
 #include "stubs/rulesets/stubContainsProperty.h"
 

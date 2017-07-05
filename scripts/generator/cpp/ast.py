@@ -430,6 +430,10 @@ class Type(_GenericDeclaration):
         self.array = array
 
     def __str__(self):
+
+        return self._TypeStringHelper(self.GetTypeDeclaration())
+
+    def GetTypeDeclaration(self):
         prefix = ''
         if self.modifiers:
             prefix = ' '.join(self.modifiers) + ' '
@@ -443,7 +447,7 @@ class Type(_GenericDeclaration):
             suffix += '*'
         if self.array:
             suffix += '[]'
-        return self._TypeStringHelper(suffix)
+        return suffix
 
     # By definition, Is* are always False.  A Type can only exist in
     # some sort of variable declaration, parameter, or return value.
@@ -614,12 +618,26 @@ class TypeConverter(object):
                           parameter_type, default)
             result.append(p)
 
+        param_name = None
         template_count = 0
+        default_open_count = 0
         for s in tokens:
             if not first_token:
                 first_token = s
             if default:
-                default.append(s)
+                if default_open_count == 0 and s.name == ',':
+                    AddParameter(s.start)
+                    name = type_name = ''
+                    type_modifiers = []
+                    pointer = reference = array = False
+                    first_token = None
+                    default = []
+                else:
+                    default.append(s)
+                if s.name in ['<', '(', '{']:
+                    default_open_count =+ 1
+                if s.name in ['>', ')', '}']:
+                    default_open_count =- 1
             else:
                 if s.name == '<':
                     template_count += 1
@@ -645,11 +663,15 @@ class TypeConverter(object):
                 elif s.name == ']':
                     pass  # Just don't add to type_modifiers.
                 elif s.name == '=':
+                    param_name = tokens[-1].end
                     # Got a default value.  Add any value (None) as a flag.
                     default.append(None)
                 else:
                     type_modifiers.append(s)
-        AddParameter(tokens[-1].end)
+        if param_name:
+            AddParameter(param_name)
+        else:
+            AddParameter(tokens[-1].end)
         return result
 
     def CreateReturnType(self, return_type_seq):
@@ -859,8 +881,8 @@ class AstBuilder(object):
         tokens = []
         openTemplateCount = 0
         while (last_token.token_type != expected_token_type or
-               last_token.name not in expected_tokens or
-               openTemplateCount > 0):
+                last_token.name not in expected_tokens or
+                openTemplateCount > 0):
             if last_token.name == '<' and previous_token != "operator":
                 openTemplateCount += 1
             if last_token.name == '>' and previous_token != "operator":

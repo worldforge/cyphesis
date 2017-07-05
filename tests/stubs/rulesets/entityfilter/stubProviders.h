@@ -29,7 +29,8 @@ namespace EntityFilter {
 
 #ifndef STUB_Consumer_value
 //#define STUB_Consumer_value
-  void Consumer::value(Atlas::Message::Element& value, const T& parent_value) const
+  template <typename T>
+  void Consumer<T>::value(Atlas::Message::Element& value, const T& parent_value) const
   {
     
   }
@@ -37,7 +38,8 @@ namespace EntityFilter {
 
 #ifndef STUB_Consumer_getType
 //#define STUB_Consumer_getType
-  const std::type_info* Consumer::getType() const
+  template <typename T>
+  const std::type_info* Consumer<T>::getType() const
   {
     return nullptr;
   }
@@ -50,7 +52,8 @@ namespace EntityFilter {
 
 #ifndef STUB_ProviderBase_ProviderBase
 //#define STUB_ProviderBase_ProviderBase
-   ProviderBase::ProviderBase(Consumer<T>* consumer)
+  template <typename T>
+   ProviderBase<T>::ProviderBase(Consumer<T>* consumer)
     : m_consumer(nullptr)
   {
     
@@ -59,7 +62,8 @@ namespace EntityFilter {
 
 #ifndef STUB_ProviderBase_ProviderBase_DTOR
 //#define STUB_ProviderBase_ProviderBase_DTOR
-   ProviderBase::~ProviderBase()
+  template <typename T>
+   ProviderBase<T>::~ProviderBase()
   {
     
   }
@@ -72,7 +76,8 @@ namespace EntityFilter {
 
 #ifndef STUB_ConsumingProviderBase_ConsumingProviderBase
 //#define STUB_ConsumingProviderBase_ConsumingProviderBase
-   ConsumingProviderBase::ConsumingProviderBase(Consumer<TProviding>* consumer)
+  template <typename TProviding,typename TConsuming>
+   ConsumingProviderBase<TProviding,TConsuming>::ConsumingProviderBase(Consumer<TProviding>* consumer)
     : ProviderBase(consumer)
   {
     
@@ -81,7 +86,8 @@ namespace EntityFilter {
 
 #ifndef STUB_ConsumingProviderBase_getType
 //#define STUB_ConsumingProviderBase_getType
-  const std::type_info* ConsumingProviderBase::getType() const
+  template <typename TProviding,typename TConsuming>
+  const std::type_info* ConsumingProviderBase<TProviding,TConsuming>::getType() const
   {
     return nullptr;
   }
@@ -94,7 +100,8 @@ namespace EntityFilter {
 
 #ifndef STUB_NamedAttributeProviderBase_NamedAttributeProviderBase
 //#define STUB_NamedAttributeProviderBase_NamedAttributeProviderBase
-   NamedAttributeProviderBase::NamedAttributeProviderBase(Consumer<T>* consumer, const std::string& attribute_name)
+  template <typename T>
+   NamedAttributeProviderBase<T>::NamedAttributeProviderBase(Consumer<T>* consumer, const std::string& attribute_name)
     : ProviderBase(consumer, attribute_name)
   {
     
@@ -108,7 +115,8 @@ namespace EntityFilter {
 
 #ifndef STUB_ConsumingNamedAttributeProviderBase_ConsumingNamedAttributeProviderBase
 //#define STUB_ConsumingNamedAttributeProviderBase_ConsumingNamedAttributeProviderBase
-   ConsumingNamedAttributeProviderBase::ConsumingNamedAttributeProviderBase(Consumer<TProviding>* consumer, const std::string& attribute_name)
+  template <typename TProviding,typename TConsuming>
+   ConsumingNamedAttributeProviderBase<TProviding,TConsuming>::ConsumingNamedAttributeProviderBase(Consumer<TProviding>* consumer, const std::string& attribute_name)
     : NamedAttributeProviderBase(consumer, attribute_name)
   {
     
@@ -117,7 +125,8 @@ namespace EntityFilter {
 
 #ifndef STUB_ConsumingNamedAttributeProviderBase_getType
 //#define STUB_ConsumingNamedAttributeProviderBase_getType
-  const std::type_info* ConsumingNamedAttributeProviderBase::getType() const
+  template <typename TProviding,typename TConsuming>
+  const std::type_info* ConsumingNamedAttributeProviderBase<TProviding,TConsuming>::getType() const
   {
     return nullptr;
   }
@@ -373,7 +382,8 @@ namespace EntityFilter {
 
 #ifndef STUB_PropertyProvider_PropertyProvider
 //#define STUB_PropertyProvider_PropertyProvider
-   PropertyProvider::PropertyProvider(Consumer<TProperty>* consumer, const std::string& attribute_name)
+  template <typename TProperty>
+   PropertyProvider<TProperty>::PropertyProvider(Consumer<TProperty>* consumer, const std::string& attribute_name)
     : ConsumingNamedAttributeProviderBase(consumer, attribute_name)
   {
     
@@ -382,7 +392,8 @@ namespace EntityFilter {
 
 #ifndef STUB_PropertyProvider_value
 //#define STUB_PropertyProvider_value
-  void PropertyProvider::value(Atlas::Message::Element& value, const LocatedEntity& entity) const
+  template <typename TProperty>
+  void PropertyProvider<TProperty>::value(Atlas::Message::Element& value, const LocatedEntity& entity) const
   {
     
   }

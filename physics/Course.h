@@ -33,6 +33,10 @@ class Course {
   protected:
     PathT<dim> m_path;
   public:
+        /// generic: check if two classes are equal, up to a given tolerance
+        bool isEqualTo(const Course& c, WFMath::CoordType epsilon =
+        WFMath::numeric_constants<WFMath::CoordType>::epsilon()) const;
+
     ///
     Course();
     ///
@@ -50,9 +54,7 @@ class Course {
     ///
     Course& operator=(const Course& l);
 
-    /// generic: check if two classes are equal, up to a given tolerance
-    bool isEqualTo(const Course& c, WFMath::CoordType epsilon =
-          WFMath::numeric_constants<WFMath::CoordType>::epsilon()) const;
+
     ///
     bool operator==(const Course& s) const {return isEqualTo(s);}
     ///

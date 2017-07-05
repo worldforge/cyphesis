@@ -20,6 +20,7 @@
 #define TESTS_ENTITY_EXERCISER_H
 
 #include "rulesets/LocatedEntity.h"
+#define STUB_TypeNode_addProperty
 
 #include <Atlas/Objects/RootOperation.h>
 

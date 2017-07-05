@@ -30,9 +30,16 @@
 
 class LocatedEntity;
 
-/// \brief Type to hold an operation and the Entity it is from for efficiency
+/// \brief Type to hold an operation and the Entity it is from   for efficiency
 /// when broadcasting.
 struct OpQueEntry {
+    bool operator<(const OpQueEntry& right) const {
+        return op->getSeconds() < right->getSeconds();
+    }
+
+    bool operator>(const OpQueEntry& right) const {
+        return op->getSeconds() > right->getSeconds();
+    }
     Operation op;
     LocatedEntity* from;
 
@@ -48,13 +55,7 @@ struct OpQueEntry {
         return op.get();
     }
 
-    bool operator<(const OpQueEntry& right) const {
-        return op->getSeconds() < right->getSeconds();
-    }
 
-    bool operator>(const OpQueEntry& right) const {
-        return op->getSeconds() > right->getSeconds();
-    }
 };
 
 typedef std::queue<OpQueEntry> OpQueue;

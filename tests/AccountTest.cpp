@@ -1808,6 +1808,7 @@ void Lobby::operation(const Operation & op, OpVector & res)
 #include "stubs/rulesets/stubThing.h"
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
+#include "stubs/common/stubid.h"
 
 
 #define STUB_Entity_addToEntity

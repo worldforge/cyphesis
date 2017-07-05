@@ -57,6 +57,3 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 
 #include "modules/Location.h"
 
-void Location::setVisibility(float v)
-{
-}

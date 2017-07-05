@@ -45,7 +45,6 @@
 #include "stubs/modules/stubLocation.h"
 
 #include "stubs/rulesets/stubContainsProperty.h"
-#include "stubs/rulesets/stubSoftProperty.h"
 #include "stubs/rulesets/stubDomain.h"
 #include "stubs/common/stubProperty.h"
 #include "stubs/common/stubMonitors.h"

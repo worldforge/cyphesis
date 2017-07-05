@@ -9,7 +9,8 @@
 
 #ifndef STUB_EntityPropertyFactory_newProperty
 //#define STUB_EntityPropertyFactory_newProperty
-  PropertyBase* EntityPropertyFactory::newProperty(Entity *)
+  template <typename T>
+  PropertyBase* EntityPropertyFactory<T>::newProperty(Entity *)
   {
     return nullptr;
   }

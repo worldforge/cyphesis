@@ -351,6 +351,14 @@ int main()
 
 #include "common/TypeNode.h"
 
+#define STUB_SoftProperty_get
+int SoftProperty::get(Atlas::Message::Element & val) const
+{
+    val = m_data;
+    return 0;
+}
+
+
 #include "stubs/rulesets/stubDomainProperty.h"
 #include "stubs/common/stubProperty.h"
 
@@ -437,29 +445,6 @@ IdProperty * IdProperty::copy() const
     return 0;
 }
 
-SoftProperty::SoftProperty()
-{
-}
-
-SoftProperty::SoftProperty(const Atlas::Message::Element & data) :
-              PropertyBase(0), m_data(data)
-{
-}
-
-int SoftProperty::get(Atlas::Message::Element & val) const
-{
-    val = m_data;
-    return 0;
-}
-
-void SoftProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-SoftProperty * SoftProperty::copy() const
-{
-    return 0;
-}
 
 ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
       PropertyBase(per_ephem), m_data(data)

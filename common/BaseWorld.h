@@ -75,7 +75,7 @@ class BaseWorld {
 
     LocatedEntity* m_limboLocation;
 
-    explicit BaseWorld(LocatedEntity &);
+    explicit BaseWorld(LocatedEntity & gw);
 
     /// \brief Called when the world is resumed.
     virtual void resumeWorld() {}

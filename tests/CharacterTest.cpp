@@ -56,7 +56,6 @@
 #include "stubs/rulesets/stubTasksProperty.h"
 #include "stubs/rulesets/stubTask.h"
 #include "stubs/common/stubProperty.h"
-#include "stubs/rulesets/stubSoftProperty.h"
 #include "stubs/rulesets/stubContainsProperty.h"
 #include "stubs/rulesets/stubStatusProperty.h"
 #include "stubs/rulesets/stubBBoxProperty.h"

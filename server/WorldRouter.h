@@ -58,7 +58,7 @@ class WorldRouter : public BaseWorld {
                    LocatedEntity &);
     void resumeWorld();
   public:
-    explicit WorldRouter(const SystemTime &);
+    explicit WorldRouter(const SystemTime & systemTime);
     virtual ~WorldRouter();
 
     bool idle();

@@ -62,6 +62,3 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
     return 0;
 }
 
-void Location::modifyBBox()
-{
-}

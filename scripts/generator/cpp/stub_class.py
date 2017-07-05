@@ -105,7 +105,10 @@ def _GenerateMethods(output_lines, source, class_node):
                     elif node.return_type.name == 'bool':
                         return_statement = 'return false;'
                     elif node.return_type.name in ['std::string', 'char*', 'const char*']:
-                        return_statement = 'return "";'
+                        if node.return_type.reference:
+                            return_statement = 'static %s instance; return instance;' % raw_return_type
+                        else:
+                            return_statement = 'return "";'
                     elif node.return_type.name in ['std::vector', 'std::set', 'std::list', 'std::map']:
                         if node.return_type.reference:
                             return_statement = 'static %s instance; return instance;' % raw_return_type
@@ -127,29 +130,10 @@ def _GenerateMethods(output_lines, source, class_node):
 
             args = ''
             if node.parameters:
-                # Due to the parser limitations, it is impossible to keep comments
-                # while stripping the default parameters.  When defaults are
-                # present, we choose to strip them and comments (and produce
-                # compilable code).
-                # TODO(nnorwitz@google.com): Investigate whether it is possible to
-                # preserve parameter name when reconstructing parameter text from
-                # the AST.
+                # Remove any default values
+                args = ', '.join('%s' % source[param.start:param.end].split('=')[0] for param in node.parameters)
 
-                # Get the full text of the parameters from the start
-                # of the first parameter to the end of the last parameter.
-                start = node.parameters[0].start
-                end = node.parameters[-1].end
-                # Remove // comments.
-                args_strings = re.sub(r'//.*', '', source[start:end])
-                # Remove default values
-                args_strings = re.sub(r'=[^\),]*', '', args_strings)
-                # Condense multiple spaces and eliminate newlines putting the
-                # parameters together on a single line.  Ensure there is a
-                # space in an argument which is split by a newline without
-                # intervening whitespace, e.g.: int\nBar
-                args = re.sub('  +', ' ', args_strings.replace('\n', ' '))
-
-            guard = 'STUB_%s_%s' % (class_node.name, node.name.replace('=', ''))
+            guard = 'STUB_%s_%s' % (class_node.name, node.name.replace('==', '_EQUALS').replace('[]', '_INDEX'))
             if node.modifiers & ast.FUNCTION_DTOR:
                 guard += "_DTOR"
 
@@ -157,8 +141,13 @@ def _GenerateMethods(output_lines, source, class_node):
             output_lines.extend(['#ifndef %s' % guard])
             # Add a commented out line to allow for easily copying to the "custom" file if needed.
             output_lines.extend(['//#define %s' % guard])
+            template_specifier = ""
+            if class_node.templated_types and len(class_node.templated_types) > 0:
+                output_lines.extend(['%stemplate <%s>' % (indent, ','.join('typename %s' % key for key in class_node.templated_types.keys()))])
+                template_specifier = "<%s>" % ','.join('%s' % key for key in class_node.templated_types.keys())
+
             if node.modifiers & ast.FUNCTION_CTOR:
-                output_lines.extend(['%s%s %s::%s(%s)%s' % (indent, return_type, class_node.name, methodName, args, const)])
+                output_lines.extend(['%s%s %s%s::%s(%s)%s' % (indent, return_type, class_node.name, template_specifier, methodName, args, const)])
                 if class_node.bases is not None and len(class_node.bases) > 0:
                     output_lines.extend(['%s: %s(%s)' % (indent * 2, class_node.bases[0].name, ', '.join(param.name for param in node.parameters))])
                     if len(ctor_inits) != 0:
@@ -168,7 +157,7 @@ def _GenerateMethods(output_lines, source, class_node):
                         output_lines.extend(["%s: %s" % (indent * 2, ','.join(ctor_inits))])
                 output_lines.extend(['%s{' % (indent), (indent * 2) + return_statement, '%s}' % (indent)])
             else:
-                output_lines.extend(['%s%s %s::%s(%s)%s' % (indent, return_type, class_node.name, methodName, args, const), '%s{' % (indent), (indent * 2) + return_statement, '%s}' % (indent)])
+                output_lines.extend(['%s%s %s%s::%s(%s)%s' % (indent, return_type, class_node.name, template_specifier, methodName, args, const), '%s{' % (indent), (indent * 2) + return_statement, '%s}' % (indent)])
             output_lines.extend(['#endif //%s' % guard, ''])
 
 

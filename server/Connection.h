@@ -74,7 +74,7 @@ class Connection : public Link, virtual public sigc::trackable {
   public:
     ServerRouting & m_server;
 
-    Connection(CommSocket &, ServerRouting & svr,
+    Connection(CommSocket & commSocket, ServerRouting & svr,
                const std::string & addr, const std::string & id, long iid);
     virtual ~Connection();
 

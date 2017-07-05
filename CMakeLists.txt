@@ -127,38 +127,37 @@ find_program(XMLLINT xmllint)
 
 configure_file(config.h.in config.h)
 
+set(STUB_HEADERS "")
+
 macro(wf_generate_stubs DIRECTORY)
 
-    MESSAGE(STATUS "${CMAKE_SOURCE_DIR}/${DIRECTORY}/*.h")
     file(GLOB_RECURSE H_FILES RELATIVE "${CMAKE_SOURCE_DIR}" "${CMAKE_SOURCE_DIR}/${DIRECTORY}/*.h")
 
-    MESSAGE(STATUS ${H_FILES})
     set(STUB_DIRECTORY ${CMAKE_SOURCE_DIR}/tests/stubs)
 
     foreach(FILE ${H_FILES})
-        MESSAGE(${FILE})
         set(STUB_FILE ${STUB_DIRECTORY}/stub${FILE}.h)
         set(STUB_CUSTOM_FILE ${STUB_DIRECTORY}/stub${FILE}.h)
         set(SOURCE_FILE "${CMAKE_SOURCE_DIR}/${FILE}")
-        MESSAGE(${SOURCE_FILE})
 
         add_custom_command(TARGET stubs
-            #OUTPUT ${STUB_DIRECTORY}/stub${FILE}.h ${STUB_DIRECTORY}/stub${FILE}_custom.h
             COMMAND ${CMAKE_COMMAND} -E echo_append "Generating stubs for ${FILE}\n"
             COMMAND ${PROJECT_SOURCE_DIR}/scripts/generator/generate_stub.py ${FILE} ${STUB_DIRECTORY}
-            #COMMAND ${CMAKE_COMMAND} -E echo "Done."
             WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-            #DEPENDS "stubs"
         )
-        #add_dependencies(stubs ${SOURCE_FILE})
-        #add_custom_target(stubs DEPENDS ${DOXYGEN_OUTPUT})
-    endforeach(FILE)
 
+        list(APPEND STUB_HEADERS ${STUB_FILE})
+    endforeach(FILE)
 
 endmacro()
 
 add_custom_target(stubs)
-wf_generate_stubs("rulesets")
+wf_generate_stubs(common)
+wf_generate_stubs(modules)
+wf_generate_stubs(navigation)
+wf_generate_stubs(physics)
+wf_generate_stubs(rulesets)
+wf_generate_stubs(server)
 
 
 # Add a "check" target, which builds and runs the tests.

@@ -293,7 +293,7 @@ LocatedEntity * BaseWorld::getEntity(const std::string & id) const
     return 0;
 }
 
-void Location::addToMessage(MapType & omap) const
+void Location::addToMessage(Atlas::Message::MapType & omap) const
 {
 }
 

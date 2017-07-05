@@ -26,7 +26,7 @@
 
 #ifndef STUB_PhysicalWorld_stepSimulation
 //#define STUB_PhysicalWorld_stepSimulation
-  int PhysicalWorld::stepSimulation(btScalar timeStep, int maxSubSteps , btScalar fixedTimeStep ) / btScalar(60.))
+  int PhysicalWorld::stepSimulation(btScalar timeStep, int maxSubSteps , btScalar fixedTimeStep )
   {
     return 0;
   }

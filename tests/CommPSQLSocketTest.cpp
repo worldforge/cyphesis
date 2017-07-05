@@ -65,6 +65,7 @@ int Database::launchNewQuery()
 
 int Database::initConnection()
 {
+    return 0;
 }
 
 void Database::queryResult(ExecStatusType status)

@@ -39,6 +39,7 @@
 #include "common/TypeNode.h"
 
 #include <Atlas/Objects/Anonymous.h>
+#include <Atlas/Objects/Operation.h>
 
 #include <cassert>
 

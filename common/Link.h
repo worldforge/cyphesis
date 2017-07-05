@@ -37,7 +37,7 @@ class Link : public Router {
   public:
     CommSocket & m_commSocket;
 
-    Link(CommSocket &, const std::string & id, long iid);
+    Link(CommSocket & commSocket, const std::string & id, long iid);
     virtual ~Link();
 
     void setEncoder(Atlas::Objects::ObjectsEncoder * e) {

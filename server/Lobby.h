@@ -36,7 +36,7 @@ class Lobby : public Router {
     AccountDict m_accounts;
     ServerRouting & m_server;
   public:
-    explicit Lobby(ServerRouting &, const std::string & id, long intId);
+    explicit Lobby(ServerRouting & serverRouting, const std::string & id, long intId);
     virtual ~Lobby();
 
     void addAccount(Account * a);

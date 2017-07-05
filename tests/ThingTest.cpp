@@ -43,7 +43,6 @@
 #include "stubs/common/stubPropertyManager.h"
 #include "stubs/modules/stubLocation.h"
 #include "stubs/common/stubProperty.h"
-#include "stubs/rulesets/stubSoftProperty.h"
 #include "stubs/rulesets/stubDomain.h"
 #include "stubs/rulesets/stubPropelProperty.h"
 #include "TestDomain.h"
@@ -93,27 +92,6 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 
 
 #include "stubs/rulesets/stubEntity.h"
-
-//void Entity::destroy()
-//{
-//    destroyed.emit();
-//}
-//
-//
-//PropertyBase * Entity::setProperty(const std::string & name,
-//                                   PropertyBase * prop)
-//{
-//    return m_properties[name] = prop;
-//}
-//
-//Domain * Entity::getDomain()
-//{
-//    return new TestDomain(*this);
-//}
-//void Entity::setType(const TypeNode * t) {
-//    m_type = t;
-//}
-
 
 bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* watcher) const
 {

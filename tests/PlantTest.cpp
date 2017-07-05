@@ -65,7 +65,6 @@ int LocatedEntity::getAttrType(const std::string & name,
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/rulesets/stubIdProperty.h"
 #include "stubs/common/stubProperty.h"
-#include "stubs/rulesets/stubSoftProperty.h"
 #include "stubs/rulesets/stubContainsProperty.h"
 #include "stubs/rulesets/stubStatusProperty.h"
 #include "stubs/rulesets/stubBBoxProperty.h"

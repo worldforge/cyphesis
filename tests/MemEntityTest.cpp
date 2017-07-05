@@ -50,4 +50,3 @@ int main()
 #include "stubs/rulesets/stubBBoxProperty.h"
 #include "stubs/rulesets/stubSimpleProperty.h"
 #include "stubs/rulesets/stubSolidProperty.h"
-#include "stubs/rulesets/stubSoftProperty.h"

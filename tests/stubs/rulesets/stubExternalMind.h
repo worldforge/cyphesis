@@ -61,7 +61,7 @@
 //#define STUB_ExternalMind_connectionId
   const std::string& ExternalMind::connectionId()
   {
-    return "";
+    static std::string instance; return instance;
   }
 #endif //STUB_ExternalMind_connectionId
 

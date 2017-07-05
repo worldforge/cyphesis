@@ -9,7 +9,8 @@
 
 #ifndef STUB_PythonScriptFactory_PythonScriptFactory
 //#define STUB_PythonScriptFactory_PythonScriptFactory
-   PythonScriptFactory::PythonScriptFactory(const std::string & package, const std::string & type)
+  template <typename T>
+   PythonScriptFactory<T>::PythonScriptFactory(const std::string & package, const std::string & type)
     : ScriptKit(package, type)
   {
     
@@ -18,7 +19,8 @@
 
 #ifndef STUB_PythonScriptFactory_PythonScriptFactory_DTOR
 //#define STUB_PythonScriptFactory_PythonScriptFactory_DTOR
-   PythonScriptFactory::~PythonScriptFactory()
+  template <typename T>
+   PythonScriptFactory<T>::~PythonScriptFactory()
   {
     
   }
@@ -26,7 +28,8 @@
 
 #ifndef STUB_PythonScriptFactory_setup
 //#define STUB_PythonScriptFactory_setup
-  int PythonScriptFactory::setup()
+  template <typename T>
+  int PythonScriptFactory<T>::setup()
   {
     return 0;
   }
@@ -34,15 +37,17 @@
 
 #ifndef STUB_PythonScriptFactory_package
 //#define STUB_PythonScriptFactory_package
-  const std::string& PythonScriptFactory::package() const
+  template <typename T>
+  const std::string& PythonScriptFactory<T>::package() const
   {
-    return "";
+    static std::string instance; return instance;
   }
 #endif //STUB_PythonScriptFactory_package
 
 #ifndef STUB_PythonScriptFactory_addScript
 //#define STUB_PythonScriptFactory_addScript
-  int PythonScriptFactory::addScript(T * entity) const
+  template <typename T>
+  int PythonScriptFactory<T>::addScript(T * entity) const
   {
     return 0;
   }
@@ -50,7 +55,8 @@
 
 #ifndef STUB_PythonScriptFactory_refreshClass
 //#define STUB_PythonScriptFactory_refreshClass
-  int PythonScriptFactory::refreshClass()
+  template <typename T>
+  int PythonScriptFactory<T>::refreshClass()
   {
     return 0;
   }

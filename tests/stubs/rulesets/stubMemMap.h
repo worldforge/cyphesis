@@ -58,7 +58,7 @@
 #ifndef STUB_MemMap_MemMap
 //#define STUB_MemMap_MemMap
    MemMap::MemMap(Script *& s)
-    : m_entity_type(nullptr),m_script(nullptr),m_listener(nullptr)
+    : m_script(nullptr),m_listener(nullptr)
   {
     
   }

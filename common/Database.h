@@ -138,9 +138,9 @@ class Database {
     int encodeObject(const Atlas::Message::MapType &,
                      std::string &);
     int putObject(const std::string & table,
-                  const std::string &,
-                  const Atlas::Message::MapType &,
-                  const StringVector & = StringVector());
+                  const std::string & key,
+                  const Atlas::Message::MapType & object,
+                  const StringVector & values = StringVector());
     int getObject(const std::string & table,
                   const std::string & key,
                   Atlas::Message::MapType &);
