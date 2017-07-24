@@ -251,7 +251,7 @@ void Connection::externalOperation(const Operation & op, Link & link)
     if (I == m_objects.end()) {
         sendError(op, String::compose("Client \"%1\" op from \"%2\" is from "
                                       "non-existant object.",
-                                      op->getParents().front(), from), from);
+                                      op->getParent(), from), from);
         return;
     }
     I->second->externalOperation(op, link);
@@ -277,7 +277,7 @@ void Connection::operation(const Operation & op, OpVector & res)
         case OP_INVALID:
             break;
         default:
-            std::string parent = op->getParents().empty() ? "-" : op->getParents().front();
+            std::string parent = op->getParent().empty() ? "-" : op->getParent();
             error(op, String::compose("Unknown operation %1 in Connection", parent), res);
             break;
     }
@@ -390,11 +390,8 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
         return;
     }
     std::string type("player");
-    if (!arg->isDefaultParents()) {
-        const std::list<std::string> & parents = arg->getParents();
-        if (!parents.empty()) {
-            type = parents.front();
-        }
+    if (!arg->isDefaultParent()) {
+        type = arg->getParent();
     }
     Account * account = addNewAccount(type, username, password);
     if (account == 0) {

@@ -87,10 +87,10 @@ int main()
     expect_python_error("m.add('2', 1.2)", PyExc_TypeError);
     expect_python_error("m.add(Message())", PyExc_TypeError);
     expect_python_error("m.add(Message(), 1.2)", PyExc_TypeError);
-    expect_python_error("m.add(Message({'objtype': 'op', 'parents': ['get']}), 1.2)",
+    expect_python_error("m.add(Message({'objtype': 'op', 'parent': 'get'}), 1.2)",
                         PyExc_TypeError);
     expect_python_error("m.add(Message({}), 1.2)", PyExc_TypeError);
-    expect_python_error("m.add(Message({'parents': 'get'}), 1.2)",
+    expect_python_error("m.add(Message({'parent': 'get'}), 1.2)",
                         PyExc_TypeError);
     run_python_string("m.add(Message({'id': '2'}), 1.2)");
     run_python_string("m.add(Message({'id': '2'}), 1.2)");

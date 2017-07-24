@@ -230,7 +230,7 @@ int ArchetypeRuleHandler::populateArchetypeFactory(
 
 int ArchetypeRuleHandler::check(const Atlas::Objects::Root & desc)
 {
-    assert(!desc->getParents().empty());
+    assert(!desc->getParent().empty());
     if (desc->getObjtype() != "archetype") {
         return -1;
     }

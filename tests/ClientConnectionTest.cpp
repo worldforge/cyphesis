@@ -91,7 +91,7 @@ void ClientConnectiontest::test_sequence()
         op->setArgs1(op_arg);
 
         op->setFrom("1");
-        op->setParents(std::list<std::string>());
+        op->setParent("");
         cc->operation(op);
 
         Info i;

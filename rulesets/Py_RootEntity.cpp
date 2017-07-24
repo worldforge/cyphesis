@@ -224,7 +224,7 @@ static int RootEntity_init(PyRootEntity * self, PyObject * args, PyObject * kwds
                     PyErr_SetString(PyExc_TypeError, "type must be a string.");
                     return -1;
                 }
-                self->entity->setParents(std::list<std::string>(1, PyString_AsString(val)));
+                self->entity->setParent(PyString_AsString(val));
                 self->entity->setObjtype("obj");
             } else {
                 Element val_obj;

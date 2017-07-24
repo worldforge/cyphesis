@@ -66,7 +66,7 @@ Root BaseClient::createSystemAccount(const std::string& usernameSuffix)
     player_ent->setAttr("username", m_username);
     m_password = compose("%1%2", ::rand(), ::rand());
     player_ent->setAttr("password", m_password);
-    player_ent->setParents(std::list<std::string>(1, "sys"));
+    player_ent->setParent("sys");
 
     Create createAccountOp;
     createAccountOp->setArgs1(player_ent);
@@ -103,7 +103,7 @@ Root BaseClient::createAccount(const std::string & name,
     Anonymous player_ent;
     player_ent->setAttr("username", name);
     player_ent->setAttr("password", password);
-    player_ent->setParents(std::list<std::string>(1, "player"));
+    player_ent->setParent("player");
 
     debug(
             std::cout << "Logging " << name << " in with " << password

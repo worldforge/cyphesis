@@ -24,9 +24,7 @@
     </map>
     <string name="id">goblin</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
     <int name="playable">1</int>
   </map>
 
@@ -46,9 +44,7 @@
     </map>
     <string name="id">lych</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
   </map>
 
   <map>
@@ -75,9 +71,7 @@
     </map>
     <string name="id">marshall</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
   </map>
 
   <map>
@@ -104,9 +98,7 @@
     </map>
     <string name="id">mercenary</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
   </map>
 
   <map>
@@ -133,9 +125,7 @@
     </map>
     <string name="id">merchant</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
   </map>
 
   <map>
@@ -177,9 +167,7 @@
     </map>
     <string name="id">mobile</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>character</string>
-    </list>
+    <string name="parent">character</string>
   </map>
 
   <map>
@@ -231,9 +219,7 @@
     </map>
     <string name="id">settler</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
     <int name="playable">1</int>
   </map>
 
@@ -253,9 +239,7 @@
     </map>
     <string name="id">skeleton</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
     <int name="playable">1</int>
     <map name="script">
       <string name="language">python</string>

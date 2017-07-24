@@ -15,20 +15,20 @@ class Shop_vacant_deco_1_se(Thing):
         # South wall
 	loc = Location(self, Vector3D(-0.5,0.5,0))
         loc.bbox = Vector3D(6,0.5,5)
-        ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
+        ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
 	loc = Location(self, Vector3D(7.5,0.5,0))
         loc.bbox = Vector3D(2,0.5,5)
-        ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
+        ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
         # West wall
 	loc = Location(self, Vector3D(-0.5,0.5,0))
         loc.bbox = Vector3D(0.5,8,5)
-        ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
+        ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
         # North wall
 	loc = Location(self, Vector3D(-0.5,8,0))
         loc.bbox = Vector3D(10,0.5,5)
-        ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
+        ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
         # East wall
 	loc = Location(self, Vector3D(9,0.5,0))
         loc.bbox = Vector3D(0.5,8,5)
-        ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
+        ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
         return ret

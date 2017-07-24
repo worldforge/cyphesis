@@ -117,9 +117,7 @@ void Peer::operation(const Operation &op, OpVector &res)
                 }
                 // Response to a Login op
                 m_accountId = arg->getId();
-                if (!arg->getParents().empty()) {
-                    m_accountType = arg->getParents().front();
-                }
+                m_accountType = arg->getParent();
                 m_state = PEER_AUTHENTICATED;
             } else if (m_state == PEER_AUTHENTICATED) {
                 // If we received an Info op while authenticated, it is a

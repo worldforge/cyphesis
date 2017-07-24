@@ -102,7 +102,7 @@ void PropertyRuleHandlertest::test_sequence()
 void PropertyRuleHandlertest::test_check_fail()
 {
     Anonymous description;
-    description->setParents(std::list<std::string>(1, "foo"));
+    description->setParent("foo");
     int ret = rh->check(description);
 
     assert(ret == -1);
@@ -113,7 +113,7 @@ void PropertyRuleHandlertest::test_check_pass()
 {
     Anonymous description;
     description->setObjtype("type");
-    description->setParents(std::list<std::string>(1, "foo"));
+    description->setParent("foo");
     int ret = rh->check(description);
 
     assert(ret == 0);

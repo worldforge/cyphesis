@@ -16,9 +16,7 @@
     </map>
     <string name="id">armory</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
   </map>
 
   <map>
@@ -37,9 +35,7 @@
     </map>
     <string name="id">bailey1</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
   </map>
 
   <map>
@@ -58,9 +54,7 @@
     </map>
     <string name="id">bailey2</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
   </map>
 
   <map>
@@ -83,9 +77,7 @@
     </map>
     <string name="id">block_house</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
   </map>
 
   <map>
@@ -104,9 +96,7 @@
     </map>
     <string name="id">concrete_stairs</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
   </map>
 
   
@@ -126,9 +116,7 @@
     </map>
     <string name="id">gateway</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
   </map>
 
   <map>
@@ -136,9 +124,7 @@
     </map>
     <string name="id">hall</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
   </map>
 
   <map>
@@ -150,9 +136,7 @@
     </map>
     <string name="id">house</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
   </map>
 
   <map>
@@ -175,9 +159,7 @@
     </map>
     <string name="id">jetty</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
   </map>
 
   <map>
@@ -196,9 +178,7 @@
     </map>
     <string name="id">keep</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
   </map>
 
   <map>
@@ -217,9 +197,7 @@
     </map>
     <string name="id">mausoleum</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
   </map>
 
   <map>
@@ -242,9 +220,7 @@
     </map>
     <string name="id">stone_palisade</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
   </map>
 
   <map>
@@ -260,9 +236,7 @@
     </map>
     <string name="id">stonehouse</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>house</string>
-    </list>
+    <string name="parent">house</string>
   </map>
 
   <map>
@@ -278,9 +252,7 @@
     </map>
     <string name="id">structure</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -299,9 +271,7 @@
     </map>
     <string name="id">tent</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
   </map>
 
   <map>
@@ -320,9 +290,7 @@
     </map>
     <string name="id">tower</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
   </map>
 
   <map>
@@ -341,9 +309,7 @@
     </map>
     <string name="id">waterwell</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
   </map>
 
 </atlas>

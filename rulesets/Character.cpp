@@ -631,11 +631,11 @@ void Character::UseOperation(const Operation & op, OpVector & res)
     const Root & arg = args.front();
     const std::string & argtype = arg->getObjtype();
     if (argtype == "op") {
-        if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) || (arg->getParents().empty())) {
-            error(op, "Use arg op has malformed parents", res, getId());
+        if (!arg->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
+            error(op, "Use arg op has malformed parent", res, getId());
             return;
         }
-        op_type = arg->getParents().front();
+        op_type = arg->getParent();
         debug(std::cout << "Got op type " << op_type << " from arg" << std::endl << std::flush
         ;);
         if (toolOps.find(op_type) == toolOps.end()) {
@@ -939,11 +939,11 @@ void Character::ActuateOperation(const Operation & op, OpVector & res)
     const Root & arg = args.front();
     const std::string & argtype = arg->getObjtype();
     if (argtype == "op") {
-        if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) || (arg->getParents().empty())) {
-            error(op, "Use arg op has malformed parents", res, getId());
+        if (!arg->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
+            error(op, "Use arg op has malformed parent", res, getId());
             return;
         }
-        op_type = arg->getParents().front();
+        op_type = arg->getParent();
         debug(std::cout << "Got op type " << op_type << " from arg" << std::endl << std::flush
         ;);
         // Check against valid ops
@@ -1709,7 +1709,7 @@ void Character::mindTouchOperation(const Operation & op, OpVector & res)
 /// @param res The filtered result is returned here.
 void Character::mindOtherOperation(const Operation & op, OpVector & res)
 {
-    log(WARNING, String::compose("Passing '%1' op from mind through to world. %2", op->getParents().front(), describeEntity()));
+    log(WARNING, String::compose("Passing '%1' op from mind through to world. %2", op->getParent(), describeEntity()));
     op->setTo(getId());
     res.push_back(op);
 }
@@ -1866,7 +1866,7 @@ bool Character::w2mRelayOperation(const Operation & op)
 /// @param res The result of the operation is returned here.
 void Character::sendMind(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Character::sendMind(" << op->getParents().front() << ") " << describeEntity() << std::endl << std::flush
+    debug(std::cout << "Character::sendMind(" << op->getParent() << ") " << describeEntity() << std::endl << std::flush
     ;);
 
     if (m_externalMind != nullptr && m_externalMind->isLinked()) {
@@ -1896,7 +1896,7 @@ void Character::sendMind(const Operation & op, OpVector & res)
 /// @param res The result of the operation is returned here.
 void Character::mind2body(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Character::mind2body(" << op->getParents().front() << ") " << describeEntity() << std::endl << std::flush
+    debug(std::cout << "Character::mind2body(" << op->getParent() << ") " << describeEntity() << std::endl << std::flush
     ;);
 
     //Check if we have any relays registered for this op.
@@ -1924,12 +1924,12 @@ void Character::mind2body(const Operation & op, OpVector & res)
 
     if (!op->isDefaultTo()) {
 
-        log(ERROR, String::compose("Operation \"%1\" from mind with TO set. %2", op->getParents().front(), describeEntity()));
+        log(ERROR, String::compose("Operation \"%1\" from mind with TO set. %2", op->getParent(), describeEntity()));
         return;
     }
     if (!op->isDefaultFutureSeconds() && op->getClassNo() != Atlas::Objects::Operation::TICK_NO) {
         log(ERROR, String::compose("Operation \"%1\" from mind with "
-                "FUTURE_SECONDS set. %2", op->getParents().front(), describeEntity()));
+                "FUTURE_SECONDS set. %2", op->getParent(), describeEntity()));
     }
     auto op_no = op->getClassNo();
     switch (op_no) {
@@ -2003,7 +2003,7 @@ void Character::mind2body(const Operation & op, OpVector & res)
 /// useful information.
 bool Character::world2mind(const Operation & op)
 {
-    debug(std::cout << "Character::world2mind(" << op->getParents().front() << ") " << describeEntity() << std::endl << std::flush
+    debug(std::cout << "Character::world2mind(" << op->getParent() << ") " << describeEntity() << std::endl << std::flush
     ;);
     auto otype = op->getClassNo();
     POLL_OP_SWITCH(op, otype, w2m)
@@ -2032,11 +2032,11 @@ void Character::filterExternalOperation(const Operation & op)
 
 void Character::operation(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Character::operation(" << op->getParents().front() << ") " << describeEntity() << std::endl << std::flush
+    debug(std::cout << "Character::operation(" << op->getParent() << ") " << describeEntity() << std::endl << std::flush
     ;);
     Entity::operation(op, res);
     if (world2mind(op)) {
-        debug(std::cout << "Character::operation(" << op->getParents().front() << ") passed to mind" << std::endl << std::flush
+        debug(std::cout << "Character::operation(" << op->getParent() << ") passed to mind" << std::endl << std::flush
         ;);
         OpVector mres;
         sendMind(op, mres);
@@ -2049,7 +2049,7 @@ void Character::operation(const Operation & op, OpVector & res)
 
 void Character::externalOperation(const Operation & op, Link & link)
 {
-    debug(std::cout << "Character::externalOperation(" << op->getParents().front() << ") " << describeEntity() << std::endl << std::flush
+    debug(std::cout << "Character::externalOperation(" << op->getParent() << ") " << describeEntity() << std::endl << std::flush
     ;);
     if (linkExternal(&link) == 0) {
         debug(std::cout << "Subscribing existing character" << std::endl << std::flush

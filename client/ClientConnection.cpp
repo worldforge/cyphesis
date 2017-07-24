@@ -40,7 +40,7 @@ ClientConnection::~ClientConnection()
 
 void ClientConnection::operation(const RootOperation & op)
 {
-    debug(std::cout << "A " << op->getParents().front() << " op from server!" << std::endl << std::flush;);
+    debug(std::cout << "A " << op->getParent() << " op from server!" << std::endl << std::flush;);
 
     reply_flag = true;
     operationQueue.push_back(op);
@@ -85,7 +85,7 @@ int ClientConnection::sendAndWaitReply(const Operation & op, OpVector & res)
     long no = newSerialNo();
     op->setSerialno(no);
     send(op);
-    debug(std::cout << "Waiting for reply to " << op->getParents().front()
+    debug(std::cout << "Waiting for reply to " << op->getParent()
                     << std::endl << std::flush;);
     while (true) {
         if (pending()) {

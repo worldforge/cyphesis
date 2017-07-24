@@ -413,7 +413,7 @@ void WorldRouter::message(const Operation & op, LocatedEntity & fromEntity)
         m_operationsDispatcher.addOperationToQueue(op, fromEntity);
     }
     debug(std::cout << "WorldRouter::message {"
-                    << op->getParents().front() << ":"
+                    << op->getParent() << ":"
                     << op->getFrom() << ":" << op->getTo() << "}" << std::endl
                     << std::flush;);
 }
@@ -428,7 +428,7 @@ bool WorldRouter::shouldBroadcastPerception(const Operation & op) const
         return true;
     }
     log(WARNING, String::compose("Broadcasting %1 op from %2",
-                                 op->getParents().front(),
+                                 op->getParent(),
                                  op->getFrom()));
     return false;
 }
@@ -453,12 +453,12 @@ void WorldRouter::deliverTo(const Operation & op, LocatedEntity & ent)
     }
     OpVector res;
     debug(std::cout << "WorldRouter::deliverTo begin {"
-                        << op->getParents().front() << ":"
+                        << op->getParent() << ":"
                         << op->getFrom() << ":" << op->getTo() << "}" << std::endl
                         << std::flush;);
     ent.operation(op, res);
     debug(std::cout << "WorldRouter::deliverTo done {"
-                        << op->getParents().front() << ":"
+                        << op->getParent() << ":"
                         << op->getFrom() << ":" << op->getTo() << "}" << std::endl
                         << std::flush;);
     for(auto& resOp : res) {
@@ -481,11 +481,11 @@ void WorldRouter::deliverTo(const Operation & op, LocatedEntity & ent)
 void WorldRouter::operation(const Operation & op, LocatedEntity & from)
 {
     debug(std::cout << "WorldRouter::operation {"
-                    << op->getParents().front() << ":"
+                    << op->getParent() << ":"
                     << op->getFrom() << ":" << op->getTo() << "}"
                     << std::endl << std::flush;);
     assert(op->getFrom() == from.getId());
-    assert(!op->getParents().empty());
+    assert(op->getParent() != "");
 
     Dispatching.emit(op);
 

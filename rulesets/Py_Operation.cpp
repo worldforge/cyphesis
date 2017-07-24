@@ -622,12 +622,12 @@ static PyObject * Operation_getattro(PyOperation * self, PyObject * oname)
     } else if (strcmp(name, "to") == 0) {
         return PyString_FromString(self->operation->getTo().c_str());
     } else if (strcmp(name, "id") == 0) {
-        const std::list<std::string> & parents = self->operation->getParents();
-        if (parents.empty()) {
-            PyErr_SetString(PyExc_AttributeError, "Operation has no parents");
-            return NULL;
+        const std::string & parent = self->operation->getParent();
+        if (parent == "") {
+            PyErr_SetString(PyExc_AttributeError, "Operation has no parent");
+            return nullptr;
         }
-        return PyString_FromString(parents.front().c_str());
+        return PyString_FromString(parent.c_str());
     }
     return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
@@ -729,7 +729,7 @@ static int Operation_init(PyOperation * self, PyObject * args, PyObject * kwds)
         // PyErr_SetString(PyExc_TypeError, "Operation() unknown operation type requested");
         // return -1;
         self->operation = Generic();
-        self->operation->setParents(std::list<std::string>(1, type));
+        self->operation->setParent(type);
     }
     if (kwds != NULL) {
         PyObject * from = PyDict_GetItemString(kwds, "from_");

@@ -15,34 +15,34 @@ class Yetown_inn_deco_agril_1_sw(Thing):
         # South wall with door
 	loc = Location(self, Vector3D(-1,1,0))
         loc.bbox = Vector3D(6,0.5,5)
-        ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
+        ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
 	loc = Location(self, Vector3D(9,1,0))
         loc.bbox = Vector3D(4,0.5,5)
-        ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
+        ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
         # West wall with door
 	loc = Location(self, Vector3D(-1,1,0))
         loc.bbox = Vector3D(0.5,2,5)
-        ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
+        ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
 	loc = Location(self, Vector3D(-1,7,0))
         loc.bbox = Vector3D(0.5,4,5)
-        ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
+        ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
         # North facing section
 	loc = Location(self, Vector3D(-1,10.5,0))
         loc.bbox = Vector3D(6,0.5,5)
-        ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
+        ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
         # Remaining west facing section
 	loc = Location(self, Vector3D(5,7,0))
         loc.bbox = Vector3D(0.5,10,5)
-        ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
+        ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
         # North wall
 	loc = Location(self, Vector3D(5,16.5,0))
         loc.bbox = Vector3D(8,0.5,5)
-        ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
+        ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
         # East wall with door
 	loc = Location(self, Vector3D(12.5,1,0))
         loc.bbox = Vector3D(0.5,4,5)
-        ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
+        ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
 	loc = Location(self, Vector3D(12.5,7,0))
         loc.bbox = Vector3D(0.5,10,5)
-        ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
+        ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
         return ret

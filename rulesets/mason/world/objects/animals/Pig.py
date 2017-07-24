@@ -16,7 +16,7 @@ class Pig(server.Thing):
         res = Oplist()
         ent=Entity(self.id,mode="dead",mass=self.mass-1)
         res.append(Operation("set",ent,to=self))
-        ham_ent=Entity(name='ham',parents=['ham'],location=self.location.copy())
+        ham_ent=Entity(name='ham',parent='ham',location=self.location.copy())
         if (len(op)>1):
             to_ = op[1].id
         else:

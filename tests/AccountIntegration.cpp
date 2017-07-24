@@ -198,7 +198,7 @@ void Accountintegration::test_addToEntity()
 void Accountintegration::test_CreateOperation()
 {
     Anonymous op_arg;
-    op_arg->setParents(std::list<std::string>(1, "game_entity"));
+    op_arg->setParent("game_entity");
     op_arg->setName("Bob");
 
     Create op;
@@ -211,7 +211,7 @@ void Accountintegration::test_CreateOperation()
 void Accountintegration::test_GetOperation()
 {
     Anonymous op_arg;
-    op_arg->setParents(std::list<std::string>());
+    op_arg->setParent("");
 
     Get op;
     op->setArgs1(op_arg);
@@ -282,7 +282,7 @@ void Accountintegration::test_SetOperation()
 void Accountintegration::test_TalkOperation()
 {
     Anonymous op_arg;
-    op_arg->setParents(std::list<std::string>());
+    op_arg->setParent("");
     op_arg->setLoc("1");
 
     Talk op;
@@ -301,7 +301,7 @@ void Accountintegration::test_LogoutOperation()
     op->setSerialno(1);
 
     Anonymous op_arg;
-    op_arg->setParents(std::list<std::string>());
+    op_arg->setParent("");
     op->setArgs1(op_arg);
 
     OpVector res;

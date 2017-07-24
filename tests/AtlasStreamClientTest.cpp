@@ -75,9 +75,9 @@ int main()
     {
         Atlas::Objects::Root obj;
         asc->test_objectArrived(obj);
-        obj->setParents(std::list<std::string>());
+        obj->setParent("");
         asc->test_objectArrived(obj);
-        obj->setParents(std::list<std::string>(1, "foo"));
+        obj->setParent("foo");
         asc->test_objectArrived(obj);
         obj->setObjtype("foo");
         asc->test_objectArrived(obj);

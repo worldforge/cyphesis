@@ -205,7 +205,7 @@ void Entity::addToMessage(MapType & omap) const
     }
 
     omap["stamp"] = (double)m_seq;
-    omap["parents"] = ListType(1, m_type);
+    omap["parent"] = m_type;
     m_location.addToMessage(omap);
     omap["objtype"] = "obj";
 }
@@ -227,7 +227,7 @@ void Entity::addToEntity(const RootEntity & ent) const
 
     ent->setStamp(m_seq);
     if (m_type != 0) {
-        ent->setParents(std::list<std::string>(1, m_type->name()));
+        ent->setParent(m_type->name());
     }
     m_location.addToEntity(ent);
     ent->setObjtype("obj");
@@ -505,7 +505,7 @@ void Entity::externalOperation(const Operation & op, Link &)
 void Entity::operation(const Operation & op, OpVector & res)
 {
     if (m_script != 0 &&
-        m_script->operation(op->getParents().front(), op, res) != 0) {
+        m_script->operation(op->getParent(), op, res) != 0) {
         return;
     }
 

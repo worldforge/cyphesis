@@ -848,8 +848,6 @@
         </map>
         <string name="id">fence_section</string>
         <string name="objtype">class</string>
-        <list name="parents">
-            <string>structure</string>
-        </list>
+        <string name="parent">structure</string>
     </map>
 </atlas>

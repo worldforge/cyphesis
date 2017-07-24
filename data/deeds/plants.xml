@@ -21,9 +21,7 @@
     </map>
     <string name="id">acorn</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>seed</string>
-    </list>
+    <string name="parent">seed</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.plants.seeds.Acorn.Acorn</string>
@@ -68,9 +66,7 @@
     </map>
     <string name="id">apple</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>seed</string>
-    </list>
+    <string name="parent">seed</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.plants.seeds.Apple.Apple</string>
@@ -129,9 +125,7 @@
     </map>
     <string name="id">appletree</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>tree</string>
-    </list>
+    <string name="parent">tree</string>
   </map>
 
   <map>
@@ -170,9 +164,7 @@
     </map>
     <string name="id">birch</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>tree</string>
-    </list>
+    <string name="parent">tree</string>
   </map>
 
   <map>
@@ -208,9 +200,7 @@
     </map>
     <string name="id">carrot</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>tuber</string>
-    </list>
+    <string name="parent">tuber</string>
   </map>
 
   <map>
@@ -233,9 +223,7 @@
     </map>
     <string name="id">fern</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -270,9 +258,7 @@
     </map>
     <string name="id">fir</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>tree</string>
-    </list>
+    <string name="parent">tree</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.plants.Fir.Fir</string>
@@ -300,9 +286,7 @@
     </map>
     <string name="id">fircone</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>seed</string>
-    </list>
+    <string name="parent">seed</string>
   </map>
 
   <map>
@@ -325,9 +309,7 @@
     </map>
     <string name="id">flower</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -354,9 +336,7 @@
     </map>
     <string name="id">grass</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -379,9 +359,7 @@
     </map>
     <string name="id">leaf</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -408,9 +386,7 @@
     </map>
     <string name="id">mushroom</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -514,9 +490,7 @@
     </map>
     <string name="id">oak</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>tree</string>
-    </list>
+    <string name="parent">tree</string>
   </map>
 
   <map>
@@ -552,9 +526,7 @@
     </map>
     <string name="id">poplar</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>tree</string>
-    </list>
+    <string name="parent">tree</string>
   </map>
 
   <map>
@@ -574,9 +546,7 @@
     </map>
     <string name="id">seed</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.plants.seeds.Seed.Seed</string>
@@ -603,9 +573,7 @@
     </map>
     <string name="id">shrub</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -633,9 +601,7 @@
     </map>
     <string name="id">tree</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>plant</string>
-    </list>
+    <string name="parent">plant</string>
   </map>
 
   <map>
@@ -651,9 +617,7 @@
     </map>
     <string name="id">tuber</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>plant</string>
-    </list>
+    <string name="parent">plant</string>
   </map>
 
   <map>
@@ -689,9 +653,7 @@
     </map>
     <string name="id">turnip</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>tuber</string>
-    </list>
+    <string name="parent">tuber</string>
   </map>
 
   <map>
@@ -723,9 +685,7 @@
     </map>
     <string name="id">willow</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>tree</string>
-    </list>
+    <string name="parent">tree</string>
   </map>
 
 </atlas>

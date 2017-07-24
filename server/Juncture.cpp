@@ -192,14 +192,14 @@ void Juncture::addToMessage(MapType & omap) const
 {
     omap["objtype"] = "obj";
     omap["id"] = getId();
-    omap["parents"] = ListType(1, "juncture");
+    omap["parent"] = "juncture";
 }
 
 void Juncture::addToEntity(const RootEntity & ent) const
 {
     ent->setObjtype("obj");
     ent->setId(getId());
-    ent->setParents(std::list<std::string>(1,"juncture"));
+    ent->setParent("juncture");
 }
 
 void Juncture::LoginOperation(const Operation & op, OpVector & res)

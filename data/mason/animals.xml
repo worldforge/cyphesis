@@ -13,9 +13,7 @@
     </map>
     <string name="id">annelid</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
   </map>
 
   <map>
@@ -38,9 +36,7 @@
     </map>
     <string name="id">bass</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>fish</string>
-    </list>
+    <string name="parent">fish</string>
   </map>
 
   <map>
@@ -67,9 +63,7 @@
     </map>
     <string name="id">bear</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
   </map>
 
   <map>
@@ -92,9 +86,7 @@
     </map>
     <string name="id">bluegill</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>fish</string>
-    </list>
+    <string name="parent">fish</string>
   </map>
 
   <map>
@@ -121,9 +113,7 @@
     </map>
     <string name="id">chicken</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
   </map>
 
   <map>
@@ -154,9 +144,7 @@
     </map>
     <string name="id">cow</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
   </map>
 
   <map>
@@ -176,9 +164,7 @@
     </map>
     <string name="id">crab</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
   </map>
 
   <map>
@@ -201,9 +187,7 @@
     </map>
     <string name="id">deer</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
   </map>
 
   <map>
@@ -234,9 +218,7 @@
     </map>
     <string name="id">dog</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
   </map>
 
   <map>
@@ -263,9 +245,7 @@
     </map>
     <string name="id">donkey</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
   </map>
 
   <map>
@@ -292,9 +272,7 @@
     </map>
     <string name="id">duck</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
   </map>
 
   <map>
@@ -310,9 +288,7 @@
     </map>
     <string name="id">fish</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
   </map>
 
   <map>
@@ -339,9 +315,7 @@
     </map>
     <string name="id">flying_bird</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
   </map>
 
   <map>
@@ -368,9 +342,7 @@
     </map>
     <string name="id">horse</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
   </map>
 
   <map>
@@ -386,9 +358,7 @@
     </map>
     <string name="id">larva</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
   </map>
 
   <map>
@@ -404,9 +374,7 @@
     </map>
     <string name="id">maggot</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
   </map>
 
   <map>
@@ -429,9 +397,7 @@
     </map>
     <string name="id">pickerel</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>fish</string>
-    </list>
+    <string name="parent">fish</string>
   </map>
 
   <map>
@@ -467,9 +433,7 @@
     </map>
     <string name="id">pig</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
   </map>
 
   <map>
@@ -496,9 +460,7 @@
     </map>
     <string name="id">rabbit</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
   </map>
 
   <map>
@@ -529,9 +491,7 @@
     </map>
     <string name="id">spider</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
   </map>
 
   <map>
@@ -562,9 +522,7 @@
     </map>
     <string name="id">squirrel</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
   </map>
 
   <map>
@@ -587,9 +545,7 @@
     </map>
     <string name="id">tuna</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>fish</string>
-    </list>
+    <string name="parent">fish</string>
   </map>
 
   <map>
@@ -620,9 +576,7 @@
     </map>
     <string name="id">wolf</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
   </map>
 
 </atlas>

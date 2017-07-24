@@ -160,7 +160,7 @@ void AccountConnectionintegration::test_account_creation()
 
         Create op;
         Anonymous create_arg;
-        create_arg->setParents(std::list<std::string>(1, "player"));
+        create_arg->setParent("player");
         create_arg->setAttr("username", "39d409ec");
         create_arg->setAttr("password", "6a6e71bab281");
         op->setArgs1(create_arg);
@@ -225,7 +225,7 @@ void AccountConnectionintegration::test_account_creation()
         Player::playableTypes.insert(test_valid_character_type);
 
         Anonymous character_arg;
-        character_arg->setParents(std::list<std::string>(1, test_valid_character_type));
+        character_arg->setParent(test_valid_character_type);
         character_arg->setName("938862f2-4db2-4e8e-b944-7b0935e569db");
 
         Create character_op;

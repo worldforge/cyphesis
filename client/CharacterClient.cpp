@@ -96,12 +96,12 @@ LocatedEntity * CharacterClient::sendLook(const Operation & op)
         std::cerr << "NULL reply to look" << std::endl << std::flush;
         return NULL;
     }
-    const std::string & resparents = res->getParents().front();
-    if (resparents == "unseen") {
+    const std::string & resparent = res->getParent();
+    if (resparent == "unseen") {
         return NULL;
     }
-    if (resparents != "sight") {
-        std::cerr << "Reply to look is " << resparents << " not sight" << std::endl << std::flush;
+    if (resparent != "sight") {
+        std::cerr << "Reply to look is " << resparent << " not sight" << std::endl << std::flush;
         return NULL;
     }
     if (res->getArgs().empty()) {
@@ -118,8 +118,8 @@ LocatedEntity * CharacterClient::sendLook(const Operation & op)
         return NULL;
     }
     const std::string & sight_id = seen->getId();
-    if (seen->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
-        std::cout << "Seen: " << seen->getParents().front()
+    if (seen->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
+        std::cout << "Seen: " << seen->getParent()
                   << "(" << sight_id << ")" << std::endl << std::flush;
     } else {
         std::cout << "Seen: " << sight_id << std::endl << std::flush;

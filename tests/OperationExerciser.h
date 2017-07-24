@@ -46,12 +46,12 @@ class OperationExerciser {
     void testTypeString(const std::string & type) {
         {
             Op op;
-            assert(!op->isDefaultParents());
+            assert(!op->isDefaultParent());
         }
 
         {
             Op op;
-            assert(type == op->getParents().front());
+            assert(type == op->getParent());
         }
     }
 

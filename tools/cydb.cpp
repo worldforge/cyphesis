@@ -394,7 +394,7 @@ void exec(const std::string & cmd, const std::string & arg)
             Anonymous ent;
             ent->setId(std::string(arg, 0, space));
             ent->setObjtype("class");
-            ent->setParents(std::list<std::string>(1, std::string(arg, space + 1)));
+            ent->setParent(std::string(arg, space + 1));
             c->setArgs1(ent);
             encoder->streamObjectsMessage(c);
         }
@@ -518,7 +518,7 @@ void exec(const std::string & cmd, const std::string & arg)
         Create c;
 
         Anonymous cmap;
-        cmap->setParents(std::list<std::string>(1, agent_type));
+        cmap->setParent(agent_type);
         cmap->setName("cycmd agent");
         cmap->setObjtype("obj");
         c->setArgs1(cmap);
@@ -577,7 +577,7 @@ void exec(const std::string & cmd, const std::string & arg)
             Look l;
 
             Anonymous lmap;
-            lmap->setParents(std::list<std::string>(1, arg));
+            lmap->setParent(arg);
             l->setArgs1(lmap);
             l->setFrom(agentId);
 
@@ -608,7 +608,7 @@ void exec(const std::string & cmd, const std::string & arg)
             Create c;
 
             Anonymous thing;
-            thing->setParents(std::list<std::string>(1, arg));
+            thing->setParent(arg);
             c->setArgs1(thing);
             c->setFrom(agentId);
 

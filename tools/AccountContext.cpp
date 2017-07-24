@@ -60,9 +60,8 @@ int AccountContext::dispatch(const RootOperation & op)
                   << std::endl << std::flush;
         const Root & ent = op->getArgs().front();
         if (ent->hasAttrFlag(Atlas::Objects::ID_FLAG) &&
-            ent->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) &&
-            ent->getParents().size() > 0) {
-            const std::string & type = ent->getParents().front();
+            ent->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
+            const std::string & type = ent->getParent();
             if (type == "juncture") {
                 std::cout << "created juncture"
                           << std::endl << std::flush;

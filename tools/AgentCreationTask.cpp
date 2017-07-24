@@ -46,7 +46,7 @@ void AgentCreationTask::setup(const std::string & arg, OpVector & res)
     Atlas::Objects::Operation::Create c;
 
     Atlas::Objects::Entity::Anonymous cmap;
-    cmap->setParents(std::list<std::string>(1, "creator"));
+    cmap->setParent("creator");
     cmap->setName("cyexport agent");
     cmap->setObjtype("obj");
     c->setArgs1(cmap);

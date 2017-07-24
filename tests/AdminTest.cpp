@@ -140,8 +140,8 @@ class Admintest : public Cyphesis::TestBase
     void test_opDispatched();
     void test_opDispatched_unconnected();
     void test_opDispatched_unconnected_monitored();
-    void test_characterError_default_parents();
-    void test_characterError_empty_parents();
+    void test_characterError_default_parent();
+    void test_characterError_empty_parent();
     void test_characterError_valid();
     void test_LogoutOperation_no_args();
     void test_LogoutOperation_no_id();
@@ -266,8 +266,8 @@ Admintest::Admintest() : m_server(0),
     ADD_TEST(Admintest::test_opDispatched);
     ADD_TEST(Admintest::test_opDispatched_unconnected);
     ADD_TEST(Admintest::test_opDispatched_unconnected_monitored);
-    ADD_TEST(Admintest::test_characterError_default_parents);
-    ADD_TEST(Admintest::test_characterError_empty_parents);
+    ADD_TEST(Admintest::test_characterError_default_parent);
+    ADD_TEST(Admintest::test_characterError_empty_parent);
     ADD_TEST(Admintest::test_characterError_valid);
     ADD_TEST(Admintest::test_LogoutOperation_no_args);
     ADD_TEST(Admintest::test_LogoutOperation_no_id);
@@ -479,7 +479,7 @@ void Admintest::test_opDispatched_unconnected_monitored()
     ASSERT_TRUE(!Link_sent_called);
 }
 
-void Admintest::test_characterError_default_parents()
+void Admintest::test_characterError_default_parent()
 {
     Operation op;
     Root ent;
@@ -493,13 +493,13 @@ void Admintest::test_characterError_default_parents()
                  Atlas::Objects::Operation::ERROR_NO);
 }
 
-void Admintest::test_characterError_empty_parents()
+void Admintest::test_characterError_empty_parent()
 {
     Operation op;
     Root ent;
     OpVector res;
 
-    ent->setParents(std::list<std::string>());
+    ent->setParent("");
 
     int ret = m_account->characterError(op, ent, res);
 
@@ -515,7 +515,7 @@ void Admintest::test_characterError_valid()
     Root ent;
     OpVector res;
 
-    ent->setParents(std::list<std::string>(1, "settler"));
+    ent->setParent("settler");
 
     int ret = m_account->characterError(op, ent, res);
 
@@ -1880,7 +1880,6 @@ Inheritance::Inheritance() : noClass(0)
 {
     Atlas::Objects::Entity::Anonymous root_desc;
 
-    root_desc->setParents(std::list<std::string>(0));
     root_desc->setObjtype("meta");
     root_desc->setId("root");
 
@@ -1936,7 +1935,7 @@ bool Inheritance::hasClass(const std::string & parent)
 TypeNode * Inheritance::addChild(const Root & obj)
 {
     const std::string & child = obj->getId();
-    const std::string & parent = obj->getParents().front();
+    const std::string & parent = obj->getParent();
     assert(atlasObjects.find(child) == atlasObjects.end());
 
     TypeNodeDict::iterator I = atlasObjects.find(parent);
@@ -1971,7 +1970,7 @@ Root atlasClass(const std::string & name, const std::string & parent)
 {
     Atlas::Objects::Entity::Anonymous r;
 
-    r->setParents(std::list<std::string>(1, parent));
+    r->setParent(parent);
     r->setObjtype("class");
     r->setId(name);
 

@@ -61,7 +61,7 @@ Root atlasOpDefinition(const std::string & name, const std::string & parent)
 {
     Atlas::Objects::Entity::Anonymous r;
 
-    r->setParents(std::list<std::string>(1, parent));
+    r->setParent(parent);
     r->setObjtype("op_definition");
     r->setId(name);
 
@@ -72,7 +72,7 @@ Root atlasClass(const std::string & name, const std::string & parent)
 {
     Atlas::Objects::Entity::Anonymous r;
 
-    r->setParents(std::list<std::string>(1, parent));
+    r->setParent(parent);
     r->setObjtype("class");
     r->setId(name);
 

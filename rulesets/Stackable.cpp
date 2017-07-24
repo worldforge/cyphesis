@@ -131,7 +131,7 @@ void Stackable::DivideOperation(const Operation & op, OpVector & res)
         m_num -= new_num;
         
         Anonymous create_arg;
-        create_arg->setParents(std::list<std::string>(1, m_type->name()));
+        create_arg->setParent(m_type->name());
         if (new_num > 1) {
             create_arg->setAttr("num", new_num);
         }

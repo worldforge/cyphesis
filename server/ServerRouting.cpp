@@ -146,7 +146,7 @@ void ServerRouting::addToMessage(MapType & omap) const
     omap["server"] = "cyphesis";
     omap["ruleset"] = m_svrRuleset;
     omap["name"] = m_svrName;
-    omap["parents"] = ListType(1, "server");
+    omap["parent"] = "server";
     omap["clients"] = m_numClients;
     omap["uptime"] = m_world.upTime();
     omap["buildid"] = consts::buildId;
@@ -165,7 +165,7 @@ void ServerRouting::addToEntity(const RootEntity & ent) const
     ent->setAttr("server", "cyphesis");
     ent->setAttr("ruleset", m_svrRuleset);
     ent->setName(m_svrName);
-    ent->setParents(std::list<std::string>(1, "server"));
+    ent->setParent("server");
     ent->setAttr("clients", m_numClients);
     ent->setAttr("uptime", m_world.upTime());
     ent->setAttr("buildid", consts::buildId);

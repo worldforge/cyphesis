@@ -145,7 +145,7 @@ int main()
         Atlas::Objects::Operation::Sight op;
         Atlas::Objects::Entity::Anonymous ent;
         ent->setId("2");
-        ent->setParents(std::list<std::string>(1, "oak"));
+        ent->setParent("oak");
         op->setArgs1(ent);
         tf->operation(op, ret);
         assert(ret.empty());
@@ -164,7 +164,7 @@ int main()
         Atlas::Objects::Operation::Sight op;
         Atlas::Objects::Entity::Anonymous ent;
         ent->setId("2");
-        ent->setParents(std::list<std::string>(1, "oak"));
+        ent->setParent("oak");
         op->setArgs1(ent);
         tf->operation(op, ret);
         assert(!ret.empty());

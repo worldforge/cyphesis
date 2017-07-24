@@ -150,25 +150,19 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
         return 0;
     }
 
-    MapType::const_iterator I = rule.find("parents");
+    MapType::const_iterator I = rule.find("parent");
     if (I == rule.end()) {
-        std::cerr << "Rule " << id << " to be uploaded has no parents."
+        std::cerr << "Rule " << id << " to be uploaded has no parent."
                   << std::endl << std::flush;
         return -1;
     }
     const Element & pelem = I->second;
-    if (!pelem.isList()) {
-        std::cerr << "Rule " << id << " to be uploaded has non-list parents."
+    if (!pelem.isString()) {
+        std::cerr << "Rule " << id << " to be uploaded has non-string parent."
                   << std::endl << std::flush;
         return -1;
     }
-    const ListType & parents = pelem.asList();
-    if (parents.empty() || !parents.front().isString()) {
-        std::cerr << "Rule " << id << " to be uploaded has malformed parents."
-                  << std::endl << std::flush;
-        return -1;
-    }
-    const std::string & parent = parents.front().asString();
+    const std::string& parent = pelem.asString();
 
     if (checkRule(parent) != 0) {
         debug(std::cerr << "Rule \"" << id << "\" to be uploaded has parent \""

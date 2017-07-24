@@ -15,5 +15,5 @@ class Shop_itemshop_deco_agril_1_sesw(Thing):
         # South wall
 	loc = Location(self, Vector3D(0,0,0))
         loc.bbox = Vector3D(2,0.5,5)
-        ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
+        ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
         return ret

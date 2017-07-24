@@ -103,7 +103,7 @@ void Creator::externalOperation(const Operation & op, Link &)
     // it specially, and make sure it goes direct, otherwise
     // we handle it like a normal character.
     debug( std::cout << "Creator::externalOperation("
-                     << op->getParents().front() << ")" << std::endl
+                     << op->getParent() << ")" << std::endl
                      << std::flush;);
     if (op->isDefaultTo()) {
         debug( std::cout << "Creator handling op normally" << std::endl
@@ -243,34 +243,32 @@ void Creator::mindLookOperation(const Operation & op, OpVector & res)
                 sendMind(u, res);
                 return;
             }
-        } else if (arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
+        } else if (arg->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
             // Search by name
-            if (!arg->getParents().empty()) {
-                LocatedEntity * e = BaseWorld::instance().findByType(arg->getParents().front());
-                if (e != nullptr) {
-                    //This will override the normal sights checking code, which is ok since we're an administrator
-                    Sight s;
+            LocatedEntity * e = BaseWorld::instance().findByType(arg->getParent());
+            if (e != nullptr) {
+                //This will override the normal sights checking code, which is ok since we're an administrator
+                Sight s;
 
-                    Anonymous sarg;
-                    e->addToEntity(sarg);
-                    s->setArgs1(sarg);
-                    s->setTo(getId());
-                    if (!op->isDefaultSerialno()) {
-                        s->setRefno(op->getSerialno());
-                    }
-
-                    sendMind(s, res);
-                    return;
-                } else {
-                    Unseen u;
-                    u->setTo(getId());
-                    u->setArgs1(arg);
-                    if (!op->isDefaultSerialno()) {
-                        u->setRefno(op->getSerialno());
-                    }
-                    sendMind(u, res);
-                    return;
+                Anonymous sarg;
+                e->addToEntity(sarg);
+                s->setArgs1(sarg);
+                s->setTo(getId());
+                if (!op->isDefaultSerialno()) {
+                    s->setRefno(op->getSerialno());
                 }
+
+                sendMind(s, res);
+                return;
+            } else {
+                Unseen u;
+                u->setTo(getId());
+                u->setArgs1(arg);
+                if (!op->isDefaultSerialno()) {
+                    u->setRefno(op->getSerialno());
+                }
+                sendMind(u, res);
+                return;
             }
         }
         // FIXME Need to ensure that a broadcast Look insn't sent, and

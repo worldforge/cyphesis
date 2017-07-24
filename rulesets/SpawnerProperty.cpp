@@ -230,7 +230,7 @@ void SpawnerProperty::createNewEntity(LocatedEntity * e, const Operation & op,
             return;
         }
     } else {
-        create_arg->setParents(std::list<std::string>(1, m_type));
+        create_arg->setParent(m_type);
     }
     create_arg->setLoc(locId);
 

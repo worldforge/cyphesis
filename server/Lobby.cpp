@@ -99,7 +99,7 @@ void Lobby::externalOperation(const Operation & op, Link &)
 
 void Lobby::operation(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Lobby::operation(" << op->getParents().front()
+    debug(std::cout << "Lobby::operation(" << op->getParent()
                                            << std::endl << std::flush; );
     const std::string & to = op->getTo();
     if (to.empty() || to == getId()) {
@@ -110,7 +110,7 @@ void Lobby::operation(const Operation & op, OpVector & res)
             Connection * c = I->second->m_connection;
             if (c != 0) {
                 newop->setTo(I->first);
-                debug(std::cout << "Lobby sending " << newop->getParents().front() << " operation to " << I->first << std::endl << std::flush; );
+                debug(std::cout << "Lobby sending " << newop->getParent() << " operation to " << I->first << std::endl << std::flush; );
                 c->send(newop);
             }
         }
@@ -132,8 +132,7 @@ void Lobby::operation(const Operation & op, OpVector & res)
 void Lobby::addToMessage(MapType & omap) const
 {
     omap["name"] = "lobby";
-    ListType plist(1, "room");
-    omap["parents"] = plist;
+    omap["parent"] = "room";
     ListType player_list;
     AccountDict::const_iterator Iend = m_accounts.end();
     for (AccountDict::const_iterator I = m_accounts.begin(); I != Iend; ++I) {
@@ -149,7 +148,7 @@ void Lobby::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
     ent->setName("lobby");
     ListType plist(1, "room");
-    ent->setParents(std::list<std::string>(1,"room"));
+    ent->setParent("room");
     ListType player_list;
     AccountDict::const_iterator Iend = m_accounts.end();
     for (AccountDict::const_iterator I = m_accounts.begin(); I != Iend; ++I) {

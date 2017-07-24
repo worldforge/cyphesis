@@ -59,12 +59,12 @@ LocatedEntity * CreatorClient::handleMakeResponse(const RootOperation & op,
         return NULL;
     }
     const std::string & created_id = created->getId();
-    if (created->getParents().empty()) {
+    if (created->getParent() == "") {
         std::cerr << "Created entity " << created_id << " has no type"
                   << std::endl << std::flush;
         return NULL;
     }
-    const std::string & created_type = created->getParents().front();
+    const std::string & created_type = created->getParent();
     std::cout << "Created: " << created_type << "(" << created_id << ")"
               << std::endl << std::flush;
     LocatedEntity * obj = m_map.updateAdd(created, create_time);

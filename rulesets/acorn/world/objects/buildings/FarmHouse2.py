@@ -15,25 +15,25 @@ class Farmhouse_deco_2(Thing):
         # South wall
 	loc = Location(self, Vector3D(-4,3,0))
         loc.bbox = Vector3D(14,0.2,5)
-        ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
+        ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
         # West wall
 	loc = Location(self, Vector3D(-4,3,0))
         loc.bbox = Vector3D(0.2,4,5)
-        ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
+        ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
         # North wall
 	loc = Location(self, Vector3D(-4,6.8,0))
         loc.bbox = Vector3D(14,0.2,5)
-        ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
+        ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
         # East wall
 	loc = Location(self, Vector3D(9.8,-3,0))
         loc.bbox = Vector3D(0.2,10,5)
-        ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
+        ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
         # West annex wall
 	loc = Location(self, Vector3D(4,-3,0))
         loc.bbox = Vector3D(0.2,6,5)
-        ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
+        ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
         # South annex wall
 	loc = Location(self, Vector3D(4,-3,0))
         loc.bbox = Vector3D(6,0.2,5)
-        ret.append(Operation("create",Entity(name='wall',parents=['wall'],location=loc),to=self))
+        ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
         return ret

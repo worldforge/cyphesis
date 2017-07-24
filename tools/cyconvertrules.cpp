@@ -122,7 +122,7 @@ void FileConverter::messageArrived(MapType omap)
                       << std::endl << std::flush;
             continue;
         }
-        newObject["parents"] = ListType(1, J->second.asString());
+        newObject["parent"] = J->second.asString();
 
         // Default attribute values, which straightforward values in the old
         // format, are converted to more complex structures defining

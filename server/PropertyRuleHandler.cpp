@@ -37,7 +37,7 @@ static const bool debug_flag = false;
 
 int PropertyRuleHandler::check(const Atlas::Objects::Root & desc)
 {
-    assert(!desc->getParents().empty());
+    assert(!desc->getParent().empty());
     if (desc->getObjtype() != "type") {
         return -1;
     }

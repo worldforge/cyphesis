@@ -406,7 +406,7 @@ def test_teleport(host='', account='', password='', **args):
     m=create_editor(host, account, password)
 
     rep=m.client.send_wait(Operation("create",
-                                     Entity(parents=['juncture']),
+                                     Entity(parent='juncture'),
                                      from_=m.client.id))
     juncture=rep[0]
     print "Created juncture ", juncture.id

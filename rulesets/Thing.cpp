@@ -535,9 +535,9 @@ void Thing::CreateOperation(const Operation& op, OpVector& res)
             error(op, "Entity to be created is malformed", res, getId());
             return;
         }
-        const std::list<std::string>& parents = ent->getParents();
-        if (parents.empty()) {
-            error(op, "Entity to be created has empty parents", res, getId());
+        const std::string& type = ent->getParent();
+        if (type == "") {
+            error(op, "Entity to be created has empty parent", res, getId());
             return;
         }
 
@@ -545,7 +545,6 @@ void Thing::CreateOperation(const Operation& op, OpVector& res)
         if (!ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG) && (m_location.m_loc != 0)) {
             ent->setLoc(m_location.m_loc->getId());
         }
-        const std::string& type = parents.front();
         debug_print(getId() << " creating " << type);
 
         LocatedEntity* obj = BaseWorld::instance().addNewEntity(type, ent);

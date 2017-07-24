@@ -19,5 +19,5 @@ class Skeleton(Undead):
         retops = retops + Operation("set", Entity(self.id, status=self.status), to=self)
         for item in ['skull', 'ribcage', 'arm', 'pelvis', 'thigh', 'shin']:
             newloc.coordinates = newloc.coordinates + Vector3D(uniform(-1,1), uniform(-1,1), uniform(-1,1))
-            retops = retops + Operation("create", Entity(name=item,parents=[item],location=newloc.copy()), to=self)
+            retops = retops + Operation("create", Entity(name=item,parent=item,location=newloc.copy()), to=self)
         return retops

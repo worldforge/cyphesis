@@ -57,13 +57,13 @@ using Atlas::Objects::Operation::Error;
 using Atlas::Objects::Operation::Use;
 using Atlas::Objects::Operation::Wield;
 
-Inheritance * Inheritance::m_instance = NULL;
+Inheritance * Inheritance::m_instance = nullptr;
 
 Root atlasOpDefinition(const std::string & name, const std::string & parent)
 {
     Atlas::Objects::Entity::Anonymous r;
 
-    r->setParents(std::list<std::string>(1, parent));
+    r->setParent(parent);
     r->setObjtype("op_definition");
     r->setId(name);
 
@@ -74,7 +74,7 @@ Root atlasClass(const std::string & name, const std::string & parent)
 {
     Atlas::Objects::Entity::Anonymous r;
 
-    r->setParents(std::list<std::string>(1, parent));
+    r->setParent(parent);
     r->setObjtype("class");
     r->setId(name);
 
@@ -87,7 +87,7 @@ Root atlasType(const std::string & name,
 {
     Atlas::Objects::Entity::Anonymous r;
 
-    r->setParents(std::list<std::string>(1, parent));
+    r->setParent(parent);
     r->setObjtype(abstract ? "data_type" : "type");
     r->setId(name);
 
@@ -98,7 +98,6 @@ Inheritance::Inheritance() : noClass(0)
 {
     Atlas::Objects::Entity::Anonymous root_desc;
 
-    root_desc->setParents(std::list<std::string>(0));
     root_desc->setObjtype("meta");
     root_desc->setId("root");
 
@@ -119,7 +118,7 @@ void Inheritance::flush()
 
 Inheritance & Inheritance::instance()
 {
-    if (m_instance == NULL) {
+    if (m_instance == nullptr) {
         m_instance = new Inheritance();
         installStandardObjects();
         installCustomOperations();
@@ -130,10 +129,10 @@ Inheritance & Inheritance::instance()
 
 void Inheritance::clear()
 {
-    if (m_instance != NULL) {
+    if (m_instance != nullptr) {
         m_instance->flush();
         delete m_instance;
-        m_instance = NULL;
+        m_instance = nullptr;
     }
 }
 
@@ -149,12 +148,12 @@ const Root & Inheritance::getClass(const std::string & parent)
 int Inheritance::updateClass(const std::string & parent,
                              const Root & description)
 {
-    TypeNodeDict::iterator I = atlasObjects.find(parent);
+    auto I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
         return -1;
     }
     TypeNode * tn = I->second;
-    if (tn->description()->getParents() != description->getParents()) {
+    if (tn->description()->getParent() != description->getParent()) {
         return -1;
     }
     tn->description() = description;
@@ -181,9 +180,9 @@ bool Inheritance::hasClass(const std::string & parent)
 
 TypeNode * Inheritance::addChild(const Root & obj)
 {
-    assert(obj->getParents().size() > 0);
+    assert(obj->getParent() != "");
     const std::string & child = obj->getId();
-    const std::string & parent = obj->getParents().front();
+    const std::string & parent = obj->getParent();
     TypeNodeDict::const_iterator I = atlasObjects.find(child);
     TypeNodeDict::const_iterator Iend = atlasObjects.end();
     if (I != Iend) {
@@ -193,14 +192,14 @@ TypeNode * Inheritance::addChild(const Root & obj)
                                    obj->getObjtype(), child, parent,
                                    I->second->description()->getObjtype(),
                                    existing ? existing->name() : "NON"));
-        return 0;
+        return nullptr;
     }
     I = atlasObjects.find(parent);
     if (I == Iend) {
         log(ERROR, String::compose("Installing %1 \"%2\" "
                                    "which has unknown parent \"%3\".",
                                    obj->getObjtype(), child, parent));;
-        return 0;
+        return nullptr;
     }
     Element children(ListType(1, child));
     if (I->second->description()->copyAttr("children", children) == 0) {

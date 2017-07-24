@@ -70,7 +70,7 @@ int main()
         stub_poll_sequence = std::queue<enum srvop>();
     }
 
-    // new rule with no parents - fails
+    // new rule with no parent - fails
     {
         TestAdminClient ac;
 
@@ -82,12 +82,12 @@ int main()
         stub_poll_sequence = std::queue<enum srvop>();
     }
 
-    // new rule with non list parents - fails
+    // new rule with non string parent - fails
     {
         TestAdminClient ac;
 
         Atlas::Message::MapType rule;
-        rule["parents"] = "non_list_parents";
+        rule["parent"] = 1;
         assert(stub_poll_sequence.empty());
         stub_poll_sequence.push(SRV_ERROR);
         int res = ac.uploadRule("new_rule", "test_rule_set", rule);
@@ -95,12 +95,12 @@ int main()
         stub_poll_sequence = std::queue<enum srvop>();
     }
 
-    // new rule with empty parents - fails
+    // new rule with empty parent - fails
     {
         TestAdminClient ac;
 
         Atlas::Message::MapType rule;
-        rule["parents"] = Atlas::Message::ListType();
+        rule["parent"] = "";
         assert(stub_poll_sequence.empty());
         stub_poll_sequence.push(SRV_ERROR);
         int res = ac.uploadRule("new_rule", "test_rule_set", rule);
@@ -108,12 +108,12 @@ int main()
         stub_poll_sequence = std::queue<enum srvop>();
     }
 
-    // new rule with parents - upload fails
+    // new rule with parent - upload fails
     {
         TestAdminClient ac;
 
         Atlas::Message::MapType rule;
-        rule["parents"] = Atlas::Message::ListType(1, "new_rule");
+        rule["parent"] = "new_rule";
         assert(stub_poll_sequence.empty());
         stub_poll_sequence.push(SRV_ERROR); // Check existence of new rule
         stub_poll_sequence.push(SRV_INFO); // Check existence of parent
@@ -123,12 +123,12 @@ int main()
         stub_poll_sequence = std::queue<enum srvop>();
     }
 
-    // new rule with parents - upload succeeds
+    // new rule with parent - upload succeeds
     {
         TestAdminClient ac;
 
         Atlas::Message::MapType rule;
-        rule["parents"] = Atlas::Message::ListType(1, "new_rule");
+        rule["parent"] = "new_rule";
         assert(stub_poll_sequence.empty());
         stub_poll_sequence.push(SRV_ERROR); // Check existence of new rule
         stub_poll_sequence.push(SRV_INFO); // Check existence of parent
@@ -138,12 +138,12 @@ int main()
         stub_poll_sequence = std::queue<enum srvop>();
     }
 
-    // new rule with parents - upload succeeds, and re-upload same should fail
+    // new rule with parent - upload succeeds, and re-upload same should fail
     {
         TestAdminClient ac;
 
         Atlas::Message::MapType rule;
-        rule["parents"] = Atlas::Message::ListType(1, "new_rule");
+        rule["parent"] = "new_rule";
         assert(stub_poll_sequence.empty());
         stub_poll_sequence.push(SRV_ERROR); // Check existence of new rule
         stub_poll_sequence.push(SRV_INFO); // Check existence of parent
@@ -160,12 +160,12 @@ int main()
         stub_poll_sequence = std::queue<enum srvop>();
     }
 
-    // new rule with parents - parent rule not uploaded yet
+    // new rule with parent - parent rule not uploaded yet
     {
         TestAdminClient ac;
 
         Atlas::Message::MapType rule;
-        rule["parents"] = Atlas::Message::ListType(1, "new_rule");
+        rule["parent"] = "new_rule";
         assert(stub_poll_sequence.empty());
         stub_poll_sequence.push(SRV_ERROR); // Check existence of new rule
         stub_poll_sequence.push(SRV_ERROR); // Check existence of parent
@@ -174,13 +174,13 @@ int main()
         stub_poll_sequence = std::queue<enum srvop>();
     }
 
-    // new rule with parents - parent rule not uploaded yet, and second
+    // new rule with parent - parent rule not uploaded yet, and second
     //                         rule queueed on same parent
     {
         TestAdminClient ac;
 
         Atlas::Message::MapType rule;
-        rule["parents"] = Atlas::Message::ListType(1, "new_rule");
+        rule["parent"] = "new_rule";
         assert(stub_poll_sequence.empty());
         stub_poll_sequence.push(SRV_ERROR); // Check existence of new rule
         stub_poll_sequence.push(SRV_ERROR); // Check existence of parent
@@ -194,13 +194,13 @@ int main()
         stub_poll_sequence = std::queue<enum srvop>();
     }
 
-    // new rule with parents - parent rule not uploaded yet, and try same
+    // new rule with parent - parent rule not uploaded yet, and try same
     //                         rule twice
     {
         TestAdminClient ac;
 
         Atlas::Message::MapType rule;
-        rule["parents"] = Atlas::Message::ListType(1, "new_rule");
+        rule["parent"] = "new_rule";
         assert(stub_poll_sequence.empty());
         stub_poll_sequence.push(SRV_ERROR); // Check existence of new rule
         stub_poll_sequence.push(SRV_ERROR); // Check existence of parent
@@ -214,13 +214,13 @@ int main()
         stub_poll_sequence = std::queue<enum srvop>();
     }
 
-    // new rule with parents - parent rule not uploaded yet, and try same
+    // new rule with parent - parent rule not uploaded yet, and try same
     //                         rule twice
     {
         TestAdminClient ac;
 
         Atlas::Message::MapType rule1;
-        rule1["parents"] = Atlas::Message::ListType(1, "rule2");
+        rule1["parent"] = "rule2";
         assert(stub_poll_sequence.empty());
         stub_poll_sequence.push(SRV_ERROR); // Check existence of new rule
         stub_poll_sequence.push(SRV_ERROR); // Check existence of parent
@@ -229,7 +229,7 @@ int main()
         stub_poll_sequence = std::queue<enum srvop>();
 
         Atlas::Message::MapType rule2;
-        rule2["parents"] = Atlas::Message::ListType(1, "old_rule");
+        rule2["parent"] = "old_rule";
         stub_poll_sequence.push(SRV_ERROR); // Check existence of new rule
         stub_poll_sequence.push(SRV_INFO); // Check existence of parent
         stub_poll_sequence.push(SRV_INFO); // Create rule2
@@ -286,7 +286,7 @@ int main()
         AdminClient ac;
 
         Atlas::Message::MapType rule;
-        rule["parents"] = Atlas::Message::ListType(1, "new_rule");
+        rule["parent"] = "new_rule";
         assert(stub_poll_sequence.empty());
         stub_poll_sequence.push(SRV_ERROR); // Check existence of new rule
         stub_poll_sequence.push(SRV_ERROR); // Check existence of parent

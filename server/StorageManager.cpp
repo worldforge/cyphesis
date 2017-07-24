@@ -633,7 +633,7 @@ void StorageManager::thoughtsReceived(const std::string& entityId, const Operati
         log(WARNING,
                 String::compose(
                         "Got response to a thoughts Get request from mind %1 with an operation of type %2. This could signal a malicious client.",
-                        op->getFrom(), op->getParents().front()));
+                        op->getFrom(), op->getParent()));
     }
 
 }

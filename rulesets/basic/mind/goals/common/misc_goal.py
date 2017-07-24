@@ -34,7 +34,7 @@ class make_amount(Goal):
         for t in me.find_thing(self.what):
             if t.status<1.0-const.fzero: 
                 return Operation("set",Entity(t.id,status=t.status+0.1))
-        return Operation("create",Entity(name=self.what,parents=[self.what],
+        return Operation("create",Entity(name=self.what,parent=self.what,
                                          description=self.what_desc))
 
 ########################## NOT YET IMPLEMENTED ################################
@@ -737,7 +737,7 @@ class assemble(Goal):
         for item in self.fromwhat:
             cmpnt=me.find_thing(item)[0]
             retops = retops + Operation("set", Entity(cmpnt.id,status=-1))
-        retops = retops + Operation("create", Entity(name=self.what,parents=[self.what], location=me.location.copy()))
+        retops = retops + Operation("create", Entity(name=self.what,parent=self.what, location=me.location.copy()))
         retops = retops + Operation("imaginary", Entity("conjure"))
         return retops
 

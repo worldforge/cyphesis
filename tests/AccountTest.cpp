@@ -136,7 +136,7 @@ class Accounttest : public Cyphesis::TestBase
     void test_operation_INVALID();
     void test_operation_Other();
     void test_CreateOperation_no_args();
-    void test_CreateOperation_no_parents();
+    void test_CreateOperation_no_parent();
     void test_CreateOperation_good();
     void test_GetOperation();
     void test_ImaginaryOperation_no_args();
@@ -276,7 +276,7 @@ Accounttest::Accounttest() : m_id_counter(0L),
     ADD_TEST(Accounttest::test_operation_INVALID);
     ADD_TEST(Accounttest::test_operation_Other);
     ADD_TEST(Accounttest::test_CreateOperation_no_args);
-    ADD_TEST(Accounttest::test_CreateOperation_no_parents);
+    ADD_TEST(Accounttest::test_CreateOperation_no_parent);
     ADD_TEST(Accounttest::test_CreateOperation_good);
     ADD_TEST(Accounttest::test_GetOperation);
     ADD_TEST(Accounttest::test_ImaginaryOperation_no_args);
@@ -613,7 +613,7 @@ void Accounttest::test_addToMessage()
     ASSERT_EQUAL(data["username"], m_account->m_username);
     ASSERT_EQUAL(data["name"], m_account->m_username);
     ASSERT_EQUAL(data["password"], m_account->m_password);
-    ASSERT_EQUAL(data["parents"], ListType(1, "account"));
+    ASSERT_EQUAL(data["parent"], "account");
     ASSERT_EQUAL(data["characters"], ListType(1, c->getId()));
     ASSERT_EQUAL(data["objtype"], "obj");
     ASSERT_EQUAL(data["id"], m_account->getId());
@@ -639,10 +639,10 @@ void Accounttest::test_addToEntity()
     ASSERT_TRUE(!data->isDefaultName());
     ASSERT_EQUAL(data->getName(), m_account->m_username);
     ASSERT_EQUAL(data->getAttr("password"), m_account->m_password);
-    ASSERT_TRUE(!data->isDefaultParents());
-    ASSERT_EQUAL(data->getParents(), std::list<std::string>(1, "account"));
+    ASSERT_TRUE(!data->isDefaultParent());
+    ASSERT_EQUAL(data->getParent(), "account");
     ASSERT_EQUAL(data->getAttr("characters"), ListType(1, c->getId()));
-    ASSERT_TRUE(!data->isDefaultParents());
+    ASSERT_TRUE(!data->isDefaultParent());
     ASSERT_EQUAL(data->getObjtype(), "obj");
     ASSERT_EQUAL(data->getAttr("id"), m_account->getId());
 
@@ -733,7 +733,7 @@ void Accounttest::test_CreateOperation_no_args()
     m_account->CreateOperation(op, res);
 }
 
-void Accounttest::test_CreateOperation_no_parents()
+void Accounttest::test_CreateOperation_no_parent()
 {
     Atlas::Objects::Operation::Create op;
     OpVector res;
@@ -761,7 +761,7 @@ void Accounttest::test_CreateOperation_good()
     OpVector res;
 
     Anonymous create_arg;
-    create_arg->setParents(std::list<std::string>(1, "foo"));
+    create_arg->setParent("foo");
     op->setArgs1(create_arg);
 
     m_account->operation(op, res);

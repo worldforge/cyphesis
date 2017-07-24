@@ -58,7 +58,7 @@ LocatedEntity * ArchetypeFactory::createEntity(const std::string & id, long intI
         std::map<std::string, EntityCreation>& entities)
 {
     auto& attributes = entityCreation.definition;
-    std::string concreteType = attributes->getParents().front();
+    std::string concreteType = attributes->getParent();
 
     MapType attrMap;
     attributes->addToMessage(attrMap);
@@ -192,8 +192,8 @@ LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId, 
     auto& entityCreation = entities.begin()->second;
     RootEntity& attrEntity = entityCreation.definition;
     for (auto& attrI : attrs) {
-        //copy all attributes except "parents", since that will point to the name of the archetype
-        if (attrI.first != "parents") {
+        //copy all attributes except "parent", since that will point to the name of the archetype
+        if (attrI.first != "parent") {
             //Also handle orientation separately.
             //We want to apply both rotations, both the one in the archetype and the one which was sent.
             if (attrI.first == "orientation" && attrEntity->hasAttr("orientation")) {

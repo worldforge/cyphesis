@@ -93,15 +93,9 @@ int Ruleset::installRuleInner(const std::string & class_name,
         return -1;
     }
 
-    const std::list<std::string> & parents = class_desc->getParents();
-    if (parents.empty()) {
-        log(ERROR, compose("Rule \"%1\" has empty parents. Skipping.",
-                           class_name));
-        return -1;
-    }
-    const std::string & parent = parents.front();
+    const std::string & parent = class_desc->getParent();
     if (parent.empty()) {
-        log(ERROR, compose("Rule \"%1\" has empty first parent. Skipping.",
+        log(ERROR, compose("Rule \"%1\" has empty parent. Skipping.",
                            class_name));
         return -1;
     }
@@ -192,23 +186,17 @@ int Ruleset::modifyRule(const std::string & class_name,
                            "inheritance", class_name));
         return -1;
     }
-    assert(!o->isDefaultParents());
-    assert(!o->getParents().empty());
-    if (class_desc->isDefaultParents()) {
-        log(ERROR, compose("Updated type \"%1\" has no parents in its "
+    assert(!o->isDefaultParent());
+    assert(o->getParent() != "");
+    if (class_desc->isDefaultParent() || class_desc->getParent().empty()) {
+        log(ERROR, compose("Updated type \"%1\" has no parent in its "
                            "description", class_name));
         return -1;
     }
-    const std::list<std::string> & class_parents = class_desc->getParents();
-    if (class_parents.empty()) {
-        log(ERROR, compose("Updated type \"%1\" has empty parents in its "
-                           "description", class_name));
-        return -1;
-    }
-    if (class_parents.front() != o->getParents().front()) {
+    if (class_desc->getParent() != o->getParent()) {
         log(ERROR, compose("Updated type \"%1\" attempting to change parent "
                            "from %2 to %3", class_name,
-                           o->getParents().front(), class_parents.front()));
+                           o->getParent(), class_desc->getParent()));
         return -1;
     }
     int ret = -1;

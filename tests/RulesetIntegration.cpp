@@ -146,7 +146,7 @@ void Rulesetintegration::test_sequence()
             attrs["test_custom_type_attr"] = test_custom_type_attr;
             custom_type_description->setAttr("attributes", attrs);
             custom_type_description->setId("custom_type");
-            custom_type_description->setParents(std::list<std::string>(1, "thing"));
+            custom_type_description->setParent("thing");
             custom_type_description->setObjtype("class");
 
             int ret = test_ruleset.installRule("custom_type", "custom",
@@ -166,8 +166,7 @@ void Rulesetintegration::test_sequence()
         const Root & check_class = Inheritance::instance().getClass("custom_type");
         assert(check_class.isValid());
         assert(check_class->getId() == "custom_type");
-        assert(check_class->getParents().size() == 1);
-        assert(check_class->getParents().front() == "thing");
+        assert(check_class->getParent() == "thing");
 
         // Check the factory has the attributes we described on the custom
         // type.
@@ -221,7 +220,7 @@ void Rulesetintegration::test_sequence()
             attrs["test_custom_inherited_type_attr"] = test_custom_type_attr;
             custom_inherited_type_description->setAttr("attributes", attrs);
             custom_inherited_type_description->setId("custom_inherited_type");
-            custom_inherited_type_description->setParents(std::list<std::string>(1, "custom_type"));
+            custom_inherited_type_description->setParent("custom_type");
             custom_inherited_type_description->setObjtype("class");
 
             std::string dependent, reason;
@@ -309,26 +308,26 @@ void Rulesetintegration::test_sequence()
             new_custom_inherited_type_description->setId("custom_inherited_type");
             new_custom_inherited_type_description->setAttr("attributes", MapType());
 
-            // No parents
+            // No parent
             int ret = test_ruleset.modifyRule("custom_inherited_type",
                                               new_custom_inherited_type_description);
             assert(ret != 0);
 
-            // empty parents
-            new_custom_inherited_type_description->setParents(std::list<std::string>());
+            // empty parent
+            new_custom_inherited_type_description->setParent("");
 
             ret = test_ruleset.modifyRule("custom_inherited_type",
                                           new_custom_inherited_type_description);
             assert(ret != 0);
 
-            // wrong parents
-            new_custom_inherited_type_description->setParents(std::list<std::string>(1, "wrong_parent"));
+            // wrong parent
+            new_custom_inherited_type_description->setParent("wrong_parent");
 
             ret = test_ruleset.modifyRule("custom_inherited_type",
                                           new_custom_inherited_type_description);
             assert(ret != 0);
 
-            new_custom_inherited_type_description->setParents(std::list<std::string>(1, "custom_type"));
+            new_custom_inherited_type_description->setParent("custom_type");
 
             ret = test_ruleset.modifyRule("custom_inherited_type",
                                           new_custom_inherited_type_description);
@@ -393,7 +392,7 @@ void Rulesetintegration::test_sequence()
             new_custom_type_description->setObjtype("class");
             new_custom_type_description->setId("custom_type");
             new_custom_type_description->setAttr("attributes", MapType());
-            new_custom_type_description->setParents(std::list<std::string>(1, "thing"));
+            new_custom_type_description->setParent("thing");
 
             int ret = test_ruleset.modifyRule("custom_type", new_custom_type_description);
 
@@ -491,7 +490,7 @@ void Rulesetintegration::test_sequence()
 
             new_custom_type_description->setId("custom_type");
             new_custom_type_description->setAttr("attributes", attrs);
-            new_custom_type_description->setParents(std::list<std::string>(1, "thing"));
+            new_custom_type_description->setParent("thing");
 
             int ret = test_ruleset.modifyRule("custom_type", new_custom_type_description);
 

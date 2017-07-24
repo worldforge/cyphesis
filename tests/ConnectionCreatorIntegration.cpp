@@ -257,7 +257,7 @@ void ConnectionCreatorintegration::test_external_op_puppet_nonexistant()
     // Operation should be via world dispatch, as if it was from the Entity
     // we are puppeting.
     ASSERT_TRUE(m_Link_send_sent.isValid());
-    ASSERT_EQUAL(m_Link_send_sent->getParents().front(),
+    ASSERT_EQUAL(m_Link_send_sent->getParent(),
                  "unseen");
     ASSERT_TRUE(!m_Link_send_sent->isDefaultTo());
     ASSERT_EQUAL(m_Link_send_sent->getTo(), m_creator->getId());

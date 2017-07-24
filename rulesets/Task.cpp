@@ -102,11 +102,11 @@ void Task::setScript(Script * scrpt)
 
 void Task::initTask(const Operation & op, OpVector & res)
 {
-    assert(!op->getParents().empty());
+    assert(op->getParent() != "");
     if (m_script == 0) {
         log(WARNING, "Task script failed");
         irrelevant();
-    } else if (!m_script->operation(op->getParents().front(), op, res)) {
+    } else if (!m_script->operation(op->getParent(), op, res)) {
         log(WARNING, "Task init failed");
         irrelevant();
     }
@@ -128,6 +128,6 @@ void Task::initTask(const Operation & op, OpVector & res)
 void Task::operation(const Operation & op, OpVector & res)
 {
     if (m_script != 0) {
-        m_script->operation(op->getParents().front(), op, res);
+        m_script->operation(op->getParent(), op, res);
     }
 }

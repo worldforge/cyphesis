@@ -152,7 +152,7 @@ void WorldRouterintegration::test_sequence()
         MapType spawn_data;
         spawn_data["name"] = "bob";
         MapType entity;
-        entity["parents"] = Atlas::Message::ListType(1, "spiddler");
+        entity["parent"] = "spiddler";
         MapType entities;
         entities["spiddler"] = entity;
         spawn_data["entities"] = entities;
@@ -168,7 +168,7 @@ void WorldRouterintegration::test_sequence()
         MapType spawn_data;
         spawn_data["name"] = "bob";
         MapType entity;
-        entity["parents"] = Atlas::Message::ListType(1, "character");
+        entity["parent"] = "character";
         MapType entities;
         entities["character"] = entity;
         spawn_data["entities"] = entities;
@@ -185,7 +185,7 @@ void WorldRouterintegration::test_sequence()
 //        MapType spawn_data;
 //        spawn_data["name"] = "bob";
 //        MapType entity;
-//        entity["parents"] = Atlas::Message::ListType(1, "character");
+//        entity["parent"] = "character";
 //        MapType entities;
 //        entities["character"] = entity;
 //        spawn_data["entities"] = entities;

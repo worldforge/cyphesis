@@ -162,12 +162,11 @@ void Admin::opDispatched(Operation op)
 int Admin::characterError(const Operation & op,
                           const Root & ent, OpVector & res) const
 {
-    if (!ent->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
+    if (!ent->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
         error(op, "You cannot create a character with no type.", res, getId());
         return -1;
     }
-    const std::list<std::string> & parents = ent->getParents();
-    if (parents.empty()) {
+    if (ent->getParent() == "") {
         error(op, "You cannot create a character with empty type.", res, getId());
         return -1;
     }

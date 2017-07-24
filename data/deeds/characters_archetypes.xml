@@ -4,14 +4,10 @@
         <int name="playable">1</int>
         <string name="id">settler</string>
         <string name="objtype">archetype</string>
-        <list name="parents">
-            <string>archetype</string>
-        </list>
+        <string name="parent">archetype</string>
         <list name="entities">
             <map>
-                <list name="parents">
-                    <string>human</string>
-                </list>
+                <string name="parent">human</string>
                 <list name="contains">
                     <string>trousers</string>
                     <string>knife</string>
@@ -36,52 +32,36 @@
             </map>
             <map>
                 <string name="id">trousers</string>
-                <list name="parents">
-                    <string>trousers</string>
-                </list>
+                <string name="parent">trousers</string>
                 <string name="style">burlap</string>
             </map>
             <map>
                 <string name="id">knife</string>
-                <list name="parents">
-                    <string>knife</string>
-                </list>
+                <string name="parent">knife</string>
             </map>
             <map>
                 <string name="id">coin1</string>
-                <list name="parents">
-                    <string>coin</string>
-                </list>
+                <string name="parent">coin</string>
             </map>
             <map>
                 <string name="id">coin2</string>
-                <list name="parents">
-                    <string>coin</string>
-                </list>
+                <string name="parent">coin</string>
             </map>
             <map>
                 <string name="id">coin3</string>
-                <list name="parents">
-                    <string>coin</string>
-                </list>
+                <string name="parent">coin</string>
             </map>
             <map>
                 <string name="id">coin4</string>
-                <list name="parents">
-                    <string>coin</string>
-                </list>
+                <string name="parent">coin</string>
             </map>
             <map>
                 <string name="id">coin5</string>
-                <list name="parents">
-                    <string>coin</string>
-                </list>
+                <string name="parent">coin</string>
             </map>
             <map>
                 <string name="id">coin6</string>
-                <list name="parents">
-                    <string>coin</string>
-                </list>
+                <string name="parent">coin</string>
             </map>
         </list>
         <list name="thoughts">
@@ -91,14 +71,10 @@
     <map>
         <string name="id">human_npc_basic</string>
         <string name="objtype">archetype</string>
-        <list name="parents">
-            <string>archetype</string>
-        </list>
+        <string name="parent">archetype</string>
         <list name="entities">
             <map>
-                <list name="parents">
-                    <string>human</string>
-                </list>
+                <string name="parent">human</string>
             </map>
         </list>
         <list name="thoughts">
@@ -114,14 +90,10 @@
     <map>
         <string name="id">merchant</string>
         <string name="objtype">archetype</string>
-        <list name="parents">
-            <string>human_npc_basic</string>
-        </list>
+        <string name="parent">human_npc_basic</string>
         <list name="entities">
             <map>
-                <list name="parents">
-                    <string>human</string>
-                </list>
+                <string name="parent">human</string>
                 <list name="contains">
                     <string>shirt</string>
                     <string>trousers</string>
@@ -160,74 +132,52 @@
             </map>
             <map>
                 <string name="id">shirt</string>
-                <list name="parents">
-                    <string>shirt</string>
-                </list>
+                <string name="parent">shirt</string>
                 <string name="style">fine</string>
             </map>
             <map>
                 <string name="id">trousers</string>
-                <list name="parents">
-                    <string>trousers</string>
-                </list>
+                <string name="parent">trousers</string>
                 <string name="style">fine</string>
             </map>
             <map>
                 <string name="id">cloak</string>
-                <list name="parents">
-                    <string>cloak</string>
-                </list>
+                <string name="parent">cloak</string>
                 <string name="style">fine</string>
             </map>
             <map>
                 <string name="id">boots</string>
-                <list name="parents">
-                    <string>boots</string>
-                </list>
+                <string name="parent">boots</string>
                 <string name="style">fine</string>
             </map>
             <map>
                 <string name="id">hat</string>
-                <list name="parents">
-                    <string>hat</string>
-                </list>
+                <string name="parent">hat</string>
                 <string name="style">fine</string>
             </map>
             <map>
                 <string name="id">coin1</string>
-                <list name="parents">
-                    <string>coin</string>
-                </list>
+                <string name="parent">coin</string>
             </map>
             <map>
                 <string name="id">coin2</string>
-                <list name="parents">
-                    <string>coin</string>
-                </list>
+                <string name="parent">coin</string>
             </map>
             <map>
                 <string name="id">coin3</string>
-                <list name="parents">
-                    <string>coin</string>
-                </list>
+                <string name="parent">coin</string>
             </map>
             <map>
                 <string name="id">coin4</string>
-                <list name="parents">
-                    <string>coin</string>
-                </list>
+                <string name="parent">coin</string>
             </map>
             <map>
                 <string name="id">coin5</string>
-                <list name="parents">
-                    <string>coin</string>
-                </list>
+                <string name="parent">coin</string>
             </map>
             <map>
                 <string name="id">coin6</string>
-                <list name="parents">
-                    <string>coin</string>
-                </list>
+                <string name="parent">coin</string>
             </map>
         </list>
         <list name="thoughts">
@@ -237,14 +187,10 @@
     <map>
         <string name="id">mercenary</string>
         <string name="objtype">archetype</string>
-        <list name="parents">
-            <string>human_npc_basic</string>
-        </list>
+        <string name="parent">human_npc_basic</string>
         <list name="entities">
             <map>
-                <list name="parents">
-                    <string>human</string>
-                </list>
+                <string name="parent">human</string>
                 <list name="contains">
                     <string>shirt</string>
                     <string>trousers</string>
@@ -290,115 +236,79 @@
             </map>
             <map>
                 <string name="id">shirt</string>
-                <list name="parents">
-                    <string>shirt</string>
-                </list>
+                <string name="parent">shirt</string>
                 <string name="style">ragged</string>
             </map>
             <map>
                 <string name="id">trousers</string>
-                <list name="parents">
-                    <string>trousers</string>
-                </list>
+                <string name="parent">trousers</string>
                 <string name="style">ragged</string>
             </map>
             <map>
                 <string name="id">boots</string>
-                <list name="parents">
-                    <string>boots</string>
-                </list>
+                <string name="parent">boots</string>
                 <string name="style">ragged</string>
             </map>
             <map>
                 <string name="id">hat</string>
-                <list name="parents">
-                    <string>hat</string>
-                </list>
+                <string name="parent">hat</string>
                 <string name="style">ragged</string>
             </map>
             <map>
                 <string name="id">sword</string>
-                <list name="parents">
-                    <string>sword</string>
-                </list>
+                <string name="parent">sword</string>
             </map>
             <map>
                 <string name="id">bow</string>
-                <list name="parents">
-                    <string>bow</string>
-                </list>
+                <string name="parent">bow</string>
             </map>
             <map>
                 <string name="id">arrow1</string>
-                <list name="parents">
-                    <string>arrow</string>
-                </list>
+                <string name="parent">arrow</string>
             </map>
             <map>
                 <string name="id">arrow2</string>
-                <list name="parents">
-                    <string>arrow</string>
-                </list>
+                <string name="parent">arrow</string>
             </map>
             <map>
                 <string name="id">arrow3</string>
-                <list name="parents">
-                    <string>arrow</string>
-                </list>
+                <string name="parent">arrow</string>
             </map>
             <map>
                 <string name="id">arrow4</string>
-                <list name="parents">
-                    <string>arrow</string>
-                </list>
+                <string name="parent">arrow</string>
             </map>
             <map>
                 <string name="id">arrow5</string>
-                <list name="parents">
-                    <string>arrow</string>
-                </list>
+                <string name="parent">arrow</string>
             </map>
             <map>
                 <string name="id">arrow6</string>
-                <list name="parents">
-                    <string>arrow</string>
-                </list>
+                <string name="parent">arrow</string>
             </map>
             <map>
                 <string name="id">coin1</string>
-                <list name="parents">
-                    <string>coin</string>
-                </list>
+                <string name="parent">coin</string>
             </map>
             <map>
                 <string name="id">coin2</string>
-                <list name="parents">
-                    <string>coin</string>
-                </list>
+                <string name="parent">coin</string>
             </map>
             <map>
                 <string name="id">coin3</string>
-                <list name="parents">
-                    <string>coin</string>
-                </list>
+                <string name="parent">coin</string>
             </map>
             <map>
                 <string name="id">coin4</string>
-                <list name="parents">
-                    <string>coin</string>
-                </list>
+                <string name="parent">coin</string>
             </map>
             <map>
                 <string name="id">coin5</string>
-                <list name="parents">
-                    <string>coin</string>
-                </list>
+                <string name="parent">coin</string>
             </map>
             <map>
                 <string name="id">coin6</string>
-                <list name="parents">
-                    <string>coin</string>
-                </list>
+                <string name="parent">coin</string>
             </map>
         </list>
         <list name="thoughts">
@@ -409,9 +319,7 @@
     <map>
         <string name="id">goblin_basic_npc</string>
         <string name="objtype">archetype</string>
-        <list name="parents">
-            <string>archetype</string>
-        </list>
+        <string name="parent">archetype</string>
         <list name="entities">
             <map>
                 <list name="contains">
@@ -420,15 +328,11 @@
                 <map name="right_hand_wield">
                     <string name="$eid">axe</string>
                 </map>
-                <list name="parents">
-                    <string>goblin</string>
-                </list>
+                <string name="parent">goblin</string>
             </map>
             <map>
                 <string name="id">axe</string>
-                <list name="parents">
-                    <string>axe</string>
-                </list>
+                <string name="parent">axe</string>
             </map>
         </list>
         <list name="thoughts">

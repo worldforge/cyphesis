@@ -290,9 +290,9 @@ void AtlasStreamClient::objectArrived(const Root & obj)
     if (!op.isValid()) {
         std::cerr << "ERROR: Non op object received from server"
                   << std::endl << std::flush;;
-        if (!obj->isDefaultParents() && !obj->getParents().empty()) {
+        if (!obj->isDefaultParent()) {
             std::cerr << "NOTICE: Unexpected object has parent "
-                      << obj->getParents().front()
+                      << obj->getParent()
                       << std::endl << std::flush;
         }
         if (!obj->isDefaultObjtype()) {
@@ -514,7 +514,7 @@ int AtlasStreamClient::create(const std::string & type,
 
     account->setAttr("username", username);
     account->setAttr("password", password);
-    account->setParents(std::list<std::string>(1, type));
+    account->setParent(type);
 
     c->setArgs1(account);
     c->setSerialno(newSerialNo());
@@ -532,9 +532,7 @@ int AtlasStreamClient::waitForLoginResponse()
                std::cerr << "Malformed reply" << std::endl << std::flush;
             } else {
                 m_accountId = m_infoReply->getId();
-                if (!m_infoReply->getParents().empty()) {
-                    m_accountType = m_infoReply->getParents().front();
-                }
+                m_accountType = m_infoReply->getParent();
                 loginSuccess(m_infoReply);
                 return 0;
             }

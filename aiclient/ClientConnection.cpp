@@ -48,7 +48,7 @@ void ClientConnection::operation(const RootOperation & op)
 {
     if (debug_flag) {
         std::stringstream ss;
-        ss << "I: " << op->getParents().front() << " : ";
+        ss << "I: " << op->getParent() << " : ";
         Atlas::Message::QueuedDecoder decoder;
         Atlas::Codecs::XML codec(ss, ss, decoder);
 
@@ -100,7 +100,7 @@ void ClientConnection::send(const RootOperation & op)
 {
     if (debug_flag) {
         std::stringstream ss;
-        ss << "O: " << op->getParents().front() << " : ";
+        ss << "O: " << op->getParent() << " : ";
         Atlas::Message::QueuedDecoder decoder;
         Atlas::Codecs::XML codec(ss, ss, decoder);
 
@@ -117,7 +117,7 @@ int ClientConnection::sendAndWaitReply(const Operation & op, OpVector & res)
     long no = newSerialNo();
     op->setSerialno(no);
     send(op);
-    debug(std::cout << "Waiting for reply to " << op->getParents().front()
+    debug(std::cout << "Waiting for reply to " << op->getParent()
                     << std::endl << std::flush;);
     while (true) {
         if (pending()) {

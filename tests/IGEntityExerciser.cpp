@@ -126,14 +126,14 @@ void IGEntityExerciser::runOperations()
         }
         this->flushOperations(ov);
 
-        create_arg->setParents(std::list<std::string>(1, ""));
+        create_arg->setParent("");
         this->m_ent.CreateOperation(op, ov);
         if (!ov.empty()) {
             assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
         }
         this->flushOperations(ov);
 
-        create_arg->setParents(std::list<std::string>(1, "thing"));
+        create_arg->setParent("thing");
         this->m_ent.CreateOperation(op, ov);
         if (!ov.empty()) {
             assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);

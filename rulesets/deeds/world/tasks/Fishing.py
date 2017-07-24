@@ -59,9 +59,9 @@ class Fishing(server.Task):
         bait_loc = float_loc.copy()
         bait_loc.coordinates = bait_loc.coordinates + bait_vector
         
-        res = Operation("create", Entity(name = "bobber", parents = ["bobber"], location = float_loc), to = self.target())
+        res = Operation("create", Entity(name = "bobber", parent="bobber", location = float_loc), to = self.target())
         res = res + Operation("move", Entity(bait.id, location = bait_loc), to = bait)
-        res = res + Operation("create", Entity(parents = ["hook"], location = Location(bait, Point3D(0,0,0))), to = bait)
+        res = res + Operation("create", Entity(parent="hook", location = Location(bait, Point3D(0,0,0))), to = bait)
         return res
 
     def tick_operation(self, op):

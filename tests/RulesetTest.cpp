@@ -124,7 +124,7 @@ int main(int argc, char ** argv)
             Root custom_type_description;
             custom_type_description->setObjtype("class");
             custom_type_description->setId("f134c3e0");
-            custom_type_description->setParents(std::list<std::string>(1, "thing"));
+            custom_type_description->setParent("thing");
 
             ret = test_ruleset.installRule("f134c3e0", "custom",
                                            custom_type_description);
@@ -139,7 +139,7 @@ int main(int argc, char ** argv)
             Root custom_type_description;
             custom_type_description->setObjtype("class");
             custom_type_description->setId("667aa324");
-            custom_type_description->setParents(std::list<std::string>(1, "task"));
+            custom_type_description->setParent("task");
 
             ret = test_ruleset.installRule("667aa324", "custom",
                                            custom_type_description);
@@ -154,7 +154,7 @@ int main(int argc, char ** argv)
             Root custom_type_description;
             custom_type_description->setObjtype("op_definition");
             custom_type_description->setId("17c4e87e");
-            custom_type_description->setParents(std::list<std::string>(1, "get"));
+            custom_type_description->setParent("get");
 
             ret = test_ruleset.installRule("17c4e87e", "custom",
                                            custom_type_description);
@@ -170,23 +170,7 @@ int main(int argc, char ** argv)
             Root custom_type_description;
             custom_type_description->setObjtype("class");
             custom_type_description->setId(class_name);
-            custom_type_description->setParents(std::list<std::string>(1, "thing"));
-
-            ret = test_ruleset.installRule(class_name, "custom",
-                                           custom_type_description);
-            // Add this to inheritance, so future tests work
-            Inheritance::instance().addChild(custom_type_description);
-
-            assert(ret == -1);
-        }
-
-        // Empty parents list
-        {
-            std::string class_name("2cde57d0");
-            Root custom_type_description;
-            custom_type_description->setObjtype("class");
-            custom_type_description->setId(class_name);
-            custom_type_description->setParents(std::list<std::string>());
+            custom_type_description->setParent("thing");
 
             ret = test_ruleset.installRule(class_name, "custom",
                                            custom_type_description);
@@ -202,7 +186,7 @@ int main(int argc, char ** argv)
             Root custom_type_description;
             custom_type_description->setObjtype("class");
             custom_type_description->setId(class_name);
-            custom_type_description->setParents(std::list<std::string>(1, ""));
+            custom_type_description->setParent("");
 
             ret = test_ruleset.installRule(class_name, "custom",
                                            custom_type_description);
@@ -218,7 +202,7 @@ int main(int argc, char ** argv)
             Root custom_type_description;
             custom_type_description->setObjtype("481c53630c98");
             custom_type_description->setId(class_name);
-            custom_type_description->setParents(std::list<std::string>(1, "thing"));
+            custom_type_description->setParent("thing");
 
             ret = test_ruleset.installRule(class_name, "custom",
                                            custom_type_description);
@@ -239,7 +223,7 @@ int main(int argc, char ** argv)
             attrs["test_custom_type_attr"] = test_custom_type_attr;
             custom_type_description->setAttr("attributes", attrs);
             custom_type_description->setId("custom_type");
-            custom_type_description->setParents(std::list<std::string>(1, "thing"));
+            custom_type_description->setParent("thing");
 
             ret = test_ruleset.installRule("custom_type", "custom",
                                            custom_type_description);
@@ -261,7 +245,7 @@ int main(int argc, char ** argv)
             attrs["test_custom_inherited_type_attr"] = test_custom_type_attr;
             custom_inherited_type_description->setAttr("attributes", attrs);
             custom_inherited_type_description->setId("custom_inherited_type");
-            custom_inherited_type_description->setParents(std::list<std::string>(1, "custom_type"));
+            custom_inherited_type_description->setParent("custom_type");
 
             ret = test_ruleset.installRule("custom_inherited_type", "custom",
                                            custom_inherited_type_description);
@@ -297,26 +281,26 @@ int main(int argc, char ** argv)
             new_custom_inherited_type_description->setId("custom_inherited_type");
             new_custom_inherited_type_description->setAttr("attributes", MapType());
 
-            // No parents
+            // No parent
             ret = test_ruleset.modifyRule("custom_inherited_type",
                                           new_custom_inherited_type_description);
             assert(ret != 0);
 
-            // empty parents
-            new_custom_inherited_type_description->setParents(std::list<std::string>());
-
-            ret = test_ruleset.modifyRule("custom_inherited_type",
-                                          new_custom_inherited_type_description);
-            assert(ret != 0);
-
-            // wrong parents
-            new_custom_inherited_type_description->setParents(std::list<std::string>(1, "wrong_parent"));
+            // empty parent
+            new_custom_inherited_type_description->setParent("");
 
             ret = test_ruleset.modifyRule("custom_inherited_type",
                                           new_custom_inherited_type_description);
             assert(ret != 0);
 
-            new_custom_inherited_type_description->setParents(std::list<std::string>(1, "custom_type"));
+            // wrong parent
+            new_custom_inherited_type_description->setParent("wrong_parent");
+
+            ret = test_ruleset.modifyRule("custom_inherited_type",
+                                          new_custom_inherited_type_description);
+            assert(ret != 0);
+
+            new_custom_inherited_type_description->setParent("custom_type");
 
             ret = test_ruleset.modifyRule("custom_inherited_type",
                                           new_custom_inherited_type_description);
@@ -330,7 +314,7 @@ int main(int argc, char ** argv)
             new_custom_type_description->setObjtype("class");
             new_custom_type_description->setId("custom_type");
             new_custom_type_description->setAttr("attributes", MapType());
-            new_custom_type_description->setParents(std::list<std::string>(1, "thing"));
+            new_custom_type_description->setParent("thing");
 
             ret = test_ruleset.modifyRule("custom_type", new_custom_type_description);
 
@@ -356,7 +340,7 @@ int main(int argc, char ** argv)
 
             new_custom_type_description->setId("custom_type");
             new_custom_type_description->setAttr("attributes", attrs);
-            new_custom_type_description->setParents(std::list<std::string>(1, "thing"));
+            new_custom_type_description->setParent("thing");
 
             ret = test_ruleset.modifyRule("custom_type", new_custom_type_description);
 
@@ -430,7 +414,7 @@ int EntityRuleHandler::check(const Atlas::Objects::Root & desc)
     if (desc->getObjtype() != "class") {
         return -1;
     }
-    return m_builder->isTask(desc->getParents().front()) ? -1 : 0;
+    return m_builder->isTask(desc->getParent()) ? -1 : 0;
 }
 
 int EntityRuleHandler::install(const std::string & name,
@@ -450,7 +434,7 @@ int EntityRuleHandler::update(const std::string & name,
 
 int TaskRuleHandler::check(const Atlas::Objects::Root & desc)
 {
-    return m_builder->isTask(desc->getParents().front()) ? 0 : -1;
+    return m_builder->isTask(desc->getParent()) ? 0 : -1;
 }
 
 int TaskRuleHandler::install(const std::string & name,

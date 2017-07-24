@@ -560,7 +560,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             Anonymous ent;
             ent->setId(std::string(arg, 0, space));
             ent->setObjtype("class");
-            ent->setParents(std::list<std::string>(1, std::string(arg, space + 1)));
+            ent->setParent(std::string(arg, space + 1));
             c->setArgs1(ent);
             send(c);
         }
@@ -713,7 +713,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         Create c;
 
         Anonymous cmap;
-        cmap->setParents(std::list<std::string>(1, agent_type));
+        cmap->setParent(agent_type);
         cmap->setName("cycmd agent");
         cmap->setObjtype("obj");
         c->setArgs1(cmap);
@@ -765,7 +765,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             Look l;
 
             Anonymous lmap;
-            lmap->setParents(std::list<std::string>(1, arg));
+            lmap->setParent(arg);
             l->setArgs1(lmap);
             l->setSerialno(newSerialNo());
 
@@ -820,7 +820,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
                       << std::endl << std::flush;
         } else {
             Anonymous cmap;
-            cmap->setParents(std::list<std::string>(1, args[0]));
+            cmap->setParent(args[0]);
             cmap->setObjtype("obj");
 
             Create c;

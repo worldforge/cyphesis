@@ -317,16 +317,10 @@ void CommAsioClient<ProtocolT>::objectArrived(const Atlas::Objects::Root & obj)
             Atlas::Objects::smart_dynamic_cast<
                     Atlas::Objects::Operation::RootOperation>(obj);
     if (!op.isValid()) {
-        const std::list<std::string> & parents = obj->getParents();
-        if (parents.empty()) {
-            log(ERROR, String::compose("Object of type \"%1\" with no parent "
-                    "arrived from client", obj->getObjtype()));
-        } else {
-            log(ERROR,
-                    String::compose("Object of type \"%1\" with parent "
-                            "\"%2\" arrived from client", obj->getObjtype(),
-                            obj->getParents().front()));
-        }
+        log(ERROR,
+                String::compose("Object of type \"%1\" with parent "
+                        "\"%2\" arrived from client", obj->getObjtype(),
+                        obj->getParent()));
         return;
     }
     m_opQueue.push_back(op);
