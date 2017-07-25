@@ -200,7 +200,7 @@ public:
 	 * @param avatarId The id of the avatar.
 	 */
 	explicit EntityImporterBase(const std::string& accountId, const std::string& avatarId);
-	virtual ~EntityImporterBase();
+	virtual ~EntityImporterBase() = default;
 
 
 	/**

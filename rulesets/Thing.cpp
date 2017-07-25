@@ -536,7 +536,7 @@ void Thing::CreateOperation(const Operation& op, OpVector& res)
             return;
         }
         const std::string& type = ent->getParent();
-        if (type == "") {
+        if (type.empty()) {
             error(op, "Entity to be created has empty parent", res, getId());
             return;
         }
@@ -549,7 +549,7 @@ void Thing::CreateOperation(const Operation& op, OpVector& res)
 
         LocatedEntity* obj = BaseWorld::instance().addNewEntity(type, ent);
 
-        if (obj == 0) {
+        if (obj == nullptr) {
             error(op, "Create op failed.", res, op->getFrom());
             return;
         }
@@ -558,7 +558,7 @@ void Thing::CreateOperation(const Operation& op, OpVector& res)
         obj->addToEntity(new_ent);
 
         if (!op->isDefaultSerialno()) {
-            log(NOTICE, "Sending create response");
+            log(NOTICE, String::compose("Sending create response for creation of '%1'.", type));
 
             Info i;
             i->setArgs1(new_ent);
@@ -572,7 +572,6 @@ void Thing::CreateOperation(const Operation& op, OpVector& res)
         Sight s;
         s->setArgs1(c);
         broadcast(s, res);
-        //res.push_back(s);
     }
     catch (Atlas::Message::WrongTypeException&) {
         log(ERROR, "EXCEPTION: Malformed object to be created");
