@@ -21,6 +21,7 @@ set(VERSION ${CYPHESIS_VERSION_MAJOR}.${CYPHESIS_VERSION_MINOR}.${CYPHESIS_VERSI
 # Set compiler flags
 # Prevent GCC from messing up Python pointer handling
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -fno-strict-aliasing")
+
 add_definitions(-DHAVE_CONFIG_H)
 
 include_directories("${PROJECT_SOURCE_DIR};${PROJECT_BINARY_DIR}")
@@ -32,15 +33,6 @@ get_git_head_revision(GIT_REFSPEC GIT_SHA1)
 set(DESCRIPTION "A complete server for the Worldforge system.")
 set(SOCKET_DIR ${CMAKE_INSTALL_FULL_LOCALSTATEDIR}/tmp)
 set(PACKAGE_BUGREPORT "erik@ogenvik.org")
-
-#Macro for adding a test
-macro(wf_add_test _TEST_NAME)
-
-    add_executable(${_TEST_NAME}_test ${ARGN})
-    target_link_libraries(${_TEST_NAME}_test ${LIBNAME})
-    add_test(NAME ${_TEST_NAME} COMMAND ${_TEST_NAME}_test)
-
-endmacro()
 
 check_function_exists(getuid HAVE_GETUID)
 check_function_exists(nice HAVE_NICE)
@@ -68,8 +60,6 @@ pkg_check_modules(WF REQUIRED varconf-1.0>=0.6.7 mercator-0.4>=0.4.0 atlascpp-0.
 link_directories(${WF_LIBRARY_DIRS})
 include_directories(${WF_INCLUDE_DIRS})
 link_libraries(${WF_LIBRARIES})
-
-message(STATUS ${WF_INCLUDE_DIRS})
 
 pkg_check_modules(SIGCPP REQUIRED sigc++-2.0>=2.0.0)
 link_directories(${SIGCPP_LIBRARY_DIRS})
