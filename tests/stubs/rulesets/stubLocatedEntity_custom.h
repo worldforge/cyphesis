@@ -2,6 +2,18 @@
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/SmartPtr.h>
 
+#ifndef STUB_LocatedEntity_LocatedEntity
+#define STUB_LocatedEntity_LocatedEntity
+LocatedEntity::LocatedEntity(const std::string & id, long intId)
+    : Router(id, intId)
+    , m_refCount(0), m_seq(0)
+    , m_script(nullptr),m_type(nullptr), m_flags(0), m_contains(nullptr)
+{
+
+}
+#endif //STUB_LocatedEntity_LocatedEntity
+
+
 #ifndef STUB_LocatedEntity_setType
 #define STUB_LocatedEntity_setType
 
