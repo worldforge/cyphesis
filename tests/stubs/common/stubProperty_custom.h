@@ -8,6 +8,16 @@
 #define STUB_Property_add
 #define STUB_Property_copy
 
+
+#ifndef STUB_PropertyBase_PropertyBase
+#define STUB_PropertyBase_PropertyBase
+PropertyBase::PropertyBase(unsigned int flags )
+    : m_flags(flags)
+{
+
+}
+#endif //STUB_PropertyBase_PropertyBase
+
 #ifndef STUB_PropertyBase_add
 #define STUB_PropertyBase_add
 void PropertyBase::add(const std::string & s,
