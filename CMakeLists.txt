@@ -19,9 +19,6 @@ set(CYPHESIS_VERSION_PATCH 0)
 set(VERSION ${CYPHESIS_VERSION_MAJOR}.${CYPHESIS_VERSION_MINOR}.${CYPHESIS_VERSION_PATCH})
 
 # Set compiler flags
-# Prevent GCC from messing up Python pointer handling
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -fno-strict-aliasing")
-
 add_definitions(-DHAVE_CONFIG_H)
 
 include_directories("${PROJECT_SOURCE_DIR};${PROJECT_BINARY_DIR}")

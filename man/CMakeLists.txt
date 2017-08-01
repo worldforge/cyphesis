@@ -1,7 +1,6 @@
 install(FILES cyaddrules.1
         cyclient.1
         cycmd.1
-        cycmd.sgml
         cyconvertrules.1
         cydb.1
         cydumprules.1
