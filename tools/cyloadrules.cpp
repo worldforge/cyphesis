@@ -36,6 +36,7 @@
 #include <boost/algorithm/string/erase.hpp>
 
 #include <iostream>
+#include <fstream>
 
 // #ifdef HAVE_DIRENT_H
 // #endif // HAS_DIRENT_H
