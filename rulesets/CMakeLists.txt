@@ -108,6 +108,8 @@ add_library(scriptpython
         PythonScriptFactory.cpp)
 
 target_link_libraries(scriptpython ${PYTHON_LIBRARIES})
+# Prevent GCC from messing up Python pointer handling
+target_compile_options(scriptpython PUBLIC "-fno-strict-aliasing")
 
 install(FILES
         basic/world/objects/Thing.py
