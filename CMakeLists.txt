@@ -171,21 +171,10 @@ add_subdirectory(man)
 #Only build tests if the "check" target is used.
 add_subdirectory(tests EXCLUDE_FROM_ALL)
 
-#TODO: Implement schema validation for tests only
-#file(GLOB MODELDEFINITIONS_FILES data/dural/*.modeldef)
-#foreach (FILE ${MODELDEFINITIONS_FILES})
-#    execute_process(COMMAND "${XMLLINT}" --schema "${PROJECT_SOURCE_DIR}/data/modeldefinition.xsd" --nonet --noout "${FILE}" RESULT_VARIABLE CMDRESULT)
-#    if (CMDRESULT)
-#        message(FATAL_ERROR "xmllint failure: ${CMDRESULT}")
-#    endif (CMDRESULT)
-#endforeach (FILE MODELDEFINITIONS_FILES)
-#
-#
-
 configure_file(Doxyfile.in Doxyfile @ONLY)
 configure_file(Doxyfile-python.in Doxyfile-python @ONLY)
 
-install(FILES README COPYING AUTHORS THANKS NEWS FIXME DESTINATION ${CMAKE_INSTALL_DATADIR}/doc/cyphesis-${VERSION})
+install(FILES README COPYING AUTHORS THANKS NEWS FIXME DESTINATION ${CMAKE_INSTALL_DATADIR}/doc/cyphesis)
 install(DIRECTORY DESTINATION ${SOCKET_DIR})
 
 ## Doxygen support, exports a "docs" target.
