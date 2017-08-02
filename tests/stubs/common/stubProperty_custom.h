@@ -54,10 +54,18 @@ void Property<int>::set(const Atlas::Message::Element & e)
 }
 
 template<>
+void Property<float>::set(const Atlas::Message::Element & e)
+{
+    if (e.isNum()) {
+        this->m_data = e.asNum();
+    }
+}
+
+template<>
 void Property<double>::set(const Atlas::Message::Element & e)
 {
     if (e.isNum()) {
-       this->m_data = e.asNum();
+        this->m_data = e.asNum();
     }
 }
 
@@ -74,6 +82,14 @@ void Property<Atlas::Message::MapType>::set(const Atlas::Message::Element & e)
 {
     if (e.isMap()) {
         this->m_data = e.Map();
+    }
+}
+
+template<>
+void Property<Atlas::Message::ListType>::set(const Atlas::Message::Element & e)
+{
+    if (e.isList()) {
+        this->m_data = e.List();
     }
 }
 #endif //STUB_Property_set
@@ -96,5 +112,8 @@ SoftProperty::SoftProperty()
 
 template class Property<int>;
 template class Property<double>;
+template class Property<float>;
 template class Property<std::string>;
 template class Property<Atlas::Message::MapType>;
+template class Property<Atlas::Message::ListType>;
+//template class Property<std::vector<std::string>>;

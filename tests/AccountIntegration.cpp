@@ -350,8 +350,6 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 
 // stubs
 
-#include "Property_stub_impl.h"
-
 #include "server/ArithmeticBuilder.h"
 #include "server/EntityFactory.h"
 #include "server/ArchetypeFactory.h"
@@ -439,6 +437,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "stubs/common/stubCustom.h"
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
+#include "stubs/common/stubProperty.h"
 
 ArithmeticBuilder * ArithmeticBuilder::m_instance = 0;
 
@@ -775,77 +774,8 @@ HandlerResult TasksProperty::operation(LocatedEntity *, const Operation &, OpVec
     return OPERATION_IGNORED;
 }
 
-PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
-{
-}
-
-PropertyBase::~PropertyBase()
-{
-}
-
-void PropertyBase::install(LocatedEntity *, const std::string & name)
-{
-}
-
-void PropertyBase::remove(LocatedEntity *, const std::string & name)
-{
-}
-
-void PropertyBase::apply(LocatedEntity *)
-{
-}
-
-void PropertyBase::add(const std::string & s,
-                       Atlas::Message::MapType & ent) const
-{
-    get(ent[s]);
-}
-
-void PropertyBase::add(const std::string & s,
-                       const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-HandlerResult PropertyBase::operation(LocatedEntity *,
-                                      const Operation &,
-                                      OpVector &)
-{
-    return OPERATION_IGNORED;
-}
-
-template class Property<int>;
-template class Property<double>;
-template class Property<std::string>;
-template class Property<ListType>;
-template class Property<MapType>;
-template class Property<std::vector<std::string>>;
-
 PropertyKit::~PropertyKit()
 {
-}
-
-SoftProperty::SoftProperty()
-{
-}
-
-SoftProperty::SoftProperty(const Atlas::Message::Element & data) :
-              PropertyBase(0), m_data(data)
-{
-}
-
-int SoftProperty::get(Atlas::Message::Element & val) const
-{
-    val = m_data;
-    return 0;
-}
-
-void SoftProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-SoftProperty * SoftProperty::copy() const
-{
-    return 0;
 }
 
 ContainsProperty::ContainsProperty(LocatedEntitySet & data) :

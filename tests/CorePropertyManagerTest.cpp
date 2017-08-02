@@ -192,9 +192,20 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
     return 0;
 }
 
+
+
+#include "common/const.h"
+#include "common/globals.h"
+#include "common/log.h"
+#include "common/Monitors.h"
+#include "common/PropertyFactory.h"
+#include "common/system.h"
+#include "common/TypeNode.h"
+#include "common/Variable.h"
+
+
 // stubs
 
-#include "Property_stub_impl.h"
 
 #include "server/ArithmeticBuilder.h"
 #include "server/EntityFactory.h"
@@ -235,16 +246,20 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "rulesets/DefaultLocationProperty.h"
 #include "rulesets/LimboProperty.h"
 #include "rulesets/DomainProperty.h"
+//void Entity::destroy()
+//{
+//    destroyed.emit();
+//}
+//
+//void Entity::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+//{
+//    ent->setId(getId());
+//}
 
-#include "common/const.h"
-#include "common/globals.h"
-#include "common/log.h"
-#include "common/Monitors.h"
-#include "common/PropertyFactory.h"
-#include "common/system.h"
-#include "common/TypeNode.h"
-#include "common/Variable.h"
+#include "stubs/rulesets/stubEntity.h"
+#include "stubs/rulesets/stubLocatedEntity.h"
 
+#include "stubs/common/stubProperty.h"
 #include "stubs/common/stubCustom.h"
 #include "stubs/rulesets/stubImmortalProperty.h"
 #include "stubs/rulesets/stubRespawningProperty.h"
@@ -650,19 +665,6 @@ ExternalProperty * ExternalProperty::copy() const
     return 0;
 }
 
-//void Entity::destroy()
-//{
-//    destroyed.emit();
-//}
-//
-//void Entity::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-//{
-//    ent->setId(getId());
-//}
-
-#include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubLocatedEntity.h"
-
 EntityProperty::EntityProperty()
 {
 }
@@ -727,52 +729,6 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
 {
 }
 
-PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
-{
-}
-
-PropertyBase::~PropertyBase()
-{
-}
-
-void PropertyBase::install(LocatedEntity *, const std::string & name)
-{
-}
-
-void PropertyBase::remove(LocatedEntity *, const std::string & name)
-{
-}
-
-void PropertyBase::apply(LocatedEntity *)
-{
-}
-
-void PropertyBase::add(const std::string & s,
-                       Atlas::Message::MapType & ent) const
-{
-    get(ent[s]);
-}
-
-void PropertyBase::add(const std::string & s,
-                       const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-HandlerResult PropertyBase::operation(LocatedEntity *,
-                                      const Operation &,
-                                      OpVector &)
-{
-    return OPERATION_IGNORED;
-}
-
-template class Property<int>;
-template class Property<float>;
-template class Property<double>;
-template class Property<std::string>;
-template class Property<ListType>;
-template class Property<MapType>;
-template class Property<std::vector<std::string>>;
-
 PropertyKit::~PropertyKit()
 {
 }
@@ -790,30 +746,6 @@ PropertyFactory<T> * PropertyFactory<T>::duplicateFactory() const
 }
 
 template class PropertyFactory<MinimalProperty>;
-
-SoftProperty::SoftProperty()
-{
-}
-
-SoftProperty::SoftProperty(const Atlas::Message::Element & data) :
-              PropertyBase(0), m_data(data)
-{
-}
-
-int SoftProperty::get(Atlas::Message::Element & val) const
-{
-    val = m_data;
-    return 0;
-}
-
-void SoftProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-SoftProperty * SoftProperty::copy() const
-{
-    return 0;
-}
 
 
 void TeleportProperty::install(LocatedEntity * owner, const std::string & name)

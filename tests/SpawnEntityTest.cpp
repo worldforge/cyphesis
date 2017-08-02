@@ -121,7 +121,7 @@ int main()
 
 // Stubs
 
-#include "Property_stub_impl.h"
+#include "stubs/common/stubProperty.h"
 
 void addToEntity(const Point3D & p, std::vector<double> & vd)
 {
@@ -169,45 +169,6 @@ AreaProperty * AreaProperty::copy() const
 
 void AreaProperty::apply(LocatedEntity * owner)
 {
-}
-
-template class Property<Atlas::Message::MapType>;
-
-PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
-{
-}
-
-PropertyBase::~PropertyBase()
-{
-}
-
-void PropertyBase::install(LocatedEntity *, const std::string & name)
-{
-}
-
-void PropertyBase::remove(LocatedEntity *, const std::string & name)
-{
-}
-
-void PropertyBase::apply(LocatedEntity *)
-{
-}
-
-void PropertyBase::add(const std::string & s,
-                       Atlas::Message::MapType & ent) const
-{
-}
-
-void PropertyBase::add(const std::string & s,
-                       const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-HandlerResult PropertyBase::operation(LocatedEntity *,
-                                      const Operation &,
-                                      OpVector &)
-{
-    return OPERATION_IGNORED;
 }
 
 Location::Location() : m_loc(0)

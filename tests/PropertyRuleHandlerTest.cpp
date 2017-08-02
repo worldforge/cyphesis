@@ -174,8 +174,7 @@ int main()
 
 // stubs
 
-#include "Property_stub_impl.h"
-
+#include "stubs/common/stubProperty.h"
 #include "common/Inheritance.h"
 #include "common/log.h"
 #include "common/PropertyFactory_impl.h"
@@ -217,42 +216,6 @@ bool Inheritance::hasClass(const std::string & parent)
     return true;
 }
 
-PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
-{
-}
-
-PropertyBase::~PropertyBase()
-{
-}
-
-void PropertyBase::install(LocatedEntity *, const std::string & name)
-{
-}
-
-void PropertyBase::remove(LocatedEntity *, const std::string & name)
-{
-}
-
-void PropertyBase::apply(LocatedEntity *)
-{
-}
-
-void PropertyBase::add(const std::string & s,
-                       Atlas::Message::MapType & ent) const
-{
-}
-
-void PropertyBase::add(const std::string & s,
-                       const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-HandlerResult PropertyBase::operation(LocatedEntity *,
-                                      const Operation &,
-                                      OpVector & res)
-{
-    return OPERATION_IGNORED;
-}
 
 PropertyKit::~PropertyKit()
 {
