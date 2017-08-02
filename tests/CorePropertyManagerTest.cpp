@@ -766,6 +766,7 @@ HandlerResult PropertyBase::operation(LocatedEntity *,
 }
 
 template class Property<int>;
+template class Property<float>;
 template class Property<double>;
 template class Property<std::string>;
 template class Property<ListType>;
