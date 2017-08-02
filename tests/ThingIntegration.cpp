@@ -121,7 +121,7 @@ void ThingIntegration::test_visibility()
         thing->broadcast(s, res);
 
         for (auto expectedThing : expectedThings) {
-            auto I = std::find_if(std::begin(res), std::end(res), [&](auto entry) { return entry->getTo() == expectedThing->getId(); });
+            auto I = std::find_if(std::begin(res), std::end(res), [&](Operation entry) { return entry->getTo() == expectedThing->getId(); });
             if (I == std::end(res)) {
                 addFailure(String::compose("Could not find entity id '%1' in list of broadcasts.", expectedThing->getId()));
                 return false;
