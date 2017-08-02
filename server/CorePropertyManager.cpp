@@ -121,8 +121,8 @@ CorePropertyManager::CorePropertyManager()
     installProperty<ModeProperty>("mode", "string");
     installProperty<LineProperty>("coords", "list");
     installProperty<LineProperty>("points", "list");
-    installProperty<Property<IdList> >("start_intersections", "list");
-    installProperty<Property<IdList> >("end_intersections", "list");
+    //installProperty<Property<IdList> >("start_intersections", "list");
+    //installProperty<Property<IdList> >("end_intersections", "list");
     installProperty<DecaysProperty>("decays", "string");
     installProperty<OutfitProperty>("outfit", "map");
     installProperty<SolidProperty>("solid", "int");
