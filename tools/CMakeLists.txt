@@ -21,6 +21,7 @@ target_link_libraries(cycmd ${READLINE_LIBRARY})
 
 target_link_libraries(cycmd
         common)
+install(TARGETS cycmd DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
 
 add_executable(cyconfig cyconfig.cpp)
 target_link_libraries(cyconfig
