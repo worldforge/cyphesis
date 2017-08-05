@@ -118,7 +118,7 @@ install(FILES
         basic/editor.py
         DESTINATION ${CMAKE_INSTALL_DATADIR}/cyphesis/scripts/cyphesis)
 install(DIRECTORY
-        mason minimal mars deeds
+        deeds
         DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/cyphesis/rulesets)
 install(DIRECTORY
         basic/mind
