@@ -288,6 +288,8 @@ int main(int argc, char ** argv)
         long c_iid = newId(connection_id);
         //Turn off Nagle's algorithm to increase responsiveness.
         client.getSocket().set_option(ip::tcp::no_delay(true));
+        //Listen to both ipv4 and ipv6
+        client.getSocket().set_option(boost::asio::ip::v6_only(false));
         client.startAccept(new Connection(client, *server, "", connection_id, c_iid));
     };
 
@@ -298,7 +300,7 @@ int main(int argc, char ** argv)
         for (; client_port_num <= dynamic_port_end; client_port_num++) {
             try {
                 tcp_atlas_clients.emplace_back(tcpAtlasStarter, server->getName(), *io_service,
-                                               ip::tcp::endpoint(ip::tcp::v4(), client_port_num));
+                                               ip::tcp::endpoint(ip::tcp::v6(), client_port_num));
             } catch (const std::exception& e) {
                 break;
             }
@@ -323,7 +325,7 @@ int main(int argc, char ** argv)
                 client_port_num + 1, varconf::USER);
     } else {
         try {
-            tcp_atlas_clients.emplace_back(tcpAtlasStarter, server->getName(), *io_service, ip::tcp::endpoint(ip::tcp::v4(), client_port_num));
+            tcp_atlas_clients.emplace_back(tcpAtlasStarter, server->getName(), *io_service, ip::tcp::endpoint(ip::tcp::v6(), client_port_num));
         } catch (const std::exception& e) {
             log(ERROR, String::compose("Could not create client listen socket "
                     "on port %1. Init failed. The most common reason for this "
@@ -354,11 +356,13 @@ int main(int argc, char ** argv)
     //Instantiate at startup
     HttpCache::instance();
     std::function<void(CommHttpClient&)> httpStarter = [&](CommHttpClient& client) {
+        //Listen to both ipv4 and ipv6
+        client.getSocket().set_option(boost::asio::ip::v6_only(false));
         client.serveRequest();
     };
 
     auto httpListener = new CommAsioListener<ip::tcp, CommHttpClient>(httpStarter, server->getName(), *io_service,
-                                                                      ip::tcp::endpoint(ip::tcp::v4(), http_port_num));
+                                                                      ip::tcp::endpoint(ip::tcp::v6(), http_port_num));
 
     log(INFO, compose("Http service. The following endpoints are available over port %1.", http_port_num));
     log(INFO, " /config : shows server configuration");
