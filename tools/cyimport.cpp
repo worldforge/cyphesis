@@ -143,7 +143,7 @@ int main(int argc, char ** argv)
             bool isPopulated = false;
             std::function<bool(const RootEntity&)> visitor =
                     [&](const RootEntity& entity)->bool {
-                        if (entity->getId() != "0" && !entity->hasAttr("transient")) {
+                        if (entity->getId() != "0" && entity->getId() != agent_id && !entity->hasAttr("transient")) {
                             isPopulated = true;
                             return false;
                         }
