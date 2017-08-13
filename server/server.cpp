@@ -256,7 +256,7 @@ int main(int argc, char ** argv)
 
     Inheritance::instance();
 
-    SystemTime time;
+    SystemTime time{};
     time.update();
 
     WorldRouter * world = new WorldRouter(time);
@@ -289,7 +289,7 @@ int main(int argc, char ** argv)
         //Turn off Nagle's algorithm to increase responsiveness.
         client.getSocket().set_option(ip::tcp::no_delay(true));
         //Listen to both ipv4 and ipv6
-        client.getSocket().set_option(boost::asio::ip::v6_only(false));
+        //client.getSocket().set_option(boost::asio::ip::v6_only(false));
         client.startAccept(new Connection(client, *server, "", connection_id, c_iid));
     };
 
@@ -357,7 +357,7 @@ int main(int argc, char ** argv)
     HttpCache::instance();
     std::function<void(CommHttpClient&)> httpStarter = [&](CommHttpClient& client) {
         //Listen to both ipv4 and ipv6
-        client.getSocket().set_option(boost::asio::ip::v6_only(false));
+        //client.getSocket().set_option(boost::asio::ip::v6_only(false));
         client.serveRequest();
     };
 

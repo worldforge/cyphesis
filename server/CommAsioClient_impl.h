@@ -20,7 +20,9 @@
 #define COMMASIOCLIENT_IMPL_H_
 
 #ifdef HAVE_CONFIG_H
+
 #include "config.h"
+
 #endif
 
 #include "common/log.h"
@@ -41,13 +43,13 @@
 
 static const bool comm_asio_client_debug_flag = false;
 
+
 template<class ProtocolT>
-CommAsioClient<ProtocolT>::CommAsioClient(const std::string & name,
-        boost::asio::io_service& io_service) :
-        CommSocket(io_service), mSocket(io_service), mWriteBuffer(
-                new boost::asio::streambuf()), mSendBuffer(new boost::asio::streambuf()), mInStream(&mReadBuffer),
-                mOutStream(mWriteBuffer), mNegotiateTimer(io_service, boost::posix_time::seconds(1)), mIsSending(false), mShouldSend(false),
-                m_codec(nullptr), m_encoder(nullptr), m_negotiate(nullptr), m_link(nullptr), mName(name)
+CommAsioClient<ProtocolT>::CommAsioClient(const std::string& name,
+                                          boost::asio::io_service& io_service) :
+    CommSocket(io_service), mSocket(io_service), mWriteBuffer(new boost::asio::streambuf()), mSendBuffer(new boost::asio::streambuf()), mInStream(&mReadBuffer),
+    mOutStream(mWriteBuffer), mNegotiateTimer(io_service, boost::posix_time::seconds(1)), mIsSending(false), mShouldSend(false),
+    m_codec(nullptr), m_encoder(nullptr), m_negotiate(nullptr), m_link(nullptr), mName(name)
 {
 }
 
@@ -81,24 +83,22 @@ void CommAsioClient<ProtocolT>::do_read()
 {
     auto self(this->shared_from_this());
     mSocket.async_read_some(mReadBuffer.prepare(read_buffer_size),
-            [this, self](boost::system::error_code ec, std::size_t length)
-            {
-                if (!ec)
-                {
-                    mReadBuffer.commit(length);
-                    m_codec->poll();
-                    this->dispatch();
-                    //By calling do_read again we make sure that the instance
-                    //doesn't go out of scope ("shared_from this"). As soon as that
-                    //doesn't happen, and there's no write in progress, the instance
-                    //will be deleted since there's no more references to it.
-                    this->do_read();
-                } else {
-                    std::stringstream ss;
-                    ss << "Error when reading from socket: (" << ec << ") " << ec.message();
-                    log(WARNING, ss.str());
-                }
-            });
+                            [this, self](boost::system::error_code ec, std::size_t length) {
+                                if (!ec) {
+                                    mReadBuffer.commit(length);
+                                    m_codec->poll();
+                                    this->dispatch();
+                                    //By calling do_read again we make sure that the instance
+                                    //doesn't go out of scope ("shared_from this"). As soon as that
+                                    //doesn't happen, and there's no write in progress, the instance
+                                    //will be deleted since there's no more references to it.
+                                    this->do_read();
+                                } else {
+                                    std::stringstream ss;
+                                    ss << "Error when reading from socket: (" << ec << ") " << ec.message();
+                                    log(WARNING, ss.str());
+                                }
+                            });
 }
 
 template<class ProtocolT>
@@ -108,10 +108,10 @@ void CommAsioClient<ProtocolT>::write()
         if (mIsSending) {
             //We're already sending in the background.
             //Make that we should send again once we've completed sending.
-    //        std::cerr << "Delaying send." << std::endl << std::flush;
-    //        if (!mShouldSend) {
-    //            start = boost::posix_time::microsec_clock::local_time();
-    //        }
+            //        std::cerr << "Delaying send." << std::endl << std::flush;
+            //        if (!mShouldSend) {
+            //            start = boost::posix_time::microsec_clock::local_time();
+            //        }
             mShouldSend = true;
             return;
         }
@@ -126,24 +126,22 @@ void CommAsioClient<ProtocolT>::write()
         mIsSending = true;
 
         boost::asio::async_write(mSocket, *mSendBuffer,
-                [this, self](boost::system::error_code ec, std::size_t length)
-                {
-                    mIsSending = false;
-                    if (!ec)
-                    {
-                        mSendBuffer->consume(length);
-                        //Is there data queued for transmission which we should send right away?
-                        if (mShouldSend) {
+                                 [this, self](boost::system::error_code ec, std::size_t length) {
+                                     mIsSending = false;
+                                     if (!ec) {
+                                         mSendBuffer->consume(length);
+                                         //Is there data queued for transmission which we should send right away?
+                                         if (mShouldSend) {
 //                            auto diff = boost::posix_time::microsec_clock::local_time() - start;
 //                            std::cerr << "Sending delayed "<< diff.total_microseconds() <<" microseconds." << std::endl << std::flush;
-                            this->write();
-                        }
-                    } else {
-                        std::stringstream ss;
-                        ss << "Error when writing to socket: (" << ec << ") " << ec.message();
-                        log(WARNING, ss.str());
-                    }
-                });
+                                             this->write();
+                                         }
+                                     } else {
+                                         std::stringstream ss;
+                                         ss << "Error when writing to socket: (" << ec << ") " << ec.message();
+                                         log(WARNING, ss.str());
+                                     }
+                                 });
     }
 }
 
@@ -152,29 +150,27 @@ void CommAsioClient<ProtocolT>::negotiate_read()
 {
     auto self(this->shared_from_this());
     mSocket.async_read_some(mReadBuffer.prepare(read_buffer_size),
-            [this, self](boost::system::error_code ec, std::size_t length)
-            {
-                if (!ec)
-                {
-                    mReadBuffer.commit(length);
-                    if (length > 0) {
-                        int negotiateResult = this->negotiate();
-                        if (negotiateResult < 0) {
-                            //this should remove any shared references and delete this instance
-                            return;
-                        }
-                    }
+                            [this, self](boost::system::error_code ec, std::size_t length) {
+                                if (!ec) {
+                                    mReadBuffer.commit(length);
+                                    if (length > 0) {
+                                        int negotiateResult = this->negotiate();
+                                        if (negotiateResult < 0) {
+                                            //this should remove any shared references and delete this instance
+                                            return;
+                                        }
+                                    }
 
-                    //If the m_negotiate instance is removed we're done with negotiation and should start the main loop.
-                    if (m_negotiate == nullptr) {
-                        this->write();
-                        this->do_read();
-                    } else {
-                        this->negotiate_write();
-                        this->negotiate_read();
-                    }
-                }
-            });
+                                    //If the m_negotiate instance is removed we're done with negotiation and should start the main loop.
+                                    if (m_negotiate == nullptr) {
+                                        this->write();
+                                        this->do_read();
+                                    } else {
+                                        this->negotiate_write();
+                                        this->negotiate_read();
+                                    }
+                                }
+                            });
 }
 
 template<class ProtocolT>
@@ -184,18 +180,16 @@ void CommAsioClient<ProtocolT>::negotiate_write()
 
     if (mWriteBuffer->size() != 0) {
         boost::asio::async_write(mSocket, mWriteBuffer->data(),
-                [this, self](boost::system::error_code ec, std::size_t length)
-                {
-                    if (!ec)
-                    {
-                        mWriteBuffer->consume(length);
-                    }
-                });
+                                 [this, self](boost::system::error_code ec, std::size_t length) {
+                                     if (!ec) {
+                                         mWriteBuffer->consume(length);
+                                     }
+                                 });
     }
 }
 
 template<class ProtocolT>
-void CommAsioClient<ProtocolT>::startAccept(Link * connection)
+void CommAsioClient<ProtocolT>::startAccept(Link* connection)
 {
     // Create the server side negotiator
     m_negotiate = new Atlas::Net::StreamAccept("cyphesis " + mName, mInStream, mOutStream);
@@ -206,7 +200,7 @@ void CommAsioClient<ProtocolT>::startAccept(Link * connection)
 }
 
 template<class ProtocolT>
-void CommAsioClient<ProtocolT>::startConnect(Link * connection)
+void CommAsioClient<ProtocolT>::startConnect(Link* connection)
 {
     // Create the client side negotiator
     m_negotiate = new Atlas::Net::StreamConnect("cyphesis " + mName, mInStream, mOutStream);
@@ -222,15 +216,14 @@ void CommAsioClient<ProtocolT>::startNegotiation()
 
     auto self(this->shared_from_this());
     mNegotiateTimer.expires_from_now(boost::posix_time::seconds(10));
-    mNegotiateTimer.async_wait([this, self](const boost::system::error_code& ec)
-    {
+    mNegotiateTimer.async_wait([this, self](const boost::system::error_code& ec) {
         //If the negotiator still exists after the deadline it means that the negotation hasn't
         //completed yet; we'll consider that a "timeout".
-            if (m_negotiate != nullptr) {
-                log(NOTICE, "Client disconnected because of negotiation timeout.");
-                mSocket.close();
-            }
-        });
+        if (m_negotiate != nullptr) {
+            log(NOTICE, "Client disconnected because of negotiation timeout.");
+            mSocket.close();
+        }
+    });
 
     m_negotiate->poll(false);
 
@@ -280,7 +273,7 @@ int CommAsioClient<ProtocolT>::negotiate()
 
 template<class ProtocolT>
 int CommAsioClient<ProtocolT>::operation(
-        const Atlas::Objects::Operation::RootOperation & op)
+    const Atlas::Objects::Operation::RootOperation& op)
 {
     assert(m_link != 0);
     m_link->externalOperation(op, *m_link);
@@ -300,7 +293,7 @@ void CommAsioClient<ProtocolT>::dispatch()
 }
 
 template<class ProtocolT>
-void CommAsioClient<ProtocolT>::objectArrived(const Atlas::Objects::Root & obj)
+void CommAsioClient<ProtocolT>::objectArrived(const Atlas::Objects::Root& obj)
 {
     if (comm_asio_client_debug_flag) {
         std::stringstream debugStream;
@@ -314,13 +307,13 @@ void CommAsioClient<ProtocolT>::objectArrived(const Atlas::Objects::Root & obj)
     }
 
     Atlas::Objects::Operation::RootOperation op =
-            Atlas::Objects::smart_dynamic_cast<
-                    Atlas::Objects::Operation::RootOperation>(obj);
+        Atlas::Objects::smart_dynamic_cast<
+            Atlas::Objects::Operation::RootOperation>(obj);
     if (!op.isValid()) {
         log(ERROR,
-                String::compose("Object of type \"%1\" with parent "
-                        "\"%2\" arrived from client", obj->getObjtype(),
-                        obj->getParent()));
+            String::compose("Object of type \"%1\" with parent "
+                                "\"%2\" arrived from client", obj->getObjtype(),
+                            obj->getParent()));
         return;
     }
     m_opQueue.push_back(op);
@@ -328,7 +321,7 @@ void CommAsioClient<ProtocolT>::objectArrived(const Atlas::Objects::Root & obj)
 
 template<class ProtocolT>
 int CommAsioClient<ProtocolT>::send(
-        const Atlas::Objects::Operation::RootOperation & op)
+    const Atlas::Objects::Operation::RootOperation& op)
 {
     if (!mSocket.is_open()) {
         log(ERROR, "Writing to closed client");

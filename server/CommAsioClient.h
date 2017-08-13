@@ -54,9 +54,9 @@ class CommAsioClient: public Atlas::Objects::ObjectsDecoder,
         /// \brief STL deque of pointers to operation objects.
         typedef std::deque<Atlas::Objects::Operation::RootOperation> DispatchQueue;
 
-        virtual void disconnect();
+        void disconnect() override;
 
-        virtual int flush();
+        int flush() override;
 
     protected:
         typename ProtocolT::socket mSocket;
@@ -106,7 +106,7 @@ class CommAsioClient: public Atlas::Objects::ObjectsDecoder,
             read_buffer_size = 16384
         };
 
-/// \brief Queue of operations that have been decoded by not dispatched.
+        /// \brief Queue of operations that have been decoded by not dispatched.
         DispatchQueue m_opQueue;
         /// \brief Atlas codec that handles encoding and decoding traffic.
         Atlas::Codec * m_codec;
@@ -136,7 +136,7 @@ class CommAsioClient: public Atlas::Objects::ObjectsDecoder,
 
         int operation(const Atlas::Objects::Operation::RootOperation &);
 
-        virtual void objectArrived(const Atlas::Objects::Root & obj);
+        void objectArrived(const Atlas::Objects::Root & obj) override;
 };
 
 #endif /* COMMASIOCLIENT_H_ */

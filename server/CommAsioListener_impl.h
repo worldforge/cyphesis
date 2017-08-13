@@ -24,11 +24,10 @@
 
 template<class ProtocolT, typename ClientT>
 CommAsioListener<ProtocolT, ClientT>::CommAsioListener(
-        std::function<void(ClientT&)> clientStarter,
-        const std::string& serverName, boost::asio::io_service& ioService,
-        const typename ProtocolT::endpoint& endpoint) :
-        mClientStarter(clientStarter), mServerName(serverName), mAcceptor(
-                ioService, endpoint)
+    std::function<void(ClientT&)> clientStarter,
+    const std::string& serverName, boost::asio::io_service& ioService,
+    const typename ProtocolT::endpoint& endpoint)
+    : mClientStarter(clientStarter), mServerName(serverName), mAcceptor(ioService, endpoint)
 {
     startAccept();
 }
@@ -42,19 +41,14 @@ CommAsioListener<ProtocolT, ClientT>::~CommAsioListener()
 template<class ProtocolT, typename ClientT>
 void CommAsioListener<ProtocolT, ClientT>::startAccept()
 {
-    auto client = std::make_shared < ClientT
-            > (mServerName, mAcceptor.get_io_service());
-
+    auto client = std::make_shared<ClientT>(mServerName, mAcceptor.get_io_service());
     mAcceptor.async_accept(client->getSocket(),
-            [this, client](boost::system::error_code ec)
-            {
-                if (!ec)
-                {
-                    mClientStarter(*client);
-                }
-
-                this->startAccept();
-            });
+                           [this, client](boost::system::error_code ec) {
+                               if (!ec) {
+                                   mClientStarter(*client);
+                               }
+                               this->startAccept();
+                           });
 }
 
 #endif /* COMMASIOLISTENER_IMPL_H_ */
