@@ -72,9 +72,9 @@ class PropertyBase;
 class PhysicalDomain : public Domain
 {
     public:
-        PhysicalDomain(LocatedEntity& entity);
+        explicit PhysicalDomain(LocatedEntity& entity);
 
-        virtual ~PhysicalDomain();
+        ~PhysicalDomain() override;
 
         void tick(double t, OpVector& res) override;
 
@@ -139,7 +139,6 @@ class PhysicalDomain : public Domain
         std::set<BulletEntry*> m_movingEntities;
         std::set<BulletEntry*> m_lastMovingEntities;
         std::set<BulletEntry*> m_dirtyEntries;
-        std::set<BulletEntry*> m_characterEntries;
         std::vector<WFMath::AxisBox<2>> m_dirtyTerrainAreas;
 
         std::unordered_map<long, std::tuple<Mercator::TerrainMod*, WFMath::Point<3>, WFMath::Quaternion, WFMath::AxisBox<2>>> m_terrainMods;

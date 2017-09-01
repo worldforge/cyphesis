@@ -50,6 +50,7 @@
 #include <chrono>
 #include <rulesets/VisibilityProperty.h>
 #include <rulesets/GeometryProperty.h>
+#include "rulesets/PhysicalWorld.h"
 
 #include "stubs/common/stubLog.h"
 
@@ -61,6 +62,19 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 
 using String::compose;
+
+class TestPhysicalDomain : public PhysicalDomain {
+    public:
+        TestPhysicalDomain(LocatedEntity& entity) :
+            PhysicalDomain(entity) {
+
+        }
+
+
+        PhysicalWorld* getPhysicalWorld() const {
+            return m_dynamicsWorld;
+        }
+};
 
 
 class PhysicalDomainIntegrationTest : public Cyphesis::TestBase
@@ -100,21 +114,24 @@ class PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         void test_visibilityPerformance();
 
         void test_stairs();
+
+        void test_terrainPrecision();
 };
 
 long PhysicalDomainIntegrationTest::m_id_counter = 0L;
 
 PhysicalDomainIntegrationTest::PhysicalDomainIntegrationTest()
 {
-//    ADD_TEST(PhysicalDomainIntegrationTest::test_fallToBottom);
-//    ADD_TEST(PhysicalDomainIntegrationTest::test_standOnFixed);
-//    ADD_TEST(PhysicalDomainIntegrationTest::test_fallToTerrain);
-//    ADD_TEST(PhysicalDomainIntegrationTest::test_collision);
-//    ADD_TEST(PhysicalDomainIntegrationTest::test_mode);
-//    ADD_TEST(PhysicalDomainIntegrationTest::test_determinism);
-//    ADD_TEST(PhysicalDomainIntegrationTest::test_zoffset);
-//    ADD_TEST(PhysicalDomainIntegrationTest::test_zscaledoffset);
-//    ADD_TEST(PhysicalDomainIntegrationTest::test_visibility);
+    ADD_TEST(PhysicalDomainIntegrationTest::test_terrainPrecision);
+    ADD_TEST(PhysicalDomainIntegrationTest::test_fallToBottom);
+    ADD_TEST(PhysicalDomainIntegrationTest::test_standOnFixed);
+    ADD_TEST(PhysicalDomainIntegrationTest::test_fallToTerrain);
+    ADD_TEST(PhysicalDomainIntegrationTest::test_collision);
+    ADD_TEST(PhysicalDomainIntegrationTest::test_mode);
+    ADD_TEST(PhysicalDomainIntegrationTest::test_determinism);
+    ADD_TEST(PhysicalDomainIntegrationTest::test_zoffset);
+    ADD_TEST(PhysicalDomainIntegrationTest::test_zscaledoffset);
+    ADD_TEST(PhysicalDomainIntegrationTest::test_visibility);
     ADD_TEST(PhysicalDomainIntegrationTest::test_stairs);
 }
 
@@ -823,6 +840,51 @@ void PhysicalDomainIntegrationTest::test_stairs()
 
 
 }
+
+void PhysicalDomainIntegrationTest::test_terrainPrecision()
+{
+
+    double tickSize = 1.0 / 15.0;
+    double time = 0;
+    Entity* rootEntity = new Entity("0", newId());
+    TerrainProperty* terrainProperty = new TerrainProperty();
+    Mercator::Terrain& terrain = terrainProperty->getData();
+    terrain.setBasePoint(0, 0, Mercator::BasePoint(10));
+    terrain.setBasePoint(0, 1, Mercator::BasePoint(15));
+    terrain.setBasePoint(0, -1, Mercator::BasePoint(15));
+    terrain.setBasePoint(1, 0, Mercator::BasePoint(20));
+    terrain.setBasePoint(1, 1, Mercator::BasePoint(25));
+    terrain.setBasePoint(1, -1, Mercator::BasePoint(30));
+    terrain.setBasePoint(-1, 0, Mercator::BasePoint(35));
+    terrain.setBasePoint(-1, 1, Mercator::BasePoint(40));
+    terrain.setBasePoint(-1, -1, Mercator::BasePoint(45));
+    rootEntity->setProperty("terrain", terrainProperty);
+    rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
+    rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
+    TestPhysicalDomain* domain = new TestPhysicalDomain(*rootEntity);
+
+
+    auto checkHeightFunc = [&](float x, float y) {
+        PhysicalWorld* physicalWorld = domain->getPhysicalWorld();
+
+        float mercatorHeight = terrain.get(x, y);
+
+        btVector3 from(x, 63, -y);
+        btVector3 to(x, -63, -y);
+        btCollisionWorld::ClosestRayResultCallback callback(from, to);
+
+        physicalWorld->rayTest(from, to, callback);
+        ASSERT_FUZZY_EQUAL(mercatorHeight, callback.m_hitPointWorld.y(), 0.1);
+    };
+
+    checkHeightFunc(1,1);
+    checkHeightFunc(10,10);
+    checkHeightFunc(15,15);
+    checkHeightFunc(-15,15);
+    checkHeightFunc(-15,-15);
+    checkHeightFunc(15,-15);
+}
+
 
 void TestWorld::message(const Operation& op, LocatedEntity& ent)
 {
