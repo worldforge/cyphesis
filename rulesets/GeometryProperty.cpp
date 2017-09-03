@@ -54,7 +54,11 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
         if (shapeType == "sphere") {
             mShapeCreator = [&](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset) -> std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> {
                 float minRadius = std::min(size.x(), std::min(size.y(), size.z())) * 0.5f;
-                centerOfMassOffset = -btVector3(minRadius, minRadius, minRadius);
+                float xOffset = bbox.lowCorner().x() + minRadius;
+                float yOffset = bbox.lowCorner().y() + minRadius;
+                float zOffset = bbox.lowCorner().z() + minRadius;
+
+                centerOfMassOffset = -btVector3(xOffset, zOffset, -yOffset);
                 return std::make_pair(new btSphereShape(minRadius), std::shared_ptr<btCollisionShape>());
             };
         } else if (shapeType == "capsule-z") {
