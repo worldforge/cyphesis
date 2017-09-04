@@ -121,7 +121,7 @@ void GeometryPropertyIntegrationTest::test_createShapes()
         GeometryProperty g1;
         g1.set(Atlas::Message::MapType({{"shape", "sphere"}}));
         btCollisionShape* shape = g1.createShape(aabb, massOffset).first;
-        ASSERT_EQUAL(btVector3(-4, -4, -4), massOffset);
+        ASSERT_EQUAL(btVector3(-2, 0, 1), massOffset);
         btSphereShape* sphere = dynamic_cast<btSphereShape*>(shape);
         ASSERT_NOT_NULL(sphere);
         //Min radius is used
