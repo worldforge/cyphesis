@@ -128,11 +128,11 @@ class Goal:
         if hasattr(self, "lastProcessedGoals"):
             map["lastProcessedGoals"] = self.lastProcessedGoals
 
-        if len(self.subgoals) > 0:
-            subgoals=[]
-            for sg in self.subgoals:
-                if type(sg)!=FunctionType and type(sg)!=MethodType and sg is not None:
-                    subgoals.append(sg.report())
+        subgoals=[]
+        for sg in self.subgoals:
+            if type(sg)!=FunctionType and type(sg)!=MethodType and sg is not None:
+                subgoals.append(sg.report())
+        if len(subgoals) > 0:
             map["subgoals"]=subgoals
         
         if len(self.vars) > 0:
