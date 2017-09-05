@@ -909,7 +909,7 @@ class NPCMind(server.Mind):
             return
         vector = vector.unit_vector()
         newloc = Location(self.location.parent)
-        newloc.orientation = Quaternion(Vector3D(1,0,0), vector)
+        newloc.orientation = Quaternion(Vector3D(1,0,0), vector, Vector3D(0,0,1))
         return Operation("move", Entity(self.id, location=newloc))
     def address(self, entity_id, message):
         """Creates a new Talk op which is addressed to an entity"""
