@@ -195,7 +195,7 @@ class NPCMind(server.Mind):
         
         This method is automatically invoked by the C++ BaseMind code, due to its *_*_operation name."""
         obj=self.map.update(op[0], op.getSeconds())
-        if obj.location.parent.id==self.id:
+        if obj.location.parent and obj.location.parent.id==self.id:
             self.add_thing(obj)
             if op.to != self.id:
                 self.transfers.append((op.from_, obj.id))
