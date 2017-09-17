@@ -72,7 +72,8 @@ RULESETS_INTEGRATION_TESTS = TerrainPropertyintegration \
                              BaseMindMapEntityintegration \
                              AreaPropertyintegration \
                              SuspendedPropertyintegration \
-                             ThingIntegration
+                             ThingIntegration \
+                             MetabolizingPropertyintegration
 
 CLIENT_TESTS = Py_CreatorClientTest Py_ObserverClientTest \
                ClientConnectionTest BaseClientTest \
@@ -925,6 +926,15 @@ DecaysPropertyintegration_SOURCES = DecaysPropertyIntegration.cpp
 DecaysPropertyintegration_LDADD = \
         $(top_builddir)/rulesets/Entity.o \
         $(top_builddir)/rulesets/DecaysProperty.o \
+        $(top_builddir)/rulesets/LocatedEntity.o \
+        $(top_builddir)/common/Property.o \
+        $(top_builddir)/common/TypeNode.o
+
+MetabolizingPropertyintegration_SOURCES = MetabolizingPropertyIntegration.cpp
+MetabolizingPropertyintegration_LDADD = \
+        $(top_builddir)/rulesets/Entity.o \
+        $(top_builddir)/rulesets/MetabolizingProperty.o \
+        $(top_builddir)/common/BaseWorld.o \
         $(top_builddir)/rulesets/LocatedEntity.o \
         $(top_builddir)/common/Property.o \
         $(top_builddir)/common/TypeNode.o
