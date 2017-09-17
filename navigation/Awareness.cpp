@@ -498,7 +498,7 @@ void Awareness::processEntityMovementChange(EntityEntry& entityEntry, const Loca
     }
 }
 
-bool Awareness::avoidObstacles(int avatarEntityId, const WFMath::Point<2>& position, const WFMath::Vector<2>& desiredVelocity, WFMath::Vector<2>& newVelocity, double currentTimestamp) const
+bool Awareness::avoidObstacles(long avatarEntityId, const WFMath::Point<2>& position, const WFMath::Vector<2>& desiredVelocity, WFMath::Vector<2>& newVelocity, double currentTimestamp) const
 {
     struct EntityCollisionEntry
     {

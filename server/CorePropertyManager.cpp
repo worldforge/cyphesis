@@ -49,11 +49,13 @@
 #include "rulesets/DefaultLocationProperty.h"
 #include "rulesets/DomainProperty.h"
 #include "rulesets/LimboProperty.h"
-#include "rulesets/TransformsProperty.h"
 #include "rulesets/ModeProperty.h"
-#include "rulesets/ModeSpecProperty.h"
-#include "rulesets/ForcesProperty.h"
 #include "rulesets/PropelProperty.h"
+#include "rulesets/DensityProperty.h"
+#include "rulesets/AngularFactorProperty.h"
+#include "rulesets/GeometryProperty.h"
+#include "rulesets/QuaternionProperty.h"
+#include "rulesets/Vector3Property.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
@@ -109,7 +111,7 @@ void CorePropertyManager::installProperty()
 
 CorePropertyManager::CorePropertyManager()
 {
-    // Core types, for inheritence only generally.
+    // Core types, for inheritance only generally.
     installBaseProperty<int>("int", "root_type");
     installBaseProperty<double>("float", "root_type");
     installBaseProperty<std::string>("string", "root_type");
@@ -120,8 +122,8 @@ CorePropertyManager::CorePropertyManager()
     installProperty<ModeProperty>("mode", "string");
     installProperty<LineProperty>("coords", "list");
     installProperty<LineProperty>("points", "list");
-    installProperty<Property<IdList> >("start_intersections", "list");
-    installProperty<Property<IdList> >("end_intersections", "list");
+    //installProperty<Property<IdList> >("start_intersections", "list");
+    //installProperty<Property<IdList> >("end_intersections", "list");
     installProperty<DecaysProperty>("decays", "string");
     installProperty<OutfitProperty>("outfit", "map");
     installProperty<SolidProperty>("solid", "int");
@@ -142,7 +144,7 @@ CorePropertyManager::CorePropertyManager()
     installProperty<SpawnProperty>("spawn", "map");
     installProperty<AreaProperty>("area", "map");
     installProperty<VisibilityProperty>("visibility", "float");
-    installProperty<TerrainModProperty>("terrainmod", "map");
+    installProperty<TerrainModProperty>();
     installProperty<TerrainProperty>("terrain", "map");
     installProperty<TeleportProperty>("linked", "string");
     installProperty<SuspendedProperty>("suspended", "int");
@@ -154,13 +156,46 @@ CorePropertyManager::CorePropertyManager()
     installProperty<DefaultLocationProperty>("default_location", "int");
     installProperty<DomainProperty>("domain", "string");
     installProperty<LimboProperty>("limbo", "int");
-    installProperty<TransformsProperty>("map");
     installProperty<ModeProperty>("string");
-    installProperty<ModeSpecProperty>("mode-fixed", "map");
-    installProperty<ModeSpecProperty>("mode-standing", "map");
-    installProperty<ModeSpecProperty>("mode-planted", "map");
-    installProperty<ForcesProperty>("map");
     installProperty<PropelProperty>();
+    installProperty<DensityProperty>();
+    /**
+     * Friction is used by the physics system. 0 is no friction, 1 is full friction.
+     */
+    installProperty<Property<float> >("friction", "float");
+    installProperty<AngularFactorProperty>();
+    installProperty<GeometryProperty>();
+
+    /**
+     * Vertical offset to use when entity is planted, and adjusted to the height of the terrain.
+     */
+    installProperty<Property<double>>("planted-offset", "float");
+
+    /**
+     * Vertical scaled offset to use when entity is planted, and adjusted to the height of the terrain.
+     * The resulting offset is a product of this value and the height of the entity.
+     */
+    installProperty<Property<double>>("planted-scaled-offset", "float");
+
+    /**
+     * The rotation applied to the entity when it's planted.
+     */
+    installProperty<QuaternionProperty>("planted-rotation", QuaternionProperty::property_atlastype);
+    /**
+     * The current extra rotation applied to the entity.
+     * This is closely matched with "planted-rotation" to keep track of when the entity has the planted rotation applied and not.
+     */
+    installProperty<QuaternionProperty>("active-rotation", QuaternionProperty::property_atlastype);
+
+    /**
+     * Used for things that grows, to limit the size.
+     */
+    installProperty<Vector3Property>("maxsize", Vector3Property::property_atlastype);
+
+    /**
+     * Specifies how much the entity is allowed to step onto things when moving, as a factor of the entity's height.
+     */
+    installProperty<Property<double>>("step_factor", "float");
 
 }
 

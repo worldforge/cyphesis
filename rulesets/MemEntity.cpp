@@ -77,6 +77,7 @@ PropertyBase * MemEntity::setAttr(const std::string & name, const Atlas::Message
     if (I != m_properties.end()) {
         I->second->set(attr);
         I->second->apply(this);
+        propertyApplied(I->first, *I->second);
         return I->second;
     }
     //Check if the property changed is any one of those that will alter the location,
@@ -96,5 +97,6 @@ PropertyBase * MemEntity::setAttr(const std::string & name, const Atlas::Message
     prop->install(this, name);
     prop->set(attr);
     prop->apply(this);
+    propertyApplied(name, *prop);
     return m_properties[name] = prop;
 }

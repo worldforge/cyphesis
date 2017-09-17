@@ -43,8 +43,8 @@ class ExternalMind : public Router {
     ExternalMind(LocatedEntity &);
     virtual ~ExternalMind();
 
-    virtual void externalOperation(const Operation & op, Link &);
-    virtual void operation(const Operation &, OpVector &);
+    void externalOperation(const Operation & op, Link &) override;
+    void operation(const Operation &, OpVector &) override;
 
     bool isLinked() { return m_external != 0; }
     bool isLinkedTo(Link * c) { return m_external == c; }

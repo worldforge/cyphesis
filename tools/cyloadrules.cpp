@@ -30,16 +30,15 @@
 #include "common/globals.h"
 #include "common/log.h"
 
-#include <Atlas/Message/DecoderBase.h>
 #include <Atlas/Codecs/XML.h>
 
-#include <string>
-#include <fstream>
-#include <iostream>
+#include <boost/filesystem.hpp>
+#include <boost/algorithm/string/erase.hpp>
 
-#include <sys/types.h>
+#include <iostream>
+#include <fstream>
+
 // #ifdef HAVE_DIRENT_H
-#include <dirent.h>
 // #endif // HAS_DIRENT_H
 
 using Atlas::Message::Element;
@@ -88,6 +87,11 @@ class DatabaseFileLoader : public Atlas::Message::DecoderBase {
     bool isOpen() {
         return m_file.is_open();
     }
+
+    int count() {
+        return m_count;
+    }
+
 };
 
 static void usage(char * prgname)
@@ -134,39 +138,30 @@ int main(int argc, char ** argv)
         f.report(argv[optind]);
     } else if (optind == argc) {
         storage->clearRules();
-        std::cout << "Reading rules from " << ruleset_name << std::endl << std::flush;
-        std::string filename;
 
         std::string dirname = etc_directory + "/cyphesis/" + ruleset_name + ".d";
-        DIR * rules_dir = ::opendir(dirname.c_str());
-        if (rules_dir == 0) {
-            filename = etc_directory + "/cyphesis/" + ruleset_name + ".xml";
-            DatabaseFileLoader f(filename, *storage);
-            if (f.isOpen()) {
-                std::cerr << "WARNING: Reading legacy rule data from \""
-                          << filename << "\""
-                          << std::endl << std::flush;
-                storage->setRuleset(ruleset_name);
-                f.read();
-                f.report(ruleset_name);
-            }
-        } else {
-            while (struct dirent * rules_entry = ::readdir(rules_dir)) {
-                if (rules_entry->d_name[0] == '.') {
-                    continue;
-                }
-                filename = dirname + "/" + rules_entry->d_name;
-            
+
+        std::cout << "Reading rules from " << ruleset_name << " at '" << dirname << "'"<< std::endl << std::flush;
+
+        boost::filesystem::path rulesPath(dirname);
+        boost::filesystem::recursive_directory_iterator dir(rulesPath), end;
+
+        int count = 0;
+        while (dir != end) {
+            if (boost::filesystem::is_regular_file(dir->status())) {
+                auto filename = dir->path().native();
                 DatabaseFileLoader f(filename, *storage);
                 if (!f.isOpen()) {
-                    std::cerr << "ERROR: Unable to open file " << filename
-                              << std::endl << std::flush;
+                    std::cerr << "Unable to open rule file \"" << filename << "\"." << std::endl << std::flush;
                 } else {
-                    storage->setRuleset(rules_entry->d_name);
+                    auto relativePath = boost::erase_first_copy(dir->path().native(), rulesPath.native() + "/");
+                    storage->setRuleset(relativePath);
                     f.read();
-                    f.report(rules_entry->d_name);
+                    f.report(relativePath);
+                    count += f.count();
                 }
             }
+            ++dir;
         }
     } else {
         usage(argv[0]);

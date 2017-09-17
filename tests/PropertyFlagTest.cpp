@@ -102,7 +102,6 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "rulesets/AtlasProperties.h"
 #include "rulesets/Domain.h"
 #include "rulesets/DomainProperty.h"
-#include "rulesets/Motion.h"
 
 #include "common/const.h"
 #include "common/log.h"
@@ -115,49 +114,9 @@ using Atlas::Objects::Entity::RootEntity;
 #include "stubs/rulesets/stubDomainProperty.h"
 #include "stubs/common/stubMonitors.h"
 #include "stubs/common/stubVariable.h"
-#include "stubs/rulesets/stubTransformsProperty.h"
 #include "stubs/rulesets/stubPropelProperty.h"
 
 
-Motion::Motion(LocatedEntity & body) : m_entity(body), m_serialno(0),
-                                m_collision(false), m_collEntity(0),
-                                m_collisionTime(0.f)
-{
-}
-
-Motion::~Motion()
-{
-}
-
-float Motion::checkCollisions(Domain&)
-{
-    return consts::move_tick;
-}
-
-bool Motion::resolveCollision()
-{
-    return false;
-}
-
-void Motion::setMode(const std::string & mode)
-{
-    m_mode = mode;
-    // FIXME Re-configure stuff, and possible schedule an update?
-}
-
-void Motion::adjustPosition()
-{
-}
-
-Operation * Motion::genUpdateOperation()
-{
-    return 0;
-}
-
-Operation * Motion::genMoveOperation()
-{
-    return 0;
-}
 
 #include "stubs/common/stubRouter.h"
 #include "stubs/modules/stubLocation.h"

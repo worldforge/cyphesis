@@ -2,14 +2,10 @@
     <map>
         <string name="id">ploughed_field</string>
         <string name="objtype">archetype</string>
-        <list name="parents">
-            <string>archetype</string>
-        </list>
+        <string name="parent">archetype</string>
         <list name="entities">
             <map>
-                <list name="parents">
-                    <string>region</string>
-                </list>
+                <string name="parent">region</string>
                 <int name="visibility">100</int>
                 <map name="area">
                     <int name="layer">8</int>

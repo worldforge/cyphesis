@@ -28,7 +28,6 @@
 #include "TestPropertyManager.h"
 #include "TestWorld.h"
 
-#include "rulesets/Motion.h"
 #include "rulesets/Entity.h"
 
 #include "common/TypeNode.h"
@@ -126,14 +125,14 @@ void IGEntityExerciser::runOperations()
         }
         this->flushOperations(ov);
 
-        create_arg->setParents(std::list<std::string>(1, ""));
+        create_arg->setParent("");
         this->m_ent.CreateOperation(op, ov);
         if (!ov.empty()) {
             assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
         }
         this->flushOperations(ov);
 
-        create_arg->setParents(std::list<std::string>(1, "thing"));
+        create_arg->setParent("thing");
         this->m_ent.CreateOperation(op, ov);
         if (!ov.empty()) {
             assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
@@ -200,13 +199,6 @@ void IGEntityExerciser::runOperations()
 
         Atlas::Objects::Entity::Anonymous move_arg;
         op->setArgs1(move_arg);
-        this->m_ent.MoveOperation(op, ov);
-        if (!ov.empty()) {
-            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
-        }
-        this->flushOperations(ov);
-
-        move_arg->setId(this->m_ent.getId());
         this->m_ent.MoveOperation(op, ov);
         if (!ov.empty()) {
             assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
@@ -471,9 +463,6 @@ void IGEntityExerciser::runOperations()
         this->flushOperations(ov);
 
         this->m_ent.m_location.m_velocity = Vector3D();
-        if (this->m_ent.motion() != 0) {
-            op->setRefno(this->m_ent.motion()->serialno());
-        }
         this->m_ent.UpdateOperation(op, ov);
         this->flushOperations(ov);
 

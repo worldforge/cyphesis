@@ -1,0 +1,6 @@
+#include "common/const.h"
+
+namespace consts {
+
+  const char * buildId = "@GIT_SHA1@";
+}

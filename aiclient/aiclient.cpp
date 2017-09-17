@@ -1,6 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
 #include <rulesets/mind/AwareMindFactory.h>
-#include <rulesets/mind/SharedTerrain.h>
 // Copyright (C) 2001 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
@@ -20,7 +19,6 @@
 #include "ClientConnection.h"
 #include "PossessionClient.h"
 #include "rulesets/Python_API.h"
-#include "rulesets/MindFactory.h"
 #include "rulesets/PythonScriptFactory.h"
 
 #include "common/debug.h"
@@ -33,9 +31,6 @@
 #include "common/system.h"
 #include "common/RuleTraversalTask.h"
 
-#include <varconf/config.h>
-
-#include <memory>
 #define _GLIBCXX_USE_NANOSLEEP 1
 #include <thread>
 

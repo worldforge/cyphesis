@@ -28,6 +28,8 @@
 #include <Atlas/Codecs/XML.h>
 
 #include <fstream>
+#include <iostream>
+#include <common/debug.h>
 
 using Atlas::Objects::Root;
 using Atlas::Objects::smart_dynamic_cast;
@@ -85,11 +87,14 @@ void EntityImporter::operation(const Operation & op, OpVector & res)
 {
     mCurrentRes = &res;
 
+//    std::cout << "Got op ==================" << std::endl;
+//    debug_dump(op, std::cout);
+
     if (!op->isDefaultRefno()) {
         auto I = mCallbacks.find(op->getRefno());
         if (I != mCallbacks.end()) {
             auto callback = I->second;
-            mCallbacks.erase(I);
+            //Don't erase callbacks, since we can get multiple responses for the same serial number
             callback(op);
         }
     } else {

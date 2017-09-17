@@ -27,7 +27,6 @@
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/compose.hpp"
-#include "common/EntityKit.h"
 
 #include <iostream>
 
@@ -111,7 +110,7 @@ int EntityRuleHandler::modifyEntityClass(const std::string & class_name,
             backup_class_attributes = factory->m_classAttributes;
 
     // Copy the defaults from the parent. In populateEntityFactory this may be
-    // overriden with the defaults for this class.
+    // overridden with the defaults for this class.
     if (factory->m_parent != 0) {
         factory->m_attributes = factory->m_parent->m_attributes;
     } else {
@@ -212,11 +211,11 @@ int EntityRuleHandler::populateEntityFactory(const std::string & class_name,
 
 int EntityRuleHandler::check(const Atlas::Objects::Root & desc)
 {
-    assert(!desc->getParents().empty());
+    assert(desc->getParent() != "");
     if (desc->getObjtype() != "class") {
         return -1;
     }
-    return m_builder->isTask(desc->getParents().front()) ? -1 : 0;
+    return m_builder->isTask(desc->getParent()) ? -1 : 0;
 }
 
 int EntityRuleHandler::install(const std::string & name,

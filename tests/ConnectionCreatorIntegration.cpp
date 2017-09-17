@@ -257,7 +257,7 @@ void ConnectionCreatorintegration::test_external_op_puppet_nonexistant()
     // Operation should be via world dispatch, as if it was from the Entity
     // we are puppeting.
     ASSERT_TRUE(m_Link_send_sent.isValid());
-    ASSERT_EQUAL(m_Link_send_sent->getParents().front(),
+    ASSERT_EQUAL(m_Link_send_sent->getParent(),
                  "unseen");
     ASSERT_TRUE(!m_Link_send_sent->isDefaultTo());
     ASSERT_EQUAL(m_Link_send_sent->getTo(), m_creator->getId());
@@ -321,6 +321,8 @@ bool restricted_flag;
 #include "stubs/common/stubOperationsDispatcher.h"
 #include "stubs/modules/stubDateTime.h"
 #include "stubs/modules/stubWorldTime.h"
+#include "stubs/modules/stubLocation.h"
+#include "stubs/physics/stubVector3D.h"
 
 namespace Atlas { namespace Objects { namespace Operation {
 int ACTUATE_NO = -1;
@@ -628,7 +630,7 @@ ExternalProperty * ExternalProperty::copy() const
 
 #include "stubs/rulesets/stubThing.h"
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0)
+        LocatedEntity(id, intId)
 {
 }
 
@@ -792,12 +794,22 @@ void Entity::removeDelegate(int class_no, const std::string & delegate)
 {
 }
 
-Domain * Entity::getMovementDomain()
+
+void Entity::addChild(LocatedEntity& childEntity)
+{
+}
+
+void Entity::removeChild(LocatedEntity& childEntity)
+{
+}
+
+
+Domain * Entity::getDomain()
 {
     return 0;
 }
 
-const Domain * Entity::getMovementDomain() const
+const Domain * Entity::getDomain() const
 {
     return 0;
 }
@@ -821,6 +833,7 @@ void Entity::setType(const TypeNode* t) {
 }
 
 #include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rulesets/stubOutfitProperty.h"
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
 
@@ -851,52 +864,6 @@ void EntityProperty::add(const std::string & s,
 EntityProperty * EntityProperty::copy() const
 {
     return 0;
-}
-
-OutfitProperty::OutfitProperty()
-{
-}
-
-OutfitProperty::~OutfitProperty()
-{
-}
-
-int OutfitProperty::get(Atlas::Message::Element & val) const
-{
-    return 0;
-}
-
-void OutfitProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-void OutfitProperty::add(const std::string & key,
-                         Atlas::Message::MapType & map) const
-{
-}
-
-void OutfitProperty::add(const std::string & key,
-                         const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-OutfitProperty * OutfitProperty::copy() const
-{
-    return 0;
-}
-
-void OutfitProperty::cleanUp()
-{
-}
-
-void OutfitProperty::wear(LocatedEntity * wearer,
-                          const std::string & location,
-                          LocatedEntity * garment)
-{
-}
-
-void OutfitProperty::itemRemoved(LocatedEntity * garment, LocatedEntity * wearer)
-{
 }
 
 Task::~Task()
@@ -1153,6 +1120,10 @@ Link::~Link()
 {
 }
 
+void Link::send(const OpVector& opVector) const
+{
+}
+
 void Link::send(const Operation & op) const
 {
     ConnectionCreatorintegration::Link_send_sent(op);
@@ -1196,14 +1167,6 @@ void Router::clientError(const Operation & op,
                          const std::string & errstring,
                          OpVector & res,
                          const std::string & to) const
-{
-}
-
-Location::Location() : m_loc(0)
-{
-}
-
-Location::Location(LocatedEntity * rf, const Point3D & pos)
 {
 }
 
@@ -1321,11 +1284,6 @@ void EntityRef::onEntityDeleted()
 {
 }
 
-const Vector3D distanceTo(const Location & self, const Location & other)
-{
-    return Vector3D(1,0,0);
-}
-
 template<class V>
 const Quaternion quaternionFromTo(const V & from, const V & to)
 {
@@ -1366,14 +1324,6 @@ long newId(std::string & id)
     return new_id;
 }
 
-void addToEntity(const Vector3D & v, std::vector<double> & vd)
-{
-    vd.resize(3);
-    vd[0] = v[0];
-    vd[1] = v[1];
-    vd[2] = v[2];
-}
-
 Shaker::Shaker()
 {
 }
@@ -1382,22 +1332,6 @@ std::string Shaker::generateSalt(size_t length)
 {
     return "";
 }
-
-template <typename FloatT>
-int fromStdVector(Point3D & p, const std::vector<FloatT> & vf)
-{
-    return 0;
-}
-
-template <typename FloatT>
-int fromStdVector(Vector3D & v, const std::vector<FloatT> & vf)
-{
-    return 0;
-}
-
-template int fromStdVector<double>(Point3D & p, const std::vector<double> & vf);
-template int fromStdVector<double>(Vector3D & v, const std::vector<double> & vf);
-
 
 void hash_password(const std::string & pwd, const std::string & salt,
                    std::string & hash )

@@ -55,3 +55,16 @@ WFMath::CoordType boxSquareHorizontalBoundingRadius(const BBox & box)
             sqrMag(WFMath::Point<2>(box.highCorner().x(), box.highCorner().y())));
 }
 
+void boxScale(BBox& box, float scale)
+{
+    float side_scale = std::pow(scale, 0.33333f);
+
+    box = BBox(WFMath::Point<3>(box.lowCorner().x() * side_scale,
+                        box.lowCorner().y() * side_scale,
+                        box.lowCorner().z() * side_scale),
+            WFMath::Point<3>(box.highCorner().x() * side_scale,
+                        box.highCorner().y() * side_scale,
+                        box.highCorner().z() * side_scale));
+}
+
+

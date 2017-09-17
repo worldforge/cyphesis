@@ -2,34 +2,52 @@
 
   <map>
     <map name="attributes">
-      <map name="mass">
-        <float name="default">0.05</float>
+       <map name="bbox">
+        <list name="default">
+          <float>-0.02</float>
+          <float>-0.02</float>
+          <float>0</float>
+          <float>0.02</float>
+          <float>0.02</float>
+          <float>0.3</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="density">
+        <float name="default">500</float>
         <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">arrow</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
     <map name="attributes">
+       <map name="bbox">
+        <list name="default">
+          <float>-0.2</float>
+          <float>-0.02</float>
+          <float>0</float>
+          <float>0.2</float>
+          <float>0.02</float>
+          <float>1.5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
       <map name="ammo">
         <string name="default">arrow</string>
         <string name="visibility">internal</string>
       </map>
-      <map name="mass">
-        <float name="default">1.5</float>
+      <map name="density">
+        <float name="default">500</float>
         <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">bow</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.tools.Bow.Bow</string>
@@ -38,16 +56,25 @@
 
   <map>
     <map name="attributes">
-      <map name="mass">
-        <float name="default">1.5</float>
+       <map name="bbox">
+        <list name="default">
+          <float>-0.05</float>
+          <float>-0.05</float>
+          <float>0</float>
+          <float>0.05</float>
+          <float>0.05</float>
+          <float>1.5</float>
+        </list>
+        <string name="visibility">public</string>
+      </map>
+      <map name="density">
+        <float name="default">7500</float>
         <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">sword</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
 </atlas>

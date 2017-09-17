@@ -26,13 +26,10 @@
 #undef DATADIR
 #endif // _WIN32
 
-#include <cassert>
-
 extern "C" {
 #ifdef HAVE_SYS_UTSNAME_H
     #include <sys/utsname.h>
 #endif // HAVE_SYS_UTSNAME_H
-    #include <sys/types.h>
 }
 
 #ifdef HAVE_WINSOCK_H
@@ -40,7 +37,6 @@ extern "C" {
 #endif // HAVE_WINSOCK_H
 
 #ifdef HAVE_SYS_UN_H
-#include <sys/un.h>
 #endif // HAVE_SYS_UN_H
 
 static const bool debug_flag = false;

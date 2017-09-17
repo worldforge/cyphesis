@@ -31,8 +31,6 @@
 #include "common/compose.hpp"
 #include "common/OperationRouter.h"
 
-#include <Atlas/Objects/RootOperation.h>
-
 #include <iostream>
 
 static const bool debug_flag = false;
@@ -97,7 +95,7 @@ bool PythonEntityScript::operation(const std::string & op_type,
         PyOperation * op = (PyOperation*)ret;
         assert(op->operation.isValid());
         //Filter out raw operations, as these are meant to be used to short circuit goals. They should thus never be sent on.
-        if (!op->operation->getParents().empty() && op->operation->getParents().front() != "operation") {
+        if (op->operation->getParent() != "operation") {
             res.push_back(op->operation);
         }
     } else if (PyOplist_Check(ret)) {
@@ -107,7 +105,7 @@ bool PythonEntityScript::operation(const std::string & op_type,
         OpVector::const_iterator Iend = o.end();
         for (OpVector::const_iterator I = o.begin(); I != Iend; ++I) {
             //Filter out raw operations, as these are meant to be used to short circuit goals. They should thus never be sent on.
-            if (!(*I)->getParents().empty() && (*I)->getParents().front() != "operation") {
+            if ((*I)->getParent() != "operation") {
                 res.push_back(*I);
             }
         }

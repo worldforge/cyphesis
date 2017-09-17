@@ -1,11 +1,22 @@
 #!/bin/sh
 #
+#
 # cyphesis          This shell script takes care of starting and stopping
 #                   the cyphesis service.
 #
 # chkconfig: - 90 10
 # description: Cyphesis is a server for WorldForge online games.
 # processname: cyphesis
+#
+### BEGIN INIT INFO
+# Provides:          cyphesis
+# Required-Start:    $network $syslog $remote_fs postgresql
+# Required-Stop:     $network postgresql
+# Default-Start:     3 5
+# Default-Stop:      0 1 2 6
+# Short-Description: Cyphesis is a server for WorldForge online games.
+# Description:       Cyphesis is a server for WorldForge online games.
+### END INIT INFO
 
 if [ -f /etc/rc.d/init.d/functions ] ; then
         . /etc/rc.d/init.d/functions
@@ -92,7 +103,7 @@ start() {
         RETVAL=$?
         if [ $RETVAL -eq 0 ]; then
             echo_success
-            touch /var/lock/subsys/cyphesis
+            touch /var/lock/cyphesis
         else
             echo_failure
             echo
@@ -107,7 +118,7 @@ stop() {
         killproc cyphesis
         RETVAL=$?
         echo
-        [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/cyphesis
+        [ $RETVAL -eq 0 ] && rm -f /var/lock/cyphesis
         return $RETVAL
 }
 
@@ -120,13 +131,13 @@ case "$1" in
         stop
         RETVAL=$?
         ;;
-  restart|reload)
+  restart|reload|force-reload)
         stop
         start
         RETVAL=$?
         ;;
   condrestart)
-        if [ -f /var/lock/subsys/cyphesis ]; then
+        if [ -f /var/lock/cyphesis ]; then
             stop
             start
             RETVAL=$?

@@ -23,7 +23,6 @@
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/SmartPtr.h>
 
 Router::Router(const std::string & id, long intId) : m_id(id),
                                                              m_intId(intId)

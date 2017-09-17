@@ -122,7 +122,7 @@ void MindClient::operation(const Operation & op, OpVector & res)
         } else {
             log(ERROR,
                     String::compose("Unrecognized response to possession: %1",
-                            op->getParents().front()));
+                            op->getParent()));
         }
 
     } else {
@@ -147,7 +147,7 @@ void MindClient::createMind(const Operation & op, OpVector & res)
     }
 
     std::string entityId = ent->getId();
-    std::string entityType = ent->getParents().front();
+    std::string entityType = ent->getParent();
 
     log(INFO,
             String::compose(

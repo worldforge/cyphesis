@@ -143,7 +143,7 @@ void Tasktest::test_sequence()
     assert(res.empty());
 
     Atlas::Objects::Operation::Generic c;
-    c->setParents(std::list<std::string>(1, "generic"));
+    c->setParent("generic");
 
     m_task->initTask(c, res);
 

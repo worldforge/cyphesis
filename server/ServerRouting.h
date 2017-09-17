@@ -100,11 +100,11 @@ class ServerRouting : public Router {
     Router * getObject(const std::string & id) const;
     Account * getAccountByName(const std::string & username);
 
-    virtual void addToMessage(Atlas::Message::MapType &) const;
-    virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
+    void addToMessage(Atlas::Message::MapType &) const override;
+    void addToEntity(const Atlas::Objects::Entity::RootEntity &) const override;
 
-    virtual void externalOperation(const Operation & op, Link &);
-    virtual void operation(const Operation &, OpVector &);
+    void externalOperation(const Operation & op, Link &) override;
+    void operation(const Operation &, OpVector &) override;
 };
 
 #endif // SERVER_SERVER_ROUTING_H

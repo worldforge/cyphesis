@@ -39,6 +39,7 @@
 #include "common/TypeNode.h"
 
 #include <Atlas/Objects/Anonymous.h>
+#include <Atlas/Objects/Operation.h>
 
 #include <cassert>
 
@@ -146,7 +147,7 @@ void Rulesetintegration::test_sequence()
             attrs["test_custom_type_attr"] = test_custom_type_attr;
             custom_type_description->setAttr("attributes", attrs);
             custom_type_description->setId("custom_type");
-            custom_type_description->setParents(std::list<std::string>(1, "thing"));
+            custom_type_description->setParent("thing");
             custom_type_description->setObjtype("class");
 
             int ret = test_ruleset.installRule("custom_type", "custom",
@@ -166,8 +167,7 @@ void Rulesetintegration::test_sequence()
         const Root & check_class = Inheritance::instance().getClass("custom_type");
         assert(check_class.isValid());
         assert(check_class->getId() == "custom_type");
-        assert(check_class->getParents().size() == 1);
-        assert(check_class->getParents().front() == "thing");
+        assert(check_class->getParent() == "thing");
 
         // Check the factory has the attributes we described on the custom
         // type.
@@ -221,7 +221,7 @@ void Rulesetintegration::test_sequence()
             attrs["test_custom_inherited_type_attr"] = test_custom_type_attr;
             custom_inherited_type_description->setAttr("attributes", attrs);
             custom_inherited_type_description->setId("custom_inherited_type");
-            custom_inherited_type_description->setParents(std::list<std::string>(1, "custom_type"));
+            custom_inherited_type_description->setParent("custom_type");
             custom_inherited_type_description->setObjtype("class");
 
             std::string dependent, reason;
@@ -309,26 +309,26 @@ void Rulesetintegration::test_sequence()
             new_custom_inherited_type_description->setId("custom_inherited_type");
             new_custom_inherited_type_description->setAttr("attributes", MapType());
 
-            // No parents
+            // No parent
             int ret = test_ruleset.modifyRule("custom_inherited_type",
                                               new_custom_inherited_type_description);
             assert(ret != 0);
 
-            // empty parents
-            new_custom_inherited_type_description->setParents(std::list<std::string>());
+            // empty parent
+            new_custom_inherited_type_description->setParent("");
 
             ret = test_ruleset.modifyRule("custom_inherited_type",
                                           new_custom_inherited_type_description);
             assert(ret != 0);
 
-            // wrong parents
-            new_custom_inherited_type_description->setParents(std::list<std::string>(1, "wrong_parent"));
+            // wrong parent
+            new_custom_inherited_type_description->setParent("wrong_parent");
 
             ret = test_ruleset.modifyRule("custom_inherited_type",
                                           new_custom_inherited_type_description);
             assert(ret != 0);
 
-            new_custom_inherited_type_description->setParents(std::list<std::string>(1, "custom_type"));
+            new_custom_inherited_type_description->setParent("custom_type");
 
             ret = test_ruleset.modifyRule("custom_inherited_type",
                                           new_custom_inherited_type_description);
@@ -393,7 +393,7 @@ void Rulesetintegration::test_sequence()
             new_custom_type_description->setObjtype("class");
             new_custom_type_description->setId("custom_type");
             new_custom_type_description->setAttr("attributes", MapType());
-            new_custom_type_description->setParents(std::list<std::string>(1, "thing"));
+            new_custom_type_description->setParent("thing");
 
             int ret = test_ruleset.modifyRule("custom_type", new_custom_type_description);
 
@@ -491,7 +491,7 @@ void Rulesetintegration::test_sequence()
 
             new_custom_type_description->setId("custom_type");
             new_custom_type_description->setAttr("attributes", attrs);
-            new_custom_type_description->setParents(std::list<std::string>(1, "thing"));
+            new_custom_type_description->setParent("thing");
 
             int ret = test_ruleset.modifyRule("custom_type", new_custom_type_description);
 
@@ -642,8 +642,9 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "rulesets/Plant.h"
 #include "rulesets/Stackable.h"
 
-#include "stubs/rulesets/stubTransformsProperty.h"
 #include "stubs/rulesets/stubCreator.h"
+#include "stubs/server/stubAdmin.h"
+#include "stubs/modules/stubLocation.h"
 
 Account::Account(Connection * conn,
                  const std::string & uname,
@@ -955,191 +956,17 @@ Router * ServerRouting::getObject(const std::string & id) const
     return 0;
 }
 
-Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0)
-{
-}
+#include "stubs/rulesets/stubEntity.h"
 
-Entity::~Entity()
-{
-}
-
-void Entity::destroy()
-{
-    destroyed.emit();
-}
-
-void Entity::ActuateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::AppearanceOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::AttackOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::CombineOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::CreateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DeleteOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DisappearanceOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DivideOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::EatOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::GetOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::InfoOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::ImaginaryOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::LookOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::MoveOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::NourishOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SetOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SightOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SoundOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TalkOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TickOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TouchOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::UpdateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::UseOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::WieldOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::RelayOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::externalOperation(const Operation & op, Link &)
-{
-}
-
-void Entity::operation(const Operation & op, OpVector & res)
-{
-}
-
-void Entity::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Entity::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-PropertyBase * Entity::setAttr(const std::string & name,
-                               const Atlas::Message::Element & attr)
-{
-    return 0;
-}
-
-const PropertyBase * Entity::getProperty(const std::string & name) const
-{
-    return 0;
-}
-
-PropertyBase * Entity::setProperty(const std::string & name,
-                                   PropertyBase * prop)
-{
-    return m_properties[name] = prop;
-}
-
-PropertyBase * Entity::modProperty(const std::string & name)
-{
-    return 0;
-}
-
-void Entity::installDelegate(int class_no, const std::string & delegate)
-{
-}
-
-void Entity::removeDelegate(int class_no, const std::string & delegate)
-{
-}
-
-Domain * Entity::getMovementDomain()
-{
-    return 0;
-}
-
-const Domain * Entity::getMovementDomain() const
-{
-    return 0;
-}
-
-void Entity::sendWorld(const Operation & op)
-{
-}
-
-void Entity::onContainered(const LocatedEntity*)
-{
-}
-
-void Entity::onUpdated()
-{
-}
-
-void Entity::setType(const TypeNode* t) {
-    m_type = t;
-}
+//PropertyBase * Entity::setProperty(const std::string & name,
+//                                   PropertyBase * prop)
+//{
+//    return m_properties[name] = prop;
+//}
+//
+//void Entity::setType(const TypeNode* t) {
+//    m_type = t;
+//}
 
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),
@@ -1222,12 +1049,12 @@ void LocatedEntity::destroy()
 {
 }
 
-Domain * LocatedEntity::getMovementDomain()
+Domain * LocatedEntity::getDomain()
 {
     return 0;
 }
 
-const Domain * LocatedEntity::getMovementDomain() const
+const Domain * LocatedEntity::getDomain() const
 {
     return 0;
 }
@@ -1406,14 +1233,6 @@ void World::RelayOperation(const Operation & op, OpVector & res)
 {
 }
 
-Location::Location() : m_loc(0)
-{
-}
-
-int Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent)
-{
-    return 0;
-}
 
 Character::Character(const std::string& id, long int intId) :
         Thing(id, intId), m_movement(*(Movement*)(nullptr)){

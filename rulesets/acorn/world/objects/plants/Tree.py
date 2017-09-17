@@ -133,7 +133,7 @@ class Tree(Thing):
                 randz = 0
                 if hasattr(self,"coords_modify"):
                     randx,randy,randz=coords_modify(randx,randy,randz)
-                fruit=Entity(name=self.fruitname,location=Location(server.world,Vector3D(randx,randy,randz)),parents=[self.fruitname])
+                fruit=Entity(name=self.fruitname,location=Location(server.world,Vector3D(randx,randy,randz)),parent=self.fruitname)
                 result = result + Operation("create",fruit,to=self)
                 if debug_tree:
                     print fruit

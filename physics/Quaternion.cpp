@@ -20,10 +20,7 @@
 
 #include "Vector3D.h"
 
-#include "common/log.h"
-
 #include <wfmath/quaternion.h>
-#include <wfmath/error.h>
 
 template<class V>
 const Quaternion quaternionFromTo(const V & from, const V & to, const V& fallbackAxis)

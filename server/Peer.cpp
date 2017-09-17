@@ -25,10 +25,7 @@
 
 #include "common/BaseWorld.h"
 #include "common/CommSocket.h"
-#include "common/id.h"
 #include "common/log.h"
-#include "common/system.h"
-#include "common/serialno.h"
 #include "common/compose.hpp"
 
 #include "rulesets/Character.h"
@@ -36,13 +33,7 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
-#include <wfmath/MersenneTwister.h>
-
 #include <chrono>
-
-#include <iostream>
-
-#include <ctime>
 
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
@@ -126,9 +117,7 @@ void Peer::operation(const Operation &op, OpVector &res)
                 }
                 // Response to a Login op
                 m_accountId = arg->getId();
-                if (!arg->getParents().empty()) {
-                    m_accountType = arg->getParents().front();
-                }
+                m_accountType = arg->getParent();
                 m_state = PEER_AUTHENTICATED;
             } else if (m_state == PEER_AUTHENTICATED) {
                 // If we received an Info op while authenticated, it is a
@@ -142,6 +131,9 @@ void Peer::operation(const Operation &op, OpVector &res)
             m_state = PEER_FAILED;
         }
         break;
+        default:
+            //Ignore all else
+            break;
     }
 }
 
@@ -168,10 +160,6 @@ int Peer::teleportEntity(const LocatedEntity * ent)
 
     // Add a teleport state object to identify this teleport request
     TeleportState * s = new TeleportState(teleport_time);
-    if (s == NULL) {
-        log(ERROR, "Unable to allocate teleport state object");
-        return -1;
-    }
 
     // Check if the entity has a mind
     const Character * chr = dynamic_cast<const Character *>(ent);

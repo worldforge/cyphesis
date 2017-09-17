@@ -20,7 +20,6 @@
 
 #include "rulesets/LocatedEntity.h"
 
-#include <Atlas/Message/Element.h>
 #include <Atlas/Objects/RootEntity.h>
 
 Container::Container_const_iterator::Container_const_iterator() : m_refCount(0)

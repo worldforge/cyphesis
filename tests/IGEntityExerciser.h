@@ -24,7 +24,6 @@
 #include "TestPropertyManager.h"
 #include "TestWorld.h"
 
-#include "rulesets/Motion.h"
 #include "rulesets/Entity.h"
 
 #include <Atlas/Message/Element.h>

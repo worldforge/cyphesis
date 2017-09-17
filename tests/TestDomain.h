@@ -35,15 +35,8 @@ class TestDomain : public Domain
         {
         }
 
-        float constrainHeight(LocatedEntity& entity, LocatedEntity * parent,
-                const Point3D & pos, const std::string & mode)
+        void tick(double t, OpVector& res)
         {
-            return 0.0f;
-        }
-
-        void tick(double t)
-        {
-
         }
 
         bool isEntityVisibleFor(
@@ -53,24 +46,18 @@ class TestDomain : public Domain
             return true;
         }
 
-        void processVisibilityForMovedEntity(
-                const LocatedEntity& moved_entity, const Location& old_loc,
-                OpVector & res)
+        virtual void getVisibleEntitiesFor(const LocatedEntity& observingEntity,
+                std::list<LocatedEntity*>& entityList) const
         {
+
         }
 
-        void processDisappearanceOfEntity(
-                const LocatedEntity& moved_entity, const Location& old_loc,
-                OpVector & res)
-        {
-        }
+        void addEntity(LocatedEntity& entity) {
 
-        float checkCollision(LocatedEntity& entity,
-                CollisionData& collisionData)
-        {
-            return consts::move_tick;
         }
+        void removeEntity(LocatedEntity& entity) {
 
+        }
 };
 
 #endif /* TESTS_TESTDOMAIN_H_ */

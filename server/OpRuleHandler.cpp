@@ -18,7 +18,6 @@
 
 #include "OpRuleHandler.h"
 
-#include "common/log.h"
 #include "common/debug.h"
 #include "common/Inheritance.h"
 #include "common/compose.hpp"
@@ -76,7 +75,7 @@ int OpRuleHandler::modifyOpDefinition(const std::string & class_name,
 
 int OpRuleHandler::check(const Atlas::Objects::Root & desc)
 {
-    assert(!desc->getParents().empty());
+    assert(!desc->getParent().empty());
     if (desc->getObjtype() != "op_definition") {
         return -1;
     }

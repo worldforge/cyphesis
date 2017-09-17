@@ -31,7 +31,7 @@
 /// Attributes can refer to other entities by using the entity reference format, whereby a map
 /// with a string entry with the key "$eid" is used.
 /// If no "objtype" is specified in the entity sent to newEntity the data therein is handled
-/// as entity initialization data. The properties specified (except "parents") will all be
+/// as entity initialization data. The properties specified (except "parent") will all be
 /// applied to the first entity created.
 /// This behaviour is default in order to make sure archetypes and entities can be created
 /// interchangeably.

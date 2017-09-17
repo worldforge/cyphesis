@@ -24,8 +24,6 @@
 #include <iostream>
 #include <unordered_map>
 
-class Motion;
-
 /// \brief This is the base class from which all in-game objects inherit.
 ///
 /// This class should not normally be instantiated directly.
@@ -37,8 +35,7 @@ class Motion;
 /// \ingroup EntityClasses
 class Entity : public LocatedEntity {
   protected:
-    /// Motion behavior of this entity
-    Motion * m_motion;
+
     /// Map of delegate properties.
     std::multimap<int, std::string> m_delegates;
 
@@ -51,23 +48,16 @@ class Entity : public LocatedEntity {
     explicit Entity(const std::string & id, long intId);
     virtual ~Entity();
 
-    /// \brief Accessor for pointer to motion object
-    Motion * motion() const {
-        return m_motion;
-    }
+    void setType(const TypeNode * t) override;
 
-    virtual void setType(const TypeNode * t);
+    PropertyBase * setAttr(const std::string & name, const Atlas::Message::Element &) override;
+    const PropertyBase * getProperty(const std::string & name) const override;
 
+    PropertyBase * modProperty(const std::string & name) override;
+    PropertyBase * setProperty(const std::string & name, PropertyBase * prop) override;
 
-    virtual PropertyBase * setAttr(const std::string & name,
-                                   const Atlas::Message::Element &);
-    virtual const PropertyBase * getProperty(const std::string & name) const;
-
-    virtual PropertyBase * modProperty(const std::string & name);
-    virtual PropertyBase * setProperty(const std::string & name, PropertyBase * prop);
-
-    virtual void addToMessage(Atlas::Message::MapType &) const;
-    virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
+    void addToMessage(Atlas::Message::MapType &) const override;
+    void addToEntity(const Atlas::Objects::Entity::RootEntity &) const override;
 
     virtual void ActuateOperation(const Operation &, OpVector &);
     virtual void AppearanceOperation(const Operation &, OpVector &);
@@ -103,18 +93,22 @@ class Entity : public LocatedEntity {
                                OpVector &);
     void callOperation(const Operation &, OpVector &);
 
-    virtual void installDelegate(int, const std::string &);
-    virtual void removeDelegate(int, const std::string &);
+    void installDelegate(int, const std::string &) override;
+    void removeDelegate(int, const std::string &) override;
 
-    virtual void onContainered(const LocatedEntity* oldLocation);
-    virtual void onUpdated();
+    void addChild(LocatedEntity& childEntity) override;
 
-    virtual void destroy();
+    void removeChild(LocatedEntity& childEntity) override;
 
-    virtual Domain * getMovementDomain();
-    virtual const Domain * getMovementDomain() const;
+    void onContainered(const LocatedEntity* oldLocation) override;
+    void onUpdated() override;
 
-    virtual void sendWorld(const Operation & op);
+    void destroy() override;
+
+    Domain * getDomain() override ;
+    const Domain * getDomain() const override ;
+
+    void sendWorld(const Operation & op) override;
 
     friend class Entitytest;
     friend class PropertyEntityintegration;

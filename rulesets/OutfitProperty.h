@@ -55,14 +55,17 @@ class OutfitProperty : public PropertyBase, virtual public sigc::trackable {
 
     void itemRemoved(LocatedEntity * garment, LocatedEntity * wearer);
   public:
+    static const std::string property_name;
+    static const std::string property_atlastype;
+
     explicit OutfitProperty();
     virtual ~OutfitProperty();
 
-    virtual int get(Atlas::Message::Element & val) const;
-    virtual void set(const Atlas::Message::Element & val);
-    virtual void add(const std::string & key, Atlas::Message::MapType & map) const;
-    virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
-    virtual OutfitProperty * copy() const;
+    int get(Atlas::Message::Element & val) const override;
+    void set(const Atlas::Message::Element & val) override;
+    void add(const std::string & key, Atlas::Message::MapType & map) const override;
+    void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const override;
+    OutfitProperty * copy() const;
 
     //\brief Get a pointer to the entity at a given key of outfit
     //null pointer is returned if there is no entity at a given key

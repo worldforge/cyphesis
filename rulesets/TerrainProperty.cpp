@@ -18,11 +18,10 @@
 
 #include "TerrainProperty.h"
 #include "LocatedEntity.h"
+#include "Domain.h"
 
 #include "common/BaseWorld.h"
-#include "common/log.h"
 #include "common/debug.h"
-#include "common/compose.hpp"
 #include "common/custom.h"
 #include "common/TypeNode.h"
 #include "common/Nourish.h"
@@ -32,21 +31,13 @@
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>
 #include <Mercator/Surface.h>
-#include <Mercator/TerrainMod.h>
 #include <Mercator/TileShader.h>
 #include <Mercator/FillShader.h>
 #include <Mercator/ThresholdShader.h>
 #include <Mercator/DepthShader.h>
 #include <Mercator/GrassShader.h>
 
-#include <wfmath/intersect.h>
-
-#include <Atlas/Objects/RootOperation.h>
 #include <Atlas/Objects/Anonymous.h>
-
-#include <sstream>
-
-#include <cassert>
 
 static const bool debug_flag = false;
 
@@ -111,18 +102,32 @@ int TerrainProperty::get(Element & ent) const
     MapType & terrain = (t["points"] = MapType()).asMap();
 
     const Pointstore & points = m_data.getPoints();
-    Pointstore::const_iterator Iend = points.end();
-    for (Pointstore::const_iterator I = points.begin(); I != Iend; ++I) {
-        const Pointcolumn & pointcol = I->second;
-        Pointcolumn::const_iterator J = pointcol.begin();
-        Pointcolumn::const_iterator Jend = pointcol.end();
-        for (; J != Jend; ++J) {
+    for (const auto& column : points) {
+        for (const auto point : column.second) {
+            const Mercator::BasePoint& bp = point.second;
             std::stringstream key;
-            key << I->first << "x" << J->first;
-            ListType & point = (terrain[key.str()] = ListType(3)).asList();
-            point[0] = (FloatType)(I->first);
-            point[1] = (FloatType)(J->first);
-            point[2] = (FloatType)(J->second.height());
+            key << column.first << "x" << point.first;
+            size_t size = 3;
+            bool sendRoughness = false;
+            bool sendFalloff = false;
+            if (bp.falloff() != Mercator::BasePoint::FALLOFF) {
+                size = 5;
+                sendRoughness = true;
+                sendFalloff = true;
+            } else if (bp.roughness() != Mercator::BasePoint::ROUGHNESS) {
+                size = 4;
+                sendRoughness = true;
+            }
+            ListType & pointElem = (terrain[key.str()] = ListType(size)).List();
+            pointElem[0] = (FloatType)(column.first);
+            pointElem[1] = (FloatType)(point.first);
+            pointElem[2] = (FloatType)(bp.height());
+            if (sendRoughness) {
+                pointElem[3] = bp.roughness();
+            }
+            if (sendFalloff) {
+                pointElem[4] = bp.falloff();
+            }
         }
     }
 
@@ -141,6 +146,11 @@ void TerrainProperty::set(const Element & ent)
 
     const Pointstore & base_points = m_data.getPoints();
 
+    int minX = std::numeric_limits<int>::max();
+    int maxX = std::numeric_limits<int>::min();
+    int minY = std::numeric_limits<int>::max();
+    int maxY = std::numeric_limits<int>::min();
+
     MapType::const_iterator I = t.find("points");
     if (I != t.end() && I->second.isMap()) {
         const MapType & points = I->second.asMap();
@@ -150,12 +160,30 @@ void TerrainProperty::set(const Element & ent)
                 continue;
             }
             const ListType & point = I->second.asList();
-            if (point.size() != 3) {
+            if (point.size() < 3) {
+                continue;
+            }
+            if (!point[0].isNum() || !point[1].isNum() || !point[2].isNum()) {
                 continue;
             }
 
             int x = (int)point[0].asNum();
             int y = (int)point[1].asNum();
+            double h = point[2].asNum();
+            double roughness;
+            double falloff;
+            if (point.size() > 3) {
+                roughness = point[3].asFloat();
+            } else {
+                roughness = Mercator::BasePoint::ROUGHNESS;
+            }
+            if (point.size() > 4) {
+                falloff = point[4].asFloat();
+            } else {
+                falloff = Mercator::BasePoint::FALLOFF;
+            }
+
+            Mercator::BasePoint bp(h, roughness, falloff);
 
             Pointstore::const_iterator J = base_points.find(x);
             if (J == base_points.end() ||
@@ -173,12 +201,23 @@ void TerrainProperty::set(const Element & ent)
                 // else do nothing, as its currently waiting to be added.
             }
             
-            m_data.setBasePoint(x, y, point[2].asNum());
-            // FIXME Add support for roughness and falloff, as done
-            // by damien in equator and FIXMEd out by me
 
-            
+            minX = std::min(minX, x);
+            maxX = std::max(maxX, x);
+            minY = std::min(minY, y);
+            maxY = std::max(maxY, y);
+
+            m_data.setBasePoint(x, y, bp);
+
         }
+    }
+
+    if (minX != std::numeric_limits<int>::max()) {
+        float spacing = m_data.getSpacing();
+        WFMath::Point<2> minCorner((minX * spacing) - (spacing * 0.5f), (minY * spacing)  - (spacing * 0.5f));
+        WFMath::Point<2> maxCorner((maxX * spacing) + (spacing * 0.5f), (maxY * spacing) + (spacing * 0.5f));
+        WFMath::AxisBox<2> changedArea(minCorner, maxCorner);
+        m_changedAreas.push_back(changedArea);
     }
 
     I = t.find("surfaces");
@@ -198,6 +237,17 @@ void TerrainProperty::set(const Element & ent)
         }
     }
 
+}
+
+void TerrainProperty::apply(LocatedEntity* entity) {
+
+    if (!m_changedAreas.empty()) {
+        Domain* domain = entity->getDomain();
+        if (domain) {
+            domain->refreshTerrain(m_changedAreas);
+            m_changedAreas.clear();
+        }
+    }
 }
 
 Mercator::TileShader* TerrainProperty::createShaders(const Atlas::Message::ListType& surfaceList) {
@@ -286,24 +336,24 @@ HandlerResult TerrainProperty::operation(LocatedEntity * e,
     return eat_handler(e, op, res);
 }
 
-void TerrainProperty::addMod(const Mercator::TerrainMod *mod) const
+void TerrainProperty::addMod(long id, const Mercator::TerrainMod *mod) const
 {
-    m_data.addMod(mod);
+    m_data.updateMod(id, mod);
 }
 
-void TerrainProperty::updateMod(const Mercator::TerrainMod *mod) const
+void TerrainProperty::updateMod(long id, const Mercator::TerrainMod *mod) const
 {
-    m_data.updateMod(mod);
+    m_data.updateMod(id, mod);
 }
 
-void TerrainProperty::removeMod(const Mercator::TerrainMod *mod) const
+void TerrainProperty::removeMod(long id) const
 {
-    m_data.removeMod(mod);
+    m_data.updateMod(id, nullptr);
 }
 
 void TerrainProperty::clearMods(float x, float y)
 {
-    Mercator::Segment *s = m_data.getSegment(x,y);
+    Mercator::Segment *s = m_data.getSegmentAtPos(x,y);
     if(s != NULL) {
         s->clearMods();
         //log(INFO, "Mods cleared!");
@@ -316,7 +366,7 @@ bool TerrainProperty::getHeightAndNormal(float x,
                                          float & height,
                                          Vector3D & normal) const
 {
-    Mercator::Segment * s = m_data.getSegment(x, y);
+    Mercator::Segment * s = m_data.getSegmentAtPos(x, y);
     if (s != 0 && !s->isValid()) {
         s->populate();
     }
@@ -332,7 +382,7 @@ int TerrainProperty::getSurface(const Point3D & pos, int & material)
 {
     float x = pos.x(),
           y = pos.y();
-    Mercator::Segment * segment = m_data.getSegment(x, y);
+    Mercator::Segment * segment = m_data.getSegmentAtPos(x, y);
     if (segment == 0) {
         debug(std::cerr << "No terrain at this point" << std::endl << std::flush;);
         return -1;
@@ -371,15 +421,13 @@ int TerrainProperty::getSurface(const Point3D & pos, int & material)
 void TerrainProperty::findMods(const Point3D & pos,
                                std::vector<LocatedEntity *> & ret)
 {
-    Mercator::Segment * seg = m_data.getSegment(pos.x(), pos.y());
+    Mercator::Segment * seg = m_data.getSegmentAtPos(pos.x(), pos.y());
     if (seg == 0) {
         return;
     }
-    const Mercator::ModList & seg_mods = seg->getMods();
-    Mercator::ModList::const_iterator I = seg_mods.begin();
-    Mercator::ModList::const_iterator Iend = seg_mods.end();
-    for (; I != Iend; ++I) {
-        const Mercator::TerrainMod * mod = *I;
+    auto& seg_mods = seg->getMods();
+    for (auto& entry : seg_mods) {
+        const Mercator::TerrainMod * mod = entry.second;
         WFMath::AxisBox<2> mod_box = mod->bbox();
         if (pos.x() > mod_box.lowCorner().x() && pos.x() < mod_box.highCorner().x() &&
             pos.y() > mod_box.lowCorner().y() && pos.y() < mod_box.highCorner().y()) {
@@ -455,7 +503,7 @@ Mercator::Terrain& TerrainProperty::getData()
     return m_data;
 }
 
-const Mercator::Terrain& TerrainProperty::getData() const
+Mercator::Terrain& TerrainProperty::getData() const
 {
     return m_data;
 }

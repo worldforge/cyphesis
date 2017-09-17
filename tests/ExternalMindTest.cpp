@@ -340,7 +340,7 @@ using Atlas::Message::MapType;
 
 #include "stubs/server/stubConnection.h"
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0)
+        LocatedEntity(id, intId)
 {
 }
 
@@ -499,12 +499,12 @@ void Entity::removeDelegate(int class_no, const std::string & delegate)
 {
 }
 
-Domain * Entity::getMovementDomain()
+Domain * Entity::getDomain()
 {
     return 0;
 }
 
-const Domain * Entity::getMovementDomain() const
+const Domain * Entity::getDomain() const
 {
     return 0;
 }
@@ -526,6 +526,15 @@ void Entity::onContainered(const LocatedEntity*)
 void Entity::onUpdated()
 {
 }
+
+void Entity::addChild(LocatedEntity& childEntity)
+{
+}
+
+void Entity::removeChild(LocatedEntity& childEntity)
+{
+}
+
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/rulesets/stubScript.h"
 

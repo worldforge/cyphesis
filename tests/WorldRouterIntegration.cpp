@@ -152,7 +152,7 @@ void WorldRouterintegration::test_sequence()
         MapType spawn_data;
         spawn_data["name"] = "bob";
         MapType entity;
-        entity["parents"] = Atlas::Message::ListType(1, "spiddler");
+        entity["parent"] = "spiddler";
         MapType entities;
         entities["spiddler"] = entity;
         spawn_data["entities"] = entities;
@@ -168,7 +168,7 @@ void WorldRouterintegration::test_sequence()
         MapType spawn_data;
         spawn_data["name"] = "bob";
         MapType entity;
-        entity["parents"] = Atlas::Message::ListType(1, "character");
+        entity["parent"] = "character";
         MapType entities;
         entities["character"] = entity;
         spawn_data["entities"] = entities;
@@ -185,7 +185,7 @@ void WorldRouterintegration::test_sequence()
 //        MapType spawn_data;
 //        spawn_data["name"] = "bob";
 //        MapType entity;
-//        entity["parents"] = Atlas::Message::ListType(1, "character");
+//        entity["parent"] = "character";
 //        MapType entities;
 //        entities["character"] = entity;
 //        spawn_data["entities"] = entities;
@@ -238,7 +238,6 @@ int main()
 #include "rulesets/Plant.h"
 #include "rulesets/Stackable.h"
 #include "rulesets/ExternalMind.h"
-#include "rulesets/Motion.h"
 #include "rulesets/Pedestrian.h"
 #include "rulesets/PythonArithmeticFactory.h"
 #include "rulesets/Task.h"
@@ -251,9 +250,9 @@ int main()
 #include "stubs/rulesets/stubBaseMind.h"
 #include "stubs/rulesets/stubMemEntity.h"
 #include "stubs/rulesets/stubMemMap.h"
-#include "stubs/rulesets/stubTransformsProperty.h"
 #include "stubs/rulesets/stubPropelProperty.h"
 #include "stubs/rulesets/stubCreator.h"
+#include "stubs/rulesets/stubOutfitProperty.h"
 
 #include "stubs/server/stubExternalMindsManager.h"
 #include "stubs/server/stubExternalMindsConnection.h"
@@ -272,7 +271,7 @@ CorePropertyManager::~CorePropertyManager()
 PropertyBase * CorePropertyManager::addProperty(const std::string & name,
                                                 int type)
 {
-    return 0;
+    return new Property<float>();
 }
 
 int CorePropertyManager::installFactory(const std::string & type_name,
@@ -476,52 +475,6 @@ IdProperty * IdProperty::copy() const
     return 0;
 }
 
-OutfitProperty::OutfitProperty()
-{
-}
-
-OutfitProperty::~OutfitProperty()
-{
-}
-
-int OutfitProperty::get(Element & val) const
-{
-    return 0;
-}
-
-void OutfitProperty::set(const Element & val)
-{
-}
-
-void OutfitProperty::add(const std::string & key,
-                         MapType & map) const
-{
-}
-
-void OutfitProperty::add(const std::string & key,
-                         const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-OutfitProperty * OutfitProperty::copy() const
-{
-    return 0;
-}
-
-void OutfitProperty::cleanUp()
-{
-}
-
-void OutfitProperty::wear(LocatedEntity * wearer,
-                          const std::string & location,
-                          LocatedEntity * garment)
-{
-}
-
-void OutfitProperty::itemRemoved(LocatedEntity * garment, LocatedEntity * wearer)
-{
-}
-
 
 Task::Task(LocatedEntity & owner) : m_refCount(0), m_serialno(0),
                                     m_obsolete(false),
@@ -612,8 +565,6 @@ void ExternalMind::operation(const Operation & op, OpVector & res)
 ArithmeticKit::~ArithmeticKit()
 {
 }
-
-#include "stubs/rulesets/stubMotion.h"
 
 Pedestrian::Pedestrian(LocatedEntity & body) : Movement(body)
 {

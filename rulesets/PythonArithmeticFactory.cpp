@@ -25,11 +25,6 @@
 #include "rulesets/Py_Thing.h"
 #include "rulesets/Character.h"
 
-#include "common/log.h"
-#include "common/compose.hpp"
-
-#include <iostream>
-
 /// \brief PythonArithmeticFactory constructor
 ///
 /// @param package Name of the package containing the script

@@ -51,7 +51,7 @@ class StreamClientSocketBase
         Atlas::Codec& getCodec();
         Atlas::Objects::ObjectsEncoder& getEncoder();
 
-        virtual int write() = 0;
+        virtual size_t write() = 0;
         int poll(const boost::posix_time::time_duration& duration);
         int poll(const boost::posix_time::time_duration& duration, const std::function<bool()> exitCheckerFn);
     protected:
@@ -69,7 +69,7 @@ class StreamClientSocketBase
         Atlas::Objects::ObjectsEncoder * m_encoder;
         bool m_is_connected;
 
-        virtual int read_blocking() = 0;
+        virtual size_t read_blocking() = 0;
         virtual void do_read() = 0;
 };
 
@@ -77,22 +77,22 @@ class TcpStreamClientSocket : public StreamClientSocketBase
 {
     public:
         TcpStreamClientSocket(boost::asio::io_service& io_service, std::function<void()>& dispatcher, boost::asio::ip::tcp::endpoint endpoint);
-        virtual int write();
+        size_t write() override;
    protected:
         boost::asio::ip::tcp::socket m_socket;
-        virtual int read_blocking();
-        virtual void do_read();
+        size_t read_blocking() override;
+        void do_read() override;
 };
 
 class LocalStreamClientSocket : public StreamClientSocketBase
 {
     public:
         LocalStreamClientSocket(boost::asio::io_service& io_service, std::function<void()>& dispatcher, boost::asio::local::stream_protocol::endpoint endpoint);
-        virtual int write();
+        size_t write() override;
     protected:
         boost::asio::local::stream_protocol::socket m_socket;
-        virtual int read_blocking();
-        virtual void do_read();
+        size_t read_blocking() override;
+        void do_read() override;
 };
 
 
@@ -114,7 +114,7 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     ClientTask * m_currentTask;
 
     std::string m_username;
-    int m_spacing;
+    size_t m_spacing;
 
     /// \brief Store for reply data from the server
     Atlas::Objects::Root m_infoReply;
@@ -130,7 +130,6 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
 
     // void objectArrived(const Atlas::Objects::Root &);
     int waitForLoginResponse();
-    int negotiate();
     void dispatch();
 
     virtual void objectArrived(const Atlas::Objects::Root &);
@@ -162,12 +161,12 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
         return m_errorMessage;
     }
 
-    int spacing() const {
+    size_t spacing() const {
         return m_spacing;
     }
 
-    void send(const Atlas::Objects::Operation::RootOperation & op);
-    int connect(const std::string & host, int port = 6767);
+    virtual void send(const Atlas::Objects::Operation::RootOperation & op);
+    int connect(const std::string & host, unsigned short port = 6767);
     int connectLocal(const std::string & host);
     int cleanDisconnect();
     int login(const std::string & username, const std::string & password);
@@ -177,7 +176,7 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     int pollOne(const boost::posix_time::time_duration& duration);
     int poll(const boost::posix_time::time_duration& duration);
     int poll(int seconds = 0, int microseconds = 0);
-    void output(const Atlas::Message::Element & item, int depth = 0) const;
+    void output(const Atlas::Message::Element & item, size_t depth = 0) const;
     void output(const Atlas::Objects::Root & item) const;
 
     int runTask(ClientTask * task, const std::string & arg);

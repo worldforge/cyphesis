@@ -31,20 +31,16 @@
 #include "AdminClient.h"
 
 #include "common/compose.hpp"
-#include "common/Database.h"
 #include "common/globals.h"
 #include "common/log.h"
 #include "common/sockets.h"
 #include "common/system.h"
 
-#include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>
 
 #include <varconf/config.h>
 
-#include <string>
 #include <fstream>
-#include <cstdlib>
 
 #include <dirent.h>
 

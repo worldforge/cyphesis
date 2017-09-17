@@ -160,7 +160,7 @@ void AccountConnectionintegration::test_account_creation()
 
         Create op;
         Anonymous create_arg;
-        create_arg->setParents(std::list<std::string>(1, "player"));
+        create_arg->setParent("player");
         create_arg->setAttr("username", "39d409ec");
         create_arg->setAttr("password", "6a6e71bab281");
         op->setArgs1(create_arg);
@@ -225,7 +225,7 @@ void AccountConnectionintegration::test_account_creation()
         Player::playableTypes.insert(test_valid_character_type);
 
         Anonymous character_arg;
-        character_arg->setParents(std::list<std::string>(1, test_valid_character_type));
+        character_arg->setParent(test_valid_character_type);
         character_arg->setName("938862f2-4db2-4e8e-b944-7b0935e569db");
 
         Create character_op;
@@ -404,6 +404,13 @@ Link::~Link()
 {
 }
 
+void Link::send(const OpVector& opVector) const
+{
+    for (const auto& op : opVector) {
+        test_sent_ops.push_back(op);
+    }
+}
+
 void Link::send(const Operation & op) const
 {
     test_sent_ops.push_back(op);
@@ -508,12 +515,10 @@ void logEvent(LogEvent lev, const std::string & msg)
 #include "stubs/server/stubExternalMindsManager.h"
 #include "stubs/server/stubExternalMindsConnection.h"
 #include "stubs/common/stubOperationsDispatcher.h"
+#include "stubs/modules/stubLocation.h"
 
 PropertyManager * PropertyManager::m_instance = 0;
 
-Location::Location() : m_loc(0)
-{
-}
 
 long integerId(const std::string & id)
 {

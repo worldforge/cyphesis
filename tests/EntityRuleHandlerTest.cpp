@@ -56,7 +56,7 @@ int main()
         RuleHandler * rh = new EntityRuleHandler(EntityBuilder::instance());
 
         Anonymous description;
-        description->setParents(std::list<std::string>(1, "foo"));
+        description->setParent("foo");
         int ret = rh->check(description);
 
         assert(ret == -1);
@@ -72,7 +72,7 @@ int main()
 
         Anonymous description;
         description->setObjtype("class");
-        description->setParents(std::list<std::string>(1, "foo"));
+        description->setParent("foo");
         int ret = rh->check(description);
 
         assert(ret == -1);
@@ -88,7 +88,7 @@ int main()
 
         Anonymous description;
         description->setObjtype("class");
-        description->setParents(std::list<std::string>(1, "foo"));
+        description->setParent("foo");
         int ret = rh->check(description);
 
         assert(ret == 0);

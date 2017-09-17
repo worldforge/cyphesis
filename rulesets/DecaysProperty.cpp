@@ -24,7 +24,6 @@
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/SmartPtr.h>
 
 #include <wfmath/atlasconv.h>
 
@@ -65,7 +64,7 @@ HandlerResult DecaysProperty::del_handler(LocatedEntity * e,
     const std::string & type = data();
 
     Anonymous create_arg;
-    create_arg->setParents(std::list<std::string>(1, type));
+    create_arg->setParent(type);
     ::addToEntity(e->m_location.pos(), create_arg->modifyPos());
     create_arg->setLoc(e->m_location.m_loc->getId());
     create_arg->setAttr("orientation", e->m_location.orientation().toAtlas());

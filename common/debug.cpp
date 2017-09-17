@@ -27,13 +27,12 @@
 #include <Atlas/Objects/Entity.h>
 
 #include <iostream>
-#include <sstream>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 
-void output_element(std::ostream & out, const Element & item, int depth)
+void output_element(std::ostream & out, const Element & item, size_t depth)
 {
     switch (item.getType()) {
         case Element::TYPE_INT:

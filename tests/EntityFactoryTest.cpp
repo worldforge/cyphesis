@@ -179,7 +179,6 @@ void Plant::TouchOperation(const Operation & op, OpVector & res)
 #include "stubs/common/stubProperty.h"
 #include "common/Property_impl.h"
 #include "stubs/modules/stubLocation.h"
-#include "stubs/rulesets/stubTransformsProperty.h"
 
 void log(LogLevel lvl, const std::string & msg)
 {

@@ -85,8 +85,8 @@ PropertyExerciser::PropertyExerciser()
     string_values.push_back(std::string(32768, 'a'));
     string_values.push_back(std::string(32768, 'B'));
     string_values.push_back(std::string(32768, '0'));
-    string_values.push_back("!£$%^&*()_+}{[]:@~#';<>?/.,l\\|");
-    string_values.push_back("pwu3dc5012cw*/-+3+Q£%$\"q%2");
+    string_values.push_back("!Â£$%^&*()_+}{[]:@~#';<>?/.,l\\|");
+    string_values.push_back("pwu3dc5012cw*/-+3+QÂ£%$\"q%2");
 
     // Add all the standard class names to the string values list
     const TypeNodeDict & allTypes = Inheritance::instance().getAllObjects();

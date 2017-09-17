@@ -13,16 +13,14 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">1</float>
+      <map name="density">
+        <float name="default">2000</float>
         <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">bone_pile</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -38,16 +36,14 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">1</float>
+      <map name="density">
+        <float name="default">2000</float>
         <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">femur</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -63,16 +59,14 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">1</float>
+      <map name="density">
+        <float name="default">2000</float>
         <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">humerus</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -88,16 +82,14 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">1</float>
+      <map name="density">
+        <float name="default">2000</float>
         <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">pelvis</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -113,16 +105,14 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">1</float>
+      <map name="density">
+        <float name="default">2000</float>
         <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">ribcage</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -138,16 +128,14 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">1</float>
+      <map name="density">
+        <float name="default">2000</float>
         <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">skull</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -163,16 +151,14 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">1</float>
+      <map name="density">
+        <float name="default">2000</float>
         <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">tibia</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
 </atlas>

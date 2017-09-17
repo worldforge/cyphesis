@@ -17,7 +17,6 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
 #endif
 
 #include "EntityTraversalTask.h"
@@ -25,7 +24,6 @@
 #include "common/serialno.h"
 
 #include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/Entity.h>
 
 using Atlas::Objects::Root;
 using Atlas::Objects::smart_dynamic_cast;

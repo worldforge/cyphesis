@@ -457,7 +457,7 @@ class pick_up_focus(Goal):
 
 class wander(Goal):
     """Move in a non-specific way."""
-    def __init__(self, extragoal):
+    def __init__(self, extragoal=None):
         Goal.__init__(self,"wander randomly",false,
                       [move_me(None),
                        extragoal,
@@ -554,25 +554,25 @@ class hunt_for(pursuit):
 
 class patrol(Goal):
     """Move around an area defined by some waypoints."""
-    def __init__(self, locations, extragoal):
+    def __init__(self, locations, extragoal=None):
         Goal.__init__(self, "patrol an area",
                       false,
-                      [self.check_move_valid,
-                       move_me(locations[0]),
+                      [move_me(locations[0]),
                        extragoal,
-                       self.increment])
+                       self.increment],
+                      self.check_move_valid)
         self.list = locations
         self.stage = 0
         self.count = len(locations)
         self.vars = ["stage", "list"]
     """ Checks that the movement goal is reachable; if not we should move on to the next patrol goal """
     def check_move_valid(self, me):
-        return self.subgoals[1].is_valid(me)
+        return self.subgoals[0].is_valid(me)
     def increment(self, me):
         self.stage = self.stage + 1
         if self.stage >= self.count:
             self.stage = 0
-        self.subgoals[1].location = self.list[self.stage]
+        self.subgoals[0].location = self.list[self.stage]
         #print "Moved to next patrol goal: " + str(self.subgoals[0].location)
 
 ############################## ACCOMPANY ##############################

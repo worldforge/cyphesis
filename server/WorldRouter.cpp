@@ -24,18 +24,13 @@
 
 #include "rulesets/World.h"
 #include "rulesets/Domain.h"
-#include "rulesets/TransformsProperty.h"
 
 #include "common/id.h"
-#include "common/log.h"
 #include "common/debug.h"
 #include "common/const.h"
-#include "common/globals.h"
 #include "common/random.h"
 #include "common/system.h"
 #include "common/TypeNode.h"
-#include "common/serialno.h"
-#include "common/compose.hpp"
 #include "common/Inheritance.h"
 #include "common/Monitors.h"
 #include "common/SystemTime.h"
@@ -45,7 +40,6 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
-#include <sstream>
 #include <algorithm>
 
 using Atlas::Message::Element;
@@ -93,7 +87,6 @@ WorldRouter::WorldRouter(const SystemTime & time) :
     EntityBuilder::init();
     m_gameWorld.setType(Inheritance::instance().getType("world"));
     m_eobjects[m_gameWorld.getIntId()] = &m_gameWorld;
-    m_perceptives.insert(&m_gameWorld);
     //WorldTime tmp_date("612-1-1 08:57:00");
     Monitors::instance()->watch("entities", new Variable<int>(m_entityCount));
 }
@@ -155,14 +148,12 @@ LocatedEntity * WorldRouter::addEntity(LocatedEntity * ent)
     ++m_entityCount;
     assert(ent->m_location.isValid());
 
-    TransformsProperty* transProp = ent->requirePropertyClassFixed<TransformsProperty>();
     if (!ent->m_location.isValid()) {
         log(ERROR, String::compose("Entity %1 of type %2 added to world with invalid location!", ent->getId(), ent->getType()->name()));
         debug(std::cout << "set loc " << &getDefaultLocation()  << std::endl
                         << std::flush;);
         ent->m_location.m_loc = &getDefaultLocation();
-        transProp->getTranslate() = Vector3D(uniform(-8,8), uniform(-8,8), 0);
-        transProp->apply(ent);
+        ent->m_location.m_pos = Point3D(uniform(-8,8), uniform(-8,8), 0);
         debug(std::cout << "loc set with loc " << ent->m_location.m_loc->getId()
                         << std::endl << std::flush;);
     }
@@ -174,14 +165,15 @@ LocatedEntity * WorldRouter::addEntity(LocatedEntity * ent)
         mode = mode_attr.String();
     }
     if (ent->m_location.m_loc) {
-        Domain* movementDomain = ent->m_location.m_loc->getMovementDomain();
+        Domain* movementDomain = ent->m_location.m_loc->getDomain();
         if (movementDomain) {
-            float height = movementDomain->
-                  constrainHeight(*ent, ent->m_location.m_loc,
-                                  ent->m_location.pos(),
-                                  mode);
-            transProp->getTranslate().z() = height;
-            transProp->apply(ent);
+//            float height = movementDomain->
+//                  constrainHeight(*ent, ent->m_location.m_loc,
+//                                  ent->m_location.pos(),
+//                                  mode);
+//            transProp->getTranslate().z() = height;
+//            transProp->apply(ent);
+            movementDomain->addEntity(*ent);
         }
     }
     ent->m_location.m_loc->makeContainer();
@@ -385,7 +377,6 @@ void WorldRouter::delEntity(LocatedEntity * ent)
         return;
     }
     assert(ent->getIntId() != 0);
-    m_perceptives.erase(ent);
     m_eobjects.erase(ent->getIntId());
     --m_entityCount;
     ent->destroy();
@@ -408,24 +399,26 @@ void WorldRouter::resumeWorld()
 ///
 /// Pass an operation to addOperationToQueue()
 /// so it gets added to the queue for dispatch.
-void WorldRouter::message(const Operation & op, LocatedEntity & ent)
+/// If the op is a broadcast op, it will be split up into separate ops
+/// for each observer.
+void WorldRouter::message(const Operation & op, LocatedEntity & fromEntity)
 {
-    m_operationsDispatcher.addOperationToQueue(op, ent);
+    if (op->isDefaultTo() && shouldBroadcastPerception(op)) {
+        OpVector res;
+        fromEntity.broadcast(op, res);
+        for (auto& broadcastedOp : res) {
+            m_operationsDispatcher.addOperationToQueue(broadcastedOp, fromEntity);
+        }
+    } else {
+        m_operationsDispatcher.addOperationToQueue(op, fromEntity);
+    }
     debug(std::cout << "WorldRouter::message {"
-                    << op->getParents().front() << ":"
+                    << op->getParent() << ":"
                     << op->getFrom() << ":" << op->getTo() << "}" << std::endl
                     << std::flush;);
 }
 
-/// \brief Determine the broadcast list to be used to broadcast an operation.
-///
-/// Check the type of operation, and work out which list of entities
-/// it should be broadcast to. This will be perceptives in case 
-/// a perception operation, or all entities in any other case.
-/// This should probably go, as there is essentially no sane reason
-/// for broadcasting a random op to all entities.
-/// @return a reference to the list of entities to be used for braodcast.
-bool WorldRouter::broadcastPerception(const Operation & op) const
+bool WorldRouter::shouldBroadcastPerception(const Operation & op) const
 {
     int op_class = op->getClassNo();
     if (op_class == Atlas::Objects::Operation::SIGHT_NO ||
@@ -435,7 +428,7 @@ bool WorldRouter::broadcastPerception(const Operation & op) const
         return true;
     }
     log(WARNING, String::compose("Broadcasting %1 op from %2",
-                                 op->getParents().front(),
+                                 op->getParent(),
                                  op->getFrom()));
     return false;
 }
@@ -460,12 +453,12 @@ void WorldRouter::deliverTo(const Operation & op, LocatedEntity & ent)
     }
     OpVector res;
     debug(std::cout << "WorldRouter::deliverTo begin {"
-                        << op->getParents().front() << ":"
+                        << op->getParent() << ":"
                         << op->getFrom() << ":" << op->getTo() << "}" << std::endl
                         << std::flush;);
     ent.operation(op, res);
     debug(std::cout << "WorldRouter::deliverTo done {"
-                        << op->getParents().front() << ":"
+                        << op->getParent() << ":"
                         << op->getFrom() << ":" << op->getTo() << "}" << std::endl
                         << std::flush;);
     for(auto& resOp : res) {
@@ -481,23 +474,18 @@ void WorldRouter::deliverTo(const Operation & op, LocatedEntity & ent)
 /// \brief Main in-game operation dispatch function.
 ///
 /// Operations are passed here when they are due for dispatch.
-/// Determine the target of the operation and deliver it directly,
-/// or broadcast if broadcast is required. This function implements
-/// sight ranges for perception operations.
-/// @param op operation to be dispatched to the world. This is non-const
-/// so that broadcast ops can have their TO set correctly for each target.
+/// Determine the target of the operation and deliver it directly.
+/// @param op operation to be dispatched to the world.
 /// @param from entity the operation to be dispatched was send from. Note
-/// that it is possible that this entity has been destroyed, but it
-/// should still have a valid location, so can be used for range
-/// calculations.
+/// that it is possible that this entity has been destroyed.
 void WorldRouter::operation(const Operation & op, LocatedEntity & from)
 {
     debug(std::cout << "WorldRouter::operation {"
-                    << op->getParents().front() << ":"
+                    << op->getParent() << ":"
                     << op->getFrom() << ":" << op->getTo() << "}"
                     << std::endl << std::flush;);
     assert(op->getFrom() == from.getId());
-    assert(!op->getParents().empty());
+    assert(op->getParent() != "");
 
     Dispatching.emit(op);
 
@@ -527,20 +515,6 @@ void WorldRouter::operation(const Operation & op, LocatedEntity & from)
 
         deliverTo(op, *to_entity);
 
-    } else if (broadcastPerception(op)) {
-        if (from.m_location.m_loc) {
-            // Where broadcasts go depends on type of op
-            for (auto& entity : m_perceptives) {
-                if (entity->m_location.m_loc) {
-                    Domain* entityDomain = entity->m_location.m_loc->getMovementDomain();
-                    if (entityDomain && entityDomain->isEntityVisibleFor(*entity, from)) {
-                        op->setTo(entity->getId());
-                        deliverTo(op, *entity);
-                    }
-
-                }
-            }
-        }
     } else {
         EntityDict::const_iterator I = m_eobjects.begin();
         EntityDict::const_iterator Iend = m_eobjects.end();
@@ -559,7 +533,6 @@ void WorldRouter::operation(const Operation & op, LocatedEntity & from)
 void WorldRouter::addPerceptive(LocatedEntity * perceptive)
 {
     debug(std::cout << "WorldRouter::addPerceptive" << std::endl << std::flush;);
-    m_perceptives.insert(perceptive);
 }
 
 /// Main world loop function.

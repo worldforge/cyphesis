@@ -54,24 +54,59 @@ class CommAsioClient: public Atlas::Objects::ObjectsDecoder,
         /// \brief STL deque of pointers to operation objects.
         typedef std::deque<Atlas::Objects::Operation::RootOperation> DispatchQueue;
 
-        virtual void disconnect();
+        void disconnect() override;
 
-        virtual int flush();
+        int flush() override;
 
     protected:
         typename ProtocolT::socket mSocket;
 
         boost::asio::streambuf mReadBuffer;
+        /**
+         * A buffer into which any outgoing data is written. This is always attached to mOutStream,
+         * which basically means that any Atlas op being serialized for outgoing data is written to
+         * this buffer.
+         */
         boost::asio::streambuf* mWriteBuffer;
-        std::iostream mStream;
+
+        /**
+         * A buffer which is used when data is being sent asynchronously.
+         */
+        boost::asio::streambuf* mSendBuffer;
+
+        /**
+         * The stream onto which data is received.
+         */
+        std::istream mInStream;
+
+        /**
+         * The stream onto which data is written when it's to be sent.
+         * Note that the actual data is accessed through mWriteBuffer.
+         */
+        std::ostream mOutStream;
+
         boost::asio::deadline_timer mNegotiateTimer;
+
+        /**
+         * True if we're currently are sending/writing. No other write operations to the socket is allowed.
+         */
+        bool mIsSending;
+
+        /**
+         * True if we have pending data which we should send as soon as a pending async write operation has
+         * completed.
+         */
+        bool mShouldSend;
 
         enum
         {
+            /**
+             * Arbitrary size of the read buffer.
+             */
             read_buffer_size = 16384
         };
 
-/// \brief Queue of operations that have been decoded by not dispatched.
+        /// \brief Queue of operations that have been decoded by not dispatched.
         DispatchQueue m_opQueue;
         /// \brief Atlas codec that handles encoding and decoding traffic.
         Atlas::Codec * m_codec;
@@ -101,7 +136,7 @@ class CommAsioClient: public Atlas::Objects::ObjectsDecoder,
 
         int operation(const Atlas::Objects::Operation::RootOperation &);
 
-        virtual void objectArrived(const Atlas::Objects::Root & obj);
+        void objectArrived(const Atlas::Objects::Root & obj) override;
 };
 
 #endif /* COMMASIOCLIENT_H_ */

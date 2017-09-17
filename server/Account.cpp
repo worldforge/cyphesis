@@ -29,11 +29,7 @@
 
 #include "common/BaseWorld.h"
 #include "common/id.h"
-#include "common/log.h"
-#include "common/const.h"
 #include "common/debug.h"
-#include "common/serialno.h"
-#include "common/compose.hpp"
 
 #include <wfmath/atlasconv.h>
 
@@ -41,7 +37,6 @@
 #include <Atlas/Objects/Anonymous.h>
 
 #include <sigc++/adaptors/bind.h>
-#include <sigc++/functors/mem_fun.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -222,7 +217,7 @@ void Account::addToMessage(MapType & omap) const
     if (!m_password.empty()) {
         omap["password"] = m_password;
     }
-    omap["parents"] = ListType(1,getType());
+    omap["parent"] = getType();
     if (m_connection != 0) {
         BaseWorld & world = m_connection->m_server.m_world;
         ListType spawn_list;
@@ -260,7 +255,7 @@ void Account::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
     if (!m_password.empty()) {
         ent->setAttr("password", m_password);
     }
-    ent->setParents(std::list<std::string>(1,getType()));
+    ent->setParent(getType());
     if (m_connection != 0) {
         BaseWorld & world = m_connection->m_server.m_world;
         ListType spawn_list;
@@ -297,16 +292,17 @@ void Account::externalOperation(const Operation & op, Link &)
     OpVector reply;
     long serialno = op->getSerialno();
     operation(op, reply);
-    OpVector::const_iterator Iend = reply.end();
-    for(OpVector::const_iterator I = reply.begin(); I != Iend; ++I) {
-        if (!op->isDefaultSerialno()) {
-            // Should we respect existing refnos?
-            if ((*I)->isDefaultRefno()) {
-                (*I)->setRefno(serialno);
+    if (!reply.empty()) {
+        for(auto& replyOp : reply) {
+            if (!op->isDefaultSerialno()) {
+                // Should we respect existing refnos?
+                if (replyOp->isDefaultRefno()) {
+                    replyOp->setRefno(serialno);
+                }
             }
         }
         // FIXME detect socket failure here
-        m_connection->send(*I);
+        m_connection->send(reply);
     }
 }
 
@@ -351,12 +347,11 @@ void Account::CreateOperation(const Operation & op, OpVector & res)
     }
 
     const Root & arg = args.front();
-    if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) ||
-        arg->getParents().empty()) {
+    if (!arg->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
         error(op, "Object to be created has no type", res, getId());
         return;
     }
-    const std::string & type_str = arg->getParents().front();
+    const std::string & type_str = arg->getParent();
 
     createObject(type_str, arg, op, res);
 }
@@ -374,7 +369,7 @@ void Account::createObject(const std::string & type_str,
                      << std::endl << std::flush; );
 
     Anonymous new_character;
-    new_character->setParents(std::list<std::string>(1, type_str));
+    new_character->setParent(type_str);
     //Disable the AI mind since this will be controlled by a client.
     new_character->setAttr("mind", MapType());
     if (!arg->isDefaultName()) {
@@ -664,6 +659,6 @@ void Account::GetOperation(const Operation & op, OpVector & res)
 
 void Account::OtherOperation(const Operation & op, OpVector & res)
 {
-    std::string parent = op->getParents().empty() ? "-" : op->getParents().front();
+    std::string parent = op->getParent() == "" ? "-" : op->getParent();
     error(op, String::compose("Unknown operation %1 in Account", parent), res);
 }

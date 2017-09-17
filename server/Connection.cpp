@@ -28,23 +28,17 @@
 #include "rulesets/ExternalMind.h"
 
 #include "common/id.h"
-#include "common/log.h"
 #include "common/debug.h"
 #include "common/Update.h"
-#include "common/globals.h"
-#include "common/serialno.h"
 #include "common/Inheritance.h"
 #include "common/system.h"
 #include "common/TypeNode.h"
-#include "common/compose.hpp"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
 
 #include <sigc++/adaptors/bind.h>
-#include <sigc++/functors/mem_fun.h>
 
-#include <cassert>
 #include <algorithm>
 
 using Atlas::Message::Element;
@@ -236,16 +230,18 @@ void Connection::externalOperation(const Operation & op, Link & link)
         OpVector reply;
         long serialno = op->getSerialno();
         operation(op, reply);
-        OpVector::const_iterator Iend = reply.end();
-        for(OpVector::const_iterator I = reply.begin(); I != Iend; ++I) {
-            if (!op->isDefaultSerialno()) {
-                // Should we respect existing refnos?
-                if ((*I)->isDefaultRefno()) {
-                    (*I)->setRefno(serialno);
+
+        if (!reply.empty()) {
+            for(auto& replyOp : reply) {
+                if (!op->isDefaultSerialno()) {
+                    // Should we respect existing refnos?
+                    if (replyOp->isDefaultRefno()) {
+                        replyOp->setRefno(serialno);
+                    }
                 }
             }
             // FIXME detect socket failure here
-            send(*I);
+            send(reply);
         }
         return;
     }
@@ -255,7 +251,7 @@ void Connection::externalOperation(const Operation & op, Link & link)
     if (I == m_objects.end()) {
         sendError(op, String::compose("Client \"%1\" op from \"%2\" is from "
                                       "non-existant object.",
-                                      op->getParents().front(), from), from);
+                                      op->getParent(), from), from);
         return;
     }
     I->second->externalOperation(op, link);
@@ -281,7 +277,7 @@ void Connection::operation(const Operation & op, OpVector & res)
         case OP_INVALID:
             break;
         default:
-            std::string parent = op->getParents().empty() ? "-" : op->getParents().front();
+            std::string parent = op->getParent().empty() ? "-" : op->getParent();
             error(op, String::compose("Unknown operation %1 in Connection", parent), res);
             break;
     }
@@ -394,11 +390,8 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
         return;
     }
     std::string type("player");
-    if (!arg->isDefaultParents()) {
-        const std::list<std::string> & parents = arg->getParents();
-        if (!parents.empty()) {
-            type = parents.front();
-        }
+    if (!arg->isDefaultParent()) {
+        type = arg->getParent();
     }
     Account * account = addNewAccount(type, username, password);
     if (account == 0) {

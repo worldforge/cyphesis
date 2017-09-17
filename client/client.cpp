@@ -26,8 +26,6 @@
 
 #include <varconf/config.h>
 
-#include <iostream>
-
 #include <cassert>
 
 static void usage(const char * prgname)

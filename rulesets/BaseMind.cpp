@@ -22,9 +22,7 @@
 
 #include "common/custom.h"
 #include "common/debug.h"
-#include "common/log.h"
 #include "common/op_switch.h"
-#include "common/compose.hpp"
 
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>
@@ -164,7 +162,7 @@ void BaseMind::SoundOperation(const Operation & op, OpVector & res)
     if (op2.isValid()) {
         debug( std::cout << " args is an op!" << std::endl << std::flush;);
         std::string event_name("sound_");
-        event_name += op2->getParents().front();
+        event_name += op2->getParent();
 
         if (m_script == 0 || m_script->operation(event_name, op2, res) == 0) {
             callSoundOperation(op2, res);
@@ -187,13 +185,13 @@ void BaseMind::SightOperation(const Operation & op, OpVector & res)
     if (op2.isValid()) {
         debug( std::cout << " args is an op!" << std::endl << std::flush;);
         std::string event_name("sight_");
-        event_name += op2->getParents().front();
+        event_name += op2->getParent();
 
         //Check that the argument had seconds set; if not the timestamp of the updates will be wrong.
         if (!op2->hasAttrFlag(Atlas::Objects::Operation::SECONDS_FLAG)) {
             //Copy from wrapping op to fix this. This indicates an error in the server.
             op2->setSeconds(op->getSeconds());
-            log(WARNING, String::compose("Sight op argument had no seconds set, for argument %1.", op2->getParents().front()));
+            log(WARNING, String::compose("Sight op argument ('%1') had no seconds set.", op2->getParent()));
         }
 
         if (m_script == 0 || m_script->operation(event_name, op2, res) == 0) {
@@ -230,7 +228,7 @@ void BaseMind::ThinkOperation(const Operation &op, OpVector &res)
         debug(std::cout << " args is an op!" << std::endl << std::flush
         ;);
         std::string event_name("think_");
-        event_name += op2->getParents().front();
+        event_name += op2->getParent();
 
         OpVector mres;
 
@@ -351,7 +349,7 @@ void BaseMind::operation(const Operation & op, OpVector & res)
     //   If so create look operations to those ids
     //   Set the minds time and date 
     debug(std::cout << "BaseMind::operation("
-                    << op->getParents().front() << ")"
+                    << op->getParent() << ")"
                     << std::endl << std::flush;);
     int op_no = op->getClassNo();
     m_time.update((int)op->getSeconds());
@@ -363,7 +361,7 @@ void BaseMind::operation(const Operation & op, OpVector & res)
     m_map.sendLooks(res);
     if (m_script) {
         m_script->operation("call_triggers", op, res);
-        if (m_script->operation(op->getParents().front(), op, res) != 0) {
+        if (m_script->operation(op->getParent(), op, res) != 0) {
             return;
         }
     }
@@ -398,7 +396,7 @@ void BaseMind::callSightOperation(const Operation & op,
     auto op_no = op->getClassNo();
     if (debug_flag && (op_no == OP_INVALID)) {
         debug(std::cout << getId() << " could not deliver sight of "
-                        << op->getParents().front()
+                        << op->getParent()
                         << std::endl << std::flush;);
     }
     SUB_OP_SWITCH(op, op_no, res, sight)
@@ -413,7 +411,7 @@ void BaseMind::callSoundOperation(const Operation & op,
     auto op_no = op->getClassNo();
     if (debug_flag && (op_no == OP_INVALID)) {
         debug(std::cout << getId() << " could not deliver sound of "
-                        << op->getParents().front()
+                        << op->getParent()
                         << std::endl << std::flush;);
     }
 

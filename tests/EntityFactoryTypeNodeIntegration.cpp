@@ -138,7 +138,6 @@ void Plant::TouchOperation(const Operation & op, OpVector & res)
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/rulesets/stubThing.h"
-#include "stubs/rulesets/stubTransformsProperty.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/modules/stubLocation.h"
 

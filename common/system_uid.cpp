@@ -53,6 +53,6 @@ std::string create_session_username()
 #elif defined(_WIN32)
     return String::compose("admin_%1_%2", GetCurrentProcessId(), 23);
 #else // _WIN32
-    return String::compost("admin_%1", ::rand());
+    return String::compose("admin_%1", ::rand());
 #endif // _WIN32
 }

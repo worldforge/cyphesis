@@ -56,12 +56,12 @@ A Set op is used to insert or update a thought. Each argument element represents
 Outgoing
 <pre>
 {
-	"parents": ["thought"],
+	"parent": "thought",
 	"to": "1",
 	"from": "1",
 	"args": [
 		{
-			"parents": ["set"],
+			"parent": "set",
 			"objtype": "op",
 			"args": [
 				{
@@ -87,13 +87,13 @@ The thoughts will be returned as a Set op. The idea here is that this should be 
 Outgoing
 <pre>
 {
-	"parents": ["thought"],
+	"parent": "thought",
 	"to": "1",
 	"from": "1",
 	"objtype": "op",
 	"args": [
 		{
-			"parents": ["get"]
+			"parent": "get"
 		}
 	]
 }
@@ -101,13 +101,13 @@ Outgoing
 Incoming
 <pre>
 {
-	"parents": ["thought"],
+	"parent": "thought",
 	"to": "1",
 	"from": "1",
 	"objtype": "op",
 	"args": [
 		{
-			"parents": ["set"],
+			"parent": "set",
 			"objtype": "op",
 			"args": [
 				{
@@ -130,13 +130,13 @@ Alternatively thoughts can also be filtered. This is done by submitting an argum
 Outgoing
 <pre>
 {
-	"parents": ["thought"],
+	"parent": "thought",
 	"to": "1",
 	"from": "1",
 	"objtype": "op",
 	"args": [
 		{
-			"parents": ["get"]
+			"parent": "get"
 			"objtype": "op",
 			"args": [
 				{
@@ -150,13 +150,13 @@ Outgoing
 Incoming
 <pre>
 {
-	"parents": ["thought"],
+	"parent": "thought",
 	"to": "1",
 	"from": "1",
 	"objtype": "op",
 	"args": [
 		{
-			"parents": ["set"],
+			"parent": "set",
 			"objtype": "op",
 			"args": [
 				{
@@ -177,13 +177,13 @@ A delete op with arguments will delete matching thoughts, per argument.
 Outgoing to delete all
 <pre>
 {
-	"parents": ["thought"],
+	"parent": "thought",
 	"to": "1",
 	"from": "1",
 	"objtype": "op",
 	"args": [
 		{
-			"parents": ["delete"]
+			"parent": "delete"
 		}
 	]
 }
@@ -193,13 +193,13 @@ Outgoing to delete all
 Outgoing to delete single
 <pre>
 {
-	"parents": ["thought"],
+	"parent": "thought",
 	"to": "1",
 	"from": "1",
 	"objtype": "op",
 	"args": [
 		{
-			"parents": ["delete"],
+			"parent": "delete",
 			"args": [
 				{
 					"id": "goal1"
@@ -219,13 +219,13 @@ For each thought a "report" is returned in an Info op.
 Outgoing
 <pre>
 {
-	"parents": ["thought"],
+	"parent": "thought",
 	"to": "1",
 	"from": "1",
 	"objtype": "op",
 	"args": [
 		{
-			"parents": ["look"],
+			"parent": "look",
 			"args": [
 				{
 					"id": "goal1"
@@ -238,13 +238,13 @@ Outgoing
 Incoming
 <pre>
 {
-	"parents": ["thought"],
+	"parent": "thought",
 	"to": "1",
 	"from": "1",
 	"objtype": "op",
 	"args": [
 		{
-			"parents": ["info"],
+			"parent": "info",
 			"objtype": "op",
 			"args": [
 				{

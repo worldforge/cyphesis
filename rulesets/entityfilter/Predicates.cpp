@@ -1,10 +1,8 @@
 #include "Predicates.h"
-#include "Providers.h"
 
 #include "../../common/TypeNode.h"
 
 #include <algorithm>
-#include <stdexcept>
 
 namespace EntityFilter
 {

@@ -21,7 +21,6 @@
 #include "common/custom.h"
 #include "Entity.h"
 
-#include <Atlas/Message/Element.h>
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/RootEntity.h>
 #include <Atlas/Objects/Operation.h>

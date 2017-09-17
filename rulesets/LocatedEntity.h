@@ -122,7 +122,19 @@ class LocatedEntity : public Router {
     /// Flags indicating changes to attributes
     unsigned int m_flags;
 
-  public:
+    void clearProperties();
+
+    /**
+     * Collects all observers of the child, i.e. all entities that are currently observing it.
+     * This method will walk upwards the entity chain.
+     * @param child The child entity that's being observed.
+     * @param op
+     * @param res
+     */
+    void collectObserversForChild(const LocatedEntity& child, std::set<const LocatedEntity*>& receivers) const;
+
+
+    public:
     /// Full details of location
     Location m_location;
     /// List of entities which use this as ref
@@ -150,12 +162,12 @@ class LocatedEntity : public Router {
     }
 
     /// \brief Check if this entity is flagged as perceptive
-    bool isPerceptive() const { return m_flags & entity_perceptive; }
+    bool isPerceptive() const { return (m_flags & entity_perceptive) != 0; }
 
     /// \brief Check if this entity is flagged as destroyed
-    bool isDestroyed() const { return m_flags & entity_destroyed; }
+    bool isDestroyed() const { return (m_flags & entity_destroyed) != 0; }
 
-    bool isVisible() const { return m_flags & entity_visible; }
+    bool isVisible() const { return (m_flags & entity_visible) != 0; }
 
     /// \brief Accessor for flags
     const int getFlags() const { return m_flags; }
@@ -201,8 +213,8 @@ class LocatedEntity : public Router {
 
     virtual void destroy() = 0;
 
-    virtual Domain * getMovementDomain();
-    virtual const Domain * getMovementDomain() const;
+    virtual Domain * getDomain();
+    virtual const Domain * getDomain() const;
 
     virtual void sendWorld(const Operation & op);
 
@@ -222,7 +234,34 @@ class LocatedEntity : public Router {
     /// \brief Removes a child from this entity.
     virtual void removeChild(LocatedEntity& childEntity);
 
+
     /**
+     * Collects all entities that are observing this entity.
+     * @param observers A set which will be filled with observing entities.
+     */
+    void collectObservers(std::set<const LocatedEntity*>& observers) const;
+
+    /**
+     * Broadcasts an op.
+     *
+     * If this entity has a domain, the op is broadcast to all observers in the domain.
+     * In addition, broadcastFromChild will be called on any parent entity, to make it broadcast to entities in the same domain, or in domains above.
+     * @param op
+     * @param res
+     */
+    void broadcast(const Atlas::Objects::Operation::RootOperation& op, OpVector& res) const;
+
+    /**
+     * Processes appearance and disappearance of this entity for other observing entities. This is done by matching the supplied list of entities that previously
+     * observed the entity. When called, a list of entities that are currently observing it will be created, and the two lists will be compared.
+     *
+     * Any new entity gets a "Appearance" op, and any old entity which wasn't present in the new list will get a "Disappearance" op.
+     * @param previousObserving
+     * @param res
+     */
+    void processAppearDisappear(std::set<const LocatedEntity*> previousObserving, OpVector& res) const;
+
+     /**
      * @brief Determines if this entity is visible to another entity.
      *
      * @param watcher The other entity observing this entity, for which we want to determine visibility.
@@ -378,6 +417,11 @@ class LocatedEntity : public Router {
     /// and marks the conceptual destruction of the concept this entity
     /// represents, not the destruction of this object.
     sigc::signal<void> destroyed;
+
+    /// @brief Signal emitted whenever a property update is applied.
+    ///
+    /// The first parameter is the name of the property, the second is the updated property.
+    sigc::signal<void, const std::string&, PropertyBase&> propertyApplied;
 
     friend class LocatedEntitytest;
 };

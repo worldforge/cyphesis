@@ -74,7 +74,7 @@ class Connection : public Link, virtual public sigc::trackable {
   public:
     ServerRouting & m_server;
 
-    Connection(CommSocket &, ServerRouting & svr,
+    Connection(CommSocket & commSocket, ServerRouting & svr,
                const std::string & addr, const std::string & id, long iid);
     virtual ~Connection();
 
@@ -94,8 +94,8 @@ class Connection : public Link, virtual public sigc::trackable {
     void removeObject(long id);
     void objectDeleted(long id);
 
-    virtual void externalOperation(const Operation & op, Link &);
-    virtual void operation(const Operation &, OpVector &);
+    void externalOperation(const Operation & op, Link &) override;
+    void operation(const Operation &, OpVector &) override;
 
     virtual void LoginOperation(const Operation &, OpVector &);
     virtual void LogoutOperation(const Operation &, OpVector &);

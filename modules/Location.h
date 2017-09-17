@@ -45,9 +45,22 @@ class Location {
     float m_radius; // Radius of bounding sphere of box
     float m_squareRadius;
   public:
+    /**
+     * The parent entity.
+     */
     LocatedEntity * m_loc;
-    Point3D m_pos;   // Coords relative to m_loc entity
-    Vector3D m_velocity; // Veclociy vector, relative to m_loc entity.
+    /**
+     * Coords relative to the parent entity
+     */
+    Point3D m_pos;
+    /**
+     * Velocity vector, relative to m_loc entity.
+     */
+    Vector3D m_velocity;
+    /**
+     * Angular velocity of the entity, i.e. how it's being continuously rotated.
+     */
+    Vector3D m_angularVelocity;
     Quaternion m_orientation;
 
     BBox m_bBox;

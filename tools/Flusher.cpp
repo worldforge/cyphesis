@@ -27,7 +27,6 @@
 #include <Atlas/Objects/Operation.h>
 
 #include <iostream>
-#include <memory>
 
 using Atlas::Objects::Root;
 using Atlas::Objects::smart_dynamic_cast;
@@ -64,7 +63,7 @@ void Flusher::setup(const std::string & arg, OpVector & ret)
     Look l;
 
     Anonymous lmap;
-    lmap->setParents(std::list<std::string>(1, type));
+    lmap->setParent(type);
     l->setArgs1(lmap);
 
     flush_context->setFromContext(l);
@@ -99,12 +98,11 @@ void Flusher::operation(const Operation & op, OpVector & res)
             std::cerr << "Got sight no ID" << std::endl << std::flush;
             return;
         }
-        if (!sight_ent->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
-            std::cerr << "Got sight no PARENTS" << std::endl << std::flush;
+        if (!sight_ent->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
+            std::cerr << "Got sight no PARENT" << std::endl << std::flush;
             return;
         }
-        if (sight_ent->getParents().empty() ||
-            sight_ent->getParents().front() != type) {
+        if (sight_ent->getParent() != type) {
             return;
         }
         const std::string & id = sight_ent->getId();
@@ -138,7 +136,7 @@ void Flusher::operation(const Operation & op, OpVector & res)
         t->setArgs1(tick_arg);
 
         res.push_back(t);
-    } else if (op->getParents().front() == "tick") {
+    } else if (op->getParent() == "tick") {
         // We have a tick op, check if its the one we sent ourselves
         // to schedule the next look.
         if (op->getArgs().empty() ||
@@ -151,12 +149,12 @@ void Flusher::operation(const Operation & op, OpVector & res)
         Look l;
 
         Anonymous lmap;
-        lmap->setParents(std::list<std::string>(1, type));
+        lmap->setParent(type);
         l->setArgs1(lmap);
         flush_context->setFromContext(l);
 
         res.push_back(l);
-    } else if (op->getParents().front() == "unseen") {
+    } else if (op->getParent() == "unseen") {
         // We have an unseen op, which signals our last look returned
         // no results.
         m_complete = true;

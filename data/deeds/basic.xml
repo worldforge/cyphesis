@@ -6,23 +6,139 @@
         <list name="default">
           <float>-0.25</float>
           <float>-0.25</float>
-          <float>-0.25</float>
+          <float>0</float>
           <float>0.25</float>
           <float>0.25</float>
-          <float>0.25</float>
+          <float>0.5</float>
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">50</float>
+      <map name="density">
+        <float name="default">2500</float>
         <string name="visibility">public</string>
       </map>
+      <map name="geometry">
+        <map name="default">
+          <list name="indices">
+            <int>0</int>
+            <int>1</int>
+            <int>2</int>
+            <int>2</int>
+            <int>3</int>
+            <int>0</int>
+            <int>4</int>
+            <int>5</int>
+            <int>6</int>
+            <int>6</int>
+            <int>7</int>
+            <int>4</int>
+            <int>8</int>
+            <int>9</int>
+            <int>10</int>
+            <int>10</int>
+            <int>11</int>
+            <int>8</int>
+            <int>12</int>
+            <int>13</int>
+            <int>14</int>
+            <int>14</int>
+            <int>15</int>
+            <int>12</int>
+            <int>16</int>
+            <int>17</int>
+            <int>18</int>
+            <int>18</int>
+            <int>19</int>
+            <int>16</int>
+            <int>20</int>
+            <int>21</int>
+            <int>22</int>
+            <int>22</int>
+            <int>23</int>
+            <int>20</int>
+          </list>
+          <string name="shape">mesh</string>
+          <list name="vertices">
+            <float>1</float>
+            <float>-1</float>
+            <float>-1</float>
+            <float>1</float>
+            <float>-1</float>
+            <float>1</float>
+            <float>-1</float>
+            <float>-1</float>
+            <float>1</float>
+            <float>-1</float>
+            <float>-1</float>
+            <float>-1</float>
+            <float>1</float>
+            <float>1</float>
+            <float>-0.999999</float>
+            <float>-1</float>
+            <float>1</float>
+            <float>-1</float>
+            <float>-1</float>
+            <float>1</float>
+            <float>1</float>
+            <float>0.999999</float>
+            <float>1</float>
+            <float>1</float>
+            <float>1</float>
+            <float>-1</float>
+            <float>-1</float>
+            <float>1</float>
+            <float>1</float>
+            <float>-0.999999</float>
+            <float>0.999999</float>
+            <float>1</float>
+            <float>1</float>
+            <float>1</float>
+            <float>-1</float>
+            <float>1</float>
+            <float>1</float>
+            <float>-1</float>
+            <float>1</float>
+            <float>0.999999</float>
+            <float>1</float>
+            <float>1</float>
+            <float>-1</float>
+            <float>1</float>
+            <float>1</float>
+            <float>-1</float>
+            <float>-1</float>
+            <float>1</float>
+            <float>-1</float>
+            <float>-1</float>
+            <float>1</float>
+            <float>-1</float>
+            <float>1</float>
+            <float>1</float>
+            <float>-1</float>
+            <float>1</float>
+            <float>-1</float>
+            <float>-1</float>
+            <float>-1</float>
+            <float>-1</float>
+            <float>1</float>
+            <float>1</float>
+            <float>-0.999999</float>
+            <float>1</float>
+            <float>-1</float>
+            <float>-1</float>
+            <float>-1</float>
+            <float>-1</float>
+            <float>-1</float>
+            <float>-1</float>
+            <float>1</float>
+            <float>-1</float>
+          </list>
+        </map>
+        <string name="visibility">public</string>
+      </map>      
     </map>
     <string name="id">boulder</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -38,9 +154,7 @@
     </map>
     <string name="id">coin</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>stackable</string>
-    </list>
+    <string name="parent">stackable</string>
   </map>
 
   <map>
@@ -48,9 +162,7 @@
     </map>
     <string name="id">feature</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -77,9 +189,7 @@
     </map>
     <string name="id">fire</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.elements.Fire.Fire</string>
@@ -117,9 +227,7 @@
     </map>
     <string name="id">pile</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -131,15 +239,17 @@
     </map>
     <string name="id">region</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>feature</string>
-    </list>
+    <string name="parent">feature</string>
   </map>
   
   <map>
     <map name="attributes">
       <map name="domain">
         <string name="default">physical</string>
+        <string name="visibility">public</string>
+      </map>
+      <map name="friction">
+      	<float name="default">1.0</float>
         <string name="visibility">public</string>
       </map>
       <map name="terrain">
@@ -188,8 +298,6 @@
     </map>
     <string name="id">land</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 </atlas>

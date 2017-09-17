@@ -26,18 +26,15 @@
 #include "OutfitProperty.h"
 #include "StatusProperty.h"
 #include "TasksProperty.h"
+#include "Domain.h"
 
 #include "common/BaseWorld.h"
 #include "common/op_switch.h"
 #include "common/const.h"
 #include "common/custom.h"
 #include "common/debug.h"
-#include "common/globals.h"
-#include "common/log.h"
 #include "common/Link.h"
 #include "common/TypeNode.h"
-#include "common/serialno.h"
-#include "common/compose.hpp"
 #include "common/PropertyManager.h"
 
 #include "common/Actuate.h"
@@ -54,10 +51,7 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
-#include <sigc++/functors/mem_fun.h>
 #include <sigc++/adaptors/hide.h>
-
-#include <cassert>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -246,6 +240,19 @@ int Character::unlinkExternal(Link * link)
     // character.
     m_externalMind->linkUp(0);
     externalLinkChanged.emit();
+
+    //If the entity is marked as "transient" we should remove it from the world once it's not controlled anymore.
+    if (getProperty("transient")) {
+        log(INFO, "Removing entity marked as transient when mind disconnected. " + describeEntity());
+
+        Atlas::Objects::Operation::Delete delOp;
+        delOp->setTo(getId());
+        Anonymous anon;
+        anon->setId(getId());
+        delOp->setArgs1(anon);
+
+        sendWorld(delOp);
+    }
     return 0;
 }
 
@@ -324,29 +331,29 @@ void Character::TickOperation(const Operation & op, OpVector & res)
     if (!args.empty()) {
         const Root & arg = args.front();
         if (arg->getName() == "move") {
-            // Deal with movement.
-            Element serialno;
-            if (arg->copyAttr(SERIALNO, serialno) == 0 && (serialno.isInt())) {
-                if (serialno.asInt() < m_movement.serialno()) {
-                    debug(std::cout << "Old tick" << std::endl << std::flush;);
-                    return;
-                }
-            } else {
-                log(ERROR, "Character::TickOperation: No serialno in tick arg. " + describeEntity());
-            }
-            Location return_location;
-            if (m_movement.getUpdatedLocation(return_location)) {
-                return;
-            }
-            res.push_back(m_movement.generateMove(return_location));
-            Anonymous tick_arg;
-            tick_arg->setName("move");
-            tick_arg->setAttr(SERIALNO, m_movement.serialno());
-            Tick tickOp;
-            tickOp->setTo(getId());
-            tickOp->setFutureSeconds(m_movement.getTickAddition(return_location.pos(), return_location.velocity()));
-            tickOp->setArgs1(tick_arg);
-            res.push_back(tickOp);
+//            // Deal with movement.
+//            Element serialno;
+//            if (arg->copyAttr(SERIALNO, serialno) == 0 && (serialno.isInt())) {
+//                if (serialno.asInt() < m_movement.serialno()) {
+//                    debug(std::cout << "Old tick" << std::endl << std::flush;);
+//                    return;
+//                }
+//            } else {
+//                log(ERROR, "Character::TickOperation: No serialno in tick arg");
+//            }
+//            Location return_location;
+//            if (m_movement.getUpdatedLocation(return_location)) {
+//                return;
+//            }
+//            res.push_back(m_movement.generateMove(return_location));
+//            Anonymous tick_arg;
+//            tick_arg->setName("move");
+//            tick_arg->setAttr(SERIALNO, m_movement.serialno());
+//            Tick tickOp;
+//            tickOp->setTo(getId());
+//            tickOp->setFutureSeconds(m_movement.getTickAddition(return_location.pos(), return_location.velocity()));
+//            tickOp->setArgs1(tick_arg);
+//            res.push_back(tickOp);
         } else if (arg->getName() == "task") {
             TasksProperty * tp = modPropertyClass<TasksProperty>(TASKS);
 
@@ -496,11 +503,11 @@ void Character::UseOperation(const Operation & op, OpVector & res)
     const Root & arg = args.front();
     const std::string & argtype = arg->getObjtype();
     if (argtype == "op") {
-        if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) || (arg->getParents().empty())) {
-            error(op, "Use arg op has malformed parents", res, getId());
+        if (!arg->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
+            error(op, "Use arg op has malformed parent", res, getId());
             return;
         }
-        op_type = arg->getParents().front();
+        op_type = arg->getParent();
         debug(std::cout << "Got op type " << op_type << " from arg" << std::endl << std::flush
         ;);
         if (toolOps.find(op_type) == toolOps.end()) {
@@ -601,9 +608,15 @@ void Character::UseOperation(const Operation & op, OpVector & res)
 void Character::WieldOperation(const Operation & op, OpVector & res)
 {
     if (op->getArgs().empty()) {
+        std::set<const LocatedEntity*> prevObserving, newObserving;
         EntityProperty * rhw = modPropertyClass<EntityProperty>(RIGHT_HAND_WIELD);
-        if (rhw == 0) {
+        if (rhw == nullptr) {
             return;
+        }
+
+        auto wieldedEntity = rhw->data().get();
+        if (wieldedEntity) {
+            wieldedEntity->collectObservers(prevObserving);
         }
 
         rhw->data() = EntityRef(0);
@@ -620,6 +633,10 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         update->setTo(getId());
         res.push_back(update);
 
+        if (wieldedEntity) {
+            wieldedEntity->processAppearDisappear(std::move(prevObserving), res);
+        }
+
         return;
     }
     const Root & arg = op->getArgs().front();
@@ -629,7 +646,7 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
     }
     const std::string & id = arg->getId();
     LocatedEntity * item = BaseWorld::instance().getEntity(id);
-    if (item == 0) {
+    if (item == nullptr) {
         error(op, "Wield arg does not exist", res, getId());
         return;
     }
@@ -646,11 +663,24 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         ;);
 
         if (worn_attr.isString()) {
-            OutfitProperty * outfit = requirePropertyClass<OutfitProperty>(OUTFIT);
+            std::set<const LocatedEntity*> oldEntityPrevObserving, newEntityPrevObserving;
+
+            OutfitProperty * outfit = requirePropertyClassFixed<OutfitProperty>();
+            LocatedEntity* prevEntity = outfit->getEntity(worn_attr.String());
+            if (prevEntity) {
+                prevEntity->collectObservers(oldEntityPrevObserving);
+            }
+            item->collectObservers(newEntityPrevObserving);
             outfit->wear(this, worn_attr.String(), item);
             outfit->cleanUp();
 
             outfit->setFlags(flag_unsent);
+
+            if (prevEntity) {
+                prevEntity->processAppearDisappear(std::move(oldEntityPrevObserving), res);
+            }
+            item->processAppearDisappear(std::move(newEntityPrevObserving), res);
+
         } else {
             log(WARNING, "Got clothing with non-string worn attribute. " + describeEntity());
             return;
@@ -661,10 +691,16 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         // looked up here, and fix the GuiseProperty code so it does not
         // need a repeat lookup
     } else {
+        std::set<const LocatedEntity*> oldEntityPrevObserving, newEntityPrevObserving;
         debug(std::cout << "Got wield for a tool" << std::endl << std::flush
         ;);
 
         EntityProperty * rhw = requirePropertyClass<EntityProperty>(RIGHT_HAND_WIELD);
+        LocatedEntity* prevEntity = rhw->data().get();
+        if (prevEntity) {
+            prevEntity->collectObservers(oldEntityPrevObserving);
+        }
+        item->collectObservers(newEntityPrevObserving);
         // FIXME Make sure we don't stay linked to the previous wielded
         // tool.
         if (m_rightHandWieldConnection.connected()) {
@@ -677,6 +713,11 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         rhw->setFlags(flag_unsent);
 
         m_rightHandWieldConnection = item->containered.connect(sigc::hide<0>(sigc::mem_fun(this, &Character::wieldDropped)));
+
+        if (prevEntity) {
+            prevEntity->processAppearDisappear(std::move(oldEntityPrevObserving), res);
+        }
+        item->processAppearDisappear(std::move(newEntityPrevObserving), res);
 
         debug(std::cout << "Wielding " << item->getId() << std::endl << std::flush
         ;);
@@ -770,11 +811,11 @@ void Character::ActuateOperation(const Operation & op, OpVector & res)
     const Root & arg = args.front();
     const std::string & argtype = arg->getObjtype();
     if (argtype == "op") {
-        if (!arg->hasAttrFlag(Atlas::Objects::PARENTS_FLAG) || (arg->getParents().empty())) {
-            error(op, "Use arg op has malformed parents", res, getId());
+        if (!arg->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
+            error(op, "Use arg op has malformed parent", res, getId());
             return;
         }
-        op_type = arg->getParents().front();
+        op_type = arg->getParent();
         debug(std::cout << "Got op type " << op_type << " from arg" << std::endl << std::flush
         ;);
         // Check against valid ops
@@ -1227,14 +1268,14 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     // Movement within current loc. Work out the speed and stuff and
     // use movement object to track movement.
 
-    Location ret_location;
-    int ret = m_movement.getUpdatedLocation(ret_location);
-    if (ret) {
-        ret_location = m_location;
-    }
-
-    // FIXME THis here?
-    m_movement.reset();
+    Location ret_location = m_location;
+//    int ret = m_movement.getUpdatedLocation(ret_location);
+//    if (ret) {
+//        ret_location = m_location;
+//    }
+//
+//    // FIXME THis here?
+//    m_movement.reset();
 
     Vector3D direction;
     if (new_pos.isValid()) {
@@ -1264,6 +1305,10 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         vel_mag = consts::base_velocity;
     }
 
+    // Set up argument for operation
+    Anonymous move_arg;
+    move_arg->setId(getId());
+
     // Need to add the arguments to this op before we return it
     // direction is already a unit vector
     if (new_pos.isValid()) {
@@ -1274,29 +1319,39 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     if (direction.isValid()) {
         ret_location.m_velocity = direction;
         ret_location.m_velocity *= vel_mag;
+
+        ::addToEntity(direction * vel_mag, move_arg->modifyVelocity());
         debug(std::cout << "Velocity" << ret_location.velocity() << std::endl << std::flush
         ;);
+    }
+
+    if (new_orientation.isValid()) {
+        move_arg->setAttr("orientation", new_orientation.toAtlas());
     }
     ret_location.m_orientation = new_orientation;
     debug(std::cout << "Orientation" << ret_location.orientation() << std::endl << std::flush
     ;);
 
-    Operation move_op = m_movement.generateMove(ret_location);
-    assert(move_op.isValid());
-    res.push_back(move_op);
+    // Create move operation
+    Move moveOp;
+    moveOp->setTo(getId());
+    moveOp->setSeconds(BaseWorld::instance().getTime());
+    moveOp->setArgs1(move_arg);
 
-    if (m_movement.hasTarget() && ret_location.velocity().isValid() && ret_location.velocity() != Vector3D::ZERO()) {
+    res.push_back(moveOp);
 
-        Tick tickOp;
-        Anonymous tick_arg;
-        tick_arg->setAttr(SERIALNO, m_movement.serialno());
-        tick_arg->setName("move");
-        tickOp->setArgs1(tick_arg);
-        tickOp->setTo(getId());
-        tickOp->setFutureSeconds(m_movement.getTickAddition(ret_location.pos(), ret_location.velocity()));
-
-        res.push_back(tickOp);
-    }
+//    if (m_movement.hasTarget() && ret_location.velocity().isValid() && ret_location.velocity() != Vector3D::ZERO()) {
+//
+//        Tick tickOp;
+//        Anonymous tick_arg;
+//        tick_arg->setAttr(SERIALNO, m_movement.serialno());
+//        tick_arg->setName("move");
+//        tickOp->setArgs1(tick_arg);
+//        tickOp->setTo(getId());
+//        tickOp->setFutureSeconds(m_movement.getTickAddition(ret_location.pos(), ret_location.velocity()));
+//
+//        res.push_back(tickOp);
+//    }
 
 }
 
@@ -1436,6 +1491,13 @@ void Character::mindLookOperation(const Operation & op, OpVector & res)
     debug(std::cout << "Got look up from mind from [" << op->getFrom() << "] to [" << op->getTo() << "]" << std::endl << std::flush
     ;);
     m_flags |= entity_perceptive;
+    if (m_location.m_loc) {
+        Domain* domain = m_location.m_loc->getDomain();
+        if (domain) {
+            domain->toggleChildPerception(*this);
+        }
+    }
+
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
         //If nothing is specified, send to parent, if available.
@@ -1519,7 +1581,7 @@ void Character::mindTouchOperation(const Operation & op, OpVector & res)
 /// @param res The filtered result is returned here.
 void Character::mindOtherOperation(const Operation & op, OpVector & res)
 {
-    log(WARNING, String::compose("Passing '%1' op from mind through to world. %2", op->getParents().front(), describeEntity()));
+    log(WARNING, String::compose("Passing '%1' op from mind through to world. %2", op->getParent(), describeEntity()));
     op->setTo(getId());
     res.push_back(op);
 }
@@ -1676,7 +1738,7 @@ bool Character::w2mRelayOperation(const Operation & op)
 /// @param res The result of the operation is returned here.
 void Character::sendMind(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Character::sendMind(" << op->getParents().front() << ") " << describeEntity() << std::endl << std::flush
+    debug(std::cout << "Character::sendMind(" << op->getParent() << ") " << describeEntity() << std::endl << std::flush
     ;);
 
     if (m_externalMind != nullptr && m_externalMind->isLinked()) {
@@ -1706,7 +1768,7 @@ void Character::sendMind(const Operation & op, OpVector & res)
 /// @param res The result of the operation is returned here.
 void Character::mind2body(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Character::mind2body(" << op->getParents().front() << ") " << describeEntity() << std::endl << std::flush
+    debug(std::cout << "Character::mind2body(" << op->getParent() << ") " << describeEntity() << std::endl << std::flush
     ;);
 
     //Check if we have any relays registered for this op.
@@ -1734,12 +1796,12 @@ void Character::mind2body(const Operation & op, OpVector & res)
 
     if (!op->isDefaultTo()) {
 
-        log(ERROR, String::compose("Operation \"%1\" from mind with TO set. %2", op->getParents().front(), describeEntity()));
+        log(ERROR, String::compose("Operation \"%1\" from mind with TO set. %2", op->getParent(), describeEntity()));
         return;
     }
     if (!op->isDefaultFutureSeconds() && op->getClassNo() != Atlas::Objects::Operation::TICK_NO) {
         log(ERROR, String::compose("Operation \"%1\" from mind with "
-                "FUTURE_SECONDS set. %2", op->getParents().front(), describeEntity()));
+                "FUTURE_SECONDS set. %2", op->getParent(), describeEntity()));
     }
     auto op_no = op->getClassNo();
     switch (op_no) {
@@ -1813,7 +1875,7 @@ void Character::mind2body(const Operation & op, OpVector & res)
 /// useful information.
 bool Character::world2mind(const Operation & op)
 {
-    debug(std::cout << "Character::world2mind(" << op->getParents().front() << ") " << describeEntity() << std::endl << std::flush
+    debug(std::cout << "Character::world2mind(" << op->getParent() << ") " << describeEntity() << std::endl << std::flush
     ;);
     auto otype = op->getClassNo();
     POLL_OP_SWITCH(op, otype, w2m)
@@ -1842,11 +1904,11 @@ void Character::filterExternalOperation(const Operation & op)
 
 void Character::operation(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Character::operation(" << op->getParents().front() << ") " << describeEntity() << std::endl << std::flush
+    debug(std::cout << "Character::operation(" << op->getParent() << ") " << describeEntity() << std::endl << std::flush
     ;);
     Entity::operation(op, res);
     if (world2mind(op)) {
-        debug(std::cout << "Character::operation(" << op->getParents().front() << ") passed to mind" << std::endl << std::flush
+        debug(std::cout << "Character::operation(" << op->getParent() << ") passed to mind" << std::endl << std::flush
         ;);
         OpVector mres;
         sendMind(op, mres);
@@ -1859,7 +1921,7 @@ void Character::operation(const Operation & op, OpVector & res)
 
 void Character::externalOperation(const Operation & op, Link & link)
 {
-    debug(std::cout << "Character::externalOperation(" << op->getParents().front() << ") " << describeEntity() << std::endl << std::flush
+    debug(std::cout << "Character::externalOperation(" << op->getParent() << ") " << describeEntity() << std::endl << std::flush
     ;);
     if (linkExternal(&link) == 0) {
         debug(std::cout << "Subscribing existing character" << std::endl << std::flush

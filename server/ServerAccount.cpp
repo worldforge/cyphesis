@@ -25,10 +25,7 @@
 #include "rulesets/LocatedEntity.h"
 
 #include "common/BaseWorld.h"
-#include "common/id.h"
-#include "common/log.h"
 #include "common/debug.h"
-#include "common/compose.hpp"
 
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>
@@ -173,8 +170,8 @@ LocatedEntity * ServerAccount::addNewEntity(const std::string & typestr,
                                             const RootEntity & ent,
                                             const Root & arg)
 {
-    if (m_connection == 0) {
-        return 0;
+    if (!m_connection) {
+        return nullptr;
     }
     BaseWorld & world = m_connection->m_server.m_world;
     debug(std::cout << "Account::Add_character" << std::endl << std::flush;);
@@ -185,8 +182,8 @@ LocatedEntity * ServerAccount::addNewEntity(const std::string & typestr,
     } else {
         chr = world.addNewEntity(typestr, ent);
     }
-    if (chr == 0) {
-        return 0;
+    if (!chr) {
+        return nullptr;
     }
     debug(std::cout << "Added" << std::endl << std::flush;);
     assert(chr->m_location.isValid());

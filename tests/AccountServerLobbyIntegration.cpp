@@ -349,6 +349,10 @@ Link::~Link()
 {
 }
 
+void Link::send(const OpVector& opVector) const
+{
+}
+
 void Link::send(const Operation & op) const
 {
     ++test_send_count;

@@ -29,12 +29,12 @@
 
 #include <cassert>
 
-class TestBulletDomain : public BulletDomain
+class TestBulletDomain : public PhysicalDomain
 {
   public:
-    btCollisionWorld * test_getCollisionWorld() const
+    btDynamicsWorld * test_getDynamicsWorld() const
     {
-        return m_collisionWorld;
+        return m_dynamicsWorld;
     }
 };
 

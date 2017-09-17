@@ -23,7 +23,6 @@
 #include "system.h"
 
 #include "log.h"
-#include "debug.h"
 #include "globals.h"
 #include "compose.hpp"
 
@@ -43,16 +42,11 @@
 
 extern "C" {
 #ifdef HAVE_SYS_UTSNAME_H
-    #include <sys/utsname.h>
 #endif // HAVE_SYS_UTSNAME_H
-    #include <sys/types.h>
 #ifdef HAVE_SYS_WAIT_H
     #include <sys/wait.h>
 #endif // HAVE_SYS_WAIT_H
-    #include <signal.h>
-    #include <fcntl.h>
-    #include <unistd.h>
-    #include <stdio.h>
+#include <fcntl.h>
 }
 
 #ifdef HAVE_WINSOCK_H
@@ -242,7 +236,7 @@ extern "C" void soft_shutdown_on_signal(int signo)
 #endif
 }
 
-extern "C" void report_segfault(int signo)
+extern "C" void report_segfault(int)
 {
     //Don't print to the log at segfault, as that involves memory allocation.
     //And with a segfault we might have gotten a tainted stack, which might cause that call to hang.
@@ -254,7 +248,7 @@ extern "C" void report_segfault(int signo)
 #endif
 }
 
-extern "C" void report_abort(int signo)
+extern "C" void report_abort(int)
 {
     //Don't print to the log in signal handler, as that involves memory allocation.
     fprintf(stderr, "Aborted");
@@ -453,7 +447,7 @@ int daemonise()
                 pid = -1;
             }
 
-            if (running == true) {
+            if (running) {
                 log(INFO, "Running");
             } else {
                 int estatus = WEXITSTATUS(status);

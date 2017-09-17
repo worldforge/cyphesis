@@ -25,6 +25,7 @@
 #include <boost/function.hpp>
 
 #include <iostream>
+#include <cmath>
 
 namespace Cyphesis {
 
@@ -67,9 +68,19 @@ class TestBase
     int assertTrue(const char * n, const V & val,
                    const char * func, const char * file, int line);
 
+    template <typename V>
+    int assertFalse(const char * n, const V & val,
+                   const char * func, const char * file, int line);
+
     template <typename L, typename R>
     int assertEqual(const char * l, const L & lval,
                     const char * r, const R & rval,
+                    const char * func, const char * file, int line);
+
+    template <typename L, typename R, typename E>
+    int assertFuzzyEqual(const char * l, const L & lval,
+                    const char * r, const R & rval,
+                    const char * e, const E & epsilon,
                     const char * func, const char * file, int line);
 
     template <typename L, typename R>
@@ -124,8 +135,10 @@ int TestBase::run()
     std::list<Test>::const_iterator I = m_tests.begin();
     for (; I != Iend; ++I) {
         setup();
+        std::cerr << "Starting test " << I->name << std::endl << std::flush;
         (*I).method();
         teardown();
+        std::cerr << "Completed test " << I->name << std::endl << std::flush;
 
         if (!m_errorReports.empty()) {
             ++error_count;
@@ -157,6 +170,18 @@ int TestBase::assertTrue(const char * n, const V & val,
     return 0;
 }
 
+template <typename V>
+int TestBase::assertFalse(const char * n, const V & val,
+                         const char * func, const char * file, int line)
+{
+    if (val) {
+        addFailure(String::compose("%1:%2: %3: Assertion '%4' failed.",
+                                   file, line, func, n));
+        return -1;
+    }
+    return 0;
+}
+
 template <typename L, typename R>
 int TestBase::assertEqual(const char * l, const L & lval,
                           const char * r, const R & rval,
@@ -165,6 +190,21 @@ int TestBase::assertEqual(const char * l, const L & lval,
     if (lval != rval) {
         addFailure(String::compose("%1:%2: %3: Assertion '%4 == %5' failed. "
                                    "%6 != %7",
+                                   file, line, func, l, r, lval, rval));
+        return -1;
+    }
+    return 0;
+}
+
+template <typename L, typename R, typename E>
+int TestBase::assertFuzzyEqual(const char * l, const L & lval,
+                          const char * r, const R & rval,
+                          const char * e, const E & epsilon,
+                          const char * func, const char * file, int line)
+{
+    if (std::abs(lval - rval) > epsilon) {
+        addFailure(String::compose("%1:%2: %3: Assertion '%4 ~= %5' failed. "
+                                       "%6 != %7",
                                    file, line, func, l, r, lval, rval));
         return -1;
     }
@@ -251,8 +291,18 @@ int TestBase::assertNotNull(const char * n, const T * ptr,
                          __FILE__, __LINE__) != 0) return;\
 }
 
+#define ASSERT_FALSE(_expr) {\
+    if (this->assertFalse(#_expr, _expr, __PRETTY_FUNCTION__,\
+                         __FILE__, __LINE__) != 0) return;\
+}
+
 #define ASSERT_EQUAL(_lval, _rval) {\
     if (this->assertEqual(#_lval, _lval, #_rval, _rval, __PRETTY_FUNCTION__,\
+                          __FILE__, __LINE__) != 0) return;\
+}
+
+#define ASSERT_FUZZY_EQUAL(_lval, _rval, _epsilon) {\
+    if (this->assertFuzzyEqual(#_lval, _lval, #_rval, _rval, #_epsilon, _epsilon, __PRETTY_FUNCTION__,\
                           __FILE__, __LINE__) != 0) return;\
 }
 

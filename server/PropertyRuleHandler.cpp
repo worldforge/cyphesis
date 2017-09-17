@@ -19,13 +19,9 @@
 #include "PropertyRuleHandler.h"
 
 #include "EntityBuilder.h"
-#include "TaskFactory.h"
-
-#include "rulesets/PythonScriptFactory.h"
 
 #include "common/log.h"
 #include "common/debug.h"
-#include "common/Inheritance.h"
 #include "common/compose.hpp"
 #include "common/PropertyManager.h"
 #include "common/PropertyFactory.h"
@@ -41,7 +37,7 @@ static const bool debug_flag = false;
 
 int PropertyRuleHandler::check(const Atlas::Objects::Root & desc)
 {
-    assert(!desc->getParents().empty());
+    assert(!desc->getParent().empty());
     if (desc->getObjtype() != "type") {
         return -1;
     }

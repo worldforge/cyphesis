@@ -300,7 +300,6 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "stubs/common/stubCustom.h"
 #include "stubs/rulesets/stubDomain.h"
 #include "stubs/rulesets/stubDomainProperty.h"
-#include "stubs/rulesets/stubTransformsProperty.h"
 
 void addToEntity(const Point3D & p, std::vector<double> & vd)
 {

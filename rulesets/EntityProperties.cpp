@@ -21,10 +21,6 @@
 #include "common/Property_impl.h"
 #include "common/type_utils.h"
 
-#include "physics/BBox.h"
-
-#include <wfmath/atlasconv.h>
-
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;

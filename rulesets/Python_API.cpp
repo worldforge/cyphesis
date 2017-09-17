@@ -42,11 +42,9 @@
 #include "PythonEntityScript.h"
 #include "BaseMind.h"
 
-#include "common/compose.hpp"
 #include "common/globals.h"
 #include "common/const.h"
 #include "common/debug.h"
-#include "common/log.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>

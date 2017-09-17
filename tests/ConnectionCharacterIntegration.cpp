@@ -316,6 +316,8 @@ int main()
 #include "stubs/common/stubOperationsDispatcher.h"
 #include "stubs/modules/stubDateTime.h"
 #include "stubs/modules/stubWorldTime.h"
+#include "stubs/modules/stubLocation.h"
+#include "stubs/physics/stubVector3D.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -524,7 +526,7 @@ ExternalProperty * ExternalProperty::copy() const
 }
 
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0)
+        LocatedEntity(id, intId)
 {
 }
 
@@ -683,12 +685,20 @@ void Entity::removeDelegate(int class_no, const std::string & delegate)
 {
 }
 
-Domain * Entity::getMovementDomain()
+void Entity::addChild(LocatedEntity& childEntity)
+{
+}
+
+void Entity::removeChild(LocatedEntity& childEntity)
+{
+}
+
+Domain * Entity::getDomain()
 {
     return 0;
 }
 
-const Domain * Entity::getMovementDomain() const
+const Domain * Entity::getDomain() const
 {
     return 0;
 }
@@ -944,6 +954,10 @@ Link::~Link()
 {
 }
 
+void Link::send(const OpVector& opVector) const
+{
+}
+
 void Link::send(const Operation & op) const
 {
     ConnectionCharacterintegration::Link_send_sent(op);
@@ -987,14 +1001,6 @@ void Router::clientError(const Operation & op,
                          const std::string & errstring,
                          OpVector & res,
                          const std::string & to) const
-{
-}
-
-Location::Location() : m_loc(0)
-{
-}
-
-Location::Location(LocatedEntity * rf, const Point3D & pos)
 {
 }
 
@@ -1098,11 +1104,6 @@ void EntityRef::onEntityDeleted()
 {
 }
 
-const Vector3D distanceTo(const Location & self, const Location & other)
-{
-    return Vector3D(1,0,0);
-}
-
 template<class V>
 const Quaternion quaternionFromTo(const V & from, const V & to)
 {
@@ -1143,13 +1144,6 @@ long newId(std::string & id)
     return new_id;
 }
 
-void addToEntity(const Vector3D & v, std::vector<double> & vd)
-{
-    vd.resize(3);
-    vd[0] = v[0];
-    vd[1] = v[1];
-    vd[2] = v[2];
-}
 
 Shaker::Shaker()
 {
@@ -1159,21 +1153,6 @@ std::string Shaker::generateSalt(size_t length)
 {
     return "";
 }
-
-template <typename FloatT>
-int fromStdVector(Point3D & p, const std::vector<FloatT> & vf)
-{
-    return 0;
-}
-
-template <typename FloatT>
-int fromStdVector(Vector3D & v, const std::vector<FloatT> & vf)
-{
-    return 0;
-}
-
-template int fromStdVector<double>(Point3D & p, const std::vector<double> & vf);
-template int fromStdVector<double>(Vector3D & v, const std::vector<double> & vf);
 
 
 void hash_password(const std::string & pwd, const std::string & salt,

@@ -18,10 +18,7 @@
 
 #include "EntityKit.h"
 
-#include "common/ScriptKit.h"
 #include "common/TypeNode.h"
-
-#include <cassert>
 
 using Atlas::Message::MapType;
 

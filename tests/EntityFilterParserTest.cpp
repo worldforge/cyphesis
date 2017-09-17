@@ -217,7 +217,7 @@ int main(int argc, char ** argv)
 #include "stubs/common/stubMonitors.h"
 #include "stubs/rulesets/stubDomainProperty.h"
 #include "stubs/rulesets/stubIdProperty.h"
-#include "stubs/rulesets/stubTransformsProperty.h"
+#include "stubs/rulesets/stubDensityProperty.h"
 
 ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
         PropertyBase(per_ephem), m_data(data)
@@ -293,7 +293,7 @@ LocatedEntity * BaseWorld::getEntity(const std::string & id) const
     return 0;
 }
 
-void Location::addToMessage(MapType & omap) const
+void Location::addToMessage(Atlas::Message::MapType & omap) const
 {
 }
 

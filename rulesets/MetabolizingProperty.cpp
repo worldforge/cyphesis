@@ -121,7 +121,7 @@ HandlerResult MetabolizingProperty::tick_handler(LocatedEntity * e,
                                            OpVector & res)
 {
  
-    debug(std::cout << "MetabolizingProperty::tick_handler(entId="
+    debu(std::cout << "MetabolizingProperty::tick_handler(entId="
                     << e->getId() << ")" <<std::endl << std::flush;);
 
     // Check if this Tick operation is meant to trigger "metabolism tick"
@@ -159,9 +159,6 @@ HandlerResult MetabolizingProperty::tick_handler(LocatedEntity * e,
     // get mass property
     Property<double> * mass_prop = e->modPropertyType<double>(MASS);
  
-    // the growth factor (1- means no growth)
-    float growth = 1.0f; 
-
     // get mass reserves (new property introduced for metabolism to work)
     Property<double> * massreserve_prop; 
     if (mass_prop != 0) {
@@ -181,7 +178,7 @@ HandlerResult MetabolizingProperty::tick_handler(LocatedEntity * e,
     double nourishmentConsumed = 0;
     double biteSize = biteSizeBase * metabolizingSpeed;
     
-    // DIGEST FIRST 
+    // DIGESTION
     // don't go further if we don't have following properties
     if (nourishment_prop != 0 && mass_prop != 0) {
 
@@ -202,6 +199,9 @@ HandlerResult MetabolizingProperty::tick_handler(LocatedEntity * e,
             nourishmentConsumed = 0;
         }
     }
+
+    // Default growth factor (1- means no growth)
+    float growth = 1.0f; 
 
     // Status should be between 0 and ?
     // WEIGHT GAIN for high status

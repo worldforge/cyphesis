@@ -19,18 +19,12 @@
 #include "AdminClient.h"
 
 #include "common/debug.h"
-#include "common/sockets.h"
 
-#include <Atlas/Codec.h>
 #include <Atlas/Net/Stream.h>
 
 #include <Atlas/Objects/Encoder.h>
-#include <Atlas/Objects/objectFactory.h>
 
 #include <Atlas/Objects/Entity.h>
-#include <Atlas/Objects/Anonymous.h>
-
-#include <Atlas/Objects/Operation.h>
 
 #include <iostream>
 
@@ -107,7 +101,7 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
                             const MapType & rule)
 {
     if (m_uploadedRules.find(id) != m_uploadedRules.end()) {
-        std::cout << "Overriden rule " << id << " ignored."
+        std::cout << "Overridden rule " << id << " ignored."
                   << std::endl << std::flush;
 
         return -1;
@@ -156,25 +150,19 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
         return 0;
     }
 
-    MapType::const_iterator I = rule.find("parents");
+    MapType::const_iterator I = rule.find("parent");
     if (I == rule.end()) {
-        std::cerr << "Rule " << id << " to be uploaded has no parents."
+        std::cerr << "Rule " << id << " to be uploaded has no parent."
                   << std::endl << std::flush;
         return -1;
     }
     const Element & pelem = I->second;
-    if (!pelem.isList()) {
-        std::cerr << "Rule " << id << " to be uploaded has non-list parents."
+    if (!pelem.isString()) {
+        std::cerr << "Rule " << id << " to be uploaded has non-string parent."
                   << std::endl << std::flush;
         return -1;
     }
-    const ListType & parents = pelem.asList();
-    if (parents.empty() || !parents.front().isString()) {
-        std::cerr << "Rule " << id << " to be uploaded has malformed parents."
-                  << std::endl << std::flush;
-        return -1;
-    }
-    const std::string & parent = parents.front().asString();
+    const std::string& parent = pelem.asString();
 
     if (checkRule(parent) != 0) {
         debug(std::cerr << "Rule \"" << id << "\" to be uploaded has parent \""

@@ -50,12 +50,15 @@ static PyObject * add_properties(PyObject * self, PyEntity * o)
     PropertyBase * p = ent->setProperty("statistics", new StatisticsProperty);
     p->install(ent, "statistics");
     p->apply(ent);
+    ent->propertyApplied("statistics", *p);
     p = ent->setProperty("terrain", new TerrainProperty);
     p->install(ent, "terrain");
     p->apply(ent);
+    ent->propertyApplied("terrain", *p);
     p = ent->setProperty("line", new LineProperty);
     p->install(ent, "line");
     p->apply(ent);
+    ent->propertyApplied("line", *p);
 
     Py_INCREF(Py_None);
     return Py_None;

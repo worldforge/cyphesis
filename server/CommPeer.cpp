@@ -21,11 +21,6 @@
 
 #include "Peer.h"
 
-#include "common/globals.h"
-#include "common/serialno.h"
-#include "common/log.h"
-
-#include <Atlas/Negotiate.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 

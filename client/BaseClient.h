@@ -81,13 +81,6 @@ class BaseClient {
         return m_connection.sendAndWaitReply(op, res);
     }
 
-    /// \brief Default client main loop
-    void run(const bool loop = true) {
-        while (loop) {
-            handleNet();
-            idle();
-        };
-    }
 };
 
 #endif // CLIENT_BASE_CLIENT_H

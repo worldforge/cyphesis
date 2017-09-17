@@ -30,13 +30,10 @@
 #include "common/log.h"
 
 #include <Atlas/Formatter.h>
-#include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>
-#include <Atlas/Message/MEncoder.h>
 #include <Atlas/Message/QueuedDecoder.h>
 #include <Atlas/MultiLineListFormatter.h>
 
-#include <string>
 #include <fstream>
 #include <sstream>
 #include <iostream>

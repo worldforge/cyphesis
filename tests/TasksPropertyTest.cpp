@@ -69,6 +69,8 @@ int main()
 
 // stubs
 
+#include "stubs/rulesets/stubTask.h"
+
 void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
@@ -83,32 +85,3 @@ namespace Atlas { namespace Objects { namespace Operation {
 int UPDATE_NO = -1;
 } } }
 
-int Character::startTask(Task * task, const Operation & op, OpVector & res)
-{
-    return 0;
-}
-
-Task::Task(LocatedEntity & chr) : m_refCount(0), m_serialno(0), m_obsolete(false), m_progress(-1), m_rate(-1), m_owner(chr)
-{
-}
-
-Task::~Task()
-{
-}
-
-void Task::irrelevant()
-{
-}
-
-void Task::setAttr(const std::string & attr,
-                   const Atlas::Message::Element & val)
-{
-}
-
-void Task::initTask(const Operation & op, OpVector & res)
-{
-}
-
-void Task::operation(const Operation & op, OpVector & res)
-{
-}

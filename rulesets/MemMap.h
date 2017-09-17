@@ -115,8 +115,7 @@ class MemMap {
                                 Atlas::Message::Element& value) const;
 
     ///\brief m_entityRelatedMemory accessor
-        const std::map<std::string,
-                std::map<std::string, Atlas::Message::Element>>& getEntityRelatedMemory() const;
+        const std::map<std::string, std::map<std::string, Atlas::Message::Element>>& getEntityRelatedMemory() const;
 
     EntityVector findByType(const std::string & what);
     EntityVector findByLocation(const Location & where,

@@ -23,7 +23,6 @@
 #include "rulesets/Py_Thing.h"
 #include "rulesets/Py_Task.h"
 #include "rulesets/Python_Script_Utils.h"
-#include "rulesets/PythonEntityScript.h"
 
 #include "rulesets/BaseMind.h"
 #include "rulesets/Task.h"

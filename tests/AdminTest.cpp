@@ -140,8 +140,8 @@ class Admintest : public Cyphesis::TestBase
     void test_opDispatched();
     void test_opDispatched_unconnected();
     void test_opDispatched_unconnected_monitored();
-    void test_characterError_default_parents();
-    void test_characterError_empty_parents();
+    void test_characterError_default_parent();
+    void test_characterError_empty_parent();
     void test_characterError_valid();
     void test_LogoutOperation_no_args();
     void test_LogoutOperation_no_id();
@@ -266,8 +266,8 @@ Admintest::Admintest() : m_server(0),
     ADD_TEST(Admintest::test_opDispatched);
     ADD_TEST(Admintest::test_opDispatched_unconnected);
     ADD_TEST(Admintest::test_opDispatched_unconnected_monitored);
-    ADD_TEST(Admintest::test_characterError_default_parents);
-    ADD_TEST(Admintest::test_characterError_empty_parents);
+    ADD_TEST(Admintest::test_characterError_default_parent);
+    ADD_TEST(Admintest::test_characterError_empty_parent);
     ADD_TEST(Admintest::test_characterError_valid);
     ADD_TEST(Admintest::test_LogoutOperation_no_args);
     ADD_TEST(Admintest::test_LogoutOperation_no_id);
@@ -479,7 +479,7 @@ void Admintest::test_opDispatched_unconnected_monitored()
     ASSERT_TRUE(!Link_sent_called);
 }
 
-void Admintest::test_characterError_default_parents()
+void Admintest::test_characterError_default_parent()
 {
     Operation op;
     Root ent;
@@ -493,13 +493,13 @@ void Admintest::test_characterError_default_parents()
                  Atlas::Objects::Operation::ERROR_NO);
 }
 
-void Admintest::test_characterError_empty_parents()
+void Admintest::test_characterError_empty_parent()
 {
     Operation op;
     Root ent;
     OpVector res;
 
-    ent->setParents(std::list<std::string>());
+    ent->setParent("");
 
     int ret = m_account->characterError(op, ent, res);
 
@@ -515,7 +515,7 @@ void Admintest::test_characterError_valid()
     Root ent;
     OpVector res;
 
-    ent->setParents(std::list<std::string>(1, "settler"));
+    ent->setParent("settler");
 
     int ret = m_account->characterError(op, ent, res);
 
@@ -1499,6 +1499,7 @@ void Account::OtherOperation(const Operation &, OpVector &)
 }
 
 #include "stubs/server/stubConnection.h"
+#include "stubs/modules/stubLocation.h"
 
 
 ConnectableRouter::ConnectableRouter(const std::string & id,
@@ -1661,196 +1662,13 @@ void Persistence::putAccount(const Account & ac)
 #include "stubs/rulesets/stubCharacter.h"
 #include "stubs/rulesets/stubThing.h"
 
-Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0)
-{
-}
-
-Entity::~Entity()
-{
-}
-
-void Entity::destroy()
-{
-    destroyed.emit();
-}
-
-void Entity::ActuateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::AppearanceOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::AttackOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::CombineOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::CreateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DeleteOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DisappearanceOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DivideOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::EatOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::GetOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::InfoOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::ImaginaryOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::LookOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::MoveOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::NourishOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SetOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SightOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SoundOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TalkOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TickOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TouchOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::UpdateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::UseOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::WieldOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::RelayOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::externalOperation(const Operation & op, Link &)
-{
-}
-
-void Entity::operation(const Operation & op, OpVector & res)
-{
-}
-
-void Entity::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
+#define STUB_Entity_addToEntity
 void Entity::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
     ent->setId(getId());
 }
+#include "stubs/rulesets/stubEntity.h"
 
-PropertyBase * Entity::setAttr(const std::string & name,
-                               const Atlas::Message::Element & attr)
-{
-    return 0;
-}
-
-const PropertyBase * Entity::getProperty(const std::string & name) const
-{
-    return 0;
-}
-
-PropertyBase * Entity::modProperty(const std::string & name)
-{
-    return 0;
-}
-
-PropertyBase * Entity::setProperty(const std::string & name,
-                                   PropertyBase * prop)
-{
-    return 0;
-}
-
-void Entity::installDelegate(int class_no, const std::string & delegate)
-{
-}
-
-void Entity::removeDelegate(int class_no, const std::string & delegate)
-{
-}
-
-Domain * Entity::getMovementDomain()
-{
-    return 0;
-}
-
-const Domain * Entity::getMovementDomain() const
-{
-    return 0;
-}
-
-void Entity::sendWorld(const Operation & op)
-{
-}
-
-void Entity::onContainered(const LocatedEntity*)
-{
-}
-
-void Entity::onUpdated()
-{
-}
-
-void Entity::callOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Entity::setType(const TypeNode* t)
-{
-}
 
 #include "stubs/rulesets/stubLocatedEntity.h"
 
@@ -1879,7 +1697,6 @@ Inheritance::Inheritance() : noClass(0)
 {
     Atlas::Objects::Entity::Anonymous root_desc;
 
-    root_desc->setParents(std::list<std::string>(0));
     root_desc->setObjtype("meta");
     root_desc->setId("root");
 
@@ -1935,7 +1752,7 @@ bool Inheritance::hasClass(const std::string & parent)
 TypeNode * Inheritance::addChild(const Root & obj)
 {
     const std::string & child = obj->getId();
-    const std::string & parent = obj->getParents().front();
+    const std::string & parent = obj->getParent();
     assert(atlasObjects.find(child) == atlasObjects.end());
 
     TypeNodeDict::iterator I = atlasObjects.find(parent);
@@ -1970,7 +1787,7 @@ Root atlasClass(const std::string & name, const std::string & parent)
 {
     Atlas::Objects::Entity::Anonymous r;
 
-    r->setParents(std::list<std::string>(1, parent));
+    r->setParent(parent);
     r->setObjtype("class");
     r->setId(name);
 
@@ -2045,9 +1862,6 @@ void Router::error(const Operation & op,
     res.push_back(Atlas::Objects::Operation::Error());
 }
 
-Location::Location() : m_loc(0)
-{
-}
 
 long newId(std::string & id)
 {

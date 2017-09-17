@@ -29,21 +29,15 @@
 
 #include "common/BaseWorld.h"
 #include "common/id.h"
-#include "common/log.h"
 #include "common/debug.h"
-#include "common/serialno.h"
 #include "common/custom.h"
 #include "common/Inheritance.h"
-#include "common/compose.hpp"
 
 #include "common/Connect.h"
 #include "common/Monitor.h"
 
-#include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
-
-#include <sigc++/functors/mem_fun.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -117,10 +111,12 @@ LocatedEntity * Admin::createCharacterEntity(const std::string & typestr,
     Element spawn;
     if (arg->copyAttr("spawn_name", spawn) == 0 && spawn.isString()) {
         BaseWorld & world = m_connection->m_server.m_world;
+
+        Location new_loc;
+        world.moveToSpawn(spawn.String(), new_loc);
+        new_loc.addToEntity(ent);
+
         entity = world.addNewEntity(typestr, ent);
-        if (entity) {
-            world.moveToSpawn(spawn.asString(), entity->m_location);
-        }
     }
     return entity;
 }
@@ -166,12 +162,11 @@ void Admin::opDispatched(Operation op)
 int Admin::characterError(const Operation & op,
                           const Root & ent, OpVector & res) const
 {
-    if (!ent->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
+    if (!ent->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
         error(op, "You cannot create a character with no type.", res, getId());
         return -1;
     }
-    const std::list<std::string> & parents = ent->getParents();
-    if (parents.empty()) {
+    if (ent->getParent() == "") {
         error(op, "You cannot create a character with empty type.", res, getId());
         return -1;
     }
@@ -327,7 +322,7 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
               res, getId());
         return;
     } else {
-        error(op, "Unknow object type set", res, getId());
+        error(op, "Unknown object type set", res, getId());
         return;
     }
 }

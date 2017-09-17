@@ -21,15 +21,11 @@
 #include "Script.h"
 #include "Domain.h"
 #include "DomainProperty.h"
-#include "TransformsProperty.h"
-#include "Motion.h"
 
 #include "common/BaseWorld.h"
-#include "common/log.h"
 #include "common/debug.h"
 #include "common/op_switch.h"
 #include "common/TypeNode.h"
-#include "common/Property.h"
 #include "common/PropertyManager.h"
 
 #include "common/Actuate.h"
@@ -43,16 +39,9 @@
 
 #include "common/Monitors.h"
 #include "common/Variable.h"
-#include "common/compose.hpp"
-
-#include <wfmath/atlasconv.h>
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
-
-#include <sigc++/functors/mem_fun.h>
-
-#include <cassert>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -80,7 +69,7 @@ std::unordered_map<const TypeNode*, std::unique_ptr<int>> Entity::s_monitorsMap;
 
 /// \brief Entity constructor
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(nullptr)
+        LocatedEntity(id, intId)
 {
 }
 
@@ -94,7 +83,6 @@ Entity::~Entity()
         }
     }
 
-    delete m_motion;
 }
 
 void Entity::setType(const TypeNode * t) {
@@ -113,6 +101,25 @@ void Entity::setType(const TypeNode * t) {
             *ptr = *ptr + 1;
         }
     }
+}
+
+
+void Entity::addChild(LocatedEntity& childEntity)
+{
+    LocatedEntity::addChild(childEntity);
+    auto domain = getDomain();
+    if (domain) {
+        domain->addEntity(childEntity);
+    }
+}
+
+void Entity::removeChild(LocatedEntity& childEntity)
+{
+    if (m_flags & entity_domain) {
+        auto domain = getPropertyClass<DomainProperty>("domain")->getDomain(this);
+        domain->removeEntity(childEntity);
+    }
+    LocatedEntity::removeChild(childEntity);
 }
 
 
@@ -144,6 +151,7 @@ PropertyBase * Entity::setAttr(const std::string & name, const Element & attr)
     prop->set(attr);
     // Allow the value to take effect.
     prop->apply(this);
+    propertyApplied(name, *prop);
     // Mark the Entity as unclean
     resetFlags(entity_clean);
     return prop;
@@ -180,6 +188,7 @@ PropertyBase * Entity::modProperty(const std::string & name)
             new_prop->flags() &= ~flag_class;
             m_properties[name] = new_prop;
             new_prop->apply(this);
+            propertyApplied(name, *new_prop);
             new_prop->install(this, name);
             return new_prop;
         }
@@ -214,7 +223,7 @@ void Entity::addToMessage(MapType & omap) const
     }
 
     omap["stamp"] = (double)m_seq;
-    omap["parents"] = ListType(1, m_type);
+    omap["parent"] = m_type;
     m_location.addToMessage(omap);
     omap["objtype"] = "obj";
 }
@@ -236,7 +245,7 @@ void Entity::addToEntity(const RootEntity & ent) const
 
     ent->setStamp(m_seq);
     if (m_type != 0) {
-        ent->setParents(std::list<std::string>(1, m_type->name()));
+        ent->setParent(m_type->name());
     }
     m_location.addToEntity(ent);
     ent->setObjtype("obj");
@@ -273,14 +282,12 @@ void Entity::destroy()
             Location & child = (*I)->m_location;
             // FIXME take account of orientation
             // FIXME velocity and orientation  need to be adjusted
-            TransformsProperty* transformsProp = (*I)->requirePropertyClassFixed<TransformsProperty>();
 
             if (m_location.orientation().isValid() && m_location.pos().isValid()) {
 
-                transformsProp->getTranslate() = WFMath::Vector<3>(child.m_pos.toParentCoords(m_location.pos(),
-                                                         m_location.orientation()));
-                if (transformsProp->getRotate().isValid()) {
-                    transformsProp->getRotate() *= m_location.orientation();
+                m_location.m_pos = child.m_pos.toParentCoords(m_location.pos(), m_location.orientation());
+                if (m_location.m_orientation.isValid()) {
+                    m_location.m_orientation *= m_location.orientation();
                 }
 
                 if (child.m_velocity.isValid()) {
@@ -288,10 +295,8 @@ void Entity::destroy()
                 }
             } else {
                 static const Quaternion identity(1, 0, 0, 0);
-                transformsProp->getTranslate() = WFMath::Vector<3>(child.m_pos.toParentCoords(m_location.pos(),
-                                                         identity));
+                m_location.m_pos = child.m_pos.toParentCoords(m_location.pos(), identity);
             }
-            transformsProp->apply(*I);
             // Remove the reference to ourself.
             decRef();
             m_location.m_loc->addChild(**I);
@@ -308,11 +313,14 @@ void Entity::destroy()
     // It will be decRef()ed automatically from our (LocatedEntity)
     // destructor
     m_location.m_loc->removeChild(*this);
+
+    LocatedEntity::destroy();
+
     m_flags |= entity_destroyed;
     destroyed.emit();
 }
 
-Domain * Entity::getMovementDomain()
+Domain * Entity::getDomain()
 {
     if (m_flags & entity_domain) {
         return getPropertyClass<DomainProperty>("domain")->getDomain(this);
@@ -321,13 +329,15 @@ Domain * Entity::getMovementDomain()
     }
 }
 
-const Domain * Entity::getMovementDomain() const
+const Domain * Entity::getDomain() const
 {
     if (m_flags & entity_domain) {
         return getPropertyClass<DomainProperty>("domain")->getDomain(this);
     } else {
         return nullptr;
     }
+    return nullptr;
+
 }
 
 
@@ -513,7 +523,7 @@ void Entity::externalOperation(const Operation & op, Link &)
 void Entity::operation(const Operation & op, OpVector & res)
 {
     if (m_script != 0 &&
-        m_script->operation(op->getParents().front(), op, res) != 0) {
+        m_script->operation(op->getParent(), op, res) != 0) {
         return;
     }
 

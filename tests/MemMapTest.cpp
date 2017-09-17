@@ -219,7 +219,7 @@ void MemMaptest::test_readEntity_type()
     const std::string new_id("3");
 
     Anonymous data;
-    data->setParents(std::list<std::string>(1, "sample_type"));
+    data->setParent("sample_type");
 
     MemEntity * ent = new MemEntity(new_id, 3);
     ent->setType(MemMap::m_entity_type);
@@ -235,7 +235,7 @@ void MemMaptest::test_readEntity_type_nonexist()
     const std::string new_id("3");
 
     Anonymous data;
-    data->setParents(std::list<std::string>(1, "non_sample_type"));
+    data->setParent("non_sample_type");
 
     MemEntity * ent = new MemEntity(new_id, 3);
     ent->setType(MemMap::m_entity_type);

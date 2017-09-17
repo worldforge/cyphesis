@@ -134,21 +134,19 @@ int main()
 // stubs
 
 #include "rulesets/Domain.h"
-#include "rulesets/Motion.h"
 
 #include "common/BaseWorld.h"
 #include "common/const.h"
 #include "common/log.h"
 
 #include "stubs/common/stubCustom.h"
-#include "stubs/rulesets/stubMotion.h"
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubDomain.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubBaseWorld.h"
 #include "stubs/modules/stubLocation.h"
-#include "stubs/rulesets/stubTransformsProperty.h"
 #include "stubs/rulesets/stubPropelProperty.h"
+#include "stubs/rulesets/stubDomainProperty.h"
 
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),
@@ -213,12 +211,12 @@ void LocatedEntity::destroy()
 {
 }
 
-Domain * LocatedEntity::getMovementDomain()
+Domain * LocatedEntity::getDomain()
 {
     return 0;
 }
 
-const Domain * LocatedEntity::getMovementDomain() const
+const Domain * LocatedEntity::getDomain() const
 {
     return 0;
 }
@@ -300,6 +298,23 @@ std::string LocatedEntity::describeEntity() const
     return "";
 }
 
+
+void LocatedEntity::broadcast(const Atlas::Objects::Operation::RootOperation& op, OpVector& res) const
+{
+    auto copy = op.copy();
+    copy->setTo(getId());
+    res.push_back(copy);
+}
+
+void LocatedEntity::collectObservers(std::set<const LocatedEntity*>& observers) const
+{
+
+}
+
+void LocatedEntity::processAppearDisappear(std::set<const LocatedEntity*> previousObserving, OpVector& res) const
+{
+
+}
 void addToEntity(const Point3D & p, std::vector<double> & vd)
 {
     vd.resize(3);

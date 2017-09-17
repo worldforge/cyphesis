@@ -2,7 +2,6 @@
 
 TOPSRCDIR="$@"
 GITCHECK="${TOPSRCDIR}/.git/config"
-OLDBUILDCPP="${TOPSRCDIR}/server/buildid.cpp"
 
 if ! test -d "${TOPSRCDIR}"
 then
@@ -11,27 +10,17 @@ then
     exit 1
 fi
 
-# If sources are under git control then use "git describe"
+# If sources are under Git version control then use "git rev-parse"
 if test -f "${GITCHECK}"
 then
-    if (cd "${TOPSRCDIR}" && git describe)
+    if (cd "${TOPSRCDIR}" && git rev-parse HEAD)
     then
         echo Getting buildid from Git >&2
         exit 0
     fi
 fi
 
-# We don't seem to be under source control, so use the existing buildid.
-if test -f "${OLDBUILDCPP}"
-then
-    if grep buildId "${OLDBUILDCPP}" | head -n 1 | sed "s/^.* = \([-0-9]*\);$/\1/"
-    then
-        echo Using existing buildid >&2
-        exit 0
-    fi
-fi
-
-# We could not find any useful build ID, so mark it clearly as an error.
-echo Unknown buildid >&2
-echo 1
+# Not in Git version control, therefore this is a released build.
+echo Released build, no SHA1 buildid. >&2
+echo Released
 exit 0

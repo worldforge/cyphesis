@@ -23,18 +23,13 @@
 #include "rulesets/Plant.h"
 #include "rulesets/Stackable.h"
 #include "rulesets/World.h"
-#include "rulesets/TransformsProperty.h"
 
-#include "rulesets/LocatedEntity.h"
 #include "common/debug.h"
-#include "common/log.h"
 #include "common/ScriptKit.h"
 #include "common/TypeNode.h"
 #include "common/random.h"
 
 #include <Atlas/Objects/Entity.h>
-
-#include <iostream>
 
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
@@ -82,19 +77,10 @@ void EntityFactoryBase::initializeEntity(LocatedEntity& thing,
     if (attributes.isValid()) {
         thing.m_location.readFromEntity(attributes);
 
-        auto transProp = thing.requirePropertyClassFixed<TransformsProperty>();
-        if (!attributes->hasAttr(TransformsProperty::property_name)) {
-            if (thing.m_location.pos().isValid()) {
-                //If a position is provided, but not any transforms, copy the position value into the transforms.
-                transProp->getTranslate() = Vector3D(thing.m_location.pos());
-            } else {
-                // If no position coords were provided, put it somewhere near origin, but only if there's no transform property
-                transProp->getTranslate() = Vector3D(uniform(-8,8), uniform(-8,8), 0);
-            }
-        } else {
-            transProp->set(attributes->getAttr(TransformsProperty::property_name));
+        if (!thing.m_location.pos().isValid()) {
+            // If no position coords were provided, put it somewhere near origin
+            thing.m_location.m_pos = Point3D(uniform(-8,8), uniform(-8,8), 0);
         }
-        transProp->apply(&thing);
         if (thing.m_location.velocity().isValid()) {
             if (attributes.isValid() && attributes->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
                 log(ERROR, compose("EntityFactory::initializeEntity(%1, %2): "
@@ -117,10 +103,11 @@ void EntityFactoryBase::initializeEntity(LocatedEntity& thing,
             // If a property is in the class it won't have been installed
             // as setAttr() checks
             prop->install(&thing, propIter.first);
-            // The property will have been applied if it has an overriden
+            // The property will have been applied if it has an overridden
             // value, so we only apply it the value is still default.
             if (attrs.find(propIter.first) == attrs.end()) {
                 prop->apply(&thing);
+                thing.propertyApplied(propIter.first, *prop);
             }
         }
     }

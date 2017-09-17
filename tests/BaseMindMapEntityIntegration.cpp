@@ -342,7 +342,7 @@ int main()
 #include "common/TypeNode.h"
 
 #include "stubs/common/stubCustom.h"
-#include "stubs/rulesets/stubTransformsProperty.h"
+#include "stubs/rulesets/stubDensityProperty.h"
 
 LocatedEntity::LocatedEntity(const std::string & id, long intId) :
                Router(id, intId),
@@ -413,12 +413,12 @@ void LocatedEntity::destroy()
 {
 }
 
-Domain * LocatedEntity::getMovementDomain()
+Domain * LocatedEntity::getDomain()
 {
     return 0;
 }
 
-const Domain * LocatedEntity::getMovementDomain() const
+const Domain * LocatedEntity::getDomain() const
 {
     return 0;
 }

@@ -257,7 +257,7 @@ void TrustedConnectionCreatorintegration::test_external_op_puppet_nonexistant()
     // Operation should be via world dispatch, as if it was from the Entity
     // we are puppeting.
     ASSERT_TRUE(m_Link_send_sent.isValid());
-    ASSERT_EQUAL(m_Link_send_sent->getParents().front(),
+    ASSERT_EQUAL(m_Link_send_sent->getParent(),
                  "unseen");
     ASSERT_TRUE(!m_Link_send_sent->isDefaultTo());
     ASSERT_EQUAL(m_Link_send_sent->getTo(), m_creator->getId());
@@ -321,6 +321,7 @@ bool restricted_flag;
 #include "stubs/common/stubOperationsDispatcher.h"
 #include "stubs/modules/stubWorldTime.h"
 #include "stubs/modules/stubDateTime.h"
+#include "stubs/modules/stubLocation.h"
 
 
 
@@ -630,199 +631,35 @@ ExternalProperty * ExternalProperty::copy() const
 
 #include "stubs/rulesets/stubThing.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rulesets/stubOutfitProperty.h"
+#include "stubs/physics/stubVector3D.h"
 
-Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0)
-{
-}
-
-Entity::~Entity()
-{
-}
-
-void Entity::destroy()
-{
-    destroyed.emit();
-}
-
-void Entity::ActuateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::AppearanceOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::AttackOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::CombineOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::CreateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DeleteOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DisappearanceOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DivideOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::EatOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::GetOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::InfoOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::ImaginaryOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::LookOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::MoveOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::NourishOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SetOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SightOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SoundOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TalkOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TickOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TouchOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::UpdateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::UseOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::WieldOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::RelayOperation(const Operation &, OpVector &)
-{
-}
-
+#define STUB_Entity_callOperation
 void Entity::callOperation(const Operation & op, OpVector & res)
 {
     TrustedConnectionCreatorintegration::Entity_callOperation_called(op);
 }
 
-void Entity::externalOperation(const Operation & op, Link &)
-{
-}
-
-void Entity::operation(const Operation & op, OpVector & res)
-{
-}
-
-void Entity::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Entity::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-PropertyBase * Entity::setAttr(const std::string & name,
-                               const Atlas::Message::Element & attr)
-{
-    return 0;
-}
-
-const PropertyBase * Entity::getProperty(const std::string & name) const
-{
-    return 0;
-}
-
-PropertyBase * Entity::modProperty(const std::string & name)
-{
-    return 0;
-}
-
+#define STUB_Entity_setProperty
 PropertyBase * Entity::setProperty(const std::string & name,
                                    PropertyBase * prop)
 {
     return m_properties[name] = prop;
 }
 
-void Entity::installDelegate(int class_no, const std::string & delegate)
-{
-}
-
-void Entity::removeDelegate(int class_no, const std::string & delegate)
-{
-}
-
-Domain * Entity::getMovementDomain()
-{
-    return 0;
-}
-
-const Domain * Entity::getMovementDomain() const
-{
-    return 0;
-}
-
+#define STUB_Entity_sendWorld
 void Entity::sendWorld(const Operation & op)
 {
     BaseWorld::instance().message(op, *this);
 }
 
-void Entity::onContainered(const LocatedEntity*)
-{
-}
-
-void Entity::onUpdated()
-{
-}
-
+#define STUB_Entity_setType
 void Entity::setType(const TypeNode* t) {
     m_type = t;
 
 }
+
+#include "stubs/rulesets/stubEntity.h"
 
 EntityProperty::EntityProperty()
 {
@@ -850,52 +687,6 @@ void EntityProperty::add(const std::string & s,
 EntityProperty * EntityProperty::copy() const
 {
     return 0;
-}
-
-OutfitProperty::OutfitProperty()
-{
-}
-
-OutfitProperty::~OutfitProperty()
-{
-}
-
-int OutfitProperty::get(Atlas::Message::Element & val) const
-{
-    return 0;
-}
-
-void OutfitProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-void OutfitProperty::add(const std::string & key,
-                         Atlas::Message::MapType & map) const
-{
-}
-
-void OutfitProperty::add(const std::string & key,
-                         const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-OutfitProperty * OutfitProperty::copy() const
-{
-    return 0;
-}
-
-void OutfitProperty::cleanUp()
-{
-}
-
-void OutfitProperty::wear(LocatedEntity * wearer,
-                          const std::string & location,
-                          LocatedEntity * garment)
-{
-}
-
-void OutfitProperty::itemRemoved(LocatedEntity * garment, LocatedEntity * wearer)
-{
 }
 
 Task::~Task()
@@ -1157,6 +948,10 @@ void Link::send(const Operation & op) const
     TrustedConnectionCreatorintegration::Link_send_sent(op);
 }
 
+void Link::send(const OpVector& opVector) const
+{
+}
+
 void Link::sendError(const Operation & op,
                      const std::string &,
                      const std::string &) const
@@ -1195,14 +990,6 @@ void Router::clientError(const Operation & op,
                          const std::string & errstring,
                          OpVector & res,
                          const std::string & to) const
-{
-}
-
-Location::Location() : m_loc(0)
-{
-}
-
-Location::Location(LocatedEntity * rf, const Point3D & pos)
 {
 }
 
@@ -1320,11 +1107,6 @@ void EntityRef::onEntityDeleted()
 {
 }
 
-const Vector3D distanceTo(const Location & self, const Location & other)
-{
-    return Vector3D(1,0,0);
-}
-
 template<class V>
 const Quaternion quaternionFromTo(const V & from, const V & to)
 {
@@ -1365,13 +1147,6 @@ long newId(std::string & id)
     return new_id;
 }
 
-void addToEntity(const Vector3D & v, std::vector<double> & vd)
-{
-    vd.resize(3);
-    vd[0] = v[0];
-    vd[1] = v[1];
-    vd[2] = v[2];
-}
 
 Shaker::Shaker()
 {
@@ -1381,22 +1156,6 @@ std::string Shaker::generateSalt(size_t length)
 {
     return "";
 }
-
-template <typename FloatT>
-int fromStdVector(Point3D & p, const std::vector<FloatT> & vf)
-{
-    return 0;
-}
-
-template <typename FloatT>
-int fromStdVector(Vector3D & v, const std::vector<FloatT> & vf)
-{
-    return 0;
-}
-
-template int fromStdVector<double>(Point3D & p, const std::vector<double> & vf);
-template int fromStdVector<double>(Vector3D & v, const std::vector<double> & vf);
-
 
 void hash_password(const std::string & pwd, const std::string & salt,
                    std::string & hash )

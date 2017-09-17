@@ -20,7 +20,7 @@ class Deer(Thing):
         res = Oplist()
         ent=Entity(self.id,mode="dead",mass=self.mass-1)
         res.append(Operation("set",ent,to=self))
-        venison_ent=Entity(name='venison',parents=['venison'])
+        venison_ent=Entity(name='venison',parent='venison')
         if (len(op)>1):
             to_ = op[1].id
         else:

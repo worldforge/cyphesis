@@ -37,7 +37,7 @@ class DateTime {
     static unsigned int m_dpm; // days per month
     static unsigned int m_mpy; // months per year
 
-    void set(int);
+    void set(unsigned int);
   public:
     explicit DateTime(char *);
     explicit DateTime(int);

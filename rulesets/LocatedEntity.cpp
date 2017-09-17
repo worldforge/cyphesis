@@ -18,14 +18,16 @@
 
 #include "LocatedEntity.h"
 
-#include "TransformsProperty.h"
+#include "Domain.h"
 
 #include "Script.h"
 #include "AtlasProperties.h"
 
-#include "common/Property.h"
 #include "common/TypeNode.h"
-#include "Domain.h"
+
+#include <Atlas/Objects/RootOperation.h>
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Anonymous.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -35,28 +37,37 @@ using Atlas::Message::MapType;
 /// The attributes named are special and are modified using high level
 /// operations, such as Move, not via Set operations, or assigned by
 /// normal means.
-std::set<std::string> LocatedEntity::s_immutable = {"id", "parents", "pos", "loc", "velocity", "orientation", "contains", "objtype", "transforms"};
+std::set<std::string> LocatedEntity::s_immutable = {"id", "parent", "pos", "loc", "velocity", "orientation", "contains", "objtype"};
 
 /// \brief Singleton accessor for immutables
 ///
 /// The immutable attribute set m_immutables is returned.
-const std::set<std::string> & LocatedEntity::immutables()
+const std::set<std::string>& LocatedEntity::immutables()
 {
     return s_immutable;
 }
 
 /// \brief LocatedEntity constructor
-LocatedEntity::LocatedEntity(const std::string & id, long intId) :
-               Router(id, intId),
-               m_refCount(0), m_seq(0),
-               m_script(0), m_type(0), m_flags(0), m_contains(0)
+LocatedEntity::LocatedEntity(const std::string& id, long intId) :
+    Router(id, intId),
+    m_refCount(0), m_seq(0),
+    m_script(0), m_type(0), m_flags(0), m_contains(0)
 {
     m_properties["id"] = new IdProperty(getId());
-    TransformsProperty* transProp = new TransformsProperty();
-    m_properties["transforms"] = transProp;
 }
 
 LocatedEntity::~LocatedEntity()
+{
+    clearProperties();
+
+    delete m_script;
+    if (m_location.m_loc != 0) {
+        m_location.m_loc->decRef();
+    }
+    delete m_contains;
+}
+
+void LocatedEntity::clearProperties()
 {
 
     if (m_type) {
@@ -72,14 +83,12 @@ LocatedEntity::~LocatedEntity()
         entry.second->remove(this, entry.first);
         delete entry.second;
     }
-    delete m_script;
-    if (m_location.m_loc != 0) {
-        m_location.m_loc->decRef();
-    }
-    delete m_contains;
+    m_properties.clear();
+
 }
 
-void LocatedEntity::setType(const TypeNode * t) {
+void LocatedEntity::setType(const TypeNode* t)
+{
     m_type = t;
 }
 
@@ -88,7 +97,7 @@ void LocatedEntity::setType(const TypeNode * t) {
 /// @param name Name of attribute to be checked
 /// @return trye if this entity has an attribute with the name given
 /// false otherwise
-bool LocatedEntity::hasAttr(const std::string & name) const
+bool LocatedEntity::hasAttr(const std::string& name) const
 {
     PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
@@ -109,8 +118,8 @@ bool LocatedEntity::hasAttr(const std::string & name) const
 /// @param attr Reference used to store value
 /// @return zero if this entity has an attribute with the name given
 /// nonzero otherwise
-int LocatedEntity::getAttr(const std::string & name,
-                           Element & attr) const
+int LocatedEntity::getAttr(const std::string& name,
+                           Element& attr) const
 {
     PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
@@ -131,8 +140,8 @@ int LocatedEntity::getAttr(const std::string & name,
 /// @param attr Reference used to store value
 /// @return zero if this entity has an attribute with the name given
 /// nonzero otherwise
-int LocatedEntity::getAttrType(const std::string & name,
-                               Element & attr,
+int LocatedEntity::getAttrType(const std::string& name,
+                               Element& attr,
                                int type) const
 {
     PropertyDict::const_iterator I = m_properties.find(name);
@@ -152,8 +161,8 @@ int LocatedEntity::getAttrType(const std::string & name,
 ///
 /// @param name Name of attribute to be changed
 /// @param attr Value to be stored
-PropertyBase * LocatedEntity::setAttr(const std::string & name,
-                                      const Element & attr)
+PropertyBase* LocatedEntity::setAttr(const std::string& name,
+                                     const Element& attr)
 {
     PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
@@ -168,7 +177,7 @@ PropertyBase * LocatedEntity::setAttr(const std::string & name,
 /// @param name name of the attribute for which the property is required.
 /// @return a pointer to the property, or zero if the attributes does
 /// not exist, or is not stored using a property object.
-const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
+const PropertyBase* LocatedEntity::getProperty(const std::string& name) const
 {
     PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
@@ -177,7 +186,7 @@ const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
     return 0;
 }
 
-PropertyBase * LocatedEntity::modProperty(const std::string & name)
+PropertyBase* LocatedEntity::modProperty(const std::string& name)
 {
     PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
@@ -186,23 +195,23 @@ PropertyBase * LocatedEntity::modProperty(const std::string & name)
     return 0;
 }
 
-PropertyBase * LocatedEntity::setProperty(const std::string & name,
-                                          PropertyBase * prop)
+PropertyBase* LocatedEntity::setProperty(const std::string& name,
+                                         PropertyBase* prop)
 {
     return m_properties[name] = prop;
 }
 
-void LocatedEntity::installDelegate(int, const std::string &)
+void LocatedEntity::installDelegate(int, const std::string&)
 {
 }
 
-void LocatedEntity::removeDelegate(int, const std::string &)
+void LocatedEntity::removeDelegate(int, const std::string&)
 {
 }
 
 /// \brief Called when the container of this entity changes.
 ///
-void LocatedEntity::onContainered(const LocatedEntity * new_loc)
+void LocatedEntity::onContainered(const LocatedEntity* new_loc)
 {
 }
 
@@ -215,14 +224,15 @@ void LocatedEntity::onUpdated()
 /// \brief Called when the entity needs to be removed from its context
 void LocatedEntity::destroy()
 {
+    clearProperties();
 }
 
-Domain * LocatedEntity::getMovementDomain()
+Domain* LocatedEntity::getDomain()
 {
     return nullptr;
 }
 
-const Domain * LocatedEntity::getMovementDomain() const
+const Domain* LocatedEntity::getDomain() const
 {
     return nullptr;
 }
@@ -233,7 +243,7 @@ const Domain * LocatedEntity::getMovementDomain() const
 /// sendWorld() bipasses serialno assignment, so you must ensure
 /// that serialno is sorted. This allows client serialnos to get
 /// in, so that client gets correct usefull refnos back.
-void LocatedEntity::sendWorld(const Operation & op)
+void LocatedEntity::sendWorld(const Operation& op)
 {
 }
 
@@ -241,7 +251,7 @@ void LocatedEntity::sendWorld(const Operation & op)
 ///
 /// The previously associated script is deleted.
 /// @param scrpt Pointer to the script to be associated with this entity
-void LocatedEntity::setScript(Script * scrpt)
+void LocatedEntity::setScript(Script* scrpt)
 {
     delete m_script;
     m_script = scrpt;
@@ -267,9 +277,9 @@ void LocatedEntity::makeContainer()
 
 /// \brief Change the container of an entity
 ///
-/// @param new_loc The entity which is to become this entities new
+/// @param new_loc The entity which is to become this entity's new
 /// container.
-void LocatedEntity::changeContainer(LocatedEntity * new_loc)
+void LocatedEntity::changeContainer(LocatedEntity* new_loc)
 {
     LocatedEntity* oldLoc = m_location.m_loc;
     oldLoc->removeChild(*this);
@@ -279,8 +289,89 @@ void LocatedEntity::changeContainer(LocatedEntity * new_loc)
 
     onContainered(oldLoc);
     oldLoc->decRef();
+}
+
+void LocatedEntity::broadcast(const Atlas::Objects::Operation::RootOperation& op, OpVector& res) const
+{
+    std::set<const LocatedEntity*> receivers;
+    collectObservers(receivers);
+
+    for (auto& entity : receivers) {
+        auto newOp = op.copy();
+        newOp->setTo(entity->getId());
+        newOp->setFrom(getId());
+        res.push_back(newOp);
+    }
 
 }
+
+void LocatedEntity::collectObservers(std::set<const LocatedEntity*>& receivers) const
+{
+    if (isPerceptive()) {
+        receivers.insert(this);
+    }
+    const Domain* domain = getDomain();
+    if (domain) {
+        auto observingEntities = domain->getObservingEntitiesFor(*this);
+        receivers.insert(observingEntities.begin(), observingEntities.end());
+    }
+    if (m_location.m_loc) {
+        m_location.m_loc->collectObserversForChild(*this, receivers);
+    }
+
+}
+
+
+void LocatedEntity::collectObserversForChild(const LocatedEntity& child, std::set<const LocatedEntity*>& receivers) const
+{
+    const Domain* domain = getDomain();
+
+    if (isPerceptive()) {
+        receivers.insert(this);
+    }
+
+    if (domain) {
+        auto observingEntities = domain->getObservingEntitiesFor(child);
+        receivers.insert(observingEntities.begin(), observingEntities.end());
+    }
+    if (m_location.m_loc) {
+        //If this entity have a movement domain, check if the child entity is visible to the parent entity (i.e. it's "exposed outside of the domain"). If not, the broadcast chain stops here.
+        if (domain && !domain->isEntityVisibleFor(*m_location.m_loc, child)) {
+            return;
+        }
+        m_location.m_loc->collectObserversForChild(*this, receivers);
+    }
+}
+
+void LocatedEntity::processAppearDisappear(std::set<const LocatedEntity*> previousObserving, OpVector& res) const
+{
+    std::set<const LocatedEntity*> nowObservers;
+    collectObservers(nowObservers);
+    for (auto entity : nowObservers) {
+        auto numberErased = previousObserving.erase(entity);
+        if (numberErased == 0) {
+            Atlas::Objects::Operation::Appearance appear;
+            Atlas::Objects::Entity::Anonymous that_ent;
+            that_ent->setId(getId());
+            that_ent->setStamp(getSeq());
+            appear->setArgs1(that_ent);
+            appear->setTo(entity->getId());
+            res.push_back(appear);
+        }
+    }
+
+    for (auto entity : previousObserving) {
+        Atlas::Objects::Operation::Disappearance disappear;
+        Atlas::Objects::Entity::Anonymous that_ent;
+        that_ent->setId(getId());
+        that_ent->setStamp(getSeq());
+        disappear->setArgs1(that_ent);
+        disappear->setTo(entity->getId());
+        res.push_back(disappear);
+    }
+}
+
+
 
 void LocatedEntity::addChild(LocatedEntity& childEntity)
 {
@@ -318,7 +409,7 @@ bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* watcher) const
     const Domain* watcherParentDomain = nullptr;
 
     while (domainEntity != nullptr) {
-        watcherParentDomain = domainEntity->getMovementDomain();
+        watcherParentDomain = domainEntity->getDomain();
         if (watcherParentDomain) {
             break;
         }
@@ -327,7 +418,7 @@ bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* watcher) const
     }
 
     domainEntity = watcher->m_location.m_loc;
-    const Domain* watcherOwnDomain = watcher->getMovementDomain();
+    const Domain* watcherOwnDomain = watcher->getDomain();
 
     //Now walk upwards from the entity being looked at until we reach either the watcher's parent domain entity,
     //or the watcher itself
@@ -369,7 +460,7 @@ bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* watcher) const
             }
         }
 
-        ancestorDomain = ancestor->getMovementDomain();
+        ancestorDomain = ancestor->getDomain();
     }
     return true;
 }
@@ -377,13 +468,16 @@ bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* watcher) const
 /// \brief Read attributes from an Atlas element
 ///
 /// @param ent The Atlas map element containing the attribute values
-void LocatedEntity::merge(const MapType & ent)
+void LocatedEntity::merge(const MapType& ent)
 {
-    const std::set<std::string> & imm = immutables();
+    const std::set<std::string>& imm = immutables();
     MapType::const_iterator Iend = ent.end();
     for (MapType::const_iterator I = ent.begin(); I != Iend; ++I) {
-        const std::string & key = I->first;
-        if (imm.find(key) != imm.end()) continue;
+        const std::string& key = I->first;
+        if (key.empty()) {
+            continue;
+        }
+        if (imm.find(key) != imm.end()) { continue; }
         setAttr(key, I->second);
     }
 }

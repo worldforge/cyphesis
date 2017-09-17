@@ -26,10 +26,6 @@
 
 #include "common/sockets.h"
 
-#include <iostream>
-
-#include <unistd.h>
-
 ObserverClient::ObserverClient()
 {
 }

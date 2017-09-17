@@ -196,9 +196,7 @@ int main()
         Atlas::Objects::Operation::Info op;
         Atlas::Objects::Root arg;
         arg->setId("2");
-        std::list<std::string> parents;
-        parents.push_back("server");
-        arg->setParents(parents);
+        arg->setParent("server");
         op->setArgs1(arg);
         OpVector res;
         p->operation(op, res);

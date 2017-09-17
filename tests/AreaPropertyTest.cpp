@@ -69,7 +69,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 
 #include "physics/Shape.h"
 
-const TerrainProperty * TerrainEffectorProperty::getTerrain(LocatedEntity * owner)
+const TerrainProperty * TerrainEffectorProperty::getTerrain(LocatedEntity * owner, LocatedEntity**)
 {
     return 0;
 }

@@ -186,7 +186,7 @@ void Playertest::test_characterError_no_name()
 
     Atlas::Objects::Operation::Create op;
     Anonymous description;
-    description->setParents(std::list<std::string>(1, "settler"));
+    description->setParent("settler");
     OpVector res;
 
     int result = m_account->characterError(op, description, res);
@@ -204,7 +204,7 @@ void Playertest::test_characterError_admin_name()
     Atlas::Objects::Operation::Create op;
     Anonymous description;
     description->setName("adminfoo");
-    description->setParents(std::list<std::string>(1, "settler"));
+    description->setParent("settler");
     OpVector res;
 
     int result = m_account->characterError(op, description, res);
@@ -222,7 +222,7 @@ void Playertest::test_characterError_not_playable()
     Atlas::Objects::Operation::Create op;
     Anonymous description;
     description->setName("dfdd84f5-4708-4b6d-b418-f825d779efc0");
-    description->setParents(std::list<std::string>(1, "goblin"));
+    description->setParent("goblin");
     OpVector res;
 
     int result = m_account->characterError(op, description, res);
@@ -240,7 +240,7 @@ void Playertest::test_characterError_playable()
     Atlas::Objects::Operation::Create op;
     Anonymous description;
     description->setName("13e45264-e512-411b-9f8a-2e5cb6327c87");
-    description->setParents(std::list<std::string>(1, "settler"));
+    description->setParent("settler");
     OpVector res;
 
     int result = m_account->characterError(op, description, res);

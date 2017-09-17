@@ -26,7 +26,6 @@
 
 #include "common/log.h"
 #include "common/debug.h"
-#include "common/EntityKit.h"
 #include "common/Inheritance.h"
 #include "common/compose.hpp"
 
@@ -252,8 +251,8 @@ int TaskRuleHandler::modifyTaskClass(const std::string & class_name,
 
 int TaskRuleHandler::check(const Atlas::Objects::Root & desc)
 {
-    assert(!desc->getParents().empty());
-    return m_builder->isTask(desc->getParents().front()) ? 0 : -1;
+    assert(!desc->getParent().empty());
+    return m_builder->isTask(desc->getParent()) ? 0 : -1;
 }
 
 int TaskRuleHandler::install(const std::string & name,

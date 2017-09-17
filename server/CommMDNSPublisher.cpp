@@ -48,8 +48,6 @@
 
 #include <avahi-common/error.h>
 
-#include <cassert>
-
 static const bool debug_flag = false;
 
 static void client_callback(AvahiClient * s,
@@ -341,9 +339,6 @@ void CommMDNSPublisher::setup_service(AvahiClient * client)
 
     AvahiStringList * txt;
     txt = avahi_string_list_new(
-      String::compose("builddate=%1",
-                      std::string(consts::buildTime) + ", " +
-                      std::string(consts::buildDate)).c_str(),
       String::compose("clients=%1", m_server.getClients()).c_str(),
       String::compose("ruleset=%1", m_server.getRuleset()).c_str(),
       String::compose("server=%1", "cyphesis").c_str(),

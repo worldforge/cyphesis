@@ -21,13 +21,9 @@
 #include "LocatedEntity.h"
 #include "Task.h"
 
-#include "common/compose.hpp"
 #include "common/debug.h"
-#include "common/log.h"
 #include "common/TypeNode.h"
 #include "common/Update.h"
-
-#include <iostream>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;

@@ -77,11 +77,13 @@ void AreaPropertyintegration::setup()
     m_char1->setType(m_char_type);
     m_char_property->install(m_char1, "char_prop");
     m_char_property->apply(m_char1);
+    m_char1->propertyApplied("char_prop", *m_char_property);
 
     m_char2 = new Entity("2", 2);
     m_char2->setType(m_char_type);
     m_char_property->install(m_char2, "char_prop");
     m_char_property->apply(m_char2);
+    m_char2->propertyApplied("char_prop", *m_char_property);
 }
 
 void AreaPropertyintegration::teardown()
@@ -110,14 +112,12 @@ int main()
 
 #include "common/log.h"
 
-const TerrainProperty * TerrainEffectorProperty::getTerrain(LocatedEntity * owner)
+const TerrainProperty * TerrainEffectorProperty::getTerrain(LocatedEntity * owner, LocatedEntity**)
 {
     return 0;
 }
 
 // stubs
-
-#include "Property_stub_impl.h"
 
 #include "rulesets/AtlasProperties.h"
 #include "rulesets/Domain.h"
@@ -132,9 +132,9 @@ const TerrainProperty * TerrainEffectorProperty::getTerrain(LocatedEntity * owne
 #include "stubs/common/stubCustom.h"
 #include "stubs/rulesets/stubDomain.h"
 #include "stubs/rulesets/stubDomainProperty.h"
-#include "stubs/rulesets/stubTransformsProperty.h"
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
+#include "stubs/common/stubProperty.h"
 
 
 void addToEntity(const Point3D & p, std::vector<double> & vd)
@@ -258,97 +258,6 @@ void IdProperty::add(const std::string & key,
 IdProperty * IdProperty::copy() const
 {
     return 0;
-}
-
-PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
-{
-}
-
-PropertyBase::~PropertyBase()
-{
-}
-
-void PropertyBase::install(LocatedEntity *, const std::string & name)
-{
-}
-
-void PropertyBase::remove(LocatedEntity *, const std::string & name)
-{
-}
-
-void PropertyBase::apply(LocatedEntity *)
-{
-}
-
-void PropertyBase::add(const std::string & s,
-                       Atlas::Message::MapType & ent) const
-{
-    get(ent[s]);
-}
-
-void PropertyBase::add(const std::string & s,
-                       const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-HandlerResult PropertyBase::operation(LocatedEntity *,
-                                      const Operation &,
-                                      OpVector &)
-{
-    return OPERATION_IGNORED;
-}
-
-template<>
-void Property<int>::set(const Atlas::Message::Element & e)
-{
-    if (e.isInt()) {
-        this->m_data = e.asInt();
-    }
-}
-
-template<>
-void Property<double>::set(const Atlas::Message::Element & e)
-{
-    if (e.isNum()) {
-        this->m_data = e.asNum();
-    }
-}
-
-template<>
-void Property<std::string>::set(const Atlas::Message::Element & e)
-{
-    if (e.isString()) {
-        this->m_data = e.String();
-    }
-}
-
-template class Property<int>;
-template class Property<double>;
-template class Property<std::string>;
-template class Property<MapType>;
-
-SoftProperty::SoftProperty()
-{
-}
-
-SoftProperty::SoftProperty(const Atlas::Message::Element & data) :
-              PropertyBase(0), m_data(data)
-{
-}
-
-int SoftProperty::get(Atlas::Message::Element & val) const
-{
-    val = m_data;
-    return 0;
-}
-
-void SoftProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-SoftProperty * SoftProperty::copy() const
-{
-    return new SoftProperty(*this);
 }
 
 ContainsProperty::ContainsProperty(LocatedEntitySet & data) :

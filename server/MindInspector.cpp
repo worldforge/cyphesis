@@ -17,7 +17,6 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
 #endif
 
 #include "MindInspector.h"
@@ -26,11 +25,9 @@
 
 #include "common/BaseWorld.h"
 #include "common/custom.h"
-#include "common/log.h"
 #include "common/Commune.h"
 #include "common/Think.h"
 
-#include <Atlas/Objects/Generic.h>
 #include <Atlas/Objects/Operation.h>
 
 MindInspector::MindInspector() :

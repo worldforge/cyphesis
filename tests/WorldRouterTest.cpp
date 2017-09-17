@@ -371,12 +371,12 @@ void LocatedEntity::destroy()
 {
 }
 
-Domain * LocatedEntity::getMovementDomain()
+Domain * LocatedEntity::getDomain()
 {
     return 0;
 }
 
-const Domain * LocatedEntity::getMovementDomain() const
+const Domain * LocatedEntity::getDomain() const
 {
     return 0;
 }
@@ -408,6 +408,21 @@ std::vector<Atlas::Objects::Root> LocatedEntity::getThoughts() const
 {
     return std::vector<Atlas::Objects::Root>();
 }
+
+void LocatedEntity::broadcast(const Atlas::Objects::Operation::RootOperation& op, OpVector& res) const
+{
+}
+
+void LocatedEntity::collectObservers(std::set<const LocatedEntity*>& observers) const
+{
+
+}
+
+void LocatedEntity::processAppearDisappear(std::set<const LocatedEntity*> previousObserving, OpVector& res) const
+{
+
+}
+
 #include "stubs/common/stubRouter.h"
 
 
@@ -596,7 +611,6 @@ const TypeNode * Inheritance::getType(const std::string & parent)
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
 #include "stubs/common/stubProperty.h"
-#include "stubs/rulesets/stubTransformsProperty.h"
 #include "common/Property_impl.h"
 
 

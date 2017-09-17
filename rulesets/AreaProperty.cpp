@@ -20,16 +20,12 @@
 
 #include "common/debug.h"
 #include <common/log.h>
-#include "common/type_utils_impl.h"
 
 #include "physics/Shape.h"
 
 #include <wfmath/atlasconv.h>
 
 #include <sstream>
-#include <iostream>
-
-#include <cassert>
 
 static const bool debug_flag = false;
 

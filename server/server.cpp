@@ -25,7 +25,6 @@
 #include "CommMetaClient.h"
 #include "CommMDNSPublisher.h"
 #include "CommAsioListener_impl.h"
-#include "CommAsioClient.h"
 #include "Connection.h"
 #include "ServerRouting.h"
 #include "EntityBuilder.h"
@@ -44,34 +43,16 @@
 #include "rulesets/LocatedEntity.h"
 
 #include "common/id.h"
-#include "common/log.h"
 #include "common/const.h"
-#include "common/debug.h"
-#include "common/globals.h"
 #include "common/Inheritance.h"
-#include "common/compose.hpp"
 #include "common/system.h"
-#include "common/nls.h"
 #include "common/sockets.h"
-#include "common/utils.h"
-#include "common/serialno.h"
 #include "common/SystemTime.h"
 #include "common/Monitors.h"
 
 #include <varconf/config.h>
 
-#include <sigc++/functors/mem_fun.h>
-
-#include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/Anonymous.h>
-
-#include <boost/asio/io_service.hpp>
-#include <boost/asio/local/stream_protocol.hpp>
-#include <boost/asio/ip/tcp.hpp>
-#include <boost/asio/deadline_timer.hpp>
-
 #include <thread>
-#include <cstdlib>
 #include <fstream>
 
 using String::compose;
@@ -164,7 +145,7 @@ int main(int argc, char ** argv)
     if (config_status < 0) {
         if (config_status == CONFIG_VERSION) {
             std::cout << argv[0] << " (cyphesis) " << consts::version
-                    << " (Cyphesis build " << consts::buildId << ")"
+                    << " (Cyphesis build: " << consts::buildId << ")"
                     << std::endl << std::flush;
 
             return 0;
@@ -255,19 +236,19 @@ int main(int argc, char ** argv)
 
     io_service* io_service = new boost::asio::io_service();
 
-    boost::asio::signal_set signalSet(*io_service);
+    boost::asio::signal_set* signalSet = new boost::asio::signal_set(*io_service);
     //If we're not running as a daemon we should use the interactive signal handler.
     if (!daemon_flag) {
-        signalSet.add(SIGINT);
-        signalSet.add(SIGTERM);
-        signalSet.add(SIGHUP);
-        signalSet.add(SIGQUIT);
+        signalSet->add(SIGINT);
+        signalSet->add(SIGTERM);
+        signalSet->add(SIGHUP);
+        signalSet->add(SIGQUIT);
 
-        signalSet.async_wait(std::bind(interactiveSignalsHandler, std::ref(signalSet), std::placeholders::_1, std::placeholders::_2));
+        signalSet->async_wait(std::bind(interactiveSignalsHandler, std::ref(*signalSet), std::placeholders::_1, std::placeholders::_2));
     } else {
-        signalSet.add(SIGTERM);
+        signalSet->add(SIGTERM);
 
-        signalSet.async_wait(std::bind(daemonSignalsHandler, std::ref(signalSet), std::placeholders::_1, std::placeholders::_2));
+        signalSet->async_wait(std::bind(daemonSignalsHandler, std::ref(*signalSet), std::placeholders::_1, std::placeholders::_2));
     }
 
     // Start up the Python subsystem.
@@ -275,7 +256,7 @@ int main(int argc, char ** argv)
 
     Inheritance::instance();
 
-    SystemTime time;
+    SystemTime time{};
     time.update();
 
     WorldRouter * world = new WorldRouter(time);
@@ -302,65 +283,24 @@ int main(int argc, char ** argv)
     ServerRouting * server = new ServerRouting(*world, ruleset_name,
             server_name, server_id, int_id, lobby_id, lobby_int_id);
 
-    // This is where we should restore the database, before
-    // the listen sockets are open. Unlike earlier code, we are
-    // attempting to construct the internal state from the database,
-    // not creating a new world using the contents of the database as a
-    // template
+    std::function<void(CommAsioClient<ip::tcp>&)> tcpAtlasStarter = [&](CommAsioClient<ip::tcp>& client) {
+        std::string connection_id;
+        long c_iid = newId(connection_id);
+        //Turn off Nagle's algorithm to increase responsiveness.
+        client.getSocket().set_option(ip::tcp::no_delay(true));
+        //Listen to both ipv4 and ipv6
+        //client.getSocket().set_option(boost::asio::ip::v6_only(false));
+        client.startAccept(new Connection(client, *server, "", connection_id, c_iid));
+    };
 
-    IdleConnector* storage_idle = nullptr;
-
-    CommPSQLSocket * dbsocket = nullptr;
-    if (database_flag) {
-        // log(INFO, _("Restoring world from database..."));
-
-        store->restoreWorld();
-        // FIXME Do the following steps.
-        // Read the world entity if any from the database, or set it up.
-        // If it was there, make sure it did not get any of the wrong
-        // position or orientation data.
-        store->initWorld();
-
-        // log(INFO, _("Restored world."));
-
-        dbsocket = new CommPSQLSocket(*io_service,
-                Persistence::instance()->m_db);
-
-        storage_idle = new IdleConnector(*io_service);
-        storage_idle->idling.connect(
-                sigc::mem_fun(store, &StorageManager::tick));
-    } else {
-        std::string adminId;
-        long intId = newId(adminId);
-        assert(intId >= 0);
-
-        Admin * admin = new Admin(0, "admin", "BAD_HASH", adminId, intId);
-        server->addAccount(admin);
-    }
-
-    std::function<void(CommAsioClient<ip::tcp>&)> tcpAtlasStarter =
-            [&](CommAsioClient<ip::tcp>& client) {
-
-                std::string connection_id;
-                long c_iid = newId(connection_id);
-                //Turn off Nagle's algorithm to increase responsiveness.
-                client.getSocket().set_option(ip::tcp::no_delay(true));
-                client.startAccept(
-                        new Connection(client, *server, "", connection_id, c_iid));
-            };
-
-    std::list<
-            CommAsioListener<ip::tcp,
-                    CommAsioClient<ip::tcp>> > tcp_atlas_clients;
+    std::list<CommAsioListener<ip::tcp, CommAsioClient<ip::tcp>>> tcp_atlas_clients;
 
     if (client_port_num < 0) {
         client_port_num = dynamic_port_start;
         for (; client_port_num <= dynamic_port_end; client_port_num++) {
             try {
-                tcp_atlas_clients.emplace_back(tcpAtlasStarter,
-                        server->getName(), *io_service,
-                        ip::tcp::endpoint(
-                                ip::tcp::v4(), client_port_num));
+                tcp_atlas_clients.emplace_back(tcpAtlasStarter, server->getName(), *io_service,
+                                               ip::tcp::endpoint(ip::tcp::v6(), client_port_num));
             } catch (const std::exception& e) {
                 break;
             }
@@ -385,10 +325,7 @@ int main(int argc, char ** argv)
                 client_port_num + 1, varconf::USER);
     } else {
         try {
-            tcp_atlas_clients.emplace_back(tcpAtlasStarter, server->getName(),
-                    *io_service,
-                    ip::tcp::endpoint(ip::tcp::v4(),
-                            client_port_num));
+            tcp_atlas_clients.emplace_back(tcpAtlasStarter, server->getName(), *io_service, ip::tcp::endpoint(ip::tcp::v6(), client_port_num));
         } catch (const std::exception& e) {
             log(ERROR, String::compose("Could not create client listen socket "
                     "on port %1. Init failed. The most common reason for this "
@@ -403,36 +340,29 @@ int main(int argc, char ** argv)
             [&](CommPythonClient& client) {
                 client.startAccept();
             };
-    auto pythonListener = new CommAsioListener<local::stream_protocol,
-            CommPythonClient>(pythonStarter,
-            server->getName(), *io_service,
-            local::stream_protocol::endpoint(python_socket_name));
+    auto pythonListener = new CommAsioListener<local::stream_protocol, CommPythonClient>(pythonStarter, server->getName(), *io_service,
+                                                                                         local::stream_protocol::endpoint(python_socket_name));
 
     remove(client_socket_name.c_str());
-    std::function<void(CommAsioClient<local::stream_protocol>&)> localStarter =
-            [&](CommAsioClient<local::stream_protocol>& client) {
-
-                std::string connection_id;
-                long c_iid = newId(connection_id);
-                client.startAccept(
-                        new TrustedConnection(client, *server, "", connection_id, c_iid));
-            };
-    auto localListener = new CommAsioListener<local::stream_protocol,
-            CommAsioClient<local::stream_protocol>>(localStarter,
-            server->getName(), *io_service,
-            local::stream_protocol::endpoint(client_socket_name));
+    std::function<void(CommAsioClient<local::stream_protocol>&)> localStarter = [&](CommAsioClient<local::stream_protocol>& client) {
+        std::string connection_id;
+        long c_iid = newId(connection_id);
+        client.startAccept(new TrustedConnection(client, *server, "", connection_id, c_iid));
+    };
+    auto localListener = new CommAsioListener<local::stream_protocol, CommAsioClient<local::stream_protocol>>(localStarter, server->getName(), *io_service,
+                                                                                                              local::stream_protocol::endpoint(client_socket_name));
 
 
     //Instantiate at startup
     HttpCache::instance();
-    std::function<void(CommHttpClient&)> httpStarter =
-            [&](CommHttpClient& client) {
-                client.serveRequest();
-            };
+    std::function<void(CommHttpClient&)> httpStarter = [&](CommHttpClient& client) {
+        //Listen to both ipv4 and ipv6
+        //client.getSocket().set_option(boost::asio::ip::v6_only(false));
+        client.serveRequest();
+    };
 
-    auto httpListener = new CommAsioListener<ip::tcp, CommHttpClient>(httpStarter,
-            server->getName(), *io_service,
-            ip::tcp::endpoint(ip::tcp::v4(), http_port_num));
+    auto httpListener = new CommAsioListener<ip::tcp, CommHttpClient>(httpStarter, server->getName(), *io_service,
+                                                                      ip::tcp::endpoint(ip::tcp::v6(), http_port_num));
 
     log(INFO, compose("Http service. The following endpoints are available over port %1.", http_port_num));
     log(INFO, " /config : shows server configuration");
@@ -461,6 +391,36 @@ int main(int argc, char ** argv)
 #endif // defined(HAVE_AVAHI)
     // Configuration is now complete, and verified as somewhat sane, so
     // we save the updated user config.
+
+
+    IdleConnector* storage_idle = nullptr;
+
+    CommPSQLSocket * dbsocket = nullptr;
+    if (database_flag) {
+        log(INFO, "Restoring world from database...");
+
+        store->restoreWorld();
+        // Read the world entity if any from the database, or set it up.
+        // If it was there, make sure it did not get any of the wrong
+        // position or orientation data.
+        store->initWorld();
+
+        log(INFO, "Restored world.");
+
+        dbsocket = new CommPSQLSocket(*io_service,
+                                      Persistence::instance()->m_db);
+
+        storage_idle = new IdleConnector(*io_service);
+        storage_idle->idling.connect(
+            sigc::mem_fun(store, &StorageManager::tick));
+    } else {
+        std::string adminId;
+        long intId = newId(adminId);
+        assert(intId >= 0);
+
+        Admin * admin = new Admin(0, "admin", "BAD_HASH", adminId, intId);
+        server->addAccount(admin);
+    }
 
     updateUserConfiguration();
 
@@ -530,115 +490,120 @@ int main(int argc, char ** argv)
 
     bool soft_exit_in_progress = false;
 
-    //Make sure that the io_service never runs out of work.
-    boost::asio::io_service::work work(*io_service);
-    //This timer is used to wake the io_service when next op needs to be handled.
-    boost::asio::deadline_timer nextOpTimer(*io_service);
-    //This timer will set a deadline for any mind persistence during soft exits.
-    boost::asio::deadline_timer softExitTimer(*io_service);
-    // Loop until the exit flag is set. The exit flag can be set anywhere in
-    // the code easily.
-    while (!exit_flag) {
-        try {
-            time.update();
-            bool busy = world->idle();
-            world->markQueueAsClean();
-            //If the world is busy we should just poll.
-            if (busy) {
-                io_service->poll();
-            } else {
-                //If it's not busy however we should run until we get a task.
-                //We will either get an io task, or we will be triggered by the timer
-                //which is set to expire when the next op should be dispatched.
-                double secondsUntilNextOp = world->secondsUntilNextOp();
-                if (secondsUntilNextOp <= 0.0) {
+    {
+        //Make sure that the io_service never runs out of work.
+        boost::asio::io_service::work work(*io_service);
+        //This timer is used to wake the io_service when next op needs to be handled.
+        boost::asio::deadline_timer nextOpTimer(*io_service);
+        //This timer will set a deadline for any mind persistence during soft exits.
+        boost::asio::deadline_timer softExitTimer(*io_service);
+        // Loop until the exit flag is set. The exit flag can be set anywhere in
+        // the code easily.
+        while (!exit_flag) {
+            try {
+                time.update();
+                bool busy = world->idle();
+                world->markQueueAsClean();
+                //If the world is busy we should just poll.
+                if (busy) {
                     io_service->poll();
                 } else {
-                    bool nextOpTimeExpired = false;
-                    boost::posix_time::microseconds waitTime((long long)(secondsUntilNextOp * 1000000));
-                    nextOpTimer.expires_from_now(waitTime);
-                    nextOpTimer.async_wait([&](boost::system::error_code ec){
-                        if (ec != boost::asio::error::operation_aborted) {
-                            nextOpTimeExpired = true;
+                    //If it's not busy however we should run until we get a task.
+                    //We will either get an io task, or we will be triggered by the timer
+                    //which is set to expire when the next op should be dispatched.
+                    double secondsUntilNextOp = world->secondsUntilNextOp();
+                    if (secondsUntilNextOp <= 0.0) {
+                        io_service->poll();
+                    } else {
+                        bool nextOpTimeExpired = false;
+                        boost::posix_time::microseconds waitTime((int64_t)(secondsUntilNextOp * 1000000L));
+                        nextOpTimer.expires_from_now(waitTime);
+                        nextOpTimer.async_wait([&](boost::system::error_code ec){
+                            if (ec != boost::asio::error::operation_aborted) {
+                                nextOpTimeExpired = true;
+                            }
+                        });
+                        //Keep on running IO handlers until either the queue is dirty (i.e. we need to handle
+                        //any new operation) or the timer has expired.
+                        do {
+                            io_service->run_one();
+                        } while (!world->isQueueDirty() && !nextOpTimeExpired &&
+                                !exit_flag_soft && !exit_flag && !soft_exit_in_progress);
+                        nextOpTimer.cancel();
+                    }
+                }
+                if (soft_exit_in_progress) {
+                    //If we're in soft exit mode and either the deadline has been exceeded
+                    //or we've persisted all minds we should shut down normally.
+                    if (store->numberOfOutstandingThoughtRequests() == 0) {
+                        log(NOTICE, "All entity thoughts were persisted.");
+                        exit_flag = true;
+                        softExitTimer.cancel();
+                    }
+                } else if (exit_flag_soft) {
+                    exit_flag_soft = false;
+                    soft_exit_in_progress = true;
+                    size_t requestNumber = store->requestMinds(
+                            world->getEntities());
+                    log(INFO,
+                            String::compose(
+                                    "Soft exit requested, persisting %1 minds.",
+                                    requestNumber));
+                    //Set a deadline for five seconds.
+                    softExitTimer.expires_from_now(boost::posix_time::seconds(5));
+                    softExitTimer.async_wait([&](boost::system::error_code ec){
+                        if (!ec) {
+                            log(WARNING,
+                                    String::compose("Waiting for persisting thoughts timed out. This might "
+                                            "lead to lost entity thoughts. %1 thoughts outstanding.",
+                                            store->numberOfOutstandingThoughtRequests()));
+                            exit_flag = true;
                         }
                     });
-                    //Keep on running IO handlers until either the queue is dirty (i.e. we need to handle
-                    //any new operation) or the timer has expired.
-                    do {
-                        io_service->run_one();
-                    } while (!world->isQueueDirty() && !nextOpTimeExpired &&
-                            !exit_flag_soft && !exit_flag && !soft_exit_in_progress);
-                    nextOpTimer.cancel();
+                    log(NOTICE,
+                            String::compose(
+                                    "Deadline for mind persistence set to %1 seconds.",
+                                    5));
                 }
+                // It is hoped that commonly thrown exception, particularly
+                // exceptions that can be caused  by external influences
+                // should be caught close to where they are thrown. If
+                // an exception makes it here then it should be debugged.
+            } catch (const std::exception& e) {
+                log(ERROR,
+                        String::compose("Exception caught in main(): %1",
+                                e.what()));
+            } catch (...) {
+                log(ERROR, "Exception caught in main()");
             }
-            if (soft_exit_in_progress) {
-                //If we're in soft exit mode and either the deadline has been exceeded
-                //or we've persisted all minds we should shut down normally.
-                if (store->numberOfOutstandingThoughtRequests() == 0) {
-                    log(NOTICE, "All entity thoughts were persisted.");
-                    exit_flag = true;
-                    softExitTimer.cancel();
-                }
-            } else if (exit_flag_soft) {
-                exit_flag_soft = false;
-                soft_exit_in_progress = true;
-                size_t requestNumber = store->requestMinds(
-                        world->getEntities());
-                log(INFO,
-                        String::compose(
-                                "Soft exit requested, persisting %1 minds.",
-                                requestNumber));
-                //Set a deadline for five seconds.
-                softExitTimer.expires_from_now(boost::posix_time::seconds(5));
-                softExitTimer.async_wait([&](boost::system::error_code ec){
-                    if (!ec) {
-                        log(WARNING,
-                                String::compose("Waiting for persisting thoughts timed out. This might "
-                                        "lead to lost entity thoughts. %1 thoughts outstanding.",
-                                        store->numberOfOutstandingThoughtRequests()));
-                        exit_flag = true;
-                    }
-                });
-                log(NOTICE,
-                        String::compose(
-                                "Deadline for mind persistence set to %1 seconds.",
-                                5));
+        }
+        // exit flag has been set so we close down the databases, and indicate
+        // to the metaserver (if we are using one) that this server is going down.
+        // It is assumed that any preparation for the shutdown that is required
+        // by the game has been done before exit flag was set.
+        log(NOTICE, "Performing clean shutdown...");
+
+        //Actually, there's no way for the world to know that it's shutting down,
+        //as the shutdown signal most probably comes from a sighandler. We need to
+        //tell it it's shutting down so it can do some housekeeping.
+        try {
+            exit_flag = false;
+            if (store->shutdown(exit_flag, world->getEntities()) != 0) {
+                //Ignore this error and carry on with shutting down.
+                log(ERROR, "Error when shutting down");
             }
-            // It is hoped that commonly thrown exception, particularly
-            // exceptions that can be caused  by external influences
-            // should be caught close to where they are thrown. If
-            // an exception makes it here then it should be debugged.
         } catch (const std::exception& e) {
             log(ERROR,
-                    String::compose("Exception caught in main(): %1",
+                    String::compose("Exception caught when shutting down: %1",
                             e.what()));
         } catch (...) {
-            log(ERROR, "Exception caught in main()");
-        }
-    }
-    // exit flag has been set so we close down the databases, and indicate
-    // to the metaserver (if we are using one) that this server is going down.
-    // It is assumed that any preparation for the shutdown that is required
-    // by the game has been done before exit flag was set.
-    log(NOTICE, "Performing clean shutdown...");
-
-    //Actually, there's no way for the world to know that it's shutting down,
-    //as the shutdown signal most probably comes from a sighandler. We need to
-    //tell it it's shutting down so it can do some housekeeping.
-    try {
-        exit_flag = false;
-        if (store->shutdown(exit_flag, world->getEntities()) != 0) {
             //Ignore this error and carry on with shutting down.
-            log(ERROR, "Error when shutting down");
+            log(ERROR, "Exception caught when shutting down");
         }
-    } catch (const std::exception& e) {
-        log(ERROR,
-                String::compose("Exception caught when shutting down: %1",
-                        e.what()));
-    } catch (...) {
-        //Ignore this error and carry on with shutting down.
-        log(ERROR, "Exception caught when shutting down");
     }
+
+    signalSet->clear();
+    delete signalSet;
 
     delete cmdns;
 
@@ -657,6 +622,8 @@ int main(int argc, char ** argv)
 
     delete storage_idle;
 
+    delete dbsocket;
+
     delete io_service;
 
     delete server;
@@ -665,7 +632,6 @@ int main(int argc, char ** argv)
 
     delete world;
 
-    delete dbsocket;
 
     Persistence::instance()->shutdown();
 

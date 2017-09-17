@@ -13,8 +13,8 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">2</float>
+      <map name="density">
+        <float name="default">860</float>
         <string name="visibility">public</string>
       </map>
       <map name="worn">
@@ -24,9 +24,7 @@
     </map>
     <string name="id">boots</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -42,8 +40,8 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">0.5</float>
+      <map name="density">
+        <float name="default">30</float>
         <string name="visibility">public</string>
       </map>
       <map name="worn">
@@ -53,9 +51,7 @@
     </map>
     <string name="id">cloak</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -71,8 +67,8 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">3</float>
+      <map name="density">
+        <float name="default">30</float>
         <string name="visibility">public</string>
       </map>
       <map name="operations">
@@ -84,9 +80,7 @@
     </map>
     <string name="id">garment</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.clothing.Garment.Garment</string>
@@ -106,8 +100,8 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">0.5</float>
+      <map name="density">
+        <float name="default">30</float>
         <string name="visibility">public</string>
       </map>
       <map name="worn">
@@ -117,9 +111,7 @@
     </map>
     <string name="id">hat</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -135,8 +127,8 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">0.5</float>
+      <map name="density">
+        <float name="default">30</float>
         <string name="visibility">public</string>
       </map>
       <map name="worn">
@@ -146,9 +138,7 @@
     </map>
     <string name="id">shirt</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -164,8 +154,8 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">0.5</float>
+      <map name="density">
+        <float name="default">30</float>
         <string name="visibility">public</string>
       </map>
       <map name="worn">
@@ -175,9 +165,7 @@
     </map>
     <string name="id">trousers</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
 </atlas>

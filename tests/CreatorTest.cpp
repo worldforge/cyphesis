@@ -49,7 +49,6 @@
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubBaseWorld.h"
 #include "stubs/common/stubProperty.h"
-#include "stubs/rulesets/stubSoftProperty.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/common/stubPropertyManager.h"
 #include "stubs/rulesets/stubDomain.h"

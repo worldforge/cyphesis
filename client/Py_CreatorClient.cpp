@@ -24,7 +24,6 @@
 #include "rulesets/Py_Operation.h"
 #include "rulesets/Py_RootEntity.h"
 #include "rulesets/Py_WorldTime.h"
-#include "rulesets/Py_Point3D.h"
 #include "rulesets/Py_Location.h"
 #include "rulesets/Py_Message.h"
 #include "rulesets/Py_Thing.h"
@@ -32,7 +31,6 @@
 
 #include "common/debug.h"
 #include "common/id.h"
-#include "common/log.h"
 #include "common/TypeNode.h"
 
 using Atlas::Message::Element;

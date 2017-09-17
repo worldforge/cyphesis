@@ -20,9 +20,6 @@
 
 #include "common/globals.h"
 
-#include <cstdio>
-#include <cstdlib>
-
 // date_pat=re.compile("^|[-:]|\s+");
 
 // unsigned int DateTime::m_spm = 60; // seconds per minute
@@ -36,7 +33,7 @@ unsigned int DateTime::m_hpd = HPD; // hours per day
 unsigned int DateTime::m_dpm = DPM; // days per month
 unsigned int DateTime::m_mpy = MPY; // months per year
 
-inline void DateTime::set(int t)
+inline void DateTime::set(unsigned int t)
 {
     m_second = t % m_spm;
     t /= m_spm;

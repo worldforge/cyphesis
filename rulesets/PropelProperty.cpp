@@ -31,7 +31,8 @@ using Atlas::Objects::Entity::RootEntity;
 const std::string PropelProperty::property_name = "propel";
 const std::string PropelProperty::property_atlastype = "list";
 
-PropelProperty::PropelProperty() {
+PropelProperty::PropelProperty(): PropertyBase(per_ephem)
+{
 }
 
 PropelProperty::~PropelProperty()
@@ -51,29 +52,27 @@ void PropelProperty::set(const Element & val)
 {
     try {
         mData.fromAtlas(val.asList());
-    }
-    catch (Atlas::Message::WrongTypeException &) {
+    } catch (Atlas::Message::WrongTypeException &) {
         log(ERROR, "BBoxProperty::set: Box bbox data");
     }
 }
 
-void PropelProperty::add(const std::string & key,
-                       MapType & map) const
+void PropelProperty::add(const std::string & key, MapType & map) const
 {
     if (mData.isValid()) {
         map[key] = mData.toAtlas();
     }
 }
 
-void PropelProperty::add(const std::string & key,
-                       const RootEntity & ent) const
+void PropelProperty::add(const std::string & key, const RootEntity & ent) const
 {
     if (mData.isValid()) {
         ent->setAttr(key, mData.toAtlas());
     }
 }
 
-PropelProperty * PropelProperty::copy() const {
+PropelProperty * PropelProperty::copy() const
+{
     return new PropelProperty(*this);
 }
 

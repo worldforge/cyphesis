@@ -136,7 +136,7 @@ class Accounttest : public Cyphesis::TestBase
     void test_operation_INVALID();
     void test_operation_Other();
     void test_CreateOperation_no_args();
-    void test_CreateOperation_no_parents();
+    void test_CreateOperation_no_parent();
     void test_CreateOperation_good();
     void test_GetOperation();
     void test_ImaginaryOperation_no_args();
@@ -276,7 +276,7 @@ Accounttest::Accounttest() : m_id_counter(0L),
     ADD_TEST(Accounttest::test_operation_INVALID);
     ADD_TEST(Accounttest::test_operation_Other);
     ADD_TEST(Accounttest::test_CreateOperation_no_args);
-    ADD_TEST(Accounttest::test_CreateOperation_no_parents);
+    ADD_TEST(Accounttest::test_CreateOperation_no_parent);
     ADD_TEST(Accounttest::test_CreateOperation_good);
     ADD_TEST(Accounttest::test_GetOperation);
     ADD_TEST(Accounttest::test_ImaginaryOperation_no_args);
@@ -613,7 +613,7 @@ void Accounttest::test_addToMessage()
     ASSERT_EQUAL(data["username"], m_account->m_username);
     ASSERT_EQUAL(data["name"], m_account->m_username);
     ASSERT_EQUAL(data["password"], m_account->m_password);
-    ASSERT_EQUAL(data["parents"], ListType(1, "account"));
+    ASSERT_EQUAL(data["parent"], "account");
     ASSERT_EQUAL(data["characters"], ListType(1, c->getId()));
     ASSERT_EQUAL(data["objtype"], "obj");
     ASSERT_EQUAL(data["id"], m_account->getId());
@@ -639,10 +639,10 @@ void Accounttest::test_addToEntity()
     ASSERT_TRUE(!data->isDefaultName());
     ASSERT_EQUAL(data->getName(), m_account->m_username);
     ASSERT_EQUAL(data->getAttr("password"), m_account->m_password);
-    ASSERT_TRUE(!data->isDefaultParents());
-    ASSERT_EQUAL(data->getParents(), std::list<std::string>(1, "account"));
+    ASSERT_TRUE(!data->isDefaultParent());
+    ASSERT_EQUAL(data->getParent(), "account");
     ASSERT_EQUAL(data->getAttr("characters"), ListType(1, c->getId()));
-    ASSERT_TRUE(!data->isDefaultParents());
+    ASSERT_TRUE(!data->isDefaultParent());
     ASSERT_EQUAL(data->getObjtype(), "obj");
     ASSERT_EQUAL(data->getAttr("id"), m_account->getId());
 
@@ -733,7 +733,7 @@ void Accounttest::test_CreateOperation_no_args()
     m_account->CreateOperation(op, res);
 }
 
-void Accounttest::test_CreateOperation_no_parents()
+void Accounttest::test_CreateOperation_no_parent()
 {
     Atlas::Objects::Operation::Create op;
     OpVector res;
@@ -761,7 +761,7 @@ void Accounttest::test_CreateOperation_good()
     OpVector res;
 
     Anonymous create_arg;
-    create_arg->setParents(std::list<std::string>(1, "foo"));
+    create_arg->setParent("foo");
     op->setArgs1(create_arg);
 
     m_account->operation(op, res);
@@ -1808,199 +1808,16 @@ void Lobby::operation(const Operation & op, OpVector & res)
 #include "stubs/rulesets/stubThing.h"
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
+#include "stubs/common/stubid.h"
 
 
-Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0)
-{
-}
-
-Entity::~Entity()
-{
-}
-
-void Entity::destroy()
-{
-    destroyed.emit();
-}
-
-void Entity::ActuateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::AppearanceOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::AttackOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::CombineOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::CreateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DeleteOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DisappearanceOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DivideOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::EatOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::GetOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::InfoOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::ImaginaryOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::LookOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::MoveOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::NourishOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SetOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SightOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SoundOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TalkOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TickOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TouchOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::UpdateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::UseOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::WieldOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::RelayOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::externalOperation(const Operation & op, Link &)
-{
-}
-
-void Entity::operation(const Operation & op, OpVector & res)
-{
-}
-
-void Entity::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
+#define STUB_Entity_addToEntity
 void Entity::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
     ent->setId(getId());
 }
 
-PropertyBase * Entity::setAttr(const std::string & name,
-                               const Atlas::Message::Element & attr)
-{
-    return 0;
-}
-
-const PropertyBase * Entity::getProperty(const std::string & name) const
-{
-    return 0;
-}
-
-PropertyBase * Entity::modProperty(const std::string & name)
-{
-    return 0;
-}
-
-PropertyBase * Entity::setProperty(const std::string & name,
-                                   PropertyBase * prop)
-{
-    return 0;
-}
-
-void Entity::installDelegate(int class_no, const std::string & delegate)
-{
-}
-
-void Entity::removeDelegate(int class_no, const std::string & delegate)
-{
-}
-
-Domain * Entity::getMovementDomain()
-{
-    return 0;
-}
-
-const Domain * Entity::getMovementDomain() const
-{
-    return 0;
-}
-
-void Entity::sendWorld(const Operation & op)
-{
-}
-
-void Entity::onContainered(const LocatedEntity*)
-{
-}
-
-void Entity::onUpdated()
-{
-}
-
-void Entity::callOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Entity::setType(const TypeNode* t)
-{
-}
-
+#include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
 
 Link::Link(CommSocket & socket, const std::string & id, long iid) :
@@ -2016,6 +1833,11 @@ void Link::send(const Operation & op) const
 {
     Accounttest::append_Link_send_sent(op);
 }
+
+void Link::send(const OpVector& opVector) const
+{
+}
+
 
 void Link::disconnect()
 {

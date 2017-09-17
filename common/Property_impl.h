@@ -23,7 +23,7 @@
 
 #include <Atlas/Objects/RootEntity.h>
 
-/// \brief Constructor for immutable Propertys
+/// \brief Constructor for immutable Properties
 template <typename T>
 Property<T>::Property(unsigned int flags) :
                       PropertyBase(flags)

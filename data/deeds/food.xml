@@ -13,9 +13,7 @@
     </map>
     <string name="id">ham</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -42,9 +40,7 @@
     </map>
     <string name="id">loaf</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -60,9 +56,7 @@
     </map>
     <string name="id">venison</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
 </atlas>

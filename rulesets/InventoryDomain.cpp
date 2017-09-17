@@ -17,7 +17,6 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
 #endif
 
 #include "InventoryDomain.h"
@@ -25,10 +24,8 @@
 #include "EntityProperty.h"
 #include "LocatedEntity.h"
 
-#include "common/const.h"
-
+#include "common/TypeNode.h"
 #include "common/debug.h"
-#include "common/const.h"
 #include "common/Unseen.h"
 
 #include <Atlas/Objects/Operation.h>
@@ -36,6 +33,7 @@
 
 #include <iostream>
 #include <unordered_set>
+#include <common/BaseWorld.h>
 
 static const bool debug_flag = true;
 
@@ -51,7 +49,7 @@ using Atlas::Objects::Operation::Disappearance;
 using Atlas::Objects::Operation::Unseen;
 
 InventoryDomain::InventoryDomain(LocatedEntity& entity) :
-                Domain(entity)
+        Domain(entity)
 {
     entity.makeContainer();
 }
@@ -60,21 +58,33 @@ InventoryDomain::~InventoryDomain()
 {
 }
 
-float InventoryDomain::constrainHeight(LocatedEntity& entity, LocatedEntity * parent, const Point3D & pos, const std::string & mode)
+void InventoryDomain::tick(double t, OpVector& res)
 {
-    //Nothing can move
-    return 0.0f;
 }
 
-void InventoryDomain::tick(double t)
+void InventoryDomain::addEntity(LocatedEntity& entity)
 {
+    entity.m_location.m_pos = WFMath::Point<3>::ZERO();
+    entity.m_location.m_orientation = WFMath::Quaternion::IDENTITY();
+//    entity.m_location.update(BaseWorld::instance().getTime());
+    entity.resetFlags(entity_clean);
 
+    //Nothing special to do for this domain.
+}
+
+void InventoryDomain::removeEntity(LocatedEntity& entity)
+{
+    //Nothing special to do for this domain.
 }
 
 bool InventoryDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const
 {
     //If the observing entity is the same as the one the domain belongs to it can see everything.
     if (&observingEntity == &m_entity) {
+        return true;
+    }
+
+    if (observingEntity.getType()->isTypeOf("creator")) {
         return true;
     }
 
@@ -100,69 +110,21 @@ bool InventoryDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, c
     return false;
 }
 
-void InventoryDomain::processVisibilityForMovedEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res)
+void InventoryDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<LocatedEntity*>& entityList) const
 {
     if (m_entity.m_contains) {
-
-        std::vector<LocatedEntity*> visibleEntities;
-
-        std::unordered_set<int> outfitted;
-        LocatedEntity* rightHandWieldedEntity = nullptr;
-        const OutfitProperty* outfitProperty = m_entity.getPropertyClass<OutfitProperty>("outfit");
-
-        if (outfitProperty) {
-            for (auto& entry : outfitProperty->data()) {
-                outfitted.insert(entry.second->getIntId());
+        for (auto& entity : *m_entity.m_contains) {
+            if (isEntityVisibleFor(observingEntity, *entity)) {
+                entityList.push_back(entity);
             }
         }
-        const EntityProperty* rightHandWieldProperty = m_entity.getPropertyClass<EntityProperty>("right_hand_wield");
-        if (rightHandWieldProperty) {
-            rightHandWieldedEntity = rightHandWieldProperty->data().get();
-        }
-
-        for (auto childEntity : *m_entity.m_contains) {
-            if (childEntity == rightHandWieldedEntity) {
-                visibleEntities.push_back(childEntity);
-            } else if (outfitted.find(childEntity->getIntId()) != outfitted.end()) {
-                visibleEntities.push_back(childEntity);
-            }
-        }
-
-        std::set<std::string> newVisibleEntities;
-        for (auto visibleEntity : visibleEntities) {
-            if (m_lastVisibleEntities.find(visibleEntity->getId()) == m_lastVisibleEntities.end()) {
-                Anonymous ent;
-                ent->setId(visibleEntity->getId());
-                ent->setStamp(visibleEntity->getSeq());
-
-                Appearance d;
-                d->setArgs1(ent);
-                res.push_back(d);
-            } else {
-                m_lastVisibleEntities.erase(visibleEntity->getId());
-            }
-            newVisibleEntities.insert(visibleEntity->getId());
-        }
-        for (auto entityId : m_lastVisibleEntities) {
-            Anonymous ent;
-            ent->setId(entityId);
-
-            Disappearance d;
-            d->setArgs1(ent);
-            res.push_back(d);
-
-        }
-
-        m_lastVisibleEntities = std::move(newVisibleEntities);
     }
 }
 
-void InventoryDomain::processDisappearanceOfEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res)
+std::list<LocatedEntity*> InventoryDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity) const
 {
+    std::list<LocatedEntity*> list;
+    list.push_back(&m_entity);
+    return std::move(list);
 }
 
-float InventoryDomain::checkCollision(LocatedEntity& entity, CollisionData& collisionData)
-{
-    //Nothing can move
-    return consts::move_tick;
-}

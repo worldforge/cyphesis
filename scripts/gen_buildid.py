@@ -12,12 +12,8 @@ build_id.write(
 
 namespace consts {
 
-  const char * buildTime = __TIME__;
-  const char * buildDate = __DATE__;
   const char * buildId = "%s";
 }
 """ % sys.argv[1])
 
 build_id.close()
-
-# tail -n 1 ChangeLog | sed "s/^.* 1\.\([0-9]*\).*$/\1/"

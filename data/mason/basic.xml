@@ -20,9 +20,7 @@
     </map>
     <string name="id">boulder</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -38,9 +36,7 @@
     </map>
     <string name="id">coin</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>stackable</string>
-    </list>
+    <string name="parent">stackable</string>
   </map>
 
   <map>
@@ -48,9 +44,7 @@
     </map>
     <string name="id">feature</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -77,9 +71,7 @@
     </map>
     <string name="id">fire</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.elements.Fire.Fire</string>
@@ -117,9 +109,7 @@
     </map>
     <string name="id">pile</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -131,9 +121,7 @@
     </map>
     <string name="id">region</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>feature</string>
-    </list>
+    <string name="parent">feature</string>
   </map>
 
 </atlas>

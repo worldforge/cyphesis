@@ -15,7 +15,6 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-
 #include "EntityBuilder.h"
 
 #include "CorePropertyManager.h"
@@ -25,60 +24,95 @@
 #include "rulesets/LocatedEntity.h"
 
 #include "common/BaseWorld.h"
-#include "common/id.h"
-#include "common/log.h"
 #include "common/debug.h"
 #include "common/Inheritance.h"
-#include "common/random.h"
-#include "common/compose.hpp"
 #include "common/Monitors.h"
 #include "common/ScriptKit.h"
 #include "common/TaskKit.h"
 #include "common/TypeNode.h"
 #include "common/Variable.h"
 
-#include <Atlas/Message/Element.h>
-#include <Atlas/Objects/Entity.h>
 #include <Atlas/Objects/RootOperation.h>
 
 using Atlas::Message::MapType;
+using Atlas::Message::ListType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
 
 using String::compose;
 
 class Character;
+
 class Creator;
+
 class Entity;
+
 class Plant;
+
 class Stackable;
+
 class Thing;
+
 class World;
 
-extern template class EntityFactory<Character>;
-extern template class EntityFactory<Creator>;
-extern template class EntityFactory<Thing>;
-extern template class EntityFactory<Plant>;
-extern template class EntityFactory<Stackable>;
-extern template class EntityFactory<World>;
+extern template
+class EntityFactory<Character>;
+
+extern template
+class EntityFactory<Creator>;
+
+extern template
+class EntityFactory<Thing>;
+
+extern template
+class EntityFactory<Plant>;
+
+extern template
+class EntityFactory<Stackable>;
+
+extern template
+class EntityFactory<World>;
 
 static const bool debug_flag = false;
 
-EntityBuilder * EntityBuilder::m_instance = NULL;
+EntityBuilder* EntityBuilder::m_instance = NULL;
 
 EntityBuilder::EntityBuilder()
 {
+    // The property manager instance installs itself at construction time.
+    new CorePropertyManager();
+
     installBaseFactory("world", "game_entity", new EntityFactory<World>());
-    EntityFactory<Thing> * tft = new EntityFactory<Thing>();
+    EntityFactory<Thing>* tft = new EntityFactory<Thing>();
+    tft->m_attributes["mode"] = "planted";
     installBaseFactory("thing", "game_entity", tft);
-    installBaseFactory("character", "thing", new EntityFactory<Character>());
-    installBaseFactory("creator", "character", new EntityFactory<Creator>());
-    installBaseFactory("plant", "thing", new EntityFactory<Plant>());
+    auto characterFactory = new EntityFactory<Character>();
+    characterFactory->m_attributes["density"] = 125;
+    installBaseFactory("character", "thing", characterFactory);
+    auto creatorFactory = new EntityFactory<Creator>();
+    creatorFactory->m_attributes["transient"] = -1;
+    creatorFactory->m_attributes["solid"] = 0;
+
+    //Creator agents should have a bbox, so that they easily can be made solid for testing purposes.
+    creatorFactory->m_attributes["bbox"] = ListType {-.5, -0.5, 0, .5, .5, 1};
+    creatorFactory->m_attributes["geometry"] = MapType {{"shape", "sphere"}};
+    creatorFactory->m_attributes["friction"] = 10.f;
+    creatorFactory->m_attributes["angularfactor"] = ListType {0, 0, 0};
+
+    installBaseFactory("creator", "character", creatorFactory);
+    creatorFactory->addProperties();
+    auto plantFactory = new EntityFactory<Plant>();
+    plantFactory->m_attributes["friction"] = 1.0f;
+    plantFactory->m_attributes["mode"] = "planted";
+    plantFactory->m_attributes["status"] = 1.0f;
+    //Plants should by default be represented by an upright cylinder.
+    plantFactory->m_attributes["geometry"] = MapType {{"shape", "cylinder-z"}};
+    installBaseFactory("plant", "thing", plantFactory);
+    plantFactory->addProperties();
+
     installBaseFactory("stackable", "thing", new EntityFactory<Stackable>());
     installBaseFactory("archetype", "root_entity", new ArchetypeFactory());
 
-    // The property manager instance installs itself at construction time.
-    new CorePropertyManager();
 }
 
 EntityBuilder::~EntityBuilder()
@@ -111,16 +145,13 @@ EntityBuilder::~EntityBuilder()
 /// @param intId The integer identifier of the new entity.
 /// @param type The string specifying the type of entity.
 /// @param attributes A mapping of attribute values to set on the entity.
-LocatedEntity * EntityBuilder::newEntity(const std::string & id, long intId,
-                                         const std::string & type,
-                                         const RootEntity & attributes,
-                                         const BaseWorld & world) const
+LocatedEntity* EntityBuilder::newEntity(const std::string& id, long intId, const std::string& type, const RootEntity& attributes, const BaseWorld& world) const
 {
     LocatedEntity* loc = nullptr;
     // Get location from entity, if it is present
     // The default attributes cannot contain info on location
     if (attributes.isValid() && attributes->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
-        const std::string & loc_id = attributes->getLoc();
+        const std::string& loc_id = attributes->getLoc();
         loc = world.getEntity(loc_id);
     }
     if (loc == 0) {
@@ -132,16 +163,13 @@ LocatedEntity * EntityBuilder::newEntity(const std::string & id, long intId,
         return newChildEntity(id, intId, type, attributes, *loc);
     } catch (const std::exception& ex) {
         log(ERROR, String::compose("Error when creating entity of type %1."
-                " Message: %2", type, ex.what()));
+                                       " Message: %2", type, ex.what()));
         return nullptr;
     }
 }
 
-LocatedEntity * EntityBuilder::newChildEntity(const std::string & id,
-                          long intId,
-                          const std::string & type,
-                          const Atlas::Objects::Entity::RootEntity & attributes,
-                          LocatedEntity & parentEntity) const
+LocatedEntity* EntityBuilder::newChildEntity(const std::string& id, long intId, const std::string& type, const Atlas::Objects::Entity::RootEntity& attributes,
+                                             LocatedEntity& parentEntity) const
 {
     debug(std::cout << "EntityFactor::newEntity()" << std::endl << std::flush;);
     FactoryDict::const_iterator I = m_entityFactories.find(type);
@@ -149,17 +177,15 @@ LocatedEntity * EntityBuilder::newChildEntity(const std::string & id,
         return 0;
     }
 
-    EntityKit * factory = I->second;
-    debug( std::cout << "[" << type << "]"
-                     << std::endl << std::flush;);
+    EntityKit* factory = I->second;
+    debug(std::cout << "[" << type << "]" << std::endl << std::flush;);
     return factory->newEntity(id, intId, attributes, &parentEntity);
 
 }
 
-
-Task * EntityBuilder::buildTask(TaskKit * factory, LocatedEntity & owner) const
+Task* EntityBuilder::buildTask(TaskKit* factory, LocatedEntity& owner) const
 {
-    Task * task = factory->newTask(owner);
+    Task* task = factory->newTask(owner);
 
     if (task != 0 && factory->m_scriptFactory != 0) {
         if (factory->m_scriptFactory->addScript(task) != 0) {
@@ -173,7 +199,7 @@ Task * EntityBuilder::buildTask(TaskKit * factory, LocatedEntity & owner) const
 ///
 /// @param name The name of the task type.
 /// @param owner The character entity that owns the task.
-Task * EntityBuilder::newTask(const std::string & name, LocatedEntity & owner) const
+Task* EntityBuilder::newTask(const std::string& name, LocatedEntity& owner) const
 {
     TaskFactoryDict::const_iterator I = m_taskFactories.find(name);
     if (I == m_taskFactories.end()) {
@@ -182,13 +208,12 @@ Task * EntityBuilder::newTask(const std::string & name, LocatedEntity & owner) c
     return buildTask(I->second, owner);
 }
 
-void EntityBuilder::installTaskFactory(const std::string & class_name,
-                                       TaskKit * factory)
+void EntityBuilder::installTaskFactory(const std::string& class_name, TaskKit* factory)
 {
     m_taskFactories.insert(std::make_pair(class_name, factory));
 }
 
-TaskKit * EntityBuilder::getTaskFactory(const std::string & class_name)
+TaskKit* EntityBuilder::getTaskFactory(const std::string& class_name)
 {
     TaskFactoryDict::const_iterator I = m_taskFactories.find(class_name);
     if (I == m_taskFactories.end()) {
@@ -197,9 +222,7 @@ TaskKit * EntityBuilder::getTaskFactory(const std::string & class_name)
     return I->second;
 }
 
-void EntityBuilder::addTaskActivation(const std::string & tool,
-                                      const std::string & op,
-                                      TaskKit * factory)
+void EntityBuilder::addTaskActivation(const std::string& tool, const std::string& op, TaskKit* factory)
 {
     m_taskActivations[tool].insert(std::make_pair(op, factory));
 }
@@ -215,16 +238,13 @@ void EntityBuilder::addTaskActivation(const std::string & tool,
 /// @param op The type of operation being performed with the tool.
 /// @param target The type of entity the operation is being performed on.
 /// @param owner The character entity activating the task.
-Task * EntityBuilder::activateTask(const std::string & tool,
-                                   const std::string & op,
-                                   LocatedEntity * target,
-                                   LocatedEntity & owner) const
+Task* EntityBuilder::activateTask(const std::string& tool, const std::string& op, LocatedEntity* target, LocatedEntity& owner) const
 {
     TaskFactoryActivationDict::const_iterator I = m_taskActivations.find(tool);
     if (I == m_taskActivations.end()) {
         return 0;
     }
-    const TaskFactoryMultimap & dict = I->second;
+    const TaskFactoryMultimap& dict = I->second;
     TaskFactoryMultimap::const_iterator J = dict.lower_bound(op);
     if (J == dict.end()) {
         return 0;
@@ -255,7 +275,7 @@ void EntityBuilder::flushFactories()
     m_taskFactories.clear();
 }
 
-bool EntityBuilder::isTask(const std::string & class_name)
+bool EntityBuilder::isTask(const std::string& class_name)
 {
     if (class_name == "task") {
         return true;
@@ -263,23 +283,19 @@ bool EntityBuilder::isTask(const std::string & class_name)
     return (m_taskFactories.find(class_name) != m_taskFactories.end());
 }
 
-bool EntityBuilder::hasTask(const std::string & class_name)
+bool EntityBuilder::hasTask(const std::string& class_name)
 {
     return (m_taskFactories.find(class_name) != m_taskFactories.end());
 }
 
-void EntityBuilder::installBaseFactory(const std::string & class_name,
-                                       const std::string & parent,
-                                       EntityKit * factory)
+void EntityBuilder::installBaseFactory(const std::string& class_name, const std::string& parent, EntityKit* factory)
 {
     installFactory(class_name, atlasClass(class_name, parent), factory);
 }
 
-int EntityBuilder::installFactory(const std::string & class_name,
-                                  const Root & class_desc,
-                                  EntityKit * factory)
+int EntityBuilder::installFactory(const std::string& class_name, const Root& class_desc, EntityKit* factory)
 {
-    Inheritance & i = Inheritance::instance();
+    Inheritance& i = Inheritance::instance();
     factory->m_type = i.addChild(class_desc);
 
     if (factory->m_type == 0) {
@@ -288,12 +304,11 @@ int EntityBuilder::installFactory(const std::string & class_name,
 
     m_entityFactories.insert(std::make_pair(class_name, factory));
 
-    Monitors::instance()->watch(compose("created_count{type=\"%1\"}", class_name),
-                                new Variable<int>(factory->m_createdCount));
+    Monitors::instance()->watch(compose("created_count{type=\"%1\"}", class_name), new Variable<int>(factory->m_createdCount));
     return 0;
 }
 
-EntityKit * EntityBuilder::getClassFactory(const std::string & class_name)
+EntityKit* EntityBuilder::getClassFactory(const std::string& class_name)
 {
     FactoryDict::const_iterator I = m_entityFactories.find(class_name);
     if (I == m_entityFactories.end()) {

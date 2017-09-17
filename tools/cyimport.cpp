@@ -30,11 +30,6 @@
 
 #include <varconf/config.h>
 
-#include <Atlas/Objects/Operation.h>
-
-#include <iostream>
-#include <cstdlib>
-
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Root;
 using Atlas::Objects::smart_dynamic_cast;
@@ -148,7 +143,7 @@ int main(int argc, char ** argv)
             bool isPopulated = false;
             std::function<bool(const RootEntity&)> visitor =
                     [&](const RootEntity& entity)->bool {
-                        if (entity->getId() != "0" && !entity->hasAttr("transient")) {
+                        if (entity->getId() != "0" && entity->getId() != agent_id && !entity->hasAttr("transient")) {
                             isPopulated = true;
                             return false;
                         }

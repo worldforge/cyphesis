@@ -28,9 +28,6 @@
 
 #include <varconf/config.h>
 
-#include <iostream>
-#include <cstdlib>
-
 static void usage(char * prg)
 {
     std::cerr << "usage: " << prg << " [options] filepath" << std::endl

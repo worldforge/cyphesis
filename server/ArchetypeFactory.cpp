@@ -20,27 +20,16 @@
 #include "WorldRouter.h"
 
 #include "rulesets/Character.h"
-#include "rulesets/Creator.h"
 #include "rulesets/Plant.h"
-#include "rulesets/Stackable.h"
-#include "rulesets/World.h"
 
-#include "rulesets/LocatedEntity.h"
 #include "common/debug.h"
-#include "common/log.h"
-#include "common/ScriptKit.h"
 #include "common/TypeNode.h"
-#include "common/random.h"
 #include "common/id.h"
 #include "common/Think.h"
 
 #include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/Entity.h>
-#include <Atlas/Objects/objectFactory.h>
 
 #include <wfmath/atlasconv.h>
-
-#include <iostream>
 
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
@@ -69,7 +58,7 @@ LocatedEntity * ArchetypeFactory::createEntity(const std::string & id, long intI
         std::map<std::string, EntityCreation>& entities)
 {
     auto& attributes = entityCreation.definition;
-    std::string concreteType = attributes->getParents().front();
+    std::string concreteType = attributes->getParent();
 
     MapType attrMap;
     attributes->addToMessage(attrMap);
@@ -203,8 +192,8 @@ LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId, 
     auto& entityCreation = entities.begin()->second;
     RootEntity& attrEntity = entityCreation.definition;
     for (auto& attrI : attrs) {
-        //copy all attributes except "parents", since that will point to the name of the archetype
-        if (attrI.first != "parents") {
+        //copy all attributes except "parent", since that will point to the name of the archetype
+        if (attrI.first != "parent") {
             //Also handle orientation separately.
             //We want to apply both rotations, both the one in the archetype and the one which was sent.
             if (attrI.first == "orientation" && attrEntity->hasAttr("orientation")) {

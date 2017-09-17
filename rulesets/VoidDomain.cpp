@@ -17,12 +17,9 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
 #endif
 
 #include "VoidDomain.h"
-
-#include "common/const.h"
 
 VoidDomain::VoidDomain(LocatedEntity& entity)
 : Domain(entity)
@@ -33,36 +30,32 @@ VoidDomain::~VoidDomain()
 {
 }
 
-float VoidDomain::constrainHeight(LocatedEntity &, LocatedEntity *,
-                              const Point3D &,
-                              const std::string &)
+void VoidDomain::tick(double t, OpVector& res)
 {
-    //Nothing can move
-    return 0.0f;
-}
-
-void VoidDomain::tick(double t)
-{
-
 }
 
 bool VoidDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const
 {
+    //The entity to which the domain belongs can see its content
+    if (&observingEntity == &m_entity) {
+        return true;
+    }
+
     //Nothing can be seen
     return false;
 }
 
-void VoidDomain::processVisibilityForMovedEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res) {
-    //Nothing can be seen
-}
-
-void VoidDomain::processDisappearanceOfEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res) {
-    //Nothing can be seen
-}
-
-
-float VoidDomain::checkCollision(LocatedEntity& entity, CollisionData& collisionData)
+void VoidDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity,
+        std::list<LocatedEntity*>& entityList) const
 {
-    //Nothing can move
-    return consts::move_tick;
+
 }
+
+
+void VoidDomain::addEntity(LocatedEntity& entity) {
+
+}
+void VoidDomain::removeEntity(LocatedEntity& entity) {
+
+}
+

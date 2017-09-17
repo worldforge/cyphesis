@@ -17,28 +17,22 @@
 
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
 #endif // HAVE_CONFIG_H
 
 #include "common/AtlasStreamClient.h"
 #include "common/ClientTask.h"
-#include "common/system.h"
 
 #include "common/debug.h"
 
 #include <Atlas/Codec.h>
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Encoder.h>
-#include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Net/Stream.h>
 
 #ifdef _WIN32
 #undef DATADIR
 #endif // _WIN32
 
-#include <boost/asio/deadline_timer.hpp>
-
-#include <cstdio>
 #include <iostream>
 
 using Atlas::Message::Element;
@@ -51,6 +45,8 @@ using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Operation::RootOperation;
 
 using namespace boost::asio;
+
+static const bool debug_flag = false;
 
 
 StreamClientSocketBase::StreamClientSocketBase(boost::asio::io_service& io_service, std::function<void()>& dispatcher)
@@ -72,7 +68,7 @@ std::iostream& StreamClientSocketBase::getIos()
 int StreamClientSocketBase::negotiate(Atlas::Objects::ObjectsDecoder& decoder)
 {
 
-    Atlas::Net::StreamConnect conn("cyphesis_client", m_ios);
+    Atlas::Net::StreamConnect conn("cyphesis_client", m_ios, m_ios);
 
     while (conn.getState() == Atlas::Net::StreamConnect::IN_PROGRESS) {
       write();
@@ -177,10 +173,10 @@ void TcpStreamClientSocket::do_read()
             });
 }
 
-int TcpStreamClientSocket::read_blocking()
+size_t TcpStreamClientSocket::read_blocking()
 {
     if (!m_socket.is_open()) {
-        return -1;
+        return 0;
     }
     if (m_socket.available() > 0) {
         auto received = m_socket.read_some(mBuffer.prepare(m_socket.available()));
@@ -192,10 +188,10 @@ int TcpStreamClientSocket::read_blocking()
     return 0;
 }
 
-int TcpStreamClientSocket::write()
+size_t TcpStreamClientSocket::write()
 {
     if (!m_socket.is_open()) {
-        return -1;
+        return 0;
     }
     if (mBuffer.size() == 0) {
         return 0;
@@ -235,13 +231,13 @@ void LocalStreamClientSocket::do_read()
             });
 }
 
-int LocalStreamClientSocket::read_blocking()
+size_t LocalStreamClientSocket::read_blocking()
 {
     if (!m_socket.is_open()) {
-        return -1;
+        return 0;
     }
     if (m_socket.available() > 0) {
-        int received = m_socket.read_some(mBuffer.prepare(m_socket.available()));
+        size_t received = m_socket.read_some(mBuffer.prepare(m_socket.available()));
         if (received > 0) {
             mBuffer.commit(received);
         }
@@ -250,10 +246,10 @@ int LocalStreamClientSocket::read_blocking()
     return 0;
 }
 
-int LocalStreamClientSocket::write()
+size_t LocalStreamClientSocket::write()
 {
     if (!m_socket.is_open()) {
-        return -1;
+        return 0;
     }
     if (mBuffer.size() == 0) {
         return 0;
@@ -267,7 +263,7 @@ int LocalStreamClientSocket::write()
 
 
 
-void AtlasStreamClient::output(const Element & item, int depth) const
+void AtlasStreamClient::output(const Element & item, size_t depth) const
 {
     output_element(std::cout, item, depth);
 }
@@ -294,9 +290,9 @@ void AtlasStreamClient::objectArrived(const Root & obj)
     if (!op.isValid()) {
         std::cerr << "ERROR: Non op object received from server"
                   << std::endl << std::flush;;
-        if (!obj->isDefaultParents() && !obj->getParents().empty()) {
+        if (!obj->isDefaultParent()) {
             std::cerr << "NOTICE: Unexpected object has parent "
-                      << obj->getParents().front()
+                      << obj->getParent()
                       << std::endl << std::flush;
         }
         if (!obj->isDefaultObjtype()) {
@@ -321,6 +317,10 @@ void AtlasStreamClient::dispatch()
 
 void AtlasStreamClient::operation(const RootOperation & op)
 {
+    if (debug_flag) {
+        debug_print("Received:");
+        debug_dump(op, std::cout);
+    }
     if (m_currentTask != 0) {
         OpVector res;
         m_currentTask->operation(op, res);
@@ -433,13 +433,18 @@ void AtlasStreamClient::send(const RootOperation & op)
         return;
     }
 
+    if (debug_flag) {
+        debug_print("Sending:");
+        debug_dump(op, std::cout);
+    }
+
     reply_flag = false;
     error_flag = false;
     m_socket->getEncoder().streamObjectsMessage(op);
     m_socket->write();
 }
 
-int AtlasStreamClient::connect(const std::string & host, int port)
+int AtlasStreamClient::connect(const std::string & host, unsigned short port)
 {
     delete m_socket;
     m_socket = nullptr;
@@ -509,7 +514,7 @@ int AtlasStreamClient::create(const std::string & type,
 
     account->setAttr("username", username);
     account->setAttr("password", password);
-    account->setParents(std::list<std::string>(1, type));
+    account->setParent(type);
 
     c->setArgs1(account);
     c->setSerialno(newSerialNo());
@@ -527,9 +532,7 @@ int AtlasStreamClient::waitForLoginResponse()
                std::cerr << "Malformed reply" << std::endl << std::flush;
             } else {
                 m_accountId = m_infoReply->getId();
-                if (!m_infoReply->getParents().empty()) {
-                    m_accountType = m_infoReply->getParents().front();
-                }
+                m_accountType = m_infoReply->getParent();
                 loginSuccess(m_infoReply);
                 return 0;
             }

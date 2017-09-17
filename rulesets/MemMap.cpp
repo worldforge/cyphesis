@@ -22,16 +22,12 @@
 #include "Script.h"
 
 #include "common/id.h"
-#include "common/log.h"
 #include "common/debug.h"
 #include "common/TypeNode.h"
-#include "common/compose.hpp"
 #include "common/Inheritance.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
-
-#include <sstream>
 
 static const bool debug_flag = false;
 
@@ -79,19 +75,17 @@ MemEntity * MemMap::addEntity(MemEntity * entity)
 void MemMap::readEntity(MemEntity * entity, const RootEntity & ent, double timestamp)
 // Read the contents of an Atlas message into an entity
 {
-    if (ent->hasAttrFlag(Atlas::Objects::PARENTS_FLAG)) {
-        const std::list<std::string> & parents = ent->getParents();
-        if (!parents.empty()) {
-            if (entity->getType() == m_entity_type) {
-                const TypeNode * type = Inheritance::instance().getType(parents.front());
-                if (type != 0) {
-                    entity->setType(type);
-                }
-            } else if (entity->getType()->name() != parents.front()) {
-                debug(std::cout << "Attempting to mutate " << entity->getType()
-                                << " into " << parents.front()
-                                << std::endl << std::flush;);
+    if (ent->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
+        const std::string& parent = ent->getParent();
+        if (entity->getType() == m_entity_type) {
+            const TypeNode * type = Inheritance::instance().getType(parent);
+            if (type != 0) {
+                entity->setType(type);
             }
+        } else if (entity->getType()->name() != parent) {
+            debug(std::cout << "Attempting to mutate " << entity->getType()
+                            << " into " << parent
+                            << std::endl << std::flush;);
         }
     }
     entity->merge(ent->asMessage());

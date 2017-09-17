@@ -23,24 +23,15 @@
 #include "Domain.h"
 
 #include "common/BaseWorld.h"
-#include "common/log.h"
-#include "common/const.h"
 #include "common/debug.h"
 #include "common/TypeNode.h"
-#include "common/compose.hpp"
 #include "common/custom.h"
 
 #include "common/Eat.h"
 #include "common/Nourish.h"
 
-#include <wfmath/atlasconv.h>
-
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
-
-#include <sstream>
-
-#include <cassert>
 
 static const bool debug_flag = false;
 
@@ -92,7 +83,7 @@ void World::LookOperation(const Operation & op, OpVector & res)
 
     Domain* domain = nullptr;
     if (m_location.m_loc) {
-        domain = m_location.m_loc->getMovementDomain();
+        domain = m_location.m_loc->getDomain();
     }
     if (domain) {
         generateSightOp(*from, op, res);

@@ -36,7 +36,7 @@ class Lobby : public Router {
     AccountDict m_accounts;
     ServerRouting & m_server;
   public:
-    explicit Lobby(ServerRouting &, const std::string & id, long intId);
+    explicit Lobby(ServerRouting & serverRouting, const std::string & id, long intId);
     virtual ~Lobby();
 
     void addAccount(Account * a);
@@ -47,11 +47,11 @@ class Lobby : public Router {
         return m_accounts;
     }
 
-    virtual void externalOperation(const Operation & op, Link &);
-    virtual void operation(const Operation &, OpVector &);
+    void externalOperation(const Operation & op, Link &) override;
+    void operation(const Operation &, OpVector &) override;
 
-    virtual void addToMessage(Atlas::Message::MapType &) const;
-    virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
+    void addToMessage(Atlas::Message::MapType &) const override;
+    void addToEntity(const Atlas::Objects::Entity::RootEntity &) const override;
 };
 
 #endif // SERVER_LOBBY_H

@@ -7,9 +7,7 @@
       </map>
     </map>
     <string name="id">acorn</string>
-    <list name="parents">
-      <string>food</string>
-    </list>
+    <string name="parent">food</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.plants.seeds.Acorn</string>
@@ -28,9 +26,7 @@
       </map>
     </map>
     <string name="id">apple</string>
-    <list name="parents">
-      <string>food</string>
-    </list>
+    <string name="parent">food</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.plants.seeds.Apple</string>
@@ -52,9 +48,7 @@
       </map>
     </map>
     <string name="id">appletree</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.plants.AppleTree</string>
@@ -69,9 +63,7 @@
       </map>
     </map>
     <string name="id">arm</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.undead.Arm</string>
@@ -86,9 +78,7 @@
       </map>
     </map>
     <string name="id">cleaver</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.tools.Cleaver</string>
@@ -103,9 +93,7 @@
       </map>
     </map>
     <string name="id">crab</string>
-    <list name="parents">
-      <string>character</string>
-    </list>
+    <string name="parent">character</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.animals.Crab</string>
@@ -120,9 +108,7 @@
       </map>
     </map>
     <string name="id">deer</string>
-    <list name="parents">
-      <string>character</string>
-    </list>
+    <string name="parent">character</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.animals.Deer</string>
@@ -144,9 +130,7 @@
       </map>
     </map>
     <string name="id">farmhouse_deco_1</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.FarmHouse1</string>
@@ -168,9 +152,7 @@
       </map>
     </map>
     <string name="id">farmhouse_deco_2</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.FarmHouse2</string>
@@ -192,9 +174,7 @@
       </map>
     </map>
     <string name="id">farmhouse_deco_3</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.FarmHouse3</string>
@@ -216,9 +196,7 @@
       </map>
     </map>
     <string name="id">house_deco_1</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.House1</string>
@@ -240,9 +218,7 @@
       </map>
     </map>
     <string name="id">house_deco_2</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.House2</string>
@@ -264,9 +240,7 @@
       </map>
     </map>
     <string name="id">house_deco_3</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.House3</string>
@@ -288,9 +262,7 @@
       </map>
     </map>
     <string name="id">house_deco_4</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.House4</string>
@@ -312,9 +284,7 @@
       </map>
     </map>
     <string name="id">house_deco_5</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.House5</string>
@@ -325,9 +295,7 @@
     <map name="attributes">
     </map>
     <string name="id">lych</string>
-    <list name="parents">
-      <string>character</string>
-    </list>
+    <string name="parent">character</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.undead.Lych</string>
@@ -349,9 +317,7 @@
       </map>
     </map>
     <string name="id">mansion_grey_deco_1_sw</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.Mansion</string>
@@ -373,9 +339,7 @@
       </map>
     </map>
     <string name="id">mstall_bakery_2_se</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.Stall</string>
@@ -397,9 +361,7 @@
       </map>
     </map>
     <string name="id">mstall_beer_1_se</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.Stall</string>
@@ -421,9 +383,7 @@
       </map>
     </map>
     <string name="id">mstall_blacksmith_1_sw</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.Stall</string>
@@ -445,9 +405,7 @@
       </map>
     </map>
     <string name="id">mstall_blue_1_us</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.Stall</string>
@@ -469,9 +427,7 @@
       </map>
     </map>
     <string name="id">mstall_books_2_sw</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.Stall</string>
@@ -493,9 +449,7 @@
       </map>
     </map>
     <string name="id">mstall_cheese_2_se</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.Stall</string>
@@ -517,9 +471,7 @@
       </map>
     </map>
     <string name="id">mstall_fish_1_se</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.Stall</string>
@@ -541,9 +493,7 @@
       </map>
     </map>
     <string name="id">mstall_freshmeat_1_se</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.Stall</string>
@@ -565,9 +515,7 @@
       </map>
     </map>
     <string name="id">mstall_fruits_2_se</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.Stall</string>
@@ -589,9 +537,7 @@
       </map>
     </map>
     <string name="id">mstall_healer_1_sw</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.Stall</string>
@@ -613,9 +559,7 @@
       </map>
     </map>
     <string name="id">mstall_household_1_sw</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.Stall</string>
@@ -637,9 +581,7 @@
       </map>
     </map>
     <string name="id">mstall_jewels_1_sw</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.Stall</string>
@@ -661,9 +603,7 @@
       </map>
     </map>
     <string name="id">mstall_magic_items_1_sw</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.Stall</string>
@@ -685,9 +625,7 @@
       </map>
     </map>
     <string name="id">mstall_milk_2_se</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.Stall</string>
@@ -709,9 +647,7 @@
       </map>
     </map>
     <string name="id">mstall_seamstress_1_sw</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.Stall</string>
@@ -733,9 +669,7 @@
       </map>
     </map>
     <string name="id">mstall_vegetables_1_se</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.Stall</string>
@@ -757,9 +691,7 @@
       </map>
     </map>
     <string name="id">mstall_wine_1_se</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.Stall</string>
@@ -778,9 +710,7 @@
       </map>
     </map>
     <string name="id">oak</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.plants.Oak</string>
@@ -795,9 +725,7 @@
       </map>
     </map>
     <string name="id">pelvis</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.undead.Pelvis</string>
@@ -816,9 +744,7 @@
       <string name="language">python</string>
       <string name="name">mind.PigMind</string>
     </map>
-    <list name="parents">
-      <string>character</string>
-    </list>
+    <string name="parent">character</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.animals.Pig</string>
@@ -833,9 +759,7 @@
       </map>
     </map>
     <string name="id">ribcage</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.undead.Ribcage</string>
@@ -857,9 +781,7 @@
       </map>
     </map>
     <string name="id">ruin_deco_1_se</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name"></string>
@@ -874,9 +796,7 @@
       </map>
     </map>
     <string name="id">seed</string>
-    <list name="parents">
-      <string>food</string>
-    </list>
+    <string name="parent">food</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.plants.seeds.Seed</string>
@@ -898,9 +818,7 @@
       </map>
     </map>
     <string name="id">shack_deco_1</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.Shack</string>
@@ -915,9 +833,7 @@
       </map>
     </map>
     <string name="id">shin</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.undead.Shin</string>
@@ -939,9 +855,7 @@
       </map>
     </map>
     <string name="id">shop_farmstand_deco_agril_1_sesw</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.FarmStand</string>
@@ -963,9 +877,7 @@
       </map>
     </map>
     <string name="id">shop_fishshop_deco_agril_1_sesw</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.FishShop</string>
@@ -987,9 +899,7 @@
       </map>
     </map>
     <string name="id">shop_itemshop_deco_agril_1_sesw</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.ItemShop</string>
@@ -1011,9 +921,7 @@
       </map>
     </map>
     <string name="id">shop_metalshop_deco_agril_1_sesw</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.MetalShop</string>
@@ -1035,9 +943,7 @@
       </map>
     </map>
     <string name="id">shop_vacant_deco_1_se</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.VacantShop1e</string>
@@ -1059,9 +965,7 @@
       </map>
     </map>
     <string name="id">shop_vacant_deco_1_sw</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.VacantShop1w</string>
@@ -1083,9 +987,7 @@
       </map>
     </map>
     <string name="id">shop_vacant_deco_2_se</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.VacantShop2</string>
@@ -1100,9 +1002,7 @@
       <string name="language">python</string>
       <string name="name">mind.SkelMind</string>
     </map>
-    <list name="parents">
-      <string>character</string>
-    </list>
+    <string name="parent">character</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.undead.Skeleton</string>
@@ -1117,9 +1017,7 @@
       </map>
     </map>
     <string name="id">skull</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.undead.Skull</string>
@@ -1134,9 +1032,7 @@
       </map>
     </map>
     <string name="id">squirrel</string>
-    <list name="parents">
-      <string>character</string>
-    </list>
+    <string name="parent">character</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.animals.Squirrel</string>
@@ -1158,9 +1054,7 @@
       </map>
     </map>
     <string name="id">tent_1_brown_s</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name"></string>
@@ -1175,9 +1069,7 @@
       </map>
     </map>
     <string name="id">thigh</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.undead.Thigh</string>
@@ -1200,9 +1092,7 @@
       </map>
     </map>
     <string name="id">tree</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.plants.Tree</string>
@@ -1213,9 +1103,7 @@
     <map name="attributes">
     </map>
     <string name="id">weather</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.Weather</string>
@@ -1234,9 +1122,7 @@
       <string name="language">python</string>
       <string name="name">mind.WolfMind</string>
     </map>
-    <list name="parents">
-      <string>character</string>
-    </list>
+    <string name="parent">character</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.animals.Wolf</string>
@@ -1258,9 +1144,7 @@
       </map>
     </map>
     <string name="id">yetown_inn_deco_agril_1_sw</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.Inn1</string>
@@ -1282,9 +1166,7 @@
       </map>
     </map>
     <string name="id">yetown_inn_deco_agril_2_sw</string>
-    <list name="parents">
-      <string>structure</string>
-    </list>
+    <string name="parent">structure</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.buildings.Inn2</string>

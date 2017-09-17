@@ -53,6 +53,7 @@ static PyObject * add_properties(PyObject * self, PyEntity * o)
     PropertyBase * p = ent->setProperty("terrainmod", new TerrainModProperty);
     p->install(ent, "terrainmod");
     p->apply(ent);
+    ent->propertyApplied("terrainmod", *p);
 
     Py_INCREF(Py_None);
     return Py_None;

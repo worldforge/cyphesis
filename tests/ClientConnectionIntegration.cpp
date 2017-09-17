@@ -96,7 +96,7 @@ void ClientConnectionintegration::test_sequence()
         op->setFrom("1");
         cc->infoArrived(op);
 
-        op->setParents(std::list<std::string>());
+        op->setParent("");
         cc->operation(op);
         cc->objectArrived(op);
 
@@ -107,7 +107,7 @@ void ClientConnectionintegration::test_sequence()
         cc->objectArrived(e);
 
         cc->objectArrived(obj);
-        obj->setParents(std::list<std::string>());
+        obj->setParent("");
         cc->objectArrived(obj);
     }
 }
@@ -123,11 +123,6 @@ int main()
 
 #include "common/debug.h"
 
-void output_element(std::ostream & out,
-                    const Atlas::Message::Element & item,
-                    int depth)
-{
-}
 
 int socket_client_send_credentials(int fd)
 {

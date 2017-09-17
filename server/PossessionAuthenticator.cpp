@@ -23,7 +23,6 @@
 #include "common/compose.hpp"
 #include "common/debug.h"
 
-#include <cassert>
 #include <iostream>
 
 static const bool debug_flag = false;

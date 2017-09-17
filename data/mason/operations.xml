@@ -3,185 +3,139 @@
   <map>
     <string name="id">aframe</string>
     <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>root_operation</string>
-    </list>
+    <string name="parent">root_operation</string>
   </map>
 
   <map>
     <string name="id">cast</string>
     <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>action</string>
-    </list>
+    <string name="parent">action</string>
   </map>
 
   <map>
     <string name="id">chop</string>
     <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>affect</string>
-    </list>
+    <string name="parent">affect</string>
   </map>
 
   <map>
     <string name="id">collapse</string>
     <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>action</string>
-    </list>
+    <string name="parent">action</string>
   </map>
 
   <map>
     <string name="id">craft</string>
     <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>root_operation</string>
-    </list>
+    <string name="parent">root_operation</string>
   </map>
 
   <map>
     <string name="id">cut</string>
     <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>action</string>
-    </list>
+    <string name="parent">action</string>
   </map>
 
   <map>
     <string name="id">disperse</string>
     <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>root_operation</string>
-    </list>
+    <string name="parent">root_operation</string>
   </map>
 
   <map>
     <string name="id">drag</string>
     <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>root_operation</string>
-    </list>
+    <string name="parent">root_operation</string>
   </map>
 
   <map>
     <string name="id">earthwork_bloomery</string>
     <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>root_operation</string>
-    </list>
+    <string name="parent">root_operation</string>
   </map>
 
   <map>
     <string name="id">extinguish</string>
     <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>root_operation</string>
-    </list>
+    <string name="parent">root_operation</string>
   </map>
 
   <map>
     <string name="id">gates</string>
     <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>root_operation</string>
-    </list>
+    <string name="parent">root_operation</string>
   </map>
 
   <map>
     <string name="id">heap</string>
     <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>root_operation</string>
-    </list>
+    <string name="parent">root_operation</string>
   </map>
 
   <map>
     <string name="id">ignite</string>
     <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>action</string>
-    </list>
+    <string name="parent">action</string>
   </map>
 
   <map>
     <string name="id">lever</string>
     <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>action</string>
-    </list>
+    <string name="parent">action</string>
   </map>
 
   <map>
     <string name="id">plane</string>
     <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>action</string>
-    </list>
+    <string name="parent">action</string>
   </map>
 
   <map>
     <string name="id">pull</string>
     <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>action</string>
-    </list>
+    <string name="parent">action</string>
   </map>
 
   <map>
     <string name="id">repair</string>
     <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>action</string>
-    </list>
+    <string name="parent">action</string>
   </map>
 
   <map>
     <string name="id">shoot</string>
     <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>root_operation</string>
-    </list>
+    <string name="parent">root_operation</string>
   </map>
 
   <map>
     <string name="id">sow</string>
     <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>action</string>
-    </list>
+    <string name="parent">action</string>
   </map>
 
   <map>
     <string name="id">strike</string>
     <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>action</string>
-    </list>
+    <string name="parent">action</string>
   </map>
 
   <map>
     <string name="id">trench</string>
     <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>root_operation</string>
-    </list>
+    <string name="parent">root_operation</string>
   </map>
 
   <map>
     <string name="id">walls</string>
     <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>root_operation</string>
-    </list>
+    <string name="parent">root_operation</string>
   </map>
 
   <map>
     <string name="id">wear</string>
     <string name="objtype">op_definition</string>
-    <list name="parents">
-      <string>action</string>
-    </list>
+    <string name="parent">action</string>
   </map>
 
 </atlas>

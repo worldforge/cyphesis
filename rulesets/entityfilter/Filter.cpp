@@ -1,6 +1,4 @@
 #include "Filter.h"
-#include "ParserDefinitions.h"
-#include "Providers.h"
 
 using namespace boost;
 namespace qi = boost::spirit::qi;

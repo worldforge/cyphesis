@@ -63,10 +63,10 @@ static PyObject * null_wrapper(PyObject * self, PyOperation * o)
     return Py_None;
 }
 
-static PyObject * clear_parents(PyObject * self, PyOperation * o)
+static PyObject * clear_parent(PyObject * self, PyOperation * o)
 {
     if (PyOperation_Check(o)) {
-        o->operation->setParents(std::list<std::string>());
+        o->operation->setParent("");
     } else {
         PyErr_SetString(PyExc_TypeError, "Unknown Object type");
         return Py_True;
@@ -77,7 +77,7 @@ static PyObject * clear_parents(PyObject * self, PyOperation * o)
 
 static PyMethodDef sabotage_methods[] = {
     {"null",          (PyCFunction)null_wrapper,                 METH_O},
-    {"clear_parents", (PyCFunction)clear_parents,                METH_O},
+    {"clear_parent",  (PyCFunction)clear_parent,                METH_O},
     {NULL,          NULL}                       /* Sentinel */
 };
 
@@ -123,7 +123,7 @@ int main()
                         PyExc_TypeError);
     run_python_string("o=Operation('get', Entity(), Entity(), Entity(), to='1', from_='1')");
     expect_python_error("Operation('get', Message('1'))", PyExc_TypeError);
-    run_python_string("Operation('get', Message({'objtype': 'obj', 'parents': ['thing']}))");
+    run_python_string("Operation('get', Message({'objtype': 'obj', 'parent': 'thing'}))");
     expect_python_error("o=Operation()", PyExc_TypeError);
     expect_python_error("o=Operation(1)", PyExc_TypeError);
     run_python_string("o=Operation('get')");
@@ -146,8 +146,8 @@ int main()
     expect_python_error("o.setArgs(1)", PyExc_TypeError);
     expect_python_error("o.setArgs([1])", PyExc_TypeError);
     run_python_string("o.setArgs([Operation('get')])");
-    run_python_string("o.setArgs([Entity(parents=[\"oak\"])])");
-    run_python_string("o.setArgs([Message({'parents': ['root']})])");
+    run_python_string("o.setArgs([Entity(parent=\"oak\")])");
+    run_python_string("o.setArgs([Message({'parent': 'root'})])");
     expect_python_error("o.setArgs([Message('1')])", PyExc_TypeError);
     run_python_string("import types");
     run_python_string("assert type(o.getSerialno()) == types.IntType");
@@ -159,7 +159,7 @@ int main()
     run_python_string("assert type(o.getArgs()) == types.ListType");
     run_python_string("assert type(o.get_name()) == types.StringType");
     run_python_string("assert len(o) == 1");
-    run_python_string("o.setArgs([Operation('get'), Entity(parents=[\"oak\"]), Message({'parents': ['root'], 'objtype': 'obj'})])");
+    run_python_string("o.setArgs([Operation('get'), Entity(parent=\"oak\"), Message({'parent': 'root', 'objtype': 'obj'})])");
     run_python_string("assert type(o[0]) == Operation");
     run_python_string("assert type(o[1]) == Entity");
     run_python_string("assert type(o[2]) == Message");
@@ -185,7 +185,7 @@ int main()
     run_python_string("import sabotage");
 
     // Hit the assert checks.
-    run_python_string("arg1=Message({'objtype': 'obj', 'parents': ['thing']})");
+    run_python_string("arg1=Message({'objtype': 'obj', 'parent': 'thing'})");
     run_python_string("sabotage.null(arg1)");
     expect_python_error("Operation('get', arg1)", PyExc_AssertionError);
 
@@ -206,7 +206,7 @@ int main()
     run_python_string("sabotage.null(o2)");
     expect_python_error("o + o2", PyExc_AssertionError);
 
-    run_python_string("sabotage.clear_parents(o)");
+    run_python_string("sabotage.clear_parent(o)");
     expect_python_error("print o.id", PyExc_AttributeError);
 
     run_python_string("ol = Oplist()");

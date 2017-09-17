@@ -10,9 +10,7 @@
     </map>
     <string name="id">baking</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Baking.Baking</string>
@@ -29,9 +27,7 @@
     </map>
     <string name="id">bisect</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Bisect.Bisect</string>
@@ -48,9 +44,7 @@
     </map>
     <string name="id">build_bloomery</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.BuildBloomery.BuildBloomery</string>
@@ -66,9 +60,7 @@
     </map>
     <string name="id">combat</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Combat.Combat</string>
@@ -85,9 +77,7 @@
     </map>
     <string name="id">cultivate</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Cultivate.Cultivate</string>
@@ -104,9 +94,7 @@
     </map>
     <string name="id">delve</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Delve.Delve</string>
@@ -123,9 +111,7 @@
     </map>
     <string name="id">destroying</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Destroying.Destroying</string>
@@ -142,9 +128,7 @@
     </map>
     <string name="id">dig</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Dig.Dig</string>
@@ -161,9 +145,7 @@
     </map>
     <string name="id">dragging</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Dragging.Dragging</string>
@@ -180,9 +162,7 @@
     </map>
     <string name="id">drying</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Drying.Drying</string>
@@ -199,9 +179,7 @@
     </map>
     <string name="id">earthbarrier</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Earthbarrier.Earthbarrier</string>
@@ -218,9 +196,7 @@
     </map>
     <string name="id">earthwall</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Earthwall.Earthwall</string>
@@ -237,9 +213,7 @@
     </map>
     <string name="id">fishing</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Fishing.Fishing</string>
@@ -256,9 +230,7 @@
     </map>
     <string name="id">heaping</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Heaping.Heaping</string>
@@ -275,9 +247,7 @@
     </map>
     <string name="id">iron_smelting</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.IronSmelting.IronSmelting</string>
@@ -294,9 +264,7 @@
     </map>
     <string name="id">logging</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Logging.Logging</string>
@@ -313,9 +281,7 @@
     </map>
     <string name="id">pioneering</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Pioneering.Pioneering</string>
@@ -332,9 +298,7 @@
     </map>
     <string name="id">pulling</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Pulling.Pulling</string>
@@ -351,9 +315,7 @@
     </map>
     <string name="id">raise</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Raise.Raise</string>
@@ -370,9 +332,7 @@
     </map>
     <string name="id">ram</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Ram.Ram</string>
@@ -389,9 +349,7 @@
     </map>
     <string name="id">reap</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Reap.Reap</string>
@@ -408,9 +366,7 @@
     </map>
     <string name="id">repairing</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Repairing.Repairing</string>
@@ -427,9 +383,7 @@
     </map>
     <string name="id">sharpen</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Sharpen.Sharpen</string>
@@ -446,9 +400,7 @@
     </map>
     <string name="id">sift</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Sift.Sift</string>
@@ -465,9 +417,7 @@
     </map>
     <string name="id">slaughter</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Slaughter.Slaughter</string>
@@ -484,9 +434,7 @@
     </map>
     <string name="id">slice</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Slice.Slice</string>
@@ -502,9 +450,7 @@
     </map>
     <string name="id">trailblaze</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Trailblaze.Trailblaze</string>
@@ -521,9 +467,7 @@
     </map>
     <string name="id">trenching</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Trenching.Trenching</string>
@@ -540,9 +484,7 @@
     </map>
     <string name="id">twirling</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Twirling.Twirling</string>
@@ -559,9 +501,7 @@
     </map>
     <string name="id">woodenwall</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>task</string>
-    </list>
+    <string name="parent">task</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.tasks.Woodenwall.Woodenwall</string>

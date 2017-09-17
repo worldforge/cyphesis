@@ -12,7 +12,7 @@ ruleset="deeds"
 # Automatically import this world if the server is unpopulated.
 # The default value relies on the content of the "Worldforge World" project
 # being installed.
-autoimport="@prefix@/share/worldforge/worlds/deeds/braga/world.xml"
+autoimport="@CMAKE_INSTALL_PREFIX@/share/worldforge/worlds/deeds/braga/world.xml"
 # Name to identify this server, please customise and include
 # If none is specified here, the machines hostname is used
 # servername="Deeds server"

@@ -559,12 +559,12 @@ void LocatedEntity::destroy()
 {
 }
 
-Domain * LocatedEntity::getMovementDomain()
+Domain * LocatedEntity::getDomain()
 {
     return 0;
 }
 
-const Domain * LocatedEntity::getMovementDomain() const
+const Domain * LocatedEntity::getDomain() const
 {
     return 0;
 }
@@ -633,7 +633,6 @@ Inheritance::Inheritance() : noClass(0)
 {
     Atlas::Objects::Entity::Anonymous root_desc;
 
-    root_desc->setParents(std::list<std::string>(0));
     root_desc->setObjtype("meta");
     root_desc->setId("root");
 
@@ -688,7 +687,7 @@ bool Inheritance::isTypeOf(const std::string & instance,
 TypeNode * Inheritance::addChild(const Root & obj)
 {
     const std::string & child = obj->getId();
-    const std::string & parent = obj->getParents().front();
+    const std::string & parent = obj->getParent();
     if (atlasObjects.find(child) != atlasObjects.end()) {
         std::cerr << String::compose("Installing type \"%1\"(\"%2\") "
                                    "which was already installed",
@@ -910,7 +909,7 @@ TaskKit::~TaskKit()
 Root atlasClass(const std::string & name, const std::string & parent)
 {
     Atlas::Objects::Entity::Anonymous r;
-    r->setParents(std::list<std::string>(1, parent));
+    r->setParent(parent);
     r->setObjtype("class");
     r->setId(name);
     return r;

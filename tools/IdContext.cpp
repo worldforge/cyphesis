@@ -19,9 +19,6 @@
 #include "IdContext.h"
 
 #include <Atlas/Objects/RootOperation.h>
-#include <Atlas/Objects/SmartPtr.h>
-
-#include <iostream>
 
 using Atlas::Objects::Operation::RootOperation;
 

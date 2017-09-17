@@ -40,7 +40,6 @@
 #include "TestWorld.h"
 
 #include "stubs/rulesets/stubCharacter.h"
-#include "stubs/rulesets/stubTransformsProperty.h"
 #include "stubs/rulesets/stubPropelProperty.h"
 
 #include <Atlas/Objects/SmartPtr.h>
@@ -193,9 +192,20 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
     return 0;
 }
 
+
+
+#include "common/const.h"
+#include "common/globals.h"
+#include "common/log.h"
+#include "common/Monitors.h"
+#include "common/PropertyFactory.h"
+#include "common/system.h"
+#include "common/TypeNode.h"
+#include "common/Variable.h"
+
+
 // stubs
 
-#include "Property_stub_impl.h"
 
 #include "server/ArithmeticBuilder.h"
 #include "server/EntityFactory.h"
@@ -206,7 +216,6 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "server/ServerRouting.h"
 #include "server/TeleportProperty.h"
 
-#include "rulesets/Motion.h"
 #include "rulesets/Pedestrian.h"
 #include "rulesets/AreaProperty.h"
 #include "rulesets/AtlasProperties.h"
@@ -238,16 +247,20 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "rulesets/DefaultLocationProperty.h"
 #include "rulesets/LimboProperty.h"
 #include "rulesets/DomainProperty.h"
+//void Entity::destroy()
+//{
+//    destroyed.emit();
+//}
+//
+//void Entity::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+//{
+//    ent->setId(getId());
+//}
 
-#include "common/const.h"
-#include "common/globals.h"
-#include "common/log.h"
-#include "common/Monitors.h"
-#include "common/PropertyFactory.h"
-#include "common/system.h"
-#include "common/TypeNode.h"
-#include "common/Variable.h"
+#include "stubs/rulesets/stubEntity.h"
+#include "stubs/rulesets/stubLocatedEntity.h"
 
+#include "stubs/common/stubProperty.h"
 #include "stubs/common/stubCustom.h"
 #include "stubs/rulesets/stubImmortalProperty.h"
 #include "stubs/rulesets/stubRespawningProperty.h"
@@ -269,8 +282,11 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "stubs/rulesets/stubDomainProperty.h"
 #include "stubs/rulesets/stubSuspendedProperty.h"
 #include "stubs/rulesets/stubModeProperty.h"
-#include "stubs/rulesets/stubModeSpecProperty.h"
-#include "stubs/rulesets/stubForcesProperty.h"
+#include "stubs/rulesets/stubQuaternionProperty.h"
+#include "stubs/rulesets/stubAngularFactorProperty.h"
+#include "stubs/rulesets/stubGeometryProperty.h"
+#include "stubs/rulesets/stubDensityProperty.h"
+#include "stubs/rulesets/stubVector3Property.h"
 
 
 Account::Account(Connection * conn,
@@ -651,200 +667,6 @@ ExternalProperty * ExternalProperty::copy() const
     return 0;
 }
 
-Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0)
-{
-}
-
-Entity::~Entity()
-{
-}
-
-void Entity::destroy()
-{
-    destroyed.emit();
-}
-
-void Entity::ActuateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::AppearanceOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::AttackOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::CombineOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::CreateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DeleteOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DisappearanceOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DivideOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::EatOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::GetOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::InfoOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::ImaginaryOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::LookOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::MoveOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::NourishOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SetOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SightOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::SoundOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TalkOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TickOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::TouchOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::UpdateOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::UseOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::WieldOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::RelayOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::externalOperation(const Operation & op, Link &)
-{
-}
-
-void Entity::operation(const Operation & op, OpVector & res)
-{
-}
-
-void Entity::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Entity::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-    ent->setId(getId());
-}
-
-PropertyBase * Entity::setAttr(const std::string & name,
-                               const Atlas::Message::Element & attr)
-{
-    return 0;
-}
-
-const PropertyBase * Entity::getProperty(const std::string & name) const
-{
-    return 0;
-}
-
-PropertyBase * Entity::modProperty(const std::string & name)
-{
-    return 0;
-}
-
-PropertyBase * Entity::setProperty(const std::string & name,
-                                   PropertyBase * prop)
-{
-    return 0;
-}
-
-void Entity::installDelegate(int class_no, const std::string & delegate)
-{
-}
-
-void Entity::removeDelegate(int class_no, const std::string & delegate)
-{
-}
-
-Domain * Entity::getMovementDomain()
-{
-    return 0;
-}
-
-const Domain * Entity::getMovementDomain() const
-{
-    return 0;
-}
-
-void Entity::sendWorld(const Operation & op)
-{
-}
-
-void Entity::onContainered(const LocatedEntity*)
-{
-}
-
-void Entity::onUpdated()
-{
-}
-
-void Entity::callOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Entity::setType(const TypeNode* t)
-{
-
-}
-
-#include "stubs/rulesets/stubLocatedEntity.h"
-
 EntityProperty::EntityProperty()
 {
 }
@@ -909,51 +731,6 @@ void Thing::UpdateOperation(const Operation & op, OpVector & res)
 {
 }
 
-PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
-{
-}
-
-PropertyBase::~PropertyBase()
-{
-}
-
-void PropertyBase::install(LocatedEntity *, const std::string & name)
-{
-}
-
-void PropertyBase::remove(LocatedEntity *, const std::string & name)
-{
-}
-
-void PropertyBase::apply(LocatedEntity *)
-{
-}
-
-void PropertyBase::add(const std::string & s,
-                       Atlas::Message::MapType & ent) const
-{
-    get(ent[s]);
-}
-
-void PropertyBase::add(const std::string & s,
-                       const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-HandlerResult PropertyBase::operation(LocatedEntity *,
-                                      const Operation &,
-                                      OpVector &)
-{
-    return OPERATION_IGNORED;
-}
-
-template class Property<int>;
-template class Property<double>;
-template class Property<std::string>;
-template class Property<ListType>;
-template class Property<MapType>;
-template class Property<std::vector<std::string>>;
-
 PropertyKit::~PropertyKit()
 {
 }
@@ -971,30 +748,6 @@ PropertyFactory<T> * PropertyFactory<T>::duplicateFactory() const
 }
 
 template class PropertyFactory<MinimalProperty>;
-
-SoftProperty::SoftProperty()
-{
-}
-
-SoftProperty::SoftProperty(const Atlas::Message::Element & data) :
-              PropertyBase(0), m_data(data)
-{
-}
-
-int SoftProperty::get(Atlas::Message::Element & val) const
-{
-    val = m_data;
-    return 0;
-}
-
-void SoftProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-SoftProperty * SoftProperty::copy() const
-{
-    return 0;
-}
 
 
 void TeleportProperty::install(LocatedEntity * owner, const std::string & name)
@@ -1234,8 +987,6 @@ bool Movement::updateNeeded(const Location & location) const
 void Movement::reset()
 {
 }
-
-#include "stubs/rulesets/stubMotion.h"
 
 
 Location::Location() :

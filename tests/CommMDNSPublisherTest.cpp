@@ -125,8 +125,6 @@ void log(LogLevel lvl, const std::string & msg)
 
 namespace consts {
 
-  const char * buildTime = __TIME__;
-  const char * buildDate = __DATE__;
   const int buildId = -1;
   const char * version = "test_version";
 }

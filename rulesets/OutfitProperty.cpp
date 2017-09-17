@@ -22,14 +22,12 @@
 
 #include "common/BaseWorld.h"
 #include "common/debug.h"
-#include "common/log.h"
 #include "common/Update.h"
 
 #include <Atlas/Objects/Anonymous.h>
 
 #include <sigc++/adaptors/bind.h>
 #include <sigc++/adaptors/hide.h>
-#include <sigc++/functors/mem_fun.h>
 
 #include <iostream>
 
@@ -39,6 +37,10 @@ using Atlas::Objects::Operation::Update;
 using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
+
+const std::string OutfitProperty::property_name = "outfit";
+const std::string OutfitProperty::property_atlastype = "map";
+
 
 /// \brief OutfitProperty constructor
 OutfitProperty::OutfitProperty()

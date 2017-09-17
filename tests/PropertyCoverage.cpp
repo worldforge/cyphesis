@@ -106,6 +106,7 @@ void PropertyCoverage::basicCoverage()
     for (; I != Iend; ++I) {
         m_prop->set(*I);
         m_prop->apply(m_ent);
+        m_ent->propertyApplied("test_prop", *m_prop);
     }
 
     MapType map;
@@ -143,7 +144,7 @@ void PropertyCoverage::testDataAppend(const Element & o)
 
 
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId), m_motion(0)
+        LocatedEntity(id, intId)
 {
 }
 
@@ -306,12 +307,12 @@ void Entity::removeDelegate(int class_no, const std::string & delegate)
 {
 }
 
-Domain * Entity::getMovementDomain()
+Domain * Entity::getDomain()
 {
     return 0;
 }
 
-const Domain * Entity::getMovementDomain() const
+const Domain * Entity::getDomain() const
 {
     return 0;
 }
@@ -331,6 +332,15 @@ void Entity::onUpdated()
 void Entity::setType(const TypeNode * t) {
     LocatedEntity::setType(t);
 }
+
+void Entity::addChild(LocatedEntity& childEntity)
+{
+}
+
+void Entity::removeChild(LocatedEntity& childEntity)
+{
+}
+
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubBaseWorld.h"

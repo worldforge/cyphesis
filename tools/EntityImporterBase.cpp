@@ -23,6 +23,7 @@
 
 #include <fstream>
 #include <sstream>
+#include <iostream>
 
 using Atlas::Objects::Root;
 using Atlas::Objects::smart_dynamic_cast;
@@ -37,7 +38,7 @@ using Atlas::Message::Element;
 //The following are adapters to make the Ember logging syntax work with the Cyphesis log.
 #include "common/log.h"
 #include "common/debug.h"
-static const bool debug_flag = false;
+static const bool debug_flag = true;
 #define S_LOG_VERBOSE(message) \
     { debug(std::stringstream ss;\
     ss << message;\
@@ -108,7 +109,7 @@ void EntityImporterBase::extractChildren(const Root& op, std::list<std::string>&
         if (childElem.isList()) {
             for (auto child : childElem.asList()) {
                 if (child.isString()) {
-                    children.push_back(child.asString());
+                    children.push_back(child.String());
                 }
             }
         }
@@ -262,7 +263,7 @@ void EntityImporterBase::sendMinds()
                                                 const auto& entityIdLookupI = mEntityIdMap.find(thingId.asString());
                                                 //Check if the owned entity has been created with a new id. If so, replace the data.
                                                 if (entityIdLookupI != mEntityIdMap.end()) {
-                                                    newList.push_back(entityIdLookupI->second);
+                                                    newList.emplace_back(entityIdLookupI->second);
                                                 } else {
                                                     newList.push_back(thingId);
                                                 }
@@ -286,7 +287,7 @@ void EntityImporterBase::sendMinds()
                                         const auto& entityIdLookupI = mEntityIdMap.find(thingId.asString());
                                         //Check if the owned entity has been created with a new id. If so, replace the data.
                                         if (entityIdLookupI != mEntityIdMap.end()) {
-                                            newList.push_back(entityIdLookupI->second);
+                                            newList.emplace_back(entityIdLookupI->second);
                                         } else {
                                             newList.push_back(thingId);
                                         }
@@ -324,9 +325,7 @@ void EntityImporterBase::sendMinds()
             }
 
             Atlas::Objects::Operation::RootOperation thinkOp;
-            std::list<std::string> parents;
-            parents.emplace_back("think");
-            thinkOp->setParents(parents);
+            thinkOp->setParent("think");
             thinkOp->setTo(mind.first);
             //By setting it TO an entity and FROM our avatar we'll make the server deliver it as
             //if it came from the entity itself (the server rewrites the FROM to be of the entity).
@@ -431,7 +430,7 @@ void EntityImporterBase::createEntity(const RootEntity & obj, OpVector & res)
     m_state = ENTITY_CREATING;
 
     assert(mTreeStack.size() > 1);
-    std::deque<StackEntry>::reverse_iterator I = mTreeStack.rbegin();
+    auto I = mTreeStack.rbegin();
     ++I;
     assert(I != mTreeStack.rend());
     const std::string & loc = I->restored_id;
@@ -499,7 +498,7 @@ void EntityImporterBase::updateRule(const Root& existingDefinition, const Root& 
     if (!newChildren.empty() && !existingChildren.empty()) {
         Atlas::Message::ListType childrenElement;
         for (auto& child : newChildren) {
-            childrenElement.push_back(child);
+            childrenElement.emplace_back(child);
         }
         updatedDefinition->setAttr("children", childrenElement);
     }
@@ -600,9 +599,7 @@ void EntityImporterBase::errorArrived(const Operation & op, OpVector & res)
             auto J = mPersistedEntities.find(I->second);
             if (J != mPersistedEntities.end()) {
                 auto& entity = J->second;
-                if (!entity->getParents().empty()) {
-                    entityType = entity->getParents().front();
-                }
+                entityType = entity->getParent();
             }
         }
         S_LOG_FAILURE("Could not create entity of type '" << entityType << "', continuing with next. Server message: " << errorMessage);
@@ -612,7 +609,7 @@ void EntityImporterBase::errorArrived(const Operation & op, OpVector & res)
     }
         break;
     default:
-        S_LOG_FAILURE("Unexpected state in state machine. Server message: " << errorMessage);
+        S_LOG_FAILURE("Unexpected state in state machine: " << m_state << ". Server message: " << errorMessage);
         break;
     };
 }
@@ -654,7 +651,7 @@ void EntityImporterBase::infoArrived(const Operation & op, OpVector & res)
         mNewIds.insert(arg->getId());
         StackEntry & current = mTreeStack.back();
         current.restored_id = arg->getId();
-        S_LOG_VERBOSE("Created: " << arg->getParents().front() << "(" << arg->getId() << ")");
+        S_LOG_VERBOSE("Created: " << arg->getParent() << "(" << arg->getId() << ")");
 
         auto I = mCreateEntityMapping.find(op->getRefno());
         if (I != mCreateEntityMapping.end()) {
@@ -686,7 +683,7 @@ void EntityImporterBase::infoArrived(const Operation & op, OpVector & res)
 
         assert(id == obj->getId());
 
-        if (mNewIds.find(id) != mNewIds.end() || (mTreeStack.size() != 1 && ent->isDefaultLoc()) || ent->getParents().front() != obj->getParents().front()) {
+        if (mNewIds.find(id) != mNewIds.end() || (mTreeStack.size() != 1 && ent->isDefaultLoc()) || ent->getParent() != obj->getParent()) {
             createEntity(obj, res);
         } else {
 
@@ -694,7 +691,7 @@ void EntityImporterBase::infoArrived(const Operation & op, OpVector & res)
 
             current.restored_id = id;
 
-            S_LOG_VERBOSE("Updating: " << obj->getId() << " ," << obj->getParents().front());
+            S_LOG_VERBOSE("Updating: " << obj->getId() << " ," << obj->getParent());
 
             update->removeAttrFlag(Atlas::Objects::Entity::CONTAINS_FLAG);
             update->removeAttrFlag(Atlas::Objects::STAMP_FLAG);
@@ -758,8 +755,12 @@ void EntityImporterBase::sightArrived(const Operation & op, OpVector & res)
         walkEntities(res);
     }
         break;
+    case ENTITY_CREATING:
+    case ENTITY_WALKING:
+        //Just ignore sights when creating; these are sights of the actual creation ops.
+        break;
     default:
-        S_LOG_WARNING("Unexpected state in state machine.");
+        S_LOG_WARNING("Unexpected state in state machine: " << m_state);
         break;
     };
 }
@@ -769,12 +770,9 @@ EntityImporterBase::EntityImporterBase(const std::string& accountId, const std::
 {
 }
 
-EntityImporterBase::~EntityImporterBase()
-{
-}
-
 void EntityImporterBase::start(const std::string& filename)
 {
+    S_LOG_VERBOSE("Starting import from " << filename);
     auto factories = Atlas::Objects::Factories::instance();
 
     auto rootObj = loadFromFile(filename);
@@ -874,7 +872,7 @@ void EntityImporterBase::registerEntityReferences(const std::string& id, const A
 {
     for (auto I : element) {
         const auto& name = I.first;
-        if (name == "id" || name == "parents" || name == "contains") {
+        if (name == "id" || name == "parent" || name == "contains") {
             continue;
         }
         if (hasEntityReference(I.second)) {
@@ -928,13 +926,15 @@ void EntityImporterBase::startRuleWalking()
 
     OpVector res;
     getRule("root", res);
-    for (auto op : res) {
+    for (auto& op : res) {
         sendOperation(op);
     }
 }
 
 void EntityImporterBase::sendOperation(const Operation& op)
 {
+    //std::cout << "Sending op ============";
+    //debug_dump(op, std::cout);
     if (!op->isDefaultSerialno()) {
         sigc::slot<void, const Operation&> slot = sigc::mem_fun(*this, &EntityImporterBase::operation);
         sendAndAwaitResponse(op, slot);
@@ -976,6 +976,9 @@ void EntityImporterBase::operationSetResult(const Operation & op)
 
 void EntityImporterBase::operation(const Operation & op)
 {
+    //std::cout << "Got op ==================" << std::endl;
+    //debug_dump(op, std::cout);
+
     if (m_state == CANCEL) {
         m_state = CANCELLED;
         return;
@@ -992,8 +995,8 @@ void EntityImporterBase::operation(const Operation & op)
         sightArrived(op, res);
     }
 
-    for (auto& op : res) {
-        sendOperation(op);
+    for (auto& resOp : res) {
+        sendOperation(resOp);
     }
 
 }

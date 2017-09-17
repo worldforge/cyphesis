@@ -623,7 +623,7 @@ Note that:
 
  Both sight_move and sight_create update the map via the Python API
  when this could be more efficiently done in the C++ if the op
- handler wasn't overriden. Why not assume the python handler does not
+ handler wasn't overridden. Why not assume the python handler does not
  override?
 
  The overall concept of overriding from scripts and also from handlers
@@ -1595,7 +1595,7 @@ from where the character ends up. This is a general problem with moving
 to pre-defined positions.
 
 Does sightFooOperation etc. in BaseMind.h have to be virtual? I think not.
-Yes it does, as its overriden in some client code.
+Yes it does, as its overridden in some client code.
 
 CONTAINS could be some kind of spatial set of buckets for efficiency
 when doing collision detection, but if this is not to be true for all entities

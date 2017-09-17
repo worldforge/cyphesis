@@ -447,6 +447,7 @@ int main()
 #include "common/log.h"
 
 #include <Atlas/Negotiate.h>
+#include "stubs/common/stubLink.h"
 
 namespace Atlas { namespace Objects { namespace Operation {
 
@@ -616,23 +617,6 @@ ConnectableRouter::ConnectableRouter(const std::string & id,
 }
 
 ConnectableRouter::~ConnectableRouter()
-{
-}
-
-Link::Link(CommSocket & socket, const std::string & id, long iid) :
-            Router(id, iid), m_encoder(0), m_commSocket(socket)
-{
-}
-
-Link::~Link()
-{
-}
-
-void Link::send(const Operation & op) const
-{
-}
-
-void Link::disconnect()
 {
 }
 

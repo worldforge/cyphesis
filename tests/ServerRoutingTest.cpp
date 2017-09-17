@@ -85,8 +85,8 @@ class TestRouter : public Router
   public:
     TestRouter(const std::string &id, int iid) : Router(id, iid) { }
 
-    virtual void externalOperation(const Operation &, Link &) { }
-    virtual void operation(const Operation &, OpVector &) { }
+    void externalOperation(const Operation &, Link &) override { }
+    void operation(const Operation &, OpVector &) override { }
 };
 
 class TestAccount : public Account {

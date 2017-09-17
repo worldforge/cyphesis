@@ -20,10 +20,6 @@
 #include "common/log.h"
 #include "common/compose.hpp"
 
-#include <cstdlib>
-
-#include <cassert>
-
 long integerId(const std::string & id)
 {
     long intId = strtol(id.c_str(), 0, 10);

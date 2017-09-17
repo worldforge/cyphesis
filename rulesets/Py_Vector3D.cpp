@@ -126,7 +126,7 @@ static PyObject * Vector3D_unit_vector(PyVector3D * self)
     }
     ret->coords = self->coords;
     WFMath::CoordType the_mag = ret->coords.mag();
-    if (!the_mag > 0) {
+    if (!(the_mag > 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "Attempt to normalize a vector with zero magnitude");
         return NULL;
     }
@@ -146,7 +146,7 @@ static PyObject *Vector3D_unit_vector_to(PyVector3D * self, PyVector3D * other)
     }
     ret->coords = (other->coords - self->coords);
     WFMath::CoordType the_mag = ret->coords.mag();
-    if (!the_mag > 0) {
+    if (!(the_mag > 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "Attempt to normalize a vector with zero magnitude");
         return NULL;
     }

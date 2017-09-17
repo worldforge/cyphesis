@@ -9,9 +9,7 @@
     </map>
     <string name="id">boundary</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -27,9 +25,7 @@
     </map>
     <string name="id">ocean</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -41,9 +37,7 @@
     </map>
     <string name="id">path</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>area</string>
-    </list>
+    <string name="parent">area</string>
   </map>
 
   <map>
@@ -105,9 +99,7 @@
     </map>
     <string name="id">ploughed_field</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>area</string>
-    </list>
+    <string name="parent">area</string>
   </map>
 
 </atlas>

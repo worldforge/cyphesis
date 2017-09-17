@@ -18,7 +18,6 @@
 
 #include "rulesets/LocatedEntity.h"
 
-#include "common/log.h"
 #include "common/const.h"
 #include "common/debug.h"
 
@@ -85,6 +84,9 @@ void Location::addToMessage(MapType & omap) const
     if (bBox().isValid()) {
         omap["bbox"] = bBox().toAtlas();
     }
+    if (m_angularVelocity.isValid()) {
+        omap["angular"] = m_angularVelocity.toAtlas();
+    }
 }
 
 void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
@@ -103,6 +105,9 @@ void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
     }
     if (bBox().isValid()) {
         ent->setAttr("bbox", bBox().toAtlas());
+    }
+    if (m_angularVelocity.isValid()) {
+        ent->setAttr("angular", m_angularVelocity.toAtlas());
     }
 }
 
@@ -128,6 +133,17 @@ int Location::readFromMessage(const MapType & msg)
                 log(ERROR, "Malformed ORIENTATION data");
             }
         }
+        I = msg.find("angular");
+        if (I != Iend) {
+            const Element & angular = I->second;
+            if (angular.isList() && angular.List().size() == 3) {
+                m_angularVelocity.fromAtlas(angular);
+            } else {
+                log(ERROR, "Malformed angular velocity data");
+            }
+        }
+
+
     }
     catch (Atlas::Message::WrongTypeException&) {
         log(ERROR, "Location::readFromMessage: Bad location data");
@@ -146,12 +162,19 @@ int Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent)
         if (ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
             fromStdVector(m_velocity, ent->getVelocity());
         }
-        Element orientation;
-        if (ent->copyAttr("orientation", orientation) == 0) {
-            if (orientation.isList() && orientation.List().size() == 4) {
-                m_orientation.fromAtlas(orientation);
+        Element element;
+        if (ent->copyAttr("orientation", element) == 0) {
+            if (element.isList() && element.List().size() == 4) {
+                m_orientation.fromAtlas(element);
             } else {
-                log(ERROR, "Malformed ORIENTATION data");
+                log(ERROR, "Malformed ORIENTATION data.");
+            }
+        }
+        if (ent->copyAttr("angular", element) == 0) {
+            if (element.isList() && element.List().size() == 3 && element.List()[0].isNum() && element.List()[1].isNum() && element.List()[2].isNum()) {
+                m_angularVelocity = WFMath::Vector<3>(element.List()[0].asNum(), element.List()[1].asNum(), element.List()[2].asNum());
+            } else {
+                log(ERROR, "Malformed angular velocity data.");
             }
         }
     }
@@ -224,15 +247,14 @@ static const Location* distanceFromAncestor(const Location & self,
 static const Location* distanceToAncestor(const Location & self,
                                const Location & other, Point3D & c)
 {
-    if (!self.m_pos.isValid()) {
-        return nullptr;
-    }
-
     c.setToOrigin();
     const Location* ancestor = distanceFromAncestor(self, other, c);
     if (ancestor) {
         return ancestor;
-    } else if ((self.m_loc != 0)) {
+    } else if ((self.m_loc != nullptr)) {
+        if (!self.m_pos.isValid()) {
+            return nullptr;
+        }
         ancestor = distanceToAncestor(self.m_loc->m_location, other, c);
         if (ancestor) {
             if (self.orientation().isValid()) {
@@ -245,15 +267,15 @@ static const Location* distanceToAncestor(const Location & self,
         }
     }
     log(ERROR, "Broken entity hierarchy doing distance calculation");
-    if (self.m_loc != 0) {
-        std::cerr << "Self(" << self.m_loc->getId() << "," << self.m_loc << ")"
+    if (self.m_loc != nullptr) {
+        std::cerr << "Self("<< &self << ", loc:" << self.m_loc->getId() << "," << self.m_loc << ",pos:" << self.m_pos << ":" << self.m_pos.isValid() << ", orient:" << self.m_orientation << ")"
                   << std::endl << std::flush;
     } else {
         std::cerr << "Self has no location"
                   << std::endl << std::flush;
     }
-    if (other.m_loc != 0) {
-        std::cerr << "Other(" << other.m_loc->getId() << "," << other.m_loc << ")"
+    if (other.m_loc != nullptr) {
+        std::cerr << "Other("<< &other << ", loc:" << other.m_loc->getId() << "," << other.m_loc << ",pos:" << other.m_pos << ":" << self.m_pos.isValid() << ", orient:" << other.m_orientation << ")"
                   << std::endl << std::flush;
     } else {
         std::cerr << "Other has no location"
@@ -270,7 +292,7 @@ static const Location* distanceToAncestor(const Location & self,
 ///        determined
 /// @return The vector distance from self to other.
 /// The distance calculated is a vector relative to the parent of the
-/// entity who's location is given by self. This is useful for determing
+/// entity who's location is given by self. This is useful for determining
 /// both the scalar distance to another entity, and a direction vector
 /// that can be used to determine the direction for motion if it
 /// is necessary to head toward the other entity.
@@ -294,7 +316,7 @@ const Vector3D distanceTo(const Location & self, const Location & other)
 /// @return The position of other.
 /// The position calculated is relative to the entity who's location is given
 /// by self. The calculation is very similar to distanceTo() but an extra
-/// step is ommited.
+/// step is omited.
 const Point3D relativePos(const Location & self, const Location & other)
 {
     Point3D pos;

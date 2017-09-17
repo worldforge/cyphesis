@@ -24,9 +24,7 @@
     </map>
     <string name="id">goblin</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
   </map>
 
   <map>
@@ -45,9 +43,7 @@
     </map>
     <string name="id">lych</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
   </map>
 
   <map>
@@ -66,6 +62,19 @@
           <float>2</float>
         </list>
         <string name="visibility">public</string>
+      </map>
+      <map name="geometry">
+        <map name="default">
+          <string name="shape">capsule-z</string>
+        </map>
+        <string name="visibility">public</string>
+      </map>
+      <map name="angularfactor">
+        <list name="default">
+          <float>0</float>
+          <float>0</float>
+          <float>0</float>
+        </list>
       </map>
       <map name="mind">
         <map name="default">
@@ -90,23 +99,31 @@
         <string name="default">inventory</string>
         <string name="visibility">public</string>
       </map>
+      <!-- Set a high friction so that mobile entities can cling to slopes without sliding down. -->
+      <map name="friction">
+        <float name="default">10</float>
+        <string name="visibility">public</string>
+      </map>
+      <!-- By default mobile entities should step up 30% of their height. This is based on humans. -->
+      <map name="step_factor">
+        <float name="default">0.3</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">mobile</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>character</string>
-    </list>
+    <string name="parent">character</string>
   </map>
 
   <map>
     <map name="attributes">
       <map name="bbox">
         <list name="default">
-          <float>-0.25</float>
-          <float>-0.25</float>
+          <float>-0.4</float>
+          <float>-0.4</float>
           <float>0</float>
-          <float>0.25</float>
-          <float>0.25</float>
+          <float>0.4</float>
+          <float>0.4</float>
           <float>2</float>
         </list>
         <string name="visibility">public</string>
@@ -140,9 +157,7 @@
     </map>
     <string name="id">human</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
   </map>
 
   <map>
@@ -161,15 +176,13 @@
     </map>
     <string name="id">skeleton</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>mobile</string>
-    </list>
+    <string name="parent">mobile</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.undead.Skeleton.Skeleton</string>
     </map>
   </map>
-    
+
   <map>
     <map name="attributes">
       <map name="mass">
@@ -190,9 +203,7 @@
     </map>
     <string name="id">pelvis</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -215,11 +226,9 @@
     </map>
     <string name="id">ribcage</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
-    
+
   <map>
     <map name="attributes">
       <map name="mass">
@@ -240,9 +249,7 @@
     </map>
     <string name="id">tibia</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -265,9 +272,7 @@
     </map>
     <string name="id">femur</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -290,11 +295,9 @@
     </map>
     <string name="id">bone_pile</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
-    
+
   <map>
     <map name="attributes">
       <map name="mass">
@@ -311,27 +314,21 @@
           <float>0.160005</float>
         </list>
         <string name="visibility">public</string>
-      </map>      
+      </map>
     </map>
     <string name="id">skull</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
-  
+
    <map>
         <string name="id">dead_human_skull</string>
         <string name="objtype">archetype</string>
-        <list name="parents">
-            <string>archetype</string>
-        </list>
+        <string name="parent">archetype</string>
         <list name="entities">
             <map>
                 <string name="name">human skull</string>
-                <list name="parents">
-                    <string>skull</string>
-                </list>
+                <string name="parent">skull</string>
                 <float name="transient">1800</float>
             </map>
         </list>
@@ -340,18 +337,14 @@
     <map>
         <string name="id">dead_goblin_skull</string>
         <string name="objtype">archetype</string>
-        <list name="parents">
-            <string>archetype</string>
-        </list>
+        <string name="parent">archetype</string>
         <list name="entities">
             <map>
                 <string name="name">goblin skull</string>
-                <list name="parents">
-                    <string>skull</string>
-                </list>
+                <string name="parent">skull</string>
                 <float name="transient">1800</float>
             </map>
         </list>
     </map>
-    
+
 </atlas>

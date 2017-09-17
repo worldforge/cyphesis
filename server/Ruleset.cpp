@@ -38,14 +38,13 @@
 #include "common/AtlasFileLoader.h"
 #include "common/compose.hpp"
 
-#include <Atlas/Message/Element.h>
 #include <Atlas/Objects/objectFactory.h>
+
+#include <boost/filesystem.hpp>
 
 #include <iostream>
 
-#include <sys/types.h>
 #ifdef HAVE_DIRENT_H
-#include <dirent.h>
 #endif // HAS_DIRENT_H
 
 using Atlas::Message::Element;
@@ -94,15 +93,9 @@ int Ruleset::installRuleInner(const std::string & class_name,
         return -1;
     }
 
-    const std::list<std::string> & parents = class_desc->getParents();
-    if (parents.empty()) {
-        log(ERROR, compose("Rule \"%1\" has empty parents. Skipping.",
-                           class_name));
-        return -1;
-    }
-    const std::string & parent = parents.front();
+    const std::string & parent = class_desc->getParent();
     if (parent.empty()) {
-        log(ERROR, compose("Rule \"%1\" has empty first parent. Skipping.",
+        log(ERROR, compose("Rule \"%1\" has empty parent. Skipping.",
                            class_name));
         return -1;
     }
@@ -193,23 +186,17 @@ int Ruleset::modifyRule(const std::string & class_name,
                            "inheritance", class_name));
         return -1;
     }
-    assert(!o->isDefaultParents());
-    assert(!o->getParents().empty());
-    if (class_desc->isDefaultParents()) {
-        log(ERROR, compose("Updated type \"%1\" has no parents in its "
+    assert(!o->isDefaultParent());
+    assert(o->getParent() != "");
+    if (class_desc->isDefaultParent() || class_desc->getParent().empty()) {
+        log(ERROR, compose("Updated type \"%1\" has no parent in its "
                            "description", class_name));
         return -1;
     }
-    const std::list<std::string> & class_parents = class_desc->getParents();
-    if (class_parents.empty()) {
-        log(ERROR, compose("Updated type \"%1\" has empty parents in its "
-                           "description", class_name));
-        return -1;
-    }
-    if (class_parents.front() != o->getParents().front()) {
+    if (class_desc->getParent() != o->getParent()) {
         log(ERROR, compose("Updated type \"%1\" attempting to change parent "
                            "from %2 to %3", class_name,
-                           o->getParents().front(), class_parents.front()));
+                           o->getParent(), class_desc->getParent()));
         return -1;
     }
     int ret = -1;
@@ -235,7 +222,7 @@ int Ruleset::modifyRule(const std::string & class_name,
 /// \brief Mark a rule down as waiting for another.
 ///
 /// Note that a rule cannot yet be installed because it depends on something
-/// that has not yet occured, or a more fatal condition has occured.
+/// that has not yet occurred, or a more fatal condition has occurred.
 void Ruleset::waitForRule(const std::string & rulename,
                           const Root & ruledesc,
                           const std::string & dependent,
@@ -252,41 +239,45 @@ void Ruleset::waitForRule(const std::string & rulename,
 void Ruleset::getRulesFromFiles(const std::string & ruleset,
                                 RootDict & rules)
 {
+
     std::string filename;
 
     std::string dirname = etc_directory + "/cyphesis/" + ruleset + ".d";
-    DIR * rules_dir = ::opendir(dirname.c_str());
-    if (rules_dir == 0) {
-        filename = etc_directory + "/cyphesis/" + ruleset + ".xml";
-        AtlasFileLoader f(filename, rules);
-        if (f.isOpen()) {
-            log(WARNING, compose("Reading legacy rule data from \"%1\".",
-                                 filename));
-            f.read();
+
+    if (boost::filesystem::is_directory(dirname)) {
+
+    boost::filesystem::recursive_directory_iterator dir(dirname), end;
+        log(INFO, compose("Trying to load rules from directory '%1'", dirname));
+
+        int count = 0;
+        while (dir != end) {
+            if (boost::filesystem::is_regular_file(dir->status())) {
+                auto filename = dir->path().native();
+                AtlasFileLoader f(filename, rules);
+                if (!f.isOpen()) {
+                    log(ERROR, compose("Unable to open rule file \"%1\".", filename));
+                } else {
+                    f.read();
+                    count += f.count();
+                }
+            }
+            ++dir;
         }
-        return;
+
+        log(INFO, compose("Loaded %1 rules.", count));
     }
-    while (struct dirent * rules_entry = ::readdir(rules_dir)) {
-        if (rules_entry->d_name[0] == '.') {
-            continue;
-        }
-        filename = dirname + "/" + rules_entry->d_name;
-        
-        AtlasFileLoader f(filename, rules);
-        if (!f.isOpen()) {
-            log(ERROR, compose("Unable to open rule file \"%1\".", filename));
-        } else {
-            f.read();
-        }
-    }
-    ::closedir(rules_dir);
+
+
 }
 
 void Ruleset::loadRules(const std::string & ruleset)
 {
     RootDict ruleTable;
 
-    if (database_flag) {
+    bool loadFromDatabase = database_flag;
+    loadFromDatabase = false;
+
+    if (loadFromDatabase) {
         Persistence * p = Persistence::instance();
         p->getRules(ruleTable);
     } else {
@@ -295,7 +286,7 @@ void Ruleset::loadRules(const std::string & ruleset)
 
     if (ruleTable.empty()) {
         log(ERROR, "Rule database table contains no rules.");
-        if (database_flag) {
+        if (loadFromDatabase) {
             log(NOTICE, "Attempting to load temporary ruleset from files.");
             getRulesFromFiles(ruleset, ruleTable);
         }

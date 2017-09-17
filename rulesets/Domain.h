@@ -25,8 +25,10 @@
 #include <wfmath/vector.h>
 
 #include <string>
+#include <list>
 
 class LocatedEntity;
+
 class Location;
 
 /// \brief Base class for movement domains
@@ -34,74 +36,100 @@ class Location;
 /// The movement domain implements movement in the game world, including
 /// visibility calculations, collision detection and physics.
 /// Motion objects interact with the movement domain.
-class Domain {
-  protected:
+class Domain
+{
+    protected:
 
-    /**
-     * @brief The entity to which this domain belongs.
-     */
-    LocatedEntity& m_entity;
+        /**
+         * @brief The entity to which this domain belongs.
+         */
+        LocatedEntity& m_entity;
 
-  public:
+    public:
 
-    /**
-     * @brief Collision data used when checking for collision.
-     */
-    struct CollisionData {
-        ///True if there's a collision.
-        bool isCollision;
-        /// Entity with which collision will occur
-        LocatedEntity * collEntity;
-        /// Normal to the collision surface
-        Vector3D collNormal;
-    };
+        Domain(LocatedEntity& entity);
 
-    Domain(LocatedEntity& entity);
+        virtual ~Domain();
 
-    virtual ~Domain();
+        virtual void tick(double t, OpVector& res) = 0;
 
-    virtual float constrainHeight(LocatedEntity& entity, LocatedEntity *, const Point3D &,
-                                  const std::string &) = 0;
+        /**
+         * @brief Checks if the observing Entity can see the observed entity.
+         *
+         * This is done by using both a distance check as well as an outfit and wielded check.
+         *
+         * @param observingEntity The observer entity.
+         * @param observedEntity The entity being looked at.
+         * @return True if the observer entity can see the observed entity.
+         */
+        virtual bool isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const = 0;
 
-    virtual void tick(double t) = 0;
+        /**
+         * Adds a child entity to this domain. The child entity is guaranteed to be a direct child of the entity to which the domain belongs.
+         *
+         * @param entity A child entity.
+         */
+        virtual void addEntity(LocatedEntity& entity) = 0;
 
-    /**
-     * @brief Checks if the observing Entity can see the observed entity.
-     *
-     * This is done by using both a distance check as well as an outfit and wielded check.
-     *
-     * @param observingEntity The observer entity.
-     * @param observedEntity The entity being looked at.
-     * @return True if the observer entity can see the observed entity.
-     */
-    virtual bool isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const = 0;
+        /**
+         * Removes a child entity from this domain. The child entity is guaranteed to be a direct child of the entity to which the domain belongs, and to have addEntity(...) being called earlier.
+         *
+         * @param entity A child entity.
+         */
+        virtual void removeEntity(LocatedEntity& entity) = 0;
 
-    /**
-     * @brief Process visibility operation for an entity that has been moved.
-     *
-     * This mainly involves calculating visibility changes, generating Appear and Disappear ops.
-     *
-     * @param moved_entity The entity that was moved.
-     * @param old_loc The old location of the entity.
-     * @param res
-     */
-    virtual void processVisibilityForMovedEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res) = 0;
+        /**
+         * Fills the supplied list with all entities in the domain that the supplied entity can currently observe.
+         * @param observingEntity The entity that is observing.
+         * @param entityList A list of entities.
+         */
+        virtual void getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<LocatedEntity*>& entityList) const = 0;
 
-    /**
-     * @brief Process an entity being moved out of the domain, and thus disappearing.
-     * @param moved_entity
-     * @param old_loc
-     * @param res
-     */
-    virtual void processDisappearanceOfEntity(const LocatedEntity& moved_entity, const Location& old_loc, OpVector & res) = 0;
+        /**
+         * Fills the supplied list with all entities in the domain that are currently observing the supplied entity.
+         * @param observedEntity The entity which is being observed.
+         * @return A list of entities.
+         */
+        virtual std::list<LocatedEntity*> getObservingEntitiesFor(const LocatedEntity& observedEntity) const
+        {
+            return std::list<LocatedEntity*>();
+        }
 
-    /**
-     * Checks any upcoming collisions for the supplied entity.
-     * @param entity The entity which is moving.
-     * @param collisionData Collision data, to be populated.
-     * @return Seconds until either a collision will occur, or we should check for collisions again.
-     */
-    virtual float checkCollision(LocatedEntity& entity, CollisionData& collisionData) = 0;
+        /**
+         * Applies transformations to a child entity in the domain.
+         *
+         * Note that different domains handle this differently. Some will ignore some or all of the transformations.
+         *
+         * @param entity The child entity.
+         * @param orientation New orientation, applied if valid.
+         * @param pos New position, applied if valid.
+         * @param velocity New velocity, applied if valid.
+         */
+        virtual void applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity)
+        {
+
+        }
+
+        /**
+         * Refreshes the terrain within the supplied areas.
+         * @param areas A collection of areas describing the terrain changed.
+         */
+        virtual void refreshTerrain(const std::vector<WFMath::AxisBox<2>>& areas)
+        {
+
+        }
+
+        /**
+         * Updates perceptive state of a child entity.
+         *
+         * This is called mainly when an entity becomes perceptive.
+         * @param entity A child entity of the entity the domain belongs to.
+         */
+        virtual void toggleChildPerception(LocatedEntity& entity)
+        {
+
+        }
+
 
 };
 

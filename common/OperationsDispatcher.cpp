@@ -17,7 +17,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+
 #endif
 
 #include "OperationsDispatcher.h"
@@ -32,7 +32,7 @@
 static const bool debug_flag = false;
 
 OpQueEntry::OpQueEntry(const Operation & o, LocatedEntity & f) : op(o),
-                                                                        from(&f)
+                                                                 from(&f)
 {
     from->incRef();
 }
@@ -48,8 +48,8 @@ OpQueEntry::~OpQueEntry()
 }
 
 
-OperationsDispatcher::OperationsDispatcher(const std::function<void(const Operation&, LocatedEntity&)>& operationProcessor, const std::function<double()>& timeProviderFn)
-: m_operationProcessor(operationProcessor), m_timeProviderFn(timeProviderFn), m_operation_queues_dirty(false)
+OperationsDispatcher::OperationsDispatcher(const std::function<void(const Operation &, LocatedEntity &)> & operationProcessor, const std::function<double()> & timeProviderFn)
+    : m_operationProcessor(operationProcessor), m_timeProviderFn(timeProviderFn), m_operation_queues_dirty(false)
 {
 }
 
@@ -60,25 +60,27 @@ OperationsDispatcher::~OperationsDispatcher()
 
 void OperationsDispatcher::clearQueues()
 {
-    m_immediateQueue = OpQueue();
     m_operationQueue = OpPriorityQueue();
 }
 
-void OperationsDispatcher::dispatchOperation(const OpQueEntry& oqe)
+void OperationsDispatcher::dispatchOperation(const OpQueEntry & oqe)
 {
+    //Set the time of when this op is dispatched. That way, other components in the system can
+    //always use the seconds set on the op to know the current time.
+    oqe.op->setSeconds(getTime());
     try {
         m_operationProcessor(oqe.op, *oqe.from);
     }
-    catch (const std::exception& ex) {
+    catch (const std::exception & ex) {
         log(ERROR, String::compose("Exception caught in WorldRouter::idle() "
-                                   "thrown while processing operation "
-                                   "sent to \"%1\" from \"%2\": %3",
+                                       "thrown while processing operation "
+                                       "sent to \"%1\" from \"%2\": %3",
                                    oqe->getTo(), oqe->getFrom(), ex.what()));
     }
     catch (...) {
         log(ERROR, String::compose("Unspecified exception caught in WorldRouter::idle() "
-                                   "thrown while processing operation "
-                                   "sent to \"%1\" from \"%2\"",
+                                       "thrown while processing operation "
+                                       "sent to \"%1\" from \"%2\"",
                                    oqe->getTo(), oqe->getFrom()));
     }
 }
@@ -86,7 +88,7 @@ void OperationsDispatcher::dispatchOperation(const OpQueEntry& oqe)
 /// \brief Add an operation to the ordered op queue.
 ///
 /// Any time adjustment required is made to the operation, and it
-/// is added to the apropriate place in the chronologically ordered
+/// is added to the appropriate place in the chronologically ordered
 /// queue. The From attribute of the operation is set to the id of
 /// the entity that is responsible for adding the operation to the
 /// queue.
@@ -97,14 +99,15 @@ void OperationsDispatcher::addOperationToQueue(const Operation & op, LocatedEnti
 
     m_operation_queues_dirty = true;
     op->setFrom(ent.getId());
-    if (!op->hasAttrFlag(Atlas::Objects::Operation::FUTURE_SECONDS_FLAG)) {
-        op->setSeconds(getTime());
-        m_immediateQueue.push(OpQueEntry(op, ent));
-        return;
+    if (!op->hasAttrFlag(Atlas::Objects::Operation::SECONDS_FLAG)) {
+        if (!op->hasAttrFlag(Atlas::Objects::Operation::FUTURE_SECONDS_FLAG)) {
+            op->setSeconds(getTime());
+        } else {
+            double t = getTime() + (op->getFutureSeconds() * consts::time_multiplier);
+            op->setSeconds(t);
+            op->removeAttrFlag(Atlas::Objects::Operation::FUTURE_SECONDS_FLAG);
+        }
     }
-    double t = getTime() + (op->getFutureSeconds() * consts::time_multiplier);
-    op->setSeconds(t);
-    op->setFutureSeconds(0.);
     m_operationQueue.push(OpQueEntry(op, ent));
     if (debug_flag) {
         std::cout << "WorldRouter::addOperationToQueue {" << std::endl;
@@ -118,47 +121,23 @@ bool OperationsDispatcher::idle()
     unsigned int op_count = 0;
 
     double realtime = getTime();
-    bool result = false;
+    bool opsAvailableRightNow = !m_operationQueue.empty() && m_operationQueue.top()->getSeconds() <= realtime;
 
-    while (true) {
-        if (!m_immediateQueue.empty()) {
-            ++op_count;
-            auto opQueueEntry = std::move(m_immediateQueue.front());
-            m_immediateQueue.pop();
-            dispatchOperation(opQueueEntry);
-        } else if (!m_operationQueue.empty() && m_operationQueue.top()->getSeconds() <= realtime) {
-            ++op_count;
-            auto opQueueEntry = m_operationQueue.top();
-            //Pop it before we dispatch it, since dispatching might alter the queue.
-            m_operationQueue.pop();
-            dispatchOperation(opQueueEntry);
-        } else {
-            //There were neither any immediate ops to dispatch, or any regular ops that were ready for dispatch.
-            //We should return and signal that it's ok to sleep until any op is ready for dispatch.
-            result = false;
-            break;
-        }
+    while (opsAvailableRightNow && op_count < 10) {
+        ++op_count;
+        auto opQueueEntry = std::move(m_operationQueue.top());
+        //Pop it before we dispatch it, since dispatching might alter the queue.
+        m_operationQueue.pop();
+        dispatchOperation(opQueueEntry);
 
-        if (op_count >= 10) {
-            //we've processed 10 ops, we should return to allow for IO to interleave. Check if there are more
-            //ops that should be processed now.
-
-            // If there are still immediate or regular ops to deliver return true
-            // to tell the server not to sleep when polling clients. This ensures
-            // that we keep processing ops at a the maximum rate without leaving
-            // clients unattended.
-            if (!m_immediateQueue.empty() || (!m_operationQueue.empty() && m_operationQueue.top()->getSeconds() <= realtime)) {
-                result = true;
-                break;
-            } else {
-                result = false;
-                break;
-            }
-        }
-    }
-    Monitors::instance()->insert("immediate_operations_queue", (Atlas::Message::IntType) m_immediateQueue.size());
+        opsAvailableRightNow = !m_operationQueue.empty() && m_operationQueue.top()->getSeconds() <= realtime;
+    };
+    // If there are still ops to deliver return true
+    // to tell the server not to sleep when polling clients. This ensures
+    // that we keep processing ops at a the maximum rate without leaving
+    // clients unattended.
     Monitors::instance()->insert("operations_queue", (Atlas::Message::IntType) m_operationQueue.size());
-    return result;
+    return opsAvailableRightNow;
 }
 
 
@@ -175,11 +154,10 @@ void OperationsDispatcher::markQueueAsClean()
 double OperationsDispatcher::getTime() const
 {
     return m_timeProviderFn();
-    //TODO: remove this tangle somehow
-//    return BaseWorld::instance().getTime();
 }
 
-double OperationsDispatcher::secondsUntilNextOp() const {
+double OperationsDispatcher::secondsUntilNextOp() const
+{
     if (m_operationQueue.empty()) {
         //600 is a fairly large number of seconds
         return 600.0;

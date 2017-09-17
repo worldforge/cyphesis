@@ -198,7 +198,7 @@ void Accountintegration::test_addToEntity()
 void Accountintegration::test_CreateOperation()
 {
     Anonymous op_arg;
-    op_arg->setParents(std::list<std::string>(1, "game_entity"));
+    op_arg->setParent("game_entity");
     op_arg->setName("Bob");
 
     Create op;
@@ -211,7 +211,7 @@ void Accountintegration::test_CreateOperation()
 void Accountintegration::test_GetOperation()
 {
     Anonymous op_arg;
-    op_arg->setParents(std::list<std::string>());
+    op_arg->setParent("");
 
     Get op;
     op->setArgs1(op_arg);
@@ -282,7 +282,7 @@ void Accountintegration::test_SetOperation()
 void Accountintegration::test_TalkOperation()
 {
     Anonymous op_arg;
-    op_arg->setParents(std::list<std::string>());
+    op_arg->setParent("");
     op_arg->setLoc("1");
 
     Talk op;
@@ -301,7 +301,7 @@ void Accountintegration::test_LogoutOperation()
     op->setSerialno(1);
 
     Anonymous op_arg;
-    op_arg->setParents(std::list<std::string>());
+    op_arg->setParent("");
     op->setArgs1(op_arg);
 
     OpVector res;
@@ -350,8 +350,6 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 
 // stubs
 
-#include "Property_stub_impl.h"
-
 #include "server/ArithmeticBuilder.h"
 #include "server/EntityFactory.h"
 #include "server/ArchetypeFactory.h"
@@ -361,7 +359,6 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "server/Ruleset.h"
 #include "server/TeleportProperty.h"
 
-#include "rulesets/Motion.h"
 #include "rulesets/Pedestrian.h"
 #include "rulesets/AreaProperty.h"
 #include "rulesets/AtlasProperties.h"
@@ -425,12 +422,15 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "stubs/rulesets/stubBaseMind.h"
 #include "stubs/rulesets/stubMemEntity.h"
 #include "stubs/rulesets/stubMemMap.h"
-#include "stubs/rulesets/stubTransformsProperty.h"
 #include "stubs/rulesets/stubModeProperty.h"
-#include "stubs/rulesets/stubModeSpecProperty.h"
-#include "stubs/rulesets/stubForcesProperty.h"
 #include "stubs/rulesets/stubCreator.h"
 #include "stubs/rulesets/stubPropelProperty.h"
+#include "stubs/rulesets/stubQuaternionProperty.h"
+#include "stubs/rulesets/stubDensityProperty.h"
+#include "stubs/rulesets/stubAngularFactorProperty.h"
+#include "stubs/rulesets/stubGeometryProperty.h"
+#include "stubs/rulesets/stubVector3Property.h"
+#include "stubs/rulesets/stubOutfitProperty.h"
 
 #include "stubs/server/stubExternalMindsManager.h"
 #include "stubs/server/stubExternalMindsConnection.h"
@@ -439,6 +439,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "stubs/common/stubCustom.h"
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
+#include "stubs/common/stubProperty.h"
 
 ArithmeticBuilder * ArithmeticBuilder::m_instance = 0;
 
@@ -725,52 +726,6 @@ EntityProperty * EntityProperty::copy() const
     return 0;
 }
 
-OutfitProperty::OutfitProperty()
-{
-}
-
-OutfitProperty::~OutfitProperty()
-{
-}
-
-int OutfitProperty::get(Atlas::Message::Element & val) const
-{
-    return 0;
-}
-
-void OutfitProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-void OutfitProperty::add(const std::string & key,
-                         Atlas::Message::MapType & map) const
-{
-}
-
-void OutfitProperty::add(const std::string & key,
-                         const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-OutfitProperty * OutfitProperty::copy() const
-{
-    return 0;
-}
-
-void OutfitProperty::cleanUp()
-{
-}
-
-void OutfitProperty::wear(LocatedEntity * wearer,
-                          const std::string & location,
-                          LocatedEntity * garment)
-{
-}
-
-void OutfitProperty::itemRemoved(LocatedEntity * garment, LocatedEntity * wearer)
-{
-}
-
 TasksProperty::TasksProperty() : PropertyBase(per_ephem), m_task(0)
 {
 }
@@ -821,77 +776,8 @@ HandlerResult TasksProperty::operation(LocatedEntity *, const Operation &, OpVec
     return OPERATION_IGNORED;
 }
 
-PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
-{
-}
-
-PropertyBase::~PropertyBase()
-{
-}
-
-void PropertyBase::install(LocatedEntity *, const std::string & name)
-{
-}
-
-void PropertyBase::remove(LocatedEntity *, const std::string & name)
-{
-}
-
-void PropertyBase::apply(LocatedEntity *)
-{
-}
-
-void PropertyBase::add(const std::string & s,
-                       Atlas::Message::MapType & ent) const
-{
-    get(ent[s]);
-}
-
-void PropertyBase::add(const std::string & s,
-                       const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-HandlerResult PropertyBase::operation(LocatedEntity *,
-                                      const Operation &,
-                                      OpVector &)
-{
-    return OPERATION_IGNORED;
-}
-
-template class Property<int>;
-template class Property<double>;
-template class Property<std::string>;
-template class Property<ListType>;
-template class Property<MapType>;
-template class Property<std::vector<std::string>>;
-
 PropertyKit::~PropertyKit()
 {
-}
-
-SoftProperty::SoftProperty()
-{
-}
-
-SoftProperty::SoftProperty(const Atlas::Message::Element & data) :
-              PropertyBase(0), m_data(data)
-{
-}
-
-int SoftProperty::get(Atlas::Message::Element & val) const
-{
-    val = m_data;
-    return 0;
-}
-
-void SoftProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-SoftProperty * SoftProperty::copy() const
-{
-    return 0;
 }
 
 ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
@@ -1166,7 +1052,6 @@ void Movement::reset()
 {
 }
 
-#include "stubs/rulesets/stubMotion.h"
 #include "stubs/server/stubBuildid.h"
 
 bool_config_register::bool_config_register(bool & var,

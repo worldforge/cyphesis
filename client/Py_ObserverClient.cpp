@@ -25,7 +25,6 @@
 #include "rulesets/Py_Oplist.h"
 
 #include "common/debug.h"
-#include "common/log.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;

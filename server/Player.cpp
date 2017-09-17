@@ -92,8 +92,8 @@ int Player::characterError(const Operation & op,
         return -1;
     }
 
-    // Parents must have been checked already before calling this method
-    const std::string & type = ent->getParents().front(); 
+    // Parent must have been checked already before calling this method
+    const std::string & type = ent->getParent();
     if (Player::playableTypes.find(type) == Player::playableTypes.end()) {
         error(op,
               String::compose("You cannot create a character of type \"%1\".",

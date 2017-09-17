@@ -28,9 +28,6 @@
 #include "MemMap.h"
 #include "Script.h"
 
-#include <Atlas/Objects/RootEntity.h>
-#include <Atlas/Objects/objectFactory.h>
-
 using Atlas::Objects::Root;
 using Atlas::Objects::Factories;
 using Atlas::Objects::Entity::RootEntity;

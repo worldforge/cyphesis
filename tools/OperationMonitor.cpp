@@ -19,7 +19,6 @@
 #include "OperationMonitor.h"
 
 #include <Atlas/Objects/RootOperation.h>
-#include <Atlas/Objects/SmartPtr.h>
 
 #include <iostream>
 
@@ -39,7 +38,7 @@ void OperationMonitor::setup(const std::string & arg, OpVector &)
 void OperationMonitor::operation(const Operation & op, OpVector &)
 {
     ++op_count;
-    std::cout << op->getParents().front() << "(from=\"" << op->getFrom()
+    std::cout << op->getParent() << "(from=\"" << op->getFrom()
               << "\",to=\"" << op->getTo() << "\")"
               << std::endl << std::flush;
 }

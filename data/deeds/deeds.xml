@@ -17,16 +17,14 @@
         <float name="default">0.25</float>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">20</float>
+      <map name="density">
+        <float name="default">50</float>
         <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">barrel</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -42,12 +40,14 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="density">
+        <float name="default">500</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">bed</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -67,8 +67,8 @@
         <float name="default">0.1</float>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">250</float>
+      <map name="density">
+        <float name="default">100</float>
         <string name="visibility">public</string>
       </map>
       <map name="mode">
@@ -78,9 +78,7 @@
     </map>
     <string name="id">boat</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -89,12 +87,14 @@
         <float name="default">0.2</float>
         <string name="visibility">public</string>
       </map>
+      <map name="density">
+        <float name="default">2600</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">bottle</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -110,16 +110,14 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">0.5</float>
+      <map name="density">
+        <float name="default">100</float>
         <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">bowl</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -135,16 +133,14 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">5</float>
+      <map name="density">
+        <float name="default">500</float>
         <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">campfire</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.outdoor.Campfire.Campfire</string>
@@ -164,6 +160,10 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="density">
+        <float name="default">500</float>
+        <string name="visibility">public</string>
+      </map>
       <map name="style">
         <string name="default">1</string>
         <string name="visibility">public</string>
@@ -171,9 +171,7 @@
     </map>
     <string name="id">cart</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -189,12 +187,14 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="density">
+        <float name="default">500</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">chair</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -210,12 +210,14 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="density">
+        <float name="default">500</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">chest</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -231,12 +233,14 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="density">
+        <float name="default">500</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">choppingblock</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -252,12 +256,14 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="density">
+        <float name="default">200</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">crate</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -273,12 +279,14 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="density">
+        <float name="default">500</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">crate_lid</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -294,12 +302,14 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="density">
+        <float name="default">200</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">crate_open</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -319,12 +329,14 @@
         <float name="default">0.25</float>
         <string name="visibility">public</string>
       </map>
+      <map name="density">
+        <float name="default">500</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">gallows</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -348,12 +360,14 @@
         <string name="default">simple</string>
         <string name="visibility">public</string>
       </map>
+      <map name="density">
+        <float name="default">2000</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">gravestone</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.outdoor.Gravestone.Gravestone</string>
@@ -373,12 +387,14 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="density">
+        <float name="default">500</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">long_table</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -394,16 +410,14 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">40</float>
+      <map name="density">
+        <float name="default">500</float>
         <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">longtable</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -419,16 +433,14 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">40</float>
+      <map name="density">
+        <float name="default">2000</float>
         <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">pedestal</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -444,12 +456,14 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="density">
+        <float name="default">500</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">shelf_table</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -469,12 +483,14 @@
         <string name="default"></string>
         <string name="visibility">public</string>
       </map>
+      <map name="density">
+        <float name="default">500</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">signpost</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -490,12 +506,14 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="density">
+        <float name="default">500</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">simple_shelf</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -511,16 +529,14 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">40</float>
+      <map name="density">
+        <float name="default">2000</float>
         <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">statue</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -536,12 +552,14 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="density">
+        <float name="default">500</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">stool</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -557,12 +575,14 @@
         </list>
         <string name="visibility">public</string>
       </map>
+      <map name="density">
+        <float name="default">500</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">table</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -601,9 +621,7 @@
     </map>
     <string name="id">weather</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
     <map name="script">
       <string name="language">python</string>
       <string name="name">world.objects.Weather.Weather</string>

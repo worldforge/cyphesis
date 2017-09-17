@@ -44,19 +44,21 @@ class WorldRouter : public BaseWorld {
     OperationsDispatcher m_operationsDispatcher;
     /// An ordered queue of suspended operations to be dispatched when resumed.
     OpQueue m_suspendedQueue;
-    /// List of perceptive entities.
-    EntitySet m_perceptives;
     /// Count of in world entities
     int m_entityCount;
     /// Map of spawns
     SpawnDict m_spawns;
   protected:
-    bool broadcastPerception(const Atlas::Objects::Operation::RootOperation &) const;
+    /// \brief Determine if the broadcast is allowed.
+    ///
+    /// Check the type of operation, and work out if broadcasting is allowed.
+    /// @return True if broadcasting is allowed.
+    bool shouldBroadcastPerception(const Atlas::Objects::Operation::RootOperation &) const;
     void deliverTo(const Atlas::Objects::Operation::RootOperation &,
                    LocatedEntity &);
     void resumeWorld();
   public:
-    explicit WorldRouter(const SystemTime &);
+    explicit WorldRouter(const SystemTime & systemTime);
     virtual ~WorldRouter();
 
     bool idle();
@@ -90,7 +92,7 @@ class WorldRouter : public BaseWorld {
                    LocatedEntity &);
 
     virtual void addPerceptive(LocatedEntity *);
-    virtual void message(const Atlas::Objects::Operation::RootOperation &,
+    void message(const Atlas::Objects::Operation::RootOperation &,
                          LocatedEntity &);
     virtual LocatedEntity * findByName(const std::string & name);
     virtual LocatedEntity * findByType(const std::string & type);

@@ -17,7 +17,6 @@
 
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
 #endif
 
 #include "globals.h"
@@ -211,11 +210,11 @@ class DumbOption : public Option {
 
     virtual ~DumbOption() { }
 
-    virtual void read(varconf::Variable var) { }
-  
-    virtual const std::string repr() const;
+    void read(varconf::Variable var) override { }
 
-    virtual size_t size() const;
+    const std::string repr() const override;
+
+    size_t size() const override;
 };
 
 /// \brief Basic varconf option declared as a variable inline
@@ -231,11 +230,11 @@ class StaticOption : public Option {
                  ValueT & data) :
         Option(val, descr), m_data(data), m_default(data) { }
 
-    virtual void read(varconf::Variable var);
+    void read(varconf::Variable var) override;
 
-    virtual const std::string repr() const;
+    const std::string repr() const override;
 
-    virtual size_t size() const;
+    size_t size() const override;
     
 };
 
@@ -484,7 +483,7 @@ int loadConfig(int argc, char ** argv, int usage)
         getinstallprefix();
     }
 
-    // Check if the config directory has been overriden at this point, as if
+    // Check if the config directory has been overridden at this point, as if
     // it has, that will affect loading the main config.
     readConfigItem("cyphesis", "confdir", etc_directory);
 
@@ -564,7 +563,7 @@ void updateUserConfiguration()
 {
     char * home = getenv("HOME");
 
-    // Write out any changes that have been overriden at user scope. It
+    // Write out any changes that have been overridden at user scope. It
     // may be a good idea to do this at shutdown.
     if (home != NULL) {
         global_conf->writeToFile(std::string(home) + "/.cyphesis.vconf", varconf::USER);

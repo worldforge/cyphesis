@@ -14,9 +14,7 @@
     </map>
     <string name="id">blueprint</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -36,16 +34,14 @@
         <float name="default">0.6</float>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">20</float>
+      <map name="density">
+        <float name="default">500</float>
         <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">board</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>material</string>
-    </list>
+    <string name="parent">material</string>
   </map>
 
   <map>
@@ -61,16 +57,14 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">20</float>
+      <map name="density">
+        <float name="default">500</float>
         <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">board_wall</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>wall</string>
-    </list>
+    <string name="parent">wall</string>
   </map>
 
   <map>
@@ -90,8 +84,8 @@
         <float name="default">1</float>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">2</float>
+      <map name="density">
+        <float name="default">300</float>
         <string name="visibility">public</string>
       </map>
       <map name="material">
@@ -101,9 +95,7 @@
     </map>
     <string name="id">charcoal</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>material</string>
-    </list>
+    <string name="parent">material</string>
   </map>
 
   <map>
@@ -115,9 +107,7 @@
     </map>
     <string name="id">construction</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -133,9 +123,7 @@
     </map>
     <string name="id">deed</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -151,16 +139,14 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">20</float>
+      <map name="density">
+        <float name="default">1200</float>
         <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">earth_wall</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>wall</string>
-    </list>
+    <string name="parent">wall</string>
   </map>
 
   <map>
@@ -180,16 +166,14 @@
         <float name="default">1</float>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">1</float>
+      <map name="density">
+        <float name="default">30</float>
         <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">fibre</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -209,8 +193,8 @@
         <float name="default">1</float>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">2</float>
+      <map name="density">
+        <float name="default">5000</float>
         <string name="visibility">public</string>
       </map>
       <map name="material">
@@ -220,9 +204,7 @@
     </map>
     <string name="id">hematite</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>material</string>
-    </list>
+    <string name="parent">material</string>
   </map>
 
   <map>
@@ -242,16 +224,14 @@
         <float name="default">1</float>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">20</float>
+      <map name="density">
+        <float name="default">7900</float>
         <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">iron_ingot</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>material</string>
-    </list>
+    <string name="parent">material</string>
   </map>
 
   <map>
@@ -271,8 +251,8 @@
         <float name="default">1</float>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">10</float>
+      <map name="density">
+        <float name="default">500</float>
         <string name="visibility">public</string>
       </map>
       <map name="material">
@@ -282,9 +262,7 @@
     </map>
     <string name="id">lumber</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>material</string>
-    </list>
+    <string name="parent">material</string>
   </map>
 
   <map>
@@ -293,9 +271,7 @@
     <string name="description">base class for solid materials</string>
     <string name="id">material</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
@@ -315,8 +291,8 @@
         <float name="default">1</float>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">2000</float>
+      <map name="density">
+        <float name="default">500</float>
         <string name="visibility">public</string>
       </map>
       <map name="material">
@@ -330,9 +306,7 @@
     </map>
     <string name="id">stake</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>construction</string>
-    </list>
+    <string name="parent">construction</string>
   </map>
 
   <map>
@@ -340,9 +314,7 @@
     </map>
     <string name="id">stone</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>material</string>
-    </list>
+    <string name="parent">material</string>
   </map>
 
   <map>
@@ -358,24 +330,20 @@
         </list>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">20</float>
+      <map name="density">
+        <float name="default">500</float>
         <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">twobyfour</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>thing</string>
-    </list>
+    <string name="parent">thing</string>
   </map>
 
   <map>
     <string name="id">wall</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>construction</string>
-    </list>
+    <string name="parent">construction</string>
   </map>
 
   <map>
@@ -384,16 +352,14 @@
         <float name="default">1</float>
         <string name="visibility">public</string>
       </map>
-      <map name="mass">
-        <float name="default">10</float>
+      <map name="density">
+        <float name="default">500</float>
         <string name="visibility">public</string>
       </map>
     </map>
     <string name="id">wood</string>
     <string name="objtype">class</string>
-    <list name="parents">
-      <string>material</string>
-    </list>
+    <string name="parent">material</string>
   </map>
 
 </atlas>

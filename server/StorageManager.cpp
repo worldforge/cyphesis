@@ -25,33 +25,26 @@
 #include "rulesets/LocatedEntity.h"
 #include "rulesets/Character.h"
 #include "rulesets/MindProperty.h"
+#include "rulesets/Domain.h"
 
 #include "common/Database.h"
 #include "common/TypeNode.h"
-#include "common/Property.h"
 #include "common/debug.h"
 #include "common/Monitors.h"
 #include "common/PropertyManager.h"
 #include "common/id.h"
-#include "common/log.h"
-#include "common/compose.hpp"
 #include "common/Variable.h"
 #include "common/custom.h"
 #include "common/Think.h"
 #include "common/Commune.h"
-#include "common/SystemTime.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/SmartPtr.h>
-#include <Atlas/Message/Element.h>
 
 #include <wfmath/atlasconv.h>
 
 #include <sigc++/adaptors/bind.h>
-#include <sigc++/functors/mem_fun.h>
 
-#include <iostream>
 #include <unordered_set>
 
 using Atlas::Message::MapType;
@@ -236,6 +229,7 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
         prop->set(val);
         prop->setFlags(per_clean | per_seen);
         prop->apply(ent);
+        ent->propertyApplied(name, *prop);
         instanceProperties.insert(name);
     }
 
@@ -246,10 +240,18 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
                 // If a property is in the class it won't have been installed
                 // as setAttr() checks
                 prop->install(ent, propIter.first);
-                // The property will have been applied if it has an overriden
+                // The property will have been applied if it has an overridden
                 // value, so we only apply it the value is still default.
                 prop->apply(ent);
+                ent->propertyApplied(propIter.first, *prop);
             }
+        }
+    }
+
+    if (ent->m_location.m_loc) {
+        auto domain = ent->m_location.m_loc->getDomain();
+        if (domain) {
+            domain->addEntity(*ent);
         }
     }
 
@@ -455,7 +457,7 @@ void StorageManager::updateEntity(LocatedEntity * ent)
         Database::instance()->updateProperties(ent->getId(),
                                                upd_property_tuples);
     }
-    ent->setFlags(entity_clean);
+    ent->setFlags(entity_clean_mask);
 }
 
 void StorageManager::restoreChildren(LocatedEntity * parent)
@@ -470,7 +472,7 @@ void StorageManager::restoreChildren(LocatedEntity * parent)
     DatabaseResult::const_iterator Iend = res.end();
     for (; I != Iend; ++I) {
         const std::string id = I.column("id");
-        const int int_id = forceIntegerId(id);
+        const long int_id = forceIntegerId(id);
         const std::string type = I.column("type");
         //By sending an empty attributes pointer we're telling the builder not to apply any default
         //attributes. We will instead apply all attributes ourselves when we later on restore attributes.
@@ -490,7 +492,7 @@ void StorageManager::restoreChildren(LocatedEntity * parent)
         if (!child->m_location.pos().isValid()) {
             std::cout << "No pos data" << std::endl << std::flush;
             log(ERROR, compose("Entity %1 restored from database has no "
-                               "POS data. Ignored.", child->getId()));
+                               "POS data. Ignored.", child->describeEntity()));
             delete child;
             continue;
         }
@@ -544,7 +546,7 @@ void StorageManager::tick()
         }
         const EntityRef & ent = m_dirtyEntities.front();
         if (ent.get() != 0) {
-            if ((ent->getFlags() & entity_clean_mask) == 0) {
+            if ((ent->getFlags() & entity_clean_mask) != entity_clean_mask) {
                 debug( std::cout << "updating " << ent->getId() << std::endl << std::flush; );
                 updateEntity(ent.get());
                 ++updates;
@@ -631,7 +633,7 @@ void StorageManager::thoughtsReceived(const std::string& entityId, const Operati
         log(WARNING,
                 String::compose(
                         "Got response to a thoughts Get request from mind %1 with an operation of type %2. This could signal a malicious client.",
-                        op->getFrom(), op->getParents().front()));
+                        op->getFrom(), op->getParent()));
     }
 
 }

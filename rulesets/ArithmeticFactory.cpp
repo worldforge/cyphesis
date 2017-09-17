@@ -18,8 +18,6 @@
 
 #include "rulesets/ArithmeticFactory.h"
 
-#include <iostream>
-
 ArithmeticKit::~ArithmeticKit()
 {
 }

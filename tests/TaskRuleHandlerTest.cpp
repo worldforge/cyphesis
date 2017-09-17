@@ -56,7 +56,7 @@ int main()
         RuleHandler * rh = new TaskRuleHandler(EntityBuilder::instance());
 
         Anonymous description;
-        description->setParents(std::list<std::string>(1, "foo"));
+        description->setParent("foo");
         int ret = rh->check(description);
 
         assert(ret == -1);
@@ -71,7 +71,7 @@ int main()
         stub_isTask_result = true;
 
         Anonymous description;
-        description->setParents(std::list<std::string>(1, "foo"));
+        description->setParent("foo");
         int ret = rh->check(description);
 
         assert(ret == 0);

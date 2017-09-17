@@ -170,7 +170,7 @@ void Inheritancetest::test_getClass()
     const Root & rt = i.getClass("root");
 
     ASSERT_EQUAL(rt->getId(), "root");
-    ASSERT_TRUE(rt->getParents().empty());
+    ASSERT_TRUE(rt->getParent().empty());
 }
 
 void Inheritancetest::test_tree()
@@ -190,10 +190,10 @@ void Inheritancetest::test_addChild_unknown_parent()
 {
     Inheritance & i = Inheritance::instance();
 
-    // Make sure inserting a type with unknown parents fails with null
+    // Make sure inserting a type with unknown parent fails with null
     Root r;
     r->setId("squigglymuff");
-    r->setParents(std::list<std::string>(1, "ludricous_test_parent"));
+    r->setParent("ludricous_test_parent");
     ASSERT_NULL(i.addChild(r));
 
     ASSERT_TRUE(!i.hasClass("squigglymuff"));
@@ -205,7 +205,7 @@ void Inheritancetest::test_addChild()
 
     Root r;
     r->setId("squigglymuff");
-    r->setParents(std::list<std::string>(1, "root_operation"));
+    r->setParent("root_operation");
     ASSERT_NOT_NULL(i.addChild(r));
 
     ASSERT_TRUE(i.hasClass("squigglymuff"));
@@ -218,7 +218,7 @@ void Inheritancetest::test_addChild_duplicate()
     {
         Root r;
         r->setId("squigglymuff");
-        r->setParents(std::list<std::string>(1, "root_operation"));
+        r->setParent("root_operation");
         ASSERT_NOT_NULL(i.addChild(r));
     }
 
@@ -227,7 +227,7 @@ void Inheritancetest::test_addChild_duplicate()
     // Make sure adding a duplicate fails. 
     Root r;
     r->setId("squigglymuff");
-    r->setParents(std::list<std::string>(1, "root_operation"));
+    r->setParent("root_operation");
     ASSERT_NULL(i.addChild(r));
 
 }
@@ -240,7 +240,7 @@ void Inheritancetest::test_updateClass_nonexist()
         Root r;
 
         r->setId("squigglymuff");
-        r->setParents(std::list<std::string>(1, "ludricous_test_parent"));
+        r->setParent("ludricous_test_parent");
         
         int ret = i.updateClass("squigglymuff", r);
         ASSERT_EQUAL(ret, -1);
@@ -254,7 +254,7 @@ void Inheritancetest::test_updateClass_operation()
 
     Root r;
     r->setId("squigglymuff");
-    r->setParents(std::list<std::string>(1, "root_operation"));
+    r->setParent("root_operation");
     ASSERT_NOT_NULL(i.addChild(r));
 
     ASSERT_TRUE(i.hasClass("squigglymuff"));
@@ -263,7 +263,7 @@ void Inheritancetest::test_updateClass_operation()
         Root r;
 
         r->setId("squigglymuff");
-        r->setParents(std::list<std::string>(1, "root_operation"));
+        r->setParent("root_operation");
         
         int ret = i.updateClass("squigglymuff", r);
         ASSERT_EQUAL(ret, 0);
@@ -276,14 +276,14 @@ void Inheritancetest::test_updateClass_change_parent()
 
     Root r;
     r->setId("squigglymuff");
-    r->setParents(std::list<std::string>(1, "root_operation"));
+    r->setParent("root_operation");
     ASSERT_NOT_NULL(i.addChild(r));
 
     {
         Root r;
 
         r->setId("squigglymuff");
-        r->setParents(std::list<std::string>(1, "action"));
+        r->setParent("action");
         
         int ret = i.updateClass("squigglymuff", r);
         ASSERT_EQUAL(ret, -1);
@@ -353,7 +353,7 @@ void Inheritancetest::test_flush()
     // Make sure installing a child of root now fails.
     Root r;
     r->setId("squigglymuff");
-    r->setParents(std::list<std::string>(1, "root"));
+    r->setParent("root");
     assert(i.addChild(r) == 0);
 
     assert(!i.hasClass("root"));

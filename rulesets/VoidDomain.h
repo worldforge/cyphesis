@@ -27,26 +27,19 @@ class VoidDomain : public Domain
 {
     public:
         VoidDomain(LocatedEntity& entity);
+
         virtual ~VoidDomain();
 
-        virtual float constrainHeight(LocatedEntity &, LocatedEntity *, const Point3D &,
-                const std::string &);
+        void tick(double t, OpVector& res) override;
 
-        virtual void tick(double t);
+        bool isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const override;
 
-        virtual bool isEntityVisibleFor(const LocatedEntity& observingEntity,
-                const LocatedEntity& observedEntity) const;
+        void getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<LocatedEntity*>& entityList) const override;
 
-        virtual void processVisibilityForMovedEntity(
-                const LocatedEntity& moved_entity, const Location& old_loc,
-                OpVector & res);
+        void addEntity(LocatedEntity& entity) override;
 
-        virtual void processDisappearanceOfEntity(
-                const LocatedEntity& moved_entity, const Location& old_loc,
-                OpVector & res);
+        void removeEntity(LocatedEntity& entity) override;
 
-        virtual float checkCollision(LocatedEntity& entity,
-                CollisionData& collisionData);
 };
 
 #endif /* VOIDDOMAIN_H_ */

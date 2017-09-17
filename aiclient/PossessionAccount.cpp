@@ -17,7 +17,6 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
 #endif
 
 #include "PossessionAccount.h"
@@ -27,8 +26,6 @@
 #include "rulesets/BaseMind.h"
 
 #include "common/Possess.h"
-#include "common/log.h"
-#include "common/compose.hpp"
 #include "common/id.h"
 #include "common/custom.h"
 #include "common/TypeNode.h"
@@ -38,7 +35,6 @@
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Entity.h>
-#include <Atlas/Objects/SmartPtr.h>
 
 
 static const bool debug_flag = false;
@@ -52,7 +48,7 @@ using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
 
-PossessionAccount::PossessionAccount(const std::string& id, int intId, LocatedEntityRegistry& locatedEntityRegistry, const MindKit& mindFactory) :
+PossessionAccount::PossessionAccount(const std::string& id, long intId, LocatedEntityRegistry& locatedEntityRegistry, const MindKit& mindFactory) :
         Router(id, intId), mLocatedEntityRegistry(locatedEntityRegistry), m_mindFactory(mindFactory), m_serialNoCounter(1)
 {
 }
@@ -95,7 +91,7 @@ void PossessionAccount::operation(const Operation & op, OpVector & res)
         } else if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO) {
             //Ignore info ops, since they just signal other accounts doing things
         } else {
-            log(NOTICE, String::compose("Unknown operation %1 in PossessionAccount", op->getParents().front()));
+            log(NOTICE, String::compose("Unknown operation %1 in PossessionAccount", op->getParent()));
         }
     }
 }
@@ -161,13 +157,13 @@ void PossessionAccount::createMind(const Operation & op, OpVector & res)
         return;
     }
 
-    if (ent->isDefaultParents()) {
+    if (ent->isDefaultParent()) {
         log(ERROR, "malformed character create/take response");
         return;
     }
 
     std::string entityId = ent->getId();
-    std::string entityType = ent->getParents().front();
+    std::string entityType = ent->getParent();
 
     debug(std::cout << String::compose("Got info on account, creating mind for entity with id %1 of type %2.", entityId, entityType) << std::endl;);
     BaseMind* mind = m_mindFactory.newMind(entityId, integerId(entityId));

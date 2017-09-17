@@ -22,17 +22,13 @@
 #include "Py_Message.h"
 #include "Py_Point3D.h"
 
-#include "common/log.h"
-
 #include "physics/Shape.h"
 
 #include "physics/Course.h"
 
 #include <Atlas/Message/Element.h>
 
-#include <wfmath/axisbox.h>
 #include <wfmath/line.h>
-#include <wfmath/point.h>
 #include <wfmath/polygon.h>
 
 #include <sstream>
@@ -450,7 +446,7 @@ PyShape * Area_sq_item(PyShape * self, Py_ssize_t index)
     }
 #endif // NDEBUG
     if (static_cast<size_t>(index) >= self->shape.s->size()) {
-        PyErr_SetString(PyExc_IndexError, "Number of corners exceded");
+        PyErr_SetString(PyExc_IndexError, "Number of corners exceeded");
         return 0;
     }
     PyShape * a = newPyArea();
@@ -474,7 +470,7 @@ PyPoint3D * Body_sq_item(PyShape * self, Py_ssize_t index)
     }
 #endif // NDEBUG
     if (static_cast<size_t>(index) >= self->shape.s->size()) {
-        PyErr_SetString(PyExc_IndexError, "Number of corners exceded");
+        PyErr_SetString(PyExc_IndexError, "Number of corners exceeded");
         return 0;
     }
     PyPoint3D * v = newPyPoint3D();

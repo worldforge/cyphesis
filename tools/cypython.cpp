@@ -41,8 +41,6 @@ extern "C" {
 #endif
 #include <boost/asio.hpp>
 
-#include <iostream>
-
 #ifdef ERROR
 #undef ERROR
 #endif

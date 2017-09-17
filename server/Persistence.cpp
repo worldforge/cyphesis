@@ -25,12 +25,9 @@
 #include "rulesets/LocatedEntity.h"
 
 #include "common/id.h"
-#include "common/log.h"
-#include "common/const.h"
 #include "common/debug.h"
 #include "common/globals.h"
 #include "common/Database.h"
-#include "common/compose.hpp"
 #include "common/Shaker.h"
 
 #include <iostream>
@@ -56,8 +53,6 @@ Persistence * Persistence::instance()
 
 int Persistence::init()
 {
-    assert(this != 0);
-
     if (m_db.initConnection() != 0) {
         if (::instance == CYPHESIS) {
             return DATABASE_CONERR;

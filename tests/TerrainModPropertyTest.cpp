@@ -151,28 +151,21 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 
 #include <Mercator/TerrainMod.h>
 
-const TerrainProperty * TerrainEffectorProperty::getTerrain(LocatedEntity * owner)
+const TerrainProperty * TerrainEffectorProperty::getTerrain(LocatedEntity * owner, LocatedEntity**)
 {
     return stub_getTerrain_return;
 }
 
-TerrainModTranslator::TerrainModTranslator()
+TerrainModTranslator::TerrainModTranslator(const Atlas::Message::MapType& data)
 {
 }
 
-bool TerrainModTranslator::parseData(const WFMath::Point<3> & pos,
-                                     const WFMath::Quaternion & orientation,
-                                     const MapType& modElement)
+Mercator::TerrainMod* TerrainModTranslator::parseData(const WFMath::Point<3> & pos,
+                                     const WFMath::Quaternion & orientation)
 {
     WFMath::Polygon<2> p;
     p.addCorner(0, WFMath::Point<2>(0., 0.));
-    m_mod = new Mercator::LevelTerrainMod<WFMath::Polygon>(1.f, p);
-    return true;
-}
-
-Mercator::TerrainMod* TerrainModTranslator::getModifier()
-{
-    return m_mod;
+    return new Mercator::LevelTerrainMod<WFMath::Polygon>(1.f, p);
 }
 
 TerrainContext::TerrainContext(LocatedEntity * e) : m_entity(e)

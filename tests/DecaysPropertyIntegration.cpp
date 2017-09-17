@@ -155,7 +155,6 @@ int main()
 #include "stubs/rulesets/stubDomainProperty.h"
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
-#include "stubs/rulesets/stubTransformsProperty.h"
 
 void addToEntity(const Point3D & p, std::vector<double> & vd)
 {

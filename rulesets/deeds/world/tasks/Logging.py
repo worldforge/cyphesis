@@ -94,7 +94,7 @@ class Logging(server.Task):
             create_loc = self.target().location.copy()
             create_loc.orientation = self.target().location.orientation
             create = Operation("create",
-                               Entity(parents = ["lumber"],
+                               Entity(parent="lumber",
                                       mass = self.target().mass, 
                                       location = create_loc,
                                       bbox = self.target().bbox),

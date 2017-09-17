@@ -15,28 +15,27 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-
 #include "TerrainEffectorProperty.h"
 
 #include "rulesets/LocatedEntity.h"
 #include "rulesets/TerrainProperty.h"
 
-#include "modules/Location.h"
 #include "modules/TerrainContext.h"
 
-#include <Mercator/TerrainMod.h>
-
-const TerrainProperty * TerrainEffectorProperty::getTerrain(LocatedEntity * owner)
+const TerrainProperty * TerrainEffectorProperty::getTerrain(LocatedEntity * owner, LocatedEntity** terrainHolder)
 {
     const TerrainProperty * terr;
     LocatedEntity * ent = owner;
 
-    while ( (terr = ent->getPropertyClass<TerrainProperty>("terrain")) == nullptr) {
+    while ((terr = ent->getPropertyClass<TerrainProperty>("terrain")) == nullptr) {
         ent = ent->m_location.m_loc;
-        if (ent == NULL) {
-            return NULL;
+        if (ent == nullptr) {
+            return nullptr;
         }
     }
 
+    if (terrainHolder) {
+        *terrainHolder = ent;
+    }
     return terr;
 }

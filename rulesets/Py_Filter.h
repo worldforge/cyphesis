@@ -1,9 +1,10 @@
 #ifndef RULESETS_PY_FILTER_H
 #define RULESETS_PY_FILTER_H
 
+#include <Python.h>
+
 #include "entityfilter/Filter.h"
 
-#include <Python.h>
 
 class Filter;
 PyObject* get_filter(PyObject* self, PyObject* query);

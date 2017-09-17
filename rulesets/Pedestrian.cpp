@@ -24,8 +24,6 @@
 #include "common/BaseWorld.h"
 #include "common/const.h"
 #include "common/debug.h"
-#include "common/log.h"
-#include "common/compose.hpp"
 
 #include "common/Tick.h"
 
@@ -125,18 +123,18 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
     }
     // FIXME Use the movement_domain to apply the constraints.
 
-    if (m_body.m_location.m_loc) {
-        auto domain = m_body.m_location.m_loc->getMovementDomain();
-        if (domain) {
-            float z = domain->constrainHeight(m_body, new_location.m_loc,
-                                                                  new_location.m_pos,
-                                                                  "standing");
-            debug(std::cout << "Height adjustment " << z << " " << new_location.m_pos.z()
-                            << std::endl << std::flush;);
-
-            new_location.m_pos.z() = z;
-        }
-    }
+//    if (m_body.m_location.m_loc) {
+//        auto domain = m_body.m_location.m_loc->getDomain();
+//        if (domain) {
+//            float z = domain->constrainHeight(m_body, new_location.m_loc,
+//                                                                  new_location.m_pos,
+//                                                                  "standing");
+//            debug(std::cout << "Height adjustment " << z << " " << new_location.m_pos.z()
+//                            << std::endl << std::flush;);
+//
+//            new_location.m_pos.z() = z;
+//        }
+//    }
     return_location = new_location;
 
     return 0;

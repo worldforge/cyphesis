@@ -21,12 +21,8 @@
 #include "common/Database.h"
 #include "common/log.h"
 #include "common/debug.h"
-#include "common/globals.h"
-
-#include <boost/asio.hpp>
 
 #include <iostream>
-#include <cassert>
 
 static const bool debug_flag = false;
 

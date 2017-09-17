@@ -295,10 +295,6 @@ void EntityRef::onEntityDeleted()
 {
 }
 
-int Location::readFromMessage(const MapType & msg)
-{
-    return 0;
-}
 
 
 
