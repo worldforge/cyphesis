@@ -14,9 +14,6 @@ meaning that the code that handles it can abort().
 Persistence and other words with the same root are incorrectly spelt
 Persistance throughout.
 
-If a character sets its velocity to 0 when its position is outside its
-parents bbox, then the collision code does not detect that it is outside.
-
 Plant C++ base class is totally screwed.
 
 Leaks
