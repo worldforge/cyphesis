@@ -19,11 +19,8 @@
 #ifndef COMMON_COMM_SOCKET_H
 #define COMMON_COMM_SOCKET_H
 
-namespace boost {
-namespace asio {
-class io_service;
-}
-}
+#include <boost/asio/io_service.hpp>
+
 
 /// \brief Base class for all classes for handling socket communication.
 /// \ingroup ServerSockets
