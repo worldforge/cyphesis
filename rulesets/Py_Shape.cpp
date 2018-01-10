@@ -213,11 +213,12 @@ static PyBBox * Box_extrude(PyShape * self, PyObject * args)
     PyBBox * ret = newPyBBox();
     if (ret != 0) {
         ret->box = BBox(Point3D(shape->shape().lowCorner().x(),
-                                shape->shape().lowCorner().y(),
-                                low),
+                                low,
+                                shape->shape().lowCorner().y()),
                         Point3D(shape->shape().highCorner().x(),
-                                shape->shape().highCorner().y(),
-                                high), true);
+                                high,
+                                shape->shape().highCorner().y()),
+                        true);
     }
     return ret;
 }

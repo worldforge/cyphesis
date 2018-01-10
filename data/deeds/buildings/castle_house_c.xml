@@ -5,11 +5,11 @@
       <map name="bbox">
         <list name="default">
           <float>-10.1437</float>
-          <float>-12.9916</float>
           <float>-1.03524</float>
+          <float>-12.9916</float>
           <float>11.8081</float>
-          <float>11.5058</float>
           <float>15.1643</float>
+          <float>11.5058</float>
         </list>
         <string name="visibility">public</string>
       </map>

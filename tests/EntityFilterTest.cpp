@@ -429,11 +429,11 @@ void EntityFilterTest::setup()
     m_ch1->setProperty("outfit", outfit1);
 
     BBoxProperty* bbox1 = new BBoxProperty;
-    bbox1->set((std::vector<Element> { -1, -2, -3, 1, 2, 3 }));
+    bbox1->set((std::vector<Element> { -1, -3, -2, 1, 3, 2 }));
     m_b1->setProperty("bbox", bbox1);
 
     BBoxProperty* bbox2 = new BBoxProperty;
-    bbox2->set(std::vector<Element> { -3, -1, -2, 1, 2, 3 });
+    bbox2->set(std::vector<Element> { -3, -2, -1, 1, 3, 2 });
     m_bl1->setProperty("bbox", bbox2);
 
     m_cloth->setProperty("bbox", bbox1->copy());

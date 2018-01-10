@@ -179,11 +179,11 @@ Awareness::Awareness(const LocatedEntity& domainEntity, float agentRadius, float
 
         //Recast uses y for the vertical axis
         mCfg.bmin[0] = lower.x();
-        mCfg.bmin[2] = lower.y();
-        mCfg.bmin[1] = std::min(-500.f, lower.z());
+        mCfg.bmin[2] = lower.z();
+        mCfg.bmin[1] = std::min(-500.f, lower.y());
         mCfg.bmax[0] = upper.x();
-        mCfg.bmax[2] = upper.y();
-        mCfg.bmax[1] = std::max(500.f, upper.z());
+        mCfg.bmax[2] = upper.z();
+        mCfg.bmax[1] = std::max(500.f, upper.y());
 
         int gw = 0, gh = 0;
         float cellsize = mAgentRadius / 2.0f; //Should be enough for outdoors; indoors we might want r / 3.0 instead
@@ -534,7 +534,7 @@ bool Awareness::avoidObstacles(long avatarEntityId, const WFMath::Point<2>& posi
             continue;
         }
 
-        WFMath::Point<2> entityView2dPos(pos.x(), pos.y());
+        WFMath::Point<2> entityView2dPos(pos.x(), pos.z());
         WFMath::Ball<2> entityViewRadius(entityView2dPos, entity->location.radius());
 
         if (WFMath::Intersect(playerRadius, entityViewRadius, false) || WFMath::Contains(playerRadius, entityViewRadius, false)) {
@@ -550,7 +550,7 @@ bool Awareness::avoidObstacles(long avatarEntityId, const WFMath::Point<2>& posi
             const EntityCollisionEntry& entry = nearestEntities.top();
             auto& entity = entry.entity;
             float pos[] { entry.viewPosition.x(), 0, entry.viewPosition.y() };
-            float vel[] { entity->location.velocity().x(), 0, entity->location.velocity().y() };
+            float vel[] { entity->location.velocity().x(), 0, entity->location.velocity().z() };
             mObstacleAvoidanceQuery->addCircle(pos, entry.viewRadius.radius(), vel, vel);
             nearestEntities.pop();
             ++i;
@@ -677,7 +677,7 @@ bool Awareness::isPositionAware(float x, float y) const
 }
 
 
-void Awareness::findAffectedTiles(const WFMath::AxisBox<2>& area, int& tileMinXIndex, int& tileMaxXIndex, int& tileMinYIndex, int& tileMaxYIndex) const
+void Awareness::findAffectedTiles(const WFMath::AxisBox<2>& area, int& tileMinXIndex, int& tileMaxXIndex, int& tileMinZIndex, int& tileMaxZIndex) const
 {
     float tilesize = mCfg.tileSize * mCfg.cs;
     WFMath::Point<2> lowCorner = area.lowCorner();
@@ -711,15 +711,15 @@ void Awareness::findAffectedTiles(const WFMath::AxisBox<2>& area, int& tileMinXI
 
     tileMinXIndex = (lowCorner.x() - mCfg.bmin[0]) / tilesize;
     tileMaxXIndex = (highCorner.x() - mCfg.bmin[0]) / tilesize;
-    tileMinYIndex = (lowCorner.y() - mCfg.bmin[2]) / tilesize;
-    tileMaxYIndex = (highCorner.y() - mCfg.bmin[2]) / tilesize;
+    tileMinZIndex = (lowCorner.y() - mCfg.bmin[2]) / tilesize;
+    tileMaxZIndex = (highCorner.y() - mCfg.bmin[2]) / tilesize;
 }
 
 int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& end, float radius, std::list<WFMath::Point<3>>& path) const
 {
 
-    float pStartPos[] { start.x(), start.z(), start.y() };
-    float pEndPos[] { end.x(), end.z(), end.y() };
+    float pStartPos[] { start.x(), start.y(), start.z() };
+    float pEndPos[] { end.x(), end.y(), end.z() };
     float startExtent[] { mAgentRadius * 2.2f, 100, mAgentRadius  * 2.2f}; //Only extend radius in horizontal plane
     //To make sure that the agent can move close enough we need to subtract the agent's radius from the destination radius.
     //We'll also adjust with 0.95 to allow for some padding.
@@ -826,8 +826,8 @@ void Awareness::setAwarenessArea(const std::string& areaId, const WFMath::RotBox
 
     int tileMinXIndex = (lowCorner.x() - mCfg.bmin[0]) / tilesize;
     int tileMaxXIndex = (highCorner.x() - mCfg.bmin[0]) / tilesize;
-    int tileMinYIndex = (lowCorner.y() - mCfg.bmin[2]) / tilesize;
-    int tileMaxYIndex = (highCorner.y() - mCfg.bmin[2]) / tilesize;
+    int tileMinZIndex = (lowCorner.y() - mCfg.bmin[2]) / tilesize;
+    int tileMaxZIndex = (highCorner.y() - mCfg.bmin[2]) / tilesize;
 
 //Now mark tiles
     const float tcs = mCfg.tileSize * mCfg.cs;
@@ -835,13 +835,13 @@ void Awareness::setAwarenessArea(const std::string& areaId, const WFMath::RotBox
 
     bool wereDirtyTiles = !mDirtyAwareTiles.empty();
     for (int tx = tileMinXIndex; tx <= tileMaxXIndex; ++tx) {
-        for (int ty = tileMinYIndex; ty <= tileMaxYIndex; ++ty) {
+        for (int tz = tileMinZIndex; tz <= tileMaxZIndex; ++tz) {
             // Tile bounds.
-            WFMath::AxisBox<2> tileBounds(WFMath::Point<2>((mCfg.bmin[0] + tx * tcs) - tileBorderSize, (mCfg.bmin[2] + ty * tcs) - tileBorderSize),
-                    WFMath::Point<2>((mCfg.bmin[0] + (tx + 1) * tcs) + tileBorderSize, (mCfg.bmin[2] + (ty + 1) * tcs) + tileBorderSize));
+            WFMath::AxisBox<2> tileBounds(WFMath::Point<2>((mCfg.bmin[0] + tx * tcs) - tileBorderSize, (mCfg.bmin[2] + tz * tcs) - tileBorderSize),
+                    WFMath::Point<2>((mCfg.bmin[0] + (tx + 1) * tcs) + tileBorderSize, (mCfg.bmin[2] + (tz + 1) * tcs) + tileBorderSize));
             if (WFMath::Intersect(area, tileBounds, false) || WFMath::Contains(area, tileBounds, false)) {
 
-                std::pair<int, int> index(tx, ty);
+                std::pair<int, int> index(tx, tz);
 
                 newAwareAreaSet.insert(index);
                 //If true we should insert in the front of the dirty tiles list.
@@ -864,7 +864,7 @@ void Awareness::setAwarenessArea(const std::string& areaId, const WFMath::RotBox
                     }
                 } else {
                     //The tile wasn't marked as dirty in any set, but it might be that it hasn't been processed before.
-                    auto tile = mTileCache->getTileAt(tx, ty, 0);
+                    auto tile = mTileCache->getTileAt(tx, tz, 0);
                     if (!tile) {
                         if (focusLine.isValid() && WFMath::Intersect(focusLine, tileBounds, false)) {
                             insertFront = true;
@@ -1009,15 +1009,15 @@ void Awareness::buildEntityAreas(const EntityEntry& entity, std::map<const Entit
         if (pos.isValid() && orientation.isValid()) {
 
             WFMath::Vector<3> xVec = WFMath::Vector<3>(1.0, 0.0, 0.0).rotate(orientation);
-            double theta = atan2(xVec.y(), xVec.x()); // rotation about Z
+            double theta = atan2(xVec.z(), xVec.x()); // rotation about Y
 
             WFMath::RotMatrix<2> rm;
             rm.rotation(theta);
 
             const BBox& bbox = entity.location.m_bBox;
 
-            WFMath::Point<2> highCorner(bbox.highCorner().x(), bbox.highCorner().y());
-            WFMath::Point<2> lowCorner(bbox.lowCorner().x(), bbox.lowCorner().y());
+            WFMath::Point<2> highCorner(bbox.highCorner().x(), bbox.highCorner().z());
+            WFMath::Point<2> lowCorner(bbox.lowCorner().x(), bbox.lowCorner().z());
 
             //Expand the box a little so that we can navigate around it without being stuck on it.
             //We'll the radius of the avatar.
@@ -1028,7 +1028,7 @@ void Awareness::buildEntityAreas(const EntityEntry& entity, std::map<const Entit
             rotbox.shift(WFMath::Vector<2>(lowCorner.x(), lowCorner.y()));
             rotbox.rotatePoint(rm, WFMath::Point<2>::ZERO());
 
-            rotbox.shift(WFMath::Vector<2>(pos.x(), pos.y()));
+            rotbox.shift(WFMath::Vector<2>(pos.x(), pos.z()));
 
             entityAreas.insert(std::make_pair(&entity, rotbox));
         }

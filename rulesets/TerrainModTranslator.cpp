@@ -90,14 +90,14 @@ Mercator::TerrainMod* InnerTranslatorImpl<ModT, ShapeT>::createInstance(const WF
 	}
 
 	if (orientation.isValid()) {
-        /// rotation about Z axis
+        /// rotation about Y axis
         WFMath::Vector<3> xVec = WFMath::Vector<3>(1.0, 0.0, 0.0).rotate(orientation);
-        WFMath::CoordType theta = std::atan2(xVec.y(), xVec.x());
+        WFMath::CoordType theta = std::atan2(xVec.z(), xVec.x());
         WFMath::RotMatrix<2> rm;
         shape.rotatePoint(rm.rotation(theta), WFMath::Point<2>(0, 0));
 	}
 
-	shape.shift(WFMath::Vector<2>(pos.x(), pos.y()));
+	shape.shift(WFMath::Vector<2>(pos.x(), pos.z()));
 	float level = TerrainModTranslator::parsePosition(pos, this->mData);
 	return new ModT<ShapeT>(level, shape);
 }
@@ -112,14 +112,14 @@ Mercator::TerrainMod* InnerTranslatorSlope<ShapeT>::createInstance(const WFMath:
 	}
 
     if (orientation.isValid()) {
-        /// rotation about Z axis
+        /// rotation about Y axis
         WFMath::Vector<3> xVec = WFMath::Vector<3>(1.0, 0.0, 0.0).rotate(orientation);
-        WFMath::CoordType theta = std::atan2(xVec.y(), xVec.x());
+        WFMath::CoordType theta = std::atan2(xVec.z(), xVec.x());
         WFMath::RotMatrix<2> rm;
         shape.rotatePoint(rm.rotation(theta), WFMath::Point<2>(0, 0));
     }
 
-	shape.shift(WFMath::Vector<2>(pos.x(), pos.y()));
+	shape.shift(WFMath::Vector<2>(pos.x(), pos.z()));
 	float level = TerrainModTranslator::parsePosition(pos, this->mData);
 	return new Mercator::SlopeTerrainMod<ShapeT>(level, mDx, mDy, shape);
 }

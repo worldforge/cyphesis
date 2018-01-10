@@ -3,13 +3,13 @@
         <map name="attributes">
             <map name="bbox">
                 <list name="default">
-                    <float>-3.70325</float>
-                    <float>-3.30579</float>
-                    <float>-0.669061</float>
-                    <float>2.78066</float>
-                    <float>1.73857</float>
-                    <float>2.93438</float>
-                </list>
+          <float>-3.70325</float>
+          <float>-0.669061</float>
+          <float>-3.30579</float>
+          <float>2.78066</float>
+          <float>2.93438</float>
+          <float>1.73857</float>
+        </list>
                 <string name="visibility">public</string>
             </map>
             <map name="geometry">

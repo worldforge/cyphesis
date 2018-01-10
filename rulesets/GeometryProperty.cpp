@@ -58,15 +58,15 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
                 float yOffset = bbox.lowCorner().y() + minRadius;
                 float zOffset = bbox.lowCorner().z() + minRadius;
 
-                centerOfMassOffset = -btVector3(xOffset, zOffset, -yOffset);
+                centerOfMassOffset = -btVector3(xOffset, yOffset, zOffset);
                 return std::make_pair(new btSphereShape(minRadius), std::shared_ptr<btCollisionShape>());
             };
-        } else if (shapeType == "capsule-z") {
+        } else if (shapeType == "capsule-y") {
             mShapeCreator = [&](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset) -> std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
-                float minRadius = std::min(size.x(), size.y()) * 0.5f;
+                float minRadius = std::min(size.x(), size.z()) * 0.5f;
                 //subtract the radius times 2 from the height
-                float height = size.z() - (minRadius * 2.0f);
+                float height = size.y() - (minRadius * 2.0f);
                 //If the resulting height is negative we need to use a sphere instead.
                 if (height > 0) {
                     return std::make_pair(new btCapsuleShape(minRadius, height), std::shared_ptr<btCollisionShape>());
@@ -88,12 +88,12 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
                     return std::make_pair(new btSphereShape(minRadius), std::shared_ptr<btCollisionShape>());
                 }
             };
-        } else if (shapeType == "capsule-y") {
+        } else if (shapeType == "capsule-z") {
             mShapeCreator = [&](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset) -> std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
-                float minRadius = std::min(size.x(), size.z()) * 0.5f;
+                float minRadius = std::min(size.x(), size.y()) * 0.5f;
                 //subtract the radius times 2 from the height
-                float height = size.y() - (minRadius * 2.0f);
+                float height = size.z() - (minRadius * 2.0f);
                 //If the resulting height is negative we need to use a sphere instead.
                 if (height > 0) {
                     return std::make_pair(new btCapsuleShapeZ(minRadius, height), std::shared_ptr<btCollisionShape>());
@@ -104,7 +104,7 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
 
         } else if (shapeType == "box") {
             mShapeCreator = createBoxFn;
-        } else if (shapeType == "cylinder-z") {
+        } else if (shapeType == "cylinder-y") {
             mShapeCreator = [&](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset) -> std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
                 btCylinderShape* shape = new btCylinderShape(btVector3(1, 1, 1));
@@ -120,7 +120,7 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
                 shape->setLocalScaling(Convert::toBullet(size * 0.5f));
                 return std::make_pair(shape, std::shared_ptr<btCollisionShape>());
             };
-        } else if (shapeType == "cylinder-y") {
+        } else if (shapeType == "cylinder-z") {
             mShapeCreator = [&](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset) -> std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
                 btCylinderShape* shape = new btCylinderShapeZ(btVector3(1, 1, 1));
@@ -187,8 +187,8 @@ void GeometryProperty::buildMeshCreator()
                     return;
                 }
                 verts[i] = (float) vertsList[i].Float();
-                verts[i + 1] = (float) vertsList[i + 2].Float(); //Convert from WF coord to Bullet coord
-                verts[i + 2] = (float) -vertsList[i + 1].Float(); //Convert from WF coord to Bullet coord
+                verts[i + 1] = (float) vertsList[i + 1].Float();
+                verts[i + 2] = (float) vertsList[i + 2].Float();
             }
 
             int* indices = new int[trisList.size()];
@@ -199,7 +199,7 @@ void GeometryProperty::buildMeshCreator()
                     delete[] indices;
                     return;
                 }
-                if (trisList[i].Int() >= numberOfVertices || trisList[i + 1].Int() >= numberOfVertices || trisList[i + 1].Int() >= numberOfVertices) {
+                if (trisList[i].Int() >= numberOfVertices || trisList[i + 1].Int() >= numberOfVertices || trisList[i + 2].Int() >= numberOfVertices) {
                     log(ERROR, "Index data was out of bounds for vertices for mesh.");
                     delete[] verts;
                     delete[] indices;
@@ -228,7 +228,7 @@ void GeometryProperty::buildMeshCreator()
                 //In contrast to other shapes there's no centerOfMassOffset for mesh shapes
                 centerOfMassOffset = btVector3(0, 0, 0);
                 btVector3 meshSize = meshShape->getLocalAabbMax() - meshShape->getLocalAabbMin();
-                btVector3 scaling(size.x() / meshSize.x(), size.z() / meshSize.y(), size.y() / meshSize.z());
+                btVector3 scaling(size.x() / meshSize.x(), size.y() / meshSize.y(), size.z() / meshSize.z());
                 btScaledBvhTriangleMeshShape* scaledShape = new btScaledBvhTriangleMeshShape(meshShape.get(), scaling);
                 return std::make_pair(scaledShape, meshShape);
             };

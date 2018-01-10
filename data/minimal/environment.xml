@@ -5,8 +5,8 @@
       <map name="bbox">
         <list name="default">
           <float>-1000</float>
-          <float>-1000</float>
           <float>0</float>
+          <float>-1000</float>
           <float>1000</float>
           <float>1000</float>
           <float>1000</float>

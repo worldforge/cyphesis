@@ -168,7 +168,7 @@ void TerrainProperty::set(const Element & ent)
             }
 
             int x = (int)point[0].asNum();
-            int y = (int)point[1].asNum();
+            int y = -(int)point[1].asNum();
             double h = point[2].asNum();
             double roughness;
             double falloff;
@@ -381,8 +381,8 @@ bool TerrainProperty::getHeightAndNormal(float x,
 int TerrainProperty::getSurface(const Point3D & pos, int & material)
 {
     float x = pos.x(),
-          y = pos.y();
-    Mercator::Segment * segment = m_data.getSegmentAtPos(x, y);
+          z = pos.z();
+    Mercator::Segment * segment = m_data.getSegmentAtPos(x, z);
     if (segment == 0) {
         debug(std::cerr << "No terrain at this point" << std::endl << std::flush;);
         return -1;
@@ -391,14 +391,14 @@ int TerrainProperty::getSurface(const Point3D & pos, int & material)
         segment->populate();
     }
     x -= segment->getXRef();
-    y -= segment->getYRef();
+    z -= segment->getZRef();
     assert(x <= segment->getSize());
-    assert(y <= segment->getSize());
+    assert(z <= segment->getSize());
     const Mercator::Segment::Surfacestore & surfaces = segment->getSurfaces();
     WFMath::Vector<3> normal;
     float height = -23;
-    segment->getHeightAndNormal(x, y, height, normal);
-    debug(std::cout << "At the point " << x << "," << y
+    segment->getHeightAndNormal(x, z, height, normal);
+    debug(std::cout << "At the point " << x << "," << z
                     << " of the segment the height is " << height << std::endl;
           std::cout << "The segment has " << surfaces.size()
                     << std::endl << std::flush;);
@@ -410,7 +410,7 @@ int TerrainProperty::getSurface(const Point3D & pos, int & material)
     if (!tile_surface.isValid()) {
         tile_surface.populate();
     }
-    material = tile_surface((int)x, (int)y, 0);
+    material = tile_surface((int)x, (int)z, 0);
     return 0;
 }
 
@@ -421,7 +421,7 @@ int TerrainProperty::getSurface(const Point3D & pos, int & material)
 void TerrainProperty::findMods(const Point3D & pos,
                                std::vector<LocatedEntity *> & ret)
 {
-    Mercator::Segment * seg = m_data.getSegmentAtPos(pos.x(), pos.y());
+    Mercator::Segment * seg = m_data.getSegmentAtPos(pos.x(), pos.z());
     if (seg == 0) {
         return;
     }
@@ -430,7 +430,7 @@ void TerrainProperty::findMods(const Point3D & pos,
         const Mercator::TerrainMod * mod = entry.second;
         WFMath::AxisBox<2> mod_box = mod->bbox();
         if (pos.x() > mod_box.lowCorner().x() && pos.x() < mod_box.highCorner().x() &&
-            pos.y() > mod_box.lowCorner().y() && pos.y() < mod_box.highCorner().y()) {
+            pos.z() > mod_box.lowCorner().y() && pos.z() < mod_box.highCorner().y()) {
             Mercator::Effector::Context * c = mod->context();
             if (c == 0) {
                 log(WARNING, "Terrrain mod with no context");

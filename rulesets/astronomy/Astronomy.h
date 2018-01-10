@@ -33,7 +33,7 @@ class Astronomy {
     Atlas::Message::Element asObject(const Vector3D & from)
     {
         Atlas::Message::Element::MapType amap;
-        amap["longitude"] = (from.Y() / world_maxy) * 90;
+        amap["longitude"] = (from.z() / world_maxy) * 90;
     }
 };
 

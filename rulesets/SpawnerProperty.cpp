@@ -255,26 +255,26 @@ void SpawnerProperty::createNewEntity(LocatedEntity * e, const Operation & op,
         }
 
         float x = (distance * std::cos(angle));
-        float y = (distance * std::sin(angle));
+        float z = (distance * std::sin(angle));
 
         ::addToEntity(
                 WFMath::Point<3>(e->m_location.pos()).shift(
-                        WFMath::Vector<3>(x, y, 0)), create_arg->modifyPos());
+                        WFMath::Vector<3>(x, 0, z)), create_arg->modifyPos());
     } else {
         //If it's an internal spawner, spawn anywhere within the bounding box.
         const BBox bbox = e->m_location.m_bBox;
         if (bbox.isValid()) {
             float x = rand.rand(bbox.highCorner().x() - bbox.lowCorner().x())
                     + bbox.lowCorner().x();
-            float y = rand.rand(bbox.highCorner().y() - bbox.lowCorner().y())
-                    + bbox.lowCorner().y();
-            ::addToEntity(WFMath::Point<3>(x, y, 0), create_arg->modifyPos());
+            float z = rand.rand(bbox.highCorner().z() - bbox.lowCorner().z())
+                    + bbox.lowCorner().z();
+            ::addToEntity(WFMath::Point<3>(x, 0, z), create_arg->modifyPos());
         } else {
             ::addToEntity(WFMath::Point<3>::ZERO(), create_arg->modifyPos());
         }
     }
     float rotation = rand.rand<float>() * WFMath::numeric_constants<float>::pi() * 2;
-    WFMath::Quaternion orientation(WFMath::Vector<3>(0, 0, 1), rotation);
+    WFMath::Quaternion orientation(WFMath::Vector<3>(0, 1, 0), rotation);
     create_arg->setAttr("orientation", orientation.toAtlas());
 
     Create create;

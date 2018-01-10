@@ -475,10 +475,10 @@ protected:
 	 * @param area An area in world units.
 	 * @param tileMinXIndex Min X index.
 	 * @param tileMaxXIndex Max X index.
-	 * @param tileMinYIndex Min Y index.
-	 * @param tileMaxYIndex Max Y index.
+	 * @param tileMinZIndex Min Y index.
+	 * @param tileMaxZIndex Max Y index.
 	 */
-	void findAffectedTiles(const WFMath::AxisBox<2>& area, int& tileMinXIndex, int& tileMaxXIndex, int& tileMinYIndex, int& tileMaxYIndex) const;
+	void findAffectedTiles(const WFMath::AxisBox<2>& area, int& tileMinXIndex, int& tileMaxXIndex, int& tileMinZIndex, int& tileMaxZIndex) const;
 
 
 	void returnAwareTiles(const std::set<std::pair<int,int>>& tileset);

@@ -9,11 +9,11 @@
       <map name="bbox">
         <list name="default">
           <float>-0.1</float>
-          <float>-0.1</float>
           <float>0</float>
-          <float>0.1</float>
+          <float>-0.1</float>
           <float>0.1</float>
           <float>0.5</float>
+          <float>0.1</float>
         </list>
         <string name="visibility">public</string>
       </map>
@@ -28,8 +28,8 @@
       <map name="bbox">
         <list name="default">
           <float>-0.02</float>
-          <float>-0.02</float>
           <float>0</float>
+          <float>-0.02</float>
           <float>0.04</float>
           <float>0.02</float>
           <float>0.02</float>
@@ -59,11 +59,11 @@
       <map name="bbox">
         <list name="default">
           <float>-1</float>
+          <float>0</float>
           <float>-0.02</float>
           <float>0</float>
-          <float>0</float>
-          <float>0.02</float>
           <float>0.2</float>
+          <float>0.02</float>
         </list>
         <string name="visibility">public</string>
       </map>
@@ -86,11 +86,11 @@
       <map name="bbox">
         <list name="default">
           <float>-0.1</float>
-          <float>-0.1</float>
           <float>0</float>
-          <float>0.1</float>
+          <float>-0.1</float>
           <float>0.1</float>
           <float>0.5</float>
+          <float>0.1</float>
         </list>
         <string name="visibility">public</string>
       </map>
@@ -105,11 +105,11 @@
       <map name="bbox">
         <list name="default">
           <float>-0.04</float>
-          <float>-0.04</float>
           <float>0</float>
-          <float>0.04</float>
+          <float>-0.04</float>
           <float>0.04</float>
           <float>2</float>
+          <float>0.04</float>
         </list>
         <string name="visibility">public</string>
       </map>
@@ -128,11 +128,11 @@
       <map name="bbox">
         <list name="default">
           <float>-0.1</float>
-          <float>-0.1</float>
           <float>0</float>
-          <float>0.1</float>
+          <float>-0.1</float>
           <float>0.1</float>
           <float>0.5</float>
+          <float>0.1</float>
         </list>
         <string name="visibility">public</string>
       </map>
@@ -151,11 +151,11 @@
       <map name="bbox">
         <list name="default">
           <float>-0.01</float>
-          <float>-0.1</float>
           <float>-0.01</float>
-          <float>0.1</float>
+          <float>-0.1</float>
           <float>0.1</float>
           <float>0.15</float>
+          <float>0.1</float>
         </list>
         <string name="visibility">public</string>
       </map>
@@ -174,11 +174,11 @@
       <map name="bbox">
         <list name="default">
           <float>-0.01</float>
-          <float>-0.1</float>
           <float>-0.01</float>
+          <float>-0.1</float>
+          <float>0.01</float>
           <float>0.01</float>
           <float>0.1</float>
-          <float>0.01</float>
         </list>
         <string name="visibility">public</string>
       </map>
@@ -197,11 +197,11 @@
       <map name="bbox">
         <list name="default">
           <float>-0.01</float>
-          <float>-0.1</float>
           <float>-0.01</float>
-          <float>0.1</float>
+          <float>-0.1</float>
           <float>0.1</float>
           <float>0.15</float>
+          <float>0.1</float>
         </list>
         <string name="visibility">public</string>
       </map>
@@ -223,8 +223,8 @@
           <float>-0.1</float>
           <float>-0.1</float>
           <float>0.3</float>
-          <float>0.3</float>
           <float>0.35</float>
+          <float>0.3</float>
         </list>
         <string name="visibility">public</string>
       </map>
@@ -243,11 +243,11 @@
       <map name="bbox">
         <list name="default">
           <float>-0.02</float>
-          <float>-0.02</float>
           <float>0</float>
-          <float>0.02</float>
+          <float>-0.02</float>
           <float>0.02</float>
           <float>0.5</float>
+          <float>0.02</float>
         </list>
         <string name="visibility">public</string>
       </map>
@@ -266,11 +266,11 @@
       <map name="bbox">
         <list name="default">
           <float>-0.02</float>
-          <float>-0.02</float>
           <float>0</float>
-          <float>0.02</float>
+          <float>-0.02</float>
           <float>0.02</float>
           <float>2</float>
+          <float>0.02</float>
         </list>
         <string name="visibility">public</string>
       </map>
@@ -312,11 +312,11 @@
       <map name="bbox">
         <list name="default">
           <float>-0.02</float>
-          <float>-0.02</float>
           <float>0</float>
-          <float>0.02</float>
+          <float>-0.02</float>
           <float>0.02</float>
           <float>2</float>
+          <float>0.02</float>
         </list>
         <string name="visibility">public</string>
       </map>
@@ -335,11 +335,11 @@
       <map name="bbox">
         <list name="default">
           <float>-0.1</float>
-          <float>-0.1</float>
           <float>0</float>
-          <float>0.1</float>
+          <float>-0.1</float>
           <float>0.1</float>
           <float>1.2</float>
+          <float>0.1</float>
         </list>
         <string name="visibility">public</string>
       </map>
@@ -358,11 +358,11 @@
       <map name="bbox">
         <list name="default">
           <float>-0.2</float>
-          <float>-0.2</float>
           <float>0</float>
-          <float>0.2</float>
+          <float>-0.2</float>
           <float>0.2</float>
           <float>0.1</float>
+          <float>0.2</float>
         </list>
         <string name="visibility">public</string>
       </map>
@@ -381,11 +381,11 @@
       <map name="bbox">
         <list name="default">
           <float>-0.5</float>
-          <float>0.7</float>
           <float>-0.07</float>
+          <float>0.7</float>
           <float>0.5</float>
-          <float>-0.7</float>
           <float>0.07</float>
+          <float>-0.7</float>
         </list>
         <string name="visibility">public</string>
       </map>
@@ -404,11 +404,11 @@
       <map name="bbox">
         <list name="default">
           <float>-0.15</float>
-          <float>-0.15</float>
           <float>-0</float>
-          <float>0.15</float>
+          <float>-0.15</float>
           <float>0.15</float>
           <float>0.5</float>
+          <float>0.15</float>
         </list>
         <string name="visibility">public</string>
       </map>
@@ -427,11 +427,11 @@
       <map name="bbox">
         <list name="default">
           <float>-0.2</float>
-          <float>-0.2</float>
           <float>0</float>
-          <float>0.2</float>
+          <float>-0.2</float>
           <float>0.2</float>
           <float>0.4</float>
+          <float>0.2</float>
         </list>
         <string name="visibility">public</string>
       </map>
@@ -480,11 +480,11 @@
       <map name="bbox">
         <list name="default">
           <float>-0.075</float>
-          <float>-0.008</float>
           <float>-0.062</float>
+          <float>-0.008</float>
           <float>0.075</float>
-          <float>0.008</float>
           <float>0.484</float>
+          <float>0.008</float>
         </list>
         <string name="visibility">public</string>
       </map>
@@ -553,11 +553,11 @@
        <map name="bbox">
         <list name="default">
           <float>-0.02</float>
-          <float>-0.02</float>
           <float>0</float>
-          <float>0.02</float>
+          <float>-0.02</float>
           <float>0.02</float>
           <float>0.3</float>
+          <float>0.02</float>
         </list>
         <string name="visibility">public</string>
       </map>

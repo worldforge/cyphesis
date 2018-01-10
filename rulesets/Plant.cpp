@@ -71,11 +71,11 @@ void Plant::dropFruit(OpVector & res, const std::string& fruitName)
     float height = m_location.bBox().highCorner().z();
     float rx = m_location.pos().x() + uniform( height,
                                               -height);
-    float ry = m_location.pos().y() + uniform( height,
+    float rz = m_location.pos().z() + uniform( height,
                                               -height);
     Anonymous fruit_arg;
     fruit_arg->setParent(fruitName);
-    Location floc(m_location.m_loc, Point3D(rx, ry, 0));
+    Location floc(m_location.m_loc, Point3D(rx, 0, rz));
     floc.addToEntity(fruit_arg);
     Create create;
     create->setTo(getId());

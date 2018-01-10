@@ -136,10 +136,10 @@ int SpawnEntity::placeInSpawn(Location& location) const
         for (int i = 0; i < 10; ++i) {
             WFMath::CoordType x = uniform(spawn_box.lowCorner().x(),
                     spawn_box.highCorner().x());
-            WFMath::CoordType y = uniform(spawn_box.lowCorner().y(),
+            WFMath::CoordType z = uniform(spawn_box.lowCorner().y(),
                     spawn_box.highCorner().y());
-            if (spawn_area->intersect(WFMath::Point<2>(x, y))) {
-                new_pos += Vector3D(x, y, 0);
+            if (spawn_area->intersect(WFMath::Point<2>(x, z))) {
+                new_pos += Vector3D(x, 0, z);
                 break;
             }
         }
@@ -147,7 +147,7 @@ int SpawnEntity::placeInSpawn(Location& location) const
     } else if (m_ent->m_location.bBox().isValid()) {
         const BBox & b = m_ent->m_location.bBox();
         location.m_pos = Point3D(uniform(b.lowCorner().x(), b.highCorner().x()),
-                uniform(b.lowCorner().y(), b.highCorner().y()), 0);
+             0, uniform(b.lowCorner().z(), b.highCorner().z()));
         // Locate in bbox
     } else {
         location.m_pos = m_ent->m_location.pos();

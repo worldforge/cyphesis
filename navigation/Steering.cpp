@@ -258,10 +258,10 @@ SteeringResult Steering::update(double currentTimestamp)
             } else {
                 //We should send a move op if we're either not moving, or we've reached a waypoint, or we need to divert a lot.
 
-                WFMath::Point<2> nextWaypoint(mPath.front().x(), mPath.front().y());
+                WFMath::Point<2> nextWaypoint(mPath.front().x(), mPath.front().z());
                 while (WFMath::Distance(nextWaypoint, entityPosition) < mAvatarHorizRadius && mPath.size() > 1) {
                     mPath.pop_front();
-                    nextWaypoint = WFMath::Point<2>(mPath.front().x(), mPath.front().y());
+                    nextWaypoint = WFMath::Point<2>(mPath.front().x(), mPath.front().z());
                 }
 
                 WFMath::Vector<2> distance = nextWaypoint - entityPosition;
@@ -314,9 +314,9 @@ SteeringResult Steering::update(double currentTimestamp)
                 if (shouldSend) {
                     //If we're moving to a certain destination and aren't avoiding anything we should tell the server to move to the destination.
                     if (destination.isValid() && !avoiding) {
-                        result.destination = WFMath::Point<3>(destination.x(), destination.y(), mAvatar.m_location.m_pos.z());
+                        result.destination = WFMath::Point<3>(destination.x(), mAvatar.m_location.m_pos.y(), destination.y());
                     }
-                    result.direction = WFMath::Vector<3>(velocity.x(), velocity.y(), 0);
+                    result.direction = WFMath::Vector<3>(velocity.x(), 0, velocity.y());
                     mLastSentVelocity = velocity;
                     mExpectingServerMovement = true;
                 }

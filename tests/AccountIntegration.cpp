@@ -259,8 +259,8 @@ void Accountintegration::test_SetOperation()
     Anonymous new_char;
     LocatedEntity * chr = m_ac->addNewCharacter("thing", new_char,
                                                 RootEntity());
-    BBox newBox(WFMath::Point<3>(-0.5, -0.5, 0.0),
-                WFMath::Point<3>(-0.5, -0.5, 2.0));
+    BBox newBox(WFMath::Point<3>(-0.5, 0.0, -0.5),
+                WFMath::Point<3>(-0.5, 2.0, -0.5));
     chr->m_location.setBBox(newBox);
 
     Anonymous op_arg;

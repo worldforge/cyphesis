@@ -94,7 +94,7 @@ EntityBuilder::EntityBuilder()
     creatorFactory->m_attributes["solid"] = 0;
 
     //Creator agents should have a bbox, so that they easily can be made solid for testing purposes.
-    creatorFactory->m_attributes["bbox"] = ListType {-.5, -0.5, 0, .5, .5, 1};
+    creatorFactory->m_attributes["bbox"] = ListType {-.5, 0, -0.5, .5, 1, .5};
     creatorFactory->m_attributes["geometry"] = MapType {{"shape", "sphere"}};
     creatorFactory->m_attributes["friction"] = 10.f;
     creatorFactory->m_attributes["angularfactor"] = ListType {0, 0, 0};

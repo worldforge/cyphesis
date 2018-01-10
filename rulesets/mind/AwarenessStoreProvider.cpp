@@ -60,7 +60,7 @@ AwarenessStore& AwarenessStoreProvider::getStore(const TypeNode* type, int tileS
         const auto& bbox = bboxProp->data();
         agentHeight = bbox.highCorner().z() - bbox.lowCorner().z();
 
-        WFMath::AxisBox<2> agent2dBbox(WFMath::Point<2>(bbox.lowCorner().x(), bbox.lowCorner().y()), WFMath::Point<2>(bbox.highCorner().x(), bbox.highCorner().y()));
+        WFMath::AxisBox<2> agent2dBbox(WFMath::Point<2>(bbox.lowCorner().x(), bbox.lowCorner().z()), WFMath::Point<2>(bbox.highCorner().x(), bbox.highCorner().z()));
         agentRadius = std::max(0.2f, agent2dBbox.boundingSphere().radius()); //Don't make the radius smaller than 0.2 meters, to avoid too many cells
     }
 

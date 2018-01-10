@@ -215,16 +215,16 @@ void BBoxProvider::value(Atlas::Message::Element& value, const BBoxProperty& pro
         value = bbox.highCorner().x() - bbox.lowCorner().x();
         break;
     case Measurement::DEPTH:
-        value = bbox.highCorner().y() - bbox.lowCorner().y();
+        value = bbox.highCorner().z() - bbox.lowCorner().z();
         break;
     case Measurement::HEIGHT:
-        value = bbox.highCorner().z() - bbox.lowCorner().z();
+        value = bbox.highCorner().y() - bbox.lowCorner().y();
         break;
     case Measurement::VOLUME:
         value = (bbox.highCorner().x() - bbox.lowCorner().x()) * (bbox.highCorner().y() - bbox.lowCorner().y()) * (bbox.highCorner().z() - bbox.lowCorner().z());
         break;
     case Measurement::AREA:
-        value = (bbox.highCorner().x() - bbox.lowCorner().x()) * (bbox.highCorner().y() - bbox.lowCorner().y());
+        value = (bbox.highCorner().x() - bbox.lowCorner().x()) * (bbox.highCorner().z() - bbox.lowCorner().z());
         break;
     }
 }

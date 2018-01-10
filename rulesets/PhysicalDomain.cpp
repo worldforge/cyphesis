@@ -338,7 +338,7 @@ void PhysicalDomain::buildTerrainPage(Mercator::Segment& segment, float friction
     int vertexCountOneSide = segment.getSize();
 
     std::stringstream ss;
-    ss << segment.getXRef() << ":" << segment.getYRef();
+    ss << segment.getXRef() << ":" << segment.getZRef();
     TerrainEntry& terrainEntry = m_terrainSegments[ss.str()];
     if (!terrainEntry.data) {
         terrainEntry.data = new std::array<float, 65 * 65>();
@@ -351,12 +351,7 @@ void PhysicalDomain::buildTerrainPage(Mercator::Segment& segment, float friction
     float* data = terrainEntry.data->data();
     const float* mercatorData = segment.getPoints();
 
-    //Need to rotate to fit Bullet coord space.
-    for (int y = 0; y < vertexCountOneSide; ++y) {
-        for (int x = 0; x < vertexCountOneSide; ++x) {
-            data[(vertexCountOneSide * (vertexCountOneSide - y - 1)) + x] = mercatorData[(vertexCountOneSide * y) + x];
-        }
-    }
+    memcpy(data, mercatorData, vertexCountOneSide*vertexCountOneSide*sizeof(float));
 
     float min = segment.getMin();
     float max = segment.getMax();
@@ -368,8 +363,8 @@ void PhysicalDomain::buildTerrainPage(Mercator::Segment& segment, float friction
     float res = (float) segment.getResolution();
 
     float xPos = segment.getXRef() + (res / 2);
-    float yPos = segment.getYRef() + (res / 2);
-    float zPos = min + ((max - min) * 0.5f);
+    float yPos = min + ((max - min) * 0.5f);
+    float zPos = segment.getZRef() + (res / 2);
 
     WFMath::Point<3> pos(xPos, yPos, zPos);
     btVector3 btPos = Convert::toBullet(pos);
@@ -403,16 +398,16 @@ void PhysicalDomain::createDomainBorders()
             };
 
         //Bottom plane
-        createPlane(btVector3(0, 1, 0), btVector3(0, bbox.lowerBound(2), 0));
+        createPlane(btVector3(0, 1, 0), btVector3(0, bbox.lowerBound(1), 0));
 
         //Top plane
-        createPlane(btVector3(0, -1, 0), btVector3(0, bbox.upperBound(2), 0));
+        createPlane(btVector3(0, -1, 0), btVector3(0, bbox.upperBound(1), 0));
 
         //Crate surrounding planes
         createPlane(btVector3(1, 0, 0), btVector3(bbox.lowerBound(0), 0, 0));
         createPlane(btVector3(-1, 0, 0), btVector3(bbox.upperBound(0), 0, 0));
-        createPlane(btVector3(0, 0, 1), btVector3(0, 0, bbox.lowerBound(1)));
-        createPlane(btVector3(0, 0, -1), btVector3(0, 0, bbox.upperBound(1)));
+        createPlane(btVector3(0, 0, 1), btVector3(0, 0, bbox.lowerBound(2)));
+        createPlane(btVector3(0, 0, -1), btVector3(0, 0, bbox.upperBound(2)));
     }
 }
 
@@ -668,7 +663,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     //Handle the special case of the entity being a "creator".
     if (entity.getType()->isTypeOf("creator")) {
         if (!bbox.isValid()) {
-            bbox = WFMath::AxisBox<3>(WFMath::Point<3>(-0.25f, -0.25f, .0f), WFMath::Point<3>(0.25f, 0.25f, 1.5f));
+            bbox = WFMath::AxisBox<3>(WFMath::Point<3>(-0.25f, .0f, -0.25f), WFMath::Point<3>(0.25f, 1.5f, 0.25f));
         }
         angularFactor = btVector3(0, 0, 0);
     }
@@ -912,9 +907,9 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
         if (m_terrain) {
             WFMath::Point<3>& wfPos = entity.m_location.m_pos;
 
-            float h = wfPos.z();
-            getTerrainHeight(wfPos.x(), wfPos.y(), h);
-            wfPos.z() = h;
+            float h = wfPos.y();
+            getTerrainHeight(wfPos.x(), wfPos.z(), h);
+            wfPos.y() = h;
 
             btQuaternion orientation = entity.m_location.m_orientation.isValid() ? Convert::toBullet(entity.m_location.m_orientation) : btQuaternion::getIdentity();
             btVector3 pos = wfPos.isValid() ? Convert::toBullet(wfPos) : btVector3(0, 0, 0);
@@ -1054,7 +1049,7 @@ void PhysicalDomain::updateTerrainMod(const LocatedEntity& entity, bool forceUpd
             auto terrainModProperty = entity.getPropertyClassFixed<TerrainModProperty>();
             if (terrainModProperty && m_terrain) {
                 //We need to get the vertical position in the terrain, without any mods.
-                Mercator::Segment* segment = m_terrain->getSegmentAtPos(entity.m_location.m_pos.x(), entity.m_location.m_pos.y());
+                Mercator::Segment* segment = m_terrain->getSegmentAtPos(entity.m_location.m_pos.x(), entity.m_location.m_pos.z());
                 WFMath::Point<3> modPos = entity.m_location.m_pos;
                 if (segment) {
                     std::vector<WFMath::AxisBox<2>> terrainAreas;
@@ -1064,13 +1059,13 @@ void PhysicalDomain::updateTerrainMod(const LocatedEntity& entity, bool forceUpd
                         if (!segment->isValid()) {
                             segment->populate();
                         }
-                        segment->getHeight(modPos.x() - (segment->getXRef()), modPos.y() - (segment->getYRef()), modPos.z());
+                        segment->getHeight(modPos.x() - (segment->getXRef()), modPos.z() - (segment->getZRef()), modPos.y());
                     } else {
                         Mercator::HeightMap heightMap((unsigned int) segment->getResolution());
                         heightMap.allocate();
                         segment->populateHeightMap(heightMap);
 
-                        heightMap.getHeight(modPos.x() - (segment->getXRef()), modPos.y() - (segment->getYRef()), modPos.z());
+                        heightMap.getHeight(modPos.x() - (segment->getXRef()), modPos.z() - (segment->getZRef()), modPos.y());
                     }
 
                     auto I = m_terrainMods.find(entity.getIntId());
@@ -1164,30 +1159,30 @@ void PhysicalDomain::entityPropertyApplied(const std::string& name, PropertyBase
 void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, LocatedEntity& entity, WFMath::Point<3>& pos)
 {
     if (mode == ModeProperty::Mode::Planted || mode == ModeProperty::Mode::Free) {
-        float h = pos.z();
-        getTerrainHeight(pos.x(), pos.y(), h);
+        float h = pos.y();
+        getTerrainHeight(pos.x(), pos.z(), h);
 
         if (mode == ModeProperty::Mode::Planted) {
-            pos.z() = h;
+            pos.y() = h;
 
             auto plantedOffsetProp = entity.getPropertyType<double>("planted-offset");
             if (plantedOffsetProp) {
-                pos.z() += plantedOffsetProp->data();
+                pos.y() += plantedOffsetProp->data();
             }
             auto plantedScaledOffsetProp = entity.getPropertyType<double>("planted-scaled-offset");
             if (plantedScaledOffsetProp && entity.m_location.bBox().isValid()) {
                 auto size = entity.m_location.bBox().highCorner() - entity.m_location.bBox().lowCorner();
 
-                pos.z() += (plantedScaledOffsetProp->data() * size.z());
+                pos.y() += (plantedScaledOffsetProp->data() * size.y());
             }
         } else if (mode == ModeProperty::Mode::Free) {
             //For free entities we only want to clamp to terrain if the entity is below it
-            pos.z() = std::max(pos.z(), h);
+            pos.y() = std::max(pos.y(), h);
         }
     } else if (mode != ModeProperty::Mode::Fixed) {
-        float h = pos.z();
-        getTerrainHeight(pos.x(), pos.y(), h);
-        pos.z() = h;
+        float h = pos.y();
+        getTerrainHeight(pos.x(), pos.z(), h);
+        pos.y() = h;
     }
 }
 
@@ -1302,7 +1297,7 @@ void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& 
                 if (K == m_propellingEntries.end()) {
                     const Property<double>* stepFactorProp = entity->getPropertyType<double>("step_factor");
                     if (stepFactorProp && entity->m_location.bBox().isValid()) {
-                        float height = entity->m_location.bBox().upperBound(2) - entity->m_location.bBox().lowerBound(2);
+                        float height = entity->m_location.bBox().upperBound(1) - entity->m_location.bBox().lowerBound(1);
                         m_propellingEntries.insert(std::make_pair(entity->getIntId(), PropelEntry{&entry, btVelocity, height * (float) stepFactorProp->data()}));
                     } else {
                         m_propellingEntries.insert(std::make_pair(entity->getIntId(), PropelEntry{&entry, btVelocity, 0}));
@@ -1423,12 +1418,12 @@ void PhysicalDomain::processDirtyTerrainAreas()
         friction = frictionProp->data();
     }
 
-    float worldHeight = m_entity.m_location.bBox().highCorner().z() - m_entity.m_location.bBox().lowCorner().z();
+    float worldHeight = m_entity.m_location.bBox().highCorner().y() - m_entity.m_location.bBox().lowCorner().y();
 
     debug_print("dirty segments: " << dirtySegments.size());
     for (auto& segment : dirtySegments) {
 
-        debug_print("rebuilding segment at x: " << segment->getXRef() << " y: " << segment->getYRef());
+        debug_print("rebuilding segment at x: " << segment->getXRef() << " z: " << segment->getZRef());
 
         buildTerrainPage(*segment, friction);
 
@@ -1444,7 +1439,7 @@ void PhysicalDomain::processDirtyTerrainAreas()
         btCollisionObject collObject;
         collObject.setCollisionShape(&boxShape);
         auto center = area.getCenter();
-        collObject.setWorldTransform(btTransform(btQuaternion::getIdentity(), btVector3(center.x(), 0, -center.y())));
+        collObject.setWorldTransform(btTransform(btQuaternion::getIdentity(), btVector3(center.x(), 0, center.y())));
         m_dynamicsWorld->contactTest(&collObject, callback);
 
         debug_print("Matched " << callback.m_entries.size() << " entries");
