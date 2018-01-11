@@ -50,6 +50,8 @@
 #include <chrono>
 #include <rulesets/VisibilityProperty.h>
 #include <rulesets/GeometryProperty.h>
+#include <BulletDynamics/Dynamics/btRigidBody.h>
+#include <physics/Convert.h>
 #include "rulesets/PhysicalWorld.h"
 
 #include "stubs/common/stubLog.h"
@@ -63,15 +65,18 @@ using Atlas::Objects::Entity::RootEntity;
 
 using String::compose;
 
-class TestPhysicalDomain : public PhysicalDomain {
+class TestPhysicalDomain : public PhysicalDomain
+{
     public:
         TestPhysicalDomain(LocatedEntity& entity) :
-            PhysicalDomain(entity) {
+            PhysicalDomain(entity)
+        {
 
         }
 
 
-        PhysicalWorld* getPhysicalWorld() const {
+        PhysicalWorld* getPhysicalWorld() const
+        {
             return m_dynamicsWorld;
         }
 };
@@ -90,6 +95,8 @@ class PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         void setup();
 
         void teardown();
+
+        void test_placement();
 
         void test_fallToBottom();
 
@@ -122,6 +129,7 @@ long PhysicalDomainIntegrationTest::m_id_counter = 0L;
 
 PhysicalDomainIntegrationTest::PhysicalDomainIntegrationTest()
 {
+    ADD_TEST(PhysicalDomainIntegrationTest::test_placement);
     ADD_TEST(PhysicalDomainIntegrationTest::test_terrainPrecision);
     ADD_TEST(PhysicalDomainIntegrationTest::test_fallToBottom);
     ADD_TEST(PhysicalDomainIntegrationTest::test_standOnFixed);
@@ -147,7 +155,164 @@ void PhysicalDomainIntegrationTest::setup()
 
 void PhysicalDomainIntegrationTest::teardown()
 {
+}
 
+void PhysicalDomainIntegrationTest::test_placement()
+{
+    class TestPhysicalDomain : public PhysicalDomain
+    {
+        public:
+            explicit TestPhysicalDomain(LocatedEntity& entity) : PhysicalDomain(entity)
+            {
+            }
+
+            btDiscreteDynamicsWorld* test_getBulletWorld() {
+                return m_dynamicsWorld;
+            }
+
+            btRigidBody* test_getRigidBody(long id) {
+                return m_entries.find(id)->second->rigidBody;
+            }
+    };
+
+    TypeNode* rockType = new TypeNode("rock");
+
+    Property<double>* massProp = new Property<double>();
+    massProp->data() = 10000;
+
+    ModeProperty* modeProperty = new ModeProperty();
+    modeProperty->set("fixed");
+
+
+    Entity* rootEntity = new Entity("0", newId());
+    rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
+    rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
+    TestPhysicalDomain* domain = new TestPhysicalDomain(*rootEntity);
+
+    // btDiscreteDynamicsWorld* bulletWorld = domain->test_getBulletWorld();
+
+    auto verifyBboxes = [&](Entity* entity) {
+        btRigidBody* rigidBody = domain->test_getRigidBody(entity->getIntId());
+        btVector3 aabbMin, aabbMax;
+        rigidBody->getAabb(aabbMin, aabbMax);
+
+        //Get the final positions of the entity's bbox
+
+        btVector3 expectedBtAabbMax(std::numeric_limits<float>::lowest(), std::numeric_limits<float>::lowest(), std::numeric_limits<float>::lowest());
+        btVector3 expectedBtAabbMin(std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
+
+        for (size_t i = 0; i < entity->m_location.bBox().numCorners(); ++i) {
+            WFMath::Point<3> point = entity->m_location.bBox().getCorner(i);
+            point.rotate(entity->m_location.orientation(), WFMath::Point<3>::ZERO());
+
+            point += WFMath::Vector<3>(entity->m_location.pos());
+
+            btVector3 btPoint = Convert::toBullet(point);
+
+            expectedBtAabbMax.setX(std::max(expectedBtAabbMax.x(), btPoint.x()));
+            expectedBtAabbMax.setY(std::max(expectedBtAabbMax.y(), btPoint.y()));
+            expectedBtAabbMax.setZ(std::max(expectedBtAabbMax.z(), btPoint.z()));
+
+            expectedBtAabbMin.setX(std::min(expectedBtAabbMin.x(), btPoint.x()));
+            expectedBtAabbMin.setY(std::min(expectedBtAabbMin.y(), btPoint.y()));
+            expectedBtAabbMin.setZ(std::min(expectedBtAabbMin.z(), btPoint.z()));
+
+        }
+
+        ASSERT_FUZZY_EQUAL(expectedBtAabbMax.x(), aabbMax.x(), 0.001);
+        ASSERT_FUZZY_EQUAL(expectedBtAabbMax.y(), aabbMax.y(), 0.001);
+        ASSERT_FUZZY_EQUAL(expectedBtAabbMax.z(), aabbMax.z(), 0.001);
+
+        ASSERT_FUZZY_EQUAL(expectedBtAabbMin.x(), aabbMin.x(), 0.001);
+        ASSERT_FUZZY_EQUAL(expectedBtAabbMin.y(), aabbMin.y(), 0.001);
+        ASSERT_FUZZY_EQUAL(expectedBtAabbMin.z(), aabbMin.z(), 0.001);
+    };
+
+
+    auto performPlacementTests = [&](Entity* entity) {
+        verifyBboxes(entity);
+
+        //Change pos only
+        domain->applyTransform(*entity, WFMath::Quaternion(), WFMath::Point<3>(20, 30, 1), WFMath::Vector<3>());
+
+        verifyBboxes(entity);
+
+        //Change orientation only
+        domain->applyTransform(*entity, WFMath::Quaternion(2, WFMath::numeric_constants<float>::pi() / 3.0f), WFMath::Point<3>(), WFMath::Vector<3>());
+
+        verifyBboxes(entity);
+
+        //Change pos and orientation
+        domain->applyTransform(*entity, WFMath::Quaternion(2, WFMath::numeric_constants<float>::pi() / 5.0f), WFMath::Point<3>(10, -25, 6), WFMath::Vector<3>());
+
+        verifyBboxes(entity);
+
+        //Change velocity (should not change pos and orientation)
+        domain->applyTransform(*entity, WFMath::Quaternion(), WFMath::Point<3>(), WFMath::Vector<3>(4, 4, 4));
+
+        verifyBboxes(entity);
+    };
+
+
+    //Start with a box centered at origo, with no orientation
+    {
+        long id = newId();
+        Entity* entity = new Entity(std::to_string(id), id);
+        entity->setProperty(ModeProperty::property_name, modeProperty);
+        entity->setType(rockType);
+        entity->m_location.m_pos = WFMath::Point<3>(10, -20, 1);
+        entity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-6, -1, -2), WFMath::Point<3>(6, 1, 2)));
+        entity->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
+        domain->addEntity(*entity);
+
+        performPlacementTests(entity);
+    }
+
+    //Start with a box centered at origo, with 45 degrees orientation
+    {
+        long id = newId();
+        Entity* entity = new Entity(std::to_string(id), id);
+        entity->setProperty(ModeProperty::property_name, modeProperty);
+        entity->setType(rockType);
+        entity->m_location.m_pos = WFMath::Point<3>(10, -20, 1);
+        entity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-6, -1, -2), WFMath::Point<3>(6, 1, 2)));
+        WFMath::Quaternion wfQuat;
+        wfQuat.rotation(2, -WFMath::numeric_constants<float>::pi() / 4.0f);
+        entity->m_location.m_orientation = wfQuat;
+        domain->addEntity(*entity);
+
+        performPlacementTests(entity);
+    }
+
+    //A box not centered at origo, with no orientation
+    {
+        long id = newId();
+        Entity* entity = new Entity(std::to_string(id), id);
+        entity->setProperty(ModeProperty::property_name, modeProperty);
+        entity->setType(rockType);
+        entity->m_location.m_pos = WFMath::Point<3>(10, -20, 1);
+        entity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(0, 0, 0), WFMath::Point<3>(6, 1, 2)));
+        entity->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
+        domain->addEntity(*entity);
+
+        performPlacementTests(entity);
+    }
+
+    //A box not centered at origo, with 45 degrees orientation
+    {
+        long id = newId();
+        Entity* entity = new Entity(std::to_string(id), id);
+        entity->setProperty(ModeProperty::property_name, modeProperty);
+        entity->setType(rockType);
+        entity->m_location.m_pos = WFMath::Point<3>(10, -20, 1);
+        entity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(2, 0, 1), WFMath::Point<3>(6, 1, 2)));
+        WFMath::Quaternion wfQuat;
+        wfQuat.rotation(2, -WFMath::numeric_constants<float>::pi() / 4.0f);
+        entity->m_location.m_orientation = wfQuat;
+        domain->addEntity(*entity);
+
+        performPlacementTests(entity);
+    }
 }
 
 void PhysicalDomainIntegrationTest::test_fallToBottom()
@@ -877,12 +1042,12 @@ void PhysicalDomainIntegrationTest::test_terrainPrecision()
         ASSERT_FUZZY_EQUAL(mercatorHeight, callback.m_hitPointWorld.y(), 0.1);
     };
 
-    checkHeightFunc(1,1);
-    checkHeightFunc(10,10);
-    checkHeightFunc(15,15);
-    checkHeightFunc(-15,15);
-    checkHeightFunc(-15,-15);
-    checkHeightFunc(15,-15);
+    checkHeightFunc(1, 1);
+    checkHeightFunc(10, 10);
+    checkHeightFunc(15, 15);
+    checkHeightFunc(-15, 15);
+    checkHeightFunc(-15, -15);
+    checkHeightFunc(15, -15);
 }
 
 

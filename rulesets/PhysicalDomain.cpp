@@ -1211,7 +1211,10 @@ void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath:
         entity.m_location.m_pos = newPos;
 
         debug_print("PhysicalDomain::new pos " << entity.describeEntity() << " " << pos);
-        transform.setOrigin(Convert::toBullet(newPos) - entry->centerOfMassOffset);
+
+        transform.setOrigin(Convert::toBullet(newPos));
+        transform *= btTransform(btQuaternion::getIdentity(), entry->centerOfMassOffset).inverse();
+
         collObject->setWorldTransform(transform);
         //Since we've deactivated automatic updating of all aabbs each tick we need to do it ourselves when updating the position of a non-active object.
         if (!collObject->isActive()) {
@@ -1347,7 +1350,11 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
             if (orientation.isValid() && !orientation.isEqualTo(entity.m_location.m_orientation)) {
                 debug_print("PhysicalDomain::new orientation " << entity.describeEntity() << " " << orientation);
                 btTransform& transform = entry->rigidBody->getWorldTransform();
+
                 transform.setRotation(Convert::toBullet(orientation));
+                transform.setOrigin(Convert::toBullet(entry->entity->m_location.pos()));
+                transform *= btTransform(btQuaternion::getIdentity(), entry->centerOfMassOffset).inverse();
+
                 entry->rigidBody->setWorldTransform(transform);
                 entity.m_location.m_orientation = orientation;
                 entity.resetFlags(entity_orient_clean);
