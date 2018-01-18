@@ -13,12 +13,12 @@ class Stall_se(Thing):
     def setup_operation(self, op):
         ret = Oplist()
         # South counter
-	loc = Location(self, Vector3D(-0.5,-0.5,0))
-        loc.bbox = Vector3D(3,0.5,1)
+	loc = Location(self, Vector3D(-0.5, 0, 0.5))
+        loc.bbox = Vector3D(3, 1, -0.5)
         ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
         # North back wall
-	loc = Location(self, Vector3D(-0.5,1.3,0))
-        loc.bbox = Vector3D(3,0.2,3)
+	loc = Location(self, Vector3D(-0.5, 0, -1.3))
+        loc.bbox = Vector3D(3, 3, -0.2)
         ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
         return ret
 
@@ -26,12 +26,12 @@ class Stall_sw(Thing):
     def setup_operation(self, op):
         ret = Oplist()
         # West counter
-	loc = Location(self, Vector3D(-0.5,-0.5,0))
-        loc.bbox = Vector3D(0.5,3,1)
+	loc = Location(self, Vector3D(-0.5, 0, 0.5))
+        loc.bbox = Vector3D(0.5, 1, -3)
         ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
         # North back wall
-	loc = Location(self, Vector3D(1.3,-0.5,0))
-        loc.bbox = Vector3D(0.2,3,3)
+	loc = Location(self, Vector3D(1.3, 0, 0.5))
+        loc.bbox = Vector3D(0.2, 3, -3)
         ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
         return ret
 

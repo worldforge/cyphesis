@@ -61,8 +61,8 @@ class Gateconstruction(server.Task):
                 tar = raw_materials1.pop()
                 self.lumber_length = tar.location.bbox.far_point[2]- \
                                      tar.location.bbox.near_point[2]
-                offset=Vector3D(self.lumber_length/7, 
-                self.lumber_length/3.5,self.lumber_length*.63)
+                offset=Vector3D(self.lumber_length/7, self.lumber_length*.63, -
+                self.lumber_length/3.5)
                 chunk_loc.orientation=Quaternion([.707,0,0,.707])
                 #Same as an Euler of (0,90 Degrees,0)
                 chunk_loc.coordinates=chunk_loc.coordinates+offset
@@ -85,15 +85,15 @@ class Gateconstruction(server.Task):
                 if count == 2 :
                     #left component of gate
                     chunk_loc.coordinates =Point3D([0,0,0])
-                    offset=Vector3D(0,0,self.lumber_length*.7)
+                    offset=Vector3D(0, self.lumber_length*.7, 0)
                     chunk_loc.orientation=Quaternion([.707,0,0,.707])
                     chunk_loc.coordinates=chunk_loc.coordinates+offset
                     
                 if count == 1 :
                     #right component of gate
                     chunk_loc.coordinates =Point3D([0,0,0])
-                    offset=Vector3D(0,-(self.lumber_length/2),
-                                    self.lumber_length*.7)
+                    offset=Vector3D(0,
+                                    self.lumber_length*.7, (self.lumber_length/2))
                     chunk_loc.orientation=Quaternion([.707,0,0,.707])
                     chunk_loc.coordinates=chunk_loc.coordinates+offset
                     
@@ -108,7 +108,7 @@ class Gateconstruction(server.Task):
             chunk_loc.coordinates = Point3D([0,0,0]) 
             self.lumber_length = tar.location.bbox.far_point[2]- \
                                  tar.location.bbox.near_point[2]
-            offset=Vector3D(0,self.lumber_length/4,self.lumber_length*.8)
+            offset=Vector3D(0, self.lumber_length*.8, -self.lumber_length/4)
             chunk_loc.orientation=Quaternion([.707,.707,0,0])
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             move1=Operation("move", Entity(tar.id,location=chunk_loc,
@@ -119,8 +119,8 @@ class Gateconstruction(server.Task):
             chunk_loc.coordinates =Point3D([0,0,0]) 
             self.lumber_length = tar.location.bbox.far_point[2]- \
                                  tar.location.bbox.near_point[2]
-            offset=Vector3D(0,self.lumber_length*(3.0/4.0),
-                            self.lumber_length*.8)
+            offset=Vector3D(0,
+                            self.lumber_length*.8, -self.lumber_length*(3.0/4.0))
             chunk_loc.orientation=Quaternion([.707,.707,0,0])
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             move1=Operation("move", Entity(tar.id,location=chunk_loc,
@@ -131,7 +131,7 @@ class Gateconstruction(server.Task):
             chunk_loc.coordinates =Point3D([0,0,0]) 
             self.lumber_length=tar.location.bbox.far_point[2]- \
                                tar.location.bbox.near_point[2]
-            offset=Vector3D(0,self.lumber_length,self.lumber_length*(.7))
+            offset=Vector3D(0, self.lumber_length*(.7, -self.lumber_length))
             chunk_loc.orientation=Quaternion([.5,.5,-.5,.5])
             #Same as (90 Degrees, 0, 90 Degrees)
             chunk_loc.coordinates=chunk_loc.coordinates+offset

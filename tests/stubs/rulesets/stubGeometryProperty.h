@@ -7,23 +7,6 @@
 #ifndef STUB_RULESETS_GEOMETRYPROPERTY_H
 #define STUB_RULESETS_GEOMETRYPROPERTY_H
 
-#ifndef STUB_GeometryProperty_GeometryProperty
-//#define STUB_GeometryProperty_GeometryProperty
-   GeometryProperty::GeometryProperty()
-    : Property()
-  {
-    
-  }
-#endif //STUB_GeometryProperty_GeometryProperty
-
-#ifndef STUB_GeometryProperty_GeometryProperty_DTOR
-//#define STUB_GeometryProperty_GeometryProperty_DTOR
-   GeometryProperty::~GeometryProperty()
-  {
-    
-  }
-#endif //STUB_GeometryProperty_GeometryProperty_DTOR
-
 #ifndef STUB_GeometryProperty_set
 //#define STUB_GeometryProperty_set
   void GeometryProperty::set(const Atlas::Message::Element&)

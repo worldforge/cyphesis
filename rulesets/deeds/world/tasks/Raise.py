@@ -53,7 +53,7 @@ class Raise(server.Task):
             # print "Going nowhere"
             return self.next_tick(1);
         # print "DISTANCE ", distance, distance.is_valid()
-        axis=distance.cross(Vector3D(0,0,1))
+        axis=distance.cross(Vector3D(0, 1, 0))
         # If distance is zero, axis becomes zero
         # print "DISTANCE ", distance, distance.is_valid(), axis, axis.is_valid()
         # If axis is zero, the quaternion contains NaNs.

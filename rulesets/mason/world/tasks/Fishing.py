@@ -55,7 +55,7 @@ class Fishing(server.Task):
         
         float_loc.coordinates = self.pos
 
-        bait_vector = Vector3D(0, 0, -0.5)
+        bait_vector = Vector3D(0,  -0.5, - 0)
         bait_loc = float_loc.copy()
         bait_loc.coordinates = bait_loc.coordinates + bait_vector
         

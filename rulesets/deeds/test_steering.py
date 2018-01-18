@@ -64,6 +64,6 @@ def _add_obstacles(m):
         ypos = uniform(ymin, ymax)
         
         
-        orient=Quaternion(Vector3D(0,0,1), uniform(0, pi * 2.0))
+        orient=Quaternion(Vector3D(0, 1, 0), uniform(0, pi * 2.0))
         
         m.make('stone_palisade', pos=(xpos, ypos, defaultZ), orientation=orient.as_list())

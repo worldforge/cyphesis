@@ -38,7 +38,7 @@ class Ram(server.Task):
             return self.next_tick(1)
 
         target_location = Location(self.target().location.parent, self.target().location.coordinates)
-        target_location.velocity=Vector3D(0,0,-0.5)
+        target_location.velocity=Vector3D(0, -0.5, 0)
         target_entity_moving = Entity(self.target().id, location = target_location)
 
         target_location = Location(self.target().location.parent, Point3D(self.target().location.coordinates.x, self.target().location.coordinates.y - 0.1, self.target().location.coordinates.z))

@@ -5,13 +5,13 @@
 from physics import Vector3D
 
 compass_points=[(Vector3D(1,0,0), "east"),
-                (Vector3D(0,1,0), "north"),
-                (Vector3D(0,-1,0), "south"),
-                (Vector3D(-1,0,0), "west"),
-                (Vector3D(0.707,0.707,0), "north east"),
-                (Vector3D(-0.707,0.707,0), "north west"),
-                (Vector3D(0.707,-0.707,0), "south east"),
-                (Vector3D(-0.707,-0.707,0), "south west")]
+                (Vector3D(0, 0, -1), "north"),
+                (Vector3D(0, 0, 1), "south"),
+                (Vector3D(-1, 0, 0), "west"),
+                (Vector3D(0.707, 0, -0.707), "north east"),
+                (Vector3D(-0.707, 0, -0.707), "north west"),
+                (Vector3D(0.707, 0, 0.707), "south east"),
+                (Vector3D(-0.707, 0, 0.707), "south west")]
 
 def vector_to_compass(direction):
     dot=-1

@@ -39,7 +39,7 @@ class Pulling(server.Task):
 
         target_location = Location(self.target().location.parent,
                                    self.target().location.coordinates)
-        target_location.velocity=Vector3D(0,0,-0.5)
+        target_location.velocity=Vector3D(0, -0.5, 0)
         new_loc = self.character.location.coordinates
         origin = self.points[0]
         # Get the diffrence in the location of user at current time to the time when he started the task

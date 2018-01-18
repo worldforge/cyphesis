@@ -13,15 +13,15 @@ class Shack_deco_1(Thing):
     def setup_operation(self, op):
         ret = Oplist()
         # West wall
-	loc = Location(self, Vector3D(-0.5,3.5,0))
-        loc.bbox = Vector3D(0.5,4,5)
+	loc = Location(self, Vector3D(-0.5, 0, -3.5))
+        loc.bbox = Vector3D(0.5, 5, -4)
         ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
         # North wall
-	loc = Location(self, Vector3D(-0.5,7,0))
-        loc.bbox = Vector3D(8,0.5,5)
+	loc = Location(self, Vector3D(-0.5, 0, -7))
+        loc.bbox = Vector3D(8, 5, -0.5)
         ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
         # East wall
-	loc = Location(self, Vector3D(7,-0.5,0))
-        loc.bbox = Vector3D(0.5,8,5)
+	loc = Location(self, Vector3D(7, 0, 0.5))
+        loc.bbox = Vector3D(0.5, 5, -8)
         ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
         return ret

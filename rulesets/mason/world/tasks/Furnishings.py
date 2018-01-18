@@ -71,7 +71,7 @@ class Furnishings(server.Task):
             create=Operation("create", Entity(name = "lumber", type = "lumber", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
             res.append(create)
             #create the table top
-            offset=Vector3D(0,0,1)
+            offset=Vector3D(0, 1, 0)
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             lbbox=[-.7,-.7,-.1,.7,.7,.1]
             create=Operation("create", Entity(name = "wood", type = "wood", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
@@ -86,7 +86,7 @@ class Furnishings(server.Task):
             #create the legs
             #leg 1
             chunk_loc.coordinates =Point3D([0,0,0])
-            offset=Vector3D(.2,.2,0)
+            offset=Vector3D(.2, 0, -.2)
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             create=Operation("create", Entity(name = "lumber", type = "lumber", location = chunk_loc,mode="fixed"), to = target)
             res.append(create)
@@ -94,21 +94,21 @@ class Furnishings(server.Task):
 
             #leg 2
             chunk_loc.coordinates =Point3D([0,0,0])
-            offset=Vector3D(-.2,.2,0)
+            offset=Vector3D(-.2, 0, -.2)
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             create=Operation("create", Entity(name = "lumber", type = "lumber", location = chunk_loc,mode="fixed"), to = target)
             res.append(create)
 
             #leg 3
             chunk_loc.coordinates =Point3D([0,0,0])
-            offset=Vector3D(-.2,-.2,0)
+            offset=Vector3D(-.2, 0, .2)
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             create=Operation("create", Entity(name = "lumber", type = "lumber", location = chunk_loc,mode="fixed"), to = target)
             res.append(create)
 
             #leg 4
             chunk_loc.coordinates =Point3D([0,0,0])
-            offset=Vector3D(.2,-.2,0)
+            offset=Vector3D(.2, 0, .2)
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             create=Operation("create", Entity(name = "lumber", type = "lumber", location = chunk_loc,mode="fixed"), to = target)
             res.append(create)
@@ -117,7 +117,7 @@ class Furnishings(server.Task):
             
             #create the seat
             chunk_loc.coordinates =Point3D([0,0,0])
-            offset=Vector3D(0,0,.5)
+            offset=Vector3D(0, .5, 0)
             lbbox=[-.3,-.3,-.1,.3,.3,.1]#Local bbox
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             create=Operation("create", Entity(name = "wood", type = "wood", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
@@ -125,7 +125,7 @@ class Furnishings(server.Task):
 
             #create the back of the seat
             chunk_loc.coordinates =Point3D([0,0,0])
-            offset=Vector3D(-.3,0,.75)
+            offset=Vector3D(-.3, .75, 0)
             lbbox=[-.1,-.3,-.4,.1,.3,.4]#local bbox
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             create=Operation("create", Entity(name = "wood", type = "wood", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
@@ -157,21 +157,21 @@ class Furnishings(server.Task):
             res.append(create)
             #Top part
             chunk_loc.coordinates =Point3D([0,0,0])
-            offset=Vector3D(0,0,4)
+            offset=Vector3D(0, 4, 0)
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             lbbox=[-3,-.1,-1,3,.1,2]
             create=Operation("create", Entity(name = "wood", type = "wood", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
             res.append(create)
             #left part
             chunk_loc.coordinates =Point3D([0,0,0])
-            offset=Vector3D(-2,0,2)
+            offset=Vector3D(-2, 2, 0)
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             lbbox=[-1,-.1,-.5,1,.1,.5]
             create=Operation("create", Entity(name = "wood", type = "wood", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
             res.append(create)
             #Right part
             chunk_loc.coordinates =Point3D([0,0,0])
-            offset=Vector3D(2,0,2)
+            offset=Vector3D(2, 2, 0)
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             lbbox=[-1,-.1,-.5,1,.1,.5]
             create=Operation("create", Entity(name = "wood", type = "wood", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
@@ -193,21 +193,21 @@ class Furnishings(server.Task):
             res.append(create)
             #make wall 1 of fireplace
             chunk_loc.coordinates =Point3D([0,0,0])
-            offset=Vector3D(-1.6,0,0)
+            offset=Vector3D(-1.6, 0, 0)
             lbbox=[-.1,-1,-.1,.1,1,1.5]
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             create=Operation("create", Entity(name = "boulder", type = "boulder", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
             res.append(create)
             #make wall 2 of fireplace
             chunk_loc.coordinates =Point3D([0,0,0])
-            offset=Vector3D(1.6,0,0)
+            offset=Vector3D(1.6, 0, 0)
             lbbox=[-.1,-1,-.1,.1,1,1.5]
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             create=Operation("create", Entity(name = "boulder", type = "boulder", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
             res.append(create)
             #make back of fireplace
             chunk_loc.coordinates =Point3D([0,0,0])
-            offset=Vector3D(0,-.6,0)
+            offset=Vector3D(0, 0, .6)
             lbbox=[-2,-.1,-.1,2,.1,1.5]
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             create=Operation("create", Entity(name = "boulder", type = "boulder", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
@@ -218,14 +218,14 @@ class Furnishings(server.Task):
             tar = raw_materials.pop()
             lumberlength=tar.location.bbox.far_point[2]-tar.location.bbox.near_point[2]
             chunk_loc.orientation=Quaternion([.5,.5,.5,.5])
-            offset=Vector3D(-lumberlength/2,0,0)
+            offset=Vector3D(-lumberlength/2, 0, 0)
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             create=Operation("move", Entity(tar.id, location = chunk_loc,mode="fixed"), to = tar)
             res.append(create)
             #Top part of wall frame
             chunk_loc.coordinates =Point3D([0,0,0])
             tar = raw_materials.pop()
-            offset=Vector3D(-lumberlength/2,0,lumberlength*.8)
+            offset=Vector3D(-lumberlength/2, lumberlength*.8, 0)
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             chunk_loc.orientation=Quaternion([.5,.5,.5,.5])
             create=Operation("move", Entity(tar.id, location = chunk_loc,mode="fixed"), to = tar)
@@ -233,7 +233,7 @@ class Furnishings(server.Task):
             #Left part of wall frame
             chunk_loc.coordinates =Point3D([0,0,0])
             tar = raw_materials.pop()
-            offset=Vector3D((lumberlength/2.0)*-.8,0,lumberlength*.8)
+            offset=Vector3D((lumberlength/2.0)*-.8, lumberlength*.8, 0)
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             chunk_loc.orientation=Quaternion([.707,.707,0,0])
             create=Operation("move", Entity(tar.id, location = chunk_loc,mode="fixed"), to = tar)
@@ -241,7 +241,7 @@ class Furnishings(server.Task):
             #Right part of wall frame
             chunk_loc.coordinates =Point3D([0,0,0])
             tar = raw_materials.pop()
-            offset=Vector3D((lumberlength/2.0)*.8,0,lumberlength*.8)
+            offset=Vector3D((lumberlength/2.0)*.8, lumberlength*.8, 0)
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             chunk_loc.orientation=Quaternion([.707,.707,0,0])
             create=Operation("move", Entity(tar.id, location = chunk_loc,mode="fixed"), to = tar)
@@ -249,7 +249,7 @@ class Furnishings(server.Task):
             #Center part of wall frame
             chunk_loc.coordinates =Point3D([0,0,0])
             tar = raw_materials.pop()
-            offset=Vector3D((lumberlength/2.0)*-.8,0,lumberlength*.1)
+            offset=Vector3D((lumberlength/2.0)*-.8, lumberlength*.1, 0)
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             chunk_loc.orientation=Quaternion([.27,.27,.65,.65])
             create=Operation("move", Entity(tar.id, location = chunk_loc,mode="fixed"), to = tar)
@@ -263,14 +263,14 @@ class Furnishings(server.Task):
                 count = count - 1
             #create the top, it is one large wood
             lbbox=[-4,-4,-.1,4,4,.3]#local bbox
-            offset=Vector3D(0,0,5)
+            offset=Vector3D(0, 5, 0)
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             create=Operation("create", Entity(name = "wood", type = "wood", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
             res.append(create)
             #create column
             chunk_loc.coordinates =Point3D([0,0,0])
             lbbox=[-.5,-.5,-.1,.5,.5,6]#local bbox
-            offset=Vector3D(0,0,0)
+            offset=Vector3D(0, 0, 0)
             chunk_loc.coordinates=chunk_loc.coordinates+offset
             create=Operation("create", Entity(name = "lumber", type = "lumber", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
             res.append(create)

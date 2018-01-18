@@ -76,7 +76,7 @@ class Pioneeringconstruction(server.Task):
                 chunk_loc.coordinates = Point3D([0,0,0]) #self.pos
                 #.707 is sin(.5) which is needed for a 90 degree rotation
                 chunk_loc.orientation=Quaternion([.707,0,.707,0])
-                offset=Vector3D(-(1.5*lumber_length),-(2.5*lumber_length),0)
+                offset=Vector3D(-(1.5*lumber_length), 0, (2.5*lumber_length))
                 chunk_loc.coordinates=chunk_loc.coordinates+offset
                 
             move=Operation("move", Entity(tar.id,location=chunk_loc,

@@ -770,7 +770,7 @@ def _setup_camp(m):
     for i in range(10, 350, 5):
         direction=Vector3D(sin(radians(i)) * uniform(0,2),
                            cos(radians(i)) * uniform(0,2), 10).unit_vector()
-        orient=Quaternion(Vector3D(0,0,1), direction)
+        orient=Quaternion(Vector3D(0, 1, 0), direction)
         m.make('stake', pos=(100 + 14 * sin(radians(i)),
                              -50 + 16 * cos(radians(i)), -1),
                bbox=[-0.5,-0.5,0,0.5,0.5,5 + uniform(0,2)],

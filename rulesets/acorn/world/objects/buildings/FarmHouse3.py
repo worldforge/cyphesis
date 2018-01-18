@@ -13,25 +13,25 @@ class Farmhouse_deco_3(Thing):
     def setup_operation(self, op):
         ret = Oplist()
         # South wall
-	loc = Location(self, Vector3D(1,-1,0))
-        loc.bbox = Vector3D(10,0.2,5)
+	loc = Location(self, Vector3D(1, 0, 1))
+        loc.bbox = Vector3D(10, 5, -0.2)
         ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
         # West wall
-	loc = Location(self, Vector3D(1,-1,0))
-        loc.bbox = Vector3D(0.2,6,5)
+	loc = Location(self, Vector3D(1, 0, 1))
+        loc.bbox = Vector3D(0.2, 5, -6)
         ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
-	loc = Location(self, Vector3D(1,7,0))
-        loc.bbox = Vector3D(0.2,6,5)
+	loc = Location(self, Vector3D(1, 0, -7))
+        loc.bbox = Vector3D(0.2, 5, -6)
         ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
         # North wall with door
-	loc = Location(self, Vector3D(1,12.8,0))
-        loc.bbox = Vector3D(4,0.2,5)
+	loc = Location(self, Vector3D(1, 0, -12.8))
+        loc.bbox = Vector3D(4, 5, -0.2)
         ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
-	loc = Location(self, Vector3D(7,12.8,0))
-        loc.bbox = Vector3D(4,0.2,5)
+	loc = Location(self, Vector3D(7, 0, -12.8))
+        loc.bbox = Vector3D(4, 5, -0.2)
         ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
         # East wall
-	loc = Location(self, Vector3D(10.8,-1,0))
-        loc.bbox = Vector3D(0.2,14,5)
+	loc = Location(self, Vector3D(10.8, 0, 1))
+        loc.bbox = Vector3D(0.2, 5, -14)
         ret.append(Operation("create",Entity(name='wall',parent='wall',location=loc),to=self))
         return ret
