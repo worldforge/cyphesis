@@ -62,7 +62,7 @@ class harvest_resource(Goal):
             #Only chop down adult plants which have grown at least 1.1 times their adult size
             #(so that we give the trees some time to disperse seeds, which they only do when they are adult)
             sizeAdult = entity.sizeAdult
-            entity_height = entity.location.bbox.far_point.z 
+            entity_height = entity.location.bbox.far_point.y
             if entity_height >= (sizeAdult * 1.1):
                 return True
             return False

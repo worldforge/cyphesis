@@ -118,8 +118,8 @@ class Heaping(server.Task):
             raise Heaping.Obstructed, "Another mod is in the way"
     def _create_initial_mod(self):
         print "no existing mod"
-        z=self.character.location.coordinates.z + 1.0
-        modmap = {'height': z,
+        y=self.character.location.coordinates.y + 1.0
+        modmap = {'height': y,
                   'shape': Polygon([[ -0.7, -0.7 ],
                                     [ -1.0, 0.0 ],
                                     [ -0.7, 0.7 ],

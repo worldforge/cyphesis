@@ -68,7 +68,7 @@ void Plant::dropFruit(OpVector & res, const std::string& fruitName)
 
     debug(std::cout << "Dropping a fruit from "
                     << m_type << " plant." << std::endl << std::flush;);
-    float height = m_location.bBox().highCorner().z();
+    float height = m_location.bBox().highCorner().y();
     float rx = m_location.pos().x() + uniform( height,
                                               -height);
     float rz = m_location.pos().z() + uniform( height,
@@ -275,7 +275,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
                 getAttrType("sizeAdult", sizeAdult, Element::TYPE_INT) == 0) {
             //Only drop fruits if we're an adult
             if (m_location.bBox().isValid() &&
-                    (m_location.bBox().highCorner().z() >= sizeAdult.asNum())) {
+                    (m_location.bBox().highCorner().y() >= sizeAdult.asNum())) {
                 handleFruiting(res, *fruits_prop);
             }
         }
@@ -322,7 +322,7 @@ void Plant::TouchOperation(const Operation & op, OpVector & res)
             || getAttrType("sizeAdult", sizeAdult, Element::TYPE_INT) == 0) {
         //Only drop fruits if we're an adult
         if (m_location.bBox().isValid()
-                && (m_location.bBox().highCorner().z() >= sizeAdult.asNum())) {
+                && (m_location.bBox().highCorner().y() >= sizeAdult.asNum())) {
 
             Property<int> * fruits_prop = modPropertyType<int>("fruits");
             if (fruits_prop != nullptr) {
@@ -368,7 +368,7 @@ void Plant::scaleArea() {
             if (area_radius != 0.0f) {
 
                 //We're only interested in the horizontal radius of the plant
-                WFMath::AxisBox<2> flat_bbox(WFMath::Point<2>(bbox.lowerBound(0), bbox.lowerBound(1)), WFMath::Point<2>(bbox.upperBound(0), bbox.upperBound(1)));
+                WFMath::AxisBox<2> flat_bbox(WFMath::Point<2>(bbox.lowerBound(0), bbox.lowerBound(2)), WFMath::Point<2>(bbox.upperBound(0), bbox.upperBound(2)));
                 auto plant_radius = flat_bbox.boundingSphere().radius();
 
                 auto desired_radius = plant_radius * AREA_SCALING_FACTOR;

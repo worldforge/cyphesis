@@ -53,13 +53,13 @@ class GeometryProperty : public Property<Atlas::Message::MapType>
         static const std::string property_name;
         static const std::string property_atlastype;
 
-        GeometryProperty();
+        GeometryProperty() = default;
 
-        virtual ~GeometryProperty();
+        ~GeometryProperty() override = default;
 
-        virtual void set(const Atlas::Message::Element&);
+        void set(const Atlas::Message::Element&) override;
 
-        virtual GeometryProperty* copy() const;
+        GeometryProperty* copy() const override;
 
         /**
          * Creates a new shape instance for the supplied bounding box, and setting the center of mass offset.

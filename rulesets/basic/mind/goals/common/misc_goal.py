@@ -340,7 +340,7 @@ class amble(Goal):
         #op = Operation("eat", ground)
         #print "Fish ambling"
         target = Location(me.location.parent, me.location.coordinates)
-        target.coordinates = Vector3D(target.coordinates.x + uniform(-1.5,1.5), target.coordinates.y+ uniform(-1.5,1.5), target.coordinates.z)
+        target.coordinates = Vector3D(target.coordinates.x + uniform(-1.5,1.5), target.coordinates.y, target.coordinates.z+ uniform(-1.5,1.5))
         target.velocity = Vector3D(1,0,0)
         return Operation("move",  Entity(me.id, location=target))
 
@@ -421,7 +421,7 @@ class peck(feed):
         #ground = world.id 
         #op = Operation("eat", ground)
         target = Location(me.location.parent, me.location.coordinates)
-        target.coordinates = Vector3D(target.coordinates.x + uniform(-1.5,1.5), target.coordinates.y+ uniform(-1.5,1.5), target.coordinates.z)
+        target.coordinates = Vector3D(target.coordinates.x + uniform(-1.5,1.5), target.coordinates.y, target.coordinates.z+ uniform(-1.5,1.5))
         target.velocity = Vector3D(1,0,0)
         #op += Operation("move",  Entity(me.id, location=target))
         return Operation("move",  Entity(me.id, location=target))
@@ -680,12 +680,12 @@ class keep(Goal):
         where=me.find_thing(self.where)[0]
         to_location=Location(where,Point3D(0,0,0))
         minx=where.location.bbox.near_point.x
-        miny=where.location.bbox.near_point.y
+        minz=where.location.bbox.near_point.z
         maxx=where.location.bbox.far_point.x
-        maxy=where.location.bbox.far_point.y
+        maxz=where.location.bbox.far_point.z
         for thing in thing_all:
             if thing.location.parent.id!=where.id and thing.location.parent.id!=me.id:
-                thingloc=Location(where,Point3D(uniform(minx,maxx),uniform(miny,maxy),0))
+                thingloc=Location(where,Point3D(uniform(minx,maxx),0,uniform(minz,maxz)))
                 result.append(Operation("move",Entity(thing.id, location=thingloc)))
         return result
 

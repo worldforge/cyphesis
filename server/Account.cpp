@@ -478,7 +478,7 @@ void Account::SetOperation(const Operation & op, OpVector & res)
                         << std::endl << std::flush;);
         const BBox & bbox = e->m_location.bBox();
         if (bbox.isValid()) {
-            float old_height = bbox.highCorner().z() - bbox.lowCorner().z();
+            float old_height = bbox.highCorner().y() - bbox.lowCorner().y();
             float scale = height.asNum() / old_height;
             BBox newBox(WFMath::Point<3>(bbox.lowCorner().x() * scale,
                                          bbox.lowCorner().y() * scale,

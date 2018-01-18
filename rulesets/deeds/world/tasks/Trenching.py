@@ -76,9 +76,9 @@ class Trenching(server.Task):
                     return
                 self.surface = surface
 
-                z=self.character.location.coordinates.z - 1.0
+                y=self.character.location.coordinates.y - 1.0
                 modmap = {
-                          'height': z,
+                          'height': y,
                           'shape': {
                                     'points': [[ -1.0, -1.0 ],
                                                [ -1.0, 1.0 ],

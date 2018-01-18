@@ -168,7 +168,7 @@ void TerrainProperty::set(const Element & ent)
             }
 
             int x = (int)point[0].asNum();
-            int y = -(int)point[1].asNum();
+            int y = (int)point[1].asNum();
             double h = point[2].asNum();
             double roughness;
             double falloff;
@@ -373,9 +373,9 @@ bool TerrainProperty::getHeightAndNormal(float x,
     return m_data.getHeightAndNormal(x, y, height, normal);
 }
 
-/// \brief Get a number encoding the surface type at the given x,y coordinates
+/// \brief Get a number encoding the surface type at the given x,z coordinates
 ///
-/// @param pos the x,y coordinates of the point on the terrain
+/// @param pos the x,z coordinates of the point on the terrain
 /// @param material a reference to the integer to be used to store the
 /// material identifier at this location.
 int TerrainProperty::getSurface(const Point3D & pos, int & material)

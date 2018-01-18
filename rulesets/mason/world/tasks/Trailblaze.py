@@ -98,8 +98,8 @@ class Trailblaze(server.Task):
             if i == 0:
                 # The first point on the path. Make it the start of both sides
                 vtn = (self.points[i + 1] - point).unit_vector()
-                area.append([local_point.x - 2 * vtn.y, local_point.y + 2 * vtn.x])
-                area_tail.append([local_point.x + 2 * vtn.y, local_point.y - 2 * vtn.x])
+                area.append([local_point.x - 2 * vtn.z, local_point.z + 2 * vtn.x])
+                area_tail.append([local_point.x + 2 * vtn.z, local_point.z - 2 * vtn.x])
                 # area_tail.append([point.x, point.y])
                 continue
 
@@ -114,16 +114,16 @@ class Trailblaze(server.Task):
             if i == count - 1:
                 # The end point of the path. Make it the end of left side.
                 vfp = (point - self.points[i - 1]).unit_vector()
-                area.append([local_point.x - 2 * vfp.y, local_point.y + 2 * vfp.x])
-                area_tail.append([local_point.x + 2 * vfp.y, local_point.y - 2 * vfp.x])
+                area.append([local_point.x - 2 * vfp.z, local_point.z + 2 * vfp.x])
+                area_tail.append([local_point.x + 2 * vfp.z, local_point.z - 2 * vfp.x])
                 continue
             # vector from previous
             vfp = (point - self.points[i - 1]).unit_vector()
             # vector to next
             vtn = (self.points[i + 1] - point).unit_vector()
 
-            area.append([local_point.x - vfp.y - vtn.y, local_point.y + vfp.x + vtn.x])
-            area_tail.append([local_point.x + vfp.y + vtn.y, local_point.y - vfp.x - vtn.x])
+            area.append([local_point.x - vfp.z - vtn.z, local_point.z + vfp.x + vtn.x])
+            area_tail.append([local_point.x + vfp.z + vtn.z, local_point.z - vfp.x - vtn.x])
 
 
         # Reverse the right side of the path

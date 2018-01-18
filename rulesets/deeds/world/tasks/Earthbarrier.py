@@ -97,10 +97,10 @@ class Earthbarrier(server.Task):
                     return mod
             raise Earthbarrier.Obstructed, "Another mod is in the way"
     def _create_initial_mod(self):
-        z=self.character.location.coordinates.z + 1.0
-        mod_path = Line([[ self.pos.x, self.pos.y ]])
+        y=self.character.location.coordinates.y + 1.0
+        mod_path = Line([[ self.pos.x, self.pos.z ]])
         modmap = {
-                  'height': z,
+                  'height': y,
                   'shape': {
                             'points': [[ -1.0, -1.0 ],
                                        [ -1.0, 1.0 ],

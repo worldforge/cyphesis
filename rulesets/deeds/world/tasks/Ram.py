@@ -41,7 +41,7 @@ class Ram(server.Task):
         target_location.velocity=Vector3D(0,0,-0.5)
         target_entity_moving = Entity(self.target().id, location = target_location)
 
-        target_location = Location(self.target().location.parent, Point3D(self.target().location.coordinates.x, self.target().location.coordinates.y, self.target().location.coordinates.z - 0.1))
+        target_location = Location(self.target().location.parent, Point3D(self.target().location.coordinates.x, self.target().location.coordinates.y - 0.1, self.target().location.coordinates.z))
         target_location.velocity=Vector3D(0,0,0)
         target_entity = Entity(self.target().id, location = target_location)
 

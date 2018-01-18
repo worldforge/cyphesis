@@ -564,7 +564,7 @@ class NPCMind(server.Mind):
             k_type = type(k)
             if k_type==type(Location()):
                 dist = distance_to(self.location, k)
-                dist.z = 0
+                dist.y = 0
                 distmag = dist.mag()
                 if distmag < 8:
                     k = 'right here'
@@ -904,7 +904,7 @@ class NPCMind(server.Mind):
     ########## turn to face other entity
     def face(self, other):
         vector = distance_to(self.location, other.location)
-        vector.z = 0
+        vector.y = 0
         if vector.square_mag() < 0.1:
             return
         vector = vector.unit_vector()

@@ -30,14 +30,6 @@
 const std::string GeometryProperty::property_name = "geometry";
 const std::string GeometryProperty::property_atlastype = "map";
 
-GeometryProperty::GeometryProperty()
-{
-}
-
-GeometryProperty::~GeometryProperty()
-{
-}
-
 void GeometryProperty::set(const Atlas::Message::Element& data)
 {
     Property<Atlas::Message::MapType>::set(data);

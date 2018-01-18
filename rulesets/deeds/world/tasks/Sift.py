@@ -15,16 +15,16 @@ class Sift(server.Task):
     
     materials = ['earth']
     def get_quality(self, location, target, moisture):
-        z = location.z
-        zval = math.exp(-z*z/2)
+        y = location.y
+        yval = math.exp(-y*y/2)
         if not hasattr(target, 'location'):
             self.irrelevant()
             return 0
-        normal = target.location.parent.terrain.get_normal(location.x, location.y);
+        normal = target.location.parent.terrain.get_normal(location.x, location.z);
         print normal
         i = Vector3D(1, 0, 0)
         slope = normal.dot(i) / normal.mag()
-        return zval + moisture + (1 - slope)
+        return yval + moisture + (1 - slope)
 
     def cut_operation(self, op):
         """ Op handler for cut op which activates this task """

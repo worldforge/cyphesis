@@ -29,20 +29,20 @@ speed = 20
 # This is the size the main goal stops from growing to reporducing #
 sizeadult = 5
 
-# Cordinate sizes. These are the left and right mutiples of each cordinates. To work out the actual size its the current codinate + size * the below number
+# Coordinate sizes. These are the left and right mutiples of each cordinates. To work out the actual size its the current codinate + size * the below number
   # X or width
 x1 = 0.5
 x2 = 0.5
-  # Y or long axies  
+  # Y or height
 y1 = 0.5
-y2 = 0.5
-  # Z or height
+y2 = 1.5
+  # Z or long axies
 z1 = 0.5
-z2 = 1.5
+z2 = 0.5
 # These are the maximums widths between the 2 above cordinates
 xMax = 5
-yMax = 5
-zMax = 40
+yMax = 40
+zMax = 5
 
 # Chances
   # The chance for a flower to germinate
@@ -128,9 +128,9 @@ class Tree(Thing):
                 if debug_tree:
                     print "Creating Fruit"
                 randx = uniform ( self.location.coordinates.x - cs( x1 * self.height, x2 * self.height, xMax) , self.location.coordinates.x + cs( x2 * self.height, x1 * self.height, xMax) )
-                randy = uniform ( self.location.coordinates.y - cs( y1 * self.height, y2 * self.height, yMax) , self.location.coordinates.y + cs( y2 * self.height, y1 * self.height, yMax) )
+                randy = 0
+                randz = uniform ( self.location.coordinates.z - cs( z1 * self.height, z2 * self.height, zMax) , self.location.coordinates.z + cs( z2 * self.height, z1 * self.height, zMax) )
                 #randz = uniform ( self.location.coordinates.z - cs( z1 * self.size, z2 * self.size, zMax) , self.location.coordinates.z + cs( z2 * self.size, z1 * self.size, zMax) )
-                randz = 0
                 if hasattr(self,"coords_modify"):
                     randx,randy,randz=coords_modify(randx,randy,randz)
                 fruit=Entity(name=self.fruitname,location=Location(server.world,Vector3D(randx,randy,randz)),parent=self.fruitname)

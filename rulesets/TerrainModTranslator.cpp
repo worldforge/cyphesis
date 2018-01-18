@@ -154,11 +154,11 @@ float TerrainModTranslator::parsePosition(const WFMath::Point<3> & pos, const Ma
 			const Element& modHeightElem = I->second;
 			if (modHeightElem.isNum()) {
 				float heightoffset = modHeightElem.asNum();
-				return pos.z() + heightoffset;
+				return pos.y() + heightoffset;
 			}
 		}
 	}
-	return pos.z();
+	return pos.y();
 }
 
 /**

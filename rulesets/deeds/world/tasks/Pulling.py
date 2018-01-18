@@ -49,8 +49,8 @@ class Pulling(server.Task):
         # Replicate the diffrence in position to the corresponding change in height.
         target_location = Location(self.target().location.parent,
                                    Point3D(self.target().location.coordinates.x, 
-                                   self.target().location.coordinates.y, 
-                                   self.target().location.coordinates.z + diff))
+                                   self.target().location.coordinates.y + diff,
+                                   self.target().location.coordinates.z))
         target_location.velocity=Vector3D(0,0,0)
         target_entity = Entity(self.target().id, location = target_location)
 

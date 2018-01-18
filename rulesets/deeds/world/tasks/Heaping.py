@@ -97,11 +97,11 @@ class Heaping(server.Task):
 
         box = mod.terrainmod.shape.footprint()
         mod.bbox = [box.low_corner().x,
-                    box.low_corner().y,
                     0,
+                    box.low_corner().z,
                     box.high_corner().x,
-                    box.high_corner().y,
-                    mod.terrainmod.height]
+                    mod.terrainmod.height,
+                    box.high_corner().z]
 
         # We have modified the attribute in place,
         # so must send an update op to propagate
@@ -118,8 +118,8 @@ class Heaping(server.Task):
             raise Heaping.Obstructed, "Another mod is in the way"
     def _create_initial_mod(self):
         print "no existing mod"
-        z=self.character.location.coordinates.z + 1.0
-        modmap = {'height': z,
+        y=self.character.location.coordinates.y + 1.0
+        modmap = {'height': y,
                   'shape': Polygon([[ -0.7, -0.7 ],
                                     [ -1.0, 0.0 ],
                                     [ -0.7, 0.7 ],

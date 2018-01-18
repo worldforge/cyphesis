@@ -39,7 +39,7 @@ static int test_reparse()
 {
     // Call parseData with polygon shape and valid points
     {
-        WFMath::Point<3> pos(0,0,-1);
+        WFMath::Point<3> pos(0, -1, 0);
         WFMath::Quaternion orientation;
 
         MapType mod;
@@ -90,7 +90,7 @@ int main()
 
     // Call parsePosition with empty height data
     {
-        WFMath::Point<3> pos(0,0,-1);
+        WFMath::Point<3> pos(0, -1, 0);
 
         MapType data;
         float z = TerrainModTranslator::parsePosition(pos, data);
@@ -99,7 +99,7 @@ int main()
 
     // Call parsePosition with int height data
     {
-        WFMath::Point<3> pos(0,0,-1);
+        WFMath::Point<3> pos(0, -1, 0);
 
         MapType data;
         data["height"] = 1;
@@ -109,7 +109,7 @@ int main()
 
     // Call parsePosition with float height data
     {
-        WFMath::Point<3> pos(0,0,-1);
+        WFMath::Point<3> pos(0, -1, 0);
 
         MapType data;
         data["height"] = 1.;
@@ -119,7 +119,7 @@ int main()
 
     // Call parsePosition with bad (string) height data
     {
-        WFMath::Point<3> pos(0,0,-1);
+        WFMath::Point<3> pos(0, -1, 0);
 
         MapType data;
         data["height"] = "1.";
@@ -129,7 +129,7 @@ int main()
 
     // Call parsePosition with int heightoffset data
     {
-        WFMath::Point<3> pos(0,0,-1);
+        WFMath::Point<3> pos(0, -1, 0);
 
         MapType data;
         data["heightoffset"] = 2;
@@ -139,7 +139,7 @@ int main()
 
     // Call parsePosition with float heightoffset data
     {
-        WFMath::Point<3> pos(0,0,-1);
+        WFMath::Point<3> pos(0, -1, 0);
 
         MapType data;
         data["heightoffset"] = 2.;
@@ -149,7 +149,7 @@ int main()
 
     // Call parsePosition with bad (string) heightoffset data
     {
-        WFMath::Point<3> pos(0,0,-1);
+        WFMath::Point<3> pos(0, -1, 0);
 
         MapType data;
         data["heightoffset"] = "1.";
@@ -168,7 +168,7 @@ int main()
     // Call parseData with empty map
     {
         TerrainModTranslator * titm = new TerrainModTranslator(MapType());
-        WFMath::Point<3> pos(0,0,-1);
+        WFMath::Point<3> pos(0, -1, 0);
         WFMath::Quaternion orientation;
 
         Mercator::TerrainMod* ret = titm->parseData(pos, orientation);
@@ -185,7 +185,7 @@ int main()
         mod["shape"] = shape_desc;
 
         TerrainModTranslator * titm = new TerrainModTranslator(mod);
-        WFMath::Point<3> pos(0,0,-1);
+        WFMath::Point<3> pos(0, -1, 0);
         WFMath::Quaternion orientation;
 
         Mercator::TerrainMod* ret = titm->parseData(pos, orientation);
@@ -203,7 +203,7 @@ int main()
         mod["shape"] = shape_desc;
 
         TerrainModTranslator * titm = new TerrainModTranslator(mod);
-        WFMath::Point<3> pos(0,0,-1);
+        WFMath::Point<3> pos(0, -1, 0);
         WFMath::Quaternion orientation;
 
         Mercator::TerrainMod* ret = titm->parseData(pos, orientation);
@@ -223,7 +223,7 @@ int main()
         mod["type"] = "levelmod";
 
         TerrainModTranslator * titm = new TerrainModTranslator(mod);
-        WFMath::Point<3> pos(0,0,-1);
+        WFMath::Point<3> pos(0, -1, 0);
         WFMath::Quaternion orientation;
 
         Mercator::TerrainMod* ret = titm->parseData(pos, orientation);
@@ -243,7 +243,7 @@ int main()
         mod["type"] = "levelmod";
 
         TerrainModTranslator * titm = new TerrainModTranslator(mod);
-        WFMath::Point<3> pos(0,0,-1);
+        WFMath::Point<3> pos(0, -1, 0);
         WFMath::Quaternion orientation(0,0,0,1);
 
         Mercator::TerrainMod* ret = titm->parseData(pos, orientation);
@@ -262,7 +262,7 @@ int main()
         mod["type"] = "levelmod";
 
         TerrainModTranslator * titm = new TerrainModTranslator(mod);
-        WFMath::Point<3> pos(0,0,-1);
+        WFMath::Point<3> pos(0, -1, 0);
         WFMath::Quaternion orientation;
 
         Mercator::TerrainMod* ret = titm->parseData(pos, orientation);
@@ -282,7 +282,7 @@ int main()
         mod["type"] = "levelmod";
 
         TerrainModTranslator * titm = new TerrainModTranslator(mod);
-        WFMath::Point<3> pos(0,0,-1);
+        WFMath::Point<3> pos(0, -1, 0);
         WFMath::Quaternion orientation;
 
         Mercator::TerrainMod* ret = titm->parseData(pos, orientation);
@@ -302,7 +302,7 @@ int main()
         mod["type"] = "levelmod";
 
         TerrainModTranslator * titm = new TerrainModTranslator(mod);
-        WFMath::Point<3> pos(0,0,-1);
+        WFMath::Point<3> pos(0, -1, 0);
         WFMath::Quaternion orientation;
 
         Mercator::TerrainMod* ret = titm->parseData(pos, orientation);

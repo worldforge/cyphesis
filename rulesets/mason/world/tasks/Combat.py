@@ -137,7 +137,7 @@ class Combat(server.Task):
         """ Turn to face that another character, ensuring that
             we are facing the character we are hitting """
         vector = distance_to(self.character.location, other.location)
-        vector.z = 0
+        vector.y = 0
         if vector.square_mag() < 0.1:
             return
         vector = vector.unit_vector()
