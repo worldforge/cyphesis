@@ -20,6 +20,7 @@
 
 #include "common/log.h"
 #include "common/compose.hpp"
+#include "common/debug.h"
 
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/SmartPtr.h>
@@ -31,12 +32,15 @@ using Atlas::Objects::Root;
 void AtlasFileLoader::objectArrived(const Root & obj)
 {
     if (obj->isDefaultId()) {
-        log(ERROR, "Object without ID read from file");
+        log(ERROR, String::compose("Object without ID read from file %1", m_filename));
+        std::stringstream ss;
+        debug_dump(obj, ss);
+        log(ERROR, "Object: " + ss.str());
         return;
     }
     const std::string & id = obj->getId();
     if (m_messages.find(id) != m_messages.end()) {
-        log(WARNING, String::compose("Duplicate object ID \"%1\" loaded.", id));
+        log(WARNING, String::compose("Duplicate object ID \"%1\" loaded from file %2.", id, m_filename));
     }
     m_messages[id] = obj;
     ++m_count;
@@ -49,7 +53,7 @@ void AtlasFileLoader::objectArrived(const Root & obj)
 AtlasFileLoader::AtlasFileLoader(const std::string & filename,
                                  std::map<std::string, Root> & m) :
                 m_file(filename.c_str(), std::ios::in),
-                m_count(0), m_messages(m)
+                m_count(0), m_messages(m), m_filename(filename)
 {
     m_codec = new Atlas::Codecs::XML(m_file, m_file, *this);
 }

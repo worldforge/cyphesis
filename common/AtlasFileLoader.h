@@ -37,6 +37,8 @@ class AtlasFileLoader : public Atlas::Objects::ObjectsDecoder {
     /// Store for the messages loaded
     std::map<std::string, Atlas::Objects::Root> & m_messages;
 
+    std::string m_filename;
+
     virtual void objectArrived(const Atlas::Objects::Root & obj);
   public:
     AtlasFileLoader(const std::string & filename,
