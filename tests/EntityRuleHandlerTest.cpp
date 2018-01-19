@@ -251,36 +251,6 @@ int PythonClass::refresh()
     return 0;
 }
 
-EntityKit::EntityKit()
-{
-}
-EntityKit::~EntityKit()
-{
-}
-
-void EntityKit::updateProperties()
-{
-}
-
-void EntityKit::addProperties()
-{
-}
-
-EntityFactoryBase::EntityFactoryBase()
-{
-}
-EntityFactoryBase::~EntityFactoryBase()
-{
-}
-
-void EntityFactoryBase::updateProperties()
-{
-}
-
-void EntityFactoryBase::addProperties()
-{
-}
-
 Inheritance * Inheritance::m_instance = NULL;
 
 Inheritance::Inheritance() : noClass(0)
@@ -314,4 +284,22 @@ void log(LogLevel lvl, const std::string & msg)
 {
 }
 
+#include "stubs/common/stubEntityKit.h"
+#include "stubs/server/stubEntityFactory.h"
+
+class Thing;
+class Character;
+class Creator;
+class Plant;
+class Stackable;
+class Entity;
+class World;
+
+template class EntityFactory<Entity>;
+template class EntityFactory<Thing>;
+template class EntityFactory<Character>;
+template class EntityFactory<Creator>;
+template class EntityFactory<Plant>;
+template class EntityFactory<Stackable>;
+template class EntityFactory<World>;
 

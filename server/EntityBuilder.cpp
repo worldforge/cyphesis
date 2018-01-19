@@ -41,38 +41,6 @@ using Atlas::Objects::Entity::RootEntity;
 
 using String::compose;
 
-class Character;
-
-class Creator;
-
-class Entity;
-
-class Plant;
-
-class Stackable;
-
-class Thing;
-
-class World;
-
-extern template
-class EntityFactory<Character>;
-
-extern template
-class EntityFactory<Creator>;
-
-extern template
-class EntityFactory<Thing>;
-
-extern template
-class EntityFactory<Plant>;
-
-extern template
-class EntityFactory<Stackable>;
-
-extern template
-class EntityFactory<World>;
-
 static const bool debug_flag = false;
 
 EntityBuilder* EntityBuilder::m_instance = NULL;
@@ -81,36 +49,6 @@ EntityBuilder::EntityBuilder()
 {
     // The property manager instance installs itself at construction time.
     new CorePropertyManager();
-
-    installBaseFactory("world", "game_entity", new EntityFactory<World>());
-    EntityFactory<Thing>* tft = new EntityFactory<Thing>();
-    tft->m_attributes["mode"] = "planted";
-    installBaseFactory("thing", "game_entity", tft);
-    auto characterFactory = new EntityFactory<Character>();
-    characterFactory->m_attributes["density"] = 125;
-    installBaseFactory("character", "thing", characterFactory);
-    auto creatorFactory = new EntityFactory<Creator>();
-    creatorFactory->m_attributes["transient"] = -1;
-    creatorFactory->m_attributes["solid"] = 0;
-
-    //Creator agents should have a bbox, so that they easily can be made solid for testing purposes.
-    creatorFactory->m_attributes["bbox"] = ListType {-.5, 0, -0.5, .5, 1, .5};
-    creatorFactory->m_attributes["geometry"] = MapType {{"shape", "sphere"}};
-    creatorFactory->m_attributes["friction"] = 10.f;
-    creatorFactory->m_attributes["angularfactor"] = ListType {0, 0, 0};
-
-    installBaseFactory("creator", "character", creatorFactory);
-    creatorFactory->addProperties();
-    auto plantFactory = new EntityFactory<Plant>();
-    plantFactory->m_attributes["friction"] = 1.0f;
-    plantFactory->m_attributes["mode"] = "planted";
-    plantFactory->m_attributes["status"] = 1.0f;
-    //Plants should by default be represented by an upright cylinder.
-    plantFactory->m_attributes["geometry"] = MapType {{"shape", "cylinder-z"}};
-    installBaseFactory("plant", "thing", plantFactory);
-    plantFactory->addProperties();
-
-    installBaseFactory("stackable", "thing", new EntityFactory<Stackable>());
     installBaseFactory("archetype", "root_entity", new ArchetypeFactory());
 
 }

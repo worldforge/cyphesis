@@ -31,6 +31,7 @@
 #include "server/EntityFactory.h"
 #include "server/ArchetypeFactory.h"
 
+#include "rulesets/Thing.h"
 #include "rulesets/Entity.h"
 #include "rulesets/Script.h"
 #include "rulesets/Task.h"
@@ -118,6 +119,8 @@ void EntityBuildertest::setup()
     e = new Entity("1", 1);
     test_world = new TestWorld(*e);
     EntityBuilder::init();
+
+    EntityBuilder::instance()->installBaseFactory("thing", "game_entity", new EntityFactory<Thing>());
 }
 
 void EntityBuildertest::teardown()

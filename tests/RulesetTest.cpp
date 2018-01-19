@@ -358,6 +358,7 @@ int main(int argc, char ** argv)
 #include "server/TaskRuleHandler.h"
 #include "server/ArchetypeRuleHandler.h"
 #include "server/Persistence.h"
+#include "server/EntityFactory.h"
 
 #include "common/AtlasFileLoader.h"
 #include "common/log.h"
@@ -409,6 +410,7 @@ int PropertyRuleHandler::update(const std::string & name,
     return 0;
 }
 
+#define STUB_EntityRuleHandler_check
 int EntityRuleHandler::check(const Atlas::Objects::Root & desc)
 {
     if (desc->getObjtype() != "class") {
@@ -417,20 +419,6 @@ int EntityRuleHandler::check(const Atlas::Objects::Root & desc)
     return m_builder->isTask(desc->getParent()) ? -1 : 0;
 }
 
-int EntityRuleHandler::install(const std::string & name,
-                             const std::string & parent,
-                             const Atlas::Objects::Root & description,
-                             std::string & dependent,
-                             std::string & reason)
-{
-    return 0;
-}
-
-int EntityRuleHandler::update(const std::string & name,
-                            const Atlas::Objects::Root & desc)
-{
-    return 0;
-}
 
 int TaskRuleHandler::check(const Atlas::Objects::Root & desc)
 {
@@ -618,3 +606,6 @@ void log(LogLevel lvl, const std::string & msg)
 std::string etc_directory;
 bool database_flag = true;
 
+#include "stubs/common/stubEntityKit.h"
+#include "stubs/server/stubEntityFactory.h"
+#include "stubs/server/stubEntityRuleHandler.h"

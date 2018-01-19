@@ -493,6 +493,8 @@ wf_add_test(CorePropertyManagerTest.cpp ${PROJECT_SOURCE_DIR}/server/CorePropert
 wf_add_test(WorldRouterIntegration.cpp ${PROJECT_SOURCE_DIR}/server/WorldRouter.cpp
         ${PROJECT_SOURCE_DIR}/server/EntityBuilder.cpp
         ${PROJECT_SOURCE_DIR}/server/EntityFactory.cpp
+        ${PROJECT_SOURCE_DIR}/server/EntityRuleHandler.cpp
+        ${PROJECT_SOURCE_DIR}/server/RuleHandler.cpp
         ${PROJECT_SOURCE_DIR}/server/TaskFactory.cpp
         ${PROJECT_SOURCE_DIR}/server/SpawnEntity.cpp
         ${PROJECT_SOURCE_DIR}/server/ArithmeticBuilder.cpp
@@ -539,6 +541,7 @@ wf_add_test(AccountConnectionCharacterIntegration.cpp ${PROJECT_SOURCE_DIR}/phys
         ${PROJECT_SOURCE_DIR}/rulesets/ExternalMind.cpp)
 wf_add_test(AccountIntegration.cpp ${PROJECT_SOURCE_DIR}/server/EntityBuilder.cpp
         ${PROJECT_SOURCE_DIR}/server/EntityFactory.cpp
+        ${PROJECT_SOURCE_DIR}/server/EntityRuleHandler.cpp
         ${PROJECT_SOURCE_DIR}/server/CorePropertyManager.cpp
         ${PROJECT_SOURCE_DIR}/server/ServerRouting.cpp
         ${PROJECT_SOURCE_DIR}/server/Lobby.cpp

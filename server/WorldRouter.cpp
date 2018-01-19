@@ -84,7 +84,7 @@ WorldRouter::WorldRouter(const SystemTime & time) :
 {
     m_initTime = time.seconds();
     m_gameWorld.incRef();
-    EntityBuilder::init();
+
     m_gameWorld.setType(Inheritance::instance().getType("world"));
     m_eobjects[m_gameWorld.getIntId()] = &m_gameWorld;
     //WorldTime tmp_date("612-1-1 08:57:00");

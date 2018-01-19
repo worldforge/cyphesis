@@ -27,6 +27,7 @@
 
 #include "server/Account.h"
 #include "server/EntityBuilder.h"
+#include "server/EntityRuleHandler.h"
 #include "server/Ruleset.h"
 #include "server/ServerRouting.h"
 #include "server/Connection.h"
@@ -149,6 +150,9 @@ Accountintegration::Accountintegration()
 void Accountintegration::setup()
 {
     m_time = new SystemTime;
+    EntityBuilder::init();
+    new EntityRuleHandler(EntityBuilder::instance());
+
     m_world = new WorldRouter(*m_time);
 
     m_server = new ServerRouting(*m_world, "noruleset", "unittesting",
@@ -402,6 +406,24 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "common/TypeNode.h"
 #include "common/Variable.h"
 
+
+#include "rulesets/PythonScriptFactory.h"
+
+#define STUB_PythonScriptFactory_PythonScriptFactory
+template<>
+PythonScriptFactory<LocatedEntity>::PythonScriptFactory(const std::string & p,
+                                                        const std::string & t) :
+    PythonClass(p, t, nullptr)
+{
+}
+
+template <>
+int PythonScriptFactory<LocatedEntity>::setup()
+{
+    return load();
+}
+
+
 #include "stubs/rulesets/stubSpawnProperty.h"
 #include "stubs/rulesets/stubRespawningProperty.h"
 #include "stubs/rulesets/stubImmortalProperty.h"
@@ -429,9 +451,13 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "stubs/rulesets/stubGeometryProperty.h"
 #include "stubs/rulesets/stubVector3Property.h"
 #include "stubs/rulesets/stubOutfitProperty.h"
+#include "stubs/rulesets/stubPythonScriptFactory.h"
+#include "stubs/rulesets/stubPythonClass.h"
 
+#include "stubs/server/stubRuleHandler.h"
 #include "stubs/server/stubExternalMindsManager.h"
 #include "stubs/server/stubExternalMindsConnection.h"
+#include "stubs/server/stubPlayer.h"
 #include "stubs/common/stubOperationsDispatcher.h"
 #include "stubs/modules/stubWorldTime.h"
 #include "stubs/common/stubCustom.h"
@@ -561,36 +587,6 @@ void Persistence::addCharacter(const Account &, const LocatedEntity &)
 
 void Persistence::delCharacter(const std::string &)
 {
-}
-
-Player::Player(Connection * conn,
-               const std::string & username,
-               const std::string & passwd,
-               const std::string & id,
-               long intId) :
-        Account(conn, username, passwd, id, intId)
-{
-}
-
-Player::~Player() { }
-
-const char * Player::getType() const
-{
-    return "player";
-}
-
-void Player::addToMessage(MapType & omap) const
-{
-}
-
-void Player::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-int Player::characterError(const Operation & op,
-                           const Root & ent, OpVector & res) const
-{
-    return 0;
 }
 
 Ruleset * Ruleset::m_instance = NULL;

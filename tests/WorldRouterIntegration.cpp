@@ -28,6 +28,7 @@
 #include "server/WorldRouter.h"
 
 #include "server/EntityBuilder.h"
+#include "server/EntityRuleHandler.h"
 #include "server/SpawnEntity.h"
 
 #include "rulesets/Domain.h"
@@ -49,6 +50,7 @@
 #include <cstdlib>
 
 #include <cassert>
+#include <server/Ruleset.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -74,6 +76,8 @@ WorldRouterintegration::WorldRouterintegration()
 
 void WorldRouterintegration::setup()
 {
+    EntityBuilder::init();
+    new EntityRuleHandler(EntityBuilder::instance());
 }
 
 void WorldRouterintegration::teardown()
@@ -242,6 +246,22 @@ int main()
 #include "rulesets/PythonArithmeticFactory.h"
 #include "rulesets/Task.h"
 
+#include "rulesets/PythonScriptFactory.h"
+
+#define STUB_PythonScriptFactory_PythonScriptFactory
+template<>
+PythonScriptFactory<LocatedEntity>::PythonScriptFactory(const std::string & p,
+                                                        const std::string & t) :
+    PythonClass(p, t, nullptr)
+{
+}
+
+template <>
+int PythonScriptFactory<LocatedEntity>::setup()
+{
+    return load();
+}
+
 #include "stubs/rulesets/stubBBoxProperty.h"
 #include "stubs/rulesets/stubTasksProperty.h"
 #include "stubs/rulesets/stubTerrainProperty.h"
@@ -253,10 +273,17 @@ int main()
 #include "stubs/rulesets/stubPropelProperty.h"
 #include "stubs/rulesets/stubCreator.h"
 #include "stubs/rulesets/stubOutfitProperty.h"
+#include "stubs/rulesets/stubPythonClass.h"
 
+#include "stubs/common/stubOperationsDispatcher.h"
+#include "stubs/common/stubScriptKit.h"
+#include "stubs/common/stubRouter.h"
+#include "stubs/server/stubConnectableRouter.h"
+#include "stubs/server/stubAccount.h"
+#include "stubs/server/stubPlayer.h"
 #include "stubs/server/stubExternalMindsManager.h"
 #include "stubs/server/stubExternalMindsConnection.h"
-#include "stubs/common/stubOperationsDispatcher.h"
+#include "stubs/rulesets/stubPythonScriptFactory.h"
 
 #include <Atlas/Objects/Operation.h>
 
@@ -629,16 +656,6 @@ int PythonArithmeticFactory::setup()
 ArithmeticScript * PythonArithmeticFactory::newScript(LocatedEntity * owner)
 {
     return 0;
-}
-
-PythonClass::PythonClass(const std::string & package,
-                         const std::string & type,
-                         struct _typeobject * base)
-{
-}
-
-PythonClass::~PythonClass()
-{
 }
 
 #if 0

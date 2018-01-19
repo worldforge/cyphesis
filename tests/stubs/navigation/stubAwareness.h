@@ -252,7 +252,7 @@
 
 #ifndef STUB_Awareness_findAffectedTiles
 //#define STUB_Awareness_findAffectedTiles
-  void Awareness::findAffectedTiles(const WFMath::AxisBox<2>& area, int& tileMinXIndex, int& tileMaxXIndex, int& tileMinYIndex, int& tileMaxYIndex) const
+  void Awareness::findAffectedTiles(const WFMath::AxisBox<2>& area, int& tileMinXIndex, int& tileMaxXIndex, int& tileMinZIndex, int& tileMaxZIndex) const
   {
     
   }

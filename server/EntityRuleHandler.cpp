@@ -37,7 +37,121 @@ using Atlas::Objects::Root;
 
 using String::compose;
 
+
+class Character;
+
+class Creator;
+
+class Entity;
+
+class Plant;
+
+class Stackable;
+
+class Thing;
+
+class World;
+
+extern template
+class EntityFactory<Character>;
+
+extern template
+class EntityFactory<Creator>;
+
+extern template
+class EntityFactory<Thing>;
+
+extern template
+class EntityFactory<Plant>;
+
+extern template
+class EntityFactory<Stackable>;
+
+extern template
+class EntityFactory<World>;
+
 static const bool debug_flag = false;
+
+
+EntityRuleHandler::EntityRuleHandler(EntityBuilder * eb)
+    : m_builder(eb)
+{
+    installStandardRules();
+}
+
+void EntityRuleHandler::installStandardRules()
+{
+    auto composeDeclaration = [](std::string class_name, std::string parent, Atlas::Message::MapType rawAttributes) {
+
+        Atlas::Objects::Root decl;
+        decl->setObjtype("class");
+        decl->setId(class_name);
+        decl->setParent(parent);
+
+        Atlas::Message::MapType composed;
+        for (const auto& entry : rawAttributes) {
+            composed[entry.first] = Atlas::Message::MapType{
+                {"default", entry.second},
+                {"visibility", "public"}
+            };
+        }
+
+        decl->setAttr("attributes", composed);
+        return decl;
+    };
+
+    std::string dependent, reason;
+
+    {
+        Atlas::Objects::Root decl = composeDeclaration("world", "game_entity", {});
+        installEntityClass(decl->getId(), decl->getParent(), decl, dependent, reason, new EntityFactory<World>());
+    }
+
+    {
+        Atlas::Objects::Root decl = composeDeclaration("thing", "game_entity", {
+            {"mode", "planted"}
+        });
+        installEntityClass(decl->getId(), decl->getParent(), decl, dependent, reason, new EntityFactory<Thing>());
+    }
+
+    {
+        Atlas::Objects::Root decl = composeDeclaration("character", "thing", {
+            {"density", 125}
+        });
+        installEntityClass(decl->getId(), decl->getParent(), decl, dependent, reason, new EntityFactory<Character>());
+    }
+
+    {
+        Atlas::Objects::Root decl = composeDeclaration("creator", "character", {
+            {"transient", -1},
+            {"solid", 0},
+            //Creator agents should have a bbox, so that they easily can be made solid for testing purposes.
+            {"bbox", ListType {-.5, 0, -0.5, .5, 1, .5}},
+            {"geometry", MapType {{"shape", "sphere"}}},
+            {"friction", 10.f},
+            {"angularfactor", ListType {0, 0, 0}},
+            {"mass", 1.0},
+        });
+
+        installEntityClass(decl->getId(), decl->getParent(), decl, dependent, reason, new EntityFactory<Creator>());
+    }
+
+    {
+        Atlas::Objects::Root decl = composeDeclaration("plant", "thing", {
+            {"friction", 1.0f},
+            {"mode", "planted"},
+            {"status", 1.0f},
+            //Plants should by default be represented by an upright cylinder.
+            {"geometry", MapType {{"shape", "cylinder-z"}}},
+        });
+        installEntityClass(decl->getId(), decl->getParent(), decl, dependent, reason, new EntityFactory<Plant>());
+    }
+
+    {
+        Atlas::Objects::Root decl = composeDeclaration("stackable", "thing", {});
+        installEntityClass(decl->getId(), decl->getParent(), decl, dependent, reason, new EntityFactory<Stackable>());
+    }
+}
 
 int EntityRuleHandler::installEntityClass(const std::string & class_name,
                                           const std::string & parent,
@@ -49,7 +163,7 @@ int EntityRuleHandler::installEntityClass(const std::string & class_name,
 
     // Get the new factory for this rule
     EntityFactoryBase * parent_factory = dynamic_cast<EntityFactoryBase*>(m_builder->getClassFactory(parent));
-    if (parent_factory == 0) {
+    if (parent_factory == nullptr) {
         debug(std::cout << "class \"" << class_name
                         << "\" has non existant parent \"" << parent
                         << "\". Waiting." << std::endl << std::flush;);
@@ -59,14 +173,27 @@ int EntityRuleHandler::installEntityClass(const std::string & class_name,
         return 1;
     }
     EntityFactoryBase * factory = parent_factory->duplicateFactory();
-    if (factory == 0) {
+    assert(factory->m_parent == parent_factory);
+
+    return installEntityClass(class_name, parent, class_desc, dependent, reason, factory);
+}
+
+int EntityRuleHandler::installEntityClass(const std::string & class_name,
+                                          const std::string & parent,
+                                          const Root & class_desc,
+                                          std::string & dependent,
+                                          std::string & reason,
+                                          EntityFactoryBase* factory)
+{
+    // Get the new factory for this rule
+    EntityFactoryBase * parent_factory = dynamic_cast<EntityFactoryBase*>(m_builder->getClassFactory(parent));
+
+    if (factory == nullptr) {
         log(ERROR,
             compose("Attempt to install rule \"%1\" which has parent \"%2\" "
-                    "which cannot be instantiated", class_name, parent));
+                        "which cannot be instantiated", class_name, parent));
         return -1;
     }
-
-    assert(factory->m_parent == parent_factory);
 
     if (populateEntityFactory(class_name, factory,
                               class_desc->asMessage(),
@@ -87,12 +214,13 @@ int EntityRuleHandler::installEntityClass(const std::string & class_name,
 
     factory->addProperties();
 
-    // Add it as a child to its parent.
-    parent_factory->m_children.insert(factory);
+    if (parent_factory) {
+        // Add it as a child to its parent.
+        parent_factory->m_children.insert(factory);
+    }
 
     return 0;
 }
-
 int EntityRuleHandler::modifyEntityClass(const std::string & class_name,
                                          const Root & class_desc)
 {

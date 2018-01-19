@@ -20,6 +20,7 @@
 #define SERVER_ENTITY_RULE_HANDLER_H
 
 #include "RuleHandler.h"
+#include <string>
 
 class EntityBuilder;
 class EntityKit;
@@ -42,19 +43,30 @@ class EntityRuleHandler : public RuleHandler {
                            std::string & dependent,
                            std::string & reason);
 
+    int installEntityClass(const std::string & class_name,
+                           const std::string & parent,
+                           const Atlas::Objects::Root & class_desc,
+                           std::string & dependent,
+                           std::string & reason,
+                           EntityFactoryBase* factory);
+
     int modifyEntityClass(const std::string & class_name,
                           const Atlas::Objects::Root & class_desc);
-  public:
-    EntityRuleHandler(EntityBuilder * eb) : m_builder(eb) { }
 
-    virtual int check(const Atlas::Objects::Root & desc);
-    virtual int install(const std::string &,
+    void installStandardRules();
+
+  public:
+    explicit EntityRuleHandler(EntityBuilder * eb);
+
+    int check(const Atlas::Objects::Root & desc) override;
+    int install(const std::string &,
                         const std::string &,
                         const Atlas::Objects::Root & desc,
                         std::string &,
-                        std::string &);
-    virtual int update(const std::string &,
-                       const Atlas::Objects::Root & desc);
+                        std::string &) override;
+    int update(const std::string &,
+                       const Atlas::Objects::Root & desc) override;
+
 };
 
 #endif // SERVER_ENTITY_RULE_HANDLER_H

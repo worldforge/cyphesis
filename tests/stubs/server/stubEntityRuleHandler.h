@@ -23,6 +23,14 @@
   }
 #endif //STUB_EntityRuleHandler_installEntityClass
 
+#ifndef STUB_EntityRuleHandler_installEntityClass
+//#define STUB_EntityRuleHandler_installEntityClass
+  int EntityRuleHandler::installEntityClass(const std::string & class_name, const std::string & parent, const Atlas::Objects::Root & class_desc, std::string & dependent, std::string & reason, EntityFactoryBase* factory)
+  {
+    return 0;
+  }
+#endif //STUB_EntityRuleHandler_installEntityClass
+
 #ifndef STUB_EntityRuleHandler_modifyEntityClass
 //#define STUB_EntityRuleHandler_modifyEntityClass
   int EntityRuleHandler::modifyEntityClass(const std::string & class_name, const Atlas::Objects::Root & class_desc)
@@ -30,6 +38,24 @@
     return 0;
   }
 #endif //STUB_EntityRuleHandler_modifyEntityClass
+
+#ifndef STUB_EntityRuleHandler_installStandardRules
+//#define STUB_EntityRuleHandler_installStandardRules
+  void EntityRuleHandler::installStandardRules()
+  {
+    
+  }
+#endif //STUB_EntityRuleHandler_installStandardRules
+
+#ifndef STUB_EntityRuleHandler_EntityRuleHandler
+//#define STUB_EntityRuleHandler_EntityRuleHandler
+   EntityRuleHandler::EntityRuleHandler(EntityBuilder * eb)
+    : RuleHandler(eb)
+    , m_builder(nullptr)
+  {
+    
+  }
+#endif //STUB_EntityRuleHandler_EntityRuleHandler
 
 #ifndef STUB_EntityRuleHandler_check
 //#define STUB_EntityRuleHandler_check

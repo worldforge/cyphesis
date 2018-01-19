@@ -259,9 +259,12 @@ int main(int argc, char ** argv)
     SystemTime time{};
     time.update();
 
-    WorldRouter * world = new WorldRouter(time);
+    EntityBuilder::init();
 
     Ruleset::init(ruleset_name);
+
+    WorldRouter * world = new WorldRouter(time);
+
 
     PossessionAuthenticator::init();
 
