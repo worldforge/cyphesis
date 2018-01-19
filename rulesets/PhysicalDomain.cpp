@@ -636,10 +636,6 @@ float PhysicalDomain::getMassForEntity(const LocatedEntity& entity) const
 {
     float mass = 0;
 
-    if (entity.getType()->isTypeOf("creator")) {
-        mass = 1.0f;
-    }
-
     auto massProp = entity.getPropertyType<double>("mass");
     if (massProp) {
         mass = (float) massProp->data();
@@ -659,14 +655,6 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     BulletEntry* entry = new BulletEntry();
     m_entries.insert(std::make_pair(entity.getIntId(), entry));
     entry->entity = &entity;
-
-    //Handle the special case of the entity being a "creator".
-    if (entity.getType()->isTypeOf("creator")) {
-        if (!bbox.isValid()) {
-            bbox = WFMath::AxisBox<3>(WFMath::Point<3>(-0.25f, .0f, -0.25f), WFMath::Point<3>(0.25f, 1.5f, 0.25f));
-        }
-        angularFactor = btVector3(0, 0, 0);
-    }
 
     const AngularFactorProperty* angularFactorProp = entity.getPropertyClassFixed<AngularFactorProperty>();
     if (angularFactorProp && angularFactorProp->data().isValid()) {
