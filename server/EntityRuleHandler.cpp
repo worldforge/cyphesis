@@ -142,7 +142,7 @@ void EntityRuleHandler::installStandardRules()
             {"mode", "planted"},
             {"status", 1.0f},
             //Plants should by default be represented by an upright cylinder.
-            {"geometry", MapType {{"shape", "cylinder-z"}}},
+            {"geometry", MapType {{"shape", "cylinder-y"}}},
         });
         installEntityClass(decl->getId(), decl->getParent(), decl, dependent, reason, new EntityFactory<Plant>());
     }
