@@ -409,19 +409,20 @@
         <map name="attributes">
             <map name="bbox">
                 <list name="default">
-          <float>-0.375</float>
-          <float>0</float>
-          <float>-0.125</float>
-          <float>0.5625</float>
-          <float>0.5</float>
-          <float>0.125</float>
-        </list>
+                  <float>-0.375</float>
+                  <float>0</float>
+                  <float>-0.125</float>
+                  <float>0.5625</float>
+                  <float>0.5</float>
+                  <float>0.125</float>
+                </list>
                 <string name="visibility">public</string>
             </map>
             <map name="geometry">
                 <map name="default">
                     <string name="shape">capsule-x</string>
                 </map>
+                <string name="visibility">public</string>
             </map>
             <map name="biomass">
                 <float name="default">5</float>
