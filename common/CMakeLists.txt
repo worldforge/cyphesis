@@ -37,7 +37,8 @@ add_library(common
         atlas_helpers.cpp
         Shaker.cpp
         OperationsDispatcher.cpp
-        RuleTraversalTask.cpp)
+        RuleTraversalTask.cpp
+        AtlasQuery.h)
 
 target_link_libraries(common ${PostgreSQL_LIBRARIES})
 target_link_libraries(common ${GCRYPT_LIBRARIES})
