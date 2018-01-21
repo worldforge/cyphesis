@@ -1,2 +1,5 @@
 add_library(metaserverapi
-        MetaServerPacket.cpp)
+    MetaServerPacket.cpp
+    MetaServerAPI.hpp
+    MetaServerProtocol.hpp
+    MetaServerVersion.hpp)
