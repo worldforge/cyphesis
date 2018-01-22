@@ -48,10 +48,6 @@ EntityExporter::EntityExporter(const std::string & accountId,
     assert(avatarId != "");
 }
 
-EntityExporter::~EntityExporter()
-{
-}
-
 void EntityExporter::setup(const std::string & arg, OpVector & ret)
 {
     mCurrentRes = &ret;

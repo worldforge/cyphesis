@@ -45,7 +45,7 @@ class EntityExporter: public ClientTask, public EntityExporterBase
         /**
          * @brief Dtor.
          */
-        virtual ~EntityExporter();
+        ~EntityExporter() override = default;
 
     protected:
 
@@ -67,29 +67,30 @@ class EntityExporter: public ClientTask, public EntityExporterBase
 
         std::unordered_map<long int, CallbackFunction> mCallbacks;
 
-        virtual void setup(const std::string & arg, OpVector & ret);
-        virtual void operation(const Operation & op, OpVector & res);
+        void setup(const std::string & arg, OpVector & ret) override;
+
+        void operation(const Operation & op, OpVector & res) override;
 
         /**
          * @brief Create a new unique serial number for operations.
          * @return A new serial number.
          */
-        virtual long int newSerialNumber();
+        long int newSerialNumber() override;
 
         /**
          * @brief Send an object to the server.
          * @param op An object which is to be sent.
          */
-        virtual void send(const Atlas::Objects::Operation::RootOperation& op);
+        void send(const Atlas::Objects::Operation::RootOperation& op) override;
 
         /**
          * @brief Send an object to the server and await a response.
          * @param op An object which is to be sent.
          * @param callback A callback, called when a response is received.
          */
-        virtual void sendAndAwaitResponse(
+        void sendAndAwaitResponse(
                 const Atlas::Objects::Operation::RootOperation& op,
-                CallbackFunction& callback);
+                CallbackFunction& callback) override;
 
         /**
          * @brief Creates a multi line formatter.
@@ -97,8 +98,8 @@ class EntityExporter: public ClientTask, public EntityExporterBase
          * @param b A bridge.
          * @return A formatter instance. Ownership is transferred.
          */
-        virtual Atlas::Formatter* createMultiLineFormatter(std::iostream& s,
-                Atlas::Bridge& b);
+        Atlas::Formatter* createMultiLineFormatter(std::iostream& s,
+                Atlas::Bridge& b) override;
 
         /**
          * @brief Gets the current time as a unit timestamp string.
@@ -110,7 +111,7 @@ class EntityExporter: public ClientTask, public EntityExporterBase
          * @brief Fills the supplied map with server meta data.
          * @param serverMap An empty map.
          */
-        virtual void fillWithServerData(Atlas::Message::MapType& serverMap);
+        void fillWithServerData(Atlas::Message::MapType& serverMap) override;
 
         /**
          * Called when server info is received.

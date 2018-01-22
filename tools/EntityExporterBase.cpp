@@ -28,6 +28,7 @@
 #include <sstream>
 #include <algorithm>
 #include <iostream>
+#include <iomanip>
 
 
 
@@ -84,11 +85,17 @@ bool idSorter(const std::string& lhs, const std::string& rhs)
 }
 
 EntityExporterBase::EntityExporterBase(const std::string& accountId, const std::string& avatarId, const std::string& currentTimestamp) :
-		mAccountId(accountId), mAvatarId(avatarId), mCurrentTimestamp(currentTimestamp), mStats( { }), mComplete(false), mCancelled(false), mOutstandingGetRequestCounter(0), mExportTransient(false), mPreserveIds(false), mExportRules(false), mExportMinds(true)
-{
-}
-
-EntityExporterBase::~EntityExporterBase()
+		mAccountId(accountId),
+        mAvatarId(avatarId),
+        mCurrentTimestamp(currentTimestamp),
+        mStats( { }),
+        mComplete(false),
+        mCancelled(false),
+        mOutstandingGetRequestCounter(0),
+        mExportTransient(false),
+        mPreserveIds(false),
+        mExportRules(false),
+        mExportMinds(true)
 {
 }
 
@@ -156,7 +163,7 @@ void EntityExporterBase::dumpEntity(const RootEntity & ent)
 {
 	Atlas::Message::MapType entityMap;
 	ent->addToMessage(entityMap);
-	mEntities.push_back(entityMap);
+	mEntities.emplace_back(entityMap);
 }
 
 void EntityExporterBase::dumpMind(const std::string& entityId, const Operation & op)
@@ -166,7 +173,7 @@ void EntityExporterBase::dumpMind(const std::string& entityId, const Operation &
 		Atlas::Message::MapType entityMap;
 		entityMap["id"] = entityId;
 		entityMap["thoughts"] = thoughts;
-		mMinds.push_back(entityMap);
+		mMinds.emplace_back(entityMap);
 	} else {
 		S_LOG_VERBOSE("Got commune response without any thoughts for entity " << entityId <<".");
 	}
@@ -175,7 +182,7 @@ void EntityExporterBase::dumpMind(const std::string& entityId, const Operation &
 void EntityExporterBase::thoughtOpArrived(const Operation & op)
 {
 
-	std::map<int, std::string>::const_iterator I = mThoughtsOutstanding.find(op->getRefno());
+	auto I = mThoughtsOutstanding.find(op->getRefno());
 	if (I == mThoughtsOutstanding.end()) {
 		S_LOG_WARNING("Got unrecognized thought info.");
 		return;
@@ -404,7 +411,7 @@ void EntityExporterBase::adjustReferencedEntities()
 											auto entityIdLookupI = mIdMapping.find(thingId.asString());
 											//Check if the owned entity has been created with a new id. If so, replace the data.
 											if (entityIdLookupI != mIdMapping.end()) {
-												newList.push_back(entityIdLookupI->second);
+												newList.emplace_back(entityIdLookupI->second);
 											} else {
 												newList.push_back(thingId);
 											}
@@ -428,7 +435,7 @@ void EntityExporterBase::adjustReferencedEntities()
 									auto entityIdLookupI = mIdMapping.find(thingId.asString());
 									//Check if the owned entity has been created with a new id. If so, replace the data.
 									if (entityIdLookupI != mIdMapping.end()) {
-										newList.push_back(entityIdLookupI->second);
+										newList.emplace_back(entityIdLookupI->second);
 									} else {
 										newList.push_back(thingId);
 									}
@@ -478,7 +485,7 @@ void EntityExporterBase::adjustReferencedEntities()
 					//we can assume that it's string
 					auto I = mIdMapping.find(entityElem.asString());
 					if (I != mIdMapping.end()) {
-						newContains.push_back(I->second);
+						newContains.emplace_back(I->second);
 					}
 				}
 				contains = newContains;
@@ -687,7 +694,7 @@ void EntityExporterBase::operationGetRuleResult(const Operation & op)
 		//Check if we're actually exporting rules; we might also be getting rules if we're set to ignore
 		//transients, since we then need to get the types in order to know what entities are transient.
 		if (mExportRules) {
-		    mRules.push_back(ruleMap);
+		    mRules.emplace_back(ruleMap);
 		}
 
 		Element attributesElem;
