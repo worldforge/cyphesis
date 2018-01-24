@@ -375,6 +375,11 @@ protected:
     std::unordered_set<std::string> mMindTypes;
 
     /**
+     * All default type attributes.
+     */
+    std::unordered_map<std::string, Atlas::Message::MapType> mTypeAttributes;
+
+    /**
 	 * @brief Starts the process of requesting entities and walking the entity hierarchy.
 	 */
 	void startRequestingEntities();

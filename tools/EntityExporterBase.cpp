@@ -29,6 +29,7 @@
 #include <algorithm>
 #include <iostream>
 #include <iomanip>
+#include <common/TypeNode.h>
 
 
 
@@ -163,6 +164,32 @@ void EntityExporterBase::dumpEntity(const RootEntity & ent)
 {
 	Atlas::Message::MapType entityMap;
 	ent->addToMessage(entityMap);
+
+    //Check if any attribute is the same as the type default, and if so don't persist it.
+    std::vector<std::string> attributesToRemove;
+    auto typeAttributesI = mTypeAttributes.find(ent->getParent());
+    if (typeAttributesI != mTypeAttributes.end()) {
+        auto& parentAttributes = typeAttributesI->second;
+        for (auto& entry : entityMap) {
+            auto parentAttributeI = parentAttributes.find(entry.first);
+            if (parentAttributeI != parentAttributes.end()) {
+                auto defaultAttributeI = parentAttributeI->second.Map().find("default");
+                if (defaultAttributeI->second == entry.second) {
+                    attributesToRemove.emplace_back(entry.first);
+                }
+            }
+        }
+    }
+
+    //Check for empty "contains" property and remove if so.
+    auto containsI = entityMap.find("contains");
+    if (containsI != entityMap.end() && containsI->second.isList() && containsI->second.List().empty()) {
+        attributesToRemove.emplace_back("contains");
+    }
+
+    for (auto& attribute : attributesToRemove) {
+        entityMap.erase(attribute);
+    }
 	mEntities.emplace_back(entityMap);
 }
 
@@ -587,13 +614,11 @@ void EntityExporterBase::start(const std::string& filename, const std::string& e
 	mFilename = filename;
 	mRootEntityId = entityId;
 
-	//Get rules either if we're exporting rules, or if we're not exporting transients (since we then need to check the type if it's transient).
-	//Or if we're exporting minds, since we need to check with the type if it has a mind.
-	if (mExportRules || !mExportTransient || mExportMinds) {
-		requestRule("root");
-	} else {
-		startRequestingEntities();
-	}
+	//Start by getting all rules, since we need them to
+    // 1) check for transients
+    // 2) if we're also exporting rules
+    // 3) remove entity attributes that are the same as the defaults
+	requestRule("root");
 
 }
 
@@ -697,17 +722,20 @@ void EntityExporterBase::operationGetRuleResult(const Operation & op)
 		    mRules.emplace_back(ruleMap);
 		}
 
+        std::string ruleId = ruleMap.find("id")->second.asString();
+
 		Element attributesElem;
         bool foundTransientProperty = false;
         bool foundMindProperty = false;
 		if (ent->copyAttr("attributes", attributesElem) == 0 && attributesElem.isMap()) {
+            mTypeAttributes[ruleId] = attributesElem.Map();
 		    auto transientI = attributesElem.Map().find("transient");
 		    if (transientI != attributesElem.Map().end() && transientI->second.isMap()) {
 		        auto defaultI = transientI->second.Map().find("default");
 		        if (defaultI != transientI->second.Map().end()) {
 		            foundTransientProperty = true;
 		            if (defaultI->second.isNum() && defaultI->second.asNum() != 0) {
-		                mTransientTypes.insert(ruleMap.find("id")->second.asString());
+		                mTransientTypes.insert(ruleId);
 		            }
 		        }
 		    }
@@ -715,7 +743,7 @@ void EntityExporterBase::operationGetRuleResult(const Operation & op)
             auto mindI = attributesElem.Map().find("mind");
             //We don't care what the default value is; we'll just check that it's a mind
             if (mindI != attributesElem.Map().end()) {
-                mMindTypes.insert(ruleMap.find("id")->second.asString());
+                mMindTypes.insert(ruleId);
                 foundMindProperty = true;
             }
 		}
@@ -725,7 +753,7 @@ void EntityExporterBase::operationGetRuleResult(const Operation & op)
 		    if (parentI != ruleMap.end() && parentI->second.isString()) {
 		        const std::string& parent = parentI->second.String();
 		        if (mTransientTypes.find(parent) != mTransientTypes.end()) {
-		            mTransientTypes.insert(ruleMap.find("id")->second.asString());
+		            mTransientTypes.insert(ruleId);
 		        }
 		    }
 		}
@@ -735,7 +763,7 @@ void EntityExporterBase::operationGetRuleResult(const Operation & op)
             if (parentI != ruleMap.end() && parentI->second.isString()) {
                 const std::string& parent = parentI->second.String();
                 if (mMindTypes.find(parent) != mMindTypes.end()) {
-                    mMindTypes.insert(ruleMap.find("id")->second.asString());
+                    mMindTypes.insert(ruleId);
                 }
             }
         }
