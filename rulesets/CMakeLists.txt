@@ -59,7 +59,10 @@ add_library(rulesetentity
     GeometryProperty.cpp
     AngularFactorProperty.cpp
     QuaternionProperty.cpp
-    Vector3Property.cpp PhysicalWorld.cpp PhysicalWorld.h)
+    Vector3Property.cpp
+    PhysicalWorld.cpp PhysicalWorld.h
+    GeometryFileProperty.cpp GeometryFileProperty.h
+    OgreMeshDeserializer.cpp OgreMeshDeserializer.h)
 
 target_link_libraries(rulesetentity ${BULLET_LIBRARIES})
 

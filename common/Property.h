@@ -135,11 +135,13 @@ class Property : public PropertyBase {
     const T & data() const { return this->m_data; }
     T & data() { return this->m_data; }
 
-    virtual int get(Atlas::Message::Element & val) const;
-    virtual void set(const Atlas::Message::Element &);
-    virtual void add(const std::string & key, Atlas::Message::MapType & map) const;
+    int get(Atlas::Message::Element & val) const override;
+
+    void set(const Atlas::Message::Element &) override;
+
+    void add(const std::string & key, Atlas::Message::MapType & map) const override;
     virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
-    virtual Property<T> * copy() const;
+    Property<T> * copy() const override;
 };
 
 /// \brief Entity property that can store any Atlas value
@@ -151,9 +153,9 @@ class SoftProperty : public PropertyBase {
     SoftProperty();
     explicit SoftProperty(const Atlas::Message::Element & data);
 
-    virtual int get(Atlas::Message::Element & val) const;
-    virtual void set(const Atlas::Message::Element & val);
-    virtual SoftProperty * copy() const;
+    int get(Atlas::Message::Element & val) const override ;
+    void set(const Atlas::Message::Element & val) override ;
+    SoftProperty * copy() const override ;
 };
 
 #endif // COMMON_PROPERTY_H

@@ -51,6 +51,7 @@ endmacro()
 
 #### Common tests #####
 wf_add_test(TestBaseTest.cpp)
+wf_add_test(OgreMeshDeserializerTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/OgreMeshDeserializer.cpp)
 wf_add_test(logTest.cpp ${PROJECT_SOURCE_DIR}/common/log.cpp)
 wf_add_test(InheritanceTest.cpp ${PROJECT_SOURCE_DIR}/common/Inheritance.cpp ${PROJECT_SOURCE_DIR}/common/custom.cpp)
 wf_add_test(PropertyTest.cpp ${PROJECT_SOURCE_DIR}/common/Property.cpp)
