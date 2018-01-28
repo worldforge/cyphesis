@@ -163,7 +163,7 @@ void TcpStreamClientSocket::do_read()
                 {
                     mReadBuffer.commit(length);
                     this->m_ios.rdbuf(&mReadBuffer);
-                    m_codec->poll();
+                    m_codec->poll(true);
                     this->m_ios.rdbuf(&mBuffer);
                     mDispatcher();
                     this->do_read();
@@ -221,7 +221,7 @@ void LocalStreamClientSocket::do_read()
                 {
                     mReadBuffer.commit(length);
                     this->m_ios.rdbuf(&mReadBuffer);
-                    m_codec->poll();
+                    m_codec->poll(true);
                     this->m_ios.rdbuf(&mBuffer);
                     mDispatcher();
                     this->do_read();

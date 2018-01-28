@@ -76,7 +76,7 @@ class FileConverter : public Atlas::Message::DecoderBase {
     /// Read input file to atlas codec.
     void read() {
         while (!m_file.eof()) {
-            m_codec.poll();
+            m_codec.poll(true);
         }
     }
 

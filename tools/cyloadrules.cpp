@@ -74,7 +74,7 @@ class DatabaseFileLoader : public Atlas::Message::DecoderBase {
 
     void read() {
         while (!m_file.eof()) {
-            m_codec.poll();
+            m_codec.poll(true);
         }
     }
 

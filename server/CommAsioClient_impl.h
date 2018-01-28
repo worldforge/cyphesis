@@ -86,7 +86,7 @@ void CommAsioClient<ProtocolT>::do_read()
                             [this, self](boost::system::error_code ec, std::size_t length) {
                                 if (!ec) {
                                     mReadBuffer.commit(length);
-                                    m_codec->poll();
+                                    m_codec->poll(true);
                                     this->dispatch();
                                     //By calling do_read again we make sure that the instance
                                     //doesn't go out of scope ("shared_from this"). As soon as that
@@ -235,7 +235,7 @@ template<class ProtocolT>
 int CommAsioClient<ProtocolT>::negotiate()
 {
     // poll and check if negotiation is complete
-    m_negotiate->poll();
+    m_negotiate->poll(true);
 
     if (m_negotiate->getState() == Atlas::Negotiate::IN_PROGRESS) {
         return 0;

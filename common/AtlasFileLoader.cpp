@@ -73,7 +73,7 @@ bool AtlasFileLoader::isOpen()
 void AtlasFileLoader::read()
 {
     while (!m_file.eof()) {
-        m_codec->poll();
+        m_codec->poll(true);
     }
 }
 

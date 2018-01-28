@@ -105,7 +105,7 @@ class ServerRulesFileLoader : public Atlas::Message::DecoderBase
     /// \brief Read the contents of the file to the end
     void read() {
         while (!m_file.eof()) {
-            m_codec.poll();
+            m_codec.poll(true);
         }
     }
 

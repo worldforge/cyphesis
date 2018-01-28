@@ -281,7 +281,7 @@ int Database::decodeObject(const std::string & data,
     // Clear the decoder
     m_od.get();
 
-    codec.poll();
+    codec.poll(true);
 
     if (!m_od.check()) {
         log(WARNING, "Database entry does not appear to be decodable");
@@ -307,7 +307,7 @@ int Database::decodeMessage(const std::string & data,
     // Clear the decoder
     m_d.get();
 
-    codec.poll();
+    codec.poll(true);
 
     if (!m_d.check()) {
         log(WARNING, "Database entry does not appear to be decodable");
