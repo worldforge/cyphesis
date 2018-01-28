@@ -47,7 +47,7 @@ const char * const SLAVE = "slave";
 static const char * const DEFAULT_RULESET = "deeds";
 static const char * const DEFAULT_INSTANCE = "cyphesis";
 
-varconf::Config * global_conf = NULL;
+varconf::Config * global_conf = nullptr;
 std::string instance(DEFAULT_INSTANCE);
 std::string bin_directory(BINDIR);
 std::string share_directory(DATADIR);
@@ -111,13 +111,13 @@ static const usage_data usage[] = {
     { CYPHESIS, "dbpasswd", "<dbusername>", "", "Database password for access", S|D },
     { SLAVE, "tcpport", "<portnumber>", "6768", "Network listen port for client connections to the AI slave server", M },
     { SLAVE, "server", "<hostname>", "localhost", "Master server to connect the slave to", M },
-    { 0, 0, 0, 0 }
+    {nullptr, nullptr, nullptr, nullptr }
 };
 
 static int check_tmp_path(const std::string & dir)
 {
     std::string tmp_directory = dir + "/tmp";
-    struct stat tmp_stat;
+    struct stat tmp_stat{};
 
     if (::stat(tmp_directory.c_str(), &tmp_stat) != 0) {
         return -1;
