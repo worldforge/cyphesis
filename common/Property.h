@@ -24,6 +24,7 @@
 #include <Atlas/Message/Element.h>
 
 class LocatedEntity;
+class TypeNode;
 
 /// \brief Interface for Entity properties
 ///
@@ -35,7 +36,7 @@ class PropertyBase {
     explicit PropertyBase(unsigned int flags = 0);
     PropertyBase(const PropertyBase &) = default;
   public:
-    virtual ~PropertyBase();
+    virtual ~PropertyBase() = default;
 
     /// \brief Accessor for Property flags
     unsigned int flags() const { return m_flags; }
@@ -50,6 +51,10 @@ class PropertyBase {
     ///
     /// Called whenever an Entity gains this property for the first time
     virtual void install(LocatedEntity *, const std::string &);
+    /// \brief Install this property on a type
+    ///
+    /// Called whenever a TypeNode gains this property for the first time
+    virtual void install(TypeNode *, const std::string &);
     /// \brief Remove this property from an entity.
     ///
     /// Called whenever the property is removed or the entity is shutting down.
@@ -140,7 +145,7 @@ class Property : public PropertyBase {
     void set(const Atlas::Message::Element &) override;
 
     void add(const std::string & key, Atlas::Message::MapType & map) const override;
-    virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
+    void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const override;
     Property<T> * copy() const override;
 };
 
@@ -150,7 +155,7 @@ class SoftProperty : public PropertyBase {
   protected:
     Atlas::Message::Element m_data;
   public:
-    SoftProperty();
+    SoftProperty() = default;
     explicit SoftProperty(const Atlas::Message::Element & data);
 
     int get(Atlas::Message::Element & val) const override ;

@@ -118,7 +118,7 @@ void StatisicsPropertyintegration::setup()
 
     m_char_property = new StatisticsProperty;
     m_char_property->setFlags(flag_class);
-    m_char_type->addProperty("char_prop", m_char_property);
+    m_char_type->injectProperty("char_prop", m_char_property);
 
     m_char1 = new Entity("1", 1);
     m_char1->setType(m_char_type);
@@ -266,8 +266,8 @@ TypeNode::~TypeNode()
     }
 }
 
-void TypeNode::addProperty(const std::string & name,
-                           PropertyBase * p)
+void TypeNode::injectProperty(const std::string& name,
+                              PropertyBase* p)
 {
     m_defaults[name] = p;
 }

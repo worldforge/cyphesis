@@ -15,17 +15,17 @@
   }
 #endif //STUB_PropertyBase_PropertyBase
 
-#ifndef STUB_PropertyBase_PropertyBase_DTOR
-//#define STUB_PropertyBase_PropertyBase_DTOR
-   PropertyBase::~PropertyBase()
-  {
-    
-  }
-#endif //STUB_PropertyBase_PropertyBase_DTOR
-
 #ifndef STUB_PropertyBase_install
 //#define STUB_PropertyBase_install
   void PropertyBase::install(LocatedEntity *, const std::string &)
+  {
+    
+  }
+#endif //STUB_PropertyBase_install
+
+#ifndef STUB_PropertyBase_install
+//#define STUB_PropertyBase_install
+  void PropertyBase::install(TypeNode *, const std::string &)
   {
     
   }
@@ -151,15 +151,6 @@
   }
 #endif //STUB_Property_copy
 
-
-#ifndef STUB_SoftProperty_SoftProperty
-//#define STUB_SoftProperty_SoftProperty
-   SoftProperty::SoftProperty()
-    : PropertyBase()
-  {
-    
-  }
-#endif //STUB_SoftProperty_SoftProperty
 
 #ifndef STUB_SoftProperty_SoftProperty
 //#define STUB_SoftProperty_SoftProperty

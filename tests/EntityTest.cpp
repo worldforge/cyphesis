@@ -181,7 +181,7 @@ void Entitytest::test_setAttr_type()
     TestProperty * type_property = new TestProperty;
     type_property->data() = 17;
     type_property->flags() &= flag_class;
-    m_type->addProperty("test_int_property", type_property);
+    m_type->injectProperty("test_int_property", type_property);
 
     PropertyBase * pb = m_entity->setAttr("test_int_property", 24);
     ASSERT_NOT_NULL(pb);

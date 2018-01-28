@@ -35,7 +35,7 @@
 
 #ifndef STUB_TypeNode_addProperty
 //#define STUB_TypeNode_addProperty
-  void TypeNode::addProperty(const std::string &, PropertyBase *)
+  void TypeNode::injectProperty(const std::string&, PropertyBase*)
   {
     
   }

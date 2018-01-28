@@ -241,8 +241,8 @@ void EntityBuildertest::test_sequence4()
         ASSERT_EQUAL(ret, 0);
     }
 
-    PropertyBase * p = new Property<std::string>; 
-    custom_type_factory->m_type->addProperty("test_custom_type_attr", p);
+    PropertyBase * p = new Property<std::string>;
+    custom_type_factory->m_type->injectProperty("test_custom_type_attr", p);
     p->set("test_value");
 
     // Check that the factory dictionary now contains a factory for
@@ -742,8 +742,8 @@ TypeNode::~TypeNode()
 {
 }
 
-void TypeNode::addProperty(const std::string & name,
-                           PropertyBase * p)
+void TypeNode::injectProperty(const std::string& name,
+                              PropertyBase* p)
 {
     m_defaults[name] = p;
 }

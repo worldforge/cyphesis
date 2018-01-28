@@ -28,44 +28,49 @@ static const bool debug_flag = false;
 
 using Atlas::Message::MapType;
 
-TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
+TypeNode::TypeNode(const std::string & name) : m_name(name),
+                                               m_parent(nullptr)
 {
 }
 
 TypeNode::TypeNode(const std::string & name,
                    const Atlas::Objects::Root & d) : m_name(name),
                                                      m_description(d),
-                                                     m_parent(0)
+                                                     m_parent(nullptr)
 {
 }
 
 TypeNode::~TypeNode()
 {
-    PropertyDict::const_iterator I = m_defaults.begin();
-    PropertyDict::const_iterator Iend = m_defaults.end();
-    for (; I != Iend; ++I) {
-        delete I->second;
+    for (auto entry: m_defaults) {
+        delete entry.second;
     }
 }
 
-void TypeNode::addProperty(const std::string & name,
-                           PropertyBase * p)
+void TypeNode::injectProperty(const std::string& name,
+                              PropertyBase* p)
 {
     m_defaults[name] = p;
+    auto attributesElement = m_description->getAttr("attributes");
+    Atlas::Message::Element propertyElement;
+    p->get(propertyElement);
+    attributesElement.Map()[name] = Atlas::Message::MapType{
+        {"visibility", "public"},
+        {"default", propertyElement}
+    };
+    m_description->setAttr("attributes", attributesElement);
 }
 
 void TypeNode::addProperties(const MapType & attributes)
 {
-    MapType::const_iterator J = attributes.begin();
-    MapType::const_iterator Jend = attributes.end();
-    PropertyBase * p;
-    for (; J != Jend; ++J) {
-        p = PropertyManager::instance()->addProperty(J->first,
-                                                     J->second.getType());
-        assert(p != 0);
-        p->set(J->second);
+    for (auto entry : attributes) {
+        PropertyBase * p = PropertyManager::instance()->addProperty(entry.first,
+                                                                    entry.second.getType());
+        assert(p != nullptr);
+        p->set(entry.second);
         p->setFlags(flag_class);
-        m_defaults[J->first] = p;
+        p->install(this, entry.first);
+        m_defaults[entry.first] = p;
     }
 }
 
@@ -84,7 +89,7 @@ void TypeNode::updateProperties(const MapType & attributes)
     // Remove the class properties for the default attributes that
     // no longer exist
     for (auto& entry : removed_properties) {
-        PropertyDict::iterator M = m_defaults.find(entry);
+        auto M = m_defaults.find(entry);
         delete M->second;
         m_defaults.erase(M);
     }
@@ -98,6 +103,7 @@ void TypeNode::updateProperties(const MapType & attributes)
             p = PropertyManager::instance()->addProperty(entry.first, entry.second.getType());
             assert(p != nullptr);
             p->setFlags(flag_class);
+            p->install(this, entry.first);
             m_defaults[entry.first] = p;
         } else {
             p = I->second;
@@ -114,7 +120,7 @@ bool TypeNode::isTypeOf(const std::string & base_type) const
             return true;
         }
         node = node->parent();
-    } while (node != 0);
+    } while (node != nullptr);
     return false;
 }
 
@@ -126,6 +132,6 @@ bool TypeNode::isTypeOf(const TypeNode * base_type) const
             return true;
         }
         node = node->parent();
-    } while (node != 0);
+    } while (node != nullptr);
     return false;
 }

@@ -71,7 +71,7 @@ void AreaPropertyintegration::setup()
             })
         }
     );
-    m_char_type->addProperty("char_type", m_char_property);
+    m_char_type->injectProperty("char_type", m_char_property);
 
     m_char1 = new Entity("1", 1);
     m_char1->setType(m_char_type);
@@ -225,8 +225,8 @@ TypeNode::~TypeNode()
     }
 }
 
-void TypeNode::addProperty(const std::string & name,
-                           PropertyBase * p)
+void TypeNode::injectProperty(const std::string& name,
+                              PropertyBase* p)
 {
     m_defaults[name] = p;
 }

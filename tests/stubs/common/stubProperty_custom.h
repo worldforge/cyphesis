@@ -103,11 +103,6 @@ SoftProperty::SoftProperty(const Atlas::Message::Element & data)
 
 }
 
-SoftProperty::SoftProperty()
-    : PropertyBase()
-{
-
-}
 #endif
 
 template class Property<int>;

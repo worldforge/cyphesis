@@ -46,11 +46,11 @@ PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
 {
 }
 
-PropertyBase::~PropertyBase()
+void PropertyBase::install(LocatedEntity *, const std::string & name)
 {
 }
 
-void PropertyBase::install(LocatedEntity *, const std::string & name)
+void PropertyBase::install(TypeNode *, const std::string & name)
 {
 }
 
@@ -147,10 +147,6 @@ void Property<std::string>::add(const std::string & s,
     if (!m_data.empty()) {
         ent[s] = m_data;
     }
-}
-
-SoftProperty::SoftProperty()
-{
 }
 
 SoftProperty::SoftProperty(const Atlas::Message::Element & data) :

@@ -23,6 +23,7 @@
 #include <Atlas/Objects/SmartPtr.h>
 
 #include <iostream>
+#include <map>
 
 class PropertyBase;
 
@@ -43,11 +44,12 @@ class TypeNode {
     /// \brief parent node
     const TypeNode * m_parent;
   public:
-    TypeNode(const std::string &);
+    explicit TypeNode(const std::string &);
     TypeNode(const std::string &, const Atlas::Objects::Root &);
     ~TypeNode();
 
-    void addProperty(const std::string &, PropertyBase *);
+    /// \brief injects a new property and updated the m_description
+    void injectProperty(const std::string&, PropertyBase*);
 
     /// \brief add the class properties for this type from Atlas attributes
     void addProperties(const Atlas::Message::MapType & attributes);
