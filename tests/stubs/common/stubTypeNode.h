@@ -33,13 +33,13 @@
   }
 #endif //STUB_TypeNode_TypeNode_DTOR
 
-#ifndef STUB_TypeNode_addProperty
-//#define STUB_TypeNode_addProperty
+#ifndef STUB_TypeNode_injectProperty
+//#define STUB_TypeNode_injectProperty
   void TypeNode::injectProperty(const std::string&, PropertyBase*)
   {
     
   }
-#endif //STUB_TypeNode_addProperty
+#endif //STUB_TypeNode_injectProperty
 
 #ifndef STUB_TypeNode_addProperties
 //#define STUB_TypeNode_addProperties

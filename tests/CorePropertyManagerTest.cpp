@@ -285,6 +285,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "stubs/rulesets/stubGeometryProperty.h"
 #include "stubs/rulesets/stubDensityProperty.h"
 #include "stubs/rulesets/stubVector3Property.h"
+#include "stubs/rulesets/stubGeometryFileProperty.h"
 
 
 Account::Account(Connection * conn,

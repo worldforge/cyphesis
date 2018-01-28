@@ -453,6 +453,7 @@ int PythonScriptFactory<LocatedEntity>::setup()
 #include "stubs/rulesets/stubOutfitProperty.h"
 #include "stubs/rulesets/stubPythonScriptFactory.h"
 #include "stubs/rulesets/stubPythonClass.h"
+#include "stubs/rulesets/stubGeometryFileProperty.h"
 
 #include "stubs/server/stubRuleHandler.h"
 #include "stubs/server/stubExternalMindsManager.h"

@@ -55,6 +55,7 @@
 #include "rulesets/GeometryProperty.h"
 #include "rulesets/QuaternionProperty.h"
 #include "rulesets/Vector3Property.h"
+#include "rulesets/GeometryFileProperty.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
@@ -194,6 +195,7 @@ CorePropertyManager::CorePropertyManager()
      */
     installProperty<Property<double>>("step_factor", "float");
 
+    installProperty<GeometryFileProperty>();
 }
 
 CorePropertyManager::~CorePropertyManager()

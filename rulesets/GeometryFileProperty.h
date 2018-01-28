@@ -22,7 +22,12 @@
 #include "common/Property.h"
 
 #include <Atlas/Message/Element.h>
+#include <wfmath/axisbox.h>
 
+/**
+ * Allow specification of a geometry mesh file. When installed on a TypeNode the mesh will be parsed
+ * and a "GeometryProperty" installed on the type.
+ */
 class GeometryFileProperty : public Property<Atlas::Message::StringType>
 {
     public:
@@ -37,12 +42,20 @@ class GeometryFileProperty : public Property<Atlas::Message::StringType>
 
         void apply(LocatedEntity *) override;
 
+        void install(TypeNode* typeNode, const std::string& name) override;
+
         GeometryFileProperty* copy() const override;
 
 
     private:
 
         Atlas::Message::MapType m_geometryProperty;
+
+        std::vector<float> m_vertices;
+        std::vector<int> m_indices;
+        WFMath::AxisBox<3> m_bounds;
+        float m_radius{};
+
 
 };
 

@@ -360,11 +360,11 @@ PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
 {
 }
 
-PropertyBase::~PropertyBase()
+void PropertyBase::install(LocatedEntity *, const std::string & name)
 {
 }
 
-void PropertyBase::install(LocatedEntity *, const std::string & name)
+void PropertyBase::install(TypeNode *, const std::string & name)
 {
 }
 
