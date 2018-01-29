@@ -145,17 +145,17 @@
 
 #ifndef STUB_OgreMeshDeserializer_readGeometryVertexDeclaration
 //#define STUB_OgreMeshDeserializer_readGeometryVertexDeclaration
-  std::vector<VertexElement> OgreMeshDeserializer::readGeometryVertexDeclaration()
+  std::vector<OgreMeshDeserializer::VertexElement> OgreMeshDeserializer::readGeometryVertexDeclaration()
   {
-    return std::vector<VertexElement>();
+    return std::vector<OgreMeshDeserializer::VertexElement>();
   }
 #endif //STUB_OgreMeshDeserializer_readGeometryVertexDeclaration
 
 #ifndef STUB_OgreMeshDeserializer_readGeometryVertexElement
 //#define STUB_OgreMeshDeserializer_readGeometryVertexElement
-  VertexElement OgreMeshDeserializer::readGeometryVertexElement()
+  OgreMeshDeserializer::VertexElement OgreMeshDeserializer::readGeometryVertexElement()
   {
-    return *static_cast<VertexElement*>(nullptr);
+    return *static_cast<OgreMeshDeserializer::VertexElement*>(nullptr);
   }
 #endif //STUB_OgreMeshDeserializer_readGeometryVertexElement
 

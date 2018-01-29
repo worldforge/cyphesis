@@ -84,9 +84,9 @@ class OgreMeshDeserializer
 
         void readGeometry();
 
-        std::vector<VertexElement> readGeometryVertexDeclaration();
+        std::vector<OgreMeshDeserializer::VertexElement> readGeometryVertexDeclaration();
 
-        VertexElement readGeometryVertexElement();
+        OgreMeshDeserializer::VertexElement readGeometryVertexElement();
 
         std::vector<char> readGeometryVertexBuffer(unsigned int vertexCount);
 

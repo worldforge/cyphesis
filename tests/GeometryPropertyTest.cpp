@@ -25,7 +25,9 @@
 
 #include "PropertyCoverage.h"
 #include "stubs/common/stubCustom.h"
+#include "stubs/common/stubglobals.h"
 #include "stubs/rulesets/stubQuaternionProperty.h"
+#include "stubs/rulesets/stubOgreMeshDeserializer.h"
 
 #include "rulesets/GeometryProperty.h"
 
