@@ -19,7 +19,11 @@
 #include "physics/Convert.h"
 #include "common/log.h"
 #include "common/globals.h"
+#include "common/TypeNode.h"
 #include "OgreMeshDeserializer.h"
+#include "BBoxProperty.h"
+
+#include <wfmath/atlasconv.h>
 
 #include <BulletCollision/CollisionShapes/btSphereShape.h>
 #include <BulletCollision/CollisionShapes/btBoxShape.h>
@@ -220,6 +224,8 @@ void GeometryProperty::buildMeshCreator()
                 delete[] indices;
             });
             meshShape->setLocalScaling(btVector3(1, 1, 1));
+            //Store the bounds, so that the "bbox" property can be updated when this is applied to a TypeNode
+            m_meshBounds = WFMath::AxisBox<3>(Convert::toWF<WFMath::Point<3>>(meshShape->getLocalAabbMin()), Convert::toWF<WFMath::Point<3>>(meshShape->getLocalAabbMax()));
 
             mShapeCreator = [meshShape](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size,
                                         btVector3& centerOfMassOffset) -> std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> {
@@ -259,6 +265,7 @@ void GeometryProperty::parseMeshFile()
                         deserializer.deserialize();
                         *verts = std::move(deserializer.m_vertices);
                         *indices = std::move(deserializer.m_indices);
+                        m_meshBounds = deserializer.m_bounds;
                     }
 
 
@@ -299,5 +306,15 @@ void GeometryProperty::parseMeshFile()
         }
     });
 
+}
+
+void GeometryProperty::install(TypeNode* typeNode, const std::string&)
+{
+    if (m_meshBounds.isValid()) {
+        //Update the bbox property of the type if there are valid bounds from the mesh.
+        BBoxProperty* bBoxProperty = new BBoxProperty();
+        bBoxProperty->set(m_meshBounds.toAtlas());
+        typeNode->injectProperty("bbox", bBoxProperty);
+    }
 }
 

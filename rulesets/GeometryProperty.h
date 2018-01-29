@@ -45,6 +45,9 @@ class btVector3;
  * "mesh"      : An arbitrary mesh, using vertices and indices.
  * "asset"     : Generates a mesh from a file. The path to is defined in the "path" entry.
  *
+ * When a mesh is used as geometry, the bounds of the mesh will be used to update the "bbox" property
+ * of any TypeNode that this property is applied on.
+ *
  * @ingroup PropertyClasses
  */
 class GeometryProperty : public Property<Atlas::Message::MapType>
@@ -60,6 +63,8 @@ class GeometryProperty : public Property<Atlas::Message::MapType>
 
         void set(const Atlas::Message::Element&) override;
 
+        void install(TypeNode *, const std::string &) override;
+
         GeometryProperty* copy() const override;
 
         /**
@@ -73,6 +78,8 @@ class GeometryProperty : public Property<Atlas::Message::MapType>
         std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> createShape(const WFMath::AxisBox<3>& bbox, btVector3& centerOfMassOffset) const;
 
     private:
+
+        WFMath::AxisBox<3> m_meshBounds;
 
         /**
          * Creator function used for creating a new shape instance.

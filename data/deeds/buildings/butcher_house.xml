@@ -2,17 +2,6 @@
 
   <map>
     <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-11.3712</float>
-          <float>-1.86372</float>
-          <float>-0.74111</float>
-          <float>0.765608</float>
-          <float>5.46929</float>
-          <float>8.65918</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
       <map name="geometry">
           <map name="default">
               <string name="shape">asset</string>
