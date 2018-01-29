@@ -43,6 +43,7 @@ class btVector3;
  * "cylinder-x": A cylinder, oriented along the x axis
  * "cylinder-y": A cylinder, oriented along the y axis
  * "mesh"      : An arbitrary mesh, using vertices and indices.
+ * "asset"     : Generates a mesh from a file. The path to is defined in the "path" entry.
  *
  * @ingroup PropertyClasses
  */
@@ -79,6 +80,8 @@ class GeometryProperty : public Property<Atlas::Message::MapType>
         std::function<std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>>(const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset)> mShapeCreator;
 
         void buildMeshCreator();
+
+        void parseMeshFile();
 };
 
 #endif /* RULESETS_GEOMETRYPROPERTY_H_ */

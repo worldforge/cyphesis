@@ -18,6 +18,8 @@
 #include "GeometryProperty.h"
 #include "physics/Convert.h"
 #include "common/log.h"
+#include "common/globals.h"
+#include "OgreMeshDeserializer.h"
 
 #include <BulletCollision/CollisionShapes/btSphereShape.h>
 #include <BulletCollision/CollisionShapes/btBoxShape.h>
@@ -26,6 +28,8 @@
 #include <BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h>
 #include <BulletCollision/CollisionShapes/btCapsuleShape.h>
 #include <BulletCollision/CollisionShapes/btScaledBvhTriangleMeshShape.h>
+#include <boost/algorithm/string.hpp>
+#include <common/AtlasQuery.h>
 
 const std::string GeometryProperty::property_name = "geometry";
 const std::string GeometryProperty::property_atlastype = "map";
@@ -121,6 +125,8 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
             };
         } else if (shapeType == "mesh") {
             buildMeshCreator();
+        } else if (shapeType == "asset") {
+            parseMeshFile();
         }
     }
 }
@@ -235,5 +241,63 @@ void GeometryProperty::buildMeshCreator()
 GeometryProperty* GeometryProperty::copy() const
 {
     return new GeometryProperty(*this);
+}
+
+void GeometryProperty::parseMeshFile()
+{
+    AtlasQuery::find<Atlas::Message::StringType>(data(), "path", [&](const auto& path) {
+        try {
+            if (boost::algorithm::ends_with(path, ".mesh")) {
+                std::string fullpath = share_directory + "/cyphesis/assets/" + path;
+                std::fstream fileStream(fullpath);
+                if (fileStream) {
+                    auto verts = new std::vector<float>();
+                    auto indices = new std::vector<int>();
+
+                    {
+                        OgreMeshDeserializer deserializer(fileStream);
+                        deserializer.deserialize();
+                        *verts = std::move(deserializer.m_vertices);
+                        *indices = std::move(deserializer.m_indices);
+                    }
+
+
+                    int vertStride = sizeof(float) * 3;
+                    int indexStride = sizeof(int) * 3;
+
+                    int numberOfVertices = (int) (verts->size() / 3);
+                    int numberOfTriangles = (int) (indices->size() / 3);
+
+                    btTriangleIndexVertexArray* triangleVertexArray = new btTriangleIndexVertexArray(numberOfTriangles, indices->data(), indexStride, numberOfVertices, verts->data(), vertStride);
+
+                    std::shared_ptr<btBvhTriangleMeshShape> meshShape(new btBvhTriangleMeshShape(triangleVertexArray, true, true), [triangleVertexArray, verts, indices](btBvhTriangleMeshShape* p) {
+                        delete triangleVertexArray;
+                        delete p;
+                        delete verts;
+                        delete indices;
+                    });
+                    meshShape->setLocalScaling(btVector3(1, 1, 1));
+
+                    mShapeCreator = [meshShape](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size,
+                                                btVector3& centerOfMassOffset) -> std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> {
+                        //In contrast to other shapes there's no centerOfMassOffset for mesh shapes
+                        centerOfMassOffset = btVector3(0, 0, 0);
+                        btVector3 meshSize = meshShape->getLocalAabbMax() - meshShape->getLocalAabbMin();
+                        btVector3 scaling(size.x() / meshSize.x(), size.y() / meshSize.y(), size.z() / meshSize.z());
+                        btScaledBvhTriangleMeshShape* scaledShape = new btScaledBvhTriangleMeshShape(meshShape.get(), scaling);
+                        return std::make_pair(scaledShape, meshShape);
+                    };
+
+                } else {
+                    log(ERROR, "Could not find geometry file at " + path);
+                }
+            } else {
+                log(ERROR, "Could not recognize geometry file type: " + path);
+            }
+        } catch (const std::exception& ex) {
+            log(ERROR, "Exception when trying to parse geometry at " + path);
+        }
+    });
+
 }
 

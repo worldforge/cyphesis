@@ -35,7 +35,7 @@ class OgreMeshDeserializer
     public:
         explicit OgreMeshDeserializer(std::fstream& stream);;
 
-        void deserialize();;
+        void deserialize();
 
         std::vector<float> m_vertices;
         std::vector<int> m_indices;
