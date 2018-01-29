@@ -21,12 +21,9 @@
                 <string name="visibility">public</string>
             </map>
         </map>
-        <string name="visibility">public</string>
-      </map>
+        <string name="id">castle_wall_corner</string>
+        <string name="objtype">class</string>
+        <string name="parent">structure</string>
     </map>
-    <string name="id">castle_wall_corner</string>
-    <string name="objtype">class</string>
-    <string name="parent">structure</string>
-  </map>
 
 </atlas>
