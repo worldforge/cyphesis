@@ -50,7 +50,12 @@ TypeNode::~TypeNode()
 void TypeNode::injectProperty(const std::string& name,
                               PropertyBase* p)
 {
-    m_defaults[name] = p;
+    auto existingI = m_defaults.find(name);
+    if (existingI != m_defaults.end()) {
+        delete existingI->second;
+        m_defaults.erase(existingI);
+    }
+    m_defaults.emplace(name, p);
     auto attributesElement = m_description->getAttr("attributes");
     Atlas::Message::Element propertyElement;
     p->get(propertyElement);
@@ -96,8 +101,9 @@ void TypeNode::updateProperties(const MapType & attributes)
 
     // Update the values of existing class properties, and add new class
     // properties for added default attributes.
-    PropertyBase * p;
+    std::map<std::string, PropertyBase*> newProps;
     for (auto& entry : attributes) {
+        PropertyBase * p;
         auto I = m_defaults.find(entry.first);
         if (I == m_defaults.end()) {
             p = PropertyManager::instance()->addProperty(entry.first, entry.second.getType());
@@ -105,11 +111,25 @@ void TypeNode::updateProperties(const MapType & attributes)
             p->setFlags(flag_class);
             p->install(this, entry.first);
             m_defaults[entry.first] = p;
+            newProps.emplace(entry.first, p);
         } else {
             p = I->second;
         }
         p->set(entry.second);
     }
+
+    //Update the description
+    auto attributesElement = m_description->getAttr("attributes");
+    Atlas::Message::Element propertyElement;
+    for (auto entry : newProps) {
+        entry.second->get(propertyElement);
+        attributesElement.Map()[entry.first] = Atlas::Message::MapType{
+            {"visibility", "public"},
+            {"default", propertyElement}
+        };
+    }
+    m_description->setAttr("attributes", attributesElement);
+
 }
 
 bool TypeNode::isTypeOf(const std::string & base_type) const
