@@ -259,7 +259,7 @@ void PhysicalDomainIntegrationTest::test_visibilityPerformance()
     auto size = aabb.highCorner() - aabb.lowCorner();
 
     for (float i = aabb.lowCorner().x(); i <= aabb.highCorner().x(); i = i + (size.x() / 100.0f)) {
-        for (float j = aabb.lowCorner().z(); j <= aabb.highCorner().z(); j = j + (size.y() / 100.0f)) {
+        for (float j = aabb.lowCorner().z(); j <= aabb.highCorner().z(); j = j + (size.z() / 100.0f)) {
             counter++;
             long id = newId();
             std::stringstream ss;
