@@ -42,9 +42,9 @@ static const bool debug_flag = false;
 static PyObject* Message_get_name(PyMessage * self)
 {
 #ifndef NDEBUG
-    if (self->m_obj == NULL) {
-        PyErr_SetString(PyExc_AssertionError,"NULL MessageElement in MessageElement.get_name");
-        return NULL;
+    if (self->m_obj == nullptr) {
+        PyErr_SetString(PyExc_AssertionError,"nullptr MessageElement in MessageElement.get_name");
+        return nullptr;
     }
 #endif // NDEBUG
     return PyString_FromString("obj");
@@ -62,9 +62,9 @@ static PyObject* Message_get_name(PyMessage * self)
 static PyObject* Message_pythonize(PyMessage * self)
 {
 #ifndef NDEBUG
-    if (self->m_obj == NULL) {
-        PyErr_SetString(PyExc_AssertionError,"NULL MessageElement in MessageElement.pythonize");
-        return NULL;
+    if (self->m_obj == nullptr) {
+        PyErr_SetString(PyExc_AssertionError,"nullptr MessageElement in MessageElement.pythonize");
+        return nullptr;
     }
 #endif // NDEBUG
     return MessageElement_asPyObject(*self->m_obj);
@@ -77,7 +77,7 @@ static PyObject* Message_pythonize(PyMessage * self)
 static PyMethodDef Message_methods[] = {
         {"get_name",    (PyCFunction)Message_get_name,  METH_NOARGS},
         {"pythonize",   (PyCFunction)Message_pythonize,  METH_NOARGS},
-        {NULL,          NULL}           /* sentinel */
+        {nullptr,          nullptr}           /* sentinel */
 };
 
 /*
@@ -93,9 +93,9 @@ static void Message_dealloc(PyMessage *self)
 static PyObject * Message_repr(PyMessage *self)
 {
 #ifndef NDEBUG
-    if (self->m_obj == NULL) {
-        PyErr_SetString(PyExc_AssertionError,"NULL MessageElement in MessageElement.repr");
-        return NULL;
+    if (self->m_obj == nullptr) {
+        PyErr_SetString(PyExc_AssertionError,"nullptr MessageElement in MessageElement.repr");
+        return nullptr;
     }
 #endif // NDEBUG
     if (self->m_obj->isString()) {
@@ -110,9 +110,9 @@ static PyObject * Message_repr(PyMessage *self)
 static PyObject * Message_getattro(PyMessage *self, PyObject *oname)
 {
 #ifndef NDEBUG
-    if (self->m_obj == NULL) {
-        PyErr_SetString(PyExc_AssertionError,"NULL MessageElement in MessageElement.getattr");
-        return NULL;
+    if (self->m_obj == nullptr) {
+        PyErr_SetString(PyExc_AssertionError,"nullptr MessageElement in MessageElement.getattr");
+        return nullptr;
     }
 #endif // NDEBUG
     char * name = PyString_AsString(oname);
@@ -129,8 +129,8 @@ static PyObject * Message_getattro(PyMessage *self, PyObject *oname)
 static int Message_setattro(PyMessage *self, PyObject *oname, PyObject *v)
 {
 #ifndef NDEBUG
-    if (self->m_obj == NULL) {
-        PyErr_SetString(PyExc_AssertionError,"NULL MessageElement in MessageElement.setattr");
+    if (self->m_obj == nullptr) {
+        PyErr_SetString(PyExc_AssertionError,"nullptr MessageElement in MessageElement.setattr");
         return -1;
     }
 #endif // NDEBUG
@@ -154,9 +154,9 @@ static int Message_setattro(PyMessage *self, PyObject *oname, PyObject *v)
 PyObject * Message_richcompare(PyMessage * self, PyObject * other, int op)
 {
 #ifndef NDEBUG
-    if (self->m_obj == NULL) {
+    if (self->m_obj == nullptr) {
         PyErr_SetString(PyExc_AssertionError,
-                        "NULL MessageElement in MessageElement.richcompare");
+                        "nullptr MessageElement in MessageElement.richcompare");
         return 0;
     }
 #endif // NDEBUG
@@ -272,9 +272,9 @@ static PyObject * MapType_asPyObject(const MapType & map)
     for (MapType::const_iterator I = map.begin(); I != Iend; ++I) {
         const std::string & key = I->first;
         item = newPyMessage();
-        if (item == NULL) {
+        if (item == nullptr) {
             PyErr_SetString(PyExc_MemoryError,"error creating map");
-            return NULL;
+            return nullptr;
         }
         item->m_obj = new Element(I->second);
         // PyDict_SetItem() does not eat the reference passed to it
@@ -292,9 +292,9 @@ static PyObject * ListType_asPyObject(const ListType & list)
     ListType::const_iterator Iend = list.end();
     for (ListType::const_iterator I = list.begin(); I != Iend; ++I, ++j) {
         item = newPyMessage();
-        if (item == NULL) {
+        if (item == nullptr) {
             PyErr_SetString(PyExc_MemoryError,"error creating list");
-            return NULL;
+            return nullptr;
         }
         item->m_obj = new Element(*I);
         // PyList_SetItem() eats the reference passed to it
@@ -305,7 +305,7 @@ static PyObject * ListType_asPyObject(const ListType & list)
 
 PyObject * MessageElement_asPyObject(const Element & obj)
 {
-    PyObject * ret = NULL;
+    PyObject * ret = nullptr;
     switch (obj.getType()) {
         case Element::TYPE_INT:
             ret = PyInt_FromLong(obj.Int());

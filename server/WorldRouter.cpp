@@ -572,7 +572,7 @@ LocatedEntity * WorldRouter::findByName(const std::string & name)
             }
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 /// Find an entity of the given type. This is provided to allow administrators
@@ -589,5 +589,5 @@ LocatedEntity * WorldRouter::findByType(const std::string & type)
             return I->second;
         }
     }
-    return NULL;
+    return nullptr;
 }

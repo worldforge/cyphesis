@@ -43,7 +43,7 @@ using String::compose;
 
 static const bool debug_flag = false;
 
-EntityBuilder* EntityBuilder::m_instance = NULL;
+EntityBuilder* EntityBuilder::m_instance = nullptr;
 
 EntityBuilder::EntityBuilder()
 {

@@ -644,7 +644,7 @@ void Awareness::pruneTiles()
                 int ty = tile->header->ty;
                 int tlayer = tile->header->tlayer;
                 rcVcopy(min, tile->header->bmin);
-                mTileCache->removeTile(tilesRefs[i], NULL, NULL);
+                mTileCache->removeTile(tilesRefs[i], nullptr, nullptr);
                 mNavMesh->removeTile(mNavMesh->getTileRefAt(tx, ty, tlayer), 0, 0);
 
                 EventTileRemoved(tx, ty, tlayer);
@@ -753,7 +753,7 @@ int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& e
     if (nPathCount == 0)
         return -4; // couldn't find a path
 
-    status = mNavQuery->findStraightPath(StartNearest, EndNearest, PolyPath, nPathCount, StraightPath, NULL, NULL, &nVertCount, MAX_PATHVERT);
+    status = mNavQuery->findStraightPath(StartNearest, EndNearest, PolyPath, nPathCount, StraightPath, nullptr, nullptr, &nVertCount, MAX_PATHVERT);
     if ((status & DT_FAILURE))
         return -5; // couldn't create a path
     if (nVertCount == 0)
@@ -975,7 +975,7 @@ void Awareness::rebuildTile(int tx, int ty, const std::vector<WFMath::RotBox<2>>
         dtTileCacheLayerHeader* header = (dtTileCacheLayerHeader*)tile->data;
         dtTileRef tileRef = mTileCache->getTileRef(mTileCache->getTileAt(header->tx, header->ty, header->tlayer));
         if (tileRef) {
-            mTileCache->removeTile(tileRef, NULL, NULL);
+            mTileCache->removeTile(tileRef, nullptr, nullptr);
         }
         dtStatus status = mTileCache->addTile(tile->data, tile->dataSize, DT_COMPRESSEDTILE_FREE_DATA, 0); // Add compressed tiles to tileCache
         if (dtStatusFailed(status)) {

@@ -36,9 +36,9 @@ static PyObject * TerrainModProperty_getattro(PyProperty *self,
                                               PyObject * oname)
 {
 #ifndef NDEBUG
-    if (self->m_entity == NULL || self->m_p.terrainmod == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainModProperty.getattr");
-        return NULL;
+    if (self->m_entity == nullptr || self->m_p.terrainmod == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr entity in TerrainModProperty.getattr");
+        return nullptr;
     }
 #endif // NDEBUG
     char * name = PyString_AsString(oname);
@@ -63,8 +63,8 @@ static int TerrainModProperty_setattro(PyProperty * self,
                                        PyObject * v)
 {
 #ifndef NDEBUG
-    if (self->m_entity == NULL || self->m_p.terrainmod == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainModProperty.setattro");
+    if (self->m_entity == nullptr || self->m_p.terrainmod == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr entity in TerrainModProperty.setattro");
         return -1;
     }
 #endif // NDEBUG
@@ -103,7 +103,7 @@ static int TerrainModProperty_init(PyProperty * self,
 }
 
 PyTypeObject PyTerrainModProperty_Type = {
-        PyObject_HEAD_INIT(NULL)
+        PyObject_HEAD_INIT(nullptr)
         0,                                                // ob_size
         "TerrainModProperty",                             // tp_name
         sizeof(PyProperty),                               // tp_basicsize

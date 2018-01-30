@@ -41,13 +41,13 @@ static const bool debug_flag = false;
 static PyObject * CreatorClient_as_entity(PyCreatorClient * self, PyObject *)
 {
 #ifndef NDEBUG
-    if (self->m_mind.c == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL CreatorClient in CreatorClient.as_entity");
-        return NULL;
+    if (self->m_mind.c == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr CreatorClient in CreatorClient.as_entity");
+        return nullptr;
     }
 #endif // NDEBUG
     PyMessage * ret = newPyMessage();
-    if (ret != NULL) {
+    if (ret != nullptr) {
         ret->m_obj = new Element(MapType());
         self->m_mind.c->addToMessage(ret->m_obj->asMap());
     }
@@ -58,22 +58,22 @@ static PyObject * CreatorClient_make(PyCreatorClient * self,
                                      PyRootEntity * entity)
 {
 #ifndef NDEBUG
-    if (self->m_mind.c == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL CreatorClient in CreatorClient.make");
-        return NULL;
+    if (self->m_mind.c == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr CreatorClient in CreatorClient.make");
+        return nullptr;
     }
 #endif // NDEBUG
     if (!PyRootEntity_Check(entity)) {
         PyErr_SetString(PyExc_TypeError, "Can only make Atlas entity");
-        return NULL;
+        return nullptr;
     }
     LocatedEntity * retval = self->m_mind.a->make(entity->entity);
-    if (retval == NULL) {
+    if (retval == nullptr) {
         PyErr_SetString(PyExc_RuntimeError, "Entity creation failed");
-        return NULL;
+        return nullptr;
     }
     PyEntity * ret = newPyLocatedEntity();
-    if (ret != NULL) {
+    if (ret != nullptr) {
         ret->m_entity.l = retval;
     }
     return (PyObject *)ret;
@@ -82,19 +82,19 @@ static PyObject * CreatorClient_make(PyCreatorClient * self,
 static PyObject * CreatorClient_set(PyCreatorClient * self, PyObject * args)
 {
 #ifndef NDEBUG
-    if (self->m_mind.c == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL CreatorClient in CreatorClient.set");
-        return NULL;
+    if (self->m_mind.c == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr CreatorClient in CreatorClient.set");
+        return nullptr;
     }
 #endif // NDEBUG
-    PyRootEntity * entity = NULL;
-    char * id = NULL;
+    PyRootEntity * entity = nullptr;
+    char * id = nullptr;
     if (!PyArg_ParseTuple(args, "sO", &id, &entity)) {
-        return NULL;
+        return nullptr;
     }
     if (!PyRootEntity_Check(entity)) {
         PyErr_SetString(PyExc_TypeError, "Can only set Atlas entity");
-        return NULL;
+        return nullptr;
     }
     self->m_mind.a->sendSet(id, entity->entity);
     Py_INCREF(Py_None);
@@ -104,23 +104,23 @@ static PyObject * CreatorClient_set(PyCreatorClient * self, PyObject * args)
 static PyObject * CreatorClient_look(PyCreatorClient * self, PyObject * py_id)
 {
 #ifndef NDEBUG
-    if (self->m_mind.c == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL CreatorClient in CreatorClient.look");
-        return NULL;
+    if (self->m_mind.c == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr CreatorClient in CreatorClient.look");
+        return nullptr;
     }
 #endif // NDEBUG
     if (!PyString_CheckExact(py_id)) {
         PyErr_SetString(PyExc_TypeError, "CreatorClient.look must be a string");
-        return NULL;
+        return nullptr;
     }
     char * id = PyString_AsString(py_id);
     LocatedEntity * retval = self->m_mind.c->look(id);
-    if (retval == NULL) {
+    if (retval == nullptr) {
         PyErr_SetString(PyExc_RuntimeError, "Entity look failed");
-        return NULL;
+        return nullptr;
     }
     PyEntity * ret = newPyLocatedEntity();
-    if (ret != NULL) {
+    if (ret != nullptr) {
         ret->m_entity.l = retval;
     }
     return (PyObject *)ret;
@@ -129,22 +129,22 @@ static PyObject * CreatorClient_look_for(PyCreatorClient * self,
                                          PyRootEntity * ent)
 {
 #ifndef NDEBUG
-    if (self->m_mind.c == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL CreatorClient in CreatorClient.look_for");
-        return NULL;
+    if (self->m_mind.c == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr CreatorClient in CreatorClient.look_for");
+        return nullptr;
     }
 #endif // NDEBUG
     if (!PyRootEntity_Check(ent)) {
         PyErr_SetString(PyExc_TypeError, "Can only look for Atlas description");
-        return NULL;
+        return nullptr;
     }
     LocatedEntity * retval = self->m_mind.c->lookFor(ent->entity);
-    if (retval == NULL) {
+    if (retval == nullptr) {
         Py_INCREF(Py_None);
         return Py_None;
     }
     PyEntity * ret = newPyLocatedEntity();
-    if (ret != NULL) {
+    if (ret != nullptr) {
         ret->m_entity.l = retval;
     }
     return (PyObject *)ret;
@@ -153,14 +153,14 @@ static PyObject * CreatorClient_look_for(PyCreatorClient * self,
 static PyObject * CreatorClient_send(PyCreatorClient * self, PyOperation * op)
 {
 #ifndef NDEBUG
-    if (self->m_mind.c == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL CreatorClient in CreatorClient.send");
-        return NULL;
+    if (self->m_mind.c == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr CreatorClient in CreatorClient.send");
+        return nullptr;
     }
 #endif // NDEBUG
     if (!PyOperation_Check(op)) {
         PyErr_SetString(PyExc_TypeError, "Can only send Atlas operation");
-        return NULL;
+        return nullptr;
     }
     self->m_mind.c->send(op->operation);
     Py_INCREF(Py_None);
@@ -170,14 +170,14 @@ static PyObject * CreatorClient_send(PyCreatorClient * self, PyOperation * op)
 static PyObject * CreatorClient_delete(PyCreatorClient * self, PyObject * py_id)
 {
 #ifndef NDEBUG
-    if (self->m_mind.c == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL CreatorClient in CreatorClient.send");
-        return NULL;
+    if (self->m_mind.c == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr CreatorClient in CreatorClient.send");
+        return nullptr;
     }
 #endif // NDEBUG
     if (!PyString_CheckExact(py_id)) {
         PyErr_SetString(PyExc_TypeError, "CreatorClient.delete must be a string");
-        return NULL;
+        return nullptr;
     }
     char * id = PyString_AsString(py_id);
     self->m_mind.a->del(id);
@@ -192,7 +192,7 @@ static PyMethodDef CharacterClient_methods[] = {
         {"look",           (PyCFunction)CreatorClient_look,      METH_O},
         {"look_for",       (PyCFunction)CreatorClient_look_for,  METH_O},
         {"send",           (PyCFunction)CreatorClient_send,      METH_O},
-        {NULL,          NULL}           /* sentinel */
+        {nullptr,          nullptr}           /* sentinel */
 };
 #endif
 
@@ -204,7 +204,7 @@ static PyMethodDef CreatorClient_methods[] = {
         {"look_for",       (PyCFunction)CreatorClient_look_for,  METH_O},
         {"send",           (PyCFunction)CreatorClient_send,      METH_O},
         {"delete",         (PyCFunction)CreatorClient_delete,    METH_O},
-        {NULL,          NULL}           /* sentinel */
+        {nullptr,          nullptr}           /* sentinel */
 };
 
 static PyObject * CreatorClient_getattro(PyCreatorClient *self,
@@ -212,35 +212,35 @@ static PyObject * CreatorClient_getattro(PyCreatorClient *self,
 {
     // Fairly major re-write of this to use operator[] of CreatorClient base class
 #ifndef NDEBUG
-    if (self->m_mind.c == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL CreatorClient in CreatorClient.getattr");
-        return NULL;
+    if (self->m_mind.c == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr CreatorClient in CreatorClient.getattr");
+        return nullptr;
     }
 #endif // NDEBUG
     char * name = PyString_AsString(oname);
     // If operation search gets to here, it goes no further
-    if (strstr(name, "_operation") != NULL) {
+    if (strstr(name, "_operation") != nullptr) {
         PyErr_SetString(PyExc_AttributeError, name);
-        return NULL;
+        return nullptr;
     }
     if (strcmp(name, "type") == 0) {
         PyObject * list = PyList_New(0);
-        if (list == NULL) {
-            return NULL;
+        if (list == nullptr) {
+            return nullptr;
         }
         PyList_Append(list, PyString_FromString(self->m_mind.c->getType()->name().c_str()));
         return list;
     }
     if (strcmp(name, "map") == 0) {
         PyMap * map = newPyMap();
-        if (map != NULL) {
+        if (map != nullptr) {
             map->m_map = self->m_mind.c->getMap();
         }
         return (PyObject *)map;
     }
     if (strcmp(name, "location") == 0) {
         PyLocation * loc = newPyLocation();
-        if (loc != NULL) {
+        if (loc != nullptr) {
             loc->location = &self->m_mind.c->m_location;
             loc->owner = self->m_mind.c;
         }
@@ -248,7 +248,7 @@ static PyObject * CreatorClient_getattro(PyCreatorClient *self,
     }
     if (strcmp(name, "time") == 0) {
         PyWorldTime * worldtime = newPyWorldTime();
-        if (worldtime != NULL) {
+        if (worldtime != nullptr) {
             worldtime->time = self->m_mind.c->getTime();
         }
         return (PyObject *)worldtime;
@@ -268,7 +268,7 @@ static int CreatorClient_setattro(PyCreatorClient *self,
                                   PyObject *v)
 {
     char * name = PyString_AsString(oname);
-    if (self->m_mind.c == NULL) {
+    if (self->m_mind.c == nullptr) {
         // FIXME Set an error
         return -1;
     }
@@ -278,7 +278,7 @@ static int CreatorClient_setattro(PyCreatorClient *self,
     }
     LocatedEntity * thing = self->m_mind.c;
     //std::string attr(name);
-    //if (v == NULL) {
+    //if (v == nullptr) {
         //thing->attributes.erase(attr);
         //return 0;
     //}
@@ -293,7 +293,7 @@ static int CreatorClient_setattro(PyCreatorClient *self,
 
 static int CreatorClient_compare(PyCreatorClient *self, PyCreatorClient *other)
 {
-    if (self->m_mind.c == NULL || other->m_mind.c == NULL) {
+    if (self->m_mind.c == nullptr || other->m_mind.c == nullptr) {
         return -1;
     }
     return (self->m_mind.c == other->m_mind.c) ? 0 : 1;
@@ -302,7 +302,7 @@ static int CreatorClient_compare(PyCreatorClient *self, PyCreatorClient *other)
 static int CreatorClient_init(PyCreatorClient * self,
                               PyObject * args, PyObject * kwds)
 {
-    char * id = NULL;
+    char * id = nullptr;
 
     if (!PyArg_ParseTuple(args, "s", &id)) {
         return -1;

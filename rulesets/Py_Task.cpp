@@ -29,9 +29,9 @@
 static PyObject * Task_irrelevant(PyTask * self)
 {
 #ifndef NDEBUG
-    if (self->m_task == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL task in Task.irrelevant");
-        return NULL;
+    if (self->m_task == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr task in Task.irrelevant");
+        return nullptr;
     }
 #endif // NDEBUG
     self->m_task->irrelevant();
@@ -42,9 +42,9 @@ static PyObject * Task_irrelevant(PyTask * self)
 static PyObject * Task_obsolete(PyTask * self)
 {
 #ifndef NDEBUG
-    if (self->m_task == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL task in Task.irrelevant");
-        return NULL;
+    if (self->m_task == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr task in Task.irrelevant");
+        return nullptr;
     }
 #endif // NDEBUG
     PyObject * ret = self->m_task->obsolete() ? Py_True : Py_False;
@@ -55,9 +55,9 @@ static PyObject * Task_obsolete(PyTask * self)
 static PyObject * Task_count(PyTask * self)
 {
 #ifndef NDEBUG
-    if (self->m_task == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL task in Task.irrelevant");
-        return NULL;
+    if (self->m_task == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr task in Task.irrelevant");
+        return nullptr;
     }
 #endif // NDEBUG
     return PyInt_FromLong(self->m_task->count());
@@ -66,9 +66,9 @@ static PyObject * Task_count(PyTask * self)
 static PyObject * Task_newtick(PyTask * self)
 {
 #ifndef NDEBUG
-    if (self->m_task == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL task in Task.irrelevant");
-        return NULL;
+    if (self->m_task == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr task in Task.irrelevant");
+        return nullptr;
     }
 #endif // NDEBUG
     return PyInt_FromLong(self->m_task->newTick());
@@ -77,9 +77,9 @@ static PyObject * Task_newtick(PyTask * self)
 static PyObject * Task_nexttick(PyTask * self, PyObject * arg)
 {
 #ifndef NDEBUG
-    if (self->m_task == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL task in Task.irrelevant");
-        return NULL;
+    if (self->m_task == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr task in Task.irrelevant");
+        return nullptr;
     }
 #endif // NDEBUG
     double interval;
@@ -89,7 +89,7 @@ static PyObject * Task_nexttick(PyTask * self, PyObject * arg)
         interval = PyInt_AsLong(arg);
     } else {
         PyErr_SetString(PyExc_TypeError, "Interval must be a number");
-        return NULL;
+        return nullptr;
     }
     PyOperation * tick_op = newPyOperation();
     if (tick_op != 0) {
@@ -104,16 +104,16 @@ static PyMethodDef Task_methods[] = {
         {"count",          (PyCFunction)Task_count, METH_NOARGS},
         {"new_tick",       (PyCFunction)Task_newtick, METH_NOARGS},
         {"next_tick",      (PyCFunction)Task_nexttick, METH_O},
-        {NULL,          NULL}           /* sentinel */
+        {nullptr,          nullptr}           /* sentinel */
 };
 
 static PyObject * Task_getattro(PyTask *self, PyObject *oname)
 {
     // Fairly major re-write of this to use operator[] of Task base class
 #ifndef NDEBUG
-    if (self->m_task == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL task Task.getattr");
-        return NULL;
+    if (self->m_task == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr task Task.getattr");
+        return nullptr;
     }
 #endif // NDEBUG
     char * name = PyString_AsString(oname);
@@ -136,8 +136,8 @@ static PyObject * Task_getattro(PyTask *self, PyObject *oname)
 static int Task_setattro(PyTask *self, PyObject * oname, PyObject *v)
 {
 #ifndef NDEBUG
-    if (self->m_task == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL task Task.setattr");
+    if (self->m_task == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr task Task.setattr");
         return -1;
     }
 #endif // NDEBUG
@@ -181,8 +181,8 @@ static int Task_setattro(PyTask *self, PyObject * oname, PyObject *v)
 static int Task_compare(PyTask *self, PyTask *other)
 {
 #ifndef NDEBUG
-    if (self->m_task == NULL || other->m_task == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Task in Task.compare");
+    if (self->m_task == nullptr || other->m_task == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Task in Task.compare");
         return -1;
     }
 #endif // NDEBUG
@@ -198,8 +198,8 @@ static int Task_init(PyTask * self, PyObject * args, PyObject * kwds)
     if (PyTask_Check(arg)) {
         PyTask * wrap_task = (PyTask *)arg;
 #ifndef NDEBUG
-        if (wrap_task->m_task == NULL) {
-            PyErr_SetString(PyExc_AssertionError, "NULL task Task.__init__");
+        if (wrap_task->m_task == nullptr) {
+            PyErr_SetString(PyExc_AssertionError, "nullptr task Task.__init__");
             return -1;
         }
 #endif // NDEBUG
@@ -209,8 +209,8 @@ static int Task_init(PyTask * self, PyObject * args, PyObject * kwds)
     if (PyLocatedEntity_Check(arg)) {
         PyEntity * owner = (PyEntity *)arg;
 #ifndef NDEBUG
-        if (owner->m_entity.l == NULL) {
-            PyErr_SetString(PyExc_AssertionError, "NULL owner Task.__init__");
+        if (owner->m_entity.l == nullptr) {
+            PyErr_SetString(PyExc_AssertionError, "nullptr owner Task.__init__");
             return -1;
         }
 #endif // NDEBUG
@@ -272,7 +272,7 @@ PyObject * wrapTask(Task * task)
     PythonWrapper * pw;
     if (ts == 0 || ((pw = dynamic_cast<PythonWrapper *>(ts->script())) == 0)) {
         PyTask * pt = newPyTask();
-        if (pt != NULL) {
+        if (pt != nullptr) {
             pt->m_task = task;
         }
         wrapper = (PyObject *)pt;
@@ -280,7 +280,7 @@ PyObject * wrapTask(Task * task)
         // we don't have to do this next time.
     } else {
         wrapper = pw->wrapper();
-        assert(wrapper != NULL);
+        assert(wrapper != nullptr);
         Py_INCREF(wrapper);
     }
     return wrapper;
@@ -291,8 +291,8 @@ template<>
 PyObject * wrapPython<Task>(Task * t)
 {
     PyTask * pt = newPyTask();
-    if (pt == NULL) {
-        return NULL;
+    if (pt == nullptr) {
+        return nullptr;
     }
     pt->m_task = t;
     return (PyObject*)pt;

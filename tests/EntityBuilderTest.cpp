@@ -630,7 +630,7 @@ void log(LogLevel lvl, const std::string & msg)
 {
 }
 
-Inheritance * Inheritance::m_instance = NULL;
+Inheritance * Inheritance::m_instance = nullptr;
 
 Inheritance::Inheritance() : noClass(0)
 {
@@ -646,7 +646,7 @@ Inheritance::Inheritance() : noClass(0)
 
 Inheritance & Inheritance::instance()
 {
-    if (m_instance == NULL) {
+    if (m_instance == nullptr) {
         m_instance = new Inheritance();
         installStandardObjects();
     }
@@ -721,9 +721,9 @@ TypeNode * Inheritance::addChild(const Root & obj)
 
 void Inheritance::clear()
 {
-    if (m_instance != NULL) {
+    if (m_instance != nullptr) {
         delete m_instance;
-        m_instance = NULL;
+        m_instance = nullptr;
     }
 }
 

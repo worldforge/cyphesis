@@ -62,7 +62,7 @@ int dbs_help(Storage & ab, struct dbsys * system, int argc, char ** argv)
 {
     size_t max_length = 0;
 
-    for (struct dbsys * I = system->sys_subsys; I->sys_name != NULL; ++I) {
+    for (struct dbsys * I = system->sys_subsys; I->sys_name != nullptr; ++I) {
        max_length = std::max(max_length, strlen(I->sys_name));
     }
     max_length += 2;
@@ -71,7 +71,7 @@ int dbs_help(Storage & ab, struct dbsys * system, int argc, char ** argv)
               << system->sys_name << " commands:"
               << std::endl << std::endl;
 
-    for (struct dbsys * I = system->sys_subsys; I->sys_name != NULL; ++I) {
+    for (struct dbsys * I = system->sys_subsys; I->sys_name != nullptr; ++I) {
         std::cout << "    " << I->sys_name
                   << std::string(max_length - strlen(I->sys_name), ' ')
                   << I->sys_description << std::endl;
@@ -273,7 +273,7 @@ int dbs_generic(Storage & ab, struct dbsys * system,
         return 1;
     }
     char ** nargv = &argv[1];
-    for (struct dbsys * I = subsyss; I->sys_name != NULL; ++I) {
+    for (struct dbsys * I = subsyss; I->sys_name != nullptr; ++I) {
         if (strcmp(nargv[0], I->sys_name) == 0) {
             return I->sys_function(ab, I, nargc, nargv);
         }
@@ -288,7 +288,7 @@ int dbs_generic(Storage & ab, struct dbsys * system,
 struct dbsys world_cmds[] = {
     { "purge", "Purge world data", &world_purge, 0 },
     { "help",  "Show world help", &dbs_help, &world_cmds[0] },
-    { NULL,    "Guard", }
+    { nullptr,    "Guard", }
 };
 
 struct dbsys users_cmds[] = {
@@ -297,14 +297,14 @@ struct dbsys users_cmds[] = {
     { "del",   "Delete a user account", &users_del, 0 },
     { "mod",   "Modify a user account", &users_mod, 0 },
     { "help",  "Show users help", &dbs_help, &users_cmds[0] },
-    { NULL,    "Guard", }
+    { nullptr,    "Guard", }
 };
 
 struct dbsys rules_cmds[] = {
     { "purge", "Purge rules data", &rules_purge, 0 },
     { "list",  "List rules", &rules_list, 0 },
     { "help",  "Show rules help", &dbs_help, &rules_cmds[0] },
-    { NULL,    "Guard", }
+    { nullptr,    "Guard", }
 };
 
 struct dbsys systems[] = {
@@ -312,7 +312,7 @@ struct dbsys systems[] = {
     { "user",  "Modify the user account table", &dbs_generic, &users_cmds[0] },
     { "world", "Modify the world storage tables", &dbs_generic, &world_cmds[0] },
     { "help",  "Show command help", &dbs_help, &systems[0] },
-    { NULL,    "Guard", }
+    { nullptr,    "Guard", }
 };
 
 struct dbsys tool = {
@@ -487,7 +487,7 @@ void exec(const std::string & cmd, const std::string & arg)
             reply_expected = false;
 
             struct timeval tv;
-            gettimeofday(&tv, NULL);
+            gettimeofday(&tv, nullptr);
             int monitor_time = tv.tv_sec - om->startTime();
 
             std::cout << om->count() << " operations monitored in "
@@ -629,9 +629,9 @@ void exec(const std::string & cmd, const std::string & arg)
 
     if (!reply_expected) { return; }
     // Wait for reply
-    time_t wait_start_time = time(NULL);
+    time_t wait_start_time = time(nullptr);
     while (!reply_flag) {
-       if (time(NULL) - wait_start_time > 5) {
+       if (time(nullptr) - wait_start_time > 5) {
            std::cout << cmd << ": No reply from server" << std::endl << std::flush;
            return;
        }
@@ -642,7 +642,7 @@ void exec(const std::string & cmd, const std::string & arg)
 
 static int run_command(Storage & ab, int argc, char ** argv)
 {
-    for (struct dbsys * I = &systems[0]; I->sys_name != NULL; ++I) {
+    for (struct dbsys * I = &systems[0]; I->sys_name != nullptr; ++I) {
         if (strcmp(argv[0], I->sys_name) == 0) {
             return I->sys_function(ab, I, argc, argv);
         }

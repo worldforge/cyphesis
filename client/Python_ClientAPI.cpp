@@ -34,13 +34,13 @@ int python_client_script(const std::string & package,
                          const std::map<std::string, std::string> & keywords)
 {
     PyObject * module = Get_PyModule(package);
-    if (module == NULL) {
+    if (module == nullptr) {
         return -1;
     }
     PyObject * function = PyObject_GetAttrString(module,
                                                  (char *)func.c_str());
     Py_DECREF(module);
-    if (function == NULL) {
+    if (function == nullptr) {
         std::cerr << "Could not find " << func << " function" << std::endl
                   << std::flush;
         PyErr_Print();
@@ -68,8 +68,8 @@ int python_client_script(const std::string & package,
     Py_DECREF(kwds);
     Py_DECREF(args);
 
-    if (pyob == NULL) {
-        if (PyErr_Occurred() == NULL) {
+    if (pyob == nullptr) {
+        if (PyErr_Occurred() == nullptr) {
             std::cerr << "Could not call function" << std::endl << std::flush;
         } else {
             std::cerr << "Reporting python error" << std::endl << std::flush;

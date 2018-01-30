@@ -46,13 +46,13 @@ using Atlas::Message::MapType;
 static PyObject * Entity_as_entity(PyEntity * self)
 {
 #ifndef NDEBUG
-    if (self->m_entity.l == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.as_entity");
-        return NULL;
+    if (self->m_entity.l == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr entity in Entity.as_entity");
+        return nullptr;
     }
 #endif // NDEBUG
     PyMessage * ret = newPyMessage();
-    if (ret != NULL) {
+    if (ret != nullptr) {
         ret->m_obj = new Element(MapType());
         self->m_entity.l->addToMessage(ret->m_obj->asMap());
     }
@@ -61,22 +61,22 @@ static PyObject * Entity_as_entity(PyEntity * self)
 
 static PyMethodDef LocatedEntity_methods[] = {
     {"as_entity",       (PyCFunction)Entity_as_entity,  METH_NOARGS},
-    {NULL,              NULL}           /* sentinel */
+    {nullptr,              nullptr}           /* sentinel */
 };
 
 static PyObject * Entity_send_world(PyEntity * self, PyOperation * op)
 {
 #ifndef NDEBUG
-    if (self->m_entity.e == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.send_world");
-        return NULL;
+    if (self->m_entity.e == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr entity in Entity.send_world");
+        return nullptr;
     }
 #endif // NDEBUG
     if (PyOperation_Check(op)) {
         self->m_entity.e->sendWorld(op->operation);
     } else {
         PyErr_SetString(PyExc_TypeError, "Entity.send_world must be an op");
-        return NULL;
+        return nullptr;
     }
     Py_INCREF(Py_None);
     return Py_None;
@@ -84,34 +84,34 @@ static PyObject * Entity_send_world(PyEntity * self, PyOperation * op)
 
 static PyMethodDef Entity_methods[] = {
     {"send_world",      (PyCFunction)Entity_send_world, METH_O},
-    {NULL,              NULL}           /* sentinel */
+    {nullptr,              nullptr}           /* sentinel */
 };
 
 static PyObject * Character_start_task(PyEntity * self, PyObject * args)
 {
 #ifndef NDEBUG
-    if (self->m_entity.l == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.start_task");
-        return NULL;
+    if (self->m_entity.l == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr entity in Entity.start_task");
+        return nullptr;
     }
 #endif // NDEBUG
     PyObject * task;
     PyObject * op;
     PyObject * res;
     if (!PyArg_ParseTuple(args, "OOO", &task, &op, &res)) {
-        return NULL;
+        return nullptr;
     }
     if (!PyTask_Check(task)) {
         PyErr_SetString(PyExc_TypeError, "Entity.start_task must be a task");
-        return NULL;
+        return nullptr;
     }
     if (!PyOperation_Check(op)) {
         PyErr_SetString(PyExc_TypeError, "Entity.start_task must be an op");
-        return NULL;
+        return nullptr;
     }
     if (!PyOplist_Check(res)) {
         PyErr_SetString(PyExc_TypeError, "Entity.start_task must be an oplist");
-        return NULL;
+        return nullptr;
     }
     self->m_entity.c->startTask(((PyTask*)task)->m_task,
                                 ((PyOperation*)op)->operation,
@@ -123,14 +123,14 @@ static PyObject * Character_start_task(PyEntity * self, PyObject * args)
 static PyObject * Character_mind2body(PyEntity * self, PyOperation * op)
 {
 #ifndef NDEBUG
-    if (self->m_entity.l == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.mind2body");
-        return NULL;
+    if (self->m_entity.l == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr entity in Entity.mind2body");
+        return nullptr;
     }
 #endif // NDEBUG
     if (!PyOperation_Check(op)) {
          PyErr_SetString(PyExc_TypeError, "Entity.mind2body must be an operation");
-         return NULL;
+         return nullptr;
     }
     OpVector res;
     self->m_entity.c->mind2body(op->operation, res);
@@ -139,13 +139,13 @@ static PyObject * Character_mind2body(PyEntity * self, PyOperation * op)
         return Py_None;
     } else if (res.size() == 1) {
         PyOperation * ret = newPyOperation();
-        if (ret != NULL) {
+        if (ret != nullptr) {
             ret->operation = res[0];
         }
         return (PyObject*)ret;
     } else {
         PyOplist * ret = newPyOplist();
-        if (ret != NULL) {
+        if (ret != nullptr) {
             ret->ops = new OpVector(res);
         }
         return (PyObject*)ret;
@@ -155,14 +155,14 @@ static PyObject * Character_mind2body(PyEntity * self, PyOperation * op)
 static PyObject * Mind_refreshPath(PyEntity * self)
 {
 #ifndef NDEBUG
-    if (self->m_entity.l == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.refreshPath");
-        return NULL;
+    if (self->m_entity.l == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr entity in Entity.refreshPath");
+        return nullptr;
     }
 #endif // NDEBUG
     AwareMind* awareMind = dynamic_cast<AwareMind*>(self->m_entity.m);
     if (!awareMind) {
-        return NULL;
+        return nullptr;
     }
 
     int result = awareMind->updatePath();
@@ -173,14 +173,14 @@ static PyObject * Mind_refreshPath(PyEntity * self)
 static PyObject * Mind_describeEntity(PyEntity * self)
 {
 #ifndef NDEBUG
-    if (self->m_entity.l == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.mind2body");
-        return NULL;
+    if (self->m_entity.l == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr entity in Entity.mind2body");
+        return nullptr;
     }
 #endif // NDEBUG
     AwareMind* awareMind = dynamic_cast<AwareMind*>(self->m_entity.m);
     if (!awareMind) {
-        return NULL;
+        return nullptr;
     }
 
     std::string result = awareMind->describeEntity();
@@ -192,7 +192,7 @@ static PyObject* Mind_setDestination(PyEntity* self, PyObject* args)
 {
     AwareMind* awareMind = dynamic_cast<AwareMind*>(self->m_entity.m);
     if (!awareMind) {
-        return NULL;
+        return nullptr;
     }
 
     PyObject * destination_arg;
@@ -200,12 +200,12 @@ static PyObject* Mind_setDestination(PyEntity* self, PyObject* args)
     const char* entityIdString;
     if (!PyArg_ParseTuple(args, "Ofz", &destination_arg, &radius, &entityIdString)) {
         awareMind->getSteering().stopSteering();
-        return NULL;
+        return nullptr;
     }
     if (!PyPoint3D_Check(destination_arg)) {
         PyErr_SetString(PyExc_TypeError, "Argument must be a Point3D");
         awareMind->getSteering().stopSteering();
-        return NULL;
+        return nullptr;
     }
     PyPoint3D * destination = (PyPoint3D *)destination_arg;
 
@@ -234,14 +234,14 @@ static PyObject* Mind_setDestination(PyEntity* self, PyObject* args)
 static PyMethodDef Character_methods[] = {
     {"start_task",      (PyCFunction)Character_start_task, METH_VARARGS},
     {"mind2body",       (PyCFunction)Character_mind2body,  METH_O},
-    {NULL,              NULL}           /* sentinel */
+    {nullptr,              nullptr}           /* sentinel */
 };
 
 static PyMethodDef Mind_methods[] = {
     {"refreshPath",     (PyCFunction)Mind_refreshPath,  METH_NOARGS},
     {"setDestination",     (PyCFunction)Mind_setDestination,  METH_VARARGS},
     {"describeEntity",     (PyCFunction)Mind_describeEntity,  METH_NOARGS},
-    {NULL,              NULL}           /* sentinel */
+    {nullptr,              nullptr}           /* sentinel */
 };
 
 static PyEntity * Entity_new(PyTypeObject * type,
@@ -249,15 +249,15 @@ static PyEntity * Entity_new(PyTypeObject * type,
                              PyObject * kwds)
 {
     PyEntity * self = (PyEntity *)type->tp_alloc(type, 0);
-    if (self != NULL) {
-        self->m_weakreflist = NULL;
+    if (self != nullptr) {
+        self->m_weakreflist = nullptr;
     }
     return self;
 }
 
 static void Entity_dealloc(PyEntity *self)
 {
-    if (self->m_weakreflist != NULL) {
+    if (self->m_weakreflist != nullptr) {
         PyObject_ClearWeakRefs((PyObject *) self);
     }
 
@@ -267,21 +267,21 @@ static void Entity_dealloc(PyEntity *self)
 static PyObject * Entity_getattro(PyEntity *self, PyObject *oname)
 {
 #ifndef NDEBUG
-    if (self->m_entity.e == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.getattr");
-        return NULL;
+    if (self->m_entity.e == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr entity in Entity.getattr");
+        return nullptr;
     }
 #endif // NDEBUG
     char * name = PyString_AsString(oname);
     // If operation search gets to here, it goes no further
     if (strcmp(name, "type") == 0) {
-        if (self->m_entity.e->getType() == NULL) {
+        if (self->m_entity.e->getType() == nullptr) {
             PyErr_SetString(PyExc_AttributeError, name);
-            return NULL;
+            return nullptr;
         }
         PyObject * list = PyList_New(0);
-        if (list == NULL) {
-            return NULL;
+        if (list == nullptr) {
+            return nullptr;
         }
         PyObject * ent = PyString_FromString(self->m_entity.e->getType()->name().c_str());
         PyList_Append(list, ent);
@@ -290,7 +290,7 @@ static PyObject * Entity_getattro(PyEntity *self, PyObject *oname)
     }
     if (strcmp(name, "location") == 0) {
         PyLocation * loc = newPyLocation();
-        if (loc != NULL) {
+        if (loc != nullptr) {
             loc->location = &self->m_entity.e->m_location;
             loc->owner = self->m_entity.e;
         }
@@ -302,17 +302,17 @@ static PyObject * Entity_getattro(PyEntity *self, PyObject *oname)
             return Py_None;
         }
         PyObject * list = PyList_New(0);
-        if (list == NULL) {
-            return NULL;
+        if (list == nullptr) {
+            return nullptr;
         }
         LocatedEntitySet::const_iterator I = self->m_entity.e->m_contains->begin();
         LocatedEntitySet::const_iterator Iend = self->m_entity.e->m_contains->end();
         for (; I != Iend; ++I) {
             LocatedEntity * child = *I;
             PyObject * wrapper = wrapEntity(child);
-            if (wrapper == NULL) {
+            if (wrapper == nullptr) {
                 Py_DECREF(list);
-                return NULL;
+                return nullptr;
             }
             PyList_Append(list, wrapper);
             Py_DECREF(wrapper);
@@ -348,8 +348,8 @@ static PyObject * Entity_getattro(PyEntity *self, PyObject *oname)
 static int Entity_setattro(PyEntity *self, PyObject *oname, PyObject *v)
 {
 #ifndef NDEBUG
-    if (self->m_entity.e == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in Entity.setattr");
+    if (self->m_entity.e == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr entity in Entity.setattr");
         return -1;
     }
 #endif // NDEBUG
@@ -360,7 +360,7 @@ static int Entity_setattro(PyEntity *self, PyObject *oname, PyObject *v)
     }
     Entity * entity = self->m_entity.e;
     //std::string attr(name);
-    //if (v == NULL) {
+    //if (v == nullptr) {
         //entity->attributes.erase(attr);
         //return 0;
     //}
@@ -394,8 +394,8 @@ static int Entity_setattro(PyEntity *self, PyObject *oname, PyObject *v)
 
 static int Entity_compare(PyEntity *self, PyEntity *other)
 {
-    if (self->m_entity.e == NULL || other->m_entity.e == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Entity in Entity.compare");
+    if (self->m_entity.e == nullptr || other->m_entity.e == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Entity in Entity.compare");
         return -1;
     }
     return (self->m_entity.e == other->m_entity.e) ? 0 : 1;
@@ -403,7 +403,7 @@ static int Entity_compare(PyEntity *self, PyEntity *other)
 
 static int LocatedEntity_init(PyEntity * self, PyObject * args, PyObject * kwds)
 {
-    char * id = NULL;
+    char * id = nullptr;
 
     if (!PyArg_ParseTuple(args, "s", &id)) {
         return -1;
@@ -436,8 +436,8 @@ static int Entity_init(PyEntity * self, PyObject * args, PyObject * kwds)
     if (PyEntity_Check(arg)) {
         PyEntity * character = (PyEntity *)arg;
 #ifndef NDEBUG
-        if (character->m_entity.c == NULL) {
-            PyErr_SetString(PyExc_AssertionError, "NULL character Task.__init__");
+        if (character->m_entity.c == nullptr) {
+            PyErr_SetString(PyExc_AssertionError, "nullptr character Task.__init__");
             return -1;
         }
 #endif // NDEBUG
@@ -468,8 +468,8 @@ static int Character_init(PyEntity * self, PyObject * args, PyObject * kwds)
     if (PyCharacter_Check(arg)) {
         PyEntity * character = (PyEntity *)arg;
 #ifndef NDEBUG
-        if (character->m_entity.c == NULL) {
-            PyErr_SetString(PyExc_AssertionError, "NULL character Task.__init__");
+        if (character->m_entity.c == nullptr) {
+            PyErr_SetString(PyExc_AssertionError, "nullptr character Task.__init__");
             return -1;
         }
 #endif // NDEBUG
@@ -484,9 +484,9 @@ static int Character_init(PyEntity * self, PyObject * args, PyObject * kwds)
 static PyObject * Mind_getattro(PyEntity *self, PyObject *oname)
 {
 #ifndef NDEBUG
-    if (self->m_entity.m == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL mind in Mind.getattr");
-        return NULL;
+    if (self->m_entity.m == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr mind in Mind.getattr");
+        return nullptr;
     }
 #endif // NDEBUG
     char * name = PyString_AsString(oname);
@@ -494,13 +494,13 @@ static PyObject * Mind_getattro(PyEntity *self, PyObject *oname)
         return (PyObject *)PyString_FromString(self->m_entity.m->getId().c_str());
     }
     if (strcmp(name, "type") == 0) {
-        if (self->m_entity.m->getType() == NULL) {
+        if (self->m_entity.m->getType() == nullptr) {
             PyErr_SetString(PyExc_AttributeError, name);
-            return NULL;
+            return nullptr;
         }
         PyObject * list = PyList_New(0);
-        if (list == NULL) {
-            return NULL;
+        if (list == nullptr) {
+            return nullptr;
         }
         PyObject * ent = PyString_FromString(self->m_entity.m->getType()->name().c_str());
         PyList_Append(list, ent);
@@ -509,14 +509,14 @@ static PyObject * Mind_getattro(PyEntity *self, PyObject *oname)
     }
     if (strcmp(name, "map") == 0) {
         PyMap * map = newPyMap();
-        if (map != NULL) {
+        if (map != nullptr) {
             map->m_map = self->m_entity.m->getMap();
         }
         return (PyObject *)map;
     }
     if (strcmp(name, "location") == 0) {
         PyLocation * loc = newPyLocation();
-        if (loc != NULL) {
+        if (loc != nullptr) {
             loc->location = &self->m_entity.m->m_location;
             loc->owner = self->m_entity.m;
         }
@@ -524,7 +524,7 @@ static PyObject * Mind_getattro(PyEntity *self, PyObject *oname)
     }
     if (strcmp(name, "time") == 0) {
         PyWorldTime * worldtime = newPyWorldTime();
-        if (worldtime != NULL) {
+        if (worldtime != nullptr) {
             worldtime->time = self->m_entity.m->getTime();
         }
         return (PyObject *)worldtime;
@@ -535,17 +535,17 @@ static PyObject * Mind_getattro(PyEntity *self, PyObject *oname)
             return Py_None;
         }
         PyObject * list = PyList_New(0);
-        if (list == NULL) {
-            return NULL;
+        if (list == nullptr) {
+            return nullptr;
         }
         LocatedEntitySet::const_iterator I = self->m_entity.m->m_contains->begin();
         LocatedEntitySet::const_iterator Iend = self->m_entity.m->m_contains->end();
         for (; I != Iend; ++I) {
             LocatedEntity * child = *I;
             PyObject * wrapper = wrapEntity(child);
-            if (wrapper == NULL) {
+            if (wrapper == nullptr) {
                 Py_DECREF(list);
-                return NULL;
+                return nullptr;
             }
             PyList_Append(list, wrapper);
             Py_DECREF(wrapper);
@@ -555,7 +555,7 @@ static PyObject * Mind_getattro(PyEntity *self, PyObject *oname)
     if (strcmp(name, "unawareTilesCount") == 0) {
         AwareMind* awareMind = dynamic_cast<AwareMind*>(self->m_entity.m);
         if (!awareMind) {
-            return NULL;
+            return nullptr;
         }
 
         size_t count = awareMind->getSteering().unawareAreaCount();
@@ -565,12 +565,12 @@ static PyObject * Mind_getattro(PyEntity *self, PyObject *oname)
     if (strcmp(name, "path") == 0) {
         AwareMind* awareMind = dynamic_cast<AwareMind*>(self->m_entity.m);
         if (!awareMind) {
-            return NULL;
+            return nullptr;
         }
         const auto& path = awareMind->getSteering().getPath();
         PyObject * list = PyList_New(0);
-        if (list == NULL) {
-            return NULL;
+        if (list == nullptr) {
+            return nullptr;
         }
 
         for (auto& point : path) {
@@ -587,7 +587,7 @@ static PyObject * Mind_getattro(PyEntity *self, PyObject *oname)
     if (strcmp(name, "pathResult") == 0) {
         AwareMind* awareMind = dynamic_cast<AwareMind*>(self->m_entity.m);
         if (!awareMind) {
-            return NULL;
+            return nullptr;
         }
 
         return PyInt_FromLong(awareMind->getSteering().getPathResult());
@@ -613,8 +613,8 @@ static int Mind_setattro(PyEntity *self, PyObject *oname, PyObject *v)
         return 0;
     }
 #ifndef NDEBUG
-    if (self->m_entity.m == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL mind in Mind.setattr");
+    if (self->m_entity.m == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr mind in Mind.setattr");
         return -1;
     }
 #endif // NDEBUG
@@ -626,7 +626,7 @@ static int Mind_setattro(PyEntity *self, PyObject *oname, PyObject *v)
     LocatedEntity * entity = self->m_entity.m;
     // Should we support removal of attributes?
     //std::string attr(name);
-    //if (v == NULL) {
+    //if (v == nullptr) {
         //entity->attributes.erase(attr);
         //return 0;
     //}
@@ -643,8 +643,8 @@ static int Mind_setattro(PyEntity *self, PyObject *oname, PyObject *v)
 
 static int Mind_compare(PyEntity *self, PyEntity *other)
 {
-    if (self->m_entity.m == NULL || other->m_entity.m == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL mind in Mind.compare");
+    if (self->m_entity.m == nullptr || other->m_entity.m == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr mind in Mind.compare");
         return -1;
     }
     return (self->m_entity.m == other->m_entity.m) ? 0 : 1;
@@ -652,7 +652,7 @@ static int Mind_compare(PyEntity *self, PyEntity *other)
 
 static int Mind_init(PyEntity * self, PyObject * args, PyObject * kwds)
 {
-    char * id = NULL;
+    char * id = nullptr;
 
     if (!PyArg_ParseTuple(args, "s", &id)) {
         return -1;
@@ -847,21 +847,21 @@ PyObject * wrapPython<LocatedEntity>(LocatedEntity * le)
         Character * ch_entity = dynamic_cast<Character *>(entity);
         if (ch_entity != 0) {
             pe = newPyCharacter();
-            if (pe == NULL) {
-                return NULL;
+            if (pe == nullptr) {
+                return nullptr;
             }
             pe->m_entity.c = ch_entity;
         } else {
             pe = newPyEntity();
-            if (pe == NULL) {
-                return NULL;
+            if (pe == nullptr) {
+                return nullptr;
             }
             pe->m_entity.e = entity;
         }
     } else {
         pe = newPyLocatedEntity();
-        if (pe == NULL) {
-            return NULL;
+        if (pe == nullptr) {
+            return nullptr;
         }
         pe->m_entity.l = le;
     }
@@ -878,8 +878,8 @@ template<>
 PyObject * wrapPython<BaseMind>(BaseMind * t)
 {
     PyEntity * pm = newPyMind();
-    if (pm == NULL) {
-        return NULL;
+    if (pm == nullptr) {
+        return nullptr;
     }
     pm->m_entity.m = t;
     return (PyObject*)pm;
@@ -897,7 +897,7 @@ PyObject * wrapEntity(LocatedEntity * le)
             log(WARNING, "Entity has script of unknown type");
         } else {
             wrapper = pw->wrapper();
-            assert(wrapper != NULL);
+            assert(wrapper != nullptr);
             Py_INCREF(wrapper);
         }
     }

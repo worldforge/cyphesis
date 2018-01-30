@@ -47,7 +47,7 @@ static PyObject * BBox_as_sequence(PyBBox * self)
 {
     PyObject * res = PyList_New(6);
     const BBox & b = self->box;
-    if (res != NULL) {
+    if (res != nullptr) {
         PyList_SetItem(res, 0, PyFloat_FromDouble(b.lowCorner().x()));
         PyList_SetItem(res, 1, PyFloat_FromDouble(b.lowCorner().y()));
         PyList_SetItem(res, 2, PyFloat_FromDouble(b.lowCorner().z()));
@@ -62,7 +62,7 @@ static PyMethodDef BBox_methods[] = {
     {"square_bounding_radius", (PyCFunction)BBox_sqr_bounding_radius, METH_NOARGS},
     {"square_horizontal_bounding_radius", (PyCFunction)BBox_sqr_horizontal_bounding_radius, METH_NOARGS},
     {"as_sequence",            (PyCFunction)BBox_as_sequence,     METH_NOARGS},
-    {NULL, NULL}  // sentinel
+    {nullptr, nullptr}  // sentinel
 };
 
 static void BBox_dealloc(PyBBox * self)
@@ -76,14 +76,14 @@ static PyObject * BBox_getattro(PyBBox *self, PyObject *oname)
     char * name = PyString_AsString(oname);
     if (strcmp(name, "near_point") == 0) {
         PyPoint3D * v = newPyPoint3D();
-        if (v != NULL) {
+        if (v != nullptr) {
             v->coords = self->box.lowCorner();
         }
         return (PyObject *)v;
     }
     if (strcmp(name, "far_point") == 0) {
         PyPoint3D * v = newPyPoint3D();
-        if (v != NULL) {
+        if (v != nullptr) {
             v->coords = self->box.highCorner();
         }
         return (PyObject *)v;
@@ -201,7 +201,7 @@ static PyObject * BBox_new(PyTypeObject * type, PyObject *, PyObject *)
     // This looks allot like the default implementation, except we call the
     // in-place constructor.
     PyBBox * self = (PyBBox *)type->tp_alloc(type, 0);
-    if (self != NULL) {
+    if (self != nullptr) {
         new (&(self->box)) BBox();
     }
     return (PyObject *)self;

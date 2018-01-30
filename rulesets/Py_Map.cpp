@@ -35,39 +35,39 @@ using Atlas::Objects::Entity::RootEntity;
 static PyObject * Map_find_by_location(PyMap * self, PyObject * args)
 {
 #ifndef NDEBUG
-    if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.find_by_location");
-        return NULL;
+    if (self->m_map == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Map in Map.find_by_location");
+        return nullptr;
     }
 #endif // NDEBUG
     PyObject * where_obj;
     double radius;
     char * type;
     if (!PyArg_ParseTuple(args, "Ods", &where_obj, &radius, &type)) {
-        return NULL;
+        return nullptr;
     }
     if (!PyLocation_Check(where_obj)) {
         PyErr_SetString(PyExc_TypeError, "Argument must be a location");
-        return NULL;
+        return nullptr;
     }
     PyLocation * where = (PyLocation *)where_obj;
     if (!where->location->isValid()) {
         PyErr_SetString(PyExc_RuntimeError, "Location is incomplete");
-        return NULL;
+        return nullptr;
     }
     EntityVector res = self->m_map->findByLocation(*where->location,
                                                    radius, type);
     PyObject * list = PyList_New(res.size());
-    if (list == NULL) {
-        return NULL;
+    if (list == nullptr) {
+        return nullptr;
     } 
     EntityVector::const_iterator Iend = res.end();
     int i = 0;
     for (EntityVector::const_iterator I = res.begin(); I != Iend; ++I, ++i) {
         PyObject * thing = wrapEntity(*I);
-        if (thing == NULL) {
+        if (thing == nullptr) {
             Py_DECREF(list);
-            return NULL;
+            return nullptr;
         }
         PyList_SetItem(list, i, thing);
     }
@@ -77,28 +77,28 @@ static PyObject * Map_find_by_location(PyMap * self, PyObject * args)
 static PyObject * Map_find_by_type(PyMap * self, PyObject * py_what)
 {
 #ifndef NDEBUG
-    if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.find_by_type");
-        return NULL;
+    if (self->m_map == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Map in Map.find_by_type");
+        return nullptr;
     }
 #endif // NDEBUG
     if (!PyString_CheckExact(py_what)) {
         PyErr_SetString(PyExc_TypeError, "Map.find_by_type must be string");
-        return NULL;
+        return nullptr;
     }
     char * what = PyString_AsString(py_what);
     EntityVector res = self->m_map->findByType(std::string(what));
     PyObject * list = PyList_New(res.size());
-    if (list == NULL) {
-        return NULL;
+    if (list == nullptr) {
+        return nullptr;
     } 
     EntityVector::const_iterator Iend = res.end();
     int i = 0;
     for (EntityVector::const_iterator I = res.begin(); I != Iend; ++I, ++i) {
         PyObject * thing = wrapEntity(*I);
-        if (thing == NULL) {
+        if (thing == nullptr) {
             Py_DECREF(list);
-            return NULL;
+            return nullptr;
         }
         PyList_SetItem(list, i, thing);
     }
@@ -108,21 +108,21 @@ static PyObject * Map_find_by_type(PyMap * self, PyObject * py_what)
 static PyObject * Map_updateAdd(PyMap * self, PyObject * args)
 {
 #ifndef NDEBUG
-    if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.updateAdd");
-        return NULL;
+    if (self->m_map == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Map in Map.updateAdd");
+        return nullptr;
     }
 #endif // NDEBUG
     PyObject * arg;
     double time;
     if (!PyArg_ParseTuple(args, "Od", &arg, &time)) {
-        return NULL;
+        return nullptr;
     }
     if (PyMessage_Check(arg)) {
         PyMessage * me = (PyMessage*)arg;
         if (!me->m_obj->isMap()) {
             PyErr_SetString(PyExc_TypeError, "arg is a Message that is not a map");
-            return NULL;
+            return nullptr;
         }
         Root obj(0);
         try {
@@ -130,17 +130,17 @@ static PyObject * Map_updateAdd(PyMap * self, PyObject * args)
         }
         catch (Atlas::Message::WrongTypeException&) {
             PyErr_SetString(PyExc_TypeError, "arg is a Message that contains malformed attributes");
-            return NULL;
+            return nullptr;
         }
         RootEntity ent = Atlas::Objects::smart_dynamic_cast<RootEntity>(obj);
         if (!ent.isValid()) {
             PyErr_SetString(PyExc_TypeError, "arg is a Message that does not represent an entity");
-            return NULL;
+            return nullptr;
         }
         MemEntity * ret = self->m_map->updateAdd(ent, time);
-        if (ret == NULL) {
+        if (ret == nullptr) {
             PyErr_SetString(PyExc_TypeError, "arg is a Message that does not have an ID");
-            return NULL;
+            return nullptr;
         }
         PyObject * thing = wrapEntity(ret);
         return thing;
@@ -151,21 +151,21 @@ static PyObject * Map_updateAdd(PyMap * self, PyObject * args)
         return thing;
     } else {
         PyErr_SetString(PyExc_TypeError, "arg is not an Atlas Entity or Message");
-        return NULL;
+        return nullptr;
     }
 }
 
 static PyObject * Map_delete(PyMap * self, PyObject * py_id)
 {
 #ifndef NDEBUG
-    if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.delete");
-        return NULL;
+    if (self->m_map == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Map in Map.delete");
+        return nullptr;
     }
 #endif // NDEBUG
     if (!PyString_CheckExact(py_id)) {
         PyErr_SetString(PyExc_TypeError, "Map.delete must be string");
-        return NULL;
+        return nullptr;
     }
     char * id = PyString_AsString(py_id);
     self->m_map->del(id);
@@ -177,18 +177,18 @@ static PyObject * Map_delete(PyMap * self, PyObject * py_id)
 static PyObject * Map_get(PyMap * self, PyObject * py_id)
 {
 #ifndef NDEBUG
-    if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.get");
-        return NULL;
+    if (self->m_map == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Map in Map.get");
+        return nullptr;
     }
 #endif // NDEBUG
     if (!PyString_CheckExact(py_id)) {
         PyErr_SetString(PyExc_TypeError, "Map.get must be string");
-        return NULL;
+        return nullptr;
     }
     char * id = PyString_AsString(py_id);
     MemEntity * ret = self->m_map->get(id);
-    if (ret == NULL) {
+    if (ret == nullptr) {
         Py_INCREF(Py_None);
         return Py_None;
     }
@@ -199,14 +199,14 @@ static PyObject * Map_get(PyMap * self, PyObject * py_id)
 static PyObject * Map_get_add(PyMap * self, PyObject * py_id)
 {
 #ifndef NDEBUG
-    if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.get_add");
-        return NULL;
+    if (self->m_map == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Map in Map.get_add");
+        return nullptr;
     }
 #endif // NDEBUG
     if (!PyString_CheckExact(py_id)) {
         PyErr_SetString(PyExc_TypeError, "Map.get_add must be string");
-        return NULL;
+        return nullptr;
     }
     char * id = PyString_AsString(py_id);
     MemEntity * ret = self->m_map->getAdd(id);
@@ -218,14 +218,14 @@ static PyObject * Map_get_add(PyMap * self, PyObject * py_id)
 static PyObject * Map_add_hooks_append(PyMap * self, PyObject * py_method)
 {
 #ifndef NDEBUG
-    if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.add_hooks_append");
-        return NULL;
+    if (self->m_map == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Map in Map.add_hooks_append");
+        return nullptr;
     }
 #endif // NDEBUG
     if (!PyString_CheckExact(py_method)) {
         PyErr_SetString(PyExc_TypeError, "Map.add_hooks_append must be string");
-        return NULL;
+        return nullptr;
     }
     char * method = PyString_AsString(py_method);
     self->m_map->getAddHooks().push_back(std::string(method));
@@ -237,14 +237,14 @@ static PyObject * Map_add_hooks_append(PyMap * self, PyObject * py_method)
 static PyObject * Map_update_hooks_append(PyMap * self, PyObject * py_method)
 {
 #ifndef NDEBUG
-    if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.update_hooks_append");
-        return NULL;
+    if (self->m_map == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Map in Map.update_hooks_append");
+        return nullptr;
     }
 #endif // NDEBUG
     if (!PyString_CheckExact(py_method)) {
         PyErr_SetString(PyExc_TypeError, "Map.update_hooks_append must be string");
-        return NULL;
+        return nullptr;
     }
     char * method = PyString_AsString(py_method);
     self->m_map->getUpdateHooks().push_back(std::string(method));
@@ -256,14 +256,14 @@ static PyObject * Map_update_hooks_append(PyMap * self, PyObject * py_method)
 static PyObject * Map_delete_hooks_append(PyMap * self, PyObject * py_method)
 {
 #ifndef NDEBUG
-    if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.delete_hooks_append");
-        return NULL;
+    if (self->m_map == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Map in Map.delete_hooks_append");
+        return nullptr;
     }
 #endif // NDEBUG
     if (!PyString_CheckExact(py_method)) {
         PyErr_SetString(PyExc_TypeError, "Map.delete_hooks_append must be string");
-        return NULL;
+        return nullptr;
     }
     char * method = PyString_AsString(py_method);
     self->m_map->getDeleteHooks().push_back(std::string(method));
@@ -275,15 +275,15 @@ static PyObject * Map_delete_hooks_append(PyMap * self, PyObject * py_method)
 ///\brief Return Python list of entities that match a given Filter
 static PyObject * Map_find_by_filter(PyMap* self, PyObject* filter){
 #ifndef NDEBUG
-    if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.find_by_filter");
-        return NULL;
+    if (self->m_map == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Map in Map.find_by_filter");
+        return nullptr;
     }
 #endif // NDEBUG
 
     EntityVector res;
     if(!PyFilter_Check(filter)){
-        return NULL;
+        return nullptr;
     }
     PyFilter* f = (PyFilter*)filter;
 
@@ -295,16 +295,16 @@ static PyObject * Map_find_by_filter(PyMap* self, PyObject* filter){
         }
     }
     PyObject * list = PyList_New(res.size());
-    if (list == NULL) {
-        return NULL;
+    if (list == nullptr) {
+        return nullptr;
     }
     EntityVector::const_iterator Iend = res.end();
     int i = 0;
     for (EntityVector::const_iterator I = res.begin(); I != Iend; ++I, ++i) {
         PyObject * thing = wrapEntity(*I);
-        if (thing == NULL) {
+        if (thing == nullptr) {
             Py_DECREF(list);
-            return NULL;
+            return nullptr;
         }
         PyList_SetItem(list, i, thing);
     }
@@ -314,9 +314,9 @@ static PyObject * Map_find_by_filter(PyMap* self, PyObject* filter){
 ///\brief find entities using a query in a specified location
 static PyObject * Map_find_by_location_query(PyMap* self, PyObject* args){
 #ifndef NDEBUG
-    if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.find_by_location_query");
-        return NULL;
+    if (self->m_map == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Map in Map.find_by_location_query");
+        return nullptr;
     }
 #endif // NDEBUG
 
@@ -324,23 +324,23 @@ static PyObject * Map_find_by_location_query(PyMap* self, PyObject* args){
     double radius;
     PyObject* filter;
     if (!PyArg_ParseTuple(args, "OdO", &where_obj, &radius, &filter)) {
-        return NULL;
+        return nullptr;
     }
 
     if (!PyFilter_Check(filter)) {
-        return NULL;
+        return nullptr;
     }
     PyFilter* f = (PyFilter*)filter;
 
 
     if (!PyLocation_Check(where_obj)) {
         PyErr_SetString(PyExc_TypeError, "Argument must be a location");
-        return NULL;
+        return nullptr;
     }
     PyLocation * where = (PyLocation *)where_obj;
     if (!where->location->isValid()) {
         PyErr_SetString(PyExc_RuntimeError, "Location is incomplete");
-        return NULL;
+        return nullptr;
     }
 
     //Create a vector and fill it with entities that match the given filter and are in range
@@ -368,16 +368,16 @@ static PyObject * Map_find_by_location_query(PyMap* self, PyObject* args){
 
     //Create a python list an fill it with the entities we got
     PyObject * list = PyList_New(res.size());
-    if (list == NULL) {
-        return NULL;
+    if (list == nullptr) {
+        return nullptr;
     }
     EntityVector::const_iterator Iend = res.end();
     int i = 0;
     for (EntityVector::const_iterator I = res.begin(); I != Iend; ++I, ++i) {
         PyObject * thing = wrapEntity(*I);
-        if (thing == NULL) {
+        if (thing == nullptr) {
             Py_DECREF(list);
-            return NULL;
+            return nullptr;
         }
         PyList_SetItem(list, i, thing);
     }
@@ -386,16 +386,16 @@ static PyObject * Map_find_by_location_query(PyMap* self, PyObject* args){
 
 PyObject* Map_add_entity_memory(PyMap* self, PyObject* args){
 #ifndef NDEBUG
-    if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.add_entity_memory");
-        return NULL;
+    if (self->m_map == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Map in Map.add_entity_memory");
+        return nullptr;
     }
 #endif // NDEBUG
 
     char *id, *memory_name;
     PyObject *val;
     if (!PyArg_ParseTuple(args, "ssO", &id, &memory_name, &val)) {
-        return NULL;
+        return nullptr;
     }
 
     Atlas::Message::Element element_val;
@@ -408,15 +408,15 @@ PyObject* Map_add_entity_memory(PyMap* self, PyObject* args){
 
 PyObject* Map_recall_entity_memory(PyMap* self, PyObject* args){
 #ifndef NDEBUG
-    if (self->m_map == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Map in Map.recall_entity_memory");
-        return NULL;
+    if (self->m_map == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Map in Map.recall_entity_memory");
+        return nullptr;
     }
 #endif // NDEBUG
 
     char *id, *memory_name;
     if (!PyArg_ParseTuple(args, "ss", &id, &memory_name)) {
-        return NULL;
+        return nullptr;
     }
 
     Atlas::Message::Element element_val;
@@ -426,7 +426,7 @@ PyObject* Map_recall_entity_memory(PyMap* self, PyObject* args){
     if (ret) {
         return ret;
     } else {
-        return NULL;
+        return nullptr;
     }
 
 }
@@ -446,7 +446,7 @@ static PyMethodDef Map_methods[] = {
     {"add_hooks_append",    (PyCFunction)Map_add_hooks_append,    METH_O},
     {"update_hooks_append", (PyCFunction)Map_update_hooks_append, METH_O},
     {"delete_hooks_append", (PyCFunction)Map_delete_hooks_append, METH_O},
-    {NULL,                  NULL}           // sentinel
+    {nullptr,                  nullptr}           // sentinel
 };
 
 static int Map_init(PyMap * self, PyObject * args, PyObject * kwds)

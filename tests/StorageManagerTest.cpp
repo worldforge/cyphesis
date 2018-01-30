@@ -212,7 +212,7 @@ using Atlas::Message::MapType;
 using Atlas::Objects::Entity::RootEntity;
 
 
-EntityBuilder * EntityBuilder::m_instance = NULL;
+EntityBuilder * EntityBuilder::m_instance = nullptr;
 
 EntityBuilder::EntityBuilder()
 {

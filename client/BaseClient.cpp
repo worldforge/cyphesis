@@ -159,7 +159,7 @@ CreatorClient * BaseClient::createCharacter(const std::string & type)
     if (m_connection.wait() != 0) {
         std::cerr << "ERROR: Failed to create character type: "
                   << type << std::endl << std::flush;
-        return NULL;
+        return nullptr;
     }
 
     RootEntity ent = smart_dynamic_cast<RootEntity>(m_connection.getInfoReply());

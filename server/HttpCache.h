@@ -39,15 +39,15 @@ class HttpCache {
                           const std::string & mesg = "Bad Request");
   public:
     static HttpCache * instance() {
-        if (m_instance == NULL) {
+        if (m_instance == nullptr) {
             m_instance = new HttpCache();
         }
         return m_instance;
     }
     static void del() {
-        if (m_instance != NULL) {
+        if (m_instance != nullptr) {
             delete m_instance;
-            m_instance = NULL;
+            m_instance = nullptr;
         }
     }
     void processQuery(std::ostream &, const std::list<std::string> &);

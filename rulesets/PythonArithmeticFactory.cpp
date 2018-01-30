@@ -74,7 +74,7 @@ ArithmeticScript * PythonArithmeticFactory::newScript(LocatedEntity * owner)
     }
     
     if (py_object == 0) {
-        if (PyErr_Occurred() == NULL) {
+        if (PyErr_Occurred() == nullptr) {
             log(ERROR, "Could not create python stats instance");
         } else {
             log(ERROR, "Reporting python error");

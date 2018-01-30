@@ -39,7 +39,7 @@ static PyObject * null_wrapper(PyObject * self, PyOplist * o)
 {
     if (PyOplist_Check(o)) {
 #ifdef CYPHESIS_DEBUG
-        o->ops = NULL;
+        o->ops = nullptr;
 #endif // NDEBUG
     } else if (PyOperation_Check(o)) {
 #ifdef CYPHESIS_DEBUG
@@ -47,7 +47,7 @@ static PyObject * null_wrapper(PyObject * self, PyOplist * o)
 #endif // NDEBUG
     } else {
         PyErr_SetString(PyExc_TypeError, "Unknown Object type");
-        return NULL;
+        return nullptr;
     }
     Py_INCREF(Py_None);
     return Py_None;
@@ -55,7 +55,7 @@ static PyObject * null_wrapper(PyObject * self, PyOplist * o)
 
 static PyMethodDef sabotage_methods[] = {
     {"null", (PyCFunction)null_wrapper,                 METH_O},
-    {NULL,          NULL}                       /* Sentinel */
+    {nullptr,          nullptr}                       /* Sentinel */
 };
 
 static void setup_test_functions()

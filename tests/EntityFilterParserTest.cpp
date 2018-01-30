@@ -115,7 +115,7 @@ void ParserTest::test_ComparisonOperators()
             "types.thing instance_of entity.type");
     assert(pred->m_comparator == ComparePredicate::Comparator::INSTANCE_OF);
     delete pred;
-    types["thing"] = NULL;
+    types["thing"] = nullptr;
     delete thingType;
 
     try { //Should throw an exception for nonexisting type

@@ -27,7 +27,7 @@ static PyObject * Vector3D_dot(PyVector3D * self, PyVector3D * other)
 {
     if (!PyVector3D_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Can only dot with Vector3D");
-        return NULL;
+        return nullptr;
     }
     return PyFloat_FromDouble(Dot(self->coords, other->coords));
 }
@@ -36,10 +36,10 @@ static PyObject * Vector3D_cross(PyVector3D * self, PyVector3D * other)
 {
     if (!PyVector3D_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Can only cross with Vector3D");
-        return NULL;
+        return nullptr;
     }
     PyVector3D * ret = newPyVector3D();
-    if (ret != NULL) {
+    if (ret != nullptr) {
         ret->coords = Cross(self->coords, other->coords);
     }
     return (PyObject *)ret;
@@ -49,7 +49,7 @@ static PyObject * Vector3D_rotatex(PyVector3D * self, PyObject * arg)
 {
     if (!PyFloat_CheckExact(arg)) {
         PyErr_SetString(PyExc_TypeError, "Can only rotatex with a float");
-        return NULL;
+        return nullptr;
     }
     double angle = PyFloat_AsDouble(arg);
     self->coords.rotateX(angle);
@@ -61,7 +61,7 @@ static PyObject * Vector3D_rotatey(PyVector3D * self, PyObject * arg)
 {
     if (!PyFloat_CheckExact(arg)) {
         PyErr_SetString(PyExc_TypeError, "Can only rotatey with a float");
-        return NULL;
+        return nullptr;
     }
     double angle = PyFloat_AsDouble(arg);
     self->coords.rotateY(angle);
@@ -73,7 +73,7 @@ static PyObject * Vector3D_rotatez(PyVector3D * self, PyObject * arg)
 {
     if (!PyFloat_CheckExact(arg)) {
         PyErr_SetString(PyExc_TypeError, "Can only rotatez with a float");
-        return NULL;
+        return nullptr;
     }
     double angle = PyFloat_AsDouble(arg);
     self->coords.rotateZ(angle);
@@ -85,7 +85,7 @@ static PyObject * Vector3D_rotate(PyVector3D * self, PyQuaternion * arg)
 {
     if (!PyQuaternion_Check(arg)) {
         PyErr_SetString(PyExc_TypeError, "Can only rotate with a quaternion");
-        return NULL;
+        return nullptr;
     }
     self->coords.rotate(arg->rotation);
     Py_INCREF(Py_None);
@@ -96,7 +96,7 @@ static PyObject * Vector3D_angle(PyVector3D * self, PyVector3D * other)
 {
     if (!PyVector3D_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Can get angle to Vector3D");
-        return NULL;
+        return nullptr;
     }
     return PyFloat_FromDouble(Angle(self->coords, other->coords));
 }
@@ -121,14 +121,14 @@ static PyObject * Vector3D_is_valid(PyVector3D * self)
 static PyObject * Vector3D_unit_vector(PyVector3D * self)
 {
     PyVector3D * ret = newPyVector3D();
-    if (ret == NULL) {
-        return NULL;
+    if (ret == nullptr) {
+        return nullptr;
     }
     ret->coords = self->coords;
     WFMath::CoordType the_mag = ret->coords.mag();
     if (!(the_mag > 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "Attempt to normalize a vector with zero magnitude");
-        return NULL;
+        return nullptr;
     }
     ret->coords /= the_mag;
     return (PyObject *)ret;
@@ -138,17 +138,17 @@ static PyObject *Vector3D_unit_vector_to(PyVector3D * self, PyVector3D * other)
 {
     if (!PyVector3D_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Argument must be a Vector3D");
-        return NULL;
+        return nullptr;
     }
     PyVector3D * ret = newPyVector3D();
-    if (ret == NULL) {
-        return NULL;
+    if (ret == nullptr) {
+        return nullptr;
     }
     ret->coords = (other->coords - self->coords);
     WFMath::CoordType the_mag = ret->coords.mag();
     if (!(the_mag > 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "Attempt to normalize a vector with zero magnitude");
-        return NULL;
+        return nullptr;
     }
     ret->coords /= the_mag;
     return (PyObject *)ret;
@@ -167,7 +167,7 @@ static PyMethodDef Vector3D_methods[] = {
     {"is_valid",        (PyCFunction)Vector3D_is_valid, METH_NOARGS},
     {"unit_vector",     (PyCFunction)Vector3D_unit_vector,      METH_NOARGS},
     {"unit_vector_to",  (PyCFunction)Vector3D_unit_vector_to,   METH_O},
-    {NULL,              NULL}           /* sentinel */
+    {nullptr,              nullptr}           /* sentinel */
 };
 
 static void Vector3D_dealloc(PyVector3D *self)
@@ -268,10 +268,10 @@ static PyVector3D*Vector3D_num_add(PyVector3D*self,PyVector3D*other)
 {
     if (!PyVector3D_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Can only add Vector3D to Vector3D");
-        return NULL;
+        return nullptr;
     }
     PyVector3D * ret = newPyVector3D();
-    if (ret != NULL) {
+    if (ret != nullptr) {
         ret->coords = (self->coords + other->coords);
     }
     return ret;
@@ -281,10 +281,10 @@ static PyVector3D*Vector3D_num_sub(PyVector3D*self,PyVector3D*other)
 {
     if (!PyVector3D_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Can only sub Vector3D from Vector3D");
-        return NULL;
+        return nullptr;
     }
     PyVector3D * ret = newPyVector3D();
-    if (ret != NULL) {
+    if (ret != nullptr) {
         ret->coords = (self->coords - other->coords);
     }
     return ret;
@@ -299,10 +299,10 @@ static PyVector3D * Vector3D_num_mul(PyVector3D * self, PyObject * _other)
         other = PyFloat_AsDouble(_other);
     } else {
         PyErr_SetString(PyExc_TypeError, "Vector3D can only be multiplied by numeric value");
-        return NULL;
+        return nullptr;
     }
     PyVector3D * ret = newPyVector3D();
-    if (ret != NULL) {
+    if (ret != nullptr) {
         ret->coords = (self->coords * other);
     }
     return ret;
@@ -317,10 +317,10 @@ static PyVector3D * Vector3D_num_div(PyVector3D * self, PyObject * _other)
         other = PyFloat_AsDouble(_other);
     } else {
         PyErr_SetString(PyExc_TypeError, "Vector3D can only be divided by numeric value");
-        return NULL;
+        return nullptr;
     }
     PyVector3D * ret = newPyVector3D();
-    if (ret != NULL) {
+    if (ret != nullptr) {
         ret->coords = (self->coords / other);
     }
     return ret;
@@ -397,7 +397,7 @@ static PyObject * Vector3D_new(PyTypeObject * type, PyObject *, PyObject *)
     // This looks allot like the default implementation, except we call the
     // in-place constructor.
     PyVector3D * self = (PyVector3D *)type->tp_alloc(type, 0);
-    if (self != NULL) {
+    if (self != nullptr) {
         new (&(self->coords)) Vector3D();
     }
     return (PyObject *)self;
@@ -405,12 +405,12 @@ static PyObject * Vector3D_new(PyTypeObject * type, PyObject *, PyObject *)
 
 static PySequenceMethods Vector3D_seq = {
     (lenfunc)Vector3D_seq_length,              /* sq_length */
-    NULL,                                      /* sq_concat */
-    NULL,                                      /* sq_repeat */
+    nullptr,                                      /* sq_concat */
+    nullptr,                                      /* sq_repeat */
     (ssizeargfunc)Vector3D_seq_item,           /* sq_item */
-    NULL,                                      /* sq_slice */
+    nullptr,                                      /* sq_slice */
     (ssizeobjargproc)Vector3D_seq_ass_item,    /* sq_ass_item */
-    NULL                                       /* sq_ass_slice */
+    nullptr                                       /* sq_ass_slice */
 };
 
 static PyNumberMethods Vector3D_num = {

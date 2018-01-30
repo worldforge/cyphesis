@@ -38,7 +38,7 @@ static PyObject * null_wrapper(PyObject * self, PyRootEntity * o)
 {
     if (!PyRootEntity_Check(o)) {
         PyErr_SetString(PyExc_TypeError, "Unknown Object type");
-        return NULL;
+        return nullptr;
     }
 #ifdef CYPHESIS_DEBUG
     o->entity = Atlas::Objects::Entity::RootEntity(0);
@@ -49,7 +49,7 @@ static PyObject * null_wrapper(PyObject * self, PyRootEntity * o)
 
 static PyMethodDef sabotage_methods[] = {
     {"null", (PyCFunction)null_wrapper,                 METH_O},
-    {NULL,          NULL}                       /* Sentinel */
+    {nullptr,          nullptr}                       /* Sentinel */
 };
 
 static void setup_test_functions()

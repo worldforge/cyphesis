@@ -34,36 +34,36 @@ static const bool debug_flag = false;
 static PyObject * ObserverClient_setup(PyObserverClient * self, PyObject * args)
 {
 #ifndef NDEBUG
-    if (self->m_client == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL ObserverClient in ObserverClient.set");
-        return NULL;
+    if (self->m_client == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr ObserverClient in ObserverClient.set");
+        return nullptr;
     }
 #endif // NDEBUG
-    char * username = NULL;
-    char * password = NULL;
-    char * avatar = NULL;
+    char * username = nullptr;
+    char * password = nullptr;
+    char * avatar = nullptr;
     char empty[] = "";
     if (!PyArg_ParseTuple(args, "|sss", &username, &password, &avatar)) {
-        return NULL;
+        return nullptr;
     }
-    if (username == NULL) {
+    if (username == nullptr) {
         username = &empty[0];
-        if (password == NULL) {
+        if (password == nullptr) {
             password = &empty[0];
         }
-    } else if (password == NULL) {
+    } else if (password == nullptr) {
         PyErr_SetString(PyExc_TypeError, "function takes 0 or 2, or 3 arguments (1 given)");
-        return NULL;
+        return nullptr;
     }
     int res;
-    if (avatar == NULL) {
+    if (avatar == nullptr) {
         res = self->m_client->setup(username, password);
     } else {
         res = self->m_client->setup(username, password, avatar);
     }
     if (res != 0) {
         PyErr_SetString(PyExc_RuntimeError, "client setup failed");
-        return NULL;
+        return nullptr;
     }
     Py_INCREF(Py_None);
     return Py_None;
@@ -72,9 +72,9 @@ static PyObject * ObserverClient_setup(PyObserverClient * self, PyObject * args)
 static PyObject * ObserverClient_teardown(PyObserverClient * self)
 {
 #ifndef NDEBUG
-    if (self->m_client == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL ObserverClient in ObserverClient.set");
-        return NULL;
+    if (self->m_client == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr ObserverClient in ObserverClient.set");
+        return nullptr;
     }
 #endif // NDEBUG
     self->m_client->teardown();
@@ -86,20 +86,20 @@ static PyObject * ObserverClient_create_avatar(PyObserverClient * self,
                                                PyObject * arg)
 {
 #ifndef NDEBUG
-    if (self->m_client == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL ObserverClient in ObserverClient.set");
-        return NULL;
+    if (self->m_client == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr ObserverClient in ObserverClient.set");
+        return nullptr;
     }
 #endif // NDEBUG
     if (!PyString_Check(arg)) {
         PyErr_SetString(PyExc_TypeError, "id must be a string");
-        return NULL;
+        return nullptr;
     }
     char * avatar = PyString_AsString(arg);
     CreatorClient * c = self->m_client->createCharacter(avatar);
     if (c == 0) {
         PyErr_SetString(PyExc_RuntimeError, "avatar creation failed");
-        return NULL;
+        return nullptr;
     }
     PyCreatorClient * pcc = newPyCreatorClient();
     pcc->m_mind.a = c;
@@ -109,9 +109,9 @@ static PyObject * ObserverClient_create_avatar(PyObserverClient * self,
 static PyObject * ObserverClient_run(PyObserverClient * self)
 {
 #ifndef NDEBUG
-    if (self->m_client == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL ObserverClient in ObserverClient.set");
-        return NULL;
+    if (self->m_client == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr ObserverClient in ObserverClient.set");
+        return nullptr;
     }
 #endif // NDEBUG
     Py_INCREF(Py_None);
@@ -121,14 +121,14 @@ static PyObject * ObserverClient_run(PyObserverClient * self)
 static PyObject * ObserverClient_send(PyObserverClient * self, PyOperation * op)
 {
 #ifndef NDEBUG
-    if (self->m_client == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL ObserverClient in ObserverClient.send");
-        return NULL;
+    if (self->m_client == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr ObserverClient in ObserverClient.send");
+        return nullptr;
     }
 #endif // NDEBUG
     if (!PyOperation_Check(op)) {
         PyErr_SetString(PyExc_TypeError, "Can only send Atlas operation");
-        return NULL;
+        return nullptr;
     }
     self->m_client->send(op->operation);
     Py_INCREF(Py_None);
@@ -139,14 +139,14 @@ static PyObject * ObserverClient_send_wait(PyObserverClient * self,
                                            PyOperation * op)
 {
 #ifndef NDEBUG
-    if (self->m_client == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL ObserverClient in ObserverClient.send");
-        return NULL;
+    if (self->m_client == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr ObserverClient in ObserverClient.send");
+        return nullptr;
     }
 #endif // NDEBUG
     if (!PyOperation_Check(op)) {
         PyErr_SetString(PyExc_TypeError, "Can only send Atlas operation");
-        return NULL;
+        return nullptr;
     }
     OpVector res;
     self->m_client->sendAndWaitReply(op->operation, res);
@@ -155,13 +155,13 @@ static PyObject * ObserverClient_send_wait(PyObserverClient * self,
         return Py_None;
     } else if (res.size() == 1) {
         PyOperation * ret = newPyOperation();
-        if (ret != NULL) {
+        if (ret != nullptr) {
             ret->operation = res[0];
         }
         return (PyObject*)ret;
     } else {
         PyOplist * ret = newPyOplist();
-        if (ret != NULL) {
+        if (ret != nullptr) {
             ret->ops = new OpVector(res);
         }
         return (PyObject*)ret;
@@ -171,15 +171,15 @@ static PyObject * ObserverClient_send_wait(PyObserverClient * self,
 static PyObject * ObserverClient_wait(PyObserverClient * self)
 {
 #ifndef NDEBUG
-    if (self->m_client == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL ObserverClient in ObserverClient.set");
-        return NULL;
+    if (self->m_client == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr ObserverClient in ObserverClient.set");
+        return nullptr;
     }
 #endif // NDEBUG
     int ret = self->m_client->wait();
     if (ret != 0) {
         PyErr_SetString(PyExc_RuntimeError, "Timeout waiting for reply");
-        return NULL;
+        return nullptr;
     }
     Py_INCREF(Py_None);
     return Py_None;
@@ -193,7 +193,7 @@ static PyMethodDef ObserverClient_methods[] = {
         {"send",           (PyCFunction)ObserverClient_send,      METH_O},
         {"send_wait",      (PyCFunction)ObserverClient_send_wait, METH_O},
         {"wait",           (PyCFunction)ObserverClient_wait,      METH_NOARGS},
-        {NULL,          NULL}           /* sentinel */
+        {nullptr,          nullptr}           /* sentinel */
 };
 
 static void ObserverClient_dealloc(PyObserverClient *self)
@@ -207,9 +207,9 @@ static PyObject * ObserverClient_getattro(PyObserverClient *self,
 {
     // Fairly major re-write of this to use operator[] of ObserverClient base class
 #ifndef NDEBUG
-    if (self->m_client == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL ObserverClient in ObserverClient.getattr");
-        return NULL;
+    if (self->m_client == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr ObserverClient in ObserverClient.getattr");
+        return nullptr;
     }
 #endif // NDEBUG
     char * name = PyString_AsString(oname);
@@ -245,7 +245,7 @@ static int ObserverClient_setattro(PyObserverClient *self,
 
 static int ObserverClient_compare(PyObserverClient *self, PyObserverClient *other)
 {
-    if (self->m_client == NULL || other->m_client == NULL) {
+    if (self->m_client == nullptr || other->m_client == nullptr) {
         return -1;
     }
     return (self->m_client == other->m_client) ? 0 : 1;

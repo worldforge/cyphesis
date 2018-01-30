@@ -52,7 +52,7 @@ void getinstallprefix()
     unsigned long type=REG_SZ, size=1024;
     char path[1024]="";
 
-    res = RegQueryValueEx(hKey, "Path", NULL, &type, (LPBYTE)&path[0], &size);
+    res = RegQueryValueEx(hKey, "Path", nullptr, &type, (LPBYTE)&path[0], &size);
 
     if (res != ERROR_SUCCESS)
     {

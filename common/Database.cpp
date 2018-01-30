@@ -42,7 +42,7 @@ typedef Atlas::Codecs::XML Serialiser;
 
 static const bool debug_flag = false;
 
-Database * Database::m_instance = NULL;
+Database * Database::m_instance = nullptr;
 
 static void databaseNotice(void *, const char * message)
 {
@@ -52,7 +52,7 @@ static void databaseNotice(void *, const char * message)
 
 Database::Database() : m_rule_db("rules"),
                        m_queryInProgress(false),
-                       m_connection(NULL)
+                       m_connection(nullptr)
 {
 }
 
@@ -72,7 +72,7 @@ bool Database::tuplesOk()
     bool status = false;
 
     PGresult * res;
-    while ((res = PQgetResult(m_connection)) != NULL) {
+    while ((res = PQgetResult(m_connection)) != nullptr) {
         if (PQresultStatus(res) == PGRES_TUPLES_OK) {
             status = true;
         }
@@ -88,7 +88,7 @@ int Database::commandOk()
     int status = -1;
 
     PGresult * res;
-    while ((res = PQgetResult(m_connection)) != NULL) {
+    while ((res = PQgetResult(m_connection)) != nullptr) {
         if (PQresultStatus(res) == PGRES_COMMAND_OK) {
             status = 0;
         } else {
@@ -171,7 +171,7 @@ int Database::connect(const std::string & context, std::string & error_msg)
 
     m_connection = PQconnectdb(cinfo.c_str());
 
-    if (m_connection == NULL) {
+    if (m_connection == nullptr) {
         error_msg = "Unknown error";
         return -1;
     }
@@ -253,7 +253,7 @@ void Database::shutdownConnection()
 
 Database * Database::instance()
 {
-    if (m_instance == NULL) {
+    if (m_instance == nullptr) {
         m_instance = new Database();
     }
     return m_instance;
@@ -363,7 +363,7 @@ int Database::getObject(const std::string & table,
     }
 
     PGresult * res;
-    if ((res = PQgetResult(m_connection)) == NULL) {
+    if ((res = PQgetResult(m_connection)) == nullptr) {
         debug(std::cout << "Error accessing " << key << " in " << table
                         << " table" << std::endl << std::flush;);
         return -1;
@@ -372,7 +372,7 @@ int Database::getObject(const std::string & table,
         debug(std::cout << "No entry for " << key << " in " << table
                         << " table" << std::endl << std::flush;);
         PQclear(res);
-        while ((res = PQgetResult(m_connection)) != NULL) {
+        while ((res = PQgetResult(m_connection)) != nullptr) {
             PQclear(res);
         }
         return -1;
@@ -384,7 +384,7 @@ int Database::getObject(const std::string & table,
     int ret = decodeMessage(data, o);
     PQclear(res);
 
-    while ((res = PQgetResult(m_connection)) != NULL) {
+    while ((res = PQgetResult(m_connection)) != nullptr) {
         PQclear(res);
         log(ERROR, "Extra database result to simple query.");
     };
@@ -451,7 +451,7 @@ int Database::delObject(const std::string & table, const std::string & key)
     key.set_size(strlen(keystr) + 1);
 
     int err;
-    if ((err = db.del(NULL, &key, 0)) != 0) {
+    if ((err = db.del(nullptr, &key, 0)) != 0) {
         debug(cout << "db.del.ERROR! " << err << endl << flush;);
         return false;
     }
@@ -477,7 +477,7 @@ bool Database::hasKey(const std::string & table, const std::string & key)
 
     PGresult * res;
     bool ret = false;
-    if ((res = PQgetResult(m_connection)) == NULL) {
+    if ((res = PQgetResult(m_connection)) == nullptr) {
         debug(std::cout << "Error accessing " << table
                         << " table" << std::endl << std::flush;);
         return false;
@@ -487,7 +487,7 @@ bool Database::hasKey(const std::string & table, const std::string & key)
         ret = true;
     }
     PQclear(res);
-    while ((res = PQgetResult(m_connection)) != NULL) {
+    while ((res = PQgetResult(m_connection)) != nullptr) {
         PQclear(res);
     }
     return ret;
@@ -512,7 +512,7 @@ int Database::getTable(const std::string & table,
     }
 
     PGresult * res;
-    if ((res = PQgetResult(m_connection)) == NULL) {
+    if ((res = PQgetResult(m_connection)) == nullptr) {
         debug(std::cout << "Error accessing " << table
                         << " table" << std::endl << std::flush;);
         return -1;
@@ -522,7 +522,7 @@ int Database::getTable(const std::string & table,
         debug(std::cout << "No entries in " << table
                         << " table" << std::endl << std::flush;);
         PQclear(res);
-        while ((res = PQgetResult(m_connection)) != NULL) {
+        while ((res = PQgetResult(m_connection)) != nullptr) {
             PQclear(res);
         }
         return -1;
@@ -549,7 +549,7 @@ int Database::getTable(const std::string & table,
     }
     PQclear(res);
 
-    while ((res = PQgetResult(m_connection)) != NULL) {
+    while ((res = PQgetResult(m_connection)) != nullptr) {
         PQclear(res);
         log(ERROR, "Extra database result to simple query.");
     };
@@ -568,7 +568,7 @@ void Database::reportError()
     assert(m_connection != 0);
 
     char * message = PQerrorMessage(m_connection);
-    assert(message != NULL);
+    assert(message != nullptr);
 
     if (strlen(message) < 2) {
         log(WARNING, "Zero length database error message");
@@ -592,7 +592,7 @@ const DatabaseResult Database::runSimpleSelectQuery(const std::string & query)
     }
     debug(std::cout << "done" << std::endl << std::flush;);
     PGresult * res;
-    if ((res = PQgetResult(m_connection)) == NULL) {
+    if ((res = PQgetResult(m_connection)) == nullptr) {
         log(ERROR, "Error selecting.");
         reportError();
         debug(std::cout << "Row query didn't work"
@@ -607,7 +607,7 @@ const DatabaseResult Database::runSimpleSelectQuery(const std::string & query)
         res = 0;
     }
     PGresult * nres;
-    while ((nres = PQgetResult(m_connection)) != NULL) {
+    while ((nres = PQgetResult(m_connection)) != nullptr) {
         PQclear(nres);
         log(ERROR, "Extra database result to simple query.");
     };
@@ -931,7 +931,7 @@ long Database::newId(std::string & id)
         return -1;
     }
     PGresult * res;
-    if ((res = PQgetResult(m_connection)) == NULL) {
+    if ((res = PQgetResult(m_connection)) == nullptr) {
         log(ERROR, "Error getting new ID.");
         reportError();
         return -1;
@@ -939,7 +939,7 @@ long Database::newId(std::string & id)
     const char * cid = PQgetvalue(res, 0, 0);
     id = cid;
     PQclear(res);
-    while ((res = PQgetResult(m_connection)) != NULL) {
+    while ((res = PQgetResult(m_connection)) != nullptr) {
         PQclear(res);
         log(ERROR, "Extra database result to simple query.");
     };
@@ -1228,7 +1228,7 @@ bool Database::registerArrayTable(const std::string & name,
     query += " WHERE id = 0";
 
     createquery += name;
-    createquery += " (id integer REFERENCES entities NOT NULL";
+    createquery += " (id integer REFERENCES entities NOT nullptr";
 
     indexquery += name;
     indexquery += "_point_idx on ";
@@ -1242,7 +1242,7 @@ bool Database::registerArrayTable(const std::string & name,
 
         createquery += ", ";
         createquery += array_axes[i];
-        createquery += " integer NOT NULL";
+        createquery += " integer NOT nullptr";
 
         indexquery += ", ";
         indexquery += array_axes[i];

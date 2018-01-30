@@ -38,8 +38,8 @@ PyObject * Property_asPyObject(PropertyBase * property, Entity * owner)
             log(ERROR, "Unexpected non-python Statistics script");
             // FIXME Do we need PyStatisticsProperty for this kind of thing?
             // PyStatistics * ps = newPyStatistics();
-            // if (ps == NULL) {
-                // return NULL;
+            // if (ps == nullptr) {
+                // return nullptr;
             // }
             // ps->m_entity = owner;
             // return (PyObject*)ps;
@@ -51,7 +51,7 @@ PyObject * Property_asPyObject(PropertyBase * property, Entity * owner)
     if (tp != 0) {
         // Create a new python wrapper for this property.
         PyProperty * prop = newPyTerrainProperty();
-        if (prop != NULL) {
+        if (prop != nullptr) {
             prop->m_entity = owner;
             prop->m_p.terrain = tp;
         }
@@ -61,7 +61,7 @@ PyObject * Property_asPyObject(PropertyBase * property, Entity * owner)
     if (tm != 0) {
         // Create a new python wrapper for this property
         PyProperty * prop = newPyTerrainModProperty();
-        if (prop != NULL) {
+        if (prop != nullptr) {
             prop->m_entity = owner;
             prop->m_p.terrainmod = tm;
         }

@@ -467,7 +467,7 @@ RuleHandler::~RuleHandler()
 {
 }
 
-EntityBuilder * EntityBuilder::m_instance = NULL;
+EntityBuilder * EntityBuilder::m_instance = nullptr;
 
 EntityBuilder::EntityBuilder()
 {
@@ -485,7 +485,7 @@ bool EntityBuilder::isTask(const std::string & class_name)
     return (m_taskFactories.find(class_name) != m_taskFactories.end());
 }
 
-Persistence * Persistence::m_instance = NULL;
+Persistence * Persistence::m_instance = nullptr;
 
 Persistence::Persistence() : m_db(*(Database*)0)
 {
@@ -493,7 +493,7 @@ Persistence::Persistence() : m_db(*(Database*)0)
 
 Persistence * Persistence::instance()
 {
-    if (m_instance == NULL) {
+    if (m_instance == nullptr) {
         m_instance = new Persistence();
     }
     return m_instance;
@@ -542,7 +542,7 @@ void AtlasFileLoader::read()
 {
 }
 
-Inheritance * Inheritance::m_instance = NULL;
+Inheritance * Inheritance::m_instance = nullptr;
 
 Inheritance::Inheritance() : noClass(0)
 {
@@ -550,7 +550,7 @@ Inheritance::Inheritance() : noClass(0)
 
 Inheritance & Inheritance::instance()
 {
-    if (m_instance == NULL) {
+    if (m_instance == nullptr) {
         m_instance = new Inheritance();
     }
     return *m_instance;
@@ -562,10 +562,10 @@ void Inheritance::flush()
 
 void Inheritance::clear()
 {
-    if (m_instance != NULL) {
+    if (m_instance != nullptr) {
         m_instance->flush();
         delete m_instance;
-        m_instance = NULL;
+        m_instance = nullptr;
     }
 }
 

@@ -137,7 +137,7 @@ struct command commands[] = {
       &Interactive::commandUnknown, CMD_DEFAULT, 0, },
     { "unmonitor",      "Disable in-game op monitoring",
       &Interactive::commandUnknown, CMD_DEFAULT, 0, },
-    { NULL,             "Guard", 0, 0, }
+    { nullptr,             "Guard", 0, 0, }
 };
 
 
@@ -145,14 +145,14 @@ static void help()
 {
     size_t max_length = 0;
 
-    for (struct command * I = &commands[0]; I->cmd_string != NULL; ++I) {
+    for (struct command * I = &commands[0]; I->cmd_string != nullptr; ++I) {
        max_length = std::max(max_length, strlen(I->cmd_string));
     }
     max_length += 2;
 
     std::cout << "Cyphesis commands:" << std::endl << std::endl;
 
-    for (struct command * I = &commands[0]; I->cmd_string != NULL; ++I) {
+    for (struct command * I = &commands[0]; I->cmd_string != nullptr; ++I) {
         std::cout << " " << I->cmd_string
                   << std::string(max_length - strlen(I->cmd_string), ' ')
                   << I->cmd_description << std::endl;
@@ -365,7 +365,7 @@ void Interactive::gotCommand(char * cmd)
 
 void Interactive::runCommand(char * cmd)
 {
-    if (cmd == NULL) {
+    if (cmd == nullptr) {
         cleanDisconnect();
         return;
     }
@@ -378,7 +378,7 @@ void Interactive::runCommand(char * cmd)
     add_history(cmd);
 
     char * arg = strchr(cmd, ' ');
-    if (arg != NULL) {
+    if (arg != nullptr) {
         *arg++ = 0;
         int len = strlen(arg);
         while (len > 0 && arg[--len] == ' ') { arg[len] = 0; }
@@ -386,7 +386,7 @@ void Interactive::runCommand(char * cmd)
         arg = (char *)"";
     }
 
-    for (struct command * I = &commands[0]; I->cmd_string != NULL; ++I) {
+    for (struct command * I = &commands[0]; I->cmd_string != nullptr; ++I) {
         if (strcmp(cmd, I->cmd_string) == 0) {
             (this->*(I->cmd_method))(I, arg);
         }
@@ -474,7 +474,7 @@ int Interactive::select(bool rewrite_prompt)
     tv.tv_sec = 0;
     tv.tv_usec = 0;
 
-    retval = ::select(1, &rfds, NULL, NULL, &tv);
+    retval = ::select(1, &rfds, nullptr, nullptr, &tv);
 
     if (retval){
         rl_callback_read_char();
@@ -862,9 +862,9 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         return;
     }
     // Wait for reply
-    time_t wait_start_time = time(NULL);
+    time_t wait_start_time = time(nullptr);
     while (!reply_flag) {
-       if (time(NULL) - wait_start_time > 5) {
+       if (time(nullptr) - wait_start_time > 5) {
            std::cout << cmd << ": No reply from server" << std::endl << std::flush;
            return;
        }

@@ -25,7 +25,7 @@
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 
-Monitors * Monitors::m_instance = NULL;
+Monitors * Monitors::m_instance = nullptr;
 
 Monitors::Monitors()
 {
@@ -42,7 +42,7 @@ Monitors::~Monitors()
 
 Monitors * Monitors::instance()
 {
-    if (m_instance == NULL) {
+    if (m_instance == nullptr) {
         m_instance = new Monitors();
     }
     return m_instance;

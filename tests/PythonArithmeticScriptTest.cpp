@@ -35,7 +35,7 @@
 #include <cassert>
 
 static PyMethodDef no_methods[] = {
-    {NULL,          NULL}                       /* Sentinel */
+    {nullptr,          nullptr}                       /* Sentinel */
 };
 
 PyObject * Get_PyClass(PyObject * module,
@@ -93,24 +93,24 @@ PyObject * Get_PyClass(PyObject * module,
                        const std::string & type)
 {
     PyObject * py_class = PyObject_GetAttrString(module, (char *)type.c_str());
-    if (py_class == NULL) {
+    if (py_class == nullptr) {
         log(ERROR, String::compose("Could not find python class \"%1.%2\"",
                                    package, type));
         PyErr_Print();
-        return NULL;
+        return nullptr;
     }
     if (PyCallable_Check(py_class) == 0) {
         log(ERROR, String::compose("Could not instance python class \"%1.%2\"",
                                    package, type));
         Py_DECREF(py_class);
-        return NULL;
+        return nullptr;
     }
     if (PyType_Check(py_class) == 0) {
         log(ERROR, String::compose("PyCallable_Check returned true, "
                                    "but PyType_Check returned false \"%1.%2\"",
                                    package, type));
         Py_DECREF(py_class);
-        return NULL;
+        return nullptr;
     }
     return py_class;
 }

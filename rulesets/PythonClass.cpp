@@ -52,7 +52,7 @@ PythonClass::~PythonClass()
 int PythonClass::load()
 {
     m_module = Get_PyModule(m_package);
-    if (m_module == NULL) {
+    if (m_module == nullptr) {
         return -1;
     }
     return getClass(m_module);

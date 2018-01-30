@@ -354,7 +354,7 @@ void TerrainProperty::removeMod(long id) const
 void TerrainProperty::clearMods(float x, float y)
 {
     Mercator::Segment *s = m_data.getSegmentAtPos(x,y);
-    if(s != NULL) {
+    if(s != nullptr) {
         s->clearMods();
         //log(INFO, "Mods cleared!");
     } 

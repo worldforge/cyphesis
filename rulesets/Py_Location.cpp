@@ -31,13 +31,13 @@
 static PyObject * Location_copy(PyLocation *self)
 {
 #ifndef NDEBUG
-    if (self->location == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Location in Location.copy");
-        return NULL;
+    if (self->location == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Location in Location.copy");
+        return nullptr;
     }
 #endif // NDEBUG
     PyLocation * ret = newPyLocation();
-    if (ret != NULL) {
+    if (ret != nullptr) {
         ret->location = new Location(self->location->m_loc,
                                      self->location->pos(),
                                      self->location->velocity());
@@ -47,12 +47,12 @@ static PyObject * Location_copy(PyLocation *self)
 
 static PyMethodDef Location_methods[] = {
     {"copy",            (PyCFunction)Location_copy,     METH_NOARGS},
-    {NULL,              NULL}           /* sentinel */
+    {nullptr,              nullptr}           /* sentinel */
 };
 
 static void Location_dealloc(PyLocation *self)
 {
-    if (self->owner == 0 && self->location != NULL) {
+    if (self->owner == 0 && self->location != nullptr) {
         delete self->location;
     }
     self->ob_type->tp_free((PyObject*)self);
@@ -61,50 +61,50 @@ static void Location_dealloc(PyLocation *self)
 static PyObject * Location_getattro(PyLocation *self, PyObject *oname)
 {
 #ifndef NDEBUG
-    if (self->location == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Location in Location.getattr");
-        return NULL;
+    if (self->location == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Location in Location.getattr");
+        return nullptr;
     }
 #endif // NDEBUG
     char * name = PyString_AsString(oname);
     if (strcmp(name, "parent") == 0) {
-        if (self->location->m_loc == NULL) {
+        if (self->location->m_loc == nullptr) {
             Py_INCREF(Py_None);
             return Py_None;
         }
         PyObject * wrapper = wrapEntity(self->location->m_loc);
-        if (wrapper == NULL) {
-            return NULL;
+        if (wrapper == nullptr) {
+            return nullptr;
         }
-        PyObject * wrapper_proxy = PyWeakref_NewProxy(wrapper, NULL);
+        PyObject * wrapper_proxy = PyWeakref_NewProxy(wrapper, nullptr);
         // FIXME Have wrapEntity return a borrowed reference
         Py_DECREF(wrapper);
         return wrapper_proxy;
     }
     if (strcmp(name, "coordinates") == 0) {
         PyPoint3D * v = newPyPoint3D();
-        if (v != NULL) {
+        if (v != nullptr) {
             v->coords = self->location->pos();
         }
         return (PyObject *)v;
     }
     if (strcmp(name, "velocity") == 0) {
         PyVector3D * v = newPyVector3D();
-        if (v != NULL) {
+        if (v != nullptr) {
             v->coords = self->location->velocity();
         }
         return (PyObject *)v;
     }
     if (strcmp(name, "orientation") == 0) {
         PyQuaternion * v = newPyQuaternion();
-        if (v != NULL) {
+        if (v != nullptr) {
             v->rotation = self->location->orientation();
         }
         return (PyObject *)v;
     }
     if (strcmp(name, "bbox") == 0) {
         PyBBox * b = newPyBBox();
-        if (b != NULL) {
+        if (b != nullptr) {
             b->box = self->location->bBox();
         }
         return (PyObject *)b;
@@ -115,8 +115,8 @@ static PyObject * Location_getattro(PyLocation *self, PyObject *oname)
 static int Location_setattro(PyLocation *self, PyObject *oname, PyObject *v)
 {
 #ifndef NDEBUG
-    if (self->location == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Location in Location.setattr");
+    if (self->location == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Location in Location.setattr");
         return -1;
     }
 #endif // NDEBUG
@@ -129,7 +129,7 @@ static int Location_setattro(PyLocation *self, PyObject *oname, PyObject *v)
         }
         PyEntity * thing = (PyEntity *)v;
 #ifndef NDEBUG
-        if (thing->m_entity.l == NULL) {
+        if (thing->m_entity.l == nullptr) {
             PyErr_SetString(PyExc_AssertionError, "invalid thing");
             return -1;
         }
@@ -224,13 +224,13 @@ static PyObject * Location_repr(PyLocation *self)
 static int Location_init(PyLocation * self, PyObject * args, PyObject * kwds)
 {
     // We need to deal with actual args here
-    PyObject * refO = NULL;
-    PyPoint3D * coords = NULL;
-    LocatedEntity * ref_ent = NULL;
+    PyObject * refO = nullptr;
+    PyPoint3D * coords = nullptr;
+    LocatedEntity * ref_ent = nullptr;
     if (!PyArg_ParseTuple(args, "|OO", &refO, &coords)) {
         return -1;
     }
-    if (refO != NULL) {
+    if (refO != nullptr) {
         if (PyWeakref_CheckProxy(refO)) {
             refO = PyWeakref_GET_OBJECT(refO);
         }
@@ -241,7 +241,7 @@ static int Location_init(PyLocation * self, PyObject * args, PyObject * kwds)
                 return -1;
             }
         }
-        if (coords != NULL && !PyPoint3D_Check(coords)) {
+        if (coords != nullptr && !PyPoint3D_Check(coords)) {
             PyErr_SetString(PyExc_TypeError, "Arg coords required");
             return -1;
         }
@@ -251,7 +251,7 @@ static int Location_init(PyLocation * self, PyObject * args, PyObject * kwds)
         } else {
             PyEntity * ref = (PyEntity*)refO;
 #ifndef NDEBUG
-            if (ref->m_entity.l == NULL) {
+            if (ref->m_entity.l == nullptr) {
                 PyErr_SetString(PyExc_AssertionError, "Parent thing is invalid");
                 return -1;
             }
@@ -259,7 +259,7 @@ static int Location_init(PyLocation * self, PyObject * args, PyObject * kwds)
             ref_ent = ref->m_entity.l;
         }
     }
-    if (coords == NULL) {
+    if (coords == nullptr) {
         self->location = new Location(ref_ent);
     } else {
         self->location = new Location(ref_ent, coords->coords);
@@ -272,8 +272,8 @@ static PyObject * Location_new(PyTypeObject * type, PyObject *, PyObject *)
     // This looks allot like the default implementation, except we call the
     // in-place constructor.
     PyLocation * self = (PyLocation *)type->tp_alloc(type, 0);
-    if (self != NULL) {
-        self->location = NULL;
+    if (self != nullptr) {
+        self->location = nullptr;
         self->owner = 0;
     }
     return (PyObject *)self;
@@ -286,7 +286,7 @@ static PyObject * Location_subtract(PyLocation * lhs, PyLocation * rhs)
         return 0;
     }
     PyVector3D * v = newPyVector3D();
-    if (v != NULL) {
+    if (v != nullptr) {
         v->coords = distanceTo(*rhs->location, *lhs->location);
     }
     return (PyObject*)v;

@@ -69,7 +69,7 @@ static PyObject * log_debug(PyObject * self, PyObject * args, PyObject * kwds)
         PyObject * op;
 
         if (!PyArg_ParseTuple(args, "is|O", &level, &message, &op)) {
-            return NULL;
+            return nullptr;
         }
 
         if (consts::debug_level >= level) {
@@ -87,7 +87,7 @@ static PyObject * log_think(PyObject * self, PyObject * args, PyObject * kwds)
         char *message;
 
         if (!PyArg_ParseTuple(args, "s", &message)) {
-            return NULL;
+            return nullptr;
         }
 
         log(SCRIPT, message);
@@ -243,12 +243,12 @@ static PyObject * PyErrLogger_write(PyObject * self, PyObject * arg)
 
 static PyMethodDef PyOutLogger_methods[] = {
     {"write",       PyOutLogger_write,          METH_O},
-    {NULL,          NULL}                       /* Sentinel */
+    {nullptr,          nullptr}                       /* Sentinel */
 };
 
 static PyMethodDef PyErrLogger_methods[] = {
     {"write",       PyErrLogger_write,          METH_O},
-    {NULL,          NULL}                       /* Sentinel */
+    {nullptr,          nullptr}                       /* Sentinel */
 };
 
 PyTypeObject PyOutLogger_Type = {
@@ -348,24 +348,24 @@ PyObject * Get_PyClass(PyObject * module,
                        const std::string & type)
 {
     PyObject * py_class = PyObject_GetAttrString(module, (char *)type.c_str());
-    if (py_class == NULL) {
+    if (py_class == nullptr) {
         log(ERROR, String::compose("Could not find python class \"%1.%2\"",
                                    package, type));
         PyErr_Print();
-        return NULL;
+        return nullptr;
     }
     if (PyCallable_Check(py_class) == 0) {
         log(ERROR, String::compose("Could not instance python class \"%1.%2\"",
                                    package, type));
         Py_DECREF(py_class);
-        return NULL;
+        return nullptr;
     }
     if (PyType_Check(py_class) == 0) {
         log(ERROR, String::compose("PyCallable_Check returned true, "
                                    "but PyType_Check returned false \"%1.%2\"",
                                    package, type));
         Py_DECREF(py_class);
-        return NULL;
+        return nullptr;
     }
     return py_class;
 }
@@ -379,7 +379,7 @@ PyObject * Get_PyModule(const std::string & package)
     PyObject * package_name = PyString_FromString((char *)package.c_str());
     PyObject * module = PyImport_Import(package_name);
     Py_DECREF(package_name);
-    if (module == NULL) {
+    if (module == nullptr) {
         log(ERROR, String::compose("Missing python module \"%1\"", package));
         PyErr_Print();
     }
@@ -390,8 +390,8 @@ PyObject * Create_PyScript(PyObject * wrapper, PyObject * py_class)
 {
     PyObject * pyob = PyEval_CallFunction(py_class,"(O)", wrapper);
     
-    if (pyob == NULL) {
-        if (PyErr_Occurred() == NULL) {
+    if (pyob == nullptr) {
+        if (PyErr_Occurred() == nullptr) {
             log(ERROR, "Could not create python instance");
         } else {
             log(ERROR, "Reporting python error");
@@ -415,22 +415,22 @@ static PyObject * distance_to(PyObject * self, PyObject * args)
 {
     PyObject * near, * other;
     if (!PyArg_ParseTuple(args, "OO", &near, &other)) {
-        return NULL;
+        return nullptr;
     }
     if (!PyLocation_Check(near) || !PyLocation_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Arg Location required");
-        return NULL;
+        return nullptr;
     }
     PyLocation * sloc = (PyLocation *)near,
                * oloc = (PyLocation *)other;
 #ifndef NDEBUG
-    if (sloc->location == NULL || oloc->location == NULL) {
+    if (sloc->location == nullptr || oloc->location == nullptr) {
         PyErr_SetString(PyExc_AssertionError, "Null location pointer");
-        return NULL;
+        return nullptr;
     }
 #endif // NDEBUG
     PyVector3D * ret = newPyVector3D();
-    if (ret != NULL) {
+    if (ret != nullptr) {
         ret->coords = distanceTo(*sloc->location, *oloc->location);
     }
     return (PyObject *)ret;
@@ -440,18 +440,18 @@ static PyObject * square_distance(PyObject * self, PyObject * args)
 {
     PyObject * near, * other;
     if (!PyArg_ParseTuple(args, "OO", &near, &other)) {
-        return NULL;
+        return nullptr;
     }
     if (!PyLocation_Check(near) || !PyLocation_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Arg Location required");
-        return NULL;
+        return nullptr;
     }
     PyLocation * sloc = (PyLocation *)near,
                * oloc = (PyLocation *)other;
 #ifndef NDEBUG
-    if (sloc->location == NULL || oloc->location == NULL) {
+    if (sloc->location == nullptr || oloc->location == nullptr) {
         PyErr_SetString(PyExc_AssertionError, "Null location pointer");
-        return NULL;
+        return nullptr;
     }
 #endif // NDEBUG
     return PyFloat_FromDouble(squareDistance(*sloc->location, *oloc->location));
@@ -461,18 +461,18 @@ static PyObject * square_horizontal_distance(PyObject * self, PyObject * args)
 {
     PyObject * near, * other;
     if (!PyArg_ParseTuple(args, "OO", &near, &other)) {
-        return NULL;
+        return nullptr;
     }
     if (!PyLocation_Check(near) || !PyLocation_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Arg Location required");
-        return NULL;
+        return nullptr;
     }
     PyLocation * sloc = (PyLocation *)near,
                * oloc = (PyLocation *)other;
 #ifndef NDEBUG
-    if (sloc->location == NULL || oloc->location == NULL) {
+    if (sloc->location == nullptr || oloc->location == nullptr) {
         PyErr_SetString(PyExc_AssertionError, "Null location pointer");
-        return NULL;
+        return nullptr;
     }
 #endif // NDEBUG
     return PyFloat_FromDouble(squareHorizontalDistance(*sloc->location, *oloc->location));
@@ -485,18 +485,18 @@ static PyObject * square_horizontal_edge_distance(PyObject * self, PyObject * ar
 {
     PyObject * near, * other;
     if (!PyArg_ParseTuple(args, "OO", &near, &other)) {
-        return NULL;
+        return nullptr;
     }
     if (!PyLocation_Check(near) || !PyLocation_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Arg Location required");
-        return NULL;
+        return nullptr;
     }
     PyLocation * sloc = (PyLocation *)near,
                * oloc = (PyLocation *)other;
 #ifndef NDEBUG
-    if (sloc->location == NULL || oloc->location == NULL) {
+    if (sloc->location == nullptr || oloc->location == nullptr) {
         PyErr_SetString(PyExc_AssertionError, "Null location pointer");
-        return NULL;
+        return nullptr;
     }
 #endif // NDEBUG
     return PyFloat_FromDouble(squareHorizontalDistance(*sloc->location, *oloc->location) -
@@ -507,12 +507,12 @@ static PyObject * square_horizontal_edge_distance(PyObject * self, PyObject * ar
 // In Python 2.3 or later this it is okay to pass in null for the methods
 // of a module, making this obsolete.
 static PyMethodDef no_methods[] = {
-    {NULL,          NULL}                       /* Sentinel */
+    {nullptr,          nullptr}                       /* Sentinel */
 };
 
 static PyMethodDef atlas_methods[] = {
     {"isLocation", is_location,                 METH_O},
-    {NULL,          NULL}                       /* Sentinel */
+    {nullptr,          nullptr}                       /* Sentinel */
 };
 
 static PyMethodDef physics_methods[] = {
@@ -522,12 +522,12 @@ static PyMethodDef physics_methods[] = {
       square_horizontal_distance,               METH_VARARGS},
     {"square_horizontal_edge_distance",
       square_horizontal_edge_distance,          METH_VARARGS},
-    {NULL,          NULL}                       /* Sentinel */
+    {nullptr,          nullptr}                       /* Sentinel */
 };
 
 static PyMethodDef entity_filter_methods[] = {
         {"get_filter", get_filter, METH_O},
-        {NULL, NULL}
+        {nullptr, nullptr}
 };
 
 void init_python_api(const std::string & ruleset, bool log_stdout)
@@ -592,7 +592,7 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
     Py_DECREF(sys_module);
 
     PyObject * entity_filter = Py_InitModule("entity_filter", entity_filter_methods);
-    if (entity_filter == NULL) {
+    if (entity_filter == nullptr) {
         log(CRITICAL, "Python init failed to create entity_filter module\n");
         return;
     }
@@ -604,7 +604,7 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
     }
 
     PyObject * atlas = Py_InitModule("atlas", atlas_methods);
-    if (atlas == NULL) {
+    if (atlas == nullptr) {
         log(CRITICAL, "Python init failed to create atlas module\n");
         return;
     }
@@ -641,7 +641,7 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
     PyModule_AddObject(atlas, "Message", (PyObject *)&PyMessage_Type);
 
     PyObject * physics = Py_InitModule("physics", physics_methods);
-    if (physics == NULL) {
+    if (physics == nullptr) {
         log(CRITICAL, "Python init failed to create physics module\n");
         return;
     }
@@ -703,7 +703,7 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
     PyModule_AddObject(physics, "Polygon", (PyObject *)&PyPolygon_Type);
 
     PyObject * common = Py_InitModule("common", no_methods);
-    if (common == NULL) {
+    if (common == nullptr) {
         log(CRITICAL, "Python init failed to create common module\n");
         return;
     }
@@ -760,7 +760,7 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
     PyModule_AddObject(globals, "share_directory", o);
 
     PyObject * server = Py_InitModule("server", no_methods);
-    if (server == NULL) {
+    if (server == nullptr) {
         log(CRITICAL, "Python init failed to create server module");
         return;
     }
@@ -813,7 +813,7 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
     PyModule_AddObject(server, "WorldTime", (PyObject *)&PyWorldTime_Type);
 
     PyWorld * world = newPyWorld();
-    if (world != NULL) {
+    if (world != nullptr) {
         PyModule_AddObject(server, "world", (PyObject *)world);
     } else {
         log(CRITICAL, "Python init failed to create World object");
@@ -821,7 +821,7 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
 
     // FIXME Remove once we are sure.
     // PyObject * rules = Py_InitModule("rulesets", no_methods);
-    // if (rules == NULL) {
+    // if (rules == nullptr) {
         // log(CRITICAL, "Python init failed to create rules module");
         // // return;
     // }

@@ -208,7 +208,7 @@ extern "C" void shutdown_on_signal(int signo)
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
     action.sa_handler = SIG_IGN;
-    sigaction(signo, &action, NULL);
+    sigaction(signo, &action, nullptr);
 #else
     signal(signo, SIG_IGN);
 #endif
@@ -230,7 +230,7 @@ extern "C" void soft_shutdown_on_signal(int signo)
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
     action.sa_handler = SIG_IGN;
-    sigaction(signo, &action, NULL);
+    sigaction(signo, &action, nullptr);
 #else
     signal(signo, SIG_IGN);
 #endif
@@ -281,44 +281,44 @@ void interactive_signals()
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
     action.sa_handler = soft_shutdown_on_signal;
-    sigaction(SIGINT, &action, NULL);
+    sigaction(SIGINT, &action, nullptr);
 
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
     action.sa_handler = soft_shutdown_on_signal;
-    sigaction(SIGTERM, &action, NULL);
+    sigaction(SIGTERM, &action, nullptr);
 
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
     action.sa_handler = shutdown_on_signal;
-    sigaction(SIGQUIT, &action, NULL);
+    sigaction(SIGQUIT, &action, nullptr);
 
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
     action.sa_handler = soft_shutdown_on_signal;
-    sigaction(SIGHUP, &action, NULL);
+    sigaction(SIGHUP, &action, nullptr);
 
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
     action.sa_handler = SIG_IGN;
-    sigaction(SIGPIPE, &action, NULL);
+    sigaction(SIGPIPE, &action, nullptr);
 
     sigemptyset(&action.sa_mask);
     action.sa_flags = SA_RESETHAND;
     action.sa_handler = report_segfault;
-    sigaction(SIGSEGV, &action, NULL);
+    sigaction(SIGSEGV, &action, nullptr);
 
     sigemptyset(&action.sa_mask);
     action.sa_flags = SA_RESETHAND;
     action.sa_handler = report_abort;
-    sigaction(SIGABRT, &action, NULL);
+    sigaction(SIGABRT, &action, nullptr);
 
 #ifdef __APPLE__
 #warning Apple
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
     action.sa_handler = report_status;
-    sigaction(SIGINFO, &action, NULL);
+    sigaction(SIGINFO, &action, nullptr);
 #endif // __APPLE__
 
 #else // defined(HAVE_SIGACTION)
@@ -342,37 +342,37 @@ void daemon_signals()
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
     action.sa_handler = SIG_IGN;
-    sigaction(SIGINT, &action, NULL);
+    sigaction(SIGINT, &action, nullptr);
 
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
     action.sa_handler = soft_shutdown_on_signal;
-    sigaction(SIGTERM, &action, NULL);
+    sigaction(SIGTERM, &action, nullptr);
 
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
     action.sa_handler = SIG_IGN;
-    sigaction(SIGQUIT, &action, NULL);
+    sigaction(SIGQUIT, &action, nullptr);
 
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
     action.sa_handler = rotate_logs;
-    sigaction(SIGHUP, &action, NULL);
+    sigaction(SIGHUP, &action, nullptr);
 
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
     action.sa_handler = SIG_IGN;
-    sigaction(SIGPIPE, &action, NULL);
+    sigaction(SIGPIPE, &action, nullptr);
 
     sigemptyset(&action.sa_mask);
     action.sa_flags = SA_RESETHAND;
     action.sa_handler = report_segfault;
-    sigaction(SIGSEGV, &action, NULL);
+    sigaction(SIGSEGV, &action, nullptr);
 
     sigemptyset(&action.sa_mask);
     action.sa_flags = SA_RESETHAND;
     action.sa_handler = report_abort;
-    sigaction(SIGABRT, &action, NULL);
+    sigaction(SIGABRT, &action, nullptr);
 #else
     signal(SIGINT, SIG_IGN);
     signal(SIGTERM, shutdown_on_signal);
@@ -436,12 +436,12 @@ int daemonise()
             sigemptyset(&action.sa_mask);
             action.sa_flags = 0;
             action.sa_handler = soft_shutdown_on_signal;
-            sigaction(SIGUSR1, &action, NULL);
+            sigaction(SIGUSR1, &action, nullptr);
 #else
             signal(SIGUSR1, soft_shutdown_on_signal);
 #endif
 
-            if (wait4(pid, &status, 0, NULL) < 0) {
+            if (wait4(pid, &status, 0, nullptr) < 0) {
                 running = true;
             } else {
                 pid = -1;

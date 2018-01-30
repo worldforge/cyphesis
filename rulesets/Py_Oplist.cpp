@@ -22,9 +22,9 @@
 static PyObject* Oplist_append(PyOplist * self, PyOperation * op)
 {
 #ifndef NDEBUG
-    if (self->ops == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Oplist in Oplist.append");
-        return NULL;
+    if (self->ops == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Oplist in Oplist.append");
+        return nullptr;
     }
 #endif // NDEBUG
     if (PyOperation_Check(op)) {
@@ -37,7 +37,7 @@ static PyObject* Oplist_append(PyOplist * self, PyOperation * op)
         }
     } else if ((PyObject*)op != Py_None) {
         PyErr_SetString(PyExc_TypeError, "Append must be an op or message");
-        return NULL;
+        return nullptr;
     }
     Py_INCREF(Py_None);
     return Py_None;
@@ -46,7 +46,7 @@ static PyObject* Oplist_append(PyOplist * self, PyOperation * op)
 
 static PyMethodDef Oplist_methods[] = {
     {"append",          (PyCFunction)Oplist_append,     METH_O},
-    {NULL,              NULL}           /* sentinel */
+    {nullptr,              nullptr}           /* sentinel */
 };
 
 static void Oplist_dealloc(PyOplist *self)
@@ -58,9 +58,9 @@ static void Oplist_dealloc(PyOplist *self)
 static PyObject * Oplist_num_add(PyOplist *self, PyObject *other)
 {
 #ifndef NDEBUG
-    if (self->ops == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Oplist in Oplist.num_add");
-        return NULL;
+    if (self->ops == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Oplist in Oplist.num_add");
+        return nullptr;
     }
 #endif // NDEBUG
     if (other == Py_None) {
@@ -70,7 +70,7 @@ static PyObject * Oplist_num_add(PyOplist *self, PyObject *other)
     if (PyOplist_Check(other)) {
         PyOplist * opl = (PyOplist*)other;
         PyOplist * res = newPyOplist();
-        if (res != NULL) {
+        if (res != nullptr) {
             res->ops = new OpVector(*self->ops);
             OpVector::const_iterator Iend = opl->ops->end();
             for (OpVector::const_iterator I = opl->ops->begin(); I != Iend; ++I) {
@@ -84,18 +84,18 @@ static PyObject * Oplist_num_add(PyOplist *self, PyObject *other)
 #ifndef NDEBUG
         if (!op->operation.isValid()) {
             PyErr_SetString(PyExc_ValueError, "Invalid Operation in other of Oplist.num_add");
-            return NULL;
+            return nullptr;
         }
 #endif // NDEBUG
         PyOplist * res = newPyOplist();
-        if (res != NULL) {
+        if (res != nullptr) {
             res->ops = new OpVector(*self->ops);
             res->ops->push_back(op->operation);
         }
         return (PyObject*)res;
     }
     PyErr_SetString(PyExc_TypeError, "Unknown other in Oplist.num_add");
-    return NULL;
+    return nullptr;
 }
 
 static int Oplist_num_coerce(PyObject ** self, PyObject ** other)
@@ -111,9 +111,9 @@ static int Oplist_num_coerce(PyObject ** self, PyObject ** other)
 static PyObject * Oplist_num_inplace_add(PyOplist * self, PyObject * other)
 {
 #ifndef NDEBUG
-    if (self->ops == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Oplist in Oplist.num_inplace_add");
-        return NULL;
+    if (self->ops == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Oplist in Oplist.num_inplace_add");
+        return nullptr;
     }
 #endif // NDEBUG
     if (other == Py_None) {
@@ -134,7 +134,7 @@ static PyObject * Oplist_num_inplace_add(PyOplist * self, PyObject * other)
 #ifndef NDEBUG
         if (!op->operation.isValid()) {
             PyErr_SetString(PyExc_ValueError, "Invalid Operation in other of Oplist.num_inplace_add");
-            return NULL;
+            return nullptr;
         }
 #endif // NDEBUG
         self->ops->push_back(op->operation);
@@ -142,7 +142,7 @@ static PyObject * Oplist_num_inplace_add(PyOplist * self, PyObject * other)
         return (PyObject*)self;
     }
     PyErr_SetString(PyExc_TypeError, "Unknown other in Oplist.num_inplace_add");
-    return NULL;
+    return nullptr;
 }
 
 #if PY_MINOR_VERSION < 5
@@ -156,7 +156,7 @@ typedef int Py_ssize_t;
 static Py_ssize_t Oplist_seq_length(PyOplist * self)
 {
 #ifndef NDEBUG
-    if (self->ops == NULL) {
+    if (self->ops == nullptr) {
         PyErr_SetString(PyExc_AssertionError,"Invalid Oplist in Oplist.seq_length");
         return -1;
     }
@@ -170,23 +170,23 @@ static Py_ssize_t Oplist_seq_length(PyOplist * self)
 
 static PyMappingMethods Oplist_as_mapping = {
     (lenfunc)Oplist_seq_length,      /* mp_length */
-    NULL,
-    NULL
+    nullptr,
+    nullptr
 };
 
 static PySequenceMethods Oplist_as_sequence = {
     (lenfunc)Oplist_seq_length,      /* sq_length */
-    NULL,                            /* sq_concat */
-    NULL,                            /* sq_repeat */
-    NULL,                            /* sq_item */
-    NULL,                            /* sq_slice */
-    NULL,                            /* sq_ass_item */
-    NULL                             /* sq_ass_slice */
+    nullptr,                            /* sq_concat */
+    nullptr,                            /* sq_repeat */
+    nullptr,                            /* sq_item */
+    nullptr,                            /* sq_slice */
+    nullptr,                            /* sq_ass_item */
+    nullptr                             /* sq_ass_slice */
 };
 
 static inline int addToOplist(PyOperation * op, PyOplist * o)
 {
-    if (op != NULL) {
+    if (op != nullptr) {
        if (PyOperation_Check(op)) {
            o->ops->push_back(op->operation);
        } else if ((PyObject*)op != Py_None) {
@@ -200,7 +200,7 @@ static inline int addToOplist(PyOperation * op, PyOplist * o)
 // FIXME Lots of silent failure here, and oddly unexpected results.
 static int Oplist_init(PyOplist * self, PyObject * args, PyObject * kwds)
 {
-    PyOperation *op1 = NULL, *op2 = NULL, *op3 = NULL, *op4 = NULL;
+    PyOperation *op1 = nullptr, *op2 = nullptr, *op3 = nullptr, *op4 = nullptr;
     if (!PyArg_ParseTuple(args, "|OOOO", &op1, &op2, &op3, &op4)) {
         return -1;
     }

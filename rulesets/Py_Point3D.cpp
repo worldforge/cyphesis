@@ -32,10 +32,10 @@ static PyObject *Point3D_unit_vector_to(PyPoint3D * self, PyPoint3D * other)
 {
     if (!PyPoint3D_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Can get unit vector to Point3D");
-        return NULL;
+        return nullptr;
     }
     PyVector3D * ret = newPyVector3D();
-    if (ret != NULL) {
+    if (ret != nullptr) {
         ret->coords = (other->coords - self->coords);
         ret->coords.normalize();
     }
@@ -46,7 +46,7 @@ static PyObject * Point3D_distance(PyPoint3D * self, PyPoint3D * other)
 {
     if (!PyPoint3D_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Can get distance to other Point3D");
-        return NULL;
+        return nullptr;
     }
     return PyFloat_FromDouble(distance(self->coords, other->coords));
 }
@@ -63,7 +63,7 @@ static PyMethodDef Point3D_methods[] = {
     {"unit_vector_to",  (PyCFunction)Point3D_unit_vector_to,   METH_O},
     {"distance",        (PyCFunction)Point3D_distance,         METH_O},
     {"is_valid",        (PyCFunction)Point3D_is_valid,         METH_NOARGS},
-    {NULL,              NULL}           /* sentinel */
+    {nullptr,              nullptr}           /* sentinel */
 };
 
 static void Point3D_dealloc(PyPoint3D *self)
@@ -139,10 +139,10 @@ static PyPoint3D * Point3D_num_add(PyPoint3D * self, PyVector3D*other)
 {
     if (!PyVector3D_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Can only add Vector3D to Point3D");
-        return NULL;
+        return nullptr;
     }
     PyPoint3D * ret = newPyPoint3D();
-    if (ret != NULL) {
+    if (ret != nullptr) {
         ret->coords = (self->coords + other->coords);
     }
     return ret;
@@ -153,20 +153,20 @@ static PyObject * Point3D_num_sub(PyPoint3D * self, PyObject * other)
     if (PyVector3D_Check(other)) {
         PyVector3D * ovec = (PyVector3D *)other;
         PyPoint3D * ret = newPyPoint3D();
-        if (ret != NULL) {
+        if (ret != nullptr) {
             ret->coords = (self->coords - ovec->coords);
         }
         return (PyObject *)ret;
     } else if (PyPoint3D_Check(other)) {
         PyPoint3D * opoint = (PyPoint3D *)other;
         PyVector3D * ret = newPyVector3D();
-        if (ret != NULL) {
+        if (ret != nullptr) {
             ret->coords = (self->coords - opoint->coords);
         }
         return (PyObject *)ret;
     } else {
         PyErr_SetString(PyExc_TypeError, "Can only subtract Vector3D or Point3D from Point3D");
-        return NULL;
+        return nullptr;
     }
 }
 
@@ -242,7 +242,7 @@ PyObject * Point3D_new(PyTypeObject * type, PyObject *, PyObject *)
     // This looks allot like the default implementation, except we call the
     // in-place constructor.
     PyPoint3D * self = (PyPoint3D *)type->tp_alloc(type, 0);
-    if (self != NULL) {
+    if (self != nullptr) {
         new (&(self->coords)) Point3D();
     }
     return (PyObject *)self;
@@ -250,12 +250,12 @@ PyObject * Point3D_new(PyTypeObject * type, PyObject *, PyObject *)
 
 static PySequenceMethods Point3D_seq = {
     (lenfunc)Point3D_seq_length,              /* sq_length */
-    NULL,                                     /* sq_concat */
-    NULL,                                     /* sq_repeat */
+    nullptr,                                     /* sq_concat */
+    nullptr,                                     /* sq_repeat */
     (ssizeargfunc)Point3D_seq_item,           /* sq_item */
-    NULL,                                     /* sq_slice */
+    nullptr,                                     /* sq_slice */
     (ssizeobjargproc)Point3D_seq_ass_item,    /* sq_ass_item */
-    NULL                                      /* sq_ass_slice */
+    nullptr                                      /* sq_ass_slice */
 };
 
 static PyNumberMethods Point3D_num = {

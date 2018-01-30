@@ -243,7 +243,7 @@ MemEntity * MemMap::get(const std::string & id) const
     if (id.empty()) {
         // This shouldn't really occur, and shouldn't be a problem
         log(ERROR, "MemMap::get queried for empty ID string.");
-        return NULL;
+        return nullptr;
     }
 
     long int_id = integerId(id);
@@ -253,7 +253,7 @@ MemEntity * MemMap::get(const std::string & id) const
         assert(I->second != 0);
         return I->second;
     }
-    return NULL;
+    return nullptr;
 }
 
 MemEntity * MemMap::getAdd(const std::string & id)
@@ -262,14 +262,14 @@ MemEntity * MemMap::getAdd(const std::string & id)
 {
     debug( std::cout << "MemMap::getAdd(" << id << ")" << std::endl << std::flush;);
     if (id.empty()) {
-        return NULL;
+        return nullptr;
     }
 
     long int_id = integerId(id);
 
     if (int_id == -1) {
         log(ERROR, String::compose("MemMap::getAdd: Invalid ID \"%1\".", id));
-        return NULL;
+        return nullptr;
     }
 
     MemEntityDict::const_iterator I = m_entities.find(int_id);
@@ -304,19 +304,19 @@ MemEntity * MemMap::updateAdd(const RootEntity & ent, const double & d)
     debug( std::cout << "MemMap::updateAdd" << std::endl << std::flush;);
     if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         log(ERROR, "MemMap::updateAdd, Missing id in updated entity");
-        return NULL;
+        return nullptr;
     }
     const std::string & id = ent->getId();
     if (id.empty()) {
         log(ERROR, "MemMap::updateAdd, Empty ID in updated entity.");
-        return NULL;
+        return nullptr;
     }
 
     long int_id = integerId(id);
 
     if (int_id == -1) {
         log(ERROR, String::compose("MemMap::updateAdd: Invalid ID \"%1\".", id));
-        return NULL;
+        return nullptr;
     }
 
     MemEntityDict::const_iterator I = m_entities.find(int_id);

@@ -333,7 +333,7 @@ class DatabaseResult {
     int size() const { return PQntuples(m_res.get()); }
     int empty() const { return (size() == 0); }
     int columns() const { return PQnfields(m_res.get()); }
-    bool error() const { return (m_res.get() == NULL); }
+    bool error() const { return (m_res.get() == nullptr); }
 
     const_iterator begin() const {
         return const_iterator(*this);

@@ -174,7 +174,7 @@ int main(int argc, char ** argv)
         for (int i = 0; i < ai_clients; ++i) {
             auto pid = fork();
             if (pid == 0) {
-                execl((bin_directory + "/cyaiclient").c_str(), (bin_directory + "/cyaiclient").c_str(), NULL);
+                execl((bin_directory + "/cyaiclient").c_str(), (bin_directory + "/cyaiclient").c_str(), nullptr);
                 return EXIT_FORK_ERROR;
             } else if (pid == -1) {
                 log(WARNING, "Could not spawn AI client process.");

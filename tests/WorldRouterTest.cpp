@@ -469,7 +469,7 @@ static bool distanceFromAncestor(const Location & self,
         return true;
     }
 
-    if (other.m_loc == NULL) {
+    if (other.m_loc == nullptr) {
         return false;
     }
 
@@ -585,7 +585,7 @@ LocatedEntity& BaseWorld::getDefaultLocation() const {
     return m_gameWorld;
 }
 
-Inheritance * Inheritance::m_instance = NULL;
+Inheritance * Inheritance::m_instance = nullptr;
 
 Inheritance::Inheritance() : noClass(0)
 {
@@ -593,7 +593,7 @@ Inheritance::Inheritance() : noClass(0)
 
 Inheritance & Inheritance::instance()
 {
-    if (m_instance == NULL) {
+    if (m_instance == nullptr) {
         m_instance = new Inheritance();
     }
     return *m_instance;
@@ -627,7 +627,7 @@ ArithmeticScript * ArithmeticBuilder::newArithmetic(const std::string &,
     return 0;
 }
 
-EntityBuilder * EntityBuilder::m_instance = NULL;
+EntityBuilder * EntityBuilder::m_instance = nullptr;
 
 EntityBuilder::EntityBuilder()
 {

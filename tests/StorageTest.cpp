@@ -214,11 +214,11 @@ void log(LogLevel lvl, const std::string & msg)
 {
 }
 
-Database * Database::m_instance = NULL;
+Database * Database::m_instance = nullptr;
 
 Database * Database::instance()
 {
-    if (m_instance == NULL) {
+    if (m_instance == nullptr) {
         m_instance = new Database();
     }
     return m_instance;
@@ -226,7 +226,7 @@ Database * Database::instance()
 
 Database::Database() : m_rule_db("rules"),
                        m_queryInProgress(false),
-                       m_connection(NULL)
+                       m_connection(nullptr)
 {
 }
 

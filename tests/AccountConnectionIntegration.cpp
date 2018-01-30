@@ -426,7 +426,7 @@ void Link::disconnect()
 {
 }
 
-Ruleset * Ruleset::m_instance = NULL;
+Ruleset * Ruleset::m_instance = nullptr;
 
 int Ruleset::installRule(const std::string & class_name,
                          const std::string & section,
@@ -441,7 +441,7 @@ int Ruleset::modifyRule(const std::string & class_name,
     return 0;
 }
 
-PossessionAuthenticator * PossessionAuthenticator::m_instance = NULL;
+PossessionAuthenticator * PossessionAuthenticator::m_instance = nullptr;
 
 int PossessionAuthenticator::addPossession(const std::string &entity_id,
                                         const std::string &possess_key)
@@ -460,7 +460,7 @@ LocatedEntity *PossessionAuthenticator::authenticatePossession(const std::string
     return 0;
 }
 
-Persistence * Persistence::m_instance = NULL;
+Persistence * Persistence::m_instance = nullptr;
 
 Persistence::Persistence() : m_db(*(Database*)0)
 {
@@ -468,7 +468,7 @@ Persistence::Persistence() : m_db(*(Database*)0)
 
 Persistence * Persistence::instance()
 {
-    if (m_instance == NULL) {
+    if (m_instance == nullptr) {
         m_instance = new Persistence();
     }
     return m_instance;

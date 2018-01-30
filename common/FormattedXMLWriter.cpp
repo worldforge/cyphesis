@@ -108,7 +108,7 @@ void FormattedXMLWriter::outputValue(const Element & e)
 
 void FormattedXMLWriter::outputMap(const MapType & o)
 {
-    MapType::const_iterator Iend = o.end();
+    auto Iend = o.end();
     for (MapType::const_iterator I = o.begin(); I != Iend; ++I) {
         for (int i = 0; i < m_indent; ++i) {
             m_stream << " ";

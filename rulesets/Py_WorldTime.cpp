@@ -23,9 +23,9 @@
 static PyObject *WorldTime_seconds(PyWorldTime *self)
 {
 #ifndef NDEBUG
-    if (self->time == NULL) {
-        PyErr_SetString(PyExc_AssertionError,"NULL WorldTime in WorldTime.seconds");
-        return NULL;
+    if (self->time == nullptr) {
+        PyErr_SetString(PyExc_AssertionError,"nullptr WorldTime in WorldTime.seconds");
+        return nullptr;
     }
 #endif // NDEBUG
     return PyFloat_FromDouble(self->time->seconds());
@@ -34,14 +34,14 @@ static PyObject *WorldTime_seconds(PyWorldTime *self)
 static PyObject * WorldTime_is_now(PyWorldTime * self, PyObject * py_other)
 {
 #ifndef NDEBUG
-    if (self->time == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL WorldTime in WorldTime.is_now");
+    if (self->time == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr WorldTime in WorldTime.is_now");
         return 0;
     }
 #endif // NDEBUG
     if (!PyString_CheckExact(py_other)) {
         PyErr_SetString(PyExc_TypeError, "time must be a string");
-        return NULL;
+        return nullptr;
     }
     char * other = PyString_AsString(py_other);
     //printf("Python worldtime is string\n");
@@ -54,12 +54,12 @@ static PyObject * WorldTime_is_now(PyWorldTime * self, PyObject * py_other)
 static PyMethodDef WorldTime_methods[] = {
     {"seconds",         (PyCFunction)WorldTime_seconds, METH_NOARGS},
     {"is_now",          (PyCFunction)WorldTime_is_now,  METH_O},
-    {NULL,              NULL}           // sentinel
+    {nullptr,              nullptr}           // sentinel
 };
 
 static void WorldTime_dealloc(PyWorldTime *self)
 {
-    if (self->own && self->time != NULL) {
+    if (self->own && self->time != nullptr) {
         delete self->time;
     }
     self->ob_type->tp_free(self);
@@ -80,7 +80,7 @@ static PyObject * WorldTime_new(PyTypeObject * type, PyObject *, PyObject *)
     // This looks allot like the default implementation, except we set some
     // stuff to null.
     PyWorldTime * self = (PyWorldTime *)type->tp_alloc(type, 0);
-    if (self != NULL) {
+    if (self != nullptr) {
         self->time = 0;
         self->own = false;
     }
@@ -102,7 +102,7 @@ static int WorldTime_init(PyWorldTime * self, PyObject * args, PyObject * kwds)
 }
 
 PyTypeObject PyWorldTime_Type = {
-        PyObject_HEAD_INIT(NULL)
+        PyObject_HEAD_INIT(nullptr)
         0,                              // ob_size
         "server.WorldTime",             // tp_name
         sizeof(PyWorldTime),            // tp_basicsize

@@ -41,7 +41,7 @@ static PyObject * null_wrapper(PyObject * self, PyWorldTime * o)
         return Py_True;
     }
 #ifdef CYPHESIS_DEBUG
-    o->time = NULL;
+    o->time = nullptr;
 #endif // NDEBUG
     Py_INCREF(Py_None);
     return Py_None;
@@ -49,7 +49,7 @@ static PyObject * null_wrapper(PyObject * self, PyWorldTime * o)
 
 static PyMethodDef sabotage_methods[] = {
     {"null", (PyCFunction)null_wrapper,                 METH_O},
-    {NULL,          NULL}                       /* Sentinel */
+    {nullptr,          nullptr}                       /* Sentinel */
 };
 
 static void setup_test_functions()

@@ -106,7 +106,7 @@ bool EntityExerciser::checkAttributes(const std::set<std::string> & attr_names)
                       << std::endl << std::flush;
             res = false;
         }
-        if (this->m_ent.getProperty(*I) == NULL) {
+        if (this->m_ent.getProperty(*I) == nullptr) {
             std::cerr << "Entity does not have \"" << *I << "\" property."
                       << std::endl << std::flush;
             res = false;

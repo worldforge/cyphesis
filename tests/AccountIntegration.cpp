@@ -554,7 +554,7 @@ int Juncture::teleportEntity(const LocatedEntity * ent)
     return 0;
 }
 
-Persistence * Persistence::m_instance = NULL;
+Persistence * Persistence::m_instance = nullptr;
 
 Persistence::Persistence() : m_db(*(Database*)0)
 {
@@ -562,7 +562,7 @@ Persistence::Persistence() : m_db(*(Database*)0)
 
 Persistence * Persistence::instance()
 {
-    if (m_instance == NULL) {
+    if (m_instance == nullptr) {
         m_instance = new Persistence();
     }
     return m_instance;
@@ -590,7 +590,7 @@ void Persistence::delCharacter(const std::string &)
 {
 }
 
-Ruleset * Ruleset::m_instance = NULL;
+Ruleset * Ruleset::m_instance = nullptr;
 
 Ruleset::~Ruleset()
 {
@@ -1117,7 +1117,7 @@ Root atlasType(const std::string & name,
     return Atlas::Objects::Root();
 }
 
-Inheritance * Inheritance::m_instance = NULL;
+Inheritance * Inheritance::m_instance = nullptr;
 
 Inheritance::Inheritance() : noClass(0)
 {
@@ -1125,7 +1125,7 @@ Inheritance::Inheritance() : noClass(0)
 
 Inheritance & Inheritance::instance()
 {
-    if (m_instance == NULL) {
+    if (m_instance == nullptr) {
         m_instance = new Inheritance();
     }
     return *m_instance;

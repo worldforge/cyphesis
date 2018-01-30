@@ -1056,7 +1056,7 @@ LocatedEntity& BaseWorld::getRootEntity() const {
     return m_gameWorld;
 }
 
-Inheritance * Inheritance::m_instance = NULL;
+Inheritance * Inheritance::m_instance = nullptr;
 
 Inheritance::Inheritance() : noClass(0)
 {
@@ -1064,7 +1064,7 @@ Inheritance::Inheritance() : noClass(0)
 
 Inheritance & Inheritance::instance()
 {
-    if (m_instance == NULL) {
+    if (m_instance == nullptr) {
         m_instance = new Inheritance();
     }
     return *m_instance;

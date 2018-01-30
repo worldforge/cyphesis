@@ -45,7 +45,7 @@ static const char * TIME_FORMAT = "%Y-%m-%dT%H:%M:%S";
 static void logDate(std::ostream & log_stream)
 {
     struct tm * local_time;
-    const time_t now = time(NULL);
+    const time_t now = time(nullptr);
 
 #ifdef HAVE_LOCALTIME_R
 
@@ -253,7 +253,7 @@ void logEvent(LogEvent lev, const std::string & msg)
 void logSysError(LogLevel lvl)
 {
     char * err = strerror(errno);
-    if (err != NULL) {
+    if (err != nullptr) {
         log(lvl, err);
     } else {
         log(ERROR, "Error getting error message from system.");

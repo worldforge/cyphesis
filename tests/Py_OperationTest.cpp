@@ -57,7 +57,7 @@ static PyObject * null_wrapper(PyObject * self, PyOperation * o)
 #endif // NDEBUG
     } else {
         PyErr_SetString(PyExc_TypeError, "Unknown Object type");
-        return NULL;
+        return nullptr;
     }
     Py_INCREF(Py_None);
     return Py_None;
@@ -78,7 +78,7 @@ static PyObject * clear_parent(PyObject * self, PyOperation * o)
 static PyMethodDef sabotage_methods[] = {
     {"null",          (PyCFunction)null_wrapper,                 METH_O},
     {"clear_parent",  (PyCFunction)clear_parent,                METH_O},
-    {NULL,          NULL}                       /* Sentinel */
+    {nullptr,          nullptr}                       /* Sentinel */
 };
 
 static void setup_test_functions()

@@ -45,8 +45,8 @@ run_mod(mod_ty mod, const char *filename, PyObject *globals, PyObject *locals,
     PyCodeObject *co;
     PyObject *v;
     co = PyAST_Compile(mod, filename, flags, arena);
-    if (co == NULL)
-        return NULL;
+    if (co == nullptr)
+        return nullptr;
     v = PyEval_EvalCode(co, globals, locals);
     Py_DECREF(co);
     return v;
@@ -59,18 +59,18 @@ run_mod(mod_ty mod, const char *filename, PyObject *globals, PyObject *locals,
 // it won't parse.
 int CyPyRun_SimpleString(const char * command, PyObject * exception)
 {
-    PyCompilerFlags *flags = NULL;
+    PyCompilerFlags *flags = nullptr;
     PyObject * m = PyImport_AddModule("__main__");
-    if (m == NULL)
+    if (m == nullptr)
         return -1;
     PyObject * d = PyModule_GetDict(m);
     // v = PyRun_StringFlags(command, Py_file_input, d, d, flags);
     PyArena *arena = PyArena_New();
-    if (arena == NULL)
+    if (arena == nullptr)
         return -1;
 
     mod_ty mod = PyParser_ASTFromString(command, "<string>", Py_file_input, flags, arena);
-    if (mod == NULL) {
+    if (mod == nullptr) {
         PyArena_Free(arena);
         PyErr_Print();
         return -2;
@@ -79,7 +79,7 @@ int CyPyRun_SimpleString(const char * command, PyObject * exception)
     PyObject *ret = run_mod(mod, "<string>", d, d, flags, arena);
     PyArena_Free(arena);
 
-    if (ret == NULL) {
+    if (ret == nullptr) {
         int errcode = -1;
         if (exception != 0) {
             if (PyErr_ExceptionMatches(exception)) {

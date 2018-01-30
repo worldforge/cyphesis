@@ -344,7 +344,7 @@ void CommMDNSPublisher::setup_service(AvahiClient * client)
       String::compose("server=%1", "cyphesis").c_str(),
       String::compose("uptime=%1", m_server.m_world.upTime()).c_str(),
       String::compose("version=%1", std::string(consts::version)).c_str(),
-      NULL);
+      nullptr);
 
     int ret;
     ret = avahi_entry_group_add_service_strlst(
@@ -353,7 +353,7 @@ void CommMDNSPublisher::setup_service(AvahiClient * client)
       AVAHI_PROTO_UNSPEC,
       (AvahiPublishFlags)0,
       m_server.getName().c_str(),
-      "_worldforge._tcp", NULL, NULL,
+      "_worldforge._tcp", nullptr, nullptr,
       client_port_num, txt);
 
     avahi_string_list_free(txt);

@@ -81,7 +81,7 @@ class TestWorld : public BaseWorld {
 
 
 static PyMethodDef no_methods[] = {
-    {NULL,          NULL}                       /* Sentinel */
+    {nullptr,          nullptr}                       /* Sentinel */
 };
 
 int main()

@@ -51,7 +51,7 @@ ExternalMindsManager::~ExternalMindsManager()
 
 ExternalMindsManager * ExternalMindsManager::instance()
 {
-    if (m_instance == NULL) {
+    if (m_instance == nullptr) {
         m_instance = new ExternalMindsManager();
     }
     return m_instance;

@@ -69,12 +69,12 @@ void Stackable::CombineOperation(const Operation & op, OpVector & res)
             continue;
         }
         LocatedEntity * ent = BaseWorld::instance().getEntity(id);
-        if (ent == NULL) {
+        if (ent == nullptr) {
             // FIXME Send an Unseen op?
             continue;
         }
         Stackable * obj = dynamic_cast<Stackable *>(ent);
-        if (obj == NULL) { continue; }
+        if (obj == nullptr) { continue; }
         if (obj->m_type != m_type) { continue; }
         m_num = m_num + obj->m_num;
         // This ensures an attempt to stack this entitie multiple times will

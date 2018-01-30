@@ -98,7 +98,7 @@ void CommPeer::checkAuth()
         }
     } else {
         Peer *peer = dynamic_cast<Peer*>(m_link);
-        if (peer == NULL) {
+        if (peer == nullptr) {
             log(WARNING, "Casting CommPeer connection to Peer failed");
             return;
         }

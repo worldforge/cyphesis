@@ -393,7 +393,7 @@ ConnectableRouter::~ConnectableRouter()
 {
 }
 
-Persistence * Persistence::m_instance = NULL;
+Persistence * Persistence::m_instance = nullptr;
 
 Persistence::Persistence() : m_db(*(Database*)0)
 {
@@ -401,7 +401,7 @@ Persistence::Persistence() : m_db(*(Database*)0)
 
 Persistence * Persistence::instance()
 {
-    if (m_instance == NULL) {
+    if (m_instance == nullptr) {
         m_instance = new Persistence();
     }
     return m_instance;

@@ -28,14 +28,14 @@ static PyObject * TerrainProperty_getHeight(PyProperty * self,
                                             PyObject * args)
 {
 #ifndef NDEBUG
-    if (self->m_entity == NULL || self->m_p.terrain == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.getHeight");
-        return NULL;
+    if (self->m_entity == nullptr || self->m_p.terrain == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr entity in TerrainProperty.getHeight");
+        return nullptr;
     }
 #endif // NDEBUG
     float x, y;
     if (!PyArg_ParseTuple(args, "ff", &x, &y)) {
-        return NULL;
+        return nullptr;
     }
     // Return a sensible default.
     Vector3D normal(0,0,1);
@@ -48,25 +48,25 @@ static PyObject * TerrainProperty_getSurface(PyProperty * self,
                                              PyObject * args)
 {
 #ifndef NDEBUG
-    if (self->m_entity == NULL || self->m_p.terrain == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.getSurface");
-        return NULL;
+    if (self->m_entity == nullptr || self->m_p.terrain == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr entity in TerrainProperty.getSurface");
+        return nullptr;
     }
 #endif // NDEBUG
     // FIXME Inconsistent interface. Should take the same args as others.
     // If it really should take a point, METH_O would work better.
     PyPoint3D * pos;
     if (!PyArg_ParseTuple(args, "O", &pos)) {
-        return NULL;
+        return nullptr;
     }
     if (!PyPoint3D_Check(pos)) {
         PyErr_SetString(PyExc_TypeError, "Position for surface must be Point3D");
-        return NULL;
+        return nullptr;
     }
     int surface;
     if (self->m_p.terrain->getSurface(pos->coords, surface) != 0) {
         PyErr_SetString(PyExc_TypeError, "How the hell should I know");
-        return NULL;
+        return nullptr;
     }
     return PyInt_FromLong(surface);
 }
@@ -75,21 +75,21 @@ static PyObject * TerrainProperty_getNormal(PyProperty * self,
                                             PyObject * args)
 {
 #ifndef NDEBUG
-    if (self->m_entity == NULL || self->m_p.terrain == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL entity in TerrainProperty.getNormal");
-        return NULL;
+    if (self->m_entity == nullptr || self->m_p.terrain == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr entity in TerrainProperty.getNormal");
+        return nullptr;
     }
 #endif
     float x,y;
     if (!PyArg_ParseTuple(args, "ff", &x, &y)) {
-        return NULL;
+        return nullptr;
     }
     // Return a sensible default.
     Vector3D normal(0,0,1);
     float h = 0;
     self->m_p.terrain->getHeightAndNormal(x, y, h, normal);
     PyVector3D * ret = newPyVector3D();
-    if (ret != NULL) {
+    if (ret != nullptr) {
         ret->coords = normal;
     }
     return (PyObject *)ret;
@@ -100,7 +100,7 @@ static PyObject * TerrainProperty_findMods(PyProperty * self,
 {
     if (!PyPoint3D_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Argument must be terrain pos");
-        return NULL;
+        return nullptr;
     }
     std::vector<LocatedEntity *> result;
     self->m_p.terrain->findMods(((PyPoint3D*)other)->coords, result);
@@ -118,7 +118,7 @@ static PyMethodDef TerrainProperty_methods[] = {
     {"get_surface",  (PyCFunction)TerrainProperty_getSurface,    METH_VARARGS},
     {"get_normal",   (PyCFunction)TerrainProperty_getNormal,	 METH_VARARGS},
     {"find_mods",    (PyCFunction)TerrainProperty_findMods, METH_O},
-    {NULL,           NULL}           /* sentinel */
+    {nullptr,           nullptr}           /* sentinel */
 };
 
 static int TerrainProperty_init(PyProperty * self,
@@ -133,7 +133,7 @@ static int TerrainProperty_init(PyProperty * self,
 }
 
 PyTypeObject PyTerrainProperty_Type = {
-        PyObject_HEAD_INIT(NULL)
+        PyObject_HEAD_INIT(nullptr)
         0,                                                // ob_size
         "TerrainProperty",                                // tp_name
         sizeof(PyProperty),                               // tp_basicsize

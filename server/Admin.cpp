@@ -193,7 +193,7 @@ void Admin::LogoutOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    if (m_connection == NULL) {
+    if (m_connection == nullptr) {
         error(op,"Disconnected admin account handling explicit logout",res, getId());
         return;
     }

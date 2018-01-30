@@ -236,7 +236,7 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
     }
 
     TeleportState *s = I->second;
-    assert (s != NULL);
+    assert (s != nullptr);
 
     s->setCreated();
     log(INFO, String::compose("Entity with ID %1 replicated on peer", iid));
@@ -264,7 +264,7 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
             return;
         }
         if (!chr->m_externalMind->isLinked()) {
-            log(ERROR, "Mind is NULL or not connected");
+            log(ERROR, "Mind is nullptr or not connected");
             return;
         }
         std::vector<Root> logout_args;

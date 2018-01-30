@@ -160,7 +160,7 @@ int main()
 #include "stubs/common/stubMonitors.h"
 
 
-varconf::Config * global_conf = NULL;
+varconf::Config * global_conf = nullptr;
 
 std::string instance("test_instance");
 

@@ -313,7 +313,7 @@ void Admin::OtherOperation(const Operation & op, OpVector & res)
 {
 }
 
-Database * Database::m_instance = NULL;
+Database * Database::m_instance = nullptr;
 
 int Database::initConnection()
 {
@@ -322,7 +322,7 @@ int Database::initConnection()
 
 Database::Database() : m_rule_db("rules"),
                        m_queryInProgress(false),
-                       m_connection(NULL)
+                       m_connection(nullptr)
 {
 }
 
@@ -351,7 +351,7 @@ const DatabaseResult Database::selectSimpleRowBy(const std::string & name,
 
 Database * Database::instance()
 {
-    if (m_instance == NULL) {
+    if (m_instance == nullptr) {
         m_instance = new Database();
     }
     return m_instance;

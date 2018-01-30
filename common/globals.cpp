@@ -462,7 +462,7 @@ int loadConfig(int argc, char ** argv, int usage)
     char * home = getenv("HOME");
 
     // Read in only the users settings, and the commandline settings.
-    if (home != NULL) {
+    if (home != nullptr) {
         home_dir_config = global_conf->readFromFile(std::string(home) + "/.cyphesis.vconf");
     }
 
@@ -565,7 +565,7 @@ void updateUserConfiguration()
 
     // Write out any changes that have been overridden at user scope. It
     // may be a good idea to do this at shutdown.
-    if (home != NULL) {
+    if (home != nullptr) {
         global_conf->writeToFile(std::string(home) + "/.cyphesis.vconf", varconf::USER);
     }
 

@@ -836,7 +836,7 @@ LocatedEntity * BaseWorld::getEntity(long id) const
     }
 }
 
-Inheritance * Inheritance::m_instance = NULL;
+Inheritance * Inheritance::m_instance = nullptr;
 
 Inheritance::Inheritance() : noClass(0)
 {
@@ -844,7 +844,7 @@ Inheritance::Inheritance() : noClass(0)
 
 Inheritance & Inheritance::instance()
 {
-    if (m_instance == NULL) {
+    if (m_instance == nullptr) {
         m_instance = new Inheritance();
     }
     return *m_instance;
@@ -881,7 +881,7 @@ void Variable<T>::send(std::ostream & o)
 
 template class Variable<int>;
 
-Monitors * Monitors::m_instance = NULL;
+Monitors * Monitors::m_instance = nullptr;
 
 Monitors::Monitors()
 {
@@ -893,7 +893,7 @@ Monitors::~Monitors()
 
 Monitors * Monitors::instance()
 {
-    if (m_instance == NULL) {
+    if (m_instance == nullptr) {
         m_instance = new Monitors();
     }
     return m_instance;

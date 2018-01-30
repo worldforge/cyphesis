@@ -58,7 +58,7 @@ typedef std::map<std::string, Root> RootDict;
 
 static const bool debug_flag = false;
 
-Ruleset * Ruleset::m_instance = NULL;
+Ruleset * Ruleset::m_instance = nullptr;
 
 void Ruleset::init(const std::string & ruleset)
 {

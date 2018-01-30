@@ -5,7 +5,7 @@
 PyObject * get_filter(PyObject * self, PyObject* query){
     if (!PyString_CheckExact(query)){
             PyErr_SetString(PyExc_TypeError, "Map_get_filter what must be string");
-                    return NULL;
+                    return nullptr;
         }
         char * query_str = PyString_AsString(query);
         PyFilter* f = newPyFilter();
@@ -16,7 +16,7 @@ PyObject * get_filter(PyObject * self, PyObject* query){
         }
         catch (std::invalid_argument& e){
             PyErr_SetString(PyExc_TypeError, String::compose("Invalid query for Entity Filter: %1", e.what()).c_str());
-            return NULL;
+            return nullptr;
         }
         return (PyObject*)f;
 }
@@ -26,12 +26,12 @@ static PyObject * match_entity(PyFilter * self, PyObject * py_entity)
 {
     if (!PyLocatedEntity_Check(py_entity)) {
         PyErr_SetString(PyExc_AssertionError, "Argument must be Entity in match_entity");
-        return NULL;
+        return nullptr;
     }
 
-    if(self->m_filter == NULL){
-        PyErr_SetString(PyExc_AssertionError, "NULL Filter in Filter.match_entity");
-        return NULL;
+    if(self->m_filter == nullptr){
+        PyErr_SetString(PyExc_AssertionError, "nullptr Filter in Filter.match_entity");
+        return nullptr;
     }
 
     //Not sure if this is safest or the most correct way to get an entity pointer
@@ -58,16 +58,16 @@ static PyObject * match_entity(PyFilter * self, PyObject * py_entity)
 ///@param py_entity - an entity whose "contains" property to search
 PyObject* search_contains(PyFilter* self, PyEntity* py_entity){
 #ifndef NDEBUG
-    if (self->m_filter == NULL) {
+    if (self->m_filter == nullptr) {
         PyErr_SetString(PyExc_AssertionError,
-                        "NULL Filter in Entity_filter.search_contains");
-        return NULL;
+                        "nullptr Filter in Entity_filter.search_contains");
+        return nullptr;
     }
 #endif // NDEBUG
 
     //This function is often used on mind's own entity, in which case, the type is PyMind
     if (!PyMind_Check(py_entity) && !PyEntity_Check(py_entity)){
-        return NULL;
+        return nullptr;
     }
     LocatedEntity* ent = py_entity->m_entity.l;
 
@@ -89,16 +89,16 @@ PyObject* search_contains(PyFilter* self, PyEntity* py_entity){
     //Create a python list an fill it with the entities we got
     //FIXME: the code below is reused in multiple places
     PyObject * list = PyList_New(res.size());
-    if (list == NULL) {
-        return NULL;
+    if (list == nullptr) {
+        return nullptr;
     }
     std::vector<LocatedEntity*>::const_iterator Iend = res.end();
     int i = 0;
     for (std::vector<LocatedEntity*>::const_iterator I = res.begin(); I != Iend; ++I, ++i) {
         PyObject * thing = wrapEntity(*I);
-        if (thing == NULL) {
+        if (thing == nullptr) {
             Py_DECREF(list);
-            return NULL;
+            return nullptr;
         }
         PyList_SetItem(list, i, thing);
     }
@@ -107,7 +107,7 @@ PyObject* search_contains(PyFilter* self, PyEntity* py_entity){
 
 static void Filter_dealloc(PyFilter *self)
 {
-    if (self->m_filter != NULL) {
+    if (self->m_filter != nullptr) {
         delete self->m_filter;
     }
     self->ob_type->tp_free((PyObject*)self);
@@ -116,7 +116,7 @@ static void Filter_dealloc(PyFilter *self)
 static PyMethodDef Filter_methods[] = {
     {"match_entity",        (PyCFunction)match_entity,       METH_O},
     {"search_contains",     (PyCFunction)search_contains,    METH_O},
-    {NULL,                  NULL}           // sentinel
+    {nullptr,                  nullptr}           // sentinel
 };
 
 PyTypeObject PyFilter_Type = {

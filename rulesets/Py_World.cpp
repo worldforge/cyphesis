@@ -29,7 +29,7 @@
 static PyObject * World_get_time(PyWorld *self)
 {
     PyWorldTime * wtime = newPyWorldTime();
-    if (wtime != NULL) {
+    if (wtime != nullptr) {
         wtime->time = new WorldTime((int)BaseWorld::instance().getTime());
         wtime->own = true;
     }
@@ -40,18 +40,18 @@ static PyObject * World_get_object(PyWorld *self, PyObject * id)
 {
     if (!PyString_CheckExact(id)) {
         PyErr_SetString(PyExc_TypeError, "World.get_object must be string");
-        return NULL;
+        return nullptr;
     }
     LocatedEntity * ent = BaseWorld::instance().getEntity(PyString_AsString(id));
-    if (ent == NULL) {
+    if (ent == nullptr) {
         Py_INCREF(Py_None);
         return Py_None;
     }
     PyObject * wrapper = wrapEntity(ent);
-    if (wrapper == NULL) {
-        return NULL;
+    if (wrapper == nullptr) {
+        return nullptr;
     }
-    PyObject * wrapper_proxy = PyWeakref_NewProxy(wrapper, NULL);
+    PyObject * wrapper_proxy = PyWeakref_NewProxy(wrapper, nullptr);
     // FIXME Have wrapEntity return a borrowed reference
     Py_DECREF(wrapper);
     return wrapper_proxy;
@@ -61,18 +61,18 @@ static PyObject * World_get_object_ref(PyWorld *self, PyObject * id)
 {
     if (!PyString_CheckExact(id)) {
         PyErr_SetString(PyExc_TypeError, "World.get_object must be string");
-        return NULL;
+        return nullptr;
     }
     LocatedEntity * ent = BaseWorld::instance().getEntity(PyString_AsString(id));
-    if (ent == NULL) {
+    if (ent == nullptr) {
         Py_INCREF(Py_None);
         return Py_None;
     }
     PyObject * wrapper = wrapEntity(ent);
-    if (wrapper == NULL) {
-        return NULL;
+    if (wrapper == nullptr) {
+        return nullptr;
     }
-    PyObject * wrapper_ref = PyWeakref_NewRef(wrapper, NULL);
+    PyObject * wrapper_ref = PyWeakref_NewRef(wrapper, nullptr);
     // FIXME Have wrapEntity return a borrowed reference
     Py_DECREF(wrapper);
     return wrapper_ref;
@@ -82,7 +82,7 @@ static PyMethodDef World_methods[] = {
     {"get_time",        (PyCFunction)World_get_time,        METH_NOARGS},
     {"get_object",      (PyCFunction)World_get_object,      METH_O},
     {"get_object_ref",  (PyCFunction)World_get_object_ref,  METH_O},
-    {NULL,              NULL}           // sentinel
+    {nullptr,              nullptr}           // sentinel
 };
 
 static int World_init(PyWorld * self, PyObject * args, PyObject * kwds)

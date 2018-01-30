@@ -45,7 +45,7 @@ static PyObject * add_properties(PyObject * self, PyEntity * o)
 {
     if (!PyEntity_Check(o)) {
         PyErr_SetString(PyExc_TypeError, "Unknown Object type");
-        return NULL;
+        return nullptr;
     }
 
     Entity * ent = o->m_entity.e;
@@ -63,7 +63,7 @@ static PyObject * add_terrainmod_shape(PyObject * self, PyProperty * o)
 {
     if (!PyTerrainModProperty_Check(o)) {
         PyErr_SetString(PyExc_TypeError, "Unknown Object type");
-        return NULL;
+        return nullptr;
     }
 
     TerrainModProperty * p = o->m_p.terrainmod;
@@ -87,11 +87,11 @@ static PyObject * null_wrapper(PyObject * self, PyProperty * o)
 {
     if (PyTerrainModProperty_Check(o)) {
 #ifdef CYPHESIS_DEBUG
-        o->m_p.base = NULL;
+        o->m_p.base = nullptr;
 #endif // NDEBUG
     } else {
         PyErr_SetString(PyExc_TypeError, "Unknown Object type");
-        return NULL;
+        return nullptr;
     }
     Py_INCREF(Py_None);
     return Py_None;
@@ -100,12 +100,12 @@ static PyObject * null_wrapper(PyObject * self, PyProperty * o)
 static PyMethodDef testprop_methods[] = {
     {"add_properties", (PyCFunction)add_properties,                 METH_O},
     {"add_terrainmod_shape", (PyCFunction)add_terrainmod_shape,     METH_O},
-    {NULL,          NULL}                       /* Sentinel */
+    {nullptr,          nullptr}                       /* Sentinel */
 };
 
 static PyMethodDef sabotage_methods[] = {
     {"null", (PyCFunction)null_wrapper,                 METH_O},
-    {NULL,          NULL}                       /* Sentinel */
+    {nullptr,          nullptr}                       /* Sentinel */
 };
 
 static void setup_test_functions()

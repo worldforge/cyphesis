@@ -69,7 +69,7 @@ Location::Location(LocatedEntity * rf,
 
 void Location::addToMessage(MapType & omap) const
 {
-    if (m_loc!=NULL) {
+    if (m_loc!=nullptr) {
         omap["loc"] = m_loc->getId();
     }
     if (pos().isValid()) {
@@ -91,7 +91,7 @@ void Location::addToMessage(MapType & omap) const
 
 void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
-    if (m_loc!=NULL) {
+    if (m_loc!=nullptr) {
         ent->setLoc(m_loc->getId());
     }
     if (pos().isValid()) {

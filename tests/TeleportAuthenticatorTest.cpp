@@ -123,15 +123,15 @@ void TeleportAuthenticatortest::setup()
 {
     m_world = new TestWorld;
 
-    assert(PossessionAuthenticator::instance() == NULL);
+    assert(PossessionAuthenticator::instance() == nullptr);
     PossessionAuthenticator::init();
-    assert(PossessionAuthenticator::instance() != NULL);
+    assert(PossessionAuthenticator::instance() != nullptr);
 }
 
 void TeleportAuthenticatortest::teardown()
 {
     PossessionAuthenticator::del();
-    assert(PossessionAuthenticator::instance() == NULL);
+    assert(PossessionAuthenticator::instance() == nullptr);
 
     delete m_world;
 }
@@ -139,7 +139,7 @@ void TeleportAuthenticatortest::teardown()
 void TeleportAuthenticatortest::test_sequence()
 {
     // Check for correct singleton instancing
-    assert(PossessionAuthenticator::instance() != NULL);
+    assert(PossessionAuthenticator::instance() != nullptr);
     
     // Test isPending() function
     assert(!PossessionAuthenticator::instance()->isPending("test_non_existent_entity_id"));
@@ -160,21 +160,21 @@ void TeleportAuthenticatortest::test_authenticatePossession()
 {
     Entity ent("100", 100);
     m_world->test_addEntity(&ent, 100);
-    assert(PossessionAuthenticator::instance() != NULL);
+    assert(PossessionAuthenticator::instance() != nullptr);
 
     PossessionAuthenticator::instance()->addPossession("100", "test_possess_key");
 
     // Test non-existent ID authentication request
     assert(PossessionAuthenticator::instance()->authenticatePossession(
-               "101", "test_possess_key") == NULL);
+               "101", "test_possess_key") == nullptr);
 
     // Test incorrect possess key authentication request
     assert(PossessionAuthenticator::instance()->authenticatePossession("100",
-                                        "test_wrong_possess_key") == NULL);
+                                        "test_wrong_possess_key") == nullptr);
 
     // Test valid authentication request
     assert(PossessionAuthenticator::instance()->authenticatePossession("100",
-                                        "test_possess_key") != NULL);
+                                        "test_possess_key") != nullptr);
 
 }
 
@@ -182,14 +182,14 @@ void TeleportAuthenticatortest::test_authenticatePossession_nonexist()
 {
     Entity ent("100", 100);
     m_world->test_addEntity(&ent, 100);
-    assert(PossessionAuthenticator::instance() != NULL);
+    assert(PossessionAuthenticator::instance() != nullptr);
 
     PossessionAuthenticator::instance()->addPossession("101", "test_possess_key");
 
     // Test ID authentication request, that we added, for a non existant
     // entity
     assert(PossessionAuthenticator::instance()->authenticatePossession(
-                   "101", "test_possess_key") == NULL);
+                   "101", "test_possess_key") == nullptr);
 }
 
 void TeleportAuthenticatortest::test_removePossession_id()

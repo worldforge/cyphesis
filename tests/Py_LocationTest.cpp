@@ -42,15 +42,15 @@ static PyObject * null_wrapper(PyObject * self, PyLocation * o)
 {
     if (PyLocation_Check(o)) {
 #ifdef CYPHESIS_DEBUG
-        o->location = NULL;
+        o->location = nullptr;
 #endif // NDEBUG
     } else if (PyLocatedEntity_Check(o)) {
 #ifdef CYPHESIS_DEBUG
-        ((PyEntity*)o)->m_entity.l = NULL;
+        ((PyEntity*)o)->m_entity.l = nullptr;
 #endif // NDEBUG
     } else {
         PyErr_SetString(PyExc_TypeError, "Unknown Object type");
-        return NULL;
+        return nullptr;
     }
     Py_INCREF(Py_None);
     return Py_None;
@@ -58,7 +58,7 @@ static PyObject * null_wrapper(PyObject * self, PyLocation * o)
 
 static PyMethodDef sabotage_methods[] = {
     {"null", (PyCFunction)null_wrapper,                 METH_O},
-    {NULL,          NULL}                       /* Sentinel */
+    {nullptr,          nullptr}                       /* Sentinel */
 };
 
 static void setup_test_functions()

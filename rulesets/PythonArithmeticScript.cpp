@@ -46,8 +46,8 @@ int PythonArithmeticScript::attribute(const std::string & name, float & val)
     PyObject * pn = PyString_FromString(name.c_str());
     PyObject * ret = PyObject_GenericGetAttr(m_script, pn);
     Py_DECREF(pn);
-    if (ret == NULL) {
-        if (PyErr_Occurred() == NULL) {
+    if (ret == nullptr) {
+        if (PyErr_Occurred() == nullptr) {
             // std::cout << "No attribute method" << std::endl << std::flush;
         } else {
             log(ERROR, "Reporting python error");

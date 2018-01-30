@@ -26,7 +26,7 @@
 PythonContext::PythonContext()
 {
     m_module = PyImport_AddModule("__main__");
-    if (m_module == NULL) {
+    if (m_module == nullptr) {
         log(ERROR, "Could not import __main__");
         return;
     }
@@ -50,8 +50,8 @@ run_mod(mod_ty mod, const char *filename, PyObject *globals, PyObject *locals,
     PyCodeObject *co;
     PyObject *v;
     co = PyAST_Compile(mod, filename, flags, arena);
-    if (co == NULL)
-        return NULL;
+    if (co == nullptr)
+        return nullptr;
     v = PyEval_EvalCode(co, globals, locals);
     Py_DECREF(co);
     return v;
@@ -61,20 +61,20 @@ std::string PythonContext::runCommand(const std::string & s)
 {
     // This is expanded from PyRun_SimpleString in the Python library
     // so that we can report errors better at the parsing stage
-    PyObject *ret = NULL;
+    PyObject *ret = nullptr;
     mod_ty mod;
 
     mod = PyParser_ASTFromString(s.c_str(),
                                  "<string>",
                                  Py_single_input,
-                                 NULL,
+                                 nullptr,
                                  m_arena);
-    if (mod == NULL) {
+    if (mod == nullptr) {
         PyErr_Print();
         return "[parseerror]";
     }
-    ret = run_mod(mod, "<string>", m_globals, m_locals, NULL, m_arena);
-    if (ret == NULL) {
+    ret = run_mod(mod, "<string>", m_globals, m_locals, nullptr, m_arena);
+    if (ret == nullptr) {
         PyErr_Print();
         return "ERROR";
     }

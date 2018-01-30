@@ -85,7 +85,7 @@ class Location {
     const BBox & bBox() const { return m_bBox; }
 
     bool isValid() const {
-        return ((m_loc != NULL) && m_pos.isValid());
+        return ((m_loc != nullptr) && m_pos.isValid());
     }
 
     bool isSimple() const {

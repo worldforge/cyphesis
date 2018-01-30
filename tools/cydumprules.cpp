@@ -59,7 +59,7 @@ class RuleReader {
 
     /// \brief Return a singleton instance of RuleReader
     static RuleReader * instance() {
-        if (m_instance == NULL) {
+        if (m_instance == nullptr) {
             m_instance = new RuleReader();
             if (m_instance->m_connection.initConnection() != 0) {
                 delete m_instance;
@@ -106,7 +106,7 @@ class RuleReader {
     }
 };
 
-RuleReader * RuleReader::m_instance = NULL;
+RuleReader * RuleReader::m_instance = nullptr;
 
 int main(int argc, char ** argv)
 {

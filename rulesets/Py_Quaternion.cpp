@@ -50,11 +50,11 @@ static PyObject * Quaternion_rotation(PyQuaternion * self, PyObject * args)
     PyObject * axis_arg;
     float angle;
     if (!PyArg_ParseTuple(args, "Of", &axis_arg, &angle)) {
-        return NULL;
+        return nullptr;
     }
     if (!PyVector3D_Check(axis_arg)) {
         PyErr_SetString(PyExc_TypeError, "Argument must be a Vector3D");
-        return NULL;
+        return nullptr;
     }
     PyVector3D * axis = (PyVector3D *)axis_arg;
 
@@ -68,7 +68,7 @@ static PyMethodDef Quaternion_methods[] = {
     {"as_list",         (PyCFunction)Quaternion_as_list, METH_NOARGS},
     {"is_valid",        (PyCFunction)Quaternion_is_valid,METH_NOARGS},
     {"rotation",        (PyCFunction)Quaternion_rotation,METH_VARARGS},
-    {NULL,              NULL}           /* sentinel */
+    {nullptr,              nullptr}           /* sentinel */
 };
 
 static void Quaternion_dealloc(PyQuaternion *self)
@@ -109,10 +109,10 @@ PyObject * Quaternium_num_mult(PyQuaternion * self, PyQuaternion * other)
 {
     if (!PyQuaternion_Check(other)) {
         PyErr_SetString(PyExc_TypeError, "Quaternion must be multiplied by Quaternion");
-        return NULL;
+        return nullptr;
     }
     PyQuaternion * ret = newPyQuaternion();
-    if (ret != NULL) {
+    if (ret != nullptr) {
         ret->rotation = self->rotation * other->rotation;
     }
     return (PyObject *)ret;
@@ -253,7 +253,7 @@ static PyObject * Quaternion_new(PyTypeObject * type, PyObject *, PyObject *)
     // This looks allot like the default implementation, except we call the
     // in-place constructor.
     PyQuaternion * self = (PyQuaternion *)type->tp_alloc(type, 0);
-    if (self != NULL) {
+    if (self != nullptr) {
         new (&(self->rotation)) Quaternion();
     }
     return (PyObject *)self;

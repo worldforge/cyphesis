@@ -45,9 +45,9 @@ using Atlas::Message::MapType;
 static PyObject * Shape_area(PyShape * self)
 {
 #ifndef NDEBUG
-    if (self->shape.s == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.area");
-        return NULL;
+    if (self->shape.s == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Shape in Shape.area");
+        return nullptr;
     }
 #endif // NDEBUG
     return PyFloat_FromDouble(self->shape.s->area());
@@ -56,9 +56,9 @@ static PyObject * Shape_area(PyShape * self)
 static PyObject * Shape_footprint(PyShape * self)
 {
 #ifndef NDEBUG
-    if (self->shape.s == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.footprint");
-        return NULL;
+    if (self->shape.s == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Shape in Shape.footprint");
+        return nullptr;
     }
 #endif // NDEBUG
     PyShape * res = newPyBox();
@@ -71,9 +71,9 @@ static PyObject * Shape_footprint(PyShape * self)
 static PyObject * Shape_as_data(PyShape * self)
 {
 #ifndef NDEBUG
-    if (self->shape.s == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.as_data");
-        return NULL;
+    if (self->shape.s == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Shape in Shape.as_data");
+        return nullptr;
     }
 #endif // NDEBUG
     MapType atlas_data;
@@ -85,15 +85,15 @@ static PyMethodDef Shape_methods[] = {
     {"area",               (PyCFunction)Shape_area,              METH_NOARGS},
     {"footprint",          (PyCFunction)Shape_footprint,         METH_NOARGS},
     {"as_data",            (PyCFunction)Shape_as_data,           METH_NOARGS},
-    {NULL,              NULL}           /* sentinel */
+    {nullptr,              nullptr}           /* sentinel */
 };
 
 static PyObject * Area_centre(PyShape * self)
 {
 #ifndef NDEBUG
-    if (self->shape.s == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.centre");
-        return NULL;
+    if (self->shape.s == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Shape in Shape.centre");
+        return nullptr;
     }
 #endif // NDEBUG
     PyPoint3D * res = newPyPoint3D();
@@ -106,9 +106,9 @@ static PyObject * Area_centre(PyShape * self)
 static PyObject * Area_low_corner(PyShape * self)
 {
 #ifndef NDEBUG
-    if (self->shape.s == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.low_corner");
-        return NULL;
+    if (self->shape.s == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Shape in Shape.low_corner");
+        return nullptr;
     }
 #endif // NDEBUG
     PyPoint3D * res = newPyPoint3D();
@@ -121,9 +121,9 @@ static PyObject * Area_low_corner(PyShape * self)
 static PyObject * Area_high_corner(PyShape * self)
 {
 #ifndef NDEBUG
-    if (self->shape.s == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.high_corner");
-        return NULL;
+    if (self->shape.s == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Shape in Shape.high_corner");
+        return nullptr;
     }
 #endif // NDEBUG
     PyPoint3D * res = newPyPoint3D();
@@ -137,15 +137,15 @@ static PyMethodDef Area_methods[] = {
     {"centre",             (PyCFunction)Area_centre,             METH_NOARGS},
     {"low_corner",         (PyCFunction)Area_low_corner,         METH_NOARGS},
     {"high_corner",        (PyCFunction)Area_high_corner,        METH_NOARGS},
-    {NULL,              NULL}           /* sentinel */
+    {nullptr,              nullptr}           /* sentinel */
 };
 
 static PyObject * Body_centre(PyShape * self)
 {
 #ifndef NDEBUG
-    if (self->shape.s == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.centre");
-        return NULL;
+    if (self->shape.s == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Shape in Shape.centre");
+        return nullptr;
     }
 #endif // NDEBUG
     PyPoint3D * res = newPyPoint3D();
@@ -158,9 +158,9 @@ static PyObject * Body_centre(PyShape * self)
 static PyObject * Body_low_corner(PyShape * self)
 {
 #ifndef NDEBUG
-    if (self->shape.s == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.low_corner");
-        return NULL;
+    if (self->shape.s == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Shape in Shape.low_corner");
+        return nullptr;
     }
 #endif // NDEBUG
     PyPoint3D * res = newPyPoint3D();
@@ -173,9 +173,9 @@ static PyObject * Body_low_corner(PyShape * self)
 static PyObject * Body_high_corner(PyShape * self)
 {
 #ifndef NDEBUG
-    if (self->shape.s == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.high_corner");
-        return NULL;
+    if (self->shape.s == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Shape in Shape.high_corner");
+        return nullptr;
     }
 #endif // NDEBUG
     PyPoint3D * res = newPyPoint3D();
@@ -189,26 +189,26 @@ static PyMethodDef Body_methods[] = {
     {"centre",             (PyCFunction)Body_centre,             METH_NOARGS},
     {"low_corner",         (PyCFunction)Body_low_corner,         METH_NOARGS},
     {"high_corner",        (PyCFunction)Body_high_corner,        METH_NOARGS},
-    {NULL,              NULL}           /* sentinel */
+    {nullptr,              nullptr}           /* sentinel */
 };
 
 static PyBBox * Box_extrude(PyShape * self, PyObject * args)
 {
 #ifndef NDEBUG
-    if (self->shape.s == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.as_data");
-        return NULL;
+    if (self->shape.s == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Shape in Shape.as_data");
+        return nullptr;
     }
 #endif // NDEBUG
     MathShape<WFMath::AxisBox, 2> * shape =
           dynamic_cast<MathShape<WFMath::AxisBox, 2> *>(self->shape.p);
     if (shape == 0) {
         PyErr_SetString(PyExc_RuntimeError, "Shape is not a 2D axisbox");
-        return NULL;
+        return nullptr;
     }
     float low, high;
     if (!PyArg_ParseTuple(args, "ff", &low, &high)) {
-        return NULL;
+        return nullptr;
     }
     PyBBox * ret = newPyBBox();
     if (ret != 0) {
@@ -225,16 +225,16 @@ static PyBBox * Box_extrude(PyShape * self, PyObject * args)
 
 static PyMethodDef Box_methods[] = {
     {"extrude",            (PyCFunction)Box_extrude,             METH_VARARGS},
-    {NULL,              NULL}           /* sentinel */
+    {nullptr,              nullptr}           /* sentinel */
 };
 
 static PyMethodDef Course_methods[] = {
-    {NULL,              NULL}           /* sentinel */
+    {nullptr,              nullptr}           /* sentinel */
 };
 
 static void Shape_dealloc(PyShape *self)
 {
-    if (self->shape.s != NULL) {
+    if (self->shape.s != nullptr) {
         delete self->shape.s;
     }
     self->ob_type->tp_free((PyObject*)self);
@@ -243,9 +243,9 @@ static void Shape_dealloc(PyShape *self)
 static PyObject * Shape_getattro(PyShape *self, PyObject * oname)
 {
 #ifndef NDEBUG
-    if (self->shape.s == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.getattro");
-        return NULL;
+    if (self->shape.s == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Shape in Shape.getattro");
+        return nullptr;
     }
 #endif // NDEBUG
     // char * name = PyString_AsString(oname);
@@ -255,8 +255,8 @@ static PyObject * Shape_getattro(PyShape *self, PyObject * oname)
 static int Shape_setattro(PyShape *self, PyObject *oname, PyObject *v)
 {
 #ifndef NDEBUG
-    if (self->shape.s == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.setattr");
+    if (self->shape.s == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Shape in Shape.setattr");
         return -1;
     }
 #endif // NDEBUG
@@ -268,9 +268,9 @@ static int Shape_setattro(PyShape *self, PyObject *oname, PyObject *v)
 static PyObject * Polygon_getattro(PyShape *self, PyObject * oname)
 {
 #ifndef NDEBUG
-    if (self->shape.s == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Polygon.getattro");
-        return NULL;
+    if (self->shape.s == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Shape in Polygon.getattro");
+        return nullptr;
     }
 #endif // NDEBUG
     // char * name = PyString_AsString(oname);
@@ -280,8 +280,8 @@ static PyObject * Polygon_getattro(PyShape *self, PyObject * oname)
 static int Polygon_setattro(PyShape *self, PyObject *oname, PyObject *v)
 {
 #ifndef NDEBUG
-    if (self->shape.s == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Polygon.setattr");
+    if (self->shape.s == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Shape in Polygon.setattr");
         return -1;
     }
 #endif // NDEBUG
@@ -421,8 +421,8 @@ static PyObject * Shape_new(PyTypeObject * type, PyObject *, PyObject *)
 {
     // This looks allot like the default implementation
     PyShape * self = (PyShape *)type->tp_alloc(type, 0);
-    if (self != NULL) {
-        self->shape.s = NULL;
+    if (self != nullptr) {
+        self->shape.s = nullptr;
     }
     return (PyObject *)self;
 }
@@ -430,8 +430,8 @@ static PyObject * Shape_new(PyTypeObject * type, PyObject *, PyObject *)
 Py_ssize_t Shape_sq_length(PyShape * self)
 {
 #ifndef NDEBUG
-    if (self->shape.s == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.copy");
+    if (self->shape.s == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Shape in Shape.copy");
         return 0;
     }
 #endif // NDEBUG
@@ -441,8 +441,8 @@ Py_ssize_t Shape_sq_length(PyShape * self)
 PyShape * Area_sq_item(PyShape * self, Py_ssize_t index)
 {
 #ifndef NDEBUG
-    if (self->shape.s == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.copy");
+    if (self->shape.s == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Shape in Shape.copy");
         return 0;
     }
 #endif // NDEBUG
@@ -456,7 +456,7 @@ PyShape * Area_sq_item(PyShape * self, Py_ssize_t index)
               new MathShape<WFMath::Point, 2>(self->shape.p->getCorner(index));
         if (a->shape.p == 0) {
             Py_DECREF(a);
-            a = NULL;
+            a = nullptr;
         }
     }
     return a;
@@ -465,8 +465,8 @@ PyShape * Area_sq_item(PyShape * self, Py_ssize_t index)
 PyPoint3D * Body_sq_item(PyShape * self, Py_ssize_t index)
 {
 #ifndef NDEBUG
-    if (self->shape.s == NULL) {
-        PyErr_SetString(PyExc_AssertionError, "NULL Shape in Shape.copy");
+    if (self->shape.s == nullptr) {
+        PyErr_SetString(PyExc_AssertionError, "nullptr Shape in Shape.copy");
         return 0;
     }
 #endif // NDEBUG
@@ -475,7 +475,7 @@ PyPoint3D * Body_sq_item(PyShape * self, Py_ssize_t index)
         return 0;
     }
     PyPoint3D * v = newPyPoint3D();
-    if (v != NULL) {
+    if (v != nullptr) {
         v->coords = self->shape.b->getCorner(index);
     }
     return v;
@@ -485,7 +485,7 @@ static PyObject * Shape_inplace_multiply(PyShape * self, PyObject * other)
 {
     if (!PyFloat_CheckExact(other)) {
         PyErr_SetString(PyExc_TypeError, "Can only scale with a float");
-        return NULL;
+        return nullptr;
     }
     double val = PyFloat_AsDouble(other);
     self->shape.s->scale(val);
@@ -878,7 +878,7 @@ PyTypeObject PyPolygon_Type = {
 
 PyShape * wrapShape(Shape * shape)
 {
-    PyShape * wrapper = NULL;
+    PyShape * wrapper = nullptr;
     Form<2> * plan = dynamic_cast<Form<2> *>(shape);
     if (plan != 0) {
         wrapper = newPyArea();

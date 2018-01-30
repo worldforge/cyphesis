@@ -61,13 +61,13 @@ int PythonScriptFactory<T>::addScript(T * entity) const
 
     Py_DECREF(wrapper);
 
-    if (script != NULL) {
+    if (script != nullptr) {
         entity->setScript(new PythonEntityScript(script));
 
         Py_DECREF(script);
     }
 
-    return (script == NULL) ? -1 : 0;
+    return (script == nullptr) ? -1 : 0;
 }
 
 template <class T>

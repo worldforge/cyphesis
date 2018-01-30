@@ -38,10 +38,10 @@ static PyObject * null_wrapper(PyObject * self, PyMap * o)
 {
     if (!PyMap_Check(o)) {
         PyErr_SetString(PyExc_TypeError, "Unknown Object type");
-        return NULL;
+        return nullptr;
     }
 #ifdef CYPHESIS_DEBUG
-    o->m_map = NULL;
+    o->m_map = nullptr;
 #endif // NDEBUG
     Py_INCREF(Py_None);
     return Py_None;
@@ -49,7 +49,7 @@ static PyObject * null_wrapper(PyObject * self, PyMap * o)
 
 static PyMethodDef sabotage_methods[] = {
     {"null", (PyCFunction)null_wrapper,                 METH_O},
-    {NULL,          NULL}                       /* Sentinel */
+    {nullptr,          nullptr}                       /* Sentinel */
 };
 
 static void setup_test_functions()

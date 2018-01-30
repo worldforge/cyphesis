@@ -50,6 +50,6 @@ EntityRef& EntityRef::operator=(const EntityRef& ref)
 
 void EntityRef::onEntityDeleted()
 {
-    m_inner = NULL;
+    m_inner = nullptr;
     Changed();
 }

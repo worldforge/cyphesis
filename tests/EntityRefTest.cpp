@@ -124,28 +124,28 @@ int main()
     }
 
     {
-        // Check the default constructor initialises to NULL via get
+        // Check the default constructor initialises to nullptr via get
         EntityRef ref;
 
         assert(ref.get() == 0);
     }
 
     {
-        // Check the default constructor initialises to NULL via dereference
+        // Check the default constructor initialises to nullptr via dereference
         EntityRef ref;
 
         assert(&(*ref) == 0);
     }
 
     {
-        // Check the default constructor initialises to NULL via ->
+        // Check the default constructor initialises to nullptr via ->
         EntityRef ref;
 
         assert(ref.operator->() == 0);
     }
 
     {
-        // Check the default constructor initialises to NULL via ==
+        // Check the default constructor initialises to nullptr via ==
         EntityRef ref;
 
         assert(ref == 0);

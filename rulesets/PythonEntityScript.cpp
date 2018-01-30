@@ -49,7 +49,7 @@ bool PythonEntityScript::operation(const std::string & op_type,
                                    const Operation & op,
                                    OpVector & res)
 {
-    assert(m_wrapper != NULL);
+    assert(m_wrapper != nullptr);
     std::string op_name = op_type + "_operation";
     debug( std::cout << "Got script object for " << op_name << std::endl
                                                             << std::flush;);
@@ -70,8 +70,8 @@ bool PythonEntityScript::operation(const std::string & op_type,
     ret = PyObject_CallMethod(m_wrapper, (char *)(op_name.c_str()),
                                             (char *)"(O)", py_op);
     Py_DECREF(py_op);
-    if (ret == NULL) {
-        if (PyErr_Occurred() == NULL) {
+    if (ret == nullptr) {
+        if (PyErr_Occurred() == nullptr) {
             debug( std::cout << "No method to be found for " << std::endl
                              << std::flush;);
         } else {
@@ -100,7 +100,7 @@ bool PythonEntityScript::operation(const std::string & op_type,
         }
     } else if (PyOplist_Check(ret)) {
         PyOplist * op = (PyOplist*)ret;
-        assert(op->ops != NULL);
+        assert(op->ops != nullptr);
         const OpVector & o = *op->ops;
         OpVector::const_iterator Iend = o.end();
         for (OpVector::const_iterator I = o.begin(); I != Iend; ++I) {
@@ -122,7 +122,7 @@ void PythonEntityScript::hook(const std::string & function,
                               LocatedEntity * entity)
 {
     PyObject * wrapper = wrapEntity(entity);
-    if (wrapper == NULL) {
+    if (wrapper == nullptr) {
         return;
     }
 
@@ -131,8 +131,8 @@ void PythonEntityScript::hook(const std::string & function,
                                          (char *)"(O)",
                                          wrapper);
     Py_DECREF(wrapper);
-    if (ret == NULL) {
-        if (PyErr_Occurred() == NULL) {
+    if (ret == nullptr) {
+        if (PyErr_Occurred() == nullptr) {
             log(NOTICE, "No hook");
         } else {
             log(ERROR, "Reporting python error");

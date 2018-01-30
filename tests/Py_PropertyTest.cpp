@@ -42,7 +42,7 @@ static PyObject * add_properties(PyObject * self, PyEntity * o)
 {
     if (!PyEntity_Check(o)) {
         PyErr_SetString(PyExc_TypeError, "Unknown Object type");
-        return NULL;
+        return nullptr;
     }
 
     Entity * ent = o->m_entity.e;
@@ -66,7 +66,7 @@ static PyObject * add_properties(PyObject * self, PyEntity * o)
 
 static PyMethodDef testprop_methods[] = {
     {"add_properties", (PyCFunction)add_properties,                 METH_O},
-    {NULL,          NULL}                       /* Sentinel */
+    {nullptr,          nullptr}                       /* Sentinel */
 };
 
 static void setup_test_functions()

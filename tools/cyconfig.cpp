@@ -71,7 +71,7 @@ static int runCommand(int argc, char ** argv)
 int main(int argc, char ** argv)
 {
     char * home;
-    if ((home = getenv("HOME")) == NULL) {
+    if ((home = getenv("HOME")) == nullptr) {
         std::cerr << "ERROR: Unable to get home directory." << std::endl << std::flush;
         return 1;
     }

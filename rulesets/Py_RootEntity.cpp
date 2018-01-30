@@ -44,8 +44,8 @@ static PyObject* RootEntity_get_name(PyRootEntity * self)
 {
 #ifndef NDEBUG
     if (!self->entity.isValid()) {
-        PyErr_SetString(PyExc_AssertionError,"NULL RootEntity in RootEntity.get_name");
-        return NULL;
+        PyErr_SetString(PyExc_AssertionError,"nullptr RootEntity in RootEntity.get_name");
+        return nullptr;
     }
 #endif // NDEBUG
     return PyString_FromString("obj");
@@ -60,7 +60,7 @@ static PyObject* RootEntity_get_name(PyRootEntity * self)
 
 PyMethodDef RootEntity_methods[] = {
     {"get_name",        (PyCFunction)RootEntity_get_name,    METH_NOARGS},
-    {NULL,          NULL}
+    {nullptr,          nullptr}
 };
 
 /*
@@ -77,8 +77,8 @@ static PyObject * RootEntity_getattro(PyRootEntity * self, PyObject * oname)
 {
 #ifndef NDEBUG
     if (!self->entity.isValid()) {
-        PyErr_SetString(PyExc_AssertionError, "NULL RootEntity in RootEntity.getattr");
-        return NULL;
+        PyErr_SetString(PyExc_AssertionError, "nullptr RootEntity in RootEntity.getattr");
+        return nullptr;
     }
 #endif // NDEBUG
     char * name = PyString_AsString(oname);
@@ -105,7 +105,7 @@ static int RootEntity_setattro(PyRootEntity *self, PyObject *oname, PyObject *v)
 {
 #ifndef NDEBUG
     if (!self->entity.isValid()) {
-        PyErr_SetString(PyExc_AssertionError, "NULL RootEntity in RootEntity.setattr");
+        PyErr_SetString(PyExc_AssertionError, "nullptr RootEntity in RootEntity.setattr");
         return -1;
     }
 #endif // NDEBUG
@@ -179,18 +179,18 @@ static int PySequence_asVector(PyObject * o, std::vector<double> & ret)
 
 static int RootEntity_init(PyRootEntity * self, PyObject * args, PyObject * kwds)
 {
-    char * id = NULL;
+    char * id = nullptr;
 
     if (!PyArg_ParseTuple(args, "|s", &id)) {
         return -1;
     }
-    if (id != NULL) {
+    if (id != nullptr) {
         self->entity->setId(id);
     }
-    if (kwds != NULL && PyDict_Check(kwds)) {
+    if (kwds != nullptr && PyDict_Check(kwds)) {
         PyObject * keys = PyDict_Keys(kwds);
         PyObject * vals = PyDict_Values(kwds);
-        if (keys == NULL || vals == NULL) {
+        if (keys == nullptr || vals == nullptr) {
             // No need to set error, as it will have been set inside the
             // called functions above which failed.
             return -1;
@@ -248,8 +248,8 @@ static int RootEntity_init(PyRootEntity * self, PyObject * args, PyObject * kwds
 static PyObject * RootEntity_new(PyTypeObject * type, PyObject *, PyObject *)
 {
    PyRootEntity * self = (PyRootEntity *)type->tp_alloc(type, 0);
-    if (self != NULL) {
-        new (&(self->entity)) RootEntity(NULL);
+    if (self != nullptr) {
+        new (&(self->entity)) RootEntity(nullptr);
         self->entity = Anonymous();
     }
     return (PyObject *)self;

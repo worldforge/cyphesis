@@ -33,7 +33,7 @@ class EntityRef : public sigc::trackable
 
     void setup();
   public:
-    EntityRef() : m_inner(NULL)
+    EntityRef() : m_inner(nullptr)
     {
     }
 

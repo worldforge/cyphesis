@@ -37,7 +37,7 @@ using Atlas::Objects::Root;
 
 static const bool debug_flag = false;
 
-Persistence * Persistence::m_instance = NULL;
+Persistence * Persistence::m_instance = nullptr;
 
 Persistence::Persistence() : m_db(*Database::instance())
 {
@@ -45,7 +45,7 @@ Persistence::Persistence() : m_db(*Database::instance())
 
 Persistence * Persistence::instance()
 {
-    if (m_instance == NULL) {
+    if (m_instance == nullptr) {
         m_instance = new Persistence();
     }
     return m_instance;
@@ -137,7 +137,7 @@ void Persistence::shutdown()
     Database::cleanup();
     assert(this == m_instance);
     delete m_instance;
-    m_instance = NULL;
+    m_instance = nullptr;
 }
 
 bool Persistence::findAccount(const std::string & name)

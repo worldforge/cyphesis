@@ -280,7 +280,7 @@ Element PropertyExerciser::randomAtlasValue()
         break;
       case 2:
         if (ptr_values.empty()) {
-            ptr_values.push_back(NULL);
+            ptr_values.push_back(nullptr);
         }
         return ptr_values[randint(0, ptr_values.size())];
         break;
