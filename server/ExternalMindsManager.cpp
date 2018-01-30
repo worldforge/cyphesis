@@ -98,7 +98,7 @@ int ExternalMindsManager::removeConnection(const std::string& routerId)
         return -1;
     } else {
         debug(std::cout << String::compose(
-                "Deregisted external mind connection registered for router %1. "
+                "Deregistered external mind connection registered for router %1. "
                         "There are now %2 connections.", routerId,
                 m_connections.size()) << std::endl;);
         return 0;
