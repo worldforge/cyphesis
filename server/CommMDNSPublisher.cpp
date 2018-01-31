@@ -299,7 +299,7 @@ int CommMDNSPublisher::setup()
     do_timer_check();
 
     if (m_avahiFd == -1) {
-        log(ERROR, "Avahi client has not registed a file descriptor");
+        log(ERROR, "Avahi client has not registered a file descriptor");
         return -1;
     }
 

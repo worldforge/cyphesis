@@ -142,7 +142,7 @@ ruleset="basic"
 Server name.
       </para>
       <para>
-Name that identifies this server. If this option is ommited from the config
+Name that identifies this server. If this option is omitted from the config
 file, and not provided any other way, then the system hostname will be used.
       </para>
      </listitem>
