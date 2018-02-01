@@ -40,6 +40,7 @@
 #endif
 
 #include <cassert>
+#include <boost/filesystem/operations.hpp>
 
 const char * const CYPHESIS = "cyphesis";
 const char * const SLAVE = "slave";
@@ -447,6 +448,11 @@ int loadConfig(int argc, char ** argv, int usage)
 {
     global_conf = varconf::Config::inst();
 
+    //Listen for errors from Varconf and write to the log.
+    global_conf->sige.connect([](const char* error){
+        log(ERROR, error);
+    });
+
     global_conf->setParameterLookup('h', "help");
     global_conf->setParameterLookup('?', "help");
 
@@ -464,8 +470,12 @@ int loadConfig(int argc, char ** argv, int usage)
     char * home = getenv("HOME");
 
     // Read in only the users settings, and the commandline settings.
-    if (home != nullptr) {
+    if (home != nullptr && boost::filesystem::exists(std::string(home) + "/.cyphesis.vconf")) {
         home_dir_config = global_conf->readFromFile(std::string(home) + "/.cyphesis.vconf");
+        if (!home_dir_config) {
+            //Not being able to read from the local config file, if it exists, should result in fail fast.
+            return CONFIG_ERROR;
+        }
     }
 
     global_conf->getCmdline(argc, argv);
@@ -503,6 +513,8 @@ int loadConfig(int argc, char ** argv, int usage)
         } else {
             log(INFO, "Please ensure that cyphesis has been installed correctly.");
         }
+        //We should fail if we can't read the config file.
+        return CONFIG_ERROR;
     }
     if (home_dir_config) {
         global_conf->readFromFile(std::string(home) + "/.cyphesis.vconf");
