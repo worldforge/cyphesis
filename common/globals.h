@@ -34,6 +34,7 @@ extern std::string bin_directory;
 extern std::string share_directory;
 extern std::string etc_directory;
 extern std::string var_directory;
+extern std::string assets_directory;
 extern std::string ruleset_name;
 extern std::string server_uuid;
 extern std::string server_key;

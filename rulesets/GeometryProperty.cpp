@@ -34,6 +34,8 @@
 #include <BulletCollision/CollisionShapes/btScaledBvhTriangleMeshShape.h>
 #include <boost/algorithm/string.hpp>
 #include <common/AtlasQuery.h>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/fstream.hpp>
 
 const std::string GeometryProperty::property_name = "geometry";
 const std::string GeometryProperty::property_atlastype = "map";
@@ -254,8 +256,8 @@ void GeometryProperty::parseMeshFile()
     AtlasQuery::find<Atlas::Message::StringType>(data(), "path", [&](const auto& path) {
         try {
             if (boost::algorithm::ends_with(path, ".mesh")) {
-                std::string fullpath = share_directory + "/cyphesis/assets/" + path;
-                std::fstream fileStream(fullpath);
+                boost::filesystem::path fullpath = boost::filesystem::path(assets_directory) / path;
+                boost::filesystem::fstream fileStream(fullpath);
                 if (fileStream) {
                     auto verts = new std::vector<float>();
                     auto indices = new std::vector<int>();
@@ -296,7 +298,7 @@ void GeometryProperty::parseMeshFile()
                     };
 
                 } else {
-                    log(ERROR, "Could not find geometry file at " + path);
+                    log(ERROR, "Could not find geometry file at " + fullpath.string());
                 }
             } else {
                 log(ERROR, "Could not recognize geometry file type: " + path);

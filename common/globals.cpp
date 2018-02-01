@@ -53,6 +53,7 @@ std::string bin_directory(BINDIR);
 std::string share_directory(DATADIR);
 std::string etc_directory(SYSCONFDIR);
 std::string var_directory(LOCALSTATEDIR);
+std::string assets_directory("");
 std::string ruleset_name(DEFAULT_RULESET);
 std::string server_uuid("");
 std::string server_key("");
@@ -96,6 +97,7 @@ static const usage_data usage[] = {
     { CYPHESIS, "confdir", "<directory>", "", "Directory where server config can be found", S|C|M|D },
     { CYPHESIS, "bindir", "<directory>", "", "Directory where Cyphesis binaries can be found", S|C|M|D },
     { CYPHESIS, "vardir", "<directory>", "", "Directory where temporary files can be stored", S|C|M },
+    { CYPHESIS, "assetsdir", "<directory>", "", "Directory where media assets are stored, if nothing is specified Cyphesis will look under the shared directory", S },
     { CYPHESIS, "ruleset", "<name>", DEFAULT_RULESET, "Ruleset name", S|C|D },
     { CYPHESIS, "servername", "<name>", "<hostname>", "Published name of the server", S|C },
     { CYPHESIS, "tcpport", "<portnumber>", "6767", "Network listen port for client connections", S|C|M },
@@ -582,6 +584,11 @@ void readInstanceConfiguration(const std::string & section)
     readConfigItem(section, "confdir", etc_directory);
 
     readConfigItem(section, "vardir", var_directory);
+
+    //If not specified, the assets directory is dependent on the share directory.
+    if (readConfigItem(section, "assetsdir", assets_directory) != 0) {
+        assets_directory = share_directory + "/cyphesis/assets";
+    }
 
     readConfigItem(section, "daemon", daemon_flag);
 
