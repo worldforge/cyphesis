@@ -1,0 +1,18 @@
+<atlas>
+
+  <map>
+    <map name="attributes">
+      <map name="geometry">
+        <map name="default">
+          <string name="path">dural/items/misc/tombstone/model/tombstone_b.mesh</string>
+          <string name="type">asset</string>
+        </map>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">tombstone_b</string>
+    <string name="objtype">class</string>
+    <string name="parent">tombstone</string>
+  </map>
+
+</atlas>

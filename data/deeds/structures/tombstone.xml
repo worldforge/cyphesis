@@ -1,0 +1,23 @@
+<atlas>
+
+    <map>
+        <map name="attributes">
+            <map name="density">
+                <float name="default">2000</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="name">
+                <string name="default">tombstone</string>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">tombstone</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+        <map name="script">
+            <string name="language">python</string>
+            <string name="name">world.objects.outdoor.Gravestone.Gravestone</string>
+        </map>
+    </map>
+
+</atlas>

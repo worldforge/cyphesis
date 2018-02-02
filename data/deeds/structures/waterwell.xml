@@ -1,0 +1,18 @@
+<atlas>
+
+  <map>
+    <map name="attributes">
+      <map name="geometry">
+        <map name="default">
+          <string name="path">dural/structures/waterwell/model/waterwell.mesh</string>
+          <string name="type">asset</string>
+        </map>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">waterwell</string>
+    <string name="objtype">class</string>
+    <string name="parent">structure</string>
+  </map>
+
+</atlas>

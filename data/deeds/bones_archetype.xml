@@ -1,0 +1,29 @@
+<atlas>
+
+   <map>
+        <string name="id">dead_human_skull</string>
+        <string name="objtype">archetype</string>
+        <string name="parent">archetype</string>
+        <list name="entities">
+            <map>
+                <string name="name">human skull</string>
+                <string name="parent">skull</string>
+                <float name="transient">1800</float>
+            </map>
+        </list>
+    </map>
+
+    <map>
+        <string name="id">dead_goblin_skull</string>
+        <string name="objtype">archetype</string>
+        <string name="parent">archetype</string>
+        <list name="entities">
+            <map>
+                <string name="name">goblin skull</string>
+                <string name="parent">skull</string>
+                <float name="transient">1800</float>
+            </map>
+        </list>
+    </map>
+
+</atlas>

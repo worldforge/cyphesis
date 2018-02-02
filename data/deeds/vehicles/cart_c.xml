@@ -1,0 +1,22 @@
+<atlas>
+
+  <map>
+    <map name="attributes">
+      <map name="geometry">
+        <map name="default">
+          <string name="path">dural/items/vehicle/cart/model/cart_c.mesh</string>
+          <string name="type">asset</string>
+        </map>
+        <string name="visibility">public</string>
+      </map>
+        <map name="name">
+            <string name="default">cart</string>
+            <string name="visibility">public</string>
+        </map>
+    </map>
+    <string name="id">cart_c</string>
+    <string name="objtype">class</string>
+    <string name="parent">vehicle</string>
+  </map>
+
+</atlas>

@@ -1,0 +1,18 @@
+<atlas>
+
+  <map>
+    <map name="attributes">
+      <map name="geometry">
+          <map name="default">
+              <string name="type">asset</string>
+              <string name="path">dural/structures/palisade/model/palisade_circle_a.mesh</string>
+          </map>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">palisade_circle_a</string>
+    <string name="objtype">class</string>
+    <string name="parent">structure</string>
+  </map>
+
+</atlas>

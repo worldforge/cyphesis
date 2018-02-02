@@ -59,7 +59,7 @@
       </map>
       <map name="geometry">
         <map name="default">
-          <string name="shape">sphere</string>
+          <string name="type">sphere</string>
         </map>
         <string name="visibility">public</string>
       </map>
@@ -173,25 +173,27 @@
         <float name="default">0.5</float>
         <string name="visibility">public</string>
       </map>
-      <map name="density">
-        <float name="default">800</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="bbox">
+        <map name="geometry">
+            <map name="default">
+                <string name="type">cylinder-z</string>
+            </map>
+            <string name="visibility">public</string>
+        </map>
+        <map name="bbox">
         <list name="default">
-          <float>-0.4</float>
           <float>-0.1</float>
           <float>-0.1</float>
+          <float>0</float>
+          <float>0.1</float>
+          <float>0.1</float>
           <float>0.4</float>
-          <float>0.1</float>
-          <float>0.1</float>
         </list>
         <string name="visibility">public</string>
       </map>
       <map name="planted-rotation">
         <list name="default">
-          <float>0</float>
           <float>0.7071</float>
+          <float>0</float>
           <float>0</float>
           <float>0.7071</float>
         </list>
@@ -623,10 +625,6 @@
   <map>
     <map name="attributes">
       <map name="biomass">
-        <float name="default">0.5</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
         <float name="default">0.5</float>
         <string name="visibility">public</string>
       </map>

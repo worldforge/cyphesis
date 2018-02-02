@@ -1,0 +1,20 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="type">asset</string>
+                    <string name="path">dural/structures/wooden_fence/model/wooden_fence_gate.mesh</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="material">
+                <string name="default">wood</string>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">fence_gate</string>
+        <string name="objtype">class</string>
+        <string name="parent">structure</string>
+    </map>
+</atlas>

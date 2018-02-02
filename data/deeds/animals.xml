@@ -104,7 +104,7 @@
             </map>
             <map name="geometry">
                 <map name="default">
-                    <string name="shape">sphere</string>
+                    <string name="type">sphere</string>
                 </map>
             </map>
             <map name="biomass">
@@ -420,7 +420,7 @@
             </map>
             <map name="geometry">
                 <map name="default">
-                    <string name="shape">capsule-x</string>
+                    <string name="type">capsule-x</string>
                 </map>
                 <string name="visibility">public</string>
             </map>

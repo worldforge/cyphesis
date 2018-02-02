@@ -57,7 +57,7 @@
             <int>23</int>
             <int>20</int>
           </list>
-          <string name="shape">mesh</string>
+          <string name="type">mesh</string>
           <list name="vertices">
             <float>1</float>
             <float>-1</float>

@@ -1,0 +1,22 @@
+<atlas>
+
+  <map>
+    <map name="attributes">
+      <map name="geometry">
+        <map name="default">
+          <string name="path">dural/structures/stone_palisade/model/stone_palisade_broken_b.mesh</string>
+          <string name="type">asset</string>
+        </map>
+        <string name="visibility">public</string>
+      </map>
+        <map name="name">
+            <string name="default">stone palisade</string>
+            <string name="visibility">public</string>
+        </map>
+    </map>
+    <string name="id">stone_palisade_broken_b</string>
+    <string name="objtype">class</string>
+    <string name="parent">structure</string>
+  </map>
+
+</atlas>

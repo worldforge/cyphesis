@@ -1,0 +1,18 @@
+<atlas>
+
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="type">asset</string>
+                    <string name="path">dural/structures/two_room_house/model/two_room_house.mesh</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">two_room_house</string>
+        <string name="objtype">class</string>
+        <string name="parent">structure</string>
+    </map>
+
+</atlas>

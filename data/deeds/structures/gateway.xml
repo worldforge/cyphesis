@@ -1,0 +1,18 @@
+<atlas>
+
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="type">asset</string>
+                    <string name="path">dural/structures/cg_gateway/model/cg_gateway.mesh</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">gateway</string>
+        <string name="objtype">class</string>
+        <string name="parent">structure</string>
+    </map>
+
+</atlas>

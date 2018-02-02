@@ -1,0 +1,22 @@
+<atlas>
+
+  <map>
+    <map name="attributes">
+      <map name="geometry">
+        <map name="default">
+          <string name="path">dural/structures/gallows/model/gallows.mesh</string>
+          <string name="type">asset</string>
+        </map>
+        <string name="visibility">public</string>
+      </map>
+      <map name="density">
+        <float name="default">500</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">gallows</string>
+    <string name="objtype">class</string>
+    <string name="parent">structure</string>
+  </map>
+
+</atlas>

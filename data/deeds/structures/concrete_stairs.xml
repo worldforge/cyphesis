@@ -1,0 +1,18 @@
+<atlas>
+
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="type">asset</string>
+                    <string name="path">dural/structures/concrete_stairs/model/concrete_stairs.mesh</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">concrete_stairs</string>
+        <string name="objtype">class</string>
+        <string name="parent">structure</string>
+    </map>
+
+</atlas>

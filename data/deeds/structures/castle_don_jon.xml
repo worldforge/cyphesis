@@ -1,0 +1,18 @@
+<atlas>
+
+  <map>
+    <map name="attributes">
+      <map name="geometry">
+        <map name="default">
+          <string name="type">asset</string>
+          <string name="path">dural/structures/cg_don_jon/model/cg_don_jon.mesh</string>
+        </map>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">castle_don_jon</string>
+    <string name="objtype">class</string>
+    <string name="parent">structure</string>
+  </map>
+
+</atlas>
