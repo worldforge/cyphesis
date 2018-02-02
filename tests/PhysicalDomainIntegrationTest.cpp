@@ -957,7 +957,7 @@ void PhysicalDomainIntegrationTest::test_stairs()
     AngularFactorProperty angularZeroFactorProperty;
     angularZeroFactorProperty.data() = WFMath::Vector<3>::ZERO();
     GeometryProperty capsuleProperty;
-    capsuleProperty.set(Atlas::Message::MapType({{"shape", "capsule-y"}}));
+    capsuleProperty.set(Atlas::Message::MapType({{"type", "capsule-y"}}));
 //    Property<double>* stepFactorProp = new Property<double>();
 //    stepFactorProp->data() = 0.3;
 

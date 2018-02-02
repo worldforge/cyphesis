@@ -127,7 +127,7 @@ void EntityRuleHandler::installStandardRules()
             {"solid", 0},
             //Creator agents should have a bbox, so that they easily can be made solid for testing purposes.
             {"bbox", ListType {-.5, 0, -0.5, .5, 1, .5}},
-            {"geometry", MapType {{"shape", "sphere"}}},
+            {"geometry", MapType {{"type", "sphere"}}},
             {"friction", 10.f},
             {"angularfactor", ListType {0, 0, 0}},
             {"mass", 1.0},
@@ -142,7 +142,7 @@ void EntityRuleHandler::installStandardRules()
             {"mode", "planted"},
             {"status", 1.0f},
             //Plants should by default be represented by an upright cylinder.
-            {"geometry", MapType {{"shape", "cylinder-y"}}},
+            {"geometry", MapType {{"type", "cylinder-y"}}},
         });
         installEntityClass(decl->getId(), decl->getParent(), decl, dependent, reason, new EntityFactory<Plant>());
     }

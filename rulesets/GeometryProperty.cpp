@@ -36,6 +36,7 @@
 #include <common/AtlasQuery.h>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/fstream.hpp>
+#include <common/debug.h>
 
 const std::string GeometryProperty::property_name = "geometry";
 const std::string GeometryProperty::property_atlastype = "map";
@@ -50,7 +51,7 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
         return std::make_pair(new btBoxShape(btSize), std::shared_ptr<btCollisionShape>());
     };
 
-    auto I = m_data.find("shape");
+    auto I = m_data.find("type");
     if (I != m_data.end() && I->second.isString()) {
         const std::string& shapeType = I->second.String();
         if (shapeType == "sphere") {
@@ -134,6 +135,8 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
         } else if (shapeType == "asset") {
             parseMeshFile();
         }
+    } else {
+        log(WARNING, "Geometry property without 'type' attribute set. Property value: " + debug_tostring(data));
     }
 }
 

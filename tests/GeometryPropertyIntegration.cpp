@@ -110,7 +110,7 @@ void GeometryPropertyIntegrationTest::test_createShapes()
     }
     {
         GeometryProperty g1;
-        g1.set(Atlas::Message::MapType({{"shape", "box"}}));
+        g1.set(Atlas::Message::MapType({{"type", "box"}}));
         btCollisionShape* shape = g1.createShape(aabb, massOffset).first;
         ASSERT_EQUAL(btVector3(-2, -3, -2.5), massOffset);
         btBoxShape* box = dynamic_cast<btBoxShape*>(shape);
@@ -119,7 +119,7 @@ void GeometryPropertyIntegrationTest::test_createShapes()
     }
     {
         GeometryProperty g1;
-        g1.set(Atlas::Message::MapType({{"shape", "sphere"}}));
+        g1.set(Atlas::Message::MapType({{"type", "sphere"}}));
         btCollisionShape* shape = g1.createShape(aabb, massOffset).first;
         ASSERT_EQUAL(btVector3(-2, 0, -1), massOffset);
         btSphereShape* sphere = dynamic_cast<btSphereShape*>(shape);
@@ -130,7 +130,7 @@ void GeometryPropertyIntegrationTest::test_createShapes()
     {
         WFMath::AxisBox<3> characterAabb(WFMath::Point<3>(-2, -4, -3), WFMath::Point<3>(2, 10, 3));
         GeometryProperty g1;
-        g1.set(Atlas::Message::MapType({{"shape", "capsule-y"}}));
+        g1.set(Atlas::Message::MapType({{"type", "capsule-y"}}));
         btCollisionShape* shape = g1.createShape(characterAabb, massOffset).first;
         ASSERT_EQUAL(btVector3(0, -3, 0), massOffset);
         btCapsuleShape* capsule = dynamic_cast<btCapsuleShape*>(shape);
@@ -141,7 +141,7 @@ void GeometryPropertyIntegrationTest::test_createShapes()
     {
         WFMath::AxisBox<3> characterAabb(WFMath::Point<3>(-10, -4, -3), WFMath::Point<3>(2, 2, 3));
         GeometryProperty g1;
-        g1.set(Atlas::Message::MapType({{"shape", "capsule-x"}}));
+        g1.set(Atlas::Message::MapType({{"type", "capsule-x"}}));
         btCollisionShape* shape = g1.createShape(characterAabb, massOffset).first;
         ASSERT_EQUAL(btVector3(4, 1, 0), massOffset);
         btCapsuleShapeX* capsule = dynamic_cast<btCapsuleShapeX*>(shape);
@@ -152,7 +152,7 @@ void GeometryPropertyIntegrationTest::test_createShapes()
     {
         WFMath::AxisBox<3> characterAabb(WFMath::Point<3>(-3, -4, -10), WFMath::Point<3>(3, 2, 2));
         GeometryProperty g1;
-        g1.set(Atlas::Message::MapType({{"shape", "capsule-z"}}));
+        g1.set(Atlas::Message::MapType({{"type", "capsule-z"}}));
         btCollisionShape* shape = g1.createShape(characterAabb, massOffset).first;
         ASSERT_EQUAL(btVector3(0, 1, 4), massOffset);
         btCapsuleShapeZ* capsule = dynamic_cast<btCapsuleShapeZ*>(shape);
@@ -164,7 +164,7 @@ void GeometryPropertyIntegrationTest::test_createShapes()
     {
         WFMath::AxisBox<3> characterAabb(WFMath::Point<3>(-2, -4, -3), WFMath::Point<3>(2, 10, 3));
         GeometryProperty g1;
-        g1.set(Atlas::Message::MapType({{"shape", "cylinder-y"}}));
+        g1.set(Atlas::Message::MapType({{"type", "cylinder-y"}}));
         btCollisionShape* shape = g1.createShape(characterAabb, massOffset).first;
         ASSERT_EQUAL(btVector3(0, -3, 0), massOffset);
         btCylinderShape* cylinder = dynamic_cast<btCylinderShape*>(shape);
@@ -175,7 +175,7 @@ void GeometryPropertyIntegrationTest::test_createShapes()
     {
         WFMath::AxisBox<3> characterAabb(WFMath::Point<3>(-10, -4, -3), WFMath::Point<3>(2, 2, 3));
         GeometryProperty g1;
-        g1.set(Atlas::Message::MapType({{"shape", "cylinder-x"}}));
+        g1.set(Atlas::Message::MapType({{"type", "cylinder-x"}}));
         btCollisionShape* shape = g1.createShape(characterAabb, massOffset).first;
         ASSERT_EQUAL(btVector3(4, 1, 0), massOffset);
         btCylinderShapeX* cylinder = dynamic_cast<btCylinderShapeX*>(shape);
@@ -186,7 +186,7 @@ void GeometryPropertyIntegrationTest::test_createShapes()
     {
         WFMath::AxisBox<3> characterAabb(WFMath::Point<3>(-3, -4, -10), WFMath::Point<3>(3, 2, 2));
         GeometryProperty g1;
-        g1.set(Atlas::Message::MapType({{"shape", "cylinder-z"}}));
+        g1.set(Atlas::Message::MapType({{"type", "cylinder-z"}}));
         btCollisionShape* shape = g1.createShape(characterAabb, massOffset).first;
         ASSERT_EQUAL(btVector3(0, 1, 4), massOffset);
         btCylinderShapeZ* cylinder = dynamic_cast<btCylinderShapeZ*>(shape);
@@ -341,7 +341,7 @@ void GeometryPropertyIntegrationTest::test_createMesh()
     indices.push_back(20);
 
 
-    g1.set(Atlas::Message::MapType({{"shape",    "mesh"},
+    g1.set(Atlas::Message::MapType({{"type",    "mesh"},
                                     {"vertices", vertices},
                                     {"indices",  indices}
                                    }));
@@ -390,7 +390,7 @@ void GeometryPropertyIntegrationTest::test_createMeshInvalidData()
         indices.push_back(1);
         indices.push_back(2);
 
-        g1.set(Atlas::Message::MapType({{"shape",    "mesh"},
+        g1.set(Atlas::Message::MapType({{"type",    "mesh"},
                                         {"vertices", vertices},
                                         {"indices",  indices}
                                        }));
@@ -415,7 +415,7 @@ void GeometryPropertyIntegrationTest::test_createMeshInvalidData()
         indices.push_back(0);
         indices.push_back(1);
 
-        g1.set(Atlas::Message::MapType({{"shape",    "mesh"},
+        g1.set(Atlas::Message::MapType({{"type",    "mesh"},
                                         {"vertices", vertices},
                                         {"indices",  indices}
                                        }));
@@ -441,7 +441,7 @@ void GeometryPropertyIntegrationTest::test_createMeshInvalidData()
         indices.push_back(1);
         indices.push_back(2);
 
-        g1.set(Atlas::Message::MapType({{"shape",    "mesh"},
+        g1.set(Atlas::Message::MapType({{"type",    "mesh"},
                                         {"vertices", vertices},
                                         {"indices",  indices}
                                        }));
@@ -467,7 +467,7 @@ void GeometryPropertyIntegrationTest::test_createMeshInvalidData()
         indices.push_back(1);
         indices.push_back(2);
 
-        g1.set(Atlas::Message::MapType({{"shape",    "mesh"},
+        g1.set(Atlas::Message::MapType({{"type",    "mesh"},
                                         {"vertices", vertices},
                                         {"indices",  indices}
                                        }));
@@ -494,7 +494,7 @@ void GeometryPropertyIntegrationTest::test_createMeshInvalidData()
         indices.push_back(2);
         indices.push_back("a");
 
-        g1.set(Atlas::Message::MapType({{"shape",    "mesh"},
+        g1.set(Atlas::Message::MapType({{"type",    "mesh"},
                                         {"vertices", vertices},
                                         {"indices",  indices}
                                        }));
