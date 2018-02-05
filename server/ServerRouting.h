@@ -67,7 +67,7 @@ class ServerRouting : public Router {
                   const std::string & name,
                   const std::string & id, long intId,
                   const std::string & lId, long lIntId);
-    ~ServerRouting();
+    ~ServerRouting() override;
 
     /// Increment the number of clients connected to this server.
     void incClients() { ++m_numClients; }

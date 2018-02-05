@@ -29,6 +29,7 @@
 #include "common/id.h"
 #include "common/Monitors.h"
 #include "common/Variable.h"
+#include "common/globals.h"
 
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/RootEntity.h>
@@ -72,9 +73,8 @@ ServerRouting::ServerRouting(BaseWorld & wrld,
 /// Server destructor, implicitly destroys all OOG objects in the server.
 ServerRouting::~ServerRouting()
 {
-    RouterMap::const_iterator Iend = m_objects.end();
-    for(RouterMap::const_iterator I = m_objects.begin(); I != Iend; ++I) {
-        delete I->second;
+    for(auto entry : m_objects) {
+        delete entry.second;
     }
     delete &m_lobby;
 }
@@ -108,9 +108,9 @@ void ServerRouting::delObject(Router * obj)
 /// zero if no object with this id is present.
 Router * ServerRouting::getObject(const std::string & id) const
 {
-    RouterMap::const_iterator I = m_objects.find(integerId(id));
+    auto I = m_objects.find(integerId(id));
     if (I == m_objects.end()) {
-        return 0;
+        return nullptr;
     } else {
         return I->second;
     }
@@ -124,13 +124,13 @@ Router * ServerRouting::getObject(const std::string & id) const
 /// database.
 Account * ServerRouting::getAccountByName(const std::string & username)
 {
-    Account * account = 0;
-    AccountDict::const_iterator I = m_accounts.find(username);
+    Account * account = nullptr;
+    auto I = m_accounts.find(username);
     if (I != m_accounts.end()) {
         account = I->second;
     } else if (database_flag) {
         account = Persistence::instance()->getAccount(username);
-        if (account != 0) {
+        if (account != nullptr) {
             Persistence::instance()->registerCharacters(*account,
                                                m_world.getEntities());
             m_accounts[username] = account;
@@ -155,7 +155,8 @@ void ServerRouting::addToMessage(MapType & omap) const
         omap["restricted"] = "true";
     }
     omap["entities"] = (long)m_world.getEntities().size();
-    
+    omap["assets"] = Atlas::Message::ListType{"file://" + assets_directory};
+
     // We could add all sorts of stats here, but I don't know exactly what yet.
 }
 
@@ -174,7 +175,9 @@ void ServerRouting::addToEntity(const RootEntity & ent) const
         ent->setAttr("restricted", "true");
     }
     ent->setAttr("entities", (long)m_world.getEntities().size());
-    
+
+    ent->setAttr("assets", Atlas::Message::ListType{"file://" + assets_directory});
+
     // We could add all sorts of stats here, but I don't know exactly what yet.
 }
 
