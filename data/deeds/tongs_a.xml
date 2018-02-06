@@ -1,0 +1,18 @@
+<atlas>
+
+  <map>
+    <map name="attributes">
+      <map name="geometry">
+        <map name="default">
+          <string name="path">dural/items/tools/blacksmith_tools/model/tongs_a.mesh</string>
+          <string name="type">asset</string>
+        </map>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">tongs_a</string>
+    <string name="objtype">class</string>
+    <string name="parent">tool</string>
+  </map>
+
+</atlas>
