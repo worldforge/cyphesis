@@ -27,13 +27,10 @@
 #include <wfmath/atlasconv.h>
 
 const std::string ModeProperty::property_name = "mode";
+const std::string ModeProperty::property_atlastype = "string";
 
 ModeProperty::ModeProperty()
 : m_mode(Mode::Free)
-{
-}
-
-ModeProperty::~ModeProperty()
 {
 }
 
@@ -114,7 +111,7 @@ ModeProperty * ModeProperty::copy() const
 void ModeProperty::set(const Atlas::Message::Element & val)
 {
     Property<std::string>::set(val);
-    if (m_data == "free" || m_data == "") {
+    if (m_data == "free" || m_data.empty()) {
         m_mode = Mode::Free;
     } else if (m_data == "planted") {
         m_mode = Mode::Planted;

@@ -118,7 +118,7 @@ CorePropertyManager::CorePropertyManager()
     installBaseProperty<MapType>("map", "root_type");
 
     installProperty<Property<double>>("stamina", "float");
-    installProperty<ModeProperty>("mode", "string");
+    installProperty<ModeProperty>();
     installProperty<LineProperty>("coords", "list");
     installProperty<LineProperty>("points", "list");
     //installProperty<Property<IdList> >("start_intersections", "list");
@@ -153,7 +153,6 @@ CorePropertyManager::CorePropertyManager()
     installProperty<DefaultLocationProperty>("default_location", "int");
     installProperty<DomainProperty>("domain", "string");
     installProperty<LimboProperty>("limbo", "int");
-    installProperty<ModeProperty>("string");
     installProperty<PropelProperty>();
     installProperty<DensityProperty>();
     /**

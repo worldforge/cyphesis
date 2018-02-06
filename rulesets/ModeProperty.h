@@ -25,7 +25,7 @@ class ModeProperty : public Property<std::string> {
 
         enum class Mode {
             /**
-             * Planted entities are stuck to the terrain. Their z-position is determined by the terrain at their origo.
+             * Planted entities are stuck to the terrain. Their y-position is determined by the terrain at their origo.
              * They can optionally also have an offset, specified in "planted-offset" or "planted-scaled-offset".
              * Planted entities are not affected by physics.
              */
@@ -49,12 +49,16 @@ class ModeProperty : public Property<std::string> {
         };
 
         static const std::string property_name;
+        static const std::string property_atlastype;
 
         ModeProperty();
-        virtual ~ModeProperty();
-        virtual void apply(LocatedEntity *);
-        virtual ModeProperty * copy() const;
-        virtual void set(const Atlas::Message::Element & val);
+        ~ModeProperty() override = default;
+
+        void apply(LocatedEntity *) override;
+
+        ModeProperty * copy() const override;
+
+        void set(const Atlas::Message::Element & val) override;
 
         Mode getMode() const {
             return m_mode;

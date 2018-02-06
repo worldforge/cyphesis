@@ -16,14 +16,6 @@
   }
 #endif //STUB_ModeProperty_ModeProperty
 
-#ifndef STUB_ModeProperty_ModeProperty_DTOR
-//#define STUB_ModeProperty_ModeProperty_DTOR
-   ModeProperty::~ModeProperty()
-  {
-    
-  }
-#endif //STUB_ModeProperty_ModeProperty_DTOR
-
 #ifndef STUB_ModeProperty_apply
 //#define STUB_ModeProperty_apply
   void ModeProperty::apply(LocatedEntity *)
