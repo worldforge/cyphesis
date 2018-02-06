@@ -574,3 +574,4 @@ std::string Shaker::generateSalt(size_t length)
 {
     return "";
 }
+std::string assets_directory = "";

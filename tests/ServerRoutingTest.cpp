@@ -524,6 +524,7 @@ static const char * DEFAULT_INSTANCE = "cyphesis";
 std::string instance(DEFAULT_INSTANCE);
 int timeoffset = 0;
 bool database_flag = false;
+std::string assets_directory = "";
 
 namespace consts {
   const char * version = "test_version";

@@ -28,6 +28,8 @@
 #include "stubs/common/stubglobals.h"
 #include "stubs/rulesets/stubQuaternionProperty.h"
 #include "stubs/rulesets/stubOgreMeshDeserializer.h"
+#include "stubs/rulesets/stubBBoxProperty.h"
+#include "stubs/common/stubTypeNode.h"
 
 #include "rulesets/GeometryProperty.h"
 
@@ -57,4 +59,4 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
     return 0;
 }
 
-
+std::string assets_directory = "";

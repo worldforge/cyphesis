@@ -215,6 +215,8 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 
 #include <cstdlib>
 
+std::string assets_directory("");
+
 void Connection::addEntity(LocatedEntity * ent)
 {
 }

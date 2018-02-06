@@ -15,6 +15,14 @@
   }
 #endif //STUB_GeometryProperty_set
 
+#ifndef STUB_GeometryProperty_install
+//#define STUB_GeometryProperty_install
+  void GeometryProperty::install(TypeNode *, const std::string &)
+  {
+    
+  }
+#endif //STUB_GeometryProperty_install
+
 #ifndef STUB_GeometryProperty_copy
 //#define STUB_GeometryProperty_copy
   GeometryProperty* GeometryProperty::copy() const

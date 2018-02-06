@@ -119,7 +119,10 @@ void TypeNode::updateProperties(const MapType & attributes)
     }
 
     //Update the description
-    auto attributesElement = m_description->getAttr("attributes");
+    Atlas::Message::Element attributesElement = Atlas::Message::MapType();
+    if (m_description->hasAttr("attributes")) {
+        attributesElement = m_description->getAttr("attributes");
+    }
     Atlas::Message::Element propertyElement;
     for (auto entry : newProps) {
         entry.second->get(propertyElement);

@@ -44,8 +44,8 @@ class Router {
     const long m_intId;
   protected:
     explicit Router(const std::string & id, long intId);
-    Router(const Router &) = delete;
   public:
+    Router(const Router &) = delete;
     virtual ~Router();
 
     /// \brief Read only accessor for string identity

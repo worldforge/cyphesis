@@ -49,6 +49,7 @@
 #include <BulletCollision/CollisionShapes/btScaledBvhTriangleMeshShape.h>
 
 #include "stubs/common/stubLog.h"
+#include "stubs/modules/stubLocation.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
