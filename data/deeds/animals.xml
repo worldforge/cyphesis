@@ -422,6 +422,10 @@
                 <map name="default">
                     <string name="shape">capsule-x</string>
                 </map>
+	    </map>
+            <map name="grows">
+                <int name="default">1</int>
+                <string name="visibility">public</string>
             </map>
             <map name="biomass">
                 <float name="default">5</float>
@@ -439,6 +443,10 @@
             </map>
             <map name="meat">
                 <string name="default">ham</string>
+	    </map>
+            <map name="metabolizing">
+                <float name="default">5</float>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">pig</string>

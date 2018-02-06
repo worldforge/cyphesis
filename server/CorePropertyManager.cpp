@@ -34,6 +34,7 @@
 #include "rulesets/BiomassProperty.h"
 #include "rulesets/BurnSpeedProperty.h"
 #include "rulesets/DecaysProperty.h"
+#include "rulesets/MetabolizingProperty.h"
 #include "rulesets/MindProperty.h"
 #include "rulesets/InternalProperties.h"
 #include "rulesets/SpawnProperty.h"
@@ -131,9 +132,11 @@ CorePropertyManager::CorePropertyManager()
     installProperty<BiomassProperty>("biomass", "float");
     installProperty<BurnSpeedProperty>("burn_speed", "float");
     installProperty<TransientProperty>("transient", "float");
-    installProperty<Property<double> >("food", "float");
+    installProperty<Property<int> >("grows", "int");
+    installProperty<Property<double> >("nourishment", "float");
     installProperty<Property<double> >("mass", "float");
     installProperty<BBoxProperty>("bbox", "list");
+    installProperty<MetabolizingProperty>("metabolizing", "float");
     installProperty<MindProperty>("mind", "map");
     installProperty<SetupProperty>("init", "int");
     installProperty<TickProperty>("ticks", "float");

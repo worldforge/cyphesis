@@ -34,7 +34,6 @@
 #include "common/Tick.h"
 #include "common/Update.h"
 
-#include <wfmath/atlasconv.h>
 #include <wfmath/MersenneTwister.h>
 
 #include <Atlas/Objects/Operation.h>
@@ -45,12 +44,15 @@ using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Eat;
 using Atlas::Objects::Operation::Set;
+using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Move;
 using Atlas::Objects::Operation::Tick;
 using Atlas::Objects::Operation::Update;
 using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
+
+static const std::string NOURISHMENT = "nourishment";
 
 Plant::Plant(const std::string & id, long intId) :
        Thing(id, intId)
@@ -92,16 +94,33 @@ void Plant::NourishOperation(const Operation & op, OpVector & res)
         return;
     }
     const Root & arg = op->getArgs().front();
-    Element mass;
-    if (arg->copyAttr("mass", mass) != 0 || !mass.isNum()) {
+    Element mass_attr;
+    if (arg->copyAttr("mass", mass_attr) != 0 || !mass_attr.isNum()) {
         return;
     }
-    if (!m_nourishment) {
-        m_nourishment = mass.asNum();
-    } else {
-        *m_nourishment += mass.asNum();
-    }
-    debug(std::cout << "Nourishment: " << *m_nourishment
+
+    // Set nourishment property
+    Property<double> * nourishment_prop = requirePropertyClass<Property<double> >(NOURISHMENT, 0.f);
+    double & nourishment = nourishment_prop->data();
+    nourishment += mass_attr.asNum();
+    nourishment_prop->setFlags(flag_unsent);
+
+    // FIXME This will become a Update once private properties are sorted
+    Anonymous nourishment_ent;
+    nourishment_ent->setId(getId());
+    nourishment_ent->setAttr(NOURISHMENT, nourishment);
+    
+    Set s;
+    s->setArgs1(nourishment_ent);
+
+    // FIXME HELP Why do I need to send sight operation?? 
+    // It seems I require for tests to work but I don't know what the logic behind it
+    Sight si;
+    si->setTo(getId());
+    si->setArgs1(s);
+    res.push_back(si);
+
+    debug(std::cout << "Nourishment: " << nourishment
                     << std::endl << std::flush;);
 }
 
@@ -118,33 +137,33 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
     tick_op->setFutureSeconds(consts::basic_tick * m_speed + jitter);
     res.push_back(tick_op);
 
-    // The update op will broadcast notification for all properties that
-    // are marked flag_unsent
-    Update update;
-    update->setTo(getId());
-    res.push_back(update);
+
+    const Property<double> * nourishment_prop = getPropertyType<double>(NOURISHMENT);
 
     //Only do nourishment check if we've had a chance to send an Eat op.
     //Else we'll be shrinking each time the server is restarted.
-    if (m_nourishment) {
-        StatusProperty * status = requirePropertyClass<StatusProperty>("status", 1);
-        double & new_status = status->data();
-        status->setFlags(flag_unsent);
-        if (*m_nourishment <= 0) {
+    if (nourishment_prop != 0) {
+        const double & nourishment = nourishment_prop->data();
+        // all mass & status change was moved to metabolise tick
+        if (nourishment <= 0) {
             debug(std::cout << "No nourishment; shrinking."
                             << std::endl << std::flush;);
-            new_status -= 0.1;
         } else {
-            new_status += 0.1;
-            if (new_status > 1.) {
-                new_status = 1.;
-            }
-
+            // TODO Handle this in metabolism too
             Property<double> * mass_prop = requirePropertyClass<Property<double> >("mass", 0.);
             PropertyBase * biomass = modPropertyType<double>("biomass");
             BBoxProperty * box_property = requirePropertyClass<BBoxProperty>("bbox");
             BBox & bbox = m_location.m_bBox;
             double & mass = mass_prop->data();
+	    /*
+<<<<<<< HEAD
+            PropertyBase * biomass = modPropertyType<double>("biomass");
+            if (biomass != nullptr) {
+                biomass->set(mass);
+                biomass->setFlags(flag_unsent);
+            }
+=======
+            */
             double old_mass = mass;
 
             const DensityProperty* densityProperty = getPropertyClassFixed<DensityProperty>();
@@ -247,8 +266,8 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
                 }
             }
             *m_nourishment = 0;
+//>>>>>>> master
         }
-        status->apply(this);
     }
 
     if (m_location.m_loc != nullptr) {
@@ -260,10 +279,6 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
             res.push_back(eat_op);
         }
 
-        //Initialize nourishment to zero once we've had a chance to sent our first Eat op.
-        if (!m_nourishment) {
-            m_nourishment = .0;
-        }
     }
 
 
@@ -280,6 +295,12 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
             }
         }
     }
+ 
+    // The update op will broadcast notification for all properties that
+    // are marked flag_unsent
+    Update update;
+    update->setTo(getId());
+    res.push_back(update);
 }
 
 void Plant::handleFruiting(OpVector & res, Property<int>& fruits_prop) {
@@ -348,54 +369,6 @@ void Plant::TouchOperation(const Operation & op, OpVector & res)
                     res.push_back(update);
                 }
 
-            }
-        }
-    }
-}
-
-
-void Plant::scaleArea() {
-    static float AREA_SCALING_FACTOR=3.0f;
-
-    const WFMath::AxisBox<3>& bbox = m_location.bBox();
-    if (bbox.isValid()) {
-        //If there's an area we need to scale that with the bbox
-        AreaProperty * area_property = modPropertyClass<AreaProperty>("area");
-        if (area_property != nullptr) {
-            WFMath::AxisBox<2> footprint = area_property->shape()->footprint();
-            //We'll make it so that the footprint of the area is AREA_SCALING_FACTOR times the footprint of the bbox
-            auto area_radius = footprint.boundingSphere().radius();
-            if (area_radius != 0.0f) {
-
-                //We're only interested in the horizontal radius of the plant
-                WFMath::AxisBox<2> flat_bbox(WFMath::Point<2>(bbox.lowerBound(0), bbox.lowerBound(1)), WFMath::Point<2>(bbox.upperBound(0), bbox.upperBound(1)));
-                auto plant_radius = flat_bbox.boundingSphere().radius();
-
-                auto desired_radius = plant_radius * AREA_SCALING_FACTOR;
-                auto scaling_factor = desired_radius / area_radius;
-
-                //No need to alter if the scale is the same.
-                //Also don't scale the unless the difference is at least 10% in either direction.
-                //The reason for this is that we don't want to alter the area each tick since
-                //the client often must perform a sometimes expensive material regeneration
-                //calculation every time a terrain area changes. With many plants this runs the
-                //risk of bogging down the client then.
-                if (!WFMath::Equal(scaling_factor, 1.0f)
-                        && (scaling_factor > 1.1f || scaling_factor < 0.9f)) {
-                    std::unique_ptr<Form<2>> new_area_shape(
-                            area_property->shape()->copy());
-                    new_area_shape->scale(scaling_factor);
-                    Atlas::Message::MapType shapeElement;
-                    new_area_shape->toAtlas(shapeElement);
-
-                    Atlas::Message::Element areaElement;
-                    area_property->get(areaElement);
-                    areaElement.asMap()["shape"] = shapeElement;
-
-                    area_property->set(areaElement);
-                    area_property->apply(this);
-                    area_property->setFlags(flag_unsent);
-                }
             }
         }
     }

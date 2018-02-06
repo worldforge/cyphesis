@@ -1243,10 +1243,6 @@ Character::~Character() {
 
 }
 
-void Character::metabolise(OpVector & res, double ammount)
-{
-}
-
 void Character::wieldDropped()
 {
 }

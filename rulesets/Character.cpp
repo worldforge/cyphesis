@@ -76,145 +76,14 @@ static const bool debug_flag = false;
 
 long int Character::s_serialNumberNext = 0L;
 
-// This figure is calculated to allow a character to live for 4 weeks
-// without food, during which time they will lose 40% of their mass
-// before starving.
-const double Character::energyConsumption = 0.0001;
-
-// Food consumption is fast, to keep Acorn playable
-const double Character::foodConsumption = 0.1;
-
-// When the character is starving, they start to lose weight. During
-// the latter 2 and a half weeks, they lose about 40% of their mass.
-// Bad players who do not feed their characters will be punished.
-const double Character::weightConsumption = 0.00002;
-
-// Ammount of evergy turned into weight by metabolism when Character
-// is well fed.
-const double Character::energyLaidDown = 0.1;
-
-// Ammount of weight gained as a result. High for Acorn.
-const double Character::weightGain = 0.5;
-
-static const std::string FOOD = "food";
+static const std::string NOURISHMENT = "nourishment";
 static const std::string MASS = "mass";
-static const std::string MAXMASS = "maxmass";
 static const std::string OUTFIT = "outfit";
 static const std::string RIGHT_HAND_WIELD = "right_hand_wield";
 static const std::string SERIALNO = "serialno";
 static const std::string STAMINA = "stamina";
 static const std::string STATUS = "status";
 static const std::string TASKS = "tasks";
-
-/// \brief Calculate how the Characters metabolism has affected it in the
-/// last tick
-///
-/// This function is called every 90 seconds. It does one of three things.
-/// If energy is very high, it loses some, and gains some weight. Otherwise
-/// it loses some energy, unless energy is very low, in which case loss
-/// is slower, as weight is used to compensate.
-/// A fully healthy Character should take about a week to starve to death.
-/// So 10080 / 90 = 6720 ticks.
-/// @param res Any result of changes is returned here.
-/// @param ammount Time scale factor, currently not used.
-void Character::metabolise(OpVector & res, double ammount)
-{
-    // Currently handles energy
-    // We should probably call this whenever the entity performs a movement.
-
-    StatusProperty * status_prop = modPropertyClass<StatusProperty>(STATUS);
-    bool status_changed = false;
-    if (status_prop == 0) {
-        // FIXME Probably don't do enough here to set up the property.
-        status_prop = new StatusProperty;
-        assert(status_prop != 0);
-        m_properties[STATUS] = status_prop;
-        status_prop->set(1.f);
-        status_changed = true;
-    }
-    double & status = status_prop->data();
-    status_prop->setFlags(flag_unsent);
-
-    Property<double> * food_prop = modPropertyType<double>(FOOD);
-    // DIGEST
-    if (food_prop != 0) {
-        double & food = food_prop->data();
-        if (food >= foodConsumption && status < 2) {
-            // It is important that the metabolise bit is done next, as this
-            // handles the status change
-            status += foodConsumption;
-            status_changed = true;
-            food -= foodConsumption;
-
-            food_prop->setFlags(flag_unsent);
-            food_prop->apply(this);
-            propertyApplied(FOOD, *food_prop);
-
-        }
-    }
-
-    Property<double> * mass_prop = modPropertyType<double>(MASS);
-    // If status is very high, we gain weight
-    if (status > (1.5 + energyLaidDown)) {
-        status -= energyLaidDown;
-        status_changed = true;
-        if (mass_prop != 0) {
-            double & mass = mass_prop->data();
-            mass += weightGain;
-            mass_prop->setFlags(flag_unsent);
-            Element maxmass_attr;
-            if (getAttrType(MAXMASS, maxmass_attr, Element::TYPE_FLOAT) == 0) {
-                mass = std::min(mass, maxmass_attr.Float());
-            }
-            mass_prop->apply(this);
-            propertyApplied(MASS, *mass_prop);
-        }
-    } else {
-        // If status is relatively is not very high, then energy is burned
-        double energy_used = energyConsumption * ammount;
-        status -= energy_used;
-        status_changed = true;
-        if (mass_prop != 0) {
-            double & mass = mass_prop->data();
-            double weight_used = weightConsumption * mass * ammount;
-            if (status <= 0.5 && mass > weight_used) {
-                // Drain away a little less energy and lose some weight
-                // This ensures there is a long term penalty to allowing
-                // something to starve
-                status += (energy_used / 2);
-                status_changed = true;
-                mass -= weight_used;
-                mass_prop->setFlags(flag_unsent);
-                mass_prop->apply(this);
-                propertyApplied(MASS, *mass_prop);
-           }
-        }
-    }
-    // FIXME Stamina property?
-    const TasksProperty * tp = getPropertyClass<TasksProperty>(TASKS);
-    if ((tp == 0 || !tp->busy()) && !m_movement.updateNeeded(m_location)) {
-
-        Property<double> * stamina_prop = modPropertyType<double>(STAMINA);
-        if (stamina_prop != 0) {
-            double & stamina = stamina_prop->data();
-            if (stamina < 1.f) {
-                stamina = 1.f;
-                stamina_prop->setFlags(flag_unsent);
-                stamina_prop->apply(this);
-                propertyApplied(STAMINA, *stamina_prop);
-            }
-        }
-    }
-
-    if (status_changed) {
-        status_prop->apply(this);
-    }
-
-    Update update;
-    update->setTo(getId());
-
-    res.push_back(update);
-}
 
 /// \brief Hooked to the Entity::containered signal of the wielded entity
 /// to indicate a change of location
@@ -455,6 +324,7 @@ void Character::InfoOperation(const Operation & op, OpVector & res)
 
 void Character::TickOperation(const Operation & op, OpVector & res)
 {
+
     debug(std::cout << "================================" << std::endl
                     << std::flush;);
     const std::vector<Root> & args = op->getArgs();
@@ -496,14 +366,16 @@ void Character::TickOperation(const Operation & op, OpVector & res)
 
         } else if (arg->getName() == "mind") {
             // Do nothing. Passed to mind.
+
+        } else if (arg->getName() == "metabolize") {
+            // Do nothing. Passed to Metabolizing property.
+
         } else {
             debug(std::cout << "Tick to unknown subsystem " << arg->getName()
                             << " arrived. " << describeEntity() << std::endl << std::flush
             ;);
         }
     } else {
-        // METABOLISE
-        metabolise(res);
 
         // TICK
         Tick tickOp;
@@ -534,18 +406,18 @@ void Character::NourishOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    Property<double> * food_prop = requirePropertyClass<Property<double> >(FOOD, 0.f);
-    double & food = food_prop->data();
-    food += mass_attr.asNum();
-    food_prop->setFlags(flag_unsent);
+    Property<double> * nourishment_prop = requirePropertyClass<Property<double> >(NOURISHMENT, 0.f);
+    double & nourishment = nourishment_prop->data();
+    nourishment += mass_attr.asNum();
+    nourishment_prop->setFlags(flag_unsent);
 
     // FIXME This will become a Update once private properties are sorted
-    Anonymous food_ent;
-    food_ent->setId(getId());
-    food_ent->setAttr(FOOD, food);
+    Anonymous nourishment_ent;
+    nourishment_ent->setId(getId());
+    nourishment_ent->setAttr(NOURISHMENT, nourishment);
 
     Set s;
-    s->setArgs1(food_ent);
+    s->setArgs1(nourishment_ent);
     // FIXME FROM, SECONDS?
 
     Sight si;
