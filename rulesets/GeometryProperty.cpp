@@ -256,7 +256,7 @@ GeometryProperty* GeometryProperty::copy() const
 
 void GeometryProperty::parseMeshFile()
 {
-    AtlasQuery::find<Atlas::Message::StringType>(data(), "path", [&](const auto& path) {
+    AtlasQuery::find<Atlas::Message::StringType>(data(), "path", [&](const Atlas::Message::StringType& path) {
         try {
             if (boost::algorithm::ends_with(path, ".mesh")) {
                 boost::filesystem::path fullpath = boost::filesystem::path(assets_directory) / path;
