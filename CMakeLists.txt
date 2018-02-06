@@ -109,6 +109,51 @@ link_directories(${Boost_LIBRARY_DIRS})
 link_libraries(${Boost_LIBRARIES})
 include_directories(${Boost_INCLUDE_DIRS})
 
+set(ASSETS_DIR assets-${VERSION})
+set(ASSETSREPO_DIR ${PROJECT_SOURCE_DIR}/assetsrepo)
+
+find_program(SUBVERSION_CMD NAMES svn)
+find_program(PYTHON_CMD NAMES python)
+find_program(RSYNC_CMD NAMES rsync)
+
+add_custom_target(assets-download)
+if (RSYNC_CMD)
+    add_custom_command(
+        TARGET assets-download
+        COMMAND ${CMAKE_COMMAND} -E echo "I will now use rsync to install the assets from amber.worldforge.org into ${ASSETS_DIR}."
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${ASSETS_DIR}
+        #We'll for now only copy ".mesh" files.
+        COMMAND rsync -rtvzu --include='*.mesh' --include='*/' --exclude='*' amber.worldforge.org::ember-media/ember-media-0.8.0/media/assets ${ASSETS_DIR}
+        COMMAND ${CMAKE_COMMAND} -E echo "Copying ${ASSETS_DIR} to ${CMAKE_INSTALL_FULL_DATADIR}/cyphesis/assets."
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${ASSETS_DIR} ${CMAKE_INSTALL_FULL_DATADIR}/cyphesis/
+        COMMAND ${CMAKE_COMMAND} -E echo "Done."
+        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+    )
+else(RSYNC_CMD)
+    add_custom_command(
+        TARGET assets-download
+        COMMAND ${CMAKE_COMMAND} -E echo "Could not find the Rsync command. The target 'assets-download' is disabled."
+    )
+endif(RSYNC_CMD)
+
+
+
+
+add_custom_target(assetsrepo-checkout)
+if (SUBVERSION_CMD)
+    add_custom_command(
+        TARGET assetsrepo-checkout
+        COMMAND ${CMAKE_COMMAND} -E echo "Using Subversion to checkout https://svn.worldforge.org:886/svn/media/trunk/assets to ${ASSETSREPO_DIR}/assets."
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${ASSETSREPO_DIR}
+        COMMAND ${SUBVERSION_CMD} co https://svn.worldforge.org:886/svn/media/trunk/assets ${ASSETSREPO_DIR}/assets
+    )
+else(SUBVERSION_CMD)
+    add_custom_command(
+        TARGET assetsrepo-checkout
+        COMMAND ${CMAKE_COMMAND} -E echo "Could not find the Subversion command 'svn'. The target 'assetsrepo-checkout' is disabled."
+    )
+endif(SUBVERSION_CMD)
+
 ##TODO: check for binreloc?
 
 #We'll use xmllint for validating schemas of some of our xml files.

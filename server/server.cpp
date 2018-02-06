@@ -54,6 +54,7 @@
 
 #include <thread>
 #include <fstream>
+#include <boost/filesystem/operations.hpp>
 
 using String::compose;
 using namespace boost::asio;
@@ -186,6 +187,12 @@ int main(int argc, char ** argv)
 
     // If we are a daemon logging to syslog, we need to set it up.
     initLogger();
+
+    //Check that there's a valid assets directory, and warn if not.
+    if (!boost::filesystem::is_directory(assets_directory)) {
+        log(ERROR, String::compose("Could not find any valid assets directory at '%1'.", assets_directory));
+        log(ERROR, "If you've built Cyphesis yourself make sure you've run the 'make assets-download' command.");
+    }
 
     // Initialise the persistence subsystem. If we have been built with
     // database support, this will open the various databases used to
