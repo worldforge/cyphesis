@@ -169,6 +169,11 @@ void CommAsioClient<ProtocolT>::negotiate_read()
                                         this->negotiate_write();
                                         this->negotiate_read();
                                     }
+                                } else {
+                                    //If connection is shut down, we should consider this as an aborted negotiaton
+                                    delete m_negotiate;
+                                    m_negotiate = nullptr;
+                                    mNegotiateTimer.cancel();
                                 }
                             });
 }
@@ -283,8 +288,8 @@ int CommAsioClient<ProtocolT>::operation(
 template<class ProtocolT>
 void CommAsioClient<ProtocolT>::dispatch()
 {
-    DispatchQueue::const_iterator Iend = m_opQueue.end();
-    for (DispatchQueue::const_iterator I = m_opQueue.begin(); I != Iend; ++I) {
+    auto Iend = m_opQueue.end();
+    for (auto I = m_opQueue.begin(); I != Iend; ++I) {
         if (operation(*I) != 0) {
             return;
         }
