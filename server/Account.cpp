@@ -71,10 +71,6 @@ Account::Account(Connection * conn,
 {
 }
 
-Account::~Account()
-{
-}
-
 /// \brief Called when the Character has been removed from the world.
 ///
 /// @param id Integer identifier of the Character destroyed.
@@ -95,8 +91,9 @@ int Account::connectCharacter(LocatedEntity *chr)
     Character * character = dynamic_cast<Character *>(chr);
     if (character) {
         if (character->linkExternal(m_connection) != 0) {
-            log(WARNING, String::compose("Could not take character %1 as it "
-                    "already is connected to an external mind.", chr->getId()));
+            log(WARNING, String::compose("Account %1 (%2) could not take character %3 as it "
+                "already is connected to an external mind with id %4.",
+                                         getId(), m_username, chr->getId(), character->m_externalMind->getLink()));
             return -2;
         }
 
@@ -138,6 +135,8 @@ LocatedEntity * Account::addNewCharacter(const std::string & typestr,
     if (m_connection == nullptr) {
         return nullptr;
     }
+    //Any entity created as a character should have it's "mind" property disabled; i.e. we don't want AI to control this character.
+    ent->setAttr("mind", Atlas::Message::Element());
     debug(std::cout << "Account::Add_character" << std::endl << std::flush;);
     LocatedEntity * chr = createCharacterEntity(typestr, ent, arg);
     if (chr == nullptr) {
@@ -176,8 +175,8 @@ LocatedEntity * Account::createCharacterEntity(const std::string & typestr,
 void Account::LogoutOperation(const Operation & op, OpVector & res)
 {
     if (m_connection == nullptr) {
-        log(ERROR, "Account::LogoutOperation on account that doesn't seem to "
-                   "be connected.");
+        log(ERROR, String::compose("Account::LogoutOperation on account %1 (%2) that doesn't seem to "
+                   "be connected.", getId(), m_username));
         return;
     }
 
@@ -660,5 +659,5 @@ void Account::GetOperation(const Operation & op, OpVector & res)
 void Account::OtherOperation(const Operation & op, OpVector & res)
 {
     std::string parent = op->getParent().empty() ? "-" : op->getParent();
-    error(op, String::compose("Unknown operation %1 in Account", parent), res);
+    error(op, String::compose("Unknown operation %1 in Account %2 (%3)", parent, getId(), m_username), res);
 }

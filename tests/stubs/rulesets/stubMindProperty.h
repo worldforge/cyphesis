@@ -16,23 +16,6 @@
   }
 #endif //STUB_MindProperty_MindProperty
 
-#ifndef STUB_MindProperty_MindProperty
-//#define STUB_MindProperty_MindProperty
-   MindProperty::MindProperty()
-    : Property()
-  {
-    
-  }
-#endif //STUB_MindProperty_MindProperty
-
-#ifndef STUB_MindProperty_MindProperty_DTOR
-//#define STUB_MindProperty_MindProperty_DTOR
-   MindProperty::~MindProperty()
-  {
-    
-  }
-#endif //STUB_MindProperty_MindProperty_DTOR
-
 #ifndef STUB_MindProperty_isMindEnabled
 //#define STUB_MindProperty_isMindEnabled
   bool MindProperty::isMindEnabled() const

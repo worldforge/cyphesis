@@ -39,15 +39,15 @@ class MindProperty : public Property<Atlas::Message::MapType> {
 
     MindProperty(const MindProperty &);
   public:
-    MindProperty();
-    virtual ~MindProperty();
+    MindProperty() = default;
+    ~MindProperty() override = default;
 
     /// \brief Returns true if mind scripting is enabled.
     bool isMindEnabled() const;
 
-    virtual void set(const Atlas::Message::Element & val);
-    virtual MindProperty * copy() const;
-    virtual void apply(LocatedEntity *);
+    void set(const Atlas::Message::Element & val) override;
+    MindProperty * copy() const override;
+    void apply(LocatedEntity *) override;
 };
 
 #endif // RULESETS_MIND_PROPERTY_H

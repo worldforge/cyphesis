@@ -386,13 +386,9 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 
 
 ExternalMind::ExternalMind(LocatedEntity & e) : Router(e.getId(), e.getIntId()),
-                                         m_external(0),
+                                         m_link(0),
                                          m_entity(e),
                                          m_lossTime(0.)
-{
-}
-
-ExternalMind::~ExternalMind()
 {
 }
 
@@ -402,7 +398,7 @@ void ExternalMind::externalOperation(const Operation & op, Link &)
 
 void ExternalMind::linkUp(Link * c)
 {
-    m_external = c;
+    m_link = c;
 }
 
 void ExternalMind::operation(const Operation & op, OpVector & res)

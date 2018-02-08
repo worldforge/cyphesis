@@ -40,14 +40,6 @@
   }
 #endif //STUB_ServerAccount_ServerAccount
 
-#ifndef STUB_ServerAccount_ServerAccount_DTOR
-//#define STUB_ServerAccount_ServerAccount_DTOR
-   ServerAccount::~ServerAccount()
-  {
-    
-  }
-#endif //STUB_ServerAccount_ServerAccount_DTOR
-
 #ifndef STUB_ServerAccount_getType
 //#define STUB_ServerAccount_getType
   const char* ServerAccount::getType() const

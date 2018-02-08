@@ -32,7 +32,7 @@ class LocatedEntity;
 /// to the client.
 class ExternalMind : public Router {
   protected:
-    Link * m_external;
+    Link * m_link;
     LocatedEntity & m_entity;
     double m_lossTime;
 
@@ -47,12 +47,16 @@ class ExternalMind : public Router {
     void externalOperation(const Operation & op, Link &) override;
     void operation(const Operation &, OpVector &) override;
 
-    bool isLinked() { return m_external != nullptr; }
-    bool isLinkedTo(Link * c) { return m_external == c; }
+    bool isLinked() { return m_link != nullptr; }
+    bool isLinkedTo(Link * c) { return m_link == c; }
 
     const std::string & connectionId();
 
     void linkUp(Link * c);
+
+    Link* getLink() const {
+        return m_link;
+    }
 };
 
 #endif // RULESETS_EXTERNAL_MIND_H

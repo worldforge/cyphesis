@@ -30,12 +30,12 @@ class ConnectableRouter : public Router {
   protected:
     explicit ConnectableRouter(const std::string & id,
                              long intId,
-                             Connection * c = 0);
+                             Connection * c = nullptr);
   public:
     /// \brief The network connection currently subscribed to this object
     Connection * m_connection;
 
-    virtual ~ConnectableRouter();
+    ~ConnectableRouter() override = default;
 };
 
 #endif // SERVER_CONNECTABLE_ROUTER_H

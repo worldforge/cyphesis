@@ -140,11 +140,7 @@ int main()
 // stubs
 
 ExternalMind::ExternalMind(LocatedEntity & e) : Router("", -1L),
-                                                m_external(0), m_entity(e)
-{
-}
-
-ExternalMind::~ExternalMind()
+                                                m_link(0), m_entity(e)
 {
 }
 

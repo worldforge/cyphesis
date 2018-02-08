@@ -434,9 +434,6 @@ Account::Account(Connection * conn,
 {
 }
 
-Account::~Account()
-{
-}
 
 const char * Account::getType() const
 {
@@ -519,10 +516,6 @@ ConnectableRouter::ConnectableRouter(const std::string & id,
                                  Connection *c) :
                  Router(id, iid),
                  m_connection(c)
-{
-}
-
-ConnectableRouter::~ConnectableRouter()
 {
 }
 

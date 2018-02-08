@@ -214,10 +214,6 @@ ConnectableRouter::ConnectableRouter(const std::string & id,
 {
 }
 
-ConnectableRouter::~ConnectableRouter()
-{
-}
-
 #include "stubs/server/stubConnection.h"
 #include "stubs/server/stubServerRouting.h"
 #include "stubs/server/stubLobby.h"
@@ -225,11 +221,7 @@ ConnectableRouter::~ConnectableRouter()
 
 
 ExternalMind::ExternalMind(LocatedEntity & e) : Router(e.getId(), e.getIntId()),
-                                         m_external(0), m_entity(e)
-{
-}
-
-ExternalMind::~ExternalMind()
+                                         m_link(0), m_entity(e)
 {
 }
 
@@ -271,13 +263,13 @@ ExternalProperty * ExternalProperty::copy() const
 
 const std::string & ExternalMind::connectionId()
 {
-    assert(m_external != 0);
-    return m_external->getId();
+    assert(m_link != 0);
+    return m_link->getId();
 }
 
 void ExternalMind::linkUp(Link * c)
 {
-    m_external = c;
+    m_link = c;
 }
 
 #include "stubs/rulesets/stubCharacter.h"

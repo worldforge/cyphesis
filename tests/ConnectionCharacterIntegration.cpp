@@ -419,10 +419,6 @@ ConnectableRouter::ConnectableRouter(const std::string & id,
 {
 }
 
-ConnectableRouter::~ConnectableRouter()
-{
-}
-
 ServerRouting::ServerRouting(BaseWorld & wrld,
                              const std::string & ruleset,
                              const std::string & name,

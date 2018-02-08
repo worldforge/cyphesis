@@ -34,7 +34,7 @@ PossessionAuthenticator * PossessionAuthenticator::m_instance = nullptr;
 /// \param entity_id The entity ID to check for pending teleport
 bool PossessionAuthenticator::isPending(const std::string & entity_id) const
 {
-    PendingPossessionsMap::const_iterator I = m_possessions.find(entity_id);
+    auto I = m_possessions.find(entity_id);
     return (I != m_possessions.end());
 }
 
@@ -49,9 +49,6 @@ int PossessionAuthenticator::addPossession(const std::string & entity_id,
         return -1;
     }
     PendingPossession * pt = new PendingPossession(entity_id, possess_key);
-    if (pt == 0) {
-        return -1;
-    }
     m_possessions.insert(std::make_pair(entity_id, pt));
     debug(std::cout << String::compose("Added possession auth entry for %1,%2",
                               entity_id, possess_key) << std::endl;);
@@ -63,7 +60,7 @@ int PossessionAuthenticator::addPossession(const std::string & entity_id,
 /// \param entity_id The ID of the entity whose data is to be removed
 int PossessionAuthenticator::removePossession(const std::string &entity_id)
 {
-    PendingPossessionsMap::iterator I = m_possessions.find(entity_id);
+    auto I = m_possessions.find(entity_id);
     if (I == m_possessions.end()) {
         log(ERROR, String::compose("No possession auth entry for entity ID %1",
                                                 entity_id));
@@ -104,18 +101,18 @@ boost::optional<std::string> PossessionAuthenticator::getPossessionKey(const std
 LocatedEntity * PossessionAuthenticator::authenticatePossession(const std::string &entity_id,
                                             const std::string &possess_key)
 {
-    PendingPossessionsMap::iterator I = m_possessions.find(entity_id);
+    auto I = m_possessions.find(entity_id);
     if (I == m_possessions.end()) {
         log(ERROR, String::compose("Unable to find possessable entity with ID %1",
                                                                     entity_id));
         return nullptr;
     }
     PendingPossession *entry = I->second;
-    assert(entry != 0);
+    assert(entry != nullptr);
     if (entry->validate(entity_id, possess_key)) {
         // We are authenticated!
         LocatedEntity * entity = BaseWorld::instance().getEntity(entity_id);
-        if (entity == 0) {
+        if (entity == nullptr) {
             // This means the authentication entry itself is invalid. Remove it.
             log(ERROR, String::compose("Unable to find possessable entity with ID %1",
                                                                         entity_id));

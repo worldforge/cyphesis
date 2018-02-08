@@ -896,14 +896,6 @@ LineProperty * LineProperty::copy() const
     return 0;
 }
 
-MindProperty::MindProperty()
-{
-}
-
-MindProperty::~MindProperty()
-{
-}
-
 void MindProperty::set(const Element & val)
 {
 }

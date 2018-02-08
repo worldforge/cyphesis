@@ -91,10 +91,6 @@ ConnectableRouter::ConnectableRouter(const std::string & id,
 {
 }
 
-ConnectableRouter::~ConnectableRouter()
-{
-}
-
 Account::Account(Connection * conn,
                  const std::string & uname,
                  const std::string & passwd,
@@ -105,9 +101,6 @@ Account::Account(Connection * conn,
 {
 }
 
-Account::~Account()
-{
-}
 
 const char * Account::getType() const
 {
@@ -194,10 +187,6 @@ ServerAccount::ServerAccount(Connection * conn,
              const std::string & id,
              long intId) :
        Account(conn, username, passwd, id, intId)
-{
-}
-
-ServerAccount::~ServerAccount()
 {
 }
 

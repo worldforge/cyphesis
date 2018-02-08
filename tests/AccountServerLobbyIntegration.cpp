@@ -229,10 +229,6 @@ ConnectableRouter::ConnectableRouter(const std::string & id,
 {
 }
 
-ConnectableRouter::~ConnectableRouter()
-{
-}
-
 PossessionAuthenticator * PossessionAuthenticator::m_instance = nullptr;
 
 int PossessionAuthenticator::removePossession(const std::string &entity_id)

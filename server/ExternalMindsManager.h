@@ -32,8 +32,8 @@ class Character;
 class ExternalMindsManager : public virtual sigc::trackable
 {
     public:
-        explicit ExternalMindsManager();
-        ~ExternalMindsManager();
+        explicit ExternalMindsManager() = default;
+        ~ExternalMindsManager() = default;
 
         static ExternalMindsManager * instance();
 

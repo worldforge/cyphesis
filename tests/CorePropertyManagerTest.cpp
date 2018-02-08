@@ -297,9 +297,6 @@ Account::Account(Connection * conn,
 {
 }
 
-Account::~Account()
-{
-}
 
 const char * Account::getType() const
 {
@@ -401,10 +398,6 @@ ConnectableRouter::ConnectableRouter(const std::string & id,
                                  Connection *c) :
                  Router(id, iid),
                  m_connection(c)
-{
-}
-
-ConnectableRouter::~ConnectableRouter()
 {
 }
 
@@ -834,14 +827,6 @@ void LineProperty::add(const std::string & s, MapType & ent) const
 LineProperty * LineProperty::copy() const
 {
     return 0;
-}
-
-MindProperty::MindProperty()
-{
-}
-
-MindProperty::~MindProperty()
-{
 }
 
 void MindProperty::set(const Element & val)

@@ -601,9 +601,6 @@ Account::Account(Connection * conn,
 {
 }
 
-Account::~Account()
-{
-}
 
 const char * Account::getType() const
 {
@@ -694,10 +691,6 @@ ConnectableRouter::ConnectableRouter(const std::string & id,
 {
 }
 
-ConnectableRouter::~ConnectableRouter()
-{
-}
-
 ServerRouting::ServerRouting(BaseWorld & wrld,
                              const std::string & ruleset,
                              const std::string & name,
@@ -773,11 +766,7 @@ void Lobby::operation(const Operation & op, OpVector & res)
 }
 
 ExternalMind::ExternalMind(LocatedEntity & e) : Router(e.getId(), e.getIntId()),
-                                         m_external(0), m_entity(e)
-{
-}
-
-ExternalMind::~ExternalMind()
+                                         m_link(0), m_entity(e)
 {
 }
 
@@ -819,13 +808,13 @@ ExternalProperty * ExternalProperty::copy() const
 
 const std::string & ExternalMind::connectionId()
 {
-    assert(m_external != 0);
-    return m_external->getId();
+    assert(m_link != 0);
+    return m_link->getId();
 }
 
 void ExternalMind::linkUp(Link * c)
 {
-    m_external = c;
+    m_link = c;
 }
 
 #include "stubs/rulesets/stubCharacter.h"

@@ -40,15 +40,6 @@ static const bool debug_flag = false;
 
 ExternalMindsManager * ExternalMindsManager::m_instance = nullptr;
 
-ExternalMindsManager::ExternalMindsManager()
-{
-
-}
-
-ExternalMindsManager::~ExternalMindsManager()
-{
-}
-
 ExternalMindsManager * ExternalMindsManager::instance()
 {
     if (m_instance == nullptr) {
@@ -122,19 +113,13 @@ int ExternalMindsManager::requestPossession(Character& character, const std::str
     //TODO: take preferred language and script into account
     addPossessionEntryForCharacter(character);
     character.destroyed.connect(
-            sigc::bind(
-                    sigc::mem_fun(*this,
-                            &ExternalMindsManager::entity_destroyed),
-                    &character));
+        sigc::bind(sigc::mem_fun(*this, &ExternalMindsManager::entity_destroyed), &character));
     m_unpossessedEntities.insert(&character);
 
     character.externalLinkChanged.connect(
-            sigc::bind(
-                    sigc::mem_fun(*this,
-                            &ExternalMindsManager::character_externalLinkChanged),
-                    &character));
+        sigc::bind(sigc::mem_fun(*this, &ExternalMindsManager::character_externalLinkChanged), &character));
 
-    if (!m_connections.empty()) {
+    if (character.m_externalMind == nullptr || !character.m_externalMind->isLinked()) {
         requestPossessionFromRegisteredClients(character.getId());
     }
     return 0;

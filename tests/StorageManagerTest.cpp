@@ -438,14 +438,6 @@ bool MindProperty::isMindEnabled() const {
     return false;
 }
 
-MindProperty::MindProperty()
-{
-}
-
-MindProperty::~MindProperty()
-{
-}
-
 void MindProperty::set(const Element & val)
 {
 }

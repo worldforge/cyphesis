@@ -297,10 +297,6 @@ ConnectableRouter::ConnectableRouter(const std::string & id,
 {
 }
 
-ConnectableRouter::~ConnectableRouter()
-{
-}
-
 Ruleset::Ruleset(EntityBuilder * eb) :
       m_taskHandler(0),
       m_entityHandler(0),

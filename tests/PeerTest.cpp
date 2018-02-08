@@ -519,11 +519,7 @@ int CommSocket::flush()
 }
 
 ExternalMind::ExternalMind(LocatedEntity & e) : Router(e.getId(), e.getIntId()),
-                                         m_external(0), m_entity(e)
-{
-}
-
-ExternalMind::~ExternalMind()
+                                         m_link(0), m_entity(e)
 {
 }
 
@@ -537,7 +533,7 @@ void ExternalMind::operation(const Operation & op, OpVector & res)
 
 void ExternalMind::linkUp(Link * c)
 {
-    m_external = c;
+    m_link = c;
 }
 
 #include "stubs/rulesets/stubCharacter.h"

@@ -39,22 +39,18 @@ MindProperty::MindProperty(const MindProperty & rhs)
 {
 }
 
-MindProperty::MindProperty()
-{
-}
-
-MindProperty::~MindProperty()
-{
-}
-
 void MindProperty::set(const Element & val)
 {
     Property<Atlas::Message::MapType>::set(val);
     if (!val.isMap()) {
+        m_language.clear();
+        m_script.clear();
         return;
     }
     const MapType & data = val.Map();
     if (data.empty()) {
+        m_language.clear();
+        m_script.clear();
         return;
     }
 
@@ -101,17 +97,12 @@ void MindProperty::apply(LocatedEntity * ent)
         return;
     }
 
-    if (chr->m_externalMind != nullptr) {
-        log(NOTICE, "Mind property character already has an external mind");
-        return;
-    }
-
     ExternalMindsManager::instance()->requestPossession(*chr, m_language, m_script);
 
 }
 
 bool MindProperty::isMindEnabled() const
 {
-    return m_language != "" || m_script != "";
+    return !m_language.empty() || !m_script.empty();
 }
 

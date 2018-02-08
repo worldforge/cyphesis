@@ -72,14 +72,6 @@
   }
 #endif //STUB_Account_Account
 
-#ifndef STUB_Account_Account_DTOR
-//#define STUB_Account_Account_DTOR
-   Account::~Account()
-  {
-    
-  }
-#endif //STUB_Account_Account_DTOR
-
 #ifndef STUB_Account_getType
 //#define STUB_Account_getType
   const char* Account::getType() const

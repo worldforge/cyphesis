@@ -656,9 +656,6 @@ Account::Account(Connection * conn,
 {
 }
 
-Account::~Account()
-{
-}
 
 LocatedEntity * Account::addNewCharacter(const std::string & typestr,
                                   const RootEntity & ent,
@@ -756,10 +753,6 @@ ConnectableRouter::ConnectableRouter(const std::string & id,
                                  Connection *c) :
                  Router(id, iid),
                  m_connection(c)
-{
-}
-
-ConnectableRouter::~ConnectableRouter()
 {
 }
 
@@ -921,10 +914,6 @@ ServerAccount::ServerAccount(Connection * conn,
              const std::string & id,
              long intId) :
        Account(conn, username, passwd, id, intId)
-{
-}
-
-ServerAccount::~ServerAccount()
 {
 }
 

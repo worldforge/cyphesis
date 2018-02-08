@@ -69,7 +69,7 @@ void ExternalMind::purgeEntity(const LocatedEntity & ent, bool forceDelete)
 }
 
 ExternalMind::ExternalMind(LocatedEntity & e) : Router(e.getId(), e.getIntId()),
-                                                m_external(0),
+                                                m_link(nullptr),
                                                 m_entity(e),
                                                 m_lossTime(0.)
 {
@@ -93,7 +93,7 @@ void ExternalMind::operation(const Operation & op, OpVector & res)
     //would make sure that only those players which are active end up in the real world.
     //Another solution is to do something with the entity when the connection is cut; perhaps move
     //it to limbo or some other place. All of these solutions are better than just deleting it.
-    if (m_external == nullptr) {
+    if (m_link == nullptr) {
         if (m_entity.getFlags() & entity_ephem) {
             // If this entity no longer has a connection, and is ephemeral
             // we should delete it.
@@ -111,7 +111,7 @@ void ExternalMind::operation(const Operation & op, OpVector & res)
 //        }
         return;
     }
-    m_external->send(op);
+    m_link->send(op);
 
     // Here we see if there is anything we should be sending the user
     // extra info about. The initial demo implementation checks for
@@ -147,7 +147,7 @@ void ExternalMind::operation(const Operation & op, OpVector & res)
                     sight->setFrom(getId());
                     sight->setArgs1(imaginary);
 
-                    m_external->send(sight);
+                    m_link->send(sight);
                 }
             }
         }
@@ -156,13 +156,13 @@ void ExternalMind::operation(const Operation & op, OpVector & res)
 
 const std::string & ExternalMind::connectionId()
 {
-    assert(m_external != nullptr);
-    return m_external->getId();
+    assert(m_link != nullptr);
+    return m_link->getId();
 }
 
 void ExternalMind::linkUp(Link * c)
 {
-    m_external = c;
+    m_link = c;
     if (c == nullptr) {
         m_lossTime = BaseWorld::instance().getTime();
     }

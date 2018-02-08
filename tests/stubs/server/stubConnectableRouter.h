@@ -17,13 +17,5 @@
   }
 #endif //STUB_ConnectableRouter_ConnectableRouter
 
-#ifndef STUB_ConnectableRouter_ConnectableRouter_DTOR
-//#define STUB_ConnectableRouter_ConnectableRouter_DTOR
-   ConnectableRouter::~ConnectableRouter()
-  {
-    
-  }
-#endif //STUB_ConnectableRouter_ConnectableRouter_DTOR
-
 
 #endif

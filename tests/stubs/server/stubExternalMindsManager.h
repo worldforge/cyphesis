@@ -7,23 +7,6 @@
 #ifndef STUB_SERVER_EXTERNALMINDSMANAGER_H
 #define STUB_SERVER_EXTERNALMINDSMANAGER_H
 
-#ifndef STUB_ExternalMindsManager_ExternalMindsManager
-//#define STUB_ExternalMindsManager_ExternalMindsManager
-   ExternalMindsManager::ExternalMindsManager()
-    : sigc::trackable()
-  {
-    
-  }
-#endif //STUB_ExternalMindsManager_ExternalMindsManager
-
-#ifndef STUB_ExternalMindsManager_ExternalMindsManager_DTOR
-//#define STUB_ExternalMindsManager_ExternalMindsManager_DTOR
-   ExternalMindsManager::~ExternalMindsManager()
-  {
-    
-  }
-#endif //STUB_ExternalMindsManager_ExternalMindsManager_DTOR
-
 #ifndef STUB_ExternalMindsManager_instance
 //#define STUB_ExternalMindsManager_instance
    ExternalMindsManager* ExternalMindsManager::instance()

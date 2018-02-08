@@ -616,10 +616,6 @@ ConnectableRouter::ConnectableRouter(const std::string & id,
 {
 }
 
-ConnectableRouter::~ConnectableRouter()
-{
-}
-
 Router::Router(const std::string & id, long intId) : m_id(id),
                                                              m_intId(intId)
 {

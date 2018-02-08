@@ -85,7 +85,8 @@ class Account : public ConnectableRouter {
     Account(Connection * conn, const std::string & username,
                                const std::string & passwd,
                                const std::string & id, long intId);
-    virtual ~Account();
+
+    ~Account() override = default;
 
     const std::string & username() const {
         return m_username;
@@ -104,11 +105,11 @@ class Account : public ConnectableRouter {
     /// \brief Returns true if the account should be stored.
     virtual bool isPersisted() const;
 
-    virtual void addToMessage(Atlas::Message::MapType &) const;
-    virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
+    void addToMessage(Atlas::Message::MapType &) const override;
+    void addToEntity(const Atlas::Objects::Entity::RootEntity &) const override;
 
-    virtual void externalOperation(const Operation & op, Link &);
-    virtual void operation(const Operation &, OpVector &);
+    void externalOperation(const Operation & op, Link &) override;
+    void operation(const Operation &, OpVector &) override;
 
     virtual void LogoutOperation(const Operation &, OpVector &);
     virtual void CreateOperation(const Operation &, OpVector &);

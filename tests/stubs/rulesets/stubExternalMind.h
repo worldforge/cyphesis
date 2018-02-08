@@ -27,19 +27,11 @@
 //#define STUB_ExternalMind_ExternalMind
    ExternalMind::ExternalMind(LocatedEntity &)
     : Router(LocatedEntity)
-    , m_external(nullptr)
+    , m_link(nullptr)
   {
     
   }
 #endif //STUB_ExternalMind_ExternalMind
-
-#ifndef STUB_ExternalMind_ExternalMind_DTOR
-//#define STUB_ExternalMind_ExternalMind_DTOR
-   ExternalMind::~ExternalMind()
-  {
-    
-  }
-#endif //STUB_ExternalMind_ExternalMind_DTOR
 
 #ifndef STUB_ExternalMind_externalOperation
 //#define STUB_ExternalMind_externalOperation
