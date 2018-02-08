@@ -80,8 +80,8 @@ Connection::~Connection()
         ExternalMindsManager::instance()->removeConnection(routerId);
     }
 
-    RouterMap::iterator Iend = m_objects.end();
-    for (RouterMap::iterator I = m_objects.begin(); I != Iend; ++I) {
+    auto Iend = m_objects.end();
+    for (auto I = m_objects.begin(); I != Iend; ++I) {
         disconnectObject(I, "Disconnect");
     }
 
@@ -111,12 +111,12 @@ Account * Connection::addNewAccount(const std::string & type,
     long intId = newId(newAccountId);
     if (intId < 0) {
         log(ERROR, "Account creation failed as no ID available");
-        return 0;
+        return nullptr;
     }
 
     Account * account = newAccount(type, username, hash, newAccountId, intId);
-    if (account == 0) {
-        return 0;
+    if (account == nullptr) {
+        return nullptr;
     }
     addObject(account);
     assert(account->m_connection == this);
@@ -134,17 +134,17 @@ void Connection::disconnectObject(RouterMap::iterator I,
                                   const std::string & event)
 {
     ConnectableRouter * cr = dynamic_cast<ConnectableRouter *>(I->second);
-    if (cr != 0) {
+    if (cr != nullptr) {
         // FIXME assert that the connection pointer points to this
-        cr->m_connection = 0;
+        cr->m_connection = nullptr;
         Account * ac = dynamic_cast<Account *>(cr);
-        if (ac != 0) {
+        if (ac != nullptr) {
             disconnectAccount(ac, I, event);
         }
         return;
     }
     Character * chr = dynamic_cast<Character *>(I->second);
-    if (chr != 0) {
+    if (chr != nullptr) {
         int taken = chr->unlinkExternal(this);
         if (taken == 0) {
             logEvent(DROP_CHAR, String::compose("%1 - %2 %4 character (%3)",
@@ -163,7 +163,6 @@ void Connection::disconnectObject(RouterMap::iterator I,
                                        chr->m_externalMind->connectionId()));
         }
     }
-    return;
 }
 
 void Connection::setPossessionEnabled(bool enabled, const std::string& routerId)
@@ -316,7 +315,7 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
     // account, either from existing account ....
     Account * account = m_server.getAccountByName(username);
     // or if not, from the database
-    if (account == 0 || verifyCredentials(*account, arg) != 0) {
+    if (account == nullptr || verifyCredentials(*account, arg) != 0) {
         clientError(op, "Login is invalid", res);
         return;
     }
@@ -328,8 +327,8 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
     }
     // Connect everything up
     addObject(account);
-    EntityDict::const_iterator J = account->getCharacters().begin();
-    EntityDict::const_iterator Jend = account->getCharacters().end();
+    auto J = account->getCharacters().begin();
+    auto Jend = account->getCharacters().end();
     for (; J != Jend; ++J) {
         addEntity(J->second);
     }
@@ -384,7 +383,7 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
     const std::string & password = passwd_attr.String();
 
     if (username.empty() || password.empty() ||
-        (0 != m_server.getAccountByName(username))) {
+        (nullptr != m_server.getAccountByName(username))) {
         // Account exists, or creation data is duff
         clientError(op, "Account creation is invalid", res);
         return;
@@ -394,7 +393,7 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
         type = arg->getParent();
     }
     Account * account = addNewAccount(type, username, password);
-    if (account == 0) {
+    if (account == nullptr) {
         clientError(op, "Account creation failed", res);
         return;
     }
@@ -437,7 +436,7 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
         error(op, "Got logout for non numeric entity ID", res);
         return;
     }
-    RouterMap::iterator I = m_objects.find(obj_id);
+    auto I = m_objects.find(obj_id);
     if (I == m_objects.end()) {
         error(op, String::compose("Got logout for unknown entity ID(%1)",
                                   obj_id),
@@ -466,8 +465,8 @@ void Connection::disconnectAccount(Account * ac,
         return;
     }
     m_objects.erase(I);
-    EntityDict::const_iterator J = ac->getCharacters().begin();
-    EntityDict::const_iterator Jend = ac->getCharacters().end();
+    auto J = ac->getCharacters().begin();
+    auto Jend = ac->getCharacters().end();
     for (; J != Jend; ++J) {
         LocatedEntity * ent = J->second;
         Character * chr = dynamic_cast<Character *>(ent);

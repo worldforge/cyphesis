@@ -56,12 +56,12 @@ void ExternalMind::deleteEntity(const std::string & id, bool forceDelete)
 
 void ExternalMind::purgeEntity(const LocatedEntity & ent, bool forceDelete)
 {
-    if (ent.m_contains != 0) {
-        LocatedEntitySet::const_iterator I = ent.m_contains->begin();
-        LocatedEntitySet::const_iterator Iend = ent.m_contains->end();
+    if (ent.m_contains != nullptr) {
+        auto I = ent.m_contains->begin();
+        auto Iend = ent.m_contains->end();
         for (; I != Iend; ++I) {
             LocatedEntity * child = *I;
-            assert(child != 0);
+            assert(child != nullptr);
             purgeEntity(*child);
         }
     }
@@ -72,10 +72,6 @@ ExternalMind::ExternalMind(LocatedEntity & e) : Router(e.getId(), e.getIntId()),
                                                 m_external(0),
                                                 m_entity(e),
                                                 m_lossTime(0.)
-{
-}
-
-ExternalMind::~ExternalMind()
 {
 }
 
@@ -97,7 +93,7 @@ void ExternalMind::operation(const Operation & op, OpVector & res)
     //would make sure that only those players which are active end up in the real world.
     //Another solution is to do something with the entity when the connection is cut; perhaps move
     //it to limbo or some other place. All of these solutions are better than just deleting it.
-    if (m_external == 0) {
+    if (m_external == nullptr) {
         if (m_entity.getFlags() & entity_ephem) {
             // If this entity no longer has a connection, and is ephemeral
             // we should delete it.
@@ -160,14 +156,14 @@ void ExternalMind::operation(const Operation & op, OpVector & res)
 
 const std::string & ExternalMind::connectionId()
 {
-    assert(m_external != 0);
+    assert(m_external != nullptr);
     return m_external->getId();
 }
 
 void ExternalMind::linkUp(Link * c)
 {
     m_external = c;
-    if (c == 0) {
+    if (c == nullptr) {
         m_lossTime = BaseWorld::instance().getTime();
     }
 }

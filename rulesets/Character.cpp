@@ -271,8 +271,9 @@ LocatedEntity * Character::findInInventory(const std::string & id)
 /// @param intId Integer identifier
 Character::Character(const std::string & id, long intId) :
            Thing(id, intId),
-               m_movement(*new Pedestrian(*this)),
-               m_proxyMind(new ProxyMind(id, intId, *this)), m_externalMind(0)
+           m_movement(*new Pedestrian(*this)),
+           m_proxyMind(new ProxyMind(id, intId, *this)),
+           m_externalMind(nullptr)
 {
     //Prevent the proxy mind from being deleted when all references to itself are removed
     //(for example through a Sight of a Delete).
@@ -296,17 +297,19 @@ Character::~Character()
 
 int Character::linkExternal(Link * link)
 {
-    if (m_externalMind == 0) {
+    if (m_externalMind == nullptr) {
         m_externalMind = new ExternalMind(*this);
     } else if (m_externalMind->isLinked()) {
         return -1;
     }
     m_externalMind->linkUp(link);
 
-    if (getProperty("external") == 0) {
+    if (getProperty("external") == nullptr) {
         ExternalProperty * ep = new ExternalProperty(m_externalMind);
         // FIXME ensure this is install()ed and apply()ed
         setProperty("external", ep);
+        ep->install(this, "external");
+        ep->apply(this);
     }
 
     Anonymous update_arg;
@@ -336,7 +339,7 @@ int Character::linkExternal(Link * link)
 
 int Character::unlinkExternal(Link * link)
 {
-    if (m_externalMind == 0) {
+    if (m_externalMind == nullptr) {
         log(ERROR, "Character is not connected. " + describeEntity());
         return -1;
     }
@@ -369,7 +372,7 @@ int Character::unlinkExternal(Link * link)
     // We used to delete the external mind here, but now we
     // leave it in place, as it takes care of the disconnected
     // character.
-    m_externalMind->linkUp(0);
+    m_externalMind->linkUp(nullptr);
     externalLinkChanged.emit();
 
     //If the entity is marked as "transient" we should remove it from the world once it's not controlled anymore.
@@ -418,7 +421,7 @@ void Character::clearTask(OpVector & res)
 {
     TasksProperty * tp = modPropertyClass<TasksProperty>(TASKS);
 
-    if (tp == 0) {
+    if (tp == nullptr) {
         log(NOTICE, "Clearing task when no property exists. " + describeEntity());
         return;
     }
@@ -446,7 +449,7 @@ void Character::InfoOperation(const Operation & op, OpVector & res)
 {
     TasksProperty * tp = modPropertyClass<TasksProperty>(TASKS);
 
-    if (tp == 0) {
+    if (tp == nullptr) {
         return;
     }
 
@@ -571,13 +574,13 @@ void Character::UseOperation(const Operation & op, OpVector & res)
 
     // Are we going to modify this really?
     EntityProperty * rhw = modPropertyClass<EntityProperty>(RIGHT_HAND_WIELD);
-    if (rhw == 0) {
+    if (rhw == nullptr) {
         error(op, "Character::UseOp No tool wielded, no right_hand_wield property found", res, getId());
         return;
     }
 
     LocatedEntity * tool = rhw->data().get();
-    if (tool == 0) {
+    if (tool == nullptr) {
         error(op, "Character::UseOp No tool wielded, no entity found", res, getId());
         return;
     }
@@ -602,8 +605,8 @@ void Character::UseOperation(const Operation & op, OpVector & res)
         log(ERROR, "Character::UseOp Tool operation list is empty. " + describeEntity());
         return;
     }
-    ListType::const_iterator J = toolOpList.begin();
-    ListType::const_iterator Jend = toolOpList.end();
+    auto J = toolOpList.begin();
+    auto Jend = toolOpList.end();
     assert(J != Jend);
     if (!(*J).isString()) {
         log(ERROR, "Character::UseOp Tool operation list is malformed. " + describeEntity());
@@ -620,7 +623,7 @@ void Character::UseOperation(const Operation & op, OpVector & res)
         }
     }
 
-    RootEntity entity_arg(0);
+    RootEntity entity_arg(nullptr);
 
     assert(!entity_arg.isValid());
 
@@ -716,7 +719,7 @@ void Character::UseOperation(const Operation & op, OpVector & res)
     rop->setTo(tool->getId());
 
     LocatedEntity * target_ent = BaseWorld::instance().getEntity(entity_arg->getId());
-    if (target_ent == 0) {
+    if (target_ent == nullptr) {
         error(op, "Character::UseOperation Target does not exist", res, getId());
         return;
     }
@@ -747,7 +750,7 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
             wieldedEntity->collectObservers(prevObserving);
         }
 
-        rhw->data() = EntityRef(0);
+        rhw->data() = EntityRef(nullptr);
         rhw->setFlags(flag_unsent);
         // FIXME Remove the property?
 
@@ -779,7 +782,7 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    if (m_contains == 0 || m_contains->find(item) == m_contains->end()) {
+    if (m_contains == nullptr || m_contains->find(item) == m_contains->end()) {
         error(op, String::compose("Wield arg %1(%2) is not in inventory "
                 "of %3(%4)", item->getType()->name(), id, getType()->name(), getId()), res, getId());
         return;
@@ -864,7 +867,7 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
     }
 
     LocatedEntity * attack_ent = BaseWorld::instance().getEntity(op->getFrom());
-    if (attack_ent == 0) {
+    if (attack_ent == nullptr) {
         log(ERROR, "AttackOperation: Attack op from non-existant ID");
         return;
     }
@@ -872,20 +875,20 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
     // FIXME Is this dynamic cast required?
     Character * attacker = dynamic_cast<Character *>(attack_ent);
 
-    if (attacker == 0) {
+    if (attacker == nullptr) {
         log(ERROR, "AttackOperation: Attack op from non-character entity");
         return;
     }
 
     const TasksProperty * atp = attacker->getPropertyClass<TasksProperty>(TASKS);
-    if (atp != 0 && atp->busy()) {
+    if (atp != nullptr && atp->busy()) {
         log(ERROR, String::compose("AttackOperation: Attack op aborted "
                 "because attacker %1(%2) busy.", attacker->getId(), attacker->getType()));
         return;
     }
 
     TasksProperty * tp = requirePropertyClass<TasksProperty>(TASKS);
-    if (tp != 0 && tp->busy()) {
+    if (tp != nullptr && tp->busy()) {
         log(ERROR, String::compose("AttackOperation: Attack op aborted "
                 "because defender %1(%2) busy.", getId(), getType()));
         return;
@@ -893,7 +896,7 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
 
     Task * combat = BaseWorld::instance().newTask("combat", *this);
 
-    if (combat == 0) {
+    if (combat == nullptr) {
         log(ERROR, "Character::AttackOperation: Unable to create combat task");
         return;
     }
@@ -904,7 +907,7 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
 
     combat = BaseWorld::instance().newTask("combat", *attacker);
 
-    if (combat == 0) {
+    if (combat == nullptr) {
         log(ERROR, "Character::AttackOperation: Unable to create combat task");
         return;
     }
@@ -926,7 +929,7 @@ void Character::ActuateOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    RootEntity entity_arg(0);
+    RootEntity entity_arg(nullptr);
 
     assert(!entity_arg.isValid());
 
@@ -1007,8 +1010,8 @@ void Character::ActuateOperation(const Operation & op, OpVector & res)
         log(ERROR, "Character::mindActuateOp device operation list is empty. " + describeEntity());
         return;
     }
-    ListType::const_iterator J = deviceOpList.begin();
-    ListType::const_iterator Jend = deviceOpList.end();
+    auto J = deviceOpList.begin();
+    auto Jend = deviceOpList.end();
     assert(J != Jend);
 
     for (; J != Jend; ++J) {
@@ -1301,7 +1304,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         debug(std::cout << "Moving something else. " << other_id << std::endl << std::flush
         ;);
         LocatedEntity * other = BaseWorld::instance().getEntity(other_id);
-        if (other == 0) {
+        if (other == nullptr) {
             Unseen u;
 
             Anonymous unseen_arg;
@@ -1371,7 +1374,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         debug(std::cout << "Changing loc" << std::endl << std::flush
         ;);
         LocatedEntity * target_loc = BaseWorld::instance().getEntity(new_loc);
-        if (target_loc == 0) {
+        if (target_loc == nullptr) {
             Unseen u;
 
             Anonymous unseen_arg;
@@ -1520,10 +1523,10 @@ void Character::mindCombineOperation(const Operation & op, OpVector & res)
         log(ERROR, "mindCombineOperation: combine op has no argument. " + describeEntity());
         return;
     }
-    std::vector<Root>::const_iterator I = args.begin();
+    auto I = args.begin();
     const Root & arg1 = *I;
     op->setTo(arg1->getId());
-    std::vector<Root>::const_iterator Iend = args.end();
+    auto Iend = args.end();
     for (; I != Iend; ++I) {
         const Root & arg = *I;
         if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
@@ -1567,7 +1570,7 @@ void Character::mindDivideOperation(const Operation & op, OpVector & res)
         log(ERROR, "mindDivideOperation: op has no argument. " + describeEntity());
         return;
     }
-    std::vector<Root>::const_iterator I = args.begin();
+    auto I = args.begin();
     const Root & arg1 = *I;
     if (!arg1->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         error(op, "Character::mindDivideOp arg 1 has no ID.", res, getId());
@@ -1576,7 +1579,7 @@ void Character::mindDivideOperation(const Operation & op, OpVector & res)
     // FIXME Check entity to be divided is in inventory
     op->setTo(arg1->getId());
     ++I;
-    std::vector<Root>::const_iterator Iend = args.end();
+    auto Iend = args.end();
     for (; I != Iend; ++I) {
         const Root & arg = *I;
         if (arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {

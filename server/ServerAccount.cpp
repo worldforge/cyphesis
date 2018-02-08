@@ -58,9 +58,6 @@ ServerAccount::ServerAccount(Connection * conn,
 {
 }
 
-ServerAccount::~ServerAccount()
-{
-}
 
 /// \brief Get the type of account ("server" in this case)
 ///

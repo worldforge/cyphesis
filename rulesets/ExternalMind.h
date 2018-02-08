@@ -40,13 +40,14 @@ class ExternalMind : public Router {
     void purgeEntity(const LocatedEntity & ent, bool forceDelete = false);
   public:
 
-    ExternalMind(LocatedEntity &);
-    virtual ~ExternalMind();
+    explicit ExternalMind(LocatedEntity &);
+
+    ~ExternalMind() override = default;
 
     void externalOperation(const Operation & op, Link &) override;
     void operation(const Operation &, OpVector &) override;
 
-    bool isLinked() { return m_external != 0; }
+    bool isLinked() { return m_external != nullptr; }
     bool isLinkedTo(Link * c) { return m_external == c; }
 
     const std::string & connectionId();

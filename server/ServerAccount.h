@@ -28,25 +28,27 @@
 /// \brief This is a class for handling users with administrative priveleges
 class ServerAccount : public Account {
   protected:
-    virtual int characterError(const Operation & op,
-                               const Atlas::Objects::Root & ent,
-                               OpVector & res) const;
+
+    int characterError(const Operation & op,
+                       const Atlas::Objects::Root & ent,
+                       OpVector & res) const override;
 
     LocatedEntity * addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &,
                                  const Atlas::Objects::Root &);
 
-    virtual void createObject(const std::string &,
-                              const Atlas::Objects::Root &,
-                              const Operation &,
-                              OpVector &);
+    void createObject(const std::string &,
+                      const Atlas::Objects::Root &,
+                      const Operation &,
+                      OpVector &) override;
   public:
     ServerAccount(Connection * conn, const std::string & username,
                   const std::string & passwd,
                   const std::string & id, long intId);
-    virtual ~ServerAccount();
 
-    virtual const char * getType() const;
+    ~ServerAccount() override = default;
+
+    const char * getType() const override;
 
     friend class ServerAccounttest;
 };

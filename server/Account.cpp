@@ -93,7 +93,7 @@ void Account::characterDestroyed(long id)
 int Account::connectCharacter(LocatedEntity *chr)
 {
     Character * character = dynamic_cast<Character *>(chr);
-    if (character != 0) {
+    if (character) {
         if (character->linkExternal(m_connection) != 0) {
             log(WARNING, String::compose("Could not take character %1 as it "
                     "already is connected to an external mind.", chr->getId()));
@@ -120,7 +120,7 @@ int Account::connectCharacter(LocatedEntity *chr)
 void Account::addCharacter(LocatedEntity * chr)
 {
     Character * pchar = dynamic_cast<Character *>(chr);
-    if (pchar == 0) {
+    if (pchar == nullptr) {
         return;
     }
     m_charactersDict[chr->getIntId()] = chr;
@@ -135,13 +135,13 @@ LocatedEntity * Account::addNewCharacter(const std::string & typestr,
                                          const RootEntity & ent,
                                          const Root & arg)
 {
-    if (m_connection == 0) {
-        return 0;
+    if (m_connection == nullptr) {
+        return nullptr;
     }
     debug(std::cout << "Account::Add_character" << std::endl << std::flush;);
     LocatedEntity * chr = createCharacterEntity(typestr, ent, arg);
-    if (chr == 0) {
-        return 0;
+    if (chr == nullptr) {
+        return nullptr;
     }
     debug(std::cout << "Added" << std::endl << std::flush;);
     assert(chr->m_location.isValid());
@@ -175,7 +175,7 @@ LocatedEntity * Account::createCharacterEntity(const std::string & typestr,
 
 void Account::LogoutOperation(const Operation & op, OpVector & res)
 {
-    if (m_connection == 0) {
+    if (m_connection == nullptr) {
         log(ERROR, "Account::LogoutOperation on account that doesn't seem to "
                    "be connected.");
         return;
@@ -218,7 +218,7 @@ void Account::addToMessage(MapType & omap) const
         omap["password"] = m_password;
     }
     omap["parent"] = getType();
-    if (m_connection != 0) {
+    if (m_connection != nullptr) {
         BaseWorld & world = m_connection->m_server.m_world;
         ListType spawn_list;
         if (world.getSpawnList(spawn_list) == 0) {
@@ -238,10 +238,10 @@ void Account::addToMessage(MapType & omap) const
         }
     }
     ListType char_list;
-    EntityDict::const_iterator I = m_charactersDict.begin();
-    EntityDict::const_iterator Iend = m_charactersDict.end();
+    auto I = m_charactersDict.begin();
+    auto Iend = m_charactersDict.end();
     for (; I != Iend; ++I) {
-        char_list.push_back(I->second->getId());
+        char_list.emplace_back(I->second->getId());
     }
     omap["characters"] = char_list;
     omap["objtype"] = "obj";
@@ -276,10 +276,10 @@ void Account::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
         }
     }
     ListType char_list;
-    EntityDict::const_iterator I = m_charactersDict.begin();
-    EntityDict::const_iterator Iend = m_charactersDict.end();
+    auto I = m_charactersDict.begin();
+    auto Iend = m_charactersDict.end();
     for (; I != Iend; ++I) {
-        char_list.push_back(I->second->getId());
+        char_list.emplace_back(I->second->getId());
     }
     ent->setAttr("characters", char_list);
     ent->setObjtype("obj");
@@ -288,7 +288,7 @@ void Account::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 
 void Account::externalOperation(const Operation & op, Link &)
 {
-    assert(m_connection != 0);
+    assert(m_connection != nullptr);
     OpVector reply;
     long serialno = op->getSerialno();
     operation(op, reply);
@@ -378,13 +378,13 @@ void Account::createObject(const std::string & type_str,
 
     LocatedEntity * entity = addNewCharacter(type_str, new_character, arg);
 
-    if (entity == 0) {
+    if (entity == nullptr) {
         error(op, "Character creation failed", res, getId());
         return;
     }
 
     Character * character = dynamic_cast<Character *>(entity);
-    if (character != 0) {
+    if (character != nullptr) {
         // Inform the client that it has successfully subscribed
         Info info;
         Anonymous info_arg;
@@ -406,16 +406,16 @@ int Account::filterTasks(const ListType & tasks,
                          const RootEntity & filtered_arg) const
 {
     ListType filtered_tasks;
-    ListType::const_iterator I = tasks.begin();
-    ListType::const_iterator Iend = tasks.end();
+    auto I = tasks.begin();
+    auto Iend = tasks.end();
     for (; I != Iend; ++I) {
         if (!I->isMap()) {
             return -1;
         }
         const MapType & task = I->asMap();
         MapType filtered_task;
-        MapType::const_iterator J = task.find("name");
-        MapType::const_iterator Jend = task.end();
+        auto J = task.find("name");
+        auto Jend = task.end();
         if (J == Jend || !J->second.isString()) {
             log(ERROR, "Task has no name");
             return -1;
@@ -429,7 +429,7 @@ int Account::filterTasks(const ListType & tasks,
             }
             filtered_task[J->first] = J->second;
         }
-        filtered_tasks.push_back(filtered_task);
+        filtered_tasks.emplace_back(filtered_task);
     }
     filtered_arg->setAttr("tasks", filtered_tasks);
     return 0;
@@ -537,7 +537,7 @@ void Account::ImaginaryOperation(const Operation & op, OpVector & res)
     } else {
         s->setTo(op->getTo());
     }
-    if (m_connection != 0) {
+    if (m_connection != nullptr) {
         m_connection->m_server.m_lobby.operation(s, res);
     }
 }
@@ -570,14 +570,14 @@ void Account::TalkOperation(const Operation & op, OpVector & res)
     } else {
         s->setTo(op->getTo());
     }
-    if (m_connection != 0) {
+    if (m_connection != nullptr) {
         m_connection->m_server.m_lobby.operation(s, res);
     }
 }
 
 void Account::LookOperation(const Operation & op, OpVector & res)
 {
-    if (m_connection == 0) {
+    if (m_connection == nullptr) {
         return;
     }
     const std::vector<Root> & args = op->getArgs();
@@ -640,7 +640,7 @@ void Account::LookOperation(const Operation & op, OpVector & res)
         return;
     }
     const AccountDict & accounts = m_connection->m_server.m_lobby.getAccounts();
-    AccountDict::const_iterator K = accounts.find(to);
+    auto K = accounts.find(to);
     if (K != accounts.end()) {
         Sight s;
         s->setTo(getId());
@@ -659,6 +659,6 @@ void Account::GetOperation(const Operation & op, OpVector & res)
 
 void Account::OtherOperation(const Operation & op, OpVector & res)
 {
-    std::string parent = op->getParent() == "" ? "-" : op->getParent();
+    std::string parent = op->getParent().empty() ? "-" : op->getParent();
     error(op, String::compose("Unknown operation %1 in Account", parent), res);
 }
