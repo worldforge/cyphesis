@@ -12,7 +12,7 @@
     </map>
     <string name="id">hammer_b</string>
     <string name="objtype">class</string>
-    <string name="parent">tool</string>
+    <string name="parent">thing</string>
   </map>
 
 </atlas>
