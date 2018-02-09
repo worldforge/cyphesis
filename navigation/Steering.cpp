@@ -33,23 +33,29 @@
 static const bool debug_flag = true;
 
 Steering::Steering(MemEntity& avatar) :
-        mAwareness(nullptr), mAvatar(avatar), mDestinationEntityId(-1), mDestinationRadius(1.0), mSteeringEnabled(false), mUpdateNeeded(false), mPadding(16), mSpeed(2), mExpectingServerMovement(false), mPathResult(0), mAvatarHorizRadius(0.4)
+        mAwareness(nullptr),
+        mAvatar(avatar),
+        mDestinationEntityId(-1),
+        mDestinationRadius(1.0),
+        mSteeringEnabled(false),
+        mUpdateNeeded(false),
+        mPadding(16),
+        mSpeed(2),
+        mExpectingServerMovement(false),
+        mPathResult(0),
+        mAvatarHorizRadius(0.4)
 {
 
-}
-
-Steering::~Steering()
-{
 }
 
 void Steering::setAwareness(Awareness* awareness)
 {
-    const BBox& bbox = mAvatar.m_location.bBox();
+    auto& bbox = mAvatar.m_location.bBox();
     if (bbox.isValid()) {
         WFMath::CoordType squareHorizRadius = std::max(square(bbox.lowCorner().x()) +
-                                  square(bbox.lowCorner().y()),
+                                  square(bbox.lowCorner().z()),
                                   square(bbox.highCorner().x()) +
-                                  square(bbox.highCorner().y()));
+                                  square(bbox.highCorner().z()));
         mAvatarHorizRadius = std::sqrt(squareHorizRadius);
     }
     mAwareness = awareness;
@@ -86,7 +92,7 @@ void Steering::setDestination(int entityId, const WFMath::Point<3>& entityRelati
 
         //Only update if destination or radius has changed, or if the current tile of the avatar isn't known.
         if (mViewDestination != finalPosition || mDestinationRadius != finalRadius
-                || !mAwareness->isPositionAware(currentAvatarPos.x(), currentAvatarPos.y())) {
+                || !mAwareness->isPositionAware(currentAvatarPos.x(), currentAvatarPos.z())) {
             mViewDestination = finalPosition;
             mDestinationRadius = finalRadius;
             mUpdateNeeded = true;
@@ -101,11 +107,11 @@ void Steering::setAwarenessArea()
 {
     if (mAwareness) {
         if (mViewDestination.isValid()) {
-            WFMath::Point<2> destination2d(mViewDestination.x(), mViewDestination.y());
-            WFMath::Point<2> entityPosition2d(mAvatar.m_location.m_pos.x(), mAvatar.m_location.m_pos.y());
+            WFMath::Point<2> destination2d(mViewDestination.x(), mViewDestination.z());
+            WFMath::Point<2> entityPosition2d(mAvatar.m_location.m_pos.x(), mAvatar.m_location.m_pos.z());
 
             WFMath::Vector<2> direction(destination2d - entityPosition2d);
-            double theta = atan2(direction.y(), direction.x()); // rotation about Z
+            auto theta = std::atan2(direction.y(), direction.x()); // rotation about Y
             WFMath::RotMatrix<2> rm;
             rm.rotation(theta);
 
@@ -233,7 +239,7 @@ WFMath::Point<3> Steering::getCurrentAvatarPosition(double currentTimestamp)
 
 SteeringResult Steering::update(double currentTimestamp)
 {
-    SteeringResult result;
+    SteeringResult result{};
     if (mSteeringEnabled && mAwareness) {
 
         auto currentEntityPos = getCurrentAvatarPosition(currentTimestamp);
@@ -245,9 +251,9 @@ SteeringResult Steering::update(double currentTimestamp)
         if (!mPath.empty()) {
             const auto& finalDestination = mPath.back();
 
-            const WFMath::Point<2> entityPosition(currentEntityPos.x(), currentEntityPos.y());
+            const WFMath::Point<2> entityPosition(currentEntityPos.x(), currentEntityPos.z());
             //First check if we've arrived at our actual destination.
-            if (WFMath::Distance(WFMath::Point<2>(finalDestination.x(), finalDestination.y()), entityPosition) < mAvatarHorizRadius) {
+            if (WFMath::Distance(WFMath::Point<2>(finalDestination.x(), finalDestination.z()), entityPosition) < mAvatarHorizRadius) {
                 //We've arrived at our destination. If we're moving we should stop.
                 if (mLastSentVelocity != WFMath::Vector<2>::ZERO()) {
                     result.direction = WFMath::Vector<3>::ZERO();
@@ -298,8 +304,8 @@ SteeringResult Steering::update(double currentTimestamp)
                         if (mAvatar.m_location.velocity() == WFMath::Vector<3>::ZERO() && !mExpectingServerMovement) {
                             shouldSend = true;
                         } else {
-                            double currentTheta = atan2(mLastSentVelocity.y(), mLastSentVelocity.x());
-                            double newTheta = atan2(velocity.y(), velocity.x());
+                            auto currentTheta = std::atan2(mLastSentVelocity.y(), mLastSentVelocity.x());
+                            auto newTheta = std::atan2(velocity.y(), velocity.x());
 
                             //If we divert too much from where we need to go we must adjust.
                             if (std::abs(currentTheta - newTheta) > WFMath::numeric_constants<double>::pi() / 20) {

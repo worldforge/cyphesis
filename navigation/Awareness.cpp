@@ -177,13 +177,12 @@ Awareness::Awareness(const LocatedEntity& domainEntity, float agentRadius, float
         const WFMath::Point<3>& lower = extent.lowCorner();
         const WFMath::Point<3>& upper = extent.highCorner();
 
-        //Recast uses y for the vertical axis
         mCfg.bmin[0] = lower.x();
-        mCfg.bmin[2] = lower.z();
         mCfg.bmin[1] = std::min(-500.f, lower.y());
+        mCfg.bmin[2] = lower.z();
         mCfg.bmax[0] = upper.x();
-        mCfg.bmax[2] = upper.z();
         mCfg.bmax[1] = std::max(500.f, upper.y());
+        mCfg.bmax[2] = upper.z();
 
         int gw = 0, gh = 0;
         float cellsize = mAgentRadius / 2.0f; //Should be enough for outdoors; indoors we might want r / 3.0 instead
@@ -761,7 +760,7 @@ int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& e
 
 // At this point we have our path.
     for (int nVert = 0; nVert < nVertCount; nVert++) {
-        path.emplace_back(StraightPath[nVert * 3], StraightPath[(nVert * 3) + 2], StraightPath[(nVert * 3) + 1]);
+        path.emplace_back(StraightPath[nVert * 3], StraightPath[(nVert * 3) + 1], StraightPath[(nVert * 3) + 2]);
     }
 
     return nVertCount;
@@ -1095,7 +1094,7 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
 //Then define the triangles
     for (int y = 0; y < (sizeY - 1); y++) {
         for (int x = 0; x < (sizeX - 1); x++) {
-            size_t vertPtr = (y * sizeX) + x;
+            int vertPtr = (y * sizeX) + x;
             //make a square, including the vertices to the right and below
             trisVector.push_back(vertPtr);
             trisVector.push_back(vertPtr + sizeX);

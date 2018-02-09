@@ -69,8 +69,8 @@ struct SteeringResult {
 class Steering: public virtual sigc::trackable
 {
 public:
-	Steering(MemEntity& avatar);
-	virtual ~Steering();
+	explicit Steering(MemEntity& avatar);
+	virtual ~Steering() = default;
 
 	void setAwareness(Awareness* awareness);
 
