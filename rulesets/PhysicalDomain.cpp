@@ -149,14 +149,14 @@ class PhysicalDomain::PhysicalMotionState : public btMotionState
         }
 
         ///synchronizes world transform from user to physics
-        virtual void getWorldTransform(btTransform& centerOfMassWorldTrans) const
+        void getWorldTransform(btTransform& centerOfMassWorldTrans) const override
         {
             centerOfMassWorldTrans = m_worldTrans * m_centerOfMassOffset.inverse();
         }
 
         ///synchronizes world transform from physics to user
         ///Bullet only calls the update of worldtransform for active objects
-        virtual void setWorldTransform(const btTransform& /* centerOfMassWorldTrans */)
+        void setWorldTransform(const btTransform& /* centerOfMassWorldTrans */) override
         {
 
 
@@ -226,7 +226,7 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
 
     m_visibilityWorld->setForceUpdateAllAabbs(false);
 
-    const TerrainProperty* terrainProperty = m_entity.getPropertyClass<TerrainProperty>("terrain");
+    auto terrainProperty = m_entity.getPropertyClass<TerrainProperty>("terrain");
     if (terrainProperty) {
         m_terrain = &terrainProperty->getData();
     }
@@ -236,19 +236,23 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
     //Update the linear velocity of all self propelling entities each tick.
     auto preTickCallback = [](btDynamicsWorld* world, btScalar timeStep) {
 
-        std::map<int, PropelEntry>* propellingEntries = static_cast<std::map<int, PropelEntry>*>(world->getWorldUserInfo());
+        auto propellingEntries = static_cast<std::map<int, PropelEntry>*>(world->getWorldUserInfo());
         for (auto& entry : *propellingEntries) {
 //            const btVector3& velocity = entry.second.bulletEntry->rigidBody->getLinearVelocity();
 //            entry.second.bulletEntry->rigidBody->setLinearVelocity(btVector3(entry.second.velocity.x(), velocity.y()+ (world->getGravity().y() * timeStep), entry.second.velocity.z()));
 
             float verticalVelocity = entry.second.bulletEntry->rigidBody->getLinearVelocity().y();
 
+            //TODO: check if we're on the ground, in the water or flying and apply different speed modifiers
+            double speed = entry.second.bulletEntry->speedGround;
+            btVector3 finalSpeed = entry.second.velocity * speed;
+
             //Apply gravity
             if (verticalVelocity != 0) {
                 verticalVelocity += world->getGravity().y() * timeStep;
-                entry.second.bulletEntry->rigidBody->setLinearVelocity(entry.second.velocity + btVector3(0, verticalVelocity, 0));
+                entry.second.bulletEntry->rigidBody->setLinearVelocity(finalSpeed + btVector3(0, verticalVelocity, 0));
             } else {
-                entry.second.bulletEntry->rigidBody->setLinearVelocity(entry.second.velocity);
+                entry.second.bulletEntry->rigidBody->setLinearVelocity(finalSpeed);
             }
 
             //When entities are being propelled they will have low friction. When propelling stop the friction will be returned in setVelocity.
@@ -351,7 +355,7 @@ void PhysicalDomain::buildTerrainPage(Mercator::Segment& segment, float friction
     float* data = terrainEntry.data->data();
     const float* mercatorData = segment.getPoints();
 
-    memcpy(data, mercatorData, vertexCountOneSide*vertexCountOneSide*sizeof(float));
+    memcpy(data, mercatorData, vertexCountOneSide * vertexCountOneSide * sizeof(float));
 
     float min = segment.getMin();
     float max = segment.getMax();
@@ -474,8 +478,8 @@ class PhysicalDomain::VisibilityCallback : public btCollisionWorld::ContactResul
 
         std::set<BulletEntry*> m_entries;
 
-        virtual btScalar addSingleResult(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap,
-                                         int partId1, int index1)
+        btScalar addSingleResult(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap,
+                                         int partId1, int index1) override
         {
             BulletEntry* bulletEntry = static_cast<BulletEntry*>(colObj1Wrap->m_collisionObject->getUserPointer());
             if (bulletEntry) {
@@ -656,7 +660,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     m_entries.insert(std::make_pair(entity.getIntId(), entry));
     entry->entity = &entity;
 
-    const AngularFactorProperty* angularFactorProp = entity.getPropertyClassFixed<AngularFactorProperty>();
+    auto angularFactorProp = entity.getPropertyClassFixed<AngularFactorProperty>();
     if (angularFactorProp && angularFactorProp->data().isValid()) {
         angularFactor = Convert::toBullet(angularFactorProp->data());
     }
@@ -684,7 +688,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         //"Center of mass offset" is the inverse of the center of the object in relation to origo.
 
         auto size = bbox.highCorner() - bbox.lowCorner();
-        const GeometryProperty* geometryProp = entity.getPropertyClassFixed<GeometryProperty>();
+        auto geometryProp = entity.getPropertyClassFixed<GeometryProperty>();
         if (geometryProp) {
             std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> instance = geometryProp->createShape(bbox, entry->centerOfMassOffset);
             entry->collisionShape = instance.first;
@@ -728,6 +732,16 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         entry->rigidBody->setCcdMotionThreshold(minSize * CCD_MOTION_FACTOR);
         entry->rigidBody->setCcdSweptSphereRadius(minSize * CCD_SPHERE_FACTOR);
 
+        //Set up cached speed values
+        auto speedGroundProp = entity.getPropertyType<double>("speed-ground");
+        entry->speedGround = speedGroundProp ? speedGroundProp->data() : 0;
+
+        auto speedWaterProp = entity.getPropertyType<double>("speed-water");
+        entry->speedWater = speedWaterProp ? speedWaterProp->data() : 0;
+
+        auto speedFlightProp = entity.getPropertyType<double>("speed-flight");
+        entry->speedFlight = speedFlightProp ? speedFlightProp->data() : 0;
+
         if (mass == 0) {
             entry->rigidBody->setCollisionFlags(entry->rigidBody->getCollisionFlags() | btCollisionObject::CF_STATIC_OBJECT);
         }
@@ -740,7 +754,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         //Call to "activate" will be ignored for bodies marked with CF_STATIC_OBJECT
         entry->rigidBody->activate();
 
-        const PropelProperty* propelProp = entity.getPropertyClassFixed<PropelProperty>();
+        auto propelProp = entity.getPropertyClassFixed<PropelProperty>();
         if (propelProp && propelProp->data().isValid() && propelProp->data() != WFMath::Vector<3>::ZERO()) {
             applyVelocity(*entry, propelProp->data());
         }
@@ -755,7 +769,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     {
 
         btSphereShape* visSphere = new btSphereShape(0);
-        const VisibilityProperty* visProp = entity.getPropertyClass<VisibilityProperty>("visibility");
+        auto visProp = entity.getPropertyClass<VisibilityProperty>("visibility");
         if (visProp) {
             visSphere->setUnscaledRadius(visProp->data() / VISIBILITY_SCALING_FACTOR);
         } else if (entity.m_location.bBox().isValid() && entity.m_location.radius() > 0) {
@@ -853,9 +867,8 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
         delete entry->motionState;
         delete entry->rigidBody;
     }
-    if (entry->collisionShape) {
-        delete entry->collisionShape;
-    }
+    delete entry->collisionShape;
+
     entry->propertyUpdatedConnection.disconnect();
     if (entry->viewSphere) {
         m_visibilityWorld->removeCollisionObject(entry->viewSphere);
@@ -1026,6 +1039,12 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
         //sendMoveSight(*bulletEntry);
     } else if (name == TerrainModProperty::property_name) {
         updateTerrainMod(*bulletEntry->entity, true);
+    } else if (name == "speed-ground") {
+        bulletEntry->speedGround = dynamic_cast<Property<double>*>(&prop)->data();
+    } else if (name == "speed-water") {
+        bulletEntry->speedWater = dynamic_cast<Property<double>*>(&prop)->data();
+    } else if (name == "speed-flight") {
+        bulletEntry->speedFlight = dynamic_cast<Property<double>*>(&prop)->data();
     }
 }
 
@@ -1220,8 +1239,8 @@ void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath:
 void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& velocity)
 {
     /**
-                 * A callback which checks if the instance is "grounded", i.e. that there's a contact point which is below its center.
-                 */
+     * A callback which checks if the instance is "grounded", i.e. that there's a contact point which is below its center.
+     */
     struct IsGroundedCallback : public btCollisionWorld::ContactResultCallback
     {
         const btRigidBody& m_body;
@@ -1235,9 +1254,9 @@ void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& 
         }
 
 
-        virtual btScalar addSingleResult(btManifoldPoint& cp,
-                                         const btCollisionObjectWrapper* colObj0, int partId0, int index0,
-                                         const btCollisionObjectWrapper* colObj1, int partId1, int index1)
+        btScalar addSingleResult(btManifoldPoint& cp,
+                                 const btCollisionObjectWrapper* colObj0, int partId0, int index0,
+                                 const btCollisionObjectWrapper* colObj1, int partId1, int index1) override
         {
             //Local collision point, in the body's space
             btVector3 point;

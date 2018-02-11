@@ -40,11 +40,16 @@ Steering::Steering(MemEntity& avatar) :
         mSteeringEnabled(false),
         mUpdateNeeded(false),
         mPadding(16),
-        mSpeed(2),
+        mMaxSpeed(5),
+        mDesiredSpeed(0.5),
         mExpectingServerMovement(false),
         mPathResult(0),
         mAvatarHorizRadius(0.4)
 {
+    auto speedGroundProp = avatar.getPropertyType<double>("speed-ground");
+    if (speedGroundProp) {
+        mMaxSpeed = speedGroundProp->data();
+    }
 
 }
 
@@ -139,9 +144,9 @@ size_t Steering::unawareAreaCount() const {
 }
 
 
-void Steering::setSpeed(float speed)
+void Steering::setDesiredSpeed(float desiredSpeed)
 {
-    mSpeed = speed;
+    mDesiredSpeed = desiredSpeed;
 }
 
 int Steering::getPathResult() const
@@ -273,10 +278,9 @@ SteeringResult Steering::update(double currentTimestamp)
                 WFMath::Vector<2> distance = nextWaypoint - entityPosition;
                 WFMath::Vector<2> velocity = distance;
                 WFMath::Point<2> destination;
-                velocity.normalize();
-                velocity *= mSpeed;
+                velocity = velocity.normalize() * mDesiredSpeed;
 
-                result.timeToNextWaypoint = distance.mag() / mSpeed;
+                result.timeToNextWaypoint = distance.mag() / mMaxSpeed;
 
                 if (mPath.size() == 1) {
                     //if the next waypoint is the destination we should send a "move to position" update to the server, to make sure that we stop when we've arrived.
@@ -286,12 +290,15 @@ SteeringResult Steering::update(double currentTimestamp)
 
                 //Check if we need to divert in order to avoid colliding.
                 WFMath::Vector<2> newVelocity;
-                bool avoiding = mAwareness->avoidObstacles(mAvatar.getIntId(), entityPosition, velocity, newVelocity, currentTimestamp);
+                bool avoiding = mAwareness->avoidObstacles(mAvatar.getIntId(), entityPosition, velocity * mMaxSpeed, newVelocity, currentTimestamp);
                 if (avoiding) {
-                    //debug_print("Need to avoid in steering.");
+                    auto newMag = newVelocity.mag();
+                    auto relativeMag = mMaxSpeed / newMag;
+
                     velocity = newVelocity;
                     velocity.normalize();
-                    velocity *= mSpeed;
+                    velocity *= relativeMag;
+
                     //Schedule a new steering op very soon
                     result.timeToNextWaypoint = 0.2f;
                     mUpdateNeeded = true;

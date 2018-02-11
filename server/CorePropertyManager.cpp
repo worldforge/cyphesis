@@ -203,6 +203,19 @@ CorePropertyManager::CorePropertyManager()
      */
     installProperty<Property<std::string> >("present-model", "string");
 
+    /**
+     * The max speed in meters per second (m/s) when moving over ground.
+     */
+    installProperty<Property<double>>("speed-ground", "float");
+    /**
+     * The max speed in meters per second (m/s) when moving in water.
+     */
+    installProperty<Property<double>>("speed-water", "float");
+    /**
+     * The max speed in meters per second (m/s) when flying.
+     */
+    installProperty<Property<double>>("speed-flight", "float");
+
 
 }
 

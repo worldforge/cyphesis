@@ -109,6 +109,14 @@
         <float name="default">0.3</float>
         <string name="visibility">public</string>
       </map>
+      <map name="speed-ground">
+        <float name="default">5</float>
+        <string name="visibility">public</string>
+      </map>
+      <map name="speed-water">
+        <float name="default">1</float>
+        <string name="visibility">public</string>
+      </map>
     </map>
     <string name="id">mobile</string>
     <string name="objtype">class</string>

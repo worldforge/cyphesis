@@ -15,7 +15,7 @@ When calculating movement and collisions for an entity, only entities belonging 
 A World entity contains a Human and a Chest. The Chest in turn contains a Helmet.
 When the Human moves, collision detection is only carried out between the Human and the Chest, and never between the Human and the Helmet.
 
-When calculating sights, each Domain must be queried in order. So, building on our previous example, if the Human sends a Look op to the Helmet, sight is determined by first checking with the World's domain if the Human can see the Chest. If this is allowed, the Chest's Domain is then queried if the Human is allowed to see the Helmet. If the Chest didn't have a Domain attached this wouldn't be allowed at all. If it has a Domain this can for example be a "chest" domain which first checks the open/closed state of the Chest, and then checks the distance of the Human from itself.
+When calculating sights, each Domain must be queried in order. So, building on our previous example, if the Human sends a Look op to the Helmet, sight is determined by first checking with the World's domain if the Human can see the Chest. If this is allowed, the Chest's Domain is then queried if the Human is allowed to see the Helmet. If the Chest didn't have a Domain attached any child entities are visible is the parent entity is visible. If it has a Domain this can for example be a "chest" domain which first checks the open/closed state of the Chest, and then checks the distance of the Human from itself.
 
 Note that the movement rules means that any entities that are expected to interact with one other physically must belong to the same world. So, consider an open crate entity. If items are to freely be put into the crate and then be able to interact with the world (i.e. falling out if the open crate is tipped) they must all belong to the same parent as the open crate itself. However, if items are to be stuck to the open crate, and not be able to interact with the world in any way, they should instead be entities contained by the crate.
 
@@ -36,7 +36,19 @@ Sights are determined both by checking the closed/open state of the container, a
 
 ### Custom domains
 
-Apart from these domains there's room for more specialized ones, such as an "endless bag". 
+Apart from these domains there's room for more specialized ones, such as an "endless bag".
+
+## Movement
+
+The following only applies to Physical Domains.
+
+Each entity has a "position", an "orientation", a "velocity" and an "angular velocity". The values determine how the entity moves through the world, and are communicated to clients.
+
+However, when a character needs to move, this is done by setting the "propel" property. This property determines how much the character is moving continously on its own. The resulting "velocity" differs from the "propel" value, since collision detection and other physical constraints are taken into account.
+
+Furthermore, the final velocity is calculated by multiplying the "propel" value with one of the "speed-ground", "speed-water" and "speed-flight" values. Which value to use should be decided by the domain depending on where the character is situated and in what state. An absence of such values, or 0, means that the entity can't move throughout the specified medium.
+
+The "propel" property is therefore normalized, in the sense that a value with magnitude of 1 means "full speed". Checks are done so that normal characters shouldn't be allowed to set values with larger magnitude than 1.
 
 
 

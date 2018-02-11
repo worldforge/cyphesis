@@ -84,7 +84,7 @@
 
 #ifndef STUB_Steering_setSpeed
 //#define STUB_Steering_setSpeed
-  void Steering::setSpeed(float speed)
+  void Steering::setDesiredSpeed(float speed)
   {
     
   }

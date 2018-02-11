@@ -1337,26 +1337,27 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     Quaternion new_orientation;
     try {
         //If there's a position specified, that takes precedence (i.e. move as quickly straight to the position).
+        //Note that we still look for a propel attribute, since that can be used to determine the speed of movement.
         if (arg->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
             fromStdVector(new_pos, arg->getPos());
             debug(std::cout << "pos set to " << new_pos << std::endl << std::flush
             ;);
+        }
+
+        //First look for the "propel" attribute; if that's not there look for the legacy "velocity" attribute.
+        //Note that we differ between "propel", which is how an entity propels itself forward, and "velocity"
+        //which is the resulting velocity of the entity, taking all other entities as well as gravity into consideration.
+        Element attr_propel;
+        if (arg->copyAttr("propel", attr_propel) == 0) {
+            try {
+                new_propel.fromAtlas(attr_propel);
+            } catch (...) {
+                //just ignore malformed data
+            }
         } else {
-            //First look for the "propel" attribute; if that's not there look for the legacy "velocity" attribute.
-            //Note that we differ between "propel", which is how an entity propels itself forward, and "velocity"
-            //which is the resulting velocity of the entity, taking all other entities as well as gravity into consideration.
-            Element attr_propel;
-            if (arg->copyAttr("propel", attr_propel) == 0) {
-                try {
-                    new_propel.fromAtlas(attr_propel);
-                } catch (...) {
-                    //just ignore malformed data
-                }
-            } else {
-                if (arg->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
-                    fromStdVector(new_propel, arg->getVelocity());
-                    debug(std::cout << "propel set to " << new_propel << std::endl << std::flush;);
-                }
+            if (arg->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
+                fromStdVector(new_propel, arg->getVelocity());
+                debug(std::cout << "propel set to " << new_propel << std::endl << std::flush;);
             }
         }
 
@@ -1409,8 +1410,18 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
 
     Location ret_location = m_location;
 
+    //If there's a position set, we'll use that to determine the propel value. However, we'll also check if there also was a propel value set,
+    //since the magnitude of that indicates the speed to use (otherwise we'll use full speed).
     if (new_pos.isValid()) {
-        new_propel = new_pos - m_location.pos();
+        if (new_propel.isValid()) {
+            auto mag = new_propel.mag();
+            new_propel = new_pos - m_location.pos();
+            new_propel.normalize();
+            new_propel *= mag;
+        } else {
+            new_propel = new_pos - m_location.pos();
+            new_propel.normalize();
+        }
     }
     // Set up argument for operation
     Anonymous move_arg;
@@ -1424,13 +1435,15 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         ;);
     }
     if (new_propel.isValid()) {
-        //TODO: replace this with various movement speeds for different modes (walking, swimming, flying). Perhaps doing this in the PhysicalDomain though?
         auto mag = new_propel.mag();
         if (mag == 0) {
-            move_arg->setAttr("propel", (new_propel).toAtlas());
+            move_arg->setAttr("propel", new_propel.toAtlas());
         } else {
-            WFMath::CoordType vel_mag = std::min(mag, consts::base_velocity);
-            move_arg->setAttr("propel", (new_propel.normalize() * vel_mag).toAtlas());
+            //We don't allow the mind to set any speed greater than a normalized value.
+            if (mag > 1.0) {
+                new_propel.normalize();
+            }
+            move_arg->setAttr("propel", new_propel.toAtlas());
         }
     }
 

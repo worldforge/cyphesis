@@ -121,9 +121,9 @@ public:
 
 	/**
 	 * @brief Sets the desired speed.
-	 * @param speed The desired speed, in world units per second.
+	 * @param desiredSpeed The desired speed, as a normalized value.
 	 */
-	void setSpeed(float speed);
+	void setDesiredSpeed(float desiredSpeed);
 
 	/**
 	 * @brief Gets the current path.
@@ -215,9 +215,14 @@ private:
 	float mPadding;
 
 	/**
-	 * @brief The desired speed.
+	 * @brief The max speed of the character, when moving with a normalized velocity vector.
 	 */
-	float mSpeed;
+	double mMaxSpeed;
+
+    /**
+     * @brief A normalized value of how much of the max speed we want to keep.
+     */
+    float mDesiredSpeed;
 
 	/**
 	 * @brief True if we're expecting a movement response from the server.

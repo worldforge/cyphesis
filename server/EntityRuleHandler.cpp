@@ -131,6 +131,10 @@ void EntityRuleHandler::installStandardRules()
             {"friction", 10.f},
             {"angularfactor", ListType {0, 0, 0}},
             {"mass", 1.0},
+            //Creator agents should by default move quickly.
+            {"speed-ground", 15},
+            {"speed-water", 15},
+            {"speed-flight", 15}
         });
 
         installEntityClass(decl->getId(), decl->getParent(), decl, dependent, reason, new EntityFactory<Creator>());

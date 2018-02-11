@@ -47,7 +47,7 @@ class Domain
 
     public:
 
-        Domain(LocatedEntity& entity);
+        explicit Domain(LocatedEntity& entity);
 
         virtual ~Domain();
 
@@ -103,7 +103,7 @@ class Domain
          * @param entity The child entity.
          * @param orientation New orientation, applied if valid.
          * @param pos New position, applied if valid.
-         * @param velocity New velocity, applied if valid.
+         * @param velocity New velocity, applied if valid. This is pseudo-normalized, in the sense that a normalized value means "max speed". The final velocity is caluclated by the domain.
          */
         virtual void applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity)
         {
