@@ -123,9 +123,11 @@ void AwareMind::processMoveTick(const Operation & op, OpVector & res)
         if (result.direction.isValid()) {
             Atlas::Objects::Operation::Move move;
             Atlas::Objects::Entity::Anonymous what;
-//            what->setLoc(m_entity->getLocation()->getId());
             what->setId(getId());
-            what->setAttr("velocity", result.direction.toAtlas());
+            what->setAttr("propel", result.direction.toAtlas());
+            WFMath::Quaternion orientation;
+            orientation.rotation(WFMath::Vector<3>(0, 0, 1), result.direction, WFMath::Vector<3>(0, 1, 0));
+            what->setAttr("orientation", orientation.toAtlas());
             if (result.destination.isValid()) {
                 what->setAttr("pos", result.destination.toAtlas());
             }

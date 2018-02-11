@@ -193,10 +193,17 @@ CorePropertyManager::CorePropertyManager()
      */
     installProperty<Property<double>>("step_factor", "float");
 
-}
+    /**
+     * Specifies a mesh to use for client side presentation.
+     */
+    installProperty<Property<std::string> >("present-mesh", "string");
 
-CorePropertyManager::~CorePropertyManager()
-{
+    /**
+     * Specifies a model to use for client side presentation.
+     */
+    installProperty<Property<std::string> >("present-model", "string");
+
+
 }
 
 int CorePropertyManager::installFactory(const std::string & type_name,

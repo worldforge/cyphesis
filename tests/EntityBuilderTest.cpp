@@ -854,10 +854,6 @@ CorePropertyManager::CorePropertyManager()
 {
 }
 
-CorePropertyManager::~CorePropertyManager()
-{
-}
-
 PropertyBase * CorePropertyManager::addProperty(const std::string & name,
                                                 int type)
 {

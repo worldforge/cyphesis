@@ -18,14 +18,6 @@
   }
 #endif //STUB_Steering_Steering
 
-#ifndef STUB_Steering_Steering_DTOR
-//#define STUB_Steering_Steering_DTOR
-   Steering::~Steering()
-  {
-    
-  }
-#endif //STUB_Steering_Steering_DTOR
-
 #ifndef STUB_Steering_setAwareness
 //#define STUB_Steering_setAwareness
   void Steering::setAwareness(Awareness* awareness)

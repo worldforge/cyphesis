@@ -16,14 +16,6 @@
   }
 #endif //STUB_Pedestrian_Pedestrian
 
-#ifndef STUB_Pedestrian_Pedestrian_DTOR
-//#define STUB_Pedestrian_Pedestrian_DTOR
-   Pedestrian::~Pedestrian()
-  {
-    
-  }
-#endif //STUB_Pedestrian_Pedestrian_DTOR
-
 #ifndef STUB_Pedestrian_getTickAddition
 //#define STUB_Pedestrian_getTickAddition
   double Pedestrian::getTickAddition(const Point3D & coordinates, const Vector3D & velocity) const

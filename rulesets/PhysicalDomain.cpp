@@ -1260,7 +1260,7 @@ void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& 
         LocatedEntity* entity = entry.entity;
         if (entry.rigidBody) {
 
-            debug_print("PhysicalDomain::setVelocity " << entity->describeEntity() << " " << velocity << " " << velocity.mag());
+            debug_print("PhysicalDomain::applyVelocity " << entity->describeEntity() << " " << velocity << " " << velocity.mag());
 
             btVector3 btVelocity = Convert::toBullet(velocity);
 

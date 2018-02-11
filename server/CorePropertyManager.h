@@ -41,13 +41,13 @@ class CorePropertyManager : public PropertyManager {
 
   public:
     CorePropertyManager();
-    virtual ~CorePropertyManager();
+    ~CorePropertyManager() override = default;
 
-    virtual PropertyBase * addProperty(const std::string & name, int type);
+    PropertyBase * addProperty(const std::string & name, int type) override;
 
-    virtual int installFactory(const std::string & type_name,
+    int installFactory(const std::string & type_name,
                                const Atlas::Objects::Root & type_desc,
-                               PropertyKit * factory);
+                               PropertyKit * factory) override;
 
     friend class CorePropertyManagertest;
 };

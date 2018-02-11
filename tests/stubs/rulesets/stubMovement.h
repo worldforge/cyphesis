@@ -15,14 +15,6 @@
   }
 #endif //STUB_Movement_Movement
 
-#ifndef STUB_Movement_Movement_DTOR
-//#define STUB_Movement_Movement_DTOR
-   Movement::~Movement()
-  {
-    
-  }
-#endif //STUB_Movement_Movement_DTOR
-
 #ifndef STUB_Movement_reset
 //#define STUB_Movement_reset
   void Movement::reset()

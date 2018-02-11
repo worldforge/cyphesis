@@ -37,7 +37,7 @@ Location::Location() :
     m_simple(true), m_solid(true),
     m_boxSize(consts::minBoxSize),
     m_squareBoxSize(consts::minSqrBoxSize),
-    m_loc(0)
+    m_loc(nullptr)
 {
 }
 
@@ -114,8 +114,8 @@ void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 int Location::readFromMessage(const MapType & msg)
 {
     try {
-        MapType::const_iterator I = msg.find("pos");
-        MapType::const_iterator Iend = msg.end();
+        auto I = msg.find("pos");
+        auto Iend = msg.end();
         if (I != Iend) {
             const Element & pos = I->second;
             if (pos.isList() && pos.List().size() == 3) {
@@ -335,7 +335,7 @@ float squareDistanceWithAncestor(const Location & self, const Location & other, 
 {
     Point3D dist;
     *ancestor = distanceToAncestor(self, other, dist);
-    if (ancestor) {
+    if (*ancestor) {
         return sqrMag(dist);
     }
     return 0.f;
@@ -353,7 +353,7 @@ float squareHorizontalDistance(const Location & self, const Location & other)
 std::ostream & operator<<(std::ostream& s, Location& v)
 {
     s << "{";
-    if (v.m_loc != 0) {
+    if (v.m_loc != nullptr) {
         s << v.m_loc->getId();
     } else {
         s << "null";

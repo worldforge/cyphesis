@@ -36,7 +36,6 @@
 #include "rulesets/ExternalMind.h"
 #include "rulesets/ExternalProperty.h"
 #include "rulesets/OutfitProperty.h"
-#include "rulesets/Pedestrian.h"
 #include "rulesets/Script.h"
 #include "rulesets/StatusProperty.h"
 #include "rulesets/Task.h"
@@ -75,7 +74,6 @@
 #include "stubs/rulesets/stubScript.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
-#include "stubs/rulesets/stubMovement.h"
 #include "stubs/rulesets/stubDomain.h"
 
 #include <cstdlib>
@@ -405,30 +403,6 @@ void ExternalMind::operation(const Operation & op, OpVector & res)
 {
 }
 
-Pedestrian::Pedestrian(LocatedEntity & body) : Movement(body)
-{
-}
-
-Pedestrian::~Pedestrian()
-{
-}
-
-double Pedestrian::getTickAddition(const Point3D & coordinates,
-                                   const Vector3D & velocity) const
-{
-    return consts::basic_tick;
-}
-
-int Pedestrian::getUpdatedLocation(Location & return_location)
-{
-    return 1;
-}
-
-Operation Pedestrian::generateMove(const Location & new_location)
-{
-    Atlas::Objects::Operation::Move moveOp;
-    return moveOp;
-}
 
 
 void addToEntity(const Point3D & p, std::vector<double> & vd)
@@ -446,6 +420,8 @@ void Entity::sendWorld(const Operation & op)
 }
 
 #include "stubs/rulesets/stubEntity.h"
+#include "stubs/rulesets/stubPedestrian.h"
+#include "stubs/rulesets/stubMovement.h"
 
 BaseWorld * BaseWorld::m_instance = 0;
 

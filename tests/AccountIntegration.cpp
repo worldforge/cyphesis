@@ -363,7 +363,6 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "server/Ruleset.h"
 #include "server/TeleportProperty.h"
 
-#include "rulesets/Pedestrian.h"
 #include "rulesets/AreaProperty.h"
 #include "rulesets/AtlasProperties.h"
 #include "rulesets/BBoxProperty.h"
@@ -822,10 +821,6 @@ HandlerResult TeleportProperty::operation(LocatedEntity * ent,
     return OPERATION_IGNORED;
 }
 
-Pedestrian::Pedestrian(LocatedEntity & body) : Movement(body)
-{
-}
-
 SetupProperty::SetupProperty()
 {
 }
@@ -999,46 +994,9 @@ void TransientProperty::apply(LocatedEntity * ent)
 {
 }
 
-Pedestrian::~Pedestrian()
-{
-}
-
-double Pedestrian::getTickAddition(const Point3D & coordinates,
-                                   const Vector3D & velocity) const
-{
-    return consts::basic_tick;
-}
-
-int Pedestrian::getUpdatedLocation(Location & return_location)
-{
-    return 1;
-}
-
-Operation Pedestrian::generateMove(const Location & new_location)
-{
-    Atlas::Objects::Operation::Move moveOp;
-    return moveOp;
-}
-
-Movement::Movement(LocatedEntity & body) : m_body(body),
-                                    m_serialno(0)
-{
-}
-
-Movement::~Movement()
-{
-}
-
-bool Movement::updateNeeded(const Location & location) const
-{
-    return true;
-}
-
-void Movement::reset()
-{
-}
-
 #include "stubs/server/stubBuildid.h"
+#include "stubs/rulesets/stubPedestrian.h"
+#include "stubs/rulesets/stubMovement.h"
 
 bool_config_register::bool_config_register(bool & var,
                                            const char * section,

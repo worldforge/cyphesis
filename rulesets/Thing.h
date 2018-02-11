@@ -38,7 +38,7 @@ class Thing : public Entity {
   public:
 
     explicit Thing(const std::string & id, long intId);
-    virtual ~Thing();
+    virtual ~Thing() = default;
 
     void DeleteOperation(const Operation & op, OpVector &) override;
     void MoveOperation(const Operation & op, OpVector &) override;

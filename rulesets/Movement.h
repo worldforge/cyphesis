@@ -33,9 +33,6 @@ class Location;
 /// This class should be replaced by a base class for handling all entity
 /// movement.
 class Movement {
-  private:
-    Movement(const Movement &) = delete;
-    Movement & operator=(const Movement &) = delete;
   protected:
     /// The Entity this Movement is tracking.
     LocatedEntity & m_body;
@@ -44,8 +41,11 @@ class Movement {
     int m_serialno;
 
   public:
+    Movement(const Movement &) = delete;
     explicit Movement(LocatedEntity & body);
-    virtual ~Movement();
+    virtual ~Movement() = default;
+
+    Movement & operator=(const Movement &) = delete;
 
     int serialno() const {
         return m_serialno;

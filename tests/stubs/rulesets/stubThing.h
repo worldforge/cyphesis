@@ -40,14 +40,6 @@
   }
 #endif //STUB_Thing_Thing
 
-#ifndef STUB_Thing_Thing_DTOR
-//#define STUB_Thing_Thing_DTOR
-   Thing::~Thing()
-  {
-    
-  }
-#endif //STUB_Thing_Thing_DTOR
-
 #ifndef STUB_Thing_DeleteOperation
 //#define STUB_Thing_DeleteOperation
   void Thing::DeleteOperation(const Operation & op, OpVector &)

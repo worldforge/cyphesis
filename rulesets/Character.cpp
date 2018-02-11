@@ -124,7 +124,7 @@ void Character::metabolise(OpVector & res, double ammount)
 
     StatusProperty * status_prop = modPropertyClass<StatusProperty>(STATUS);
     bool status_changed = false;
-    if (status_prop == 0) {
+    if (status_prop == nullptr) {
         // FIXME Probably don't do enough here to set up the property.
         status_prop = new StatusProperty;
         assert(status_prop != 0);
@@ -137,7 +137,7 @@ void Character::metabolise(OpVector & res, double ammount)
 
     Property<double> * food_prop = modPropertyType<double>(FOOD);
     // DIGEST
-    if (food_prop != 0) {
+    if (food_prop != nullptr) {
         double & food = food_prop->data();
         if (food >= foodConsumption && status < 2) {
             // It is important that the metabolise bit is done next, as this
@@ -158,7 +158,7 @@ void Character::metabolise(OpVector & res, double ammount)
     if (status > (1.5 + energyLaidDown)) {
         status -= energyLaidDown;
         status_changed = true;
-        if (mass_prop != 0) {
+        if (mass_prop != nullptr) {
             double & mass = mass_prop->data();
             mass += weightGain;
             mass_prop->setFlags(flag_unsent);
@@ -174,7 +174,7 @@ void Character::metabolise(OpVector & res, double ammount)
         double energy_used = energyConsumption * ammount;
         status -= energy_used;
         status_changed = true;
-        if (mass_prop != 0) {
+        if (mass_prop != nullptr) {
             double & mass = mass_prop->data();
             double weight_used = weightConsumption * mass * ammount;
             if (status <= 0.5 && mass > weight_used) {
@@ -191,11 +191,11 @@ void Character::metabolise(OpVector & res, double ammount)
         }
     }
     // FIXME Stamina property?
-    const TasksProperty * tp = getPropertyClass<TasksProperty>(TASKS);
-    if ((tp == 0 || !tp->busy()) && !m_movement.updateNeeded(m_location)) {
+    auto tp = getPropertyClass<TasksProperty>(TASKS);
+    if ((tp == nullptr || !tp->busy())) {
 
         Property<double> * stamina_prop = modPropertyType<double>(STAMINA);
-        if (stamina_prop != 0) {
+        if (stamina_prop != nullptr) {
             double & stamina = stamina_prop->data();
             if (stamina < 1.f) {
                 stamina = 1.f;
@@ -236,24 +236,24 @@ void Character::wieldDropped()
 LocatedEntity * Character::findInContains(LocatedEntity * ent,
                                           const std::string & id)
 {
-    if (ent->m_contains == 0) {
-        return 0;
+    if (ent->m_contains == nullptr) {
+        return nullptr;
     }
-    LocatedEntitySet::const_iterator I = ent->m_contains->begin();
-    LocatedEntitySet::const_iterator Iend = ent->m_contains->end();
+    auto I = ent->m_contains->begin();
+    auto Iend = ent->m_contains->end();
     for (; I != Iend; ++I) {
         LocatedEntity * child = *I;
         if (child->getId() == id) {
             return *I;
         }
-        if (child->m_contains != 0 && !child->m_contains->empty()) {
+        if (child->m_contains != nullptr && !child->m_contains->empty()) {
             LocatedEntity * found = findInContains(child, id);
-            if (found != 0) {
+            if (found != nullptr) {
                 return found;
             }
         }
     }
-    return 0;
+    return nullptr;
 }
 
 /// \brief Search for an entity in the Character's inventory
@@ -559,8 +559,7 @@ void Character::NourishOperation(const Operation & op, OpVector & res)
 
 void Character::UseOperation(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Got Use op. " << describeEntity() << std::endl << std::flush
-    ;);
+    debug(std::cout << "Got Use op. " << describeEntity() << std::endl << std::flush;);
 
     TasksProperty * tp = modPropertyClass<TasksProperty>(TASKS);
 
@@ -710,8 +709,7 @@ void Character::UseOperation(const Operation & op, OpVector & res)
         // make it back to the client if we made an error response?
         return;
     } else if (!target->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        debug(std::cout << "No target" << std::endl << std::flush
-        ;);
+        debug(std::cout << "No target" << std::endl << std::flush;);
     } else {
         rop->setArgs1(target);
     }
@@ -920,8 +918,7 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
 
 void Character::ActuateOperation(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Got Actuate op" << std::endl << std::flush
-    ;);
+    debug(std::cout << "Got Actuate op" << std::endl << std::flush;);
 
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
@@ -1336,26 +1333,37 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         ;);
     }
     Point3D new_pos;
-    Vector3D new_velocity;
+    Vector3D new_propel;
     Quaternion new_orientation;
     try {
+        //If there's a position specified, that takes precedence (i.e. move as quickly straight to the position).
         if (arg->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
             fromStdVector(new_pos, arg->getPos());
             debug(std::cout << "pos set to " << new_pos << std::endl << std::flush
             ;);
-        }
-
-        if (arg->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
-            fromStdVector(new_velocity, arg->getVelocity());
-            debug(std::cout << "vel set to " << new_velocity << std::endl << std::flush
-            ;);
+        } else {
+            //First look for the "propel" attribute; if that's not there look for the legacy "velocity" attribute.
+            //Note that we differ between "propel", which is how an entity propels itself forward, and "velocity"
+            //which is the resulting velocity of the entity, taking all other entities as well as gravity into consideration.
+            Element attr_propel;
+            if (arg->copyAttr("propel", attr_propel) == 0) {
+                try {
+                    new_propel.fromAtlas(attr_propel);
+                } catch (...) {
+                    //just ignore malformed data
+                }
+            } else {
+                if (arg->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
+                    fromStdVector(new_propel, arg->getVelocity());
+                    debug(std::cout << "propel set to " << new_propel << std::endl << std::flush;);
+                }
+            }
         }
 
         Element orientation_attr;
         if (arg->copyAttr("orientation", orientation_attr) == 0) {
             new_orientation.fromAtlas(orientation_attr);
-            debug(std::cout << "ori set to " << new_orientation << std::endl << std::flush
-            ;);
+            debug(std::cout << "ori set to " << new_orientation << std::endl << std::flush;);
             if (!new_orientation.isValid()) {
                 log(ERROR, "Invalid orientation from client. Ignoring");
             }
@@ -1368,13 +1376,13 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    debug(std::cout << ":" << new_loc << ":" << m_location.m_loc->getId() << ":" << std::endl << std::flush
-    ;);
+    debug(std::cout << ":" << new_loc << ":" << m_location.m_loc->getId() << ":" << std::endl << std::flush;);
     if (!new_loc.empty() && (new_loc != m_location.m_loc->getId())) {
         debug(std::cout << "Changing loc" << std::endl << std::flush
         ;);
         LocatedEntity * target_loc = BaseWorld::instance().getEntity(new_loc);
         if (target_loc == nullptr) {
+            //TODO: what use case is this? Moving the entity to a null location?
             Unseen u;
 
             Anonymous unseen_arg;
@@ -1400,42 +1408,10 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     // use movement object to track movement.
 
     Location ret_location = m_location;
-//    int ret = m_movement.getUpdatedLocation(ret_location);
-//    if (ret) {
-//        ret_location = m_location;
-//    }
-//
-//    // FIXME THis here?
-//    m_movement.reset();
 
-    Vector3D direction;
     if (new_pos.isValid()) {
-        direction = new_pos - ret_location.pos();
-    } else if (new_velocity.isValid()) {
-        direction = new_velocity;
+        new_propel = new_pos - m_location.pos();
     }
-    if (direction.isValid() && (direction.mag() > 0)) {
-        direction.normalize();
-        debug_print("Direction: " << direction);
-        if (!new_orientation.isValid()) {
-            // This is a character walking, so it should stay upright
-            Vector3D upright_direction = direction;
-            upright_direction[cZ] = 0;
-            if (upright_direction.mag() > 0) {
-                upright_direction.normalize();
-                new_orientation = quaternionFromTo(Vector3D(1, 0, 0), upright_direction, Vector3D(0, 0, 1));
-                debug_print("Orientation: " << new_orientation);
-            }
-        }
-    }
-
-    WFMath::CoordType vel_mag;
-    if (new_velocity.isValid()) {
-        vel_mag = std::min(new_velocity.mag(), consts::base_velocity);
-    } else {
-        vel_mag = consts::base_velocity;
-    }
-
     // Set up argument for operation
     Anonymous move_arg;
     move_arg->setId(getId());
@@ -1447,21 +1423,20 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         debug(std::cout << "Target" << new_pos << std::endl << std::flush
         ;);
     }
-    if (direction.isValid()) {
-        ret_location.m_velocity = direction;
-        ret_location.m_velocity *= vel_mag;
-
-        ::addToEntity(direction * vel_mag, move_arg->modifyVelocity());
-        debug(std::cout << "Velocity" << ret_location.velocity() << std::endl << std::flush
-        ;);
+    if (new_propel.isValid()) {
+        //TODO: replace this with various movement speeds for different modes (walking, swimming, flying). Perhaps doing this in the PhysicalDomain though?
+        auto mag = new_propel.mag();
+        if (mag == 0) {
+            move_arg->setAttr("propel", (new_propel).toAtlas());
+        } else {
+            WFMath::CoordType vel_mag = std::min(mag, consts::base_velocity);
+            move_arg->setAttr("propel", (new_propel.normalize() * vel_mag).toAtlas());
+        }
     }
 
     if (new_orientation.isValid()) {
         move_arg->setAttr("orientation", new_orientation.toAtlas());
     }
-    ret_location.m_orientation = new_orientation;
-    debug(std::cout << "Orientation" << ret_location.orientation() << std::endl << std::flush
-    ;);
 
     // Create move operation
     Move moveOp;
@@ -1470,19 +1445,6 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     moveOp->setArgs1(move_arg);
 
     res.push_back(moveOp);
-
-//    if (m_movement.hasTarget() && ret_location.velocity().isValid() && ret_location.velocity() != Vector3D::ZERO()) {
-//
-//        Tick tickOp;
-//        Anonymous tick_arg;
-//        tick_arg->setAttr(SERIALNO, m_movement.serialno());
-//        tick_arg->setName("move");
-//        tickOp->setArgs1(tick_arg);
-//        tickOp->setTo(getId());
-//        tickOp->setFutureSeconds(m_movement.getTickAddition(ret_location.pos(), ret_location.velocity()));
-//
-//        res.push_back(tickOp);
-//    }
 
 }
 

@@ -66,16 +66,12 @@ Thing::Thing(const std::string& id, long intId) :
 {
 }
 
-Thing::~Thing()
-{
-}
-
 void Thing::DeleteOperation(const Operation& op, OpVector& res)
 {
-    if (m_location.m_loc == 0) {
+    if (m_location.m_loc == nullptr) {
         log(ERROR, String::compose("Deleting %1(%2) when it is not "
                                        "in the world.", getType(), getId()));
-        assert(m_location.m_loc != 0);
+        assert(m_location.m_loc != nullptr);
         return;
     }
     // The actual destruction and removal of this entity will be handled
@@ -105,10 +101,10 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
 {
     debug(std::cout << "Thing::move_operation" << std::endl << std::flush;);
 
-    if (m_location.m_loc == 0) {
+    if (m_location.m_loc == nullptr) {
         log(ERROR, String::compose("Moving %1(%2) when it is not in the world.",
                                    getType(), getId()));
-        assert(m_location.m_loc != 0);
+        assert(m_location.m_loc != nullptr);
         return;
     }
 
@@ -218,11 +214,11 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
             updatedTransform = true;
         }
 
-
-        if (ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
-            // Update velocity
-            if (fromStdVector(newVelocity, ent->getVelocity()) == 0) {
-                auto propelProp = requirePropertyClassFixed<PropelProperty>();
+        Element attr_propel;
+        if (ent->copyAttr("propel", attr_propel) == 0) {
+            auto propelProp = requirePropertyClassFixed<PropelProperty>();
+            try {
+                newVelocity.fromAtlas(attr_propel);
                 if (!newVelocity.isEqualTo(propelProp->data())) {
                     propelProp->data() = newVelocity;
                     // Velocity is not persistent so has no flag
@@ -231,8 +227,29 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
                     //Velocity wasn't changed, so we can make newVelocity invalid and it won't be applied.
                     newVelocity.setValid(false);
                 }
+            } catch (...) {
+                //just ignore malformed data
             }
         }
+        //TODO: allow for setting of impact velocity as well as propel velocity
+//        else {
+//            if (ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
+//                // Update velocity
+//                if (fromStdVector(newVelocity, ent->getVelocity()) == 0) {
+//                    auto propelProp = requirePropertyClassFixed<PropelProperty>();
+//                    if (!newVelocity.isEqualTo(propelProp->data())) {
+//                        propelProp->data() = newVelocity;
+//                        // Velocity is not persistent so has no flag
+//                        updatedTransform = true;
+//                    } else {
+//                        //Velocity wasn't changed, so we can make newVelocity invalid and it won't be applied.
+//                        newVelocity.setValid(false);
+//                    }
+//                }
+//            }
+//        }
+
+
 
 
         // Check if the location has changed

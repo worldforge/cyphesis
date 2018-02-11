@@ -31,12 +31,12 @@ class Pedestrian : public Movement {
     // friend class Character;
   public:
     explicit Pedestrian(LocatedEntity & body);
-    virtual ~Pedestrian();
+    ~Pedestrian() override = default;
 
     double getTickAddition(const Point3D & coordinates,
-                           const Vector3D & velocity) const;
-    int getUpdatedLocation(Location &);
-    Atlas::Objects::Operation::RootOperation generateMove(const Location &);
+                           const Vector3D & velocity) const override;
+    int getUpdatedLocation(Location &) override;
+    Atlas::Objects::Operation::RootOperation generateMove(const Location &) override;
 };
 
 #endif // RULESETS_PEDESTRIAN_H

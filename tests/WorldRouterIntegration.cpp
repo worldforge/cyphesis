@@ -242,7 +242,6 @@ int main()
 #include "rulesets/Plant.h"
 #include "rulesets/Stackable.h"
 #include "rulesets/ExternalMind.h"
-#include "rulesets/Pedestrian.h"
 #include "rulesets/PythonArithmeticFactory.h"
 #include "rulesets/Task.h"
 
@@ -274,6 +273,8 @@ int PythonScriptFactory<LocatedEntity>::setup()
 #include "stubs/rulesets/stubCreator.h"
 #include "stubs/rulesets/stubOutfitProperty.h"
 #include "stubs/rulesets/stubPythonClass.h"
+#include "stubs/rulesets/stubPedestrian.h"
+#include "stubs/rulesets/stubMovement.h"
 
 #include "stubs/common/stubOperationsDispatcher.h"
 #include "stubs/common/stubScriptKit.h"
@@ -288,10 +289,6 @@ int PythonScriptFactory<LocatedEntity>::setup()
 #include <Atlas/Objects/Operation.h>
 
 CorePropertyManager::CorePropertyManager()
-{
-}
-
-CorePropertyManager::~CorePropertyManager()
 {
 }
 
@@ -589,48 +586,6 @@ ArithmeticKit::~ArithmeticKit()
 {
 }
 
-Pedestrian::Pedestrian(LocatedEntity & body) : Movement(body)
-{
-}
-
-Pedestrian::~Pedestrian()
-{
-}
-
-double Pedestrian::getTickAddition(const Point3D & coordinates,
-                                   const Vector3D & velocity) const
-{
-    return consts::basic_tick;
-}
-
-int Pedestrian::getUpdatedLocation(Location & return_location)
-{
-    return 1;
-}
-
-Operation Pedestrian::generateMove(const Location & new_location)
-{
-    Atlas::Objects::Operation::Move moveOp;
-    return moveOp;
-}
-
-Movement::Movement(LocatedEntity & body) : m_body(body),
-                                    m_serialno(0)
-{
-}
-
-Movement::~Movement()
-{
-}
-
-bool Movement::updateNeeded(const Location & location) const
-{
-    return true;
-}
-
-void Movement::reset()
-{
-}
 
 PythonArithmeticFactory::PythonArithmeticFactory(const std::string & package,
                                                  const std::string & name) :

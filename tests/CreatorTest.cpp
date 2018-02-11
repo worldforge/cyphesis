@@ -144,6 +144,22 @@ int main(int argc, char ** argv)
 
 // stubs
 
+#include "stubs/rulesets/stubPedestrian.h"
+#include "stubs/rulesets/stubMovement.h"
+
+#define STUB_Character_externalOperation
+void Character::externalOperation(const Operation & op, Link &)
+{
+    filterExternalOperation(op);
+}
+#define STUB_Character_filterExternalOperation
+void Character::filterExternalOperation(const Operation & op)
+{
+    Creatortest::Character_filterExternalOperation_called(op);
+}
+
+#include "stubs/rulesets/stubCharacter.h"
+
 void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
@@ -154,172 +170,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
     return 0;
 }
 
-Character::Character(const std::string & id, long intId) :
-           Thing(id, intId),
-               m_movement(*(Movement*)0),
-               m_externalMind(0)
-{
-}
 
-Character::~Character()
-{
-}
-
-void Character::operation(const Operation & op, OpVector &)
-{
-}
-
-void Character::externalOperation(const Operation & op, Link &)
-{
-    filterExternalOperation(op);
-}
-
-void Character::filterExternalOperation(const Operation & op)
-{
-    Creatortest::Character_filterExternalOperation_called(op);
-}
-
-void Character::ImaginaryOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::InfoOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::TickOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::TalkOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::NourishOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::UseOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::WieldOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::AttackOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::ActuateOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::RelayOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::mindActuateOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindAttackOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindCombineOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindCreateOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindDeleteOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindDivideOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindEatOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindGoalInfoOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindImaginaryOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindLookOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindMoveOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindSetOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindSetupOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindTalkOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindThoughtOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindTickOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindTouchOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindUpdateOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindUseOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindWieldOperation(const Operation &, OpVector &)
-{
-}
-
-
-void Character::mindOtherOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindThinkOperation(const Operation & op, OpVector & res)
-{
-}
-
-
-void Character::sendMind(const Operation & op, OpVector & res)
-{
-}
-
-std::vector<Atlas::Objects::Root> Character::getThoughts() const
-{
-    return std::vector<Atlas::Objects::Root>();
-}
-
-
-long int Character::s_serialNumberNext = 0L;
 
 
 

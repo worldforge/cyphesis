@@ -47,10 +47,6 @@ Pedestrian::Pedestrian(LocatedEntity & body) : Movement(body)
 {
 }
 
-Pedestrian::~Pedestrian()
-{
-}
-
 double Pedestrian::getTickAddition(const Point3D & coordinates,
                                    const Vector3D & velocity) const
 {
@@ -154,6 +150,12 @@ Operation Pedestrian::generateMove(const Location & new_location)
     // FIXME Query from the movement_domain what the constraints are.
     // On water, on land or falling?
 
+    if (new_location.orientation().isValid()) {
+        move_arg->setAttr("orientation", new_location.orientation().toAtlas());
+    }
+    if (new_location.velocity().isValid()) {
+        move_arg->setAttr("propel", new_location.velocity().toAtlas());
+    }
     new_location.addToEntity(move_arg);
     moveOp->setArgs1(move_arg);
 

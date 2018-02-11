@@ -216,7 +216,6 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "server/ServerRouting.h"
 #include "server/TeleportProperty.h"
 
-#include "rulesets/Pedestrian.h"
 #include "rulesets/AreaProperty.h"
 #include "rulesets/AtlasProperties.h"
 #include "rulesets/BBoxProperty.h"
@@ -285,6 +284,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "stubs/rulesets/stubGeometryProperty.h"
 #include "stubs/rulesets/stubDensityProperty.h"
 #include "stubs/rulesets/stubVector3Property.h"
+#include "stubs/rulesets/stubThing.h"
 
 
 Account::Account(Connection * conn,
@@ -689,38 +689,6 @@ EntityProperty * EntityProperty::copy() const
 
 
 
-Thing::Thing(const std::string & id, long intId) :
-       Entity(id, intId)
-{
-}
-
-Thing::~Thing()
-{
-}
-
-void Thing::DeleteOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::MoveOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::SetOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::LookOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::CreateOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Thing::UpdateOperation(const Operation & op, OpVector & res)
-{
-}
 
 PropertyKit::~PropertyKit()
 {
@@ -751,13 +719,6 @@ HandlerResult TeleportProperty::operation(LocatedEntity * ent,
 {
     return OPERATION_IGNORED;
 }
-
-
-Pedestrian::Pedestrian(LocatedEntity & body) : Movement(body)
-{
-}
-
-
 
 SetupProperty::SetupProperty()
 {
@@ -931,46 +892,6 @@ void TransientProperty::install(LocatedEntity * ent, const std::string & name)
 void TransientProperty::apply(LocatedEntity * ent)
 {
 }
-
-Pedestrian::~Pedestrian()
-{
-}
-
-double Pedestrian::getTickAddition(const Point3D & coordinates,
-                                   const Vector3D & velocity) const
-{
-    return consts::basic_tick;
-}
-
-int Pedestrian::getUpdatedLocation(Location & return_location)
-{
-    return 1;
-}
-
-Operation Pedestrian::generateMove(const Location & new_location)
-{
-    Atlas::Objects::Operation::Move moveOp;
-    return moveOp;
-}
-
-Movement::Movement(LocatedEntity & body) : m_body(body),
-                                    m_serialno(0)
-{
-}
-
-Movement::~Movement()
-{
-}
-
-bool Movement::updateNeeded(const Location & location) const
-{
-    return true;
-}
-
-void Movement::reset()
-{
-}
-
 
 Location::Location() :
     m_simple(true), m_solid(true),

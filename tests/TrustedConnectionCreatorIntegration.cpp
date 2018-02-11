@@ -292,7 +292,6 @@ int main()
 #include "rulesets/EntityProperty.h"
 #include "rulesets/ExternalProperty.h"
 #include "rulesets/OutfitProperty.h"
-#include "rulesets/Pedestrian.h"
 #include "rulesets/Script.h"
 #include "rulesets/StatusProperty.h"
 #include "rulesets/Task.h"
@@ -316,6 +315,8 @@ bool restricted_flag;
 #include "stubs/rulesets/stubBaseMind.h"
 #include "stubs/rulesets/stubMemEntity.h"
 #include "stubs/rulesets/stubMemMap.h"
+#include "stubs/rulesets/stubPedestrian.h"
+#include "stubs/rulesets/stubMovement.h"
 #include "stubs/server/stubExternalMindsManager.h"
 #include "stubs/server/stubExternalMindsConnection.h"
 #include "stubs/common/stubOperationsDispatcher.h"
@@ -340,49 +341,6 @@ int RELAY_NO = -1;
 int THINK_NO = -1;
 int COMMUNE_NO = -1;
 } } }
-
-Pedestrian::Pedestrian(LocatedEntity & body) : Movement(body)
-{
-}
-
-Pedestrian::~Pedestrian()
-{
-}
-
-double Pedestrian::getTickAddition(const Point3D & coordinates,
-                                   const Vector3D & velocity) const
-{
-    return consts::basic_tick;
-}
-
-int Pedestrian::getUpdatedLocation(Location & return_location)
-{
-    return 1;
-}
-
-Operation Pedestrian::generateMove(const Location & new_location)
-{
-    Atlas::Objects::Operation::RootOperation moveOp;
-    return moveOp;
-}
-
-Movement::Movement(LocatedEntity & body) : m_body(body),
-                                    m_serialno(0)
-{
-}
-
-Movement::~Movement()
-{
-}
-
-bool Movement::updateNeeded(const Location & location) const
-{
-    return true;
-}
-
-void Movement::reset()
-{
-}
 
 CommSocket::CommSocket(boost::asio::io_service & svr) : m_io_service(svr) { }
 
