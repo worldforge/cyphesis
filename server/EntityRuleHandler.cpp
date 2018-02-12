@@ -128,7 +128,7 @@ void EntityRuleHandler::installStandardRules()
             //Creator agents should have a bbox, so that they easily can be made solid for testing purposes.
             {"bbox", ListType {-.5, 0, -0.5, .5, 1, .5}},
             {"geometry", MapType {{"type", "sphere"}}},
-            {"friction", 10.f},
+            {"friction", 10.0},
             {"angularfactor", ListType {0, 0, 0}},
             {"mass", 1.0},
             //Creator agents should by default move quickly.
@@ -142,7 +142,7 @@ void EntityRuleHandler::installStandardRules()
 
     {
         Atlas::Objects::Root decl = composeDeclaration("plant", "thing", {
-            {"friction", 1.0f},
+            {"friction", 1.0},
             {"mode", "planted"},
             {"status", 1.0f},
             //Plants should by default be represented by an upright cylinder.

@@ -533,7 +533,7 @@ void PhysicalDomainIntegrationTest::test_collision()
 
     double tickSize = 1.0 / 15.0;
 
-    Property<float>* zeroFrictionProperty = new Property<float>();
+    Property<double>* zeroFrictionProperty = new Property<double>();
     zeroFrictionProperty->data() = 0;
 
 

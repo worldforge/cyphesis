@@ -312,9 +312,9 @@ PhysicalDomain::~PhysicalDomain()
 
 void PhysicalDomain::buildTerrainPages()
 {
-    float friction = 1.0f;
+    double friction = 1.0;
 
-    const Property<float>* frictionProp = m_entity.getPropertyType<float>("friction");
+    auto frictionProp = m_entity.getPropertyType<double>("friction");
 
     if (frictionProp) {
         friction = frictionProp->data();
@@ -715,7 +715,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
 
         btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(mass, nullptr, entry->collisionShape, inertia);
 
-        const Property<float>* frictionProp = entity.getPropertyType<float>("friction");
+        auto frictionProp = entity.getPropertyType<double>("friction");
         if (frictionProp) {
             rigidBodyCI.m_friction = frictionProp->data();
         }
@@ -924,7 +924,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
 
     if (name == "friction") {
         if (bulletEntry->rigidBody) {
-            Property<float>* frictionProp = static_cast<Property<float>*>(&prop);
+            Property<double>* frictionProp = static_cast<Property<double>*>(&prop);
             bulletEntry->rigidBody->setFriction(frictionProp->data());
             if (getMassForEntity(*bulletEntry->entity) != 0) {
                 bulletEntry->rigidBody->activate();
@@ -1150,7 +1150,7 @@ void PhysicalDomain::getCollisionFlagsForEntity(const LocatedEntity& entity, sho
 void PhysicalDomain::entityPropertyApplied(const std::string& name, PropertyBase& prop)
 {
     if (name == "friction") {
-        Property<float>* frictionProp = static_cast<Property<float>*>(&prop);
+        Property<double>* frictionProp = static_cast<Property<double>*>(&prop);
         for (auto& entry : m_terrainSegments) {
             entry.second.rigidBody->setFriction(frictionProp->data());
         }
@@ -1326,8 +1326,8 @@ void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& 
                 }
 
                 entry.rigidBody->setLinearVelocity(bodyVelocity);
-                float friction = 1.0f; //Default to 1 if no "friction" prop is present.
-                const Property<float>* frictionProp = entity->getPropertyType<float>("friction");
+                double friction = 1.0; //Default to 1 if no "friction" prop is present.
+                auto frictionProp = entity->getPropertyType<double>("friction");
                 if (frictionProp) {
                     friction = frictionProp->data();
                 }
@@ -1420,7 +1420,7 @@ void PhysicalDomain::processDirtyTerrainAreas()
     m_dirtyTerrainAreas.clear();
 
     float friction = 1.0f;
-    const Property<float>* frictionProp = m_entity.getPropertyType<float>("friction");
+    auto frictionProp = m_entity.getPropertyType<double>("friction");
     if (frictionProp) {
         friction = frictionProp->data();
     }

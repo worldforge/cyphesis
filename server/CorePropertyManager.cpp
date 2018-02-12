@@ -158,7 +158,7 @@ CorePropertyManager::CorePropertyManager()
     /**
      * Friction is used by the physics system. 0 is no friction, 1 is full friction.
      */
-    installProperty<Property<float> >("friction", "float");
+    installProperty<Property<double> >("friction", "float");
     installProperty<AngularFactorProperty>();
     installProperty<GeometryProperty>();
 
