@@ -1,0 +1,24 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="bbox">
+                <list name="default">
+                    <float>-0.1</float>
+                    <float>-0.08</float>
+                    <float>-0.1</float>
+                    <float>0.1</float>
+                    <float>1.6</float>
+                    <float>0.1</float>
+                </list>
+                <string name="visibility">public</string>
+            </map>
+            <map name="density">
+                <float name="default">400</float>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">shrub</string>
+        <string name="objtype">class</string>
+        <string name="parent">plant</string>
+    </map>
+</atlas>

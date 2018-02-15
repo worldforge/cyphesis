@@ -5,10 +5,14 @@
       <map name="geometry">
         <map name="default">
           <string name="path">dural/items/vehicle/cart/model/cart_a.mesh</string>
-          <string name="type">asset</string>
+          <string name="type">mesh</string>
         </map>
         <string name="visibility">public</string>
       </map>
+        <map name="present-mesh">
+            <string name="default">dural/items/vehicle/cart/model/cart_a.mesh</string>
+            <string name="visibility">public</string>
+        </map>
         <map name="name">
             <string name="default">cart</string>
             <string name="visibility">public</string>

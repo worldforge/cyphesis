@@ -1,0 +1,28 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="bbox">
+                <list name="default">
+                    <float>-0.3377</float>
+                    <float>-0.0001</float>
+                    <float>-0.0446</float>
+                    <float>0.1829</float>
+                    <float>0.2381</float>
+                    <float>0.045</float>
+                </list>
+                <string name="visibility">public</string>
+            </map>
+            <map name="mass">
+                <float name="default">5</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present-model">
+                <string name="default">dural/creatures/tubular/bass_lm.modeldef</string>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">bass</string>
+        <string name="objtype">class</string>
+        <string name="parent">fish</string>
+    </map>
+</atlas>

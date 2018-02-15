@@ -82,13 +82,13 @@
   }
 #endif //STUB_Steering_isEnabled
 
-#ifndef STUB_Steering_setSpeed
-//#define STUB_Steering_setSpeed
-  void Steering::setDesiredSpeed(float speed)
+#ifndef STUB_Steering_setDesiredSpeed
+//#define STUB_Steering_setDesiredSpeed
+  void Steering::setDesiredSpeed(float desiredSpeed)
   {
     
   }
-#endif //STUB_Steering_setSpeed
+#endif //STUB_Steering_setDesiredSpeed
 
 #ifndef STUB_Steering_getPath
 //#define STUB_Steering_getPath

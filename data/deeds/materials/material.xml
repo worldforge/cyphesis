@@ -1,0 +1,10 @@
+<atlas>
+    <map>
+        <map name="attributes">
+        </map>
+        <string name="description">base class for solid materials</string>
+        <string name="id">material</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+</atlas>

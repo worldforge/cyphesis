@@ -28,10 +28,12 @@ class btCollisionShape;
 
 class btVector3;
 
+class OgreMeshDeserializer;
+
 /**
  * @brief Specifies geometry of an entity.
  *
- * The property "shape" defines the shape of the geometry.
+ * The attribute "type" defines the shape of the geometry.
  * Possible values:
  *
  * "sphere"
@@ -43,9 +45,11 @@ class btVector3;
  * "cylinder-x": A cylinder, oriented along the x axis
  * "cylinder-y": A cylinder, oriented along the y axis
  * "mesh"      : An arbitrary mesh, using vertices and indices.
- * "asset"     : Generates a mesh from a file. The path to is defined in the "path" entry.
+ *               Mesh data is either read from the "path", or supplied "vertices" and "indices" attributes.
  *
- * When a mesh is used as geometry, the bounds of the mesh will be used to update the "bbox" property
+ * In addition a "path" attribute can be specified, pointing to a mesh file.
+ * If the "mesh" type is specified, the full mesh data will be read and used.
+ * The bounds of the mesh will be used to update the "bbox" property
  * of any TypeNode that this property is applied on.
  *
  * @ingroup PropertyClasses
@@ -86,9 +90,8 @@ class GeometryProperty : public Property<Atlas::Message::MapType>
          */
         std::function<std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>>(const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset)> mShapeCreator;
 
-        void buildMeshCreator();
+        void buildMeshCreator(std::shared_ptr<OgreMeshDeserializer> meshDeserializer);
 
-        void parseMeshFile();
 };
 
 #endif /* RULESETS_GEOMETRYPROPERTY_H_ */

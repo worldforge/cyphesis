@@ -1,0 +1,39 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="biomass">
+                <float name="default">0.05</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="germinates">
+                <string name="default">oak</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="density">
+                <float name="default">600</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="transient">
+                <float name="default">1800</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="geometry">
+                <map name="default">
+                    <string name="type">sphere</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present-model">
+                <string name="default">dural/plants/fruit/acorn/acorn.modeldef</string>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">acorn</string>
+        <string name="objtype">class</string>
+        <string name="parent">seed</string>
+        <map name="script">
+            <string name="language">python</string>
+            <string name="name">world.objects.plants.seeds.Acorn.Acorn</string>
+        </map>
+    </map>
+</atlas>

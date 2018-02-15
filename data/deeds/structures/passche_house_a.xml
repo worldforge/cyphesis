@@ -4,9 +4,13 @@
         <map name="attributes">
             <map name="geometry">
                 <map name="default">
-                    <string name="type">asset</string>
+                    <string name="type">mesh</string>
                     <string name="path">dural/structures/passche_town/model/passche_house_a.mesh</string>
                 </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present-mesh">
+                <string name="default">dural/structures/passche_town/model/passche_house_a.mesh</string>
                 <string name="visibility">public</string>
             </map>
         </map>

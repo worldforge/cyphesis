@@ -4,11 +4,15 @@
     <map name="attributes">
       <map name="geometry">
           <map name="default">
-              <string name="type">asset</string>
+              <string name="type">mesh</string>
               <string name="path">dural/structures/cg_outer_wall/model/cg_wall_gate.mesh</string>
           </map>
         <string name="visibility">public</string>
       </map>
+        <map name="present-mesh">
+            <string name="default">dural/structures/cg_outer_wall/model/cg_wall_gate.mesh</string>
+            <string name="visibility">public</string>
+        </map>
     </map>
     <string name="id">castle_wall_gate</string>
     <string name="objtype">class</string>

@@ -5,10 +5,14 @@
       <map name="geometry">
         <map name="default">
           <string name="path">dural/structures/stone_palisade/model/stone_palisade.mesh</string>
-          <string name="type">asset</string>
+          <string name="type">mesh</string>
         </map>
         <string name="visibility">public</string>
       </map>
+        <map name="present-mesh">
+            <string name="default">dural/structures/stone_palisade/model/stone_palisade.mesh</string>
+            <string name="visibility">public</string>
+        </map>
         <map name="name">
             <string name="default">stone palisade</string>
             <string name="visibility">public</string>

@@ -1,77 +1,5 @@
 <atlas>
 
-  <map>
-    <map name="attributes">
-      <map name="biomass">
-        <float name="default">0.05</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="germinates">
-        <string name="default">oak</string>
-        <string name="visibility">public</string>
-      </map>
-      <map name="density">
-        <float name="default">600</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="transient">
-        <float name="default">1800</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">acorn</string>
-    <string name="objtype">class</string>
-    <string name="parent">seed</string>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.objects.plants.seeds.Acorn.Acorn</string>
-    </map>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.1</float>
-          <float>0</float>
-          <float>-0.1</float>
-          <float>0.1</float>
-          <float>0.2</float>
-          <float>0.1</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="alcohol">
-        <float name="default">0</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="germinates">
-        <string name="default">appletree</string>
-        <string name="visibility">public</string>
-      </map>
-      <map name="density">
-        <float name="default">900</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="ticks">
-        <float name="default">900</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="geometry">
-        <map name="default">
-          <string name="type">sphere</string>
-        </map>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">apple</string>
-    <string name="objtype">class</string>
-    <string name="parent">seed</string>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.objects.plants.seeds.Apple.Apple</string>
-    </map>
-  </map>
 
   <map>
     <map name="attributes">
@@ -128,82 +56,9 @@
     <string name="parent">tree</string>
   </map>
 
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.2</float>
-          <float>0</float>
-          <float>-0.2</float>
-          <float>0.2</float>
-          <float>12</float>
-          <float>0.2</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="burn_speed">
-        <float name="default">0.05</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="height">
-        <float name="default">6</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="density">
-        <float name="default">600</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="maxsize">
-        <list name="default">
-            <float>0</float>
-            <float>0</float>
-            <float>15</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">birch</string>
-    <string name="objtype">class</string>
-    <string name="parent">tree</string>
-  </map>
 
-  <map>
-    <map name="attributes">
-      <map name="biomass">
-        <float name="default">0.5</float>
-        <string name="visibility">public</string>
-      </map>
-        <map name="geometry">
-            <map name="default">
-                <string name="type">cylinder-z</string>
-            </map>
-            <string name="visibility">public</string>
-        </map>
-        <map name="bbox">
-        <list name="default">
-          <float>-0.1</float>
-          <float>-0.1</float>
-          <float>0</float>
-          <float>0.1</float>
-          <float>0.1</float>
-          <float>0.4</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="planted-rotation">
-        <list name="default">
-          <float>0.7071</float>
-          <float>0</float>
-          <float>0</float>
-          <float>0.7071</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">carrot</string>
-    <string name="objtype">class</string>
-    <string name="parent">tuber</string>
-  </map>
+
+
 
   <map>
     <map name="attributes">
@@ -555,28 +410,7 @@
     </map>
   </map>
 
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.1</float>
-          <float>-0.08</float>
-          <float>-0.1</float>
-          <float>0.1</float>
-          <float>1.6</float>
-          <float>0.1</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="density">
-        <float name="default">400</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">shrub</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
+
 
   <map>
     <map name="attributes">
@@ -622,37 +456,7 @@
     <string name="parent">plant</string>
   </map>
 
-  <map>
-    <map name="attributes">
-      <map name="biomass">
-        <float name="default">0.5</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="bbox">
-        <list name="default">
-          <float>-0.3</float>
-          <float>-0.2</float>
-          <float>-0.2</float>
-          <float>0.3</float>
-          <float>0.2</float>
-          <float>0.2</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="planted-rotation">
-        <list name="default">
-            <float>0</float>
-            <float>0.7071</float>
-            <float>0</float>
-            <float>0.7071</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">turnip</string>
-    <string name="objtype">class</string>
-    <string name="parent">tuber</string>
-  </map>
+
 
   <map>
     <map name="attributes">

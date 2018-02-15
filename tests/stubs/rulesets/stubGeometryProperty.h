@@ -41,19 +41,11 @@
 
 #ifndef STUB_GeometryProperty_buildMeshCreator
 //#define STUB_GeometryProperty_buildMeshCreator
-  void GeometryProperty::buildMeshCreator()
+  void GeometryProperty::buildMeshCreator(std::shared_ptr<OgreMeshDeserializer> meshDeserializer)
   {
     
   }
 #endif //STUB_GeometryProperty_buildMeshCreator
-
-#ifndef STUB_GeometryProperty_parseMeshFile
-//#define STUB_GeometryProperty_parseMeshFile
-  void GeometryProperty::parseMeshFile()
-  {
-    
-  }
-#endif //STUB_GeometryProperty_parseMeshFile
 
 
 #endif

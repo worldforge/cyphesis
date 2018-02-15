@@ -1,0 +1,13 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="present-model">
+                <string name="default">dural/plants/shrubs/bush/bush_gnarly_brown.mesh</string>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">wormwood</string>
+        <string name="objtype">class</string>
+        <string name="parent">shrub</string>
+    </map>
+</atlas>

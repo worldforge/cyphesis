@@ -1,54 +1,7 @@
 <atlas>
 
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.25</float>
-          <float>0</float>
-          <float>-0.25</float>
-          <float>0.25</float>
-          <float>1</float>
-          <float>0.25</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="burn_speed">
-        <float name="default">0.25</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="density">
-        <float name="default">50</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">barrel</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
 
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-3.57136</float>
-          <float>-0.29046</float>
-          <float>0</float>
-          <float>0</float>
-          <float>2.97412</float>
-          <float>4.45084</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="density">
-        <float name="default">500</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">bed</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
+
 
   <map>
     <map name="attributes">

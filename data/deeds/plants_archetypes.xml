@@ -1,35 +1,35 @@
 <atlas>
 
 	<map>
-		<string name="id">oak_planted</string>
+		<string name="id">oak_free</string>
 		<string name="objtype">archetype</string>
 		<string name="parent">archetype</string>
 		<list name="entities">
 			<map>
 				<string name="parent">oak</string>
-				<string name="mode">planted</string>
+				<string name="mode">free</string>
 			</map>
 		</list>
 	</map>
 	<map>
-		<string name="id">appletree_planted</string>
+		<string name="id">appletree_free</string>
 		<string name="objtype">archetype</string>
 		<string name="parent">archetype</string>
 		<list name="entities">
 			<map>
 				<string name="parent">appletree</string>
-				<string name="mode">planted</string>
+				<string name="mode">free</string>
 			</map>
 		</list>
 	</map>
 	<map>
-		<string name="id">birch_planted</string>
+		<string name="id">birch_free</string>
 		<string name="objtype">archetype</string>
 		<string name="parent">archetype</string>
 		<list name="entities">
 			<map>
 				<string name="parent">birch</string>
-				<string name="mode">planted</string>
+				<string name="mode">free</string>
 			</map>
 		</list>
 	</map>
@@ -40,106 +40,106 @@
 		<list name="entities">
 			<map>
 				<string name="parent">carrot</string>
-				<string name="mode"></string>
+				<string name="mode">free</string>
 			</map>
 		</list>
 	</map>
 	<map>
-		<string name="id">fern_planted</string>
+		<string name="id">fern_free</string>
 		<string name="objtype">archetype</string>
 		<string name="parent">archetype</string>
 		<list name="entities">
 			<map>
 				<string name="parent">fern</string>
-				<string name="mode">planted</string>
+				<string name="mode">free</string>
 			</map>
 		</list>
 	</map>
 	<map>
-		<string name="id">fir_planted</string>
+		<string name="id">fir_free</string>
 		<string name="objtype">archetype</string>
 		<string name="parent">archetype</string>
 		<list name="entities">
 			<map>
 				<string name="parent">fir</string>
-				<string name="mode">planted</string>
+				<string name="mode">free</string>
 			</map>
 		</list>
 	</map>
 	<map>
-		<string name="id">flower_planted</string>
+		<string name="id">flower_free</string>
 		<string name="objtype">archetype</string>
 		<string name="parent">archetype</string>
 		<list name="entities">
 			<map>
 				<string name="parent">flower</string>
-				<string name="mode">planted</string>
+				<string name="mode">free</string>
 			</map>
 		</list>
 	</map>
 	<map>
-		<string name="id">grass_planted</string>
+		<string name="id">grass_free</string>
 		<string name="objtype">archetype</string>
 		<string name="parent">archetype</string>
 		<list name="entities">
 			<map>
 				<string name="parent">grass</string>
-				<string name="mode">planted</string>
+				<string name="mode">free</string>
 			</map>
 		</list>
 	</map>
 	<map>
-		<string name="id">mushroom_planted</string>
+		<string name="id">mushroom_free</string>
 		<string name="objtype">archetype</string>
 		<string name="parent">archetype</string>
 		<list name="entities">
 			<map>
 				<string name="parent">mushroom</string>
-				<string name="mode">planted</string>
+				<string name="mode">free</string>
 			</map>
 		</list>
 	</map>
 	<map>
-		<string name="id">poplar_planted</string>
+		<string name="id">poplar_free</string>
 		<string name="objtype">archetype</string>
 		<string name="parent">archetype</string>
 		<list name="entities">
 			<map>
 				<string name="parent">poplar</string>
-				<string name="mode">planted</string>
+				<string name="mode">free</string>
 			</map>
 		</list>
 	</map>
 	<map>
-		<string name="id">shrub_planted</string>
+		<string name="id">shrub_free</string>
 		<string name="objtype">archetype</string>
 		<string name="parent">archetype</string>
 		<list name="entities">
 			<map>
 				<string name="parent">shrub</string>
-				<string name="mode">planted</string>
+				<string name="mode">free</string>
 			</map>
 		</list>
 	</map>
 	<map>
-		<string name="id">turnip_planted</string>
+		<string name="id">turnip_free</string>
 		<string name="objtype">archetype</string>
 		<string name="parent">archetype</string>
 		<list name="entities">
 			<map>
 				<string name="parent">turnip</string>
-				<string name="mode">planted</string>
+				<string name="mode">free</string>
 			</map>
 		</list>
 	</map>
 	<map>
-		<string name="id">willow_planted</string>
+		<string name="id">willow_free</string>
 		<string name="objtype">archetype</string>
 		<string name="parent">archetype</string>
 		<list name="entities">
 			<map>
 				<string name="parent">willow</string>
-				<string name="mode">planted</string>
+				<string name="mode">free</string>
 			</map>
 		</list>
 	</map>
@@ -150,7 +150,7 @@
 		<list name="entities">
 			<map>
 				<string name="parent">apple</string>
-				<string name="mode">none</string>
+				<string name="mode">free</string>
 			</map>
 		</list>
 	</map>

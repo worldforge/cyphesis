@@ -1,0 +1,43 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="biomass">
+                <float name="default">0.5</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="geometry">
+                <map name="default">
+                    <string name="type">cylinder-z</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="bbox">
+                <list name="default">
+                    <float>-0.1</float>
+                    <float>-0.1</float>
+                    <float>0</float>
+                    <float>0.1</float>
+                    <float>0.1</float>
+                    <float>0.4</float>
+                </list>
+                <string name="visibility">public</string>
+            </map>
+            <map name="planted-rotation">
+                <list name="default">
+                    <float>0.7071</float>
+                    <float>0</float>
+                    <float>0</float>
+                    <float>0.7071</float>
+                </list>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present-model">
+                <string name="default">dural/plants/fruit/carrot/carrot.modeldef</string>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">carrot</string>
+        <string name="objtype">class</string>
+        <string name="parent">tuber</string>
+    </map>
+</atlas>

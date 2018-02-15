@@ -67,36 +67,7 @@
     <string name="parent">wall</string>
   </map>
 
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.1</float>
-          <float>0</float>
-          <float>-0.1</float>
-          <float>0.1</float>
-          <float>0.2</float>
-          <float>0.1</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="burn_speed">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="density">
-        <float name="default">300</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="material">
-        <string name="default">wood</string>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">charcoal</string>
-    <string name="objtype">class</string>
-    <string name="parent">material</string>
-  </map>
+
 
   <map>
     <map name="attributes">
@@ -263,15 +234,6 @@
     <string name="id">lumber</string>
     <string name="objtype">class</string>
     <string name="parent">material</string>
-  </map>
-
-  <map>
-    <map name="attributes">
-    </map>
-    <string name="description">base class for solid materials</string>
-    <string name="id">material</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
   </map>
 
   <map>

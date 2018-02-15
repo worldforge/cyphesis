@@ -1,0 +1,29 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="bbox">
+                <list name="default">
+                    <float>-1.9</float>
+                    <float>0</float>
+                    <float>-0.8</float>
+                    <float>1.9</float>
+                    <float>2.5</float>
+                    <float>0.8</float>
+                </list>
+                <string name="visibility">public</string>
+            </map>
+            <map name="biomass">
+                <float name="default">400</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present-model">
+                <string name="default">dural/creatures/bear/bear.modeldef</string>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">bear</string>
+        <string name="objtype">class</string>
+        <string name="parent">mobile</string>
+    </map>
+
+</atlas>

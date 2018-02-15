@@ -4,11 +4,15 @@
     <map name="attributes">
       <map name="geometry">
           <map name="default">
-              <string name="type">asset</string>
+              <string name="type">mesh</string>
               <string name="path">dural/structures/palisade/model/palisade_circle_c.mesh</string>
           </map>
         <string name="visibility">public</string>
       </map>
+        <map name="present-mesh">
+            <string name="default">dural/structures/palisade/model/palisade_circle_c.mesh</string>
+            <string name="visibility">public</string>
+        </map>
     </map>
     <string name="id">palisade_circle_c</string>
     <string name="objtype">class</string>

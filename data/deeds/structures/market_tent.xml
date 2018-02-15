@@ -5,10 +5,14 @@
       <map name="geometry">
         <map name="default">
           <string name="path">dural/structures/market_tent/model/market_tent.mesh</string>
-          <string name="type">asset</string>
+          <string name="type">mesh</string>
         </map>
         <string name="visibility">public</string>
       </map>
+        <map name="present-mesh">
+            <string name="default">dural/structures/market_tent/model/market_tent.mesh</string>
+            <string name="visibility">public</string>
+        </map>
     </map>
     <string name="id">market_tent</string>
     <string name="objtype">class</string>

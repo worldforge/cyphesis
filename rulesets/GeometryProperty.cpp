@@ -51,6 +51,29 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
         return std::make_pair(new btBoxShape(btSize), std::shared_ptr<btCollisionShape>());
     };
 
+    std::shared_ptr<OgreMeshDeserializer> deserializer;
+    AtlasQuery::find<std::string>(data, "path", [&](const std::string& path) {
+        try {
+            if (boost::algorithm::ends_with(path, ".mesh")) {
+                boost::filesystem::path fullpath = boost::filesystem::path(assets_directory) / path;
+                boost::filesystem::fstream fileStream(fullpath);
+                if (fileStream) {
+                    deserializer.reset(new OgreMeshDeserializer(fileStream));
+                    deserializer->deserialize();
+                    m_meshBounds = deserializer->m_bounds;
+
+                } else {
+                    log(ERROR, "Could not find geometry file at " + fullpath.string());
+                }
+            } else {
+                log(ERROR, "Could not recognize geometry file type: " + path);
+            }
+        } catch (const std::exception& ex) {
+            log(ERROR, "Exception when trying to parse geometry at " + path);
+        }
+    });
+
+
     auto I = m_data.find("type");
     if (I != m_data.end() && I->second.isString()) {
         const std::string& shapeType = I->second.String();
@@ -131,9 +154,7 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
                 return std::make_pair(shape, std::shared_ptr<btCollisionShape>());
             };
         } else if (shapeType == "mesh") {
-            buildMeshCreator();
-        } else if (shapeType == "asset") {
-            parseMeshFile();
+            buildMeshCreator(std::move(deserializer));
         }
     } else {
         log(WARNING, "Geometry property without 'type' attribute set. Property value: " + debug_tostring(data));
@@ -153,100 +174,116 @@ std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> GeometryProperty
 }
 
 
-void GeometryProperty::buildMeshCreator()
+void GeometryProperty::buildMeshCreator(std::shared_ptr<OgreMeshDeserializer> meshDeserializer)
 {
-    auto vertsI = m_data.find("vertices");
-    if (vertsI != m_data.end() && vertsI->second.isList()) {
-        auto trisI = m_data.find("indices");
-        if (trisI != m_data.end() && trisI->second.isList()) {
-            auto& vertsList = vertsI->second.List();
-            auto& trisList = trisI->second.List();
+    //Shared pointers since we want these values to survive as long as "meshShape" is alive.
+    std::shared_ptr<std::vector<float>> verts(new std::vector<float>());
+    std::shared_ptr<std::vector<int>> indices(new std::vector<int>());
 
-            if (vertsList.empty()) {
-                log(ERROR, "Vertices is empty for mesh.");
-                return;
-            }
+    if (!meshDeserializer) {
 
-            if (vertsList.size() % 3 != 0) {
-                log(ERROR, "Vertices is not even with 3.");
-                return;
-            }
+        auto vertsI = m_data.find("vertices");
+        if (vertsI != m_data.end() && vertsI->second.isList()) {
+            auto trisI = m_data.find("indices");
+            if (trisI != m_data.end() && trisI->second.isList()) {
+                auto& vertsList = vertsI->second.List();
+                auto& trisList = trisI->second.List();
 
-            if (trisList.empty()) {
-                log(ERROR, "Triangles is empty for mesh.");
-                return;
-            }
-
-            if (trisList.size() % 3 != 0) {
-                log(ERROR, "Triangles is not even with 3.");
-                return;
-            }
-
-            int numberOfVertices = (int) (vertsList.size() / 3);
-            int numberOfTriangles = (int) (trisList.size() / 3);
-
-            float* verts = new float[vertsList.size()];
-
-            for (size_t i = 0; i < vertsList.size(); i += 3) {
-                if (!vertsList[i].isFloat() || !vertsList[i + 1].isFloat() || !vertsList[i + 2].isFloat()) {
-                    log(ERROR, "Vertex data was not a float for mesh.");
-                    delete[] verts;
+                if (vertsList.empty()) {
+                    log(ERROR, "Vertices is empty for mesh.");
                     return;
                 }
-                verts[i] = (float) vertsList[i].Float();
-                verts[i + 1] = (float) vertsList[i + 1].Float();
-                verts[i + 2] = (float) vertsList[i + 2].Float();
-            }
 
-            int* indices = new int[trisList.size()];
-            for (size_t i = 0; i < trisList.size(); i += 3) {
-                if (!trisList[i].isInt() || !trisList[i + 1].isInt() || !trisList[i + 2].isInt()) {
-                    log(ERROR, "Index data was not an int for mesh.");
-                    delete[] verts;
-                    delete[] indices;
+                if (vertsList.size() % 3 != 0) {
+                    log(ERROR, "Vertices is not even with 3.");
                     return;
                 }
-                if (trisList[i].Int() >= numberOfVertices || trisList[i + 1].Int() >= numberOfVertices || trisList[i + 2].Int() >= numberOfVertices) {
-                    log(ERROR, "Index data was out of bounds for vertices for mesh.");
-                    delete[] verts;
-                    delete[] indices;
+
+                if (trisList.empty()) {
+                    log(ERROR, "Triangles is empty for mesh.");
                     return;
                 }
-                indices[i] = (int) trisList[i].Int();
-                indices[i + 1] = (int) trisList[i + 1].Int();
-                indices[i + 2] = (int) trisList[i + 2].Int();
+
+                if (trisList.size() % 3 != 0) {
+                    log(ERROR, "Triangles is not even with 3.");
+                    return;
+                }
+
+                int numberOfVertices = static_cast<int>(vertsList.size() / 3);
+
+                auto& local_verts = *verts.get();
+                auto& local_indices = *indices.get();
+                local_verts.resize(vertsList.size());
+
+                for (size_t i = 0; i < vertsList.size(); i += 3) {
+                    if (!vertsList[i].isFloat() || !vertsList[i + 1].isFloat() || !vertsList[i + 2].isFloat()) {
+                        log(ERROR, "Vertex data was not a float for mesh.");
+                        return;
+                    }
+                    local_verts[i] = (float) vertsList[i].Float();
+                    local_verts[i + 1] = (float) vertsList[i + 1].Float();
+                    local_verts[i + 2] = (float) vertsList[i + 2].Float();
+                }
+
+                local_indices.resize(trisList.size());
+                for (size_t i = 0; i < trisList.size(); i += 3) {
+                    if (!trisList[i].isInt() || !trisList[i + 1].isInt() || !trisList[i + 2].isInt()) {
+                        log(ERROR, "Index data was not an int for mesh.");
+                        return;
+                    }
+                    if (trisList[i].Int() >= numberOfVertices || trisList[i + 1].Int() >= numberOfVertices || trisList[i + 2].Int() >= numberOfVertices) {
+                        log(ERROR, "Index data was out of bounds for vertices for mesh.");
+                        return;
+                    }
+                    local_indices[i] = (int) trisList[i].Int();
+                    local_indices[i + 1] = (int) trisList[i + 1].Int();
+                    local_indices[i + 2] = (int) trisList[i + 2].Int();
+                }
+
+
+            } else {
+                log(ERROR, "Could not find list of triangles for mesh.");
             }
-
-            int vertStride = sizeof(float) * 3;
-            int indexStride = sizeof(int) * 3;
-
-            btTriangleIndexVertexArray* triangleVertexArray = new btTriangleIndexVertexArray(numberOfTriangles, indices, indexStride, numberOfVertices, verts, vertStride);
-
-            std::shared_ptr<btBvhTriangleMeshShape> meshShape(new btBvhTriangleMeshShape(triangleVertexArray, true, true), [triangleVertexArray, verts, indices](btBvhTriangleMeshShape* p) {
-                delete triangleVertexArray;
-                delete p;
-                delete[] verts;
-                delete[] indices;
-            });
-            meshShape->setLocalScaling(btVector3(1, 1, 1));
-            //Store the bounds, so that the "bbox" property can be updated when this is applied to a TypeNode
-            m_meshBounds = WFMath::AxisBox<3>(Convert::toWF<WFMath::Point<3>>(meshShape->getLocalAabbMin()), Convert::toWF<WFMath::Point<3>>(meshShape->getLocalAabbMax()));
-
-            mShapeCreator = [meshShape](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size,
-                                        btVector3& centerOfMassOffset) -> std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> {
-                //In contrast to other shapes there's no centerOfMassOffset for mesh shapes
-                centerOfMassOffset = btVector3(0, 0, 0);
-                btVector3 meshSize = meshShape->getLocalAabbMax() - meshShape->getLocalAabbMin();
-                btVector3 scaling(size.x() / meshSize.x(), size.y() / meshSize.y(), size.z() / meshSize.z());
-                btScaledBvhTriangleMeshShape* scaledShape = new btScaledBvhTriangleMeshShape(meshShape.get(), scaling);
-                return std::make_pair(scaledShape, meshShape);
-            };
         } else {
-            log(ERROR, "Could not find list of triangles for mesh.");
+            log(ERROR, "Could not find list of vertices for mesh.");
         }
     } else {
-        log(ERROR, "Could not find list of vertices for mesh.");
+        if (meshDeserializer) {
+            *indices = std::move(meshDeserializer->m_indices);
+            *verts = std::move(meshDeserializer->m_vertices);
+        } else {
+            //No mesh deserializer, and no other mesh data, return.
+            return;
+        }
     }
+
+
+
+    int vertStride = sizeof(float) * 3;
+    int indexStride = sizeof(int) * 3;
+
+    btTriangleIndexVertexArray* triangleVertexArray = new btTriangleIndexVertexArray(static_cast<int>(indices->size() / 3), indices->data(), indexStride,
+                                                                                     static_cast<int>(verts->size() / 3), verts->data(), vertStride);
+
+    //Make sure to capture "verts" and "indices" so that they are kept around.
+    std::shared_ptr<btBvhTriangleMeshShape> meshShape(new btBvhTriangleMeshShape(triangleVertexArray, true, true), [triangleVertexArray, verts, indices](btBvhTriangleMeshShape* p) {
+        delete triangleVertexArray;
+        delete p;
+    });
+    meshShape->setLocalScaling(btVector3(1, 1, 1));
+    //Store the bounds, so that the "bbox" property can be updated when this is applied to a TypeNode
+    m_meshBounds = WFMath::AxisBox<3>(Convert::toWF<WFMath::Point<3>>(meshShape->getLocalAabbMin()), Convert::toWF<WFMath::Point<3>>(meshShape->getLocalAabbMax()));
+
+    mShapeCreator = [meshShape](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size,
+                                btVector3& centerOfMassOffset) -> std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> {
+        //In contrast to other shapes there's no centerOfMassOffset for mesh shapes
+        centerOfMassOffset = btVector3(0, 0, 0);
+        btVector3 meshSize = meshShape->getLocalAabbMax() - meshShape->getLocalAabbMin();
+        btVector3 scaling(size.x() / meshSize.x(), size.y() / meshSize.y(), size.z() / meshSize.z());
+        return std::make_pair(new btScaledBvhTriangleMeshShape(meshShape.get(), scaling), meshShape);
+    };
+
+
 }
 
 GeometryProperty* GeometryProperty::copy() const
@@ -254,64 +291,6 @@ GeometryProperty* GeometryProperty::copy() const
     return new GeometryProperty(*this);
 }
 
-void GeometryProperty::parseMeshFile()
-{
-    AtlasQuery::find<Atlas::Message::StringType>(data(), "path", [&](const Atlas::Message::StringType& path) {
-        try {
-            if (boost::algorithm::ends_with(path, ".mesh")) {
-                boost::filesystem::path fullpath = boost::filesystem::path(assets_directory) / path;
-                boost::filesystem::fstream fileStream(fullpath);
-                if (fileStream) {
-                    auto verts = new std::vector<float>();
-                    auto indices = new std::vector<int>();
-
-                    {
-                        OgreMeshDeserializer deserializer(fileStream);
-                        deserializer.deserialize();
-                        *verts = std::move(deserializer.m_vertices);
-                        *indices = std::move(deserializer.m_indices);
-                        m_meshBounds = deserializer.m_bounds;
-                    }
-
-
-                    int vertStride = sizeof(float) * 3;
-                    int indexStride = sizeof(int) * 3;
-
-                    int numberOfVertices = (int) (verts->size() / 3);
-                    int numberOfTriangles = (int) (indices->size() / 3);
-
-                    btTriangleIndexVertexArray* triangleVertexArray = new btTriangleIndexVertexArray(numberOfTriangles, indices->data(), indexStride, numberOfVertices, verts->data(), vertStride);
-
-                    std::shared_ptr<btBvhTriangleMeshShape> meshShape(new btBvhTriangleMeshShape(triangleVertexArray, true, true), [triangleVertexArray, verts, indices](btBvhTriangleMeshShape* p) {
-                        delete triangleVertexArray;
-                        delete p;
-                        delete verts;
-                        delete indices;
-                    });
-                    meshShape->setLocalScaling(btVector3(1, 1, 1));
-
-                    mShapeCreator = [meshShape](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size,
-                                                btVector3& centerOfMassOffset) -> std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> {
-                        //In contrast to other shapes there's no centerOfMassOffset for mesh shapes
-                        centerOfMassOffset = btVector3(0, 0, 0);
-                        btVector3 meshSize = meshShape->getLocalAabbMax() - meshShape->getLocalAabbMin();
-                        btVector3 scaling(size.x() / meshSize.x(), size.y() / meshSize.y(), size.z() / meshSize.z());
-                        btScaledBvhTriangleMeshShape* scaledShape = new btScaledBvhTriangleMeshShape(meshShape.get(), scaling);
-                        return std::make_pair(scaledShape, meshShape);
-                    };
-
-                } else {
-                    log(ERROR, "Could not find geometry file at " + fullpath.string());
-                }
-            } else {
-                log(ERROR, "Could not recognize geometry file type: " + path);
-            }
-        } catch (const std::exception& ex) {
-            log(ERROR, "Exception when trying to parse geometry at " + path);
-        }
-    });
-
-}
 
 void GeometryProperty::install(TypeNode* typeNode, const std::string&)
 {
