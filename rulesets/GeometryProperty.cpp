@@ -178,7 +178,7 @@ void GeometryProperty::buildMeshCreator(std::shared_ptr<OgreMeshDeserializer> me
 {
     //Shared pointers since we want these values to survive as long as "meshShape" is alive.
     std::shared_ptr<std::vector<float>> verts(new std::vector<float>());
-    std::shared_ptr<std::vector<int>> indices(new std::vector<int>());
+    std::shared_ptr<std::vector<unsigned int>> indices(new std::vector<unsigned int>());
 
     if (!meshDeserializer) {
 
@@ -235,9 +235,9 @@ void GeometryProperty::buildMeshCreator(std::shared_ptr<OgreMeshDeserializer> me
                         log(ERROR, "Index data was out of bounds for vertices for mesh.");
                         return;
                     }
-                    local_indices[i] = (int) trisList[i].Int();
-                    local_indices[i + 1] = (int) trisList[i + 1].Int();
-                    local_indices[i + 2] = (int) trisList[i + 2].Int();
+                    local_indices[i] = (unsigned int) trisList[i].Int();
+                    local_indices[i + 1] = (unsigned int) trisList[i + 1].Int();
+                    local_indices[i + 2] = (unsigned int) trisList[i + 2].Int();
                 }
 
 
@@ -258,12 +258,26 @@ void GeometryProperty::buildMeshCreator(std::shared_ptr<OgreMeshDeserializer> me
     }
 
 
+    if (indices->empty() || verts->empty()) {
+        log(ERROR, "Vertices or indices were empty.");
+        return;
+    }
+
+    for (auto index : *indices) {
+        if (index >= verts->size() / 3) {
+            log(ERROR, "Index out of bounds.");
+            return;
+        }
+    }
 
     int vertStride = sizeof(float) * 3;
-    int indexStride = sizeof(int) * 3;
+    int indexStride = sizeof(unsigned int) * 3;
 
-    btTriangleIndexVertexArray* triangleVertexArray = new btTriangleIndexVertexArray(static_cast<int>(indices->size() / 3), indices->data(), indexStride,
-                                                                                     static_cast<int>(verts->size() / 3), verts->data(), vertStride);
+    int indicesCount = static_cast<int>(indices->size() / 3);
+    int vertexCount = static_cast<int>(verts->size() / 3);
+
+    btTriangleIndexVertexArray* triangleVertexArray = new btTriangleIndexVertexArray(indicesCount, reinterpret_cast<int*>(indices->data()), indexStride,
+                                                                                     vertexCount, verts->data(), vertStride);
 
     //Make sure to capture "verts" and "indices" so that they are kept around.
     std::shared_ptr<btBvhTriangleMeshShape> meshShape(new btBvhTriangleMeshShape(triangleVertexArray, true, true), [triangleVertexArray, verts, indices](btBvhTriangleMeshShape* p) {

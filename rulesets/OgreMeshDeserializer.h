@@ -38,7 +38,7 @@ class OgreMeshDeserializer
         void deserialize();
 
         std::vector<float> m_vertices;
-        std::vector<int> m_indices;
+        std::vector<unsigned int> m_indices;
         WFMath::AxisBox<3> m_bounds;
         float m_radius;
 

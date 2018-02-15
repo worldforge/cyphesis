@@ -627,7 +627,7 @@ void OgreMeshDeserializer::readSubMesh()
 
     size_t offset = 0;
     if (!useSharedVertices) {
-        offset = m_vertices.size();
+        offset = m_vertices.size() / 3;
     }
 
     unsigned int indexCount = 0;
