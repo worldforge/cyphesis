@@ -56,7 +56,10 @@ void TypeNode::injectProperty(const std::string& name,
         m_defaults.erase(existingI);
     }
     m_defaults.emplace(name, p);
-    auto attributesElement = m_description->getAttr("attributes");
+    Atlas::Message::Element attributesElement = Atlas::Message::MapType();
+    if (m_description->hasAttr("attributes")) {
+        attributesElement = m_description->getAttr("attributes");
+    }
     Atlas::Message::Element propertyElement;
     p->get(propertyElement);
     attributesElement.Map()[name] = Atlas::Message::MapType{

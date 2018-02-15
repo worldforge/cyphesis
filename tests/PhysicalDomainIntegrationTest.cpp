@@ -535,6 +535,8 @@ void PhysicalDomainIntegrationTest::test_collision()
 
     Property<double>* zeroFrictionProperty = new Property<double>();
     zeroFrictionProperty->data() = 0;
+    auto speedGroundProperty = new Property<double>();
+    speedGroundProperty->data() = 5.0;
 
 
     Entity* rootEntity = new Entity("0", newId());
@@ -558,7 +560,7 @@ void PhysicalDomainIntegrationTest::test_collision()
 
     PropelProperty* propelProperty = new PropelProperty();
     //Move y axis 2 meter per second.
-    propelProperty->data() = WFMath::Vector<3>(0, 0, 2);
+    propelProperty->data() = WFMath::Vector<3>(0, 0, 2.0/speedGroundProperty->data());
 
     AngularFactorProperty angularZeroFactorProperty;
     angularZeroFactorProperty.data() = WFMath::Vector<3>::ZERO();
@@ -568,6 +570,7 @@ void PhysicalDomainIntegrationTest::test_collision()
     freeEntity->setProperty(PropelProperty::property_name, propelProperty);
     freeEntity->setProperty("mass", massProp);
     freeEntity->setProperty("friction", zeroFrictionProperty);
+    freeEntity->setProperty("speed-ground", speedGroundProperty);
     freeEntity->setProperty(AngularFactorProperty::property_name, &angularZeroFactorProperty);
     freeEntity->setType(rockType);
     freeEntity->m_location.m_pos = WFMath::Point<3>(10, 10, 10);
@@ -952,14 +955,18 @@ void PhysicalDomainIntegrationTest::test_stairs()
     modePlantedProperty->set("planted");
     Property<double>* massProp = new Property<double>();
     massProp->data() = 100;
+    auto speedGroundProperty = new Property<double>();
+    speedGroundProperty->data() = 5.0;
     PropelProperty* propelProperty = new PropelProperty();
-    propelProperty->data() = WFMath::Vector<3>(0, 0, 1);
+    propelProperty->data() = WFMath::Vector<3>(0, 0, 1.0/speedGroundProperty->data());
     AngularFactorProperty angularZeroFactorProperty;
     angularZeroFactorProperty.data() = WFMath::Vector<3>::ZERO();
     GeometryProperty capsuleProperty;
     capsuleProperty.set(Atlas::Message::MapType({{"type", "capsule-y"}}));
 //    Property<double>* stepFactorProp = new Property<double>();
 //    stepFactorProp->data() = 0.3;
+
+    humanType->injectProperty("speed-ground", speedGroundProperty);
 
 
     Entity* rootEntity = new Entity("0", newId());
