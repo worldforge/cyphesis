@@ -1,0 +1,64 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="bbox">
+                <list name="default">
+                    <float>-0.25</float>
+                    <float>0</float>
+                    <float>-0.25</float>
+                    <float>0.25</float>
+                    <float>7</float>
+                    <float>0.25</float>
+                </list>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/plants/trees/pine/pine_a.modeldef</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="height">
+                <float name="default">8</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="density">
+                <float name="default">600</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="maxsize">
+                <list name="default">
+                    <float>0</float>
+                    <float>0</float>
+                    <float>15</float>
+                </list>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">pine</string>
+        <string name="objtype">class</string>
+        <string name="parent">tree</string>
+    </map>
+
+    <map>
+        <map name="attributes">
+            <map name="present">
+                <string name="default">dural/plants/trees/pine/pine_b.modeldef</string>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">pine_b</string>
+        <string name="objtype">class</string>
+        <string name="parent">pine</string>
+    </map>
+
+    <map>
+        <map name="attributes">
+            <map name="present">
+                <string name="default">dural/plants/trees/pine/pine_c.modeldef</string>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">pine_c</string>
+        <string name="objtype">class</string>
+        <string name="parent">pine</string>
+    </map>
+</atlas>

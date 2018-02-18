@@ -9,7 +9,7 @@
         </map>
         <string name="visibility">public</string>
       </map>
-        <map name="present-mesh">
+        <map name="present">
             <string name="default">dural/structures/jetty/model/jetty_run_a.mesh</string>
             <string name="visibility">public</string>
         </map>

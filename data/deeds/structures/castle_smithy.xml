@@ -1,22 +1,106 @@
 <atlas>
 
-  <map>
-    <map name="attributes">
-      <map name="geometry">
-          <map name="default">
-              <string name="type">mesh</string>
-              <string name="path">dural/structures/cg_smithy/model/cg_smithy.mesh</string>
-          </map>
-        <string name="visibility">public</string>
-      </map>
-        <map name="present-mesh">
-            <string name="default">dural/structures/cg_smithy/model/cg_smithy.mesh</string>
-            <string name="visibility">public</string>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="type">mesh</string>
+                    <string name="path">dural/structures/cg_smithy/model/cg_smithy.mesh</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/structures/cg_smithy/model/cg_smithy.mesh</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="area">
+                <map name="default">
+                    <int name="layer">7</int>
+                    <map name="shape">
+                        <list name="points">
+                            <list>
+                                <float>0.091949</float>
+                                <float>-1.00925</float>
+                            </list>
+                            <list>
+                                <float>-0.137837</float>
+                                <float>-10.2827</float>
+                            </list>
+                            <list>
+                                <float>-9.6361</float>
+                                <float>-10.269</float>
+                            </list>
+                            <list>
+                                <float>-9.65017</float>
+                                <float>-0.645141</float>
+                            </list>
+                            <list>
+                                <float>-11.0888</float>
+                                <float>-0.442382</float>
+                            </list>
+                            <list>
+                                <float>-11.207</float>
+                                <float>6.24856</float>
+                            </list>
+                            <list>
+                                <float>6.92925</float>
+                                <float>6.11902</float>
+                            </list>
+                            <list>
+                                <float>6.46924</float>
+                                <float>-0.419333</float>
+                            </list>
+                        </list>
+                        <string name="type">polygon</string>
+                    </map>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="terrainmod">
+                <float name="heightoffset">0</float>
+                <map name="shape">
+                    <list name="points">
+                        <list>
+                            <float>0.091949</float>
+                            <float>-1.00925</float>
+                        </list>
+                        <list>
+                            <float>-0.137837</float>
+                            <float>-10.2827</float>
+                        </list>
+                        <list>
+                            <float>-9.6361</float>
+                            <float>-10.269</float>
+                        </list>
+                        <list>
+                            <float>-9.65017</float>
+                            <float>-0.645141</float>
+                        </list>
+                        <list>
+                            <float>-11.0888</float>
+                            <float>-0.442382</float>
+                        </list>
+                        <list>
+                            <float>-11.207</float>
+                            <float>6.24856</float>
+                        </list>
+                        <list>
+                            <float>6.92925</float>
+                            <float>6.11902</float>
+                        </list>
+                        <list>
+                            <float>6.46924</float>
+                            <float>-0.419333</float>
+                        </list>
+                    </list>
+                    <string name="type">polygon</string>
+                </map>
+                <string name="type">levelmod</string>
+            </map>
         </map>
+        <string name="id">castle_smithy</string>
+        <string name="objtype">class</string>
+        <string name="parent">structure</string>
     </map>
-    <string name="id">castle_smithy</string>
-    <string name="objtype">class</string>
-    <string name="parent">structure</string>
-  </map>
 
 </atlas>

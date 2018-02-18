@@ -8,8 +8,143 @@
                 </map>
                 <string name="visibility">public</string>
             </map>
-            <map name="present-mesh">
+            <map name="present">
                 <string name="default">dural/structures/cg_inn/model/cg_inn.mesh</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="terrainmod">
+                <map name="default">
+                    <float name="heightoffset">0</float>
+                    <map name="shape">
+                        <list name="points">
+                            <list>
+                                <float>-0.0330088</float>
+                                <float>3.35904</float>
+                            </list>
+                            <list>
+                                <float>-8.21518</float>
+                                <float>2.93664</float>
+                            </list>
+                            <list>
+                                <float>-8.27803</float>
+                                <float>2.38888</float>
+                            </list>
+                            <list>
+                                <float>-10.0172</float>
+                                <float>2.40824</float>
+                            </list>
+                            <list>
+                                <float>-10.0154</float>
+                                <float>0.235201</float>
+                            </list>
+                            <list>
+                                <float>-8.26947</float>
+                                <float>0.228893</float>
+                            </list>
+                            <list>
+                                <float>-8.44085</float>
+                                <float>-12.1663</float>
+                            </list>
+                            <list>
+                                <float>3.99713</float>
+                                <float>-12.5411</float>
+                            </list>
+                            <list>
+                                <float>3.85007</float>
+                                <float>-9.92374</float>
+                            </list>
+                            <list>
+                                <float>6.66209</float>
+                                <float>-10.1851</float>
+                            </list>
+                            <list>
+                                <float>6.56119</float>
+                                <float>-8.55103</float>
+                            </list>
+                            <list>
+                                <float>7.0901</float>
+                                <float>-8.5686</float>
+                            </list>
+                            <list>
+                                <float>7.05797</float>
+                                <float>-0.183271</float>
+                            </list>
+                            <list>
+                                <float>-0.231897</float>
+                                <float>-0.19835</float>
+                            </list>
+                        </list>
+                        <string name="type">polygon</string>
+                    </map>
+                    <string name="type">levelmod</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="area">
+                <map name="default">
+                    <int name="layer">7</int>
+                    <map name="shape">
+                        <list name="points">
+                            <list>
+                                <float>-0.0330088</float>
+                                <float>3.35904</float>
+                            </list>
+                            <list>
+                                <float>-8.21518</float>
+                                <float>2.93664</float>
+                            </list>
+                            <list>
+                                <float>-8.27803</float>
+                                <float>2.38888</float>
+                            </list>
+                            <list>
+                                <float>-10.0172</float>
+                                <float>2.40824</float>
+                            </list>
+                            <list>
+                                <float>-10.0154</float>
+                                <float>0.235201</float>
+                            </list>
+                            <list>
+                                <float>-8.26947</float>
+                                <float>0.228893</float>
+                            </list>
+                            <list>
+                                <float>-8.44085</float>
+                                <float>-12.1663</float>
+                            </list>
+                            <list>
+                                <float>3.99713</float>
+                                <float>-12.5411</float>
+                            </list>
+                            <list>
+                                <float>3.85007</float>
+                                <float>-9.92374</float>
+                            </list>
+                            <list>
+                                <float>6.66209</float>
+                                <float>-10.1851</float>
+                            </list>
+                            <list>
+                                <float>6.56119</float>
+                                <float>-8.55103</float>
+                            </list>
+                            <list>
+                                <float>7.0901</float>
+                                <float>-8.5686</float>
+                            </list>
+                            <list>
+                                <float>7.05797</float>
+                                <float>-0.183271</float>
+                            </list>
+                            <list>
+                                <float>-0.231897</float>
+                                <float>-0.19835</float>
+                            </list>
+                        </list>
+                        <string name="type">polygon</string>
+                    </map>
+                </map>
                 <string name="visibility">public</string>
             </map>
         </map>
@@ -18,3 +153,5 @@
         <string name="parent">structure</string>
     </map>
 </atlas>
+
+

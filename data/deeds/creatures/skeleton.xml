@@ -1,0 +1,24 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/creatures/biped/skeleton/model/skeleton.mesh</string>
+                    <string name="type">capsule-y</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/creatures/biped/skeleton/skeleton.model</string>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">skeleton</string>
+        <string name="objtype">class</string>
+        <string name="parent">mobile</string>
+        <map name="script">
+            <string name="language">python</string>
+            <string name="name">world.objects.undead.Skeleton.Skeleton</string>
+        </map>
+    </map>
+</atlas>

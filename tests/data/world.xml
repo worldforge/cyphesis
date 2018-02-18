@@ -27549,10 +27549,10 @@
       <float>0.0114326</float>
     </list>
     <string name="id">833</string>
-    <string name="parent">trousers</string>
+    <string name="parent">pants</string>
     <float name="stamp">0</float>
     <string name="objtype">obj</string>
-    <string name="name">ragged trousers</string>
+    <string name="name">ragged pants</string>
     <list name="bbox">
       <float>-0.1</float>
       <float>-0.1</float>
@@ -27717,10 +27717,10 @@
       <float>-0.0135174</float>
     </list>
     <string name="id">836</string>
-    <string name="parent">trousers</string>
+    <string name="parent">pants</string>
     <float name="stamp">0</float>
     <string name="objtype">obj</string>
-    <string name="name">sun trousers</string>
+    <string name="name">sun pants</string>
     <list name="bbox">
       <float>-0.1</float>
       <float>-0.1</float>
@@ -27861,10 +27861,10 @@
       <float>0.00488472</float>
     </list>
     <string name="id">842</string>
-    <string name="parent">trousers</string>
+    <string name="parent">pants</string>
     <float name="stamp">0</float>
     <string name="objtype">obj</string>
-    <string name="name">ragged trousers</string>
+    <string name="name">ragged pants</string>
     <list name="bbox">
       <float>-0.1</float>
       <float>-0.1</float>
@@ -27885,10 +27885,10 @@
       <float>0.00400925</float>
     </list>
     <string name="id">843</string>
-    <string name="parent">trousers</string>
+    <string name="parent">pants</string>
     <float name="stamp">0</float>
     <string name="objtype">obj</string>
-    <string name="name">burlap trousers</string>
+    <string name="name">burlap pants</string>
     <list name="bbox">
       <float>-0.1</float>
       <float>-0.1</float>

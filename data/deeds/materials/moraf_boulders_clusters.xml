@@ -1,0 +1,22 @@
+<atlas>
+
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/environment/boulder/model/moraf_boulders_clusters.mesh</string>
+                    <string name="type">mesh</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/environment/boulder/model/moraf_boulders_clusters.mesh</string>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">moraf_boulder_cluster</string>
+        <string name="objtype">class</string>
+        <string name="parent">boulder</string>
+    </map>
+
+</atlas>

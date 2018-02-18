@@ -1,0 +1,17 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="present">
+                <string name="default">dural/plants/shrubs/fern/model/fern.mesh</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="density">
+                <float name="default">100</float>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">fern</string>
+        <string name="objtype">class</string>
+        <string name="parent">plant</string>
+    </map>
+</atlas>

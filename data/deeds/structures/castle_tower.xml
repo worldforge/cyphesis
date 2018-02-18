@@ -1,22 +1,48 @@
 <atlas>
 
-  <map>
-    <map name="attributes">
-      <map name="geometry">
-          <map name="default">
-              <string name="type">mesh</string>
-              <string name="path">dural/structures/cg_tower/model/cg_tower.mesh</string>
-          </map>
-        <string name="visibility">public</string>
-      </map>
-        <map name="present-mesh">
-            <string name="default">dural/structures/cg_tower/model/cg_tower.mesh</string>
-            <string name="visibility">public</string>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="type">mesh</string>
+                    <string name="path">dural/structures/cg_tower/model/cg_tower.mesh</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/structures/cg_tower/model/cg_tower.mesh</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="terrainmod">
+                <float name="heightoffset">0</float>
+                <map name="shape">
+                    <list name="points">
+                        <list>
+                            <float>-2.98328</float>
+                            <float>-0.0483053</float>
+                        </list>
+                        <list>
+                            <float>0.112286</float>
+                            <float>3.13993</float>
+                        </list>
+                        <list>
+                            <float>3.18611</float>
+                            <float>0.285134</float>
+                        </list>
+                        <list>
+                            <float>0.0674631</float>
+                            <float>-2.92697</float>
+                        </list>
+                    </list>
+                    <string name="type">polygon</string>
+                </map>
+                <string name="type">levelmod</string>
+            </map>
+
         </map>
+        <string name="id">castle_tower</string>
+        <string name="objtype">class</string>
+        <string name="parent">structure</string>
     </map>
-    <string name="id">castle_tower</string>
-    <string name="objtype">class</string>
-    <string name="parent">structure</string>
-  </map>
 
 </atlas>

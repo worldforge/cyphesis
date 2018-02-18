@@ -194,14 +194,9 @@ CorePropertyManager::CorePropertyManager()
     installProperty<Property<double>>("step_factor", "float");
 
     /**
-     * Specifies a mesh to use for client side presentation.
+     * Specifies a mesh, model or mapping to use for client side presentation.
      */
-    installProperty<Property<std::string> >("present-mesh", "string");
-
-    /**
-     * Specifies a model to use for client side presentation.
-     */
-    installProperty<Property<std::string> >("present-model", "string");
+    installProperty<Property<std::string> >("present", "string");
 
     /**
      * The max speed in meters per second (m/s) when moving over ground.

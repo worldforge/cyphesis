@@ -1,27 +1,6 @@
 <atlas>
 
-  <map>
-    <map name="attributes">
-      <map name="density">
-        <float name="default">2000</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="bbox">
-        <list name="default">
-          <float>-0.1</float>
-          <float>0</float>
-          <float>-0.1</float>
-          <float>0.1</float>
-          <float>0.5</float>
-          <float>0.1</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">axe</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
+
 
   <map>
     <map name="attributes">
@@ -56,29 +35,6 @@
 
   <map>
     <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-1</float>
-          <float>0</float>
-          <float>-0.02</float>
-          <float>0</float>
-          <float>0.2</float>
-          <float>0.02</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="density">
-        <float name="default">2000</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">bucksaw</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
-
-  <map>
-    <map name="attributes">
       <map name="density">
         <float name="default">2000</float>
         <string name="visibility">public</string>
@@ -100,120 +56,27 @@
     <string name="parent">thing</string>
   </map>
 
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.04</float>
-          <float>0</float>
-          <float>-0.04</float>
-          <float>0.04</float>
-          <float>2</float>
-          <float>0.04</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="density">
-        <float name="default">500</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">fishingrod</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
 
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.1</float>
-          <float>0</float>
-          <float>-0.1</float>
-          <float>0.1</float>
-          <float>0.5</float>
-          <float>0.1</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="density">
-        <float name="default">2000</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">hammer</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
 
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.01</float>
-          <float>-0.01</float>
-          <float>-0.1</float>
-          <float>0.1</float>
-          <float>0.15</float>
-          <float>0.1</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="density">
-        <float name="default">2000</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">hook</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
 
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.01</float>
-          <float>-0.01</float>
-          <float>-0.1</float>
-          <float>0.01</float>
-          <float>0.01</float>
-          <float>0.1</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="density">
-        <float name="default">2000</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">knife</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
 
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.01</float>
-          <float>-0.01</float>
-          <float>-0.1</float>
-          <float>0.1</float>
-          <float>0.15</float>
-          <float>0.1</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="density">
-        <float name="default">1500</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">lure</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   <map>
     <map name="attributes">
@@ -238,28 +101,7 @@
     <string name="parent">thing</string>
   </map>
 
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.02</float>
-          <float>0</float>
-          <float>-0.02</float>
-          <float>0.02</float>
-          <float>0.5</float>
-          <float>0.02</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="density">
-        <float name="default">2000</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">pickaxe</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
+
 
   <map>
     <map name="attributes">
@@ -303,75 +145,6 @@
       </map>
     </map>
     <string name="id">rope</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.02</float>
-          <float>0</float>
-          <float>-0.02</float>
-          <float>0.02</float>
-          <float>2</float>
-          <float>0.02</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="density">
-        <float name="default">2000</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">scythe</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.1</float>
-          <float>0</float>
-          <float>-0.1</float>
-          <float>0.1</float>
-          <float>1.2</float>
-          <float>0.1</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="density">
-        <float name="default">2000</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">shovel</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.2</float>
-          <float>0</float>
-          <float>-0.2</float>
-          <float>0.2</float>
-          <float>0.1</float>
-          <float>0.2</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="density">
-        <float name="default">2000</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">sieve</string>
     <string name="objtype">class</string>
     <string name="parent">thing</string>
   </map>
@@ -445,108 +218,6 @@
     <string name="parent">thing</string>
   </map>
 
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>0.3</float>
-          <float>0.1</float>
-          <float>0.1</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="density">
-        <float name="default">300</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="operations">
-        <list name="default">
-          <string>ignite</string>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">tinderbox</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.objects.tools.Tinderbox.Tinderbox</string>
-    </map>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.075</float>
-          <float>-0.062</float>
-          <float>-0.008</float>
-          <float>0.075</float>
-          <float>0.484</float>
-          <float>0.008</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="density">
-        <float name="default">2000</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">tongs</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>0.05</float>
-          <float>0.05</float>
-          <float>1</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="density">
-        <float name="default">500</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="operations">
-        <list name="default">
-          <string>ignite</string>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">torch</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.objects.tools.Torch.Torch</string>
-    </map>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>0.3</float>
-          <float>0.1</float>
-          <float>0.1</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="density">
-        <float name="default">2000</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">trowel</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
 
   <map>
     <map name="attributes">

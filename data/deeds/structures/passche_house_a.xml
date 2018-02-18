@@ -9,8 +9,60 @@
                 </map>
                 <string name="visibility">public</string>
             </map>
-            <map name="present-mesh">
+            <map name="present">
                 <string name="default">dural/structures/passche_town/model/passche_house_a.mesh</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="terrainmod">
+                <float name="heightoffset">0</float>
+                <map name="shape">
+                    <list name="points">
+                        <list>
+                            <float>-5.93582</float>
+                            <float>-5.54921</float>
+                        </list>
+                        <list>
+                            <float>-6.22798</float>
+                            <float>5.00621</float>
+                        </list>
+                        <list>
+                            <float>5.82947</float>
+                            <float>5.25693</float>
+                        </list>
+                        <list>
+                            <float>6.2682</float>
+                            <float>-5.7236</float>
+                        </list>
+                    </list>
+                    <string name="type">polygon</string>
+                </map>
+                <string name="type">levelmod</string>
+            </map>
+            <map name="area">
+                <map name="default">
+                    <int name="layer">7</int>
+                    <map name="shape">
+                        <list name="points">
+                            <list>
+                                <float>-5.93582</float>
+                                <float>-5.54921</float>
+                            </list>
+                            <list>
+                                <float>-6.22798</float>
+                                <float>5.00621</float>
+                            </list>
+                            <list>
+                                <float>5.82947</float>
+                                <float>5.25693</float>
+                            </list>
+                            <list>
+                                <float>6.2682</float>
+                                <float>-5.7236</float>
+                            </list>
+                        </list>
+                        <string name="type">polygon</string>
+                    </map>
+                </map>
                 <string name="visibility">public</string>
             </map>
         </map>

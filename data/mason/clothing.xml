@@ -163,7 +163,7 @@
         <string name="visibility">public</string>
       </map>
     </map>
-    <string name="id">trousers</string>
+    <string name="id">pants</string>
     <string name="objtype">class</string>
     <string name="parent">thing</string>
   </map>

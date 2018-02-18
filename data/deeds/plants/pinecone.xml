@@ -1,0 +1,27 @@
+<atlas>
+
+    <map>
+        <map name="attributes">
+            <map name="biomass">
+                <float name="default">0.1</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="germinates">
+                <string name="default">pine</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="density">
+                <float name="default">530</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="transient">
+                <float name="default">1800</float>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">pinecone</string>
+        <string name="objtype">class</string>
+        <string name="parent">seed</string>
+    </map>
+
+</atlas>

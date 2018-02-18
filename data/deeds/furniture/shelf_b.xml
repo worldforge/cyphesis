@@ -1,0 +1,20 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/furniture/avalon/model/avalong_shelf.mesh</string>
+                    <string name="type">mesh</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/furniture/avalon/model/avalong_shelf.mesh</string>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">shelf_b</string>
+        <string name="objtype">class</string>
+        <string name="parent">shelf</string>
+    </map>
+</atlas>

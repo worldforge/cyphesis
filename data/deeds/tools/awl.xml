@@ -1,0 +1,20 @@
+<atlas>
+  <map>
+    <map name="attributes">
+      <map name="geometry">
+        <map name="default">
+          <string name="path">dural/items/tools/pick_aul/model/pick_awl.mesh</string>
+          <string name="type">box</string>
+        </map>
+        <string name="visibility">public</string>
+      </map>
+      <map name="present">
+        <string name="default">dural/items/tools/pick_aul/model/pick_awl.mesh</string>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">awl</string>
+    <string name="objtype">class</string>
+    <string name="parent">thing</string>
+  </map>
+</atlas>

@@ -1,0 +1,24 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/containers/jug/model/jug.mesh</string>
+                    <string name="type">cylinder-y</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/containers/jug/jug.modeldef</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="density">
+                <float name="default">2600</float>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">jug</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+</atlas>

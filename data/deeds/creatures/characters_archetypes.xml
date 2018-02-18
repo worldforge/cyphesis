@@ -1,0 +1,341 @@
+<atlas>
+
+    <map>
+        <int name="playable">1</int>
+        <string name="id">settler</string>
+        <string name="objtype">archetype</string>
+        <string name="parent">archetype</string>
+        <list name="entities">
+            <map>
+                <string name="parent">human</string>
+                <list name="contains">
+                    <string>pants</string>
+                    <string>knife</string>
+                    <string>coin1</string>
+                    <string>coin2</string>
+                    <string>coin3</string>
+                    <string>coin4</string>
+                    <string>coin5</string>
+                    <string>coin6</string>
+                </list>
+                <map name="outfit">
+                    <map name="legs">
+                        <string name="$eid">pants</string>
+                    </map>
+                </map>
+                <map name="statistics">
+                    <float name="attack">25</float>
+                    <float name="defend">21</float>
+                    <float name="strength">23</float>
+                </map>
+                <float name="status">0.024</float>
+            </map>
+            <map>
+                <string name="id">pants</string>
+                <string name="parent">pants</string>
+                <string name="style">burlap</string>
+            </map>
+            <map>
+                <string name="id">knife</string>
+                <string name="parent">knife</string>
+            </map>
+            <map>
+                <string name="id">coin1</string>
+                <string name="parent">coin</string>
+            </map>
+            <map>
+                <string name="id">coin2</string>
+                <string name="parent">coin</string>
+            </map>
+            <map>
+                <string name="id">coin3</string>
+                <string name="parent">coin</string>
+            </map>
+            <map>
+                <string name="id">coin4</string>
+                <string name="parent">coin</string>
+            </map>
+            <map>
+                <string name="id">coin5</string>
+                <string name="parent">coin</string>
+            </map>
+            <map>
+                <string name="id">coin6</string>
+                <string name="parent">coin</string>
+            </map>
+        </list>
+        <list name="thoughts">
+        </list>
+    </map>
+
+    <map>
+        <string name="id">human_npc_basic</string>
+        <string name="objtype">archetype</string>
+        <string name="parent">archetype</string>
+        <list name="entities">
+            <map>
+                <string name="parent">human</string>
+            </map>
+        </list>
+        <list name="thoughts">
+            <map>
+                <string name="object">avoid([&apos;wolf&apos;,&apos;goblin&apos;,&apos;bear&apos;,&apos;skeleton&apos;,&apos;lych&apos;],30.0)</string>
+                <string name="predicate">goal</string>
+                <string name="subject">(&apos;avoid&apos;, &apos;#avoid_verb1&apos;)</string>
+            </map>
+        </list>
+    </map>
+
+
+    <map>
+        <string name="id">merchant</string>
+        <string name="objtype">archetype</string>
+        <string name="parent">human_npc_basic</string>
+        <list name="entities">
+            <map>
+                <string name="parent">human</string>
+                <list name="contains">
+                    <string>shirt</string>
+                    <string>pants</string>
+                    <string>cloak</string>
+                    <string>boots</string>
+                    <string>hat</string>
+                    <string>coin1</string>
+                    <string>coin2</string>
+                    <string>coin3</string>
+                    <string>coin4</string>
+                    <string>coin5</string>
+                    <string>coin6</string>
+                </list>
+                <map name="outfit">
+                    <map name="back">
+                        <string name="$eid">cloak</string>
+                    </map>
+                    <map name="body">
+                        <string name="$eid">shirt</string>
+                    </map>
+                    <map name="feet">
+                        <string name="$eid">boots</string>
+                    </map>
+                    <map name="head">
+                        <string name="$eid">hat</string>
+                    </map>
+                    <map name="legs">
+                        <string name="$eid">pants</string>
+                    </map>
+                </map>
+                <map name="statistics">
+                    <float name="attack">25</float>
+                    <float name="defend">21</float>
+                    <float name="strength">23</float>
+                </map>
+            </map>
+            <map>
+                <string name="id">shirt</string>
+                <string name="parent">shirt</string>
+                <string name="style">fine</string>
+            </map>
+            <map>
+                <string name="id">pants</string>
+                <string name="parent">pants</string>
+                <string name="style">fine</string>
+            </map>
+            <map>
+                <string name="id">cloak</string>
+                <string name="parent">cloak</string>
+                <string name="style">fine</string>
+            </map>
+            <map>
+                <string name="id">boots</string>
+                <string name="parent">boots</string>
+                <string name="style">fine</string>
+            </map>
+            <map>
+                <string name="id">hat</string>
+                <string name="parent">hat</string>
+                <string name="style">fine</string>
+            </map>
+            <map>
+                <string name="id">coin1</string>
+                <string name="parent">coin</string>
+            </map>
+            <map>
+                <string name="id">coin2</string>
+                <string name="parent">coin</string>
+            </map>
+            <map>
+                <string name="id">coin3</string>
+                <string name="parent">coin</string>
+            </map>
+            <map>
+                <string name="id">coin4</string>
+                <string name="parent">coin</string>
+            </map>
+            <map>
+                <string name="id">coin5</string>
+                <string name="parent">coin</string>
+            </map>
+            <map>
+                <string name="id">coin6</string>
+                <string name="parent">coin</string>
+            </map>
+        </list>
+        <list name="thoughts">
+        </list>
+    </map>
+
+    <map>
+        <string name="id">mercenary</string>
+        <string name="objtype">archetype</string>
+        <string name="parent">human_npc_basic</string>
+        <list name="entities">
+            <map>
+                <string name="parent">human</string>
+                <list name="contains">
+                    <string>shirt</string>
+                    <string>pants</string>
+                    <string>boots</string>
+                    <string>hat</string>
+                    <string>sword</string>
+                    <string>bow</string>
+                    <string>arrow1</string>
+                    <string>arrow2</string>
+                    <string>arrow3</string>
+                    <string>arrow4</string>
+                    <string>arrow5</string>
+                    <string>arrow6</string>
+                    <string>coin1</string>
+                    <string>coin2</string>
+                    <string>coin3</string>
+                    <string>coin4</string>
+                    <string>coin5</string>
+                    <string>coin6</string>
+                </list>
+                <map name="outfit">
+                    <map name="body">
+                        <string name="$eid">shirt</string>
+                    </map>
+                    <map name="feet">
+                        <string name="$eid">boots</string>
+                    </map>
+                    <map name="head">
+                        <string name="$eid">hat</string>
+                    </map>
+                    <map name="legs">
+                        <string name="$eid">pants</string>
+                    </map>
+                </map>
+                <map name="right_hand_wield">
+                    <string name="$eid">sword</string>
+                </map>
+                <map name="statistics">
+                    <float name="attack">40</float>
+                    <float name="defend">40</float>
+                    <float name="strength">40</float>
+                </map>
+            </map>
+            <map>
+                <string name="id">shirt</string>
+                <string name="parent">shirt</string>
+                <string name="style">ragged</string>
+            </map>
+            <map>
+                <string name="id">pants</string>
+                <string name="parent">pants</string>
+                <string name="style">ragged</string>
+            </map>
+            <map>
+                <string name="id">boots</string>
+                <string name="parent">boots</string>
+                <string name="style">ragged</string>
+            </map>
+            <map>
+                <string name="id">hat</string>
+                <string name="parent">hat</string>
+                <string name="style">ragged</string>
+            </map>
+            <map>
+                <string name="id">sword</string>
+                <string name="parent">sword</string>
+            </map>
+            <map>
+                <string name="id">bow</string>
+                <string name="parent">bow</string>
+            </map>
+            <map>
+                <string name="id">arrow1</string>
+                <string name="parent">arrow</string>
+            </map>
+            <map>
+                <string name="id">arrow2</string>
+                <string name="parent">arrow</string>
+            </map>
+            <map>
+                <string name="id">arrow3</string>
+                <string name="parent">arrow</string>
+            </map>
+            <map>
+                <string name="id">arrow4</string>
+                <string name="parent">arrow</string>
+            </map>
+            <map>
+                <string name="id">arrow5</string>
+                <string name="parent">arrow</string>
+            </map>
+            <map>
+                <string name="id">arrow6</string>
+                <string name="parent">arrow</string>
+            </map>
+            <map>
+                <string name="id">coin1</string>
+                <string name="parent">coin</string>
+            </map>
+            <map>
+                <string name="id">coin2</string>
+                <string name="parent">coin</string>
+            </map>
+            <map>
+                <string name="id">coin3</string>
+                <string name="parent">coin</string>
+            </map>
+            <map>
+                <string name="id">coin4</string>
+                <string name="parent">coin</string>
+            </map>
+            <map>
+                <string name="id">coin5</string>
+                <string name="parent">coin</string>
+            </map>
+            <map>
+                <string name="id">coin6</string>
+                <string name="parent">coin</string>
+            </map>
+        </list>
+        <list name="thoughts">
+        </list>
+    </map>
+
+
+    <map>
+        <string name="id">goblin_basic_npc</string>
+        <string name="objtype">archetype</string>
+        <string name="parent">archetype</string>
+        <list name="entities">
+            <map>
+                <list name="contains">
+                    <string>axe</string>
+                </list>
+                <map name="right_hand_wield">
+                    <string name="$eid">axe</string>
+                </map>
+                <string name="parent">goblin</string>
+            </map>
+            <map>
+                <string name="id">axe</string>
+                <string name="parent">axe</string>
+            </map>
+        </list>
+        <list name="thoughts">
+        </list>
+    </map>
+</atlas>

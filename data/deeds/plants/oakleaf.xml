@@ -1,7 +1,7 @@
 <atlas>
     <map>
         <map name="attributes">
-            <map name="present-model">
+            <map name="present">
                 <string name="default">dural/plants/shrubs/shrub/shrub_a.modeldef</string>
                 <string name="visibility">public</string>
             </map>

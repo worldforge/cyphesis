@@ -1,0 +1,9 @@
+<atlas>
+    <map>
+        <map name="attributes">
+        </map>
+        <string name="id">stone</string>
+        <string name="objtype">class</string>
+        <string name="parent">material</string>
+    </map>
+</atlas>

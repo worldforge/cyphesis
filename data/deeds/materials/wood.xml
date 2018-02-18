@@ -1,0 +1,21 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="burn_speed">
+                <float name="default">1</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="density">
+                <float name="default">500</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/structures/ossyja_planks/ossyja_planks.modeldef</string>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">wood</string>
+        <string name="objtype">class</string>
+        <string name="parent">material</string>
+    </map>
+</atlas>

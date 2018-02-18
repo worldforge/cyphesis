@@ -1,0 +1,107 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="area">
+                <map name="default">
+                    <int name="layer">6</int>
+                    <map name="shape">
+                        <list name="points">
+                            <list>
+                                <float>-0.035</float>
+                                <float>-0.035</float>
+                            </list>
+                            <list>
+                                <float>-0.05</float>
+                                <float>0</float>
+                            </list>
+                            <list>
+                                <float>-0.035</float>
+                                <float>0.035</float>
+                            </list>
+                            <list>
+                                <float>0</float>
+                                <float>0.05</float>
+                            </list>
+                            <list>
+                                <float>0.035</float>
+                                <float>0.035</float>
+                            </list>
+                            <list>
+                                <float>0.05</float>
+                                <float>0</float>
+                            </list>
+                            <list>
+                                <float>0.035</float>
+                                <float>-0.035</float>
+                            </list>
+                            <list>
+                                <float>0</float>
+                                <float>-0.05</float>
+                            </list>
+                        </list>
+                        <string name="type">polygon</string>
+                    </map>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="bbox">
+                <list name="default">
+                    <float>-1</float>
+                    <float>0</float>
+                    <float>-1</float>
+                    <float>1</float>
+                    <float>12</float>
+                    <float>1</float>
+                </list>
+                <string name="visibility">public</string>
+            </map>
+            <map name="burn_speed">
+                <float name="default">0.025</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="fruitChance">
+                <int name="default">5</int>
+                <string name="visibility">public</string>
+            </map>
+            <map name="fruitName">
+                <string name="default">acorn</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="fruits">
+                <int name="default">2</int>
+                <string name="visibility">public</string>
+            </map>
+            <map name="fruitsMax">
+                <int name="default">10</int>
+                <string name="visibility">public</string>
+            </map>
+            <map name="density">
+                <float name="default">600</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="maxsize">
+                <list name="default">
+                    <float>0</float>
+                    <float>0</float>
+                    <float>15</float>
+                </list>
+                <string name="visibility">public</string>
+            </map>
+            <map name="sizeAdult">
+                <int name="default">4</int>
+                <string name="visibility">public</string>
+            </map>
+            <map name="planted-scaled-offset">
+                <float name="default">-0.1</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/plants/trees/oak/oak_straight.modeldef</string>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">oak</string>
+        <string name="objtype">class</string>
+        <string name="parent">tree</string>
+    </map>
+</atlas>

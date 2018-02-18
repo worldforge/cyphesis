@@ -32,7 +32,7 @@
                 </list>
                 <string name="visibility">public</string>
             </map>
-            <map name="present-model">
+            <map name="present">
                 <string name="default">dural/plants/trees/birch/birch_a.modeldef</string>
                 <string name="visibility">public</string>
             </map>
@@ -48,7 +48,7 @@
 
     <map>
         <map name="attributes">
-            <map name="present-model">
+            <map name="present">
                 <string name="default">dural/plants/trees/birch/birch_b.modeldef</string>
                 <string name="visibility">public</string>
             </map>
@@ -59,7 +59,7 @@
     </map>
     <map>
         <map name="attributes">
-            <map name="present-model">
+            <map name="present">
                 <string name="default">dural/plants/trees/birch/birch_c.modeldef</string>
                 <string name="visibility">public</string>
             </map>
@@ -70,7 +70,7 @@
     </map>
     <map>
         <map name="attributes">
-            <map name="present-model">
+            <map name="present">
                 <string name="default">dural/plants/trees/birch/birch_d.modeldef</string>
                 <string name="visibility">public</string>
             </map>

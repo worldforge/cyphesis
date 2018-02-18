@@ -1,0 +1,62 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/arrow/model/arrow_a.mesh</string>
+                    <string name="type">cylinder-z</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/arrow/arrow_a.modeldef</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="density">
+                <float name="default">500</float>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">arrow</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/arrow/model/arrow_b.mesh</string>
+                    <string name="type">cylinder-z</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/arrow/arrow_b.modeldef</string>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">arrow_b</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/arrow/model/arrow_c.mesh</string>
+                    <string name="type">cylinder-z</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/arrow/arrow_c.modeldef</string>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">arrow_c</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+</atlas>

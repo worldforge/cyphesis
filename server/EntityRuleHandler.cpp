@@ -134,7 +134,8 @@ void EntityRuleHandler::installStandardRules()
             //Creator agents should by default move quickly.
             {"speed-ground", 15},
             {"speed-water", 15},
-            {"speed-flight", 15}
+            {"speed-flight", 15},
+            {"present", "dural/items/misc/flame/creator.modeldef"},
         });
 
         installEntityClass(decl->getId(), decl->getParent(), decl, dependent, reason, new EntityFactory<Creator>());

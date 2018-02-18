@@ -1,22 +1,90 @@
 <atlas>
 
-  <map>
-    <map name="attributes">
-      <map name="geometry">
-          <map name="default">
-              <string name="type">mesh</string>
-              <string name="path">dural/structures/butcher_house/model/butcher_house.mesh</string>
-          </map>
-        <string name="visibility">public</string>
-      </map>
-        <map name="present-mesh">
-            <string name="default">dural/structures/butcher_house/model/butcher_house.mesh</string>
-            <string name="visibility">public</string>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="type">mesh</string>
+                    <string name="path">dural/structures/butcher_house/model/butcher_house.mesh</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/structures/butcher_house/model/butcher_house.mesh</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="terrainmod">
+                <float name="heightoffset">0</float>
+                <map name="shape">
+                    <list name="points">
+                        <list>
+                            <float>5.85361</float>
+                            <float>-5.90119</float>
+                        </list>
+                        <list>
+                            <float>5.78928</float>
+                            <float>-11.5414</float>
+                        </list>
+                        <list>
+                            <float>-0.696075</float>
+                            <float>-11.3017</float>
+                        </list>
+                        <list>
+                            <float>-0.737288</float>
+                            <float>0.906641</float>
+                        </list>
+                        <list>
+                            <float>9.01707</float>
+                            <float>1.14483</float>
+                        </list>
+                        <list>
+                            <float>8.80733</float>
+                            <float>-5.77111</float>
+                        </list>
+                    </list>
+                    <string name="type">polygon</string>
+                </map>
+                <string name="type">levelmod</string>
+            </map>
+            <map name="area">
+                <map name="default">
+                    <int name="layer">7</int>
+                    <map name="shape">
+                        <list name="points">
+                            <list>
+                                <float>5.85361</float>
+                                <float>-5.90119</float>
+                            </list>
+                            <list>
+                                <float>5.78928</float>
+                                <float>-11.5414</float>
+                            </list>
+                            <list>
+                                <float>-0.696075</float>
+                                <float>-11.3017</float>
+                            </list>
+                            <list>
+                                <float>-0.737288</float>
+                                <float>0.906641</float>
+                            </list>
+                            <list>
+                                <float>9.01707</float>
+                                <float>1.14483</float>
+                            </list>
+                            <list>
+                                <float>8.80733</float>
+                                <float>-5.77111</float>
+                            </list>
+                        </list>
+                        <string name="type">polygon</string>
+                    </map>
+                </map>
+                <string name="visibility">public</string>
+            </map>
         </map>
+        <string name="id">butcher_house</string>
+        <string name="objtype">class</string>
+        <string name="parent">structure</string>
     </map>
-    <string name="id">butcher_house</string>
-    <string name="objtype">class</string>
-    <string name="parent">structure</string>
-  </map>
 
 </atlas>

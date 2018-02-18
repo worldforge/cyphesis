@@ -2,7 +2,18 @@
 
   <map>
     <map name="attributes">
-      <map name="mass">
+        <map name="geometry">
+            <map name="default">
+                <string name="path">dural/items/misc/curly_document/model/curly_document.mesh</string>
+                <string name="type">box</string>
+            </map>
+            <string name="visibility">public</string>
+        </map>
+        <map name="present">
+            <string name="default">dural/items/misc/curly_document/model/curly_document.mesh</string>
+            <string name="visibility">public</string>
+        </map>
+        <map name="mass">
         <float name="default">0.1</float>
         <string name="visibility">public</string>
       </map>
@@ -17,32 +28,7 @@
     <string name="parent">thing</string>
   </map>
 
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-1</float>
-          <float>-0.02</float>
-          <float>-0.125</float>
-          <float>1</float>
-          <float>0.02</float>
-          <float>0.125</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="burn_speed">
-        <float name="default">0.6</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="density">
-        <float name="default">500</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">board</string>
-    <string name="objtype">class</string>
-    <string name="parent">material</string>
-  </map>
+
 
   <map>
     <map name="attributes">
@@ -83,6 +69,17 @@
 
   <map>
     <map name="attributes">
+        <map name="geometry">
+            <map name="default">
+                <string name="path">dural/items/misc/curly_document/model/curly_document.mesh</string>
+                <string name="type">box</string>
+            </map>
+            <string name="visibility">public</string>
+        </map>
+        <map name="present">
+            <string name="default">dural/items/misc/curly_document/model/curly_document.mesh</string>
+            <string name="visibility">public</string>
+        </map>
       <map name="burn_speed">
         <float name="default">2</float>
         <string name="visibility">public</string>
@@ -99,17 +96,17 @@
 
   <map>
     <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-1</float>
-          <float>-0.1</float>
-          <float>-0.1</float>
-          <float>1</float>
-          <float>1</float>
-          <float>0.1</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
+        <map name="geometry">
+            <map name="default">
+                <string name="path">dural/structures/ground_palisade/model/ground_palisade_b.mesh</string>
+                <string name="type">cylinder-y</string>
+            </map>
+            <string name="visibility">public</string>
+        </map>
+        <map name="present">
+            <string name="default">dural/structures/ground_palisade/model/ground_palisade_b.mesh</string>
+            <string name="visibility">public</string>
+        </map>
       <map name="density">
         <float name="default">1200</float>
         <string name="visibility">public</string>
@@ -149,106 +146,17 @@
 
   <map>
     <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.1</float>
-          <float>0</float>
-          <float>-0.1</float>
-          <float>0.1</float>
-          <float>0.2</float>
-          <float>0.1</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="burn_speed">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="density">
-        <float name="default">5000</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="material">
-        <string name="default">stone</string>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">hematite</string>
-    <string name="objtype">class</string>
-    <string name="parent">material</string>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.201</float>
-          <float>0</float>
-          <float>-0.069</float>
-          <float>0.201</float>
-          <float>0.062</float>
-          <float>0.069</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="burn_speed">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="density">
-        <float name="default">7900</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">iron_ingot</string>
-    <string name="objtype">class</string>
-    <string name="parent">material</string>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.1</float>
-          <float>0</float>
-          <float>-0.1</float>
-          <float>0.1</float>
-          <float>0.5</float>
-          <float>0.1</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="burn_speed">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="density">
-        <float name="default">500</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="material">
-        <string name="default">wood</string>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">lumber</string>
-    <string name="objtype">class</string>
-    <string name="parent">material</string>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.1</float>
-          <float>0</float>
-          <float>-0.1</float>
-          <float>0.1</float>
-          <float>0.5</float>
-          <float>0.1</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
+        <map name="geometry">
+            <map name="default">
+                <string name="path">dural/structures/sharpened_log/model/sharpened_log_fir.mesh</string>
+                <string name="type">cylinder-y</string>
+            </map>
+            <string name="visibility">public</string>
+        </map>
+        <map name="present">
+            <string name="default">dural/structures/sharpened_log/model/sharpened_log_fir.mesh</string>
+            <string name="visibility">public</string>
+        </map>
       <map name="burn_speed">
         <float name="default">1</float>
         <string name="visibility">public</string>
@@ -273,25 +181,17 @@
 
   <map>
     <map name="attributes">
-    </map>
-    <string name="id">stone</string>
-    <string name="objtype">class</string>
-    <string name="parent">material</string>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-1</float>
-          <float>-0.05</float>
-          <float>-0.025</float>
-          <float>1</float>
-          <float>0.05</float>
-          <float>0.025</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
+        <map name="geometry">
+            <map name="default">
+                <string name="path">dural/structures/building_elements/model/twobyfour.mesh</string>
+                <string name="type">box</string>
+            </map>
+            <string name="visibility">public</string>
+        </map>
+        <map name="present">
+            <string name="default">dural/structures/building_elements/model/twobyfour.mesh</string>
+            <string name="visibility">public</string>
+        </map>
       <map name="density">
         <float name="default">500</float>
         <string name="visibility">public</string>
@@ -302,26 +202,5 @@
     <string name="parent">thing</string>
   </map>
 
-  <map>
-    <string name="id">wall</string>
-    <string name="objtype">class</string>
-    <string name="parent">construction</string>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="burn_speed">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="density">
-        <float name="default">500</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">wood</string>
-    <string name="objtype">class</string>
-    <string name="parent">material</string>
-  </map>
 
 </atlas>

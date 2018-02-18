@@ -12,7 +12,7 @@
                 <float name="default">500</float>
                 <string name="visibility">public</string>
             </map>
-            <map name="present-mesh">
+            <map name="present">
                 <string name="default">dural/items/furniture/avalon/model/avalon_bed.mesh</string>
                 <string name="visibility">public</string>
             </map>

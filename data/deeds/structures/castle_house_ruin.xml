@@ -8,7 +8,7 @@
                 </map>
                 <string name="visibility">public</string>
             </map>
-            <map name="present-mesh">
+            <map name="present">
                 <string name="default">dural/structures/cg_house_ruin/model/cg_house_ruin.mesh</string>
                 <string name="visibility">public</string>
             </map>

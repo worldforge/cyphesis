@@ -1,8 +1,8 @@
 <atlas>
     <map>
         <map name="attributes">
-            <map name="present-model">
-                <string name="default">dural/plants/shrubs/bush/bush_green.mesh</string>
+            <map name="present">
+                <string name="default">dural/plants/shrubs/bush/bush_green.modeldef</string>
                 <string name="visibility">public</string>
             </map>
         </map>

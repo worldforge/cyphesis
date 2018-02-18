@@ -5,18 +5,18 @@
       <map name="geometry">
         <map name="default">
           <string name="path">dural/items/tools/blacksmith_tools/model/tongs_a.mesh</string>
-          <string name="type">mesh</string>
+          <string name="type">box</string>
         </map>
         <string name="visibility">public</string>
       </map>
-        <map name="present-mesh">
+        <map name="present">
             <string name="default">dural/items/tools/blacksmith_tools/model/tongs_a.mesh</string>
             <string name="visibility">public</string>
         </map>
     </map>
     <string name="id">tongs_a</string>
     <string name="objtype">class</string>
-    <string name="parent">thing</string>
+    <string name="parent">tongs</string>
   </map>
 
 </atlas>

@@ -1,0 +1,9 @@
+<atlas>
+
+    <map>
+        <string name="id">wall</string>
+        <string name="objtype">class</string>
+        <string name="parent">construction</string>
+    </map>
+
+</atlas>

@@ -1,0 +1,88 @@
+<atlas>
+
+  <map>
+    <map name="attributes">
+      <map name="geometry">
+          <map name="default">
+              <string name="type">mesh</string>
+              <string name="path">dural/structures/marketstall/model/marketstall.mesh</string>
+          </map>
+        <string name="visibility">public</string>
+      </map>
+        <map name="present">
+            <string name="default">dural/structures/marketstall/model/marketstall.mesh</string>
+            <string name="visibility">public</string>
+        </map>
+    </map>
+    <string name="id">marketstall</string>
+    <string name="objtype">class</string>
+    <string name="parent">structure</string>
+  </map>
+
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="type">mesh</string>
+                    <string name="path">dural/structures/marketstall/model/marketstall_canvas_a.mesh</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/structures/marketstall/marketstall_canvas_a.entitymap</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="fabric">
+                <string name="default">blue</string>
+                <string name="visibility">public</string>
+                <list name="value">
+                    <string>blue</string>
+                    <string>red</string>
+                    <string>umber</string>
+                </list>
+            </map>
+        </map>
+        <string name="id">marketstall_canvas_a</string>
+        <string name="objtype">class</string>
+        <string name="parent">marketstall</string>
+    </map>
+
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="type">mesh</string>
+                    <string name="path">dural/structures/marketstall/model/marketstall_canvas_b.mesh</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/structures/marketstall/marketstall_canvas_b.entitymap</string>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">marketstall_canvas_b</string>
+        <string name="objtype">class</string>
+        <string name="parent">marketstall_canvas_a</string>
+    </map>
+
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="type">mesh</string>
+                    <string name="path">dural/structures/marketstall/model/marketstall_canvas_c.mesh</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/structures/marketstall/marketstall_canvas_c.entitymap</string>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">marketstall_canvas_c</string>
+        <string name="objtype">class</string>
+        <string name="parent">marketstall_canvas_a</string>
+    </map>
+
+</atlas>

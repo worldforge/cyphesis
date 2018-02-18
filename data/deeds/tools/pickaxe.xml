@@ -1,0 +1,24 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/tools/axe_pick/model/axe_pick.mesh</string>
+                    <string name="type">box</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/tools/axe_pick/axe_pick.modeldef</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="density">
+                <float name="default">2000</float>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">pickaxe</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+</atlas>

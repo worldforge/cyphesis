@@ -1,0 +1,33 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/creatures/biped/goblin/model/goblin.mesh</string>
+                    <string name="type">capsule-y</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/creatures/biped/goblin/goblin.entitymap</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="decays">
+                <string name="default">dead_goblin_skull</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="complexion">
+                <string name="default">green</string>
+                <string name="visibility">public</string>
+                <list name="value">
+                    <string>green</string>
+                    <string>brown</string>
+                </list>
+            </map>
+        </map>
+        <string name="id">goblin</string>
+        <string name="objtype">class</string>
+        <string name="parent">mobile</string>
+    </map>
+
+</atlas>

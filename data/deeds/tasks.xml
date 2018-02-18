@@ -207,7 +207,7 @@
     <map name="activation">
       <string name="operation">sow</string>
       <string name="target">ocean</string>
-      <string name="tool">fishingrod</string>
+      <string name="tool">fishing_rod</string>
     </map>
     <map name="attributes">
     </map>

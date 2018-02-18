@@ -1,22 +1,86 @@
 <atlas>
 
-  <map>
-    <map name="attributes">
-      <map name="geometry">
-          <map name="default">
-              <string name="type">mesh</string>
-              <string name="path">dural/structures/cg_house_b/model/cg_house_b.mesh</string>
-          </map>
-        <string name="visibility">public</string>
-      </map>
-        <map name="present-mesh">
-            <string name="default">dural/structures/cg_house_b/model/cg_house_b.mesh</string>
-            <string name="visibility">public</string>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="type">mesh</string>
+                    <string name="path">dural/structures/cg_house_b/model/cg_house_b.mesh</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/structures/cg_house_b/cg_house_b.entitymap</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="roof">
+                <string name="default">shingle</string>
+                <string name="visibility">public</string>
+                <list name="values">
+                    <string>shingle</string>
+                    <string>straw</string>
+                    <string>shale</string>
+                </list>
+            </map>
+            <map name="area">
+                <map name="default">
+                    <int name="layer">7</int>
+                    <map name="shape">
+                        <list name="points">
+                            <list>
+                                <float>-7.04481</float>
+                                <float>-5.64173</float>
+                            </list>
+                            <list>
+                                <float>-7.11073</float>
+                                <float>6.76335</float>
+                            </list>
+                            <list>
+                                <float>7.34819</float>
+                                <float>6.99426</float>
+                            </list>
+                            <list>
+                                <float>7.38598</float>
+                                <float>-6.09428</float>
+                            </list>
+                        </list>
+                        <string name="type">polygon</string>
+                    </map>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="terrainmod">
+                <map name="default">
+                    <float name="heightoffset">0</float>
+                    <map name="shape">
+                        <list name="points">
+                            <list>
+                                <float>-7.04481</float>
+                                <float>-5.64173</float>
+                            </list>
+                            <list>
+                                <float>-7.11073</float>
+                                <float>6.76335</float>
+                            </list>
+                            <list>
+                                <float>7.34819</float>
+                                <float>6.99426</float>
+                            </list>
+                            <list>
+                                <float>7.38598</float>
+                                <float>-6.09428</float>
+                            </list>
+                        </list>
+                        <string name="type">polygon</string>
+                    </map>
+                    <string name="type">levelmod</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
         </map>
+        <string name="id">castle_house_b</string>
+        <string name="objtype">class</string>
+        <string name="parent">structure</string>
     </map>
-    <string name="id">castle_house_b</string>
-    <string name="objtype">class</string>
-    <string name="parent">structure</string>
-  </map>
 
 </atlas>

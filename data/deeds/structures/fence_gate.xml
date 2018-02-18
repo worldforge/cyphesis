@@ -8,8 +8,8 @@
                 </map>
                 <string name="visibility">public</string>
             </map>
-            <map name="present-mesh">
-                <string name="default">dural/structures/wooden_fence/model/wooden_fence_gate.mesh</string>
+            <map name="present">
+                <string name="default">dural/structures/wooden_fence/wooden_fence_gate.modeldef</string>
                 <string name="visibility">public</string>
             </map>
             <map name="material">

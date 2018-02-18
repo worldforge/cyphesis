@@ -1,0 +1,32 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/vehicle/goatboat/model/goat_boat.mesh</string>
+                    <string name="type">mesh</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/vehicle/goatboat/model/goat_boat.mesh</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="burn_speed">
+                <float name="default">0.1</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="density">
+                <float name="default">100</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="mode">
+                <string name="default">floating</string>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">boat</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+</atlas>

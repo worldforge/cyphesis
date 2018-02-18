@@ -61,7 +61,7 @@ class Fishing(server.Task):
         
         res = Operation("create", Entity(name = "bobber", parent="bobber", location = float_loc), to = self.target())
         res = res + Operation("move", Entity(bait.id, location = bait_loc), to = bait)
-        res = res + Operation("create", Entity(parent="hook", location = Location(bait, Point3D(0,0,0))), to = bait)
+        res = res + Operation("create", Entity(parent="fishing_hook", location = Location(bait, Point3D(0,0,0))), to = bait)
         return res
 
     def tick_operation(self, op):
@@ -69,11 +69,11 @@ class Fishing(server.Task):
         res=Oplist()
         hook = 0
         if not self.bait() is None:
-            if not hasattr(self, 'hook'):
+            if not hasattr(self, 'fishing_hook'):
                 for item in self.bait().contains:
-                    if item.type[0] == "hook":
+                    if item.type[0] == "fishing_hook":
                         self.hook = weakref.ref(item)
-            if not hasattr(self, 'hook'):
+            if not hasattr(self, 'fishing_hook'):
                 #something has gone wrong, there is bait, but no hook inside it
                 self.irrelevant()
                 return

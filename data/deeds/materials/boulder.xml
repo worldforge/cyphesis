@@ -1,0 +1,16 @@
+<atlas>
+
+    <map>
+        <map name="attributes">
+            <map name="density">
+                <float name="default">2500</float>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="description">Base class for boulders.</string>
+        <string name="id">boulder</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+
+</atlas>

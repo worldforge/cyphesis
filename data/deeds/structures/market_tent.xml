@@ -1,22 +1,55 @@
 <atlas>
 
-  <map>
-    <map name="attributes">
-      <map name="geometry">
-        <map name="default">
-          <string name="path">dural/structures/market_tent/model/market_tent.mesh</string>
-          <string name="type">mesh</string>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/structures/market_tent/model/market_tent.mesh</string>
+                    <string name="type">mesh</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/structures/market_tent/market_tent.entitymap</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="fabric">
+                <string name="default">blue</string>
+                <string name="visibility">public</string>
+                <list name="value">
+                    <string>blue</string>
+                    <string>red</string>
+                </list>
+            </map>
+            <map name="terrainmod">
+                <float name="heightoffset">0</float>
+                <map name="shape">
+                    <list name="points">
+                        <list>
+                            <float>-4.03805</float>
+                            <float>-3.99663</float>
+                        </list>
+                        <list>
+                            <float>-4.11821</float>
+                            <float>4.07838</float>
+                        </list>
+                        <list>
+                            <float>4.29511</float>
+                            <float>4.16372</float>
+                        </list>
+                        <list>
+                            <float>4.03738</float>
+                            <float>-4.00681</float>
+                        </list>
+                    </list>
+                    <string name="type">polygon</string>
+                </map>
+                <string name="type">levelmod</string>
+            </map>
         </map>
-        <string name="visibility">public</string>
-      </map>
-        <map name="present-mesh">
-            <string name="default">dural/structures/market_tent/model/market_tent.mesh</string>
-            <string name="visibility">public</string>
-        </map>
+        <string name="id">market_tent</string>
+        <string name="objtype">class</string>
+        <string name="parent">structure</string>
     </map>
-    <string name="id">market_tent</string>
-    <string name="objtype">class</string>
-    <string name="parent">structure</string>
-  </map>
 
 </atlas>

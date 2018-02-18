@@ -1,22 +1,90 @@
 <atlas>
 
-  <map>
-    <map name="attributes">
-      <map name="geometry">
-        <map name="default">
-          <string name="path">dural/structures/blacksmith/model/blacksmith.mesh</string>
-          <string name="type">mesh</string>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/structures/blacksmith/model/blacksmith.mesh</string>
+                    <string name="type">mesh</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/structures/blacksmith/model/blacksmith.mesh</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="terrainmod">
+                <float name="heightoffset">0</float>
+                <map name="shape">
+                    <list name="points">
+                        <list>
+                            <float>-4.55403</float>
+                            <float>-11.028</float>
+                        </list>
+                        <list>
+                            <float>-4.68611</float>
+                            <float>-7.96259</float>
+                        </list>
+                        <list>
+                            <float>-9.91194</float>
+                            <float>-7.78336</float>
+                        </list>
+                        <list>
+                            <float>-9.73878</float>
+                            <float>2.05816</float>
+                        </list>
+                        <list>
+                            <float>0.902542</float>
+                            <float>2.1326</float>
+                        </list>
+                        <list>
+                            <float>0.541489</float>
+                            <float>-10.7561</float>
+                        </list>
+                    </list>
+                    <string name="type">polygon</string>
+                </map>
+                <string name="type">levelmod</string>
+            </map>
+            <map name="area">
+                <map name="default">
+                    <int name="layer">7</int>
+                    <map name="shape">
+                        <list name="points">
+                            <list>
+                                <float>-4.55403</float>
+                                <float>-11.028</float>
+                            </list>
+                            <list>
+                                <float>-4.68611</float>
+                                <float>-7.96259</float>
+                            </list>
+                            <list>
+                                <float>-9.91194</float>
+                                <float>-7.78336</float>
+                            </list>
+                            <list>
+                                <float>-9.73878</float>
+                                <float>2.05816</float>
+                            </list>
+                            <list>
+                                <float>0.902542</float>
+                                <float>2.1326</float>
+                            </list>
+                            <list>
+                                <float>0.541489</float>
+                                <float>-10.7561</float>
+                            </list>
+                        </list>
+                        <string name="type">polygon</string>
+                    </map>
+                </map>
+                <string name="visibility">public</string>
+            </map>
         </map>
-        <string name="visibility">public</string>
-      </map>
-      <map name="present-mesh">
-        <string name="default">dural/structures/blacksmith/model/blacksmith.mesh</string>
-        <string name="visibility">public</string>
-      </map>
+        <string name="id">blacksmith</string>
+        <string name="objtype">class</string>
+        <string name="parent">structure</string>
     </map>
-    <string name="id">blacksmith</string>
-    <string name="objtype">class</string>
-    <string name="parent">structure</string>
-  </map>
 
 </atlas>

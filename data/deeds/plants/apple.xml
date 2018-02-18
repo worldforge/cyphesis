@@ -34,7 +34,7 @@
                 </map>
                 <string name="visibility">public</string>
             </map>
-            <map name="present-model">
+            <map name="present">
                 <string name="default">dural/plants/fruit/apple/apple.modeldef</string>
                 <string name="visibility">public</string>
             </map>

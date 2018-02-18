@@ -1,0 +1,46 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/creatures/biped/male/model/male.mesh</string>
+                    <string name="type">capsule-y</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/creatures/biped/human.entitymap</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="decays">
+                <string name="default">dead_human_skull</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="guise">
+                <map name="default">
+                    <map name="material">
+                        <string name="head">simon</string>
+                    </map>
+                </map>
+            </map>
+            <map name="mass">
+                <float name="default">60</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="sex">
+                <string name="default">male</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="statistics">
+                <map name="default">
+                    <float name="attack">25</float>
+                    <float name="defend">21</float>
+                    <float name="strength">23</float>
+                </map>
+            </map>
+        </map>
+        <string name="id">human</string>
+        <string name="objtype">class</string>
+        <string name="parent">mobile</string>
+    </map>
+</atlas>

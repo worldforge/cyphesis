@@ -1,0 +1,143 @@
+<atlas>
+
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/plants/mushrooms/model/silkfoot.mesh</string>
+                    <string name="type">box</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/plants/mushrooms/silkfoot.modeldef</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="biomass">
+                <float name="default">0.1</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="density">
+                <float name="default">900</float>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">mushroom</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/plants/mushrooms/model/amanita.mesh</string>
+                    <string name="type">box</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/plants/mushrooms/amanita.modeldef</string>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">amanita</string>
+        <string name="objtype">class</string>
+        <string name="parent">mushroom</string>
+    </map>
+
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/plants/mushrooms/model/bluemoon.mesh</string>
+                    <string name="type">box</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/plants/mushrooms/bluemoon.modeldef</string>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">bluemoon</string>
+        <string name="objtype">class</string>
+        <string name="parent">mushroom</string>
+    </map>
+
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/plants/mushrooms/model/galerina.mesh</string>
+                    <string name="type">box</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/plants/mushrooms/galerina.modeldef</string>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">galerina</string>
+        <string name="objtype">class</string>
+        <string name="parent">mushroom</string>
+    </map>
+
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/plants/mushrooms/model/amanita_cluster.mesh</string>
+                    <string name="type">box</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/plants/mushrooms/amanita_cluster.modeldef</string>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">amanita_cluster</string>
+        <string name="objtype">class</string>
+        <string name="parent">amanita</string>
+    </map>
+
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/plants/mushrooms/model/bluemoon_cluster.mesh</string>
+                    <string name="type">box</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/plants/mushrooms/bluemoon_cluster.modeldef</string>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">bluemoon_cluster</string>
+        <string name="objtype">class</string>
+        <string name="parent">bluemoon</string>
+    </map>
+
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/plants/mushrooms/model/galerina_cluster.mesh</string>
+                    <string name="type">box</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/plants/mushrooms/galerina_cluster.modeldef</string>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">galerina_cluster</string>
+        <string name="objtype">class</string>
+        <string name="parent">galerina</string>
+    </map>
+</atlas>

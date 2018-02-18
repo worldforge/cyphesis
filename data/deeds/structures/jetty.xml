@@ -8,7 +8,7 @@
           <string name="type">mesh</string>
         </map>
         <string name="visibility">public</string>
-          <map name="present-mesh">
+          <map name="present">
               <string name="default">dural/structures/jetty/model/jetty.mesh</string>
               <string name="visibility">public</string>
           </map>

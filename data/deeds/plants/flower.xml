@@ -1,0 +1,28 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="bbox">
+                <list name="default">
+                    <float>-0.2</float>
+                    <float>0</float>
+                    <float>-0.2</float>
+                    <float>0.2</float>
+                    <float>0.5</float>
+                    <float>0.2</float>
+                </list>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/plants/flowers/camellia/camellia.modeldef</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="density">
+                <float name="default">200</float>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">flower</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+</atlas>

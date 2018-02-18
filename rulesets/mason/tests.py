@@ -398,7 +398,7 @@ def test_spawn(host='', account='', password='', **args):
                   'character_types': ['settler'],
                   'contains': ['coin', 'coin', 'coin', 'coin', 'coin',
                                'coin', 'coin', 'coin', 'coin', 'coin',
-                               'shirt', 'trousers', 'cloak', 'boots', 'hat']})
+                               'shirt', 'pants', 'cloak', 'boots', 'hat']})
 
 def test_teleport(host='', account='', password='', **args):
     #   general things

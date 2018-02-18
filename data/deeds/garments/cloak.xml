@@ -1,0 +1,26 @@
+<atlas>
+
+  <map>
+    <map name="attributes">
+        <map name="geometry">
+            <map name="default">
+                <string name="path">dural/creatures/biped/malebuilder/model/folded_shirt.mesh</string>
+                <string name="type">box</string>
+            </map>
+            <string name="visibility">public</string>
+        </map>
+        <map name="present">
+            <string name="default">dural/creatures/biped/malebuilder/folded_shirt.modeldef</string>
+            <string name="visibility">public</string>
+        </map>
+      <map name="worn">
+        <string name="default">back</string>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">cloak</string>
+    <string name="objtype">class</string>
+    <string name="parent">garment</string>
+  </map>
+
+</atlas>

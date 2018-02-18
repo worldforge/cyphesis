@@ -1,5 +1,4 @@
 <atlas>
-
     <map>
         <map name="attributes">
             <map name="geometry">
@@ -9,7 +8,7 @@
                 </map>
                 <string name="visibility">public</string>
             </map>
-            <map name="present-mesh">
+            <map name="present">
                 <string name="default">dural/structures/concrete_stairs/model/concrete_stairs.mesh</string>
                 <string name="visibility">public</string>
             </map>
@@ -18,5 +17,4 @@
         <string name="objtype">class</string>
         <string name="parent">structure</string>
     </map>
-
 </atlas>

@@ -9,9 +9,74 @@
                 </map>
                 <string name="visibility">public</string>
             </map>
-            <map name="present-mesh">
+            <map name="present">
                 <string name="default">dural/structures/cg_gateway/model/cg_gateway.mesh</string>
                 <string name="visibility">public</string>
+            </map>
+            <map name="terrainmod">
+                <float name="heightoffset">0</float>
+                <map name="shape">
+                    <list name="points">
+                        <list>
+                            <float>-8.26135</float>
+                            <float>-6.70881</float>
+                        </list>
+                        <list>
+                            <float>-8.85931</float>
+                            <float>2.20318</float>
+                        </list>
+                        <list>
+                            <float>-1.85774</float>
+                            <float>10.1483</float>
+                        </list>
+                        <list>
+                            <float>-2.83735</float>
+                            <float>31.0656</float>
+                        </list>
+                        <list>
+                            <float>-9.14413</float>
+                            <float>37.9297</float>
+                        </list>
+                        <list>
+                            <float>-8.79563</float>
+                            <float>46.5846</float>
+                        </list>
+                        <list>
+                            <float>-3.66005</float>
+                            <float>53.4622</float>
+                        </list>
+                        <list>
+                            <float>15.9624</float>
+                            <float>53.9123</float>
+                        </list>
+                        <list>
+                            <float>29.836</float>
+                            <float>43.3101</float>
+                        </list>
+                        <list>
+                            <float>19.8514</float>
+                            <float>32.8965</float>
+                        </list>
+                        <list>
+                            <float>19.4131</float>
+                            <float>10.0072</float>
+                        </list>
+                        <list>
+                            <float>29.1462</float>
+                            <float>-2.08979</float>
+                        </list>
+                        <list>
+                            <float>18.8376</float>
+                            <float>-12.6127</float>
+                        </list>
+                        <list>
+                            <float>-2.11884</float>
+                            <float>-13.5149</float>
+                        </list>
+                    </list>
+                    <string name="type">polygon</string>
+                </map>
+                <string name="type">levelmod</string>
             </map>
         </map>
         <string name="id">gateway</string>

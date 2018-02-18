@@ -1,0 +1,34 @@
+<atlas>
+
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/creatures/biped/paladin/model/paladin_bow.mesh</string>
+                    <string name="type">box</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/creatures/biped/paladin/model/paladin_bow.mesh</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="ammo">
+                <string name="default">arrow</string>
+                <string name="visibility">internal</string>
+            </map>
+            <map name="density">
+                <float name="default">500</float>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">bow</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+        <map name="script">
+            <string name="language">python</string>
+            <string name="name">world.objects.tools.Bow.Bow</string>
+        </map>
+    </map>
+
+</atlas>

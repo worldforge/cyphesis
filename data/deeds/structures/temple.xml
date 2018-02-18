@@ -1,22 +1,138 @@
 <atlas>
 
-  <map>
-    <map name="attributes">
-      <map name="geometry">
-        <map name="default">
-          <string name="path">dural/structures/temple/model/temple.mesh</string>
-          <string name="type">mesh</string>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/structures/temple/model/temple.mesh</string>
+                    <string name="type">mesh</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/structures/temple/model/temple.mesh</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="terrainmod">
+                <float name="heightoffset">0</float>
+                <map name="shape">
+                    <list name="points">
+                        <list>
+                            <float>-7.96178</float>
+                            <float>-11.647</float>
+                        </list>
+                        <list>
+                            <float>-7.94141</float>
+                            <float>8.86002</float>
+                        </list>
+                        <list>
+                            <float>-4.80981</float>
+                            <float>8.97022</float>
+                        </list>
+                        <list>
+                            <float>-4.90681</float>
+                            <float>14.2311</float>
+                        </list>
+                        <list>
+                            <float>-2.81923</float>
+                            <float>14.2365</float>
+                        </list>
+                        <list>
+                            <float>-2.85528</float>
+                            <float>19.6986</float>
+                        </list>
+                        <list>
+                            <float>3.8335</float>
+                            <float>19.8356</float>
+                        </list>
+                        <list>
+                            <float>3.77746</float>
+                            <float>14.1004</float>
+                        </list>
+                        <list>
+                            <float>5.62915</float>
+                            <float>14.0192</float>
+                        </list>
+                        <list>
+                            <float>5.90282</float>
+                            <float>8.70778</float>
+                        </list>
+                        <list>
+                            <float>7.61686</float>
+                            <float>8.71219</float>
+                        </list>
+                        <list>
+                            <float>8.36257</float>
+                            <float>-11.7936</float>
+                        </list>
+                    </list>
+                    <string name="type">polygon</string>
+                </map>
+                <string name="type">levelmod</string>
+            </map>
+            <map name="area">
+                <map name="default">
+                    <int name="layer">7</int>
+                    <map name="shape">
+                        <list name="points">
+                            <list>
+                                <float>-7.96178</float>
+                                <float>-11.647</float>
+                            </list>
+                            <list>
+                                <float>-7.94141</float>
+                                <float>8.86002</float>
+                            </list>
+                            <list>
+                                <float>-4.80981</float>
+                                <float>8.97022</float>
+                            </list>
+                            <list>
+                                <float>-4.90681</float>
+                                <float>14.2311</float>
+                            </list>
+                            <list>
+                                <float>-2.81923</float>
+                                <float>14.2365</float>
+                            </list>
+                            <list>
+                                <float>-2.85528</float>
+                                <float>19.6986</float>
+                            </list>
+                            <list>
+                                <float>3.8335</float>
+                                <float>19.8356</float>
+                            </list>
+                            <list>
+                                <float>3.77746</float>
+                                <float>14.1004</float>
+                            </list>
+                            <list>
+                                <float>5.62915</float>
+                                <float>14.0192</float>
+                            </list>
+                            <list>
+                                <float>5.90282</float>
+                                <float>8.70778</float>
+                            </list>
+                            <list>
+                                <float>7.61686</float>
+                                <float>8.71219</float>
+                            </list>
+                            <list>
+                                <float>8.36257</float>
+                                <float>-11.7936</float>
+                            </list>
+                        </list>
+                        <string name="type">polygon</string>
+                    </map>
+                </map>
+                <string name="visibility">public</string>
+            </map>
         </map>
-        <string name="visibility">public</string>
-      </map>
-        <map name="present-mesh">
-            <string name="default">dural/structures/temple/model/temple.mesh</string>
-            <string name="visibility">public</string>
-        </map>
+        <string name="id">temple</string>
+        <string name="objtype">class</string>
+        <string name="parent">structure</string>
     </map>
-    <string name="id">temple</string>
-    <string name="objtype">class</string>
-    <string name="parent">structure</string>
-  </map>
 
 </atlas>

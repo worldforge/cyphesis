@@ -1,0 +1,24 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/furniture/shelf/model/shelf.mesh</string>
+                    <string name="type">mesh</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/furniture/shelf/model/shelf.mesh</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="density">
+                <float name="default">500</float>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">shelf</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+</atlas>

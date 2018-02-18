@@ -1,0 +1,22 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="mode">
+                <string name="default">fixed</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="solid">
+                <int name="default">0</int>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/environment/ocean.entitymap</string>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">ocean</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+
+</atlas>

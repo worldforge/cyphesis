@@ -120,7 +120,7 @@ toolprices = [('bowl', 'price', '3'),
 toolmerc_knowledge=[('market', 'location', tool_stall_pos)]
 
 tailor_prices = [('shirt', 'price', '5'), 
-                 ('trousers', 'price', '5'),
+                 ('pants', 'price', '5'),
                  ('cloak', 'price', '5')]
 
 tailor_knowledge=[('market', 'location', tailor_stall_pos)]
@@ -336,7 +336,7 @@ def default(host='', account='', password='', **args):
         m.own(tailor, stall)
 
         clothes=[]
-        garment_types=['shirt', 'trousers', 'cloak']
+        garment_types=['shirt', 'pants', 'cloak']
         garment_styles=['ragged', 'burlap', 'sun', 'fine']
 
         for i in range(0, 15):
@@ -497,7 +497,7 @@ def default(host='', account='', password='', **args):
           "'I can take care of my pigs alone'])"))
     m.learn(warriors,(il.hire,"hire_trade()"))
     m.learn(warriors,(il.forage,"gather(['boots', 'cloak', 'shirt',"
-                                "'trousers', 'hat', 'skull', 'coin'])"))
+                                "'pants', 'hat', 'skull', 'coin'])"))
     m.learn(warriors,(il.lunch,"meal('ham','midday', 'inn')"))
     m.learn(warriors,(il.sup,"meal('beer', 'evening', 'inn')"))
 
@@ -717,7 +717,7 @@ def _setup_settlement(m):
                   'character_types': ['settler'],
                   'contains': ['coin', 'coin', 'coin', 'coin', 'coin',
                                'coin', 'coin', 'coin', 'coin', 'coin',
-                               'shirt', 'trousers', 'cloak', 'boots', 'hat']})
+                               'shirt', 'pants', 'cloak', 'boots', 'hat']})
 
     m.make('tower',pos=(210,210,5))
     m.make('gallows',pos=(185,175,5))
@@ -785,7 +785,7 @@ def _setup_camp(m):
            bbox=[-14, -16, 0, 14, 16, 1],
            spawn={'name': 'goblin village',
                   'character_types': ['goblin'],
-                  'contains': ['shirt', 'trousers', 'cloak', 'boots', 'hat']})
+                  'contains': ['shirt', 'pants', 'cloak', 'boots', 'hat']})
 
 def _add_resources(m):
 

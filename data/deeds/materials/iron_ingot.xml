@@ -1,0 +1,28 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/resources/iron_ingot/model/ingot_iron.mesh</string>
+                    <string name="type">box</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/resources/iron_ingot/model/ingot_iron.mesh</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="burn_speed">
+                <float name="default">1</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="density">
+                <float name="default">7900</float>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">iron_ingot</string>
+        <string name="objtype">class</string>
+        <string name="parent">material</string>
+    </map>
+</atlas>

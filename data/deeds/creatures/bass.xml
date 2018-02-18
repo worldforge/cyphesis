@@ -16,7 +16,7 @@
                 <float name="default">5</float>
                 <string name="visibility">public</string>
             </map>
-            <map name="present-model">
+            <map name="present">
                 <string name="default">dural/creatures/tubular/bass_lm.modeldef</string>
                 <string name="visibility">public</string>
             </map>

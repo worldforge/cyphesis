@@ -1,0 +1,25 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="biomass">
+                <float name="default">0.05</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="germinates">
+                <string name="default">plant</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="density">
+                <float name="default">600</float>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">seed</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+        <map name="script">
+            <string name="language">python</string>
+            <string name="name">world.objects.plants.seeds.Seed.Seed</string>
+        </map>
+    </map>
+</atlas>

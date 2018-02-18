@@ -9,7 +9,7 @@
           </map>
         <string name="visibility">public</string>
       </map>
-        <map name="present-mesh">
+        <map name="present">
             <string name="default">dural/structures/palisade/model/palisade_circle_c.mesh</string>
             <string name="visibility">public</string>
         </map>

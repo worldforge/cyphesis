@@ -1,26 +1,51 @@
 <atlas>
 
-  <map>
-    <map name="attributes">
-      <map name="geometry">
-        <map name="default">
-          <string name="path">dural/structures/gallows/model/gallows.mesh</string>
-          <string name="type">mesh</string>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/structures/gallows/model/gallows.mesh</string>
+                    <string name="type">mesh</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/structures/gallows/model/gallows.mesh</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="density">
+                <float name="default">500</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="terrainmod">
+                <float name="heightoffset">0</float>
+                <map name="shape">
+                    <list name="points">
+                        <list>
+                            <float>-4.95776</float>
+                            <float>-4.79856</float>
+                        </list>
+                        <list>
+                            <float>-5.40543</float>
+                            <float>2.01777</float>
+                        </list>
+                        <list>
+                            <float>2.01292</float>
+                            <float>1.59472</float>
+                        </list>
+                        <list>
+                            <float>1.68967</float>
+                            <float>-4.44029</float>
+                        </list>
+                    </list>
+                    <string name="type">polygon</string>
+                </map>
+                <string name="type">levelmod</string>
+            </map>
         </map>
-        <string name="visibility">public</string>
-      </map>
-        <map name="present-mesh">
-            <string name="default">dural/structures/gallows/model/gallows.mesh</string>
-            <string name="visibility">public</string>
-        </map>
-      <map name="density">
-        <float name="default">500</float>
-        <string name="visibility">public</string>
-      </map>
+        <string name="id">gallows</string>
+        <string name="objtype">class</string>
+        <string name="parent">structure</string>
     </map>
-    <string name="id">gallows</string>
-    <string name="objtype">class</string>
-    <string name="parent">structure</string>
-  </map>
 
 </atlas>

@@ -1,0 +1,32 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/resources/log_bundle/model/log.mesh</string>
+                    <string name="type">cylinder-x</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/resources/log_bundle/model/log.mesh</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="burn_speed">
+                <float name="default">1</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="density">
+                <float name="default">500</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="material">
+                <string name="default">wood</string>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">lumber</string>
+        <string name="objtype">class</string>
+        <string name="parent">material</string>
+    </map>
+</atlas>

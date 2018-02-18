@@ -1,22 +1,59 @@
 <atlas>
 
-  <map>
-    <map name="attributes">
-      <map name="geometry">
-          <map name="default">
-              <string name="type">mesh</string>
-              <string name="path">dural/structures/cg_house_d/model/cg_house_d.mesh</string>
-          </map>
-          <string name="visibility">public</string>
-      </map>
-        <map name="present-mesh">
-            <string name="default">dural/structures/cg_house_d/model/cg_house_d.mesh</string>
-            <string name="visibility">public</string>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="type">mesh</string>
+                    <string name="path">dural/structures/cg_house_d/model/cg_house_d.mesh</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/structures/cg_house_d/cg_house_d.entitymap</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="roof">
+                <string name="default">shingle</string>
+                <string name="visibility">public</string>
+                <list name="values">
+                    <string>shingle</string>
+                    <string>straw</string>
+                    <string>shale</string>
+                </list>
+            </map>
+            <map name="terrainmod">
+                <map name="default">
+                    <float name="heightoffset">0</float>
+                    <map name="shape">
+                        <list name="points">
+                            <list>
+                                <float>-7.19509</float>
+                                <float>-9.13097</float>
+                            </list>
+                            <list>
+                                <float>-9.16889</float>
+                                <float>-1.08151</float>
+                            </list>
+                            <list>
+                                <float>6.1259</float>
+                                <float>-3.07852</float>
+                            </list>
+                            <list>
+                                <float>5.87794</float>
+                                <float>-6.96846</float>
+                            </list>
+                        </list>
+                        <string name="type">polygon</string>
+                    </map>
+                    <string name="type">levelmod</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
         </map>
+        <string name="id">castle_house_d</string>
+        <string name="objtype">class</string>
+        <string name="parent">structure</string>
     </map>
-    <string name="id">castle_house_d</string>
-    <string name="objtype">class</string>
-    <string name="parent">structure</string>
-  </map>
 
 </atlas>

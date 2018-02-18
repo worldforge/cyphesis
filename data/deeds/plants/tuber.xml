@@ -1,0 +1,17 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="biomass">
+                <float name="default">0.5</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="density">
+                <float name="default">800</float>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">tuber</string>
+        <string name="objtype">class</string>
+        <string name="parent">plant</string>
+    </map>
+</atlas>

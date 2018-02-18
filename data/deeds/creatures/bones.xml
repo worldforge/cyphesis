@@ -1,0 +1,164 @@
+<atlas>
+
+  <map>
+    <map name="attributes">
+        <map name="geometry">
+            <map name="default">
+                <string name="path">dural/creatures/biped/skeleton/model/bone_pile.mesh</string>
+                <string name="type">box</string>
+            </map>
+            <string name="visibility">public</string>
+        </map>
+        <map name="present">
+            <string name="default">dural/creatures/biped/skeleton/model/bone_pile.mesh</string>
+            <string name="visibility">public</string>
+        </map>
+      <map name="density">
+        <float name="default">2000</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">bone_pile</string>
+    <string name="objtype">class</string>
+    <string name="parent">thing</string>
+  </map>
+
+  <map>
+    <map name="attributes">
+        <map name="geometry">
+            <map name="default">
+                <string name="path">dural/items/misc/femur/model/femur.mesh</string>
+                <string name="type">box</string>
+            </map>
+            <string name="visibility">public</string>
+        </map>
+        <map name="present">
+            <string name="default">dural/items/misc/femur/model/femur.mesh</string>
+            <string name="visibility">public</string>
+        </map>
+      <map name="density">
+        <float name="default">2000</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">femur</string>
+    <string name="objtype">class</string>
+    <string name="parent">thing</string>
+  </map>
+
+  <map>
+    <map name="attributes">
+        <map name="geometry">
+            <map name="default">
+                <string name="path">dural/items/misc/humerus/model/humerus.mesh</string>
+                <string name="type">box</string>
+            </map>
+            <string name="visibility">public</string>
+        </map>
+        <map name="present">
+            <string name="default">dural/items/misc/humerus/model/humerus.mesh</string>
+            <string name="visibility">public</string>
+        </map>
+      <map name="density">
+        <float name="default">2000</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">humerus</string>
+    <string name="objtype">class</string>
+    <string name="parent">thing</string>
+  </map>
+
+  <map>
+    <map name="attributes">
+        <map name="geometry">
+            <map name="default">
+                <string name="path">dural/items/misc/pelvis/model/pelvis.mesh</string>
+                <string name="type">box</string>
+            </map>
+            <string name="visibility">public</string>
+        </map>
+        <map name="present">
+            <string name="default">dural/items/misc/pelvis/model/pelvis.mesh</string>
+            <string name="visibility">public</string>
+        </map>
+      <map name="density">
+        <float name="default">2000</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">pelvis</string>
+    <string name="objtype">class</string>
+    <string name="parent">thing</string>
+  </map>
+
+  <map>
+    <map name="attributes">
+        <map name="geometry">
+            <map name="default">
+                <string name="path">dural/items/misc/ribcage/model/ribcage.mesh</string>
+                <string name="type">box</string>
+            </map>
+            <string name="visibility">public</string>
+        </map>
+        <map name="present">
+            <string name="default">dural/items/misc/ribcage/model/ribcage.mesh</string>
+            <string name="visibility">public</string>
+        </map>
+      <map name="density">
+        <float name="default">2000</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">ribcage</string>
+    <string name="objtype">class</string>
+    <string name="parent">thing</string>
+  </map>
+
+  <map>
+    <map name="attributes">
+        <map name="geometry">
+            <map name="default">
+                <string name="path">dural/items/misc/skull/model/skull.mesh</string>
+                <string name="type">box</string>
+            </map>
+            <string name="visibility">public</string>
+        </map>
+        <map name="present">
+            <string name="default">dural/items/misc/skull/model/skull.mesh</string>
+            <string name="visibility">public</string>
+        </map>
+      <map name="density">
+        <float name="default">2000</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">skull</string>
+    <string name="objtype">class</string>
+    <string name="parent">thing</string>
+  </map>
+
+  <map>
+    <map name="attributes">
+        <map name="geometry">
+            <map name="default">
+                <string name="path">dural/items/misc/tibia/model/tibia.mesh</string>
+                <string name="type">box</string>
+            </map>
+            <string name="visibility">public</string>
+        </map>
+        <map name="present">
+            <string name="default">dural/items/misc/tibia/model/tibia.mesh</string>
+            <string name="visibility">public</string>
+        </map>
+      <map name="density">
+        <float name="default">2000</float>
+        <string name="visibility">public</string>
+      </map>
+    </map>
+    <string name="id">tibia</string>
+    <string name="objtype">class</string>
+    <string name="parent">thing</string>
+  </map>
+
+</atlas>
