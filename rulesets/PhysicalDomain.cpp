@@ -1281,18 +1281,23 @@ void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& 
 
             btVector3 btVelocity = Convert::toBullet(velocity);
 
+            //TODO: add support for flying and swimming
             if (!btVelocity.isZero()) {
 
                 //Check if we're trying to jump
                 if (btVelocity.m_floats[1] > 0) {
-                    bool isGrounded = false;
-                    IsGroundedCallback groundedCallback(*entry.rigidBody, isGrounded);
-                    m_dynamicsWorld->contactTest(entry.rigidBody, groundedCallback);
-                    if (isGrounded) {
-                        //If the entity is grounded, allow it to jump by setting the vertical velocity.
-                        btVector3 newVelocity = entry.rigidBody->getLinearVelocity();
-                        newVelocity.m_floats[1] = btVelocity.m_floats[1] * 2.0f;
-                        entry.rigidBody->setLinearVelocity(newVelocity);
+                    auto jumpSpeedProp = entity->getPropertyType<double>("speed-jump");
+                    if (jumpSpeedProp && jumpSpeedProp->data() > 0) {
+
+                        bool isGrounded = false;
+                        IsGroundedCallback groundedCallback(*entry.rigidBody, isGrounded);
+                        m_dynamicsWorld->contactTest(entry.rigidBody, groundedCallback);
+                        if (isGrounded) {
+                            //If the entity is grounded, allow it to jump by setting the vertical velocity.
+                            btVector3 newVelocity = entry.rigidBody->getLinearVelocity();
+                            newVelocity.m_floats[1] = static_cast<btScalar>(btVelocity.m_floats[1] * jumpSpeedProp->data());
+                            entry.rigidBody->setLinearVelocity(newVelocity);
+                        }
                     }
                 }
                 btVelocity.m_floats[1] = 0; //Don't allow vertical velocity to be set for the continuous velocity.
@@ -1314,14 +1319,6 @@ void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& 
                 btVector3 bodyVelocity = entry.rigidBody->getLinearVelocity();
                 bodyVelocity.setX(0);
                 bodyVelocity.setZ(0);
-
-                //When a character stops moving, we'll also stop any vertical movement only if the character is touching the ground.
-                bool isGrounded = false;
-                IsGroundedCallback groundedCallback(*entry.rigidBody, isGrounded);
-                m_dynamicsWorld->contactTest(entry.rigidBody, groundedCallback);
-                if (isGrounded) {
-                    bodyVelocity.setY(0);
-                }
 
                 entry.rigidBody->setLinearVelocity(bodyVelocity);
                 double friction = 1.0; //Default to 1 if no "friction" prop is present.

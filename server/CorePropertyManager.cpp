@@ -210,6 +210,10 @@ CorePropertyManager::CorePropertyManager()
      * The max speed in meters per second (m/s) when flying.
      */
     installProperty<Property<double>>("speed-flight", "float");
+    /**
+     * The max speed in meters per second (m/s) when jumping.
+     */
+    installProperty<Property<double>>("speed-jump", "float");
 
 
 }

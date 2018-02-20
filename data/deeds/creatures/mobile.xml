@@ -70,6 +70,11 @@
                 <float name="default">1</float>
                 <string name="visibility">public</string>
             </map>
+            <!-- By default we'll allow mobiles to jump like a normal human -->
+            <map name="speed-jump">
+                <float name="default">7.5</float>
+                <string name="visibility">public</string>
+            </map>
         </map>
         <string name="id">mobile</string>
         <string name="objtype">class</string>
