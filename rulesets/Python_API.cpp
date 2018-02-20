@@ -740,12 +740,6 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
     o = PyFloat_FromDouble(consts::time_multiplier);
     PyModule_AddObject(_const, "time_multiplier", o);
 
-    o = PyFloat_FromDouble(consts::base_velocity_coefficient);
-    PyModule_AddObject(_const, "base_velocity_coefficient", o);
-
-    o = PyFloat_FromDouble(consts::base_velocity);
-    PyModule_AddObject(_const, "base_velocity", o);
-
     o = PyFloat_FromDouble(consts::basic_tick);
     PyModule_AddObject(_const, "basic_tick", o);
 

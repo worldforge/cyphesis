@@ -43,12 +43,8 @@ namespace consts {
   static const float time_multiplier = 1.0;
   /// \brief In Real time how many seconds between ticks
   static const float basic_tick = time_multiplier * 3.0f;
-  /// \brief Highest possible person velocity
-  static const float base_velocity_coefficient = 5.0;
-  static const float base_velocity = base_velocity_coefficient/time_multiplier;
   /// \brief Square versions of above, to avoid square roots in calculations
   static const float square_basic_tick = basic_tick * basic_tick;
-  static const float square_base_velocity = base_velocity * base_velocity;
 
   /// \brief sin() of minimum angle subtended by visible object
   static const float sight_factor = 0.06f;

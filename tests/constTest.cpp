@@ -44,18 +44,9 @@ int main()
     float basic_tick;
     basic_tick = consts::basic_tick;
     assert(basic_tick > 0);
-    float base_velocity_coefficient;
-    base_velocity_coefficient = consts::base_velocity_coefficient;
-    assert(base_velocity_coefficient > 0);
-    float base_velocity;
-    base_velocity = consts::base_velocity;
-    assert(base_velocity > 0);
     float square_basic_tick;
     square_basic_tick = consts::square_basic_tick;
     assert(square_basic_tick > 0);
-    float square_base_velocity;
-    square_base_velocity = consts::square_base_velocity;
-    assert(square_base_velocity > 0);
     float sight_factor;
     sight_factor = consts::sight_factor;
     assert(sight_factor > 0);
