@@ -81,6 +81,14 @@ class GeometryProperty : public Property<Atlas::Message::MapType>
          */
         std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> createShape(const WFMath::AxisBox<3>& bbox, btVector3& centerOfMassOffset) const;
 
+        /**
+         * Calculates the local inertia for the shape. The shape submitted must be one created previously by the same instance using "createShape".
+         * @param shape
+         * @param mass
+         * @param inertia
+         */
+        void calculateLocalInertia(btCollisionShape* shape, float mass, btVector3& inertia) const;
+
     private:
 
         WFMath::AxisBox<3> m_meshBounds;
@@ -89,6 +97,11 @@ class GeometryProperty : public Property<Atlas::Message::MapType>
          * Creator function used for creating a new shape instance.
          */
         std::function<std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>>(const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset)> mShapeCreator;
+
+        /**
+         * Function used for calculating inertia.
+         */
+        std::function<void(btCollisionShape* shape, float, btVector3&)> mInertiaCalculatorFn;
 
         void buildMeshCreator(std::shared_ptr<OgreMeshDeserializer> meshDeserializer);
 

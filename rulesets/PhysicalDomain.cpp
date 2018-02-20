@@ -292,9 +292,9 @@ PhysicalDomain::~PhysicalDomain()
             delete entry.second->motionState;
             delete entry.second->rigidBody;
         }
-        if (entry.second->collisionShape) {
-            delete entry.second->collisionShape;
-        }
+
+        delete entry.second->collisionShape;
+
         entry.second->propertyUpdatedConnection.disconnect();
         delete entry.second;
 
@@ -327,7 +327,7 @@ void PhysicalDomain::buildTerrainPages()
         for (auto& row : segments) {
             for (auto& entry : row.second) {
                 Mercator::Segment* segment = entry.second;
-                buildTerrainPage(*segment, friction);
+                buildTerrainPage(*segment, static_cast<float>(friction));
             }
         }
     }
@@ -681,7 +681,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     calculatePositionForEntity(mode, entity, entity.m_location.m_pos);
 
 
-    btQuaternion orientation = entity.m_location.m_orientation.isValid() ? Convert::toBullet(entity.m_location.m_orientation) : btQuaternion(0, 0, 0, 1);
+    btQuaternion orientation = entity.m_location.m_orientation.isValid() ? Convert::toBullet(entity.m_location.m_orientation) : btQuaternion::getIdentity();
     btVector3 pos = entity.m_location.m_pos.isValid() ? Convert::toBullet(entity.m_location.m_pos) : btVector3(0, 0, 0);
 
     if (bbox.isValid()) {
@@ -689,26 +689,22 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
 
         auto size = bbox.highCorner() - bbox.lowCorner();
         auto geometryProp = entity.getPropertyClassFixed<GeometryProperty>();
+        btVector3 inertia(0, 0, 0);
         if (geometryProp) {
             std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> instance = geometryProp->createShape(bbox, entry->centerOfMassOffset);
             entry->collisionShape = instance.first;
             entry->backingShape = instance.second;
+            geometryProp->calculateLocalInertia(entry->collisionShape, mass, inertia);
         } else {
             auto btSize = Convert::toBullet(size * 0.5).absolute();
             entry->centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
             entry->collisionShape = new btBoxShape(btSize);
+            entry->collisionShape->calculateLocalInertia(mass, inertia);
         }
 
         short collisionMask;
         short collisionGroup;
         getCollisionFlagsForEntity(entity, collisionGroup, collisionMask);
-
-        btVector3 inertia;
-        if (mass == 0) {
-            inertia = btVector3(0, 0, 0);
-        } else {
-            entry->collisionShape->calculateLocalInertia(mass, inertia);
-        }
 
         debug_print(
             "PhysicsDomain adding entity " << entity.describeEntity() << " with mass " << mass << " and inertia (" << inertia.x() << "," << inertia.y() << "," << inertia.z() << ")");
@@ -717,7 +713,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
 
         auto frictionProp = entity.getPropertyType<double>("friction");
         if (frictionProp) {
-            rigidBodyCI.m_friction = frictionProp->data();
+            rigidBodyCI.m_friction = (btScalar) frictionProp->data();
         }
 
         entry->rigidBody = new btRigidBody(rigidBodyCI);
@@ -728,7 +724,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
 
         //To prevent tunneling we'll turn on CCD with suitable values.
         float minSize = std::min(size.x(), std::min(size.y(), size.z()));
-        float maxSize = std::max(size.x(), std::max(size.y(), size.z()));
+//        float maxSize = std::max(size.x(), std::max(size.y(), size.z()));
         entry->rigidBody->setCcdMotionThreshold(minSize * CCD_MOTION_FACTOR);
         entry->rigidBody->setCcdSweptSphereRadius(minSize * CCD_SPHERE_FACTOR);
 
@@ -924,8 +920,8 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
 
     if (name == "friction") {
         if (bulletEntry->rigidBody) {
-            Property<double>* frictionProp = static_cast<Property<double>*>(&prop);
-            bulletEntry->rigidBody->setFriction(frictionProp->data());
+            Property<double>* frictionProp = dynamic_cast<Property<double>*>(&prop);
+            bulletEntry->rigidBody->setFriction(static_cast<btScalar>(frictionProp->data()));
             if (getMassForEntity(*bulletEntry->entity) != 0) {
                 bulletEntry->rigidBody->activate();
             }
@@ -934,7 +930,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
     } else if (name == "mode") {
 
         if (bulletEntry->rigidBody) {
-            ModeProperty* modeProp = static_cast<ModeProperty*>(&prop);
+            ModeProperty* modeProp = dynamic_cast<ModeProperty*>(&prop);
 
             applyNewPositionForEntity(bulletEntry, bulletEntry->entity->m_location.m_pos);
 
@@ -1150,9 +1146,9 @@ void PhysicalDomain::getCollisionFlagsForEntity(const LocatedEntity& entity, sho
 void PhysicalDomain::entityPropertyApplied(const std::string& name, PropertyBase& prop)
 {
     if (name == "friction") {
-        Property<double>* frictionProp = static_cast<Property<double>*>(&prop);
+        Property<double>* frictionProp = dynamic_cast<Property<double>*>(&prop);
         for (auto& entry : m_terrainSegments) {
-            entry.second.rigidBody->setFriction(frictionProp->data());
+            entry.second.rigidBody->setFriction(static_cast<btScalar>(frictionProp->data()));
         }
         return;
     } else if (name == "terrain") {
@@ -1190,6 +1186,8 @@ void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, Located
         float h = pos.y();
         getTerrainHeight(pos.x(), pos.z(), h);
         pos.y() = h;
+    } else {
+        log(WARNING, "Unknown mode for entity " + entity.describeEntity());
     }
 }
 
@@ -1331,7 +1329,7 @@ void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& 
                 if (frictionProp) {
                     friction = frictionProp->data();
                 }
-                entry.rigidBody->setFriction(friction);
+                entry.rigidBody->setFriction(static_cast<btScalar>(friction));
 
                 m_propellingEntries.erase(entity->getIntId());
 
@@ -1422,7 +1420,7 @@ void PhysicalDomain::processDirtyTerrainAreas()
     float friction = 1.0f;
     auto frictionProp = m_entity.getPropertyType<double>("friction");
     if (frictionProp) {
-        friction = frictionProp->data();
+        friction = (float) frictionProp->data();
     }
 
     float worldHeight = m_entity.m_location.bBox().highCorner().y() - m_entity.m_location.bBox().lowCorner().y();
@@ -1650,7 +1648,7 @@ bool PhysicalDomain::getTerrainHeight(float x, float y, float& height) const
 {
     if (m_terrain) {
         Mercator::Segment* s = m_terrain->getSegmentAtPos(x, y);
-        if (s != 0 && !s->isValid()) {
+        if (s != nullptr && !s->isValid()) {
             s->populate();
         }
         return m_terrain->getHeight(x, y, height);
