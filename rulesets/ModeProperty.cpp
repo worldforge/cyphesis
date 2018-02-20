@@ -75,30 +75,32 @@ void ModeProperty::apply(LocatedEntity *entity)
             }
         }
     } else {
-        QuaternionProperty* activeRotationProp = entity->requirePropertyClass<QuaternionProperty>("active-rotation");
-        if (activeRotationProp->data().isValid()) {
-            WFMath::Quaternion currentOrientation = entity->m_location.orientation();
+        if (entity->hasAttr("active-rotation")) {
+            QuaternionProperty* activeRotationProp = entity->modPropertyClass<QuaternionProperty>("active-rotation");
+            if (activeRotationProp->data().isValid()) {
+                WFMath::Quaternion currentOrientation = entity->m_location.orientation();
 
-            WFMath::Quaternion rotation = activeRotationProp->data().inverse();
-            //normalize to avoid drift
-            rotation.normalize();
-            currentOrientation = rotation * currentOrientation;
+                WFMath::Quaternion rotation = activeRotationProp->data().inverse();
+                //normalize to avoid drift
+                rotation.normalize();
+                currentOrientation = rotation * currentOrientation;
 
-            activeRotationProp->data() = WFMath::Quaternion::Identity();
-            activeRotationProp->apply(entity);
-            activeRotationProp->resetFlags(per_clean);
-            activeRotationProp->setFlags(flag_unsent);
+                activeRotationProp->data() = WFMath::Quaternion::Identity();
+                activeRotationProp->apply(entity);
+                activeRotationProp->resetFlags(per_clean);
+                activeRotationProp->setFlags(flag_unsent);
 
-            Atlas::Objects::Entity::Anonymous move_arg;
-            move_arg->setId(entity->getId());
-            move_arg->setAttr("orientation", currentOrientation.toAtlas());
+                Atlas::Objects::Entity::Anonymous move_arg;
+                move_arg->setId(entity->getId());
+                move_arg->setAttr("orientation", currentOrientation.toAtlas());
 
-            Atlas::Objects::Operation::Move moveOp;
-            moveOp->setTo(entity->getId());
-            moveOp->setSeconds(BaseWorld::instance().getTime());
-            moveOp->setArgs1(move_arg);
-            entity->sendWorld(moveOp);
+                Atlas::Objects::Operation::Move moveOp;
+                moveOp->setTo(entity->getId());
+                moveOp->setSeconds(BaseWorld::instance().getTime());
+                moveOp->setArgs1(move_arg);
+                entity->sendWorld(moveOp);
 
+            }
         }
     }
 }
