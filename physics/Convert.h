@@ -52,35 +52,45 @@ class Convert {
 inline btVector3 Convert::toBullet(const WFMath::Vector<3>& p)
 {
     assert(p.isValid() && "Never convert an invalid WFMath point into Bullet as there will only be pain on the other side.");
-    return btVector3(p.x(), p.y(), p.z());
+    return {p.x(), p.y(), p.z()};
 }
 
 inline btVector3 Convert::toBullet(const WFMath::Point<3>& p)
 {
     assert(p.isValid() && "Never convert an invalid WFMath point into Bullet as there will only be pain on the other side.");
-    return btVector3(p.x(), p.y(), p.z());
+    return {p.x(), p.y(), p.z()};
 }
 
 inline btQuaternion Convert::toBullet(const WFMath::Quaternion& aq)
 {
     assert(aq.isValid() && "Never convert an invalid WFMath quaternion into Bullet as there will only be pain on the other side.");
-    return btQuaternion(aq.vector().x(), aq.vector().y(), aq.vector().z(), aq.scalar());
+    return {aq.vector().x(), aq.vector().y(), aq.vector().z(), aq.scalar()};
 }
 
 template<>
 inline WFMath::Point<3> Convert::toWF<WFMath::Point<3>>(const btVector3& p)
 {
+    assert(std::isfinite(p.x()));
+    assert(std::isfinite(p.y()));
+    assert(std::isfinite(p.z()));
     return WFMath::Point<3>(p.x(), p.y(), p.z());
 }
 
 template<>
 inline WFMath::Vector<3> Convert::toWF<WFMath::Vector<3>>(const btVector3& p)
 {
+    assert(std::isfinite(p.x()));
+    assert(std::isfinite(p.y()));
+    assert(std::isfinite(p.z()));
     return WFMath::Vector<3>(p.x(), p.y(), p.z());
 }
 
 inline WFMath::Quaternion Convert::toWF(const btQuaternion& aq)
 {
+    assert(std::isfinite(aq.x()));
+    assert(std::isfinite(aq.y()));
+    assert(std::isfinite(aq.z()));
+    assert(std::isfinite(aq.w()));
     return WFMath::Quaternion(aq.w(), aq.x(), aq.y(), aq.z());
 }
 
