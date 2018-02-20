@@ -374,6 +374,12 @@ void Account::createObject(const std::string & type_str,
     if (!arg->isDefaultName()) {
         new_character->setName(arg->getName());
     }
+    Atlas::Message::Element sexElement;
+    if (arg->copyAttr("sex", sexElement) == 0 && sexElement.isString()) {
+        if (sexElement.String() == "male" || sexElement.String() == "female") {
+            new_character->setAttr("sex", sexElement);
+        }
+    }
 
     LocatedEntity * entity = addNewCharacter(type_str, new_character, arg);
 
