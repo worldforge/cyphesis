@@ -158,21 +158,9 @@ LocatedEntity * WorldRouter::addEntity(LocatedEntity * ent)
                         << std::endl << std::flush;);
     }
     ent->m_location.update(getTime());
-    // FIXME
-    std::string mode;
-    Element mode_attr;
-    if (ent->getAttrType("mode", mode_attr, Element::TYPE_STRING) == 0) {
-        mode = mode_attr.String();
-    }
     if (ent->m_location.m_loc) {
         Domain* movementDomain = ent->m_location.m_loc->getDomain();
         if (movementDomain) {
-//            float height = movementDomain->
-//                  constrainHeight(*ent, ent->m_location.m_loc,
-//                                  ent->m_location.pos(),
-//                                  mode);
-//            transProp->getTranslate().z() = height;
-//            transProp->apply(ent);
             movementDomain->addEntity(*ent);
         }
     }
