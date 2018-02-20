@@ -21,16 +21,16 @@
 
 #include "common/Property.h"
 
-/// \brief Class to handle whether or not an entity is solid for collisions.
+/// \brief Keeps track of the status of an entity. When it reaches 0 the entity is destroyed.
 /// \ingroup PropertyClasses
 class StatusProperty : public Property<double> {
   public:
     /// \brief Constructor
-    explicit StatusProperty();
+    StatusProperty() = default;
 
-    virtual StatusProperty * copy() const;
+        StatusProperty * copy() const override;
 
-    virtual void apply(LocatedEntity *);
+        void apply(LocatedEntity *) override;
 };
 
 #endif // RULESETS_STATUS_PROPERTY_H

@@ -7,23 +7,6 @@
 #ifndef STUB_RULESETS_IMMORTALPROPERTY_H
 #define STUB_RULESETS_IMMORTALPROPERTY_H
 
-#ifndef STUB_ImmortalProperty_ImmortalProperty
-//#define STUB_ImmortalProperty_ImmortalProperty
-   ImmortalProperty::ImmortalProperty()
-    : Property()
-  {
-    
-  }
-#endif //STUB_ImmortalProperty_ImmortalProperty
-
-#ifndef STUB_ImmortalProperty_ImmortalProperty_DTOR
-//#define STUB_ImmortalProperty_ImmortalProperty_DTOR
-   ImmortalProperty::~ImmortalProperty()
-  {
-    
-  }
-#endif //STUB_ImmortalProperty_ImmortalProperty_DTOR
-
 #ifndef STUB_ImmortalProperty_install
 //#define STUB_ImmortalProperty_install
   void ImmortalProperty::install(LocatedEntity *, const std::string &)

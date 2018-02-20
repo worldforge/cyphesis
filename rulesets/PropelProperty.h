@@ -35,18 +35,22 @@ class PropelProperty: public PropertyBase {
         static const std::string property_atlastype;
 
         PropelProperty();
-        virtual ~PropelProperty();
+
+        ~PropelProperty() override;
         const WFMath::Vector<3> & data() const { return mData; }
         WFMath::Vector<3> & data() { return mData; }
 
-        virtual int get(Atlas::Message::Element & val) const;
-        virtual void set(const Atlas::Message::Element & val);
-        virtual void add(const std::string & key,
-                         Atlas::Message::MapType & map) const;
-        virtual void add(const std::string & key,
-                         const Atlas::Objects::Entity::RootEntity & ent) const;
+        int get(Atlas::Message::Element & val) const override;
 
-        virtual PropelProperty * copy() const;
+        void set(const Atlas::Message::Element & val) override;
+
+        void add(const std::string & key,
+                         Atlas::Message::MapType & map) const override;
+
+        void add(const std::string & key,
+                         const Atlas::Objects::Entity::RootEntity & ent) const override;
+
+        PropelProperty * copy() const override;
     protected:
         WFMath::Vector<3> mData;
 };

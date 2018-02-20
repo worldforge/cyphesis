@@ -30,16 +30,18 @@
 class ImmortalProperty : public Property<int>
 {
     public:
-        explicit ImmortalProperty();
-        virtual ~ImmortalProperty();
 
-        virtual void install(LocatedEntity *, const std::string &);
-        virtual void remove(LocatedEntity *, const std::string &);
-        virtual void apply(LocatedEntity *);
-        virtual HandlerResult operation(LocatedEntity *,
+        void install(LocatedEntity *, const std::string &) override;
+
+        void remove(LocatedEntity *, const std::string &) override;
+
+        void apply(LocatedEntity *) override;
+
+        HandlerResult operation(LocatedEntity *,
                                         const Operation &,
-                                        OpVector &);
-        virtual ImmortalProperty * copy() const;
+                                        OpVector &) override;
+
+        ImmortalProperty * copy() const override;
 
 
         HandlerResult delete_handler(LocatedEntity * e,

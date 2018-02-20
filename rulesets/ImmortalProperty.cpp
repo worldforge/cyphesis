@@ -26,14 +26,6 @@
 
 static const bool debug_flag = false;
 
-ImmortalProperty::ImmortalProperty()
-{
-}
-
-ImmortalProperty::~ImmortalProperty()
-{
-}
-
 void ImmortalProperty::install(LocatedEntity * owner, const std::string & name)
 {
     owner->installDelegate(Atlas::Objects::Operation::DELETE_NO, name);

@@ -21,19 +21,27 @@
 
 #include "common/Property.h"
 
+/**
+ * \brief Specifies the type that will be created when an entity is destroyed.
+ * A simple example would be a "skull" being left over when a character is destroyed.
+ * \ingroup PropertyClasses
+ */
 class DecaysProperty : public Property<std::string>
 {
-  public:
-    virtual void install(LocatedEntity *, const std::string &);
-    virtual void remove(LocatedEntity *, const std::string &);
-    virtual HandlerResult operation(LocatedEntity *,
-                                    const Operation &,
-                                    OpVector &);
-    virtual DecaysProperty * copy() const;
+    public:
+        void install(LocatedEntity*, const std::string&) override;
 
-    HandlerResult del_handler(LocatedEntity * e,
-                              const Operation &,
-                              OpVector & res);
+        void remove(LocatedEntity*, const std::string&) override;
+
+        HandlerResult operation(LocatedEntity*,
+                                const Operation&,
+                                OpVector&) override;
+
+        DecaysProperty* copy() const override;
+
+        HandlerResult del_handler(LocatedEntity* e,
+                                  const Operation&,
+                                  OpVector& res);
 };
 
 #endif // RULESETS_DECAYS_PROPERTY_H

@@ -20,14 +20,6 @@
 
 #include "rulesets/LocatedEntity.h"
 
-VisibilityProperty::VisibilityProperty()
-{
-}
-
-VisibilityProperty::~VisibilityProperty()
-{
-}
-
 VisibilityProperty * VisibilityProperty::copy() const
 {
     return new VisibilityProperty(*this);

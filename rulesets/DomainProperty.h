@@ -33,6 +33,8 @@ class Domain;
  * The data defines the kind of domain. The available options are:
  * * void: no movement or sight allowed
  * * physical: movement and sights behave like in the real world
+ *
+ * \ingroup PropertyClasses
  */
 class DomainProperty: public Property<std::string> {
     public:
@@ -41,17 +43,20 @@ class DomainProperty: public Property<std::string> {
         static const std::string property_atlastype;
 
         explicit DomainProperty();
-        explicit DomainProperty(const DomainProperty& rhs);
 
-        virtual void install(LocatedEntity *, const std::string &);
-        virtual void remove(LocatedEntity *, const std::string &);
-        virtual DomainProperty * copy() const;
+        DomainProperty(const DomainProperty& rhs);
 
-        virtual void apply(LocatedEntity *);
+        void install(LocatedEntity *, const std::string &) override;
+
+        void remove(LocatedEntity *, const std::string &) override;
+
+        DomainProperty * copy() const override;
+
+        void apply(LocatedEntity *) override;
 
         Domain* getDomain(const LocatedEntity *) const;
 
-        HandlerResult operation(LocatedEntity * e, const Operation & op, OpVector & res);
+        HandlerResult operation(LocatedEntity * e, const Operation & op, OpVector & res) override;
 
     private:
 

@@ -21,9 +21,11 @@
 #include "common/Property.h"
 
 /**
- * Density property updates the mass automatically when the size of the entity changes.
+ * \brief Density property updates the mass automatically when the size of the entity changes.
  *
  * Density is expressed as kg/m3.
+ *
+ * \ingroup PropertyClasses
  */
 class DensityProperty: public Property<double>
 {
@@ -32,8 +34,9 @@ class DensityProperty: public Property<double>
         static const std::string property_name;
         static const std::string property_atlastype;
 
-        virtual void apply(LocatedEntity *);
-        virtual DensityProperty * copy() const;
+        void apply(LocatedEntity *) override;
+
+        DensityProperty * copy() const override;
 
         void updateMass(LocatedEntity *entity) const;
 

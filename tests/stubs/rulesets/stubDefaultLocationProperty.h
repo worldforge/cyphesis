@@ -26,7 +26,7 @@
 
 #ifndef STUB_DefaultLocationProperty_install
 //#define STUB_DefaultLocationProperty_install
-  void DefaultLocationProperty::install(LocatedEntity *, const std::string &)
+  void DefaultLocationProperty::install(LocatedEntity*, const std::string&)
   {
     
   }
@@ -34,7 +34,7 @@
 
 #ifndef STUB_DefaultLocationProperty_remove
 //#define STUB_DefaultLocationProperty_remove
-  void DefaultLocationProperty::remove(LocatedEntity *, const std::string &)
+  void DefaultLocationProperty::remove(LocatedEntity*, const std::string&)
   {
     
   }

@@ -22,8 +22,9 @@
 #include <wfmath/vector.h>
 
 /**
- * Angular factor property determines how much the entity is allows angular movement.
+ * \brief Angular factor property determines how much the entity is allows angular movement.
  * It's normalized, with 0 being no movement, and 1 being full movement.
+ * \ingroup PropertyClasses
  */
 class AngularFactorProperty: public PropertyBase
 {
@@ -34,15 +35,18 @@ class AngularFactorProperty: public PropertyBase
         static const std::string property_name;
         static const std::string property_atlastype;
 
-        virtual AngularFactorProperty * copy() const;
+        AngularFactorProperty * copy() const override;
 
         const WFMath::Vector<3> & data() const { return m_data; }
         WFMath::Vector<3> & data() { return m_data; }
 
-        virtual int get(Atlas::Message::Element & val) const;
-        virtual void set(const Atlas::Message::Element & val);
-        virtual void add(const std::string & key, Atlas::Message::MapType & map) const;
-        virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
+        int get(Atlas::Message::Element & val) const override;
+
+        void set(const Atlas::Message::Element & val) override;
+
+        void add(const std::string & key, Atlas::Message::MapType & map) const override;
+
+        void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const override;
 };
 
 #endif // RULESETS_ANGULARFACTOR_PROPERTY_H

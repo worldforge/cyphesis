@@ -7,15 +7,6 @@
 #ifndef STUB_RULESETS_LIMBOPROPERTY_H
 #define STUB_RULESETS_LIMBOPROPERTY_H
 
-#ifndef STUB_LimboProperty_LimboProperty
-//#define STUB_LimboProperty_LimboProperty
-   LimboProperty::LimboProperty()
-    : Property()
-  {
-    
-  }
-#endif //STUB_LimboProperty_LimboProperty
-
 #ifndef STUB_LimboProperty_copy
 //#define STUB_LimboProperty_copy
   LimboProperty* LimboProperty::copy() const

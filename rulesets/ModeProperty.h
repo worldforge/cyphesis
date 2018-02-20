@@ -20,6 +20,14 @@
 
 #include "common/Property.h"
 
+/**
+ * \brief Defines the physical mode of the entity.
+ *
+ * The "mode" determines how the entity interacts with other entities.
+ * For entities that shouldn't be moved, use "planted" or "fixed".
+ * For entities that should react to physics, use "free".
+ * \ingroup PropertyClasses
+ */
 class ModeProperty : public Property<std::string> {
     public:
 

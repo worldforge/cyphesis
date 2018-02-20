@@ -9,7 +9,7 @@
 
 #ifndef STUB_DecaysProperty_install
 //#define STUB_DecaysProperty_install
-  void DecaysProperty::install(LocatedEntity *, const std::string &)
+  void DecaysProperty::install(LocatedEntity*, const std::string&)
   {
     
   }
@@ -17,7 +17,7 @@
 
 #ifndef STUB_DecaysProperty_remove
 //#define STUB_DecaysProperty_remove
-  void DecaysProperty::remove(LocatedEntity *, const std::string &)
+  void DecaysProperty::remove(LocatedEntity*, const std::string&)
   {
     
   }
@@ -25,7 +25,7 @@
 
 #ifndef STUB_DecaysProperty_operation
 //#define STUB_DecaysProperty_operation
-  HandlerResult DecaysProperty::operation(LocatedEntity *, const Operation &, OpVector &)
+  HandlerResult DecaysProperty::operation(LocatedEntity*, const Operation&, OpVector&)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }
@@ -41,7 +41,7 @@
 
 #ifndef STUB_DecaysProperty_del_handler
 //#define STUB_DecaysProperty_del_handler
-  HandlerResult DecaysProperty::del_handler(LocatedEntity * e, const Operation &, OpVector & res)
+  HandlerResult DecaysProperty::del_handler(LocatedEntity* e, const Operation&, OpVector& res)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }

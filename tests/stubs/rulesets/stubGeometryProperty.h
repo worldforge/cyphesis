@@ -39,6 +39,14 @@
   }
 #endif //STUB_GeometryProperty_createShape
 
+#ifndef STUB_GeometryProperty_calculateLocalInertia
+//#define STUB_GeometryProperty_calculateLocalInertia
+  void GeometryProperty::calculateLocalInertia(btCollisionShape* shape, float mass, btVector3& inertia) const
+  {
+    
+  }
+#endif //STUB_GeometryProperty_calculateLocalInertia
+
 #ifndef STUB_GeometryProperty_buildMeshCreator
 //#define STUB_GeometryProperty_buildMeshCreator
   void GeometryProperty::buildMeshCreator(std::shared_ptr<OgreMeshDeserializer> meshDeserializer)

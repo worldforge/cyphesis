@@ -21,19 +21,26 @@
 
 #include "common/Property.h"
 
+/**
+ * \brief Keeps track of the current biomass of living creatures.
+ * \ingroup PropertyClasses
+ */
 class BiomassProperty : public Property<double>
 {
-  public:
-    virtual void install(LocatedEntity *, const std::string &);
-    virtual void remove(LocatedEntity *, const std::string &);
-    virtual HandlerResult operation(LocatedEntity *,
-                                    const Operation &,
-                                    OpVector &);
-    virtual BiomassProperty * copy() const;
+    public:
+        void install(LocatedEntity*, const std::string&) override;
 
-    HandlerResult eat_handler(LocatedEntity * e,
-                              const Operation & op,
-                              OpVector & res);
+        void remove(LocatedEntity*, const std::string&) override;
+
+        HandlerResult operation(LocatedEntity*,
+                                const Operation&,
+                                OpVector&) override;
+
+        BiomassProperty* copy() const override;
+
+        HandlerResult eat_handler(LocatedEntity* e,
+                                  const Operation& op,
+                                  OpVector& res);
 
 };
 

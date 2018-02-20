@@ -20,14 +20,20 @@
 
 #include "common/Property.h"
 
-class DefaultLocationProperty : public Property<int> {
-  public:
-    DefaultLocationProperty();
+/**
+ * \brief The entity on which this is set is designated the "default location" when entities enter the world.
+ * \ingroup PropertyClasses
+ */
+class DefaultLocationProperty : public Property<int>
+{
+    public:
+        DefaultLocationProperty();
 
-    virtual DefaultLocationProperty * copy() const;
+        DefaultLocationProperty* copy() const override;
 
-    virtual void install(LocatedEntity *, const std::string &);
-    virtual void remove(LocatedEntity *, const std::string &);
+        void install(LocatedEntity*, const std::string&) override;
+
+        void remove(LocatedEntity*, const std::string&) override;
 };
 
 #endif /* DEFAULTLOCATIONPROPERTY_H_ */

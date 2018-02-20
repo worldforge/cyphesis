@@ -7,15 +7,6 @@
 #ifndef STUB_RULESETS_STATUSPROPERTY_H
 #define STUB_RULESETS_STATUSPROPERTY_H
 
-#ifndef STUB_StatusProperty_StatusProperty
-//#define STUB_StatusProperty_StatusProperty
-   StatusProperty::StatusProperty()
-    : Property()
-  {
-    
-  }
-#endif //STUB_StatusProperty_StatusProperty
-
 #ifndef STUB_StatusProperty_copy
 //#define STUB_StatusProperty_copy
   StatusProperty* StatusProperty::copy() const

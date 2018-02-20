@@ -27,10 +27,6 @@ using Atlas::Message::Element;
 using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Entity::Anonymous;
 
-StatusProperty::StatusProperty()
-{
-}
-
 StatusProperty * StatusProperty::copy() const
 {
     return new StatusProperty(*this);

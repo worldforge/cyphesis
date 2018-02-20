@@ -25,20 +25,28 @@
 
 /// \brief Class to handle an Entity property that references another entity
 /// \ingroup PropertyClasses
-class EntityProperty : public PropertyBase {
-  protected:
-    EntityRef m_data;
-  public:
-    explicit EntityProperty();
+class EntityProperty : public PropertyBase
+{
+    protected:
+        EntityRef m_data;
+    public:
+        explicit EntityProperty();
 
-    EntityRef & data() { return m_data; }
-    const EntityRef & data() const { return m_data; }
+        EntityRef& data()
+        { return m_data; }
 
-    virtual int get(Atlas::Message::Element & val) const;
-    virtual void set(const Atlas::Message::Element & val);
-    virtual void add(const std::string & val, Atlas::Message::MapType & map) const;
-    virtual void add(const std::string & val, const Atlas::Objects::Entity::RootEntity & ent) const;
-    virtual EntityProperty * copy() const;
+        const EntityRef& data() const
+        { return m_data; }
+
+        int get(Atlas::Message::Element& val) const override;
+
+        void set(const Atlas::Message::Element& val) override;
+
+        void add(const std::string& val, Atlas::Message::MapType& map) const override;
+
+        void add(const std::string& val, const Atlas::Objects::Entity::RootEntity& ent) const override;
+
+        EntityProperty* copy() const override;
 };
 
 #endif // RULESETS_ENTITY_PROPERTY_H

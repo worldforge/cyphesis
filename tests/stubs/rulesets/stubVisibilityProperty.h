@@ -7,23 +7,6 @@
 #ifndef STUB_RULESETS_VISIBILITYPROPERTY_H
 #define STUB_RULESETS_VISIBILITYPROPERTY_H
 
-#ifndef STUB_VisibilityProperty_VisibilityProperty
-//#define STUB_VisibilityProperty_VisibilityProperty
-   VisibilityProperty::VisibilityProperty()
-    : Property()
-  {
-    
-  }
-#endif //STUB_VisibilityProperty_VisibilityProperty
-
-#ifndef STUB_VisibilityProperty_VisibilityProperty_DTOR
-//#define STUB_VisibilityProperty_VisibilityProperty_DTOR
-   VisibilityProperty::~VisibilityProperty()
-  {
-    
-  }
-#endif //STUB_VisibilityProperty_VisibilityProperty_DTOR
-
 #ifndef STUB_VisibilityProperty_copy
 //#define STUB_VisibilityProperty_copy
   VisibilityProperty* VisibilityProperty::copy() const
@@ -34,7 +17,7 @@
 
 #ifndef STUB_VisibilityProperty_apply
 //#define STUB_VisibilityProperty_apply
-  void VisibilityProperty::apply(LocatedEntity *)
+  void VisibilityProperty::apply(LocatedEntity*)
   {
     
   }

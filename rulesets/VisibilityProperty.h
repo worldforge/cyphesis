@@ -21,16 +21,19 @@
 
 #include "common/Property.h"
 
-/// \brief Class to handle assigning a mind object to an entity
+/// \brief Allows overriding the default visibility calculations.
+
 /// \ingroup PropertyClasses
-class VisibilityProperty : public Property<float> {
-  public:
-    VisibilityProperty();
-    virtual ~VisibilityProperty();
+class VisibilityProperty : public Property<float>
+{
+    public:
+        VisibilityProperty() = default;
 
-    virtual VisibilityProperty * copy() const;
+        virtual ~VisibilityProperty() = default;
 
-    virtual void apply(LocatedEntity *);
+        VisibilityProperty* copy() const override;
+
+        void apply(LocatedEntity*) override;
 };
 
 #endif // RULESETS_VISIBILITY_PROPERTY_H

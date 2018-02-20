@@ -18,7 +18,7 @@
 
 #ifndef STUB_EntityProperty_get
 //#define STUB_EntityProperty_get
-  int EntityProperty::get(Atlas::Message::Element & val) const
+  int EntityProperty::get(Atlas::Message::Element& val) const
   {
     return 0;
   }
@@ -26,7 +26,7 @@
 
 #ifndef STUB_EntityProperty_set
 //#define STUB_EntityProperty_set
-  void EntityProperty::set(const Atlas::Message::Element & val)
+  void EntityProperty::set(const Atlas::Message::Element& val)
   {
     
   }
@@ -34,7 +34,7 @@
 
 #ifndef STUB_EntityProperty_add
 //#define STUB_EntityProperty_add
-  void EntityProperty::add(const std::string & val, Atlas::Message::MapType & map) const
+  void EntityProperty::add(const std::string& val, Atlas::Message::MapType& map) const
   {
     
   }
@@ -42,7 +42,7 @@
 
 #ifndef STUB_EntityProperty_add
 //#define STUB_EntityProperty_add
-  void EntityProperty::add(const std::string & val, const Atlas::Objects::Entity::RootEntity & ent) const
+  void EntityProperty::add(const std::string& val, const Atlas::Objects::Entity::RootEntity& ent) const
   {
     
   }

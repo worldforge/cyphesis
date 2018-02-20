@@ -9,7 +9,7 @@
 
 #ifndef STUB_BiomassProperty_install
 //#define STUB_BiomassProperty_install
-  void BiomassProperty::install(LocatedEntity *, const std::string &)
+  void BiomassProperty::install(LocatedEntity*, const std::string&)
   {
     
   }
@@ -17,7 +17,7 @@
 
 #ifndef STUB_BiomassProperty_remove
 //#define STUB_BiomassProperty_remove
-  void BiomassProperty::remove(LocatedEntity *, const std::string &)
+  void BiomassProperty::remove(LocatedEntity*, const std::string&)
   {
     
   }
@@ -25,7 +25,7 @@
 
 #ifndef STUB_BiomassProperty_operation
 //#define STUB_BiomassProperty_operation
-  HandlerResult BiomassProperty::operation(LocatedEntity *, const Operation &, OpVector &)
+  HandlerResult BiomassProperty::operation(LocatedEntity*, const Operation&, OpVector&)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }
@@ -41,7 +41,7 @@
 
 #ifndef STUB_BiomassProperty_eat_handler
 //#define STUB_BiomassProperty_eat_handler
-  HandlerResult BiomassProperty::eat_handler(LocatedEntity * e, const Operation & op, OpVector & res)
+  HandlerResult BiomassProperty::eat_handler(LocatedEntity* e, const Operation& op, OpVector& res)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }

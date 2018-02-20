@@ -21,19 +21,26 @@
 
 #include "common/Property.h"
 
+/**
+ * \brief Specifies how fast an entity burns.
+ * \ingroup PropertyClasses
+ */
 class BurnSpeedProperty : public Property<double>
 {
-  public:
-    virtual void install(LocatedEntity *, const std::string &);
-    virtual void remove(LocatedEntity *, const std::string &);
-    virtual HandlerResult operation(LocatedEntity *,
-                                    const Operation &,
-                                    OpVector &);
-    virtual BurnSpeedProperty * copy() const;
+    public:
+        void install(LocatedEntity*, const std::string&) override;
 
-    HandlerResult burn_handler(LocatedEntity * e,
-                               const Operation & op,
-                               OpVector & res);
+        void remove(LocatedEntity*, const std::string&) override;
+
+        HandlerResult operation(LocatedEntity*,
+                                const Operation&,
+                                OpVector&) override;
+
+        BurnSpeedProperty* copy() const override;
+
+        HandlerResult burn_handler(LocatedEntity* e,
+                                   const Operation& op,
+                                   OpVector& res);
 };
 
 #endif // RULESETS_BURN_SPEED_PROPERTY_H

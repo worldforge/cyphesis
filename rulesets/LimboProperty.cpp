@@ -22,10 +22,6 @@
 #include "LimboProperty.h"
 #include "common/BaseWorld.h"
 
-LimboProperty::LimboProperty()
-{
-}
-
 LimboProperty * LimboProperty::copy() const
 {
     return new LimboProperty(*this);

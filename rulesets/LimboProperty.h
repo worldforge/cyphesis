@@ -21,19 +21,23 @@
 #include "common/Property.h"
 
 /**
- * When put on an entity, marks that entity as "limbo", i.e. place where non-controlled characters
+ * \brief When put on an entity, marks that entity as "limbo".
+ *
+ * I.e. place where non-controlled characters
  * are put when they die. When the characters then again becomes controlled they will be moved
  * from limbo to their respawn point.
+ *
+ * \ingroup PropertyClasses
  */
 class LimboProperty : public Property<int>
 {
     public:
-        LimboProperty();
 
-      virtual LimboProperty * copy() const;
+        LimboProperty * copy() const override;
 
-      virtual void install(LocatedEntity *, const std::string &);
-      virtual void remove(LocatedEntity *, const std::string &);
+        void install(LocatedEntity *, const std::string &) override;
+
+        void remove(LocatedEntity *, const std::string &) override;
 };
 
 #endif /* LIMBOPROPERTY_H_ */

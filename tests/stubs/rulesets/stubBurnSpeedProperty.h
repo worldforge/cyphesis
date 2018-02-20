@@ -9,7 +9,7 @@
 
 #ifndef STUB_BurnSpeedProperty_install
 //#define STUB_BurnSpeedProperty_install
-  void BurnSpeedProperty::install(LocatedEntity *, const std::string &)
+  void BurnSpeedProperty::install(LocatedEntity*, const std::string&)
   {
     
   }
@@ -17,7 +17,7 @@
 
 #ifndef STUB_BurnSpeedProperty_remove
 //#define STUB_BurnSpeedProperty_remove
-  void BurnSpeedProperty::remove(LocatedEntity *, const std::string &)
+  void BurnSpeedProperty::remove(LocatedEntity*, const std::string&)
   {
     
   }
@@ -25,7 +25,7 @@
 
 #ifndef STUB_BurnSpeedProperty_operation
 //#define STUB_BurnSpeedProperty_operation
-  HandlerResult BurnSpeedProperty::operation(LocatedEntity *, const Operation &, OpVector &)
+  HandlerResult BurnSpeedProperty::operation(LocatedEntity*, const Operation&, OpVector&)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }
@@ -41,7 +41,7 @@
 
 #ifndef STUB_BurnSpeedProperty_burn_handler
 //#define STUB_BurnSpeedProperty_burn_handler
-  HandlerResult BurnSpeedProperty::burn_handler(LocatedEntity * e, const Operation & op, OpVector & res)
+  HandlerResult BurnSpeedProperty::burn_handler(LocatedEntity* e, const Operation& op, OpVector& res)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }

@@ -803,14 +803,6 @@ void MindProperty::apply(LocatedEntity * ent)
 {
 }
 
-VisibilityProperty::VisibilityProperty()
-{
-}
-
-VisibilityProperty::~VisibilityProperty()
-{
-}
-
 VisibilityProperty * VisibilityProperty::copy() const
 {
     return 0;

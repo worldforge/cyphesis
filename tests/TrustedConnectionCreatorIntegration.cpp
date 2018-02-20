@@ -816,10 +816,6 @@ ContainsProperty * ContainsProperty::copy() const
     return 0;
 }
 
-StatusProperty::StatusProperty()
-{
-}
-
 StatusProperty * StatusProperty::copy() const
 {
     return 0;

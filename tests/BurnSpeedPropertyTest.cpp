@@ -61,10 +61,6 @@ int NOURISH_NO = -1;
 int UPDATE_NO = -1;
 } } }
 
-StatusProperty::StatusProperty()
-{
-}
-
 StatusProperty * StatusProperty::copy() const
 {
     return 0;

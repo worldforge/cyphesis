@@ -797,10 +797,6 @@ ContainsProperty * ContainsProperty::copy() const
     return 0;
 }
 
-StatusProperty::StatusProperty()
-{
-}
-
 StatusProperty * StatusProperty::copy() const
 {
     return 0;
@@ -901,14 +897,6 @@ MindProperty * MindProperty::copy() const
 }
 
 void MindProperty::apply(LocatedEntity * ent)
-{
-}
-
-VisibilityProperty::VisibilityProperty()
-{
-}
-
-VisibilityProperty::~VisibilityProperty()
 {
 }
 
