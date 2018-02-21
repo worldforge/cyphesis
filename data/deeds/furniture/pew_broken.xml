@@ -1,26 +1,21 @@
 <atlas>
-
     <map>
         <map name="attributes">
             <map name="geometry">
                 <map name="default">
-                    <string name="path">dural/structures/jetty/model/jetty_run_a.mesh</string>
+                    <string name="path">dural/structures/cathedral_pew/model/pew_broken.mesh</string>
                     <string name="type">mesh</string>
                 </map>
                 <string name="visibility">public</string>
             </map>
             <map name="present">
-                <string name="default">dural/structures/jetty/model/jetty_run_a.mesh</string>
-                <string name="visibility">public</string>
-            </map>
-            <map name="name">
-                <string name="default">jetty</string>
+                <string name="default">dural/structures/cathedral_pew/model/pew_broken.mesh</string>
                 <string name="visibility">public</string>
             </map>
         </map>
-        <string name="id">jetty_run_a</string>
+        <string name="id">pew_broken</string>
         <string name="objtype">class</string>
-        <string name="parent">structure</string>
+        <string name="parent">thing</string>
     </map>
 
 </atlas>

@@ -9,7 +9,7 @@
                 <string name="visibility">public</string>
             </map>
             <map name="present">
-                <string name="default">dural/creatures/biped/skeleton/skeleton.model</string>
+                <string name="default">dural/creatures/biped/skeleton/skeleton.modeldef</string>
                 <string name="visibility">public</string>
             </map>
         </map>

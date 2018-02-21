@@ -4,21 +4,17 @@
         <map name="attributes">
             <map name="geometry">
                 <map name="default">
-                    <string name="path">dural/structures/jetty/model/jetty_run_a.mesh</string>
+                    <string name="path">dural/structures/forge_pit/model/forge_pit.mesh</string>
                     <string name="type">mesh</string>
                 </map>
                 <string name="visibility">public</string>
             </map>
             <map name="present">
-                <string name="default">dural/structures/jetty/model/jetty_run_a.mesh</string>
-                <string name="visibility">public</string>
-            </map>
-            <map name="name">
-                <string name="default">jetty</string>
+                <string name="default">dural/structures/forge_pit/forge_pit.modeldef</string>
                 <string name="visibility">public</string>
             </map>
         </map>
-        <string name="id">jetty_run_a</string>
+        <string name="id">forge_pit</string>
         <string name="objtype">class</string>
         <string name="parent">structure</string>
     </map>

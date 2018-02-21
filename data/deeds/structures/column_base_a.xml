@@ -1,0 +1,22 @@
+<atlas>
+
+  <map>
+    <map name="attributes">
+      <map name="geometry">
+          <map name="default">
+              <string name="type">cylinder-y</string>
+              <string name="path">dural/structures/rezpa_column_a_base/model/rezpa_column_a_base.mesh</string>
+          </map>
+        <string name="visibility">public</string>
+      </map>
+        <map name="present">
+            <string name="default">dural/structures/rezpa_column_a_base/model/rezpa_column_a_base.mesh</string>
+            <string name="visibility">public</string>
+        </map>
+    </map>
+    <string name="id">column_a_base</string>
+    <string name="objtype">class</string>
+    <string name="parent">structure</string>
+  </map>
+
+</atlas>

@@ -144,40 +144,7 @@
     <string name="parent">thing</string>
   </map>
 
-  <map>
-    <map name="attributes">
-        <map name="geometry">
-            <map name="default">
-                <string name="path">dural/structures/sharpened_log/model/sharpened_log_fir.mesh</string>
-                <string name="type">cylinder-y</string>
-            </map>
-            <string name="visibility">public</string>
-        </map>
-        <map name="present">
-            <string name="default">dural/structures/sharpened_log/model/sharpened_log_fir.mesh</string>
-            <string name="visibility">public</string>
-        </map>
-      <map name="burn_speed">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="density">
-        <float name="default">500</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="material">
-        <string name="default">wood</string>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mode">
-        <string name="default">relative</string>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">stake</string>
-    <string name="objtype">class</string>
-    <string name="parent">construction</string>
-  </map>
+
 
   <map>
     <map name="attributes">
