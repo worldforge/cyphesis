@@ -1,4 +1,4 @@
-<atlas>
+<atl    as>
     <map>
         <map name="attributes">
             <map name="geometry">
@@ -17,5 +17,6 @@
         <string name="objtype">class</string>
         <string name="parent">thing</string>
     </map>
+
 
 </atlas>

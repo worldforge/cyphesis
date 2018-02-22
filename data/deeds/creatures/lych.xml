@@ -1,6 +1,17 @@
 <atlas>
     <map>
         <map name="attributes">
+            <map name="bbox">
+                <list name="default">
+                    <float>-0.4</float>
+                    <float>0</float>
+                    <float>-0.4</float>
+                    <float>0.4</float>
+                    <float>1.8</float>
+                    <float>0.4</float>
+                </list>
+                <string name="visibility">public</string>
+            </map>
             <map name="geometry">
                 <map name="default">
                     <string name="path">dural/creatures/biped/skeleton/model/skeleton.mesh</string>

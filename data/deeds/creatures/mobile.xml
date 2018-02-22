@@ -5,17 +5,6 @@
                 <float name="default">0.3</float>
                 <string name="visibility">private</string>
             </map>
-            <map name="bbox">
-                <list name="default">
-                    <float>-0.25</float>
-                    <float>0</float>
-                    <float>-0.25</float>
-                    <float>0.25</float>
-                    <float>2</float>
-                    <float>0.25</float>
-                </list>
-                <string name="visibility">public</string>
-            </map>
             <map name="geometry">
                 <map name="default">
                     <string name="type">capsule-y</string>

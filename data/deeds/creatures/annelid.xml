@@ -1,6 +1,17 @@
 <atlas>
     <map>
         <map name="attributes">
+            <map name="bbox">
+                <list name="default">
+                    <float>-0.1</float>
+                    <float>0</float>
+                    <float>-0.1</float>
+                    <float>0.1</float>
+                    <float>0.1</float>
+                    <float>0.1</float>
+                </list>
+                <string name="visibility">public</string>
+            </map>
             <map name="biomass">
                 <float name="default">1</float>
                 <string name="visibility">public</string>
