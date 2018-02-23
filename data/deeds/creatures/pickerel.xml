@@ -1,0 +1,22 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="attributes">
+                <map name="geometry">
+                    <map name="default">
+                        <string name="path">dural/creatures/tubular/model/pickerel.mesh</string>
+                        <string name="type">capsule-z</string>
+                    </map>
+                    <string name="visibility">public</string>
+                </map>
+                <map name="present">
+                    <string name="default">dural/creatures/tubular/pickerel.modeldef</string>
+                    <string name="visibility">public</string>
+                </map>
+            </map>
+        </map>
+        <string name="id">pickerel</string>
+        <string name="objtype">class</string>
+        <string name="parent">fish</string>
+    </map>
+</atlas>

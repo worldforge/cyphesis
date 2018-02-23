@@ -1,0 +1,24 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/creatures/flying_bird/model/flying_bird.mesh</string>
+                    <string name="type">sphere</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/creatures/flying_bird/flying_bird.modeldef</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="biomass">
+                <float name="default">3</float>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">flying_bird</string>
+        <string name="objtype">class</string>
+        <string name="parent">mobile</string>
+    </map>
+</atlas>

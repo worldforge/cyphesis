@@ -1,0 +1,31 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/creatures/deer/model/deer.mesh</string>
+                    <string name="type">sphere</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/creatures/deer/deer.modeldef</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="biomass">
+                <float name="default">100</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="maxmass">
+                <float name="default">150</float>
+                <string name="visibility">private</string>
+            </map>
+            <map name="meat">
+                <string name="default">venison</string>
+            </map>
+        </map>
+        <string name="id">deer</string>
+        <string name="objtype">class</string>
+        <string name="parent">mobile</string>
+    </map>
+</atlas>

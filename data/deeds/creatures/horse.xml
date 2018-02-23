@@ -1,0 +1,24 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/creatures/quadruped_v2/model/horse.mesh</string>
+                    <string name="type">sphere</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/creatures/quadruped_v2/horse.modeldef</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="biomass">
+                <float name="default">300</float>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">horse</string>
+        <string name="objtype">class</string>
+        <string name="parent">mobile</string>
+    </map>
+</atlas>

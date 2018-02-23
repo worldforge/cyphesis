@@ -1,0 +1,28 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/creatures/quadruped/model/squirrel.mesh</string>
+                    <string name="type">sphere</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/creatures/quadruped/squirrel.modeldef</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="biomass">
+                <float name="default">1</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="maxmass">
+                <float name="default">2</float>
+                <string name="visibility">private</string>
+            </map>
+        </map>
+        <string name="id">squirrel</string>
+        <string name="objtype">class</string>
+        <string name="parent">mobile</string>
+    </map>
+</atlas>

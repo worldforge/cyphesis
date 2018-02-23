@@ -1,0 +1,33 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/creatures/chicken/model/chicken.mesh</string>
+                    <string name="type">sphere</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/creatures/chicken/chicken.entitymap</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="biomass">
+                <float name="default">3</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="plumage">
+                <string name="default">red</string>
+                <string name="visibility">public</string>
+                <list name="values">
+                    <string>red</string>
+                    <string>grey</string>
+                    <string>buzzard</string>
+                </list>
+            </map>
+        </map>
+        <string name="id">chicken</string>
+        <string name="objtype">class</string>
+        <string name="parent">mobile</string>
+    </map>
+</atlas>
