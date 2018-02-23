@@ -137,6 +137,7 @@ void EntityRuleHandler::installStandardRules()
             {"speed-flight", 15},
             {"speed-jump", 7.5},
             {"present", "dural/items/misc/flame/creator.modeldef"},
+            {"mode", "free"}
         });
 
         installEntityClass(decl->getId(), decl->getParent(), decl, dependent, reason, new EntityFactory<Creator>());

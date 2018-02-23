@@ -35,6 +35,10 @@ class ModeProperty : public Property<std::string>
         enum class Mode
         {
                 /**
+                 * This mode is used when the mode string isn't recognized.
+                 */
+                    Unknown,
+                /**
                  * Planted entities are stuck to the terrain. Their y-position is determined by the terrain at their origo.
                  * They can optionally also have an offset, specified in "planted-offset" or "planted-scaled-offset".
                  * Planted entities are not affected by physics.
@@ -58,9 +62,9 @@ class ModeProperty : public Property<std::string>
                     Free,
 
                 /**
-                 * This mode is used when the mode string isn't recognized.
+                 * Submerged entities are like Free, but are submerged in liquid (such as an ocean).
                  */
-                    Unknown
+                    Submerged
         };
 
         static const std::string property_name;

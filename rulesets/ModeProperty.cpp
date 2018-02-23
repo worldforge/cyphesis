@@ -121,6 +121,8 @@ void ModeProperty::set(const Atlas::Message::Element & val)
         m_mode = Mode::Fixed;
     } else if (m_data == "floating") {
         m_mode = Mode::Floating;
+    } else if (m_data == "submerged") {
+        m_mode = Mode::Submerged;
     } else {
         m_mode = Mode::Unknown;
     }

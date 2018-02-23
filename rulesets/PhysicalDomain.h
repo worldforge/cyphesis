@@ -139,6 +139,16 @@ class PhysicalDomain : public Domain
              */
             double speedFlight;
 
+            /**
+             * The mode of the entity, as known by the physics system.
+             */
+            ModeProperty::Mode mode;
+
+            /**
+             * Set to true if the mode has been changed in a tick, which should be communicated in a Move op.
+             */
+            bool modeChanged;
+
         };
 
         struct TerrainEntry
@@ -236,7 +246,7 @@ class PhysicalDomain : public Domain
 
         void getCollisionFlagsForEntity(const LocatedEntity& entity, short& collisionGroup, short& collisionMask) const;
 
-        void sendMoveSight(BulletEntry& bulletEntry, bool posChange, bool velocityChange, bool orientationChange, bool angularChange);
+        void sendMoveSight(BulletEntry& bulletEntry, bool posChange, bool velocityChange, bool orientationChange, bool angularChange, bool modeChanged);
 
         void processMovedEntity(BulletEntry& bulletEntry);
 

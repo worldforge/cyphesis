@@ -167,12 +167,33 @@ class PhysicalDomain::PhysicalMotionState : public btMotionState
             //            debug_print(
             //                    "setWorldTransform: "<< m_entity.describeEntity() << " (" << centerOfMassWorldTrans.getOrigin().x() << "," << centerOfMassWorldTrans.getOrigin().y() << "," << centerOfMassWorldTrans.getOrigin().z() << ")");
 
-            btTransform newTransform = m_bulletEntry.rigidBody->getCenterOfMassTransform() * m_centerOfMassOffset;
+            auto& bulletTransform = m_bulletEntry.rigidBody->getCenterOfMassTransform();
+            btTransform newTransform = bulletTransform * m_centerOfMassOffset;
 
             entity.m_location.m_pos = Convert::toWF<WFMath::Point<3>>(newTransform.getOrigin());
             entity.m_location.m_orientation = Convert::toWF(newTransform.getRotation());
             entity.m_location.m_angularVelocity = Convert::toWF<WFMath::Vector<3>>(m_bulletEntry.rigidBody->getAngularVelocity());
             entity.m_location.m_velocity = Convert::toWF<WFMath::Vector<3>>(m_bulletEntry.rigidBody->getLinearVelocity());
+
+            if (bulletTransform.getOrigin().y() <= 0) {
+                if (m_bulletEntry.mode != ModeProperty::Mode::Submerged) {
+                    m_bulletEntry.rigidBody->setGravity(btVector3(0, 0, 0));
+                    m_bulletEntry.rigidBody->setDamping(0.8, 0);
+                    m_bulletEntry.mode = ModeProperty::Mode::Submerged;
+                    auto prop = m_bulletEntry.entity->requirePropertyClassFixed<ModeProperty>("submerged");
+                    prop->set("submerged");
+                    m_bulletEntry.modeChanged = true;
+                }
+            } else {
+                if (m_bulletEntry.mode == ModeProperty::Mode::Submerged) {
+                    m_bulletEntry.rigidBody->setGravity(m_domain.m_dynamicsWorld->getGravity());
+                    m_bulletEntry.rigidBody->setDamping(0, 0);
+                    m_bulletEntry.mode = ModeProperty::Mode::Free;
+                    auto prop = m_bulletEntry.entity->requirePropertyClassFixed<ModeProperty>("free");
+                    prop->set("free");
+                    m_bulletEntry.modeChanged = true;
+                }
+            }
 
             //If the magnitude is small enough, consider the velocity to be zero.
             if (entity.m_location.m_velocity.sqrMag() < 0.001f) {
@@ -244,12 +265,17 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
             float verticalVelocity = entry.second.bulletEntry->rigidBody->getLinearVelocity().y();
 
             //TODO: check if we're on the ground, in the water or flying and apply different speed modifiers
-            double speed = entry.second.bulletEntry->speedGround;
+            double speed;
+            if (entry.second.bulletEntry->mode == ModeProperty::Mode::Submerged || entry.second.bulletEntry->mode == ModeProperty::Mode::Floating) {
+                speed  = entry.second.bulletEntry->speedWater;
+            } else {
+                speed  = entry.second.bulletEntry->speedGround;
+            }
             btVector3 finalSpeed = entry.second.velocity * speed;
 
             //Apply gravity
             if (verticalVelocity != 0) {
-                verticalVelocity += world->getGravity().y() * timeStep;
+                verticalVelocity += entry.second.bulletEntry->rigidBody->getGravity().y() * timeStep;
                 entry.second.bulletEntry->rigidBody->setLinearVelocity(finalSpeed + btVector3(0, verticalVelocity, 0));
             } else {
                 entry.second.bulletEntry->rigidBody->setLinearVelocity(finalSpeed);
@@ -479,7 +505,7 @@ class PhysicalDomain::VisibilityCallback : public btCollisionWorld::ContactResul
         std::set<BulletEntry*> m_entries;
 
         btScalar addSingleResult(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap,
-                                         int partId1, int index1) override
+                                 int partId1, int index1) override
         {
             BulletEntry* bulletEntry = static_cast<BulletEntry*>(colObj1Wrap->m_collisionObject->getUserPointer());
             if (bulletEntry) {
@@ -670,6 +696,9 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     if (modeProp) {
         mode = modeProp->getMode();
     }
+
+    entry->modeChanged = false;
+    entry->mode = mode;
 
     if (mode == ModeProperty::Mode::Planted || mode == ModeProperty::Mode::Fixed || mode == ModeProperty::Mode::Floating) {
         //"fixed" mode means that the entity stays in place, always
@@ -931,37 +960,42 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
 
         if (bulletEntry->rigidBody) {
             ModeProperty* modeProp = dynamic_cast<ModeProperty*>(&prop);
+            if (modeProp->getMode() != bulletEntry->mode) {
+                applyNewPositionForEntity(bulletEntry, bulletEntry->entity->m_location.m_pos);
 
-            applyNewPositionForEntity(bulletEntry, bulletEntry->entity->m_location.m_pos);
+                //When altering mass we need to first remove and then re-add the body, for some reason.
+                m_dynamicsWorld->removeRigidBody(bulletEntry->rigidBody);
 
-            //When altering mass we need to first remove and then re-add the body, for some reason.
-            m_dynamicsWorld->removeRigidBody(bulletEntry->rigidBody);
+                float mass = 0;
+                if (modeProp->getMode() == ModeProperty::Mode::Planted || modeProp->getMode() == ModeProperty::Mode::Fixed) {
+                    //"fixed" mode means that the entity stays in place, always
+                    //"planted" mode means it's planted in the ground
+                    //Zero mass makes the rigid body static
+                    bulletEntry->rigidBody->setMassProps(0, btVector3(0, 0, 0));
+                    updateTerrainMod(*bulletEntry->entity);
+                } else {
+                    mass = getMassForEntity(*bulletEntry->entity);
+                    btVector3 inertia;
+                    bulletEntry->collisionShape->calculateLocalInertia(mass, inertia);
 
-            float mass = 0;
-            if (modeProp->getMode() == ModeProperty::Mode::Planted || modeProp->getMode() == ModeProperty::Mode::Fixed) {
-                //"fixed" mode means that the entity stays in place, always
-                //"planted" mode means it's planted in the ground
-                //Zero mass makes the rigid body static
-                bulletEntry->rigidBody->setMassProps(0, btVector3(0, 0, 0));
-                updateTerrainMod(*bulletEntry->entity);
-            } else {
-                mass = getMassForEntity(*bulletEntry->entity);
-                btVector3 inertia;
-                bulletEntry->collisionShape->calculateLocalInertia(mass, inertia);
+                    bulletEntry->rigidBody->setMassProps(mass, inertia);
 
-                bulletEntry->rigidBody->setMassProps(mass, inertia);
+                }
 
+                short collisionMask;
+                short collisionGroup;
+                getCollisionFlagsForEntity(*bulletEntry->entity, collisionGroup, collisionMask);
+
+                m_dynamicsWorld->addRigidBody(bulletEntry->rigidBody, collisionGroup, collisionMask);
+
+                bulletEntry->rigidBody->activate();
+
+                m_movingEntities.insert(bulletEntry);
+
+                bulletEntry->mode = modeProp->getMode();
             }
 
-            short collisionMask;
-            short collisionGroup;
-            getCollisionFlagsForEntity(*bulletEntry->entity, collisionGroup, collisionMask);
 
-            m_dynamicsWorld->addRigidBody(bulletEntry->rigidBody, collisionGroup, collisionMask);
-
-            bulletEntry->rigidBody->activate();
-
-            m_movingEntities.insert(bulletEntry);
             //sendMoveSight(*bulletEntry);
         }
         return;
@@ -1333,6 +1367,10 @@ void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& 
                 bodyVelocity.setX(0);
                 bodyVelocity.setZ(0);
 
+                if (entry.rigidBody->getCenterOfMassPosition().y() <= 0) {
+                    bodyVelocity.setY(0);
+                }
+
                 entry.rigidBody->setLinearVelocity(bodyVelocity);
                 double friction = 1.0; //Default to 1 if no "friction" prop is present.
                 auto frictionProp = entity->getPropertyType<double>("friction");
@@ -1475,7 +1513,7 @@ void PhysicalDomain::processDirtyTerrainAreas()
     }
 }
 
-void PhysicalDomain::sendMoveSight(BulletEntry& entry, bool posChange, bool velocityChange, bool orientationChange, bool angularChange)
+void PhysicalDomain::sendMoveSight(BulletEntry& entry, bool posChange, bool velocityChange, bool orientationChange, bool angularChange, bool modeChange)
 {
 
     LocatedEntity& entity = *entry.entity;
@@ -1503,6 +1541,16 @@ void PhysicalDomain::sendMoveSight(BulletEntry& entry, bool posChange, bool velo
             ::addToEntity(entity.m_location.pos(), move_arg->modifyPos());
             shouldSendOp = true;
             lastSentLocation.m_pos = entity.m_location.m_pos;
+        }
+        if (modeChange) {
+            auto prop = entity.getPropertyClassFixed<ModeProperty>();
+            if (prop) {
+                Atlas::Message::Element element;
+                if (prop->get(element) == 0) {
+                    move_arg->setAttr("mode", element);
+                    shouldSendOp = true;
+                }
+            }
         }
 
         if (shouldSendOp) {
@@ -1551,7 +1599,7 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry)
 
 
     if (false) {
-        sendMoveSight(bulletEntry, true, true, true, true);
+        sendMoveSight(bulletEntry, true, true, true, true, true);
     } else {
 
         bool velocityChange = false;
@@ -1590,9 +1638,11 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry)
                 lastSentLocation.m_angularVelocity = entity.m_location.m_angularVelocity;
             }
         }
-        if (velocityChange || orientationChange || angularChange) {
-            sendMoveSight(bulletEntry, true, velocityChange, orientationChange, angularChange);
+
+        if (velocityChange || orientationChange || angularChange || bulletEntry.modeChanged) {
+            sendMoveSight(bulletEntry, true, velocityChange, orientationChange, angularChange, bulletEntry.modeChanged);
             lastSentLocation.m_pos = entity.m_location.m_pos;
+            bulletEntry.modeChanged = false;
         }
 
     }
