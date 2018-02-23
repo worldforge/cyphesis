@@ -671,7 +671,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         mode = modeProp->getMode();
     }
 
-    if (mode == ModeProperty::Mode::Planted || mode == ModeProperty::Mode::Fixed) {
+    if (mode == ModeProperty::Mode::Planted || mode == ModeProperty::Mode::Fixed || mode == ModeProperty::Mode::Floating) {
         //"fixed" mode means that the entity stays in place, always
         //"planted" mode means it's planted in the ground
         //Zero mass makes the rigid body static
@@ -1116,7 +1116,9 @@ void PhysicalDomain::getCollisionFlagsForEntity(const LocatedEntity& entity, sho
     //The "mask" defines the other kind of object this body will react with.
 
     auto modeProp = entity.getPropertyClassFixed<ModeProperty>();
-    if (modeProp && (modeProp->getMode() == ModeProperty::Mode::Fixed || modeProp->getMode() == ModeProperty::Mode::Planted)) {
+    if (modeProp && (modeProp->getMode() == ModeProperty::Mode::Fixed
+                     || modeProp->getMode() == ModeProperty::Mode::Planted
+                     || modeProp->getMode() == ModeProperty::Mode::Floating)) {
         if (entity.m_location.isSolid()) {
             collisionGroup = COLLISION_MASK_STATIC;
             //Planted and fixed entities shouldn't collide with anything themselves.
@@ -1182,10 +1184,21 @@ void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, Located
             //For free entities we only want to clamp to terrain if the entity is below it
             pos.y() = std::max(pos.y(), h);
         }
-    } else if (mode != ModeProperty::Mode::Fixed) {
+    } else if (mode == ModeProperty::Mode::Free) {
         float h = pos.y();
         getTerrainHeight(pos.x(), pos.z(), h);
         pos.y() = h;
+    } else if (mode == ModeProperty::Mode::Floating) {
+        float h = pos.y();
+        getTerrainHeight(pos.x(), pos.z(), h);
+        //Check if the current terrain is above water level
+        if (h > 0) {
+            pos.y() = h;
+        } else {
+            pos.y() = 0;
+        }
+    } else if (mode == ModeProperty::Mode::Fixed) {
+        //Don't do anything to adjust height
     } else {
         log(WARNING, "Unknown mode for entity " + entity.describeEntity());
     }

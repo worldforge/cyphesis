@@ -28,49 +28,59 @@
  * For entities that should react to physics, use "free".
  * \ingroup PropertyClasses
  */
-class ModeProperty : public Property<std::string> {
+class ModeProperty : public Property<std::string>
+{
     public:
 
-        enum class Mode {
-            /**
-             * Planted entities are stuck to the terrain. Their y-position is determined by the terrain at their origo.
-             * They can optionally also have an offset, specified in "planted-offset" or "planted-scaled-offset".
-             * Planted entities are not affected by physics.
-             */
-            Planted,
+        enum class Mode
+        {
+                /**
+                 * Planted entities are stuck to the terrain. Their y-position is determined by the terrain at their origo.
+                 * They can optionally also have an offset, specified in "planted-offset" or "planted-scaled-offset".
+                 * Planted entities are not affected by physics.
+                 */
+                    Planted,
 
-            /**
-             * Fixed entities are fixed in the world. They are not affected by terrain.
-             * Fixed entities are not affected by physics.
-             */
-            Fixed,
+                /**
+                 * Floating entities behave like planted, with the difference that they float on top of any body of water.
+                 */
+                    Floating,
 
-            /**
-             * Free entities are handled by the physics engine.
-             */
-            Free,
+                /**
+                 * Fixed entities are fixed in the world. They are not affected by terrain.
+                 * Fixed entities are not affected by physics.
+                 */
+                    Fixed,
 
-            /**
-             * This mode is used when the mode string isn't recognized.
-             */
-            Unknown
+                /**
+                 * Free entities are handled by the physics engine.
+                 */
+                    Free,
+
+                /**
+                 * This mode is used when the mode string isn't recognized.
+                 */
+                    Unknown
         };
 
         static const std::string property_name;
         static const std::string property_atlastype;
 
         ModeProperty();
+
         ~ModeProperty() override = default;
 
-        void apply(LocatedEntity *) override;
+        void apply(LocatedEntity*) override;
 
-        ModeProperty * copy() const override;
+        ModeProperty* copy() const override;
 
-        void set(const Atlas::Message::Element & val) override;
+        void set(const Atlas::Message::Element& val) override;
 
-        Mode getMode() const {
+        Mode getMode() const
+        {
             return m_mode;
         }
+
     private:
         Mode m_mode;
 
