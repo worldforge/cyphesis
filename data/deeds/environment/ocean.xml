@@ -5,18 +5,23 @@
                 <string name="default">fixed</string>
                 <string name="visibility">public</string>
             </map>
-            <map name="solid">
-                <int name="default">0</int>
-                <string name="visibility">public</string>
-            </map>
             <map name="present">
                 <string name="default">dural/environment/ocean.entitymap</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="water_body">
+                <int name="default">1</int>
+                <string name="visibility">public</string>
+            </map>
+            <map name="visibility">
+                <float name="default">1000000</float>
                 <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">ocean</string>
         <string name="objtype">class</string>
         <string name="parent">thing</string>
+        <string name="description">An infinitely large body of water. There should only be at most one ocean per domain.</string>
     </map>
 
 </atlas>

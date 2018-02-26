@@ -215,6 +215,10 @@ CorePropertyManager::CorePropertyManager()
      */
     installProperty<Property<double>>("speed-jump", "float");
 
+    /**
+     * If set to 1 the entity is a body of water, i.e. either an Ocean (if no bbox) or a lake/pond (if a bbox).
+     */
+    installProperty<Property<int>>("water_body", "int");
 
 }
 

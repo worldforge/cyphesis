@@ -107,7 +107,7 @@ class PhysicalDomain : public Domain
             LocatedEntity* entity = nullptr;
             btCollisionShape* collisionShape = nullptr;
             std::shared_ptr<btCollisionShape> backingShape;
-            btRigidBody* rigidBody = nullptr;
+            btCollisionObject* collisionObject = nullptr;
             sigc::connection propertyUpdatedConnection;
             Location lastSentLocation;
             PhysicalMotionState* motionState = nullptr;
@@ -162,6 +162,10 @@ class PhysicalDomain : public Domain
         std::set<BulletEntry*> m_movingEntities;
         std::set<BulletEntry*> m_lastMovingEntities;
         std::set<BulletEntry*> m_dirtyEntries;
+        /**
+         * A map of all submerged entities, and the water body they currently are submerged into.
+         */
+        std::map<BulletEntry*, btGhostObject*> m_submergedEntities;
         std::vector<WFMath::AxisBox<2>> m_dirtyTerrainAreas;
 
         std::unordered_map<long, std::tuple<Mercator::TerrainMod*, WFMath::Point<3>, WFMath::Quaternion, WFMath::AxisBox<2>>> m_terrainMods;
@@ -169,6 +173,7 @@ class PhysicalDomain : public Domain
 
         struct PropelEntry
         {
+            btRigidBody* rigidBody;
             BulletEntry* bulletEntry;
             btVector3 velocity;
             float stepHeight;
@@ -207,6 +212,11 @@ class PhysicalDomain : public Domain
          * property belongs.
          */
         std::vector<btRigidBody*> m_borderPlanes;
+
+        /**
+         * Keeps track of all water bodies, which are ghost objects which we use to detect when entities move in and out of the water.
+         */
+        std::vector<btGhostObject*> m_waterBodies;
 
         /**
          * @brief Creates borders around the domain, which prevents entities from "escaping".
@@ -267,6 +277,11 @@ class PhysicalDomain : public Domain
         void applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& velocity);
 
         void calculatePositionForEntity(ModeProperty::Mode mode, LocatedEntity& entity, WFMath::Point<3>& pos);
+
+        /**
+         * Called each tick to process any bodies that are moving in water.
+         */
+        void processWaterBodies();
 
 };
 

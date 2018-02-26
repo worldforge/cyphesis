@@ -31,18 +31,15 @@
 
 #include "rulesets/Entity.h"
 
-#include "common/compose.hpp"
 #include "common/debug.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/SmartPtr.h>
+#include <wfmath/atlasconv.h>
 
-#include <cassert>
 #include <rulesets/PhysicalDomain.h>
 #include <common/TypeNode.h>
 #include "physics/Convert.h"
-#include <rulesets/ModeProperty.h>
 #include <rulesets/TerrainProperty.h>
 #include <Mercator/BasePoint.h>
 #include <Mercator/Terrain.h>
@@ -52,11 +49,9 @@
 #include <rulesets/VisibilityProperty.h>
 #include <rulesets/GeometryProperty.h>
 #include <BulletDynamics/Dynamics/btRigidBody.h>
-#include <physics/Convert.h>
 #include "rulesets/PhysicalWorld.h"
 #include <BulletCollision/CollisionShapes/btBoxShape.h>
-
-#include "stubs/common/stubLog.h"
+#include <rulesets/BBoxProperty.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -100,6 +95,12 @@ class PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
         void test_convert();
 
+        void test_lake_rotated();
+
+        void test_lake();
+
+        void test_ocean();
+
         void test_placement();
 
         void test_fallToBottom();
@@ -133,6 +134,9 @@ long PhysicalDomainIntegrationTest::m_id_counter = 0L;
 
 PhysicalDomainIntegrationTest::PhysicalDomainIntegrationTest()
 {
+    ADD_TEST(PhysicalDomainIntegrationTest::test_lake_rotated);
+    ADD_TEST(PhysicalDomainIntegrationTest::test_lake);
+    ADD_TEST(PhysicalDomainIntegrationTest::test_ocean);
     ADD_TEST(PhysicalDomainIntegrationTest::test_placement);
     ADD_TEST(PhysicalDomainIntegrationTest::test_convert);
     ADD_TEST(PhysicalDomainIntegrationTest::test_terrainPrecision);
@@ -162,6 +166,309 @@ void PhysicalDomainIntegrationTest::teardown()
 {
 }
 
+void PhysicalDomainIntegrationTest::test_lake_rotated()
+{
+    class TestEntity : public Entity
+    {
+        public:
+            explicit TestEntity(const std::string& id, long intId) : Entity(id, intId)
+            {
+            }
+
+            decltype(LocatedEntity::propertyApplied)& test_propertyApplied()
+            {
+                return propertyApplied;
+            }
+    };
+
+    double tickSize = 1.0 / 15.0;
+    double time = 0;
+
+    TypeNode* rockType = new TypeNode("rock");
+    TypeNode* lakeType = new TypeNode("lake");
+
+    Property<double>* massProp = new Property<double>();
+    massProp->data() = 10000;
+
+    Property<int>* waterBodyProp = new Property<int>();
+    waterBodyProp->data() = 1;
+
+    ModeProperty* modeFreeProperty = new ModeProperty();
+    modeFreeProperty->set("free");
+    rockType->injectProperty("mode", modeFreeProperty);
+
+    ModeProperty* modeFixedProperty = new ModeProperty();
+    modeFixedProperty->set("fixed");
+
+
+    Entity* rootEntity = new Entity("0", newId());
+    rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
+    rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, 0, -64), WFMath::Point<3>(64, 64, 64)));
+    PhysicalDomain* domain = new PhysicalDomain(*rootEntity);
+
+    long id = newId();
+    TestEntity* lake = new TestEntity(std::to_string(id), id);
+    lake->setProperty(ModeProperty::property_name, modeFixedProperty);
+    lake->setType(lakeType);
+    lake->setProperty("water_body", waterBodyProp);
+    lake->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(0, -64, 0), WFMath::Point<3>(10, 0, 2)));
+    lake->m_location.m_pos = WFMath::Point<3>(0, 10, 0);
+    //rotate 90 degrees
+    lake->m_location.m_orientation = WFMath::Quaternion(1, -WFMath::numeric_constants<float>::pi() / 2.0f);
+    domain->addEntity(*lake);
+
+    //Should be in water
+    id = newId();
+    Entity* freeEntity = new Entity("freeEntity", id);
+    freeEntity->setProperty("mass", massProp);
+    freeEntity->setType(rockType);
+    freeEntity->m_location.m_pos = WFMath::Point<3>(-1, 1, 9);
+    freeEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1, 1, 1)));
+    domain->addEntity(*freeEntity);
+
+    //Should not be in water
+    id = newId();
+    Entity* freeEntity2 = new Entity("freeEntity2", id);
+    freeEntity2->setProperty("mass", massProp);
+    freeEntity2->setType(rockType);
+    freeEntity2->m_location.m_pos = WFMath::Point<3>(9, 1, 1);
+    freeEntity2->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1, 1, 1)));
+    domain->addEntity(*freeEntity2);
+
+    OpVector res;
+    domain->tick(0, res);
+    ASSERT_TRUE(freeEntity->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Submerged);
+    ASSERT_TRUE(freeEntity2->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Free);
+
+}
+
+
+void PhysicalDomainIntegrationTest::test_lake()
+{
+    class TestEntity : public Entity
+    {
+        public:
+            explicit TestEntity(const std::string& id, long intId) : Entity(id, intId)
+            {
+            }
+
+            decltype(LocatedEntity::propertyApplied)& test_propertyApplied()
+            {
+                return propertyApplied;
+            }
+    };
+
+    double tickSize = 1.0 / 15.0;
+    double time = 0;
+
+    TypeNode* rockType = new TypeNode("rock");
+    TypeNode* lakeType = new TypeNode("lake");
+
+    Property<double>* massProp = new Property<double>();
+    massProp->data() = 10000;
+
+    Property<int>* waterBodyProp = new Property<int>();
+    waterBodyProp->data() = 1;
+
+    ModeProperty* modeFreeProperty = new ModeProperty();
+    modeFreeProperty->set("free");
+    rockType->injectProperty("mode", modeFreeProperty);
+
+    ModeProperty* modeFixedProperty = new ModeProperty();
+    modeFixedProperty->set("fixed");
+
+
+    Entity* rootEntity = new Entity("0", newId());
+    rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
+    rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
+    PhysicalDomain* domain = new PhysicalDomain(*rootEntity);
+
+    long id = newId();
+    TestEntity* lake = new TestEntity(std::to_string(id), id);
+    lake->setProperty(ModeProperty::property_name, modeFixedProperty);
+    lake->setType(lakeType);
+    lake->setProperty("water_body", waterBodyProp);
+    lake->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-5, -64, -5), WFMath::Point<3>(5, 0, 5)));
+    lake->m_location.m_pos = WFMath::Point<3>(20, 0, 0);
+    lake->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
+    domain->addEntity(*lake);
+
+    id = newId();
+    Entity* freeEntity = new Entity(std::to_string(id), id);
+    freeEntity->setProperty("mass", massProp);
+    freeEntity->setType(rockType);
+    freeEntity->m_location.m_pos = WFMath::Point<3>(20, 2, 0);
+    freeEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 1, 1)));
+    domain->addEntity(*freeEntity);
+
+    //The second entity is placed in water, and should be submerged from the start
+    id = newId();
+    Entity* freeEntity2 = new Entity(std::to_string(id), id);
+    freeEntity2->setProperty("mass", massProp);
+    freeEntity2->setType(rockType);
+    freeEntity2->m_location.m_pos = WFMath::Point<3>(20, -2, 2);
+    freeEntity2->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 1, 1)));
+    domain->addEntity(*freeEntity2);
+
+    //The third entity is placed outside of the lake, and should never be submerged.
+    id = newId();
+    Entity* freeEntity3 = new Entity(std::to_string(id), id);
+    freeEntity3->setProperty("mass", massProp);
+    freeEntity3->setType(rockType);
+    freeEntity3->m_location.m_pos = WFMath::Point<3>(-20, 2, 0);
+    freeEntity3->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 1, 1)));
+    domain->addEntity(*freeEntity3);
+
+    OpVector res;
+    domain->tick(0, res);
+    while (time < 5) {
+        time += tickSize;
+        domain->tick(tickSize, res);
+    }
+
+    ASSERT_TRUE(freeEntity->m_location.pos().y() < 0);
+    ASSERT_TRUE(freeEntity->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Submerged);
+
+    ASSERT_TRUE(freeEntity2->m_location.pos().y() < 0);
+    ASSERT_TRUE(freeEntity2->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Submerged);
+
+    ASSERT_TRUE(freeEntity3->m_location.pos().y() < 0);
+    ASSERT_TRUE(freeEntity3->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Free);
+
+    //Move outside
+    domain->applyTransform(*freeEntity, WFMath::Quaternion::IDENTITY(), WFMath::Point<3>(20, 60, 0), WFMath::Vector<3>());
+    domain->tick(0, res);
+    ASSERT_TRUE(freeEntity->m_location.pos().y() > 0);
+    ASSERT_TRUE(freeEntity->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Free);
+
+    //Move back in.
+    domain->applyTransform(*freeEntity, WFMath::Quaternion::IDENTITY(), WFMath::Point<3>(20, -10, 0), WFMath::Vector<3>());
+    domain->tick(0, res);
+    ASSERT_TRUE(freeEntity->m_location.pos().y() < 0);
+    ASSERT_TRUE(freeEntity->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Submerged);
+    ASSERT_TRUE(freeEntity3->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Free);
+
+    //Move the lake to where freeEntity3 is
+    domain->applyTransform(*lake, WFMath::Quaternion(), freeEntity3->m_location.m_pos + WFMath::Vector<3>(0, 5, 0), WFMath::Vector<3>());
+    domain->tick(0, res);
+    ASSERT_TRUE(freeEntity3->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Submerged);
+    ASSERT_TRUE(freeEntity->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Free);
+
+    //Update the bbox of the lake so that it's outside of freeEntity3.
+    //To emulate the propertyApplied signal being called in this test we need to do it ourselves.
+    auto newBbox = lake->m_location.bBox();
+    newBbox.highCorner().x() = 1;
+    newBbox.highCorner().y() = 1;
+    newBbox.highCorner().z() = 1;
+    newBbox.lowCorner().x() = -1;
+    newBbox.lowCorner().y() = -1;
+    newBbox.lowCorner().z() = -1;
+
+    BBoxProperty* bBoxProperty = new BBoxProperty();
+    bBoxProperty->set(newBbox.toAtlas());
+    lake->setProperty("bbox", bBoxProperty);
+    bBoxProperty->apply(lake);
+    lake->test_propertyApplied().emit("bbox", *bBoxProperty);
+
+    domain->tick(0, res);
+    ASSERT_TRUE(freeEntity3->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Free);
+    ASSERT_TRUE(freeEntity->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Free);
+
+    domain->removeEntity(*lake);
+    domain->tick(0, res);
+    ASSERT_TRUE(freeEntity->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Free);
+    ASSERT_TRUE(freeEntity2->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Free);
+    ASSERT_TRUE(freeEntity3->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Free);
+
+}
+
+
+void PhysicalDomainIntegrationTest::test_ocean()
+{
+    double tickSize = 1.0 / 15.0;
+    double time = 0;
+
+    TypeNode* rockType = new TypeNode("rock");
+    TypeNode* oceanType = new TypeNode("ocean");
+
+    Property<double>* massProp = new Property<double>();
+    massProp->data() = 10000;
+
+    Property<int>* waterBodyProp = new Property<int>();
+    waterBodyProp->data() = 1;
+
+    ModeProperty* modeFreeProperty = new ModeProperty();
+    modeFreeProperty->set("free");
+    ModeProperty* modeFixedProperty = new ModeProperty();
+    modeFixedProperty->set("fixed");
+
+    rockType->injectProperty("mode", modeFreeProperty);
+
+
+    Entity* rootEntity = new Entity("0", newId());
+    rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
+    rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
+    PhysicalDomain* domain = new PhysicalDomain(*rootEntity);
+
+    long id = newId();
+    Entity* ocean = new Entity(std::to_string(id), id);
+    ocean->setProperty(ModeProperty::property_name, modeFixedProperty);
+    ocean->setType(oceanType);
+    ocean->setProperty("water_body", waterBodyProp);
+    ocean->m_location.m_pos = WFMath::Point<3>(0, 0, 0);
+    ocean->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
+    domain->addEntity(*ocean);
+
+    id = newId();
+    Entity* freeEntity = new Entity(std::to_string(id), id);
+    freeEntity->setProperty("mass", massProp);
+    freeEntity->setType(rockType);
+    freeEntity->m_location.m_pos = WFMath::Point<3>(0, 2, 0);
+    freeEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 1, 1)));
+    domain->addEntity(*freeEntity);
+
+    //The second entity is placed in water, and should be submerged from the start
+    id = newId();
+    Entity* freeEntity2 = new Entity(std::to_string(id), id);
+    freeEntity2->setProperty("mass", massProp);
+    freeEntity2->setType(rockType);
+    freeEntity2->m_location.m_pos = WFMath::Point<3>(10, -10, 0);
+    freeEntity2->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 1, 1)));
+    domain->addEntity(*freeEntity2);
+
+
+    OpVector res;
+    domain->tick(0, res);
+    while (time < 5) {
+        time += tickSize;
+        domain->tick(tickSize, res);
+    }
+
+    ASSERT_TRUE(freeEntity->m_location.pos().y() < 0);
+    ASSERT_TRUE(freeEntity->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Submerged);
+
+    ASSERT_TRUE(freeEntity2->m_location.pos().y() < 0);
+    ASSERT_TRUE(freeEntity2->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Submerged);
+
+    //Move outside
+    domain->applyTransform(*freeEntity, WFMath::Quaternion::IDENTITY(), WFMath::Point<3>(0, 60, 0), WFMath::Vector<3>());
+    domain->tick(0, res);
+    ASSERT_TRUE(freeEntity->m_location.pos().y() > 0);
+    ASSERT_TRUE(freeEntity->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Free);
+
+    //Move back in.
+    domain->applyTransform(*freeEntity, WFMath::Quaternion::IDENTITY(), WFMath::Point<3>(0, -10, 0), WFMath::Vector<3>());
+    domain->tick(0, res);
+    ASSERT_TRUE(freeEntity->m_location.pos().y() < 0);
+    ASSERT_TRUE(freeEntity->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Submerged);
+
+    domain->removeEntity(*ocean);
+    domain->tick(0, res);
+    ASSERT_TRUE(freeEntity->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Free);
+    ASSERT_TRUE(freeEntity2->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Free);
+}
+
+
 void PhysicalDomainIntegrationTest::test_placement()
 {
     class TestPhysicalDomain : public PhysicalDomain
@@ -171,12 +478,14 @@ void PhysicalDomainIntegrationTest::test_placement()
             {
             }
 
-            btDiscreteDynamicsWorld* test_getBulletWorld() {
+            btDiscreteDynamicsWorld* test_getBulletWorld()
+            {
                 return m_dynamicsWorld;
             }
 
-            btRigidBody* test_getRigidBody(long id) {
-                return m_entries.find(id)->second->rigidBody;
+            btRigidBody* test_getRigidBody(long id)
+            {
+                return btRigidBody::upcast(m_entries.find(id)->second->collisionObject);
             }
     };
 
@@ -560,7 +869,7 @@ void PhysicalDomainIntegrationTest::test_collision()
 
     PropelProperty* propelProperty = new PropelProperty();
     //Move y axis 2 meter per second.
-    propelProperty->data() = WFMath::Vector<3>(0, 0, 2.0/speedGroundProperty->data());
+    propelProperty->data() = WFMath::Vector<3>(0, 0, 2.0 / speedGroundProperty->data());
 
     AngularFactorProperty angularZeroFactorProperty;
     angularZeroFactorProperty.data() = WFMath::Vector<3>::ZERO();
@@ -958,7 +1267,7 @@ void PhysicalDomainIntegrationTest::test_stairs()
     auto speedGroundProperty = new Property<double>();
     speedGroundProperty->data() = 5.0;
     PropelProperty* propelProperty = new PropelProperty();
-    propelProperty->data() = WFMath::Vector<3>(0, 0, 1.0/speedGroundProperty->data());
+    propelProperty->data() = WFMath::Vector<3>(0, 0, 1.0 / speedGroundProperty->data());
     AngularFactorProperty angularZeroFactorProperty;
     angularZeroFactorProperty.data() = WFMath::Vector<3>::ZERO();
     GeometryProperty capsuleProperty;
