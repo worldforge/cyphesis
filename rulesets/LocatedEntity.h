@@ -202,7 +202,7 @@ class LocatedEntity : public Router {
     virtual const PropertyBase * getProperty(const std::string & name) const;
     // FIXME These should be de-virtualised and, and implementations moved
     // from Entity to here.
-    virtual PropertyBase * modProperty(const std::string & name);
+    virtual PropertyBase * modProperty(const std::string & name, const Atlas::Message::Element& def_val = Atlas::Message::Element());
     virtual PropertyBase * setProperty(const std::string & name, PropertyBase * prop);
 
     virtual void installDelegate(int, const std::string &);
@@ -347,7 +347,7 @@ class LocatedEntity : public Router {
                                      const Atlas::Message::Element & def_val
                                      = Atlas::Message::Element())
     {
-        PropertyBase * p = modProperty(name);
+        PropertyBase * p = modProperty(name, def_val);
         PropertyT * sp = 0;
         if (p != 0) {
             sp = dynamic_cast<PropertyT *>(p);

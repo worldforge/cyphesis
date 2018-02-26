@@ -50,7 +50,7 @@
 
 #ifndef STUB_Entity_modProperty
 //#define STUB_Entity_modProperty
-  PropertyBase* Entity::modProperty(const std::string & name)
+  PropertyBase* Entity::modProperty(const std::string & name, const Atlas::Message::Element& def_val )
   {
     return nullptr;
   }

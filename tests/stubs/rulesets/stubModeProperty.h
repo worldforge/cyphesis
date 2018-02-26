@@ -18,7 +18,7 @@
 
 #ifndef STUB_ModeProperty_apply
 //#define STUB_ModeProperty_apply
-  void ModeProperty::apply(LocatedEntity *)
+  void ModeProperty::apply(LocatedEntity*)
   {
     
   }
@@ -34,7 +34,7 @@
 
 #ifndef STUB_ModeProperty_set
 //#define STUB_ModeProperty_set
-  void ModeProperty::set(const Atlas::Message::Element & val)
+  void ModeProperty::set(const Atlas::Message::Element& val)
   {
     
   }

@@ -173,18 +173,21 @@ const PropertyBase * Entity::getProperty(const std::string & name) const
     return 0;
 }
 
-PropertyBase * Entity::modProperty(const std::string & name)
+PropertyBase * Entity::modProperty(const std::string & name, const Atlas::Message::Element& def_val)
 {
     PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
         return I->second;
     }
-    if (m_type != 0) {
+    if (m_type != nullptr) {
         I = m_type->defaults().find(name);
         if (I != m_type->defaults().end()) {
             // We have a default for this property. Create a new instance
             // property with the same value.
             PropertyBase * new_prop = I->second->copy();
+            if (!def_val.isNone()) {
+                new_prop->set(def_val);
+            }
             I->second->remove(this, name);
             new_prop->flags() &= ~flag_class;
             m_properties[name] = new_prop;
@@ -194,7 +197,7 @@ PropertyBase * Entity::modProperty(const std::string & name)
             return new_prop;
         }
     }
-    return 0;
+    return nullptr;
 }
 
 /// \brief Set the property object for a given attribute

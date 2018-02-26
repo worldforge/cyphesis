@@ -499,91 +499,7 @@ template class EntityFactory<Plant>;
 template class EntityFactory<Stackable>;
 template class EntityFactory<World>;
 
-LocatedEntity::LocatedEntity(const std::string & id, long intId) :
-               Router(id, intId),
-               m_refCount(0), m_seq(0),
-               m_script(0), m_type(0), m_flags(0), m_contains(0)
-{
-}
-
-LocatedEntity::~LocatedEntity()
-{
-}
-
-bool LocatedEntity::hasAttr(const std::string & name) const
-{
-    return false;
-}
-
-int LocatedEntity::getAttr(const std::string & name,
-                           Atlas::Message::Element & attr) const
-{
-    return -1;
-}
-
-int LocatedEntity::getAttrType(const std::string & name,
-                               Atlas::Message::Element & attr,
-                               int type) const
-{
-    return -1;
-}
-
-PropertyBase * LocatedEntity::setAttr(const std::string & name,
-                                      const Atlas::Message::Element & attr)
-{
-    return 0;
-}
-
-const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
-{
-    return 0;
-}
-
-PropertyBase * LocatedEntity::modProperty(const std::string & name)
-{
-    return 0;
-}
-
-PropertyBase * LocatedEntity::setProperty(const std::string & name,
-                                          PropertyBase * prop)
-{
-    return 0;
-}
-
-void LocatedEntity::installDelegate(int, const std::string &)
-{
-}
-
-void LocatedEntity::removeDelegate(int class_no, const std::string & delegate)
-{
-}
-
-void LocatedEntity::destroy()
-{
-}
-
-Domain * LocatedEntity::getDomain()
-{
-    return 0;
-}
-
-const Domain * LocatedEntity::getDomain() const
-{
-    return 0;
-}
-
-void LocatedEntity::sendWorld(const Operation & op)
-{
-}
-
-void LocatedEntity::onContainered(const LocatedEntity*)
-{
-}
-
-void LocatedEntity::onUpdated()
-{
-}
-
+#define STUB_LocatedEntity_makeContainer
 void LocatedEntity::makeContainer()
 {
     if (m_contains == 0) {
@@ -591,6 +507,7 @@ void LocatedEntity::makeContainer()
     }
 }
 
+#define STUB_LocatedEntity_merge
 void LocatedEntity::merge(const MapType & ent)
 {
     switch (LocatedEntity_merge_action) {
@@ -607,24 +524,7 @@ void LocatedEntity::merge(const MapType & ent)
 
 }
 
-void LocatedEntity::addChild(LocatedEntity& childEntity)
-{
-
-}
-
-void LocatedEntity::removeChild(LocatedEntity& childEntity)
-{
-
-}
-
-void LocatedEntity::setType(const TypeNode* t)
-{
-}
-std::vector<Atlas::Objects::Root> LocatedEntity::getThoughts() const
-{
-    return std::vector<Atlas::Objects::Root>();
-}
-
+#include "stubs/rulesets/stubLocatedEntity.h"
 
 void log(LogLevel lvl, const std::string & msg)
 {

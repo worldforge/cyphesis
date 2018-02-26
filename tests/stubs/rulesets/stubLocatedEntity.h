@@ -99,7 +99,7 @@
 
 #ifndef STUB_LocatedEntity_modProperty
 //#define STUB_LocatedEntity_modProperty
-  PropertyBase* LocatedEntity::modProperty(const std::string & name)
+  PropertyBase* LocatedEntity::modProperty(const std::string & name, const Atlas::Message::Element& def_val )
   {
     return nullptr;
   }

@@ -179,20 +179,20 @@ PropertyBase* LocatedEntity::setAttr(const std::string& name,
 /// not exist, or is not stored using a property object.
 const PropertyBase* LocatedEntity::getProperty(const std::string& name) const
 {
-    PropertyDict::const_iterator I = m_properties.find(name);
+    auto I = m_properties.find(name);
     if (I != m_properties.end()) {
         return I->second;
     }
-    return 0;
+    return nullptr;
 }
 
-PropertyBase* LocatedEntity::modProperty(const std::string& name)
+PropertyBase* LocatedEntity::modProperty(const std::string& name, const Atlas::Message::Element & def_val)
 {
-    PropertyDict::const_iterator I = m_properties.find(name);
+    auto I = m_properties.find(name);
     if (I != m_properties.end()) {
         return I->second;
     }
-    return 0;
+    return nullptr;
 }
 
 PropertyBase* LocatedEntity::setProperty(const std::string& name,

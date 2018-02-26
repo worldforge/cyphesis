@@ -155,7 +155,7 @@
 
 #ifndef STUB_PhysicalDomain_sendMoveSight
 //#define STUB_PhysicalDomain_sendMoveSight
-  void PhysicalDomain::sendMoveSight(BulletEntry& bulletEntry, bool posChange, bool velocityChange, bool orientationChange, bool angularChange)
+  void PhysicalDomain::sendMoveSight(BulletEntry& bulletEntry, bool posChange, bool velocityChange, bool orientationChange, bool angularChange, bool modeChanged)
   {
     
   }
@@ -240,6 +240,14 @@
     
   }
 #endif //STUB_PhysicalDomain_calculatePositionForEntity
+
+#ifndef STUB_PhysicalDomain_processWaterBodies
+//#define STUB_PhysicalDomain_processWaterBodies
+  void PhysicalDomain::processWaterBodies()
+  {
+    
+  }
+#endif //STUB_PhysicalDomain_processWaterBodies
 
 
 #endif
