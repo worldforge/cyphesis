@@ -904,6 +904,26 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
     }
 
     m_lastMovingEntities.erase(entry);
+
+    //Check if the entity is a water body, and if so remove it and detach any submerged entities.
+    auto waterBodyProp = entity.getPropertyType<int>("water_body");
+    if (waterBodyProp && waterBodyProp->data() == 1) {
+        for (auto waterIterator = m_waterBodies.begin(); waterIterator != m_waterBodies.end(); ++waterIterator) {
+            auto waterBody = *waterIterator;
+            BulletEntry* waterBodyEntry = static_cast<BulletEntry*>(waterBody->getUserPointer());
+            if (waterBodyEntry->entity == &entity) {
+                //Also check that any entities that are submerged into the body are detached
+                for (auto& submergedEntry : m_submergedEntities) {
+                    if (submergedEntry.second == waterBody) {
+                        submergedEntry.second = nullptr;
+                    }
+                }
+                m_waterBodies.erase(waterIterator);
+                break;
+            }
+        }
+    }
+
     if (entry->collisionObject) {
         m_dynamicsWorld->removeCollisionObject(entry->collisionObject);
         delete entry->motionState;
@@ -933,27 +953,6 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
     //The entity owning the domain should normally not be perceptive, so we'll check first to optimize a bit.
     if (m_entity.isPerceptive()) {
         mContainingEntityEntry.observedByThis.insert(entry);
-    }
-
-    //Check if the entity is a water body, and if so remove it and detach any submerged entities.
-    auto waterBodyProp = entity.getPropertyType<int>("water_body");
-    if (waterBodyProp && waterBodyProp->data() == 1) {
-        for (auto waterIterator = m_waterBodies.begin(); waterIterator != m_waterBodies.end(); ++waterIterator) {
-            auto waterBody = *waterIterator;
-            BulletEntry* waterBodyEntry = static_cast<BulletEntry*>(waterBody->getUserPointer());
-            if (waterBodyEntry->entity == &entity) {
-                //Also check that any entities that are submerged into the body are detached
-                for (auto& submergedEntry : m_submergedEntities) {
-                    if (submergedEntry.second == waterBody) {
-                        submergedEntry.second = nullptr;
-                    }
-                }
-                m_dynamicsWorld->removeCollisionObject(waterBody);
-                delete waterBody;
-                m_waterBodies.erase(waterIterator);
-                break;
-            }
-        }
     }
 
 
