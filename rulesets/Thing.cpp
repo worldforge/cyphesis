@@ -176,12 +176,18 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
     Element attr_mode;
     if (ent->copyAttr("mode", attr_mode) == 0) {
         if (!attr_mode.isString()) {
-            log(ERROR, "Non string mode set in Thing::MoveOperation");
+            log(ERROR, "Non string 'mode' set in Thing::MoveOperation");
         } else {
             // Update the mode
             setAttr("mode", attr_mode);
             mode = attr_mode.String();
         }
+    }
+
+    //Move ops can also alter the "planted-offset" property
+    Element attr_plantedOffset;
+    if (ent->copyAttr("planted-offset", attr_plantedOffset) == 0) {
+        setAttr("planted-offset", attr_plantedOffset);
     }
 
     const double& current_time = BaseWorld::instance().getTime();
