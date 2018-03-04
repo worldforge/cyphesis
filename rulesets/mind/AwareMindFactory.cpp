@@ -29,10 +29,6 @@ AwareMindFactory::AwareMindFactory()
 
 }
 
-AwareMindFactory::~AwareMindFactory()
-{
-}
-
 BaseMind * AwareMindFactory::newMind(const std::string & id, long intId) const
 {
     return new AwareMind(id, intId, *mSharedTerrain, *mAwarenessStoreProvider);

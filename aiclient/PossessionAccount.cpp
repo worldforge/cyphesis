@@ -53,9 +53,6 @@ PossessionAccount::PossessionAccount(const std::string& id, long intId, LocatedE
 {
 }
 
-PossessionAccount::~PossessionAccount()
-{
-}
 
 void PossessionAccount::enablePossession(OpVector& res)
 {
@@ -166,12 +163,13 @@ void PossessionAccount::createMind(const Operation & op, OpVector & res)
     std::string entityType = ent->getParent();
 
     debug(std::cout << String::compose("Got info on account, creating mind for entity with id %1 of type %2.", entityId, entityType) << std::endl;);
+    log(INFO, String::compose("Creating mind for entity with id %1 of type '%2'. Name '%3'.", entityId, entityType, ent->getName()));
     BaseMind* mind = m_mindFactory.newMind(entityId, integerId(entityId));
     mLocatedEntityRegistry.addLocatedEntity(mind);
     //TODO: setup and get type from Inheritance
     mind->setType(new TypeNode(entityType));
 
-    if (m_mindFactory.m_scriptFactory != 0) {
+    if (m_mindFactory.m_scriptFactory != nullptr) {
         debug(std::cout << "Adding script to entity." << std::endl;);
         m_mindFactory.m_scriptFactory->addScript(mind);
     }

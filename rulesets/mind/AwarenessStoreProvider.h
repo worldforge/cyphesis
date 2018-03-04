@@ -32,8 +32,8 @@ class IHeightProvider;
 class AwarenessStoreProvider
 {
     public:
-        AwarenessStoreProvider(IHeightProvider& heightProvider);
-        virtual ~AwarenessStoreProvider();
+        explicit AwarenessStoreProvider(IHeightProvider& heightProvider);
+        virtual ~AwarenessStoreProvider() = default;
 
         AwarenessStore& getStore(const TypeNode* type, int tileSize = 64);
 

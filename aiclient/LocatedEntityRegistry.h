@@ -24,7 +24,7 @@ class LocatedEntityRegistry {
 
     public:
 
-        virtual ~LocatedEntityRegistry() {}
+        virtual ~LocatedEntityRegistry() = default;
 
         virtual void addLocatedEntity(LocatedEntity*) = 0;
         virtual void removeLocatedEntity(LocatedEntity*) = 0;

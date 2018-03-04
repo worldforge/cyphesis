@@ -30,7 +30,7 @@ class PossessionAccount: public Router
 {
     public:
         PossessionAccount(const std::string& id, long intId, LocatedEntityRegistry& locatedEntityRegistry, const MindKit& mindFactory);
-        virtual ~PossessionAccount();
+        ~PossessionAccount() override = default;
 
         /**
          * Notify the server that we are able to possess minds.

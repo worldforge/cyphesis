@@ -31,9 +31,9 @@ class AwareMindFactory : public MindKit
 {
     public:
         AwareMindFactory();
-        virtual ~AwareMindFactory();
+        ~AwareMindFactory() override = default;
 
-        virtual BaseMind * newMind(const std::string & id, long) const;
+        BaseMind * newMind(const std::string & id, long) const override;
 
     protected:
         SharedTerrain* mSharedTerrain;

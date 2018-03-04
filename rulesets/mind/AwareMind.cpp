@@ -41,8 +41,12 @@
 static const bool debug_flag = true;
 
 AwareMind::AwareMind(const std::string &id, long intId, SharedTerrain& sharedTerrain, AwarenessStoreProvider& awarenessStoreProvider) :
-        BaseMind(id, intId), mSharedTerrain(sharedTerrain), mAwarenessStoreProvider(awarenessStoreProvider), mAwarenessStore(nullptr), mSteering(new Steering(*this)), mServerTimeDiff(
-                0)
+        BaseMind(id, intId),
+        mSharedTerrain(sharedTerrain),
+        mAwarenessStoreProvider(awarenessStoreProvider),
+        mAwarenessStore(nullptr),
+        mSteering(new Steering(*this)),
+        mServerTimeDiff(0)
 {
     m_map.setListener(this);
 }

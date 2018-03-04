@@ -27,7 +27,7 @@
 
 #include <wfmath/ball.h>
 
-static const bool debug_flag = true;
+static const bool debug_flag = false;
 
 
 AwarenessStoreProvider::AwarenessStoreProvider(IHeightProvider& heightProvider)
@@ -36,11 +36,6 @@ AwarenessStoreProvider::AwarenessStoreProvider(IHeightProvider& heightProvider)
     // TODO Auto-generated constructor stub
 
 }
-
-AwarenessStoreProvider::~AwarenessStoreProvider()
-{
-}
-
 
 AwarenessStore& AwarenessStoreProvider::getStore(const TypeNode* type, int tileSize)
 {
