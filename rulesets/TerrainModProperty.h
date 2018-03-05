@@ -28,54 +28,41 @@ namespace Mercator {
 }
 
 class TerrainProperty;
+
 class TerrainModTranslator;
 
 /// \brief Class to handle Entity terrain modifier property
 /// \ingroup PropertyClasses
-class TerrainModProperty : public TerrainEffectorProperty {
-  public:
-    static const std::string property_name;
-    static const std::string property_atlastype;
+class TerrainModProperty : public TerrainEffectorProperty
+{
+    public:
+        static const std::string property_name;
+        static const std::string property_atlastype;
 
-    TerrainModProperty();
-    ~TerrainModProperty();
+        TerrainModProperty();
 
-    TerrainModProperty * copy() const;
+        ~TerrainModProperty() override;
 
-    virtual void install(LocatedEntity *, const std::string &);
-    virtual void remove(LocatedEntity *, const std::string &);
-    virtual void apply(LocatedEntity *);
+        TerrainModProperty* copy() const override;
 
-    virtual HandlerResult operation(LocatedEntity *,
-                                    const Operation &,
-                                    OpVector &);
+        void apply(LocatedEntity*) override;
 
-    /// \brief Constructs a Mercator::TerrainMod from Atlas data
-    Mercator::TerrainMod * parseModData(const WFMath::Point<3>& pos,
-                                        const WFMath::Quaternion& orientation) const;
+        /// \brief Constructs a Mercator::TerrainMod from Atlas data
+        Mercator::TerrainMod* parseModData(const WFMath::Point<3>& pos,
+                                           const WFMath::Quaternion& orientation) const;
 
-    /// \brief Changes a modifier's position
-    void move(LocatedEntity*);
+        /// \brief Retrieve a sub attribute of the property
+        int getAttr(const std::string&,
+                    Atlas::Message::Element&);
 
-    /// \brief Removes the modifier from the terrain
-    void remove(LocatedEntity*);
+        /// \brief Modify a sub attribute of the property
+        void setAttr(const std::string&,
+                     const Atlas::Message::Element&);
 
-    /// \brief Retrieve a sub attribute of the property
-    int getAttr(const std::string &,
-                 Atlas::Message::Element &);
-    /// \brief Modify a sub attribute of the property
-    void setAttr(const std::string &,
-                 const Atlas::Message::Element &);
 
-    HandlerResult move_handler(LocatedEntity * e,
-                               const Operation & op,
-                               OpVector & res);
-    HandlerResult delete_handler(LocatedEntity * e,
-                                 const Operation & op,
-                                 OpVector & res);
-  protected:
+    protected:
 
-    TerrainModTranslator* m_translator;
+        TerrainModTranslator* m_translator;
 
 };
 

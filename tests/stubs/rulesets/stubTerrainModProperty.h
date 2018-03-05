@@ -33,37 +33,13 @@
   }
 #endif //STUB_TerrainModProperty_copy
 
-#ifndef STUB_TerrainModProperty_install
-//#define STUB_TerrainModProperty_install
-  void TerrainModProperty::install(LocatedEntity *, const std::string &)
-  {
-    
-  }
-#endif //STUB_TerrainModProperty_install
-
-#ifndef STUB_TerrainModProperty_remove
-//#define STUB_TerrainModProperty_remove
-  void TerrainModProperty::remove(LocatedEntity *, const std::string &)
-  {
-    
-  }
-#endif //STUB_TerrainModProperty_remove
-
 #ifndef STUB_TerrainModProperty_apply
 //#define STUB_TerrainModProperty_apply
-  void TerrainModProperty::apply(LocatedEntity *)
+  void TerrainModProperty::apply(LocatedEntity*)
   {
     
   }
 #endif //STUB_TerrainModProperty_apply
-
-#ifndef STUB_TerrainModProperty_operation
-//#define STUB_TerrainModProperty_operation
-  HandlerResult TerrainModProperty::operation(LocatedEntity *, const Operation &, OpVector &)
-  {
-    return *static_cast<HandlerResult*>(nullptr);
-  }
-#endif //STUB_TerrainModProperty_operation
 
 #ifndef STUB_TerrainModProperty_parseModData
 //#define STUB_TerrainModProperty_parseModData
@@ -73,25 +49,9 @@
   }
 #endif //STUB_TerrainModProperty_parseModData
 
-#ifndef STUB_TerrainModProperty_move
-//#define STUB_TerrainModProperty_move
-  void TerrainModProperty::move(LocatedEntity*)
-  {
-    
-  }
-#endif //STUB_TerrainModProperty_move
-
-#ifndef STUB_TerrainModProperty_remove
-//#define STUB_TerrainModProperty_remove
-  void TerrainModProperty::remove(LocatedEntity*)
-  {
-    
-  }
-#endif //STUB_TerrainModProperty_remove
-
 #ifndef STUB_TerrainModProperty_getAttr
 //#define STUB_TerrainModProperty_getAttr
-  int TerrainModProperty::getAttr(const std::string &, Atlas::Message::Element &)
+  int TerrainModProperty::getAttr(const std::string&, Atlas::Message::Element&)
   {
     return 0;
   }
@@ -99,27 +59,11 @@
 
 #ifndef STUB_TerrainModProperty_setAttr
 //#define STUB_TerrainModProperty_setAttr
-  void TerrainModProperty::setAttr(const std::string &, const Atlas::Message::Element &)
+  void TerrainModProperty::setAttr(const std::string&, const Atlas::Message::Element&)
   {
     
   }
 #endif //STUB_TerrainModProperty_setAttr
-
-#ifndef STUB_TerrainModProperty_move_handler
-//#define STUB_TerrainModProperty_move_handler
-  HandlerResult TerrainModProperty::move_handler(LocatedEntity * e, const Operation & op, OpVector & res)
-  {
-    return *static_cast<HandlerResult*>(nullptr);
-  }
-#endif //STUB_TerrainModProperty_move_handler
-
-#ifndef STUB_TerrainModProperty_delete_handler
-//#define STUB_TerrainModProperty_delete_handler
-  HandlerResult TerrainModProperty::delete_handler(LocatedEntity * e, const Operation & op, OpVector & res)
-  {
-    return *static_cast<HandlerResult*>(nullptr);
-  }
-#endif //STUB_TerrainModProperty_delete_handler
 
 
 #endif

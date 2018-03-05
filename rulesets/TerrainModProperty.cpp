@@ -64,34 +64,12 @@ TerrainModProperty * TerrainModProperty::copy() const
     return new TerrainModProperty(*this);
 }
 
-void TerrainModProperty::install(LocatedEntity * owner, const std::string & name)
-{
-}
-
-void TerrainModProperty::remove(LocatedEntity *owner, const std::string & name)
-{
-}
-
 void TerrainModProperty::apply(LocatedEntity * owner)
 {
     delete m_translator;
 
     m_translator = new TerrainModTranslator(m_data);
 
-}
-
-HandlerResult TerrainModProperty::operation(LocatedEntity * ent, const Operation & op, OpVector & res)
-{
-
-    return OPERATION_IGNORED;
-}
-
-void TerrainModProperty::move(LocatedEntity* owner)
-{
-}
-
-void TerrainModProperty::remove(LocatedEntity * owner)
-{
 }
 
 Mercator::TerrainMod * TerrainModProperty::parseModData(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation) const
@@ -115,34 +93,5 @@ int TerrainModProperty::getAttr(const std::string & name, Element & val)
 void TerrainModProperty::setAttr(const std::string & name, const Element & val)
 {
     m_data[name] = val;
-}
-
-HandlerResult TerrainModProperty::move_handler(LocatedEntity * e, const Operation & op, OpVector & res)
-{
-//    // FIXME Force instantiation of a class property?
-//
-//    // Check the validity of the operation.
-//    const std::vector<Root> & args = op->getArgs();
-//    if (args.empty()) {
-//        return OPERATION_IGNORED;
-//    }
-//    RootEntity ent = Atlas::Objects::smart_dynamic_cast<RootEntity>(args.front());
-//    if (!ent.isValid()) {
-//        return OPERATION_IGNORED;
-//    }
-//    if (e->getId() != ent->getId()) {
-//        return OPERATION_IGNORED;
-//    }
-//
-//    // Update the modifier
-//    move(e);
-    return OPERATION_IGNORED;
-}
-
-HandlerResult TerrainModProperty::delete_handler(LocatedEntity * e, const Operation & op, OpVector & res)
-{
-//    remove(e);
-
-    return OPERATION_IGNORED;
 }
 

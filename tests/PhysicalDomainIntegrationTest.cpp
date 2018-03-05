@@ -45,13 +45,15 @@
 #include <Mercator/Terrain.h>
 #include <rulesets/PropelProperty.h>
 #include <rulesets/AngularFactorProperty.h>
-#include <chrono>
 #include <rulesets/VisibilityProperty.h>
 #include <rulesets/GeometryProperty.h>
-#include <BulletDynamics/Dynamics/btRigidBody.h>
 #include "rulesets/PhysicalWorld.h"
+#include "rulesets/BBoxProperty.h"
 #include <BulletCollision/CollisionShapes/btBoxShape.h>
-#include <rulesets/BBoxProperty.h>
+#include <BulletDynamics/Dynamics/btRigidBody.h>
+
+#include <chrono>
+#include <rulesets/TerrainModProperty.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -95,6 +97,8 @@ class PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
         void test_convert();
 
+        void test_terrainMods();
+
         void test_lake_rotated();
 
         void test_lake();
@@ -134,6 +138,7 @@ long PhysicalDomainIntegrationTest::m_id_counter = 0L;
 
 PhysicalDomainIntegrationTest::PhysicalDomainIntegrationTest()
 {
+    ADD_TEST(PhysicalDomainIntegrationTest::test_terrainMods);
     ADD_TEST(PhysicalDomainIntegrationTest::test_lake_rotated);
     ADD_TEST(PhysicalDomainIntegrationTest::test_lake);
     ADD_TEST(PhysicalDomainIntegrationTest::test_ocean);
@@ -166,6 +171,126 @@ void PhysicalDomainIntegrationTest::teardown()
 {
 }
 
+void PhysicalDomainIntegrationTest::test_terrainMods()
+{
+
+    class TestPhysicalDomain : public PhysicalDomain
+    {
+        public:
+            explicit TestPhysicalDomain(LocatedEntity& entity) : PhysicalDomain(entity)
+            {
+            }
+
+            btDiscreteDynamicsWorld* test_getBulletWorld()
+            {
+                return m_dynamicsWorld;
+            }
+
+    };
+
+    Entity* rootEntity = new Entity("0", newId());
+    TerrainProperty* terrainProperty = new TerrainProperty();
+    Mercator::Terrain& terrain = terrainProperty->getData();
+    terrain.setBasePoint(0, 0, Mercator::BasePoint(10));
+    terrain.setBasePoint(0, 1, Mercator::BasePoint(10));
+    terrain.setBasePoint(1, 0, Mercator::BasePoint(10));
+    terrain.setBasePoint(1, 1, Mercator::BasePoint(10));
+    rootEntity->setProperty("terrain", terrainProperty);
+    rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
+    rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
+    TestPhysicalDomain* domain = new TestPhysicalDomain(*rootEntity);
+
+    ModeProperty* modeProperty = new ModeProperty();
+    modeProperty->set("planted");
+
+    Entity* terrainModEntity = new Entity("1", newId());
+    terrainModEntity->m_location.m_pos = WFMath::Point<3>(32, 10, 32);
+    terrainModEntity->setProperty(ModeProperty::property_name, modeProperty);
+    TerrainModProperty* terrainModProperty = new TerrainModProperty();
+
+    Atlas::Message::MapType modElement{
+        {"heightoffset", -5.0f},
+        {"shape",        MapType{
+            {"points", ListType {
+                ListType {-10.f, -10.f},
+                ListType {10.f, -10.f},
+                ListType {10.f, 10.f},
+                ListType {-10.f, 10.f},
+            }
+            },
+            {"type",   "polygon"}
+        }
+        },
+        {"type",         "levelmod"}
+    };
+
+    terrainModProperty->set(modElement);
+    terrainModEntity->setProperty(TerrainModProperty::property_name, terrainModProperty);
+    terrainModProperty->apply(terrainModEntity);
+
+    domain->addEntity(*terrainModEntity);
+
+    OpVector res;
+
+    domain->tick(0, res);
+
+
+    ASSERT_FUZZY_EQUAL(terrain.get(10, 10), 10.0f, 0.1f);
+    ASSERT_TRUE(terrain.hasMod(terrainModEntity->getIntId()));
+    ASSERT_FUZZY_EQUAL(terrain.get(32, 32), 5.0f, 0.1f);
+
+
+    {
+        btVector3 rayFrom(32, 32, 32);
+        btVector3 rayTo(32, -32, 32);
+        btCollisionWorld::ClosestRayResultCallback callback(rayFrom, rayTo);
+        domain->test_getBulletWorld()->rayTest(rayFrom, rayTo, callback);
+
+        ASSERT_FUZZY_EQUAL(callback.m_hitPointWorld.y(), 5.0f, 0.1f);
+    }
+    domain->applyTransform(*terrainModEntity, WFMath::Quaternion(), WFMath::Point<3>(10, 10, 10), WFMath::Vector<3>());
+
+    domain->tick(0, res);
+
+    ASSERT_FUZZY_EQUAL(terrain.get(10, 10), 5.0f, 0.1f);
+    ASSERT_TRUE(terrain.hasMod(terrainModEntity->getIntId()));
+    ASSERT_FUZZY_EQUAL(terrain.get(32, 32), 10.0f, 0.1f);
+
+
+    {
+        btVector3 rayFrom(32, 32, 32);
+        btVector3 rayTo(32, -32, 32);
+        btCollisionWorld::ClosestRayResultCallback callback(rayFrom, rayTo);
+        domain->test_getBulletWorld()->rayTest(rayFrom, rayTo, callback);
+
+        ASSERT_FUZZY_EQUAL(callback.m_hitPointWorld.y(), 10.0f, 0.1f);
+    }
+
+    //Now change "mode" to "free", which should remove the mod.
+
+    modeProperty->set("free");
+    modeProperty->apply(terrainModEntity);
+    terrainModEntity->propertyApplied.emit("mode", *modeProperty);
+
+    domain->tick(0, res);
+
+    ASSERT_FUZZY_EQUAL(terrain.get(10, 10), 10.0f, 0.1f);
+    ASSERT_FALSE(terrain.hasMod(terrainModEntity->getIntId()));
+    ASSERT_FUZZY_EQUAL(terrain.get(32, 32), 10.0f, 0.1f);
+
+    //And back to "planted" which should bring it back
+    modeProperty->set("planted");
+    modeProperty->apply(terrainModEntity);
+    terrainModEntity->propertyApplied.emit("mode", *modeProperty);
+
+    domain->tick(0, res);
+
+    ASSERT_FUZZY_EQUAL(terrain.get(10, 10), 5.0f, 0.1f);
+    ASSERT_TRUE(terrain.hasMod(terrainModEntity->getIntId()));
+    ASSERT_FUZZY_EQUAL(terrain.get(32, 32), 10.0f, 0.1f);
+}
+
+
 void PhysicalDomainIntegrationTest::test_lake_rotated()
 {
     class TestEntity : public Entity
@@ -180,9 +305,6 @@ void PhysicalDomainIntegrationTest::test_lake_rotated()
                 return propertyApplied;
             }
     };
-
-    double tickSize = 1.0 / 15.0;
-    double time = 0;
 
     TypeNode* rockType = new TypeNode("rock");
     TypeNode* lakeType = new TypeNode("lake");
