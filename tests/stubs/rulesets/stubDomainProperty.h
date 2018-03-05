@@ -16,15 +16,6 @@
   }
 #endif //STUB_DomainProperty_DomainProperty
 
-#ifndef STUB_DomainProperty_DomainProperty
-//#define STUB_DomainProperty_DomainProperty
-   DomainProperty::DomainProperty(const DomainProperty& rhs)
-    : Property(rhs)
-  {
-    
-  }
-#endif //STUB_DomainProperty_DomainProperty
-
 #ifndef STUB_DomainProperty_install
 //#define STUB_DomainProperty_install
   void DomainProperty::install(LocatedEntity *, const std::string &)

@@ -17,7 +17,7 @@
 
 #ifndef STUB_GeometryProperty_install
 //#define STUB_GeometryProperty_install
-  void GeometryProperty::install(TypeNode *, const std::string &)
+  void GeometryProperty::install(TypeNode*, const std::string&)
   {
     
   }
@@ -33,19 +33,11 @@
 
 #ifndef STUB_GeometryProperty_createShape
 //#define STUB_GeometryProperty_createShape
-  std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> GeometryProperty::createShape(const WFMath::AxisBox<3>& bbox, btVector3& centerOfMassOffset) const
+  std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> GeometryProperty::createShape(const WFMath::AxisBox<3>& bbox, btVector3& centerOfMassOffset, float mass) const
   {
     return *static_cast<std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>>*>(nullptr);
   }
 #endif //STUB_GeometryProperty_createShape
-
-#ifndef STUB_GeometryProperty_calculateLocalInertia
-//#define STUB_GeometryProperty_calculateLocalInertia
-  void GeometryProperty::calculateLocalInertia(btCollisionShape* shape, float mass, btVector3& inertia) const
-  {
-    
-  }
-#endif //STUB_GeometryProperty_calculateLocalInertia
 
 #ifndef STUB_GeometryProperty_buildMeshCreator
 //#define STUB_GeometryProperty_buildMeshCreator

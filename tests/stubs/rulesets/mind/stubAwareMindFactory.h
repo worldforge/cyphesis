@@ -17,14 +17,6 @@
   }
 #endif //STUB_AwareMindFactory_AwareMindFactory
 
-#ifndef STUB_AwareMindFactory_AwareMindFactory_DTOR
-//#define STUB_AwareMindFactory_AwareMindFactory_DTOR
-   AwareMindFactory::~AwareMindFactory()
-  {
-    
-  }
-#endif //STUB_AwareMindFactory_AwareMindFactory_DTOR
-
 #ifndef STUB_AwareMindFactory_newMind
 //#define STUB_AwareMindFactory_newMind
   BaseMind* AwareMindFactory::newMind(const std::string & id, long) const

@@ -37,15 +37,6 @@ const std::string DomainProperty::property_atlastype = "string";
 
 PropertyInstanceState<Domain> DomainProperty::sInstanceState;
 
-DomainProperty::DomainProperty()
-{
-}
-
-DomainProperty::DomainProperty(const DomainProperty& rhs) :
-    Property(rhs)
-{
-}
-
 void DomainProperty::install(LocatedEntity* entity, const std::string& name)
 {
     sInstanceState.addState(entity, nullptr);
@@ -62,7 +53,7 @@ void DomainProperty::remove(LocatedEntity* entity, const std::string& name)
 
 void DomainProperty::apply(LocatedEntity* entity)
 {
-    if (m_data != "") {
+    if (!m_data.empty()) {
         Domain* domain = sInstanceState.getState(entity);
         if (!domain) {
             if (m_data == "physical") {

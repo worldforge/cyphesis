@@ -51,6 +51,7 @@
 
 #include <btBulletDynamicsCommon.h>
 #include <BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h>
+#include <BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h>
 #include <BulletDynamics/Character/btKinematicCharacterController.h>
 
 #include <sigc++/bind.h>
@@ -235,6 +236,11 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
     m_dynamicsWorld->setForceUpdateAllAabbs(false);
 
     m_visibilityWorld->setForceUpdateAllAabbs(false);
+
+    //Since we're using GImpact shapes for free meshes, we need to register our dispatcher with the algorithm.
+    //Note that free mesh shapes are horrible for performance, we support them nonetheless. Just try to avoid having too many...
+    //TODO: put the basic Bullet configuration into a shared place, so that we can support multiple physical domains.
+    btGImpactCollisionAlgorithm::registerAlgorithm(m_dispatcher);
 
     auto terrainProperty = m_entity.getPropertyClass<TerrainProperty>("terrain");
     if (terrainProperty) {
@@ -662,6 +668,22 @@ float PhysicalDomain::getMassForEntity(const LocatedEntity& entity) const
     return mass;
 }
 
+void PhysicalDomain::createCollisionShapeForEntry(PhysicalDomain::BulletEntry* entry, const WFMath::AxisBox<3>& bbox, float mass)
+{
+    auto geometryProp = entry->entity->getPropertyClassFixed<GeometryProperty>();
+    if (geometryProp) {
+        auto instance = geometryProp->createShape(bbox, entry->centerOfMassOffset, mass);
+        entry->collisionShape = instance.first;
+        entry->backingShape = instance.second;
+    } else {
+        auto size = bbox.highCorner() - bbox.lowCorner();
+        auto btSize = Convert::toBullet(size * 0.5).absolute();
+        entry->centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
+        entry->collisionShape = new btBoxShape(btSize);
+    }
+
+}
+
 void PhysicalDomain::addEntity(LocatedEntity& entity)
 {
     assert(m_entries.find(entity.getIntId()) == m_entries.end());
@@ -734,24 +756,17 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
 
             //"Center of mass offset" is the inverse of the center of the object in relation to origo.
             auto size = bbox.highCorner() - bbox.lowCorner();
-
-            auto geometryProp = entity.getPropertyClassFixed<GeometryProperty>();
             btVector3 inertia(0, 0, 0);
-            if (geometryProp) {
-                std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> instance = geometryProp->createShape(bbox, entry->centerOfMassOffset);
-                entry->collisionShape = instance.first;
-                entry->backingShape = instance.second;
-                geometryProp->calculateLocalInertia(entry->collisionShape, mass, inertia);
-            } else {
-                auto btSize = Convert::toBullet(size * 0.5).absolute();
-                entry->centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
-                entry->collisionShape = new btBoxShape(btSize);
+
+            createCollisionShapeForEntry(entry, bbox, mass);
+
+            if (mass > 0) {
                 entry->collisionShape->calculateLocalInertia(mass, inertia);
             }
 
 
-            debug_print(
-                "PhysicsDomain adding entity " << entity.describeEntity() << " with mass " << mass << " and inertia (" << inertia.x() << "," << inertia.y() << "," << inertia.z() << ")");
+            debug_print("PhysicsDomain adding entity " << entity.describeEntity() << " with mass " << mass
+                                                       << " and inertia (" << inertia.x() << "," << inertia.y() << "," << inertia.z() << ")");
 
             btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(mass, nullptr, entry->collisionShape, inertia);
 
@@ -762,7 +777,9 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
 
             btRigidBody* rigidBody = new btRigidBody(rigidBodyCI);
             entry->collisionObject = rigidBody;
-            entry->motionState = new PhysicalMotionState(*entry, *rigidBody, *this, btTransform(orientation, pos), btTransform(btQuaternion::getIdentity(), entry->centerOfMassOffset));
+            entry->motionState = new PhysicalMotionState(*entry, *rigidBody, *this,
+                                                         btTransform(orientation, pos),
+                                                         btTransform(btQuaternion::getIdentity(), entry->centerOfMassOffset));
             rigidBody->setMotionState(entry->motionState);
             rigidBody->setAngularFactor(angularFactor);
             entry->collisionObject->setUserPointer(entry);
@@ -782,10 +799,6 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
 
             auto speedFlightProp = entity.getPropertyType<double>("speed-flight");
             entry->speedFlight = speedFlightProp ? speedFlightProp->data() : 0;
-
-            if (mass == 0) {
-                entry->collisionObject->setCollisionFlags(entry->collisionObject->getCollisionFlags() | btCollisionObject::CF_STATIC_OBJECT);
-            }
 
             //Only add to world if position is valid. Otherwise this will be done when a new valid position is applied in applyNewPositionForEntity
             if (entity.m_location.m_pos.isValid()) {
@@ -1003,25 +1016,44 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
 
                 auto rigidBody = btRigidBody::upcast(bulletEntry->collisionObject);
                 if (rigidBody) {
-                    //When altering mass we need to first remove and then re-add the body, for some reason.
+                    //If there's a rigid body, there's a valid bbox, otherwise something else is broken
+                    auto& bbox = bulletEntry->entity->m_location.bBox();
+
+                    //When altering mass we need to first remove and then re-add the body.
                     m_dynamicsWorld->removeCollisionObject(bulletEntry->collisionObject);
 
-                    float mass = 0;
-                    if (modeProp->getMode() == ModeProperty::Mode::Planted || modeProp->getMode() == ModeProperty::Mode::Fixed) {
-                        //"fixed" mode means that the entity stays in place, always
-                        //"planted" mode means it's planted in the ground
-                        //Zero mass makes the rigid body static
+                    float mass = getMassForEntity(*bulletEntry->entity);
+                    //"fixed" mode means that the entity stays in place, always
+                    //"planted" mode means it's planted in the ground
+                    //"floating" mode means it planted on the surface
+                    //Zero mass makes the rigid body static
+                    if (modeProp->getMode() == ModeProperty::Mode::Planted || modeProp->getMode() == ModeProperty::Mode::Fixed ||
+                        modeProp->getMode() == ModeProperty::Mode::Floating || mass == 0) {
+
+                        if ((rigidBody->getCollisionFlags() & btCollisionObject::CF_STATIC_OBJECT) == 0) {
+                            //If the shape is a mesh, and it previously wasn't static, we need to replace the shape with an optimized one.
+                            delete rigidBody->getCollisionShape();
+                            createCollisionShapeForEntry(bulletEntry, bbox, mass);
+                            rigidBody->setCollisionShape(bulletEntry->collisionShape);
+                        }
+
                         rigidBody->setMassProps(0, btVector3(0, 0, 0));
                         updateTerrainMod(*bulletEntry->entity);
+
                     } else {
-                        mass = getMassForEntity(*bulletEntry->entity);
-                        btVector3 inertia;
+                        if (rigidBody->getCollisionFlags() & btCollisionObject::CF_STATIC_OBJECT) {
+                            //If the shape is a mesh, and it previously was static, we need to replace the shape with an optimized one.
+                            delete rigidBody->getCollisionShape();
+                            createCollisionShapeForEntry(bulletEntry, bbox, mass);
+                            rigidBody->setCollisionShape(bulletEntry->collisionShape);
+                        }
+
+                        btVector3 inertia(0, 0, 0);
                         bulletEntry->collisionShape->calculateLocalInertia(mass, inertia);
 
                         rigidBody->setMassProps(mass, inertia);
 
                     }
-
                     short collisionMask;
                     short collisionGroup;
                     getCollisionFlagsForEntity(*bulletEntry->entity, collisionGroup, collisionMask);
@@ -1058,9 +1090,9 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
         }
     } else if (name == "mass") {
 
-        ModeProperty* modeProp = bulletEntry->entity->requirePropertyClassFixed<ModeProperty>();
+        const ModeProperty* modeProp = bulletEntry->entity->getPropertyClassFixed<ModeProperty>();
 
-        if (modeProp->getMode() == ModeProperty::Mode::Planted || modeProp->getMode() == ModeProperty::Mode::Fixed) {
+        if (modeProp && modeProp->getMode() == ModeProperty::Mode::Planted || modeProp->getMode() == ModeProperty::Mode::Fixed) {
             //"fixed" mode means that the entity stays in place, always
             //"planted" mode means it's planted in the ground
             //Zero mass makes the rigid body static
@@ -1103,9 +1135,9 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
                     bulletEntry->motionState->m_centerOfMassOffset = btTransform(btQuaternion::getIdentity(), bulletEntry->centerOfMassOffset);
                 }
 
-                ModeProperty* modeProp = bulletEntry->entity->requirePropertyClassFixed<ModeProperty>();
+                auto* modeProp = bulletEntry->entity->getPropertyClassFixed<ModeProperty>();
 
-                if (modeProp->getMode() != ModeProperty::Mode::Fixed) {
+                if (modeProp && modeProp->getMode() != ModeProperty::Mode::Fixed) {
                     adjustToTerrainFn();
                 }
 
@@ -1235,7 +1267,7 @@ void PhysicalDomain::getCollisionFlagsForEntity(const LocatedEntity& entity, sho
             if (entity.m_location.isSolid()) {
                 //This is a physical object
                 collisionGroup = COLLISION_MASK_PHYSICAL;
-                //In this case other physical moving object, the terrain and all static objects.
+                //In this case other physical moving objects, the terrain and all static objects.
                 collisionMask = COLLISION_MASK_PHYSICAL | COLLISION_MASK_TERRAIN | COLLISION_MASK_STATIC;
             } else {
                 //Non solid objects should collide with the terrain only.

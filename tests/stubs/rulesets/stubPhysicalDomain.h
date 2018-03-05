@@ -249,5 +249,13 @@
   }
 #endif //STUB_PhysicalDomain_processWaterBodies
 
+#ifndef STUB_PhysicalDomain_createCollisionShapeForEntry
+//#define STUB_PhysicalDomain_createCollisionShapeForEntry
+  void PhysicalDomain::createCollisionShapeForEntry(PhysicalDomain::BulletEntry* entry, const WFMath::AxisBox<3>& bbox, float mass)
+  {
+    
+  }
+#endif //STUB_PhysicalDomain_createCollisionShapeForEntry
+
 
 #endif

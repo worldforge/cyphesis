@@ -22,6 +22,7 @@
 #include <wfmath/axisbox.h>
 #include <wfmath/point.h>
 #include <wfmath/vector.h>
+#include <bullet/LinearMath/btVector3.h>
 #include <functional>
 
 class btCollisionShape;
@@ -67,7 +68,7 @@ class GeometryProperty : public Property<Atlas::Message::MapType>
 
         void set(const Atlas::Message::Element&) override;
 
-        void install(TypeNode *, const std::string &) override;
+        void install(TypeNode*, const std::string&) override;
 
         GeometryProperty* copy() const override;
 
@@ -79,15 +80,8 @@ class GeometryProperty : public Property<Atlas::Message::MapType>
          * Optionally there can also be as a second entry a shared pointer to a "backing" shape. Such a shape is shared between multiple instances, and deleted only
          * when all instances are deleted. Calling code needs to retain the shared pointer as long as the first collision shape is in use.
          */
-        std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> createShape(const WFMath::AxisBox<3>& bbox, btVector3& centerOfMassOffset) const;
-
-        /**
-         * Calculates the local inertia for the shape. The shape submitted must be one created previously by the same instance using "createShape".
-         * @param shape
-         * @param mass
-         * @param inertia
-         */
-        void calculateLocalInertia(btCollisionShape* shape, float mass, btVector3& inertia) const;
+        std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> createShape(const WFMath::AxisBox<3>& bbox,
+                                                                                    btVector3& centerOfMassOffset, float mass) const;
 
     private:
 
@@ -96,12 +90,10 @@ class GeometryProperty : public Property<Atlas::Message::MapType>
         /**
          * Creator function used for creating a new shape instance.
          */
-        std::function<std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>>(const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset)> mShapeCreator;
-
-        /**
-         * Function used for calculating inertia.
-         */
-        std::function<void(btCollisionShape* shape, float, btVector3&)> mInertiaCalculatorFn;
+        std::function<std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>>(const WFMath::AxisBox<3>& bbox,
+                                                                                      const WFMath::Vector<3>& size,
+                                                                                      btVector3& centerOfMassOffset,
+                                                                                      float mass)> mShapeCreator;
 
         void buildMeshCreator(std::shared_ptr<OgreMeshDeserializer> meshDeserializer);
 

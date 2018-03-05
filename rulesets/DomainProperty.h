@@ -42,9 +42,9 @@ class DomainProperty: public Property<std::string> {
         static const std::string property_name;
         static const std::string property_atlastype;
 
-        explicit DomainProperty();
+        explicit DomainProperty() = default;
 
-        DomainProperty(const DomainProperty& rhs);
+        DomainProperty(const DomainProperty& rhs) = default;
 
         void install(LocatedEntity *, const std::string &) override;
 

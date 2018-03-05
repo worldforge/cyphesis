@@ -15,14 +15,6 @@
   }
 #endif //STUB_AwarenessStoreProvider_AwarenessStoreProvider
 
-#ifndef STUB_AwarenessStoreProvider_AwarenessStoreProvider_DTOR
-//#define STUB_AwarenessStoreProvider_AwarenessStoreProvider_DTOR
-   AwarenessStoreProvider::~AwarenessStoreProvider()
-  {
-    
-  }
-#endif //STUB_AwarenessStoreProvider_AwarenessStoreProvider_DTOR
-
 #ifndef STUB_AwarenessStoreProvider_getStore
 //#define STUB_AwarenessStoreProvider_getStore
   AwarenessStore& AwarenessStoreProvider::getStore(const TypeNode* type, int tileSize )

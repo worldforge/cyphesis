@@ -283,6 +283,9 @@ class PhysicalDomain : public Domain
          */
         void processWaterBodies();
 
+        void createCollisionShapeForEntry(PhysicalDomain::BulletEntry* entry, const WFMath::AxisBox<3>& bbox, float mass);
+
+
 };
 
 #endif /* PHYSICALDOMAIN_H_ */
