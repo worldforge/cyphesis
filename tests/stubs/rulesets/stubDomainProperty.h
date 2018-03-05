@@ -7,15 +7,6 @@
 #ifndef STUB_RULESETS_DOMAINPROPERTY_H
 #define STUB_RULESETS_DOMAINPROPERTY_H
 
-#ifndef STUB_DomainProperty_DomainProperty
-//#define STUB_DomainProperty_DomainProperty
-   DomainProperty::DomainProperty()
-    : Property()
-  {
-    
-  }
-#endif //STUB_DomainProperty_DomainProperty
-
 #ifndef STUB_DomainProperty_install
 //#define STUB_DomainProperty_install
   void DomainProperty::install(LocatedEntity *, const std::string &)
