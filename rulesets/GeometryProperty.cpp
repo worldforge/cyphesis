@@ -38,6 +38,7 @@
 #include <boost/filesystem/fstream.hpp>
 #include <common/debug.h>
 #include <BulletCollision/CollisionShapes/btScaledBvhTriangleMeshShape.h>
+#include <BulletCollision/CollisionShapes/btConvexHullShape.h>
 
 const std::string GeometryProperty::property_name = "geometry";
 const std::string GeometryProperty::property_atlastype = "map";
@@ -301,8 +302,8 @@ void GeometryProperty::buildMeshCreator(std::shared_ptr<OgreMeshDeserializer> me
     m_meshBounds = WFMath::AxisBox<3>(Convert::toWF<WFMath::Point<3>>(meshShape->getLocalAabbMin()),
                                       Convert::toWF<WFMath::Point<3>>(meshShape->getLocalAabbMax()));
 
-    mShapeCreator = [meshShape, triangleVertexArray](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size,
-                                                     btVector3& centerOfMassOffset, float mass) -> std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> {
+    mShapeCreator = [meshShape, verts, triangleVertexArray](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size,
+                                                            btVector3& centerOfMassOffset, float mass) -> std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> {
         //In contrast to other shapes there's no centerOfMassOffset for mesh shapes
         centerOfMassOffset = btVector3(0, 0, 0);
         btVector3 meshSize = meshShape->getLocalAabbMax() - meshShape->getLocalAabbMin();
@@ -312,9 +313,10 @@ void GeometryProperty::buildMeshCreator(std::shared_ptr<OgreMeshDeserializer> me
         if (mass == 0) {
             return std::make_pair(new btScaledBvhTriangleMeshShape(meshShape.get(), scaling), meshShape);
         } else {
-            auto shape = new btGImpactMeshShape(triangleVertexArray.get());
+            auto shape = new btConvexHullShape(verts.get()->data(), verts.get()->size() / 3, sizeof(float) * 3);
+            shape->optimizeConvexHull();
+            shape->recalcLocalAabb();
             shape->setLocalScaling(scaling);
-            shape->updateBound();
             return std::make_pair(shape, meshShape);
         }
 

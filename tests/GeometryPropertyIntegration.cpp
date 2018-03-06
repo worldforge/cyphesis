@@ -44,6 +44,7 @@
 #include <BulletCollision/CollisionShapes/btCylinderShape.h>
 #include <BulletCollision/CollisionShapes/btScaledBvhTriangleMeshShape.h>
 #include <BulletCollision/Gimpact/btGImpactShape.h>
+#include <BulletCollision/CollisionShapes/btConvexHullShape.h>
 
 #include "stubs/physics/stubVector3D.h"
 
@@ -350,7 +351,7 @@ void GeometryPropertyIntegrationTest::test_createMesh()
 
         btCollisionShape* shape = g1.createShape(aabb, massOffset, 1.0).first;
         ASSERT_EQUAL(btVector3(0, 0, 0), massOffset);
-        btGImpactMeshShape* mesh = dynamic_cast<btGImpactMeshShape*>(shape);
+        btConvexHullShape* mesh = dynamic_cast<btConvexHullShape*>(shape);
         ASSERT_NOT_NULL(mesh);
         ASSERT_EQUAL(btVector3(1, 1, 1), mesh->getLocalScaling());
     }

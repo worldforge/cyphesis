@@ -240,7 +240,7 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
     //Since we're using GImpact shapes for free meshes, we need to register our dispatcher with the algorithm.
     //Note that free mesh shapes are horrible for performance, we support them nonetheless. Just try to avoid having too many...
     //TODO: put the basic Bullet configuration into a shared place, so that we can support multiple physical domains.
-    btGImpactCollisionAlgorithm::registerAlgorithm(m_dispatcher);
+    //btGImpactCollisionAlgorithm::registerAlgorithm(m_dispatcher);
 
     auto terrainProperty = m_entity.getPropertyClass<TerrainProperty>("terrain");
     if (terrainProperty) {
