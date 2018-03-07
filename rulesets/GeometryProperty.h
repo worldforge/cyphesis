@@ -47,6 +47,9 @@ class OgreMeshDeserializer;
  * "cylinder-y": A cylinder, oriented along the y axis
  * "mesh"      : An arbitrary mesh, using vertices and indices.
  *               Mesh data is either read from the "path", or supplied "vertices" and "indices" attributes.
+ *               When the entity is "static" (i.e. "planted", "fixed" or "floating") a high fidelity mesh will be used.
+ *               When it's moving however ("free" or "submerged") a convex hull will be used instead. This is for performance reasons.
+ * "compound"  : Composed by multiple simpler shapes. Use this when you want a shape which retains its detail even when non-static.
  *
  * In addition a "path" attribute can be specified, pointing to a mesh file.
  * If the "mesh" type is specified, the full mesh data will be read and used.
@@ -97,6 +100,7 @@ class GeometryProperty : public Property<Atlas::Message::MapType>
 
         void buildMeshCreator(std::shared_ptr<OgreMeshDeserializer> meshDeserializer);
 
+        void buildCompoundCreator();
 };
 
 #endif /* RULESETS_GEOMETRYPROPERTY_H_ */

@@ -39,20 +39,23 @@
 #include <common/debug.h>
 #include <BulletCollision/CollisionShapes/btScaledBvhTriangleMeshShape.h>
 #include <BulletCollision/CollisionShapes/btConvexHullShape.h>
+#include <BulletCollision/CollisionShapes/btCompoundShape.h>
+#include <common/compose.hpp>
 
 const std::string GeometryProperty::property_name = "geometry";
 const std::string GeometryProperty::property_atlastype = "map";
+
+auto createBoxFn = [&](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
+    -> std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> {
+    auto btSize = Convert::toBullet(size * 0.5).absolute();
+    centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
+    return std::make_pair(new btBoxShape(btSize), std::shared_ptr<btCollisionShape>());
+};
 
 void GeometryProperty::set(const Atlas::Message::Element& data)
 {
     Property<Atlas::Message::MapType>::set(data);
 
-    auto createBoxFn = [&](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
-        -> std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> {
-        auto btSize = Convert::toBullet(size * 0.5).absolute();
-        centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
-        return std::make_pair(new btBoxShape(btSize), std::shared_ptr<btCollisionShape>());
-    };
 
     std::shared_ptr<OgreMeshDeserializer> deserializer;
     AtlasQuery::find<std::string>(data, "path", [&](const std::string& path) {
@@ -164,6 +167,8 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
             };
         } else if (shapeType == "mesh") {
             buildMeshCreator(std::move(deserializer));
+        } else if (shapeType == "compound") {
+            buildCompoundCreator();
         }
     } else {
         log(WARNING, "Geometry property without 'type' attribute set. Property value: " + debug_tostring(data));
@@ -342,5 +347,66 @@ void GeometryProperty::install(TypeNode* typeNode, const std::string&)
             typeNode->injectProperty("bbox", bBoxProperty);
         }
     }
+}
+
+void GeometryProperty::buildCompoundCreator()
+{
+    mShapeCreator = [&](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size,
+                        btVector3& centerOfMassOffset, float mass) -> std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> {
+        auto I = m_data.find("shapes");
+        if (I != m_data.end() && I->second.isList()) {
+            auto shapes = I->second.List();
+            btCompoundShape* compoundShape = new btCompoundShape(true, shapes.size());
+
+            std::vector<btCollisionShape*> childShapes(shapes.size());
+            for (auto& shapeElement : shapes) {
+                if (shapeElement.isMap()) {
+                    auto& shapeMap = shapeElement.Map();
+                    AtlasQuery::find<std::string>(shapeMap, "type", [&](const std::string& type) {
+                        if (type == "box") {
+                            AtlasQuery::find<Atlas::Message::ListType>(shapeMap, "points", [&](const Atlas::Message::ListType& points) {
+                                WFMath::AxisBox<3> shapeBox(points);
+
+                                btTransform transform(btQuaternion::getIdentity());
+                                transform.setOrigin(Convert::toBullet(shapeBox.getCenter()));
+
+                                AtlasQuery::find<Atlas::Message::ListType>(shapeMap, "orientation", [&](const Atlas::Message::ListType& orientationList) {
+                                    transform.setRotation(Convert::toBullet(WFMath::Quaternion(orientationList)));
+
+                                });
+
+                                auto boxSize = shapeBox.highCorner() - shapeBox.lowCorner();
+
+                                btBoxShape* boxShape = new btBoxShape(Convert::toBullet(boxSize / 2.f));
+                                childShapes.emplace_back(boxShape);
+                                compoundShape->addChildShape(transform, boxShape);
+                            });
+                        } else {
+                            //TODO: implement more shapes when needed. "box" should go a long way though.
+                            log(WARNING, String::compose("Unrecognized compound shape type '%1'.", type));
+                        }
+                    });
+
+                }
+            }
+
+            btVector3 aabbMin, aabbMax;
+            compoundShape->getAabb(btTransform::getIdentity(), aabbMin, aabbMax);
+
+            centerOfMassOffset = btVector3(0, 0, 0);
+            btVector3 meshSize = aabbMax - aabbMin;
+            btVector3 scaling(size.x() / meshSize.x(), size.y() / meshSize.y(), size.z() / meshSize.z());
+            compoundShape->setLocalScaling(scaling);
+
+            return std::make_pair(compoundShape, std::shared_ptr<btCollisionShape>(nullptr, [childShapes](btCollisionShape* p) {
+                //Don't delete the shape, just the child shapes.
+                for (btCollisionShape* childShape : childShapes) {
+                    delete childShape;
+                }
+            }));
+        }
+        return createBoxFn(bbox, size, centerOfMassOffset, mass);
+    };
+
 }
 

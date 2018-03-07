@@ -30,13 +30,13 @@
 #include "server/ServerRouting.h"
 
 #include "rulesets/Entity.h"
+#include "rulesets/GeometryProperty.h"
 
 #include "common/debug.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
 
-#include <rulesets/GeometryProperty.h>
 #include <BulletCollision/CollisionShapes/btCollisionShape.h>
 #include <BulletCollision/CollisionShapes/btBoxShape.h>
 #include <BulletCollision/CollisionShapes/btSphereShape.h>
@@ -45,6 +45,8 @@
 #include <BulletCollision/CollisionShapes/btScaledBvhTriangleMeshShape.h>
 #include <BulletCollision/Gimpact/btGImpactShape.h>
 #include <BulletCollision/CollisionShapes/btConvexHullShape.h>
+#include <BulletCollision/CollisionShapes/btCompoundShape.h>
+
 
 #include "stubs/physics/stubVector3D.h"
 
@@ -73,11 +75,14 @@ class GeometryPropertyIntegrationTest : public Cyphesis::TestBase
         void test_createMesh();
 
         void test_createMeshInvalidData();
+
+        void test_createCompound();
 };
 
 
 GeometryPropertyIntegrationTest::GeometryPropertyIntegrationTest()
 {
+    ADD_TEST(GeometryPropertyIntegrationTest::test_createCompound);
     ADD_TEST(GeometryPropertyIntegrationTest::test_createShapes);
     ADD_TEST(GeometryPropertyIntegrationTest::test_createMesh);
     ADD_TEST(GeometryPropertyIntegrationTest::test_createMeshInvalidData);
@@ -90,6 +95,45 @@ void GeometryPropertyIntegrationTest::setup()
 
 void GeometryPropertyIntegrationTest::teardown()
 {
+
+}
+
+
+void GeometryPropertyIntegrationTest::test_createCompound()
+{
+    WFMath::AxisBox<3> aabb(WFMath::Point<3>(-2, -4, -3), WFMath::Point<3>(6, 10, 8));
+
+    btVector3 massOffset;
+    {
+        GeometryProperty g1;
+        g1.set(Atlas::Message::MapType({{"type",   "compound"},
+                                        {"shapes", ListType{
+                                            MapType {
+                                                {"type",   "box"},
+                                                {"points", ListType{
+                                                    1.f, 2.f, 3.f,
+                                                    6.f, 8.f, 10.f
+                                                }}
+                                            },
+                                            MapType {
+                                                {"type",   "box"},
+                                                {"points", ListType{
+                                                    1.f, 2.f, 3.f,
+                                                    6.f, 8.f, 10.f
+                                                }}
+                                            }
+
+                                        }}}));
+        auto result = g1.createShape(aabb, massOffset, 1.0f);
+        btCompoundShape* compoundShape = dynamic_cast<btCompoundShape*>(result.first);
+        ASSERT_NOT_NULL(compoundShape);
+        ASSERT_EQUAL(2, compoundShape->getNumChildShapes());
+        ASSERT_EQUAL(BOX_SHAPE_PROXYTYPE, compoundShape->getChildShape(0)->getShapeType());
+        auto* boxChild1 = dynamic_cast<btBoxShape*>(compoundShape->getChildShape(0));
+        ASSERT_FUZZY_EQUAL(8.f/2.f, boxChild1->getImplicitShapeDimensions().x(), 0.1f);
+        ASSERT_FUZZY_EQUAL(14.f/2.f, boxChild1->getImplicitShapeDimensions().y(), 0.1f);
+        ASSERT_FUZZY_EQUAL(11.f/2.f, boxChild1->getImplicitShapeDimensions().z(), 0.1f);
+    }
 
 }
 

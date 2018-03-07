@@ -4,7 +4,64 @@
             <map name="geometry">
                 <map name="default">
                     <string name="path">dural/items/containers/crate/model/wooden_crate.mesh</string>
-                    <string name="type">mesh</string>
+                    <string name="type">compound</string>
+                    <list name="shapes">
+                        <map>
+                            <string name="type">box</string>
+                            <list name="points">
+                                <float>-1</float>
+                                <float>0</float>
+                                <float>-1</float>
+                                <float>1</float>
+                                <float>0.2</float>
+                                <float>1</float>
+                            </list>
+                        </map>
+                        <map>
+                            <string name="type">box</string>
+                            <list name="points">
+                                <float>-1</float>
+                                <float>0.2</float>
+                                <float>-1</float>
+                                <float>1</float>
+                                <float>1</float>
+                                <float>-0.8</float>
+                            </list>
+                        </map>
+                        <map>
+                            <string name="type">box</string>
+                            <list name="points">
+                                <float>-1</float>
+                                <float>0.2</float>
+                                <float>0.8</float>
+                                <float>1</float>
+                                <float>1</float>
+                                <float>1</float>
+                            </list>
+                        </map>
+                        <map>
+                            <string name="type">box</string>
+                            <list name="points">
+                                <float>-1</float>
+                                <float>0.2</float>
+                                <float>-0.8</float>
+                                <float>-0.8</float>
+                                <float>1</float>
+                                <float>0.8</float>
+                            </list>
+                        </map>
+                        <map>
+                            <string name="type">box</string>
+                            <list name="points">
+                                <float>0.8</float>
+                                <float>0.2</float>
+                                <float>-0.8</float>
+                                <float>1</float>
+                                <float>1</float>
+                                <float>0.8</float>
+                            </list>
+                        </map>
+                    </list>
                 </map>
                 <string name="visibility">public</string>
             </map>

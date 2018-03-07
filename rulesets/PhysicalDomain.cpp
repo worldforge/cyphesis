@@ -680,6 +680,7 @@ void PhysicalDomain::createCollisionShapeForEntry(PhysicalDomain::BulletEntry* e
         auto btSize = Convert::toBullet(size * 0.5).absolute();
         entry->centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
         entry->collisionShape = new btBoxShape(btSize);
+        entry->backingShape.reset();
     }
 
 }
