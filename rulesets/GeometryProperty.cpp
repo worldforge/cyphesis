@@ -319,7 +319,11 @@ void GeometryProperty::buildMeshCreator(std::shared_ptr<OgreMeshDeserializer> me
             return std::make_pair(new btScaledBvhTriangleMeshShape(meshShape.get(), scaling), meshShape);
         } else {
             auto shape = new btConvexHullShape(verts.get()->data(), verts.get()->size() / 3, sizeof(float) * 3);
+
+            //btConvexHullShape::optimizeConvexHull was introduced in 2.84. It's useful, but not necessary.
+            #if BT_BULLET_VERSION > 283
             shape->optimizeConvexHull();
+            #endif
             shape->recalcLocalAabb();
             shape->setLocalScaling(scaling);
             return std::make_pair(shape, meshShape);
