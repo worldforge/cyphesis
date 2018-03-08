@@ -321,7 +321,8 @@ void GeometryProperty::buildMeshCreator(std::shared_ptr<OgreMeshDeserializer> me
             auto shape = new btConvexHullShape(verts.get()->data(), verts.get()->size() / 3, sizeof(float) * 3);
 
             //btConvexHullShape::optimizeConvexHull was introduced in 2.84. It's useful, but not necessary.
-            #if BT_BULLET_VERSION > 283
+            //version number 285 corresponds to version 2.84...
+            #if BT_BULLET_VERSION > 284
             shape->optimizeConvexHull();
             #endif
             shape->recalcLocalAabb();
