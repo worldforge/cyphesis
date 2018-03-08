@@ -361,8 +361,11 @@ void GeometryProperty::buildCompoundCreator()
         auto I = m_data.find("shapes");
         if (I != m_data.end() && I->second.isList()) {
             auto shapes = I->second.List();
+            #if BT_BULLET_VERSION > 283
             btCompoundShape* compoundShape = new btCompoundShape(true, shapes.size());
-
+            #else
+            btCompoundShape* compoundShape = new btCompoundShape(true);
+            #endif
             std::vector<btCollisionShape*> childShapes(shapes.size());
             for (auto& shapeElement : shapes) {
                 if (shapeElement.isMap()) {
