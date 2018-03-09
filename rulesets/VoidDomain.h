@@ -26,9 +26,9 @@
 class VoidDomain : public Domain
 {
     public:
-        VoidDomain(LocatedEntity& entity);
+        explicit VoidDomain(LocatedEntity& entity);
 
-        virtual ~VoidDomain();
+        ~VoidDomain() override = default;
 
         void tick(double t, OpVector& res) override;
 

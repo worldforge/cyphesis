@@ -26,29 +26,20 @@ VoidDomain::VoidDomain(LocatedEntity& entity)
 {
 }
 
-VoidDomain::~VoidDomain()
-{
-}
-
 void VoidDomain::tick(double t, OpVector& res)
 {
 }
 
 bool VoidDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const
 {
-    //The entity to which the domain belongs can see its content
-    if (&observingEntity == &m_entity) {
-        return true;
-    }
-
-    //Nothing can be seen
-    return false;
+    //The entity to which the domain belongs can see its content, otherwise nothing can be seen.
+    return &observingEntity == &m_entity;
 }
 
 void VoidDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity,
         std::list<LocatedEntity*>& entityList) const
 {
-
+    //Can't see anything
 }
 
 

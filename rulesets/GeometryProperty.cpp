@@ -343,12 +343,14 @@ GeometryProperty* GeometryProperty::copy() const
 
 void GeometryProperty::install(TypeNode* typeNode, const std::string&)
 {
-    //If there are valid mesh bounds read, and there's no
+    //If there are valid mesh bounds read, and there's no bbox property already, add one.
     if (m_meshBounds.isValid()) {
         if (typeNode->defaults().find("bbox") == typeNode->defaults().end()) {
             //Update the bbox property of the type if there are valid bounds from the mesh.
             BBoxProperty* bBoxProperty = new BBoxProperty();
             bBoxProperty->set(m_meshBounds.toAtlas());
+            bBoxProperty->setFlags(flag_class);
+            bBoxProperty->install(typeNode, "bbox");
             typeNode->injectProperty("bbox", bBoxProperty);
         }
     }

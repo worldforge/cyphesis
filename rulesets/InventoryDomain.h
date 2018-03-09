@@ -28,9 +28,9 @@
 class InventoryDomain : public Domain
 {
     public:
-        InventoryDomain(LocatedEntity& entity);
+        explicit InventoryDomain(LocatedEntity& entity);
 
-        virtual ~InventoryDomain();
+        ~InventoryDomain() override = default;
 
         void tick(double t, OpVector& res) override;
 

@@ -88,7 +88,9 @@ class PhysicalDomain : public Domain
 
         void removeEntity(LocatedEntity& entity) override;
 
-        void applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity) override;
+        void applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation,
+                            const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity,
+                            std::set<LocatedEntity*>& transformedEntities) override;
 
         void refreshTerrain(const std::vector<WFMath::AxisBox<2>>& areas) override;
 
@@ -285,7 +287,15 @@ class PhysicalDomain : public Domain
 
         void createCollisionShapeForEntry(PhysicalDomain::BulletEntry* entry, const WFMath::AxisBox<3>& bbox, float mass);
 
-
+        /**
+         * Transform any entities that are resting on the supplied entity.
+         *
+         * I.e. those that are "free" or "submerged" and are on top of the entity.
+         * @param entry
+         * @param posTransform
+         * @param transformedEntities
+         */
+        void transformRestingEntities(BulletEntry* entry, const WFMath::Vector<3>& posTransform, std::set<LocatedEntity*>& transformedEntities);
 };
 
 #endif /* PHYSICALDOMAIN_H_ */

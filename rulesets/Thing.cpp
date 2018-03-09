@@ -256,6 +256,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
 //        }
 
 
+        std::set<LocatedEntity*> transformedEntities;
 
 
         // Check if the location has changed
@@ -318,7 +319,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
             processAppearDisappear(std::move(previousObserving), res);
         } else {
             if (updatedTransform) {
-                domain->applyTransform(*this, newOrientation, newPos, newVelocity);
+                domain->applyTransform(*this, newOrientation, newPos, newVelocity, transformedEntities);
             }
         }
 
@@ -341,6 +342,30 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
         s->setArgs1(m);
         broadcast(s, res);
 
+        //Check if there are any other transformed entities, and send move ops for those.
+        //However, with this setup the Sight ops for the resting entities will be sent _before_ the Sight
+        //op for this entity is sent. It's a bit backwards.
+        //TODO: send resting sights after main sight
+        if (transformedEntities.size() > 1) {
+            for (auto& transformedEntity : transformedEntities) {
+                if (transformedEntity != this) {
+
+                    Atlas::Objects::Entity::Anonymous movedArg;
+                    movedArg->setId(transformedEntity->getId());
+                    transformedEntity->m_location.addToEntity(movedArg);
+                    Move movedOp;
+                    movedOp->setArgs1(movedArg);
+
+                    Sight sight;
+                    sight->setArgs1(movedOp);
+                    OpVector childRes;
+                    transformedEntity->broadcast(sight, childRes);
+                    for (auto& childOp : childRes) {
+                        transformedEntity->sendWorld(childOp);
+                    }
+                }
+            }
+        }
     }
 
     m_seq++;

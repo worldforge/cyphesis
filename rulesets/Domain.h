@@ -26,6 +26,7 @@
 
 #include <string>
 #include <list>
+#include <set>
 
 class LocatedEntity;
 
@@ -103,11 +104,15 @@ class Domain
          * @param entity The child entity.
          * @param orientation New orientation, applied if valid.
          * @param pos New position, applied if valid.
-         * @param velocity New velocity, applied if valid. This is pseudo-normalized, in the sense that a normalized value means "max speed". The final velocity is caluclated by the domain.
+         * @param velocity New velocity, applied if valid. This is pseudo-normalized,
+         * in the sense that a normalized value means "max speed". The final velocity is calculated by the domain.
+         * @param transformedEntities A list of entities that were transformed by this action. In most cases only the moved entity,
+         * but there are cases where other are affected too.
          */
-        virtual void applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity)
+        virtual void applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation,
+                                    const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity,
+                                    std::set<LocatedEntity*>& transformedEntities)
         {
-
         }
 
         /**

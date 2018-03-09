@@ -1141,7 +1141,6 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
                     adjustToTerrainFn();
                 }
 
-
                 applyNewPositionForEntity(bulletEntry, bulletEntry->entity->m_location.pos());
                 auto rigidBody = btRigidBody::upcast(bulletEntry->collisionObject);
                 if (rigidBody) {
@@ -1157,7 +1156,9 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
         applyNewPositionForEntity(bulletEntry, bulletEntry->entity->m_location.m_pos);
         bulletEntry->entity->m_location.update(BaseWorld::instance().getTime());
         bulletEntry->entity->resetFlags(entity_clean);
-        m_dynamicsWorld->updateSingleAabb(bulletEntry->collisionObject);
+        if (bulletEntry->collisionObject) {
+            m_dynamicsWorld->updateSingleAabb(bulletEntry->collisionObject);
+        }
         //sendMoveSight(*bulletEntry);
     } else if (name == TerrainModProperty::property_name) {
         updateTerrainMod(*bulletEntry->entity, true);
@@ -1386,7 +1387,7 @@ void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath:
         m_visibilityWorld->updateSingleAabb(entry->visibilitySphere);
     }
 
-    m_movingEntities.insert(entry);
+   // m_movingEntities.insert(entry);
     m_dirtyEntries.insert(entry);
 }
 
@@ -1498,8 +1499,13 @@ void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& 
     }
 }
 
-void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity)
+void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation,
+                                    const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity,
+                                    std::set<LocatedEntity*>& transformedEntities)
 {
+
+    WFMath::Point<3> oldPos = entity.m_location.m_pos;
+
     auto I = m_entries.find(entity.getIntId());
     assert(I != m_entries.end());
     bool hadChange = false;
@@ -1527,7 +1533,6 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
             hadChange = true;
         }
         if (pos.isValid()) {
-            WFMath::Point<3> oldPos = entity.m_location.m_pos;
             applyNewPositionForEntity(entry, pos);
             if (!oldPos.isEqualTo(entity.m_location.m_pos)) {
                 entity.resetFlags(entity_pos_clean);
@@ -1557,6 +1562,8 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
     }
 
     if (hadChange) {
+        transformedEntities.insert(entry->entity);
+        transformRestingEntities(entry, entry->entity->m_location.m_pos -oldPos , transformedEntities);
         updateTerrainMod(entity);
         if (entry->collisionShape) {
             //Since we've deactivated automatic updating of all aabbs each tick we need to do it ourselves when updating the position.
@@ -1928,5 +1935,75 @@ bool PhysicalDomain::getTerrainHeight(float x, float y, float& height) const
         return m_terrain->getHeight(x, y, height);
     }
     return false;
+}
+
+void PhysicalDomain::transformRestingEntities(PhysicalDomain::BulletEntry* entry,
+                                              const WFMath::Vector<3>& posTransform,
+                                              std::set<LocatedEntity*>& transformedEntities)
+{
+    auto* collObject = entry->collisionObject;
+    if (collObject) {
+
+        //Check if there are any objects resting on us, and move them along too.
+        std::set<BulletEntry*> objectsRestingOnOurObject;
+        int numManifolds = m_dynamicsWorld->getDispatcher()->getNumManifolds();
+        for (int i = 0; i < numManifolds; i++) {
+            btPersistentManifold* contactManifold = m_dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
+            const btCollisionObject* obA = contactManifold->getBody0();
+            const btCollisionObject* obB = contactManifold->getBody1();
+
+            const btCollisionObject* otherObject;
+            bool aIsOurObject = false;
+
+            if (obA == collObject) {
+                otherObject = obB;
+                aIsOurObject = true;
+            } else if (obB == collObject) {
+                otherObject = obA;
+            } else {
+                continue;
+            }
+
+            if (otherObject->getInternalType() != btCollisionObject::CO_GHOST_OBJECT) {
+
+                BulletEntry* restingEntry = static_cast<BulletEntry*>(otherObject->getUserPointer());
+
+                //Check that we haven't already handled this entry, to avoid infinite loop with complex shapes resting on each other.
+                if (restingEntry && transformedEntities.find(restingEntry->entity) == transformedEntities.end()) {
+                    int numContacts = contactManifold->getNumContacts();
+                    for (int j = 0; j < numContacts; j++) {
+                        btManifoldPoint& pt = contactManifold->getContactPoint(j);
+                        if (pt.getDistance() < 0.f) {
+                            const btVector3& ptA = pt.getPositionWorldOnA();
+                            const btVector3& ptB = pt.getPositionWorldOnB();
+                            //Check if the other object rests on our object.
+                            //Note that due to how collision is handled, the vertical check is "inversed".
+                            //I.e. if object A rests on object B, the collision point on A will actually
+                            // be _below_ the point on B, since they overlap.
+                            if (aIsOurObject) {
+                                if (ptA.y() > ptB.y()) {
+                                    objectsRestingOnOurObject.emplace(restingEntry);
+                                    break;
+                                }
+                            } else {
+                                if (ptB.y() > ptA.y()) {
+                                    objectsRestingOnOurObject.emplace(restingEntry);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //Move all of the objects that were resting on our object.
+        for (auto& restingEntry : objectsRestingOnOurObject) {
+            applyTransform(*restingEntry->entity, WFMath::Quaternion(),
+                           restingEntry->entity->m_location.m_pos + posTransform, WFMath::Vector<3>(), transformedEntities);
+        }
+
+
+    }
 }
 

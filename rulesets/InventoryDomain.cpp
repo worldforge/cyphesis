@@ -54,10 +54,6 @@ InventoryDomain::InventoryDomain(LocatedEntity& entity) :
     entity.makeContainer();
 }
 
-InventoryDomain::~InventoryDomain()
-{
-}
-
 void InventoryDomain::tick(double t, OpVector& res)
 {
 }
