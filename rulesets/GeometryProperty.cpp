@@ -345,12 +345,23 @@ void GeometryProperty::install(TypeNode* typeNode, const std::string&)
 {
     //If there are valid mesh bounds read, and there's no bbox property already, add one.
     if (m_meshBounds.isValid()) {
-        if (typeNode->defaults().find("bbox") == typeNode->defaults().end()) {
+        BBoxProperty* bBoxProperty = nullptr;
+        auto I = typeNode->defaults().find("bbox");
+        if (I == typeNode->defaults().end()) {
             //Update the bbox property of the type if there are valid bounds from the mesh.
-            BBoxProperty* bBoxProperty = new BBoxProperty();
+            bBoxProperty = new BBoxProperty();
             bBoxProperty->set(m_meshBounds.toAtlas());
-            bBoxProperty->setFlags(flag_class);
+            //Mark the property as ephemeral since it's calulcated.
+            bBoxProperty->setFlags(flag_class | per_ephem);
             bBoxProperty->install(typeNode, "bbox");
+        } else if ((I->second->flags() & per_ephem) != 0) {
+            bBoxProperty = dynamic_cast<BBoxProperty*>(I->second);
+            if (bBoxProperty) {
+                bBoxProperty->set(m_meshBounds.toAtlas());
+            }
+        }
+
+        if (bBoxProperty) {
             typeNode->injectProperty("bbox", bBoxProperty);
         }
     }

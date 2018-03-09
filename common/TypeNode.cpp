@@ -88,7 +88,8 @@ void TypeNode::updateProperties(const MapType & attributes)
     // present after the update.
     std::set<std::string> removed_properties;
     for (auto& entry : m_defaults) {
-        if (attributes.find(entry.first) == attributes.end()) {
+        //Don't remove epheremal attributes.
+        if (attributes.find(entry.first) == attributes.end() && (entry.second->flags() & per_ephem) == 0) {
             debug( std::cout << entry.first << " removed" << std::endl; );
             removed_properties.insert(entry.first);
         }
