@@ -146,6 +146,8 @@ void EntityRuleHandler::installStandardRules()
     {
         Atlas::Objects::Root decl = composeDeclaration("plant", "thing", {
             {"friction", 1.0},
+            {"friction_roll", 0.1},
+            {"friction_spin", 0.05},
             {"mode", "planted"},
             {"status", 1.0f},
             //Plants should by default be represented by an upright cylinder.

@@ -236,7 +236,7 @@ class PhysicalDomain : public Domain
          * @brief Builds one terrain page from a Mercator segment.
          * @param segment
          */
-        void buildTerrainPage(Mercator::Segment& segment, float friction);
+        TerrainEntry buildTerrainPage(Mercator::Segment& segment);
 
         /**
          * Listener method for all child entities, called when their properties change.

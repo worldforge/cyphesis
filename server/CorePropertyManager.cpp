@@ -157,8 +157,18 @@ CorePropertyManager::CorePropertyManager()
     installProperty<DensityProperty>();
     /**
      * Friction is used by the physics system. 0 is no friction, 1 is full friction.
+     * This is for "sliding", see "friction-roll" and "friction-spin".
      */
-    installProperty<Property<double> >("friction", "float");
+    installProperty<Property<double>>("friction", "float");
+    /**
+     * Friction for rolling is used by the physics system. 0 is no friction, 1 is full friction.
+     */
+    installProperty<Property<double>>("friction_roll", "float");
+    /**
+     * Friction for spinning is used by the physics system. 0 is no friction, 1 is full friction.
+     */
+    installProperty<Property<double>>("friction_spin", "float");
+
     installProperty<AngularFactorProperty>();
     installProperty<GeometryProperty>();
 

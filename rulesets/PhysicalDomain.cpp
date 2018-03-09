@@ -58,6 +58,7 @@
 
 #include <unordered_set>
 #include <chrono>
+#include <boost/optional.hpp>
 
 
 static const bool debug_flag = false;
@@ -289,6 +290,8 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
     m_entries.insert(std::make_pair(entity.getIntId(), &mContainingEntityEntry));
 
     buildTerrainPages();
+
+    m_entity.propertyApplied.connect(sigc::mem_fun(this, &PhysicalDomain::entityPropertyApplied));
 }
 
 PhysicalDomain::~PhysicalDomain()
@@ -333,28 +336,56 @@ PhysicalDomain::~PhysicalDomain()
 
 void PhysicalDomain::buildTerrainPages()
 {
-    double friction = 1.0;
+    boost::optional<float> friction;
+    boost::optional<float> rollingFriction;
+    boost::optional<float> spinningFriction;
 
-    auto frictionProp = m_entity.getPropertyType<double>("friction");
+    {
+        auto frictionProp = m_entity.getPropertyType<double>("friction");
 
-    if (frictionProp) {
-        friction = frictionProp->data();
+        if (frictionProp) {
+            friction = (float) frictionProp->data();
+        }
     }
 
-    const TerrainProperty* terrainProperty = m_entity.getPropertyClass<TerrainProperty>("terrain");
+    {
+        auto frictionProp = m_entity.getPropertyType<double>("friction_roll");
+
+        if (frictionProp) {
+            rollingFriction = (float) frictionProp->data();
+        }
+    }
+
+    {
+        auto frictionProp = m_entity.getPropertyType<double>("friction_spin");
+
+        if (frictionProp) {
+            spinningFriction = (float) frictionProp->data();
+        }
+    }
+    const auto* terrainProperty = m_entity.getPropertyClass<TerrainProperty>("terrain");
     if (terrainProperty) {
         auto& terrain = terrainProperty->getData();
         auto segments = terrain.getTerrain();
         for (auto& row : segments) {
             for (auto& entry : row.second) {
                 Mercator::Segment* segment = entry.second;
-                buildTerrainPage(*segment, static_cast<float>(friction));
+                TerrainEntry terrainEntry = buildTerrainPage(*segment);
+                if (friction) {
+                    terrainEntry.rigidBody->setFriction(*friction);
+                }
+                if (spinningFriction) {
+                    terrainEntry.rigidBody->setSpinningFriction(*spinningFriction);
+                }
+                if (rollingFriction) {
+                    terrainEntry.rigidBody->setRollingFriction(*rollingFriction);
+                }
             }
         }
     }
 }
 
-void PhysicalDomain::buildTerrainPage(Mercator::Segment& segment, float friction)
+PhysicalDomain::TerrainEntry PhysicalDomain::buildTerrainPage(Mercator::Segment& segment)
 {
     if (!segment.isValid()) {
         segment.populate();
@@ -396,13 +427,13 @@ void PhysicalDomain::buildTerrainPage(Mercator::Segment& segment, float friction
 
 
     btRigidBody::btRigidBodyConstructionInfo segmentCI(.0f, nullptr, terrainShape);
-    segmentCI.m_friction = friction;
     btRigidBody* segmentBody = new btRigidBody(segmentCI);
     segmentBody->setWorldTransform(btTransform(btQuaternion::getIdentity(), btPos));
 
     m_dynamicsWorld->addRigidBody(segmentBody, COLLISION_MASK_TERRAIN, COLLISION_MASK_NON_PHYSICAL | COLLISION_MASK_PHYSICAL);
 
     terrainEntry.rigidBody = segmentBody;
+    return terrainEntry;
 }
 
 void PhysicalDomain::createDomainBorders()
@@ -775,6 +806,14 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
             if (frictionProp) {
                 rigidBodyCI.m_friction = (btScalar) frictionProp->data();
             }
+            auto frictionRollProp = entity.getPropertyType<double>("friction_roll");
+            if (frictionRollProp) {
+                rigidBodyCI.m_rollingFriction = (btScalar) frictionRollProp->data();
+            }
+            auto frictionSpinProp = entity.getPropertyType<double>("friction_spin");
+            if (frictionSpinProp) {
+                rigidBodyCI.m_spinningFriction = (btScalar) frictionSpinProp->data();
+            }
 
             btRigidBody* rigidBody = new btRigidBody(rigidBodyCI);
             entry->collisionObject = rigidBody;
@@ -1001,13 +1040,28 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
 
     if (name == "friction") {
         if (bulletEntry->collisionObject) {
-            Property<double>* frictionProp = dynamic_cast<Property<double>*>(&prop);
+            auto frictionProp = dynamic_cast<Property<double>*>(&prop);
             bulletEntry->collisionObject->setFriction(static_cast<btScalar>(frictionProp->data()));
             if (getMassForEntity(*bulletEntry->entity) != 0) {
                 bulletEntry->collisionObject->activate();
             }
         }
-        return;
+    } else if (name == "friction_roll") {
+        if (bulletEntry->collisionObject) {
+            auto frictionProp = dynamic_cast<Property<double>*>(&prop);
+            bulletEntry->collisionObject->setRollingFriction(static_cast<btScalar>(frictionProp->data()));
+            if (getMassForEntity(*bulletEntry->entity) != 0) {
+                bulletEntry->collisionObject->activate();
+            }
+        }
+    } else if (name == "friction_spin") {
+        if (bulletEntry->collisionObject) {
+            auto frictionProp = dynamic_cast<Property<double>*>(&prop);
+            bulletEntry->collisionObject->setSpinningFriction(static_cast<btScalar>(frictionProp->data()));
+            if (getMassForEntity(*bulletEntry->entity) != 0) {
+                bulletEntry->collisionObject->activate();
+            }
+        }
     } else if (name == "mode") {
 
         if (bulletEntry->collisionObject) {
@@ -1031,7 +1085,8 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
                     if (modeProp->getMode() == ModeProperty::Mode::Planted || modeProp->getMode() == ModeProperty::Mode::Fixed ||
                         modeProp->getMode() == ModeProperty::Mode::Floating || mass == 0) {
 
-                        if ((rigidBody->getCollisionFlags() & btCollisionObject::CF_STATIC_OBJECT) == 0) {
+                        if ((rigidBody->getCollisionFlags() & btCollisionObject::CF_STATIC_OBJECT) == 0
+                            && rigidBody->getCollisionShape()->getShapeType() == CONVEX_HULL_SHAPE_PROXYTYPE) {
                             //If the shape is a mesh, and it previously wasn't static, we need to replace the shape with an optimized one.
                             delete rigidBody->getCollisionShape();
                             createCollisionShapeForEntry(bulletEntry, bbox, mass);
@@ -1041,7 +1096,8 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
                         rigidBody->setMassProps(0, btVector3(0, 0, 0));
 
                     } else {
-                        if (rigidBody->getCollisionFlags() & btCollisionObject::CF_STATIC_OBJECT) {
+                        if (rigidBody->getCollisionFlags() & btCollisionObject::CF_STATIC_OBJECT
+                            && rigidBody->getCollisionShape()->getShapeType() == SCALED_TRIANGLE_MESH_SHAPE_PROXYTYPE) {
                             //If the shape is a mesh, and it previously was static, we need to replace the shape with an optimized one.
                             delete rigidBody->getCollisionShape();
                             createCollisionShapeForEntry(bulletEntry, bbox, mass);
@@ -1054,6 +1110,8 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
                         rigidBody->setMassProps(mass, inertia);
 
                     }
+                    //It's crucial we call this when changing mass, otherwise we might get divide-by-zero in the simulation
+                    rigidBody->updateInertiaTensor();
                     short collisionMask;
                     short collisionGroup;
                     getCollisionFlagsForEntity(*bulletEntry->entity, collisionGroup, collisionMask);
@@ -1062,10 +1120,11 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
 
                     bulletEntry->collisionObject->activate();
 
-                } else {
-                    //Since we've deactivated automatic updating of all aabbs each tick we need to do it ourselves when updating the position.
-                    m_dynamicsWorld->updateSingleAabb(bulletEntry->collisionObject);
                 }
+//                else {
+                //Since we've deactivated automatic updating of all aabbs each tick we need to do it ourselves when updating the position.
+                m_dynamicsWorld->updateSingleAabb(bulletEntry->collisionObject);
+//                }
 
                 bulletEntry->mode = modeProp->getMode();
             }
@@ -1100,7 +1159,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
             if (bulletEntry->collisionObject) {
                 auto rigidBody = btRigidBody::upcast(bulletEntry->collisionObject);
                 if (rigidBody) {
-                    //When altering mass we need to first remove and then re-add the body, for some reason.
+                    //When altering mass we need to first remove and then re-add the body.
                     m_dynamicsWorld->removeRigidBody(rigidBody);
 
                     short collisionMask;
@@ -1112,6 +1171,9 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
                     bulletEntry->collisionShape->calculateLocalInertia(mass, inertia);
 
                     rigidBody->setMassProps(mass, inertia);
+                    //It's crucial we call this when changing mass, otherwise we might get divide-by-zero in the simulation
+                    rigidBody->updateInertiaTensor();
+
                     m_dynamicsWorld->addRigidBody(rigidBody, collisionGroup, collisionMask);
                 }
             }
@@ -1294,13 +1356,22 @@ void PhysicalDomain::getCollisionFlagsForEntity(const LocatedEntity& entity, sho
 void PhysicalDomain::entityPropertyApplied(const std::string& name, PropertyBase& prop)
 {
     if (name == "friction") {
-        Property<double>* frictionProp = dynamic_cast<Property<double>*>(&prop);
+        auto frictionProp = dynamic_cast<Property<double>*>(&prop);
         for (auto& entry : m_terrainSegments) {
             entry.second.rigidBody->setFriction(static_cast<btScalar>(frictionProp->data()));
         }
-        return;
+    } else if (name == "friction_roll") {
+        auto frictionRollingProp = dynamic_cast<Property<double>*>(&prop);
+        for (auto& entry : m_terrainSegments) {
+            entry.second.rigidBody->setRollingFriction(static_cast<btScalar>(frictionRollingProp->data()));
+        }
+    } else if (name == "friction_spin") {
+        auto frictionSpinningProp = dynamic_cast<Property<double>*>(&prop);
+        for (auto& entry : m_terrainSegments) {
+            entry.second.rigidBody->setSpinningFriction(static_cast<btScalar>(frictionSpinningProp->data()));
+        }
     } else if (name == "terrain") {
-        const TerrainProperty* terrainProperty = m_entity.getPropertyClass<TerrainProperty>("terrain");
+        auto terrainProperty = m_entity.getPropertyClass<TerrainProperty>("terrain");
         if (terrainProperty) {
             m_terrain = &terrainProperty->getData();
         }
@@ -1387,7 +1458,7 @@ void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath:
         m_visibilityWorld->updateSingleAabb(entry->visibilitySphere);
     }
 
-   // m_movingEntities.insert(entry);
+    // m_movingEntities.insert(entry);
     m_dirtyEntries.insert(entry);
 }
 
@@ -1563,7 +1634,7 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
 
     if (hadChange) {
         transformedEntities.insert(entry->entity);
-        transformRestingEntities(entry, entry->entity->m_location.m_pos -oldPos , transformedEntities);
+        transformRestingEntities(entry, entry->entity->m_location.m_pos - oldPos, transformedEntities);
         updateTerrainMod(entity);
         if (entry->collisionShape) {
             //Since we've deactivated automatic updating of all aabbs each tick we need to do it ourselves when updating the position.
@@ -1600,10 +1671,20 @@ void PhysicalDomain::processDirtyTerrainAreas()
     }
     m_dirtyTerrainAreas.clear();
 
-    float friction = 1.0f;
+    boost::optional<float> friction;
     auto frictionProp = m_entity.getPropertyType<double>("friction");
     if (frictionProp) {
         friction = (float) frictionProp->data();
+    }
+    boost::optional<float> frictionRolling;
+    auto frictionRollingProp = m_entity.getPropertyType<double>("friction_roll");
+    if (frictionRollingProp) {
+        frictionRolling = (float) frictionRollingProp->data();
+    }
+    boost::optional<float> frictionSpinning;
+    auto frictionSpinningProp = m_entity.getPropertyType<double>("friction_spin");
+    if (frictionSpinningProp) {
+        frictionSpinning = (float) frictionSpinningProp->data();
     }
 
     float worldHeight = m_entity.m_location.bBox().highCorner().y() - m_entity.m_location.bBox().lowCorner().y();
@@ -1613,7 +1694,16 @@ void PhysicalDomain::processDirtyTerrainAreas()
 
         debug_print("rebuilding segment at x: " << segment->getXRef() << " z: " << segment->getZRef());
 
-        buildTerrainPage(*segment, friction);
+        auto terrainEntry = buildTerrainPage(*segment);
+        if (friction) {
+            terrainEntry.rigidBody->setFriction(*friction);
+        }
+        if (frictionRolling) {
+            terrainEntry.rigidBody->setRollingFriction(*frictionRolling);
+        }
+        if (frictionSpinning) {
+            terrainEntry.rigidBody->setSpinningFriction(*frictionSpinning);
+        }
 
         VisibilityCallback callback;
 
