@@ -375,7 +375,11 @@ void PhysicalDomain::buildTerrainPages()
                     terrainEntry.rigidBody->setFriction(*friction);
                 }
                 if (spinningFriction) {
+#if BT_BULLET_VERSION < 285
+                    log(WARNING, "Your version of Bullet doesn't support spinning friction.");
+#else
                     terrainEntry.rigidBody->setSpinningFriction(*spinningFriction);
+#endif
                 }
                 if (rollingFriction) {
                     terrainEntry.rigidBody->setRollingFriction(*rollingFriction);
@@ -1056,11 +1060,15 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
         }
     } else if (name == "friction_spin") {
         if (bulletEntry->collisionObject) {
+#if BT_BULLET_VERSION < 285
+            log(WARNING, "Your version of Bullet doesn't support spinning friction.");
+#else
             auto frictionProp = dynamic_cast<Property<double>*>(&prop);
             bulletEntry->collisionObject->setSpinningFriction(static_cast<btScalar>(frictionProp->data()));
             if (getMassForEntity(*bulletEntry->entity) != 0) {
                 bulletEntry->collisionObject->activate();
             }
+#endif
         }
     } else if (name == "mode") {
 
@@ -1367,9 +1375,13 @@ void PhysicalDomain::entityPropertyApplied(const std::string& name, PropertyBase
         }
     } else if (name == "friction_spin") {
         auto frictionSpinningProp = dynamic_cast<Property<double>*>(&prop);
+#if BT_BULLET_VERSION < 285
+        log(WARNING, "Your version of Bullet doesn't support spinning friction.");
+#else
         for (auto& entry : m_terrainSegments) {
             entry.second.rigidBody->setSpinningFriction(static_cast<btScalar>(frictionSpinningProp->data()));
         }
+#endif
     } else if (name == "terrain") {
         auto terrainProperty = m_entity.getPropertyClass<TerrainProperty>("terrain");
         if (terrainProperty) {
@@ -1702,7 +1714,11 @@ void PhysicalDomain::processDirtyTerrainAreas()
             terrainEntry.rigidBody->setRollingFriction(*frictionRolling);
         }
         if (frictionSpinning) {
+#if BT_BULLET_VERSION < 285
+            log(WARNING, "Your version of Bullet doesn't support spinning friction.");
+#else
             terrainEntry.rigidBody->setSpinningFriction(*frictionSpinning);
+#endif
         }
 
         VisibilityCallback callback;
