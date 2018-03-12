@@ -816,7 +816,11 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
             }
             auto frictionSpinProp = entity.getPropertyType<double>("friction_spin");
             if (frictionSpinProp) {
+#if BT_BULLET_VERSION < 285
+                log(WARNING, "Your version of Bullet doesn't support spinning friction.");
+#else
                 rigidBodyCI.m_spinningFriction = (btScalar) frictionSpinProp->data();
+#endif
             }
 
             btRigidBody* rigidBody = new btRigidBody(rigidBodyCI);
