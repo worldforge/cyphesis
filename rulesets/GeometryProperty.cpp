@@ -79,22 +79,24 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
         }
     });
 
+    auto sphereCreator = [&](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
+        -> std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> {
+        float minRadius = std::min(size.x(), std::min(size.y(), size.z())) * 0.5f;
+        float xOffset = bbox.lowCorner().x() + (size.x() / 2.0f);
+        float yOffset = bbox.lowCorner().y() + (size.y() / 2.0f);
+        float zOffset = bbox.lowCorner().z() + (size.z() / 2.0f);
+
+        centerOfMassOffset = -btVector3(xOffset, yOffset, zOffset);
+        return std::make_pair(new btSphereShape(minRadius), std::shared_ptr<btCollisionShape>());
+    };
+
     auto I = m_data.find("type");
     if (I != m_data.end() && I->second.isString()) {
         const std::string& shapeType = I->second.String();
         if (shapeType == "sphere") {
-            mShapeCreator = [&](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
-                -> std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> {
-                float minRadius = std::min(size.x(), std::min(size.y(), size.z())) * 0.5f;
-                float xOffset = bbox.lowCorner().x() + minRadius;
-                float yOffset = bbox.lowCorner().y() + minRadius;
-                float zOffset = bbox.lowCorner().z() + minRadius;
-
-                centerOfMassOffset = -btVector3(xOffset, yOffset, zOffset);
-                return std::make_pair(new btSphereShape(minRadius), std::shared_ptr<btCollisionShape>());
-            };
+            mShapeCreator = sphereCreator;
         } else if (shapeType == "capsule-y") {
-            mShapeCreator = [&](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
+            mShapeCreator = [&, sphereCreator](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
                 -> std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
                 float minRadius = std::min(size.x(), size.z()) * 0.5f;
@@ -104,7 +106,7 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
                 if (height > 0) {
                     return std::make_pair(new btCapsuleShape(minRadius, height), std::shared_ptr<btCollisionShape>());
                 } else {
-                    return std::make_pair(new btSphereShape(minRadius), std::shared_ptr<btCollisionShape>());
+                    return sphereCreator(bbox, size, centerOfMassOffset, 0);
                 }
             };
 

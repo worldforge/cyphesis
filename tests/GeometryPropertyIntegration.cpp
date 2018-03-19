@@ -163,11 +163,20 @@ void GeometryPropertyIntegrationTest::test_createShapes()
         GeometryProperty g1;
         g1.set(Atlas::Message::MapType({{"type", "sphere"}}));
         btCollisionShape* shape = g1.createShape(aabb, massOffset, 1.0f).first;
-        ASSERT_EQUAL(btVector3(-2, 0, -1), massOffset);
+        ASSERT_EQUAL(btVector3(-2, -3, -2.5f), massOffset);
         btSphereShape* sphere = dynamic_cast<btSphereShape*>(shape);
         ASSERT_NOT_NULL(sphere);
         //Min radius is used
         ASSERT_EQUAL(4, sphere->getRadius());
+    }
+    {
+        GeometryProperty g1;
+        g1.set(Atlas::Message::MapType({{"type", "sphere"}}));
+        btCollisionShape* shape = g1.createShape({{-1, 0, -1},{1, 1, 1}}, massOffset, 1.0f).first;
+        ASSERT_EQUAL(btVector3(0, -0.5f, 0), massOffset);
+        btSphereShape* sphere = dynamic_cast<btSphereShape*>(shape);
+        //Min radius is used
+        ASSERT_EQUAL(0.5, sphere->getRadius());
     }
     {
         WFMath::AxisBox<3> characterAabb(WFMath::Point<3>(-2, -4, -3), WFMath::Point<3>(2, 10, 3));
