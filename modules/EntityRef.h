@@ -45,34 +45,43 @@ class EntityRef : public sigc::trackable
 
     EntityRef& operator=(const EntityRef& ref);
 
-    LocatedEntity& operator*() const
+    LocatedEntity& operator*() const noexcept
     {
         return *m_inner;
     }
 
-    LocatedEntity* operator->() const
+    LocatedEntity* operator->() const noexcept
     {
         return m_inner;
     }
 
-    LocatedEntity* get() const
+    LocatedEntity* get() const noexcept
     {
         return m_inner;
     }
 
-    bool operator==(const EntityRef& e) const
+    bool operator==(const EntityRef& e) const noexcept
     {
         return (m_inner == e.m_inner);
     }
 
-    bool operator==(const LocatedEntity* e) const
+    bool operator==(const LocatedEntity* e) const noexcept
     {
         return (m_inner == e);
     }
 
-    bool operator<(const EntityRef& e) const
+    bool operator<(const EntityRef& e) const noexcept
     {
         return (m_inner < e.m_inner);
+    }
+
+    bool operator!() const noexcept {
+        return this->m_inner == nullptr;
+    }
+
+    explicit operator bool () const noexcept
+    {
+        return !this->operator!();
     }
 
     sigc::signal<void> Changed;

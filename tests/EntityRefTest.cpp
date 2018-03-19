@@ -102,6 +102,7 @@ void checkSignal()
 
         EntityRef ref(&e);
 
+        assert(ref);
         assert(emitted == false);
 
         ref.Changed.connect(sigc::ptr_fun(&signal_emitted));
@@ -113,6 +114,7 @@ void checkSignal()
 
         assert(ref.get() == 0);
         assert(emitted == true);
+        assert(!ref);
     }
 }
 
