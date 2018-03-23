@@ -30,7 +30,7 @@ class EntityProperty : public PropertyBase
     protected:
         EntityRef m_data;
     public:
-        explicit EntityProperty();
+        explicit EntityProperty() = default;
 
         EntityRef& data()
         { return m_data; }

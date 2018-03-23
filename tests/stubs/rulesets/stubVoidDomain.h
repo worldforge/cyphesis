@@ -16,14 +16,6 @@
   }
 #endif //STUB_VoidDomain_VoidDomain
 
-#ifndef STUB_VoidDomain_VoidDomain_DTOR
-//#define STUB_VoidDomain_VoidDomain_DTOR
-   VoidDomain::~VoidDomain()
-  {
-    
-  }
-#endif //STUB_VoidDomain_VoidDomain_DTOR
-
 #ifndef STUB_VoidDomain_tick
 //#define STUB_VoidDomain_tick
   void VoidDomain::tick(double t, OpVector& res)

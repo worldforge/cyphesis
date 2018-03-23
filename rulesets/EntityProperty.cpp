@@ -29,13 +29,9 @@
 
 static const bool debug_flag = false;
 
-EntityProperty::EntityProperty()
-{
-}
-
 int EntityProperty::get(Atlas::Message::Element & val) const
 {
-    if (m_data.get() != 0) {
+    if (m_data.get() != nullptr) {
         Atlas::Message::MapType refMap;
         refMap["$eid"] = m_data->getId();
         val = refMap;
@@ -50,13 +46,13 @@ void EntityProperty::set(const Atlas::Message::Element & val)
     // INT id?
     if (val.isString()) {
         const std::string & id = val.String();
-        if (m_data.get() == 0 || m_data->getId() != id) {
+        if (m_data.get() == nullptr || m_data->getId() != id) {
             debug(std::cout << "Assigning " << id << std::endl << std::flush;);
             if (id.empty()) {
-                m_data = EntityRef(0);
+                m_data = EntityRef(nullptr );
             } else {
                 LocatedEntity * e = BaseWorld::instance().getEntity(id);
-                if (e != 0) {
+                if (e != nullptr ) {
                     debug(std::cout << "Assigned" << std::endl << std::flush;);
                     m_data = EntityRef(e);
                 }
@@ -64,7 +60,7 @@ void EntityProperty::set(const Atlas::Message::Element & val)
         }
     } else if (val.isPtr()) {
         debug(std::cout << "Assigning pointer" << std::endl << std::flush;);
-        LocatedEntity * e = static_cast<LocatedEntity*>(val.Ptr());
+        auto e = static_cast<LocatedEntity*>(val.Ptr());
         m_data = EntityRef(e);
     } else if (val.isMap()) {
         auto I = val.asMap().find("$eid");
@@ -77,7 +73,7 @@ void EntityProperty::set(const Atlas::Message::Element & val)
 void EntityProperty::add(const std::string & s,
                          Atlas::Message::MapType & map) const
 {
-    if (m_data.get() != 0) {
+    if (m_data.get() != nullptr ) {
         //The "id" attribute is special.
         if (s == "id") {
             map[s] = m_data->getId();
@@ -94,7 +90,7 @@ void EntityProperty::add(const std::string & s,
 void EntityProperty::add(const std::string & s,
                          const Atlas::Objects::Entity::RootEntity & ent) const
 {
-    if (m_data.get() != 0) {
+    if (m_data.get() != nullptr) {
         //The "id" attribute is special.
         if (s == "id") {
             ent->setAttr(s , m_data->getId());

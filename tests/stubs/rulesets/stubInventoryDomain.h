@@ -16,14 +16,6 @@
   }
 #endif //STUB_InventoryDomain_InventoryDomain
 
-#ifndef STUB_InventoryDomain_InventoryDomain_DTOR
-//#define STUB_InventoryDomain_InventoryDomain_DTOR
-   InventoryDomain::~InventoryDomain()
-  {
-    
-  }
-#endif //STUB_InventoryDomain_InventoryDomain_DTOR
-
 #ifndef STUB_InventoryDomain_tick
 //#define STUB_InventoryDomain_tick
   void InventoryDomain::tick(double t, OpVector& res)

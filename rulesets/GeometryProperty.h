@@ -83,8 +83,8 @@ class GeometryProperty : public Property<Atlas::Message::MapType>
          * Optionally there can also be as a second entry a shared pointer to a "backing" shape. Such a shape is shared between multiple instances, and deleted only
          * when all instances are deleted. Calling code needs to retain the shared pointer as long as the first collision shape is in use.
          */
-        std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> createShape(const WFMath::AxisBox<3>& bbox,
-                                                                                    btVector3& centerOfMassOffset, float mass) const;
+        std::shared_ptr<btCollisionShape> createShape(const WFMath::AxisBox<3>& bbox,
+                                                      btVector3& centerOfMassOffset, float mass) const;
 
     private:
 
@@ -93,10 +93,10 @@ class GeometryProperty : public Property<Atlas::Message::MapType>
         /**
          * Creator function used for creating a new shape instance.
          */
-        std::function<std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>>(const WFMath::AxisBox<3>& bbox,
-                                                                                      const WFMath::Vector<3>& size,
-                                                                                      btVector3& centerOfMassOffset,
-                                                                                      float mass)> mShapeCreator;
+        std::function<std::shared_ptr<btCollisionShape>(const WFMath::AxisBox<3>& bbox,
+                                                        const WFMath::Vector<3>& size,
+                                                        btVector3& centerOfMassOffset,
+                                                        float mass)> mShapeCreator;
 
         void buildMeshCreator(std::shared_ptr<OgreMeshDeserializer> meshDeserializer);
 

@@ -33,9 +33,9 @@
 
 #ifndef STUB_GeometryProperty_createShape
 //#define STUB_GeometryProperty_createShape
-  std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>> GeometryProperty::createShape(const WFMath::AxisBox<3>& bbox, btVector3& centerOfMassOffset, float mass) const
+  std::shared_ptr<btCollisionShape> GeometryProperty::createShape(const WFMath::AxisBox<3>& bbox, btVector3& centerOfMassOffset, float mass) const
   {
-    return *static_cast<std::pair<btCollisionShape*, std::shared_ptr<btCollisionShape>>*>(nullptr);
+    return *static_cast<std::shared_ptr<btCollisionShape>*>(nullptr);
   }
 #endif //STUB_GeometryProperty_createShape
 
@@ -46,6 +46,14 @@
     
   }
 #endif //STUB_GeometryProperty_buildMeshCreator
+
+#ifndef STUB_GeometryProperty_buildCompoundCreator
+//#define STUB_GeometryProperty_buildCompoundCreator
+  void GeometryProperty::buildCompoundCreator()
+  {
+    
+  }
+#endif //STUB_GeometryProperty_buildCompoundCreator
 
 
 #endif

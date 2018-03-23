@@ -107,8 +107,7 @@ class PhysicalDomain : public Domain
         struct BulletEntry
         {
             LocatedEntity* entity = nullptr;
-            btCollisionShape* collisionShape = nullptr;
-            std::shared_ptr<btCollisionShape> backingShape;
+            std::shared_ptr<btCollisionShape> collisionShape;
             btCollisionObject* collisionObject = nullptr;
             sigc::connection propertyUpdatedConnection;
             Location lastSentLocation;
@@ -285,7 +284,9 @@ class PhysicalDomain : public Domain
          */
         void processWaterBodies();
 
-        void createCollisionShapeForEntry(PhysicalDomain::BulletEntry* entry, const WFMath::AxisBox<3>& bbox, float mass);
+        std::shared_ptr<btCollisionShape> createCollisionShapeForEntry(LocatedEntity* entity,
+                                                                       const WFMath::AxisBox<3>& bbox, float mass,
+                                                                       btVector3& centerOfMassOffse);
 
         /**
          * Transform any entities that are resting on the supplied entity.

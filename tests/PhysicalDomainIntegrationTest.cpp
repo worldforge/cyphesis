@@ -240,6 +240,9 @@ void PhysicalDomainIntegrationTest::test_plantedOn()
             OpVector res;
             domain->tick(0, res);
 
+            ASSERT_TRUE(planted1->getPropertyClass<EntityProperty>("planted_on"));
+            ASSERT_TRUE(planted1->getPropertyClass<EntityProperty>("planted_on")->data());
+            ASSERT_EQUAL(rootEntity->getIntId(), planted1->getPropertyClass<EntityProperty>("planted_on")->data()->getIntId());
             ASSERT_FUZZY_EQUAL(10, planted1->m_location.m_pos.y(), 0.1);
             {
                 auto* planted1RigidBody = domain->test_getRigidBody(planted1->getIntId());
@@ -262,6 +265,7 @@ void PhysicalDomainIntegrationTest::test_plantedOn()
 
             domain->tick(0, res);
 
+            ASSERT_TRUE(planted2->getPropertyClass<EntityProperty>("planted_on"));
             ASSERT_TRUE(planted2->getPropertyClass<EntityProperty>("planted_on")->data());
             ASSERT_EQUAL(planted1->getIntId(), planted2->getPropertyClass<EntityProperty>("planted_on")->data()->getIntId());
             ASSERT_FUZZY_EQUAL(11, planted2->m_location.m_pos.y(), 0.1);
@@ -293,6 +297,7 @@ void PhysicalDomainIntegrationTest::test_plantedOn()
             domain->addEntity(*plantedOn);
 
 
+            ASSERT_TRUE(plantedOn->getPropertyClass<EntityProperty>("planted_on"));
             ASSERT_TRUE(plantedOn->getPropertyClass<EntityProperty>("planted_on")->data());
             ASSERT_EQUAL(planted1->getIntId(), plantedOn->getPropertyClass<EntityProperty>("planted_on")->data()->getIntId());
             ASSERT_FUZZY_EQUAL_FN(plantedOn->m_location.m_pos.y(), 11, 0.1, [&]() { this->addFailure(String::compose("Using shape '%1' on top of '%2'.", plantedOnTopShape, plantedShape)); });

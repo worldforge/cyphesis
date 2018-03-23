@@ -75,7 +75,7 @@
 
 #ifndef STUB_PhysicalDomain_applyTransform
 //#define STUB_PhysicalDomain_applyTransform
-  void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity)
+  void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity, std::set<LocatedEntity*>& transformedEntities)
   {
     
   }
@@ -115,9 +115,9 @@
 
 #ifndef STUB_PhysicalDomain_buildTerrainPage
 //#define STUB_PhysicalDomain_buildTerrainPage
-  void PhysicalDomain::buildTerrainPage(Mercator::Segment& segment, float friction)
+  TerrainEntry PhysicalDomain::buildTerrainPage(Mercator::Segment& segment)
   {
-    
+    return *static_cast<TerrainEntry*>(nullptr);
   }
 #endif //STUB_PhysicalDomain_buildTerrainPage
 
@@ -235,7 +235,7 @@
 
 #ifndef STUB_PhysicalDomain_calculatePositionForEntity
 //#define STUB_PhysicalDomain_calculatePositionForEntity
-  void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, LocatedEntity& entity, WFMath::Point<3>& pos)
+  void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, BulletEntry* entry, WFMath::Point<3>& pos)
   {
     
   }
@@ -251,11 +251,19 @@
 
 #ifndef STUB_PhysicalDomain_createCollisionShapeForEntry
 //#define STUB_PhysicalDomain_createCollisionShapeForEntry
-  void PhysicalDomain::createCollisionShapeForEntry(PhysicalDomain::BulletEntry* entry, const WFMath::AxisBox<3>& bbox, float mass)
+  std::shared_ptr<btCollisionShape> PhysicalDomain::createCollisionShapeForEntry(LocatedEntity* entity, const WFMath::AxisBox<3>& bbox, float mass, btVector3& centerOfMassOffse)
+  {
+    return *static_cast<std::shared_ptr<btCollisionShape>*>(nullptr);
+  }
+#endif //STUB_PhysicalDomain_createCollisionShapeForEntry
+
+#ifndef STUB_PhysicalDomain_transformRestingEntities
+//#define STUB_PhysicalDomain_transformRestingEntities
+  void PhysicalDomain::transformRestingEntities(BulletEntry* entry, const WFMath::Vector<3>& posTransform, std::set<LocatedEntity*>& transformedEntities)
   {
     
   }
-#endif //STUB_PhysicalDomain_createCollisionShapeForEntry
+#endif //STUB_PhysicalDomain_transformRestingEntities
 
 
 #endif
