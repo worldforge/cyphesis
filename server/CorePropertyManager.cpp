@@ -172,6 +172,8 @@ CorePropertyManager::CorePropertyManager()
     installProperty<AngularFactorProperty>();
     installProperty<GeometryProperty>();
 
+    installProperty<EntityProperty>("planted_on", "string");
+
     /**
      * Vertical offset to use when entity is planted, and adjusted to the height of the terrain.
      */

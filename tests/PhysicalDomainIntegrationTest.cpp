@@ -54,6 +54,7 @@
 
 #include <chrono>
 #include <rulesets/TerrainModProperty.h>
+#include <rulesets/EntityProperty.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -97,6 +98,8 @@ class PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
         void test_convert();
 
+        void test_plantedOn();
+
         void test_terrainMods();
 
         void test_lake_rotated();
@@ -138,6 +141,7 @@ long PhysicalDomainIntegrationTest::m_id_counter = 0L;
 
 PhysicalDomainIntegrationTest::PhysicalDomainIntegrationTest()
 {
+    ADD_TEST(PhysicalDomainIntegrationTest::test_plantedOn);
     ADD_TEST(PhysicalDomainIntegrationTest::test_terrainMods);
     ADD_TEST(PhysicalDomainIntegrationTest::test_lake_rotated);
     ADD_TEST(PhysicalDomainIntegrationTest::test_lake);
@@ -170,6 +174,141 @@ void PhysicalDomainIntegrationTest::setup()
 void PhysicalDomainIntegrationTest::teardown()
 {
 }
+
+#define ASSERT_FUZZY_EQUAL_FN(_lval, _rval, _epsilon, _fn) {\
+    if (this->assertFuzzyEqual(#_lval, _lval, #_rval, _rval, #_epsilon, _epsilon, __PRETTY_FUNCTION__,\
+                          __FILE__, __LINE__) != 0) {_fn(); return;}\
+}
+
+void PhysicalDomainIntegrationTest::test_plantedOn()
+{
+
+    class TestPhysicalDomain : public PhysicalDomain
+    {
+        public:
+            explicit TestPhysicalDomain(LocatedEntity& entity) : PhysicalDomain(entity)
+            {
+            }
+
+            btDiscreteDynamicsWorld* test_getBulletWorld()
+            {
+                return m_dynamicsWorld;
+            }
+
+
+            btRigidBody* test_getRigidBody(long id)
+            {
+                return btRigidBody::upcast(m_entries.find(id)->second->collisionObject);
+            }
+    };
+
+    std::vector<std::string> shapes{"box", "cylinder-x", "cylinder-y", "cylinder-z", "capsule-x", "capsule-y", "capsule-z"};
+
+    for (auto plantedShape : shapes) {
+        for (auto plantedOnTopShape : shapes) {
+            GeometryProperty* plantedGeometryProperty = new GeometryProperty();
+            plantedGeometryProperty->set(MapType{{"type", plantedShape}});
+
+            auto id = newId();
+            Entity* rootEntity = new Entity(std::to_string(id), id);
+            TerrainProperty* terrainProperty = new TerrainProperty();
+            Mercator::Terrain& terrain = terrainProperty->getData();
+            terrain.setBasePoint(0, 0, Mercator::BasePoint(10));
+            terrain.setBasePoint(0, 1, Mercator::BasePoint(10));
+            terrain.setBasePoint(1, 0, Mercator::BasePoint(10));
+            terrain.setBasePoint(1, 1, Mercator::BasePoint(10));
+            rootEntity->setProperty("terrain", terrainProperty);
+            rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
+            rootEntity->m_location.setBBox({{-64, -64, -64},
+                                            {64,  64,  64}});
+            TestPhysicalDomain* domain = new TestPhysicalDomain(*rootEntity);
+
+            ModeProperty* modeProperty = new ModeProperty();
+            modeProperty->set("planted");
+
+
+            id = newId();
+            Entity* planted1 = new Entity(std::to_string(id), id);
+            planted1->m_location.m_pos = WFMath::Point<3>(0, 10, 0);
+            planted1->m_location.setBBox({{-1, -1, -1},
+                                          {1,  1, 1}});
+            planted1->setProperty(ModeProperty::property_name, modeProperty);
+            planted1->setProperty(GeometryProperty::property_name, plantedGeometryProperty);
+
+            domain->addEntity(*planted1);
+
+            OpVector res;
+            domain->tick(0, res);
+
+            ASSERT_FUZZY_EQUAL(10, planted1->m_location.m_pos.y(), 0.1);
+            {
+                auto* planted1RigidBody = domain->test_getRigidBody(planted1->getIntId());
+                btVector3 aabbMin, aabbMax;
+                planted1RigidBody->getAabb(aabbMin, aabbMax);
+                ASSERT_FUZZY_EQUAL_FN(aabbMin.y(), 9, 0.1, [&]() { this->addFailure(String::compose("Using shape '%1'.", plantedShape)); });
+                ASSERT_FUZZY_EQUAL_FN(aabbMax.y(), 11, 0.1, [&]() { this->addFailure(String::compose("Using shape '%1'.", plantedShape)); });
+
+            }
+
+            id = newId();
+            Entity* planted2 = new Entity(std::to_string(id), id);
+            planted2->m_location.m_pos = WFMath::Point<3>(0, 15, 0);
+            planted2->m_location.setBBox({{-1, -1, -1},
+                                          {1,  1, 1}});
+            planted2->setProperty(ModeProperty::property_name, modeProperty);
+            planted2->setProperty(GeometryProperty::property_name, plantedGeometryProperty);
+
+            domain->addEntity(*planted2);
+
+            domain->tick(0, res);
+
+            ASSERT_TRUE(planted2->getPropertyClass<EntityProperty>("planted_on")->data());
+            ASSERT_EQUAL(planted1->getIntId(), planted2->getPropertyClass<EntityProperty>("planted_on")->data()->getIntId());
+            ASSERT_FUZZY_EQUAL(11, planted2->m_location.m_pos.y(), 0.1);
+            {
+                auto* planted2RigidBody = domain->test_getRigidBody(planted2->getIntId());
+                btVector3 aabbMin, aabbMax;
+                planted2RigidBody->getAabb(aabbMin, aabbMax);
+                ASSERT_FUZZY_EQUAL_FN(aabbMin.y(), 10, 0.1, [&]() { this->addFailure(String::compose("Using shape '%1'.", plantedShape)); });
+                ASSERT_FUZZY_EQUAL_FN(aabbMax.y(), 12, 0.1, [&]() { this->addFailure(String::compose("Using shape '%1'.", plantedShape)); });
+
+            }
+
+
+
+            id = newId();
+            Entity* plantedOn = new Entity(std::to_string(id), id);
+            plantedOn->m_location.m_pos = {0, 15, 0};
+            plantedOn->setProperty(ModeProperty::property_name, modeProperty);
+            plantedOn->m_location.setBBox({{-1, 0, -1},
+                                           {1,  1, 1}});
+            EntityProperty* plantedOnProperty = new EntityProperty();
+            plantedOnProperty->data() = EntityRef(planted1);
+            plantedOn->setProperty("planted_on", plantedOnProperty);
+
+            GeometryProperty* geometryProperty = new GeometryProperty();
+            geometryProperty->set(MapType{{"type", plantedOnTopShape}});
+            plantedOn->setProperty(GeometryProperty::property_name, geometryProperty);
+
+            domain->addEntity(*plantedOn);
+
+
+            ASSERT_TRUE(plantedOn->getPropertyClass<EntityProperty>("planted_on")->data());
+            ASSERT_EQUAL(planted1->getIntId(), plantedOn->getPropertyClass<EntityProperty>("planted_on")->data()->getIntId());
+            ASSERT_FUZZY_EQUAL_FN(plantedOn->m_location.m_pos.y(), 11, 0.1, [&]() { this->addFailure(String::compose("Using shape '%1' on top of '%2'.", plantedOnTopShape, plantedShape)); });
+            {
+                auto* plantedOnRigidBody = domain->test_getRigidBody(plantedOn->getIntId());
+                btVector3 aabbMin, aabbMax;
+                plantedOnRigidBody->getAabb(aabbMin, aabbMax);
+                ASSERT_FUZZY_EQUAL_FN(aabbMin.y(), 11, 0.1, [&]() { this->addFailure(String::compose("Using shape '%1' on top of '%2'.", plantedOnTopShape, plantedShape)); });
+                ASSERT_FUZZY_EQUAL_FN(aabbMax.y(), 12, 0.1, [&]() { this->addFailure(String::compose("Using shape '%1' on top of '%2'.", plantedOnTopShape, plantedShape)); });
+            }
+
+        }
+    }
+
+}
+
 
 void PhysicalDomainIntegrationTest::test_terrainMods()
 {

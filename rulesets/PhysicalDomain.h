@@ -278,7 +278,7 @@ class PhysicalDomain : public Domain
 
         void applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& velocity);
 
-        void calculatePositionForEntity(ModeProperty::Mode mode, LocatedEntity& entity, WFMath::Point<3>& pos);
+        void calculatePositionForEntity(ModeProperty::Mode mode, BulletEntry* entry, WFMath::Point<3>& pos);
 
         /**
          * Called each tick to process any bodies that are moving in water.
@@ -296,6 +296,7 @@ class PhysicalDomain : public Domain
          * @param transformedEntities
          */
         void transformRestingEntities(BulletEntry* entry, const WFMath::Vector<3>& posTransform, std::set<LocatedEntity*>& transformedEntities);
+
 };
 
 #endif /* PHYSICALDOMAIN_H_ */

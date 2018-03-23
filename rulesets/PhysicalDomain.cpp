@@ -39,6 +39,7 @@
 #include "common/TypeNode.h"
 #include "common/Update.h"
 #include "common/BaseWorld.h"
+#include "EntityProperty.h"
 
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>
@@ -59,6 +60,7 @@
 #include <unordered_set>
 #include <chrono>
 #include <boost/optional.hpp>
+#include <limits>
 
 
 static const bool debug_flag = false;
@@ -255,8 +257,6 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
 
         auto propellingEntries = static_cast<std::map<int, PropelEntry>*>(world->getWorldUserInfo());
         for (auto& entry : *propellingEntries) {
-//            const btVector3& velocity = entry.second.bulletEntry->collisionObject->getLinearVelocity();
-//            entry.second.bulletEntry->collisionObject->setLinearVelocity(btVector3(entry.second.velocity.x(), velocity.y()+ (world->getGravity().y() * timeStep), entry.second.velocity.z()));
 
             float verticalVelocity = entry.second.rigidBody->getLinearVelocity().y();
 
@@ -754,11 +754,9 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         mass = .0f;
     }
 
-    calculatePositionForEntity(mode, entity, entity.m_location.m_pos);
 
 
     btQuaternion orientation = entity.m_location.m_orientation.isValid() ? Convert::toBullet(entity.m_location.m_orientation) : btQuaternion::getIdentity();
-    btVector3 pos = entity.m_location.m_pos.isValid() ? Convert::toBullet(entity.m_location.m_pos) : btVector3(0, 0, 0);
 
     short collisionMask;
     short collisionGroup;
@@ -782,8 +780,13 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
             entry->centerOfMassOffset = btVector3(0, 0, 0);
         }
         entry->collisionObject->setCollisionShape(entry->collisionShape);
-        entry->collisionObject->setWorldTransform(btTransform(orientation, pos) * btTransform(btQuaternion::getIdentity(), entry->centerOfMassOffset).inverse());
         entry->collisionObject->setCollisionFlags(entry->collisionObject->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+
+        calculatePositionForEntity(mode, entry, entity.m_location.m_pos);
+
+        entry->collisionObject->setWorldTransform(btTransform(orientation, Convert::toBullet(entity.m_location.m_pos))
+                                                  * btTransform(btQuaternion::getIdentity(), entry->centerOfMassOffset).inverse());
+
         m_dynamicsWorld->addCollisionObject(entry->collisionObject, collisionGroup, collisionMask);
         m_waterBodies.emplace_back(ghostObject);
         ghostObject->activate();
@@ -825,8 +828,11 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
 
             btRigidBody* rigidBody = new btRigidBody(rigidBodyCI);
             entry->collisionObject = rigidBody;
+
+            calculatePositionForEntity(mode, entry, entity.m_location.m_pos);
+
             entry->motionState = new PhysicalMotionState(*entry, *rigidBody, *this,
-                                                         btTransform(orientation, pos),
+                                                         btTransform(orientation, Convert::toBullet(entity.m_location.m_pos)),
                                                          btTransform(btQuaternion::getIdentity(), entry->centerOfMassOffset));
             rigidBody->setMotionState(entry->motionState);
             rigidBody->setAngularFactor(angularFactor);
@@ -884,10 +890,10 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
 
         btCollisionObject* visObject = new btCollisionObject();
         visObject->setCollisionShape(visSphere);
-        visObject->setWorldTransform(btTransform(btQuaternion::getIdentity(), pos / VISIBILITY_SCALING_FACTOR));
         visObject->setUserPointer(entry);
         entry->visibilitySphere = visObject;
         if (entity.m_location.m_pos.isValid()) {
+            visObject->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(entity.m_location.m_pos) / VISIBILITY_SCALING_FACTOR));
             m_visibilityWorld->addCollisionObject(visObject, VISIBILITY_MASK_OBSERVER, VISIBILITY_MASK_OBSERVABLE);
         }
     }
@@ -895,11 +901,11 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         btSphereShape* viewSphere = new btSphereShape(0.5f / VISIBILITY_SCALING_FACTOR);
         btCollisionObject* visObject = new btCollisionObject();
         visObject->setCollisionShape(viewSphere);
-        visObject->setWorldTransform(btTransform(btQuaternion::getIdentity(), pos / VISIBILITY_SCALING_FACTOR));
         visObject->setUserPointer(entry);
         entry->viewSphere = visObject;
         mContainingEntityEntry.observingThis.insert(entry);
         if (entity.m_location.m_pos.isValid()) {
+            visObject->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(entity.m_location.m_pos) / VISIBILITY_SCALING_FACTOR));
             m_visibilityWorld->addCollisionObject(visObject, VISIBILITY_MASK_OBSERVABLE, VISIBILITY_MASK_OBSERVER);
         }
     }
@@ -1372,7 +1378,8 @@ void PhysicalDomain::entityPropertyApplied(const std::string& name, PropertyBase
         for (auto& entry : m_terrainSegments) {
             entry.second.rigidBody->setFriction(static_cast<btScalar>(frictionProp->data()));
         }
-    } else if (name == "friction_roll") {
+    } else if (name == "frid .."
+                                                       "ction_roll") {
         auto frictionRollingProp = dynamic_cast<Property<double>*>(&prop);
         for (auto& entry : m_terrainSegments) {
             entry.second.rigidBody->setRollingFriction(static_cast<btScalar>(frictionRollingProp->data()));
@@ -1394,14 +1401,195 @@ void PhysicalDomain::entityPropertyApplied(const std::string& name, PropertyBase
     }
 }
 
-void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, LocatedEntity& entity, WFMath::Point<3>& pos)
+
+void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, PhysicalDomain::BulletEntry* entry, WFMath::Point<3>& pos)
 {
+    struct PlantedOnCallback : public btCollisionWorld::ContactResultCallback
+    {
+        btVector3 highestPoint;
+        bool hadHit = false;
+        const btCollisionObject* highestObject = nullptr;
+
+        explicit PlantedOnCallback(btVector3 highestPoint)
+            : btCollisionWorld::ContactResultCallback(), highestPoint(highestPoint)
+        {
+        }
+
+        bool needsCollision(btBroadphaseProxy* proxy0) const override
+        {
+            return true;
+        }
+
+        btScalar addSingleResult(btManifoldPoint& cp,
+                                 const btCollisionObjectWrapper* colObj0, int partId0, int index0,
+                                 const btCollisionObjectWrapper* colObj1, int partId1, int index1) override
+        {
+
+            //B will be the existing planted object, A will be the object being planted.
+            btVector3 point = cp.getPositionWorldOnB();
+
+            if (point.y() > highestPoint.y()) {
+                highestPoint = point;
+                highestObject = colObj1->m_collisionObject;
+                hadHit = true;
+            }
+
+            //Returned result is ignored.
+            return 0;
+        }
+    };
+
+    auto& entity = *entry->entity;
+
     if (mode == ModeProperty::Mode::Planted || mode == ModeProperty::Mode::Free || mode == ModeProperty::Mode::Submerged) {
         float h = pos.y();
         getTerrainHeight(pos.x(), pos.z(), h);
 
         if (mode == ModeProperty::Mode::Planted) {
-            pos.y() = h;
+
+            bool plantedOn = false;
+            if (entry->collisionObject) {
+                auto plantedOnProp = entity.getPropertyClass<EntityProperty>("planted_on");
+                if (plantedOnProp) {
+                    const auto& plantedOnEntityRef = plantedOnProp->data();
+                    if (plantedOnEntityRef && plantedOnEntityRef->getIntId() != m_entity.getIntId()) {
+                        auto I = m_entries.find(plantedOnEntityRef->getIntId());
+                        if (I != m_entries.end()) {
+
+                            BulletEntry* plantedOnBulletEntry = I->second;
+
+                            btVector3 aabbMin, aabbMax;
+                            entry->collisionObject->getCollisionShape()->getAabb(entry->collisionObject->getWorldTransform(), aabbMin, aabbMax);
+                            float height = aabbMax.y() - aabbMin.y();
+
+                            float yPos = pos.y();
+
+                            btQuaternion orientation = entity.m_location.m_orientation.isValid() ? Convert::toBullet(entity.m_location.m_orientation) : btQuaternion::getIdentity();
+                            btTransform transform(orientation, Convert::toBullet(entry->entity->m_location.pos()));
+                            transform *= btTransform(btQuaternion::getIdentity(), entry->centerOfMassOffset).inverse();
+
+                            //auto originalTransform = entry->collisionObject->getWorldTransform();
+                            entry->collisionObject->setWorldTransform(transform);
+
+                            while (yPos > h) {
+                                PlantedOnCallback callback(btVector3(pos.x(), h, pos.z()));
+
+                                //Test if the shape collides, otherwise move it downwards until it reaches the ground.
+                                entry->collisionObject->getWorldTransform().getOrigin().setY(yPos);
+                                m_dynamicsWorld->contactPairTest(entry->collisionObject, plantedOnBulletEntry->collisionObject, callback);
+
+                                if (callback.hadHit) {
+                                    pos.y() = std::max(callback.highestPoint.y(), h);
+                                    plantedOn = true;
+                                    break;
+                                }
+
+                                yPos -= height;
+                            }
+
+
+
+//                        btTransform from(btQuaternion::getIdentity(), Convert::toBullet(entity.m_location.m_pos));
+//                        btTransform to(from);
+//                        to.getOrigin().setY(h);
+
+//                        btCollisionWorld::ClosestRayResultCallback callback(from.getOrigin(), to.getOrigin());
+//                        rayTestSingle(from, to, plantedOnBulletEntry->collisionObject,
+//                                                       plantedOnBulletEntry->collisionShape,
+//                                                       plantedOnBulletEntry->collisionObject->getWorldTransform(),
+//                                                       callback);
+//
+//                        if (callback.hasHit()) {
+//                            pos.y() = std::max(callback.m_hitPointWorld.y(), h);
+//                            plantedOn = true;
+//                        }
+
+
+//                        BulletEntry* plantedOnBulletEntry = I->second;
+//
+//
+//                        auto size = entity.m_location.bBox().highCorner() - entity.m_location.bBox().lowCorner();
+//                        auto offset = entity.m_location.bBox().getCenter();
+//
+//                        auto halfSize = size / 2.0;
+//
+//                        float testHeight = pos.y() + entity.m_location.bBox().highCorner().y() - h;
+//
+//
+//
+//                        btCylinderShape testShape(btVector3(halfSize.x(), testHeight / 2, halfSize.z()));
+//                        testShape.setMargin(0);
+//                        btCollisionObject testCollisionObject{};
+//                        testCollisionObject.setCollisionShape(&testShape);
+////                        testCollisionObject.setWorldTransform(btTransform(Convert::toBullet(entity.m_location.orientation())), )
+//                        testCollisionObject.setWorldTransform(btTransform(btQuaternion::getIdentity(), btVector3(pos.x() + offset.x(), h + (testHeight / 2), pos.z() + offset.z())) );
+//
+//                        PlantedOnCallback callback{};
+//                        m_dynamicsWorld->contactPairTest(&testCollisionObject, plantedOnBulletEntry->collisionObject, callback);
+//
+//                        if (callback.hadHit) {
+//                            pos.y() = std::max(callback.highestPoint.y(), h);
+//                            plantedOn = true;
+//                        }
+//
+////                        btTransform from(btQuaternion::getIdentity(), Convert::toBullet(entity.m_location.m_pos));
+////                        btTransform to(from);
+////                        to.getOrigin().setY(h);
+//
+////                        btCollisionWorld::ClosestRayResultCallback callback(from.getOrigin(), to.getOrigin());
+////                        rayTestSingle(from, to, plantedOnBulletEntry->collisionObject,
+////                                                       plantedOnBulletEntry->collisionShape,
+////                                                       plantedOnBulletEntry->collisionObject->getWorldTransform(),
+////                                                       callback);
+////
+////                        if (callback.hasHit()) {
+////                            pos.y() = std::max(callback.m_hitPointWorld.y(), h);
+////                            plantedOn = true;
+////                        }
+                        }
+                    }
+                } else {
+                    //Look for closest thing it can be planted on.
+                    btVector3 aabbMin, aabbMax;
+                    entry->collisionObject->getCollisionShape()->getAabb(entry->collisionObject->getWorldTransform(), aabbMin, aabbMax);
+                    float height = aabbMax.y() - aabbMin.y();
+
+                    float yPos = pos.y();
+
+                    btQuaternion orientation = entity.m_location.m_orientation.isValid() ? Convert::toBullet(entity.m_location.m_orientation) : btQuaternion::getIdentity();
+                    btTransform transform(orientation, Convert::toBullet(entry->entity->m_location.pos()));
+                    transform *= btTransform(btQuaternion::getIdentity(), entry->centerOfMassOffset).inverse();
+
+                    entry->collisionObject->setWorldTransform(transform);
+
+                    while (yPos > h) {
+                        PlantedOnCallback callback(btVector3(pos.x(), h, pos.z()));
+
+                        //Test if the shape collides, otherwise move it downwards until it reaches the ground.
+                        entry->collisionObject->getWorldTransform().getOrigin().setY(yPos);
+                        m_dynamicsWorld->contactTest(entry->collisionObject, callback);
+
+                        if (callback.hadHit) {
+                            auto plantedOnEntry = static_cast<BulletEntry*>(callback.highestObject->getUserPointer());
+                            if (plantedOnEntry) {
+                                pos.y() = std::max(callback.highestPoint.y(), h);
+                                plantedOn = true;
+
+                                auto newPlantedOnProp = entry->entity->requirePropertyClass<EntityProperty>("planted_on");
+                                newPlantedOnProp->data() = EntityRef(plantedOnEntry->entity);
+
+                                break;
+                            }
+                        }
+
+                        yPos -= height;
+                    }
+                }
+            }
+
+            if (!plantedOn) {
+                pos.y() = h;
+            }
 
             auto plantedOffsetProp = entity.getPropertyType<double>("planted-offset");
             if (plantedOffsetProp) {
@@ -1450,7 +1638,7 @@ void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath:
 
     WFMath::Point<3> newPos = pos;
 
-    calculatePositionForEntity(mode, entity, newPos);
+    calculatePositionForEntity(mode, entry, newPos);
 
     entity.m_location.m_pos = newPos;
 
@@ -2116,4 +2304,5 @@ void PhysicalDomain::transformRestingEntities(PhysicalDomain::BulletEntry* entry
 
     }
 }
+
 
