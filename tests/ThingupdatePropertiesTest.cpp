@@ -147,6 +147,7 @@ int main()
 #include "stubs/modules/stubLocation.h"
 #include "stubs/rulesets/stubPropelProperty.h"
 #include "stubs/rulesets/stubDomainProperty.h"
+#include "stubs/rulesets/stubEntityProperty.h"
 
 #define STUB_LocatedEntity_makeContainer
 void LocatedEntity::makeContainer()

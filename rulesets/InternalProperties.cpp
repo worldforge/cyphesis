@@ -29,10 +29,6 @@ using Atlas::Message::Element;
 using Atlas::Objects::Operation::Setup;
 using Atlas::Objects::Operation::Tick;
 
-SetupProperty::SetupProperty()
-{
-}
-
 SetupProperty * SetupProperty::copy() const
 {
     return new SetupProperty(*this);
@@ -43,10 +39,6 @@ void SetupProperty::install(LocatedEntity * ent, const std::string & name)
     Setup s;
     s->setTo(ent->getId());
     ent->sendWorld(s);
-}
-
-TickProperty::TickProperty()
-{
 }
 
 TickProperty * TickProperty::copy() const
@@ -64,27 +56,6 @@ void TickProperty::apply(LocatedEntity * ent)
     ent->sendWorld(t);
 }
 
-SimpleProperty::SimpleProperty()
-{
-}
-
-int SimpleProperty::get(Element & ent) const
-{
-    ent = (flags() & flag_bool) ? 1 : 0;
-    return 0;
-}
-
-void SimpleProperty::set(const Element & ent)
-{
-    if (ent.isInt()) {
-        if (ent.Int() == 0) {
-            resetFlags(flag_bool);
-        } else {
-            setFlags(flag_bool);
-        }
-    }
-}
-
 SimpleProperty * SimpleProperty::copy() const
 {
     return new SimpleProperty(*this);
@@ -92,5 +63,5 @@ SimpleProperty * SimpleProperty::copy() const
 
 void SimpleProperty::apply(LocatedEntity * owner)
 {
-    owner->m_location.setSimple(flags() & flag_bool);
+    owner->m_location.setSimple(isTrue());
 }

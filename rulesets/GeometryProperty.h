@@ -47,8 +47,8 @@ class OgreMeshDeserializer;
  * "cylinder-y": A cylinder, oriented along the y axis
  * "mesh"      : An arbitrary mesh, using vertices and indices.
  *               Mesh data is either read from the "path", or supplied "vertices" and "indices" attributes.
- *               When the entity is "static" (i.e. "planted", "fixed" or "floating") a high fidelity mesh will be used.
- *               When it's moving however ("free" or "submerged") a convex hull will be used instead. This is for performance reasons.
+ *               When the entity has no mass (is "static") a high fidelity mesh will be used.
+ *               When it has mass however (i.e. reacts to physics) a convex hull will be used instead. This is for performance reasons.
  * "compound"  : Composed by multiple simpler shapes. Use this when you want a shape which retains its detail even when non-static.
  *
  * In addition a "path" attribute can be specified, pointing to a mesh file.

@@ -25,38 +25,36 @@
 /// \ingroup PropertyClasses
 class SetupProperty : public Property<int> {
   public:
-    SetupProperty();
+    explicit SetupProperty() = default;
 
-    virtual SetupProperty * copy() const;
+    SetupProperty * copy() const override;
 
-    virtual void install(LocatedEntity *, const std::string &);
+    void install(LocatedEntity *, const std::string &) override;
 };
 
 /// \brief Class to handle Entity which requires a Tick operation
 /// \ingroup PropertyClasses
 class TickProperty : public Property<double> {
   public:
-    TickProperty();
+    explicit TickProperty() = default;
 
-    virtual TickProperty * copy() const;
+    TickProperty * copy() const override;
 
-    virtual void apply(LocatedEntity *);
+    void apply(LocatedEntity *) override;
 };
 
 /// \brief Class to handle whether or not an entit is simple for collisions.
 /// \ingroup PropertyClasses
-class SimpleProperty : public PropertyBase {
+class SimpleProperty : public BoolProperty {
   public:
     /// \brief Constructor
     ///
     /// @param owner the owner of the property.
-    explicit SimpleProperty();
+    explicit SimpleProperty() = default;
 
-    virtual int get(Atlas::Message::Element & val) const;
-    virtual void set(const Atlas::Message::Element & val);
-    virtual SimpleProperty * copy() const;
+    SimpleProperty * copy() const override;
 
-    virtual void apply(LocatedEntity *);
+    void apply(LocatedEntity *) override;
 };
 
 #endif // RULESETS_INTERNAL_PROPERTIES_H

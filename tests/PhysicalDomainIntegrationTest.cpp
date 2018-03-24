@@ -231,7 +231,7 @@ void PhysicalDomainIntegrationTest::test_plantedOn()
             Entity* planted1 = new Entity(std::to_string(id), id);
             planted1->m_location.m_pos = WFMath::Point<3>(0, 10, 0);
             planted1->m_location.setBBox({{-1, -1, -1},
-                                          {1,  1, 1}});
+                                          {1,  1,  1}});
             planted1->setProperty(ModeProperty::property_name, modeProperty);
             planted1->setProperty(GeometryProperty::property_name, plantedGeometryProperty);
 
@@ -257,7 +257,7 @@ void PhysicalDomainIntegrationTest::test_plantedOn()
             Entity* planted2 = new Entity(std::to_string(id), id);
             planted2->m_location.m_pos = WFMath::Point<3>(0, 15, 0);
             planted2->m_location.setBBox({{-1, -1, -1},
-                                          {1,  1, 1}});
+                                          {1,  1,  1}});
             planted2->setProperty(ModeProperty::property_name, modeProperty);
             planted2->setProperty(GeometryProperty::property_name, plantedGeometryProperty);
 
@@ -277,7 +277,6 @@ void PhysicalDomainIntegrationTest::test_plantedOn()
                 ASSERT_FUZZY_EQUAL_FN(aabbMax.y(), 12, 0.1, [&]() { this->addFailure(String::compose("Using shape '%1'.", plantedShape)); });
 
             }
-
 
 
             id = newId();
@@ -502,10 +501,26 @@ void PhysicalDomainIntegrationTest::test_lake_rotated()
     freeEntity2->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1, 1, 1)));
     domain->addEntity(*freeEntity2);
 
+    id = newId();
+    ModeProperty* plantedProp = new ModeProperty();
+    plantedProp->set("planted");
+    EntityProperty* plantedOnProp = new EntityProperty();
+    plantedOnProp->data() = EntityRef(lake);
+    Entity* floatingEntity = new Entity("floatingEntity", id);
+    floatingEntity->setProperty(ModeProperty::property_name, plantedProp);
+    floatingEntity->setProperty("planted_on", plantedOnProp);
+
+    floatingEntity->setType(rockType);
+    floatingEntity->m_location.m_pos = WFMath::Point<3>(5, 20, 1);
+    floatingEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1, 1, 1)));
+    domain->addEntity(*floatingEntity);
+
     OpVector res;
     domain->tick(0, res);
     ASSERT_TRUE(freeEntity->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Submerged);
     ASSERT_TRUE(freeEntity2->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Free);
+    ASSERT_TRUE(floatingEntity->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Planted);
+    ASSERT_EQUAL(WFMath::Point<3>(5, 10, 1), floatingEntity->m_location.pos());
 
 }
 

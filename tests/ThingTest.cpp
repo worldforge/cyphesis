@@ -92,6 +92,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 
 
 #include "stubs/rulesets/stubEntity.h"
+#include "stubs/rulesets/stubEntityProperty.h"
 
 
 #define STUB_LocatedEntity_isVisibleForOtherEntity

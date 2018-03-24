@@ -37,18 +37,16 @@ class ModeProperty : public Property<std::string>
                 /**
                  * Planted entities are stuck to the terrain. Their y-position is determined by the terrain at their origo.
                  * They can optionally also have an offset, specified in "planted-offset" or "planted-scaled-offset".
-                 * Planted entities are not affected by physics.
+                 * Planted entities are not affected by physics, but other free entities will react with them.
+                 * If an entity is planted on a water body, it's considered to be "floating", i.e. it will be planted on top
+                 * of the water body.
+                 * The attribute "planted_on" provides a reference to the other entity on which an entity is planted on.
                  */
                     Planted,
 
                 /**
-                 * Floating entities behave like planted, with the difference that they float on top of any body of water.
-                 */
-                    Floating,
-
-                /**
                  * Fixed entities are fixed in the world. They are not affected by terrain.
-                 * Fixed entities are not affected by physics.
+                 * Fixed entities are not affected by physics, but other free entities will react with them.
                  */
                     Fixed,
 

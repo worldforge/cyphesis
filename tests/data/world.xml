@@ -19423,7 +19423,6 @@
     </list>
     <float name="burn_speed">0.1</float>
     <float name="mass">250</float>
-    <string name="mode">floating</string>
   </map>
 
   <map>

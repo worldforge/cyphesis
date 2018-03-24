@@ -79,8 +79,8 @@
         <float name="default">250</float>
         <string name="visibility">public</string>
       </map>
-      <map name="mode">
-        <string name="default">floating</string>
+      <map name="floats">
+        <int name="default">1</int>
         <string name="visibility">public</string>
       </map>
     </map>

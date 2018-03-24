@@ -141,7 +141,7 @@ class LocatedEntity : public Router {
     LocatedEntitySet * m_contains;
 
     explicit LocatedEntity(const std::string & id, long intId);
-    virtual ~LocatedEntity();
+    ~LocatedEntity() override;
 
     /// \brief Increment the reference count on this entity
     void incRef() {
@@ -274,7 +274,7 @@ class LocatedEntity : public Router {
     const PropertyT * getPropertyClass(const std::string & name) const
     {
         const PropertyBase * p = getProperty(name);
-        if (p != 0) {
+        if (p != nullptr) {
             return dynamic_cast<const PropertyT *>(p);
         }
         return 0;
@@ -294,7 +294,7 @@ class LocatedEntity : public Router {
     const Property<T> * getPropertyType(const std::string & name) const
     {
         const PropertyBase * p = getProperty(name);
-        if (p != 0) {
+        if (p != nullptr) {
             return dynamic_cast<const Property<T> *>(p);
         }
         return 0;
@@ -305,7 +305,7 @@ class LocatedEntity : public Router {
     PropertyT * modPropertyClass(const std::string & name)
     {
         PropertyBase * p = modProperty(name);
-        if (p != 0) {
+        if (p != nullptr) {
             return dynamic_cast<PropertyT *>(p);
         }
         return 0;
@@ -329,7 +329,7 @@ class LocatedEntity : public Router {
     Property<T> * modPropertyType(const std::string & name)
     {
         PropertyBase * p = modProperty(name);
-        if (p != 0) {
+        if (p != nullptr) {
             return dynamic_cast<Property<T> *>(p);
         }
         return 0;
@@ -348,8 +348,8 @@ class LocatedEntity : public Router {
                                      = Atlas::Message::Element())
     {
         PropertyBase * p = modProperty(name, def_val);
-        PropertyT * sp = 0;
-        if (p != 0) {
+        PropertyT * sp = nullptr;
+        if (p != nullptr) {
             sp = dynamic_cast<PropertyT *>(p);
             //Assert that the stored property is of the correct type. If not,
             //it needs to be installed into CorePropertyManager.
@@ -357,12 +357,12 @@ class LocatedEntity : public Router {
             //installed of the wrong type brings instability to the system.
             assert(sp);
         }
-        if (sp == 0) {
+        if (sp == nullptr) {
             // If it is not of the right type, delete it and a new
             // one of the right type will be inserted.
             m_properties[name] = sp = new PropertyT;
             sp->install(this, name);
-            if (p != 0) {
+            if (p != nullptr) {
                 log(WARNING, String::compose("Property %1 on entity with id %2 "
                         "reinstalled with new class."
                         "This might cause instability. Make sure that all "

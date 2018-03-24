@@ -7,15 +7,6 @@
 #ifndef STUB_RULESETS_INTERNALPROPERTIES_H
 #define STUB_RULESETS_INTERNALPROPERTIES_H
 
-#ifndef STUB_SetupProperty_SetupProperty
-//#define STUB_SetupProperty_SetupProperty
-   SetupProperty::SetupProperty()
-    : Property()
-  {
-    
-  }
-#endif //STUB_SetupProperty_SetupProperty
-
 #ifndef STUB_SetupProperty_copy
 //#define STUB_SetupProperty_copy
   SetupProperty* SetupProperty::copy() const
@@ -33,15 +24,6 @@
 #endif //STUB_SetupProperty_install
 
 
-#ifndef STUB_TickProperty_TickProperty
-//#define STUB_TickProperty_TickProperty
-   TickProperty::TickProperty()
-    : Property()
-  {
-    
-  }
-#endif //STUB_TickProperty_TickProperty
-
 #ifndef STUB_TickProperty_copy
 //#define STUB_TickProperty_copy
   TickProperty* TickProperty::copy() const
@@ -58,31 +40,6 @@
   }
 #endif //STUB_TickProperty_apply
 
-
-#ifndef STUB_SimpleProperty_SimpleProperty
-//#define STUB_SimpleProperty_SimpleProperty
-   SimpleProperty::SimpleProperty()
-    : PropertyBase()
-  {
-    
-  }
-#endif //STUB_SimpleProperty_SimpleProperty
-
-#ifndef STUB_SimpleProperty_get
-//#define STUB_SimpleProperty_get
-  int SimpleProperty::get(Atlas::Message::Element & val) const
-  {
-    return 0;
-  }
-#endif //STUB_SimpleProperty_get
-
-#ifndef STUB_SimpleProperty_set
-//#define STUB_SimpleProperty_set
-  void SimpleProperty::set(const Atlas::Message::Element & val)
-  {
-    
-  }
-#endif //STUB_SimpleProperty_set
 
 #ifndef STUB_SimpleProperty_copy
 //#define STUB_SimpleProperty_copy

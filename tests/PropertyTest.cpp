@@ -179,4 +179,18 @@ int main()
     exerciseProperty(pb);
     delete pb;
     }
+
+    {
+        long i = 1;
+        PropertyBase * pb = new BoolProperty();
+        assert(pb->flags() == 0);
+        pb->set(i);
+        pb->get(val);
+        assert(val == i);
+        pb->set(200);
+        pb->get(val);
+        assert(val == 1L);
+        exerciseProperty(pb);
+        delete pb;
+    }
 }

@@ -112,3 +112,5 @@ template class Property<std::string>;
 template class Property<Atlas::Message::MapType>;
 template class Property<Atlas::Message::ListType>;
 //template class Property<std::vector<std::string>>;
+
+const std::string BoolProperty::property_atlastype = "int";

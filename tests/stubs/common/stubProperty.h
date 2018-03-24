@@ -186,4 +186,37 @@
 #endif //STUB_SoftProperty_copy
 
 
+#ifndef STUB_BoolProperty_get
+//#define STUB_BoolProperty_get
+  int BoolProperty::get(Atlas::Message::Element & val) const
+  {
+    return 0;
+  }
+#endif //STUB_BoolProperty_get
+
+#ifndef STUB_BoolProperty_set
+//#define STUB_BoolProperty_set
+  void BoolProperty::set(const Atlas::Message::Element & val)
+  {
+    
+  }
+#endif //STUB_BoolProperty_set
+
+#ifndef STUB_BoolProperty_copy
+//#define STUB_BoolProperty_copy
+  BoolProperty* BoolProperty::copy() const
+  {
+    return nullptr;
+  }
+#endif //STUB_BoolProperty_copy
+
+#ifndef STUB_BoolProperty_isTrue
+//#define STUB_BoolProperty_isTrue
+  bool BoolProperty::isTrue() const
+  {
+    return false;
+  }
+#endif //STUB_BoolProperty_isTrue
+
+
 #endif

@@ -284,6 +284,7 @@ int PythonScriptFactory<LocatedEntity>::setup()
 #include "stubs/server/stubPlayer.h"
 #include "stubs/server/stubExternalMindsManager.h"
 #include "stubs/server/stubExternalMindsConnection.h"
+#include "stubs/rulesets/stubEntityProperty.h"
 #include "stubs/rulesets/stubPythonScriptFactory.h"
 
 #include <Atlas/Objects/Operation.h>
@@ -437,34 +438,6 @@ void ExternalProperty::add(const std::string & s,
 }
 
 ExternalProperty * ExternalProperty::copy() const
-{
-    return 0;
-}
-
-EntityProperty::EntityProperty()
-{
-}
-
-int EntityProperty::get(Element & val) const
-{
-    return 0;
-}
-
-void EntityProperty::set(const Element & val)
-{
-}
-
-void EntityProperty::add(const std::string & s,
-                         MapType & map) const
-{
-}
-
-void EntityProperty::add(const std::string & s,
-                         const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-EntityProperty * EntityProperty::copy() const
 {
     return 0;
 }

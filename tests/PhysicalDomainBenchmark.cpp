@@ -318,9 +318,10 @@ void PhysicalDomainIntegrationTest::test_visibilityPerformance()
         ss << "Physics per second with " << numberOfObservers << " moving observers: " << (milliseconds / 20.0) / 10.0 << " %";
         log(INFO, ss.str());
     }
+    std::set<LocatedEntity*> transformedEntities;
     //Now stop the observers from moving, and measure again
     for (Entity* observer : observers) {
-        domain->applyTransform(*observer, WFMath::Quaternion(), WFMath::Point<3>(), WFMath::Vector<3>::ZERO());
+        domain->applyTransform(*observer, WFMath::Quaternion(), WFMath::Point<3>(), WFMath::Vector<3>::ZERO(), transformedEntities);
     }
     domain->tick(10, res);
     {

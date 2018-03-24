@@ -504,34 +504,7 @@ void Entity::setType(const TypeNode* t) {
 }
 
 #include "stubs/rulesets/stubEntity.h"
-
-EntityProperty::EntityProperty()
-{
-}
-
-int EntityProperty::get(Atlas::Message::Element & val) const
-{
-    return 0;
-}
-
-void EntityProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-void EntityProperty::add(const std::string & s,
-                         Atlas::Message::MapType & map) const
-{
-}
-
-void EntityProperty::add(const std::string & s,
-                         const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-EntityProperty * EntityProperty::copy() const
-{
-    return 0;
-}
+#include "stubs/rulesets/stubEntityProperty.h"
 
 Task::~Task()
 {

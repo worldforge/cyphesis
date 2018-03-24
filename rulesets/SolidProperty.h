@@ -23,18 +23,11 @@
 
 /// \brief Class to handle whether or not an entity is solid for collisions.
 /// \ingroup PropertyClasses
-class SolidProperty : public PropertyBase {
+class SolidProperty : public BoolProperty {
   public:
-    /// \brief Constructor
-    ///
-    /// @param owner the owner of the property.
-    explicit SolidProperty();
+    SolidProperty * copy() const override;
 
-    virtual int get(Atlas::Message::Element & val) const;
-    virtual void set(const Atlas::Message::Element & val);
-    virtual SolidProperty * copy() const;
-
-    virtual void apply(LocatedEntity *);
+    void apply(LocatedEntity *) override;
 };
 
 #endif // RULESETS_SOLID_PROPERTY_H

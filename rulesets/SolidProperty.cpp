@@ -29,27 +29,6 @@ using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Message::FloatType;
 
-SolidProperty::SolidProperty()
-{
-}
-
-int SolidProperty::get(Element & ent) const
-{
-    ent = (flags() & flag_bool) ? 1 : 0;
-    return 0;
-}
-
-void SolidProperty::set(const Element & ent)
-{
-    if (ent.isInt()) {
-        if (ent.Int() == 0) {
-            resetFlags(flag_bool);
-        } else {
-            setFlags(flag_bool);
-        }
-    }
-}
-
 SolidProperty * SolidProperty::copy() const
 {
     return new SolidProperty(*this);

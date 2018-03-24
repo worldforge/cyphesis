@@ -31,6 +31,7 @@
 #include "common/Drop.h"
 #include "common/Unseen.h"
 #include "common/TypeNode.h"
+#include "EntityProperty.h"
 
 #include <wfmath/atlasconv.h>
 
@@ -333,6 +334,17 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
         RootEntity marg = smart_dynamic_cast<RootEntity>(m->getArgs().front());
         assert(marg.isValid());
         m_location.addToEntity(marg);
+        {
+            auto plantedOnProp = getPropertyClass<EntityProperty>("planted_on");
+            if (plantedOnProp) {
+                if (plantedOnProp->hasFlags(flag_unsent)) {
+                    Element plantedOnElem;
+                    if (plantedOnProp->get(plantedOnElem) == 0) {
+                        marg->setAttr("planted_on", plantedOnElem);
+                    }
+                }
+            }
+        }
 
         if (!m->hasAttrFlag(Atlas::Objects::Operation::SECONDS_FLAG)) {
             m->setSeconds(current_time);
@@ -353,6 +365,17 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
                     Atlas::Objects::Entity::Anonymous movedArg;
                     movedArg->setId(transformedEntity->getId());
                     transformedEntity->m_location.addToEntity(movedArg);
+
+                    auto plantedOnProp = transformedEntity->getPropertyClass<EntityProperty>("planted_on");
+                    if (plantedOnProp) {
+                        if (plantedOnProp->hasFlags(flag_unsent)) {
+                            Element plantedOnElem;
+                            if (plantedOnProp->get(plantedOnElem) == 0) {
+                                movedArg->setAttr("planted_on", plantedOnElem);
+                            }
+                        }
+                    }
+
                     Move movedOp;
                     movedOp->setArgs1(movedArg);
 

@@ -7,15 +7,6 @@
 #ifndef STUB_RULESETS_ENTITYPROPERTY_H
 #define STUB_RULESETS_ENTITYPROPERTY_H
 
-#ifndef STUB_EntityProperty_EntityProperty
-//#define STUB_EntityProperty_EntityProperty
-   EntityProperty::EntityProperty()
-    : PropertyBase()
-  {
-    
-  }
-#endif //STUB_EntityProperty_EntityProperty
-
 #ifndef STUB_EntityProperty_get
 //#define STUB_EntityProperty_get
   int EntityProperty::get(Atlas::Message::Element& val) const

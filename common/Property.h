@@ -47,6 +47,8 @@ class PropertyBase {
 
     void resetFlags(unsigned int flags) { m_flags &= ~flags; }
 
+    bool hasFlags(unsigned int flags) const { return (m_flags & flags) != 0; }
+
     /// \brief Install this property on an entity
     ///
     /// Called whenever an Entity gains this property for the first time
@@ -161,6 +163,20 @@ class SoftProperty : public PropertyBase {
     int get(Atlas::Message::Element & val) const override ;
     void set(const Atlas::Message::Element & val) override ;
     SoftProperty * copy() const override ;
+};
+
+class BoolProperty : public PropertyBase {
+public:
+    static const std::string property_atlastype;
+
+    explicit BoolProperty() = default;
+
+    int get(Atlas::Message::Element & val) const override;
+    void set(const Atlas::Message::Element & val) override;
+    BoolProperty * copy() const override;
+
+    bool isTrue() const;
+
 };
 
 #endif // COMMON_PROPERTY_H

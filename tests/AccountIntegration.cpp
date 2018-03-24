@@ -452,6 +452,9 @@ int PythonScriptFactory<LocatedEntity>::setup()
 #include "stubs/rulesets/stubOutfitProperty.h"
 #include "stubs/rulesets/stubPythonScriptFactory.h"
 #include "stubs/rulesets/stubPythonClass.h"
+#include "stubs/rulesets/stubInternalProperties.h"
+#include "stubs/rulesets/stubEntityProperty.h"
+#include "stubs/rulesets/stubSolidProperty.h"
 
 #include "stubs/server/stubRuleHandler.h"
 #include "stubs/server/stubExternalMindsManager.h"
@@ -691,34 +694,6 @@ ExternalProperty * ExternalProperty::copy() const
     return 0;
 }
 
-EntityProperty::EntityProperty()
-{
-}
-
-int EntityProperty::get(Atlas::Message::Element & val) const
-{
-    return 0;
-}
-
-void EntityProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-void EntityProperty::add(const std::string & s,
-                         Atlas::Message::MapType & map) const
-{
-}
-
-void EntityProperty::add(const std::string & s,
-                         const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-EntityProperty * EntityProperty::copy() const
-{
-    return 0;
-}
-
 TasksProperty::TasksProperty() : PropertyBase(per_ephem), m_task(0)
 {
 }
@@ -817,53 +792,6 @@ HandlerResult TeleportProperty::operation(LocatedEntity * ent,
     return OPERATION_IGNORED;
 }
 
-SetupProperty::SetupProperty()
-{
-}
-
-SetupProperty * SetupProperty::copy() const
-{
-    return 0;
-}
-
-void SetupProperty::install(LocatedEntity * ent, const std::string & name)
-{
-}
-
-TickProperty::TickProperty()
-{
-}
-
-TickProperty * TickProperty::copy() const
-{
-    return 0;
-}
-
-void TickProperty::apply(LocatedEntity * ent)
-{
-}
-
-SimpleProperty::SimpleProperty()
-{
-}
-
-int SimpleProperty::get(Element & ent) const
-{
-    return 0;
-}
-
-void SimpleProperty::set(const Element & ent)
-{
-}
-
-SimpleProperty * SimpleProperty::copy() const
-{
-    return 0;
-}
-
-void SimpleProperty::apply(LocatedEntity * owner)
-{
-}
 
 LineProperty::LineProperty()
 {
@@ -937,28 +865,6 @@ void StatisticsProperty::set(const Element & ent)
 StatisticsProperty * StatisticsProperty::copy() const
 {
     return 0;
-}
-
-SolidProperty::SolidProperty()
-{
-}
-
-int SolidProperty::get(Element & ent) const
-{
-    return 0;
-}
-
-void SolidProperty::set(const Element & ent)
-{
-}
-
-SolidProperty * SolidProperty::copy() const
-{
-    return 0;
-}
-
-void SolidProperty::apply(LocatedEntity * owner)
-{
 }
 
 TransientProperty::TransientProperty()

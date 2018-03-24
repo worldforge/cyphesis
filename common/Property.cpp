@@ -170,6 +170,36 @@ SoftProperty * SoftProperty::copy() const
     return new SoftProperty(*this);
 }
 
+const std::string BoolProperty::property_atlastype = "int";
+
+int BoolProperty::get(Atlas::Message::Element & ent) const
+{
+    ent = (flags() & flag_bool) ? 1 : 0;
+    return 0;
+}
+
+void BoolProperty::set(const Atlas::Message::Element & ent)
+{
+    if (ent.isInt()) {
+        if (ent.Int() == 0) {
+            resetFlags(flag_bool);
+        } else {
+            setFlags(flag_bool);
+        }
+    }
+}
+
+BoolProperty * BoolProperty::copy() const
+{
+    return new BoolProperty(*this);
+}
+
+bool BoolProperty::isTrue() const
+{
+    return (flags() & flag_bool) != 0;
+}
+
+
 template class Property<int>;
 template class Property<long>;
 template class Property<float>;

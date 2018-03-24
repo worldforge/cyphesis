@@ -48,5 +48,5 @@ int main()
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/common/stubProperty.h"
 #include "stubs/rulesets/stubBBoxProperty.h"
-#include "stubs/rulesets/stubSimpleProperty.h"
 #include "stubs/rulesets/stubSolidProperty.h"
+#include "stubs/rulesets/stubInternalProperties.h"

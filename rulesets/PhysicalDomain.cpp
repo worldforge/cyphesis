@@ -261,7 +261,7 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
 
             //TODO: check if we're on the ground, in the water or flying and apply different speed modifiers
             double speed;
-            if (entry.second.bulletEntry->mode == ModeProperty::Mode::Submerged || entry.second.bulletEntry->mode == ModeProperty::Mode::Floating) {
+            if (entry.second.bulletEntry->mode == ModeProperty::Mode::Submerged) {
                 speed = entry.second.bulletEntry->speedWater;
             } else {
                 speed = entry.second.bulletEntry->speedGround;
@@ -745,7 +745,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     entry->modeChanged = false;
     entry->mode = mode;
 
-    if (mode == ModeProperty::Mode::Planted || mode == ModeProperty::Mode::Fixed || mode == ModeProperty::Mode::Floating) {
+    if (mode == ModeProperty::Mode::Planted || mode == ModeProperty::Mode::Fixed) {
         //"fixed" mode means that the entity stays in place, always
         //"planted" mode means it's planted in the ground
         //Zero mass makes the rigid body static
@@ -1094,10 +1094,8 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
                     float mass = getMassForEntity(*bulletEntry->entity);
                     //"fixed" mode means that the entity stays in place, always
                     //"planted" mode means it's planted in the ground
-                    //"floating" mode means it planted on the surface
                     //Zero mass makes the rigid body static
-                    if (modeProp->getMode() == ModeProperty::Mode::Planted || modeProp->getMode() == ModeProperty::Mode::Fixed ||
-                        modeProp->getMode() == ModeProperty::Mode::Floating || mass == 0) {
+                    if (modeProp->getMode() == ModeProperty::Mode::Planted || modeProp->getMode() == ModeProperty::Mode::Fixed || mass == 0) {
 
                         if ((rigidBody->getCollisionFlags() & btCollisionObject::CF_STATIC_OBJECT) == 0
                             && rigidBody->getCollisionShape()->getShapeType() == CONVEX_HULL_SHAPE_PROXYTYPE) {
@@ -1233,7 +1231,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
         if (bulletEntry->collisionObject) {
             m_dynamicsWorld->updateSingleAabb(bulletEntry->collisionObject);
         }
-        //sendMoveSight(*bulletEntry);
+        sendMoveSight(*bulletEntry, true, false, false, false, false);
     } else if (name == TerrainModProperty::property_name) {
         updateTerrainMod(*bulletEntry->entity, true);
     } else if (name == "speed-ground") {
@@ -1242,6 +1240,14 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
         bulletEntry->speedWater = dynamic_cast<Property<double>*>(&prop)->data();
     } else if (name == "speed-flight") {
         bulletEntry->speedFlight = dynamic_cast<Property<double>*>(&prop)->data();
+    } else if (name == "floats") {
+        applyNewPositionForEntity(bulletEntry, bulletEntry->entity->m_location.m_pos);
+        bulletEntry->entity->m_location.update(BaseWorld::instance().getTime());
+        bulletEntry->entity->resetFlags(entity_clean);
+        if (bulletEntry->collisionObject) {
+            m_dynamicsWorld->updateSingleAabb(bulletEntry->collisionObject);
+        }
+        sendMoveSight(*bulletEntry, true, false, false, false, false);
     }
 }
 
@@ -1336,8 +1342,7 @@ void PhysicalDomain::getCollisionFlagsForEntity(const LocatedEntity& entity, sho
 
         auto modeProp = entity.getPropertyClassFixed<ModeProperty>();
         if (modeProp && (modeProp->getMode() == ModeProperty::Mode::Fixed
-                         || modeProp->getMode() == ModeProperty::Mode::Planted
-                         || modeProp->getMode() == ModeProperty::Mode::Floating)) {
+                         || modeProp->getMode() == ModeProperty::Mode::Planted)) {
             if (entity.m_location.isSolid()) {
                 collisionGroup = COLLISION_MASK_STATIC;
                 //Planted and fixed entities shouldn't collide with anything themselves.
@@ -1468,56 +1473,117 @@ void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, Physica
             bool plantedOn = false;
             if (entry->collisionObject) {
 
-                auto plantedOnProp = entity.getPropertyClass<EntityProperty>("planted_on");
-                if (plantedOnProp) {
-                    const auto& plantedOnEntityRef = plantedOnProp->data();
-                    if (plantedOnEntityRef && plantedOnEntityRef->getIntId() != m_entity.getIntId()) {
-                        auto I = m_entries.find(plantedOnEntityRef->getIntId());
-                        if (I != m_entries.end()) {
-
-                            btVector3 centerOfMassOffset;
-                            auto placementShape = createCollisionShapeForEntry(entry->entity, entry->entity->m_location.bBox(), 1, centerOfMassOffset);
-                            entry->collisionObject->setCollisionShape(placementShape.get());
-
-                            BulletEntry* plantedOnBulletEntry = I->second;
-
-                            btVector3 aabbMin, aabbMax;
-                            entry->collisionObject->getCollisionShape()->getAabb(entry->collisionObject->getWorldTransform(), aabbMin, aabbMax);
-                            float height = aabbMax.y() - aabbMin.y();
-
-                            float yPos = pos.y();
-
-                            btQuaternion orientation = entity.m_location.m_orientation.isValid() ? Convert::toBullet(entity.m_location.m_orientation) : btQuaternion::getIdentity();
-                            btTransform transform(orientation, Convert::toBullet(entry->entity->m_location.pos()));
-                            transform *= btTransform(btQuaternion::getIdentity(), entry->centerOfMassOffset).inverse();
-
-                            //auto originalTransform = entry->collisionObject->getWorldTransform();
-                            entry->collisionObject->setWorldTransform(transform);
-
-                            while (yPos > h) {
-                                PlantedOnCallback callback(btVector3(pos.x(), h, pos.z()));
-                                callback.m_collisionFilterGroup = COLLISION_MASK_PHYSICAL;
-                                callback.m_collisionFilterMask = COLLISION_MASK_STATIC;
-
-                                //Test if the shape collides, otherwise move it downwards until it reaches the ground.
-                                entry->collisionObject->getWorldTransform().getOrigin().setY(yPos);
-                                m_dynamicsWorld->contactPairTest(entry->collisionObject, plantedOnBulletEntry->collisionObject, callback);
-
-                                if (callback.hadHit) {
-                                    pos.y() = std::max(callback.highestPoint.y(), h);
+                //Check if entity is mark to float, which should make us first check if it's in any body of water.
+                auto floatsProp = entity.getPropertyClass<BoolProperty>("floats");
+                if (floatsProp && floatsProp->isTrue()) {
+                    for (auto waterBody : m_waterBodies) {
+                        auto waterEntry = static_cast<BulletEntry*>(waterBody->getUserPointer());
+                        if (waterEntry->entity->m_location.bBox().isValid()) {
+                            auto bbox = waterEntry->entity->m_location.bBox();
+                            bbox.shift(WFMath::Vector<3>(waterEntry->entity->m_location.m_pos));
+                            if (WFMath::Contains(pos, bbox, true)) {
+                                if (h < bbox.highCorner().y()) {
+                                    pos.y() = bbox.highCorner().y();
                                     plantedOn = true;
+
+                                    auto newPlantedOnProp = entry->entity->requirePropertyClass<EntityProperty>("planted_on");
+                                    newPlantedOnProp->data() = EntityRef(waterEntry->entity);
+                                    newPlantedOnProp->setFlags(flag_unsent);
+
                                     break;
                                 }
-
-                                yPos -= height;
                             }
+                        } else {
+                            //check if we're below the water surface, and above the ground
+                            if (pos.y() <= waterEntry->entity->m_location.m_pos.y() && h < waterEntry->entity->m_location.m_pos.y()) {
+                                pos.y() = waterEntry->entity->m_location.m_pos.y();
+                                plantedOn = true;
 
-                            entry->collisionObject->setCollisionShape(entry->collisionShape.get());
+                                auto newPlantedOnProp = entry->entity->requirePropertyClass<EntityProperty>("planted_on");
+                                newPlantedOnProp->data() = EntityRef(waterEntry->entity);
+                                newPlantedOnProp->setFlags(flag_unsent);
+
+                                break;
+                            }
                         }
                     }
-                } else {
+                }
+
+                if (!plantedOn) {
+
+                    auto plantedOnProp = entity.getPropertyClass<EntityProperty>("planted_on");
+                    if (plantedOnProp) {
+                        const auto& plantedOnEntityRef = plantedOnProp->data();
+                        if (plantedOnEntityRef && plantedOnEntityRef->getIntId() != m_entity.getIntId()) {
+                            auto I = m_entries.find(plantedOnEntityRef->getIntId());
+                            if (I != m_entries.end()) {
+                                BulletEntry* plantedOnBulletEntry = I->second;
+
+                                if (dynamic_cast<btGhostObject*>(plantedOnBulletEntry->collisionObject)) {
+
+                                    //Check if we've explicitly disabled floating.
+
+                                    if (floatsProp == nullptr || floatsProp->isTrue()) {
+
+                                        //We're planted on a water body, we should place ourself on top of it.
+                                        float newHeight = plantedOnBulletEntry->entity->m_location.pos().y();
+                                        if (plantedOnBulletEntry->entity->m_location.bBox().isValid()) {
+                                            newHeight += plantedOnBulletEntry->entity->m_location.bBox().highCorner().y();
+                                        }
+
+                                        if (newHeight > h) {
+                                            //Make sure it's not under the terrain.
+                                            pos.y() = newHeight;
+                                            plantedOn = true;
+                                        }
+                                    }
+                                } else {
+
+                                    btVector3 centerOfMassOffset;
+                                    auto placementShape = createCollisionShapeForEntry(entry->entity, entry->entity->m_location.bBox(), 1, centerOfMassOffset);
+                                    entry->collisionObject->setCollisionShape(placementShape.get());
+
+
+                                    btVector3 aabbMin, aabbMax;
+                                    entry->collisionObject->getCollisionShape()->getAabb(entry->collisionObject->getWorldTransform(), aabbMin, aabbMax);
+                                    float height = aabbMax.y() - aabbMin.y();
+
+                                    float yPos = pos.y();
+
+                                    btQuaternion orientation = entity.m_location.m_orientation.isValid() ? Convert::toBullet(entity.m_location.m_orientation) : btQuaternion::getIdentity();
+                                    btTransform transform(orientation, Convert::toBullet(entry->entity->m_location.pos()));
+                                    transform *= btTransform(btQuaternion::getIdentity(), entry->centerOfMassOffset).inverse();
+
+                                    entry->collisionObject->setWorldTransform(transform);
+
+                                    while (yPos > h) {
+                                        PlantedOnCallback callback(btVector3(pos.x(), h, pos.z()));
+                                        callback.m_collisionFilterGroup = COLLISION_MASK_PHYSICAL;
+                                        callback.m_collisionFilterMask = COLLISION_MASK_STATIC;
+
+                                        //Test if the shape collides, otherwise move it downwards until it reaches the ground.
+                                        entry->collisionObject->getWorldTransform().getOrigin().setY(yPos);
+                                        m_dynamicsWorld->contactPairTest(entry->collisionObject, plantedOnBulletEntry->collisionObject, callback);
+
+                                        if (callback.hadHit) {
+                                            pos.y() = std::max(callback.highestPoint.y(), h);
+                                            plantedOn = true;
+                                            break;
+                                        }
+
+                                        yPos -= height;
+                                    }
+
+                                    entry->collisionObject->setCollisionShape(entry->collisionShape.get());
+                                }
+                            }
+                        }
+                    }
+
+
+
                     //Only perform check if it's not already on the ground.
-                    if (!WFMath::Equal(pos.y(), h, 0.01f)) {
+                    if (!plantedOn && !WFMath::Equal(pos.y(), h, 0.01f)) {
 
                         btQuaternion orientation = entity.m_location.m_orientation.isValid() ? Convert::toBullet(entity.m_location.m_orientation) : btQuaternion::getIdentity();
                         btTransform transformFrom(orientation, Convert::toBullet(entry->entity->m_location.pos()));
@@ -1549,6 +1615,7 @@ void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, Physica
 
                                         auto newPlantedOnProp = entry->entity->requirePropertyClass<EntityProperty>("planted_on");
                                         newPlantedOnProp->data() = EntityRef(plantedOnEntry->entity);
+                                        newPlantedOnProp->setFlags(flag_unsent);
 
                                     }
                                 }
@@ -1557,15 +1624,15 @@ void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, Physica
                             }
                         }
                     }
-
-                    //If we couldn't find anything to plant on, make sure it's planted on the ground.
-                    if (!plantedOn) {
-                        entity.requirePropertyClass<EntityProperty>("planted_on", &m_entity);
-                    }
                 }
             }
 
+
+            //If we couldn't find anything to plant on, make sure it's planted on the ground.
             if (!plantedOn) {
+                auto newPlantedOnProp = entry->entity->requirePropertyClass<EntityProperty>("planted_on");
+                newPlantedOnProp->data() = EntityRef(&m_entity);
+                newPlantedOnProp->setFlags(flag_unsent);
                 pos.y() = h;
             }
 
@@ -1587,15 +1654,6 @@ void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, Physica
         float h = pos.y();
         getTerrainHeight(pos.x(), pos.z(), h);
         pos.y() = h;
-    } else if (mode == ModeProperty::Mode::Floating) {
-        float h = pos.y();
-        getTerrainHeight(pos.x(), pos.z(), h);
-        //Check if the current terrain is above water level
-        if (h > 0) {
-            pos.y() = h;
-        } else {
-            pos.y() = 0;
-        }
     } else if (mode == ModeProperty::Mode::Fixed) {
         //Don't do anything to adjust height
     } else {
@@ -2209,8 +2267,10 @@ bool PhysicalDomain::getTerrainHeight(float x, float y, float& height) const
             s->populate();
         }
         return m_terrain->getHeight(x, y, height);
+    } else {
+        height = m_entity.m_location.bBox().lowCorner().y();
+        return false;
     }
-    return false;
 }
 
 void PhysicalDomain::transformRestingEntities(PhysicalDomain::BulletEntry* entry,

@@ -125,8 +125,8 @@ CorePropertyManager::CorePropertyManager()
     //installProperty<Property<IdList> >("end_intersections", "list");
     installProperty<DecaysProperty>("decays", "string");
     installProperty<OutfitProperty>("outfit", "map");
-    installProperty<SolidProperty>("solid", "int");
-    installProperty<SimpleProperty>("simple", "int");
+    installProperty<SolidProperty>("solid", BoolProperty::property_atlastype);
+    installProperty<SimpleProperty>("simple", BoolProperty::property_atlastype);
     installProperty<StatusProperty>("status", "float");
     installProperty<BiomassProperty>("biomass", "float");
     installProperty<BurnSpeedProperty>("burn_speed", "float");
@@ -172,7 +172,13 @@ CorePropertyManager::CorePropertyManager()
     installProperty<AngularFactorProperty>();
     installProperty<GeometryProperty>();
 
+    /**
+     * Refers to an entity on which another entity is planted on.
+     */
     installProperty<EntityProperty>("planted_on", "string");
+
+
+    installProperty<BoolProperty>("floats", BoolProperty::property_atlastype);
 
     /**
      * Vertical offset to use when entity is planted, and adjusted to the height of the terrain.
