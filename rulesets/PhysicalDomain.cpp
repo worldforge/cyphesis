@@ -1083,6 +1083,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
 
         if (bulletEntry->collisionObject) {
             ModeProperty* modeProp = dynamic_cast<ModeProperty*>(&prop);
+            //Check if the mode change came from "outside", i.e. wasn't made because of the physics simulation (such as being submerged).
             if (modeProp->getMode() != bulletEntry->mode) {
                 applyNewPositionForEntity(bulletEntry, bulletEntry->entity->m_location.m_pos);
 
@@ -1110,6 +1111,11 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
                         rigidBody->setMassProps(0, btVector3(0, 0, 0));
 
                     } else {
+                        //Detach from any attached entity
+
+                        plantOnEntity(bulletEntry, nullptr);
+
+                        //The entity is free
                         if (rigidBody->getCollisionFlags() & btCollisionObject::CF_STATIC_OBJECT
                             && rigidBody->getCollisionShape()->getShapeType() == SCALED_TRIANGLE_MESH_SHAPE_PROXYTYPE) {
                             //If the shape is a mesh, and it previously was static, we need to replace the shape with an optimized one.
@@ -1121,6 +1127,15 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
                         bulletEntry->collisionShape->calculateLocalInertia(mass, inertia);
 
                         rigidBody->setMassProps(mass, inertia);
+
+                        //If there are attached entities, we must also make them free.
+                        auto attachedEntitiesCopy = bulletEntry->attachedEntities;
+                        for (auto attachedEntry : attachedEntitiesCopy) {
+                            attachedEntry->entity->setAttr("mode", modeProp->data());
+                        }
+                        if (!bulletEntry->attachedEntities.empty()) {
+                            log(WARNING, "Set of attached entities isn't empty after changing all of them to free mode.");
+                        }
 
                     }
                     //It's crucial we call this when changing mass, otherwise we might get divide-by-zero in the simulation
@@ -1134,10 +1149,8 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
                     bulletEntry->collisionObject->activate();
 
                 }
-//                else {
                 //Since we've deactivated automatic updating of all aabbs each tick we need to do it ourselves when updating the position.
                 m_dynamicsWorld->updateSingleAabb(bulletEntry->collisionObject);
-//                }
 
                 bulletEntry->mode = modeProp->getMode();
             }
@@ -2368,17 +2381,36 @@ void PhysicalDomain::transformRestingEntities(PhysicalDomain::BulletEntry* entry
 
 void PhysicalDomain::plantOnEntity(PhysicalDomain::BulletEntry* plantedEntry, PhysicalDomain::BulletEntry* entryPlantedOn)
 {
-    auto newPlantedOnProp = plantedEntry->entity->requirePropertyClass<EntityProperty>("planted_on");
-    if (newPlantedOnProp->data()) {
-        if (newPlantedOnProp->data().get() == entryPlantedOn->entity) {
-            //Already planted on entity, nothing to do
+    auto existingPlantedOnProp = plantedEntry->entity->getPropertyClass<EntityProperty>("planted_on");
+
+    if (existingPlantedOnProp) {
+        //Check if we're already planted, and perhaps should be detached.
+        if (existingPlantedOnProp->data()) {
+            if (entryPlantedOn && existingPlantedOnProp->data().get() == entryPlantedOn->entity) {
+                //Already planted on entity, nothing to do
+                return;
+            }
+            if (!entryPlantedOn && !existingPlantedOnProp->data()) {
+                //Not planted already, and not being planted, nothing to do.
+                return;
+            }
+
+            auto I = m_entries.find(existingPlantedOnProp->data()->getIntId());
+            if (I != m_entries.end()) {
+                I->second->attachedEntities.erase(plantedEntry);
+            }
+        }
+
+    } else {
+        if (!entryPlantedOn) {
+            //No prop exists, and we shouldn't be planted, just return.
             return;
         }
-        auto I = m_entries.find(newPlantedOnProp->data()->getIntId());
-        if (I != m_entries.end()) {
-            I->second->attachedEntities.erase(plantedEntry);
-        }
     }
+
+    //We need to change the property for this
+    auto newPlantedOnProp = plantedEntry->entity->requirePropertyClass<EntityProperty>("planted_on");
+
     if (entryPlantedOn) {
         newPlantedOnProp->data() = EntityRef(entryPlantedOn->entity);
         entryPlantedOn->attachedEntities.insert(plantedEntry);

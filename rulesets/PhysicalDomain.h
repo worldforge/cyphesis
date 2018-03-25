@@ -150,8 +150,9 @@ class PhysicalDomain : public Domain
              */
             bool modeChanged;
 
-            BulletEntry* attachedTo = nullptr;
-
+            /**
+             * A set of entities which are planted on this. They move along.
+             */
             std::set<BulletEntry*> attachedEntities;
 
         };
