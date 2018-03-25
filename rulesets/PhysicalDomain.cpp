@@ -239,11 +239,6 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
 
     m_visibilityWorld->setForceUpdateAllAabbs(false);
 
-    //Since we're using GImpact shapes for free meshes, we need to register our dispatcher with the algorithm.
-    //Note that free mesh shapes are horrible for performance, we support them nonetheless. Just try to avoid having too many...
-    //TODO: put the basic Bullet configuration into a shared place, so that we can support multiple physical domains.
-    //btGImpactCollisionAlgorithm::registerAlgorithm(m_dispatcher);
-
     auto terrainProperty = m_entity.getPropertyClass<TerrainProperty>("terrain");
     if (terrainProperty) {
         m_terrain = &terrainProperty->getData();
@@ -1018,6 +1013,14 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
         mContainingEntityEntry.observedByThis.insert(entry);
     }
 
+    auto plantedOnProp = entity.getPropertyClass<EntityProperty>("planted_on");
+    if (plantedOnProp && plantedOnProp->data()) {
+        auto I = m_entries.find(plantedOnProp->data()->getIntId());
+        if (I != m_entries.end()) {
+            I->second->attachedEntities.erase(entry);
+        }
+    }
+
 
     delete I->second;
     m_entries.erase(I);
@@ -1486,10 +1489,7 @@ void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, Physica
                                     pos.y() = bbox.highCorner().y();
                                     plantedOn = true;
 
-                                    auto newPlantedOnProp = entry->entity->requirePropertyClass<EntityProperty>("planted_on");
-                                    newPlantedOnProp->data() = EntityRef(waterEntry->entity);
-                                    newPlantedOnProp->setFlags(flag_unsent);
-
+                                    plantOnEntity(entry, waterEntry);
                                     break;
                                 }
                             }
@@ -1499,9 +1499,7 @@ void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, Physica
                                 pos.y() = waterEntry->entity->m_location.m_pos.y();
                                 plantedOn = true;
 
-                                auto newPlantedOnProp = entry->entity->requirePropertyClass<EntityProperty>("planted_on");
-                                newPlantedOnProp->data() = EntityRef(waterEntry->entity);
-                                newPlantedOnProp->setFlags(flag_unsent);
+                                plantOnEntity(entry, waterEntry);
 
                                 break;
                             }
@@ -1613,10 +1611,7 @@ void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, Physica
                                         pos.y() = std::max(callback.highestPoint.y(), h);
                                         plantedOn = true;
 
-                                        auto newPlantedOnProp = entry->entity->requirePropertyClass<EntityProperty>("planted_on");
-                                        newPlantedOnProp->data() = EntityRef(plantedOnEntry->entity);
-                                        newPlantedOnProp->setFlags(flag_unsent);
-
+                                        plantOnEntity(entry, plantedOnEntry);
                                     }
                                 }
                             } else {
@@ -1630,9 +1625,8 @@ void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, Physica
 
             //If we couldn't find anything to plant on, make sure it's planted on the ground.
             if (!plantedOn) {
-                auto newPlantedOnProp = entry->entity->requirePropertyClass<EntityProperty>("planted_on");
-                newPlantedOnProp->data() = EntityRef(&m_entity);
-                newPlantedOnProp->setFlags(flag_unsent);
+                plantOnEntity(entry, &mContainingEntityEntry);
+
                 pos.y() = h;
             }
 
@@ -1661,7 +1655,7 @@ void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, Physica
     }
 }
 
-void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath::Point<3>& pos)
+void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath::Point<3>& pos, bool calculatePosition)
 {
     btCollisionObject* collObject = entry->collisionObject;
     LocatedEntity& entity = *entry->entity;
@@ -1674,7 +1668,9 @@ void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath:
 
     WFMath::Point<3> newPos = pos;
 
-    calculatePositionForEntity(mode, entry, newPos);
+    if (calculatePosition) {
+        calculatePositionForEntity(mode, entry, newPos);
+    }
 
     entity.m_location.m_pos = newPos;
 
@@ -1815,6 +1811,14 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
                                     std::set<LocatedEntity*>& transformedEntities)
 {
 
+    applyTransformInternal(entity, orientation, pos, velocity, transformedEntities, true);
+}
+
+void PhysicalDomain::applyTransformInternal(LocatedEntity& entity, const WFMath::Quaternion& orientation,
+                                            const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity,
+                                            std::set<LocatedEntity*>& transformedEntities, bool calculatePosition)
+{
+
     WFMath::Point<3> oldPos = entity.m_location.m_pos;
 
     auto I = m_entries.find(entity.getIntId());
@@ -1826,6 +1830,7 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
     if (entry->collisionObject) {
         rigidBody = btRigidBody::upcast(entry->collisionObject);
     }
+    WFMath::Quaternion rotationChange = WFMath::Quaternion::IDENTITY();
     if (orientation.isValid() || pos.isValid()) {
         if (orientation.isValid() && !orientation.isEqualTo(entity.m_location.m_orientation)) {
             debug_print("PhysicalDomain::new orientation " << entity.describeEntity() << " " << orientation);
@@ -1839,12 +1844,17 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
 
                 entry->collisionObject->setWorldTransform(transform);
             }
+            if (entity.m_location.m_orientation.isValid()) {
+                rotationChange = orientation * entity.m_location.m_orientation.inverse();
+            } else {
+                rotationChange = orientation;
+            }
             entity.m_location.m_orientation = orientation;
             entity.resetFlags(entity_orient_clean);
             hadChange = true;
         }
         if (pos.isValid()) {
-            applyNewPositionForEntity(entry, pos);
+            applyNewPositionForEntity(entry, pos, calculatePosition);
             if (!oldPos.isEqualTo(entity.m_location.m_pos)) {
                 entity.resetFlags(entity_pos_clean);
                 hadChange = true;
@@ -1874,7 +1884,7 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quatern
 
     if (hadChange) {
         transformedEntities.insert(entry->entity);
-        transformRestingEntities(entry, entry->entity->m_location.m_pos - oldPos, transformedEntities);
+        transformRestingEntities(entry, entry->entity->m_location.m_pos - oldPos, rotationChange, transformedEntities);
         updateTerrainMod(entity);
         if (entry->collisionShape) {
             //Since we've deactivated automatic updating of all aabbs each tick we need to do it ourselves when updating the position.
@@ -2275,13 +2285,14 @@ bool PhysicalDomain::getTerrainHeight(float x, float y, float& height) const
 
 void PhysicalDomain::transformRestingEntities(PhysicalDomain::BulletEntry* entry,
                                               const WFMath::Vector<3>& posTransform,
+                                              const WFMath::Quaternion& orientationChange,
                                               std::set<LocatedEntity*>& transformedEntities)
 {
     auto* collObject = entry->collisionObject;
     if (collObject) {
 
         //Check if there are any objects resting on us, and move them along too.
-        std::set<BulletEntry*> objectsRestingOnOurObject;
+        std::set<BulletEntry*> objectsRestingOnOurObject = entry->attachedEntities;
         int numManifolds = m_dynamicsWorld->getDispatcher()->getNumManifolds();
         for (int i = 0; i < numManifolds; i++) {
             btPersistentManifold* contactManifold = m_dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
@@ -2333,14 +2344,50 @@ void PhysicalDomain::transformRestingEntities(PhysicalDomain::BulletEntry* entry
             }
         }
 
+        auto childTransform = posTransform;
+        if (orientationChange.isValid()) {
+            childTransform.rotate(orientationChange);
+        }
         //Move all of the objects that were resting on our object.
         for (auto& restingEntry : objectsRestingOnOurObject) {
-            applyTransform(*restingEntry->entity, WFMath::Quaternion(),
-                           restingEntry->entity->m_location.m_pos + posTransform, WFMath::Vector<3>(), transformedEntities);
+
+            auto relativePos = restingEntry->entity->m_location.pos() - (entry->entity->m_location.pos() - posTransform);
+
+            if (orientationChange.isValid()) {
+                relativePos.rotate(orientationChange);
+            }
+
+            applyTransformInternal(*restingEntry->entity, restingEntry->entity->m_location.m_orientation * orientationChange,
+                           entry->entity->m_location.m_pos + relativePos, WFMath::Vector<3>(), transformedEntities, false);
+
         }
 
 
     }
+}
+
+void PhysicalDomain::plantOnEntity(PhysicalDomain::BulletEntry* plantedEntry, PhysicalDomain::BulletEntry* entryPlantedOn)
+{
+    auto newPlantedOnProp = plantedEntry->entity->requirePropertyClass<EntityProperty>("planted_on");
+    if (newPlantedOnProp->data()) {
+        if (newPlantedOnProp->data().get() == entryPlantedOn->entity) {
+            //Already planted on entity, nothing to do
+            return;
+        }
+        auto I = m_entries.find(newPlantedOnProp->data()->getIntId());
+        if (I != m_entries.end()) {
+            I->second->attachedEntities.erase(plantedEntry);
+        }
+    }
+    if (entryPlantedOn) {
+        newPlantedOnProp->data() = EntityRef(entryPlantedOn->entity);
+        entryPlantedOn->attachedEntities.insert(plantedEntry);
+    } else {
+        newPlantedOnProp->data() = EntityRef(nullptr);
+    }
+
+    newPlantedOnProp->setFlags(flag_unsent);
+
 }
 
 

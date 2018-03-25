@@ -150,6 +150,10 @@ class PhysicalDomain : public Domain
              */
             bool modeChanged;
 
+            BulletEntry* attachedTo = nullptr;
+
+            std::set<BulletEntry*> attachedEntities;
+
         };
 
         struct TerrainEntry
@@ -267,7 +271,7 @@ class PhysicalDomain : public Domain
 
         void updateObserverEntry(BulletEntry* bulletEntry, OpVector& res);
 
-        void applyNewPositionForEntity(BulletEntry* entry, const WFMath::Point<3>& pos);
+        void applyNewPositionForEntity(BulletEntry* entry, const WFMath::Point<3>& pos, bool calculatePosition = true);
 
         bool getTerrainHeight(float x, float y, float& height) const;
 
@@ -296,7 +300,17 @@ class PhysicalDomain : public Domain
          * @param posTransform
          * @param transformedEntities
          */
-        void transformRestingEntities(BulletEntry* entry, const WFMath::Vector<3>& posTransform, std::set<LocatedEntity*>& transformedEntities);
+        void transformRestingEntities(BulletEntry* entry,
+                                      const WFMath::Vector<3>& posTransform,
+                                      const WFMath::Quaternion& orientationChange,
+                                      std::set<LocatedEntity*>& transformedEntities);
+
+        void plantOnEntity(BulletEntry* plantedEntry, BulletEntry* entryPlantedOn);
+
+        void applyTransformInternal(LocatedEntity& entity, const WFMath::Quaternion& orientation,
+                            const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity,
+                            std::set<LocatedEntity*>& transformedEntities, bool calculatePosition);
+
 
 };
 

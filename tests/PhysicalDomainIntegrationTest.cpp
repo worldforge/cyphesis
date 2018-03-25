@@ -98,6 +98,8 @@ class PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
         void test_convert();
 
+        void test_movePlantedAndResting();
+
         void test_plantedOn();
 
         void test_terrainMods();
@@ -141,6 +143,7 @@ long PhysicalDomainIntegrationTest::m_id_counter = 0L;
 
 PhysicalDomainIntegrationTest::PhysicalDomainIntegrationTest()
 {
+    ADD_TEST(PhysicalDomainIntegrationTest::test_movePlantedAndResting);
     ADD_TEST(PhysicalDomainIntegrationTest::test_plantedOn);
     ADD_TEST(PhysicalDomainIntegrationTest::test_terrainMods);
     ADD_TEST(PhysicalDomainIntegrationTest::test_lake_rotated);
@@ -178,6 +181,172 @@ void PhysicalDomainIntegrationTest::teardown()
 #define ASSERT_FUZZY_EQUAL_FN(_lval, _rval, _epsilon, _fn) {\
     if (this->assertFuzzyEqual(#_lval, _lval, #_rval, _rval, #_epsilon, _epsilon, __PRETTY_FUNCTION__,\
                           __FILE__, __LINE__) != 0) {_fn(); return;}\
+}
+
+void PhysicalDomainIntegrationTest::test_movePlantedAndResting()
+{
+
+    class TestPhysicalDomain : public PhysicalDomain
+    {
+        public:
+            explicit TestPhysicalDomain(LocatedEntity& entity) : PhysicalDomain(entity)
+            {
+            }
+
+            btDiscreteDynamicsWorld* test_getBulletWorld()
+            {
+                return m_dynamicsWorld;
+            }
+
+
+            btRigidBody* test_getRigidBody(long id)
+            {
+                return btRigidBody::upcast(m_entries.find(id)->second->collisionObject);
+            }
+    };
+
+    //Place a box, "planted". On top of that, place another box, also "planted". And on top of that, place a box which is "free".
+    //Then move the first box. The two boxes on top should move along with it.
+
+    std::vector<std::string> shapes{"box", "cylinder-x", "cylinder-y", "cylinder-z", "capsule-x", "capsule-y", "capsule-z"};
+
+    auto id = newId();
+    Entity* rootEntity = new Entity(std::to_string(id), id);
+    rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
+    rootEntity->m_location.setBBox({{-64, 0,  -64},
+                                    {64,  64, 64}});
+    TestPhysicalDomain* domain = new TestPhysicalDomain(*rootEntity);
+
+    ModeProperty* fixedProperty = new ModeProperty();
+    fixedProperty->set("fixed");
+    ModeProperty* plantedProperty = new ModeProperty();
+    plantedProperty->set("planted");
+    ModeProperty* freeProperty = new ModeProperty();
+    freeProperty->set("free");
+
+    auto massProp = new Property<double>();
+    massProp->data() = 10000;
+
+    id = newId();
+    Entity* fixed1 = new Entity(std::to_string(id), id);
+    fixed1->m_location.m_pos = {0, 0, 0};
+    fixed1->m_location.setBBox({{-2, -1, -2},
+                                {2,  1,  2}});
+    fixed1->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
+    fixed1->setProperty(ModeProperty::property_name, fixedProperty);
+
+    domain->addEntity(*fixed1);
+
+    OpVector res;
+    domain->tick(0, res);
+
+    ASSERT_EQUAL(0, fixed1->m_location.m_pos.y());
+
+
+    id = newId();
+    Entity* planted1 = new Entity(std::to_string(id), id);
+    planted1->m_location.m_pos = {1, 1, 0};
+    planted1->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
+    planted1->m_location.setBBox({{-2, -1, -2},
+                                  {2,  1,  2}});
+    planted1->setProperty(ModeProperty::property_name, plantedProperty);
+
+    domain->addEntity(*planted1);
+
+    domain->tick(0, res);
+
+    id = newId();
+    Entity* planted2 = new Entity(std::to_string(id), id);
+    planted2->m_location.m_pos = {0, 2, 1};
+    planted2->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
+    planted2->m_location.setBBox({{-2, -1, -2},
+                                  {2,  1,  2}});
+    planted2->setProperty(ModeProperty::property_name, plantedProperty);
+
+    domain->addEntity(*planted2);
+
+    domain->tick(0, res);
+
+    ASSERT_FUZZY_EQUAL(2.0f, planted2->m_location.m_pos.y(), 0.1f);
+
+    id = newId();
+    Entity* freeEntity = new Entity(std::to_string(id), id);
+    freeEntity->m_location.m_pos = {1, 4, 0};
+    freeEntity->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
+    freeEntity->setProperty(ModeProperty::property_name, freeProperty);
+    freeEntity->m_location.setBBox({{-1, -1, -1},
+                                    {1,  1,  1}});
+    freeEntity->setProperty("mass", massProp);
+    domain->addEntity(*freeEntity);
+
+    ASSERT_FUZZY_EQUAL(4.0f, freeEntity->m_location.m_pos.y(), 0.1);
+    domain->tick(1, res);
+
+    ASSERT_FUZZY_EQUAL(4.0f, freeEntity->m_location.m_pos.y(), 0.1);
+
+    //Only change position
+    {
+        std::set<LocatedEntity*> transformedEntities;
+
+        domain->applyTransform(*fixed1, WFMath::Quaternion(), {10, 10, 10}, {}, transformedEntities);
+        ASSERT_EQUAL(4u, transformedEntities.size());
+        ASSERT_EQUAL(WFMath::Point<3>(11, 11, 10), planted1->m_location.pos());
+        ASSERT_EQUAL(WFMath::Point<3>(10, 12, 11), planted2->m_location.pos());
+        ASSERT_TRUE(WFMath::Equal(WFMath::Point<3>(11, 14, 10), freeEntity->m_location.pos(), 0.1));
+    }
+    domain->tick(0, res);
+
+
+    //Only change orientation
+    {
+        std::set<LocatedEntity*> transformedEntities;
+
+        domain->applyTransform(*fixed1, WFMath::Quaternion(1, WFMath::numeric_constants<float>::pi() / 2), {}, {}, transformedEntities);
+        ASSERT_EQUAL(4u, transformedEntities.size());
+        ASSERT_EQUAL(WFMath::Point<3>(10, 11, 9), planted1->m_location.pos());
+        ASSERT_EQUAL(WFMath::Point<3>(11, 12, 10), planted2->m_location.pos());
+        ASSERT_TRUE(WFMath::Equal(WFMath::Point<3>(10, 14, 9), freeEntity->m_location.pos(), 0.1));
+    }
+    domain->tick(0, res);
+
+    //Move it, and at the same time rotate it 90 degrees around the y axis.
+    {
+        std::set<LocatedEntity*> transformedEntities;
+
+
+        domain->applyTransform(*fixed1, WFMath::Quaternion(1, WFMath::numeric_constants<float>::pi()), {15, 15, 15}, {}, transformedEntities);
+        ASSERT_EQUAL(4u, transformedEntities.size());
+        ASSERT_EQUAL(WFMath::Point<3>(14, 16, 15), planted1->m_location.pos());
+        ASSERT_EQUAL(WFMath::Point<3>(15, 17, 14), planted2->m_location.pos());
+        ASSERT_TRUE(WFMath::Equal(WFMath::Point<3>(14, 19, 15), freeEntity->m_location.pos(), 0.1));
+    }
+    domain->tick(0, res);
+
+    //Move away the first planted entity, which should also move along the second planted and the free entity, and not affect the fixed entity.
+    {
+        std::set<LocatedEntity*> transformedEntities;
+
+        domain->applyTransform(*planted1, {}, {20, 0, 20}, {}, transformedEntities);
+        ASSERT_EQUAL(3u, transformedEntities.size());
+        ASSERT_EQUAL(WFMath::Point<3>(21, 1, 19), planted2->m_location.pos());
+        ASSERT_TRUE(WFMath::Equal(WFMath::Point<3>(20, 3, 20), freeEntity->m_location.pos(), 0.1));
+        ASSERT_EQUAL(WFMath::Point<3>(15, 15, 15), fixed1->m_location.pos());
+    }
+
+    {
+        std::set<LocatedEntity*> transformedEntities;
+        domain->applyTransform(*fixed1, WFMath::Quaternion(), {5, 20, 5}, {}, transformedEntities);
+        ASSERT_EQUAL(1u, transformedEntities.size());
+    }
+
+    //Remove the second planted entity, making sure that the first planted doesn't keep a reference
+    domain->removeEntity(*planted2);
+    {
+        std::set<LocatedEntity*> transformedEntities;
+
+        domain->applyTransform(*planted1, WFMath::Quaternion(), {15, 0, 20}, {}, transformedEntities);
+        ASSERT_EQUAL(1u, transformedEntities.size());
+    }
 }
 
 void PhysicalDomainIntegrationTest::test_plantedOn()
