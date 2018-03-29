@@ -1031,26 +1031,6 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
 void PhysicalDomain::childEntityPropertyApplied(const std::string& name, PropertyBase& prop, BulletEntry* bulletEntry)
 {
 
-    auto adjustToTerrainFn = [&]() {
-        LocatedEntity& entity = *bulletEntry->entity;
-
-        if (m_terrain) {
-            WFMath::Point<3>& wfPos = entity.m_location.m_pos;
-
-            float h = wfPos.y();
-            getTerrainHeight(wfPos.x(), wfPos.z(), h);
-            wfPos.y() = h;
-
-            btQuaternion orientation = entity.m_location.m_orientation.isValid() ? Convert::toBullet(entity.m_location.m_orientation) : btQuaternion::getIdentity();
-            btVector3 pos = wfPos.isValid() ? Convert::toBullet(wfPos) : btVector3(0, 0, 0);
-
-            //"Center of mass offset" is the inverse of the center of the object in relation to origo.
-            btVector3 centerOfMassOffset = -Convert::toBullet(entity.m_location.m_bBox.getCenter());
-
-            bulletEntry->collisionObject->setWorldTransform(btTransform(orientation, pos - centerOfMassOffset));
-        }
-    };
-
     if (name == "friction") {
         if (bulletEntry->collisionObject) {
             auto frictionProp = dynamic_cast<Property<double>*>(&prop);
@@ -1223,16 +1203,9 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
                     bulletEntry->motionState->m_centerOfMassOffset = btTransform(btQuaternion::getIdentity(), bulletEntry->centerOfMassOffset);
                 }
 
-                auto* modeProp = bulletEntry->entity->getPropertyClassFixed<ModeProperty>();
-
-                if (modeProp && modeProp->getMode() != ModeProperty::Mode::Fixed) {
-                    adjustToTerrainFn();
-                }
-
                 applyNewPositionForEntity(bulletEntry, bulletEntry->entity->m_location.pos());
                 auto rigidBody = btRigidBody::upcast(bulletEntry->collisionObject);
                 if (rigidBody) {
-
                     if (rigidBody->getInvMass() != 0) {
                         rigidBody->activate();
                     }
@@ -1670,6 +1643,9 @@ void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, Physica
 
 void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath::Point<3>& pos, bool calculatePosition)
 {
+    if (!pos.isValid()) {
+        return;
+    }
     btCollisionObject* collObject = entry->collisionObject;
     LocatedEntity& entity = *entry->entity;
 
