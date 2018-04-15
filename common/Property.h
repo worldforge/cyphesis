@@ -87,13 +87,13 @@ class PropertyBase {
 
 /// \brief Flag indicating data has been written to permanent store
 /// \ingroup PropertyFlags
-static const unsigned int per_clean = 1 << 0;
+static const unsigned int per_clean = 1u << 0u;
 /// \brief Flag indicating data should never be persisted
 /// \ingroup PropertyFlags
-static const unsigned int per_ephem = 1 << 1;
+static const unsigned int per_ephem = 1u << 1u;
 /// \brief Flag indicating data has been stored initially
 /// \ingroup PropertyFlags
-static const unsigned int per_seen = 1 << 2;
+static const unsigned int per_seen = 1u << 2u;
 
 /// \brief Flag mask indicating data should not be written to store
 /// \ingroup PropertyFlags
@@ -101,10 +101,10 @@ static const unsigned int per_mask = per_clean | per_ephem;
 
 /// \brief Flag indicating data is not visible
 /// \ingroup PropertyFlags
-static const unsigned int vis_hidden = 1 << 3;
+static const unsigned int vis_hidden = 1u << 3u;
 /// \brief Flag indicating data is server internal
 /// \ingroup PropertyFlags
-static const unsigned int vis_internal = 1 << 4;
+static const unsigned int vis_internal = 1u << 4u;
 
 /// \brief Flag mask indicating data should be be perceptable
 /// \ingroup PropertyFlags
@@ -112,21 +112,21 @@ static const unsigned int vis_mask = vis_hidden | vis_internal;
 
 /// \brief Flag set to indicate this is a class property, and has no instance
 /// \ingroup PropertyFlags
-static const unsigned int flag_class = 1 << 5;
+static const unsigned int flag_class = 1u << 5u;
 
 /// \brief Flag used for boolean properties
 /// \ingroup PropertyFlags
-static const unsigned int flag_bool = 1 << 6;
+static const unsigned int flag_bool = 1u << 6u;
 
 /// \brief Flag used to mark properties whose state has not been broadcast
 /// \ingroup PropertyFlags
-static const unsigned int flag_unsent = 1 << 7;
+static const unsigned int flag_unsent = 1u << 7u;
 
 /// \brief Flag used to mark properties which must be instance properties
 /// \ingroup PropertyFlags
 /// Typically this will be because they have per-entity state which cannot
 /// be handled on a class property.
-static const unsigned int flag_instance = 1 << 8;
+static const unsigned int flag_instance = 1u << 8u;
 
 /// \brief Entity property template for properties with single data values
 /// \ingroup PropertyClasses

@@ -46,13 +46,13 @@ typedef std::map<std::string, PropertyBase *> PropertyDict;
 
 /// \brief Flag indicating entity has been written to permanent store
 /// \ingroup EntityFlags
-static const unsigned int entity_clean = 1 << 0;
+static const unsigned int entity_clean = 1u << 0u;
 /// \brief Flag indicating entity POS has been written to permanent store
 /// \ingroup EntityFlags
-static const unsigned int entity_pos_clean = 1 << 1;
+static const unsigned int entity_pos_clean = 1u << 1u;
 /// \brief Flag indicating entity ORIENT has been written to permanent store
 /// \ingroup EntityFlags
-static const unsigned int entity_orient_clean = 1 << 2;
+static const unsigned int entity_orient_clean = 1u << 2u;
 
 static const unsigned int entity_clean_mask = entity_clean |
                                               entity_pos_clean |
@@ -60,36 +60,36 @@ static const unsigned int entity_clean_mask = entity_clean |
 
 /// \brief Flag indicating entity is perceptive
 /// \ingroup EntityFlags
-static const unsigned int entity_perceptive = 1 << 3;
+static const unsigned int entity_perceptive = 1u << 3u;
 /// \brief Flag indicating entity has been destroyed
 /// \ingroup EntityFlags
-static const unsigned int entity_destroyed = 1 << 4;
+static const unsigned int entity_destroyed = 1u << 4u;
 /// \brief Flag indicating entity has been queued for storage update
 /// \ingroup EntityFlags
-static const unsigned int entity_queued = 1 << 5;
+static const unsigned int entity_queued = 1u << 5u;
 /// \brief Flag indicaiting entity is ephemeral
 /// \ingroup EntityFlags
-static const unsigned int entity_ephem = 1 << 6;
+static const unsigned int entity_ephem = 1u << 6u;
 /// \brief Flag indicating entity is visible
 /// \ingroup EntityFlags
 /// Currently only used on MemEntity
-static const unsigned int entity_visible = 1 << 7;
+static const unsigned int entity_visible = 1u << 7u;
 /// \brief Flag indicating entity is asleep
 /// \ingroup EntityFlags
 /// Currently only used on BaseMind
-static const unsigned int entity_asleep = 1 << 8;
+static const unsigned int entity_asleep = 1u << 8u;
 /// \brief Flag indicating entity contains a Domain, used for movement and sights
 /// \ingroup EntityFlags
-static const unsigned int entity_domain = 1 << 9;
+static const unsigned int entity_domain = 1u << 9u;
 
 /// \brief Flag indicating entity has thoughts that needs to be persisted.
 /// \ingroup EntityFlags
-static const unsigned int entity_dirty_thoughts = 1 << 10;
+static const unsigned int entity_dirty_thoughts = 1u << 10u;
 
 /// \brief Flag indicating entity has a location which has been changed since last sent to clients,
 /// and new location data should be sent on the next Update.
 /// \ingroup EntityFlags
-static const unsigned int entity_dirty_location = 1 << 11;
+static const unsigned int entity_dirty_location = 1u << 11u;
 
 /// \brief This is the base class from which in-game and in-memory objects
 /// inherit.
