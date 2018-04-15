@@ -37,7 +37,10 @@ class OgreMeshDeserializer;
  * The attribute "type" defines the shape of the geometry.
  * Possible values:
  *
- * "sphere"
+ * "sphere"    : A sphere, using the smallest axis for radius
+ * "sphere-x"  : A sphere, using x axis for radius
+ * "sphere-y"  : A sphere, using y axis for radius
+ * "sphere-z"  : A sphere, using z axis for radius
  * "box"
  * "capsule-z" : A capsule, oriented along the z axis
  * "capsule-x" : A capsule, oriented along the x axis

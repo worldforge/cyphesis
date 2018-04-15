@@ -16,12 +16,15 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 #include "GeometryProperty.h"
+#include "OgreMeshDeserializer.h"
+#include "BBoxProperty.h"
 #include "physics/Convert.h"
 #include "common/log.h"
 #include "common/globals.h"
 #include "common/TypeNode.h"
-#include "OgreMeshDeserializer.h"
-#include "BBoxProperty.h"
+#include "common/debug.h"
+#include "common/compose.hpp"
+#include "common/AtlasQuery.h"
 
 #include <wfmath/atlasconv.h>
 
@@ -32,22 +35,18 @@
 #include <BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h>
 #include <BulletCollision/CollisionShapes/btCapsuleShape.h>
 #include <BulletCollision/Gimpact/btGImpactShape.h>
+#include <BulletCollision/CollisionShapes/btScaledBvhTriangleMeshShape.h>
+#include <BulletCollision/CollisionShapes/btCompoundShape.h>
+#include <BulletCollision/CollisionShapes/btConvexTriangleMeshShape.h>
 #include <boost/algorithm/string.hpp>
-#include <common/AtlasQuery.h>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/fstream.hpp>
-#include <common/debug.h>
-#include <BulletCollision/CollisionShapes/btScaledBvhTriangleMeshShape.h>
-#include <BulletCollision/CollisionShapes/btConvexHullShape.h>
-#include <BulletCollision/CollisionShapes/btCompoundShape.h>
-#include <common/compose.hpp>
-#include <BulletCollision/CollisionShapes/btConvexTriangleMeshShape.h>
 
 const std::string GeometryProperty::property_name = "geometry";
 const std::string GeometryProperty::property_atlastype = "map";
 
 auto createBoxFn = [&](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
-    -> std::shared_ptr<btCollisionShape> {
+        -> std::shared_ptr<btCollisionShape> {
     auto btSize = Convert::toBullet(size * 0.5).absolute();
     centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
     return std::make_shared<btBoxShape>(btSize);
@@ -80,25 +79,47 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
         }
     });
 
-    auto sphereCreator = [&](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
-        -> std::shared_ptr<btCollisionShape> {
-        float minRadius = std::min(size.x(), std::min(size.y(), size.z())) * 0.5f;
+    auto sphereCreator = [](float radius, const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset)
+            -> std::shared_ptr<btCollisionShape> {
         float xOffset = bbox.lowCorner().x() + (size.x() / 2.0f);
         float yOffset = bbox.lowCorner().y() + (size.y() / 2.0f);
         float zOffset = bbox.lowCorner().z() + (size.z() / 2.0f);
 
         centerOfMassOffset = -btVector3(xOffset, yOffset, zOffset);
-        return std::make_shared<btSphereShape>(minRadius);
+        return std::make_shared<btSphereShape>(radius);
     };
 
     auto I = m_data.find("type");
     if (I != m_data.end() && I->second.isString()) {
         const std::string& shapeType = I->second.String();
         if (shapeType == "sphere") {
-            mShapeCreator = sphereCreator;
+            mShapeCreator = [sphereCreator](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
+                    -> std::shared_ptr<btCollisionShape> {
+                float radius = std::min(size.x(), std::min(size.y(), size.z())) * 0.5f;
+                return sphereCreator(radius, bbox, size, centerOfMassOffset);
+            };
+
+        } else if (shapeType == "sphere-x") {
+            mShapeCreator = [&, sphereCreator](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
+                    -> std::shared_ptr<btCollisionShape> {
+                float radius = size.x() * 0.5f;
+                return sphereCreator(radius, bbox, size, centerOfMassOffset);
+            };
+        } else if (shapeType == "sphere-y") {
+            mShapeCreator = [&, sphereCreator](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
+                    -> std::shared_ptr<btCollisionShape> {
+                float radius = size.y() * 0.5f;
+                return sphereCreator(radius, bbox, size, centerOfMassOffset);
+            };
+        } else if (shapeType == "sphere-z") {
+            mShapeCreator = [&, sphereCreator](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
+                    -> std::shared_ptr<btCollisionShape> {
+                float radius = size.z() * 0.5f;
+                return sphereCreator(radius, bbox, size, centerOfMassOffset);
+            };
         } else if (shapeType == "capsule-y") {
             mShapeCreator = [&, sphereCreator](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
-                -> std::shared_ptr<btCollisionShape> {
+                    -> std::shared_ptr<btCollisionShape> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
                 float minRadius = std::min(size.x(), size.z()) * 0.5f;
                 //subtract the radius times 2 from the height
@@ -107,13 +128,13 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
                 if (height > 0) {
                     return std::make_shared<btCapsuleShape>(minRadius, height);
                 } else {
-                    return sphereCreator(bbox, size, centerOfMassOffset, 0);
+                    return sphereCreator(size.y() * 0.5f, bbox, size, centerOfMassOffset);
                 }
             };
 
         } else if (shapeType == "capsule-x") {
             mShapeCreator = [&](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
-                -> std::shared_ptr<btCollisionShape> {
+                    -> std::shared_ptr<btCollisionShape> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
                 float minRadius = std::min(size.z(), size.y()) * 0.5f;
                 //subtract the radius times 2 from the height
@@ -122,12 +143,12 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
                 if (height > 0) {
                     return std::make_shared<btCapsuleShapeX>(minRadius, height);
                 } else {
-                    return sphereCreator(bbox, size, centerOfMassOffset, 0);
+                    return sphereCreator(size.x() * 0.5f, bbox, size, centerOfMassOffset);
                 }
             };
         } else if (shapeType == "capsule-z") {
             mShapeCreator = [&](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
-                -> std::shared_ptr<btCollisionShape> {
+                    -> std::shared_ptr<btCollisionShape> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
                 float minRadius = std::min(size.x(), size.y()) * 0.5f;
                 //subtract the radius times 2 from the height
@@ -136,25 +157,22 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
                 if (height > 0) {
                     return std::make_shared<btCapsuleShapeZ>(minRadius, height);
                 } else {
-                    return sphereCreator(bbox, size, centerOfMassOffset, 0);
+                    return sphereCreator(size.z() * 0.5f, bbox, size, centerOfMassOffset);
                 }
             };
-
         } else if (shapeType == "box") {
             mShapeCreator = createBoxFn;
         } else if (shapeType == "cylinder-y") {
             mShapeCreator = [&](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
-                -> std::shared_ptr<btCollisionShape> {
+                    -> std::shared_ptr<btCollisionShape> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
                 auto shape = std::make_shared<btCylinderShape>(btVector3(1, 1, 1));
                 shape->setLocalScaling(Convert::toBullet(size * 0.5f));
                 return shape;
             };
-
-
         } else if (shapeType == "cylinder-x") {
             mShapeCreator = [&](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
-                -> std::shared_ptr<btCollisionShape> {
+                    -> std::shared_ptr<btCollisionShape> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
                 auto shape = std::make_shared<btCylinderShapeX>(btVector3(1, 1, 1));
                 shape->setLocalScaling(Convert::toBullet(size * 0.5f));
@@ -162,7 +180,7 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
             };
         } else if (shapeType == "cylinder-z") {
             mShapeCreator = [&](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
-                -> std::shared_ptr<btCollisionShape> {
+                    -> std::shared_ptr<btCollisionShape> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
                 auto shape = std::make_shared<btCylinderShapeZ>(btVector3(1, 1, 1));
                 shape->setLocalScaling(Convert::toBullet(size * 0.5f));
@@ -299,6 +317,9 @@ void GeometryProperty::buildMeshCreator(std::shared_ptr<OgreMeshDeserializer> me
                                                                     [verts, indices](btTriangleIndexVertexArray* p) {
                                                                         delete p;
                                                                     });
+    btVector3 aabbMin, aabbMax;
+    triangleVertexArray->calculateAabbBruteForce(aabbMin, aabbMax);
+    triangleVertexArray->setPremadeAabb(aabbMin, aabbMax);
 
     std::shared_ptr<btBvhTriangleMeshShape> meshShape(new btBvhTriangleMeshShape(triangleVertexArray.get(), true, true),
                                                       [triangleVertexArray](btBvhTriangleMeshShape* p) {
@@ -319,7 +340,7 @@ void GeometryProperty::buildMeshCreator(std::shared_ptr<OgreMeshDeserializer> me
         //Due to performance reasons we should use different shapes depending on whether it's static (i.e. mass == 0) or not
         if (mass == 0) {
             //Hold on to meshShape as long as the scaled mesh exists.
-            return std::shared_ptr<btScaledBvhTriangleMeshShape>(new btScaledBvhTriangleMeshShape(meshShape.get(), scaling), [meshShape](btScaledBvhTriangleMeshShape* p){
+            return std::shared_ptr<btScaledBvhTriangleMeshShape>(new btScaledBvhTriangleMeshShape(meshShape.get(), scaling), [meshShape](btScaledBvhTriangleMeshShape* p) {
                 delete p;
             });
         } else {
@@ -383,11 +404,11 @@ void GeometryProperty::buildCompoundCreator()
         auto I = m_data.find("shapes");
         if (I != m_data.end() && I->second.isList()) {
             auto shapes = I->second.List();
-            #if BT_BULLET_VERSION > 283
+#if BT_BULLET_VERSION > 283
             btCompoundShape* compoundShape = new btCompoundShape(true, shapes.size());
-            #else
+#else
             btCompoundShape* compoundShape = new btCompoundShape(true);
-            #endif
+#endif
             std::vector<btCollisionShape*> childShapes(shapes.size());
             for (auto& shapeElement : shapes) {
                 if (shapeElement.isMap()) {

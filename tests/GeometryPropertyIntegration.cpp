@@ -44,10 +44,8 @@
 #include <BulletCollision/CollisionShapes/btCylinderShape.h>
 #include <BulletCollision/CollisionShapes/btScaledBvhTriangleMeshShape.h>
 #include <BulletCollision/Gimpact/btGImpactShape.h>
-#include <BulletCollision/CollisionShapes/btConvexHullShape.h>
 #include <BulletCollision/CollisionShapes/btCompoundShape.h>
 #include <BulletCollision/CollisionShapes/btConvexTriangleMeshShape.h>
-
 
 #include "stubs/physics/stubVector3D.h"
 
@@ -109,20 +107,20 @@ void GeometryPropertyIntegrationTest::test_createCompound()
         GeometryProperty g1;
         g1.set(Atlas::Message::MapType({{"type",   "compound"},
                                         {"shapes", ListType{
-                                            MapType {
-                                                {"type",   "box"},
-                                                {"points", ListType{
-                                                    1.f, 2.f, 3.f,
-                                                    6.f, 8.f, 10.f
-                                                }}
-                                            },
-                                            MapType {
-                                                {"type",   "box"},
-                                                {"points", ListType{
-                                                    1.f, 2.f, 3.f,
-                                                    6.f, 8.f, 10.f
-                                                }}
-                                            }
+                                                MapType{
+                                                        {"type",   "box"},
+                                                        {"points", ListType{
+                                                                1.f, 2.f, 3.f,
+                                                                6.f, 8.f, 10.f
+                                                        }}
+                                                },
+                                                MapType{
+                                                        {"type",   "box"},
+                                                        {"points", ListType{
+                                                                1.f, 2.f, 3.f,
+                                                                6.f, 8.f, 10.f
+                                                        }}
+                                                }
 
                                         }}}));
         auto result = g1.createShape(aabb, massOffset, 1.0f);
@@ -131,9 +129,9 @@ void GeometryPropertyIntegrationTest::test_createCompound()
         ASSERT_EQUAL(2, compoundShape->getNumChildShapes());
         ASSERT_EQUAL(BOX_SHAPE_PROXYTYPE, compoundShape->getChildShape(0)->getShapeType());
         auto* boxChild1 = dynamic_cast<btBoxShape*>(compoundShape->getChildShape(0));
-        ASSERT_FUZZY_EQUAL(8.f/2.f, boxChild1->getImplicitShapeDimensions().x(), 0.1f);
-        ASSERT_FUZZY_EQUAL(14.f/2.f, boxChild1->getImplicitShapeDimensions().y(), 0.1f);
-        ASSERT_FUZZY_EQUAL(11.f/2.f, boxChild1->getImplicitShapeDimensions().z(), 0.1f);
+        ASSERT_FUZZY_EQUAL(8.f / 2.f, boxChild1->getImplicitShapeDimensions().x(), 0.1f);
+        ASSERT_FUZZY_EQUAL(14.f / 2.f, boxChild1->getImplicitShapeDimensions().y(), 0.1f);
+        ASSERT_FUZZY_EQUAL(11.f / 2.f, boxChild1->getImplicitShapeDimensions().z(), 0.1f);
     }
 
 }
@@ -173,11 +171,42 @@ void GeometryPropertyIntegrationTest::test_createShapes()
     {
         GeometryProperty g1;
         g1.set(Atlas::Message::MapType({{"type", "sphere"}}));
-        auto shape = g1.createShape({{-1, 0, -1},{1, 1, 1}}, massOffset, 1.0f);
+        auto shape = g1.createShape({{-1, 0, -1},
+                                     {1,  1, 1}}, massOffset, 1.0f);
         ASSERT_EQUAL(btVector3(0, -0.5f, 0), massOffset);
         btSphereShape* sphere = dynamic_cast<btSphereShape*>(shape.get());
         //Min radius is used
         ASSERT_EQUAL(0.5, sphere->getRadius());
+    }
+    {
+        GeometryProperty g1;
+        g1.set(Atlas::Message::MapType({{"type", "sphere-x"}}));
+        auto shape = g1.createShape({{-1, 0, -1},
+                                     {1,  1, 1}}, massOffset, 1.0f);
+        ASSERT_EQUAL(btVector3(0, -0.5f, 0), massOffset);
+        btSphereShape* sphere = dynamic_cast<btSphereShape*>(shape.get());
+        //X radius is used
+        ASSERT_EQUAL(1, sphere->getRadius());
+    }
+    {
+        GeometryProperty g1;
+        g1.set(Atlas::Message::MapType({{"type", "sphere-y"}}));
+        auto shape = g1.createShape({{-1, 0, -1},
+                                     {1,  1, 1}}, massOffset, 1.0f);
+        ASSERT_EQUAL(btVector3(0, -0.5f, 0), massOffset);
+        btSphereShape* sphere = dynamic_cast<btSphereShape*>(shape.get());
+        //Y radius is used
+        ASSERT_EQUAL(0.5, sphere->getRadius());
+    }
+    {
+        GeometryProperty g1;
+        g1.set(Atlas::Message::MapType({{"type", "sphere-z"}}));
+        auto shape = g1.createShape({{-1, 0, -1},
+                                     {1,  1, 1}}, massOffset, 1.0f);
+        ASSERT_EQUAL(btVector3(0, -0.5f, 0), massOffset);
+        btSphereShape* sphere = dynamic_cast<btSphereShape*>(shape.get());
+        //Z radius is used
+        ASSERT_EQUAL(1, sphere->getRadius());
     }
     {
         WFMath::AxisBox<3> characterAabb(WFMath::Point<3>(-2, -4, -3), WFMath::Point<3>(2, 10, 3));

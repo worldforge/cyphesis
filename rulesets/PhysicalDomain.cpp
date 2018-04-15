@@ -1745,6 +1745,7 @@ void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& 
                         if (jumpSpeedProp && jumpSpeedProp->data() > 0) {
 
                             bool isGrounded = false;
+//                            m_broadphase->getOverlappingPairCache()->
                             IsGroundedCallback groundedCallback(*rigidBody, isGrounded);
                             m_dynamicsWorld->contactTest(entry.collisionObject, groundedCallback);
                             if (isGrounded) {
