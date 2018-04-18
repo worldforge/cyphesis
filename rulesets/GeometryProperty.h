@@ -37,10 +37,7 @@ class OgreMeshDeserializer;
  * The attribute "type" defines the shape of the geometry.
  * Possible values:
  *
- * "sphere"    : A sphere, using the smallest axis for radius
- * "sphere-x"  : A sphere, using x axis for radius
- * "sphere-y"  : A sphere, using y axis for radius
- * "sphere-z"  : A sphere, using z axis for radius
+ * "sphere"    : A sphere
  * "box"
  * "capsule-z" : A capsule, oriented along the z axis
  * "capsule-x" : A capsule, oriented along the x axis
@@ -58,6 +55,9 @@ class OgreMeshDeserializer;
  * If the "mesh" type is specified, the full mesh data will be read and used.
  * The bounds of the mesh will be used to update the "bbox" property
  * of any TypeNode that this property is applied on.
+ *
+ * For spheres, capsules and cylinders the smallest axis will be used for scaling, unless a "scaler" parameter is set.
+ * "scaler" can be either "min", "max", "x", "y" or "z"
  *
  * @ingroup PropertyClasses
  */
@@ -91,6 +91,33 @@ class GeometryProperty : public Property<Atlas::Message::MapType>
 
     private:
 
+        /**
+         * Defines how the geometry should be scaled in accordance to the entity bounding box.
+         */
+        enum class ScalerType
+        {
+                /**
+                 * Use the smallest dimension.
+                 */
+                        Min,
+                /**
+                 * Use the largest dimension.
+                 */
+                        Max,
+                /**
+                 * Use the x axis.
+                 */
+                        XAxis,
+                /**
+                 * Use the y axis.
+                 */
+                        YAxis,
+                /**
+                 * Use the z axis.
+                 */
+                        ZAxis
+        };
+
         WFMath::AxisBox<3> m_meshBounds;
 
         /**
@@ -104,6 +131,9 @@ class GeometryProperty : public Property<Atlas::Message::MapType>
         void buildMeshCreator(std::shared_ptr<OgreMeshDeserializer> meshDeserializer);
 
         void buildCompoundCreator();
+
+        ScalerType parseScalerType();
+
 };
 
 #endif /* RULESETS_GEOMETRYPROPERTY_H_ */

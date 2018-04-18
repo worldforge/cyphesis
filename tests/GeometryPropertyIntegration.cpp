@@ -180,7 +180,7 @@ void GeometryPropertyIntegrationTest::test_createShapes()
     }
     {
         GeometryProperty g1;
-        g1.set(Atlas::Message::MapType({{"type", "sphere-x"}}));
+        g1.set(Atlas::Message::MapType({{"type", "sphere"}, {"scaler", "x"}}));
         auto shape = g1.createShape({{-1, 0, -1},
                                      {1,  1, 1}}, massOffset, 1.0f);
         ASSERT_EQUAL(btVector3(0, -0.5f, 0), massOffset);
@@ -190,7 +190,7 @@ void GeometryPropertyIntegrationTest::test_createShapes()
     }
     {
         GeometryProperty g1;
-        g1.set(Atlas::Message::MapType({{"type", "sphere-y"}}));
+        g1.set(Atlas::Message::MapType({{"type", "sphere"}, {"scaler", "y"}}));
         auto shape = g1.createShape({{-1, 0, -1},
                                      {1,  1, 1}}, massOffset, 1.0f);
         ASSERT_EQUAL(btVector3(0, -0.5f, 0), massOffset);
@@ -200,7 +200,7 @@ void GeometryPropertyIntegrationTest::test_createShapes()
     }
     {
         GeometryProperty g1;
-        g1.set(Atlas::Message::MapType({{"type", "sphere-z"}}));
+        g1.set(Atlas::Message::MapType({{"type", "sphere"}, {"scaler", "z"}}));
         auto shape = g1.createShape({{-1, 0, -1},
                                      {1,  1, 1}}, massOffset, 1.0f);
         ASSERT_EQUAL(btVector3(0, -0.5f, 0), massOffset);

@@ -89,73 +89,126 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
         return std::make_shared<btSphereShape>(radius);
     };
 
+    auto scalerType = parseScalerType();
+
     auto I = m_data.find("type");
     if (I != m_data.end() && I->second.isString()) {
         const std::string& shapeType = I->second.String();
         if (shapeType == "sphere") {
-            mShapeCreator = [sphereCreator](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
+            mShapeCreator = [sphereCreator, scalerType](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
                     -> std::shared_ptr<btCollisionShape> {
-                float radius = std::min(size.x(), std::min(size.y(), size.z())) * 0.5f;
-                return sphereCreator(radius, bbox, size, centerOfMassOffset);
-            };
-
-        } else if (shapeType == "sphere-x") {
-            mShapeCreator = [&, sphereCreator](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
-                    -> std::shared_ptr<btCollisionShape> {
-                float radius = size.x() * 0.5f;
-                return sphereCreator(radius, bbox, size, centerOfMassOffset);
-            };
-        } else if (shapeType == "sphere-y") {
-            mShapeCreator = [&, sphereCreator](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
-                    -> std::shared_ptr<btCollisionShape> {
-                float radius = size.y() * 0.5f;
-                return sphereCreator(radius, bbox, size, centerOfMassOffset);
-            };
-        } else if (shapeType == "sphere-z") {
-            mShapeCreator = [&, sphereCreator](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
-                    -> std::shared_ptr<btCollisionShape> {
-                float radius = size.z() * 0.5f;
+                float radius = 0;
+                switch (scalerType) {
+                    case ScalerType::Min:
+                        radius = std::min(size.x(), std::min(size.y(), size.z())) * 0.5f;
+                        break;
+                    case ScalerType::Max:
+                        radius = std::max(size.x(), std::max(size.y(), size.z())) * 0.5f;
+                        break;
+                    case ScalerType::XAxis:
+                        radius = size.x() * 0.5f;
+                        break;
+                    case ScalerType::YAxis:
+                        radius = size.y() * 0.5f;
+                        break;
+                    case ScalerType::ZAxis:
+                        radius = size.z() * 0.5f;
+                        break;
+                }
                 return sphereCreator(radius, bbox, size, centerOfMassOffset);
             };
         } else if (shapeType == "capsule-y") {
-            mShapeCreator = [&, sphereCreator](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
+            mShapeCreator = [sphereCreator, scalerType](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
                     -> std::shared_ptr<btCollisionShape> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
-                float minRadius = std::min(size.x(), size.z()) * 0.5f;
+
+                float radius = 0;
+                switch (scalerType) {
+                    case ScalerType::Min:
+                        radius = std::min(size.x(), size.z()) * 0.5f;
+                        break;
+                    case ScalerType::Max:
+                        radius = std::max(size.x(), size.z()) * 0.5f;
+                        break;
+                    case ScalerType::XAxis:
+                        radius = size.x() * 0.5f;
+                        break;
+                    case ScalerType::YAxis:
+                        radius = size.y() * 0.5f;
+                        break;
+                    case ScalerType::ZAxis:
+                        radius = size.z() * 0.5f;
+                        break;
+                }
+
                 //subtract the radius times 2 from the height
-                float height = size.y() - (minRadius * 2.0f);
+                float height = size.y() - (radius * 2.0f);
                 //If the resulting height is negative we need to use a sphere instead.
                 if (height > 0) {
-                    return std::make_shared<btCapsuleShape>(minRadius, height);
+                    return std::make_shared<btCapsuleShape>(radius, height);
                 } else {
                     return sphereCreator(size.y() * 0.5f, bbox, size, centerOfMassOffset);
                 }
             };
 
         } else if (shapeType == "capsule-x") {
-            mShapeCreator = [&](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
+            mShapeCreator = [sphereCreator, scalerType](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
                     -> std::shared_ptr<btCollisionShape> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
-                float minRadius = std::min(size.z(), size.y()) * 0.5f;
+                float radius = 0;
+                switch (scalerType) {
+                    case ScalerType::Min:
+                        radius = std::min(size.y(), size.z()) * 0.5f;
+                        break;
+                    case ScalerType::Max:
+                        radius = std::max(size.y(), size.z()) * 0.5f;
+                        break;
+                    case ScalerType::XAxis:
+                        radius = size.x() * 0.5f;
+                        break;
+                    case ScalerType::YAxis:
+                        radius = size.y() * 0.5f;
+                        break;
+                    case ScalerType::ZAxis:
+                        radius = size.z() * 0.5f;
+                        break;
+                }
                 //subtract the radius times 2 from the height
-                float height = size.x() - (minRadius * 2.0f);
+                float height = size.x() - (radius * 2.0f);
                 //If the resulting height is negative we need to use a sphere instead.
                 if (height > 0) {
-                    return std::make_shared<btCapsuleShapeX>(minRadius, height);
+                    return std::make_shared<btCapsuleShapeX>(radius, height);
                 } else {
                     return sphereCreator(size.x() * 0.5f, bbox, size, centerOfMassOffset);
                 }
             };
         } else if (shapeType == "capsule-z") {
-            mShapeCreator = [&](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
+            mShapeCreator = [sphereCreator, scalerType](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
                     -> std::shared_ptr<btCollisionShape> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
-                float minRadius = std::min(size.x(), size.y()) * 0.5f;
+                float radius = 0;
+                switch (scalerType) {
+                    case ScalerType::Min:
+                        radius = std::min(size.y(), size.x()) * 0.5f;
+                        break;
+                    case ScalerType::Max:
+                        radius = std::max(size.y(), size.x()) * 0.5f;
+                        break;
+                    case ScalerType::XAxis:
+                        radius = size.x() * 0.5f;
+                        break;
+                    case ScalerType::YAxis:
+                        radius = size.y() * 0.5f;
+                        break;
+                    case ScalerType::ZAxis:
+                        radius = size.z() * 0.5f;
+                        break;
+                }
                 //subtract the radius times 2 from the height
-                float height = size.z() - (minRadius * 2.0f);
+                float height = size.z() - (radius * 2.0f);
                 //If the resulting height is negative we need to use a sphere instead.
                 if (height > 0) {
-                    return std::make_shared<btCapsuleShapeZ>(minRadius, height);
+                    return std::make_shared<btCapsuleShapeZ>(radius, height);
                 } else {
                     return sphereCreator(size.z() * 0.5f, bbox, size, centerOfMassOffset);
                 }
@@ -163,7 +216,7 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
         } else if (shapeType == "box") {
             mShapeCreator = createBoxFn;
         } else if (shapeType == "cylinder-y") {
-            mShapeCreator = [&](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
+            mShapeCreator = [](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
                     -> std::shared_ptr<btCollisionShape> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
                 auto shape = std::make_shared<btCylinderShape>(btVector3(1, 1, 1));
@@ -171,7 +224,7 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
                 return shape;
             };
         } else if (shapeType == "cylinder-x") {
-            mShapeCreator = [&](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
+            mShapeCreator = [](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
                     -> std::shared_ptr<btCollisionShape> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
                 auto shape = std::make_shared<btCylinderShapeX>(btVector3(1, 1, 1));
@@ -179,7 +232,7 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
                 return shape;
             };
         } else if (shapeType == "cylinder-z") {
-            mShapeCreator = [&](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
+            mShapeCreator = [](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
                     -> std::shared_ptr<btCollisionShape> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
                 auto shape = std::make_shared<btCylinderShapeZ>(btVector3(1, 1, 1));
@@ -461,3 +514,25 @@ void GeometryProperty::buildCompoundCreator()
 
 }
 
+GeometryProperty::ScalerType GeometryProperty::parseScalerType()
+{
+    auto I = m_data.find("scaler");
+
+    if (I != m_data.end() && I->second.isString()) {
+        auto& radiusTypeString = I->second.String();
+        if (radiusTypeString == "min") {
+            return ScalerType::Min;
+        } else if (radiusTypeString == "max") {
+            return ScalerType::Max;
+        } else if (radiusTypeString == "x") {
+            return ScalerType::XAxis;
+        } else if (radiusTypeString == "y") {
+            return ScalerType::YAxis;
+        } else if (radiusTypeString == "z") {
+            return ScalerType::ZAxis;
+        }
+    }
+
+    //Default to minimum size
+    return ScalerType::Min;
+}

@@ -5,6 +5,7 @@
                 <map name="default">
                     <string name="path">dural/creatures/chicken/model/chicken.mesh</string>
                     <string name="type">sphere</string>
+                    <string name="scaler">y</string>
                 </map>
                 <string name="visibility">public</string>
             </map>
