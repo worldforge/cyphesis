@@ -196,6 +196,8 @@ class PhysicalDomain : public Domain
         btBroadphaseInterface* m_broadphase;
         PhysicalWorld* m_dynamicsWorld;
 
+        btCollisionDispatcher* m_visibilityDispatcher;
+        btBroadphaseInterface* m_visibilityBroadphase;
         btCollisionWorld* m_visibilityWorld;
 
         sigc::connection m_propertyAppliedConnection;
@@ -205,6 +207,8 @@ class PhysicalDomain : public Domain
         BulletEntry mContainingEntityEntry;
 
         Mercator::Terrain* m_terrain;
+
+        std::unique_ptr<btGhostPairCallback> m_ghostPairCallback;
 
         /**
          * @brief Contains all terrain segments, as height fields.

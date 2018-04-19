@@ -147,7 +147,8 @@ class PhysicalDomain::PhysicalMotionState : public btMotionState
         btTransform m_worldTrans;
         btTransform m_centerOfMassOffset;
 
-        PhysicalMotionState(BulletEntry& bulletEntry, btRigidBody& rigidBody, PhysicalDomain& domain, const btTransform& startTrans, const btTransform& centerOfMassOffset = btTransform::getIdentity())
+        PhysicalMotionState(BulletEntry& bulletEntry, btRigidBody& rigidBody, PhysicalDomain& domain,
+                            const btTransform& startTrans, const btTransform& centerOfMassOffset = btTransform::getIdentity())
             :
             m_bulletEntry(bulletEntry),
             m_rigidBody(rigidBody),
@@ -203,7 +204,8 @@ class PhysicalDomain::PhysicalMotionState : public btMotionState
 
             btCollisionObject* viewSphere = m_bulletEntry.viewSphere;
             if (viewSphere) {
-                viewSphere->setWorldTransform(btTransform(viewSphere->getWorldTransform().getBasis(), m_bulletEntry.collisionObject->getWorldTransform().getOrigin() / VISIBILITY_SCALING_FACTOR));
+                viewSphere->setWorldTransform(btTransform(viewSphere->getWorldTransform().getBasis(),
+                                                          m_bulletEntry.collisionObject->getWorldTransform().getOrigin() / VISIBILITY_SCALING_FACTOR));
                 m_domain.m_visibilityWorld->updateSingleAabb(viewSphere);
             }
 
@@ -219,17 +221,19 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
     //We'll use a dynamic broadphase for the main world. It's not as fast as SAP variants, but it's faster when dynamic objects are at rest.
     m_broadphase(new btDbvtBroadphase()),
     m_dynamicsWorld(new PhysicalWorld(m_dispatcher, m_broadphase, m_constraintSolver, m_collisionConfiguration)),
-    m_visibilityWorld(
-        //We'll use a SAP broadphase for the visibility. This is more efficient than a dynamic one.
-        new btCollisionWorld(new btCollisionDispatcher(new btDefaultCollisionConfiguration()),
-                             new bt32BitAxisSweep3(Convert::toBullet(entity.m_location.bBox().lowCorner()),
-                                                   Convert::toBullet(entity.m_location.bBox().highCorner())),
-                             new btDefaultCollisionConfiguration())),
+    m_visibilityDispatcher(new btCollisionDispatcher(m_collisionConfiguration)),
+    //We'll use a SAP broadphase for the visibility. This is more efficient than a dynamic one.
+    m_visibilityBroadphase(new bt32BitAxisSweep3(Convert::toBullet(entity.m_location.bBox().lowCorner()) / VISIBILITY_SCALING_FACTOR,
+                                                 Convert::toBullet(entity.m_location.bBox().highCorner()) / VISIBILITY_SCALING_FACTOR)),
+    m_visibilityWorld(new btCollisionWorld(m_visibilityDispatcher,
+                                           m_visibilityBroadphase,
+                                           m_collisionConfiguration)),
     m_visibilityCheckCountdown(0),
-    m_terrain(nullptr)
+    m_terrain(nullptr),
+    m_ghostPairCallback(new btGhostPairCallback())
 {
 
-    m_dynamicsWorld->getPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
+    m_dynamicsWorld->getPairCache()->setInternalGhostPairCallback(m_ghostPairCallback.get());
 
     //This is to prevent us from sliding down slopes.
     //m_dynamicsWorld->getDispatchInfo().m_allowedCcdPenetration = 0.0001f;
@@ -291,11 +295,13 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
 PhysicalDomain::~PhysicalDomain()
 {
     for (auto planeBody : m_borderPlanes) {
+        m_dynamicsWorld->removeCollisionObject(planeBody);
         delete planeBody->getCollisionShape();
         delete planeBody;
     }
 
     for (auto& entry : m_terrainSegments) {
+        m_dynamicsWorld->removeCollisionObject(entry.second.rigidBody);
         delete entry.second.data;
         delete entry.second.rigidBody->getCollisionShape();
         delete entry.second.rigidBody;
@@ -322,9 +328,10 @@ PhysicalDomain::~PhysicalDomain()
     delete m_broadphase;
     delete m_constraintSolver;
     delete m_dispatcher;
-    delete m_collisionConfiguration;
-    // delete m_visibilityWorld->getBroadphase();
     delete m_visibilityWorld;
+    delete m_visibilityDispatcher;
+    delete m_visibilityBroadphase;
+    delete m_collisionConfiguration;
     m_propertyAppliedConnection.disconnect();
 }
 
@@ -992,10 +999,12 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
     entry->propertyUpdatedConnection.disconnect();
     if (entry->viewSphere) {
         m_visibilityWorld->removeCollisionObject(entry->viewSphere);
+        delete entry->viewSphere->getCollisionShape();
         delete entry->viewSphere;
     }
     if (entry->visibilitySphere) {
         m_visibilityWorld->removeCollisionObject(entry->visibilitySphere);
+        delete entry->visibilitySphere->getCollisionShape();
         delete entry->visibilitySphere;
     }
     for (BulletEntry* observer : entry->observingThis) {
@@ -1367,7 +1376,7 @@ void PhysicalDomain::entityPropertyApplied(const std::string& name, PropertyBase
             entry.second.rigidBody->setFriction(static_cast<btScalar>(frictionProp->data()));
         }
     } else if (name == "frid .."
-        "ction_roll") {
+                       "ction_roll") {
         auto frictionRollingProp = dynamic_cast<Property<double>*>(&prop);
         for (auto& entry : m_terrainSegments) {
             entry.second.rigidBody->setRollingFriction(static_cast<btScalar>(frictionRollingProp->data()));
@@ -2348,7 +2357,7 @@ void PhysicalDomain::transformRestingEntities(PhysicalDomain::BulletEntry* entry
             }
 
             applyTransformInternal(*restingEntry->entity, restingEntry->entity->m_location.m_orientation * orientationChange,
-                           entry->entity->m_location.m_pos + relativePos, WFMath::Vector<3>(), transformedEntities, false);
+                                   entry->entity->m_location.m_pos + relativePos, WFMath::Vector<3>(), transformedEntities, false);
 
         }
 

@@ -68,16 +68,21 @@ using String::compose;
 class TestPhysicalDomain : public PhysicalDomain
 {
     public:
-        TestPhysicalDomain(LocatedEntity& entity) :
+        explicit TestPhysicalDomain(LocatedEntity& entity) :
             PhysicalDomain(entity)
         {
 
         }
 
-
-        PhysicalWorld* getPhysicalWorld() const
+        PhysicalWorld* test_getPhysicalWorld() const
         {
             return m_dynamicsWorld;
+        }
+
+
+        btRigidBody* test_getRigidBody(long id)
+        {
+            return btRigidBody::upcast(m_entries.find(id)->second->collisionObject);
         }
 };
 
@@ -186,25 +191,6 @@ void PhysicalDomainIntegrationTest::teardown()
 void PhysicalDomainIntegrationTest::test_movePlantedAndResting()
 {
 
-    class TestPhysicalDomain : public PhysicalDomain
-    {
-        public:
-            explicit TestPhysicalDomain(LocatedEntity& entity) : PhysicalDomain(entity)
-            {
-            }
-
-            btDiscreteDynamicsWorld* test_getBulletWorld()
-            {
-                return m_dynamicsWorld;
-            }
-
-
-            btRigidBody* test_getRigidBody(long id)
-            {
-                return btRigidBody::upcast(m_entries.find(id)->second->collisionObject);
-            }
-    };
-
     //Place a box, "planted". On top of that, place another box, also "planted". And on top of that, place a box which is "free".
     //Then move the first box. The two boxes on top should move along with it.
 
@@ -215,7 +201,7 @@ void PhysicalDomainIntegrationTest::test_movePlantedAndResting()
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.setBBox({{-64, 0,  -64},
                                     {64,  64, 64}});
-    TestPhysicalDomain* domain = new TestPhysicalDomain(*rootEntity);
+    std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
 
     ModeProperty* fixedProperty = new ModeProperty();
     fixedProperty->set("fixed");
@@ -351,70 +337,52 @@ void PhysicalDomainIntegrationTest::test_movePlantedAndResting()
 
 void PhysicalDomainIntegrationTest::test_plantedOn()
 {
-
-    class TestPhysicalDomain : public PhysicalDomain
-    {
-        public:
-            explicit TestPhysicalDomain(LocatedEntity& entity) : PhysicalDomain(entity)
-            {
-            }
-
-            btDiscreteDynamicsWorld* test_getBulletWorld()
-            {
-                return m_dynamicsWorld;
-            }
-
-
-            btRigidBody* test_getRigidBody(long id)
-            {
-                return btRigidBody::upcast(m_entries.find(id)->second->collisionObject);
-            }
-    };
-
     std::vector<std::string> shapes{"box", "cylinder-x", "cylinder-y", "cylinder-z", "capsule-x", "capsule-y", "capsule-z"};
 
     for (auto plantedShape : shapes) {
         for (auto plantedOnTopShape : shapes) {
-            GeometryProperty* plantedGeometryProperty = new GeometryProperty();
-            plantedGeometryProperty->set(MapType{{"type", plantedShape}});
 
             auto id = newId();
-            Entity* rootEntity = new Entity(std::to_string(id), id);
+            Entity rootEntity{std::to_string(id), id};
             TerrainProperty* terrainProperty = new TerrainProperty();
             Mercator::Terrain& terrain = terrainProperty->getData();
             terrain.setBasePoint(0, 0, Mercator::BasePoint(10));
             terrain.setBasePoint(0, 1, Mercator::BasePoint(10));
             terrain.setBasePoint(1, 0, Mercator::BasePoint(10));
             terrain.setBasePoint(1, 1, Mercator::BasePoint(10));
-            rootEntity->setProperty("terrain", terrainProperty);
-            rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
-            rootEntity->m_location.setBBox({{-64, -64, -64},
-                                            {64,  64,  64}});
-            TestPhysicalDomain* domain = new TestPhysicalDomain(*rootEntity);
-
-            ModeProperty* modeProperty = new ModeProperty();
-            modeProperty->set("planted");
+            rootEntity.setProperty("terrain", terrainProperty);
+            rootEntity.m_location.m_pos = WFMath::Point<3>::ZERO();
+            rootEntity.m_location.setBBox({{-64, -64, -64},
+                                           {64,  64,  64}});
+            TestPhysicalDomain domain{rootEntity};
 
 
             id = newId();
-            Entity* planted1 = new Entity(std::to_string(id), id);
+            std::unique_ptr<Entity> planted1(new Entity(std::to_string(id), id));
             planted1->m_location.m_pos = WFMath::Point<3>(0, 10, 0);
             planted1->m_location.setBBox({{-1, -1, -1},
                                           {1,  1,  1}});
-            planted1->setProperty(ModeProperty::property_name, modeProperty);
-            planted1->setProperty(GeometryProperty::property_name, plantedGeometryProperty);
+            {
+                GeometryProperty* plantedGeometryProperty = new GeometryProperty();
+                plantedGeometryProperty->set(MapType{{"type", plantedShape}});
+                ModeProperty* modeProperty = new ModeProperty();
+                modeProperty->set("planted");
 
-            domain->addEntity(*planted1);
+                planted1->setProperty(ModeProperty::property_name, modeProperty);
+                planted1->setProperty(GeometryProperty::property_name, plantedGeometryProperty);
+            }
+
+            domain.addEntity(*planted1);
 
             OpVector res;
-            domain->tick(0, res);
+            domain.tick(0, res);
 
             ASSERT_TRUE(planted1->getPropertyClass<EntityProperty>("planted_on"));
             ASSERT_TRUE(planted1->getPropertyClass<EntityProperty>("planted_on")->data());
-            ASSERT_EQUAL(rootEntity->getIntId(), planted1->getPropertyClass<EntityProperty>("planted_on")->data()->getIntId());
+            ASSERT_EQUAL(rootEntity.getIntId(), planted1->getPropertyClass<EntityProperty>("planted_on")->data()->getIntId());
             ASSERT_FUZZY_EQUAL(10, planted1->m_location.m_pos.y(), 0.1);
             {
-                auto* planted1RigidBody = domain->test_getRigidBody(planted1->getIntId());
+                auto* planted1RigidBody = domain.test_getRigidBody(planted1->getIntId());
                 btVector3 aabbMin, aabbMax;
                 planted1RigidBody->getAabb(aabbMin, aabbMax);
                 ASSERT_FUZZY_EQUAL_FN(aabbMin.y(), 9, 0.1, [&]() { this->addFailure(String::compose("Using shape '%1'.", plantedShape)); });
@@ -423,23 +391,30 @@ void PhysicalDomainIntegrationTest::test_plantedOn()
             }
 
             id = newId();
-            Entity* planted2 = new Entity(std::to_string(id), id);
+            std::unique_ptr<Entity> planted2(new Entity(std::to_string(id), id));
             planted2->m_location.m_pos = WFMath::Point<3>(0, 15, 0);
             planted2->m_location.setBBox({{-1, -1, -1},
                                           {1,  1,  1}});
-            planted2->setProperty(ModeProperty::property_name, modeProperty);
-            planted2->setProperty(GeometryProperty::property_name, plantedGeometryProperty);
+            {
+                GeometryProperty* plantedGeometryProperty = new GeometryProperty();
+                plantedGeometryProperty->set(MapType{{"type", plantedShape}});
+                ModeProperty* modeProperty = new ModeProperty();
+                modeProperty->set("planted");
 
-            domain->addEntity(*planted2);
+                planted2->setProperty(ModeProperty::property_name, modeProperty);
+                planted2->setProperty(GeometryProperty::property_name, plantedGeometryProperty);
+            }
 
-            domain->tick(0, res);
+            domain.addEntity(*planted2);
+
+            domain.tick(0, res);
 
             ASSERT_TRUE(planted2->getPropertyClass<EntityProperty>("planted_on"));
             ASSERT_TRUE(planted2->getPropertyClass<EntityProperty>("planted_on")->data());
             ASSERT_EQUAL(planted1->getIntId(), planted2->getPropertyClass<EntityProperty>("planted_on")->data()->getIntId());
             ASSERT_FUZZY_EQUAL(11, planted2->m_location.m_pos.y(), 0.1);
             {
-                auto* planted2RigidBody = domain->test_getRigidBody(planted2->getIntId());
+                auto* planted2RigidBody = domain.test_getRigidBody(planted2->getIntId());
                 btVector3 aabbMin, aabbMax;
                 planted2RigidBody->getAabb(aabbMin, aabbMax);
                 ASSERT_FUZZY_EQUAL_FN(aabbMin.y(), 10, 0.1, [&]() { this->addFailure(String::compose("Using shape '%1'.", plantedShape)); });
@@ -449,20 +424,24 @@ void PhysicalDomainIntegrationTest::test_plantedOn()
 
 
             id = newId();
-            Entity* plantedOn = new Entity(std::to_string(id), id);
+            std::unique_ptr<Entity> plantedOn(new Entity(std::to_string(id), id));
             plantedOn->m_location.m_pos = {0, 15, 0};
-            plantedOn->setProperty(ModeProperty::property_name, modeProperty);
+            {
+                ModeProperty* modeProperty = new ModeProperty();
+                modeProperty->set("planted");
+                plantedOn->setProperty(ModeProperty::property_name, modeProperty);
+            }
             plantedOn->m_location.setBBox({{-1, 0, -1},
                                            {1,  1, 1}});
             EntityProperty* plantedOnProperty = new EntityProperty();
-            plantedOnProperty->data() = EntityRef(planted1);
+            plantedOnProperty->data() = EntityRef(planted1.get());
             plantedOn->setProperty("planted_on", plantedOnProperty);
 
             GeometryProperty* geometryProperty = new GeometryProperty();
             geometryProperty->set(MapType{{"type", plantedOnTopShape}});
             plantedOn->setProperty(GeometryProperty::property_name, geometryProperty);
 
-            domain->addEntity(*plantedOn);
+            domain.addEntity(*plantedOn);
 
 
             ASSERT_TRUE(plantedOn->getPropertyClass<EntityProperty>("planted_on"));
@@ -470,35 +449,24 @@ void PhysicalDomainIntegrationTest::test_plantedOn()
             ASSERT_EQUAL(planted1->getIntId(), plantedOn->getPropertyClass<EntityProperty>("planted_on")->data()->getIntId());
             ASSERT_FUZZY_EQUAL_FN(plantedOn->m_location.m_pos.y(), 11, 0.1, [&]() { this->addFailure(String::compose("Using shape '%1' on top of '%2'.", plantedOnTopShape, plantedShape)); });
             {
-                auto* plantedOnRigidBody = domain->test_getRigidBody(plantedOn->getIntId());
+                auto* plantedOnRigidBody = domain.test_getRigidBody(plantedOn->getIntId());
                 btVector3 aabbMin, aabbMax;
                 plantedOnRigidBody->getAabb(aabbMin, aabbMax);
                 ASSERT_FUZZY_EQUAL_FN(aabbMin.y(), 11, 0.1, [&]() { this->addFailure(String::compose("Using shape '%1' on top of '%2'.", plantedOnTopShape, plantedShape)); });
                 ASSERT_FUZZY_EQUAL_FN(aabbMax.y(), 12, 0.1, [&]() { this->addFailure(String::compose("Using shape '%1' on top of '%2'.", plantedOnTopShape, plantedShape)); });
             }
 
+            domain.removeEntity(*planted2);
+            domain.removeEntity(*planted1);
+            domain.removeEntity(*plantedOn);
+
         }
     }
-
 }
 
 
 void PhysicalDomainIntegrationTest::test_terrainMods()
 {
-
-    class TestPhysicalDomain : public PhysicalDomain
-    {
-        public:
-            explicit TestPhysicalDomain(LocatedEntity& entity) : PhysicalDomain(entity)
-            {
-            }
-
-            btDiscreteDynamicsWorld* test_getBulletWorld()
-            {
-                return m_dynamicsWorld;
-            }
-
-    };
 
     Entity* rootEntity = new Entity("0", newId());
     TerrainProperty* terrainProperty = new TerrainProperty();
@@ -510,7 +478,7 @@ void PhysicalDomainIntegrationTest::test_terrainMods()
     rootEntity->setProperty("terrain", terrainProperty);
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
-    TestPhysicalDomain* domain = new TestPhysicalDomain(*rootEntity);
+    std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
 
     ModeProperty* modeProperty = new ModeProperty();
     modeProperty->set("planted");
@@ -523,11 +491,11 @@ void PhysicalDomainIntegrationTest::test_terrainMods()
     Atlas::Message::MapType modElement{
         {"heightoffset", -5.0f},
         {"shape",        MapType{
-            {"points", ListType {
-                ListType {-10.f, -10.f},
-                ListType {10.f, -10.f},
-                ListType {10.f, 10.f},
-                ListType {-10.f, 10.f},
+            {"points", ListType{
+                ListType{-10.f, -10.f},
+                ListType{10.f, -10.f},
+                ListType{10.f, 10.f},
+                ListType{-10.f, 10.f},
             }
             },
             {"type",   "polygon"}
@@ -557,7 +525,7 @@ void PhysicalDomainIntegrationTest::test_terrainMods()
         btVector3 rayFrom(32, 32, 32);
         btVector3 rayTo(32, -32, 32);
         btCollisionWorld::ClosestRayResultCallback callback(rayFrom, rayTo);
-        domain->test_getBulletWorld()->rayTest(rayFrom, rayTo, callback);
+        domain->test_getPhysicalWorld()->rayTest(rayFrom, rayTo, callback);
 
         ASSERT_FUZZY_EQUAL(callback.m_hitPointWorld.y(), 5.0f, 0.1f);
     }
@@ -574,7 +542,7 @@ void PhysicalDomainIntegrationTest::test_terrainMods()
         btVector3 rayFrom(32, 32, 32);
         btVector3 rayTo(32, -32, 32);
         btCollisionWorld::ClosestRayResultCallback callback(rayFrom, rayTo);
-        domain->test_getBulletWorld()->rayTest(rayFrom, rayTo, callback);
+        domain->test_getPhysicalWorld()->rayTest(rayFrom, rayTo, callback);
 
         ASSERT_FUZZY_EQUAL(callback.m_hitPointWorld.y(), 10.0f, 0.1f);
     }
@@ -639,7 +607,7 @@ void PhysicalDomainIntegrationTest::test_lake_rotated()
     Entity* rootEntity = new Entity("0", newId());
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, 0, -64), WFMath::Point<3>(64, 64, 64)));
-    PhysicalDomain* domain = new PhysicalDomain(*rootEntity);
+    std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
 
     long id = newId();
     TestEntity* lake = new TestEntity(std::to_string(id), id);
@@ -732,7 +700,7 @@ void PhysicalDomainIntegrationTest::test_lake()
     Entity* rootEntity = new Entity("0", newId());
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
-    PhysicalDomain* domain = new PhysicalDomain(*rootEntity);
+    std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
 
     long id = newId();
     TestEntity* lake = new TestEntity(std::to_string(id), id);
@@ -860,7 +828,7 @@ void PhysicalDomainIntegrationTest::test_ocean()
     Entity* rootEntity = new Entity("0", newId());
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
-    PhysicalDomain* domain = new PhysicalDomain(*rootEntity);
+    std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
 
     long id = newId();
     Entity* ocean = new Entity(std::to_string(id), id);
@@ -924,23 +892,6 @@ void PhysicalDomainIntegrationTest::test_ocean()
 
 void PhysicalDomainIntegrationTest::test_placement()
 {
-    class TestPhysicalDomain : public PhysicalDomain
-    {
-        public:
-            explicit TestPhysicalDomain(LocatedEntity& entity) : PhysicalDomain(entity)
-            {
-            }
-
-            btDiscreteDynamicsWorld* test_getBulletWorld()
-            {
-                return m_dynamicsWorld;
-            }
-
-            btRigidBody* test_getRigidBody(long id)
-            {
-                return btRigidBody::upcast(m_entries.find(id)->second->collisionObject);
-            }
-    };
 
     TypeNode* rockType = new TypeNode("rock");
 
@@ -954,7 +905,7 @@ void PhysicalDomainIntegrationTest::test_placement()
     Entity* rootEntity = new Entity("0", newId());
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
-    TestPhysicalDomain* domain = new TestPhysicalDomain(*rootEntity);
+    std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
 
     // btDiscreteDynamicsWorld* bulletWorld = domain->test_getBulletWorld();
 
@@ -1146,7 +1097,7 @@ void PhysicalDomainIntegrationTest::test_fallToBottom()
     Entity* rootEntity = new Entity("0", newId());
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
-    PhysicalDomain* domain = new PhysicalDomain(*rootEntity);
+    std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
 
     Property<double>* massProp = new Property<double>();
     massProp->data() = 10000;
@@ -1197,7 +1148,7 @@ void PhysicalDomainIntegrationTest::test_standOnFixed()
     Entity* rootEntity = new Entity("0", newId());
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
-    PhysicalDomain* domain = new PhysicalDomain(*rootEntity);
+    std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
 
     Property<double>* massProp = new Property<double>();
     massProp->data() = 10000;
@@ -1248,7 +1199,7 @@ void PhysicalDomainIntegrationTest::test_fallToTerrain()
     rootEntity->setProperty("terrain", terrainProperty);
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
-    PhysicalDomain* domain = new PhysicalDomain(*rootEntity);
+    std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
 
     Property<double>* massProp = new Property<double>();
     massProp->data() = 10000;
@@ -1313,7 +1264,7 @@ void PhysicalDomainIntegrationTest::test_collision()
     rootEntity->setProperty("friction", zeroFrictionProperty);
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
-    PhysicalDomain* domain = new PhysicalDomain(*rootEntity);
+    std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
 
     Property<double>* massProp = new Property<double>();
     massProp->data() = 100;
@@ -1407,7 +1358,7 @@ void PhysicalDomainIntegrationTest::test_mode()
     rootEntity->setProperty("terrain", terrainProperty);
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
-    PhysicalDomain* domain = new PhysicalDomain(*rootEntity);
+    std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
 
     Property<double>* massProp = new Property<double>();
     massProp->data() = 100;
@@ -1481,7 +1432,7 @@ void PhysicalDomainIntegrationTest::test_determinism()
     rootEntity->setProperty("terrain", terrainProperty);
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(0, 0, -64), WFMath::Point<3>(64, 64, 64)));
-    PhysicalDomain* domain = new PhysicalDomain(*rootEntity);
+    std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
 
     Property<double>* massProp = new Property<double>();
     massProp->data() = 100;
@@ -1543,7 +1494,7 @@ void PhysicalDomainIntegrationTest::test_zoffset()
     rootEntity->setProperty("terrain", terrainProperty);
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(0, -64, 0), WFMath::Point<3>(64, 64, 64)));
-    PhysicalDomain* domain = new PhysicalDomain(*rootEntity);
+    std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
 
     TestWorld testWorld(*rootEntity);
 
@@ -1584,7 +1535,7 @@ void PhysicalDomainIntegrationTest::test_zscaledoffset()
     rootEntity->setProperty("terrain", terrainProperty);
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(0, -64, 0), WFMath::Point<3>(64, 64, 64)));
-    PhysicalDomain* domain = new PhysicalDomain(*rootEntity);
+    std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
 
     TestWorld testWorld(*rootEntity);
 
@@ -1619,7 +1570,7 @@ void PhysicalDomainIntegrationTest::test_visibility()
     Entity* rootEntity = new Entity("0", newId());
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, 0, -64), WFMath::Point<3>(64, 64, 64)));
-    PhysicalDomain* domain = new PhysicalDomain(*rootEntity);
+    std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
 
     TestWorld testWorld(*rootEntity);
 
@@ -1676,14 +1627,11 @@ void PhysicalDomainIntegrationTest::test_visibility()
         domain->getVisibleEntitiesFor(*observerEntity, observedList);
 
         ASSERT_EQUAL(4u, observedList.size());
-        auto I = observedList.begin();
-        ASSERT_EQUAL("small2", (*I)->getId());
-        ++I;
-        ASSERT_EQUAL("smallVisible", (*I)->getId());
-        ++I;
-        ASSERT_EQUAL("large1", (*I)->getId());
-        ++I;
-        ASSERT_EQUAL("observer", (*I)->getId());
+        ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity){ return entity->getId() == "small2"; }) != observedList.end());
+        ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity){ return entity->getId() == "smallVisible"; }) != observedList.end());
+        ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity){ return entity->getId() == "large1"; }) != observedList.end());
+        ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity){ return entity->getId() == "observer"; }) != observedList.end());
+
     }
     //Now move the observer to "small1"
     domain->applyTransform(*observerEntity, WFMath::Quaternion(), WFMath::Point<3>(30, 0, 30), WFMath::Vector<3>(), transformedEntities);
@@ -1700,14 +1648,11 @@ void PhysicalDomainIntegrationTest::test_visibility()
         domain->getVisibleEntitiesFor(*observerEntity, observedList);
 
         ASSERT_EQUAL(4u, observedList.size());
-        auto I = observedList.begin();
-        ASSERT_EQUAL("small1", (*I)->getId());
-        ++I;
-        ASSERT_EQUAL("smallVisible", (*I)->getId());
-        ++I;
-        ASSERT_EQUAL("large1", (*I)->getId());
-        ++I;
-        ASSERT_EQUAL("observer", (*I)->getId());
+        ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity){ return entity->getId() == "small1"; }) != observedList.end());
+        ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity){ return entity->getId() == "smallVisible"; }) != observedList.end());
+        ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity){ return entity->getId() == "large1"; }) != observedList.end());
+        ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity){ return entity->getId() == "observer"; }) != observedList.end());
+
     }
 }
 
@@ -1736,7 +1681,7 @@ void PhysicalDomainIntegrationTest::test_stairs()
     Entity* rootEntity = new Entity("0", newId());
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, 0, -64), WFMath::Point<3>(64, 64, 64)));
-    PhysicalDomain* domain = new PhysicalDomain(*rootEntity);
+    std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
 
     TestWorld testWorld(*rootEntity);
 
@@ -1854,11 +1799,11 @@ void PhysicalDomainIntegrationTest::test_terrainPrecision()
     rootEntity->setProperty("terrain", terrainProperty);
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
-    TestPhysicalDomain* domain = new TestPhysicalDomain(*rootEntity);
+    std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
 
 
     auto checkHeightFunc = [&](float x, float z) {
-        PhysicalWorld* physicalWorld = domain->getPhysicalWorld();
+        PhysicalWorld* physicalWorld = domain->test_getPhysicalWorld();
 
         float mercatorHeight;
         WFMath::Vector<3> normal;
