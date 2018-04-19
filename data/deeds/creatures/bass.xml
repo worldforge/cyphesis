@@ -20,6 +20,14 @@
                 <string name="default">dural/creatures/tubular/bass_lm.modeldef</string>
                 <string name="visibility">public</string>
             </map>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/creatures/tubular/model/bass_lm.mesh</string>
+                    <string name="type">capsule-x</string>
+                    <string name="scaler">y</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
         </map>
         <string name="id">bass</string>
         <string name="objtype">class</string>
