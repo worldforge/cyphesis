@@ -49,6 +49,11 @@
                     <float name="strength">23</float>
                 </map>
             </map>
+            <!-- Don't move too slow or it makes traversal boring -->
+            <map name="speed-ground">
+                <float name="default">8</float>
+                <string name="visibility">public</string>
+            </map>
         </map>
         <string name="id">human</string>
         <string name="objtype">class</string>
