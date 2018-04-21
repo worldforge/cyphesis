@@ -1366,7 +1366,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
             new_orientation.fromAtlas(orientation_attr);
             debug(std::cout << "ori set to " << new_orientation << std::endl << std::flush;);
             if (!new_orientation.isValid()) {
-                log(ERROR, "Invalid orientation from client. Ignoring");
+                log(ERROR, "Ignoring invalid orientation from client " + describeEntity() + ".");
             }
         }
     } catch (Atlas::Message::WrongTypeException&) {
