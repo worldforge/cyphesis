@@ -136,6 +136,7 @@ void EntityRuleHandler::installStandardRules()
             {"speed-water", 15},
             {"speed-flight", 15},
             {"speed-jump", 7.5},
+            {"step_factor", 0.7},
             {"present", "dural/items/misc/flame/creator.modeldef"},
             {"mode", "free"}
         });

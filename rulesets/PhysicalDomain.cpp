@@ -214,6 +214,7 @@ class PhysicalDomain::PhysicalMotionState : public btMotionState
 
 PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
     Domain(entity),
+    mWorldInfo{&m_propellingEntries, &m_steppingEntries},
     //default config for now
     m_collisionConfiguration(new btDefaultCollisionConfiguration()),
     m_dispatcher(new btCollisionDispatcher(m_collisionConfiguration)),
@@ -253,7 +254,8 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
     //Update the linear velocity of all self propelling entities each tick.
     auto preTickCallback = [](btDynamicsWorld* world, btScalar timeStep) {
 
-        auto propellingEntries = static_cast<std::map<int, PropelEntry>*>(world->getWorldUserInfo());
+        auto worldInfo = static_cast<WorldInfo*>(world->getWorldUserInfo());
+        auto propellingEntries = worldInfo->propellingEntries;
         for (auto& entry : *propellingEntries) {
 
             float verticalVelocity = entry.second.rigidBody->getLinearVelocity().y();
@@ -281,7 +283,80 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
         }
     };
 
-    m_dynamicsWorld->setInternalTickCallback(preTickCallback, &m_propellingEntries, true);
+    auto postTickCallback = [](btDynamicsWorld* world, btScalar timeStep) {
+
+        struct Callback : public btCollisionWorld::ContactResultCallback
+        {
+            bool isHit = false;
+
+            btScalar addSingleResult(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap,
+                                     int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap,
+                                     int partId1, int index1) override
+            {
+                //If the normal points upwards it's below us
+                if (cp.m_normalWorldOnB.y() > 0) {
+                    isHit = true;
+                }
+                return btScalar(1.0);
+            }
+        };
+
+
+        auto worldInfo = static_cast<WorldInfo*>(world->getWorldUserInfo());
+        auto steppingEntries = worldInfo->steppingEntries;
+        for (auto& entry : *steppingEntries) {
+
+            auto collisionObject = btRigidBody::upcast(entry.second.first->collisionObject);
+            //Check that the object has moved, and if so check if it should be clamped to the ground
+            if (collisionObject->getInterpolationLinearVelocity().length2() > 0.001) {
+
+                Callback collideCallback;
+                collideCallback.m_collisionFilterMask = collisionObject->getBroadphaseHandle()->m_collisionFilterMask;
+                collideCallback.m_collisionFilterGroup = collisionObject->getBroadphaseHandle()->m_collisionFilterGroup;
+
+                world->contactTest(collisionObject, collideCallback);
+                if (!collideCallback.isHit) {
+                    //The entity isn't standing on top of anything. Check that we're not jumping; if not we should try to clamp it to the ground.
+                    if (!entry.second.first->isJumping) {
+                        //Cast a ray from the bottom and check if we're already colliding with the object we hit with our ray.
+                        //If we don't collide it means that we're in the air, and should be clamped to the ground.
+                        auto& worldTransform = collisionObject->getWorldTransform();
+                        btVector3 aabbMin, aabbMax;
+                        collisionObject->getCollisionShape()->getAabb(worldTransform, aabbMin, aabbMax);
+                        btVector3 bottomOfObject = worldTransform.getOrigin();
+                        bottomOfObject.setY(aabbMin.y());
+                        btVector3 bottomOfRay = bottomOfObject;
+                        float rayDistance = entry.second.second * (aabbMax.y() - aabbMin.y());
+
+                        bottomOfRay.setY(bottomOfRay.y() - rayDistance);
+
+                        btCollisionWorld::ClosestRayResultCallback callback(bottomOfObject, bottomOfRay);
+
+                        world->rayTest(bottomOfObject, bottomOfRay, callback);
+
+                        if (callback.hasHit()) {
+                            float distance = bottomOfObject.y() - callback.m_hitPointWorld.y();
+                            if (distance > 0.2) {
+                                worldTransform.getOrigin().setY(worldTransform.getOrigin().y() - distance);
+                                collisionObject->setWorldTransform(worldTransform);
+                                //Dampen the vertical velocity a bit
+                                auto velocity = collisionObject->getLinearVelocity();
+                                velocity.setY(velocity.y() * 0.1f);
+                                collisionObject->setLinearVelocity(velocity);
+                            }
+                        }
+                    }
+                } else {
+                    //The entity is standing on top of something, make sure it's not marked as jumping anymore.
+                    entry.second.first->isJumping = false;
+                }
+            }
+        }
+    };
+
+
+    m_dynamicsWorld->setInternalTickCallback(preTickCallback, &mWorldInfo, true);
+    m_dynamicsWorld->setInternalTickCallback(postTickCallback, &mWorldInfo, false);
 
     mContainingEntityEntry.entity = &entity;
 
@@ -438,6 +513,7 @@ PhysicalDomain::TerrainEntry PhysicalDomain::buildTerrainPage(Mercator::Segment&
     m_dynamicsWorld->addRigidBody(segmentBody, COLLISION_MASK_TERRAIN, COLLISION_MASK_NON_PHYSICAL | COLLISION_MASK_PHYSICAL);
 
     terrainEntry.rigidBody = segmentBody;
+    terrainEntry.rigidBody->setUserPointer(&mContainingEntityEntry);
     return terrainEntry;
 }
 
@@ -775,7 +851,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
             entry->collisionShape = std::make_shared<btBoxShape>(Convert::toBullet(size / 2));
             entry->centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
         } else {
-            entry->collisionShape = std::make_shared<btStaticPlaneShape>(btVector3(0, -1, 0), 0);
+            entry->collisionShape = std::make_shared<btStaticPlaneShape>(btVector3(0, 1, 0), 0);
             entry->centerOfMassOffset = btVector3(0, 0, 0);
         }
         entry->collisionObject->setCollisionShape(entry->collisionShape.get());
@@ -866,8 +942,13 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
                 applyVelocity(*entry, propelProp->data());
             }
 
+            auto stepFactorProp = entity.getPropertyType<double>("step_factor");
+            if (stepFactorProp && stepFactorProp->data() > 0) {
+                m_steppingEntries.emplace(entity.getIntId(), std::make_pair(entry, stepFactorProp->data()));
+            }
         }
     }
+
 
     entry->propertyUpdatedConnection = entity.propertyApplied.connect(sigc::bind(sigc::mem_fun(this, &PhysicalDomain::childEntityPropertyApplied), entry));
 
@@ -976,7 +1057,7 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
     if (waterBodyProp && waterBodyProp->data() == 1) {
         for (auto waterIterator = m_waterBodies.begin(); waterIterator != m_waterBodies.end(); ++waterIterator) {
             auto waterBody = *waterIterator;
-            BulletEntry* waterBodyEntry = static_cast<BulletEntry*>(waterBody->getUserPointer());
+            auto* waterBodyEntry = static_cast<BulletEntry*>(waterBody->getUserPointer());
             if (waterBodyEntry->entity == &entity) {
                 //Also check that any entities that are submerged into the body are detached
                 for (auto& submergedEntry : m_submergedEntities) {
@@ -1024,9 +1105,9 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
 
     auto plantedOnProp = entity.getPropertyClass<EntityProperty>("planted_on");
     if (plantedOnProp && plantedOnProp->data()) {
-        auto I = m_entries.find(plantedOnProp->data()->getIntId());
-        if (I != m_entries.end()) {
-            I->second->attachedEntities.erase(entry);
+        auto plantedOnI = m_entries.find(plantedOnProp->data()->getIntId());
+        if (plantedOnI != m_entries.end()) {
+            plantedOnI->second->attachedEntities.erase(entry);
         }
     }
 
@@ -1035,6 +1116,7 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
     m_entries.erase(I);
 
     m_propellingEntries.erase(entity.getIntId());
+    m_steppingEntries.erase(entity.getIntId());
 }
 
 void PhysicalDomain::childEntityPropertyApplied(const std::string& name, PropertyBase& prop, BulletEntry* bulletEntry)
@@ -1164,7 +1246,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
         }
     } else if (name == "mass") {
 
-        const ModeProperty* modeProp = bulletEntry->entity->getPropertyClassFixed<ModeProperty>();
+        const auto* modeProp = bulletEntry->entity->getPropertyClassFixed<ModeProperty>();
 
         if (modeProp && (modeProp->getMode() == ModeProperty::Mode::Planted || modeProp->getMode() == ModeProperty::Mode::Fixed)) {
             //"fixed" mode means that the entity stays in place, always
@@ -1246,6 +1328,20 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
             m_dynamicsWorld->updateSingleAabb(bulletEntry->collisionObject);
         }
         sendMoveSight(*bulletEntry, true, false, false, false, false);
+    } else if (name == "step_factor") {
+        auto stepFactorProp = dynamic_cast<Property<double>*>(&prop);
+        auto I = m_steppingEntries.find(bulletEntry->entity->getIntId());
+        if (stepFactorProp && stepFactorProp->data() > 0) {
+            if (I != m_steppingEntries.end()) {
+                I->second.second = static_cast<float>(stepFactorProp->data());
+            } else {
+                m_steppingEntries.emplace(bulletEntry->entity->getIntId(), std::make_pair(bulletEntry, stepFactorProp->data()));
+            }
+        } else {
+            if (I != m_steppingEntries.end()) {
+                m_steppingEntries.erase(I);
+            }
+        }
     }
 }
 
@@ -1754,7 +1850,6 @@ void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& 
                         if (jumpSpeedProp && jumpSpeedProp->data() > 0) {
 
                             bool isGrounded = false;
-//                            m_broadphase->getOverlappingPairCache()->
                             IsGroundedCallback groundedCallback(*rigidBody, isGrounded);
                             m_dynamicsWorld->contactTest(entry.collisionObject, groundedCallback);
                             if (isGrounded) {
@@ -1762,6 +1857,8 @@ void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& 
                                 btVector3 newVelocity = rigidBody->getLinearVelocity();
                                 newVelocity.m_floats[1] = static_cast<btScalar>(btVelocity.m_floats[1] * jumpSpeedProp->data());
                                 rigidBody->setLinearVelocity(newVelocity);
+                                //We'll mark the entity as actively jumping here, and rely on the post-tick callback to reset it when it's not jumping anymore.
+                                entry.isJumping = true;
                             }
                         }
                     }

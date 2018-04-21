@@ -155,6 +155,11 @@ class PhysicalDomain : public Domain
              */
             std::set<BulletEntry*> attachedEntities;
 
+            /**
+             * Keeps track of whether the entity is actively jumping. If so we shouldn't try to clamp it to the ground.
+             */
+            bool isJumping = false;
+
         };
 
         struct TerrainEntry
@@ -190,6 +195,22 @@ class PhysicalDomain : public Domain
          * Each tick the propel force will be applied to these entities.
          */
         std::map<long, PropelEntry> m_propellingEntries;
+
+        /**
+         * Keeps track of all stepping entries, i.e. those we want clamped to the ground.
+         */
+        std::map<long, std::pair<BulletEntry*, float>> m_steppingEntries;
+
+        /**
+         * Struct used to pass information on to the tick callbacks.
+         */
+        struct WorldInfo {
+            std::map<long, PropelEntry>* propellingEntries;
+            std::map<long, std::pair<BulletEntry*, float>>* steppingEntries;
+        };
+
+        WorldInfo mWorldInfo;
+
         btDefaultCollisionConfiguration* m_collisionConfiguration;
         btCollisionDispatcher* m_dispatcher;
         btSequentialImpulseConstraintSolver* m_constraintSolver;
