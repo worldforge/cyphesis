@@ -2,18 +2,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/short_sword/model/short_sword.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/short_sword/model/short_sword.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/short_sword/model/short_sword.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/short_sword/model/short_sword.mesh</string>
+                <string name="visibility">public</string>
             </map>
             <map name="density">
                 <float name="default">7500</float>
@@ -27,18 +25,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/broad_sword/model/broad_sword.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/broad_sword/model/broad_sword.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/broad_sword/model/broad_sword.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/broad_sword/model/broad_sword.mesh</string>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">sword_broad</string>
@@ -48,18 +44,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/swords/model/sword_A01.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/swords/model/sword_A01.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/swords/model/sword_A01.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/swords/model/sword_A01.mesh</string>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">sword_a1</string>
@@ -69,18 +63,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/swords/model/sword_A02.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/swords/model/sword_A02.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/swords/model/sword_A02.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/swords/model/sword_A02.mesh</string>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">sword_a2</string>
@@ -90,18 +82,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/swords/model/sword_A03.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/swords/model/sword_A03.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/swords/model/sword_A03.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/swords/model/sword_A03.mesh</string>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">sword_a3</string>
@@ -111,18 +101,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/swords/model/sword_A04.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/swords/model/sword_A04.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/swords/model/sword_A04.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/swords/model/sword_A04.mesh</string>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">sword_a4</string>
@@ -132,18 +120,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/swords/model/sword_A05.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/swords/model/sword_A05.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/swords/model/sword_A05.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/swords/model/sword_A05.mesh</string>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">sword_a5</string>
@@ -153,18 +139,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/swords/model/sword_A06.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/swords/model/sword_A06.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/swords/model/sword_A06.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/swords/model/sword_A06.mesh</string>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">sword_a6</string>
@@ -174,18 +158,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/swords/model/sword_A07.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/swords/model/sword_A07.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/swords/model/sword_A07.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/swords/model/sword_A07.mesh</string>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">sword_a7</string>
@@ -195,18 +177,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/swords/model/sword_A08.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/swords/model/sword_A08.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/swords/model/sword_A08.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/swords/model/sword_A08.mesh</string>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">sword_a8</string>
@@ -216,18 +196,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/swords/model/sword_A09.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/swords/model/sword_A09.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/swords/model/sword_A09.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/swords/model/sword_A09.mesh</string>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">sword_a9</string>
@@ -237,18 +215,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/swords/model/sword_A10.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/swords/model/sword_A10.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/swords/model/sword_A10.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/swords/model/sword_A10.mesh</string>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">sword_a10</string>
@@ -258,18 +234,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/swords/model/sword_A11.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/swords/model/sword_A11.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/swords/model/sword_A11.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/swords/model/sword_A11.mesh</string>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">sword_a11</string>
@@ -279,18 +253,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/swords/model/sword_B01.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/swords/model/sword_B01.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/swords/model/sword_B01.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/swords/model/sword_B01.mesh</string>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">sword_b1</string>
@@ -300,18 +272,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/swords/model/sword_B02.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/swords/model/sword_B02.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/swords/model/sword_B02.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/swords/model/sword_B02.mesh</string>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">sword_b2</string>
@@ -321,18 +291,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/swords/model/sword_B03.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/swords/model/sword_B03.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/swords/model/sword_B03.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/swords/model/sword_B03.mesh</string>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">sword_b3</string>
@@ -342,18 +310,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/swords/model/sword_B04.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/swords/model/sword_B04.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/swords/model/sword_B04.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/swords/model/sword_B04.mesh</string>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">sword_b4</string>
@@ -363,18 +329,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/swords/model/sword_B05.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/swords/model/sword_B05.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/swords/model/sword_B05.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/swords/model/sword_B05.mesh</string>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">sword_b5</string>
@@ -384,18 +348,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/swords/model/sword_B06.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/swords/model/sword_B06.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/swords/model/sword_B06.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/swords/model/sword_B06.mesh</string>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">sword_b6</string>
@@ -405,18 +367,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/swords/model/sword_B07.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/swords/model/sword_B07.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/swords/model/sword_B07.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/swords/model/sword_B07.mesh</string>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">sword_b7</string>
@@ -426,18 +386,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/swords/model/sword_B08.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/swords/model/sword_B08.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/swords/model/sword_B08.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/swords/model/sword_B08.mesh</string>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">sword_b8</string>
@@ -447,18 +405,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/swords/model/sword_C01.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/swords/model/sword_C01.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/swords/model/sword_C01.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/swords/model/sword_C01.mesh</string>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">sword_c1</string>
@@ -468,18 +424,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/swords/model/sword_C02.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/swords/model/sword_C02.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/swords/model/sword_C02.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/swords/model/sword_C02.mesh</string>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">sword_c2</string>
@@ -489,18 +443,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/swords/model/sword_C03.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/swords/model/sword_C03.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/swords/model/sword_C03.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/swords/model/sword_C03.mesh</string>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">sword_c3</string>
@@ -510,18 +462,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/swords/model/sword_C04.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/swords/model/sword_C04.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/swords/model/sword_C04.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/swords/model/sword_C04.mesh</string>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">sword_c4</string>
@@ -531,18 +481,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/swords/model/sword_C05.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/swords/model/sword_C05.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/swords/model/sword_C05.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/swords/model/sword_C05.mesh</string>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">sword_c5</string>
@@ -552,18 +500,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/swords/model/sword_C06.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/swords/model/sword_C06.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/swords/model/sword_C06.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/swords/model/sword_C06.mesh</string>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">sword_c6</string>
@@ -573,18 +519,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/swords/model/sword_C07.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/swords/model/sword_C07.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/swords/model/sword_C07.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/swords/model/sword_C07.mesh</string>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">sword_c7</string>
@@ -594,18 +538,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/swords/model/sword_C08.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/swords/model/sword_C08.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/swords/model/sword_C08.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/swords/model/sword_C08.mesh</string>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">sword_c8</string>
@@ -615,18 +557,16 @@
 
     <map>
         <map name="attributes">
-            <map name="attributes">
-                <map name="geometry">
-                    <map name="default">
-                        <string name="path">dural/items/weapons/swords/model/sword_C09.mesh</string>
-                        <string name="type">box</string>
-                    </map>
-                    <string name="visibility">public</string>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/weapons/swords/model/sword_C09.mesh</string>
+                    <string name="type">box</string>
                 </map>
-                <map name="present">
-                    <string name="default">dural/items/weapons/swords/model/sword_C09.mesh</string>
-                    <string name="visibility">public</string>
-                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/weapons/swords/model/sword_C09.mesh</string>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">sword_c9</string>
