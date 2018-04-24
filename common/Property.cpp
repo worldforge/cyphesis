@@ -42,7 +42,7 @@
 
 /// \brief Constructor called from classes which inherit from Property
 /// @param flags default value for the Property flags
-PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
+PropertyBase::PropertyBase(std::uint32_t flags) : m_flags(flags)
 {
 }
 

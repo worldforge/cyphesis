@@ -46,50 +46,50 @@ typedef std::map<std::string, PropertyBase *> PropertyDict;
 
 /// \brief Flag indicating entity has been written to permanent store
 /// \ingroup EntityFlags
-static const unsigned int entity_clean = 1u << 0u;
+static const std::uint32_t entity_clean = 1u << 0u;
 /// \brief Flag indicating entity POS has been written to permanent store
 /// \ingroup EntityFlags
-static const unsigned int entity_pos_clean = 1u << 1u;
+static const std::uint32_t entity_pos_clean = 1u << 1u;
 /// \brief Flag indicating entity ORIENT has been written to permanent store
 /// \ingroup EntityFlags
-static const unsigned int entity_orient_clean = 1u << 2u;
+static const std::uint32_t entity_orient_clean = 1u << 2u;
 
-static const unsigned int entity_clean_mask = entity_clean |
+static const std::uint32_t entity_clean_mask = entity_clean |
                                               entity_pos_clean |
                                               entity_orient_clean;
 
 /// \brief Flag indicating entity is perceptive
 /// \ingroup EntityFlags
-static const unsigned int entity_perceptive = 1u << 3u;
+static const std::uint32_t entity_perceptive = 1u << 3u;
 /// \brief Flag indicating entity has been destroyed
 /// \ingroup EntityFlags
-static const unsigned int entity_destroyed = 1u << 4u;
+static const std::uint32_t entity_destroyed = 1u << 4u;
 /// \brief Flag indicating entity has been queued for storage update
 /// \ingroup EntityFlags
-static const unsigned int entity_queued = 1u << 5u;
+static const std::uint32_t entity_queued = 1u << 5u;
 /// \brief Flag indicaiting entity is ephemeral
 /// \ingroup EntityFlags
-static const unsigned int entity_ephem = 1u << 6u;
+static const std::uint32_t entity_ephem = 1u << 6u;
 /// \brief Flag indicating entity is visible
 /// \ingroup EntityFlags
 /// Currently only used on MemEntity
-static const unsigned int entity_visible = 1u << 7u;
+static const std::uint32_t entity_visible = 1u << 7u;
 /// \brief Flag indicating entity is asleep
 /// \ingroup EntityFlags
 /// Currently only used on BaseMind
-static const unsigned int entity_asleep = 1u << 8u;
+static const std::uint32_t entity_asleep = 1u << 8u;
 /// \brief Flag indicating entity contains a Domain, used for movement and sights
 /// \ingroup EntityFlags
-static const unsigned int entity_domain = 1u << 9u;
+static const std::uint32_t entity_domain = 1u << 9u;
 
 /// \brief Flag indicating entity has thoughts that needs to be persisted.
 /// \ingroup EntityFlags
-static const unsigned int entity_dirty_thoughts = 1u << 10u;
+static const std::uint32_t entity_dirty_thoughts = 1u << 10u;
 
 /// \brief Flag indicating entity has a location which has been changed since last sent to clients,
 /// and new location data should be sent on the next Update.
 /// \ingroup EntityFlags
-static const unsigned int entity_dirty_location = 1u << 11u;
+static const std::uint32_t entity_dirty_location = 1u << 11u;
 
 /// \brief This is the base class from which in-game and in-memory objects
 /// inherit.
@@ -120,7 +120,7 @@ class LocatedEntity : public Router {
     /// Class of which this is an instance
     const TypeNode * m_type;
     /// Flags indicating changes to attributes
-    unsigned int m_flags;
+    std::uint32_t m_flags;
 
     void clearProperties();
 
@@ -170,11 +170,11 @@ class LocatedEntity : public Router {
     bool isVisible() const { return (m_flags & entity_visible) != 0; }
 
     /// \brief Accessor for flags
-    const int getFlags() const { return m_flags; }
+    std::uint32_t getFlags() const { return m_flags; }
 
-    void setFlags(unsigned int flags) { m_flags |= flags; }
+    void setFlags(std::uint32_t flags) { m_flags |= flags; }
 
-    void resetFlags(unsigned int flags) { m_flags &= ~flags; }
+    void resetFlags(std::uint32_t flags) { m_flags &= ~flags; }
 
     /// \brief Accessor for pointer to script object
     Script * script() const {

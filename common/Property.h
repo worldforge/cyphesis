@@ -32,22 +32,22 @@ class TypeNode;
 class PropertyBase {
   protected:
     /// \brief Flags indicating how this Property should be handled
-    unsigned int m_flags;
-    explicit PropertyBase(unsigned int flags = 0);
+    std::uint32_t m_flags;
+    explicit PropertyBase(std::uint32_t flags = 0);
     PropertyBase(const PropertyBase &) = default;
   public:
     virtual ~PropertyBase() = default;
 
     /// \brief Accessor for Property flags
-    unsigned int flags() const { return m_flags; }
+    std::uint32_t flags() const { return m_flags; }
     /// \brief Accessor for Property flags
-    unsigned int & flags() { return m_flags; }
+    std::uint32_t & flags() { return m_flags; }
 
-    void setFlags(unsigned int flags) { m_flags |= flags; }
+    void setFlags(std::uint32_t flags) { m_flags |= flags; }
 
-    void resetFlags(unsigned int flags) { m_flags &= ~flags; }
+    void resetFlags(std::uint32_t flags) { m_flags &= ~flags; }
 
-    bool hasFlags(unsigned int flags) const { return (m_flags & flags) != 0; }
+    bool hasFlags(std::uint32_t flags) const { return (m_flags & flags) != 0; }
 
     /// \brief Install this property on an entity
     ///
@@ -87,46 +87,46 @@ class PropertyBase {
 
 /// \brief Flag indicating data has been written to permanent store
 /// \ingroup PropertyFlags
-static const unsigned int per_clean = 1u << 0u;
+static const std::uint32_t per_clean = 1u << 0u;
 /// \brief Flag indicating data should never be persisted
 /// \ingroup PropertyFlags
-static const unsigned int per_ephem = 1u << 1u;
+static const std::uint32_t per_ephem = 1u << 1u;
 /// \brief Flag indicating data has been stored initially
 /// \ingroup PropertyFlags
-static const unsigned int per_seen = 1u << 2u;
+static const std::uint32_t per_seen = 1u << 2u;
 
 /// \brief Flag mask indicating data should not be written to store
 /// \ingroup PropertyFlags
-static const unsigned int per_mask = per_clean | per_ephem;
+static const std::uint32_t per_mask = per_clean | per_ephem;
 
 /// \brief Flag indicating data is not visible
 /// \ingroup PropertyFlags
-static const unsigned int vis_hidden = 1u << 3u;
+static const std::uint32_t vis_hidden = 1u << 3u;
 /// \brief Flag indicating data is server internal
 /// \ingroup PropertyFlags
-static const unsigned int vis_internal = 1u << 4u;
+static const std::uint32_t vis_internal = 1u << 4u;
 
 /// \brief Flag mask indicating data should be be perceptable
 /// \ingroup PropertyFlags
-static const unsigned int vis_mask = vis_hidden | vis_internal;
+static const std::uint32_t vis_mask = vis_hidden | vis_internal;
 
 /// \brief Flag set to indicate this is a class property, and has no instance
 /// \ingroup PropertyFlags
-static const unsigned int flag_class = 1u << 5u;
+static const std::uint32_t flag_class = 1u << 5u;
 
 /// \brief Flag used for boolean properties
 /// \ingroup PropertyFlags
-static const unsigned int flag_bool = 1u << 6u;
+static const std::uint32_t flag_bool = 1u << 6u;
 
 /// \brief Flag used to mark properties whose state has not been broadcast
 /// \ingroup PropertyFlags
-static const unsigned int flag_unsent = 1u << 7u;
+static const std::uint32_t flag_unsent = 1u << 7u;
 
 /// \brief Flag used to mark properties which must be instance properties
 /// \ingroup PropertyFlags
 /// Typically this will be because they have per-entity state which cannot
 /// be handled on a class property.
-static const unsigned int flag_instance = 1u << 8u;
+static const std::uint32_t flag_instance = 1u << 8u;
 
 /// \brief Entity property template for properties with single data values
 /// \ingroup PropertyClasses
