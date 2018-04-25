@@ -93,7 +93,10 @@ class WorldRouter : public BaseWorld {
 
     virtual void addPerceptive(LocatedEntity *);
     void message(const Atlas::Objects::Operation::RootOperation &,
-                         LocatedEntity &);
+                         LocatedEntity &) override;
+
+    void messageToClients(const Atlas::Objects::Operation::RootOperation &) override;
+
     virtual LocatedEntity * findByName(const std::string & name);
     virtual LocatedEntity * findByType(const std::string & type);
 

@@ -80,7 +80,7 @@ ServerRouting::~ServerRouting()
 }
 
 /// Add an OOG object to the server.
-void ServerRouting::addObject(Router * obj)
+void ServerRouting::addObject(ConnectableRouter * obj)
 {
     assert(!obj->getId().empty());
     assert(integerId(obj->getId()) == obj->getIntId());
@@ -97,7 +97,7 @@ void ServerRouting::addAccount(Account * a)
 }
 
 /// Remove an OOG object from the server.
-void ServerRouting::delObject(Router * obj)
+void ServerRouting::delObject(ConnectableRouter * obj)
 {
     m_objects.erase(obj->getIntId());
 }
@@ -106,7 +106,7 @@ void ServerRouting::delObject(Router * obj)
 ///
 /// @return a pointer to the object with the given id, or
 /// zero if no object with this id is present.
-Router * ServerRouting::getObject(const std::string & id) const
+ConnectableRouter * ServerRouting::getObject(const std::string & id) const
 {
     auto I = m_objects.find(integerId(id));
     if (I == m_objects.end()) {

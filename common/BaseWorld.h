@@ -218,7 +218,10 @@ class BaseWorld {
     virtual void message(const Atlas::Objects::Operation::RootOperation &,
                          LocatedEntity & obj) = 0;
 
-    /// \brief Find an entity of the given name.
+    /// \brief Sends a message to all connected clients.
+    virtual void messageToClients(const Atlas::Objects::Operation::RootOperation &) = 0;
+
+        /// \brief Find an entity of the given name.
     virtual LocatedEntity * findByName(const std::string & name) = 0;
 
     /// \brief Find an entity of the given type.

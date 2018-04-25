@@ -235,8 +235,8 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
         }
         long intId = integerId(id);
 
-        const RouterMap & OOGDict = m_connection->m_server.getObjects();
-        RouterMap::const_iterator J = OOGDict.find(intId);
+        const auto& OOGDict = m_connection->m_server.getObjects();
+        auto J = OOGDict.find(intId);
         const EntityDict & worldDict = m_connection->m_server.m_world.getEntities();
         EntityDict::const_iterator K = worldDict.find(intId);
 
@@ -309,6 +309,13 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
     } else if (objtype == "class" || objtype == "op_definition") {
         if (Inheritance::instance().hasClass(id)) {
             if (Ruleset::instance()->modifyRule(id, arg) == 0) {
+                const Root & o = Inheritance::instance().getClass(id);
+                if (o.isValid()) {
+                    Info infoToAll;
+                    infoToAll->setArgs1(o);
+                    BaseWorld::instance().messageToClients(infoToAll);
+                }
+
                 Info info;
                 info->setTo(getId());
                 info->setArgs1(arg);

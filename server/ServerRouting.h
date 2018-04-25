@@ -21,12 +21,13 @@
 
 #include "common/Router.h"
 #include "common/Shaker.h"
+#include "ConnectableRouter.h"
 
 class Account;
 class BaseWorld;
 class Lobby;
 
-typedef std::map<long, Router *> RouterMap;
+typedef std::map<long, ConnectableRouter *> ConnectableRouterMap;
 typedef std::map<std::string, Account *> AccountDict;
 
 extern bool restricted_flag;
@@ -41,7 +42,7 @@ class ServerRouting : public Router {
     Shaker m_shaker;
   private:
     /// A mapping of ID to object of all the OOG objects in the server.
-    RouterMap m_objects;
+    ConnectableRouterMap m_objects;
     /// A mapping of ID to object of all the accounts in the server.
     AccountDict m_accounts;
     /// The text name of the ruleset this server is running.
@@ -84,8 +85,12 @@ class ServerRouting : public Router {
     Shaker & getShaker() { return m_shaker; }
     
     /// Accessor for OOG objects map.
-    const RouterMap & getObjects() const {
+    const ConnectableRouterMap & getObjects() const {
         return m_objects;
+    }
+
+    const AccountDict getAccounts() const {
+        return m_accounts;
     }
 
     /// Accessor for server ruleset.
@@ -94,10 +99,10 @@ class ServerRouting : public Router {
     /// Accessor for server name.
     const std::string & getName() const { return m_svrName; }
 
-    void addObject(Router * obj);
+    void addObject(ConnectableRouter * obj);
     void addAccount(Account * a);
-    void delObject(Router * obj);
-    Router * getObject(const std::string & id) const;
+    void delObject(ConnectableRouter * obj);
+    ConnectableRouter * getObject(const std::string & id) const;
     Account * getAccountByName(const std::string & username);
 
     void addToMessage(Atlas::Message::MapType &) const override;

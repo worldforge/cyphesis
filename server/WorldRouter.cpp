@@ -36,6 +36,9 @@
 #include "common/SystemTime.h"
 #include "common/Variable.h"
 #include "common/Tick.h"
+#include "server/Connection.h"
+#include "ServerRouting.h"
+#include "Account.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -401,6 +404,23 @@ void WorldRouter::message(const Operation & op, LocatedEntity & fromEntity)
         m_operationsDispatcher.addOperationToQueue(op, fromEntity);
     }
     debug(std::cout << "WorldRouter::message {"
+                    << op->getParent() << ":"
+                    << op->getFrom() << ":" << op->getTo() << "}" << std::endl
+                    << std::flush;);
+}
+
+void WorldRouter::messageToClients(const Operation & op)
+{
+    auto& accounts = ServerRouting::instance()->getAccounts();
+    for (auto entry : accounts) {
+        if (entry.second->m_connection) {
+            auto opCopy = op.copy();
+            opCopy->setTo(entry.first);
+            entry.second->m_connection->send(opCopy);
+        }
+    }
+
+    debug(std::cout << "WorldRouter::messageToClients {"
                     << op->getParent() << ":"
                     << op->getFrom() << ":" << op->getTo() << "}" << std::endl
                     << std::flush;);
