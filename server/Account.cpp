@@ -287,26 +287,28 @@ void Account::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 
 void Account::externalOperation(const Operation & op, Link &)
 {
+    //External operations must come from a connection.
     assert(m_connection != nullptr);
-    OpVector reply;
-    long serialno = op->getSerialno();
-    operation(op, reply);
-    if (!reply.empty()) {
-        for(auto& replyOp : reply) {
+    OpVector res;
+
+    processExternalOperation(op, res);
+
+    if (!res.empty()) {
+        for(auto& replyOp : res) {
             if (!op->isDefaultSerialno()) {
                 // Should we respect existing refnos?
                 if (replyOp->isDefaultRefno()) {
+                    long serialno = op->getSerialno();
                     replyOp->setRefno(serialno);
                 }
             }
         }
         // FIXME detect socket failure here
-        m_connection->send(reply);
+        m_connection->send(res);
     }
 }
 
-void Account::operation(const Operation & op, OpVector & res)
-{
+void Account::processExternalOperation(const Operation & op, OpVector& res) {
     auto op_no = op->getClassNo();
     switch (op_no) {
         case Atlas::Objects::Operation::CREATE_NO:
@@ -335,6 +337,14 @@ void Account::operation(const Operation & op, OpVector & res)
         default:
             OtherOperation(op, res);
             break;
+    }
+}
+
+
+void Account::operation(const Operation & op, OpVector & res)
+{
+    if (m_connection) {
+        m_connection->send(op);
     }
 }
 

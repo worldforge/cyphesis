@@ -166,7 +166,7 @@ int Admin::characterError(const Operation & op,
         error(op, "You cannot create a character with no type.", res, getId());
         return -1;
     }
-    if (ent->getParent() == "") {
+    if (ent->getParent().empty()) {
         error(op, "You cannot create a character with empty type.", res, getId());
         return -1;
     }
@@ -238,7 +238,7 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
         const auto& OOGDict = m_connection->m_server.getObjects();
         auto J = OOGDict.find(intId);
         const EntityDict & worldDict = m_connection->m_server.m_world.getEntities();
-        EntityDict::const_iterator K = worldDict.find(intId);
+        auto K = worldDict.find(intId);
 
         if (J != OOGDict.end()) {
             Router * obj = J->second;

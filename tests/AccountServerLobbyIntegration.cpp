@@ -50,11 +50,12 @@ using String::compose;
 
 static int test_send_count;
 
+class TestAccount;
 class AccountServerLobbyintegration : public Cyphesis::TestBase
 {
   private:
     ServerRouting * m_server;
-    Account * m_account;
+    TestAccount * m_account;
     long m_id_counter;
   public:
     AccountServerLobbyintegration();
@@ -78,6 +79,10 @@ class TestAccount : public Account
     {
         return false;
     }
+
+        void test_processExternalOperation(const Operation & op, OpVector& res) {
+            processExternalOperation(op, res);
+        }
                   
 };
 
@@ -125,7 +130,7 @@ void AccountServerLobbyintegration::test_talk()
     op->setFrom(m_account->getId());
 
     OpVector res;
-    m_account->operation(op, res);
+    m_account->test_processExternalOperation(op, res);
     ASSERT_TRUE(res.empty());
 
     // Ensure the resulting broadcast sound was sent to all three accounts
@@ -144,7 +149,7 @@ void AccountServerLobbyintegration::test_emote()
     op->setFrom(m_account->getId());
 
     OpVector res;
-    m_account->operation(op, res);
+    m_account->test_processExternalOperation(op, res);
     ASSERT_TRUE(res.empty());
 
     // Ensure the resulting broadcast sound was sent to all three accounts
@@ -159,7 +164,7 @@ void AccountServerLobbyintegration::test_lobby_look()
     op->setFrom(m_account->getId());
 
     OpVector res;
-    m_account->operation(op, res);
+    m_account->test_processExternalOperation(op, res);
     ASSERT_TRUE(!res.empty());
 }
 

@@ -886,8 +886,6 @@ Player::Player(Connection * conn,
 {
 }
 
-Player::~Player() { }
-
 const char * Player::getType() const
 {
     return "player";

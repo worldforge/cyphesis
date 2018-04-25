@@ -412,12 +412,11 @@ void WorldRouter::message(const Operation & op, LocatedEntity & fromEntity)
 void WorldRouter::messageToClients(const Operation & op)
 {
     auto& accounts = ServerRouting::instance()->getAccounts();
+    OpVector res;
     for (auto entry : accounts) {
-        if (entry.second->m_connection) {
             auto opCopy = op.copy();
             opCopy->setTo(entry.first);
-            entry.second->m_connection->send(opCopy);
-        }
+            entry.second->operation(opCopy, res);
     }
 
     debug(std::cout << "WorldRouter::messageToClients {"

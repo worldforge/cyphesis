@@ -22,20 +22,23 @@
 #include "Account.h"
 
 #include <sigc++/connection.h>
+#include <Atlas/Objects/SmartPtr.h>
 
 /// \brief This is a class for handling users with administrative priveleges
 class Admin : public Account {
   protected:
-    virtual LocatedEntity * createCharacterEntity(const std::string &,
-                                        const Atlas::Objects::Entity::RootEntity &,
-                                        const Atlas::Objects::Root &);
-    virtual int characterError(const Operation & op,
-                               const Atlas::Objects::Root & ent,
-                               OpVector & res) const;
-    virtual void createObject(const std::string &,
-                              const Atlas::Objects::Root &,
-                              const Operation &,
-                              OpVector &);
+    LocatedEntity * createCharacterEntity(const std::string &,
+                                    const Atlas::Objects::Entity::RootEntity &,
+                                    const Atlas::Objects::Root &) override;
+
+    int characterError(const Operation & op,
+                           const Atlas::Objects::Root & ent,
+                           OpVector & res) const override;
+
+    void createObject(const std::string &,
+                          const Atlas::Objects::Root &,
+                          const Operation &,
+                          OpVector &) override;
 
     void opDispatched(Operation op);
 
@@ -48,17 +51,19 @@ class Admin : public Account {
     Admin(Connection * conn, const std::string & username,
                              const std::string & passwd,
                              const std::string & id, long intId);
-    virtual ~Admin();
 
-    virtual const char * getType() const;
+    ~Admin() override;
 
-    virtual void addToMessage(Atlas::Message::MapType &) const;
-    virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
+    const char * getType() const override;
 
-    virtual void LogoutOperation(const Operation &, OpVector &);
-    virtual void GetOperation(const Operation &, OpVector &);
-    virtual void SetOperation(const Operation &, OpVector &);
-    virtual void OtherOperation(const Operation &, OpVector &);
+    void addToMessage(Atlas::Message::MapType &) const override ;
+
+    void addToEntity(const Atlas::Objects::Entity::RootEntity &) const override;
+
+    void LogoutOperation(const Operation &, OpVector &) override;
+    void GetOperation(const Operation &, OpVector &) override;
+    void SetOperation(const Operation &, OpVector &) override;
+    void OtherOperation(const Operation &, OpVector &) override;
 
     void customMonitorOperation(const Operation &, OpVector &);
 

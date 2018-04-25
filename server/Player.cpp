@@ -47,10 +47,6 @@ Player::Player(Connection * conn,
 {
 }
 
-Player::~Player()
-{
-}
-
 const char * Player::getType() const
 {
     return "player";
@@ -60,8 +56,8 @@ void Player::addToMessage(MapType & omap) const
 {
     Account::addToMessage(omap);
     ListType & typeList = (omap["character_types"] = ListType()).asList();
-    std::set<std::string>::const_iterator I = Player::playableTypes.begin();
-    std::set<std::string>::const_iterator Iend = Player::playableTypes.end();
+    auto I = Player::playableTypes.begin();
+    auto Iend = Player::playableTypes.end();
     for (; I != Iend; ++I) {
         typeList.push_back(Element(*I));
     }
@@ -71,8 +67,8 @@ void Player::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
     Account::addToEntity(ent);
     ListType typeList;
-    std::set<std::string>::const_iterator I = Player::playableTypes.begin();
-    std::set<std::string>::const_iterator Iend = Player::playableTypes.end();
+    auto I = Player::playableTypes.begin();
+    auto Iend = Player::playableTypes.end();
     for (; I != Iend; ++I) {
         typeList.push_back(Element(*I));
     }

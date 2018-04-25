@@ -87,6 +87,8 @@ std::ostream & operator<<(std::ostream & os,
     return os;
 }
 
+class TestAccount;
+
 class Accounttest : public Cyphesis::TestBase
 {
   protected:
@@ -94,7 +96,7 @@ class Accounttest : public Cyphesis::TestBase
 
     ServerRouting * m_server;
     Connection * m_connection;
-    Account * m_account;
+    TestAccount * m_account;
 
     static Entity * TestWorld_addNewEntity_ret_value;
     static Entity * TeleportAuthenticator_ret_value;
@@ -241,6 +243,10 @@ class TestAccount : public Account {
     LocatedEntity * testAddNewCharacter(const std::string & typestr,
                                         const RootEntity & ent,
                                         const RootEntity & arg);
+
+    void test_processExternalOperation(const Operation & op, OpVector& res) {
+        processExternalOperation(op, res);
+    }
 };
 
 Accounttest::Accounttest() : m_id_counter(0L),
@@ -655,7 +661,7 @@ void Accounttest::test_operation_Create()
     Atlas::Objects::Operation::Create op;
     OpVector res;
 
-    m_account->operation(op, res);
+    m_account->test_processExternalOperation(op, res);
 
     ASSERT_TRUE(res.empty());
 }
@@ -665,7 +671,7 @@ void Accounttest::test_operation_Get()
     Atlas::Objects::Operation::Get op;
     OpVector res;
 
-    m_account->operation(op, res);
+    m_account->test_processExternalOperation(op, res);
 }
 
 void Accounttest::test_operation_Imaginary()
@@ -673,7 +679,7 @@ void Accounttest::test_operation_Imaginary()
     Atlas::Objects::Operation::Imaginary op;
     OpVector res;
 
-    m_account->operation(op, res);
+    m_account->test_processExternalOperation(op, res);
 }
 
 void Accounttest::test_operation_Logout()
@@ -681,7 +687,7 @@ void Accounttest::test_operation_Logout()
     Atlas::Objects::Operation::Logout op;
     OpVector res;
 
-    m_account->operation(op, res);
+    m_account->test_processExternalOperation(op, res);
 }
 
 void Accounttest::test_operation_Look()
@@ -689,7 +695,7 @@ void Accounttest::test_operation_Look()
     Atlas::Objects::Operation::Look op;
     OpVector res;
 
-    m_account->operation(op, res);
+    m_account->test_processExternalOperation(op, res);
 }
 
 void Accounttest::test_operation_Set()
@@ -697,7 +703,7 @@ void Accounttest::test_operation_Set()
     Atlas::Objects::Operation::Set op;
     OpVector res;
 
-    m_account->operation(op, res);
+    m_account->test_processExternalOperation(op, res);
 }
 
 void Accounttest::test_operation_Talk()
@@ -705,7 +711,7 @@ void Accounttest::test_operation_Talk()
     Atlas::Objects::Operation::Talk op;
     OpVector res;
 
-    m_account->operation(op, res);
+    m_account->test_processExternalOperation(op, res);
 }
 
 void Accounttest::test_operation_INVALID()
@@ -714,7 +720,7 @@ void Accounttest::test_operation_INVALID()
     op->setType("3d6b8a1e-137c-40a6-9ec9-1b21591e4937", OP_INVALID);
     OpVector res;
 
-    m_account->operation(op, res);
+    m_account->test_processExternalOperation(op, res);
 }
 
 void Accounttest::test_operation_Other()
@@ -722,7 +728,7 @@ void Accounttest::test_operation_Other()
     Atlas::Objects::Operation::RootOperation op;
     OpVector res;
 
-    m_account->operation(op, res);
+    m_account->test_processExternalOperation(op, res);
 }
 
 void Accounttest::test_CreateOperation_no_args()
@@ -741,7 +747,7 @@ void Accounttest::test_CreateOperation_no_parent()
     Anonymous create_arg;
     op->setArgs1(create_arg);
 
-    m_account->operation(op, res);
+    m_account->test_processExternalOperation(op, res);
 
     ASSERT_EQUAL(res.size(), 1u);
 
@@ -764,7 +770,7 @@ void Accounttest::test_CreateOperation_good()
     create_arg->setParent("foo");
     op->setArgs1(create_arg);
 
-    m_account->operation(op, res);
+    m_account->test_processExternalOperation(op, res);
 
     ASSERT_EQUAL(res.size(), 2u);
 

@@ -78,6 +78,8 @@ class Account : public ConnectableRouter {
                                     const Atlas::Objects::Entity::RootEntity &,
                                     const Atlas::Objects::Root &);
 
+    void processExternalOperation(const Operation & op, OpVector& res);
+
   public:
     /// \brief Connect and add a character to this account
     int connectCharacter(LocatedEntity *chr);
@@ -109,6 +111,8 @@ class Account : public ConnectableRouter {
     void addToEntity(const Atlas::Objects::Entity::RootEntity &) const override;
 
     void externalOperation(const Operation & op, Link &) override;
+
+    //Operations sent to this instance will be sent on to m_connection, if such exists.
     void operation(const Operation &, OpVector &) override;
 
     virtual void LogoutOperation(const Operation &, OpVector &);

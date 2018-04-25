@@ -136,35 +136,7 @@ int CommSocket::flush()
     return 0;
 }
 
-Player::Player(Connection * conn,
-               const std::string & username,
-               const std::string & passwd,
-               const std::string & id,
-               long intId) :
-        Account(conn, username, passwd, id, intId)
-{
-}
-
-Player::~Player() { }
-
-const char * Player::getType() const
-{
-    return "player";
-}
-
-void Player::addToMessage(MapType & omap) const
-{
-}
-
-void Player::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-int Player::characterError(const Operation & op,
-                           const Root & ent, OpVector & res) const
-{
-    return 0;
-}
+#include "stubs/server/stubPlayer.h"
 
 Account::Account(Connection * conn,
                  const std::string & uname,

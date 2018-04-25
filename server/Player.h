@@ -26,19 +26,19 @@
 /// \brief This is a class for handling users who are regular players
 class Player : public Account {
   protected:
-    virtual int characterError(const Operation &,
-                               const Atlas::Objects::Root &,
-                               OpVector &) const;
+    int characterError(const Operation &,
+                           const Atlas::Objects::Root &,
+                           OpVector &) const override;
   public:
     Player(Connection * conn, const std::string & username,
                               const std::string & passwd,
                               const std::string & id, long intId);
-    virtual ~Player();
+    ~Player() override = default;
 
-    virtual const char * getType() const;
+    const char * getType() const override;
 
-    virtual void addToMessage(Atlas::Message::MapType &) const;
-    virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
+    void addToMessage(Atlas::Message::MapType &) const override;
+    void addToEntity(const Atlas::Objects::Entity::RootEntity &) const override;
 
     /// \brief Set of types which can be created as playable characters by
     /// Player accounts.
