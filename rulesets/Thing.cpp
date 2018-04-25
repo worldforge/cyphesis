@@ -326,7 +326,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
 
 
         m_location.update(current_time);
-        resetFlags(entity_clean);
+        removeFlags(entity_clean);
 
         // At this point the Location data for this entity has been updated.
 
@@ -453,7 +453,7 @@ void Thing::updateProperties(const Operation& op, OpVector& res)
                             << std::endl << std::flush;);
 
             prop->add(entry.first, set_arg);
-            prop->resetFlags(flag_unsent | per_clean);
+            prop->removeFlags(flag_unsent | per_clean);
 
             hadChanges = true;
             // FIXME Make sure we handle separately for private properties
@@ -462,7 +462,7 @@ void Thing::updateProperties(const Operation& op, OpVector& res)
 
     if (hadChanges) {
         //Mark that entity needs to be written to storage.
-        resetFlags(entity_clean);
+        removeFlags(entity_clean);
 
         Set set;
         set->setTo(getId());
@@ -491,7 +491,7 @@ void Thing::updateProperties(const Operation& op, OpVector& res)
         s->setArgs1(m);
 
         broadcast(s, res);
-        resetFlags(entity_dirty_location);
+        removeFlags(entity_dirty_location);
         hadChanges = true;
     }
 
@@ -578,6 +578,8 @@ void Thing::LookOperation(const Operation& op, OpVector& res)
         log(ERROR, String::compose("Look op has invalid from %1. %2", op->getFrom(), describeEntity()));
         return;
     }
+
+    //TODO: this does nothing. How should we handle entities with no perception_sight property which looks at things?
     // Register the entity with the world router as perceptive.
     BaseWorld::instance().addPerceptive(from);
 

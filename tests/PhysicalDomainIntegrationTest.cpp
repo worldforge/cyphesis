@@ -1608,7 +1608,7 @@ void PhysicalDomainIntegrationTest::test_visibility()
     observerEntity->setType(humanType);
     observerEntity->m_location.m_pos = WFMath::Point<3>(-30, 0, -30);
     observerEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.2f, 0, -0.2f), WFMath::Point<3>(0.2, 2, 0.2)));
-    observerEntity->setFlags(entity_perceptive);
+    observerEntity->addFlags(entity_perceptive);
     domain->addEntity(*observerEntity);
 
     OpVector res;

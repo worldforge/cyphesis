@@ -131,7 +131,7 @@ PropertyBase * Entity::setAttr(const std::string & name, const Element & attr)
     if (I != m_properties.end()) {
         prop = I->second;
         // Mark it as unclean
-        prop->resetFlags(per_clean);
+        prop->removeFlags(per_clean);
     } else {
         PropertyDict::const_iterator I;
         if (m_type != 0 &&
@@ -151,10 +151,10 @@ PropertyBase * Entity::setAttr(const std::string & name, const Element & attr)
     prop->set(attr);
     // Allow the value to take effect.
     prop->apply(this);
-    prop->setFlags(flag_unsent);
+    prop->addFlags(flag_unsent);
     propertyApplied(name, *prop);
     // Mark the Entity as unclean
-    resetFlags(entity_clean);
+    removeFlags(entity_clean);
     return prop;
 }
 

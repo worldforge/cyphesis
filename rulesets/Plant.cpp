@@ -129,7 +129,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
     if (m_nourishment) {
         StatusProperty * status = requirePropertyClass<StatusProperty>("status", 1);
         double & new_status = status->data();
-        status->setFlags(flag_unsent);
+        status->addFlags(flag_unsent);
         if (*m_nourishment <= 0) {
             debug(std::cout << "No nourishment; shrinking."
                             << std::endl << std::flush;);
@@ -183,7 +183,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
 
                     box_property->data() = bbox;
                     box_property->apply(this);
-                    box_property->setFlags(flag_unsent);
+                    box_property->addFlags(flag_unsent);
 
                     scaleArea();
                 } else {
@@ -203,7 +203,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
 
                         box_property->data() = bbox;
                         box_property->apply(this);
-                        box_property->setFlags(flag_unsent);
+                        box_property->addFlags(flag_unsent);
 
                         scaleArea();
                     }
@@ -213,7 +213,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
 
                 if (biomass != nullptr) {
                     biomass->set(mass);
-                    biomass->setFlags(flag_unsent);
+                    biomass->addFlags(flag_unsent);
                 }
 
             } else {
@@ -225,11 +225,11 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
                 }
                 if (biomass != nullptr) {
                     biomass->set(mass);
-                    biomass->setFlags(flag_unsent);
+                    biomass->addFlags(flag_unsent);
                 }
                 //TODO: we need to sort out how to handle mass and biomass
                 mass_prop->set(mass);
-                mass_prop->setFlags(flag_unsent);
+                mass_prop->addFlags(flag_unsent);
 
                 // FIXME Handle the bbox without needing the Set operation.
                 if (old_mass != 0 && bbox.isValid()) {
@@ -241,7 +241,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
 
                     box_property->data() = bbox;
                     box_property->apply(this);
-                    box_property->setFlags(flag_unsent);
+                    box_property->addFlags(flag_unsent);
 
                     scaleArea();
                 }
@@ -296,7 +296,7 @@ void Plant::handleFruiting(OpVector & res, Property<int>& fruits_prop) {
             //TODO: use a different attribute than fruitChance for this
             if (randint(0, 100) < fruitsChance.Int()) {
                 fruits--;
-                fruits_prop.setFlags(flag_unsent);
+                fruits_prop.addFlags(flag_unsent);
                 dropFruit(res, fruitName.String());
             }
         }
@@ -309,7 +309,7 @@ void Plant::handleFruiting(OpVector & res, Property<int>& fruits_prop) {
             //FruitChance is between [0..100] (percentage).
             if (randint(0, 100) < fruitsChance.Int()) {
                 fruits++;
-                fruits_prop.setFlags(flag_unsent);
+                fruits_prop.addFlags(flag_unsent);
             }
         }
     }
@@ -340,7 +340,7 @@ void Plant::TouchOperation(const Operation & op, OpVector & res)
                 //TODO: use a different attribute than fruitChance for this
                 if (randint(0, 100) < fruitsChance.Int()) {
                     fruits_prop->data()--;
-                    fruits_prop->setFlags(flag_unsent);
+                    fruits_prop->addFlags(flag_unsent);
                     dropFruit(res, fruitName.String());
 
                     Update update;
@@ -394,7 +394,7 @@ void Plant::scaleArea() {
 
                     area_property->set(areaElement);
                     area_property->apply(this);
-                    area_property->setFlags(flag_unsent);
+                    area_property->addFlags(flag_unsent);
                 }
             }
         }

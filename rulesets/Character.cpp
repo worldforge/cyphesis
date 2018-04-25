@@ -133,7 +133,7 @@ void Character::metabolise(OpVector & res, double ammount)
         status_changed = true;
     }
     double & status = status_prop->data();
-    status_prop->setFlags(flag_unsent);
+    status_prop->addFlags(flag_unsent);
 
     Property<double> * food_prop = modPropertyType<double>(FOOD);
     // DIGEST
@@ -146,7 +146,7 @@ void Character::metabolise(OpVector & res, double ammount)
             status_changed = true;
             food -= foodConsumption;
 
-            food_prop->setFlags(flag_unsent);
+            food_prop->addFlags(flag_unsent);
             food_prop->apply(this);
             propertyApplied(FOOD, *food_prop);
 
@@ -161,7 +161,7 @@ void Character::metabolise(OpVector & res, double ammount)
         if (mass_prop != nullptr) {
             double & mass = mass_prop->data();
             mass += weightGain;
-            mass_prop->setFlags(flag_unsent);
+            mass_prop->addFlags(flag_unsent);
             Element maxmass_attr;
             if (getAttrType(MAXMASS, maxmass_attr, Element::TYPE_FLOAT) == 0) {
                 mass = std::min(mass, maxmass_attr.Float());
@@ -184,7 +184,7 @@ void Character::metabolise(OpVector & res, double ammount)
                 status += (energy_used / 2);
                 status_changed = true;
                 mass -= weight_used;
-                mass_prop->setFlags(flag_unsent);
+                mass_prop->addFlags(flag_unsent);
                 mass_prop->apply(this);
                 propertyApplied(MASS, *mass_prop);
            }
@@ -199,7 +199,7 @@ void Character::metabolise(OpVector & res, double ammount)
             double & stamina = stamina_prop->data();
             if (stamina < 1.f) {
                 stamina = 1.f;
-                stamina_prop->setFlags(flag_unsent);
+                stamina_prop->addFlags(flag_unsent);
                 stamina_prop->apply(this);
                 propertyApplied(STAMINA, *stamina_prop);
             }
@@ -540,7 +540,7 @@ void Character::NourishOperation(const Operation & op, OpVector & res)
     Property<double> * food_prop = requirePropertyClass<Property<double> >(FOOD, 0.f);
     double & food = food_prop->data();
     food += mass_attr.asNum();
-    food_prop->setFlags(flag_unsent);
+    food_prop->addFlags(flag_unsent);
 
     // FIXME This will become a Update once private properties are sorted
     Anonymous food_ent;
@@ -749,7 +749,7 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         }
 
         rhw->data() = EntityRef(nullptr);
-        rhw->setFlags(flag_unsent);
+        rhw->addFlags(flag_unsent);
         // FIXME Remove the property?
 
         // FIXME Make sure we stop wielding if the container changes,
@@ -803,7 +803,7 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
             outfit->wear(this, worn_attr.String(), item);
             outfit->cleanUp();
 
-            outfit->setFlags(flag_unsent);
+            outfit->addFlags(flag_unsent);
 
             if (prevEntity) {
                 prevEntity->processAppearDisappear(std::move(oldEntityPrevObserving), res);
@@ -839,7 +839,7 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         // The value is ignored by the update handler, but should be the
         // right type.
         rhw->data() = EntityRef(item);
-        rhw->setFlags(flag_unsent);
+        rhw->addFlags(flag_unsent);
 
         m_rightHandWieldConnection = item->containered.connect(sigc::hide<0>(sigc::mem_fun(this, &Character::wieldDropped)));
 

@@ -61,7 +61,7 @@ void ProxyMind::thinkSetOperation(const Operation & op, OpVector & res)
             m_thoughtsWithId[arg->getId()] = arg;
         }
     }
-    m_ownerEntity.setFlags(entity_dirty_thoughts);
+    m_ownerEntity.addFlags(entity_dirty_thoughts);
     m_ownerEntity.onUpdated();
 }
 
@@ -81,7 +81,7 @@ void ProxyMind::thinkDeleteOperation(const Operation & op, OpVector & res)
             }
         }
     }
-    m_ownerEntity.setFlags(entity_dirty_thoughts);
+    m_ownerEntity.addFlags(entity_dirty_thoughts);
     m_ownerEntity.onUpdated();
 }
 

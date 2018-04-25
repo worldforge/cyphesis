@@ -44,7 +44,7 @@ TransientProperty * TransientProperty::copy() const
 
 void TransientProperty::install(LocatedEntity * ent, const std::string & name)
 {
-    ent->setFlags(entity_ephem);
+    ent->addFlags(entity_ephem);
 }
 
 void TransientProperty::apply(LocatedEntity * ent)

@@ -96,7 +96,7 @@ TasksProperty * TasksProperty::copy() const
 
 int TasksProperty::updateTask(LocatedEntity * owner, OpVector & res)
 {
-    setFlags(flag_unsent);
+    addFlags(flag_unsent);
 
     Update update;
     update->setTo(owner->getId());

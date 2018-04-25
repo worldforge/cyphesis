@@ -192,8 +192,8 @@ class PhysicalDomain::PhysicalMotionState : public btMotionState
             if (entity.m_location.m_angularVelocity.sqrMag() < 0.001f) {
                 entity.m_location.m_angularVelocity.zero();
             }
-            entity.resetFlags(entity_pos_clean | entity_orient_clean);
-            //entity.setFlags(entity_dirty_location);
+            entity.removeFlags(entity_pos_clean | entity_orient_clean);
+            //entity.addFlags(entity_dirty_location);
 
             btCollisionObject* visibilitySphere = m_bulletEntry.visibilitySphere;
             if (visibilitySphere) {
@@ -1307,7 +1307,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
     } else if (name == "planted-offset" || name == "planted-scaled-offset") {
         applyNewPositionForEntity(bulletEntry, bulletEntry->entity->m_location.m_pos);
         bulletEntry->entity->m_location.update(BaseWorld::instance().getTime());
-        bulletEntry->entity->resetFlags(entity_clean);
+        bulletEntry->entity->removeFlags(entity_clean);
         if (bulletEntry->collisionObject) {
             m_dynamicsWorld->updateSingleAabb(bulletEntry->collisionObject);
         }
@@ -1323,7 +1323,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
     } else if (name == "floats") {
         applyNewPositionForEntity(bulletEntry, bulletEntry->entity->m_location.m_pos);
         bulletEntry->entity->m_location.update(BaseWorld::instance().getTime());
-        bulletEntry->entity->resetFlags(entity_clean);
+        bulletEntry->entity->removeFlags(entity_clean);
         if (bulletEntry->collisionObject) {
             m_dynamicsWorld->updateSingleAabb(bulletEntry->collisionObject);
         }
@@ -1946,13 +1946,13 @@ void PhysicalDomain::applyTransformInternal(LocatedEntity& entity, const WFMath:
                 rotationChange = orientation;
             }
             entity.m_location.m_orientation = orientation;
-            entity.resetFlags(entity_orient_clean);
+            entity.removeFlags(entity_orient_clean);
             hadChange = true;
         }
         if (pos.isValid()) {
             applyNewPositionForEntity(entry, pos, calculatePosition);
             if (!oldPos.isEqualTo(entity.m_location.m_pos)) {
-                entity.resetFlags(entity_pos_clean);
+                entity.removeFlags(entity_pos_clean);
                 hadChange = true;
                 //Check if there previously wasn't any valid pos, and thus no valid collision instances.
                 if (entity.m_location.m_pos.isValid() && !oldPos.isValid()) {
@@ -2501,7 +2501,7 @@ void PhysicalDomain::plantOnEntity(PhysicalDomain::BulletEntry* plantedEntry, Ph
         newPlantedOnProp->data() = EntityRef(nullptr);
     }
 
-    newPlantedOnProp->setFlags(flag_unsent);
+    newPlantedOnProp->addFlags(flag_unsent);
 
 }
 

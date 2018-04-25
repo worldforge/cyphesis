@@ -43,9 +43,9 @@ class PropertyBase {
     /// \brief Accessor for Property flags
     std::uint32_t & flags() { return m_flags; }
 
-    void setFlags(std::uint32_t flags) { m_flags |= flags; }
+    void addFlags(std::uint32_t flags) { m_flags |= flags; }
 
-    void resetFlags(std::uint32_t flags) { m_flags &= ~flags; }
+    void removeFlags(std::uint32_t flags) { m_flags &= ~flags; }
 
     bool hasFlags(std::uint32_t flags) const { return (m_flags & flags) != 0; }
 

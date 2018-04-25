@@ -208,7 +208,7 @@ int main()
     // Send a Delete operation to an ephemeral entity
     {
         Entity e("2", 2);
-        e.setFlags(entity_ephem);
+        e.addFlags(entity_ephem);
 
         TestExternalMind em(e);
         em.test_setLossTime(BaseWorld::instance().getTime());
@@ -222,7 +222,7 @@ int main()
     // Send a non Delete operation to an ephemeral entity
     {
         Entity e("2", 2);
-        e.setFlags(entity_ephem);
+        e.addFlags(entity_ephem);
 
         TestExternalMind em(e);
         em.test_setLossTime(BaseWorld::instance().getTime());

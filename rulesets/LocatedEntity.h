@@ -162,7 +162,7 @@ class LocatedEntity : public Router {
     }
 
     /// \brief Check if this entity is flagged as perceptive
-    bool isPerceptive() const { return (m_flags & entity_perceptive) != 0; }
+    bool isPerceptive() const { return ( m_flags & entity_perceptive) != 0; }
 
     /// \brief Check if this entity is flagged as destroyed
     bool isDestroyed() const { return (m_flags & entity_destroyed) != 0; }
@@ -172,9 +172,9 @@ class LocatedEntity : public Router {
     /// \brief Accessor for flags
     std::uint32_t getFlags() const { return m_flags; }
 
-    void setFlags(std::uint32_t flags) { m_flags |= flags; }
+    void addFlags(std::uint32_t flags) { m_flags |= flags; }
 
-    void resetFlags(std::uint32_t flags) { m_flags &= ~flags; }
+    void removeFlags(std::uint32_t flags) { m_flags &= ~flags; }
 
     /// \brief Accessor for pointer to script object
     Script * script() const {

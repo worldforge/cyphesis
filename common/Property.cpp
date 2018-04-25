@@ -182,9 +182,9 @@ void BoolProperty::set(const Atlas::Message::Element & ent)
 {
     if (ent.isInt()) {
         if (ent.Int() == 0) {
-            resetFlags(flag_bool);
+            removeFlags(flag_bool);
         } else {
-            setFlags(flag_bool);
+            addFlags(flag_bool);
         }
     }
 }

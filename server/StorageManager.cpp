@@ -126,7 +126,7 @@ void StorageManager::entityInserted(LocatedEntity * ent)
     }
     // Queue the entity to be inserted into the persistence tables.
     m_unstoredEntities.push_back(EntityRef(ent));
-    ent->setFlags(entity_queued);
+    ent->addFlags(entity_queued);
 }
 
 /// \brief Called when an Entity is modified
@@ -145,7 +145,7 @@ void StorageManager::entityUpdated(LocatedEntity * ent)
     }
     m_dirtyEntities.push_back(EntityRef(ent));
     // std::cout << "Updated fired " << ent->getId() << std::endl << std::flush;
-    ent->setFlags(entity_queued);
+    ent->addFlags(entity_queued);
 }
 
 void StorageManager::entityContainered(const LocatedEntity *oldLocation, LocatedEntity *entity)
@@ -227,7 +227,7 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
 
         //If we get to here the property either doesn't exists, or have a different value than the default or existing property.
         prop->set(val);
-        prop->setFlags(per_clean | per_seen);
+        prop->addFlags(per_clean | per_seen);
         prop->apply(ent);
         ent->propertyApplied(name, *prop);
         instanceProperties.insert(name);
@@ -377,14 +377,14 @@ void StorageManager::insertEntity(LocatedEntity * ent)
             continue;
         }
         encodeProperty(prop, property_tuples[I->first]);
-        prop->setFlags(per_clean | per_seen);
+        prop->addFlags(per_clean | per_seen);
     }
     if (!property_tuples.empty()) {
         Database::instance()->insertProperties(ent->getId(), property_tuples);
         ++m_insertPropertyCount;
     }
-    ent->resetFlags(entity_queued);
-    ent->setFlags(entity_clean | entity_pos_clean | entity_orient_clean);
+    ent->removeFlags(entity_queued);
+    ent->addFlags(entity_clean | entity_pos_clean | entity_orient_clean);
     ent->updated.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityUpdated), ent));
     ent->containered.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityContainered), ent));
 
@@ -404,7 +404,7 @@ void StorageManager::updateEntityThoughts(LocatedEntity * ent)
     }
     db->replaceThoughts(ent->getId(), thoughtsList);
 
-    ent->resetFlags(entity_dirty_thoughts);
+    ent->removeFlags(entity_dirty_thoughts);
 }
 
 void StorageManager::updateEntity(LocatedEntity * ent)
@@ -447,7 +447,7 @@ void StorageManager::updateEntity(LocatedEntity * ent)
             encodeProperty(prop, new_property_tuples[I->first]);
             ++m_insertPropertyCount;
         }
-        prop->setFlags(per_clean | per_seen);
+        prop->addFlags(per_clean | per_seen);
     }
     if (!new_property_tuples.empty()) {
         Database::instance()->insertProperties(ent->getId(),
@@ -457,7 +457,7 @@ void StorageManager::updateEntity(LocatedEntity * ent)
         Database::instance()->updateProperties(ent->getId(),
                                                upd_property_tuples);
     }
-    ent->setFlags(entity_clean_mask);
+    ent->addFlags(entity_clean_mask);
 }
 
 void StorageManager::restoreChildren(LocatedEntity * parent)
@@ -497,7 +497,7 @@ void StorageManager::restoreChildren(LocatedEntity * parent)
             continue;
         }
         child->m_location.m_loc = parent;
-        child->setFlags(entity_clean | entity_pos_clean | entity_orient_clean);
+        child->addFlags(entity_clean | entity_pos_clean | entity_orient_clean);
         BaseWorld::instance().addEntity(child);
         restoreChildren(child);
     }
@@ -556,7 +556,7 @@ void StorageManager::tick()
                 updateEntityThoughts(ent.get());
                 ++updates;
             }
-            ent->resetFlags(entity_queued);
+            ent->removeFlags(entity_queued);
         } else {
             debug( std::cout << "deleted" << std::endl << std::flush; );
         }
@@ -643,7 +643,7 @@ int StorageManager::initWorld()
     LocatedEntity * ent = &BaseWorld::instance().getRootEntity();
 
     ent->updated.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityUpdated), ent));
-    ent->setFlags(entity_clean);
+    ent->addFlags(entity_clean);
     // FIXME queue it so the initial state gets persisted.
     return 0;
 }

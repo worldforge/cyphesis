@@ -78,6 +78,7 @@ void World::LookOperation(const Operation & op, OpVector & res)
         return;
     }
 
+    //TODO: this does nothing. How should we handle entities with no perception_sight property which looks at things?
     // Register the entity with the world router as perceptive.
     BaseWorld::instance().addPerceptive(from);
 

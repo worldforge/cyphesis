@@ -435,7 +435,7 @@ void GeometryProperty::install(TypeNode* typeNode, const std::string&)
             bBoxProperty = new BBoxProperty();
             bBoxProperty->set(m_meshBounds.toAtlas());
             //Mark the property as ephemeral since it's calulcated.
-            bBoxProperty->setFlags(flag_class | per_ephem);
+            bBoxProperty->addFlags(flag_class | per_ephem);
             bBoxProperty->install(typeNode, "bbox");
         } else if ((I->second->flags() & per_ephem) != 0) {
             bBoxProperty = dynamic_cast<BBoxProperty*>(I->second);

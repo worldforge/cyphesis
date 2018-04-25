@@ -294,7 +294,7 @@ void PhysicalDomainIntegrationTest::test_visibilityPerformance()
         observerEntity->m_location.m_pos = WFMath::Point<3>(aabb.lowCorner().x() + (i * 4), 0, aabb.lowCorner().z());
         observerEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.1f, 0, -0.1f), WFMath::Point<3>(0.1, 2, 0.1)));
         observerEntity->setProperty(PropelProperty::property_name, propelProperty);
-        observerEntity->setFlags(entity_perceptive);
+        observerEntity->addFlags(entity_perceptive);
         observerEntity->setProperty("mass", massProp);
         domain->addEntity(*observerEntity);
     }

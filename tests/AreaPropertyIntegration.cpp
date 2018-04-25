@@ -62,7 +62,7 @@ void AreaPropertyintegration::setup()
     m_char_type = new TypeNode("char_type");
 
     m_char_property = new AreaProperty;
-    m_char_property->setFlags(flag_class);
+    m_char_property->addFlags(flag_class);
     m_char_property->set(
         MapType{
             std::make_pair("shape", MapType{

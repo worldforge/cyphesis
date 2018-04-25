@@ -63,7 +63,7 @@ void InventoryDomain::addEntity(LocatedEntity& entity)
     entity.m_location.m_pos = WFMath::Point<3>::ZERO();
     entity.m_location.m_orientation = WFMath::Quaternion::IDENTITY();
 //    entity.m_location.update(BaseWorld::instance().getTime());
-    entity.resetFlags(entity_clean);
+    entity.removeFlags(entity_clean);
 
     //Nothing special to do for this domain.
 }

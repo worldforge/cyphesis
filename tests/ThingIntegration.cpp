@@ -72,7 +72,7 @@ class ThingExt : public Thing
             Thing::Thing(id, intId), domain(nullptr)
         {
             m_type = new TypeNode(id);
-            setFlags(entity_perceptive);
+            addFlags(entity_perceptive);
         }
 
         bool test_lookAtEntity(const Operation& op, OpVector& res, LocatedEntity* watcher) const
@@ -208,7 +208,7 @@ void ThingIntegration::test_visibility()
         t2->addChild(*t3);
 
         t2->domain = new VoidDomain(*t2);
-        t2->setFlags(entity_domain);
+        t2->addFlags(entity_domain);
 
         Operation sightOp;
         OpVector res;
@@ -269,10 +269,10 @@ void ThingIntegration::test_visibility()
         ThingExt* t8 = new ThingExt("8", 8);
         t8->m_location.m_pos = WFMath::Point<3>::ZERO();
         t8->m_location.setBBox(bbox);
-        t8->resetFlags(entity_perceptive);
+        t8->removeFlags(entity_perceptive);
 
         t2->domain = new PhysicalDomain(*t2);
-        t2->setFlags(entity_domain);
+        t2->addFlags(entity_domain);
 
         t1->addChild(*t2);
         t2->addChild(*t3);
@@ -354,7 +354,7 @@ void ThingIntegration::test_visibility()
         t3->addChild(*t4);
 
         t2->domain = new InventoryDomain(*t2);
-        t2->setFlags(entity_domain);
+        t2->addFlags(entity_domain);
         auto entityProp = new EntityProperty();
         entityProp->data() = EntityRef(t3);
         t2->setProperty("right_hand_wield", entityProp);
@@ -418,10 +418,10 @@ void ThingIntegration::test_visibility()
         ThingExt* t6 = new ThingExt("6", 6);
 
         t2->domain = new PhysicalDomain(*t2);
-        t2->setFlags(entity_domain);
+        t2->addFlags(entity_domain);
 
         t3->domain = new InventoryDomain(*t3);
-        t3->setFlags(entity_domain);
+        t3->addFlags(entity_domain);
 
         t1->addChild(*t2);
         t2->addChild(*t3);
@@ -492,10 +492,10 @@ void ThingIntegration::test_visibility()
         ThingExt* t5 = new ThingExt("5", 5);
 
         t1->domain = new PhysicalDomain(*t1);
-        t1->setFlags(entity_domain);
+        t1->addFlags(entity_domain);
 
         t2->domain = new InventoryDomain(*t2);
-        t2->setFlags(entity_domain);
+        t2->addFlags(entity_domain);
 
         t1->addChild(*t2);
         t1->addChild(*creator);

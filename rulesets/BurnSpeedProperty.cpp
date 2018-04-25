@@ -81,7 +81,7 @@ HandlerResult BurnSpeedProperty::burn_handler(LocatedEntity * e,
 
     StatusProperty * status_prop = e->requirePropertyClass<StatusProperty>("status", 1.f);
     assert(status_prop != 0);
-    status_prop->setFlags(flag_unsent);
+    status_prop->addFlags(flag_unsent);
     double & status = status_prop->data();
 
     Element mass_attr;

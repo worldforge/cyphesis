@@ -76,7 +76,7 @@ void TypeNode::addProperties(const MapType & attributes)
                                                                     entry.second.getType());
         assert(p != nullptr);
         p->set(entry.second);
-        p->setFlags(flag_class);
+        p->addFlags(flag_class);
         p->install(this, entry.first);
         m_defaults[entry.first] = p;
     }
@@ -112,7 +112,7 @@ void TypeNode::updateProperties(const MapType & attributes)
         if (I == m_defaults.end()) {
             p = PropertyManager::instance()->addProperty(entry.first, entry.second.getType());
             assert(p != nullptr);
-            p->setFlags(flag_class);
+            p->addFlags(flag_class);
             p->install(this, entry.first);
             m_defaults[entry.first] = p;
             newProps.emplace(entry.first, p);

@@ -258,7 +258,7 @@ void IGEntityExerciser::runOperations()
         this->m_ent.MoveOperation(op, ov);
         this->flushOperations(ov);
 
-        this->m_ent.setFlags(entity_perceptive);
+        this->m_ent.addFlags(entity_perceptive);
         this->m_ent.MoveOperation(op, ov);
         this->flushOperations(ov);
     }

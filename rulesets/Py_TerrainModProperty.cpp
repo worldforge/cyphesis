@@ -74,14 +74,14 @@ static int TerrainModProperty_setattro(PyProperty * self,
         Element e;
         if (PyObject_asMessageElement(v, e, true) == 0) {
             self->m_p.terrainmod->setAttr(name, e);
-            self->m_p.terrainmod->setFlags(flag_unsent);
+            self->m_p.terrainmod->addFlags(flag_unsent);
             return 0;
         } else if (PyShape_Check(v)) {
             PyShape * ps = (PyShape*)v;
             MapType map;
             ps->shape.s->toAtlas(map);
             self->m_p.terrainmod->setAttr(name, map);
-            self->m_p.terrainmod->setFlags(flag_unsent);
+            self->m_p.terrainmod->addFlags(flag_unsent);
             return 0;
         } else {
             log(WARNING, "Cannot convert value.");

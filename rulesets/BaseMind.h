@@ -49,9 +49,9 @@ class BaseMind : public MemEntity {
     bool isAwake() const { return (getFlags() & entity_asleep) == 0; }
 
     /// \brief Set this mind as inactive
-    void sleep() { setFlags(entity_asleep); }
+    void sleep() { addFlags(entity_asleep); }
     /// \brief Set this mind as active
-    void awake() { resetFlags(entity_asleep); }
+    void awake() { removeFlags(entity_asleep); }
 
     void sightCreateOperation(const Operation &, OpVector &);
     void sightDeleteOperation(const Operation &, OpVector &);

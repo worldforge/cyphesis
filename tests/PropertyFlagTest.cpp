@@ -48,7 +48,7 @@ int main(int argc, char ** argv)
     assert(thing->getProperty("test_attr1") == 0);
     assert(thing->modProperty("test_attr1") == 0);
     // Set the flag that this entity is clean
-    thing->setFlags(entity_clean);
+    thing->addFlags(entity_clean);
     // Check the flags are no longer clear
     assert(thing->getFlags() != 0);
     // Check the entity_clean flag is set
@@ -56,7 +56,7 @@ int main(int argc, char ** argv)
     // Check entity_clean is the only flag set
     assert((thing->getFlags() & ~entity_clean) == 0);
     // Set the flag that this entity is queued
-    thing->setFlags(entity_queued);
+    thing->addFlags(entity_queued);
     // Check the entity_queued flag is set
     assert(thing->getFlags() & entity_queued);
     // Check the entity_clean flag is still set

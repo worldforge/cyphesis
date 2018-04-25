@@ -47,7 +47,7 @@ void DomainProperty::install(LocatedEntity* entity, const std::string& name)
 void DomainProperty::remove(LocatedEntity* entity, const std::string& name)
 {
     sInstanceState.removeState(entity);
-    entity->setFlags(~entity_domain);
+    entity->addFlags(~entity_domain);
     entity->removeDelegate(Atlas::Objects::Operation::TICK_NO, name);
 }
 
@@ -59,7 +59,7 @@ void DomainProperty::apply(LocatedEntity* entity)
             if (m_data == "physical") {
                 domain = new PhysicalDomain(*entity);
                 sInstanceState.replaceState(entity, domain);
-                entity->setFlags(entity_domain);
+                entity->addFlags(entity_domain);
                 OpVector res;
                 double tickSize = 1.0 / 15.0;
                 domain->tick(tickSize, res);
@@ -70,16 +70,16 @@ void DomainProperty::apply(LocatedEntity* entity)
             } else if (m_data == "void") {
                 domain = new VoidDomain(*entity);
                 sInstanceState.replaceState(entity, domain);
-                entity->setFlags(entity_domain);
+                entity->addFlags(entity_domain);
             } else if (m_data == "inventory") {
                 domain = new InventoryDomain(*entity);
                 sInstanceState.replaceState(entity, domain);
-                entity->setFlags(entity_domain);
+                entity->addFlags(entity_domain);
             }
         }
     } else {
         sInstanceState.replaceState(entity, nullptr);
-        entity->setFlags(~entity_domain);
+        entity->addFlags(~entity_domain);
     }
 }
 

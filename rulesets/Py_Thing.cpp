@@ -385,7 +385,7 @@ static int Entity_setattro(PyEntity *self, PyObject *oname, PyObject *v)
     if (PyObject_asMessageElement(v, obj) == 0) {
         PropertyBase * p = entity->setAttr(name, obj);
         if (p != 0) {
-            p->setFlags(flag_unsent);
+            p->addFlags(flag_unsent);
         }
         return 0;
     }
