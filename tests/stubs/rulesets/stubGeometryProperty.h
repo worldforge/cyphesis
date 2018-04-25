@@ -55,5 +55,13 @@
   }
 #endif //STUB_GeometryProperty_buildCompoundCreator
 
+#ifndef STUB_GeometryProperty_parseScalerType
+//#define STUB_GeometryProperty_parseScalerType
+  GeometryProperty::ScalerType GeometryProperty::parseScalerType()
+  {
+    return *static_cast<GeometryProperty::ScalerType*>(nullptr);
+  }
+#endif //STUB_GeometryProperty_parseScalerType
+
 
 #endif

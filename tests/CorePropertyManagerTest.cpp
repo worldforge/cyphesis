@@ -80,6 +80,8 @@ class CorePropertyManagertest : public Cyphesis::TestBase
     void test_addProperty_none();
     void test_addProperty_named();
     void test_installFactory();
+
+        Inheritance* m_inheritance;
 };
 
 CorePropertyManagertest::CorePropertyManagertest()
@@ -96,6 +98,7 @@ CorePropertyManagertest::CorePropertyManagertest()
 
 void CorePropertyManagertest::setup()
 {
+    m_inheritance = new Inheritance();
     m_propertyManager = new CorePropertyManager;
     m_propertyManager->m_propertyFactories.insert(
         std::make_pair("named_type", new PropertyFactory<MinimalProperty>)
@@ -105,6 +108,7 @@ void CorePropertyManagertest::setup()
 
 void CorePropertyManagertest::teardown()
 {
+    delete m_inheritance;
     delete m_propertyManager;
 }
 
@@ -288,7 +292,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "stubs/rulesets/stubEntityProperty.h"
 #include "stubs/rulesets/stubInternalProperties.h"
 #include "stubs/rulesets/stubSolidProperty.h"
-
+#include "stubs/rulesets/stubPerceptionSightProperty.h"
 
 Account::Account(Connection * conn,
                  const std::string & uname,
@@ -555,12 +559,7 @@ Ruleset::~Ruleset()
 {
 }
 
-ServerRouting * ServerRouting::m_instance = 0;
-
-Router * ServerRouting::getObject(const std::string & id) const
-{
-    return 0;
-}
+#include "stubs/server/stubServerRouting.h"
 
 CalendarProperty::CalendarProperty()
 {
@@ -862,77 +861,26 @@ Root atlasType(const std::string & name,
     return Atlas::Objects::Root();
 }
 
-Inheritance * Inheritance::m_instance = nullptr;
-
-Inheritance::Inheritance() : noClass(0)
-{
-}
-
-Inheritance & Inheritance::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Inheritance();
-    }
-    return *m_instance;
-}
-
-const Root & Inheritance::getClass(const std::string & parent)
+#define STUB_Inheritance_getClass
+const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent)
 {
     return noClass;
 }
 
-const TypeNode * Inheritance::getType(const std::string & parent)
-{
-    return 0;
-}
-
-bool Inheritance::isTypeOf(const TypeNode * instance,
-                           const std::string & base_type) const
-{
-    return false;
-}
-
-bool Inheritance::isTypeOf(const std::string & instance,
-                           const std::string & base_type) const
-{
-    return false;
-}
-
+#define STUB_Inheritance_addChild
 TypeNode * Inheritance::addChild(const Root & obj)
 {
     return new TypeNode(obj->getId());
 }
 
-void Inheritance::clear()
-{
-}
+
+#include "stubs/common/stubInheritance.h"
+
+
 
 #include "stubs/common/stubMonitors.h"
-
-PropertyManager * PropertyManager::m_instance = 0;
-
-PropertyManager::PropertyManager()
-{
-    assert(m_instance == 0);
-    m_instance = this;
-}
-
-PropertyManager::~PropertyManager()
-{
-   m_instance = 0;
-}
-
-int PropertyManager::installFactory(const std::string & type_name,
-                                    const Atlas::Objects::Root & type_desc,
-                                    PropertyKit * factory)
-{
-    return 0;
-}
-
-void PropertyManager::installFactory(const std::string & name,
-                                     PropertyKit * factory)
-{
-}
+#include "stubs/common/stubPropertyManager.h"
+#include "stubs/common/stubShaker.h"
 
 Router::Router(const std::string & id, long intId) : m_id(id),
                                                              m_intId(intId)

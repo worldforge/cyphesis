@@ -59,6 +59,7 @@ class TestWorld : public BaseWorld {
         return 0;
     }
     virtual void message(const Operation & op, LocatedEntity & ent);
+    virtual void messageToClients(const Atlas::Objects::Operation::RootOperation &){};
     virtual LocatedEntity * findByName(const std::string & name) { return 0; }
     virtual LocatedEntity * findByType(const std::string & type) { return 0; }
     virtual void addPerceptive(LocatedEntity *) { }

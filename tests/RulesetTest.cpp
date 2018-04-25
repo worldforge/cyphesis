@@ -59,6 +59,7 @@ int main(int argc, char ** argv)
 
     {
         database_flag = true;
+        Inheritance inheritance;
         EntityBuilder::init();
         Ruleset::init(ruleset);
 
@@ -70,12 +71,12 @@ int main(int argc, char ** argv)
         assert(Ruleset::instance() == 0);
         EntityBuilder::del();
         assert(EntityBuilder::instance() == 0);
-        Inheritance::clear();
     }
 
     {
         database_flag = false;
         etc_directory = data_path + "/ruleset1/etc";
+        Inheritance inheritance;
         EntityBuilder::init();
         Ruleset::init(ruleset);
 
@@ -87,12 +88,12 @@ int main(int argc, char ** argv)
         assert(Ruleset::instance() == 0);
         EntityBuilder::del();
         assert(EntityBuilder::instance() == 0);
-        Inheritance::clear();
     }
 
     {
         database_flag = false;
         etc_directory = data_path + "/ruleset2/etc";
+        Inheritance inheritance;
         EntityBuilder::init();
         Ruleset::init(ruleset);
 
@@ -104,12 +105,12 @@ int main(int argc, char ** argv)
         assert(Ruleset::instance() == 0);
         EntityBuilder::del();
         assert(EntityBuilder::instance() == 0);
-        Inheritance::clear();
     }
 
     {
         // Create a test world.
 
+        Inheritance inheritance;
         // Instance of Ruleset with all protected methods exposed
         // for testing
         EntityBuilder::init();
@@ -359,6 +360,7 @@ int main(int argc, char ** argv)
 #include "server/ArchetypeRuleHandler.h"
 #include "server/Persistence.h"
 #include "server/EntityFactory.h"
+#include "server/CorePropertyManager.h"
 
 #include "common/AtlasFileLoader.h"
 #include "common/log.h"
@@ -542,34 +544,10 @@ void AtlasFileLoader::read()
 {
 }
 
-Inheritance * Inheritance::m_instance = nullptr;
 
-Inheritance::Inheritance() : noClass(0)
-{
-}
-
-Inheritance & Inheritance::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Inheritance();
-    }
-    return *m_instance;
-}
-
-void Inheritance::flush()
-{
-}
-
-void Inheritance::clear()
-{
-    if (m_instance != nullptr) {
-        m_instance->flush();
-        delete m_instance;
-        m_instance = nullptr;
-    }
-}
-
-const Root & Inheritance::getClass(const std::string & parent)
+#ifndef STUB_Inheritance_getClass
+#define STUB_Inheritance_getClass
+const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent)
 {
     TypeNodeDict::const_iterator I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
@@ -577,20 +555,20 @@ const Root & Inheritance::getClass(const std::string & parent)
     }
     return I->second->description();
 }
+#endif //STUB_Inheritance_getClass
 
-TypeNode * Inheritance::addChild(const Root & obj)
+#ifndef STUB_Inheritance_addChild
+#define STUB_Inheritance_addChild
+TypeNode* Inheritance::addChild(const Atlas::Objects::Root & obj)
 {
     const std::string & child = obj->getId();
     TypeNode * type = new TypeNode(child, obj);
     atlasObjects[child] = type;
     return type;
 }
+#endif //STUB_Inheritance_addChild
 
-int Inheritance::updateClass(const std::string & parent,
-                             const Root & description)
-{
-    return 0;
-}
+#include "stubs/common/stubInheritance.h"
 
 TypeNode::TypeNode(const std::string & name,
                    const Atlas::Objects::Root & d) : m_name(name),

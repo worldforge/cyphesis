@@ -42,15 +42,16 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::RootOperation;
 
 PossessionClient::PossessionClient(MindKit& mindFactory) :
-        m_mindFactory(mindFactory), m_account(nullptr), m_operationsDispatcher([&](const Operation & op, LocatedEntity & from) {this->operationFromEntity(op, from);},
-                [&]()->double {return getTime();})
+    m_mindFactory(mindFactory),
+    m_account(nullptr),
+    m_operationsDispatcher([&](const Operation& op, LocatedEntity& from) { this->operationFromEntity(op, from); },
+                           [&]() -> double { return getTime(); }),
+    m_inheritance(new Inheritance())
 {
 }
 
 PossessionClient::~PossessionClient()
 {
-    //Clear all rules when we shut down.
-    Inheritance::instance().clear();
 }
 
 bool PossessionClient::idle()
@@ -95,7 +96,7 @@ void PossessionClient::createAccount(const std::string& accountId)
     }
 }
 
-void PossessionClient::operationFromEntity(const Operation & op, LocatedEntity& locatedEntity)
+void PossessionClient::operationFromEntity(const Operation& op, LocatedEntity& locatedEntity)
 {
     if (!locatedEntity.isDestroyed()) {
         OpVector res;
@@ -116,7 +117,7 @@ void PossessionClient::operationFromEntity(const Operation & op, LocatedEntity& 
     }
 }
 
-void PossessionClient::operation(const Operation & op, OpVector & res)
+void PossessionClient::operation(const Operation& op, OpVector& res)
 {
     if (debug_flag) {
         std::cout << "PossessionClient::operation {" << std::endl;
@@ -170,5 +171,5 @@ double PossessionClient::getTime() const
 {
     SystemTime time;
     time.update();
-    return (double)(time.seconds()) + (double)time.microseconds() / 1000000.;
+    return (double) (time.seconds()) + (double) time.microseconds() / 1000000.;
 }

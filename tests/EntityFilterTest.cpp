@@ -104,6 +104,7 @@ class EntityFilterTest : public Cyphesis::TestBase {
         //Test contains_recursive function
         void test_ContainsRecursive();
 
+        Inheritance* m_inheritance;
 };
 
 void EntityFilterTest::test_SoftProperty()
@@ -328,6 +329,7 @@ void EntityFilterTest::test_ContainsRecursive()
 
 void EntityFilterTest::setup()
 {
+    m_inheritance = new Inheritance();
 //Set up testing environment for Type/Soft properties
     m_b1 = new Entity("1", 1);
 
@@ -530,6 +532,7 @@ void EntityFilterTest::TestQuery(const std::string& query,
 
 void EntityFilterTest::teardown()
 {
+    delete m_inheritance;
 //    Clean up
     delete m_b1;
     delete m_b2;
@@ -646,16 +649,8 @@ void Location::modifyBBox()
 {
 }
 
-Inheritance::Inheritance()
-{
-}
-
-Inheritance & Inheritance::instance()
-{
-    return *(new Inheritance());
-}
-
-const TypeNode * Inheritance::getType(const std::string & parent)
+#define STUB_Inheritance_getType
+const TypeNode* Inheritance::getType(const std::string & parent)
 {
     auto I = types.find(parent);
     if (I == types.end()) {
@@ -663,6 +658,8 @@ const TypeNode * Inheritance::getType(const std::string & parent)
     }
     return I->second;
 }
+
+#include "stubs/common/stubInheritance.h"
 
 void log(LogLevel lvl, const std::string & msg)
 {

@@ -51,21 +51,21 @@ int PropertyRuleHandler::install(const std::string & name,
                                  std::string & reason)
 {
     assert(desc->getObjtype() == "type");
-    PropertyManager * pm = PropertyManager::instance();
-    if (pm->getPropertyFactory(name) != 0) {
+    PropertyManager& pm = PropertyManager::instance();
+    if (pm.getPropertyFactory(name) != nullptr) {
         log(ERROR, compose("Property rule \"%1\" already exists.", name));
         return -1;
     }
-    PropertyKit * parent_factory = pm->getPropertyFactory(parent);
-    if (parent_factory == 0) {
+    PropertyKit * parent_factory = pm.getPropertyFactory(parent);
+    if (parent_factory == nullptr) {
         dependent = parent;
         reason = compose("Property rule \"%1\" has parent \"%2\" which does "
                          "not exist.", name, parent);
         return 1;
     }
     auto * factory = parent_factory->duplicateFactory();
-    assert(factory != 0);
-    pm->installFactory(name, desc, factory);
+    assert(factory != nullptr);
+    pm.installFactory(name, desc, factory);
     return 0;
 }
 

@@ -178,6 +178,7 @@ int main()
 
 // stubs
 
+#include "server/CorePropertyManager.h"
 #include "server/EntityBuilder.h"
 
 #include "rulesets/Script.h"
@@ -236,25 +237,7 @@ LocatedEntity * EntityBuilder::newEntity(const std::string & id, long intId,
 #include "stubs/common/stubDatabase.h"
 #include "stubs/server/stubPersistence.h"
 
-PropertyManager * PropertyManager::m_instance = 0;
-
-PropertyManager::PropertyManager()
-{
-    assert(m_instance == 0);
-    m_instance = this;
-}
-
-PropertyManager::~PropertyManager()
-{
-   m_instance = 0;
-}
-
-int PropertyManager::installFactory(const std::string & type_name,
-                                    const Atlas::Objects::Root & type_desc,
-                                    PropertyKit * factory)
-{
-    return 0;
-}
+#include "stubs/common/stubPropertyManager.h"
 
 Script::Script()
 {

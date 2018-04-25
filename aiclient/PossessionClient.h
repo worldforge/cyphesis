@@ -27,6 +27,7 @@
 
 class MindKit;
 class PossessionAccount;
+class Inheritance;
 
 /**
  * Manages possession requests from the server and spawns new AI clients.
@@ -61,6 +62,8 @@ class PossessionClient: public BaseClient, public LocatedEntityRegistry
         OperationsDispatcher m_operationsDispatcher;
 
         std::unordered_map<long, LocatedEntity*> m_minds;
+
+        std::unique_ptr<Inheritance> m_inheritance;
 
 };
 

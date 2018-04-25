@@ -302,33 +302,29 @@ void Link::disconnect()
 #include "stubs/common/stubProperty.h"
 #include "stubs/common/stubBaseWorld.h"
 
-Inheritance * Inheritance::m_instance = nullptr;
 
-Inheritance::Inheritance() : noClass(0)
+#ifndef STUB_Inheritance_getClass
+#define STUB_Inheritance_getClass
+const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent)
 {
+    return noClass;
 }
+#endif //STUB_Inheritance_getClass
 
-Inheritance & Inheritance::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Inheritance();
-    }
-    return *m_instance;
-}
 
-const TypeNode * Inheritance::getType(const std::string & parent)
+#ifndef STUB_Inheritance_getType
+#define STUB_Inheritance_getType
+const TypeNode* Inheritance::getType(const std::string & parent)
 {
     TypeNodeDict::const_iterator I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
         return 0;
     }
-    return I->second;
-}
+    return I->second;}
+#endif //STUB_Inheritance_getType
 
-const Root & Inheritance::getClass(const std::string & parent)
-{
-    return noClass;
-}
+#include "stubs/common/stubInheritance.h"
+
 
 void encrypt_password(const std::string & pwd, std::string & hash)
 {

@@ -38,6 +38,7 @@
 #include "rulesets/Character.h"
 
 #include <cassert>
+#include <common/Inheritance.h>
 
 void check_union()
 {
@@ -111,6 +112,7 @@ class TestLocatedEntity : public LocatedEntity {
 
 int main()
 {
+    Inheritance inheritance;
     check_union();
 
     new TestPropertyManager;

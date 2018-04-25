@@ -42,6 +42,10 @@ using Atlas::Objects::Entity::Anonymous;
 class TestPropertyManager : public PropertyManager
 {
   public:
+
+        TestPropertyManager() {
+            m_propertyFactories["int"] = new PropertyFactory<Property<int>>;
+        }
     virtual PropertyBase * addProperty(const std::string & name,
                                        int type);
 };
@@ -56,6 +60,7 @@ class PropertyRuleHandlertest : public Cyphesis::TestBase
 {
   private:
     PropertyRuleHandler * rh;
+    PropertyManager* propertyManager;
   public:
     PropertyRuleHandlertest();
 
@@ -84,14 +89,14 @@ PropertyRuleHandlertest::PropertyRuleHandlertest()
 
 void PropertyRuleHandlertest::setup()
 {
-    new TestPropertyManager;
+    propertyManager = new TestPropertyManager;
     rh = new PropertyRuleHandler(0);
 }
 
 void PropertyRuleHandlertest::teardown()
 {
     delete rh;
-    delete PropertyManager::instance();
+    delete propertyManager;
 }
 
 void PropertyRuleHandlertest::test_sequence()
@@ -143,7 +148,7 @@ void PropertyRuleHandlertest::test_install_noparent()
 
 void PropertyRuleHandlertest::test_install_exists()
 {
-    PropertyManager::instance()->installFactory("existing_int_type",
+    PropertyManager::instance().installFactory("existing_int_type",
           Root(),
           new PropertyFactory<Property<int>>);
 
@@ -192,57 +197,14 @@ int RuleHandler::getScriptDetails(const Atlas::Message::MapType & script,
     return 0;
 }
 
-Inheritance * Inheritance::m_instance = nullptr;
-
-Inheritance::Inheritance() : noClass(0)
-{
-}
-
-Inheritance & Inheritance::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Inheritance();
-    }
-    return *m_instance;
-}
-
-TypeNode * Inheritance::addChild(const Root & obj)
-{
-    return 0;
-}
-
-bool Inheritance::hasClass(const std::string & parent)
-{
-    return true;
-}
-
-
 PropertyKit::~PropertyKit()
 {
 }
 
-PropertyManager * PropertyManager::m_instance = 0;
 
-PropertyManager::PropertyManager()
-{
-    assert(m_instance == 0);
-    m_instance = this;
-    m_propertyFactories["int"] = new PropertyFactory<Property<int>>;
-}
-
-PropertyManager::~PropertyManager()
-{
-    m_instance = 0;
-}
-
-int PropertyManager::installFactory(const std::string & type_name,
-                                    const Root & type_desc,
-                                    PropertyKit * factory)
-{
-    return 0;
-}
-
-PropertyKit * PropertyManager::getPropertyFactory(const std::string & name) const
+#ifndef STUB_PropertyManager_getPropertyFactory
+#define STUB_PropertyManager_getPropertyFactory
+PropertyKit* PropertyManager::getPropertyFactory(const std::string & name) const
 {
     auto I = m_propertyFactories.find(name);
     if (I != m_propertyFactories.end()) {
@@ -251,11 +213,9 @@ PropertyKit * PropertyManager::getPropertyFactory(const std::string & name) cons
     }
     return 0;
 }
+#endif //STUB_PropertyManager_getPropertyFactory
 
-void PropertyManager::installFactory(const std::string & name,
-                                     PropertyKit * factory)
-{
-}
+#include "stubs/common/stubPropertyManager.h"
 
 Root atlasOpDefinition(const std::string & name, const std::string & parent)
 {

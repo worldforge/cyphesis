@@ -33,6 +33,7 @@
 #include "rulesets/Py_Map.h"
 
 #include <cassert>
+#include <common/Inheritance.h>
 
 static PyObject * null_wrapper(PyObject * self, PyMap * o)
 {
@@ -60,6 +61,8 @@ static void setup_test_functions()
 
 int main()
 {
+    Inheritance inheritance;
+
     init_python_api("93b8eac3-9ab9-40f7-b419-d740c18c09e4");
 
     setup_test_functions();

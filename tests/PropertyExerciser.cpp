@@ -46,6 +46,7 @@ using Atlas::Message::MapType;
 using Atlas::Objects::Entity::Anonymous;
 
 PropertyExerciser::PropertyExerciser()
+: m_inheritance(new Inheritance())
 {
     integer_values.push_back(0);
     integer_values.push_back(-1);

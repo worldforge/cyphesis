@@ -53,15 +53,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 
 
 // stubs
-
-Inheritance& Inheritance::instance() {
-    return *(Inheritance*)(nullptr);
-}
-
-const TypeNode * Inheritance::getType(const std::string & parent)
-{
-    return nullptr;
-}
+#include "stubs/common/stubInheritance.h"
 
 void addToEntity(const Point3D & p, std::vector<double> & vd)
 {

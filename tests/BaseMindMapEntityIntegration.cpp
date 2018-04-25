@@ -396,24 +396,7 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 
-Inheritance * Inheritance::m_instance = nullptr;
-
-Inheritance::Inheritance() : noClass(0)
-{
-}
-
-const TypeNode * Inheritance::getType(const std::string & parent)
-{
-    return 0;
-}
-
-Inheritance & Inheritance::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Inheritance();
-    }
-    return *m_instance;
-}
+#include "stubs/common/stubInheritance.h"
 
 Script::Script()
 {

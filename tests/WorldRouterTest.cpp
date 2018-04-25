@@ -79,6 +79,8 @@ class WorldRoutertest : public Cyphesis::TestBase
     void test_createSpawnPoint();
     void test_delEntity();
     void test_delEntity_world();
+
+        Inheritance* m_inheritance;
 };
 
 WorldRoutertest::WorldRoutertest()
@@ -99,12 +101,14 @@ WorldRoutertest::WorldRoutertest()
 
 void WorldRoutertest::setup()
 {
+    m_inheritance = new Inheritance();
     test_world = new WorldRouter(SystemTime());
 }
 
 void WorldRoutertest::teardown()
 {
     delete test_world;
+    delete m_inheritance;
 
     EntityBuilder::del();
 }
@@ -319,6 +323,9 @@ void LocatedEntity::makeContainer()
 #include "stubs/rulesets/stubLocatedEntity.h"
 
 #include "stubs/common/stubRouter.h"
+#include "stubs/common/stubLink.h"
+#include "stubs/server/stubServerRouting.h"
+#include "stubs/common/stubShaker.h"
 
 
 Location::Location() : m_loc(0)
@@ -480,32 +487,24 @@ LocatedEntity& BaseWorld::getDefaultLocation() const {
     return m_gameWorld;
 }
 
-Inheritance * Inheritance::m_instance = nullptr;
-
-Inheritance::Inheritance() : noClass(0)
-{
-}
-
-Inheritance & Inheritance::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Inheritance();
-    }
-    return *m_instance;
-}
-
-const TypeNode * Inheritance::getType(const std::string & parent)
+#ifndef STUB_Inheritance_getType
+#define STUB_Inheritance_getType
+const TypeNode* Inheritance::getType(const std::string & parent)
 {
     TypeNodeDict::const_iterator I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
         return 0;
     }
-    return I->second;
-}
+    return I->second;}
+#endif //STUB_Inheritance_getType
+
+#include "stubs/common/stubInheritance.h"
+
 
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
 #include "stubs/common/stubProperty.h"
+#include "server/CorePropertyManager.h"
 #include "common/Property_impl.h"
 
 

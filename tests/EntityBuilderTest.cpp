@@ -101,6 +101,8 @@ class EntityBuildertest : public Cyphesis::TestBase
     void test_sequence5();
     void test_installFactory_duplicate();
     void test_installTaskFactory_duplicate();
+
+        Inheritance* inheritance;
 };
 
 EntityBuildertest::EntityBuildertest()
@@ -116,6 +118,7 @@ EntityBuildertest::EntityBuildertest()
 
 void EntityBuildertest::setup()
 {
+    inheritance = new Inheritance();
     e = new Entity("1", 1);
     test_world = new TestWorld(*e);
     EntityBuilder::init();
@@ -129,7 +132,7 @@ void EntityBuildertest::teardown()
     delete e;
     EntityBuilder::del();
     assert(EntityBuilder::instance() == 0);
-    Inheritance::clear();
+    delete inheritance;
 }
 
 enum action {
@@ -530,8 +533,8 @@ void log(LogLevel lvl, const std::string & msg)
 {
 }
 
-Inheritance * Inheritance::m_instance = nullptr;
-
+#ifndef STUB_Inheritance_Inheritance
+#define STUB_Inheritance_Inheritance
 Inheritance::Inheritance() : noClass(0)
 {
     Atlas::Objects::Entity::Anonymous root_desc;
@@ -542,66 +545,38 @@ Inheritance::Inheritance() : noClass(0)
     TypeNode * root = new TypeNode("root", root_desc);
 
     atlasObjects["root"] = root;
+    installStandardObjects(*this);
 }
+#endif //STUB_Inheritance_Inheritance
 
-Inheritance & Inheritance::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Inheritance();
-        installStandardObjects();
-    }
-    return *m_instance;
-}
-
-void installStandardObjects()
-{
-    Inheritance & i = Inheritance::instance();
-
-    i.addChild(atlasClass("root_entity", "root"));
-    i.addChild(atlasClass("admin_entity", "root_entity"));
-    i.addChild(atlasClass("account", "admin_entity"));
-    i.addChild(atlasClass("player", "account"));
-    i.addChild(atlasClass("admin", "account"));
-    i.addChild(atlasClass("game", "admin_entity"));
-    i.addChild(atlasClass("game_entity", "root_entity"));
-}
-
-const TypeNode * Inheritance::getType(const std::string & parent)
+#ifndef STUB_Inheritance_getType
+#define STUB_Inheritance_getType
+const TypeNode* Inheritance::getType(const std::string & parent)
 {
     TypeNodeDict::const_iterator I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
         return 0;
     }
-    return I->second;
-}
+    return I->second;}
+#endif //STUB_Inheritance_getType
 
-bool Inheritance::isTypeOf(const TypeNode * instance,
-                           const std::string & base_type) const
-{
-    return false;
-}
-
-bool Inheritance::isTypeOf(const std::string & instance,
-                           const std::string & base_type) const
-{
-    return false;
-}
-
-TypeNode * Inheritance::addChild(const Root & obj)
+#ifndef STUB_Inheritance_addChild
+#define STUB_Inheritance_addChild
+TypeNode* Inheritance::addChild(const Atlas::Objects::Root & obj)
 {
     const std::string & child = obj->getId();
     const std::string & parent = obj->getParent();
     if (atlasObjects.find(child) != atlasObjects.end()) {
         std::cerr << String::compose("Installing type \"%1\"(\"%2\") "
-                                   "which was already installed",
-                                   child, parent) << std::endl;
+                                     "which was already installed",
+                                     child, parent) << std::endl;
         return 0;
     }
     TypeNodeDict::iterator I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
         std::cerr << String::compose("Installing type \"%1\" "
-                                   "which has unknown parent \"%2\".",
-                                   child, parent) << std::endl;
+                                     "which has unknown parent \"%2\".",
+                                     child, parent) << std::endl;
         return 0;
     }
     Element children(ListType(1, child));
@@ -616,15 +591,22 @@ TypeNode * Inheritance::addChild(const Root & obj)
 
     atlasObjects[child] = type;
 
-    return type;
-}
+    return type;}
+#endif //STUB_Inheritance_addChild
 
-void Inheritance::clear()
+#include "stubs/common/stubInheritance.h"
+
+
+void installStandardObjects(Inheritance& i)
 {
-    if (m_instance != nullptr) {
-        delete m_instance;
-        m_instance = nullptr;
-    }
+
+    i.addChild(atlasClass("root_entity", "root"));
+    i.addChild(atlasClass("admin_entity", "root_entity"));
+    i.addChild(atlasClass("account", "admin_entity"));
+    i.addChild(atlasClass("player", "account"));
+    i.addChild(atlasClass("admin", "account"));
+    i.addChild(atlasClass("game", "admin_entity"));
+    i.addChild(atlasClass("game_entity", "root_entity"));
 }
 
 TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
@@ -767,25 +749,7 @@ int CorePropertyManager::installFactory(const std::string & type_name,
     return 0;
 }
 
-PropertyManager * PropertyManager::m_instance = 0;
-
-PropertyManager::PropertyManager()
-{
-    assert(m_instance == 0);
-    m_instance = this;
-}
-
-PropertyManager::~PropertyManager()
-{
-   m_instance = 0;
-}
-
-int PropertyManager::installFactory(const std::string & type_name,
-                                    const Atlas::Objects::Root & type_desc,
-                                    PropertyKit * factory)
-{
-    return 0;
-}
+#include "stubs/common/stubPropertyManager.h"
 
 long integerId(const std::string & id)
 {

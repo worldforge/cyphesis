@@ -16,14 +16,6 @@
   }
 #endif //STUB_Creator_Creator
 
-#ifndef STUB_Creator_Creator_DTOR
-//#define STUB_Creator_Creator_DTOR
-   Creator::~Creator()
-  {
-    
-  }
-#endif //STUB_Creator_Creator_DTOR
-
 #ifndef STUB_Creator_operation
 //#define STUB_Creator_operation
   void Creator::operation(const Operation & op, OpVector &)

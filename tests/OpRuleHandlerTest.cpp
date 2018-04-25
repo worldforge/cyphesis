@@ -30,6 +30,7 @@
 #include <Atlas/Objects/Anonymous.h>
 
 #include <cstdlib>
+#include <common/Inheritance.h>
 
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
@@ -39,6 +40,7 @@ static TypeNode * stub_addChild_result = 0;
 
 int main()
 {
+    Inheritance inheritance;
     {
         RuleHandler * rh = new OpRuleHandler(0);
         delete rh;
@@ -133,29 +135,26 @@ int RuleHandler::getScriptDetails(const Atlas::Message::MapType & script,
     return 0;
 }
 
-Inheritance * Inheritance::m_instance = nullptr;
 
-Inheritance::Inheritance() : noClass(0)
-{
-}
-
-Inheritance & Inheritance::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Inheritance();
-    }
-    return *m_instance;
-}
-
-TypeNode * Inheritance::addChild(const Root & obj)
+#ifndef STUB_Inheritance_addChild
+#define STUB_Inheritance_addChild
+TypeNode* Inheritance::addChild(const Atlas::Objects::Root & obj)
 {
     return stub_addChild_result;
 }
+#endif //STUB_Inheritance_addChild
 
+
+#ifndef STUB_Inheritance_hasClass
+#define STUB_Inheritance_hasClass
 bool Inheritance::hasClass(const std::string & parent)
 {
     return true;
 }
+#endif //STUB_Inheritance_hasClass
+
+#include "stubs/common/stubInheritance.h"
+
 
 Root atlasOpDefinition(const std::string & name, const std::string & parent)
 {

@@ -11,7 +11,7 @@
 //#define STUB_PhysicalDomain_PhysicalDomain
    PhysicalDomain::PhysicalDomain(LocatedEntity& entity)
     : Domain(entity)
-    , m_collisionConfiguration(nullptr),m_dispatcher(nullptr),m_constraintSolver(nullptr),m_broadphase(nullptr),m_dynamicsWorld(nullptr),m_visibilityWorld(nullptr),m_terrain(nullptr)
+    , m_collisionConfiguration(nullptr),m_dispatcher(nullptr),m_constraintSolver(nullptr),m_broadphase(nullptr),m_dynamicsWorld(nullptr),m_visibilityDispatcher(nullptr),m_visibilityBroadphase(nullptr),m_visibilityWorld(nullptr),m_terrain(nullptr)
   {
     
   }
@@ -195,7 +195,7 @@
 
 #ifndef STUB_PhysicalDomain_applyNewPositionForEntity
 //#define STUB_PhysicalDomain_applyNewPositionForEntity
-  void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath::Point<3>& pos)
+  void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath::Point<3>& pos, bool calculatePosition )
   {
     
   }
@@ -259,11 +259,27 @@
 
 #ifndef STUB_PhysicalDomain_transformRestingEntities
 //#define STUB_PhysicalDomain_transformRestingEntities
-  void PhysicalDomain::transformRestingEntities(BulletEntry* entry, const WFMath::Vector<3>& posTransform, std::set<LocatedEntity*>& transformedEntities)
+  void PhysicalDomain::transformRestingEntities(BulletEntry* entry, const WFMath::Vector<3>& posTransform, const WFMath::Quaternion& orientationChange, std::set<LocatedEntity*>& transformedEntities)
   {
     
   }
 #endif //STUB_PhysicalDomain_transformRestingEntities
+
+#ifndef STUB_PhysicalDomain_plantOnEntity
+//#define STUB_PhysicalDomain_plantOnEntity
+  void PhysicalDomain::plantOnEntity(BulletEntry* plantedEntry, BulletEntry* entryPlantedOn)
+  {
+    
+  }
+#endif //STUB_PhysicalDomain_plantOnEntity
+
+#ifndef STUB_PhysicalDomain_applyTransformInternal
+//#define STUB_PhysicalDomain_applyTransformInternal
+  void PhysicalDomain::applyTransformInternal(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity, std::set<LocatedEntity*>& transformedEntities, bool calculatePosition)
+  {
+    
+  }
+#endif //STUB_PhysicalDomain_applyTransformInternal
 
 
 #endif

@@ -284,25 +284,7 @@ ContainsProperty * ContainsProperty::copy() const
     return 0;
 }
 
-PropertyManager * PropertyManager::m_instance = 0;
-
-PropertyManager::PropertyManager()
-{
-    assert(m_instance == 0);
-    m_instance = this;
-}
-
-PropertyManager::~PropertyManager()
-{
-   m_instance = 0;
-}
-
-int PropertyManager::installFactory(const std::string & type_name,
-                                    const Atlas::Objects::Root & type_desc,
-                                    PropertyKit * factory)
-{
-    return 0;
-}
+#include "stubs/common/stubPropertyManager.h"
 
 long integerId(const std::string & id)
 {

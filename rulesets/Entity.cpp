@@ -127,24 +127,22 @@ PropertyBase * Entity::setAttr(const std::string & name, const Element & attr)
 {
     PropertyBase * prop;
     // If it is an existing property, just update the value.
-    PropertyDict::const_iterator I = m_properties.find(name);
+    auto I = m_properties.find(name);
     if (I != m_properties.end()) {
         prop = I->second;
         // Mark it as unclean
         prop->removeFlags(per_clean);
     } else {
-        PropertyDict::const_iterator I;
-        if (m_type != 0 &&
-            (I = m_type->defaults().find(name)) != m_type->defaults().end()) {
-            prop = I->second->copy();
+        PropertyDict::const_iterator J;
+        if (m_type != nullptr && (J = m_type->defaults().find(name)) != m_type->defaults().end()) {
+            prop = J->second->copy();
         } else {
             // This is an entirely new property, not just a modification of
             // one in defaults, so we need to install it to this Entity.
-            prop = PropertyManager::instance()->addProperty(name,
-                                                            attr.getType());
+            prop = PropertyManager::instance().addProperty(name, attr.getType());
             prop->install(this, name);
         }
-        assert(prop != 0);
+        assert(prop != nullptr);
         m_properties[name] = prop;
     }
 
@@ -160,17 +158,17 @@ PropertyBase * Entity::setAttr(const std::string & name, const Element & attr)
 
 const PropertyBase * Entity::getProperty(const std::string & name) const
 {
-    PropertyDict::const_iterator I = m_properties.find(name);
+    auto I = m_properties.find(name);
     if (I != m_properties.end()) {
         return I->second;
     }
-    if (m_type != 0) {
+    if (m_type != nullptr) {
         I = m_type->defaults().find(name);
         if (I != m_type->defaults().end()) {
             return I->second;
         }
     }
-    return 0;
+    return nullptr;
 }
 
 PropertyBase * Entity::modProperty(const std::string & name, const Atlas::Message::Element& def_val)

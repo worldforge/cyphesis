@@ -67,6 +67,8 @@ class WorldRouterintegration : public Cyphesis::TestBase
     void teardown();
 
     void test_sequence();
+
+        Inheritance* m_inheritance;
 };
 
 WorldRouterintegration::WorldRouterintegration()
@@ -76,12 +78,14 @@ WorldRouterintegration::WorldRouterintegration()
 
 void WorldRouterintegration::setup()
 {
+    m_inheritance = new Inheritance();
     EntityBuilder::init();
     new EntityRuleHandler(EntityBuilder::instance());
 }
 
 void WorldRouterintegration::teardown()
 {
+    delete m_inheritance;
 }
 
 void WorldRouterintegration::test_sequence()
@@ -284,6 +288,7 @@ int PythonScriptFactory<LocatedEntity>::setup()
 #include "stubs/server/stubPlayer.h"
 #include "stubs/server/stubExternalMindsManager.h"
 #include "stubs/server/stubExternalMindsConnection.h"
+#include "stubs/server/stubServerRouting.h"
 #include "stubs/rulesets/stubEntityProperty.h"
 #include "stubs/rulesets/stubPythonScriptFactory.h"
 

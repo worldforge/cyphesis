@@ -10,26 +10,19 @@
 #ifndef STUB_Inheritance_Inheritance
 //#define STUB_Inheritance_Inheritance
    Inheritance::Inheritance()
+    : Singleton()
   {
     
   }
 #endif //STUB_Inheritance_Inheritance
 
-#ifndef STUB_Inheritance_instance
-//#define STUB_Inheritance_instance
-   Inheritance& Inheritance::instance()
-  {
-    return *static_cast< Inheritance*>(nullptr);
-  }
-#endif //STUB_Inheritance_instance
-
-#ifndef STUB_Inheritance_clear
-//#define STUB_Inheritance_clear
-   void Inheritance::clear()
+#ifndef STUB_Inheritance_Inheritance_DTOR
+//#define STUB_Inheritance_Inheritance_DTOR
+   Inheritance::~Inheritance()
   {
     
   }
-#endif //STUB_Inheritance_clear
+#endif //STUB_Inheritance_Inheritance_DTOR
 
 #ifndef STUB_Inheritance_getClass
 //#define STUB_Inheritance_getClass

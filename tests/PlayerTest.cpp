@@ -370,11 +370,11 @@ ServerRouting::~ServerRouting()
     delete &m_world;
 }
 
-void ServerRouting::addObject(Router * obj)
+void ServerRouting::addObject(ConnectableRouter* obj)
 {
 }
 
-Router * ServerRouting::getObject(const std::string & id) const
+ConnectableRouter * ServerRouting::getObject(const std::string & id) const
 {
     return 0;
 }
@@ -456,21 +456,15 @@ void Link::disconnect()
 {
 }
 
-Inheritance * Inheritance::m_instance = nullptr;
-
-Inheritance::Inheritance() : noClass(0)
+#define STUB_Inheritance_getClass
+const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent)
 {
+    return noClass;
 }
 
-Inheritance & Inheritance::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Inheritance();
-    }
-    return *m_instance;
-}
 
-const TypeNode * Inheritance::getType(const std::string & parent)
+#define STUB_Inheritance_getType
+const TypeNode* Inheritance::getType(const std::string & parent)
 {
     TypeNodeDict::const_iterator I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
@@ -479,11 +473,7 @@ const TypeNode * Inheritance::getType(const std::string & parent)
     return I->second;
 }
 
-const Root & Inheritance::getClass(const std::string & parent)
-{
-    return noClass;
-}
-
+#define STUB_Inheritance_hasClass
 bool Inheritance::hasClass(const std::string & parent)
 {
     TypeNodeDict::const_iterator I = atlasObjects.find(parent);
@@ -492,6 +482,8 @@ bool Inheritance::hasClass(const std::string & parent)
     }
     return true;
 }
+
+#include "stubs/common/stubInheritance.h"
 
 Router::Router(const std::string & id, long intId) : m_id(id),
                                                              m_intId(intId)

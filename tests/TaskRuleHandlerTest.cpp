@@ -129,6 +129,7 @@ int main()
 
 #include "server/EntityFactory.h"
 #include "server/TaskFactory.h"
+#include "server/CorePropertyManager.h"
 
 #include "rulesets/PythonScriptFactory.h"
 
@@ -296,35 +297,24 @@ void EntityFactoryBase::updateProperties()
 void EntityFactoryBase::addProperties()
 {
 }
-
-Inheritance * Inheritance::m_instance = nullptr;
-
-Inheritance::Inheritance() : noClass(0)
-{
-}
-
-Inheritance & Inheritance::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Inheritance();
-    }
-    return *m_instance;
-}
-
-TypeNode * Inheritance::addChild(const Root & obj)
+#ifndef STUB_Inheritance_addChild
+#define STUB_Inheritance_addChild
+TypeNode* Inheritance::addChild(const Atlas::Objects::Root & obj)
 {
     return stub_addChild_result;
 }
+#endif //STUB_Inheritance_addChild
 
-const TypeNode * Inheritance::getType(const std::string & parent)
-{
-    return 0;
-}
 
+#ifndef STUB_Inheritance_hasClass
+#define STUB_Inheritance_hasClass
 bool Inheritance::hasClass(const std::string & parent)
 {
     return true;
 }
+#endif //STUB_Inheritance_hasClass
+
+#include "stubs/common/stubInheritance.h"
 
 Root atlasOpDefinition(const std::string & name, const std::string & parent)
 {

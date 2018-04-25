@@ -22,6 +22,8 @@
 #include <Atlas/Message/Element.h>
 
 #include <list>
+#include <memory>
+#include <common/Inheritance.h>
 
 class PropertyBase;
 
@@ -43,6 +45,8 @@ class PropertyExerciser {
 
     Atlas::Message::Element randomAtlasValue();
     const std::string & randomString() const;
+
+    std::unique_ptr<Inheritance> m_inheritance;
 
     template <typename T>
     void testSetByType(PropertyBase & property,

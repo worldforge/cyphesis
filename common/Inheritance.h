@@ -19,6 +19,8 @@
 #ifndef COMMON_INHERITANCE_H
 #define COMMON_INHERITANCE_H
 
+#include "Singleton.h"
+
 #include <Atlas/Objects/ObjectsFwd.h>
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/SmartPtr.h>
@@ -26,26 +28,21 @@
 class PropertyBase;
 class TypeNode;
 
-void installStandardObjects();
-void installCustomOperations();
-void installCustomEntities();
-
 typedef std::map<std::string, PropertyBase *> PropertyDict;
 typedef std::map<std::string, TypeNode *> TypeNodeDict;
 
 /// \brief Class to manage the inheritance tree for in-game entity types
-class Inheritance {
+class Inheritance : public Singleton<Inheritance> {
   protected:
     const Atlas::Objects::Root noClass;
     TypeNodeDict atlasObjects;
 
-    static Inheritance * m_instance;
+
+  public:
 
     Inheritance();
 
-  public:
-    static Inheritance & instance();
-    static void clear();
+    ~Inheritance() override;
 
     const TypeNodeDict & getAllObjects() const {
         return atlasObjects;
@@ -74,4 +71,7 @@ Atlas::Objects::Root atlasType(const std::string & name,
                                const std::string & parent,
                                bool abstract = false);
 
+void installStandardObjects(Inheritance & i);
+void installCustomOperations(Inheritance & i);
+void installCustomEntities(Inheritance & i);
 #endif // COMMON_INHERITANCE_H

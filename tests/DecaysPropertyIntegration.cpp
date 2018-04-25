@@ -71,6 +71,7 @@ class TestWorld : public BaseWorld {
     }
     virtual void message(const Operation & op, LocatedEntity & ent) {
     }
+    virtual void messageToClients(const Atlas::Objects::Operation::RootOperation &) {}
     virtual LocatedEntity * findByName(const std::string & name) { return 0; }
     virtual LocatedEntity * findByType(const std::string & type) { return 0; }
     virtual void addPerceptive(LocatedEntity *) { }
@@ -306,7 +307,7 @@ PropertyKit::~PropertyKit()
 {
 }
 
-PropertyManager * PropertyManager::m_instance = 0;
+#include "stubs/common/stubPropertyManager.h"
 
 long integerId(const std::string & id)
 {

@@ -114,6 +114,7 @@ int main()
 #include "stubs/rulesets/stubDomainProperty.h"
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
+#include "stubs/common/stubPropertyManager.h"
 
 
 void addToEntity(const Point3D & p, std::vector<double> & vd)
@@ -265,8 +266,6 @@ ContainsProperty * ContainsProperty::copy() const
 PropertyKit::~PropertyKit()
 {
 }
-
-PropertyManager * PropertyManager::m_instance = 0;
 
 long integerId(const std::string & id)
 {

@@ -24,16 +24,7 @@
 
 using Atlas::Objects::Root;
 
-PropertyManager * PropertyManager::m_instance = 0;
-
-/// \brief PropertyManager constructor
-///
-/// Installs this instance as the singleton instance for this base class
-PropertyManager::PropertyManager()
-{
-    assert(m_instance == 0);
-    m_instance = this;
-}
+template<> PropertyManager* Singleton<PropertyManager>::ms_Singleton = nullptr;
 
 PropertyManager::~PropertyManager()
 {
@@ -43,7 +34,6 @@ PropertyManager::~PropertyManager()
         assert(I->second != 0);
         delete I->second;
     }
-    m_instance = 0;
 }
 
 PropertyKit * PropertyManager::getPropertyFactory(const std::string & name) const
@@ -53,7 +43,7 @@ PropertyKit * PropertyManager::getPropertyFactory(const std::string & name) cons
         assert(I->second != 0);
         return I->second;
     }
-    return 0;
+    return nullptr;
 }
 
 void PropertyManager::installFactory(const std::string & name,

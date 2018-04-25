@@ -127,9 +127,6 @@ int main(int argc, char ** argv)
 
     init_python_api(ruleset_name, false);
 
-    //Initialize inheritance explicitly here.
-    Inheritance::instance();
-
     SystemTime time;
     time.update();
 

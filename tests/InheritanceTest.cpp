@@ -100,6 +100,8 @@ class Inheritancetest : public Cyphesis::TestBase
     void test_isTypeOf_TypeNode();
     void test_isTypeOf_TypeNode2();
     void test_flush();
+
+        Inheritance* m_inheritance;
 };
 
 int Inheritancetest::SQUIGGLYMUFF_NO = OP_INVALID;
@@ -130,11 +132,12 @@ Inheritancetest::Inheritancetest()
 
 void Inheritancetest::setup()
 {
+    m_inheritance = new Inheritance();
 }
 
 void Inheritancetest::teardown()
 {
-    Inheritance::clear();
+    delete m_inheritance;
 }
 
 void Inheritancetest::test_builtins()

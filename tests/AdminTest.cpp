@@ -78,7 +78,7 @@ std::ostream & operator<<(std::ostream & os,
     return os;
 }
 
-class TestObject : public Router
+class TestObject : public ConnectableRouter
 {
   public:
     explicit TestObject(const std::string & id, long intId);
@@ -87,7 +87,7 @@ class TestObject : public Router
     virtual void operation(const Operation &, OpVector &);
 };
 
-TestObject::TestObject(const std::string & id, long intId) : Router(id, intId)
+TestObject::TestObject(const std::string & id, long intId) : ConnectableRouter(id, intId)
 {
 }
 
@@ -194,6 +194,8 @@ class Admintest : public Cyphesis::TestBase
     static void set_Ruleset_installRule_called();
     static int get_Ruleset_installRule_retval();
     static bool get_newId_fail();
+
+        Inheritance* inheritance;
 };
 
 bool Admintest::Link_sent_called = false;
@@ -319,6 +321,7 @@ long Admintest::newId()
 
 void Admintest::setup()
 {
+    inheritance = new Inheritance();
     Atlas::Objects::Operation::MONITOR_NO = m_id_counter++;
 
     Entity * gw = new Entity(compose("%1", m_id_counter),
@@ -339,7 +342,7 @@ void Admintest::setup()
 
 void Admintest::teardown()
 {
-    Inheritance::clear();
+    delete inheritance;
 
     delete m_server;
     delete m_account;
@@ -733,7 +736,7 @@ void Admintest::test_GetOperation_obj_OOG()
 {
     long cid = m_id_counter++;
     std::string cid_str = String::compose("%1", cid);
-    Router * to = new TestObject(cid_str, cid);
+    auto to = new TestObject(cid_str, cid);
 
     m_server->addObject(to);
 
@@ -1582,14 +1585,14 @@ ServerRouting::~ServerRouting()
     delete &m_world;
 }
 
-void ServerRouting::addObject(Router * obj)
+void ServerRouting::addObject(ConnectableRouter * obj)
 {
     m_objects[obj->getIntId()] = obj;
 }
 
-Router * ServerRouting::getObject(const std::string & id) const
+ConnectableRouter * ServerRouting::getObject(const std::string & id) const
 {
-    RouterMap::const_iterator I = m_objects.find(integerId(id));
+    auto I = m_objects.find(integerId(id));
     if (I == m_objects.end()) {
         return 0;
     } else {
@@ -1684,9 +1687,10 @@ void Link::disconnect()
 {
 }
 
-Inheritance * Inheritance::m_instance = nullptr;
 
-Inheritance::Inheritance() : noClass(0)
+#define STUB_Inheritance_Inheritance
+Inheritance::Inheritance()
+    : Singleton(), noClass(0)
 {
     Atlas::Objects::Entity::Anonymous root_desc;
 
@@ -1698,24 +1702,8 @@ Inheritance::Inheritance() : noClass(0)
     atlasObjects["root"] = root;
 }
 
-Inheritance & Inheritance::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Inheritance();
-    }
-    return *m_instance;
-}
-
-void Inheritance::clear()
-{
-    if (m_instance != nullptr) {
-        m_instance->flush();
-        delete m_instance;
-        m_instance = nullptr;
-    }
-}
-
-const TypeNode * Inheritance::getType(const std::string & parent)
+#define STUB_Inheritance_getType
+const TypeNode* Inheritance::getType(const std::string & parent)
 {
     TypeNodeDict::const_iterator I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
@@ -1724,7 +1712,8 @@ const TypeNode * Inheritance::getType(const std::string & parent)
     return I->second;
 }
 
-const Root & Inheritance::getClass(const std::string & parent)
+#define STUB_Inheritance_getClass
+const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent)
 {
     TypeNodeDict::const_iterator I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
@@ -1733,6 +1722,8 @@ const Root & Inheritance::getClass(const std::string & parent)
     return I->second->description();
 }
 
+
+#define STUB_Inheritance_hasClass
 bool Inheritance::hasClass(const std::string & parent)
 {
     TypeNodeDict::const_iterator I = atlasObjects.find(parent);
@@ -1742,7 +1733,8 @@ bool Inheritance::hasClass(const std::string & parent)
     return true;
 }
 
-TypeNode * Inheritance::addChild(const Root & obj)
+#define STUB_Inheritance_addChild
+TypeNode* Inheritance::addChild(const Atlas::Objects::Root & obj)
 {
     const std::string & child = obj->getId();
     const std::string & parent = obj->getParent();
@@ -1765,16 +1757,7 @@ TypeNode * Inheritance::addChild(const Root & obj)
 
     return type;
 }
-
-void Inheritance::flush()
-{
-    TypeNodeDict::const_iterator I = atlasObjects.begin();
-    TypeNodeDict::const_iterator Iend = atlasObjects.end();
-    for (; I != Iend; ++I) {
-        delete I->second;
-    }
-    atlasObjects.clear();
-}
+#include "stubs/common/stubInheritance.h"
 
 Root atlasClass(const std::string & name, const std::string & parent)
 {

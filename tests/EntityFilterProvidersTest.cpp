@@ -83,6 +83,7 @@ class ProvidersTest : public Cyphesis::TestBase {
         ///\In particular, cases of checking for parent type
         void test_InstanceOf();
 
+        Inheritance* m_inheritance;
 };
 
 void ProvidersTest::test_EntityProperty()
@@ -361,6 +362,7 @@ ProvidersTest::ProvidersTest()
 
 void ProvidersTest::setup()
 {
+    m_inheritance = new Inheritance();
     //Thing is a parent type for all types except character
     m_thingType = new TypeNode("thing");
     types["thing"] = m_thingType;
@@ -447,6 +449,7 @@ void ProvidersTest::setup()
 
 void ProvidersTest::teardown()
 {
+    delete m_inheritance;
     delete m_b1;
     delete m_b2;
     delete m_ch1;
@@ -578,16 +581,8 @@ void Location::modifyBBox()
 {
 }
 
-Inheritance::Inheritance()
-{
-}
-
-Inheritance & Inheritance::instance()
-{
-    return *(new Inheritance());
-}
-
-const TypeNode * Inheritance::getType(const std::string & parent)
+#define STUB_Inheritance_getType
+const TypeNode* Inheritance::getType(const std::string & parent)
 {
     auto I = types.find(parent);
     if (I == types.end()) {
@@ -595,6 +590,9 @@ const TypeNode * Inheritance::getType(const std::string & parent)
     }
     return I->second;
 }
+
+#include "stubs/common/stubInheritance.h"
+
 
 void log(LogLevel lvl, const std::string & msg)
 {

@@ -28,6 +28,7 @@
 #include "server/EntityRuleHandler.h"
 
 #include "server/EntityBuilder.h"
+#include "server/CorePropertyManager.h"
 
 #include "common/TypeNode.h"
 
@@ -251,29 +252,24 @@ int PythonClass::refresh()
     return 0;
 }
 
-Inheritance * Inheritance::m_instance = nullptr;
-
-Inheritance::Inheritance() : noClass(0)
-{
-}
-
-Inheritance & Inheritance::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Inheritance();
-    }
-    return *m_instance;
-}
-
-TypeNode * Inheritance::addChild(const Root & obj)
+#ifndef STUB_Inheritance_addChild
+#define STUB_Inheritance_addChild
+TypeNode* Inheritance::addChild(const Atlas::Objects::Root & obj)
 {
     return stub_addChild_result;
 }
+#endif //STUB_Inheritance_addChild
 
+
+#ifndef STUB_Inheritance_hasClass
+#define STUB_Inheritance_hasClass
 bool Inheritance::hasClass(const std::string & parent)
 {
     return true;
 }
+#endif //STUB_Inheritance_hasClass
+
+#include "stubs/common/stubInheritance.h"
 
 Root atlasOpDefinition(const std::string & name, const std::string & parent)
 {

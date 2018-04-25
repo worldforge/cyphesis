@@ -18,15 +18,7 @@
 
 #include "ClientPropertyManager.h"
 
-ClientPropertyManager::ClientPropertyManager()
-{
-}
-
-ClientPropertyManager::~ClientPropertyManager()
-{
-}
-
 PropertyBase * ClientPropertyManager::addProperty(const std::string &, int)
 {
-    return 0;
+    return nullptr;
 }

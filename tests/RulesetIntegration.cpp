@@ -76,6 +76,8 @@ class Rulesetintegration : public Cyphesis::TestBase
     void test_init();
     void test_sequence();
     void test_property_type();
+
+        Inheritance* m_inheritance;
 };
 
 Rulesetintegration::Rulesetintegration()
@@ -87,6 +89,7 @@ Rulesetintegration::Rulesetintegration()
 
 void Rulesetintegration::setup()
 {
+    m_inheritance = new Inheritance();
     m_entity = new World("1", 1);
     m_test_world = new TestWorld(*m_entity);
     m_entity_builder = new ExposedEntityBuilder();
@@ -97,7 +100,7 @@ void Rulesetintegration::teardown()
     delete m_entity_builder;
     delete m_entity;
     delete m_test_world;
-    Inheritance::clear();
+    delete m_inheritance;
 }
 
 void Rulesetintegration::test_init()
@@ -932,15 +935,7 @@ void ServerAccount::createObject(const std::string & type_str,
 {
 }
 
-void ServerRouting::addObject(Router * obj)
-{
-}
-
-Router * ServerRouting::getObject(const std::string & id) const
-{
-    return 0;
-}
-
+#include "stubs/server/stubServerRouting.h"
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubThing.h"
 #include "stubs/rulesets/stubCharacter.h"

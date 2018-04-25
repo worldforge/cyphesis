@@ -7,14 +7,6 @@
 #ifndef STUB_COMMON_PROPERTYMANAGER_H
 #define STUB_COMMON_PROPERTYMANAGER_H
 
-#ifndef STUB_PropertyManager_PropertyManager
-//#define STUB_PropertyManager_PropertyManager
-   PropertyManager::PropertyManager()
-  {
-    
-  }
-#endif //STUB_PropertyManager_PropertyManager
-
 #ifndef STUB_PropertyManager_installFactory
 //#define STUB_PropertyManager_installFactory
   void PropertyManager::installFactory(const std::string &, PropertyKit *)

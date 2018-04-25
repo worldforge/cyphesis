@@ -1,4 +1,7 @@
 //Add custom implementations of stubbed functions here; this file won't be rewritten when re-generating stubs.
+ServerRouting * ServerRouting::m_instance = nullptr;
+
+
 #ifndef STUB_ServerRouting_ServerRouting
 #define STUB_ServerRouting_ServerRouting
 ServerRouting::ServerRouting(BaseWorld & wrld, const std::string & ruleset, const std::string & name, const std::string & id, long intId, const std::string & lId, long lIntId)

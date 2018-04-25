@@ -57,7 +57,7 @@ using Atlas::Objects::Operation::Error;
 using Atlas::Objects::Operation::Use;
 using Atlas::Objects::Operation::Wield;
 
-Inheritance * Inheritance::m_instance = nullptr;
+template<> Inheritance* Singleton<Inheritance>::ms_Singleton = nullptr;
 
 Root atlasOpDefinition(const std::string & name, const std::string & parent)
 {
@@ -94,7 +94,7 @@ Root atlasType(const std::string & name,
     return r;
 }
 
-Inheritance::Inheritance() : noClass(0)
+Inheritance::Inheritance() : noClass(nullptr)
 {
     Atlas::Objects::Entity::Anonymous root_desc;
 
@@ -104,41 +104,29 @@ Inheritance::Inheritance() : noClass(0)
     TypeNode * root = new TypeNode("root", root_desc);
 
     atlasObjects["root"] = root;
+
+    installStandardObjects(*this);
+    installCustomOperations(*this);
+    installCustomEntities(*this);
+}
+
+
+Inheritance::~Inheritance()
+{
+    flush();
 }
 
 void Inheritance::flush()
 {
-    TypeNodeDict::const_iterator I = atlasObjects.begin();
-    TypeNodeDict::const_iterator Iend = atlasObjects.end();
-    for (; I != Iend; ++I) {
-        delete I->second;
+    for (auto entry : atlasObjects) {
+        delete entry.second;
     }
     atlasObjects.clear();
 }
 
-Inheritance & Inheritance::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Inheritance();
-        installStandardObjects();
-        installCustomOperations();
-        installCustomEntities();
-    }
-    return *m_instance;
-}
-
-void Inheritance::clear()
-{
-    if (m_instance != nullptr) {
-        m_instance->flush();
-        delete m_instance;
-        m_instance = nullptr;
-    }
-}
-
 const Root & Inheritance::getClass(const std::string & parent)
 {
-    TypeNodeDict::const_iterator I = atlasObjects.find(parent);
+    auto I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
         return noClass;
     }
@@ -164,7 +152,7 @@ const TypeNode * Inheritance::getType(const std::string & parent)
 {
     TypeNodeDict::const_iterator I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
-        return 0;
+        return nullptr;
     }
     return I->second;
 }
@@ -172,15 +160,12 @@ const TypeNode * Inheritance::getType(const std::string & parent)
 bool Inheritance::hasClass(const std::string & parent)
 {
     TypeNodeDict::const_iterator I = atlasObjects.find(parent);
-    if (I == atlasObjects.end()) {
-        return false;
-    }
-    return true;
+    return !(I == atlasObjects.end());
 }
 
 TypeNode * Inheritance::addChild(const Root & obj)
 {
-    assert(obj->getParent() != "");
+    assert(obj.isValid() && obj->getParent() != "");
     const std::string & child = obj->getId();
     const std::string & parent = obj->getParent();
     TypeNodeDict::const_iterator I = atlasObjects.find(child);
@@ -219,8 +204,8 @@ TypeNode * Inheritance::addChild(const Root & obj)
 bool Inheritance::isTypeOf(const std::string & instance,
                            const std::string & base_type) const
 {
-    TypeNodeDict::const_iterator I = atlasObjects.find(instance);
-    TypeNodeDict::const_iterator Iend = atlasObjects.end();
+    auto I = atlasObjects.find(instance);
+    auto Iend = atlasObjects.end();
     if (I == Iend) {
         return false;
     }
@@ -253,10 +238,8 @@ using Atlas::Objects::Entity::AdminEntity;
 using Atlas::Objects::Entity::Game;
 using Atlas::Objects::Entity::GameEntity;
 
-void installStandardObjects()
+void installStandardObjects(Inheritance & i)
 {
-    Inheritance & i = Inheritance::instance();
-
     i.addChild(atlasOpDefinition("root_operation", "root"));
     i.addChild(atlasOpDefinition("action", "root_operation"));
     i.addChild(atlasOpDefinition("create", "action"));

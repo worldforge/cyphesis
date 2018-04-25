@@ -176,6 +176,14 @@
   }
 #endif //STUB_WorldRouter_message
 
+#ifndef STUB_WorldRouter_messageToClients
+//#define STUB_WorldRouter_messageToClients
+  void WorldRouter::messageToClients(const Atlas::Objects::Operation::RootOperation &)
+  {
+    
+  }
+#endif //STUB_WorldRouter_messageToClients
+
 #ifndef STUB_WorldRouter_findByName
 //#define STUB_WorldRouter_findByName
   LocatedEntity* WorldRouter::findByName(const std::string & name)

@@ -128,6 +128,8 @@ class Accountintegration : public Cyphesis::TestBase
     void test_LogoutOperation();
     void test_connectCharacter_entity();
     void test_connectCharacter_character();
+
+        Inheritance* m_inheritance;
 };
 
 Accountintegration::Accountintegration()
@@ -149,6 +151,7 @@ Accountintegration::Accountintegration()
 
 void Accountintegration::setup()
 {
+    m_inheritance = new Inheritance();
     m_time = new SystemTime;
     EntityBuilder::init();
     new EntityRuleHandler(EntityBuilder::instance());
@@ -169,7 +172,7 @@ void Accountintegration::teardown()
     delete m_world;
     EntityBuilder::del();
     Ruleset::del();
-    Inheritance::clear();
+    delete m_inheritance;
 }
 
 void Accountintegration::test_addNewCharacter()
@@ -455,6 +458,7 @@ int PythonScriptFactory<LocatedEntity>::setup()
 #include "stubs/rulesets/stubInternalProperties.h"
 #include "stubs/rulesets/stubEntityProperty.h"
 #include "stubs/rulesets/stubSolidProperty.h"
+#include "stubs/rulesets/stubPerceptionSightProperty.h"
 
 #include "stubs/server/stubRuleHandler.h"
 #include "stubs/server/stubExternalMindsManager.h"
@@ -960,51 +964,19 @@ Root atlasType(const std::string & name,
     return Atlas::Objects::Root();
 }
 
-Inheritance * Inheritance::m_instance = nullptr;
-
-Inheritance::Inheritance() : noClass(0)
-{
-}
-
-Inheritance & Inheritance::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Inheritance();
-    }
-    return *m_instance;
-}
-
-const Root & Inheritance::getClass(const std::string & parent)
+#define STUB_Inheritance_getClass
+const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent)
 {
     return noClass;
 }
 
-const TypeNode * Inheritance::getType(const std::string & parent)
-{
-    return 0;
-}
-
-bool Inheritance::isTypeOf(const TypeNode * instance,
-                           const std::string & base_type) const
-{
-    return false;
-}
-
-bool Inheritance::isTypeOf(const std::string & instance,
-                           const std::string & base_type) const
-{
-    return false;
-}
-
-TypeNode * Inheritance::addChild(const Root & obj)
+#define STUB_Inheritance_addChild
+TypeNode* Inheritance::addChild(const Atlas::Objects::Root & obj)
 {
     return new TypeNode(obj->getId());
 }
 
-void Inheritance::clear()
-{
-}
-
+#include "stubs/common/stubInheritance.h"
 
 Shaker::Shaker()
 {

@@ -24,10 +24,11 @@
 /// \brief Property manager for the client where no properties are required.
 class ClientPropertyManager : public PropertyManager {
   public:
-    ClientPropertyManager();
-    virtual ~ClientPropertyManager();
+    ClientPropertyManager() = default;
 
-    virtual PropertyBase * addProperty(const std::string & name, int);
+    ~ClientPropertyManager() override = default;
+
+    PropertyBase * addProperty(const std::string & name, int) override;
 };
 
 #endif // CLIENT_CLIENT_PROPERTY_MANAGER_H

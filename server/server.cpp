@@ -264,7 +264,7 @@ int main(int argc, char ** argv)
 
     FileSystemObserver* file_system_observer = new FileSystemObserver(*io_service);
 
-    Inheritance::instance();
+    Inheritance* inheritance = new Inheritance();
 
     SystemTime time{};
     time.update();
@@ -655,7 +655,7 @@ int main(int argc, char ** argv)
     ArithmeticBuilder::del();
     PossessionAuthenticator::del();
 
-    Inheritance::clear();
+    delete inheritance;
 
     // Shutdown the Python interpreter. This frees lots of memory, and if
     // the malloc heap is in any way corrupt, a segfault is likely to

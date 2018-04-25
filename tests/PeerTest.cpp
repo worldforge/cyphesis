@@ -105,7 +105,10 @@ class TestWorld : public BaseWorld {
                          LocatedEntity & ent) {
         // stub_baseworld_receieved_op = op->getClassNo();
     }
-    virtual LocatedEntity * findByName(const std::string & name) { return 0; }
+
+    virtual void messageToClients(const Atlas::Objects::Operation::RootOperation &) {}
+
+        virtual LocatedEntity * findByName(const std::string & name) { return 0; }
     virtual LocatedEntity * findByType(const std::string & type) { return 0; }
     virtual void addPerceptive(LocatedEntity *) { }
 };

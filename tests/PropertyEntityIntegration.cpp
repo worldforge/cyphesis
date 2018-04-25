@@ -158,6 +158,8 @@ class PropertyEntityintegration : public Cyphesis::TestBase
 
     template<class T>
     void test_modPropertyClass();
+
+        TestPropertyManager* propertyManager;
 };
 
 template<class T>
@@ -245,7 +247,7 @@ PropertyEntityintegration::PropertyEntityintegration()
 
 void PropertyEntityintegration::setup()
 {
-    new TestPropertyManager;
+    propertyManager = new TestPropertyManager;
     m_type = new TypeNode("test_type");
     m_type->addProperties(MapType{
         std::make_pair(test_values<long>::name,
@@ -265,7 +267,7 @@ void PropertyEntityintegration::teardown()
 {
     delete m_entity;
     delete m_type;
-    delete PropertyManager::instance();
+    delete propertyManager;
 }
 
 int main()
@@ -447,26 +449,7 @@ ContainsProperty * ContainsProperty::copy() const
     return 0;
 }
 
-PropertyManager * PropertyManager::m_instance = 0;
-
-PropertyManager::PropertyManager()
-{
-    assert(m_instance == 0);
-    m_instance = this;
-}
-
-PropertyManager::~PropertyManager()
-{
-   m_instance = 0;
-}
-
-int PropertyManager::installFactory(const std::string & type_name,
-                                    const Atlas::Objects::Root & type_desc,
-                                    PropertyKit * factory)
-{
-    return 0;
-}
-
+#include "stubs/common/stubPropertyManager.h"
 long integerId(const std::string & id)
 {
     long intId = strtol(id.c_str(), 0, 10);

@@ -78,6 +78,8 @@ class MemMaptest : public Cyphesis::TestBase
     void test_findByLoc_consistency_check();
 
     static void Script_hook_called(const std::string &, LocatedEntity *);
+
+        Inheritance* inheritance;
 };
 
 std::string MemMaptest::m_Script_hook_called;
@@ -123,6 +125,7 @@ MemMaptest::MemMaptest()
 
 void MemMaptest::setup()
 {
+    inheritance = new Inheritance();
     m_Script_hook_called = "";
     m_Script_hook_called_with = 0;
 
@@ -137,7 +140,7 @@ void MemMaptest::setup()
 void MemMaptest::teardown()
 {
     delete m_memMap;
-    Inheritance::clear();
+    delete inheritance;
 }
 
 void MemMaptest::test_addId()
@@ -447,32 +450,11 @@ int main()
 #include "stubs/common/stubRouter.h"
 #include "stubs/modules/stubLocation.h"
 
-Inheritance * Inheritance::m_instance = nullptr;
 
-Inheritance::Inheritance() : noClass(0)
-{
-}
 
-const TypeNode * Inheritance::getType(const std::string & parent)
-{
-    TypeNodeDict::const_iterator I = atlasObjects.find(parent);
-    if (I == atlasObjects.end()) {
-        return 0;
-    }
-    return I->second;
-}
-
-#include "stubs/rulesets/stubScript.h"
-
-Inheritance & Inheritance::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Inheritance();
-    }
-    return *m_instance;
-}
-
-TypeNode * Inheritance::addChild(const Root & obj)
+#ifndef STUB_Inheritance_addChild
+#define STUB_Inheritance_addChild
+TypeNode* Inheritance::addChild(const Atlas::Objects::Root & obj)
 {
     const std::string & child = obj->getId();
 
@@ -480,16 +462,25 @@ TypeNode * Inheritance::addChild(const Root & obj)
 
     atlasObjects[child] = type;
 
-    return type;
-}
+    return type;}
+#endif //STUB_Inheritance_addChild
 
-void Inheritance::clear()
+#ifndef STUB_Inheritance_getType
+#define STUB_Inheritance_getType
+const TypeNode* Inheritance::getType(const std::string & parent)
 {
-    if (m_instance != nullptr) {
-        delete m_instance;
-        m_instance = nullptr;
+    TypeNodeDict::const_iterator I = atlasObjects.find(parent);
+    if (I == atlasObjects.end()) {
+        return 0;
     }
+    return I->second;
 }
+#endif //STUB_Inheritance_getType
+
+#include "stubs/common/stubInheritance.h"
+#include "stubs/rulesets/stubScript.h"
+
+
 
 TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
 {

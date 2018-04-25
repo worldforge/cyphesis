@@ -55,6 +55,7 @@ class ParserTest : public Cyphesis::TestBase {
         void test_LogicalOperators();
         void test_Literals();
 
+        Inheritance* m_inheritance;
 };
 
 ParserTest::ParserTest()
@@ -66,10 +67,12 @@ ParserTest::ParserTest()
 
 void ParserTest::setup()
 {
+    m_inheritance = new Inheritance();
 }
 
 void ParserTest::teardown()
 {
+    delete m_inheritance;
 }
 
 void ParserTest::test_ComparisonOperators()
@@ -309,16 +312,8 @@ void Location::modifyBBox()
 {
 }
 
-Inheritance::Inheritance()
-{
-}
-
-Inheritance & Inheritance::instance()
-{
-    return *(new Inheritance());
-}
-
-const TypeNode * Inheritance::getType(const std::string & parent)
+#define STUB_Inheritance_getType
+const TypeNode* Inheritance::getType(const std::string & parent)
 {
     auto I = types.find(parent);
     if (I == types.end()) {
@@ -326,6 +321,9 @@ const TypeNode * Inheritance::getType(const std::string & parent)
     }
     return I->second;
 }
+
+#include "stubs/common/stubInheritance.h"
+
 
 void log(LogLevel lvl, const std::string & msg)
 {

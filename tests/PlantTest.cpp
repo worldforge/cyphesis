@@ -65,6 +65,7 @@ int LocatedEntity::getAttrType(const std::string & name,
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/rulesets/stubIdProperty.h"
 #include "stubs/common/stubProperty.h"
+#include "stubs/common/stubPropertyManager.h"
 #include "stubs/rulesets/stubContainsProperty.h"
 #include "stubs/rulesets/stubStatusProperty.h"
 #include "stubs/rulesets/stubBBoxProperty.h"
@@ -181,26 +182,6 @@ bool Script::operation(const std::string & opname,
 
 void Script::hook(const std::string & function, LocatedEntity * entity)
 {
-}
-
-PropertyManager * PropertyManager::m_instance = 0;
-
-PropertyManager::PropertyManager()
-{
-    assert(m_instance == 0);
-    m_instance = this;
-}
-
-PropertyManager::~PropertyManager()
-{
-   m_instance = 0;
-}
-
-int PropertyManager::installFactory(const std::string & type_name,
-                                    const Atlas::Objects::Root & type_desc,
-                                    PropertyKit * factory)
-{
-    return 0;
 }
 
 void log(LogLevel lvl, const std::string & msg)

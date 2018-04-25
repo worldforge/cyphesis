@@ -23,12 +23,15 @@
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/ObjectsFwd.h>
 
+#include <memory>
+
 class BaseWorld;
 class LocatedEntity;
 class LocatedEntity;
 class EntityKit;
 class Task;
 class TaskKit;
+class CorePropertyManager;
 
 typedef std::map<std::string, EntityKit *> FactoryDict;
 typedef std::map<std::string, TaskKit *> TaskFactoryDict;
@@ -44,6 +47,8 @@ class EntityBuilder {
     explicit EntityBuilder();
     ~EntityBuilder();
     static EntityBuilder * m_instance;
+
+    std::unique_ptr<CorePropertyManager> m_propertyManager;
 
     FactoryDict m_entityFactories;
     TaskFactoryDict m_taskFactories;

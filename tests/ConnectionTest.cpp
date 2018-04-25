@@ -88,6 +88,8 @@ class Connectiontest : public Cyphesis::TestBase
     ServerRouting * m_server;
     CommSocket * m_tcc;
     Connection * m_connection;
+    Inheritance * m_inheritance;
+
 
     static bool Router_error_called;
     static bool Router_clientError_called;
@@ -158,6 +160,7 @@ Connectiontest::Connectiontest()
 
 void Connectiontest::setup()
 {
+    m_inheritance = new Inheritance();
     Router_error_called = false;
 
     m_server = new ServerRouting(*(BaseWorld*)0, "noruleset", "unittesting",
@@ -169,6 +172,7 @@ void Connectiontest::setup()
 
 void Connectiontest::teardown()
 {
+    delete m_inheritance;
 }
 
 void Connectiontest::test_addNewAccount()
@@ -863,33 +867,25 @@ void Router::clientError(const Operation & op,
 #include "stubs/server/stubExternalMindsManager.h"
 #include "stubs/server/stubExternalMindsConnection.h"
 
-Inheritance * Inheritance::m_instance = nullptr;
-
-Inheritance::Inheritance() : noClass(0)
+#define STUB_Inheritance_getClass
+const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent)
 {
+    return noClass;
 }
 
-Inheritance & Inheritance::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Inheritance();
-    }
-    return *m_instance;
-}
 
-const TypeNode * Inheritance::getType(const std::string & parent)
+#define STUB_Inheritance_getType
+const TypeNode* Inheritance::getType(const std::string & parent)
 {
     TypeNodeDict::const_iterator I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
         return 0;
     }
-    return I->second;
-}
+    return I->second;}
 
-const Root & Inheritance::getClass(const std::string & parent)
-{
-    return noClass;
-}
+
+#include "stubs/common/stubInheritance.h"
+
 
 void log(LogLevel lvl, const std::string & msg)
 {

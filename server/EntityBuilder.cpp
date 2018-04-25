@@ -46,9 +46,8 @@ static const bool debug_flag = false;
 EntityBuilder* EntityBuilder::m_instance = nullptr;
 
 EntityBuilder::EntityBuilder()
+: m_propertyManager(new CorePropertyManager())
 {
-    // The property manager instance installs itself at construction time.
-    new CorePropertyManager();
     installBaseFactory("archetype", "root_entity", new ArchetypeFactory());
 
 }
@@ -66,8 +65,6 @@ EntityBuilder::~EntityBuilder()
     for (; J != Jend; ++J) {
         delete J->second;
     }
-
-    delete PropertyManager::instance();
 }
 
 /// \brief Build and populate a new entity object.
@@ -92,7 +89,7 @@ LocatedEntity* EntityBuilder::newEntity(const std::string& id, long intId, const
         const std::string& loc_id = attributes->getLoc();
         loc = world.getEntity(loc_id);
     }
-    if (loc == 0) {
+    if (loc == nullptr) {
         // If no info was provided, put the entity in the default location world
         loc = &world.getDefaultLocation();
     }
@@ -110,9 +107,9 @@ LocatedEntity* EntityBuilder::newChildEntity(const std::string& id, long intId, 
                                              LocatedEntity& parentEntity) const
 {
     debug(std::cout << "EntityFactor::newEntity()" << std::endl << std::flush;);
-    FactoryDict::const_iterator I = m_entityFactories.find(type);
+    auto I = m_entityFactories.find(type);
     if (I == m_entityFactories.end()) {
-        return 0;
+        return nullptr;
     }
 
     EntityKit* factory = I->second;
@@ -125,7 +122,7 @@ Task* EntityBuilder::buildTask(TaskKit* factory, LocatedEntity& owner) const
 {
     Task* task = factory->newTask(owner);
 
-    if (task != 0 && factory->m_scriptFactory != 0) {
+    if (task != nullptr && factory->m_scriptFactory != nullptr) {
         if (factory->m_scriptFactory->addScript(task) != 0) {
             log(ERROR, "Assigning script to task failed");
         }
@@ -139,9 +136,9 @@ Task* EntityBuilder::buildTask(TaskKit* factory, LocatedEntity& owner) const
 /// @param owner The character entity that owns the task.
 Task* EntityBuilder::newTask(const std::string& name, LocatedEntity& owner) const
 {
-    TaskFactoryDict::const_iterator I = m_taskFactories.find(name);
+    auto I = m_taskFactories.find(name);
     if (I == m_taskFactories.end()) {
-        return 0;
+        return nullptr;
     }
     return buildTask(I->second, owner);
 }
@@ -155,7 +152,7 @@ TaskKit* EntityBuilder::getTaskFactory(const std::string& class_name)
 {
     TaskFactoryDict::const_iterator I = m_taskFactories.find(class_name);
     if (I == m_taskFactories.end()) {
-        return 0;
+        return nullptr;
     }
     return I->second;
 }
@@ -178,23 +175,23 @@ void EntityBuilder::addTaskActivation(const std::string& tool, const std::string
 /// @param owner The character entity activating the task.
 Task* EntityBuilder::activateTask(const std::string& tool, const std::string& op, LocatedEntity* target, LocatedEntity& owner) const
 {
-    TaskFactoryActivationDict::const_iterator I = m_taskActivations.find(tool);
+    auto I = m_taskActivations.find(tool);
     if (I == m_taskActivations.end()) {
-        return 0;
+        return nullptr;
     }
     const TaskFactoryMultimap& dict = I->second;
-    TaskFactoryMultimap::const_iterator J = dict.lower_bound(op);
+    auto J = dict.lower_bound(op);
     if (J == dict.end()) {
-        return 0;
+        return nullptr;
     }
-    TaskFactoryMultimap::const_iterator Jend = dict.upper_bound(op);
+    auto Jend = dict.upper_bound(op);
     for (; J != Jend; ++J) {
         if (J->second->checkTarget(target) == -1) {
             continue;
         }
         return buildTask(J->second, owner);
     }
-    return 0;
+    return nullptr;
 }
 
 /// \brief Clear out all the factory objects owned by the entity builder.
@@ -236,7 +233,7 @@ int EntityBuilder::installFactory(const std::string& class_name, const Root& cla
     Inheritance& i = Inheritance::instance();
     factory->m_type = i.addChild(class_desc);
 
-    if (factory->m_type == 0) {
+    if (factory->m_type == nullptr) {
         return -1;
     }
 
@@ -250,7 +247,7 @@ EntityKit* EntityBuilder::getClassFactory(const std::string& class_name)
 {
     FactoryDict::const_iterator I = m_entityFactories.find(class_name);
     if (I == m_entityFactories.end()) {
-        return 0;
+        return nullptr;
     }
     return I->second;
 }

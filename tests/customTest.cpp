@@ -31,31 +31,14 @@ using Atlas::Objects::Root;
 
 int main()
 {
-    installCustomOperations();
-    installCustomEntities();
+    Inheritance inheritance;
+    installCustomOperations(inheritance);
+    installCustomEntities(inheritance);
     return 0;
 }
 
 // stubs
-
-Inheritance * Inheritance::m_instance = nullptr;
-
-Inheritance::Inheritance() : noClass(0)
-{
-}
-
-Inheritance & Inheritance::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Inheritance();
-    }
-    return *m_instance;
-}
-
-TypeNode * Inheritance::addChild(const Root & obj)
-{
-    return 0;
-}
+#include "stubs/common/stubInheritance.h"
 
 Root atlasOpDefinition(const std::string & name, const std::string & parent)
 {

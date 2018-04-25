@@ -673,25 +673,8 @@ BBoxProperty * BBoxProperty::copy() const
     return 0;
 }
 
-PropertyManager * PropertyManager::m_instance = 0;
+#include "stubs/common/stubPropertyManager.h"
 
-PropertyManager::PropertyManager()
-{
-    assert(m_instance == 0);
-    m_instance = this;
-}
-
-PropertyManager::~PropertyManager()
-{
-   m_instance = 0;
-}
-
-int PropertyManager::installFactory(const std::string & type_name,
-                                    const Atlas::Objects::Root & type_desc,
-                                    PropertyKit * factory)
-{
-    return 0;
-}
 
 Link::Link(CommSocket & socket, const std::string & id, long iid) :
             Router(id, iid), m_encoder(0), m_commSocket(socket)
@@ -805,33 +788,26 @@ LocatedEntity& BaseWorld::getRootEntity() const {
 }
 
 
-Inheritance * Inheritance::m_instance = nullptr;
-
-Inheritance::Inheritance() : noClass(0)
+#ifndef STUB_Inheritance_getClass
+#define STUB_Inheritance_getClass
+const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent)
 {
+    return noClass;
 }
+#endif //STUB_Inheritance_getClass
 
-Inheritance & Inheritance::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Inheritance();
-    }
-    return *m_instance;
-}
-
-const TypeNode * Inheritance::getType(const std::string & parent)
+#ifndef STUB_Inheritance_getType
+#define STUB_Inheritance_getType
+const TypeNode* Inheritance::getType(const std::string & parent)
 {
     TypeNodeDict::const_iterator I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
         return 0;
     }
-    return I->second;
-}
+    return I->second;}
+#endif //STUB_Inheritance_getType
 
-const Root & Inheritance::getClass(const std::string & parent)
-{
-    return noClass;
-}
+#include "stubs/common/stubInheritance.h"
 
 EntityRef::EntityRef(LocatedEntity* e) : m_inner(e)
 {

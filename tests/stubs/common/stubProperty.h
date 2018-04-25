@@ -9,7 +9,7 @@
 
 #ifndef STUB_PropertyBase_PropertyBase
 //#define STUB_PropertyBase_PropertyBase
-   PropertyBase::PropertyBase(unsigned int flags )
+   PropertyBase::PropertyBase(std::uint32_t flags )
   {
     
   }

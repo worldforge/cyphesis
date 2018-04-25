@@ -23,6 +23,7 @@
 
 #include <map>
 #include <string>
+#include "Singleton.h"
 
 class PropertyBase;
 class PropertyKit;
@@ -30,20 +31,17 @@ class PropertyKit;
 typedef std::map<std::string, PropertyKit *> PropertyFactoryDict;
 
 /// \brief Base class for classes that handle creating Entity properties.
-class PropertyManager {
+class PropertyManager : public Singleton<PropertyManager> {
   protected:
     // Data structure for factories and the like?
     std::map<std::string, PropertyKit *> m_propertyFactories;
 
-    /// \brief Singleton instance pointer for any subclass
-    static PropertyManager * m_instance;
-
-    PropertyManager();
+    PropertyManager() = default;
 
     void installFactory(const std::string &,
                         PropertyKit *);
   public:
-    virtual ~PropertyManager();
+    ~PropertyManager() override;
 
     /// \brief Add a new named property to an Entity
     ///
@@ -56,11 +54,6 @@ class PropertyManager {
                                PropertyKit * factory);
 
     PropertyKit * getPropertyFactory(const std::string &) const;
-
-    /// \brief Return the registered singleton instance of any subclass
-    static PropertyManager * instance() {
-        return m_instance;
-    }
 
     friend class PropertyManagertest;
 };

@@ -175,15 +175,14 @@ void StorageManager::encodeProperty(PropertyBase * prop, std::string & store)
 void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
 {
     Database * db = Database::instance();
-    PropertyManager * pm = PropertyManager::instance();
     DatabaseResult res = db->selectProperties(ent->getId());
 
     //Keep track of those properties that have been set on the instance, so we'll know what
     //type properties we should ignore.
     std::unordered_set<std::string> instanceProperties;
 
-    DatabaseResult::const_iterator I = res.begin();
-    DatabaseResult::const_iterator Iend = res.end();
+    auto I = res.begin();
+    auto Iend = res.end();
     for (; I != Iend; ++I) {
         const std::string name = I.column("name");
         if (name.empty()) {
@@ -205,7 +204,7 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
                                ent->getId(), name));
             continue;
         }
-        assert(ent->getType() != 0);
+        assert(ent->getType() != nullptr);
         const Element & val = J->second;
 
         Element existingVal;
@@ -219,7 +218,7 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
 
         PropertyBase * prop = ent->modProperty(name);
         if (prop == nullptr) {
-            prop = pm->addProperty(name, val.getType());
+            prop = PropertyManager::instance().addProperty(name, val.getType());
             prop->install(ent, name);
             //This transfers ownership of the property to the entity.
             ent->setProperty(name, prop);

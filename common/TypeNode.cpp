@@ -72,7 +72,7 @@ void TypeNode::injectProperty(const std::string& name,
 void TypeNode::addProperties(const MapType & attributes)
 {
     for (auto entry : attributes) {
-        PropertyBase * p = PropertyManager::instance()->addProperty(entry.first,
+        PropertyBase * p = PropertyManager::instance().addProperty(entry.first,
                                                                     entry.second.getType());
         assert(p != nullptr);
         p->set(entry.second);
@@ -110,7 +110,7 @@ void TypeNode::updateProperties(const MapType & attributes)
         PropertyBase * p;
         auto I = m_defaults.find(entry.first);
         if (I == m_defaults.end()) {
-            p = PropertyManager::instance()->addProperty(entry.first, entry.second.getType());
+            p = PropertyManager::instance().addProperty(entry.first, entry.second.getType());
             assert(p != nullptr);
             p->addFlags(flag_class);
             p->install(this, entry.first);

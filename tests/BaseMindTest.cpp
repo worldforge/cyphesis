@@ -286,28 +286,11 @@ int main()
 
 #include "stubs/common/stubCustom.h"
 #include "stubs/common/stubRouter.h"
+#include "stubs/common/stubInheritance.h"
 #include "stubs/rulesets/stubMemEntity.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
 
 
-Inheritance * Inheritance::m_instance = nullptr;
-
-Inheritance::Inheritance() : noClass(0)
-{
-}
-
-const TypeNode * Inheritance::getType(const std::string & parent)
-{
-    return 0;
-}
-
-Inheritance & Inheritance::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Inheritance();
-    }
-    return *m_instance;
-}
 #include "stubs/rulesets/stubScript.h"
 #include "stubs/modules/stubLocation.h"
 

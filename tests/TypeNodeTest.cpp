@@ -50,4 +50,4 @@ int main()
 
 // stub functions
 
-PropertyManager * PropertyManager::m_instance = 0;
+#include "stubs/common/stubPropertyManager.h"

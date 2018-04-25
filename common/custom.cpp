@@ -22,9 +22,8 @@
 
 #include <Atlas/Objects/Generic.h>
 
-void installCustomOperations()
+void installCustomOperations(Inheritance & i)
 {
-    Inheritance & i = Inheritance::instance();
     Atlas::Objects::Factories * atlas_factories = Atlas::Objects::Factories::instance();
 
     i.addChild(atlasOpDefinition("add", "set"));
@@ -92,9 +91,8 @@ void installCustomOperations()
     Atlas::Objects::Operation::POSSESS_NO = atlas_factories->addFactory("possess", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
 }
 
-void installCustomEntities()
+void installCustomEntities(Inheritance & i)
 {
-    Inheritance & i = Inheritance::instance();
 
     i.addChild(atlasClass("room", "admin_entity"));
 

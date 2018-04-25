@@ -26,7 +26,7 @@
 
 #ifndef STUB_ServerRouting_addObject
 //#define STUB_ServerRouting_addObject
-  void ServerRouting::addObject(Router * obj)
+  void ServerRouting::addObject(ConnectableRouter * obj)
   {
     
   }
@@ -42,7 +42,7 @@
 
 #ifndef STUB_ServerRouting_delObject
 //#define STUB_ServerRouting_delObject
-  void ServerRouting::delObject(Router * obj)
+  void ServerRouting::delObject(ConnectableRouter * obj)
   {
     
   }
@@ -50,7 +50,7 @@
 
 #ifndef STUB_ServerRouting_getObject
 //#define STUB_ServerRouting_getObject
-  Router* ServerRouting::getObject(const std::string & id) const
+  ConnectableRouter* ServerRouting::getObject(const std::string & id) const
   {
     return nullptr;
   }
