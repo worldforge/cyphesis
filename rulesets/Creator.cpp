@@ -44,13 +44,8 @@ Creator::Creator(const std::string & id, long intId) :
          Character(id, intId)
 {
     debug( std::cout << "Creator::Creator" << std::endl << std::flush;);
-    //Creators are always perceptive.
-    setFlags(entity_perceptive);
 }
 
-Creator::~Creator()
-{
-}
 
 void Creator::operation(const Operation & op, OpVector & res)
 {
@@ -126,7 +121,7 @@ void Creator::externalOperation(const Operation & op, Link &)
         }
     } else {
         LocatedEntity * to = BaseWorld::instance().getEntity(op->getTo());
-        if (to != 0) {
+        if (to != nullptr) {
             //If there's a serial number, we expect a response, and we should relay the operation
             if (op->isDefaultSerialno()) {
                 // Make it appear like it came from target itself;
@@ -209,7 +204,6 @@ void Creator::mindLookOperation(const Operation & op, OpVector & res)
     //entity interaction with the world.
     debug(std::cout << "Got look up from prived mind from [" << op->getFrom()
                << "] to [" << op->getTo() << "]" << std::endl << std::flush;);
-    m_flags |= entity_perceptive;
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
         op->setTo(BaseWorld::instance().getDefaultLocation().getId());

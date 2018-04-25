@@ -40,6 +40,7 @@
 #include "common/Update.h"
 #include "common/BaseWorld.h"
 #include "EntityProperty.h"
+#include "PerceptionSightProperty.h"
 
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>
@@ -1342,6 +1343,8 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
                 m_steppingEntries.erase(I);
             }
         }
+    } else if (name == PerceptionSightProperty::property_name) {
+        toggleChildPerception(*bulletEntry->entity);
     }
 }
 

@@ -1596,13 +1596,6 @@ void Character::mindLookOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Got look up from mind from [" << op->getFrom() << "] to [" << op->getTo() << "]" << std::endl << std::flush
     ;);
-    m_flags |= entity_perceptive;
-    if (m_location.m_loc) {
-        Domain* domain = m_location.m_loc->getDomain();
-        if (domain) {
-            domain->toggleChildPerception(*this);
-        }
-    }
 
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {

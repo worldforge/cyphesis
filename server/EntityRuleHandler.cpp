@@ -116,7 +116,8 @@ void EntityRuleHandler::installStandardRules()
 
     {
         Atlas::Objects::Root decl = composeDeclaration("character", "thing", {
-            {"density", 125}
+            {"density", 125},
+            {"perception_sight", 1.0}
         });
         installEntityClass(decl->getId(), decl->getParent(), decl, dependent, reason, new EntityFactory<Character>());
     }
@@ -138,7 +139,8 @@ void EntityRuleHandler::installStandardRules()
             {"speed-jump", 7.5},
             {"step_factor", 0.7},
             {"present", "dural/items/misc/flame/creator.modeldef"},
-            {"mode", "free"}
+            {"mode", "free"},
+            {"perception_sight", 1.0}
         });
 
         installEntityClass(decl->getId(), decl->getParent(), decl, dependent, reason, new EntityFactory<Creator>());

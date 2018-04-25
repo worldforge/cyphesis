@@ -61,7 +61,7 @@ add_library(rulesetentity
     QuaternionProperty.cpp
     Vector3Property.cpp
     PhysicalWorld.cpp PhysicalWorld.h
-    OgreMeshDeserializer.cpp OgreMeshDeserializer.h)
+    OgreMeshDeserializer.cpp OgreMeshDeserializer.h PerceptionSightProperty.cpp PerceptionSightProperty.h)
 
 target_link_libraries(rulesetentity ${BULLET_LIBRARIES})
 

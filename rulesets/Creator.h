@@ -27,19 +27,20 @@
 class Creator : public Character {
   public:
     explicit Creator(const std::string & id, long intId);
-    virtual ~Creator();
+    ~Creator() override = default;
 
-    virtual void operation(const Operation & op, OpVector &);
-    virtual void externalOperation(const Operation & op, Link &);
+    void operation(const Operation & op, OpVector &) override;
 
-    virtual void mindLookOperation(const Operation & op, OpVector &);
+    void externalOperation(const Operation & op, Link &) override;
+
+    void mindLookOperation(const Operation & op, OpVector &) override;
 
     /// \brief Filter a Set operation coming from the mind
     ///
     /// For the creator any set operation is permitted.
     /// @param op The operation to be filtered.
     /// @param res The filtered result is returned here.
-    virtual void mindSetOperation(const Operation &, OpVector &);
+    void mindSetOperation(const Operation &, OpVector &) override;
 
   protected:
     /**

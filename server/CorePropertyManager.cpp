@@ -55,6 +55,7 @@
 #include "rulesets/GeometryProperty.h"
 #include "rulesets/QuaternionProperty.h"
 #include "rulesets/Vector3Property.h"
+#include "rulesets/PerceptionSightProperty.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
@@ -238,6 +239,8 @@ CorePropertyManager::CorePropertyManager()
      */
     installProperty<Property<int>>("water_body", "int");
 
+    installProperty<PerceptionSightProperty>();
+
 }
 
 int CorePropertyManager::installFactory(const std::string & type_name,
@@ -245,7 +248,7 @@ int CorePropertyManager::installFactory(const std::string & type_name,
                                         PropertyKit * factory)
 {
     Inheritance & i = Inheritance::instance();
-    if (i.addChild(type_desc) == 0) {
+    if (i.addChild(type_desc) == nullptr) {
         return -1;
     }
 
@@ -259,7 +262,7 @@ PropertyBase * CorePropertyManager::addProperty(const std::string & name,
 {
     assert(!name.empty());
     assert(name != "objtype");
-    PropertyBase * p = 0;
+    PropertyBase * p = nullptr;
     PropertyFactoryDict::const_iterator I = m_propertyFactories.find(name);
     if (I == m_propertyFactories.end()) {
         switch (type) {
