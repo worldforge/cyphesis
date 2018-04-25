@@ -68,7 +68,11 @@ add_library(common
     types.h
     Unseen.h
     Update.h
-    )
+    FileSystemObserver.cpp
+    FileSystemObserver.h
+    AssetsManager.cpp
+    AssetsManager.h
+    Singleton.h)
 
 target_link_libraries(common ${PostgreSQL_LIBRARIES})
 target_link_libraries(common ${GCRYPT_LIBRARIES})

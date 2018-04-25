@@ -55,6 +55,7 @@
 #include <thread>
 #include <fstream>
 #include <boost/filesystem/operations.hpp>
+#include <common/FileSystemObserver.h>
 
 using String::compose;
 using namespace boost::asio;
@@ -261,6 +262,8 @@ int main(int argc, char ** argv)
     // Start up the Python subsystem.
     init_python_api(ruleset_name);
 
+    FileSystemObserver* file_system_observer = new FileSystemObserver(*io_service);
+
     Inheritance::instance();
 
     SystemTime time{};
@@ -428,7 +431,7 @@ int main(int argc, char ** argv)
         long intId = newId(adminId);
         assert(intId >= 0);
 
-        Admin * admin = new Admin(0, "admin", "BAD_HASH", adminId, intId);
+        Admin * admin = new Admin(nullptr, "admin", "BAD_HASH", adminId, intId);
         server->addAccount(admin);
     }
 
@@ -450,7 +453,7 @@ int main(int argc, char ** argv)
     //Note that we only check the top level; we don't perform a full hierarchical
     //traversal. Mainly because we never need to.
     auto autoImport = global_conf->getItem(CYPHESIS, "autoimport");
-    if (autoImport.is_string() && autoImport.as_string() != "") {
+    if (autoImport.is_string() && !autoImport.as_string().empty()) {
         std::string importPath = autoImport.as_string();
         std::ifstream file(importPath);
         if (file.good()) {
@@ -611,6 +614,8 @@ int main(int argc, char ** argv)
             log(ERROR, "Exception caught when shutting down");
         }
     }
+
+    delete file_system_observer;
 
     signalSet->clear();
     delete signalSet;
