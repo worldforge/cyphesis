@@ -17,6 +17,7 @@ add_library(common
     serialno.cpp
     TypeNode.cpp
     Inheritance.cpp
+    Inheritance.h
     Property.cpp
     PropertyFactory.cpp
     PropertyManager.cpp
@@ -72,7 +73,8 @@ add_library(common
     FileSystemObserver.h
     AssetsManager.cpp
     AssetsManager.h
-    Singleton.h)
+    Singleton.h
+    Change.h)
 
 target_link_libraries(common ${PostgreSQL_LIBRARIES})
 target_link_libraries(common ${GCRYPT_LIBRARIES})

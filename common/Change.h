@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2009 Alistair Riddoch
+// Copyright (C) 2018 Erik Ogenvik
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,34 +16,32 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
-#ifndef COMMON_CUSTOM_H
-#define COMMON_CUSTOM_H
+#ifndef COMMON_CHANGE_H
+#define COMMON_CHANGE_H
 
-namespace Atlas { namespace Objects { namespace Operation {
+#include <Atlas/Objects/Generic.h>
 
-extern int ACTUATE_NO;
-extern int ADD_NO;
-extern int ATTACK_NO;
-extern int BURN_NO;
-extern int CONNECT_NO;
-extern int DROP_NO;
-extern int EAT_NO;
-extern int GOAL_INFO_NO;
-extern int MONITOR_NO;
-extern int NOURISH_NO;
-extern int PICKUP_NO;
-extern int SETUP_NO;
-extern int THOUGHT_NO;
-extern int TICK_NO;
-extern int UNSEEN_NO;
-extern int UPDATE_NO;
-extern int TELEPORT_NO;
-extern int COMMUNE_NO;
-extern int THINK_NO;
-extern int RELAY_NO;
-extern int POSSESS_NO;
-extern int CHANGE_NO;
+namespace Atlas {
+    namespace Objects {
+        namespace Operation {
 
-} } }
+            extern int CHANGE_NO;
 
-#endif // COMMON_CUSTOM_H
+            /**
+             * \brief An operation used to signal to clients when things such as types have changed.
+             * \ingroup CustomOperations
+             */
+            class Change : public Generic
+            {
+                public:
+                    Change()
+                    {
+                        (*this)->setType("change", CHANGE_NO);
+                    }
+            };
+
+        }
+    }
+}
+
+#endif // COMMON_CHANGE_H

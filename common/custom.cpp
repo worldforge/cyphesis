@@ -89,6 +89,13 @@ void installCustomOperations(Inheritance & i)
 
     i.addChild(atlasOpDefinition("possess", "set"));
     Atlas::Objects::Operation::POSSESS_NO = atlas_factories->addFactory("possess", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
+
+    /**
+     * Used to signal that something has changed. Sent from the server to the clients.
+     * For example when a type changes.
+     */
+    i.addChild(atlasOpDefinition("change", "info"));
+    Atlas::Objects::Operation::CHANGE_NO = atlas_factories->addFactory("info", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
 }
 
 void installCustomEntities(Inheritance & i)
