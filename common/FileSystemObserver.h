@@ -64,8 +64,13 @@ class FileSystemObserver
 
         std::map<boost::filesystem::path, std::function<void(const FileSystemEvent&)>> mCallBacks;
 
+        boost::asio::io_service& m_ioService;
+
+        std::map<boost::filesystem::path, std::pair<std::chrono::steady_clock::time_point, boost::asio::dir_monitor_event>> m_changedPaths;
+
         void observe();
 
+        void processChangedPaths();
 };
 
 

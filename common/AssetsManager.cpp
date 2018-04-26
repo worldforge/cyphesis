@@ -31,19 +31,22 @@ AssetsManager::AssetsManager(FileSystemObserver& file_system_observer)
 void AssetsManager::init()
 {
 
-    //TODO: implement for all asset paths
-    m_file_system_observer.add_directory(share_directory + "/cyphesis", [&](const FileSystemObserver::FileSystemEvent& event) {
+    auto observerCallback = [&](const FileSystemObserver::FileSystemEvent& event) {
         auto I = m_callbacks.find(event.ev.path);
         if (I != m_callbacks.end()) {
             for (auto& callback : I->second) {
                 callback(event.ev.path);
             }
         }
-    });
+    };
 
-    m_file_system_observer.add_directory(etc_directory + "/cyphesis", [&](const FileSystemObserver::FileSystemEvent&) {
 
-    });
+    //TODO: implement for all asset paths
+    m_file_system_observer.add_directory(boost::filesystem::path(share_directory) / "cyphesis" / "scripts", observerCallback);
+    m_file_system_observer.add_directory(boost::filesystem::path(share_directory) / "cyphesis" / "rulesets", observerCallback);
+    m_file_system_observer.add_directory(boost::filesystem::path(assets_directory), observerCallback);
+
+    m_file_system_observer.add_directory(boost::filesystem::path(etc_directory) / "cyphesis", observerCallback);
 
 
 }

@@ -20,9 +20,10 @@
 
 #include "log.h"
 #include <boost/algorithm/string.hpp>
-#include <boost/exception/exception.hpp>
 
-FileSystemObserver::FileSystemObserver(boost::asio::io_service& ioService) {
+FileSystemObserver::FileSystemObserver(boost::asio::io_service& ioService)
+    : m_ioService(ioService)
+{
     try {
         mDirectoryMonitor.reset(new boost::asio::dir_monitor(ioService));
         observe();
@@ -31,41 +32,37 @@ FileSystemObserver::FileSystemObserver(boost::asio::io_service& ioService) {
     }
 }
 
-FileSystemObserver::~FileSystemObserver() {
+FileSystemObserver::~FileSystemObserver()
+{
     assert(mCallBacks.empty());
 }
 
 
-void FileSystemObserver::observe() {
+void FileSystemObserver::observe()
+{
     if (mDirectoryMonitor) {
         mDirectoryMonitor->async_monitor([this](const boost::system::error_code& ec, const boost::asio::dir_monitor_event& ev) {
             if (!ec && ev.type != boost::asio::dir_monitor_event::null) {
-                for (const auto& I : mCallBacks) {
-                    if (boost::starts_with(ev.path.string(), I.first.string())) {
-                        std::string relative = ev.path.string().substr(I.first.string().length() + 1);
-                        FileSystemEvent event{
-                            ev,
-                            relative
-                        };
-                        I.second(event);
-
-                        break;
-                    }
-                }
+                //Don't process directly, since there might be many events coming directly after each other. Instead
+                //add to the map of changed paths and schedule a processing in 2 milliseconds
+                m_changedPaths.emplace(ev.path, std::make_pair(std::chrono::steady_clock::now(), ev));
+                processChangedPaths();
                 this->observe();
             }
         });
     }
 }
 
-void FileSystemObserver::add_directory(const boost::filesystem::path& dirname, std::function<void(const FileSystemObserver::FileSystemEvent&)> callback) {
+void FileSystemObserver::add_directory(const boost::filesystem::path& dirname, std::function<void(const FileSystemObserver::FileSystemEvent&)> callback)
+{
     if (mDirectoryMonitor) {
         mDirectoryMonitor->add_directory(dirname.string());
         mCallBacks.insert(std::make_pair(dirname, callback));
     }
 }
 
-void FileSystemObserver::remove_directory(const boost::filesystem::path& dirname) {
+void FileSystemObserver::remove_directory(const boost::filesystem::path& dirname)
+{
     if (mDirectoryMonitor) {
         mCallBacks.erase(dirname);
         try {
@@ -74,4 +71,41 @@ void FileSystemObserver::remove_directory(const boost::filesystem::path& dirname
             //Just swallow exceptions when removing watches; this is often because the directory has been removed. Doesn't change anything.
         }
     }
+}
+
+void FileSystemObserver::processChangedPaths()
+{
+    if (!m_changedPaths.empty()) {
+        auto firstI = m_changedPaths.begin();
+        //check if enough time has passed for the first entry
+        if (firstI->second.first <= std::chrono::steady_clock::now() - std::chrono::milliseconds(2)) {
+            for (const auto& I : mCallBacks) {
+                auto& ev = firstI->second.second;
+                if (boost::starts_with(ev.path.string(), I.first.string())) {
+                    std::string relative = ev.path.string().substr(I.first.string().length() + 1);
+                    FileSystemEvent event{
+                        ev,
+                        relative
+                    };
+                    I.second(event);
+
+                    break;
+                }
+            }
+
+            m_changedPaths.erase(firstI);
+        }
+
+        if (!m_changedPaths.empty()) {
+            auto& time_point = m_changedPaths.begin()->second.first;
+            auto timer = std::make_shared<boost::asio::steady_timer>(m_ioService);
+            timer->expires_at(time_point + std::chrono::milliseconds(2));
+            timer->async_wait([&, timer](const boost::system::error_code& ec) {
+                if (!ec) {
+                    processChangedPaths();
+                }
+            });
+        }
+    }
+
 }
