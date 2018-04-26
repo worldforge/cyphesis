@@ -25,6 +25,8 @@
 #include "common/debug.h"
 #include "common/compose.hpp"
 #include "common/AtlasQuery.h"
+#include "common/AssetsManager.h"
+#include "common/Inheritance.h"
 
 #include <wfmath/atlasconv.h>
 
@@ -41,12 +43,16 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/fstream.hpp>
+#include <server/Ruleset.h>
+#include <common/BaseWorld.h>
+#include <common/Update.h>
+#include "LocatedEntity.h"
 
 const std::string GeometryProperty::property_name = "geometry";
 const std::string GeometryProperty::property_atlastype = "map";
 
-auto createBoxFn = [&](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
-        -> std::shared_ptr<btCollisionShape> {
+auto createBoxFn = [](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
+    -> std::shared_ptr<btCollisionShape> {
     auto btSize = Convert::toBullet(size * 0.5).absolute();
     centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
     return std::make_shared<btBoxShape>(btSize);
@@ -62,12 +68,46 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
         try {
             if (boost::algorithm::ends_with(path, ".mesh")) {
                 boost::filesystem::path fullpath = boost::filesystem::path(assets_directory) / path;
+                AssetsManager::instance().observeFile(fullpath, [this, fullpath](const boost::filesystem::path& changedPath) {
+
+                    boost::filesystem::fstream fileStream(fullpath);
+                    if (fileStream) {
+                        auto deserializer = std::make_shared<OgreMeshDeserializer>(fileStream);
+                        deserializer->deserialize();
+                        m_meshBounds = deserializer->m_bounds;
+                        parseData(std::move(deserializer));
+
+
+                        struct my_visitor : public boost::static_visitor<>
+                        {
+                            GeometryProperty* prop;
+                            void operator()(LocatedEntity* entity) const
+                            {
+                            }
+
+                            void operator()(TypeNode* typeNode) const
+                            {
+                                prop->install(typeNode, "");
+                            }
+                        };
+
+                        my_visitor visitor{};
+                        visitor.prop = this;
+                        m_owner.apply_visitor(visitor);
+                    } else {
+                        log(ERROR, "Could not find geometry file at " + fullpath.string());
+                    }
+
+
+
+                });
+
+
                 boost::filesystem::fstream fileStream(fullpath);
                 if (fileStream) {
                     deserializer.reset(new OgreMeshDeserializer(fileStream));
                     deserializer->deserialize();
                     m_meshBounds = deserializer->m_bounds;
-
                 } else {
                     log(ERROR, "Could not find geometry file at " + fullpath.string());
                 }
@@ -79,8 +119,15 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
         }
     });
 
+    parseData(std::move(deserializer));
+}
+
+
+void GeometryProperty::parseData(std::shared_ptr<OgreMeshDeserializer> deserializer)
+{
+
     auto sphereCreator = [](float radius, const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset)
-            -> std::shared_ptr<btCollisionShape> {
+        -> std::shared_ptr<btCollisionShape> {
         float xOffset = bbox.lowCorner().x() + (size.x() / 2.0f);
         float yOffset = bbox.lowCorner().y() + (size.y() / 2.0f);
         float zOffset = bbox.lowCorner().z() + (size.z() / 2.0f);
@@ -96,7 +143,7 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
         const std::string& shapeType = I->second.String();
         if (shapeType == "sphere") {
             mShapeCreator = [sphereCreator, scalerType](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
-                    -> std::shared_ptr<btCollisionShape> {
+                -> std::shared_ptr<btCollisionShape> {
                 float radius = 0;
                 switch (scalerType) {
                     case ScalerType::Min:
@@ -119,7 +166,7 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
             };
         } else if (shapeType == "capsule-y") {
             mShapeCreator = [sphereCreator, scalerType](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
-                    -> std::shared_ptr<btCollisionShape> {
+                -> std::shared_ptr<btCollisionShape> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
 
                 float radius = 0;
@@ -153,7 +200,7 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
 
         } else if (shapeType == "capsule-x") {
             mShapeCreator = [sphereCreator, scalerType](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
-                    -> std::shared_ptr<btCollisionShape> {
+                -> std::shared_ptr<btCollisionShape> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
                 float radius = 0;
                 switch (scalerType) {
@@ -184,7 +231,7 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
             };
         } else if (shapeType == "capsule-z") {
             mShapeCreator = [sphereCreator, scalerType](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
-                    -> std::shared_ptr<btCollisionShape> {
+                -> std::shared_ptr<btCollisionShape> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
                 float radius = 0;
                 switch (scalerType) {
@@ -217,7 +264,7 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
             mShapeCreator = createBoxFn;
         } else if (shapeType == "cylinder-y") {
             mShapeCreator = [](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
-                    -> std::shared_ptr<btCollisionShape> {
+                -> std::shared_ptr<btCollisionShape> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
                 auto shape = std::make_shared<btCylinderShape>(btVector3(1, 1, 1));
                 shape->setLocalScaling(Convert::toBullet(size * 0.5f));
@@ -225,7 +272,7 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
             };
         } else if (shapeType == "cylinder-x") {
             mShapeCreator = [](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
-                    -> std::shared_ptr<btCollisionShape> {
+                -> std::shared_ptr<btCollisionShape> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
                 auto shape = std::make_shared<btCylinderShapeX>(btVector3(1, 1, 1));
                 shape->setLocalScaling(Convert::toBullet(size * 0.5f));
@@ -233,7 +280,7 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
             };
         } else if (shapeType == "cylinder-z") {
             mShapeCreator = [](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
-                    -> std::shared_ptr<btCollisionShape> {
+                -> std::shared_ptr<btCollisionShape> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
                 auto shape = std::make_shared<btCylinderShapeZ>(btVector3(1, 1, 1));
                 shape->setLocalScaling(Convert::toBullet(size * 0.5f));
@@ -245,7 +292,7 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
             buildCompoundCreator();
         }
     } else {
-        log(WARNING, "Geometry property without 'type' attribute set. Property value: " + debug_tostring(data));
+        log(WARNING, "Geometry property without 'type' attribute set. Property value: " + debug_tostring(m_data));
     }
 }
 
@@ -265,8 +312,8 @@ std::shared_ptr<btCollisionShape> GeometryProperty::createShape(const WFMath::Ax
 void GeometryProperty::buildMeshCreator(std::shared_ptr<OgreMeshDeserializer> meshDeserializer)
 {
     //Shared pointers since we want these values to survive as long as "meshShape" is alive.
-    std::shared_ptr<std::vector<float>> verts(new std::vector<float>());
-    std::shared_ptr<std::vector<unsigned int>> indices(new std::vector<unsigned int>());
+    auto verts = std::make_shared<std::vector<float>>();
+    auto indices = std::make_shared<std::vector<unsigned int>>();
 
     if (!meshDeserializer) {
 
@@ -370,6 +417,7 @@ void GeometryProperty::buildMeshCreator(std::shared_ptr<OgreMeshDeserializer> me
                                                                     [verts, indices](btTriangleIndexVertexArray* p) {
                                                                         delete p;
                                                                     });
+
     btVector3 aabbMin, aabbMax;
     triangleVertexArray->calculateAabbBruteForce(aabbMin, aabbMax);
     triangleVertexArray->setPremadeAabb(aabbMin, aabbMax);
@@ -426,6 +474,8 @@ GeometryProperty* GeometryProperty::copy() const
 
 void GeometryProperty::install(TypeNode* typeNode, const std::string&)
 {
+    m_owner = typeNode;
+
     //If there are valid mesh bounds read, and there's no bbox property already, add one.
     if (m_meshBounds.isValid()) {
         BBoxProperty* bBoxProperty = nullptr;
@@ -433,19 +483,36 @@ void GeometryProperty::install(TypeNode* typeNode, const std::string&)
         if (I == typeNode->defaults().end()) {
             //Update the bbox property of the type if there are valid bounds from the mesh.
             bBoxProperty = new BBoxProperty();
-            bBoxProperty->set(m_meshBounds.toAtlas());
-            //Mark the property as ephemeral since it's calulcated.
+            bBoxProperty->data() = m_meshBounds;
+            //Mark the property as ephemeral since it's calculated.
             bBoxProperty->addFlags(flag_class | per_ephem);
             bBoxProperty->install(typeNode, "bbox");
         } else if ((I->second->flags() & per_ephem) != 0) {
             bBoxProperty = dynamic_cast<BBoxProperty*>(I->second);
             if (bBoxProperty) {
-                bBoxProperty->set(m_meshBounds.toAtlas());
+                bBoxProperty->data() = m_meshBounds;
+                bBoxProperty->removeFlags(per_clean);
+                bBoxProperty->addFlags(flag_unsent);
             }
         }
 
         if (bBoxProperty) {
             typeNode->injectProperty("bbox", bBoxProperty);
+            Inheritance::instance().typeUpdated(typeNode);
+
+            //TODO: perhaps the type nodes should keep track on entities that are using them?
+            if (BaseWorld::hasInstance()) {
+                auto& entities = BaseWorld::instance().getEntities();
+                for (auto entry : entities) {
+                    auto entity = entry.second;
+                    if (entity->getType() == typeNode) {
+                        if (entity->getProperty("bbox") == bBoxProperty) {
+                            bBoxProperty->apply(entity);
+                            entity->propertyApplied("bbox", *bBoxProperty);
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -536,3 +603,4 @@ GeometryProperty::ScalerType GeometryProperty::parseScalerType()
     //Default to minimum size
     return ScalerType::Min;
 }
+

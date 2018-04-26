@@ -24,6 +24,7 @@
 #include <wfmath/vector.h>
 #include <bullet/LinearMath/btVector3.h>
 #include <functional>
+#include <boost/variant.hpp>
 
 class btCollisionShape;
 
@@ -120,6 +121,8 @@ class GeometryProperty : public Property<Atlas::Message::MapType>
 
         WFMath::AxisBox<3> m_meshBounds;
 
+        boost::variant<LocatedEntity*, TypeNode*> m_owner;
+
         /**
          * Creator function used for creating a new shape instance.
          */
@@ -132,7 +135,9 @@ class GeometryProperty : public Property<Atlas::Message::MapType>
 
         void buildCompoundCreator();
 
-        ScalerType parseScalerType();
+        GeometryProperty::ScalerType parseScalerType();
+
+        void parseData(std::shared_ptr<OgreMeshDeserializer> deserializer);
 
 };
 
