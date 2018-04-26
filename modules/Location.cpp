@@ -35,24 +35,18 @@ static const bool debug_flag = false;
 
 Location::Location() :
     m_simple(true), m_solid(true),
-    m_boxSize(consts::minBoxSize),
-    m_squareBoxSize(consts::minSqrBoxSize),
     m_loc(nullptr)
 {
 }
 
 Location::Location(LocatedEntity * rf) :
     m_simple(true), m_solid(true),
-    m_boxSize(consts::minBoxSize),
-    m_squareBoxSize(consts::minSqrBoxSize),
     m_loc(rf)
 {
 }
 
 Location::Location(LocatedEntity * rf, const Point3D & pos) :
     m_simple(true), m_solid(true),
-    m_boxSize(consts::minBoxSize),
-    m_squareBoxSize(consts::minSqrBoxSize),
     m_loc(rf), m_pos(pos)
 {
 }
@@ -61,8 +55,6 @@ Location::Location(LocatedEntity * rf,
                    const Point3D& pos,
                    const Vector3D& velocity) :
     m_simple(true), m_solid(true),
-    m_boxSize(consts::minBoxSize),
-    m_squareBoxSize(consts::minSqrBoxSize),
     m_loc(rf), m_pos(pos), m_velocity(velocity)
 {
 }
@@ -80,9 +72,6 @@ void Location::addToMessage(MapType & omap) const
     }
     if (orientation().isValid()) {
         omap["orientation"] = orientation().toAtlas();
-    }
-    if (bBox().isValid()) {
-        omap["bbox"] = bBox().toAtlas();
     }
     if (m_angularVelocity.isValid()) {
         omap["angular"] = m_angularVelocity.toAtlas();
@@ -102,9 +91,6 @@ void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
     }
     if (orientation().isValid()) {
         ent->setAttr("orientation", orientation().toAtlas());
-    }
-    if (bBox().isValid()) {
-        ent->setAttr("bbox", bBox().toAtlas());
     }
     if (m_angularVelocity.isValid()) {
         ent->setAttr("angular", m_angularVelocity.toAtlas());
@@ -191,25 +177,13 @@ void Location::modifyBBox()
         return;
     }
 
-    m_squareBoxSize = square(m_bBox.highCorner().x() - m_bBox.lowCorner().x()) +
-                      square(m_bBox.highCorner().y() - m_bBox.lowCorner().y()) +
-                      square(m_bBox.highCorner().z() - m_bBox.lowCorner().z());
-    m_boxSize = std::sqrt(m_squareBoxSize);
-
-    m_squareRadius = std::max(square(m_bBox.lowCorner().x()) +  
+    m_squareRadius = std::max(square(m_bBox.lowCorner().x()) +
                               square(m_bBox.lowCorner().y()) +  
                               square(m_bBox.lowCorner().z()),
                               square(m_bBox.highCorner().x()) +  
                               square(m_bBox.highCorner().y()) +  
                               square(m_bBox.highCorner().z()));
     m_radius = std::sqrt(m_squareRadius);
-}
-
-void Location::setVisibility(float v)
-{
-    m_boxSize = v;
-    m_squareBoxSize = v * v;
-    // TODO m_radius and m_squareRadius? Unused everywhere for now.
 }
 
 const Atlas::Objects::Root Location::asEntity() const

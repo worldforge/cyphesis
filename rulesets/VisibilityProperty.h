@@ -33,7 +33,6 @@ class VisibilityProperty : public Property<float>
 
         VisibilityProperty* copy() const override;
 
-        void apply(LocatedEntity*) override;
 };
 
 #endif // RULESETS_VISIBILITY_PROPERTY_H

@@ -39,9 +39,6 @@ class Location {
 
     double m_timeStamp;
 
-    float m_boxSize; // Diagonal length across box
-    float m_squareBoxSize;
-
     float m_radius; // Radius of bounding sphere of box
     float m_squareRadius;
   public:
@@ -72,9 +69,6 @@ class Location {
     explicit Location(LocatedEntity * rf,
                       const Point3D & pos,
                       const Vector3D & velocity);
-
-    float boxSize() const { return m_boxSize; }
-    float squareBoxSize() const { return m_squareBoxSize; }
 
     float radius() const { return m_radius; }
     float squareRadius() const { return m_squareRadius; }
@@ -124,7 +118,6 @@ class Location {
     int readFromMessage(const Atlas::Message::MapType & ent);
     int readFromEntity(const Atlas::Objects::Entity::RootEntity & ent);
     void modifyBBox();
-    void setVisibility(float v);
 
     friend std::ostream & operator<<(std::ostream& s, Location& v);
 };
