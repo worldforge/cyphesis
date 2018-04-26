@@ -7,23 +7,19 @@
 
 Location::Location() :
     m_simple(true), m_solid(true),
-    m_boxSize(consts::minBoxSize),
-    m_squareBoxSize(consts::minSqrBoxSize),
     m_loc(0)
 {
 }
 
 Location::Location(LocatedEntity * rf, const Point3D & pos) :
     m_simple(true), m_solid(true),
-    m_boxSize(consts::minBoxSize),
-    m_squareBoxSize(consts::minSqrBoxSize), m_loc(rf), m_pos(pos)
+    m_loc(rf), m_pos(pos)
 {
 }
 
 Location::Location(LocatedEntity * rf):
     m_simple(true), m_solid(true),
-    m_boxSize(consts::minBoxSize),
-    m_squareBoxSize(consts::minSqrBoxSize), m_loc(rf)
+    m_loc(rf)
 {
 }
 #endif //STUB_Location_Location

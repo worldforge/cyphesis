@@ -292,6 +292,7 @@ const long rootWorldIntId = 0L;
 
 namespace Atlas { namespace Objects { namespace Operation {
 int TICK_NO = -1;
+int CHANGE_NO = -1;
 }}}
 
 #include "stubs/rulesets/stubWorld.h"

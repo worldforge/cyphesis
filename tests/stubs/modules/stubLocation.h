@@ -91,13 +91,5 @@
   }
 #endif //STUB_Location_modifyBBox
 
-#ifndef STUB_Location_setVisibility
-//#define STUB_Location_setVisibility
-  void Location::setVisibility(float v)
-  {
-    
-  }
-#endif //STUB_Location_setVisibility
-
 
 #endif

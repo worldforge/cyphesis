@@ -39,5 +39,6 @@ int COMMUNE_NO = -1;
 int PICKUP_NO = -1;
 int DROP_NO = -1;
 int POSSESS_NO = -1;
+int CHANGE_NO = -1;
 } } }
 

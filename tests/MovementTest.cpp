@@ -65,10 +65,4 @@ int main()
     return 0;
 }
 
-Location::Location() :
-    m_simple(true), m_solid(true),
-    m_boxSize(consts::minBoxSize),
-    m_squareBoxSize(consts::minSqrBoxSize),
-    m_loc(0)
-{
-}
+#include "stubs/modules/stubLocation.h"

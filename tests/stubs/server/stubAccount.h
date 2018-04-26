@@ -55,6 +55,14 @@
   }
 #endif //STUB_Account_createCharacterEntity
 
+#ifndef STUB_Account_processExternalOperation
+//#define STUB_Account_processExternalOperation
+  void Account::processExternalOperation(const Operation & op, OpVector& res)
+  {
+    
+  }
+#endif //STUB_Account_processExternalOperation
+
 #ifndef STUB_Account_connectCharacter
 //#define STUB_Account_connectCharacter
   int Account::connectCharacter(LocatedEntity *chr)

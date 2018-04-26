@@ -60,3 +60,6 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 }
 
 std::string assets_directory = "";
+
+#include "stubs/common/stubAssetsManager.h"
+#include "stubs/common/stubInheritance.h"

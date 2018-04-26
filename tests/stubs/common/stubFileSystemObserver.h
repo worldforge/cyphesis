@@ -47,5 +47,13 @@
   }
 #endif //STUB_FileSystemObserver_observe
 
+#ifndef STUB_FileSystemObserver_processChangedPaths
+//#define STUB_FileSystemObserver_processChangedPaths
+  void FileSystemObserver::processChangedPaths()
+  {
+    
+  }
+#endif //STUB_FileSystemObserver_processChangedPaths
+
 
 #endif

@@ -700,14 +700,7 @@ void MindProperty::apply(LocatedEntity * ent)
 {
 }
 
-VisibilityProperty * VisibilityProperty::copy() const
-{
-    return 0;
-}
-
-void VisibilityProperty::apply(LocatedEntity * ent)
-{
-}
+#include "stubs/rulesets/stubVisibilityProperty.h"
 
 StatisticsProperty::StatisticsProperty() : m_script(0)
 {
@@ -760,13 +753,8 @@ void TransientProperty::apply(LocatedEntity * ent)
 {
 }
 
-Location::Location() :
-    m_simple(true), m_solid(true),
-    m_boxSize(0),
-    m_squareBoxSize(0),
-    m_loc(0)
-{
-}
+#include "stubs/modules/stubLocation.h"
+
 
 BaseWorld * BaseWorld::m_instance = 0;
 

@@ -15,13 +15,5 @@
   }
 #endif //STUB_VisibilityProperty_copy
 
-#ifndef STUB_VisibilityProperty_apply
-//#define STUB_VisibilityProperty_apply
-  void VisibilityProperty::apply(LocatedEntity*)
-  {
-    
-  }
-#endif //STUB_VisibilityProperty_apply
-
 
 #endif

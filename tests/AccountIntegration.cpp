@@ -832,14 +832,7 @@ void MindProperty::apply(LocatedEntity * ent)
 {
 }
 
-VisibilityProperty * VisibilityProperty::copy() const
-{
-    return 0;
-}
-
-void VisibilityProperty::apply(LocatedEntity * ent)
-{
-}
+#include "stubs/rulesets/stubVisibilityProperty.h"
 
 StatisticsProperty::StatisticsProperty() : m_script(0)
 {

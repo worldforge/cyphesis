@@ -63,5 +63,13 @@
   }
 #endif //STUB_GeometryProperty_parseScalerType
 
+#ifndef STUB_GeometryProperty_parseData
+//#define STUB_GeometryProperty_parseData
+  void GeometryProperty::parseData(std::shared_ptr<OgreMeshDeserializer> deserializer)
+  {
+    
+  }
+#endif //STUB_GeometryProperty_parseData
+
 
 #endif
