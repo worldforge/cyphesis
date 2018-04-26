@@ -51,11 +51,12 @@ void TypeNode::injectProperty(const std::string& name,
                               PropertyBase* p)
 {
     auto existingI = m_defaults.find(name);
-    if (existingI != m_defaults.end()) {
+    if (existingI != m_defaults.end() && existingI->second != p) {
         delete existingI->second;
         m_defaults.erase(existingI);
+    } else {
+        m_defaults.emplace(name, p);
     }
-    m_defaults.emplace(name, p);
     Atlas::Message::Element attributesElement = Atlas::Message::MapType();
     if (m_description->hasAttr("attributes")) {
         attributesElement = m_description->getAttr("attributes");
