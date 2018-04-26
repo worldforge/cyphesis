@@ -56,6 +56,7 @@
 #include <fstream>
 #include <boost/filesystem/operations.hpp>
 #include <common/FileSystemObserver.h>
+#include <common/AssetsManager.h>
 
 using String::compose;
 using namespace boost::asio;
@@ -263,6 +264,9 @@ int main(int argc, char ** argv)
     init_python_api(ruleset_name);
 
     FileSystemObserver* file_system_observer = new FileSystemObserver(*io_service);
+
+    AssetsManager* assets_manager = new AssetsManager(*file_system_observer);
+    assets_manager->init();
 
     Inheritance* inheritance = new Inheritance();
 
@@ -616,6 +620,8 @@ int main(int argc, char ** argv)
     }
 
     delete file_system_observer;
+
+    delete assets_manager;
 
     signalSet->clear();
     delete signalSet;
