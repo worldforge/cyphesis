@@ -99,7 +99,7 @@ void LocatedEntity::setType(const TypeNode* t)
 /// \brief Check if this entity has a property with the given name
 ///
 /// @param name Name of attribute to be checked
-/// @return trye if this entity has an attribute with the name given
+/// @return true if this entity has an attribute with the name given
 /// false otherwise
 bool LocatedEntity::hasAttr(const std::string& name) const
 {
@@ -244,9 +244,9 @@ const Domain* LocatedEntity::getDomain() const
 
 /// \brief Send an operation to the world for dispatch.
 ///
-/// sendWorld() bipasses serialno assignment, so you must ensure
+/// sendWorld() bypasses serialno assignment, so you must ensure
 /// that serialno is sorted. This allows client serialnos to get
-/// in, so that client gets correct usefull refnos back.
+/// in, so that client gets correct useful refnos back.
 void LocatedEntity::sendWorld(const Operation& op)
 {
 }

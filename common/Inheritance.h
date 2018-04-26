@@ -25,6 +25,8 @@
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/SmartPtr.h>
 
+#include <sigc++/signal.h>
+
 class PropertyBase;
 class TypeNode;
 
@@ -61,6 +63,11 @@ class Inheritance : public Singleton<Inheritance> {
     bool isTypeOf(const TypeNode * instance,
                   const TypeNode * base_type) const;
     void flush();
+
+    /**
+     * Emitted when a type has been changed.
+     */
+    sigc::signal<void, TypeNode*> typeUpdated;
 };
 
 Atlas::Objects::Root atlasOpDefinition(const std::string & name,

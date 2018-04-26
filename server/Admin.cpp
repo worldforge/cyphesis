@@ -309,8 +309,8 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
     } else if (objtype == "class" || objtype == "op_definition") {
         if (Inheritance::instance().hasClass(id)) {
             if (Ruleset::instance()->modifyRule(id, arg) == 0) {
-                const Root & o = Inheritance::instance().getClass(id);
-                if (o.isValid()) {
+                const auto& o = Inheritance::instance().getClass(id);
+                if (o) {
                     Info infoToAll;
                     infoToAll->setArgs1(o);
                     BaseWorld::instance().messageToClients(infoToAll);

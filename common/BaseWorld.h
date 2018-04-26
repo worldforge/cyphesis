@@ -89,6 +89,10 @@ class BaseWorld {
         return *m_instance;
     }
 
+    static bool hasInstance() {
+        return m_instance != nullptr;
+    }
+
     LocatedEntity * getEntity(const std::string & id) const;
 
     LocatedEntity * getEntity(long id) const;

@@ -56,49 +56,50 @@ class WorldRouter : public BaseWorld {
     bool shouldBroadcastPerception(const Atlas::Objects::Operation::RootOperation &) const;
     void deliverTo(const Atlas::Objects::Operation::RootOperation &,
                    LocatedEntity &);
-    void resumeWorld();
+    void resumeWorld() override;
   public:
     explicit WorldRouter(const SystemTime & systemTime);
-    virtual ~WorldRouter();
 
-    bool idle();
+    ~WorldRouter() override;
+
+    bool idle() override;
 
     /**
      * Gets the number of seconds until the next operation needs to be dispatched.
      * @return Seconds.
      */
     double secondsUntilNextOp() const;
-    LocatedEntity * addEntity(LocatedEntity * obj);
+    LocatedEntity * addEntity(LocatedEntity * obj) override;
     LocatedEntity * addNewEntity(const std::string & type,
-                                 const Atlas::Objects::Entity::RootEntity &);
-    void delEntity(LocatedEntity * obj);
-    int createSpawnPoint(const Atlas::Message::MapType &, LocatedEntity *);
-    int removeSpawnPoint(LocatedEntity * ent);
-    int getSpawnList(Atlas::Message::ListType & data);
+                                 const Atlas::Objects::Entity::RootEntity &) override;
+    void delEntity(LocatedEntity * obj) override;
+    int createSpawnPoint(const Atlas::Message::MapType &, LocatedEntity *) override;
+    int removeSpawnPoint(LocatedEntity * ent) override;
+    int getSpawnList(Atlas::Message::ListType & data) override;
     LocatedEntity * spawnNewEntity(const std::string &,
                                    const std::string &,
-                                   const Atlas::Objects::Entity::RootEntity &);
-    int moveToSpawn(const std::string & name, Location& location);
-    Task * newTask(const std::string &, LocatedEntity &);
+                                   const Atlas::Objects::Entity::RootEntity &) override;
+    int moveToSpawn(const std::string & name, Location& location) override;
+    Task * newTask(const std::string &, LocatedEntity &) override;
     Task * activateTask(const std::string &,
                         const std::string &,
                         LocatedEntity *,
-                        LocatedEntity &);
+                        LocatedEntity &) override;
 
     ArithmeticScript * newArithmetic(const std::string &,
-                                     LocatedEntity *);
+                                     LocatedEntity *) override;
 
     void operation(const Atlas::Objects::Operation::RootOperation &,
                    LocatedEntity &);
 
-    virtual void addPerceptive(LocatedEntity *);
+    void addPerceptive(LocatedEntity *) override;
     void message(const Atlas::Objects::Operation::RootOperation &,
                          LocatedEntity &) override;
 
     void messageToClients(const Atlas::Objects::Operation::RootOperation &) override;
 
-    virtual LocatedEntity * findByName(const std::string & name);
-    virtual LocatedEntity * findByType(const std::string & type);
+    LocatedEntity * findByName(const std::string & name) override;
+    LocatedEntity * findByType(const std::string & type) override;
 
     /**
      * @brief Checks if the operation queues have been marked as dirty.

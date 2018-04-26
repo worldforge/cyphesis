@@ -29,7 +29,6 @@
 #include "common/debug.h"
 #include "common/const.h"
 #include "common/random.h"
-#include "common/system.h"
 #include "common/TypeNode.h"
 #include "common/Inheritance.h"
 #include "common/Monitors.h"
@@ -44,6 +43,7 @@
 #include <Atlas/Objects/Anonymous.h>
 
 #include <algorithm>
+#include <common/Change.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -90,13 +90,26 @@ WorldRouter::WorldRouter(const SystemTime & time) :
 
     m_gameWorld.setType(Inheritance::instance().getType("world"));
     m_eobjects[m_gameWorld.getIntId()] = &m_gameWorld;
-    //WorldTime tmp_date("612-1-1 08:57:00");
     Monitors::instance()->watch("entities", new Variable<int>(m_entityCount));
+
+    /**
+     * When types are updated we will send an "change" op to all connected clients.
+     */
+    Inheritance::instance().typeUpdated.connect([&](TypeNode* typeNode) {
+        Atlas::Objects::Operation::Change change;
+
+        Atlas::Objects::Entity::Anonymous o;
+        o->setObjtype(typeNode->description()->getObjtype());
+        o->setId(typeNode->name());
+        change->setArgs1(o);
+
+        messageToClients(change);
+    });
 }
 
 /// \brief Destructor for the world object.
 ///
-/// Destruction of the world object implicity deletes all IG objects in
+/// Destruction of the world object implicitly deletes all IG objects in
 /// the server, clears the operation queue
 WorldRouter::~WorldRouter()
 {
@@ -215,22 +228,22 @@ LocatedEntity * WorldRouter::addNewEntity(const std::string & typestr,
 
     if (intId < 0) {
         log(ERROR, "Unable to get ID for new Entity");
-        return 0;
+        return nullptr;
     }
 
     LocatedEntity * ent = EntityBuilder::instance()->newEntity(id, intId, typestr, attrs, *this);
-    if (ent == 0) {
+    if (ent == nullptr) {
         log(ERROR, String::compose("Attempt to create an entity of type \"%1\" "
                                    "but type is unknown or forbidden",
                                    typestr));
-        return 0;
+        return nullptr;
     }
     return addEntity(ent);
 }
 
 int WorldRouter::createSpawnPoint(const MapType & data, LocatedEntity * ent)
 {
-    MapType::const_iterator I = data.find("name");
+    auto I = data.find("name");
     if (I == data.end() || !I->second.isString()) {
         log(ERROR, "No name on spawn point");
         return -1;
@@ -243,7 +256,7 @@ int WorldRouter::createSpawnPoint(const MapType & data, LocatedEntity * ent)
     }
 
     const std::string & name = I->second.String();
-    SpawnDict::iterator J = m_spawns.find(name);
+    auto J = m_spawns.find(name);
     if (J != m_spawns.end()) {
         Spawn * old = J->second.first;
         J->second.first = new_spawn;
@@ -286,16 +299,16 @@ LocatedEntity * WorldRouter::spawnNewEntity(const std::string & name,
     SpawnDict::const_iterator I = m_spawns.find(name);
     if (I == m_spawns.end()) {
         log(ERROR, String::compose("Spawn not found %1", name));
-        return 0;
+        return nullptr;
     }
     Spawn * s = I->second.first;
     int ret = s->spawnEntity(type, desc);
     if (ret != 0) {
         log(ERROR, String::compose("Spawn not permitting %1", type));
-        return 0;
+        return nullptr;
     }
     LocatedEntity * e = addNewEntity(type, desc);
-    if (e == 0) {
+    if (e == nullptr) {
         log(ERROR, String::compose("Entity creation failed %1", type));
         return e;
     }
@@ -323,7 +336,7 @@ int WorldRouter::moveToSpawn(const std::string & name, Location& location)
 Task * WorldRouter::newTask(const std::string & name, LocatedEntity & owner)
 {
     Task * task = EntityBuilder::instance()->newTask(name, owner);
-    if (task == 0) {
+    if (task == nullptr) {
         log(ERROR, String::compose("Attempt to create a task of type \"%1\" "
                                    "but type is unknown or forbidden", name));
     }
@@ -414,9 +427,7 @@ void WorldRouter::messageToClients(const Operation & op)
     auto& accounts = ServerRouting::instance()->getAccounts();
     OpVector res;
     for (auto entry : accounts) {
-            auto opCopy = op.copy();
-            opCopy->setTo(entry.first);
-            entry.second->operation(opCopy, res);
+        entry.second->operation(op, res);
     }
 
     debug(std::cout << "WorldRouter::messageToClients {"
@@ -492,14 +503,14 @@ void WorldRouter::operation(const Operation & op, LocatedEntity & from)
                     << op->getFrom() << ":" << op->getTo() << "}"
                     << std::endl << std::flush;);
     assert(op->getFrom() == from.getId());
-    assert(op->getParent() != "");
+    assert(!op->getParent().empty());
 
     Dispatching.emit(op);
 
     if (!op->isDefaultTo()) {
         const std::string & to = op->getTo();
         assert(!to.empty());
-        LocatedEntity * to_entity = 0;
+        LocatedEntity * to_entity = nullptr;
 
         if (to == from.getId()) {
             if (from.isDestroyed()) {
@@ -510,7 +521,7 @@ void WorldRouter::operation(const Operation & op, LocatedEntity & from)
         } else {
             to_entity = getEntity(to);
 
-            if (to_entity == 0) {
+            if (to_entity == nullptr) {
                 debug(std::cerr << "WARNING: Op to=\"" << to << "\""
                                 << " does not exist"
                                 << std::endl << std::flush;);
@@ -518,7 +529,7 @@ void WorldRouter::operation(const Operation & op, LocatedEntity & from)
             }
         }
 
-        assert(to_entity != 0);
+        assert(to_entity != nullptr);
 
         deliverTo(op, *to_entity);
 
@@ -537,7 +548,7 @@ void WorldRouter::operation(const Operation & op, LocatedEntity & from)
 /// to the entity to the set of perceptive entities. This method is
 /// called when key events occur that indicate that the entity in
 /// question can receive broadcast perception operations.
-void WorldRouter::addPerceptive(LocatedEntity * perceptive)
+void WorldRouter::addPerceptive(LocatedEntity *)
 {
     debug(std::cout << "WorldRouter::addPerceptive" << std::endl << std::flush;);
 }
