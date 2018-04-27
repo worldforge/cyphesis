@@ -35,6 +35,9 @@ class StatisticsProperty : public PropertyBase {
 
     StatisticsProperty(const StatisticsProperty &);
   public:
+    static constexpr const char* property_name = "statistics";
+    static constexpr const char* property_atlastype = "map";
+
     explicit StatisticsProperty();
     virtual ~StatisticsProperty();
 

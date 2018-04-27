@@ -66,8 +66,7 @@ class GeometryProperty : public Property<Atlas::Message::MapType>
 {
     public:
 
-        static const std::string property_name;
-        static const std::string property_atlastype;
+        static constexpr const char* property_name = "geometry";
 
         GeometryProperty() = default;
 

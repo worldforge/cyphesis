@@ -66,8 +66,7 @@ class ModeProperty : public Property<std::string>
 
         };
 
-        static const std::string property_name;
-        static const std::string property_atlastype;
+        static constexpr const char* property_name = "mode";
 
         ModeProperty();
 

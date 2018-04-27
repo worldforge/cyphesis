@@ -24,10 +24,12 @@
  * \brief The entity on which this is set is designated the "default location" when entities enter the world.
  * \ingroup PropertyClasses
  */
-class DefaultLocationProperty : public Property<int>
+class DefaultLocationProperty : public BoolProperty
 {
     public:
-        DefaultLocationProperty();
+        static constexpr const char* property_name = "default_location";
+
+        explicit DefaultLocationProperty() = default;
 
         DefaultLocationProperty* copy() const override;
 

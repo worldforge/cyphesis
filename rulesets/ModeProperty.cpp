@@ -26,8 +26,6 @@
 #include <Atlas/Objects/Operation.h>
 #include <wfmath/atlasconv.h>
 
-const std::string ModeProperty::property_name = "mode";
-const std::string ModeProperty::property_atlastype = "string";
 
 ModeProperty::ModeProperty()
 : m_mode(Mode::Free)

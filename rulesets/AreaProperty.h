@@ -32,19 +32,23 @@ class AreaProperty : public TerrainEffectorProperty {
     Form<2> * m_shape;
 
     AreaProperty(const AreaProperty & other);
-    // Assignment isn't banned, but it's gotta be implemented before it'll
-    // work. Default should not be used.
-    AreaProperty & operator=(const AreaProperty &) = delete;
   public:
+
+    static constexpr const char* property_name = "area";
+
     explicit AreaProperty();
-    virtual ~AreaProperty();
+    ~AreaProperty() override;
 
     const Form<2> * shape() const { return m_shape; }
 
-    virtual void apply(LocatedEntity *);
+    void apply(LocatedEntity *) override;
 
-    virtual void set(const Atlas::Message::Element & val);
-    virtual AreaProperty * copy() const;
+    void set(const Atlas::Message::Element & val) override;
+    AreaProperty * copy() const override;
+
+    // Assignment isn't banned, but it's gotta be implemented before it'll
+    // work. Default should not be used.
+    AreaProperty & operator=(const AreaProperty &) = delete;
 };
 
 #endif // RULESETS_AREA_PROPERTY_H

@@ -31,6 +31,7 @@ class LineProperty : public PropertyBase {
   protected:
     CoordList m_data;
   public:
+    static constexpr const char* property_atlastype = "list";
     explicit LineProperty();
 
     virtual int get(Atlas::Message::Element & val) const;

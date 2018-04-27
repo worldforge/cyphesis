@@ -30,6 +30,9 @@ class EntityProperty : public PropertyBase
     protected:
         EntityRef m_data;
     public:
+
+        static constexpr const char* property_atlastype = "string";
+
         explicit EntityProperty() = default;
 
         EntityRef& data()

@@ -15,23 +15,6 @@
   }
 #endif //STUB_OutfitProperty_itemRemoved
 
-#ifndef STUB_OutfitProperty_OutfitProperty
-//#define STUB_OutfitProperty_OutfitProperty
-   OutfitProperty::OutfitProperty()
-    : PropertyBase()
-  {
-    
-  }
-#endif //STUB_OutfitProperty_OutfitProperty
-
-#ifndef STUB_OutfitProperty_OutfitProperty_DTOR
-//#define STUB_OutfitProperty_OutfitProperty_DTOR
-   OutfitProperty::~OutfitProperty()
-  {
-    
-  }
-#endif //STUB_OutfitProperty_OutfitProperty_DTOR
-
 #ifndef STUB_OutfitProperty_get
 //#define STUB_OutfitProperty_get
   int OutfitProperty::get(Atlas::Message::Element & val) const

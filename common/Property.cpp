@@ -170,11 +170,9 @@ SoftProperty * SoftProperty::copy() const
     return new SoftProperty(*this);
 }
 
-const std::string BoolProperty::property_atlastype = "int";
-
 int BoolProperty::get(Atlas::Message::Element & ent) const
 {
-    ent = (flags() & flag_bool) ? 1 : 0;
+    ent = hasFlags(flag_bool) ? 1 : 0;
     return 0;
 }
 
@@ -196,7 +194,7 @@ BoolProperty * BoolProperty::copy() const
 
 bool BoolProperty::isTrue() const
 {
-    return (flags() & flag_bool) != 0;
+    return hasFlags(flag_bool);
 }
 
 
@@ -207,3 +205,11 @@ template class Property<double>;
 template class Property<std::string>;
 template class Property<Atlas::Message::ListType>;
 template class Property<Atlas::Message::MapType>;
+
+template <> const std::string Property<int>::property_atlastype = "int";
+template <> const std::string Property<long>::property_atlastype = "int";
+template <> const std::string Property<float>::property_atlastype = "float";
+template <> const std::string Property<double>::property_atlastype = "float";
+template <> const std::string Property<std::string>::property_atlastype = "string";
+template <> const std::string Property<Atlas::Message::ListType>::property_atlastype = "list";
+template <> const std::string Property<Atlas::Message::MapType>::property_atlastype = "map";

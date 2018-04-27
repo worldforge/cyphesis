@@ -31,9 +31,6 @@ using Atlas::Objects::Entity::RootEntity;
 
 static const bool debug_flag = false;
 
-const std::string AngularFactorProperty::property_name = "angularfactor";
-const std::string AngularFactorProperty::property_atlastype = "list";
-
 int AngularFactorProperty::get(Element & val) const
 {
     if (m_data.isValid()) {

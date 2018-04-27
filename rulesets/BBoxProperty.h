@@ -32,19 +32,28 @@ class BBoxProperty : public PropertyBase {
   protected:
     BBox m_data;
   public:
+
+    static constexpr const char* property_name = "bbox";
+    static constexpr const char* property_atlastype = "list";
+
     explicit BBoxProperty();
 
     const BBox & data() const { return m_data; }
     BBox & data() { return m_data; }
 
-    virtual void apply(LocatedEntity *);
-    virtual int get(Atlas::Message::Element & val) const;
-    virtual void set(const Atlas::Message::Element & val);
-    virtual void add(const std::string & key,
-                     Atlas::Message::MapType & map) const;
-    virtual void add(const std::string & key,
-                     const Atlas::Objects::Entity::RootEntity & ent) const;
-    virtual BBoxProperty * copy() const;
+    void apply(LocatedEntity *) override;
+
+    int get(Atlas::Message::Element & val) const override;
+
+    void set(const Atlas::Message::Element & val) override;
+
+    void add(const std::string & key,
+                 Atlas::Message::MapType & map) const override;
+
+    void add(const std::string & key,
+                 const Atlas::Objects::Entity::RootEntity & ent) const override;
+
+    BBoxProperty * copy() const override;
 };
 
 #endif // RULESETS_B_BOX_PROPERTY_H

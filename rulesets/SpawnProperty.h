@@ -21,24 +21,22 @@
 
 #include "common/Property.h"
 
-namespace Atlas {
-    namespace Message {
-        class Element;
-        typedef std::map<std::string, Element> MapType;
-    }
-}
 
 /// \brief Class to handle Entity where new characters can be spawned.
 /// \ingroup PropertyClasses
 class SpawnProperty : public Property<Atlas::Message::MapType> {
   public:
-    SpawnProperty();
-    virtual ~SpawnProperty();
+    static constexpr const char* property_name = "spawn";
 
-    virtual SpawnProperty * copy() const;
+    SpawnProperty() = default;
 
-    virtual void apply(LocatedEntity *);
-    virtual void remove(LocatedEntity *, const std::string&);
+    ~SpawnProperty() override = default;
+
+    SpawnProperty * copy() const override;
+
+    void apply(LocatedEntity *) override;
+
+    void remove(LocatedEntity *, const std::string&) override;
 };
 
 #endif // RULESETS_SPAWN_PROPERTY_H

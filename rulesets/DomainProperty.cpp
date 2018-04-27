@@ -32,9 +32,6 @@
 #include <Atlas/Objects/Anonymous.h>
 #include <common/BaseWorld.h>
 
-const std::string DomainProperty::property_name = "domain";
-const std::string DomainProperty::property_atlastype = "string";
-
 PropertyInstanceState<Domain> DomainProperty::sInstanceState;
 
 void DomainProperty::install(LocatedEntity* entity, const std::string& name)

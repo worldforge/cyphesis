@@ -85,11 +85,11 @@ PropertyBase * MemEntity::setAttr(const std::string & name, const Atlas::Message
     //Note that we can't use the PropertyManager for this, since it's a singleton for the whole
     //system. If MemEntity was completely decoupled from Entity it would be possible though.
     PropertyBase* prop;
-    if (name == "bbox") {
+    if (name == BBoxProperty::property_name) {
         prop = new BBoxProperty();
     } else if (name == "solid") {
         prop = new SolidProperty();
-    } else if (name == "simple") {
+    } else if (name == SimpleProperty::property_name) {
         prop = new SimpleProperty();
     } else {
         prop = new SoftProperty(attr);

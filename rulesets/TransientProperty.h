@@ -25,14 +25,17 @@
 /// \ingroup PropertyClasses
 class TransientProperty : public Property<double> {
   public:
-    TransientProperty();
-    virtual ~TransientProperty();
+    static constexpr const char* property_name = "transient";
 
-    virtual TransientProperty * copy() const;
+    TransientProperty() = default;
 
-    virtual void install(LocatedEntity *, const std::string &);
+    ~TransientProperty() override = default;
 
-    virtual void apply(LocatedEntity *);
+    TransientProperty * copy() const override;
+
+    void install(LocatedEntity *, const std::string &) override;
+
+    void apply(LocatedEntity *) override;
 };
 
 #endif // RULESETS_TRANSIENT_PROPERTY_H

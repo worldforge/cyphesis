@@ -25,6 +25,8 @@
 /// \ingroup PropertyClasses
 class StatusProperty : public Property<double> {
   public:
+    static constexpr const char* property_name = "status";
+
     /// \brief Constructor
     StatusProperty() = default;
 

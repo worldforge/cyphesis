@@ -7,15 +7,6 @@
 #ifndef STUB_RULESETS_DEFAULTLOCATIONPROPERTY_H
 #define STUB_RULESETS_DEFAULTLOCATIONPROPERTY_H
 
-#ifndef STUB_DefaultLocationProperty_DefaultLocationProperty
-//#define STUB_DefaultLocationProperty_DefaultLocationProperty
-   DefaultLocationProperty::DefaultLocationProperty()
-    : Property()
-  {
-    
-  }
-#endif //STUB_DefaultLocationProperty_DefaultLocationProperty
-
 #ifndef STUB_DefaultLocationProperty_copy
 //#define STUB_DefaultLocationProperty_copy
   DefaultLocationProperty* DefaultLocationProperty::copy() const

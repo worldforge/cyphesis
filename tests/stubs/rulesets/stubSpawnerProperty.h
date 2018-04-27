@@ -16,14 +16,6 @@
   }
 #endif //STUB_SpawnerProperty_SpawnerProperty
 
-#ifndef STUB_SpawnerProperty_SpawnerProperty_DTOR
-//#define STUB_SpawnerProperty_SpawnerProperty_DTOR
-   SpawnerProperty::~SpawnerProperty()
-  {
-    
-  }
-#endif //STUB_SpawnerProperty_SpawnerProperty_DTOR
-
 #ifndef STUB_SpawnerProperty_install
 //#define STUB_SpawnerProperty_install
   void SpawnerProperty::install(LocatedEntity *, const std::string &)

@@ -30,19 +30,21 @@ class QuaternionProperty: public PropertyBase
 {
     public:
 
-        static const std::string property_atlastype;
+        static constexpr const char* property_atlastype = "list";
 
-        explicit QuaternionProperty();
-        explicit QuaternionProperty(const QuaternionProperty& rhs);
-        virtual ~QuaternionProperty();
+        explicit QuaternionProperty() = default;
 
-        virtual int get(Atlas::Message::Element & val) const;
-        virtual void set(const Atlas::Message::Element &);
+        QuaternionProperty(const QuaternionProperty& rhs);
+        virtual ~QuaternionProperty() = default;
+
+        int get(Atlas::Message::Element & val) const override;
+
+        void set(const Atlas::Message::Element &) override;
 
         const WFMath::Quaternion& data() const { return m_data; }
         WFMath::Quaternion& data() { return m_data; }
 
-        virtual QuaternionProperty * copy() const;
+        QuaternionProperty * copy() const override;
     protected:
         WFMath::Quaternion m_data;
 };

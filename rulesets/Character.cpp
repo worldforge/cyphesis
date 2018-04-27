@@ -45,6 +45,7 @@
 #include "common/Unseen.h"
 #include "common/Update.h"
 #include "common/Think.h"
+#include "TransientProperty.h"
 
 #include <wfmath/atlasconv.h>
 
@@ -99,11 +100,9 @@ const double Character::weightGain = 0.5;
 static const std::string FOOD = "food";
 static const std::string MASS = "mass";
 static const std::string MAXMASS = "maxmass";
-static const std::string OUTFIT = "outfit";
 static const std::string RIGHT_HAND_WIELD = "right_hand_wield";
 static const std::string SERIALNO = "serialno";
 static const std::string STAMINA = "stamina";
-static const std::string STATUS = "status";
 static const std::string TASKS = "tasks";
 
 /// \brief Calculate how the Characters metabolism has affected it in the
@@ -122,13 +121,13 @@ void Character::metabolise(OpVector & res, double ammount)
     // Currently handles energy
     // We should probably call this whenever the entity performs a movement.
 
-    StatusProperty * status_prop = modPropertyClass<StatusProperty>(STATUS);
+    StatusProperty * status_prop = modPropertyClassFixed<StatusProperty>();
     bool status_changed = false;
     if (status_prop == nullptr) {
         // FIXME Probably don't do enough here to set up the property.
         status_prop = new StatusProperty;
         assert(status_prop != 0);
-        m_properties[STATUS] = status_prop;
+        m_properties[StatusProperty::property_name] = status_prop;
         status_prop->set(1.f);
         status_changed = true;
     }
@@ -376,7 +375,7 @@ int Character::unlinkExternal(Link * link)
     externalLinkChanged.emit();
 
     //If the entity is marked as "transient" we should remove it from the world once it's not controlled anymore.
-    if (getProperty("transient")) {
+    if (getProperty(TransientProperty::property_name)) {
         log(INFO, "Removing entity marked as transient when mind disconnected. " + describeEntity());
 
         Atlas::Objects::Operation::Delete delOp;

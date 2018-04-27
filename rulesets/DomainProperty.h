@@ -39,8 +39,7 @@ class Domain;
 class DomainProperty: public Property<std::string> {
     public:
 
-        static const std::string property_name;
-        static const std::string property_atlastype;
+        static constexpr const char* property_name = "domain";
 
         explicit DomainProperty() = default;
 

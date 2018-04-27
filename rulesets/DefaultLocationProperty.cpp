@@ -23,10 +23,6 @@
 #include "common/BaseWorld.h"
 
 
-DefaultLocationProperty::DefaultLocationProperty()
-{
-}
-
 DefaultLocationProperty * DefaultLocationProperty::copy() const
 {
     return new DefaultLocationProperty(*this);

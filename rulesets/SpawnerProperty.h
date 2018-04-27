@@ -47,16 +47,22 @@
 class SpawnerProperty : public Property<Atlas::Message::MapType>
 {
     public:
-        explicit SpawnerProperty();
-        virtual ~SpawnerProperty();
 
-        virtual void install(LocatedEntity *, const std::string &);
-        virtual void remove(LocatedEntity *, const std::string &);
-        virtual void apply(LocatedEntity *);
-        virtual HandlerResult operation(LocatedEntity *,
+        static constexpr const char* property_name = "spawner";
+
+        explicit SpawnerProperty();
+
+        ~SpawnerProperty() override = default;
+
+        void install(LocatedEntity *, const std::string &) override;
+        void remove(LocatedEntity *, const std::string &) override;
+        void apply(LocatedEntity *) override;
+
+        HandlerResult operation(LocatedEntity *,
                                         const Operation &,
-                                        OpVector &);
-        virtual SpawnerProperty * copy() const;
+                                        OpVector &) override;
+
+        SpawnerProperty * copy() const override;
 
 
         HandlerResult tick_handler(LocatedEntity * e,

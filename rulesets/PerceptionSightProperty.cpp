@@ -19,9 +19,6 @@
 #include "PerceptionSightProperty.h"
 #include "LocatedEntity.h"
 
-const std::string PerceptionSightProperty::property_name = "perception_sight";
-const std::string PerceptionSightProperty::property_atlastype = "float";
-
 void PerceptionSightProperty::apply(LocatedEntity* entity)
 {
     PropertyBase::apply(entity);

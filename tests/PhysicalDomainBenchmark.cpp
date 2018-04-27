@@ -62,13 +62,13 @@ using Atlas::Objects::Entity::RootEntity;
 using String::compose;
 
 
-class PhysicalDomainIntegrationTest : public Cyphesis::TestBase
+class PhysicalDomainBenchmark : public Cyphesis::TestBase
 {
     protected:
         static long m_id_counter;
 
     public:
-        PhysicalDomainIntegrationTest();
+        PhysicalDomainBenchmark();
 
         static long newId();
 
@@ -83,31 +83,31 @@ class PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         void test_visibilityPerformance();
 };
 
-long PhysicalDomainIntegrationTest::m_id_counter = 0L;
+long PhysicalDomainBenchmark::m_id_counter = 0L;
 
-PhysicalDomainIntegrationTest::PhysicalDomainIntegrationTest()
+PhysicalDomainBenchmark::PhysicalDomainBenchmark()
 {
-    ADD_TEST(PhysicalDomainIntegrationTest::test_static_entities_no_move);
-    ADD_TEST(PhysicalDomainIntegrationTest::test_determinism);
-    ADD_TEST(PhysicalDomainIntegrationTest::test_visibilityPerformance);
+    ADD_TEST(PhysicalDomainBenchmark::test_static_entities_no_move);
+    ADD_TEST(PhysicalDomainBenchmark::test_determinism);
+    ADD_TEST(PhysicalDomainBenchmark::test_visibilityPerformance);
 
 }
 
-long PhysicalDomainIntegrationTest::newId()
+long PhysicalDomainBenchmark::newId()
 {
     return ++m_id_counter;
 }
 
-void PhysicalDomainIntegrationTest::setup()
+void PhysicalDomainBenchmark::setup()
 {
     m_id_counter = 0;
 }
 
-void PhysicalDomainIntegrationTest::teardown()
+void PhysicalDomainBenchmark::teardown()
 {
 
 }
-void PhysicalDomainIntegrationTest::test_static_entities_no_move()
+void PhysicalDomainBenchmark::test_static_entities_no_move()
 {
 
     double tickSize = 1.0 / 15.0;
@@ -169,7 +169,7 @@ void PhysicalDomainIntegrationTest::test_static_entities_no_move()
 
 }
 
-void PhysicalDomainIntegrationTest::test_determinism()
+void PhysicalDomainBenchmark::test_determinism()
 {
 
     double tickSize = 1.0 / 15.0;
@@ -226,7 +226,7 @@ void PhysicalDomainIntegrationTest::test_determinism()
     log(INFO, ss.str());
 }
 
-void PhysicalDomainIntegrationTest::test_visibilityPerformance()
+void PhysicalDomainBenchmark::test_visibilityPerformance()
 {
 
     double tickSize = 1.0 / 15.0;
@@ -352,7 +352,7 @@ LocatedEntity* TestWorld::addNewEntity(const std::string&,
 
 int main()
 {
-    PhysicalDomainIntegrationTest t;
+    PhysicalDomainBenchmark t;
 
     return t.run();
 }

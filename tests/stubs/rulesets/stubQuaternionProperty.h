@@ -9,29 +9,12 @@
 
 #ifndef STUB_QuaternionProperty_QuaternionProperty
 //#define STUB_QuaternionProperty_QuaternionProperty
-   QuaternionProperty::QuaternionProperty()
-    : PropertyBase()
-  {
-    
-  }
-#endif //STUB_QuaternionProperty_QuaternionProperty
-
-#ifndef STUB_QuaternionProperty_QuaternionProperty
-//#define STUB_QuaternionProperty_QuaternionProperty
    QuaternionProperty::QuaternionProperty(const QuaternionProperty& rhs)
     : PropertyBase(rhs)
   {
     
   }
 #endif //STUB_QuaternionProperty_QuaternionProperty
-
-#ifndef STUB_QuaternionProperty_QuaternionProperty_DTOR
-//#define STUB_QuaternionProperty_QuaternionProperty_DTOR
-   QuaternionProperty::~QuaternionProperty()
-  {
-    
-  }
-#endif //STUB_QuaternionProperty_QuaternionProperty_DTOR
 
 #ifndef STUB_QuaternionProperty_get
 //#define STUB_QuaternionProperty_get

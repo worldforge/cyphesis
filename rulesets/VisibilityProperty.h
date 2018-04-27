@@ -27,9 +27,11 @@
 class VisibilityProperty : public Property<float>
 {
     public:
+        static constexpr const char* property_name = "visibility";
+
         VisibilityProperty() = default;
 
-        virtual ~VisibilityProperty() = default;
+        ~VisibilityProperty() override = default;
 
         VisibilityProperty* copy() const override;
 

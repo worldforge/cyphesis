@@ -41,6 +41,8 @@
 #include "common/BaseWorld.h"
 #include "EntityProperty.h"
 #include "PerceptionSightProperty.h"
+#include "BBoxProperty.h"
+#include "SolidProperty.h"
 
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>
@@ -245,7 +247,7 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
 
     m_visibilityWorld->setForceUpdateAllAabbs(false);
 
-    auto terrainProperty = m_entity.getPropertyClass<TerrainProperty>("terrain");
+    auto terrainProperty = m_entity.getPropertyClassFixed<TerrainProperty>();
     if (terrainProperty) {
         m_terrain = &terrainProperty->getData();
     }
@@ -440,7 +442,7 @@ void PhysicalDomain::buildTerrainPages()
             spinningFriction = (float) frictionProp->data();
         }
     }
-    const auto* terrainProperty = m_entity.getPropertyClass<TerrainProperty>("terrain");
+    const auto* terrainProperty = m_entity.getPropertyClassFixed<TerrainProperty>();
     if (terrainProperty) {
         auto& terrain = terrainProperty->getData();
         auto segments = terrain.getTerrain();
@@ -838,8 +840,8 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     short collisionGroup;
     getCollisionFlagsForEntity(entity, collisionGroup, collisionMask);
 
-    auto waterBodyProp = entity.getPropertyType<int>("water_body");
-    if (waterBodyProp && waterBodyProp->data() == 1) {
+    auto waterBodyProp = entity.getPropertyClass<BoolProperty>("water_body");
+    if (waterBodyProp && waterBodyProp->isTrue()) {
         auto ghostObject = new btPairCachingGhostObject();
         entry->collisionObject = ghostObject;
         entry->collisionObject->setUserPointer(entry);
@@ -959,7 +961,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     {
 
         btSphereShape* visSphere = new btSphereShape(0);
-        auto visProp = entity.getPropertyClass<VisibilityProperty>("visibility");
+        auto visProp = entity.getPropertyClassFixed<VisibilityProperty>();
         if (visProp) {
             visSphere->setUnscaledRadius(visProp->data() / VISIBILITY_SCALING_FACTOR);
         } else if (entity.m_location.bBox().isValid() && entity.m_location.radius() > 0) {
@@ -1054,8 +1056,8 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
     m_lastMovingEntities.erase(entry);
 
     //Check if the entity is a water body, and if so remove it and detach any submerged entities.
-    auto waterBodyProp = entity.getPropertyType<int>("water_body");
-    if (waterBodyProp && waterBodyProp->data() == 1) {
+    auto waterBodyProp = entity.getPropertyClass<BoolProperty>("water_body");
+    if (waterBodyProp && waterBodyProp->isTrue()) {
         for (auto waterIterator = m_waterBodies.begin(); waterIterator != m_waterBodies.end(); ++waterIterator) {
             auto waterBody = *waterIterator;
             auto* waterBodyEntry = static_cast<BulletEntry*>(waterBody->getUserPointer());
@@ -1232,7 +1234,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
         }
         m_movingEntities.insert(bulletEntry);
         return;
-    } else if (name == "solid") {
+    } else if (name == SolidProperty::property_name) {
         if (bulletEntry->collisionObject) {
             auto rigidBody = btRigidBody::upcast(bulletEntry->collisionObject);
             if (rigidBody) {
@@ -1277,7 +1279,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
             }
         }
 
-    } else if (name == "bbox") {
+    } else if (name == BBoxProperty::property_name) {
         const auto& bbox = bulletEntry->entity->m_location.bBox();
         if (bbox.isValid()) {
             if (bulletEntry->collisionObject) {
@@ -1428,8 +1430,8 @@ void PhysicalDomain::getCollisionFlagsForEntity(const LocatedEntity& entity, sho
     //The "mask" defines the other kind of object this body will react with.
 
     //Water bodies behave in a special way, so check for that.
-    auto waterBodyProp = entity.getPropertyType<int>("water_body");
-    if (waterBodyProp && waterBodyProp->data() == 1) {
+    auto waterBodyProp = entity.getPropertyClass<BoolProperty>("water_body");
+    if (waterBodyProp && waterBodyProp->isTrue()) {
         //A body of water should behave like terrain, and interact with both physical and non-physical entities.
         collisionGroup = COLLISION_MASK_TERRAIN;
         collisionMask = COLLISION_MASK_NON_PHYSICAL | COLLISION_MASK_PHYSICAL;
@@ -1487,8 +1489,8 @@ void PhysicalDomain::entityPropertyApplied(const std::string& name, PropertyBase
             entry.second.rigidBody->setSpinningFriction(static_cast<btScalar>(frictionSpinningProp->data()));
         }
 #endif
-    } else if (name == "terrain") {
-        auto terrainProperty = m_entity.getPropertyClass<TerrainProperty>("terrain");
+    } else if (name == TerrainProperty::property_name) {
+        auto terrainProperty = m_entity.getPropertyClassFixed<TerrainProperty>();
         if (terrainProperty) {
             m_terrain = &terrainProperty->getData();
         }

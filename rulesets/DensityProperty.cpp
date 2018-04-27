@@ -35,8 +35,6 @@ using Atlas::Objects::Operation::Set;
 
 static const bool debug_flag = false;
 
-const std::string DensityProperty::property_name = "density";
-const std::string DensityProperty::property_atlastype = "float";
 
 void DensityProperty::apply(LocatedEntity *entity)
 {

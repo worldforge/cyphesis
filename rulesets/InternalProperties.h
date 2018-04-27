@@ -25,6 +25,8 @@
 /// \ingroup PropertyClasses
 class SetupProperty : public Property<int> {
   public:
+    static constexpr const char* property_name = "init";
+
     explicit SetupProperty() = default;
 
     SetupProperty * copy() const override;
@@ -36,6 +38,9 @@ class SetupProperty : public Property<int> {
 /// \ingroup PropertyClasses
 class TickProperty : public Property<double> {
   public:
+
+    static constexpr const char* property_name = "ticks";
+
     explicit TickProperty() = default;
 
     TickProperty * copy() const override;
@@ -43,10 +48,12 @@ class TickProperty : public Property<double> {
     void apply(LocatedEntity *) override;
 };
 
-/// \brief Class to handle whether or not an entit is simple for collisions.
+/// \brief Class to handle whether or not an entity is simple for collisions.
 /// \ingroup PropertyClasses
 class SimpleProperty : public BoolProperty {
   public:
+    static constexpr const char* property_name = "simple";
+
     /// \brief Constructor
     ///
     /// @param owner the owner of the property.

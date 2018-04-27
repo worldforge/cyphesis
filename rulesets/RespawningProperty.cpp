@@ -38,14 +38,6 @@ using Atlas::Objects::Operation::Set;
 
 PropertyInstanceState<sigc::connection> RespawningProperty::sInstanceState;
 
-RespawningProperty::RespawningProperty()
-{
-}
-
-RespawningProperty::~RespawningProperty()
-{
-}
-
 void RespawningProperty::install(LocatedEntity * owner, const std::string & name)
 {
     owner->installDelegate(Atlas::Objects::Operation::DELETE_NO, name);

@@ -434,7 +434,7 @@ Consumer<LocatedEntity>* ProviderFactory::createPropertyProvider(SegmentsList se
             return new EntityIdProvider();
         }else if (attr == "outfit") {
             return new PropertyProvider<OutfitProperty>(createOutfitEntityProvider(segments), attr);
-        } else if (attr == "bbox") {
+        } else if (attr == BBoxProperty::property_name) {
             return new PropertyProvider<BBoxProperty>(createBBoxProvider(segments), attr);
         } else if (attr == "contains") {
             return new ContainsProvider();

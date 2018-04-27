@@ -25,6 +25,9 @@
 /// \ingroup PropertyClasses
 class SolidProperty : public BoolProperty {
   public:
+
+    static constexpr const char* property_name = "solid";
+
     SolidProperty * copy() const override;
 
     void apply(LocatedEntity *) override;

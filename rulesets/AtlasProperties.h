@@ -29,13 +29,20 @@ class IdProperty : public PropertyBase {
   protected:
     const std::string & m_data;
   public:
+    static constexpr const char* property_name = "id";
+    static constexpr const char* property_atlastype = "string";
+
     explicit IdProperty(const std::string & data);
 
-    virtual int get(Atlas::Message::Element & val) const;
-    virtual void set(const Atlas::Message::Element & val);
-    virtual void add(const std::string & key, Atlas::Message::MapType & map) const;
-    virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
-    virtual IdProperty * copy() const;
+    int get(Atlas::Message::Element & val) const override;
+
+    void set(const Atlas::Message::Element & val) override;
+
+    void add(const std::string & key, Atlas::Message::MapType & map) const override;
+
+    void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const override;
+
+    IdProperty * copy() const override;
 };
 
 /// \brief Class to handle Entity name property

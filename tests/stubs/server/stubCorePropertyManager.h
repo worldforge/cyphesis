@@ -25,7 +25,7 @@
 
 #ifndef STUB_CorePropertyManager_installProperty
 //#define STUB_CorePropertyManager_installProperty
-  void CorePropertyManager::installProperty(const std::string & parent)
+  void CorePropertyManager::installProperty(const std::string & type_name)
   {
     
   }

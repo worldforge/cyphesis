@@ -47,16 +47,21 @@
 class RespawningProperty : public Property<std::string>
 {
     public:
-        explicit RespawningProperty();
-        virtual ~RespawningProperty();
+        static constexpr const char* property_name = "respawning";
 
-        virtual void install(LocatedEntity *, const std::string &);
-        virtual void remove(LocatedEntity *, const std::string &);
-        virtual void apply(LocatedEntity *);
-        virtual HandlerResult operation(LocatedEntity *,
+        explicit RespawningProperty() = default;
+
+        ~RespawningProperty() override = default;
+
+        void install(LocatedEntity *, const std::string &) override;
+        void remove(LocatedEntity *, const std::string &) override;
+        void apply(LocatedEntity *) override;
+
+        HandlerResult operation(LocatedEntity *,
                                         const Operation &,
-                                        OpVector &);
-        virtual RespawningProperty * copy() const;
+                                        OpVector &) override;
+
+        RespawningProperty * copy() const override;
 
 
         HandlerResult delete_handler(LocatedEntity * e,

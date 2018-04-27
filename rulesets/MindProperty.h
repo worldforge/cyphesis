@@ -27,6 +27,7 @@ class MindKit;
 /// \ingroup PropertyClasses
 class MindProperty : public Property<Atlas::Message::MapType> {
   protected:
+
     /**
      * The preferred language for this mind. For example "python".
      */
@@ -39,6 +40,8 @@ class MindProperty : public Property<Atlas::Message::MapType> {
 
     MindProperty(const MindProperty &);
   public:
+    static constexpr const char* property_name = "mind";
+
     MindProperty() = default;
     ~MindProperty() override = default;
 

@@ -16,14 +16,6 @@
   }
 #endif //STUB_PropelProperty_PropelProperty
 
-#ifndef STUB_PropelProperty_PropelProperty_DTOR
-//#define STUB_PropelProperty_PropelProperty_DTOR
-   PropelProperty::~PropelProperty()
-  {
-    
-  }
-#endif //STUB_PropelProperty_PropelProperty_DTOR
-
 #ifndef STUB_PropelProperty_get
 //#define STUB_PropelProperty_get
   int PropelProperty::get(Atlas::Message::Element & val) const

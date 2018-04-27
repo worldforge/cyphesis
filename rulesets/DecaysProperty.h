@@ -29,6 +29,9 @@
 class DecaysProperty : public Property<std::string>
 {
     public:
+
+        static constexpr const char* property_name = "decays";
+
         void install(LocatedEntity*, const std::string&) override;
 
         void remove(LocatedEntity*, const std::string&) override;

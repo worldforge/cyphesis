@@ -127,7 +127,7 @@ int SpawnEntity::placeInSpawn(Location& location) const
 {
 
     location.m_loc = m_ent->m_location.m_loc;
-    const AreaProperty * ap = m_ent->getPropertyClass<AreaProperty>("area");
+    const AreaProperty * ap = m_ent->getPropertyClassFixed<AreaProperty>();
     if (ap != 0 && ap->shape()) {
         // FIXME orientation ignored
         const Area * spawn_area = ap->shape();

@@ -27,9 +27,10 @@
 /// When this property is attached to an entity and set to 1 it intercepts any
 /// Delete operations and ignores them, thus making the entity immortal.
 /// \ingroup PropertyClasses
-class ImmortalProperty : public Property<int>
+class ImmortalProperty : public BoolProperty
 {
     public:
+        static constexpr const char* property_name = "immortal";
 
         void install(LocatedEntity *, const std::string &) override;
 

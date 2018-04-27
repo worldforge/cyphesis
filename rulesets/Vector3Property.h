@@ -30,19 +30,21 @@ class Vector3Property: public PropertyBase
 {
     public:
 
-        static const std::string property_atlastype;
+        static constexpr const char* property_atlastype = "list";
 
-        explicit Vector3Property();
-        explicit Vector3Property(const Vector3Property& rhs);
-        virtual ~Vector3Property();
+        explicit Vector3Property() = default;
+        Vector3Property(const Vector3Property& rhs);
 
-        virtual int get(Atlas::Message::Element & val) const;
-        virtual void set(const Atlas::Message::Element &);
+        ~Vector3Property() override = default;
+
+        int get(Atlas::Message::Element & val) const override;
+
+        void set(const Atlas::Message::Element &) override;
 
         const WFMath::Vector<3>& data() const { return m_data; }
         WFMath::Vector<3>& data() { return m_data; }
 
-        virtual Vector3Property * copy() const;
+        Vector3Property * copy() const override;
     protected:
         WFMath::Vector<3> m_data;
 };

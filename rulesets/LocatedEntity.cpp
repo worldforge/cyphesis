@@ -57,7 +57,7 @@ LocatedEntity::LocatedEntity(const std::string& id, long intId) :
     m_flags(0),
     m_contains(nullptr)
 {
-    m_properties["id"] = new IdProperty(getId());
+    m_properties[IdProperty::property_name] = new IdProperty(getId());
 }
 
 LocatedEntity::~LocatedEntity()

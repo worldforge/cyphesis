@@ -7,23 +7,6 @@
 #ifndef STUB_RULESETS_SPAWNPROPERTY_H
 #define STUB_RULESETS_SPAWNPROPERTY_H
 
-#ifndef STUB_SpawnProperty_SpawnProperty
-//#define STUB_SpawnProperty_SpawnProperty
-   SpawnProperty::SpawnProperty()
-    : Property()
-  {
-    
-  }
-#endif //STUB_SpawnProperty_SpawnProperty
-
-#ifndef STUB_SpawnProperty_SpawnProperty_DTOR
-//#define STUB_SpawnProperty_SpawnProperty_DTOR
-   SpawnProperty::~SpawnProperty()
-  {
-    
-  }
-#endif //STUB_SpawnProperty_SpawnProperty_DTOR
-
 #ifndef STUB_SpawnProperty_copy
 //#define STUB_SpawnProperty_copy
   SpawnProperty* SpawnProperty::copy() const

@@ -24,14 +24,6 @@
 
 using Atlas::Message::MapType;
 
-SpawnProperty::SpawnProperty()
-{
-}
-
-SpawnProperty::~SpawnProperty()
-{
-}
-
 SpawnProperty * SpawnProperty::copy() const
 {
     return new SpawnProperty(*this);

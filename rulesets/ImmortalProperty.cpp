@@ -55,7 +55,7 @@ ImmortalProperty * ImmortalProperty::copy() const
 HandlerResult ImmortalProperty::delete_handler(LocatedEntity * e,
         const Operation & op, OpVector & res)
 {
-    if (m_data == 1) {
+    if (isTrue()) {
         //This will effectively make the system ignore the Delete op.
         return OPERATION_BLOCKED;
     }

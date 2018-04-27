@@ -32,8 +32,8 @@ class AngularFactorProperty: public PropertyBase
         WFMath::Vector<3> m_data;
     public:
 
-        static const std::string property_name;
-        static const std::string property_atlastype;
+        static constexpr const char* property_name = "angularfactor";
+        static constexpr const char* property_atlastype = "list";
 
         AngularFactorProperty * copy() const override;
 

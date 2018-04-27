@@ -137,6 +137,8 @@ class Property : public PropertyBase {
     T m_data;
     Property(const Property<T> &) = default;
   public:
+    static const std::string property_atlastype;
+
     explicit Property(unsigned int flags = 0);
 
     const T & data() const { return this->m_data; }
@@ -162,12 +164,12 @@ class SoftProperty : public PropertyBase {
 
     int get(Atlas::Message::Element & val) const override ;
     void set(const Atlas::Message::Element & val) override ;
-    SoftProperty * copy() const override ;
+    SoftProperty * copy() const override;
 };
 
 class BoolProperty : public PropertyBase {
 public:
-    static const std::string property_atlastype;
+    static constexpr const char* property_atlastype = "int";
 
     explicit BoolProperty() = default;
 

@@ -38,9 +38,6 @@ using Atlas::Message::FloatType;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Root;
 
-const std::string TerrainModProperty::property_name = "terrainmod";
-const std::string TerrainModProperty::property_atlastype = "map";
-
 /// \brief TerrainModProperty constructor
 ///
 TerrainModProperty::TerrainModProperty() :

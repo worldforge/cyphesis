@@ -105,6 +105,39 @@ SoftProperty::SoftProperty(const Atlas::Message::Element & data)
 
 #endif
 
+#ifndef STUB_BoolProperty_get
+#define STUB_BoolProperty_get
+int BoolProperty::get(Atlas::Message::Element & val) const
+{
+    val = hasFlags(flag_bool) ? 1 : 0;
+    return 0;
+}
+#endif //STUB_BoolProperty_get
+
+#ifndef STUB_BoolProperty_set
+#define STUB_BoolProperty_set
+void BoolProperty::set(const Atlas::Message::Element & val)
+{
+    if (val.isInt()) {
+        if (val.Int() == 0) {
+            removeFlags(flag_bool);
+        } else {
+            addFlags(flag_bool);
+        }
+    }
+}
+#endif //STUB_BoolProperty_set
+
+
+
+#ifndef STUB_BoolProperty_isTrue
+#define STUB_BoolProperty_isTrue
+bool BoolProperty::isTrue() const
+{
+    return hasFlags(flag_bool);
+}
+#endif //STUB_BoolProperty_isTrue
+
 template class Property<int>;
 template class Property<double>;
 template class Property<float>;
@@ -113,4 +146,10 @@ template class Property<Atlas::Message::MapType>;
 template class Property<Atlas::Message::ListType>;
 //template class Property<std::vector<std::string>>;
 
-const std::string BoolProperty::property_atlastype = "int";
+template <> const std::string Property<int>::property_atlastype = "int";
+template <> const std::string Property<long>::property_atlastype = "int";
+template <> const std::string Property<float>::property_atlastype = "float";
+template <> const std::string Property<double>::property_atlastype = "float";
+template <> const std::string Property<std::string>::property_atlastype = "string";
+template <> const std::string Property<Atlas::Message::ListType>::property_atlastype = "list";
+template <> const std::string Property<Atlas::Message::MapType>::property_atlastype = "map";

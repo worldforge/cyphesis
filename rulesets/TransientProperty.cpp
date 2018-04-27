@@ -29,14 +29,6 @@ using Atlas::Message::Element;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Entity::Anonymous;
 
-TransientProperty::TransientProperty()
-{
-}
-
-TransientProperty::~TransientProperty()
-{
-}
-
 TransientProperty * TransientProperty::copy() const
 {
     return new TransientProperty(*this);

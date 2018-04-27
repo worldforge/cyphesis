@@ -696,17 +696,17 @@ void PhysicalDomainIntegrationTest::test_lake_rotated()
     TypeNode* rockType = new TypeNode("rock");
     TypeNode* lakeType = new TypeNode("lake");
 
-    Property<double>* massProp = new Property<double>();
+    auto massProp = new Property<double>();
     massProp->data() = 10000;
 
-    Property<int>* waterBodyProp = new Property<int>();
-    waterBodyProp->data() = 1;
+    auto waterBodyProp = new BoolProperty();
+    waterBodyProp->set(1);
 
-    ModeProperty* modeFreeProperty = new ModeProperty();
+    auto modeFreeProperty = new ModeProperty();
     modeFreeProperty->set("free");
     rockType->injectProperty("mode", modeFreeProperty);
 
-    ModeProperty* modeFixedProperty = new ModeProperty();
+    auto modeFixedProperty = new ModeProperty();
     modeFixedProperty->set("fixed");
 
 
@@ -789,17 +789,17 @@ void PhysicalDomainIntegrationTest::test_lake()
     TypeNode* rockType = new TypeNode("rock");
     TypeNode* lakeType = new TypeNode("lake");
 
-    Property<double>* massProp = new Property<double>();
+    auto massProp = new Property<double>();
     massProp->data() = 10000;
 
-    Property<int>* waterBodyProp = new Property<int>();
-    waterBodyProp->data() = 1;
+    auto waterBodyProp = new BoolProperty();
+    waterBodyProp->set(1);
 
-    ModeProperty* modeFreeProperty = new ModeProperty();
+    auto modeFreeProperty = new ModeProperty();
     modeFreeProperty->set("free");
     rockType->injectProperty("mode", modeFreeProperty);
 
-    ModeProperty* modeFixedProperty = new ModeProperty();
+    auto modeFixedProperty = new ModeProperty();
     modeFixedProperty->set("fixed");
 
 
@@ -917,15 +917,15 @@ void PhysicalDomainIntegrationTest::test_ocean()
     TypeNode* rockType = new TypeNode("rock");
     TypeNode* oceanType = new TypeNode("ocean");
 
-    Property<double>* massProp = new Property<double>();
+    auto massProp = new Property<double>();
     massProp->data() = 10000;
 
-    Property<int>* waterBodyProp = new Property<int>();
-    waterBodyProp->data() = 1;
+    auto waterBodyProp = new BoolProperty();
+    waterBodyProp->set(1);
 
-    ModeProperty* modeFreeProperty = new ModeProperty();
+    auto modeFreeProperty = new ModeProperty();
     modeFreeProperty->set("free");
-    ModeProperty* modeFixedProperty = new ModeProperty();
+    auto modeFixedProperty = new ModeProperty();
     modeFixedProperty->set("fixed");
 
     rockType->injectProperty("mode", modeFreeProperty);

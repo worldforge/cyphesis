@@ -337,7 +337,7 @@ bool StorageManager::storeThoughts(LocatedEntity * ent)
     Character* character = dynamic_cast<Character*>(ent);
     if (character) {
 
-        const MindProperty* mindProperty = character->getPropertyClass<MindProperty>("mind");
+        auto mindProperty = character->getPropertyClassFixed<MindProperty>();
         if (mindProperty) {
             if (mindProperty->isMindEnabled()) {
                 m_mindInspector->queryEntityForThoughts(character->getId());

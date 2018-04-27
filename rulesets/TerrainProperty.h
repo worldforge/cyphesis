@@ -56,19 +56,24 @@ class TerrainProperty : public PropertyBase {
     Mercator::TileShader* createShaders(const Atlas::Message::ListType& surfaceList);
 
   public:
-    explicit TerrainProperty(const TerrainProperty& rhs);
-    explicit TerrainProperty();
-    virtual ~TerrainProperty();
 
-    virtual void install(LocatedEntity *, const std::string &);
-    virtual void remove(LocatedEntity *, const std::string &);
-    virtual int get(Atlas::Message::Element &) const;
-    virtual void set(const Atlas::Message::Element &);
-    virtual TerrainProperty * copy() const;
-    virtual HandlerResult operation(LocatedEntity *,
+    static constexpr const char* property_name = "terrain";
+    static constexpr const char* property_atlastype = "map";
+
+    TerrainProperty(const TerrainProperty& rhs);
+    explicit TerrainProperty();
+
+    ~TerrainProperty() override;
+
+    void install(LocatedEntity *, const std::string &) override;
+    void remove(LocatedEntity *, const std::string &) override;
+    int get(Atlas::Message::Element &) const override;
+    void set(const Atlas::Message::Element &) override;
+    TerrainProperty * copy() const override;
+    HandlerResult operation(LocatedEntity *,
                                     const Operation &,
-                                    OpVector &);
-    void apply(LocatedEntity* entity);
+                                    OpVector &) override;
+    void apply(LocatedEntity* entity) override;
 
     // Applies a Mercator::TerrainMod to the terrain
     void addMod(long id, const Mercator::TerrainMod *) const;

@@ -29,9 +29,10 @@
  *
  * \ingroup PropertyClasses
  */
-class LimboProperty : public Property<int>
+class LimboProperty : public BoolProperty
 {
     public:
+        static constexpr const char* property_name = "limbo";
 
         LimboProperty * copy() const override;
 

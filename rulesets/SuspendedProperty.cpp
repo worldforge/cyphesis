@@ -29,10 +29,6 @@ using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Objects::Entity::RootEntity;
 
-SuspendedProperty::SuspendedProperty()
-{
-}
-
 SuspendedProperty * SuspendedProperty::copy() const
 {
     return new SuspendedProperty(*this);
@@ -42,9 +38,9 @@ void SuspendedProperty::apply(LocatedEntity * ent)
 {
 	//If this property is applied to the world entity, it's a special case.
 	if (ent->getIntId() == 0) {
-		BaseWorld::instance().setIsSuspended(m_data);
+		BaseWorld::instance().setIsSuspended(isTrue());
 	} else {
-		if (data() == 0) {
+		if (!isTrue()) {
 			//suspension is disabled; we should send any stored ops
 			for (auto& op : m_suspendedOps) {
 				BaseWorld::instance().message(op, *ent);
@@ -80,7 +76,7 @@ void SuspendedProperty::remove(LocatedEntity * owner, const std::string & name)
 HandlerResult SuspendedProperty::operation(LocatedEntity * e,
         const Operation & op, OpVector & res)
 {
-	if (data()) {
+	if (isTrue()) {
 		m_suspendedOps.push_back(op);
 		return OPERATION_BLOCKED;
 	} else {

@@ -20,6 +20,8 @@
 #define RULESETS_SUSPENDEDPROPERTY_H_
 
 #include "common/Property.h"
+#include <Atlas/Objects/SmartPtr.h>
+#include <Atlas/Objects/Operation.h>
 
 /**
  * \brief Suspends either the world or an entity.
@@ -34,19 +36,21 @@
  *
  * \ingroup PropertyClasses
  */
-class SuspendedProperty : public Property<int> {
+class SuspendedProperty : public BoolProperty {
 public:
-	explicit SuspendedProperty();
+    static constexpr const char* property_name = "suspended";
 
-    virtual SuspendedProperty * copy() const;
+    explicit SuspendedProperty() = default;
 
-    virtual void apply(LocatedEntity *);
+    SuspendedProperty * copy() const override;
 
-    virtual void install(LocatedEntity *, const std::string &);
-    virtual void remove(LocatedEntity *, const std::string & name);
+    void apply(LocatedEntity *) override;
+
+    void install(LocatedEntity *, const std::string &) override;
+    void remove(LocatedEntity *, const std::string & name) override;
 
     HandlerResult operation(LocatedEntity * e,
-            const Operation & op, OpVector & res);
+            const Operation & op, OpVector & res) override;
 protected:
 
     /**

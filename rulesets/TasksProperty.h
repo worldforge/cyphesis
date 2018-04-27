@@ -29,17 +29,20 @@ class TasksProperty : public PropertyBase {
   protected:
     Task * m_task;
   public:
+    static constexpr const char* property_name = "tasks";
+    static constexpr const char* property_atlastype = "map";
+
     /// \brief Constructor
     explicit TasksProperty();
 
     bool busy() const
     {
-        return m_task != 0;
+        return m_task != nullptr;
     }
 
-    virtual int get(Atlas::Message::Element & val) const;
-    virtual void set(const Atlas::Message::Element & val);
-    virtual TasksProperty * copy() const;
+    int get(Atlas::Message::Element & val) const override;
+    void set(const Atlas::Message::Element & val) override;
+    TasksProperty * copy() const override;
 
     int updateTask(LocatedEntity * owner, OpVector & res);
     int startTask(Task * task,
@@ -54,7 +57,7 @@ class TasksProperty : public PropertyBase {
 
     HandlerResult operation(LocatedEntity * owner,
                             const Operation & op,
-                            OpVector &);
+                            OpVector &) override;
 };
 
 #endif // RULESETS_TASKS_PROPERTY_H

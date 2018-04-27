@@ -7,23 +7,6 @@
 #ifndef STUB_RULESETS_TRANSIENTPROPERTY_H
 #define STUB_RULESETS_TRANSIENTPROPERTY_H
 
-#ifndef STUB_TransientProperty_TransientProperty
-//#define STUB_TransientProperty_TransientProperty
-   TransientProperty::TransientProperty()
-    : Property()
-  {
-    
-  }
-#endif //STUB_TransientProperty_TransientProperty
-
-#ifndef STUB_TransientProperty_TransientProperty_DTOR
-//#define STUB_TransientProperty_TransientProperty_DTOR
-   TransientProperty::~TransientProperty()
-  {
-    
-  }
-#endif //STUB_TransientProperty_TransientProperty_DTOR
-
 #ifndef STUB_TransientProperty_copy
 //#define STUB_TransientProperty_copy
   TransientProperty* TransientProperty::copy() const

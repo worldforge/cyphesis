@@ -31,12 +31,12 @@
  */
 class PropelProperty: public PropertyBase {
     public:
-        static const std::string property_name;
-        static const std::string property_atlastype;
+        static constexpr const char* property_name = "propel";
+        static constexpr const char* property_atlastype = "list";
 
         PropelProperty();
 
-        ~PropelProperty() override;
+        ~PropelProperty() override = default;
         const WFMath::Vector<3> & data() const { return mData; }
         WFMath::Vector<3> & data() { return mData; }
 

@@ -28,6 +28,7 @@
 class BurnSpeedProperty : public Property<double>
 {
     public:
+        static constexpr const char* property_name = "burn_speed";
         void install(LocatedEntity*, const std::string&) override;
 
         void remove(LocatedEntity*, const std::string&) override;

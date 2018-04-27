@@ -85,7 +85,7 @@ bool InventoryDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, c
     }
 
     //Entities can only be seen by outside observers if they are outfitted or wielded.
-    const OutfitProperty* outfitProperty = m_entity.getPropertyClass<OutfitProperty>("outfit");
+    const OutfitProperty* outfitProperty = m_entity.getPropertyClassFixed<OutfitProperty>();
     if (outfitProperty) {
         for (auto& entry : outfitProperty->data()) {
             auto outfittedEntity = entry.second.get();

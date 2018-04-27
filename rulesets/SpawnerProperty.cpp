@@ -53,9 +53,6 @@ SpawnerProperty::SpawnerProperty() :
 {
 }
 
-SpawnerProperty::~SpawnerProperty()
-{
-}
 
 void SpawnerProperty::install(LocatedEntity * owner, const std::string & name)
 {
@@ -212,8 +209,6 @@ void SpawnerProperty::handleTick(LocatedEntity * e, const Operation & op,
     //If we've come here there's not enough entities of the requested
     //type within the radius; spawn a new one
     createNewEntity(e, op, res, container_entity->getId());
-
-    return;
 
 }
 

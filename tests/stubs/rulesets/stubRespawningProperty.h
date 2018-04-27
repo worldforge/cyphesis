@@ -7,23 +7,6 @@
 #ifndef STUB_RULESETS_RESPAWNINGPROPERTY_H
 #define STUB_RULESETS_RESPAWNINGPROPERTY_H
 
-#ifndef STUB_RespawningProperty_RespawningProperty
-//#define STUB_RespawningProperty_RespawningProperty
-   RespawningProperty::RespawningProperty()
-    : Property()
-  {
-    
-  }
-#endif //STUB_RespawningProperty_RespawningProperty
-
-#ifndef STUB_RespawningProperty_RespawningProperty_DTOR
-//#define STUB_RespawningProperty_RespawningProperty_DTOR
-   RespawningProperty::~RespawningProperty()
-  {
-    
-  }
-#endif //STUB_RespawningProperty_RespawningProperty_DTOR
-
 #ifndef STUB_RespawningProperty_install
 //#define STUB_RespawningProperty_install
   void RespawningProperty::install(LocatedEntity *, const std::string &)

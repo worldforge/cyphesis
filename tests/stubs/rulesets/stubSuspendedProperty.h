@@ -7,15 +7,6 @@
 #ifndef STUB_RULESETS_SUSPENDEDPROPERTY_H
 #define STUB_RULESETS_SUSPENDEDPROPERTY_H
 
-#ifndef STUB_SuspendedProperty_SuspendedProperty
-//#define STUB_SuspendedProperty_SuspendedProperty
-   SuspendedProperty::SuspendedProperty()
-    : Property()
-  {
-    
-  }
-#endif //STUB_SuspendedProperty_SuspendedProperty
-
 #ifndef STUB_SuspendedProperty_copy
 //#define STUB_SuspendedProperty_copy
   SuspendedProperty* SuspendedProperty::copy() const

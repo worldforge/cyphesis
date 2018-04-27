@@ -19,22 +19,14 @@
 
 #include <wfmath/atlasconv.h>
 
-const std::string Vector3Property::property_atlastype = "list";
-
-Vector3Property::Vector3Property()
-{
-}
 
 Vector3Property::Vector3Property(const Vector3Property& rhs)
+    : PropertyBase(rhs)
 {
     m_data = rhs.m_data;
 }
 
-Vector3Property::~Vector3Property()
-{
-}
-
-int Vector3Property::get(Atlas::Message::Element & val) const
+int Vector3Property::get(Atlas::Message::Element& val) const
 {
     if (m_data.isValid()) {
         val = m_data.toAtlas();
@@ -44,14 +36,14 @@ int Vector3Property::get(Atlas::Message::Element & val) const
 
 }
 
-void Vector3Property::set(const Atlas::Message::Element & val)
+void Vector3Property::set(const Atlas::Message::Element& val)
 {
     if (val.isList()) {
         m_data.fromAtlas(val.List());
     }
 }
 
-Vector3Property * Vector3Property::copy() const
+Vector3Property* Vector3Property::copy() const
 {
     return new Vector3Property(*this);
 }

@@ -31,8 +31,7 @@ class DensityProperty: public Property<double>
 {
     public:
 
-        static const std::string property_name;
-        static const std::string property_atlastype;
+        static constexpr const char* property_name = "density";
 
         void apply(LocatedEntity *) override;
 

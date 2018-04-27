@@ -73,6 +73,7 @@ int LocatedEntity::getAttrType(const std::string & name,
 #include "stubs/rulesets/stubTerrainEffectorProperty.h"
 #include "stubs/rulesets/stubDomain.h"
 #include "stubs/rulesets/stubVector3Property.h"
+#include "stubs/rulesets/stubBiomassProperty.h"
 
 
 

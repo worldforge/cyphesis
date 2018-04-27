@@ -97,9 +97,9 @@ void CorePropertyManager::installProperty(const std::string & type_name,
 }
 
 template<typename PropertyT>
-void CorePropertyManager::installProperty(const std::string & parent)
+void CorePropertyManager::installProperty(const std::string & type_name)
 {
-    this->installProperty<PropertyT>(PropertyT::property_name, parent);
+    this->installProperty<PropertyT>(type_name, PropertyT::property_atlastype);
 }
 
 template<typename PropertyT>
@@ -118,57 +118,57 @@ CorePropertyManager::CorePropertyManager()
     installBaseProperty<ListType>("list", "root_type");
     installBaseProperty<MapType>("map", "root_type");
 
-    installProperty<Property<double>>("stamina", "float");
+    installProperty<Property<double>>("stamina");
     installProperty<ModeProperty>();
-    installProperty<LineProperty>("coords", "list");
-    installProperty<LineProperty>("points", "list");
+    installProperty<LineProperty>("coords");
+    installProperty<LineProperty>("points");
     //installProperty<Property<IdList> >("start_intersections", "list");
     //installProperty<Property<IdList> >("end_intersections", "list");
-    installProperty<DecaysProperty>("decays", "string");
-    installProperty<OutfitProperty>("outfit", "map");
-    installProperty<SolidProperty>("solid", BoolProperty::property_atlastype);
-    installProperty<SimpleProperty>("simple", BoolProperty::property_atlastype);
-    installProperty<StatusProperty>("status", "float");
-    installProperty<BiomassProperty>("biomass", "float");
-    installProperty<BurnSpeedProperty>("burn_speed", "float");
-    installProperty<TransientProperty>("transient", "float");
-    installProperty<Property<double> >("food", "float");
-    installProperty<Property<double> >("mass", "float");
-    installProperty<BBoxProperty>("bbox", "list");
-    installProperty<MindProperty>("mind", "map");
-    installProperty<SetupProperty>("init", "int");
-    installProperty<TickProperty>("ticks", "float");
-    installProperty<StatisticsProperty>("statistics", "map");
-    installProperty<SpawnProperty>("spawn", "map");
-    installProperty<AreaProperty>("area", "map");
-    installProperty<VisibilityProperty>("visibility", "float");
+    installProperty<DecaysProperty>();
+    installProperty<OutfitProperty>();
+    installProperty<SolidProperty>();
+    installProperty<SimpleProperty>();
+    installProperty<StatusProperty>();
+    installProperty<BiomassProperty>();
+    installProperty<BurnSpeedProperty>();
+    installProperty<TransientProperty>();
+    installProperty<Property<double>>("food");
+    installProperty<Property<double>>("mass");
+    installProperty<BBoxProperty>();
+    installProperty<MindProperty>();
+    installProperty<SetupProperty>();
+    installProperty<TickProperty>();
+    installProperty<StatisticsProperty>();
+    installProperty<SpawnProperty>();
+    installProperty<AreaProperty>();
+    installProperty<VisibilityProperty>();
     installProperty<TerrainModProperty>();
-    installProperty<TerrainProperty>("terrain", "map");
-    installProperty<TeleportProperty>("linked", "string");
-    installProperty<SuspendedProperty>("suspended", "int");
-    installProperty<TasksProperty>("tasks", "map");
-    installProperty<EntityProperty>("right_hand_wield", "string");
-    installProperty<SpawnerProperty>("spawner", "map");
-    installProperty<ImmortalProperty>("immortal", "int");
-    installProperty<RespawningProperty>("respawning", "string");
-    installProperty<DefaultLocationProperty>("default_location", "int");
-    installProperty<DomainProperty>("domain", "string");
-    installProperty<LimboProperty>("limbo", "int");
+    installProperty<TerrainProperty>();
+    installProperty<TeleportProperty>("linked");
+    installProperty<SuspendedProperty>();
+    installProperty<TasksProperty>();
+    installProperty<EntityProperty>("right_hand_wield");
+    installProperty<SpawnerProperty>();
+    installProperty<ImmortalProperty>();
+    installProperty<RespawningProperty>();
+    installProperty<DefaultLocationProperty>();
+    installProperty<DomainProperty>();
+    installProperty<LimboProperty>();
     installProperty<PropelProperty>();
     installProperty<DensityProperty>();
     /**
      * Friction is used by the physics system. 0 is no friction, 1 is full friction.
      * This is for "sliding", see "friction-roll" and "friction-spin".
      */
-    installProperty<Property<double>>("friction", "float");
+    installProperty<Property<double>>("friction");
     /**
      * Friction for rolling is used by the physics system. 0 is no friction, 1 is full friction.
      */
-    installProperty<Property<double>>("friction_roll", "float");
+    installProperty<Property<double>>("friction_roll");
     /**
      * Friction for spinning is used by the physics system. 0 is no friction, 1 is full friction.
      */
-    installProperty<Property<double>>("friction_spin", "float");
+    installProperty<Property<double>>("friction_spin");
 
     installProperty<AngularFactorProperty>();
     installProperty<GeometryProperty>();
@@ -176,68 +176,68 @@ CorePropertyManager::CorePropertyManager()
     /**
      * Refers to an entity on which another entity is planted on.
      */
-    installProperty<EntityProperty>("planted_on", "string");
+    installProperty<EntityProperty>("planted_on");
 
 
-    installProperty<BoolProperty>("floats", BoolProperty::property_atlastype);
+    installProperty<BoolProperty>("floats");
 
     /**
      * Vertical offset to use when entity is planted, and adjusted to the height of the terrain.
      */
-    installProperty<Property<double>>("planted-offset", "float");
+    installProperty<Property<double>>("planted-offset");
 
     /**
      * Vertical scaled offset to use when entity is planted, and adjusted to the height of the terrain.
      * The resulting offset is a product of this value and the height of the entity.
      */
-    installProperty<Property<double>>("planted-scaled-offset", "float");
+    installProperty<Property<double>>("planted-scaled-offset");
 
     /**
      * The rotation applied to the entity when it's planted.
      */
-    installProperty<QuaternionProperty>("planted-rotation", QuaternionProperty::property_atlastype);
+    installProperty<QuaternionProperty>("planted-rotation");
     /**
      * The current extra rotation applied to the entity.
      * This is closely matched with "planted-rotation" to keep track of when the entity has the planted rotation applied and not.
      */
-    installProperty<QuaternionProperty>("active-rotation", QuaternionProperty::property_atlastype);
+    installProperty<QuaternionProperty>("active-rotation");
 
     /**
      * Used for things that grows, to limit the size.
      */
-    installProperty<Vector3Property>("maxsize", Vector3Property::property_atlastype);
+    installProperty<Vector3Property>("maxsize");
 
     /**
      * Specifies how much the entity is allowed to step onto things when moving, as a factor of the entity's height.
      */
-    installProperty<Property<double>>("step_factor", "float");
+    installProperty<Property<double>>("step_factor");
 
     /**
      * Specifies a mesh, model or mapping to use for client side presentation.
      */
-    installProperty<Property<std::string> >("present", "string");
+    installProperty<Property<std::string> >("present");
 
     /**
      * The max speed in meters per second (m/s) when moving over ground.
      */
-    installProperty<Property<double>>("speed-ground", "float");
+    installProperty<Property<double>>("speed-ground");
     /**
      * The max speed in meters per second (m/s) when moving in water.
      */
-    installProperty<Property<double>>("speed-water", "float");
+    installProperty<Property<double>>("speed-water");
     /**
      * The max speed in meters per second (m/s) when flying.
      */
-    installProperty<Property<double>>("speed-flight", "float");
+    installProperty<Property<double>>("speed-flight");
     /**
      * The max speed in meters per second (m/s) when jumping.
      */
-    installProperty<Property<double>>("speed-jump", "float");
+    installProperty<Property<double>>("speed-jump");
 
     /**
      * If set to 1 the entity is a body of water, i.e. either an Ocean (if no bbox) or a lake/pond (if a bbox).
      */
-    installProperty<Property<int>>("water_body", "int");
+    installProperty<BoolProperty>("water_body");
 
     installProperty<PerceptionSightProperty>();
 

@@ -35,13 +35,13 @@ static const bool debug_flag = false;
 
 static const std::string SERIALNO = "serialno";
 
-TasksProperty::TasksProperty() : PropertyBase(per_ephem), m_task(0)
+TasksProperty::TasksProperty() : PropertyBase(per_ephem), m_task(nullptr)
 {
 }
 
 int TasksProperty::get(Atlas::Message::Element & val) const
 {
-    if (m_task == 0) {
+    if (m_task == nullptr) {
         val = ListType();
         return 0;
     }
@@ -67,7 +67,7 @@ void TasksProperty::set(const Atlas::Message::Element & val)
         return;
     }
 
-    if (m_task == 0) {
+    if (m_task == nullptr) {
         log(ERROR, "No task in ::set");
         return;
     }
@@ -81,9 +81,8 @@ void TasksProperty::set(const Atlas::Message::Element & val)
             return;
         }
         const MapType & task = I->asMap();
-        MapType::const_iterator J = task.begin();
-        MapType::const_iterator Jend = task.end();
-        for (J = task.begin(); J != Jend; ++J) {
+        auto Jend = task.end();
+        for (auto J = task.begin(); J != Jend; ++J) {
             m_task->setAttr(J->first, J->second);
         }
     }
@@ -112,10 +111,10 @@ int TasksProperty::startTask(Task * task,
                              OpVector & res)
 {
     bool update_required = false;
-    if (m_task != 0) {
+    if (m_task != nullptr) {
         update_required = true;
         m_task->decRef();
-        m_task = 0;
+        m_task = nullptr;
     }
 
     task->initTask(op, res);
@@ -137,13 +136,13 @@ int TasksProperty::startTask(Task * task,
         updateTask(owner, res);
     }
 
-    return (m_task == 0) ? -1 : 0;
+    return (m_task == nullptr) ? -1 : 0;
 
 }
 
 int TasksProperty::clearTask(LocatedEntity * owner, OpVector & res)
 {
-    if (m_task == 0) {
+    if (m_task == nullptr) {
         // This function should never be called when there is no task,
         // except during Entity destruction
         assert(owner->getFlags() & entity_destroyed);
@@ -153,7 +152,7 @@ int TasksProperty::clearTask(LocatedEntity * owner, OpVector & res)
     // have a task it's count must be 1
     assert(m_task->count() == 1);
     m_task->decRef();
-    m_task = 0;
+    m_task = nullptr;
 
     return updateTask(owner, res);
 }
@@ -161,14 +160,14 @@ int TasksProperty::clearTask(LocatedEntity * owner, OpVector & res)
 void TasksProperty::stopTask(LocatedEntity * owner, OpVector & res)
 {
     // This is just clearTask without an assert
-    if (m_task == 0) {
+    if (m_task == nullptr) {
         log(ERROR, "Tasks property stop when no task");
         return;
     }
 
     assert(m_task->count() == 1);
     m_task->decRef();
-    m_task = 0;
+    m_task = nullptr;
 
     updateTask(owner, res);
 }
@@ -177,7 +176,7 @@ void TasksProperty::TickOperation(LocatedEntity * owner,
                                   const Operation & op,
                                   OpVector & res)
 {
-    if (m_task == 0) {
+    if (m_task == nullptr) {
         return;
     }
 
@@ -199,7 +198,7 @@ void TasksProperty::TickOperation(LocatedEntity * owner,
         return;
     }
     operation(owner, op, res);
-    if (m_task != 0 && res.empty()) {
+    if (m_task != nullptr && res.empty()) {
         log(WARNING, String::compose("Character::%1: Task %2 has "
                                      "stalled", __func__,
                                      m_task->name()));

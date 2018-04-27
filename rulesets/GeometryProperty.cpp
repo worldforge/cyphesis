@@ -48,9 +48,6 @@
 #include <common/Update.h>
 #include "LocatedEntity.h"
 
-const std::string GeometryProperty::property_name = "geometry";
-const std::string GeometryProperty::property_atlastype = "map";
-
 auto createBoxFn = [](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
     -> std::shared_ptr<btCollisionShape> {
     auto btSize = Convert::toBullet(size * 0.5).absolute();
@@ -479,14 +476,14 @@ void GeometryProperty::install(TypeNode* typeNode, const std::string&)
     //If there are valid mesh bounds read, and there's no bbox property already, add one.
     if (m_meshBounds.isValid()) {
         BBoxProperty* bBoxProperty = nullptr;
-        auto I = typeNode->defaults().find("bbox");
+        auto I = typeNode->defaults().find(BBoxProperty::property_name);
         if (I == typeNode->defaults().end()) {
             //Update the bbox property of the type if there are valid bounds from the mesh.
             bBoxProperty = new BBoxProperty();
             bBoxProperty->data() = m_meshBounds;
             //Mark the property as ephemeral since it's calculated.
             bBoxProperty->addFlags(flag_class | per_ephem);
-            bBoxProperty->install(typeNode, "bbox");
+            bBoxProperty->install(typeNode, BBoxProperty::property_name);
         } else if ((I->second->flags() & per_ephem) != 0) {
             bBoxProperty = dynamic_cast<BBoxProperty*>(I->second);
             if (bBoxProperty) {
@@ -497,7 +494,7 @@ void GeometryProperty::install(TypeNode* typeNode, const std::string&)
         }
 
         if (bBoxProperty) {
-            typeNode->injectProperty("bbox", bBoxProperty);
+            typeNode->injectProperty(BBoxProperty::property_name, bBoxProperty);
             Inheritance::instance().typeUpdated(typeNode);
 
             //TODO: perhaps the type nodes should keep track on entities that are using them?
@@ -506,9 +503,9 @@ void GeometryProperty::install(TypeNode* typeNode, const std::string&)
                 for (auto entry : entities) {
                     auto entity = entry.second;
                     if (entity->getType() == typeNode) {
-                        if (entity->getProperty("bbox") == bBoxProperty) {
+                        if (entity->getProperty(BBoxProperty::property_name) == bBoxProperty) {
                             bBoxProperty->apply(entity);
-                            entity->propertyApplied("bbox", *bBoxProperty);
+                            entity->propertyApplied(BBoxProperty::property_name, *bBoxProperty);
                         }
                     }
                 }

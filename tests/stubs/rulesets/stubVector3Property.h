@@ -9,29 +9,12 @@
 
 #ifndef STUB_Vector3Property_Vector3Property
 //#define STUB_Vector3Property_Vector3Property
-   Vector3Property::Vector3Property()
-    : PropertyBase()
-  {
-    
-  }
-#endif //STUB_Vector3Property_Vector3Property
-
-#ifndef STUB_Vector3Property_Vector3Property
-//#define STUB_Vector3Property_Vector3Property
    Vector3Property::Vector3Property(const Vector3Property& rhs)
     : PropertyBase(rhs)
   {
     
   }
 #endif //STUB_Vector3Property_Vector3Property
-
-#ifndef STUB_Vector3Property_Vector3Property_DTOR
-//#define STUB_Vector3Property_Vector3Property_DTOR
-   Vector3Property::~Vector3Property()
-  {
-    
-  }
-#endif //STUB_Vector3Property_Vector3Property_DTOR
 
 #ifndef STUB_Vector3Property_get
 //#define STUB_Vector3Property_get

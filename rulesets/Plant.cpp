@@ -33,6 +33,7 @@
 #include "common/Eat.h"
 #include "common/Tick.h"
 #include "common/Update.h"
+#include "BiomassProperty.h"
 
 #include <wfmath/atlasconv.h>
 #include <wfmath/MersenneTwister.h>
@@ -127,7 +128,7 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
     //Only do nourishment check if we've had a chance to send an Eat op.
     //Else we'll be shrinking each time the server is restarted.
     if (m_nourishment) {
-        StatusProperty * status = requirePropertyClass<StatusProperty>("status", 1);
+        auto status = requirePropertyClassFixed<StatusProperty>(1);
         double & new_status = status->data();
         status->addFlags(flag_unsent);
         if (*m_nourishment <= 0) {
@@ -140,20 +141,20 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
                 new_status = 1.;
             }
 
-            Property<double> * mass_prop = requirePropertyClass<Property<double> >("mass", 0.);
-            PropertyBase * biomass = modPropertyType<double>("biomass");
-            BBoxProperty * box_property = requirePropertyClass<BBoxProperty>("bbox");
+            auto mass_prop = requirePropertyClass<Property<double> >("mass", 0.);
+            auto biomass = modPropertyClassFixed<BiomassProperty>();
+            auto box_property = requirePropertyClassFixed<BBoxProperty>();
             BBox & bbox = m_location.m_bBox;
             double & mass = mass_prop->data();
             double old_mass = mass;
 
-            const DensityProperty* densityProperty = getPropertyClassFixed<DensityProperty>();
+            auto densityProperty = getPropertyClassFixed<DensityProperty>();
             if (densityProperty) {
                 //There's a density property; we shouldn't change mass directly, instead we should change the size of the entity.
                 double newMass = mass + *m_nourishment;
 
                 //Check if there's a maxsize prop, otherwise check with maxmass
-                const Vector3Property* maxSizeProp = getPropertyClass<Vector3Property>("maxsize");
+                auto maxSizeProp = getPropertyClass<Vector3Property>("maxsize");
                 if (maxSizeProp && maxSizeProp->data().isValid() && bbox.isValid() && densityProperty->data() != 0) {
                     WFMath::Vector<3> volumeVector = bbox.highCorner() - bbox.lowCorner();
                     float volume = volumeVector.x() * volumeVector.y() * volumeVector.z();
@@ -360,7 +361,7 @@ void Plant::scaleArea() {
     const WFMath::AxisBox<3>& bbox = m_location.bBox();
     if (bbox.isValid()) {
         //If there's an area we need to scale that with the bbox
-        AreaProperty * area_property = modPropertyClass<AreaProperty>("area");
+        auto area_property = modPropertyClassFixed<AreaProperty>();
         if (area_property != nullptr) {
             WFMath::AxisBox<2> footprint = area_property->shape()->footprint();
             //We'll make it so that the footprint of the area is AREA_SCALING_FACTOR times the footprint of the bbox

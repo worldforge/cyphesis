@@ -732,27 +732,7 @@ StatisticsProperty * StatisticsProperty::copy() const
     return 0;
 }
 
-TransientProperty::TransientProperty()
-{
-}
-
-TransientProperty::~TransientProperty()
-{
-}
-
-TransientProperty * TransientProperty::copy() const
-{
-    return 0;
-}
-
-void TransientProperty::install(LocatedEntity * ent, const std::string & name)
-{
-}
-
-void TransientProperty::apply(LocatedEntity * ent)
-{
-}
-
+#include "stubs/rulesets/stubTransientProperty.h"
 #include "stubs/modules/stubLocation.h"
 
 
