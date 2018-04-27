@@ -1281,27 +1281,25 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
         const auto& bbox = bulletEntry->entity->m_location.bBox();
         if (bbox.isValid()) {
             if (bulletEntry->collisionObject) {
-                btCollisionShape* collisionShape = bulletEntry->collisionShape.get();
-                btVector3 aabbMin, aabbMax;
-                collisionShape->getAabb(btTransform::getIdentity(), aabbMin, aabbMax);
-                btVector3 originalSize = (aabbMax - aabbMin) / collisionShape->getLocalScaling();
-                btVector3 newSize = Convert::toBullet(bbox.highCorner() - bbox.lowCorner());
+                //When changing shape dimensions we must first remove the object, do the change, and then add it back again.
 
-                collisionShape->setLocalScaling(newSize / originalSize);
+                //Note that we can't just call setLocalScaling since it doesn't seem to work well with mesh shapes.
+                m_dynamicsWorld->removeCollisionObject(bulletEntry->collisionObject);
 
-                //"Center of mass offset" is the inverse of the center of the object in relation to origo.
-                bulletEntry->centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
-                if (bulletEntry->motionState) {
-                    bulletEntry->motionState->m_centerOfMassOffset = btTransform(btQuaternion::getIdentity(), bulletEntry->centerOfMassOffset);
-                }
+                float mass = getMassForEntity(*bulletEntry->entity);
+
+                bulletEntry->collisionShape = createCollisionShapeForEntry(bulletEntry->entity, bbox, mass, bulletEntry->centerOfMassOffset);
+                bulletEntry->collisionObject->setCollisionShape(bulletEntry->collisionShape.get());
+                bulletEntry->collisionObject->activate();
+
+                short collisionMask;
+                short collisionGroup;
+                getCollisionFlagsForEntity(*bulletEntry->entity, collisionGroup, collisionMask);
+
+                m_dynamicsWorld->addCollisionObject(bulletEntry->collisionObject, collisionGroup, collisionMask);
 
                 applyNewPositionForEntity(bulletEntry, bulletEntry->entity->m_location.pos());
-                auto rigidBody = btRigidBody::upcast(bulletEntry->collisionObject);
-                if (rigidBody) {
-                    if (rigidBody->getInvMass() != 0) {
-                        rigidBody->activate();
-                    }
-                }
+
                 m_dynamicsWorld->updateSingleAabb(bulletEntry->collisionObject);
             }
         }

@@ -84,6 +84,10 @@ class TestPhysicalDomain : public PhysicalDomain
         {
             return btRigidBody::upcast(m_entries.find(id)->second->collisionObject);
         }
+
+        void test_childEntityPropertyApplied(const std::string& name, PropertyBase& prop, long id) {
+            childEntityPropertyApplied(name, prop, m_entries.find(id)->second);
+        }
 };
 
 
@@ -100,6 +104,8 @@ class PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         void setup() override;
 
         void teardown() override;
+
+        void test_scaleBbox();
 
         void test_convert();
 
@@ -148,6 +154,7 @@ long PhysicalDomainIntegrationTest::m_id_counter = 0L;
 
 PhysicalDomainIntegrationTest::PhysicalDomainIntegrationTest()
 {
+    ADD_TEST(PhysicalDomainIntegrationTest::test_scaleBbox);
     ADD_TEST(PhysicalDomainIntegrationTest::test_movePlantedAndResting);
     ADD_TEST(PhysicalDomainIntegrationTest::test_plantedOn);
     ADD_TEST(PhysicalDomainIntegrationTest::test_terrainMods);
@@ -188,13 +195,112 @@ void PhysicalDomainIntegrationTest::teardown()
                           __FILE__, __LINE__) != 0) {_fn(); return;}\
 }
 
+
+void PhysicalDomainIntegrationTest::test_scaleBbox()
+{
+    double tickSize = 1.0 / 15.0;
+    double time = 0;
+
+    OpVector res;
+
+    TypeNode* rockType = new TypeNode("rock");
+
+    Property<double>* massProp = new Property<double>();
+    massProp->data() = 10000;
+
+    ModeProperty* plantedProperty = new ModeProperty();
+    plantedProperty->set("planted");
+
+    ModeProperty* freeProperty = new ModeProperty();
+    freeProperty->set("free");
+
+    Entity* rootEntity = new Entity("0", newId());
+    rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
+    rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, 0, -64), WFMath::Point<3>(64, 64, 64)));
+    std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
+
+
+    long id = newId();
+    Entity* plantedEntity = new Entity(std::to_string(id), id);
+    plantedEntity->setProperty(ModeProperty::property_name, plantedProperty);
+    plantedEntity->setType(rockType);
+    plantedEntity->m_location.m_pos = WFMath::Point<3>(0, 0, 0);
+    plantedEntity->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
+
+    BBoxProperty* bBoxProperty = new BBoxProperty();
+    bBoxProperty->data() = {{-1, 0, -1},
+                            {1,  1, 1}};
+    bBoxProperty->install(plantedEntity, "bbox");
+    bBoxProperty->apply(plantedEntity);
+    plantedEntity->setProperty("bbox", bBoxProperty);
+
+
+    domain->addEntity(*plantedEntity);
+
+    btVector3 from(0, 10, 0);
+    btVector3 to(0, -10, 0);
+
+    btCollisionWorld::ClosestRayResultCallback callback(from, to);
+    domain->test_getPhysicalWorld()->rayTest(from, to, callback);
+    domain->tick(1.0f, res);
+
+    ASSERT_TRUE(callback.hasHit());
+    ASSERT_FUZZY_EQUAL(1.0f, callback.m_hitPointWorld.y(), 0.1f);
+
+    //Add a box and let it fall on the planted entity
+    id = newId();
+    Entity* freeEntity = new Entity(std::to_string(id), id);
+    freeEntity->setProperty(ModeProperty::property_name, freeProperty);
+    freeEntity->setType(rockType);
+    freeEntity->m_location.m_pos = WFMath::Point<3>(0, 10, 0);
+    freeEntity->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
+    freeEntity->m_location.setBBox({{-0.5f, 0, -0.5f}, {0.5f, 1, 0.5f}});
+    freeEntity->setProperty("mass", massProp);
+
+    domain->addEntity(*freeEntity);
+
+    while (time < 5) {
+        time += tickSize;
+        domain->tick(tickSize, res);
+    }
+
+    ASSERT_FUZZY_EQUAL(freeEntity->m_location.m_pos.y(), 1.0f, 0.1f);
+
+    domain->removeEntity(*freeEntity);
+
+    bBoxProperty->data() = {{-1, 0, -1}, {1, 2, 1}};
+    bBoxProperty->apply(plantedEntity);
+
+    domain->test_childEntityPropertyApplied("bbox", *bBoxProperty, plantedEntity->getIntId());
+
+    domain->tick(1.0f, res);
+
+    callback = btCollisionWorld::ClosestRayResultCallback(from, to);
+    domain->test_getPhysicalWorld()->rayTest(from, to, callback);
+
+    ASSERT_TRUE(callback.hasHit());
+    ASSERT_FUZZY_EQUAL(2.0f, callback.m_hitPointWorld.y(), 0.1f);
+
+    //Test again with the falling box
+    freeEntity->m_location.m_pos = WFMath::Point<3>(0, 10, 0);
+
+    domain->addEntity(*freeEntity);
+
+    time = 0;
+    while (time < 5) {
+        time += tickSize;
+        domain->tick(tickSize, res);
+    }
+
+    ASSERT_FUZZY_EQUAL(freeEntity->m_location.m_pos.y(), 2.0f, 0.1f);
+
+}
+
 void PhysicalDomainIntegrationTest::test_movePlantedAndResting()
 {
 
     //Place a box, "planted". On top of that, place another box, also "planted". And on top of that, place a box which is "free".
     //Then move the first box. The two boxes on top should move along with it.
-
-    std::vector<std::string> shapes{"box", "cylinder-x", "cylinder-y", "cylinder-z", "capsule-x", "capsule-y", "capsule-z"};
 
     auto id = newId();
     Entity* rootEntity = new Entity(std::to_string(id), id);
@@ -1627,10 +1733,10 @@ void PhysicalDomainIntegrationTest::test_visibility()
         domain->getVisibleEntitiesFor(*observerEntity, observedList);
 
         ASSERT_EQUAL(4u, observedList.size());
-        ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity){ return entity->getId() == "small2"; }) != observedList.end());
-        ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity){ return entity->getId() == "smallVisible"; }) != observedList.end());
-        ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity){ return entity->getId() == "large1"; }) != observedList.end());
-        ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity){ return entity->getId() == "observer"; }) != observedList.end());
+        ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity) { return entity->getId() == "small2"; }) != observedList.end());
+        ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity) { return entity->getId() == "smallVisible"; }) != observedList.end());
+        ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity) { return entity->getId() == "large1"; }) != observedList.end());
+        ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity) { return entity->getId() == "observer"; }) != observedList.end());
 
     }
     //Now move the observer to "small1"
@@ -1648,10 +1754,10 @@ void PhysicalDomainIntegrationTest::test_visibility()
         domain->getVisibleEntitiesFor(*observerEntity, observedList);
 
         ASSERT_EQUAL(4u, observedList.size());
-        ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity){ return entity->getId() == "small1"; }) != observedList.end());
-        ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity){ return entity->getId() == "smallVisible"; }) != observedList.end());
-        ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity){ return entity->getId() == "large1"; }) != observedList.end());
-        ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity){ return entity->getId() == "observer"; }) != observedList.end());
+        ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity) { return entity->getId() == "small1"; }) != observedList.end());
+        ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity) { return entity->getId() == "smallVisible"; }) != observedList.end());
+        ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity) { return entity->getId() == "large1"; }) != observedList.end());
+        ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity) { return entity->getId() == "observer"; }) != observedList.end());
 
     }
 }
