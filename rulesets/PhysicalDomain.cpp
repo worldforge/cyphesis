@@ -296,7 +296,7 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
                                      int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap,
                                      int partId1, int index1) override
             {
-                //If the normal points upwards it's below us
+                //If the normal points upwards it's below us.
                 if (cp.m_normalWorldOnB.y() > 0) {
                     isHit = true;
                 }
@@ -334,6 +334,8 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
                         bottomOfRay.setY(bottomOfRay.y() - rayDistance);
 
                         btCollisionWorld::ClosestRayResultCallback callback(bottomOfObject, bottomOfRay);
+                        callback.m_collisionFilterMask = collisionObject->getBroadphaseHandle()->m_collisionFilterMask;
+                        callback.m_collisionFilterGroup = collisionObject->getBroadphaseHandle()->m_collisionFilterGroup;
 
                         world->rayTest(bottomOfObject, bottomOfRay, callback);
 
