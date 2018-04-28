@@ -1476,8 +1476,7 @@ void PhysicalDomain::entityPropertyApplied(const std::string& name, PropertyBase
         for (auto& entry : m_terrainSegments) {
             entry.second.rigidBody->setFriction(static_cast<btScalar>(frictionProp->data()));
         }
-    } else if (name == "frid .."
-                       "ction_roll") {
+    } else if (name == "friction_roll") {
         auto frictionRollingProp = dynamic_cast<Property<double>*>(&prop);
         for (auto& entry : m_terrainSegments) {
             entry.second.rigidBody->setRollingFriction(static_cast<btScalar>(frictionRollingProp->data()));
