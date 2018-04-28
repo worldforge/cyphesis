@@ -505,6 +505,7 @@ const TypeNode* Inheritance::getType(const std::string & parent)
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
 #include "stubs/common/stubProperty.h"
+#include "stubs/common/stubPropertyManager.h"
 #include "server/CorePropertyManager.h"
 #include "common/Property_impl.h"
 

@@ -587,3 +587,4 @@ bool database_flag = true;
 #include "stubs/common/stubEntityKit.h"
 #include "stubs/server/stubEntityFactory.h"
 #include "stubs/server/stubEntityRuleHandler.h"
+#include "stubs/common/stubPropertyManager.h"
