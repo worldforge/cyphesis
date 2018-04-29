@@ -32,5 +32,13 @@
   }
 #endif //STUB_AssetsManager_observeFile
 
+#ifndef STUB_AssetsManager_observeDirectory
+//#define STUB_AssetsManager_observeDirectory
+  void AssetsManager::observeDirectory(boost::filesystem::path path, const std::function<void(const boost::filesystem::path& path)>& callback)
+  {
+    
+  }
+#endif //STUB_AssetsManager_observeDirectory
+
 
 #endif

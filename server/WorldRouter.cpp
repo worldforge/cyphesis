@@ -95,15 +95,20 @@ WorldRouter::WorldRouter(const SystemTime & time) :
     /**
      * When types are updated we will send an "change" op to all connected clients.
      */
-    Inheritance::instance().typeUpdated.connect([&](TypeNode* typeNode) {
-        Atlas::Objects::Operation::Change change;
+    Inheritance::instance().typesUpdated.connect([&](const std::vector<const TypeNode*> typeNodes) {
+        if (!typeNodes.empty()) {
+            Atlas::Objects::Operation::Change change;
+            std::vector<Atlas::Objects::Root> args;
+            for (auto& typeNode: typeNodes) {
+                Atlas::Objects::Entity::Anonymous o;
+                o->setObjtype(typeNode->description()->getObjtype());
+                o->setId(typeNode->name());
+                args.emplace_back(o);
+            }
+            change->setArgs(args);
 
-        Atlas::Objects::Entity::Anonymous o;
-        o->setObjtype(typeNode->description()->getObjtype());
-        o->setId(typeNode->name());
-        change->setArgs1(o);
-
-        messageToClients(change);
+            messageToClients(change);
+        }
     });
 }
 

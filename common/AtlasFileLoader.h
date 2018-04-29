@@ -39,11 +39,11 @@ class AtlasFileLoader : public Atlas::Objects::ObjectsDecoder {
 
     std::string m_filename;
 
-    virtual void objectArrived(const Atlas::Objects::Root & obj);
+    void objectArrived(const Atlas::Objects::Root & obj) override;
   public:
     AtlasFileLoader(const std::string & filename,
                     std::map<std::string, Atlas::Objects::Root> & m);
-    ~AtlasFileLoader();
+    ~AtlasFileLoader() override;
 
     bool isOpen();
 

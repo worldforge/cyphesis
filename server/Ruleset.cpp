@@ -37,8 +37,9 @@
 #include "common/Inheritance.h"
 #include "common/AtlasFileLoader.h"
 #include "common/compose.hpp"
+#include "common/AssetsManager.h"
 
-#include <Atlas/Objects/objectFactory.h>
+#include <Atlas/Objects/Anonymous.h>
 
 #include <boost/filesystem.hpp>
 
@@ -239,14 +240,50 @@ void Ruleset::getRulesFromFiles(const std::string & ruleset,
                                 RootDict & rules)
 {
 
-    std::string filename;
+    boost::filesystem::path directory = boost::filesystem::path(etc_directory) / "cyphesis" / (ruleset + ".d");
 
-    std::string dirname = etc_directory + "/cyphesis/" + ruleset + ".d";
+    if (boost::filesystem::is_directory(directory)) {
 
-    if (boost::filesystem::is_directory(dirname)) {
+        AssetsManager::instance().observeDirectory(directory, [&](const boost::filesystem::path& path) {
+            if (boost::filesystem::is_regular_file(path)) {
+                auto& filename = path.native();
+                RootDict updatedRules;
+                AtlasFileLoader f(filename, updatedRules);
+                if (!f.isOpen()) {
+                    log(ERROR, compose("Unable to open rule file \"%1\".", filename));
+                } else {
+                    log(INFO, compose("Rule file \"%1\" reloaded.", filename));
+                    f.read();
 
-    boost::filesystem::recursive_directory_iterator dir(dirname), end;
-        log(INFO, compose("Trying to load rules from directory '%1'", dirname));
+                    std::vector<const TypeNode*> changedTypes;
+
+                    for (auto& entry: updatedRules) {
+                        auto& class_name = entry.first;
+                        auto& class_desc = entry.second;
+                        int result = 0;
+                        if (Inheritance::instance().hasClass(class_name)) {
+                            log(INFO, compose("Updating existing rule \"%1\".", class_name));
+                            result = modifyRule(class_name, class_desc);
+                            if (result == 0) {
+                                auto typeNode = Inheritance::instance().getType(class_name);
+                                if (typeNode) {
+                                    changedTypes.emplace_back(typeNode);
+                                }
+                            }
+                        } else {
+                            log(INFO, compose("Installing new rule \"%1\".", class_name));
+                            installItem(class_name, class_desc);
+                            //A new type doesn't need a "change" op;
+                            // if it's a new child the existing parent will be changed itself
+                        }
+                    }
+                    Inheritance::instance().typesUpdated(changedTypes);
+                }
+            }
+        });
+
+        boost::filesystem::recursive_directory_iterator dir(directory), end;
+        log(INFO, compose("Trying to load rules from directory '%1'", directory));
 
         int count = 0;
         while (dir != end) {

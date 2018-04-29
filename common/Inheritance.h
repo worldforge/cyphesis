@@ -65,9 +65,9 @@ class Inheritance : public Singleton<Inheritance> {
     void flush();
 
     /**
-     * Emitted when a type has been changed.
+     * Emitted when types have been changed.
      */
-    sigc::signal<void, TypeNode*> typeUpdated;
+    sigc::signal<void, const std::vector<const TypeNode*>&> typesUpdated;
 };
 
 Atlas::Objects::Root atlasOpDefinition(const std::string & name,

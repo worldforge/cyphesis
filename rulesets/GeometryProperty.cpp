@@ -495,7 +495,7 @@ void GeometryProperty::install(TypeNode* typeNode, const std::string&)
 
         if (bBoxProperty) {
             typeNode->injectProperty(BBoxProperty::property_name, bBoxProperty);
-            Inheritance::instance().typeUpdated(typeNode);
+            Inheritance::instance().typesUpdated({typeNode});
 
             //TODO: perhaps the type nodes should keep track on entities that are using them?
             if (BaseWorld::hasInstance()) {

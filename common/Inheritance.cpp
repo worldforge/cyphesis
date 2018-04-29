@@ -283,6 +283,6 @@ void installStandardObjects(Inheritance & i)
     i.addChild(atlasClass("root_type", "root"));
 
     // And from here on we need to define the hierarchy as found in the C++
-    // base classes. Script classes defined in rulsets need to be added
+    // base classes. Script classes defined in rulesets need to be added
     // at runtime.
 }

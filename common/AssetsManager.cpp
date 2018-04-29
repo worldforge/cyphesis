@@ -16,6 +16,7 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <boost/algorithm/string.hpp>
 #include "AssetsManager.h"
 #include "FileSystemObserver.h"
 #include "globals.h"
@@ -38,6 +39,14 @@ void AssetsManager::init()
                 callback(event.ev.path);
             }
         }
+
+        for (auto& entry : m_directoryCallbacks) {
+            if (boost::starts_with(event.ev.path.string(), entry.first.string())) {
+                for (auto& callback : entry.second) {
+                    callback(event.ev.path);
+                }
+            }
+        }
     };
 
 
@@ -53,7 +62,10 @@ void AssetsManager::init()
 
 void AssetsManager::observeFile(boost::filesystem::path path, const std::function<void(const boost::filesystem::path& path)>& callback)
 {
-
     m_callbacks[path].push_back(callback);
+}
 
+void AssetsManager::observeDirectory(boost::filesystem::path path, const std::function<void(const boost::filesystem::path& path)>& callback)
+{
+    m_directoryCallbacks[path].push_back(callback);
 }
