@@ -525,12 +525,14 @@ void Persistence::registerCharacters(Account & ac,
 
 #include "stubs/server/stubPlayer.h"
 
-Ruleset * Ruleset::m_instance = nullptr;
+#include "stubs/server/stubRuleHandler.h"
 
-Ruleset::~Ruleset()
-{
-}
-
+#include "stubs/server/stubTaskRuleHandler.h"
+#include "stubs/server/stubEntityRuleHandler.h"
+#include "stubs/server/stubArchetypeRuleHandler.h"
+#include "stubs/server/stubOpRuleHandler.h"
+#include "stubs/server/stubPropertyRuleHandler.h"
+#include "stubs/server/stubRuleset.h"
 #include "stubs/server/stubServerRouting.h"
 
 CalendarProperty::CalendarProperty()

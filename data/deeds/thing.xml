@@ -1,0 +1,15 @@
+<atlas>
+
+    <map>
+        <map name="attributes">
+            <map name="mode">
+                <string name="default">planted</string>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">thing</string>
+        <string name="objtype">class</string>
+        <string name="parent">game_entity</string>
+    </map>
+
+</atlas>

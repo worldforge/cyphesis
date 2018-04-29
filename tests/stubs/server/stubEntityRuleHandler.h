@@ -39,14 +39,6 @@
   }
 #endif //STUB_EntityRuleHandler_modifyEntityClass
 
-#ifndef STUB_EntityRuleHandler_installStandardRules
-//#define STUB_EntityRuleHandler_installStandardRules
-  void EntityRuleHandler::installStandardRules()
-  {
-    
-  }
-#endif //STUB_EntityRuleHandler_installStandardRules
-
 #ifndef STUB_EntityRuleHandler_EntityRuleHandler
 //#define STUB_EntityRuleHandler_EntityRuleHandler
    EntityRuleHandler::EntityRuleHandler(EntityBuilder * eb)

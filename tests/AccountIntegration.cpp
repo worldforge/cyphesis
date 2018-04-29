@@ -149,12 +149,32 @@ Accountintegration::Accountintegration()
     ADD_TEST(Accountintegration::test_connectCharacter_character);
 }
 
+Atlas::Objects::Root composeDeclaration(std::string class_name, std::string parent, Atlas::Message::MapType rawAttributes) {
+
+    Atlas::Objects::Root decl;
+    decl->setObjtype("class");
+    decl->setId(class_name);
+    decl->setParent(parent);
+
+    Atlas::Message::MapType composed;
+    for (const auto& entry : rawAttributes) {
+        composed[entry.first] = Atlas::Message::MapType{
+            {"default",    entry.second},
+            {"visibility", "public"}
+        };
+    }
+
+    decl->setAttr("attributes", composed);
+    return decl;
+};
+
+
 void Accountintegration::setup()
 {
     m_inheritance = new Inheritance();
     m_time = new SystemTime;
     EntityBuilder::init();
-    new EntityRuleHandler(EntityBuilder::instance());
+    auto entityRuleHandler = new EntityRuleHandler(EntityBuilder::instance());
 
     m_world = new WorldRouter(*m_time);
 
@@ -164,6 +184,13 @@ void Accountintegration::setup()
     m_tc = new TestCommSocket();
     m_c = new Connection(*m_tc, *m_server, "addr", "3", 3);
     m_ac = new TestAccount(m_c, "user", "password", "4", 4);
+
+    std::string dependent, reason;
+
+    {
+        auto decl = composeDeclaration("thing", "game_entity", {});
+        entityRuleHandler->install(decl->getId(), decl->getParent(), decl, dependent, reason);
+    }
 }
 
 void Accountintegration::teardown()
@@ -470,6 +497,11 @@ int PythonScriptFactory<LocatedEntity>::setup()
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
 #include "stubs/common/stubProperty.h"
+
+#include "stubs/server/stubTaskRuleHandler.h"
+#include "stubs/server/stubArchetypeRuleHandler.h"
+#include "stubs/server/stubOpRuleHandler.h"
+#include "stubs/server/stubPropertyRuleHandler.h"
 
 ArithmeticBuilder * ArithmeticBuilder::m_instance = 0;
 

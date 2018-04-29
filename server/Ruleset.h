@@ -22,9 +22,16 @@
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/SmartPtr.h>
 
+#include <memory>
+
 class EntityBuilder;
 class EntityKit;
 class RuleHandler;
+class EntityRuleHandler;
+class TaskRuleHandler;
+class OpRuleHandler;
+class PropertyRuleHandler;
+class ArchetypeRuleHandler;
 class TaskKit;
 
 /// \brief Class to handle rules that cannot yet be installed, and the reason
@@ -49,11 +56,11 @@ class Ruleset {
     explicit Ruleset(EntityBuilder * eb);
     ~Ruleset();
     static Ruleset * m_instance;
-    RuleHandler * const m_taskHandler;
-    RuleHandler * const m_entityHandler;
-    RuleHandler * const m_opHandler;
-    RuleHandler * const m_propertyHandler;
-    RuleHandler * const m_archetypeHandler;
+    std::unique_ptr<TaskRuleHandler>m_taskHandler;
+    std::unique_ptr<EntityRuleHandler> m_entityHandler;
+    std::unique_ptr<OpRuleHandler> m_opHandler;
+    std::unique_ptr<PropertyRuleHandler> m_propertyHandler;
+    std::unique_ptr<ArchetypeRuleHandler> m_archetypeHandler;
 
     RuleWaitList m_waitingRules;
 
@@ -78,9 +85,9 @@ class Ruleset {
         return m_instance;
     }
     static void del() {
-        if (m_instance != 0) {
+        if (m_instance != nullptr) {
             delete m_instance;
-            m_instance = 0;
+            m_instance = nullptr;
         }
     }
 

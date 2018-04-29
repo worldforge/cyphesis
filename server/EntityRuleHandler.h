@@ -21,12 +21,14 @@
 
 #include "RuleHandler.h"
 #include <string>
+#include <map>
+#include <functional>
 
 class EntityBuilder;
 class EntityKit;
 class EntityFactoryBase;
 
-/// \brief Handle processing and updating of task ruless
+/// \brief Handle processing and updating of entity type rules
 class EntityRuleHandler : public RuleHandler {
   protected:
     EntityBuilder * const m_builder;
@@ -53,7 +55,7 @@ class EntityRuleHandler : public RuleHandler {
     int modifyEntityClass(const std::string & class_name,
                           const Atlas::Objects::Root & class_desc);
 
-    void installStandardRules();
+    std::map<std::string, std::function<EntityFactoryBase*(EntityFactoryBase*)>> mFactories;
 
   public:
     explicit EntityRuleHandler(EntityBuilder * eb);
@@ -66,6 +68,7 @@ class EntityRuleHandler : public RuleHandler {
                         std::string &) override;
     int update(const std::string &,
                        const Atlas::Objects::Root & desc) override;
+
 
 };
 

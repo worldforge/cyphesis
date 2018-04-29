@@ -1,0 +1,11 @@
+<atlas>
+
+    <map>
+        <map name="attributes">
+        </map>
+        <string name="id">stackable</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+
+</atlas>

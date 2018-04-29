@@ -30,6 +30,7 @@
 #include "server/EntityBuilder.h"
 #include "server/EntityRuleHandler.h"
 #include "server/SpawnEntity.h"
+#include "server/EntityFactory.h"
 
 #include "rulesets/Domain.h"
 #include "rulesets/World.h"
@@ -51,6 +52,7 @@
 
 #include <cassert>
 #include <server/Ruleset.h>
+#include <rulesets/Character.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -76,11 +78,59 @@ WorldRouterintegration::WorldRouterintegration()
     ADD_TEST(WorldRouterintegration::test_sequence);
 }
 
+
+
+
 void WorldRouterintegration::setup()
 {
     m_inheritance = new Inheritance();
     EntityBuilder::init();
-    new EntityRuleHandler(EntityBuilder::instance());
+
+
+    class TestEntityRuleHandler : public EntityRuleHandler {
+        public:
+            explicit TestEntityRuleHandler(EntityBuilder * eb) : EntityRuleHandler(eb) {}
+
+            int test_installEntityClass(const std::string & class_name,
+                                        const std::string & parent,
+                                        const Atlas::Objects::Root & class_desc,
+                                        std::string & dependent,
+                                        std::string & reason,
+                                        EntityFactoryBase* factory)
+            {
+                return installEntityClass(class_name, parent, class_desc, dependent, reason, factory);
+            }
+    };
+
+    auto entityRuleHandler = new TestEntityRuleHandler(EntityBuilder::instance());
+
+    auto composeDeclaration = [](std::string class_name, std::string parent, Atlas::Message::MapType rawAttributes) {
+
+        Atlas::Objects::Root decl;
+        decl->setObjtype("class");
+        decl->setId(class_name);
+        decl->setParent(parent);
+
+        Atlas::Message::MapType composed;
+        for (const auto& entry : rawAttributes) {
+            composed[entry.first] = Atlas::Message::MapType{
+                {"default",    entry.second},
+                {"visibility", "public"}
+            };
+        }
+
+        decl->setAttr("attributes", composed);
+        return decl;
+    };
+    std::string dependent, reason;
+    {
+        auto decl = composeDeclaration("thing", "game_entity", {});
+        entityRuleHandler->test_installEntityClass(decl->getId(), decl->getParent(), decl, dependent, reason, new EntityFactory<Thing>());
+    }
+    {
+        auto decl = composeDeclaration("character", "thing", {});
+        entityRuleHandler->test_installEntityClass(decl->getId(), decl->getParent(), decl, dependent, reason, new EntityFactory<Character>());
+    }
 }
 
 void WorldRouterintegration::teardown()

@@ -11,7 +11,6 @@
 #ifndef STUB_Ruleset_Ruleset
 //#define STUB_Ruleset_Ruleset
    Ruleset::Ruleset(EntityBuilder * eb)
-    : m_taskHandler(nullptr),m_entityHandler(nullptr),m_opHandler(nullptr),m_propertyHandler(nullptr),m_archetypeHandler(nullptr)
   {
     
   }

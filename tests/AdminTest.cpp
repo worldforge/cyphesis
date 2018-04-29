@@ -1501,6 +1501,14 @@ void Account::OtherOperation(const Operation &, OpVector &)
 #include "stubs/server/stubConnection.h"
 #include "stubs/modules/stubLocation.h"
 
+#include "stubs/server/stubRuleHandler.h"
+
+#include "stubs/server/stubTaskRuleHandler.h"
+#include "stubs/server/stubEntityRuleHandler.h"
+#include "stubs/server/stubArchetypeRuleHandler.h"
+#include "stubs/server/stubOpRuleHandler.h"
+#include "stubs/server/stubPropertyRuleHandler.h"
+
 
 ConnectableRouter::ConnectableRouter(const std::string & id,
                                  long iid,
@@ -1510,12 +1518,7 @@ ConnectableRouter::ConnectableRouter(const std::string & id,
 {
 }
 
-Ruleset::Ruleset(EntityBuilder * eb) :
-      m_taskHandler(0),
-      m_entityHandler(0),
-      m_opHandler(0),
-      m_propertyHandler(0),
-      m_archetypeHandler(0)
+Ruleset::Ruleset(EntityBuilder * eb)
 {
 }
 

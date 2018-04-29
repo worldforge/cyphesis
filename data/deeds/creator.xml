@@ -1,0 +1,89 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="transient">
+                <int name="default">-1</int>
+                <string name="visibility">public</string>
+            </map>
+            <map name="solid">
+                <int name="default">0</int>
+                <string name="visibility">public</string>
+            </map>
+            <!-- Creator agents should have a bbox, so that they easily can be made solid for testing purposes. -->
+            <map name="bbox">
+                <list name="default">
+                    <float>-.5</float>
+                    <float>0</float>
+                    <float>-.5</float>
+                    <float>.5</float>
+                    <float>1</float>
+                    <float>.5</float>
+                </list>
+                <string name="visibility">public</string>
+            </map>
+            <map name="geometry">
+                <map name="default">
+                    <string name="type">sphere</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+            <map name="friction">
+                <float name="default">10</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="angularfactor">
+                <list name="default">
+                    <float>0</float>
+                    <float>0</float>
+                    <float>0</float>
+                </list>
+                <string name="visibility">public</string>
+            </map>
+            <map name="mass">
+                <float name="default">1</float>
+                <string name="visibility">public</string>
+            </map>
+            <!-- Creator agents should by default move quickly. -->
+            <map name="speed-ground">
+                <float name="default">15</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="speed-water">
+                <float name="default">15</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="speed-flight">
+                <float name="default">15</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="speed-jump">
+                <float name="default">7.5</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="step_factor">
+                <float name="default">0.7</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/misc/flame/creator.modeldef</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/misc/flame/creator.modeldef</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="mode">
+                <string name="default">free</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="perception_sight">
+                <float name="default">1.0</float>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">creator</string>
+        <string name="objtype">class</string>
+        <string name="parent">character</string>
+    </map>
+
+</atlas>

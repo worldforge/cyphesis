@@ -1,0 +1,37 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="friction">
+                <float name="default">1</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="friction_roll">
+                <float name="default">0.1</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="friction_spin">
+                <float name="default">0.05</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="mode">
+                <string name="default">planted</string>
+                <string name="visibility">public</string>
+            </map>
+            <map name="status">
+                <float name="default">1.0</float>
+                <string name="visibility">public</string>
+            </map>
+            <!-- Plants should by default be represented by an upright cylinder. -->
+            <map name="geometry">
+                <map name="default">
+                    <string name="type">cylinder-y</string>
+                </map>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">plant</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+
+</atlas>

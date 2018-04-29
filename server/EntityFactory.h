@@ -43,13 +43,14 @@ class EntityFactoryBase : public EntityKit {
       std::set<EntityFactoryBase *> m_children;
 
       EntityFactoryBase();
-      virtual ~EntityFactoryBase();
+
+      ~EntityFactoryBase() override;
 
       virtual EntityFactoryBase * duplicateFactory() = 0;
 
-      void addProperties();
+      void addProperties() override;
 
-      void updateProperties();
+      void updateProperties() override;
 
 };
 
@@ -62,12 +63,13 @@ class EntityFactory : public EntityFactoryBase {
   public:
 
     EntityFactory();
-    virtual ~EntityFactory();
 
-    virtual LocatedEntity * newEntity(const std::string & id, long intId,
-                const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location);
+    ~EntityFactory() override;
 
-    virtual EntityFactoryBase * duplicateFactory();
+    LocatedEntity * newEntity(const std::string & id, long intId,
+                const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location) override;
+
+    EntityFactoryBase * duplicateFactory() override;
 
 };
 

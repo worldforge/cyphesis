@@ -1,0 +1,19 @@
+<atlas>
+
+    <map>
+        <map name="attributes">
+            <map name="density">
+                <float name="default">125</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="perception_sight">
+                <float name="default">1.0</float>
+                <string name="visibility">public</string>
+            </map>
+        </map>
+        <string name="id">character</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+
+</atlas>

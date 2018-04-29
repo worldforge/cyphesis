@@ -115,6 +115,25 @@ void Rulesetintegration::test_init()
     assert(Ruleset::instance() == 0);
 }
 
+Atlas::Objects::Root composeDeclaration(std::string class_name, std::string parent, Atlas::Message::MapType rawAttributes) {
+
+    Atlas::Objects::Root decl;
+    decl->setObjtype("class");
+    decl->setId(class_name);
+    decl->setParent(parent);
+
+    Atlas::Message::MapType composed;
+    for (const auto& entry : rawAttributes) {
+        composed[entry.first] = Atlas::Message::MapType{
+            {"default",    entry.second},
+            {"visibility", "public"}
+        };
+    }
+
+    decl->setAttr("attributes", composed);
+    return decl;
+};
+
 void Rulesetintegration::test_sequence()
 {
     {
@@ -125,6 +144,12 @@ void Rulesetintegration::test_sequence()
         EntityBuilder * test_eb = EntityBuilder::instance();
         assert(test_eb == m_entity_builder);
         Ruleset test_ruleset(test_eb);
+
+
+        {
+            auto decl = composeDeclaration("thing", "game_entity", {});
+            test_ruleset.installItem(decl->getId(), decl);
+        }
 
         // Attributes for test entities being created
         Anonymous attributes;

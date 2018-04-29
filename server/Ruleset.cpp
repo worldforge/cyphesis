@@ -152,8 +152,8 @@ void Ruleset::installItem(const std::string & class_name,
 
     // Install any rules that were waiting for this rule before they
     // could be installed
-    RuleWaitList::iterator I = m_waitingRules.lower_bound(class_name);
-    RuleWaitList::iterator Iend = m_waitingRules.upper_bound(class_name);
+    auto I = m_waitingRules.lower_bound(class_name);
+    auto Iend = m_waitingRules.upper_bound(class_name);
     RootDict readyRules;
     for (; I != Iend; ++I) {
         const std::string & wClassName = I->second.name;
@@ -172,7 +172,6 @@ void Ruleset::installItem(const std::string & class_name,
         const Root & rClassDesc = K->second;
         installItem(rClassName, rClassDesc);
     }
-    return;
 }
 
 int Ruleset::modifyRule(const std::string & class_name,
