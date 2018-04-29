@@ -156,16 +156,17 @@ class ArchetypeFactory: public EntityKit
 
     public:
         explicit ArchetypeFactory();
-        virtual ~ArchetypeFactory();
 
-        virtual LocatedEntity * newEntity(const std::string & id, long intId,
+        ~ArchetypeFactory() override;
+
+        LocatedEntity * newEntity(const std::string & id, long intId,
                 const Atlas::Objects::Entity::RootEntity & attributes,
-                LocatedEntity* location);
+                LocatedEntity* location) override;
         virtual ArchetypeFactory * duplicateFactory();
 
-        virtual void addProperties();
+        void addProperties() override;
 
-        virtual void updateProperties();
+        std::map<const TypeNode*, TypeNode::PropertiesUpdate> updateProperties() override;
 
         /// Factory for class from which the class handled by this factory
         /// inherits.

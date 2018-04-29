@@ -361,36 +361,14 @@ int CorePropertyManager::installFactory(const std::string & type_name,
     return 0;
 }
 
-ArchetypeFactory::ArchetypeFactory()
-{
-}
 
-ArchetypeFactory::ArchetypeFactory(ArchetypeFactory& rhs)
-{
-}
-
-ArchetypeFactory::~ArchetypeFactory()
-{
-}
-
-void ArchetypeFactory::addProperties()
-{
-}
-
-void ArchetypeFactory::updateProperties()
-{
-}
-
-ArchetypeFactory * ArchetypeFactory::duplicateFactory()
-{
-    return 0;
-}
-
-LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId,
-        const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
+#define STUB_ArchetypeFactory_newEntity
+LocatedEntity* ArchetypeFactory::newEntity(const std::string & id, long intId, const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
 {
     return new Entity(id, intId);
 }
+
+#include "stubs/server/stubArchetypeFactory.h"
 
 
 class World;

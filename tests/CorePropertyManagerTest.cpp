@@ -408,32 +408,12 @@ ConnectableRouter::ConnectableRouter(const std::string & id,
 {
 }
 
-template <class T>
-EntityFactory<T>::EntityFactory(EntityFactory<T> & o)
-{
-}
 
-template <class T>
-EntityFactory<T>::EntityFactory()
-{
-}
-
-template <class T>
-EntityFactory<T>::~EntityFactory()
-{
-}
-
-template <class T>
-LocatedEntity * EntityFactory<T>::newEntity(const std::string & id, long intId,
-        const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
+#define STUB_EntityFactory_newEntity
+template <typename T>
+LocatedEntity* EntityFactory<T>::newEntity(const std::string & id, long intId, const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
 {
     return new Entity(id, intId);
-}
-
-template <class T>
-EntityFactoryBase * EntityFactory<T>::duplicateFactory()
-{
-    return 0;
 }
 
 class Creator;
@@ -763,38 +743,9 @@ CommSocket::~CommSocket()
 {
 }
 
-EntityKit::EntityKit() : m_type(0),
-                         m_createdCount(0)
-{
-}
+#include "stubs/common/stubEntityKit.h"
+#include "stubs/server/stubEntityFactory.h"
 
-EntityKit::~EntityKit()
-{
-}
-
-void EntityKit::addProperties()
-{
-}
-
-void EntityKit::updateProperties()
-{
-}
-
-EntityFactoryBase::EntityFactoryBase() : EntityKit::EntityKit(), m_scriptFactory(0)
-{
-}
-
-EntityFactoryBase::~EntityFactoryBase()
-{
-}
-
-void EntityFactoryBase::addProperties()
-{
-}
-
-void EntityFactoryBase::updateProperties()
-{
-}
 
 Root atlasType(const std::string & name,
                const std::string & parent,

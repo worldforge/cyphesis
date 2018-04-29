@@ -41,11 +41,7 @@
 #include <BulletCollision/CollisionShapes/btCompoundShape.h>
 #include <BulletCollision/CollisionShapes/btConvexTriangleMeshShape.h>
 #include <boost/algorithm/string.hpp>
-#include <boost/filesystem/path.hpp>
 #include <boost/filesystem/fstream.hpp>
-#include <server/Ruleset.h>
-#include <common/BaseWorld.h>
-#include <common/Update.h>
 #include "LocatedEntity.h"
 
 auto createBoxFn = [](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
@@ -67,6 +63,7 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
                 boost::filesystem::path fullpath = boost::filesystem::path(assets_directory) / path;
                 AssetsManager::instance().observeFile(fullpath, [this, fullpath](const boost::filesystem::path& changedPath) {
 
+                    log(NOTICE, String::compose("Reloading geometry from %1.", fullpath));
                     boost::filesystem::fstream fileStream(fullpath);
                     if (fileStream) {
                         auto deserializer = std::make_shared<OgreMeshDeserializer>(fileStream);
@@ -78,6 +75,7 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
                         struct my_visitor : public boost::static_visitor<>
                         {
                             GeometryProperty* prop;
+
                             void operator()(LocatedEntity* entity) const
                             {
                             }
@@ -94,9 +92,6 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
                     } else {
                         log(ERROR, "Could not find geometry file at " + fullpath.string());
                     }
-
-
-
                 });
 
 
@@ -495,21 +490,10 @@ void GeometryProperty::install(TypeNode* typeNode, const std::string&)
 
         if (bBoxProperty) {
             typeNode->injectProperty(BBoxProperty::property_name, bBoxProperty);
-            Inheritance::instance().typesUpdated({typeNode});
+            TypeNode::PropertiesUpdate update;
+            update.changedProps.insert(BBoxProperty::property_name);
 
-            //TODO: perhaps the type nodes should keep track on entities that are using them?
-            if (BaseWorld::hasInstance()) {
-                auto& entities = BaseWorld::instance().getEntities();
-                for (auto entry : entities) {
-                    auto entity = entry.second;
-                    if (entity->getType() == typeNode) {
-                        if (entity->getProperty(BBoxProperty::property_name) == bBoxProperty) {
-                            bBoxProperty->apply(entity);
-                            entity->propertyApplied(BBoxProperty::property_name, *bBoxProperty);
-                        }
-                    }
-                }
-            }
+            Inheritance::instance().typesUpdated({{typeNode, update}});
         }
     }
 }

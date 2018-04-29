@@ -40,7 +40,8 @@ using String::compose;
 static const bool debug_flag = false;
 
 EntityFactoryBase::EntityFactoryBase()
-: m_scriptFactory(0), m_parent(0)
+: m_scriptFactory(nullptr),
+  m_parent(nullptr)
 {
 
 }
@@ -56,7 +57,7 @@ LocatedEntity * EntityFactory<World>::newEntity(const std::string & id,
                                                 const Atlas::Objects::Entity::RootEntity & attributes,
                                                 LocatedEntity* location)
 {
-    return 0;
+    return nullptr;
 }
 
 void EntityFactoryBase::initializeEntity(LocatedEntity& thing,
@@ -64,7 +65,7 @@ void EntityFactoryBase::initializeEntity(LocatedEntity& thing,
 {
     thing.setType(m_type);
     // Sort out python object
-    if (m_scriptFactory != 0) {
+    if (m_scriptFactory != nullptr) {
         debug(std::cout << "Class " << m_type->name() << " has a python class"
                         << std::endl << std::flush;);
         m_scriptFactory->addScript(&thing);
@@ -115,14 +116,15 @@ void EntityFactoryBase::initializeEntity(LocatedEntity& thing,
 
 void EntityFactoryBase::addProperties()
 {
-    assert(m_type != 0);
+    assert(m_type != nullptr);
     m_type->addProperties(m_attributes);
 }
 
-void EntityFactoryBase::updateProperties()
+std::map<const TypeNode*, TypeNode::PropertiesUpdate> EntityFactoryBase::updateProperties()
 {
-    assert(m_type != 0);
-    m_type->updateProperties(m_attributes);
+    std::map<const TypeNode*, TypeNode::PropertiesUpdate> result;
+    assert(m_type != nullptr);
+    result.emplace(m_type, m_type->updateProperties(m_attributes));
 
     for (auto& child_factory : m_children) {
         child_factory->m_attributes = m_attributes;
@@ -131,8 +133,10 @@ void EntityFactoryBase::updateProperties()
         for (; J != Jend; ++J) {
             child_factory->m_attributes[J->first] = J->second;
         }
-        child_factory->updateProperties();
+        auto childResult = child_factory->updateProperties();
+        result.insert(childResult.begin(), childResult.end());
     }
+    return result;
 }
 
 template class EntityFactory<Thing>;

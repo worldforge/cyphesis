@@ -133,9 +133,9 @@
 
 #ifndef STUB_ArchetypeFactory_updateProperties
 //#define STUB_ArchetypeFactory_updateProperties
-  void ArchetypeFactory::updateProperties()
+  std::map<TypeNode*, TypeNode::PropertiesUpdate> ArchetypeFactory::updateProperties()
   {
-    
+    return std::map<TypeNode*, TypeNode::PropertiesUpdate>();
   }
 #endif //STUB_ArchetypeFactory_updateProperties
 

@@ -268,35 +268,9 @@ TaskKit * EntityBuilder::getTaskFactory(const std::string & class_name)
     return 0;
 }
 
-EntityKit::EntityKit()
-{
-}
-EntityKit::~EntityKit()
-{
-}
+#include "stubs/common/stubEntityKit.h"
+#include "stubs/server/stubEntityFactory.h"
 
-void EntityKit::updateProperties()
-{
-}
-
-void EntityKit::addProperties()
-{
-}
-
-EntityFactoryBase::EntityFactoryBase()
-{
-}
-EntityFactoryBase::~EntityFactoryBase()
-{
-}
-
-void EntityFactoryBase::updateProperties()
-{
-}
-
-void EntityFactoryBase::addProperties()
-{
-}
 #ifndef STUB_Inheritance_addChild
 #define STUB_Inheritance_addChild
 TypeNode* Inheritance::addChild(const Atlas::Objects::Root & obj)

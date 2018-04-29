@@ -51,9 +51,9 @@
 
 #ifndef STUB_EntityFactoryBase_updateProperties
 //#define STUB_EntityFactoryBase_updateProperties
-  void EntityFactoryBase::updateProperties()
+  std::map<TypeNode*, TypeNode::PropertiesUpdate> EntityFactoryBase::updateProperties()
   {
-    
+    return std::map<TypeNode*, TypeNode::PropertiesUpdate>();
   }
 #endif //STUB_EntityFactoryBase_updateProperties
 

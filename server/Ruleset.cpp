@@ -45,9 +45,6 @@
 
 #include <iostream>
 
-#ifdef HAVE_DIRENT_H
-#endif // HAS_DIRENT_H
-
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
@@ -117,7 +114,7 @@ int Ruleset::installRuleInner(const std::string & class_name,
         ret = m_archetypeHandler->install(class_name, parent, class_desc,
                                        dependent, reason);
     } else {
-        log(ERROR, compose("Rule \"%1\" has unknown objtype=\"%2\". Skipping.",
+        log(ERROR, compose(R"(Rule "%1" has unknown objtype="%2". Skipping.)",
                            class_name, class_desc->getObjtype()));
         return -1;
     }
@@ -187,7 +184,7 @@ int Ruleset::modifyRule(const std::string & class_name,
         return -1;
     }
     assert(!o->isDefaultParent());
-    assert(o->getParent() != "");
+    assert(!o->getParent().empty());
     if (class_desc->isDefaultParent() || class_desc->getParent().empty()) {
         log(ERROR, compose("Updated type \"%1\" has no parent in its "
                            "description", class_name));
@@ -246,38 +243,31 @@ void Ruleset::getRulesFromFiles(const std::string & ruleset,
 
         AssetsManager::instance().observeDirectory(directory, [&](const boost::filesystem::path& path) {
             if (boost::filesystem::is_regular_file(path)) {
-                auto& filename = path.native();
-                RootDict updatedRules;
-                AtlasFileLoader f(filename, updatedRules);
-                if (!f.isOpen()) {
-                    log(ERROR, compose("Unable to open rule file \"%1\".", filename));
-                } else {
-                    log(INFO, compose("Rule file \"%1\" reloaded.", filename));
-                    f.read();
+                try {
+                    log(NOTICE, compose("Reloading rule file %1", path));
+                    auto& filename = path.native();
+                    RootDict updatedRules;
+                    AtlasFileLoader f(filename, updatedRules);
+                    if (!f.isOpen()) {
+                        log(ERROR, compose("Unable to open rule file \"%1\".", filename));
+                    } else {
+                        log(INFO, compose("Rule file \"%1\" reloaded.", filename));
+                        f.read();
 
-                    std::vector<const TypeNode*> changedTypes;
-
-                    for (auto& entry: updatedRules) {
-                        auto& class_name = entry.first;
-                        auto& class_desc = entry.second;
-                        int result = 0;
-                        if (Inheritance::instance().hasClass(class_name)) {
-                            log(INFO, compose("Updating existing rule \"%1\".", class_name));
-                            result = modifyRule(class_name, class_desc);
-                            if (result == 0) {
-                                auto typeNode = Inheritance::instance().getType(class_name);
-                                if (typeNode) {
-                                    changedTypes.emplace_back(typeNode);
-                                }
+                        for (auto& entry: updatedRules) {
+                            auto& class_name = entry.first;
+                            auto& class_desc = entry.second;
+                            if (Inheritance::instance().hasClass(class_name)) {
+                                log(INFO, compose("Updating existing rule \"%1\".", class_name));
+                                modifyRule(class_name, class_desc);
+                            } else {
+                                log(INFO, compose("Installing new rule \"%1\".", class_name));
+                                installItem(class_name, class_desc);
                             }
-                        } else {
-                            log(INFO, compose("Installing new rule \"%1\".", class_name));
-                            installItem(class_name, class_desc);
-                            //A new type doesn't need a "change" op;
-                            // if it's a new child the existing parent will be changed itself
                         }
                     }
-                    Inheritance::instance().typesUpdated(changedTypes);
+                } catch (const std::exception& e) {
+                    log(ERROR, compose("Error when reacting to changed file at '%1': %2", path, e.what()));
                 }
             }
         });
@@ -328,18 +318,15 @@ void Ruleset::loadRules(const std::string & ruleset)
         }
     }
 
-    RootDict::const_iterator Iend = ruleTable.end();
-    for (RootDict::const_iterator I = ruleTable.begin(); I != Iend; ++I) {
-        const std::string & class_name = I->first;
-        const Root & class_desc = I->second;
+    for (auto& entry : ruleTable) {
+        const std::string & class_name = entry.first;
+        const Root & class_desc = entry.second;
         installItem(class_name, class_desc);
     }
     // Report on the non-cleared rules.
     // Perhaps we can keep them too?
     // m_waitingRules.clear();
-    RuleWaitList::const_iterator J = m_waitingRules.begin();
-    RuleWaitList::const_iterator Jend = m_waitingRules.end();
-    for (; J != Jend; ++J) {
-        log(ERROR, J->second.reason);
+    for (auto& entry : m_waitingRules) {
+        log(ERROR, entry.second.reason);
     }
 }

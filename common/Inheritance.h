@@ -20,6 +20,7 @@
 #define COMMON_INHERITANCE_H
 
 #include "Singleton.h"
+#include "TypeNode.h"
 
 #include <Atlas/Objects/ObjectsFwd.h>
 #include <Atlas/Objects/Root.h>
@@ -28,7 +29,6 @@
 #include <sigc++/signal.h>
 
 class PropertyBase;
-class TypeNode;
 
 typedef std::map<std::string, PropertyBase *> PropertyDict;
 typedef std::map<std::string, TypeNode *> TypeNodeDict;
@@ -67,7 +67,7 @@ class Inheritance : public Singleton<Inheritance> {
     /**
      * Emitted when types have been changed.
      */
-    sigc::signal<void, const std::vector<const TypeNode*>&> typesUpdated;
+    sigc::signal<void, const std::map<const TypeNode*, TypeNode::PropertiesUpdate>&> typesUpdated;
 };
 
 Atlas::Objects::Root atlasOpDefinition(const std::string & name,

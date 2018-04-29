@@ -914,54 +914,15 @@ CommSocket::CommSocket(boost::asio::io_service & svr) : m_io_service(svr) { }
 CommSocket::~CommSocket()
 {
 }
+#include "stubs/common/stubEntityKit.h"
 
-EntityKit::EntityKit() : m_type(0),
-                         m_createdCount(0)
-{
-}
-
-EntityKit::~EntityKit()
-{
-}
-
-void EntityKit::addProperties()
-{
-}
-
-void EntityKit::updateProperties()
-{
-}
-
-ArchetypeFactory::ArchetypeFactory()
-{
-}
-
-ArchetypeFactory::ArchetypeFactory(ArchetypeFactory& rhs)
-{
-}
-
-ArchetypeFactory::~ArchetypeFactory()
-{
-}
-
-void ArchetypeFactory::addProperties()
-{
-}
-
-void ArchetypeFactory::updateProperties()
-{
-}
-
-ArchetypeFactory * ArchetypeFactory::duplicateFactory()
-{
-    return 0;
-}
-
-LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId,
-        const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
+#define STUB_ArchetypeFactory_newEntity
+LocatedEntity* ArchetypeFactory::newEntity(const std::string & id, long intId, const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
 {
     return new Entity(id, intId);
 }
+
+#include "stubs/server/stubArchetypeFactory.h"
 
 Root atlasType(const std::string & name,
                const std::string & parent,
@@ -993,22 +954,7 @@ std::string Shaker::generateSalt(size_t length)
     return std::string("x", length * 2);
 }
 
-TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
-{
-}
-
-bool TypeNode::isTypeOf(const std::string & base_type) const
-{
-    return false;
-}
-
-void TypeNode::addProperties(const Atlas::Message::MapType & attributes)
-{
-}
-
-void TypeNode::updateProperties(const Atlas::Message::MapType & attributes)
-{
-}
+#include "stubs/common/stubTypeNode.h"
 
 const char * const CYPHESIS = "cyphesis";
 

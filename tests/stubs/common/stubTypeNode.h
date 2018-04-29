@@ -51,9 +51,9 @@
 
 #ifndef STUB_TypeNode_updateProperties
 //#define STUB_TypeNode_updateProperties
-  void TypeNode::updateProperties(const Atlas::Message::MapType & attributes)
+  TypeNode::PropertiesUpdate TypeNode::updateProperties(const Atlas::Message::MapType & attributes)
   {
-    
+    return *static_cast<TypeNode::PropertiesUpdate*>(nullptr);
   }
 #endif //STUB_TypeNode_updateProperties
 

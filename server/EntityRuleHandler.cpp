@@ -27,6 +27,7 @@
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/compose.hpp"
+#include "common/Inheritance.h"
 
 #include <iostream>
 
@@ -242,7 +243,9 @@ int EntityRuleHandler::modifyEntityClass(const std::string & class_name,
         return -1;
     }
 
-    factory->updateProperties();
+    auto result = factory->updateProperties();
+
+    Inheritance::instance().typesUpdated(result);
 
     return 0;
 }

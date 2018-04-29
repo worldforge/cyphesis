@@ -837,38 +837,22 @@ void Stackable::DivideOperation(const Operation & op, OpVector &)
 {
 }
 
-ArchetypeFactory::ArchetypeFactory()
-{
-}
 
-ArchetypeFactory::ArchetypeFactory(ArchetypeFactory& rhs)
-{
-}
-
-ArchetypeFactory::~ArchetypeFactory()
-{
-}
-
-void ArchetypeFactory::addProperties()
-{
-}
-
-void ArchetypeFactory::updateProperties()
-{
-}
-
-ArchetypeFactory * ArchetypeFactory::duplicateFactory()
+#define STUB_ArchetypeFactory_duplicateFactory
+ArchetypeFactory* ArchetypeFactory::duplicateFactory()
 {
     ArchetypeFactory * f = new ArchetypeFactory(*this);
     f->m_parent = this;
     return f;
 }
 
-LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId,
-        const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
+#define STUB_ArchetypeFactory_newEntity
+LocatedEntity* ArchetypeFactory::newEntity(const std::string & id, long intId, const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
 {
     return new Entity(id, intId);
 }
+
+#include "stubs/server/stubArchetypeFactory.h"
 
 class World;
 

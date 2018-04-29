@@ -24,6 +24,8 @@
 
 #include <iostream>
 #include <map>
+#include <set>
+#include <string>
 
 class PropertyBase;
 
@@ -44,6 +46,14 @@ class TypeNode {
     /// \brief parent node
     const TypeNode * m_parent;
   public:
+
+    struct PropertiesUpdate {
+        std::set<std::string> newProps;
+        std::set<std::string> removedProps;
+        std::set<std::string> changedProps;
+    };
+
+
     explicit TypeNode(const std::string &);
     TypeNode(const std::string &, const Atlas::Objects::Root &);
     ~TypeNode();
@@ -55,7 +65,7 @@ class TypeNode {
     void addProperties(const Atlas::Message::MapType & attributes);
 
     /// \brief update the class properties for this type from Atlas attributes
-    void updateProperties(const Atlas::Message::MapType & attributes);
+    TypeNode::PropertiesUpdate updateProperties(const Atlas::Message::MapType & attributes);
 
     /// \brief check if this type inherits from another
     bool isTypeOf(const std::string & base_type) const;

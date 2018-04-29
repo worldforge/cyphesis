@@ -95,11 +95,13 @@ WorldRouter::WorldRouter(const SystemTime & time) :
     /**
      * When types are updated we will send an "change" op to all connected clients.
      */
-    Inheritance::instance().typesUpdated.connect([&](const std::vector<const TypeNode*> typeNodes) {
+    Inheritance::instance().typesUpdated.connect([&](const std::map<const TypeNode*, TypeNode::PropertiesUpdate> typeNodes) {
+        //Send Change ops to all clients
         if (!typeNodes.empty()) {
             Atlas::Objects::Operation::Change change;
             std::vector<Atlas::Objects::Root> args;
-            for (auto& typeNode: typeNodes) {
+            for (auto& entry: typeNodes) {
+                auto typeNode = entry.first;
                 Atlas::Objects::Entity::Anonymous o;
                 o->setObjtype(typeNode->description()->getObjtype());
                 o->setId(typeNode->name());
@@ -108,6 +110,35 @@ WorldRouter::WorldRouter(const SystemTime & time) :
             change->setArgs(args);
 
             messageToClients(change);
+
+            //Go through all world entities and check if they need to be updated
+            for (auto& entry : m_eobjects) {
+                auto entity = entry.second;
+                auto I = typeNodes.find(entity->getType());
+                if (I != typeNodes.end()) {
+                    auto typeNode = I->first;
+                    for (auto& removedPropName : I->second.removedProps) {
+                        if (entity->getProperties().find(removedPropName) == entity->getProperties().end()) {
+                            auto prop = typeNode->defaults().find(removedPropName)->second;
+                            prop->remove(entity, removedPropName);
+                        }
+                    }
+                    for (auto& changedPropName : I->second.changedProps) {
+                        if (entity->getProperties().find(changedPropName) == entity->getProperties().end()) {
+                            auto prop = typeNode->defaults().find(changedPropName)->second;
+                            prop->apply(entity);
+                            entity->propertyApplied(changedPropName, *prop);
+                        }
+                    }
+                    for (auto& newPropName : I->second.changedProps) {
+                        if (entity->getProperties().find(newPropName) == entity->getProperties().end()) {
+                            auto prop = typeNode->defaults().find(newPropName)->second;
+                            prop->apply(entity);
+                            entity->propertyApplied(newPropName, *prop);
+                        }
+                    }
+                }
+            }
         }
     });
 }

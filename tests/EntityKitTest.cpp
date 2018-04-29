@@ -49,7 +49,9 @@ class TestEntityKit : public EntityKit
     virtual EntityKit * duplicateFactory() { return 0; }
     virtual void addProperties(){}
 
-    virtual void updateProperties(){}
+    virtual std::map<const TypeNode*, TypeNode::PropertiesUpdate> updateProperties(){
+        return std::map<const TypeNode*, TypeNode::PropertiesUpdate>();
+    }
 };
 
 class TestScriptKit : public ScriptKit<LocatedEntity>
@@ -112,18 +114,4 @@ int main()
 
 // stubs
 
-TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
-{
-}
-
-TypeNode::~TypeNode()
-{
-}
-
-void TypeNode::addProperties(const MapType & attributes)
-{
-}
-
-void TypeNode::updateProperties(const MapType & attributes)
-{
-}
+#include "stubs/common/stubTypeNode.h"

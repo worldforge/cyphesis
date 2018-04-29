@@ -18,16 +18,10 @@
 
 #include "EntityKit.h"
 
-#include "common/TypeNode.h"
-
 using Atlas::Message::MapType;
 
-EntityKit::EntityKit() : m_type(0),
+EntityKit::EntityKit() : m_type(nullptr),
                          m_createdCount(0)
-{
-}
-
-EntityKit::~EntityKit()
 {
 }
 

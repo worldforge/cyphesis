@@ -16,14 +16,6 @@
   }
 #endif //STUB_EntityKit_EntityKit
 
-#ifndef STUB_EntityKit_EntityKit_DTOR
-//#define STUB_EntityKit_EntityKit_DTOR
-   EntityKit::~EntityKit()
-  {
-    
-  }
-#endif //STUB_EntityKit_EntityKit_DTOR
-
 #ifndef STUB_EntityKit_newEntity
 //#define STUB_EntityKit_newEntity
   LocatedEntity* EntityKit::newEntity(const std::string & id, long intId, const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
@@ -42,9 +34,9 @@
 
 #ifndef STUB_EntityKit_updateProperties
 //#define STUB_EntityKit_updateProperties
-  void EntityKit::updateProperties()
+  std::map<TypeNode*, TypeNode::PropertiesUpdate> EntityKit::updateProperties()
   {
-    
+    return std::map<TypeNode*, TypeNode::PropertiesUpdate>();
   }
 #endif //STUB_EntityKit_updateProperties
 

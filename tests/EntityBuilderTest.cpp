@@ -387,63 +387,42 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
     return 0;
 }
 
-EntityKit::EntityKit() : m_createdCount(0)
+#include "stubs/common/stubEntityKit.h"
+
+
+#define STUB_EntityFactory_newEntity
+template <class T>
+LocatedEntity * EntityFactory<T>::newEntity(const std::string & id, long intId,
+                                            const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
 {
+    ++m_createdCount;
+    Entity* e = new Entity(id, intId);
+    e->setType(m_type);
+    return e;
 }
 
-EntityKit::~EntityKit()
+#define STUB_EntityFactory_duplicateFactory
+template <typename T>
+EntityFactoryBase* EntityFactory<T>::duplicateFactory()
 {
+    EntityFactoryBase * f = new EntityFactory<T>(*this);
+    f->m_parent = this;
+    return f;
 }
 
-EntityFactoryBase::EntityFactoryBase() : EntityKit::EntityKit(), m_scriptFactory(0)
-{
-}
 
-EntityFactoryBase::~EntityFactoryBase()
-{
-    delete m_scriptFactory;
-}
+#include "stubs/server/stubEntityFactory.h"
 
-void EntityFactoryBase::addProperties()
-{
-}
-
-void EntityFactoryBase::updateProperties()
-{
-}
-
-ArchetypeFactory::ArchetypeFactory()
-{
-}
-
-ArchetypeFactory::ArchetypeFactory(ArchetypeFactory& rhs)
-{
-}
-
-ArchetypeFactory::~ArchetypeFactory()
-{
-}
-
-void ArchetypeFactory::addProperties()
-{
-}
-
-void ArchetypeFactory::updateProperties()
-{
-}
-
-ArchetypeFactory * ArchetypeFactory::duplicateFactory()
+#define STUB_ArchetypeFactory_duplicateFactory
+ArchetypeFactory* ArchetypeFactory::duplicateFactory()
 {
     ArchetypeFactory * f = new ArchetypeFactory(*this);
     f->m_parent = this;
     return f;
 }
 
-LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId,
-        const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
-{
-    return 0;
-}
+
+#include "stubs/server/stubArchetypeFactory.h"
 
 
 class World;
@@ -453,39 +432,6 @@ LocatedEntity * EntityFactory<World>::newEntity(const std::string & id, long int
         const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
 {
     return 0;
-}
-
-template <class T>
-EntityFactory<T>::EntityFactory(EntityFactory<T> & o)
-{
-}
-
-template <class T>
-EntityFactory<T>::EntityFactory()
-{
-}
-
-template <class T>
-EntityFactory<T>::~EntityFactory()
-{
-}
-
-template <class T>
-LocatedEntity * EntityFactory<T>::newEntity(const std::string & id, long intId,
-        const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
-{
-    ++m_createdCount;
-    Entity* e = new Entity(id, intId);
-    e->setType(m_type);
-    return e;
-}
-
-template <class T>
-EntityFactoryBase * EntityFactory<T>::duplicateFactory()
-{
-    EntityFactoryBase * f = new EntityFactory<T>(*this);
-    f->m_parent = this;
-    return f;
 }
 
 class Thing;

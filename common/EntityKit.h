@@ -19,6 +19,8 @@
 #ifndef COMMON_ENTITY_KIT_H
 #define COMMON_ENTITY_KIT_H
 
+#include "TypeNode.h"
+
 #include <Atlas/Objects/ObjectsFwd.h>
 
 #include <set>
@@ -33,7 +35,6 @@ namespace Atlas {
 }
 
 class LocatedEntity;
-class TypeNode;
 
 template<class T>
 class ScriptKit;
@@ -52,7 +53,7 @@ class EntityKit {
     /// Number of times this factory has created an entity
     int m_createdCount;
 
-    virtual ~EntityKit();
+    virtual ~EntityKit() = default;
 
     /// \brief Create a new Entity and make it persistent.
     ///
@@ -67,7 +68,7 @@ class EntityKit {
 
     virtual void addProperties() = 0;
 
-    virtual void updateProperties() = 0;
+    virtual std::map<const TypeNode*, TypeNode::PropertiesUpdate> updateProperties() = 0;
 
 };
 
