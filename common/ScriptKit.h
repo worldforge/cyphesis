@@ -26,7 +26,7 @@
 template <class T>
 class ScriptKit {
   public:
-    virtual ~ScriptKit() = 0;
+    virtual ~ScriptKit() = default;
 
     /// \brief Accessor for package name
     virtual const std::string & package() const = 0;
@@ -36,9 +36,5 @@ class ScriptKit {
     virtual int refreshClass() = 0;
 };
 
-template <class T>
-ScriptKit<T>::~ScriptKit()
-{
-}
 
 #endif // COMMON_SCRIPT_KIT_H

@@ -27,12 +27,7 @@
 /// \brief PythonScriptFactory constructor
 ///
 /// @param package Name of the script package where the script type is
-/// @param type Name of the scrpt types instanced by this factory
-
-template <class T>
-PythonScriptFactory<T>::~PythonScriptFactory()
-{
-}
+/// @param type Name of the script types instanced by this factory
 
 template <class T>
 int PythonScriptFactory<T>::setup()
@@ -46,23 +41,31 @@ const std::string & PythonScriptFactory<T>::package() const
     return m_package;
 }
 
-template <class T>
-int PythonScriptFactory<T>::addScript(T * entity) const
+template<class T>
+PyObject* PythonScriptFactory<T>::createScript(T* entity) const
 {
     if (this->m_class == 0) {
-        return -1;
+        return nullptr;
     }
     PyObject * wrapper = wrapPython(entity);
-    if (wrapper == 0) {
-        return -1;
+    if (wrapper == nullptr) {
+        return nullptr;
     }
 
     PyObject * script = Create_PyScript(wrapper, this->m_class);
 
     Py_DECREF(wrapper);
 
-    if (script != nullptr) {
-        entity->setScript(new PythonEntityScript(script));
+    return script;
+}
+
+template <class T>
+int PythonScriptFactory<T>::addScript(T * entity) const
+{
+    auto script = createScript(entity);
+    if (script) {
+        auto scriptInstance = new PythonEntityScript(script);
+        entity->setScript(scriptInstance);
 
         Py_DECREF(script);
     }

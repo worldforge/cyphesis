@@ -31,7 +31,7 @@ add_library(common
     ClientTask.cpp
     SystemTime.cpp
     EntityKit.cpp
-    ScriptKit.cpp
+    ScriptKit.h
     TaskKit.cpp
     CommSocket.cpp
     Link.cpp

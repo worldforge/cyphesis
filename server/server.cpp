@@ -260,13 +260,13 @@ int main(int argc, char ** argv)
         signalSet->async_wait(std::bind(daemonSignalsHandler, std::ref(*signalSet), std::placeholders::_1, std::placeholders::_2));
     }
 
-    // Start up the Python subsystem.
-    init_python_api(ruleset_name);
-
     FileSystemObserver* file_system_observer = new FileSystemObserver(*io_service);
 
     AssetsManager* assets_manager = new AssetsManager(*file_system_observer);
     assets_manager->init();
+
+    // Start up the Python subsystem.
+    init_python_api(ruleset_name);
 
     Inheritance* inheritance = new Inheritance();
 

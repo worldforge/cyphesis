@@ -33,6 +33,7 @@
 #include "common/Variable.h"
 
 #include <Atlas/Objects/RootOperation.h>
+#include <rulesets/Python_API.h>
 
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
@@ -49,7 +50,28 @@ EntityBuilder::EntityBuilder()
 : m_propertyManager(new CorePropertyManager())
 {
     installBaseFactory("archetype", "root_entity", new ArchetypeFactory());
+    python_reload_scripts.connect([&]() {
+        std::map<const TypeNode*, EntityFactoryBase*> collector;
+        for (auto& entry : m_entityFactories) {
+            auto entityFactory = dynamic_cast<EntityFactoryBase*>(entry.second);
+            if (entityFactory && entityFactory->m_scriptFactory) {
+                log(NOTICE, compose("Reloading scripts for %1", entityFactory->m_type->name()));
+                entityFactory->m_scriptFactory->refreshClass();
+                collector.emplace(entityFactory->m_type, entityFactory);
+            }
+        }
 
+        auto& entities = BaseWorld::instance().getEntities();
+
+        for (auto& entry : entities) {
+            auto I = collector.find(entry.second->getType());
+            if (I != collector.end()) {
+                I->second->m_scriptFactory->addScript(entry.second);
+            }
+        }
+
+
+    });
 }
 
 EntityBuilder::~EntityBuilder()
@@ -251,3 +273,4 @@ EntityKit* EntityBuilder::getClassFactory(const std::string& class_name)
     }
     return I->second;
 }
+

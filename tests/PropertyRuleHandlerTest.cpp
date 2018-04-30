@@ -184,9 +184,6 @@ int main()
 #include "common/log.h"
 #include "common/PropertyFactory_impl.h"
 
-RuleHandler::~RuleHandler()
-{
-}
 
 int RuleHandler::getScriptDetails(const Atlas::Message::MapType & script,
                                   const std::string & class_name,

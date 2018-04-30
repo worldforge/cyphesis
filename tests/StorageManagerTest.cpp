@@ -239,14 +239,7 @@ LocatedEntity * EntityBuilder::newEntity(const std::string & id, long intId,
 
 #include "stubs/common/stubPropertyManager.h"
 
-Script::Script()
-{
-}
 
-/// \brief Script destructor
-Script::~Script()
-{
-}
 
 bool Script::operation(const std::string & opname,
                        const Atlas::Objects::Operation::RootOperation & op,

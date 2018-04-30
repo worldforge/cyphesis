@@ -27,18 +27,14 @@ using Atlas::Message::ListType;
 
 using String::compose;
 
-RuleHandler::~RuleHandler()
-{
-}
-
 int RuleHandler::getScriptDetails(const Atlas::Message::MapType & script,
                                   const std::string & class_name,
                                   const std::string & context,
                                   std::string & script_package,
                                   std::string & script_class)
 {
-    MapType::const_iterator J = script.find("name");
-    MapType::const_iterator Jend = script.end();
+    auto J = script.find("name");
+    auto Jend = script.end();
 
     if (J == Jend || !J->second.isString()) {
         log(ERROR, compose("%1 \"%2\" script has no name.",
@@ -54,13 +50,13 @@ int RuleHandler::getScriptDetails(const Atlas::Message::MapType & script,
     }
     const std::string & script_language = J->second.String();
     if (script_language != "python") {
-        log(ERROR, compose("%1 \"%2\" script has unknown language \"%3\".",
+        log(ERROR, compose(R"(%1 "%2" script has unknown language "%3".)",
                            context, class_name, script_language));
         return -1;
     }
-    std::string::size_type ptr = script_name.rfind(".");
+    std::string::size_type ptr = script_name.rfind('.');
     if (ptr == std::string::npos) {
-        log(ERROR, compose("%1 \"%2\" python script has bad class name \"%3\".",
+        log(ERROR, compose(R"(%1 "%2" python script has bad class name "%3".)",
                            context, class_name, script_name));
         return -1;
     }

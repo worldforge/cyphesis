@@ -122,9 +122,6 @@ int main()
 #include "common/Inheritance.h"
 #include "common/log.h"
 
-RuleHandler::~RuleHandler()
-{
-}
 
 int RuleHandler::getScriptDetails(const Atlas::Message::MapType & script,
                                   const std::string & class_name,

@@ -48,6 +48,8 @@
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
+#include <common/AssetsManager.h>
+#include <boost/algorithm/string.hpp>
 
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
@@ -530,6 +532,35 @@ static PyMethodDef entity_filter_methods[] = {
         {nullptr, nullptr}
 };
 
+sigc::signal<void> python_reload_scripts;
+
+void observe_python_directory(std::string directory) {
+    //This is to make sure that tests easier work.
+    if (AssetsManager::hasInstance()) {
+        AssetsManager::instance().observeDirectory(directory, [=](const boost::filesystem::path& path) {
+            if (boost::ends_with(path.string(), ".py")) {
+                auto relative = path.string().substr(directory.length() + 1);
+                //Trim the ".py" extension
+                relative = relative.substr(0, relative.size() - 3);
+                static char separator[] = {boost::filesystem::path::separator, 0};
+                auto package = boost::replace_all_copy(relative, separator, ".");
+                auto module = Get_PyModule(package);
+                if (module != nullptr) {
+                    log(INFO, String::compose("Reloading module \"%1\" from file %2.", package, path));
+                    auto result = PyImport_ReloadModule(module);
+                    if (result != module) {
+                        log(WARNING, String::compose("New pointer returned when reloading module \"%1\".", package));
+                    }
+                    Py_DECREF(module);
+
+                    python_reload_scripts();
+                }
+            }
+
+        });
+    }
+}
+
 void init_python_api(const std::string & ruleset, bool log_stdout)
 {
     Py_Initialize();
@@ -549,7 +580,7 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
     PyObject * sys_module = PyImport_Import(sys_name);
     Py_DECREF(sys_name);
 
-    if (sys_module == 0) {
+    if (sys_module == nullptr) {
         log(CRITICAL, "Python could not import sys module");
         return;
     }
@@ -565,21 +596,24 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
     }
 
     PyObject * sys_path = PyObject_GetAttrString(sys_module, "path");
-    if (sys_path != 0) {
+    if (sys_path != nullptr) {
         if (PyList_Check(sys_path)) {
             // Add the path to the non-ruleset specific code.
             std::string p = share_directory + "/cyphesis/scripts";
+            observe_python_directory(p);
             PyObject * path = PyString_FromString(p.c_str());
             PyList_Append(sys_path, path);
             Py_DECREF(path);
 
             p = share_directory + "/cyphesis/rulesets/basic";
+            observe_python_directory(p);
             path = PyString_FromString(p.c_str());
             PyList_Append(sys_path, path);
             Py_DECREF(path);
 
             // Add the path to the ruleset specific code.
             p = share_directory + "/cyphesis/rulesets/" + ruleset;
+            observe_python_directory(p);
             path = PyString_FromString(p.c_str());
             PyList_Append(sys_path, path);
             Py_DECREF(path);

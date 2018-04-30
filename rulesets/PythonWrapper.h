@@ -20,6 +20,7 @@
 #define RULESETS_PYTHON_WRAPPER_H
 
 #include "Script.h"
+#include <object.h>
 
 /// \brief Wrapper class for entities without scripts but with wrappers
 /// \ingroup Scripts
@@ -29,7 +30,7 @@ class PythonWrapper : public Script {
     struct _object * m_wrapper;
   public:
     explicit PythonWrapper(struct _object * wrapper);
-    virtual ~PythonWrapper();
+    ~PythonWrapper() override;
 
     /// \brief Accessor for the python object that wraps the entity.
     struct _object * wrapper() const { return m_wrapper; }

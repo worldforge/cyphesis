@@ -5,6 +5,7 @@ from atlas import *
 
 import server
 
+
 class Pile(server.Thing):
     """Using a pile to extinguish the fire"""
     def disperse_operation(self, op):

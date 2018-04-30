@@ -7,22 +7,6 @@
 #ifndef STUB_RULESETS_SCRIPT_H
 #define STUB_RULESETS_SCRIPT_H
 
-#ifndef STUB_Script_Script
-//#define STUB_Script_Script
-   Script::Script()
-  {
-    
-  }
-#endif //STUB_Script_Script
-
-#ifndef STUB_Script_Script_DTOR
-//#define STUB_Script_Script_DTOR
-   Script::~Script()
-  {
-    
-  }
-#endif //STUB_Script_Script_DTOR
-
 #ifndef STUB_Script_operation
 //#define STUB_Script_operation
   bool Script::operation(const std::string & opname, const Atlas::Objects::Operation::RootOperation & op, OpVector & res)

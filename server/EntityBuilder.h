@@ -24,6 +24,7 @@
 #include <Atlas/Objects/ObjectsFwd.h>
 
 #include <memory>
+#include "EntityFactory.h"
 
 class BaseWorld;
 class LocatedEntity;
@@ -57,6 +58,7 @@ class EntityBuilder {
     void installBaseFactory(const std::string & class_name,
                             const std::string & parent,
                             EntityKit * factory);
+
   public:
     static void init() {
         m_instance = new EntityBuilder();

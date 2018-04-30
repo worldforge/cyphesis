@@ -20,6 +20,10 @@
 #define RULESETS_PYTHON_API_H
 
 #include <string>
+#include <set>
+#include <sigc++/signal.h>
+
+extern sigc::signal<void> python_reload_scripts;
 
 void init_python_api(const std::string & ruleset, bool log_stdout = true);
 void shutdown_python_api();

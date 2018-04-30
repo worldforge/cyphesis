@@ -1000,3 +1000,4 @@ int check_password(const std::string & pwd, const std::string & hash)
     return -1;
 }
 std::string assets_directory = "";
+sigc::signal<void> python_reload_scripts;

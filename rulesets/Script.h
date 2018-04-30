@@ -39,8 +39,8 @@ class LocatedEntity;
 /// \ingroup Scripts
 class Script {
   public:
-    Script();
-    virtual ~Script();
+    Script() = default;
+    virtual ~Script() = default;
     virtual bool operation(const std::string & opname,
                            const Atlas::Objects::Operation::RootOperation & op,
                            OpVector & res);

@@ -231,13 +231,7 @@ int main()
 #include "stubs/common/stubRouter.h"
 #include "stubs/modules/stubLocation.h"
 
-Script::Script()
-{
-}
 
-Script::~Script()
-{
-}
 
 bool Script::operation(const std::string & opname,
                        const Atlas::Objects::Operation::RootOperation & op,

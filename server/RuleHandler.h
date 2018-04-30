@@ -24,7 +24,7 @@
 /// \brief Handle processing and updating of task ruless
 class RuleHandler {
   public:
-    virtual ~RuleHandler();
+    virtual ~RuleHandler() = default;
     virtual int check(const Atlas::Objects::Root & desc) = 0;
     virtual int install(const std::string &,
                         const std::string &,

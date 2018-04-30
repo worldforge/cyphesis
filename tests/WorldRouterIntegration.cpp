@@ -610,6 +610,7 @@ ArithmeticScript * PythonArithmeticFactory::newScript(LocatedEntity * owner)
 {
     return 0;
 }
+sigc::signal<void> python_reload_scripts;
 
 #if 0
 

@@ -723,3 +723,4 @@ Root atlasClass(const std::string & name, const std::string & parent)
     r->setId(name);
     return r;
 }
+sigc::signal<void> python_reload_scripts;

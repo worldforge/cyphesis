@@ -193,11 +193,6 @@ PythonScriptFactory<T>::PythonScriptFactory(const std::string & package,
 }
 
 template <class T>
-PythonScriptFactory<T>::~PythonScriptFactory()
-{
-}
-
-template <class T>
 int PythonScriptFactory<T>::setup()
 {
     return 0;

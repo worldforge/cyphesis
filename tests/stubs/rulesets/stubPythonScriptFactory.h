@@ -17,15 +17,6 @@
   }
 #endif //STUB_PythonScriptFactory_PythonScriptFactory
 
-#ifndef STUB_PythonScriptFactory_PythonScriptFactory_DTOR
-//#define STUB_PythonScriptFactory_PythonScriptFactory_DTOR
-  template <typename T>
-   PythonScriptFactory<T>::~PythonScriptFactory()
-  {
-    
-  }
-#endif //STUB_PythonScriptFactory_PythonScriptFactory_DTOR
-
 #ifndef STUB_PythonScriptFactory_setup
 //#define STUB_PythonScriptFactory_setup
   template <typename T>
@@ -61,6 +52,15 @@
     return 0;
   }
 #endif //STUB_PythonScriptFactory_refreshClass
+
+#ifndef STUB_PythonScriptFactory_createScript
+//#define STUB_PythonScriptFactory_createScript
+  template <typename T>
+  _object* PythonScriptFactory<T>::createScript(T * entity) const
+  {
+    return nullptr;
+  }
+#endif //STUB_PythonScriptFactory_createScript
 
 
 #endif

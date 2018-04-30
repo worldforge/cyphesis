@@ -387,15 +387,6 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 
-Script::Script()
-{
-}
-
-/// \brief Script destructor
-Script::~Script()
-{
-}
-
 bool Script::operation(const std::string & opname,
                        const Atlas::Objects::Operation::RootOperation & op,
                        OpVector & res)

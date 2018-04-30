@@ -20,18 +20,21 @@
 #define RULESETS_PYTHON_ENTITY_SCRIPT_H
 
 #include "PythonWrapper.h"
+#include <functional>
 
 /// \brief Script class for Python scripts attached to an Entity
 /// \ingroup Scripts
 class PythonEntityScript : public PythonWrapper {
   public:
     explicit PythonEntityScript(PyObject *);
-    virtual ~PythonEntityScript();
 
-    virtual bool operation(const std::string & opname,
-                           const Atlas::Objects::Operation::RootOperation & op,
-                           OpVector & res);
-    virtual void hook(const std::string & function, LocatedEntity * entity);
+    ~PythonEntityScript() override = default;
+
+    bool operation(const std::string & opname,
+                       const Atlas::Objects::Operation::RootOperation & op,
+                       OpVector & res) override;
+
+    void hook(const std::string & function, LocatedEntity * entity) override;
 };
 
 #endif // RULESETS_PYTHON_ENTITY_SCRIPT_H

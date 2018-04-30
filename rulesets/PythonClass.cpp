@@ -31,20 +31,21 @@
 /// @param type name of the type instanced to create scripts
 PythonClass::PythonClass(const std::string & package,
                          const std::string & type,
-                         PyTypeObject * base) : m_package(package),
-                                                m_type(type),
-                                                m_base(base),
-                                                m_module(0),
-                                                m_class(0)
+                         PyTypeObject * base) :
+    m_package(package),
+    m_type(type),
+    m_base(base),
+    m_module(nullptr),
+    m_class(nullptr)
 {
 }
 
 PythonClass::~PythonClass()
 {
-    if (m_class != 0) {
+    if (m_class != nullptr) {
         Py_DECREF(m_class);
     }
-    if (m_module != 0) {
+    if (m_module != nullptr) {
         Py_DECREF(m_module);
     }
 }
@@ -63,7 +64,7 @@ int PythonClass::load()
 int PythonClass::getClass(PyObject * module)
 {
     PyObject * new_class = Get_PyClass(module, m_package, m_type);
-    if (new_class == 0) {
+    if (new_class == nullptr) {
         // If this is a new class, leave it as zero and fail and this
         // should be discarded by <*>RuleHandler
         // If this is an existing class, leave it as the old value, but
@@ -77,7 +78,7 @@ int PythonClass::getClass(PyObject * module)
         Py_DECREF(new_class);
         return -1;
     }
-    if (m_class != 0) {
+    if (m_class != nullptr) {
         Py_DECREF(m_class);
     }
     m_class = new_class;
@@ -87,12 +88,13 @@ int PythonClass::getClass(PyObject * module)
 
 int PythonClass::refresh()
 {
-    if (m_module == 0) {
-        log(ERROR, "bort");
+    log(NOTICE, String::compose("Refreshing Python module \"%1.%2\".", m_package, m_type));
+    if (m_module == nullptr) {
+        log(ERROR, String::compose("Abort refresh of non loaded module \"%1.%2\".", m_package, m_type));
         return -1;
     }
     PyObject * new_module = PyImport_ReloadModule(m_module);
-    if (new_module == 0) {
+    if (new_module == nullptr) {
         log(ERROR, String::compose("Error reloading python module \"%1\"",
                                    m_package));
         PyErr_Clear();
@@ -100,7 +102,7 @@ int PythonClass::refresh()
     }
     int ret = getClass(new_module);
     if (ret != 0) {
-        log(ERROR, String::compose("Error finding python class \"%1\" in \"%2\"",
+        log(ERROR, String::compose(R"(Error finding python class "%1" in "%2")",
                                    m_type, m_package));
         return -1;
         // After reloading, but failing to get the class, I think the old class

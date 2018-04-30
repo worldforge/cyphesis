@@ -7,15 +7,6 @@
 #ifndef STUB_COMMON_SCRIPTKIT_H
 #define STUB_COMMON_SCRIPTKIT_H
 
-#ifndef STUB_ScriptKit_ScriptKit_DTOR
-//#define STUB_ScriptKit_ScriptKit_DTOR
-  template <typename T>
-   ScriptKit<T>::~ScriptKit()
-  {
-    
-  }
-#endif //STUB_ScriptKit_ScriptKit_DTOR
-
 #ifndef STUB_ScriptKit_package
 //#define STUB_ScriptKit_package
   template <typename T>

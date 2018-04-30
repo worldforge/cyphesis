@@ -18,14 +18,6 @@
 
 #include "Script.h"
 
-Script::Script()
-{
-}
-
-/// \brief Script destructor
-Script::~Script()
-{
-}
 
 // FIXME Return value of operation should be an int with different
 // return values for failure vs. not accepted. 0 for success obviously

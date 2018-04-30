@@ -7,14 +7,6 @@
 #ifndef STUB_SERVER_RULEHANDLER_H
 #define STUB_SERVER_RULEHANDLER_H
 
-#ifndef STUB_RuleHandler_RuleHandler_DTOR
-//#define STUB_RuleHandler_RuleHandler_DTOR
-   RuleHandler::~RuleHandler()
-  {
-    
-  }
-#endif //STUB_RuleHandler_RuleHandler_DTOR
-
 #ifndef STUB_RuleHandler_check
 //#define STUB_RuleHandler_check
   int RuleHandler::check(const Atlas::Objects::Root & desc)

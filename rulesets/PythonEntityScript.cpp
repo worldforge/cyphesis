@@ -41,10 +41,6 @@ PythonEntityScript::PythonEntityScript(PyObject * o) :
 {
 }
 
-PythonEntityScript::~PythonEntityScript()
-{
-}
-
 bool PythonEntityScript::operation(const std::string & op_type,
                                    const Operation & op,
                                    OpVector & res)
@@ -62,7 +58,7 @@ bool PythonEntityScript::operation(const std::string & op_type,
     }
     // Construct apropriate python object thingies from op
     PyOperation * py_op = newPyConstOperation();
-    if (py_op == 0) {
+    if (py_op == nullptr) {
         return false;
     }
     py_op->operation = op;
@@ -102,8 +98,8 @@ bool PythonEntityScript::operation(const std::string & op_type,
         PyOplist * op = (PyOplist*)ret;
         assert(op->ops != nullptr);
         const OpVector & o = *op->ops;
-        OpVector::const_iterator Iend = o.end();
-        for (OpVector::const_iterator I = o.begin(); I != Iend; ++I) {
+        auto Iend = o.end();
+        for (auto I = o.begin(); I != Iend; ++I) {
             //Filter out raw operations, as these are meant to be used to short circuit goals. They should thus never be sent on.
             if ((*I)->getParent() != "operation") {
                 res.push_back(*I);

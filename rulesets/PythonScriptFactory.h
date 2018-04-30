@@ -29,13 +29,17 @@ template <class T>
 class PythonScriptFactory : public ScriptKit<T>, private PythonClass {
   public:
     PythonScriptFactory(const std::string & package, const std::string & type);
-    ~PythonScriptFactory();
+    ~PythonScriptFactory() override = default;
 
     int setup();
 
     const std::string & package() const;
     int addScript(T * entity) const;
     int refreshClass();
+
+  protected:
+
+    _object* createScript(T * entity) const;
 };
 
 #endif // RULESETS_PYTHON_SCRIPT_FACTORY_H

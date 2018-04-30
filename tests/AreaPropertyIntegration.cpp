@@ -180,14 +180,6 @@ LocatedEntity * BaseWorld::getEntity(long id) const
     return 0;
 }
 
-Script::Script()
-{
-}
-
-/// \brief Script destructor
-Script::~Script()
-{
-}
 
 bool Script::operation(const std::string & opname,
                        const Atlas::Objects::Operation::RootOperation & op,

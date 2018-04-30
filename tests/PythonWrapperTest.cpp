@@ -44,14 +44,6 @@ int main()
 
 #include "common/log.h"
 
-Script::Script()
-{
-}
-
-Script::~Script()
-{
-}
-
 bool Script::operation(const std::string & opname,
                        const Atlas::Objects::Operation::RootOperation & op,
                        OpVector & res)
