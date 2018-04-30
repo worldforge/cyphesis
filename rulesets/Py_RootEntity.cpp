@@ -218,14 +218,13 @@ static int RootEntity_init(PyRootEntity * self, PyObject * args, PyObject * kwds
                     PyErr_SetString(PyExc_TypeError, "parent must be a string.");
                     return -1;
                 }
-                self->entity->setLoc(PyString_AsString(val));
+                self->entity->setParent(PyString_AsString(val));
             } else if (strcmp(key, "type") == 0) {
                 if (!PyString_Check(val)) {
                     PyErr_SetString(PyExc_TypeError, "type must be a string.");
                     return -1;
                 }
-                self->entity->setParent(PyString_AsString(val));
-                self->entity->setObjtype("obj");
+                self->entity->setObjtype(PyString_AsString(val));
             } else {
                 Element val_obj;
                 if (PyObject_asMessageElement(val, val_obj) != 0) {
