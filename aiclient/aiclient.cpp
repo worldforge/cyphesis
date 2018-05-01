@@ -21,10 +21,6 @@
 #include "rulesets/Python_API.h"
 #include "rulesets/PythonScriptFactory.h"
 
-#include "common/debug.h"
-#include "common/globals.h"
-#include "common/log.h"
-#include "common/compose.hpp"
 #include "common/sockets.h"
 #include "common/Inheritance.h"
 #include "common/SystemTime.h"
@@ -32,9 +28,11 @@
 #include "common/RuleTraversalTask.h"
 
 #define _GLIBCXX_USE_NANOSLEEP 1
-#include <thread>
 
 #include <sys/prctl.h>
+#include <common/AssetsManager.h>
+#include <common/FileSystemObserver.h>
+#include <common/Think.h>
 
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
@@ -44,7 +42,7 @@ using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
 
-static void usage(const char * prgname)
+static void usage(const char* prgname)
 {
     std::cout << "usage: " << prgname << " [ local_socket_path ]" << std::endl << std::flush;
 }
@@ -72,7 +70,7 @@ static int tryToConnect(PossessionClient& possessionClient)
 
             int rulesCounter = 0;
             log(INFO, "Requesting rules from server");
-            std::function<bool(const Atlas::Objects::Root&)> inheritenceFn = [&](const Atlas::Objects::Root& root) -> bool{
+            std::function<bool(const Atlas::Objects::Root&)> inheritenceFn = [&](const Atlas::Objects::Root& root) -> bool {
                 Inheritance::instance().addChild(root);
                 rulesCounter++;
                 return true;
@@ -90,7 +88,7 @@ static int tryToConnect(PossessionClient& possessionClient)
     }
 }
 
-int main(int argc, char ** argv)
+int main(int argc, char** argv)
 {
 
     //Kill ourselves if our parent is killed.
@@ -125,9 +123,16 @@ int main(int argc, char ** argv)
         return 1;
     }
 
+    boost::asio::io_service io_service;
+
+    FileSystemObserver file_system_observer(io_service);
+
+    AssetsManager assets_manager(file_system_observer);
+    assets_manager.init();
+
     init_python_api(ruleset_name, false);
 
-    SystemTime time;
+    SystemTime time{};
     time.update();
 
     AwareMindFactory mindFactory;
@@ -138,14 +143,14 @@ int main(int argc, char ** argv)
     std::string script_package = "mind.NPCMind";
     std::string script_class = "NPCMind";
 
-    if (mindFactory.m_scriptFactory != 0) {
+    if (mindFactory.m_scriptFactory != nullptr) {
         if (mindFactory.m_scriptFactory->package() != script_package) {
             delete mindFactory.m_scriptFactory;
-            mindFactory.m_scriptFactory = 0;
+            mindFactory.m_scriptFactory = nullptr;
         }
     }
-    if (mindFactory.m_scriptFactory == 0) {
-        PythonScriptFactory<BaseMind> * psf = new PythonScriptFactory<BaseMind>(script_package, script_class);
+    if (mindFactory.m_scriptFactory == nullptr) {
+        auto* psf = new PythonScriptFactory<BaseMind>(script_package, script_class);
         if (psf->setup() == 0) {
             log(INFO, String::compose("Initialized mind code with Python class %1.%2.", script_package, script_class));
             mindFactory.m_scriptFactory = psf;
@@ -156,6 +161,32 @@ int main(int argc, char ** argv)
     }
 
     std::unique_ptr<PossessionClient> possessionClient(new PossessionClient(mindFactory));
+
+    python_reload_scripts.connect([&]() {
+        mindFactory.m_scriptFactory->refreshClass();
+
+        if (possessionClient) {
+            auto& minds = possessionClient->getMinds();
+            for (auto& entry : minds) {
+                auto entity = entry.second;
+                //First store all thoughts
+                Atlas::Objects::Operation::Think think;
+                think->setArgs1(Atlas::Objects::Operation::Get());
+                OpVector res;
+                entity->operation(think, res);
+
+                mindFactory.m_scriptFactory->addScript(entity);
+
+                //After updating the script restore all thoughts
+                OpVector ignoresRes;
+                for (auto& op : res) {
+                    entity->operation(op, ignoresRes);
+                }
+            }
+        }
+
+    });
+
     log(INFO, "Trying to connect to server.");
     while (tryToConnect(*possessionClient) != 0 && !exit_flag) {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -164,7 +195,9 @@ int main(int argc, char ** argv)
     while (!exit_flag) {
         try {
             double secondsUntilNextOp = possessionClient->secondsUntilNextOp();
-            boost::posix_time::microseconds waitTime((long long)(secondsUntilNextOp * 1000000));
+            boost::posix_time::microseconds waitTime((long long) (secondsUntilNextOp * 1000000));
+            //Handle file system changes
+            io_service.poll();
             int netResult = possessionClient->pollOne(waitTime);
             if (netResult >= 0) {
                 //As long as we're connected we'll keep on processing minds
@@ -174,6 +207,7 @@ int main(int argc, char ** argv)
                 log(ERROR, "Disconnected from server; will try to reconnect every one second.");
                 //We're disconnected. We'll now enter a loop where we'll try to reconnect at an interval.
                 //First we need to shut down the current client. Perhaps we could find a way to persist the minds in a better way?
+                possessionClient.reset();
                 possessionClient.reset(new PossessionClient(mindFactory));
                 while (tryToConnect(*possessionClient) != 0 && !exit_flag) {
                     std::this_thread::sleep_for(std::chrono::milliseconds(1000));

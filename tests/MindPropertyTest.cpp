@@ -82,9 +82,6 @@ PythonClass::~PythonClass()
 {
 }
 
-MindFactory::~MindFactory()
-{
-}
 
 BaseMind * MindFactory::newMind(const std::string & id, long intId) const
 {

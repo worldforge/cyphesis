@@ -56,6 +56,7 @@ class NPCMind(server.Mind):
     def __init__(self, cppthing):
         self.mind = cppthing
 
+
         self.knowledge=Knowledge()
         self.mem=Memory(map=self.map)
         self.things={}

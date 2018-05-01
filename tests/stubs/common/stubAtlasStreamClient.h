@@ -74,7 +74,7 @@
 
 #ifndef STUB_StreamClientSocketBase_poll
 //#define STUB_StreamClientSocketBase_poll
-  int StreamClientSocketBase::poll(const boost::posix_time::time_duration& duration, const std::function<bool()> exitCheckerFn)
+  int StreamClientSocketBase::poll(const boost::posix_time::time_duration& duration, const std::function<bool()>& exitCheckerFn)
   {
     return 0;
   }

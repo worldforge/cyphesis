@@ -40,7 +40,8 @@ class SharedTerrain : public IHeightProvider
         };
 
         SharedTerrain();
-        virtual ~SharedTerrain();
+
+        ~SharedTerrain() override = default;
 
         /**
          * @brief Sets base points.
@@ -50,7 +51,7 @@ class SharedTerrain : public IHeightProvider
          */
         std::vector<BasePointDefinition> setBasePoints(const std::vector<BasePointDefinition>& basepoints);
 
-        virtual void blitHeights(int xMin, int xMax, int yMin, int yMax, std::vector<float>& heights) const;
+        void blitHeights(int xMin, int xMax, int yMin, int yMax, std::vector<float>& heights) const override;
 
         const Mercator::Terrain& getTerrain() const;
 

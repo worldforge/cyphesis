@@ -22,7 +22,6 @@
 #include "PossessionClient.h"
 #include "PossessionAccount.h"
 
-#include "rulesets/BaseMind.h"
 
 #include "common/Possess.h"
 #include "common/id.h"
@@ -44,13 +43,9 @@ using Atlas::Objects::Operation::RootOperation;
 PossessionClient::PossessionClient(MindKit& mindFactory) :
     m_mindFactory(mindFactory),
     m_account(nullptr),
-    m_operationsDispatcher([&](const Operation& op, LocatedEntity& from) { this->operationFromEntity(op, from); },
+    m_operationsDispatcher([&](const Operation& op, BaseMind& from) { this->operationFromEntity(op, from); },
                            [&]() -> double { return getTime(); }),
     m_inheritance(new Inheritance())
-{
-}
-
-PossessionClient::~PossessionClient()
 {
 }
 
@@ -74,13 +69,13 @@ void PossessionClient::markQueueAsClean()
     m_operationsDispatcher.markQueueAsClean();
 }
 
-void PossessionClient::addLocatedEntity(LocatedEntity* entity)
+void PossessionClient::addLocatedEntity(BaseMind* entity)
 {
     m_minds.insert(std::make_pair(entity->getIntId(), entity));
     entity->incRef();
 }
 
-void PossessionClient::removeLocatedEntity(LocatedEntity* entity)
+void PossessionClient::removeLocatedEntity(BaseMind* entity)
 {
     m_minds.erase(entity->getIntId());
     entity->decRef();
@@ -96,7 +91,7 @@ void PossessionClient::createAccount(const std::string& accountId)
     }
 }
 
-void PossessionClient::operationFromEntity(const Operation& op, LocatedEntity& locatedEntity)
+void PossessionClient::operationFromEntity(const Operation& op, BaseMind& locatedEntity)
 {
     if (!locatedEntity.isDestroyed()) {
         OpVector res;
@@ -144,7 +139,7 @@ void PossessionClient::operation(const Operation& op, OpVector& res)
         auto mindI = m_minds.find(integerId(op->getTo()));
         if (mindI != m_minds.end()) {
             OpVector mindRes;
-            LocatedEntity* mind = mindI->second;
+            auto mind = mindI->second;
             mind->operation(op, mindRes);
             for (auto& resOp : mindRes) {
                 resOp->setFrom(mind->getId());

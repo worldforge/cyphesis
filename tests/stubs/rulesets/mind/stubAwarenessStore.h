@@ -15,14 +15,6 @@
   }
 #endif //STUB_AwarenessStore_AwarenessStore
 
-#ifndef STUB_AwarenessStore_AwarenessStore_DTOR
-//#define STUB_AwarenessStore_AwarenessStore_DTOR
-   AwarenessStore::~AwarenessStore()
-  {
-    
-  }
-#endif //STUB_AwarenessStore_AwarenessStore_DTOR
-
 #ifndef STUB_AwarenessStore_requestAwareness
 //#define STUB_AwarenessStore_requestAwareness
   std::shared_ptr<Awareness> AwarenessStore::requestAwareness(const LocatedEntity& domainEntity)

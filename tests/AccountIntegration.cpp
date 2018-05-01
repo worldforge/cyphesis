@@ -503,6 +503,9 @@ int PythonScriptFactory<LocatedEntity>::setup()
 #include "stubs/server/stubOpRuleHandler.h"
 #include "stubs/server/stubPropertyRuleHandler.h"
 
+template class OperationsDispatcher<LocatedEntity>;
+template class OpQueEntry<LocatedEntity>;
+
 ArithmeticBuilder * ArithmeticBuilder::m_instance = 0;
 
 ArithmeticBuilder::ArithmeticBuilder()

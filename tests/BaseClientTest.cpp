@@ -209,32 +209,8 @@ long integerId(const std::string & id)
 
 
 
-MemEntity::MemEntity(const std::string & id, long intId) :
-           LocatedEntity(id, intId), m_lastSeen(0.)
-{
-}
 
-MemEntity::~MemEntity()
-{
-}
-
-void MemEntity::externalOperation(const Operation & op, Link &)
-{
-}
-
-void MemEntity::operation(const Operation &, OpVector &)
-{
-}
-
-void MemEntity::destroy()
-{
-}
-
-PropertyBase * MemEntity::setAttr(const std::string & name, const Atlas::Message::Element & attr)
-{
-    return 0;
-}
-
+#include "stubs/rulesets/stubMemEntity.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
 
 Router::Router(const std::string & id, long intId) : m_id(id),

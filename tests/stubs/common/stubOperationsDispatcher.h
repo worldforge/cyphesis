@@ -9,7 +9,8 @@
 
 #ifndef STUB_OpQueEntry_OpQueEntry
 //#define STUB_OpQueEntry_OpQueEntry
-   OpQueEntry::OpQueEntry(const Operation & o, LocatedEntity & f)
+  template <typename T>
+   OpQueEntry<T>::OpQueEntry(Operation o, T & f)
     : from(nullptr)
   {
     
@@ -18,7 +19,8 @@
 
 #ifndef STUB_OpQueEntry_OpQueEntry
 //#define STUB_OpQueEntry_OpQueEntry
-   OpQueEntry::OpQueEntry(const OpQueEntry & o)
+  template <typename T>
+   OpQueEntry<T>::OpQueEntry(const OpQueEntry & o)
     : from(nullptr)
   {
     
@@ -27,7 +29,8 @@
 
 #ifndef STUB_OpQueEntry_OpQueEntry_DTOR
 //#define STUB_OpQueEntry_OpQueEntry_DTOR
-   OpQueEntry::~OpQueEntry()
+  template <typename T>
+   OpQueEntry<T>::~OpQueEntry()
   {
     
   }
@@ -36,7 +39,8 @@
 
 #ifndef STUB_OperationsDispatcher_OperationsDispatcher
 //#define STUB_OperationsDispatcher_OperationsDispatcher
-   OperationsDispatcher::OperationsDispatcher(const std::function<void(const Operation&, LocatedEntity&)>& operationProcessor, const std::function<double()>& timeProviderFn)
+  template <typename T>
+   OperationsDispatcher<T>::OperationsDispatcher(const std::function<void(const Operation&, T&)>& operationProcessor, const std::function<double()>& timeProviderFn)
   {
     
   }
@@ -44,7 +48,8 @@
 
 #ifndef STUB_OperationsDispatcher_OperationsDispatcher_DTOR
 //#define STUB_OperationsDispatcher_OperationsDispatcher_DTOR
-   OperationsDispatcher::~OperationsDispatcher()
+  template <typename T>
+   OperationsDispatcher<T>::~OperationsDispatcher()
   {
     
   }
@@ -52,7 +57,8 @@
 
 #ifndef STUB_OperationsDispatcher_idle
 //#define STUB_OperationsDispatcher_idle
-  bool OperationsDispatcher::idle()
+  template <typename T>
+  bool OperationsDispatcher<T>::idle()
   {
     return false;
   }
@@ -60,7 +66,8 @@
 
 #ifndef STUB_OperationsDispatcher_secondsUntilNextOp
 //#define STUB_OperationsDispatcher_secondsUntilNextOp
-  double OperationsDispatcher::secondsUntilNextOp() const
+  template <typename T>
+  double OperationsDispatcher<T>::secondsUntilNextOp() const
   {
     return 0;
   }
@@ -68,7 +75,8 @@
 
 #ifndef STUB_OperationsDispatcher_isQueueDirty
 //#define STUB_OperationsDispatcher_isQueueDirty
-  bool OperationsDispatcher::isQueueDirty() const
+  template <typename T>
+  bool OperationsDispatcher<T>::isQueueDirty() const
   {
     return false;
   }
@@ -76,7 +84,8 @@
 
 #ifndef STUB_OperationsDispatcher_markQueueAsClean
 //#define STUB_OperationsDispatcher_markQueueAsClean
-  void OperationsDispatcher::markQueueAsClean()
+  template <typename T>
+  void OperationsDispatcher<T>::markQueueAsClean()
   {
     
   }
@@ -84,7 +93,8 @@
 
 #ifndef STUB_OperationsDispatcher_clearQueues
 //#define STUB_OperationsDispatcher_clearQueues
-  void OperationsDispatcher::clearQueues()
+  template <typename T>
+  void OperationsDispatcher<T>::clearQueues()
   {
     
   }
@@ -92,7 +102,8 @@
 
 #ifndef STUB_OperationsDispatcher_addOperationToQueue
 //#define STUB_OperationsDispatcher_addOperationToQueue
-  void OperationsDispatcher::addOperationToQueue(const Operation &, LocatedEntity &)
+  template <typename T>
+  void OperationsDispatcher<T>::addOperationToQueue(const Operation &, T &)
   {
     
   }
@@ -100,7 +111,8 @@
 
 #ifndef STUB_OperationsDispatcher_dispatchOperation
 //#define STUB_OperationsDispatcher_dispatchOperation
-  void OperationsDispatcher::dispatchOperation(const OpQueEntry& opQueueEntry)
+  template <typename T>
+  void OperationsDispatcher<T>::dispatchOperation(const OpQueEntry<T>& opQueueEntry)
   {
     
   }
@@ -108,7 +120,8 @@
 
 #ifndef STUB_OperationsDispatcher_getTime
 //#define STUB_OperationsDispatcher_getTime
-  double OperationsDispatcher::getTime() const
+  template <typename T>
+  double OperationsDispatcher<T>::getTime() const
   {
     return 0;
   }

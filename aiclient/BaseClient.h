@@ -51,8 +51,8 @@ class BaseClient {
     std::string getErrorMessage(const Operation & err);
 
   public:
-    BaseClient();
-    virtual ~BaseClient();
+    BaseClient() = default;
+    virtual ~BaseClient() = default;
 
     const std::string & id() const {
         return m_playerId;

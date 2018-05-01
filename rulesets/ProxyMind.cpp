@@ -41,10 +41,6 @@ ProxyMind::ProxyMind(const std::string & id, long intId, LocatedEntity& ownerEnt
 
 }
 
-ProxyMind::~ProxyMind()
-{
-}
-
 void ProxyMind::thinkSetOperation(const Operation & op, OpVector & res)
 {
     //If it's a Set op named "persistthoughts" it's coming from an AI client, and is meant

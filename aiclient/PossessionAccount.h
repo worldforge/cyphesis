@@ -24,12 +24,12 @@
 #include <unordered_set>
 
 class MindKit;
-class LocatedEntityRegistry;
+class MindRegistry;
 
 class PossessionAccount: public Router
 {
     public:
-        PossessionAccount(const std::string& id, long intId, LocatedEntityRegistry& locatedEntityRegistry, const MindKit& mindFactory);
+        PossessionAccount(const std::string& id, long intId, MindRegistry& locatedEntityRegistry, const MindKit& mindFactory);
         ~PossessionAccount() override = default;
 
         /**
@@ -41,7 +41,7 @@ class PossessionAccount: public Router
         void externalOperation(const Operation & op, Link &) override;
 
     protected:
-        LocatedEntityRegistry& mLocatedEntityRegistry;
+        MindRegistry& mLocatedEntityRegistry;
         const MindKit& m_mindFactory;
 
         int m_serialNoCounter;

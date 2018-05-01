@@ -55,7 +55,7 @@ BaseMind::~BaseMind()
 {
     m_map.m_entities.erase(getIntId());
     // FIXME Remove this once MemMap uses parent refcounting
-    m_location.m_loc = 0;
+    m_location.m_loc = nullptr;
     // debug(std::cout << getId() << ":" << getType() << " flushing mind with "
                     // << m_map.getEntities().size() << " entities in it"
                     // << std::endl << std::flush;);
@@ -164,7 +164,7 @@ void BaseMind::SoundOperation(const Operation & op, OpVector & res)
         std::string event_name("sound_");
         event_name += op2->getParent();
 
-        if (m_script == 0 || m_script->operation(event_name, op2, res) == 0) {
+        if (m_script == nullptr || m_script->operation(event_name, op2, res) == 0) {
             callSoundOperation(op2, res);
         }
     }
@@ -194,7 +194,7 @@ void BaseMind::SightOperation(const Operation & op, OpVector & res)
             log(WARNING, String::compose("Sight op argument ('%1') had no seconds set.", op2->getParent()));
         }
 
-        if (m_script == 0 || m_script->operation(event_name, op2, res) == 0) {
+        if (m_script == nullptr || m_script->operation(event_name, op2, res) == 0) {
             callSightOperation(op2, res);
         }
     } else /* if (op2->getObjtype() == "object") */ {
@@ -205,7 +205,7 @@ void BaseMind::SightOperation(const Operation & op, OpVector & res)
         }
         debug( std::cout << " arg is an entity!" << std::endl << std::flush;);
         MemEntity * me = m_map.updateAdd(ent, op->getSeconds());
-        if (me != 0) {
+        if (me != nullptr) {
             me->setVisible();
         }
     }
@@ -283,15 +283,15 @@ void BaseMind::AppearanceOperation(const Operation & op, OpVector & res)
 {
     if (!isAwake()) { return; }
     const std::vector<Root> & args = op->getArgs();
-    std::vector<Root>::const_iterator Iend = args.end();
-    for (std::vector<Root>::const_iterator I = args.begin(); I != Iend; ++I) {
+    auto Iend = args.end();
+    for (auto I = args.begin(); I != Iend; ++I) {
         if (!(*I)->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
             log(ERROR, "BaseMind: Appearance op does not have ID");
             continue;
         }
         const std::string & id = (*I)->getId();
         MemEntity * me = m_map.getAdd(id);
-        if (me != 0) {
+        if (me != nullptr) {
             if ((*I)->hasAttrFlag(Atlas::Objects::STAMP_FLAG)) {
                 if ((int)(*I)->getStamp() != me->getSeq()) {
                     Look l;
@@ -313,12 +313,12 @@ void BaseMind::DisappearanceOperation(const Operation & op, OpVector & res)
 {
     if (!isAwake()) { return; }
     const std::vector<Root> & args = op->getArgs();
-    std::vector<Root>::const_iterator Iend = args.end();
-    for (std::vector<Root>::const_iterator I = args.begin(); I != Iend; ++I) {
+    auto Iend = args.end();
+    for (auto I = args.begin(); I != Iend; ++I) {
         const std::string & id = (*I)->getId();
         if (id.empty()) { continue; }
         MemEntity * me = m_map.get(id);
-        if (me != 0) {
+        if (me != nullptr) {
             me->update(op->getSeconds());
             me->setVisible(false);
         }

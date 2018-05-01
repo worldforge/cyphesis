@@ -45,7 +45,8 @@ class ProxyMind : public BaseMind
 {
     public:
         ProxyMind(const std::string & id, long intId, LocatedEntity& ownerEntity);
-        virtual ~ProxyMind();
+
+        ~ProxyMind() override = default;
 
         /**
          * Gets all registered thoughts.

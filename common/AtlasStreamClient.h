@@ -53,7 +53,7 @@ class StreamClientSocketBase
 
         virtual size_t write() = 0;
         int poll(const boost::posix_time::time_duration& duration);
-        int poll(const boost::posix_time::time_duration& duration, const std::function<bool()> exitCheckerFn);
+        int poll(const boost::posix_time::time_duration& duration, const std::function<bool()>& exitCheckerFn);
     protected:
         enum
         {
@@ -132,7 +132,7 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     int waitForLoginResponse();
     void dispatch();
 
-    virtual void objectArrived(const Atlas::Objects::Root &);
+    void objectArrived(const Atlas::Objects::Root &) override;
 
     virtual void operation(const Atlas::Objects::Operation::RootOperation &);
 
@@ -147,13 +147,18 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
 
   public:
     AtlasStreamClient();
-    virtual ~AtlasStreamClient();
+
+    ~AtlasStreamClient() override;
 
     int newSerialNo() {
         return ++serialNo;
     }
 
     const Atlas::Objects::Root & getInfoReply() const {
+        return m_infoReply;
+    }
+
+    Atlas::Objects::Root & getInfoReply() {
         return m_infoReply;
     }
 

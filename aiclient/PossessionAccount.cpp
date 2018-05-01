@@ -20,7 +20,7 @@
 #endif
 
 #include "PossessionAccount.h"
-#include "LocatedEntityRegistry.h"
+#include "MindRegistry.h"
 
 #include "rulesets/MindFactory.h"
 #include "rulesets/BaseMind.h"
@@ -48,8 +48,11 @@ using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
 
-PossessionAccount::PossessionAccount(const std::string& id, long intId, LocatedEntityRegistry& locatedEntityRegistry, const MindKit& mindFactory) :
-        Router(id, intId), mLocatedEntityRegistry(locatedEntityRegistry), m_mindFactory(mindFactory), m_serialNoCounter(1)
+PossessionAccount::PossessionAccount(const std::string& id, long intId, MindRegistry& locatedEntityRegistry, const MindKit& mindFactory) :
+        Router(id, intId),
+        mLocatedEntityRegistry(locatedEntityRegistry),
+        m_mindFactory(mindFactory),
+        m_serialNoCounter(1)
 {
 }
 

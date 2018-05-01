@@ -93,7 +93,7 @@ void AwareMind::operation(const Operation & op, OpVector & res)
 
 double AwareMind::getCurrentLocalTime() const
 {
-    SystemTime time;
+    SystemTime time{};
     time.update();
     return (time.seconds() + (time.microseconds() * 0.000001));
 }
@@ -296,7 +296,7 @@ void AwareMind::parseTerrain(const Atlas::Message::Element& terrainElement)
                 int res = mSharedTerrain.getTerrain().getResolution();
                 for (auto& entry : changedPoints) {
                     WFMath::AxisBox<2> area(WFMath::Point<2>(entry.x - res, entry.y - res), WFMath::Point<2>(entry.x + res, entry.y + res));
-                    mAwareness->markTilesAsDirty(std::move(area));
+                    mAwareness->markTilesAsDirty(area);
                 }
             }
         }

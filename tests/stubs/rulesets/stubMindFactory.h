@@ -33,14 +33,6 @@
 #endif //STUB_MindKit_newMind
 
 
-#ifndef STUB_MindFactory_MindFactory_DTOR
-//#define STUB_MindFactory_MindFactory_DTOR
-   MindFactory::~MindFactory()
-  {
-    
-  }
-#endif //STUB_MindFactory_MindFactory_DTOR
-
 #ifndef STUB_MindFactory_newMind
 //#define STUB_MindFactory_newMind
   BaseMind* MindFactory::newMind(const std::string &, long) const

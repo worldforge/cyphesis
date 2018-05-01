@@ -29,10 +29,6 @@ AwarenessStore::AwarenessStore(float agentRadius, float agentHeight, IHeightProv
 {
 }
 
-AwarenessStore::~AwarenessStore()
-{
-}
-
 std::shared_ptr<Awareness> AwarenessStore::requestAwareness(const LocatedEntity& domainEntity)
 {
     //Check if there's already an awareness for the domain entity.

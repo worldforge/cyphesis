@@ -51,7 +51,7 @@ AwarenessStore& AwarenessStoreProvider::getStore(const TypeNode* type, int tileS
     auto propertyI = type->defaults().find("bbox");
     if (propertyI != type->defaults().end()) {
         const PropertyBase* propBase = propertyI->second;
-        const BBoxProperty* bboxProp = static_cast<const BBoxProperty*>(propBase);
+        auto bboxProp = static_cast<const BBoxProperty*>(propBase);
         const auto& bbox = bboxProp->data();
         agentHeight = bbox.highCorner().y() - bbox.lowCorner().y();
 

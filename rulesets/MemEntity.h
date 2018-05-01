@@ -32,7 +32,7 @@ class MemEntity : public LocatedEntity {
     double m_lastSeen;
   public:
     explicit MemEntity(const std::string & id, long intId);
-    virtual ~MemEntity();
+    ~MemEntity() override = default;
 
     void setVisible(bool v = true) {
         if (v) {

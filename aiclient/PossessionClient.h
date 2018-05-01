@@ -20,8 +20,10 @@
 #define POSSESSIONCLIENT_H_
 
 #include "BaseClient.h"
-#include "LocatedEntityRegistry.h"
+#include "MindRegistry.h"
+#include "rulesets/BaseMind.h"
 #include "common/OperationsDispatcher.h"
+#include "common/OperationsDispatcher_impl.h"
 #include <map>
 #include <unordered_map>
 
@@ -32,11 +34,12 @@ class Inheritance;
 /**
  * Manages possession requests from the server and spawns new AI clients.
  */
-class PossessionClient: public BaseClient, public LocatedEntityRegistry
+class PossessionClient: public BaseClient, public MindRegistry
 {
     public:
-        PossessionClient(MindKit& mindFactory);
-        virtual ~PossessionClient();
+        explicit PossessionClient(MindKit& mindFactory);
+
+        ~PossessionClient() override = default;
 
         bool idle();
         double secondsUntilNextOp() const;
@@ -45,13 +48,18 @@ class PossessionClient: public BaseClient, public LocatedEntityRegistry
 
         void createAccount(const std::string& accountId);
 
-        virtual void addLocatedEntity(LocatedEntity* mind);
-        virtual void removeLocatedEntity(LocatedEntity* mind);
+        void addLocatedEntity(BaseMind* mind) override;
+
+        void removeLocatedEntity(BaseMind* mind) override;
+
+        const std::unordered_map<long, BaseMind*>& getMinds() const {
+            return m_minds;
+        };
 
     protected:
 
-        virtual void operation(const Operation & op, OpVector & res);
-        void operationFromEntity(const Operation & op, LocatedEntity& locatedEntity);
+        void operation(const Operation & op, OpVector & res) override;
+        void operationFromEntity(const Operation & op, BaseMind& locatedEntity);
         double getTime() const;
 
 
@@ -59,9 +67,9 @@ class PossessionClient: public BaseClient, public LocatedEntityRegistry
 
         PossessionAccount* m_account;
 
-        OperationsDispatcher m_operationsDispatcher;
+        OperationsDispatcher<BaseMind> m_operationsDispatcher;
 
-        std::unordered_map<long, LocatedEntity*> m_minds;
+        std::unordered_map<long, BaseMind*> m_minds;
 
         std::unique_ptr<Inheritance> m_inheritance;
 

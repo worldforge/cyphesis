@@ -110,7 +110,7 @@ int StreamClientSocketBase::poll(const boost::posix_time::time_duration& duratio
     return poll(duration, []()->bool{return false;});
 }
 
-int StreamClientSocketBase::poll(const boost::posix_time::time_duration& duration, const std::function<bool()> exitCheckerFn)
+int StreamClientSocketBase::poll(const boost::posix_time::time_duration& duration, const std::function<bool()>& exitCheckerFn)
 {
     bool hasExpired = false;
     bool isCancelled = false;

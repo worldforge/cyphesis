@@ -24,17 +24,13 @@
 
 static const bool debug_flag = false;
 
-MindKit::MindKit() : m_scriptFactory(0)
+MindKit::MindKit() : m_scriptFactory(nullptr)
 {
 }
 
 MindKit::~MindKit()
 {
     delete m_scriptFactory;
-}
-
-MindFactory::~MindFactory()
-{
 }
 
 BaseMind * MindFactory::newMind(const std::string & id, long intId) const

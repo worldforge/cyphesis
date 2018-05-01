@@ -16,14 +16,6 @@
   }
 #endif //STUB_MemEntity_MemEntity
 
-#ifndef STUB_MemEntity_MemEntity_DTOR
-//#define STUB_MemEntity_MemEntity_DTOR
-   MemEntity::~MemEntity()
-  {
-    
-  }
-#endif //STUB_MemEntity_MemEntity_DTOR
-
 #ifndef STUB_MemEntity_externalOperation
 //#define STUB_MemEntity_externalOperation
   void MemEntity::externalOperation(const Operation & op, Link &)

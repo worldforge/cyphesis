@@ -301,6 +301,9 @@ int CHANGE_NO = -1;
 #include "stubs/rulesets/stubDomain.h"
 #include "stubs/common/stubOperationsDispatcher.h"
 
+template class OperationsDispatcher<LocatedEntity>;
+template class OpQueEntry<LocatedEntity>;
+
 #define STUB_LocatedEntity_LocatedEntity_DTOR
 // Deletions and reference count decrements are required to ensure map
 // memory management works correctly.

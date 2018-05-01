@@ -33,7 +33,7 @@ class AwarenessStore
 {
     public:
         AwarenessStore(float agentRadius, float agentHeight, IHeightProvider& heightProvider, int tileSize = 64);
-        virtual ~AwarenessStore();
+        virtual ~AwarenessStore() = default;
 
         std::shared_ptr<Awareness> requestAwareness(const LocatedEntity& domainEntity);
 
@@ -52,7 +52,7 @@ class AwarenessStore
         /**
          * @brief A map of existing awarenesses, ordered by the id of the domain entity.
          */
-        std::unordered_map<int, std::weak_ptr<Awareness>> m_awarenesses;
+        std::unordered_map<long, std::weak_ptr<Awareness>> m_awarenesses;
 };
 
 #endif /* RULESETS_MIND_AWARENESSSTORE_H_ */

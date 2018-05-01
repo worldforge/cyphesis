@@ -16,14 +16,6 @@
   }
 #endif //STUB_SharedTerrain_SharedTerrain
 
-#ifndef STUB_SharedTerrain_SharedTerrain_DTOR
-//#define STUB_SharedTerrain_SharedTerrain_DTOR
-   SharedTerrain::~SharedTerrain()
-  {
-    
-  }
-#endif //STUB_SharedTerrain_SharedTerrain_DTOR
-
 #ifndef STUB_SharedTerrain_setBasePoints
 //#define STUB_SharedTerrain_setBasePoints
   std::vector<BasePointDefinition> SharedTerrain::setBasePoints(const std::vector<BasePointDefinition>& basepoints)

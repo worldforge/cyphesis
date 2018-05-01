@@ -34,11 +34,12 @@ class AwareMind: public BaseMind, public MemMap::MapListener
 {
     public:
         AwareMind(const std::string &id, long intId, SharedTerrain& sharedTerrain, AwarenessStoreProvider& awarenessStoreProvider);
-        virtual ~AwareMind();
 
-        void entityAdded(const MemEntity& entity);
-        void entityUpdated(const MemEntity& entity, const Atlas::Objects::Entity::RootEntity & ent, LocatedEntity* oldLocation);
-        void entityDeleted(const MemEntity& entity);
+        ~AwareMind() override;
+
+        void entityAdded(const MemEntity& entity) override;
+        void entityUpdated(const MemEntity& entity, const Atlas::Objects::Entity::RootEntity & ent, LocatedEntity* oldLocation) override;
+        void entityDeleted(const MemEntity& entity) override;
 
         void setType(const TypeNode * t) override;
 

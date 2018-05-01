@@ -157,7 +157,7 @@ WorldRouter::~WorldRouter()
     //Make sure to clear the queues first so that there's nothing referencing entities
     //in them.
     m_operationsDispatcher.clearQueues();
-    m_suspendedQueue = OpQueue();
+    m_suspendedQueue = std::queue<OpQueEntry<LocatedEntity>>();
 
     EntityDict::const_iterator Jend = m_eobjects.end();
     for (EntityDict::const_iterator J = m_eobjects.begin(); J != Jend; ++J) {
@@ -501,7 +501,7 @@ void WorldRouter::deliverTo(const Operation & op, LocatedEntity & ent)
     //(to be resent when the world is resumed) and not process it now.
     if (m_isSuspended) {
         if (op->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
-            m_suspendedQueue.push(OpQueEntry(op, ent));
+            m_suspendedQueue.push(OpQueEntry<LocatedEntity>(op, ent));
             return;
         }
     }

@@ -16,14 +16,6 @@
   }
 #endif //STUB_ProxyMind_ProxyMind
 
-#ifndef STUB_ProxyMind_ProxyMind_DTOR
-//#define STUB_ProxyMind_ProxyMind_DTOR
-   ProxyMind::~ProxyMind()
-  {
-    
-  }
-#endif //STUB_ProxyMind_ProxyMind_DTOR
-
 #ifndef STUB_ProxyMind_getThoughts
 //#define STUB_ProxyMind_getThoughts
   std::vector<Atlas::Objects::Root> ProxyMind::getThoughts() const

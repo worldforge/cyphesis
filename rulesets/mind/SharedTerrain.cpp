@@ -28,10 +28,6 @@ SharedTerrain::SharedTerrain() :
 {
 }
 
-SharedTerrain::~SharedTerrain()
-{
-}
-
 std::vector<SharedTerrain::BasePointDefinition> SharedTerrain::setBasePoints(const std::vector<BasePointDefinition>& basepoints)
 {
     std::vector<BasePointDefinition> changedPoints;
@@ -96,7 +92,7 @@ void SharedTerrain::blitHeights(int xMin, int xMax, int yMin, int yMax, std::vec
 
 const Mercator::Terrain& SharedTerrain::getTerrain() const
 {
-    return *m_terrain.get();
+    return *m_terrain;
 }
 
 

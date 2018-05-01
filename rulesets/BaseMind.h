@@ -38,7 +38,8 @@ class BaseMind : public MemEntity {
     WorldTime m_time;
   public:
     BaseMind(const std::string & id, long intId);
-    virtual ~BaseMind();
+
+    ~BaseMind() override;
 
     /// \brief Accessor for the memory map of world entities
     MemMap * getMap() { return &m_map; }

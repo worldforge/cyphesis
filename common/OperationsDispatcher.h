@@ -20,6 +20,7 @@
 #define OPERATIONSDISPATCHER_H_
 
 #include "OperationRouter.h"
+#include "const.h"
 
 #include <Atlas/Objects/RootOperation.h>
 
@@ -28,10 +29,9 @@
 #include <queue>
 #include <functional>
 
-class LocatedEntity;
-
 /// \brief Type to hold an operation and the Entity it is from   for efficiency
 /// when broadcasting.
+template <typename T>
 struct OpQueEntry {
     bool operator<(const OpQueEntry& right) const {
         return op->getSeconds() < right->getSeconds();
@@ -41,9 +41,9 @@ struct OpQueEntry {
         return op->getSeconds() > right->getSeconds();
     }
     Operation op;
-    LocatedEntity* from;
+    T* from;
 
-    explicit OpQueEntry(const Operation & o, LocatedEntity & f);
+    explicit OpQueEntry(Operation o, T & f);
     OpQueEntry(const OpQueEntry & o);
     ~OpQueEntry();
 
@@ -58,11 +58,12 @@ struct OpQueEntry {
 
 };
 
-typedef std::queue<OpQueEntry> OpQueue;
-typedef std::priority_queue<OpQueEntry, std::vector<OpQueEntry>, std::greater<OpQueEntry> > OpPriorityQueue;
+//typedef std::queue<OpQueEntry> OpQueue;
+//typedef std::priority_queue<OpQueEntry, std::vector<OpQueEntry>, std::greater<> > OpPriorityQueue;
 
 /// \brief Handles dispatching of operations at suitable time.
 ///
+template <typename T>
 class OperationsDispatcher
 {
     public:
@@ -70,7 +71,7 @@ class OperationsDispatcher
          * @brief Ctor.
          * @param operationProcessor A processor function called each time an operation needs to be processed.
          */
-        OperationsDispatcher(const std::function<void(const Operation&, LocatedEntity&)>& operationProcessor, const std::function<double()>& timeProviderFn);
+        OperationsDispatcher(const std::function<void(const Operation&, T&)>& operationProcessor, const std::function<double()>& timeProviderFn);
 
         virtual ~OperationsDispatcher();
 
@@ -118,15 +119,14 @@ class OperationsDispatcher
          * @param The operation to add.
          * @param The located entity it belongs to.
          */
-        void addOperationToQueue(const Operation &,
-                        LocatedEntity &);
+        void addOperationToQueue(const Operation &, T &);
     protected:
 
-        std::function<void(const Operation&, LocatedEntity&)> m_operationProcessor;
+        std::function<void(const Operation&, T&)> m_operationProcessor;
         const std::function<double()> m_timeProviderFn;
 
         /// An ordered queue of operations to be dispatched in the future
-        OpPriorityQueue m_operationQueue;
+        std::priority_queue<OpQueEntry<T>, std::vector<OpQueEntry<T>>, std::greater<> > m_operationQueue;
         /// Keeps track of if the operation queues are dirty.
         bool m_operation_queues_dirty;
 
@@ -134,10 +134,13 @@ class OperationsDispatcher
          * @brief Dispatches the operation contained in the OpQueueEntry.
          * @param opQueueEntry An entry from an op queue.
          */
-        void dispatchOperation(const OpQueEntry& opQueueEntry);
+        void dispatchOperation(const OpQueEntry<T>& opQueueEntry);
 
         double getTime() const;
 
 };
+
+
+
 
 #endif /* OPERATIONSDISPATCHER_H_ */

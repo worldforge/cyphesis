@@ -41,13 +41,6 @@ using String::compose;
 
 static const bool debug_flag = false;
 
-BaseClient::BaseClient()
-{
-}
-
-BaseClient::~BaseClient()
-{
-}
 
 /// \brief Send an operation to the server
 void BaseClient::send(const Operation & op)
@@ -61,6 +54,9 @@ void BaseClient::send(const Operation & op)
 /// @param password Password of the new account
 Root BaseClient::createSystemAccount(const std::string& usernameSuffix)
 {
+    //reset info reply first
+    m_connection.getInfoReply() = Root(nullptr);
+
     Anonymous player_ent;
     m_username = create_session_username() + usernameSuffix;
     player_ent->setAttr("username", m_username);
@@ -76,10 +72,14 @@ Root BaseClient::createSystemAccount(const std::string& usernameSuffix)
         std::cerr << "ERROR: Failed to log into server: \""
                 << m_connection.errorMessage() << "\"" << std::endl
                 << std::flush;
-        return Root(0);
+        return Root(nullptr);
     }
 
-    const Root & ent = m_connection.getInfoReply();
+    Root ent = m_connection.getInfoReply();
+
+    if (!ent) {
+        return ent;
+    }
 
     if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         std::cerr << "ERROR: Logged in, but account has no id" << std::endl
@@ -98,6 +98,10 @@ Root BaseClient::createSystemAccount(const std::string& usernameSuffix)
 Root BaseClient::createAccount(const std::string & name,
         const std::string & password)
 {
+
+    //reset info reply first
+    m_connection.getInfoReply() = Root(nullptr);
+
     m_playerName = name;
 
     Anonymous player_ent;
@@ -123,7 +127,7 @@ Root BaseClient::createAccount(const std::string & name,
         if (m_connection.wait() != 0) {
             std::cerr << "ERROR: Failed to log into server" << std::endl
                     << std::flush;
-            return Root(0);
+            return Root(nullptr);
         }
     }
 

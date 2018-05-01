@@ -43,9 +43,9 @@ class MindKit {
 /// A mind consists of a C++ base class and an associated script object
 class MindFactory : public MindKit {
   public:
-    virtual ~MindFactory();
+    ~MindFactory() override = default;
 
-    BaseMind * newMind(const std::string &, long) const;
+    BaseMind * newMind(const std::string &, long) const override;
 };
 
 #endif // RULESETS_MIND_FACTORY_H

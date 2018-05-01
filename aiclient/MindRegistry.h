@@ -15,20 +15,20 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-#ifndef AICLIENT_LOCATEDENTITYREGISTRY_H_
-#define AICLIENT_LOCATEDENTITYREGISTRY_H_
+#ifndef AICLIENT_MINDREGISTRY_H
+#define AICLIENT_MINDREGISTRY_H
 
-class LocatedEntity;
+class BaseMind;
 
-class LocatedEntityRegistry {
+class MindRegistry {
 
     public:
 
-        virtual ~LocatedEntityRegistry() = default;
+        virtual ~MindRegistry() = default;
 
-        virtual void addLocatedEntity(LocatedEntity*) = 0;
-        virtual void removeLocatedEntity(LocatedEntity*) = 0;
+        virtual void addLocatedEntity(BaseMind*) = 0;
+        virtual void removeLocatedEntity(BaseMind*) = 0;
 
 };
 
-#endif //AICLIENT_LOCATEDENTITYREGISTRY_H_
+#endif //AICLIENT_MINDREGISTRY_H

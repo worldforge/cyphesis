@@ -41,9 +41,9 @@ class WorldRouter : public BaseWorld {
   private:
 
     ///Handles dispatching of operations.
-    OperationsDispatcher m_operationsDispatcher;
+    OperationsDispatcher<LocatedEntity> m_operationsDispatcher;
     /// An ordered queue of suspended operations to be dispatched when resumed.
-    OpQueue m_suspendedQueue;
+    std::queue<OpQueEntry<LocatedEntity>> m_suspendedQueue;
     /// Count of in world entities
     int m_entityCount;
     /// Map of spawns
