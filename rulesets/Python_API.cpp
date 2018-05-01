@@ -542,7 +542,7 @@ void observe_python_directory(std::string directory) {
                 auto relative = path.string().substr(directory.length() + 1);
                 //Trim the ".py" extension
                 relative = relative.substr(0, relative.size() - 3);
-                static char separator[] = {boost::filesystem::path::separator, 0};
+                static char separator[] = {boost::filesystem::path::preferred_separator, 0};
                 auto package = boost::replace_all_copy(relative, separator, ".");
                 auto module = Get_PyModule(package);
                 if (module != nullptr) {
