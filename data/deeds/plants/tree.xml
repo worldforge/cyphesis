@@ -13,6 +13,10 @@
                 <float name="default">600</float>
                 <string name="visibility">public</string>
             </map>
+            <map name="friction_roll">
+                <float name="default">0.5</float>
+                <string name="visibility">public</string>
+            </map>
         </map>
         <string name="id">tree</string>
         <string name="objtype">class</string>
