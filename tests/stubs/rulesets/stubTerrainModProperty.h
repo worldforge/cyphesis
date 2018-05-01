@@ -51,7 +51,7 @@
 
 #ifndef STUB_TerrainModProperty_getAttr
 //#define STUB_TerrainModProperty_getAttr
-  int TerrainModProperty::getAttr(const std::string&, Atlas::Message::Element&)
+  int TerrainModProperty::getAttr(const std::string&, Atlas::Message::Element&) const
   {
     return 0;
   }

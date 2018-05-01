@@ -16,14 +16,6 @@
   }
 #endif //STUB_TaskFactory_TaskFactory
 
-#ifndef STUB_TaskFactory_TaskFactory_DTOR
-//#define STUB_TaskFactory_TaskFactory_DTOR
-   TaskFactory::~TaskFactory()
-  {
-    
-  }
-#endif //STUB_TaskFactory_TaskFactory_DTOR
-
 #ifndef STUB_TaskFactory_checkTarget
 //#define STUB_TaskFactory_checkTarget
   int TaskFactory::checkTarget(LocatedEntity * target)

@@ -70,8 +70,8 @@ int TaskRuleHandler::populateTaskFactory(const std::string & class_name,
     }
     const MapType & activation = activation_attr.Map();
 
-    MapType::const_iterator act_end = activation.end();
-    MapType::const_iterator J = activation.find("tool");
+    auto act_end = activation.end();
+    auto J = activation.find("tool");
     if (J == act_end || !J->second.isString()) {
         log(ERROR, compose("Task \"%1\" activation has no tool.", class_name));
         return -1;
@@ -92,7 +92,7 @@ int TaskRuleHandler::populateTaskFactory(const std::string & class_name,
     J = activation.find("target");
     if (J != act_end) {
         if (!J->second.isString()) {
-            log(ERROR, compose("Task \"%1\" activation has \"%2\" target.",
+            log(ERROR, compose(R"(Task "%1" activation has "%2" target.)",
                                class_name,
                                Element::typeName(J->second.getType())));
             return -1;
@@ -105,7 +105,7 @@ int TaskRuleHandler::populateTaskFactory(const std::string & class_name,
             // This works if there is a dot, or if the search returned npos
             std::string target_class = target_desc.substr(0, dot);
             const TypeNode * target_type = i.getType(target_class);
-            if (target_type == 0) {
+            if (target_type == nullptr) {
                 dependent = target_class;
                 reason = compose("Task \"%1\" is activated on target \"%2\" "
                                  "which does not exist.", class_name,
@@ -131,8 +131,8 @@ int TaskRuleHandler::populateTaskFactory(const std::string & class_name,
                          "does not exist.", class_name, activation_tool);
         return 1;
     }
-    EntityFactoryBase * tool_factory = dynamic_cast<EntityFactoryBase*>(m_builder->getClassFactory(activation_tool));
-    if (tool_factory == 0) {
+    auto* tool_factory = dynamic_cast<EntityFactoryBase*>(m_builder->getClassFactory(activation_tool));
+    if (tool_factory == nullptr) {
         log(ERROR, compose("Task class \"%1\" is activated by tool \"%2\" "
                            "which is not an entity class.", class_name,
                            activation_tool));
@@ -148,10 +148,9 @@ int TaskRuleHandler::populateTaskFactory(const std::string & class_name,
     }
 
     // FIXME This is the same code as EntityRuleHandler
-    if (factory->m_scriptFactory == 0 ||
+    if (factory->m_scriptFactory == nullptr ||
         factory->m_scriptFactory->package() != script_package) {
-        PythonScriptFactory<Task> * ptsf =
-              new PythonScriptFactory<Task>(script_package, script_class);
+        auto* ptsf = new PythonScriptFactory<Task>(script_package, script_class);
 
         if (ptsf->setup() == 0) {
             delete factory->m_scriptFactory;
@@ -173,7 +172,7 @@ int TaskRuleHandler::populateTaskFactory(const std::string & class_name,
     // factory
     m_builder->addTaskActivation(activation_tool, activation_op, factory);
 
-    MapType::iterator L = tool_factory->m_classAttributes.find("operations");
+    auto L = tool_factory->m_classAttributes.find("operations");
     if (L == tool_factory->m_classAttributes.end()) {
         tool_factory->m_classAttributes["operations"] = ListType(1, activation_op);
         tool_factory->m_attributes["operations"] = ListType(1, activation_op);
@@ -230,7 +229,7 @@ int TaskRuleHandler::modifyTaskClass(const std::string & class_name,
     assert(class_name == class_desc->getId());
 
     TaskKit * factory = m_builder->getTaskFactory(class_name);
-    if (factory == 0) {
+    if (factory == nullptr) {
         log(ERROR, compose("Could not find factory for existing task class "
                            "\"%1\"", class_name));
         return -1;

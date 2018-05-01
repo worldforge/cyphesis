@@ -28,11 +28,13 @@ class TaskFactory : public TaskKit {
     std::string m_name;
 
   public:
-    TaskFactory(const std::string & name);
-    virtual ~TaskFactory();
+    explicit TaskFactory(const std::string & name);
 
-    virtual int checkTarget(LocatedEntity * target);
-    virtual Task * newTask(LocatedEntity & chr);
+    ~TaskFactory() override = default;
+
+    int checkTarget(LocatedEntity * target) override;
+
+    Task * newTask(LocatedEntity & chr) override;
 };
 
 #endif // SERVER_TASK_FACTORY_H

@@ -24,7 +24,7 @@
 class EntityBuilder;
 class TaskKit;
 
-/// \brief Handle processing and updating of task ruless
+/// \brief Handle processing and updating of task rules
 class TaskRuleHandler : public RuleHandler {
   protected:
     EntityBuilder * const m_builder;
@@ -44,16 +44,18 @@ class TaskRuleHandler : public RuleHandler {
     int modifyTaskClass(const std::string & class_name,
                         const Atlas::Objects::Root & class_desc);
   public:
-    TaskRuleHandler(EntityBuilder * eb) : m_builder(eb) { }
+    explicit TaskRuleHandler(EntityBuilder * eb) : m_builder(eb) { }
 
-    virtual int check(const Atlas::Objects::Root & desc);
-    virtual int install(const std::string &,
-                        const std::string &,
-                        const Atlas::Objects::Root & desc,
-                        std::string &,
-                        std::string &);
-    virtual int update(const std::string &,
-                       const Atlas::Objects::Root & desc);
+    int check(const Atlas::Objects::Root & desc) override;
+
+    int install(const std::string &,
+                   const std::string &,
+                   const Atlas::Objects::Root & desc,
+                   std::string &,
+                   std::string &) override;
+
+    int update(const std::string &,
+                   const Atlas::Objects::Root & desc) override;
 };
 
 #endif // SERVER_TASK_RULE_HANDLER_H

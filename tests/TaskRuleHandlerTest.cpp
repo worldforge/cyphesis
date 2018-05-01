@@ -144,23 +144,7 @@ TaskKit::~TaskKit()
 {
 }
 
-TaskFactory::TaskFactory(const std::string & name) : m_name(name)
-{
-}
-
-TaskFactory::~TaskFactory()
-{
-}
-
-int TaskFactory::checkTarget(LocatedEntity *)
-{
-    return -1;
-}
-
-Task * TaskFactory::newTask(LocatedEntity & chr)
-{
-    return 0;
-}
+#include "stubs/server/stubTaskFactory.h"
 
 template <class T>
 PythonScriptFactory<T>::PythonScriptFactory(const std::string & package,

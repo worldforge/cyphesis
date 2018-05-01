@@ -141,7 +141,7 @@
 
 #ifndef STUB_TerrainProperty_getSurface
 //#define STUB_TerrainProperty_getSurface
-  int TerrainProperty::getSurface(const Point3D &, int &)
+  int TerrainProperty::getSurface(const Point3D &, int &) const
   {
     return 0;
   }
@@ -149,7 +149,7 @@
 
 #ifndef STUB_TerrainProperty_findMods
 //#define STUB_TerrainProperty_findMods
-  void TerrainProperty::findMods(const Point3D &, std::vector<LocatedEntity *> &)
+  void TerrainProperty::findMods(const Point3D &, std::vector<LocatedEntity *> &) const
   {
     
   }

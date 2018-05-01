@@ -34,13 +34,9 @@ TaskFactory::TaskFactory(const std::string & name) : m_name(name)
 {
 }
 
-TaskFactory::~TaskFactory()
-{
-}
-
 int TaskFactory::checkTarget(LocatedEntity * target)
 {
-    if (m_target != 0 && !target->getType()->isTypeOf(m_target)) {
+    if (m_target != nullptr && !target->getType()->isTypeOf(m_target)) {
         debug( std::cout << target->getType()->name() << " is not a "
                          << m_target->name()
                          << std::endl << std::flush; );
@@ -61,7 +57,7 @@ Task * TaskFactory::newTask(LocatedEntity & chr)
 
     Task * task = new Task(chr);
     task->name() = m_name;
-    assert(task != 0);
+    assert(task != nullptr);
 
     return task;
 }

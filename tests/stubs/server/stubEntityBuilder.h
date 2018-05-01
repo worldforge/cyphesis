@@ -31,14 +31,6 @@
   }
 #endif //STUB_EntityBuilder_installBaseFactory
 
-#ifndef STUB_EntityBuilder_reloadScriptsInFactory
-//#define STUB_EntityBuilder_reloadScriptsInFactory
-  void EntityBuilder::reloadScriptsInFactory(EntityFactoryBase* factory, std::map<const TypeNode*, EntityFactoryBase*>& collector)
-  {
-    
-  }
-#endif //STUB_EntityBuilder_reloadScriptsInFactory
-
 #ifndef STUB_EntityBuilder_installFactory
 //#define STUB_EntityBuilder_installFactory
   int EntityBuilder::installFactory(const std::string & class_name, const Atlas::Objects::Root & class_desc, EntityKit * factory)

@@ -31,6 +31,7 @@
 #include "common/TaskKit.h"
 #include "common/TypeNode.h"
 #include "common/Variable.h"
+#include "TaskFactory.h"
 
 #include <Atlas/Objects/RootOperation.h>
 #include <rulesets/Python_API.h>
@@ -67,6 +68,13 @@ EntityBuilder::EntityBuilder()
             auto I = collector.find(entry.second->getType());
             if (I != collector.end()) {
                 I->second->m_scriptFactory->addScript(entry.second);
+            }
+        }
+
+        for (auto& entry : m_taskFactories) {
+            if (entry.second->m_scriptFactory) {
+                entry.second->m_scriptFactory->refreshClass();
+                //Note that we don't reload the tasks since they often are short lived. Should we perhaps?
             }
         }
 
