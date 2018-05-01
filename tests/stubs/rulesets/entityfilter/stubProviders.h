@@ -101,7 +101,7 @@ namespace EntityFilter {
 #ifndef STUB_NamedAttributeProviderBase_NamedAttributeProviderBase
 //#define STUB_NamedAttributeProviderBase_NamedAttributeProviderBase
   template <typename T>
-   NamedAttributeProviderBase<T>::NamedAttributeProviderBase(Consumer<T>* consumer, const std::string& attribute_name)
+   NamedAttributeProviderBase<T>::NamedAttributeProviderBase(Consumer<T>* consumer, std::string attribute_name)
     : ProviderBase(consumer, attribute_name)
   {
     

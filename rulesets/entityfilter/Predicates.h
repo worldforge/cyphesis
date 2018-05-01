@@ -12,7 +12,8 @@ class Consumer;
 
 class Predicate {
     public:
-        virtual ~Predicate(){}
+        virtual ~Predicate() = default;
+
         virtual bool isMatch(const QueryContext& context) const = 0;
 };
 
@@ -24,20 +25,20 @@ class ComparePredicate : public Predicate {
             EQUALS, NOT_EQUALS, INSTANCE_OF, IN, CONTAINS, GREATER, GREATER_EQUAL, LESS, LESS_EQUAL
         };
         ComparePredicate(const Consumer<QueryContext>* lhs, const Consumer<QueryContext>* rhs, Comparator comparator);
-        virtual bool isMatch(const QueryContext& context) const;
-    protected:
+
+        bool isMatch(const QueryContext& context) const override;
+
         const Consumer<QueryContext>* m_lhs;
         const Consumer<QueryContext>* m_rhs;
-        Comparator m_comparator;
-
-
+        const Comparator m_comparator;
 };
 
 class AndPredicate : public Predicate {
     public:
         AndPredicate(const Predicate* lhs, const Predicate* rhs);
-        virtual bool isMatch(const QueryContext& context) const;
-    protected:
+
+        bool isMatch(const QueryContext& context) const override;
+
         const Predicate* m_lhs;
         const Predicate* m_rhs;
 };
@@ -45,17 +46,19 @@ class AndPredicate : public Predicate {
 class OrPredicate : public Predicate {
     public:
         OrPredicate(const Predicate* lhs, const Predicate* rhs);
-        virtual bool isMatch(const QueryContext& context) const;
-   protected:
+
+        bool isMatch(const QueryContext& context) const override;
+
         const Predicate* m_lhs;
         const Predicate* m_rhs;
 };
 
 class NotPredicate : public Predicate {
     public:
-        NotPredicate(const Predicate* pred);
-        virtual bool isMatch(const QueryContext& context) const;
-    protected:
+        explicit NotPredicate(const Predicate* pred);
+
+        bool isMatch(const QueryContext& context) const override;
+
         const Predicate* m_pred;
 };
 }

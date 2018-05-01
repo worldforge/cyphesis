@@ -280,7 +280,7 @@ EntityRefProvider::EntityRefProvider(Consumer<LocatedEntity>* consumer, const st
 
 void EntityRefProvider::value(Atlas::Message::Element& value, const LocatedEntity& entity) const
 {
-    const EntityProperty* prop = entity.getPropertyClass<EntityProperty>(m_attribute_name);
+    auto prop = entity.getPropertyClass<EntityProperty>(m_attribute_name);
     if (!prop) {
         return;
     }
@@ -353,7 +353,7 @@ bool ContainsRecursiveFunctionProvider::checkContainer(LocatedEntitySet* contain
             return true;
         } else {
             //If an item we're looking at also contains other items - check them too using recursion
-            if (item->m_contains && item->m_contains->size() > 0) {
+            if (item->m_contains && !item->m_contains->empty()) {
                 if (this->checkContainer(item->m_contains)) {
                     return true;
                 }

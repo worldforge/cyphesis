@@ -17,7 +17,7 @@ ComparePredicate::ComparePredicate(const Consumer<QueryContext>* lhs,
                 "At least one side of the comparison operator is invalid");
     }
     if (m_comparator == Comparator::INSTANCE_OF) {
-        //make sure that both providers return TypeNode intances
+        //make sure that both providers return TypeNode instances
         if ((m_lhs->getType() != &typeid(const TypeNode*))
                 || (m_rhs->getType() != &typeid(const TypeNode*))) {
             throw std::invalid_argument(
@@ -43,7 +43,6 @@ bool ComparePredicate::isMatch(const QueryContext& context) const
 
         return false;
     }
-        break;
     case Comparator::NOT_EQUALS:
     {
         Atlas::Message::Element left, right;
@@ -57,7 +56,6 @@ bool ComparePredicate::isMatch(const QueryContext& context) const
 
         return true;
     }
-        break;
     case Comparator::LESS:
     {
         Atlas::Message::Element left, right;
@@ -70,7 +68,6 @@ bool ComparePredicate::isMatch(const QueryContext& context) const
         }
         return false;
     }
-        break;
     case Comparator::LESS_EQUAL:
     {
         Atlas::Message::Element left, right;
@@ -83,7 +80,6 @@ bool ComparePredicate::isMatch(const QueryContext& context) const
         }
         return false;
     }
-        break;
     case Comparator::GREATER:
     {
         Atlas::Message::Element left, right;
@@ -96,7 +92,6 @@ bool ComparePredicate::isMatch(const QueryContext& context) const
         }
         return false;
     }
-        break;
     case Comparator::GREATER_EQUAL:
     {
         Atlas::Message::Element left, right;
@@ -109,19 +104,17 @@ bool ComparePredicate::isMatch(const QueryContext& context) const
         }
         return false;
     }
-        break;
     case Comparator::INSTANCE_OF:
     {
         //We know that both providers return type node instances, since we checked in the constructor.
         Atlas::Message::Element left, right;
         m_lhs->value(left, context);
         if (left.isPtr()) {
-            const TypeNode* leftType = static_cast<const TypeNode*>(left.Ptr());
+            auto leftType = static_cast<const TypeNode*>(left.Ptr());
             if (leftType) {
                 m_rhs->value(right, context);
                 if (right.isPtr()) {
-                    const TypeNode* rightType =
-                            static_cast<const TypeNode*>(right.Ptr());
+                    auto rightType = static_cast<const TypeNode*>(right.Ptr());
                     if (rightType) {
                         return leftType->isTypeOf(rightType);
                     }
@@ -158,7 +151,6 @@ bool ComparePredicate::isMatch(const QueryContext& context) const
         }
         return false;
     }
-        break;
     }
     return false;
 }

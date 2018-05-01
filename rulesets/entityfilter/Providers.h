@@ -24,6 +24,7 @@
 #include "../LocatedEntity.h"
 #include <Atlas/Message/Element.h>
 #include <list>
+#include <utility>
 
 class OutfitProperty;
 class TypeNode;
@@ -44,7 +45,7 @@ struct QueryContext {
 
 class TypedProvider {
     public:
-        virtual ~TypedProvider(){}
+        virtual ~TypedProvider() = default;
 
         /**
          * @brief Gets the type of the pointer provided by this instance, if that can be determined.
@@ -62,9 +63,10 @@ template <typename T>
 class Consumer : public TypedProvider
 {
     public:
-        virtual ~Consumer(){}
+        ~Consumer() override = default;
         virtual void value(Atlas::Message::Element& value, const T& parent_value) const = 0;
-        virtual const std::type_info* getType() const;
+
+        const std::type_info* getType() const override;
 };
 
 template <typename T>
@@ -77,7 +79,7 @@ const std::type_info* Consumer<T>::getType() const
 template <typename T>
 class ProviderBase {
     public:
-        ProviderBase(Consumer<T>* consumer);
+        explicit ProviderBase(Consumer<T>* consumer);
         virtual ~ProviderBase();
     protected:
         Consumer<T>* m_consumer;
@@ -99,9 +101,11 @@ template <typename TProviding, typename TConsuming>
 class ConsumingProviderBase : public ProviderBase<TProviding>, public Consumer<TConsuming>
 {
     public:
-        ConsumingProviderBase(Consumer<TProviding>* consumer);
-        virtual ~ConsumingProviderBase(){};
-        virtual const std::type_info* getType() const;
+        explicit ConsumingProviderBase(Consumer<TProviding>* consumer);
+
+        ~ConsumingProviderBase() override = default;;
+
+        const std::type_info* getType() const override;
 };
 
 template <typename TProviding, typename TConsuming>
@@ -123,14 +127,14 @@ inline const std::type_info* ConsumingProviderBase<TProviding, TConsuming>::getT
 template <typename T>
 class NamedAttributeProviderBase : public ProviderBase<T> {
     public:
-        NamedAttributeProviderBase(Consumer<T>* consumer, const std::string& attribute_name);
+        NamedAttributeProviderBase(Consumer<T>* consumer, std::string attribute_name);
     protected:
         const std::string m_attribute_name;
 };
 
 template <typename T>
-inline NamedAttributeProviderBase<T>::NamedAttributeProviderBase(Consumer<T>* consumer, const std::string& attribute_name)
-: ProviderBase<T>(consumer), m_attribute_name(attribute_name)
+inline NamedAttributeProviderBase<T>::NamedAttributeProviderBase(Consumer<T>* consumer, std::string attribute_name)
+: ProviderBase<T>(consumer), m_attribute_name(std::move(attribute_name))
 {
 }
 
@@ -139,8 +143,10 @@ class ConsumingNamedAttributeProviderBase : public NamedAttributeProviderBase<TP
 {
     public:
         ConsumingNamedAttributeProviderBase(Consumer<TProviding>* consumer, const std::string& attribute_name);
-        virtual ~ConsumingNamedAttributeProviderBase(){};
-        virtual const std::type_info* getType() const;
+
+        ~ConsumingNamedAttributeProviderBase() override = default;;
+
+        const std::type_info* getType() const override;
 };
 
 template <typename TProviding, typename TConsuming>
@@ -161,59 +167,70 @@ inline const std::type_info* ConsumingNamedAttributeProviderBase<TProviding, TCo
 
 class FixedElementProvider : public Consumer<QueryContext> {
     public:
-        FixedElementProvider(const Atlas::Message::Element& element);
-        virtual void value(Atlas::Message::Element& value, const QueryContext& context) const;
-    protected:
+        explicit FixedElementProvider(const Atlas::Message::Element& element);
+
+        void value(Atlas::Message::Element& value, const QueryContext& context) const override;
+
         const Atlas::Message::Element m_element;
 };
 
 class FixedTypeNodeProvider : public ConsumingProviderBase<TypeNode, QueryContext> {
     public:
         FixedTypeNodeProvider(Consumer<TypeNode>* consumer, const TypeNode& type);
-        virtual void value(Atlas::Message::Element& value, const QueryContext& context) const;
-        virtual const std::type_info* getType() const;
-    protected:
+
+        void value(Atlas::Message::Element& value, const QueryContext& context) const override;
+
+        const std::type_info* getType() const override;
+
         const TypeNode& m_type;
 };
 class MemoryProvider: public ConsumingProviderBase<Atlas::Message::Element, QueryContext>{
     public:
-        MemoryProvider(Consumer<Atlas::Message::Element>* consumer);
-        virtual void value(Atlas::Message::Element& value, const QueryContext&) const;
+        explicit MemoryProvider(Consumer<Atlas::Message::Element>* consumer);
+
+        void value(Atlas::Message::Element& value, const QueryContext&) const override;
 };
 
 class EntityProvider : public ConsumingProviderBase<LocatedEntity, QueryContext> {
     public:
-        EntityProvider(Consumer<LocatedEntity>* consumer);
-        virtual void value(Atlas::Message::Element& value, const QueryContext& context) const;
-        virtual const std::type_info* getType() const;
+        explicit EntityProvider(Consumer<LocatedEntity>* consumer);
+
+        void value(Atlas::Message::Element& value, const QueryContext& context) const override;
+
+        const std::type_info* getType() const override;
 };
 
 class SelfEntityProvider : public ConsumingProviderBase<LocatedEntity, QueryContext> {
     public:
-        SelfEntityProvider(Consumer<LocatedEntity>* consumer);
-        virtual void value(Atlas::Message::Element& value, const QueryContext& context) const;
-        virtual const std::type_info* getType() const;
+        explicit SelfEntityProvider(Consumer<LocatedEntity>* consumer);
+
+        void value(Atlas::Message::Element& value, const QueryContext& context) const override;
+
+        const std::type_info* getType() const override;
 };
 
 class EntityTypeProvider : public ConsumingProviderBase<TypeNode, LocatedEntity> {
     public:
-        EntityTypeProvider(Consumer<TypeNode>* consumer);
-        virtual void value(Atlas::Message::Element& value, const LocatedEntity& entity) const;
-        virtual const std::type_info* getType() const;
+        explicit EntityTypeProvider(Consumer<TypeNode>* consumer);
+
+        void value(Atlas::Message::Element& value, const LocatedEntity& entity) const override;
+
+        const std::type_info* getType() const override;
 };
 
 //Provides integer ID of an entity
 class EntityIdProvider : public Consumer<LocatedEntity>{
     public:
-        virtual void value(Atlas::Message::Element& value, const LocatedEntity& entity) const;
+        void value(Atlas::Message::Element& value, const LocatedEntity& entity) const override;
 };
 
 class TypeNodeProvider : public Consumer<TypeNode>
 {
     public:
-        TypeNodeProvider(const std::string& attribute_name);
-        virtual void value(Atlas::Message::Element& value, const TypeNode& type) const;
-    private:
+        explicit TypeNodeProvider(const std::string& attribute_name);
+
+        void value(Atlas::Message::Element& value, const TypeNode& type) const override;
+
         const std::string m_attribute_name;
 };
 
@@ -221,7 +238,8 @@ class OutfitEntityProvider : public ConsumingNamedAttributeProviderBase<LocatedE
 {
     public:
         OutfitEntityProvider(Consumer<LocatedEntity>* consumer, const std::string& attribute_name);
-        virtual void value(Atlas::Message::Element& value, const OutfitProperty& prop) const;
+
+        void value(Atlas::Message::Element& value, const OutfitProperty& prop) const override;
 };
 
 class BBoxProvider : public ConsumingProviderBase<Atlas::Message::Element, BBoxProperty>
@@ -232,7 +250,8 @@ class BBoxProvider : public ConsumingProviderBase<Atlas::Message::Element, BBoxP
         };
 
         BBoxProvider(Consumer<Atlas::Message::Element>* consumer, Measurement measurement);
-        virtual void value(Atlas::Message::Element& value, const BBoxProperty& prop) const;
+
+        void value(Atlas::Message::Element& value, const BBoxProperty& prop) const override;
     protected:
         Measurement m_measurement;
 };
@@ -242,7 +261,8 @@ class PropertyProvider : public ConsumingNamedAttributeProviderBase<TProperty, L
 {
     public:
         PropertyProvider(Consumer<TProperty>* consumer, const std::string& attribute_name);
-        virtual ~PropertyProvider(){}
+        virtual ~PropertyProvider() = default;
+
         virtual void value(Atlas::Message::Element& value, const LocatedEntity& entity) const;
 };
 
@@ -272,29 +292,34 @@ class SoftPropertyProvider : public ConsumingNamedAttributeProviderBase<Atlas::M
 {
     public:
         SoftPropertyProvider(Consumer<Atlas::Message::Element>* consumer, const std::string& attribute_name);
-        virtual void value(Atlas::Message::Element& value, const LocatedEntity& entity) const;
+
+        void value(Atlas::Message::Element& value, const LocatedEntity& entity) const override;
 };
 
 class MapProvider : public ConsumingNamedAttributeProviderBase<Atlas::Message::Element, Atlas::Message::Element>
 {
     public:
         MapProvider(Consumer<Atlas::Message::Element>* consumer, const std::string& attribute_name);
-        virtual void value(Atlas::Message::Element& value, const Atlas::Message::Element& parent_element) const;
+
+        void value(Atlas::Message::Element& value, const Atlas::Message::Element& parent_element) const override;
 };
 
 class EntityRefProvider : public ConsumingNamedAttributeProviderBase<LocatedEntity, LocatedEntity>
 {
     public:
         EntityRefProvider(Consumer<LocatedEntity>* consumer, const std::string& attribute_name);
-        virtual void value(Atlas::Message::Element& value, const LocatedEntity& entity) const;
-        virtual const std::type_info* getType() const;
+
+        void value(Atlas::Message::Element& value, const LocatedEntity& entity) const override;
+
+        const std::type_info* getType() const override;
 };
 
 ///\brief This class retrieves a pointer to the m_contains property of a given entity
 class ContainsProvider : public Consumer<LocatedEntity> {
     public:
-        virtual void value(Atlas::Message::Element& value, const LocatedEntity& entity) const;
-        virtual const std::type_info* getType() const;
+        void value(Atlas::Message::Element& value, const LocatedEntity& entity) const override;
+
+        const std::type_info* getType() const override;
 };
 
 ///\brief This class uses container Consumer to retrieve a container and condition Predicate
@@ -303,8 +328,9 @@ class ContainsRecursiveFunctionProvider : public Consumer<QueryContext> {
     public:
         ContainsRecursiveFunctionProvider(Consumer<QueryContext>* container,
                                           Predicate* condition);
-        virtual void value(Atlas::Message::Element& value,
-                           const QueryContext& context) const;
+
+        void value(Atlas::Message::Element& value,
+                           const QueryContext& context) const override;
     private:
         ///\brief Condition used to match entities within the container
         Predicate* m_condition;
@@ -321,7 +347,8 @@ class ProviderFactory {
             std::string attribute;
         };
         typedef std::list<Segment> SegmentsList;
-        virtual ~ProviderFactory() {}
+        virtual ~ProviderFactory() = default;
+
         virtual Consumer<QueryContext>* createProviders(SegmentsList segments) const;
 
     protected:
@@ -337,8 +364,8 @@ class ProviderFactory {
 
 class MindProviderFactory: public ProviderFactory{
     public:
-        virtual ~MindProviderFactory() {}
-        virtual Consumer<QueryContext>* createProviders(SegmentsList segments) const;
+        ~MindProviderFactory() override = default;
+        Consumer<QueryContext>* createProviders(SegmentsList segments) const override;
     protected:
         MemoryProvider* createMemoryProvider(SegmentsList segments) const;
 };

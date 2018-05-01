@@ -8,8 +8,6 @@
 
 #include "TestBase.h"
 
-#define private public
-#define protected public
 #include "rulesets/entityfilter/Filter.h"
 #include "rulesets/entityfilter/ParserDefinitions.h"
 #include "rulesets/entityfilter/Providers.h"
@@ -29,8 +27,6 @@
 
 #include <wfmath/point.h>
 #include <Atlas/Objects/Anonymous.h>
-#define private private
-#define protected private
 
 #include <cassert>
 
