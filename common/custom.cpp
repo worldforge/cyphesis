@@ -95,7 +95,7 @@ void installCustomOperations(Inheritance & i)
      * For example when a type changes.
      */
     i.addChild(atlasOpDefinition("change", "info"));
-    Atlas::Objects::Operation::CHANGE_NO = atlas_factories->addFactory("info", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
+    Atlas::Objects::Operation::CHANGE_NO = atlas_factories->addFactory("change", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
 }
 
 void installCustomEntities(Inheritance & i)
