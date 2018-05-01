@@ -455,7 +455,8 @@ HandlerResult TerrainProperty::eat_handler(LocatedEntity * e,
     const std::string & from_id = op->getFrom();
     LocatedEntity * from = BaseWorld::instance().getEntity(from_id);
     if (from == 0) {
-        log(ERROR, String::compose("Terrain got eat op from non-existant "
+        //The eating entity could have been destroyed in the interim.
+        debug_print(String::compose("Terrain got eat op from non-existent "
                                    "entity %1.", from_id));
         return OPERATION_IGNORED;
     }
