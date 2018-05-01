@@ -85,9 +85,9 @@ class TerrainProperty : public PropertyBase {
     void removeMod(long id) const;
 
     bool getHeightAndNormal(float x, float y, float &, Vector3D &) const;
-    int getSurface(const Point3D &,  int &);
+    int getSurface(const Point3D &,  int &) const;
 
-    void findMods(const Point3D &, std::vector<LocatedEntity *> &);
+    void findMods(const Point3D &, std::vector<LocatedEntity *> &) const;
 
     HandlerResult eat_handler(LocatedEntity * e,
                               const Operation & op,

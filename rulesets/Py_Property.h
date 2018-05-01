@@ -38,8 +38,8 @@ typedef struct {
     Entity * m_entity;
     /// \brief Property object handled by this wrapper
     union {
-        PropertyBase * base;
-        TerrainProperty * terrain;
+        const PropertyBase * base;
+        const TerrainProperty * terrain;
         TerrainModProperty * terrainmod;
     } m_p;
 } PyProperty;

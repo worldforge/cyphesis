@@ -39,6 +39,9 @@
 #include "common/id.h"
 #include "common/TypeNode.h"
 #include "common/Inheritance.h"
+#include "StatisticsProperty.h"
+#include "TerrainProperty.h"
+#include "TerrainModProperty.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -326,20 +329,29 @@ static PyObject * Entity_getattro(PyEntity *self, PyObject *oname)
         Py_RETURN_FALSE;
     }
 
+
     Entity * entity = self->m_entity.e;
-    PropertyBase * prop = entity->modProperty(name);
-    if (prop != 0) {
-        PyObject * ret = Property_asPyObject(prop, entity);
-        if (ret != 0) {
-            return ret;
-        }
-        Element attr;
-        // If this property is not set with a value, return none.
-        if (prop->get(attr) == 0) {
-            return MessageElement_asPyObject(attr);
+    auto prop = entity->getProperty(name);
+    if (prop) {
+        //Check if it's a special prop
+        if (dynamic_cast<const StatisticsProperty*>(prop) || dynamic_cast<const TerrainProperty*>(prop)
+            || dynamic_cast<const TerrainModProperty*>(prop)) {
+            auto mutable_prop = entity->modProperty(name);
+            if (mutable_prop) {
+                PyObject* ret = Property_asPyObject(mutable_prop, entity);
+                if (ret) {
+                    return ret;
+                }
+            }
         } else {
-            Py_INCREF(Py_None);
-            return Py_None;
+            Element attr;
+            // If this property is not set with a value, return none.
+            if (prop->get(attr) == 0) {
+                return MessageElement_asPyObject(attr);
+            } else {
+                Py_INCREF(Py_None);
+                return Py_None;
+            }
         }
     }
     return PyObject_GenericGetAttr((PyObject *)self, oname);

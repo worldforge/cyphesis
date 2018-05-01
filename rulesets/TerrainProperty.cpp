@@ -378,12 +378,12 @@ bool TerrainProperty::getHeightAndNormal(float x,
 /// @param pos the x,z coordinates of the point on the terrain
 /// @param material a reference to the integer to be used to store the
 /// material identifier at this location.
-int TerrainProperty::getSurface(const Point3D & pos, int & material)
+int TerrainProperty::getSurface(const Point3D & pos, int & material) const
 {
     float x = pos.x(),
           z = pos.z();
     Mercator::Segment * segment = m_data.getSegmentAtPos(x, z);
-    if (segment == 0) {
+    if (segment == nullptr) {
         debug(std::cerr << "No terrain at this point" << std::endl << std::flush;);
         return -1;
     }
@@ -402,7 +402,7 @@ int TerrainProperty::getSurface(const Point3D & pos, int & material)
                     << " of the segment the height is " << height << std::endl;
           std::cout << "The segment has " << surfaces.size()
                     << std::endl << std::flush;);
-    if (surfaces.size() == 0) {
+    if (surfaces.empty()) {
         log(ERROR, "The terrain has no surface data");
         return -1;
     }
@@ -419,7 +419,7 @@ int TerrainProperty::getSurface(const Point3D & pos, int & material)
 /// @param pos the x,y coordinates of a point on the terrain
 /// @param mods a reference to the list to be returned
 void TerrainProperty::findMods(const Point3D & pos,
-                               std::vector<LocatedEntity *> & ret)
+                               std::vector<LocatedEntity *> & ret) const
 {
     Mercator::Segment * seg = m_data.getSegmentAtPos(pos.x(), pos.z());
     if (seg == 0) {

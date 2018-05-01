@@ -52,7 +52,7 @@ class TerrainModProperty : public TerrainEffectorProperty
 
         /// \brief Retrieve a sub attribute of the property
         int getAttr(const std::string&,
-                    Atlas::Message::Element&);
+                    Atlas::Message::Element&) const;
 
         /// \brief Modify a sub attribute of the property
         void setAttr(const std::string&,

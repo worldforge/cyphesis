@@ -66,7 +66,7 @@ static PyObject * add_terrainmod_shape(PyObject * self, PyProperty * o)
         return nullptr;
     }
 
-    TerrainModProperty * p = o->m_p.terrainmod;
+    auto p = o->m_p.terrainmod;
 
     WFMath::Polygon<2> raw_polygon;
     raw_polygon.addCorner(0, WFMath::Point<2>(1,1));
