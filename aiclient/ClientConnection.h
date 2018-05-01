@@ -38,8 +38,9 @@ class ClientConnection : public AtlasStreamClient {
     void operation(const Atlas::Objects::Operation::RootOperation&) override;
 
   public:
-    ClientConnection();
-    virtual ~ClientConnection();
+    ClientConnection() = default;
+
+    ~ClientConnection() override = default;
 
     int wait();
     int sendAndWaitReply(const Operation & op, OpVector & res);

@@ -26,9 +26,10 @@
 
 #include <Atlas/Message/QueuedDecoder.h>
 #include <Atlas/Objects/Encoder.h>
-#include <Atlas/Codecs/XML.h>
 
 #include <iostream>
+#include <Atlas/Codecs/Bach.h>
+#include <Atlas/PresentationBridge.h>
 
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::Anonymous;
@@ -36,23 +37,16 @@ using Atlas::Objects::Operation::RootOperation;
 
 static bool debug_flag = false;
 
-ClientConnection::ClientConnection()
-{
-}
-
-ClientConnection::~ClientConnection()
-{
-}
-
 void ClientConnection::operation(const RootOperation & op)
 {
     if (debug_flag) {
         std::stringstream ss;
         ss << "I: " << op->getParent() << " : ";
         Atlas::Message::QueuedDecoder decoder;
-        Atlas::Codecs::XML codec(ss, ss, decoder);
+        Atlas::Codecs::Bach codec(ss, ss, decoder);
 
-        Atlas::Objects::ObjectsEncoder encoder(codec);
+        Atlas::PresentationBridge bridge(ss);
+        Atlas::Objects::ObjectsEncoder encoder(bridge);
         encoder.streamObjectsMessage(op);
         ss << std::flush;
         debug(std::cerr << ss.str() << std::endl;);
@@ -102,9 +96,10 @@ void ClientConnection::send(const RootOperation & op)
         std::stringstream ss;
         ss << "O: " << op->getParent() << " : ";
         Atlas::Message::QueuedDecoder decoder;
-        Atlas::Codecs::XML codec(ss, ss, decoder);
+        Atlas::Codecs::Bach codec(ss, ss, decoder);
 
-        Atlas::Objects::ObjectsEncoder encoder(codec);
+        Atlas::PresentationBridge bridge(ss);
+        Atlas::Objects::ObjectsEncoder encoder(bridge);
         encoder.streamObjectsMessage(op);
         ss << std::flush;
         debug(std::cerr << ss.str() << std::endl;);
