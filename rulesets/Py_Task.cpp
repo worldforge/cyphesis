@@ -60,7 +60,7 @@ static PyObject * Task_count(PyTask * self)
         return nullptr;
     }
 #endif // NDEBUG
-    return PyInt_FromLong(self->m_task->count());
+    return PyLong_FromLong(self->m_task->count());
 }
 
 static PyObject * Task_newtick(PyTask * self)
@@ -71,7 +71,7 @@ static PyObject * Task_newtick(PyTask * self)
         return nullptr;
     }
 #endif // NDEBUG
-    return PyInt_FromLong(self->m_task->newTick());
+    return PyLong_FromLong(self->m_task->newTick());
 }
 
 static PyObject * Task_nexttick(PyTask * self, PyObject * arg)
@@ -85,8 +85,8 @@ static PyObject * Task_nexttick(PyTask * self, PyObject * arg)
     double interval;
     if (PyFloat_Check(arg)) {
         interval = PyFloat_AsDouble(arg);
-    } else if (PyInt_Check(arg)) {
-        interval = PyInt_AsLong(arg);
+    } else if (PyLong_Check(arg)) {
+        interval = PyLong_AsLong(arg);
     } else {
         PyErr_SetString(PyExc_TypeError, "Interval must be a number");
         return nullptr;
@@ -116,7 +116,7 @@ static PyObject * Task_getattro(PyTask *self, PyObject *oname)
         return nullptr;
     }
 #endif // NDEBUG
-    char * name = PyString_AsString(oname);
+    char * name = PyUnicode_AsUTF8(oname);
     if (strcmp(name, "character") == 0) {
         return wrapEntity(&self->m_task->owner());
     }
@@ -141,12 +141,12 @@ static int Task_setattro(PyTask *self, PyObject * oname, PyObject *v)
         return -1;
     }
 #endif // NDEBUG
-    char * name = PyString_AsString(oname);
+    char * name = PyUnicode_AsUTF8(oname);
     if (strcmp(name, "progress") == 0) {
         if (PyFloat_Check(v)) {
             self->m_task->progress() = PyFloat_AsDouble(v);
-        } else if (PyInt_Check(v)) {
-            self->m_task->progress() = PyInt_AsLong(v);
+        } else if (PyLong_Check(v)) {
+            self->m_task->progress() = PyLong_AsLong(v);
         } else {
             PyErr_SetString(PyExc_TypeError, "progress must be a number");
             return -1;
@@ -157,8 +157,8 @@ static int Task_setattro(PyTask *self, PyObject * oname, PyObject *v)
         double rate;
         if (PyFloat_Check(v)) {
             rate = PyFloat_AsDouble(v);
-        } else if (PyInt_Check(v)) {
-            rate = PyInt_AsLong(v);
+        } else if (PyLong_Check(v)) {
+            rate = PyLong_AsLong(v);
         } else {
             PyErr_SetString(PyExc_TypeError, "rate must be a number");
             return -1;
@@ -178,15 +178,25 @@ static int Task_setattro(PyTask *self, PyObject * oname, PyObject *v)
     return PyObject_GenericSetAttr((PyObject*)self, oname, v);
 }
 
-static int Task_compare(PyTask *self, PyTask *other)
+static PyObject* Task_compare(PyObject *a, PyObject *b, int op)
 {
+    auto self = (PyTask*)a;
+    if (PyTask_Check(b)) {
+        auto other = (PyTask*)b;
 #ifndef NDEBUG
-    if (self->m_task == nullptr || other->m_task == nullptr) {
-        PyErr_SetString(PyExc_AssertionError, "nullptr Task in Task.compare");
-        return -1;
-    }
+        if (self->m_task == nullptr || other->m_task == nullptr) {
+            PyErr_SetString(PyExc_AssertionError, "nullptr Task in Task.compare");
+            return Py_False;
+        }
 #endif // NDEBUG
-    return (self->m_task == other->m_task) ? 0 : 1;
+        if (op == Py_EQ) {
+            return (self->m_task == other->m_task) ? Py_True : Py_False;
+        } else if (op == Py_NE) {
+            return (self->m_task != other->m_task) ? Py_True : Py_False;
+        }
+    }
+
+    return Py_NotImplemented;
 }
 
 static int Task_init(PyTask * self, PyObject * args, PyObject * kwds)
@@ -222,8 +232,7 @@ static int Task_init(PyTask * self, PyObject * args, PyObject * kwds)
 }
 
 PyTypeObject PyTask_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                              /*ob_size*/
+    PyVarObject_HEAD_INIT(&PyType_Type, 0)
         "Task",                         /*tp_name*/
         sizeof(PyTask),                 /*tp_basicsize*/
         0,                              /*tp_itemsize*/
@@ -232,7 +241,7 @@ PyTypeObject PyTask_Type = {
         0,                              /*tp_print*/
         0,                              /*tp_getattr*/
         0,                              /*tp_setattr*/
-        (cmpfunc)Task_compare,          /*tp_compare*/
+        0,                              /*tp_compare*/
         0,                              /*tp_repr*/
         0,                              /*tp_as_number*/
         0,                              /*tp_as_sequence*/
@@ -247,7 +256,7 @@ PyTypeObject PyTask_Type = {
         "Task objects",                 // tp_doc
         0,                              // tp_travers
         0,                              // tp_clear
-        0,                              // tp_richcompare
+        (richcmpfunc)Task_compare,      // tp_richcompare
         0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext

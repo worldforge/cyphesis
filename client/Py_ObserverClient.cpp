@@ -91,11 +91,11 @@ static PyObject * ObserverClient_create_avatar(PyObserverClient * self,
         return nullptr;
     }
 #endif // NDEBUG
-    if (!PyString_Check(arg)) {
+    if (!PyUnicode_Check(arg)) {
         PyErr_SetString(PyExc_TypeError, "id must be a string");
         return nullptr;
     }
-    char * avatar = PyString_AsString(arg);
+    char * avatar = PyUnicode_AsUTF8(arg);
     CreatorClient * c = self->m_client->createCharacter(avatar);
     if (c == 0) {
         PyErr_SetString(PyExc_RuntimeError, "avatar creation failed");
@@ -199,7 +199,7 @@ static PyMethodDef ObserverClient_methods[] = {
 static void ObserverClient_dealloc(PyObserverClient *self)
 {
     delete self->m_client;
-    self->ob_type->tp_free((PyObject*)self);
+    Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
 static PyObject * ObserverClient_getattro(PyObserverClient *self,
@@ -212,7 +212,7 @@ static PyObject * ObserverClient_getattro(PyObserverClient *self,
         return nullptr;
     }
 #endif // NDEBUG
-    char * name = PyString_AsString(oname);
+    char * name = PyUnicode_AsUTF8(oname);
     if (strcmp(name, "character") == 0) {
         if (self->m_client->character() == 0) {
             Py_INCREF(Py_None);
@@ -223,7 +223,7 @@ static PyObject * ObserverClient_getattro(PyObserverClient *self,
         return (PyObject*)pcc;
     }
     if (strcmp(name, "id") == 0) {
-        return PyString_FromString(self->m_client->id().c_str());
+        return PyUnicode_FromString(self->m_client->id().c_str());
     }
     return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
@@ -231,13 +231,13 @@ static PyObject * ObserverClient_getattro(PyObserverClient *self,
 static int ObserverClient_setattro(PyObserverClient *self,
                                    PyObject * oname, PyObject *v)
 {
-    char * name = PyString_AsString(oname);
+    char * name = PyUnicode_AsUTF8(oname);
     if (strcmp(name, "server") == 0) {
-        if (!PyString_Check(v)) {
+        if (!PyUnicode_Check(v)) {
             PyErr_SetString(PyExc_TypeError, "server val must be string");
             return -1;
         }
-        self->m_client->setServer(PyString_AsString(v));
+        self->m_client->setServer(PyUnicode_AsUTF8(v));
         return 0;
     }
     return PyObject_GenericSetAttr((PyObject *)self, oname, v);

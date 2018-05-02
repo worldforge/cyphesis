@@ -131,7 +131,11 @@ void AwareMind::processMoveTick(const Operation & op, OpVector & res)
             what->setAttr("propel", result.direction.toAtlas());
             WFMath::Quaternion orientation;
             orientation.rotation(WFMath::Vector<3>(0, 0, 1), result.direction, WFMath::Vector<3>(0, 1, 0));
-            what->setAttr("orientation", orientation.toAtlas());
+            if (orientation.isValid()) {
+                what->setAttr("orientation", orientation.toAtlas());
+            } else {
+                log(WARNING, "Orientation to be sent in steering isn't valid.");
+            }
             if (result.destination.isValid()) {
                 what->setAttr("pos", result.destination.toAtlas());
             }

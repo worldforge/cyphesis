@@ -29,7 +29,7 @@ typedef struct {
 
 extern PyTypeObject PyWorld_Type;
 
-#define PyWorld_Check(_o) ((_o)->ob_type == &PyWorld_Type)
+#define PyWorld_Check(_o) (Py_TYPE((_o)) == &PyWorld_Type)
 
 PyWorld * newPyWorld();
 

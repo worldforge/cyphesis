@@ -173,19 +173,19 @@ static PyMethodDef Vector3D_methods[] = {
 static void Vector3D_dealloc(PyVector3D *self)
 {
     self->coords.~Vector3D();
-    self->ob_type->tp_free(self);
+    Py_TYPE(self)->tp_free(self);
 }
 
 static PyObject* Vector3D_repr(PyVector3D * self)
 {
     char buf[64];
     ::snprintf(buf, 64, "(%f, %f, %f)", self->coords.x(), self->coords.y(), self->coords.z());
-    return PyString_FromString(buf);
+    return PyUnicode_FromString(buf);
 }
 
 static PyObject * Vector3D_getattro(PyVector3D *self, PyObject *oname)
 {
-    char * name = PyString_AsString(oname);
+    char * name = PyUnicode_AsUTF8(oname);
     if (strcmp(name, "x") == 0) { return PyFloat_FromDouble(self->coords.x()); }
     if (strcmp(name, "y") == 0) { return PyFloat_FromDouble(self->coords.y()); }
     if (strcmp(name, "z") == 0) { return PyFloat_FromDouble(self->coords.z()); }
@@ -195,10 +195,10 @@ static PyObject * Vector3D_getattro(PyVector3D *self, PyObject *oname)
 
 static int Vector3D_setattro(PyVector3D *self, PyObject *oname, PyObject *v)
 {
-    char * name = PyString_AsString(oname);
+    char * name = PyUnicode_AsUTF8(oname);
     float val;
-    if (PyInt_Check(v)) {
-        val = PyInt_AsLong(v);
+    if (PyLong_Check(v)) {
+        val = PyLong_AsLong(v);
     } else if (PyFloat_Check(v)) {
         val = PyFloat_AsDouble(v);
     } else {
@@ -218,12 +218,19 @@ static int Vector3D_setattro(PyVector3D *self, PyObject *oname, PyObject *v)
     return 0;
 }
 
-static int Vector3D_compare(PyVector3D * self, PyVector3D * other)
+static PyObject* Vector3D_compare(PyObject *a, PyObject *b, int op)
 {
-    if (self->coords == other->coords) {
-        return 0;
+    auto self = (PyVector3D*)a;
+    if (PyVector3D_Check(b)) {
+        auto other = (PyVector3D*)b;
+        if (op == Py_EQ) {
+            return self->coords == other->coords ? Py_True : Py_False;
+        } else if (op == Py_NE) {
+            return self->coords != other->coords ? Py_True : Py_False;
+        }
     }
-    return 1;
+
+    return Py_NotImplemented;
 }
 
 /*
@@ -293,8 +300,8 @@ static PyVector3D*Vector3D_num_sub(PyVector3D*self,PyVector3D*other)
 static PyVector3D * Vector3D_num_mul(PyVector3D * self, PyObject * _other)
 {
     double other;
-    if (PyInt_Check(_other)) {
-        other = PyInt_AsLong(_other);
+    if (PyLong_Check(_other)) {
+        other = PyLong_AsLong(_other);
     } else if (PyFloat_Check(_other)) {
         other = PyFloat_AsDouble(_other);
     } else {
@@ -311,8 +318,8 @@ static PyVector3D * Vector3D_num_mul(PyVector3D * self, PyObject * _other)
 static PyVector3D * Vector3D_num_div(PyVector3D * self, PyObject * _other)
 {
     double other;
-    if (PyInt_Check(_other)) {
-        other = PyInt_AsLong(_other);
+    if (PyLong_Check(_other)) {
+        other = PyLong_AsLong(_other);
     } else if (PyFloat_Check(_other)) {
         other = PyFloat_AsDouble(_other);
     } else {
@@ -326,11 +333,13 @@ static PyVector3D * Vector3D_num_div(PyVector3D * self, PyObject * _other)
     return ret;
 }
 
-static int Vector3D_num_coerce(PyObject ** self, PyObject ** other)
+static PyVector3D * Vector3D_negative(PyVector3D * self)
 {
-    Py_INCREF(*self);
-    Py_INCREF(*other);
-    return 0;
+    PyVector3D * ret = newPyVector3D();
+    if (ret != nullptr) {
+        ret->coords = -self->coords;
+    }
+    return ret;
 }
 
 static int Vector3D_init(PyVector3D * self, PyObject * args, PyObject * kwds)
@@ -351,8 +360,8 @@ static int Vector3D_init(PyVector3D * self, PyObject * args, PyObject * kwds)
             }
             for(int i = 0; i < 3; i++) {
                 PyObject * item = PyList_GetItem(clist, i);
-                if (PyInt_Check(item)) {
-                    self->coords[i] = (float)PyInt_AsLong(item);
+                if (PyLong_Check(item)) {
+                    self->coords[i] = (float)PyLong_AsLong(item);
                 } else if (PyFloat_Check(item)) {
                     self->coords[i] = PyFloat_AsDouble(item);
                 } else if (PyMessage_Check(item)) {
@@ -372,8 +381,8 @@ static int Vector3D_init(PyVector3D * self, PyObject * args, PyObject * kwds)
         case 3:
             for(int i = 0; i < 3; i++) {
                 PyObject * item = PyTuple_GetItem(args, i);
-                if (PyInt_Check(item)) {
-                    self->coords[i] = (float)PyInt_AsLong(item);
+                if (PyLong_Check(item)) {
+                    self->coords[i] = (float)PyLong_AsLong(item);
                 } else if (PyFloat_Check(item)) {
                     self->coords[i] = PyFloat_AsDouble(item);
                 } else {
@@ -414,34 +423,43 @@ static PySequenceMethods Vector3D_seq = {
 };
 
 static PyNumberMethods Vector3D_num = {
-        (binaryfunc)Vector3D_num_add,   /* nb_add */
-        (binaryfunc)Vector3D_num_sub,   /* nb_subtract */
-        (binaryfunc)Vector3D_num_mul,   /* nb_multiply */
-        (binaryfunc)Vector3D_num_div,   /* nb_divide */
-        0,                              /* nb_remainder */
-        0,                              /* nb_divmod */
-        0,                              /* nb_power */
-        0,                              /* nb_negative */
-        0,                              /* nb_positive */
-        0,                              /* nb_absolute */
-        0,                              /* nb_nonzero */
-        0,                              /* nb_invert */
-        0,                              /* nb_lshift */
-        0,                              /* nb_rshift */
-        0,                              /* nb_and */
-        0,                              /* nb_xor */
-        0,                              /* nb_or */
-        Vector3D_num_coerce,            /* nb_coerce */
-        0,                              /* nb_int */
-        0,                              /* nb_long */
-        0,                              /* nb_float */
-        0,                              /* nb_oct */
-        0                               /* nb_hex */
+    (binaryfunc)Vector3D_num_add,   /* nb_add */
+    (binaryfunc)Vector3D_num_sub,   /* nb_subtract */
+    (binaryfunc)Vector3D_num_mul,   /* nb_multiply */
+    0,                              /* nb_remainder */
+    0,                              /* nb_divmod */
+    0,                              /* nb_power */
+    (unaryfunc)Vector3D_negative,   /* nb_negative */
+    0,                              /* nb_positive */
+    0,                              /* nb_absolute */
+    0,                              /* nb_nonzero */
+    0,                              /* nb_invert */
+    0,                              /* nb_lshift */
+    0,                              /* nb_rshift */
+    0,                              /* nb_and */
+    0,                              /* nb_xor */
+    0,                              /* nb_or */
+    0,                              /* nb_int */
+    0,                              /* nb_reserved */
+    0,                              /* nb_float */
+    0,                              /* nb_inplace_add */
+    0,                              /* nb_inplace_subtract */
+    0,                              /* nb_inplace_multiply */
+    0,                              /* nb_inplace_remainder */
+    0,                              /* nb_inplace_power */
+    0,                              /* nb_inplace_lshift */
+    0,                              /* nb_inplace_rshift */
+    0,                              /* nb_inplace_and */
+    0,                              /* nb_inplace_xor */
+    0,                              /* nb_inplace_or */
+    (binaryfunc)Vector3D_num_div,   /* nb_floor_divide */
+    0,                              /* nb_true_divide */
+    0,                              /* nb_inplace_floor_divide */
+    0,                              /* nb_inplace_true_divide */
 };
 
 PyTypeObject PyVector3D_Type = {
-        PyObject_HEAD_INIT(0)
-        0,                              // ob_size
+        PyVarObject_HEAD_INIT(0, 0)
         "physics.Vector3D",             // tp_name
         sizeof(PyVector3D),             // tp_basicsize
         0,                              // tp_itemsize
@@ -450,7 +468,7 @@ PyTypeObject PyVector3D_Type = {
         0,                              // tp_print
         0,                              // tp_getattr
         0,                              // tp_setattr
-        (cmpfunc)Vector3D_compare,      // tp_compare
+        0,                              // tp_compare
         (reprfunc)Vector3D_repr,        // tp_repr
         &Vector3D_num,                  // tp_as_number
         &Vector3D_seq,                  // tp_as_sequence
@@ -465,7 +483,7 @@ PyTypeObject PyVector3D_Type = {
         "Vector3D objects",             // tp_doc
         0,                              // tp_travers
         0,                              // tp_clear
-        0,                              // tp_richcompare
+        (richcmpfunc)Vector3D_compare,  // tp_richcompare
         0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext

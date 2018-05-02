@@ -39,11 +39,11 @@ static PyObject * WorldTime_is_now(PyWorldTime * self, PyObject * py_other)
         return 0;
     }
 #endif // NDEBUG
-    if (!PyString_CheckExact(py_other)) {
+    if (!PyUnicode_CheckExact(py_other)) {
         PyErr_SetString(PyExc_TypeError, "time must be a string");
         return nullptr;
     }
-    char * other = PyString_AsString(py_other);
+    char * other = PyUnicode_AsUTF8(py_other);
     //printf("Python worldtime is string\n");
     bool eq = (*self->time == std::string(other));
     PyObject * ret = eq ? Py_True : Py_False;
@@ -62,15 +62,15 @@ static void WorldTime_dealloc(PyWorldTime *self)
     if (self->own && self->time != nullptr) {
         delete self->time;
     }
-    self->ob_type->tp_free(self);
+    Py_TYPE(self)->tp_free(self);
 }
 
 static PyObject * WorldTime_getattro(PyWorldTime *self, PyObject * oname)
 {
-    char * name = PyString_AsString(oname);
+    char * name = PyUnicode_AsUTF8(oname);
     std::string attr = (*self->time)[name];
     if (attr != "") {
-        return PyString_FromString(attr.c_str());
+        return PyUnicode_FromString(attr.c_str());
     }
     return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
@@ -102,8 +102,7 @@ static int WorldTime_init(PyWorldTime * self, PyObject * args, PyObject * kwds)
 }
 
 PyTypeObject PyWorldTime_Type = {
-        PyObject_HEAD_INIT(nullptr)
-        0,                              // ob_size
+        PyVarObject_HEAD_INIT(nullptr, 0)
         "server.WorldTime",             // tp_name
         sizeof(PyWorldTime),            // tp_basicsize
         0,                              // tp_itemsize

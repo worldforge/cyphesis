@@ -52,7 +52,7 @@ static PyMethodDef Oplist_methods[] = {
 static void Oplist_dealloc(PyOplist *self)
 {
     delete self->ops;
-    self->ob_type->tp_free((PyObject*)self);
+    Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
 static PyObject * Oplist_num_add(PyOplist *self, PyObject *other)
@@ -224,7 +224,6 @@ static PyNumberMethods Oplist_as_number = {
     (binaryfunc)Oplist_num_add,               // nb_add;
     0,                                        // nb_subtract;
     0,                                        // nb_multiply;
-    0,                                        // nb_divide;
     0,                                        // nb_remainder;
     0,                                        // nb_divmod;
     0,                                        // nb_power;
@@ -238,17 +237,13 @@ static PyNumberMethods Oplist_as_number = {
     0,                                        // nb_and;
     0,                                        // nb_xor;
     0,                                        // nb_or;
-    Oplist_num_coerce,                        // nb_coerce;
     0,                                        // nb_int;
     0,                                        // nb_long;
     0,                                        // nb_float;
-    0,                                        // nb_oct;
-    0,                                        // nb_hex;
     /* Added in release 2.0 */
     (binaryfunc)Oplist_num_inplace_add,       // nb_inplace_add;
     0,                                        // nb_inplace_subtract;
     0,                                        // nb_inplace_multiply;
-    0,                                        // nb_inplace_divide;
     0,                                        // nb_inplace_remainder;
     0,                                        // nb_inplace_power;
     0,                                        // nb_inplace_lshift;
@@ -261,8 +256,7 @@ static PyNumberMethods Oplist_as_number = {
 
 
 PyTypeObject PyOplist_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                              /*ob_size*/
+        PyVarObject_HEAD_INIT(&PyType_Type, 0)
         "atlas.Oplist",                       /*tp_name*/
         sizeof(PyOplist),               /*tp_basicsize*/
         0,                              /*tp_itemsize*/

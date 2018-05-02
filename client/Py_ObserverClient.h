@@ -34,7 +34,7 @@ typedef struct {
     ObserverClient    * m_client;
 } PyObserverClient;
 
-#define PyObserverClient_Check(_o) ((_o)->ob_type == &PyObserverClient_Type)
+#define PyObserverClient_Check(_o) (Py_TYPE((_o)) == &PyObserverClient_Type)
 
 PyObserverClient * newPyObserverClient();
 

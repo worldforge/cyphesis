@@ -36,7 +36,7 @@ typedef struct {
 
 extern PyTypeObject PyLocation_Type;
 
-#define PyLocation_Check(_o) ((_o)->ob_type == &PyLocation_Type)
+#define PyLocation_Check(_o) (Py_TYPE((_o)) == &PyLocation_Type)
 #define PyLocation_CheckExact(_o) (Py_TYPE(_o) == &PyLocation_Type)
 
 PyLocation * newPyLocation();

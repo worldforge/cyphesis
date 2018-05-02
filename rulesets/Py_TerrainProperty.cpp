@@ -68,7 +68,7 @@ static PyObject * TerrainProperty_getSurface(PyProperty * self,
         PyErr_SetString(PyExc_TypeError, "How the hell should I know");
         return nullptr;
     }
-    return PyInt_FromLong(surface);
+    return PyLong_FromLong(surface);
 }
 
 static PyObject * TerrainProperty_getNormal(PyProperty * self,
@@ -133,8 +133,7 @@ static int TerrainProperty_init(PyProperty * self,
 }
 
 PyTypeObject PyTerrainProperty_Type = {
-        PyObject_HEAD_INIT(nullptr)
-        0,                                                // ob_size
+        PyVarObject_HEAD_INIT(nullptr, 0)
         "TerrainProperty",                                // tp_name
         sizeof(PyProperty),                               // tp_basicsize
         0,                                                // tp_itemsize

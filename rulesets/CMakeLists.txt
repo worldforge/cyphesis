@@ -90,7 +90,7 @@ add_library(scriptpython
     Py_Point3D.cpp
     Py_Thing.cpp
     Py_Filter.cpp
-    Py_Map.cpp
+    Py_MemMap.cpp
     Py_Quaternion.cpp
     Py_BBox.cpp
     Py_WorldTime.cpp
@@ -113,7 +113,7 @@ add_library(scriptpython
 
 target_link_libraries(scriptpython ${PYTHON_LIBRARIES})
 # Prevent GCC from messing up Python pointer handling
-target_compile_options(scriptpython PUBLIC "-fno-strict-aliasing")
+#target_compile_options(scriptpython PUBLIC "-fno-strict-aliasing")
 
 install(FILES
     basic/world/objects/Thing.py

@@ -74,12 +74,12 @@ static PyMethodDef Quaternion_methods[] = {
 static void Quaternion_dealloc(PyQuaternion *self)
 {
     self->rotation.~Quaternion();
-    self->ob_type->tp_free((PyObject*)self);
+    Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
 static PyObject * Quaternion_getattro(PyQuaternion *self, PyObject *oname)
 {
-    char * name = PyString_AsString(oname);
+    char * name = PyUnicode_AsUTF8(oname);
     if (strcmp(name, "x") == 0) { return PyFloat_FromDouble(self->rotation.vector().x()); }
     if (strcmp(name, "y") == 0) { return PyFloat_FromDouble(self->rotation.vector().y()); }
     if (strcmp(name, "z") == 0) { return PyFloat_FromDouble(self->rotation.vector().z()); }
@@ -88,12 +88,19 @@ static PyObject * Quaternion_getattro(PyQuaternion *self, PyObject *oname)
     return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
 
-static int Quaternion_compare(PyQuaternion * self, PyQuaternion * other)
+static PyObject* Quaternion_compare(PyObject *a, PyObject *b, int op)
 {
-    if (self->rotation == other->rotation) {
-        return 0;
+    auto self = (PyQuaternion*)a;
+    if (PyQuaternion_Check(b)) {
+        auto other = (PyQuaternion*)b;
+        if (op == Py_EQ) {
+            return self->rotation == other->rotation ? Py_True : Py_False;
+        } else if (op == Py_NE) {
+            return self->rotation != other->rotation ? Py_True : Py_False;
+        }
     }
-    return 1;
+
+    return Py_NotImplemented;
 }
 
 static PyObject* Quaternion_repr(PyQuaternion * self)
@@ -102,7 +109,7 @@ static PyObject* Quaternion_repr(PyQuaternion * self)
     ::snprintf(buf, 128, "(%f, (%f, %f, %f))", self->rotation.scalar(),
                self->rotation.vector().x(), self->rotation.vector().y(),
                self->rotation.vector().z());
-    return PyString_FromString(buf);
+    return PyUnicode_FromString(buf);
 }
 
 PyObject * Quaternium_num_mult(PyQuaternion * self, PyQuaternion * other)
@@ -165,8 +172,8 @@ static int Quaternion_init(PyQuaternion * self,
             float quaternion[4];
             for(int i = 0; i < 4; i++) {
                 PyObject * item = PyList_GetItem(clist, i);
-                if (PyInt_Check(item)) {
-                    quaternion[i] = (WFMath::CoordType)PyInt_AsLong(item);
+                if (PyLong_Check(item)) {
+                    quaternion[i] = (WFMath::CoordType)PyLong_AsLong(item);
                 } else if (PyFloat_Check(item)) {
                     quaternion[i] = PyFloat_AsDouble(item);
                 } else {
@@ -226,8 +233,8 @@ static int Quaternion_init(PyQuaternion * self,
             float quaternion[4];
             for(int i = 0; i < 4; i++) {
                 PyObject * item = PyTuple_GetItem(args, i);
-                if (PyInt_Check(item)) {
-                    quaternion[i] = (WFMath::CoordType)PyInt_AsLong(item);
+                if (PyLong_Check(item)) {
+                    quaternion[i] = (WFMath::CoordType)PyLong_AsLong(item);
                 } else if (PyFloat_Check(item)) {
                     quaternion[i] = PyFloat_AsDouble(item);
                 } else {
@@ -260,8 +267,7 @@ static PyObject * Quaternion_new(PyTypeObject * type, PyObject *, PyObject *)
 }
 
 PyTypeObject PyQuaternion_Type = {
-    PyObject_HEAD_INIT(&PyType_Type)
-    0,                                                     /*ob_size*/
+    PyVarObject_HEAD_INIT(&PyType_Type, 0)
     "physics.Quaternion",                                  /*tp_name*/
     sizeof(PyQuaternion),                                  /*tp_basicsize*/
     0,                                                     /*tp_itemsize*/
@@ -270,7 +276,7 @@ PyTypeObject PyQuaternion_Type = {
     0,                                                     /*tp_print*/
     0,                                                     /*tp_getattr*/
     0,                                                     /*tp_setattr*/
-    (cmpfunc)Quaternion_compare,                           /*tp_compare*/
+    0,                                                     /*tp_compare*/
     (reprfunc)Quaternion_repr,                             /*tp_repr*/
     &Quaternion_as_number,                                 /*tp_as_number*/
     0,                                                     /*tp_as_sequence*/
@@ -285,7 +291,7 @@ PyTypeObject PyQuaternion_Type = {
     "Quaternion objects",                                  // tp_doc
     0,                                                     // tp_travers
     0,                                                     // tp_clear
-    0,                                                     // tp_richcompare
+    (richcmpfunc)Quaternion_compare,                       // tp_richcompare
     0,                                                     // tp_weaklistoffset
     0,                                                     // tp_iter
     0,                                                     // tp_iternext

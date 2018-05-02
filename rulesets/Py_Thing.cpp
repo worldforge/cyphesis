@@ -18,7 +18,7 @@
 
 #include "Py_Thing.h"
 
-#include "Py_Map.h"
+#include "Py_MemMap.h"
 #include "Py_Message.h"
 #include "Py_Vector3D.h"
 #include "Py_Point3D.h"
@@ -187,7 +187,7 @@ static PyObject * Mind_describeEntity(PyEntity * self)
     }
 
     std::string result = awareMind->describeEntity();
-    return PyString_FromString(result.c_str());
+    return PyUnicode_FromString(result.c_str());
 }
 
 
@@ -264,7 +264,7 @@ static void Entity_dealloc(PyEntity *self)
         PyObject_ClearWeakRefs((PyObject *) self);
     }
 
-    self->ob_type->tp_free((PyObject*)self);
+    Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
 static PyObject * Entity_getattro(PyEntity *self, PyObject *oname)
@@ -275,7 +275,7 @@ static PyObject * Entity_getattro(PyEntity *self, PyObject *oname)
         return nullptr;
     }
 #endif // NDEBUG
-    char * name = PyString_AsString(oname);
+    char * name = PyUnicode_AsUTF8(oname);
     // If operation search gets to here, it goes no further
     if (strcmp(name, "type") == 0) {
         if (self->m_entity.e->getType() == nullptr) {
@@ -286,7 +286,7 @@ static PyObject * Entity_getattro(PyEntity *self, PyObject *oname)
         if (list == nullptr) {
             return nullptr;
         }
-        PyObject * ent = PyString_FromString(self->m_entity.e->getType()->name().c_str());
+        PyObject * ent = PyUnicode_FromString(self->m_entity.e->getType()->name().c_str());
         PyList_Append(list, ent);
         Py_DECREF(ent);
         return list;
@@ -365,7 +365,7 @@ static int Entity_setattro(PyEntity *self, PyObject *oname, PyObject *v)
         return -1;
     }
 #endif // NDEBUG
-    char * name = PyString_AsString(oname);
+    char * name = PyUnicode_AsUTF8(oname);
     if (strcmp(name, "map") == 0) {
         PyErr_SetString(PyExc_AttributeError, "map attribute forbidden");
         return -1;
@@ -381,11 +381,11 @@ static int Entity_setattro(PyEntity *self, PyObject *oname, PyObject *v)
             PyErr_SetString(PyExc_RuntimeError, "Cannot mutate entity type");
             return -1;
         }
-        if (!PyString_CheckExact(v)) {
+        if (!PyUnicode_CheckExact(v)) {
             PyErr_SetString(PyExc_TypeError, "No string type");
             return -1;
         }
-        const TypeNode * type = Inheritance::instance().getType(PyString_AsString(v));
+        const TypeNode * type = Inheritance::instance().getType(PyUnicode_AsUTF8(v));
         if (type == 0) {
             PyErr_SetString(PyExc_ValueError, "Entity type unknown");
             return -1;
@@ -404,14 +404,25 @@ static int Entity_setattro(PyEntity *self, PyObject *oname, PyObject *v)
     return PyObject_GenericSetAttr((PyObject *)self, oname, v);
 }
 
-static int Entity_compare(PyEntity *self, PyEntity *other)
+static PyObject* Entity_compare(PyObject *a, PyObject *b, int op)
 {
-    if (self->m_entity.e == nullptr || other->m_entity.e == nullptr) {
-        PyErr_SetString(PyExc_AssertionError, "nullptr Entity in Entity.compare");
-        return -1;
+    auto self = (PyEntity*)a;
+    if (PyEntity_Check(b)) {
+        auto other = (PyEntity*)b;
+        if (self->m_entity.e == nullptr || other->m_entity.e == nullptr) {
+            PyErr_SetString(PyExc_AssertionError, "nullptr Entity in Entity.compare");
+            return Py_False;
+        }
+        if (op == Py_EQ) {
+            return (self->m_entity.e == other->m_entity.e) ? Py_True : Py_False;
+        } else if (op == Py_NE) {
+            return (self->m_entity.e != other->m_entity.e) ? Py_True : Py_False;
+        }
     }
-    return (self->m_entity.e == other->m_entity.e) ? 0 : 1;
+
+    return Py_NotImplemented;
 }
+
 
 static int LocatedEntity_init(PyEntity * self, PyObject * args, PyObject * kwds)
 {
@@ -435,8 +446,8 @@ static int Entity_init(PyEntity * self, PyObject * args, PyObject * kwds)
     if (!PyArg_ParseTuple(args, "O", &arg)) {
         return -1;
     }
-    if (PyString_Check(arg)) {
-        char * id = PyString_AsString(arg);
+    if (PyUnicode_Check(arg)) {
+        char * id = PyUnicode_AsUTF8(arg);
         long intId = integerId(id);
         if (intId == -1L) {
             PyErr_SetString(PyExc_TypeError, "Entity() requires string/int ID");
@@ -467,8 +478,8 @@ static int Character_init(PyEntity * self, PyObject * args, PyObject * kwds)
     if (!PyArg_ParseTuple(args, "O", &arg)) {
         return -1;
     }
-    if (PyString_Check(arg)) {
-        char * id = PyString_AsString(arg);
+    if (PyUnicode_Check(arg)) {
+        char * id = PyUnicode_AsUTF8(arg);
         long intId = integerId(id);
         if (intId == -1L) {
             PyErr_SetString(PyExc_TypeError, "Entity() requires string/int ID");
@@ -501,9 +512,9 @@ static PyObject * Mind_getattro(PyEntity *self, PyObject *oname)
         return nullptr;
     }
 #endif // NDEBUG
-    char * name = PyString_AsString(oname);
+    char * name = PyUnicode_AsUTF8(oname);
     if (strcmp(name, "id") == 0) {
-        return (PyObject *)PyString_FromString(self->m_entity.m->getId().c_str());
+        return (PyObject *)PyUnicode_FromString(self->m_entity.m->getId().c_str());
     }
     if (strcmp(name, "type") == 0) {
         if (self->m_entity.m->getType() == nullptr) {
@@ -514,13 +525,13 @@ static PyObject * Mind_getattro(PyEntity *self, PyObject *oname)
         if (list == nullptr) {
             return nullptr;
         }
-        PyObject * ent = PyString_FromString(self->m_entity.m->getType()->name().c_str());
+        PyObject * ent = PyUnicode_FromString(self->m_entity.m->getType()->name().c_str());
         PyList_Append(list, ent);
         Py_DECREF(ent);
         return list;
     }
     if (strcmp(name, "map") == 0) {
-        PyMap * map = newPyMap();
+        PyMemMap * map = newPyMemMap();
         if (map != nullptr) {
             map->m_map = self->m_entity.m->getMap();
         }
@@ -572,7 +583,7 @@ static PyObject * Mind_getattro(PyEntity *self, PyObject *oname)
 
         size_t count = awareMind->getSteering().unawareAreaCount();
 
-        return PyInt_FromSize_t(count);
+        return PyLong_FromSize_t(count);
     }
     if (strcmp(name, "path") == 0) {
         AwareMind* awareMind = dynamic_cast<AwareMind*>(self->m_entity.m);
@@ -602,7 +613,7 @@ static PyObject * Mind_getattro(PyEntity *self, PyObject *oname)
             return nullptr;
         }
 
-        return PyInt_FromLong(awareMind->getSteering().getPathResult());
+        return PyLong_FromLong(awareMind->getSteering().getPathResult());
     }
 
     LocatedEntity * mind = self->m_entity.m;
@@ -615,7 +626,7 @@ static PyObject * Mind_getattro(PyEntity *self, PyObject *oname)
 
 static int Mind_setattro(PyEntity *self, PyObject *oname, PyObject *v)
 {
-    char * name = PyString_AsString(oname);
+    char * name = PyUnicode_AsUTF8(oname);
     if (strcmp(name, "mind") == 0) {
         if (!PyMind_Check(v)) {
             PyErr_SetString(PyExc_TypeError, "Mind.mind requires Mind");
@@ -653,14 +664,14 @@ static int Mind_setattro(PyEntity *self, PyObject *oname, PyObject *v)
     return PyObject_GenericSetAttr((PyObject *)self, oname, v);
 }
 
-static int Mind_compare(PyEntity *self, PyEntity *other)
-{
-    if (self->m_entity.m == nullptr || other->m_entity.m == nullptr) {
-        PyErr_SetString(PyExc_AssertionError, "nullptr mind in Mind.compare");
-        return -1;
-    }
-    return (self->m_entity.m == other->m_entity.m) ? 0 : 1;
-}
+//static int Mind_compare(PyEntity *self, PyEntity *other)
+//{
+//    if (self->m_entity.m == nullptr || other->m_entity.m == nullptr) {
+//        PyErr_SetString(PyExc_AssertionError, "nullptr mind in Mind.compare");
+//        return -1;
+//    }
+//    return (self->m_entity.m == other->m_entity.m) ? 0 : 1;
+//}
 
 static int Mind_init(PyEntity * self, PyObject * args, PyObject * kwds)
 {
@@ -679,8 +690,7 @@ static int Mind_init(PyEntity * self, PyObject * args, PyObject * kwds)
 }
 
 PyTypeObject PyLocatedEntity_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                              /*ob_size*/
+        PyVarObject_HEAD_INIT(&PyType_Type, 0)
         "server.LocatedEntity",         /*tp_name*/
         sizeof(PyEntity),               /*tp_basicsize*/
         0,                              /*tp_itemsize*/
@@ -689,7 +699,7 @@ PyTypeObject PyLocatedEntity_Type = {
         0,                              /*tp_print*/
         0,                              /*tp_getattr*/
         0,                              /*tp_setattr*/
-        (cmpfunc)Entity_compare,        /*tp_compare*/
+        0,        /*tp_compare*/
         0,                              /*tp_repr*/
         0,                              /*tp_as_number*/
         0,                              /*tp_as_sequence*/
@@ -704,7 +714,7 @@ PyTypeObject PyLocatedEntity_Type = {
         "LocatedEntity objects",        // tp_doc
         0,                              // tp_travers
         0,                              // tp_clear
-        0,                              // tp_richcompare
+        (richcmpfunc)Entity_compare,    // tp_richcompare
         offsetof(PyEntity, m_weakreflist), // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
@@ -722,8 +732,7 @@ PyTypeObject PyLocatedEntity_Type = {
 };
 
 PyTypeObject PyEntity_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                              /*ob_size*/
+        PyVarObject_HEAD_INIT(&PyType_Type, 0)
         "server.Entity",                /*tp_name*/
         sizeof(PyEntity),               /*tp_basicsize*/
         0,                              /*tp_itemsize*/
@@ -732,7 +741,7 @@ PyTypeObject PyEntity_Type = {
         0,                              /*tp_print*/
         0,                              /*tp_getattr*/
         0,                              /*tp_setattr*/
-        (cmpfunc)Entity_compare,        /*tp_compare*/
+        0,                              /*tp_compare*/
         0,                              /*tp_repr*/
         0,                              /*tp_as_number*/
         0,                              /*tp_as_sequence*/
@@ -747,7 +756,7 @@ PyTypeObject PyEntity_Type = {
         "Entity objects",               // tp_doc
         0,                              // tp_travers
         0,                              // tp_clear
-        0,                              // tp_richcompare
+        (richcmpfunc)Entity_compare,    // tp_richcompare
         0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
@@ -765,8 +774,7 @@ PyTypeObject PyEntity_Type = {
 };
 
 PyTypeObject PyCharacter_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                              /*ob_size*/
+        PyVarObject_HEAD_INIT(&PyType_Type, 0)
         "server.Character",             /*tp_name*/
         sizeof(PyEntity),               /*tp_basicsize*/
         0,                              /*tp_itemsize*/
@@ -775,7 +783,7 @@ PyTypeObject PyCharacter_Type = {
         0,                              /*tp_print*/
         0,                              /*tp_getattr*/
         0,                              /*tp_setattr*/
-        (cmpfunc)Entity_compare,        /*tp_compare*/
+        0,                              /*tp_compare*/
         0,                              /*tp_repr*/
         0,                              /*tp_as_number*/
         0,                              /*tp_as_sequence*/
@@ -790,7 +798,7 @@ PyTypeObject PyCharacter_Type = {
         "Character objects",            // tp_doc
         0,                              // tp_travers
         0,                              // tp_clear
-        0,                              // tp_richcompare
+        (richcmpfunc)Entity_compare,    // tp_richcompare
         0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
@@ -808,8 +816,7 @@ PyTypeObject PyCharacter_Type = {
 };
 
 PyTypeObject PyMind_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                              // ob_size
+        PyVarObject_HEAD_INIT(&PyType_Type, 0)
         "server.Mind",                  // tp_name
         sizeof(PyEntity),               // tp_basicsize
         0,                              // tp_itemsize
@@ -818,7 +825,7 @@ PyTypeObject PyMind_Type = {
         0,                              // tp_print
         0,                              // tp_getattr
         0,                              // tp_setattr
-        (cmpfunc)Mind_compare,          // tp_compare
+        0,                              // tp_compare
         0,                              // tp_repr
         0,                              // tp_as_number
         0,                              // tp_as_sequence
@@ -833,7 +840,7 @@ PyTypeObject PyMind_Type = {
         "Mind objects",                 // tp_doc
         0,                              // tp_travers
         0,                              // tp_clear
-        0,                              // tp_richcompare
+        (richcmpfunc)Entity_compare,    // tp_richcompare
         0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext

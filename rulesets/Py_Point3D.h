@@ -38,7 +38,7 @@ typedef struct {
 
 extern PyTypeObject PyPoint3D_Type;
 
-#define PyPoint3D_Check(_o) ((_o)->ob_type == &PyPoint3D_Type)
+#define PyPoint3D_Check(_o) (Py_TYPE((_o)) == &PyPoint3D_Type)
 
 PyPoint3D * newPyPoint3D();
 

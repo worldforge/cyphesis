@@ -69,19 +69,19 @@ static PyMethodDef Point3D_methods[] = {
 static void Point3D_dealloc(PyPoint3D *self)
 {
     self->coords.~Point3D();
-    self->ob_type->tp_free(self);
+    Py_TYPE(self)->tp_free(self);
 }
 
 static PyObject* Point3D_repr(PyPoint3D * self)
 {
     char buf[64];
     ::snprintf(buf, 64, "(%f, %f, %f)", self->coords.x(), self->coords.y(), self->coords.z());
-    return PyString_FromString(buf);
+    return PyUnicode_FromString(buf);
 }
 
 static PyObject * Point3D_getattro(PyPoint3D *self, PyObject *oname)
 {
-    char * name = PyString_AsString(oname);
+    char * name = PyUnicode_AsUTF8(oname);
     if (strcmp(name, "x") == 0) { return PyFloat_FromDouble(self->coords.x()); }
     if (strcmp(name, "y") == 0) { return PyFloat_FromDouble(self->coords.y()); }
     if (strcmp(name, "z") == 0) { return PyFloat_FromDouble(self->coords.z()); }
@@ -89,12 +89,19 @@ static PyObject * Point3D_getattro(PyPoint3D *self, PyObject *oname)
     return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
 
-static int Point3D_compare(PyPoint3D * self, PyPoint3D * other)
+static PyObject* Point3D_compare(PyObject *a, PyObject *b, int op)
 {
-    if (self->coords == other->coords) {
-        return 0;
+    auto self = (PyPoint3D*)a;
+    if (PyPoint3D_Check(b)) {
+        auto other = (PyPoint3D*)b;
+        if (op == Py_EQ) {
+            return self->coords == other->coords ? Py_True : Py_False;
+        } else if (op == Py_NE) {
+            return self->coords != other->coords ? Py_True : Py_False;
+        }
     }
-    return 1;
+
+    return Py_NotImplemented;
 }
 
 /*
@@ -170,12 +177,6 @@ static PyObject * Point3D_num_sub(PyPoint3D * self, PyObject * other)
     }
 }
 
-static int Point3D_num_coerce(PyObject ** self, PyObject ** other)
-{
-    Py_INCREF(*self);
-    Py_INCREF(*other);
-    return 0;
-}
 
 static int Point3D_init(PyPoint3D * self, PyObject * args, PyObject * kwds)
 {
@@ -196,8 +197,8 @@ static int Point3D_init(PyPoint3D * self, PyObject * args, PyObject * kwds)
             }
             for(int i = 0; i < 3; i++) {
                 PyObject * item = PyList_GetItem(clist, i);
-                if (PyInt_Check(item)) {
-                    self->coords[i] = (float)PyInt_AsLong(item);
+                if (PyLong_Check(item)) {
+                    self->coords[i] = (float)PyLong_AsLong(item);
                 } else if (PyFloat_Check(item)) {
                     self->coords[i] = PyFloat_AsDouble(item);
                 } else if (PyMessage_Check(item)) {
@@ -217,8 +218,8 @@ static int Point3D_init(PyPoint3D * self, PyObject * args, PyObject * kwds)
         case 3:
             for(int i = 0; i < 3; i++) {
                 PyObject * item = PyTuple_GetItem(args, i);
-                if (PyInt_Check(item)) {
-                    self->coords[i] = (float)PyInt_AsLong(item);
+                if (PyLong_Check(item)) {
+                    self->coords[i] = (float)PyLong_AsLong(item);
                 } else if (PyFloat_Check(item)) {
                     self->coords[i] = PyFloat_AsDouble(item);
                 } else {
@@ -259,34 +260,43 @@ static PySequenceMethods Point3D_seq = {
 };
 
 static PyNumberMethods Point3D_num = {
-        (binaryfunc)Point3D_num_add,    /* nb_add */
-        (binaryfunc)Point3D_num_sub,    /* nb_subtract */
-        0,                              /* nb_multiply */
-        0,                              /* nb_divide */
-        0,                              /* nb_remainder */
-        0,                              /* nb_divmod */
-        0,                              /* nb_power */
-        0,                              /* nb_negative */
-        0,                              /* nb_positive */
-        0,                              /* nb_absolute */
-        0,                              /* nb_nonzero */
-        0,                              /* nb_invert */
-        0,                              /* nb_lshift */
-        0,                              /* nb_rshift */
-        0,                              /* nb_and */
-        0,                              /* nb_xor */
-        0,                              /* nb_or */
-        Point3D_num_coerce,             /* nb_coerce */
-        0,                              /* nb_int */
-        0,                              /* nb_long */
-        0,                              /* nb_float */
-        0,                              /* nb_oct */
-        0                               /* nb_hex */
+    (binaryfunc)Point3D_num_add,   /* nb_add */
+    (binaryfunc)Point3D_num_sub,   /* nb_subtract */
+    0,                              /* nb_multiply */
+    0,                              /* nb_remainder */
+    0,                              /* nb_divmod */
+    0,                              /* nb_power */
+    0,                              /* nb_negative */
+    0,                              /* nb_positive */
+    0,                              /* nb_absolute */
+    0,                              /* nb_nonzero */
+    0,                              /* nb_invert */
+    0,                              /* nb_lshift */
+    0,                              /* nb_rshift */
+    0,                              /* nb_and */
+    0,                              /* nb_xor */
+    0,                              /* nb_or */
+    0,                              /* nb_int */
+    0,                              /* nb_reserved */
+    0,                              /* nb_float */
+    0,                              /* nb_inplace_add */
+    0,                              /* nb_inplace_subtract */
+    0,                              /* nb_inplace_multiply */
+    0,                              /* nb_inplace_remainder */
+    0,                              /* nb_inplace_power */
+    0,                              /* nb_inplace_lshift */
+    0,                              /* nb_inplace_rshift */
+    0,                              /* nb_inplace_and */
+    0,                              /* nb_inplace_xor */
+    0,                              /* nb_inplace_or */
+    0,                              /* nb_floor_divide */
+    0,                              /* nb_true_divide */
+    0,                              /* nb_inplace_floor_divide */
+    0,                              /* nb_inplace_true_divide */
 };
 
 PyTypeObject PyPoint3D_Type = {
-        PyObject_HEAD_INIT(0)
-        0,                              // ob_size
+        PyVarObject_HEAD_INIT(0, 0)
         "physics.Point3D",              // tp_name
         sizeof(PyPoint3D),              // tp_basicsize
         0,                              // tp_itemsize
@@ -295,7 +305,7 @@ PyTypeObject PyPoint3D_Type = {
         0,                              // tp_print
         0,                              // tp_getattr
         0,                              // tp_setattr
-        (cmpfunc)Point3D_compare,       // tp_compare
+        0,                              // tp_compare
         (reprfunc)Point3D_repr,         // tp_repr
         &Point3D_num,                   // tp_as_number
         &Point3D_seq,                   // tp_as_sequence
@@ -310,7 +320,7 @@ PyTypeObject PyPoint3D_Type = {
         "Point3D objects",              // tp_doc
         0,                              // tp_travers
         0,                              // tp_clear
-        0,                              // tp_richcompare
+        (richcmpfunc)Point3D_compare,   // tp_richcompare
         0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext

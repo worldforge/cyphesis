@@ -147,7 +147,7 @@ PyObject * wrapEntity(LocatedEntity * le)
     if (stub_wrapEntity_fail) {
         return 0;
     } else {
-        return PyInt_FromLong(1L);
+        return PyLong_FromLong(1L);
     }
 }
 #include "stubs/rulesets/stubScript.h"
@@ -225,7 +225,7 @@ PyObject * Get_PyClass(PyObject * module,
 
 PyObject * Get_PyModule(const std::string & package)
 {
-    PyObject * package_name = PyString_FromString((char *)package.c_str());
+    PyObject * package_name = PyUnicode_FromString((char *)package.c_str());
     PyObject * module = PyImport_Import(package_name);
     Py_DECREF(package_name);
     if (module == nullptr) {

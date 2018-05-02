@@ -3,11 +3,11 @@
 
 ///\brief Create a new Filter object for a given query
 PyObject * get_filter(PyObject * self, PyObject* query){
-    if (!PyString_CheckExact(query)){
+    if (!PyUnicode_CheckExact(query)){
             PyErr_SetString(PyExc_TypeError, "Map_get_filter what must be string");
                     return nullptr;
         }
-        char * query_str = PyString_AsString(query);
+        char * query_str = PyUnicode_AsUTF8(query);
         PyFilter* f = newPyFilter();
         try {
             //FIXME: creating and accessing an instance of a factory should be done in a better way
@@ -110,7 +110,7 @@ static void Filter_dealloc(PyFilter *self)
     if (self->m_filter != nullptr) {
         delete self->m_filter;
     }
-    self->ob_type->tp_free((PyObject*)self);
+    Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
 static PyMethodDef Filter_methods[] = {
@@ -120,8 +120,7 @@ static PyMethodDef Filter_methods[] = {
 };
 
 PyTypeObject PyFilter_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                              // ob_size
+        PyVarObject_HEAD_INIT(&PyType_Type, 0)
         "Filter",                       // tp_name
         sizeof(PyFilter),               // tp_basicsize
         0,                              // tp_itemsize

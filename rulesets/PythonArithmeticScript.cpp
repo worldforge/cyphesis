@@ -43,7 +43,7 @@ PythonArithmeticScript::~PythonArithmeticScript()
 
 int PythonArithmeticScript::attribute(const std::string & name, float & val)
 {
-    PyObject * pn = PyString_FromString(name.c_str());
+    PyObject * pn = PyUnicode_FromString(name.c_str());
     PyObject * ret = PyObject_GenericGetAttr(m_script, pn);
     Py_DECREF(pn);
     if (ret == nullptr) {
@@ -57,8 +57,8 @@ int PythonArithmeticScript::attribute(const std::string & name, float & val)
     }
     if (PyFloat_Check(ret)) {
         val = PyFloat_AsDouble(ret);
-    } else if (PyInt_Check(ret)) {
-        val = PyInt_AsLong(ret);
+    } else if (PyLong_Check(ret)) {
+        val = PyLong_AsLong(ret);
     } else if (ret == Py_None) {
         return -1;
     } else {
@@ -70,7 +70,7 @@ int PythonArithmeticScript::attribute(const std::string & name, float & val)
 
 void PythonArithmeticScript::set(const std::string & name, const float & val)
 {
-    PyObject * pn = PyString_FromString(name.c_str());
+    PyObject * pn = PyUnicode_FromString(name.c_str());
     PyObject * py_val = PyFloat_FromDouble(val);
     if (PyObject_GenericSetAttr(m_script, pn, py_val) == 0) {
         // PyObject_GenericSetAttr sets and error if nothing was found

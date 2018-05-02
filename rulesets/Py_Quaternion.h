@@ -38,7 +38,7 @@ typedef struct {
 
 extern PyTypeObject PyQuaternion_Type;
 
-#define PyQuaternion_Check(_o) ((_o)->ob_type == &PyQuaternion_Type)
+#define PyQuaternion_Check(_o) (Py_TYPE((_o)) == &PyQuaternion_Type)
 
 PyQuaternion * newPyQuaternion();
 

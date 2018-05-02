@@ -24,7 +24,7 @@
 #include "Py_BBox.h"
 #include "Py_Message.h"
 #include "Py_Thing.h"
-#include "Py_Map.h"
+#include "Py_MemMap.h"
 #include "Py_Location.h"
 #include "Py_Vector3D.h"
 #include "Py_Point3D.h"
@@ -100,8 +100,7 @@ static PyObject * log_think(PyObject * self, PyObject * args, PyObject * kwds)
 }
 
 PyTypeObject log_debug_type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,
+        PyVarObject_HEAD_INIT(&PyType_Type, 0)
         "Function",
         sizeof(PyObject),
         0,
@@ -143,8 +142,7 @@ PyTypeObject log_debug_type = {
 };
 
 PyTypeObject log_think_type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,
+        PyVarObject_HEAD_INIT(&PyType_Type, 0)
         "Function",
         sizeof(PyObject),
         0,
@@ -217,11 +215,11 @@ static void python_log(LogLevel lvl, const char * msg)
 
 static PyObject * PyOutLogger_write(PyObject * self, PyObject * arg)
 {
-    if (!PyString_CheckExact(arg)) {
+    if (!PyUnicode_CheckExact(arg)) {
         PyErr_SetString(PyExc_TypeError, "write must be a string");
         return 0;
     }
-    char * mesg = PyString_AsString(arg);
+    char * mesg = PyUnicode_AsUTF8(arg);
 
     python_log(SCRIPT, mesg);
 
@@ -231,11 +229,11 @@ static PyObject * PyOutLogger_write(PyObject * self, PyObject * arg)
 
 static PyObject * PyErrLogger_write(PyObject * self, PyObject * arg)
 {
-    if (!PyString_CheckExact(arg)) {
+    if (!PyUnicode_CheckExact(arg)) {
         PyErr_SetString(PyExc_TypeError, "write must be a string");
         return 0;
     }
-    char * mesg = PyString_AsString(arg);
+    char * mesg = PyUnicode_AsUTF8(arg);
 
     python_log(SCRIPT_ERROR, mesg);
 
@@ -254,8 +252,7 @@ static PyMethodDef PyErrLogger_methods[] = {
 };
 
 PyTypeObject PyOutLogger_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                   // ob_size
+        PyVarObject_HEAD_INIT(&PyType_Type, 0)
         "OutLogger",         // tp_name
         sizeof(PyObject),    // tp_basicsize
         0,                   // tp_itemsize
@@ -297,8 +294,7 @@ PyTypeObject PyOutLogger_Type = {
 };
 
 PyTypeObject PyErrLogger_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                   // ob_size
+        PyVarObject_HEAD_INIT(&PyType_Type, 0)
         "ErrLogger",         // tp_name
         sizeof(PyObject),    // tp_basicsize
         0,                   // tp_itemsize
@@ -378,7 +374,7 @@ PyObject * Get_PyClass(PyObject * module,
 /// @return new reference
 PyObject * Get_PyModule(const std::string & package)
 {
-    PyObject * package_name = PyString_FromString((char *)package.c_str());
+    PyObject * package_name = PyUnicode_FromString((char *)package.c_str());
     PyObject * module = PyImport_Import(package_name);
     Py_DECREF(package_name);
     if (module == nullptr) {
@@ -561,9 +557,13 @@ void observe_python_directory(std::string directory) {
     }
 }
 
-void init_python_api(const std::string & ruleset, bool log_stdout)
+void init_python_api(const char* programName, const std::string & ruleset, bool log_stdout)
 {
-    Py_Initialize();
+    wchar_t *program = Py_DecodeLocale(programName, nullptr);
+    Py_SetProgramName(program);
+    Py_InitializeEx(0);
+
+    PyMem_RawFree(program);
 
     PyOutLogger_Type.tp_new = PyType_GenericNew;
     if (PyType_Ready(&PyOutLogger_Type) < 0) {
@@ -576,7 +576,7 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
         return;
     }
 
-    PyObject * sys_name = PyString_FromString("sys");
+    PyObject * sys_name = PyUnicode_FromString("sys");
     PyObject * sys_module = PyImport_Import(sys_name);
     Py_DECREF(sys_name);
 
@@ -601,20 +601,20 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
             // Add the path to the non-ruleset specific code.
             std::string p = share_directory + "/cyphesis/scripts";
             observe_python_directory(p);
-            PyObject * path = PyString_FromString(p.c_str());
+            PyObject * path = PyUnicode_FromString(p.c_str());
             PyList_Append(sys_path, path);
             Py_DECREF(path);
 
             p = share_directory + "/cyphesis/rulesets/basic";
             observe_python_directory(p);
-            path = PyString_FromString(p.c_str());
+            path = PyUnicode_FromString(p.c_str());
             PyList_Append(sys_path, path);
             Py_DECREF(path);
 
             // Add the path to the ruleset specific code.
             p = share_directory + "/cyphesis/rulesets/" + ruleset;
             observe_python_directory(p);
-            path = PyString_FromString(p.c_str());
+            path = PyUnicode_FromString(p.c_str());
             PyList_Append(sys_path, path);
             Py_DECREF(path);
         } else {
@@ -625,7 +625,20 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
     }
     Py_DECREF(sys_module);
 
-    PyObject * entity_filter = Py_InitModule("entity_filter", entity_filter_methods);
+    static struct PyModuleDef entity_filter_def = {
+        PyModuleDef_HEAD_INIT,
+        "entity_filter",
+        nullptr,
+//        sizeof(struct module_state),
+        0,
+        entity_filter_methods,
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr
+    };
+
+    PyObject * entity_filter = PyModule_Create(&entity_filter_def);
     if (entity_filter == nullptr) {
         log(CRITICAL, "Python init failed to create entity_filter module\n");
         return;
@@ -637,7 +650,19 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
             return;
     }
 
-    PyObject * atlas = Py_InitModule("atlas", atlas_methods);
+    static struct PyModuleDef atlas_def = {
+        PyModuleDef_HEAD_INIT,
+        "atlas",
+        nullptr,
+        0,
+        atlas_methods,
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr
+    };
+
+    PyObject * atlas = PyModule_Create(&atlas_def);
     if (atlas == nullptr) {
         log(CRITICAL, "Python init failed to create atlas module\n");
         return;
@@ -674,7 +699,19 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
     }
     PyModule_AddObject(atlas, "Message", (PyObject *)&PyMessage_Type);
 
-    PyObject * physics = Py_InitModule("physics", physics_methods);
+    static struct PyModuleDef physics_def = {
+        PyModuleDef_HEAD_INIT,
+        "physics",
+        nullptr,
+        0,
+        physics_methods,
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr
+    };
+
+    PyObject * physics = PyModule_Create(&physics_def);
     if (physics == nullptr) {
         log(CRITICAL, "Python init failed to create physics module\n");
         return;
@@ -736,7 +773,20 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
     }
     PyModule_AddObject(physics, "Polygon", (PyObject *)&PyPolygon_Type);
 
-    PyObject * common = Py_InitModule("common", no_methods);
+    static struct PyModuleDef common_def = {
+        PyModuleDef_HEAD_INIT,
+        "common",
+        nullptr,
+        0,
+        no_methods,
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr
+    };
+
+    PyObject * common = PyModule_Create(&common_def);
+
     if (common == nullptr) {
         log(CRITICAL, "Python init failed to create common module\n");
         return;
@@ -765,10 +815,10 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
     PyObject * _const = PyModule_New("const");
     PyModule_AddObject(common, "const", _const);
 
-    o = PyInt_FromLong(consts::debug_level);
+    o = PyLong_FromLong(consts::debug_level);
     PyModule_AddObject(_const, "debug_level", o);
 
-    o = PyInt_FromLong(consts::debug_thinking);
+    o = PyLong_FromLong(consts::debug_thinking);
     PyModule_AddObject(_const, "debug_thinking", o);
 
     o = PyFloat_FromDouble(consts::time_multiplier);
@@ -784,22 +834,35 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
     PyObject * globals = PyModule_New("globals");
     PyModule_AddObject(common, "globals", globals);
 
-    o = PyString_FromString(share_directory.c_str());
+    o = PyUnicode_FromString(share_directory.c_str());
     PyModule_AddObject(globals, "share_directory", o);
 
-    PyObject * server = Py_InitModule("server", no_methods);
+    static struct PyModuleDef server_def = {
+        PyModuleDef_HEAD_INIT,
+        "server",
+        nullptr,
+        0,
+        no_methods,
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr
+    };
+
+    PyObject * server = PyModule_Create(&server_def);
+
     if (server == nullptr) {
         log(CRITICAL, "Python init failed to create server module");
         return;
     }
     
     // New module code
-    PyMap_Type.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&PyMap_Type) < 0) {
+    PyMemMap_Type.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&PyMemMap_Type) < 0) {
         log(CRITICAL, "Python init failed to ready Map wrapper type");
         return;
     }
-    PyModule_AddObject(server, "Map", (PyObject *)&PyMap_Type);
+    PyModule_AddObject(server, "Map", (PyObject *)&PyMemMap_Type);
     PyTask_Type.tp_new = PyType_GenericNew;
     if (PyType_Ready(&PyTask_Type) < 0) {
         log(CRITICAL, "Python init failed to ready Task wrapper type");
@@ -878,5 +941,5 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
 void shutdown_python_api()
 {
     
-    Py_Finalize();
+    Py_FinalizeEx();
 }

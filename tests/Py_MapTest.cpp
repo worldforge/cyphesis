@@ -30,14 +30,14 @@
 #include "python_testers.h"
 
 #include "rulesets/Python_API.h"
-#include "rulesets/Py_Map.h"
+#include "rulesets/Py_MemMap.h"
 
 #include <cassert>
 #include <common/Inheritance.h>
 
-static PyObject * null_wrapper(PyObject * self, PyMap * o)
+static PyObject * null_wrapper(PyObject * self, PyMemMap * o)
 {
-    if (!PyMap_Check(o)) {
+    if (!PyMemMap_Check(o)) {
         PyErr_SetString(PyExc_TypeError, "Unknown Object type");
         return nullptr;
     }
@@ -67,7 +67,7 @@ int main()
 
     setup_test_functions();
 
-    PyMap * map = newPyMap();
+    PyMemMap * map = newPyMemMap();
     assert(map != 0);
 
     run_python_string("from server import Map");

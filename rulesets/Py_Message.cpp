@@ -47,7 +47,7 @@ static PyObject* Message_get_name(PyMessage * self)
         return nullptr;
     }
 #endif // NDEBUG
-    return PyString_FromString("obj");
+    return PyUnicode_FromString("obj");
 }
 
 
@@ -87,7 +87,7 @@ static PyMethodDef Message_methods[] = {
 static void Message_dealloc(PyMessage *self)
 {
     delete self->m_obj;
-    self->ob_type->tp_free((PyObject*)self);
+    Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
 static PyObject * Message_repr(PyMessage *self)
@@ -99,9 +99,9 @@ static PyObject * Message_repr(PyMessage *self)
     }
 #endif // NDEBUG
     if (self->m_obj->isString()) {
-        return PyString_FromString(self->m_obj->asString().c_str());
+        return PyUnicode_FromString(self->m_obj->asString().c_str());
     }
-    return PyString_FromFormat("<%s object at %p>(%s)",
+    return PyUnicode_FromFormat("<%s object at %p>(%s)",
                                Py_TYPE(self)->tp_name,
                                self,
                                debug_tostring(*self->m_obj).c_str());
@@ -115,7 +115,7 @@ static PyObject * Message_getattro(PyMessage *self, PyObject *oname)
         return nullptr;
     }
 #endif // NDEBUG
-    char * name = PyString_AsString(oname);
+    char * name = PyUnicode_AsUTF8(oname);
     if (self->m_obj->isMap()) {
         const MapType & omap = self->m_obj->asMap();
         MapType::const_iterator I = omap.find(name);
@@ -134,7 +134,7 @@ static int Message_setattro(PyMessage *self, PyObject *oname, PyObject *v)
         return -1;
     }
 #endif // NDEBUG
-    char * name = PyString_AsString(oname);
+    char * name = PyUnicode_AsUTF8(oname);
     log(WARNING, String::compose("Setting \"%1\" attribute on an Atlas Message",
                                  name));
     if (self->m_obj->isMap()) {
@@ -167,13 +167,13 @@ PyObject * Message_richcompare(PyMessage * self, PyObject * other, int op)
         return 0;
     }
     if (self->m_obj->isString()) {
-        if (PyString_Check(other) &&
-            self->m_obj->asString() == PyString_AsString(other)) {
+        if (PyUnicode_Check(other) &&
+            self->m_obj->asString() == PyUnicode_AsUTF8(other)) {
             equal = true;
         }
     } else if (self->m_obj->isInt()) {
-        if (PyInt_Check(other) &&
-            self->m_obj->asInt() == PyInt_AsLong(other)) {
+        if (PyLong_Check(other) &&
+            self->m_obj->asInt() == PyLong_AsLong(other)) {
             equal = true;
         }
     } else if (self->m_obj->isFloat()) {
@@ -209,8 +209,7 @@ static int Message_init(PyMessage * self, PyObject * args, PyObject * kwds)
 }
 
 PyTypeObject PyMessage_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                              /*ob_size*/
+        PyVarObject_HEAD_INIT(&PyType_Type, 0)
         "atlas.Message",                /*tp_name*/
         sizeof(PyMessage),       /*tp_basicsize*/
         0,                              /*tp_itemsize*/
@@ -308,13 +307,13 @@ PyObject * MessageElement_asPyObject(const Element & obj)
     PyObject * ret = nullptr;
     switch (obj.getType()) {
         case Element::TYPE_INT:
-            ret = PyInt_FromLong(obj.Int());
+            ret = PyLong_FromLong(obj.Int());
             break;
         case Element::TYPE_FLOAT:
             ret = PyFloat_FromDouble(obj.Float());
             break;
         case Element::TYPE_STRING:
-            ret = PyString_FromString(obj.String().c_str());
+            ret = PyUnicode_FromString(obj.String().c_str());
             break;
         case Element::TYPE_MAP:
             ret = MapType_asPyObject(obj.Map());
@@ -360,10 +359,10 @@ int PyDictObject_asElement(PyObject * dict, MapType & res)
         PyObject * key = PyList_GetItem(keys, i);
         item = (PyMessage *)PyList_GetItem(vals, i);
         if (PyMessage_Check(item)) {
-            res[PyString_AsString(key)] = *(item->m_obj);
+            res[PyUnicode_AsUTF8(key)] = *(item->m_obj);
         } else {
-            if (PyObject_asMessageElement((PyObject*)item, res[PyString_AsString(key)]) != 0) {
-                debug( std::cout << "Python to atlas conversion failed on element " << PyString_AsString(key) << " of map" << std::endl << std::flush; );
+            if (PyObject_asMessageElement((PyObject*)item, res[PyUnicode_AsUTF8(key)]) != 0) {
+                debug( std::cout << "Python to atlas conversion failed on element " << PyUnicode_AsUTF8(key) << " of map" << std::endl << std::flush; );
                 return -1;
             }
         }
@@ -375,16 +374,16 @@ int PyDictObject_asElement(PyObject * dict, MapType & res)
 
 int PyObject_asMessageElement(PyObject * o, Element & res, bool simple)
 {
-    if (PyInt_Check(o)) {
-        res = (int)PyInt_AsLong(o);
+    if (PyLong_Check(o)) {
+        res = (int)PyLong_AsLong(o);
         return 0;
     }
     if (PyFloat_Check(o)) {
         res = PyFloat_AsDouble(o);
         return 0;
     }
-    if (PyString_Check(o)) {
-        res = PyString_AsString(o);
+    if (PyUnicode_Check(o)) {
+        res = PyUnicode_AsUTF8(o);
         return 0;
     }
     // If the caller has specified that it is not interested in

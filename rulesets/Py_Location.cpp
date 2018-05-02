@@ -55,7 +55,7 @@ static void Location_dealloc(PyLocation *self)
     if (self->owner == 0 && self->location != nullptr) {
         delete self->location;
     }
-    self->ob_type->tp_free((PyObject*)self);
+    Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
 static PyObject * Location_getattro(PyLocation *self, PyObject *oname)
@@ -66,7 +66,7 @@ static PyObject * Location_getattro(PyLocation *self, PyObject *oname)
         return nullptr;
     }
 #endif // NDEBUG
-    char * name = PyString_AsString(oname);
+    char * name = PyUnicode_AsUTF8(oname);
     if (strcmp(name, "parent") == 0) {
         if (self->location->m_loc == nullptr) {
             Py_INCREF(Py_None);
@@ -120,7 +120,7 @@ static int Location_setattro(PyLocation *self, PyObject *oname, PyObject *v)
         return -1;
     }
 #endif // NDEBUG
-    char * name = PyString_AsString(oname);
+    char * name = PyUnicode_AsUTF8(oname);
     if (strcmp(name, "parent") == 0) {
         // FIXME Support for weakrefs
         if (!PyLocatedEntity_Check(v)) {
@@ -162,8 +162,8 @@ static int Location_setattro(PyLocation *self, PyObject *oname, PyObject *v)
         }
         for(int i = 0; i < 3; i++) {
             PyObject * item = PyTuple_GetItem(v, i);
-            if (PyInt_Check(item)) {
-                vector[i] = (double)PyInt_AsLong(item);
+            if (PyLong_Check(item)) {
+                vector[i] = (double)PyLong_AsLong(item);
             } else if (PyFloat_Check(item)) {
                 vector[i] = PyFloat_AsDouble(item);
             } else {
@@ -180,8 +180,8 @@ static int Location_setattro(PyLocation *self, PyObject *oname, PyObject *v)
         }
         for(int i = 0; i < 3; i++) {
             PyObject * item = PyList_GetItem(v, i);
-            if (PyInt_Check(item)) {
-                vector[i] = (double)PyInt_AsLong(item);
+            if (PyLong_Check(item)) {
+                vector[i] = (double)PyLong_AsLong(item);
             } else if (PyFloat_Check(item)) {
                 vector[i] = PyFloat_AsDouble(item);
             } else {
@@ -218,7 +218,7 @@ static PyObject * Location_repr(PyLocation *self)
 {
     std::stringstream r;
     r << *self->location;
-    return PyString_FromString(r.str().c_str());
+    return PyUnicode_FromString(r.str().c_str());
 }
 
 static int Location_init(PyLocation * self, PyObject * args, PyObject * kwds)
@@ -331,8 +331,7 @@ static PyNumberMethods Location_as_number = {
 };
 
 PyTypeObject PyLocation_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                              /*ob_size*/
+    PyVarObject_HEAD_INIT(&PyType_Type, 0)
         "atlas.Location",               /*tp_name*/
         sizeof(PyLocation),             /*tp_basicsize*/
         0,                              /*tp_itemsize*/

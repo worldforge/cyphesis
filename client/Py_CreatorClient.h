@@ -38,7 +38,7 @@ typedef struct {
     } m_mind;
 } PyCreatorClient;
 
-#define PyCreatorClient_Check(_o) ((_o)->ob_type == &PyCreatorClient_Type)
+#define PyCreatorClient_Check(_o) (Py_TYPE((_o)) == &PyCreatorClient_Type)
 
 PyCreatorClient * newPyCreatorClient();
 

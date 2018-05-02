@@ -27,7 +27,7 @@
 #include "rulesets/Py_Location.h"
 #include "rulesets/Py_Message.h"
 #include "rulesets/Py_Thing.h"
-#include "rulesets/Py_Map.h"
+#include "rulesets/Py_MemMap.h"
 
 #include "common/debug.h"
 #include "common/id.h"
@@ -109,11 +109,11 @@ static PyObject * CreatorClient_look(PyCreatorClient * self, PyObject * py_id)
         return nullptr;
     }
 #endif // NDEBUG
-    if (!PyString_CheckExact(py_id)) {
+    if (!PyUnicode_CheckExact(py_id)) {
         PyErr_SetString(PyExc_TypeError, "CreatorClient.look must be a string");
         return nullptr;
     }
-    char * id = PyString_AsString(py_id);
+    char * id = PyUnicode_AsUTF8(py_id);
     LocatedEntity * retval = self->m_mind.c->look(id);
     if (retval == nullptr) {
         PyErr_SetString(PyExc_RuntimeError, "Entity look failed");
@@ -175,11 +175,11 @@ static PyObject * CreatorClient_delete(PyCreatorClient * self, PyObject * py_id)
         return nullptr;
     }
 #endif // NDEBUG
-    if (!PyString_CheckExact(py_id)) {
+    if (!PyUnicode_CheckExact(py_id)) {
         PyErr_SetString(PyExc_TypeError, "CreatorClient.delete must be a string");
         return nullptr;
     }
-    char * id = PyString_AsString(py_id);
+    char * id = PyUnicode_AsUTF8(py_id);
     self->m_mind.a->del(id);
     Py_INCREF(Py_None);
     return Py_None;
@@ -217,7 +217,7 @@ static PyObject * CreatorClient_getattro(PyCreatorClient *self,
         return nullptr;
     }
 #endif // NDEBUG
-    char * name = PyString_AsString(oname);
+    char * name = PyUnicode_AsUTF8(oname);
     // If operation search gets to here, it goes no further
     if (strstr(name, "_operation") != nullptr) {
         PyErr_SetString(PyExc_AttributeError, name);
@@ -228,11 +228,11 @@ static PyObject * CreatorClient_getattro(PyCreatorClient *self,
         if (list == nullptr) {
             return nullptr;
         }
-        PyList_Append(list, PyString_FromString(self->m_mind.c->getType()->name().c_str()));
+        PyList_Append(list, PyUnicode_FromString(self->m_mind.c->getType()->name().c_str()));
         return list;
     }
     if (strcmp(name, "map") == 0) {
-        PyMap * map = newPyMap();
+        PyMemMap * map = newPyMemMap();
         if (map != nullptr) {
             map->m_map = self->m_mind.c->getMap();
         }
@@ -267,7 +267,7 @@ static int CreatorClient_setattro(PyCreatorClient *self,
                                   PyObject * oname,
                                   PyObject *v)
 {
-    char * name = PyString_AsString(oname);
+    char * name = PyUnicode_AsUTF8(oname);
     if (self->m_mind.c == nullptr) {
         // FIXME Set an error
         return -1;

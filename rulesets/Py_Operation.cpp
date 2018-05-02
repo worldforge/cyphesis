@@ -56,11 +56,11 @@ static PyObject * Operation_setSerialno(PyOperation * self, PyObject * py_sno)
     }
 #endif // NDEBUG
     // Takes integer, returns none
-    if (!PyInt_CheckExact(py_sno)) {
+    if (!PyLong_CheckExact(py_sno)) {
         PyErr_SetString(PyExc_TypeError, "serialno not an integer");
         return nullptr;
     }
-    int serialno = PyInt_AsLong(py_sno);
+    int serialno = PyLong_AsLong(py_sno);
     self->operation->setSerialno(serialno);
 
     Py_INCREF(Py_None);
@@ -76,11 +76,11 @@ static PyObject * Operation_setRefno(PyOperation * self, PyObject * py_rno)
         return nullptr;
     }
 #endif // NDEBUG
-    if (!PyInt_CheckExact(py_rno)) {
+    if (!PyLong_CheckExact(py_rno)) {
         PyErr_SetString(PyExc_TypeError, "refno not an integer");
         return nullptr;
     }
-    int refno = PyInt_AsLong(py_rno);
+    int refno = PyLong_AsLong(py_rno);
     self->operation->setRefno(refno);
 
     Py_INCREF(Py_None);
@@ -96,11 +96,11 @@ static PyObject * Operation_setFrom(PyOperation * self, PyObject * py_from)
         return nullptr;
     }
 #endif // NDEBUG
-    if (!PyString_CheckExact(py_from)) {
+    if (!PyUnicode_CheckExact(py_from)) {
         PyErr_SetString(PyExc_TypeError, "from not a string");
         return nullptr;
     }
-    char * from = PyString_AsString(py_from);
+    char * from = PyUnicode_AsUTF8(py_from);
     self->operation->setFrom(from);
 
     Py_INCREF(Py_None);
@@ -116,11 +116,11 @@ static PyObject * Operation_setTo(PyOperation * self, PyObject * py_to)
         return nullptr;
     }
 #endif // NDEBUG
-    if (!PyString_CheckExact(py_to)) {
+    if (!PyUnicode_CheckExact(py_to)) {
         PyErr_SetString(PyExc_TypeError, "to not a string");
         return nullptr;
     }
-    char * to = PyString_AsString(py_to);
+    char * to = PyUnicode_AsUTF8(py_to);
     self->operation->setTo(to);
 
     Py_INCREF(Py_None);
@@ -139,8 +139,8 @@ static PyObject * Operation_setSeconds(PyOperation * self, PyObject * py_secs)
     double seconds;
     if (PyFloat_CheckExact(py_secs)) {
         seconds = PyFloat_AsDouble(py_secs);
-    } else if (PyInt_CheckExact(py_secs)) {
-        seconds = PyInt_AsLong(py_secs);
+    } else if (PyLong_CheckExact(py_secs)) {
+        seconds = PyLong_AsLong(py_secs);
     } else {
         PyErr_SetString(PyExc_TypeError, "seconds not a number");
         return nullptr;
@@ -164,8 +164,8 @@ static PyObject * Operation_setFutureSeconds(PyOperation * self,
     double futureseconds;
     if (PyFloat_CheckExact(py_fsecs)) {
         futureseconds = PyFloat_AsDouble(py_fsecs);
-    } else if (PyInt_CheckExact(py_fsecs)) {
-        futureseconds = PyInt_AsLong(py_fsecs);
+    } else if (PyLong_CheckExact(py_fsecs)) {
+        futureseconds = PyLong_AsLong(py_fsecs);
     } else {
         PyErr_SetString(PyExc_TypeError, "future_seconds not a number");
         return nullptr;
@@ -185,11 +185,11 @@ static PyObject * Operation_setName(PyOperation * self, PyObject * py_name)
         return nullptr;
     }
 #endif // NDEBUG
-    if (!PyString_CheckExact(py_name)) {
+    if (!PyUnicode_CheckExact(py_name)) {
         PyErr_SetString(PyExc_TypeError, "name not a string");
         return nullptr;
     }
-    char * name = PyString_AsString(py_name);
+    char * name = PyUnicode_AsUTF8(py_name);
     self->operation->setName(name);
 
     Py_INCREF(Py_None);
@@ -247,7 +247,7 @@ static PyObject * Operation_getSerialno(PyOperation * self)
         return nullptr;
     }
 #endif // NDEBUG
-    return PyInt_FromLong(self->operation->getSerialno());
+    return PyLong_FromLong(self->operation->getSerialno());
 }
 
 static PyObject * Operation_isDefaultSerialno(PyOperation * self)
@@ -277,7 +277,7 @@ static PyObject * Operation_getRefno(PyOperation * self)
         return nullptr;
     }
 #endif // NDEBUG
-    return PyInt_FromLong(self->operation->getRefno());
+    return PyLong_FromLong(self->operation->getRefno());
 }
 
 static PyObject * Operation_getFrom(PyOperation * self)
@@ -289,7 +289,7 @@ static PyObject * Operation_getFrom(PyOperation * self)
         return nullptr;
     }
 #endif // NDEBUG
-    return PyString_FromString(self->operation->getFrom().c_str());
+    return PyUnicode_FromString(self->operation->getFrom().c_str());
 }
 
 static PyObject * Operation_getTo(PyOperation * self)
@@ -301,7 +301,7 @@ static PyObject * Operation_getTo(PyOperation * self)
         return nullptr;
     }
 #endif // NDEBUG
-    return PyString_FromString(self->operation->getTo().c_str());
+    return PyUnicode_FromString(self->operation->getTo().c_str());
 }
 
 static PyObject * Operation_getSeconds(PyOperation * self)
@@ -337,7 +337,7 @@ static PyObject * Operation_getName(PyOperation * self)
         return nullptr;
     }
 #endif // NDEBUG
-    return PyString_FromString(self->operation->getName().c_str());
+    return PyUnicode_FromString(self->operation->getName().c_str());
 }
 
 static PyObject * Operation_getArgs(PyOperation * self)
@@ -386,7 +386,7 @@ static PyObject* Operation_get_name(PyOperation * self)
         return nullptr;
     }
 #endif // NDEBUG
-    return PyString_FromString("op");
+    return PyUnicode_FromString("op");
 }
 
 /*
@@ -537,18 +537,13 @@ static PyNumberMethods Operation_num = {
         0,
         0,
         0,
-        Operation_num_coerce,
+        0,
         0,
         0,
         0,
         0,
         0
 };
-
-#if PY_MINOR_VERSION < 5
-#define lenfunc inquiry
-#define ssizeargfunc intargfunc
-#endif
 
 /*
  * Operation sequence methods structure.
@@ -605,7 +600,7 @@ PyMethodDef ConstOperation_methods[] = {
 static void Operation_dealloc(PyOperation *self)
 {
     self->operation.~RootOperation();
-    self->ob_type->tp_free((PyObject*)self);
+    Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
 static PyObject * Operation_getattro(PyOperation * self, PyObject * oname)
@@ -616,18 +611,18 @@ static PyObject * Operation_getattro(PyOperation * self, PyObject * oname)
         return nullptr;
     }
 #endif // NDEBUG
-    char * name = PyString_AsString(oname);
+    char * name = PyUnicode_AsUTF8(oname);
     if (strcmp(name, "from_") == 0) {
-        return PyString_FromString(self->operation->getFrom().c_str());
+        return PyUnicode_FromString(self->operation->getFrom().c_str());
     } else if (strcmp(name, "to") == 0) {
-        return PyString_FromString(self->operation->getTo().c_str());
+        return PyUnicode_FromString(self->operation->getTo().c_str());
     } else if (strcmp(name, "id") == 0) {
         const std::string & parent = self->operation->getParent();
         if (parent == "") {
             PyErr_SetString(PyExc_AttributeError, "Operation has no parent");
             return nullptr;
         }
-        return PyString_FromString(parent.c_str());
+        return PyUnicode_FromString(parent.c_str());
     }
     return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
@@ -640,30 +635,30 @@ static int Operation_setattro(PyOperation *self, PyObject * oname, PyObject *v)
         return -1;
     }
 #endif // NDEBUG
-    char * name = PyString_AsString(oname);
+    char * name = PyUnicode_AsUTF8(oname);
     if (strcmp(name, "from_") == 0) {
         PyObject * thing_id = PyObject_GetAttrString(v, "id");
-        if (thing_id == nullptr || !PyString_Check(thing_id)) {
+        if (thing_id == nullptr || !PyUnicode_Check(thing_id)) {
             PyErr_SetString(PyExc_TypeError, "invalid from");
             if (thing_id != nullptr) {
                 Py_DECREF(thing_id);
             }
             return -1;
         }
-        self->operation->setFrom(PyString_AsString(thing_id));
+        self->operation->setFrom(PyUnicode_AsUTF8(thing_id));
         Py_DECREF(thing_id);
         return 0;
     }
     if (strcmp(name, "to") == 0) {
         PyObject * thing_id = PyObject_GetAttrString(v, "id");
-        if (thing_id == nullptr || !PyString_Check(thing_id)) {
+        if (thing_id == nullptr || !PyUnicode_Check(thing_id)) {
             PyErr_SetString(PyExc_TypeError, "invalid to");
             if (thing_id != nullptr) {
                 Py_DECREF(thing_id);
             }
             return -1;
         }
-        self->operation->setTo(PyString_AsString(thing_id));
+        self->operation->setTo(PyUnicode_AsUTF8(thing_id));
         Py_DECREF(thing_id);
         return 0;
     }
@@ -735,37 +730,37 @@ static int Operation_init(PyOperation * self, PyObject * args, PyObject * kwds)
         PyObject * from = PyDict_GetItemString(kwds, "from_");
         if (from != nullptr) {
             PyObject * from_id = 0;
-            if (PyString_Check(from)) {
+            if (PyUnicode_Check(from)) {
                 from_id = from;
                 Py_INCREF(from_id);
             } else if ((from_id = PyObject_GetAttrString(from, "id")) == nullptr) {
                 PyErr_SetString(PyExc_TypeError, "from is not a string and has no id");
                 return -1;
             }
-            if (!PyString_Check(from_id)) {
+            if (!PyUnicode_Check(from_id)) {
                 Py_DECREF(from_id);
                 PyErr_SetString(PyExc_TypeError, "id of from is not a string");
                 return -1;
             }
-            self->operation->setFrom(PyString_AsString(from_id));
+            self->operation->setFrom(PyUnicode_AsUTF8(from_id));
             Py_DECREF(from_id);
         }
         PyObject * to = PyDict_GetItemString(kwds, "to");
         if (to != nullptr) {
             PyObject * to_id = 0;
-            if (PyString_Check(to)) {
+            if (PyUnicode_Check(to)) {
                 to_id = to;
                 Py_INCREF(to_id);
             } else if ((to_id = PyObject_GetAttrString(to, "id")) == nullptr) {
                 PyErr_SetString(PyExc_TypeError, "to is not a string and has no id");
                 return -1;
             }
-            if (!PyString_Check(to_id)) {
+            if (!PyUnicode_Check(to_id)) {
                 Py_DECREF(to_id);
                 PyErr_SetString(PyExc_TypeError, "id of to is not a string");
                 return -1;
             }
-            self->operation->setTo(PyString_AsString(to_id));
+            self->operation->setTo(PyUnicode_AsUTF8(to_id));
             Py_DECREF(to_id);
         }
     }
@@ -795,8 +790,7 @@ static PyObject * Operation_new(PyTypeObject * type, PyObject *, PyObject *)
 }
 
 PyTypeObject PyConstOperation_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                                      // ob_size
+    PyVarObject_HEAD_INIT(&PyType_Type, 0)
         "atlas.Operation",                      // tp_name
         sizeof(PyOperation),                    // tp_basicsize
         0,                                      // tp_itemsize
@@ -838,8 +832,7 @@ PyTypeObject PyConstOperation_Type = {
 };
 
 PyTypeObject PyOperation_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                                      // ob_size
+    PyVarObject_HEAD_INIT(&PyType_Type, 0)
         "atlas.Operation",                      // tp_name
         0,                                      // tp_basicsize
         0,                                      // tp_itemsize

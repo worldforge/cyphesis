@@ -112,7 +112,7 @@ int main()
                       " def test_hook(self, ent): pass\n");
     run_python_string("testmod.TestEntity=TestEntity");
 
-    // PyObject * package_name = PyString_FromString("testmod");
+    // PyObject * package_name = PyUnicode_FromString("testmod");
     // PyObject * testmod = PyImport_Import(package_name);
     // Py_DECREF(package_name);
     // assert(testmod);

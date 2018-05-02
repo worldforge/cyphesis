@@ -43,7 +43,7 @@ typedef struct {
 
 extern PyTypeObject PyMessage_Type;
 
-#define PyMessage_Check(_o) ((_o)->ob_type == &PyMessage_Type)
+#define PyMessage_Check(_o) (Py_TYPE((_o)) == &PyMessage_Type)
 
 //
 // Object creation function.

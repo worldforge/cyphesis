@@ -57,7 +57,7 @@ int python_client_script(const std::string & package,
     std::map<std::string, std::string>::const_iterator I = keywords.begin();
     std::map<std::string, std::string>::const_iterator Iend = keywords.end();
     for (; I != Iend; ++I) {
-        PyObject * v = PyString_FromString(I->second.c_str());
+        PyObject * v = PyUnicode_FromString(I->second.c_str());
         PyDict_SetItemString(kwds, I->first.c_str(), v);
         Py_DECREF(v);
     }

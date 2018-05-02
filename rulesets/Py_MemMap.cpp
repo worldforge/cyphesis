@@ -16,7 +16,7 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
-#include "Py_Map.h"
+#include "Py_MemMap.h"
 #include "Py_Location.h"
 #include "Py_Thing.h"
 #include "Py_Operation.h"
@@ -32,11 +32,11 @@ using Atlas::Objects::Root;
 using Atlas::Objects::Factories;
 using Atlas::Objects::Entity::RootEntity;
 
-static PyObject * Map_find_by_location(PyMap * self, PyObject * args)
+static PyObject * MemMap_find_by_location(PyMemMap* self, PyObject* args)
 {
 #ifndef NDEBUG
     if (self->m_map == nullptr) {
-        PyErr_SetString(PyExc_AssertionError, "nullptr Map in Map.find_by_location");
+        PyErr_SetString(PyExc_AssertionError, "nullptr MemMap in MemMap.find_by_location");
         return nullptr;
     }
 #endif // NDEBUG
@@ -74,19 +74,19 @@ static PyObject * Map_find_by_location(PyMap * self, PyObject * args)
     return list;
 }
 
-static PyObject * Map_find_by_type(PyMap * self, PyObject * py_what)
+static PyObject * MemMap_find_by_type(PyMemMap* self, PyObject* py_what)
 {
 #ifndef NDEBUG
     if (self->m_map == nullptr) {
-        PyErr_SetString(PyExc_AssertionError, "nullptr Map in Map.find_by_type");
+        PyErr_SetString(PyExc_AssertionError, "nullptr MemMap in MemMap.find_by_type");
         return nullptr;
     }
 #endif // NDEBUG
-    if (!PyString_CheckExact(py_what)) {
-        PyErr_SetString(PyExc_TypeError, "Map.find_by_type must be string");
+    if (!PyUnicode_CheckExact(py_what)) {
+        PyErr_SetString(PyExc_TypeError, "MemMap.find_by_type must be string");
         return nullptr;
     }
-    char * what = PyString_AsString(py_what);
+    char * what = PyUnicode_AsUTF8(py_what);
     EntityVector res = self->m_map->findByType(std::string(what));
     PyObject * list = PyList_New(res.size());
     if (list == nullptr) {
@@ -105,11 +105,11 @@ static PyObject * Map_find_by_type(PyMap * self, PyObject * py_what)
     return list;
 }
 
-static PyObject * Map_updateAdd(PyMap * self, PyObject * args)
+static PyObject * MemMap_updateAdd(PyMemMap* self, PyObject* args)
 {
 #ifndef NDEBUG
     if (self->m_map == nullptr) {
-        PyErr_SetString(PyExc_AssertionError, "nullptr Map in Map.updateAdd");
+        PyErr_SetString(PyExc_AssertionError, "nullptr MemMap in MemMap.updateAdd");
         return nullptr;
     }
 #endif // NDEBUG
@@ -155,38 +155,38 @@ static PyObject * Map_updateAdd(PyMap * self, PyObject * args)
     }
 }
 
-static PyObject * Map_delete(PyMap * self, PyObject * py_id)
+static PyObject * MemMap_delete(PyMemMap* self, PyObject* py_id)
 {
 #ifndef NDEBUG
     if (self->m_map == nullptr) {
-        PyErr_SetString(PyExc_AssertionError, "nullptr Map in Map.delete");
+        PyErr_SetString(PyExc_AssertionError, "nullptr MemMap in MemMap.delete");
         return nullptr;
     }
 #endif // NDEBUG
-    if (!PyString_CheckExact(py_id)) {
-        PyErr_SetString(PyExc_TypeError, "Map.delete must be string");
+    if (!PyUnicode_CheckExact(py_id)) {
+        PyErr_SetString(PyExc_TypeError, "MemMap.delete must be string");
         return nullptr;
     }
-    char * id = PyString_AsString(py_id);
+    char * id = PyUnicode_AsUTF8(py_id);
     self->m_map->del(id);
 
     Py_INCREF(Py_None);
     return Py_None;
 }
 
-static PyObject * Map_get(PyMap * self, PyObject * py_id)
+static PyObject * MemMap_get(PyMemMap* self, PyObject* py_id)
 {
 #ifndef NDEBUG
     if (self->m_map == nullptr) {
-        PyErr_SetString(PyExc_AssertionError, "nullptr Map in Map.get");
+        PyErr_SetString(PyExc_AssertionError, "nullptr MemMap in MemMap.get");
         return nullptr;
     }
 #endif // NDEBUG
-    if (!PyString_CheckExact(py_id)) {
-        PyErr_SetString(PyExc_TypeError, "Map.get must be string");
+    if (!PyUnicode_CheckExact(py_id)) {
+        PyErr_SetString(PyExc_TypeError, "MemMap.get must be string");
         return nullptr;
     }
-    char * id = PyString_AsString(py_id);
+    char * id = PyUnicode_AsUTF8(py_id);
     MemEntity * ret = self->m_map->get(id);
     if (ret == nullptr) {
         Py_INCREF(Py_None);
@@ -196,76 +196,76 @@ static PyObject * Map_get(PyMap * self, PyObject * py_id)
     return thing;
 }
 
-static PyObject * Map_get_add(PyMap * self, PyObject * py_id)
+static PyObject * MemMap_get_add(PyMemMap* self, PyObject* py_id)
 {
 #ifndef NDEBUG
     if (self->m_map == nullptr) {
-        PyErr_SetString(PyExc_AssertionError, "nullptr Map in Map.get_add");
+        PyErr_SetString(PyExc_AssertionError, "nullptr MemMap in MemMap.get_add");
         return nullptr;
     }
 #endif // NDEBUG
-    if (!PyString_CheckExact(py_id)) {
-        PyErr_SetString(PyExc_TypeError, "Map.get_add must be string");
+    if (!PyUnicode_CheckExact(py_id)) {
+        PyErr_SetString(PyExc_TypeError, "MemMap.get_add must be string");
         return nullptr;
     }
-    char * id = PyString_AsString(py_id);
+    char * id = PyUnicode_AsUTF8(py_id);
     MemEntity * ret = self->m_map->getAdd(id);
     assert(ret != 0);
     PyObject * thing = wrapEntity(ret);
     return thing;
 }
 
-static PyObject * Map_add_hooks_append(PyMap * self, PyObject * py_method)
+static PyObject * MemMap_add_hooks_append(PyMemMap* self, PyObject* py_method)
 {
 #ifndef NDEBUG
     if (self->m_map == nullptr) {
-        PyErr_SetString(PyExc_AssertionError, "nullptr Map in Map.add_hooks_append");
+        PyErr_SetString(PyExc_AssertionError, "nullptr MemMap in MemMap.add_hooks_append");
         return nullptr;
     }
 #endif // NDEBUG
-    if (!PyString_CheckExact(py_method)) {
-        PyErr_SetString(PyExc_TypeError, "Map.add_hooks_append must be string");
+    if (!PyUnicode_CheckExact(py_method)) {
+        PyErr_SetString(PyExc_TypeError, "MemMap.add_hooks_append must be string");
         return nullptr;
     }
-    char * method = PyString_AsString(py_method);
+    char * method = PyUnicode_AsUTF8(py_method);
     self->m_map->getAddHooks().push_back(std::string(method));
 
     Py_INCREF(Py_None);
     return Py_None;
 }
 
-static PyObject * Map_update_hooks_append(PyMap * self, PyObject * py_method)
+static PyObject * MemMap_update_hooks_append(PyMemMap* self, PyObject* py_method)
 {
 #ifndef NDEBUG
     if (self->m_map == nullptr) {
-        PyErr_SetString(PyExc_AssertionError, "nullptr Map in Map.update_hooks_append");
+        PyErr_SetString(PyExc_AssertionError, "nullptr MemMap in MemMap.update_hooks_append");
         return nullptr;
     }
 #endif // NDEBUG
-    if (!PyString_CheckExact(py_method)) {
-        PyErr_SetString(PyExc_TypeError, "Map.update_hooks_append must be string");
+    if (!PyUnicode_CheckExact(py_method)) {
+        PyErr_SetString(PyExc_TypeError, "MemMap.update_hooks_append must be string");
         return nullptr;
     }
-    char * method = PyString_AsString(py_method);
+    char * method = PyUnicode_AsUTF8(py_method);
     self->m_map->getUpdateHooks().push_back(std::string(method));
 
     Py_INCREF(Py_None);
     return Py_None;
 }
 
-static PyObject * Map_delete_hooks_append(PyMap * self, PyObject * py_method)
+static PyObject * MemMap_delete_hooks_append(PyMemMap* self, PyObject* py_method)
 {
 #ifndef NDEBUG
     if (self->m_map == nullptr) {
-        PyErr_SetString(PyExc_AssertionError, "nullptr Map in Map.delete_hooks_append");
+        PyErr_SetString(PyExc_AssertionError, "nullptr MemMap in MemMap.delete_hooks_append");
         return nullptr;
     }
 #endif // NDEBUG
-    if (!PyString_CheckExact(py_method)) {
-        PyErr_SetString(PyExc_TypeError, "Map.delete_hooks_append must be string");
+    if (!PyUnicode_CheckExact(py_method)) {
+        PyErr_SetString(PyExc_TypeError, "MemMap.delete_hooks_append must be string");
         return nullptr;
     }
-    char * method = PyString_AsString(py_method);
+    char * method = PyUnicode_AsUTF8(py_method);
     self->m_map->getDeleteHooks().push_back(std::string(method));
 
     Py_INCREF(Py_None);
@@ -273,10 +273,10 @@ static PyObject * Map_delete_hooks_append(PyMap * self, PyObject * py_method)
 }
 
 ///\brief Return Python list of entities that match a given Filter
-static PyObject * Map_find_by_filter(PyMap* self, PyObject* filter){
+static PyObject * MemMap_find_by_filter(PyMemMap* self, PyObject* filter){
 #ifndef NDEBUG
     if (self->m_map == nullptr) {
-        PyErr_SetString(PyExc_AssertionError, "nullptr Map in Map.find_by_filter");
+        PyErr_SetString(PyExc_AssertionError, "nullptr MemMap in MemMap.find_by_filter");
         return nullptr;
     }
 #endif // NDEBUG
@@ -312,10 +312,10 @@ static PyObject * Map_find_by_filter(PyMap* self, PyObject* filter){
 }
 
 ///\brief find entities using a query in a specified location
-static PyObject * Map_find_by_location_query(PyMap* self, PyObject* args){
+static PyObject * MemMap_find_by_location_query(PyMemMap* self, PyObject* args){
 #ifndef NDEBUG
     if (self->m_map == nullptr) {
-        PyErr_SetString(PyExc_AssertionError, "nullptr Map in Map.find_by_location_query");
+        PyErr_SetString(PyExc_AssertionError, "nullptr MemMap in MemMap.find_by_location_query");
         return nullptr;
     }
 #endif // NDEBUG
@@ -384,10 +384,10 @@ static PyObject * Map_find_by_location_query(PyMap* self, PyObject* args){
     return list;
 }
 
-PyObject* Map_add_entity_memory(PyMap* self, PyObject* args){
+PyObject* MemMap_add_entity_memory(PyMemMap* self, PyObject* args){
 #ifndef NDEBUG
     if (self->m_map == nullptr) {
-        PyErr_SetString(PyExc_AssertionError, "nullptr Map in Map.add_entity_memory");
+        PyErr_SetString(PyExc_AssertionError, "nullptr MemMap in MemMap.add_entity_memory");
         return nullptr;
     }
 #endif // NDEBUG
@@ -406,10 +406,10 @@ PyObject* Map_add_entity_memory(PyMap* self, PyObject* args){
     return Py_None;
 }
 
-PyObject* Map_recall_entity_memory(PyMap* self, PyObject* args){
+PyObject* MemMap_recall_entity_memory(PyMemMap* self, PyObject* args){
 #ifndef NDEBUG
     if (self->m_map == nullptr) {
-        PyErr_SetString(PyExc_AssertionError, "nullptr Map in Map.recall_entity_memory");
+        PyErr_SetString(PyExc_AssertionError, "nullptr MemMap in MemMap.recall_entity_memory");
         return nullptr;
     }
 #endif // NDEBUG
@@ -431,25 +431,25 @@ PyObject* Map_recall_entity_memory(PyMap* self, PyObject* args){
 
 }
 
-static PyMethodDef Map_methods[] = {
-    {"find_by_location",    (PyCFunction)Map_find_by_location,    METH_VARARGS},
-    {"find_by_type",        (PyCFunction)Map_find_by_type,        METH_O},
-    {"find_by_filter",      (PyCFunction)Map_find_by_filter,      METH_O},
-    {"find_by_location_query",(PyCFunction)Map_find_by_location_query,  METH_VARARGS},
-    {"add_entity_memory",   (PyCFunction)Map_add_entity_memory,   METH_VARARGS},
-    {"recall_entity_memory",(PyCFunction)Map_recall_entity_memory,METH_VARARGS},
-    {"add",                 (PyCFunction)Map_updateAdd,           METH_VARARGS},
-    {"delete",              (PyCFunction)Map_delete,              METH_O},
-    {"get",                 (PyCFunction)Map_get,                 METH_O},
-    {"get_add",             (PyCFunction)Map_get_add,             METH_O},
-    {"update",              (PyCFunction)Map_updateAdd,           METH_VARARGS},
-    {"add_hooks_append",    (PyCFunction)Map_add_hooks_append,    METH_O},
-    {"update_hooks_append", (PyCFunction)Map_update_hooks_append, METH_O},
-    {"delete_hooks_append", (PyCFunction)Map_delete_hooks_append, METH_O},
+static PyMethodDef MemMap_methods[] = {
+    {"find_by_location",    (PyCFunction)MemMap_find_by_location,    METH_VARARGS},
+    {"find_by_type",        (PyCFunction)MemMap_find_by_type,        METH_O},
+    {"find_by_filter",      (PyCFunction)MemMap_find_by_filter,      METH_O},
+    {"find_by_location_query",(PyCFunction)MemMap_find_by_location_query,  METH_VARARGS},
+    {"add_entity_memory",   (PyCFunction)MemMap_add_entity_memory,   METH_VARARGS},
+    {"recall_entity_memory",(PyCFunction)MemMap_recall_entity_memory,METH_VARARGS},
+    {"add",                 (PyCFunction)MemMap_updateAdd,           METH_VARARGS},
+    {"delete",              (PyCFunction)MemMap_delete,              METH_O},
+    {"get",                 (PyCFunction)MemMap_get,                 METH_O},
+    {"get_add",             (PyCFunction)MemMap_get_add,             METH_O},
+    {"update",              (PyCFunction)MemMap_updateAdd,           METH_VARARGS},
+    {"add_hooks_append",    (PyCFunction)MemMap_add_hooks_append,    METH_O},
+    {"update_hooks_append", (PyCFunction)MemMap_update_hooks_append, METH_O},
+    {"delete_hooks_append", (PyCFunction)MemMap_delete_hooks_append, METH_O},
     {nullptr,                  nullptr}           // sentinel
 };
 
-static int Map_init(PyMap * self, PyObject * args, PyObject * kwds)
+static int MemMap_init(PyMemMap* self, PyObject* args, PyObject* kwds)
 {
     Script ** s = new Script*;
     *s = 0;
@@ -457,11 +457,10 @@ static int Map_init(PyMap * self, PyObject * args, PyObject * kwds)
     return 0;
 }
 
-PyTypeObject PyMap_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                              // ob_size
-        "Map",                          // tp_name
-        sizeof(PyMap),                  // tp_basicsize
+PyTypeObject PyMemMap_Type = {
+        PyVarObject_HEAD_INIT(&PyType_Type, 0)
+        "MemMap",                          // tp_name
+        sizeof(PyMemMap),                  // tp_basicsize
         0,                              // tp_itemsize
         // methods
         0,                              // tp_dealloc
@@ -480,14 +479,14 @@ PyTypeObject PyMap_Type = {
         0,                              // tp_setattro
         0,                              // tp_as_buffer
         Py_TPFLAGS_DEFAULT,             // tp_flags
-        "Map objects",                  // tp_doc
+        "MemMap objects",               // tp_doc
         0,                              // tp_travers
         0,                              // tp_clear
         0,                              // tp_richcompare
         0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
-        Map_methods,                    // tp_methods
+        MemMap_methods,                    // tp_methods
         0,                              // tp_members
         0,                              // tp_getset
         0,                              // tp_base
@@ -495,12 +494,12 @@ PyTypeObject PyMap_Type = {
         0,                              // tp_descr_get
         0,                              // tp_descr_set
         0,                              // tp_dictoffset
-        (initproc)Map_init,             // tp_init
+        (initproc)MemMap_init,             // tp_init
         0,                              // tp_alloc
         0,                              // tp_new
 };
 
-PyMap * newPyMap()
+PyMemMap * newPyMemMap()
 {
-    return (PyMap *)PyMap_Type.tp_new(&PyMap_Type, 0, 0);
+    return (PyMemMap *)PyMemMap_Type.tp_new(&PyMemMap_Type, 0, 0);
 }

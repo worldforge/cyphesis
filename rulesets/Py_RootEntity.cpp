@@ -48,7 +48,7 @@ static PyObject* RootEntity_get_name(PyRootEntity * self)
         return nullptr;
     }
 #endif // NDEBUG
-    return PyString_FromString("obj");
+    return PyUnicode_FromString("obj");
 }
 
 /*
@@ -70,7 +70,7 @@ PyMethodDef RootEntity_methods[] = {
 static void RootEntity_dealloc(PyRootEntity *self)
 {
     self->entity.~RootEntity();
-    self->ob_type->tp_free((PyObject*)self);
+    Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
 static PyObject * RootEntity_getattro(PyRootEntity * self, PyObject * oname)
@@ -81,11 +81,11 @@ static PyObject * RootEntity_getattro(PyRootEntity * self, PyObject * oname)
         return nullptr;
     }
 #endif // NDEBUG
-    char * name = PyString_AsString(oname);
+    char * name = PyUnicode_AsUTF8(oname);
     if (strcmp(name, "name") == 0) {
-        return PyString_FromString(self->entity->getName().c_str());
+        return PyUnicode_FromString(self->entity->getName().c_str());
     } else if (strcmp(name, "id") == 0) {
-        return PyString_FromString(self->entity->getId().c_str());
+        return PyUnicode_FromString(self->entity->getId().c_str());
     } else {
         Element attr;
         if (self->entity->copyAttr(name, attr) == 0) {
@@ -109,13 +109,13 @@ static int RootEntity_setattro(PyRootEntity *self, PyObject *oname, PyObject *v)
         return -1;
     }
 #endif // NDEBUG
-    char * name = PyString_AsString(oname);
+    char * name = PyUnicode_AsUTF8(oname);
     if (strcmp(name, "name") == 0) {
-        if (!PyString_Check(v)) {
+        if (!PyUnicode_Check(v)) {
             PyErr_SetString(PyExc_TypeError, "non string name");
             return -1;
         }
-        self->entity->setName(PyString_AsString(v));
+        self->entity->setName(PyUnicode_AsUTF8(v));
         return 0;
     }
     Element atlas_val;
@@ -152,8 +152,8 @@ static int PySequence_asVector(PyObject * o, std::vector<double> & ret)
             item = PyList_GetItem(o, i);
             if (PyFloat_Check(item)) {
                 ret[i] = PyFloat_AsDouble(item);
-            } else if (PyInt_Check(item)) {
-                ret[i] = PyInt_AsLong(item);
+            } else if (PyLong_Check(item)) {
+                ret[i] = PyLong_AsLong(item);
             } else {
                 return -1;
             }
@@ -165,8 +165,8 @@ static int PySequence_asVector(PyObject * o, std::vector<double> & ret)
             item = PyTuple_GetItem(o, i);
             if (PyFloat_Check(item)) {
                 ret[i] = PyFloat_AsDouble(item);
-            } else if (PyInt_Check(item)) {
-                ret[i] = PyInt_AsLong(item);
+            } else if (PyLong_Check(item)) {
+                ret[i] = PyLong_AsLong(item);
             } else {
                 return -1;
             }
@@ -197,7 +197,7 @@ static int RootEntity_init(PyRootEntity * self, PyObject * args, PyObject * kwds
         }
         int i, size = PyList_Size(keys);
         for(i = 0; i < size; i++) {
-            char * key = PyString_AsString(PyList_GetItem(keys, i));
+            char * key = PyUnicode_AsUTF8(PyList_GetItem(keys, i));
             PyObject * val = PyList_GetItem(vals, i);
             if (strcmp(key, "location") == 0) {
                 if (!PyLocation_Check(val)) {
@@ -214,17 +214,17 @@ static int RootEntity_init(PyRootEntity * self, PyObject * args, PyObject * kwds
                 }
                 self->entity->setPos(vector_val);
             } else if (strcmp(key, "parent") == 0) {
-                if (!PyString_Check(val)) {
+                if (!PyUnicode_Check(val)) {
                     PyErr_SetString(PyExc_TypeError, "parent must be a string.");
                     return -1;
                 }
-                self->entity->setParent(PyString_AsString(val));
+                self->entity->setParent(PyUnicode_AsUTF8(val));
             } else if (strcmp(key, "type") == 0) {
-                if (!PyString_Check(val)) {
+                if (!PyUnicode_Check(val)) {
                     PyErr_SetString(PyExc_TypeError, "type must be a string.");
                     return -1;
                 }
-                self->entity->setObjtype(PyString_AsString(val));
+                self->entity->setObjtype(PyUnicode_AsUTF8(val));
             } else {
                 Element val_obj;
                 if (PyObject_asMessageElement(val, val_obj) != 0) {
@@ -256,8 +256,7 @@ static PyObject * RootEntity_new(PyTypeObject * type, PyObject *, PyObject *)
 
 
 PyTypeObject PyRootEntity_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                                      // ob_size
+        PyVarObject_HEAD_INIT(&PyType_Type, 0)
         "atlas.Entity",                         // tp_name
         sizeof(PyRootEntity),                   // tp_basicsize
         0,                                      // tp_itemsize

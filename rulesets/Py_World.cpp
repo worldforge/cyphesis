@@ -38,11 +38,11 @@ static PyObject * World_get_time(PyWorld *self)
 
 static PyObject * World_get_object(PyWorld *self, PyObject * id)
 {
-    if (!PyString_CheckExact(id)) {
+    if (!PyUnicode_CheckExact(id)) {
         PyErr_SetString(PyExc_TypeError, "World.get_object must be string");
         return nullptr;
     }
-    LocatedEntity * ent = BaseWorld::instance().getEntity(PyString_AsString(id));
+    LocatedEntity * ent = BaseWorld::instance().getEntity(PyUnicode_AsUTF8(id));
     if (ent == nullptr) {
         Py_INCREF(Py_None);
         return Py_None;
@@ -59,11 +59,11 @@ static PyObject * World_get_object(PyWorld *self, PyObject * id)
 
 static PyObject * World_get_object_ref(PyWorld *self, PyObject * id)
 {
-    if (!PyString_CheckExact(id)) {
+    if (!PyUnicode_CheckExact(id)) {
         PyErr_SetString(PyExc_TypeError, "World.get_object must be string");
         return nullptr;
     }
-    LocatedEntity * ent = BaseWorld::instance().getEntity(PyString_AsString(id));
+    LocatedEntity * ent = BaseWorld::instance().getEntity(PyUnicode_AsUTF8(id));
     if (ent == nullptr) {
         Py_INCREF(Py_None);
         return Py_None;
@@ -91,8 +91,7 @@ static int World_init(PyWorld * self, PyObject * args, PyObject * kwds)
 }
 
 PyTypeObject PyWorld_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                              // ob_size
+    PyVarObject_HEAD_INIT(&PyType_Type, 0)
         "World",                        // tp_name
         sizeof(PyWorld),                // tp_basicsize
         0,                              // tp_itemsize

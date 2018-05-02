@@ -18,7 +18,7 @@ typedef struct {
 
 extern PyTypeObject PyFilter_Type;
 
-#define PyFilter_Check(_o) ((_o)->ob_type == &PyFilter_Type)
+#define PyFilter_Check(_o) (Py_TYPE((_o)) == &PyFilter_Type)
 
 PyFilter * newPyFilter();
 

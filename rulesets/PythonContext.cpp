@@ -52,7 +52,7 @@ run_mod(mod_ty mod, const char *filename, PyObject *globals, PyObject *locals,
     co = PyAST_Compile(mod, filename, flags, arena);
     if (co == nullptr)
         return nullptr;
-    v = PyEval_EvalCode(co, globals, locals);
+    v = PyEval_EvalCode((PyObject*)co, globals, locals);
     Py_DECREF(co);
     return v;
 }
@@ -82,7 +82,7 @@ std::string PythonContext::runCommand(const std::string & s)
     if (repr == 0) {
         return "[undecodable]";
     }
-    return PyString_AsString(repr);
+    return PyUnicode_AsUTF8(repr);
 
 #if 0
     PyObject * res = PyRun_String(s.c_str(),
@@ -101,6 +101,6 @@ std::string PythonContext::runCommand(const std::string & s)
     if (repr == 0) {
         return "[undecodable]";
     }
-    return PyString_AsString(repr);
+    return PyUnicode_AsUTF8(repr);
 #endif
 }

@@ -41,7 +41,7 @@ static PyObject * TerrainModProperty_getattro(PyProperty *self,
         return nullptr;
     }
 #endif // NDEBUG
-    char * name = PyString_AsString(oname);
+    char * name = PyUnicode_AsUTF8(oname);
     Element val;
     if (self->m_p.terrainmod->getAttr(name, val) == 0) {
         if (strcmp(name, "shape") == 0 && val.isMap()) {
@@ -68,7 +68,7 @@ static int TerrainModProperty_setattro(PyProperty * self,
         return -1;
     }
 #endif // NDEBUG
-    char * name = PyString_AsString(oname);
+    char * name = PyUnicode_AsUTF8(oname);
     Element val;
     if (self->m_p.terrainmod->getAttr(name, val) == 0) {
         Element e;
@@ -103,8 +103,7 @@ static int TerrainModProperty_init(PyProperty * self,
 }
 
 PyTypeObject PyTerrainModProperty_Type = {
-        PyObject_HEAD_INIT(nullptr)
-        0,                                                // ob_size
+        PyVarObject_HEAD_INIT(nullptr, 0)
         "TerrainModProperty",                             // tp_name
         sizeof(PyProperty),                               // tp_basicsize
         0,                                                // tp_itemsize

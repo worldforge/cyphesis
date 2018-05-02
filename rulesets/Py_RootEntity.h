@@ -43,8 +43,8 @@ typedef struct {
 extern PyTypeObject PyRootEntity_Type;
 extern PyTypeObject PyConstRootEntity_Type;
 
-#define PyRootEntity_Check(_o) ((_o)->ob_type == &PyRootEntity_Type)
-#define PyConstRootEntity_Check(_o) ((_o)->ob_type == &PyConstRootEntity_Type)
+#define PyRootEntity_Check(_o) (Py_TYPE((_o)) == &PyRootEntity_Type)
+#define PyConstRootEntity_Check(_o) (Py_TYPE((_o)) == &PyConstRootEntity_Type)
 
 PyRootEntity * newPyRootEntity();
 PyConstRootEntity * newPyConstRootEntity();

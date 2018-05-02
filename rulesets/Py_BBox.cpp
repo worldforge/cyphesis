@@ -68,12 +68,12 @@ static PyMethodDef BBox_methods[] = {
 static void BBox_dealloc(PyBBox * self)
 {
     self->box.~BBox();
-    self->ob_type->tp_free((PyObject*)self);
+    Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
 static PyObject * BBox_getattro(PyBBox *self, PyObject *oname)
 {
-    char * name = PyString_AsString(oname);
+    char * name = PyUnicode_AsUTF8(oname);
     if (strcmp(name, "near_point") == 0) {
         PyPoint3D * v = newPyPoint3D();
         if (v != nullptr) {
@@ -94,7 +94,7 @@ static PyObject * BBox_getattro(PyBBox *self, PyObject *oname)
 
 static int BBox_setattro(PyBBox *self, PyObject *oname, PyObject *v)
 {
-    char * name = PyString_AsString(oname);
+    char * name = PyUnicode_AsUTF8(oname);
     if (!PyPoint3D_Check(v)) {
         PyErr_SetString(PyExc_TypeError, "BBox setattr must take a Point");
         return -1;
@@ -117,12 +117,19 @@ static int BBox_setattro(PyBBox *self, PyObject *oname, PyObject *v)
     return -1;
 }
 
-static int BBox_compare(PyBBox * self, PyBBox * other)
+static PyObject* BBox_compare(PyObject *a, PyObject *b, int op)
 {
-    if (self->box == other->box) {
-        return 0;
+    auto self = (PyBBox*)a;
+    if (PyBBox_Check(b)) {
+        auto other = (PyBBox*)b;
+        if (op == Py_EQ) {
+            return self->box == other->box ? Py_True : Py_False;
+        } else if (op == Py_NE) {
+            return self->box != other->box ? Py_True : Py_False;
+        }
     }
-    return 1;
+
+    return Py_NotImplemented;
 }
 
 static int BBox_init(PyBBox * self, PyObject * args, PyObject * kwds)
@@ -149,8 +156,8 @@ static int BBox_init(PyBBox * self, PyObject * args, PyObject * kwds)
             val.resize(clist_size);
             for(int i = 0; i < clist_size; i++) {
                 PyObject * item = PyList_GetItem(clist, i);
-                if (PyInt_Check(item)) {
-                    val[i] = (float)PyInt_AsLong(item);
+                if (PyLong_Check(item)) {
+                    val[i] = (float)PyLong_AsLong(item);
                 } else if (PyFloat_Check(item)) {
                     val[i] = PyFloat_AsDouble(item);
                 } else if (PyMessage_Check(item)) {
@@ -171,8 +178,8 @@ static int BBox_init(PyBBox * self, PyObject * args, PyObject * kwds)
             val.resize(tuple_size);
             for(int i = 0; i < tuple_size; i++) {
                 PyObject * item = PyTuple_GetItem(args, i);
-                if (PyInt_Check(item)) {
-                    val[i] = (float)PyInt_AsLong(item);
+                if (PyLong_Check(item)) {
+                    val[i] = (float)PyLong_AsLong(item);
                 } else if (PyFloat_Check(item)) {
                     val[i] = PyFloat_AsDouble(item);
                 } else {
@@ -208,8 +215,7 @@ static PyObject * BBox_new(PyTypeObject * type, PyObject *, PyObject *)
 }
 
 PyTypeObject PyBBox_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                              /*ob_size*/
+        PyVarObject_HEAD_INIT(&PyType_Type, 0)
         "BBox",                         /*tp_name*/
         sizeof(PyBBox),             /*tp_basicsize*/
         0,                              /*tp_itemsize*/
@@ -218,7 +224,7 @@ PyTypeObject PyBBox_Type = {
         0,                              /*tp_print*/
         0,                              /*tp_getattr*/
         0,                              /*tp_setattr*/
-        (cmpfunc)BBox_compare,          /*tp_compare*/
+        0,                              /*tp_compare*/
         0,                              /*tp_repr*/
         0,                              /*tp_as_number*/
         0,                              /*tp_as_sequence*/
@@ -233,7 +239,7 @@ PyTypeObject PyBBox_Type = {
         "BBox objects",                 // tp_doc
         0,                              // tp_travers
         0,                              // tp_clear
-        0,                              // tp_richcompare
+        (richcmpfunc)BBox_compare,      // tp_richcompare
         0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext

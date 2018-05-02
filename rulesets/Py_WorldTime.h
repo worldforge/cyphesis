@@ -35,7 +35,7 @@ typedef struct {
 
 extern PyTypeObject PyWorldTime_Type;
 
-#define PyWorldTime_Check(_o) ((_o)->ob_type == &PyWorldTime_Type)
+#define PyWorldTime_Check(_o) (Py_TYPE((_o)) == &PyWorldTime_Type)
 
 PyWorldTime * newPyWorldTime();
 

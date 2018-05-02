@@ -16,8 +16,8 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
-#ifndef RULESETS_PY_MAP_H
-#define RULESETS_PY_MAP_H
+#ifndef RULESETS_PY_MEMMAP_H
+#define RULESETS_PY_MEMMAP_H
 
 #include <Python.h>
 
@@ -29,12 +29,12 @@ typedef struct {
     PyObject_HEAD
     /// \brief MemMap object handled by this wrapper
     MemMap * m_map;
-} PyMap;
+} PyMemMap;
 
-extern PyTypeObject PyMap_Type;
+extern PyTypeObject PyMemMap_Type;
 
-#define PyMap_Check(_o) ((_o)->ob_type == &PyMap_Type)
+#define PyMemMap_Check(_o) (Py_TYPE((_o)) == &PyMemMap_Type)
 
-PyMap * newPyMap();
+PyMemMap * newPyMemMap();
 
-#endif // RULESETS_PY_MAP_H
+#endif // RULESETS_PY_MEMMAP_H

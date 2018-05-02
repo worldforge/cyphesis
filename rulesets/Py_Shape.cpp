@@ -237,7 +237,7 @@ static void Shape_dealloc(PyShape *self)
     if (self->shape.s != nullptr) {
         delete self->shape.s;
     }
-    self->ob_type->tp_free((PyObject*)self);
+    Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
 static PyObject * Shape_getattro(PyShape *self, PyObject * oname)
@@ -248,7 +248,7 @@ static PyObject * Shape_getattro(PyShape *self, PyObject * oname)
         return nullptr;
     }
 #endif // NDEBUG
-    // char * name = PyString_AsString(oname);
+    // char * name = PyUnicode_AsUTF8(oname);
     return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
 
@@ -260,7 +260,7 @@ static int Shape_setattro(PyShape *self, PyObject *oname, PyObject *v)
         return -1;
     }
 #endif // NDEBUG
-    // char * name = PyString_AsString(oname);
+    // char * name = PyUnicode_AsUTF8(oname);
     PyErr_SetString(PyExc_AttributeError, "unknown attribute");
     return -1;
 }
@@ -273,7 +273,7 @@ static PyObject * Polygon_getattro(PyShape *self, PyObject * oname)
         return nullptr;
     }
 #endif // NDEBUG
-    // char * name = PyString_AsString(oname);
+    // char * name = PyUnicode_AsUTF8(oname);
     return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
 
@@ -285,7 +285,7 @@ static int Polygon_setattro(PyShape *self, PyObject *oname, PyObject *v)
         return -1;
     }
 #endif // NDEBUG
-    // char * name = PyString_AsString(oname);
+    // char * name = PyUnicode_AsUTF8(oname);
     PyErr_SetString(PyExc_AttributeError, "unknown attribute");
     return -1;
 }
@@ -294,7 +294,7 @@ static PyObject * Shape_repr(PyShape *self)
 {
     std::stringstream r;
     r << *self->shape.s;
-    return PyString_FromString(r.str().c_str());
+    return PyUnicode_FromString(r.str().c_str());
 }
 
 static int Shape_init(PyShape * self, PyObject * args, PyObject * kwds)
@@ -576,8 +576,7 @@ static PySequenceMethods Body_sequence = {
 };
 
 PyTypeObject PyShape_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                              /*ob_size*/
+        PyVarObject_HEAD_INIT(&PyType_Type, 0)
         "physics.Shape",                /*tp_name*/
         sizeof(PyShape),                /*tp_basicsize*/
         0,                              /*tp_itemsize*/
@@ -619,8 +618,7 @@ PyTypeObject PyShape_Type = {
 };
 
 PyTypeObject PyArea_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                              /*ob_size*/
+        PyVarObject_HEAD_INIT(&PyType_Type, 0)
         "physics.Area",                 /*tp_name*/
         sizeof(PyShape),                /*tp_basicsize*/
         0,                              /*tp_itemsize*/
@@ -662,8 +660,7 @@ PyTypeObject PyArea_Type = {
 };
 
 PyTypeObject PyBody_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                              /*ob_size*/
+        PyVarObject_HEAD_INIT(&PyType_Type, 0)
         "physics.Body",                 /*tp_name*/
         sizeof(PyShape),                /*tp_basicsize*/
         0,                              /*tp_itemsize*/
@@ -705,8 +702,7 @@ PyTypeObject PyBody_Type = {
 };
 
 PyTypeObject PyBox_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                              /*ob_size*/
+        PyVarObject_HEAD_INIT(&PyType_Type, 0)
         "physics.Box",                  /*tp_name*/
         sizeof(PyShape),                /*tp_basicsize*/
         0,                              /*tp_itemsize*/
@@ -748,8 +744,8 @@ PyTypeObject PyBox_Type = {
 };
 
 PyTypeObject PyCourse_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                              /*ob_size*/
+        PyVarObject_HEAD_INIT(&PyType_Type, 0)
+
         "physics.Course",               /*tp_name*/
         sizeof(PyShape),                /*tp_basicsize*/
         0,                              /*tp_itemsize*/
@@ -792,7 +788,7 @@ PyTypeObject PyCourse_Type = {
 
 PyTypeObject PyLine_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
-        0,                              /*ob_size*/
+        
         "physics.Line",                 /*tp_name*/
         sizeof(PyShape),                /*tp_basicsize*/
         0,                              /*tp_itemsize*/
@@ -835,7 +831,7 @@ PyTypeObject PyLine_Type = {
 
 PyTypeObject PyPolygon_Type = {
         PyObject_HEAD_INIT(&PyType_Type)
-        0,                              /*ob_size*/
+        
         "physics.Polygon",              /*tp_name*/
         sizeof(PyShape),                /*tp_basicsize*/
         0,                              /*tp_itemsize*/

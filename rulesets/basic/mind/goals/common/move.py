@@ -22,7 +22,7 @@ class move_me(Goal):
     """Move me to a certain place.
     'radius' specifies how close to the location we accept.
     """
-    def __init__(self, location, radius=0.5, speed=1):
+    def __init__(self, location, radius=0.5, speed=0.5):
         Goal.__init__(self,"move me to certain place",
                       self.am_I_at_loc,
                       [self.move_to_loc],
