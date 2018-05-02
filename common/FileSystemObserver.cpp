@@ -19,6 +19,7 @@
 #include "FileSystemObserver.h"
 
 #include "log.h"
+#include "compose.hpp"
 #include <boost/algorithm/string.hpp>
 #include <boost/asio/steady_timer.hpp>
 
@@ -57,7 +58,11 @@ void FileSystemObserver::observe()
 void FileSystemObserver::add_directory(const boost::filesystem::path& dirname, std::function<void(const FileSystemObserver::FileSystemEvent&)> callback)
 {
     if (mDirectoryMonitor) {
-        mDirectoryMonitor->add_directory(dirname.string());
+        try {
+            mDirectoryMonitor->add_directory(dirname.string());
+        } catch (...) {
+            log(WARNING, String::compose("Could not observe directory %1", dirname.string()));
+        }
         mCallBacks.insert(std::make_pair(dirname, callback));
     }
 }
