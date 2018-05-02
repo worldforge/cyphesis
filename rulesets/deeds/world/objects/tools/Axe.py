@@ -7,7 +7,7 @@ from atlas import *
 class Axe(server.Thing):
     """This is base class for axes, this one just ordinary axe"""
     def cut_operation(self, op):
-        print "Axe.cut_operation() Don't call this."
+        print("Axe.cut_operation() Don't call this.")
         ent=Entity(self.id,status=self.status-0.01)
         to_ = op[0].id
         return Oplist(Operation("set",ent,to=self),Operation("chop",op[0],to=to_))

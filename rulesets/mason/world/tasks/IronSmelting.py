@@ -56,7 +56,7 @@ class IronSmelting(server.Task):
         # A bit naive iron ingot can not be made without anvil & hammer but..
 
         # Create iron stab in place of bloomery
-        print "Trying to create iron ingot"
+        print("Trying to create iron ingot")
         create = Operation("create", Entity(name = "iron_ingot", type = "iron_ingot"), to = self.character )
         res.append(create)
 

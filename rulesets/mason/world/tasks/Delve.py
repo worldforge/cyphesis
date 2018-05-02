@@ -69,7 +69,7 @@ class Delve(server.Task):
                 surface = self.target().terrain.get_surface(self.pos)
                 # print "SURFACE %d at %s" % (surface, self.pos)
                 if surface not in Delve.materials:
-                    print "Not rock"
+                    print("Not rock")
                     self.irrelevant()
                     return
                 self.surface = surface
@@ -94,13 +94,13 @@ class Delve(server.Task):
                                         to=self.target())
                 res.append(quarry_create)
             else:
-                print mods
+                print(mods)
                 for mod in mods:
                     if not hasattr(mod, 'name') or mod.name != 'quarry':
-                        print "%s is no good" % mod.id
+                        print("%s is no good" % mod.id)
                         continue
-                    print "%s looks good" % mod.id
-                    print mod.terrainmod
+                    print("%s looks good" % mod.id)
+                    print(mod.terrainmod)
                     mod.terrainmod.height -= 2.0
                     # We have modified the attribute in place, so must send an update op to propagate
                     res.append(Operation("update", to=mod.id))

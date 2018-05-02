@@ -38,7 +38,7 @@ class Woodenwall(server.Task):
         self.progress += 1
 
         if not target:
-            print "Target is no more"
+            print("Target is no more")
             self.irrelevant()
             return
 
@@ -69,7 +69,7 @@ class Woodenwall(server.Task):
             if (lcount+wcount) == 2 :
                 break
         else:
-            print "No materials in inventory"
+            print("No materials in inventory")
             self.irrelevant()
             return
 

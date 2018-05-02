@@ -29,11 +29,11 @@ class Memory:
         "return list of memories with same command"
         found=[]
         for (e,age) in self.events:
-            if apply(cmp,(event,e)): found.append(e)
+            if cmp(*(event,e)): found.append(e)
         return found
     def forget(self):
         "age memories and forgot too old ones"
         for m in self.events:
             m[1]=m[1]-0.1
         #remove forgotten things
-        self.events=filter(lambda m:m[1]>const.fzero,self.events)
+        self.events=[m for m in self.events if m[1]>const.fzero]

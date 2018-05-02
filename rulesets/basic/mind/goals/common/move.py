@@ -1,7 +1,7 @@
     #This file is distributed under the terms of the GNU General Public license.
 #Copyright (C) 1999 Aloril (See the file COPYING for details).
 
-from common import const
+from .common import const
 from physics import *
 
 from physics import Vector3D
@@ -200,7 +200,7 @@ class move_it(Goal):
         if not isLocation(self.location):
             self.location=Location(self.location,Point3D(0.0,0.0,0.0))
         if type(self.what)==StringType:
-            if me.things.has_key(self.what)==0: return 1
+            if (self.what in me.things)==0: return 1
             what=me.things[self.what][0]
         if what.location.parent.id!=self.location.parent.id: return 0
         return what.location.coordinates.distance(self.location.coordinates)<1.5
@@ -213,7 +213,7 @@ class move_it(Goal):
         elif not isLocation(self.location):
             self.location=Location(self.location,Point3D(0.0,0.0,0.0))
         if type(self.what)==StringType:
-            if me.things.has_key(self.what)==0:
+            if (self.what in me.things)==0:
                 return
             what=me.things[self.what][0]
         if self.speed==0 or what.location.parent.id!=self.location.parent.id:
@@ -263,7 +263,7 @@ class move_me_to_possession(Goal):
     def am_i_at_it(self, me):
         what = self.what
         if type(what)==StringType:
-            if me.things.has_key(what)==0: return 0
+            if (what in me.things)==0: return 0
             what=me.things[what][0]
         if square_horizontal_distance(me.location, what.location) < 4: # 2 * 2
             return 1
@@ -273,7 +273,7 @@ class move_me_to_possession(Goal):
     def move_me_to_it(self, me):
         what = self.what
         if type(what)==StringType:
-            if me.things.has_key(what)==0: return
+            if (what in me.things)==0: return
             what=me.things[what][0]
         target=what.location.copy()
         if target.parent.id==me.location.parent.id:
@@ -287,7 +287,7 @@ class move_me_to_focus(Goal):
         Goal.__init__(self,"move me to this thing",
                       self.am_i_at_it,
                       [self.move_me_to_it])
-        if type(what) == types.ListType:
+        if type(what) == list:
             self.what = what
         else:
             self.what = [ what ]
@@ -332,7 +332,7 @@ class move_me_near_focus(Goal):
         Goal.__init__(self,"move me near this thing",
                       self.am_i_at_it,
                       [self.move_me_to_it])
-        if type(what) == types.ListType:
+        if type(what) == list:
             self.what = what
         else:
             self.what = [ what ]
@@ -400,7 +400,7 @@ class pick_up_possession(Goal):
         #CHEAT!: cludge
         what=self.what
         if type(what)==StringType:
-            if me.things.has_key(self.what)==0: return 0
+            if (self.what in me.things)==0: return 0
             what=me.things[self.what][0]
         if what.location.parent.id!=me.id:
             if what.location.parent.id!=me.location.parent.id:
@@ -410,7 +410,7 @@ class pick_up_possession(Goal):
     def pick_it_up(self, me):
         what=self.what
         if type(what)==StringType:
-            if me.things.has_key(self.what)==0: return 0
+            if (self.what in me.things)==0: return 0
             what=me.things[self.what][0]
         return Operation("move", Entity(id, location=Location(me, Point3D(0,0,0))))
 
@@ -421,7 +421,7 @@ class pick_up_focus(Goal):
                       self.is_it_with_me,
                       [move_me_to_focus(what),
                        self.pick_it_up])
-        if type(what) == types.ListType:
+        if type(what) == list:
             self.what = what
         else:
             self.what = [ what ]
@@ -464,8 +464,7 @@ class wander(Goal):
                        self.do_wandering])
     def do_wandering(self, me):
         loc = me.location.copy()
-        loc.coordinates=Point3D(map(lambda c:c+uniform(-5,5),
-                                     loc.coordinates))
+        loc.coordinates=Point3D([c+uniform(-5,5) for c in loc.coordinates])
         self.subgoals[0].location = loc
 
 ############################ WANDER & SEARCH ############################
@@ -481,7 +480,7 @@ class search(Goal):
         self.what=what
         self.vars=["what"]
     def do_I_have(self, me):
-        return me.things.has_key(self.what)==1
+        return (self.what in me.things)==1
 
 ############################ PURSUIT ####################################
 
@@ -656,6 +655,5 @@ class roam(Goal):
         waypoint = me.get_knowledge("location",waypointName)
         
         loc = me.location.copy()
-        loc.coordinates=Point3D(map(lambda c:c+uniform(-self.radius,self.radius),
-                                     waypoint.coordinates))
+        loc.coordinates=Point3D([c+uniform(-self.radius,self.radius) for c in waypoint.coordinates])
         move_me_goal.location = loc

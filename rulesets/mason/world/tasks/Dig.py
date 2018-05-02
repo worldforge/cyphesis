@@ -27,7 +27,7 @@ class Dig(server.Task):
         self.pos = Point3D(op[0].pos)
 
     def info_operation(self, op):
-        print "Dig.info"
+        print("Dig.info")
     def tick_operation(self, op):
         """ Op handler for regular tick op """
         # print "Dig.tick"
@@ -56,7 +56,7 @@ class Dig(server.Task):
         surface = self.target().terrain.get_surface(self.pos)
         # print "SURFACE %d at %s" % (surface, self.pos)
         if surface not in Dig.materials:
-            print "Not right"
+            print("Not right")
             self.irrelevant()
             return
 

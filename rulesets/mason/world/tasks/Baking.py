@@ -58,7 +58,7 @@ class Baking(server.Task):
                 raw_materials.append(item)
                 bcount = bcount + 1
         else:
-            print item, "Not suffcient material in inventory"
+            print(item, "Not suffcient material in inventory")
 
         count = ecount + bcount 
 

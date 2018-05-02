@@ -59,13 +59,13 @@ class Heaping(server.Task):
             try:
                 mod = self._find_mod('motte')
             except Heaping.Obstructed:
-                print "obstructed"
+                print("obstructed")
                 self.irrelevant()
                 return
             if mod is None:
                 # There is no terrain mod where we are digging,
                 return self._create_initial_mod()
-            print "found existing mod"
+            print("found existing mod")
             self.terrain_mod = weakref.ref(mod)
 
         return self._grow_mod()
@@ -115,9 +115,9 @@ class Heaping(server.Task):
             for mod in mods:
                 if hasattr(mod, 'name') and mod.name == name:
                     return mod
-            raise Heaping.Obstructed, "Another mod is in the way"
+            raise Heaping.Obstructed("Another mod is in the way")
     def _create_initial_mod(self):
-        print "no existing mod"
+        print("no existing mod")
         y=self.character.location.coordinates.y + 1.0
         modmap = {'height': y,
                   'shape': Polygon([[ -0.7, -0.7 ],

@@ -166,13 +166,13 @@ def match_verb_subject_object_string(say):
     m=vso_pattern.match(say)
     if m:
         verb=m.group(1).lower()
-        if vso_dict.has_key(verb):
+        if verb in vso_dict:
             subject,object=m.group(4),m.group(10).rstrip('.!')
             return verb_subject_object(verb,subject,object)
     m=vspo_pattern.match(say)
     if m:
         verb=m.group(1).lower()
-        if vspo_dict.has_key(verb):
+        if verb in vspo_dict:
             subject,predicate,object=m.group(4),m.group(10),m.group(12).rstrip('.!')
             return verb_subject_predicate_object(verb,subject,predicate,object)
     return None

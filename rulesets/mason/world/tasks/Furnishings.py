@@ -25,7 +25,7 @@ class Furnishings(server.Task):
 
         self.pos = Point3D(op[0].pos)
     def info_operation(self,op):
-        print "Furnishings info"
+        print("Furnishings info")
         item = server.world.get_object_ref(op[0].id)
         chunk_loc = Location(item())
         chunk_loc.coordinates =Point3D([0,0,0])
@@ -292,7 +292,7 @@ class Furnishings(server.Task):
         self.progress += 1
 
         if not target:
-            print "Target is no more"
+            print("Target is no more")
             self.irrelevant()
             return
 
@@ -332,8 +332,8 @@ class Furnishings(server.Task):
                 acount=acount+1
 
 
-        print str(lcount)
-        print str(wcount)
+        print(str(lcount))
+        print(str(wcount))
         if lcount == 1 and wcount==3:
             self.fname="Table"
         elif lcount == 4 and wcount ==2:
@@ -349,7 +349,7 @@ class Furnishings(server.Task):
         elif wcount==0 and lcount==5:
             self.fname="Wallframe"
         else:
-            print "No materials in inventory for Furnishings 1"
+            print("No materials in inventory for Furnishings 1")
             self.irrelevant()
             return
 

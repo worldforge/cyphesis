@@ -12,7 +12,7 @@ import server
 
 class _Zone(object):
     def __init__(self):
-        print "Creating magic zone"
+        print("Creating magic zone")
 
     def get_power(self, pos):
         """Determine the spell power at a location"""
@@ -25,7 +25,7 @@ class Spell(server.Task):
     zone = None
     def cast_operation(self, op):
         """ Op handler for strike op which activates this task """
-        print "Spell.cast"
+        print("Spell.cast")
 
         if len(op) < 1:
             sys.stderr.write("Spell task has no target in cast op")
@@ -41,7 +41,7 @@ class Spell(server.Task):
 
     def tick_operation(self, op):
         """ Op handler for regular tick op """
-        print "Spell.tick"
+        print("Spell.tick")
         res=Oplist()
 
         target=server.world.get_object(self.target)

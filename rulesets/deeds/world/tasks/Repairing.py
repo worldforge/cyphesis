@@ -21,7 +21,7 @@ class Repairing(server.Task):
                 set = Operation("set", Entity(item.id, status = -1), to = item)
                 return set
         else : 
-            print "No Wood in inventory"
+            print("No Wood in inventory")
             return 0
 
     def repair_operation(self, op):

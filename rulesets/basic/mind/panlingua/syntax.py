@@ -10,19 +10,19 @@ class atom:
         self.lexlink=self.synlink=None
         self.right=self.left=self.down=self.up=None
         self.id=0
-    def id_str(self): return self.word+"#"+`self.id`
+    def id_str(self): return self.word+"#"+repr(self.id)
     def str_link(self,lnk):
         l=getattr(self,lnk)
         if l: return lnk+"="+l.word
         return ""
     def __str__(self):
-        s=self.word+" "+`self.sib`+" "+self.lexlink_type+", "+self.synlink_type
+        s=self.word+" "+repr(self.sib)+" "+self.lexlink_type+", "+self.synlink_type
         for l in ["lexlink","synlink","right","left","up","down"]:
             res=self.str_link(l)
             if res: s=s+", "+res
         return s
-    def __repr__(self): return `[self.word,self.sib,self.lexlink_type,
-                                 self.synlink_type]`
+    def __repr__(self): return repr([self.word,self.sib,self.lexlink_type,
+                                 self.synlink_type])
 
 class screen:
     def __init__(self):
@@ -34,7 +34,7 @@ class screen:
         if y>=self.ymax: self.ymax=y+1
         if x+len(txt)-1>=self.xmax: self.xmax=x+len(txt)
         for i in range(len(txt)):
-            if not self.s.has_key(x+i): self.s[x+i]={}
+            if x+i not in self.s: self.s[x+i]={}
             self.s[x+i][y]=txt[i]
     def dsp_syn(self,x,y,a):
         self.print_xy(x,y,a.word)
@@ -81,23 +81,23 @@ def build_syn_tree(arr):
 
 def list_syntax(syn_arr):
     for a in syn_arr:
-        print a.id_str(),"sib("+`a.sib`+"),",\
-              "lexlink("+a.lexlink_type+"),"
+        print(a.id_str(),"sib("+repr(a.sib)+"),",\
+              "lexlink("+a.lexlink_type+"),")
         if a.up: l="up to "+a.up.id_str()
         elif a.left: l="left to "+a.left.id_str()
         else: l=""
-        print "\tsynlink("+a.synlink_type+")",l
+        print("\tsynlink("+a.synlink_type+")",l)
 
 
 def display_syntax(syn_tree):
     scr=screen()
     scr.dsp_syn(0,1,syn_tree)
-    print scr
+    print(scr)
 
 def display_simple_syntax(syn_tree):
     scr=screen()
     scr.dsp_simple_syn(0,0,syn_tree)
-    print scr
+    print(scr)
 
 def get_tree(atom):
     if not atom: return None

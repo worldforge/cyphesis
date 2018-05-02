@@ -33,36 +33,36 @@ class editor:
         #print indent,self.cl_args,args
         self.cl_args[0](self, *args)
     def __getattr__(self, name):
-        if self.list_call.has_key(name):
+        if name in self.list_call:
             self.cl_args=self.list_call[name]
             #self.cl_depth=0
             return self.call_list_args
-        raise AttributeError,name
+        raise AttributeError(name)
     def create(self, avatar_type):
         return self.client.create_avatar(avatar_type)
     def make(self, type, **kw):
         kw['type']=type
         # if not kw.has_key('type'):
             # kw['type']=name
-        ent=apply(Entity,(),kw)
+        ent=Entity(*(), **kw)
         #ent=Entity(kw)
 ##         if hasattr(ent,"copy"):
 ##             foo
         return self.avatar.make(ent)
     def set(self, _id, **kw):
         kw['id']=_id
-        ent=apply(Entity,(),kw)
+        ent=Entity(*(), **kw)
         return self.avatar.set(_id,ent)
     def look(self, _id=""):
         return self.avatar.look(_id)
     def look_for(self, **kw):
-        ent=apply(Entity,(),kw)
+        ent=Entity(*(), **kw)
         return self.avatar.look_for(ent)
     def delete(self, id):
         return self.avatar.delete(id)
     def sanitizeKnowledge(self, knowledge):
         if type(knowledge)==InstanceType: return knowledge.id
-        elif type(knowledge)==TupleType: return `knowledge`
+        elif type(knowledge)==TupleType: return repr(knowledge)
         elif type(knowledge)==StringType: return knowledge
         else: return knowledge.id
     
@@ -70,11 +70,11 @@ class editor:
 ##         es=Entity(verb=verb,subject=subject,object=object)
 ##         self.avatar.send(Operation("talk",es,to=target))
         if type(subject)==InstanceType: subject=subject.id
-        elif type(subject)==TupleType: subject=`subject`
+        elif type(subject)==TupleType: subject=repr(subject)
         elif type(subject)==StringType: pass
         else: subject=subject.id
         if type(object)==InstanceType: object=object.id
-        elif type(object)==TupleType: object=`object`
+        elif type(object)==TupleType: object=repr(object)
         elif type(object)==StringType: pass
         else: object=object.id
         if predicate:

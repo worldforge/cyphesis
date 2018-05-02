@@ -54,11 +54,11 @@ class RegressionTester:
         c = self.editor.look(c.id)
 
         if not hasattr(c, 'tasks') or len(c.tasks) < 1:
-            raise AssertionError, 'Task \'%s\' failed to start' % task
+            raise AssertionError('Task \'%s\' failed to start' % task)
 
         if c.tasks[0].name != task:
-            raise AssertionError, 'Task \'%s\' started instead of ' \
-                                  'expected \"%s\"' % (c.tasks[0].name, task)
+            raise AssertionError('Task \'%s\' started instead of ' \
+                                  'expected \"%s\"' % (c.tasks[0].name, task))
 
 
 

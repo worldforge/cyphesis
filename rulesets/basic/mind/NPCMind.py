@@ -19,7 +19,7 @@ from mind.Knowledge import Knowledge
 from mind.panlingua import interlinguish,ontology
 from mind.compass import vector_to_compass
 from common import log,const
-import dictlist
+from . import dictlist
 import mind.goals
 import mind.goals.common
 
@@ -76,7 +76,7 @@ class NPCMind(server.Mind):
         self.goal_id_counter=0
     def print_debug(self, message):
         """Prints a debug message using 'print', prepending the message with a description of the entity."""
-        print self.describeEntity() + ": " + message
+        print(self.describeEntity() + ": " + message)
     def find_op_method(self, op_id, prefix="",undefined_op_method=None):
         """find right operation to invoke"""
         if not undefined_op_method: undefined_op_method=self.undefined_op_method
@@ -116,7 +116,7 @@ class NPCMind(server.Mind):
         #print "Map update",obj
         foo_lst = self.things.get('Foo',[])
         for foo in foo_lst[:]: #us copy in loop, because it might get modified
-            print "Oh MY GOD! We have a Foo thing!"
+            print("Oh MY GOD! We have a Foo thing!")
             if foo.id==obj.id:
                 self.remove_thing(foo)
                 self.add_thing(obj)
@@ -426,7 +426,7 @@ class NPCMind(server.Mind):
             if hasattr(thought, "predicate") == False:
                 if hasattr(thought, "things"):
                     things=thought.things
-                    for (id, thinglist) in things.items():
+                    for (id, thinglist) in list(things.items()):
                         #We can't iterate directly over the list, as it's of type atlas.Message; we must first "pythonize" it. 
                         #This should be reworked into a better way. 
                         thinglist=thinglist.pythonize()
@@ -687,7 +687,7 @@ class NPCMind(server.Mind):
         """normally location: tell where items reside
            reverse location tells what resides in this spot"""
         self.reverse_knowledge=Knowledge()
-        for (k,v) in self.knowledge.location.items():
+        for (k,v) in list(self.knowledge.location.items()):
             if not self.reverse_knowledge.location.get(v):
                 self.reverse_knowledge.add("location",v,k)
     def get_reverse_knowledge(self, what, key):
@@ -710,7 +710,7 @@ class NPCMind(server.Mind):
             if what=="goal":
                 thought_value = value.info()
             else:
-                thought_value = `value`
+                thought_value = repr(value)
         else:
             thought_value = value
         desc="%s knowledge about %s is %s" % (what,key,thought_value)
@@ -785,7 +785,7 @@ class NPCMind(server.Mind):
         try:
             goal = self.create_goal(str_goal)
         except BaseException as e:
-            print("Error when adding goal: " + str(e))
+            print(("Error when adding goal: " + str(e)))
             return
         
         self.insert_goal(goal)
@@ -809,7 +809,7 @@ class NPCMind(server.Mind):
         try:
             new_goal = self.create_goal(goal.key, str_goal)
         except BaseException as e:
-            print("Error when updating goal: " + str(e))
+            print(("Error when updating goal: " + str(e)))
             return
         
         new_goal.id = goal.id
@@ -865,23 +865,23 @@ class NPCMind(server.Mind):
                 else:
                     goalstring=g.__class__.__name__
                 if hasattr(self, "name"):
-                    print "Error in NPC with id " + self.id + " of type " + str(self.type) + " and name '" + self.name + "' when checking goal " + goalstring + "\n" + stacktrace
+                    print("Error in NPC with id " + self.id + " of type " + str(self.type) + " and name '" + self.name + "' when checking goal " + goalstring + "\n" + stacktrace)
                 else:
-                    print "Error in NPC with id " + self.id + " of type " + str(self.type) + " when checking goal " + goalstring + "\n" + stacktrace
+                    print("Error in NPC with id " + self.id + " of type " + str(self.type) + " when checking goal " + goalstring + "\n" + stacktrace)
                 continue
             # if res!=None: return res
     def teach_children(self, child):
         res=Oplist()
-        for k in self.knowledge.location.keys():
+        for k in list(self.knowledge.location.keys()):
             es=Entity(verb='know',subject=k,object=self.knowledge.location[k])
             res.append(Operation('say',es,to=child))
-        for k in self.knowledge.place.keys():
+        for k in list(self.knowledge.place.keys()):
             es=Entity(verb='know',subject=k,object=self.knowledge.place[k])
             res.append(Operation('say',es,to=child))
         for g in self.goals:
             es=Entity(verb='learn',subject=g.key,object=g.str)
             res.append(Operation('say',es,to=child))
-        for im in self.knowledge.importance.keys():
+        for im in list(self.knowledge.importance.keys()):
             cmp=self.knowledge.importance[im]
             if cmp=='>':
                 s,i=il.importance(im[0],cmp,im[1])

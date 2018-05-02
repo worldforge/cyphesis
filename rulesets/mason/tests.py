@@ -281,7 +281,7 @@ def test_tmods(host='', account='', password='', **args):
     maxx=0
     maxy=0
     maxz=0
-    for i in points.values():
+    for i in list(points.values()):
         x = i[0]
         y = i[1]
         z = i[2]
@@ -342,7 +342,7 @@ def test_task(host='', account='', password='', **args):
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
-        print "Task start failed"
+        print("Task start failed")
         return
 
     m.set(settler.id, tasks=[{'name': settler.tasks[0].name, 'foo': 14}])
@@ -361,7 +361,7 @@ def test_wand(host='', account='', password='', **args):
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
-        print "Task start failed"
+        print("Task start failed")
         return
 
     m.set(settler.id, tasks=[{'name': settler.tasks[0].name, 'foo': 14}])
@@ -409,13 +409,13 @@ def test_teleport(host='', account='', password='', **args):
                                      Entity(parent='juncture'),
                                      from_=m.client.id))
     juncture=rep[0]
-    print "Created juncture ", juncture.id
+    print("Created juncture ", juncture.id)
     rep=m.client.send_wait(Operation("connect",
                                      Entity(hostname='localhost',
                                             port=6767),
                                      from_=juncture.id))
     if not rep:
-        print "Connect failed"
+        print("Connect failed")
         return
     peer = rep[0].id
 
@@ -425,7 +425,7 @@ def test_teleport(host='', account='', password='', **args):
                                      from_=juncture.id))
 
     if not rep:
-        print "Login failed"
+        print("Login failed")
         return
 
     settler=m.make('settler',pos=(1,1,0))
@@ -456,7 +456,7 @@ def test_heap(host='', account='', password='', **args):
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
-        print "Task start failed"
+        print("Task start failed")
         return
 
     m.set(settler.id, tasks=[{'name': settler.tasks[0].name, 'foo': 14}])
@@ -473,7 +473,7 @@ def test_earthbarrier(host='', account='', password='', **args):
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
-        print "Task start failed"
+        print("Task start failed")
         return
 
 def test_trenching(host='', account='', password='', **args):
@@ -488,7 +488,7 @@ def test_trenching(host='', account='', password='', **args):
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
-        print "Task start failed"
+        print("Task start failed")
         return
 
 def test_bisect(host='', account='', password='', **args):
@@ -503,7 +503,7 @@ def test_bisect(host='', account='', password='', **args):
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
-        print "Task start failed"
+        print("Task start failed")
         return
 
 def test_dragging(host='', account='', password='', **args):
@@ -518,7 +518,7 @@ def test_dragging(host='', account='', password='', **args):
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
-        print "Task start failed"
+        print("Task start failed")
         return
 
 def test_pulling(host='', account='', password='', **args):
@@ -533,7 +533,7 @@ def test_pulling(host='', account='', password='', **args):
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
-        print "Task start failed"
+        print("Task start failed")
         return
 
 def test_reap(host='', account='', password='', **args):
@@ -548,7 +548,7 @@ def test_reap(host='', account='', password='', **args):
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
-        print "Task start failed"
+        print("Task start failed")
         return
 
 def test_drying(host='', account='', password='', **args):
@@ -563,7 +563,7 @@ def test_drying(host='', account='', password='', **args):
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
-        print "Task start failed"
+        print("Task start failed")
         return
 
 def test_twirling(host='', account='', password='', **args):
@@ -578,7 +578,7 @@ def test_twirling(host='', account='', password='', **args):
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
-        print "Task start failed"
+        print("Task start failed")
         return
 
 def test_logging(host='', account='', password='', **args):
@@ -593,7 +593,7 @@ def test_logging(host='', account='', password='', **args):
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
-        print "Task start failed"
+        print("Task start failed")
         return
 
 def test_baking(host='', account='', password='', **args):
@@ -608,7 +608,7 @@ def test_baking(host='', account='', password='', **args):
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
-        print "Task start failed"
+        print("Task start failed")
         return
 
 def test_cultivate(host='', account='', password='', **args):
@@ -623,7 +623,7 @@ def test_cultivate(host='', account='', password='', **args):
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
-        print "Task start failed"
+        print("Task start failed")
         return
 
 def test_raise(host='', account='', password='', **args):
@@ -638,7 +638,7 @@ def test_raise(host='', account='', password='', **args):
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
-        print "Task start failed"
+        print("Task start failed")
         return
 
 def test_ram(host='', account='', password='', **args):
@@ -653,7 +653,7 @@ def test_ram(host='', account='', password='', **args):
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
-        print "Task start failed"
+        print("Task start failed")
         return
 
 def test_sharpen(host='', account='', password='', **args):
@@ -668,7 +668,7 @@ def test_sharpen(host='', account='', password='', **args):
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
-        print "Task start failed"
+        print("Task start failed")
         return
 
 def test_sift(host='', account='', password='', **args):
@@ -683,7 +683,7 @@ def test_sift(host='', account='', password='', **args):
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
-        print "Task start failed"
+        print("Task start failed")
         return
 
 def test_slaughter(host='', account='', password='', **args):
@@ -698,7 +698,7 @@ def test_slaughter(host='', account='', password='', **args):
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
-        print "Task start failed"
+        print("Task start failed")
         return
 
 def test_trailblaze(host='', account='', password='', **args):
@@ -713,7 +713,7 @@ def test_trailblaze(host='', account='', password='', **args):
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
-        print "Task start failed"
+        print("Task start failed")
         return
 
 def test_slice(host='', account='', password='', **args):
@@ -728,7 +728,7 @@ def test_slice(host='', account='', password='', **args):
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
-        print "Task start failed"
+        print("Task start failed")
         return
 
 def test_delve(host='', account='', password='', **args):
@@ -743,7 +743,7 @@ def test_delve(host='', account='', password='', **args):
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
-        print "Task start failed"
+        print("Task start failed")
         return
 
 def test_dig(host='', account='', password='', **args):
@@ -758,7 +758,7 @@ def test_dig(host='', account='', password='', **args):
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
-        print "Task start failed"
+        print("Task start failed")
         return
 
 def test_fishing(host='', account='', password='', **args):
@@ -774,7 +774,7 @@ def test_fishing(host='', account='', password='', **args):
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
-        print "Task start failed"
+        print("Task start failed")
         return
 
 def test_task_stop(host='', account='', password='', **args):
@@ -789,14 +789,14 @@ def test_task_stop(host='', account='', password='', **args):
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) < 1:
-        print "Task start failed"
+        print("Task start failed")
         return
 
     m.avatar.send(Operation("use", to=settler))
     settler=m.look(settler.id)
 
     if not hasattr(settler, 'tasks') or len(settler.tasks) > 0:
-        print "Task stop failed"
+        print("Task stop failed")
         return
 
 def test_combat(host='', account='', password='', **args):
@@ -810,6 +810,6 @@ def test_combat(host='', account='', password='', **args):
     victim=m.look(victim.id)
 
     if not hasattr(victim, 'tasks') or len(victim.tasks) < 1:
-        print "Attack failed on victim"
+        print("Attack failed on victim")
         return
 

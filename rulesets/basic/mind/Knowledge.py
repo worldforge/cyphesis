@@ -16,7 +16,7 @@ class Knowledge:
         if not hasattr(self, what):
             return
         d=getattr(self,what)
-        if d.has_key(key):
+        if key in d:
             del d[key]
         if len(d)==0:
             delattr(self,what)

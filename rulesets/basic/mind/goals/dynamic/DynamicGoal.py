@@ -11,7 +11,7 @@ class DynamicGoal(Goal):
     in a talk operation."""
     def __init__(self, desc="some dynamic goal", trigger=None, **kw):
         kw['desc'] = desc
-        apply(Goal.__init__,(self,),kw)
+        Goal.__init__(*(self,), **kw)
         self.trigger_data = trigger
         self.vars.append("trigger_data")
     def trigger(self):

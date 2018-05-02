@@ -20,11 +20,11 @@ class semnod:
             s=s+str(l)
         return s+"</semnod>"
     def __repr__(self):
-        return 'semnod('+`self.id`+')'
+        return 'semnod('+repr(self.id)+')'
 
 def find_semnod(o, id):
     if not id: return None
-    if not o.has_key(id): o[id]=semnod(id)
+    if id not in o: o[id]=semnod(id)
     return o[id]
 
 class semlink:
@@ -41,7 +41,7 @@ class semlink:
         return n
     def __str__(self):
         return '<semlink from="'+self.fr.id+'" to="'+self.to.id+\
-               '" mass='+`self.mass`+'>'+self.type+'</semlink>'
+               '" mass='+repr(self.mass)+'>'+self.type+'</semlink>'
 
 
 class atom:
@@ -82,7 +82,7 @@ class atom:
             if not self.right: return {}
             if not self.right.match(t.right,res): return {}
         return res
-    def id_str(self): return self.word+`self.id`
+    def id_str(self): return self.word+repr(self.id)
     def __str__(self):
         scr=screen()
         scr.dsp_syn(0,1,self)
@@ -95,8 +95,8 @@ class atom:
 ##             if l: synlink_dir_s=' '+d+'="#'+l.id_str()+'"'
 ##         synlink_s='<synlink'+synlink_dir_s+'>'+self.synlink_type+'</synlink>\n'
 ##         return '<atom name="'+self.id_str()+'">\n'+lexlink_s+synlink_s+'</atom>'
-    def __repr__(self): return `[self.word,self.id,self.lexlink_type,
-                                 self.synlink_type]`
+    def __repr__(self): return repr([self.word,self.id,self.lexlink_type,
+                                 self.synlink_type])
 
 def match_sentence(sentence,template):
     if not (template and sentence): return {}
@@ -113,7 +113,7 @@ class screen:
         if y>=self.ymax: self.ymax=y+1
         if x+len(txt)-1>=self.xmax: self.xmax=x+len(txt)
         for i in range(len(txt)):
-            if not self.s.has_key(x+i): self.s[x+i]={}
+            if x+i not in self.s: self.s[x+i]={}
             self.s[x+i][y]=txt[i]
     def dsp_syn(self,x,y,a):
         self.print_xy(x,y,a.word)

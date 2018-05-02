@@ -58,11 +58,11 @@ class school(DynamicGoal):
         #ensures that the entity will check only other entities really close to it,
         #thereby reducing the possibility of infinite loops
         if distance < 0.4 and ent.location.velocity:
-            print "changing only velocity"
+            print("changing only velocity")
             new_loc=Location(me.location.parent)
             new_loc.velocity=ent.location.velocity
         if distance > 0.4 and ent.location.velocity:
-            print "changing both location and velocity"
+            print("changing both location and velocity")
             myvel=me.location.velocity.unit_vector()
             evel=ent.location.velocity.unit_vector()
             edir=(ent.location.coordinates-me.location.coordinates).unit_vector()
@@ -76,7 +76,7 @@ class school(DynamicGoal):
                 new_loc=Location(me.location.parent)
                 new_loc.velocity=ent.location.velocity
         else:
-            print "everything perfect, not doing anything"
+            print("everything perfect, not doing anything")
             new_loc=ent.location.copy()
             edir=(ent.location.coordinates-me.location.coordinates).unit_vector()
             new_loc.coordinates=new_loc.coordinates-edir
@@ -97,26 +97,26 @@ class flock(DynamicGoal):
             return
         ent=me.map.get(ent.id)
         if ent==None:
-            print "not convering on Nothing"
+            print("not convering on Nothing")
             return
         if ent.type[0]!=me.type[0]:
-            print "not convering on something not me"
+            print("not convering on something not me")
             return
         if type(ent.location.parent) == type(None):
-            print "flock.event, ent.location.parent is None"
+            print("flock.event, ent.location.parent is None")
             return
         if type(me.location.parent) == type(None):
-            print "flock.event, me.location.parent is None"
+            print("flock.event, me.location.parent is None")
             return
         if me.location.parent.id!=ent.location.parent.id:
-            print "not convering on something elsewhere"
+            print("not convering on something elsewhere")
             return
         if type(ent.location.coordinates)!=Point3D:
-            print "coordinates not an Point", type(ent.location.coordinates)
+            print("coordinates not an Point", type(ent.location.coordinates))
             return
         edist=(ent.location.coordinates-me.location.coordinates)
         if edist.square_mag() < 50:
-            print "not convering on close enough"
+            print("not convering on close enough")
             return
         evel=ent.location.velocity
         if evel and evel.square_mag() > 0.1:
@@ -126,15 +126,15 @@ class flock(DynamicGoal):
                 myvel = myvel.unit_vector()
                 #If I move in the same direction, then do nothing
                 if evel.dot(myvel) > 0.5:
-                    print "not convering on moving with"
+                    print("not convering on moving with")
                     return
                 #If I am moving towards them, then do nothing
                 if edir.dot(myvel) > 0.5:
-                    print "not convering on moving towards them"
+                    print("not convering on moving towards them")
                     return
             #If they are coming towards me, then do nothing
             if edir.dot(evel) < - 0.5:
-                print "not convering on moving towards me"
+                print("not convering on moving towards me")
                 return
             new_loc=Location(me.location.parent)
             new_loc.velocity=ent.location.velocity
@@ -142,7 +142,7 @@ class flock(DynamicGoal):
             new_loc=ent.location.copy()
             edir=(ent.location.coordinates-me.location.coordinates).unit_vector()
             new_loc.coordinates=new_loc.coordinates-edir
-        print "converging"
+        print("converging")
         return Operation("move", Entity(me.id, location=new_loc))
 
 class herd(DynamicGoal):

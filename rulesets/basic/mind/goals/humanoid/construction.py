@@ -69,7 +69,7 @@ class harvest_resource(Goal):
         return True 
         
     def do(self, me):
-        if me.things.has_key(self.tool)==0:
+        if (self.tool in me.things)==0:
             #print "No tool"
             return
         tool=me.find_thing(self.tool)[0]
@@ -105,7 +105,7 @@ class plant_seeds(Goal):
         self.spacing=spacing
         self.vars=["seed","source","place","tool","range","spacing"]
     def do(self, me):
-        if me.things.has_key(self.tool)==0:
+        if (self.tool in me.things)==0:
             #print "No tool"
             return
         tool=me.find_thing(self.tool)[0]

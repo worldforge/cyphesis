@@ -71,7 +71,7 @@ class get_knowledge(Goal):
         self.what=what
         self.vars=["what"]
     def do_I_know_about_this(self, me):
-        if me.things.has_key(self.what):
+        if self.what in me.things:
             return 1
         if me.get_knowledge("place",self.what):
             return 1
@@ -83,7 +83,7 @@ class get_knowledge(Goal):
 class get_thing(Goal):
     """Base class for obtaining something."""
     def do_I_have_it(self, me):
-        return me.things.has_key(self.what)
+        return self.what in me.things
 
 class buy_thing(get_thing):
     """Purchase something from a location."""
@@ -112,7 +112,7 @@ class buy_thing(get_thing):
 class acquire(Goal):
     """Base class for getting something into inventory."""
     def is_it_in_my_inventory(self, me):
-        if me.things.has_key(self.what):
+        if self.what in me.things:
             return me.things[self.what][0].location.parent==me
         return 0
 
@@ -164,8 +164,8 @@ class task(Goal):
 class cut_something(task):
     """Use a tool to cut down a tree."""
     def do(self,me):
-        if me.things.has_key(self.what)==0: return
-        if me.things.has_key(self.tool)==0: return
+        if (self.what in me.things)==0: return
+        if (self.tool in me.things)==0: return
         if not hasattr(self,'wield') or not self.wield:
             tool=me.find_thing(self.tool)[0]
             self.wield=True
@@ -274,7 +274,7 @@ class fetch_something(Goal):
         self.what=what
         self.vars=["what"]
     def is_it_in_my_inventory(self,me):
-        if me.things.has_key(self.what):
+        if self.what in me.things:
             if me.things[self.what][0].location.parent==me:
                 me.remove_knowledge('focus', self.what)
                 return 1
@@ -350,7 +350,7 @@ class feed(Goal):
     """Eat something."""
     def eat(self,me):
         me.remove_knowledge('focus',self.what)
-        if me.things.has_key(self.what)==0: return
+        if (self.what in me.things)==0: return
         food=me.find_thing(self.what)[0]
         ent=Entity(food.id)
         return Operation("eat",ent)
@@ -446,7 +446,7 @@ class browse(feed):
 
 
     def eat(self,me):
-        if me.things.has_key(self.what)==0: return
+        if (self.what in me.things)==0: return
         food=me.find_thing(self.what)[0]
         if food.status < self.min_status:
             me.remove_thing(food)
@@ -507,16 +507,16 @@ class hunt(Goal):
                 return 0
         return 1
     def fight(self, me):
-        if me.things.has_key(self.weapon)==0:
-            print "no weapon"
+        if (self.weapon in me.things)==0:
+            print("no weapon")
             return
         weapon=me.find_thing(self.weapon)[0]
-        if me.things.has_key(weapon.ammo)==0:
-            print "no ammo"
+        if (weapon.ammo in me.things)==0:
+            print("no ammo")
             return
         ammo=me.find_thing(weapon.ammo)[0]
-        if me.things.has_key(self.what)==0:
-            print "no target"
+        if (self.what in me.things)==0:
+            print("no target")
             return
         enemy=me.find_thing(self.what)[0]
         me.remove_thing(ammo)
@@ -584,7 +584,7 @@ class sell_trade(Goal):
         self.ticks=0
         self.vars=["what"]
     def dont_I_have_it(self, me):
-        if me.things.has_key(self.what):
+        if self.what in me.things:
             return randint(0,1)
         else:
             return 1
@@ -618,8 +618,8 @@ class trade(Goal):
         self.wield=False
         self.vars=["wbuy","tool","wsell"]
     def process(self,me):
-        if me.things.has_key(self.wbuy)==0: return
-        if me.things.has_key(self.tool)==0: return
+        if (self.wbuy in me.things)==0: return
+        if (self.tool in me.things)==0: return
         tool=me.find_thing(self.tool)[0]
         if not self.wield:
             self.wield=True
@@ -632,11 +632,11 @@ class trade(Goal):
 class market(Goal):
     """Base class to run a market stall."""
     def is_it(self,me):
-        if me.things.has_key(self.shop)==0: return 0
+        if (self.shop in me.things)==0: return 0
         shop=me.find_thing(self.shop)[0]
         return shop.mode==self.state
     def set_it(self,me):
-        if me.things.has_key(self.shop)==0: return
+        if (self.shop in me.things)==0: return
         shop=me.find_thing(self.shop)[0]
         return Operation("set", Entity(shop.id, mode=self.state))
 
@@ -664,8 +664,8 @@ class keep(Goal):
         self.where=where
         self.vars=["what","where"]
     def are_they_there(self,me):
-        if me.things.has_key(self.where)==0: return 1
-        if me.things.has_key(self.what)==0: return 1
+        if (self.where in me.things)==0: return 1
+        if (self.what in me.things)==0: return 1
         thing_all=me.find_thing(self.what)
         where=me.find_thing(self.where)[0]
         for thing in thing_all:
@@ -674,8 +674,8 @@ class keep(Goal):
         return 1
     def keep_it(self,me):
         result=Oplist()
-        if me.things.has_key(self.where)==0: return
-        if me.things.has_key(self.what)==0: return
+        if (self.where in me.things)==0: return
+        if (self.what in me.things)==0: return
         thing_all=me.find_thing(self.what)
         where=me.find_thing(self.where)[0]
         to_location=Location(where,Point3D(0,0,0))
@@ -707,7 +707,7 @@ class keep_on_me(Goal):
         return 1
     def keep_it(self,me):
         result=Oplist()
-        if me.things.has_key(self.what)==0: return
+        if (self.what in me.things)==0: return
         thing_all=me.find_thing(self.what)
         to_loc=Location(me,Point3D(0,0,0))
         for thing in thing_all:
@@ -733,7 +733,7 @@ class assemble(Goal):
     def build(self, me):
         retops=Oplist()
         for item in self.fromwhat:
-            if me.things.has_key(item)==0: return
+            if (item in me.things)==0: return
         for item in self.fromwhat:
             cmpnt=me.find_thing(item)[0]
             retops = retops + Operation("set", Entity(cmpnt.id,status=-1))
@@ -755,7 +755,7 @@ class transaction(Goal):
         self.payed=0
         self.vars=["what", "who", "cost", "payed"]
     def check_availability(self,me):
-        return me.things.has_key(self.what)==0
+        return (self.what in me.things)==0
     def transaction_inactive(self,me):
         if self.check_availability(me):
             return 0
@@ -775,7 +775,7 @@ class transaction(Goal):
         return 1
     def transact(self,me):
         who=me.map.get(self.who)
-        if me.things.has_key(self.what)==0:
+        if (self.what in me.things)==0:
             self.irrelevant=1
             return Operation("talk",Entity(say="I don't have any "+self.what+" left."))
         if self.payed < self.cost:
@@ -795,11 +795,11 @@ class hireling_transaction(transaction):
     def transact(self, me):
         employer = me.get_knowledge('employer', me)
         if employer:
-            print 'Already employed by ' + employer
+            print('Already employed by ' + employer)
             return Operation("talk",Entity(say="Sorry, I am currently working for someone else."))
         who=me.map.get(self.who)
         if not who:
-            print "Who am I talking to"
+            print("Who am I talking to")
             return
         if self.payed < self.cost:
             return Operation("talk",Entity(say=who.name+" you owe me "+str(self.cost-self.payed)+" coins."))
@@ -825,7 +825,7 @@ class activate_device(Goal):
     def activated(self, me):
         return False
     def activate_focus(self, me):
-        print "Activating ", self.what
+        print("Activating ", self.what)
         something=me.get_knowledge('focus', self.what)
         assert(something)
         if me.map.get(something) == None:

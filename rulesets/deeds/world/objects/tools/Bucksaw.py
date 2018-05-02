@@ -6,7 +6,7 @@ from atlas import *
 class Bucksaw(server.Thing):
     """This is a large saw for cutting logs"""
     def cut_operation(self, op):
-        print "Bucksaw.cur_operation() Don't call this."
+        print("Bucksaw.cur_operation() Don't call this.")
         to_ = op[0].id
         if not to_:
             return self.error(op,"To is undefined object")

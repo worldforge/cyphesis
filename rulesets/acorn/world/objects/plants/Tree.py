@@ -88,8 +88,8 @@ class Tree(Thing):
 
     def tick_operation(self, op):
         if debug_tree:
-            print "I this big ", self.height
-            print `self`,"Got tick operation:"
+            print("I this big ", self.height)
+            print(repr(self),"Got tick operation:")
         #in any case send ourself next tick#
         opTick=Operation("tick",to=self)
         opTick.setFutureSeconds(const.basic_tick*speed)
@@ -102,11 +102,11 @@ class Tree(Thing):
         if self.height > sizeadult :
             if randint(1, self.fruitchance) == 1:
                 if debug_tree:
-                    print "I'm growing a fruit!"
+                    print("I'm growing a fruit!")
                 self.fruits = self.fruits + 1
             else:
                 if debug_tree:
-                    print "I didn't grow a fruit"
+                    print("I didn't grow a fruit")
         if fcount != self.fruits:
             if fcount == 0:
               newmode = "normal"
@@ -126,7 +126,7 @@ class Tree(Thing):
             for x in range(rand):
                 # pick a random spot between the 2 extremes of the plant
                 if debug_tree:
-                    print "Creating Fruit"
+                    print("Creating Fruit")
                 randx = uniform ( self.location.coordinates.x - cs( x1 * self.height, x2 * self.height, xMax) , self.location.coordinates.x + cs( x2 * self.height, x1 * self.height, xMax) )
                 randy = 0
                 randz = uniform ( self.location.coordinates.z - cs( z1 * self.height, z2 * self.height, zMax) , self.location.coordinates.z + cs( z2 * self.height, z1 * self.height, zMax) )
@@ -136,6 +136,6 @@ class Tree(Thing):
                 fruit=Entity(name=self.fruitname,location=Location(server.world,Vector3D(randx,randy,randz)),parent=self.fruitname)
                 result = result + Operation("create",fruit,to=self)
                 if debug_tree:
-                    print fruit
+                    print(fruit)
         return result
 

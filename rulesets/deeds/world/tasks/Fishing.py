@@ -36,12 +36,12 @@ class Fishing(server.Task):
                 #self.character.contains.remove(item)
                 break
         else:
-            print "No bait in inventory"
+            print("No bait in inventory")
             self.irrelevant()
             return
 
         if "ocean" not in self.target().type:
-            print "Can fish only in the ocean"
+            print("Can fish only in the ocean")
             self.irrelevant()
             return
 

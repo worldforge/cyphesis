@@ -14,7 +14,7 @@ add_link("#sup_verb1","isa","#eat_verb2")
 
 def get_isa(id):
     res=[]
-    if not o.has_key(id): return res
+    if id not in o: return res
     s=o[id]
     res.append(s)
     for l in s.semlinks:

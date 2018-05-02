@@ -17,7 +17,7 @@ import server
 
 #observer calls this
 def default(host='', account='', password='', **args):
-    print "You must specify a command. The commands available are 'suspend' and 'resume'."
+    print("You must specify a command. The commands available are 'suspend' and 'resume'.")
 
 #Suspends the world, allowing authors to alter it while not worrying about entities moving or changing.
 def suspend(host='', account='', password='', **args):

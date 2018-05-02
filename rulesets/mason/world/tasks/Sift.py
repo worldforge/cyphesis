@@ -42,7 +42,7 @@ class Sift(server.Task):
         """ Op handler for regular tick op """
         # print "Dig.tick"
         if self.target() is None:
-            print "Target is no more"
+            print("Target is no more")
             self.irrelevant()
             return
 
@@ -52,7 +52,7 @@ class Sift(server.Task):
         #print material
                 
         if material not in Sift.materials:
-            print "Not right material for earthworms"
+            print("Not right material for earthworms")
             self.irrelevant()
             return
 
@@ -83,7 +83,7 @@ class Sift(server.Task):
         self_loc.coordinates = self.pos
 
         quality = int(self.get_quality(self_loc.coordinates, self.target(), moisture))
-        print quality
+        print(quality)
         for i in range(int(quality/2), quality):
             res = res + Operation("create", Entity(name = "scrawny earthworm", parent="annelid", location = self_loc), to=self.character)
         for i in range(int((10-quality)/2), quality):

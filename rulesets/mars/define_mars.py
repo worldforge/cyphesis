@@ -74,7 +74,7 @@ def _setup_terrain_basic(m, world):
     maxz=0
 
     # iterate all points, record the min/max values for the  bounding box
-    for i in points.values():
+    for i in list(points.values()):
         x = i[0]
         y = i[1]
         z = i[2]

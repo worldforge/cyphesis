@@ -21,15 +21,15 @@ class elect(DynamicGoal):
                              trigger="interlinguish_desire_verb3_vote_verb1",
                              desc=desc)
     def event(self, me, op, say):
-        print "Vote trigger called"
+        print("Vote trigger called")
 
 class count_players(DynamicGoal):
     def __init__(self, desc="count players"):
-        print "INIT count goal"
+        print("INIT count goal")
         DynamicGoal.__init__(self, trigger="sight_create", desc=desc)
         self.players=[]
     def event(self, me, original_op, op):
-        print "count trigger called"
+        print("count trigger called")
         ent=op[0]
         if ent.type != "villager":
             return
@@ -39,9 +39,9 @@ class count_players(DynamicGoal):
 
 class decount_players(DynamicGoal):
     def __init__(self, desc="count players"):
-        print "INIT decount goal"
+        print("INIT decount goal")
         DynamicGoal.__init__(self, trigger="sight_delete", desc=desc)
     def event(self, me, original_op, op):
-        print "decount trigger called"
+        print("decount trigger called")
         entid=op[0].id
         me.player_list.remove(entid)

@@ -1183,7 +1183,7 @@ def create_island_terrain(host='', account='', password='', **args):
     maxx=0
     maxy=0
     maxz=0
-    for i in points.values():
+    for i in list(points.values()):
         x = i[0]
         y = i[1]
         z = i[2]
@@ -1234,7 +1234,7 @@ def create_empty_terrain(host='', account='', password='', **args):
     maxx=0
     maxy=0
     maxz=0
-    for i in points.values():
+    for i in list(points.values()):
         x = i[0]
         y = i[1]
         z = i[2]
@@ -1289,7 +1289,7 @@ def create_large_empty_terrain(host='', account='', password='', **args):
     maxx=0
     maxy=0
     maxz=0
-    for i in points.values():
+    for i in list(points.values()):
         x = i[0]
         y = i[1]
         z = i[2]
@@ -1342,7 +1342,7 @@ def create_small_empty_terrain(host='', account='', password='', **args):
     maxx=0
     maxy=0
     maxz=0
-    for i in points.values():
+    for i in list(points.values()):
         x = i[0]
         y = i[1]
         z = i[2]

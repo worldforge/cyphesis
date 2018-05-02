@@ -53,7 +53,7 @@ class Logging(server.Task):
             res.append(set)
 
             if current_status <= 0.5 and self.target().mode != 'free':
-                print "Timber!"
+                print("Timber!")
 
                 #Make it fall initially 15 degrees away from the logger entity.
                 axis = distance_to(self.character.location,

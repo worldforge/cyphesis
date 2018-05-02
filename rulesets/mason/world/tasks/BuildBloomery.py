@@ -39,7 +39,7 @@ class BuildBloomery(server.Task):
         self.progress += 1
 
         if not target:
-            print "Target is no more"
+            print("Target is no more")
             self.irrelevant()
             return
 
@@ -70,14 +70,14 @@ class BuildBloomery(server.Task):
                     charcoal_count = charcoal_count + 1
             #we accept only piles of earth not dirt or some other shit
             if item.type[0] == str("pile") and item.material == str("earth"):
-               print "Pile of earth was found in inventory"
+               print("Pile of earth was found in inventory")
                if earth_count <= 0 :
                     raw_materials.append(item)
                     earth_count = earth_count + 1
             if (hematite_count+charcoal_count+earth_count) == 3 :
                 break
         else:
-            print "No materials in inventory"
+            print("No materials in inventory")
             self.irrelevant()
             return
 

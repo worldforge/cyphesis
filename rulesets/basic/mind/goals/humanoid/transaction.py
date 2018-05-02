@@ -27,7 +27,7 @@ class hire_trade(DynamicGoal):
         #print "To got hired"
         price = me.get_knowledge('price', 'services')
         if not price:
-            print "No price"
+            print("No price")
             return
         #print "I go for " + str(price) + " coins"
         goal = mind.goals.common.misc_goal.hireling_transaction('services', op.to, price)
@@ -111,7 +111,7 @@ class buy_livestock(DynamicGoal):
         res=Oplist()
         coins = me.find_thing("coin")
         if len(coins) < int(price):
-            print "Coins: " + len(coins) + " Cost: " + self.cost
+            print("Coins: " + len(coins) + " Cost: " + self.cost)
             return Operation("talk", Entity(say="I can't afford any "+self.what+"s at the moment."))
         for i in range(0, int(price)):
             coin=coins[0]

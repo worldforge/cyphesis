@@ -16,7 +16,7 @@ def remove_value(dict, item, remove_empty_key=1):
     """removes value from dictionary and removes key too if no values
        and if remove_empty_key true"""
     flag=0
-    for (key,value) in dict.items():
+    for (key,value) in list(dict.items()):
         if item in value:
             flag=1
             value.remove(item)

@@ -59,17 +59,17 @@ class Earthbarrier(server.Task):
             try:
                 mod = self._find_mod('wall')
             except Earthbarrier.Obstructed:
-                print "obstructed"
+                print("obstructed")
                 self.irrelevant()
                 return
             if mod is None:
                 # There is no terrain mod where we are digging,
                 return self._create_initial_mod()
-            print "found existing mod"
+            print("found existing mod")
             self.terrain_mod = weakref.ref(mod)
 
         mod = self.terrain_mod()
-        print "Now we grow it"
+        print("Now we grow it")
         area = mod.terrainmod.shape.area()
         factor = math.sqrt((area + 1) / area)
         # FIXME Shape is not compatible with line data yet
@@ -95,7 +95,7 @@ class Earthbarrier(server.Task):
             for mod in mods:
                 if hasattr(mod, 'name') and mod.name == name:
                     return mod
-            raise Earthbarrier.Obstructed, "Another mod is in the way"
+            raise Earthbarrier.Obstructed("Another mod is in the way")
     def _create_initial_mod(self):
         y=self.character.location.coordinates.y + 1.0
         mod_path = Line([[ self.pos.x, self.pos.z ]])

@@ -27,7 +27,7 @@ class Gateconstruction(server.Task):
 
         self.pos = Point3D(op[0].pos)
     def info_operation(self,op):
-        print "Gate info"
+        print("Gate info")
         gate = server.world.get_object_ref(op[0].id)
         self.lcount = 0#needs 1 lumber for basic gate
         self.acount=0#needs 2 a frames for basic gate
@@ -45,7 +45,7 @@ class Gateconstruction(server.Task):
             if self.lcount==3:
                 break
         else:
-            print "No materials in inventory for Gate"
+            print("No materials in inventory for Gate")
             self.irrelevant()
             return
 
@@ -156,7 +156,7 @@ class Gateconstruction(server.Task):
         self.progress += 1
 
         if not target:
-            print "Target is no more"
+            print("Target is no more")
             self.irrelevant()
             return
 
@@ -176,7 +176,7 @@ class Gateconstruction(server.Task):
                 self.gname="Basic_Gate"
                 break
         else:
-            print "No materials in inventory for a Gate"
+            print("No materials in inventory for a Gate")
             self.irrelevant()
 
         if self.progress < 1:

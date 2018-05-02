@@ -48,9 +48,9 @@ class Trailblaze(server.Task):
                 res.append(create)
                 self.points.append(self.character.location.coordinates)
             elif 'pile' in target.type:
-                print 'Pile'
+                print('Pile')
             else:
-                print 'WTF!', target.type
+                print('WTF!', target.type)
                 self.irrelevant()
                 return
         else:
@@ -135,7 +135,7 @@ class Trailblaze(server.Task):
         new_loc = Location(target, self.points[0])
         # create = Operation('create', Entity(name='path', type='path', location=new_loc, area=area, line=line), to=target)
         bbox = [minx, miny, minz, maxx, maxy, maxz]
-        print "area %r box %r" % (area, bbox)
+        print("area %r box %r" % (area, bbox))
         create = Operation('create',
               Entity(name='path', type='path', location=new_loc, bbox=bbox,
                      area={'shape': {'points' : area, 'type': 'polygon'},

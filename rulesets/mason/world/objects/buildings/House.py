@@ -24,6 +24,6 @@ class House(server.Thing):
                               location=Location(self,Point3D(0.0,0.0,0.0)))
             opCreate=Operation("create",fireEntity,to=self)
             if const.debug_level>=2:
-                print "Fire! "*30
+                print("Fire! "*30)
             return Oplist(opCreate,opTick)
         return opTick

@@ -68,7 +68,7 @@ class Earthwall(server.Task):
             if (ecount+scount+bcount) == 3 :
                 break
         else:
-            print "No materials in inventory"
+            print("No materials in inventory")
             self.irrelevant()
             return
 

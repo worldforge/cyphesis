@@ -62,7 +62,7 @@ class Pioneering(server.Task):
                 raw_materials.append(item)
                 lcount = lcount + 1
         else:
-            print item, "Not suffcient material in inventory"
+            print(item, "Not suffcient material in inventory")
 
         count = rcount + wcount + lcount
 

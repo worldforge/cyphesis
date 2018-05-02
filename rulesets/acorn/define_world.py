@@ -3,9 +3,9 @@
 
 from atlas import *
 from whrandom import *
-from mind.panlingua import interlinguish
+from .mind.panlingua import interlinguish
 il=interlinguish
-from world import probability
+from .world import probability
 from editor import editor
 import time
 

@@ -557,13 +557,349 @@ void observe_python_directory(std::string directory) {
     }
 }
 
+static PyObject* init_entity_filter() {
+    static struct PyModuleDef entity_filter_def = {
+            PyModuleDef_HEAD_INIT,
+            "entity_filter",
+            nullptr,
+            0,
+            entity_filter_methods,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr
+    };
+
+    PyObject * entity_filter = PyModule_Create(&entity_filter_def);
+    if (entity_filter == nullptr) {
+        log(CRITICAL, "Python init failed to create entity_filter module\n");
+        return nullptr;
+    }
+
+    PyFilter_Type.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&PyFilter_Type) < 0 ){
+        log(CRITICAL, "Python init failed to ready entity filter wrapper type");
+            return  nullptr;
+    }
+
+    return entity_filter;
+}
+
+static PyObject* init_atlas() {
+    static struct PyModuleDef atlas_def = {
+            PyModuleDef_HEAD_INIT,
+            "atlas",
+            nullptr,
+            0,
+            atlas_methods,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr
+    };
+
+    PyObject * atlas = PyModule_Create(&atlas_def);
+    if (atlas == nullptr) {
+        log(CRITICAL, "Python init failed to create atlas module\n");
+        return nullptr;
+    }
+    if (PyType_Ready(&PyConstOperation_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready const Operation wrapper type");
+        return nullptr;
+    }
+    if (PyType_Ready(&PyOperation_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Operation wrapper type");
+        return nullptr;
+    }
+    PyModule_AddObject(atlas, "Operation", (PyObject *)&PyOperation_Type);
+    if (PyType_Ready(&PyRootEntity_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready RootEntity wrapper type");
+        return nullptr;
+    }
+    PyModule_AddObject(atlas, "Entity", (PyObject *)&PyRootEntity_Type);
+    PyOplist_Type.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&PyOplist_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Oplist wrapper type");
+        return nullptr;
+    }
+    PyModule_AddObject(atlas, "Oplist", (PyObject *)&PyOplist_Type);
+    if (PyType_Ready(&PyLocation_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Location wrapper type");
+        return nullptr;
+    }
+    PyModule_AddObject(atlas, "Location", (PyObject *)&PyLocation_Type);
+    PyMessage_Type.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&PyMessage_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Message wrapper type");
+        return nullptr;
+    }
+    PyModule_AddObject(atlas, "Message", (PyObject *)&PyMessage_Type);
+
+    return atlas;
+}
+
+static PyObject* init_physics() {
+    static struct PyModuleDef physics_def = {
+            PyModuleDef_HEAD_INIT,
+            "physics",
+            nullptr,
+            0,
+            physics_methods,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr
+    };
+
+    PyObject * physics = PyModule_Create(&physics_def);
+    if (physics == nullptr) {
+        log(CRITICAL, "Python init failed to create physics module\n");
+        return nullptr;
+    }
+    if (PyType_Ready(&PyVector3D_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Vector3D wrapper type");
+        return nullptr;
+    }
+    PyModule_AddObject(physics, "Vector3D", (PyObject *)&PyVector3D_Type);
+    if (PyType_Ready(&PyPoint3D_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Point3D wrapper type");
+        return nullptr;
+    }
+    PyModule_AddObject(physics, "Point3D", (PyObject *)&PyPoint3D_Type);
+    if (PyType_Ready(&PyBBox_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready BBox wrapper type");
+        return nullptr;
+    }
+    PyModule_AddObject(physics, "BBox", (PyObject *)&PyBBox_Type);
+    if (PyType_Ready(&PyQuaternion_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Quaternion wrapper type");
+        return nullptr;
+    }
+    PyModule_AddObject(physics, "Quaternion", (PyObject *)&PyQuaternion_Type);
+
+    if (PyType_Ready(&PyShape_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Shape wrapper type");
+        return nullptr;
+    }
+    PyModule_AddObject(physics, "Shape", (PyObject *)&PyShape_Type);
+    if (PyType_Ready(&PyArea_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Area wrapper type");
+        return nullptr;
+    }
+    PyModule_AddObject(physics, "Area", (PyObject *)&PyArea_Type);
+    if (PyType_Ready(&PyBody_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Body wrapper type");
+        return nullptr;
+    }
+    PyModule_AddObject(physics, "Body", (PyObject *)&PyBody_Type);
+    if (PyType_Ready(&PyBox_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Box wrapper type");
+        return nullptr;
+    }
+    PyModule_AddObject(physics, "Box", (PyObject *)&PyBox_Type);
+    if (PyType_Ready(&PyCourse_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Course wrapper type");
+        return nullptr;
+    }
+    PyModule_AddObject(physics, "Course", (PyObject *)&PyCourse_Type);
+    if (PyType_Ready(&PyLine_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Line wrapper type");
+        return nullptr;
+    }
+    PyModule_AddObject(physics, "Line", (PyObject *)&PyLine_Type);
+    if (PyType_Ready(&PyPolygon_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Polygon wrapper type");
+        return nullptr;
+    }
+    PyModule_AddObject(physics, "Polygon", (PyObject *)&PyPolygon_Type);
+
+    return physics;
+}
+
+static PyObject* init_common() {
+    static struct PyModuleDef common_def = {
+            PyModuleDef_HEAD_INIT,
+            "common",
+            nullptr,
+            0,
+            no_methods,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr
+    };
+
+    PyObject * common = PyModule_Create(&common_def);
+
+    if (common == nullptr) {
+        log(CRITICAL, "Python init failed to create common module\n");
+        return nullptr;
+    }
+
+    log_debug_type.tp_new = PyType_GenericNew;
+    log_think_type.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&log_debug_type) < 0 || PyType_Ready(&log_think_type) < 0) {
+        log(CRITICAL, "Python init failed to ready log wrapper type");
+        return nullptr;
+    }
+
+    /// Create the common.log module
+    PyObject * log_mod = PyModule_New("log");
+    PyModule_AddObject(common, "log", log_mod);
+
+    PyObject * debug = log_debug_type.tp_new(&log_debug_type, 0, 0);
+    PyModule_AddObject(log_mod, "debug", debug);
+
+    PyObject * think = log_think_type.tp_new(&log_think_type, 0, 0);
+    PyModule_AddObject(log_mod, "thinking", think);
+
+
+    PyObject * o;
+
+    /// Create the common.const module
+    PyObject * _const = PyModule_New("const");
+    PyModule_AddObject(common, "const", _const);
+
+    o = PyLong_FromLong(consts::debug_level);
+    PyModule_AddObject(_const, "debug_level", o);
+
+    o = PyLong_FromLong(consts::debug_thinking);
+    PyModule_AddObject(_const, "debug_thinking", o);
+
+    o = PyFloat_FromDouble(consts::time_multiplier);
+    PyModule_AddObject(_const, "time_multiplier", o);
+
+    o = PyFloat_FromDouble(consts::basic_tick);
+    PyModule_AddObject(_const, "basic_tick", o);
+
+    o = PyFloat_FromDouble(WFMath::numeric_constants<WFMath::CoordType>::epsilon());
+    PyModule_AddObject(_const, "epsilon", o);
+
+    /// Create the common.globals module
+    PyObject * globals = PyModule_New("globals");
+    PyModule_AddObject(common, "globals", globals);
+
+    o = PyUnicode_FromString(share_directory.c_str());
+    PyModule_AddObject(globals, "share_directory", o);
+    
+    return common;
+}
+
+static PyObject* init_server() {
+    static struct PyModuleDef server_def = {
+            PyModuleDef_HEAD_INIT,
+            "server",
+            nullptr,
+            0,
+            no_methods,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr
+    };
+
+    PyObject * server = PyModule_Create(&server_def);
+
+    if (server == nullptr) {
+        log(CRITICAL, "Python init failed to create server module");
+        return nullptr;
+    }
+
+    // New module code
+    PyMemMap_Type.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&PyMemMap_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Map wrapper type");
+        return nullptr;
+    }
+    PyModule_AddObject(server, "Map", (PyObject *)&PyMemMap_Type);
+    PyTask_Type.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&PyTask_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Task wrapper type");
+        return nullptr;
+    }
+    PyModule_AddObject(server, "Task", (PyObject *)&PyTask_Type);
+    if (PyType_Ready(&PyLocatedEntity_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Entity wrapper type");
+        return nullptr;
+    }
+    PyModule_AddObject(server, "LocatedEntity", (PyObject *)&PyLocatedEntity_Type);
+    if (PyType_Ready(&PyEntity_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Thing wrapper type");
+        return nullptr;
+    }
+    PyModule_AddObject(server, "Thing", (PyObject *)&PyEntity_Type);
+    if (PyType_Ready(&PyCharacter_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Character wrapper type");
+        return nullptr;
+    }
+    PyModule_AddObject(server, "Character", (PyObject *)&PyCharacter_Type);
+    PyWorld_Type.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&PyWorld_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready World wrapper type");
+        return nullptr;
+    }
+    PyModule_AddObject(server, "World", (PyObject *)&PyWorld_Type);
+    if (PyType_Ready(&PyMind_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready Mind wrapper type");
+        return nullptr;
+    }
+    PyModule_AddObject(server, "Mind", (PyObject *)&PyMind_Type);
+
+    // PyWorldTime_Type.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&PyWorldTime_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready WorldTime wrapper type");
+        return nullptr;
+    }
+    PyModule_AddObject(server, "WorldTime", (PyObject *)&PyWorldTime_Type);
+
+    PyWorld * world = newPyWorld();
+    if (world != nullptr) {
+        PyModule_AddObject(server, "world", (PyObject *)world);
+    } else {
+        log(CRITICAL, "Python init failed to create World object");
+    }
+
+    // FIXME Remove once we are sure.
+    // PyObject * rules = Py_InitModule("rulesets", no_methods);
+    // if (rules == nullptr) {
+    // log(CRITICAL, "Python init failed to create rules module");
+    // // return nullptr;
+    // }
+    // if (PyType_Ready(&PyStatistics_Type) < 0) {
+    // log(CRITICAL, "Python init failed to ready Statistics wrapper type");
+    // return nullptr;
+    // }
+    // PyModule_AddObject(rules, "Statistics", (PyObject *)&PyStatistics_Type);
+
+    PyTerrainProperty_Type.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&PyTerrainProperty_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready TerrainProperty wrapper type");
+        return nullptr;
+    }
+
+    PyTerrainModProperty_Type.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&PyTerrainModProperty_Type) < 0) {
+        log(CRITICAL, "Python init failed to ready TerrainModProperty wrapper type");
+        return nullptr;
+    }
+    return server;
+}
+
+
 void init_python_api(const char* programName, const std::string & ruleset, bool log_stdout)
 {
-    wchar_t *program = Py_DecodeLocale(programName, nullptr);
-    Py_SetProgramName(program);
+
+    PyImport_AppendInittab("entity_filter", &init_entity_filter);
+    PyImport_AppendInittab("atlas", &init_atlas);
+    PyImport_AppendInittab("physics", &init_physics);
+    PyImport_AppendInittab("common", &init_common);
+    PyImport_AppendInittab("server", &init_server);
+
+    //wchar_t *program = Py_DecodeLocale(programName, nullptr);
+    //Py_SetProgramName(program);
     Py_InitializeEx(0);
 
-    PyMem_RawFree(program);
+    //PyMem_RawFree(program);
 
     PyOutLogger_Type.tp_new = PyType_GenericNew;
     if (PyType_Ready(&PyOutLogger_Type) < 0) {
@@ -625,314 +961,15 @@ void init_python_api(const char* programName, const std::string & ruleset, bool 
     }
     Py_DECREF(sys_module);
 
-    static struct PyModuleDef entity_filter_def = {
-        PyModuleDef_HEAD_INIT,
-        "entity_filter",
-        nullptr,
-//        sizeof(struct module_state),
-        0,
-        entity_filter_methods,
-        nullptr,
-        nullptr,
-        nullptr,
-        nullptr
-    };
 
-    PyObject * entity_filter = PyModule_Create(&entity_filter_def);
-    if (entity_filter == nullptr) {
-        log(CRITICAL, "Python init failed to create entity_filter module\n");
-        return;
-    }
 
-    PyFilter_Type.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&PyFilter_Type) < 0 ){
-        log(CRITICAL, "Python init failed to ready entity filter wrapper type");
-            return;
-    }
 
-    static struct PyModuleDef atlas_def = {
-        PyModuleDef_HEAD_INIT,
-        "atlas",
-        nullptr,
-        0,
-        atlas_methods,
-        nullptr,
-        nullptr,
-        nullptr,
-        nullptr
-    };
 
-    PyObject * atlas = PyModule_Create(&atlas_def);
-    if (atlas == nullptr) {
-        log(CRITICAL, "Python init failed to create atlas module\n");
-        return;
-    }
-    if (PyType_Ready(&PyConstOperation_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready const Operation wrapper type");
-        return;
-    }
-    if (PyType_Ready(&PyOperation_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Operation wrapper type");
-        return;
-    }
-    PyModule_AddObject(atlas, "Operation", (PyObject *)&PyOperation_Type);
-    if (PyType_Ready(&PyRootEntity_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready RootEntity wrapper type");
-        return;
-    }
-    PyModule_AddObject(atlas, "Entity", (PyObject *)&PyRootEntity_Type);
-    PyOplist_Type.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&PyOplist_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Oplist wrapper type");
-        return;
-    }
-    PyModule_AddObject(atlas, "Oplist", (PyObject *)&PyOplist_Type);
-    if (PyType_Ready(&PyLocation_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Location wrapper type");
-        return;
-    }
-    PyModule_AddObject(atlas, "Location", (PyObject *)&PyLocation_Type);
-    PyMessage_Type.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&PyMessage_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Message wrapper type");
-        return;
-    }
-    PyModule_AddObject(atlas, "Message", (PyObject *)&PyMessage_Type);
 
-    static struct PyModuleDef physics_def = {
-        PyModuleDef_HEAD_INIT,
-        "physics",
-        nullptr,
-        0,
-        physics_methods,
-        nullptr,
-        nullptr,
-        nullptr,
-        nullptr
-    };
+   
 
-    PyObject * physics = PyModule_Create(&physics_def);
-    if (physics == nullptr) {
-        log(CRITICAL, "Python init failed to create physics module\n");
-        return;
-    }
-    if (PyType_Ready(&PyVector3D_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Vector3D wrapper type");
-        return;
-    }
-    PyModule_AddObject(physics, "Vector3D", (PyObject *)&PyVector3D_Type);
-    if (PyType_Ready(&PyPoint3D_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Point3D wrapper type");
-        return;
-    }
-    PyModule_AddObject(physics, "Point3D", (PyObject *)&PyPoint3D_Type);
-    if (PyType_Ready(&PyBBox_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready BBox wrapper type");
-        return;
-    }
-    PyModule_AddObject(physics, "BBox", (PyObject *)&PyBBox_Type);
-    if (PyType_Ready(&PyQuaternion_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Quaternion wrapper type");
-        return;
-    }
-    PyModule_AddObject(physics, "Quaternion", (PyObject *)&PyQuaternion_Type);
 
-    if (PyType_Ready(&PyShape_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Shape wrapper type");
-        return;
-    }
-    PyModule_AddObject(physics, "Shape", (PyObject *)&PyShape_Type);
-    if (PyType_Ready(&PyArea_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Area wrapper type");
-        return;
-    }
-    PyModule_AddObject(physics, "Area", (PyObject *)&PyArea_Type);
-    if (PyType_Ready(&PyBody_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Body wrapper type");
-        return;
-    }
-    PyModule_AddObject(physics, "Body", (PyObject *)&PyBody_Type);
-    if (PyType_Ready(&PyBox_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Box wrapper type");
-        return;
-    }
-    PyModule_AddObject(physics, "Box", (PyObject *)&PyBox_Type);
-    if (PyType_Ready(&PyCourse_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Course wrapper type");
-        return;
-    }
-    PyModule_AddObject(physics, "Course", (PyObject *)&PyCourse_Type);
-    if (PyType_Ready(&PyLine_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Line wrapper type");
-        return;
-    }
-    PyModule_AddObject(physics, "Line", (PyObject *)&PyLine_Type);
-    if (PyType_Ready(&PyPolygon_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Polygon wrapper type");
-        return;
-    }
-    PyModule_AddObject(physics, "Polygon", (PyObject *)&PyPolygon_Type);
 
-    static struct PyModuleDef common_def = {
-        PyModuleDef_HEAD_INIT,
-        "common",
-        nullptr,
-        0,
-        no_methods,
-        nullptr,
-        nullptr,
-        nullptr,
-        nullptr
-    };
-
-    PyObject * common = PyModule_Create(&common_def);
-
-    if (common == nullptr) {
-        log(CRITICAL, "Python init failed to create common module\n");
-        return;
-    }
-
-    log_debug_type.tp_new = PyType_GenericNew;
-    log_think_type.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&log_debug_type) < 0 || PyType_Ready(&log_think_type) < 0) {
-        log(CRITICAL, "Python init failed to ready log wrapper type");
-        return;
-    }
-
-    /// Create the common.log module
-    PyObject * log_mod = PyModule_New("log");
-    PyModule_AddObject(common, "log", log_mod);
-
-    PyObject * debug = log_debug_type.tp_new(&log_debug_type, 0, 0);
-    PyModule_AddObject(log_mod, "debug", debug);
-
-    PyObject * think = log_think_type.tp_new(&log_think_type, 0, 0);
-    PyModule_AddObject(log_mod, "thinking", think);
-
-    PyObject * o;
-
-    /// Create the common.const module
-    PyObject * _const = PyModule_New("const");
-    PyModule_AddObject(common, "const", _const);
-
-    o = PyLong_FromLong(consts::debug_level);
-    PyModule_AddObject(_const, "debug_level", o);
-
-    o = PyLong_FromLong(consts::debug_thinking);
-    PyModule_AddObject(_const, "debug_thinking", o);
-
-    o = PyFloat_FromDouble(consts::time_multiplier);
-    PyModule_AddObject(_const, "time_multiplier", o);
-
-    o = PyFloat_FromDouble(consts::basic_tick);
-    PyModule_AddObject(_const, "basic_tick", o);
-
-    o = PyFloat_FromDouble(WFMath::numeric_constants<WFMath::CoordType>::epsilon());
-    PyModule_AddObject(_const, "epsilon", o);
-
-    /// Create the common.globals module
-    PyObject * globals = PyModule_New("globals");
-    PyModule_AddObject(common, "globals", globals);
-
-    o = PyUnicode_FromString(share_directory.c_str());
-    PyModule_AddObject(globals, "share_directory", o);
-
-    static struct PyModuleDef server_def = {
-        PyModuleDef_HEAD_INIT,
-        "server",
-        nullptr,
-        0,
-        no_methods,
-        nullptr,
-        nullptr,
-        nullptr,
-        nullptr
-    };
-
-    PyObject * server = PyModule_Create(&server_def);
-
-    if (server == nullptr) {
-        log(CRITICAL, "Python init failed to create server module");
-        return;
-    }
-    
-    // New module code
-    PyMemMap_Type.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&PyMemMap_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Map wrapper type");
-        return;
-    }
-    PyModule_AddObject(server, "Map", (PyObject *)&PyMemMap_Type);
-    PyTask_Type.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&PyTask_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Task wrapper type");
-        return;
-    }
-    PyModule_AddObject(server, "Task", (PyObject *)&PyTask_Type);
-    if (PyType_Ready(&PyLocatedEntity_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Entity wrapper type");
-        return;
-    }
-    PyModule_AddObject(server, "LocatedEntity", (PyObject *)&PyLocatedEntity_Type);
-    if (PyType_Ready(&PyEntity_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Thing wrapper type");
-        return;
-    }
-    PyModule_AddObject(server, "Thing", (PyObject *)&PyEntity_Type);
-    if (PyType_Ready(&PyCharacter_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Character wrapper type");
-        return;
-    }
-    PyModule_AddObject(server, "Character", (PyObject *)&PyCharacter_Type);
-    PyWorld_Type.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&PyWorld_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready World wrapper type");
-        return;
-    }
-    PyModule_AddObject(server, "World", (PyObject *)&PyWorld_Type);
-    if (PyType_Ready(&PyMind_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Mind wrapper type");
-        return;
-    }
-    PyModule_AddObject(server, "Mind", (PyObject *)&PyMind_Type);
-
-    // PyWorldTime_Type.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&PyWorldTime_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready WorldTime wrapper type");
-        return;
-    }
-    PyModule_AddObject(server, "WorldTime", (PyObject *)&PyWorldTime_Type);
-
-    PyWorld * world = newPyWorld();
-    if (world != nullptr) {
-        PyModule_AddObject(server, "world", (PyObject *)world);
-    } else {
-        log(CRITICAL, "Python init failed to create World object");
-    }
-
-    // FIXME Remove once we are sure.
-    // PyObject * rules = Py_InitModule("rulesets", no_methods);
-    // if (rules == nullptr) {
-        // log(CRITICAL, "Python init failed to create rules module");
-        // // return;
-    // }
-    // if (PyType_Ready(&PyStatistics_Type) < 0) {
-        // log(CRITICAL, "Python init failed to ready Statistics wrapper type");
-        // return;
-    // }
-    // PyModule_AddObject(rules, "Statistics", (PyObject *)&PyStatistics_Type);
-
-    PyTerrainProperty_Type.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&PyTerrainProperty_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready TerrainProperty wrapper type");
-        return;
-    }
-
-    PyTerrainModProperty_Type.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&PyTerrainModProperty_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready TerrainModProperty wrapper type");
-        return;
-    }
 
 
     debug(std::cout << Py_GetPath() << std::endl << std::flush;);

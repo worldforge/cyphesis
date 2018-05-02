@@ -15,8 +15,7 @@ def is_suitable_place_for_home(me):
 def find_place(me):
     "find place for home: wander randomly"
     loc=me.location.copy()
-    loc.coordinates=Vector3D(map(lambda c:c+uniform(-50,50),
-                                 loc.coordinates))
+    loc.coordinates=Vector3D([c+uniform(-50,50) for c in loc.coordinates])
     ent=Entity(me,location=loc)
     return Operation("move",ent)
 
@@ -32,7 +31,7 @@ def make_home(me):
 
 def have_home(me):
     "Do I have home?"
-    return me.things.has_key('home')
+    return 'home' in me.things
 
 find_home=Goal("find place for home and make it",
                have_home,

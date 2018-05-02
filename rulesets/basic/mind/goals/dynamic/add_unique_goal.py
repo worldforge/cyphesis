@@ -11,7 +11,7 @@ class add_unique_goal(DynamicGoal):
     """Base class for dynamic goals which add a regular goal."""
     def __init__(self, goal_to_add, desc="add_unique_goal", **kw):
         kw['desc'] = desc
-        apply(DynamicGoal.__init__,(self,),kw)
+        DynamicGoal.__init__(*(self,), **kw)
         self.goal_class = goal_to_add
         self.vars.append("goal_class")
     def event(self, me, original_op, op):

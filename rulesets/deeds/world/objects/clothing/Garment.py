@@ -12,13 +12,13 @@ class Garment(server.Thing):
         wearer = server.world.get_object(op.from_)
         guise = wearer.guise
         # return Operation("set",op[0],Entity(op.from_, ),to=to_)
-        print type(guise)
-        print guise
-        print guise['mesh']
-        print guise['mesh'].dress
-        print guise['mesh'].head
-        print guise['mesh'].pants
-        print guise['material']
-        print guise['material'].dress
-        print guise['material'].head
-        print guise['material'].pants
+        print(type(guise))
+        print(guise)
+        print(guise['mesh'])
+        print(guise['mesh'].dress)
+        print(guise['mesh'].head)
+        print(guise['mesh'].pants)
+        print(guise['material'])
+        print(guise['material'].dress)
+        print(guise['material'].head)
+        print(guise['material'].pants)

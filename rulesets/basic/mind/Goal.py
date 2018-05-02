@@ -50,11 +50,11 @@ class Goal:
     def info(self):
         name=self.__class__.__name__
         if name=="Goal":
-            return name+"("+`self.desc`+")"
+            return name+"("+repr(self.desc)+")"
         var=""
         for v in self.vars:
             if var: var=var+","
-            var=var+`getattr(self,v)`
+            var=var+repr(getattr(self,v))
         return name+"("+var+")"
     def is_valid(self, me):
         """Checks if this goal is valid. By this we mean whether the goal is possible to fulfill. 
@@ -81,15 +81,15 @@ class Goal:
         #is it right time range?
         if self.time and not time.is_now(self.time): return res,debugInfo
         if self.debug:
-            log.thinking("\t"*depth+"GOAL: bef fulfilled: "+self.desc+" "+`self.fulfilled`)
+            log.thinking("\t"*depth+"GOAL: bef fulfilled: "+self.desc+" "+repr(self.fulfilled))
         if self.fulfilled(me): 
             self.is_fulfilled = 1
             if self.debug:
-                log.thinking("\t"*depth+"GOAL: is fulfilled: "+self.desc+" "+`self.fulfilled`)
+                log.thinking("\t"*depth+"GOAL: is fulfilled: "+self.desc+" "+repr(self.fulfilled))
             return res,debugInfo
         else:
             if self.debug:
-                log.thinking("\t"*depth+"GOAL: is not fulfilled: "+self.desc+" "+`self.fulfilled`)
+                log.thinking("\t"*depth+"GOAL: is not fulfilled: "+self.desc+" "+repr(self.fulfilled))
             self.is_fulfilled = 0
         debugInfo=debugInfo+"."+self.info()
         #Iterate over all subgoals, but break if any goal returns an operation
@@ -98,10 +98,10 @@ class Goal:
                 continue
             if type(sg)==FunctionType or type(sg)==MethodType:
                 if self.debug:
-                    log.thinking("\t"*depth+"GOAL: bef function: "+`sg`+" "+`res`)
+                    log.thinking("\t"*depth+"GOAL: bef function: "+repr(sg)+" "+repr(res))
                 res=sg(me)
                 if self.debug:
-                    log.thinking("\t"*depth+"GOAL: aft function: "+`sg`+" "+`res`)
+                    log.thinking("\t"*depth+"GOAL: aft function: "+repr(sg)+" "+repr(res))
                 debugInfo=debugInfo+"."+sg.__name__+"()"
                 if res!=None:
                     #If the function generated an op, stop iterating here and return
