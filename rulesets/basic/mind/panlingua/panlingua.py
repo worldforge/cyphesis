@@ -146,7 +146,7 @@ class screen:
                 except KeyError:
                     s.append(' ')
             s.append('\n')
-        return string.join(s,'')
+        return str.join(s,'')
 
 def str_sentence(sentence):
     return str(sentence[0])

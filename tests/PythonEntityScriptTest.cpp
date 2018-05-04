@@ -88,11 +88,26 @@ static PyMethodDef no_methods[] = {
     {nullptr,          nullptr}                       /* Sentinel */
 };
 
+static PyObject* init_testmod() {
+    static struct PyModuleDef def = {
+            PyModuleDef_HEAD_INIT,
+            "testmod",
+            nullptr,
+            0,
+            no_methods,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr
+    };
+
+    return PyModule_Create(&def);
+}
+
 int main()
 {
+    PyImport_AppendInittab("testmod", &init_testmod);
     init_python_api("9fb5e26d-5631-479c-bdfc-cdb3c14b5428");
-
-    Py_InitModule("testmod", no_methods);
 
     run_python_string("import server");
     run_python_string("import testmod");
@@ -100,9 +115,9 @@ int main()
     run_python_string("class TestEntity(server.Thing):\n"
                       " def look_operation(self, op): pass\n"
                       " def delete_operation(self, op):\n"
-                      "  raise AssertionError, 'deliberate'\n"
+                      "  raise AssertionError('deliberate')\n"
                       " def tick_operation(self, op):\n"
-                      "  raise AssertionError, 'deliberate'\n"
+                      "  raise AssertionError('deliberate')\n"
                       " def talk_operation(self, op):\n"
                       "  return 'invalid result'\n"
                       " def set_operation(self, op):\n"

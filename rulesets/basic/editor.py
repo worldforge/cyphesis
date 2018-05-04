@@ -21,7 +21,7 @@ class editor:
     def call_list_args(self, *args):
         #indent='\t'*self.cl_depth
         for i in range(self.cl_args[1]):
-            if type(args[i])==ListType:
+            if type(args[i])==list:
                 #print indent,"LIST!"
                 #print indent,self.cl_args,args
                 #self.cl_depth=self.cl_depth+1
@@ -61,21 +61,21 @@ class editor:
     def delete(self, id):
         return self.avatar.delete(id)
     def sanitizeKnowledge(self, knowledge):
-        if type(knowledge)==InstanceType: return knowledge.id
-        elif type(knowledge)==TupleType: return repr(knowledge)
-        elif type(knowledge)==StringType: return knowledge
+        if type(knowledge)==object: return knowledge.id
+        elif type(knowledge)==tuple: return repr(knowledge)
+        elif type(knowledge)==str: return knowledge
         else: return knowledge.id
     
     def _say(self,target,verb,subject,object,predicate=None):
 ##         es=Entity(verb=verb,subject=subject,object=object)
 ##         self.avatar.send(Operation("talk",es,to=target))
-        if type(subject)==InstanceType: subject=subject.id
-        elif type(subject)==TupleType: subject=repr(subject)
-        elif type(subject)==StringType: pass
+        if type(subject)==object: subject=subject.id
+        elif type(subject)==tuple: subject=repr(subject)
+        elif type(subject)==str: pass
         else: subject=subject.id
-        if type(object)==InstanceType: object=object.id
-        elif type(object)==TupleType: object=repr(object)
-        elif type(object)==StringType: pass
+        if type(object)==object: object=object.id
+        elif type(object)==tuple: object=repr(object)
+        elif type(object)==str: pass
         else: object=object.id
         if predicate:
             string,interlinguish=il.verb_subject_predicate_object(verb,subject,predicate,object)

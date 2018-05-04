@@ -227,6 +227,12 @@ static PyObject * PyOutLogger_write(PyObject * self, PyObject * arg)
     return Py_None;
 }
 
+static PyObject * PyOutLogger_flush(PyObject * self)
+{
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
 static PyObject * PyErrLogger_write(PyObject * self, PyObject * arg)
 {
     if (!PyUnicode_CheckExact(arg)) {
@@ -243,6 +249,7 @@ static PyObject * PyErrLogger_write(PyObject * self, PyObject * arg)
 
 static PyMethodDef PyOutLogger_methods[] = {
     {"write",       PyOutLogger_write,          METH_O},
+    {"flush",       (PyCFunction)PyOutLogger_flush,          METH_NOARGS},
     {nullptr,          nullptr}                       /* Sentinel */
 };
 
@@ -886,7 +893,7 @@ static PyObject* init_server() {
 }
 
 
-void init_python_api(const char* programName, const std::string & ruleset, bool log_stdout)
+void init_python_api(const std::string & ruleset, bool log_stdout)
 {
 
     PyImport_AppendInittab("entity_filter", &init_entity_filter);
@@ -895,11 +902,7 @@ void init_python_api(const char* programName, const std::string & ruleset, bool 
     PyImport_AppendInittab("common", &init_common);
     PyImport_AppendInittab("server", &init_server);
 
-    //wchar_t *program = Py_DecodeLocale(programName, nullptr);
-    //Py_SetProgramName(program);
     Py_InitializeEx(0);
-
-    //PyMem_RawFree(program);
 
     PyOutLogger_Type.tp_new = PyType_GenericNew;
     if (PyType_Ready(&PyOutLogger_Type) < 0) {
@@ -960,17 +963,6 @@ void init_python_api(const char* programName, const std::string & ruleset, bool 
         log(CRITICAL, "Python could not import sys.path");
     }
     Py_DECREF(sys_module);
-
-
-
-
-
-
-   
-
-
-
-
 
     debug(std::cout << Py_GetPath() << std::endl << std::flush;);
 }

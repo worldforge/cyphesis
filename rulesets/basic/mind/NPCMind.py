@@ -339,23 +339,22 @@ class NPCMind(server.Mind):
         setOp = Operation("set")
         thoughts = []
 
-        for attr in sorted(dir(self.knowledge)):
-            d=getattr(self.knowledge, attr)
-            if getattr(d, '__iter__', False):
-               for key in sorted(d):
-                    if attr!="goal":
-                        objectVal=d[key]
-                        if type(objectVal) is Location:
-                            #Serialize Location as tuple, with parent if available
-                            if (objectVal.parent is None):
-                                location=objectVal.coordinates
-                            else:
-                                location=("$eid:" + objectVal.parent.id,objectVal.coordinates)
-                            object=str(location)
+        for what in sorted(self.knowledge.knowings.keys()):
+            d = self.knowledge.knowings[what]
+            for key in sorted(d):
+                if what!="goal":
+                    objectVal=d[key]
+                    if type(objectVal) is Location:
+                        #Serialize Location as tuple, with parent if available
+                        if (objectVal.parent is None):
+                            location=objectVal.coordinates
                         else:
-                            object=str(d[key])
-                        
-                        thoughts.append(Entity(predicate=attr, subject=str(key), object=object))
+                            location=("$eid:" + objectVal.parent.id,objectVal.coordinates)
+                        object=str(location)
+                    else:
+                        object=str(d[key])
+
+                    thoughts.append(Entity(predicate=what, subject=str(key), object=object))
         
         #It's important that the order of the goals is retained
         for goal in self.goals:
@@ -572,7 +571,7 @@ class NPCMind(server.Mind):
                 else:
                     # Currently this assumes dist is relative to TLVE
                     k='%f metres %s' % (distmag, vector_to_compass(dist))
-            elif k_type!=StringType:
+            elif k_type!=str:
                 k='difficult to explain'
             elif predicate=='about':
                 return self.face_and_address(op.to, k)
@@ -598,18 +597,17 @@ class NPCMind(server.Mind):
         if predicate == 'all knowledge':
             res = Oplist()
             res = res + self.face(self.map.get(op.to))
-            for attr in dir(self.knowledge):
-                d=getattr(self.knowledge, attr)
-                if getattr(d, '__iter__', False):
-                    for key in d:
-                        #print attr + " of "+key+": " +str(d[key])
-                        res = res + self.address(op.to, "The " + attr + " of " + 
-                                                 key + " is " + str(d[key]))
+            for attr in dir(self.knowledge.knowings):
+                d=self.knowledge.knowings[attr]
+                for key in d:
+                    #print attr + " of "+key+": " +str(d[key])
+                    res = res + self.address(op.to, "The " + attr + " of " +
+                                             key + " is " + str(d[key]))
             return res
         else:
-            if not hasattr(self.knowledge, predicate):
+            d = self.knowledge.get(predicate)
+            if len(d) == 0:
                 return None
-            d=getattr(self.knowledge, predicate)
             res = Oplist()
             res = res + self.face(self.map.get(op.to))
             for key in d:
@@ -687,26 +685,22 @@ class NPCMind(server.Mind):
         """normally location: tell where items reside
            reverse location tells what resides in this spot"""
         self.reverse_knowledge=Knowledge()
-        for (k,v) in list(self.knowledge.location.items()):
-            if not self.reverse_knowledge.location.get(v):
+        if "location" in self.knowledge.knowings:
+            for (k,v) in list(self.knowledge.knowings['location'].items()):
                 self.reverse_knowledge.add("location",v,k)
     def get_reverse_knowledge(self, what, key):
         """get certain reverse knowledge value
            what: what kind of knowledge (location only so far)"""
-        d=getattr(self.reverse_knowledge,what)
-        return d.get(key)
+        return self.reverse_knowledge.get(what, key)
     def get_knowledge(self, what, key):
         """get certain knowledge value
            what: what kind of knowledge (see Knowledge.py for list)"""
-        if not hasattr(self.knowledge, what):
-            return None
-        d=getattr(self.knowledge,what)
-        return d.get(key)
+        return self.knowledge.get(what, key)
     def add_knowledge(self,what,key,value):
         """add certain type of knowledge"""
         self.knowledge.add(what,key,value)
         #forward thought
-        if type(value)==InstanceType:
+        if type(value)==object:
             if what=="goal":
                 thought_value = value.info()
             else:
@@ -741,7 +735,7 @@ class NPCMind(server.Mind):
         l2=ontology.get_isa(id2)
         for s1 in l1:
             for s2 in l2:
-                cmp=self.knowledge.importance.get((s1.id,s2.id))
+                cmp=self.knowledge.get('importance', (s1.id,s2.id))
                 if cmp:
                     return cmp=='>'
         return 1
@@ -769,7 +763,7 @@ class NPCMind(server.Mind):
         dictlist.add_value(self.things,name,thing)
         log.debug(3,"\tafter: "+str(self.things))
     def find_thing(self, thing):
-        if StringType==type(thing):
+        if str==type(thing):
             #return found list or empty list
             return self.things.get(thing,[])
         found=[]
@@ -872,17 +866,20 @@ class NPCMind(server.Mind):
             # if res!=None: return res
     def teach_children(self, child):
         res=Oplist()
-        for k in list(self.knowledge.location.keys()):
-            es=Entity(verb='know',subject=k,object=self.knowledge.location[k])
+        locations = self.knowledge.get('location')
+        for k in list(locations.keys()):
+            es=Entity(verb='know',subject=k,object=locations[k])
             res.append(Operation('say',es,to=child))
-        for k in list(self.knowledge.place.keys()):
-            es=Entity(verb='know',subject=k,object=self.knowledge.place[k])
+        places = self.knowledge.get('place')
+        for k in list(places.keys()):
+            es=Entity(verb='know',subject=k,object=places[k])
             res.append(Operation('say',es,to=child))
         for g in self.goals:
             es=Entity(verb='learn',subject=g.key,object=g.str)
             res.append(Operation('say',es,to=child))
-        for im in list(self.knowledge.importance.keys()):
-            cmp=self.knowledge.importance[im]
+        importances = self.knowledge.get('importance')
+        for im in list(importances.keys()):
+            cmp=importances[im]
             if cmp=='>':
                 s,i=il.importance(im[0],cmp,im[1])
                 es=Entity(say=s,interlinguish=i)

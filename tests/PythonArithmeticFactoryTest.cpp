@@ -47,13 +47,26 @@ static PyMethodDef no_methods[] = {
 
 static bool stub_wrapEntity_fail = false;
 
+static PyObject* init_testmod() {
+    static struct PyModuleDef def = {
+            PyModuleDef_HEAD_INIT,
+            "testmod",
+            nullptr,
+            0,
+            no_methods,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr
+    };
+
+    return PyModule_Create(&def);
+}
+
 int main()
 {
+    PyImport_AppendInittab("testmod", &init_testmod);
     Py_Initialize();
-
-    PyObject * testmod = Py_InitModule("testmod", no_methods);
-
-    assert(testmod != 0);
 
     run_python_string("import testmod");
     run_python_string("class TestArithmeticScript(object):\n"
@@ -65,7 +78,7 @@ int main()
                      );
     run_python_string("class FailArithmeticScript(object):\n"
                       " def __init__(self):\n"
-                      "  raise AssertionError, 'deliberate'\n"
+                      "  raise AssertionError('deliberate')\n"
                      );
     run_python_string("testmod.TestArithmeticScript=TestArithmeticScript");
     run_python_string("testmod.FailArithmeticScript=FailArithmeticScript");

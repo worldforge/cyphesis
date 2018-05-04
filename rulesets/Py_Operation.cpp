@@ -827,7 +827,7 @@ PyTypeObject PyConstOperation_Type = {
         0,                                      // tp_descr_set
         0,                                      // tp_dictoffset
         (initproc)Operation_init,               // tp_init
-        0,                                      // tp_alloc
+        PyType_GenericAlloc,                    // tp_alloc
         Operation_new,                          // tp_new
 };
 
@@ -869,7 +869,7 @@ PyTypeObject PyOperation_Type = {
         0,                                      // tp_descr_set
         0,                                      // tp_dictoffset
         0,                                      // tp_init
-        0,                                      // tp_alloc
+        PyType_GenericAlloc,                    // tp_alloc
         Operation_new,                          // tp_new
 };
 

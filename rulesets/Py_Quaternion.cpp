@@ -90,17 +90,19 @@ static PyObject * Quaternion_getattro(PyQuaternion *self, PyObject *oname)
 
 static PyObject* Quaternion_compare(PyObject *a, PyObject *b, int op)
 {
+    PyObject *result = Py_NotImplemented;
     auto self = (PyQuaternion*)a;
     if (PyQuaternion_Check(b)) {
         auto other = (PyQuaternion*)b;
         if (op == Py_EQ) {
-            return self->rotation == other->rotation ? Py_True : Py_False;
+            result = self->rotation == other->rotation ? Py_True : Py_False;
         } else if (op == Py_NE) {
-            return self->rotation != other->rotation ? Py_True : Py_False;
+            result = self->rotation != other->rotation ? Py_True : Py_False;
         }
     }
 
-    return Py_NotImplemented;
+    Py_INCREF(result);
+    return result;
 }
 
 static PyObject* Quaternion_repr(PyQuaternion * self)

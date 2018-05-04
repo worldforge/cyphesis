@@ -61,12 +61,30 @@ static PyMethodDef no_methods[] = {
     {nullptr,          nullptr}                       /* Sentinel */
 };
 
+
+static PyObject* init_testmod() {
+    static struct PyModuleDef def = {
+            PyModuleDef_HEAD_INIT,
+            "testmod",
+            nullptr,
+            0,
+            no_methods,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr
+    };
+
+    testmod = PyModule_Create(&def);
+    return testmod;
+}
+
 int main()
 {
+    PyImport_AppendInittab("testmod", &init_testmod);
+
     Py_Initialize();
 
-    testmod = Py_InitModule("testmod", no_methods);
-    assert(testmod != 0);
 
     run_python_string("import testmod");
 

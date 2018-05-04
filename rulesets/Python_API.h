@@ -25,7 +25,7 @@
 
 extern sigc::signal<void> python_reload_scripts;
 
-void init_python_api(const char* programName, const std::string & ruleset, bool log_stdout = true);
+void init_python_api(const std::string & ruleset, bool log_stdout = true);
 void shutdown_python_api();
 
 #endif // RULESETS_PYTHON_API_H

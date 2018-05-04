@@ -38,10 +38,10 @@ class school(DynamicGoal):
         if me.location.parent.id!=ent.location.parent.id:
             #print "me.location.parent.id!=ent.location.parent.id"
             return
-        if type(ent.location.coordinates)!=InstanceType:
+        if type(ent.location.coordinates)!=object:
             #print ent.location.coordinates
             #print type(ent.location.coordinates)
-            #print "type(ent.location.coordinates)!=InstanceType"
+            #print "type(ent.location.coordinates)!=object"
             return
         distance=(ent.location.coordinates-me.location.coordinates).mag()
         id=me.get_knowledge('focus', 'hook')

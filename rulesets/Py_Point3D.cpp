@@ -91,17 +91,20 @@ static PyObject * Point3D_getattro(PyPoint3D *self, PyObject *oname)
 
 static PyObject* Point3D_compare(PyObject *a, PyObject *b, int op)
 {
+    PyObject *result = Py_NotImplemented;
+
     auto self = (PyPoint3D*)a;
     if (PyPoint3D_Check(b)) {
         auto other = (PyPoint3D*)b;
         if (op == Py_EQ) {
-            return self->coords == other->coords ? Py_True : Py_False;
+            result = self->coords == other->coords ? Py_True : Py_False;
         } else if (op == Py_NE) {
-            return self->coords != other->coords ? Py_True : Py_False;
+            result = self->coords != other->coords ? Py_True : Py_False;
         }
     }
 
-    return Py_NotImplemented;
+    Py_IncRef(result);
+    return result;
 }
 
 /*
@@ -333,7 +336,7 @@ PyTypeObject PyPoint3D_Type = {
         0,                              // tp_descr_set
         0,                              // tp_dictoffset
         (initproc)Point3D_init,         // tp_init
-        0,                              // tp_alloc
+        PyType_GenericAlloc,            // tp_alloc
         Point3D_new,                    // tp_new
 };
 

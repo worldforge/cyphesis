@@ -3,28 +3,21 @@
 
 class Knowledge:
     def __init__(self):
-        self.place={}
-        self.location={}
-        self.goal={}
-        self.importance={}
+        self.knowings={}
     def add(self, what, key, value):
-        if not hasattr(self, what):
-            setattr(self, what, {})
-        d=getattr(self,what)
-        d[key]=value
+        if what not in self.knowings:
+            self.knowings[what] = {}
+        self.knowings[what][key] = value
     def remove(self, what, key):
-        if not hasattr(self, what):
-            return
-        d=getattr(self,what)
-        if key in d:
-            del d[key]
-        if len(d)==0:
-            delattr(self,what)
+        if what in self.knowings:
+            del self.knowings[what][key]
+    def get(self, what, key=None):
+        if not key:
+            return self.knowings.get(what, {})
+        else:
+            if what not in self.knowings:
+                return None
+            return self.knowings[what][key]
     def __str__(self):
-        s="<know: "
-        s=s+"place: "+str(self.place)+"\n"
-        s=s+"location: "+str(self.location)+"\n"
-        s=s+"goal: "+str(self.goal)+"\n"
-        s=s+"importance: "+str(self.importance)+"\n"
+        s="<know: " + str(self.knowings)
         return s+">\n"
-

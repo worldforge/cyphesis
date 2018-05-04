@@ -81,17 +81,27 @@ static PyMethodDef sabotage_methods[] = {
     {nullptr,          nullptr}                       /* Sentinel */
 };
 
-static void setup_test_functions()
-{
-    PyObject * sabotage = Py_InitModule("sabotage", sabotage_methods);
-    assert(sabotage != 0);
+static PyObject* init_sabotage() {
+    static struct PyModuleDef def = {
+            PyModuleDef_HEAD_INIT,
+            "sabotage",
+            nullptr,
+            0,
+            sabotage_methods,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr
+    };
+
+    return PyModule_Create(&def);
 }
 
 int main()
 {
-    init_python_api("3622159a-de3c-42e6-858c-f6bd7cf8e7b1");
+    PyImport_AppendInittab("sabotage", &init_sabotage);
 
-    setup_test_functions();
+    init_python_api("3622159a-de3c-42e6-858c-f6bd7cf8e7b1");
 
     PyOperation * op = newPyOperation();
     assert(op != 0);
@@ -150,14 +160,14 @@ int main()
     run_python_string("o.setArgs([Message({'parent': 'root'})])");
     expect_python_error("o.setArgs([Message('1')])", PyExc_TypeError);
     run_python_string("import types");
-    run_python_string("assert type(o.getSerialno()) == types.IntType");
-    run_python_string("assert type(o.getRefno()) == types.IntType");
-    run_python_string("assert type(o.getTo()) == types.StringType");
-    run_python_string("assert type(o.getFrom()) == types.StringType");
-    run_python_string("assert type(o.getSeconds()) == types.FloatType");
-    run_python_string("assert type(o.getFutureSeconds()) == types.FloatType");
-    run_python_string("assert type(o.getArgs()) == types.ListType");
-    run_python_string("assert type(o.get_name()) == types.StringType");
+    run_python_string("assert type(o.getSerialno()) == int");
+    run_python_string("assert type(o.getRefno()) == int");
+    run_python_string("assert type(o.getTo()) == str");
+    run_python_string("assert type(o.getFrom()) == str");
+    run_python_string("assert type(o.getSeconds()) == float");
+    run_python_string("assert type(o.getFutureSeconds()) == float");
+    run_python_string("assert type(o.getArgs()) == list");
+    run_python_string("assert type(o.get_name()) == str");
     run_python_string("assert len(o) == 1");
     run_python_string("o.setArgs([Operation('get'), Entity(parent=\"oak\"), Message({'parent': 'root', 'objtype': 'obj'})])");
     run_python_string("assert type(o[0]) == Operation");
@@ -168,9 +178,9 @@ int main()
     expect_python_error("o + 1", PyExc_TypeError);
     run_python_string("assert type(o + Oplist()) == Oplist");
     run_python_string("assert type(o + Operation('get')) == Oplist");
-    run_python_string("assert type(o.from_) == types.StringType");
-    run_python_string("assert type(o.to) == types.StringType");
-    run_python_string("assert type(o.id) == types.StringType");
+    run_python_string("assert type(o.from_) == str");
+    run_python_string("assert type(o.to) == str");
+    run_python_string("assert type(o.id) == str");
     expect_python_error("o.from_='1'", PyExc_TypeError);
     expect_python_error("o.from_=1", PyExc_TypeError);
     expect_python_error("o.from_=Message({'id': 1})", PyExc_TypeError);
@@ -207,7 +217,7 @@ int main()
     expect_python_error("o + o2", PyExc_AssertionError);
 
     run_python_string("sabotage.clear_parent(o)");
-    expect_python_error("print o.id", PyExc_AttributeError);
+    expect_python_error("print(o.id)", PyExc_AttributeError);
 
     run_python_string("ol = Oplist()");
     run_python_string("sabotage.null(ol)");
@@ -230,7 +240,7 @@ int main()
     run_python_string("method_get_name=o.get_name");
 
     run_python_string("sabotage.null(o)");
-    expect_python_error("print o.to", PyExc_AssertionError);
+    expect_python_error("print(o.to)", PyExc_AssertionError);
     expect_python_error("len(o)", PyExc_AssertionError);
     expect_python_error("o[0]", PyExc_AssertionError);
     expect_python_error("o + None", PyExc_AssertionError);

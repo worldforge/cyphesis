@@ -268,7 +268,7 @@ int main(int argc, char ** argv)
     assets_manager->init();
 
     // Start up the Python subsystem.
-    init_python_api(argv[0], ruleset_name);
+    init_python_api(ruleset_name);
 
     Inheritance* inheritance = new Inheritance();
 

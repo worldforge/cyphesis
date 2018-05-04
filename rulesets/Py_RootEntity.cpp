@@ -293,7 +293,7 @@ PyTypeObject PyRootEntity_Type = {
         0,                                      // tp_descr_set
         0,                                      // tp_dictoffset
         (initproc)RootEntity_init,              // tp_init
-        0,                                      // tp_alloc
+        PyType_GenericAlloc,                    // tp_alloc
         RootEntity_new,                         // tp_new
 };
 

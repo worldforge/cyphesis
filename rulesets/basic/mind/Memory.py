@@ -12,7 +12,7 @@ class Memory:
         self.map=None
     def recall_place(self, location, radius, filter):
         try:
-            if type(filter)==ListType:
+            if type(filter)==list:
                 for i in filter:
                     result = self.map.find_by_location_query(location, radius, i)
                     if len(result)!=0:

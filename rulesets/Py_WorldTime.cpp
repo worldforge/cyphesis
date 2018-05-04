@@ -139,7 +139,7 @@ PyTypeObject PyWorldTime_Type = {
         0,                              // tp_descr_set
         0,                              // tp_dictoffset
         (initproc)WorldTime_init,       // tp_init
-        0,                              // tp_alloc
+        PyType_GenericAlloc,            // tp_alloc
         WorldTime_new,                  // tp_new
 };
 

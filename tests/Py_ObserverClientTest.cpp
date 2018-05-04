@@ -77,7 +77,7 @@ int main()
     run_python_string("o.wait()");
     stub_wait_fail = true;
     expect_python_error("o.wait()", PyExc_RuntimeError);
-    run_python_string("assert type(o.id) == types.StringType");
+    run_python_string("assert type(o.id) == str");
     run_python_string("o.character");
     run_python_string("o.server = 'foo'");
     expect_python_error("o.server = 23", PyExc_TypeError);

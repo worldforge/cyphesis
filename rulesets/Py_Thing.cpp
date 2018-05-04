@@ -406,21 +406,29 @@ static int Entity_setattro(PyEntity *self, PyObject *oname, PyObject *v)
 
 static PyObject* Entity_compare(PyObject *a, PyObject *b, int op)
 {
+    PyObject *result = Py_NotImplemented;
+
     auto self = (PyEntity*)a;
     if (PyEntity_Check(b)) {
         auto other = (PyEntity*)b;
         if (self->m_entity.e == nullptr || other->m_entity.e == nullptr) {
-            PyErr_SetString(PyExc_AssertionError, "nullptr Entity in Entity.compare");
-            return Py_False;
+            result = Py_False;
         }
         if (op == Py_EQ) {
-            return (self->m_entity.e == other->m_entity.e) ? Py_True : Py_False;
+            result = (self->m_entity.e == other->m_entity.e) ? Py_True : Py_False;
         } else if (op == Py_NE) {
-            return (self->m_entity.e != other->m_entity.e) ? Py_True : Py_False;
+            result = (self->m_entity.e != other->m_entity.e) ? Py_True : Py_False;
+        }
+    } else {
+        if (op == Py_EQ) {
+            result = Py_False;
+        } else if (op == Py_NE) {
+            result = Py_True;
         }
     }
 
-    return Py_NotImplemented;
+    Py_INCREF(result);
+    return result;
 }
 
 
@@ -727,7 +735,7 @@ PyTypeObject PyLocatedEntity_Type = {
         0,                              // tp_descr_set
         0,                              // tp_dictoffset
         (initproc)LocatedEntity_init,   // tp_init
-        0,                              // tp_alloc
+        PyType_GenericAlloc,            // tp_alloc
         (newfunc)Entity_new,            // tp_new
 };
 
@@ -769,7 +777,7 @@ PyTypeObject PyEntity_Type = {
         0,                              // tp_descr_set
         0,                              // tp_dictoffset
         (initproc)Entity_init,          // tp_init
-        0,                              // tp_alloc
+        PyType_GenericAlloc,            // tp_alloc
         (newfunc)Entity_new,            // tp_new
 };
 
@@ -811,7 +819,7 @@ PyTypeObject PyCharacter_Type = {
         0,                              // tp_descr_set
         0,                              // tp_dictoffset
         (initproc)Character_init,       // tp_init
-        0,                              // tp_alloc
+        PyType_GenericAlloc,            // tp_alloc
         (newfunc)Entity_new,            // tp_new
 };
 
@@ -853,7 +861,7 @@ PyTypeObject PyMind_Type = {
         0,                              // tp_descr_set
         0,                              // tp_dictoffset
         (initproc)Mind_init,            // tp_init
-        0,                              // tp_alloc
+        PyType_GenericAlloc,            // tp_alloc
         (newfunc)Entity_new,            // tp_new
 };
 

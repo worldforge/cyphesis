@@ -67,7 +67,7 @@ class screen:
                 except KeyError:
                     s.append(' ')
             s.append('\n')
-        return string.join(s,'')
+        return str.join(s,'')
 
 def build_syn_tree(arr):
     if not arr: return None

@@ -495,7 +495,7 @@ PyTypeObject PyMemMap_Type = {
         0,                              // tp_descr_set
         0,                              // tp_dictoffset
         (initproc)MemMap_init,             // tp_init
-        0,                              // tp_alloc
+        PyType_GenericAlloc,            // tp_alloc
         0,                              // tp_new
 };
 

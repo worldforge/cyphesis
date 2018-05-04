@@ -291,12 +291,17 @@ static int CreatorClient_setattro(PyCreatorClient *self,
     return -1;
 }
 
-static int CreatorClient_compare(PyCreatorClient *self, PyCreatorClient *other)
+static PyObject* CreatorClient_compare(PyObject *a, PyObject *b, int op)
 {
-    if (self->m_mind.c == nullptr || other->m_mind.c == nullptr) {
-        return -1;
+    auto self = (PyCreatorClient*)a;
+    if (PyCreatorClient_Check(b)) {
+        auto other = (PyCreatorClient*)b;
+        if (op == Py_EQ) {
+            return self->m_mind.c == other->m_mind.c ? Py_True : Py_False;
+        }
     }
-    return (self->m_mind.c == other->m_mind.c) ? 0 : 1;
+
+    return Py_NotImplemented;
 }
 
 static int CreatorClient_init(PyCreatorClient * self,
@@ -322,8 +327,7 @@ static int CreatorClient_init(PyCreatorClient * self,
 }
 
 PyTypeObject PyCharacterClient_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                                      /*ob_size*/
+        PyVarObject_HEAD_INIT(&PyType_Type, 0)
         "CreatorClient",                        /*tp_name*/
         sizeof(PyCreatorClient),                /*tp_basicsize*/
         0,                                      /*tp_itemsize*/
@@ -332,7 +336,7 @@ PyTypeObject PyCharacterClient_Type = {
         0,                                      /*tp_print*/
         0,                                      /*tp_getattr*/
         0,                                      /*tp_setattr*/
-        (cmpfunc)CreatorClient_compare,         /*tp_compare*/
+        0,                                      /*tp_compare*/
         0,                                      /*tp_repr*/
         0,                                      /*tp_as_number*/
         0,                                      /*tp_as_sequence*/
@@ -347,7 +351,7 @@ PyTypeObject PyCharacterClient_Type = {
         "CreatorClient objects",                // tp_doc
         0,                                      // tp_travers
         0,                                      // tp_clear
-        0,                                      // tp_richcompare
+        (richcmpfunc)CreatorClient_compare,     // tp_richcompare
         0,                                      // tp_weaklistoffset
         0,                                      // tp_iter
         0,                                      // tp_iternext
@@ -365,8 +369,7 @@ PyTypeObject PyCharacterClient_Type = {
 };
 
 PyTypeObject PyCreatorClient_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                                      /*ob_size*/
+        PyVarObject_HEAD_INIT(&PyType_Type, 0)
         "CreatorClient",                     /*tp_name*/
         sizeof(PyCreatorClient),                /*tp_basicsize*/
         0,                                      /*tp_itemsize*/
@@ -375,7 +378,7 @@ PyTypeObject PyCreatorClient_Type = {
         0,                                      /*tp_print*/
         0,                                      /*tp_getattr*/
         0,                                      /*tp_setattr*/
-        (cmpfunc)CreatorClient_compare,         /*tp_compare*/
+        0,         /*tp_compare*/
         0,                                      /*tp_repr*/
         0,                                      /*tp_as_number*/
         0,                                      /*tp_as_sequence*/
@@ -390,7 +393,7 @@ PyTypeObject PyCreatorClient_Type = {
         "CreatorClient objects",                // tp_doc
         0,                                      // tp_travers
         0,                                      // tp_clear
-        0,                                      // tp_richcompare
+        (richcmpfunc)CreatorClient_compare,     // tp_richcompare
         0,                                      // tp_weaklistoffset
         0,                                      // tp_iter
         0,                                      // tp_iternext

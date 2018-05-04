@@ -108,5 +108,10 @@ void python_prompt()
     char prgname[] = "python";
     char * argv[1] = { prgname };
 
-    Py_Main(1, &argv[0]);
+    auto program = Py_DecodeLocale(argv[0], nullptr);
+
+    Py_Main(1, &program);
+
+    PyMem_RawFree(program);
+
 }

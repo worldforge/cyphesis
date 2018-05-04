@@ -53,21 +53,31 @@ static PyMethodDef sabotage_methods[] = {
     {nullptr,          nullptr}                       /* Sentinel */
 };
 
-static void setup_test_functions()
-{
-    PyObject * sabotage = Py_InitModule("sabotage", sabotage_methods);
-    assert(sabotage != 0);
+static PyObject* init_sabotage() {
+    static struct PyModuleDef def = {
+            PyModuleDef_HEAD_INIT,
+            "sabotage",
+            nullptr,
+            0,
+            sabotage_methods,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr
+    };
+
+    return PyModule_Create(&def);
 }
 
 int main()
 {
+    PyImport_AppendInittab("sabotage", &init_sabotage);
     Inheritance inheritance;
 
     init_python_api("93b8eac3-9ab9-40f7-b419-d740c18c09e4");
 
-    setup_test_functions();
 
-    PyMemMap * map = newPyMemMap();
+    PyMemMap * map = (PyMemMap *)PyType_GenericAlloc(&PyMemMap_Type, 0);
     assert(map != 0);
 
     run_python_string("from server import Map");

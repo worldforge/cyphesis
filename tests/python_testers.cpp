@@ -47,7 +47,7 @@ run_mod(mod_ty mod, const char *filename, PyObject *globals, PyObject *locals,
     co = PyAST_Compile(mod, filename, flags, arena);
     if (co == nullptr)
         return nullptr;
-    v = PyEval_EvalCode(co, globals, locals);
+    v = PyEval_EvalCode((PyObject*)co, globals, locals);
     Py_DECREF(co);
     return v;
 }
@@ -90,7 +90,9 @@ int CyPyRun_SimpleString(const char * command, PyObject * exception)
         return errcode;
     }
     Py_DECREF(ret);
-    if (Py_FlushLine())
+
+    PyObject *f = PySys_GetObject("stdout");
+    if (PyFile_WriteString("\n", f))
         PyErr_Clear();
     return 0;
 }

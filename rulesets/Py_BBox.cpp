@@ -119,17 +119,19 @@ static int BBox_setattro(PyBBox *self, PyObject *oname, PyObject *v)
 
 static PyObject* BBox_compare(PyObject *a, PyObject *b, int op)
 {
+    PyObject *result = Py_NotImplemented;
     auto self = (PyBBox*)a;
     if (PyBBox_Check(b)) {
         auto other = (PyBBox*)b;
         if (op == Py_EQ) {
-            return self->box == other->box ? Py_True : Py_False;
+            result = self->box == other->box ? Py_True : Py_False;
         } else if (op == Py_NE) {
-            return self->box != other->box ? Py_True : Py_False;
+            result = self->box != other->box ? Py_True : Py_False;
         }
     }
 
-    return Py_NotImplemented;
+    Py_IncRef(result);
+    return result;
 }
 
 static int BBox_init(PyBBox * self, PyObject * args, PyObject * kwds)
@@ -205,7 +207,7 @@ static int BBox_init(PyBBox * self, PyObject * args, PyObject * kwds)
 
 static PyObject * BBox_new(PyTypeObject * type, PyObject *, PyObject *)
 {
-    // This looks allot like the default implementation, except we call the
+    // This looks alot like the default implementation, except we call the
     // in-place constructor.
     PyBBox * self = (PyBBox *)type->tp_alloc(type, 0);
     if (self != nullptr) {
@@ -252,7 +254,7 @@ PyTypeObject PyBBox_Type = {
         0,                              // tp_descr_set
         0,                              // tp_dictoffset
         (initproc)BBox_init,            // tp_init
-        0,                              // tp_alloc
+        PyType_GenericAlloc,            // tp_alloc
         BBox_new,                       // tp_new
 };
 

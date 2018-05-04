@@ -37,7 +37,7 @@ class move_me(Goal):
         if type(location_)==LambdaType:
             #print "Lambda location"
             location_=location_(me)
-        if type(location_)==StringType:
+        if type(location_)==str:
             #print "String location"
             location_=me.get_knowledge("location",location_)
         if not location_:
@@ -115,7 +115,7 @@ class move_me_area(Goal):
         if type(location_)==LambdaType:
             #print "Lambda location"
             location_=location_(me)
-        if type(location_)==StringType:
+        if type(location_)==str:
             #print "String location"
             location_=me.get_knowledge("location",location_)
         if not location_:
@@ -172,7 +172,7 @@ class move_me_place(move_me):
         self.vars = ["what"]
     def get_location_instance(self, me):
         location = me.get_knowledge("place", self.what)
-        if type(location) == StringType:
+        if type(location) == str:
             location = me.get_knowledge("location", location)
         if not location:
             return None
@@ -195,11 +195,11 @@ class move_it(Goal):
         #CHEAT!: cludge
         if self.wait>0:
             return 0
-        if type(self.location)==StringType: 
+        if type(self.location)==str:
             self.location=me.get_knowledge("location",self.location)
         if not isLocation(self.location):
             self.location=Location(self.location,Point3D(0.0,0.0,0.0))
-        if type(self.what)==StringType:
+        if type(self.what)==str:
             if (self.what in me.things)==0: return 1
             what=me.things[self.what][0]
         if what.location.parent.id!=self.location.parent.id: return 0
@@ -208,11 +208,11 @@ class move_it(Goal):
         if self.wait>0:
             self.wait=self.wait-1
             return
-        if type(self.location)==StringType: 
+        if type(self.location)==str:
             self.location=me.get_knowledge("location",self.location)
         elif not isLocation(self.location):
             self.location=Location(self.location,Point3D(0.0,0.0,0.0))
-        if type(self.what)==StringType:
+        if type(self.what)==str:
             if (self.what in me.things)==0:
                 return
             what=me.things[self.what][0]
@@ -262,7 +262,7 @@ class move_me_to_possession(Goal):
         self.vars=["what"]
     def am_i_at_it(self, me):
         what = self.what
-        if type(what)==StringType:
+        if type(what)==str:
             if (what in me.things)==0: return 0
             what=me.things[what][0]
         if square_horizontal_distance(me.location, what.location) < 4: # 2 * 2
@@ -272,7 +272,7 @@ class move_me_to_possession(Goal):
         
     def move_me_to_it(self, me):
         what = self.what
-        if type(what)==StringType:
+        if type(what)==str:
             if (what in me.things)==0: return
             what=me.things[what][0]
         target=what.location.copy()
@@ -399,7 +399,7 @@ class pick_up_possession(Goal):
     def is_it_with_me(self, me):
         #CHEAT!: cludge
         what=self.what
-        if type(what)==StringType:
+        if type(what)==str:
             if (self.what in me.things)==0: return 0
             what=me.things[self.what][0]
         if what.location.parent.id!=me.id:
@@ -409,7 +409,7 @@ class pick_up_possession(Goal):
         return what.location.parent.id==me.id
     def pick_it_up(self, me):
         what=self.what
-        if type(what)==StringType:
+        if type(what)==str:
             if (self.what in me.things)==0: return 0
             what=me.things[self.what][0]
         return Operation("move", Entity(id, location=Location(me, Point3D(0,0,0))))

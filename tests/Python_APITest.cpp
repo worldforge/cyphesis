@@ -56,32 +56,44 @@ static PyMethodDef sabotage_methods[] = {
     {nullptr,          nullptr}                       /* Sentinel */
 };
 
-static void setup_test_functions()
-{
-    PyObject * sabotage = Py_InitModule("sabotage", sabotage_methods);
-    assert(sabotage != 0);
+static PyObject* init_sabotage() {
+    static struct PyModuleDef def = {
+            PyModuleDef_HEAD_INIT,
+            "sabotage",
+            nullptr,
+            0,
+            sabotage_methods,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr
+    };
+
+    return PyModule_Create(&def);
 }
+
 
 int main()
 {
-    init_python_api("1a6c913e-79b2-4fc8-9467-ee6c39d0f674");
+    PyImport_AppendInittab("sabotage", &init_sabotage);
 
-    setup_test_functions();
+    init_python_api("1a6c913e-79b2-4fc8-9467-ee6c39d0f674");
 
     PyObject * mod = Get_PyModule("notamodule");
     assert(mod == 0);
-    mod = Get_PyModule("BaseHTTPServer");
+
+    mod = Get_PyModule("http.server");
     assert(mod != 0);
     PyObject * cls = Get_PyClass(mod, "BaseHTTPServer", "noclassbythisname");
     assert(cls == 0);
     cls = Get_PyClass(mod, "BaseHTTPServer", "HTTPServer");
-    assert(cls == 0);
+    assert(cls != 0);
     cls = Get_PyClass(mod, "BaseHTTPServer", "__all__");
     assert(cls == 0);
     // We don't actually get a class back, because apparantly classes in
     // the library don't inherit from object yet.
 
-    run_python_string("print 'hello'");
+    run_python_string("print('hello')");
     run_python_string("import sys");
     run_python_string("sys.stdout.write('hello')");
     expect_python_error("sys.stdout.write(1)", PyExc_TypeError);

@@ -52,17 +52,29 @@ static PyMethodDef sabotage_methods[] = {
     {nullptr,          nullptr}                       /* Sentinel */
 };
 
-static void setup_test_functions()
-{
-    PyObject * sabotage = Py_InitModule("sabotage", sabotage_methods);
-    assert(sabotage != 0);
+
+static PyObject* init_sabotage() {
+    static struct PyModuleDef def = {
+            PyModuleDef_HEAD_INIT,
+            "sabotage",
+            nullptr,
+            0,
+            sabotage_methods,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr
+    };
+
+    return PyModule_Create(&def);
 }
+
 
 int main()
 {
+    PyImport_AppendInittab("sabotage", &init_sabotage);
     init_python_api("c67ce8e7-d195-4806-b8e4-d905e7c9d928");
 
-    setup_test_functions();
 
     PyRootEntity * ent = newPyRootEntity();
     assert(ent != 0);

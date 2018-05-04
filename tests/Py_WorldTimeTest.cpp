@@ -52,17 +52,26 @@ static PyMethodDef sabotage_methods[] = {
     {nullptr,          nullptr}                       /* Sentinel */
 };
 
-static void setup_test_functions()
-{
-    PyObject * sabotage = Py_InitModule("sabotage", sabotage_methods);
-    assert(sabotage != 0);
+static PyObject* init_sabotage() {
+    static struct PyModuleDef def = {
+            PyModuleDef_HEAD_INIT,
+            "sabotage",
+            nullptr,
+            0,
+            sabotage_methods,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr
+    };
+
+    return PyModule_Create(&def);
 }
 
 int main()
 {
+    PyImport_AppendInittab("sabotage", &init_sabotage);
     init_python_api("cc4b05b9-4ff9-4127-85b0-300298d16c3c");
-
-    setup_test_functions();
 
     PyWorldTime * world_time = newPyWorldTime();
     assert(world_time != 0);

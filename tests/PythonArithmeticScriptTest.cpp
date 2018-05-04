@@ -33,6 +33,7 @@
 #include "common/log.h"
 
 #include <cassert>
+#include <rulesets/Python_Script_Utils.h>
 
 static PyMethodDef no_methods[] = {
     {nullptr,          nullptr}                       /* Sentinel */
@@ -42,14 +43,36 @@ PyObject * Get_PyClass(PyObject * module,
                        const std::string & package,
                        const std::string & type);
 
+PyObject * Get_PyModule(const std::string & package)
+{
+    PyObject * package_name = PyUnicode_FromString((char *)package.c_str());
+    PyObject * module = PyImport_Import(package_name);
+    Py_DECREF(package_name);
+    return module;
+}
+
+static PyObject* init_testmod() {
+    static struct PyModuleDef def = {
+            PyModuleDef_HEAD_INIT,
+            "testmod",
+            nullptr,
+            0,
+            no_methods,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr
+    };
+
+    return PyModule_Create(&def);
+}
+
 int main()
 {
-    Py_Initialize();
 
     {
-        PyObject * testmod = Py_InitModule("testmod", no_methods);
-
-        assert(testmod != 0);
+        PyImport_AppendInittab("testmod", &init_testmod);
+        Py_Initialize();
 
         run_python_string("import testmod");
         run_python_string("class TestArithmeticScript(object):\n"
@@ -60,6 +83,10 @@ int main()
                           "  self.qux='1'\n"
                          );
         run_python_string("testmod.TestArithmeticScript=TestArithmeticScript");
+
+        auto testmod = Get_PyModule("testmod");
+
+        assert(testmod);
 
         PyObject * clss = Get_PyClass(testmod, "testmod", "TestArithmeticScript");
 

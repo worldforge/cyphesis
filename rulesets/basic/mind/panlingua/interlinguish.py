@@ -10,7 +10,7 @@ p=panlingua
 #describing goal or word (sense no=0)
 word2node={}
 def add_word(words,index):
-    name=string.replace(words," ","_")
+    name=str.replace(words," ","_")
     word2node[words]=(words,index)
     globals()[name]=(words,index)
 
@@ -94,7 +94,7 @@ def importance(sub,cmp,obj):
     a5=p.atom("than",5,(than[1],"default"),
               (a4,"comparing preposition"),"left")
     a6=p.atom(obj[0],6,(obj[1],"durative"),(a5,"verb object"),"up")
-    return (string.capitalize(sub[0])+\
+    return (str.capitalize(sub[0])+\
             "ing is more important than "+obj[0]+"ing.",
             (a1,a2,a3,a4,a5,a6))
 
@@ -276,7 +276,7 @@ def convert_english_to_interlinguish(me, say_entity):
             say=say[len(name_begin):]
     match=importance_pattern.match(say)
     if match:
-        sub=word2node.get(string.lower(match.group(1)))
+        sub=word2node.get(str.lower(match.group(1)))
         obj=word2node.get(match.group(2))
         if not sub or not obj: return 0
         res=importance(sub,'>',obj)

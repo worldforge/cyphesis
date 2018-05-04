@@ -33,11 +33,12 @@ int main()
 {
     Py_Initialize();
 
-    PythonContext pc;
+    {
+        PythonContext pc;
 
-    pc.runCommand("1");
-    pc.runCommand("foo()");
-
+        pc.runCommand("1");
+        pc.runCommand("foo()");
+    }
     Py_Finalize();
 
     return 0;

@@ -69,17 +69,27 @@ static PyMethodDef testprop_methods[] = {
     {nullptr,          nullptr}                       /* Sentinel */
 };
 
-static void setup_test_functions()
-{
-    PyObject * testprop = Py_InitModule("testprop", testprop_methods);
-    assert(testprop != 0);
+static PyObject* init_testprop() {
+    static struct PyModuleDef def = {
+            PyModuleDef_HEAD_INIT,
+            "testprop",
+            nullptr,
+            0,
+            testprop_methods,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr
+    };
+
+    return PyModule_Create(&def);
 }
 
 int main()
 {
+    PyImport_AppendInittab("testprop", &init_testprop);
     init_python_api("b513b7b1-b0d8-4495-b3f0-54c2ef3f27f6");
 
-    setup_test_functions();
 
     Entity wrld("0", 0);
     TestWorld tw(wrld);

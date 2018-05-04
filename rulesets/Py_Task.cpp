@@ -43,7 +43,7 @@ static PyObject * Task_obsolete(PyTask * self)
 {
 #ifndef NDEBUG
     if (self->m_task == nullptr) {
-        PyErr_SetString(PyExc_AssertionError, "nullptr task in Task.irrelevant");
+        PyErr_SetString(PyExc_AssertionError, "nullptr task in Task.obsolete");
         return nullptr;
     }
 #endif // NDEBUG
@@ -56,7 +56,7 @@ static PyObject * Task_count(PyTask * self)
 {
 #ifndef NDEBUG
     if (self->m_task == nullptr) {
-        PyErr_SetString(PyExc_AssertionError, "nullptr task in Task.irrelevant");
+        PyErr_SetString(PyExc_AssertionError, "nullptr task in Task.count");
         return nullptr;
     }
 #endif // NDEBUG
@@ -67,7 +67,7 @@ static PyObject * Task_newtick(PyTask * self)
 {
 #ifndef NDEBUG
     if (self->m_task == nullptr) {
-        PyErr_SetString(PyExc_AssertionError, "nullptr task in Task.irrelevant");
+        PyErr_SetString(PyExc_AssertionError, "nullptr task in Task.newtick");
         return nullptr;
     }
 #endif // NDEBUG
@@ -78,7 +78,7 @@ static PyObject * Task_nexttick(PyTask * self, PyObject * arg)
 {
 #ifndef NDEBUG
     if (self->m_task == nullptr) {
-        PyErr_SetString(PyExc_AssertionError, "nullptr task in Task.irrelevant");
+        PyErr_SetString(PyExc_AssertionError, "nullptr task in Task.nexttick");
         return nullptr;
     }
 #endif // NDEBUG
@@ -94,6 +94,7 @@ static PyObject * Task_nexttick(PyTask * self, PyObject * arg)
     PyOperation * tick_op = newPyOperation();
     if (tick_op != 0) {
         tick_op->operation = self->m_task->nextTick(interval);
+        Py_INCREF(tick_op);
     }
     return (PyObject*)tick_op;
 }
@@ -180,23 +181,26 @@ static int Task_setattro(PyTask *self, PyObject * oname, PyObject *v)
 
 static PyObject* Task_compare(PyObject *a, PyObject *b, int op)
 {
+    PyObject *result = Py_NotImplemented;
+
     auto self = (PyTask*)a;
     if (PyTask_Check(b)) {
         auto other = (PyTask*)b;
 #ifndef NDEBUG
         if (self->m_task == nullptr || other->m_task == nullptr) {
-            PyErr_SetString(PyExc_AssertionError, "nullptr Task in Task.compare");
+            Py_INCREF(Py_False);
             return Py_False;
         }
 #endif // NDEBUG
         if (op == Py_EQ) {
-            return (self->m_task == other->m_task) ? Py_True : Py_False;
+            result = (self->m_task == other->m_task) ? Py_True : Py_False;
         } else if (op == Py_NE) {
-            return (self->m_task != other->m_task) ? Py_True : Py_False;
+            result = (self->m_task != other->m_task) ? Py_True : Py_False;
         }
     }
 
-    return Py_NotImplemented;
+    Py_IncRef(result);
+    return result;
 }
 
 static int Task_init(PyTask * self, PyObject * args, PyObject * kwds)

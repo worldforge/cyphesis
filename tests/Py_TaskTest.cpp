@@ -60,19 +60,28 @@ static PyMethodDef sabotage_methods[] = {
     {nullptr,          nullptr}                       /* Sentinel */
 };
 
-static void setup_test_functions()
-{
-    PyObject * sabotage = Py_InitModule("sabotage", sabotage_methods);
-    assert(sabotage != 0);
+static PyObject* init_sabotage() {
+    static struct PyModuleDef def = {
+            PyModuleDef_HEAD_INIT,
+            "sabotage",
+            nullptr,
+            0,
+            sabotage_methods,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr
+    };
+
+    return PyModule_Create(&def);
 }
 
 int main()
 {
+    PyImport_AppendInittab("sabotage", &init_sabotage);
     init_python_api("6715c02a-cc63-497b-988d-453579eae35d");
 
-    setup_test_functions();
-
-    PyTask * task = newPyTask();
+    PyTask * task = (PyTask *)PyType_GenericAlloc(&PyTask_Type, 0);
     assert(task != 0);
 
     run_python_string("from server import Task");
@@ -85,9 +94,9 @@ int main()
     run_python_string("Task(t)");
     run_python_string("t==Task(c)");
     run_python_string("assert t.character == c");
-    run_python_string("print t.progress");
-    run_python_string("print t.rate");
-    expect_python_error("print t.foo", PyExc_AttributeError);
+    run_python_string("print(t.progress)");
+    run_python_string("print(t.rate)");
+    expect_python_error("print(t.foo)", PyExc_AttributeError);
     run_python_string("t.progress = 0");
     run_python_string("t.progress = 0.5");
     expect_python_error("t.progress = '1'", PyExc_TypeError);
@@ -107,7 +116,8 @@ int main()
     run_python_string("t2.foo = 1.1");
     run_python_string("t2.foo = 'foois1'");
     run_python_string("assert t2.foo == 'foois1'");
-    
+    run_python_string("assert t!=Task(c)");
+
 
     // Tasks do not permit wrappers of core server objects
     // to be stored directly.
@@ -117,11 +127,11 @@ int main()
     expect_python_error("t.foo = server.Thing('2')", PyExc_TypeError);
 
     run_python_string("assert not t.obsolete()");
-    run_python_string("print t.count()");
-    run_python_string("print t.new_tick()");
-    run_python_string("print t.next_tick(1)");
-    run_python_string("print t.next_tick(1.1)");
-    expect_python_error("print t.next_tick('1')", PyExc_TypeError);
+    run_python_string("print(t.count())");
+    run_python_string("print(t.new_tick())");
+    run_python_string("print(t.next_tick(1))");
+    run_python_string("print(t.next_tick(1.1))");
+    expect_python_error("print(t.next_tick('1'))", PyExc_TypeError);
     run_python_string("t.irrelevant()");
     run_python_string("assert t.obsolete()");
 
@@ -144,7 +154,6 @@ int main()
 
     expect_python_error("t.progress", PyExc_AssertionError);
     expect_python_error("t.progress = 0", PyExc_AssertionError);
-    expect_python_error("t==Task(c)", PyExc_AssertionError);
     expect_python_error("Task(t)", PyExc_AssertionError);
 
     run_python_string("c2=Character('2')");

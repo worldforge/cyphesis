@@ -52,18 +52,26 @@ static PyMethodDef sabotage_methods[] = {
     {nullptr,          nullptr}                       /* Sentinel */
 };
 
-static void setup_test_functions()
-{
-    PyObject * sabotage = Py_InitModule("sabotage", sabotage_methods);
-    assert(sabotage != 0);
-}
+static PyObject* init_sabotage() {
+    static struct PyModuleDef def = {
+            PyModuleDef_HEAD_INIT,
+            "sabotage",
+            nullptr,
+            0,
+            sabotage_methods,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr
+    };
 
+    return PyModule_Create(&def);
+}
 
 int main()
 {
+    PyImport_AppendInittab("sabotage", &init_sabotage);
     init_python_api("16799987-a321-43a2-aa66-f7bc8ed8e9b2");
-
-    setup_test_functions();
 
     run_python_string("from atlas import Message");
     run_python_string("from atlas import Operation");
@@ -89,22 +97,22 @@ int main()
     expect_python_error("Message(1, 1)", PyExc_TypeError);
 
     run_python_string("m=Message(1)");
-    run_python_string("print m.get_name()");
-    expect_python_error("print m.foo", PyExc_AttributeError);
+    run_python_string("print(m.get_name())");
+    expect_python_error("print(m.foo)", PyExc_AttributeError);
     expect_python_error("m.foo = 1", PyExc_AttributeError);
     run_python_string("m=Message({})");
-    expect_python_error("print m.foo", PyExc_AttributeError);
+    expect_python_error("print(m.foo)", PyExc_AttributeError);
     expect_python_error("m.foo = Vector3D()", PyExc_TypeError);
     run_python_string("m.foo = 1");
-    run_python_string("print m.foo");
+    run_python_string("print(m.foo)");
     run_python_string("m.foo = 1.1");
-    run_python_string("print m.foo");
+    run_python_string("print(m.foo)");
     run_python_string("m.foo = '1'");
-    run_python_string("print m.foo");
+    run_python_string("print(m.foo)");
     run_python_string("m.foo = ['1']");
-    run_python_string("print m.foo");
+    run_python_string("print(m.foo)");
     run_python_string("m.foo = {'foo': 1}");
-    run_python_string("print m.foo");
+    run_python_string("print(m.foo)");
     run_python_string("m=Message(1)");
     run_python_string("assert m == 1");
     run_python_string("assert not m == 1.0");
@@ -149,8 +157,8 @@ int main()
     run_python_string("get_name_method=m.get_name");
     run_python_string("sabotage.null(m)");
     // Hit the assert checks.
-    expect_python_error("print get_name_method()", PyExc_AssertionError);
-    expect_python_error("print m.foo", PyExc_AssertionError);
+    expect_python_error("print(get_name_method())", PyExc_AssertionError);
+    expect_python_error("print(m.foo)", PyExc_AssertionError);
     expect_python_error("m.foo = 1", PyExc_AssertionError);
 #endif // NDEBUG
 

@@ -243,12 +243,17 @@ static int ObserverClient_setattro(PyObserverClient *self,
     return PyObject_GenericSetAttr((PyObject *)self, oname, v);
 }
 
-static int ObserverClient_compare(PyObserverClient *self, PyObserverClient *other)
+static PyObject* ObserverClient_compare(PyObject *a, PyObject *b, int op)
 {
-    if (self->m_client == nullptr || other->m_client == nullptr) {
-        return -1;
+    auto self = (PyObserverClient*)a;
+    if (PyObserverClient_Check(b)) {
+        auto other = (PyObserverClient*)b;
+        if (op == Py_EQ) {
+            return self->m_client == other->m_client ? Py_True : Py_False;
+        }
     }
-    return (self->m_client == other->m_client) ? 0 : 1;
+
+    return Py_NotImplemented;
 }
 
 static int ObserverClient_init(PyObserverClient * self,
@@ -262,8 +267,7 @@ static int ObserverClient_init(PyObserverClient * self,
 }
 
 PyTypeObject PyObserverClient_Type = {
-        PyObject_HEAD_INIT(&PyType_Type)
-        0,                                      /*ob_size*/
+        PyVarObject_HEAD_INIT(&PyType_Type, 0)
         "server.ObserverClient",                /*tp_name*/
         sizeof(PyObserverClient),               /*tp_basicsize*/
         0,                                      /*tp_itemsize*/
@@ -272,7 +276,7 @@ PyTypeObject PyObserverClient_Type = {
         0,                                      /*tp_print*/
         0,                                      /*tp_getattr*/
         0,                                      /*tp_setattr*/
-        (cmpfunc)ObserverClient_compare,        /*tp_compare*/
+        0,                                      /*tp_compare*/
         0,                                      /*tp_repr*/
         0,                                      /*tp_as_number*/
         0,                                      /*tp_as_sequence*/
@@ -287,7 +291,7 @@ PyTypeObject PyObserverClient_Type = {
         "ObserverClient objects",               // tp_doc
         0,                                      // tp_travers
         0,                                      // tp_clear
-        0,                                      // tp_richcompare
+        (richcmpfunc)ObserverClient_compare,    // tp_richcompare
         0,                                      // tp_weaklistoffset
         0,                                      // tp_iter
         0,                                      // tp_iternext

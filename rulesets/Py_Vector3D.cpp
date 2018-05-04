@@ -220,17 +220,20 @@ static int Vector3D_setattro(PyVector3D *self, PyObject *oname, PyObject *v)
 
 static PyObject* Vector3D_compare(PyObject *a, PyObject *b, int op)
 {
+    PyObject *result = Py_NotImplemented;
+
     auto self = (PyVector3D*)a;
     if (PyVector3D_Check(b)) {
         auto other = (PyVector3D*)b;
         if (op == Py_EQ) {
-            return self->coords == other->coords ? Py_True : Py_False;
+            result = self->coords == other->coords ? Py_True : Py_False;
         } else if (op == Py_NE) {
-            return self->coords != other->coords ? Py_True : Py_False;
+            result = self->coords != other->coords ? Py_True : Py_False;
         }
     }
 
-    return Py_NotImplemented;
+    Py_INCREF(result);
+    return result;
 }
 
 /*
@@ -453,7 +456,7 @@ static PyNumberMethods Vector3D_num = {
     0,                              /* nb_inplace_xor */
     0,                              /* nb_inplace_or */
     (binaryfunc)Vector3D_num_div,   /* nb_floor_divide */
-    0,                              /* nb_true_divide */
+    (binaryfunc)Vector3D_num_div,   /* nb_true_divide */
     0,                              /* nb_inplace_floor_divide */
     0,                              /* nb_inplace_true_divide */
 };

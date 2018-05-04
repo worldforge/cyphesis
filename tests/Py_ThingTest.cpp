@@ -93,11 +93,6 @@ static PyMethodDef sabotage_methods[] = {
     {nullptr,          nullptr}                       /* Sentinel */
 };
 
-static void setup_test_functions()
-{
-    PyObject * sabotage = Py_InitModule("sabotage", sabotage_methods);
-    assert(sabotage != 0);
-}
 
 class TestLocatedEntity : public LocatedEntity {
   public:
@@ -110,8 +105,26 @@ class TestLocatedEntity : public LocatedEntity {
     virtual void destroy() { }
 };
 
+static PyObject* init_sabotage() {
+    static struct PyModuleDef def = {
+            PyModuleDef_HEAD_INIT,
+            "sabotage",
+            nullptr,
+            0,
+            sabotage_methods,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr
+    };
+
+    return PyModule_Create(&def);
+}
+
 int main()
 {
+    PyImport_AppendInittab("sabotage", &init_sabotage);
+
     Inheritance inheritance;
     check_union();
 
@@ -119,7 +132,9 @@ int main()
 
     init_python_api("993bbe09-5751-41fe-8a18-17995c713c2e");
 
-    setup_test_functions();
+    run_python_string("from server import *");
+    run_python_string("from atlas import Operation");
+    run_python_string("from atlas import Oplist");
 
     PyEntity * ent = newPyLocatedEntity();
     assert(ent != 0);
@@ -156,9 +171,6 @@ int main()
     assert(wrap_le != 0);
     
 
-    run_python_string("from server import *");
-    run_python_string("from atlas import Operation");
-    run_python_string("from atlas import Oplist");
 
     expect_python_error("LocatedEntity()", PyExc_TypeError);
     expect_python_error("LocatedEntity('s')", PyExc_TypeError);
@@ -168,10 +180,10 @@ int main()
     expect_python_error("le.send_world(Operation('get'))",
                         PyExc_AttributeError);
     run_python_string("le==LocatedEntity('2')");
-    expect_python_error("print le.type", PyExc_AttributeError);
-    expect_python_error("print le.foo_operation", PyExc_AttributeError);
-    run_python_string("print le.location");
-    run_python_string("print le.contains");
+    expect_python_error("print(le.type)", PyExc_AttributeError);
+    expect_python_error("print(le.foo_operation)", PyExc_AttributeError);
+    run_python_string("print(le.location)");
+    run_python_string("print(le.contains)");
     expect_python_error("le.type", PyExc_AttributeError);
     expect_python_error("le.type='non_exist'", PyExc_ValueError);
     expect_python_error("le.type=1", PyExc_TypeError);
@@ -208,10 +220,10 @@ int main()
     run_python_string("t.as_entity()");
     run_python_string("t.send_world(Operation('get'))");
     expect_python_error("t.send_world('get')", PyExc_TypeError);
-    expect_python_error("print t.type", PyExc_AttributeError);
-    expect_python_error("print t.foo_operation", PyExc_AttributeError);
-    run_python_string("print t.location");
-    run_python_string("print t.contains");
+    expect_python_error("print(t.type)", PyExc_AttributeError);
+    expect_python_error("print(t.foo_operation)", PyExc_AttributeError);
+    run_python_string("print(t.location)");
+    run_python_string("print(t.contains)");
 
     expect_python_error("Character()", PyExc_TypeError);
     expect_python_error("Character('s')", PyExc_TypeError);
@@ -232,10 +244,10 @@ int main()
     expect_python_error("c.mind2body(1)", PyExc_TypeError);
     run_python_string("c.mind2body(Operation('update'))");
     run_python_string("c.mind2body(Operation('get'))");
-    expect_python_error("print c.type", PyExc_AttributeError);
-    expect_python_error("print c.foo_operation", PyExc_AttributeError);
-    run_python_string("print c.location");
-    run_python_string("print c.contains");
+    expect_python_error("print(c.type)", PyExc_AttributeError);
+    expect_python_error("print(c.foo_operation)", PyExc_AttributeError);
+    run_python_string("print(c.location)");
+    run_python_string("print(c.contains)");
 
     expect_python_error("Mind()", PyExc_TypeError);
     expect_python_error("Mind('s')", PyExc_TypeError);
@@ -246,9 +258,9 @@ int main()
     run_python_string("assert(m_ent.id == '1')");
     expect_python_error("m.send_world(Operation('get'))", PyExc_AttributeError);
     run_python_string("m==LocatedEntity('2')");
-    expect_python_error("print m.foo_operation", PyExc_AttributeError);
-    run_python_string("print m.location");
-    run_python_string("print m.contains");
+    expect_python_error("print(m.foo_operation)", PyExc_AttributeError);
+    run_python_string("print(m.location)");
+    run_python_string("print(m.contains)");
     run_python_string("m.type");
     expect_python_error("m.map=1", PyExc_AttributeError);
     run_python_string("m.string_attr='foo'");
@@ -278,7 +290,8 @@ int main()
     run_python_string("sabotage.null(le)");
     expect_python_error("le.location", PyExc_AssertionError);
     expect_python_error("le.foo=1", PyExc_AssertionError);
-    expect_python_error("le == t", PyExc_AssertionError);
+
+    run_python_string("assert le != t");
 
     run_python_string("as_entity_method=t.as_entity");
     run_python_string("send_world_method=t.send_world");

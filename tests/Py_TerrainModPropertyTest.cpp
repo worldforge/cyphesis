@@ -108,19 +108,44 @@ static PyMethodDef sabotage_methods[] = {
     {nullptr,          nullptr}                       /* Sentinel */
 };
 
-static void setup_test_functions()
-{
-    PyObject * testprop = Py_InitModule("testprop", testprop_methods);
-    assert(testprop != 0);
-    PyObject * sabotage = Py_InitModule("sabotage", sabotage_methods);
-    assert(sabotage != 0);
+
+static PyObject* init_sabotage() {
+    static struct PyModuleDef def = {
+            PyModuleDef_HEAD_INIT,
+            "sabotage",
+            nullptr,
+            0,
+            sabotage_methods,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr
+    };
+
+    return PyModule_Create(&def);
+}
+
+static PyObject* init_testprop() {
+    static struct PyModuleDef def = {
+            PyModuleDef_HEAD_INIT,
+            "testprop",
+            nullptr,
+            0,
+            testprop_methods,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr
+    };
+
+    return PyModule_Create(&def);
 }
 
 int main()
 {
+    PyImport_AppendInittab("sabotage", &init_sabotage);
+    PyImport_AppendInittab("testprop", &init_testprop);
     init_python_api("db35f202-3ebb-4df6-bf9e-4e840f6d7eb3");
-
-    setup_test_functions();
 
     run_python_string("from server import *");
     run_python_string("import physics");
@@ -136,7 +161,7 @@ int main()
     run_python_string("testprop.add_terrainmod_shape(terrainmod)");
     run_python_string("assert type(terrainmod.shape) == physics.Area");
     run_python_string("assert terrainmod.nonshape == 'testval'");
-    run_python_string("print 'test1'");
+    run_python_string("print('test1')");
     run_python_string("terrainmod.shape = physics.Polygon([[ -0.7, -0.7],"
                                                           "[ -1.0,  0.0],"
                                                           "[ -0.7,  0.7]])");
