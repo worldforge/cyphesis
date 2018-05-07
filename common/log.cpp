@@ -36,12 +36,6 @@ extern "C" {
 #endif // HAVE_SYSLOG_H
 }
 
-#ifndef _WIN32
-static const char * TIME_FORMAT = "%FT%T";
-#else
-static const char * TIME_FORMAT = "%Y-%m-%dT%H:%M:%S";
-#endif
-
 static void logDate(std::ostream & log_stream)
 {
     struct tm * local_time;
@@ -62,7 +56,11 @@ static void logDate(std::ostream & log_stream)
 #endif // HAVE_LOCALTIME_R
 
     char buf[256];
-    size_t count = strftime(buf, sizeof(buf) / sizeof(char), TIME_FORMAT, local_time);
+#ifndef _WIN32
+    size_t count = strftime(buf, sizeof(buf) / sizeof(char), "%FT%T", local_time);
+#else
+    size_t count = strftime(buf, sizeof(buf) / sizeof(char), "%Y-%m-%dT%H:%M:%S", local_time);
+#endif
 
     if (count == 0) {
         log_stream << "[TIME_ERROR]";
