@@ -42,6 +42,7 @@
 #include "StatisticsProperty.h"
 #include "TerrainProperty.h"
 #include "TerrainModProperty.h"
+#include "CyPy_Props.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -277,6 +278,15 @@ static PyObject * Entity_getattro(PyEntity *self, PyObject *oname)
 #endif // NDEBUG
     char * name = PyUnicode_AsUTF8(oname);
     // If operation search gets to here, it goes no further
+
+    if (strcmp(name, "props") == 0) {
+        CyPyProps* props = newCyPyProps();
+        props->owner = self->m_entity.e;
+        self->m_entity.e->incRef();
+        Py_INCREF(props);
+        return (PyObject*)props;
+    }
+
     if (strcmp(name, "type") == 0) {
         if (self->m_entity.e->getType() == nullptr) {
             PyErr_SetString(PyExc_AttributeError, name);
@@ -523,6 +533,15 @@ static PyObject * Mind_getattro(PyEntity *self, PyObject *oname)
     char * name = PyUnicode_AsUTF8(oname);
     if (strcmp(name, "id") == 0) {
         return (PyObject *)PyUnicode_FromString(self->m_entity.m->getId().c_str());
+    }
+
+
+    if (strcmp(name, "props") == 0) {
+        CyPyProps* props = newCyPyProps();
+        props->owner = self->m_entity.e;
+        self->m_entity.e->incRef();
+        Py_INCREF(props);
+        return (PyObject*)props;
     }
     if (strcmp(name, "type") == 0) {
         if (self->m_entity.m->getType() == nullptr) {

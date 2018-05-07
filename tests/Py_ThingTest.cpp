@@ -39,6 +39,7 @@
 
 #include <cassert>
 #include <common/Inheritance.h>
+#include <rulesets/Python_Script_Utils.h>
 
 void check_union()
 {
@@ -147,6 +148,10 @@ int main()
     Py_DECREF(ent);
 
     Entity * e = new Entity("1", 1);
+
+    SoftProperty* prop = new SoftProperty();
+    prop->set("bar");
+    e->setProperty("foo", prop);
     Entity * wrld = new Entity("0", 0);
     e->m_location.m_loc = wrld;
     e->m_location.m_loc->makeContainer();
@@ -169,8 +174,15 @@ int main()
     assert(le != 0);
     PyObject * wrap_le = wrapEntity(le);
     assert(wrap_le != 0);
-    
 
+
+    auto module = Get_PyModule("server");
+
+    PyObject_SetAttrString(module, "testentity", wrap_e);
+
+    run_python_string("import server")
+    run_python_string("assert server.testentity is not None");
+    run_python_string("assert server.testentity.props.foo == 'bar'");
 
     expect_python_error("LocatedEntity()", PyExc_TypeError);
     expect_python_error("LocatedEntity('s')", PyExc_TypeError);
