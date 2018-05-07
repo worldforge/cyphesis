@@ -500,20 +500,6 @@ static PyObject * Operation_num_add(PyOperation *self, PyObject *other)
     return nullptr;
 }
 
-/*
- * Operation numerical methods.
- */
-
-static int Operation_num_coerce(PyObject ** self, PyObject ** other)
-{
-    //if (*other == Py_None) {
-        Py_INCREF(*self);
-        Py_INCREF(*other);
-        return 0;
-    //}
-    //return -1;
-}
-
 
 /*
  * Operation numerical methods structure.

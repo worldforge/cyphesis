@@ -98,16 +98,6 @@ static PyObject * Oplist_num_add(PyOplist *self, PyObject *other)
     return nullptr;
 }
 
-static int Oplist_num_coerce(PyObject ** self, PyObject ** other)
-{
-    //if (*other == Py_None) {
-        Py_INCREF(*self);
-        Py_INCREF(*other);
-        return 0;
-    //}
-    //return -1;
-}
-
 static PyObject * Oplist_num_inplace_add(PyOplist * self, PyObject * other)
 {
 #ifndef NDEBUG
