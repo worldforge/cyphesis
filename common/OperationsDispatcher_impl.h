@@ -153,7 +153,7 @@ OperationsDispatcher<T>::OperationsDispatcher(const std::function<void(const Ope
 template <typename T>
 void OperationsDispatcher<T>::clearQueues()
 {
-    m_operationQueue = std::priority_queue<OpQueEntry<T>, std::vector<OpQueEntry<T>>, std::greater<>>();
+    m_operationQueue = std::priority_queue<OpQueEntry<T>, std::vector<OpQueEntry<T>>, std::greater<OpQueEntry<T>>>();
 }
 
 /// \brief Add an operation to the ordered op queue.

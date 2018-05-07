@@ -126,7 +126,7 @@ class OperationsDispatcher
         const std::function<double()> m_timeProviderFn;
 
         /// An ordered queue of operations to be dispatched in the future
-        std::priority_queue<OpQueEntry<T>, std::vector<OpQueEntry<T>>, std::greater<> > m_operationQueue;
+        std::priority_queue<OpQueEntry<T>, std::vector<OpQueEntry<T>>, std::greater<OpQueEntry<T>> > m_operationQueue;
         /// Keeps track of if the operation queues are dirty.
         bool m_operation_queues_dirty;
 
