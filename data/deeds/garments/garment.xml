@@ -15,10 +15,6 @@
           <string name="id">garment</string>
           <string name="objtype">class</string>
           <string name="parent">thing</string>
-          <map name="script">
-              <string name="language">python</string>
-              <string name="name">world.objects.clothing.Garment.Garment</string>
-          </map>
       </map>
 
 </atlas>

@@ -116,9 +116,7 @@ target_link_libraries(scriptpython ${PYTHON_LIBRARIES})
 #target_compile_options(scriptpython PUBLIC "-fno-strict-aliasing")
 
 install(FILES
-    basic/world/objects/Thing.py
     basic/world/probability.py
-    basic/world/objects/__init__.py
     basic/editor.py
     DESTINATION ${CMAKE_INSTALL_DATADIR}/cyphesis/scripts/cyphesis)
 install(DIRECTORY
