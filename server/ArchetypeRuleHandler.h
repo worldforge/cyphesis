@@ -46,18 +46,21 @@ class ArchetypeRuleHandler : public RuleHandler {
                            std::string & reason);
 
     int modifyArchetypeClass(const std::string & class_name,
-                          const Atlas::Objects::Root & class_desc);
+                             const Atlas::Objects::Root & class_desc,
+                             std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes);
   public:
     explicit ArchetypeRuleHandler(EntityBuilder * eb) : m_builder(eb) { }
 
-    virtual int check(const Atlas::Objects::Root & desc);
-    virtual int install(const std::string &,
+    int check(const Atlas::Objects::Root & desc) override;
+    int install(const std::string &,
                         const std::string &,
                         const Atlas::Objects::Root & desc,
                         std::string &,
-                        std::string &);
-    virtual int update(const std::string &,
-                       const Atlas::Objects::Root & desc);
+                        std::string &,
+                        std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes) override;
+    int update(const std::string &,
+                        const Atlas::Objects::Root & desc,
+                        std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes) override;
 };
 
 #endif // SERVER_ARCHETYPE_RULE_HANDLER_H

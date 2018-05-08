@@ -97,7 +97,7 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType & attributes
     // Discover the default attributes which are no longer
     // present after the update.
     for (auto& entry : m_defaults) {
-        //Don't remove epheremal attributes.
+        //Don't remove ephemeral attributes.
         if (attributes.find(entry.first) == attributes.end() && (entry.second->flags() & per_ephem) == 0) {
             debug( std::cout << entry.first << " removed" << std::endl; );
             propertiesUpdate.removedProps.insert(entry.first);
@@ -139,6 +139,11 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType & attributes
             if (oldVal != entry.second) {
                 p->set(entry.second);
                 propertiesUpdate.changedProps.emplace(entry.first);
+                attributesElement.Map()[entry.first] = Atlas::Message::MapType{
+                    {"visibility", "public"},
+                    {"default", entry.second}
+                };
+//                attributesElement.Map()[entry.first].Map()["default"] = entry.second;
             }
         }
     }

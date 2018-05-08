@@ -33,16 +33,19 @@ class TaskRuleHandler : public RuleHandler {
                             TaskKit * factory,
                             const Atlas::Objects::Root & class_desc,
                             std::string & dependent,
-                            std::string & reason);
+                            std::string & reason,
+                            std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes);
 
     int installTaskClass(const std::string & class_name,
                          const std::string & parent,
                          const Atlas::Objects::Root & class_desc,
                          std::string & dependent,
-                         std::string & reason);
+                         std::string & reason,
+                         std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes);
 
     int modifyTaskClass(const std::string & class_name,
-                        const Atlas::Objects::Root & class_desc);
+                        const Atlas::Objects::Root & class_desc,
+                        std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes);
   public:
     explicit TaskRuleHandler(EntityBuilder * eb) : m_builder(eb) { }
 
@@ -52,10 +55,12 @@ class TaskRuleHandler : public RuleHandler {
                    const std::string &,
                    const Atlas::Objects::Root & desc,
                    std::string &,
-                   std::string &) override;
+                   std::string &,
+                   std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes) override;
 
     int update(const std::string &,
-                   const Atlas::Objects::Root & desc) override;
+                    const Atlas::Objects::Root & desc,
+                    std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes) override;
 };
 
 #endif // SERVER_TASK_RULE_HANDLER_H

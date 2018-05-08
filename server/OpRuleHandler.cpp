@@ -47,7 +47,7 @@ int OpRuleHandler::installOpDefinition(const std::string & class_name,
 
     if (!i.hasClass(parent)) {
         debug(std::cout << "op_definition \"" << class_name
-                        << "\" has non existant parent \"" << parent
+                        << "\" has non existent parent \"" << parent
                         << "\". Waiting." << std::endl << std::flush;);
         dependent = parent;
         reason = compose("Operation \"%1\" has parent \"%2\" which does "
@@ -57,7 +57,7 @@ int OpRuleHandler::installOpDefinition(const std::string & class_name,
 
     Atlas::Objects::Root r = atlasOpDefinition(class_name, parent);
 
-    if (i.addChild(class_desc) == 0) {
+    if (i.addChild(class_desc) == nullptr) {
         return -1;
     }
 
@@ -86,13 +86,16 @@ int OpRuleHandler::install(const std::string & name,
                            const std::string & parent,
                            const Atlas::Objects::Root & description,
                            std::string & dependent,
-                           std::string & reason)
+                           std::string & reason,
+                           std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
+    //Ignore changes, as no other factories are affected.
     return installOpDefinition(name, parent, description, dependent, reason);
 }
 
 int OpRuleHandler::update(const std::string & name,
-                          const Atlas::Objects::Root & desc)
+                          const Atlas::Objects::Root & desc,
+                          std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     return modifyOpDefinition(name, desc);
 }

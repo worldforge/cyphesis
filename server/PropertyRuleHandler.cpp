@@ -48,7 +48,8 @@ int PropertyRuleHandler::install(const std::string & name,
                                  const std::string & parent,
                                  const Atlas::Objects::Root & desc,
                                  std::string & dependent,
-                                 std::string & reason)
+                                 std::string & reason,
+                                 std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     assert(desc->getObjtype() == "type");
     PropertyManager& pm = PropertyManager::instance();
@@ -70,7 +71,8 @@ int PropertyRuleHandler::install(const std::string & name,
 }
 
 int PropertyRuleHandler::update(const std::string & name,
-                                const Atlas::Objects::Root & desc)
+                                const Atlas::Objects::Root & desc,
+                                std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     // There is not anything to be modified yet.
     return 0;

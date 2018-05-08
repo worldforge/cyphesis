@@ -50,7 +50,7 @@ class EntityFactoryBase : public EntityKit {
 
       void addProperties() override;
 
-      std::map<const TypeNode*, TypeNode::PropertiesUpdate> updateProperties() override;
+      void updateProperties(std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes) override;
 
 };
 

@@ -42,7 +42,8 @@ int TaskRuleHandler::populateTaskFactory(const std::string & class_name,
                                          TaskKit * factory,
                                          const Root & class_desc,
                                          std::string & dependent,
-                                         std::string & reason)
+                                         std::string & reason,
+                                         std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     // assert(class_name == class_desc->getId());
 
@@ -176,7 +177,7 @@ int TaskRuleHandler::populateTaskFactory(const std::string & class_name,
     if (L == tool_factory->m_classAttributes.end()) {
         tool_factory->m_classAttributes["operations"] = ListType(1, activation_op);
         tool_factory->m_attributes["operations"] = ListType(1, activation_op);
-        tool_factory->updateProperties();
+        tool_factory->updateProperties(changes);
     } else {
         if (L->second.isList()) {
             ListType::const_iterator M = L->second.List().begin();
@@ -184,11 +185,11 @@ int TaskRuleHandler::populateTaskFactory(const std::string & class_name,
             if (M == L->second.List().end()) {
                 L->second.List().push_back(activation_op);
                 tool_factory->m_attributes[L->first] = L->second.List();
-                tool_factory->updateProperties();
+                tool_factory->updateProperties(changes);
             }
         }
     }
-    
+
     return 0;
 }
 
@@ -196,7 +197,8 @@ int TaskRuleHandler::installTaskClass(const std::string & class_name,
                                       const std::string & parent,
                                       const Root & class_desc,
                                       std::string & dependent,
-                                      std::string & reason)
+                                      std::string & reason,
+                                      std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     assert(class_name == class_desc->getId());
 
@@ -209,7 +211,7 @@ int TaskRuleHandler::installTaskClass(const std::string & class_name,
     TaskKit * factory = new TaskFactory(class_name);
 
     int ret = populateTaskFactory(class_name, factory, class_desc,
-                                  dependent, reason);
+                                  dependent, reason, changes);
     if (ret != 0) {
         delete factory;
         return ret;
@@ -224,7 +226,8 @@ int TaskRuleHandler::installTaskClass(const std::string & class_name,
 }
 
 int TaskRuleHandler::modifyTaskClass(const std::string & class_name,
-                                     const Root & class_desc)
+                                     const Root & class_desc,
+                                     std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     assert(class_name == class_desc->getId());
 
@@ -237,7 +240,7 @@ int TaskRuleHandler::modifyTaskClass(const std::string & class_name,
 
     std::string dependent, reason;
     int ret = populateTaskFactory(class_name, factory, class_desc,
-                                  dependent, reason);
+                                  dependent, reason, changes);
     if (ret != 0) {
         if (ret > 0) {
             log(ERROR, reason);
@@ -258,13 +261,15 @@ int TaskRuleHandler::install(const std::string & name,
                              const std::string & parent,
                              const Atlas::Objects::Root & description,
                              std::string & dependent,
-                             std::string & reason)
+                             std::string & reason,
+                             std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
-    return installTaskClass(name, parent, description, dependent, reason);
+    return installTaskClass(name, parent, description, dependent, reason, changes);
 }
 
 int TaskRuleHandler::update(const std::string & name,
-                            const Atlas::Objects::Root & desc)
+                            const Atlas::Objects::Root & desc,
+                            std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
-    return modifyTaskClass(name, desc);
+    return modifyTaskClass(name, desc, changes);
 }

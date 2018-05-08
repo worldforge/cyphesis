@@ -68,7 +68,7 @@ class EntityKit {
 
     virtual void addProperties() = 0;
 
-    virtual std::map<const TypeNode*, TypeNode::PropertiesUpdate> updateProperties() = 0;
+    virtual void updateProperties(std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes) = 0;
 
 };
 

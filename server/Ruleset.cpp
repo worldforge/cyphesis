@@ -98,26 +98,38 @@ int Ruleset::installRuleInner(const std::string & class_name,
         return -1;
     }
     int ret = -1;
+    std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
     if (m_opHandler->check(class_desc) == 0) {
         ret = m_opHandler->install(class_name, parent, class_desc,
-                                   dependent, reason);
+                                   dependent, reason, changes);
     } else if (m_taskHandler->check(class_desc) == 0) {
         ret = m_taskHandler->install(class_name, parent, class_desc,
-                                     dependent, reason);
+                                     dependent, reason, changes);
     } else if (m_entityHandler->check(class_desc) == 0) {
         ret = m_entityHandler->install(class_name, parent, class_desc,
-                                       dependent, reason);
+                                       dependent, reason, changes);
     } else if (m_propertyHandler->check(class_desc) == 0) {
         ret = m_propertyHandler->install(class_name, parent, class_desc,
-                                       dependent, reason);
+                                       dependent, reason, changes);
     } else if (m_archetypeHandler->check(class_desc) == 0) {
         ret = m_archetypeHandler->install(class_name, parent, class_desc,
-                                       dependent, reason);
+                                       dependent, reason, changes);
     } else {
         log(ERROR, compose(R"(Rule "%1" has unknown objtype="%2". Skipping.)",
                            class_name, class_desc->getObjtype()));
         return -1;
     }
+
+    //Sometimes when installing new rules existing ones are changed.
+    for (auto& entry : changes) {
+        Inheritance::instance().updateClass(entry.first->name(), entry.first->description());
+        if (database_flag) {
+            Persistence * p = Persistence::instance();
+            p->updateRule(entry.first->description(), entry.first->name());
+        }
+    }
+
+    Inheritance::instance().typesUpdated(changes);
 
     return ret;
 }
@@ -197,22 +209,26 @@ int Ruleset::modifyRule(const std::string & class_name,
         return -1;
     }
     int ret = -1;
+    std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
     if (m_opHandler->check(class_desc) == 0) {
-        ret = m_opHandler->update(class_name, class_desc);
+        ret = m_opHandler->update(class_name, class_desc, changes);
     } else if (m_taskHandler->check(o) == 0) {
-        ret = m_taskHandler->update(class_name, class_desc);
+        ret = m_taskHandler->update(class_name, class_desc, changes);
     } else if (m_entityHandler->check(class_desc) == 0) {
-        ret = m_entityHandler->update(class_name, class_desc);
+        ret = m_entityHandler->update(class_name, class_desc, changes);
     } else if (m_propertyHandler->check(class_desc) == 0) {
-        ret = m_propertyHandler->update(class_name, class_desc);
+        ret = m_propertyHandler->update(class_name, class_desc, changes);
     }
-    if (ret == 0) {
-        Inheritance::instance().updateClass(class_name, class_desc);
+    for (auto& entry : changes) {
+        Inheritance::instance().updateClass(entry.first->name(), entry.first->description());
         if (database_flag) {
             Persistence * p = Persistence::instance();
-            p->updateRule(class_desc, class_name);
+            p->updateRule(entry.first->description(), entry.first->name());
         }
     }
+
+    Inheritance::instance().typesUpdated(changes);
+
     return ret;
 }
 

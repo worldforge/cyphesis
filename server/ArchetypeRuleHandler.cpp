@@ -49,9 +49,8 @@ int ArchetypeRuleHandler::installArchetypeClass(const std::string & class_name,
     assert(class_name == class_desc->getId());
 
     // Get the new factory for this rule
-    ArchetypeFactory * parent_factory =
-            dynamic_cast<ArchetypeFactory*>(m_builder->getClassFactory(parent));
-    if (parent_factory == 0) {
+    auto* parent_factory = dynamic_cast<ArchetypeFactory*>(m_builder->getClassFactory(parent));
+    if (parent_factory == nullptr) {
         debug(
                 std::cout << "class \"" << class_name
                         << "\" has non existant parent \"" << parent
@@ -63,7 +62,7 @@ int ArchetypeRuleHandler::installArchetypeClass(const std::string & class_name,
         return 1;
     }
     ArchetypeFactory * factory = parent_factory->duplicateFactory();
-    if (factory == 0) {
+    if (factory == nullptr) {
         log(ERROR,
                 compose(
                         "Attempt to install rule \"%1\" which has parent \"%2\" "
@@ -100,26 +99,25 @@ int ArchetypeRuleHandler::installArchetypeClass(const std::string & class_name,
 }
 
 int ArchetypeRuleHandler::modifyArchetypeClass(const std::string & class_name,
-        const Root & class_desc)
+        const Root & class_desc, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     assert(class_name == class_desc->getId());
 
-    ArchetypeFactory * factory =
-            dynamic_cast<ArchetypeFactory*>(m_builder->getClassFactory(
-                    class_name));
-    if (factory == 0) {
+    auto factory =
+            dynamic_cast<ArchetypeFactory*>(m_builder->getClassFactory(class_name));
+    if (factory == nullptr) {
         log(ERROR, compose("Could not find factory for existing entity class "
                 "\"%1\".", class_name));
         return -1;
     }
-    assert(factory != 0);
+    assert(factory != nullptr);
 
     auto backup_entities = factory->m_entities;
     auto backup_thoughts = factory->m_thoughts;
 
     // Copy the defaults from the parent. In populateArchetypeFactory this may be
     // overridden with the defaults for this class.
-    if (factory->m_parent != 0) {
+    if (factory->m_parent != nullptr) {
         factory->m_entities = factory->m_parent->m_entities;
         factory->m_thoughts = factory->m_parent->m_thoughts;
     } else {
@@ -146,7 +144,7 @@ int ArchetypeRuleHandler::modifyArchetypeClass(const std::string & class_name,
         return -1;
     }
 
-    factory->updateProperties();
+    factory->updateProperties(changes);
 
     return 0;
 }
@@ -239,13 +237,15 @@ int ArchetypeRuleHandler::check(const Atlas::Objects::Root & desc)
 
 int ArchetypeRuleHandler::install(const std::string & name,
         const std::string & parent, const Atlas::Objects::Root & description,
-        std::string & dependent, std::string & reason)
+        std::string & dependent, std::string & reason,
+        std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     return installArchetypeClass(name, parent, description, dependent, reason);
 }
 
 int ArchetypeRuleHandler::update(const std::string & name,
-        const Atlas::Objects::Root & desc)
+        const Atlas::Objects::Root & desc,
+        std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
-    return modifyArchetypeClass(name, desc);
+    return modifyArchetypeClass(name, desc, changes);
 }

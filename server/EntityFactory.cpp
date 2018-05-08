@@ -120,11 +120,10 @@ void EntityFactoryBase::addProperties()
     m_type->addProperties(m_attributes);
 }
 
-std::map<const TypeNode*, TypeNode::PropertiesUpdate> EntityFactoryBase::updateProperties()
+void EntityFactoryBase::updateProperties(std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
-    std::map<const TypeNode*, TypeNode::PropertiesUpdate> result;
     assert(m_type != nullptr);
-    result.emplace(m_type, m_type->updateProperties(m_attributes));
+    changes.emplace(m_type, m_type->updateProperties(m_attributes));
 
     for (auto& child_factory : m_children) {
         child_factory->m_attributes = m_attributes;
@@ -133,10 +132,8 @@ std::map<const TypeNode*, TypeNode::PropertiesUpdate> EntityFactoryBase::updateP
         for (; J != Jend; ++J) {
             child_factory->m_attributes[J->first] = J->second;
         }
-        auto childResult = child_factory->updateProperties();
-        result.insert(childResult.begin(), childResult.end());
+        child_factory->updateProperties(changes);
     }
-    return result;
 }
 
 template class EntityFactory<Thing>;

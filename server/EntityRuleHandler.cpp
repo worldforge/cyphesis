@@ -116,7 +116,8 @@ int EntityRuleHandler::installEntityClass(const std::string & class_name,
                                           const std::string & parent,
                                           const Root & class_desc,
                                           std::string & dependent,
-                                          std::string & reason)
+                                          std::string & reason,
+                                          std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     assert(class_name == class_desc->getId());
 
@@ -156,7 +157,7 @@ int EntityRuleHandler::installEntityClass(const std::string & class_name,
         assert(factory->m_parent == parent_factory);
     }
 
-    return installEntityClass(class_name, parent, class_desc, dependent, reason, factory);
+    return installEntityClass(class_name, parent, class_desc, dependent, reason, factory, changes);
 
 }
 
@@ -165,7 +166,8 @@ int EntityRuleHandler::installEntityClass(const std::string & class_name,
                                           const Root & class_desc,
                                           std::string & dependent,
                                           std::string & reason,
-                                          EntityFactoryBase* factory)
+                                          EntityFactoryBase* factory,
+                                          std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     // Get the new factory for this rule
 
@@ -199,12 +201,14 @@ int EntityRuleHandler::installEntityClass(const std::string & class_name,
     if (parent_factory) {
         // Add it as a child to its parent.
         parent_factory->m_children.insert(factory);
+        parent_factory->updateProperties(changes);
     }
 
     return 0;
 }
 int EntityRuleHandler::modifyEntityClass(const std::string & class_name,
-                                         const Root & class_desc)
+                                         const Root & class_desc,
+                                         std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     assert(class_name == class_desc->getId());
 
@@ -243,9 +247,7 @@ int EntityRuleHandler::modifyEntityClass(const std::string & class_name,
         return -1;
     }
 
-    auto result = factory->updateProperties();
-
-    Inheritance::instance().typesUpdated(result);
+    factory->updateProperties(changes);
 
     return 0;
 }
@@ -332,13 +334,15 @@ int EntityRuleHandler::install(const std::string & name,
                              const std::string & parent,
                              const Atlas::Objects::Root & description,
                              std::string & dependent,
-                             std::string & reason)
+                             std::string & reason,
+                             std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
-    return installEntityClass(name, parent, description, dependent, reason);
+    return installEntityClass(name, parent, description, dependent, reason, changes);
 }
 
 int EntityRuleHandler::update(const std::string & name,
-                            const Atlas::Objects::Root & desc)
+                                const Atlas::Objects::Root & desc,
+                                std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
-    return modifyEntityClass(name, desc);
+    return modifyEntityClass(name, desc, changes);
 }

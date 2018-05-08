@@ -19,6 +19,8 @@
 #ifndef SERVER_RULE_HANDLER_H
 #define SERVER_RULE_HANDLER_H
 
+#include "common/TypeNode.h"
+
 #include <Atlas/Objects/Root.h>
 
 /// \brief Handle processing and updating of task ruless
@@ -30,9 +32,11 @@ class RuleHandler {
                         const std::string &,
                         const Atlas::Objects::Root & desc,
                         std::string &,
-                        std::string &) = 0;
+                        std::string &,
+                        std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes) = 0;
     virtual int update(const std::string &,
-                       const Atlas::Objects::Root & desc) = 0;
+                       const Atlas::Objects::Root & desc,
+                       std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes) = 0;
 
     static int getScriptDetails(const Atlas::Message::MapType &,
                                 const std::string &,

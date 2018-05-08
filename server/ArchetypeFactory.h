@@ -166,7 +166,7 @@ class ArchetypeFactory: public EntityKit
 
         void addProperties() override;
 
-        std::map<const TypeNode*, TypeNode::PropertiesUpdate> updateProperties() override;
+        void updateProperties(std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes) override;
 
         /// Factory for class from which the class handled by this factory
         /// inherits.

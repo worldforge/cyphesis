@@ -29,16 +29,18 @@ class PropertyRuleHandler : public RuleHandler {
     EntityBuilder * const m_builder;
 
   public:
-    PropertyRuleHandler(EntityBuilder * eb) : m_builder(eb) { }
+    explicit PropertyRuleHandler(EntityBuilder * eb) : m_builder(eb) { }
 
-    virtual int check(const Atlas::Objects::Root & desc);
-    virtual int install(const std::string &,
+    int check(const Atlas::Objects::Root & desc) override;
+    int install(const std::string &,
                         const std::string &,
                         const Atlas::Objects::Root & desc,
                         std::string &,
-                        std::string &);
-    virtual int update(const std::string &,
-                       const Atlas::Objects::Root & desc);
+                        std::string &,
+                        std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes) override;
+    int update(const std::string &,
+                       const Atlas::Objects::Root & desc,
+                       std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes) override;
 };
 
 #endif // SERVER_PROPERTY_RULE_HANDLER_H

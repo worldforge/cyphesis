@@ -378,11 +378,9 @@ void ArchetypeFactory::addProperties()
 
 }
 
-std::map<const TypeNode*, TypeNode::PropertiesUpdate> ArchetypeFactory::updateProperties()
+void ArchetypeFactory::updateProperties(std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     assert(m_type != 0);
-
-    std::map<const TypeNode*, TypeNode::PropertiesUpdate> result;
 
     MapType attributes;
     ListType entities;
@@ -391,7 +389,7 @@ std::map<const TypeNode*, TypeNode::PropertiesUpdate> ArchetypeFactory::updatePr
     }
     attributes.insert(std::make_pair("entities", entities));
     attributes.insert(std::make_pair("thoughts", m_thoughts));
-    result.emplace(m_type, m_type->updateProperties(attributes));
+    changes.emplace(m_type, m_type->updateProperties(attributes));
 
     for (auto& child_factory : m_children) {
         child_factory->m_thoughts = m_thoughts;
@@ -399,10 +397,6 @@ std::map<const TypeNode*, TypeNode::PropertiesUpdate> ArchetypeFactory::updatePr
 
         child_factory->m_entities = m_entities;
 
-        auto childResult = child_factory->updateProperties();
-        result.insert(childResult.begin(), childResult.end());
-
+        child_factory->updateProperties(changes);
     }
-    return result;
-
 }
