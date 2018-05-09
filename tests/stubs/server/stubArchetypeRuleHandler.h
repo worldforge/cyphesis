@@ -25,7 +25,7 @@
 
 #ifndef STUB_ArchetypeRuleHandler_modifyArchetypeClass
 //#define STUB_ArchetypeRuleHandler_modifyArchetypeClass
-  int ArchetypeRuleHandler::modifyArchetypeClass(const std::string & class_name, const Atlas::Objects::Root & class_desc)
+  int ArchetypeRuleHandler::modifyArchetypeClass(const std::string & class_name, const Atlas::Objects::Root & class_desc, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
   {
     return 0;
   }
@@ -41,7 +41,7 @@
 
 #ifndef STUB_ArchetypeRuleHandler_install
 //#define STUB_ArchetypeRuleHandler_install
-  int ArchetypeRuleHandler::install(const std::string &, const std::string &, const Atlas::Objects::Root & desc, std::string &, std::string &)
+  int ArchetypeRuleHandler::install(const std::string &, const std::string &, const Atlas::Objects::Root & desc, std::string &, std::string &, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
   {
     return 0;
   }
@@ -49,7 +49,7 @@
 
 #ifndef STUB_ArchetypeRuleHandler_update
 //#define STUB_ArchetypeRuleHandler_update
-  int ArchetypeRuleHandler::update(const std::string &, const Atlas::Objects::Root & desc)
+  int ArchetypeRuleHandler::update(const std::string &, const Atlas::Objects::Root & desc, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
   {
     return 0;
   }

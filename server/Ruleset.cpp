@@ -44,6 +44,8 @@
 #include <boost/filesystem.hpp>
 
 #include <iostream>
+#include <chrono>
+#include <boost/asio/steady_timer.hpp>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -56,21 +58,15 @@ typedef std::map<std::string, Root> RootDict;
 
 static const bool debug_flag = false;
 
-Ruleset * Ruleset::m_instance = nullptr;
+template<> Ruleset* Singleton<Ruleset>::ms_Singleton = nullptr;
 
-void Ruleset::init(const std::string & ruleset)
-{
-    m_instance = new Ruleset(EntityBuilder::instance());
-    m_instance->loadRules(ruleset);
-}
-
-
-Ruleset::Ruleset(EntityBuilder * eb) : 
+Ruleset::Ruleset(EntityBuilder * eb, boost::asio::io_service& io_service) :
       m_taskHandler(new TaskRuleHandler(eb)),
       m_entityHandler(new EntityRuleHandler(eb)),
       m_opHandler(new OpRuleHandler(eb)),
       m_propertyHandler(new PropertyRuleHandler(eb)),
-      m_archetypeHandler(new ArchetypeRuleHandler(eb))
+      m_archetypeHandler(new ArchetypeRuleHandler(eb)),
+      m_io_service(io_service)
 {
 }
 
@@ -81,7 +77,8 @@ Ruleset::~Ruleset()
 int Ruleset::installRuleInner(const std::string & class_name,
                               const Root & class_desc,
                               std::string & dependent,
-                              std::string & reason)
+                              std::string & reason,
+                              std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     assert(class_name == class_desc->getId());
 
@@ -98,7 +95,6 @@ int Ruleset::installRuleInner(const std::string & class_name,
         return -1;
     }
     int ret = -1;
-    std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
     if (m_opHandler->check(class_desc) == 0) {
         ret = m_opHandler->install(class_name, parent, class_desc,
                                    dependent, reason, changes);
@@ -120,17 +116,6 @@ int Ruleset::installRuleInner(const std::string & class_name,
         return -1;
     }
 
-    //Sometimes when installing new rules existing ones are changed.
-    for (auto& entry : changes) {
-        Inheritance::instance().updateClass(entry.first->name(), entry.first->description());
-        if (database_flag) {
-            Persistence * p = Persistence::instance();
-            p->updateRule(entry.first->description(), entry.first->name());
-        }
-    }
-
-    Inheritance::instance().typesUpdated(changes);
-
     return ret;
 }
 
@@ -139,20 +124,31 @@ int Ruleset::installRule(const std::string & class_name,
                          const Root & class_desc)
 {
     std::string dependent, reason;
+    std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
     // Possibly we should report some types of failure here.
-    int ret = installRuleInner(class_name, class_desc, dependent, reason);
-    if (ret == 0 && database_flag) {
-        Persistence * p = Persistence::instance();
-        p->storeRule(class_desc, class_name, section);
+    int ret = installRuleInner(class_name, class_desc, dependent, reason, changes);
+
+    if (!changes.empty()) {
+        for (auto &entry : changes) {
+            Inheritance::instance().updateClass(entry.first->name(), entry.first->description());
+            if (database_flag) {
+                Persistence *p = Persistence::instance();
+                p->updateRule(entry.first->description(), entry.first->name());
+            }
+        }
+
+        Inheritance::instance().typesUpdated(changes);
     }
+
     return ret;
 }
 
 void Ruleset::installItem(const std::string & class_name,
-                          const Root & class_desc)
+                          const Root & class_desc,
+                          std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     std::string dependent, reason;
-    int ret = installRuleInner(class_name, class_desc, dependent, reason);
+    int ret = installRuleInner(class_name, class_desc, dependent, reason, changes);
     if (ret != 0) {
         if (ret > 0) {
             waitForRule(class_name, class_desc, dependent, reason);
@@ -180,12 +176,34 @@ void Ruleset::installItem(const std::string & class_name,
     for (; K != Kend; ++K) {
         const std::string & rClassName = K->first;
         const Root & rClassDesc = K->second;
-        installItem(rClassName, rClassDesc);
+        installItem(rClassName, rClassDesc, changes);
     }
 }
 
 int Ruleset::modifyRule(const std::string & class_name,
                         const Root & class_desc)
+{
+    std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
+    auto ret = modifyRuleInner(class_name,class_desc, changes);
+
+    if (!changes.empty()) {
+        for (auto &entry : changes) {
+            Inheritance::instance().updateClass(entry.first->name(), entry.first->description());
+            if (database_flag) {
+                Persistence *p = Persistence::instance();
+                p->updateRule(entry.first->description(), entry.first->name());
+            }
+        }
+
+        Inheritance::instance().typesUpdated(changes);
+    }
+
+    return ret;
+}
+
+int Ruleset::modifyRuleInner(const std::string & class_name,
+                        const Root & class_desc,
+                        std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     assert(class_name == class_desc->getId());
 
@@ -209,7 +227,6 @@ int Ruleset::modifyRule(const std::string & class_name,
         return -1;
     }
     int ret = -1;
-    std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
     if (m_opHandler->check(class_desc) == 0) {
         ret = m_opHandler->update(class_name, class_desc, changes);
     } else if (m_taskHandler->check(o) == 0) {
@@ -219,17 +236,55 @@ int Ruleset::modifyRule(const std::string & class_name,
     } else if (m_propertyHandler->check(class_desc) == 0) {
         ret = m_propertyHandler->update(class_name, class_desc, changes);
     }
-    for (auto& entry : changes) {
-        Inheritance::instance().updateClass(entry.first->name(), entry.first->description());
-        if (database_flag) {
-            Persistence * p = Persistence::instance();
-            p->updateRule(entry.first->description(), entry.first->name());
-        }
-    }
-
-    Inheritance::instance().typesUpdated(changes);
 
     return ret;
+}
+
+void Ruleset::processChangedRules() {
+    if (!m_changedRules.empty()) {
+        RootDict updatedRules;
+        for (auto& path : m_changedRules) {
+            try {
+                log(NOTICE, compose("Reloading rule file %1", path));
+                auto& filename = path.native();
+                AtlasFileLoader f(filename, updatedRules);
+                if (!f.isOpen()) {
+                    log(ERROR, compose("Unable to open rule file \"%1\".", filename));
+                } else {
+                    log(INFO, compose("Rule file \"%1\" reloaded.", filename));
+                    f.read();
+                }
+            } catch (const std::exception& e) {
+                log(ERROR, compose("Error when reacting to changed file at '%1': %2", path, e.what()));
+            }
+        }
+        if (!updatedRules.empty()) {
+            std::map<const TypeNode *, TypeNode::PropertiesUpdate> changes;
+            for (auto &entry: updatedRules) {
+                auto &class_name = entry.first;
+                auto &class_desc = entry.second;
+                if (Inheritance::instance().hasClass(class_name)) {
+                    log(INFO, compose("Updating existing rule \"%1\".", class_name));
+                    modifyRuleInner(class_name, class_desc, changes);
+                } else {
+                    log(INFO, compose("Installing new rule \"%1\".", class_name));
+                    installItem(class_name, class_desc, changes);
+                }
+            }
+            if (!changes.empty()) {
+                for (auto &entry : changes) {
+                    Inheritance::instance().updateClass(entry.first->name(), entry.first->description());
+                    if (database_flag) {
+                        Persistence *p = Persistence::instance();
+                        p->updateRule(entry.first->description(), entry.first->name());
+                    }
+                }
+
+                Inheritance::instance().typesUpdated(changes);
+            }
+        }
+        m_changedRules.clear();
+    }
 }
 
 /// \brief Mark a rule down as waiting for another.
@@ -258,34 +313,16 @@ void Ruleset::getRulesFromFiles(const std::string & ruleset,
     if (boost::filesystem::is_directory(directory)) {
 
         AssetsManager::instance().observeDirectory(directory, [&](const boost::filesystem::path& path) {
-            if (boost::filesystem::is_regular_file(path)) {
-                try {
-                    log(NOTICE, compose("Reloading rule file %1", path));
-                    auto& filename = path.native();
-                    RootDict updatedRules;
-                    AtlasFileLoader f(filename, updatedRules);
-                    if (!f.isOpen()) {
-                        log(ERROR, compose("Unable to open rule file \"%1\".", filename));
-                    } else {
-                        log(INFO, compose("Rule file \"%1\" reloaded.", filename));
-                        f.read();
+            m_changedRules.insert(path);
 
-                        for (auto& entry: updatedRules) {
-                            auto& class_name = entry.first;
-                            auto& class_desc = entry.second;
-                            if (Inheritance::instance().hasClass(class_name)) {
-                                log(INFO, compose("Updating existing rule \"%1\".", class_name));
-                                modifyRule(class_name, class_desc);
-                            } else {
-                                log(INFO, compose("Installing new rule \"%1\".", class_name));
-                                installItem(class_name, class_desc);
-                            }
-                        }
-                    }
-                } catch (const std::exception& e) {
-                    log(ERROR, compose("Error when reacting to changed file at '%1': %2", path, e.what()));
+            auto timer = std::make_shared<boost::asio::steady_timer>(m_io_service);
+            timer->expires_from_now(std::chrono::milliseconds(20));
+            timer->async_wait([&, timer](const boost::system::error_code& ec) {
+                if (!ec) {
+                    processChangedRules();
                 }
-            }
+            });
+
         });
 
         boost::filesystem::recursive_directory_iterator dir(directory), end;
@@ -334,10 +371,13 @@ void Ruleset::loadRules(const std::string & ruleset)
         }
     }
 
+    //Just ignore any changes, since this happens at startup before any clients are connected.
+    std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
+
     for (auto& entry : ruleTable) {
         const std::string & class_name = entry.first;
         const Root & class_desc = entry.second;
-        installItem(class_name, class_desc);
+        installItem(class_name, class_desc, changes);
     }
     // Report on the non-cleared rules.
     // Perhaps we can keep them too?

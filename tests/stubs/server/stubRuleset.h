@@ -8,9 +8,58 @@
 #define STUB_SERVER_RULESET_H
 
 
+#ifndef STUB_Ruleset_installItem
+//#define STUB_Ruleset_installItem
+  void Ruleset::installItem(const std::string & class_name, const Atlas::Objects::Root & class_desc, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
+  {
+    
+  }
+#endif //STUB_Ruleset_installItem
+
+#ifndef STUB_Ruleset_installRuleInner
+//#define STUB_Ruleset_installRuleInner
+  int Ruleset::installRuleInner(const std::string & class_name, const Atlas::Objects::Root & class_desc, std::string & dependent, std::string & reason, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
+  {
+    return 0;
+  }
+#endif //STUB_Ruleset_installRuleInner
+
+#ifndef STUB_Ruleset_modifyRuleInner
+//#define STUB_Ruleset_modifyRuleInner
+  int Ruleset::modifyRuleInner(const std::string &class_name, const Atlas::Objects::Root &class_desc, std::map<const TypeNode *, TypeNode::PropertiesUpdate> &changes)
+  {
+    return 0;
+  }
+#endif //STUB_Ruleset_modifyRuleInner
+
+#ifndef STUB_Ruleset_getRulesFromFiles
+//#define STUB_Ruleset_getRulesFromFiles
+  void Ruleset::getRulesFromFiles(const std::string &, std::map<std::string, Atlas::Objects::Root> &)
+  {
+    
+  }
+#endif //STUB_Ruleset_getRulesFromFiles
+
+#ifndef STUB_Ruleset_waitForRule
+//#define STUB_Ruleset_waitForRule
+  void Ruleset::waitForRule(const std::string & class_name, const Atlas::Objects::Root & class_desc, const std::string & dependent, const std::string & reason)
+  {
+    
+  }
+#endif //STUB_Ruleset_waitForRule
+
+#ifndef STUB_Ruleset_processChangedRules
+//#define STUB_Ruleset_processChangedRules
+  void Ruleset::processChangedRules()
+  {
+    
+  }
+#endif //STUB_Ruleset_processChangedRules
+
 #ifndef STUB_Ruleset_Ruleset
 //#define STUB_Ruleset_Ruleset
-   Ruleset::Ruleset(EntityBuilder * eb)
+   Ruleset::Ruleset(EntityBuilder * eb, boost::asio::io_service& io_service)
+    : Singleton(eb, io_service)
   {
     
   }
@@ -24,30 +73,6 @@
   }
 #endif //STUB_Ruleset_Ruleset_DTOR
 
-#ifndef STUB_Ruleset_installItem
-//#define STUB_Ruleset_installItem
-  void Ruleset::installItem(const std::string & class_name, const Atlas::Objects::Root & class_desc)
-  {
-    
-  }
-#endif //STUB_Ruleset_installItem
-
-#ifndef STUB_Ruleset_installRuleInner
-//#define STUB_Ruleset_installRuleInner
-  int Ruleset::installRuleInner(const std::string & class_name, const Atlas::Objects::Root & class_desc, std::string & dependent, std::string & reason)
-  {
-    return 0;
-  }
-#endif //STUB_Ruleset_installRuleInner
-
-#ifndef STUB_Ruleset_getRulesFromFiles
-//#define STUB_Ruleset_getRulesFromFiles
-  void Ruleset::getRulesFromFiles(const std::string &, std::map<std::string, Atlas::Objects::Root> &)
-  {
-    
-  }
-#endif //STUB_Ruleset_getRulesFromFiles
-
 #ifndef STUB_Ruleset_loadRules
 //#define STUB_Ruleset_loadRules
   void Ruleset::loadRules(const std::string &)
@@ -55,22 +80,6 @@
     
   }
 #endif //STUB_Ruleset_loadRules
-
-#ifndef STUB_Ruleset_waitForRule
-//#define STUB_Ruleset_waitForRule
-  void Ruleset::waitForRule(const std::string & class_name, const Atlas::Objects::Root & class_desc, const std::string & dependent, const std::string & reason)
-  {
-    
-  }
-#endif //STUB_Ruleset_waitForRule
-
-#ifndef STUB_Ruleset_init
-//#define STUB_Ruleset_init
-   void Ruleset::init(const std::string &)
-  {
-    
-  }
-#endif //STUB_Ruleset_init
 
 #ifndef STUB_Ruleset_installRule
 //#define STUB_Ruleset_installRule

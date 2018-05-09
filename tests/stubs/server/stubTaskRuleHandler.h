@@ -9,7 +9,7 @@
 
 #ifndef STUB_TaskRuleHandler_populateTaskFactory
 //#define STUB_TaskRuleHandler_populateTaskFactory
-  int TaskRuleHandler::populateTaskFactory(const std::string & class_name, TaskKit * factory, const Atlas::Objects::Root & class_desc, std::string & dependent, std::string & reason)
+  int TaskRuleHandler::populateTaskFactory(const std::string & class_name, TaskKit * factory, const Atlas::Objects::Root & class_desc, std::string & dependent, std::string & reason, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
   {
     return 0;
   }
@@ -17,7 +17,7 @@
 
 #ifndef STUB_TaskRuleHandler_installTaskClass
 //#define STUB_TaskRuleHandler_installTaskClass
-  int TaskRuleHandler::installTaskClass(const std::string & class_name, const std::string & parent, const Atlas::Objects::Root & class_desc, std::string & dependent, std::string & reason)
+  int TaskRuleHandler::installTaskClass(const std::string & class_name, const std::string & parent, const Atlas::Objects::Root & class_desc, std::string & dependent, std::string & reason, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
   {
     return 0;
   }
@@ -25,7 +25,7 @@
 
 #ifndef STUB_TaskRuleHandler_modifyTaskClass
 //#define STUB_TaskRuleHandler_modifyTaskClass
-  int TaskRuleHandler::modifyTaskClass(const std::string & class_name, const Atlas::Objects::Root & class_desc)
+  int TaskRuleHandler::modifyTaskClass(const std::string & class_name, const Atlas::Objects::Root & class_desc, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
   {
     return 0;
   }
@@ -41,7 +41,7 @@
 
 #ifndef STUB_TaskRuleHandler_install
 //#define STUB_TaskRuleHandler_install
-  int TaskRuleHandler::install(const std::string &, const std::string &, const Atlas::Objects::Root & desc, std::string &, std::string &)
+  int TaskRuleHandler::install(const std::string &, const std::string &, const Atlas::Objects::Root & desc, std::string &, std::string &, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
   {
     return 0;
   }
@@ -49,7 +49,7 @@
 
 #ifndef STUB_TaskRuleHandler_update
 //#define STUB_TaskRuleHandler_update
-  int TaskRuleHandler::update(const std::string &, const Atlas::Objects::Root & desc)
+  int TaskRuleHandler::update(const std::string &, const Atlas::Objects::Root & desc, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
   {
     return 0;
   }

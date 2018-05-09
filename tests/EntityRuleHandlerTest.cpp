@@ -99,13 +99,14 @@ int main()
 
     {
         RuleHandler * rh = new EntityRuleHandler(EntityBuilder::instance());
+        std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
 
         Anonymous description;
         description->setId("class_name");
         std::string dependent, reason;
 
         int ret = rh->install("class_name", "parent_name",
-                              description, dependent, reason);
+                              description, dependent, reason, changes);
 
         assert(ret == 1);
         assert(dependent == "parent_name");
@@ -116,6 +117,7 @@ int main()
     // Install a rule with addChild rigged to give a correct result
     {
         RuleHandler * rh = new EntityRuleHandler(EntityBuilder::instance());
+        std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
 
         Anonymous description;
         description->setId("class_name");
@@ -123,7 +125,7 @@ int main()
 
         stub_addChild_result = (TypeNode *) malloc(sizeof(TypeNode));
         int ret = rh->install("class_name", "parent_name",
-                              description, dependent, reason);
+                              description, dependent, reason, changes);
 
         assert(ret == 1);
         assert(dependent == "parent_name");
@@ -135,9 +137,10 @@ int main()
     }
     {
         RuleHandler * rh = new EntityRuleHandler(EntityBuilder::instance());
+        std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
 
         Anonymous description;
-        int ret = rh->update("", description);
+        int ret = rh->update("", description, changes);
 
         // FIXME Currently does nothing
         assert(ret == -1);

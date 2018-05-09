@@ -17,7 +17,7 @@
 
 #ifndef STUB_RuleHandler_install
 //#define STUB_RuleHandler_install
-  int RuleHandler::install(const std::string &, const std::string &, const Atlas::Objects::Root & desc, std::string &, std::string &)
+  int RuleHandler::install(const std::string &, const std::string &, const Atlas::Objects::Root & desc, std::string &, std::string &, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
   {
     return 0;
   }
@@ -25,7 +25,7 @@
 
 #ifndef STUB_RuleHandler_update
 //#define STUB_RuleHandler_update
-  int RuleHandler::update(const std::string &, const Atlas::Objects::Root & desc)
+  int RuleHandler::update(const std::string &, const Atlas::Objects::Root & desc, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
   {
     return 0;
   }

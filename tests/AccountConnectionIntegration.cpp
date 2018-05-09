@@ -422,20 +422,12 @@ void Link::disconnect()
 {
 }
 
-Ruleset * Ruleset::m_instance = nullptr;
-
-int Ruleset::installRule(const std::string & class_name,
-                         const std::string & section,
-                         const Root & class_desc)
-{
-    return 0;
-}
-
-int Ruleset::modifyRule(const std::string & class_name,
-                        const Root & class_desc)
-{
-    return 0;
-}
+#include "server/PropertyRuleHandler.h"
+#include "server/ArchetypeRuleHandler.h"
+#include "server/TaskRuleHandler.h"
+#include "server/EntityRuleHandler.h"
+#include "server/OpRuleHandler.h"
+#include "stubs/server/stubRuleset.h"
 
 PossessionAuthenticator * PossessionAuthenticator::m_instance = nullptr;
 

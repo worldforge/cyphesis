@@ -17,7 +17,7 @@
 
 #ifndef STUB_EntityRuleHandler_installEntityClass
 //#define STUB_EntityRuleHandler_installEntityClass
-  int EntityRuleHandler::installEntityClass(const std::string & class_name, const std::string & parent, const Atlas::Objects::Root & class_desc, std::string & dependent, std::string & reason)
+  int EntityRuleHandler::installEntityClass(const std::string & class_name, const std::string & parent, const Atlas::Objects::Root & class_desc, std::string & dependent, std::string & reason, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
   {
     return 0;
   }
@@ -25,7 +25,7 @@
 
 #ifndef STUB_EntityRuleHandler_installEntityClass
 //#define STUB_EntityRuleHandler_installEntityClass
-  int EntityRuleHandler::installEntityClass(const std::string & class_name, const std::string & parent, const Atlas::Objects::Root & class_desc, std::string & dependent, std::string & reason, EntityFactoryBase* factory)
+  int EntityRuleHandler::installEntityClass(const std::string & class_name, const std::string & parent, const Atlas::Objects::Root & class_desc, std::string & dependent, std::string & reason, EntityFactoryBase* factory, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
   {
     return 0;
   }
@@ -33,7 +33,7 @@
 
 #ifndef STUB_EntityRuleHandler_modifyEntityClass
 //#define STUB_EntityRuleHandler_modifyEntityClass
-  int EntityRuleHandler::modifyEntityClass(const std::string & class_name, const Atlas::Objects::Root & class_desc)
+  int EntityRuleHandler::modifyEntityClass(const std::string & class_name, const Atlas::Objects::Root & class_desc, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
   {
     return 0;
   }
@@ -59,7 +59,7 @@
 
 #ifndef STUB_EntityRuleHandler_install
 //#define STUB_EntityRuleHandler_install
-  int EntityRuleHandler::install(const std::string &, const std::string &, const Atlas::Objects::Root & desc, std::string &, std::string &)
+  int EntityRuleHandler::install(const std::string &, const std::string &, const Atlas::Objects::Root & desc, std::string &, std::string &, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
   {
     return 0;
   }
@@ -67,7 +67,7 @@
 
 #ifndef STUB_EntityRuleHandler_update
 //#define STUB_EntityRuleHandler_update
-  int EntityRuleHandler::update(const std::string &, const Atlas::Objects::Root & desc)
+  int EntityRuleHandler::update(const std::string &, const Atlas::Objects::Root & desc, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
   {
     return 0;
   }

@@ -41,16 +41,15 @@ class TestEntityKit : public EntityKit
   public:
     virtual ~TestEntityKit() { }
 
-    virtual LocatedEntity * newEntity(const std::string & id,
+    LocatedEntity * newEntity(const std::string & id,
             long intId,
             const Atlas::Objects::Entity::RootEntity & attributes,
-            LocatedEntity* location) { return 0; }
+            LocatedEntity* location) override { return 0; }
 
-    virtual EntityKit * duplicateFactory() { return 0; }
-    virtual void addProperties(){}
+    EntityKit * duplicateFactory() { return 0; }
+    void addProperties() override{}
 
-    virtual std::map<const TypeNode*, TypeNode::PropertiesUpdate> updateProperties(){
-        return std::map<const TypeNode*, TypeNode::PropertiesUpdate>();
+    void updateProperties(std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes) override {
     }
 };
 
@@ -102,7 +101,8 @@ void EntityKittest::test_addProperties()
 
 void EntityKittest::test_updateProperties()
 {
-    m_ek->updateProperties();
+    std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
+    m_ek->updateProperties(changes);
 }
 
 int main()

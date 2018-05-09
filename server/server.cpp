@@ -277,7 +277,8 @@ int main(int argc, char ** argv)
 
     EntityBuilder::init();
 
-    Ruleset::init(ruleset_name);
+    Ruleset* ruleset = new Ruleset(EntityBuilder::instance(), *io_service);
+    ruleset->loadRules(ruleset_name);
 
     WorldRouter * world = new WorldRouter(time);
 
@@ -655,6 +656,7 @@ int main(int argc, char ** argv)
 
     delete world;
 
+    delete ruleset;
 
     Persistence::instance()->shutdown();
 

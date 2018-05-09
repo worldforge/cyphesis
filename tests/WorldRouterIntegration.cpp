@@ -98,7 +98,8 @@ void WorldRouterintegration::setup()
                                         std::string & reason,
                                         EntityFactoryBase* factory)
             {
-                return installEntityClass(class_name, parent, class_desc, dependent, reason, factory);
+                std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
+                return installEntityClass(class_name, parent, class_desc, dependent, reason, factory, changes);
             }
     };
 

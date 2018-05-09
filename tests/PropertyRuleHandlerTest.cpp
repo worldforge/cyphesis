@@ -126,28 +126,34 @@ void PropertyRuleHandlertest::test_check_pass()
 
 void PropertyRuleHandlertest::test_install()
 {
+    std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
+
     Anonymous description;
     description->setObjtype("type");
     std::string dependent, reason;
 
-    int ret = rh->install("new_int_type", "int", description, dependent, reason);
+    int ret = rh->install("new_int_type", "int", description, dependent, reason, changes);
 
     assert(ret == 0);
 }
 
 void PropertyRuleHandlertest::test_install_noparent()
 {
+    std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
+
     Anonymous description;
     description->setObjtype("type");
     std::string dependent, reason;
 
-    int ret = rh->install("new_int_type", "int", description, dependent, reason);
+    int ret = rh->install("new_int_type", "int", description, dependent, reason, changes);
 
     assert(ret == 0);
 }
 
 void PropertyRuleHandlertest::test_install_exists()
 {
+    std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
+
     PropertyManager::instance().installFactory("existing_int_type",
           Root(),
           new PropertyFactory<Property<int>>);
@@ -156,15 +162,17 @@ void PropertyRuleHandlertest::test_install_exists()
     description->setObjtype("type");
     std::string dependent, reason;
 
-    int ret = rh->install("existing_int_type", "int", description, dependent, reason);
+    int ret = rh->install("existing_int_type", "int", description, dependent, reason, changes);
 
     assert(ret == 0);
 }
 
 void PropertyRuleHandlertest::test_update()
 {
+    std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
+
     Anonymous description;
-    int ret = rh->update("", description);
+    int ret = rh->update("", description, changes);
 
     // FIXME Currently does nothing
     assert(ret == 0);

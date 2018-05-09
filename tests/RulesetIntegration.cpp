@@ -105,14 +105,16 @@ void Rulesetintegration::teardown()
 
 void Rulesetintegration::test_init()
 {
-    assert(Ruleset::instance() == 0);
+    assert(!Ruleset::hasInstance());
 
-    Ruleset::init("b08f221d-a177-45c7-be11-5be4195b6c40");
+    boost::asio::io_service io_service;
+    {
+        Ruleset ruleset(nullptr, io_service);
 
-    assert(Ruleset::instance() != 0);
+        assert(Ruleset::hasInstance());
 
-    Ruleset::del();
-    assert(Ruleset::instance() == 0);
+    }
+    assert(!Ruleset::hasInstance());
 }
 
 Atlas::Objects::Root composeDeclaration(std::string class_name, std::string parent, Atlas::Message::MapType rawAttributes) {
@@ -143,12 +145,14 @@ void Rulesetintegration::test_sequence()
         // for testing
         EntityBuilder * test_eb = EntityBuilder::instance();
         assert(test_eb == m_entity_builder);
-        Ruleset test_ruleset(test_eb);
+        boost::asio::io_service io_service;
+        Ruleset test_ruleset(test_eb, io_service);
 
 
         {
             auto decl = composeDeclaration("thing", "game_entity", {});
-            test_ruleset.installItem(decl->getId(), decl);
+            std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
+            test_ruleset.installItem(decl->getId(), decl, changes);
         }
 
         // Attributes for test entities being created
@@ -629,7 +633,6 @@ void Rulesetintegration::test_sequence()
 
 void Rulesetintegration::test_property_type()
 {
-    Ruleset test_ruleset(m_entity_builder);
     // Stub back in PropertyManager, and stub out everything it depends
     // on.
 }

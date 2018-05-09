@@ -36,6 +36,7 @@
 int main()
 {
     TestPropertyManager tpm;
+    std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
 
     EntityFactoryBase * ek;
     ek = new EntityFactory<Thing>;
@@ -49,7 +50,7 @@ int main()
 
     assert(ek->m_type->defaults().empty());
 
-    ek->updateProperties();
+    ek->updateProperties(changes);
 
     assert(ek->m_type->defaults().size() == 1);
 
@@ -66,11 +67,11 @@ int main()
 
     assert(subclass_ek->m_type->defaults().empty());
 
-    subclass_ek->updateProperties();
+    subclass_ek->updateProperties(changes);
 
     assert(subclass_ek->m_type->defaults().size() == 1);
 
-    ek->updateProperties();
+    ek->updateProperties(changes);
 
     assert(ek->m_type->defaults().size() == 1);
     assert(subclass_ek->m_type->defaults().size() == 2);
@@ -78,7 +79,7 @@ int main()
     subclass_ek->m_attributes["test1"] = Atlas::Message::StringType("bar");
     subclass_ek->m_classAttributes["test1"] = Atlas::Message::StringType("bar");
 
-    ek->updateProperties();
+    ek->updateProperties(changes);
 
     assert(ek->m_type->defaults().size() == 1);
     assert(subclass_ek->m_type->defaults().size() == 2);

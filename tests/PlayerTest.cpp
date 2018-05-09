@@ -261,7 +261,8 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 
 int main()
 {
-    Ruleset::init("");
+    boost::asio::io_service io_service;
+    Ruleset ruleset(nullptr, io_service);
 
     Playertest t;
 
@@ -304,29 +305,7 @@ ConnectableRouter::ConnectableRouter(const std::string & id,
 {
 }
 
-Ruleset::Ruleset(EntityBuilder * eb)
-{
-}
-
-Ruleset * Ruleset::m_instance = nullptr;
-
-void Ruleset::init(const std::string & ruleset)
-{
-    m_instance = new Ruleset(0);
-}
-
-int Ruleset::modifyRule(const std::string & class_name,
-                        const Root & class_desc)
-{
-    return 0;
-}
-
-int Ruleset::installRule(const std::string & class_name,
-                         const std::string & section,
-                         const Root & class_desc)
-{
-    return 0;
-}
+#include "stubs/server/stubRuleset.h"
 
 Juncture::Juncture(Connection * c, const std::string & id, long iid) :
           ConnectableRouter(id, iid, c),

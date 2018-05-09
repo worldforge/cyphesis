@@ -40,9 +40,9 @@ using Atlas::Objects::Root;
 
 class ExposedRuleset : public Ruleset {
   public:
-    ExposedRuleset(EntityBuilder * eb) : Ruleset(eb) { }
+    ExposedRuleset(EntityBuilder * eb, boost::asio::io_service& io_service) : Ruleset(eb, io_service) { }
 
-    void getRulesFromFiles(const std::string & ruleset,
+    void test_getRulesFromFiles(const std::string & ruleset,
                            std::map<std::string, Root> & rules) {
         Ruleset::getRulesFromFiles(ruleset, rules);
     }
@@ -53,6 +53,7 @@ const std::string data_path = TESTDATADIR;
 
 int main(int argc, char ** argv)
 {
+    boost::asio::io_service io_service;
     int ret;
 
     std::string ruleset("caaa1085-9ef4-4dc2-b1ad-3d1f15b31060");
@@ -61,14 +62,15 @@ int main(int argc, char ** argv)
         database_flag = true;
         Inheritance inheritance;
         EntityBuilder::init();
-        Ruleset::init(ruleset);
+        {
+            Ruleset instance(EntityBuilder::instance(), io_service);
+            instance.loadRules(ruleset);
 
-        assert(Ruleset::instance() != 0);
+            assert(Ruleset::hasInstance());
 
-        assert(EntityBuilder::instance() != 0);
-
-        Ruleset::del();
-        assert(Ruleset::instance() == 0);
+            assert(EntityBuilder::instance() != 0);
+        }
+        assert(!Ruleset::hasInstance());
         EntityBuilder::del();
         assert(EntityBuilder::instance() == 0);
     }
@@ -78,14 +80,15 @@ int main(int argc, char ** argv)
         etc_directory = data_path + "/ruleset1/etc";
         Inheritance inheritance;
         EntityBuilder::init();
-        Ruleset::init(ruleset);
+        {
+            Ruleset instance(EntityBuilder::instance(), io_service);
+            instance.loadRules(ruleset);
 
-        assert(Ruleset::instance() != 0);
+            assert(Ruleset::hasInstance());
 
-        assert(EntityBuilder::instance() != 0);
-
-        Ruleset::del();
-        assert(Ruleset::instance() == 0);
+            assert(EntityBuilder::instance() != 0);
+        }
+        assert(!Ruleset::hasInstance());
         EntityBuilder::del();
         assert(EntityBuilder::instance() == 0);
     }
@@ -95,14 +98,15 @@ int main(int argc, char ** argv)
         etc_directory = data_path + "/ruleset2/etc";
         Inheritance inheritance;
         EntityBuilder::init();
-        Ruleset::init(ruleset);
+        {
+            Ruleset instance(EntityBuilder::instance(), io_service);
+            instance.loadRules(ruleset);
 
-        assert(Ruleset::instance() != 0);
+            assert(Ruleset::hasInstance());
 
-        assert(EntityBuilder::instance() != 0);
-
-        Ruleset::del();
-        assert(Ruleset::instance() == 0);
+            assert(EntityBuilder::instance() != 0);
+        }
+        assert(!Ruleset::hasInstance());
         EntityBuilder::del();
         assert(EntityBuilder::instance() == 0);
     }
@@ -115,7 +119,7 @@ int main(int argc, char ** argv)
         // for testing
         EntityBuilder::init();
         EntityBuilder * test_eb = EntityBuilder::instance();
-        ExposedRuleset test_ruleset(test_eb);
+        ExposedRuleset test_ruleset(test_eb, io_service);
 
         // Attributes for test entities being created
         Anonymous attributes;
@@ -366,6 +370,7 @@ int main(int argc, char ** argv)
 #include "common/log.h"
 #include "common/TypeNode.h"
 
+#define STUB_OpRuleHandler_check
 int OpRuleHandler::check(const Atlas::Objects::Root & desc)
 {
     if (desc->getObjtype() != "op_definition") {
@@ -374,21 +379,9 @@ int OpRuleHandler::check(const Atlas::Objects::Root & desc)
     return 0;
 }
 
-int OpRuleHandler::install(const std::string & name,
-                           const std::string & parent,
-                           const Atlas::Objects::Root & description,
-                           std::string & dependent,
-                           std::string & reason)
-{
-    return 0;
-}
+#include "stubs/server/stubOpRuleHandler.h"
 
-int OpRuleHandler::update(const std::string & name,
-                          const Atlas::Objects::Root & desc)
-{
-    return 0;
-}
-
+#define STUB_PropertyRuleHandler_check
 int PropertyRuleHandler::check(const Atlas::Objects::Root & desc)
 {
     if (desc->getObjtype() != "type") {
@@ -397,20 +390,7 @@ int PropertyRuleHandler::check(const Atlas::Objects::Root & desc)
     return 0;
 }
 
-int PropertyRuleHandler::install(const std::string & name,
-                             const std::string & parent,
-                             const Atlas::Objects::Root & description,
-                             std::string & dependent,
-                             std::string & reason)
-{
-    return 0;
-}
-
-int PropertyRuleHandler::update(const std::string & name,
-                            const Atlas::Objects::Root & desc)
-{
-    return 0;
-}
+#include "stubs/server/stubPropertyRuleHandler.h"
 
 #define STUB_EntityRuleHandler_check
 int EntityRuleHandler::check(const Atlas::Objects::Root & desc)
@@ -422,26 +402,15 @@ int EntityRuleHandler::check(const Atlas::Objects::Root & desc)
 }
 
 
+#define STUB_TaskRuleHandler_check
 int TaskRuleHandler::check(const Atlas::Objects::Root & desc)
 {
     return m_builder->isTask(desc->getParent()) ? 0 : -1;
 }
 
-int TaskRuleHandler::install(const std::string & name,
-                             const std::string & parent,
-                             const Atlas::Objects::Root & description,
-                             std::string & dependent,
-                             std::string & reason)
-{
-    return 0;
-}
+#include "stubs/server/stubTaskRuleHandler.h"
 
-int TaskRuleHandler::update(const std::string & name,
-                            const Atlas::Objects::Root & desc)
-{
-    return 0;
-}
-
+#define STUB_ArchetypeRuleHandler_check
 int ArchetypeRuleHandler::check(const Atlas::Objects::Root & desc)
 {
     if (desc->getObjtype() != "archetype") {
@@ -450,21 +419,7 @@ int ArchetypeRuleHandler::check(const Atlas::Objects::Root & desc)
     return 0;
 }
 
-int ArchetypeRuleHandler::install(const std::string & name,
-                             const std::string & parent,
-                             const Atlas::Objects::Root & description,
-                             std::string & dependent,
-                             std::string & reason)
-{
-    return 0;
-}
-
-int ArchetypeRuleHandler::update(const std::string & name,
-                            const Atlas::Objects::Root & desc)
-{
-    return 0;
-}
-
+#include "stubs/server/stubArchetypeRuleHandler.h"
 
 EntityBuilder * EntityBuilder::m_instance = nullptr;
 

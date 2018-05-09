@@ -83,10 +83,11 @@ int main()
 
     {
         RuleHandler * rh = new TaskRuleHandler(EntityBuilder::instance());
+        std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
 
         Anonymous description;
         std::string dependent, reason;
-        int ret = rh->install("", "", description, dependent, reason);
+        int ret = rh->install("", "", description, dependent, reason, changes);
 
         assert(ret == -1);
 
@@ -96,12 +97,13 @@ int main()
     // Install a rule with addChild rigged to give a correct result
     {
         RuleHandler * rh = new TaskRuleHandler(EntityBuilder::instance());
+        std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
 
         Anonymous description;
         std::string dependent, reason;
 
         stub_addChild_result = (TypeNode *) malloc(sizeof(TypeNode));
-        int ret = rh->install("", "", description, dependent, reason);
+        int ret = rh->install("", "", description, dependent, reason, changes);
 
         assert(ret == -1);
 
@@ -112,9 +114,10 @@ int main()
     }
     {
         RuleHandler * rh = new TaskRuleHandler(EntityBuilder::instance());
+        std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
 
         Anonymous description;
-        int ret = rh->update("", description);
+        int ret = rh->update("", description, changes);
 
         // FIXME Currently does nothing
         assert(ret == -1);

@@ -308,14 +308,7 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
         // Manipulate attributes of existing objects.
     } else if (objtype == "class" || objtype == "op_definition") {
         if (Inheritance::instance().hasClass(id)) {
-            if (Ruleset::instance()->modifyRule(id, arg) == 0) {
-                const auto& o = Inheritance::instance().getClass(id);
-                if (o) {
-                    Info infoToAll;
-                    infoToAll->setArgs1(o);
-                    BaseWorld::instance().messageToClients(infoToAll);
-                }
-
+            if (Ruleset::instance().modifyRule(id, arg) == 0) {
                 Info info;
                 info->setTo(getId());
                 info->setArgs1(arg);
@@ -359,7 +352,7 @@ void Admin::createObject(const std::string & type_str,
                               "parent \"%1\"", type_str), res, getId());
             return;
         }
-        if (Ruleset::instance()->installRule(id, "unknown", arg) == 0) {
+        if (Ruleset::instance().installRule(id, "unknown", arg) == 0) {
             Info info;
             info->setTo(getId());
             info->setArgs1(arg);

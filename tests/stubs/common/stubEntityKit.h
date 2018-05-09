@@ -34,9 +34,9 @@
 
 #ifndef STUB_EntityKit_updateProperties
 //#define STUB_EntityKit_updateProperties
-  std::map<TypeNode*, TypeNode::PropertiesUpdate> EntityKit::updateProperties()
+  void EntityKit::updateProperties(std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
   {
-    return std::map<TypeNode*, TypeNode::PropertiesUpdate>();
+    
   }
 #endif //STUB_EntityKit_updateProperties
 

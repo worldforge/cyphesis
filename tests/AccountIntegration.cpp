@@ -189,7 +189,8 @@ void Accountintegration::setup()
 
     {
         auto decl = composeDeclaration("thing", "game_entity", {});
-        entityRuleHandler->install(decl->getId(), decl->getParent(), decl, dependent, reason);
+        std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
+        entityRuleHandler->install(decl->getId(), decl->getParent(), decl, dependent, reason, changes);
     }
 }
 
@@ -198,7 +199,6 @@ void Accountintegration::teardown()
     delete m_ac;
     delete m_world;
     EntityBuilder::del();
-    Ruleset::del();
     delete m_inheritance;
 }
 
@@ -630,11 +630,7 @@ void Persistence::delCharacter(const std::string &)
 {
 }
 
-Ruleset * Ruleset::m_instance = nullptr;
-
-Ruleset::~Ruleset()
-{
-}
+#include "stubs/server/stubRuleset.h"
 
 CalendarProperty::CalendarProperty()
 {

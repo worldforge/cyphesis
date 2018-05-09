@@ -33,7 +33,7 @@
 
 #ifndef STUB_OpRuleHandler_install
 //#define STUB_OpRuleHandler_install
-  int OpRuleHandler::install(const std::string &, const std::string &, const Atlas::Objects::Root & desc, std::string &, std::string &)
+  int OpRuleHandler::install(const std::string &, const std::string &, const Atlas::Objects::Root & desc, std::string &, std::string &, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
   {
     return 0;
   }
@@ -41,7 +41,7 @@
 
 #ifndef STUB_OpRuleHandler_update
 //#define STUB_OpRuleHandler_update
-  int OpRuleHandler::update(const std::string &, const Atlas::Objects::Root & desc)
+  int OpRuleHandler::update(const std::string &, const Atlas::Objects::Root & desc, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
   {
     return 0;
   }

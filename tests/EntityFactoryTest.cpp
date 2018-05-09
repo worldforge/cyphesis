@@ -105,7 +105,8 @@ void EntityFactorytest::test_destructor()
 
 void EntityFactorytest::test_updateProperties()
 {
-    m_ek->updateProperties();
+    std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
+    m_ek->updateProperties(changes);
 }
 
 void EntityFactorytest::test_updateProperties_child()
@@ -116,7 +117,8 @@ void EntityFactorytest::test_updateProperties_child()
 
     m_ek->m_children.insert(ekc);
 
-    m_ek->updateProperties();
+    std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
+    m_ek->updateProperties(changes);
 
     assert(ekc->m_attributes.find("foo") != ekc->m_attributes.end());
 }

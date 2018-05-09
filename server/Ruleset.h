@@ -19,10 +19,16 @@
 #ifndef SERVER_RULESET_H
 #define SERVER_RULESET_H
 
+#include "common/TypeNode.h"
+#include "common/Singleton.h"
+
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/SmartPtr.h>
 
+#include <boost/filesystem/path.hpp>
+
 #include <memory>
+#include <boost/asio/io_service.hpp>
 
 class EntityBuilder;
 class EntityKit;
@@ -51,11 +57,8 @@ typedef std::multimap<std::string, RuleWaiting> RuleWaitList;
 ///
 /// Uses PersistantThingFactory to store information about entity types, and
 /// create them. Handles connecting entities to their persistor as required.
-class Ruleset {
+class Ruleset : public Singleton<Ruleset>{
   protected:
-    explicit Ruleset(EntityBuilder * eb);
-    ~Ruleset();
-    static Ruleset * m_instance;
     std::unique_ptr<TaskRuleHandler>m_taskHandler;
     std::unique_ptr<EntityRuleHandler> m_entityHandler;
     std::unique_ptr<OpRuleHandler> m_opHandler;
@@ -64,32 +67,35 @@ class Ruleset {
 
     RuleWaitList m_waitingRules;
 
+    std::set<boost::filesystem::path> m_changedRules;
+
+    boost::asio::io_service& m_io_service;
+
     void installItem(const std::string & class_name,
-                     const Atlas::Objects::Root & class_desc);
+                     const Atlas::Objects::Root & class_desc,
+                     std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes);
     int installRuleInner(const std::string & class_name,
                          const Atlas::Objects::Root & class_desc,
                          std::string & dependent,
-                         std::string & reason);
+                         std::string & reason,
+                         std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes);
+    int modifyRuleInner(const std::string &class_name,
+                        const Atlas::Objects::Root &class_desc,
+                        std::map<const TypeNode *, TypeNode::PropertiesUpdate> &changes);
+
     void getRulesFromFiles(const std::string &,
                            std::map<std::string, Atlas::Objects::Root> &);
-    void loadRules(const std::string &);
-
     void waitForRule(const std::string & class_name,
                      const Atlas::Objects::Root & class_desc,
                      const std::string & dependent,
                      const std::string & reason);
-  public:
-    static void init(const std::string &);
 
-    static Ruleset * instance() {
-        return m_instance;
-    }
-    static void del() {
-        if (m_instance != nullptr) {
-            delete m_instance;
-            m_instance = nullptr;
-        }
-    }
+    void processChangedRules();
+  public:
+    explicit Ruleset(EntityBuilder * eb, boost::asio::io_service& io_service);
+    ~Ruleset();
+
+    void loadRules(const std::string &);
 
     int installRule(const std::string & class_name,
                     const std::string & section,
@@ -98,6 +104,7 @@ class Ruleset {
                    const Atlas::Objects::Root & class_desc);
 
     friend class Rulesetintegration;
+
 };
 
 #endif // SERVER_RULESET_H
