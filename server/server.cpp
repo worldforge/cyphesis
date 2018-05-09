@@ -129,8 +129,6 @@ void daemonSignalsHandler(boost::asio::signal_set& this_, boost::system::error_c
 
 int main(int argc, char ** argv)
 {
-    init_python_api(argv[0], "");
-
     if (security_init() != 0) {
         log(CRITICAL, "Security initialization Error. Exiting.");
         return EXIT_SECURITY_ERROR;
@@ -269,6 +267,7 @@ int main(int argc, char ** argv)
 
     // Start up the Python subsystem.
     init_python_api(ruleset_name);
+    observe_python_directories(*io_service, *assets_manager);
 
     Inheritance* inheritance = new Inheritance();
 

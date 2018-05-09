@@ -16,6 +16,8 @@ class Baking(server.Task):
     def craft_operation(self, op):
         """ Op handler for crafting op which activates this task """
 
+
+
         if len(op) < 1:
             sys.stderr.write("Baking task has no target in crafting op")
 

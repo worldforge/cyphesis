@@ -131,6 +131,8 @@ int main(int argc, char** argv)
     assets_manager.init();
 
     init_python_api(ruleset_name, false);
+    observe_python_directories(io_service, assets_manager);
+
 
     SystemTime time{};
     time.update();

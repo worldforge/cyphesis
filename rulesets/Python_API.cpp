@@ -50,6 +50,7 @@
 #include <Atlas/Objects/Anonymous.h>
 #include <common/AssetsManager.h>
 #include <boost/algorithm/string.hpp>
+#include <boost/asio/steady_timer.hpp>
 
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
@@ -536,28 +537,52 @@ static PyMethodDef entity_filter_methods[] = {
 };
 
 sigc::signal<void> python_reload_scripts;
+std::vector<std::string> python_directories;
 
-void observe_python_directory(std::string directory) {
-    //This is to make sure that tests easier work.
-    if (AssetsManager::hasInstance()) {
-        AssetsManager::instance().observeDirectory(directory, [=](const boost::filesystem::path& path) {
+std::map<boost::filesystem::path, std::string> changedPaths;
+
+void reloadChangedPaths() {
+    if (!changedPaths.empty()) {
+
+        for (auto& entry : changedPaths) {
+            auto& package = entry.second;
+            auto& path = entry.first;
+            auto module = Get_PyModule(package);
+            if (module != nullptr) {
+                log(INFO, String::compose("Reloading module \"%1\" from file %2.", package, path));
+                auto result = PyImport_ReloadModule(module);
+                if (result != module) {
+                    log(WARNING, String::compose("New pointer returned when reloading module \"%1\".", package));
+                }
+                Py_DECREF(module);
+
+            }
+
+        }
+        python_reload_scripts();
+        changedPaths.clear();
+    }
+}
+
+void observe_python_directories(boost::asio::io_service& io_service, AssetsManager& assetsManager) {
+
+    for (auto& directory : python_directories) {
+        AssetsManager::instance().observeDirectory(directory, [=, &io_service](const boost::filesystem::path& path) {
+            //Trim the ".py" extension
             if (boost::ends_with(path.string(), ".py")) {
                 auto relative = path.string().substr(directory.length() + 1);
-                //Trim the ".py" extension
                 relative = relative.substr(0, relative.size() - 3);
                 static char separator[] = {boost::filesystem::path::preferred_separator, 0};
                 auto package = boost::replace_all_copy(relative, separator, ".");
-                auto module = Get_PyModule(package);
-                if (module != nullptr) {
-                    log(INFO, String::compose("Reloading module \"%1\" from file %2.", package, path));
-                    auto result = PyImport_ReloadModule(module);
-                    if (result != module) {
-                        log(WARNING, String::compose("New pointer returned when reloading module \"%1\".", package));
-                    }
-                    Py_DECREF(module);
+                changedPaths[path] = package;
 
-                    python_reload_scripts();
-                }
+                auto timer = std::make_shared<boost::asio::steady_timer>(io_service);
+                timer->expires_from_now(std::chrono::milliseconds(20));
+                timer->async_wait([&, timer](const boost::system::error_code& ec) {
+                    if (!ec) {
+                        reloadChangedPaths();
+                    }
+                });
             }
 
         });
@@ -939,20 +964,20 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
         if (PyList_Check(sys_path)) {
             // Add the path to the non-ruleset specific code.
             std::string p = share_directory + "/cyphesis/scripts";
-            observe_python_directory(p);
+            python_directories.push_back(p);
             PyObject * path = PyUnicode_FromString(p.c_str());
             PyList_Append(sys_path, path);
             Py_DECREF(path);
 
             p = share_directory + "/cyphesis/rulesets/basic";
-            observe_python_directory(p);
+            python_directories.push_back(p);
             path = PyUnicode_FromString(p.c_str());
             PyList_Append(sys_path, path);
             Py_DECREF(path);
 
             // Add the path to the ruleset specific code.
             p = share_directory + "/cyphesis/rulesets/" + ruleset;
-            observe_python_directory(p);
+            python_directories.push_back(p);
             path = PyUnicode_FromString(p.c_str());
             PyList_Append(sys_path, path);
             Py_DECREF(path);
