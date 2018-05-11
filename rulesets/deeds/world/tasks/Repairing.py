@@ -65,8 +65,8 @@ class Repairing(server.Task):
             return self.next_tick(1.75)
 
         # Some entity do not have status defined. If not present we assume that the entity is unharmed & stop the task
-        if hasattr ( self.target(), 'status' ) : 
-            current_status = self.target().status
+        if hasattr ( self.target().props, 'status' ) :
+            current_status = self.target().props.status
         else:
             set = Operation("set", Entity(self.self.target(), status = 1),
                             to = self.target)

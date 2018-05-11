@@ -11,7 +11,7 @@ import server
 class Skeleton(server.Thing):
     def touch_operation(self, op):
         retops = Oplist()
-        if self.status<0: return
+        if self.props.status<0: return
         newloc=self.location.copy()
         newloc.velocity=Vector3D()
         retops = retops + Operation("move", Entity(self.id, location=newloc.copy(), mode="collapsed"), to=self)

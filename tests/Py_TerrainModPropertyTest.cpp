@@ -40,6 +40,7 @@
 #include <wfmath/polygon.h>
 
 #include <cassert>
+#include <rulesets/Py_Property.h>
 
 static PyObject * add_properties(PyObject * self, PyEntity * o)
 {
@@ -66,7 +67,8 @@ static PyObject * add_terrainmod_shape(PyObject * self, PyProperty * o)
         return nullptr;
     }
 
-    auto p = o->m_p.terrainmod;
+    auto prop = dynamic_cast<TerrainModProperty *>(o->m_entity->modProperty(TerrainModProperty::property_name));
+    o->m_p.terrainmod = prop;
 
     WFMath::Polygon<2> raw_polygon;
     raw_polygon.addCorner(0, WFMath::Point<2>(1,1));
@@ -76,8 +78,8 @@ static PyObject * add_terrainmod_shape(PyObject * self, PyProperty * o)
     Atlas::Message::MapType shape_data;
     polygon.toAtlas(shape_data);
 
-    p->setAttr("shape", shape_data);
-    p->setAttr("nonshape", "testval");
+    prop->setAttr("shape", shape_data);
+    prop->setAttr("nonshape", "testval");
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -151,9 +153,9 @@ int main()
     run_python_string("import physics");
     run_python_string("import testprop");
     run_python_string("t=Thing('1')");
-    expect_python_error("t.terrainmod", PyExc_AttributeError);
+    expect_python_error("t.props.terrainmod", PyExc_AttributeError);
     run_python_string("testprop.add_properties(t)");
-    run_python_string("terrainmod = t.terrainmod");
+    run_python_string("terrainmod = t.props.terrainmod");
     expect_python_error("terrainmod.foo = 1", PyExc_AttributeError);
     expect_python_error("terrainmod.foo", PyExc_AttributeError);
     expect_python_error("terrainmod.shape", PyExc_AttributeError);

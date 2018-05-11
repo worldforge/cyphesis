@@ -61,12 +61,12 @@ class Delve(server.Task):
         chunk_loc.coordinates = self.pos
 
         if not hasattr(self, 'terrain_mod'):
-            mods = self.target().terrain.find_mods(self.pos)
+            mods = self.target().props.terrain.find_mods(self.pos)
             if len(mods) == 0:
                 # There is no terrain mod where we are digging,
                 # so we check if it is rock, and if so create
                 # a quarry
-                surface = self.target().terrain.get_surface(self.pos)
+                surface = self.target().props.terrain.get_surface(self.pos)
                 # print "SURFACE %d at %s" % (surface, self.pos)
                 if surface not in Delve.materials:
                     print("Not rock")

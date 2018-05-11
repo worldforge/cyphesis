@@ -110,7 +110,7 @@ class Heaping(server.Task):
         res.append(self.next_tick(0.75))
         return res
     def _find_mod(self, name):
-        mods = self.target().terrain.find_mods(self.pos)
+        mods = self.target().props.terrain.find_mods(self.pos)
         if len(mods) != 0:
             for mod in mods:
                 if hasattr(mod, 'name') and mod.name == name:

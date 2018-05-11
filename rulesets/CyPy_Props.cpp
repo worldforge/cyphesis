@@ -7,6 +7,10 @@
 
 
 #include "LocatedEntity.h"
+#include "StatisticsProperty.h"
+#include "TerrainProperty.h"
+#include "TerrainModProperty.h"
+#include "Py_Property.h"
 #include <Atlas/Message/Element.h>
 
 
@@ -35,13 +39,29 @@ static PyObject * Props_getattro(CyPyProps *self, PyObject *oname)
 {
     char * name = PyUnicode_AsUTF8(oname);
 
-    LocatedEntity * mind = self->owner;
-    Element attr;
-    if (mind->getAttr(name, attr) == 0) {
-        return MessageElement_asPyObject(attr);
+    LocatedEntity * locatedEntity = self->owner;
+    auto prop = locatedEntity->getProperty(name);
+    if (prop) {
+        //Check if it's a special prop
+        if (dynamic_cast<const StatisticsProperty*>(prop) || dynamic_cast<const TerrainProperty*>(prop)
+            || dynamic_cast<const TerrainModProperty*>(prop)) {
+            PyObject* ret = Property_asPyObject(prop, locatedEntity);
+            if (ret) {
+                return ret;
+            }
+        } else {
+            Element attr;
+            // If this property is not set with a value, return none.
+            if (prop->get(attr) == 0) {
+                return MessageElement_asPyObject(attr);
+            } else {
+                Py_INCREF(Py_None);
+                return Py_None;
+            }
+        }
     }
 
-    return nullptr;
+    return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
 
 static int Props_setattro(CyPyProps *self, PyObject *oname, PyObject *v)
@@ -55,14 +75,16 @@ static int Props_setattro(CyPyProps *self, PyObject *oname, PyObject *v)
     //return 0;
     //}
     Element obj;
-    if (PyObject_asMessageElement(v, obj, true) == 0) {
+    if (PyObject_asMessageElement(v, obj, false) == 0) {
         // In the Python wrapper for Entity in Py_Thing.cpp notices are issued
         // for some types.
         entity->setAttr(name, obj);
+        return 0;
     } else {
+        PyErr_SetString(PyExc_AttributeError, name);
         log(WARNING, "Value submitted to Props.set can not be converted to an Atlas Message.");
     }
-    return 0;
+    return PyObject_GenericSetAttr((PyObject *)self, oname, v);
 }
 
 

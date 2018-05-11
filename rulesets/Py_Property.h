@@ -21,7 +21,7 @@
 
 #include <Python.h>
 
-class Entity;
+class LocatedEntity;
 class PropertyBase;
 class StatisticsProperty;
 class TerrainModProperty;
@@ -35,12 +35,12 @@ class TerrainProperty;
 typedef struct {
     PyObject_HEAD
     /// \brief Entity object that owns the Property
-    Entity * m_entity;
+    LocatedEntity * m_entity;
     /// \brief Property object handled by this wrapper
     union {
         const PropertyBase * base;
         const TerrainProperty * terrain;
-        TerrainModProperty * terrainmod;
+        const TerrainModProperty * terrainmod;
     } m_p;
 } PyProperty;
 
@@ -54,7 +54,7 @@ extern PyTypeObject PyTerrainModProperty_Type;
 #define PyTerrainModProperty_Check(_o) PyObject_TypeCheck(_o, &PyTerrainModProperty_Type)
 #define PyTerrainModProperty_CheckExact(_o) (Py_Type(_o) == &PyTerrainModProperty_Type)
 
-PyObject * Property_asPyObject(PropertyBase * property, Entity * owner);
+PyObject * Property_asPyObject(const PropertyBase * property, LocatedEntity * owner);
 
 PyProperty * newPyTerrainProperty();
 PyProperty * newPyTerrainModProperty();

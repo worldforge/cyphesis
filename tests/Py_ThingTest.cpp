@@ -203,18 +203,12 @@ int main()
     expect_python_error("le.type='game_entity'", PyExc_RuntimeError);
     run_python_string("le.type");
     expect_python_error("le.map=1", PyExc_AttributeError);
-    run_python_string("le.map_attr={'1': 2}");
-    run_python_string("le.map_attr");
-    run_python_string("le.list_attr=[1,2]");
-    run_python_string("le.list_attr");
-    expect_python_error("le.non_atlas=set([1,2])", PyExc_AttributeError);
-    expect_python_error("le.non_atlas", PyExc_AttributeError);
-
-    run_python_string("class LocatedEntitySub(LocatedEntity): pass");
-
-    run_python_string("le2=LocatedEntitySub('1')");
-    run_python_string("le2.non_atlas=set([1,2])");
-    run_python_string("le2.non_atlas");
+    run_python_string("le.props.map_attr={'1': 2}");
+    run_python_string("le.props.map_attr");
+    run_python_string("le.props.list_attr=[1,2]");
+    run_python_string("le.props.list_attr");
+    expect_python_error("le.props.non_atlas=set([1,2])", PyExc_AttributeError);
+    expect_python_error("le.props.non_atlas", PyExc_AttributeError);
 
     // run_python_string("le.foo=1");
     // run_python_string("le.foo='1'");
@@ -275,17 +269,17 @@ int main()
     run_python_string("print(m.contains)");
     run_python_string("m.type");
     expect_python_error("m.map=1", PyExc_AttributeError);
-    run_python_string("m.string_attr='foo'");
-    run_python_string("assert(m.string_attr == 'foo')");
-    run_python_string("m.int_attr=23");
-    run_python_string("assert(m.int_attr == 23)");
-    run_python_string("m.float_attr=17.23");
-    expect_python_error("m.map_attr={'1': 2}", PyExc_AttributeError);
-    expect_python_error("m.map_attr", PyExc_AttributeError);
-    expect_python_error("m.list_attr=[1,2]", PyExc_AttributeError);
-    expect_python_error("m.list_attr", PyExc_AttributeError);
-    expect_python_error("m.non_atlas=set([1,2])", PyExc_AttributeError);
-    expect_python_error("m.non_atlas", PyExc_AttributeError);
+    run_python_string("m.props.string_attr='foo'");
+    run_python_string("assert(m.props.string_attr == 'foo')");
+    run_python_string("m.props.int_attr=23");
+    run_python_string("assert(m.props.int_attr == 23)");
+    run_python_string("m.props.float_attr=17.23");
+//    expect_python_error("m.map_attr={'1': 2}", PyExc_AttributeError);
+//    expect_python_error("m.map_attr", PyExc_AttributeError);
+//    expect_python_error("m.list_attr=[1,2]", PyExc_AttributeError);
+//    expect_python_error("m.list_attr", PyExc_AttributeError);
+//    expect_python_error("m.non_atlas=set([1,2])", PyExc_AttributeError);
+//    expect_python_error("m.non_atlas", PyExc_AttributeError);
 
 #ifdef CYPHESIS_DEBUG
     run_python_string("import sabotage");

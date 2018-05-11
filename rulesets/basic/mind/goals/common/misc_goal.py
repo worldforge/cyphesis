@@ -28,12 +28,12 @@ class make_amount(Goal):
         t_list=me.find_thing(self.what)
         if len(t_list)<self.amount: return 0
         for t in t_list:
-            if t.status<1.0-const.fzero: return 0
+            if t.props.status<1.0-const.fzero: return 0
         return 1
     def do_all(self, me):
         for t in me.find_thing(self.what):
-            if t.status<1.0-const.fzero: 
-                return Operation("set",Entity(t.id,status=t.status+0.1))
+            if t.props.status<1.0-const.fzero:
+                return Operation("set",Entity(t.id,status=t.props.status+0.1))
         return Operation("create",Entity(name=self.what,parent=self.what,
                                          description=self.what_desc))
 
@@ -435,7 +435,7 @@ class browse(feed):
     def __init__(self, what, min_status):
         Goal.__init__(self, "browse for food by name",
                       self.am_i_full,
-                      [spot_something(what, range=20, condition=(lambda o,s=min_status:hasattr(o,"status") and o.status > s)),
+                      [spot_something(what, range=20, condition=(lambda o,s=min_status:hasattr(o.props,"status") and o.props.status > s)),
                        move_me_to_focus(what),
                        self.eat])
         self.what=what
@@ -448,7 +448,7 @@ class browse(feed):
     def eat(self,me):
         if (self.what in me.things)==0: return
         food=me.find_thing(self.what)[0]
-        if food.status < self.min_status:
+        if food.props.status < self.min_status:
             me.remove_thing(food)
         ent=Entity(food.id)
         return Operation("eat",ent)

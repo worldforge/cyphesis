@@ -24,6 +24,7 @@
 #include "Py_Thing.h"
 
 #include "rulesets/TerrainModProperty.h"
+#include "rulesets/Entity.h"
 
 #include "common/log.h"
 
@@ -70,18 +71,22 @@ static int TerrainModProperty_setattro(PyProperty * self,
 #endif // NDEBUG
     char * name = PyUnicode_AsUTF8(oname);
     Element val;
+    //Make sure we operate on a entity specific property
+    auto mutableProp = dynamic_cast<TerrainModProperty *>(self->m_entity->modProperty(TerrainModProperty::property_name));
+    self->m_p.terrainmod = mutableProp;
+
     if (self->m_p.terrainmod->getAttr(name, val) == 0) {
         Element e;
         if (PyObject_asMessageElement(v, e, true) == 0) {
-            self->m_p.terrainmod->setAttr(name, e);
-            self->m_p.terrainmod->addFlags(flag_unsent);
+            mutableProp->setAttr(name, e);
+            mutableProp->addFlags(flag_unsent);
             return 0;
         } else if (PyShape_Check(v)) {
             PyShape * ps = (PyShape*)v;
             MapType map;
             ps->shape.s->toAtlas(map);
-            self->m_p.terrainmod->setAttr(name, map);
-            self->m_p.terrainmod->addFlags(flag_unsent);
+            mutableProp->setAttr(name, map);
+            mutableProp->addFlags(flag_unsent);
             return 0;
         } else {
             log(WARNING, "Cannot convert value.");

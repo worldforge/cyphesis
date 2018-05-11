@@ -42,6 +42,7 @@ class StatisticsProperty : public PropertyBase {
     virtual ~StatisticsProperty();
 
     ArithmeticScript * script() { return m_script; }
+    const ArithmeticScript * script() const { return m_script; }
 
     virtual void install(LocatedEntity *, const std::string &);
     virtual void apply(LocatedEntity *);

@@ -48,7 +48,7 @@ class Sift(server.Task):
 
         world = self.target().location.parent
 
-        material = self.target().name
+        material = self.target().props.name
         #print material
                 
         if material not in Sift.materials:

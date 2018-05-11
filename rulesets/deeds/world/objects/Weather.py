@@ -13,16 +13,16 @@ class Weather(server.Thing):
         res = Oplist()
         optick = Operation("tick", to=self)
         res = res + optick
-        if self.rain<0.1:
+        if self.props.rain<0.1:
             optick.setFutureSeconds(randint(60,300))
             self.rain=uniform(0.1, 0.9)
-            self.visibility=10/(self.rain * self.rain)
+            self.visibility=10/(self.props.rain * self.props.rain)
             res = res + Operation("set", Entity(world.id, moisture=1), to=world)
         else:
             moisture = world.moisture
             optick.setFutureSeconds(randint(600,2400))
-            self.rain=0.0
-            self.visibility=1000
+            self.props.rain=0.0
+            self.props.visibility=1000
             res = res + Operation("set", Entity(world.id, moisture=moisture-0.5), to=world)
-        res = res+Operation("set", Entity(self.id,rain=self.rain,visibility=self.visibility), to=self)
+        res = res+Operation("set", Entity(self.id,rain=self.props.rain,visibility=self.props.visibility), to=self)
         return res

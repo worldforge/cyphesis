@@ -35,7 +35,7 @@ class Sharpen(server.Task):
 
         new_status = 1
         if hasattr(self.target(), 'status'):
-            new_status = self.target().status - 0.1
+            new_status = self.target().props.status - 0.1
 
         #Measure the distance between the entity horizontal edges. Else we won't be able to reach if either entity is too thick.
         distance_between_entity_edges_squared = square_horizontal_edge_distance(self.character.location, self.target().location) 

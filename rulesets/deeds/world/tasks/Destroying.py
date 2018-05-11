@@ -42,8 +42,8 @@ class Destroying(server.Task):
         chunk_loc.coordinates = self.target().location.coordinates
         chunk_loc.orientation = self.target().location.orientation
         # Some entity do not have status defined. If not present we assume that the entity is unharmed 
-        if hasattr ( self.target(), 'status' ) : 
-            current_status = self.target().status
+        if hasattr ( self.target().props, 'status' ) :
+            current_status = self.target().props.status
 
         else:
             set = Operation("set", Entity(self.target().id, status = 1),

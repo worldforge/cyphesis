@@ -122,7 +122,7 @@ int main()
     run_python_string("t=Thing('1')");
     expect_python_error("t.terrain", PyExc_AttributeError);
     run_python_string("testprop.add_properties(t)");
-    run_python_string("terrain = t.terrain");
+    run_python_string("terrain = t.props.terrain");
     expect_python_error("terrain.foo = 1", PyExc_AttributeError);
     expect_python_error("terrain.get_height()", PyExc_TypeError);
     run_python_string("terrain.get_height(0,0)");
@@ -144,14 +144,14 @@ int main()
     run_python_string("points['1x0'] = [1, 0, 23.1]");
     run_python_string("points['0x1'] = [0, 1, 14.2]");
     run_python_string("points['1x1'] = [1, 1, 19.7]");
-    run_python_string("t.terrain = {'points': points}");
+    run_python_string("t.props.terrain = {'points': points}");
 
     //No surfaces until "surfaces" is defined.
     expect_python_error("terrain.get_surface(Point3D(0,0,0))", PyExc_TypeError);
 
     run_python_string("surface = {'name': 'rock', 'pattern': 'fill'}");
     run_python_string("surfaces = [surface]");
-    run_python_string("t.terrain = {'points': points, 'surfaces': surfaces}");
+    run_python_string("t.props.terrain = {'points': points, 'surfaces': surfaces}");
 
     run_python_string("terrain.get_surface(Point3D(0,0,0))");
 

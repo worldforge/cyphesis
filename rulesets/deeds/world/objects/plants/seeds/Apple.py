@@ -11,7 +11,7 @@ class Apple(Seed):
         ent=Entity(self.id,status=-1)
         res = Operation("set",ent,to=self)
         to_ = op.from_
-        nour=Entity(to_,mass=self.mass,alcohol=self.alcohol)
+        nour=Entity(to_,mass=self.props.mass,alcohol=self.props.alcohol)
         res = res + Operation("nourish",nour,to=to_)
         return res
     def tick_operation(self, op):

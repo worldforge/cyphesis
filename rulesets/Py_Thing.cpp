@@ -248,9 +248,9 @@ static PyMethodDef Mind_methods[] = {
     {nullptr,              nullptr}           /* sentinel */
 };
 
-static PyEntity * Entity_new(PyTypeObject * type,
-                             PyObject * args,
-                             PyObject * kwds)
+static PyEntity * LocatedEntity_new(PyTypeObject *type,
+                                    PyObject *args,
+                                    PyObject *kwds)
 {
     PyEntity * self = (PyEntity *)type->tp_alloc(type, 0);
     if (self != nullptr) {
@@ -259,7 +259,7 @@ static PyEntity * Entity_new(PyTypeObject * type,
     return self;
 }
 
-static void Entity_dealloc(PyEntity *self)
+static void LocatedEntity_dealloc(PyEntity *self)
 {
     if (self->m_weakreflist != nullptr) {
         PyObject_ClearWeakRefs((PyObject *) self);
@@ -268,7 +268,7 @@ static void Entity_dealloc(PyEntity *self)
     Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
-static PyObject * Entity_getattro(PyEntity *self, PyObject *oname)
+static PyObject * LocatedEntity_getattro(PyEntity *self, PyObject *oname)
 {
 #ifndef NDEBUG
     if (self->m_entity.e == nullptr) {
@@ -278,6 +278,10 @@ static PyObject * Entity_getattro(PyEntity *self, PyObject *oname)
 #endif // NDEBUG
     char * name = PyUnicode_AsUTF8(oname);
     // If operation search gets to here, it goes no further
+
+    if (strcmp(name, "id") == 0) {
+        return PyUnicode_FromString(self->m_entity.m->getId().c_str());
+    }
 
     if (strcmp(name, "props") == 0) {
         CyPyProps* props = newCyPyProps();
@@ -301,6 +305,13 @@ static PyObject * Entity_getattro(PyEntity *self, PyObject *oname)
         Py_DECREF(ent);
         return list;
     }
+    if (strcmp(name, "time") == 0) {
+        PyWorldTime * worldtime = newPyWorldTime();
+        if (worldtime != nullptr) {
+            worldtime->time = self->m_entity.m->getTime();
+        }
+        return (PyObject *)worldtime;
+    }
     if (strcmp(name, "location") == 0) {
         PyLocation * loc = newPyLocation();
         if (loc != nullptr) {
@@ -318,8 +329,8 @@ static PyObject * Entity_getattro(PyEntity *self, PyObject *oname)
         if (list == nullptr) {
             return nullptr;
         }
-        LocatedEntitySet::const_iterator I = self->m_entity.e->m_contains->begin();
-        LocatedEntitySet::const_iterator Iend = self->m_entity.e->m_contains->end();
+        auto I = self->m_entity.e->m_contains->begin();
+        auto Iend = self->m_entity.e->m_contains->end();
         for (; I != Iend; ++I) {
             LocatedEntity * child = *I;
             PyObject * wrapper = wrapEntity(child);
@@ -339,35 +350,10 @@ static PyObject * Entity_getattro(PyEntity *self, PyObject *oname)
         Py_RETURN_FALSE;
     }
 
-
-    Entity * entity = self->m_entity.e;
-    auto prop = entity->getProperty(name);
-    if (prop) {
-        //Check if it's a special prop
-        if (dynamic_cast<const StatisticsProperty*>(prop) || dynamic_cast<const TerrainProperty*>(prop)
-            || dynamic_cast<const TerrainModProperty*>(prop)) {
-            auto mutable_prop = entity->modProperty(name);
-            if (mutable_prop) {
-                PyObject* ret = Property_asPyObject(mutable_prop, entity);
-                if (ret) {
-                    return ret;
-                }
-            }
-        } else {
-            Element attr;
-            // If this property is not set with a value, return none.
-            if (prop->get(attr) == 0) {
-                return MessageElement_asPyObject(attr);
-            } else {
-                Py_INCREF(Py_None);
-                return Py_None;
-            }
-        }
-    }
     return PyObject_GenericGetAttr((PyObject *)self, oname);
 }
 
-static int Entity_setattro(PyEntity *self, PyObject *oname, PyObject *v)
+static int LocatedEntity_setattro(PyEntity *self, PyObject *oname, PyObject *v)
 {
 #ifndef NDEBUG
     if (self->m_entity.e == nullptr) {
@@ -403,18 +389,11 @@ static int Entity_setattro(PyEntity *self, PyObject *oname, PyObject *v)
         entity->setType(type);
         return 0;
     }
-    Element obj;
-    if (PyObject_asMessageElement(v, obj) == 0) {
-        PropertyBase * p = entity->setAttr(name, obj);
-        if (p != 0) {
-            p->addFlags(flag_unsent);
-        }
-        return 0;
-    }
-    return PyObject_GenericSetAttr((PyObject *)self, oname, v);
+    auto ret = PyObject_GenericSetAttr((PyObject *)self, oname, v);
+    return ret;
 }
 
-static PyObject* Entity_compare(PyObject *a, PyObject *b, int op)
+static PyObject* LocatedEntity_compare(PyObject *a, PyObject *b, int op)
 {
     PyObject *result = Py_NotImplemented;
 
@@ -531,76 +510,12 @@ static PyObject * Mind_getattro(PyEntity *self, PyObject *oname)
     }
 #endif // NDEBUG
     char * name = PyUnicode_AsUTF8(oname);
-    if (strcmp(name, "id") == 0) {
-        return (PyObject *)PyUnicode_FromString(self->m_entity.m->getId().c_str());
-    }
-
-
-    if (strcmp(name, "props") == 0) {
-        CyPyProps* props = newCyPyProps();
-        props->owner = self->m_entity.e;
-        self->m_entity.e->incRef();
-        Py_INCREF(props);
-        return (PyObject*)props;
-    }
-    if (strcmp(name, "type") == 0) {
-        if (self->m_entity.m->getType() == nullptr) {
-            PyErr_SetString(PyExc_AttributeError, name);
-            return nullptr;
-        }
-        PyObject * list = PyList_New(0);
-        if (list == nullptr) {
-            return nullptr;
-        }
-        PyObject * ent = PyUnicode_FromString(self->m_entity.m->getType()->name().c_str());
-        PyList_Append(list, ent);
-        Py_DECREF(ent);
-        return list;
-    }
     if (strcmp(name, "map") == 0) {
         PyMemMap * map = newPyMemMap();
         if (map != nullptr) {
             map->m_map = self->m_entity.m->getMap();
         }
         return (PyObject *)map;
-    }
-    if (strcmp(name, "location") == 0) {
-        PyLocation * loc = newPyLocation();
-        if (loc != nullptr) {
-            loc->location = &self->m_entity.m->m_location;
-            loc->owner = self->m_entity.m;
-        }
-        return (PyObject *)loc;
-    }
-    if (strcmp(name, "time") == 0) {
-        PyWorldTime * worldtime = newPyWorldTime();
-        if (worldtime != nullptr) {
-            worldtime->time = self->m_entity.m->getTime();
-        }
-        return (PyObject *)worldtime;
-    }
-    if (strcmp(name, "contains") == 0) {
-        if (self->m_entity.m->m_contains == 0) {
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-        PyObject * list = PyList_New(0);
-        if (list == nullptr) {
-            return nullptr;
-        }
-        LocatedEntitySet::const_iterator I = self->m_entity.m->m_contains->begin();
-        LocatedEntitySet::const_iterator Iend = self->m_entity.m->m_contains->end();
-        for (; I != Iend; ++I) {
-            LocatedEntity * child = *I;
-            PyObject * wrapper = wrapEntity(child);
-            if (wrapper == nullptr) {
-                Py_DECREF(list);
-                return nullptr;
-            }
-            PyList_Append(list, wrapper);
-            Py_DECREF(wrapper);
-        }
-        return list;
     }
     if (strcmp(name, "unawareTilesCount") == 0) {
         AwareMind* awareMind = dynamic_cast<AwareMind*>(self->m_entity.m);
@@ -643,12 +558,7 @@ static PyObject * Mind_getattro(PyEntity *self, PyObject *oname)
         return PyLong_FromLong(awareMind->getSteering().getPathResult());
     }
 
-    LocatedEntity * mind = self->m_entity.m;
-    Element attr;
-    if (mind->getAttr(name, attr) == 0) {
-        return MessageElement_asPyObject(attr);
-    }
-    return PyObject_GenericGetAttr((PyObject *)self, oname);
+    return LocatedEntity_getattro(self, oname);
 }
 
 static int Mind_setattro(PyEntity *self, PyObject *oname, PyObject *v)
@@ -673,32 +583,8 @@ static int Mind_setattro(PyEntity *self, PyObject *oname, PyObject *v)
         return -1;
     }
 
-    LocatedEntity * entity = self->m_entity.m;
-    // Should we support removal of attributes?
-    //std::string attr(name);
-    //if (v == nullptr) {
-        //entity->attributes.erase(attr);
-        //return 0;
-    //}
-    Element obj;
-    if (PyObject_asMessageElement(v, obj, true) == 0) {
-        assert(!obj.isMap() && !obj.isList());
-        // In the Python wrapper for Entity in Py_Thing.cpp notices are issued
-        // for some types.
-        entity->setAttr(name, obj);
-        return 0;
-    }
     return PyObject_GenericSetAttr((PyObject *)self, oname, v);
 }
-
-//static int Mind_compare(PyEntity *self, PyEntity *other)
-//{
-//    if (self->m_entity.m == nullptr || other->m_entity.m == nullptr) {
-//        PyErr_SetString(PyExc_AssertionError, "nullptr mind in Mind.compare");
-//        return -1;
-//    }
-//    return (self->m_entity.m == other->m_entity.m) ? 0 : 1;
-//}
 
 static int Mind_init(PyEntity * self, PyObject * args, PyObject * kwds)
 {
@@ -722,7 +608,7 @@ PyTypeObject PyLocatedEntity_Type = {
         sizeof(PyEntity),               /*tp_basicsize*/
         0,                              /*tp_itemsize*/
         /* methods */
-        (destructor)Entity_dealloc,     /*tp_dealloc*/
+        (destructor)LocatedEntity_dealloc,     /*tp_dealloc*/
         0,                              /*tp_print*/
         0,                              /*tp_getattr*/
         0,                              /*tp_setattr*/
@@ -734,14 +620,14 @@ PyTypeObject PyLocatedEntity_Type = {
         0,                              /*tp_hash*/
         0,                              // tp_call
         0,                              // tp_str
-        (getattrofunc)Entity_getattro,  // tp_getattro
-        (setattrofunc)Entity_setattro,  // tp_setattro
+        (getattrofunc)LocatedEntity_getattro,  // tp_getattro
+        (setattrofunc)LocatedEntity_setattro,  // tp_setattro
         0,                              // tp_as_buffer
         Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,             // tp_flags
         "LocatedEntity objects",        // tp_doc
         0,                              // tp_travers
         0,                              // tp_clear
-        (richcmpfunc)Entity_compare,    // tp_richcompare
+        (richcmpfunc)LocatedEntity_compare,    // tp_richcompare
         offsetof(PyEntity, m_weakreflist), // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
@@ -755,7 +641,7 @@ PyTypeObject PyLocatedEntity_Type = {
         0,                              // tp_dictoffset
         (initproc)LocatedEntity_init,   // tp_init
         PyType_GenericAlloc,            // tp_alloc
-        (newfunc)Entity_new,            // tp_new
+        (newfunc)LocatedEntity_new,            // tp_new
 };
 
 PyTypeObject PyEntity_Type = {
@@ -783,7 +669,7 @@ PyTypeObject PyEntity_Type = {
         "Entity objects",               // tp_doc
         0,                              // tp_travers
         0,                              // tp_clear
-        (richcmpfunc)Entity_compare,    // tp_richcompare
+        (richcmpfunc)LocatedEntity_compare,    // tp_richcompare
         0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
@@ -797,7 +683,7 @@ PyTypeObject PyEntity_Type = {
         0,                              // tp_dictoffset
         (initproc)Entity_init,          // tp_init
         PyType_GenericAlloc,            // tp_alloc
-        (newfunc)Entity_new,            // tp_new
+        (newfunc)LocatedEntity_new,            // tp_new
 };
 
 PyTypeObject PyCharacter_Type = {
@@ -825,7 +711,7 @@ PyTypeObject PyCharacter_Type = {
         "Character objects",            // tp_doc
         0,                              // tp_travers
         0,                              // tp_clear
-        (richcmpfunc)Entity_compare,    // tp_richcompare
+        (richcmpfunc)LocatedEntity_compare,    // tp_richcompare
         0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
@@ -839,7 +725,7 @@ PyTypeObject PyCharacter_Type = {
         0,                              // tp_dictoffset
         (initproc)Character_init,       // tp_init
         PyType_GenericAlloc,            // tp_alloc
-        (newfunc)Entity_new,            // tp_new
+        (newfunc)LocatedEntity_new,            // tp_new
 };
 
 PyTypeObject PyMind_Type = {
@@ -867,7 +753,7 @@ PyTypeObject PyMind_Type = {
         "Mind objects",                 // tp_doc
         0,                              // tp_travers
         0,                              // tp_clear
-        (richcmpfunc)Entity_compare,    // tp_richcompare
+        (richcmpfunc)LocatedEntity_compare,    // tp_richcompare
         0,                              // tp_weaklistoffset
         0,                              // tp_iter
         0,                              // tp_iternext
@@ -881,7 +767,7 @@ PyTypeObject PyMind_Type = {
         0,                              // tp_dictoffset
         (initproc)Mind_init,            // tp_init
         PyType_GenericAlloc,            // tp_alloc
-        (newfunc)Entity_new,            // tp_new
+        (newfunc)LocatedEntity_new,            // tp_new
 };
 
 template<>

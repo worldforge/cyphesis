@@ -25,11 +25,12 @@
 
 #include "common/log.h"
 
-PyObject * Property_asPyObject(PropertyBase * property, Entity * owner)
+
+PyObject * Property_asPyObject(const PropertyBase * property, LocatedEntity * owner)
 {
-    StatisticsProperty * sp = dynamic_cast<StatisticsProperty *>(property);
+    auto sp = dynamic_cast<const StatisticsProperty *>(property);
     if (sp != 0) {
-        PythonArithmeticScript * script = dynamic_cast<PythonArithmeticScript *>(sp->script());
+        auto script = dynamic_cast<const PythonArithmeticScript *>(sp->script());
         if (script != 0) {
             PyObject * o = script->script();
             Py_INCREF(o);
@@ -47,7 +48,7 @@ PyObject * Property_asPyObject(PropertyBase * property, Entity * owner)
             return Py_None;
         }
     }
-    TerrainProperty * tp = dynamic_cast<TerrainProperty *>(property);
+    auto tp = dynamic_cast<const TerrainProperty *>(property);
     if (tp != 0) {
         // Create a new python wrapper for this property.
         PyProperty * prop = newPyTerrainProperty();
@@ -57,7 +58,7 @@ PyObject * Property_asPyObject(PropertyBase * property, Entity * owner)
         }
         return (PyObject*)prop;
     }
-    TerrainModProperty * tm = dynamic_cast<TerrainModProperty *>(property);
+    auto tm = dynamic_cast<const TerrainModProperty *>(property);
     if (tm != 0) {
         // Create a new python wrapper for this property
         PyProperty * prop = newPyTerrainModProperty();

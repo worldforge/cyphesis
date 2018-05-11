@@ -45,7 +45,7 @@ class Ram(server.Task):
         target_location.velocity=Vector3D(0,0,0)
         target_entity = Entity(self.target().id, location = target_location)
 
-        if not hasattr(self.target(), 'mode') or self.target().mode != 'fixed':
+        if not hasattr(self.target(), 'mode') or self.target().props.mode != 'fixed':
             target_entity.mode = 'fixed'
 
         move=Operation("move", target_entity, to=self.target())

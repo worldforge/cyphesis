@@ -42,7 +42,7 @@ find_home=Goal("find place for home and make it",
 def have_built_home(me):
     "Do I have home that is fully built?"
     t=me.things.get('home')
-    if t: return t[0].status>=1.0-const.fzero
+    if t: return t[0].props.status>=1.0-const.fzero
 
 def build_house(me):
     "Build my home"

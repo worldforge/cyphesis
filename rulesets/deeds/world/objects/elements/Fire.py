@@ -12,13 +12,13 @@ class Fire(server.Thing):
     #CHEAT! make it more realistic (like spreading to things that burn near)
     def extinguish_operation(self, op):
         """If somebody tries to extinguish us, change status lower"""
-        self.status=self.status-0.25
-        self_ent=Entity(self.id,status=self.status)
+        self.props.status=self.props.status-0.25
+        self_ent=Entity(self.id,status=self.props.status)
         #print "Extinguish:",self,self.location.parent,self.status,op.from_
         return Operation("set",self_ent,to=self)
     def tick_operation(self, op):
         """things to do every tick, see comments"""
-        #print `self`,"Got tick operation:\n",op
+        #print ("Got tick operation:\n",op)
         #Is fire extinguished?
         # if self.status<0.0:
             # return Operation("delete",Entity(self.id),to=self)
@@ -28,12 +28,12 @@ class Fire(server.Thing):
             return Operation("delete",Entity(self.id),to=self)
 
         #Send burn operation to parent container
-        self_ent=Entity(self.id,status=self.status)
+        self_ent=Entity(self.id,status=self.props.status)
         opBurn=Operation("burn",self_ent,to=self.location.parent)
-        if self.status<0.2:
-            status=self.status-0.02
+        if self.props.status<0.2:
+            status=self.props.status-0.02
         else:
-            status=self.status-0.02
+            status=self.props.status-0.02
         if status > 1:
             status=1
         self_ent2=Entity(self.id,status=status)
@@ -46,6 +46,6 @@ class Fire(server.Thing):
     def nourish_operation(self, op):
         #Increase fire
         inc=op[0].mass
-        self.status=self.status+inc
+        self.props.status=self.props.status+inc
         #No need to send a set. The next tick will deal with that.
     #def move_operation(self, op): pass

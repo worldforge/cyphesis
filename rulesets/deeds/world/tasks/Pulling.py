@@ -55,7 +55,7 @@ class Pulling(server.Task):
         target_entity = Entity(self.target().id, location = target_location)
 
         # Make the mode fixed to remove the height constraint on entity. 
-        if not hasattr(self.target(), 'mode') or self.target().mode != 'fixed':
+        if not hasattr(self.target(), 'mode') or self.target().props.mode != 'fixed':
             target_entity.mode = 'fixed'
 
         move=Operation("move", target_entity, to=self.target())

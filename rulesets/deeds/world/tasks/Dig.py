@@ -53,7 +53,7 @@ class Dig(server.Task):
 
         self.progress = 0
 
-        surface = self.target().terrain.get_surface(self.pos)
+        surface = self.target().props.terrain.get_surface(self.pos)
         # print "SURFACE %d at %s" % (surface, self.pos)
         if surface not in Dig.materials:
             print("Not right")

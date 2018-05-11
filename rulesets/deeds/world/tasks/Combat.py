@@ -17,7 +17,7 @@ class Combat(server.Task):
             we term the attacker, TO the character that is attacker which we
             term the defender. We store the IDs of both. """
         # Check if the attacked characters stamina is too low for combat
-        if self.character.stamina < 0.1:
+        if self.character.props.stamina < 0.1:
             # print "Aborting defender stamina low"
             self.irrelevant()
             return
@@ -54,7 +54,7 @@ class Combat(server.Task):
 
         assert(self.character.id == op.to)
 
-        if self.character.stamina <= 0:
+        if self.character.props.stamina <= 0:
             # print "I am exhausted"
             self.irrelevant()
             return
@@ -65,7 +65,7 @@ class Combat(server.Task):
             self.irrelevant()
             return
 
-        if attacker.stamina <= 0:
+        if attacker.props.stamina <= 0:
             # print "Attacker exhausted"
             self.irrelevant()
             return
@@ -91,7 +91,7 @@ class Combat(server.Task):
         damage = (attacker.statistics.attack / defender.statistics.defence) / uniform(2,10)
         # Damage is counted against stamina, to ensure combat is non lethal,
         # and make recovery easier.
-        stamina=defender.stamina-damage
+        stamina=defender.props.stamina-damage
         if stamina<0: stamina=0
         set_arg=Entity(self.oponent, stamina=stamina)
 
@@ -106,7 +106,7 @@ class Combat(server.Task):
         # If the defenders stamina has reached zero, combat is over, and emotes
         # are sent to indicate this.
         if stamina <= 0:
-            set_arg.status = defender.status - 0.1
+            set_arg.status = defender.props.status - 0.1
             defender.send_world(Operation("imaginary", Entity(description="has been defeated"), to=defender))
             defender.send_world(Operation("sight", Operation("collapse", from_=d)))
             attacker.send_world(Operation("imaginary", Entity(description="is victorious"), to=attacker))

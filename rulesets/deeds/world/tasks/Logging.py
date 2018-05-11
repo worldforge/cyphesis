@@ -33,7 +33,7 @@ class Logging(server.Task):
             self.irrelevant()
             return
 
-        current_status = self.target().status
+        current_status = self.target().props.status
 
         #Measure the distance between the entity horizontal edges. Else we won't be able to reach if either entity is too thick.
         distance_between_entity_edges_squared = square_horizontal_edge_distance(self.character.location, self.target().location)
@@ -52,7 +52,7 @@ class Logging(server.Task):
             set=Operation("set", Entity(self.target().id, status=current_status-0.1), to=self.target())
             res.append(set)
 
-            if current_status <= 0.5 and self.target().mode != 'free':
+            if current_status <= 0.5 and self.target().props.mode != 'free':
                 print("Timber!")
 
                 #Make it fall initially 15 degrees away from the logger entity.
@@ -88,7 +88,7 @@ class Logging(server.Task):
             create_loc.orientation = self.target().location.orientation
             create = Operation("create",
                                Entity(parent="lumber",
-                                      mass = self.target().mass,
+                                      mass = self.target().props.mass,
                                       location = create_loc,
                                       #bbox = self.target().bbox,
                                       mode = "free"),

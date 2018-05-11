@@ -31,7 +31,7 @@ class Reap(server.Task):
             return
 
         if self.count == 0:
-            self.count = int(self.target().mass)
+            self.count = int(self.target().props.mass)
             # print "setting target mass to ", self.count
 
 
@@ -52,7 +52,7 @@ class Reap(server.Task):
             # print "Wasn't moving right speed"
             return self.next_tick(1.75)
 
-        surface = self.target().terrain.get_surface(self.character.location.coordinates)
+        surface = self.target().props.terrain.get_surface(self.character.location.coordinates)
         if surface is not 2:
             # print "Not grass"
             return self.next_tick(1.75)
