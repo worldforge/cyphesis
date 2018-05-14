@@ -995,5 +995,5 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
 void shutdown_python_api()
 {
     
-    Py_FinalizeEx();
+    Py_Finalize();
 }
