@@ -393,10 +393,6 @@ static PyObject* Operation_get_name(PyOperation * self)
  * Operation sequence methods.
  */
 
-#if PY_VERSION_HEX < 0x02050000
-typedef int Py_ssize_t;
-#endif
-
 static Py_ssize_t Operation_seq_length(PyOperation * self)
 {
 #ifndef NDEBUG

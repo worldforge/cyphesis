@@ -111,10 +111,6 @@ static PyObject* Point3D_compare(PyObject *a, PyObject *b, int op)
  * Point3D sequence methods.
  */
 
-#if PY_VERSION_HEX < 0x02050000
-typedef int Py_ssize_t;
-#endif
-
 static Py_ssize_t Point3D_seq_length(PyPoint3D * self)
 {
     return 3;

@@ -200,7 +200,7 @@ static int Vector3D_setattro(PyVector3D *self, PyObject *oname, PyObject *v)
     if (PyLong_Check(v)) {
         val = PyLong_AsLong(v);
     } else if (PyFloat_Check(v)) {
-        val = PyFloat_AsDouble(v);
+        val = static_cast<float>(PyFloat_AsDouble(v));
     } else {
         PyErr_SetString(PyExc_TypeError, "Vector3D attributes must be numeric");
         return -1;
@@ -240,10 +240,6 @@ static PyObject* Vector3D_compare(PyObject *a, PyObject *b, int op)
  * Vector3D sequence methods.
  */
 
-#if PY_VERSION_HEX < 0x02050000
-typedef int Py_ssize_t;
-#endif
-
 static Py_ssize_t Vector3D_seq_length(PyVector3D * self)
 {
     return 3;
@@ -270,7 +266,7 @@ static int Vector3D_seq_ass_item(PyVector3D * self,
         PyErr_SetString(PyExc_TypeError,"Vector3D.[]: Value must be float.");
         return -1;
     }
-    self->coords[item] = PyFloat_AsDouble(val);
+    self->coords[item] = static_cast<WFMath::CoordType>(PyFloat_AsDouble(val));
     return 0;
 }
 

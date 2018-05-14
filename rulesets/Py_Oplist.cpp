@@ -135,14 +135,6 @@ static PyObject * Oplist_num_inplace_add(PyOplist * self, PyObject * other)
     return nullptr;
 }
 
-#if PY_MINOR_VERSION < 5
-#define lenfunc inquiry
-#endif
-
-#if PY_VERSION_HEX < 0x02050000
-typedef int Py_ssize_t;
-#endif
-
 static Py_ssize_t Oplist_seq_length(PyOplist * self)
 {
 #ifndef NDEBUG
@@ -154,9 +146,6 @@ static Py_ssize_t Oplist_seq_length(PyOplist * self)
     return self->ops->size();
 } 
 
-#if PY_MINOR_VERSION < 5
-#define lenfunc inquiry
-#endif
 
 static PyMappingMethods Oplist_as_mapping = {
     (lenfunc)Oplist_seq_length,      /* mp_length */
