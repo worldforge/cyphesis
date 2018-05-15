@@ -28,6 +28,7 @@
 #include "common/log.h"
 
 #include <iostream>
+#include <string>
 
 int python_client_script(const std::string & package,
                          const std::string & func,
@@ -105,13 +106,15 @@ void extend_client_python_api()
 
 void python_prompt()
 {
-    char prgname[] = "python";
-    char * argv[1] = { prgname };
 
-    auto program = Py_DecodeLocale(argv[0], nullptr);
+    std::wstring prgname = L"python";
 
-    Py_Main(1, &program);
+    auto bytes = (prgname.size() * sizeof(wchar_t)) + 1;
+    auto mem = new wchar_t[bytes];
+    memcpy(mem, prgname.c_str(), bytes);
 
-    PyMem_RawFree(program);
+    Py_Main(1, &mem);
+
+    delete[] mem;
 
 }
