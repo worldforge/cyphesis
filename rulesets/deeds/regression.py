@@ -3,7 +3,6 @@
 
 from atlas import *
 from cyphesis.editor import create_editor
-from types import str
 
 ALL_CLASSES=["acorn", "annelid", "apple", "appletree", "region", "arm", "armory", "arrow", "axe", "barrel", "birch", "block_house", "blueprint", "board", "boat", "boots", "bottle", "boulder", "boundary", "bow", "bowl", "bucksaw", "rabbit", "butcher_house", "campfire", "carrot", "chicken", "cleaver", "cloak", "coin", "construction", "cow", "crab", "deed", "deer", "dog", "castle_don_jon", "door", "feature", "fern", "fir", "fircone", "fire", "fish", "fishingrod", "bobber", "flower", "forest", "gallows", "garment", "gateway", "goblin", "grass", "gravestone", "hall", "ham", "hammer", "hat", "hook", "horse", "house", "jetty", "keep", "knife", "larva", "leaf", "loaf", "longtable", "lumber", "lych", "maggot", "marshall", "material", "mausoleum", "mercenary", "merchant", "mobile", "mushroom", "oak", "ocean", "path", "pelvis", "pickaxe", "pig", "pile", "ploughed_field", "pole", "poplar", "ribcage", "rope", "scythe", "seed", "settler", "shin", "shirt", "shovel", "sieve", "skeleton", "skull", "spider", "squirrel", "stake", "stall", "statue", "stone", "stonehouse", "structure", "sty", "sword", "tent", "theodolite", "thigh", "tinderbox", "torch", "tower", "tree", "pants", "trowel", "tuber", "turnip", "twobyfour", "venison", "wall", "weather", "willow", "wolf", "wood"]
 
