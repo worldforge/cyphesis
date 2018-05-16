@@ -18,7 +18,7 @@
 
 #include "CommPSQLSocket.h"
 
-#include "common/Database.h"
+#include "common/DatabasePostgres.h"
 #include "common/log.h"
 #include "common/debug.h"
 
@@ -35,7 +35,7 @@ const int CommPSQLSocket::reindexFreq = 30 * 60;
 /// \brief Constructor for PostgreSQL socket polling object.
 ///
 /// @param db Reference to the low level database management object.
-CommPSQLSocket::CommPSQLSocket(boost::asio::io_service& io_service, Database & db) :
+CommPSQLSocket::CommPSQLSocket(boost::asio::io_service& io_service, DatabasePostgres & db) :
                                m_io_service(io_service), m_socket(new boost::asio::ip::tcp::socket(io_service)),
                                m_vacuumTimer(io_service), m_reindexTimer(io_service), m_reconnectTimer(io_service),
                                m_db(db), m_vacuumFull(false)
@@ -165,11 +165,11 @@ void CommPSQLSocket::vacuum()
 {
     if (m_socket && m_socket->is_open()) {
         if (m_vacuumFull) {
-            m_db.runMaintainance(Database::MAINTAIN_VACUUM |
-                                 Database::MAINTAIN_VACUUM_FULL);
+            m_db.runMaintainance(DatabasePostgres::MAINTAIN_VACUUM |
+                                     DatabasePostgres::MAINTAIN_VACUUM_FULL);
         } else {
-            m_db.runMaintainance(Database::MAINTAIN_VACUUM |
-                                 Database::MAINTAIN_VACUUM_ANALYZE);
+            m_db.runMaintainance(DatabasePostgres::MAINTAIN_VACUUM |
+                                     DatabasePostgres::MAINTAIN_VACUUM_ANALYZE);
         }
         m_vacuumFull = !m_vacuumFull;
     }
@@ -186,7 +186,7 @@ void CommPSQLSocket::vacuum()
 void CommPSQLSocket::reindex()
 {
     if (m_socket && m_socket->is_open()) {
-        m_db.runMaintainance(Database::MAINTAIN_REINDEX);
+        m_db.runMaintainance(DatabasePostgres::MAINTAIN_REINDEX);
     }
     m_reindexTimer.expires_from_now(boost::posix_time::seconds(reindexFreq));
     m_reindexTimer.async_wait([this](boost::system::error_code ec) {

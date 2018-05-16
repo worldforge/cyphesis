@@ -32,9 +32,7 @@ class Storage {
     Storage() : m_connection(Database::instance()) { }
 
     ~Storage() {
-        if (m_connection.getConnection() != 0) {
-            m_connection.shutdownConnection();
-        }
+        m_connection.shutdownConnection();
     }
 
     int init();

@@ -83,8 +83,6 @@ int Persistence::init()
         return DATABASE_TABERR;
     }
 
-    bool i = (m_db.initRule(true) == 0);
-
     MapType tableDesc;
     tableDesc["username"] = "                                                                                ";
     tableDesc["password"] = "                                                                                ";
@@ -92,7 +90,8 @@ int Persistence::init()
     bool j = m_db.registerSimpleTable("accounts", tableDesc) == 0;
     bool k = m_db.registerRelation(m_characterRelation,
                                            "accounts",
-                                           "entities") == 0;
+                                           "entities",
+                                   Database::OneToMany) == 0;
 
     if (!findAccount("admin")) {
         debug(std::cout << "Bootstraping admin account."
@@ -119,7 +118,7 @@ int Persistence::init()
         putAccount(dummyAdminAccount);
     }
 
-    return (i && j && k) ? 0 : DATABASE_TABERR;
+    return (j && k) ? 0 : DATABASE_TABERR;
 }
 
 void Persistence::shutdown()

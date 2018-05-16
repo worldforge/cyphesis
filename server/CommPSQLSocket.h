@@ -24,7 +24,7 @@
 #include <boost/asio.hpp>
 #include <boost/asio/deadline_timer.hpp>
 
-class Database;
+class DatabasePostgres;
 
 /// \brief Handle polling the socket used to communicate with the PostgreSQL
 /// RDBMS.
@@ -40,7 +40,7 @@ class CommPSQLSocket {
 
 
     /// Reference to the low level database management object.
-    Database & m_db;
+    DatabasePostgres & m_db;
 
     /// Flag indicating whether the next vacuum job should be vacuum full.
     bool m_vacuumFull;
@@ -59,7 +59,7 @@ class CommPSQLSocket {
     /// Interval between database reindex jobs.
     static const int reindexFreq;
 
-    CommPSQLSocket(boost::asio::io_service& io_service, Database & db);
+    CommPSQLSocket(boost::asio::io_service& io_service, DatabasePostgres & db);
     virtual ~CommPSQLSocket();
 };
 

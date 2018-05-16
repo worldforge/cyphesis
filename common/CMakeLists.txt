@@ -74,7 +74,9 @@ add_library(common
     AssetsManager.cpp
     AssetsManager.h
     Singleton.h
-    Change.h)
+    Change.h
+    DatabasePostgres.cpp
+    DatabasePostgres.h)
 
 target_link_libraries(common ${PostgreSQL_LIBRARIES})
 target_link_libraries(common ${GCRYPT_LIBRARIES})

@@ -42,7 +42,7 @@
 #include "rulesets/Python_API.h"
 #include "rulesets/LocatedEntity.h"
 
-#include "common/Database.h"
+#include "common/DatabasePostgres.h"
 #include "common/id.h"
 #include "common/const.h"
 #include "common/Inheritance.h"
@@ -201,9 +201,9 @@ int main(int argc, char ** argv)
     // database support, this will open the various databases used to
     // store server data.
     Persistence* persistence = nullptr;
-    Database* database = nullptr;
+    DatabasePostgres* database = nullptr;
     if (database_flag) {
-        database = new Database();
+        database = new DatabasePostgres();
         persistence = new Persistence(*database);
         int dbstatus = persistence->init();
         if (dbstatus < 0) {
@@ -430,8 +430,7 @@ int main(int argc, char ** argv)
 
         log(INFO, "Restored world.");
 
-        dbsocket = new CommPSQLSocket(*io_service,
-                                      Persistence::instance().m_db);
+        dbsocket = new CommPSQLSocket(*io_service, *database);
 
         storage_idle = new IdleConnector(*io_service);
         storage_idle->idling.connect(
