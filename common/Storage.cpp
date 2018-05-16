@@ -39,7 +39,7 @@ int Storage::init()
 /// @param account Atlas description of Account to be stored
 int Storage::putAccount(const Atlas::Message::MapType & account)
 {
-    Atlas::Message::MapType::const_iterator I = account.find("username");
+    auto I = account.find("username");
     if (I == account.end() || !I->second.isString()) {
         return -1;
     }
@@ -85,7 +85,7 @@ int Storage::modAccount(const Atlas::Message::MapType & account,
     std::string columns;
     bool empty = true;
 
-    Atlas::Message::MapType::const_iterator I = account.find("type");
+    auto I = account.find("type");
     if (I != account.end() && I->second.isString()) {
         empty = false;
         columns += "type = '";
@@ -156,23 +156,4 @@ int Storage::getAccount(const std::string & username,
     account["type"] = type;
 
     return 0;
-}
-
-void Storage::storeInRules(const Atlas::Message::MapType & rule,
-                           const std::string & key)
-{
-    if (m_connection.hasKey(m_connection.rule(), key)) {
-        return;
-    }
-    m_connection.putObject(m_connection.rule(), key, rule, StringVector(1, m_rulesetName));
-    if (m_connection.clearPendingQuery() != 0) {
-        // FIXME NO cerr
-        std::cerr << "Failed" << std::endl << std::flush;
-    }
-}
-
-int Storage::clearRules()
-{
-    return m_connection.clearTable(m_connection.rule()) ||
-           m_connection.clearPendingQuery();
 }

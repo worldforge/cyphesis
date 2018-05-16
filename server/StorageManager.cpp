@@ -97,8 +97,8 @@ StorageManager:: StorageManager(WorldRouter & world) :
             m_updateQpsRing[i] = 0;
         }
 
-        Persistence::instance()->characterAdded.connect(sigc::mem_fun(*this, &StorageManager::persistance_characterAdded));
-        Persistence::instance()->characterDeleted.connect(sigc::mem_fun(*this, &StorageManager::persistance_characterDeleted));
+        Persistence::instance().characterAdded.connect(sigc::mem_fun(*this, &StorageManager::persistance_characterAdded));
+        Persistence::instance().characterDeleted.connect(sigc::mem_fun(*this, &StorageManager::persistance_characterDeleted));
     }
 }
 
@@ -169,12 +169,12 @@ void StorageManager::encodeProperty(PropertyBase * prop, std::string & store)
 {
     Atlas::Message::MapType map;
     prop->get(map["val"]);
-    Database::instance()->encodeObject(map, store);
+    Database::instance().encodeObject(map, store);
 }
 
 void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
 {
-    Database * db = Database::instance();
+    Database * db = Database::instancePtr();
     DatabaseResult res = db->selectProperties(ent->getId());
 
     //Keep track of those properties that have been set on the instance, so we'll know what
@@ -289,7 +289,7 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
 
 void StorageManager::restoreThoughts(LocatedEntity * ent)
 {
-    Database * db = Database::instance();
+    Database * db = Database::instancePtr();
     const DatabaseResult res = db->selectThoughts(ent->getId());
     Atlas::Message::ListType thoughts_data;
 
@@ -358,9 +358,9 @@ void StorageManager::insertEntity(LocatedEntity * ent)
     if (ent->m_location.orientation().isValid()) {
         map["orientation"] = ent->m_location.orientation().toAtlas();
     }
-    Database::instance()->encodeObject(map, location);
+    Database::instance().encodeObject(map, location);
 
-    Database::instance()->insertEntity(ent->getId(),
+    Database::instance().insertEntity(ent->getId(),
                                        ent->m_location.m_loc->getId(),
                                        ent->getType()->name(),
                                        ent->getSeq(),
@@ -379,7 +379,7 @@ void StorageManager::insertEntity(LocatedEntity * ent)
         prop->addFlags(per_clean | per_seen);
     }
     if (!property_tuples.empty()) {
-        Database::instance()->insertProperties(ent->getId(), property_tuples);
+        Database::instance().insertProperties(ent->getId(), property_tuples);
         ++m_insertPropertyCount;
     }
     ent->removeFlags(entity_queued);
@@ -391,7 +391,7 @@ void StorageManager::insertEntity(LocatedEntity * ent)
 
 void StorageManager::updateEntityThoughts(LocatedEntity * ent)
 {
-    Database * db = Database::instance();
+    Database * db = Database::instancePtr();
     auto thoughts = ent->getThoughts();
     std::vector<std::string> thoughtsList;
     for (auto& thoughtOp : thoughts) {
@@ -414,16 +414,16 @@ void StorageManager::updateEntity(LocatedEntity * ent)
     if (ent->m_location.orientation().isValid()) {
         map["orientation"] = ent->m_location.orientation().toAtlas();
     }
-    Database::instance()->encodeObject(map, location);
+    Database::instance().encodeObject(map, location);
 
     //Under normal circumstances only the top world won't have a location.
     if (ent->m_location.m_loc) {
-        Database::instance()->updateEntity(ent->getId(),
+        Database::instance().updateEntity(ent->getId(),
                                        ent->getSeq(),
                                        location,
                                        ent->m_location.m_loc->getId());
     } else {
-        Database::instance()->updateEntityWithoutLoc(ent->getId(),
+        Database::instance().updateEntityWithoutLoc(ent->getId(),
                                        ent->getSeq(),
                                        location);
     }
@@ -449,11 +449,11 @@ void StorageManager::updateEntity(LocatedEntity * ent)
         prop->addFlags(per_clean | per_seen);
     }
     if (!new_property_tuples.empty()) {
-        Database::instance()->insertProperties(ent->getId(),
+        Database::instance().insertProperties(ent->getId(),
                                                new_property_tuples);
     }
     if (!upd_property_tuples.empty()) {
-        Database::instance()->updateProperties(ent->getId(),
+        Database::instance().updateProperties(ent->getId(),
                                                upd_property_tuples);
     }
     ent->addFlags(entity_clean_mask);
@@ -461,7 +461,7 @@ void StorageManager::updateEntity(LocatedEntity * ent)
 
 void StorageManager::restoreChildren(LocatedEntity * parent)
 {
-    Database * db = Database::instance();
+    Database * db = Database::instancePtr();
     DatabaseResult res = db->selectEntities(parent->getId());
     EntityBuilder * eb = EntityBuilder::instance();
 
@@ -510,7 +510,7 @@ void StorageManager::tick()
 
     while (!m_destroyedEntities.empty()) {
         long id = m_destroyedEntities.front();
-        Database::instance()->dropEntity(id);
+        Database::instance().dropEntity(id);
         m_destroyedEntities.pop_front();
     }
 
@@ -528,18 +528,18 @@ void StorageManager::tick()
 
     while (!m_addedCharacters.empty()) {
         auto& data = m_addedCharacters.front();
-        Database::instance()->createRelationRow(Persistence::instance()->getCharacterAccountRelationName(), data.account_id, data.entity_id);
+        Database::instance().createRelationRow(Persistence::instance().getCharacterAccountRelationName(), data.account_id, data.entity_id);
         m_addedCharacters.pop_front();
     }
 
     while (!m_deletedCharacters.empty()) {
         auto& entity_id = m_deletedCharacters.front();
-        Database::instance()->removeRelationRowByOther(Persistence::instance()->getCharacterAccountRelationName(), entity_id);
+        Database::instance().removeRelationRowByOther(Persistence::instance().getCharacterAccountRelationName(), entity_id);
         m_deletedCharacters.pop_front();
     }
 
     while (!m_dirtyEntities.empty()) {
-        if (Database::instance()->queryQueueSize() > 200) {
+        if (Database::instance().queryQueueSize() > 200) {
             debug(std::cout << "Too many" << std::endl << std::flush;);
             break;
         }
@@ -612,7 +612,7 @@ void StorageManager::thoughtsReceived(const std::string& entityId, const Operati
             log(WARNING, "Got thought op where the first argument wasn't a Set op.");
         } else {
             auto setOp = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Operation::Set>(arg);
-            Database * db = Database::instance();
+            Database * db = Database::instancePtr();
             std::vector<std::string> thoughtsList;
             Atlas::Message::ListType thoughts = setOp->getArgsAsList();
             for (auto& thoughtElement : thoughts) {
@@ -668,16 +668,16 @@ int StorageManager::restoreWorld()
 int StorageManager::shutdown(bool& exit_flag, const std::map<long, LocatedEntity *>& entites)
 {
     tick();
-    while (Database::instance()->queryQueueSize()) {
+    while (Database::instance().queryQueueSize()) {
         //Allow for any user to abort the process.
         if(exit_flag) {
             log(NOTICE, "Aborted entity persisting. This might lead to lost entities.");
             return 0;
         }
-        if (!Database::instance()->queryInProgress()) {
-            Database::instance()->launchNewQuery();
+        if (!Database::instance().queryInProgress()) {
+            Database::instance().launchNewQuery();
         } else {
-            Database::instance()->clearPendingQuery();
+            Database::instance().clearPendingQuery();
         }
     }
     return 0;

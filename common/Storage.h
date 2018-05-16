@@ -28,10 +28,8 @@ class Storage {
     /// \brief Database connection used to change the accounts table
     Database & m_connection;
 
-    /// \brief Name of the ruleset to be read from file
-    std::string m_rulesetName;
   public:
-    Storage() : m_connection(*Database::instance()) { }
+    Storage() : m_connection(Database::instance()) { }
 
     ~Storage() {
         if (m_connection.getConnection() != 0) {
@@ -48,16 +46,7 @@ class Storage {
     int getAccount(const std::string & username,
                    Atlas::Message::MapType & o);
 
-    void storeInRules(const Atlas::Message::MapType & rule,
-                      const std::string & key);
-    int clearRules();
-    void setRuleset(const std::string & n);
-
 };
 
-inline void Storage::setRuleset(const std::string & n)
-{
-    m_rulesetName = n;
-}
 
 #endif // COMMON_STORAGE_H

@@ -42,7 +42,7 @@ typedef Atlas::Codecs::XML Serialiser;
 
 static const bool debug_flag = false;
 
-Database * Database::m_instance = nullptr;
+template<> Database* Singleton<Database>::ms_Singleton = nullptr;
 
 static void databaseNotice(void *, const char * message)
 {
@@ -50,15 +50,14 @@ static void databaseNotice(void *, const char * message)
     log_formatted(NOTICE, message);
 }
 
-Database::Database() : m_rule_db("rules"),
-                       m_queryInProgress(false),
+Database::Database() : m_queryInProgress(false),
                        m_connection(nullptr)
 {
 }
 
 Database::~Database()
 {
-    if (pendingQueries.size() != 0) {
+    if (!pendingQueries.empty()) {
         log(ERROR, compose("Database delete with %1 queries pending",
                            pendingQueries.size()));
     
@@ -245,25 +244,10 @@ int Database::initRule(bool createTables)
 
 void Database::shutdownConnection()
 {
-    if (m_connection != 0) {
+    if (m_connection != nullptr) {
         PQfinish(m_connection);
-        m_connection = 0;
+        m_connection = nullptr;
     }
-}
-
-Database * Database::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Database();
-    }
-    return m_instance;
-}
-
-void Database::cleanup()
-{
-    delete m_instance;
-
-    m_instance = 0;
 }
 
 int Database::decodeObject(const std::string & data,
@@ -1635,5 +1619,5 @@ void DatabaseResult::const_iterator::readColumn(const char * column,
         return;
     }
     const char * v = PQgetvalue(m_dr.m_res.get(), m_row, col_num);
-    Database::instance()->decodeMessage(v, val);
+    Database::instance().decodeMessage(v, val);
 }

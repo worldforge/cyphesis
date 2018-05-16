@@ -42,31 +42,31 @@ int main()
     }
 
     {
-        assert(Database::instance()->getConnection() == 0);
+        assert(Database::instance().getConnection() == 0);
 
         Database::cleanup();
     }
 
     {
-        assert(Database::instance()->rule() == "rules");
+        assert(Database::instance().rule() == "rules");
 
         Database::cleanup();
     }
 
     {
-        assert(Database::instance()->queryInProgress() == false);
+        assert(Database::instance().queryInProgress() == false);
 
         Database::cleanup();
     }
 
     {
-        // Database::instance()->decodeObject();
+        // Database::instance().decodeObject();
 
         Database::cleanup();
     }
 
     {
-        // Database::instance()->encodeObject();
+        // Database::instance().encodeObject();
 
         Database::cleanup();
     }

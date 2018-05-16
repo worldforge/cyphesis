@@ -19,6 +19,7 @@
 #ifndef SERVER_PERSISTENCE_H
 #define SERVER_PERSISTENCE_H
 
+#include "common/Singleton.h"
 #include <Atlas/Objects/ObjectsFwd.h>
 
 #include <sigc++/signal.h>
@@ -34,14 +35,13 @@ typedef std::map<long, LocatedEntity *> EntityDict;
 
 /// \brief Class for managing the required database tables for persisting
 /// in-game entities and server accounts
-class Persistence {
+class Persistence : public Singleton<Persistence> {
   private:
-    Persistence();
 
     std::string m_characterRelation;
 
-    static Persistence * m_instance;
   public:
+    explicit Persistence(Database& database);
 
     /// \brief Data about a character being tied to an account.
     ///
@@ -60,7 +60,6 @@ class Persistence {
 
     Database & m_db;
 
-    static Persistence * instance();
     int init();
     void shutdown();
 
@@ -70,14 +69,6 @@ class Persistence {
     void registerCharacters(Account &, const EntityDict & worldObjects);
     void addCharacter(const Account &, const LocatedEntity &);
     void delCharacter(const std::string &);
-    
-    int getRules(std::map<std::string, Atlas::Objects::Root> & m);
-    int storeRule(const Atlas::Objects::Root & rule,
-                  const std::string & key,
-                  const std::string & section);
-    int updateRule(const Atlas::Objects::Root & rule,
-                   const std::string & key);
-    int clearRules();
 
     /// \brief Gets the name of the DB relation tying Accounts to Entities.
     const std::string& getCharacterAccountRelationName() const;

@@ -19,6 +19,8 @@
 #ifndef COMMON_DATABASE_H
 #define COMMON_DATABASE_H
 
+#include "Singleton.h"
+
 #include <Atlas/Message/DecoderBase.h>
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Decoder.h>
@@ -33,7 +35,8 @@
 /// \brief Class to handle decoding Atlas encoded database records
 class Decoder : public Atlas::Message::DecoderBase {
   private:
-    virtual void messageArrived(Atlas::Message::MapType msg) {
+    void messageArrived(Atlas::Message::MapType msg) override
+    {
         m_check = true;
         m_msg = std::move(msg);
     }
@@ -57,7 +60,7 @@ class Decoder : public Atlas::Message::DecoderBase {
 /// \brief Class to handle decoding Atlas encoded database records
 class ObjectDecoder : public Atlas::Objects::ObjectsDecoder {
   private:
-    virtual void objectArrived(const Atlas::Objects::Root & obj) {
+    void objectArrived(const Atlas::Objects::Root & obj) override {
         m_check = true;
         m_obj = obj;
     }
@@ -89,11 +92,9 @@ typedef std::deque<DatabaseQuery> QueryQue;
 ///
 /// Most SQL is generated from here, including queries for handling all
 /// table creation, queries to simple non-inherited tables and more
-class Database {
+class Database : public Singleton<Database> {
   protected:
     static Database * m_instance;
-
-    std::string m_rule_db;
 
     TableSet allTables;
     QueryQue pendingQueries;
@@ -103,9 +104,6 @@ class Database {
     ObjectDecoder m_od;
 
     PGconn * m_connection;
-
-    Database();
-    ~Database();
 
     // bool command(const std::string & cmd);
 
@@ -122,8 +120,11 @@ class Database {
 
     typedef std::map<std::string, std::string> KeyValues;
 
+    Database();
+    ~Database() override;
+
+
     PGconn * getConnection() const { return m_connection; }
-    const std::string & rule() const { return m_rule_db; }
     bool queryInProgress() const { return m_queryInProgress; }
 
     size_t queryQueueSize() const {
@@ -156,9 +157,6 @@ class Database {
     void reportError();
 
     int connect(const std::string & context, std::string & error_msg);
-
-    static Database * instance();
-    static void cleanup();
 
     int initConnection();
     int createInstanceDatabase();
@@ -269,22 +267,19 @@ class DatabaseResult {
     std::shared_ptr<PGresult> m_res;
   public:
     explicit DatabaseResult(PGresult * r) : m_res(r, deleter) { }
-    DatabaseResult(const DatabaseResult & dr) : m_res(dr.m_res) { }
+    DatabaseResult(const DatabaseResult & dr) = default;
 
-    DatabaseResult & operator=(const DatabaseResult & other) {
-        m_res = other.m_res;
-        return *this;
-    }
+        DatabaseResult & operator=(const DatabaseResult & other) = default;
 
-    /// \brief Iterator for DatabaseResult
+        /// \brief Iterator for DatabaseResult
     ///
     /// Minics STL iterator API
     class const_iterator {
       private:
         const DatabaseResult & m_dr;
         int m_row;
-        
-        const_iterator(const DatabaseResult & dr, int r = 0) : m_dr(dr),
+
+        explicit const_iterator(const DatabaseResult & dr, int r = 0) : m_dr(dr),
                                                                m_row(r) {
             if (m_row != -1) {
                 if (m_row >= m_dr.size()) {
@@ -293,10 +288,9 @@ class DatabaseResult {
             }
         }
       public:
-        const_iterator(const const_iterator & ci) : m_dr(ci.m_dr),
-                                                    m_row(ci.m_row) { }
+        const_iterator(const const_iterator & ci) = default;
 
-        bool operator==(const const_iterator & other) {
+            bool operator==(const const_iterator & other) {
             return (m_row == other.m_row);
         }
 
@@ -315,7 +309,7 @@ class DatabaseResult {
 
         const char * column(int column) const {
             if (m_row == -1) {
-                return 0;
+                return nullptr;
             }
             return PQgetvalue(m_dr.m_res.get(), m_row, column);
         }
@@ -333,7 +327,7 @@ class DatabaseResult {
     int size() const { return PQntuples(m_res.get()); }
     int empty() const { return (size() == 0); }
     int columns() const { return PQnfields(m_res.get()); }
-    bool error() const { return (m_res.get() == nullptr); }
+    bool error() const { return (m_res == nullptr); }
 
     const_iterator begin() const {
         return const_iterator(*this);

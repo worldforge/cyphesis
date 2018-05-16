@@ -37,20 +37,11 @@ using Atlas::Objects::Root;
 
 static const bool debug_flag = false;
 
-Persistence * Persistence::m_instance = nullptr;
+template<> Persistence* Singleton<Persistence>::ms_Singleton = nullptr;
 
-Persistence::Persistence() : m_db(*Database::instance())
+Persistence::Persistence(Database& database) : m_db(database)
 {
 }
-
-Persistence * Persistence::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Persistence();
-    }
-    return m_instance;
-}
-
 int Persistence::init()
 {
     if (m_db.initConnection() != 0) {
@@ -134,10 +125,6 @@ int Persistence::init()
 void Persistence::shutdown()
 {
     m_db.shutdownConnection();
-    Database::cleanup();
-    assert(this == m_instance);
-    delete m_instance;
-    m_instance = nullptr;
 }
 
 bool Persistence::findAccount(const std::string & name)
@@ -227,14 +214,14 @@ void Persistence::registerCharacters(Account & ac,
     DatabaseResult::const_iterator Iend = dr.end();
     for (DatabaseResult::const_iterator I = dr.begin(); I != Iend; ++I) {
         const char * id = I.column(0);
-        if (id == 0) {
+        if (id == nullptr) {
             log(ERROR, "No ID data in relation when examing characters");
             continue;
         }
 
         long intId = integerId(id);
 
-        EntityDict::const_iterator J = worldObjects.find(intId);
+        auto J = worldObjects.find(intId);
         if (J == worldObjects.end()) {
             log(WARNING, String::compose("Persistence: Got character id \"%1\" "
                                          "from database which does not exist "
@@ -273,71 +260,4 @@ const std::string& Persistence::getCharacterAccountRelationName() const
     return m_characterRelation;
 }
 
-int Persistence::getRules(std::map<std::string, Root> & t)
-{
-    return m_db.getTable(m_db.rule(), t);
-}
 
-int Persistence::storeRule(const Atlas::Objects::Root & rule,
-                           const std::string & key,
-                           const std::string & section)
-{
-    const std::string & table = m_db.rule();
-    if (m_db.hasKey(table, key)) {
-        return -1;
-    }
-    MapType rule_msg = rule->asMessage();
-
-    // Sort out the correct filename, and remove the reference to it
-    std::string file = String::compose("%1.xml", section);
-    MapType::const_iterator I = rule_msg.find("ruleset");
-    if (I != rule_msg.end()) {
-        if (I->second.isString()) {
-            const std::string & new_set = I->second.asString();
-            if (new_set.find(".xml") == std::string::npos) {
-                file = String::compose("%1.xml", new_set);
-            } else {
-                file = new_set;
-            }
-        }
-        rule_msg.erase("ruleset");
-    }
-
-    m_db.putObject(table, key, rule_msg, StringVector(1, file));
-    if (m_db.clearPendingQuery() != 0) {
-        // FIXME No writing to stderr here!
-        std::cerr << "Failed" << std::endl << std::flush;
-        return -1;
-    }
-    return 0;
-}
-
-int Persistence::updateRule(const Atlas::Objects::Root & rule,
-                             const std::string & key)
-{
-    const std::string & table = m_db.rule();
-    if (!m_db.hasKey(table, key)) {
-        std::cout << "Existing rule" << std::endl << std::flush;
-        return -1;
-    }
-    MapType rule_msg = rule->asMessage();
-
-    // Remove the reference to filename
-    MapType::iterator I = rule_msg.find("ruleset");
-    if (I != rule_msg.end()) {
-        rule_msg.erase(I);
-    }
-
-    m_db.updateObject(table, key, rule_msg);
-    if (m_db.clearPendingQuery() != 0) {
-        // FIXME No writing to stderr here!
-        std::cerr << "Failed" << std::endl << std::flush;
-        return -1;
-    }
-    return 0;
-}
-
-int Persistence::clearRules()
-{
-    return m_db.clearTable(m_db.rule());
-}

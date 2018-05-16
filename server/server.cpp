@@ -42,6 +42,7 @@
 #include "rulesets/Python_API.h"
 #include "rulesets/LocatedEntity.h"
 
+#include "common/Database.h"
 #include "common/id.h"
 #include "common/const.h"
 #include "common/Inheritance.h"
@@ -199,9 +200,12 @@ int main(int argc, char ** argv)
     // Initialise the persistence subsystem. If we have been built with
     // database support, this will open the various databases used to
     // store server data.
+    Persistence* persistence = nullptr;
+    Database* database = nullptr;
     if (database_flag) {
-        Persistence * p = Persistence::instance();
-        int dbstatus = p->init();
+        database = new Database();
+        persistence = new Persistence(*database);
+        int dbstatus = persistence->init();
         if (dbstatus < 0) {
             database_flag = false;
             log(ERROR, "Error opening database. Database disabled.");
@@ -427,7 +431,7 @@ int main(int argc, char ** argv)
         log(INFO, "Restored world.");
 
         dbsocket = new CommPSQLSocket(*io_service,
-                                      Persistence::instance()->m_db);
+                                      Persistence::instance().m_db);
 
         storage_idle = new IdleConnector(*io_service);
         storage_idle->idling.connect(
@@ -657,7 +661,13 @@ int main(int argc, char ** argv)
 
     delete ruleset;
 
-    Persistence::instance()->shutdown();
+    if (persistence) {
+        persistence->shutdown();
+        delete persistence;
+    }
+
+    delete database;
+
 
     EntityBuilder::instance()->flushFactories();
     EntityBuilder::del();

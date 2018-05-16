@@ -194,7 +194,7 @@ int main(int argc, char ** argv)
     } // close scope of CommServer, which cause the destruction of the
       // server and world objects, and the entire world contents
 
-    Persistence::instance()->shutdown();
+    Persistence::instance().shutdown();
 
     EntityBuilder::instance()->flushFactories();
     EntityBuilder::del();

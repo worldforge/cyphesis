@@ -129,9 +129,9 @@ Account * ServerRouting::getAccountByName(const std::string & username)
     if (I != m_accounts.end()) {
         account = I->second;
     } else if (database_flag) {
-        account = Persistence::instance()->getAccount(username);
+        account = Persistence::instance().getAccount(username);
         if (account != nullptr) {
-            Persistence::instance()->registerCharacters(*account,
+            Persistence::instance().registerCharacters(*account,
                                                m_world.getEntities());
             m_accounts[username] = account;
             addObject(account);

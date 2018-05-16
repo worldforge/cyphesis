@@ -38,17 +38,6 @@ target_link_libraries(cyaddrules
         common)
 install(TARGETS cyaddrules DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
 
-add_executable(cyloadrules cyloadrules.cpp)
-target_link_libraries(cyloadrules
-        tools
-        common)
-install(TARGETS cyloadrules DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
-
-add_executable(cydumprules cydumprules.cpp)
-target_link_libraries(cydumprules
-        common)
-install(TARGETS cydumprules DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
-
 add_executable(cypasswd cypasswd.cpp)
 target_link_libraries(cypasswd
         tools

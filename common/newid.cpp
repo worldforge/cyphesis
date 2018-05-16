@@ -27,7 +27,7 @@ static long idGenerator = 0;
 long newId(std::string & id)
 {
     if (database_flag) {
-        return Database::instance()->newId(id);
+        return Database::instance().newId(id);
     } else {
         static char buf[32];
         long new_id = ++idGenerator;

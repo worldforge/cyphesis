@@ -449,15 +449,6 @@ long Database::newId(std::string & id)
     return 0;
 }
 
-void Database::cleanup()
-{
-    if (m_instance != 0) {
-        delete m_instance;
-    }
-
-    m_instance = 0;
-}
-
 int Database::registerThoughtsTable()
 {
     return 0;

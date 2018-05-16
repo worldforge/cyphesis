@@ -131,10 +131,7 @@ int Ruleset::installRule(const std::string & class_name,
     if (!changes.empty()) {
         for (auto &entry : changes) {
             Inheritance::instance().updateClass(entry.first->name(), entry.first->description());
-            if (database_flag) {
-                Persistence *p = Persistence::instance();
-                p->updateRule(entry.first->description(), entry.first->name());
-            }
+            //TODO: write to user writable rule files
         }
 
         Inheritance::instance().typesUpdated(changes);
@@ -189,10 +186,7 @@ int Ruleset::modifyRule(const std::string & class_name,
     if (!changes.empty()) {
         for (auto &entry : changes) {
             Inheritance::instance().updateClass(entry.first->name(), entry.first->description());
-            if (database_flag) {
-                Persistence *p = Persistence::instance();
-                p->updateRule(entry.first->description(), entry.first->name());
-            }
+            //TODO: write to user writable rule files
         }
 
         Inheritance::instance().typesUpdated(changes);
@@ -274,10 +268,7 @@ void Ruleset::processChangedRules() {
             if (!changes.empty()) {
                 for (auto &entry : changes) {
                     Inheritance::instance().updateClass(entry.first->name(), entry.first->description());
-                    if (database_flag) {
-                        Persistence *p = Persistence::instance();
-                        p->updateRule(entry.first->description(), entry.first->name());
-                    }
+                    //TODO: write to user writable rule files
                 }
 
                 Inheritance::instance().typesUpdated(changes);
@@ -353,22 +344,10 @@ void Ruleset::loadRules(const std::string & ruleset)
 {
     RootDict ruleTable;
 
-    bool loadFromDatabase = database_flag;
-    loadFromDatabase = false;
-
-    if (loadFromDatabase) {
-        Persistence * p = Persistence::instance();
-        p->getRules(ruleTable);
-    } else {
-        getRulesFromFiles(ruleset, ruleTable);
-    }
+    getRulesFromFiles(ruleset, ruleTable);
 
     if (ruleTable.empty()) {
         log(ERROR, "Rule database table contains no rules.");
-        if (loadFromDatabase) {
-            log(NOTICE, "Attempting to load temporary ruleset from files.");
-            getRulesFromFiles(ruleset, ruleTable);
-        }
     }
 
     //Just ignore any changes, since this happens at startup before any clients are connected.
