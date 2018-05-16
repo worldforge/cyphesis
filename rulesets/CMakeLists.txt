@@ -118,15 +118,15 @@ target_link_libraries(scriptpython ${PYTHON_LIBRARIES})
 #target_compile_options(scriptpython PUBLIC "-fno-strict-aliasing")
 
 install(FILES
-    basic/world/probability.py
-    basic/editor.py
+    basic/scripts/world/probability.py
+    basic/scripts/editor.py
     DESTINATION ${CMAKE_INSTALL_DATADIR}/cyphesis/scripts/cyphesis)
 install(DIRECTORY
     deeds
     DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/cyphesis/rulesets)
 install(DIRECTORY
-    basic/mind
-    DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/cyphesis/rulesets/basic)
+    basic/scripts/mind
+    DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/cyphesis/rulesets/basic/scripts)
 
 #moduledir = $(datadir)/cyphesis/scripts/cyphesis
 

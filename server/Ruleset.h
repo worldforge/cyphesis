@@ -83,7 +83,7 @@ class Ruleset : public Singleton<Ruleset>{
                         const Atlas::Objects::Root &class_desc,
                         std::map<const TypeNode *, TypeNode::PropertiesUpdate> &changes);
 
-    void getRulesFromFiles(const std::string &,
+    void getRulesFromFiles(boost::filesystem::path directory,
                            std::map<std::string, Atlas::Objects::Root> &);
     void waitForRule(const std::string & class_name,
                      const Atlas::Objects::Root & class_desc,

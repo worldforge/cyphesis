@@ -295,11 +295,9 @@ void Ruleset::waitForRule(const std::string & rulename,
     m_waitingRules.insert(std::make_pair(dependent, rule));
 }
 
-void Ruleset::getRulesFromFiles(const std::string & ruleset,
+void Ruleset::getRulesFromFiles(boost::filesystem::path directory,
                                 RootDict & rules)
 {
-
-    boost::filesystem::path directory = boost::filesystem::path(etc_directory) / "cyphesis" / (ruleset + ".d");
 
     if (boost::filesystem::is_directory(directory)) {
 
@@ -342,9 +340,19 @@ void Ruleset::getRulesFromFiles(const std::string & ruleset,
 
 void Ruleset::loadRules(const std::string & ruleset)
 {
-    RootDict ruleTable;
+    boost::filesystem::path shared_rules_directory = boost::filesystem::path(share_directory) / "cyphesis" / "rulesets/" / ruleset / "rules";
+    boost::filesystem::path var_rules_directory = boost::filesystem::path(var_directory) / "lib" / "cyphesis" / "rulesets" / ruleset / "rules";
 
-    getRulesFromFiles(ruleset, ruleTable);
+    //Prefer rules from the "var" directory over the ones from the "etc" directory.
+    RootDict ruleTable;
+    getRulesFromFiles(var_rules_directory, ruleTable);
+    RootDict shared_ruleTable;
+    getRulesFromFiles(shared_rules_directory, shared_ruleTable);
+
+    for (auto& entry : shared_ruleTable) {
+        //Will only insert if a rule doesn't already exist.
+        ruleTable.insert(entry);
+    }
 
     if (ruleTable.empty()) {
         log(ERROR, "Rule database table contains no rules.");

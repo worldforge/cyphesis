@@ -969,14 +969,14 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
             PyList_Append(sys_path, path);
             Py_DECREF(path);
 
-            p = share_directory + "/cyphesis/rulesets/basic";
+            p = share_directory + "/cyphesis/rulesets/basic/scripts";
             python_directories.push_back(p);
             path = PyUnicode_FromString(p.c_str());
             PyList_Append(sys_path, path);
             Py_DECREF(path);
 
             // Add the path to the ruleset specific code.
-            p = share_directory + "/cyphesis/rulesets/" + ruleset;
+            p = share_directory + "/cyphesis/rulesets/" + ruleset + "/scripts";
             python_directories.push_back(p);
             path = PyUnicode_FromString(p.c_str());
             PyList_Append(sys_path, path);
