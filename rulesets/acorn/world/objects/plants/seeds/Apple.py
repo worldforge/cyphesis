@@ -19,7 +19,7 @@ class Apple(Seed):
         ent=Entity(self.id,status=-1)
         res = Operation("set",ent,to=self)
         to_ = op.from_
-        nour=Entity(to_.id,mass=self.mass,alcohol=self.alcohol)
+        nour=Entity(to_.id,mass=self.props.mass,alcohol=self.props.alcohol)
         res = res + Operation("nourish",nour,to=to_)
         return res
     def setup_operation(self, op):
@@ -29,11 +29,11 @@ class Apple(Seed):
         return opTick
     def tick_operation(self, op):
         # After a short while we turn into a rotten apple, which is alcoholic
-        if self.alcohol > 0:
+        if self.props.alcohol > 0:
             ent=Entity(self.id,status=-1)
             return Operation("set",ent,to=self)
         else:
-            self.alcohol = 1
+            self.props.alcohol = 1
             opTick=Operation("tick",to=self)
             opTick.setFutureSeconds(900)
             return opTick

@@ -16,11 +16,11 @@ class Apple(Seed):
         return res
     def tick_operation(self, op):
         # After a short while we turn into a rotten apple, which is alcoholic
-        if self.alcohol > 0:
+        if self.props.alcohol > 0:
             ent=Entity(self.id,status=-1)
             return Operation("set",ent,to=self)
         else:
-            self.alcohol = 1
+            self.props.alcohol = 1
             opTick=Operation("tick",to=self)
             opTick.setFutureSeconds(900)
             return opTick

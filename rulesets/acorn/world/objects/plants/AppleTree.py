@@ -20,7 +20,7 @@ class Appletree(Tree):
         set_kw(self,kw,"init_fruits", 3)
     def touch_operation(self, op):
         # If somebody shakes us we drop a fruit, and make sound #
-        fcount = self.fruits
+        fcount = self.props.fruits
         result = self.drop_fruit()
         if fcount != self.fruits:
             if fcount == 0:
