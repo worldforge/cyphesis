@@ -62,6 +62,7 @@
 #include <common/FileSystemObserver.h>
 #include <common/AssetsManager.h>
 #include <common/DatabaseSQLite.h>
+#include <common/RepeatedTask.h>
 
 using String::compose;
 using namespace boost::asio;
@@ -208,6 +209,7 @@ int main(int argc, char ** argv)
 
     Database* database;
     CommPSQLSocket * dbsocket = nullptr;
+    RepeatedTask* dbvacuumTask = nullptr;
     if (databaseBackend == "postgres") {
 #if POSTGRES_FOUND
         database = new DatabasePostgres();
@@ -217,7 +219,9 @@ int main(int argc, char ** argv)
         return -1;
 #endif
     } else {
-        database = new DatabaseSQLite();
+        auto sqliteDatabase = new DatabaseSQLite();
+        database = sqliteDatabase;
+        dbvacuumTask = new RepeatedTask(*io_service, boost::posix_time::seconds(25 * 60), [=]() {sqliteDatabase->runMaintainance();});
     }
 
     auto persistence = new Persistence(*database);
@@ -611,6 +615,8 @@ int main(int argc, char ** argv)
             log(ERROR, "Exception caught when shutting down");
         }
     }
+
+    delete dbvacuumTask;
 
     delete file_system_observer;
 

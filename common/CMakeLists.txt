@@ -74,7 +74,7 @@ add_library(common
     AssetsManager.cpp
     AssetsManager.h
     Singleton.h
-    Change.h)
+    Change.h RepeatedTask.cpp RepeatedTask.h)
 
 target_link_libraries(common ${GCRYPT_LIBRARIES})
 target_include_directories(common PUBLIC ${GCRYPT_INCLUDE_DIRS})

@@ -36,14 +36,18 @@ const int CommPSQLSocket::reindexFreq = 30 * 60;
 ///
 /// @param db Reference to the low level database management object.
 CommPSQLSocket::CommPSQLSocket(boost::asio::io_service& io_service, DatabasePostgres & db) :
-                               m_io_service(io_service), m_socket(new boost::asio::ip::tcp::socket(io_service)),
-                               m_vacuumTimer(io_service), m_reindexTimer(io_service), m_reconnectTimer(io_service),
-                               m_db(db), m_vacuumFull(false)
+                               m_io_service(io_service),
+                               m_socket(new boost::asio::ip::tcp::socket(io_service)),
+                               m_vacuumTimer(io_service),
+                               m_reindexTimer(io_service),
+                               m_reconnectTimer(io_service),
+                               m_db(db),
+                               m_vacuumFull(false)
 {
     // This assumes the database connection is already sorted, which I think
     // is okay
     PGconn * con = m_db.getConnection();
-    assert(con != 0);
+    assert(con != nullptr);
     
     if (PQsetnonblocking(con, 1) == -1) {
         log(ERROR, "Unable to put database connection in non-blocking mode.");

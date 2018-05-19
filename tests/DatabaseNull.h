@@ -26,13 +26,17 @@
 struct const_iterator_worker_null : public DatabaseResult::const_iterator_worker
 {
 
-    const char* column(int column) const {return "";}
+    const char* column(int column) const override
+    { return ""; }
 
-    const char* column(const char* column) const {return "";}
+    const char* column(const char* column) const override
+    { return ""; }
 
-    DatabaseResult::const_iterator_worker& operator++() {return *this;}
+    DatabaseResult::const_iterator_worker& operator++() override
+    { return *this; }
 
-    bool operator==(const const_iterator_worker& other) const {return true;}
+    bool operator==(const const_iterator_worker& other) const override
+    { return true; }
 };
 
 class DatabaseNullResultWorker : public DatabaseResult::DatabaseResultWorker
@@ -78,7 +82,7 @@ class DatabaseNull : public Database
 
     public:
 
-        std::function<long()> idGeneratorFn = []()->long{ return 0L;};
+        std::function<long()> idGeneratorFn = []() -> long { return 0L; };
 
         int initConnection() override
         {
