@@ -20,6 +20,20 @@
 #define CYPHESIS_DATABASENULL_H
 
 #include "../common/Database.h"
+#include <functional>
+
+
+struct const_iterator_worker_null : public DatabaseResult::const_iterator_worker
+{
+
+    const char* column(int column) const {return "";}
+
+    const char* column(const char* column) const {return "";}
+
+    DatabaseResult::const_iterator_worker& operator++() {return *this;}
+
+    bool operator==(const const_iterator_worker& other) const {return true;}
+};
 
 class DatabaseNullResultWorker : public DatabaseResult::DatabaseResultWorker
 {
@@ -40,12 +54,12 @@ class DatabaseNullResultWorker : public DatabaseResult::DatabaseResultWorker
 
         DatabaseResult::const_iterator begin() const override
         {
-            return DatabaseResult::const_iterator(nullptr, *this);
+            return DatabaseResult::const_iterator(std::unique_ptr<DatabaseResult::const_iterator_worker>(new const_iterator_worker_null), *this);
         }
 
         DatabaseResult::const_iterator end() const override
         {
-            return DatabaseResult::const_iterator(nullptr, *this);
+            return DatabaseResult::const_iterator(std::unique_ptr<DatabaseResult::const_iterator_worker>(new const_iterator_worker_null), *this);
         }
 
         const char* field(int column) const override
@@ -63,6 +77,9 @@ class DatabaseNull : public Database
 {
 
     public:
+
+        std::function<long()> idGeneratorFn = []()->long{ return 0L;};
+
         int initConnection() override
         {
             return 0;
@@ -140,6 +157,11 @@ class DatabaseNull : public Database
         /// Note that this method will access the database, so it's a fairly expensive method.
         long newId(std::string& id) override
         {
+            if (idGeneratorFn) {
+                auto newId = idGeneratorFn();
+                id = std::to_string(newId);
+                return newId;
+            }
             return 0;
         }
 

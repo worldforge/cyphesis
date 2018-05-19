@@ -16,7 +16,7 @@ if (AVAHI_FOUND)
     target_link_libraries(comm ${AVAHI_LIBRARIES} -lavahi-common)
 endif (AVAHI_FOUND)
 
-add_executable(cyphesis
+set(cyphesis_files
     Account.cpp
     Player.cpp
     Admin.cpp
@@ -48,7 +48,6 @@ add_executable(cyphesis
     TrustedConnection.cpp
     Peer.cpp
     Juncture.cpp
-    CommPSQLSocket.cpp
     TeleportState.cpp
     PossessionAuthenticator.cpp
     TeleportProperty.cpp
@@ -61,7 +60,15 @@ add_executable(cyphesis
     ExternalMindsManager.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/buildid.cpp)
 
+if(PostgreSQL_FOUND)
+    list(APPEND cyphesis_files
+        CommPSQLSocket.cpp)
+endif(PostgreSQL_FOUND)
 
+add_executable(cyphesis
+    ${cyphesis_files})
+
+target_compile_definitions(cyphesis PRIVATE -DPOSTGRES_FOUND=${PostgreSQL_FOUND})
 target_link_libraries(cyphesis
     scriptpython
     navigation

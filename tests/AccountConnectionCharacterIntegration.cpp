@@ -36,6 +36,7 @@
 #include "common/const.h"
 #include "common/log.h"
 #include "common/TypeNode.h"
+#include "DatabaseNull.h"
 
 #include <Atlas/Objects/Operation.h>
 
@@ -43,6 +44,7 @@
 #include <cstring>
 
 #include <cassert>
+#include <server/Persistence.h>
 
 using Atlas::Objects::Operation::RootOperation;
 using String::compose;
@@ -55,6 +57,8 @@ class AccountConnectionCharacterintegration : public Cyphesis::TestBase
     static LogEvent m_logEvent_logged;
     static Operation m_Link_send_sent;
 
+    DatabaseNull m_database;
+    Persistence* m_persistence;
     ServerRouting * m_server;
     Connection * m_connection;
     Account * m_account;
@@ -103,6 +107,8 @@ AccountConnectionCharacterintegration::AccountConnectionCharacterintegration() :
 
 void AccountConnectionCharacterintegration::setup()
 {
+    m_persistence = new Persistence(m_database);
+
     m_Link_send_sent = 0;
 
     Entity * gw = new Entity(compose("%1", m_id_counter),
@@ -132,6 +138,7 @@ void AccountConnectionCharacterintegration::teardown()
     delete m_character;
     delete m_characterType;
     delete m_server;
+    delete m_persistence;
 }
 
 void AccountConnectionCharacterintegration::test_subscribe()
@@ -303,6 +310,7 @@ bool restricted_flag;
 #include "stubs/server/stubExternalMindsManager.h"
 #include "stubs/server/stubExternalMindsConnection.h"
 #include "stubs/common/stubOperationsDispatcher.h"
+#include "stubs/common/stubDatabase.h"
 #include "stubs/modules/stubWorldTime.h"
 #include "stubs/modules/stubDateTime.h"
 #include "stubs/modules/stubLocation.h"

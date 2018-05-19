@@ -257,13 +257,6 @@ DatabaseResult Database::selectThoughts(const std::string& loc)
     return DatabaseResult(std::unique_ptr<DatabaseNullResultWorker>(new DatabaseNullResultWorker()));
 }
 
-DatabaseResult::const_iterator::const_iterator(std::unique_ptr<DatabaseResult::const_iterator_worker>&& worker, const DatabaseResult::DatabaseResultWorker& dr)
-    : m_worker(std::move(worker)),
-      m_dr(dr)
-{
-
-}
-
 #include "stubs/common/stubDatabase.h"
 #include "stubs/server/stubPersistence.h"
 

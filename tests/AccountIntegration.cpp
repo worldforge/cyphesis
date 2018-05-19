@@ -43,12 +43,14 @@
 #include "common/SystemTime.h"
 
 #include "TestWorld.h"
+#include "DatabaseNull.h"
 
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
 
 #include <cassert>
+#include <server/Persistence.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -100,6 +102,9 @@ class TestAccount : public Account {
 
 class Accountintegration : public Cyphesis::TestBase
 {
+    DatabaseNull m_database;
+    Persistence* m_persistence;
+
     SystemTime * m_time;
     WorldRouter * m_world;
 
@@ -171,6 +176,7 @@ Atlas::Objects::Root composeDeclaration(std::string class_name, std::string pare
 
 void Accountintegration::setup()
 {
+    m_persistence = new Persistence(m_database);
     m_inheritance = new Inheritance();
     m_time = new SystemTime;
     EntityBuilder::init();
@@ -200,6 +206,7 @@ void Accountintegration::teardown()
     delete m_world;
     EntityBuilder::del();
     delete m_inheritance;
+    delete m_persistence;
 }
 
 void Accountintegration::test_addNewCharacter()
@@ -365,8 +372,6 @@ void Accountintegration::test_connectCharacter_character()
 
 int main()
 {
-    database_flag = false;
-
     Accountintegration t;
 
     return t.run();
@@ -497,6 +502,7 @@ int PythonScriptFactory<LocatedEntity>::setup()
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
 #include "stubs/common/stubProperty.h"
+#include "stubs/common/stubDatabase.h"
 
 #include "stubs/server/stubTaskRuleHandler.h"
 #include "stubs/server/stubArchetypeRuleHandler.h"

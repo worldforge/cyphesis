@@ -65,41 +65,38 @@ StorageManager:: StorageManager(WorldRouter & world) :
       m_insertQpsAvg(0), m_updateQpsAvg(0),
       m_insertQpsIndex(0), m_updateQpsIndex(0)
 {
-    if (database_flag) {
+    m_mindInspector = new MindInspector();
+    m_mindInspector->ThoughtsReceived.connect(sigc::mem_fun(*this, &StorageManager::thoughtsReceived));
 
-        m_mindInspector = new MindInspector();
-        m_mindInspector->ThoughtsReceived.connect(sigc::mem_fun(*this, &StorageManager::thoughtsReceived));
+    world.inserted.connect(sigc::mem_fun(this,
+          &StorageManager::entityInserted));
 
-        world.inserted.connect(sigc::mem_fun(this,
-              &StorageManager::entityInserted));
+    Monitors::instance()->watch("storage_entity_inserts",
+                                new Variable<int>(m_insertEntityCount));
+    Monitors::instance()->watch("storage_entity_updates",
+                                new Variable<int>(m_updateEntityCount));
+    Monitors::instance()->watch("storage_property_inserts",
+                                new Variable<int>(m_insertPropertyCount));
+    Monitors::instance()->watch("storage_property_updates",
+                                new Variable<int>(m_updatePropertyCount));
 
-        Monitors::instance()->watch("storage_entity_inserts",
-                                    new Variable<int>(m_insertEntityCount));
-        Monitors::instance()->watch("storage_entity_updates",
-                                    new Variable<int>(m_updateEntityCount));
-        Monitors::instance()->watch("storage_property_inserts",
-                                    new Variable<int>(m_insertPropertyCount));
-        Monitors::instance()->watch("storage_property_updates",
-                                    new Variable<int>(m_updatePropertyCount));
+    Monitors::instance()->watch("storage_qps{qtype=\"inserts\",t=\"1\"}",
+                                new Variable<int>(m_insertQpsNow));
+    Monitors::instance()->watch("storage_qps{qtype=\"updates\",t=\"1\"}",
+                                new Variable<int>(m_updateQpsNow));
 
-        Monitors::instance()->watch("storage_qps{qtype=\"inserts\",t=\"1\"}",
-                                    new Variable<int>(m_insertQpsNow));
-        Monitors::instance()->watch("storage_qps{qtype=\"updates\",t=\"1\"}",
-                                    new Variable<int>(m_updateQpsNow));
+    Monitors::instance()->watch("storage_qps{qtype=\"inserts\",t=\"32\"}",
+                                new Variable<int>(m_insertQpsAvg));
+    Monitors::instance()->watch("storage_qps{qtype=\"updates\",t=\"32\"}",
+                                new Variable<int>(m_updateQpsAvg));
 
-        Monitors::instance()->watch("storage_qps{qtype=\"inserts\",t=\"32\"}",
-                                    new Variable<int>(m_insertQpsAvg));
-        Monitors::instance()->watch("storage_qps{qtype=\"updates\",t=\"32\"}",
-                                    new Variable<int>(m_updateQpsAvg));
-
-        for (int i = 0; i < 32; ++i) {
-            m_insertQpsRing[i] = 0;
-            m_updateQpsRing[i] = 0;
-        }
-
-        Persistence::instance().characterAdded.connect(sigc::mem_fun(*this, &StorageManager::persistance_characterAdded));
-        Persistence::instance().characterDeleted.connect(sigc::mem_fun(*this, &StorageManager::persistance_characterDeleted));
+    for (int i = 0; i < 32; ++i) {
+        m_insertQpsRing[i] = 0;
+        m_updateQpsRing[i] = 0;
     }
+
+    Persistence::instance().characterAdded.connect(sigc::mem_fun(*this, &StorageManager::persistance_characterAdded));
+    Persistence::instance().characterDeleted.connect(sigc::mem_fun(*this, &StorageManager::persistance_characterDeleted));
 }
 
 StorageManager::~StorageManager()

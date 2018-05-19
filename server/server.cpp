@@ -42,7 +42,10 @@
 #include "rulesets/Python_API.h"
 #include "rulesets/LocatedEntity.h"
 
+#if POSTGRES_FOUND
 #include "common/DatabasePostgres.h"
+#endif
+
 #include "common/id.h"
 #include "common/const.h"
 #include "common/Inheritance.h"
@@ -187,8 +190,6 @@ int main(int argc, char ** argv)
         }
     }
 
-    readConfigItem(instance, "usedatabase", database_flag);
-
     // If we are a daemon logging to syslog, we need to set it up.
     initLogger();
 
@@ -198,34 +199,32 @@ int main(int argc, char ** argv)
         log(ERROR, "If you've built Cyphesis yourself make sure you've run the 'make assets-download' command.");
     }
 
-    // Initialise the persistence subsystem. If we have been built with
-    // database support, this will open the various databases used to
-    // store server data.
-    Persistence* persistence = nullptr;
-//    DatabasePostgres* database = nullptr;
-    DatabaseSQLite* database = nullptr;
-    if (database_flag) {
+
+    io_service* io_service = new boost::asio::io_service();
+
+    // Initialise the persistence subsystem.
+    std::string databaseBackend;
+    readConfigItem(instance, "database", databaseBackend);
+
+    Database* database;
+    CommPSQLSocket * dbsocket = nullptr;
+    if (databaseBackend == "postgres") {
+#if POSTGRES_FOUND
+        database = new DatabasePostgres();
+        dbsocket = new CommPSQLSocket(*io_service, *database);
+#else
+        log(ERROR, "Database specified as 'postgres', but this server is not built with Postgres SQL support.");
+        return -1;
+#endif
+    } else {
         database = new DatabaseSQLite();
-        persistence = new Persistence(*database);
-        int dbstatus = persistence->init();
-        if (dbstatus < 0) {
-            database_flag = false;
-            log(ERROR, "Error opening database. Database disabled.");
-            if (dbstatus == DATABASE_TABERR) {
-                log(INFO, "Database connection established, "
-                        "but unable to create required tables.");
-                log(INFO, "Please ensure that any obsolete database "
-                        "tables have been removed.");
-            } else {
-                log(INFO, "Unable to connect to the RDBMS.");
-                log(INFO, "Please ensure that the RDBMS is running, "
-                        "the cyphesis database exists and is accessible "
-                        "to the user running cyphesis.");
-            }
-            log(INFO, String::compose("To disable this message please run:\n\n"
-                    "    cyconfig --%1:usedatabase=false\n\n"
-                    "to permanently disable database usage.", instance));
-        }
+    }
+
+    auto persistence = new Persistence(*database);
+    int dbstatus = persistence->init();
+    if (dbstatus < 0) {
+        log(ERROR, "Error opening database.");
+        return -1;
     }
 
     // If the restricted flag is set in the config file, then we
@@ -248,8 +247,6 @@ int main(int argc, char ** argv)
 
     int nice = 1;
     readConfigItem(instance, "nice", nice);
-
-    io_service* io_service = new boost::asio::io_service();
 
     boost::asio::signal_set* signalSet = new boost::asio::signal_set(*io_service);
     //If we're not running as a daemon we should use the interactive signal handler.
@@ -420,31 +417,20 @@ int main(int argc, char ** argv)
 
     IdleConnector* storage_idle = nullptr;
 
-    CommPSQLSocket * dbsocket = nullptr;
-    if (database_flag) {
-        log(INFO, "Restoring world from database...");
+    log(INFO, "Restoring world from database...");
 
-        store->restoreWorld();
-        // Read the world entity if any from the database, or set it up.
-        // If it was there, make sure it did not get any of the wrong
-        // position or orientation data.
-        store->initWorld();
+    store->restoreWorld();
+    // Read the world entity if any from the database, or set it up.
+    // If it was there, make sure it did not get any of the wrong
+    // position or orientation data.
+    store->initWorld();
 
-        log(INFO, "Restored world.");
+    log(INFO, "Restored world.");
 
-        //dbsocket = new CommPSQLSocket(*io_service, *database);
+    storage_idle = new IdleConnector(*io_service);
+    storage_idle->idling.connect(
+        sigc::mem_fun(store, &StorageManager::tick));
 
-        storage_idle = new IdleConnector(*io_service);
-        storage_idle->idling.connect(
-            sigc::mem_fun(store, &StorageManager::tick));
-    } else {
-        std::string adminId;
-        long intId = newId(adminId);
-        assert(intId >= 0);
-
-        Admin * admin = new Admin(nullptr, "admin", "BAD_HASH", adminId, intId);
-        server->addAccount(admin);
-    }
 
     updateUserConfiguration();
 

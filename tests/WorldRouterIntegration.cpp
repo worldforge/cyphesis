@@ -54,6 +54,8 @@
 #include <server/Ruleset.h>
 #include <rulesets/Character.h>
 
+#include "DatabaseNull.h"
+
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Objects::Entity::Anonymous;
@@ -71,6 +73,7 @@ class WorldRouterintegration : public Cyphesis::TestBase
     void test_sequence();
 
         Inheritance* m_inheritance;
+        DatabaseNull m_database;
 };
 
 WorldRouterintegration::WorldRouterintegration()
@@ -141,8 +144,6 @@ void WorldRouterintegration::teardown()
 
 void WorldRouterintegration::test_sequence()
 {
-    database_flag = false;
-
     WorldRouter * test_world = new WorldRouter(SystemTime());
 
     LocatedEntity * ent1 = test_world->addNewEntity("__no_such_type__",
@@ -270,6 +271,12 @@ void WorldRouterintegration::test_sequence()
 int main()
 {
     WorldRouterintegration t;
+
+    t.m_database.idGeneratorFn = [](){
+        static long id = 0;
+        return ++id;
+    };
+
 
     return t.run();
 }

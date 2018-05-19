@@ -62,3 +62,9 @@ DatabaseResult::const_iterator& DatabaseResult::const_iterator::operator++()
 {
     return *this;
 }
+
+DatabaseResult::const_iterator::const_iterator(std::unique_ptr<DatabaseResult::const_iterator_worker>&& worker, const DatabaseResult::DatabaseResultWorker& dr)
+    : m_worker(std::move(worker)),
+      m_dr(dr)
+{
+}

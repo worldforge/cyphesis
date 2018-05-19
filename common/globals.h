@@ -58,7 +58,6 @@ extern bool exit_flag_soft;
 /// This is off by default.
 extern bool exit_soft_enabled;
 extern bool daemon_flag;
-extern bool database_flag;
 extern int timeoffset;
 extern int dynamic_port_start;
 extern int dynamic_port_end;

@@ -233,12 +233,6 @@ long Database::newId(std::string & id)
     return 1;
 }
 
-DatabaseResult::const_iterator::const_iterator(std::unique_ptr<DatabaseResult::const_iterator_worker>&& worker, const DatabaseResult::DatabaseResultWorker& dr)
-    : m_worker(std::move(worker)),
-      m_dr(dr)
-{
-
-}
 
 #define STUB_Database_selectSimpleRowBy
 DatabaseResult Database::selectSimpleRowBy(const std::string & name, const std::string & column, const std::string & value)

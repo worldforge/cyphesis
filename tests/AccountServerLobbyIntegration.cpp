@@ -34,9 +34,11 @@
 #include "rulesets/Entity.h"
 
 #include "common/compose.hpp"
+#include "DatabaseNull.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
+#include <server/Persistence.h>
 
 class CommSocket;
 
@@ -54,6 +56,8 @@ class TestAccount;
 class AccountServerLobbyintegration : public Cyphesis::TestBase
 {
   private:
+    DatabaseNull m_database;
+    Persistence* m_persistence;
     ServerRouting * m_server;
     TestAccount * m_account;
     long m_id_counter;
@@ -96,6 +100,8 @@ AccountServerLobbyintegration::AccountServerLobbyintegration() :
 
 void AccountServerLobbyintegration::setup()
 {
+    m_persistence = new Persistence(m_database);
+
     LocatedEntity * gw = new Entity(compose("%1", m_id_counter),
                                     m_id_counter++);
     m_server = new ServerRouting(*new TestWorld(*gw),
@@ -116,6 +122,7 @@ void AccountServerLobbyintegration::setup()
 void AccountServerLobbyintegration::teardown()
 {
     delete m_server;
+    delete m_persistence;
 }
 
 void AccountServerLobbyintegration::test_talk()
@@ -254,6 +261,7 @@ LocatedEntity *PossessionAuthenticator::authenticatePossession(const std::string
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
+#include "stubs/common/stubDatabase.h"
 #include "stubs/server/stubBuildid.h"
 
 

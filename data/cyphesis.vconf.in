@@ -37,15 +37,16 @@ daemon="false"
 nice=1
 # Leave control of NPCs to AI client
 useaiclient="false"
-# Database configuration
-usedatabase="true"
-# Do not specify a host, unless it is something other than localhost
+# Database configuration. By default "sqlite" is used.
+database="sqlite"
+#database="postgres"
+# Do not specify a host, unless it is something other than localhost. Only applies to "postgres".
 # dbserver = "darkstar"
-# Name of the database in the rdbms
+# Name of the database in the rdbms. Only applies to "postgres".
 dbname = "cyphesis"
-# Name of the database user in the rdbms
+# Name of the database user in the rdbms. Only applies to "postgres".
 # dbuser = "cyphesis"
-# Password used to access the rdbms, if required
+# Password used to access the rdbms, if required. Only applies to "postgres".
 # dbpasswd = ""
 # List of peers to connect to during startup
 #   PeerEntry: hostname|port|server_account_username|server_account_password

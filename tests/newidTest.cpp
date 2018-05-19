@@ -35,8 +35,10 @@
 int main()
 {
     DatabaseNull database;
-
-    database_flag = false;
+    database.idGeneratorFn = [](){
+        static long id = 0;
+        return ++id;
+    };
 
     std::string id;
 
@@ -44,13 +46,6 @@ int main()
 
     assert(!id.empty());
     assert(int_id > 0);
-
-    database_flag = true;
-
-    int_id = newId(id);
-
-    assert(!id.empty());
-    //assert(int_id > 0);
 
     return 0;
 }
@@ -63,9 +58,5 @@ void log(LogLevel lvl, const std::string & msg)
 {
 }
 
-DatabaseResult::const_iterator::const_iterator(std::unique_ptr<DatabaseResult::const_iterator_worker>&& worker, const DatabaseResult::DatabaseResultWorker& dr)
-    : m_worker(std::move(worker)),
-      m_dr(dr)
-{
-}
+
 #include "stubs/common/stubDatabase.h"

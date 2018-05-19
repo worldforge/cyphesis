@@ -16,24 +16,11 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
-#include "common/id.h"
-#include "common/globals.h"
 #include "common/Database.h"
 
 #include <assert.h>
 
-static long idGenerator = 0;
-
 long newId(std::string & id)
 {
-    if (database_flag) {
-        return Database::instance().newId(id);
-    } else {
-        static char buf[32];
-        long new_id = ++idGenerator;
-        sprintf(buf, "%ld", new_id);
-        id = buf;
-        assert(!id.empty());
-        return new_id;
-    }
+    return Database::instance().newId(id);
 }

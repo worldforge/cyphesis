@@ -93,9 +93,11 @@ endif (AVAHI_FOUND)
 
 
 find_package(PostgreSQL 7.1)
-#include_directories(${PostgreSQL_INCLUDE_DIRS})
 
 find_package(SQLite3 REQUIRED)
+if (NOT SQLITE3_FOUND)
+    message(FATAL_ERROR "Could not find SQLite 3 development package.")
+endif(NOT SQLITE3_FOUND)
 
 
 find_package(Readline REQUIRED)

@@ -128,7 +128,7 @@ Account * ServerRouting::getAccountByName(const std::string & username)
     auto I = m_accounts.find(username);
     if (I != m_accounts.end()) {
         account = I->second;
-    } else if (database_flag) {
+    } else {
         account = Persistence::instance().getAccount(username);
         if (account != nullptr) {
             Persistence::instance().registerCharacters(*account,

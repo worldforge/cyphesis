@@ -59,7 +59,6 @@ int main(int argc, char ** argv)
     std::string ruleset("caaa1085-9ef4-4dc2-b1ad-3d1f15b31060");
 
     {
-        database_flag = true;
         Inheritance inheritance;
         EntityBuilder::init();
         {
@@ -76,7 +75,6 @@ int main(int argc, char ** argv)
     }
 
     {
-        database_flag = false;
         etc_directory = data_path + "/ruleset1/etc";
         Inheritance inheritance;
         EntityBuilder::init();
@@ -94,7 +92,6 @@ int main(int argc, char ** argv)
     }
 
     {
-        database_flag = false;
         etc_directory = data_path + "/ruleset2/etc";
         Inheritance inheritance;
         EntityBuilder::init();

@@ -38,6 +38,7 @@
 #include "common/compose.hpp"
 #include "common/debug.h"
 #include "common/id.h"
+#include "DatabaseNull.h"
 
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -45,6 +46,7 @@
 #include <Atlas/Objects/SmartPtr.h>
 
 #include <cassert>
+#include <server/Persistence.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -94,6 +96,8 @@ class Accounttest : public Cyphesis::TestBase
   protected:
     long m_id_counter;
 
+    DatabaseNull m_database;
+    Persistence* m_persistence;
     ServerRouting * m_server;
     Connection * m_connection;
     TestAccount * m_account;
@@ -327,6 +331,7 @@ Accounttest::Accounttest() : m_id_counter(0L),
 
 void Accounttest::setup()
 {
+    m_persistence = new Persistence(m_database);
     Entity * gw = new Entity(compose("%1", m_id_counter),
                              m_id_counter++);
     m_server = new ServerRouting(*new TestWorld(*gw),
@@ -347,6 +352,7 @@ void Accounttest::teardown()
 {
     delete m_server;
     delete m_account;
+    delete m_persistence;
 }
 
 void Accounttest::test_null()
@@ -1796,6 +1802,7 @@ void Entity::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/common/stubDatabase.h"
 
 Link::Link(CommSocket & socket, const std::string & id, long iid) :
             Router(id, iid), m_encoder(0), m_commSocket(socket)

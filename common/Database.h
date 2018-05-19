@@ -297,12 +297,12 @@ class DatabaseResult
 
                 bool operator==(const const_iterator& other)
                 {
-                    return (m_worker == other.m_worker);
+                    return (*m_worker == *other.m_worker);
                 }
 
                 bool operator!=(const const_iterator& other)
                 {
-                    return !(m_worker == other.m_worker);
+                    return !(*this == other);
                 }
 
                 const_iterator& operator++();
@@ -332,7 +332,6 @@ class DatabaseResult
             virtual const_iterator begin() const = 0;
 
             virtual const_iterator end() const = 0;
-            // const_iterator find() perhaps
 
             virtual const char* field(int column) const = 0;
 

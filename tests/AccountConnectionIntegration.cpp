@@ -39,11 +39,13 @@
 #include "common/id.h"
 #include "common/TypeNode.h"
 #include "common/CommSocket.h"
+#include "DatabaseNull.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
 
 #include <cassert>
+#include <server/Persistence.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -106,6 +108,8 @@ class TestCommSocket : public CommSocket
 
 class AccountConnectionintegration : public Cyphesis::TestBase {
   protected:
+    DatabaseNull m_database;
+    Persistence* m_persistence;
     Entity * m_tlve;
     BaseWorld * m_world;
     ServerRouting * m_server;
@@ -129,6 +133,7 @@ AccountConnectionintegration::AccountConnectionintegration()
 
 void AccountConnectionintegration::setup()
 {
+    m_persistence = new Persistence(m_database);
     m_tlve = new Entity("0", 0);
     m_world = new SpawningTestWorld(*m_tlve);
     m_server = new ServerRouting(*m_world,
@@ -146,6 +151,7 @@ void AccountConnectionintegration::teardown()
     delete m_connection;
     delete m_server;
     delete m_world;
+    delete m_persistence;
 }
 
 static OpVector test_sent_ops;
@@ -289,8 +295,6 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include <cstdlib>
 #include "stubs/server/stubBuildid.h"
 
-bool database_flag = false;
-
 namespace consts {
   const char * version = "test_build";
 }
@@ -428,6 +432,8 @@ void Link::disconnect()
 #include "server/EntityRuleHandler.h"
 #include "server/OpRuleHandler.h"
 #include "stubs/server/stubRuleset.h"
+#include "stubs/common/stubDatabase.h"
+
 
 PossessionAuthenticator * PossessionAuthenticator::m_instance = nullptr;
 

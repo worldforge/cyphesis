@@ -639,8 +639,6 @@ void Rulesetintegration::test_property_type()
 
 int main()
 {
-    database_flag = false;
-
     // init_python_api("6525a56d-7139-4016-8c1c-c2e77ab50039");
 
     Rulesetintegration t;

@@ -209,6 +209,9 @@ int main()
     }
 
     {
+        DatabaseNull database;
+        Persistence persistence(database);
+
         ServerRouting server(world, ruleset, server_name,
                              server_id, int_id,
                              lobby_id, lobby_int_id);
@@ -225,7 +228,6 @@ int main()
     }
 
     {
-        database_flag = true;
         DatabaseNull database;
         Persistence persistence(database);
         ServerRouting server(world, ruleset, server_name,
@@ -238,11 +240,9 @@ int main()
 
         Account * rac = server.getAccountByName("alice");
         assert(rac == 0);
-        database_flag = false;
     }
 
     {
-        database_flag = true;
         stub_generate_accounts = true;
         DatabaseNull database;
         Persistence persistence(database);
@@ -256,7 +256,6 @@ int main()
 
         Account * rac = server.getAccountByName("alice");
         assert(rac != 0);
-        database_flag = false;
     }
 
     {
@@ -298,12 +297,6 @@ int main()
 
 #include <cstdio>
 #include <cstdlib>
-
-DatabaseResult::const_iterator::const_iterator(std::unique_ptr<DatabaseResult::const_iterator_worker>&& worker, const DatabaseResult::DatabaseResultWorker& dr)
-    : m_worker(std::move(worker)),
-      m_dr(dr)
-{
-}
 #include "stubs/common/stubDatabase.h"
 
 Account::Account(Connection * conn,

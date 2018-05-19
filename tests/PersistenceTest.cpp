@@ -73,12 +73,6 @@ DatabaseResult Database::selectSimpleRowBy(const std::string& name,
 }
 
 
-DatabaseResult::const_iterator::const_iterator(std::unique_ptr<DatabaseResult::const_iterator_worker>&& worker, const DatabaseResult::DatabaseResultWorker& dr)
-    : m_worker(std::move(worker)),
-      m_dr(dr)
-{
-}
-
 #include "stubs/common/stubDatabase.h"
 
 const char * const CYPHESIS = "cyphesis";
