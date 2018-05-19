@@ -9,19 +9,12 @@
 
 #ifndef STUB_Persistence_Persistence
 //#define STUB_Persistence_Persistence
-   Persistence::Persistence()
+   Persistence::Persistence(Database& database)
+    : Singleton(database)
   {
     
   }
 #endif //STUB_Persistence_Persistence
-
-#ifndef STUB_Persistence_instance
-//#define STUB_Persistence_instance
-   Persistence* Persistence::instance()
-  {
-    return nullptr;
-  }
-#endif //STUB_Persistence_instance
 
 #ifndef STUB_Persistence_init
 //#define STUB_Persistence_init
@@ -30,14 +23,6 @@
     return 0;
   }
 #endif //STUB_Persistence_init
-
-#ifndef STUB_Persistence_shutdown
-//#define STUB_Persistence_shutdown
-  void Persistence::shutdown()
-  {
-    
-  }
-#endif //STUB_Persistence_shutdown
 
 #ifndef STUB_Persistence_findAccount
 //#define STUB_Persistence_findAccount
@@ -86,38 +71,6 @@
     
   }
 #endif //STUB_Persistence_delCharacter
-
-#ifndef STUB_Persistence_getRules
-//#define STUB_Persistence_getRules
-  int Persistence::getRules(std::map<std::string, Atlas::Objects::Root> & m)
-  {
-    return 0;
-  }
-#endif //STUB_Persistence_getRules
-
-#ifndef STUB_Persistence_storeRule
-//#define STUB_Persistence_storeRule
-  int Persistence::storeRule(const Atlas::Objects::Root & rule, const std::string & key, const std::string & section)
-  {
-    return 0;
-  }
-#endif //STUB_Persistence_storeRule
-
-#ifndef STUB_Persistence_updateRule
-//#define STUB_Persistence_updateRule
-  int Persistence::updateRule(const Atlas::Objects::Root & rule, const std::string & key)
-  {
-    return 0;
-  }
-#endif //STUB_Persistence_updateRule
-
-#ifndef STUB_Persistence_clearRules
-//#define STUB_Persistence_clearRules
-  int Persistence::clearRules()
-  {
-    return 0;
-  }
-#endif //STUB_Persistence_clearRules
 
 #ifndef STUB_Persistence_getCharacterAccountRelationName
 //#define STUB_Persistence_getCharacterAccountRelationName

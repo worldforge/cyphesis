@@ -46,6 +46,7 @@
 #include <readline/readline.h>
 
 #include <cstring>
+#include <common/DatabaseSQLite.h>
 
 typedef int (*dbcmd_function)(Storage & ab, struct dbsys * system,
                               int argc, char ** argv);
@@ -680,12 +681,15 @@ int main(int argc, char ** argv)
         interactive = false;
     }
 
-    Storage ab;
+    DatabaseSQLite database;
+    database.initConnection();
 
-    if (ab.init() != 0) {
+    if (database.initConnection() != 0) {
         log(ERROR, "Database setup failed.");
         return 1;
     }
+
+    Storage ab(database);
 
     if (!interactive) {
         ret = run_command(ab, argc - optind, &argv[optind]);

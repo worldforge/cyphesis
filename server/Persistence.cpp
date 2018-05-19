@@ -60,11 +60,6 @@ int Persistence::init()
                                   "\"%1\".", ::instance));
     }
 
-    if (m_db.registerEntityIdGenerator() != 0) {
-        log(ERROR, "Failed to register Id generator in database.");
-        return DATABASE_TABERR;
-    }
-
     std::map<std::string, int> chunks;
     chunks["location"] = 0;
 
@@ -93,6 +88,11 @@ int Persistence::init()
                                            "entities",
                                    Database::OneToMany) == 0;
 
+    if (m_db.registerEntityIdGenerator() != 0) {
+        log(ERROR, "Failed to register Id generator in database.");
+        return DATABASE_TABERR;
+    }
+
     if (!findAccount("admin")) {
         debug(std::cout << "Bootstraping admin account."
                         << std::endl << std::flush;);
@@ -119,11 +119,6 @@ int Persistence::init()
     }
 
     return (j && k) ? 0 : DATABASE_TABERR;
-}
-
-void Persistence::shutdown()
-{
-    m_db.shutdownConnection();
 }
 
 bool Persistence::findAccount(const std::string & name)
@@ -214,7 +209,7 @@ void Persistence::registerCharacters(Account & ac,
     for (DatabaseResult::const_iterator I = dr.begin(); I != Iend; ++I) {
         const char * id = I.column(0);
         if (id == nullptr) {
-            log(ERROR, "No ID data in relation when examing characters");
+            log(ERROR, "No ID data in relation when examining characters");
             continue;
         }
 

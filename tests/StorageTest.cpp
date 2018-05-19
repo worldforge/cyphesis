@@ -26,6 +26,7 @@
 #include "common/Storage.h"
 
 #include "common/log.h"
+#include "DatabaseNull.h"
 
 #include <cassert>
 
@@ -34,25 +35,20 @@ bool test_newid_fail = false;
 int main()
 {
     {
-        Storage a;
+        DatabaseNull database;
+        Storage a(database);
     }
 
     {
-        Storage * a = new Storage;
+        DatabaseNull database;
+        Storage * a = new Storage(database);
 
         delete a;
     }
 
     {
-        Storage * a = new Storage;
-
-        a->init();
-
-        delete a;
-    }
-
-    {
-        Storage * a = new Storage;
+        DatabaseNull database;
+        Storage * a = new Storage(database);
 
         Atlas::Message::MapType acc;
         a->putAccount(acc);
@@ -61,7 +57,8 @@ int main()
     }
 
     {
-        Storage * a = new Storage;
+        DatabaseNull database;
+        Storage * a = new Storage(database);
 
         Atlas::Message::MapType acc;
         acc["username"] = 1;
@@ -71,7 +68,8 @@ int main()
     }
 
     {
-        Storage * a = new Storage;
+        DatabaseNull database;
+        Storage * a = new Storage(database);
 
         Atlas::Message::MapType acc;
         acc["username"] = "fred";
@@ -81,7 +79,8 @@ int main()
     }
 
     {
-        Storage * a = new Storage;
+        DatabaseNull database;
+        Storage * a = new Storage(database);
 
         Atlas::Message::MapType acc;
         acc["username"] = "fred";
@@ -92,7 +91,8 @@ int main()
     }
 
     {
-        Storage * a = new Storage;
+        DatabaseNull database;
+        Storage * a = new Storage(database);
 
         Atlas::Message::MapType acc;
         acc["username"] = "fred";
@@ -103,7 +103,8 @@ int main()
     }
 
     {
-        Storage * a = new Storage;
+        DatabaseNull database;
+        Storage * a = new Storage(database);
 
         Atlas::Message::MapType acc;
         acc["username"] = "fred";
@@ -116,7 +117,8 @@ int main()
 
     test_newid_fail = true;
     {
-        Storage * a = new Storage;
+        DatabaseNull database;
+        Storage * a = new Storage(database);
 
         Atlas::Message::MapType acc;
         acc["username"] = "fred";
@@ -128,7 +130,8 @@ int main()
     test_newid_fail = false;
 
     {
-        Storage * a = new Storage;
+        DatabaseNull database;
+        Storage * a = new Storage(database);
 
         Atlas::Message::MapType acc;
         a->modAccount(acc, "1");
@@ -137,7 +140,8 @@ int main()
     }
 
     {
-        Storage * a = new Storage;
+        DatabaseNull database;
+        Storage * a = new Storage(database);
 
         Atlas::Message::MapType acc;
         acc["type"] = 1;
@@ -147,7 +151,8 @@ int main()
     }
 
     {
-        Storage * a = new Storage;
+        DatabaseNull database;
+        Storage * a = new Storage(database);
 
         Atlas::Message::MapType acc;
         acc["type"] = "admin";
@@ -157,7 +162,8 @@ int main()
     }
 
     {
-        Storage * a = new Storage;
+        DatabaseNull database;
+        Storage * a = new Storage(database);
 
         Atlas::Message::MapType acc;
         acc["password"] = 1;
@@ -167,7 +173,8 @@ int main()
     }
 
     {
-        Storage * a = new Storage;
+        DatabaseNull database;
+        Storage * a = new Storage(database);
 
         Atlas::Message::MapType acc;
         acc["password"] = "bill";
@@ -176,7 +183,8 @@ int main()
         delete a;
     }
     {
-        Storage * a = new Storage;
+        DatabaseNull database;
+        Storage * a = new Storage(database);
 
         Atlas::Message::MapType acc;
         acc["password"] = "bill";
@@ -187,7 +195,8 @@ int main()
     }
 
     {
-        Storage * a = new Storage;
+        DatabaseNull database;
+        Storage * a = new Storage(database);
 
         a->delAccount("1");
 
@@ -195,7 +204,8 @@ int main()
     }
 
     {
-        Storage * a = new Storage;
+        DatabaseNull database;
+        Storage * a = new Storage(database);
 
         Atlas::Message::MapType acc;
         a->getAccount("1", acc);
@@ -214,36 +224,7 @@ void log(LogLevel lvl, const std::string & msg)
 {
 }
 
-Database * Database::m_instance = nullptr;
-
-Database * Database::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Database();
-    }
-    return m_instance;
-}
-
-Database::Database() : m_rule_db("rules"),
-                       m_queryInProgress(false),
-                       m_connection(nullptr)
-{
-}
-
-int Database::initConnection()
-{
-    return 0;
-}
-
-int Database::initRule(bool)
-{
-    return 0;
-}
-
-void Database::shutdownConnection()
-{
-}
-
+#define STUB_Database_newId
 long Database::newId(std::string & id)
 {
     if (test_newid_fail) {
@@ -252,56 +233,21 @@ long Database::newId(std::string & id)
     return 1;
 }
 
-const DatabaseResult Database::selectSimpleRowBy(const std::string & name,
-                                                 const std::string & column,
-                                                 const std::string & value)
+DatabaseResult::const_iterator::const_iterator(std::unique_ptr<DatabaseResult::const_iterator_worker>&& worker, const DatabaseResult::DatabaseResultWorker& dr)
+    : m_worker(std::move(worker)),
+      m_dr(dr)
 {
-    return DatabaseResult(0);
+
 }
 
-int Database::updateSimpleRow(const std::string & name,
-                               const std::string & key,
-                               const std::string & value,
-                               const std::string & columns)
+#define STUB_Database_selectSimpleRowBy
+DatabaseResult Database::selectSimpleRowBy(const std::string & name, const std::string & column, const std::string & value)
 {
-    return 0;
+    return DatabaseResult(std::unique_ptr<DatabaseNullResultWorker>(new DatabaseNullResultWorker()));
 }
 
-int Database::createSimpleRow(const std::string & name,
-                               const std::string & id,
-                               const std::string & columns,
-                               const std::string & values)
-{
-    return 0;
-}
+#include "stubs/common/stubDatabase.h"
 
-int Database::clearTable(const std::string & table)
-{
-    return 0;
-}
-
-int Database::clearPendingQuery()
-{
-    return 0;
-}
-
-bool Database::hasKey(const std::string & table, const std::string & key)
-{
-    return false;
-}
-
-int Database::putObject(const std::string & table,
-                         const std::string & key,
-                         const Atlas::Message::MapType & o,
-                         const StringVector & c)
-{
-    return 0;
-}
-
-const char * DatabaseResult::field(const char * column, int row) const
-{
-    return "";
-}
 
 void encrypt_password(const std::string & pwd, std::string & hash)
 {

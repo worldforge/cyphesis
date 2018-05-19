@@ -1740,32 +1740,7 @@ LocatedEntity *PossessionAuthenticator::authenticatePossession(const std::string
     Entity * ne = Accounttest::get_TeleportAuthenticator_ret_value();
     return ne;
 }
-
-Persistence * Persistence::m_instance = nullptr;
-
-Persistence::Persistence() : m_db(*(Database*)0)
-{
-}
-
-Persistence * Persistence::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Persistence();
-    }
-    return m_instance;
-}
-
-void Persistence::putAccount(const Account & ac)
-{
-}
-
-void Persistence::addCharacter(const Account &, const LocatedEntity &)
-{
-}
-
-void Persistence::delCharacter(const std::string &)
-{
-}
+#include "stubs/server/stubPersistence.h"
 
 
 Lobby::Lobby(ServerRouting & s, const std::string & id, long intId) :

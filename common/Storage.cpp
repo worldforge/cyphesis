@@ -22,15 +22,6 @@
 
 #include <iostream>
 
-/// \brief Initialise a connection to the accounts database
-int Storage::init()
-{
-    if (m_connection.initConnection() != 0) {
-        return -1;
-    }
-    return 0;
-}
-
 /// \brief Store a new Account in the database
 ///
 /// @param account Atlas description of Account to be stored

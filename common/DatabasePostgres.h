@@ -32,11 +32,12 @@ class DatabasePostgres : public Database
 
         QueryQue pendingQueries;
         PGconn* m_connection;
+        TableSet allTables;
 
 
-        bool tuplesOk() override;
+        bool tuplesOk();
 
-        int commandOk() override;
+        int commandOk();
 
     public:
         static const unsigned int MAINTAIN_VACUUM = 0x0100;
@@ -71,7 +72,7 @@ class DatabasePostgres : public Database
         int encodeObject(const Atlas::Message::MapType&,
                          std::string&) override;
 
-        void reportError() override;
+        void reportError();
 
         int connect(const std::string& context, std::string& error_msg) override;
 
@@ -105,11 +106,12 @@ class DatabasePostgres : public Database
 
         void queryResult(ExecStatusType status);
 
-        void queryComplete() override;
+        void queryComplete();
 
-        int launchNewQuery() override;
 
         int scheduleCommand(const std::string& query) override;
+
+        int launchNewQuery() override;
 
         int clearPendingQuery() override;
 
@@ -142,11 +144,16 @@ struct DatabaseResultWorkerPostgres : public DatabaseResult::DatabaseResultWorke
     struct const_iterator_worker_postgres : public DatabaseResult::const_iterator_worker
     {
         const DatabaseResultWorkerPostgres& m_dr;
-
+        int m_row;
         const_iterator_worker_postgres(const DatabaseResultWorkerPostgres& dr, int row)
-            : const_iterator_worker(row),
-              m_dr(dr)
+            : m_dr(dr),
+              m_row(row)
         {
+            if (m_row != -1) {
+                if (m_row >= m_dr.size()) {
+                    m_row = -1;
+                }
+            }
         }
 
         const char* column(int column) const override
@@ -164,6 +171,21 @@ struct DatabaseResultWorkerPostgres : public DatabaseResult::DatabaseResultWorke
                 return "";
             }
             return PQgetvalue(m_dr.m_res.get(), m_row, col_num);
+        }
+
+        const_iterator_worker& operator++() override
+        {
+            if (m_row != -1) {
+                if (++m_row >= m_dr.size()) {
+                    m_row = -1;
+                }
+            }
+            return *this;
+        }
+
+        bool operator==(const const_iterator_worker& other) const override
+        {
+            return (m_row == ((const_iterator_worker_postgres&)other).m_row);
         }
 
     };
@@ -190,18 +212,18 @@ struct DatabaseResultWorkerPostgres : public DatabaseResult::DatabaseResultWorke
 
     // const_iterator find() perhaps
 
-    const char* field(int column, int row) const override
+    const char* field(int column) const override
     {
-        return PQgetvalue(m_res.get(), row, column);
+        return PQgetvalue(m_res.get(), 0, column);
     }
 
-    const char* field(const char* column, int row) const override
+    const char* field(const char* column) const override
     {
         int col_num = PQfnumber(m_res.get(), column);
         if (col_num == -1) {
             return "";
         }
-        return PQgetvalue(m_res.get(), row, col_num);
+        return PQgetvalue(m_res.get(), 0, col_num);
     }
 
 };

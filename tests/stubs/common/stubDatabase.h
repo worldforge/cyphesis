@@ -12,7 +12,7 @@
 #ifndef STUB_Database_Database
 //#define STUB_Database_Database
    Database::Database()
-    : m_connection(nullptr)
+    : Singleton()
   {
     
   }
@@ -26,33 +26,17 @@
   }
 #endif //STUB_Database_Database_DTOR
 
-#ifndef STUB_Database_tuplesOk
-//#define STUB_Database_tuplesOk
-  bool Database::tuplesOk()
-  {
-    return false;
-  }
-#endif //STUB_Database_tuplesOk
-
-#ifndef STUB_Database_commandOk
-//#define STUB_Database_commandOk
-  int Database::commandOk()
+#ifndef STUB_Database_queryQueueSize
+//#define STUB_Database_queryQueueSize
+  size_t Database::queryQueueSize() const
   {
     return 0;
   }
-#endif //STUB_Database_commandOk
-
-#ifndef STUB_Database_decodeObject
-//#define STUB_Database_decodeObject
-  int Database::decodeObject(const std::string & data, Atlas::Objects::Root &)
-  {
-    return 0;
-  }
-#endif //STUB_Database_decodeObject
+#endif //STUB_Database_queryQueueSize
 
 #ifndef STUB_Database_decodeMessage
 //#define STUB_Database_decodeMessage
-  int Database::decodeMessage(const std::string & data, Atlas::Message::MapType &)
+  int Database::decodeMessage(const std::string& data, Atlas::Message::MapType&)
   {
     return 0;
   }
@@ -60,99 +44,27 @@
 
 #ifndef STUB_Database_encodeObject
 //#define STUB_Database_encodeObject
-  int Database::encodeObject(const Atlas::Message::MapType &, std::string &)
+  int Database::encodeObject(const Atlas::Message::MapType&, std::string&)
   {
     return 0;
   }
 #endif //STUB_Database_encodeObject
 
-#ifndef STUB_Database_putObject
-//#define STUB_Database_putObject
-  int Database::putObject(const std::string & table, const std::string & key, const Atlas::Message::MapType & object, const StringVector & values )
-  {
-    return 0;
-  }
-#endif //STUB_Database_putObject
-
 #ifndef STUB_Database_getObject
 //#define STUB_Database_getObject
-  int Database::getObject(const std::string & table, const std::string & key, Atlas::Message::MapType &)
+  int Database::getObject(const std::string& table, const std::string& key, Atlas::Message::MapType&)
   {
     return 0;
   }
 #endif //STUB_Database_getObject
 
-#ifndef STUB_Database_updateObject
-//#define STUB_Database_updateObject
-  int Database::updateObject(const std::string & table, const std::string & key, const Atlas::Message::MapType&)
-  {
-    return 0;
-  }
-#endif //STUB_Database_updateObject
-
-#ifndef STUB_Database_delObject
-//#define STUB_Database_delObject
-  int Database::delObject(const std::string &, const std::string & key)
-  {
-    return 0;
-  }
-#endif //STUB_Database_delObject
-
-#ifndef STUB_Database_hasKey
-//#define STUB_Database_hasKey
-  bool Database::hasKey(const std::string &, const std::string & key)
-  {
-    return false;
-  }
-#endif //STUB_Database_hasKey
-
-#ifndef STUB_Database_getTable
-//#define STUB_Database_getTable
-  int Database::getTable(const std::string & table, std::map<std::string, Atlas::Objects::Root> &)
-  {
-    return 0;
-  }
-#endif //STUB_Database_getTable
-
-#ifndef STUB_Database_clearTable
-//#define STUB_Database_clearTable
-  int Database::clearTable(const std::string & table)
-  {
-    return 0;
-  }
-#endif //STUB_Database_clearTable
-
-#ifndef STUB_Database_reportError
-//#define STUB_Database_reportError
-  void Database::reportError()
-  {
-    
-  }
-#endif //STUB_Database_reportError
-
 #ifndef STUB_Database_connect
 //#define STUB_Database_connect
-  int Database::connect(const std::string & context, std::string & error_msg)
+  int Database::connect(const std::string& context, std::string& error_msg)
   {
     return 0;
   }
 #endif //STUB_Database_connect
-
-#ifndef STUB_Database_instance
-//#define STUB_Database_instance
-   Database* Database::instance()
-  {
-    return nullptr;
-  }
-#endif //STUB_Database_instance
-
-#ifndef STUB_Database_cleanup
-//#define STUB_Database_cleanup
-   void Database::cleanup()
-  {
-    
-  }
-#endif //STUB_Database_cleanup
 
 #ifndef STUB_Database_initConnection
 //#define STUB_Database_initConnection
@@ -170,14 +82,6 @@
   }
 #endif //STUB_Database_createInstanceDatabase
 
-#ifndef STUB_Database_initRule
-//#define STUB_Database_initRule
-  int Database::initRule(bool createTables )
-  {
-    return 0;
-  }
-#endif //STUB_Database_initRule
-
 #ifndef STUB_Database_shutdownConnection
 //#define STUB_Database_shutdownConnection
   void Database::shutdownConnection()
@@ -188,15 +92,15 @@
 
 #ifndef STUB_Database_runSimpleSelectQuery
 //#define STUB_Database_runSimpleSelectQuery
-  const DatabaseResult Database::runSimpleSelectQuery(const std::string & query)
+  DatabaseResult Database::runSimpleSelectQuery(const std::string& query)
   {
-    return *static_cast<const DatabaseResult*>(nullptr);
+    return *static_cast<DatabaseResult*>(nullptr);
   }
 #endif //STUB_Database_runSimpleSelectQuery
 
 #ifndef STUB_Database_runCommandQuery
 //#define STUB_Database_runCommandQuery
-  int Database::runCommandQuery(const std::string & query)
+  int Database::runCommandQuery(const std::string& query)
   {
     return 0;
   }
@@ -204,7 +108,7 @@
 
 #ifndef STUB_Database_registerRelation
 //#define STUB_Database_registerRelation
-  int Database::registerRelation(std::string & tablename, const std::string & sourcetable, const std::string & targettable, RelationType kind )
+  int Database::registerRelation(std::string& tablename, const std::string& sourcetable, const std::string& targettable, RelationType kind)
   {
     return 0;
   }
@@ -212,31 +116,23 @@
 
 #ifndef STUB_Database_selectRelation
 //#define STUB_Database_selectRelation
-  const DatabaseResult Database::selectRelation(const std::string & name, const std::string & id)
+  DatabaseResult Database::selectRelation(const std::string& name, const std::string& id)
   {
-    return *static_cast<const DatabaseResult*>(nullptr);
+    return *static_cast<DatabaseResult*>(nullptr);
   }
 #endif //STUB_Database_selectRelation
 
 #ifndef STUB_Database_createRelationRow
 //#define STUB_Database_createRelationRow
-  int Database::createRelationRow(const std::string & name, const std::string & id, const std::string & other)
+  int Database::createRelationRow(const std::string& name, const std::string& id, const std::string& other)
   {
     return 0;
   }
 #endif //STUB_Database_createRelationRow
 
-#ifndef STUB_Database_removeRelationRow
-//#define STUB_Database_removeRelationRow
-  int Database::removeRelationRow(const std::string & name, const std::string & id)
-  {
-    return 0;
-  }
-#endif //STUB_Database_removeRelationRow
-
 #ifndef STUB_Database_removeRelationRowByOther
 //#define STUB_Database_removeRelationRowByOther
-  int Database::removeRelationRowByOther(const std::string & name, const std::string & other)
+  int Database::removeRelationRowByOther(const std::string& name, const std::string& other)
   {
     return 0;
   }
@@ -244,31 +140,23 @@
 
 #ifndef STUB_Database_registerSimpleTable
 //#define STUB_Database_registerSimpleTable
-  int Database::registerSimpleTable(const std::string & name, const Atlas::Message::MapType & row)
+  int Database::registerSimpleTable(const std::string& name, const Atlas::Message::MapType& row)
   {
     return 0;
   }
 #endif //STUB_Database_registerSimpleTable
 
-#ifndef STUB_Database_selectSimpleRow
-//#define STUB_Database_selectSimpleRow
-  const DatabaseResult Database::selectSimpleRow(const std::string & name, const std::string & id)
-  {
-    return *static_cast<const DatabaseResult*>(nullptr);
-  }
-#endif //STUB_Database_selectSimpleRow
-
 #ifndef STUB_Database_selectSimpleRowBy
 //#define STUB_Database_selectSimpleRowBy
-  const DatabaseResult Database::selectSimpleRowBy(const std::string & name, const std::string & column, const std::string & value)
+  DatabaseResult Database::selectSimpleRowBy(const std::string& name, const std::string& column, const std::string& value)
   {
-    return *static_cast<const DatabaseResult*>(nullptr);
+    return *static_cast<DatabaseResult*>(nullptr);
   }
 #endif //STUB_Database_selectSimpleRowBy
 
 #ifndef STUB_Database_createSimpleRow
 //#define STUB_Database_createSimpleRow
-  int Database::createSimpleRow(const std::string & name, const std::string & id, const std::string & columns, const std::string & values)
+  int Database::createSimpleRow(const std::string& name, const std::string& id, const std::string& columns, const std::string& values)
   {
     return 0;
   }
@@ -276,7 +164,7 @@
 
 #ifndef STUB_Database_updateSimpleRow
 //#define STUB_Database_updateSimpleRow
-  int Database::updateSimpleRow(const std::string & name, const std::string & key, const std::string & value, const std::string & columns)
+  int Database::updateSimpleRow(const std::string& name, const std::string& key, const std::string& value, const std::string& columns)
   {
     return 0;
   }
@@ -292,7 +180,7 @@
 
 #ifndef STUB_Database_newId
 //#define STUB_Database_newId
-  long Database::newId(std::string & id)
+  long Database::newId(std::string& id)
   {
     return 0;
   }
@@ -300,7 +188,7 @@
 
 #ifndef STUB_Database_registerEntityTable
 //#define STUB_Database_registerEntityTable
-  int Database::registerEntityTable(const std::map<std::string, int> & chunks)
+  int Database::registerEntityTable(const std::map<std::string, int>& chunks)
   {
     return 0;
   }
@@ -308,7 +196,7 @@
 
 #ifndef STUB_Database_insertEntity
 //#define STUB_Database_insertEntity
-  int Database::insertEntity(const std::string & id, const std::string & loc, const std::string & type, int seq, const std::string & value)
+  int Database::insertEntity(const std::string& id, const std::string& loc, const std::string& type, int seq, const std::string& value)
   {
     return 0;
   }
@@ -316,7 +204,7 @@
 
 #ifndef STUB_Database_updateEntityWithoutLoc
 //#define STUB_Database_updateEntityWithoutLoc
-  int Database::updateEntityWithoutLoc(const std::string & id, int seq, const std::string & location_data)
+  int Database::updateEntityWithoutLoc(const std::string& id, int seq, const std::string& location_data)
   {
     return 0;
   }
@@ -324,7 +212,7 @@
 
 #ifndef STUB_Database_updateEntity
 //#define STUB_Database_updateEntity
-  int Database::updateEntity(const std::string & id, int seq, const std::string & location_data, const std::string & location_entity_id)
+  int Database::updateEntity(const std::string& id, int seq, const std::string& location_data, const std::string& location_entity_id)
   {
     return 0;
   }
@@ -332,9 +220,9 @@
 
 #ifndef STUB_Database_selectEntities
 //#define STUB_Database_selectEntities
-  const DatabaseResult Database::selectEntities(const std::string & loc)
+  DatabaseResult Database::selectEntities(const std::string& loc)
   {
-    return *static_cast<const DatabaseResult*>(nullptr);
+    return *static_cast<DatabaseResult*>(nullptr);
   }
 #endif //STUB_Database_selectEntities
 
@@ -356,7 +244,7 @@
 
 #ifndef STUB_Database_insertProperties
 //#define STUB_Database_insertProperties
-  int Database::insertProperties(const std::string & id, const KeyValues & tuples)
+  int Database::insertProperties(const std::string& id, const KeyValues& tuples)
   {
     return 0;
   }
@@ -364,15 +252,15 @@
 
 #ifndef STUB_Database_selectProperties
 //#define STUB_Database_selectProperties
-  const DatabaseResult Database::selectProperties(const std::string & loc)
+  DatabaseResult Database::selectProperties(const std::string& loc)
   {
-    return *static_cast<const DatabaseResult*>(nullptr);
+    return *static_cast<DatabaseResult*>(nullptr);
   }
 #endif //STUB_Database_selectProperties
 
 #ifndef STUB_Database_updateProperties
 //#define STUB_Database_updateProperties
-  int Database::updateProperties(const std::string & id, const KeyValues & tuples)
+  int Database::updateProperties(const std::string& id, const KeyValues& tuples)
   {
     return 0;
   }
@@ -388,35 +276,19 @@
 
 #ifndef STUB_Database_selectThoughts
 //#define STUB_Database_selectThoughts
-  const DatabaseResult Database::selectThoughts(const std::string & loc)
+  DatabaseResult Database::selectThoughts(const std::string& loc)
   {
-    return *static_cast<const DatabaseResult*>(nullptr);
+    return *static_cast<DatabaseResult*>(nullptr);
   }
 #endif //STUB_Database_selectThoughts
 
 #ifndef STUB_Database_replaceThoughts
 //#define STUB_Database_replaceThoughts
-  int Database::replaceThoughts(const std::string & id, const std::vector<std::string>& thoughts)
+  int Database::replaceThoughts(const std::string& id, const std::vector<std::string>& thoughts)
   {
     return 0;
   }
 #endif //STUB_Database_replaceThoughts
-
-#ifndef STUB_Database_queryResult
-//#define STUB_Database_queryResult
-  void Database::queryResult(ExecStatusType)
-  {
-    
-  }
-#endif //STUB_Database_queryResult
-
-#ifndef STUB_Database_queryComplete
-//#define STUB_Database_queryComplete
-  void Database::queryComplete()
-  {
-    
-  }
-#endif //STUB_Database_queryComplete
 
 #ifndef STUB_Database_launchNewQuery
 //#define STUB_Database_launchNewQuery
@@ -426,14 +298,6 @@
   }
 #endif //STUB_Database_launchNewQuery
 
-#ifndef STUB_Database_scheduleCommand
-//#define STUB_Database_scheduleCommand
-  int Database::scheduleCommand(const std::string & query)
-  {
-    return 0;
-  }
-#endif //STUB_Database_scheduleCommand
-
 #ifndef STUB_Database_clearPendingQuery
 //#define STUB_Database_clearPendingQuery
   int Database::clearPendingQuery()
@@ -442,22 +306,22 @@
   }
 #endif //STUB_Database_clearPendingQuery
 
-#ifndef STUB_Database_runMaintainance
-//#define STUB_Database_runMaintainance
-  int Database::runMaintainance(int command )
+#ifndef STUB_Database_scheduleCommand
+//#define STUB_Database_scheduleCommand
+  int Database::scheduleCommand(const std::string& query)
   {
     return 0;
   }
-#endif //STUB_Database_runMaintainance
+#endif //STUB_Database_scheduleCommand
 
 
-#ifndef STUB_DatabaseResult_field
-//#define STUB_DatabaseResult_field
-  const char* DatabaseResult::field(const char * column, int row ) const
+#ifndef STUB_DatabaseResult_DatabaseResult
+//#define STUB_DatabaseResult_DatabaseResult
+   DatabaseResult::DatabaseResult(DatabaseResult&& dr)
   {
-    return nullptr;
+    
   }
-#endif //STUB_DatabaseResult_field
+#endif //STUB_DatabaseResult_DatabaseResult
 
 
 #endif

@@ -439,37 +439,8 @@ bool EntityBuilder::isTask(const std::string & class_name)
     return (m_taskFactories.find(class_name) != m_taskFactories.end());
 }
 
-Persistence * Persistence::m_instance = nullptr;
-
-Persistence::Persistence() : m_db(*(Database*)0)
-{
-}
-
-Persistence * Persistence::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Persistence();
-    }
-    return m_instance;
-}
-
-int Persistence::updateRule(const Atlas::Objects::Root & rule,
-                            const std::string & key)
-{
-    return 0;
-}
-
-int Persistence::getRules(std::map<std::string, Root> & t)
-{
-    return 0;
-}
-
-int Persistence::storeRule(const Atlas::Objects::Root & rule,
-                           const std::string & key,
-                           const std::string & ruleset)
-{
-    return 0;
-}
+#include "stubs/server/stubPersistence.h"
+#include "stubs/common/stubglobals.h"
 
 AtlasFileLoader::AtlasFileLoader(const std::string & filename,
                                  std::map<std::string, Root> & m) :
@@ -497,7 +468,6 @@ void AtlasFileLoader::read()
 }
 
 
-#ifndef STUB_Inheritance_getClass
 #define STUB_Inheritance_getClass
 const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent)
 {
@@ -507,9 +477,7 @@ const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent)
     }
     return I->second->description();
 }
-#endif //STUB_Inheritance_getClass
 
-#ifndef STUB_Inheritance_addChild
 #define STUB_Inheritance_addChild
 TypeNode* Inheritance::addChild(const Atlas::Objects::Root & obj)
 {
@@ -518,7 +486,6 @@ TypeNode* Inheritance::addChild(const Atlas::Objects::Root & obj)
     atlasObjects[child] = type;
     return type;
 }
-#endif //STUB_Inheritance_addChild
 
 #include "stubs/common/stubInheritance.h"
 
@@ -532,9 +499,6 @@ TypeNode::TypeNode(const std::string & name,
 void log(LogLevel lvl, const std::string & msg)
 {
 }
-
-std::string etc_directory;
-bool database_flag = true;
 
 #include "stubs/common/stubEntityKit.h"
 #include "stubs/server/stubEntityFactory.h"

@@ -33,6 +33,7 @@
 #include "rulesets/MindProperty.h"
 
 #include "common/SystemTime.h"
+#include "DatabaseNull.h"
 
 #include <cassert>
 using Atlas::Message::Element;
@@ -72,6 +73,9 @@ class TestStorageManager : public StorageManager
 
 int main()
 {
+    DatabaseNull database;
+    Persistence persistence(database);
+
     {
         SystemTime time;
         WorldRouter world(time);
@@ -234,6 +238,32 @@ LocatedEntity * EntityBuilder::newEntity(const std::string & id, long intId,
 
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"
+
+#define STUB_Database_selectEntities
+DatabaseResult Database::selectEntities(const std::string & loc)
+{
+    return DatabaseResult(std::unique_ptr<DatabaseNullResultWorker>(new DatabaseNullResultWorker()));
+}
+
+#define STUB_Database_selectProperties
+DatabaseResult Database::selectProperties(const std::string& loc)
+{
+    return DatabaseResult(std::unique_ptr<DatabaseNullResultWorker>(new DatabaseNullResultWorker()));
+}
+
+#define STUB_Database_selectThoughts
+DatabaseResult Database::selectThoughts(const std::string& loc)
+{
+    return DatabaseResult(std::unique_ptr<DatabaseNullResultWorker>(new DatabaseNullResultWorker()));
+}
+
+DatabaseResult::const_iterator::const_iterator(std::unique_ptr<DatabaseResult::const_iterator_worker>&& worker, const DatabaseResult::DatabaseResultWorker& dr)
+    : m_worker(std::move(worker)),
+      m_dr(dr)
+{
+
+}
+
 #include "stubs/common/stubDatabase.h"
 #include "stubs/server/stubPersistence.h"
 
@@ -269,15 +299,6 @@ EntityRef& EntityRef::operator=(const EntityRef& ref)
 
 void EntityRef::onEntityDeleted()
 {
-}
-
-
-
-
-
-const char * DatabaseResult::const_iterator::column(const char * column) const
-{
-    return "";
 }
 
 VariableBase::~VariableBase()

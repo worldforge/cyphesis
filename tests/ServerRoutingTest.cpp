@@ -30,12 +30,14 @@
 #include "common/BaseWorld.h"
 #include "common/id.h"
 #include "common/log.h"
+#include "DatabaseNull.h"
 
 #include <Atlas/Objects/Anonymous.h>
 
 #include <iostream>
 
 #include <cassert>
+#include <server/Persistence.h>
 
 class Entity;
 
@@ -224,6 +226,8 @@ int main()
 
     {
         database_flag = true;
+        DatabaseNull database;
+        Persistence persistence(database);
         ServerRouting server(world, ruleset, server_name,
                              server_id, int_id,
                              lobby_id, lobby_int_id);
@@ -240,6 +244,8 @@ int main()
     {
         database_flag = true;
         stub_generate_accounts = true;
+        DatabaseNull database;
+        Persistence persistence(database);
         ServerRouting server(world, ruleset, server_name,
                              server_id, int_id,
                              lobby_id, lobby_int_id);
@@ -292,6 +298,13 @@ int main()
 
 #include <cstdio>
 #include <cstdlib>
+
+DatabaseResult::const_iterator::const_iterator(std::unique_ptr<DatabaseResult::const_iterator_worker>&& worker, const DatabaseResult::DatabaseResultWorker& dr)
+    : m_worker(std::move(worker)),
+      m_dr(dr)
+{
+}
+#include "stubs/common/stubDatabase.h"
 
 Account::Account(Connection * conn,
                  const std::string & uname,
@@ -387,20 +400,8 @@ ConnectableRouter::ConnectableRouter(const std::string & id,
 {
 }
 
-Persistence * Persistence::m_instance = nullptr;
 
-Persistence::Persistence() : m_db(*(Database*)0)
-{
-}
-
-Persistence * Persistence::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Persistence();
-    }
-    return m_instance;
-}
-
+#define STUB_Persistence_getAccount
 Account * Persistence::getAccount(const std::string & name)
 {
     if (!stub_generate_accounts) {
@@ -414,10 +415,7 @@ Account * Persistence::getAccount(const std::string & name)
     return new TestAccount(0, name, "", id, iid);
 }
 
-void Persistence::registerCharacters(Account & ac,
-                                     const EntityDict & worldObjects)
-{
-}
+#include "stubs/server/stubPersistence.h"
 
 Lobby::Lobby(ServerRouting & s, const std::string & id, long intId) :
        Router(id, intId),

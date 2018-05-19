@@ -7,14 +7,6 @@
 #ifndef STUB_COMMON_STORAGE_H
 #define STUB_COMMON_STORAGE_H
 
-#ifndef STUB_Storage_init
-//#define STUB_Storage_init
-  int Storage::init()
-  {
-    return 0;
-  }
-#endif //STUB_Storage_init
-
 #ifndef STUB_Storage_putAccount
 //#define STUB_Storage_putAccount
   int Storage::putAccount(const Atlas::Message::MapType & o)
@@ -46,30 +38,6 @@
     return 0;
   }
 #endif //STUB_Storage_getAccount
-
-#ifndef STUB_Storage_storeInRules
-//#define STUB_Storage_storeInRules
-  void Storage::storeInRules(const Atlas::Message::MapType & rule, const std::string & key)
-  {
-    
-  }
-#endif //STUB_Storage_storeInRules
-
-#ifndef STUB_Storage_clearRules
-//#define STUB_Storage_clearRules
-  int Storage::clearRules()
-  {
-    return 0;
-  }
-#endif //STUB_Storage_clearRules
-
-#ifndef STUB_Storage_setRuleset
-//#define STUB_Storage_setRuleset
-  void Storage::setRuleset(const std::string & n)
-  {
-    
-  }
-#endif //STUB_Storage_setRuleset
 
 
 #endif

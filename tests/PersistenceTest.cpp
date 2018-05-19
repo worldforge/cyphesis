@@ -24,10 +24,12 @@
 #endif
 
 #include "server/Persistence.h"
+#include "DatabaseNull.h"
 
 #include <Atlas/Message/Element.h>
 
 #include <cassert>
+#include <common/Database.h>
 
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
@@ -35,15 +37,15 @@ using Atlas::Objects::Root;
 int main()
 {
     {
-        Persistence * p = Persistence::instance();
-        p->shutdown();
+        DatabaseNull database;
+        Persistence p(database);
     }
 
     {
-        Persistence * p = Persistence::instance();
-        int res = p->init();
+        DatabaseNull database;
+        Persistence p(database);
+        int res = p.init();
         assert(res == 0);
-        p->shutdown();
     }
 
     return 0;
@@ -61,7 +63,23 @@ int main()
 #include "common/id.h"
 #include "common/Shaker.h"
 
-#include <cstdlib>
+
+#define STUB_Database_selectSimpleRowBy
+DatabaseResult Database::selectSimpleRowBy(const std::string& name,
+                                           const std::string& column,
+                                           const std::string& value)
+{
+    return DatabaseResult(std::unique_ptr<DatabaseNullResultWorker>(new DatabaseNullResultWorker()));
+}
+
+
+DatabaseResult::const_iterator::const_iterator(std::unique_ptr<DatabaseResult::const_iterator_worker>&& worker, const DatabaseResult::DatabaseResultWorker& dr)
+    : m_worker(std::move(worker)),
+      m_dr(dr)
+{
+}
+
+#include "stubs/common/stubDatabase.h"
 
 const char * const CYPHESIS = "cyphesis";
 
@@ -298,165 +316,6 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
 
 void Admin::OtherOperation(const Operation & op, OpVector & res)
 {
-}
-
-Database * Database::m_instance = nullptr;
-
-int Database::initConnection()
-{
-    return 0;
-}
-
-Database::Database() : m_rule_db("rules"),
-                       m_queryInProgress(false),
-                       m_connection(nullptr)
-{
-}
-
-Database::~Database()
-{
-}
-
-void Database::shutdownConnection()
-{
-}
-
-int Database::registerRelation(std::string & tablename,
-                               const std::string & sourcetable,
-                               const std::string & targettable,
-                               RelationType kind)
-{
-    return 0;
-}
-
-const DatabaseResult Database::selectSimpleRowBy(const std::string & name,
-                                                 const std::string & column,
-                                                 const std::string & value)
-{
-    return DatabaseResult(0);
-}
-
-Database * Database::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Database();
-    }
-    return m_instance;
-}
-
-int Database::createInstanceDatabase()
-{
-    return 0;
-}
-
-int Database::registerEntityIdGenerator()
-{
-    return 0;
-}
-
-int Database::registerEntityTable(const std::map<std::string, int> & chunks)
-{
-    return 0;
-}
-
-int Database::registerPropertyTable()
-{
-    return 0;
-}
-
-int Database::initRule(bool createTables)
-{
-    return 0;
-}
-
-int Database::registerSimpleTable(const std::string & name,
-                                  const MapType & row)
-{
-    return 0;
-}
-
-int Database::createSimpleRow(const std::string & name,
-                              const std::string & id,
-                              const std::string & columns,
-                              const std::string & values)
-{
-    return 0;
-}
-
-const DatabaseResult Database::selectRelation(const std::string & name,
-                                              const std::string & id)
-{
-    return DatabaseResult(0);
-}
-
-int Database::createRelationRow(const std::string & name,
-                                const std::string & id,
-                                const std::string & other)
-{
-    return 0;
-}
-
-int Database::removeRelationRow(const std::string & name,
-                                const std::string & id)
-{
-    return 0;
-}
-
-int Database::removeRelationRowByOther(const std::string & name,
-                                       const std::string & other)
-{
-    return 0;
-}
-
-bool Database::hasKey(const std::string & table, const std::string & key)
-{
-    return false;
-}
-
-int Database::putObject(const std::string & table,
-                        const std::string & key,
-                        const MapType & o,
-                        const StringVector & c)
-{
-    return 0;
-}
-
-int Database::getTable(const std::string & table,
-                       std::map<std::string, Root> & contents)
-{
-    return 0;
-}
-
-int Database::clearPendingQuery()
-{
-    return 0;
-}
-
-int Database::updateObject(const std::string & table,
-                           const std::string & key,
-                           const MapType & o)
-{
-    return 0;
-}
-
-int Database::clearTable(const std::string & table)
-{
-    return 0;
-}
-
-long Database::newId(std::string & id)
-{
-    return 0;
-}
-
-int Database::registerThoughtsTable()
-{
-    return 0;
-}
-
-const char * DatabaseResult::field(const char * column, int row) const
-{
-    return "";
 }
 
 Shaker::Shaker() {}

@@ -36,6 +36,7 @@
 #include <varconf/config.h>
 
 #include <cstring>
+#include <common/DatabaseSQLite.h>
 
 #ifdef HAVE_TERMIOS_H
 #include <termios.h>
@@ -196,12 +197,9 @@ int main(int argc, char ** argv)
         return EXIT_SECURITY_ERROR;
     }
 
-    Storage db;
-
-    if (db.init() != 0) {
-        std::cerr << "Unable to connect to database" << std::endl << std::flush;
-        return 1;
-    }
+    DatabaseSQLite database;
+    database.initConnection();
+    Storage db(database);
 
     // MapType data;
 

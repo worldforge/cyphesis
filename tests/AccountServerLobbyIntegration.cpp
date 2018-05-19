@@ -247,42 +247,7 @@ LocatedEntity *PossessionAuthenticator::authenticatePossession(const std::string
     return 0;
 }
 
-Persistence * Persistence::m_instance = nullptr;
-
-Persistence::Persistence() : m_db(*(Database*)0)
-{
-}
-
-Persistence * Persistence::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Persistence();
-    }
-    return m_instance;
-}
-
-void Persistence::putAccount(const Account & ac)
-{
-}
-
-void Persistence::registerCharacters(Account & ac,
-                                     const EntityDict & worldObjects)
-{
-}
-
-Account * Persistence::getAccount(const std::string & name)
-{
-    return 0;
-}
-
-void Persistence::addCharacter(const Account &, const LocatedEntity &)
-{
-}
-
-void Persistence::delCharacter(const std::string &)
-{
-}
-
+#include "stubs/server/stubPersistence.h"
 #include "stubs/rulesets/stubCharacter.h"
 #include "stubs/rulesets/stubThing.h"
 #include "stubs/rulesets/stubEntity.h"

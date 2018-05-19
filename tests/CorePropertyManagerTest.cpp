@@ -475,34 +475,7 @@ int Juncture::teleportEntity(const LocatedEntity * ent)
     return 0;
 }
 
-Persistence * Persistence::m_instance = nullptr;
-
-Persistence::Persistence() : m_db(*(Database*)0)
-{
-}
-
-Persistence * Persistence::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Persistence();
-    }
-    return m_instance;
-}
-
-Account * Persistence::getAccount(const std::string & name)
-{
-    return 0;
-}
-
-void Persistence::putAccount(const Account & ac)
-{
-}
-
-void Persistence::registerCharacters(Account & ac,
-                                     const EntityDict & worldObjects)
-{
-}
-
+#include "stubs/server/stubPersistence.h"
 #include "stubs/server/stubPlayer.h"
 
 #include "stubs/server/stubRuleHandler.h"

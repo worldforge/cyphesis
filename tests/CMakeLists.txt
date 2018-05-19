@@ -1,6 +1,6 @@
 add_definitions(-DTESTDATADIR="${CMAKE_CURRENT_SOURCE_DIR}/data")
 
-add_library(stubnavigation stubs/navigation/libstub.cpp)
+add_library(stubnavigation stubs/navigation/libstub.cpp DatabaseNull.h)
 
 link_libraries(${PYTHON_LIBRARIES})
 link_libraries(${GCRYPT_LIBRARIES})
@@ -76,7 +76,6 @@ wf_add_test(UnseenTest.cpp)
 wf_add_test(UpdateTest.cpp)
 wf_add_test(AtlasFileLoaderTest.cpp ${PROJECT_SOURCE_DIR}/common/AtlasFileLoader.cpp)
 wf_add_test(BaseWorldTest.cpp ${PROJECT_SOURCE_DIR}/common/BaseWorld.cpp)
-wf_add_test(DatabaseTest.cpp ${PROJECT_SOURCE_DIR}/common/Database.cpp)
 wf_add_test(idTest.cpp ${PROJECT_SOURCE_DIR}/common/id.cpp)
 wf_add_test(StorageTest.cpp ${PROJECT_SOURCE_DIR}/common/Storage.cpp)
 wf_add_test(debugTest.cpp ${PROJECT_SOURCE_DIR}/common/debug.cpp)
@@ -483,7 +482,6 @@ wf_add_test(TaskRuleHandlerTest.cpp ${PROJECT_SOURCE_DIR}/server/TaskRuleHandler
         ${PROJECT_SOURCE_DIR}/server/RuleHandler.cpp)
 wf_add_test(PropertyRuleHandlerTest.cpp ${PROJECT_SOURCE_DIR}/server/PropertyRuleHandler.cpp)
 wf_add_test(IdleConnectorTest.cpp ${PROJECT_SOURCE_DIR}/server/IdleConnector.cpp)
-wf_add_test(CommPSQLSocketTest.cpp ${PROJECT_SOURCE_DIR}/server/CommPSQLSocket.cpp)
 wf_add_test(PersistenceTest.cpp ${PROJECT_SOURCE_DIR}/server/Persistence.cpp)
 wf_add_test(SystemAccountTest.cpp ${PROJECT_SOURCE_DIR}/server/SystemAccount.cpp)
 wf_add_test(CorePropertyManagerTest.cpp ${PROJECT_SOURCE_DIR}/server/CorePropertyManager.cpp)

@@ -1,5 +1,6 @@
 // Cyphesis Online RPG Server and AI Engine
 // Copyright (C) 2000-2007 Alistair Riddoch
+// Copyright (C) 2018 Erik Ogenvik
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -58,6 +59,7 @@ DatabasePostgres::~DatabasePostgres()
                            pendingQueries.size()));
 
     }
+    shutdownConnection();
 }
 
 bool DatabasePostgres::tuplesOk()

@@ -25,20 +25,21 @@
 #include "compose.hpp"
 #include "const.h"
 
-#include <Atlas/Codecs/XML.h>
+#include <Atlas/Codecs/Packed.h>
 
 #include <varconf/config.h>
 
 #include <cstring>
 
 #include <cassert>
+#include <boost/algorithm/string.hpp>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
 using String::compose;
 
-typedef Atlas::Codecs::XML Serialiser;
+typedef Atlas::Codecs::Packed Serialiser;
 
 static const bool debug_flag = false;
 
@@ -93,7 +94,6 @@ int Database::decodeMessage(const std::string & data,
     std::stringstream str(data, std::ios::in);
 
     Serialiser codec(str, str, m_d);
-    Atlas::Message::Encoder enc(codec);
 
     // Clear the decoder
     m_d.get();
@@ -327,7 +327,7 @@ int Database::replaceThoughts(const std::string & id,
 
     for (auto& thought : thoughts) {
         std::string insertQuery = compose("INSERT INTO thoughts (id, thought)"
-                                          " VALUES (%1, '%2')", id, thought);
+                                          " VALUES (%1, '%2')", id, boost::replace_all_copy(thought, "'", "''"));
         scheduleCommand(insertQuery);
     }
     return 0;
@@ -579,11 +579,7 @@ DatabaseResult::const_iterator::const_iterator(std::unique_ptr<DatabaseResult::c
 : m_worker(std::move(worker)),
 m_dr(dr)
 {
-    if (m_worker->m_row != -1) {
-        if (m_worker->m_row >= m_dr.size()) {
-            m_worker->m_row = -1;
-        }
-    }
+
 }
 
 DatabaseResult::const_iterator::const_iterator(const_iterator&& ci) noexcept
@@ -594,10 +590,7 @@ DatabaseResult::const_iterator::const_iterator(const_iterator&& ci) noexcept
 
 DatabaseResult::const_iterator& DatabaseResult::const_iterator::operator++()
 {
-    if (m_worker->m_row != -1) {
-        if (++m_worker->m_row >= m_dr.size()) {
-            m_worker->m_row = -1;
-        }
-    }
+    m_worker->operator++();
+
     return *this;
 }

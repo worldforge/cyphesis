@@ -29,13 +29,7 @@ class Storage {
     Database & m_connection;
 
   public:
-    Storage() : m_connection(Database::instance()) { }
-
-    ~Storage() {
-        m_connection.shutdownConnection();
-    }
-
-    int init();
+    explicit Storage(Database& database) : m_connection(database) { }
 
     int putAccount(const Atlas::Message::MapType & o);
     int modAccount(const Atlas::Message::MapType & o,

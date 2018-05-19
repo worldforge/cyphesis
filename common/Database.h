@@ -102,7 +102,6 @@ class Database : public Singleton<Database>
     protected:
         static Database* m_instance;
 
-        TableSet allTables;
         bool m_queryInProgress;
 
         Decoder m_d;
@@ -110,9 +109,6 @@ class Database : public Singleton<Database>
 
         // bool command(const std::string & cmd);
 
-        virtual bool tuplesOk() = 0;
-
-        virtual int commandOk() = 0;
 
     public:
         typedef enum
@@ -140,8 +136,6 @@ class Database : public Singleton<Database>
         virtual int getObject(const std::string& table,
                               const std::string& key,
                               Atlas::Message::MapType&) = 0;
-
-        virtual void reportError() = 0;
 
         virtual int connect(const std::string& context, std::string& error_msg) = 0;
 
@@ -241,13 +235,13 @@ class Database : public Singleton<Database>
 
         // Interface for CommPSQLSocket, so it can give us feedback
 
-        virtual void queryComplete() = 0;
-
         virtual int launchNewQuery() = 0;
+
+        virtual int clearPendingQuery() = 0;
+
 
         virtual int scheduleCommand(const std::string& query) = 0;
 
-        virtual int clearPendingQuery() = 0;
 
 
 };
@@ -277,16 +271,14 @@ class DatabaseResult
 
         struct const_iterator_worker
         {
-            int m_row;
-
-            explicit const_iterator_worker(int row) : m_row(row)
-            {
-
-            }
 
             virtual const char* column(int column) const = 0;
 
             virtual const char* column(const char* column) const = 0;
+
+            virtual const_iterator_worker& operator++() = 0;
+
+            virtual bool operator==(const const_iterator_worker& other) const = 0;
         };
 
         /// \brief Iterator for DatabaseResult
@@ -305,12 +297,12 @@ class DatabaseResult
 
                 bool operator==(const const_iterator& other)
                 {
-                    return (m_worker->m_row == other.m_worker->m_row);
+                    return (m_worker == other.m_worker);
                 }
 
                 bool operator!=(const const_iterator& other)
                 {
-                    return (m_worker->m_row != other.m_worker->m_row);
+                    return !(m_worker == other.m_worker);
                 }
 
                 const_iterator& operator++();
@@ -342,9 +334,9 @@ class DatabaseResult
             virtual const_iterator end() const = 0;
             // const_iterator find() perhaps
 
-            virtual const char* field(int column, int row) const = 0;
+            virtual const char* field(int column) const = 0;
 
-            virtual const char* field(const char* column, int row) const = 0;
+            virtual const char* field(const char* column) const = 0;
 
         };
 
@@ -379,14 +371,14 @@ class DatabaseResult
         }
         // const_iterator find() perhaps
 
-        const char* field(int column, int row = 0) const
+        const char* field(int column) const
         {
-            return m_worker->field(column, row);
+            return m_worker->field(column);
         }
 
-        const char* field(const char* column, int row = 0) const
+        const char* field(const char* column) const
         {
-            return m_worker->field(column, row);
+            return m_worker->field(column);
         }
 };
 

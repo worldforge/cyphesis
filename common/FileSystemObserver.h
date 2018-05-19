@@ -19,7 +19,7 @@
 #ifndef CYPHESIS_FILESYSTEMOBSERVER_H
 #define CYPHESIS_FILESYSTEMOBSERVER_H
 
-#include "dir_monitor/include/dir_monitor/dir_monitor.hpp"
+#include "external/dir_monitor/include/dir_monitor/dir_monitor.hpp"
 
 #include <boost/asio/io_service.hpp>
 #include <boost/filesystem/path.hpp>

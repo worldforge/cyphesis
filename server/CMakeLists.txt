@@ -74,6 +74,7 @@ target_link_libraries(cyphesis
     rulesetbase
     modules
     common
+    db
     physics
     comm
     metaserverapi

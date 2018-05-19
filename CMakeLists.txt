@@ -92,9 +92,11 @@ if (AVAHI_FOUND)
 endif (AVAHI_FOUND)
 
 
-find_package(PostgreSQL 7.1 REQUIRED)
-link_directories(${PostgreSQL_LIBRARY_DIRS})
-include_directories(${PostgreSQL_INCLUDE_DIRS})
+find_package(PostgreSQL 7.1)
+#include_directories(${PostgreSQL_INCLUDE_DIRS})
+
+find_package(SQLite3 REQUIRED)
+
 
 find_package(Readline REQUIRED)
 link_directories(${READLINE_LIBRARY_DIRS})

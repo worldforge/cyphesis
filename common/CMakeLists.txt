@@ -74,14 +74,23 @@ add_library(common
     AssetsManager.cpp
     AssetsManager.h
     Singleton.h
-    Change.h
-    DatabasePostgres.cpp
-    DatabasePostgres.h)
+    Change.h)
 
-target_link_libraries(common ${PostgreSQL_LIBRARIES})
 target_link_libraries(common ${GCRYPT_LIBRARIES})
+target_include_directories(common PUBLIC ${GCRYPT_INCLUDE_DIRS})
 
 target_compile_definitions(common PUBLIC -DBINDIR="${CMAKE_INSTALL_FULL_BINDIR}" -DDATADIR="${CMAKE_INSTALL_FULL_DATADIR}" -DSYSCONFDIR="${CMAKE_INSTALL_FULL_SYSCONFDIR}" -DLOCALSTATEDIR="${CMAKE_INSTALL_FULL_LOCALSTATEDIR}")
+
+add_library(db
+    DatabasePostgres.cpp
+    DatabasePostgres.h
+    DatabaseSQLite.cpp
+    DatabaseSQLite.h)
+target_link_libraries(db ${PostgreSQL_LIBRARIES})
+target_include_directories(db PUBLIC ${PostgreSQL_INCLUDE_DIRS})
+target_link_libraries(db ${SQLITE3_LIBRARIES})
+target_include_directories(db PUBLIC ${SQLITE3_INCLUDE_DIRS})
+
 
 add_library(tools
     Storage.cpp

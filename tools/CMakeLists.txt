@@ -41,7 +41,8 @@ install(TARGETS cyaddrules DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
 add_executable(cypasswd cypasswd.cpp)
 target_link_libraries(cypasswd
         tools
-        common)
+        common
+        db)
 install(TARGETS cypasswd DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
 
 add_executable(cydb cydb.cpp)
@@ -50,7 +51,8 @@ target_link_libraries(cydb ${READLINE_LIBRARY})
 
 target_link_libraries(cydb
         tools
-        common)
+        common
+        db)
 install(TARGETS cydb DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
 
 add_executable(cypython cypython.cpp)

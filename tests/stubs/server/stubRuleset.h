@@ -34,7 +34,7 @@
 
 #ifndef STUB_Ruleset_getRulesFromFiles
 //#define STUB_Ruleset_getRulesFromFiles
-  void Ruleset::getRulesFromFiles(const std::string &, std::map<std::string, Atlas::Objects::Root> &)
+  void Ruleset::getRulesFromFiles(boost::filesystem::path directory, std::map<std::string, Atlas::Objects::Root> &)
   {
     
   }

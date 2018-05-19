@@ -58,6 +58,7 @@
 #include <boost/filesystem/operations.hpp>
 #include <common/FileSystemObserver.h>
 #include <common/AssetsManager.h>
+#include <common/DatabaseSQLite.h>
 
 using String::compose;
 using namespace boost::asio;
@@ -201,9 +202,10 @@ int main(int argc, char ** argv)
     // database support, this will open the various databases used to
     // store server data.
     Persistence* persistence = nullptr;
-    DatabasePostgres* database = nullptr;
+//    DatabasePostgres* database = nullptr;
+    DatabaseSQLite* database = nullptr;
     if (database_flag) {
-        database = new DatabasePostgres();
+        database = new DatabaseSQLite();
         persistence = new Persistence(*database);
         int dbstatus = persistence->init();
         if (dbstatus < 0) {
@@ -430,7 +432,7 @@ int main(int argc, char ** argv)
 
         log(INFO, "Restored world.");
 
-        dbsocket = new CommPSQLSocket(*io_service, *database);
+        //dbsocket = new CommPSQLSocket(*io_service, *database);
 
         storage_idle = new IdleConnector(*io_service);
         storage_idle->idling.connect(
@@ -660,10 +662,7 @@ int main(int argc, char ** argv)
 
     delete ruleset;
 
-    if (persistence) {
-        persistence->shutdown();
-        delete persistence;
-    }
+    delete persistence;
 
     delete database;
 

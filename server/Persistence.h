@@ -61,7 +61,6 @@ class Persistence : public Singleton<Persistence> {
     Database & m_db;
 
     int init();
-    void shutdown();
 
     bool findAccount(const std::string &);
     Account * getAccount(const std::string &);

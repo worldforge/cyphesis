@@ -368,8 +368,8 @@ void StorageManager::insertEntity(LocatedEntity * ent)
     ++m_insertEntityCount;
     KeyValues property_tuples;
     const PropertyDict & properties = ent->getProperties();
-    PropertyDict::const_iterator I = properties.begin();
-    PropertyDict::const_iterator Iend = properties.end();
+    auto I = properties.begin();
+    auto Iend = properties.end();
     for (; I != Iend; ++I) {
         PropertyBase * prop = I->second;
         if (prop->flags() & per_ephem) {
@@ -431,8 +431,8 @@ void StorageManager::updateEntity(LocatedEntity * ent)
     KeyValues new_property_tuples;
     KeyValues upd_property_tuples;
     const PropertyDict & properties = ent->getProperties();
-    PropertyDict::const_iterator I = properties.begin();
-    PropertyDict::const_iterator Iend = properties.end();
+    auto I = properties.begin();
+    auto Iend = properties.end();
     for (; I != Iend; ++I) {
         PropertyBase * prop = I->second;
         if (prop->flags() & per_mask) {
