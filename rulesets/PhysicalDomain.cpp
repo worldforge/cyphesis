@@ -2411,7 +2411,7 @@ void PhysicalDomain::transformRestingEntities(PhysicalDomain::BulletEntry* entry
                 continue;
             }
 
-            if (otherObject->getInternalType() != btCollisionObject::CO_GHOST_OBJECT) {
+            if (otherObject->getInternalType() != btCollisionObject::CO_GHOST_OBJECT && !otherObject->isStaticObject()) {
 
                 BulletEntry* restingEntry = static_cast<BulletEntry*>(otherObject->getUserPointer());
 
