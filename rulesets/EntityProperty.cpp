@@ -67,6 +67,8 @@ void EntityProperty::set(const Atlas::Message::Element & val)
         if (I != val.asMap().end()) {
             set(I->second);
         }
+    } else if (val.isNone()) {
+        m_data = EntityRef(nullptr);
     }
 }
 
