@@ -1311,15 +1311,18 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
             res.push_back(u);
             return;
         }
-        Element mass;
-        if (other->getAttr(MASS, mass) != 0 || !mass.isFloat()) {
-            // FIXME Check against strength
-            // || mass.Float() > m_statistics.get("strength"));
-            debug(std::cout << "We can't move this. Just too heavy" << std::endl << std::flush
-            ;);
-            //TODO: send op back to the mind informing it that it was too heavy to move.
-            return;
-        }
+        //TODO: add checks for the things that we can reach, and that we can move.
+        //Probably involve the domain in this.
+//        Element mass;
+//        if (other->getAttr(MASS, mass) != 0 || !mass.isFloat()) {
+//            // FIXME Check against strength
+//            // || mass.Float() > m_statistics.get("strength"));
+//            debug(std::cout << "We can't move this. Just too heavy" << std::endl << std::flush
+//            ;);
+//            //TODO: send op back to the mind informing it that it was too heavy to move.
+//            return;
+//        }
+
         op->setTo(other_id);
         res.push_back(op);
         return;

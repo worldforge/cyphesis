@@ -178,6 +178,11 @@ CorePropertyManager::CorePropertyManager()
      */
     installProperty<EntityProperty>("planted_on");
 
+    /**
+     * Refers to an entity on which the entity should be planted on, if possible.
+     */
+    installProperty<EntityProperty>("planted_on_desired");
+
 
     installProperty<BoolProperty>("floats");
 

@@ -539,9 +539,9 @@ void PhysicalDomainIntegrationTest::test_plantedOn()
             }
             plantedOn->m_location.setBBox({{-1, 0, -1},
                                            {1,  1, 1}});
-            EntityProperty* plantedOnProperty = new EntityProperty();
-            plantedOnProperty->data() = EntityRef(planted1.get());
-            plantedOn->setProperty("planted_on", plantedOnProperty);
+            EntityProperty* plantedOnDesiredProperty = new EntityProperty();
+            plantedOnDesiredProperty->data() = EntityRef(planted1.get());
+            plantedOn->setProperty("planted_on_desired", plantedOnDesiredProperty);
 
             GeometryProperty* geometryProperty = new GeometryProperty();
             geometryProperty->set(MapType{{"type", plantedOnTopShape}});
@@ -747,11 +747,11 @@ void PhysicalDomainIntegrationTest::test_lake_rotated()
     id = newId();
     ModeProperty* plantedProp = new ModeProperty();
     plantedProp->set("planted");
-    EntityProperty* plantedOnProp = new EntityProperty();
-    plantedOnProp->data() = EntityRef(lake);
+    EntityProperty* plantedOnDesiredProp = new EntityProperty();
+    plantedOnDesiredProp->data() = EntityRef(lake);
     Entity* floatingEntity = new Entity("floatingEntity", id);
     floatingEntity->setProperty(ModeProperty::property_name, plantedProp);
-    floatingEntity->setProperty("planted_on", plantedOnProp);
+    floatingEntity->setProperty("planted_on_desired", plantedOnDesiredProp);
 
     floatingEntity->setType(rockType);
     floatingEntity->m_location.m_pos = WFMath::Point<3>(5, 20, 1);

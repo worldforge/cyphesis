@@ -185,6 +185,12 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
         }
     }
 
+    //Move ops can also alter the "planted_on_desired" property
+    Element attr_plantedOnDesired;
+    if (ent->copyAttr("planted_on_desired", attr_plantedOnDesired) == 0) {
+        setAttr("planted_on_desired", attr_plantedOnDesired);
+    }
+
     //Move ops can also alter the "planted-offset" property
     Element attr_plantedOffset;
     if (ent->copyAttr("planted-offset", attr_plantedOffset) == 0) {
