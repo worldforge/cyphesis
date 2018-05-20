@@ -28,16 +28,6 @@ target_link_libraries(cyconfig
         common)
 install(TARGETS cyconfig DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
 
-add_executable(cyconvertrules cyconvertrules.cpp)
-target_link_libraries(cyconvertrules
-        common)
-install(TARGETS cyconvertrules DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
-
-add_executable(cyaddrules cyaddrules.cpp AdminClient.cpp)
-target_link_libraries(cyaddrules
-        common)
-install(TARGETS cyaddrules DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
-
 add_executable(cypasswd cypasswd.cpp)
 target_link_libraries(cypasswd
         tools

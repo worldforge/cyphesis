@@ -6,31 +6,14 @@
  </refmeta>
 
  <refnamediv>
-  <refname>cyconfig, cyconvertrules, cydumprules, cyloadrules, cypasswd, cypython, cydb</refname>
+  <refname>cyconfig, cypasswd, cypython, cydb</refname>
   <refpurpose>cyphesis tools</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
   <cmdsynopsis>
-   <command>/usr/bin/cyaddrules</command>
-   <arg choice="opt" rep="repeat">--section:option=value</arg>
-   <arg choice="opt">rulesetname atlas-xml-file</arg>
-  </cmdsynopsis>
-  <cmdsynopsis>
    <command>/usr/bin/cyconfig</command>
    <arg choice="opt" rep="repeat">--section:option=value</arg>
-  </cmdsynopsis>
-  <cmdsynopsis>
-   <command>/usr/bin/cyconvertrules</command>
-   <arg choice="req">rule_file</arg>
-  </cmdsynopsis>
-  <cmdsynopsis>
-   <command>/usr/bin/cydumprules</command>
-  </cmdsynopsis>
-  <cmdsynopsis>
-   <command>/usr/bin/cyloadrules</command>
-   <arg choice="opt" rep="repeat">--section:option=value</arg>
-   <arg choice="opt">rulesetname atlas-xml-file</arg>
   </cmdsynopsis>
   <cmdsynopsis>
    <command>/usr/bin/cypasswd</command>
@@ -68,18 +51,6 @@
 The cyphesis tools manage the data and configuration files used by cyphesis.
   </para>
   <para>
-The <command>cyaddrules</command> tool uploads Atlas XML rules files into the
-a running server. If rules already exist in the server, then the default
-attributes are updated, and if the rule has a script associated with it,
-then the script is reloaded from file. <command>cyaddrules</command> can
-either upload the file given on the command line, or if none is specified it
-will upload the rule file for the ruleset specified in the server config,
-and any rule files it depends on. <command>cyaddrules</command> is typically
-used to add additional rules during rule development without having to
-restart the server.  Rules can be loaded directly into a running server
-using <command>cyaddrules</command>.
-  </para>
-  <para>
 The <command>cyconfig</command> program provides an easy scriptable way to
 make permanent changes to the server config from the command line.
 It works by writing new config options to <filename>.cyphesis.vconf</filename>
@@ -88,31 +59,6 @@ and overrides the contents of the main config file. For a description of
 the various options that the server takes, please see 
 <citerefentry><refentrytitle>cyphesis</refentrytitle><manvolnum>1</manvolnum>
 </citerefentry>.
-  </para>
-  <para>
-The <command>cyconvertrules</command> program converts Atlas XML rules files
-from an older historic format into the format used by cyphesis since
-version 0.3.1.
-  </para>
-  <para>
-The <command>cydumprules</command> program dumps rules from the database table
-used by the server into a set of Atlas XML rules files. Note that this does
-not produce a set of files containing the same rules as those that were loaded
-in using <command>cyloadrules</command> because some of the rules in the
-rulesets that were not top level may have been overloaded, and do not exist
-in the database table. Typically this command will be used to get an updated
-copy of the top level ruleset from the server database, and the rest of the
-files will be ignored.
-  </para>
-  <para>
-The <command>cyloadrules</command> tool loads Atlas XML rules files into the
-database table used by the server. The rules table is read by the
-server at startup, so a server restart is typically required after loading
-rules. <command>cyloadrules</command> can either load the file given on
-the command line, or if none is specified it will load the rule file for
-the ruleset specified in the server config, and any rule files it depends on.
-Rules can be loaded directly into a running server using
-<command>cyaddrules</command>.
   </para>
   <para>
 The <command>cypasswd</command> tool is used to administrate the accounts table
@@ -144,13 +90,6 @@ The following datasets are supported:
   </para>
   <variablelist> 
     <varlistentry>
-      <term>rules</term> 
-      <listitem> 
-        <para>Purge and list rules.
-        </para> 
-      </listitem> 
-    </varlistentry> 
-    <varlistentry>
       <term>user</term> 
       <listitem> 
         <para>Purge, list, delete or modify user entries.
@@ -158,7 +97,7 @@ The following datasets are supported:
       </listitem> 
     </varlistentry> 
     <varlistentry>
-      <term>user</term> 
+      <term>world</term>
       <listitem> 
         <para>Purge the world of all entities.
         </para>
@@ -200,7 +139,7 @@ Written by Alistair Riddoch and Erik Ogenvik.
  </refsect1>
  <refsect1><title>Reporting bugs</title>
   <para>
-Report bugs to <email>general@worldforge.org</email>.
+Report bugs to <email>erik@ogenvik.org</email>.
   </para>
  </refsect1>
  <refsect1><title>Copyright</title>

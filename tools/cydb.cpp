@@ -234,32 +234,6 @@ static int users_mod(Storage & ab, struct dbsys * system,
     return 0;
 }
 
-static int rules_purge(Storage & ab, struct dbsys * system,
-                      int argc, char ** argv)
-{
-    std::string cmd = "DELETE FROM rules";
-    if (Database::instance().runCommandQuery(cmd) != 0) {
-        std::cout << "Rule purge fail" << std::endl << std::flush;
-        return 1;
-    }
-    return 0;
-}
-
-static int rules_list(Storage & ab, struct dbsys * system,
-                      int argc, char ** argv)
-{
-    std::string cmd = "SELECT id FROM rules";
-    DatabaseResult res = Database::instance().runSimpleSelectQuery(cmd);
-    DatabaseResult::const_iterator I = res.begin();
-    DatabaseResult::const_iterator Iend = res.end();
-    for (; I != Iend; ++I) {
-        std::string name = I.column("id");
-        std::cout << name << std::endl << std::flush;
-    }
-
-    return 0;
-}
-
 int dbs_generic(Storage & ab, struct dbsys * system,
                 int argc, char ** argv)
 {
@@ -301,15 +275,8 @@ struct dbsys users_cmds[] = {
     { nullptr,    "Guard", }
 };
 
-struct dbsys rules_cmds[] = {
-    { "purge", "Purge rules data", &rules_purge, 0 },
-    { "list",  "List rules", &rules_list, 0 },
-    { "help",  "Show rules help", &dbs_help, &rules_cmds[0] },
-    { nullptr,    "Guard", }
-};
 
 struct dbsys systems[] = {
-    { "rules", "Modify the rule storage table", &dbs_generic, &rules_cmds[0] },
     { "user",  "Modify the user account table", &dbs_generic, &users_cmds[0] },
     { "world", "Modify the world storage tables", &dbs_generic, &world_cmds[0] },
     { "help",  "Show command help", &dbs_help, &systems[0] },

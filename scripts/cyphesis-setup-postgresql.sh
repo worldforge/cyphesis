@@ -23,14 +23,10 @@ cat << EOWELCOME
 Welcome to cyphesis.
 
 This script will go through the steps required to configure
-your system so that you can run cyphesis. An important part of this
-process is setting up access to the PostgreSQL RDBMS, so this script
+PostgreSQL so that you can run cyphesis. This script
 must be run as root or with sudo access. It is strongly recommended that
 you run cyphesis using a normal user account, and this script will help to
 set up access for this account to the database.
-
-This script will remove any existing server rules and maps, but will
-preserve any user accounts in the server.
 
 EOWELCOME
 
@@ -128,27 +124,6 @@ else
     fi
 fi
 
-echo
-
-# Currently dropping the rules and world should not have any
-# negative consequences, as there is no instance specific data
-# in these tables, and no tools currently exist for the user to
-# modify them.
-echo Clearing rules data...
-sudo -u ${USERNAME} $DB_QUERY_CMD -c "DROP TABLE rules;" cyphesis > /dev/null 2>&1
-echo Cleared.
-
-echo
-
-# cyloadrules automatically picks up the right files for the ruleset
-# set in the main config.
-echo Loading game rules into database...
-if sudo -u ${USERNAME} ${SCRIPTDIR}/../tools/cyloadrules 2> /dev/null; then
-    echo Loaded.
-else
-    echo ERROR: $0: Unable to load rules into database.
-    exit 1
-fi
 
 echo
 echo This system is now ready to run cyphesis.
