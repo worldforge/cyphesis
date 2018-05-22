@@ -618,9 +618,9 @@ int main(int argc, char ** argv)
 
     delete dbvacuumTask;
 
-    delete file_system_observer;
-
     delete assets_manager;
+
+    delete file_system_observer;
 
     signalSet->clear();
     delete signalSet;
@@ -634,6 +634,7 @@ int main(int argc, char ** argv)
 
     delete localListener;
     delete httpListener;
+
     HttpCache::del();
 
     delete pythonListener;
@@ -643,6 +644,9 @@ int main(int argc, char ** argv)
     delete storage_idle;
 
     delete dbsocket;
+
+    //Run any outstanding tasks before shutting down service.
+    io_service->run();
 
     delete io_service;
 

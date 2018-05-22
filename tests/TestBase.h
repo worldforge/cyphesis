@@ -19,6 +19,13 @@
 #ifndef TESTS_TEST_BASE_H
 #define TESTS_TEST_BASE_H
 
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
+#ifndef DEBUG
+#define DEBUG
+#endif
+
 #include "common/compose.hpp"
 
 #include <boost/bind.hpp>

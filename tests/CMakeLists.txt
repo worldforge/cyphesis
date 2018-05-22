@@ -106,6 +106,8 @@ wf_add_test(atlas_helpersTest.cpp ${PROJECT_SOURCE_DIR}/common/atlas_helpers.cpp
 wf_add_test(LinkTest.cpp ${PROJECT_SOURCE_DIR}/common/Link.cpp)
 wf_add_test(CommSocketTest.cpp ${PROJECT_SOURCE_DIR}/common/CommSocket.cpp)
 wf_add_test(composeTest.cpp)
+wf_add_test(FileSystemObserverIntegrationTest.cpp ${PROJECT_SOURCE_DIR}/common/FileSystemObserver.cpp)
+target_link_libraries(FileSystemObserverIntegrationTest common)
 
 # PHYSICS_TESTS
 wf_add_test(BBoxTest.cpp ${PROJECT_SOURCE_DIR}/physics/BBox.cpp ${PROJECT_SOURCE_DIR}/common/const.cpp)
@@ -465,7 +467,6 @@ wf_add_test(ServerRoutingTest.cpp ${PROJECT_SOURCE_DIR}/server/ServerRouting.cpp
 wf_add_test(StorageManagerTest.cpp ${PROJECT_SOURCE_DIR}/server/StorageManager.cpp)
 wf_add_test(HttpCacheTest.cpp ${PROJECT_SOURCE_DIR}/server/HttpCache.cpp)
 
-
 # SERVER_COMM_TESTS
 wf_add_test(CommPeerTest.cpp ${PROJECT_SOURCE_DIR}/server/CommPeer.cpp)
 wf_add_test(CommMDNSPublisherTest.cpp ${PROJECT_SOURCE_DIR}/server/CommMDNSPublisher.cpp)
@@ -487,7 +488,6 @@ wf_add_test(SystemAccountTest.cpp ${PROJECT_SOURCE_DIR}/server/SystemAccount.cpp
 wf_add_test(CorePropertyManagerTest.cpp ${PROJECT_SOURCE_DIR}/server/CorePropertyManager.cpp)
 
 # SERVER_INTEGRATION_TESTS
-
 
 wf_add_test(WorldRouterIntegration.cpp ${PROJECT_SOURCE_DIR}/server/WorldRouter.cpp
         ${PROJECT_SOURCE_DIR}/server/EntityBuilder.cpp

@@ -29,6 +29,14 @@ AssetsManager::AssetsManager(FileSystemObserver& file_system_observer)
 
 }
 
+AssetsManager::~AssetsManager() {
+    m_file_system_observer.remove_directory(boost::filesystem::path(share_directory) / "cyphesis" / "scripts");
+    m_file_system_observer.remove_directory(boost::filesystem::path(share_directory) / "cyphesis" / "rulesets");
+    m_file_system_observer.remove_directory(boost::filesystem::path(assets_directory));
+    m_file_system_observer.remove_directory(boost::filesystem::path(etc_directory) / "cyphesis");
+
+}
+
 void AssetsManager::init()
 {
 

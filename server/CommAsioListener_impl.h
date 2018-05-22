@@ -46,8 +46,8 @@ void CommAsioListener<ProtocolT, ClientT>::startAccept()
                            [this, client](boost::system::error_code ec) {
                                if (!ec) {
                                    mClientStarter(*client);
+                                   this->startAccept();
                                }
-                               this->startAccept();
                            });
 }
 

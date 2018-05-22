@@ -32,6 +32,7 @@ class AssetsManager : public Singleton<AssetsManager>
     public:
 
         explicit AssetsManager(FileSystemObserver& file_system_observer);
+        ~AssetsManager() override;
 
         void init();
 

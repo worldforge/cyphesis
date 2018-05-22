@@ -98,8 +98,8 @@ void CommMetaClient::do_receive()
                 if (!ec)
                 {
                     this->metaserverReply(length);
+                    this->do_receive();
                 }
-                this->do_receive();
             });
 }
 
@@ -122,8 +122,8 @@ void CommMetaClient::keepalive()
                             this->metaserverKeepalive();
                         }
                     });
+            this->keepalive();
         }
-        this->keepalive();
     });
 }
 

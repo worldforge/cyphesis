@@ -125,107 +125,112 @@ int main(int argc, char** argv)
 
     boost::asio::io_service io_service;
 
-    FileSystemObserver file_system_observer(io_service);
-
-    AssetsManager assets_manager(file_system_observer);
-    assets_manager.init();
-
-    init_python_api(ruleset_name, false);
-    observe_python_directories(io_service, assets_manager);
+    {
+        FileSystemObserver file_system_observer(io_service);
 
 
-    SystemTime time{};
-    time.update();
+        AssetsManager assets_manager(file_system_observer);
+        assets_manager.init();
 
-    AwareMindFactory mindFactory;
+        init_python_api(ruleset_name, false);
+        observe_python_directories(io_service, assets_manager);
+
+
+        SystemTime time{};
+        time.update();
+
+        AwareMindFactory mindFactory;
 //    MindFactory mindFactory;
 //    AwareMindFactory awareMindFactory;
 
-    //TODO: perhaps don't hardcode this; instead allowing for different classes for different minds?
-    std::string script_package = "mind.NPCMind";
-    std::string script_class = "NPCMind";
+        //TODO: perhaps don't hardcode this; instead allowing for different classes for different minds?
+        std::string script_package = "mind.NPCMind";
+        std::string script_class = "NPCMind";
 
-    if (mindFactory.m_scriptFactory != nullptr) {
-        if (mindFactory.m_scriptFactory->package() != script_package) {
-            delete mindFactory.m_scriptFactory;
-            mindFactory.m_scriptFactory = nullptr;
+        if (mindFactory.m_scriptFactory != nullptr) {
+            if (mindFactory.m_scriptFactory->package() != script_package) {
+                delete mindFactory.m_scriptFactory;
+                mindFactory.m_scriptFactory = nullptr;
+            }
         }
-    }
-    if (mindFactory.m_scriptFactory == nullptr) {
-        auto* psf = new PythonScriptFactory<BaseMind>(script_package, script_class);
-        if (psf->setup() == 0) {
-            log(INFO, String::compose("Initialized mind code with Python class %1.%2.", script_package, script_class));
-            mindFactory.m_scriptFactory = psf;
-        } else {
-            log(ERROR, String::compose("Python class \"%1.%2\" failed to load", script_package, script_class));
-            delete psf;
-        }
-    }
-
-    std::unique_ptr<PossessionClient> possessionClient(new PossessionClient(mindFactory));
-
-    python_reload_scripts.connect([&]() {
-        mindFactory.m_scriptFactory->refreshClass();
-
-        if (possessionClient) {
-            auto& minds = possessionClient->getMinds();
-            for (auto& entry : minds) {
-                auto entity = entry.second;
-                //First store all thoughts
-                Atlas::Objects::Operation::Think think;
-                think->setArgs1(Atlas::Objects::Operation::Get());
-                OpVector res;
-                entity->operation(think, res);
-
-                mindFactory.m_scriptFactory->addScript(entity);
-
-                //After updating the script restore all thoughts
-                OpVector ignoresRes;
-                for (auto& op : res) {
-                    entity->operation(op, ignoresRes);
-                }
+        if (mindFactory.m_scriptFactory == nullptr) {
+            auto* psf = new PythonScriptFactory<BaseMind>(script_package, script_class);
+            if (psf->setup() == 0) {
+                log(INFO, String::compose("Initialized mind code with Python class %1.%2.", script_package, script_class));
+                mindFactory.m_scriptFactory = psf;
+            } else {
+                log(ERROR, String::compose("Python class \"%1.%2\" failed to load", script_package, script_class));
+                delete psf;
             }
         }
 
-    });
+        std::unique_ptr<PossessionClient> possessionClient(new PossessionClient(mindFactory));
 
-    log(INFO, "Trying to connect to server.");
-    while (tryToConnect(*possessionClient) != 0 && !exit_flag) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    }
+        python_reload_scripts.connect([&]() {
+            mindFactory.m_scriptFactory->refreshClass();
 
-    while (!exit_flag) {
-        try {
-            double secondsUntilNextOp = possessionClient->secondsUntilNextOp();
-            boost::posix_time::microseconds waitTime((long long) (secondsUntilNextOp * 1000000));
-            //Handle file system changes
-            io_service.poll();
-            int netResult = possessionClient->pollOne(waitTime);
-            if (netResult >= 0) {
-                //As long as we're connected we'll keep on processing minds
-                possessionClient->idle();
-                possessionClient->markQueueAsClean();
-            } else if (!exit_flag) {
-                log(ERROR, "Disconnected from server; will try to reconnect every one second.");
-                //We're disconnected. We'll now enter a loop where we'll try to reconnect at an interval.
-                //First we need to shut down the current client. Perhaps we could find a way to persist the minds in a better way?
-                possessionClient.reset();
-                possessionClient.reset(new PossessionClient(mindFactory));
-                while (tryToConnect(*possessionClient) != 0 && !exit_flag) {
-                    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            if (possessionClient) {
+                auto& minds = possessionClient->getMinds();
+                for (auto& entry : minds) {
+                    auto entity = entry.second;
+                    //First store all thoughts
+                    Atlas::Objects::Operation::Think think;
+                    think->setArgs1(Atlas::Objects::Operation::Get());
+                    OpVector res;
+                    entity->operation(think, res);
+
+                    mindFactory.m_scriptFactory->addScript(entity);
+
+                    //After updating the script restore all thoughts
+                    OpVector ignoresRes;
+                    for (auto& op : res) {
+                        entity->operation(op, ignoresRes);
+                    }
                 }
             }
 
-            // It is hoped that commonly thrown exception, particularly
-            // exceptions that can be caused  by external influences
-            // should be caught close to where they are thrown. If
-            // an exception makes it here then it should be debugged.
-        } catch (const std::exception& e) {
-            log(ERROR, String::compose("Exception caught in main(): %1", e.what()));
-        } catch (...) {
-            log(ERROR, "Exception caught in main()");
-        }
-    }
+        });
 
-    log(INFO, "Shutting down.");
+        log(INFO, "Trying to connect to server.");
+        while (tryToConnect(*possessionClient) != 0 && !exit_flag) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+
+        while (!exit_flag) {
+            try {
+                double secondsUntilNextOp = possessionClient->secondsUntilNextOp();
+                boost::posix_time::microseconds waitTime((long long) (secondsUntilNextOp * 1000000));
+                //Handle file system changes
+                io_service.poll();
+                int netResult = possessionClient->pollOne(waitTime);
+                if (netResult >= 0) {
+                    //As long as we're connected we'll keep on processing minds
+                    possessionClient->idle();
+                    possessionClient->markQueueAsClean();
+                } else if (!exit_flag) {
+                    log(ERROR, "Disconnected from server; will try to reconnect every one second.");
+                    //We're disconnected. We'll now enter a loop where we'll try to reconnect at an interval.
+                    //First we need to shut down the current client. Perhaps we could find a way to persist the minds in a better way?
+                    possessionClient.reset();
+                    possessionClient.reset(new PossessionClient(mindFactory));
+                    while (tryToConnect(*possessionClient) != 0 && !exit_flag) {
+                        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+                    }
+                }
+
+                // It is hoped that commonly thrown exception, particularly
+                // exceptions that can be caused  by external influences
+                // should be caught close to where they are thrown. If
+                // an exception makes it here then it should be debugged.
+            } catch (const std::exception& e) {
+                log(ERROR, String::compose("Exception caught in main(): %1", e.what()));
+            } catch (...) {
+                log(ERROR, "Exception caught in main()");
+            }
+        }
+
+        log(INFO, "Shutting down.");
+    }
+    //Run any outstanding tasks before shutting down.
+    io_service.run();
 }

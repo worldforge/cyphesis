@@ -16,6 +16,14 @@
   }
 #endif //STUB_AssetsManager_AssetsManager
 
+#ifndef STUB_AssetsManager_AssetsManager_DTOR
+//#define STUB_AssetsManager_AssetsManager_DTOR
+   AssetsManager::~AssetsManager()
+  {
+    
+  }
+#endif //STUB_AssetsManager_AssetsManager_DTOR
+
 #ifndef STUB_AssetsManager_init
 //#define STUB_AssetsManager_init
   void AssetsManager::init()

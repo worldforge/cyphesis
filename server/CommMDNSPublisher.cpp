@@ -320,8 +320,8 @@ void CommMDNSPublisher::do_read()
                 if (!ec)
                 {
                     this->read();
+                    this->do_read();
                 }
-                this->do_read();
             });
 }
 
@@ -389,8 +389,10 @@ void CommMDNSPublisher::do_timer_check()
     m_timers_check_timer.expires_from_now(boost::posix_time::milliseconds(500));
     m_timers_check_timer.async_wait([this](boost::system::error_code ec)
     {
-        this->checkTimers(0);
-        this->do_timer_check();
+        if (!ec) {
+            this->checkTimers(0);
+            this->do_timer_check();
+        }
     });
 }
 
