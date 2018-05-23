@@ -185,10 +185,13 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
         }
     }
 
-    //Move ops can also alter the "planted_on_desired" property
-    Element attr_plantedOnDesired;
-    if (ent->copyAttr("planted_on_desired", attr_plantedOnDesired) == 0) {
-        setAttr("planted_on_desired", attr_plantedOnDesired);
+    //If a Move op contains a planted_on prop it should be used.
+    //It's expected that only admins should ever send a "planted_on" as Move ops (to build the world).
+    //In all other cases we want to let regular Domain rules apply
+    Element attr_plantedOn;
+    LocatedEntity* plantedOnEntity = nullptr;
+    if (ent->copyAttr("planted_on", attr_plantedOn) == 0 && attr_plantedOn.isString()) {
+        plantedOnEntity = BaseWorld::instance().getEntity(attr_plantedOn.String());
     }
 
     //Move ops can also alter the "planted-offset" property
@@ -326,7 +329,8 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
             processAppearDisappear(std::move(previousObserving), res);
         } else {
             if (updatedTransform) {
-                domain->applyTransform(*this, newOrientation, newPos, newVelocity, transformedEntities);
+                Domain::TransformData transformData{newOrientation, newPos, newVelocity, plantedOnEntity};
+                domain->applyTransform(*this, transformData, transformedEntities);
             }
         }
 

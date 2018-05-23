@@ -1347,6 +1347,9 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
         }
     } else if (name == PerceptionSightProperty::property_name) {
         toggleChildPerception(*bulletEntry->entity);
+    } else if (name == "planted_on") {
+        applyNewPositionForEntity(bulletEntry, bulletEntry->entity->m_location.m_pos, true);
+        sendMoveSight(*bulletEntry, true, false, false, false, false);
     }
 }
 
@@ -1605,9 +1608,9 @@ void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, Physica
 
                 if (!plantedOn) {
 
-                    auto plantedOnDesiredProp = entity.getPropertyClass<EntityProperty>("planted_on_desired");
-                    if (plantedOnDesiredProp) {
-                        const auto& plantedOnEntityRef = plantedOnDesiredProp->data();
+                    auto plantedOnProp = entity.getPropertyClass<EntityProperty>("planted_on");
+                    if (plantedOnProp) {
+                        const auto& plantedOnEntityRef = plantedOnProp->data();
                         if (plantedOnEntityRef) {
                             //If it's desired that the entity should be planted on the ground then make it so.
                             //Since the ground is everywhere.
@@ -1617,7 +1620,7 @@ void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, Physica
                                 pos.y() = h;
                                 plantedOn = true;
                             } else {
-                                //Otherwise we need to check that it really can be planted on what it's desired to be planted on.
+                                //Otherwise we need to check that it really can be planted on what it's planted on.
                                 auto I = m_entries.find(plantedOnEntityRef->getIntId());
                                 if (I != m_entries.end()) {
                                     BulletEntry* plantedOnBulletEntry = I->second;
@@ -1920,12 +1923,23 @@ void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& 
     }
 }
 
-void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation,
-                                    const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity,
+void PhysicalDomain::applyTransform(LocatedEntity& entity, const TransformData& transformData,
                                     std::set<LocatedEntity*>& transformedEntities)
 {
+    //First handle any changes to the "planted_on" property.
+    auto I = m_entries.find(entity.getIntId());
+    BulletEntry* entry = I->second;
+    BulletEntry* entryPlantedOn = nullptr;
 
-    applyTransformInternal(entity, orientation, pos, velocity, transformedEntities, true);
+    if (transformData.plantedOn) {
+        auto plantedOnI = m_entries.find(transformData.plantedOn->getIntId());
+        if (plantedOnI != m_entries.end()) {
+            entryPlantedOn = plantedOnI->second;
+        }
+    }
+    plantOnEntity(entry, entryPlantedOn);
+
+    applyTransformInternal(entity, transformData.orientation, transformData.pos, transformData.velocity, transformedEntities, true);
 }
 
 void PhysicalDomain::applyTransformInternal(LocatedEntity& entity, const WFMath::Quaternion& orientation,

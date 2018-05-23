@@ -38,7 +38,6 @@
 #include <wfmath/atlasconv.h>
 
 #include <rulesets/PhysicalDomain.h>
-#include <common/TypeNode.h>
 #include "physics/Convert.h"
 #include <rulesets/TerrainProperty.h>
 #include <Mercator/BasePoint.h>
@@ -52,7 +51,6 @@
 #include <BulletCollision/CollisionShapes/btBoxShape.h>
 #include <BulletDynamics/Dynamics/btRigidBody.h>
 
-#include <chrono>
 #include <rulesets/TerrainModProperty.h>
 #include <rulesets/EntityProperty.h>
 
@@ -85,7 +83,8 @@ class TestPhysicalDomain : public PhysicalDomain
             return btRigidBody::upcast(m_entries.find(id)->second->collisionObject);
         }
 
-        void test_childEntityPropertyApplied(const std::string& name, PropertyBase& prop, long id) {
+        void test_childEntityPropertyApplied(const std::string& name, PropertyBase& prop, long id)
+        {
             childEntityPropertyApplied(name, prop, m_entries.find(id)->second);
         }
 };
@@ -254,7 +253,8 @@ void PhysicalDomainIntegrationTest::test_scaleBbox()
     freeEntity->setType(rockType);
     freeEntity->m_location.m_pos = WFMath::Point<3>(0, 10, 0);
     freeEntity->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
-    freeEntity->m_location.setBBox({{-0.5f, 0, -0.5f}, {0.5f, 1, 0.5f}});
+    freeEntity->m_location.setBBox({{-0.5f, 0, -0.5f},
+                                    {0.5f,  1, 0.5f}});
     freeEntity->setProperty("mass", massProp);
 
     domain->addEntity(*freeEntity);
@@ -268,7 +268,8 @@ void PhysicalDomainIntegrationTest::test_scaleBbox()
 
     domain->removeEntity(*freeEntity);
 
-    bBoxProperty->data() = {{-1, 0, -1}, {1, 2, 1}};
+    bBoxProperty->data() = {{-1, 0, -1},
+                            {1,  2, 1}};
     bBoxProperty->apply(plantedEntity);
 
     domain->test_childEntityPropertyApplied("bbox", *bBoxProperty, plantedEntity->getIntId());
@@ -380,7 +381,7 @@ void PhysicalDomainIntegrationTest::test_movePlantedAndResting()
     {
         std::set<LocatedEntity*> transformedEntities;
 
-        domain->applyTransform(*fixed1, WFMath::Quaternion(), {10, 10, 10}, {}, transformedEntities);
+        domain->applyTransform(*fixed1, Domain::TransformData{WFMath::Quaternion(), {10, 10, 10}, {}}, transformedEntities);
         ASSERT_EQUAL(4u, transformedEntities.size());
         ASSERT_EQUAL(WFMath::Point<3>(11, 11, 10), planted1->m_location.pos());
         ASSERT_EQUAL(WFMath::Point<3>(10, 12, 11), planted2->m_location.pos());
@@ -393,7 +394,7 @@ void PhysicalDomainIntegrationTest::test_movePlantedAndResting()
     {
         std::set<LocatedEntity*> transformedEntities;
 
-        domain->applyTransform(*fixed1, WFMath::Quaternion(1, WFMath::numeric_constants<float>::pi() / 2), {}, {}, transformedEntities);
+        domain->applyTransform(*fixed1, Domain::TransformData{WFMath::Quaternion(1, WFMath::numeric_constants<float>::pi() / 2), {}, {}}, transformedEntities);
         ASSERT_EQUAL(4u, transformedEntities.size());
         ASSERT_EQUAL(WFMath::Point<3>(10, 11, 9), planted1->m_location.pos());
         ASSERT_EQUAL(WFMath::Point<3>(11, 12, 10), planted2->m_location.pos());
@@ -406,7 +407,7 @@ void PhysicalDomainIntegrationTest::test_movePlantedAndResting()
         std::set<LocatedEntity*> transformedEntities;
 
 
-        domain->applyTransform(*fixed1, WFMath::Quaternion(1, WFMath::numeric_constants<float>::pi()), {15, 15, 15}, {}, transformedEntities);
+        domain->applyTransform(*fixed1, Domain::TransformData{WFMath::Quaternion(1, WFMath::numeric_constants<float>::pi()), {15, 15, 15}, {}}, transformedEntities);
         ASSERT_EQUAL(4u, transformedEntities.size());
         ASSERT_EQUAL(WFMath::Point<3>(14, 16, 15), planted1->m_location.pos());
         ASSERT_EQUAL(WFMath::Point<3>(15, 17, 14), planted2->m_location.pos());
@@ -418,7 +419,9 @@ void PhysicalDomainIntegrationTest::test_movePlantedAndResting()
     {
         std::set<LocatedEntity*> transformedEntities;
 
-        domain->applyTransform(*planted1, {}, {20, 0, 20}, {}, transformedEntities);
+        domain->applyTransform(*planted1, Domain::TransformData{{},
+                                                                {20, 0, 20},
+                                                                {}}, transformedEntities);
         ASSERT_EQUAL(3u, transformedEntities.size());
         ASSERT_EQUAL(WFMath::Point<3>(21, 1, 19), planted2->m_location.pos());
         ASSERT_TRUE(WFMath::Equal(WFMath::Point<3>(20, 3, 20), freeEntity->m_location.pos(), 0.1));
@@ -427,7 +430,7 @@ void PhysicalDomainIntegrationTest::test_movePlantedAndResting()
 
     {
         std::set<LocatedEntity*> transformedEntities;
-        domain->applyTransform(*fixed1, WFMath::Quaternion(), {5, 20, 5}, {}, transformedEntities);
+        domain->applyTransform(*fixed1, Domain::TransformData{WFMath::Quaternion(), {5, 20, 5}, {}}, transformedEntities);
         ASSERT_EQUAL(1u, transformedEntities.size());
     }
 
@@ -436,7 +439,7 @@ void PhysicalDomainIntegrationTest::test_movePlantedAndResting()
     {
         std::set<LocatedEntity*> transformedEntities;
 
-        domain->applyTransform(*planted1, WFMath::Quaternion(), {15, 0, 20}, {}, transformedEntities);
+        domain->applyTransform(*planted1, Domain::TransformData{WFMath::Quaternion(), {15, 0, 20}, {}}, transformedEntities);
         ASSERT_EQUAL(1u, transformedEntities.size());
     }
 }
@@ -539,9 +542,9 @@ void PhysicalDomainIntegrationTest::test_plantedOn()
             }
             plantedOn->m_location.setBBox({{-1, 0, -1},
                                            {1,  1, 1}});
-            EntityProperty* plantedOnDesiredProperty = new EntityProperty();
-            plantedOnDesiredProperty->data() = EntityRef(planted1.get());
-            plantedOn->setProperty("planted_on_desired", plantedOnDesiredProperty);
+            EntityProperty* plantedOnProperty = new EntityProperty();
+            plantedOnProperty->data() = EntityRef(planted1.get());
+            plantedOn->setProperty("planted_on", plantedOnProperty);
 
             GeometryProperty* geometryProperty = new GeometryProperty();
             geometryProperty->set(MapType{{"type", plantedOnTopShape}});
@@ -635,7 +638,7 @@ void PhysicalDomainIntegrationTest::test_terrainMods()
 
         ASSERT_FUZZY_EQUAL(callback.m_hitPointWorld.y(), 5.0f, 0.1f);
     }
-    domain->applyTransform(*terrainModEntity, WFMath::Quaternion(), WFMath::Point<3>(10, 10, 10), WFMath::Vector<3>(), transformedEntities);
+    domain->applyTransform(*terrainModEntity, Domain::TransformData{WFMath::Quaternion(), WFMath::Point<3>(10, 10, 10), WFMath::Vector<3>()}, transformedEntities);
 
     domain->tick(0, res);
 
@@ -747,11 +750,11 @@ void PhysicalDomainIntegrationTest::test_lake_rotated()
     id = newId();
     ModeProperty* plantedProp = new ModeProperty();
     plantedProp->set("planted");
-    EntityProperty* plantedOnDesiredProp = new EntityProperty();
-    plantedOnDesiredProp->data() = EntityRef(lake);
+    EntityProperty* plantedOnProp = new EntityProperty();
+    plantedOnProp->data() = EntityRef(lake);
     Entity* floatingEntity = new Entity("floatingEntity", id);
     floatingEntity->setProperty(ModeProperty::property_name, plantedProp);
-    floatingEntity->setProperty("planted_on_desired", plantedOnDesiredProp);
+    floatingEntity->setProperty("planted_on", plantedOnProp);
 
     floatingEntity->setType(rockType);
     floatingEntity->m_location.m_pos = WFMath::Point<3>(5, 20, 1);
@@ -862,20 +865,20 @@ void PhysicalDomainIntegrationTest::test_lake()
     ASSERT_TRUE(freeEntity3->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Free);
 
     //Move outside
-    domain->applyTransform(*freeEntity, WFMath::Quaternion::IDENTITY(), WFMath::Point<3>(20, 60, 0), WFMath::Vector<3>(), transformedEntities);
+    domain->applyTransform(*freeEntity, Domain::TransformData{WFMath::Quaternion::IDENTITY(), WFMath::Point<3>(20, 60, 0), WFMath::Vector<3>()}, transformedEntities);
     domain->tick(0, res);
     ASSERT_TRUE(freeEntity->m_location.pos().y() > 0);
     ASSERT_TRUE(freeEntity->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Free);
 
     //Move back in.
-    domain->applyTransform(*freeEntity, WFMath::Quaternion::IDENTITY(), WFMath::Point<3>(20, -10, 0), WFMath::Vector<3>(), transformedEntities);
+    domain->applyTransform(*freeEntity, Domain::TransformData{WFMath::Quaternion::IDENTITY(), WFMath::Point<3>(20, -10, 0), WFMath::Vector<3>()}, transformedEntities);
     domain->tick(0, res);
     ASSERT_TRUE(freeEntity->m_location.pos().y() < 0);
     ASSERT_TRUE(freeEntity->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Submerged);
     ASSERT_TRUE(freeEntity3->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Free);
 
     //Move the lake to where freeEntity3 is
-    domain->applyTransform(*lake, WFMath::Quaternion(), freeEntity3->m_location.m_pos + WFMath::Vector<3>(0, 5, 0), WFMath::Vector<3>(), transformedEntities);
+    domain->applyTransform(*lake, Domain::TransformData{WFMath::Quaternion(), freeEntity3->m_location.m_pos + WFMath::Vector<3>(0, 5, 0), WFMath::Vector<3>()}, transformedEntities);
     domain->tick(0, res);
     ASSERT_TRUE(freeEntity3->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Submerged);
     ASSERT_TRUE(freeEntity->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Free);
@@ -978,13 +981,13 @@ void PhysicalDomainIntegrationTest::test_ocean()
     ASSERT_TRUE(freeEntity2->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Submerged);
 
     //Move outside
-    domain->applyTransform(*freeEntity, WFMath::Quaternion::IDENTITY(), WFMath::Point<3>(0, 60, 0), WFMath::Vector<3>(), transformedEntities);
+    domain->applyTransform(*freeEntity, Domain::TransformData{WFMath::Quaternion::IDENTITY(), WFMath::Point<3>(0, 60, 0), WFMath::Vector<3>()}, transformedEntities);
     domain->tick(0, res);
     ASSERT_TRUE(freeEntity->m_location.pos().y() > 0);
     ASSERT_TRUE(freeEntity->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Free);
 
     //Move back in.
-    domain->applyTransform(*freeEntity, WFMath::Quaternion::IDENTITY(), WFMath::Point<3>(0, -10, 0), WFMath::Vector<3>(), transformedEntities);
+    domain->applyTransform(*freeEntity, Domain::TransformData{WFMath::Quaternion::IDENTITY(), WFMath::Point<3>(0, -10, 0), WFMath::Vector<3>()}, transformedEntities);
     domain->tick(0, res);
     ASSERT_TRUE(freeEntity->m_location.pos().y() < 0);
     ASSERT_TRUE(freeEntity->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Submerged);
@@ -1058,22 +1061,23 @@ void PhysicalDomainIntegrationTest::test_placement()
         std::set<LocatedEntity*> transformedEntities;
 
         //Change pos only
-        domain->applyTransform(*entity, WFMath::Quaternion(), WFMath::Point<3>(20, 30, 1), WFMath::Vector<3>(), transformedEntities);
+        domain->applyTransform(*entity, Domain::TransformData{WFMath::Quaternion(), WFMath::Point<3>(20, 30, 1), WFMath::Vector<3>()}, transformedEntities);
 
         verifyBboxes(entity);
 
         //Change orientation only
-        domain->applyTransform(*entity, WFMath::Quaternion(1, WFMath::numeric_constants<float>::pi() / 3.0f), WFMath::Point<3>(), WFMath::Vector<3>(), transformedEntities);
+        domain->applyTransform(*entity, Domain::TransformData{WFMath::Quaternion(1, WFMath::numeric_constants<float>::pi() / 3.0f), WFMath::Point<3>(), WFMath::Vector<3>()}, transformedEntities);
 
         verifyBboxes(entity);
 
         //Change pos and orientation
-        domain->applyTransform(*entity, WFMath::Quaternion(1, WFMath::numeric_constants<float>::pi() / 5.0f), WFMath::Point<3>(10, -25, 6), WFMath::Vector<3>(), transformedEntities);
+        domain->applyTransform(*entity, Domain::TransformData{WFMath::Quaternion(1, WFMath::numeric_constants<float>::pi() / 5.0f), WFMath::Point<3>(10, -25, 6), WFMath::Vector<3>()},
+                               transformedEntities);
 
         verifyBboxes(entity);
 
         //Change velocity (should not change pos and orientation)
-        domain->applyTransform(*entity, WFMath::Quaternion(), WFMath::Point<3>(), WFMath::Vector<3>(4, 4, 4), transformedEntities);
+        domain->applyTransform(*entity, Domain::TransformData{WFMath::Quaternion(), WFMath::Point<3>(), WFMath::Vector<3>(4, 4, 4)}, transformedEntities);
 
         verifyBboxes(entity);
     };
@@ -1740,7 +1744,7 @@ void PhysicalDomainIntegrationTest::test_visibility()
 
     }
     //Now move the observer to "small1"
-    domain->applyTransform(*observerEntity, WFMath::Quaternion(), WFMath::Point<3>(30, 0, 30), WFMath::Vector<3>(), transformedEntities);
+    domain->applyTransform(*observerEntity, Domain::TransformData{WFMath::Quaternion(), WFMath::Point<3>(30, 0, 30), WFMath::Vector<3>()}, transformedEntities);
     //Force visibility updates
     domain->tick(2, res);
     {

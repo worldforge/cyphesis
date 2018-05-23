@@ -88,8 +88,7 @@ class PhysicalDomain : public Domain
 
         void removeEntity(LocatedEntity& entity) override;
 
-        void applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation,
-                            const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity,
+        void applyTransform(LocatedEntity& entity, const TransformData& transformData,
                             std::set<LocatedEntity*>& transformedEntities) override;
 
         void refreshTerrain(const std::vector<WFMath::AxisBox<2>>& areas) override;
