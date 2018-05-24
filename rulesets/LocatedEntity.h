@@ -133,11 +133,6 @@ class LocatedEntity : public Router {
      */
     void collectObserversForChild(const LocatedEntity& child, std::set<const LocatedEntity*>& receivers) const;
 
-    /**
-     * The bounding box of the entity. It can be invalid if there's no bounding box.
-     */
-    WFMath::AxisBox<3> m_bbox;
-
     public:
     /// Full details of location
     Location m_location;
