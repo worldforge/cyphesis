@@ -65,7 +65,7 @@ LocatedEntity::~LocatedEntity()
     clearProperties();
 
     delete m_script;
-    if (m_location.m_loc != 0) {
+    if (m_location.m_loc != nullptr) {
         m_location.m_loc->decRef();
     }
     delete m_contains;
@@ -103,11 +103,11 @@ void LocatedEntity::setType(const TypeNode* t)
 /// false otherwise
 bool LocatedEntity::hasAttr(const std::string& name) const
 {
-    PropertyDict::const_iterator I = m_properties.find(name);
+    auto I = m_properties.find(name);
     if (I != m_properties.end()) {
         return true;
     }
-    if (m_type != 0) {
+    if (m_type != nullptr) {
         I = m_type->defaults().find(name);
         if (I != m_type->defaults().end()) {
             return true;
@@ -125,11 +125,11 @@ bool LocatedEntity::hasAttr(const std::string& name) const
 int LocatedEntity::getAttr(const std::string& name,
                            Element& attr) const
 {
-    PropertyDict::const_iterator I = m_properties.find(name);
+    auto I = m_properties.find(name);
     if (I != m_properties.end()) {
         return I->second->get(attr);
     }
-    if (m_type != 0) {
+    if (m_type != nullptr) {
         I = m_type->defaults().find(name);
         if (I != m_type->defaults().end()) {
             return I->second->get(attr);
@@ -148,11 +148,11 @@ int LocatedEntity::getAttrType(const std::string& name,
                                Element& attr,
                                int type) const
 {
-    PropertyDict::const_iterator I = m_properties.find(name);
+    auto I = m_properties.find(name);
     if (I != m_properties.end()) {
         return I->second->get(attr) || (attr.getType() == type ? 0 : 1);
     }
-    if (m_type != 0) {
+    if (m_type != nullptr) {
         I = m_type->defaults().find(name);
         if (I != m_type->defaults().end()) {
             return I->second->get(attr) || (attr.getType() == type ? 0 : 1);
@@ -273,7 +273,7 @@ std::vector<Atlas::Objects::Root> LocatedEntity::getThoughts() const
 /// storage and property.
 void LocatedEntity::makeContainer()
 {
-    if (m_contains == 0) {
+    if (m_contains == nullptr) {
         m_contains = new LocatedEntitySet;
         m_properties["contains"] = new ContainsProperty(*m_contains);
     }
@@ -392,7 +392,7 @@ void LocatedEntity::addChild(LocatedEntity& childEntity)
 void LocatedEntity::removeChild(LocatedEntity& childEntity)
 {
     assert(checkRef() > 0);
-    assert(m_contains != 0);
+    assert(m_contains != nullptr);
     assert(m_contains->count(&childEntity));
     m_contains->erase(&childEntity);
     if (m_contains->empty()) {
@@ -405,6 +405,11 @@ bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* watcher) const
     //Are we looking at ourselves?
     if (watcher == this) {
         return true;
+    }
+
+    //Optimize for the most common case of both entities being direct child of a domain
+    if (m_location.m_loc != nullptr && watcher->m_location.m_loc == m_location.m_loc && m_location.m_loc->getDomain()) {
+        return m_location.m_loc->getDomain()->isEntityVisibleFor(*watcher, *this);
     }
 
     //First find the domain which contains the watcher, as well as if the watcher has a domain itself.
