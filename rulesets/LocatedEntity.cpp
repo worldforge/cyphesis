@@ -474,14 +474,95 @@ bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* watcher) const
     return true;
 }
 
+bool LocatedEntity::isReachableForOtherEntity(const LocatedEntity* reachingEntity, const WFMath::Point<3>& positionOnEntity) const
+{
+    //Are we reaching for our ourselves?
+    if (reachingEntity == this) {
+        return true;
+    }
+
+    //Is the reacher a "creator"?
+    if (reachingEntity->getType()->isTypeOf("creator")) {
+        return true;
+    }
+
+    double reachDistance = 0;
+    auto reachProp = reachingEntity->getPropertyType<double>("reach");
+    if (reachProp) {
+        reachDistance = reachProp->data();
+    }
+
+    //First find the domain which contains the reacher, as well as if the reacher has a domain itself.
+    const LocatedEntity* domainEntity = reachingEntity->m_location.m_loc;
+    const LocatedEntity* topReachingEntity = reachingEntity;
+    const Domain* reacherParentDomain = nullptr;
+    const LocatedEntity* reacherDomainEntity = nullptr; //The entity which contains the reacher's domain
+
+    while (domainEntity != nullptr) {
+        reacherParentDomain = domainEntity->getDomain();
+        if (reacherParentDomain) {
+            reacherDomainEntity = domainEntity;
+            break;
+        }
+        topReachingEntity = domainEntity;
+        domainEntity = domainEntity->m_location.m_loc;
+    }
+
+    //Now walk upwards from the entity being reached for until we reach either the reacher's parent domain entity,
+    //or the reacher itself
+    std::vector<const LocatedEntity*> toAncestors;
+    toAncestors.reserve(4);
+    const LocatedEntity* ancestorEntity = this;
+
+    while (true) {
+        if (ancestorEntity == reacherDomainEntity) {
+            if (ancestorEntity == this) {
+                //We're trying to reach our containing domain entity, handle separately
+                return !(reacherParentDomain && !reacherParentDomain->isEntityReachable(*reachingEntity, reachDistance, *reacherDomainEntity, positionOnEntity));
+            }
+            break;
+        }
+        if (ancestorEntity == reachingEntity) {
+            break;
+        }
+
+        toAncestors.push_back(ancestorEntity);
+
+        if (ancestorEntity == topReachingEntity) {
+            break;
+        }
+        ancestorEntity = ancestorEntity->m_location.m_loc;
+        if (ancestorEntity == nullptr) {
+            //Could find no common ancestor; can't be reached.
+            return false;
+        }
+    }
+
+    if (toAncestors.empty()) {
+        return false;
+    }
+
+    //Now walk back down the toAncestors list, checking if all entities on the way can be reached.
+    //Reachability is only checked for the first immediate child of a domain entity, further grandchildren are considered reachable if the top one is, until
+    //another domain is reached.
+    for (auto I = toAncestors.rbegin(); I != toAncestors.rend(); ++I) {
+        const LocatedEntity* ancestor = *I;
+        auto domain = ancestor->m_location.m_loc ? ancestor->m_location.m_loc->getDomain() : nullptr;
+        if (domain && !domain->isEntityReachable(*reachingEntity, reachDistance, *ancestor, positionOnEntity)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 /// \brief Read attributes from an Atlas element
 ///
 /// @param ent The Atlas map element containing the attribute values
 void LocatedEntity::merge(const MapType& ent)
 {
     const std::set<std::string>& imm = immutables();
-    MapType::const_iterator Iend = ent.end();
-    for (MapType::const_iterator I = ent.begin(); I != Iend; ++I) {
+    auto Iend = ent.end();
+    for (auto I = ent.begin(); I != Iend; ++I) {
         const std::string& key = I->first;
         if (key.empty()) {
             continue;

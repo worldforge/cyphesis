@@ -141,6 +141,20 @@ class Domain
 
         }
 
+        /**
+         * @brief Checks if the reaching Entity can reach the "queried" entity.
+         *
+         * @param reachingEntity            The reaching entity.
+         * @param reach                     The reach in meters of the reaching entity.
+         * @param queriedEntity             The entity being reached for.
+         * @param positionOnQueriedEntity   An optional position on the entity being reached for.
+         *                                  This only makes sense in some situation (such as reaching for a place in the terrain) and will be ignored by some domains.
+         * @return True if the reaching entity can reach the queried entity.
+         */
+        virtual bool isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const {
+            return false;
+        }
+
 
 };
 

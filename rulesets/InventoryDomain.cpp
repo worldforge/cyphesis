@@ -121,6 +121,12 @@ std::list<LocatedEntity*> InventoryDomain::getObservingEntitiesFor(const Located
 {
     std::list<LocatedEntity*> list;
     list.push_back(&m_entity);
-    return std::move(list);
+    return list;
+}
+
+bool InventoryDomain::isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const
+{
+    //Only the entity to which the inventory belongs is allowed to reach things in the inventory.
+    return &reachingEntity == &m_entity;
 }
 

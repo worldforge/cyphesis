@@ -50,3 +50,7 @@ void VoidDomain::removeEntity(LocatedEntity& entity) {
 
 }
 
+bool VoidDomain::isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const {
+    return &reachingEntity == &m_entity;
+}
+

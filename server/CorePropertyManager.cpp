@@ -241,6 +241,10 @@ CorePropertyManager::CorePropertyManager()
 
     installProperty<PerceptionSightProperty>();
 
+    /**
+     * How far away the entity can reach (used when interacting with things).
+     */
+    installProperty<Property<double>>("reach");
 }
 
 int CorePropertyManager::installFactory(const std::string & type_name,

@@ -175,6 +175,29 @@ int main()
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
 
+#define STUB_TypeNode_TypeNode
+TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
+{
+}
+
+#define STUB_TypeNode_TypeNode_DTOR
+TypeNode::~TypeNode()
+{
+    PropertyDict::const_iterator I = m_defaults.begin();
+    PropertyDict::const_iterator Iend = m_defaults.end();
+    for (; I != Iend; ++I) {
+        delete I->second;
+    }
+}
+
+#define STUB_TypeNode_injectProperty
+void TypeNode::injectProperty(const std::string& name,
+                              PropertyBase* p)
+{
+    m_defaults[name] = p;
+}
+#include "stubs/common/stubTypeNode.h"
+
 
 void addToEntity(const Point3D & p, std::vector<double> & vd)
 {
@@ -244,25 +267,6 @@ Location::Location() : m_loc(0)
 
 void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
-}
-
-TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
-{
-}
-
-TypeNode::~TypeNode()
-{
-    PropertyDict::const_iterator I = m_defaults.begin();
-    PropertyDict::const_iterator Iend = m_defaults.end();
-    for (; I != Iend; ++I) {
-        delete I->second;
-    }
-}
-
-void TypeNode::injectProperty(const std::string& name,
-                              PropertyBase* p)
-{
-    m_defaults[name] = p;
 }
 
 IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),

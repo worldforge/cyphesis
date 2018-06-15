@@ -31,16 +31,8 @@
 #include "rulesets/InventoryDomain.h"
 #include "rulesets/EntityProperty.h"
 
-#include "common/const.h"
-#include "common/globals.h"
-#include "common/id.h"
 #include "common/Inheritance.h"
-#include "common/log.h"
-#include "common/Monitors.h"
-#include "common/SystemTime.h"
 #include "common/Tick.h"
-#include "common/Variable.h"
-#include "common/TypeNode.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
@@ -56,11 +48,13 @@ class ThingIntegration : public Cyphesis::TestBase
     public:
         ThingIntegration();
 
-        void setup();
+        void setup() override;
 
-        void teardown();
+        void teardown() override;
 
         void test_visibility();
+
+        void test_reachability();
 };
 
 class ThingExt : public Thing
@@ -100,6 +94,7 @@ class ThingExt : public Thing
 
 ThingIntegration::ThingIntegration()
 {
+    ADD_TEST(ThingIntegration::test_reachability);
     ADD_TEST(ThingIntegration::test_visibility);
 }
 
@@ -131,7 +126,7 @@ void ThingIntegration::test_visibility()
         }
 
         if (!res.empty()) {
-            for (auto op : res) {
+            for (auto& op : res) {
                 addFailure(String::compose("Found broadcast op to '%1' which was not expected.", op->getTo()));
             }
             return false;
@@ -142,7 +137,7 @@ void ThingIntegration::test_visibility()
     /**
      * First handle the case where there's no domains at all.
      *
-     * All entities are places at origo
+     * All entities are placed at origo
      * Hierarchy looks like this:
      *
      *              T1              T4
@@ -150,7 +145,6 @@ void ThingIntegration::test_visibility()
      *         T3
      *
      *
-     * With T2 having a physical domain.
      */
     {
         ThingExt* t1 = new ThingExt("1", 1);
@@ -170,7 +164,7 @@ void ThingIntegration::test_visibility()
         //T1 can see T3 since it's a grandchild and there's no domain
         ASSERT_TRUE(t3->test_lookAtEntity(sightOp, res, t1));
         //T1 can't see T4 since it's not in the same graph
-        ASSERT_TRUE(!t4->test_lookAtEntity(sightOp, res, t1));
+        ASSERT_FALSE(t4->test_lookAtEntity(sightOp, res, t1));
 
         //T2 can see T1 since it's a parent and there's no domain
         ASSERT_TRUE(t1->test_lookAtEntity(sightOp, res, t2));
@@ -179,7 +173,7 @@ void ThingIntegration::test_visibility()
         //T5 can see T3 since they share T1 as parent/grand parent and there's no domain
         ASSERT_TRUE(t3->test_lookAtEntity(sightOp, res, t5));
         //T4 can't see T1 since it's not in the same graph
-        ASSERT_TRUE(!t1->test_lookAtEntity(sightOp, res, t4));
+        ASSERT_FALSE(t1->test_lookAtEntity(sightOp, res, t4));
 
 
         ASSERT_TRUE(verifyBroadcastContains(t1, {t1}));
@@ -217,12 +211,12 @@ void ThingIntegration::test_visibility()
         //T1 can see T2 since it's a child and there's no domain
         ASSERT_TRUE(t2->test_lookAtEntity(sightOp, res, t1));
         //T1 can't see T3 since T2 has a Void domain
-        ASSERT_TRUE(!t3->test_lookAtEntity(sightOp, res, t1));
+        ASSERT_FALSE(t3->test_lookAtEntity(sightOp, res, t1));
 
         //T2 can see T1 since it's a parent and there's no domain
         ASSERT_TRUE(t1->test_lookAtEntity(sightOp, res, t2));
         //T3 can't see T1 since T2 has a domain
-        ASSERT_TRUE(!t1->test_lookAtEntity(sightOp, res, t3));
+        ASSERT_FALSE(t1->test_lookAtEntity(sightOp, res, t3));
 
         //T2 can see itself
         ASSERT_TRUE(t2->test_lookAtEntity(sightOp, res, t2));
@@ -290,12 +284,12 @@ void ThingIntegration::test_visibility()
         //T1 can see T2 since it's a child and there's no domain
         ASSERT_TRUE(t2->test_lookAtEntity(sightOp, res, t1));
         //T1 can't see T3 since T2 has a Physical domain and it doesn't allow external entities to look into it.
-        ASSERT_TRUE(!t3->test_lookAtEntity(sightOp, res, t1));
+        ASSERT_FALSE(t3->test_lookAtEntity(sightOp, res, t1));
 
         //T2 can see T1 since it's a parent and there's no domain
         ASSERT_TRUE(t1->test_lookAtEntity(sightOp, res, t2));
         //T3 can't see T1 since T2 has a domain
-        ASSERT_TRUE(!t1->test_lookAtEntity(sightOp, res, t3));
+        ASSERT_FALSE(t1->test_lookAtEntity(sightOp, res, t3));
 
         //T2 can see itself
         ASSERT_TRUE(t2->test_lookAtEntity(sightOp, res, t2));
@@ -309,9 +303,9 @@ void ThingIntegration::test_visibility()
         //T2 can see T6 since the parent of T6 is T5, which can be seen and has no domain.
         ASSERT_TRUE(t6->test_lookAtEntity(sightOp, res, t2));
         //T3 can't see T7 since T2 has a Physical domain and T7 has an invalid pos.
-        ASSERT_TRUE(!t7->test_lookAtEntity(sightOp, res, t3));
+        ASSERT_FALSE(t7->test_lookAtEntity(sightOp, res, t3));
         //T4 can't see T5 since T4 isn't a direct child of T2
-        ASSERT_TRUE(!t5->test_lookAtEntity(sightOp, res, t4));
+        ASSERT_FALSE(t5->test_lookAtEntity(sightOp, res, t4));
 
         ASSERT_TRUE(verifyBroadcastContains(t1, {t1}));
         ASSERT_TRUE(verifyBroadcastContains(t2, {t2, t3, t5, t7, t1}));
@@ -370,14 +364,14 @@ void ThingIntegration::test_visibility()
         //T1 can see T4 since T2 has an Inventory domain and T3 is wielded, and T4 is a child.
         ASSERT_TRUE(t4->test_lookAtEntity(sightOp, res, t1));
         //T1 can't see T5 since T2 has an Inventory domain and T5 isn't wielded.
-        ASSERT_TRUE(!t5->test_lookAtEntity(sightOp, res, t1));
+        ASSERT_FALSE(t5->test_lookAtEntity(sightOp, res, t1));
 
         //T6 can see T3 since T2 has an Inventory domain and T3 is wielded.
         ASSERT_TRUE(t3->test_lookAtEntity(sightOp, res, t6));
         //T6 can see T4 since T2 has an Inventory domain and T3 is wielded, and T4 is a child.
         ASSERT_TRUE(t4->test_lookAtEntity(sightOp, res, t6));
         //T6 can't see T5 since T2 has an Inventory domain and T5 isn't wielded.
-        ASSERT_TRUE(!t5->test_lookAtEntity(sightOp, res, t6));
+        ASSERT_FALSE(t5->test_lookAtEntity(sightOp, res, t6));
 
         ASSERT_TRUE(verifyBroadcastContains(t1, {t1}));
         ASSERT_TRUE(verifyBroadcastContains(t2, {t2, t1}));
@@ -440,16 +434,16 @@ void ThingIntegration::test_visibility()
         //T1 can see T2 since it's a child and there's no domain
         ASSERT_TRUE(t2->test_lookAtEntity(sightOp, res, t1));
         //T1 can't see T3 since T2 has an Physical domain and T1 is a parent.
-        ASSERT_TRUE(!t3->test_lookAtEntity(sightOp, res, t1));
+        ASSERT_FALSE(t3->test_lookAtEntity(sightOp, res, t1));
         //T1 can't see T4 since T2 has an Physical domain and T1 is a parent.
-        ASSERT_TRUE(!t4->test_lookAtEntity(sightOp, res, t1));
+        ASSERT_FALSE(t4->test_lookAtEntity(sightOp, res, t1));
 
         //T5 can see T3 since T2 has an Physical domain .
         ASSERT_TRUE(t3->test_lookAtEntity(sightOp, res, t5));
         //T5 can see T4 since T2 has an Physical domain, T3 has an Inventory Domain and is close, and T4 is wielded.
         ASSERT_TRUE(t4->test_lookAtEntity(sightOp, res, t5));
         //T5 can't see T6 since T2 has an Physical domain, T3 has an Inventory Domain and is close, and T6 isn't wielded.
-        ASSERT_TRUE(!t6->test_lookAtEntity(sightOp, res, t5));
+        ASSERT_FALSE(t6->test_lookAtEntity(sightOp, res, t5));
 
         ASSERT_TRUE(verifyBroadcastContains(t1, {t1}));
         ASSERT_TRUE(verifyBroadcastContains(t2, {t1, t2, t3, t5}));
@@ -523,6 +517,413 @@ void ThingIntegration::test_visibility()
 
     }
 }
+
+
+void ThingIntegration::test_reachability()
+{
+    WFMath::AxisBox<3> bbox(WFMath::Point<3>(-10, -10, -10), WFMath::Point<3>(10, 10, 10));
+
+    auto createReachPropFn = [](double reach) {
+        auto reachProp = new Property<double>();
+        reachProp->data() = reach;
+        return reachProp;
+    };
+
+    /**
+     * First handle the case where there's no domains at all.
+     *
+     * All entities are placed at origo
+     * Hierarchy looks like this:
+     *
+     *              T1              T4
+     *         T2       T5
+     *         T3
+     *
+     *
+     */
+    {
+        ThingExt* t1 = new ThingExt("1", 1);
+        ThingExt* t2 = new ThingExt("2", 2);
+        ThingExt* t3 = new ThingExt("3", 3);
+        ThingExt* t4 = new ThingExt("4", 4);
+        ThingExt* t5 = new ThingExt("5", 5);
+        t1->addChild(*t2);
+        t1->addChild(*t5);
+        t2->addChild(*t3);
+        //T1 can reach itself
+        ASSERT_TRUE(t1->isReachableForOtherEntity(t1));
+        //T1 can reach T2 since it's a child and there's no domain
+        ASSERT_TRUE(t2->isReachableForOtherEntity(t1));
+        //T1 can reach T3 since it's a grandchild and there's no domain
+        ASSERT_TRUE(t3->isReachableForOtherEntity(t1));
+        //T1 can't reach T4 since it's not in the same graph
+        ASSERT_FALSE(t4->isReachableForOtherEntity(t1));
+
+        //T2 can reach T1 since it's a parent and there's no domain
+        ASSERT_TRUE(t1->isReachableForOtherEntity(t2));
+        //T3 can reach T1 since it's a grand parent and there's no domain
+        ASSERT_TRUE(t1->isReachableForOtherEntity(t3));
+        //T5 can reach T3 since they share T1 as parent/grand parent and there's no domain
+        ASSERT_TRUE(t3->isReachableForOtherEntity(t5));
+        //T4 can't reach T1 since it's not in the same graph
+        ASSERT_FALSE(t1->isReachableForOtherEntity(t4));
+    }
+
+    /**
+     * Then handle the case where there's a Void domain
+     *
+     * Hierarchy looks like this:
+     *
+     *              T1
+     *              T2*
+     *              T3
+     *
+     * With T2 having a void domain.
+     */
+    {
+        ThingExt* t1 = new ThingExt("1", 1);
+        ThingExt* t2 = new ThingExt("2", 2);
+        ThingExt* t3 = new ThingExt("3", 3);
+        t1->addChild(*t2);
+        t2->addChild(*t3);
+
+        t2->domain = new VoidDomain(*t2);
+        t2->addFlags(entity_domain);
+
+        //T1 can reach itself
+        ASSERT_TRUE(t1->isReachableForOtherEntity(t1));
+        //T1 can reach T2 since it's a child and there's no domain
+        ASSERT_TRUE(t2->isReachableForOtherEntity(t1));
+        //T1 can't reach T3 since T2 has a Void domain
+        ASSERT_FALSE(t3->isReachableForOtherEntity(t1));
+
+        //T2 can reach T1 since it's a parent and there's no domain
+        ASSERT_TRUE(t1->isReachableForOtherEntity(t2));
+        //T3 can't reach T1 since T2 has a domain
+        ASSERT_FALSE(t1->isReachableForOtherEntity(t3));
+
+        //T2 can reach itself
+        ASSERT_TRUE(t2->isReachableForOtherEntity(t2));
+        //T2 can reach T3 even though T2 has a Void domain, since T2 is the parent
+        ASSERT_TRUE(t3->isReachableForOtherEntity(t2));
+
+
+    }
+
+    /**
+     * Then handle the case where there's a Physical domain.
+     *
+     * All entities are placed at origo
+     * Hierarchy looks like this:
+     *
+     *              T1
+     *              T2*
+     *         T3       T5      T7**      T8***
+     *         T4       T6**
+     *
+     * With T2 having a physical domain, and T6 and T7 having invalid positions.
+     * T8 is not perceptive.
+     */
+    {
+        ThingExt* t1 = new ThingExt("1", 1);
+        ThingExt* t2 = new ThingExt("2", 2);
+        t2->m_location.m_pos = WFMath::Point<3>::ZERO();
+        t2->m_location.setBBox(bbox);
+        ThingExt* t3 = new ThingExt("3", 3);
+        t3->m_location.m_pos = WFMath::Point<3>::ZERO();
+        t3->m_location.setBBox(bbox);
+        ThingExt* t4 = new ThingExt("4", 4);
+        t4->m_location.m_pos = WFMath::Point<3>::ZERO();
+        t4->m_location.setBBox(bbox);
+        ThingExt* t5 = new ThingExt("5", 5);
+        t5->m_location.m_pos = WFMath::Point<3>::ZERO();
+        t5->m_location.setBBox(bbox);
+        t5->setProperty("reach", createReachPropFn(10));
+        ThingExt* t6 = new ThingExt("6", 6);
+        ThingExt* t7 = new ThingExt("7", 7);
+        ThingExt* t8 = new ThingExt("8", 8);
+        t8->m_location.m_pos = WFMath::Point<3>::ZERO();
+        t8->m_location.setBBox(bbox);
+        t8->removeFlags(entity_perceptive);
+
+        t2->domain = new PhysicalDomain(*t2);
+        t2->addFlags(entity_domain);
+
+        t1->addChild(*t2);
+        t2->addChild(*t3);
+        t2->addChild(*t5);
+        t2->addChild(*t7);
+        t2->addChild(*t8);
+        t5->addChild(*t6);
+        t3->addChild(*t4);
+
+        //T1 can reach itself
+        ASSERT_TRUE(t1->isReachableForOtherEntity( t1));
+        //T1 can reach T2 since it's a child and there's no domain
+        ASSERT_TRUE(t2->isReachableForOtherEntity( t1));
+        //T1 can't reach T3 since T2 has a Physical domain and it doesn't allow external entities to reach into it.
+        ASSERT_FALSE(t3->isReachableForOtherEntity( t1));
+
+        //T2 can reach T1 since it's a parent and there's no domain
+        ASSERT_TRUE(t1->isReachableForOtherEntity( t2));
+        //T3 can't reach T1 since T2 has a domain
+        ASSERT_FALSE(t1->isReachableForOtherEntity( t3));
+
+        //T2 can reach itself
+        ASSERT_TRUE(t2->isReachableForOtherEntity( t2));
+        //T2 can reach T3 since T2 has a Physical domain which allows it.
+        ASSERT_TRUE(t3->isReachableForOtherEntity( t2));
+        //T5 can reach T3 since T2 has a Physical domain which allows it.
+        ASSERT_TRUE(t3->isReachableForOtherEntity( t5));
+        //T5 can reach T4 since T2 has a Physical domain which allows it to reach T3, and thus T4.
+        ASSERT_TRUE(t4->isReachableForOtherEntity( t5));
+
+        //T2 can reach T6 since the parent of T6 is T5, which can be reached and has no domain.
+        ASSERT_TRUE(t6->isReachableForOtherEntity( t2));
+        //T3 can't reach T7 since T2 has a Physical domain and T7 has an invalid pos.
+        ASSERT_FALSE(t7->isReachableForOtherEntity( t3));
+        //T4 can't reach T5 since T4 isn't a direct child of T2
+        ASSERT_FALSE(t5->isReachableForOtherEntity( t4));
+
+
+    }
+
+    /**
+     * Then handle the case where there's an Inventory domain.
+     *
+     * All entities are placed at origo
+     * Hierarchy looks like this:
+     *
+     *              T1
+     *              T2*    T6
+     *         T3**     T5
+     *         T4
+     *
+     * With T2 having an inventory domain.
+     * And T3 being wielded
+     */
+    {
+        ThingExt* t1 = new ThingExt("1", 1);
+        ThingExt* t2 = new ThingExt("2", 2);
+        ThingExt* t3 = new ThingExt("3", 3);
+        ThingExt* t4 = new ThingExt("4", 4);
+        ThingExt* t5 = new ThingExt("5", 5);
+        ThingExt* t6 = new ThingExt("6", 6);
+
+        t1->addChild(*t2);
+        t1->addChild(*t6);
+        t2->addChild(*t3);
+        t2->addChild(*t5);
+        t3->addChild(*t4);
+
+        t2->domain = new InventoryDomain(*t2);
+        t2->addFlags(entity_domain);
+        auto entityProp = new EntityProperty();
+        entityProp->data() = EntityRef(t3);
+        t2->setProperty("right_hand_wield", entityProp);
+
+        //T1 can reach itself
+        ASSERT_TRUE(t1->isReachableForOtherEntity(t1));
+        //T1 can reach T2 since it's a child and there's no domain
+        ASSERT_TRUE(t2->isReachableForOtherEntity(t1));
+        //T1 can't reach T3 since T2 has an Inventory domain, even though T3 is wielded.
+        ASSERT_FALSE(t3->isReachableForOtherEntity(t1));
+        //T1 can't reach T4 since T2 has an Inventory domain, even though T3 is wielded, and T4 is a child.
+        ASSERT_FALSE(t4->isReachableForOtherEntity(t1));
+        //T1 can't reach T5 since T2 has an Inventory domain.
+        ASSERT_FALSE(t5->isReachableForOtherEntity(t1));
+
+        //T6 can't reach T3 since T2 has an Inventory domain, even though T3 is wielded.
+        ASSERT_FALSE(t3->isReachableForOtherEntity(t6));
+        //T6 can't reach T4 since T2 has an Inventory domain, even though T3 is wielded, and T4 is a child.
+        ASSERT_FALSE(t4->isReachableForOtherEntity(t6));
+        //T6 can't reach T5 since T2 has an Inventory domain.
+        ASSERT_FALSE(t5->isReachableForOtherEntity(t6));
+
+
+    }
+
+    /**
+     * And then a more complex case, involving multiple domains.
+     *
+     * All entities are placed at origo
+     * Hierarchy looks like this:
+     *
+     *                T1
+     *                T2*
+     *          T3*       T5
+     *       T4*   T6
+     *
+     * With T2 having a Physical domain.
+     * With T3 having an Inventory domain.
+     * And T4 being wielded
+     */
+    {
+        ThingExt* t1 = new ThingExt("1", 1);
+        ThingExt* t2 = new ThingExt("2", 2);
+        t2->m_location.m_pos = WFMath::Point<3>::ZERO();
+        t2->m_location.setBBox(bbox);
+        ThingExt* t3 = new ThingExt("3", 3);
+        t3->m_location.m_pos = WFMath::Point<3>::ZERO();
+        t3->m_location.setBBox(bbox);
+        ThingExt* t4 = new ThingExt("4", 4);
+        ThingExt* t5 = new ThingExt("5", 5);
+        t5->m_location.m_pos = WFMath::Point<3>::ZERO();
+        t5->m_location.setBBox(bbox);
+        t5->setProperty("reach", createReachPropFn(10));
+        ThingExt* t6 = new ThingExt("6", 6);
+
+        t2->domain = new PhysicalDomain(*t2);
+        t2->addFlags(entity_domain);
+
+        t3->domain = new InventoryDomain(*t3);
+        t3->addFlags(entity_domain);
+
+        t1->addChild(*t2);
+        t2->addChild(*t3);
+        t2->addChild(*t5);
+        t3->addChild(*t4);
+        t3->addChild(*t6);
+
+        auto entityProp = new EntityProperty();
+        entityProp->data() = EntityRef(t4);
+        t3->setProperty("right_hand_wield", entityProp);
+
+        //T1 can reach itself
+        ASSERT_TRUE(t1->isReachableForOtherEntity(t1));
+        //T1 can reach T2 since it's a child and there's no domain
+        ASSERT_TRUE(t2->isReachableForOtherEntity(t1));
+        //T1 can't reach T3 since T2 has an Physical domain and T1 is a parent.
+        ASSERT_FALSE(t3->isReachableForOtherEntity(t1));
+        //T1 can't reach T4 since T2 has an Physical domain and T1 is a parent.
+        ASSERT_FALSE(t4->isReachableForOtherEntity(t1));
+
+        //T5 can reach T3 since T2 has an Physical domain .
+        ASSERT_TRUE(t3->isReachableForOtherEntity(t5));
+        //T5 can't reach T4 since T2 has an Physical domain, T3 has an Inventory Domain and is close, even though T4 is wielded.
+        ASSERT_FALSE(t4->isReachableForOtherEntity(t5));
+        //T5 can't reach T6 since T2 has an Physical domain, T3 has an Inventory Domain.
+        ASSERT_FALSE(t6->isReachableForOtherEntity(t5));
+
+    }
+
+    /**
+    * Handle "creator" entities which allows more access.
+    *
+    * All entities are placed at origo
+    * Hierarchy looks like this:
+    *
+    *                T1*
+    *       T2*** creator*   T3
+    *    T4**  T5
+    *
+    * With T1 having a Physical domain.
+    * With T2 having an Inventory domain.
+    * With "creator" being a "creator"
+    * And T4 being wielded
+    */
+    {
+        ThingExt* t1 = new ThingExt("1", 1);
+        t1->m_location.m_pos = WFMath::Point<3>::ZERO();
+        t1->m_location.setBBox(bbox);
+        ThingExt* t2 = new ThingExt("2", 2);
+        t2->m_location.m_pos = WFMath::Point<3>::ZERO();
+        t2->m_location.setBBox(bbox);
+        ThingExt* creator = new ThingExt("creator", 10);
+        creator->m_location.m_pos = WFMath::Point<3>::ZERO();
+        creator->m_location.setBBox(bbox);
+        ThingExt* t3 = new ThingExt("3", 3);
+        t3->m_location.m_pos = WFMath::Point<3>::ZERO();
+        t3->m_location.setBBox(bbox);
+        ThingExt* t4 = new ThingExt("4", 4);
+        ThingExt* t5 = new ThingExt("5", 5);
+
+        t1->domain = new PhysicalDomain(*t1);
+        t1->addFlags(entity_domain);
+
+        t2->domain = new InventoryDomain(*t2);
+        t2->addFlags(entity_domain);
+
+        t1->addChild(*t2);
+        t1->addChild(*creator);
+        t1->addChild(*t3);
+        t2->addChild(*t4);
+        t2->addChild(*t5);
+
+        auto entityProp = new EntityProperty();
+        entityProp->data() = EntityRef(t4);
+        t2->setProperty("right_hand_wield", entityProp);
+
+        //T3 can't reach t4 even though it's wielded
+        ASSERT_FALSE(t4->isReachableForOtherEntity(t3));
+        //"creator" can reach t4 since it's a "creator"
+        ASSERT_TRUE(t4->isReachableForOtherEntity(creator));
+        //T3 can't reach t5
+        ASSERT_FALSE(t5->isReachableForOtherEntity(t3));
+        //"creator" can reach t5 since it's a "creator"
+        ASSERT_TRUE(t5->isReachableForOtherEntity(creator));
+
+    }
+
+
+    /**
+    * Handle reaching entities in the same physical domain based on distance.
+    *
+    * Hierarchy looks like this:
+    *
+    *                T1*
+    *       T2       T3      T4
+    *
+    * With T1 having a Physical domain.
+    * And T2, T3 placed near each other, while T4 is placed a bit away.
+    * T2 has no reach, T3 has a reach of 20 meters
+    */
+    {
+        WFMath::AxisBox<3> smallBbox = {{-1, -1, -1},
+                                        {1,  1,  1}};
+        ThingExt* t1 = new ThingExt("1", 1);
+        t1->m_location.m_pos = WFMath::Point<3>::ZERO();
+        t1->m_location.setBBox({{-200, -200, -200}, {200, 200, 200}});
+        ThingExt* t2 = new ThingExt("2", 2);
+        t2->m_location.m_pos = {5, 0, 5};
+        t2->m_location.setBBox(smallBbox);
+        ThingExt* t3 = new ThingExt("3", 3);
+        t3->m_location.m_pos = {10, 0, 10};
+        t3->m_location.setBBox(smallBbox);
+        auto reachProp = new Property<double>();
+        reachProp->data() = 20.f;
+        t3->setProperty("reach", reachProp);
+        ThingExt* t4 = new ThingExt("4", 4);
+        t4->m_location.m_pos = {100, 0, 100};
+        t4->m_location.setBBox(smallBbox);
+
+        t1->domain = new PhysicalDomain(*t1);
+        t1->addFlags(entity_domain);
+
+        t1->addChild(*t2);
+        t1->addChild(*t3);
+        t1->addChild(*t4);
+
+        //T2 can't reach t3 since t2 has no reach
+        ASSERT_FALSE(t3->isReachableForOtherEntity(t2));
+        //T3 can reach t2 since they are close
+        ASSERT_TRUE(t2->isReachableForOtherEntity(t3));
+        //T3 can't reach t4 since it's far away
+        ASSERT_FALSE(t4->isReachableForOtherEntity(t3));
+        //T2 can't reach t4 since it's far away and t2 has no reach
+        ASSERT_FALSE(t4->isReachableForOtherEntity(t2));
+        //T3 can reach a close point in t1
+        ASSERT_TRUE(t1->isReachableForOtherEntity(t3, {9, 0, 9}));
+        //T3 can't reach a far away point in t1
+        ASSERT_FALSE(t1->isReachableForOtherEntity(t3, {90, 0, 90}));
+        //T2 can't reach a close point in t1 since it has no reach
+        ASSERT_FALSE(t1->isReachableForOtherEntity(t2, {6, 0, 6}));
+
+
+
+    }
+}
+
 
 int main()
 {

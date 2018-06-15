@@ -361,6 +361,7 @@ int SoftProperty::get(Atlas::Message::Element & val) const
 
 #include "stubs/rulesets/stubDomainProperty.h"
 #include "stubs/common/stubProperty.h"
+#include "stubs/common/stubTypeNode.h"
 
 namespace Atlas { namespace Objects { namespace Operation {
 int EAT_NO = -1;
@@ -399,10 +400,6 @@ void Script::hook(const std::string & function, LocatedEntity * entity)
 }
 
 Location::Location() : m_loc(0)
-{
-}
-
-TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
 {
 }
 

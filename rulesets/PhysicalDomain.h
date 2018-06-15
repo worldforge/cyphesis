@@ -95,6 +95,8 @@ class PhysicalDomain : public Domain
 
         void toggleChildPerception(LocatedEntity& entity) override;
 
+        bool isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const override;
+
     protected:
 
         friend class SteppingCallback;

@@ -40,6 +40,8 @@ class VoidDomain : public Domain
 
         void removeEntity(LocatedEntity& entity) override;
 
+        bool isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const override;
+
 };
 
 #endif /* VOIDDOMAIN_H_ */

@@ -2537,4 +2537,62 @@ void PhysicalDomain::plantOnEntity(PhysicalDomain::BulletEntry* plantedEntry, Ph
 
 }
 
+bool PhysicalDomain::isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const
+{
+    if (&reachingEntity == &m_entity) {
+        //If the entity itself is reaching for a contained entities it's allowed.
+        return true;
+    }
+
+    if (reach == 0) {
+        return false;
+    }
+
+
+    auto reachingEntityI = m_entries.find(reachingEntity.getIntId());
+    if (reachingEntityI != m_entries.end()) {
+        auto reachingEntityEntry = reachingEntityI->second;
+
+        if (!reachingEntityEntry->entity->m_location.m_pos.isValid()) {
+            return false;
+        }
+
+        //If a contained entity tries to touch the domain entity we must check the optional position.
+        if (&queriedEntity == &m_entity) {
+            if (!positionOnQueriedEntity.isValid()) {
+                return false;
+            }
+
+            auto distance = reachingEntityEntry->collisionObject->getWorldTransform().getOrigin().distance(Convert::toBullet(positionOnQueriedEntity));
+            distance -= reachingEntity.m_location.radius();
+            return distance <= reach;
+
+        } else {
+            //Both the reaching entity and the queried entity must be contained in the domain.
+            auto queriedBulletEntryI = m_entries.find(queriedEntity.getIntId());
+            if (queriedBulletEntryI != m_entries.end()) {
+
+                if (!queriedBulletEntryI->second->entity->m_location.m_pos.isValid()) {
+                    return false;
+                }
+
+
+                //Note that we ignore the position.
+
+                //Start with the full distance.
+                auto distance = reachingEntityEntry->collisionObject->getWorldTransform().getOrigin().distance(queriedBulletEntryI->second->collisionObject->getWorldTransform().getOrigin());
+
+                //We measure from the edge of one entity to the edge of another.
+                distance -= reachingEntity.m_location.radius();
+                distance -= queriedEntity.m_location.radius();
+
+                return distance <= reach;
+            }
+        }
+    }
+    //If either the reaching of queried entity doesn't belong to the domain we won't allow it.
+    //The most likely case if the reaching entity not belonging (i.e. reaching into a domain).
+    return false;
+}
+
 

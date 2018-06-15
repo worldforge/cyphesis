@@ -123,6 +123,7 @@ using Atlas::Objects::Entity::RootEntity;
 #include "stubs/modules/stubLocation.h"
 #include "stubs/common/stubBaseWorld.h"
 #include "stubs/common/stubPropertyManager.h"
+#include "stubs/common/stubTypeNode.h"
 
 void addToEntity(const Point3D & p, std::vector<double> & vd)
 {
