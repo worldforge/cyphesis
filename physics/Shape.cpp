@@ -81,7 +81,7 @@ int MathShape<Ball, 2>::fromAtlas(const Element & data)
             ret = 0;
         }
     }
-    catch (Atlas::Message::WrongTypeException e) {
+    catch (const Atlas::Message::WrongTypeException& e) {
     }
     return ret;
 }
@@ -142,7 +142,7 @@ int MathShape<AxisBox, 2>::fromAtlas(const Element & data)
     try {
         if (data.isMap()) {
             const MapType & datamap = data.Map();
-            MapType::const_iterator I = datamap.find("points");
+            auto I = datamap.find("points");
             if (I != datamap.end()) {
                 m_shape.fromAtlas(I->second);
                 ret = 0;
@@ -152,7 +152,7 @@ int MathShape<AxisBox, 2>::fromAtlas(const Element & data)
             ret = 0;
         }
     }
-    catch (Atlas::Message::WrongTypeException e) {
+    catch (const Atlas::Message::WrongTypeException& e) {
     }
     return ret;
 }
@@ -177,7 +177,7 @@ void MathShape<Line, 2>::scale(CoordType factor)
 {
     size_t count = m_shape.numCorners();
     for (size_t i = 0; i < count; ++i) {
-        Point<2> corner = m_shape.getCorner(i);
+        auto corner = m_shape.getCorner(i);
         m_shape.moveCorner(i, Point<2>(corner.x() * factor,
                                        corner.y() * factor));
     }
@@ -204,7 +204,7 @@ int MathShape<Point, 2>::fromAtlas(const Element & data)
     try {
         if (data.isMap()) {
             const MapType & datamap = data.Map();
-            MapType::const_iterator I = datamap.find("pos");
+            auto I = datamap.find("pos");
             if (I != datamap.end()) {
                 m_shape.fromAtlas(I->second);
                 ret = 0;
@@ -214,7 +214,7 @@ int MathShape<Point, 2>::fromAtlas(const Element & data)
             ret = 0;
         }
     }
-    catch (Atlas::Message::WrongTypeException e) {
+    catch (const Atlas::Message::WrongTypeException& e) {
     }
     return ret;
 }
@@ -287,7 +287,7 @@ int MathShape<RotBox, 2>::fromAtlas(const Element & data)
             ret = 0;
         }
     }
-    catch (Atlas::Message::WrongTypeException e) {
+    catch (const Atlas::Message::WrongTypeException& e) {
     }
     return ret;
 }
@@ -306,12 +306,12 @@ void MathShape<RotBox, 2>::toAtlas(MapType & data) const
 
 Shape * Shape::newFromAtlas(const MapType & data)
 {
-    MapType::const_iterator I = data.find("type");
+    auto I = data.find("type");
     if (I == data.end() || !I->second.isString()) {
-        return 0;
+        return nullptr;
     }
     const std::string & type = I->second.String();
-    Shape * new_shape = 0;
+    Shape * new_shape = nullptr;
     if (type == "polygon") {
         new_shape = new MathShape<Polygon>;
     } else if (type == "line") {
@@ -325,11 +325,11 @@ Shape * Shape::newFromAtlas(const MapType & data)
     } else if (type == "box") {
         new_shape = new MathShape<AxisBox>;
     }
-    if (new_shape != 0) {
+    if (new_shape != nullptr) {
         int res = new_shape->fromAtlas(data);
         if (res != 0) {
             delete new_shape;
-            new_shape = 0;
+            new_shape = nullptr;
         }
     }
     return new_shape;

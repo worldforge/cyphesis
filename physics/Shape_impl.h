@@ -72,7 +72,7 @@ WFMath::Point<dim> MathShape<ShapeT, dim>::getCorner(size_t i) const
 template<template <int> class ShapeT, int dim>
 WFMath::CoordType MathShape<ShapeT, dim>::area() const
 {
-    return 1.;
+    return 1.f;
 }
 
 template<template <int> class ShapeT, int dim>
@@ -124,9 +124,8 @@ void MathShape<ShapeT, dim>::scale(WFMath::CoordType)
 template<template <int> class ShapeT, int dim>
 bool MathShape<ShapeT, dim>::equal(const Shape & other) const
 {
-    const MathShape<ShapeT, dim> * rhs =
-          dynamic_cast<const MathShape<ShapeT, dim> *>(&other);
-    if (rhs != 0 && WFMath::Equal(this->m_shape, rhs->m_shape)) {
+    auto rhs = dynamic_cast<const MathShape<ShapeT, dim> *>(&other);
+    if (rhs != nullptr && WFMath::Equal(this->m_shape, rhs->m_shape)) {
         return true;
     }
     return false;
@@ -162,7 +161,7 @@ int MathShape<ShapeT, dim>::fromAtlas(const Atlas::Message::Element & data)
         m_shape.fromAtlas(data);
         ret = 0;
     }
-    catch (Atlas::Message::WrongTypeException e) {
+    catch (const Atlas::Message::WrongTypeException& e) {
     }
     return ret;
 }
