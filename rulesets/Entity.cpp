@@ -146,6 +146,10 @@ PropertyBase * Entity::setAttr(const std::string & name, const Element & attr)
         m_properties[name] = prop;
     }
 
+    if (prop->hasFlags(per_ephem)) {
+        log(WARNING, String::compose("Setting the ephemeral property '%1' on entity '%2'. This change will not be persisted.", name, describeEntity()));
+    }
+
     prop->set(attr);
     // Allow the value to take effect.
     prop->apply(this);
