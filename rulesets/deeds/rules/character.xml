@@ -14,6 +14,11 @@
                 <string name="default">free</string>
                 <string name="visibility">public</string>
             </map>
+            <!-- Default to a reach of 3 meters -->
+            <map name="reach">
+                <float name="default">3</float>
+                <string name="visibility">public</string>
+            </map>
         </map>
         <string name="id">character</string>
         <string name="objtype">class</string>
