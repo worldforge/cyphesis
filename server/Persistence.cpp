@@ -94,7 +94,7 @@ int Persistence::init()
     }
 
     if (!findAccount("admin")) {
-        debug(std::cout << "Bootstraping admin account."
+        debug(std::cout << "Bootstrapping admin account."
                         << std::endl << std::flush;);
         std::string adminAccountId;
         long adminAccountIntId = m_db.newId(adminAccountId);
@@ -108,7 +108,7 @@ int Persistence::init()
         Shaker shaker;
         std::string password = shaker.generateSalt(32);
 
-        Admin dummyAdminAccount(0, "admin", password,
+        Admin dummyAdminAccount(nullptr, "admin", password,
                                 adminAccountId, adminAccountIntId);
 
         log(INFO, "Created 'admin' account with randomized password.\n"
@@ -126,14 +126,14 @@ bool Persistence::findAccount(const std::string & name)
     std::string namestr = "'" + name + "'";
     DatabaseResult dr = m_db.selectSimpleRowBy("accounts", "username", namestr);
     if (dr.error()) {
-        log(ERROR, "Failure while find account.");
+        log(ERROR, String::compose("Failure while finding account '%1'.", name));
         return false;
     }
     if (dr.empty()) {
         return false;
     }
     if (dr.size() > 1) {
-        log(ERROR, "Duplicate username in accounts database.");
+        log(ERROR, String::compose("Duplicate username in accounts database for name '%1'.", name));
     }
     return true;
 }
@@ -143,44 +143,44 @@ Account * Persistence::getAccount(const std::string & name)
     std::string namestr = "'" + name + "'";
     DatabaseResult dr = m_db.selectSimpleRowBy("accounts", "username", namestr);
     if (dr.error()) {
-        log(ERROR, "Failure while find account.");
-        return 0;
+        log(ERROR, String::compose("Failure while finding account '%1'.", name));
+        return nullptr;
     }
     if (dr.empty()) {
-        return 0;
+        return nullptr;
     }
     if (dr.size() > 1) {
-        log(ERROR, "Duplicate username in accounts database.");
+        log(ERROR, String::compose("Duplicate username in accounts database for name '%1'.", name));
     }
     const char * c = dr.field("id");
-    if (c == 0) {
+    if (c == nullptr) {
         log(ERROR, "Unable to find id field in accounts database.");
-        return 0;
+        return nullptr;
     }
     std::string id = c;
     long intId = integerId(id);
     if (intId == -1) {
-        log(ERROR, String::compose("Invalid ID \"%1\" for account from database.", id));
-        return 0;
+        log(ERROR, String::compose(R"(Invalid ID "%1" for account "%2" from database.)", id, name));
+        return nullptr;
     }
     c = dr.field("password");
-    if (c == 0) {
+    if (c == nullptr) {
         log(ERROR, "Unable to find password field in accounts database.");
-        return 0;
+        return nullptr;
     }
     std::string passwd = c;
     c = dr.field("type");
-    if (c == 0) {
+    if (c == nullptr) {
         log(ERROR, "Unable to find type field in accounts database.");
-        return 0;
+        return nullptr;
     }
     std::string type = c;
     if (type == "admin") {
-        return new Admin(0, name, passwd, id, intId);
+        return new Admin(nullptr, name, passwd, id, intId);
     } else if (type == "server") {
-        return new ServerAccount(0, name, passwd, id, intId);
+        return new ServerAccount(nullptr, name, passwd, id, intId);
     } else {
-        return new Player(0, name, passwd, id, intId);
+        return new Player(nullptr, name, passwd, id, intId);
     }
 }
 
@@ -203,10 +203,10 @@ void Persistence::registerCharacters(Account & ac,
     DatabaseResult dr = m_db.selectRelation(m_characterRelation,
                                                     ac.getId());
     if (dr.error()) {
-        log(ERROR, "Database query failed while looking for characters for account.");
+        log(ERROR, String::compose("Database query failed while looking for characters for account '%1'.", ac.getId()));
     }
-    DatabaseResult::const_iterator Iend = dr.end();
-    for (DatabaseResult::const_iterator I = dr.begin(); I != Iend; ++I) {
+    auto Iend = dr.end();
+    for (auto I = dr.begin(); I != Iend; ++I) {
         const char * id = I.column(0);
         if (id == nullptr) {
             log(ERROR, "No ID data in relation when examining characters");
