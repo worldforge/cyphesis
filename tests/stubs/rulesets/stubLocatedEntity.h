@@ -265,6 +265,14 @@
   }
 #endif //STUB_LocatedEntity_isVisibleForOtherEntity
 
+#ifndef STUB_LocatedEntity_isReachableForOtherEntity
+//#define STUB_LocatedEntity_isReachableForOtherEntity
+  bool LocatedEntity::isReachableForOtherEntity(const LocatedEntity* reacher, const WFMath::Point<3>& positionOnEntity ) const
+  {
+    return false;
+  }
+#endif //STUB_LocatedEntity_isReachableForOtherEntity
+
 #ifndef STUB_LocatedEntity_describeEntity
 //#define STUB_LocatedEntity_describeEntity
   std::string LocatedEntity::describeEntity() const

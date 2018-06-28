@@ -293,6 +293,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "stubs/rulesets/stubInternalProperties.h"
 #include "stubs/rulesets/stubSolidProperty.h"
 #include "stubs/rulesets/stubPerceptionSightProperty.h"
+#include "stubs/rulesets/stubScaleProperty.h"
 
 Account::Account(Connection * conn,
                  const std::string & uname,

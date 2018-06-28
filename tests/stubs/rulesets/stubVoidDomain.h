@@ -56,5 +56,13 @@
   }
 #endif //STUB_VoidDomain_removeEntity
 
+#ifndef STUB_VoidDomain_isEntityReachable
+//#define STUB_VoidDomain_isEntityReachable
+  bool VoidDomain::isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const
+  {
+    return false;
+  }
+#endif //STUB_VoidDomain_isEntityReachable
+
 
 #endif

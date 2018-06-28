@@ -7,15 +7,6 @@
 #include "rulesets/BBoxProperty.h"
 #include "stubBBoxProperty_custom.h"
 
-#ifndef STUB_BBoxProperty_BBoxProperty
-//#define STUB_BBoxProperty_BBoxProperty
-   BBoxProperty::BBoxProperty()
-    : PropertyBase()
-  {
-    
-  }
-#endif //STUB_BBoxProperty_BBoxProperty
-
 #ifndef STUB_BBoxProperty_apply
 //#define STUB_BBoxProperty_apply
   void BBoxProperty::apply(LocatedEntity *)
@@ -63,6 +54,14 @@
     return nullptr;
   }
 #endif //STUB_BBoxProperty_copy
+
+#ifndef STUB_BBoxProperty_updateBboxOnEntity
+//#define STUB_BBoxProperty_updateBboxOnEntity
+  void BBoxProperty::updateBboxOnEntity(LocatedEntity* entity) const
+  {
+    
+  }
+#endif //STUB_BBoxProperty_updateBboxOnEntity
 
 
 #endif

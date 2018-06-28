@@ -612,10 +612,6 @@ void StatusProperty::apply(LocatedEntity * owner)
 {
 }
 
-BBoxProperty::BBoxProperty()
-{
-}
-
 void BBoxProperty::apply(LocatedEntity * ent)
 {
 }

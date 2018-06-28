@@ -430,6 +430,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "rulesets/Creator.h"
 #include "rulesets/Plant.h"
 #include "rulesets/Stackable.h"
+#include "stubs/rulesets/stubScaleProperty.h"
 
 #include "common/const.h"
 #include "common/globals.h"

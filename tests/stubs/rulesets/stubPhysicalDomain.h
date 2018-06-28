@@ -75,7 +75,7 @@
 
 #ifndef STUB_PhysicalDomain_applyTransform
 //#define STUB_PhysicalDomain_applyTransform
-  void PhysicalDomain::applyTransform(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity, std::set<LocatedEntity*>& transformedEntities)
+  void PhysicalDomain::applyTransform(LocatedEntity& entity, const TransformData& transformData, std::set<LocatedEntity*>& transformedEntities)
   {
     
   }
@@ -96,6 +96,14 @@
     
   }
 #endif //STUB_PhysicalDomain_toggleChildPerception
+
+#ifndef STUB_PhysicalDomain_isEntityReachable
+//#define STUB_PhysicalDomain_isEntityReachable
+  bool PhysicalDomain::isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const
+  {
+    return false;
+  }
+#endif //STUB_PhysicalDomain_isEntityReachable
 
 #ifndef STUB_PhysicalDomain_createDomainBorders
 //#define STUB_PhysicalDomain_createDomainBorders
@@ -123,7 +131,7 @@
 
 #ifndef STUB_PhysicalDomain_childEntityPropertyApplied
 //#define STUB_PhysicalDomain_childEntityPropertyApplied
-  void PhysicalDomain::childEntityPropertyApplied(const std::string& name, PropertyBase& prop, BulletEntry* bulletEntry)
+  void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const PropertyBase& prop, BulletEntry* bulletEntry)
   {
     
   }
@@ -131,7 +139,7 @@
 
 #ifndef STUB_PhysicalDomain_entityPropertyApplied
 //#define STUB_PhysicalDomain_entityPropertyApplied
-  void PhysicalDomain::entityPropertyApplied(const std::string& name, PropertyBase& prop)
+  void PhysicalDomain::entityPropertyApplied(const std::string& name, const PropertyBase& prop)
   {
     
   }

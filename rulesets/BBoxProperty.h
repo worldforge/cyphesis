@@ -36,7 +36,7 @@ class BBoxProperty : public PropertyBase {
     static constexpr const char* property_name = "bbox";
     static constexpr const char* property_atlastype = "list";
 
-    explicit BBoxProperty();
+    explicit BBoxProperty() = default;
 
     const BBox & data() const { return m_data; }
     BBox & data() { return m_data; }
@@ -54,6 +54,8 @@ class BBoxProperty : public PropertyBase {
                  const Atlas::Objects::Entity::RootEntity & ent) const override;
 
     BBoxProperty * copy() const override;
+
+    void updateBboxOnEntity(LocatedEntity* entity) const;
 };
 
 #endif // RULESETS_B_BOX_PROPERTY_H

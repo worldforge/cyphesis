@@ -558,6 +558,7 @@ void EntityFilterTest::teardown()
 #include "stubs/rulesets/stubDomainProperty.h"
 #include "stubs/rulesets/stubIdProperty.h"
 #include "stubs/rulesets/stubDensityProperty.h"
+#include "stubs/rulesets/stubScaleProperty.h"
 
 ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
         PropertyBase(per_ephem), m_data(data)

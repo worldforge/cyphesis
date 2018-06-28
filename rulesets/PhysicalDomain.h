@@ -274,7 +274,7 @@ class PhysicalDomain : public Domain
          * @param prop
          * @param bulletEntry
          */
-        void childEntityPropertyApplied(const std::string& name, PropertyBase& prop, BulletEntry* bulletEntry);
+        void childEntityPropertyApplied(const std::string& name, const PropertyBase& prop, BulletEntry* bulletEntry);
 
         /**
          * Listener method for changes to properties on the entity to which the property belongs.
@@ -282,7 +282,7 @@ class PhysicalDomain : public Domain
          * @param prop
          * @param bulletEntry
          */
-        void entityPropertyApplied(const std::string& name, PropertyBase& prop);
+        void entityPropertyApplied(const std::string& name, const PropertyBase& prop);
 
         float getMassForEntity(const LocatedEntity& entity) const;
 

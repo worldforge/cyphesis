@@ -51,6 +51,7 @@ int main()
 
 #include "TestWorld.h"
 #include "stubs/rulesets/stubDensityProperty.h"
+#include "stubs/rulesets/stubScaleProperty.h"
 
 void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {

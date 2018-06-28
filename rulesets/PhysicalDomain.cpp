@@ -43,6 +43,7 @@
 #include "PerceptionSightProperty.h"
 #include "BBoxProperty.h"
 #include "SolidProperty.h"
+#include "ScaleProperty.h"
 
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>
@@ -1124,12 +1125,12 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
     m_steppingEntries.erase(entity.getIntId());
 }
 
-void PhysicalDomain::childEntityPropertyApplied(const std::string& name, PropertyBase& prop, BulletEntry* bulletEntry)
+void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const PropertyBase& prop, BulletEntry* bulletEntry)
 {
 
     if (name == "friction") {
         if (bulletEntry->collisionObject) {
-            auto frictionProp = dynamic_cast<Property<double>*>(&prop);
+            auto frictionProp = dynamic_cast<const Property<double>*>(&prop);
             bulletEntry->collisionObject->setFriction(static_cast<btScalar>(frictionProp->data()));
             if (getMassForEntity(*bulletEntry->entity) != 0) {
                 bulletEntry->collisionObject->activate();
@@ -1137,7 +1138,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
         }
     } else if (name == "friction_roll") {
         if (bulletEntry->collisionObject) {
-            auto frictionProp = dynamic_cast<Property<double>*>(&prop);
+            auto frictionProp = dynamic_cast<const Property<double>*>(&prop);
             bulletEntry->collisionObject->setRollingFriction(static_cast<btScalar>(frictionProp->data()));
             if (getMassForEntity(*bulletEntry->entity) != 0) {
                 bulletEntry->collisionObject->activate();
@@ -1148,7 +1149,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
 #if BT_BULLET_VERSION < 285
             log(WARNING, "Your version of Bullet doesn't support spinning friction.");
 #else
-            auto frictionProp = dynamic_cast<Property<double>*>(&prop);
+            auto frictionProp = dynamic_cast<const Property<double>*>(&prop);
             bulletEntry->collisionObject->setSpinningFriction(static_cast<btScalar>(frictionProp->data()));
             if (getMassForEntity(*bulletEntry->entity) != 0) {
                 bulletEntry->collisionObject->activate();
@@ -1158,7 +1159,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
     } else if (name == "mode") {
 
         if (bulletEntry->collisionObject) {
-            ModeProperty* modeProp = dynamic_cast<ModeProperty*>(&prop);
+            auto modeProp = dynamic_cast<const ModeProperty*>(&prop);
             //Check if the mode change came from "outside", i.e. wasn't made because of the physics simulation (such as being submerged).
             if (modeProp->getMode() != bulletEntry->mode) {
                 applyNewPositionForEntity(bulletEntry, bulletEntry->entity->m_location.m_pos);
@@ -1281,7 +1282,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
             }
         }
 
-    } else if (name == BBoxProperty::property_name) {
+    } else if (name == BBoxProperty::property_name || name == ScaleProperty::property_name) {
         const auto& bbox = bulletEntry->entity->m_location.bBox();
         if (bbox.isValid()) {
             if (bulletEntry->collisionObject) {
@@ -1318,11 +1319,11 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
     } else if (name == TerrainModProperty::property_name) {
         updateTerrainMod(*bulletEntry->entity, true);
     } else if (name == "speed-ground") {
-        bulletEntry->speedGround = dynamic_cast<Property<double>*>(&prop)->data();
+        bulletEntry->speedGround = dynamic_cast<const Property<double>*>(&prop)->data();
     } else if (name == "speed-water") {
-        bulletEntry->speedWater = dynamic_cast<Property<double>*>(&prop)->data();
+        bulletEntry->speedWater = dynamic_cast<const Property<double>*>(&prop)->data();
     } else if (name == "speed-flight") {
-        bulletEntry->speedFlight = dynamic_cast<Property<double>*>(&prop)->data();
+        bulletEntry->speedFlight = dynamic_cast<const Property<double>*>(&prop)->data();
     } else if (name == "floats") {
         applyNewPositionForEntity(bulletEntry, bulletEntry->entity->m_location.m_pos);
         bulletEntry->entity->m_location.update(BaseWorld::instance().getTime());
@@ -1332,7 +1333,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, Propert
         }
         sendMoveSight(*bulletEntry, true, false, false, false, false);
     } else if (name == "step_factor") {
-        auto stepFactorProp = dynamic_cast<Property<double>*>(&prop);
+        auto stepFactorProp = dynamic_cast<const Property<double>*>(&prop);
         auto I = m_steppingEntries.find(bulletEntry->entity->getIntId());
         if (stepFactorProp && stepFactorProp->data() > 0) {
             if (I != m_steppingEntries.end()) {
@@ -1472,20 +1473,20 @@ void PhysicalDomain::getCollisionFlagsForEntity(const LocatedEntity& entity, sho
     }
 }
 
-void PhysicalDomain::entityPropertyApplied(const std::string& name, PropertyBase& prop)
+void PhysicalDomain::entityPropertyApplied(const std::string& name, const PropertyBase& prop)
 {
     if (name == "friction") {
-        auto frictionProp = dynamic_cast<Property<double>*>(&prop);
+        auto frictionProp = dynamic_cast<const Property<double>*>(&prop);
         for (auto& entry : m_terrainSegments) {
             entry.second.rigidBody->setFriction(static_cast<btScalar>(frictionProp->data()));
         }
     } else if (name == "friction_roll") {
-        auto frictionRollingProp = dynamic_cast<Property<double>*>(&prop);
+        auto frictionRollingProp = dynamic_cast<const Property<double>*>(&prop);
         for (auto& entry : m_terrainSegments) {
             entry.second.rigidBody->setRollingFriction(static_cast<btScalar>(frictionRollingProp->data()));
         }
     } else if (name == "friction_spin") {
-        auto frictionSpinningProp = dynamic_cast<Property<double>*>(&prop);
+        auto frictionSpinningProp = dynamic_cast<const Property<double>*>(&prop);
 #if BT_BULLET_VERSION < 285
         log(WARNING, "Your version of Bullet doesn't support spinning friction.");
 #else

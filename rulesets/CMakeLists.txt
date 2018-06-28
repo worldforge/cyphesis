@@ -62,7 +62,7 @@ add_library(rulesetentity
     Vector3Property.cpp
     PhysicalWorld.cpp PhysicalWorld.h
     OgreMeshDeserializer.cpp OgreMeshDeserializer.h
-    PerceptionSightProperty.cpp PerceptionSightProperty.h)
+    PerceptionSightProperty.cpp PerceptionSightProperty.h ScaleProperty.cpp ScaleProperty.h)
 
 target_link_libraries(rulesetentity ${BULLET_LIBRARIES})
 

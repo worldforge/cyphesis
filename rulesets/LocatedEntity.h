@@ -428,7 +428,7 @@ class LocatedEntity : public Router {
     /// @brief Signal emitted whenever a property update is applied.
     ///
     /// The first parameter is the name of the property, the second is the updated property.
-    sigc::signal<void, const std::string&, PropertyBase&> propertyApplied;
+    sigc::signal<void, const std::string&, const PropertyBase&> propertyApplied;
 
     friend class LocatedEntitytest;
 };

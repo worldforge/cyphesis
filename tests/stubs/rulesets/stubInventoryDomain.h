@@ -64,5 +64,13 @@
   }
 #endif //STUB_InventoryDomain_removeEntity
 
+#ifndef STUB_InventoryDomain_isEntityReachable
+//#define STUB_InventoryDomain_isEntityReachable
+  bool InventoryDomain::isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const
+  {
+    return false;
+  }
+#endif //STUB_InventoryDomain_isEntityReachable
+
 
 #endif

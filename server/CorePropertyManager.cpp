@@ -56,6 +56,7 @@
 #include "rulesets/QuaternionProperty.h"
 #include "rulesets/Vector3Property.h"
 #include "rulesets/PerceptionSightProperty.h"
+#include "rulesets/ScaleProperty.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
@@ -245,6 +246,8 @@ CorePropertyManager::CorePropertyManager()
      * How far away the entity can reach (used when interacting with things).
      */
     installProperty<Property<double>>("reach");
+
+    installProperty<ScaleProperty>();
 }
 
 int CorePropertyManager::installFactory(const std::string & type_name,
