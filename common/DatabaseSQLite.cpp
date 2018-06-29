@@ -445,13 +445,3 @@ DatabaseResult::const_iterator DatabaseResultWorkerSqlite::end() const
 {
     return DatabaseResult::const_iterator(std::unique_ptr<const_iterator_worker_sqlite>(new const_iterator_worker_sqlite{*this, m_res->end()}), *this);
 }
-
-const char* DatabaseResultWorkerSqlite::field(int column) const
-{
-    return begin().column(column);
-}
-
-const char* DatabaseResultWorkerSqlite::field(const char* column) const
-{
-    return begin().column(column);
-}

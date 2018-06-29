@@ -66,15 +66,6 @@ class DatabaseNullResultWorker : public DatabaseResult::DatabaseResultWorker
             return DatabaseResult::const_iterator(std::unique_ptr<DatabaseResult::const_iterator_worker>(new const_iterator_worker_null), *this);
         }
 
-        const char* field(int column) const override
-        {
-            return "";
-        }
-
-        const char* field(const char* column) const override
-        {
-            return "";
-        }
 };
 
 class DatabaseNull : public Database

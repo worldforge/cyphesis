@@ -161,10 +161,6 @@ struct DatabaseResultWorkerSqlite : public DatabaseResult::DatabaseResultWorker
 
     DatabaseResult::const_iterator end() const override;
 
-    const char* field(int column) const override;
-
-    const char* field(const char* column) const override;
-
 };
 
 #endif // COMMON_DATABASESQLITE_H

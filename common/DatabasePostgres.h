@@ -210,22 +210,6 @@ struct DatabaseResultWorkerPostgres : public DatabaseResult::DatabaseResultWorke
         return DatabaseResult::const_iterator(std::unique_ptr<const_iterator_worker_postgres>(new const_iterator_worker_postgres{*this, -1}), *this);
     }
 
-    // const_iterator find() perhaps
-
-    const char* field(int column) const override
-    {
-        return PQgetvalue(m_res.get(), 0, column);
-    }
-
-    const char* field(const char* column) const override
-    {
-        int col_num = PQfnumber(m_res.get(), column);
-        if (col_num == -1) {
-            return "";
-        }
-        return PQgetvalue(m_res.get(), 0, col_num);
-    }
-
 };
 
 #endif // COMMON_DATABASEPOSTGRES_H

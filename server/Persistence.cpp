@@ -152,7 +152,8 @@ Account * Persistence::getAccount(const std::string & name)
     if (dr.size() > 1) {
         log(ERROR, String::compose("Duplicate username in accounts database for name '%1'.", name));
     }
-    const char * c = dr.field("id");
+    auto first = dr.begin();
+    const char * c = first.column("id");
     if (c == nullptr) {
         log(ERROR, "Unable to find id field in accounts database.");
         return nullptr;
@@ -163,13 +164,13 @@ Account * Persistence::getAccount(const std::string & name)
         log(ERROR, String::compose(R"(Invalid ID "%1" for account "%2" from database.)", id, name));
         return nullptr;
     }
-    c = dr.field("password");
+    c = first.column("password");
     if (c == nullptr) {
         log(ERROR, "Unable to find password field in accounts database.");
         return nullptr;
     }
     std::string passwd = c;
-    c = dr.field("type");
+    c = first.column("type");
     if (c == nullptr) {
         log(ERROR, "Unable to find type field in accounts database.");
         return nullptr;

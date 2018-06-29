@@ -333,10 +333,6 @@ class DatabaseResult
 
             virtual const_iterator end() const = 0;
 
-            virtual const char* field(int column) const = 0;
-
-            virtual const char* field(const char* column) const = 0;
-
         };
 
         int size() const
@@ -368,17 +364,7 @@ class DatabaseResult
         {
             return m_worker->end();
         }
-        // const_iterator find() perhaps
 
-        const char* field(int column) const
-        {
-            return m_worker->field(column);
-        }
-
-        const char* field(const char* column) const
-        {
-            return m_worker->field(column);
-        }
 };
 
 #endif // COMMON_DATABASE_H
