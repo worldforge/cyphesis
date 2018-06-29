@@ -17,9 +17,9 @@
                 <float name="default">100</float>
                 <string name="visibility">public</string>
             </map>
-            <map name="maxmass">
-                <float name="default">150</float>
-                <string name="visibility">private</string>
+            <map name="maxscale">
+                <float name="default">1.2</float>
+                <string name="visibility">public</string>
             </map>
             <map name="meat">
                 <string name="default">venison</string>

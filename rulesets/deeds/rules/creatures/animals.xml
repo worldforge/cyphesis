@@ -9,9 +9,9 @@
                 <float name="default">20</float>
                 <string name="visibility">public</string>
             </map>
-            <map name="maxmass">
-                <float name="default">30</float>
-                <string name="visibility">private</string>
+            <map name="maxscale">
+                <float name="default">1.2</float>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">crab</string>

@@ -18,9 +18,9 @@
                 <float name="default">80</float>
                 <string name="visibility">public</string>
             </map>
-            <map name="maxmass">
-                <float name="default">2000</float>
-                <string name="visibility">private</string>
+            <map name="maxscale">
+                <float name="default">1.2</float>
+                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">cow</string>

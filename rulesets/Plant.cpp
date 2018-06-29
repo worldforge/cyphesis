@@ -34,6 +34,7 @@
 #include "common/Tick.h"
 #include "common/Update.h"
 #include "BiomassProperty.h"
+#include "ScaleProperty.h"
 
 #include <wfmath/atlasconv.h>
 #include <wfmath/MersenneTwister.h>
@@ -143,109 +144,33 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
 
             auto mass_prop = requirePropertyClass<Property<double> >("mass", 0.);
             auto biomass = modPropertyClassFixed<BiomassProperty>();
-            auto box_property = requirePropertyClassFixed<BBoxProperty>();
-            BBox & bbox = m_location.m_bBox;
+            auto bboxProperty = getPropertyClassFixed<BBoxProperty>();
             double & mass = mass_prop->data();
-            double old_mass = mass;
 
             auto densityProperty = getPropertyClassFixed<DensityProperty>();
-            if (densityProperty) {
+            auto maxScaleProperty = getPropertyType<double>("maxscale");
+            if (densityProperty && maxScaleProperty && bboxProperty) {
                 //There's a density property; we shouldn't change mass directly, instead we should change the size of the entity.
                 double newMass = mass + *m_nourishment;
 
-                //Check if there's a maxsize prop, otherwise check with maxmass
-                auto maxSizeProp = getPropertyClass<Vector3Property>("maxsize");
-                if (maxSizeProp && maxSizeProp->data().isValid() && bbox.isValid() && densityProperty->data() != 0) {
-                    WFMath::Vector<3> volumeVector = bbox.highCorner() - bbox.lowCorner();
-                    float volume = volumeVector.x() * volumeVector.y() * volumeVector.z();
-                    float volumeNew = newMass / densityProperty->data();
-                    float scale = volumeNew / volume;
-                    boxScale(bbox, scale);
+                const auto& bbox = bboxProperty->data();
+                WFMath::Vector<3> volumeVector = bbox.highCorner() - bbox.lowCorner();
+                float volume = volumeVector.x() * volumeVector.y() * volumeVector.z();
+                double volumeNew = newMass / densityProperty->data();
+                double scale = std::min(std::pow(volumeNew / volume, 0.33333f), maxScaleProperty->data());
 
-                    //We've scaled the bbox; now check if it exceeds the max size.
-                    //0 is ignored.
-                    WFMath::Vector<3> newSize = bbox.highCorner() - bbox.lowCorner();
-                    const WFMath::Vector<3>& maxSize = maxSizeProp->data();
-                    scale = 1.0f;
-                    if (maxSize.x() != 0 && newSize.x() > maxSize.x()) {
-                        scale = std::min(scale, maxSize.x() / newSize.x());
-                    }
-                    if (maxSize.y() != 0 && newSize.y() > maxSize.y()) {
-                        scale = std::min(scale, maxSize.y() / newSize.y());
-                    }
-                    if (maxSize.z() != 0 && newSize.z() > maxSize.z()) {
-                        scale = std::min(scale, maxSize.z() / newSize.z());
-                    }
-
-                    //New box needs to be scaled again to fit with max size.
-                    if (scale != 1.0f) {
-                        boxScale(bbox, scale);
-                    }
-
-                    box_property->data() = bbox;
-                    box_property->apply(this);
-                    box_property->addFlags(flag_unsent);
-
+                auto scaleProperty = requirePropertyClass<ScaleProperty>("scale");
+                //Just check the y, assuming the scale is uniform.
+                if (scale != scaleProperty->data().y()) {
+                    setAttr("scale", Atlas::Message::ListType{scale});
                     scaleArea();
-                } else {
-                    Element maxmass_attr;
-                    if (getAttrType("maxmass", maxmass_attr, Element::TYPE_FLOAT) == 0) {
-                        newMass = std::min(newMass, maxmass_attr.Float());
-                    }
-
-                    if (old_mass != 0 && bbox.isValid()) {
-                        float scale = (float)(newMass / old_mass);
-                        float height_scale = std::pow(scale, 0.33333f);
-                        debug(std::cout << "scale " << scale << ", " << height_scale
-                                        << std::endl << std::flush;);
-                        debug(std::cout << "Old " << bbox << std::endl << std::flush;);
-                        boxScale(bbox, scale);
-                        debug(std::cout << "New " << bbox << std::endl << std::flush;);
-
-                        box_property->data() = bbox;
-                        box_property->apply(this);
-                        box_property->addFlags(flag_unsent);
-
-                        scaleArea();
-                    }
                 }
-
-
 
                 if (biomass != nullptr) {
                     biomass->set(mass);
                     biomass->addFlags(flag_unsent);
                 }
 
-            } else {
-                mass += *m_nourishment;
-
-                Element maxmass_attr;
-                if (getAttrType("maxmass", maxmass_attr, Element::TYPE_FLOAT) == 0) {
-                    mass = std::min(mass, maxmass_attr.Float());
-                }
-                if (biomass != nullptr) {
-                    biomass->set(mass);
-                    biomass->addFlags(flag_unsent);
-                }
-                //TODO: we need to sort out how to handle mass and biomass
-                mass_prop->set(mass);
-                mass_prop->addFlags(flag_unsent);
-
-                // FIXME Handle the bbox without needing the Set operation.
-                if (old_mass != 0 && bbox.isValid()) {
-                    float scale = (float)(mass / old_mass);
-
-                    debug(std::cout << "Old " << bbox << std::endl << std::flush;);
-                    boxScale(bbox, scale);
-                    debug(std::cout << "New " << bbox << std::endl << std::flush;);
-
-                    box_property->data() = bbox;
-                    box_property->apply(this);
-                    box_property->addFlags(flag_unsent);
-
-                    scaleArea();
-                }
             }
             *m_nourishment = 0;
         }

@@ -109,6 +109,8 @@ int main()
 
 // stubs
 
+#include "stubs/rulesets/stubScaleProperty.h"
+
 void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }

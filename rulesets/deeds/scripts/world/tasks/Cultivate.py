@@ -51,10 +51,8 @@ class Cultivate(server.Task):
 
         new_loc = self.target().location.copy()
         new_loc.orientation = self.target().location.orientation
-        create=Operation("create", Entity(type = self.target().props.germinates,
-                                          mass = self.target().props.mass,
-                                          bbox = [-0.02, -0.02, 0,
-                                                  0.02, 0.02, 0.12],
+        create=Operation("create", Entity(parent = self.target().props.germinates,
+                                          scale = [0.1],
                                           location = new_loc,
                                           mode = "planted"), to = self.target())
         res.append(create)

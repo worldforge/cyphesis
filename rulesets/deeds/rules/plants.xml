@@ -38,12 +38,8 @@
         <float name="default">750</float>
         <string name="visibility">public</string>
       </map>
-      <map name="maxsize">
-        <list name="default">
-            <float>0</float>
-            <float>0</float>
-            <float>4</float>
-        </list>
+      <map name="maxscale">
+        <float name="default">1.5</float>
         <string name="visibility">public</string>
       </map>
       <map name="sizeAdult">
@@ -74,12 +70,8 @@
         <float name="default">600</float>
         <string name="visibility">public</string>
       </map>
-      <map name="maxsize">
-        <list name="default">
-            <float>0</float>
-            <float>0</float>
-            <float>15</float>
-        </list>
+      <map name="maxscale">
+        <float name="default">1.5</float>
         <string name="visibility">public</string>
       </map>
     </map>

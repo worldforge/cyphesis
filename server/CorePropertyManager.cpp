@@ -248,6 +248,11 @@ CorePropertyManager::CorePropertyManager()
     installProperty<Property<double>>("reach");
 
     installProperty<ScaleProperty>();
+
+    /**
+     * The max scale of an entity. This is a single value; when enforcing one dimension of the actual scale value will be used (often y).
+     */
+    installProperty<Property<double>>("maxscale");
 }
 
 int CorePropertyManager::installFactory(const std::string & type_name,
