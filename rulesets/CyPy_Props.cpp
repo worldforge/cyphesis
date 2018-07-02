@@ -54,14 +54,12 @@ static PyObject * Props_getattro(CyPyProps *self, PyObject *oname)
             // If this property is not set with a value, return none.
             if (prop->get(attr) == 0) {
                 return MessageElement_asPyObject(attr);
-            } else {
-                Py_INCREF(Py_None);
-                return Py_None;
             }
         }
     }
 
-    return PyObject_GenericGetAttr((PyObject *)self, oname);
+    Py_INCREF(Py_None);
+    return Py_None;
 }
 
 static int Props_setattro(CyPyProps *self, PyObject *oname, PyObject *v)
