@@ -160,25 +160,6 @@
         <map name="attributes">
             <map name="geometry">
                 <map name="default">
-                    <string name="path">dural/items/weapons/swords/model/sword_A07.mesh</string>
-                    <string name="type">box</string>
-                </map>
-                <string name="visibility">public</string>
-            </map>
-            <map name="present">
-                <string name="default">dural/items/weapons/swords/model/sword_A07.mesh</string>
-                <string name="visibility">public</string>
-            </map>
-        </map>
-        <string name="id">sword_a7</string>
-        <string name="objtype">class</string>
-        <string name="parent">sword</string>
-    </map>
-
-    <map>
-        <map name="attributes">
-            <map name="geometry">
-                <map name="default">
                     <string name="path">dural/items/weapons/swords/model/sword_A08.mesh</string>
                     <string name="type">box</string>
                 </map>
