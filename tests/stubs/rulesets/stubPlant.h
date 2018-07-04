@@ -40,14 +40,6 @@
   }
 #endif //STUB_Plant_Plant
 
-#ifndef STUB_Plant_Plant_DTOR
-//#define STUB_Plant_Plant_DTOR
-   Plant::~Plant()
-  {
-    
-  }
-#endif //STUB_Plant_Plant_DTOR
-
 #ifndef STUB_Plant_NourishOperation
 //#define STUB_Plant_NourishOperation
   void Plant::NourishOperation(const Operation &, OpVector &)
@@ -63,14 +55,6 @@
     
   }
 #endif //STUB_Plant_TickOperation
-
-#ifndef STUB_Plant_TouchOperation
-//#define STUB_Plant_TouchOperation
-  void Plant::TouchOperation(const Operation &, OpVector &)
-  {
-    
-  }
-#endif //STUB_Plant_TouchOperation
 
 
 #endif

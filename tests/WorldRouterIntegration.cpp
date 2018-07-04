@@ -378,29 +378,11 @@ LocatedEntity* ArchetypeFactory::newEntity(const std::string & id, long intId, c
 }
 
 #include "stubs/server/stubArchetypeFactory.h"
+#include "stubs/rulesets/stubPlant.h"
 
 
 class World;
 
-
-Plant::Plant(const std::string& id, long idInt)
-:Thing::Thing(id, idInt)
-{
-}
-
-Plant::~Plant(){}
-
-void Plant::NourishOperation(const Operation & op, OpVector &)
-{
-}
-
-void Plant::TickOperation(const Operation & op, OpVector &)
-{
-}
-
-void Plant::TouchOperation(const Operation & op, OpVector &)
-{
-}
 
 Stackable::Stackable(const std::string& id, long idInt)
 :Thing::Thing(id, idInt)

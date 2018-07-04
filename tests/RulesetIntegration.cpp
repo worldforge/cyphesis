@@ -804,25 +804,7 @@ int CorePropertyManager::installFactory(const std::string & type_name,
 {
     return 0;
 }
-
-Plant::Plant(const std::string& id, long idInt)
-:Thing::Thing(id, idInt)
-{
-}
-
-Plant::~Plant(){}
-
-void Plant::NourishOperation(const Operation & op, OpVector &)
-{
-}
-
-void Plant::TickOperation(const Operation & op, OpVector &)
-{
-}
-
-void Plant::TouchOperation(const Operation & op, OpVector &)
-{
-}
+#include "stubs/rulesets/stubPlant.h"
 
 Stackable::Stackable(const std::string& id, long idInt)
 :Thing::Thing(id, idInt)

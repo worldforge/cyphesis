@@ -534,25 +534,8 @@ ArithmeticScript * ArithmeticBuilder::newArithmetic(const std::string & name,
     return 0;
 }
 
+#include "stubs/rulesets/stubPlant.h"
 
-Plant::Plant(const std::string& id, long idInt)
-:Thing::Thing(id, idInt)
-{
-}
-
-Plant::~Plant(){}
-
-void Plant::NourishOperation(const Operation & op, OpVector &)
-{
-}
-
-void Plant::TickOperation(const Operation & op, OpVector &)
-{
-}
-
-void Plant::TouchOperation(const Operation & op, OpVector &)
-{
-}
 
 Stackable::Stackable(const std::string& id, long idInt)
 :Thing::Thing(id, idInt)

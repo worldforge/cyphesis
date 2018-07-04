@@ -60,8 +60,6 @@ class Plant : public Thing {
     boost::optional<double> m_nourishment;
 
     static const int m_speed = 20; // Number of basic_ticks per tick
-    static const int m_minuDrop = 0; // min fruit dropped
-    static const int m_maxuDrop = 2; // max fruit dropped
 
     void handleFruiting(OpVector & res, Property<int>& fruits_prop);
     void dropFruit(OpVector & res, const std::string& fruitName);
@@ -73,11 +71,12 @@ class Plant : public Thing {
   public:
 
     explicit Plant(const std::string & id, long intId);
-    virtual ~Plant();
 
-    virtual void NourishOperation(const Operation &, OpVector &);
-    virtual void TickOperation(const Operation &, OpVector &);
-    virtual void TouchOperation(const Operation &, OpVector &);
+    ~Plant() override = default;
+
+    void NourishOperation(const Operation &, OpVector &) override;
+
+    void TickOperation(const Operation &, OpVector &) override;
 };
 
 #endif // RULESETS_PLANT_H

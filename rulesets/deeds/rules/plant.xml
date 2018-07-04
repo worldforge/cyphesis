@@ -28,6 +28,15 @@
                 </map>
                 <string name="visibility">public</string>
             </map>
+            <map name="scripts">
+                <list name="default">
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.objects.plants.FruitPlant.FruitPlant</string>
+                    </map>
+                </list>
+                <string name="visibility">public</string>
+            </map>
         </map>
         <string name="id">plant</string>
         <string name="objtype">class</string>

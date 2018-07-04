@@ -59,10 +59,6 @@ Plant::Plant(const std::string & id, long intId) :
 {
 }
 
-Plant::~Plant()
-{
-}
-
 /// \brief Generate operations to drop a fruit.
 ///
 void Plant::dropFruit(OpVector & res, const std::string& fruitName)
@@ -236,44 +232,6 @@ void Plant::handleFruiting(OpVector & res, Property<int>& fruits_prop) {
             if (randint(0, 100) < fruitsChance.Int()) {
                 fruits++;
                 fruits_prop.addFlags(flag_unsent);
-            }
-        }
-    }
-}
-
-void Plant::TouchOperation(const Operation & op, OpVector & res)
-{
-    Element sizeAdult;
-    if (getAttrType("sizeAdult", sizeAdult, Element::TYPE_FLOAT) == 0
-            || getAttrType("sizeAdult", sizeAdult, Element::TYPE_INT) == 0) {
-        //Only drop fruits if we're an adult
-        if (m_location.bBox().isValid()
-                && (m_location.bBox().highCorner().y() >= sizeAdult.asNum())) {
-
-            Property<int> * fruits_prop = modPropertyType<int>("fruits");
-            if (fruits_prop != nullptr) {
-                if (fruits_prop->data() <= 0) {
-                    return;
-                }
-                Element fruitName;
-                if (getAttrType("fruitName", fruitName, Element::TYPE_STRING) != 0) {
-                    return;
-                }
-                Element fruitsChance;
-                if (getAttrType("fruitChance", fruitsChance, Element::TYPE_INT) != 0) {
-                    return;
-                }
-                //TODO: use a different attribute than fruitChance for this
-                if (randint(0, 100) < fruitsChance.Int()) {
-                    fruits_prop->data()--;
-                    fruits_prop->addFlags(flag_unsent);
-                    dropFruit(res, fruitName.String());
-
-                    Update update;
-                    update->setTo(getId());
-                    res.push_back(update);
-                }
-
             }
         }
     }

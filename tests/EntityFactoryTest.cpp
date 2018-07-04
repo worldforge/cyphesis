@@ -148,27 +148,8 @@ void Stackable::CombineOperation(const Operation & op, OpVector & res)
 void Stackable::DivideOperation(const Operation & op, OpVector & res)
 {
 }
+#include "stubs/rulesets/stubPlant.h"
 
-Plant::Plant(const std::string & id, long intId) :
-       Thing(id, intId), m_nourishment(0)
-{
-}
-
-Plant::~Plant()
-{
-}
-
-void Plant::NourishOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Plant::TickOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Plant::TouchOperation(const Operation & op, OpVector & res)
-{
-}
 
 #include "stubs/rulesets/stubCreator.h"
 #include "stubs/rulesets/stubCharacter.h"
