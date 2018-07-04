@@ -564,14 +564,13 @@ void Character::UseOperation(const Operation & op, OpVector & res)
 
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
-        if (tp != 0) {
+        if (tp != nullptr) {
             tp->stopTask(this, res);
         }
         return;
     }
 
-    // Are we going to modify this really?
-    EntityProperty * rhw = modPropertyClass<EntityProperty>(RIGHT_HAND_WIELD);
+    auto * rhw = getPropertyClass<EntityProperty>(RIGHT_HAND_WIELD);
     if (rhw == nullptr) {
         error(op, "Character::UseOp No tool wielded, no right_hand_wield property found", res, getId());
         return;
@@ -721,16 +720,21 @@ void Character::UseOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    Task * task = BaseWorld::instance().activateTask(tool->getType()->name(), op_type, target_ent, *this);
-    if (task != nullptr) {
-        startTask(task, rop, res);
+    if (target_ent->isReachableForOtherEntity(this)) {
+
+        Task * task = BaseWorld::instance().activateTask(tool->getType()->name(), op_type, target_ent, *this);
+        if (task != nullptr) {
+            startTask(task, rop, res);
+        }
+
+        res.push_back(rop);
+
+        Sight sight;
+        sight->setArgs1(rop);
+        res.push_back(sight);
+    } else {
+        clientError(op, "Entity is too far away.", res, op->getFrom());
     }
-
-    res.push_back(rop);
-
-    Sight sight;
-    sight->setArgs1(rop);
-    res.push_back(sight);
 }
 
 void Character::WieldOperation(const Operation & op, OpVector & res)
@@ -877,7 +881,7 @@ void Character::AttackOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    const TasksProperty * atp = attacker->getPropertyClass<TasksProperty>(TASKS);
+    auto atp = attacker->getPropertyClass<TasksProperty>(TASKS);
     if (atp != nullptr && atp->busy()) {
         log(ERROR, String::compose("AttackOperation: Attack op aborted "
                 "because attacker %1(%2) busy.", attacker->getId(), attacker->getType()));
@@ -987,6 +991,16 @@ void Character::ActuateOperation(const Operation & op, OpVector & res)
     }
 
     LocatedEntity * device = BaseWorld::instance().getEntity(entity_arg->getId());
+
+    if (!device) {
+        log(ERROR, "Character::mindActuateOp trying to actuate non existing device. " + describeEntity());
+        return;
+    }
+
+    if (!device->isReachableForOtherEntity(this)) {
+        clientError(op, "Device is too far away.", res, op->getFrom());
+        return;
+    }
 
     Element deviceOpAttr;
     std::set<std::string> deviceOps;
@@ -1182,6 +1196,7 @@ void Character::mindActuateOperation(const Operation & op, OpVector & res)
     debug(std::cout << "Got Actuate op from mind" << std::endl << std::flush
     ;);
 
+    //Distance filtering etc. happens in ActuateOperation
     op->setTo(getId());
     res.push_back(op);
 }
@@ -1229,6 +1244,7 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Got Use op from mind" << std::endl << std::flush
     ;);
+    //Distance filtering etc. happens in UseOperation
     op->setTo(getId());
     res.push_back(op);
 }
@@ -1666,6 +1682,17 @@ void Character::mindEatOperation(const Operation & op, OpVector & res)
     const Root & arg = args.front();
     if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         log(ERROR, describeEntity() + " mindEatOperation: Arg has no ID");
+        return;
+    }
+
+    auto target = BaseWorld::instance().getEntity(arg->getId());
+    if (!target) {
+        log(NOTICE, describeEntity() + " mindEatOperation: Target does not exist");
+        return;
+    }
+
+    if (!target->isReachableForOtherEntity(this)) {
+        clientError(op, "Target is too far away.", res, op->getFrom());
         return;
     }
     op->setTo(arg->getId());
