@@ -351,6 +351,7 @@ int PythonScriptFactory<LocatedEntity>::setup()
 #include "stubs/rulesets/stubPythonScriptFactory.h"
 
 #include <Atlas/Objects/Operation.h>
+#include "stubs/rulesets/stubScriptsProperty.h"
 
 CorePropertyManager::CorePropertyManager()
 {

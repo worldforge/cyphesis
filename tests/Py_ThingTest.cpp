@@ -208,7 +208,7 @@ int main()
     run_python_string("le.props.list_attr=[1,2]");
     run_python_string("le.props.list_attr");
     expect_python_error("le.props.non_atlas=set([1,2])", PyExc_AttributeError);
-    expect_python_error("le.props.non_atlas", PyExc_AttributeError);
+    run_python_string("le.props.non_atlas == None");
 
     // run_python_string("le.foo=1");
     // run_python_string("le.foo='1'");

@@ -52,7 +52,6 @@ LocatedEntity::LocatedEntity(const std::string& id, long intId) :
     Router(id, intId),
     m_refCount(0),
     m_seq(0),
-    m_script(nullptr),
     m_type(nullptr),
     m_flags(0),
     m_contains(nullptr)
@@ -64,7 +63,10 @@ LocatedEntity::~LocatedEntity()
 {
     clearProperties();
 
-    delete m_script;
+    for (auto script : m_scripts) {
+        delete script;
+    }
+
     if (m_location.m_loc != nullptr) {
         m_location.m_loc->decRef();
     }
@@ -257,8 +259,7 @@ void LocatedEntity::sendWorld(const Operation& op)
 /// @param scrpt Pointer to the script to be associated with this entity
 void LocatedEntity::setScript(Script* scrpt)
 {
-    delete m_script;
-    m_script = scrpt;
+    m_scripts.push_back(scrpt);
 }
 
 std::vector<Atlas::Objects::Root> LocatedEntity::getThoughts() const

@@ -209,21 +209,5 @@
   }
 #endif //STUB_DatabaseResultWorkerSqlite_end
 
-#ifndef STUB_DatabaseResultWorkerSqlite_field
-//#define STUB_DatabaseResultWorkerSqlite_field
-  const char* DatabaseResultWorkerSqlite::field(int column) const
-  {
-    return nullptr;
-  }
-#endif //STUB_DatabaseResultWorkerSqlite_field
-
-#ifndef STUB_DatabaseResultWorkerSqlite_field
-//#define STUB_DatabaseResultWorkerSqlite_field
-  const char* DatabaseResultWorkerSqlite::field(const char* column) const
-  {
-    return nullptr;
-  }
-#endif //STUB_DatabaseResultWorkerSqlite_field
-
 
 #endif

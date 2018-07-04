@@ -49,7 +49,6 @@ class MemMaptest : public Cyphesis::TestBase
 {
   private:
     TypeNode * m_sampleType;
-    Script * m_script;
     MemMap * m_memMap;
 
     static std::string m_Script_hook_called;
@@ -133,8 +132,7 @@ void MemMaptest::setup()
     type_desc->setId("sample_type");
     m_sampleType = Inheritance::instance().addChild(type_desc);
 
-    m_script = 0;
-    m_memMap = new MemMap(m_script);
+    m_memMap = new MemMap();
 }
 
 void MemMaptest::teardown()
@@ -174,7 +172,8 @@ void MemMaptest::test_addEntity()
 
 void MemMaptest::test_addEntity_script()
 {
-    m_script = new TestScript;
+    auto script = new TestScript;
+    m_memMap->setScript(script);
     const std::string new_id("3");
     ASSERT_NULL(m_memMap->get(new_id));
 
@@ -191,7 +190,8 @@ void MemMaptest::test_addEntity_script_hook()
     const std::string new_id("3");
     const std::string test_add_hook_name("test_add_hook");
 
-    m_script = new TestScript;
+    auto script = new TestScript;
+    m_memMap->setScript(script);
     m_memMap->m_addHooks.push_back(test_add_hook_name);
 
     ASSERT_NULL(m_memMap->get(new_id));

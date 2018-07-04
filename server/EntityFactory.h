@@ -29,7 +29,6 @@ class EntityFactoryBase : public EntityKit {
               LocatedEntity* location);
     public:
 
-      ScriptKit<LocatedEntity> * m_scriptFactory;
       /// Default attribute values for this class
       Atlas::Message::MapType m_classAttributes;
       /// Default attribute values for instances of this class, including

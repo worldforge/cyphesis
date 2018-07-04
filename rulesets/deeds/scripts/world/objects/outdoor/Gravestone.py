@@ -21,7 +21,7 @@ def create_skeletonpart(self, op):
     items = ['skull', 'ribcage', 'arm', 'pelvis', 'thigh', 'shin']
     item = items[randint(0,5)]
     newloc.coordinates = newloc.coordinates + Vector3D(uniform(-1,1), uniform(-1,1), uniform(-1,1))
-    retops = retops + Operation("create", Entity(name=item,parent=item,location=newloc.copy()), to=self)
+    retops += Operation("create", Entity(name=item,parent=item,location=newloc.copy()), to=self)
     return retops
 
 class Gravestone(server.Thing):

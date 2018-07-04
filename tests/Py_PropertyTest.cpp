@@ -97,9 +97,9 @@ int main()
     run_python_string("from server import *");
     run_python_string("import testprop");
     run_python_string("t=Thing('1')");
-    expect_python_error("t.props.line", PyExc_AttributeError);
-    expect_python_error("t.props.statistics", PyExc_AttributeError);
-    expect_python_error("t.props.terrain", PyExc_AttributeError);
+    run_python_string("t.props.line == None");
+    run_python_string("t.props.statistics == None");
+    run_python_string("t.props.terrain == None");
     run_python_string("testprop.add_properties(t)");
     run_python_string("t.props.line");
     run_python_string("t.props.statistics");

@@ -388,16 +388,8 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 
-bool Script::operation(const std::string & opname,
-                       const Atlas::Objects::Operation::RootOperation & op,
-                       OpVector & res)
-{
-   return false;
-}
+#include "stubs/rulesets/stubScript.h"
 
-void Script::hook(const std::string & function, LocatedEntity * entity)
-{
-}
 
 Location::Location() : m_loc(0)
 {

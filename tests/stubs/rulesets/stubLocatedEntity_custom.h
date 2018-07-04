@@ -7,7 +7,7 @@
 LocatedEntity::LocatedEntity(const std::string & id, long intId)
     : Router(id, intId)
     , m_refCount(0), m_seq(0)
-    , m_script(nullptr),m_type(nullptr), m_flags(0), m_contains(nullptr)
+    , m_type(nullptr), m_flags(0), m_contains(nullptr)
 {
 
 }

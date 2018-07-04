@@ -100,7 +100,6 @@ void EntityFactorytest::test_newEntity()
 
 void EntityFactorytest::test_destructor()
 {
-    m_ek->m_scriptFactory = new TestScriptFactory;
 }
 
 void EntityFactorytest::test_updateProperties()

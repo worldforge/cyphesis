@@ -44,16 +44,7 @@ int main()
 
 #include "common/log.h"
 
-bool Script::operation(const std::string & opname,
-                       const Atlas::Objects::Operation::RootOperation & op,
-                       OpVector & res)
-{
-   return false;
-}
-
-void Script::hook(const std::string & function, LocatedEntity * entity)
-{
-}
+#include "stubs/rulesets/stubScript.h"
 
 void log(LogLevel lvl, const std::string & msg)
 {

@@ -10,14 +10,19 @@
                 <string name="default">tombstone</string>
                 <string name="visibility">public</string>
             </map>
+            <map name="scripts">
+                <list name="default">
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.objects.outdoor.Gravestone.Gravestone</string>
+                    </map>
+                </list>
+                <string name="visibility">public</string>
+            </map>
         </map>
         <string name="id">tombstone</string>
         <string name="objtype">class</string>
         <string name="parent">thing</string>
-        <map name="script">
-            <string name="language">python</string>
-            <string name="name">world.objects.outdoor.Gravestone.Gravestone</string>
-        </map>
     </map>
 
 </atlas>

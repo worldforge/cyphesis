@@ -30,9 +30,9 @@ typedef Atlas::Objects::Operation::RootOperation Operation;
 typedef std::vector<Operation> OpVector;
 
 typedef enum {
-    OPERATION_BLOCKED, // Handler has determined that op should stop here
-    OPERATION_HANDLED, // Handler has done something, but op should continue
     OPERATION_IGNORED, // Handler has done nothing
+    OPERATION_HANDLED, // Handler has done something, but op should continue
+    OPERATION_BLOCKED, // Handler has determined that op should stop here
 } HandlerResult;
 
 #endif // COMMON_OPERATION_ROUTER_H

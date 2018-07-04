@@ -9,9 +9,9 @@
 
 #ifndef STUB_Script_operation
 //#define STUB_Script_operation
-  bool Script::operation(const std::string & opname, const Atlas::Objects::Operation::RootOperation & op, OpVector & res)
+  HandlerResult Script::operation(const std::string & opname, const Atlas::Objects::Operation::RootOperation & op, OpVector & res)
   {
-    return false;
+    return *static_cast<HandlerResult*>(nullptr);
   }
 #endif //STUB_Script_operation
 

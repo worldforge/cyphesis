@@ -19,6 +19,7 @@
 #ifndef RULESETS_SCRIPT_H
 #define RULESETS_SCRIPT_H
 
+#include "common/OperationRouter.h"
 #include <string>
 #include <vector>
 
@@ -41,7 +42,7 @@ class Script {
   public:
     Script() = default;
     virtual ~Script() = default;
-    virtual bool operation(const std::string & opname,
+    virtual HandlerResult operation(const std::string & opname,
                            const Atlas::Objects::Operation::RootOperation & op,
                            OpVector & res);
     virtual void hook(const std::string & function, LocatedEntity * entity);

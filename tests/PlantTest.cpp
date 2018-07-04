@@ -167,17 +167,8 @@ LocatedEntity * BaseWorld::getEntity(long id) const
     }
 }
 
+#include "stubs/rulesets/stubScript.h"
 
-bool Script::operation(const std::string & opname,
-                       const Atlas::Objects::Operation::RootOperation & op,
-                       OpVector & res)
-{
-   return false;
-}
-
-void Script::hook(const std::string & function, LocatedEntity * entity)
-{
-}
 
 void log(LogLevel lvl, const std::string & msg)
 {

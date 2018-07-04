@@ -24,13 +24,18 @@
                 <float name="default">0</float>
                 <string name="visibility">public</string>
             </map>
+            <map name="scripts">
+                <list name="default">
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.objects.elements.Fire.Fire</string>
+                    </map>
+                </list>
+                <string name="visibility">public</string>
+            </map>
         </map>
         <string name="id">fire</string>
         <string name="objtype">class</string>
         <string name="parent">thing</string>
-        <map name="script">
-            <string name="language">python</string>
-            <string name="name">world.objects.elements.Fire.Fire</string>
-        </map>
     </map>
 </atlas>

@@ -19,7 +19,7 @@
 //#define STUB_EntityFactoryBase_EntityFactoryBase
    EntityFactoryBase::EntityFactoryBase()
     : EntityKit()
-    , m_scriptFactory(nullptr),m_parent(nullptr)
+    , m_parent(nullptr)
   {
     
   }

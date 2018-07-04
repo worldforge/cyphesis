@@ -837,6 +837,10 @@ static PyObject* init_server() {
         return nullptr;
     }
 
+    PyModule_AddIntConstant(server, "OPERATION_IGNORED", 0);
+    PyModule_AddIntConstant(server, "OPERATION_HANDLED", 1);
+    PyModule_AddIntConstant(server, "OPERATION_BLOCKED", 2);
+
     // New module code
     PyMemMap_Type.tp_new = PyType_GenericNew;
     if (PyType_Ready(&PyMemMap_Type) < 0) {

@@ -38,13 +38,18 @@
                 <string name="default">dural/plants/fruit/apple/apple.modeldef</string>
                 <string name="visibility">public</string>
             </map>
+            <map name="scripts">
+                <list name="default">
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.objects.plants.seeds.Apple.Apple</string>
+                    </map>
+                </list>
+                <string name="visibility">public</string>
+            </map>
         </map>
         <string name="id">apple</string>
         <string name="objtype">class</string>
         <string name="parent">seed</string>
-        <map name="script">
-            <string name="language">python</string>
-            <string name="name">world.objects.plants.seeds.Apple.Apple</string>
-        </map>
     </map>
 </atlas>

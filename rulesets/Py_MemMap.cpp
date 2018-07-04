@@ -451,9 +451,7 @@ static PyMethodDef MemMap_methods[] = {
 
 static int MemMap_init(PyMemMap* self, PyObject* args, PyObject* kwds)
 {
-    Script ** s = new Script*;
-    *s = 0;
-    self->m_map = new MemMap(*s);
+    self->m_map = new MemMap();
     return 0;
 }
 
@@ -494,7 +492,7 @@ PyTypeObject PyMemMap_Type = {
         0,                              // tp_descr_get
         0,                              // tp_descr_set
         0,                              // tp_dictoffset
-        (initproc)MemMap_init,             // tp_init
+        (initproc)MemMap_init,          // tp_init
         PyType_GenericAlloc,            // tp_alloc
         0,                              // tp_new
 };

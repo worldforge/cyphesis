@@ -71,6 +71,7 @@
 #include <Atlas/Objects/Operation.h>
 
 #include <iostream>
+#include <rulesets/ScriptsProperty.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -253,6 +254,8 @@ CorePropertyManager::CorePropertyManager()
      * The max scale of an entity. This is a single value; when enforcing one dimension of the actual scale value will be used (often y).
      */
     installProperty<Property<double>>("maxscale");
+
+    installProperty<ScriptsProperty>();
 }
 
 int CorePropertyManager::installFactory(const std::string & type_name,

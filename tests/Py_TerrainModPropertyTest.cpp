@@ -153,7 +153,7 @@ int main()
     run_python_string("import physics");
     run_python_string("import testprop");
     run_python_string("t=Thing('1')");
-    expect_python_error("t.props.terrainmod", PyExc_AttributeError);
+    run_python_string("t.props.terrainmod == None");
     run_python_string("testprop.add_properties(t)");
     run_python_string("terrainmod = t.props.terrainmod");
     expect_python_error("terrainmod.foo = 1", PyExc_AttributeError);

@@ -42,11 +42,7 @@ int main()
 
 // stubs
 
-MemMap::MemMap(Script *& s) : m_script(s)
-{
-}
-
-
+#include "stubs/rulesets/stubMemMap.h"
 #include "stubs/rulesets/stubBaseMind.h"
 #include "stubs/rulesets/stubMemEntity.h"
 #include "stubs/rulesets/stubLocatedEntity.h"

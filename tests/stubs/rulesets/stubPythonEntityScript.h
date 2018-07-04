@@ -18,9 +18,9 @@
 
 #ifndef STUB_PythonEntityScript_operation
 //#define STUB_PythonEntityScript_operation
-  bool PythonEntityScript::operation(const std::string & opname, const Atlas::Objects::Operation::RootOperation & op, OpVector & res)
+  HandlerResult PythonEntityScript::operation(const std::string & opname, const Atlas::Objects::Operation::RootOperation & op, OpVector & res)
   {
-    return false;
+    return *static_cast<HandlerResult*>(nullptr);
   }
 #endif //STUB_PythonEntityScript_operation
 

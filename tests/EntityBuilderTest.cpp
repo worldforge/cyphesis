@@ -297,8 +297,6 @@ void EntityBuildertest::test_sequence5()
     custom_type_factory->m_attributes["test_custom_type_attr"] =
           "test_value";
 
-    custom_type_factory->m_scriptFactory = new TestScriptFactory();
-
     {
         entity_factory.installFactory("custom_scripted_type",
               atlasClass("custom_scripted_type", "thing"),
@@ -423,6 +421,7 @@ ArchetypeFactory* ArchetypeFactory::duplicateFactory()
 
 
 #include "stubs/server/stubArchetypeFactory.h"
+#include "stubs/rulesets/stubScriptsProperty.h"
 
 
 class World;
@@ -638,9 +637,18 @@ void Property<std::string>::set(const Atlas::Message::Element & e)
     }
 }
 
+template<>
+void Property<Atlas::Message::ListType>::set(const Atlas::Message::Element & e)
+{
+    if (e.isList()) {
+        this->m_data = e.List();
+    }
+}
+
 template class Property<int>;
 template class Property<double>;
 template class Property<std::string>;
+template class Property<Atlas::Message::ListType>;
 
 #include "stubs/common/stubRouter.h"
 #include "stubs/rulesets/stubScript.h"

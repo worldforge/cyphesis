@@ -310,8 +310,10 @@ void Entity::destroy()
         }
     }
 
-    delete m_script;
-    m_script = 0;
+    for (auto script : m_scripts) {
+        delete script;
+    }
+    m_scripts.clear();
 
     // We don't call decRef() on our parent, because we may not get deleted
     // yet, and we need to keep a reference to our parent in case there
@@ -528,13 +530,21 @@ void Entity::externalOperation(const Operation & op, Link &)
 
 void Entity::operation(const Operation & op, OpVector & res)
 {
-    if (m_script != 0 &&
-        m_script->operation(op->getParent(), op, res) != 0) {
-        return;
+    HandlerResult hr = OPERATION_IGNORED;
+    if (!m_scripts.empty()) {
+        for (auto script: m_scripts) {
+            auto hr_call = script->operation(op->getParent(), op, res);
+            //Stop on the first blocker. Only change "hr" value if it's "handled".
+            if (hr_call != OPERATION_IGNORED) {
+                if (hr_call == OPERATION_BLOCKED) {
+                    return;
+                }
+                hr = hr_call;
+            }
+        }
     }
 
     auto J = m_delegates.equal_range(op->getClassNo());
-    HandlerResult hr = OPERATION_IGNORED;
     for (;J.first != J.second; ++J.first) {
         HandlerResult hr_call = callDelegate(J.first->second, op, res);
         //We'll record the most blocking of the different results only.

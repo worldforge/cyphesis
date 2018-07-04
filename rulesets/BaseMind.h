@@ -36,6 +36,7 @@ class BaseMind : public MemEntity {
     MemMap m_map;
     /// \brief World time as far as this mind is aware
     WorldTime m_time;
+
   public:
     BaseMind(const std::string & id, long intId);
 
@@ -77,6 +78,9 @@ class BaseMind : public MemEntity {
     void callSoundOperation(const Operation &, OpVector &);
 
     friend class BaseMindMapEntityintegration;
+
+    void setScript(Script * scrpt) override;
+
 };
 
 #endif // RULESETS_BASE_MIND_H

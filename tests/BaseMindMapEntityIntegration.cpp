@@ -392,17 +392,8 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 }
 
 #include "stubs/common/stubInheritance.h"
+#include "stubs/rulesets/stubScript.h"
 
-bool Script::operation(const std::string & opname,
-                       const Atlas::Objects::Operation::RootOperation & op,
-                       OpVector & res)
-{
-   return false;
-}
-
-void Script::hook(const std::string & function, LocatedEntity * entity)
-{
-}
 
 DateTime::DateTime(int t)
 {

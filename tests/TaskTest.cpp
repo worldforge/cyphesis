@@ -44,7 +44,7 @@ class Tasktest : public Cyphesis::TestBase
     Task * m_task;
 
     static bool Script_operation_called;
-    static bool Script_operation_ret;
+    static HandlerResult Script_operation_ret;
   public:
     Tasktest();
 
@@ -60,13 +60,13 @@ class Tasktest : public Cyphesis::TestBase
     void test_initTask_script();
     void test_initTask_script_fail();
 
-    static bool get_Script_operation_ret();
+    static HandlerResult get_Script_operation_ret();
 };
 
 bool Tasktest::Script_operation_called = false;
-bool Tasktest::Script_operation_ret = true;
+HandlerResult Tasktest::Script_operation_ret = OPERATION_IGNORED;
 
-bool Tasktest::get_Script_operation_ret()
+HandlerResult Tasktest::get_Script_operation_ret()
 {
     Script_operation_called = true;
     return Script_operation_ret;
@@ -185,7 +185,7 @@ void Tasktest::test_operation_script()
 
 void Tasktest::test_initTask_script()
 {
-    Script_operation_ret = true;
+    Script_operation_ret = OPERATION_BLOCKED;
 
     Script * s1 = new Script;
     m_task->setScript(s1);
@@ -201,7 +201,7 @@ void Tasktest::test_initTask_script()
 
 void Tasktest::test_initTask_script_fail()
 {
-    Script_operation_ret = false;
+    Script_operation_ret = OPERATION_IGNORED;
 
     Script * s1 = new Script;
     m_task->setScript(s1);
@@ -231,18 +231,14 @@ int main()
 #include "stubs/common/stubRouter.h"
 #include "stubs/modules/stubLocation.h"
 
-
-
-bool Script::operation(const std::string & opname,
-                       const Atlas::Objects::Operation::RootOperation & op,
-                       OpVector & res)
+#define STUB_Script_operation
+HandlerResult Script::operation(const std::string & opname,
+                                const Atlas::Objects::Operation::RootOperation & op,
+                                OpVector & res)
 {
-   return Tasktest::get_Script_operation_ret();
+    return Tasktest::get_Script_operation_ret();
 }
-
-void Script::hook(const std::string & function, LocatedEntity * entity)
-{
-}
+#include "stubs/rulesets/stubScript.h"
 
 void log(LogLevel lvl, const std::string & msg)
 {

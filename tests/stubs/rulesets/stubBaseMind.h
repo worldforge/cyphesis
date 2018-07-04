@@ -160,5 +160,13 @@
   }
 #endif //STUB_BaseMind_callSoundOperation
 
+#ifndef STUB_BaseMind_setScript
+//#define STUB_BaseMind_setScript
+  void BaseMind::setScript(Script * scrpt)
+  {
+    
+  }
+#endif //STUB_BaseMind_setScript
+
 
 #endif

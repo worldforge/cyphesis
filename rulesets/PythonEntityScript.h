@@ -30,7 +30,7 @@ class PythonEntityScript : public PythonWrapper {
 
     ~PythonEntityScript() override = default;
 
-    bool operation(const std::string & opname,
+    HandlerResult operation(const std::string & opname,
                        const Atlas::Objects::Operation::RootOperation & op,
                        OpVector & res) override;
 

@@ -32,6 +32,7 @@
 #include "common/OperationRouter.h"
 
 #include <iostream>
+#include <memory>
 
 static const bool debug_flag = false;
 
@@ -41,7 +42,7 @@ PythonEntityScript::PythonEntityScript(PyObject * o) :
 {
 }
 
-bool PythonEntityScript::operation(const std::string & op_type,
+HandlerResult PythonEntityScript::operation(const std::string & op_type,
                                    const Operation & op,
                                    OpVector & res)
 {
@@ -54,16 +55,16 @@ bool PythonEntityScript::operation(const std::string & op_type,
     if (!PyObject_HasAttrString(m_wrapper, (char *)(op_name.c_str()))) {
         debug( std::cout << "No method to be found for " << op_name
                          << std::endl << std::flush;);
-        return false;
+        return OPERATION_IGNORED;
     }
-    // Construct apropriate python object thingies from op
+
+    // Construct appropriate python object thingies from op
     PyOperation * py_op = newPyConstOperation();
     if (py_op == nullptr) {
-        return false;
+        return OPERATION_IGNORED;
     }
     py_op->operation = op;
-    PyObject * ret;
-    ret = PyObject_CallMethod(m_wrapper, (char *)(op_name.c_str()),
+    PyObject * ret = PyObject_CallMethod(m_wrapper, (char *)(op_name.c_str()),
                                             (char *)"(O)", py_op);
     Py_DECREF(py_op);
     if (ret == nullptr) {
@@ -81,37 +82,66 @@ bool PythonEntityScript::operation(const std::string & op_type,
                                     op->getTo()));
             }
         }
-        return false;
+        return OPERATION_IGNORED;
     }
     debug( std::cout << "Called python method " << op_name
                      << std::endl << std::flush;);
+
+    HandlerResult result = OPERATION_IGNORED;
+
+    auto processPythonResultFn = [&](PyObject* pythonResult){
+        if (PyLong_Check(pythonResult)) {
+            auto numRet = PyLong_AsLong(pythonResult);
+            if (numRet == 0) {
+                result = OPERATION_IGNORED;
+            } else if (numRet == 1) {
+                result = OPERATION_HANDLED;
+            } else if (numRet == 2) {
+                result = OPERATION_BLOCKED;
+            } else {
+                log(ERROR, String::compose("Unrecognized return code %1 for operation handler '%2'", numRet, op_name));
+            }
+
+        } else if (PyOperation_Check(pythonResult)) {
+            auto *operation = (PyOperation *) pythonResult;
+            assert(operation->operation.isValid());
+            //Filter out raw operations, as these are meant to be used to short circuit goals. They should thus never be sent on.
+            if (operation->operation->getParent() != "operation") {
+                res.push_back(operation->operation);
+            }
+        } else if (PyOplist_Check(pythonResult)) {
+            auto *oplist = (PyOplist *) pythonResult;
+            assert(oplist->ops != nullptr);
+            const OpVector &o = *oplist->ops;
+            auto Iend = o.end();
+            for (auto I = o.begin(); I != Iend; ++I) {
+                //Filter out raw operations, as these are meant to be used to short circuit goals. They should thus never be sent on.
+                if ((*I)->getParent() != "operation") {
+                    res.push_back(*I);
+                }
+            }
+        } else {
+            log(ERROR, String::compose("Python script \"%1\" returned an invalid "
+                                       "result.", op_name));
+        }
+    };
+
     if (ret == Py_None) {
         debug(std::cout << "Returned none" << std::endl << std::flush;);
-    } else if (PyOperation_Check(ret)) {
-        PyOperation * op = (PyOperation*)ret;
-        assert(op->operation.isValid());
-        //Filter out raw operations, as these are meant to be used to short circuit goals. They should thus never be sent on.
-        if (op->operation->getParent() != "operation") {
-            res.push_back(op->operation);
-        }
-    } else if (PyOplist_Check(ret)) {
-        PyOplist * op = (PyOplist*)ret;
-        assert(op->ops != nullptr);
-        const OpVector & o = *op->ops;
-        auto Iend = o.end();
-        for (auto I = o.begin(); I != Iend; ++I) {
-            //Filter out raw operations, as these are meant to be used to short circuit goals. They should thus never be sent on.
-            if ((*I)->getParent() != "operation") {
-                res.push_back(*I);
-            }
-        }
     } else {
-        log(ERROR, String::compose("Python script \"%1\" returned an invalid "
-                                   "result.", op_name));
+        //Check if it's a tuple and process it.
+        if (PyTuple_Check(ret)) {
+            auto size = PyTuple_Size(ret);
+            for (Py_ssize_t i = 0; i < size; ++i) {
+                processPythonResultFn(PyTuple_GetItem(ret, i));
+            }
+        } else {
+            processPythonResultFn(ret);
+        }
     }
-    
+
     Py_DECREF(ret);
-    return true;
+    return result;
 }
 
 void PythonEntityScript::hook(const std::string & function,

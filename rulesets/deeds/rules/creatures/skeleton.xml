@@ -23,13 +23,18 @@
                 <string name="default">dural/creatures/biped/skeleton/skeleton.modeldef</string>
                 <string name="visibility">public</string>
             </map>
+            <map name="scripts">
+                <list name="default">
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.objects.undead.Skeleton.Skeleton</string>
+                    </map>
+                </list>
+                <string name="visibility">public</string>
+            </map>
         </map>
         <string name="id">skeleton</string>
         <string name="objtype">class</string>
         <string name="parent">mobile</string>
-        <map name="script">
-            <string name="language">python</string>
-            <string name="name">world.objects.undead.Skeleton.Skeleton</string>
-        </map>
     </map>
 </atlas>

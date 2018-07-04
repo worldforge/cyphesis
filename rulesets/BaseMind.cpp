@@ -44,7 +44,7 @@ static const bool debug_flag = false;
 /// @param intId Integer identifier
 /// @param body_name The name attribute of the body this mind controls
 BaseMind::BaseMind(const std::string & id, long intId) :
-          MemEntity(id, intId), m_map(m_script)
+          MemEntity(id, intId), m_map()
 {
     setVisible(true);
     setType(MemMap::m_entity_type);
@@ -164,7 +164,7 @@ void BaseMind::SoundOperation(const Operation & op, OpVector & res)
         std::string event_name("sound_");
         event_name += op2->getParent();
 
-        if (m_script == nullptr || m_script->operation(event_name, op2, res) == 0) {
+        if (m_scripts.empty()|| m_scripts.front()->operation(event_name, op2, res) != OPERATION_BLOCKED) {
             callSoundOperation(op2, res);
         }
     }
@@ -194,7 +194,7 @@ void BaseMind::SightOperation(const Operation & op, OpVector & res)
             log(WARNING, String::compose("Sight op argument ('%1') had no seconds set.", op2->getParent()));
         }
 
-        if (m_script == nullptr || m_script->operation(event_name, op2, res) == 0) {
+        if (m_scripts.empty()|| m_scripts.front()->operation(event_name, op2, res) != OPERATION_BLOCKED) {
             callSightOperation(op2, res);
         }
     } else /* if (op2->getObjtype() == "object") */ {
@@ -232,7 +232,7 @@ void BaseMind::ThinkOperation(const Operation &op, OpVector &res)
 
         OpVector mres;
 
-        if (m_script == nullptr || m_script->operation(event_name, op2, mres) == 0) {
+        if (m_scripts.empty()|| m_scripts.front()->operation(event_name, op2, mres) != OPERATION_BLOCKED) {
             int op2ClassNo = op2->getClassNo();
             switch (op2ClassNo) {
             case Atlas::Objects::Operation::SET_NO:
@@ -359,9 +359,9 @@ void BaseMind::operation(const Operation & op, OpVector & res)
         m_map.getAdd(op->getFrom());
     }
     m_map.sendLooks(res);
-    if (m_script) {
-        m_script->operation("call_triggers", op, res);
-        if (m_script->operation(op->getParent(), op, res) != 0) {
+    if (!m_scripts.empty()) {
+        m_scripts.front()->operation("call_triggers", op, res);
+        if (m_scripts.front()->operation(op->getParent(), op, res) == OPERATION_BLOCKED) {
             return;
         }
     }
@@ -427,4 +427,12 @@ void BaseMind::callSoundOperation(const Operation & op,
 #endif
 
     // SUB_OP_SWITCH(op, op_no, res, sound)
+}
+
+void BaseMind::setScript(Script * scrpt)
+{
+    LocatedEntity::setScript(scrpt);
+    if (m_scripts.size() == 1) {
+        m_map.setScript(m_scripts.front());
+    }
 }

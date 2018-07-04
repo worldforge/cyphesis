@@ -249,6 +249,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "rulesets/DefaultLocationProperty.h"
 #include "rulesets/LimboProperty.h"
 #include "rulesets/DomainProperty.h"
+#include "rulesets/ScriptsProperty.h"
 //void Entity::destroy()
 //{
 //    destroyed.emit();
@@ -294,6 +295,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 #include "stubs/rulesets/stubSolidProperty.h"
 #include "stubs/rulesets/stubPerceptionSightProperty.h"
 #include "stubs/rulesets/stubScaleProperty.h"
+#include "stubs/rulesets/stubScriptsProperty.h"
 
 Account::Account(Connection * conn,
                  const std::string & uname,

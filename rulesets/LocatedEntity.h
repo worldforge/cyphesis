@@ -28,6 +28,8 @@
 
 #include <sigc++/signal.h>
 
+#include <boost/any.hpp>
+
 #include <set>
 
 #include <cassert>
@@ -37,6 +39,7 @@ class LocatedEntity;
 class PropertyBase;
 class Script;
 class TypeNode;
+class _object;
 
 template <typename T>
 class Property;
@@ -114,9 +117,7 @@ class LocatedEntity : public Router {
 
     /// Sequence number
     int m_seq;
-
-    /// Script associated with this entity
-    Script * m_script;
+    
     /// Class of which this is an instance
     const TypeNode * m_type;
     /// Flags indicating changes to attributes
@@ -134,10 +135,14 @@ class LocatedEntity : public Router {
     void collectObserversForChild(const LocatedEntity& child, std::set<const LocatedEntity*>& receivers) const;
 
     public:
+    /// Scripts that are associated with this entity.
+    std::vector<Script*> m_scripts;
     /// Full details of location
     Location m_location;
     /// List of entities which use this as ref
     LocatedEntitySet * m_contains;
+    // A representation of this instance used by the scripting system. This is opaque to this class.
+    boost::any m_scriptEntity;
 
     explicit LocatedEntity(const std::string & id, long intId);
     ~LocatedEntity() override;
@@ -174,11 +179,6 @@ class LocatedEntity : public Router {
     void addFlags(std::uint32_t flags) { m_flags |= flags; }
 
     void removeFlags(std::uint32_t flags) { m_flags &= ~flags; }
-
-    /// \brief Accessor for pointer to script object
-    Script * script() const {
-        return m_script;
-    }
 
     /// \brief Accessor for sequence number
     const int getSeq() const { return m_seq; }
@@ -217,7 +217,7 @@ class LocatedEntity : public Router {
 
     virtual void sendWorld(const Operation & op);
 
-    void setScript(Script * scrpt);
+    virtual void setScript(Script * scrpt);
     void makeContainer();
     void changeContainer(LocatedEntity *);
     void merge(const Atlas::Message::MapType &);

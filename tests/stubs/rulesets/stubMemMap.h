@@ -57,12 +57,20 @@
 
 #ifndef STUB_MemMap_MemMap
 //#define STUB_MemMap_MemMap
-   MemMap::MemMap(Script *& s)
+   MemMap::MemMap()
     : m_script(nullptr),m_listener(nullptr)
   {
     
   }
 #endif //STUB_MemMap_MemMap
+
+#ifndef STUB_MemMap_setScript
+//#define STUB_MemMap_setScript
+  void MemMap::setScript(Script* script)
+  {
+    
+  }
+#endif //STUB_MemMap_setScript
 
 #ifndef STUB_MemMap_find
 //#define STUB_MemMap_find

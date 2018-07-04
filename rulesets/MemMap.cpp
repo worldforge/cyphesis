@@ -19,6 +19,7 @@
 #include "MemMap.h"
 
 #include "MemEntity.h"
+#include "BaseMind.h"
 #include "Script.h"
 
 #include "common/id.h"
@@ -41,6 +42,12 @@ using String::compose;
 
 const TypeNode * MemMap::m_entity_type = 0;
 
+void MemMap::setScript(Script* script)
+{
+    m_script = script;
+}
+
+
 MemEntity * MemMap::addEntity(MemEntity * entity)
 {
     assert(entity != 0);
@@ -56,10 +63,10 @@ MemEntity * MemMap::addEntity(MemEntity * entity)
     m_entities[entity->getIntId()] = entity;
     m_checkIterator = m_entities.find(next);
 
-    if (m_script != 0) {
+    if (m_script) {
         debug( std::cout << this << std::endl << std::flush;);
-        std::vector<std::string>::const_iterator I = m_addHooks.begin();
-        std::vector<std::string>::const_iterator Iend = m_addHooks.end();
+        auto I = m_addHooks.begin();
+        auto Iend = m_addHooks.end();
         for (; I != Iend; ++I) {
             m_script->hook(*I, entity);
         }
@@ -122,9 +129,9 @@ void MemMap::updateEntity(MemEntity * entity, const RootEntity & ent, double tim
     auto old_loc = entity->m_location.m_loc;
     readEntity(entity, ent, timestamp);
 
-    if (m_script != 0) {
-        std::vector<std::string>::const_iterator K = m_updateHooks.begin();
-        std::vector<std::string>::const_iterator Kend = m_updateHooks.end();
+    if (m_script) {
+        auto K = m_updateHooks.begin();
+        auto Kend = m_updateHooks.end();
         for (; K != Kend; ++K) {
             m_script->hook(*K, entity);
         }
@@ -149,7 +156,7 @@ MemEntity * MemMap::newEntity(const std::string & id, long int_id,
     return addEntity(entity);
 }
 
-MemMap::MemMap(Script *& s) : m_checkIterator(m_entities.begin()), m_script(s), m_listener(nullptr)
+MemMap::MemMap() : m_checkIterator(m_entities.begin()), m_listener(nullptr)
 {
     if (m_entity_type == 0) {
         // m_entity_type = Inheritance::instance().getType("game_entity");
@@ -162,8 +169,8 @@ MemMap::MemMap(Script *& s) : m_checkIterator(m_entities.begin()), m_script(s), 
 void MemMap::sendLooks(OpVector & res)
 {
     debug( std::cout << "MemMap::sendLooks" << std::endl << std::flush;);
-    std::list<std::string>::const_iterator I = m_additionsById.begin();
-    std::list<std::string>::const_iterator Iend = m_additionsById.end();
+    auto I = m_additionsById.begin();
+    auto Iend = m_additionsById.end();
     for (; I != Iend; ++I) {
         Look l;
         Anonymous look_arg;
@@ -194,7 +201,7 @@ void MemMap::del(const std::string & id)
 
     long int_id = integerId(id);
 
-    MemEntityDict::iterator I = m_entities.find(int_id);
+    auto I = m_entities.find(int_id);
     if (I != m_entities.end()) {
         MemEntity * ent = I->second;
         assert(ent != 0);
@@ -220,7 +227,7 @@ void MemMap::del(const std::string & id)
             m_checkIterator = m_entities.begin();
         }
 
-        if (m_script != 0) {
+        if (m_script) {
             std::vector<std::string>::const_iterator J = m_deleteHooks.begin();
             std::vector<std::string>::const_iterator Jend = m_deleteHooks.end();
             for(; J != Jend; ++J) {
@@ -248,7 +255,7 @@ MemEntity * MemMap::get(const std::string & id) const
 
     long int_id = integerId(id);
 
-    MemEntityDict::const_iterator I = m_entities.find(int_id);
+    auto I = m_entities.find(int_id);
     if (I != m_entities.end()) {
         assert(I->second != 0);
         return I->second;
@@ -287,8 +294,8 @@ void MemMap::addContents(const RootEntity & ent)
         return;
     }
     const std::list<std::string> & contlist = ent->getContains();
-    std::list<std::string>::const_iterator Jend = contlist.end();
-    std::list<std::string>::const_iterator J = contlist.begin();
+    auto Jend = contlist.end();
+    auto J = contlist.begin();
     for (; J != Jend; ++J) {
         getAdd(*J);
     }
@@ -400,8 +407,8 @@ EntityVector MemMap::findByLocation(const Location & loc,
         return res;
     }
 #endif // NDEBUG
-    LocatedEntitySet::const_iterator I = place->m_contains->begin();
-    LocatedEntitySet::const_iterator Iend = place->m_contains->end();
+    auto I = place->m_contains->begin();
+    auto Iend = place->m_contains->end();
     float square_range = radius * radius;
     for (; I != Iend; ++I) {
         assert(*I != 0);

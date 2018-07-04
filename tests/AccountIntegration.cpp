@@ -492,6 +492,7 @@ int PythonScriptFactory<LocatedEntity>::setup()
 #include "stubs/rulesets/stubEntityProperty.h"
 #include "stubs/rulesets/stubSolidProperty.h"
 #include "stubs/rulesets/stubPerceptionSightProperty.h"
+#include "stubs/rulesets/stubScriptsProperty.h"
 
 #include "stubs/server/stubRuleHandler.h"
 #include "stubs/server/stubExternalMindsManager.h"

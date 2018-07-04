@@ -262,18 +262,7 @@ DatabaseResult Database::selectThoughts(const std::string& loc)
 
 #include "stubs/common/stubPropertyManager.h"
 
-
-
-bool Script::operation(const std::string & opname,
-                       const Atlas::Objects::Operation::RootOperation & op,
-                       OpVector & res)
-{
-   return false;
-}
-
-void Script::hook(const std::string & function, LocatedEntity * entity)
-{
-}
+#include "stubs/rulesets/stubScript.h"
 
 EntityRef::EntityRef(LocatedEntity* e) : m_inner(e)
 {

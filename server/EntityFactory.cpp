@@ -40,14 +40,12 @@ using String::compose;
 static const bool debug_flag = false;
 
 EntityFactoryBase::EntityFactoryBase()
-: m_scriptFactory(nullptr),
-  m_parent(nullptr)
+: m_parent(nullptr)
 {
 
 }
 EntityFactoryBase::~EntityFactoryBase()
 {
-    delete m_scriptFactory;
 }
 
 
@@ -64,12 +62,6 @@ void EntityFactoryBase::initializeEntity(LocatedEntity& thing,
         const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
 {
     thing.setType(m_type);
-    // Sort out python object
-    if (m_scriptFactory != nullptr) {
-        debug(std::cout << "Class " << m_type->name() << " has a python class"
-                        << std::endl << std::flush;);
-        m_scriptFactory->addScript(&thing);
-    }
     thing.m_location.m_loc = location;
 
     //Only apply attributes if the supplied attributes is valid.

@@ -27,13 +27,18 @@
                 <string name="default">dural/plants/fruit/acorn/acorn.modeldef</string>
                 <string name="visibility">public</string>
             </map>
+            <map name="scripts">
+                <list name="default">
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.objects.plants.seeds.Acorn.Acorn</string>
+                    </map>
+                </list>
+                <string name="visibility">public</string>
+            </map>
         </map>
         <string name="id">acorn</string>
         <string name="objtype">class</string>
         <string name="parent">seed</string>
-        <map name="script">
-            <string name="language">python</string>
-            <string name="name">world.objects.plants.seeds.Acorn.Acorn</string>
-        </map>
     </map>
 </atlas>

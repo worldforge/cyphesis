@@ -22,13 +22,18 @@
                 </list>
                 <string name="visibility">public</string>
             </map>
+            <map name="scripts">
+                <list name="default">
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.objects.tools.Tinderbox.Tinderbox</string>
+                    </map>
+                </list>
+                <string name="visibility">public</string>
+            </map>
         </map>
         <string name="id">tinderbox</string>
         <string name="objtype">class</string>
         <string name="parent">thing</string>
-        <map name="script">
-            <string name="language">python</string>
-            <string name="name">world.objects.tools.Tinderbox.Tinderbox</string>
-        </map>
     </map>
 </atlas>

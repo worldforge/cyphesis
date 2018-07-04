@@ -61,7 +61,7 @@ class MemMap {
     std::vector<std::string> m_addHooks;
     std::vector<std::string> m_updateHooks;
     std::vector<std::string> m_deleteHooks;
-    Script *& m_script;
+    Script* m_script;
 
     MapListener* m_listener;
 
@@ -80,7 +80,9 @@ class MemMap {
     MemEntity * addId(const std::string &, long);
   public:
 
-    explicit MemMap(Script *& s);
+    explicit MemMap();
+
+    void setScript(Script* script);
 
     bool find(const std::string & id) const;
 

@@ -16,13 +16,18 @@
                 <float name="default">500</float>
                 <string name="visibility">public</string>
             </map>
+            <map name="scripts">
+                <list name="default">
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.objects.outdoor.Campfire.Campfire</string>
+                    </map>
+                </list>
+                <string name="visibility">public</string>
+            </map>
         </map>
         <string name="id">campfire</string>
         <string name="objtype">class</string>
         <string name="parent">thing</string>
-        <map name="script">
-            <string name="language">python</string>
-            <string name="name">world.objects.outdoor.Campfire.Campfire</string>
-        </map>
     </map>
 </atlas>

@@ -260,39 +260,10 @@ int EntityRuleHandler::populateEntityFactory(const std::string & class_name,
                                              std::string & reason)
 {
     // assert(class_name == class_desc->getId());
-    // Establish whether this rule has an associated script, and
-    // if so, use it.
-    auto J = class_desc.find("script");
-    auto Jend = class_desc.end();
-    if (J != Jend && J->second.isMap()) {
-        const MapType & script = J->second.asMap();
-        std::string script_package;
-        std::string script_class;
-        if (getScriptDetails(script, class_name, "Entity",
-                             script_package, script_class) != 0) {
-            return -1;
-        }
-        if (factory->m_scriptFactory == nullptr ||
-            factory->m_scriptFactory->package() != script_package) {
-            auto* psf = new PythonScriptFactory<LocatedEntity>(script_package, script_class);
-            if (psf->setup() == 0) {
-                delete factory->m_scriptFactory;
-                factory->m_scriptFactory = psf;
-            } else {
-                log(ERROR, compose("Python class \"%1.%2\" failed to load",
-                                   script_package, script_class));
-                delete psf;
-                return -1;
-            }
-        } else {
-            // FIXME If this fails, that's bad.
-            factory->m_scriptFactory->refreshClass();
-        }
-    }
 
     // Store the default attribute for entities create by this rule.
-    J = class_desc.find("attributes");
-    if (J != Jend && J->second.isMap()) {
+    auto J = class_desc.find("attributes");
+    if (J != class_desc.end() && J->second.isMap()) {
         const MapType & attrs = J->second.asMap();
         auto Kend = attrs.end();
         for (auto K = attrs.begin(); K != Kend; ++K) {
@@ -314,7 +285,7 @@ int EntityRuleHandler::populateEntityFactory(const std::string & class_name,
 
     // Check whether it should be available to players as a playable character.
     J = class_desc.find("playable");
-    if (J != Jend && J->second.isInt()) {
+    if (J != class_desc.end() && J->second.isInt()) {
         Player::playableTypes.insert(class_name);
     }
 

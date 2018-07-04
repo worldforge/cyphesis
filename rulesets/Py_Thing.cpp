@@ -819,20 +819,20 @@ PyObject * wrapPython<BaseMind>(BaseMind * t)
 
 PyObject * wrapEntity(LocatedEntity * le)
 {
-    PyObject * wrapper = 0;
-    if (le->script() == 0) {
-        wrapper = wrapPython(le);
-        le->setScript(new PythonWrapper(wrapper));
+    PyObject * wrapper = nullptr;
+
+    if (!le->m_scriptEntity.empty()) {
+        wrapper = boost::any_cast<std::shared_ptr<_object>>(le->m_scriptEntity).get();
+        assert(wrapper != nullptr);
     } else {
-        PythonWrapper * pw = dynamic_cast<PythonWrapper *>(le->script());
-        if (pw == 0) {
-            log(WARNING, "Entity has script of unknown type");
-        } else {
-            wrapper = pw->wrapper();
-            assert(wrapper != nullptr);
-            Py_INCREF(wrapper);
-        }
+        wrapper = wrapPython(le);
+        std::shared_ptr<_object> holder(wrapper, [](_object *ptr) {
+            //Don't delete; just decrease ref
+            Py_DECREF(ptr);
+        });
+        le->m_scriptEntity = boost::any(holder);
     }
+    Py_INCREF(wrapper);
     return wrapper;
 }
 

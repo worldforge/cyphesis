@@ -162,7 +162,7 @@ int main()
     Atlas::Objects::Operation::Tick op7;
     e->operation(op7, res);
 
-    Script * script = e->script();
+    Script * script = e->m_scripts.front();
     assert(script != 0);
 
     script->hook("nohookfunction", e);

@@ -29,11 +29,11 @@
 /// @param res The result of the operation is returned here
 /// @return true if operation was accepted, false if it was not handled
 /// or an error occured.
-bool Script::operation(const std::string & opname,
+HandlerResult Script::operation(const std::string & opname,
                        const Atlas::Objects::Operation::RootOperation & op,
                        OpVector & res)
 {
-   return false;
+   return OPERATION_IGNORED;
 }
 
 /// \brief Call a named function on the script, passing in the entity

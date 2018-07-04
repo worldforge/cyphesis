@@ -135,9 +135,7 @@ CharacterClient::CharacterClient(const std::string & id, long intId,
 {
 }
 
-MemMap::MemMap(Script *& s) : m_checkIterator(m_entities.begin()), m_script(s)
-{
-}
+#include "stubs/rulesets/stubMemMap.h"
 
 AtlasStreamClient::AtlasStreamClient() : m_io_work(m_io_service), reply_flag(false), error_flag(false),
                                          serialNo(512), m_currentTask(0)
