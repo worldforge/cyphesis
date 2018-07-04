@@ -1694,18 +1694,33 @@ void Character::mindTouchOperation(const Operation & op, OpVector & res)
         log(ERROR, "mindTouchOperation: Op has no ARGS");
         return;
     }
-    const Root & arg = args.front();
+    auto arg = smart_dynamic_cast<Atlas::Objects::Entity::Anonymous>(args.front());
     if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         log(ERROR, describeEntity() + " mindTouchOperation: Op has no ID");
         return;
     }
-    // Pass the modified touch operation on to target.
-    op->setTo(arg->getId());
-    res.push_back(op);
-    // Send sight of touch
-    Sight s;
-    s->setArgs1(op);
-    res.push_back(s);
+
+    WFMath::Point<3> pos;
+    if (arg->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
+        pos.fromAtlas(arg->getPosAsList());
+    }
+
+    LocatedEntity * other = BaseWorld::instance().getEntity(arg->getId());
+
+    //Check that we actually can reach the other entity.
+    if (other->isReachableForOtherEntity(this, pos)) {
+        // Pass the modified touch operation on to target.
+        op->setTo(arg->getId());
+        res.push_back(op);
+        // Send sight of touch
+        Sight s;
+        s->setArgs1(op);
+        res.push_back(s);
+    } else {
+        clientError(op, "Entity is too far away.", res, op->getFrom());
+    }
+
+
 }
 
 /// \brief Filter any other operation coming from the mind
