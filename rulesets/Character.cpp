@@ -1330,33 +1330,43 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
 
         //Check that we actually can reach the other entity.
         if (other->isReachableForOtherEntity(this)) {
+            //Now also check that we can reach wherever we're trying to move the entity.
+
+            auto targetLoc = other->m_location.m_loc;
+
+            //Only allow some things to be set when moving another entity.
+            RootEntity newArgs1;
+            //We've already checked that the id exists
+            newArgs1->setId(arg->getId());
+
+            if (!arg->isDefaultLoc()) {
+                newArgs1->setLoc(arg->getLoc());
+                targetLoc = BaseWorld::instance().getEntity(arg->getLoc());
+            }
+            if (!targetLoc) {
+                clientError(op, "Target parent entity doesn't exist.", res, op->getFrom());
+                return;
+            }
+            WFMath::Point<3> targetPos;
+            if (!arg->isDefaultPos()) {
+                newArgs1->setPos(arg->getPos());
+                targetPos.fromAtlas(arg->getPosAsList());
+            }
+            //Check that we can reach the edge of the entity if it's placed in its new location.
+            if (!targetLoc->isReachableForOtherEntity(this, targetPos, other->m_location.radius())) {
+                clientError(op, "Target is too far away.", res, op->getFrom());
+                return;
+            }
+            if (arg->hasAttr("orientation")) {
+                newArgs1->setAttr("orientation", arg->getAttr("orientation"));
+            }
+            //Replace first arg with our sanitized arg.
+            op->setArgs1(newArgs1);
             op->setFrom(this->getId());
             op->setTo(other_id);
 
-            //Only allow some things to be set when moving another entity.
-            if (!op->getArgs().empty()) {
-                RootEntity newArgs1;
-                RootEntity ent = smart_dynamic_cast<RootEntity>(args.front());
-                if (ent) {
-                    //The id really is required, but we need to check if it exists anyway.
-                    if (!ent->isDefaultId()) {
-                        newArgs1->setId(ent->getId());
-                    }
-
-                    if (!ent->isDefaultLoc()) {
-                        newArgs1->setLoc(ent->getLoc());
-                    }
-                    if (!ent->isDefaultPos()) {
-                        newArgs1->setPos(ent->getPos());
-                    }
-                    if (ent->hasAttr("orientation")) {
-                        newArgs1->setAttr("orientation", ent->getAttr("orientation"));
-                    }
-                }
-                //Replace first arg with our sanitized arg.
-                op->setArgs1(newArgs1);
-            }
             res.push_back(op);
+
         } else {
             clientError(op, "Entity is too far away.", res, op->getFrom());
         }

@@ -475,7 +475,9 @@ bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* watcher) const
     return true;
 }
 
-bool LocatedEntity::isReachableForOtherEntity(const LocatedEntity* reachingEntity, const WFMath::Point<3>& positionOnEntity) const
+bool LocatedEntity::isReachableForOtherEntity(const LocatedEntity* reachingEntity,
+                                              const WFMath::Point<3>& positionOnEntity,
+                                              float extraReach) const
 {
     //Are we reaching for our ourselves?
     if (reachingEntity == this) {
@@ -492,6 +494,7 @@ bool LocatedEntity::isReachableForOtherEntity(const LocatedEntity* reachingEntit
     if (reachProp) {
         reachDistance = reachProp->data();
     }
+    reachDistance += extraReach;
 
     //First find the domain which contains the reacher, as well as if the reacher has a domain itself.
     const LocatedEntity* domainEntity = reachingEntity->m_location.m_loc;

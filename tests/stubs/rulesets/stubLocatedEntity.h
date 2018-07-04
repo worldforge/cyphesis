@@ -267,7 +267,7 @@
 
 #ifndef STUB_LocatedEntity_isReachableForOtherEntity
 //#define STUB_LocatedEntity_isReachableForOtherEntity
-  bool LocatedEntity::isReachableForOtherEntity(const LocatedEntity* reacher, const WFMath::Point<3>& positionOnEntity ) const
+  bool LocatedEntity::isReachableForOtherEntity(const LocatedEntity* reacher, const WFMath::Point<3>& positionOnEntity, float extraReach) const
   {
     return false;
   }
