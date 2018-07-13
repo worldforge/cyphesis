@@ -117,12 +117,12 @@ WorldRouter::WorldRouter(const SystemTime & time) :
                 auto I = typeNodes.find(entity->getType());
                 if (I != typeNodes.end()) {
                     auto typeNode = I->first;
-                    for (auto& removedPropName : I->second.removedProps) {
-                        if (entity->getProperties().find(removedPropName) == entity->getProperties().end()) {
-                            auto prop = typeNode->defaults().find(removedPropName)->second;
-                            prop->remove(entity, removedPropName);
-                        }
-                    }
+//                    for (auto& removedPropName : I->second.removedProps) {
+//                        if (entity->getProperties().find(removedPropName) == entity->getProperties().end()) {
+//                            auto prop = typeNode->defaults().find(removedPropName)->second;
+//                            prop->remove(entity, removedPropName);
+//                        }
+//                    }
                     for (auto& changedPropName : I->second.changedProps) {
                         if (entity->getProperties().find(changedPropName) == entity->getProperties().end()) {
                             auto prop = typeNode->defaults().find(changedPropName)->second;
