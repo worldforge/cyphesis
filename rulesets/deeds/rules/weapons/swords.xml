@@ -1,6 +1,16 @@
 <atlas>
 
     <map>
+        <string name="id">weapon_strike</string>
+        <string name="objtype">class</string>
+        <string name="parent">task</string>
+        <map name="script">
+            <string name="language">python</string>
+            <string name="name">world.tasks.Strike.Strike</string>
+        </map>
+    </map>
+
+    <map>
         <map name="attributes">
             <map name="geometry">
                 <map name="default">
@@ -15,6 +25,16 @@
             </map>
             <map name="density">
                 <float name="default">7500</float>
+                <string name="visibility">public</string>
+            </map>
+            <map name="usages">
+                <list name="default">
+                    <map>
+                        <string name="operation">attack</string>
+                        <string name="filter">entity.type instance_of types.game_entity</string>
+                        <string name="task">weapon_strike</string>
+                    </map>
+                </list>
                 <string name="visibility">public</string>
             </map>
         </map>

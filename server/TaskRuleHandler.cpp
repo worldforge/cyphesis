@@ -63,90 +63,6 @@ int TaskRuleHandler::populateTaskFactory(const std::string & class_name,
         return -1;
     }
 
-    Element activation_attr;
-    if (class_desc->copyAttr("activation", activation_attr) != 0 ||
-        !activation_attr.isMap()) {
-        log(ERROR, compose("Task \"%1\" has no activation.", class_name));
-        return -1;
-    }
-    const MapType & activation = activation_attr.Map();
-
-    auto act_end = activation.end();
-    auto J = activation.find("tool");
-    if (J == act_end || !J->second.isString()) {
-        log(ERROR, compose("Task \"%1\" activation has no tool.", class_name));
-        return -1;
-    }
-    const std::string & activation_tool = J->second.String();
-
-    J = activation.find("operation");
-    if (J == act_end || !J->second.isString()) {
-        log(ERROR, compose("Task \"%1\" activation has no operation.",
-                           class_name));
-        return -1;
-    }
-
-    const std::string & activation_op = J->second.String();
-
-    Inheritance & i = Inheritance::instance();
-
-    J = activation.find("target");
-    if (J != act_end) {
-        if (!J->second.isString()) {
-            log(ERROR, compose(R"(Task "%1" activation has "%2" target.)",
-                               class_name,
-                               Element::typeName(J->second.getType())));
-            return -1;
-        }
-        const std::string & target_desc = J->second.String();
-        std::string::size_type dot = target_desc.find('.');
-        if (dot != 0) {
-            // If there is no dot, or the dot is not the first character,
-            // then the first part of the string is the class to be matched
-            // This works if there is a dot, or if the search returned npos
-            std::string target_class = target_desc.substr(0, dot);
-            const TypeNode * target_type = i.getType(target_class);
-            if (target_type == nullptr) {
-                dependent = target_class;
-                reason = compose("Task \"%1\" is activated on target \"%2\" "
-                                 "which does not exist.", class_name,
-                                 target_class);
-                return 1;
-            }
-            factory->setTarget(target_type);
-        }
-        if (dot != std::string::npos) {
-            if (++dot < target_desc.size()) {
-                std::string target_property = target_desc.substr(dot);
-                factory->setRequireProperty(target_property);
-            } else {
-                log(WARNING, compose("Task rule \"%1\" provide empty string "
-                                     "for activation property", class_name));
-            }
-        }
-    }
-
-    if (!i.hasClass(activation_tool)) {
-        dependent = activation_tool;
-        reason = compose("Task \"%1\" is activated by tool \"%2\" which "
-                         "does not exist.", class_name, activation_tool);
-        return 1;
-    }
-    auto* tool_factory = dynamic_cast<EntityFactoryBase*>(m_builder->getClassFactory(activation_tool));
-    if (tool_factory == nullptr) {
-        log(ERROR, compose("Task class \"%1\" is activated by tool \"%2\" "
-                           "which is not an entity class.", class_name,
-                           activation_tool));
-        return -1;
-    }
-
-    if (!i.hasClass(activation_op)) {
-        dependent = activation_op;
-        reason = compose("Task \"%1\" is activated by operation \"%2\" "
-                         "which does not exist.", class_name, 
-                         activation_op);
-        return 1;
-    }
 
     // FIXME This is the same code as EntityRuleHandler
     if (factory->m_scriptFactory == nullptr ||
@@ -167,27 +83,6 @@ int TaskRuleHandler::populateTaskFactory(const std::string & class_name,
         // If this fails the user needs to know, but the old values
         // should remain in place.
         factory->m_scriptFactory->refreshClass();
-    }
-
-    // FIXME This does not check for or remove old activations for this
-    // factory
-    m_builder->addTaskActivation(activation_tool, activation_op, factory);
-
-    auto L = tool_factory->m_classAttributes.find("operations");
-    if (L == tool_factory->m_classAttributes.end()) {
-        tool_factory->m_classAttributes["operations"] = ListType(1, activation_op);
-        tool_factory->m_attributes["operations"] = ListType(1, activation_op);
-        tool_factory->updateProperties(changes);
-    } else {
-        if (L->second.isList()) {
-            ListType::const_iterator M = L->second.List().begin();
-            for (; M != L->second.List().end() && *M != activation_op; ++M);
-            if (M == L->second.List().end()) {
-                L->second.List().push_back(activation_op);
-                tool_factory->m_attributes[L->first] = L->second.List();
-                tool_factory->updateProperties(changes);
-            }
-        }
     }
 
     return 0;

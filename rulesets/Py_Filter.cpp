@@ -1,5 +1,6 @@
 #include "Py_Filter.h"
 #include "Py_Thing.h"
+#include "entityfilter/Providers.h"
 
 ///\brief Create a new Filter object for a given query
 PyObject * get_filter(PyObject * self, PyObject* query){

@@ -46,6 +46,7 @@
 #include "common/Update.h"
 #include "common/Think.h"
 #include "TransientProperty.h"
+#include "UsagesProperty.h"
 
 #include <wfmath/atlasconv.h>
 
@@ -560,7 +561,7 @@ void Character::UseOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Got Use op. " << describeEntity() << std::endl << std::flush;);
 
-    TasksProperty * tp = modPropertyClass<TasksProperty>(TASKS);
+    auto tp = modPropertyClass<TasksProperty>(TASKS);
 
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
@@ -570,126 +571,62 @@ void Character::UseOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    auto * rhw = getPropertyClass<EntityProperty>(RIGHT_HAND_WIELD);
-    if (rhw == nullptr) {
-        error(op, "Character::UseOp No tool wielded, no right_hand_wield property found", res, getId());
-        return;
-    }
 
-    LocatedEntity * tool = rhw->data().get();
-    if (tool == nullptr) {
-        error(op, "Character::UseOp No tool wielded, no entity found", res, getId());
-        return;
-    }
-    // FIXME Get a tool id from the op attributes?
-
-    Element toolOpAttr;
-    std::set<std::string> toolOps;
     std::string op_type;
 
-    // Determine the operations this tool supports
-    if (tool->getAttr("operations", toolOpAttr) != 0) {
-        log(NOTICE, "Character::UseOp Attempt to use something not a tool. " + describeEntity());
-        return;
-    }
-
-    if (!toolOpAttr.isList()) {
-        log(ERROR, "Character::UseOp Tool has non list operations list. " + describeEntity());
-        return;
-    }
-    const ListType & toolOpList = toolOpAttr.asList();
-    if (toolOpList.empty()) {
-        log(ERROR, "Character::UseOp Tool operation list is empty. " + describeEntity());
-        return;
-    }
-    auto J = toolOpList.begin();
-    auto Jend = toolOpList.end();
-    assert(J != Jend);
-    if (!(*J).isString()) {
-        log(ERROR, "Character::UseOp Tool operation list is malformed. " + describeEntity());
-        return;
-    }
-    op_type = (*J).String();
-    debug(std::cout << "default tool op is " << op_type << std::endl << std::flush
-    ;);
-    for (; J != Jend; ++J) {
-        if (!(*J).isString()) {
-            log(ERROR, "Character::UseOp Tool has non string in operations list." + describeEntity());
-        } else {
-            toolOps.insert((*J).String());
-        }
-    }
 
     RootEntity entity_arg(nullptr);
 
     assert(!entity_arg.isValid());
 
-    // Look at Use args. If arg is an entity, this is the target.
-    // If arg is an operation, this is the operation to be used, and the
-    // sub op arg may be an entity specifying target. If op to be used is
-    // specified, this is checked against the ops permitted by this tool.
-    const Root & arg = args.front();
-    const std::string & argtype = arg->getObjtype();
-    if (argtype == "op") {
-        if (!arg->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
-            error(op, "Use arg op has malformed parent", res, getId());
-            return;
-        }
-        op_type = arg->getParent();
-        debug(std::cout << "Got op type " << op_type << " from arg" << std::endl << std::flush
-        ;);
-        if (toolOps.find(op_type) == toolOps.end()) {
-            error(op, "Use op is not permitted by tool", res, getId());
-            return;
-        }
-        // Check against valid ops
-        Operation arg_op = smart_dynamic_cast<Operation>(arg);
-        if (!arg_op.isValid()) {
-            error(op, "Use op arg is a malformed op", res, getId());
-            return;
-        }
+    auto argOp = smart_dynamic_cast<Atlas::Objects::Operation::RootOperation>(args.front());
+    if (!argOp) {
+        error(op, "First arg wasn't an operation.", res, getId());
+        return;
+    }
 
-        const std::vector<Root> & arg_op_args = arg_op->getArgs();
-        if (!arg_op_args.empty()) {
-            entity_arg = smart_dynamic_cast<RootEntity>(arg_op_args.front());
-            if (!entity_arg.isValid()) {
-                error(op, "Use op target is malformed", res, getId());
-                return;
-            }
-        }
-    } else if (argtype == "obj") {
-        entity_arg = smart_dynamic_cast<RootEntity>(arg);
+
+    if (!argOp->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
+        error(op, "Use arg op has malformed parent", res, getId());
+        return;
+    }
+    op_type = argOp->getParent();
+    debug(std::cout << "Got op type " << op_type << " from arg" << std::endl << std::flush
+    ;);
+
+    const std::vector<Root> & arg_op_args = argOp->getArgs();
+    if (!arg_op_args.empty()) {
+        entity_arg = smart_dynamic_cast<RootEntity>(arg_op_args.front());
         if (!entity_arg.isValid()) {
-            error(op, "Use target is malformed", res, getId());
+            error(op, "Use op target is malformed", res, getId());
             return;
         }
-    } else {
-        error(op, "Use arg has unknown objtype", res, getId());
+    }
+
+    if (argOp->isDefaultTo()) {
+        error(op, "No entity to use specified.", res, getId());
         return;
     }
 
-    Anonymous target;
-    if (!entity_arg.isValid()) {
-        error(op, "Character::UseOperation No target specified", res, getId());
+    auto tool = BaseWorld::instance().getEntity(argOp->getTo());
+    if (!tool) {
+        error(op, "Tool entity does not exist.", res, getId());
         return;
     }
 
-    if (!entity_arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        error(op, "Character::UseOperation Target entity has no ID", res, getId());
+    auto usagesProp = tool->getPropertyClassFixed<UsagesProperty>();
+    if (!usagesProp) {
+        log(NOTICE, "Character::UseOp Attempt to use something without usages. " + describeEntity());
         return;
     }
-    target->setId(entity_arg->getId());
 
-    if (entity_arg->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
-        target->setPos(entity_arg->getPos());
-    }
 
     if (op_type.empty()) {
         error(op, "Character::UseOperation Unable to determine op type for tool", res, getId());
         return;
     }
 
-    debug(std::cout << "Using tool " << tool->getType() << " on " << target->getId() << " with " << op_type << " action." << std::endl << std::flush
+    debug(std::cout << "Using tool " << tool->getType() << " with " << op_type << " action." << std::endl << std::flush
     ;);
 
     Root obj = Atlas::Objects::Factories::instance()->createObject(op_type);
@@ -706,13 +643,24 @@ void Character::UseOperation(const Operation & op, OpVector & res)
         // FIXME Think hard about how this error is reported. Would the error
         // make it back to the client if we made an error response?
         return;
-    } else if (!target->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        debug(std::cout << "No target" << std::endl << std::flush;);
     } else {
-        rop->setArgs1(target);
+        if (entity_arg) {
+            Anonymous target;
+            if (!entity_arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+                error(op, "Character::UseOperation Target entity has no ID", res, getId());
+                return;
+            }
+            target->setId(entity_arg->getId());
+
+            if (entity_arg->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
+                target->setPos(entity_arg->getPos());
+            }
+            rop->setArgs1(target);
+        }
     }
 
     rop->setTo(tool->getId());
+    rop->setFrom(getId());
 
     LocatedEntity * target_ent = BaseWorld::instance().getEntity(entity_arg->getId());
     if (target_ent == nullptr) {
@@ -720,21 +668,24 @@ void Character::UseOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    if (target_ent->isReachableForOtherEntity(this)) {
-
-        Task * task = BaseWorld::instance().activateTask(tool->getType()->name(), op_type, target_ent, *this);
-        if (task != nullptr) {
-            startTask(task, rop, res);
-        }
-
-        res.push_back(rop);
-
-        Sight sight;
-        sight->setArgs1(rop);
-        res.push_back(sight);
-    } else {
-        clientError(op, "Entity is too far away.", res, op->getFrom());
+    auto taskName = usagesProp->findMatchingTask(op_type, target_ent);
+    if (taskName.empty()) {
+        clientError(op, "Could not find any matching usage.", res, getId());
+        return;
     }
+
+
+
+    Task * task = BaseWorld::instance().newTask(taskName, *this);
+    if (task != nullptr) {
+        startTask(task, rop, res);
+    }
+
+    res.push_back(rop);
+
+    Sight sight;
+    sight->setArgs1(rop);
+    res.push_back(sight);
 }
 
 void Character::WieldOperation(const Operation & op, OpVector & res)
@@ -858,65 +809,6 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
     Update update;
     update->setTo(getId());
     res.push_back(update);
-}
-
-void Character::AttackOperation(const Operation & op, OpVector & res)
-{
-    const std::string & from = op->getFrom();
-    if (from == getId()) {
-        return;
-    }
-
-    LocatedEntity * attack_ent = BaseWorld::instance().getEntity(op->getFrom());
-    if (attack_ent == nullptr) {
-        log(ERROR, "AttackOperation: Attack op from non-existant ID");
-        return;
-    }
-
-    // FIXME Is this dynamic cast required?
-    Character * attacker = dynamic_cast<Character *>(attack_ent);
-
-    if (attacker == nullptr) {
-        log(ERROR, "AttackOperation: Attack op from non-character entity");
-        return;
-    }
-
-    auto atp = attacker->getPropertyClass<TasksProperty>(TASKS);
-    if (atp != nullptr && atp->busy()) {
-        log(ERROR, String::compose("AttackOperation: Attack op aborted "
-                "because attacker %1(%2) busy.", attacker->getId(), attacker->getType()));
-        return;
-    }
-
-    TasksProperty * tp = requirePropertyClass<TasksProperty>(TASKS);
-    if (tp != nullptr && tp->busy()) {
-        log(ERROR, String::compose("AttackOperation: Attack op aborted "
-                "because defender %1(%2) busy.", getId(), getType()));
-        return;
-    }
-
-    Task * combat = BaseWorld::instance().newTask("combat", *this);
-
-    if (combat == nullptr) {
-        log(ERROR, "Character::AttackOperation: Unable to create combat task");
-        return;
-    }
-
-    if (tp->startTask(combat, this, op, res) != 0) {
-        return;
-    }
-
-    combat = BaseWorld::instance().newTask("combat", *attacker);
-
-    if (combat == nullptr) {
-        log(ERROR, "Character::AttackOperation: Unable to create combat task");
-        return;
-    }
-
-    if (attacker->startTask(combat, op, res) != 0) {
-        clearTask(res);
-        return;
-    }
 }
 
 void Character::ActuateOperation(const Operation & op, OpVector & res)
@@ -1198,28 +1090,6 @@ void Character::mindActuateOperation(const Operation & op, OpVector & res)
 
     //Distance filtering etc. happens in ActuateOperation
     op->setTo(getId());
-    res.push_back(op);
-}
-
-/// \brief Filter a Attack operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindAttackOperation(const Operation & op, OpVector & res)
-{
-    const std::vector<Root> & args = op->getArgs();
-    if (args.empty()) {
-        log(ERROR, "mindAttackOperation: attack op has no argument. " + describeEntity());
-        return;
-    }
-    const Root & arg = args.front();
-    if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        log(ERROR, "mindAttackOperation: attack op arg has no ID. " + describeEntity());
-        return;
-    }
-    const std::string & id = arg->getId();
-
-    op->setTo(id);
     res.push_back(op);
 }
 
@@ -2029,8 +1899,6 @@ void Character::mind2body(const Operation & op, OpVector & res)
     default:
         if (op_no == Atlas::Objects::Operation::ACTUATE_NO) {
             mindActuateOperation(op, res);
-        } else if (op_no == Atlas::Objects::Operation::ATTACK_NO) {
-            mindAttackOperation(op, res);
         } else if (op_no == Atlas::Objects::Operation::EAT_NO) {
             mindEatOperation(op, res);
         } else if (op_no == Atlas::Objects::Operation::SETUP_NO) {

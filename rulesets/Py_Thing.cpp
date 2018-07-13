@@ -63,8 +63,28 @@ static PyObject * Entity_as_entity(PyEntity * self)
     return (PyObject *)ret;
 }
 
+static PyObject * Entity_is_reachable_for_other_entity(PyEntity * self, PyObject* target)
+{
+    if (PyWeakref_Check(target)) {
+        target = PyWeakref_GetObject(target);
+    }
+    if (!PyLocatedEntity_Check(target)) {
+        PyErr_SetString(PyExc_TypeError, "Target must be a located entity");
+        return nullptr;
+    }
+
+    auto targetEntity = (PyEntity*)(target);
+
+    auto result = targetEntity->m_entity.l->isReachableForOtherEntity(self->m_entity.l);
+    if (result) {
+        Py_RETURN_TRUE;
+    }
+    Py_RETURN_FALSE;
+}
+
 static PyMethodDef LocatedEntity_methods[] = {
     {"as_entity",       (PyCFunction)Entity_as_entity,  METH_NOARGS},
+    {"is_reachable_for_other_entity",       (PyCFunction)Entity_is_reachable_for_other_entity,  METH_O},
     {nullptr,              nullptr}           /* sentinel */
 };
 

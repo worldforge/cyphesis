@@ -72,6 +72,7 @@
 
 #include <iostream>
 #include <rulesets/ScriptsProperty.h>
+#include <rulesets/UsagesProperty.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -256,6 +257,8 @@ CorePropertyManager::CorePropertyManager()
     installProperty<Property<double>>("maxscale");
 
     installProperty<ScriptsProperty>();
+
+    installProperty<UsagesProperty>();
 }
 
 int CorePropertyManager::installFactory(const std::string & type_name,

@@ -1,12 +1,16 @@
 #ifndef RULESETS_FILTER_H_
 #define RULESETS_FILTER_H_
 
-#include "ParserDefinitions.h"
+#include <string>
 
+class LocatedEntity;
 ///\brief This class is used to search entities in NPC's memory
 ///using a query as a filter
 namespace EntityFilter
 {
+class ProviderFactory;
+class QueryContext;
+class Predicate;
 ///Main Filtering class
 class Filter {
     public:

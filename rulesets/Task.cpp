@@ -33,7 +33,7 @@ using Atlas::Message::MapType;
 Task::Task(LocatedEntity & owner) : m_refCount(0), m_serialno(0),
                                     m_obsolete(false),
                                     m_progress(-1), m_rate(-1),
-                                    m_owner(owner), m_script(0)
+                                    m_owner(owner), m_script(nullptr)
 {
 }
 
@@ -72,7 +72,7 @@ Operation Task::nextTick(double interval)
 int Task::getAttr(const std::string & attr,
                   Atlas::Message::Element & val) const
 {
-    MapType::const_iterator I = m_attr.find(attr);
+    auto I = m_attr.find(attr);
     if (I == m_attr.end()) {
         return -1;
     }
@@ -93,7 +93,7 @@ void Task::setAttr(const std::string & attr,
 /// @param scrpt the language script object handle this task
 void Task::setScript(Script * scrpt)
 {
-    if (m_script != 0) {
+    if (m_script != nullptr) {
         log(WARNING, "Installing a new task script over an existing script");
         delete m_script;
     }
@@ -102,13 +102,12 @@ void Task::setScript(Script * scrpt)
 
 void Task::initTask(const Operation & op, OpVector & res)
 {
-    assert(op->getParent() != "");
-    if (m_script == 0) {
+    assert(!op->getParent().empty());
+    if (m_script == nullptr) {
         log(WARNING, "Task script failed");
         irrelevant();
-    } else if (!m_script->operation(op->getParent(), op, res)) {
-        log(WARNING, "Task init failed");
-        irrelevant();
+    } else {
+        m_script->operation(op->getParent(), op, res);
     }
 
     if (obsolete()) {
@@ -127,7 +126,7 @@ void Task::initTask(const Operation & op, OpVector & res)
 
 void Task::operation(const Operation & op, OpVector & res)
 {
-    if (m_script != 0) {
+    if (m_script != nullptr) {
         m_script->operation(op->getParent(), op, res);
     }
 }
