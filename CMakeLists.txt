@@ -204,6 +204,7 @@ add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} -E Benchmark)
 # Add a "benchmark" target, which builds and runs the benchmarks.
 add_custom_target(benchmark COMMAND ${CMAKE_CTEST_COMMAND} -R Benchmark)
 
+add_subdirectory(external)
 add_subdirectory(physics)
 add_subdirectory(common)
 add_subdirectory(modules)

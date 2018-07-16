@@ -113,7 +113,7 @@ add_library(scriptpython
     PythonScriptFactory_impl.h
     CyPy_Props.cpp CyPy_Props.h)
 
-target_link_libraries(scriptpython ${PYTHON_LIBRARIES})
+target_link_libraries(scriptpython ${PYTHON_LIBRARIES} pycxx)
 # Prevent GCC from messing up Python pointer handling
 #target_compile_options(scriptpython PUBLIC "-fno-strict-aliasing")
 
