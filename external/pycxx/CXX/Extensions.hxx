@@ -34,10 +34,156 @@
 // DAMAGE.
 //
 //-----------------------------------------------------------------------------
-#include "CXX/WrapPython.h"
 
-#if PY_MAJOR_VERSION == 2
-#include "CXX/Python2/Extensions.hxx"
-#else
-#include "CXX/Python3/Extensions.hxx"
+#ifndef __CXX_Extensions__h
+#define __CXX_Extensions__h
+
+
+#ifdef _MSC_VER
+// disable warning C4786: symbol greater than 255 character,
+// okay to ignore
+#pragma warning( disable: 4786 )
+#endif
+
+#include "WrapPython.h"
+#include "Version.hxx"
+#include "Config.hxx"
+#include "CxxDebug.hxx"
+#include "Objects.hxx"
+
+extern "C" { extern PyObject py_object_initializer; }
+
+#include <vector>
+#include <map>
+
+// ----------------------------------------------------------------------
+
+namespace Py
+{
+    class ExtensionModuleBase;
+
+    // Make an Exception Type for use in raising custom exceptions
+    class ExtensionExceptionType : public Object
+    {
+    public:
+        ExtensionExceptionType();
+        virtual ~ExtensionExceptionType();
+
+        // call init to create the type
+        void init( ExtensionModuleBase &module, const std::string &name, ExtensionExceptionType &parent );
+        void init( ExtensionModuleBase &module, const std::string &name );
+    };
+
+    class MethodTable
+    {
+    public:
+        MethodTable();
+        virtual ~MethodTable();
+
+        void add( const char *method_name, PyCFunction f, const char *doc="", int flag=1 );
+        PyMethodDef *table();
+
+    protected:
+        std::vector<PyMethodDef> t;    // accumulator of PyMethodDef's
+        PyMethodDef *mt;        // Actual method table produced when full
+
+        static PyMethodDef method( const char* method_name, PyCFunction f, int flags=1, const char* doc="" );
+
+    private:
+        //
+        // prevent the compiler generating these unwanted functions
+        //
+        MethodTable( const MethodTable &m );    //unimplemented
+        void operator=( const MethodTable &m );    //unimplemented
+
+    }; // end class MethodTable
+
+    // Note: Python calls noargs as varargs buts args==NULL
+    extern "C" typedef PyObject *(*method_noargs_call_handler_t)( PyObject *_self, PyObject * );
+    extern "C" typedef PyObject *(*method_varargs_call_handler_t)( PyObject *_self, PyObject *_args );
+    extern "C" typedef PyObject *(*method_keyword_call_handler_t)( PyObject *_self, PyObject *_args, PyObject *_dict );
+
+    template<class T>
+    class MethodDefExt
+    {
+    public:
+        typedef Object (T::*method_noargs_function_t)();
+        typedef Object (T::*method_varargs_function_t)( const Tuple &args );
+        typedef Object (T::*method_keyword_function_t)( const Tuple &args, const Dict &kws );
+
+        // NOARGS
+        MethodDefExt
+        (
+            const char *_name,
+            method_noargs_function_t _function,
+            method_noargs_call_handler_t _handler,
+            const char *_doc
+        )
+        {
+            ext_meth_def.ml_name = const_cast<char *>( _name );
+            ext_meth_def.ml_meth = reinterpret_cast<method_varargs_call_handler_t>( _handler );
+            ext_meth_def.ml_flags = METH_NOARGS;
+            ext_meth_def.ml_doc = const_cast<char *>( _doc );
+
+            ext_noargs_function = _function;
+            ext_varargs_function = NULL;
+            ext_keyword_function = NULL;
+        }
+
+        // VARARGS
+        MethodDefExt
+        (
+            const char *_name,
+            method_varargs_function_t _function,
+            method_varargs_call_handler_t _handler,
+            const char *_doc
+        )
+        {
+            ext_meth_def.ml_name = const_cast<char *>( _name );
+            ext_meth_def.ml_meth = reinterpret_cast<method_varargs_call_handler_t>( _handler );
+            ext_meth_def.ml_flags = METH_VARARGS;
+            ext_meth_def.ml_doc = const_cast<char *>( _doc );
+
+            ext_noargs_function = NULL;
+            ext_varargs_function = _function;
+            ext_keyword_function = NULL;
+        }
+
+        // VARARGS + KEYWORD
+        MethodDefExt
+        (
+            const char *_name,
+            method_keyword_function_t _function,
+            method_keyword_call_handler_t _handler,
+            const char *_doc
+        )
+        {
+            ext_meth_def.ml_name = const_cast<char *>( _name );
+            ext_meth_def.ml_meth = reinterpret_cast<method_varargs_call_handler_t>( _handler );
+            ext_meth_def.ml_flags = METH_VARARGS|METH_KEYWORDS;
+            ext_meth_def.ml_doc = const_cast<char *>( _doc );
+
+            ext_noargs_function = NULL;
+            ext_varargs_function = NULL;
+            ext_keyword_function = _function;
+        }
+
+        ~MethodDefExt()
+        {}
+
+        PyMethodDef ext_meth_def;
+        method_noargs_function_t ext_noargs_function;
+        method_varargs_function_t ext_varargs_function;
+        method_keyword_function_t ext_keyword_function;
+        Object py_method;
+    };
+} // Namespace Py
+
+#include "ExtensionModule.hxx"
+#include "PythonType.hxx"
+#include "ExtensionTypeBase.hxx"
+#include "ExtensionOldType.hxx"
+#include "ExtensionType.hxx"
+
+// End of CXX_Extensions.h
 #endif

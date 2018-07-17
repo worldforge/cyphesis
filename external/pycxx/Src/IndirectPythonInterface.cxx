@@ -422,7 +422,7 @@ void _XDECREF( PyObject *op )
 #if PY_MAJOR_VERSION == 2
 #include "CXX/Python2/cxx_standard_exceptions.hxx"
 #else
-#include "CXX/Python3/cxx_standard_exceptions.hxx"
+#include "external/pycxx/CXX/cxx_standard_exceptions.hxx"
 #endif
 
 #undef PYCXX_STANDARD_EXCEPTION
