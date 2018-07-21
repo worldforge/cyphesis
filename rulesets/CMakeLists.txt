@@ -70,7 +70,7 @@ add_library(entityfilter
     entityfilter/Filter.cpp
     entityfilter/Providers.cpp
     entityfilter/Predicates.cpp
-    entityfilter/ParserDefinitions.h)
+    entityfilter/ParserDefinitions.h python/CyPy_Props.cpp python/CyPy_Props.h)
 
 add_library(rulesetmind
     BaseMind.cpp
@@ -111,7 +111,13 @@ add_library(scriptpython
     PythonArithmeticFactory.cpp
     PythonScriptFactory.cpp
     PythonScriptFactory_impl.h
-    CyPy_Props.cpp CyPy_Props.h)
+    CyPy_Props.cpp CyPy_Props.h
+
+    python/CyPy_EntityFilter.cpp python/CyPy_EntityFilter.h
+    python/CyPy_LocatedEntity.cpp python/CyPy_LocatedEntity.h
+    python/CyPy_Entity.cpp python/CyPy_Entity.h
+    python/CyPy_Common.cpp python/CyPy_Common.h
+    python/CyPy_Atlas.cpp python/CyPy_Atlas.h python/CyPy_Operation.cpp python/CyPy_Operation.h python/CyPy_Element.cpp python/CyPy_Element.h python/CyPy_RootEntity.cpp python/CyPy_RootEntity.h python/CyPy_Oplist.cpp python/CyPy_Oplist.h python/CyPy_Location.cpp python/CyPy_Location.h python/CyPy_Point3D.cpp python/CyPy_Point3D.h python/CyPy_Vector3D.cpp python/CyPy_Vector3D.h python/CyPy_Quaternion.cpp python/CyPy_Quaternion.h python/CyPy_Axisbox.cpp python/CyPy_Axisbox.h python/CyPy_Physics.cpp python/CyPy_Physics.h python/CoordHelper.cpp python/CoordHelper.h python/WrapperBase.cpp python/WrapperBase.h)
 
 target_link_libraries(scriptpython ${PYTHON_LIBRARIES} pycxx)
 # Prevent GCC from messing up Python pointer handling

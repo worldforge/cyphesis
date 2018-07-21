@@ -34,43 +34,8 @@
 
 #include <cassert>
 
-static PyObject * null_wrapper(PyObject * self, PyMessage * o)
-{
-    if (!PyMessage_Check(o)) {
-        PyErr_SetString(PyExc_TypeError, "Unknown Object type");
-        return nullptr;
-    }
-#ifdef CYPHESIS_DEBUG
-    o->m_obj = nullptr;
-#endif // NDEBUG
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-
-static PyMethodDef sabotage_methods[] = {
-    {"null", (PyCFunction)null_wrapper,                 METH_O},
-    {nullptr,          nullptr}                       /* Sentinel */
-};
-
-static PyObject* init_sabotage() {
-    static struct PyModuleDef def = {
-            PyModuleDef_HEAD_INIT,
-            "sabotage",
-            nullptr,
-            0,
-            sabotage_methods,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr
-    };
-
-    return PyModule_Create(&def);
-}
-
 int main()
 {
-    PyImport_AppendInittab("sabotage", &init_sabotage);
     init_python_api("16799987-a321-43a2-aa66-f7bc8ed8e9b2");
 
     run_python_string("from atlas import Message");
@@ -151,16 +116,6 @@ int main()
     run_python_string("assert m != 1");
     run_python_string("assert m != 1.0");
     run_python_string("assert m != '1'");
-
-#ifdef CYPHESIS_DEBUG
-    run_python_string("import sabotage");
-    run_python_string("get_name_method=m.get_name");
-    run_python_string("sabotage.null(m)");
-    // Hit the assert checks.
-    expect_python_error("print(get_name_method())", PyExc_AssertionError);
-    expect_python_error("print(m.foo)", PyExc_AssertionError);
-    expect_python_error("m.foo = 1", PyExc_AssertionError);
-#endif // NDEBUG
 
     shutdown_python_api();
     return 0;

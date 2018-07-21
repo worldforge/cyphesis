@@ -62,7 +62,7 @@ int main()
     expect_python_error("print(q * 2)", PyExc_TypeError);
     run_python_string("print(q.is_valid())");
     run_python_string("print(q.as_list())");
-    expect_python_error("print(q.rotation())", PyExc_TypeError);
+    expect_python_error("print(q.rotation())", PyExc_IndexError);
     expect_python_error("print(q.rotation('foo',1.0))", PyExc_TypeError);
     run_python_string("from physics import Vector3D");
     run_python_string("v=Vector3D(0,0,0)");

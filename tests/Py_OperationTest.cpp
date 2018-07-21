@@ -37,69 +37,8 @@
 
 #include <cassert>
 
-static PyObject * null_wrapper(PyObject * self, PyOperation * o)
-{
-    if (PyOperation_Check(o)) {
-#ifdef CYPHESIS_DEBUG
-        o->operation = Atlas::Objects::Operation::RootOperation(nullptr);
-#endif // NDEBUG
-    } else if (PyOplist_Check(o)) {
-#ifdef CYPHESIS_DEBUG
-        ((PyOplist*)o)->ops = 0;
-#endif // NDEBUG
-    } else if (PyRootEntity_Check(o)) {
-#ifdef CYPHESIS_DEBUG
-        ((PyRootEntity*)o)->entity = Atlas::Objects::Entity::RootEntity(nullptr);
-#endif // NDEBUG
-    } else if (PyMessage_Check(o)) {
-#ifdef CYPHESIS_DEBUG
-        ((PyMessage*)o)->m_obj = 0;
-#endif // NDEBUG
-    } else {
-        PyErr_SetString(PyExc_TypeError, "Unknown Object type");
-        return nullptr;
-    }
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-
-static PyObject * clear_parent(PyObject * self, PyOperation * o)
-{
-    if (PyOperation_Check(o)) {
-        o->operation->setParent("");
-    } else {
-        PyErr_SetString(PyExc_TypeError, "Unknown Object type");
-        return Py_True;
-    }
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-
-static PyMethodDef sabotage_methods[] = {
-    {"null",          (PyCFunction)null_wrapper,                 METH_O},
-    {"clear_parent",  (PyCFunction)clear_parent,                METH_O},
-    {nullptr,          nullptr}                       /* Sentinel */
-};
-
-static PyObject* init_sabotage() {
-    static struct PyModuleDef def = {
-            PyModuleDef_HEAD_INIT,
-            "sabotage",
-            nullptr,
-            0,
-            sabotage_methods,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr
-    };
-
-    return PyModule_Create(&def);
-}
-
 int main()
 {
-    PyImport_AppendInittab("sabotage", &init_sabotage);
 
     init_python_api("3622159a-de3c-42e6-858c-f6bd7cf8e7b1");
 
@@ -151,7 +90,7 @@ int main()
     run_python_string("o.setFutureSeconds(2)");
     run_python_string("o.setFutureSeconds(2.0)");
     expect_python_error("o.setFutureSeconds('2.0')", PyExc_TypeError);
-    expect_python_error("o.setArgs()", PyExc_TypeError);
+    expect_python_error("o.setArgs()", PyExc_IndexError);
     run_python_string("o.setArgs([])");
     expect_python_error("o.setArgs(1)", PyExc_TypeError);
     expect_python_error("o.setArgs([1])", PyExc_TypeError);
@@ -190,80 +129,6 @@ int main()
     expect_python_error("o.to=Message({'id': 1})", PyExc_TypeError);
     run_python_string("o.to=Message({'id': '1'})");
     expect_python_error("o.other=1", PyExc_AttributeError);
-    
-#ifdef CYPHESIS_DEBUG
-    run_python_string("import sabotage");
-
-    // Hit the assert checks.
-    run_python_string("arg1=Message({'objtype': 'obj', 'parent': 'thing'})");
-    run_python_string("sabotage.null(arg1)");
-    expect_python_error("Operation('get', arg1)", PyExc_AssertionError);
-
-    run_python_string("arg1=Entity()");
-    run_python_string("sabotage.null(arg1)");
-    expect_python_error("Operation('get', arg1)", PyExc_AssertionError);
-
-    run_python_string("arg1=Operation('get')");
-    run_python_string("sabotage.null(arg1)");
-    expect_python_error("Operation('get', arg1)", PyExc_AssertionError);
-
-    expect_python_error("Operation('get', Entity(), arg1)",
-                        PyExc_AssertionError);
-    expect_python_error("Operation('get', Entity(), Entity(), arg1)",
-                        PyExc_AssertionError);
-
-    run_python_string("o2=Operation('get')");
-    run_python_string("sabotage.null(o2)");
-    expect_python_error("o + o2", PyExc_AssertionError);
-
-    run_python_string("sabotage.clear_parent(o)");
-    expect_python_error("print(o.id)", PyExc_AttributeError);
-
-    run_python_string("ol = Oplist()");
-    run_python_string("sabotage.null(ol)");
-    expect_python_error("o + ol", PyExc_AssertionError);
-
-    run_python_string("method_setSerialno=o.setSerialno");
-    run_python_string("method_setRefno=o.setRefno");
-    run_python_string("method_setTo=o.setTo");
-    run_python_string("method_setFrom=o.setFrom");
-    run_python_string("method_setSeconds=o.setSeconds");
-    run_python_string("method_setFutureSeconds=o.setFutureSeconds");
-    run_python_string("method_setArgs=o.setArgs");
-    run_python_string("method_getSerialno=o.getSerialno");
-    run_python_string("method_getRefno=o.getRefno");
-    run_python_string("method_getTo=o.getTo");
-    run_python_string("method_getFrom=o.getFrom");
-    run_python_string("method_getSeconds=o.getSeconds");
-    run_python_string("method_getFutureSeconds=o.getFutureSeconds");
-    run_python_string("method_getArgs=o.getArgs");
-    run_python_string("method_get_name=o.get_name");
-
-    run_python_string("sabotage.null(o)");
-    expect_python_error("print(o.to)", PyExc_AssertionError);
-    expect_python_error("len(o)", PyExc_AssertionError);
-    expect_python_error("o[0]", PyExc_AssertionError);
-    expect_python_error("o + None", PyExc_AssertionError);
-    expect_python_error("o.to='1'", PyExc_AssertionError);
-
-    expect_python_error("method_setSerialno(1)", PyExc_AssertionError);
-    expect_python_error("method_setRefno(1)", PyExc_AssertionError);
-    expect_python_error("method_setTo('1')", PyExc_AssertionError);
-    expect_python_error("method_setFrom('2')", PyExc_AssertionError);
-    expect_python_error("method_setSeconds(2.0)", PyExc_AssertionError);
-    expect_python_error("method_setFutureSeconds(2.0)", PyExc_AssertionError);
-    expect_python_error("method_setArgs([])", PyExc_AssertionError);
-    expect_python_error("method_getSerialno()", PyExc_AssertionError);
-    expect_python_error("method_getRefno()", PyExc_AssertionError);
-    expect_python_error("method_getTo()", PyExc_AssertionError);
-    expect_python_error("method_getFrom()", PyExc_AssertionError);
-    expect_python_error("method_getSeconds()", PyExc_AssertionError);
-    expect_python_error("method_getFutureSeconds()", PyExc_AssertionError);
-    expect_python_error("method_getArgs()", PyExc_AssertionError);
-    expect_python_error("method_get_name()", PyExc_AssertionError);
-
-#endif // NDEBUG
-
 
     shutdown_python_api();
     return 0;

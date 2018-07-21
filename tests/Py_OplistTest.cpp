@@ -30,54 +30,12 @@
 #include "python_testers.h"
 
 #include "rulesets/Python_API.h"
-#include "rulesets/Py_Oplist.h"
-#include "rulesets/Py_Operation.h"
 
 #include <cassert>
 
-static PyObject * null_wrapper(PyObject * self, PyOplist * o)
-{
-    if (PyOplist_Check(o)) {
-#ifdef CYPHESIS_DEBUG
-        o->ops = nullptr;
-#endif // NDEBUG
-    } else if (PyOperation_Check(o)) {
-#ifdef CYPHESIS_DEBUG
-        ((PyOperation*)o)->operation = Atlas::Objects::Operation::RootOperation(nullptr);
-#endif // NDEBUG
-    } else {
-        PyErr_SetString(PyExc_TypeError, "Unknown Object type");
-        return nullptr;
-    }
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-
-static PyMethodDef sabotage_methods[] = {
-    {"null", (PyCFunction)null_wrapper,                 METH_O},
-    {nullptr,          nullptr}                       /* Sentinel */
-};
-
-static PyObject* init_sabotage() {
-    static struct PyModuleDef def = {
-            PyModuleDef_HEAD_INIT,
-            "sabotage",
-            nullptr,
-            0,
-            sabotage_methods,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr
-    };
-
-    return PyModule_Create(&def);
-}
 
 int main()
 {
-    PyImport_AppendInittab("sabotage", &init_sabotage);
-
     init_python_api("3803b66a-022e-420e-8e63-30e0c32aaf87");
 
     run_python_string("from atlas import Oplist");
@@ -116,26 +74,6 @@ int main()
                         PyExc_TypeError);
     expect_python_error("Oplist(Operation('get'), Operation('get'), Operation('get'), 1)",
                         PyExc_TypeError);
-    expect_python_error("Oplist(Operation('get'), Operation('get'), Operation('get'), Operation('get'), Operation('get'))",
-                        PyExc_TypeError);
-
-#ifdef CYPHESIS_DEBUG
-    run_python_string("import sabotage");
-
-    // Hit the assert checks.
-    run_python_string("arg1=Operation('get')");
-    run_python_string("sabotage.null(arg1)");
-    expect_python_error("m += arg1", PyExc_ValueError);
-    expect_python_error("n = m + arg1", PyExc_ValueError);
-    
-    run_python_string("sabotage.null(m)");
-
-    expect_python_error("m.append(None)", PyExc_AssertionError);
-    expect_python_error("m += None", PyExc_AssertionError);
-    expect_python_error("n = m + None", PyExc_AssertionError);
-    expect_python_error("len(m)", PyExc_AssertionError);
-
-#endif // NDEBUG
 
     shutdown_python_api();
     return 0;

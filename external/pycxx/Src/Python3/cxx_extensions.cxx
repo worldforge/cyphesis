@@ -278,6 +278,10 @@ extern "C"
     static PyObject *number_xor_handler( PyObject *, PyObject * );
     static PyObject *number_or_handler( PyObject *, PyObject * );
     static PyObject *number_power_handler( PyObject *, PyObject *, PyObject * );
+    static PyObject *number_floor_divide_handler( PyObject *, PyObject *);
+    static PyObject *number_true_divide_handler( PyObject *, PyObject *);
+    static PyObject *number_inplace_floor_divide_handler( PyObject *, PyObject *);
+    static PyObject *number_inplace_true_divide_handler( PyObject *, PyObject *);
 
     // Buffer
     static int buffer_get_handler( PyObject *, Py_buffer *, int );
@@ -436,6 +440,14 @@ PythonType &PythonType::supportNumberType( int methods_to_support )
         if( methods_to_support&support_number_float )
         {
             number_table->nb_float = number_float_handler;
+        }
+        if( methods_to_support&support_number_floor_divide )
+        {
+            number_table->nb_floor_divide = number_floor_divide_handler;
+        }
+        if( methods_to_support&support_number_true_divide )
+        {
+            number_table->nb_true_divide = number_true_divide_handler;
         }
 
         // QQQ lots of new methods to add
@@ -1255,6 +1267,57 @@ extern "C" PyObject *number_power_handler( PyObject *self, PyObject *x1, PyObjec
     }
 }
 
+extern "C" PyObject *number_floor_divide_handler( PyObject *self, PyObject *other )
+{
+    try
+    {
+        PythonExtensionBase *p = getPythonExtensionBase( self );
+        return new_reference_to( p->number_floor_divide( Object( other ) ) );
+    }
+    catch( BaseException & )
+    {
+        return NULL;    // indicate error
+    }
+}
+
+extern "C" PyObject *number_true_divide_handler( PyObject *self, PyObject *other )
+{
+    try
+    {
+        PythonExtensionBase *p = getPythonExtensionBase( self );
+        return new_reference_to( p->number_true_divide( Object( other ) ) );
+    }
+    catch( BaseException & )
+    {
+        return NULL;    // indicate error
+    }
+}
+extern "C" PyObject *number_inplace_floor_divide_handler( PyObject *self, PyObject *other )
+{
+    try
+    {
+        PythonExtensionBase *p = getPythonExtensionBase( self );
+        return new_reference_to( p->number_inplace_floor_divide( Object( other ) ) );
+    }
+    catch( BaseException & )
+    {
+        return NULL;    // indicate error
+    }
+}
+extern "C" PyObject *number_inplace_true_divide_handler( PyObject *self, PyObject *other )
+{
+    try
+    {
+        PythonExtensionBase *p = getPythonExtensionBase( self );
+        return new_reference_to( p->number_inplace_true_divide( Object( other ) ) );
+    }
+    catch( BaseException & )
+    {
+        return NULL;    // indicate error
+    }
+}
+
+
 // Buffer
 extern "C" int buffer_get_handler( PyObject *self, Py_buffer *buf, int flags )
 {
@@ -1601,6 +1664,26 @@ Object PythonExtensionBase::number_or( const Object & )
 Object PythonExtensionBase::number_power( const Object &, const Object & )
 {
     missing_method( number_power );
+}
+
+Object PythonExtensionBase::number_floor_divide( const Object & )
+{
+    missing_method( number_floor_divide );
+}
+
+Object PythonExtensionBase::number_true_divide( const Object & )
+{
+    missing_method( number_true_divide );
+}
+
+Object PythonExtensionBase::number_inplace_floor_divide( const Object & )
+{
+    missing_method( number_floor_divide );
+}
+
+Object PythonExtensionBase::number_inplace_true_divide( const Object & )
+{
+    missing_method( number_true_divide );
 }
 
 

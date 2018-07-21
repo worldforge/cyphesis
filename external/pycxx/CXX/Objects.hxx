@@ -322,6 +322,11 @@ namespace Py
             return Py::_Dict_Check( p );
         }
 
+        bool isDictOrSubclass() const
+        {
+            return PyDict_Check( p ) != 0;
+        }
+
         bool isList() const
         {
             return Py::_List_Check( p );
@@ -335,6 +340,16 @@ namespace Py
         bool isNumeric() const
         {
             return PyNumber_Check( p ) != 0;
+        }
+
+        bool isFloat() const
+        {
+            return PyFloat_Check( p ) != 0;
+        }
+
+        bool isLong() const
+        {
+            return PyLong_Check( p ) != 0;
         }
 
         bool isSequence() const
@@ -1405,7 +1420,8 @@ namespace Py
         {
             if( size() != required_size )
             {
-                throw IndexError( "Unexpected SeqBase<T> length." );
+                throw IndexError( (std::string("Unexpected sequence length. Expected a length of ")
+                                   + std::to_string(required_size)).c_str() );
             }
         }
 
@@ -1414,7 +1430,10 @@ namespace Py
             size_type n = size();
             if( n < min_size || n > max_size )
             {
-                throw IndexError( "Unexpected SeqBase<T> length." );
+                throw IndexError( (std::string("Unexpected sequence length. Expected a length of min ")
+                                   + std::to_string(min_size)
+                                   + std::string(" and max ")
+                                   + std::to_string(max_size)).c_str() );
             }
         }
 

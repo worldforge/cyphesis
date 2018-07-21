@@ -129,7 +129,11 @@ namespace Py
             support_number_xor =                B(13),
             support_number_or =                 B(14),
             support_number_int =                B(15),
-            support_number_float=               B(16)
+            support_number_float=               B(16),
+            support_number_floor_divide =       B(17),
+            support_number_true_divide =        B(18),
+            support_number_inplace_floor_divide = B(19),
+            support_number_inplace_true_divide = B(20)
         };
         PythonType &supportNumberType( int methods_to_support=
                     support_number_add |
@@ -148,7 +152,11 @@ namespace Py
                     support_number_xor |
                     support_number_or |
                     support_number_int |
-                    support_number_float
+                    support_number_float |
+                    support_number_floor_divide |
+                    support_number_true_divide |
+                    support_number_inplace_floor_divide |
+                    support_number_inplace_true_divide
                     );
 
         enum {

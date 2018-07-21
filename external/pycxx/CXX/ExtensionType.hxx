@@ -199,6 +199,12 @@ namespace Py
         {
         }
 
+        explicit PythonClass( PythonClassInstance *self)
+            : PythonExtensionBase()
+            , m_class_instance( self )
+        {
+        }
+
         virtual ~PythonClass()
         {} 
 

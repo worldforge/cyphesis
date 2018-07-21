@@ -126,6 +126,10 @@ namespace Py
         virtual Object number_xor( const Object & );
         virtual Object number_or( const Object & );
         virtual Object number_power( const Object &, const Object & );
+        virtual Object number_floor_divide( const Object & );
+        virtual Object number_true_divide( const Object & );
+        virtual Object number_inplace_floor_divide( const Object & );
+        virtual Object number_inplace_true_divide( const Object & );
 
         // Buffer
         virtual int buffer_get( Py_buffer *, int flags );

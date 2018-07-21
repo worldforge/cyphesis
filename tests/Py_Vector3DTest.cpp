@@ -87,14 +87,14 @@ int main()
     run_python_string("print(v[1])");
     run_python_string("print(v[2])");
     run_python_string("print(v[-1])");
-    expect_python_error("print(v[3])", PyExc_TypeError);
+    expect_python_error("print(v[3])", PyExc_IndexError);
     run_python_string("v.x=1");
     run_python_string("v.y=1");
     run_python_string("v.z=1");
     run_python_string("v[0]=1.0");
     run_python_string("v[1]=1.0");
     run_python_string("v[2]=1.0");
-    expect_python_error("v[3]=1", PyExc_TypeError);
+    expect_python_error("v[3]=1", PyExc_IndexError);
     run_python_string("v.z=1.9");
     expect_python_error("v.z='1'", PyExc_TypeError);
     expect_python_error("v.w=1", PyExc_AttributeError);

@@ -51,6 +51,10 @@
 #include <common/AssetsManager.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/asio/steady_timer.hpp>
+#include <rulesets/python/CyPy_EntityFilter.h>
+#include <rulesets/python/CyPy_Common.h>
+#include <rulesets/python/CyPy_Atlas.h>
+#include <rulesets/python/CyPy_Physics.h>
 
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
@@ -264,7 +268,7 @@ PyTypeObject PyOutLogger_Type = {
         "OutLogger",         // tp_name
         sizeof(PyObject),    // tp_basicsize
         0,                   // tp_itemsize
-        //  methods 
+        //  methods
         0,                   // tp_dealloc
         0,                   // tp_print
         0,                   // tp_getattr
@@ -306,7 +310,7 @@ PyTypeObject PyErrLogger_Type = {
         "ErrLogger",         // tp_name
         sizeof(PyObject),    // tp_basicsize
         0,                   // tp_itemsize
-        //  methods 
+        //  methods
         0,                   // tp_dealloc
         0,                   // tp_print
         0,                   // tp_getattr
@@ -395,7 +399,7 @@ PyObject * Get_PyModule(const std::string & package)
 PyObject * Create_PyScript(PyObject * wrapper, PyObject * py_class)
 {
     PyObject * pyob = PyEval_CallFunction(py_class,"(O)", wrapper);
-    
+
     if (pyob == nullptr) {
         if (PyErr_Occurred() == nullptr) {
             log(ERROR, "Could not create python instance");
@@ -531,10 +535,6 @@ static PyMethodDef physics_methods[] = {
     {nullptr,          nullptr}                       /* Sentinel */
 };
 
-static PyMethodDef entity_filter_methods[] = {
-        {"get_filter", get_filter, METH_O},
-        {nullptr, nullptr}
-};
 
 sigc::signal<void> python_reload_scripts;
 std::vector<std::string> python_directories;
@@ -589,33 +589,6 @@ void observe_python_directories(boost::asio::io_service& io_service, AssetsManag
     }
 }
 
-static PyObject* init_entity_filter() {
-    static struct PyModuleDef entity_filter_def = {
-            PyModuleDef_HEAD_INIT,
-            "entity_filter",
-            nullptr,
-            0,
-            entity_filter_methods,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr
-    };
-
-    PyObject * entity_filter = PyModule_Create(&entity_filter_def);
-    if (entity_filter == nullptr) {
-        log(CRITICAL, "Python init failed to create entity_filter module\n");
-        return nullptr;
-    }
-
-    PyFilter_Type.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&PyFilter_Type) < 0 ){
-        log(CRITICAL, "Python init failed to ready entity filter wrapper type");
-            return  nullptr;
-    }
-
-    return entity_filter;
-}
 
 static PyObject* init_atlas() {
     static struct PyModuleDef atlas_def = {
@@ -748,75 +721,6 @@ static PyObject* init_physics() {
     return physics;
 }
 
-static PyObject* init_common() {
-    static struct PyModuleDef common_def = {
-            PyModuleDef_HEAD_INIT,
-            "common",
-            nullptr,
-            0,
-            no_methods,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr
-    };
-
-    PyObject * common = PyModule_Create(&common_def);
-
-    if (common == nullptr) {
-        log(CRITICAL, "Python init failed to create common module\n");
-        return nullptr;
-    }
-
-    log_debug_type.tp_new = PyType_GenericNew;
-    log_think_type.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&log_debug_type) < 0 || PyType_Ready(&log_think_type) < 0) {
-        log(CRITICAL, "Python init failed to ready log wrapper type");
-        return nullptr;
-    }
-
-    /// Create the common.log module
-    PyObject * log_mod = PyModule_New("log");
-    PyModule_AddObject(common, "log", log_mod);
-
-    PyObject * debug = log_debug_type.tp_new(&log_debug_type, 0, 0);
-    PyModule_AddObject(log_mod, "debug", debug);
-
-    PyObject * think = log_think_type.tp_new(&log_think_type, 0, 0);
-    PyModule_AddObject(log_mod, "thinking", think);
-
-
-    PyObject * o;
-
-    /// Create the common.const module
-    PyObject * _const = PyModule_New("const");
-    PyModule_AddObject(common, "const", _const);
-
-    o = PyLong_FromLong(consts::debug_level);
-    PyModule_AddObject(_const, "debug_level", o);
-
-    o = PyLong_FromLong(consts::debug_thinking);
-    PyModule_AddObject(_const, "debug_thinking", o);
-
-    o = PyFloat_FromDouble(consts::time_multiplier);
-    PyModule_AddObject(_const, "time_multiplier", o);
-
-    o = PyFloat_FromDouble(consts::basic_tick);
-    PyModule_AddObject(_const, "basic_tick", o);
-
-    o = PyFloat_FromDouble(WFMath::numeric_constants<WFMath::CoordType>::epsilon());
-    PyModule_AddObject(_const, "epsilon", o);
-
-    /// Create the common.globals module
-    PyObject * globals = PyModule_New("globals");
-    PyModule_AddObject(common, "globals", globals);
-
-    o = PyUnicode_FromString(share_directory.c_str());
-    PyModule_AddObject(globals, "share_directory", o);
-    
-    return common;
-}
-
 static PyObject* init_server() {
     static struct PyModuleDef server_def = {
             PyModuleDef_HEAD_INIT,
@@ -925,10 +829,22 @@ static PyObject* init_server() {
 void init_python_api(const std::string & ruleset, bool log_stdout)
 {
 
-    PyImport_AppendInittab("entity_filter", &init_entity_filter);
-    PyImport_AppendInittab("atlas", &init_atlas);
-    PyImport_AppendInittab("physics", &init_physics);
-    PyImport_AppendInittab("common", &init_common);
+    PyImport_AppendInittab("entity_filter", [](){
+        static auto module = new CyPy_EntityFilter();
+        return module->module().ptr();
+    });
+    PyImport_AppendInittab("atlas", [](){
+        static auto module = new CyPy_Atlas();
+        return module->module().ptr();
+    });
+    PyImport_AppendInittab("physics", [](){
+        static auto module = new CyPy_Physics();
+        return module->module().ptr();
+    });
+    PyImport_AppendInittab("common", [](){
+        static auto module = new CyPy_Common();
+        return module->module().ptr();
+    });
     PyImport_AppendInittab("server", &init_server);
 
     Py_InitializeEx(0);
@@ -998,6 +914,6 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
 
 void shutdown_python_api()
 {
-    
+
     Py_Finalize();
 }
