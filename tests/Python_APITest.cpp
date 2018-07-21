@@ -31,51 +31,16 @@
 
 #include "rulesets/Python_API.h"
 #include "rulesets/Python_Script_Utils.h"
-#include "rulesets/Py_Location.h"
 
 #include "stubs/navigation/stubAwareness.h"
 #include "stubs/navigation/stubSteering.h"
 
 #include <cassert>
 
-static PyObject * null_wrapper(PyObject * self, PyLocation * o)
-{
-    if (!PyLocation_Check(o)) {
-        PyErr_SetString(PyExc_TypeError, "Unknown Object type");
-        return nullptr;
-    }
-#ifdef CYPHESIS_DEBUG
-    o->location = nullptr;
-#endif // NDEBUG
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-
-static PyMethodDef sabotage_methods[] = {
-    {"null", (PyCFunction)null_wrapper,                 METH_O},
-    {nullptr,          nullptr}                       /* Sentinel */
-};
-
-static PyObject* init_sabotage() {
-    static struct PyModuleDef def = {
-            PyModuleDef_HEAD_INIT,
-            "sabotage",
-            nullptr,
-            0,
-            sabotage_methods,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr
-    };
-
-    return PyModule_Create(&def);
-}
 
 
 int main()
 {
-    PyImport_AppendInittab("sabotage", &init_sabotage);
 
     init_python_api("1a6c913e-79b2-4fc8-9467-ee6c39d0f674");
 
@@ -125,20 +90,6 @@ int main()
     expect_python_error("physics.square_horizontal_distance('1', l2)",
                         PyExc_TypeError);
 
-#ifdef CYPHESIS_DEBUG
-    run_python_string("import sabotage");
-    run_python_string("sabotage.null(l1)");
-    expect_python_error("physics.distance_to(l1, l2)", PyExc_AssertionError);
-    expect_python_error("physics.distance_to(l2, l1)", PyExc_AssertionError);
-    expect_python_error("physics.square_distance(l1, l2)",
-                        PyExc_AssertionError);
-    expect_python_error("physics.square_distance(l2, l1)",
-                        PyExc_AssertionError);
-    expect_python_error("physics.square_horizontal_distance(l1, l2)",
-                        PyExc_AssertionError);
-    expect_python_error("physics.square_horizontal_distance(l2, l1)",
-                        PyExc_AssertionError);
-#endif // NDEBUG
 
     shutdown_python_api();
     return 0;

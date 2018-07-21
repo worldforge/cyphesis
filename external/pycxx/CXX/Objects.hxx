@@ -322,11 +322,6 @@ namespace Py
             return Py::_Dict_Check( p );
         }
 
-        bool isDictOrSubclass() const
-        {
-            return PyDict_Check( p ) != 0;
-        }
-
         bool isList() const
         {
             return Py::_List_Check( p );

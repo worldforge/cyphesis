@@ -31,56 +31,24 @@
 
 #include "rulesets/Python_API.h"
 #include "rulesets/Py_RootEntity.h"
+#include "rulesets/python/CyPy_RootEntity.h"
 
 #include <cassert>
-
-static PyObject * null_wrapper(PyObject * self, PyRootEntity * o)
-{
-    if (!PyRootEntity_Check(o)) {
-        PyErr_SetString(PyExc_TypeError, "Unknown Object type");
-        return nullptr;
-    }
-#ifdef CYPHESIS_DEBUG
-    o->entity = Atlas::Objects::Entity::RootEntity(0);
-#endif // NDEBUG
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-
-static PyMethodDef sabotage_methods[] = {
-    {"null", (PyCFunction)null_wrapper,                 METH_O},
-    {nullptr,          nullptr}                       /* Sentinel */
-};
-
-
-static PyObject* init_sabotage() {
-    static struct PyModuleDef def = {
-            PyModuleDef_HEAD_INIT,
-            "sabotage",
-            nullptr,
-            0,
-            sabotage_methods,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr
-    };
-
-    return PyModule_Create(&def);
-}
 
 
 int main()
 {
-    PyImport_AppendInittab("sabotage", &init_sabotage);
     init_python_api("c67ce8e7-d195-4806-b8e4-d905e7c9d928");
 
 
-    PyRootEntity * ent = newPyRootEntity();
-    assert(ent != 0);
 
     run_python_string("from atlas import Entity");
     run_python_string("from atlas import Location");
+
+    auto ent = CyPy_RootEntity::wrap(Atlas::Objects::Entity::RootEntity());
+    assert(ent.getCxxObject() != 0);
+    assert(ent.getCxxObject()->m_value.isValid());
+
     run_python_string("Entity('1')");
     expect_python_error("Entity(1)", PyExc_TypeError);
     expect_python_error("Entity('1', location='loc')", PyExc_TypeError);
@@ -109,19 +77,9 @@ int main()
     run_python_string("e.bar=1");
     run_python_string("e.baz=[1,2.0,'three']");
     run_python_string("e.qux={'mim': 23}");
-    run_python_string("e.ptr=set([1,2])");
+    expect_python_error("e.ptr=set([1,2])", PyExc_TypeError);
     run_python_string("e.foo");
-    run_python_string("e.ptr");
-
-#ifdef CYPHESIS_DEBUG
-    run_python_string("import sabotage");
-    // Hit the assert checks.
-    run_python_string("get_name_methd=e.get_name");
-    run_python_string("sabotage.null(e)");
-    expect_python_error("get_name_methd()", PyExc_AssertionError);
-    expect_python_error("e.name", PyExc_AssertionError);
-    expect_python_error("e.name='Bob'", PyExc_AssertionError);
-#endif // NDEBUG
+    expect_python_error("e.ptr", PyExc_AttributeError);
 
 
     shutdown_python_api();

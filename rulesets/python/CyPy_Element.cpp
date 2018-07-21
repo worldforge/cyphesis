@@ -194,7 +194,7 @@ Element CyPy_Element::asElement(const Py::Object& o)
     if (o.isList()) {
         return listAsElement(Py::List(o));
     }
-    if (o.isDictOrSubclass()) {
+    if (o.isDict()) {
         return dictAsElement(Py::Dict(o));
     }
     if (o.isSequence()) {

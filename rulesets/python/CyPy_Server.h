@@ -16,49 +16,19 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef CYPHESIS_CYPY_COMMON_H
-#define CYPHESIS_CYPY_COMMON_H
+#ifndef CYPHESIS_CYPY_SERVER_H
+#define CYPHESIS_CYPY_SERVER_H
 
 #include "external/pycxx/CXX/Extensions.hxx"
 
-class CyPy_Const : public Py::ExtensionModule<CyPy_Const>
+class CyPy_Server: public Py::ExtensionModule<CyPy_Server>
 {
-    public:
-        CyPy_Const();
-};
-
-
-class CyPy_Globals : public Py::ExtensionModule<CyPy_Globals>
-{
-    public:
-        CyPy_Globals();
-};
-
-
-class CyPy_Log : public Py::ExtensionModule<CyPy_Log>
-{
-    public:
-        CyPy_Log();
+        public:
+        CyPy_Server();
 
     private:
-        Py::Object debug_(const Py::Tuple& args);
-
-        Py::Object thinking(const Py::Tuple& args);
-
-};
-
-class CyPy_Common : public Py::ExtensionModule<CyPy_Common>
-{
-    public:
-        CyPy_Common();
-
-    private:
-        CyPy_Log m_log;
-        CyPy_Const m_const;
-        CyPy_Globals m_globals;
-
 
 };
 
 
-#endif //CYPHESIS_CYPY_COMMON_H
+#endif //CYPHESIS_CYPY_SERVER_H

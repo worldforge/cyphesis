@@ -27,6 +27,8 @@ class WrapperBase : public Py::PythonClass<TPythonClass>
 {
     public:
 
+        typedef TValue value_type;
+
         WrapperBase(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
 
         static Py::PythonClassObject<TPythonClass> wrap(TValue value);
@@ -65,27 +67,28 @@ TValue& WrapperBase<TValue, TPythonClass>::value(const Py::Object& object)
     return Py::PythonClassObject<TPythonClass>(object).getCxxObject()->m_value;
 }
 
-void verifyString(const Py::Object& object, const std::string& message = "Must be string");
+std::string verifyString(const Py::Object& object, const std::string& message = "Must be string");
 
-void verifyNumeric(const Py::Object& object, const std::string& message = "Must be numeric");
+float verifyNumeric(const Py::Object& object, const std::string& message = "Must be numeric");
 
-void verifyLong(const Py::Object& object, const std::string& message = "Must be long");
+long verifyLong(const Py::Object& object, const std::string& message = "Must be long");
 
-void verifyFloat(const Py::Object& object, const std::string& message = "Must be float");
+float verifyFloat(const Py::Object& object, const std::string& message = "Must be float");
 
-void verifyList(const Py::Object& object, const std::string& message = "Must be list");
+Py::List verifyList(const Py::Object& object, const std::string& message = "Must be list");
 
-void verifyDict(const Py::Object& object, const std::string& message = "Must be dict");
+Py::Dict verifyDict(const Py::Object& object, const std::string& message = "Must be dict");
 
 template <typename T>
-void verifyObject(const Py::Object& object, const std::string& message)
+typename T::value_type& verifyObject(const Py::Object& object, const std::string& message = "")
 {
     if (T::check(object)) {
         if (message.empty()) {
-            throw Py::TypeError("Must be a " + T::type_object()->tp_name);
+            throw Py::TypeError("Must be a " + std::string(T::type_object()->tp_name));
         }
         throw Py::TypeError(message);
     }
+    return T::value(object);
 }
 
 

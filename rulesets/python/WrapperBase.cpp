@@ -18,44 +18,52 @@
 
 #include "WrapperBase.h"
 
-void verifyString(const Py::Object& object, const std::string& message)
+std::string verifyString(const Py::Object& object, const std::string& message)
 {
     if (!object.isString()) {
         throw Py::TypeError(message);
     }
+    return object.as_string();
 }
 
-void verifyNumeric(const Py::Object& object, const std::string& message)
+float verifyNumeric(const Py::Object& object, const std::string& message)
 {
     if (!object.isNumeric()) {
         throw Py::TypeError(message);
     }
+    return Py::Float(object);
 }
 
-void verifyLong(const Py::Object& object, const std::string& message)
+long verifyLong(const Py::Object& object, const std::string& message)
 {
     if (!object.isNumeric()) {
         throw Py::TypeError(message);
     }
+    return Py::Long(object);
+
 }
 
-void verifyFloat(const Py::Object& object, const std::string& message)
+float verifyFloat(const Py::Object& object, const std::string& message)
 {
     if (!object.isNumeric()) {
         throw Py::TypeError(message);
     }
+    return Py::Float(object);
+
 }
 
-void verifyList(const Py::Object& object, const std::string& message)
+Py::List verifyList(const Py::Object& object, const std::string& message)
 {
     if (!object.isNumeric()) {
         throw Py::TypeError(message);
     }
+    return Py::List(object);
 }
 
-void verifyDict(const Py::Object& object, const std::string& message)
+Py::Dict verifyDict(const Py::Object& object, const std::string& message)
 {
     if (!object.isNumeric()) {
         throw Py::TypeError(message);
     }
+    return Py::Dict(object);
 }

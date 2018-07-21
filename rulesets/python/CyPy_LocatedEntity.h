@@ -29,6 +29,7 @@
 class CyPy_LocatedEntity : public Py::PythonClass<CyPy_LocatedEntity>
 {
     public:
+        typedef LocatedEntity value_type;
 
         CyPy_LocatedEntity(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
 
