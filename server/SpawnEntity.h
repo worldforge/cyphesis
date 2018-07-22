@@ -21,7 +21,7 @@
 
 #include "server/Spawn.h"
 
-#include "modules/EntityRef.h"
+#include "modules/WeakEntityRef.h"
 
 #include <Atlas/Objects/ObjectsFwd.h>
 #include <Atlas/Objects/RootEntity.h>
@@ -37,7 +37,7 @@ namespace Atlas {
 class SpawnEntity : public Spawn {
   protected:
     /// Reference to the entity that defines this spawn location
-    EntityRef m_ent;
+    WeakEntityRef m_ent;
 
     /// Map of character types available here
     std::unordered_map<std::string, Atlas::Message::MapType> m_entities;

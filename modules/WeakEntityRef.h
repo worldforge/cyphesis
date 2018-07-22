@@ -16,15 +16,15 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
-#ifndef MODULES_ENTITY_REF_H
-#define MODULES_ENTITY_REF_H
+#ifndef MODULES_WEAK_ENTITY_REF_H
+#define MODULES_WEAK_ENTITY_REF_H
 
 #include <sigc++/trackable.h>
 #include <sigc++/signal.h>
 
 class LocatedEntity;
 
-class EntityRef : public sigc::trackable
+class WeakEntityRef : public sigc::trackable
 {
   private:
     LocatedEntity * m_inner;
@@ -33,17 +33,17 @@ class EntityRef : public sigc::trackable
 
     void setup();
   public:
-    EntityRef() : m_inner(nullptr)
+    WeakEntityRef() : m_inner(nullptr)
     {
     }
 
-    explicit EntityRef(LocatedEntity*);
+    explicit WeakEntityRef(LocatedEntity*);
 
-    virtual ~EntityRef() = default;
+    virtual ~WeakEntityRef() = default;
 
-    EntityRef(const EntityRef& ref);
+    WeakEntityRef(const WeakEntityRef& ref);
 
-    EntityRef& operator=(const EntityRef& ref);
+    WeakEntityRef& operator=(const WeakEntityRef& ref);
 
     LocatedEntity& operator*() const noexcept
     {
@@ -60,7 +60,7 @@ class EntityRef : public sigc::trackable
         return m_inner;
     }
 
-    bool operator==(const EntityRef& e) const noexcept
+    bool operator==(const WeakEntityRef& e) const noexcept
     {
         return (m_inner == e.m_inner);
     }
@@ -70,7 +70,7 @@ class EntityRef : public sigc::trackable
         return (m_inner == e);
     }
 
-    bool operator<(const EntityRef& e) const noexcept
+    bool operator<(const WeakEntityRef& e) const noexcept
     {
         return (m_inner < e.m_inner);
     }
@@ -87,4 +87,4 @@ class EntityRef : public sigc::trackable
     sigc::signal<void> Changed;
 };
 
-#endif // MODULES_ENTITY_REF_H
+#endif // MODULES_WEAK_ENTITY_REF_H

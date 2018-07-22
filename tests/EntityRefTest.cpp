@@ -23,7 +23,7 @@
 #define DEBUG
 #endif
 
-#include "modules/EntityRef.h"
+#include "modules/WeakEntityRef.h"
 
 #include "rulesets/Entity.h"
 
@@ -50,7 +50,7 @@ void checkSignal()
         emitted = false;
 
         Entity e("1", 1);
-        EntityRef ref;
+        WeakEntityRef ref;
 
         assert(emitted == false);
 
@@ -58,7 +58,7 @@ void checkSignal()
 
         assert(emitted == false);
 
-        ref = EntityRef(&e);
+        ref = WeakEntityRef(&e);
 
         assert(ref.get() == &e);
         assert(emitted == true);
@@ -70,7 +70,7 @@ void checkSignal()
         emitted = false;
 
         Entity e("1", 1);
-        EntityRef ref(&e);
+        WeakEntityRef ref(&e);
 
         assert(emitted == false);
 
@@ -78,7 +78,7 @@ void checkSignal()
 
         assert(emitted == false);
 
-        ref = EntityRef(&e);
+        ref = WeakEntityRef(&e);
 
         assert(ref.get() == &e);
         assert(emitted == false);
@@ -100,7 +100,7 @@ void checkSignal()
         // destructor will delete it.
         container->incRef();
 
-        EntityRef ref(&e);
+        WeakEntityRef ref(&e);
 
         assert(ref);
         assert(emitted == false);
@@ -122,33 +122,33 @@ int main()
 {
     {
         // Check the default constructor
-        EntityRef ref;
+        WeakEntityRef ref;
     }
 
     {
         // Check the default constructor initialises to nullptr via get
-        EntityRef ref;
+        WeakEntityRef ref;
 
         assert(ref.get() == 0);
     }
 
     {
         // Check the default constructor initialises to nullptr via dereference
-        EntityRef ref;
+        WeakEntityRef ref;
 
         assert(&(*ref) == 0);
     }
 
     {
         // Check the default constructor initialises to nullptr via ->
-        EntityRef ref;
+        WeakEntityRef ref;
 
         assert(ref.operator->() == 0);
     }
 
     {
         // Check the default constructor initialises to nullptr via ==
-        EntityRef ref;
+        WeakEntityRef ref;
 
         assert(ref == 0);
     }
@@ -156,7 +156,7 @@ int main()
     {
         // Check the initialising constructor via get
         Entity * e = new Entity("1", 1);
-        EntityRef ref(e);
+        WeakEntityRef ref(e);
 
         assert(ref.get() == e);
     }
@@ -164,7 +164,7 @@ int main()
     {
         // Check the initialising constructor via dereference
         Entity * e = new Entity("1", 1);
-        EntityRef ref(e);
+        WeakEntityRef ref(e);
 
         assert(&(*ref) == e);
     }
@@ -172,7 +172,7 @@ int main()
     {
         // Check the initialising constructor via ->
         Entity * e = new Entity("1", 1);
-        EntityRef ref(e);
+        WeakEntityRef ref(e);
 
         assert(ref.operator->() == e);
     }
@@ -180,7 +180,7 @@ int main()
     {
         // Check the initialising constructor via ==
         Entity * e = new Entity("1", 1);
-        EntityRef ref(e);
+        WeakEntityRef ref(e);
 
         assert(ref == e);
     }
@@ -188,8 +188,8 @@ int main()
     {
         // Check the copy constructor
         Entity * e = new Entity("1", 1);
-        EntityRef ref(e);
-        EntityRef ref2(ref);
+        WeakEntityRef ref(e);
+        WeakEntityRef ref2(ref);
 
         assert(ref2.get() == e);
     }
@@ -197,8 +197,8 @@ int main()
     {
         // Check the comparison operator
         Entity * e = new Entity("1", 1);
-        EntityRef ref(e);
-        EntityRef ref2(e);
+        WeakEntityRef ref(e);
+        WeakEntityRef ref2(e);
 
         assert(ref == ref2);
     }
@@ -207,8 +207,8 @@ int main()
         // Check the comparison operator
         Entity * e = new Entity("1", 1);
         Entity * e2 = new Entity("2", 2);
-        EntityRef ref(e);
-        EntityRef ref2(e2);
+        WeakEntityRef ref(e);
+        WeakEntityRef ref2(e2);
 
         assert(!(ref == ref2));
     }
@@ -218,8 +218,8 @@ int main()
     {
         // Check the comparison operator
         Entity e("1", 1);
-        EntityRef ref(&e);
-        EntityRef ref2(&e);
+        WeakEntityRef ref(&e);
+        WeakEntityRef ref2(&e);
 
         assert(!(ref != ref2));
     }
@@ -228,8 +228,8 @@ int main()
         // Check the comparison operator
         Entity e("1", 1);
         Entity e2("2", 2);
-        EntityRef ref(&e);
-        EntityRef ref2(&e2);
+        WeakEntityRef ref(&e);
+        WeakEntityRef ref2(&e2);
 
         assert(ref != ref2);
     }
@@ -238,8 +238,8 @@ int main()
     {
         // Check the less than operator
         Entity * e = new Entity("1", 1);
-        EntityRef ref(e);
-        EntityRef ref2(e);
+        WeakEntityRef ref(e);
+        WeakEntityRef ref2(e);
 
         assert(!(ref < ref2) && !(ref2 < ref));
     }
@@ -248,8 +248,8 @@ int main()
         // Check the less than operator
         Entity * e = new Entity("1", 1);
         Entity * e2 = new Entity("2", 2);
-        EntityRef ref(e);
-        EntityRef ref2(e2);
+        WeakEntityRef ref(e);
+        WeakEntityRef ref2(e2);
 
         assert(ref < ref2 || ref2 < ref);
     }
@@ -257,9 +257,9 @@ int main()
     {
         // Check the assignment operator
         Entity * e = new Entity("1", 1);
-        EntityRef ref;
+        WeakEntityRef ref;
 
-        ref = EntityRef(e);
+        ref = WeakEntityRef(e);
 
         assert(ref.get() == e);
     }
@@ -278,7 +278,7 @@ int main()
         // destructor will delete it.
         container->incRef();
 
-        EntityRef ref(&e);
+        WeakEntityRef ref(&e);
 
         assert(ref.get() == &e);
         e.destroy();

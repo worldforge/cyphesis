@@ -124,7 +124,7 @@ wf_add_test(DateTimeTest.cpp ${PROJECT_SOURCE_DIR}/modules/DateTime.cpp)
 wf_add_test(LocationTest.cpp ../rulesets/Location.cpp)
 target_link_libraries(LocationTest physics)
 wf_add_test(WorldTimeTest.cpp ${PROJECT_SOURCE_DIR}/modules/WorldTime.cpp ${PROJECT_SOURCE_DIR}/modules/DateTime.cpp)
-wf_add_test(EntityRefTest.cpp ${PROJECT_SOURCE_DIR}/modules/EntityRef.cpp)
+wf_add_test(EntityRefTest.cpp ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp)
 wf_add_test(TerrainContextTest.cpp ${PROJECT_SOURCE_DIR}/modules/TerrainContext.cpp)
 
 # RULESETS_TESTS
@@ -142,7 +142,7 @@ wf_add_test(CharacterTest.cpp ${ENTITYEXERCISE} ${PROJECT_SOURCE_DIR}/rulesets/C
 wf_add_test(CreatorTest.cpp ${ENTITYEXERCISE} ${PROJECT_SOURCE_DIR}/rulesets/Creator.cpp)
 wf_add_test(ThingupdatePropertiesTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/Thing.cpp ${PROJECT_SOURCE_DIR}/common/Property.cpp)
 wf_add_test(TaskTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/Task.cpp)
-wf_add_test(EntityPropertyTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/EntityProperty.cpp ${PROJECT_SOURCE_DIR}/modules/EntityRef.cpp ${PROJECT_SOURCE_DIR}/common/Property.cpp)
+wf_add_test(EntityPropertyTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/EntityProperty.cpp ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp ${PROJECT_SOURCE_DIR}/common/Property.cpp)
 wf_add_test(AllPropertyTest.cpp PropertyExerciser.cpp ${PROJECT_SOURCE_DIR}/rulesets/AreaProperty.cpp
         ${PROJECT_SOURCE_DIR}/rulesets/AtlasProperties.cpp
         ${PROJECT_SOURCE_DIR}/rulesets/CalendarProperty.cpp
@@ -152,7 +152,7 @@ wf_add_test(AllPropertyTest.cpp PropertyExerciser.cpp ${PROJECT_SOURCE_DIR}/rule
         ${PROJECT_SOURCE_DIR}/rulesets/StatisticsProperty.cpp
         ${PROJECT_SOURCE_DIR}/rulesets/TerrainProperty.cpp
         ${PROJECT_SOURCE_DIR}/rulesets/TerrainEffectorProperty.cpp
-        ${PROJECT_SOURCE_DIR}/modules/EntityRef.cpp
+    ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp
         ${PROJECT_SOURCE_DIR}/modules/DateTime.cpp
         ${PROJECT_SOURCE_DIR}/modules/TerrainContext.cpp
         ${PROJECT_SOURCE_DIR}/common/Property.cpp
@@ -176,7 +176,7 @@ wf_add_test(MindPropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rule
 wf_add_test(ModePropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/ModeProperty.cpp
         ${PROJECT_SOURCE_DIR}/common/Property.cpp)
 wf_add_test(OutfitPropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/OutfitProperty.cpp
-        ${PROJECT_SOURCE_DIR}/modules/EntityRef.cpp
+    ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp
         ${PROJECT_SOURCE_DIR}/common/Property.cpp)
 wf_add_test(SolidPropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/SolidProperty.cpp
         ${PROJECT_SOURCE_DIR}/common/Property.cpp)
@@ -308,7 +308,7 @@ wf_add_test(EntityFilterTest.cpp
         ${PROJECT_SOURCE_DIR}/rulesets/OutfitProperty.cpp
         ${PROJECT_SOURCE_DIR}/rulesets/BBoxProperty.cpp
         ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp
-        ${PROJECT_SOURCE_DIR}/modules/EntityRef.cpp
+    ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp
         ${PROJECT_SOURCE_DIR}/common/Property.cpp
         ${PROJECT_SOURCE_DIR}/common/TypeNode.cpp
         ${PROJECT_SOURCE_DIR}/common/PropertyManager.cpp)
@@ -320,7 +320,7 @@ wf_add_test(EntityFilterParserTest.cpp
         ${PROJECT_SOURCE_DIR}/rulesets/OutfitProperty.cpp
         ${PROJECT_SOURCE_DIR}/rulesets/BBoxProperty.cpp
         ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp
-        ${PROJECT_SOURCE_DIR}/modules/EntityRef.cpp
+    ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp
         ${PROJECT_SOURCE_DIR}/common/Property.cpp
         ${PROJECT_SOURCE_DIR}/common/TypeNode.cpp
         ${PROJECT_SOURCE_DIR}/common/PropertyManager.cpp)
@@ -331,7 +331,7 @@ wf_add_test(EntityFilterProvidersTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/EntityP
         ${PROJECT_SOURCE_DIR}/rulesets/OutfitProperty.cpp
         ${PROJECT_SOURCE_DIR}/rulesets/BBoxProperty.cpp
         ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp
-        ${PROJECT_SOURCE_DIR}/modules/EntityRef.cpp
+    ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp
         ${PROJECT_SOURCE_DIR}/common/Property.cpp
         ${PROJECT_SOURCE_DIR}/common/TypeNode.cpp
         ${PROJECT_SOURCE_DIR}/common/PropertyManager.cpp)
@@ -386,7 +386,7 @@ wf_add_test(TerrainModPropertyIntegration.cpp ${PROJECT_SOURCE_DIR}/rulesets/Ent
         ${PROJECT_SOURCE_DIR}/rulesets/TerrainModProperty.cpp
         ${PROJECT_SOURCE_DIR}/rulesets/TerrainModTranslator.cpp
         ${PROJECT_SOURCE_DIR}/rulesets/TerrainProperty.cpp
-        ${PROJECT_SOURCE_DIR}/modules/EntityRef.cpp
+    ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp
         ${PROJECT_SOURCE_DIR}/modules/TerrainContext.cpp
         ${PROJECT_SOURCE_DIR}/common/Property.cpp
         ${PROJECT_SOURCE_DIR}/common/TypeNode.cpp)
@@ -559,7 +559,7 @@ wf_add_test(AccountIntegration.cpp ${PROJECT_SOURCE_DIR}/server/EntityBuilder.cp
         ${PROJECT_SOURCE_DIR}/rulesets/Thing.cpp
         ${PROJECT_SOURCE_DIR}/rulesets/World.cpp
         ${PROJECT_SOURCE_DIR}/modules/DateTime.cpp
-        ${PROJECT_SOURCE_DIR}/modules/EntityRef.cpp
+    ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp
     ../rulesets/Location.cpp
         ${PROJECT_SOURCE_DIR}/common/BaseWorld.cpp
         ${PROJECT_SOURCE_DIR}/common/const.cpp

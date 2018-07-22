@@ -104,6 +104,6 @@ TerrainContext::~TerrainContext()
 {
 }
 
-EntityRef::EntityRef(LocatedEntity* e) : m_inner(e)
+WeakEntityRef::WeakEntityRef(LocatedEntity* e) : m_inner(e)
 {
 }

@@ -43,8 +43,8 @@ int main()
 
 // stubs
 
-#include "modules/EntityRef.h"
+#include "modules/WeakEntityRef.h"
 
-EntityRef::EntityRef(LocatedEntity* e) : m_inner(e)
+WeakEntityRef::WeakEntityRef(LocatedEntity* e) : m_inner(e)
 {
 }

@@ -129,7 +129,7 @@ int main()
     // protect property code from getting given pointers from outside.
     // Atlas-C++ must not allow pointers to come in from the network.
     {
-        EntityRef test_entityref_data;
+        WeakEntityRef test_entityref_data;
         EntityProperty test_property(test_entityref_data);
         assert(exerciser.exerciseProperty(test_property, TYPE_STRING) == 0);
     }
@@ -142,7 +142,7 @@ int main()
     }
 
 #if 0
-    // FIXME THis segfaults, probably the same reason as why EntityRef
+    // FIXME THis segfaults, probably the same reason as why WeakEntityRef
     // does
     {
         OutfitProperty test_property;

@@ -46,7 +46,7 @@ int OutfitProperty::get(Atlas::Message::Element & val) const
     EntityRefMap::const_iterator I = m_data.begin();
     EntityRefMap::const_iterator Iend = m_data.end();
     for (; I != Iend; ++I) {
-        const EntityRef & item = I->second;
+        const WeakEntityRef & item = I->second;
         if (item.get() == 0) {
             val_map[I->first] = "";
         } else {
@@ -81,12 +81,12 @@ void OutfitProperty::set(const Atlas::Message::Element & val)
             const std::string & id = item.String();
             LocatedEntity * e = BaseWorld::instance().getEntity(id);
             if (e != 0) {
-                m_data[key] = EntityRef(e);
+                m_data[key] = WeakEntityRef(e);
             }
         } else if (item.isPtr()) {
             LocatedEntity * e = static_cast<LocatedEntity*>(item.Ptr());
             assert(e != 0);
-            m_data[key] = EntityRef(e);
+            m_data[key] = WeakEntityRef(e);
         } else if (item.isMap()) {
             auto J = item.asMap().find("$eid");
             if (J != item.asMap().end()) {
@@ -94,7 +94,7 @@ void OutfitProperty::set(const Atlas::Message::Element & val)
                     const std::string & id = J->second.String();
                     LocatedEntity * e = BaseWorld::instance().getEntity(id);
                     if (e != 0) {
-                        m_data[key] = EntityRef(e);
+                        m_data[key] = WeakEntityRef(e);
                     }
                 }
             }
@@ -120,7 +120,7 @@ void OutfitProperty::add(const std::string & key,
     EntityRefMap::const_iterator I = m_data.begin();
     EntityRefMap::const_iterator Iend = m_data.end();
     for (; I != Iend; ++I) {
-        const EntityRef & item = I->second;
+        const WeakEntityRef & item = I->second;
         if (item.get() != 0) {
             Atlas::Message::MapType refMap;
             refMap["$eid"] = item->getId();
@@ -143,7 +143,7 @@ void OutfitProperty::add(const std::string & key,
     EntityRefMap::const_iterator I = m_data.begin();
     EntityRefMap::const_iterator Iend = m_data.end();
     for (; I != Iend; ++I) {
-        const EntityRef & item = I->second;
+        const WeakEntityRef & item = I->second;
         if (item.get() != 0) {
             Atlas::Message::MapType refMap;
             refMap["$eid"] = item->getId();
@@ -193,7 +193,7 @@ void OutfitProperty::wear(LocatedEntity * wearer,
                           const std::string & location,
                           LocatedEntity * garment)
 {
-    m_data[location] = EntityRef(garment);
+    m_data[location] = WeakEntityRef(garment);
 
     sigc::connection containered_connection = garment->containered.connect(sigc::bind(sigc::hide<0>(sigc::mem_fun(this, &OutfitProperty::itemRemoved)), garment, wearer));
     sigc::connection destroyed_connection = garment->destroyed.connect(sigc::bind(sigc::mem_fun(this, &OutfitProperty::itemRemoved), garment, wearer));
@@ -229,7 +229,7 @@ void OutfitProperty::itemRemoved(LocatedEntity * garment,
         log(ERROR, "Outfit trying to remove garment with empty key");
         return;
     }
-    m_data[key] = EntityRef(0);
+    m_data[key] = WeakEntityRef(0);
     auto I = m_connections.find(garment);
     if (I != m_connections.end()) {
         I->second.containered.disconnect();

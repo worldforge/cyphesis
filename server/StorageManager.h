@@ -22,7 +22,7 @@
 #include "Persistence.h"
 
 #include "common/OperationRouter.h"
-#include "modules/EntityRef.h"
+#include "modules/WeakEntityRef.h"
 
 #include <sigc++/trackable.h>
 
@@ -43,7 +43,7 @@ class MindInspector;
 /// storage in whatever data store is being used.
 class StorageManager : public sigc::trackable {
   protected:
-    typedef std::deque<EntityRef> Entitystore;
+    typedef std::deque<WeakEntityRef> Entitystore;
     typedef std::deque<long> Idstore;
 
     /// \brief Queue of references to entities yet to be stored.

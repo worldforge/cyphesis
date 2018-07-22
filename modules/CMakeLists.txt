@@ -1,7 +1,7 @@
 add_library(modules
         DateTime.cpp
         WorldTime.cpp
-        EntityRef.cpp
+    WeakEntityRef.cpp
         TerrainContext.cpp
-    Ref.cpp Ref.h)
+    Ref.h)
 

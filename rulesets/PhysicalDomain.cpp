@@ -2529,10 +2529,10 @@ void PhysicalDomain::plantOnEntity(PhysicalDomain::BulletEntry* plantedEntry, Ph
     auto newPlantedOnProp = plantedEntry->entity->requirePropertyClass<EntityProperty>("planted_on");
 
     if (entryPlantedOn) {
-        newPlantedOnProp->data() = EntityRef(entryPlantedOn->entity);
+        newPlantedOnProp->data() = WeakEntityRef(entryPlantedOn->entity);
         entryPlantedOn->attachedEntities.insert(plantedEntry);
     } else {
-        newPlantedOnProp->data() = EntityRef(nullptr);
+        newPlantedOnProp->data() = WeakEntityRef(nullptr);
     }
 
     newPlantedOnProp->addFlags(flag_unsent);

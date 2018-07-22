@@ -543,7 +543,7 @@ void PhysicalDomainIntegrationTest::test_plantedOn()
             plantedOn->m_location.setBBox({{-1, 0, -1},
                                            {1,  1, 1}});
             EntityProperty* plantedOnProperty = new EntityProperty();
-            plantedOnProperty->data() = EntityRef(planted1.get());
+            plantedOnProperty->data() = WeakEntityRef(planted1.get());
             plantedOn->setProperty("planted_on", plantedOnProperty);
 
             GeometryProperty* geometryProperty = new GeometryProperty();
@@ -751,7 +751,7 @@ void PhysicalDomainIntegrationTest::test_lake_rotated()
     ModeProperty* plantedProp = new ModeProperty();
     plantedProp->set("planted");
     EntityProperty* plantedOnProp = new EntityProperty();
-    plantedOnProp->data() = EntityRef(lake);
+    plantedOnProp->data() = WeakEntityRef(lake);
     Entity* floatingEntity = new Entity("floatingEntity", id);
     floatingEntity->setProperty(ModeProperty::property_name, plantedProp);
     floatingEntity->setProperty("planted_on", plantedOnProp);

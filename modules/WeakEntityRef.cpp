@@ -16,28 +16,28 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
-#include "EntityRef.h"
+#include "WeakEntityRef.h"
 
 #include "rulesets/LocatedEntity.h"
 
-void EntityRef::setup()
+void WeakEntityRef::setup()
 {
     if (m_inner) {
-        m_inner->destroyed.connect(sigc::mem_fun(this, &EntityRef::onEntityDeleted));
+        m_inner->destroyed.connect(sigc::mem_fun(this, &WeakEntityRef::onEntityDeleted));
     }
 }
 
-EntityRef::EntityRef(LocatedEntity* e) : m_inner(e)
+WeakEntityRef::WeakEntityRef(LocatedEntity* e) : m_inner(e)
 {
     setup();
 }
 
-EntityRef::EntityRef(const EntityRef& ref) : m_inner(ref.m_inner)
+WeakEntityRef::WeakEntityRef(const WeakEntityRef& ref) : m_inner(ref.m_inner)
 {
     setup();
 }
 
-EntityRef& EntityRef::operator=(const EntityRef& ref)
+WeakEntityRef& WeakEntityRef::operator=(const WeakEntityRef& ref)
 {
     bool changed = (m_inner != ref.m_inner);
     m_inner = ref.m_inner;
@@ -48,7 +48,7 @@ EntityRef& EntityRef::operator=(const EntityRef& ref)
     return *this;
 }
 
-void EntityRef::onEntityDeleted()
+void WeakEntityRef::onEntityDeleted()
 {
     m_inner = nullptr;
     Changed();

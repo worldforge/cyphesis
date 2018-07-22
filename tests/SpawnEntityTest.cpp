@@ -131,22 +131,22 @@ void addToEntity(const Point3D & p, std::vector<double> & vd)
     vd[2] = p[2];
 }
 
-EntityRef::EntityRef(LocatedEntity* e) : m_inner(e)
+WeakEntityRef::WeakEntityRef(LocatedEntity* e) : m_inner(e)
 {
 }
 
-EntityRef::EntityRef(const EntityRef& ref) : m_inner(ref.m_inner)
+WeakEntityRef::WeakEntityRef(const WeakEntityRef& ref) : m_inner(ref.m_inner)
 {
 }
 
-EntityRef& EntityRef::operator=(const EntityRef& ref)
+WeakEntityRef& WeakEntityRef::operator=(const WeakEntityRef& ref)
 {
     m_inner = ref.m_inner;
 
     return *this;
 }
 
-void EntityRef::onEntityDeleted()
+void WeakEntityRef::onEntityDeleted()
 {
 }
 

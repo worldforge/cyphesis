@@ -21,12 +21,12 @@
 
 #include "common/Property.h"
 
-#include "modules/EntityRef.h"
+#include "modules/WeakEntityRef.h"
 
 #include <sigc++/trackable.h>
 #include <sigc++/connection.h>
 
-typedef std::map<std::string, EntityRef> EntityRefMap;
+typedef std::map<std::string, WeakEntityRef> EntityRefMap;
 
 /// \brief Class to handle Character outfit property
 ///

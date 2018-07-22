@@ -161,5 +161,4 @@ constexpr Ref<T>::operator T*() const
 }
 
 
-
 #endif //CYPHESIS_REF_H

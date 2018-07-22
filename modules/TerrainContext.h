@@ -19,14 +19,14 @@
 #ifndef MODULES_TERRAIN_CONTEXT_H
 #define MODULES_TERRAIN_CONTEXT_H
 
-#include "modules/EntityRef.h"
+#include "modules/WeakEntityRef.h"
 
 #include <Mercator/TerrainMod.h>
 
 class TerrainContext : public Mercator::Effector::Context
 {
   protected:
-    EntityRef m_entity;
+    WeakEntityRef m_entity;
 
   public:
     TerrainContext();
@@ -35,7 +35,7 @@ class TerrainContext : public Mercator::Effector::Context
 
     virtual ~TerrainContext();
 
-    EntityRef & entity() { return m_entity; }
+    WeakEntityRef & entity() { return m_entity; }
 };
 
 #endif // MODULES_TERRAIN_CONTEXT_H

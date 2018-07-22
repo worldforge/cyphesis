@@ -700,7 +700,7 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
             wieldedEntity->collectObservers(prevObserving);
         }
 
-        rhw->data() = EntityRef(nullptr);
+        rhw->data() = WeakEntityRef(nullptr);
         rhw->addFlags(flag_unsent);
         // FIXME Remove the property?
 
@@ -790,7 +790,7 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
 
         // The value is ignored by the update handler, but should be the
         // right type.
-        rhw->data() = EntityRef(item);
+        rhw->data() = WeakEntityRef(item);
         rhw->addFlags(flag_unsent);
 
         m_rightHandWieldConnection = item->containered.connect(sigc::hide<0>(sigc::mem_fun(this, &Character::wieldDropped)));

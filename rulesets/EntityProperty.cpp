@@ -49,26 +49,26 @@ void EntityProperty::set(const Atlas::Message::Element & val)
         if (m_data.get() == nullptr || m_data->getId() != id) {
             debug(std::cout << "Assigning " << id << std::endl << std::flush;);
             if (id.empty()) {
-                m_data = EntityRef(nullptr );
+                m_data = WeakEntityRef(nullptr );
             } else {
                 LocatedEntity * e = BaseWorld::instance().getEntity(id);
                 if (e != nullptr ) {
                     debug(std::cout << "Assigned" << std::endl << std::flush;);
-                    m_data = EntityRef(e);
+                    m_data = WeakEntityRef(e);
                 }
             }
         }
     } else if (val.isPtr()) {
         debug(std::cout << "Assigning pointer" << std::endl << std::flush;);
         auto e = static_cast<LocatedEntity*>(val.Ptr());
-        m_data = EntityRef(e);
+        m_data = WeakEntityRef(e);
     } else if (val.isMap()) {
         auto I = val.asMap().find("$eid");
         if (I != val.asMap().end()) {
             set(I->second);
         }
     } else if (val.isNone()) {
-        m_data = EntityRef(nullptr);
+        m_data = WeakEntityRef(nullptr);
     }
 }
 

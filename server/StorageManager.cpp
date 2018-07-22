@@ -122,7 +122,7 @@ void StorageManager::entityInserted(LocatedEntity * ent)
         return;
     }
     // Queue the entity to be inserted into the persistence tables.
-    m_unstoredEntities.push_back(EntityRef(ent));
+    m_unstoredEntities.push_back(WeakEntityRef(ent));
     ent->addFlags(entity_queued);
 }
 
@@ -140,7 +140,7 @@ void StorageManager::entityUpdated(LocatedEntity * ent)
         // std::cout << "Already queued " << ent->getId() << std::endl << std::flush;
         return;
     }
-    m_dirtyEntities.push_back(EntityRef(ent));
+    m_dirtyEntities.push_back(WeakEntityRef(ent));
     // std::cout << "Updated fired " << ent->getId() << std::endl << std::flush;
     ent->addFlags(entity_queued);
 }
@@ -512,7 +512,7 @@ void StorageManager::tick()
     }
 
     while (!m_unstoredEntities.empty()) {
-        const EntityRef & ent = m_unstoredEntities.front();
+        const WeakEntityRef & ent = m_unstoredEntities.front();
         if (ent.get() != 0) {
             debug( std::cout << "storing " << ent->getId() << std::endl << std::flush; );
             insertEntity(ent.get());
@@ -540,7 +540,7 @@ void StorageManager::tick()
             debug(std::cout << "Too many" << std::endl << std::flush;);
             break;
         }
-        const EntityRef & ent = m_dirtyEntities.front();
+        const WeakEntityRef & ent = m_dirtyEntities.front();
         if (ent.get() != 0) {
             if ((ent->getFlags() & entity_clean_mask) != entity_clean_mask) {
                 debug( std::cout << "updating " << ent->getId() << std::endl << std::flush; );

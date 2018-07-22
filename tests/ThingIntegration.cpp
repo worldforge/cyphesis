@@ -350,7 +350,7 @@ void ThingIntegration::test_visibility()
         t2->domain = new InventoryDomain(*t2);
         t2->addFlags(entity_domain);
         auto entityProp = new EntityProperty();
-        entityProp->data() = EntityRef(t3);
+        entityProp->data() = WeakEntityRef(t3);
         t2->setProperty("right_hand_wield", entityProp);
 
         Operation sightOp;
@@ -424,7 +424,7 @@ void ThingIntegration::test_visibility()
         t3->addChild(*t6);
 
         auto entityProp = new EntityProperty();
-        entityProp->data() = EntityRef(t4);
+        entityProp->data() = WeakEntityRef(t4);
         t3->setProperty("right_hand_wield", entityProp);
 
         Operation sightOp;
@@ -498,7 +498,7 @@ void ThingIntegration::test_visibility()
         t2->addChild(*t5);
 
         auto entityProp = new EntityProperty();
-        entityProp->data() = EntityRef(t4);
+        entityProp->data() = WeakEntityRef(t4);
         t2->setProperty("right_hand_wield", entityProp);
 
         Operation sightOp;
@@ -719,7 +719,7 @@ void ThingIntegration::test_reachability()
         t2->domain = new InventoryDomain(*t2);
         t2->addFlags(entity_domain);
         auto entityProp = new EntityProperty();
-        entityProp->data() = EntityRef(t3);
+        entityProp->data() = WeakEntityRef(t3);
         t2->setProperty("right_hand_wield", entityProp);
 
         //T1 can reach itself
@@ -786,7 +786,7 @@ void ThingIntegration::test_reachability()
         t3->addChild(*t6);
 
         auto entityProp = new EntityProperty();
-        entityProp->data() = EntityRef(t4);
+        entityProp->data() = WeakEntityRef(t4);
         t3->setProperty("right_hand_wield", entityProp);
 
         //T1 can reach itself
@@ -851,7 +851,7 @@ void ThingIntegration::test_reachability()
         t2->addChild(*t5);
 
         auto entityProp = new EntityProperty();
-        entityProp->data() = EntityRef(t4);
+        entityProp->data() = WeakEntityRef(t4);
         t2->setProperty("right_hand_wield", entityProp);
 
         //T3 can't reach t4 even though it's wielded

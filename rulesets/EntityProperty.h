@@ -21,24 +21,24 @@
 
 #include "common/Property.h"
 
-#include "modules/EntityRef.h"
+#include "modules/WeakEntityRef.h"
 
 /// \brief Class to handle an Entity property that references another entity
 /// \ingroup PropertyClasses
 class EntityProperty : public PropertyBase
 {
     protected:
-        EntityRef m_data;
+        WeakEntityRef m_data;
     public:
 
         static constexpr const char* property_atlastype = "string";
 
         explicit EntityProperty() = default;
 
-        EntityRef& data()
+        WeakEntityRef& data()
         { return m_data; }
 
-        const EntityRef& data() const
+        const WeakEntityRef& data() const
         { return m_data; }
 
         int get(Atlas::Message::Element& val) const override;

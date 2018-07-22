@@ -187,7 +187,7 @@ int main()
 
 #include "rulesets/Script.h"
 
-#include "modules/EntityRef.h"
+#include "modules/WeakEntityRef.h"
 #include "rulesets/Location.h"
 
 #include "common/const.h"
@@ -264,22 +264,22 @@ DatabaseResult Database::selectThoughts(const std::string& loc)
 
 #include "stubs/rulesets/stubScript.h"
 
-EntityRef::EntityRef(LocatedEntity* e) : m_inner(e)
+WeakEntityRef::WeakEntityRef(LocatedEntity* e) : m_inner(e)
 {
 }
 
-EntityRef::EntityRef(const EntityRef& ref) : m_inner(ref.m_inner)
+WeakEntityRef::WeakEntityRef(const WeakEntityRef& ref) : m_inner(ref.m_inner)
 {
 }
 
-EntityRef& EntityRef::operator=(const EntityRef& ref)
+WeakEntityRef& WeakEntityRef::operator=(const WeakEntityRef& ref)
 {
     m_inner = ref.m_inner;
 
     return *this;
 }
 
-void EntityRef::onEntityDeleted()
+void WeakEntityRef::onEntityDeleted()
 {
 }
 
