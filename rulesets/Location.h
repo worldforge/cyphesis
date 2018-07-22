@@ -19,6 +19,7 @@
 #ifndef MODULES_LOCATION_H
 #define MODULES_LOCATION_H
 
+#include "modules/Ref.h"
 #include "physics/Vector3D.h"
 #include "physics/BBox.h"
 #include "physics/Quaternion.h"
@@ -45,7 +46,7 @@ class Location {
     /**
      * The parent entity.
      */
-    LocatedEntity * m_loc;
+    Ref<LocatedEntity> m_loc;
     /**
      * Coords relative to the parent entity
      */
@@ -79,7 +80,7 @@ class Location {
     const BBox & bBox() const { return m_bBox; }
 
     bool isValid() const {
-        return ((m_loc != nullptr) && m_pos.isValid());
+        return (m_loc && m_pos.isValid());
     }
 
     bool isSimple() const {
@@ -121,6 +122,8 @@ class Location {
 
     friend std::ostream & operator<<(std::ostream& s, Location& v);
 };
+
+#include "rulesets/LocatedEntity.h"
 
 const Vector3D distanceTo(const Location & self, const Location & other);
 

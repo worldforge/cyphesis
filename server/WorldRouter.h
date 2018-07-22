@@ -48,6 +48,9 @@ class WorldRouter : public BaseWorld {
     int m_entityCount;
     /// Map of spawns
     SpawnDict m_spawns;
+
+    /// \brief The top level in-game entity in the world.
+    Ref<LocatedEntity> m_baseEntity;
   protected:
     /// \brief Determine if the broadcast is allowed.
     ///
@@ -58,7 +61,7 @@ class WorldRouter : public BaseWorld {
                    LocatedEntity &);
     void resumeWorld() override;
   public:
-    explicit WorldRouter(const SystemTime & systemTime);
+    explicit WorldRouter(const SystemTime & systemTime, Ref<LocatedEntity> baseEntity);
 
     ~WorldRouter() override;
 
@@ -119,6 +122,8 @@ class WorldRouter : public BaseWorld {
 
     friend class WorldRoutertest;
     friend class WorldRouterintegration;
+
+    LocatedEntity& getDefaultLocation() const override;
 };
 
 #endif // SERVER_WORLD_ROUTER_H

@@ -3,5 +3,5 @@ add_library(modules
         WorldTime.cpp
         EntityRef.cpp
         TerrainContext.cpp
-        Location.cpp)
+    Ref.cpp Ref.h)
 

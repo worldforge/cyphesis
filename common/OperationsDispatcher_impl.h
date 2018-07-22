@@ -122,7 +122,6 @@ OpQueEntry<T>::OpQueEntry(Operation o, T & f) :
     op(std::move(o)),
     from(&f)
 {
-    from->incRef();
 }
 
 template <typename T>
@@ -130,13 +129,11 @@ OpQueEntry<T>::OpQueEntry(const OpQueEntry & o) :
     op(o.op),
     from(o.from)
 {
-    from->incRef();
 }
 
 template <typename T>
 OpQueEntry<T>::~OpQueEntry()
 {
-    from->decRef();
 }
 
 

@@ -67,9 +67,6 @@ LocatedEntity::~LocatedEntity()
         delete script;
     }
 
-    if (m_location.m_loc != nullptr) {
-        m_location.m_loc->decRef();
-    }
     delete m_contains;
 }
 
@@ -286,14 +283,12 @@ void LocatedEntity::makeContainer()
 /// container.
 void LocatedEntity::changeContainer(LocatedEntity* new_loc)
 {
-    LocatedEntity* oldLoc = m_location.m_loc;
+    auto oldLoc = m_location.m_loc;
     oldLoc->removeChild(*this);
     new_loc->addChild(*this);
-    new_loc->incRef();
     assert(m_location.m_loc->checkRef() > 0);
 
-    onContainered(oldLoc);
-    oldLoc->decRef();
+    onContainered(oldLoc.get());
 }
 
 void LocatedEntity::broadcast(const Atlas::Objects::Operation::RootOperation& op, OpVector& res) const

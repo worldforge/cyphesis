@@ -23,7 +23,7 @@
 #define DEBUG
 #endif
 
-#include "modules/Location.h"
+#include "rulesets/Location.h"
 
 #include "rulesets/Entity.h"
 

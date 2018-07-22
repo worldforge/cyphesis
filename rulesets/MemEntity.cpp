@@ -42,8 +42,8 @@ void MemEntity::destroy()
 {
      // Handling re-parenting is done very similarly to Entity::destroy,
      // but is slightly different as we tolerate LOC being null.
-     LocatedEntity * ent_loc = this->m_location.m_loc;
-     if (ent_loc != nullptr) {
+     auto ent_loc = this->m_location.m_loc;
+     if (ent_loc) {
          // Remove deleted entity from its parents contains
          assert(ent_loc->m_contains != nullptr);
          ent_loc->m_contains->erase(this);
@@ -51,7 +51,7 @@ void MemEntity::destroy()
      // FIXME This is required until MemMap uses parent refcounting
      this->m_location.m_loc = nullptr;
 
-     if (this->m_contains != nullptr) {
+     if (this->m_contains) {
          // Add deleted entity's children into its parents contains
          for (auto& child_ent : *this->m_contains) {
              child_ent->m_location.m_loc = ent_loc;

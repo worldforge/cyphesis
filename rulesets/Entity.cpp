@@ -281,11 +281,10 @@ void Entity::removeDelegate(int class_no, const std::string & delegate)
 void Entity::destroy()
 {
     assert(m_location.m_loc != 0);
-    assert(m_location.m_loc->m_contains != 0);
-    if (m_contains != 0) {
-        LocatedEntitySet::const_iterator Iend = m_contains->end();
-        for (LocatedEntitySet::const_iterator I = m_contains->begin(); I != Iend; ++I) {
-            Location & child = (*I)->m_location;
+    assert(m_location.m_loc->m_contains != nullptr);
+    if (m_contains != nullptr) {
+        for (auto& entity : *m_contains) {
+            Location & child = entity->m_location;
             // FIXME take account of orientation
             // FIXME velocity and orientation  need to be adjusted
 
@@ -303,10 +302,7 @@ void Entity::destroy()
                 static const Quaternion identity(1, 0, 0, 0);
                 m_location.m_pos = child.m_pos.toParentCoords(m_location.pos(), identity);
             }
-            // Remove the reference to ourself.
-            decRef();
-            m_location.m_loc->addChild(**I);
-            m_location.m_loc->incRef();
+            m_location.m_loc->addChild(*entity);
         }
     }
 

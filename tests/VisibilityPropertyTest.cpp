@@ -55,5 +55,5 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
     return 0;
 }
 
-#include "modules/Location.h"
+#include "rulesets/Location.h"
 

@@ -66,9 +66,9 @@ World::~World()
 void World::LookOperation(const Operation & op, OpVector & res)
 {
     // We must be the top level entity
-    assert(m_location.m_loc == 0);
+    assert(m_location.m_loc == nullptr);
     // We must contains something, or where the hell did the look come from?
-    assert(m_contains != 0);
+    assert(m_contains != nullptr);
 
     //The top level entity is a little special, since its properties can be inspected by all entities, although it's children can not.
     //First check if there's a movement domain. If so we'll handle Look ops just like usually. However, if not we'll send the properties sans the "contains" property.
@@ -103,7 +103,7 @@ void World::LookOperation(const Operation & op, OpVector & res)
 
 void World::MoveOperation(const Operation & op, OpVector & res)
 {
-    assert(m_location.m_loc == 0);
+    assert(m_location.m_loc == nullptr);
     // Can't move the world.
 }
 
@@ -131,7 +131,7 @@ void World::DeleteOperation(const Operation & op, OpVector & res)
             log(ERROR, "World::DeleteOperation got delete op with arg but no id.");
         }
     } else {
-        assert(m_location.m_loc == 0);
+        assert(m_location.m_loc == nullptr);
         // Deleting has no effect.
     }
 }

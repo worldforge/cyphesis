@@ -81,11 +81,11 @@ PyObject* search_contains(PyFilter* self, PyEntity* py_entity){
 
     std::vector<LocatedEntity*> res;
 
-    for (;iter != iter_end; ++iter){
-        if((**iter).isVisible() && self->m_filter->match(**iter)){
-            res.push_back(*iter);
-        }
-    }
+//    for (;iter != iter_end; ++iter){
+//        if((**iter).isVisible() && self->m_filter->match(**iter)){
+//            res.push_back(*iter);
+//        }
+//    }
 
     //Create a python list an fill it with the entities we got
     //FIXME: the code below is reused in multiple places

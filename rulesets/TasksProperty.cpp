@@ -113,7 +113,6 @@ int TasksProperty::startTask(Task * task,
     bool update_required = false;
     if (m_task != nullptr) {
         update_required = true;
-        m_task->decRef();
         m_task = nullptr;
     }
 
@@ -128,7 +127,6 @@ int TasksProperty::startTask(Task * task,
     } else {
         assert(!res.empty());
         m_task = task;
-        m_task->incRef();
         update_required = true;
     }
 
@@ -151,7 +149,6 @@ int TasksProperty::clearTask(LocatedEntity * owner, OpVector & res)
     // Thus far a task can only have one reference legally, so if we
     // have a task it's count must be 1
     assert(m_task->count() == 1);
-    m_task->decRef();
     m_task = nullptr;
 
     return updateTask(owner, res);
@@ -166,7 +163,6 @@ void TasksProperty::stopTask(LocatedEntity * owner, OpVector & res)
     }
 
     assert(m_task->count() == 1);
-    m_task->decRef();
     m_task = nullptr;
 
     updateTask(owner, res);

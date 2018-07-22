@@ -16,6 +16,7 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
+#include "Location.h"
 #include "rulesets/LocatedEntity.h"
 
 #include "common/const.h"
@@ -242,14 +243,14 @@ static const Location* distanceToAncestor(const Location & self,
     }
     log(ERROR, "Broken entity hierarchy doing distance calculation");
     if (self.m_loc != nullptr) {
-        std::cerr << "Self("<< &self << ", loc:" << self.m_loc->getId() << "," << self.m_loc << ",pos:" << self.m_pos << ":" << self.m_pos.isValid() << ", orient:" << self.m_orientation << ")"
+        std::cerr << "Self("<< &self << ", loc:" << self.m_loc->describeEntity() << ",pos:" << self.m_pos << ":" << self.m_pos.isValid() << ", orient:" << self.m_orientation << ")"
                   << std::endl << std::flush;
     } else {
         std::cerr << "Self has no location"
                   << std::endl << std::flush;
     }
     if (other.m_loc != nullptr) {
-        std::cerr << "Other("<< &other << ", loc:" << other.m_loc->getId() << "," << other.m_loc << ",pos:" << other.m_pos << ":" << self.m_pos.isValid() << ", orient:" << other.m_orientation << ")"
+        std::cerr << "Other("<< &other << ", loc:" << other.m_loc->describeEntity() << ",pos:" << other.m_pos << ":" << self.m_pos.isValid() << ", orient:" << other.m_orientation << ")"
                   << std::endl << std::flush;
     } else {
         std::cerr << "Other has no location"

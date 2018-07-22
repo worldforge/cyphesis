@@ -26,6 +26,7 @@
 #include <set>
 #include <map>
 #include <string>
+#include "modules/Ref.h"
 
 namespace Atlas {
     namespace Message {
@@ -61,7 +62,7 @@ class EntityKit {
     /// @param intId an integer giving the identifier of the Entity.
     /// @param attributes custom attributes set for the new instance
     /// @param attributes the location of the entity
-    virtual LocatedEntity * newEntity(const std::string & id,
+    virtual Ref<LocatedEntity> newEntity(const std::string & id,
                                       long intId,
                                       const Atlas::Objects::Entity::RootEntity & attributes,
                                       LocatedEntity* location) = 0;

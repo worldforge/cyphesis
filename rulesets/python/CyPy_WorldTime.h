@@ -19,43 +19,26 @@
 #ifndef CYPHESIS_CYPY_WORLDTIME_H
 #define CYPHESIS_CYPY_WORLDTIME_H
 
+#include "modules/Ref.h"
 #include <rulesets/BaseMind.h>
 #include <boost/variant.hpp>
 #include "WrapperBase.h"
 
-struct WorldTimeWrapper {
-    boost::variant<BaseMind*, WorldTime> m_value;
+struct WorldTimeWrapper
+{
+    boost::variant<Ref<BaseMind>, WorldTime> m_value;
 
     WorldTimeWrapper() = default;
 
-    WorldTimeWrapper(decltype(m_value) value) : m_value(std::move(value)) {
-        struct MyVisitor : public boost::static_visitor<> {
-            void operator()(BaseMind* i) const
-            {
-                i->incRef();
-            }
-            void operator()(WorldTime& i) const
-            {
-            }
-        };
-        boost::apply_visitor(MyVisitor{}, m_value);
+    WorldTimeWrapper(decltype(m_value) value)
+        : m_value(std::move(value))
+    {
     }
 
-    ~WorldTimeWrapper() {
-        struct MyVisitor : public boost::static_visitor<> {
-            void operator()(BaseMind* i) const
-            {
-                i->decRef();
-            }
-            void operator()(WorldTime& i) const
-            {
-            }
-        };
-        boost::apply_visitor(MyVisitor{}, m_value);
-    }
+    ~WorldTimeWrapper() = default;
 };
 
-class CyPy_WorldTime: public WrapperBase<WorldTimeWrapper, CyPy_WorldTime>
+class CyPy_WorldTime : public WrapperBase<WorldTimeWrapper, CyPy_WorldTime>
 {
     public:
         CyPy_WorldTime(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
@@ -71,9 +54,11 @@ class CyPy_WorldTime: public WrapperBase<WorldTimeWrapper, CyPy_WorldTime>
         WorldTime& get_value();
 
         Py::Object seconds();
+
         PYCXX_NOARGS_METHOD_DECL(CyPy_WorldTime, seconds)
 
         Py::Object is_now(const Py::Tuple& args);
+
         PYCXX_VARARGS_METHOD_DECL(CyPy_WorldTime, is_now)
 
 };

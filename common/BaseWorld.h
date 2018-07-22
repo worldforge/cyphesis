@@ -26,6 +26,7 @@
 
 #include <sigc++/signal.h>
 #include <ctime>
+#include <boost/noncopyable.hpp>
 
 class ArithmeticScript;
 class LocatedEntity;
@@ -40,12 +41,8 @@ typedef std::map<long, LocatedEntity *> EntityDict;
 /// This base class provides the common features required by cyphesis
 /// for the object which encapsulates the game world. Other classes
 /// inherit from this provide the core game world system.
-class BaseWorld {
+class BaseWorld : private boost::noncopyable {
   private:
-    /// \brief Copy constructor deleted to prevent slicing
-    BaseWorld(const BaseWorld &) = delete;
-    /// \brief Assignment operator deleted to prevent slicing
-    const BaseWorld & operator=(const BaseWorld &) = delete;
 
     /// \brief Singleton instance pointer for the World manager object.
     static BaseWorld * m_instance;
@@ -68,14 +65,11 @@ class BaseWorld {
     /// without the simulation altering it.
     bool m_isSuspended;
 
-    /// \brief The top level in-game entity in the world.
-    LocatedEntity & m_gameWorld;
-
     LocatedEntity* m_defaultLocation;
 
     LocatedEntity* m_limboLocation;
 
-    explicit BaseWorld(LocatedEntity & gw);
+    explicit BaseWorld();
 
     /// \brief Called when the world is resumed.
     virtual void resumeWorld() {}
@@ -102,29 +96,12 @@ class BaseWorld {
         return m_eobjects;
     }
 
-    /// \brief Gets the root entity.
-    ///
-    /// The root entity is special, in that it never can be deleted.
-    LocatedEntity& getRootEntity();
-
-    /// \brief Gets the root entity.
-    ///
-    /// The root entity is special, in that it never can be deleted.
-    LocatedEntity& getRootEntity() const;
-
     /// \brief Gets the default location.
     ///
     /// This is where entities will be created if nothing else is specified.
     /// This will either return the root gameworld, or another entity if
     /// setDefaultLocation() has been called.
-    LocatedEntity& getDefaultLocation();
-
-    /// \brief Gets the default location.
-    ///
-    /// This is where entities will be created if nothing else is specified.
-    /// This will either return the root gameworld, or another entity if
-    /// setDefaultLocation() has been called.
-    LocatedEntity& getDefaultLocation() const;
+    virtual LocatedEntity& getDefaultLocation() const = 0;
 
     /// \brief Sets the default location.
     ///

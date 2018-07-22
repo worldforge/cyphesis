@@ -50,7 +50,7 @@ EntityFactoryBase::~EntityFactoryBase()
 
 
 template <>
-LocatedEntity * EntityFactory<World>::newEntity(const std::string & id,
+Ref<LocatedEntity> EntityFactory<World>::newEntity(const std::string & id,
                                                 long intId,
                                                 const Atlas::Objects::Entity::RootEntity & attributes,
                                                 LocatedEntity* location)

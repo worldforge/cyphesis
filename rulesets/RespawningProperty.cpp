@@ -54,7 +54,7 @@ void RespawningProperty::apply(LocatedEntity * ent)
 {
     //Check if we're already in limbo.
     Character* character = dynamic_cast<Character*>(ent);
-    if (character && BaseWorld::instance().getLimboLocation() && character->m_location.m_loc == BaseWorld::instance().getLimboLocation()) {
+    if (character && BaseWorld::instance().getLimboLocation() && character->m_location.m_loc.get() == BaseWorld::instance().getLimboLocation()) {
         sigc::connection* connection = sInstanceState.getState(ent);
         if (!(*connection)) {
             (*connection) = character->externalLinkChanged.connect(sigc::bind(sigc::mem_fun(*this, &RespawningProperty::entity_externalLinkChanged), ent));

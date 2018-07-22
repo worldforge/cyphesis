@@ -25,7 +25,7 @@
 
 #include "rulesets/Entity.h"
 
-#include "modules/Location.h"
+#include "rulesets/Location.h"
 
 #include "common/log.h"
 

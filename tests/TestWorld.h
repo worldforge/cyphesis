@@ -26,8 +26,9 @@
 /// Test implementation of the BaseWorld interface
 class TestWorld : public BaseWorld {
   public:
-    explicit TestWorld(LocatedEntity & gw) : BaseWorld(gw) {
-        m_eobjects[m_gameWorld.getIntId()] = &m_gameWorld;
+    LocatedEntity& m_gw;
+    explicit TestWorld(LocatedEntity & gw) : BaseWorld(), m_gw(gw) {
+        m_eobjects[gw.getIntId()] = &gw;
     }
 
     virtual ~TestWorld(){}
@@ -64,6 +65,7 @@ class TestWorld : public BaseWorld {
     virtual LocatedEntity * findByType(const std::string & type) { return 0; }
     virtual void addPerceptive(LocatedEntity *) { }
 
+    virtual LocatedEntity& getDefaultLocation() const {return m_gw;};
 
 };
 

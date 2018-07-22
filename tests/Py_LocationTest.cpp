@@ -38,48 +38,8 @@
 
 #include <cassert>
 
-static PyObject * null_wrapper(PyObject * self, PyLocation * o)
-{
-    if (PyLocation_Check(o)) {
-#ifdef CYPHESIS_DEBUG
-        o->location = nullptr;
-#endif // NDEBUG
-    } else if (PyLocatedEntity_Check(o)) {
-#ifdef CYPHESIS_DEBUG
-        ((PyEntity*)o)->m_entity.l = nullptr;
-#endif // NDEBUG
-    } else {
-        PyErr_SetString(PyExc_TypeError, "Unknown Object type");
-        return nullptr;
-    }
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-
-static PyMethodDef sabotage_methods[] = {
-    {"null", (PyCFunction)null_wrapper,                 METH_O},
-    {nullptr,          nullptr}                       /* Sentinel */
-};
-
-static PyObject* init_sabotage() {
-    static struct PyModuleDef def = {
-            PyModuleDef_HEAD_INIT,
-            "sabotage",
-            nullptr,
-            0,
-            sabotage_methods,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr
-    };
-
-    return PyModule_Create(&def);
-}
-
 int main()
 {
-    PyImport_AppendInittab("sabotage", &init_sabotage);
     init_python_api("21b996b0-9dc3-4749-bd8c-24908f372ddc");
 
     Entity wrld("0", 0);
@@ -135,25 +95,6 @@ int main()
     run_python_string("common_parent = server.Thing('1')");
     run_python_string("atlas.Location(common_parent, Point3D(0,0,0)) - atlas.Location(common_parent, Point3D(1,0,0))");
     expect_python_error("atlas.Location(common_parent, Point3D(0,0,0)) - Point3D(1,0,0)", PyExc_TypeError);
-
-#ifdef CYPHESIS_DEBUG
-    run_python_string("import sabotage");
-    // Hit the assert checks.
-    run_python_string("t=server.Thing('1')");
-    run_python_string("sabotage.null(t)");
-    expect_python_error("l.parent=t", PyExc_AssertionError);
-    expect_python_error("atlas.Location(t)", PyExc_AssertionError);
-
-    run_python_string("m=server.Mind('1')");
-    run_python_string("sabotage.null(m)");
-    expect_python_error("atlas.Location(m)", PyExc_AssertionError);
-
-    run_python_string("copy_methd=l.copy");
-    run_python_string("sabotage.null(l)");
-    expect_python_error("copy_methd()", PyExc_AssertionError);
-    expect_python_error("l.parent", PyExc_AssertionError);
-    expect_python_error("l.velocity=Vector3D()", PyExc_AssertionError);
-#endif // NDEBUG
 
     shutdown_python_api();
     return 0;

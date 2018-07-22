@@ -48,11 +48,11 @@ class PossessionClient: public BaseClient, public MindRegistry
 
         void createAccount(const std::string& accountId);
 
-        void addLocatedEntity(BaseMind* mind) override;
+        void addLocatedEntity(Ref<BaseMind> mind) override;
 
-        void removeLocatedEntity(BaseMind* mind) override;
+        void removeLocatedEntity(Ref<BaseMind> mind) override;
 
-        const std::unordered_map<long, BaseMind*>& getMinds() const {
+        const std::unordered_map<long, Ref<BaseMind>>& getMinds() const {
             return m_minds;
         };
 
@@ -69,7 +69,7 @@ class PossessionClient: public BaseClient, public MindRegistry
 
         OperationsDispatcher<BaseMind> m_operationsDispatcher;
 
-        std::unordered_map<long, BaseMind*> m_minds;
+        std::unordered_map<long, Ref<BaseMind>> m_minds;
 
         std::unique_ptr<Inheritance> m_inheritance;
 

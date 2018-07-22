@@ -19,7 +19,7 @@
 #ifndef RULESETS_LOCATED_ENTITY_H
 #define RULESETS_LOCATED_ENTITY_H
 
-#include "modules/Location.h"
+#include "Location.h"
 
 #include "common/Property.h"
 #include "common/Router.h"
@@ -44,7 +44,7 @@ class _object;
 template <typename T>
 class Property;
 
-typedef std::set<LocatedEntity *> LocatedEntitySet;
+typedef std::set<Ref<LocatedEntity>> LocatedEntitySet;
 typedef std::map<std::string, PropertyBase *> PropertyDict;
 
 /// \brief Flag indicating entity has been written to permanent store

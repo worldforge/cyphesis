@@ -22,7 +22,7 @@ CyPy_WorldTime::CyPy_WorldTime(Py::PythonClassInstance* self, Py::Tuple& args, P
     : WrapperBase(self, args, kwds)
 {
     args.verify_length(1);
-    m_value = decltype(m_value){WorldTime(verifyLong(args.front()))};
+    m_value = decltype(m_value){WorldTime(static_cast<int>(verifyLong(args.front())))};
 }
 
 CyPy_WorldTime::CyPy_WorldTime(Py::PythonClassInstance* self, WorldTimeWrapper value)

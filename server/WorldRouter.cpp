@@ -53,43 +53,17 @@ using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
 
-/**
- * \brief Acts as a RAII scoped guard for an entity.
- */
-struct EntityScopedRef {
-    LocatedEntity& entity;
-    explicit EntityScopedRef(LocatedEntity& e);
-    ~EntityScopedRef();
-};
-
-inline EntityScopedRef::EntityScopedRef(LocatedEntity & e) : entity(e)
-{
-    entity.incRef();
-}
-
-inline EntityScopedRef::~EntityScopedRef()
-{
-    entity.decRef();
-}
-
-
-
 /// \brief Constructor for the world object.
-///
-/// The Entity representing the world is implicitly constructed.
-/// Currently the world entity is included in the perceptives list,
-/// but I am not clear why. Need to look into why.
-WorldRouter::WorldRouter(const SystemTime & time) :
-      BaseWorld(*new World(consts::rootWorldId, consts::rootWorldIntId)),
+WorldRouter::WorldRouter(const SystemTime & time, Ref<LocatedEntity> baseEntity) :
+      BaseWorld(),
       m_operationsDispatcher([&](const Operation & op, LocatedEntity & from){this->operation(op, from);}, [&]()->double {return getTime();}),
-      m_entityCount(1)
+      m_entityCount(1),
+      m_baseEntity(baseEntity)
           
 {
     m_initTime = time.seconds();
-    m_gameWorld.incRef();
 
-    m_gameWorld.setType(Inheritance::instance().getType("world"));
-    m_eobjects[m_gameWorld.getIntId()] = &m_gameWorld;
+    m_eobjects[baseEntity->getIntId()] = baseEntity;
     Monitors::instance()->watch("entities", new Variable<int>(m_entityCount));
 
     /**
@@ -159,17 +133,11 @@ WorldRouter::~WorldRouter()
     m_operationsDispatcher.clearQueues();
     m_suspendedQueue = std::queue<OpQueEntry<LocatedEntity>>();
 
-    EntityDict::const_iterator Jend = m_eobjects.end();
-    for (EntityDict::const_iterator J = m_eobjects.begin(); J != Jend; ++J) {
-        J->second->decRef();
-    }
+    m_eobjects.clear();
     for (auto entry : m_spawns) {
         delete entry.second.first;
     }
     m_spawns.clear();
-    // This should be deleted here rather than in the base class because
-    // we created it, and BaseWorld should not even know what it is.
-    m_gameWorld.decRef();
 }
 
 bool WorldRouter::isQueueDirty() const
@@ -218,11 +186,7 @@ LocatedEntity * WorldRouter::addEntity(LocatedEntity * ent)
     }
     ent->m_location.m_loc->makeContainer();
     bool cont_change = ent->m_location.m_loc->m_contains->empty();
-    bool child_inserted = ent->m_location.m_loc->m_contains->insert(ent).second;
-    //check that the child wasn't already present
-    if (child_inserted) {
-        ent->m_location.m_loc->incRef();
-    }
+
     // FIXME Should we call this every time a new child is inserted (now it's just called if the container is empty first
     if (cont_change) {
         // FIXME Mark the entity as dirty?
@@ -412,16 +376,15 @@ ArithmeticScript * WorldRouter::newArithmetic(const std::string & name,
 /// entity.
 void WorldRouter::delEntity(LocatedEntity * ent)
 {
-    if (ent == &m_gameWorld) {
+    if (ent == m_baseEntity) {
         log(WARNING, "Attempt to delete game world");
         return;
     }
     assert(ent->getIntId() != 0);
-    m_eobjects.erase(ent->getIntId());
-    --m_entityCount;
     ent->destroy();
     ent->updated.emit();
-    ent->decRef();
+    m_eobjects.erase(ent->getIntId());
+    --m_entityCount;
 }
 
 void WorldRouter::resumeWorld()
@@ -496,7 +459,7 @@ void WorldRouter::deliverTo(const Operation & op, LocatedEntity & ent)
 {
     //Make sure the entity isn't dereferenced while in this loop.
     //This is mainly in place to handle relayed deletion ops.
-    EntityScopedRef referenceGuard(ent);
+    Ref<LocatedEntity> referenceGuard(&ent);
     //If the world is suspended and the op is a tick, we should store it
     //(to be resent when the world is resumed) and not process it now.
     if (m_isSuspended) {
@@ -644,4 +607,12 @@ LocatedEntity * WorldRouter::findByType(const std::string & type)
         }
     }
     return nullptr;
+}
+
+LocatedEntity& WorldRouter::getDefaultLocation() const
+{
+    if (m_defaultLocation) {
+        return *m_defaultLocation;
+    }
+    return *m_baseEntity;
 }

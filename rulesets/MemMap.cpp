@@ -393,7 +393,7 @@ EntityVector MemMap::findByLocation(const Location & loc,
 // FIXME Don't return by value
 {
     EntityVector res;
-    LocatedEntity * place = loc.m_loc;
+    auto place = loc.m_loc;
     if (place->m_contains == 0) {
         return res;
     }
@@ -483,13 +483,13 @@ void MemMap::flush()
 {
     debug(std::cout << "Flushing memory with " << m_entities.size()
                     << " memories" << std::endl << std::flush;);
-    
-    MemEntityDict::const_iterator Iend = m_entities.end();
-    for (MemEntityDict::const_iterator I = m_entities.begin(); I != Iend; ++I) {
-        // FIXME This is required until MemMap uses parent refcounting
-        I->second->m_location.m_loc = 0;
-        I->second->decRef();
-    }
+    m_entities.clear();
+//    MemEntityDict::const_iterator Iend = m_entities.end();
+//    for (MemEntityDict::const_iterator I = m_entities.begin(); I != Iend; ++I) {
+//        // FIXME This is required until MemMap uses parent refcounting
+//        I->second->m_location.m_loc = 0;
+//        I->second->decRef();
+//    }
 }
 
 void MemMap::setListener(MapListener* listener)

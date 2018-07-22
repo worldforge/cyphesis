@@ -21,7 +21,7 @@
 #include "Py_Oplist.h"
 #include "Py_Location.h"
 
-#include "modules/Location.h"
+#include "Location.h"
 
 #include "common/log.h"
 #include "common/compose.hpp"

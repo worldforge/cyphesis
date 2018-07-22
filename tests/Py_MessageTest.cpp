@@ -54,11 +54,11 @@ int main()
     run_python_string("Message(Operation('get'))");
     run_python_string("Message(Oplist(Operation('get')))");
     run_python_string("Message(Location())");
-    expect_python_error("Message(Vector3D())", PyExc_TypeError);
+    run_python_string("Message(Vector3D())");
     run_python_string("Message([Message(1)])");
-    expect_python_error("Message([Vector3D()])", PyExc_TypeError);
+    run_python_string("Message([Vector3D()])");
     run_python_string("Message({'foo': Message(1)})");
-    expect_python_error("Message({'foo': Vector3D()})", PyExc_TypeError);
+    run_python_string("Message({'foo': Vector3D()})");
     expect_python_error("Message(1, 1)", PyExc_TypeError);
 
     run_python_string("m=Message(1)");
@@ -67,7 +67,7 @@ int main()
     expect_python_error("m.foo = 1", PyExc_AttributeError);
     run_python_string("m=Message({})");
     expect_python_error("print(m.foo)", PyExc_AttributeError);
-    expect_python_error("m.foo = Vector3D()", PyExc_TypeError);
+    run_python_string("m.foo = Vector3D()");
     run_python_string("m.foo = 1");
     run_python_string("print(m.foo)");
     run_python_string("m.foo = 1.1");

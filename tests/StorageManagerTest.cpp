@@ -188,7 +188,7 @@ int main()
 #include "rulesets/Script.h"
 
 #include "modules/EntityRef.h"
-#include "modules/Location.h"
+#include "rulesets/Location.h"
 
 #include "common/const.h"
 #include "common/Database.h"

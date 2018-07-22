@@ -19,6 +19,7 @@
 #ifndef RULESETS_TASKS_PROPERTY_H
 #define RULESETS_TASKS_PROPERTY_H
 
+#include "modules/Ref.h"
 #include "common/Property.h"
 
 class Task;
@@ -27,7 +28,7 @@ class Task;
 /// \ingroup PropertyClasses
 class TasksProperty : public PropertyBase {
   protected:
-    Task * m_task;
+    Ref<Task> m_task;
   public:
     static constexpr const char* property_name = "tasks";
     static constexpr const char* property_atlastype = "map";

@@ -115,7 +115,7 @@ EntityBuilder::~EntityBuilder()
 /// @param intId The integer identifier of the new entity.
 /// @param type The string specifying the type of entity.
 /// @param attributes A mapping of attribute values to set on the entity.
-LocatedEntity* EntityBuilder::newEntity(const std::string& id, long intId, const std::string& type, const RootEntity& attributes, const BaseWorld& world) const
+Ref<LocatedEntity> EntityBuilder::newEntity(const std::string& id, long intId, const std::string& type, const RootEntity& attributes, const BaseWorld& world) const
 {
     LocatedEntity* loc = nullptr;
     // Get location from entity, if it is present
@@ -138,7 +138,7 @@ LocatedEntity* EntityBuilder::newEntity(const std::string& id, long intId, const
     }
 }
 
-LocatedEntity* EntityBuilder::newChildEntity(const std::string& id, long intId, const std::string& type, const Atlas::Objects::Entity::RootEntity& attributes,
+Ref<LocatedEntity> EntityBuilder::newChildEntity(const std::string& id, long intId, const std::string& type, const Atlas::Objects::Entity::RootEntity& attributes,
                                              LocatedEntity& parentEntity) const
 {
     debug(std::cout << "EntityFactor::newEntity()" << std::endl << std::flush;);

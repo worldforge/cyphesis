@@ -21,6 +21,8 @@
 
 #include "common/Property.h"
 
+#include "modules/Ref.h"
+
 #include <set>
 
 /// \brief Class to handle Entity id property
@@ -56,7 +58,7 @@ class NameProperty : public Property<std::string> {
 
 class LocatedEntity;
 
-typedef std::set<LocatedEntity *> LocatedEntitySet;
+typedef std::set<Ref<LocatedEntity>> LocatedEntitySet;
 
 /// \brief Class to handle Entity contains property
 /// \ingroup PropertyClasses

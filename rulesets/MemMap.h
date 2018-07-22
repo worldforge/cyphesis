@@ -21,6 +21,8 @@
 
 #include "common/OperationRouter.h"
 
+#include "modules/Ref.h"
+
 #include <Atlas/Objects/ObjectsFwd.h>
 #include <Atlas/Message/Element.h>
 
@@ -37,7 +39,7 @@ class Script;
 class TypeNode;
 
 typedef std::vector<LocatedEntity *> EntityVector;
-typedef std::map<long, MemEntity *> MemEntityDict;
+typedef std::map<long, Ref<MemEntity>> MemEntityDict;
 
 /// \brief Class to handle the basic entity memory of a mind
 class MemMap {

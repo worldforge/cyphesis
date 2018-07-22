@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 Erik Ogenvik
+ Copyright (C) 2018 Erik Ogenvik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -15,22 +15,5 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-#ifndef AICLIENT_MINDREGISTRY_H
-#define AICLIENT_MINDREGISTRY_H
 
-#include <modules/Ref.h>
-
-class BaseMind;
-
-class MindRegistry {
-
-    public:
-
-        virtual ~MindRegistry() = default;
-
-        virtual void addLocatedEntity(Ref<BaseMind>) = 0;
-        virtual void removeLocatedEntity(Ref<BaseMind>) = 0;
-
-};
-
-#endif //AICLIENT_MINDREGISTRY_H
+#include "Ref.h"

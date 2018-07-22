@@ -65,7 +65,7 @@ class EntityFactory : public EntityFactoryBase {
 
     ~EntityFactory() override;
 
-    LocatedEntity * newEntity(const std::string & id, long intId,
+    Ref<LocatedEntity> newEntity(const std::string & id, long intId,
                 const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location) override;
 
     EntityFactoryBase * duplicateFactory() override;

@@ -54,7 +54,7 @@ ArchetypeFactory::~ArchetypeFactory()
 {
 }
 
-LocatedEntity * ArchetypeFactory::createEntity(const std::string & id, long intId, EntityCreation& entityCreation, LocatedEntity* location,
+Ref<LocatedEntity> ArchetypeFactory::createEntity(const std::string & id, long intId, EntityCreation& entityCreation, LocatedEntity* location,
         std::map<std::string, EntityCreation>& entities)
 {
     auto& attributes = entityCreation.definition;
@@ -76,7 +76,7 @@ LocatedEntity * ArchetypeFactory::createEntity(const std::string & id, long intI
         ::addToEntity(Point3D::ZERO(), cleansedAttributes->modifyPos());
     }
 
-    LocatedEntity* entity = EntityBuilder::instance()->newChildEntity(id, intId, concreteType, cleansedAttributes, *location);
+    auto entity = EntityBuilder::instance()->newChildEntity(id, intId, concreteType, cleansedAttributes, *location);
 
     if (entity == nullptr) {
         log(ERROR, String::compose("Could not create entity of type %1.", concreteType));
@@ -93,14 +93,13 @@ LocatedEntity * ArchetypeFactory::createEntity(const std::string & id, long intI
         }
         std::string childEntityId;
         long childIntId = newId(childEntityId);
-        LocatedEntity* childEntity = createEntity(childEntityId, childIntId, entityI->second, entity, entities);
+        auto childEntity = createEntity(childEntityId, childIntId, entityI->second, entity, entities);
         if (childEntity == nullptr) {
             log(ERROR, String::compose("Could not create child entity with id %1.", childId));
             return nullptr;
         }
         entity->makeContainer();
         entity->m_contains->insert(childEntity);
-        entity->incRef();
     }
 
     if (entity->m_contains != nullptr && !entity->m_contains->empty()) {
@@ -147,7 +146,7 @@ bool ArchetypeFactory::parseEntities(const std::map<std::string, MapType>& entit
     return true;
 }
 
-LocatedEntity * ArchetypeFactory::newEntity(const std::string & id, long intId, const RootEntity & attributes, LocatedEntity* location)
+Ref<LocatedEntity> ArchetypeFactory::newEntity(const std::string & id, long intId, const RootEntity & attributes, LocatedEntity* location)
 {
     //parse entities into RootEntity instances first
     std::map<std::string, EntityCreation> entities;

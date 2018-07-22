@@ -18,7 +18,7 @@
 
 #include "Movement.h"
 
-#include "modules/Location.h"
+#include "Location.h"
 
 Movement::Movement(LocatedEntity & body) : m_body(body),
                                            m_serialno(0)

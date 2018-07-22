@@ -37,11 +37,11 @@ EntityFactory<T>::~EntityFactory()
 }
 
 template <class T>
-LocatedEntity * EntityFactory<T>::newEntity(const std::string & id, long intId,
+Ref<LocatedEntity> EntityFactory<T>::newEntity(const std::string & id, long intId,
         const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
 {
     ++m_createdCount;
-    T* thing = new T(id, intId);
+    auto* thing = new T(id, intId);
     initializeEntity(*thing, attributes, location);
     return thing;
 }
@@ -49,7 +49,7 @@ LocatedEntity * EntityFactory<T>::newEntity(const std::string & id, long intId,
 template <class T>
 EntityFactoryBase * EntityFactory<T>::duplicateFactory()
 {
-    EntityFactory<T> * f = new EntityFactory<T>(*this);
+    auto * f = new EntityFactory<T>(*this);
     // Copy the defaults to the parent
     f->m_attributes = this->m_attributes;
     f->m_parent = this;

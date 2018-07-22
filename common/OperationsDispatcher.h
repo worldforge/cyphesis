@@ -28,6 +28,7 @@
 #include <set>
 #include <queue>
 #include <functional>
+#include "modules/Ref.h"
 
 /// \brief Type to hold an operation and the Entity it is from   for efficiency
 /// when broadcasting.
@@ -41,7 +42,7 @@ struct OpQueEntry {
         return op->getSeconds() > right->getSeconds();
     }
     Operation op;
-    T* from;
+    Ref<T> from;
 
     explicit OpQueEntry(Operation o, T & f);
     OpQueEntry(const OpQueEntry & o);

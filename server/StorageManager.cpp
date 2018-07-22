@@ -634,20 +634,17 @@ void StorageManager::thoughtsReceived(const std::string& entityId, const Operati
 
 }
 
-int StorageManager::initWorld()
+int StorageManager::initWorld(const Ref<LocatedEntity>& ent)
 {
-    LocatedEntity * ent = &BaseWorld::instance().getRootEntity();
-
     ent->updated.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityUpdated), ent));
     ent->addFlags(entity_clean);
     // FIXME queue it so the initial state gets persisted.
     return 0;
 }
 
-int StorageManager::restoreWorld()
+int StorageManager::restoreWorld(const Ref<LocatedEntity>& ent)
 {
     log(INFO, "Starting restoring world from storage.");
-    LocatedEntity * ent = &BaseWorld::instance().getRootEntity();
 
     //The order here is important. We want to restore the children before we restore the properties.
     //The reason for this is that some properties (such as "outfit") refer to child entities; if

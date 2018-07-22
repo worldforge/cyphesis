@@ -45,7 +45,7 @@ int main()
     run_python_string("from atlas import Entity");
     run_python_string("from atlas import Location");
 
-    auto ent = CyPy_RootEntity::wrap(Atlas::Objects::Entity::RootEntity());
+    auto ent = (Py::PythonClassObject<CyPy_RootEntity>)(CyPy_RootEntity::wrap(Atlas::Objects::Entity::RootEntity()));
     assert(ent.getCxxObject() != 0);
     assert(ent.getCxxObject()->m_value.isValid());
 

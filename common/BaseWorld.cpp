@@ -32,9 +32,12 @@ BaseWorld * BaseWorld::m_instance = 0;
 /// This constructor registers the instance created as the singleton, and
 /// in debug mode ensures that an instance has not already been created.
 /// @param gw the top level in-game entity in the world.
-BaseWorld::BaseWorld(LocatedEntity & gw) : m_isSuspended(false), m_gameWorld(gw), m_defaultLocation(&gw), m_limboLocation(nullptr)
+BaseWorld::BaseWorld() :
+    m_isSuspended(false),
+    m_defaultLocation(nullptr),
+    m_limboLocation(nullptr)
 {
-    assert(m_instance == 0);
+    assert(m_instance == nullptr);
     m_instance = this;
 }
 
@@ -45,7 +48,7 @@ BaseWorld::BaseWorld(LocatedEntity & gw) : m_isSuspended(false), m_gameWorld(gw)
 BaseWorld::~BaseWorld()
 {
     assert(m_instance == this);
-    m_instance = 0;
+    m_instance = nullptr;
 }
 
 /// \brief Get an in-game Entity by its string ID.
@@ -56,12 +59,12 @@ LocatedEntity * BaseWorld::getEntity(const std::string & id) const
 {
     long intId = integerId(id);
 
-    EntityDict::const_iterator I = m_eobjects.find(intId);
+    auto I = m_eobjects.find(intId);
     if (I != m_eobjects.end()) {
         assert(I->second != 0);
         return I->second;
     } else {
-        return 0;
+        return nullptr;
     }
 }
 
@@ -71,43 +74,18 @@ LocatedEntity * BaseWorld::getEntity(const std::string & id) const
 /// @return pointer to Entity retrieved, or zero if it was not found.
 LocatedEntity * BaseWorld::getEntity(long id) const
 {
-    EntityDict::const_iterator I = m_eobjects.find(id);
+    auto I = m_eobjects.find(id);
     if (I != m_eobjects.end()) {
         assert(I->second != 0);
         return I->second;
     } else {
-        return 0;
+        return nullptr;
     }
-}
-
-LocatedEntity& BaseWorld::getRootEntity()
-{
-    return m_gameWorld;
-}
-
-LocatedEntity& BaseWorld::getRootEntity() const
-{
-    return m_gameWorld;
-}
-
-LocatedEntity& BaseWorld::getDefaultLocation()
-{
-    return *m_defaultLocation;
-}
-
-LocatedEntity& BaseWorld::getDefaultLocation() const
-{
-    return *m_defaultLocation;
 }
 
 void BaseWorld::setDefaultLocation(LocatedEntity* entity)
 {
-    //If null is provided we'll revert back to the root world.
-    if (!entity) {
-        m_defaultLocation = &m_gameWorld;
-    } else {
-        m_defaultLocation = entity;
-    }
+    m_defaultLocation = entity;
 }
 
 LocatedEntity* BaseWorld::getLimboLocation() const
@@ -133,7 +111,7 @@ void BaseWorld::setIsSuspended(bool suspended)
 }
 
 double BaseWorld::getTime() const {
-    SystemTime time;
+    SystemTime time{};
     time.update();
     return (double)(time.seconds() + timeoffset - m_initTime) + (double)time.microseconds()/1000000.;
 }

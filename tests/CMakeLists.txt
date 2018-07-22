@@ -114,14 +114,14 @@ wf_add_test(BBoxTest.cpp ${PROJECT_SOURCE_DIR}/physics/BBox.cpp ${PROJECT_SOURCE
 wf_add_test(Vector3DTest.cpp ${PROJECT_SOURCE_DIR}/physics/Vector3D.cpp)
 wf_add_test(QuaternionTest.cpp ${PROJECT_SOURCE_DIR}/physics/Quaternion.cpp)
 wf_add_test(transformTest.cpp)
-wf_add_test(distanceTest.cpp ${PROJECT_SOURCE_DIR}/physics/Vector3D ${PROJECT_SOURCE_DIR}/modules/Location)
+wf_add_test(distanceTest.cpp ${PROJECT_SOURCE_DIR}/physics/Vector3D ${PROJECT_SOURCE_DIR}/rulesets/Location)
 wf_add_test(ShapeTest.cpp ${PROJECT_SOURCE_DIR}/physics/Shape.cpp ${PROJECT_SOURCE_DIR}/physics/Course.cpp)
 wf_add_test(CourseTest.cpp ${PROJECT_SOURCE_DIR}/physics/Course.cpp)
 
 # MODULE_TESTS
 
 wf_add_test(DateTimeTest.cpp ${PROJECT_SOURCE_DIR}/modules/DateTime.cpp)
-wf_add_test(LocationTest.cpp ${PROJECT_SOURCE_DIR}/modules/Location.cpp)
+wf_add_test(LocationTest.cpp ../rulesets/Location.cpp)
 target_link_libraries(LocationTest physics)
 wf_add_test(WorldTimeTest.cpp ${PROJECT_SOURCE_DIR}/modules/WorldTime.cpp ${PROJECT_SOURCE_DIR}/modules/DateTime.cpp)
 wf_add_test(EntityRefTest.cpp ${PROJECT_SOURCE_DIR}/modules/EntityRef.cpp)
@@ -141,7 +141,6 @@ wf_add_test(WorldTest.cpp ${ENTITYEXERCISE} ${PROJECT_SOURCE_DIR}/rulesets/World
 wf_add_test(CharacterTest.cpp ${ENTITYEXERCISE} ${PROJECT_SOURCE_DIR}/rulesets/Character.cpp ${PROJECT_SOURCE_DIR}/physics/Quaternion.cpp)
 wf_add_test(CreatorTest.cpp ${ENTITYEXERCISE} ${PROJECT_SOURCE_DIR}/rulesets/Creator.cpp)
 wf_add_test(ThingupdatePropertiesTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/Thing.cpp ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(ContainerTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/Container.cpp)
 wf_add_test(TaskTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/Task.cpp)
 wf_add_test(EntityPropertyTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/EntityProperty.cpp ${PROJECT_SOURCE_DIR}/modules/EntityRef.cpp ${PROJECT_SOURCE_DIR}/common/Property.cpp)
 wf_add_test(AllPropertyTest.cpp PropertyExerciser.cpp ${PROJECT_SOURCE_DIR}/rulesets/AreaProperty.cpp
@@ -400,7 +399,7 @@ wf_add_test(BaseMindMapEntityIntegration.cpp ${PROJECT_SOURCE_DIR}/rulesets/Base
         ${PROJECT_SOURCE_DIR}/rulesets/BBoxProperty.cpp
         ${PROJECT_SOURCE_DIR}/rulesets/SolidProperty.cpp
         ${PROJECT_SOURCE_DIR}/rulesets/InternalProperties.cpp
-        ${PROJECT_SOURCE_DIR}/modules/Location.cpp
+    ../rulesets/Location.cpp
         ${PROJECT_SOURCE_DIR}/common/Property.cpp)
 wf_add_test(AreaPropertyIntegration.cpp ${PROJECT_SOURCE_DIR}/rulesets/AreaProperty.cpp
         ${PROJECT_SOURCE_DIR}/rulesets/Entity.cpp
@@ -561,7 +560,7 @@ wf_add_test(AccountIntegration.cpp ${PROJECT_SOURCE_DIR}/server/EntityBuilder.cp
         ${PROJECT_SOURCE_DIR}/rulesets/World.cpp
         ${PROJECT_SOURCE_DIR}/modules/DateTime.cpp
         ${PROJECT_SOURCE_DIR}/modules/EntityRef.cpp
-        ${PROJECT_SOURCE_DIR}/modules/Location.cpp
+    ../rulesets/Location.cpp
         ${PROJECT_SOURCE_DIR}/common/BaseWorld.cpp
         ${PROJECT_SOURCE_DIR}/common/const.cpp
         ${PROJECT_SOURCE_DIR}/common/id.cpp

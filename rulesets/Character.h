@@ -67,7 +67,7 @@ class Character : public Thing, public virtual sigc::trackable {
     /// \brief Handler for simulating movement under direction from the mind
     Movement & m_movement;
     /// \brief Internal AI mind keeping track of what this character experiences.
-    ProxyMind * m_proxyMind;
+    Ref<ProxyMind> m_proxyMind;
 
 
     /**
@@ -124,7 +124,7 @@ class Character : public Thing, public virtual sigc::trackable {
     void updateTask(OpVector &);
     void clearTask(OpVector &);
 
-    virtual std::vector<Atlas::Objects::Root> getThoughts() const;
+    std::vector<Atlas::Objects::Root> getThoughts() const override;
 
     virtual void operation(const Operation & op, OpVector &);
     virtual void externalOperation(const Operation & op, Link &);

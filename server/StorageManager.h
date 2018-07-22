@@ -30,6 +30,7 @@
 #include <string>
 #include <map>
 #include <set>
+#include "modules/Ref.h"
 
 class Entity;
 class WorldRouter;
@@ -116,8 +117,8 @@ class StorageManager : public sigc::trackable {
     virtual ~StorageManager();
 
     void tick();
-    int initWorld();
-    int restoreWorld();
+    int initWorld(const Ref<LocatedEntity>& ent);
+    int restoreWorld(const Ref<LocatedEntity>& ent);
 
     /// \brief Called when shutting down.
     ///

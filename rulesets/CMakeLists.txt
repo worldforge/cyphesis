@@ -2,8 +2,8 @@ add_library(rulesetbase
     LocatedEntity.cpp
     EntityProperties.cpp
     AtlasProperties.cpp
-    Container.cpp
-    Script.cpp)
+    Script.cpp
+    Location.cpp)
 
 add_library(rulesetentity
     Entity.cpp

@@ -23,7 +23,7 @@
 #include "common/log.h"
 #include "common/compose.hpp"
 
-#include "modules/Location.h"
+#include "Location.h"
 
 #include <Atlas/Objects/Anonymous.h>
 

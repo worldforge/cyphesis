@@ -277,7 +277,6 @@ Character::Character(const std::string & id, long intId) :
 {
     //Prevent the proxy mind from being deleted when all references to itself are removed
     //(for example through a Sight of a Delete).
-    m_proxyMind->incRef();
     // FIXME Do we still need this?
     // It is my hope that once the task object is fully held by the
     // property, this will no longer be necessary. If it is we will
@@ -291,7 +290,6 @@ Character::~Character()
         m_rightHandWieldConnection.disconnect();
     }
     delete &m_movement;
-    delete m_proxyMind;
     delete m_externalMind;
 }
 

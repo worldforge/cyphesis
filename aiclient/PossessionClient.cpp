@@ -69,16 +69,14 @@ void PossessionClient::markQueueAsClean()
     m_operationsDispatcher.markQueueAsClean();
 }
 
-void PossessionClient::addLocatedEntity(BaseMind* entity)
+void PossessionClient::addLocatedEntity(Ref<BaseMind> entity)
 {
-    m_minds.insert(std::make_pair(entity->getIntId(), entity));
-    entity->incRef();
+    m_minds.insert(std::make_pair(entity->getIntId(), std::move(entity)));
 }
 
-void PossessionClient::removeLocatedEntity(BaseMind* entity)
+void PossessionClient::removeLocatedEntity(Ref<BaseMind> entity)
 {
     m_minds.erase(entity->getIntId());
-    entity->decRef();
 }
 
 void PossessionClient::createAccount(const std::string& accountId)

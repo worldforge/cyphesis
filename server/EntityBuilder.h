@@ -77,12 +77,12 @@ class EntityBuilder {
                        const Atlas::Objects::Root & class_desc,
                        EntityKit * factory);
     EntityKit * getClassFactory(const std::string & class_name);
-    LocatedEntity * newEntity(const std::string & id,
+    Ref<LocatedEntity> newEntity(const std::string & id,
                               long intId,
                               const std::string & type,
                               const Atlas::Objects::Entity::RootEntity & attrs,
                               const BaseWorld & world) const;
-    LocatedEntity * newChildEntity(const std::string & id,
+    Ref<LocatedEntity> newChildEntity(const std::string & id,
                               long intId,
                               const std::string & type,
                               const Atlas::Objects::Entity::RootEntity & attrs,

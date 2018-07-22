@@ -41,6 +41,7 @@
 
 #include "rulesets/Python_API.h"
 #include "rulesets/LocatedEntity.h"
+#include "rulesets/World.h"
 
 #if POSTGRES_FOUND
 #include "common/DatabasePostgres.h"
@@ -286,7 +287,10 @@ int main(int argc, char ** argv)
     Ruleset* ruleset = new Ruleset(EntityBuilder::instance(), *io_service);
     ruleset->loadRules(ruleset_name);
 
-    WorldRouter * world = new WorldRouter(time);
+    Ref<LocatedEntity> baseEntity = new World(consts::rootWorldId, consts::rootWorldIntId);
+    baseEntity->setType(Inheritance::instance().getType("world"));
+
+    WorldRouter * world = new WorldRouter(time, baseEntity);
 
     register_baseworld_with_python(world);
 
@@ -425,11 +429,11 @@ int main(int argc, char ** argv)
 
     log(INFO, "Restoring world from database...");
 
-    store->restoreWorld();
+    store->restoreWorld(baseEntity);
     // Read the world entity if any from the database, or set it up.
     // If it was there, make sure it did not get any of the wrong
     // position or orientation data.
-    store->initWorld();
+    store->initWorld(baseEntity);
 
     log(INFO, "Restored world.");
 
@@ -463,8 +467,8 @@ int main(int argc, char ** argv)
             file.close();
             //We should only try to import if the world isn't populated.
             bool isPopulated = false;
-            if (world->getRootEntity().m_contains) {
-                for (auto entity : *world->getRootEntity().m_contains) {
+            if (baseEntity->m_contains) {
+                for (auto entity : *baseEntity->m_contains) {
                     //if there's any entity that's not transient we consider it populated
                     if (!entity->hasAttr("transient")) {
                         isPopulated = true;

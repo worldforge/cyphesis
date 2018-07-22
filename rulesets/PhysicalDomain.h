@@ -19,7 +19,7 @@
 #define PHYSICALDOMAIN_H_
 
 #include "Domain.h"
-#include "modules/Location.h"
+#include "Location.h"
 #include "ModeProperty.h"
 
 #include <sigc++/connection.h>
