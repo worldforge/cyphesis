@@ -28,7 +28,7 @@
 
 #ifndef STUB_Steering_setDestination
 //#define STUB_Steering_setDestination
-  void Steering::setDestination(int entityId, const WFMath::Point<3>& entityRelativePosition, float radius, double currentServerTimestamp)
+  void Steering::setDestination(long entityId, const WFMath::Point<3>& entityRelativePosition, float radius, double currentServerTimestamp)
   {
     
   }
@@ -188,7 +188,7 @@
 
 #ifndef STUB_Steering_updateDestination
 //#define STUB_Steering_updateDestination
-  void Steering::updateDestination(double currentServerTimestamp, int entityId, WFMath::Point<3>& pos)
+  void Steering::updateDestination(double currentServerTimestamp, long entityId, WFMath::Point<3>& pos)
   {
     
   }

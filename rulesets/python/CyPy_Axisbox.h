@@ -48,11 +48,11 @@ class CyPy_Axisbox : public WrapperBase<WFMath::AxisBox<3>, CyPy_Axisbox>
 
         PYCXX_NOARGS_METHOD_DECL(CyPy_Axisbox, as_sequence)
 
-        Py::Object getattro(const Py::String& name);
+        Py::Object getattro(const Py::String& name) override;
 
-        int setattro(const Py::String& name, const Py::Object& attr);
+        int setattro(const Py::String& name, const Py::Object& attr) override;
 
-        Py::Object rich_compare(const Py::Object& other, int type);
+        Py::Object rich_compare(const Py::Object& other, int type) override;
 };
 
 

@@ -17,3 +17,44 @@
  */
 
 #include "CyPy_MemEntity.h"
+
+CyPy_MemEntity::CyPy_MemEntity(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
+    : CyPy_LocatedEntityBase(self, args, kwds)
+{
+    args.verify_length(1);
+    auto id = verifyString(args.front());
+
+    long intId = integerId(id);
+    if (intId == -1L) {
+        throw Py::TypeError("LocatedEntity() requires string/int ID");
+    }
+    m_value = new MemEntity(id, intId);
+}
+
+CyPy_MemEntity::~CyPy_MemEntity()
+{
+
+}
+
+void CyPy_MemEntity::init_type()
+{
+    behaviors().name("MemEntity");
+    behaviors().doc("");
+
+    behaviors().supportRichCompare();
+
+    PYCXX_ADD_NOARGS_METHOD(as_entity, as_entity, "");
+    PYCXX_ADD_VARARGS_METHOD(is_reachable_for_other_entity, is_reachable_for_other_entity, "");
+    PYCXX_ADD_NOARGS_METHOD(describe_entity, describe_entity, "");
+
+    //behaviors().type_object()->tp_base = base;
+
+    behaviors().readyType();
+}
+
+
+CyPy_MemEntity::CyPy_MemEntity(Py::PythonClassInstance* self, MemEntity* value)
+    : CyPy_LocatedEntityBase(self, value)
+{
+
+}

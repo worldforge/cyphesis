@@ -29,9 +29,11 @@ class CyPy_Filter : public Py::PythonClass<CyPy_Filter>
 {
     public:
 
+        typedef EntityFilter::Filter value_type;
         CyPy_Filter(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
 
         static void init_type();
+        static EntityFilter::Filter& value(const Py::Object& object);
 
         std::unique_ptr<EntityFilter::Filter> m_value;
 

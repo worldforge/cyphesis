@@ -63,11 +63,16 @@ Py::List CyPy_Filter::search_contains(const Py::Tuple& args)
         auto& entity = CyPy_LocatedEntity::value(arg);
         if (entity.m_contains) {
             for (auto& contained : *entity.m_contains) {
-                list.append(wrapLocatedEntity(contained));
+                list.append(CyPy_LocatedEntity::wrap(contained));
             }
         }
     }
     return list;
+}
+
+EntityFilter::Filter& CyPy_Filter::value(const Py::Object& object)
+{
+    return *Py::PythonClassObject<CyPy_Filter>(object).getCxxObject()->m_value.get();
 }
 
 CyPy_EntityFilter::CyPy_EntityFilter()

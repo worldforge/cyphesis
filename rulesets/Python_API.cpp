@@ -55,6 +55,7 @@
 #include <rulesets/python/CyPy_Common.h>
 #include <rulesets/python/CyPy_Atlas.h>
 #include <rulesets/python/CyPy_Physics.h>
+#include <rulesets/python/CyPy_Server.h>
 
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
@@ -825,6 +826,12 @@ static PyObject* init_server() {
     return server;
 }
 
+CyPy_Server* server;
+
+void register_baseworld_with_python(BaseWorld* baseWorld)
+{
+    server->registerWorld(baseWorld);
+}
 
 void init_python_api(const std::string & ruleset, bool log_stdout)
 {
@@ -845,7 +852,10 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
         static auto module = new CyPy_Common();
         return module->module().ptr();
     });
-    PyImport_AppendInittab("server", &init_server);
+    PyImport_AppendInittab("server", [](){
+        server = new CyPy_Server();
+        return server->module().ptr();
+    });
 
     Py_InitializeEx(0);
 

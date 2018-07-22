@@ -29,11 +29,47 @@ class CyPy_MemMap : public WrapperBase<MemMap*, CyPy_MemMap>
 
         CyPy_MemMap(Py::PythonClassInstance* self, MemMap* value);
 
+        static void init_type();
+
         Py::Object find_by_location(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_MemMap, find_by_location)
 
         Py::Object find_by_type(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_MemMap, find_by_type)
 
         Py::Object updateAdd(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_MemMap, updateAdd)
+
+        Py::Object delete_(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_MemMap, delete_)
+
+        Py::Object get(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_MemMap, get)
+
+        Py::Object get_add(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_MemMap, get_add)
+
+        Py::Object add_hooks_append(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_MemMap, add_hooks_append)
+
+        Py::Object update_hooks_append(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_MemMap, update_hooks_append)
+
+        Py::Object delete_hooks_append(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_MemMap, delete_hooks_append)
+
+        Py::Object find_by_filter(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_MemMap, find_by_filter)
+
+        Py::Object find_by_location_query(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_MemMap, find_by_location_query)
+
+        Py::Object add_entity_memory(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_MemMap, add_entity_memory)
+
+        Py::Object recall_entity_memory(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_MemMap, recall_entity_memory)
+
 };
 
 

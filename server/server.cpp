@@ -288,6 +288,8 @@ int main(int argc, char ** argv)
 
     WorldRouter * world = new WorldRouter(time);
 
+    register_baseworld_with_python(world);
+
 
     PossessionAuthenticator::init();
 

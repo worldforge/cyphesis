@@ -90,10 +90,10 @@ int main()
     run_python_string("from physics import Point3D");
     expect_python_error("atlas.Location(set([1,1]))", PyExc_TypeError);
     expect_python_error("atlas.Location(1,1,1)", PyExc_TypeError);
-    run_python_string("atlas.Location(server.LocatedEntity('1'))");
+    run_python_string("atlas.Location(server.Entity('1'))");
     run_python_string("atlas.Location(server.Thing('1'))");
     run_python_string("atlas.Location(server.Character('1'))");
-    run_python_string("atlas.Location(server.World())");
+    //run_python_string("atlas.Location(server.World())");
     run_python_string("atlas.Location(server.Mind('1'))");
     expect_python_error("atlas.Location(server.Thing('1'), 1)",
                         PyExc_TypeError);
@@ -129,7 +129,7 @@ int main()
     expect_python_error("l.parent='1'", PyExc_TypeError);
     run_python_string("l.parent=server.Thing('1')");
     expect_python_error("l.other=Vector3D(0,0,0)", PyExc_AttributeError);
-    run_python_string("repr(l)");
+    run_python_string("print(repr(l))");
     run_python_string("l2=atlas.Location(server.Thing('1'), Point3D(0,0,0))");
     run_python_string("l.parent");
     run_python_string("common_parent = server.Thing('1')");

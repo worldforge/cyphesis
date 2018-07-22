@@ -25,6 +25,7 @@
 #include <boost/asio/io_service.hpp>
 
 class AssetsManager;
+class BaseWorld;
 
 extern sigc::signal<void> python_reload_scripts;
 
@@ -32,5 +33,7 @@ void init_python_api(const std::string & ruleset, bool log_stdout = true);
 void shutdown_python_api();
 
 void observe_python_directories(boost::asio::io_service& io_service, AssetsManager& assetsManager);
+
+void register_baseworld_with_python(BaseWorld* baseWorld);
 
 #endif // RULESETS_PYTHON_API_H

@@ -42,9 +42,9 @@ class CyPy_RootEntity : public WrapperBase<Atlas::Objects::Entity::RootEntity, C
     protected:
 
 
-        Py::Object getattro(const Py::String& name);
+        Py::Object getattro(const Py::String& name) override;
 
-        int setattro(const Py::String& name, const Py::Object& attr);
+        int setattro(const Py::String& name, const Py::Object& attr) override;
 
         static std::vector<double> sequence_asVector(const Py::Object& o);
 };

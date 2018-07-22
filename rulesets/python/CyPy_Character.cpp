@@ -16,10 +16,14 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "CyPy_Entity.h"
+#include <rulesets/Py_Task.h>
+#include <rulesets/Py_Oplist.h>
+#include "CyPy_Character.h"
+#include "CyPy_Task.h"
 #include "CyPy_Operation.h"
+#include "CyPy_Oplist.h"
 
-CyPy_Entity::CyPy_Entity(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
+CyPy_Character::CyPy_Character(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
     : CyPy_LocatedEntityBase(self, args, kwds)
 {
     args.verify_length(1);
@@ -27,16 +31,18 @@ CyPy_Entity::CyPy_Entity(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dic
 
     long intId = integerId(id);
     if (intId == -1L) {
-        throw Py::TypeError("LocatedEntity() requires string/int ID");
+        throw Py::TypeError("Character() requires string/int ID");
     }
-    m_value = new Entity(id, intId);
+    m_value = new Character(id, intId);
 }
 
-CyPy_Entity::~CyPy_Entity() = default;
-
-void CyPy_Entity::init_type()
+CyPy_Character::~CyPy_Character()
 {
-    behaviors().name("Entity");
+}
+
+void CyPy_Character::init_type()
+{
+    behaviors().name("Character");
     behaviors().doc("");
 
     behaviors().supportRichCompare();
@@ -44,23 +50,43 @@ void CyPy_Entity::init_type()
     PYCXX_ADD_NOARGS_METHOD(as_entity, as_entity, "");
     PYCXX_ADD_VARARGS_METHOD(is_reachable_for_other_entity, is_reachable_for_other_entity, "");
     PYCXX_ADD_NOARGS_METHOD(describe_entity, describe_entity, "");
-    PYCXX_ADD_VARARGS_METHOD(send_world, send_world, "");
+    PYCXX_ADD_VARARGS_METHOD(start_task, start_task, "");
+    PYCXX_ADD_VARARGS_METHOD(mind2body, mind2body, "");
 
     //behaviors().type_object()->tp_base = base;
 
     behaviors().readyType();
+
 }
 
-
-CyPy_Entity::CyPy_Entity(Py::PythonClassInstance* self, Entity* value)
+CyPy_Character::CyPy_Character(Py::PythonClassInstance* self, Character* value)
     : CyPy_LocatedEntityBase(self, value)
 {
 
 }
 
-Py::Object CyPy_Entity::send_world(const Py::Tuple& args)
+Py::Object CyPy_Character::start_task(const Py::Tuple& args)
+{
+    args.verify_length(3);
+
+    auto task = verifyObject<CyPy_Task>(args[0]);
+    auto op = verifyObject<CyPy_Operation>(args[1]);
+    auto res = verifyObject<CyPy_Oplist>(args[2]);
+    m_value->startTask(task, op, res);
+    return Py::None();
+}
+
+Py::Object CyPy_Character::mind2body(const Py::Tuple& args)
 {
     args.verify_length(1);
-    m_value->sendWorld(verifyObject<CyPy_Operation>(args.front()));
-    return Py::None();
+    auto op = verifyObject<CyPy_Operation>(args.front());
+    OpVector res;
+    m_value->mind2body(op, res);
+    if (res.empty()) {
+        return Py::None();
+    } else if (res.size() == 1) {
+        return CyPy_Operation::wrap(std::move(res.front()));
+    } else {
+        return CyPy_Oplist::wrap(std::move(res));
+    }
 }

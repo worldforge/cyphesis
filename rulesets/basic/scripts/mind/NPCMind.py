@@ -54,6 +54,7 @@ class NPCMind(server.Mind):
     are activated by an event."""
     ########## Initialization
     def __init__(self, cppthing):
+        #FIXME: this shouldn't be needed
         self.mind = cppthing
 
 

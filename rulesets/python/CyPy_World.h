@@ -16,22 +16,35 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef CYPHESIS_CYPY_SERVER_H
-#define CYPHESIS_CYPY_SERVER_H
+#ifndef CYPHESIS_CYPY_WORLD_H
+#define CYPHESIS_CYPY_WORLD_H
 
-#include "external/pycxx/CXX/Extensions.hxx"
+#include <common/BaseWorld.h>
+#include "WrapperBase.h"
 
-class BaseWorld;
-class CyPy_Server : public Py::ExtensionModule<CyPy_Server>
+class CyPy_World : public WrapperBase<BaseWorld*, CyPy_World>
 {
     public:
-        CyPy_Server();
+        CyPy_World(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
 
-        void registerWorld(BaseWorld* world);
+        CyPy_World(Py::PythonClassInstance* self, BaseWorld* value);
 
-    private:
+        static void init_type();
+
+        Py::Object get_time();
+
+        PYCXX_NOARGS_METHOD_DECL(CyPy_World, get_time)
+
+        Py::Object get_object_ref(const Py::Tuple& args);
+
+        PYCXX_VARARGS_METHOD_DECL(CyPy_World, get_object_ref)
+
+        Py::Object get_object(const Py::Tuple& args);
+
+        PYCXX_VARARGS_METHOD_DECL(CyPy_World, get_object)
+
 
 };
 
 
-#endif //CYPHESIS_CYPY_SERVER_H
+#endif //CYPHESIS_CYPY_WORLD_H

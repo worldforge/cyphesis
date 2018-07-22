@@ -16,22 +16,31 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef CYPHESIS_CYPY_SERVER_H
-#define CYPHESIS_CYPY_SERVER_H
+#ifndef CYPHESIS_CYPY_CHARACTER_H
+#define CYPHESIS_CYPY_CHARACTER_H
 
-#include "external/pycxx/CXX/Extensions.hxx"
+#include "rulesets/Character.h"
+#include "CyPy_LocatedEntity.h"
 
-class BaseWorld;
-class CyPy_Server : public Py::ExtensionModule<CyPy_Server>
+class CyPy_Character : public CyPy_LocatedEntityBase<Character, CyPy_Character>
 {
     public:
-        CyPy_Server();
+        CyPy_Character(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
+        CyPy_Character(Py::PythonClassInstance* self, Character* value);
 
-        void registerWorld(BaseWorld* world);
+        ~CyPy_Character() override;
 
-    private:
+        static void init_type();
+
+    protected:
+
+        Py::Object start_task(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Character, start_task)
+
+        Py::Object mind2body(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Character, mind2body)
 
 };
 
 
-#endif //CYPHESIS_CYPY_SERVER_H
+#endif //CYPHESIS_CYPY_CHARACTER_H

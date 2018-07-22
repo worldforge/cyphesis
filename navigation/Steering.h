@@ -80,7 +80,7 @@ public:
 	 * @param entityRelativePosition The position, as relative to the referred entity.
 	 * @param radius The radius around the destination where it's acceptable to end up if we couldn't reach the destination precisely.
 	 */
-	void setDestination(int entityId, const WFMath::Point<3>& entityRelativePosition, float radius, double currentServerTimestamp);
+	void setDestination(long entityId, const WFMath::Point<3>& entityRelativePosition, float radius, double currentServerTimestamp);
 
 	/**
 	 * @brief Updates the path.
@@ -178,7 +178,7 @@ private:
 	 * This is either the domain entity, for which the final destination then would be static.
 	 * Or it's the id of an entity contained in the domain. The final destination is then dynamic, and updated as the entity moves.
 	 */
-	int mDestinationEntityId;
+    long mDestinationEntityId;
 
 	/**
 	 * The destination as relative to the mDestinationEntityId.
@@ -284,7 +284,7 @@ private:
 	 */
 	void moveToPoint(const WFMath::Point<3>& point);
 
-	void updateDestination(double currentServerTimestamp, int entityId, WFMath::Point<3>& pos);
+	void updateDestination(double currentServerTimestamp, long entityId, WFMath::Point<3>& pos);
 
 };
 

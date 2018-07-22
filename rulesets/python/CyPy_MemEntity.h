@@ -20,10 +20,22 @@
 #define CYPHESIS_CYPY_MEMENTITY_H
 
 
-class CyPy_MemEntity
+#include "rulesets/MemEntity.h"
+#include "CyPy_LocatedEntity.h"
+
+class CyPy_MemEntity : public CyPy_LocatedEntityBase<MemEntity, CyPy_MemEntity>
 {
+    public:
+        CyPy_MemEntity(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
+        CyPy_MemEntity(Py::PythonClassInstance* self, MemEntity* value);
+
+        ~CyPy_MemEntity() override;
+
+        static void init_type();
+
+
+    protected:
 
 };
-
 
 #endif //CYPHESIS_CYPY_MEMENTITY_H

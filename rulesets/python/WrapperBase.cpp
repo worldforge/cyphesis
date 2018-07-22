@@ -31,7 +31,7 @@ float verifyNumeric(const Py::Object& object, const std::string& message)
     if (!object.isNumeric()) {
         throw Py::TypeError(message);
     }
-    return Py::Float(object);
+    return static_cast<float>(Py::Float(object));
 }
 
 long verifyLong(const Py::Object& object, const std::string& message)
@@ -48,7 +48,7 @@ float verifyFloat(const Py::Object& object, const std::string& message)
     if (!object.isNumeric()) {
         throw Py::TypeError(message);
     }
-    return Py::Float(object);
+    return static_cast<float>(Py::Float(object));
 
 }
 

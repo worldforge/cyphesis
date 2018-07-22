@@ -188,7 +188,7 @@
 
 #ifndef STUB_Awareness_projectPosition
 //#define STUB_Awareness_projectPosition
-  bool Awareness::projectPosition(int entityId, WFMath::Point<3>& pos, double currentServerTimestamp)
+  bool Awareness::projectPosition(long entityId, WFMath::Point<3>& pos, double currentServerTimestamp)
   {
     return false;
   }

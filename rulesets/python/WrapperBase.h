@@ -19,7 +19,6 @@
 #ifndef CYPHESIS_WRAPPERBASE_H
 #define CYPHESIS_WRAPPERBASE_H
 
-#include "external/pycxx/CXX/Objects.hxx"
 #include "external/pycxx/CXX/Extensions.hxx"
 
 template<typename TValue, typename TPythonClass>
@@ -31,7 +30,7 @@ class WrapperBase : public Py::PythonClass<TPythonClass>
 
         WrapperBase(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
 
-        static Py::PythonClassObject<TPythonClass> wrap(TValue value);
+        static Py::Object wrap(TValue value);
 
         static TValue& value(const Py::Object& object);
 
@@ -53,7 +52,7 @@ WrapperBase<TValue, TPythonClass>::WrapperBase(Py::PythonClassInstance* self, TV
 {}
 
 template<typename TValue, typename TPythonClass>
-Py::PythonClassObject<TPythonClass> WrapperBase<TValue, TPythonClass>::wrap(TValue value)
+Py::Object WrapperBase<TValue, TPythonClass>::wrap(TValue value)
 {
     auto obj = Py::PythonClass<TPythonClass>::extension_object_new(Py::PythonClass<TPythonClass>::type_object(), nullptr, nullptr);
     reinterpret_cast<Py::PythonClassInstance*>(obj)->m_pycxx_object = new TPythonClass(reinterpret_cast<Py::PythonClassInstance*>(obj), std::move(value));
@@ -82,7 +81,7 @@ Py::Dict verifyDict(const Py::Object& object, const std::string& message = "Must
 template <typename T>
 typename T::value_type& verifyObject(const Py::Object& object, const std::string& message = "")
 {
-    if (T::check(object)) {
+    if (!T::check(object)) {
         if (message.empty()) {
             throw Py::TypeError("Must be a " + std::string(T::type_object()->tp_name));
         }

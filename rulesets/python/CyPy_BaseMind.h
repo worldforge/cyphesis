@@ -16,27 +16,36 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef CYPHESIS_CYPY_ENTITY_H
-#define CYPHESIS_CYPY_ENTITY_H
+#ifndef CYPHESIS_CYPY_BASEMIND_H
+#define CYPHESIS_CYPY_BASEMIND_H
 
-#include "rulesets/Entity.h"
+
+#include "rulesets/BaseMind.h"
 #include "CyPy_LocatedEntity.h"
 
-class CyPy_Entity : public CyPy_LocatedEntityBase<Entity, CyPy_Entity>
+class CyPy_BaseMind : public CyPy_LocatedEntityBase<BaseMind, CyPy_BaseMind>
 {
     public:
-        CyPy_Entity(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
-        CyPy_Entity(Py::PythonClassInstance* self, Entity* value);
+        CyPy_BaseMind(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
+        CyPy_BaseMind(Py::PythonClassInstance* self, BaseMind* value);
 
-        ~CyPy_Entity() override;
+        ~CyPy_BaseMind() override;
 
         static void init_type();
 
+        Py::Object getattro(const Py::String&) override;
+
+        int setattro(const Py::String& name, const Py::Object& attr) override;
+
     protected:
 
-        Py::Object send_world(const Py::Tuple& args);
-        PYCXX_VARARGS_METHOD_DECL(CyPy_Entity, send_world)
+        Py::Object refreshPath();
+        PYCXX_NOARGS_METHOD_DECL(CyPy_BaseMind, refreshPath)
+
+        Py::Object setDestination(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_BaseMind, setDestination)
 
 };
 
-#endif //CYPHESIS_CYPY_ENTITY_H
+
+#endif //CYPHESIS_CYPY_BASEMIND_H

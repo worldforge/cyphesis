@@ -273,7 +273,7 @@ public:
      * @param currentServerTimestamp The current server time stamp, to calculate new positions for moving entities.
      * @return True if entity could be found.
      */
-    bool projectPosition(int entityId, WFMath::Point<3>& pos, double currentServerTimestamp);
+    bool projectPosition(long entityId, WFMath::Point<3>& pos, double currentServerTimestamp);
 
 protected:
 

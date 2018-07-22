@@ -766,7 +766,7 @@ int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& e
     return nVertCount;
 }
 
-bool Awareness::projectPosition(int entityId, WFMath::Point<3>& pos, double currentServerTimestamp)
+bool Awareness::projectPosition(long entityId, WFMath::Point<3>& pos, double currentServerTimestamp)
 {
     auto entityI = mObservedEntities.find(entityId);
     if (entityI != mObservedEntities.end()) {

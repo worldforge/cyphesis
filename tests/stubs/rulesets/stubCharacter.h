@@ -185,14 +185,6 @@
   }
 #endif //STUB_Character_WieldOperation
 
-#ifndef STUB_Character_AttackOperation
-//#define STUB_Character_AttackOperation
-  void Character::AttackOperation(const Operation & op, OpVector &)
-  {
-    
-  }
-#endif //STUB_Character_AttackOperation
-
 #ifndef STUB_Character_ActuateOperation
 //#define STUB_Character_ActuateOperation
   void Character::ActuateOperation(const Operation & op, OpVector &)
@@ -216,14 +208,6 @@
     
   }
 #endif //STUB_Character_mindActuateOperation
-
-#ifndef STUB_Character_mindAttackOperation
-//#define STUB_Character_mindAttackOperation
-  void Character::mindAttackOperation(const Operation &, OpVector &)
-  {
-    
-  }
-#endif //STUB_Character_mindAttackOperation
 
 #ifndef STUB_Character_mindCombineOperation
 //#define STUB_Character_mindCombineOperation

@@ -71,7 +71,7 @@ void Steering::setAwareness(Awareness* awareness)
     }
 }
 
-void Steering::setDestination(int entityId, const WFMath::Point<3>& entityRelativePosition, float radius, double currentServerTimestamp)
+void Steering::setDestination(long entityId, const WFMath::Point<3>& entityRelativePosition, float radius, double currentServerTimestamp)
 {
     if (mAwareness) {
         mDestinationEntityId = entityId;
@@ -154,7 +154,7 @@ int Steering::getPathResult() const
     return mPathResult;
 }
 
-void Steering::updateDestination(double currentServerTimestamp, int entityId, WFMath::Point<3>& pos) {
+void Steering::updateDestination(double currentServerTimestamp, long entityId, WFMath::Point<3>& pos) {
     if (mAwareness && mAvatar.m_location.m_loc) {
         if (entityId != mAvatar.m_location.m_loc->getIntId()) {
             mAwareness->projectPosition(mDestinationEntityId, pos, currentServerTimestamp);

@@ -29,10 +29,7 @@ CyPy_Location::CyPy_Location(Py::PythonClassInstance* self, Py::Tuple& args, Py:
 
     if (args.length() > 0) {
 
-        if (!CyPy_LocatedEntity::check(args[0])) {
-            throw Py::TypeError("First arg must be a LocatedEntity.");
-        }
-        m_value.m_loc = Py::PythonClassObject<CyPy_LocatedEntity>(args[0]).getCxxObject()->m_value;
+        m_value.m_loc = &verifyObject<CyPy_LocatedEntity>(args[0]);
 
         if (args.length() == 2) {
             m_value.m_pos = CyPy_Point3D::parse(args[1]);
@@ -71,7 +68,7 @@ Py::Object CyPy_Location::getattro(const Py::String& name)
         if (!m_value.m_loc) {
             return Py::None();
         }
-        return wrapLocatedEntity(m_value.m_loc);
+        return CyPy_LocatedEntity::wrap(m_value.m_loc);
     }
     //FIXME: rename to "pos"
     if ("coordinates" == nameStr) {
@@ -98,7 +95,7 @@ int CyPy_Location::setattro(const Py::String& name, const Py::Object& attr)
         if (!CyPy_LocatedEntity::check(attr)) {
             throw Py::TypeError("parent must be an entity");
         }
-        m_value.m_loc = Py::PythonClassObject<CyPy_LocatedEntity>(attr).getCxxObject()->m_value;
+        m_value.m_loc = &verifyObject<CyPy_LocatedEntity>(attr);
 
         return 0;
     }
