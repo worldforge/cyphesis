@@ -9,7 +9,7 @@
 
 #ifndef STUB_PythonArithmeticFactory_PythonArithmeticFactory
 //#define STUB_PythonArithmeticFactory_PythonArithmeticFactory
-   PythonArithmeticFactory::PythonArithmeticFactory(const std::string & package, const std::string & name)
+   PythonArithmeticFactory::PythonArithmeticFactory(const std::string& package, const std::string& name)
     : ArithmeticKit(package, name)
   {
     
@@ -34,7 +34,7 @@
 
 #ifndef STUB_PythonArithmeticFactory_newScript
 //#define STUB_PythonArithmeticFactory_newScript
-  ArithmeticScript* PythonArithmeticFactory::newScript(LocatedEntity * owner)
+  ArithmeticScript* PythonArithmeticFactory::newScript(LocatedEntity* owner)
   {
     return nullptr;
   }

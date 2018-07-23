@@ -71,8 +71,8 @@ void CyPy_Character::init_type()
 
 }
 
-CyPy_Character::CyPy_Character(Py::PythonClassInstance* self, Character* value)
-    : CyPy_LocatedEntityBase(self, value)
+CyPy_Character::CyPy_Character(Py::PythonClassInstance* self, Ref<Character> value)
+    : CyPy_LocatedEntityBase(self, std::move(value))
 {
 
 }

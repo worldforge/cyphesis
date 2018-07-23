@@ -62,8 +62,8 @@ void CyPy_Entity::init_type()
 }
 
 
-CyPy_Entity::CyPy_Entity(Py::PythonClassInstance* self, Entity* value)
-    : CyPy_LocatedEntityBase(self, value)
+CyPy_Entity::CyPy_Entity(Py::PythonClassInstance* self, Ref<Entity> value)
+    : CyPy_LocatedEntityBase(self, std::move(value))
 {
 
 }

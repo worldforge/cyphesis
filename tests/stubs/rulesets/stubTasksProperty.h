@@ -11,7 +11,6 @@
 //#define STUB_TasksProperty_TasksProperty
    TasksProperty::TasksProperty()
     : PropertyBase()
-    , m_task(nullptr)
   {
     
   }
@@ -51,7 +50,7 @@
 
 #ifndef STUB_TasksProperty_startTask
 //#define STUB_TasksProperty_startTask
-  int TasksProperty::startTask(Task * task, LocatedEntity * owner, const Operation & op, OpVector & res)
+  int TasksProperty::startTask(Ref<Task> task, LocatedEntity * owner, const Operation & op, OpVector & res)
   {
     return 0;
   }

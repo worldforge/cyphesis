@@ -34,9 +34,9 @@
 
 #ifndef STUB_TaskKit_newTask
 //#define STUB_TaskKit_newTask
-  Task* TaskKit::newTask(LocatedEntity & chr)
+  Ref<Task> TaskKit::newTask(LocatedEntity & chr)
   {
-    return nullptr;
+    return *static_cast<Ref<Task>*>(nullptr);
   }
 #endif //STUB_TaskKit_newTask
 

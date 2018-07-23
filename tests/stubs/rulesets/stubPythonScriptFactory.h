@@ -56,9 +56,9 @@
 #ifndef STUB_PythonScriptFactory_createScript
 //#define STUB_PythonScriptFactory_createScript
   template <typename T>
-  _object* PythonScriptFactory<T>::createScript(T * entity) const
+  Py::Object PythonScriptFactory<T>::createScript(T * entity) const
   {
-    return nullptr;
+    return *static_cast<Py::Object*>(nullptr);
   }
 #endif //STUB_PythonScriptFactory_createScript
 

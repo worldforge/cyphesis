@@ -24,8 +24,8 @@
 #include "WrapperBase.h"
 
 #include <common/id.h>
-#include <rulesets/Character.h>
-#include <rulesets/MemEntity.h>
+#include "rulesets/Character.h"
+#include "rulesets/MemEntity.h"
 #include "CyPy_Props.h"
 #include "common/TypeNode.h"
 #include "common/Inheritance.h"
@@ -33,7 +33,7 @@
 #include "CyPy_Element.h"
 
 template<typename TValue, typename TPythonClass>
-class CyPy_LocatedEntityBase : public WrapperBase<TValue*, TPythonClass>
+class CyPy_LocatedEntityBase : public WrapperBase<TValue, TPythonClass>
 {
     public:
         CyPy_LocatedEntityBase(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
@@ -50,7 +50,7 @@ class CyPy_LocatedEntityBase : public WrapperBase<TValue*, TPythonClass>
 
 
     protected:
-        CyPy_LocatedEntityBase(Py::PythonClassInstance* self, TValue* value);
+        CyPy_LocatedEntityBase(Py::PythonClassInstance* self, TValue value);
 
         Py::Object as_entity();
 
@@ -104,25 +104,20 @@ Py::Object wrapLocatedEntity(LocatedEntity* locatedEntity);
 
 template<typename TValue, typename TPythonClass>
 CyPy_LocatedEntityBase<TValue, TPythonClass>::CyPy_LocatedEntityBase(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
-    : WrapperBase<TValue*, TPythonClass>::WrapperBase(self, args, kwds)
+    : WrapperBase<TValue, TPythonClass>::WrapperBase(self, args, kwds)
 {
-    this->m_value = nullptr;
 }
 
 template<typename TValue, typename TPythonClass>
-CyPy_LocatedEntityBase<TValue, TPythonClass>::CyPy_LocatedEntityBase(Py::PythonClassInstance* self, TValue* value)
-    : WrapperBase<TValue*, TPythonClass>::WrapperBase(self, value)
+CyPy_LocatedEntityBase<TValue, TPythonClass>::CyPy_LocatedEntityBase(Py::PythonClassInstance* self, TValue value)
+    : WrapperBase<TValue, TPythonClass>::WrapperBase(self, std::move(value))
 {
-    this->m_value->incRef();
 }
 
 
 template<typename TValue, typename TPythonClass>
 CyPy_LocatedEntityBase<TValue, TPythonClass>::~CyPy_LocatedEntityBase()
 {
-    if (this->m_value) {
-        this->m_value->decRef();
-    }
 }
 
 

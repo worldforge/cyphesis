@@ -22,11 +22,11 @@
 #include "rulesets/Entity.h"
 #include "CyPy_LocatedEntity.h"
 
-class CyPy_Entity : public CyPy_LocatedEntityBase<Entity, CyPy_Entity>
+class CyPy_Entity : public CyPy_LocatedEntityBase<Ref<Entity>, CyPy_Entity>
 {
     public:
         CyPy_Entity(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
-        CyPy_Entity(Py::PythonClassInstance* self, Entity* value);
+        CyPy_Entity(Py::PythonClassInstance* self, Ref<Entity> value);
 
         ~CyPy_Entity() override;
 

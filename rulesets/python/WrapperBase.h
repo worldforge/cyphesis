@@ -36,6 +36,8 @@ class WrapperBase : public Py::PythonClass<TPythonClass>
 
         TValue m_value;
 
+        //Py::Object rich_compare(const Py::Object&, int) override;
+
     protected:
         WrapperBase(Py::PythonClassInstance* self, TValue value);
 
@@ -66,6 +68,23 @@ TValue& WrapperBase<TValue, TPythonClass>::value(const Py::Object& object)
     return Py::PythonClassObject<TPythonClass>(object).getCxxObject()->m_value;
 }
 
+//template<typename TValue, typename TPythonClass>
+//Py::Object WrapperBase<TValue, TPythonClass>::rich_compare(const Py::Object& other, int op)
+//{
+//    if (op == Py_EQ || op == Py_NE) {
+//        if (!TPythonClass::check(other)) {
+//            return Py_EQ == op ? Py::False() : Py::True();
+//        }
+//        if (op == Py_EQ) {
+//            return Py::Boolean(m_value == TPythonClass::value(other));
+//        } else if (op == Py_NE) {
+//            return Py::Boolean(m_value != TPythonClass::value(other));
+//        }
+//
+//    }
+//    throw Py::NotImplementedError("Objects can only be checked for == or !=");
+//}
+
 std::string verifyString(const Py::Object& object, const std::string& message = "Must be string");
 
 float verifyNumeric(const Py::Object& object, const std::string& message = "Must be numeric");
@@ -78,7 +97,7 @@ Py::List verifyList(const Py::Object& object, const std::string& message = "Must
 
 Py::Dict verifyDict(const Py::Object& object, const std::string& message = "Must be dict");
 
-template <typename T>
+template<typename T>
 typename T::value_type& verifyObject(const Py::Object& object, const std::string& message = "")
 {
     if (!T::check(object)) {

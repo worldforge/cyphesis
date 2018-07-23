@@ -9,8 +9,9 @@
 
 #ifndef STUB_BaseWorld_BaseWorld
 //#define STUB_BaseWorld_BaseWorld
-   BaseWorld::BaseWorld(LocatedEntity & gw)
-    : m_defaultLocation(nullptr),m_limboLocation(nullptr)
+   BaseWorld::BaseWorld()
+    : boost::noncopyable()
+    , m_defaultLocation(nullptr),m_limboLocation(nullptr)
   {
     
   }
@@ -39,30 +40,6 @@
     return nullptr;
   }
 #endif //STUB_BaseWorld_getEntity
-
-#ifndef STUB_BaseWorld_getRootEntity
-//#define STUB_BaseWorld_getRootEntity
-  LocatedEntity& BaseWorld::getRootEntity()
-  {
-    return *static_cast<LocatedEntity*>(nullptr);
-  }
-#endif //STUB_BaseWorld_getRootEntity
-
-#ifndef STUB_BaseWorld_getRootEntity
-//#define STUB_BaseWorld_getRootEntity
-  LocatedEntity& BaseWorld::getRootEntity() const
-  {
-    return *static_cast<LocatedEntity*>(nullptr);
-  }
-#endif //STUB_BaseWorld_getRootEntity
-
-#ifndef STUB_BaseWorld_getDefaultLocation
-//#define STUB_BaseWorld_getDefaultLocation
-  LocatedEntity& BaseWorld::getDefaultLocation()
-  {
-    return *static_cast<LocatedEntity*>(nullptr);
-  }
-#endif //STUB_BaseWorld_getDefaultLocation
 
 #ifndef STUB_BaseWorld_getDefaultLocation
 //#define STUB_BaseWorld_getDefaultLocation
@@ -122,17 +99,17 @@
 
 #ifndef STUB_BaseWorld_addEntity
 //#define STUB_BaseWorld_addEntity
-  LocatedEntity* BaseWorld::addEntity(LocatedEntity * obj)
+  Ref<LocatedEntity> BaseWorld::addEntity(const Ref<LocatedEntity>& obj)
   {
-    return nullptr;
+    return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
 #endif //STUB_BaseWorld_addEntity
 
 #ifndef STUB_BaseWorld_addNewEntity
 //#define STUB_BaseWorld_addNewEntity
-  LocatedEntity* BaseWorld::addNewEntity(const std::string & type, const Atlas::Objects::Entity::RootEntity &)
+  Ref<LocatedEntity> BaseWorld::addNewEntity(const std::string & type, const Atlas::Objects::Entity::RootEntity &)
   {
-    return nullptr;
+    return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
 #endif //STUB_BaseWorld_addNewEntity
 
@@ -186,17 +163,17 @@
 
 #ifndef STUB_BaseWorld_newTask
 //#define STUB_BaseWorld_newTask
-  Task* BaseWorld::newTask(const std::string &, LocatedEntity &)
+  Ref<Task> BaseWorld::newTask(const std::string &, LocatedEntity &)
   {
-    return nullptr;
+    return *static_cast<Ref<Task>*>(nullptr);
   }
 #endif //STUB_BaseWorld_newTask
 
 #ifndef STUB_BaseWorld_activateTask
 //#define STUB_BaseWorld_activateTask
-  Task* BaseWorld::activateTask(const std::string &, const std::string &, LocatedEntity *, LocatedEntity &)
+  Ref<Task> BaseWorld::activateTask(const std::string &, const std::string &, LocatedEntity *, LocatedEntity &)
   {
-    return nullptr;
+    return *static_cast<Ref<Task>*>(nullptr);
   }
 #endif //STUB_BaseWorld_activateTask
 

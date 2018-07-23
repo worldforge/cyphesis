@@ -9,8 +9,7 @@
 
 #ifndef STUB_PythonClass_PythonClass
 //#define STUB_PythonClass_PythonClass
-   PythonClass::PythonClass(const std::string & package, const std::string & type, struct _typeobject * base)
-    : m_base(nullptr),m_module(nullptr),m_class(nullptr)
+   PythonClass::PythonClass(const std::string & package, const std::string & type)
   {
     
   }
@@ -18,7 +17,7 @@
 
 #ifndef STUB_PythonClass_getClass
 //#define STUB_PythonClass_getClass
-  int PythonClass::getClass(struct _object *)
+  int PythonClass::getClass(const Py::Module& module)
   {
     return 0;
   }

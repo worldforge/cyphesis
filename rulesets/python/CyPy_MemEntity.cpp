@@ -62,8 +62,8 @@ void CyPy_MemEntity::init_type()
 }
 
 
-CyPy_MemEntity::CyPy_MemEntity(Py::PythonClassInstance* self, MemEntity* value)
-    : CyPy_LocatedEntityBase(self, value)
+CyPy_MemEntity::CyPy_MemEntity(Py::PythonClassInstance* self, Ref<MemEntity> value)
+    : CyPy_LocatedEntityBase(self, std::move(value))
 {
 
 }

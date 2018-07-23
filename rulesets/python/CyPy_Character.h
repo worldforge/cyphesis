@@ -22,11 +22,11 @@
 #include "rulesets/Character.h"
 #include "CyPy_LocatedEntity.h"
 
-class CyPy_Character : public CyPy_LocatedEntityBase<Character, CyPy_Character>
+class CyPy_Character : public CyPy_LocatedEntityBase<Ref<Character>, CyPy_Character>
 {
     public:
         CyPy_Character(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
-        CyPy_Character(Py::PythonClassInstance* self, Character* value);
+        CyPy_Character(Py::PythonClassInstance* self, Ref<Character> value);
 
         ~CyPy_Character() override;
 

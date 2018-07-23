@@ -9,9 +9,8 @@
 
 #ifndef STUB_PythonArithmeticScript_PythonArithmeticScript
 //#define STUB_PythonArithmeticScript_PythonArithmeticScript
-   PythonArithmeticScript::PythonArithmeticScript(struct _object * script)
+   PythonArithmeticScript::PythonArithmeticScript(Py::Callable script)
     : ArithmeticScript(script)
-    , m_script(nullptr)
   {
     
   }
@@ -27,7 +26,7 @@
 
 #ifndef STUB_PythonArithmeticScript_attribute
 //#define STUB_PythonArithmeticScript_attribute
-  int PythonArithmeticScript::attribute(const std::string & name, float & val)
+  int PythonArithmeticScript::attribute(const std::string& name, float& val)
   {
     return 0;
   }
@@ -35,7 +34,7 @@
 
 #ifndef STUB_PythonArithmeticScript_set
 //#define STUB_PythonArithmeticScript_set
-  void PythonArithmeticScript::set(const std::string & name, const float & val)
+  void PythonArithmeticScript::set(const std::string& name, const float& val)
   {
     
   }

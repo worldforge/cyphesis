@@ -18,9 +18,9 @@
 
 #ifndef STUB_EntityKit_newEntity
 //#define STUB_EntityKit_newEntity
-  LocatedEntity* EntityKit::newEntity(const std::string & id, long intId, const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
+  Ref<LocatedEntity> EntityKit::newEntity(const std::string & id, long intId, const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
   {
-    return nullptr;
+    return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
 #endif //STUB_EntityKit_newEntity
 

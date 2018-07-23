@@ -11,7 +11,6 @@
 //#define STUB_OpQueEntry_OpQueEntry
   template <typename T>
    OpQueEntry<T>::OpQueEntry(Operation o, T & f)
-    : from(nullptr)
   {
     
   }
@@ -21,7 +20,6 @@
 //#define STUB_OpQueEntry_OpQueEntry
   template <typename T>
    OpQueEntry<T>::OpQueEntry(const OpQueEntry & o)
-    : from(nullptr)
   {
     
   }

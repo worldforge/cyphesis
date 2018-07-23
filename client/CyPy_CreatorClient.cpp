@@ -32,8 +32,8 @@ CyPy_CreatorClient::CyPy_CreatorClient(Py::PythonClassInstance* self, Py::Tuple&
     throw Py::RuntimeError("Can't be created from Python.");
 }
 
-CyPy_CreatorClient::CyPy_CreatorClient(Py::PythonClassInstance* self, CreatorClient* value)
-    : WrapperBase(self, value)
+CyPy_CreatorClient::CyPy_CreatorClient(Py::PythonClassInstance* self, Ref<CreatorClient> value)
+    : WrapperBase(self, std::move(value))
 {
 
 }
@@ -144,7 +144,7 @@ Py::Object CyPy_CreatorClient::getattro(const Py::String& name)
         return CyPy_Location::wrap(m_value->m_location);
     }
     if (nameStr == "time") {
-        return CyPy_WorldTime::wrap(WorldTimeWrapper{m_value});
+        return CyPy_WorldTime::wrap(WorldTimeWrapper{m_value.get()});
     }
     Atlas::Message::Element attr;
     if (m_value->getAttr(nameStr, attr) == 0) {

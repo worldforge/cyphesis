@@ -23,11 +23,11 @@
 #include "rulesets/BaseMind.h"
 #include "CyPy_LocatedEntity.h"
 
-class CyPy_BaseMind : public CyPy_LocatedEntityBase<BaseMind, CyPy_BaseMind>
+class CyPy_BaseMind : public CyPy_LocatedEntityBase<Ref<BaseMind>, CyPy_BaseMind>
 {
     public:
         CyPy_BaseMind(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
-        CyPy_BaseMind(Py::PythonClassInstance* self, BaseMind* value);
+        CyPy_BaseMind(Py::PythonClassInstance* self, Ref<BaseMind> value);
 
         ~CyPy_BaseMind() override;
 

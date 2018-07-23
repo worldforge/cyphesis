@@ -51,7 +51,7 @@
 //#define STUB_Character_Character
    Character::Character(const std::string & id, long intId)
     : Thing(id, intId)
-    , m_proxyMind(nullptr),m_externalMind(nullptr)
+    , m_externalMind(nullptr)
   {
     
   }
@@ -83,7 +83,7 @@
 
 #ifndef STUB_Character_startTask
 //#define STUB_Character_startTask
-  int Character::startTask(Task *, const Operation & op, OpVector &)
+  int Character::startTask(Ref<Task>, const Operation & op, OpVector &)
   {
     return 0;
   }

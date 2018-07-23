@@ -69,8 +69,8 @@ void CyPy_BaseMind::init_type()
     behaviors().readyType();
 }
 
-CyPy_BaseMind::CyPy_BaseMind(Py::PythonClassInstance* self, BaseMind* value)
-    : CyPy_LocatedEntityBase(self, value)
+CyPy_BaseMind::CyPy_BaseMind(Py::PythonClassInstance* self, Ref<BaseMind> value)
+    : CyPy_LocatedEntityBase(self, std::move(value))
 {
 
 }
@@ -78,7 +78,7 @@ CyPy_BaseMind::CyPy_BaseMind(Py::PythonClassInstance* self, BaseMind* value)
 Py::Object CyPy_BaseMind::refreshPath()
 {
 
-    AwareMind* awareMind = dynamic_cast<AwareMind*>(m_value);
+    AwareMind* awareMind = dynamic_cast<AwareMind*>(m_value.get());
     if (!awareMind) {
         throw Py::TypeError("Not an AwareMind");
     }
@@ -88,7 +88,7 @@ Py::Object CyPy_BaseMind::refreshPath()
 
 Py::Object CyPy_BaseMind::setDestination(const Py::Tuple& args)
 {
-    AwareMind* awareMind = dynamic_cast<AwareMind*>(m_value);
+    AwareMind* awareMind = dynamic_cast<AwareMind*>(m_value.get());
     if (!awareMind) {
         throw Py::TypeError("Not an AwareMind");
     }
@@ -136,14 +136,14 @@ Py::Object CyPy_BaseMind::getattro(const Py::String& name)
     }
     if (nameStr == "unawareTilesCount") {
 
-        AwareMind* awareMind = dynamic_cast<AwareMind*>(m_value);
+        AwareMind* awareMind = dynamic_cast<AwareMind*>(m_value.get());
         if (!awareMind) {
             throw Py::TypeError("Not an AwareMind");
         }
         return Py::Long(awareMind->getSteering().unawareAreaCount());
     }
     if (nameStr == "path") {
-        AwareMind* awareMind = dynamic_cast<AwareMind*>(m_value);
+        AwareMind* awareMind = dynamic_cast<AwareMind*>(m_value.get());
         if (!awareMind) {
             throw Py::TypeError("Not an AwareMind");
         }
@@ -158,7 +158,7 @@ Py::Object CyPy_BaseMind::getattro(const Py::String& name)
     }
 
     if (nameStr == "pathResult") {
-        AwareMind* awareMind = dynamic_cast<AwareMind*>(m_value);
+        AwareMind* awareMind = dynamic_cast<AwareMind*>(m_value.get());
         if (!awareMind) {
             throw Py::TypeError("Not an AwareMind");
         }

@@ -23,12 +23,12 @@
 #include "CreatorClient.h"
 #include "rulesets/python/WrapperBase.h"
 
-class CyPy_CreatorClient : public WrapperBase<CreatorClient*, CyPy_CreatorClient>
+class CyPy_CreatorClient : public WrapperBase<Ref<CreatorClient>, CyPy_CreatorClient>
 {
     public:
         CyPy_CreatorClient(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
 
-        CyPy_CreatorClient(Py::PythonClassInstance* self, CreatorClient* value);
+        CyPy_CreatorClient(Py::PythonClassInstance* self, Ref<CreatorClient> value);
 
         ~CyPy_CreatorClient() override;
 

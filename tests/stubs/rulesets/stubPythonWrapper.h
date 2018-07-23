@@ -9,9 +9,8 @@
 
 #ifndef STUB_PythonWrapper_PythonWrapper
 //#define STUB_PythonWrapper_PythonWrapper
-   PythonWrapper::PythonWrapper(struct _object * wrapper)
+   PythonWrapper::PythonWrapper(Py::Object wrapper)
     : Script(wrapper)
-    , m_wrapper(nullptr)
   {
     
   }

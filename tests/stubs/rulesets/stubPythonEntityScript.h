@@ -9,8 +9,8 @@
 
 #ifndef STUB_PythonEntityScript_PythonEntityScript
 //#define STUB_PythonEntityScript_PythonEntityScript
-   PythonEntityScript::PythonEntityScript(PyObject *)
-    : PythonWrapper(PyObject)
+   PythonEntityScript::PythonEntityScript(Py::Callable obj)
+    : PythonWrapper(obj)
   {
     
   }

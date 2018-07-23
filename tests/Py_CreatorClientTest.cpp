@@ -81,7 +81,7 @@ int main()
     run_python_string("c.delete('1')");
     expect_python_error("c.delete(1)", PyExc_TypeError);
     expect_python_error("c.delete()", PyExc_IndexError);
-    run_python_string("c == server.testclient");
+    run_python_string("assert c == server.testclient");
 
     run_python_string("assert type(c.map) == server.Map");
     run_python_string("assert type(c.location) == atlas.Location");
