@@ -29,6 +29,8 @@ class CyPy_MemMap : public WrapperBase<MemMap*, CyPy_MemMap>
 
         CyPy_MemMap(Py::PythonClassInstance* self, MemMap* value);
 
+        ~CyPy_MemMap();
+
         static void init_type();
 
         Py::Object find_by_location(const Py::Tuple& args);
@@ -69,6 +71,9 @@ class CyPy_MemMap : public WrapperBase<MemMap*, CyPy_MemMap>
 
         Py::Object recall_entity_memory(const Py::Tuple& args);
         PYCXX_VARARGS_METHOD_DECL(CyPy_MemMap, recall_entity_memory)
+
+    protected:
+        bool m_owned;
 
 };
 

@@ -288,7 +288,7 @@ void LocatedEntity::changeContainer(LocatedEntity* new_loc)
     new_loc->addChild(*this);
     assert(m_location.m_loc->checkRef() > 0);
 
-    onContainered(oldLoc.get());
+    onContainered(oldLoc);
 }
 
 void LocatedEntity::broadcast(const Atlas::Objects::Operation::RootOperation& op, OpVector& res) const

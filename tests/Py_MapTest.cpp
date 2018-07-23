@@ -30,55 +30,20 @@
 #include "python_testers.h"
 
 #include "rulesets/Python_API.h"
-#include "rulesets/Py_MemMap.h"
 
 #include <cassert>
 #include <common/Inheritance.h>
-
-static PyObject * null_wrapper(PyObject * self, PyMemMap * o)
-{
-    if (!PyMemMap_Check(o)) {
-        PyErr_SetString(PyExc_TypeError, "Unknown Object type");
-        return nullptr;
-    }
-#ifdef CYPHESIS_DEBUG
-    o->m_map = nullptr;
-#endif // NDEBUG
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-
-static PyMethodDef sabotage_methods[] = {
-    {"null", (PyCFunction)null_wrapper,                 METH_O},
-    {nullptr,          nullptr}                       /* Sentinel */
-};
-
-static PyObject* init_sabotage() {
-    static struct PyModuleDef def = {
-            PyModuleDef_HEAD_INIT,
-            "sabotage",
-            nullptr,
-            0,
-            sabotage_methods,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr
-    };
-
-    return PyModule_Create(&def);
-}
+#include <rulesets/python/CyPy_MemMap.h>
 
 int main()
 {
-    PyImport_AppendInittab("sabotage", &init_sabotage);
     Inheritance inheritance;
 
     init_python_api("93b8eac3-9ab9-40f7-b419-d740c18c09e4");
 
-
-    PyMemMap * map = (PyMemMap *)PyType_GenericAlloc(&PyMemMap_Type, 0);
-    assert(map != 0);
+    MemMap memMap;
+    auto map = CyPy_MemMap::wrap(&memMap);
+    assert(!map.isNull());
 
     run_python_string("from server import Map");
     run_python_string("from atlas import Location");
@@ -86,19 +51,19 @@ int main()
     run_python_string("from atlas import Message");
     run_python_string("from entity_filter import get_filter");
     run_python_string("m=Map()");
-    expect_python_error("m.find_by_location()", PyExc_TypeError);
+    expect_python_error("m.find_by_location()", PyExc_IndexError);
     run_python_string("l=Location()");
-    expect_python_error("m.find_by_location(l)", PyExc_TypeError);
+    expect_python_error("m.find_by_location(l)", PyExc_IndexError);
     expect_python_error("m.find_by_location(l, 5.0, 'foo')",
                         PyExc_RuntimeError);
     expect_python_error("m.find_by_location(5, 5.0, 'foo')", PyExc_TypeError);
-    expect_python_error("m.find_by_type()", PyExc_TypeError);
+    expect_python_error("m.find_by_type()", PyExc_IndexError);
     expect_python_error("m.find_by_type(1)", PyExc_TypeError);
     run_python_string("m.find_by_type('foo')");
-    expect_python_error("m.add()", PyExc_TypeError);
-    expect_python_error("m.add('2')", PyExc_TypeError);
+    expect_python_error("m.add()", PyExc_IndexError);
+    expect_python_error("m.add('2')", PyExc_IndexError);
     expect_python_error("m.add('2', 1.2)", PyExc_TypeError);
-    expect_python_error("m.add(Message())", PyExc_TypeError);
+    expect_python_error("m.add(Message())", PyExc_IndexError);
     expect_python_error("m.add(Message(), 1.2)", PyExc_TypeError);
     expect_python_error("m.add(Message({'objtype': 'op', 'parent': 'get'}), 1.2)",
                         PyExc_TypeError);
@@ -107,11 +72,11 @@ int main()
                         PyExc_TypeError);
     run_python_string("m.add(Message({'id': '2'}), 1.2)");
     run_python_string("m.add(Message({'id': '2'}), 1.2)");
-    expect_python_error("m.add(Entity())", PyExc_TypeError);
-    expect_python_error("m.add(Entity('1', type='oak'))", PyExc_TypeError);
+    expect_python_error("m.add(Entity())", PyExc_IndexError);
+    expect_python_error("m.add(Entity('1', type='oak'))", PyExc_IndexError);
     run_python_string("m.add(Entity('1', type='thing'), 1.1)");
     run_python_string("m.find_by_type('thing')");
-    expect_python_error("m.get()", PyExc_TypeError);
+    expect_python_error("m.get()", PyExc_IndexError);
     expect_python_error("m.get(1)", PyExc_TypeError);
     run_python_string("m.get('1')");
     run_python_string("m.get('23')");
@@ -124,43 +89,23 @@ int main()
     run_python_string("non_existing = m.recall_entity_memory('1', 'foo')");
     run_python_string("assert(non_existing == None)");
 
-    expect_python_error("m.get_add()", PyExc_TypeError);
+    expect_python_error("m.get_add()", PyExc_IndexError);
     expect_python_error("m.get_add(3)", PyExc_TypeError);
     run_python_string("m.get_add('3')");
     run_python_string("m.update(Entity('3', type='thing'), 1.1)");
-    expect_python_error("m.update()", PyExc_TypeError);
-    expect_python_error("m.delete()", PyExc_TypeError);
+    expect_python_error("m.update()", PyExc_IndexError);
+    expect_python_error("m.delete()", PyExc_IndexError);
     expect_python_error("m.delete(1)", PyExc_TypeError);
     run_python_string("m.delete('1')");
-    expect_python_error("m.add_hooks_append()", PyExc_TypeError);
+    expect_python_error("m.add_hooks_append()", PyExc_IndexError);
     expect_python_error("m.add_hooks_append(1)", PyExc_TypeError);
     run_python_string("m.add_hooks_append('add_map')");
-    expect_python_error("m.update_hooks_append()", PyExc_TypeError);
+    expect_python_error("m.update_hooks_append()", PyExc_IndexError);
     expect_python_error("m.update_hooks_append(1)", PyExc_TypeError);
     run_python_string("m.update_hooks_append('update_map')");
-    expect_python_error("m.delete_hooks_append()", PyExc_TypeError);
+    expect_python_error("m.delete_hooks_append()", PyExc_IndexError);
     expect_python_error("m.delete_hooks_append(1)", PyExc_TypeError);
     run_python_string("m.delete_hooks_append('delete_map')");
-
-#ifdef CYPHESIS_DEBUG
-    run_python_string("import sabotage");
-    run_python_string("sabotage.null(m)");
-    // Hit the assert checks.
-    expect_python_error("m.find_by_location(l, 5.0, 'foo')",
-                        PyExc_AssertionError);
-    expect_python_error("m.find_by_type('foo')", PyExc_AssertionError);
-    expect_python_error("m.add(Entity('1', type='thing'), 1.1)",
-                        PyExc_AssertionError);
-    expect_python_error("m.delete('1')", PyExc_AssertionError);
-    expect_python_error("m.get('1')", PyExc_AssertionError);
-    expect_python_error("m.get_add('3')", PyExc_AssertionError);
-    expect_python_error("m.add_hooks_append('add_map')",
-                        PyExc_AssertionError);
-    expect_python_error("m.update_hooks_append('update_map')",
-                        PyExc_AssertionError);
-    expect_python_error("m.delete_hooks_append('delete_map')",
-                        PyExc_AssertionError);
-#endif // NDEBUG
 
     shutdown_python_api();
     return 0;

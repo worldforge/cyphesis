@@ -18,7 +18,6 @@
 
 #include "CyPy_MemMap.h"
 #include "CyPy_MemEntity.h"
-#include "CyPy_Element.h"
 #include "CyPy_RootEntity.h"
 #include "CyPy_EntityFilter.h"
 
@@ -32,16 +31,22 @@ using Atlas::Objects::Factories;
 using Atlas::Objects::Entity::RootEntity;
 
 CyPy_MemMap::CyPy_MemMap(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
-    : WrapperBase(self, args, kwds)
+    : WrapperBase(self, args, kwds), m_owned(true)
 {
-    args.verify_length(1);
-    //verifyObject<CyPy_LocatedEntity>(args.front());
+    m_value = new MemMap();
 }
 
 CyPy_MemMap::CyPy_MemMap(Py::PythonClassInstance* self, MemMap* value)
-    : WrapperBase(self, value)
+    : WrapperBase(self, value), m_owned(false)
 {
 
+}
+
+CyPy_MemMap::~CyPy_MemMap()
+{
+    if (m_owned) {
+        delete m_value;
+    }
 }
 
 void CyPy_MemMap::init_type()
@@ -53,7 +58,9 @@ void CyPy_MemMap::init_type()
 
     PYCXX_ADD_VARARGS_METHOD(find_by_type, find_by_type, "");
 
-    PYCXX_ADD_VARARGS_METHOD(updateAdd, updateAdd, "");
+    PYCXX_ADD_VARARGS_METHOD(add, updateAdd, "");
+
+    PYCXX_ADD_VARARGS_METHOD(update, updateAdd, "");
 
     PYCXX_ADD_VARARGS_METHOD(delete, delete_, "");
 
@@ -85,7 +92,7 @@ Py::Object CyPy_MemMap::find_by_location(const Py::Tuple& args)
     args.verify_length(3);
     auto& location = verifyObject<CyPy_Location>(args[0]);
     if (!location.isValid()) {
-        throw Py::TypeError("Location is incomplete");
+        throw Py::RuntimeError("Location is incomplete");
     }
     auto radius = verifyNumeric(args[1]);
     auto type = verifyString(args[2]);
@@ -128,7 +135,7 @@ Py::Object CyPy_MemMap::updateAdd(const Py::Tuple& args)
             if (!ent.isValid()) {
                 throw Py::TypeError("arg is a Message that does not represent an entity");
             }
-            auto* ret = m_value->updateAdd(ent, time);
+            auto ret = m_value->updateAdd(ent, time);
             if (!ret) {
                 throw Py::TypeError("arg is a Message that does not have an ID");
             }
@@ -139,7 +146,7 @@ Py::Object CyPy_MemMap::updateAdd(const Py::Tuple& args)
         }
     } else if (CyPy_RootEntity::check(args[0])) {
         auto& ent = CyPy_RootEntity::value(args[0]);
-        auto* ret = m_value->updateAdd(ent, time);
+        auto ret = m_value->updateAdd(ent, time);
         if (!ret) {
             throw Py::TypeError("arg is a Message that does not have an ID");
         }

@@ -21,6 +21,7 @@
 
 #include "common/OperationRouter.h"
 
+#include "MemEntity.h"
 #include "modules/Ref.h"
 
 #include <Atlas/Objects/ObjectsFwd.h>
@@ -34,7 +35,6 @@
 
 class LocatedEntity;
 class Location;
-class MemEntity;
 class Script;
 class TypeNode;
 
@@ -73,13 +73,13 @@ class MemMap {
     ///and the value of that memory (i.e. disposition: 25)
     std::map<std::string, std::map<std::string, Atlas::Message::Element>> m_entityRelatedMemory;
 
-    MemEntity * addEntity(MemEntity *);
-    void readEntity(MemEntity *, const Atlas::Objects::Entity::RootEntity &, double timestamp);
-    void updateEntity(MemEntity *, const Atlas::Objects::Entity::RootEntity &, double timestamp);
-    MemEntity * newEntity(const std::string &, long,
+    Ref<MemEntity> addEntity(const Ref<MemEntity>);
+    void readEntity(const Ref<MemEntity>, const Atlas::Objects::Entity::RootEntity &, double timestamp);
+    void updateEntity(const Ref<MemEntity>, const Atlas::Objects::Entity::RootEntity &, double timestamp);
+    Ref<MemEntity> newEntity(const std::string &, long,
                           const Atlas::Objects::Entity::RootEntity &, double timestamp);
     void addContents(const Atlas::Objects::Entity::RootEntity &);
-    MemEntity * addId(const std::string &, long);
+    Ref<MemEntity> addId(const std::string &, long);
   public:
 
     explicit MemMap();
@@ -98,9 +98,9 @@ class MemMap {
 
     void sendLooks(OpVector &);
     void del(const std::string & id);
-    MemEntity * get(const std::string & id) const;
-    MemEntity * getAdd(const std::string & id);
-    MemEntity * updateAdd(const Atlas::Objects::Entity::RootEntity &, const double &);
+    Ref<MemEntity> get(const std::string & id) const;
+    Ref<MemEntity> getAdd(const std::string & id);
+    Ref<MemEntity> updateAdd(const Atlas::Objects::Entity::RootEntity &, const double &);
 
     ///\brief Add an entity-related memory or update it if it already exists
     ///@param id - the id of entity to which we relate the memory

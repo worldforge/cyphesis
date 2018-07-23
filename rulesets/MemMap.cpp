@@ -40,7 +40,7 @@ using Atlas::Objects::Entity::Anonymous;
 
 using String::compose;
 
-const TypeNode * MemMap::m_entity_type = 0;
+const TypeNode * MemMap::m_entity_type = nullptr;
 
 void MemMap::setScript(Script* script)
 {
@@ -48,13 +48,13 @@ void MemMap::setScript(Script* script)
 }
 
 
-MemEntity * MemMap::addEntity(MemEntity * entity)
+Ref<MemEntity> MemMap::addEntity(const Ref<MemEntity> entity)
 {
-    assert(entity != 0);
+    assert(entity != nullptr);
     assert(!entity->getId().empty());
-    assert(entity->getType() != 0);
+    assert(entity->getType() != nullptr);
 
-    debug(std::cout << "MemMap::addEntity " << entity << " " << entity->getId()
+    debug(std::cout << "MemMap::addEntity " << entity->describeEntity() << " " << entity->getId()
                     << std::endl << std::flush;);
     long next = -1;
     if (m_checkIterator != m_entities.end()) {
@@ -79,7 +79,7 @@ MemEntity * MemMap::addEntity(MemEntity * entity)
     return entity;
 }
 
-void MemMap::readEntity(MemEntity * entity, const RootEntity & ent, double timestamp)
+void MemMap::readEntity(const Ref<MemEntity> entity, const RootEntity & ent, double timestamp)
 // Read the contents of an Atlas message into an entity
 {
     if (ent->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
@@ -119,12 +119,12 @@ void MemMap::readEntity(MemEntity * entity, const RootEntity & ent, double times
     addContents(ent);
 }
 
-void MemMap::updateEntity(MemEntity * entity, const RootEntity & ent, double timestamp)
+void MemMap::updateEntity(const Ref<MemEntity> entity, const RootEntity & ent, double timestamp)
 // Update contents of entity an Atlas message.
 {
-    assert(entity != 0);
+    assert(entity != nullptr);
 
-    debug( std::cout << " got " << entity << std::endl << std::flush;);
+    debug( std::cout << " got " << entity->describeEntity() << std::endl << std::flush;);
 
     auto old_loc = entity->m_location.m_loc;
     readEntity(entity, ent, timestamp);
@@ -142,7 +142,7 @@ void MemMap::updateEntity(MemEntity * entity, const RootEntity & ent, double tim
 
 }
 
-MemEntity * MemMap::newEntity(const std::string & id, long int_id,
+Ref<MemEntity> MemMap::newEntity(const std::string & id, long int_id,
                               const RootEntity & ent, double timestamp)
 // Create a new entity from an Atlas message.
 {
@@ -181,7 +181,7 @@ void MemMap::sendLooks(OpVector & res)
     m_additionsById.clear();
 }
 
-MemEntity * MemMap::addId(const std::string & id, long int_id)
+Ref<MemEntity> MemMap::addId(const std::string & id, long int_id)
 // Queue the ID of an entity we are interested in
 {
     assert(!id.empty());
@@ -203,8 +203,8 @@ void MemMap::del(const std::string & id)
 
     auto I = m_entities.find(int_id);
     if (I != m_entities.end()) {
-        MemEntity * ent = I->second;
-        assert(ent != 0);
+        auto ent = I->second;
+        assert(ent);
 
         //HACK: We currently do refcounting for Locations kept in the mind as knowledge.
         //The result is that if an entity is removed here, it will be deleted, and any
@@ -243,7 +243,7 @@ void MemMap::del(const std::string & id)
     }
 }
 
-MemEntity * MemMap::get(const std::string & id) const
+Ref<MemEntity> MemMap::get(const std::string & id) const
 // Get an entity from memory
 {
     debug( std::cout << "MemMap::get" << std::endl << std::flush;);
@@ -257,13 +257,13 @@ MemEntity * MemMap::get(const std::string & id) const
 
     auto I = m_entities.find(int_id);
     if (I != m_entities.end()) {
-        assert(I->second != 0);
+        assert(I->second != nullptr);
         return I->second;
     }
     return nullptr;
 }
 
-MemEntity * MemMap::getAdd(const std::string & id)
+Ref<MemEntity> MemMap::getAdd(const std::string & id)
 // Get an entity from memory, or add it if we haven't seen it yet
 // This could be implemented by calling get() for all but the the last line
 {
@@ -281,7 +281,7 @@ MemEntity * MemMap::getAdd(const std::string & id)
 
     MemEntityDict::const_iterator I = m_entities.find(int_id);
     if (I != m_entities.end()) {
-        assert(I->second != 0);
+        assert(I->second != nullptr);
         return I->second;
     }
     return addId(id, int_id);
@@ -301,7 +301,7 @@ void MemMap::addContents(const RootEntity & ent)
     }
 }
 
-MemEntity * MemMap::updateAdd(const RootEntity & ent, const double & d)
+Ref<MemEntity> MemMap::updateAdd(const RootEntity & ent, const double & d)
 // Update an entity in our memory, from an Atlas message
 // The mind code relies on this function never sending a Sight to
 // be sure that seeing something created does not imply that the created
@@ -327,7 +327,7 @@ MemEntity * MemMap::updateAdd(const RootEntity & ent, const double & d)
     }
 
     MemEntityDict::const_iterator I = m_entities.find(int_id);
-    MemEntity * entity;
+    Ref<MemEntity> entity;
     if (I == m_entities.end()) {
         entity = newEntity(id, int_id, ent, d);
     } else {
@@ -377,7 +377,7 @@ EntityVector MemMap::findByType(const std::string & what)
     
     MemEntityDict::const_iterator Iend = m_entities.end();
     for (MemEntityDict::const_iterator I = m_entities.begin(); I != Iend; ++I) {
-        MemEntity * item = I->second;
+        auto item = I->second;
         debug( std::cout << "F" << what << ":" << item->getType() << ":" << item->getId() << std::endl << std::flush;);
         if (item->isVisible() && item->getType()->name() == what) {
             res.push_back(I->second);
@@ -398,7 +398,7 @@ EntityVector MemMap::findByLocation(const Location & loc,
         return res;
     }
 #ifndef NDEBUG
-    MemEntity * place_by_id = get(place->getId());
+    auto place_by_id = get(place->getId());
     if (place != place_by_id) {
         log(ERROR, compose("MemMap consistency check failure: find location "
                            "has LOC %1(%2) which is different in dict (%3)",
@@ -411,9 +411,9 @@ EntityVector MemMap::findByLocation(const Location & loc,
     auto Iend = place->m_contains->end();
     float square_range = radius * radius;
     for (; I != Iend; ++I) {
-        assert(*I != 0);
+        assert(*I != nullptr);
         LocatedEntity * item = *I;
-        if (item == 0) {
+        if (item == nullptr) {
             log(ERROR, "Weird entity in memory");
             continue;
         }
@@ -434,10 +434,10 @@ void MemMap::check(const double & time)
     if (m_checkIterator == entities_end) {
         m_checkIterator = m_entities.begin();
     } else {
-        MemEntity * me = m_checkIterator->second;
-        assert(me != 0);
+        auto me = m_checkIterator->second;
+        assert(me != nullptr);
         if (!me->isVisible() && (time - me->lastSeen()) > 600 &&
-            (me->m_contains == 0 || me->m_contains->empty())) {
+            (me->m_contains == nullptr || me->m_contains->empty())) {
             //Don't remove any entities; we need to instead implement reference counted locations
 //            debug(std::cout << me->getId() << "|" << me->getType()->name()
 //                      << " is a waste of space" << std::endl << std::flush;);
