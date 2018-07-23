@@ -449,6 +449,14 @@ PythonType &PythonType::supportNumberType( int methods_to_support )
         {
             number_table->nb_true_divide = number_true_divide_handler;
         }
+        if( methods_to_support&support_number_inplace_floor_divide )
+        {
+            number_table->nb_inplace_floor_divide = number_inplace_floor_divide_handler;
+        }
+        if( methods_to_support&support_number_inplace_true_divide )
+        {
+            number_table->nb_inplace_true_divide = number_inplace_true_divide_handler;
+        }
 
         // QQQ lots of new methods to add
     }
