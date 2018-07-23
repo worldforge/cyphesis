@@ -34,53 +34,14 @@
 
 #include <cassert>
 
-static PyObject * null_wrapper(PyObject * self, PyWorldTime * o)
-{
-    if (!PyWorldTime_Check(o)) {
-        PyErr_SetString(PyExc_TypeError, "Unknown Object type");
-        return Py_True;
-    }
-#ifdef CYPHESIS_DEBUG
-    o->time = nullptr;
-#endif // NDEBUG
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-
-static PyMethodDef sabotage_methods[] = {
-    {"null", (PyCFunction)null_wrapper,                 METH_O},
-    {nullptr,          nullptr}                       /* Sentinel */
-};
-
-static PyObject* init_sabotage() {
-    static struct PyModuleDef def = {
-            PyModuleDef_HEAD_INIT,
-            "sabotage",
-            nullptr,
-            0,
-            sabotage_methods,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr
-    };
-
-    return PyModule_Create(&def);
-}
-
 int main()
 {
-    PyImport_AppendInittab("sabotage", &init_sabotage);
     init_python_api("cc4b05b9-4ff9-4127-85b0-300298d16c3c");
 
-    PyWorldTime * world_time = newPyWorldTime();
-    assert(world_time != 0);
-
     run_python_string("from server import WorldTime");
-    expect_python_error("WorldTime()", PyExc_TypeError);
+    expect_python_error("WorldTime()", PyExc_IndexError);
     run_python_string("WorldTime(23)");
-    // FIXME This started failing with Python 2.7
-    // run_python_string("WorldTime(23.1)");
+    run_python_string("WorldTime(23.1)");
 
     run_python_string("w=WorldTime(23)");
     run_python_string("w.season");
@@ -89,13 +50,6 @@ int main()
     expect_python_error("w.is_now(1)", PyExc_TypeError);
     run_python_string("w.seconds()");
 
-#ifdef CYPHESIS_DEBUG
-    run_python_string("import sabotage");
-    run_python_string("sabotage.null(w)");
-    // Hit the assert checks.
-    expect_python_error("w.is_now('morning')", PyExc_AssertionError);
-    expect_python_error("w.seconds()", PyExc_AssertionError);
-#endif // NDEBUG
 
     shutdown_python_api();
     return 0;

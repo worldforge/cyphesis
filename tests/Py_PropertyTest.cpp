@@ -30,64 +30,55 @@
 #include "TestWorld.h"
 
 #include "rulesets/Python_API.h"
-#include "rulesets/Py_Thing.h"
 #include "rulesets/Entity.h"
 #include "rulesets/LineProperty.h"
 #include "rulesets/StatisticsProperty.h"
 #include "rulesets/TerrainProperty.h"
+#include "rulesets/python/CyPy_Entity.h"
 
-#include <cassert>
+#include "external/pycxx/CXX/Extensions.hxx"
 
-static PyObject * add_properties(PyObject * self, PyEntity * o)
+
+class TestProp : public Py::ExtensionModule<TestProp>
 {
-    if (!PyEntity_Check(o)) {
-        PyErr_SetString(PyExc_TypeError, "Unknown Object type");
-        return nullptr;
-    }
+    public:
+        Py::Object add_properties(const Py::Tuple& args)
+        {
+            auto ent = CyPy_Entity::value(args.front());
 
-    Entity * ent = o->m_entity.e;
-    
-    PropertyBase * p = ent->setProperty("statistics", new StatisticsProperty);
-    p->install(ent, "statistics");
-    p->apply(ent);
-    ent->propertyApplied("statistics", *p);
-    p = ent->setProperty("terrain", new TerrainProperty);
-    p->install(ent, "terrain");
-    p->apply(ent);
-    ent->propertyApplied("terrain", *p);
-    p = ent->setProperty("line", new LineProperty);
-    p->install(ent, "line");
-    p->apply(ent);
-    ent->propertyApplied("line", *p);
+            PropertyBase * p = ent->setProperty("statistics", new StatisticsProperty);
+            p->install(ent, "statistics");
+            p->apply(ent);
+            ent->propertyApplied("statistics", *p);
+            p = ent->setProperty("terrain", new TerrainProperty);
+            p->install(ent, "terrain");
+            p->apply(ent);
+            ent->propertyApplied("terrain", *p);
+            p = ent->setProperty("line", new LineProperty);
+            p->install(ent, "line");
+            p->apply(ent);
+            ent->propertyApplied("line", *p);
 
-    Py_INCREF(Py_None);
-    return Py_None;
-}
+            return Py::None();
+        }
 
-static PyMethodDef testprop_methods[] = {
-    {"add_properties", (PyCFunction)add_properties,                 METH_O},
-    {nullptr,          nullptr}                       /* Sentinel */
+        TestProp() : ExtensionModule("testprop")
+        {
+
+            add_varargs_method("add_properties", &TestProp::add_properties, "");
+
+
+            initialize("testprop");
+        }
+
 };
-
-static PyObject* init_testprop() {
-    static struct PyModuleDef def = {
-            PyModuleDef_HEAD_INIT,
-            "testprop",
-            nullptr,
-            0,
-            testprop_methods,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr
-    };
-
-    return PyModule_Create(&def);
-}
 
 int main()
 {
-    PyImport_AppendInittab("testprop", &init_testprop);
+    PyImport_AppendInittab("testprop", [](){
+        auto module = new TestProp();
+        return module->module().ptr();
+    });
     init_python_api("b513b7b1-b0d8-4495-b3f0-54c2ef3f27f6");
 
 

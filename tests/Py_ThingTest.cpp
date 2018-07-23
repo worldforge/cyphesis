@@ -33,101 +33,18 @@
 #include "TestPropertyManager.h"
 
 #include "rulesets/Python_API.h"
-#include "rulesets/Py_Thing.h"
 #include "rulesets/Entity.h"
 #include "rulesets/Character.h"
 
 #include <cassert>
 #include <common/Inheritance.h>
 #include <rulesets/Python_Script_Utils.h>
-
-void check_union()
-{
-    PyEntity ent;
-
-    Entity * e;
-    LocatedEntity * le;
-    Character * c;
-
-    e = new Entity("1", 1);
-    ent.m_entity.e = e;
-
-    le = ent.m_entity.e;
-    assert(le == ent.m_entity.l);
-    assert(le == ent.m_entity.e);
-
-    e = new Entity("1", 1);
-    ent.m_entity.l = e;
-
-    le = ent.m_entity.e;
-    assert(le == ent.m_entity.l);
-    assert(le == ent.m_entity.e);
-
-    c = new Character("1", 1);
-    ent.m_entity.c = c;
-
-    le = ent.m_entity.e;
-    assert(le == ent.m_entity.l);
-    assert(le == ent.m_entity.e);
-    assert(c == ent.m_entity.e);
-    assert(c == ent.m_entity.l);
-
-    ent.m_entity.e = new Entity("1", 1);
-}
-
-static PyObject * null_wrapper(PyObject * self, PyEntity * o)
-{
-    if (PyLocatedEntity_Check(o)) {
-#ifdef CYPHESIS_DEBUG
-        o->m_entity.l = nullptr;
-#endif // NDEBUG
-    } else {
-        PyErr_SetString(PyExc_TypeError, "Unknown Object type");
-        return nullptr;
-    }
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-
-static PyMethodDef sabotage_methods[] = {
-    {"null", (PyCFunction)null_wrapper,                 METH_O},
-    {nullptr,          nullptr}                       /* Sentinel */
-};
-
-
-class TestLocatedEntity : public LocatedEntity {
-  public:
-    TestLocatedEntity(const std::string & id, long intId) :
-                      LocatedEntity(id, intId) { }
-
-    virtual void externalOperation(const Operation &, Link &) { }
-    virtual void operation(const Operation &, OpVector &) { }
-
-    virtual void destroy() { }
-};
-
-static PyObject* init_sabotage() {
-    static struct PyModuleDef def = {
-            PyModuleDef_HEAD_INIT,
-            "sabotage",
-            nullptr,
-            0,
-            sabotage_methods,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr
-    };
-
-    return PyModule_Create(&def);
-}
+#include <rulesets/python/CyPy_LocatedEntity.h>
 
 int main()
 {
-    PyImport_AppendInittab("sabotage", &init_sabotage);
 
     Inheritance inheritance;
-    check_union();
 
     new TestPropertyManager;
 
@@ -137,16 +54,6 @@ int main()
     run_python_string("from atlas import Operation");
     run_python_string("from atlas import Oplist");
 
-    PyEntity * ent = newPyLocatedEntity();
-    assert(ent != 0);
-    Py_DECREF(ent);
-    ent = newPyEntity();
-    assert(ent != 0);
-    Py_DECREF(ent);
-    ent = newPyCharacter();
-    assert(ent != 0);
-    Py_DECREF(ent);
-
     Entity * e = new Entity("1", 1);
 
     SoftProperty* prop = new SoftProperty();
@@ -155,43 +62,34 @@ int main()
     Entity * wrld = new Entity("0", 0);
     e->m_location.m_loc = wrld;
     e->m_location.m_loc->makeContainer();
-    assert(e->m_location.m_loc->m_contains != 0);
+    assert(e->m_location.m_loc->m_contains != nullptr);
     e->m_location.m_loc->m_contains->insert(e);
     TestWorld test_world(*wrld);
 
-    PyObject * wrap_e = wrapEntity(e);
-    assert(wrap_e != 0);
-    PyObject * wrap_e_again = wrapEntity(e);
-    assert(wrap_e_again != 0);
+    auto wrap_e = CyPy_LocatedEntity::wrap(e);
+    assert(CyPy_LocatedEntity::check(wrap_e));
+    auto wrap_e_again = CyPy_LocatedEntity::wrap(e);
+    assert(CyPy_LocatedEntity::check(wrap_e_again));
     assert(wrap_e == wrap_e_again);
 
     Character * c = new Character("2", 2);
-    assert(c != 0);
-    PyObject * wrap_c = wrapEntity(c);
-    assert(wrap_c != 0);
+    auto wrap_c = CyPy_LocatedEntity::wrap(c);
+    assert(CyPy_LocatedEntity::check(wrap_c));
 
-    LocatedEntity * le = new TestLocatedEntity("3", 3);
-    assert(le != 0);
-    PyObject * wrap_le = wrapEntity(le);
-    assert(wrap_le != 0);
-
-
-    auto module = Get_PyModule("server");
-
-    PyObject_SetAttrString(module, "testentity", wrap_e);
+    Py::Module module("server");
+    module.setAttr("testentity", wrap_e);
 
     run_python_string("import server")
     run_python_string("assert server.testentity is not None");
     run_python_string("assert server.testentity.props.foo == 'bar'");
 
-    expect_python_error("LocatedEntity()", PyExc_TypeError);
-    expect_python_error("LocatedEntity('s')", PyExc_TypeError);
-    run_python_string("le=LocatedEntity('1')");
+    expect_python_error("Entity()", PyExc_IndexError);
+    expect_python_error("Entity('s')", PyExc_TypeError);
+    run_python_string("le=Entity('1')");
     run_python_string("le_ent = le.as_entity()");
     run_python_string("assert(le_ent.id == '1')");
-    expect_python_error("le.send_world(Operation('get'))",
-                        PyExc_AttributeError);
-    run_python_string("le==LocatedEntity('2')");
+    run_python_string("le.send_world(Operation('get'))");
+    run_python_string("le==Entity('2')");
     expect_python_error("print(le.type)", PyExc_AttributeError);
     expect_python_error("print(le.foo_operation)", PyExc_AttributeError);
     run_python_string("print(le.location)");
@@ -207,7 +105,7 @@ int main()
     run_python_string("le.props.map_attr");
     run_python_string("le.props.list_attr=[1,2]");
     run_python_string("le.props.list_attr");
-    expect_python_error("le.props.non_atlas=set([1,2])", PyExc_AttributeError);
+    expect_python_error("le.props.non_atlas=set([1,2])", PyExc_TypeError);
     run_python_string("le.props.non_atlas == None");
 
     // run_python_string("le.foo=1");
@@ -216,13 +114,13 @@ int main()
     // run_python_string("le.foo=['1']");
     // run_python_string("le.foo={'foo': 1, 'bar': '1'}");
 
-    expect_python_error("Thing()", PyExc_TypeError);
+    expect_python_error("Thing()", PyExc_IndexError);
     expect_python_error("Thing('s')", PyExc_TypeError);
     expect_python_error("Thing(1)", PyExc_TypeError);
-    expect_python_error("Thing(LocatedEntity('1'))", PyExc_TypeError);
+    run_python_string("Thing(Entity('1'))");
     run_python_string("t=Thing('1')");
     run_python_string("Thing(t)");
-    run_python_string("Thing(Character('1'))");
+    //run_python_string("Thing(Character('1'))");
     run_python_string("t.as_entity()");
     run_python_string("t.send_world(Operation('get'))");
     expect_python_error("t.send_world('get')", PyExc_TypeError);
@@ -231,7 +129,7 @@ int main()
     run_python_string("print(t.location)");
     run_python_string("print(t.contains)");
 
-    expect_python_error("Character()", PyExc_TypeError);
+    expect_python_error("Character()", PyExc_IndexError);
     expect_python_error("Character('s')", PyExc_TypeError);
     expect_python_error("Character(1)", PyExc_TypeError);
     expect_python_error("Character(Thing('1'))", PyExc_TypeError);
@@ -239,8 +137,8 @@ int main()
     run_python_string("Character(c)");
     run_python_string("c.as_entity()");
     run_python_string("c.send_world(Operation('get'))");
-    expect_python_error("c.start_task()", PyExc_TypeError);
-    expect_python_error("c.start_task(Task(c))", PyExc_TypeError);
+    expect_python_error("c.start_task()", PyExc_IndexError);
+    expect_python_error("c.start_task(Task(c))", PyExc_IndexError);
     expect_python_error("c.start_task(1,Operation('cut'),Oplist())",
                         PyExc_TypeError);
     expect_python_error("c.start_task(Task(c),1,Oplist())", PyExc_TypeError);
@@ -255,7 +153,7 @@ int main()
     run_python_string("print(c.location)");
     run_python_string("print(c.contains)");
 
-    expect_python_error("Mind()", PyExc_TypeError);
+    expect_python_error("Mind()", PyExc_IndexError);
     expect_python_error("Mind('s')", PyExc_TypeError);
     expect_python_error("Mind(1)", PyExc_TypeError);
     run_python_string("m=Mind('1')");
@@ -263,7 +161,7 @@ int main()
     run_python_string("m_ent = m.as_entity()");
     run_python_string("assert(m_ent.id == '1')");
     expect_python_error("m.send_world(Operation('get'))", PyExc_AttributeError);
-    run_python_string("m==LocatedEntity('2')");
+    run_python_string("m==Entity('2')");
     expect_python_error("print(m.foo_operation)", PyExc_AttributeError);
     run_python_string("print(m.location)");
     run_python_string("print(m.contains)");
@@ -281,40 +179,6 @@ int main()
 //    expect_python_error("m.non_atlas=set([1,2])", PyExc_AttributeError);
 //    expect_python_error("m.non_atlas", PyExc_AttributeError);
 
-#ifdef CYPHESIS_DEBUG
-    run_python_string("import sabotage");
-    // Hit the assert checks.
-
-    run_python_string("t4=Thing('4')");
-    run_python_string("sabotage.null(t4)");
-    expect_python_error("Thing(t4)", PyExc_AssertionError);
-    
-    run_python_string("c5=Character('5')");
-    run_python_string("sabotage.null(c5)");
-    expect_python_error("Character(c5)", PyExc_AssertionError);
-
-    run_python_string("sabotage.null(le)");
-    expect_python_error("le.location", PyExc_AssertionError);
-    expect_python_error("le.foo=1", PyExc_AssertionError);
-
-    run_python_string("assert le != t");
-
-    run_python_string("as_entity_method=t.as_entity");
-    run_python_string("send_world_method=t.send_world");
-    run_python_string("sabotage.null(t)");
-    expect_python_error("as_entity_method()", PyExc_AssertionError);
-    expect_python_error("send_world_method(Operation('get'))",
-                        PyExc_AssertionError);
-
-    run_python_string("start_task_method=c.start_task");
-    run_python_string("mind2body_method=c.mind2body");
-    run_python_string("sabotage.null(c)");
-    expect_python_error("start_task_method(Task(Character('3')),Operation('cut'),Oplist())",
-                        PyExc_AssertionError);
-    expect_python_error("mind2body_method(Operation('update'))",
-                        PyExc_AssertionError);
-
-#endif // NDEBUG
 
     shutdown_python_api();
     return 0;
@@ -324,8 +188,8 @@ void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-LocatedEntity * TestWorld::addNewEntity(const std::string &,
+Ref<LocatedEntity> TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
-    return 0;
+    return nullptr;
 }

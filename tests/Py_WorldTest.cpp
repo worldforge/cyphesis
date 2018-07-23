@@ -34,22 +34,25 @@
 #include "rulesets/Entity.h"
 
 #include <cassert>
+#include "rulesets/World.h"
+#include "rulesets/python/CyPy_World.h"
 
 int main()
 {
     init_python_api("cb44c6cc-64fa-46c4-83d1-f43c6a2bb56c");
 
-    Entity wrld("0", 0);
+    World wrld("0", 0);
     TestWorld tw(wrld);
 
+    Py::Module server("server");
+    server.setAttr("test_world", CyPy_World::wrap(&tw));
 
-    run_python_string("from server import World");
-    run_python_string("w=World()");
+    run_python_string("import server");
+    run_python_string("w=server.test_world");
     run_python_string("w.get_time()");
     run_python_string("w.get_object('0')");
     run_python_string("w.get_object('1')");
     expect_python_error("w.get_object(1)", PyExc_TypeError);
-    run_python_string("w == World()");
 
     shutdown_python_api();
     return 0;
@@ -59,8 +62,8 @@ void TestWorld::message(const Operation & op, LocatedEntity & ent)
 {
 }
 
-LocatedEntity * TestWorld::addNewEntity(const std::string &,
+Ref<LocatedEntity> TestWorld::addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &)
 {
-    return 0;
+    return nullptr;
 }

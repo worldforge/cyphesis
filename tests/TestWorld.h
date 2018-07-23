@@ -22,6 +22,7 @@
 #include "common/BaseWorld.h"
 
 #include "rulesets/LocatedEntity.h"
+#include "rulesets/Task.h"
 
 /// Test implementation of the BaseWorld interface
 class TestWorld : public BaseWorld {
@@ -34,11 +35,11 @@ class TestWorld : public BaseWorld {
     virtual ~TestWorld(){}
 
     virtual bool idle() { return false; }
-    virtual LocatedEntity * addEntity(LocatedEntity * ent) { 
-        m_eobjects[ent->getIntId()] = ent;
+    virtual Ref<LocatedEntity> addEntity(const Ref<LocatedEntity>& ent) {
+        m_eobjects[ent->getIntId()] = ent.get();
         return 0;
     }
-    virtual LocatedEntity * addNewEntity(const std::string &,
+    virtual Ref<LocatedEntity> addNewEntity(const std::string &,
                                          const Atlas::Objects::Entity::RootEntity &);
     void delEntity(LocatedEntity * obj) {}
     int createSpawnPoint(const Atlas::Message::MapType & data,
@@ -52,8 +53,8 @@ class TestWorld : public BaseWorld {
     }
     virtual int moveToSpawn(const std::string & name,
                             Location& location){return 0;}
-    virtual Task * newTask(const std::string &, LocatedEntity &) { return 0; }
-    virtual Task * activateTask(const std::string &, const std::string &,
+    virtual Ref<Task> newTask(const std::string &, LocatedEntity &) { return 0; }
+    virtual Ref<Task> activateTask(const std::string &, const std::string &,
                                 LocatedEntity *, LocatedEntity &) { return 0; }
     virtual ArithmeticScript * newArithmetic(const std::string &,
                                              LocatedEntity *) {

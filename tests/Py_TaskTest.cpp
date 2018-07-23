@@ -30,62 +30,23 @@
 #include "python_testers.h"
 
 #include "rulesets/Python_API.h"
-#include "rulesets/Py_Task.h"
-#include "rulesets/Py_Thing.h"
 #include "rulesets/Character.h"
 #include "rulesets/Task.h"
 
 #include <cassert>
+#include <rulesets/python/CyPy_Task.h>
 
-static PyObject * null_wrapper(PyObject * self, PyTask * o)
-{
-    if (PyTask_Check(o)) {
-#ifdef CYPHESIS_DEBUG
-        o->m_task = nullptr;
-#endif // NDEBUG
-    } else if (PyLocatedEntity_Check(o)) {
-#ifdef CYPHESIS_DEBUG
-        ((PyEntity*)o)->m_entity.l = 0;
-#endif // NDEBUG
-    } else {
-        PyErr_SetString(PyExc_TypeError, "Unknown Object type");
-        return nullptr;
-    }
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-
-static PyMethodDef sabotage_methods[] = {
-    {"null", (PyCFunction)null_wrapper,                 METH_O},
-    {nullptr,          nullptr}                       /* Sentinel */
-};
-
-static PyObject* init_sabotage() {
-    static struct PyModuleDef def = {
-            PyModuleDef_HEAD_INIT,
-            "sabotage",
-            nullptr,
-            0,
-            sabotage_methods,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr
-    };
-
-    return PyModule_Create(&def);
-}
 
 int main()
 {
-    PyImport_AppendInittab("sabotage", &init_sabotage);
     init_python_api("6715c02a-cc63-497b-988d-453579eae35d");
 
-    PyTask * task = (PyTask *)PyType_GenericAlloc(&PyTask_Type, 0);
-    assert(task != 0);
+    Entity entity("", 1);
+    auto task = CyPy_Task::wrap(new Task(entity));
+    assert(CyPy_Task::check(task));
 
     run_python_string("from server import Task");
-    expect_python_error("Task()", PyExc_TypeError);
+    expect_python_error("Task()", PyExc_IndexError);
     expect_python_error("Task(1)", PyExc_TypeError);
     expect_python_error("Task('1')", PyExc_TypeError);
     run_python_string("from server import Character");
@@ -103,11 +64,10 @@ int main()
     run_python_string("t.rate = 0");
     run_python_string("t.rate = 0.5");
     expect_python_error("t.rate = '1'", PyExc_TypeError);
-    // The raw wrapper object has no dict for arbitrary attributes
-    expect_python_error("t.foo = 1", PyExc_AttributeError);
-    expect_python_error("t.foo = 1.1", PyExc_AttributeError);
-    expect_python_error("t.foo = 'foois1'", PyExc_AttributeError);
-    expect_python_error("assert t.foo == 'foois1'", PyExc_AttributeError);
+    run_python_string("t.foo = 1");
+    run_python_string("t.foo = 1.1");
+    run_python_string("t.foo = 'foois1'");
+    run_python_string("assert t.foo == 'foois1'");
 
     run_python_string("class TaskSubclass(Task): pass");
     run_python_string("t2=TaskSubclass(c)");
@@ -123,7 +83,7 @@ int main()
     // to be stored directly.
     expect_python_error("t.foo = Character('2')", PyExc_TypeError);
     run_python_string("import server");
-    expect_python_error("t.foo = server.LocatedEntity('2')", PyExc_TypeError);
+    expect_python_error("t.foo = server.Entity('2')", PyExc_TypeError);
     expect_python_error("t.foo = server.Thing('2')", PyExc_TypeError);
 
     run_python_string("assert not t.obsolete()");
@@ -135,31 +95,6 @@ int main()
     run_python_string("t.irrelevant()");
     run_python_string("assert t.obsolete()");
 
-#ifdef CYPHESIS_DEBUG
-    run_python_string("import sabotage");
-    // Hit the assert checks.
-    run_python_string("irrelevant_methd=t.irrelevant");
-    run_python_string("obsolete_methd=t.obsolete");
-    run_python_string("count_methd=t.count");
-    run_python_string("new_tick_methd=t.new_tick");
-    run_python_string("next_tick_methd=t.next_tick");
-
-    run_python_string("sabotage.null(t)");
-
-    expect_python_error("irrelevant_methd()", PyExc_AssertionError);
-    expect_python_error("obsolete_methd()", PyExc_AssertionError);
-    expect_python_error("count_methd()", PyExc_AssertionError);
-    expect_python_error("new_tick_methd()", PyExc_AssertionError);
-    expect_python_error("next_tick_methd(1.1)", PyExc_AssertionError);
-
-    expect_python_error("t.progress", PyExc_AssertionError);
-    expect_python_error("t.progress = 0", PyExc_AssertionError);
-    expect_python_error("Task(t)", PyExc_AssertionError);
-
-    run_python_string("c2=Character('2')");
-    run_python_string("sabotage.null(c2)");
-    expect_python_error("t=Task(c2)", PyExc_AssertionError);
-#endif // NDEBUG
 
     shutdown_python_api();
     return 0;
