@@ -32,11 +32,50 @@ class Ref
 
         constexpr Ref(T* entity);
 
+        /**
+         * This allows us to create a new Ref from a Ref for a subclass.
+         */
+        template<class TSubclass>
+        constexpr operator Ref<TSubclass>() const noexcept
+        {
+            return Ref<TSubclass>(m_inner);
+        }
+
+        /**
+         * This allows us to create a new Ref from a Ref for a subclass.
+         */
+        template<class TSubclass>
+        constexpr operator Ref<const TSubclass>() const noexcept
+        {
+            return Ref<const TSubclass>(m_inner);
+        }
+
         ~Ref();
 
         constexpr Ref<T>& operator=(T* rhs);
 
         constexpr Ref& operator=(const Ref&);
+
+        /**
+         * This operator allows us to assign a Ref for a subclass to this.
+         *
+         * Like this:
+         * Ref<SuperClass> r;
+         * r = Ref<SubClass>();
+         *
+         */
+        template<class TSubclass>
+        constexpr Ref& operator=(const Ref<TSubclass>& rhs)
+        {
+            if (rhs.get()) {
+                rhs.get()->incRef();
+            }
+            if (this->m_inner) {
+                this->m_inner->decRef();
+            }
+            this->m_inner = rhs.get();
+            return *this;
+        }
 
         constexpr T& operator*() const
         {
@@ -68,6 +107,12 @@ class Ref
             return (m_inner == e.m_inner);
         }
 
+        template<class TSubclass>
+        constexpr bool operator==(const Ref<TSubclass>& e) const
+        {
+            return (m_inner == e.get());
+        }
+
         constexpr bool operator==(const T* e) const
         {
             return (m_inner == e);
@@ -76,6 +121,12 @@ class Ref
         constexpr bool operator!=(const Ref& e) const
         {
             return (m_inner != e.m_inner);
+        }
+
+        template<class TSubclass>
+        constexpr bool operator!=(const Ref<TSubclass>& e) const
+        {
+            return (m_inner != e.get());
         }
 
         constexpr bool operator!=(const T* e) const
