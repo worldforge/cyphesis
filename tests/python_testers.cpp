@@ -81,7 +81,7 @@ int CyPyRun_SimpleString(const char * command, PyObject * exception)
 
     if (ret == nullptr) {
         int errcode = -1;
-        if (exception != 0) {
+        if (exception != nullptr) {
             if (PyErr_ExceptionMatches(exception)) {
                 errcode = -3;
             }
@@ -92,7 +92,7 @@ int CyPyRun_SimpleString(const char * command, PyObject * exception)
     Py_DECREF(ret);
 
     PyObject *f = PySys_GetObject("stdout");
-    if (PyFile_WriteString("\n", f))
+    if (PyFile_WriteString((std::string("Exec: ") + command + "\n").c_str(), f))
         PyErr_Clear();
     return 0;
 }
