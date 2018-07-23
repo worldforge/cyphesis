@@ -280,8 +280,8 @@ void Entity::removeDelegate(int class_no, const std::string & delegate)
 /// removing from the containership tree.
 void Entity::destroy()
 {
-    assert(m_location.m_loc != 0);
-    assert(m_location.m_loc->m_contains != nullptr);
+    assert(m_location.m_loc);
+    assert(m_location.m_loc->m_contains);
     if (m_contains != nullptr) {
         for (auto& entity : *m_contains) {
             Location & child = entity->m_location;

@@ -91,8 +91,8 @@ class EntityBuilder {
 
     bool isTask(const std::string & class_name);
     bool hasTask(const std::string & class_name);
-    Task * buildTask(TaskKit * factory, LocatedEntity & owner) const;
-    Task * newTask(const std::string & class_name,
+    Ref<Task> buildTask(TaskKit * factory, LocatedEntity & owner) const;
+    Ref<Task> newTask(const std::string & class_name,
                    LocatedEntity & owner) const;
     void installTaskFactory(const std::string & class_name,
                             TaskKit * factory);
@@ -100,7 +100,7 @@ class EntityBuilder {
     void addTaskActivation(const std::string & tool,
                            const std::string & op,
                            TaskKit * factory);
-    Task * activateTask(const std::string & tool,
+    Ref<Task> activateTask(const std::string & tool,
                         const std::string & op,
                         LocatedEntity * target,
                         LocatedEntity & owner) const;

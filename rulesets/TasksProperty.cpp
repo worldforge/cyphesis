@@ -41,7 +41,7 @@ TasksProperty::TasksProperty() : PropertyBase(per_ephem), m_task(nullptr)
 
 int TasksProperty::get(Atlas::Message::Element & val) const
 {
-    if (m_task == nullptr) {
+    if (!m_task) {
         val = ListType();
         return 0;
     }
@@ -67,7 +67,7 @@ void TasksProperty::set(const Atlas::Message::Element & val)
         return;
     }
 
-    if (m_task == nullptr) {
+    if (!m_task) {
         log(ERROR, "No task in ::set");
         return;
     }
@@ -105,26 +105,20 @@ int TasksProperty::updateTask(LocatedEntity * owner, OpVector & res)
     return 0;
 }
 
-int TasksProperty::startTask(Task * task,
+int TasksProperty::startTask(Ref<Task> task,
                              LocatedEntity * owner,
                              const Operation & op,
                              OpVector & res)
 {
     bool update_required = false;
-    if (m_task != nullptr) {
+    if (m_task) {
         update_required = true;
         m_task = nullptr;
     }
 
     task->initTask(op, res);
 
-    assert(task->count() == 0);
-
-    if (task->obsolete()) {
-        // Thus far a task can not legally have a reference, so we can't
-        // decref it.
-        delete task;
-    } else {
+    if (!task->obsolete()) {
         assert(!res.empty());
         m_task = task;
         update_required = true;
@@ -134,21 +128,18 @@ int TasksProperty::startTask(Task * task,
         updateTask(owner, res);
     }
 
-    return (m_task == nullptr) ? -1 : 0;
+    return (m_task) ? 0 : -1;
 
 }
 
 int TasksProperty::clearTask(LocatedEntity * owner, OpVector & res)
 {
-    if (m_task == nullptr) {
+    if (!m_task) {
         // This function should never be called when there is no task,
         // except during Entity destruction
         assert(owner->getFlags() & entity_destroyed);
         return -1;
     }
-    // Thus far a task can only have one reference legally, so if we
-    // have a task it's count must be 1
-    assert(m_task->count() == 1);
     m_task = nullptr;
 
     return updateTask(owner, res);
@@ -157,12 +148,11 @@ int TasksProperty::clearTask(LocatedEntity * owner, OpVector & res)
 void TasksProperty::stopTask(LocatedEntity * owner, OpVector & res)
 {
     // This is just clearTask without an assert
-    if (m_task == nullptr) {
+    if (!m_task) {
         log(ERROR, "Tasks property stop when no task");
         return;
     }
 
-    assert(m_task->count() == 1);
     m_task = nullptr;
 
     updateTask(owner, res);
@@ -172,7 +162,7 @@ void TasksProperty::TickOperation(LocatedEntity * owner,
                                   const Operation & op,
                                   OpVector & res)
 {
-    if (m_task == nullptr) {
+    if (!m_task) {
         return;
     }
 

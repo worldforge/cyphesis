@@ -120,7 +120,7 @@ class Character : public Thing, public virtual sigc::trackable {
     int linkExternal(Link *);
     int unlinkExternal(Link *);
 
-    int startTask(Task *, const Operation & op, OpVector &);
+    int startTask(Ref<Task>, const Operation & op, OpVector &);
     void updateTask(OpVector &);
     void clearTask(OpVector &);
 

@@ -73,6 +73,16 @@ class Ref
             return (m_inner == e);
         }
 
+        constexpr bool operator!=(const Ref& e) const
+        {
+            return (m_inner != e.m_inner);
+        }
+
+        constexpr bool operator!=(const T* e) const
+        {
+            return (m_inner != e);
+        }
+
         constexpr bool operator<(const Ref& e) const
         {
             return (m_inner < e.m_inner);

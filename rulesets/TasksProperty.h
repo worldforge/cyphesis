@@ -46,7 +46,7 @@ class TasksProperty : public PropertyBase {
     TasksProperty * copy() const override;
 
     int updateTask(LocatedEntity * owner, OpVector & res);
-    int startTask(Task * task,
+    int startTask(Ref<Task> task,
                   LocatedEntity * owner,
                   const Operation & op,
                   OpVector & res);

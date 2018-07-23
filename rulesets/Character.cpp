@@ -27,6 +27,7 @@
 #include "StatusProperty.h"
 #include "TasksProperty.h"
 #include "Domain.h"
+#include "Task.h"
 
 #include "common/BaseWorld.h"
 #include "common/op_switch.h"
@@ -393,7 +394,7 @@ int Character::unlinkExternal(Link * link)
 /// @param task The new task to be assigned to the Character
 /// @param op The operation that initiates the task.
 /// @param res The result of the task startup.
-int Character::startTask(Task * task, const Operation & op, OpVector & res)
+int Character::startTask(Ref<Task> task, const Operation & op, OpVector & res)
 {
     TasksProperty * tp = requirePropertyClass<TasksProperty>(TASKS);
 
@@ -674,9 +675,9 @@ void Character::UseOperation(const Operation & op, OpVector & res)
 
 
 
-    Task * task = BaseWorld::instance().newTask(taskName, *this);
-    if (task != nullptr) {
-        startTask(task, rop, res);
+    auto task = BaseWorld::instance().newTask(taskName, *this);
+    if (task) {
+        startTask(std::move(task), rop, res);
     }
 
     res.push_back(rop);

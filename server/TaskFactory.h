@@ -34,7 +34,7 @@ class TaskFactory : public TaskKit {
 
     int checkTarget(LocatedEntity * target) override;
 
-    Task * newTask(LocatedEntity & chr) override;
+    Ref<Task> newTask(LocatedEntity & chr) override;
 };
 
 #endif // SERVER_TASK_FACTORY_H

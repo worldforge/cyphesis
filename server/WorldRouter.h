@@ -72,8 +72,8 @@ class WorldRouter : public BaseWorld {
      * @return Seconds.
      */
     double secondsUntilNextOp() const;
-    LocatedEntity * addEntity(LocatedEntity * obj) override;
-    LocatedEntity * addNewEntity(const std::string & type,
+    Ref<LocatedEntity> addEntity(const Ref<LocatedEntity>& obj) override;
+    Ref<LocatedEntity> addNewEntity(const std::string & type,
                                  const Atlas::Objects::Entity::RootEntity &) override;
     void delEntity(LocatedEntity * obj) override;
     int createSpawnPoint(const Atlas::Message::MapType &, LocatedEntity *) override;
@@ -83,8 +83,8 @@ class WorldRouter : public BaseWorld {
                                    const std::string &,
                                    const Atlas::Objects::Entity::RootEntity &) override;
     int moveToSpawn(const std::string & name, Location& location) override;
-    Task * newTask(const std::string &, LocatedEntity &) override;
-    Task * activateTask(const std::string &,
+    Ref<Task> newTask(const std::string &, LocatedEntity &) override;
+    Ref<Task> activateTask(const std::string &,
                         const std::string &,
                         LocatedEntity *,
                         LocatedEntity &) override;

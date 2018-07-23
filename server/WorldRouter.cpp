@@ -159,7 +159,7 @@ void WorldRouter::markQueueAsClean()
 /// the default spawn area if necessary. Handle inserting the
 /// entity into the loc/contains tree maintained by the Entity
 /// class. Send a Setup op to the entity.
-LocatedEntity * WorldRouter::addEntity(LocatedEntity * ent)
+Ref<LocatedEntity> WorldRouter::addEntity(const Ref<LocatedEntity>& ent)
 {
     debug(std::cout << "WorldRouter::addEntity(" << ent->getIntId() << ")" << std::endl
                     << std::flush;);
@@ -208,7 +208,7 @@ LocatedEntity * WorldRouter::addEntity(LocatedEntity * ent)
     app->setArgs1(arg);
     message(app, *ent);
 
-    inserted.emit(ent);
+    inserted.emit(ent.get());
 
     return ent;
 }
@@ -218,7 +218,7 @@ LocatedEntity * WorldRouter::addEntity(LocatedEntity * ent)
 /// Construct a new entity using the entity description provided,
 /// and pass it to addEntity().
 /// @return a pointer to the new entity.
-LocatedEntity * WorldRouter::addNewEntity(const std::string & typestr,
+Ref<LocatedEntity> WorldRouter::addNewEntity(const std::string & typestr,
                                           const RootEntity & attrs)
 {
     debug(std::cout << "WorldRouter::addNewEntity(\"" << typestr << "\", attrs)"
@@ -231,7 +231,7 @@ LocatedEntity * WorldRouter::addNewEntity(const std::string & typestr,
         return nullptr;
     }
 
-    LocatedEntity * ent = EntityBuilder::instance()->newEntity(id, intId, typestr, attrs, *this);
+    auto ent = EntityBuilder::instance()->newEntity(id, intId, typestr, attrs, *this);
     if (ent == nullptr) {
         log(ERROR, String::compose("Attempt to create an entity of type \"%1\" "
                                    "but type is unknown or forbidden",
@@ -333,10 +333,10 @@ int WorldRouter::moveToSpawn(const std::string & name, Location& location)
 /// @param name the name of the task type to be instantiated
 /// @param owner the character who will own the task
 /// @return a pointer to the new task
-Task * WorldRouter::newTask(const std::string & name, LocatedEntity & owner)
+Ref<Task> WorldRouter::newTask(const std::string & name, LocatedEntity & owner)
 {
-    Task * task = EntityBuilder::instance()->newTask(name, owner);
-    if (task == nullptr) {
+    auto task = EntityBuilder::instance()->newTask(name, owner);
+    if (!task) {
         log(ERROR, String::compose("Attempt to create a task of type \"%1\" "
                                    "but type is unknown or forbidden", name));
     }
@@ -352,7 +352,7 @@ Task * WorldRouter::newTask(const std::string & name, LocatedEntity & owner)
 /// @param target the entity that the task uses as its target
 /// @param owner the character who will own the task
 /// @return a pointer to the new task
-Task * WorldRouter::activateTask(const std::string & tool,
+Ref<Task> WorldRouter::activateTask(const std::string & tool,
                                  const std::string & op,
                                  LocatedEntity * target,
                                  LocatedEntity & owner)

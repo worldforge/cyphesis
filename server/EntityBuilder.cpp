@@ -153,11 +153,11 @@ Ref<LocatedEntity> EntityBuilder::newChildEntity(const std::string& id, long int
 
 }
 
-Task* EntityBuilder::buildTask(TaskKit* factory, LocatedEntity& owner) const
+Ref<Task> EntityBuilder::buildTask(TaskKit* factory, LocatedEntity& owner) const
 {
-    Task* task = factory->newTask(owner);
+    auto task = factory->newTask(owner);
 
-    if (task != nullptr && factory->m_scriptFactory != nullptr) {
+    if (task && factory->m_scriptFactory != nullptr) {
         if (factory->m_scriptFactory->addScript(task) != 0) {
             log(ERROR, "Assigning script to task failed");
         }
@@ -169,7 +169,7 @@ Task* EntityBuilder::buildTask(TaskKit* factory, LocatedEntity& owner) const
 ///
 /// @param name The name of the task type.
 /// @param owner The character entity that owns the task.
-Task* EntityBuilder::newTask(const std::string& name, LocatedEntity& owner) const
+Ref<Task> EntityBuilder::newTask(const std::string& name, LocatedEntity& owner) const
 {
     auto I = m_taskFactories.find(name);
     if (I == m_taskFactories.end()) {
@@ -208,7 +208,7 @@ void EntityBuilder::addTaskActivation(const std::string& tool, const std::string
 /// @param op The type of operation being performed with the tool.
 /// @param target The type of entity the operation is being performed on.
 /// @param owner The character entity activating the task.
-Task* EntityBuilder::activateTask(const std::string& tool, const std::string& op, LocatedEntity* target, LocatedEntity& owner) const
+Ref<Task> EntityBuilder::activateTask(const std::string& tool, const std::string& op, LocatedEntity* target, LocatedEntity& owner) const
 {
     auto I = m_taskActivations.find(tool);
     if (I == m_taskActivations.end()) {

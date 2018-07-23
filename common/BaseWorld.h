@@ -21,6 +21,8 @@
 
 #include "globals.h"
 
+#include "modules/Ref.h"
+
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/ObjectsFwd.h>
 
@@ -149,10 +151,10 @@ class BaseWorld : private boost::noncopyable {
     virtual bool idle() = 0;
 
     /// \brief Add a new entity to the world.
-    virtual LocatedEntity * addEntity(LocatedEntity * obj) = 0;
+    virtual Ref<LocatedEntity> addEntity(const Ref<LocatedEntity>& obj) = 0;
 
     /// \brief Create a new entity and add to the world.
-    virtual LocatedEntity * addNewEntity(const std::string & type,
+    virtual Ref<LocatedEntity> addNewEntity(const std::string & type,
                                   const Atlas::Objects::Entity::RootEntity &) = 0;
 
     /// \brief Deletes an entity from the world.
@@ -185,10 +187,10 @@ class BaseWorld : private boost::noncopyable {
                             Location& location) = 0;
 
     /// \brief Create a new task
-    virtual Task * newTask(const std::string &, LocatedEntity &) = 0;
+    virtual Ref<Task> newTask(const std::string &, LocatedEntity &) = 0;
 
     /// \brief Activate a new tast
-    virtual Task * activateTask(const std::string &, const std::string &,
+    virtual Ref<Task> activateTask(const std::string &, const std::string &,
                                 LocatedEntity *, LocatedEntity &) = 0;
 
     /// \brief Create a new Arithmetic object

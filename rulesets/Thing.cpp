@@ -145,7 +145,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
                 }
             }
             assert(new_loc != nullptr);
-            assert(m_location.m_loc != new_loc);
+            assert(m_location.m_loc.get() != new_loc);
         }
 
     }
@@ -273,7 +273,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
         if (new_loc != nullptr) {
             // new_loc should only be non-null if the LOC specified is
             // different from the current LOC
-            assert(m_location.m_loc != new_loc);
+            assert(m_location.m_loc.get() != new_loc);
             // Check for pickup, ie if the new LOC is the actor, and the
             // previous LOC is the actor's LOC.
             if (new_loc->getId() == op->getFrom() &&
@@ -625,7 +625,7 @@ void Thing::CreateOperation(const Operation& op, OpVector& res)
         }
 
         //If there's no location set we'll use the same one as the current entity.
-        if (!ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG) && (m_location.m_loc != 0)) {
+        if (!ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG) && (m_location.m_loc)) {
             ent->setLoc(m_location.m_loc->getId());
         }
         debug_print(getId() << " creating " << type);

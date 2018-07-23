@@ -83,25 +83,25 @@ add_library(rulesetmind
     mind/SharedTerrain.cpp)
 
 add_library(scriptpython
-    Py_Message.cpp
-    Py_Operation.cpp
-    Py_RootEntity.cpp
-    Py_Oplist.cpp
-    Py_Vector3D.cpp
-    Py_Point3D.cpp
-    Py_Thing.cpp
-    Py_Filter.cpp
-    Py_MemMap.cpp
-    Py_Quaternion.cpp
-    Py_BBox.cpp
-    Py_WorldTime.cpp
-    Py_World.cpp
-    Py_Location.cpp
-    Py_Task.cpp
-    Py_Shape.cpp
-    Py_Property.cpp
-    Py_TerrainModProperty.cpp
-    Py_TerrainProperty.cpp
+#    Py_Message.cpp
+#    Py_Operation.cpp
+#    Py_RootEntity.cpp
+#    Py_Oplist.cpp
+#    Py_Vector3D.cpp
+#    Py_Point3D.cpp
+#    Py_Thing.cpp
+#    Py_Filter.cpp
+#    Py_MemMap.cpp
+#    Py_Quaternion.cpp
+#    Py_BBox.cpp
+#    Py_WorldTime.cpp
+#    Py_World.cpp
+#    Py_Location.cpp
+#    Py_Task.cpp
+#    Py_Shape.cpp
+#    Py_Property.cpp
+#    Py_TerrainModProperty.cpp
+#    Py_TerrainProperty.cpp
     Python_API.cpp
     PythonClass.cpp
     PythonContext.cpp
@@ -117,7 +117,27 @@ add_library(scriptpython
     python/CyPy_LocatedEntity.cpp python/CyPy_LocatedEntity.h
     python/CyPy_Entity.cpp python/CyPy_Entity.h
     python/CyPy_Common.cpp python/CyPy_Common.h
-    python/CyPy_Atlas.cpp python/CyPy_Atlas.h python/CyPy_Operation.cpp python/CyPy_Operation.h python/CyPy_Element.cpp python/CyPy_Element.h python/CyPy_RootEntity.cpp python/CyPy_RootEntity.h python/CyPy_Oplist.cpp python/CyPy_Oplist.h python/CyPy_Location.cpp python/CyPy_Location.h python/CyPy_Point3D.cpp python/CyPy_Point3D.h python/CyPy_Vector3D.cpp python/CyPy_Vector3D.h python/CyPy_Quaternion.cpp python/CyPy_Quaternion.h python/CyPy_Axisbox.cpp python/CyPy_Axisbox.h python/CyPy_Physics.cpp python/CyPy_Physics.h python/CoordHelper.cpp python/CoordHelper.h python/WrapperBase.cpp python/WrapperBase.h python/CyPy_Server.cpp python/CyPy_Server.h python/CyPy_MemMap.cpp python/CyPy_MemMap.h python/CyPy_MemEntity.cpp python/CyPy_MemEntity.h python/CyPy_Character.cpp python/CyPy_Character.h python/CyPy_BaseMind.cpp python/CyPy_BaseMind.h python/CyPy_Task.cpp python/CyPy_Task.h python/CyPy_WorldTime.cpp python/CyPy_WorldTime.h python/CyPy_World.cpp python/CyPy_World.h)
+    python/CyPy_Atlas.cpp python/CyPy_Atlas.h
+    python/CyPy_Operation.cpp python/CyPy_Operation.h
+    python/CyPy_Element.cpp python/CyPy_Element.h
+    python/CyPy_RootEntity.cpp python/CyPy_RootEntity.h
+    python/CyPy_Oplist.cpp python/CyPy_Oplist.h
+    python/CyPy_Location.cpp python/CyPy_Location.h
+    python/CyPy_Point3D.cpp python/CyPy_Point3D.h
+    python/CyPy_Vector3D.cpp python/CyPy_Vector3D.h
+    python/CyPy_Quaternion.cpp python/CyPy_Quaternion.h
+    python/CyPy_Axisbox.cpp python/CyPy_Axisbox.h
+    python/CyPy_Physics.cpp python/CyPy_Physics.h
+    python/CoordHelper.cpp python/CoordHelper.h
+    python/WrapperBase.cpp python/WrapperBase.h
+    python/CyPy_Server.cpp python/CyPy_Server.h
+    python/CyPy_MemMap.cpp python/CyPy_MemMap.h
+    python/CyPy_MemEntity.cpp python/CyPy_MemEntity.h
+    python/CyPy_Character.cpp python/CyPy_Character.h
+    python/CyPy_BaseMind.cpp python/CyPy_BaseMind.h
+    python/CyPy_Task.cpp python/CyPy_Task.h
+    python/CyPy_WorldTime.cpp python/CyPy_WorldTime.h
+    python/CyPy_World.cpp python/CyPy_World.h)
 
 target_link_libraries(scriptpython ${PYTHON_LIBRARIES} pycxx)
 # Prevent GCC from messing up Python pointer handling

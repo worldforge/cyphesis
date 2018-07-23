@@ -20,6 +20,7 @@
 #define COMMON_TASK_KIT_H
 
 #include <string>
+#include "modules/Ref.h"
 
 class LocatedEntity;
 class Task;
@@ -69,7 +70,7 @@ class TaskKit {
     /// \brief Create a new task
     ///
     /// @param chr the character performing the task
-    virtual Task * newTask(LocatedEntity & chr) = 0;
+    virtual Ref<Task> newTask(LocatedEntity & chr) = 0;
 };
 
 #endif // COMMON_TASK_KIT_H

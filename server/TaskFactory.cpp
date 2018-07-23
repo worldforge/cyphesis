@@ -51,7 +51,7 @@ int TaskFactory::checkTarget(LocatedEntity * target)
     return 0;
 }
 
-Task * TaskFactory::newTask(LocatedEntity & chr)
+Ref<Task> TaskFactory::newTask(LocatedEntity & chr)
 {
     // Create the task, and use its script to add a script
 
@@ -59,5 +59,5 @@ Task * TaskFactory::newTask(LocatedEntity & chr)
     task->name() = m_name;
     assert(task != nullptr);
 
-    return task;
+    return Ref(task);
 }
