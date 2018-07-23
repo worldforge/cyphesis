@@ -23,7 +23,7 @@ std::string verifyString(const Py::Object& object, const std::string& message)
     if (!object.isString()) {
         throw Py::TypeError(message);
     }
-    return object.as_string();
+    return Py::String(object);
 }
 
 float verifyNumeric(const Py::Object& object, const std::string& message)

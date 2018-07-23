@@ -34,7 +34,7 @@ class CyPy_Vector3D : public WrapperBase<WFMath::Vector<3>, CyPy_Vector3D>
 
         static void init_type();
 
-        Py::Object getattro(const Py::String&) override;
+        Py::Object getattro(const Py::String& name) override;
 
         int setattro(const Py::String& name, const Py::Object& attr) override;
 

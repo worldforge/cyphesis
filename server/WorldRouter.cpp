@@ -24,6 +24,7 @@
 
 #include "rulesets/World.h"
 #include "rulesets/Domain.h"
+#include "rulesets/Task.h"
 
 #include "common/id.h"
 #include "common/debug.h"

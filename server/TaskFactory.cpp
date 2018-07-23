@@ -59,5 +59,5 @@ Ref<Task> TaskFactory::newTask(LocatedEntity & chr)
     task->name() = m_name;
     assert(task != nullptr);
 
-    return Ref(task);
+    return Ref<Task>(task);
 }

@@ -65,6 +65,7 @@ static const bool debug_flag = false;
 /// log subsystem
 struct LogWriter : public WrapperBase<LogLevel, LogWriter>
 {
+    std::string m_message;
     LogWriter(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
         : WrapperBase(self, args, kwds)
     {
@@ -77,28 +78,31 @@ struct LogWriter : public WrapperBase<LogLevel, LogWriter>
 
     }
 
-    void python_log(LogLevel lvl, std::string message)
+    void python_log(LogLevel lvl, const std::string& msg)
     {
+
+        m_message += msg;
         std::string::size_type n = 0;
         std::string::size_type p;
-        for (p = message.find_first_of('\n');
+        for (p = m_message.find_first_of('\n');
              p != std::string::npos;
-             p = message.find_first_of('\n', n)) {
-            log(lvl, message.substr(n, p - n));
+             p = m_message.find_first_of('\n', n)) {
+            log(lvl, m_message.substr(n, p - n));
             n = p + 1;
         }
-        if (message.size() > n) {
-            message = message.substr(n, message.size() - n);
+        if (m_message.size() > n) {
+            m_message = m_message.substr(n, m_message.size() - n);
         } else {
-            message.clear();
+            m_message.clear();
         }
+
     }
 
     Py::Object write(const Py::Tuple& args)
     {
-        args.verify_length(1);
-
-        python_log(m_value, std::move(verifyString(args.front())));
+        if (args.length() > 0 && args.front().isString()) {
+            python_log(m_value, verifyString(args.front()));
+        }
 
         return Py::None();
     }
@@ -128,54 +132,46 @@ struct LogWriter : public WrapperBase<LogLevel, LogWriter>
 /// @param package the name of the module for error reporting
 /// @param type the name of the class or type
 /// @return new reference
-PyObject * Get_PyClass(PyObject * module,
+Py::Callable Get_PyClass(const Py::Module& module,
                        const std::string & package,
                        const std::string & type)
 {
-    PyObject * py_class = PyObject_GetAttrString(module, (char *)type.c_str());
-    if (py_class == nullptr) {
+    auto py_class = module.getAttr(type);
+    if (py_class.isNull()) {
         log(ERROR, String::compose("Could not find python class \"%1.%2\"",
                                    package, type));
         PyErr_Print();
-        return nullptr;
+        return Py::Null();
     }
-    if (PyCallable_Check(py_class) == 0) {
+    if (!py_class.isCallable()) {
         log(ERROR, String::compose("Could not instance python class \"%1.%2\"",
                                    package, type));
-        Py_DECREF(py_class);
-        return nullptr;
+        return Py::Null();
     }
-    if (PyType_Check(py_class) == 0) {
-        log(ERROR, String::compose("PyCallable_Check returned true, "
-                                   "but PyType_Check returned false \"%1.%2\"",
-                                   package, type));
-        Py_DECREF(py_class);
-        return nullptr;
-    }
-    return py_class;
+    return Py::Callable(py_class);
 }
 
 /// \brief Import a Python module
 ///
 /// @param package the name of the module
 /// @return new reference
-PyObject * Get_PyModule(const std::string & package)
+Py::Module Get_PyModule(const std::string & package)
 {
-    PyObject * package_name = PyUnicode_FromString((char *)package.c_str());
-    PyObject * module = PyImport_Import(package_name);
-    Py_DECREF(package_name);
+    Py::String package_name(package);
+    PyObject * module = PyImport_Import(package_name.ptr());
     if (module == nullptr) {
         log(ERROR, String::compose("Missing python module \"%1\"", package));
         PyErr_Print();
     }
-    return module;
+    return Py::Module(module);
 }
 
-PyObject * Create_PyScript(PyObject * wrapper, PyObject * py_class)
+Py::Object Create_PyScript(const Py::Object& wrapper, const Py::Callable& py_class)
 {
-    PyObject * pyob = PyEval_CallFunction(py_class,"(O)", wrapper);
+    auto ret = py_class.apply(Py::Tuple(wrapper));
 
-    if (pyob == nullptr) {
+    //FIXME: try..catch?
+    if (ret.isNull()) {
         if (PyErr_Occurred() == nullptr) {
             log(ERROR, "Could not create python instance");
         } else {
@@ -183,7 +179,7 @@ PyObject * Create_PyScript(PyObject * wrapper, PyObject * py_class)
             PyErr_Print();
         }
     }
-    return pyob;
+    return ret;
 }
 
 sigc::signal<void> python_reload_scripts;
@@ -198,13 +194,12 @@ void reloadChangedPaths() {
             auto& package = entry.second;
             auto& path = entry.first;
             auto module = Get_PyModule(package);
-            if (module != nullptr) {
+            if (module.isNull()) {
                 log(INFO, String::compose("Reloading module \"%1\" from file %2.", package, path));
-                auto result = PyImport_ReloadModule(module);
-                if (result != module) {
+                auto result = PyImport_ReloadModule(module.ptr());
+                if (result != module.ptr()) {
                     log(WARNING, String::compose("New pointer returned when reloading module \"%1\".", package));
                 }
-                Py_DECREF(module);
 
             }
 
@@ -281,6 +276,7 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
     PyImport_ImportModule("physics");
     PyImport_ImportModule("entity_filter");
     PyImport_ImportModule("server");
+    PyImport_ImportModule("sys");
 
     Py::Module sys_module(PyImport_Import(Py::String("sys").ptr()));
 

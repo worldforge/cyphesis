@@ -33,12 +33,15 @@
 
 #include <iostream>
 #include <memory>
+#include <rulesets/python/CyPy_Operation.h>
+#include <rulesets/python/CyPy_Oplist.h>
+#include <rulesets/python/CyPy_LocatedEntity.h>
 
 static const bool debug_flag = false;
 
 /// \brief PythonEntityScript constructor
-PythonEntityScript::PythonEntityScript(PyObject * o) :
-                    PythonWrapper(o)
+PythonEntityScript::PythonEntityScript(Py::Callable obj) :
+                    PythonWrapper(obj)
 {
 }
 
@@ -46,125 +49,117 @@ HandlerResult PythonEntityScript::operation(const std::string & op_type,
                                    const Operation & op,
                                    OpVector & res)
 {
-    assert(m_wrapper != nullptr);
-    std::string op_name = op_type + "_operation";
-    debug( std::cout << "Got script object for " << op_name << std::endl
-                                                            << std::flush;);
-    // This check isn't really necessary, except it saves the conversion
-    // time.
-    if (!PyObject_HasAttrString(m_wrapper, (char *)(op_name.c_str()))) {
-        debug( std::cout << "No method to be found for " << op_name
-                         << std::endl << std::flush;);
-        return OPERATION_IGNORED;
-    }
-
-    // Construct appropriate python object thingies from op
-    PyOperation * py_op = newPyConstOperation();
-    if (py_op == nullptr) {
-        return OPERATION_IGNORED;
-    }
-    py_op->operation = op;
-    PyObject * ret = PyObject_CallMethod(m_wrapper, (char *)(op_name.c_str()),
-                                            (char *)"(O)", py_op);
-    Py_DECREF(py_op);
-    if (ret == nullptr) {
-        if (PyErr_Occurred() == nullptr) {
-            debug( std::cout << "No method to be found for " << std::endl
-                             << std::flush;);
-        } else {
-            log(ERROR, String::compose("Python error calling \"%1\"", op_name));
-            PyErr_Print();
-            if (op->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
-                log(ERROR,
-                    String::compose("Script for \"%1\" has reported an error "
-                                    "processing a tick operation. "
-                                    "This entity is probably now inactive.",
-                                    op->getTo()));
-            }
+        assert(!m_wrapper.isNull());
+        std::string op_name = op_type + "_operation";
+        debug(std::cout << "Got script object for " << op_name << std::endl
+                        << std::flush;);
+        // This check isn't really necessary, except it saves the conversion
+        // time.
+        if (!m_wrapper.hasAttr(op_name)) {
+            debug(std::cout << "No method to be found for " << op_name
+                            << std::endl << std::flush;);
+            return OPERATION_IGNORED;
         }
-        return OPERATION_IGNORED;
-    }
-    debug( std::cout << "Called python method " << op_name
-                     << std::endl << std::flush;);
 
-    HandlerResult result = OPERATION_IGNORED;
-
-    auto processPythonResultFn = [&](PyObject* pythonResult){
-        if (PyLong_Check(pythonResult)) {
-            auto numRet = PyLong_AsLong(pythonResult);
-            if (numRet == 0) {
-                result = OPERATION_IGNORED;
-            } else if (numRet == 1) {
-                result = OPERATION_HANDLED;
-            } else if (numRet == 2) {
-                result = OPERATION_BLOCKED;
-            } else {
-                log(ERROR, String::compose("Unrecognized return code %1 for operation handler '%2'", numRet, op_name));
-            }
-
-        } else if (PyOperation_Check(pythonResult)) {
-            auto *operation = (PyOperation *) pythonResult;
-            assert(operation->operation.isValid());
-            //Filter out raw operations, as these are meant to be used to short circuit goals. They should thus never be sent on.
-            if (operation->operation->getParent() != "operation") {
-                res.push_back(operation->operation);
-            }
-        } else if (PyOplist_Check(pythonResult)) {
-            auto *oplist = (PyOplist *) pythonResult;
-            assert(oplist->ops != nullptr);
-            const OpVector &o = *oplist->ops;
-            auto Iend = o.end();
-            for (auto I = o.begin(); I != Iend; ++I) {
-                //Filter out raw operations, as these are meant to be used to short circuit goals. They should thus never be sent on.
-                if ((*I)->getParent() != "operation") {
-                    res.push_back(*I);
+        if (!m_wrapper.isCallable()) {
+            debug(std::cout << "Python object can't be called"
+                            << std::endl << std::flush;);
+            return OPERATION_IGNORED;
+        }
+    try {
+        Py::Callable callable(m_wrapper);
+        auto ret = callable.callMemberFunction(op_name, CyPy_Operation::wrap(op));
+        if (ret.isNull()) {
+                log(ERROR, String::compose("Python error calling \"%1\"", op_name));
+                PyErr_Print();
+                if (op->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
+                    log(ERROR,
+                        String::compose("Script for \"%1\" has reported an error "
+                                        "processing a tick operation. "
+                                        "This entity is probably now inactive.",
+                                        op->getTo()));
                 }
-            }
-        } else {
-            log(ERROR, String::compose("Python script \"%1\" returned an invalid "
-                                       "result.", op_name));
+            return OPERATION_IGNORED;
         }
-    };
+        debug(std::cout << "Called python method " << op_name
+                        << std::endl << std::flush;);
 
-    if (ret == Py_None) {
-        debug(std::cout << "Returned none" << std::endl << std::flush;);
-    } else {
-        //Check if it's a tuple and process it.
-        if (PyTuple_Check(ret)) {
-            auto size = PyTuple_Size(ret);
-            for (Py_ssize_t i = 0; i < size; ++i) {
-                processPythonResultFn(PyTuple_GetItem(ret, i));
+        HandlerResult result = OPERATION_IGNORED;
+
+        auto processPythonResultFn = [&](const Py::Object& pythonResult) {
+            if (pythonResult.isLong()) {
+                auto numRet = Py::Long(pythonResult).as_long();
+                if (numRet == 0) {
+                    result = OPERATION_IGNORED;
+                } else if (numRet == 1) {
+                    result = OPERATION_HANDLED;
+                } else if (numRet == 2) {
+                    result = OPERATION_BLOCKED;
+                } else {
+                    log(ERROR, String::compose("Unrecognized return code %1 for operation handler '%2'", numRet, op_name));
+                }
+
+            } else if (CyPy_Operation::check(pythonResult)) {
+                auto operation = CyPy_Operation::value(pythonResult);
+                assert(operation);
+                //Filter out raw operations, as these are meant to be used to short circuit goals. They should thus never be sent on.
+                if (operation->getParent() != "operation") {
+                    res.push_back(std::move(operation));
+                }
+            } else if (CyPy_Oplist::check(pythonResult)) {
+                auto& o = CyPy_Oplist::value(pythonResult);
+                for (auto& opRes : o) {
+                    if (opRes->getParent() != "operation") {
+                        res.push_back(opRes);
+                    }
+                }
+            } else {
+                log(ERROR, String::compose("Python script \"%1\" returned an invalid "
+                                           "result.", op_name));
             }
+        };
+
+        if (ret.isNone()) {
+            debug(std::cout << "Returned none" << std::endl << std::flush;);
         } else {
-            processPythonResultFn(ret);
+            //Check if it's a tuple and process it.
+            if (ret.isTuple()) {
+                for (auto item : Py::Tuple(ret)) {
+                    processPythonResultFn(item);
+                }
+            } else {
+                processPythonResultFn(ret);
+            }
         }
+
+        return result;
+    } catch (const Py::BaseException& py_ex) {
+        log(ERROR, String::compose("Python error calling \"%1\"", op_name));
+        PyErr_Print();
+        if (op->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
+            log(ERROR,
+                String::compose("Script for \"%1\" has reported an error "
+                                "processing a tick operation. "
+                                "This entity is probably now inactive.",
+                                op->getTo()));
+        }
+        return OPERATION_IGNORED;
     }
-
-    Py_DECREF(ret);
-    return result;
 }
 
 void PythonEntityScript::hook(const std::string & function,
                               LocatedEntity * entity)
 {
-    PyObject * wrapper = wrapEntity(entity);
-    if (wrapper == nullptr) {
+    auto wrapper = CyPy_LocatedEntity::wrap(entity);
+    if (wrapper.isNull()) {
         return;
     }
 
-    PyObject * ret = PyObject_CallMethod(m_wrapper,
-                                         (char *)(function.c_str()),
-                                         (char *)"(O)",
-                                         wrapper);
-    Py_DECREF(wrapper);
-    if (ret == nullptr) {
-        if (PyErr_Occurred() == nullptr) {
-            log(NOTICE, "No hook");
-        } else {
-            log(ERROR, "Reporting python error");
-            PyErr_Print();
-        }
-    } else {
-        Py_DECREF(ret);
+    try {
+        auto ret = m_wrapper.callMemberFunction(function, wrapper);
+    } catch (const Py::BaseException& py_ex) {
+        log(ERROR, "Reporting python error");
+        PyErr_Print();
     }
+
 }

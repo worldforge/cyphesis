@@ -19,6 +19,7 @@
 #ifndef RULESETS_PYTHON_SCRIPT_FACTORY_H
 #define RULESETS_PYTHON_SCRIPT_FACTORY_H
 
+#include "external/pycxx/CXX/Objects.hxx"
 #include "rulesets/PythonClass.h"
 
 #include "common/ScriptKit.h"
@@ -39,7 +40,7 @@ class PythonScriptFactory : public ScriptKit<T>, private PythonClass {
 
   protected:
 
-    _object* createScript(T * entity) const;
+    Py::Object createScript(T * entity) const;
 };
 
 #endif // RULESETS_PYTHON_SCRIPT_FACTORY_H

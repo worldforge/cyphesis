@@ -19,6 +19,9 @@
 #ifndef RULESETS_PYTHON_SCRIPT_FACTORY_IMPL_H
 #define RULESETS_PYTHON_SCRIPT_FACTORY_IMPL_H
 
+#include "rulesets/python/CyPy_LocatedEntity.h"
+#include "rulesets/python/CyPy_Task.h"
+#include "rulesets/BaseMind.h"
 #include "PythonScriptFactory.h"
 
 #include "PythonEntityScript.h"
@@ -28,6 +31,16 @@
 ///
 /// @param package Name of the script package where the script type is
 /// @param type Name of the script types instanced by this factory
+
+Py::Object wrapPython(LocatedEntity* value) {
+    return CyPy_LocatedEntity::wrap(value);
+}
+Py::Object wrapPython(BaseMind* value) {
+    return CyPy_LocatedEntity::wrap(value);
+}
+Py::Object wrapPython(Task* value) {
+    return CyPy_Task::wrap(value);
+}
 
 template <class T>
 int PythonScriptFactory<T>::setup()
@@ -42,35 +55,29 @@ const std::string & PythonScriptFactory<T>::package() const
 }
 
 template<class T>
-PyObject* PythonScriptFactory<T>::createScript(T* entity) const
+Py::Object PythonScriptFactory<T>::createScript(T* entity) const
 {
     if (this->m_class == 0) {
-        return nullptr;
+        return Py::Null();
     }
-    PyObject * wrapper = wrapPython(entity);
-    if (wrapper == nullptr) {
-        return nullptr;
+    auto wrapper = wrapPython(entity);
+    if (wrapper.isNull()) {
+        return Py::Null();
     }
-
-    PyObject * script = Create_PyScript(wrapper, this->m_class);
-
-    Py_DECREF(wrapper);
-
-    return script;
+    return this->m_class.apply(Py::Tuple(wrapper));
 }
 
 template <class T>
 int PythonScriptFactory<T>::addScript(T * entity) const
 {
     auto script = createScript(entity);
-    if (script) {
+    if (!script.isNull()) {
         auto scriptInstance = new PythonEntityScript(script);
         entity->setScript(scriptInstance);
 
-        Py_DECREF(script);
     }
 
-    return (script == nullptr) ? -1 : 0;
+    return (script.isNull()) ? -1 : 0;
 }
 
 template <class T>

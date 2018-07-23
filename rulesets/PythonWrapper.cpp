@@ -24,15 +24,14 @@
 #include "common/log.h"
 
 /// \brief PythonWrapper constructor
-PythonWrapper::PythonWrapper(PyObject * wrapper) : m_wrapper(wrapper)
+PythonWrapper::PythonWrapper(Py::Object wrapper)
+    : m_wrapper(std::move(wrapper))
 {
-    Py_INCREF(m_wrapper);
 }
 
 PythonWrapper::~PythonWrapper()
 {
-    if (m_wrapper->ob_refcnt != 1) {
-        log(WARNING, String::compose("Deleting Python object of type '%1' with %2 > 1 refs to its wrapper/script", m_wrapper->ob_type->tp_name, m_wrapper->ob_refcnt));
+    if (m_wrapper.reference_count() != 1) {
+        log(WARNING, String::compose("Deleting Python object of type '%1' with %2 > 1 refs to its wrapper/script", "FIXME: expose type in Py::Type", m_wrapper.reference_count()));
     }
-    Py_DECREF(m_wrapper);
 }

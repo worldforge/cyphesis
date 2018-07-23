@@ -19,15 +19,16 @@
 #ifndef RULESETS_PYTHON_SCRIPT_UTILS_H
 #define RULESETS_PYTHON_SCRIPT_UTILS_H
 
+#include "external/pycxx/CXX/Objects.hxx"
 #include <string>
 
 class BaseMind;
 class Entity;
 
-struct _object * Get_PyClass(struct _object * module,
+Py::Callable Get_PyClass(const Py::Module& module,
                        const std::string & package,
                        const std::string & type);
-struct _object * Get_PyModule(const std::string & package);
-struct _object * Create_PyScript(struct _object *, struct _object *);
+Py::Module Get_PyModule(const std::string & package);
+Py::Callable Create_PyScript(struct _object *, struct _object *);
 
 #endif // RULESETS_PYTHON_SCRIPT_UTILS_H

@@ -30,11 +30,10 @@
 /// @param package name of the script package scripts are to be created from
 /// @param type name of the type instanced to create scripts
 PythonClass::PythonClass(const std::string & package,
-                         const std::string & type,
-                         PyTypeObject * base) :
+                         const std::string & type) :
     m_package(package),
     m_type(type),
-    m_base(base),
+//    m_base(base),
     m_module(nullptr),
     m_class(nullptr)
 {
@@ -42,18 +41,12 @@ PythonClass::PythonClass(const std::string & package,
 
 PythonClass::~PythonClass()
 {
-    if (m_class != nullptr) {
-        Py_DECREF(m_class);
-    }
-    if (m_module != nullptr) {
-        Py_DECREF(m_module);
-    }
 }
 
 int PythonClass::load()
 {
     m_module = Get_PyModule(m_package);
-    if (m_module == nullptr) {
+    if (m_module.isNull()) {
         return -1;
     }
     return getClass(m_module);
@@ -61,26 +54,22 @@ int PythonClass::load()
 
 /// \brief Retrieve the pythonclass object from the module which has
 /// already been loaded.
-int PythonClass::getClass(PyObject * module)
+int PythonClass::getClass(const Py::Module& module)
 {
-    PyObject * new_class = Get_PyClass(module, m_package, m_type);
-    if (new_class == nullptr) {
+    auto new_class = Get_PyClass(module, m_package, m_type);
+    if (new_class.isNull()) {
         // If this is a new class, leave it as zero and fail and this
         // should be discarded by <*>RuleHandler
         // If this is an existing class, leave it as the old value, but
         // fail the update. This should signal back to the client.
         return -1;
     }
-    if (!PyType_IsSubtype((PyTypeObject*)new_class, m_base)) {
-        log(ERROR, String::compose("Python class \"%1.%2\" does not inherit "
-                                   "from a core server type \"%3\".",
-                                   m_package, m_type, m_base->tp_name));
-        Py_DECREF(new_class);
-        return -1;
-    }
-    if (m_class != nullptr) {
-        Py_DECREF(m_class);
-    }
+//    if (!PyType_IsSubtype((PyTypeObject*)new_class.type().ptr, m_base)) {
+//        log(ERROR, String::compose("Python class \"%1.%2\" does not inherit "
+//                                   "from a core server type \"%3\".",
+//                                   m_package, m_type, m_base->tp_name));
+//        return -1;
+//    }
     m_class = new_class;
 
     return 0;
@@ -89,12 +78,12 @@ int PythonClass::getClass(PyObject * module)
 int PythonClass::refresh()
 {
     log(NOTICE, String::compose("Refreshing Python module \"%1.%2\".", m_package, m_type));
-    if (m_module == nullptr) {
+    if (m_module.isNull()) {
         log(ERROR, String::compose("Abort refresh of non loaded module \"%1.%2\".", m_package, m_type));
         return -1;
     }
-    PyObject * new_module = PyImport_ReloadModule(m_module);
-    if (new_module == nullptr) {
+    Py::Module new_module(PyImport_ReloadModule(m_module.ptr()));
+    if (new_module.isNull()) {
         log(ERROR, String::compose("Error reloading python module \"%1\"",
                                    m_package));
         PyErr_Clear();
@@ -110,9 +99,6 @@ int PythonClass::refresh()
         // be collected at least until we release the reference we hold
         // in m_class
     }
-    // We decref even though this is probably an identical pointer to the
-    // module because the PyImport_ call returned a new reference
-    Py_DECREF(m_module);
     if (m_module != new_module) {
         log(WARNING, String::compose("Python module \"%1.%2\" has changed "
                                      "its pointer on reload",

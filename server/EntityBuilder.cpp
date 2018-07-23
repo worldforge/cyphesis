@@ -22,6 +22,7 @@
 #include "ArchetypeFactory.h"
 
 #include "rulesets/LocatedEntity.h"
+#include "rulesets/Task.h"
 
 #include "common/BaseWorld.h"
 #include "common/debug.h"

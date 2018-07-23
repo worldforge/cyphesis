@@ -20,8 +20,6 @@
 
 #include "PythonScriptFactory_impl.h"
 
-#include "rulesets/Py_Thing.h"
-#include "rulesets/Py_Task.h"
 #include "rulesets/Python_Script_Utils.h"
 
 #include "rulesets/BaseMind.h"
@@ -30,8 +28,7 @@
 template<>
 PythonScriptFactory<LocatedEntity>::PythonScriptFactory(const std::string & p,
                                                         const std::string & t) :
-                                                        PythonClass(p, t,
-                                                             &PyEntity_Type)
+                                                        PythonClass(p, t)
 {
 }
 
@@ -39,8 +36,7 @@ template<>
 PythonScriptFactory<Task>::PythonScriptFactory(const std::string & package,
                                                const std::string & type) :
                                                PythonClass(package,
-                                                           type,
-                                                           &PyTask_Type)
+                                                           type)
 {
 }
 
@@ -48,8 +44,7 @@ template<>
 PythonScriptFactory<BaseMind>::PythonScriptFactory(const std::string & package,
                                                    const std::string & type) :
                                                    PythonClass(package,
-                                                               type,
-                                                               &PyMind_Type)
+                                                               type)
 {
 }
 

@@ -21,22 +21,23 @@
 
 #include "Script.h"
 #include <object.h>
+#include "external/pycxx/CXX/Objects.hxx"
 
 /// \brief Wrapper class for entities without scripts but with wrappers
 /// \ingroup Scripts
 class PythonWrapper : public Script {
   protected:
     /// \brief Python object that wraps the entity.
-    struct _object * m_wrapper;
+    Py::Object m_wrapper;
   public:
-    explicit PythonWrapper(struct _object * wrapper);
+    explicit PythonWrapper(Py::Object wrapper);
     ~PythonWrapper() override;
 
     /// \brief Accessor for the python object that wraps the entity.
-    struct _object * wrapper() const { return m_wrapper; }
+    const Py::Object& wrapper() const { return m_wrapper; }
 };
 
 template<class T>
-struct _object * wrapPython(T * entity);
+struct Py::Object wrapPython(T * entity);
 
 #endif // RULESETS_PYTHON_WRAPPER_H

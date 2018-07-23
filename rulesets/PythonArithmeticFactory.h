@@ -26,15 +26,17 @@
 #include <string>
 
 /// \brief Factory class for for creating python arithmetic scripts
-class PythonArithmeticFactory : public ArithmeticKit, private PythonClass {
-  public:
-    PythonArithmeticFactory(const std::string & package,
-                            const std::string & name);
-    virtual ~PythonArithmeticFactory();
+class PythonArithmeticFactory : public ArithmeticKit, private PythonClass
+{
+    public:
+        PythonArithmeticFactory(const std::string& package,
+                                const std::string& name);
 
-    int setup();
+        ~PythonArithmeticFactory() override;
 
-    virtual ArithmeticScript * newScript(LocatedEntity * owner);
+        int setup();
+
+        ArithmeticScript* newScript(LocatedEntity* owner) override;
 };
 
 #endif // RULESETS_PYTHON_ARITHMETIC_FACTORY_H

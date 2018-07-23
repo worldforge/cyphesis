@@ -17,6 +17,7 @@
 
 
 #include <Python.h>
+#include <rulesets/python/CyPy_LocatedEntity.h>
 
 #include "rulesets/PythonArithmeticFactory.h"
 
@@ -31,9 +32,7 @@
 /// @param name Name of the type within the package for the script
 PythonArithmeticFactory::PythonArithmeticFactory(const std::string & package,
                                                  const std::string & name) :
-                                                 PythonClass(package,
-                                                             name,
-                                                             &PyBaseObject_Type)
+                                                 PythonClass(package, name)
 {
 }
 
@@ -53,27 +52,21 @@ int PythonArithmeticFactory::setup()
 ArithmeticScript * PythonArithmeticFactory::newScript(LocatedEntity * owner)
 {
     // Create the task, and use its script to add a script
-    if (m_class == 0) {
-        return 0;
+    if (m_class.isNull()) {
+        return nullptr;
     }
 
     // FIXME Pass in entity for initialisation of entity pointer in
     // EntityWrapper.
-    PyObject * py_object;
+    Py::Object  py_object;
 
-    if (owner == 0) {
-        py_object = PyEval_CallFunction(m_class, "()");
+    if (owner == nullptr) {
+        py_object = m_class.apply();
     } else {
-        PyObject * entity = wrapEntity(owner);
-        if (entity == 0) {
-            log(ERROR, "Could not wrap character when installing statistics");
-            return 0;
-        }
-        py_object = PyEval_CallFunction(m_class, "(O)", entity);
-        Py_DECREF(entity);
+        py_object = m_class.apply(Py::Tuple(CyPy_LocatedEntity::wrap(owner)));
     }
     
-    if (py_object == 0) {
+    if (py_object.isNull()) {
         if (PyErr_Occurred() == nullptr) {
             log(ERROR, "Could not create python stats instance");
         } else {
@@ -83,7 +76,7 @@ ArithmeticScript * PythonArithmeticFactory::newScript(LocatedEntity * owner)
     }
 
     ArithmeticScript * script = new PythonArithmeticScript(py_object);
-    assert(script != 0);
+    assert(script != nullptr);
     // FIXME This is now part of the property, not the character.
     // chr.statistics().m_script = script;
 

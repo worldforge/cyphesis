@@ -20,6 +20,7 @@
 #define RULESETS_PYTHON_CLASS_H
 
 #include <string>
+#include "external/pycxx/CXX/Objects.hxx"
 
 /// \brief Factory interface for creating scripts to attach to in game
 /// entity objects.
@@ -30,18 +31,17 @@ class PythonClass {
     /// \brief Name of the script type instanced by this factory
     std::string m_type;
     /// \brief Base class object this should inherit from
-    struct _typeobject * m_base;
+    //struct _typeobject * m_base;
 
     /// \brief Module object which contains the script class
-    struct _object * m_module;
+    Py::Module m_module;
     /// \brief Class object to be instanced when creating scripts
-    struct _object * m_class;
+    Py::Callable m_class;
 
     PythonClass(const std::string & package,
-                const std::string & type,
-                struct _typeobject * base);
+                const std::string & type);
 
-    int getClass(struct _object *);
+    int getClass(const Py::Module& module);
     int load();
     int refresh();
 

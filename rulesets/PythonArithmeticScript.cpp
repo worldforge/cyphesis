@@ -23,30 +23,25 @@
 #include "common/log.h"
 #include "common/compose.hpp"
 
-#include <iostream>
-
 /// \brief PythonArithmeticScript
 ///
 /// @param script Python instance object implementing the script
-PythonArithmeticScript::PythonArithmeticScript(PyObject * script) :
-                                               m_script(script)
+PythonArithmeticScript::PythonArithmeticScript(Py::Callable script) :
+    m_script(std::move(script))
 {
 }
 
 PythonArithmeticScript::~PythonArithmeticScript()
 {
-    if (m_script->ob_refcnt != 1) {
-        log(WARNING, String::compose("Deleting arithmetic script with %1 > 1 refs to its script", m_script->ob_refcnt));
+    if (m_script.reference_count() != 1) {
+        log(WARNING, String::compose("Deleting arithmetic script with %1 > 1 refs to its script", m_script.reference_count()));
     }
-    Py_DECREF(m_script);
 }
 
-int PythonArithmeticScript::attribute(const std::string & name, float & val)
+int PythonArithmeticScript::attribute(const std::string& name, float& val)
 {
-    PyObject * pn = PyUnicode_FromString(name.c_str());
-    PyObject * ret = PyObject_GenericGetAttr(m_script, pn);
-    Py_DECREF(pn);
-    if (ret == nullptr) {
+    auto ret = m_script.getAttr(name);
+    if (ret.isNull()) {
         if (PyErr_Occurred() == nullptr) {
             // std::cout << "No attribute method" << std::endl << std::flush;
         } else {
@@ -55,11 +50,9 @@ int PythonArithmeticScript::attribute(const std::string & name, float & val)
         }
         return -1;
     }
-    if (PyFloat_Check(ret)) {
-        val = PyFloat_AsDouble(ret);
-    } else if (PyLong_Check(ret)) {
-        val = PyLong_AsLong(ret);
-    } else if (ret == Py_None) {
+    if (ret.isNumeric()) {
+        val = static_cast<float>(Py::Float(ret).as_double());
+    } else if (ret.isNone()) {
         return -1;
     } else {
         log(ERROR, "Invalid response from script");
@@ -68,14 +61,7 @@ int PythonArithmeticScript::attribute(const std::string & name, float & val)
     return 0;
 }
 
-void PythonArithmeticScript::set(const std::string & name, const float & val)
+void PythonArithmeticScript::set(const std::string& name, const float& val)
 {
-    PyObject * pn = PyUnicode_FromString(name.c_str());
-    PyObject * py_val = PyFloat_FromDouble(val);
-    if (PyObject_GenericSetAttr(m_script, pn, py_val) == 0) {
-        // PyObject_GenericSetAttr sets and error if nothing was found
-        PyErr_Clear();
-    }
-    Py_DECREF(pn);
-    Py_DECREF(py_val);
+    m_script.setAttr(name, Py::Float(val));
 }

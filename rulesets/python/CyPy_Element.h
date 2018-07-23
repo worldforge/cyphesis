@@ -34,6 +34,8 @@ class CyPy_Element : public WrapperBase<Atlas::Message::Element, CyPy_Element>
 
         static void init_type();
 
+        static Py::Object wrap(Atlas::Message::Element value);
+
         Py::Object repr() override;
 
         Py::Object getattro(const Py::String&) override;

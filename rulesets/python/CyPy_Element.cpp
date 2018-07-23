@@ -227,3 +227,12 @@ Element CyPy_Element::asElement(const Py::Object& o)
     }
     throw Py::TypeError("Contained object could not be converted to an Element.");
 }
+
+Py::Object CyPy_Element::wrap(Atlas::Message::Element value)
+{
+    if (value.isNone()) {
+        return Py::None();
+    } else {
+        return WrapperBase::wrap(std::move(value));
+    }
+}

@@ -26,7 +26,7 @@
 /// \ingroup Scripts
 class PythonEntityScript : public PythonWrapper {
   public:
-    explicit PythonEntityScript(PyObject *);
+    explicit PythonEntityScript(Py::Callable obj);
 
     ~PythonEntityScript() override = default;
 

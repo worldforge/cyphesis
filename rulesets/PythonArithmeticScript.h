@@ -19,24 +19,29 @@
 #ifndef RULESETS_PYTHON_ARITHMETIC_SCRIPT_H
 #define RULESETS_PYTHON_ARITHMETIC_SCRIPT_H
 
+#include <external/pycxx/CXX/Objects.hxx>
 #include "ArithmeticScript.h"
 
 /// \brief Base class for script objects which handle statistics for entities.
 ///
 /// This base class allows scripts to override attribute requests
-class PythonArithmeticScript : public ArithmeticScript {
-  protected:
-    /// \brief Python instance object implementing the script
-    struct _object * m_script;
-  public:
-    PythonArithmeticScript(struct _object * script);
-    virtual ~PythonArithmeticScript();
+class PythonArithmeticScript : public ArithmeticScript
+{
+    protected:
+        /// \brief Python instance object implementing the script
+        Py::Callable m_script;
+    public:
+        explicit PythonArithmeticScript(Py::Callable script);
 
-    /// \brief Accessor for python instance object implementing the script
-    struct _object * script() const { return m_script; }
+        ~PythonArithmeticScript() override;
 
-    virtual int attribute(const std::string & name, float & val);
-    virtual void set(const std::string & name, const float & val);
+        /// \brief Accessor for python instance object implementing the script
+        const Py::Callable& script() const
+        { return m_script; }
+
+        int attribute(const std::string& name, float& val) override;
+
+        void set(const std::string& name, const float& val) override;
 };
 
 #endif // RULESETS_PYTHON_ARITHMETIC_SCRIPT_H

@@ -415,13 +415,13 @@ target_link_libraries(ThingIntegration rulesetentity rulesetbase modules common 
 
 
 # CLIENT_TESTS
-wf_add_test(Py_CreatorClientTest.cpp python_testers.cpp ${PROJECT_SOURCE_DIR}/client/Py_CreatorClient.cpp
-        ${PROJECT_SOURCE_DIR}/client/Py_ObserverClient.cpp
+wf_add_test(Py_CreatorClientTest.cpp python_testers.cpp ${PROJECT_SOURCE_DIR}/client/CyPy_CreatorClient.cpp
+        ${PROJECT_SOURCE_DIR}/client/CyPy_ObserverClient.cpp
         ${PROJECT_SOURCE_DIR}/client/Python_ClientAPI.cpp)
 target_link_libraries(Py_CreatorClientTest ${PYTHON_TESTS_LIBS})
 
-wf_add_test(Py_ObserverClientTest.cpp python_testers.cpp ${PROJECT_SOURCE_DIR}/client/Py_CreatorClient.cpp
-        ${PROJECT_SOURCE_DIR}/client/Py_ObserverClient.cpp
+wf_add_test(Py_ObserverClientTest.cpp python_testers.cpp ${PROJECT_SOURCE_DIR}/client/CyPy_CreatorClient.cpp
+        ${PROJECT_SOURCE_DIR}/client/CyPy_ObserverClient.cpp
         ${PROJECT_SOURCE_DIR}/client/Python_ClientAPI.cpp)
 target_link_libraries(Py_ObserverClientTest ${PYTHON_TESTS_LIBS})
 
