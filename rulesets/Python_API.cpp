@@ -21,24 +21,6 @@
 #include "Python_API.h"
 #include "Python_Script_Utils.h"
 
-#include "Py_BBox.h"
-#include "Py_Message.h"
-#include "Py_Thing.h"
-#include "Py_MemMap.h"
-#include "Py_Location.h"
-#include "Py_Vector3D.h"
-#include "Py_Point3D.h"
-#include "Py_Quaternion.h"
-#include "Py_Shape.h"
-#include "Py_WorldTime.h"
-#include "Py_World.h"
-#include "Py_Operation.h"
-#include "Py_RootEntity.h"
-#include "Py_Oplist.h"
-#include "Py_Property.h"
-#include "Py_Task.h"
-#include "Py_Filter.h"
-
 #include "PythonEntityScript.h"
 #include "BaseMind.h"
 
@@ -56,6 +38,7 @@
 #include <rulesets/python/CyPy_Atlas.h>
 #include <rulesets/python/CyPy_Physics.h>
 #include <rulesets/python/CyPy_Server.h>
+#include <rulesets/python/WrapperBase.h>
 
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
@@ -69,283 +52,74 @@ static const bool debug_flag = false;
 /// Structure types based on the PyObject header used to wrap C++ objects
 /// in Python.
 
-static PyObject * log_debug(PyObject * self, PyObject * args, PyObject * kwds)
-{
-    if (consts::debug_level != 0) {
-        int level;
-        char *message;
-        PyObject * op;
-
-        if (!PyArg_ParseTuple(args, "is|O", &level, &message, &op)) {
-            return nullptr;
-        }
-
-        if (consts::debug_level >= level) {
-            log(SCRIPT, message);
-        }
-    }
-
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-
-static PyObject * log_think(PyObject * self, PyObject * args, PyObject * kwds)
-{
-    if (consts::debug_thinking != 0) {
-        char *message;
-
-        if (!PyArg_ParseTuple(args, "s", &message)) {
-            return nullptr;
-        }
-
-        log(SCRIPT, message);
-    }
-
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-
-PyTypeObject log_debug_type = {
-        PyVarObject_HEAD_INIT(&PyType_Type, 0)
-        "Function",
-        sizeof(PyObject),
-        0,
-        /* methods */
-        0,
-        0,              /* tp_print */
-        0,              /* tp_getattr */
-        0,              /* tp_setattr */
-        0,              /* tp_compare */
-        0,              /* tp_repr */
-        0,              /* tp_as_number */
-        0,              /* tp_as_sequence */
-        0,              /* tp_as_mapping */
-        0,              /* tp_hash */
-        log_debug,      /* tp_call */
-        0,                              // tp_str
-        0,                              // tp_getattro
-        0,                              // tp_setattro
-        0,                              // tp_as_buffer
-        Py_TPFLAGS_DEFAULT,             // tp_flags
-        "Function objects",             // tp_doc
-        0,                              // tp_travers
-        0,                              // tp_clear
-        0,                              // tp_richcompare
-        0,                              // tp_weaklistoffset
-        0,                              // tp_iter
-        0,                              // tp_iternext
-        0,                              // tp_methods
-        0,                              // tp_members
-        0,                              // tp_getset
-        0,                              // tp_base
-        0,                              // tp_dict
-        0,                              // tp_descr_get
-        0,                              // tp_descr_set
-        0,                              // tp_dictoffset
-        0,                              // tp_init
-        0,                              // tp_alloc
-        0,                              // tp_new
-};
-
-PyTypeObject log_think_type = {
-        PyVarObject_HEAD_INIT(&PyType_Type, 0)
-        "Function",
-        sizeof(PyObject),
-        0,
-        /* methods */
-        0,
-        0,              /* tp_print */
-        0,              /* tp_getattr */
-        0,              /* tp_setattr */
-        0,              /* tp_compare */
-        0,              /* tp_repr */
-        0,              /* tp_as_number */
-        0,              /* tp_as_sequence */
-        0,              /* tp_as_mapping */
-        0,              /* tp_hash */
-        log_think,      /* tp_call */
-        0,                              // tp_str
-        0,                              // tp_getattro
-        0,                              // tp_setattro
-        0,                              // tp_as_buffer
-        Py_TPFLAGS_DEFAULT,             // tp_flags
-        "Function objects",             // tp_doc
-        0,                              // tp_travers
-        0,                              // tp_clear
-        0,                              // tp_richcompare
-        0,                              // tp_weaklistoffset
-        0,                              // tp_iter
-        0,                              // tp_iternext
-        0,                              // tp_methods
-        0,                              // tp_members
-        0,                              // tp_getset
-        0,                              // tp_base
-        0,                              // tp_dict
-        0,                              // tp_descr_get
-        0,                              // tp_descr_set
-        0,                              // tp_dictoffset
-        0,                              // tp_init
-        0,                              // tp_alloc
-        0,                              // tp_new
-};
 
 //////////////////////////////////////////////////////////////////////////
 // Logger replaces sys.stdout and sys.stderr so the nothing goes to output
 //////////////////////////////////////////////////////////////////////////
+
 
 /// \brief Python type to handle output from python scripts
 ///
 /// In instance of this type is used to replace sys.stdout and sys.stderr
 /// in the Python interpreter so that all script output goes to the cyphesis
 /// log subsystem
-
-static void python_log(LogLevel lvl, const char * msg)
+struct LogWriter : public WrapperBase<LogLevel, LogWriter>
 {
-    static std::string message;
+    LogWriter(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
+        : WrapperBase(self, args, kwds)
+    {
 
-    message += msg;
-    std::string::size_type n = 0;
-    std::string::size_type p;
-    for (p = message.find_first_of('\n');
-         p != std::string::npos;
-         p = message.find_first_of('\n', n)) {
-        log(lvl, message.substr(n, p - n));
-        n = p + 1;
     }
-    if (message.size() > n) {
-        message = message.substr(n, message.size() - n);
-    } else {
-        message.clear();
+
+    LogWriter(Py::PythonClassInstance* self, LogLevel value)
+        : WrapperBase(self, value)
+    {
+
     }
-}
 
-static PyObject * PyOutLogger_write(PyObject * self, PyObject * arg)
-{
-    if (!PyUnicode_CheckExact(arg)) {
-        PyErr_SetString(PyExc_TypeError, "write must be a string");
-        return 0;
+    void python_log(LogLevel lvl, std::string message)
+    {
+        std::string::size_type n = 0;
+        std::string::size_type p;
+        for (p = message.find_first_of('\n');
+             p != std::string::npos;
+             p = message.find_first_of('\n', n)) {
+            log(lvl, message.substr(n, p - n));
+            n = p + 1;
+        }
+        if (message.size() > n) {
+            message = message.substr(n, message.size() - n);
+        } else {
+            message.clear();
+        }
     }
-    char * mesg = PyUnicode_AsUTF8(arg);
 
-    python_log(SCRIPT, mesg);
+    Py::Object write(const Py::Tuple& args)
+    {
+        args.verify_length(1);
 
-    Py_INCREF(Py_None);
-    return Py_None;
-}
+        python_log(m_value, std::move(verifyString(args.front())));
 
-static PyObject * PyOutLogger_flush(PyObject * self)
-{
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-
-static PyObject * PyErrLogger_write(PyObject * self, PyObject * arg)
-{
-    if (!PyUnicode_CheckExact(arg)) {
-        PyErr_SetString(PyExc_TypeError, "write must be a string");
-        return 0;
+        return Py::None();
     }
-    char * mesg = PyUnicode_AsUTF8(arg);
+    PYCXX_VARARGS_METHOD_DECL(LogWriter, write)
 
-    python_log(SCRIPT_ERROR, mesg);
+    Py::Object flush()
+    {
+        return Py::None();
+    }
+    PYCXX_NOARGS_METHOD_DECL(LogWriter, flush)
 
-    Py_INCREF(Py_None);
-    return Py_None;
-}
+    static void init_type() {
+        behaviors().name("LogWriter");
+        behaviors().doc("");
 
-static PyMethodDef PyOutLogger_methods[] = {
-    {"write",       PyOutLogger_write,          METH_O},
-    {"flush",       (PyCFunction)PyOutLogger_flush,          METH_NOARGS},
-    {nullptr,          nullptr}                       /* Sentinel */
-};
+        PYCXX_ADD_NOARGS_METHOD(flush, flush, "");
+        PYCXX_ADD_VARARGS_METHOD(write, write, "");
 
-static PyMethodDef PyErrLogger_methods[] = {
-    {"write",       PyErrLogger_write,          METH_O},
-    {nullptr,          nullptr}                       /* Sentinel */
-};
+        behaviors().readyType();
+    }
 
-PyTypeObject PyOutLogger_Type = {
-        PyVarObject_HEAD_INIT(&PyType_Type, 0)
-        "OutLogger",         // tp_name
-        sizeof(PyObject),    // tp_basicsize
-        0,                   // tp_itemsize
-        //  methods
-        0,                   // tp_dealloc
-        0,                   // tp_print
-        0,                   // tp_getattr
-        0,                   // tp_setattr
-        0,                   // tp_compare
-        0,                   // tp_repr
-        0,                   // tp_as_number
-        0,                   // tp_as_sequence
-        0,                   // tp_as_mapping
-        0,                   // tp_hash
-        0,                              // tp_call
-        0,                              // tp_str
-        0,                              // tp_getattro
-        0,                              // tp_setattro
-        0,                              // tp_as_buffer
-        Py_TPFLAGS_DEFAULT,             // tp_flags
-        "OutLogger objects",            // tp_doc
-        0,                              // tp_travers
-        0,                              // tp_clear
-        0,                              // tp_richcompare
-        0,                              // tp_weaklistoffset
-        0,                              // tp_iter
-        0,                              // tp_iternext
-        PyOutLogger_methods,            // tp_methods
-        0,                              // tp_members
-        0,                              // tp_getset
-        0,                              // tp_base
-        0,                              // tp_dict
-        0,                              // tp_descr_get
-        0,                              // tp_descr_set
-        0,                              // tp_dictoffset
-        0,                              // tp_init
-        0,                              // tp_alloc
-        0,                              // tp_new
-};
-
-PyTypeObject PyErrLogger_Type = {
-        PyVarObject_HEAD_INIT(&PyType_Type, 0)
-        "ErrLogger",         // tp_name
-        sizeof(PyObject),    // tp_basicsize
-        0,                   // tp_itemsize
-        //  methods
-        0,                   // tp_dealloc
-        0,                   // tp_print
-        0,                   // tp_getattr
-        0,                   // tp_setattr
-        0,                   // tp_compare
-        0,                   // tp_repr
-        0,                   // tp_as_number
-        0,                   // tp_as_sequence
-        0,                   // tp_as_mapping
-        0,                   // tp_hash
-        0,                              // tp_call
-        0,                              // tp_str
-        0,                              // tp_getattro
-        0,                              // tp_setattro
-        0,                              // tp_as_buffer
-        Py_TPFLAGS_DEFAULT,             // tp_flags
-        "ErrLogger objects",            // tp_doc
-        0,                              // tp_travers
-        0,                              // tp_clear
-        0,                              // tp_richcompare
-        0,                              // tp_weaklistoffset
-        0,                              // tp_iter
-        0,                              // tp_iternext
-        PyErrLogger_methods,            // tp_methods
-        0,                              // tp_members
-        0,                              // tp_getset
-        0,                              // tp_base
-        0,                              // tp_dict
-        0,                              // tp_descr_get
-        0,                              // tp_descr_set
-        0,                              // tp_dictoffset
-        0,                              // tp_init
-        0,                              // tp_alloc
-        0,                              // tp_new
 };
 
 /// \brief Find a class in a Python module
@@ -412,131 +186,6 @@ PyObject * Create_PyScript(PyObject * wrapper, PyObject * py_class)
     return pyob;
 }
 
-static PyObject * is_location(PyObject * self, PyObject * loc)
-{
-    if (PyLocation_Check(loc)) {
-        Py_INCREF(Py_True);
-        return Py_True;
-    }
-    Py_INCREF(Py_False);
-    return Py_False;
-}
-
-static PyObject * distance_to(PyObject * self, PyObject * args)
-{
-    PyObject * near, * other;
-    if (!PyArg_ParseTuple(args, "OO", &near, &other)) {
-        return nullptr;
-    }
-    if (!PyLocation_Check(near) || !PyLocation_Check(other)) {
-        PyErr_SetString(PyExc_TypeError, "Arg Location required");
-        return nullptr;
-    }
-    PyLocation * sloc = (PyLocation *)near,
-               * oloc = (PyLocation *)other;
-#ifndef NDEBUG
-    if (sloc->location == nullptr || oloc->location == nullptr) {
-        PyErr_SetString(PyExc_AssertionError, "Null location pointer");
-        return nullptr;
-    }
-#endif // NDEBUG
-    PyVector3D * ret = newPyVector3D();
-    if (ret != nullptr) {
-        ret->coords = distanceTo(*sloc->location, *oloc->location);
-    }
-    return (PyObject *)ret;
-}
-
-static PyObject * square_distance(PyObject * self, PyObject * args)
-{
-    PyObject * near, * other;
-    if (!PyArg_ParseTuple(args, "OO", &near, &other)) {
-        return nullptr;
-    }
-    if (!PyLocation_Check(near) || !PyLocation_Check(other)) {
-        PyErr_SetString(PyExc_TypeError, "Arg Location required");
-        return nullptr;
-    }
-    PyLocation * sloc = (PyLocation *)near,
-               * oloc = (PyLocation *)other;
-#ifndef NDEBUG
-    if (sloc->location == nullptr || oloc->location == nullptr) {
-        PyErr_SetString(PyExc_AssertionError, "Null location pointer");
-        return nullptr;
-    }
-#endif // NDEBUG
-    return PyFloat_FromDouble(squareDistance(*sloc->location, *oloc->location));
-}
-
-static PyObject * square_horizontal_distance(PyObject * self, PyObject * args)
-{
-    PyObject * near, * other;
-    if (!PyArg_ParseTuple(args, "OO", &near, &other)) {
-        return nullptr;
-    }
-    if (!PyLocation_Check(near) || !PyLocation_Check(other)) {
-        PyErr_SetString(PyExc_TypeError, "Arg Location required");
-        return nullptr;
-    }
-    PyLocation * sloc = (PyLocation *)near,
-               * oloc = (PyLocation *)other;
-#ifndef NDEBUG
-    if (sloc->location == nullptr || oloc->location == nullptr) {
-        PyErr_SetString(PyExc_AssertionError, "Null location pointer");
-        return nullptr;
-    }
-#endif // NDEBUG
-    return PyFloat_FromDouble(squareHorizontalDistance(*sloc->location, *oloc->location));
-}
-
-/**
- * Measures the horizontal distance between the edges of two entities.
- */
-static PyObject * square_horizontal_edge_distance(PyObject * self, PyObject * args)
-{
-    PyObject * near, * other;
-    if (!PyArg_ParseTuple(args, "OO", &near, &other)) {
-        return nullptr;
-    }
-    if (!PyLocation_Check(near) || !PyLocation_Check(other)) {
-        PyErr_SetString(PyExc_TypeError, "Arg Location required");
-        return nullptr;
-    }
-    PyLocation * sloc = (PyLocation *)near,
-               * oloc = (PyLocation *)other;
-#ifndef NDEBUG
-    if (sloc->location == nullptr || oloc->location == nullptr) {
-        PyErr_SetString(PyExc_AssertionError, "Null location pointer");
-        return nullptr;
-    }
-#endif // NDEBUG
-    return PyFloat_FromDouble(squareHorizontalDistance(*sloc->location, *oloc->location) -
-            boxSquareHorizontalBoundingRadius(sloc->location->m_bBox) -
-            boxSquareHorizontalBoundingRadius(oloc->location->m_bBox));
-}
-
-// In Python 2.3 or later this it is okay to pass in null for the methods
-// of a module, making this obsolete.
-static PyMethodDef no_methods[] = {
-    {nullptr,          nullptr}                       /* Sentinel */
-};
-
-static PyMethodDef atlas_methods[] = {
-    {"isLocation", is_location,                 METH_O},
-    {nullptr,          nullptr}                       /* Sentinel */
-};
-
-static PyMethodDef physics_methods[] = {
-    {"distance_to",distance_to,                 METH_VARARGS},
-    {"square_distance",square_distance,         METH_VARARGS},
-    {"square_horizontal_distance",
-      square_horizontal_distance,               METH_VARARGS},
-    {"square_horizontal_edge_distance",
-      square_horizontal_edge_distance,          METH_VARARGS},
-    {nullptr,          nullptr}                       /* Sentinel */
-};
-
-
 sigc::signal<void> python_reload_scripts;
 std::vector<std::string> python_directories;
 
@@ -591,241 +240,6 @@ void observe_python_directories(boost::asio::io_service& io_service, AssetsManag
 }
 
 
-static PyObject* init_atlas() {
-    static struct PyModuleDef atlas_def = {
-            PyModuleDef_HEAD_INIT,
-            "atlas",
-            nullptr,
-            0,
-            atlas_methods,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr
-    };
-
-    PyObject * atlas = PyModule_Create(&atlas_def);
-    if (atlas == nullptr) {
-        log(CRITICAL, "Python init failed to create atlas module\n");
-        return nullptr;
-    }
-    if (PyType_Ready(&PyConstOperation_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready const Operation wrapper type");
-        return nullptr;
-    }
-    if (PyType_Ready(&PyOperation_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Operation wrapper type");
-        return nullptr;
-    }
-    PyModule_AddObject(atlas, "Operation", (PyObject *)&PyOperation_Type);
-    if (PyType_Ready(&PyRootEntity_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready RootEntity wrapper type");
-        return nullptr;
-    }
-    PyModule_AddObject(atlas, "Entity", (PyObject *)&PyRootEntity_Type);
-    PyOplist_Type.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&PyOplist_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Oplist wrapper type");
-        return nullptr;
-    }
-    PyModule_AddObject(atlas, "Oplist", (PyObject *)&PyOplist_Type);
-    if (PyType_Ready(&PyLocation_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Location wrapper type");
-        return nullptr;
-    }
-    PyModule_AddObject(atlas, "Location", (PyObject *)&PyLocation_Type);
-    PyMessage_Type.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&PyMessage_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Message wrapper type");
-        return nullptr;
-    }
-    PyModule_AddObject(atlas, "Message", (PyObject *)&PyMessage_Type);
-
-    return atlas;
-}
-
-static PyObject* init_physics() {
-    static struct PyModuleDef physics_def = {
-            PyModuleDef_HEAD_INIT,
-            "physics",
-            nullptr,
-            0,
-            physics_methods,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr
-    };
-
-    PyObject * physics = PyModule_Create(&physics_def);
-    if (physics == nullptr) {
-        log(CRITICAL, "Python init failed to create physics module\n");
-        return nullptr;
-    }
-    if (PyType_Ready(&PyVector3D_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Vector3D wrapper type");
-        return nullptr;
-    }
-    PyModule_AddObject(physics, "Vector3D", (PyObject *)&PyVector3D_Type);
-    if (PyType_Ready(&PyPoint3D_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Point3D wrapper type");
-        return nullptr;
-    }
-    PyModule_AddObject(physics, "Point3D", (PyObject *)&PyPoint3D_Type);
-    if (PyType_Ready(&PyBBox_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready BBox wrapper type");
-        return nullptr;
-    }
-    PyModule_AddObject(physics, "BBox", (PyObject *)&PyBBox_Type);
-    if (PyType_Ready(&PyQuaternion_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Quaternion wrapper type");
-        return nullptr;
-    }
-    PyModule_AddObject(physics, "Quaternion", (PyObject *)&PyQuaternion_Type);
-
-    if (PyType_Ready(&PyShape_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Shape wrapper type");
-        return nullptr;
-    }
-    PyModule_AddObject(physics, "Shape", (PyObject *)&PyShape_Type);
-    if (PyType_Ready(&PyArea_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Area wrapper type");
-        return nullptr;
-    }
-    PyModule_AddObject(physics, "Area", (PyObject *)&PyArea_Type);
-    if (PyType_Ready(&PyBody_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Body wrapper type");
-        return nullptr;
-    }
-    PyModule_AddObject(physics, "Body", (PyObject *)&PyBody_Type);
-    if (PyType_Ready(&PyBox_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Box wrapper type");
-        return nullptr;
-    }
-    PyModule_AddObject(physics, "Box", (PyObject *)&PyBox_Type);
-    if (PyType_Ready(&PyCourse_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Course wrapper type");
-        return nullptr;
-    }
-    PyModule_AddObject(physics, "Course", (PyObject *)&PyCourse_Type);
-    if (PyType_Ready(&PyLine_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Line wrapper type");
-        return nullptr;
-    }
-    PyModule_AddObject(physics, "Line", (PyObject *)&PyLine_Type);
-    if (PyType_Ready(&PyPolygon_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Polygon wrapper type");
-        return nullptr;
-    }
-    PyModule_AddObject(physics, "Polygon", (PyObject *)&PyPolygon_Type);
-
-    return physics;
-}
-
-static PyObject* init_server() {
-    static struct PyModuleDef server_def = {
-            PyModuleDef_HEAD_INIT,
-            "server",
-            nullptr,
-            0,
-            no_methods,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr
-    };
-
-    PyObject * server = PyModule_Create(&server_def);
-
-    if (server == nullptr) {
-        log(CRITICAL, "Python init failed to create server module");
-        return nullptr;
-    }
-
-    PyModule_AddIntConstant(server, "OPERATION_IGNORED", 0);
-    PyModule_AddIntConstant(server, "OPERATION_HANDLED", 1);
-    PyModule_AddIntConstant(server, "OPERATION_BLOCKED", 2);
-
-    // New module code
-    PyMemMap_Type.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&PyMemMap_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Map wrapper type");
-        return nullptr;
-    }
-    PyModule_AddObject(server, "Map", (PyObject *)&PyMemMap_Type);
-    PyTask_Type.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&PyTask_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Task wrapper type");
-        return nullptr;
-    }
-    PyModule_AddObject(server, "Task", (PyObject *)&PyTask_Type);
-    if (PyType_Ready(&PyLocatedEntity_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Entity wrapper type");
-        return nullptr;
-    }
-    PyModule_AddObject(server, "LocatedEntity", (PyObject *)&PyLocatedEntity_Type);
-    if (PyType_Ready(&PyEntity_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Thing wrapper type");
-        return nullptr;
-    }
-    PyModule_AddObject(server, "Thing", (PyObject *)&PyEntity_Type);
-    if (PyType_Ready(&PyCharacter_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Character wrapper type");
-        return nullptr;
-    }
-    PyModule_AddObject(server, "Character", (PyObject *)&PyCharacter_Type);
-    PyWorld_Type.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&PyWorld_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready World wrapper type");
-        return nullptr;
-    }
-    PyModule_AddObject(server, "World", (PyObject *)&PyWorld_Type);
-    if (PyType_Ready(&PyMind_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready Mind wrapper type");
-        return nullptr;
-    }
-    PyModule_AddObject(server, "Mind", (PyObject *)&PyMind_Type);
-
-    // PyWorldTime_Type.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&PyWorldTime_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready WorldTime wrapper type");
-        return nullptr;
-    }
-    PyModule_AddObject(server, "WorldTime", (PyObject *)&PyWorldTime_Type);
-
-    PyWorld * world = newPyWorld();
-    if (world != nullptr) {
-        PyModule_AddObject(server, "world", (PyObject *)world);
-    } else {
-        log(CRITICAL, "Python init failed to create World object");
-    }
-
-    // FIXME Remove once we are sure.
-    // PyObject * rules = Py_InitModule("rulesets", no_methods);
-    // if (rules == nullptr) {
-    // log(CRITICAL, "Python init failed to create rules module");
-    // // return nullptr;
-    // }
-    // if (PyType_Ready(&PyStatistics_Type) < 0) {
-    // log(CRITICAL, "Python init failed to ready Statistics wrapper type");
-    // return nullptr;
-    // }
-    // PyModule_AddObject(rules, "Statistics", (PyObject *)&PyStatistics_Type);
-
-    PyTerrainProperty_Type.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&PyTerrainProperty_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready TerrainProperty wrapper type");
-        return nullptr;
-    }
-
-    PyTerrainModProperty_Type.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&PyTerrainModProperty_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready TerrainModProperty wrapper type");
-        return nullptr;
-    }
-    return server;
-}
-
 CyPy_Server* server;
 
 void register_baseworld_with_python(BaseWorld* baseWorld)
@@ -859,65 +273,49 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
 
     Py_InitializeEx(0);
 
-    PyOutLogger_Type.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&PyOutLogger_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready OutLogger wrapper type");
-        return;
-    }
-    PyErrLogger_Type.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&PyErrLogger_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready ErrLogger wrapper type");
-        return;
-    }
+    //Make sure that all modules are imported, since this is needed to initialize all types.
+    //Otherwise we risk that we try to invoke the types from the C++ code before they have
+    //been populated.
+    PyImport_ImportModule("atlas");
+    PyImport_ImportModule("common");
+    PyImport_ImportModule("physics");
+    PyImport_ImportModule("entity_filter");
+    PyImport_ImportModule("server");
 
-    PyObject * sys_name = PyUnicode_FromString("sys");
-    PyObject * sys_module = PyImport_Import(sys_name);
-    Py_DECREF(sys_name);
+    Py::Module sys_module(PyImport_Import(Py::String("sys").ptr()));
 
-    if (sys_module == nullptr) {
+    if (sys_module.isNull()) {
         log(CRITICAL, "Python could not import sys module");
         return;
     }
 
     if (log_stdout) {
-
-        PyObject * out_logger = PyOutLogger_Type.tp_new(&PyOutLogger_Type, 0, 0);
-        PyModule_AddObject(sys_module, "stdout", out_logger);
-
-        PyObject * err_logger = PyErrLogger_Type.tp_new(&PyErrLogger_Type, 0, 0);
-        PyModule_AddObject(sys_module, "stderr", err_logger);
-
+        LogWriter::init_type();
+        sys_module.setAttr("stdout", LogWriter::wrap(SCRIPT));
+        sys_module.setAttr("stderr", LogWriter::wrap(SCRIPT_ERROR));
     }
 
-    PyObject * sys_path = PyObject_GetAttrString(sys_module, "path");
-    if (sys_path != nullptr) {
-        if (PyList_Check(sys_path)) {
+    auto sys_path = sys_module.getAttr("path");
+    if (!sys_path.isNull()) {
+        if (sys_path.isList()) {
+            Py::List paths(sys_path);
+
             // Add the path to the non-ruleset specific code.
-            std::string p = share_directory + "/cyphesis/scripts";
-            python_directories.push_back(p);
-            PyObject * path = PyUnicode_FromString(p.c_str());
-            PyList_Append(sys_path, path);
-            Py_DECREF(path);
-
-            p = share_directory + "/cyphesis/rulesets/basic/scripts";
-            python_directories.push_back(p);
-            path = PyUnicode_FromString(p.c_str());
-            PyList_Append(sys_path, path);
-            Py_DECREF(path);
-
+            python_directories.push_back(share_directory + "/cyphesis/scripts");
+            python_directories.push_back(share_directory + "/cyphesis/rulesets/basic/scripts");
             // Add the path to the ruleset specific code.
-            p = share_directory + "/cyphesis/rulesets/" + ruleset + "/scripts";
-            python_directories.push_back(p);
-            path = PyUnicode_FromString(p.c_str());
-            PyList_Append(sys_path, path);
-            Py_DECREF(path);
+            python_directories.push_back(share_directory + "/cyphesis/rulesets/" + ruleset + "/scripts");
+
+            for (auto& path : python_directories) {
+                paths.append(Py::String(path));
+            }
+
         } else {
             log(CRITICAL, "Python sys.path is not a list");
         }
     } else {
         log(CRITICAL, "Python could not import sys.path");
     }
-    Py_DECREF(sys_module);
 
     debug(std::cout << Py_GetPath() << std::endl << std::flush;);
 }
