@@ -49,7 +49,7 @@ int main()
     run_python_string("import types");
     run_python_string("o=server.ObserverClient()");
     run_python_string("o.setup()");
-    expect_python_error("o.setup('bob')", PyExc_TypeError);
+    expect_python_error("o.setup('bob')", PyExc_IndexError);
     run_python_string("o.setup('bob', 'jim')");
     run_python_string("o.setup('bob', 'jim', 'settler')");
     stub_setup_fail = true;
@@ -59,10 +59,10 @@ int main()
     run_python_string("o.create_avatar('settler')");
     expect_python_error("o.create_avatar(1)", PyExc_TypeError);
     run_python_string("o.run()");
-    expect_python_error("o.send()", PyExc_TypeError);
+    expect_python_error("o.send()", PyExc_IndexError);
     expect_python_error("o.send('get')", PyExc_TypeError);
     run_python_string("o.send(atlas.Operation('get'))");
-    expect_python_error("o.send_wait()", PyExc_TypeError);
+    expect_python_error("o.send_wait()", PyExc_IndexError);
     expect_python_error("o.send_wait('get')", PyExc_TypeError);
     run_python_string("o.send_wait(atlas.Operation('get'))");
     stub_send_wait_results = 1;

@@ -20,56 +20,45 @@
 
 #include "Python_ClientAPI.h"
 
-#include "Py_CreatorClient.h"
-#include "Py_ObserverClient.h"
-
 #include "rulesets/Python_Script_Utils.h"
 
 #include "common/log.h"
+#include "CyPy_CreatorClient.h"
+#include "CyPy_ObserverClient.h"
 
 #include <iostream>
 #include <string>
+#include <external/pycxx/CXX/Objects.hxx>
 
 int python_client_script(const std::string & package,
                          const std::string & func,
                          const std::map<std::string, std::string> & keywords)
 {
-    PyObject * module = Get_PyModule(package);
-    if (module == nullptr) {
+    auto module = Get_PyModule(package);
+    if (module.isNull()) {
         return -1;
     }
-    PyObject * function = PyObject_GetAttrString(module,
-                                                 (char *)func.c_str());
-    Py_DECREF(module);
-    if (function == nullptr) {
+    auto function = module.getAttr(func);
+    if (function.isNull()) {
         std::cerr << "Could not find " << func << " function" << std::endl
                   << std::flush;
         PyErr_Print();
         return -1;
     }
-    if (PyCallable_Check(function) == 0) {
+    if (!function.isCallable()) {
         std::cerr << "It does not seem to be a function at all" << std::endl
                   << std::flush;
-        Py_DECREF(function);
         return -1;
     }
-    PyObject * args = Py_BuildValue("()");
-    PyObject * kwds = PyDict_New();
-    std::map<std::string, std::string>::const_iterator I = keywords.begin();
-    std::map<std::string, std::string>::const_iterator Iend = keywords.end();
-    for (; I != Iend; ++I) {
-        PyObject * v = PyUnicode_FromString(I->second.c_str());
-        PyDict_SetItemString(kwds, I->first.c_str(), v);
-        Py_DECREF(v);
+    Py::Callable callable(function);
+    Py::Dict kwds;
+    Py::Tuple args;
+    for (auto& entry : keywords) {
+        kwds.setAttr(entry.first, Py::String(entry.second));
     }
-    PyObject * pyob = PyEval_CallObjectWithKeywords(function,
-                                                    args,
-                                                    kwds);
+    auto ret = callable.apply(args, kwds);
 
-    Py_DECREF(kwds);
-    Py_DECREF(args);
-
-    if (pyob == nullptr) {
+    if (ret.isNull()) {
         if (PyErr_Occurred() == nullptr) {
             std::cerr << "Could not call function" << std::endl << std::flush;
         } else {
@@ -77,31 +66,21 @@ int python_client_script(const std::string & package,
             PyErr_Print();
         }
     }
-    Py_DECREF(function);
     return 0;
 
 }
 
 void extend_client_python_api()
 {
-    PyObject * server = Get_PyModule("server");
-    if (server == 0) {
+    Py::Module server("server");
+    if (server.isNull()) {
         return;
     }
+    CyPy_CreatorClient::init_type();
+    CyPy_ObserverClient::init_type();
 
-    PyCreatorClient_Type.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&PyCreatorClient_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready CreatorClient wrapper type");
-        return;
-    }
-    PyModule_AddObject(server, "CreatorClient", (PyObject *)&PyCreatorClient_Type);
-
-    PyObserverClient_Type.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&PyObserverClient_Type) < 0) {
-        log(CRITICAL, "Python init failed to ready ObserverClient wrapper type");
-        return;
-    }
-    PyModule_AddObject(server, "ObserverClient", (PyObject *)&PyObserverClient_Type);
+    server.setAttr("CreatorClient", CyPy_CreatorClient::type());
+    server.setAttr("ObserverClient", CyPy_ObserverClient::type());
 }
 
 void python_prompt()

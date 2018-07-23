@@ -32,6 +32,9 @@
 #include "rulesets/Python_API.h"
 
 #include <cassert>
+#include <client/CyPy_CreatorClient.h>
+#include <client/ClientConnection.h>
+#include "external/pycxx/CXX/Objects.hxx"
 
 static bool stub_make_fail = false;
 static bool stub_look_fail = false;
@@ -42,13 +45,16 @@ int main()
     init_python_api("602fe3c3-e6c4-4c9a-b0ac-9f0a034042ba");
     extend_client_python_api();
 
+    Py::Module module("server");
+    module.setAttr("testclient", CyPy_CreatorClient::wrap(new CreatorClient("test", 0, *new ClientConnection())));
+
     run_python_string("import server");
     run_python_string("import atlas");
-    expect_python_error("server.CreatorClient(1)", PyExc_TypeError);
-    expect_python_error("server.CreatorClient(\"one\")", PyExc_ValueError);
-    run_python_string("c=server.CreatorClient(\"1\")");
+    expect_python_error("server.CreatorClient(1)", PyExc_RuntimeError);
+    expect_python_error("server.CreatorClient(\"one\")", PyExc_RuntimeError);
+    run_python_string("c=server.testclient");
     run_python_string("c.as_entity()");
-    expect_python_error("c.make()", PyExc_TypeError);
+    expect_python_error("c.make()", PyExc_IndexError);
     expect_python_error("c.make('1')", PyExc_TypeError);
     run_python_string("c.make(atlas.Entity('1'))");
     stub_make_fail = true;
@@ -63,7 +69,7 @@ int main()
     stub_look_fail = false;
     expect_python_error("c.look(1)", PyExc_TypeError);
     run_python_string("e=c.look('1')");
-    run_python_string("assert type(e) == server.LocatedEntity");
+    run_python_string("assert type(e) == server.Entity");
     run_python_string("c.look_for(atlas.Entity('1'))");
     stub_lookfor_fail = true;
     run_python_string("c.look_for(atlas.Entity('1'))");
@@ -71,11 +77,11 @@ int main()
     expect_python_error("c.look_for('1')", PyExc_TypeError);
     run_python_string("c.send(atlas.Operation('info'))");
     expect_python_error("c.send('info')", PyExc_TypeError);
-    expect_python_error("c.send()", PyExc_TypeError);
+    expect_python_error("c.send()", PyExc_IndexError);
     run_python_string("c.delete('1')");
     expect_python_error("c.delete(1)", PyExc_TypeError);
-    expect_python_error("c.delete()", PyExc_TypeError);
-    run_python_string("c == server.CreatorClient(\"2\")");
+    expect_python_error("c.delete()", PyExc_IndexError);
+    run_python_string("c == server.testclient");
 
     run_python_string("assert type(c.map) == server.Map");
     run_python_string("assert type(c.location) == atlas.Location");
@@ -84,7 +90,7 @@ int main()
     expect_python_error("c.foo_operation", PyExc_AttributeError);
     run_python_string("c.foo = 1");
     run_python_string("assert c.foo == 1");
-    expect_python_error("c.foo = [1,2]", PyExc_ValueError);
+    run_python_string("c.foo = [1,2]");
     expect_python_error("c.map = 1", PyExc_AttributeError);
 
     shutdown_python_api();
@@ -108,7 +114,7 @@ using Atlas::Objects::Entity::RootEntity;
 LocatedEntity * CharacterClient::look(const std::string & id)
 {
     if (stub_look_fail) {
-        return 0;
+        return nullptr;
     }
     return new Entity(id, integerId(id));
 }
@@ -116,7 +122,7 @@ LocatedEntity * CharacterClient::look(const std::string & id)
 LocatedEntity * CharacterClient::lookFor(const RootEntity & entity)
 {
     if (stub_lookfor_fail) {
-        return 0;
+        return nullptr;
     }
     return new Entity(entity->getId(), integerId(entity->getId()));
 }
@@ -124,7 +130,7 @@ LocatedEntity * CharacterClient::lookFor(const RootEntity & entity)
 LocatedEntity * CreatorClient::make(const RootEntity & entity)
 {
     if (stub_make_fail) {
-        return 0;
+        return nullptr;
     }
     return new Entity(entity->getId(), integerId(entity->getId()));
 }
