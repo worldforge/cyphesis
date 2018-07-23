@@ -40,6 +40,8 @@ class CyPy_Character : public CyPy_LocatedEntityBase<Character, CyPy_Character>
         Py::Object mind2body(const Py::Tuple& args);
         PYCXX_VARARGS_METHOD_DECL(CyPy_Character, mind2body)
 
+        Py::Object send_world(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Character, send_world)
 };
 
 

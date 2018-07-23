@@ -106,7 +106,7 @@ template<typename TValue, typename TPythonClass>
 CyPy_LocatedEntityBase<TValue, TPythonClass>::CyPy_LocatedEntityBase(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
     : WrapperBase<TValue*, TPythonClass>::WrapperBase(self, args, kwds)
 {
-
+    this->m_value = nullptr;
 }
 
 template<typename TValue, typename TPythonClass>
@@ -120,7 +120,9 @@ CyPy_LocatedEntityBase<TValue, TPythonClass>::CyPy_LocatedEntityBase(Py::PythonC
 template<typename TValue, typename TPythonClass>
 CyPy_LocatedEntityBase<TValue, TPythonClass>::~CyPy_LocatedEntityBase()
 {
-    this->m_value->decRef();
+    if (this->m_value) {
+        this->m_value->decRef();
+    }
 }
 
 
@@ -184,7 +186,7 @@ int CyPy_LocatedEntityBase<TValue, TPythonClass>::setattro(const Py::String& nam
             throw Py::RuntimeError("Cannot mutate entity type");
         }
 
-        const TypeNode* type = Inheritance::instance().getType(attr.str().as_string());
+        const TypeNode* type = Inheritance::instance().getType(verifyString(attr));
         if (!type) {
             throw Py::ValueError("Entity type unknown");
         }

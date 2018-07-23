@@ -27,13 +27,22 @@ CyPy_BaseMind::CyPy_BaseMind(Py::PythonClassInstance* self, Py::Tuple& args, Py:
     : CyPy_LocatedEntityBase(self, args, kwds)
 {
     args.verify_length(1);
-    auto id = verifyString(args.front());
 
-    long intId = integerId(id);
-    if (intId == -1L) {
-        throw Py::TypeError("Mind() requires string/int ID");
+    auto arg = args.front();
+    if (arg.isString()) {
+        auto id = verifyString(args.front());
+
+        long intId = integerId(id);
+        if (intId == -1L) {
+            throw Py::TypeError("Mind() requires string/int ID");
+        }
+        m_value = new BaseMind(id, intId);
+    } else if (CyPy_BaseMind::check(arg)) {
+        m_value = CyPy_BaseMind::value(arg);
+    } else {
+        throw Py::TypeError("Mind() requires string ID or Mind");
     }
-    m_value = new BaseMind(id, intId);
+    m_value->incRef();
 }
 
 CyPy_BaseMind::~CyPy_BaseMind()

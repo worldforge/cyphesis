@@ -23,13 +23,22 @@ CyPy_Entity::CyPy_Entity(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dic
     : CyPy_LocatedEntityBase(self, args, kwds)
 {
     args.verify_length(1);
-    auto id = verifyString(args.front());
 
-    long intId = integerId(id);
-    if (intId == -1L) {
-        throw Py::TypeError("LocatedEntity() requires string/int ID");
+    auto arg = args.front();
+    if (arg.isString()) {
+        auto id = verifyString(args.front());
+
+        long intId = integerId(id);
+        if (intId == -1L) {
+            throw Py::TypeError("Entity() requires string/int ID");
+        }
+        m_value = new Entity(id, intId);
+    } else if (CyPy_Entity::check(arg)) {
+        m_value = CyPy_Entity::value(arg);
+    } else {
+        throw Py::TypeError("Entity() requires string ID or Entity");
     }
-    m_value = new Entity(id, intId);
+    m_value->incRef();
 }
 
 CyPy_Entity::~CyPy_Entity() = default;
@@ -44,6 +53,7 @@ void CyPy_Entity::init_type()
     PYCXX_ADD_NOARGS_METHOD(as_entity, as_entity, "");
     PYCXX_ADD_VARARGS_METHOD(is_reachable_for_other_entity, is_reachable_for_other_entity, "");
     PYCXX_ADD_NOARGS_METHOD(describe_entity, describe_entity, "");
+
     PYCXX_ADD_VARARGS_METHOD(send_world, send_world, "");
 
     //behaviors().type_object()->tp_base = base;

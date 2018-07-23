@@ -19,36 +19,29 @@
 #include "CyPy_Task.h"
 #include "CyPy_Operation.h"
 #include "CyPy_LocatedEntity.h"
-#include "CyPy_Element.h"
 
 CyPy_Task::CyPy_Task(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
-    : WrapperBase(self, args, kwds), m_owned(false)
+    : WrapperBase(self, args, kwds)
 {
     args.verify_length(1);
     auto arg = args.front();
     if (CyPy_Task::check(arg)) {
         m_value = CyPy_Task::value(arg);
     } else if (CyPy_LocatedEntity::check(arg)) {
-
         m_value = new Task(CyPy_LocatedEntity::value(arg));
-        m_owned = true;
+    } else {
+        throw Py::TypeError("Task requires a Task, or Entity");
     }
-    PyErr_SetString(PyExc_TypeError, "Task requires a Task, or Entity");
 }
 
-CyPy_Task::CyPy_Task(Py::PythonClassInstance* self, Task* value)
-    : WrapperBase(self, value), m_owned(false)
+CyPy_Task::CyPy_Task(Py::PythonClassInstance* self, Ref<Task> value)
+    : WrapperBase(self, std::move(value))
 {
 
 }
 
 
-CyPy_Task::~CyPy_Task()
-{
-    if (m_owned) {
-        delete m_value;
-    }
-}
+CyPy_Task::~CyPy_Task() = default;
 
 void CyPy_Task::init_type()
 {
@@ -63,9 +56,9 @@ void CyPy_Task::init_type()
 
     PYCXX_ADD_NOARGS_METHOD(count, count, "");
 
-    PYCXX_ADD_NOARGS_METHOD(newtick, newtick, "");
+    PYCXX_ADD_NOARGS_METHOD(new_tick, newtick, "");
 
-    PYCXX_ADD_VARARGS_METHOD(nexttick, nexttick, "");
+    PYCXX_ADD_VARARGS_METHOD(next_tick, nexttick, "");
 
     behaviors().readyType();
 }

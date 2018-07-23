@@ -49,7 +49,7 @@ class CyPy_WorldTime : public WrapperBase<WorldTimeWrapper, CyPy_WorldTime>
 
         static void init_type();
 
-        bool m_owned;
+        Py::Object getattro(const Py::String&) override;
 
         WorldTime& get_value();
 

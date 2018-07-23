@@ -21,20 +21,19 @@
 
 
 #include "rulesets/Task.h"
+#include "modules/Ref.h"
 #include "WrapperBase.h"
 
-class CyPy_Task : public WrapperBase<Task*, CyPy_Task>
+class CyPy_Task : public WrapperBase<Ref<Task>, CyPy_Task>
 {
     public:
         CyPy_Task(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
 
-        CyPy_Task(Py::PythonClassInstance* self, Task* value);
+        CyPy_Task(Py::PythonClassInstance* self, Ref<Task> value);
 
         ~CyPy_Task() override;
 
         static void init_type();
-
-        bool m_owned;
 
         Py::Object getattro(const Py::String& name) override;
 

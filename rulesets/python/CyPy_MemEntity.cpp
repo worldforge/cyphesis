@@ -22,13 +22,22 @@ CyPy_MemEntity::CyPy_MemEntity(Py::PythonClassInstance* self, Py::Tuple& args, P
     : CyPy_LocatedEntityBase(self, args, kwds)
 {
     args.verify_length(1);
-    auto id = verifyString(args.front());
 
-    long intId = integerId(id);
-    if (intId == -1L) {
-        throw Py::TypeError("LocatedEntity() requires string/int ID");
+    auto arg = args.front();
+    if (arg.isString()) {
+        auto id = verifyString(args.front());
+
+        long intId = integerId(id);
+        if (intId == -1L) {
+            throw Py::TypeError("MemEntity() requires string/int ID");
+        }
+        m_value = new MemEntity(id, intId);
+    } else if (CyPy_MemEntity::check(arg)) {
+        m_value = CyPy_MemEntity::value(arg);
+    } else {
+        throw Py::TypeError("MemEntity() requires string ID or MemEntity");
     }
-    m_value = new MemEntity(id, intId);
+    m_value->incRef();
 }
 
 CyPy_MemEntity::~CyPy_MemEntity()

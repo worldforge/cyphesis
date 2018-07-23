@@ -16,8 +16,8 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <rulesets/Py_Message.h>
 #include "CyPy_Props.h"
+#include "CyPy_Element.h"
 #include "rulesets/LocatedEntity.h"
 
 CyPy_Props::CyPy_Props(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
@@ -51,8 +51,11 @@ Py::Object CyPy_Props::getattro(const Py::String& name)
         Atlas::Message::Element element;
         // If this property is not set with a value, return none.
         if (prop->get(element) == 0) {
-            auto object = MessageElement_asPyObject(element);
-            return Py::Object(object);
+            if (element.isNone()) {
+                return Py::None();
+            } else {
+                return CyPy_Element::wrap(element);
+            }
         }
 //        }
     }
@@ -63,13 +66,8 @@ int CyPy_Props::setattro(const Py::String& name, const Py::Object& attr)
 {
     auto nameStr = name.as_string();
 
-    Atlas::Message::Element obj;
-    if (PyObject_asMessageElement(attr.ptr(), obj, false) == 0) {
 
-        m_value->setAttr(name, obj);
-        return 0;
-    } else {
-        log(WARNING, "Value submitted to Props.set can not be converted to an Atlas Message.");
-        throw Py::AttributeError(name);
-    }
+    Atlas::Message::Element obj = CyPy_Element::asElement(attr);
+    m_value->setAttr(name, obj);
+    return 0;
 }

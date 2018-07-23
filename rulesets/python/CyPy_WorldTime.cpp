@@ -73,3 +73,11 @@ Py::Object CyPy_WorldTime::is_now(const Py::Tuple& args)
     return Py::Boolean(get_value() == verifyString(args.front()));
 }
 
+Py::Object CyPy_WorldTime::getattro(const Py::String& name)
+{
+    auto element = get_value()[name.as_string()];
+    if (!element.empty()) {
+        return Py::String(element);
+    }
+    return PythonExtensionBase::getattro(name);
+}
