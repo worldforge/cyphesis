@@ -26,6 +26,7 @@
 #include "CyPy_Task.h"
 #include "CyPy_World.h"
 #include "CyPy_WorldTime.h"
+#include "CyPy_TerrainProperty.h"
 
 
 CyPy_Server::CyPy_Server() : ExtensionModule("server")
@@ -40,6 +41,8 @@ CyPy_Server::CyPy_Server() : ExtensionModule("server")
     CyPy_Task::init_type();
     CyPy_World::init_type();
     CyPy_WorldTime::init_type();
+    
+    CyPy_TerrainProperty::init_type();
 
     initialize("server");
 

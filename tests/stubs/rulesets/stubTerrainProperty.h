@@ -133,25 +133,33 @@
 
 #ifndef STUB_TerrainProperty_getHeightAndNormal
 //#define STUB_TerrainProperty_getHeightAndNormal
-  bool TerrainProperty::getHeightAndNormal(float x, float y, float &, Vector3D &) const
+  bool TerrainProperty::getHeightAndNormal(float x, float z, float &, Vector3D &) const
   {
     return false;
   }
 #endif //STUB_TerrainProperty_getHeightAndNormal
 
+#ifndef STUB_TerrainProperty_getHeight
+//#define STUB_TerrainProperty_getHeight
+  bool TerrainProperty::getHeight(float x, float z, float &) const
+  {
+    return false;
+  }
+#endif //STUB_TerrainProperty_getHeight
+
 #ifndef STUB_TerrainProperty_getSurface
 //#define STUB_TerrainProperty_getSurface
-  int TerrainProperty::getSurface(const Point3D &, int &) const
+  boost::optional<int> TerrainProperty::getSurface(float x, float z) const
   {
-    return 0;
+    return *static_cast<boost::optional<int>*>(nullptr);
   }
 #endif //STUB_TerrainProperty_getSurface
 
 #ifndef STUB_TerrainProperty_findMods
 //#define STUB_TerrainProperty_findMods
-  void TerrainProperty::findMods(const Point3D &, std::vector<LocatedEntity *> &) const
+  boost::optional<std::vector<LocatedEntity*>> TerrainProperty::findMods(float x, float z) const
   {
-    
+    return *static_cast<boost::optional<std::vector<LocatedEntity*>>*>(nullptr);
   }
 #endif //STUB_TerrainProperty_findMods
 

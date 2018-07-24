@@ -59,7 +59,7 @@ class ServerAccounttest : public Cyphesis::TestBase
     Connection * m_connection;
     ServerAccount * m_account;
 
-    static Entity * TestWorld_addNewEntity_ret_value;
+    static Ref<Entity> TestWorld_addNewEntity_ret_value;
   public:
     ServerAccounttest();
 
@@ -80,12 +80,12 @@ class ServerAccounttest : public Cyphesis::TestBase
     void test_addNewEntity_success();
     void test_addNewEntity_unconnected();
 
-    static Entity * get_TestWorld_addNewEntity_ret_value();
+    static Ref<Entity> get_TestWorld_addNewEntity_ret_value();
 };
 
-Entity * ServerAccounttest::TestWorld_addNewEntity_ret_value;
+Ref<Entity> ServerAccounttest::TestWorld_addNewEntity_ret_value;
 
-Entity * ServerAccounttest::get_TestWorld_addNewEntity_ret_value()
+Ref<Entity> ServerAccounttest::get_TestWorld_addNewEntity_ret_value()
 {
     return TestWorld_addNewEntity_ret_value;
 }
@@ -113,13 +113,13 @@ ServerAccounttest::ServerAccounttest() : m_id_counter(0L),
 void ServerAccounttest::setup()
 {
 
-    Entity * gw = new Entity(compose("%1", m_id_counter),
+    Ref<Entity> gw = new Entity(compose("%1", m_id_counter),
                              m_id_counter++);
-    TestWorld::extension.addNewEntityFn = [&](const std::string &,
+    TestWorld::extension.addNewEntityFn = [&, gw](const std::string &,
                         const Atlas::Objects::Entity::RootEntity &)
     {
-        Entity * ne = ServerAccounttest::get_TestWorld_addNewEntity_ret_value();
-        if (ne != 0) {
+        auto ne = ServerAccounttest::get_TestWorld_addNewEntity_ret_value();
+        if (ne) {
             ne->m_location.m_loc = gw;
             ne->m_location.m_pos = Point3D(0,0,0);
             assert(ne->m_location.isValid());
@@ -239,8 +239,7 @@ void ServerAccounttest::test_createObject_success()
     ASSERT_EQUAL(reply->getClassNo(),
                  Atlas::Objects::Operation::INFO_NO);
 
-    delete TestWorld_addNewEntity_ret_value;
-    TestWorld_addNewEntity_ret_value = 0;
+    TestWorld_addNewEntity_ret_value = nullptr;
 }
 
 void ServerAccounttest::test_createObject_success_refo()
@@ -265,8 +264,7 @@ void ServerAccounttest::test_createObject_success_refo()
     ASSERT_TRUE(!reply->isDefaultRefno());
     ASSERT_EQUAL(reply->getRefno(), op->getSerialno());
 
-    delete TestWorld_addNewEntity_ret_value;
-    TestWorld_addNewEntity_ret_value = 0;
+    TestWorld_addNewEntity_ret_value = nullptr;
 }
 
 void ServerAccounttest::test_createObject_no_possess()
@@ -287,8 +285,7 @@ void ServerAccounttest::test_createObject_no_possess()
     // FIXME No error to the client!
     ASSERT_TRUE(res.empty());
 
-    delete TestWorld_addNewEntity_ret_value;
-    TestWorld_addNewEntity_ret_value = 0;
+    TestWorld_addNewEntity_ret_value = nullptr;
 }
 
 void ServerAccounttest::test_createObject_possess_non_string()
@@ -310,8 +307,7 @@ void ServerAccounttest::test_createObject_possess_non_string()
     // FIXME No error to the client!
     ASSERT_TRUE(res.empty());
 
-    delete TestWorld_addNewEntity_ret_value;
-    TestWorld_addNewEntity_ret_value = 0;
+    TestWorld_addNewEntity_ret_value = nullptr;
 }
 
 void ServerAccounttest::test_createObject_success_possess()
@@ -338,13 +334,12 @@ void ServerAccounttest::test_createObject_success_possess()
     ASSERT_EQUAL(reply->getClassNo(),
                  Atlas::Objects::Operation::INFO_NO);
 
-    delete TestWorld_addNewEntity_ret_value;
-    TestWorld_addNewEntity_ret_value = 0;
+    TestWorld_addNewEntity_ret_value = nullptr;
 }
 
 void ServerAccounttest::test_addNewEntity_failed()
 {
-    TestWorld_addNewEntity_ret_value = 0;
+    TestWorld_addNewEntity_ret_value = nullptr;
 
     std::string type_str("unimportant_string");
     RootEntity arg;
@@ -367,8 +362,7 @@ void ServerAccounttest::test_addNewEntity_success()
 
     ASSERT_EQUAL(c, e);
 
-    delete TestWorld_addNewEntity_ret_value;
-    TestWorld_addNewEntity_ret_value = 0;
+    TestWorld_addNewEntity_ret_value = nullptr;
 }
 
 void ServerAccounttest::test_addNewEntity_unconnected()

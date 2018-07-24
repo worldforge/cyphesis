@@ -151,11 +151,11 @@ void TerrainProperty::set(const Element & ent)
     int minY = std::numeric_limits<int>::max();
     int maxY = std::numeric_limits<int>::min();
 
-    MapType::const_iterator I = t.find("points");
+    auto I = t.find("points");
     if (I != t.end() && I->second.isMap()) {
         const MapType & points = I->second.asMap();
-        MapType::const_iterator Iend = points.end();
-        for (MapType::const_iterator I = points.begin(); I != Iend; ++I) {
+        auto Iend = points.end();
+        for (auto I = points.begin(); I != Iend; ++I) {
             if (!I->second.isList()) {
                 continue;
             }
@@ -185,7 +185,7 @@ void TerrainProperty::set(const Element & ent)
 
             Mercator::BasePoint bp(h, roughness, falloff);
 
-            Pointstore::const_iterator J = base_points.find(x);
+            auto J = base_points.find(x);
             if (J == base_points.end() ||
                 J->second.find(y) == J->second.end()) {
                 // Newly added point.
@@ -366,26 +366,34 @@ bool TerrainProperty::getHeightAndNormal(float x,
                                          float & height,
                                          Vector3D & normal) const
 {
-    Mercator::Segment * s = m_data.getSegmentAtPos(x, y);
-    if (s != 0 && !s->isValid()) {
+    auto s = m_data.getSegmentAtPos(x, y);
+    if (s && !s->isValid()) {
         s->populate();
     }
     return m_data.getHeightAndNormal(x, y, height, normal);
 }
+
+bool TerrainProperty::getHeight(float x, float y, float& height) const
+{
+    auto s = m_data.getSegmentAtPos(x, y);
+    if (s && !s->isValid()) {
+        s->populate();
+    }
+    return m_data.getHeight(x, y, height);
+}
+
 
 /// \brief Get a number encoding the surface type at the given x,z coordinates
 ///
 /// @param pos the x,z coordinates of the point on the terrain
 /// @param material a reference to the integer to be used to store the
 /// material identifier at this location.
-int TerrainProperty::getSurface(const Point3D & pos, int & material) const
+boost::optional<int> TerrainProperty::getSurface(float x, float z) const
 {
-    float x = pos.x(),
-          z = pos.z();
     Mercator::Segment * segment = m_data.getSegmentAtPos(x, z);
     if (segment == nullptr) {
         debug(std::cerr << "No terrain at this point" << std::endl << std::flush;);
-        return -1;
+        return boost::none;
     }
     if (!segment->isValid()) {
         segment->populate();
@@ -404,41 +412,36 @@ int TerrainProperty::getSurface(const Point3D & pos, int & material) const
                     << std::endl << std::flush;);
     if (surfaces.empty()) {
         log(ERROR, "The terrain has no surface data");
-        return -1;
+        return boost::none;
     }
     Mercator::Surface & tile_surface = *surfaces.begin()->second;
     if (!tile_surface.isValid()) {
         tile_surface.populate();
     }
-    material = tile_surface((int)x, (int)z, 0);
-    return 0;
+    return tile_surface((int)x, (int)z, 0);
 }
 
-/// \brief Find the mods at a given location
-///
-/// @param pos the x,y coordinates of a point on the terrain
-/// @param mods a reference to the list to be returned
-void TerrainProperty::findMods(const Point3D & pos,
-                               std::vector<LocatedEntity *> & ret) const
+boost::optional<std::vector<LocatedEntity*>> TerrainProperty::findMods(float x, float z) const
 {
-    Mercator::Segment * seg = m_data.getSegmentAtPos(pos.x(), pos.z());
-    if (seg == 0) {
-        return;
+    Mercator::Segment * seg = m_data.getSegmentAtPos(x, z);
+    if (seg == nullptr) {
+        return boost::none;
     }
+    std::vector<LocatedEntity*> ret;
     auto& seg_mods = seg->getMods();
     for (auto& entry : seg_mods) {
         const Mercator::TerrainMod * mod = entry.second;
         WFMath::AxisBox<2> mod_box = mod->bbox();
-        if (pos.x() > mod_box.lowCorner().x() && pos.x() < mod_box.highCorner().x() &&
-            pos.z() > mod_box.lowCorner().y() && pos.z() < mod_box.highCorner().y()) {
+        if (x > mod_box.lowCorner().x() && x < mod_box.highCorner().x() &&
+            z > mod_box.lowCorner().y() && z < mod_box.highCorner().y()) {
             Mercator::Effector::Context * c = mod->context();
-            if (c == 0) {
+            if (c == nullptr) {
                 log(WARNING, "Terrrain mod with no context");
                 continue;
             }
             debug(std::cout << "Context has id" << c->id() << std::endl;);
-            TerrainContext * tc = dynamic_cast<TerrainContext *>(c);
-            if (tc == 0) {
+            auto tc = dynamic_cast<TerrainContext *>(c);
+            if (tc == nullptr) {
                 log(WARNING, "Terrrain mod with non Cyphesis context");
                 continue;
             }
@@ -447,6 +450,7 @@ void TerrainProperty::findMods(const Point3D & pos,
             ret.push_back(tc->entity().get());
         }
     }
+    return ret;
 }
 
 HandlerResult TerrainProperty::eat_handler(LocatedEntity * e,
@@ -454,7 +458,7 @@ HandlerResult TerrainProperty::eat_handler(LocatedEntity * e,
 {
     const std::string & from_id = op->getFrom();
     LocatedEntity * from = BaseWorld::instance().getEntity(from_id);
-    if (from == 0) {
+    if (from == nullptr) {
         //The eating entity could have been destroyed in the interim.
         debug_print(String::compose("Terrain got eat op from non-existent "
                                    "entity %1.", from_id));
@@ -463,15 +467,15 @@ HandlerResult TerrainProperty::eat_handler(LocatedEntity * e,
 
 
     Point3D from_pos = relativePos(e->m_location, from->m_location);
-    int material;
-    if (getSurface(from_pos, material) != 0) {
+    auto material = getSurface(from_pos.x(), from_pos.z());
+    if (!material) {
         debug(std::cout << "no surface hit" << std::endl << std::flush;);
         return OPERATION_IGNORED;
     }
 
     const TypeNode * from_type = from->getType();
     if (from_type->isTypeOf("plant")) {
-        if (material == GRASS) {
+        if (*material == GRASS) {
             debug(std::cout << "From grass" << std::endl << std::flush;);
             Nourish nourish;
             nourish->setTo(from_id);
@@ -491,7 +495,7 @@ HandlerResult TerrainProperty::eat_handler(LocatedEntity * e,
         }
     } else if (from_type->isTypeOf("character")) {
         log(NOTICE, "Eat coming from an animal.");
-        if (material == GRASS) {
+        if (*material == GRASS) {
             debug(std::cout << "From grass" << std::endl << std::flush;);
         }
     }

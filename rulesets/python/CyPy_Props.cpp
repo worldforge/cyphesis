@@ -19,6 +19,7 @@
 #include "CyPy_Props.h"
 #include "CyPy_Element.h"
 #include "rulesets/LocatedEntity.h"
+#include "CyPy_TerrainProperty.h"
 
 CyPy_Props::CyPy_Props(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
     : PythonClass(self, args, kwds)
@@ -40,7 +41,12 @@ Py::Object CyPy_Props::getattro(const Py::String& name)
 
     auto prop = m_value->getProperty(nameStr);
     if (prop) {
-        //Check if it's a special prop
+        if (nameStr == "terrain") {
+            return CyPy_TerrainProperty::wrap(m_value);
+        } else {
+
+
+            //Check if it's a special prop
 //        if (dynamic_cast<const StatisticsProperty*>(prop) || dynamic_cast<const TerrainProperty*>(prop)
 //            || dynamic_cast<const TerrainModProperty*>(prop)) {
 //            PyObject* ret = Property_asPyObject(prop, locatedEntity);
@@ -48,16 +54,16 @@ Py::Object CyPy_Props::getattro(const Py::String& name)
 //                return ret;
 //            }
 //        } else {
-        Atlas::Message::Element element;
-        // If this property is not set with a value, return none.
-        if (prop->get(element) == 0) {
-            if (element.isNone()) {
-                return Py::None();
-            } else {
-                return CyPy_Element::wrap(element);
+            Atlas::Message::Element element;
+            // If this property is not set with a value, return none.
+            if (prop->get(element) == 0) {
+                if (element.isNone()) {
+                    return Py::None();
+                } else {
+                    return CyPy_Element::wrap(element);
+                }
             }
         }
-//        }
     }
     return Py::None();
 }

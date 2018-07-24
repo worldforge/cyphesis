@@ -24,6 +24,7 @@
 #include "common/Property.h"
 
 #include <set>
+#include <boost/optional.hpp>
 
 namespace Mercator {
     class Terrain;
@@ -84,10 +85,15 @@ class TerrainProperty : public PropertyBase {
     // Removes a single TerrainMod from the terrain
     void removeMod(long id) const;
 
-    bool getHeightAndNormal(float x, float y, float &, Vector3D &) const;
-    int getSurface(const Point3D &,  int &) const;
+    bool getHeightAndNormal(float x, float z, float &, Vector3D &) const;
+    bool getHeight(float x, float z, float &) const;
+    boost::optional<int> getSurface(float x, float z) const;
 
-    void findMods(const Point3D &, std::vector<LocatedEntity *> &) const;
+    /// \brief Find the mods at a given location
+    ///
+    /// @param pos the x,y coordinates of a point on the terrain
+    /// @param mods a reference to the list to be returned
+    boost::optional<std::vector<LocatedEntity *>> findMods(float x, float z) const;
 
     HandlerResult eat_handler(LocatedEntity * e,
                               const Operation & op,

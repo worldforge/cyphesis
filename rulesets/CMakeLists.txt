@@ -62,7 +62,10 @@ add_library(rulesetentity
     Vector3Property.cpp
     PhysicalWorld.cpp PhysicalWorld.h
     OgreMeshDeserializer.cpp OgreMeshDeserializer.h
-    PerceptionSightProperty.cpp PerceptionSightProperty.h ScaleProperty.cpp ScaleProperty.h ScriptsProperty.cpp ScriptsProperty.h UsagesProperty.cpp UsagesProperty.h)
+    PerceptionSightProperty.cpp PerceptionSightProperty.h
+    ScaleProperty.cpp ScaleProperty.h
+    ScriptsProperty.cpp ScriptsProperty.h
+    UsagesProperty.cpp UsagesProperty.h)
 
 target_link_libraries(rulesetentity ${BULLET_LIBRARIES})
 
@@ -137,7 +140,8 @@ add_library(scriptpython
     python/CyPy_BaseMind.cpp python/CyPy_BaseMind.h
     python/CyPy_Task.cpp python/CyPy_Task.h
     python/CyPy_WorldTime.cpp python/CyPy_WorldTime.h
-    python/CyPy_World.cpp python/CyPy_World.h)
+    python/CyPy_World.cpp python/CyPy_World.h
+    python/CyPy_TerrainProperty.cpp python/CyPy_TerrainProperty.h)
 
 target_link_libraries(scriptpython ${PYTHON_LIBRARIES} pycxx)
 # Prevent GCC from messing up Python pointer handling

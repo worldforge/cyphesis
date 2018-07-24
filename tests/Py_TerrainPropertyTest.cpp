@@ -78,15 +78,15 @@ int main()
     run_python_string("testprop.add_properties(t)");
     run_python_string("terrain = t.props.terrain");
     expect_python_error("terrain.foo = 1", PyExc_AttributeError);
-    expect_python_error("terrain.get_height()", PyExc_TypeError);
+    expect_python_error("terrain.get_height()", PyExc_IndexError);
     run_python_string("terrain.get_height(0,0)");
-    expect_python_error("terrain.get_surface()", PyExc_TypeError);
-    expect_python_error("terrain.get_surface('1')", PyExc_TypeError);
+    expect_python_error("terrain.get_surface()", PyExc_IndexError);
+    expect_python_error("terrain.get_surface('1')", PyExc_IndexError);
     run_python_string("from physics import *");
-    expect_python_error("terrain.get_surface(Point3D(0,0,0))", PyExc_TypeError);
-    expect_python_error("terrain.get_normal()", PyExc_TypeError);
+    expect_python_error("terrain.get_surface(Point3D(0,0,0))", PyExc_IndexError);
+    expect_python_error("terrain.get_normal()", PyExc_IndexError);
     run_python_string("terrain.get_normal(0,0)");
-    run_python_string("terrain.find_mods(Point3D(0,0,0))");
+    run_python_string("terrain.find_mods(0,0)");
 
     run_python_string("points = { }");
     run_python_string("points['-1x-1'] = [-1, -1, -16.8]");
@@ -101,13 +101,13 @@ int main()
     run_python_string("t.props.terrain = {'points': points}");
 
     //No surfaces until "surfaces" is defined.
-    expect_python_error("terrain.get_surface(Point3D(0,0,0))", PyExc_TypeError);
+    run_python_string("assert terrain.get_surface(0,0) is None");
 
     run_python_string("surface = {'name': 'rock', 'pattern': 'fill'}");
     run_python_string("surfaces = [surface]");
     run_python_string("t.props.terrain = {'points': points, 'surfaces': surfaces}");
 
-    run_python_string("terrain.get_surface(Point3D(0,0,0))");
+    run_python_string("terrain.get_surface(0,0)");
 
     shutdown_python_api();
     return 0;
