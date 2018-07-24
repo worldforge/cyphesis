@@ -20,7 +20,7 @@
 #define CYPHESIS_CYPY_ENTITY_H
 
 #include "rulesets/Entity.h"
-#include "CyPy_LocatedEntity.h"
+#include "CyPy_LocatedEntity_impl.h"
 
 class CyPy_Entity : public CyPy_LocatedEntityBase<Ref<Entity>, CyPy_Entity>
 {
@@ -35,7 +35,7 @@ class CyPy_Entity : public CyPy_LocatedEntityBase<Ref<Entity>, CyPy_Entity>
     protected:
 
         Py::Object send_world(const Py::Tuple& args);
-        PYCXX_VARARGS_METHOD_DECL(CyPy_Entity, send_world)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Entity, send_world);
 
 };
 

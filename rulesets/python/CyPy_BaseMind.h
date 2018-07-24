@@ -21,7 +21,7 @@
 
 
 #include "rulesets/BaseMind.h"
-#include "CyPy_LocatedEntity.h"
+#include "CyPy_LocatedEntity_impl.h"
 
 class CyPy_BaseMind : public CyPy_LocatedEntityBase<Ref<BaseMind>, CyPy_BaseMind>
 {
@@ -40,10 +40,10 @@ class CyPy_BaseMind : public CyPy_LocatedEntityBase<Ref<BaseMind>, CyPy_BaseMind
     protected:
 
         Py::Object refreshPath();
-        PYCXX_NOARGS_METHOD_DECL(CyPy_BaseMind, refreshPath)
+        PYCXX_NOARGS_METHOD_DECL(CyPy_BaseMind, refreshPath);
 
         Py::Object setDestination(const Py::Tuple& args);
-        PYCXX_VARARGS_METHOD_DECL(CyPy_BaseMind, setDestination)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_BaseMind, setDestination);
 
 };
 

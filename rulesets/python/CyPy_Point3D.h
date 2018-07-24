@@ -57,16 +57,16 @@ class CyPy_Point3D : public WrapperBase<WFMath::Point<3>, CyPy_Point3D>
 
 
         Py::Object mag();
-        PYCXX_NOARGS_METHOD_DECL(CyPy_Point3D, mag)
+        PYCXX_NOARGS_METHOD_DECL(CyPy_Point3D, mag);
 
         Py::Object unit_vector_to(const Py::Tuple& args);
-        PYCXX_VARARGS_METHOD_DECL(CyPy_Point3D, unit_vector_to)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Point3D, unit_vector_to);
 
         Py::Object is_valid();
-        PYCXX_NOARGS_METHOD_DECL(CyPy_Point3D, is_valid)
+        PYCXX_NOARGS_METHOD_DECL(CyPy_Point3D, is_valid);
 
         Py::Object distance(const Py::Tuple& args);
-        PYCXX_VARARGS_METHOD_DECL(CyPy_Point3D, distance)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Point3D, distance);
 
 
 };

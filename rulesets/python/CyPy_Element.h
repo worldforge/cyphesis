@@ -44,11 +44,11 @@ class CyPy_Element : public WrapperBase<Atlas::Message::Element, CyPy_Element>
 
         Py::Object get_name();
 
-        PYCXX_NOARGS_METHOD_DECL(CyPy_Element, get_name)
+        PYCXX_NOARGS_METHOD_DECL(CyPy_Element, get_name);
 
         Py::Object pythonize();
 
-        PYCXX_NOARGS_METHOD_DECL(CyPy_Element, pythonize)
+        PYCXX_NOARGS_METHOD_DECL(CyPy_Element, pythonize);
 
         static Py::Object asPyObject(const Atlas::Message::Element& obj);
 

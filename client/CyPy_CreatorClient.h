@@ -40,31 +40,31 @@ class CyPy_CreatorClient : public WrapperBase<Ref<CreatorClient>, CyPy_CreatorCl
 
         Py::Object make(const Py::Tuple& args);
 
-        PYCXX_VARARGS_METHOD_DECL(CyPy_CreatorClient, make)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_CreatorClient, make);
 
         Py::Object as_entity();
 
-        PYCXX_NOARGS_METHOD_DECL(CyPy_CreatorClient, as_entity)
+        PYCXX_NOARGS_METHOD_DECL(CyPy_CreatorClient, as_entity);
 
         Py::Object set(const Py::Tuple& args);
 
-        PYCXX_VARARGS_METHOD_DECL(CyPy_CreatorClient, set)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_CreatorClient, set);
 
         Py::Object look(const Py::Tuple& args);
 
-        PYCXX_VARARGS_METHOD_DECL(CyPy_CreatorClient, look)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_CreatorClient, look);
 
         Py::Object look_for(const Py::Tuple& args);
 
-        PYCXX_VARARGS_METHOD_DECL(CyPy_CreatorClient, look_for)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_CreatorClient, look_for);
 
         Py::Object send(const Py::Tuple& argsp);
 
-        PYCXX_VARARGS_METHOD_DECL(CyPy_CreatorClient, send)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_CreatorClient, send);
 
         Py::Object delete_(const Py::Tuple& args);
 
-        PYCXX_VARARGS_METHOD_DECL(CyPy_CreatorClient, delete_)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_CreatorClient, delete_);
 
 };
 

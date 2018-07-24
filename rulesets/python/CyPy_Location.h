@@ -44,7 +44,7 @@ class CyPy_Location : public WrapperBase<Location, CyPy_Location>
 
         Py::Object copy();
 
-        PYCXX_NOARGS_METHOD_DECL(CyPy_Location, copy)
+        PYCXX_NOARGS_METHOD_DECL(CyPy_Location, copy);
 };
 
 

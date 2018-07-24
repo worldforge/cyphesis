@@ -38,31 +38,31 @@ class CyPy_ObserverClient : public WrapperBase<ObserverClient*, CyPy_ObserverCli
 
         Py::Object setup(const Py::Tuple& args);
 
-        PYCXX_VARARGS_METHOD_DECL(CyPy_ObserverClient, setup)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_ObserverClient, setup);
 
         Py::Object teardown();
 
-        PYCXX_NOARGS_METHOD_DECL(CyPy_ObserverClient, teardown)
+        PYCXX_NOARGS_METHOD_DECL(CyPy_ObserverClient, teardown);
 
         Py::Object create_avatar(const Py::Tuple& args);
 
-        PYCXX_VARARGS_METHOD_DECL(CyPy_ObserverClient, create_avatar)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_ObserverClient, create_avatar);
 
         Py::Object run();
 
-        PYCXX_NOARGS_METHOD_DECL(CyPy_ObserverClient, run)
+        PYCXX_NOARGS_METHOD_DECL(CyPy_ObserverClient, run);
 
         Py::Object send(const Py::Tuple& args);
 
-        PYCXX_VARARGS_METHOD_DECL(CyPy_ObserverClient, send)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_ObserverClient, send);
 
         Py::Object send_wait(const Py::Tuple& args);
 
-        PYCXX_VARARGS_METHOD_DECL(CyPy_ObserverClient, send_wait)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_ObserverClient, send_wait);
 
         Py::Object wait();
 
-        PYCXX_NOARGS_METHOD_DECL(CyPy_ObserverClient, wait)
+        PYCXX_NOARGS_METHOD_DECL(CyPy_ObserverClient, wait);
 
 };
 

@@ -20,7 +20,7 @@
 #define CYPHESIS_CYPY_CHARACTER_H
 
 #include "rulesets/Character.h"
-#include "CyPy_LocatedEntity.h"
+#include "CyPy_LocatedEntity_impl.h"
 
 class CyPy_Character : public CyPy_LocatedEntityBase<Ref<Character>, CyPy_Character>
 {
@@ -35,13 +35,13 @@ class CyPy_Character : public CyPy_LocatedEntityBase<Ref<Character>, CyPy_Charac
     protected:
 
         Py::Object start_task(const Py::Tuple& args);
-        PYCXX_VARARGS_METHOD_DECL(CyPy_Character, start_task)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Character, start_task);
 
         Py::Object mind2body(const Py::Tuple& args);
-        PYCXX_VARARGS_METHOD_DECL(CyPy_Character, mind2body)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Character, mind2body);
 
         Py::Object send_world(const Py::Tuple& args);
-        PYCXX_VARARGS_METHOD_DECL(CyPy_Character, send_world)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Character, send_world);
 };
 
 

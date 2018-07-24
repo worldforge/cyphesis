@@ -56,16 +56,18 @@ int python_client_script(const std::string & package,
     for (auto& entry : keywords) {
         kwds.setAttr(entry.first, Py::String(entry.second));
     }
-    auto ret = callable.apply(args, kwds);
-
-    if (ret.isNull()) {
+    try {
+        auto ret = callable.apply(args, kwds);
+    } catch (...) {
         if (PyErr_Occurred() == nullptr) {
-            std::cerr << "Could not call function" << std::endl << std::flush;
+            log(ERROR, "Could not call function");
         } else {
-            std::cerr << "Reporting python error" << std::endl << std::flush;
+            log(ERROR, "Reporting python error");
             PyErr_Print();
         }
+        return -1;
     }
+
     return 0;
 
 }

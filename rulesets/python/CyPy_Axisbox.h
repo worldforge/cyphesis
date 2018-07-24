@@ -38,15 +38,15 @@ class CyPy_Axisbox : public WrapperBase<WFMath::AxisBox<3>, CyPy_Axisbox>
 
         Py::Object sqr_bounding_radius();
 
-        PYCXX_NOARGS_METHOD_DECL(CyPy_Axisbox, sqr_bounding_radius)
+        PYCXX_NOARGS_METHOD_DECL(CyPy_Axisbox, sqr_bounding_radius);
 
         Py::Object sqr_horizontal_bounding_radius();
 
-        PYCXX_NOARGS_METHOD_DECL(CyPy_Axisbox, sqr_horizontal_bounding_radius)
+        PYCXX_NOARGS_METHOD_DECL(CyPy_Axisbox, sqr_horizontal_bounding_radius);
 
         Py::Object as_sequence();
 
-        PYCXX_NOARGS_METHOD_DECL(CyPy_Axisbox, as_sequence)
+        PYCXX_NOARGS_METHOD_DECL(CyPy_Axisbox, as_sequence);
 
         Py::Object getattro(const Py::String& name) override;
 

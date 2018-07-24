@@ -55,11 +55,11 @@ class CyPy_WorldTime : public WrapperBase<WorldTimeWrapper, CyPy_WorldTime>
 
         Py::Object seconds();
 
-        PYCXX_NOARGS_METHOD_DECL(CyPy_WorldTime, seconds)
+        PYCXX_NOARGS_METHOD_DECL(CyPy_WorldTime, seconds);
 
         Py::Object is_now(const Py::Tuple& args);
 
-        PYCXX_VARARGS_METHOD_DECL(CyPy_WorldTime, is_now)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_WorldTime, is_now);
 
 };
 

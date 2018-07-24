@@ -344,19 +344,15 @@ Py::Object CyPy_Operation::number_add(const Py::Object& other)
     }
 
     if (CyPy_Oplist::check(other)) {
-        Py::PythonClassObject<CyPy_Oplist> otherList(other);
-        Py::PythonClassObject<CyPy_Oplist> res(Py::Callable(CyPy_Oplist::type()).apply());
-
-        res.getCxxObject()->m_value = otherList.getCxxObject()->m_value;
-        res.getCxxObject()->m_value.push_back(m_value);
-        return res;
+        auto list = CyPy_Oplist::value(other);
+        list.push_back(m_value);
+        return CyPy_Oplist::wrap(list);
     }
     if (CyPy_Operation::check(other)) {
-        Py::PythonClassObject<CyPy_Operation> otherOp(other);
-        Py::PythonClassObject<CyPy_Oplist> res(Py::Callable(CyPy_Oplist::type()).apply());
-        res.getCxxObject()->m_value.push_back(otherOp.getCxxObject()->m_value);
-        res.getCxxObject()->m_value.push_back(m_value);
-        return res;
+        std::vector<Atlas::Objects::Operation::RootOperation> oplist;
+        oplist.push_back(m_value);
+        oplist.push_back(CyPy_Operation::value(other));
+        return CyPy_Oplist::wrap(oplist);
     }
     throw Py::TypeError("Unknown other in Operation.num_add");
 }

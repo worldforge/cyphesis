@@ -21,7 +21,7 @@
 
 
 #include "rulesets/MemEntity.h"
-#include "CyPy_LocatedEntity.h"
+#include "CyPy_LocatedEntity_impl.h"
 
 class CyPy_MemEntity : public CyPy_LocatedEntityBase<Ref<MemEntity>, CyPy_MemEntity>
 {

@@ -39,7 +39,7 @@ class CyPy_Oplist : public WrapperBase<std::vector<Atlas::Objects::Operation::Ro
 
         Py::Object append(const Py::Tuple& args);
 
-        PYCXX_VARARGS_METHOD_DECL(CyPy_Oplist, append)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Oplist, append);
 
 
         static void appendToList(const Py::Object& op, std::vector<Atlas::Objects::Operation::RootOperation>& list);

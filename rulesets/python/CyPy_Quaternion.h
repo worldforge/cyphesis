@@ -37,13 +37,13 @@ class CyPy_Quaternion : public WrapperBase<WFMath::Quaternion, CyPy_Quaternion>
 
 
         Py::Object is_valid();
-        PYCXX_NOARGS_METHOD_DECL(CyPy_Quaternion, is_valid)
+        PYCXX_NOARGS_METHOD_DECL(CyPy_Quaternion, is_valid);
 
         Py::Object as_list();
-        PYCXX_NOARGS_METHOD_DECL(CyPy_Quaternion, as_list)
+        PYCXX_NOARGS_METHOD_DECL(CyPy_Quaternion, as_list);
 
         Py::Object rotation(const Py::Tuple& args);
-        PYCXX_VARARGS_METHOD_DECL(CyPy_Quaternion, rotation)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Quaternion, rotation);
 
         Py::Object getattro(const Py::String& name) override;
 

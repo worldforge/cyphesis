@@ -59,9 +59,9 @@ Py::Object wrapLocatedEntity(LocatedEntity* le)
 }
 
 
-Py::PythonClassObject<CyPy_LocatedEntity> CyPy_LocatedEntity::wrap(LocatedEntity* value)
+Py::Object CyPy_LocatedEntity::wrap(LocatedEntity* value)
 {
-    return (Py::PythonClassObject<CyPy_LocatedEntity>) (wrapLocatedEntity(value));
+    return wrapLocatedEntity(value);
 }
 
 LocatedEntity& CyPy_LocatedEntity::value(const Py::Object& object)

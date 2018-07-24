@@ -66,51 +66,51 @@ class CyPy_Vector3D : public WrapperBase<WFMath::Vector<3>, CyPy_Vector3D>
 
         Py::Object dot(const Py::Tuple& args);
 
-        PYCXX_VARARGS_METHOD_DECL(CyPy_Vector3D, dot)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Vector3D, dot);
 
         Py::Object cross(const Py::Tuple& args);
 
-        PYCXX_VARARGS_METHOD_DECL(CyPy_Vector3D, cross)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Vector3D, cross);
 
         Py::Object rotatex(const Py::Tuple& args);
 
-        PYCXX_VARARGS_METHOD_DECL(CyPy_Vector3D, rotatex)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Vector3D, rotatex);
 
         Py::Object rotatey(const Py::Tuple& args);
 
-        PYCXX_VARARGS_METHOD_DECL(CyPy_Vector3D, rotatey)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Vector3D, rotatey);
 
         Py::Object rotatez(const Py::Tuple& args);
 
-        PYCXX_VARARGS_METHOD_DECL(CyPy_Vector3D, rotatez)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Vector3D, rotatez);
 
         Py::Object rotate(const Py::Tuple& args);
 
-        PYCXX_VARARGS_METHOD_DECL(CyPy_Vector3D, rotate)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Vector3D, rotate);
 
         Py::Object angle(const Py::Tuple& args);
 
-        PYCXX_VARARGS_METHOD_DECL(CyPy_Vector3D, angle)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Vector3D, angle);
 
         Py::Object sqr_mag();
 
-        PYCXX_NOARGS_METHOD_DECL(CyPy_Vector3D, sqr_mag)
+        PYCXX_NOARGS_METHOD_DECL(CyPy_Vector3D, sqr_mag);
 
         Py::Object mag();
 
-        PYCXX_NOARGS_METHOD_DECL(CyPy_Vector3D, mag)
+        PYCXX_NOARGS_METHOD_DECL(CyPy_Vector3D, mag);
 
         Py::Object is_valid();
 
-        PYCXX_NOARGS_METHOD_DECL(CyPy_Vector3D, is_valid)
+        PYCXX_NOARGS_METHOD_DECL(CyPy_Vector3D, is_valid);
 
         Py::Object unit_vector();
 
-        PYCXX_NOARGS_METHOD_DECL(CyPy_Vector3D, unit_vector)
+        PYCXX_NOARGS_METHOD_DECL(CyPy_Vector3D, unit_vector);
 
         Py::Object unit_vector_to(const Py::Tuple& args);
 
-        PYCXX_VARARGS_METHOD_DECL(CyPy_Vector3D, unit_vector_to)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Vector3D, unit_vector_to);
 };
 
 

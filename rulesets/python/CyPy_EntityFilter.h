@@ -40,7 +40,7 @@ class CyPy_Filter : public Py::PythonClass<CyPy_Filter>
         ///\brief Match a single entity using a filter that called this method.
         Py::Boolean match_entity(const Py::Tuple& args);
 
-        PYCXX_VARARGS_METHOD_DECL(CyPy_Filter, match_entity)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Filter, match_entity);
 
         ///\This method is used to search the "contains" property of an entity,
         ///returning a list of entities that match a given filter
@@ -51,7 +51,7 @@ class CyPy_Filter : public Py::PythonClass<CyPy_Filter>
         ///@param py_entity - an entity whose "contains" property to search
         Py::List search_contains(const Py::Tuple& args);
 
-        PYCXX_VARARGS_METHOD_DECL(CyPy_Filter, search_contains)
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Filter, search_contains);
 
 
     private:
