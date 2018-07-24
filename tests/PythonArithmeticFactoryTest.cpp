@@ -42,8 +42,6 @@
 #include <cassert>
 #include <external/pycxx/CXX/Extensions.hxx>
 
-static bool stub_wrapEntity_fail = false;
-
 struct TestMod : public Py::ExtensionModule<TestMod>
 {
     TestMod() : ExtensionModule("testmod")

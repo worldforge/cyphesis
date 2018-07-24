@@ -19,24 +19,22 @@
 #ifndef CYPHESIS_CYPY_PROPS_H
 #define CYPHESIS_CYPY_PROPS_H
 
-#include "external/pycxx/CXX/Objects.hxx"
-#include "external/pycxx/CXX/Extensions.hxx"
+#include "WrapperBase.h"
+#include "rulesets/LocatedEntity.h"
 
-class LocatedEntity;
-
-class CyPy_Props : public Py::PythonClass<CyPy_Props>
+class CyPy_Props : public WrapperBase<Ref<LocatedEntity>, CyPy_Props>
 {
     public:
 
         CyPy_Props(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
+
+        CyPy_Props(Py::PythonClassInstance* self, Ref<LocatedEntity> value);
 
         static void init_type();
 
         Py::Object getattro(const Py::String& name) override;
 
         int setattro(const Py::String& name, const Py::Object& attr) override;
-
-        LocatedEntity* m_value;
 
     private:
 

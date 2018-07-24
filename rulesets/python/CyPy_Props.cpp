@@ -18,14 +18,21 @@
 
 #include "CyPy_Props.h"
 #include "CyPy_Element.h"
-#include "rulesets/LocatedEntity.h"
 #include "CyPy_TerrainProperty.h"
 
 CyPy_Props::CyPy_Props(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
-    : PythonClass(self, args, kwds)
+    : WrapperBase(self, args, kwds)
 {
 
 }
+
+
+CyPy_Props::CyPy_Props(Py::PythonClassInstance* self, Ref<LocatedEntity> value)
+    : WrapperBase(self, std::move(value))
+{
+
+}
+
 
 void CyPy_Props::init_type()
 {

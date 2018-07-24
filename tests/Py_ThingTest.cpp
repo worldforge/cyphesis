@@ -54,12 +54,12 @@ int main()
     run_python_string("from atlas import Operation");
     run_python_string("from atlas import Oplist");
 
-    Entity * e = new Entity("1", 1);
+    Ref<Entity> e = new Entity("1", 1);
 
     SoftProperty* prop = new SoftProperty();
     prop->set("bar");
     e->setProperty("foo", prop);
-    Entity * wrld = new Entity("0", 0);
+    Ref<Entity> wrld = new Entity("0", 0);
     e->m_location.m_loc = wrld;
     e->m_location.m_loc->makeContainer();
     assert(e->m_location.m_loc->m_contains != nullptr);
@@ -72,7 +72,7 @@ int main()
     assert(CyPy_LocatedEntity::check(wrap_e_again));
     assert(wrap_e == wrap_e_again);
 
-    Character * c = new Character("2", 2);
+    Ref<Character> c = new Character("2", 2);
     auto wrap_c = CyPy_LocatedEntity::wrap(c);
     assert(CyPy_LocatedEntity::check(wrap_c));
 

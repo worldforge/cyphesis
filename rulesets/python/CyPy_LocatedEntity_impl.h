@@ -49,11 +49,7 @@ Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::getattro(const Py::Stri
     }
 
     if (nameStr == "props") {
-        //FIXME: Make CyPy_Props wrap an entity ref instead
-        Py::Callable class_type(CyPy_Props::type());
-        Py::PythonClassObject<CyPy_Props> propsObj(class_type.apply());
-        propsObj.getCxxObject()->m_value = this->m_value;
-        return propsObj;
+        return CyPy_Props::wrap(this->m_value);
     }
 
     if (nameStr == "type") {
