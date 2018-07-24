@@ -49,17 +49,17 @@
 
 #ifndef STUB_EntityBuilder_newEntity
 //#define STUB_EntityBuilder_newEntity
-  LocatedEntity* EntityBuilder::newEntity(const std::string & id, long intId, const std::string & type, const Atlas::Objects::Entity::RootEntity & attrs, const BaseWorld & world) const
+  Ref<LocatedEntity> EntityBuilder::newEntity(const std::string & id, long intId, const std::string & type, const Atlas::Objects::Entity::RootEntity & attrs, const BaseWorld & world) const
   {
-    return nullptr;
+    return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
 #endif //STUB_EntityBuilder_newEntity
 
 #ifndef STUB_EntityBuilder_newChildEntity
 //#define STUB_EntityBuilder_newChildEntity
-  LocatedEntity* EntityBuilder::newChildEntity(const std::string & id, long intId, const std::string & type, const Atlas::Objects::Entity::RootEntity & attrs, LocatedEntity & parentEntity) const
+  Ref<LocatedEntity> EntityBuilder::newChildEntity(const std::string & id, long intId, const std::string & type, const Atlas::Objects::Entity::RootEntity & attrs, LocatedEntity & parentEntity) const
   {
-    return nullptr;
+    return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
 #endif //STUB_EntityBuilder_newChildEntity
 
@@ -89,17 +89,17 @@
 
 #ifndef STUB_EntityBuilder_buildTask
 //#define STUB_EntityBuilder_buildTask
-  Task* EntityBuilder::buildTask(TaskKit * factory, LocatedEntity & owner) const
+  Ref<Task> EntityBuilder::buildTask(TaskKit * factory, LocatedEntity & owner) const
   {
-    return nullptr;
+    return *static_cast<Ref<Task>*>(nullptr);
   }
 #endif //STUB_EntityBuilder_buildTask
 
 #ifndef STUB_EntityBuilder_newTask
 //#define STUB_EntityBuilder_newTask
-  Task* EntityBuilder::newTask(const std::string & class_name, LocatedEntity & owner) const
+  Ref<Task> EntityBuilder::newTask(const std::string & class_name, LocatedEntity & owner) const
   {
-    return nullptr;
+    return *static_cast<Ref<Task>*>(nullptr);
   }
 #endif //STUB_EntityBuilder_newTask
 
@@ -129,9 +129,9 @@
 
 #ifndef STUB_EntityBuilder_activateTask
 //#define STUB_EntityBuilder_activateTask
-  Task* EntityBuilder::activateTask(const std::string & tool, const std::string & op, LocatedEntity * target, LocatedEntity & owner) const
+  Ref<Task> EntityBuilder::activateTask(const std::string & tool, const std::string & op, LocatedEntity * target, LocatedEntity & owner) const
   {
-    return nullptr;
+    return *static_cast<Ref<Task>*>(nullptr);
   }
 #endif //STUB_EntityBuilder_activateTask
 

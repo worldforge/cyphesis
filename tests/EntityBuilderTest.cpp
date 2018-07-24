@@ -48,7 +48,7 @@
 #include "common/TaskKit.h"
 
 #include "stubs/rulesets/stubEntity.h"
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
 
@@ -79,8 +79,8 @@ class TestScriptFactory : public ScriptKit<LocatedEntity> {
 class TestTaskFactory : public TaskKit
 {
   public:
-    virtual int checkTarget(LocatedEntity * target) { return 0; }
-    virtual Task * newTask(LocatedEntity & chr) { return 0; }
+    int checkTarget(LocatedEntity * target) override{ return 0; }
+    Ref<Task> newTask(LocatedEntity & chr) override { return 0; }
 };
 
 class EntityBuildertest : public Cyphesis::TestBase
@@ -144,11 +144,11 @@ void EntityBuildertest::test_sequence1()
 {
     Anonymous attributes;
 
-    assert(EntityBuilder::instance() != 0);
+    assert(EntityBuilder::instance() != nullptr);
 
-    assert(EntityBuilder::instance()->newEntity("1", 1, "world", attributes, BaseWorld::instance()) == 0);
-    assert(EntityBuilder::instance()->newEntity("1", 1, "nonexistant", attributes, BaseWorld::instance()) == 0);
-    assert(EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, BaseWorld::instance()) != 0);
+    assert(EntityBuilder::instance()->newEntity("1", 1, "world", attributes, BaseWorld::instance()) == nullptr);
+    assert(EntityBuilder::instance()->newEntity("1", 1, "nonexistant", attributes, BaseWorld::instance()) == nullptr);
+    assert(EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, BaseWorld::instance()) != nullptr);
 }
 
 void EntityBuildertest::test_sequence2()
@@ -218,7 +218,7 @@ void EntityBuildertest::test_sequence4()
 
     // Check that creating an entity of a type we know we have not yet
     // installed results in a null pointer.
-    assert(entity_factory.newEntity("1", 1, "custom_type", attributes, BaseWorld::instance()) == 0);
+    assert(entity_factory.newEntity("1", 1, "custom_type", attributes, BaseWorld::instance()) == nullptr);
 
     // Get a reference to the internal dictionary of entity factories.
     const FactoryDict & factory_dict = entity_factory.m_entityFactories;
@@ -270,7 +270,7 @@ void EntityBuildertest::test_sequence4()
 
     // Check that creating an entity of a type we know we have not yet
     // installed results in a null pointer.
-    assert(entity_factory.newEntity("1", 1, "custom_inherited_type", attributes, BaseWorld::instance()) == 0);
+    assert(entity_factory.newEntity("1", 1, "custom_inherited_type", attributes, BaseWorld::instance()) == nullptr);
 
     // Assert the dictionary does not contain the factory we know we have
     // have not yet installed.
@@ -375,22 +375,14 @@ int main(int argc, char ** argv)
 
 // stubs
 
-void TestWorld::message(const Operation & op, LocatedEntity & ent)
-{
-}
 
-LocatedEntity * TestWorld::addNewEntity(const std::string &,
-                                 const Atlas::Objects::Entity::RootEntity &)
-{
-    return 0;
-}
 
 #include "stubs/common/stubEntityKit.h"
 
 
 #define STUB_EntityFactory_newEntity
 template <class T>
-LocatedEntity * EntityFactory<T>::newEntity(const std::string & id, long intId,
+Ref<LocatedEntity> EntityFactory<T>::newEntity(const std::string & id, long intId,
                                             const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
 {
     ++m_createdCount;
@@ -427,7 +419,7 @@ ArchetypeFactory* ArchetypeFactory::duplicateFactory()
 class World;
 
 template <>
-LocatedEntity * EntityFactory<World>::newEntity(const std::string & id, long intId,
+Ref<LocatedEntity> EntityFactory<World>::newEntity(const std::string & id, long intId,
         const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
 {
     return 0;
@@ -655,7 +647,7 @@ template class Property<Atlas::Message::ListType>;
 #include "stubs/rulesets/stubTask.h"
 BaseWorld * BaseWorld::m_instance = 0;
 
-BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld()
 {
     m_instance = this;
 }
@@ -663,14 +655,6 @@ BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
 BaseWorld::~BaseWorld()
 {
     m_instance = 0;
-}
-
-LocatedEntity& BaseWorld::getDefaultLocation() const {
-    return m_gameWorld;
-}
-
-LocatedEntity& BaseWorld::getDefaultLocation() {
-    return m_gameWorld;
 }
 
 LocatedEntity * BaseWorld::getEntity(const std::string & id) const

@@ -276,22 +276,8 @@ void Router::addToMessage(Atlas::Message::MapType & omap) const
 void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
-BaseWorld*BaseWorld::m_instance = 0;
-BaseWorld::BaseWorld(LocatedEntity & gw) :
-        m_gameWorld(gw)
-{
-    m_instance = this;
-}
 
-BaseWorld::~BaseWorld()
-{
-    m_instance = 0;
-}
-
-LocatedEntity * BaseWorld::getEntity(const std::string & id) const
-{
-    return 0;
-}
+#include "stubs/common/stubBaseWorld.h"
 
 void Location::addToMessage(Atlas::Message::MapType & omap) const
 {

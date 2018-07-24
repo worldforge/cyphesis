@@ -9,15 +9,15 @@
 
 #ifndef STUB_MemMap_addEntity
 //#define STUB_MemMap_addEntity
-  MemEntity* MemMap::addEntity(MemEntity *)
+  Ref<MemEntity> MemMap::addEntity(const Ref<MemEntity>)
   {
-    return nullptr;
+    return *static_cast<Ref<MemEntity>*>(nullptr);
   }
 #endif //STUB_MemMap_addEntity
 
 #ifndef STUB_MemMap_readEntity
 //#define STUB_MemMap_readEntity
-  void MemMap::readEntity(MemEntity *, const Atlas::Objects::Entity::RootEntity &, double timestamp)
+  void MemMap::readEntity(const Ref<MemEntity>, const Atlas::Objects::Entity::RootEntity &, double timestamp)
   {
     
   }
@@ -25,7 +25,7 @@
 
 #ifndef STUB_MemMap_updateEntity
 //#define STUB_MemMap_updateEntity
-  void MemMap::updateEntity(MemEntity *, const Atlas::Objects::Entity::RootEntity &, double timestamp)
+  void MemMap::updateEntity(const Ref<MemEntity>, const Atlas::Objects::Entity::RootEntity &, double timestamp)
   {
     
   }
@@ -33,9 +33,9 @@
 
 #ifndef STUB_MemMap_newEntity
 //#define STUB_MemMap_newEntity
-  MemEntity* MemMap::newEntity(const std::string &, long, const Atlas::Objects::Entity::RootEntity &, double timestamp)
+  Ref<MemEntity> MemMap::newEntity(const std::string &, long, const Atlas::Objects::Entity::RootEntity &, double timestamp)
   {
-    return nullptr;
+    return *static_cast<Ref<MemEntity>*>(nullptr);
   }
 #endif //STUB_MemMap_newEntity
 
@@ -49,9 +49,9 @@
 
 #ifndef STUB_MemMap_addId
 //#define STUB_MemMap_addId
-  MemEntity* MemMap::addId(const std::string &, long)
+  Ref<MemEntity> MemMap::addId(const std::string &, long)
   {
-    return nullptr;
+    return *static_cast<Ref<MemEntity>*>(nullptr);
   }
 #endif //STUB_MemMap_addId
 
@@ -98,25 +98,25 @@
 
 #ifndef STUB_MemMap_get
 //#define STUB_MemMap_get
-  MemEntity* MemMap::get(const std::string & id) const
+  Ref<MemEntity> MemMap::get(const std::string & id) const
   {
-    return nullptr;
+    return *static_cast<Ref<MemEntity>*>(nullptr);
   }
 #endif //STUB_MemMap_get
 
 #ifndef STUB_MemMap_getAdd
 //#define STUB_MemMap_getAdd
-  MemEntity* MemMap::getAdd(const std::string & id)
+  Ref<MemEntity> MemMap::getAdd(const std::string & id)
   {
-    return nullptr;
+    return *static_cast<Ref<MemEntity>*>(nullptr);
   }
 #endif //STUB_MemMap_getAdd
 
 #ifndef STUB_MemMap_updateAdd
 //#define STUB_MemMap_updateAdd
-  MemEntity* MemMap::updateAdd(const Atlas::Objects::Entity::RootEntity &, const double &)
+  Ref<MemEntity> MemMap::updateAdd(const Atlas::Objects::Entity::RootEntity &, const double &)
   {
-    return nullptr;
+    return *static_cast<Ref<MemEntity>*>(nullptr);
   }
 #endif //STUB_MemMap_updateAdd
 

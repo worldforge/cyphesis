@@ -72,8 +72,8 @@ void TerrainEffectorPropertytest::teardown()
 
 void TerrainEffectorPropertytest::test_none_found()
 {
-    ASSERT_NULL(m_world->m_location.m_loc);
-    ASSERT_EQUAL(m_entity->m_location.m_loc, m_world);
+    ASSERT_FALSE(m_world->m_location.m_loc);
+    ASSERT_EQUAL(m_entity->m_location.m_loc.get(), m_world);
 
     const TerrainProperty * res = m_property->getTerrain(m_entity);
 
@@ -82,8 +82,8 @@ void TerrainEffectorPropertytest::test_none_found()
 
 void TerrainEffectorPropertytest::test_not_terrain()
 {
-    ASSERT_NULL(m_world->m_location.m_loc);
-    ASSERT_EQUAL(m_entity->m_location.m_loc, m_world);
+    ASSERT_FALSE(m_world->m_location.m_loc);
+    ASSERT_EQUAL(m_entity->m_location.m_loc.get(), m_world);
 
     m_world->setProperty("terrain",
                          new Property<Atlas::Message::MapType>);
@@ -95,8 +95,8 @@ void TerrainEffectorPropertytest::test_not_terrain()
 
 void TerrainEffectorPropertytest::test_found()
 {
-    ASSERT_NULL(m_world->m_location.m_loc);
-    ASSERT_EQUAL(m_entity->m_location.m_loc, m_world);
+    ASSERT_FALSE(m_world->m_location.m_loc);
+    ASSERT_EQUAL(m_entity->m_location.m_loc.get(), m_world);
 
     m_world->setProperty("terrain",
                          new TerrainProperty);
@@ -140,5 +140,5 @@ PropertyBase * Entity::setProperty(const std::string & name,
 
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 #include "stubs/common/stubProperty.h"

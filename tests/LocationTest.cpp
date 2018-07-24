@@ -343,7 +343,7 @@ int main()
     {
         Location testloc;
 
-        assert(testloc.m_loc == 0);
+        assert(!testloc.m_loc);
         assert(!testloc.pos().isValid());
         assert(!testloc.velocity().isValid());
         assert(!testloc.orientation().isValid());
@@ -354,7 +354,7 @@ int main()
     {
         Location testloc(0);
 
-        assert(testloc.m_loc == 0);
+        assert(!testloc.m_loc);
         assert(!testloc.pos().isValid());
         assert(!testloc.velocity().isValid());
         assert(!testloc.orientation().isValid());
@@ -366,7 +366,7 @@ int main()
 
         assert(!testPos.isValid());
 
-        assert(testloc.m_loc == 0);
+        assert(!testloc.m_loc);
         assert(!testloc.pos().isValid());
         assert(!testloc.velocity().isValid());
         assert(!testloc.orientation().isValid());
@@ -378,7 +378,7 @@ int main()
 
         assert(testPos.isValid());
 
-        assert(testloc.m_loc == 0);
+        assert(!testloc.m_loc);
         assert(testloc.pos().isValid());
         assert(!testloc.velocity().isValid());
         assert(!testloc.orientation().isValid());
@@ -392,7 +392,7 @@ int main()
         assert(testPos.isValid());
         assert(!testVel.isValid());
 
-        assert(testloc.m_loc == 0);
+        assert(!testloc.m_loc);
         assert(testloc.pos().isValid());
         assert(!testloc.velocity().isValid());
         assert(!testloc.orientation().isValid());
@@ -406,7 +406,7 @@ int main()
         assert(testPos.isValid());
         assert(testVel.isValid());
 
-        assert(testloc.m_loc == 0);
+        assert(!testloc.m_loc);
         assert(testloc.pos().isValid());
         assert(testloc.velocity().isValid());
         assert(!testloc.orientation().isValid());
@@ -422,7 +422,7 @@ int main()
 
         testloc.m_bBox = BBox(Point3D(0,0,0), Point3D(1,1,1));
 
-        assert(testloc.m_loc == 0);
+        assert(!testloc.m_loc);
         assert(!testloc.pos().isValid());
         assert(!testloc.velocity().isValid());
         assert(!testloc.orientation().isValid());

@@ -47,7 +47,7 @@ int main()
 #include "stubs/rulesets/stubMemEntity.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 
 void WorldTime::initTimeInfo()
 {

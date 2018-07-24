@@ -183,7 +183,7 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 
 BaseWorld * BaseWorld::m_instance = 0;
 
-BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld()
 {
     m_instance = this;
 }

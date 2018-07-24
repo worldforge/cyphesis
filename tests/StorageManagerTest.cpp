@@ -76,34 +76,36 @@ int main()
     DatabaseNull database;
     Persistence persistence(database);
 
+    Ref<LocatedEntity> le = new Entity("", 0);
+
     {
         SystemTime time;
-        WorldRouter world(time);
+        WorldRouter world(time, le);
 
         StorageManager store(world);
     }
 
     {
         SystemTime time;
-        WorldRouter world(time);
+        WorldRouter world(time, le);
 
         StorageManager store(world);
 
-        store.initWorld();
+        store.initWorld(le);
     }
 
     {
         SystemTime time;
-        WorldRouter world(time);
+        WorldRouter world(time, le);
 
         StorageManager store(world);
 
-        store.restoreWorld();
+        store.restoreWorld(le);
     }
 
     {
         SystemTime time;
-        WorldRouter world(time);
+        WorldRouter world(time, le);
 
         StorageManager store(world);
 
@@ -112,7 +114,7 @@ int main()
 
     {
         SystemTime time;
-        WorldRouter world(time);
+        WorldRouter world(time, le);
 
         TestStorageManager store(world);
 
@@ -121,7 +123,7 @@ int main()
 
     {
         SystemTime time;
-        WorldRouter world(time);
+        WorldRouter world(time, le);
 
         TestStorageManager store(world);
 
@@ -130,7 +132,7 @@ int main()
 
     {
         SystemTime time;
-        WorldRouter world(time);
+        WorldRouter world(time, le);
 
         TestStorageManager store(world);
 
@@ -141,7 +143,7 @@ int main()
 
     {
         SystemTime time;
-        WorldRouter world(time);
+        WorldRouter world(time, le);
 
         TestStorageManager store(world);
 
@@ -150,7 +152,7 @@ int main()
 
     {
         SystemTime time;
-        WorldRouter world(time);
+        WorldRouter world(time, le);
 
         TestStorageManager store(world);
 
@@ -159,7 +161,7 @@ int main()
 
     {
         SystemTime time;
-        WorldRouter world(time);
+        WorldRouter world(time, le);
 
         TestStorageManager store(world);
 
@@ -168,7 +170,7 @@ int main()
 
     {
         SystemTime time;
-        WorldRouter world(time);
+        WorldRouter world(time, le);
 
         TestStorageManager store(world);
 
@@ -200,7 +202,7 @@ int main()
 #include "common/Variable.h"
 
 #include "stubs/server/stubWorldRouter.h"
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubCharacter.h"
 #include "stubs/rulesets/stubThing.h"
@@ -216,26 +218,7 @@ int main()
 using Atlas::Message::MapType;
 using Atlas::Objects::Entity::RootEntity;
 
-
-EntityBuilder * EntityBuilder::m_instance = nullptr;
-
-EntityBuilder::EntityBuilder()
-{
-}
-
-EntityBuilder::~EntityBuilder()
-{
-}
-
-LocatedEntity * EntityBuilder::newEntity(const std::string & id, long intId,
-                                         const std::string & type,
-                                         const RootEntity & attributes,
-                                         const BaseWorld &) const
-{
-    return 0;
-}
-
-
+#include "stubs/server/stubEntityBuilder.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"
 

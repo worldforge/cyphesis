@@ -10,7 +10,7 @@
 #ifndef STUB_PythonArithmeticFactory_PythonArithmeticFactory
 //#define STUB_PythonArithmeticFactory_PythonArithmeticFactory
    PythonArithmeticFactory::PythonArithmeticFactory(const std::string& package, const std::string& name)
-    : ArithmeticKit(package, name)
+    : PythonClass(package, name)
   {
     
   }

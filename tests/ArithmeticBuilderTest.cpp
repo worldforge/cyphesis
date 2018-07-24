@@ -58,8 +58,7 @@ int main()
 PythonArithmeticFactory::PythonArithmeticFactory(const std::string & package,
                                                  const std::string & name) :
                                                  PythonClass(package,
-                                                             name,
-                                                             0)
+                                                             name)
 {
 }
 
@@ -80,13 +79,4 @@ ArithmeticScript * PythonArithmeticFactory::newScript(LocatedEntity * owner)
 ArithmeticKit::~ArithmeticKit()
 {
 }
-
-PythonClass::PythonClass(const std::string & package,
-                         const std::string & type,
-                         struct _typeobject * base)
-{
-}
-
-PythonClass::~PythonClass()
-{
-}
+#include "stubs/rulesets/stubPythonClass.h"

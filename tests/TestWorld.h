@@ -23,51 +23,74 @@
 
 #include "rulesets/LocatedEntity.h"
 #include "rulesets/Task.h"
+#include <Atlas/Objects/ObjectsFwd.h>
+#include <Atlas/Objects/RootEntity.h>
+#include <Atlas/Objects/RootOperation.h>
+#include <functional>
 
-/// Test implementation of the BaseWorld interface
-class TestWorld : public BaseWorld {
-  public:
-    LocatedEntity& m_gw;
-    explicit TestWorld(LocatedEntity & gw) : BaseWorld(), m_gw(gw) {
+struct TestWorldExtension {
+    std::function<void(const Operation & op, LocatedEntity & ent)> messageFn;
+    std::function<Ref<LocatedEntity>(const std::string &, const Atlas::Objects::Entity::RootEntity &)> addNewEntityFn;
+};
+
+struct TestWorld : public BaseWorld {
+
+    static TestWorldExtension extension;
+
+    LocatedEntity* m_gw;
+    explicit TestWorld() : BaseWorld(), m_gw(nullptr) {
+    }
+    explicit TestWorld(LocatedEntity & gw) : BaseWorld(), m_gw(&gw) {
         m_eobjects[gw.getIntId()] = &gw;
     }
 
-    virtual ~TestWorld(){}
+    ~TestWorld() override{}
 
-    virtual bool idle() { return false; }
-    virtual Ref<LocatedEntity> addEntity(const Ref<LocatedEntity>& ent) {
+    bool idle() override { return false; }
+    Ref<LocatedEntity> addEntity(const Ref<LocatedEntity>& ent) override {
         m_eobjects[ent->getIntId()] = ent.get();
         return 0;
     }
-    virtual Ref<LocatedEntity> addNewEntity(const std::string &,
-                                         const Atlas::Objects::Entity::RootEntity &);
-    void delEntity(LocatedEntity * obj) {}
+    Ref<LocatedEntity> addNewEntity(const std::string & id,
+                                         const Atlas::Objects::Entity::RootEntity & op) override
+    {
+        if (extension.addNewEntityFn) {
+            return extension.addNewEntityFn(id, op);
+        }
+        return nullptr;
+    }
+    void delEntity(LocatedEntity * obj) override {}
     int createSpawnPoint(const Atlas::Message::MapType & data,
-                         LocatedEntity *) { return 0; }
-    int removeSpawnPoint(LocatedEntity *) {return 0; }
-    int getSpawnList(Atlas::Message::ListType & data) { return 0; }
+                         LocatedEntity *) override { return 0; }
+    int removeSpawnPoint(LocatedEntity *) override {return 0; }
+    int getSpawnList(Atlas::Message::ListType & data) override { return 0; }
     LocatedEntity * spawnNewEntity(const std::string & name,
                                    const std::string & type,
                                    const Atlas::Objects::Entity::RootEntity & desc) {
         return addNewEntity(type, desc);
     }
-    virtual int moveToSpawn(const std::string & name,
-                            Location& location){return 0;}
-    virtual Ref<Task> newTask(const std::string &, LocatedEntity &) { return 0; }
-    virtual Ref<Task> activateTask(const std::string &, const std::string &,
-                                LocatedEntity *, LocatedEntity &) { return 0; }
-    virtual ArithmeticScript * newArithmetic(const std::string &,
-                                             LocatedEntity *) {
+    int moveToSpawn(const std::string & name,
+                            Location& location) override{return 0;}
+    Ref<Task> newTask(const std::string &, LocatedEntity &) override { return 0; }
+    Ref<Task> activateTask(const std::string &, const std::string &,
+                                LocatedEntity *, LocatedEntity &) override { return 0; }
+    ArithmeticScript * newArithmetic(const std::string &,
+                                             LocatedEntity *) override {
         return 0;
     }
-    virtual void message(const Operation & op, LocatedEntity & ent);
-    virtual void messageToClients(const Atlas::Objects::Operation::RootOperation &){};
-    virtual LocatedEntity * findByName(const std::string & name) { return 0; }
-    virtual LocatedEntity * findByType(const std::string & type) { return 0; }
-    virtual void addPerceptive(LocatedEntity *) { }
+    void message(const Operation & op, LocatedEntity & ent) override {
+        if (extension.messageFn) {
+            extension.messageFn(op, ent);
+        }
+    }
+    void messageToClients(const Atlas::Objects::Operation::RootOperation &) override{}
+    LocatedEntity * findByName(const std::string & name) override { return 0; }
+    LocatedEntity * findByType(const std::string & type) override { return 0; }
+    void addPerceptive(LocatedEntity *) override { }
 
-    virtual LocatedEntity& getDefaultLocation() const {return m_gw;};
+    LocatedEntity& getDefaultLocation() const override {return *m_gw;};
 
 };
+
 
 #endif // TESTS_TEST_WORLD_H

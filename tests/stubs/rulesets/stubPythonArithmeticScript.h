@@ -9,7 +9,7 @@
 
 #ifndef STUB_PythonArithmeticScript_PythonArithmeticScript
 //#define STUB_PythonArithmeticScript_PythonArithmeticScript
-   PythonArithmeticScript::PythonArithmeticScript(Py::Callable script)
+   PythonArithmeticScript::PythonArithmeticScript(Py::Object script)
     : ArithmeticScript(script)
   {
     

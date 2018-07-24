@@ -47,45 +47,22 @@ class TestArithmeticScript : public ArithmeticScript
     }
 };
 
+#include "TestWorld.h"
 /// Test implementation of the BaseWorld interface, which produces dummy
 /// Arithmetic scripts.
-class ArithmeticTestWorld : public BaseWorld {
+class ArithmeticTestWorld : public TestWorld {
   public:
-    explicit ArithmeticTestWorld(LocatedEntity & gw) : BaseWorld(gw) {
+    explicit ArithmeticTestWorld() {
     }
 
-    virtual bool idle() { return false; }
-    virtual LocatedEntity * addEntity(LocatedEntity * ent) { 
+    Ref<LocatedEntity> addEntity(const Ref<LocatedEntity>& ent) override {
         m_eobjects[ent->getIntId()] = ent;
         return 0;
     }
-    virtual LocatedEntity * addNewEntity(const std::string &,
-                                         const Atlas::Objects::Entity::RootEntity &) { return 0; }
-    void delEntity(LocatedEntity * obj) {}
-    int createSpawnPoint(const Atlas::Message::MapType & data,
-                         LocatedEntity *) { return 0; }
-    int removeSpawnPoint(LocatedEntity *) {return 0; }
-    int getSpawnList(Atlas::Message::ListType & data) { return 0; }
-    LocatedEntity * spawnNewEntity(const std::string & name,
-                                   const std::string & type,
-                                   const Atlas::Objects::Entity::RootEntity & desc) {
-        return addNewEntity(type, desc);
-    }
-    virtual int moveToSpawn(const std::string & name,
-                            Location& location) {return 0;}
-    virtual Task * newTask(const std::string &, LocatedEntity &) { return 0; }
-    virtual Task * activateTask(const std::string &, const std::string &,
-                                LocatedEntity *, LocatedEntity &) { return 0; }
-    virtual ArithmeticScript * newArithmetic(const std::string &,
-                                             LocatedEntity *) {
+    ArithmeticScript * newArithmetic(const std::string &,
+                                             LocatedEntity *) override {
         return new TestArithmeticScript;
     }
-    virtual void message(const Operation & op, LocatedEntity & ent) { }
-    virtual void messageToClients(const Atlas::Objects::Operation::RootOperation &) {}
-
-    virtual LocatedEntity * findByName(const std::string & name) { return 0; }
-    virtual LocatedEntity * findByType(const std::string & type) { return 0; }
-    virtual void addPerceptive(LocatedEntity *) { }
 };
 
 // Check what happens when two instance of a type both instantiate
@@ -109,7 +86,7 @@ class StatisicsPropertyintegration : public Cyphesis::TestBase
 
 StatisicsPropertyintegration::StatisicsPropertyintegration()
 {
-    new ArithmeticTestWorld(*(LocatedEntity*)0);
+    new ArithmeticTestWorld();
 
     ADD_TEST(StatisicsPropertyintegration::test_copy);
 }
@@ -226,7 +203,7 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 
 BaseWorld * BaseWorld::m_instance = 0;
 
-BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld()
 {
     m_instance = this;
 }

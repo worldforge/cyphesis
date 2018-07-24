@@ -833,7 +833,7 @@ void Router::clientError(const Operation & op,
     Connectiontest::set_Router_clientError_called();
 }
 #include "stubs/common/stubTypeNode.h"
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 #include "stubs/common/stubProperty.h"
 #include "stubs/common/stubBaseWorld.h"
 #include "stubs/server/stubExternalMindsManager.h"

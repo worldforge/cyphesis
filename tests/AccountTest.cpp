@@ -58,6 +58,7 @@ using Atlas::Objects::Operation::RootOperation;
 
 using String::compose;
 
+
 std::ostream & operator<<(std::ostream & os,
                           const EntityDict::const_iterator &)
 {
@@ -331,9 +332,22 @@ Accounttest::Accounttest() : m_id_counter(0L),
 
 void Accounttest::setup()
 {
+
+
     m_persistence = new Persistence(m_database);
     Entity * gw = new Entity(compose("%1", m_id_counter),
                              m_id_counter++);
+    TestWorld::extension.messageFn = &Accounttest::set_TestWorld_message_called;
+    TestWorld::extension.addNewEntityFn = [&, gw](const std::string &,
+                        const Atlas::Objects::Entity::RootEntity &){
+        Entity * ne = Accounttest::get_TestWorld_addNewEntity_ret_value();
+        if (ne != nullptr) {
+            ne->m_location.m_loc = gw;
+            ne->m_location.m_pos = Point3D(0,0,0);
+            assert(ne->m_location.isValid());
+        }
+        return ne;
+    };
     m_server = new ServerRouting(*new TestWorld(*gw),
                                  "5529d7a4-0158-4dc1-b4a5-b5f260cac635",
                                  "bad621d4-616d-4faf-b9e6-471d12b139a9",
@@ -482,7 +496,7 @@ void Accounttest::test_addNewCharacter_raw_Entity()
     ASSERT_TRUE(m_account->m_charactersDict.empty());
     ASSERT_NOT_NULL(m_account->m_connection);
 
-    LocatedEntity * te = m_account->addNewCharacter(
+    auto te = m_account->addNewCharacter(
           "9e0ff22a-3b57-4703-b3fd-6ed0b8a89edc",
           RootEntity(),
           Root());
@@ -1641,23 +1655,6 @@ LocatedEntity * TestAccount::testAddNewCharacter(const std::string & typestr,
                                                  const RootEntity & arg)
 {
     return addNewCharacter(typestr, ent, arg);
-}
-
-void TestWorld::message(const Operation & op, LocatedEntity & ent)
-{
-    Accounttest::set_TestWorld_message_called(op, ent);
-}
-
-LocatedEntity * TestWorld::addNewEntity(const std::string &,
-                                 const Atlas::Objects::Entity::RootEntity &)
-{
-    Entity * ne = Accounttest::get_TestWorld_addNewEntity_ret_value();
-    if (ne != 0) {
-        ne->m_location.m_loc = &m_gameWorld;
-        ne->m_location.m_pos = Point3D(0,0,0);
-        assert(ne->m_location.isValid());
-    }
-    return ne;
 }
 
 int main()

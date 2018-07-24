@@ -112,8 +112,20 @@ ServerAccounttest::ServerAccounttest() : m_id_counter(0L),
 
 void ServerAccounttest::setup()
 {
+
     Entity * gw = new Entity(compose("%1", m_id_counter),
                              m_id_counter++);
+    TestWorld::extension.addNewEntityFn = [&](const std::string &,
+                        const Atlas::Objects::Entity::RootEntity &)
+    {
+        Entity * ne = ServerAccounttest::get_TestWorld_addNewEntity_ret_value();
+        if (ne != 0) {
+            ne->m_location.m_loc = gw;
+            ne->m_location.m_pos = Point3D(0,0,0);
+            assert(ne->m_location.isValid());
+        }
+        return ne;
+    };
     m_server = new ServerRouting(*new TestWorld(*gw),
                                  "5529d7a4-0158-4dc1-b4a5-b5f260cac635",
                                  "bad621d4-616d-4faf-b9e6-471d12b139a9",
@@ -371,21 +383,6 @@ void ServerAccounttest::test_addNewEntity_unconnected()
     ASSERT_NULL(e);
 }
 
-void TestWorld::message(const Operation & op, LocatedEntity & ent)
-{
-}
-
-LocatedEntity * TestWorld::addNewEntity(const std::string &,
-                                 const Atlas::Objects::Entity::RootEntity &)
-{
-    Entity * ne = ServerAccounttest::get_TestWorld_addNewEntity_ret_value();
-    if (ne != 0) {
-        ne->m_location.m_loc = &m_gameWorld;
-        ne->m_location.m_pos = Point3D(0,0,0);
-        assert(ne->m_location.isValid());
-    }
-    return ne;
-}
 
 int main()
 {

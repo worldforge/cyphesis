@@ -40,32 +40,25 @@
 #include <Atlas/Objects/Root.h>
 
 #include <cassert>
-
-static PyMethodDef no_methods[] = {
-    {nullptr,          nullptr}                       /* Sentinel */
-};
+#include <external/pycxx/CXX/Extensions.hxx>
 
 static bool stub_wrapEntity_fail = false;
 
-static PyObject* init_testmod() {
-    static struct PyModuleDef def = {
-            PyModuleDef_HEAD_INIT,
-            "testmod",
-            nullptr,
-            0,
-            no_methods,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr
-    };
+struct TestMod : public Py::ExtensionModule<TestMod>
+{
+    TestMod() : ExtensionModule("testmod")
+    {
+        initialize("testmod");
+    }
+};
 
-    return PyModule_Create(&def);
-}
 
 int main()
 {
-    PyImport_AppendInittab("testmod", &init_testmod);
+    PyImport_AppendInittab("testmod", []() {
+        auto module = new TestMod();
+        return module->module().ptr();
+    });
     Py_Initialize();
 
     run_python_string("import testmod");
@@ -119,15 +112,13 @@ int main()
     as = paf.newScript(e);
     assert(as != 0);
     
-    stub_wrapEntity_fail = true;
-    as = paf.newScript(e);
-    assert(as == 0);
-
     Py_Finalize();
     return 0;
 }
 
 // stubs
+
+#include "stubs/rulesets/python/stubCyPy_LocatedEntity.h"
 
 ArithmeticKit::~ArithmeticKit()
 {
@@ -137,34 +128,10 @@ ArithmeticScript::~ArithmeticScript()
 {
 }
 
-PythonArithmeticScript::PythonArithmeticScript(PyObject * script) :
-                                               m_script(script)
-{
-}
+#include "stubs/rulesets/stubPythonArithmeticScript.h"
 
-PythonArithmeticScript::~PythonArithmeticScript()
-{
-}
-
-int PythonArithmeticScript::attribute(const std::string & name, float & val)
-{
-    return 0;
-}
-
-void PythonArithmeticScript::set(const std::string & name, const float & val)
-{
-}
-
-PyObject * wrapEntity(LocatedEntity * le)
-{
-    if (stub_wrapEntity_fail) {
-        return 0;
-    } else {
-        return PyLong_FromLong(1L);
-    }
-}
 #include "stubs/rulesets/stubScript.h"
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 #include "stubs/rulesets/stubEntity.h"
 
 
@@ -179,8 +146,8 @@ void LocatedEntity::makeContainer()
 #define STUB_LocatedEntity_changeContainer
 void LocatedEntity::changeContainer(LocatedEntity * new_loc)
 {
-    assert(m_location.m_loc != 0);
-    assert(m_location.m_loc->m_contains != 0);
+    assert(m_location.m_loc);
+    assert(m_location.m_loc->m_contains != nullptr);
     m_location.m_loc->m_contains->erase(this);
     if (m_location.m_loc->m_contains->empty()) {
         m_location.m_loc->onUpdated();
@@ -236,14 +203,33 @@ PyObject * Get_PyClass(PyObject * module,
     return py_class;
 }
 
-PyObject * Get_PyModule(const std::string & package)
+Py::Module Get_PyModule(const std::string & package)
 {
-    PyObject * package_name = PyUnicode_FromString((char *)package.c_str());
-    PyObject * module = PyImport_Import(package_name);
-    Py_DECREF(package_name);
+    Py::String package_name(package);
+    PyObject * module = PyImport_Import(package_name.ptr());
     if (module == nullptr) {
         log(ERROR, String::compose("Missing python module \"%1\"", package));
         PyErr_Print();
+        return Py::Module(nullptr);
     }
-    return module;
+    return Py::Module(module);
+}
+
+Py::Object Get_PyClass(const Py::Module& module,
+                       const std::string & package,
+                       const std::string & type)
+{
+    auto py_class = module.getAttr(type);
+    if (py_class.isNull()) {
+        log(ERROR, String::compose("Could not find python class \"%1.%2\"",
+                                   package, type));
+        PyErr_Print();
+        return Py::Null();
+    }
+    if (!py_class.isCallable()) {
+        log(ERROR, String::compose("Could not instance python class \"%1.%2\"",
+                                   package, type));
+        return Py::Null();
+    }
+    return py_class;
 }

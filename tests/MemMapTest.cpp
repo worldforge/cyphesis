@@ -160,13 +160,13 @@ void MemMaptest::test_del()
 void MemMaptest::test_addEntity()
 {
     const std::string new_id("3");
-    ASSERT_NULL(m_memMap->get(new_id));
+    ASSERT_FALSE(m_memMap->get(new_id));
 
     MemEntity * ent = new MemEntity(new_id, 3);
     ent->setType(MemMap::m_entity_type);
     m_memMap->addEntity(ent);
 
-    ASSERT_NOT_NULL(m_memMap->get(new_id));
+    ASSERT_TRUE(m_memMap->get(new_id));
     ASSERT_NULL(m_Script_hook_called_with);
 }
 
@@ -175,13 +175,13 @@ void MemMaptest::test_addEntity_script()
     auto script = new TestScript;
     m_memMap->setScript(script);
     const std::string new_id("3");
-    ASSERT_NULL(m_memMap->get(new_id));
+    ASSERT_FALSE(m_memMap->get(new_id));
 
     MemEntity * ent = new MemEntity(new_id, 3);
     ent->setType(MemMap::m_entity_type);
     m_memMap->addEntity(ent);
 
-    ASSERT_NOT_NULL(m_memMap->get(new_id));
+    ASSERT_TRUE(m_memMap->get(new_id));
     ASSERT_NULL(m_Script_hook_called_with);
 }
 
@@ -194,13 +194,13 @@ void MemMaptest::test_addEntity_script_hook()
     m_memMap->setScript(script);
     m_memMap->m_addHooks.push_back(test_add_hook_name);
 
-    ASSERT_NULL(m_memMap->get(new_id));
+    ASSERT_FALSE(m_memMap->get(new_id));
 
     MemEntity * ent = new MemEntity(new_id, 3);
     ent->setType(MemMap::m_entity_type);
     m_memMap->addEntity(ent);
 
-    ASSERT_NOT_NULL(m_memMap->get(new_id));
+    ASSERT_TRUE(m_memMap->get(new_id));
     ASSERT_NOT_NULL(m_Script_hook_called_with);
     ASSERT_EQUAL(m_Script_hook_called, test_add_hook_name);
 }
@@ -448,7 +448,7 @@ int main()
 #include "stubs/rulesets/stubMemEntity.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 
 
 

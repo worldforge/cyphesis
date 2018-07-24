@@ -29,7 +29,7 @@
 
 #include "common/ScriptKit.h"
 #include "common/TypeNode.h"
-
+#include "rulesets/LocatedEntity.h"
 #include <Atlas/Message/Element.h>
 
 #include <cassert>
@@ -41,7 +41,7 @@ class TestEntityKit : public EntityKit
   public:
     virtual ~TestEntityKit() { }
 
-    LocatedEntity * newEntity(const std::string & id,
+    Ref<LocatedEntity> newEntity(const std::string & id,
             long intId,
             const Atlas::Objects::Entity::RootEntity & attributes,
             LocatedEntity* location) override { return 0; }

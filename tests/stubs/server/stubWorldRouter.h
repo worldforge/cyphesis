@@ -33,8 +33,8 @@
 
 #ifndef STUB_WorldRouter_WorldRouter
 //#define STUB_WorldRouter_WorldRouter
-   WorldRouter::WorldRouter(const SystemTime & systemTime)
-    : BaseWorld(systemTime)
+   WorldRouter::WorldRouter(const SystemTime & systemTime, Ref<LocatedEntity> baseEntity)
+    : BaseWorld(systemTime, baseEntity)
   {
     
   }
@@ -66,17 +66,17 @@
 
 #ifndef STUB_WorldRouter_addEntity
 //#define STUB_WorldRouter_addEntity
-  LocatedEntity* WorldRouter::addEntity(LocatedEntity * obj)
+  Ref<LocatedEntity> WorldRouter::addEntity(const Ref<LocatedEntity>& obj)
   {
-    return nullptr;
+    return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
 #endif //STUB_WorldRouter_addEntity
 
 #ifndef STUB_WorldRouter_addNewEntity
 //#define STUB_WorldRouter_addNewEntity
-  LocatedEntity* WorldRouter::addNewEntity(const std::string & type, const Atlas::Objects::Entity::RootEntity &)
+  Ref<LocatedEntity> WorldRouter::addNewEntity(const std::string & type, const Atlas::Objects::Entity::RootEntity &)
   {
-    return nullptr;
+    return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
 #endif //STUB_WorldRouter_addNewEntity
 
@@ -130,17 +130,17 @@
 
 #ifndef STUB_WorldRouter_newTask
 //#define STUB_WorldRouter_newTask
-  Task* WorldRouter::newTask(const std::string &, LocatedEntity &)
+  Ref<Task> WorldRouter::newTask(const std::string &, LocatedEntity &)
   {
-    return nullptr;
+    return *static_cast<Ref<Task>*>(nullptr);
   }
 #endif //STUB_WorldRouter_newTask
 
 #ifndef STUB_WorldRouter_activateTask
 //#define STUB_WorldRouter_activateTask
-  Task* WorldRouter::activateTask(const std::string &, const std::string &, LocatedEntity *, LocatedEntity &)
+  Ref<Task> WorldRouter::activateTask(const std::string &, const std::string &, LocatedEntity *, LocatedEntity &)
   {
-    return nullptr;
+    return *static_cast<Ref<Task>*>(nullptr);
   }
 #endif //STUB_WorldRouter_activateTask
 
@@ -215,6 +215,14 @@
     
   }
 #endif //STUB_WorldRouter_markQueueAsClean
+
+#ifndef STUB_WorldRouter_getDefaultLocation
+//#define STUB_WorldRouter_getDefaultLocation
+  LocatedEntity& WorldRouter::getDefaultLocation() const
+  {
+    return *static_cast<LocatedEntity*>(nullptr);
+  }
+#endif //STUB_WorldRouter_getDefaultLocation
 
 
 #endif

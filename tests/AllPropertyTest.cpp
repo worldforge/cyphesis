@@ -41,7 +41,7 @@
 #include "common/Property_impl.h"
 #include "common/TypeNode.h"
 
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 
 #include <Mercator/Terrain.h>
 
@@ -167,7 +167,7 @@ int main()
 
 BaseWorld * BaseWorld::m_instance = 0;
 
-BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld()
 {
     m_instance = this;
 }

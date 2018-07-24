@@ -89,15 +89,7 @@ int main(int argc, char ** argv)
 
 // stubs
 
-void TestWorld::message(const Operation & op, LocatedEntity & ent)
-{
-}
 
-LocatedEntity * TestWorld::addNewEntity(const std::string &,
-                                 const Atlas::Objects::Entity::RootEntity &)
-{
-    return 0;
-}
 
 #include "rulesets/AtlasProperties.h"
 #include "rulesets/Domain.h"
@@ -120,7 +112,7 @@ using Atlas::Objects::Entity::RootEntity;
 
 
 #include "stubs/common/stubRouter.h"
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 #include "stubs/common/stubBaseWorld.h"
 #include "stubs/common/stubPropertyManager.h"
 #include "stubs/common/stubTypeNode.h"

@@ -47,17 +47,6 @@ int main()
 // stubs
 
 #include "TestWorld.h"
-
-void TestWorld::message(const Operation & op, LocatedEntity & ent)
-{
-}
-
-LocatedEntity * TestWorld::addNewEntity(const std::string &,
-                                 const Atlas::Objects::Entity::RootEntity &)
-{
-    return 0;
-}
-
 #include "rulesets/BaseMind.h"
 #include "rulesets/PythonScriptFactory.h"
 
@@ -68,20 +57,7 @@ namespace Atlas { namespace Objects { namespace Operation {
 int SETUP_NO = -1;
 } } }
 
-PythonClass::PythonClass(const std::string & package,
-                         const std::string & type,
-                         PyTypeObject * base) : m_package(package),
-                                                m_type(type),
-                                                m_base(base),
-                                                m_module(0),
-                                                m_class(0)
-{
-}
-
-PythonClass::~PythonClass()
-{
-}
-
+#include "stubs/rulesets/stubPythonClass.h"
 
 BaseMind * MindFactory::newMind(const std::string & id, long intId) const
 {
@@ -100,8 +76,7 @@ template<>
 PythonScriptFactory<BaseMind>::PythonScriptFactory(const std::string & package,
                                                    const std::string & type) :
                                                    PythonClass(package,
-                                                               type,
-                                                               &PyBaseObject_Type)
+                                                               type)
 {
 }
 

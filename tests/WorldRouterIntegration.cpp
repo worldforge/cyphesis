@@ -144,7 +144,8 @@ void WorldRouterintegration::teardown()
 
 void WorldRouterintegration::test_sequence()
 {
-    WorldRouter * test_world = new WorldRouter(SystemTime());
+    LocatedEntity* base = new Entity("", 0);
+    WorldRouter * test_world = new WorldRouter(SystemTime(), base);
 
     LocatedEntity * ent1 = test_world->addNewEntity("__no_such_type__",
                                                     Anonymous());
@@ -158,7 +159,7 @@ void WorldRouterintegration::test_sequence()
 
     Entity * ent2 = new Thing(id, int_id);
     assert(ent2 != 0);
-    ent2->m_location.m_loc = &test_world->m_gameWorld;
+    ent2->m_location.m_loc = base;
     ent2->m_location.m_pos = Point3D(0,0,0);
     test_world->addEntity(ent2);
 
@@ -261,7 +262,7 @@ void WorldRouterintegration::test_sequence()
 //                                                      Anonymous());
 //    assert(ent4 != 0);
 //
-    test_world->delEntity(&test_world->m_gameWorld);
+    test_world->delEntity(base);
 //    test_world->delEntity(ent4);
 //    ent4 = 0;
 
@@ -313,7 +314,7 @@ int main()
 template<>
 PythonScriptFactory<LocatedEntity>::PythonScriptFactory(const std::string & p,
                                                         const std::string & t) :
-    PythonClass(p, t, nullptr)
+    PythonClass(p, t)
 {
 }
 
@@ -337,6 +338,9 @@ int PythonScriptFactory<LocatedEntity>::setup()
 #include "stubs/rulesets/stubPythonClass.h"
 #include "stubs/rulesets/stubPedestrian.h"
 #include "stubs/rulesets/stubMovement.h"
+#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rulesets/stubUsagesProperty.h"
+#include "stubs/rulesets/entityfilter/stubFilter.h"
 
 #include "stubs/common/stubOperationsDispatcher.h"
 #include "stubs/common/stubScriptKit.h"
@@ -372,7 +376,7 @@ int CorePropertyManager::installFactory(const std::string & type_name,
 
 
 #define STUB_ArchetypeFactory_newEntity
-LocatedEntity* ArchetypeFactory::newEntity(const std::string & id, long intId, const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
+Ref<LocatedEntity> ArchetypeFactory::newEntity(const std::string & id, long intId, const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
 {
     return new Entity(id, intId);
 }
@@ -579,28 +583,8 @@ ArithmeticKit::~ArithmeticKit()
 {
 }
 
+#include "stubs/rulesets/stubPythonArithmeticFactory.h"
 
-PythonArithmeticFactory::PythonArithmeticFactory(const std::string & package,
-                                                 const std::string & name) :
-                                                 PythonClass(package,
-                                                             name,
-                                                             0)
-{
-}
-
-PythonArithmeticFactory::~PythonArithmeticFactory()
-{
-}
-
-int PythonArithmeticFactory::setup()
-{
-    return 0;
-}
-
-ArithmeticScript * PythonArithmeticFactory::newScript(LocatedEntity * owner)
-{
-    return 0;
-}
 sigc::signal<void> python_reload_scripts;
 
 #if 0
@@ -749,7 +733,7 @@ long newId(std::string & id)
     return new_id;
 }
 
-BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld()
 {
 }
 

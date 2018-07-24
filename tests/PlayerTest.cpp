@@ -249,15 +249,7 @@ void Playertest::test_characterError_playable()
     ASSERT_EQUAL(res.size(), 0u);
 }
 
-void TestWorld::message(const Operation & op, LocatedEntity & ent)
-{
-}
 
-LocatedEntity * TestWorld::addNewEntity(const std::string &,
-                                 const Atlas::Objects::Entity::RootEntity &)
-{
-    return 0;
-}
 
 int main()
 {
@@ -483,7 +475,7 @@ void Router::error(const Operation & op,
     res.push_back(Atlas::Objects::Operation::Error());
 }
 #include "stubs/common/stubBaseWorld.h"
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 
 long newId(std::string & id)
 {

@@ -42,111 +42,63 @@
 #include <cassert>
 #include <rulesets/Py_Property.h>
 
-static PyObject * add_properties(PyObject * self, PyEntity * o)
+#include "external/pycxx/CXX/Extensions.hxx"
+#include "rulesets/python/CyPy_Entity.h"
+
+
+class TestProp : public Py::ExtensionModule<TestProp>
 {
-    if (!PyEntity_Check(o)) {
-        PyErr_SetString(PyExc_TypeError, "Unknown Object type");
-        return nullptr;
-    }
+    public:
+        Py::Object add_properties(const Py::Tuple& args)
+        {
+            auto ent = CyPy_Entity::value(args.front());
 
-    Entity * ent = o->m_entity.e;
-    
-    PropertyBase * p = ent->setProperty("terrainmod", new TerrainModProperty);
-    p->install(ent, "terrainmod");
-    p->apply(ent);
-    ent->propertyApplied("terrainmod", *p);
+            PropertyBase * p = ent->setProperty("terrainmod", new TerrainModProperty);
+            p->install(ent, "terrainmod");
+            p->apply(ent);
+            ent->propertyApplied("terrainmod", *p);
 
-    Py_INCREF(Py_None);
-    return Py_None;
-}
+            return Py::None();
+        }
 
-static PyObject * add_terrainmod_shape(PyObject * self, PyProperty * o)
-{
-    if (!PyTerrainModProperty_Check(o)) {
-        PyErr_SetString(PyExc_TypeError, "Unknown Object type");
-        return nullptr;
-    }
+        Py::Object add_terrainmod_shape(const Py::Tuple& args)
+        {
+            auto ent = CyPy_Entity::value(args.front());
 
-    auto prop = dynamic_cast<TerrainModProperty *>(o->m_entity->modProperty(TerrainModProperty::property_name));
-    o->m_p.terrainmod = prop;
+            //FIXME: if this is to be enabled we need to implement TerrainModProperty support in Python bindings
+            //auto prop = dynamic_cast<TerrainModProperty *>(o->m_entity->modProperty(TerrainModProperty::property_name));
+            //o->m_p.terrainmod = prop;
 
-    WFMath::Polygon<2> raw_polygon;
-    raw_polygon.addCorner(0, WFMath::Point<2>(1,1));
-    raw_polygon.addCorner(0, WFMath::Point<2>(1,0));
-    raw_polygon.addCorner(0, WFMath::Point<2>(0,0));
-    MathShape<WFMath::Polygon, 2> polygon(raw_polygon);
-    Atlas::Message::MapType shape_data;
-    polygon.toAtlas(shape_data);
+            WFMath::Polygon<2> raw_polygon;
+            raw_polygon.addCorner(0, WFMath::Point<2>(1,1));
+            raw_polygon.addCorner(0, WFMath::Point<2>(1,0));
+            raw_polygon.addCorner(0, WFMath::Point<2>(0,0));
+            MathShape<WFMath::Polygon, 2> polygon(raw_polygon);
+            Atlas::Message::MapType shape_data;
+            polygon.toAtlas(shape_data);
 
-    prop->setAttr("shape", shape_data);
-    prop->setAttr("nonshape", "testval");
+            prop->setAttr("shape", shape_data);
+            prop->setAttr("nonshape", "testval");
 
-    Py_INCREF(Py_None);
-    return Py_None;
-}
+            return Py::None();
+        }
 
-static PyObject * null_wrapper(PyObject * self, PyProperty * o)
-{
-    if (PyTerrainModProperty_Check(o)) {
-#ifdef CYPHESIS_DEBUG
-        o->m_p.base = nullptr;
-#endif // NDEBUG
-    } else {
-        PyErr_SetString(PyExc_TypeError, "Unknown Object type");
-        return nullptr;
-    }
-    Py_INCREF(Py_None);
-    return Py_None;
-}
+        TestProp() : ExtensionModule("testprop")
+        {
+            add_varargs_method("add_properties", &TestProp::add_properties, "");
+            add_varargs_method("add_terrainmod_shape", &TestProp::add_terrainmod_shape, "");
 
-static PyMethodDef testprop_methods[] = {
-    {"add_properties", (PyCFunction)add_properties,                 METH_O},
-    {"add_terrainmod_shape", (PyCFunction)add_terrainmod_shape,     METH_O},
-    {nullptr,          nullptr}                       /* Sentinel */
+            initialize("testprop");
+        }
+
 };
-
-static PyMethodDef sabotage_methods[] = {
-    {"null", (PyCFunction)null_wrapper,                 METH_O},
-    {nullptr,          nullptr}                       /* Sentinel */
-};
-
-
-static PyObject* init_sabotage() {
-    static struct PyModuleDef def = {
-            PyModuleDef_HEAD_INIT,
-            "sabotage",
-            nullptr,
-            0,
-            sabotage_methods,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr
-    };
-
-    return PyModule_Create(&def);
-}
-
-static PyObject* init_testprop() {
-    static struct PyModuleDef def = {
-            PyModuleDef_HEAD_INIT,
-            "testprop",
-            nullptr,
-            0,
-            testprop_methods,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr
-    };
-
-    return PyModule_Create(&def);
-}
 
 int main()
 {
-    PyImport_AppendInittab("sabotage", &init_sabotage);
-    PyImport_AppendInittab("testprop", &init_testprop);
+    PyImport_AppendInittab("testprop", [](){
+        auto module = new TestProp();
+        return module->module().ptr();
+    });
     init_python_api("db35f202-3ebb-4df6-bf9e-4e840f6d7eb3");
 
     run_python_string("from server import *");
@@ -168,14 +120,6 @@ int main()
                                                           "[ -1.0,  0.0],"
                                                           "[ -0.7,  0.7]])");
 
-#ifdef CYPHESIS_DEBUG
-    run_python_string("import sabotage");
-    // Hit the assert checks.
-    run_python_string("sabotage.null(terrainmod)");
-    expect_python_error("terrainmod.foo", PyExc_AssertionError);
-    expect_python_error("terrainmod.foo = 1", PyExc_AssertionError);
-#endif // NDEBUG
-   
 
     shutdown_python_api();
     return 0;

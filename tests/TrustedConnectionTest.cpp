@@ -33,6 +33,7 @@
 #include "server/Lobby.h"
 #include "server/Player.h"
 #include "server/ServerRouting.h"
+#include "rulesets/Task.h"
 #include "server/WorldRouter.h"
 #include "server/SystemAccount.h"
 
@@ -297,7 +298,7 @@ void Link::disconnect()
 
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubTypeNode.h"
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 #include "common/Property_impl.h"
 #include "stubs/common/stubProperty.h"
 #include "stubs/common/stubBaseWorld.h"

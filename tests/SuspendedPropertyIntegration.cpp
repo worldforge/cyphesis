@@ -72,19 +72,6 @@ PropertyBase * TestPropertyManager::addProperty(const std::string & name,
     return new SuspendedProperty();
 }
 
-
-void TestWorld::message(const Operation & op, LocatedEntity & ent)
-{
-	worldMessageCallback(op);
-}
-
-LocatedEntity * TestWorld::addNewEntity(const std::string &,
-                                 const Atlas::Objects::Entity::RootEntity &)
-{
-    return 0;
-}
-
-
 class SuspendedPropertyintegration : public Cyphesis::TestBase
 {
   private:
@@ -113,6 +100,9 @@ SuspendedPropertyintegration::SuspendedPropertyintegration()
 
 void SuspendedPropertyintegration::setup()
 {
+    TestWorld::extension.messageFn = [](const Operation & op, LocatedEntity & ent){
+        worldMessageCallback(op);
+    };
 	world_entity = new TestEntity("0", 0);
 	world = new TestWorld(*world_entity);
 }
@@ -186,7 +176,7 @@ int main()
 // stubs
 
 //#include "Property_stub_impl.h"
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 #include "stubs/common/stubProperty.h"
 #include "stubs/common/stubPropertyManager.h"
 #include "stubs/common/stubRouter.h"
@@ -207,7 +197,7 @@ long integerId(const std::string & id)
 
 BaseWorld * BaseWorld::m_instance = 0;
 
-BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld()
 {
     m_instance = this;
 }
@@ -215,22 +205,6 @@ BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
 BaseWorld::~BaseWorld()
 {
     m_instance = 0;
-}
-
-LocatedEntity& BaseWorld::getDefaultLocation() {
-    return m_gameWorld;
-}
-
-LocatedEntity& BaseWorld::getDefaultLocation() const {
-    return m_gameWorld;
-}
-
-LocatedEntity& BaseWorld::getRootEntity() {
-    return m_gameWorld;
-}
-
-LocatedEntity& BaseWorld::getRootEntity() const {
-    return m_gameWorld;
 }
 
 LocatedEntity * BaseWorld::getEntity(const std::string & id) const

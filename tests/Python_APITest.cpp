@@ -44,17 +44,18 @@ int main()
 
     init_python_api("1a6c913e-79b2-4fc8-9467-ee6c39d0f674");
 
-    PyObject * mod = Get_PyModule("notamodule");
-    assert(mod == 0);
+    auto amod = Get_PyModule("notamodule");
+    assert(amod.isNull());
 
-    mod = Get_PyModule("http.server");
-    assert(mod != 0);
-    PyObject * cls = Get_PyClass(mod, "BaseHTTPServer", "noclassbythisname");
-    assert(cls == 0);
+    amod = Get_PyModule("http.server");
+    assert(!amod.isNull());
+    Py::Module mod(amod.ptr());
+    auto cls = Get_PyClass(mod, "BaseHTTPServer", "noclassbythisname");
+    assert(cls.isNull());
     cls = Get_PyClass(mod, "BaseHTTPServer", "HTTPServer");
-    assert(cls != 0);
+    assert(!cls.isNull() && cls.isCallable());
     cls = Get_PyClass(mod, "BaseHTTPServer", "__all__");
-    assert(cls == 0);
+    assert(cls.isNull());
     // We don't actually get a class back, because apparantly classes in
     // the library don't inherit from object yet.
 

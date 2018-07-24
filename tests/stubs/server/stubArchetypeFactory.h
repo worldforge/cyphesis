@@ -19,9 +19,9 @@
 
 #ifndef STUB_ArchetypeFactory_createEntity
 //#define STUB_ArchetypeFactory_createEntity
-  LocatedEntity* ArchetypeFactory::createEntity(const std::string & id, long intId, EntityCreation& entityCreation, LocatedEntity* location, std::map<std::string, EntityCreation>& entities)
+  Ref<LocatedEntity> ArchetypeFactory::createEntity(const std::string & id, long intId, EntityCreation& entityCreation, LocatedEntity* location, std::map<std::string, EntityCreation>& entities)
   {
-    return nullptr;
+    return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
 #endif //STUB_ArchetypeFactory_createEntity
 
@@ -109,9 +109,9 @@
 
 #ifndef STUB_ArchetypeFactory_newEntity
 //#define STUB_ArchetypeFactory_newEntity
-  LocatedEntity* ArchetypeFactory::newEntity(const std::string & id, long intId, const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
+  Ref<LocatedEntity> ArchetypeFactory::newEntity(const std::string & id, long intId, const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
   {
-    return nullptr;
+    return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
 #endif //STUB_ArchetypeFactory_newEntity
 

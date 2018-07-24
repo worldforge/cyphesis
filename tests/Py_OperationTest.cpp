@@ -30,10 +30,6 @@
 #include "python_testers.h"
 
 #include "rulesets/Python_API.h"
-#include "rulesets/Py_Operation.h"
-#include "rulesets/Py_Oplist.h"
-#include "rulesets/Py_Message.h"
-#include "rulesets/Py_RootEntity.h"
 
 #include <cassert>
 
@@ -42,10 +38,6 @@ int main()
 
     init_python_api("3622159a-de3c-42e6-858c-f6bd7cf8e7b1");
 
-    PyOperation * op = newPyOperation();
-    assert(op != 0);
-    op = newPyConstOperation();
-    assert(op != 0);
 
     run_python_string("from atlas import *");
     run_python_string("o=Operation('get')");

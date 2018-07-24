@@ -211,7 +211,7 @@ void Tasktest::test_initTask_script_fail()
 
     m_task->initTask(op, res);
 
-    ASSERT_EQUAL(m_task->obsolete(), true);
+    ASSERT_TRUE(m_task->obsolete());
     ASSERT_TRUE(res.empty());
 }
 
@@ -229,7 +229,7 @@ int main()
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 
 #define STUB_Script_operation
 HandlerResult Script::operation(const std::string & opname,

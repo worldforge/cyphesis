@@ -160,7 +160,7 @@ void Stackable::DivideOperation(const Operation & op, OpVector & res)
 #include "stubs/common/stubTypeNode.h"
 #include "stubs/common/stubProperty.h"
 #include "common/Property_impl.h"
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 
 void log(LogLevel lvl, const std::string & msg)
 {

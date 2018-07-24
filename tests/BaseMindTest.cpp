@@ -292,7 +292,7 @@ int main()
 
 
 #include "stubs/rulesets/stubScript.h"
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 
 DateTime::DateTime(int t)
 {

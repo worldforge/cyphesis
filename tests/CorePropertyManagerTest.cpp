@@ -186,15 +186,7 @@ int main()
     return t.run();
 }
 
-void TestWorld::message(const Operation & op, LocatedEntity & ent)
-{
-}
 
-LocatedEntity * TestWorld::addNewEntity(const std::string &,
-                                 const Atlas::Objects::Entity::RootEntity &)
-{
-    return 0;
-}
 
 
 
@@ -414,7 +406,7 @@ ConnectableRouter::ConnectableRouter(const std::string & id,
 
 #define STUB_EntityFactory_newEntity
 template <typename T>
-LocatedEntity* EntityFactory<T>::newEntity(const std::string & id, long intId, const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
+Ref<LocatedEntity> EntityFactory<T>::newEntity(const std::string & id, long intId, const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
 {
     return new Entity(id, intId);
 }
@@ -425,14 +417,14 @@ class Stackable;
 class World;
 
 template <>
-LocatedEntity * EntityFactory<World>::newEntity(const std::string & id, long intId,
+Ref<LocatedEntity> EntityFactory<World>::newEntity(const std::string & id, long intId,
         const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
 {
     return 0;
 }
 
 template <>
-LocatedEntity * EntityFactory<Character>::newEntity(const std::string & id, long intId,
+Ref<LocatedEntity> EntityFactory<Character>::newEntity(const std::string & id, long intId,
         const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
 {
     return new Character(id, intId);
@@ -490,6 +482,9 @@ int Juncture::teleportEntity(const LocatedEntity * ent)
 #include "stubs/server/stubPropertyRuleHandler.h"
 #include "stubs/server/stubRuleset.h"
 #include "stubs/server/stubServerRouting.h"
+#include "stubs/rulesets/stubTask.h"
+#include "stubs/rulesets/stubUsagesProperty.h"
+#include "stubs/rulesets/entityfilter/stubFilter.h"
 
 CalendarProperty::CalendarProperty()
 {
@@ -691,7 +686,7 @@ StatisticsProperty * StatisticsProperty::copy() const
 }
 
 #include "stubs/rulesets/stubTransientProperty.h"
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 
 
 BaseWorld * BaseWorld::m_instance = 0;

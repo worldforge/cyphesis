@@ -33,7 +33,7 @@ int main()
 {
     Py_Initialize();
 
-    PythonWrapper * pw = new PythonWrapper(PyLong_FromLong(1L));
+    PythonWrapper * pw = new PythonWrapper(Py::Long(1L));
     delete pw;
 
     Py_Finalize();

@@ -1941,15 +1941,7 @@ void PhysicalDomainIntegrationTest::test_terrainPrecision()
 }
 
 
-void TestWorld::message(const Operation& op, LocatedEntity& ent)
-{
-}
 
-LocatedEntity* TestWorld::addNewEntity(const std::string&,
-                                       const Atlas::Objects::Entity::RootEntity&)
-{
-    return 0;
-}
 
 int main()
 {

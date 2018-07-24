@@ -122,6 +122,7 @@ TrustedConnectionCreatorintegration::TrustedConnectionCreatorintegration() :
 
 void TrustedConnectionCreatorintegration::setup()
 {
+    TestWorld::extension.messageFn = &TrustedConnectionCreatorintegration::BaseWorld_message_called;
     m_Link_send_sent = 0;
     m_BaseWorld_message_called = 0;
     m_BaseWorld_message_called_from = 0;
@@ -263,17 +264,6 @@ void TrustedConnectionCreatorintegration::test_external_op_puppet_nonexistant()
     ASSERT_EQUAL(m_Link_send_sent->getTo(), m_creator->getId());
 }
 
-void TestWorld::message(const Operation & op, LocatedEntity & ent)
-{
-    TrustedConnectionCreatorintegration::BaseWorld_message_called(op, ent);
-}
-
-LocatedEntity * TestWorld::addNewEntity(const std::string &,
-                                 const Atlas::Objects::Entity::RootEntity &)
-{
-    return 0;
-}
-
 int main()
 {
     TrustedConnectionCreatorintegration t;
@@ -322,7 +312,7 @@ bool restricted_flag;
 #include "stubs/common/stubOperationsDispatcher.h"
 #include "stubs/modules/stubWorldTime.h"
 #include "stubs/modules/stubDateTime.h"
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 
 
 
@@ -610,6 +600,8 @@ void Entity::setType(const TypeNode* t) {
 
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubEntityProperty.h"
+#include "stubs/rulesets/stubUsagesProperty.h"
+#include "stubs/rulesets/entityfilter/stubFilter.h"
 
 Task::~Task()
 {
@@ -645,7 +637,7 @@ TasksProperty * TasksProperty::copy() const
     return 0;
 }
 
-int TasksProperty::startTask(Task *, LocatedEntity *, const Operation &, OpVector &)
+int TasksProperty::startTask(Ref<Task>, LocatedEntity *, const Operation &, OpVector &)
 {
     return 0;
 }
@@ -739,9 +731,18 @@ void Property<std::string>::set(const Atlas::Message::Element & e)
     }
 }
 
+template<>
+void Property<Atlas::Message::ListType>::set(const Atlas::Message::Element & e)
+{
+    if (e.isList()) {
+        this->m_data = e.List();
+    }
+}
+
 template class Property<int>;
 template class Property<double>;
 template class Property<std::string>;
+template class Property<Atlas::Message::ListType>;
 
 SoftProperty::SoftProperty(const Atlas::Message::Element & data) :
               PropertyBase(0), m_data(data)
@@ -895,7 +896,7 @@ TypeNode::~TypeNode()
 
 BaseWorld * BaseWorld::m_instance = 0;
 
-BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld()
 {
     m_instance = this;
 }
@@ -903,7 +904,6 @@ BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
 BaseWorld::~BaseWorld()
 {
     m_instance = 0;
-    delete &m_gameWorld;
 }
 
 double BaseWorld::getTime() const
@@ -935,22 +935,6 @@ LocatedEntity * BaseWorld::getEntity(long id) const
     }
 }
 
-
-LocatedEntity& BaseWorld::getDefaultLocation() {
-    return m_gameWorld;
-}
-
-LocatedEntity& BaseWorld::getDefaultLocation() const {
-    return m_gameWorld;
-}
-
-LocatedEntity& BaseWorld::getRootEntity() {
-    return m_gameWorld;
-}
-
-LocatedEntity& BaseWorld::getRootEntity() const {
-    return m_gameWorld;
-}
 
 #define STUB_Inheritance_getClass
 const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent)

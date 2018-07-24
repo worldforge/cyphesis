@@ -646,15 +646,7 @@ int main()
     return t.run();
 }
 
-void TestWorld::message(const Operation & op, LocatedEntity & ent)
-{
-}
 
-LocatedEntity * TestWorld::addNewEntity(const std::string &,
-                                 const Atlas::Objects::Entity::RootEntity &)
-{
-    return 0;
-}
 
 // stubs
 
@@ -673,7 +665,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 
 #include "stubs/rulesets/stubCreator.h"
 #include "stubs/server/stubAdmin.h"
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 #include "stubs/rulesets/stubScriptsProperty.h"
 
 Account::Account(Connection * conn,
@@ -831,7 +823,7 @@ ArchetypeFactory* ArchetypeFactory::duplicateFactory()
 }
 
 #define STUB_ArchetypeFactory_newEntity
-LocatedEntity* ArchetypeFactory::newEntity(const std::string & id, long intId, const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
+Ref<LocatedEntity> ArchetypeFactory::newEntity(const std::string & id, long intId, const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
 {
     return new Entity(id, intId);
 }
@@ -958,12 +950,9 @@ void LocatedEntity::setType(const TypeNode* t) {
 #include "stubs/rulesets/stubLocatedEntity.h"
 
 PythonClass::PythonClass(const std::string & package,
-                         const std::string & type,
-                         struct _typeobject * base) : m_package(package),
+                         const std::string & type) : m_package(package),
                                                       m_type(type),
-                                                      m_base(base),
-                                                      m_module(0),
-                                                      m_class(0)
+                                                      m_module(nullptr)
 {
 }
 
@@ -976,7 +965,7 @@ int PythonClass::load()
     return 0;
 }
 
-int PythonClass::getClass(struct _object *)
+int PythonClass::getClass(const Py::Module& module)
 {
     return 0;
 }
@@ -990,8 +979,7 @@ template <class T>
 PythonScriptFactory<T>::PythonScriptFactory(const std::string & package,
                                          const std::string & type) :
                                          PythonClass(package,
-                                                     type,
-                                                     0)
+                                                     type)
 {
 }
 

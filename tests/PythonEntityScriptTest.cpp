@@ -39,74 +39,25 @@
 #include <Atlas/Objects/Operation.h>
 
 #include <cassert>
+#include "external/pycxx/CXX/Extensions.hxx"
 
-class TestWorld : public BaseWorld {
-  public:
-    explicit TestWorld(LocatedEntity& e) : BaseWorld(e) {
-    }
+#include "TestWorld.h"
 
-    virtual bool idle() { return false; }
-    virtual LocatedEntity * addEntity(LocatedEntity * ent) {
-        return 0;
+struct TestMod : public Py::ExtensionModule<TestMod>
+{
+    TestMod() : ExtensionModule("testmod")
+    {
+        initialize("testmod");
     }
-    virtual LocatedEntity * addNewEntity(const std::string &,
-                                  const Atlas::Objects::Entity::RootEntity &) {
-        return 0;
-    }
-    void delEntity(LocatedEntity * obj) {}
-    int createSpawnPoint(const Atlas::Message::MapType & data,
-                         LocatedEntity *) { return 0; }
-    int removeSpawnPoint(LocatedEntity *) {return 0; }
-    int getSpawnList(Atlas::Message::ListType & data) { return 0; }
-    LocatedEntity * spawnNewEntity(const std::string & name,
-                                   const std::string & type,
-                                   const Atlas::Objects::Entity::RootEntity & desc) {
-        return addNewEntity(type, desc);
-    }
-    virtual int moveToSpawn(const std::string & name,
-                            Location& location){return 0;}
-    virtual Task * newTask(const std::string &, LocatedEntity &) { return 0; }
-    virtual Task * activateTask(const std::string &, const std::string &,
-                                LocatedEntity *, LocatedEntity &) { return 0; }
-    virtual ArithmeticScript * newArithmetic(const std::string &,
-                                             LocatedEntity *) {
-        return 0;
-    }
-    virtual void message(const Operation & op, LocatedEntity & ent) {
-    }
-    virtual void messageToClients(const Atlas::Objects::Operation::RootOperation &) {
-
-    }
-
-    virtual LocatedEntity * findByName(const std::string & name) { return 0; }
-    virtual LocatedEntity * findByType(const std::string & type) { return 0; }
-    virtual void addPerceptive(LocatedEntity *) { }
 };
-
-
-static PyMethodDef no_methods[] = {
-    {nullptr,          nullptr}                       /* Sentinel */
-};
-
-static PyObject* init_testmod() {
-    static struct PyModuleDef def = {
-            PyModuleDef_HEAD_INIT,
-            "testmod",
-            nullptr,
-            0,
-            no_methods,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr
-    };
-
-    return PyModule_Create(&def);
-}
 
 int main()
 {
-    PyImport_AppendInittab("testmod", &init_testmod);
+    PyImport_AppendInittab("testmod", []() {
+        auto module = new TestMod();
+        return module->module().ptr();
+    });
+
     init_python_api("9fb5e26d-5631-479c-bdfc-cdb3c14b5428");
 
     run_python_string("import server");

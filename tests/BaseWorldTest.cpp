@@ -38,113 +38,70 @@ static void test_function(Atlas::Objects::Operation::RootOperation)
 {
 }
 
-class LocatedEntity
-{
+#include "TestWorld.h"
+#include "rulesets/Entity.h"
+
+class MyTestWorld : public TestWorld {
   public:
-    const std::string m_id;
-    const long m_intId;
-    explicit LocatedEntity(const std::string & id, long intId) : m_id(id),
-                                                                 m_intId(intId) { }
-
-    const std::string & getId() const {
-        return m_id;
+    explicit MyTestWorld(LocatedEntity & gw) : TestWorld(gw) {
+        m_eobjects[gw.getIntId()] = &gw;
     }
 
-    long getIntId() const {
-        return m_intId;
-    }
-};
-
-class TestWorld : public BaseWorld {
-  public:
-    explicit TestWorld(LocatedEntity & gw) : BaseWorld(gw) {
-        m_eobjects[m_gameWorld.getIntId()] = &m_gameWorld;
-    }
-
-    virtual bool idle() { return false; }
-    virtual LocatedEntity * addEntity(LocatedEntity * ent) { 
+    Ref<LocatedEntity> addEntity(const Ref<LocatedEntity>& ent) override {
         m_eobjects[ent->getIntId()] = ent;
         return 0;
     }
-    virtual LocatedEntity * addNewEntity(const std::string &,
-                                  const Atlas::Objects::Entity::RootEntity &) {
-        return 0;
-    }
-    void delEntity(LocatedEntity * obj) {}
-    int createSpawnPoint(const Atlas::Message::MapType & data,
-                         LocatedEntity *) { return 0; }
-    int removeSpawnPoint(LocatedEntity *) {return 0; }
-    int getSpawnList(Atlas::Message::ListType & data) { return 0; }
-    LocatedEntity * spawnNewEntity(const std::string & name,
-                            const std::string & type,
-                            const Atlas::Objects::Entity::RootEntity & desc) {
-        return addNewEntity(type, desc);
-    }
-    virtual int moveToSpawn(const std::string & name,
-                            Location& location){return 0;}
-    virtual Task * newTask(const std::string &, LocatedEntity &) { return 0; }
-    virtual Task * activateTask(const std::string &, const std::string &,
-                                LocatedEntity *, LocatedEntity &) { return 0; }
-    virtual ArithmeticScript * newArithmetic(const std::string &, LocatedEntity *) {
-        return 0;
-    }
-    virtual void message(const Atlas::Objects::Operation::RootOperation & op,
-                         LocatedEntity & ent) { }
-    virtual void messageToClients(const Atlas::Objects::Operation::RootOperation &) {}
-    virtual LocatedEntity * findByName(const std::string & name) { return 0; }
-    virtual LocatedEntity * findByType(const std::string & type) { return 0; }
-    virtual void addPerceptive(LocatedEntity *) { }
 };
 
 int main()
 {
-    // We have to use the TestWorld class, as it implements the functions
+    // We have to use the MyTestWorld class, as it implements the functions
     // missing from BaseWorld interface.
 
     {
         // Test constructor
-        LocatedEntity wrld("1", 1);
-        TestWorld tw(wrld);
+        Entity wrld("1", 1);
+        MyTestWorld tw(wrld);
     }
 
     {
         // Test destructor
-        LocatedEntity wrld("1", 1);
-        BaseWorld * tw = new TestWorld(wrld);
+        Entity wrld("1", 1);
+        BaseWorld * tw = new MyTestWorld(wrld);
 
         delete tw;
     }
 
     {
         // Test constructor sets singleton pointer
-        LocatedEntity wrld("1", 1);
-        TestWorld tw(wrld);
+        Entity wrld("1", 1);
+        MyTestWorld tw(wrld);
 
         assert(&BaseWorld::instance() == &tw);
     }
 
     {
         // Test constructor installs reference to world entity
-        LocatedEntity wrld("1", 1);
-        TestWorld tw(wrld);
+        Entity wrld("1", 1);
+        MyTestWorld tw(wrld);
 
-        assert(&tw.getRootEntity() == &wrld);
+        assert(tw.m_gw == &wrld);
     }
 
     {
         // Test retrieving non existant entity by string ID is ok
-        LocatedEntity wrld("1", 1);
-        TestWorld tw(wrld);
+        Entity wrld("1", 1);
+        MyTestWorld tw(wrld);
 
         assert(tw.getEntity("2") == 0);
     }
 
     {
         // Test retrieving existant entity by string ID is ok
-        LocatedEntity wrld("1", 1);
-        TestWorld tw(wrld);
+        Entity wrld("1", 1);
+        MyTestWorld tw(wrld);
 
-        LocatedEntity * tc = new LocatedEntity("2", 2);
+        LocatedEntity * tc = new Entity("2", 2);
 
         tw.addEntity(tc);
 
@@ -153,10 +110,10 @@ int main()
 
     {
         // Test retrieving existant entity by integer ID is ok
-        LocatedEntity wrld("1", 1);
-        TestWorld tw(wrld);
+        Entity wrld("1", 1);
+        MyTestWorld tw(wrld);
 
-        LocatedEntity * tc = new LocatedEntity("2", 2);
+        LocatedEntity * tc = new Entity("2", 2);
 
         tw.addEntity(tc);
 
@@ -165,40 +122,40 @@ int main()
 
     {
         // Test retrieving non existant entity by integer ID is ok
-        LocatedEntity wrld("1", 1);
-        TestWorld tw(wrld);
+        Entity wrld("1", 1);
+        MyTestWorld tw(wrld);
 
         assert(tw.getEntity(2) == 0);
     }
 
     {
         // Test retrieving reference to all entities is okay and empty
-        LocatedEntity wrld("1", 1);
-        TestWorld tw(wrld);
+        Entity wrld("1", 1);
+        MyTestWorld tw(wrld);
 
         assert(tw.getEntities().size() == 1);
     }
 
     {
         // Test getting the time
-        LocatedEntity wrld("1", 1);
-        TestWorld tw(wrld);
+        Entity wrld("1", 1);
+        MyTestWorld tw(wrld);
 
         tw.getTime();
     }
 
     {
         // Test getting the uptime
-        LocatedEntity wrld("1", 1);
-        TestWorld tw(wrld);
+        Entity wrld("1", 1);
+        MyTestWorld tw(wrld);
 
         tw.upTime();
     }
 
     {
         // Test connecting to the dispatch signal
-        LocatedEntity wrld("1", 1);
-        TestWorld tw(wrld);
+        Entity wrld("1", 1);
+        MyTestWorld tw(wrld);
 
         tw.Dispatching.connect(sigc::ptr_fun(&test_function));
     }
@@ -221,3 +178,8 @@ void log(LogLevel lvl, const std::string & msg)
 }
 
 int timeoffset = 0;
+
+#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rulesets/stubEntity.h"
+#include "stubs/rulesets/stubLocation.h"
+#include "stubs/common/stubRouter.h"

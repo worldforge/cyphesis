@@ -47,7 +47,7 @@
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubTypeNode.h"
 #include "stubs/common/stubPropertyManager.h"
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 #include "stubs/rulesets/stubThing.h"
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
@@ -78,7 +78,7 @@ int main()
 
     IGEntityExerciser ee(e);
 
-    assert(e.m_location.m_loc == 0);
+    assert(e.m_location.m_loc == nullptr);
 
     // Throw an op of every type at the entity
     ee.runOperations();
@@ -95,15 +95,6 @@ int main()
 
 // stubs
 
-void TestWorld::message(const Operation & op, LocatedEntity & ent)
-{
-}
-
-LocatedEntity * TestWorld::addNewEntity(const std::string &,
-                                 const Atlas::Objects::Entity::RootEntity &)
-{
-    return 0;
-}
 
 void addToEntity(const Point3D & p, std::vector<double> & vd)
 {
@@ -115,7 +106,7 @@ void addToEntity(const Point3D & p, std::vector<double> & vd)
 
 BaseWorld * BaseWorld::m_instance = 0;
 
-BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld()
 {
     m_instance = this;
 }

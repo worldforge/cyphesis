@@ -41,7 +41,7 @@
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubTypeNode.h"
 #include "stubs/common/stubPropertyManager.h"
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 #include "stubs/common/stubProperty.h"
 #include "stubs/rulesets/stubDomain.h"
 #include "stubs/rulesets/stubPropelProperty.h"
@@ -80,15 +80,6 @@ int main()
 
 //stubs
 
-void TestWorld::message(const Operation & op, LocatedEntity & ent)
-{
-}
-
-LocatedEntity * TestWorld::addNewEntity(const std::string &,
-                                 const Atlas::Objects::Entity::RootEntity &)
-{
-    return 0;
-}
 
 
 #include "stubs/rulesets/stubEntity.h"
@@ -112,8 +103,8 @@ void LocatedEntity::makeContainer()
 #define STUB_LocatedEntity_changeContainer
 void LocatedEntity::changeContainer(LocatedEntity * new_loc)
 {
-    assert(m_location.m_loc != 0);
-    assert(m_location.m_loc->m_contains != 0);
+    assert(m_location.m_loc != nullptr);
+    assert(m_location.m_loc->m_contains != nullptr);
     m_location.m_loc->m_contains->erase(this);
     if (m_location.m_loc->m_contains->empty()) {
         m_location.m_loc->onUpdated();
@@ -155,7 +146,7 @@ void addToEntity(const Point3D & p, std::vector<double> & vd)
 
 BaseWorld * BaseWorld::m_instance = 0;
 
-BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld()
 {
     m_instance = this;
 }

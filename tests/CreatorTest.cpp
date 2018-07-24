@@ -44,7 +44,7 @@
 #include "stubs/rulesets/stubThing.h"
 #include "stubs/common/stubCustom.h"
 #include "stubs/common/stubTypeNode.h"
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubBaseWorld.h"
@@ -160,15 +160,7 @@ void Character::filterExternalOperation(const Operation & op)
 
 #include "stubs/rulesets/stubCharacter.h"
 
-void TestWorld::message(const Operation & op, LocatedEntity & ent)
-{
-}
 
-LocatedEntity * TestWorld::addNewEntity(const std::string &,
-                                 const Atlas::Objects::Entity::RootEntity &)
-{
-    return 0;
-}
 
 
 

@@ -30,91 +30,45 @@
 #include "python_testers.h"
 
 #include "rulesets/Python_API.h"
-#include "rulesets/Py_Thing.h"
-#include "rulesets/Py_Property.h"
 #include "rulesets/Entity.h"
 #include "rulesets/TerrainProperty.h"
 
 #include <cassert>
 
-static PyObject * add_properties(PyObject * self, PyEntity * o)
+#include "external/pycxx/CXX/Extensions.hxx"
+#include "rulesets/python/CyPy_Entity.h"
+
+
+class TestProp : public Py::ExtensionModule<TestProp>
 {
-    if (!PyEntity_Check(o)) {
-        PyErr_SetString(PyExc_TypeError, "Unknown Object type");
-        return nullptr;
-    }
+    public:
+        Py::Object add_properties(const Py::Tuple& args)
+        {
+            auto ent = CyPy_Entity::value(args.front());
 
-    Entity * ent = o->m_entity.e;
-    
-    PropertyBase * p = ent->setProperty("terrain", new TerrainProperty);
-    p->install(ent, "terrain");
-    p->apply(ent);
-    ent->propertyApplied("terrain", *p);
+            PropertyBase * p = ent->setProperty("terrain", new TerrainProperty);
+            p->install(ent, "terrain");
+            p->apply(ent);
+            ent->propertyApplied("terrain", *p);
 
-    Py_INCREF(Py_None);
-    return Py_None;
-}
+            return Py::None();
+        }
 
-static PyObject * null_wrapper(PyObject * self, PyProperty * o)
-{
-    if (PyTerrainProperty_Check(o)) {
-#ifdef CYPHESIS_DEBUG
-        o->m_p.base = nullptr;
-#endif // NDEBUG
-    } else {
-        PyErr_SetString(PyExc_TypeError, "Unknown Object type");
-        return nullptr;
-    }
-    Py_INCREF(Py_None);
-    return Py_None;
-}
+        TestProp() : ExtensionModule("testprop")
+        {
+            add_varargs_method("add_properties", &TestProp::add_properties, "");
 
-static PyMethodDef testprop_methods[] = {
-    {"add_properties", (PyCFunction)add_properties,                 METH_O},
-    {nullptr,          nullptr}                       /* Sentinel */
+            initialize("testprop");
+        }
+
 };
-
-static PyMethodDef sabotage_methods[] = {
-    {"null", (PyCFunction)null_wrapper,                 METH_O},
-    {nullptr,          nullptr}                       /* Sentinel */
-};
-
-static PyObject* init_sabotage() {
-    static struct PyModuleDef def = {
-            PyModuleDef_HEAD_INIT,
-            "sabotage",
-            nullptr,
-            0,
-            sabotage_methods,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr
-    };
-
-    return PyModule_Create(&def);
-}
-
-static PyObject* init_testprop() {
-    static struct PyModuleDef def = {
-            PyModuleDef_HEAD_INIT,
-            "testprop",
-            nullptr,
-            0,
-            testprop_methods,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr
-    };
-
-    return PyModule_Create(&def);
-}
 
 int main()
 {
-    PyImport_AppendInittab("sabotage", &init_sabotage);
-    PyImport_AppendInittab("testprop", &init_testprop);
+    PyImport_AppendInittab("testprop", [](){
+        auto module = new TestProp();
+        return module->module().ptr();
+    });
     init_python_api("bac81904-0516-4dd0-b9d8-32e879339b96");
 
     run_python_string("from server import *");
@@ -154,20 +108,6 @@ int main()
     run_python_string("t.props.terrain = {'points': points, 'surfaces': surfaces}");
 
     run_python_string("terrain.get_surface(Point3D(0,0,0))");
-
-#ifdef CYPHESIS_DEBUG
-    run_python_string("import sabotage");
-    // Hit the assert checks.
-    run_python_string("method_get_height = terrain.get_height");
-    run_python_string("method_get_surface = terrain.get_surface");
-    run_python_string("method_get_normal = terrain.get_normal");
-    run_python_string("sabotage.null(terrain)");
-    expect_python_error("method_get_height(0,0)", PyExc_AssertionError);
-    expect_python_error("method_get_surface(Point3D(0,0,0))",
-                        PyExc_AssertionError);
-    expect_python_error("method_get_normal(0,0)", PyExc_AssertionError);
-#endif // NDEBUG
-   
 
     shutdown_python_api();
     return 0;

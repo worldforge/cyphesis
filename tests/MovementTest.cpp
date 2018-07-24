@@ -65,4 +65,4 @@ int main()
     return 0;
 }
 
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"

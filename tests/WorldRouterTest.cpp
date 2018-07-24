@@ -81,6 +81,7 @@ class WorldRoutertest : public Cyphesis::TestBase
     void test_delEntity_world();
 
         Inheritance* m_inheritance;
+        LocatedEntity* m_rootEntity;
 };
 
 WorldRoutertest::WorldRoutertest()
@@ -101,8 +102,9 @@ WorldRoutertest::WorldRoutertest()
 
 void WorldRoutertest::setup()
 {
+    m_rootEntity = new Entity("", 0);
     m_inheritance = new Inheritance();
-    test_world = new WorldRouter(SystemTime());
+    test_world = new WorldRouter(SystemTime(), m_rootEntity);
 }
 
 void WorldRoutertest::teardown()
@@ -149,7 +151,7 @@ void WorldRoutertest::test_addEntity()
 
     Entity * ent2 = new Entity(id, int_id);
     assert(ent2 != 0);
-    ent2->m_location.m_loc = &test_world->m_gameWorld;
+    ent2->m_location.m_loc = m_rootEntity;
     ent2->m_location.m_pos = Point3D(0,0,0);
     test_world->addEntity(ent2);
 }
@@ -161,7 +163,7 @@ void WorldRoutertest::test_addEntity_tick()
 
     Entity * ent2 = new Entity(id, int_id);
     assert(ent2 != 0);
-    ent2->m_location.m_loc = &test_world->m_gameWorld;
+    ent2->m_location.m_loc = m_rootEntity;
     ent2->m_location.m_pos = Point3D(0,0,0);
     test_world->addEntity(ent2);
 
@@ -179,7 +181,7 @@ void WorldRoutertest::test_addEntity_tick_get()
 
     Entity * ent2 = new Entity(id, int_id);
     assert(ent2 != 0);
-    ent2->m_location.m_loc = &test_world->m_gameWorld;
+    ent2->m_location.m_loc = m_rootEntity;
     ent2->m_location.m_pos = Point3D(0,0,0);
     test_world->addEntity(ent2);
 
@@ -213,7 +215,7 @@ void WorldRoutertest::test_createSpawnPoint()
 
     Entity * ent2 = new Entity(id, int_id);
     assert(ent2 != 0);
-    ent2->m_location.m_loc = &test_world->m_gameWorld;
+    ent2->m_location.m_loc = m_rootEntity;
     ent2->m_location.m_pos = Point3D(0,0,0);
     test_world->addEntity(ent2);
 
@@ -261,17 +263,17 @@ void WorldRoutertest::test_delEntity()
 
     Entity * ent2 = new Entity(id, int_id);
     assert(ent2 != 0);
-    ent2->m_location.m_loc = &test_world->m_gameWorld;
+    ent2->m_location.m_loc = m_rootEntity;
     ent2->m_location.m_pos = Point3D(0,0,0);
     test_world->addEntity(ent2);
 
     test_world->delEntity(ent2);
-    test_world->delEntity(&test_world->m_gameWorld);
+    test_world->delEntity(m_rootEntity);
 }
 
 void WorldRoutertest::test_delEntity_world()
 {
-    test_world->delEntity(&test_world->m_gameWorld);
+    test_world->delEntity(m_rootEntity);
 }
 
 int main()
@@ -309,7 +311,7 @@ template class OpQueEntry<LocatedEntity>;
 // memory management works correctly.
 LocatedEntity::~LocatedEntity()
 {
-    if (m_location.m_loc != 0) {
+    if (m_location.m_loc) {
         m_location.m_loc->decRef();
     }
     delete m_contains;
@@ -318,7 +320,7 @@ LocatedEntity::~LocatedEntity()
 #define STUB_LocatedEntity_makeContainer
 void LocatedEntity::makeContainer()
 {
-    if (m_contains == 0) {
+    if (!m_contains) {
         m_contains = new LocatedEntitySet;
     }
 }
@@ -395,7 +397,7 @@ static bool distanceToAncestor(const Location & self,
     c.setToOrigin();
     if (distanceFromAncestor(self, other, c)) {
         return true;
-    } else if ((self.m_loc != 0) &&
+    } else if ((self.m_loc) &&
                distanceToAncestor(self.m_loc->m_location, other, c)) {
         if (self.orientation().isValid()) {
             c = c.toLocalCoords(self.m_pos, self.orientation());
@@ -406,12 +408,12 @@ static bool distanceToAncestor(const Location & self,
         return true;
     }
     log(ERROR, "Broken entity hierarchy doing distance calculation");
-    if (self.m_loc != 0) {
-        std::cerr << "Self(" << self.m_loc->getId() << "," << self.m_loc << ")"
+    if (self.m_loc) {
+        std::cerr << "Self(" << self.m_loc->getId() << "," << self.m_loc->describeEntity() << ")"
                   << std::endl << std::flush;
     }
-    if (other.m_loc != 0) {
-        std::cerr << "Other(" << other.m_loc->getId() << "," << other.m_loc << ")"
+    if (other.m_loc) {
+        std::cerr << "Other(" << other.m_loc->getId() << "," << other.m_loc->describeEntity() << ")"
                   << std::endl << std::flush;
     }
      
@@ -445,7 +447,7 @@ long newId(std::string & id)
     return new_id;
 }
 
-BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld()
 {
 }
 
@@ -483,13 +485,7 @@ double BaseWorld::getTime() const
     return 0;
 }
 
-LocatedEntity& BaseWorld::getDefaultLocation() {
-    return m_gameWorld;
-}
 
-LocatedEntity& BaseWorld::getDefaultLocation() const {
-    return m_gameWorld;
-}
 
 #ifndef STUB_Inheritance_getType
 #define STUB_Inheritance_getType
@@ -505,6 +501,7 @@ const TypeNode* Inheritance::getType(const std::string & parent)
 #include "stubs/common/stubInheritance.h"
 
 
+#include "stubs/rulesets/stubTask.h"
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
 #include "stubs/common/stubProperty.h"
@@ -536,7 +533,7 @@ EntityBuilder::~EntityBuilder()
 {
 }
 
-LocatedEntity * EntityBuilder::newEntity(const std::string & id, long intId,
+Ref<LocatedEntity> EntityBuilder::newEntity(const std::string & id, long intId,
                                          const std::string & type,
                                          const RootEntity & attributes,
                                          const BaseWorld & world) const
@@ -550,12 +547,12 @@ LocatedEntity * EntityBuilder::newEntity(const std::string & id, long intId,
     return 0;
 }
 
-Task * EntityBuilder::newTask(const std::string & name, LocatedEntity & owner) const
+Ref<Task> EntityBuilder::newTask(const std::string & name, LocatedEntity & owner) const
 {
     return 0;
 }
 
-Task * EntityBuilder::activateTask(const std::string & tool,
+Ref<Task> EntityBuilder::activateTask(const std::string & tool,
                                    const std::string & op,
                                    LocatedEntity * target,
                                    LocatedEntity & owner) const

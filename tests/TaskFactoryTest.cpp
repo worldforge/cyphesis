@@ -235,5 +235,5 @@ bool TypeNode::isTypeOf(const TypeNode * base_type) const
     return stub_TypeNode_isTypeOf;
 }
 
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 

@@ -117,7 +117,11 @@ void ConnectionCharacterintegration::setup()
 
     Entity * gw = new Entity(compose("%1", m_id_counter),
                              m_id_counter++);
-    m_server = new ServerRouting(*new TestWorld(*gw),
+    auto testWorld = new TestWorld(*gw);
+    TestWorld::extension.messageFn = [](const Operation & op, LocatedEntity & ent) {
+        ConnectionCharacterintegration::BaseWorld_message_called(op, ent);
+    };
+    m_server = new ServerRouting(*testWorld,
                                  "dd7452be-0137-4664-b90e-77dfb395ac39",
                                  "a2feda8e-62e9-4ba0-95c4-09f92eda6a78",
                                  compose("%1", m_id_counter), m_id_counter++,
@@ -259,17 +263,6 @@ void ConnectionCharacterintegration::test_external_op()
     ASSERT_EQUAL(m_BaseWorld_message_called_from, m_character);
 }
 
-void TestWorld::message(const Operation & op, LocatedEntity & ent)
-{
-    ConnectionCharacterintegration::BaseWorld_message_called(op, ent);
-}
-
-LocatedEntity * TestWorld::addNewEntity(const std::string &,
-                                 const Atlas::Objects::Entity::RootEntity &)
-{
-    return 0;
-}
-
 int main()
 {
     ConnectionCharacterintegration t;
@@ -315,7 +308,7 @@ int main()
 #include "stubs/common/stubOperationsDispatcher.h"
 #include "stubs/modules/stubDateTime.h"
 #include "stubs/modules/stubWorldTime.h"
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 #include "stubs/physics/stubVector3D.h"
 #include "stubs/rulesets/stubPedestrian.h"
 #include "stubs/rulesets/stubMovement.h"
@@ -555,9 +548,18 @@ void Property<std::string>::set(const Atlas::Message::Element & e)
     }
 }
 
+template<>
+void Property<Atlas::Message::ListType>::set(const Atlas::Message::Element & e)
+{
+    if (e.isList()) {
+        this->m_data = e.List();
+    }
+}
+
 template class Property<int>;
 template class Property<double>;
 template class Property<std::string>;
+template class Property<Atlas::Message::ListType>;
 
 SoftProperty::SoftProperty(const Atlas::Message::Element & data) :
               PropertyBase(0), m_data(data)
@@ -710,50 +712,7 @@ TypeNode::~TypeNode()
 {
 }
 
-BaseWorld * BaseWorld::m_instance = 0;
-
-BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
-{
-    m_instance = this;
-}
-
-BaseWorld::~BaseWorld()
-{
-    m_instance = 0;
-    delete &m_gameWorld;
-}
-
-double BaseWorld::getTime() const
-{
-    return .0;
-}
-
-LocatedEntity * BaseWorld::getEntity(const std::string & id) const
-{
-    return 0;
-}
-
-LocatedEntity * BaseWorld::getEntity(long id) const
-{
-    return 0;
-}
-
-LocatedEntity& BaseWorld::getDefaultLocation() {
-    return m_gameWorld;
-}
-
-LocatedEntity& BaseWorld::getDefaultLocation() const {
-    return m_gameWorld;
-}
-
-LocatedEntity& BaseWorld::getRootEntity() {
-    return m_gameWorld;
-}
-
-LocatedEntity& BaseWorld::getRootEntity() const {
-    return m_gameWorld;
-}
-
+#include "stubs/common/stubBaseWorld.h"
 
 #ifndef STUB_Inheritance_getClass
 #define STUB_Inheritance_getClass
@@ -775,6 +734,8 @@ const TypeNode* Inheritance::getType(const std::string & parent)
 #endif //STUB_Inheritance_getType
 
 #include "stubs/common/stubInheritance.h"
+#include "stubs/rulesets/stubUsagesProperty.h"
+#include "stubs/rulesets/entityfilter/stubFilter.h"
 
 WeakEntityRef::WeakEntityRef(LocatedEntity* e) : m_inner(e)
 {

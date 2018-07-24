@@ -69,15 +69,15 @@ class SpawningTestWorld : public TestWorld {
   public:
     SpawningTestWorld(Entity & gw) : TestWorld(gw) { }
 
-    virtual Entity * addEntity(Entity * ent) { 
-        ent->m_location.m_loc = &m_gameWorld;
+    Ref<LocatedEntity> addEntity(const Ref<LocatedEntity>& ent) override{
+        ent->m_location.m_loc = m_gw;
         ent->m_location.m_pos = WFMath::Point<3>(0,0,0);
         m_eobjects[ent->getIntId()] = ent;
         return ent;
     }
 
-    virtual Entity * addNewEntity(const std::string & t,
-                                  const Atlas::Objects::Entity::RootEntity &) {
+    Ref<LocatedEntity> addNewEntity(const std::string & t,
+                                  const Atlas::Objects::Entity::RootEntity &) override {
         std::string id;
         long intId = newId(id);
 
@@ -266,15 +266,7 @@ int main()
 
 // stubs
 
-void TestWorld::message(const Operation & op, LocatedEntity & ent)
-{
-}
 
-LocatedEntity * TestWorld::addNewEntity(const std::string &,
-                                 const Atlas::Objects::Entity::RootEntity &)
-{
-    return 0;
-}
 
 #include "rulesets/ExternalMind.h"
 #include "rulesets/ExternalProperty.h"
@@ -475,7 +467,7 @@ void logEvent(LogEvent lev, const std::string & msg)
 #include "stubs/server/stubExternalMindsManager.h"
 #include "stubs/server/stubExternalMindsConnection.h"
 #include "stubs/common/stubOperationsDispatcher.h"
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 #include "stubs/common/stubPropertyManager.h"
 
 long integerId(const std::string & id)

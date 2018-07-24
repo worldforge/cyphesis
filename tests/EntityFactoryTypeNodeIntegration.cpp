@@ -121,7 +121,7 @@ void Stackable::DivideOperation(const Operation & op, OpVector & res)
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/rulesets/stubThing.h"
 #include "stubs/common/stubRouter.h"
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 
 void log(LogLevel lvl, const std::string & msg)
 {

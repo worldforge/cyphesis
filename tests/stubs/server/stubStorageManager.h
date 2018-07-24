@@ -147,7 +147,7 @@
 
 #ifndef STUB_StorageManager_initWorld
 //#define STUB_StorageManager_initWorld
-  int StorageManager::initWorld()
+  int StorageManager::initWorld(const Ref<LocatedEntity>& ent)
   {
     return 0;
   }
@@ -155,7 +155,7 @@
 
 #ifndef STUB_StorageManager_restoreWorld
 //#define STUB_StorageManager_restoreWorld
-  int StorageManager::restoreWorld()
+  int StorageManager::restoreWorld(const Ref<LocatedEntity>& ent)
   {
     return 0;
   }

@@ -26,9 +26,9 @@
 
 #ifndef STUB_TaskFactory_newTask
 //#define STUB_TaskFactory_newTask
-  Task* TaskFactory::newTask(LocatedEntity & chr)
+  Ref<Task> TaskFactory::newTask(LocatedEntity & chr)
   {
-    return nullptr;
+    return *static_cast<Ref<Task>*>(nullptr);
   }
 #endif //STUB_TaskFactory_newTask
 

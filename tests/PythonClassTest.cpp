@@ -28,60 +28,63 @@
 #include "python_testers.h"
 
 #include "rulesets/PythonClass.h"
-
+#include "external/pycxx/CXX/Extensions.hxx"
 #include <cassert>
 
-static bool stub_Get_PyClass_return = false;
-static bool stub_Get_PyModule_return = false;
+Py::Object* stub_Get_PyClass_return = nullptr;
+Py::Module* stub_Get_PyModule_return = nullptr;
 
-static PyObject * testmod = 0;
-static PyObject * GoodClass_type = 0;
 
-class TestPythonClass : public PythonClass {
-  public:
-    TestPythonClass(const std::string & p, const std::string & t) :
-          PythonClass(p, t, &PyBaseObject_Type) { }
+class TestPythonClass : public PythonClass
+{
+    public:
+        TestPythonClass(const std::string& p, const std::string& t) :
+            PythonClass(p, t)
+        {}
 
-    virtual ~TestPythonClass() { }
+        virtual ~TestPythonClass()
+        {}
 
-    virtual int check() const { return 0; }
+        virtual int check() const
+        { return 0; }
 
-    int test_getClass(struct _object * o) { return getClass(o); }
-    int test_load() { return load(); }
-    int test_refresh() { return refresh(); }
+        int test_getClass(Py::Module o)
+        { return getClass(o); }
 
-    const std::string & access_package() { return m_package; }
-    const std::string & access_type() { return m_type; }
+        int test_load()
+        { return load(); }
 
-    struct _object * access_module() { return m_module; }
-    struct _object * access_class() { return m_class; }
+        int test_refresh()
+        { return refresh(); }
+
+        const std::string& access_package()
+        { return m_package; }
+
+        const std::string& access_type()
+        { return m_type; }
+
+        Py::Module& access_module()
+        { return m_module; }
+
+        boost::optional<Py::Callable>& access_class()
+        { return m_class; }
 };
 
-static PyMethodDef no_methods[] = {
-    {nullptr,          nullptr}                       /* Sentinel */
+struct TestMod : public Py::ExtensionModule<TestMod>
+{
+    TestMod() : ExtensionModule("testmod")
+    {
+        initialize("testmod");
+    }
 };
 
-
-static PyObject* init_testmod() {
-    static struct PyModuleDef def = {
-            PyModuleDef_HEAD_INIT,
-            "testmod",
-            nullptr,
-            0,
-            no_methods,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr
-    };
-
-    testmod = PyModule_Create(&def);
-    return testmod;
-}
 
 int main()
 {
-    PyImport_AppendInittab("testmod", &init_testmod);
+    PyImport_AppendInittab("testmod", []() {
+        auto module = new TestMod();
+        return module->module().ptr();
+    });
 
     Py_Initialize();
 
@@ -95,48 +98,34 @@ int main()
     run_python_string("testmod.BadClass=BadClass");
     run_python_string("testmod.GoodClass=GoodClass");
 
-    GoodClass_type = PyObject_GetAttrString(testmod, "GoodClass");
-    assert(GoodClass_type != 0);
+    Py::Module testmod("testmod");
+    auto good_class = Py::Callable(testmod.getAttr("GoodClass"));
 
     {
-        const char * package = "acfd44fd-dccb-4a63-98c3-6facd580ca5f";
-        const char * type = "3265e96a-28a0-417c-ad30-2970c1777c50";
+        const char* package = "acfd44fd-dccb-4a63-98c3-6facd580ca5f";
+        const char* type = "3265e96a-28a0-417c-ad30-2970c1777c50";
 
-        TestPythonClass * pc = new TestPythonClass(package, type);
+        TestPythonClass* pc = new TestPythonClass(package, type);
 
-        assert(pc != 0);
+        assert(pc != nullptr);
 
         assert(pc->access_package() == package);
         assert(pc->access_type() == type);
 
-        assert(pc->access_module() == 0);
-        assert(pc->access_class() == 0);
+        assert(pc->access_module().isNull());
+        assert(!pc->access_class());
 
         delete pc;
     }
 
     {
-        const char * package = "acfd44fd-dccb-4a63-98c3-6facd580ca5f";
-        const char * type = "3265e96a-28a0-417c-ad30-2970c1777c50";
+        const char* package = "acfd44fd-dccb-4a63-98c3-6facd580ca5f";
+        const char* type = "3265e96a-28a0-417c-ad30-2970c1777c50";
 
-        TestPythonClass * pc = new TestPythonClass(package, type);
+        TestPythonClass* pc = new TestPythonClass(package, type);
 
-        stub_Get_PyModule_return = false;
-        stub_Get_PyClass_return = false;
-
-        int ret = pc->test_load();
-
-        assert(ret == -1);
-    }
-
-    {
-        const char * package = "acfd44fd-dccb-4a63-98c3-6facd580ca5f";
-        const char * type = "3265e96a-28a0-417c-ad30-2970c1777c50";
-
-        TestPythonClass * pc = new TestPythonClass(package, type);
-
-        stub_Get_PyModule_return = true;
-        stub_Get_PyClass_return = false;
+        stub_Get_PyModule_return = nullptr;
+        stub_Get_PyClass_return = nullptr;
 
         int ret = pc->test_load();
 
@@ -144,13 +133,27 @@ int main()
     }
 
     {
-        const char * package = "acfd44fd-dccb-4a63-98c3-6facd580ca5f";
-        const char * type = "3265e96a-28a0-417c-ad30-2970c1777c50";
+        const char* package = "acfd44fd-dccb-4a63-98c3-6facd580ca5f";
+        const char* type = "3265e96a-28a0-417c-ad30-2970c1777c50";
 
-        TestPythonClass * pc = new TestPythonClass(package, type);
+        TestPythonClass* pc = new TestPythonClass(package, type);
 
-        stub_Get_PyModule_return = true;
-        stub_Get_PyClass_return = true;
+        stub_Get_PyModule_return = &testmod;
+        stub_Get_PyClass_return = nullptr;
+
+        int ret = pc->test_load();
+
+        assert(ret == -1);
+    }
+
+    {
+        const char* package = "acfd44fd-dccb-4a63-98c3-6facd580ca5f";
+        const char* type = "3265e96a-28a0-417c-ad30-2970c1777c50";
+
+        TestPythonClass* pc = new TestPythonClass(package, type);
+
+        stub_Get_PyModule_return = &testmod;
+        stub_Get_PyClass_return = &good_class;
 
         int ret = pc->test_load();
 
@@ -166,27 +169,24 @@ int main()
 
 #include "rulesets/Python_Script_Utils.h"
 
-void log(LogLevel lvl, const std::string & msg)
+void log(LogLevel lvl, const std::string& msg)
 {
 }
 
-struct _object * Get_PyClass(struct _object * module,
-                             const std::string & package,
-                             const std::string & type)
+Py::Object Get_PyClass(const Py::Module& module,
+                       const std::string & package,
+                       const std::string & type)
 {
     if (stub_Get_PyClass_return) {
-        // It's possible I should be incrementing the reference count
-        Py_INCREF(GoodClass_type);
-        return GoodClass_type;
+        return *stub_Get_PyClass_return;
     }
-    return 0;
+    return Py::Null();
 }
 
-struct _object * Get_PyModule(const std::string & package)
+Py::Module Get_PyModule(const std::string& package)
 {
     if (stub_Get_PyModule_return) {
-        Py_INCREF(testmod);
-        return testmod;
+        return *stub_Get_PyModule_return;
     }
-    return 0;
+    return Py::Module(nullptr);
 }

@@ -51,3 +51,11 @@ int LocatedEntity::getAttrType(const std::string & name, Atlas::Message::Element
     return -1;
 }
 #endif //STUB_LocatedEntity_getAttrType
+
+#ifndef STUB_LocatedEntity_isReachableForOtherEntity
+#define STUB_LocatedEntity_isReachableForOtherEntity
+bool LocatedEntity::isReachableForOtherEntity(const LocatedEntity* reacher, const WFMath::Point<3>& positionOnEntity, float extra ) const
+{
+    return false;
+}
+#endif //STUB_LocatedEntity_isReachableForOtherEntity

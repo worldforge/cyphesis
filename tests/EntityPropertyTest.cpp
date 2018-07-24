@@ -25,6 +25,7 @@
 
 #include "rulesets/EntityProperty.h"
 
+#include "rulesets/Task.h"
 #include "rulesets/Entity.h"
 
 #include <Atlas/Objects/Anonymous.h>
@@ -224,4 +225,4 @@ int main()
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubBaseWorld.h"
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"

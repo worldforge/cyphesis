@@ -190,8 +190,7 @@ template <class T>
 PythonScriptFactory<T>::PythonScriptFactory(const std::string & package,
                                          const std::string & type) :
                                          PythonClass(package,
-                                                     type,
-                                                     &PyBaseObject_Type)
+                                                     type)
 {
 }
 
@@ -221,34 +220,8 @@ int PythonScriptFactory<T>::refreshClass()
     return 0;
 }
 
-PythonClass::PythonClass(const std::string & package,
-                         const std::string & type,
-                         PyTypeObject * base) : m_package(package),
-                                                m_type(type),
-                                                m_base(base),
-                                                m_module(0),
-                                                m_class(0)
-{
-}
+#include "stubs/rulesets/stubPythonClass.h"
 
-PythonClass::~PythonClass()
-{
-}
-
-int PythonClass::load()
-{
-    return 0;
-}
-
-int PythonClass::getClass(struct _object *)
-{
-    return 0;
-}
-
-int PythonClass::refresh()
-{
-    return 0;
-}
 
 #ifndef STUB_Inheritance_addChild
 #define STUB_Inheritance_addChild

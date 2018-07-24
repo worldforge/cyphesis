@@ -36,9 +36,6 @@ int main()
 {
     init_python_api("2a83ab2f-928f-457d-bcf7-34d3686e49c1");
 
-    PyBBox * bbox = newPyBBox();
-    assert(bbox != 0);
-
     run_python_string("from physics import BBox");
     run_python_string("b=BBox()");
     expect_python_error("b=BBox([1])", PyExc_ValueError);

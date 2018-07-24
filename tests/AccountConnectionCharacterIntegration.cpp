@@ -254,15 +254,7 @@ void AccountConnectionCharacterintegration::test_unsubscribe_other()
                 m_connection->m_objects.end())
 }
 
-void TestWorld::message(const Operation & op, LocatedEntity & ent)
-{
-}
 
-LocatedEntity * TestWorld::addNewEntity(const std::string &,
-                                 const Atlas::Objects::Entity::RootEntity &)
-{
-    return 0;
-}
 
 int main()
 {
@@ -313,7 +305,7 @@ bool restricted_flag;
 #include "stubs/common/stubDatabase.h"
 #include "stubs/modules/stubWorldTime.h"
 #include "stubs/modules/stubDateTime.h"
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 #include "stubs/physics/stubVector3D.h"
 
 namespace Atlas { namespace Objects { namespace Operation {
@@ -492,55 +484,7 @@ void Task::irrelevant()
 {
 }
 
-TasksProperty::TasksProperty() : PropertyBase(per_ephem), m_task(0)
-{
-}
-
-int TasksProperty::get(Atlas::Message::Element & val) const
-{
-    return 0;
-}
-
-void TasksProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-TasksProperty * TasksProperty::copy() const
-{
-    return 0;
-}
-
-int TasksProperty::startTask(Task *, LocatedEntity *, const Operation &, OpVector &)
-{
-    return 0;
-}
-
-int TasksProperty::updateTask(LocatedEntity *, OpVector &)
-{
-    return 0;
-}
-
-int TasksProperty::clearTask(LocatedEntity *, OpVector &)
-{
-    return 0;
-}
-
-void TasksProperty::stopTask(LocatedEntity *, OpVector &)
-{
-}
-
-void TasksProperty::TickOperation(LocatedEntity *, const Operation &, OpVector &)
-{
-}
-
-void TasksProperty::UseOperation(LocatedEntity *, const Operation &, OpVector &)
-{
-}
-
-HandlerResult TasksProperty::operation(LocatedEntity *, const Operation &, OpVector &)
-{
-    return OPERATION_IGNORED;
-}
+#include "stubs/rulesets/stubTasksProperty.h"
 
 PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
 {
@@ -604,9 +548,18 @@ void Property<std::string>::set(const Atlas::Message::Element & e)
     }
 }
 
+template<>
+void Property<Atlas::Message::ListType>::set(const Atlas::Message::Element & e)
+{
+    if (e.isList()) {
+        this->m_data = e.List();
+    }
+}
+
 template class Property<int>;
 template class Property<double>;
 template class Property<std::string>;
+template class Property<Atlas::Message::ListType>;
 
 SoftProperty::SoftProperty(const Atlas::Message::Element & data) :
               PropertyBase(0), m_data(data)
@@ -757,50 +710,9 @@ TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
 TypeNode::~TypeNode()
 {
 }
-
-BaseWorld * BaseWorld::m_instance = 0;
-
-BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
-{
-    m_instance = this;
-}
-
-BaseWorld::~BaseWorld()
-{
-    m_instance = 0;
-    delete &m_gameWorld;
-}
-
-double BaseWorld::getTime() const
-{
-    return .0;
-}
-
-LocatedEntity * BaseWorld::getEntity(const std::string & id) const
-{
-    return 0;
-}
-
-LocatedEntity * BaseWorld::getEntity(long id) const
-{
-    return 0;
-}
-
-LocatedEntity& BaseWorld::getDefaultLocation() {
-    return m_gameWorld;
-}
-
-LocatedEntity& BaseWorld::getDefaultLocation() const {
-    return m_gameWorld;
-}
-
-LocatedEntity& BaseWorld::getRootEntity() {
-    return m_gameWorld;
-}
-
-LocatedEntity& BaseWorld::getRootEntity() const {
-    return m_gameWorld;
-}
+#include "stubs/common/stubBaseWorld.h"
+#include "stubs/rulesets/stubUsagesProperty.h"
+#include "stubs/rulesets/entityfilter/stubFilter.h"
 
 #define STUB_Inheritance_getClass
 const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent)

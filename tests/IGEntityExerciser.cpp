@@ -53,13 +53,13 @@ IGEntityExerciser::IGEntityExerciser(Entity & e) :
     if (e.getIntId() == 0) {
         new TestWorld(e);
     } else {
-        assert(e.m_location.m_loc != 0);
+        assert(e.m_location.m_loc != nullptr);
         delete e.m_location.m_loc;
         e.m_location.m_loc = new Entity("0", 0);
         e.m_location.m_loc->makeContainer();
-        assert(e.m_location.m_loc->m_contains != 0);
+        assert(e.m_location.m_loc->m_contains != nullptr);
         e.m_location.m_loc->m_contains->insert(&e);
-        new TestWorld(*dynamic_cast<Entity*>(e.m_location.m_loc));
+        new TestWorld(*e.m_location.m_loc);
     }
     BaseWorld::instance().addEntity(&e);
 }
@@ -219,7 +219,7 @@ void IGEntityExerciser::runOperations()
         }
         this->flushOperations(ov);
 
-        if (this->m_ent.m_location.m_loc != 0) {
+        if (this->m_ent.m_location.m_loc != nullptr) {
             move_arg->setLoc(this->m_ent.m_location.m_loc->getId());
             this->m_ent.MoveOperation(op, ov);
             if (!ov.empty()) {
@@ -236,7 +236,7 @@ void IGEntityExerciser::runOperations()
         }
         this->flushOperations(ov);
 
-        if (this->m_ent.m_location.m_loc != 0) {
+        if (this->m_ent.m_location.m_loc != nullptr) {
             move_arg->setLoc(this->m_ent.m_location.m_loc->getId());
         }
         std::vector<double> pos(3, 0);

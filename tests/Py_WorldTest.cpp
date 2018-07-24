@@ -58,12 +58,3 @@ int main()
     return 0;
 }
 
-void TestWorld::message(const Operation & op, LocatedEntity & ent)
-{
-}
-
-Ref<LocatedEntity> TestWorld::addNewEntity(const std::string &,
-                                 const Atlas::Objects::Entity::RootEntity &)
-{
-    return nullptr;
-}

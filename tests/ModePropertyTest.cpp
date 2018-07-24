@@ -45,14 +45,4 @@ int main()
 
 #include "TestWorld.h"
 
-void TestWorld::message(const Operation & op, LocatedEntity & ent)
-{
-}
-
-LocatedEntity * TestWorld::addNewEntity(const std::string &,
-                                 const Atlas::Objects::Entity::RootEntity &)
-{
-    return 0;
-}
-
 

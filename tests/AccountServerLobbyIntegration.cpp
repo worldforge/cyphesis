@@ -202,15 +202,6 @@ int main()
 
 // stubs
 
-void TestWorld::message(const Operation & op, LocatedEntity & ent)
-{
-}
-
-LocatedEntity * TestWorld::addNewEntity(const std::string &,
-                                 const Atlas::Objects::Entity::RootEntity &)
-{
-    return 0;
-}
 
 #include "server/Connection.h"
 #include "server/Persistence.h"
@@ -362,32 +353,7 @@ void Router::error(const Operation & op,
 {
 }
 
-BaseWorld * BaseWorld::m_instance = 0;
-
-BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
-{
-    m_instance = this;
-}
-
-BaseWorld::~BaseWorld()
-{
-    m_instance = 0;
-}
-
-double BaseWorld::getTime() const
-{
-    return .0;
-}
-
-LocatedEntity * BaseWorld::getEntity(const std::string & id) const
-{
-    return 0;
-}
-
-LocatedEntity * BaseWorld::getEntity(long id) const
-{
-    return 0;
-}
+#include "stubs/common/stubBaseWorld.h"
 
 Location::Location() : m_loc(0)
 {

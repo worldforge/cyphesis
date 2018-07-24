@@ -144,7 +144,7 @@ int main()
 #include "stubs/rulesets/stubDomain.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubBaseWorld.h"
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 #include "stubs/rulesets/stubPropelProperty.h"
 #include "stubs/rulesets/stubDomainProperty.h"
 #include "stubs/rulesets/stubEntityProperty.h"
@@ -160,8 +160,8 @@ void LocatedEntity::makeContainer()
 #define STUB_LocatedEntity_changeContainer
 void LocatedEntity::changeContainer(LocatedEntity * new_loc)
 {
-    assert(m_location.m_loc != 0);
-    assert(m_location.m_loc->m_contains != 0);
+    assert(m_location.m_loc != nullptr);
+    assert(m_location.m_loc->m_contains != nullptr);
     m_location.m_loc->m_contains->erase(this);
     if (m_location.m_loc->m_contains->empty()) {
         m_location.m_loc->onUpdated();

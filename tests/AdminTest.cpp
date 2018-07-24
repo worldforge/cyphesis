@@ -1357,15 +1357,7 @@ void Admintest::test_createObject_fallthrough()
                  m_account);
 }
 
-void TestWorld::message(const Operation & op, LocatedEntity & ent)
-{
-}
 
-LocatedEntity * TestWorld::addNewEntity(const std::string &,
-                                 const Atlas::Objects::Entity::RootEntity &)
-{
-    return 0;
-}
 
 int main()
 {
@@ -1500,7 +1492,7 @@ void Account::OtherOperation(const Operation &, OpVector &)
 }
 
 #include "stubs/server/stubConnection.h"
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 
 #include "stubs/server/stubRuleHandler.h"
 
@@ -1765,7 +1757,7 @@ TypeNode::~TypeNode()
 
 BaseWorld * BaseWorld::m_instance = 0;
 
-BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld()
 {
     m_instance = this;
 }
@@ -1773,7 +1765,6 @@ BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
 BaseWorld::~BaseWorld()
 {
     m_instance = 0;
-    delete &m_gameWorld;
 }
 
 LocatedEntity * BaseWorld::getEntity(const std::string & id) const

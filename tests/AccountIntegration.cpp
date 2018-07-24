@@ -135,6 +135,7 @@ class Accountintegration : public Cyphesis::TestBase
     void test_connectCharacter_character();
 
         Inheritance* m_inheritance;
+        Entity* m_rootEntity;
 };
 
 Accountintegration::Accountintegration()
@@ -176,13 +177,14 @@ Atlas::Objects::Root composeDeclaration(std::string class_name, std::string pare
 
 void Accountintegration::setup()
 {
+    m_rootEntity = new Entity("", 0);
     m_persistence = new Persistence(m_database);
     m_inheritance = new Inheritance();
     m_time = new SystemTime;
     EntityBuilder::init();
     auto entityRuleHandler = new EntityRuleHandler(EntityBuilder::instance());
 
-    m_world = new WorldRouter(*m_time);
+    m_world = new WorldRouter(*m_time, m_rootEntity);
 
     m_server = new ServerRouting(*m_world, "noruleset", "unittesting",
                          "1", 1, "2", 2);
@@ -377,15 +379,7 @@ int main()
     return t.run();
 }
 
-void TestWorld::message(const Operation & op, LocatedEntity & ent)
-{
-}
 
-LocatedEntity * TestWorld::addNewEntity(const std::string &,
-                                 const Atlas::Objects::Entity::RootEntity &)
-{
-    return 0;
-}
 
 // stubs
 
@@ -448,7 +442,7 @@ LocatedEntity * TestWorld::addNewEntity(const std::string &,
 template<>
 PythonScriptFactory<LocatedEntity>::PythonScriptFactory(const std::string & p,
                                                         const std::string & t) :
-    PythonClass(p, t, nullptr)
+    PythonClass(p, t)
 {
 }
 
@@ -703,7 +697,7 @@ TasksProperty * TasksProperty::copy() const
     return 0;
 }
 
-int TasksProperty::startTask(Task *, LocatedEntity *, const Operation &, OpVector &)
+int TasksProperty::startTask(Ref<Task>, LocatedEntity *, const Operation &, OpVector &)
 {
     return 0;
 }
@@ -872,12 +866,14 @@ CommSocket::~CommSocket()
 #include "stubs/common/stubEntityKit.h"
 
 #define STUB_ArchetypeFactory_newEntity
-LocatedEntity* ArchetypeFactory::newEntity(const std::string & id, long intId, const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
+Ref<LocatedEntity> ArchetypeFactory::newEntity(const std::string & id, long intId, const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
 {
     return new Entity(id, intId);
 }
 
 #include "stubs/server/stubArchetypeFactory.h"
+#include "stubs/rulesets/stubUsagesProperty.h"
+#include "stubs/rulesets/entityfilter/stubFilter.h"
 
 Root atlasType(const std::string & name,
                const std::string & parent,

@@ -1,12 +1,12 @@
 //Add custom implementations of stubbed functions here; this file won't be rewritten when re-generating stubs.
-
+#include "rulesets/Task.h"
 BaseWorld *BaseWorld::m_instance = 0;
 
 #ifndef STUB_BaseWorld_BaseWorld
 #define STUB_BaseWorld_BaseWorld
 
-BaseWorld::BaseWorld(LocatedEntity &gw)
-        : m_gameWorld(gw), m_defaultLocation(nullptr), m_limboLocation(nullptr) {
+BaseWorld::BaseWorld()
+        : m_defaultLocation(nullptr), m_limboLocation(nullptr) {
     m_instance = this;
 }
 
@@ -44,37 +44,3 @@ LocatedEntity* BaseWorld::getEntity(long id) const
     }
 }
 #endif //STUB_BaseWorld_getEntity
-
-#ifndef STUB_BaseWorld_getRootEntity
-#define STUB_BaseWorld_getRootEntity
-
-LocatedEntity &BaseWorld::getRootEntity() {
-    return m_gameWorld;
-}
-
-#endif //STUB_BaseWorld_getRootEntity
-
-#ifndef STUB_BaseWorld_getRootEntity
-#define STUB_BaseWorld_getRootEntity
-LocatedEntity& BaseWorld::getRootEntity() const
-{
-    return m_gameWorld;
-}
-#endif //STUB_BaseWorld_getRootEntity
-
-#ifndef STUB_BaseWorld_getDefaultLocation
-#define STUB_BaseWorld_getDefaultLocation
-
-LocatedEntity &BaseWorld::getDefaultLocation() {
-    return m_gameWorld;
-}
-
-#endif //STUB_BaseWorld_getDefaultLocation
-
-#ifndef STUB_BaseWorld_getDefaultLocation
-#define STUB_BaseWorld_getDefaultLocation
-LocatedEntity& BaseWorld::getDefaultLocation() const
-{
-    return m_gameWorld;
-}
-#endif //STUB_BaseWorld_getDefaultLocation

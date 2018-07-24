@@ -55,52 +55,15 @@ int stub_baseworld_receieved_op = -1;
 int stub_link_send_op = -1;
 int stub_link_send_count = 0;
 
-class TestWorld : public BaseWorld {
-  public:
-    explicit TestWorld() : BaseWorld(*(LocatedEntity*)0) {
-    }
 
-    virtual bool idle() { return false; }
-    virtual LocatedEntity * addEntity(LocatedEntity * ent) { 
-        return 0;
-    }
-    virtual LocatedEntity * addNewEntity(const std::string &,
-                                  const Atlas::Objects::Entity::RootEntity &) {
-        return 0;
-    }
-    void delEntity(LocatedEntity * obj) {}
-    int createSpawnPoint(const Atlas::Message::MapType & data,
-                         LocatedEntity *) { return 0; }
-    int removeSpawnPoint(LocatedEntity *) {return 0; }
-    int getSpawnList(Atlas::Message::ListType & data) { return 0; }
-    LocatedEntity * spawnNewEntity(const std::string & name,
-                                   const std::string & type,
-                                   const Atlas::Objects::Entity::RootEntity & desc) {
-        return addNewEntity(type, desc);
-    }
-    virtual int moveToSpawn(const std::string & name,
-                            Location& location){return 0;}
-    virtual Task * newTask(const std::string &, LocatedEntity &) { return 0; }
-    virtual Task * activateTask(const std::string &, const std::string &,
-                                LocatedEntity *, LocatedEntity &) { return 0; }
-    virtual ArithmeticScript * newArithmetic(const std::string &,
-                                             LocatedEntity *) {
-        return 0;
-    }
-    virtual void message(const Operation & op, LocatedEntity & ent) {
-        stub_baseworld_receieved_op = op->getClassNo();
-    }
-    virtual void messageToClients(const Atlas::Objects::Operation::RootOperation &) {
+#include "TestWorld.h"
 
-    }
-    virtual LocatedEntity * findByName(const std::string & name) { return 0; }
-    virtual LocatedEntity * findByType(const std::string & type) { return 0; }
-    virtual void addPerceptive(LocatedEntity *) { }
-};
+
 
 int main()
 {
-    TestWorld world;
+    TestWorld::extension.messageFn = [](const Operation & op, LocatedEntity & ent){stub_baseworld_receieved_op = op->getClassNo();};
+    TestWorld world{};
 
     {
         Entity e("2", 2);
@@ -363,7 +326,7 @@ void Entity::sendWorld(const Operation & op)
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/rulesets/stubScript.h"
 
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 
 #define STUB_Link_send
 void Link::send(const Operation & op) const

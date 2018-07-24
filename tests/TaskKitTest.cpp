@@ -24,24 +24,27 @@
 #endif
 
 #include "common/TaskKit.h"
-
+#include "rulesets/Task.h"
 #include <cassert>
 
 class TestTaskKit : public TaskKit {
   public:
-    virtual ~TestTaskKit() { }
+        ~TestTaskKit() override
+        { }
 
-    virtual int checkTarget(LocatedEntity * target) { return 0; }
+        int checkTarget(LocatedEntity * target) override
+        { return 0; }
 
-    virtual Task * newTask(LocatedEntity & chr) { return 0; }
+        Ref<Task> newTask(LocatedEntity & chr) override
+        { return nullptr; }
 };
 
 int main()
 {
     TaskKit * k = new TestTaskKit;
 
-    assert(k->m_scriptFactory == 0);
-    assert(k->target() == 0);
+    assert(k->m_scriptFactory == nullptr);
+    assert(k->target() == nullptr);
 
     delete k;
 

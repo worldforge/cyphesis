@@ -103,7 +103,7 @@ void BaseMindMapEntityintegration::test_MemMapdel_top()
     m_mind->m_map.del(tlve->getId());
 
     ASSERT_EQUAL(m_mind->m_map.m_entities.size(), 3u);
-    ASSERT_NULL(e2->m_location.m_loc);
+    ASSERT_FALSE(e2->m_location.m_loc);
     ASSERT_TRUE(e2->m_contains->find(e3) != e2->m_contains->end());
 }
 
@@ -138,7 +138,7 @@ void BaseMindMapEntityintegration::test_MemMapdel_mid()
     ASSERT_TRUE(tlve->m_contains->find(e3) != tlve->m_contains->end());
     ASSERT_TRUE(tlve->m_contains->find(e2) == tlve->m_contains->end());
 
-    ASSERT_NULL(e2->m_location.m_loc);
+    ASSERT_FALSE(e2->m_location.m_loc);
     ASSERT_EQUAL(e2->checkRef(), 0);
     e2->decRef();
 }
@@ -174,7 +174,7 @@ void BaseMindMapEntityintegration::test_MemMapdel_edge()
     ASSERT_TRUE(tlve->m_contains->find(e2) != tlve->m_contains->end());
     ASSERT_TRUE(e2->m_contains->find(e3) == e2->m_contains->end());
 
-    ASSERT_NULL(e3->m_location.m_loc);
+    ASSERT_FALSE(e3->m_location.m_loc);
     ASSERT_EQUAL(e3->checkRef(), 0);
     e3->decRef();
 }
@@ -195,7 +195,7 @@ void BaseMindMapEntityintegration::test_MemMapreadEntity_noloc()
     m_mind->m_map.m_entities[3] = e3;
 
     ASSERT_EQUAL(m_mind->m_map.m_entities.size(), 4u);
-    ASSERT_NULL(e3->m_location.m_loc);
+    ASSERT_FALSE(e3->m_location.m_loc);
 
     Anonymous data;
     data->setLoc(tlve->getId());
@@ -203,7 +203,7 @@ void BaseMindMapEntityintegration::test_MemMapreadEntity_noloc()
     // Read in entity data the sets the LOC of e3 to tlve
     m_mind->m_map.readEntity(e3, data, 0);
 
-    ASSERT_EQUAL(e3->m_location.m_loc, tlve)
+    ASSERT_EQUAL(e3->m_location.m_loc.get(), tlve)
     ASSERT_TRUE(tlve->m_contains->find(e3) != tlve->m_contains->end());
 }
 
@@ -233,7 +233,7 @@ void BaseMindMapEntityintegration::test_MemMapreadEntity_changeloc()
     // Read in entity data that changes the LOC of e3 from e2 to TLVE
     m_mind->m_map.readEntity(e3, data, 0);
 
-    ASSERT_EQUAL(e3->m_location.m_loc, tlve)
+    ASSERT_EQUAL(e3->m_location.m_loc.get(), tlve)
     ASSERT_TRUE(e2->m_contains->find(e3) == e2->m_contains->end());
     ASSERT_TRUE(tlve->m_contains->find(e3) != tlve->m_contains->end());
 }
@@ -345,7 +345,7 @@ int main()
 // memory management works correctly.
 LocatedEntity::~LocatedEntity()
 {
-    if (m_location.m_loc != 0) {
+    if (m_location.m_loc) {
         m_location.m_loc->decRef();
     }
     delete m_contains;
@@ -354,7 +354,7 @@ LocatedEntity::~LocatedEntity()
 #define STUB_LocatedEntity_makeContainer
 void LocatedEntity::makeContainer()
 {
-    if (m_contains == 0) {
+    if (!m_contains) {
         m_contains = new LocatedEntitySet;
     }
 }

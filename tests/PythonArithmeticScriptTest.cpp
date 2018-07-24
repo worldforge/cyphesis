@@ -34,44 +34,57 @@
 
 #include <cassert>
 #include <rulesets/Python_Script_Utils.h>
+#include <external/pycxx/CXX/Extensions.hxx>
 
-static PyMethodDef no_methods[] = {
-    {nullptr,          nullptr}                       /* Sentinel */
+Py::Object Get_PyClass(const Py::Module& module,
+                       const std::string & package,
+                       const std::string & type)
+{
+    auto py_class = module.getAttr(type);
+    if (py_class.isNull()) {
+        log(ERROR, String::compose("Could not find python class \"%1.%2\"",
+                                   package, type));
+        PyErr_Print();
+        return Py::Null();
+    }
+    if (!py_class.isCallable()) {
+        log(ERROR, String::compose("Could not instance python class \"%1.%2\"",
+                                   package, type));
+        return Py::Null();
+    }
+    return py_class;
+}
+
+Py::Module Get_PyModule(const std::string & package)
+{
+    Py::String package_name(package);
+    PyObject * module = PyImport_Import(package_name.ptr());
+    if (module == nullptr) {
+        log(ERROR, String::compose("Missing python module \"%1\"", package));
+        PyErr_Print();
+        return Py::Module(nullptr);
+    }
+    return Py::Module(module);
+}
+
+struct TestMod : public Py::ExtensionModule<TestMod>
+{
+    TestMod() : ExtensionModule("testmod")
+    {
+        initialize("testmod");
+    }
 };
 
-PyObject * Get_PyClass(PyObject * module,
-                       const std::string & package,
-                       const std::string & type);
 
-PyObject * Get_PyModule(const std::string & package)
-{
-    PyObject * package_name = PyUnicode_FromString((char *)package.c_str());
-    PyObject * module = PyImport_Import(package_name);
-    Py_DECREF(package_name);
-    return module;
-}
-
-static PyObject* init_testmod() {
-    static struct PyModuleDef def = {
-            PyModuleDef_HEAD_INIT,
-            "testmod",
-            nullptr,
-            0,
-            no_methods,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr
-    };
-
-    return PyModule_Create(&def);
-}
 
 int main()
 {
 
     {
-        PyImport_AppendInittab("testmod", &init_testmod);
+        PyImport_AppendInittab("testmod", []() {
+            auto module = new TestMod();
+            return module->module().ptr();
+        });
         Py_Initialize();
 
         run_python_string("import testmod");
@@ -86,15 +99,15 @@ int main()
 
         auto testmod = Get_PyModule("testmod");
 
-        assert(testmod);
+        assert(!testmod.isNull());
 
-        PyObject * clss = Get_PyClass(testmod, "testmod", "TestArithmeticScript");
+        auto clss = Get_PyClass(testmod, "testmod", "TestArithmeticScript");
 
-        assert(clss != 0);
+        assert(!clss.isNull());
 
-        PyObject * instance = PyEval_CallFunction(clss,"()");
+        auto instance = Py::Callable(clss).apply();
 
-        assert(instance != 0);
+        assert(!instance.isNull());
 
         PythonArithmeticScript pas(instance);
 

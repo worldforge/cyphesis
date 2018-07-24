@@ -68,7 +68,7 @@
 #include "stubs/common/stubLink.h"
 #include "stubs/common/stubTypeNode.h"
 #include "stubs/common/stubCustom.h"
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 #include "stubs/modules/stubWorldTime.h"
 #include "stubs/modules/stubDateTime.h"
 #include "stubs/rulesets/stubScript.h"
@@ -156,6 +156,7 @@ Charactertest::Charactertest()
 
 void Charactertest::setup()
 {
+    TestWorld::extension.messageFn = &Charactertest::BaseWorld_message_called;
     m_character = new Character("1", 1);
     m_type = new TypeNode("character");
     m_character->setType(m_type);
@@ -371,16 +372,6 @@ int main(int argc, char ** argv)
 
 // stubs
 
-void TestWorld::message(const Operation & op, LocatedEntity & ent)
-{
-    Charactertest::BaseWorld_message_called(op, ent);
-}
-
-LocatedEntity * TestWorld::addNewEntity(const std::string &,
-                                 const Atlas::Objects::Entity::RootEntity &)
-{
-    return 0;
-}
 
 
 ExternalMind::ExternalMind(LocatedEntity & e) : Router(e.getId(), e.getIntId()),
@@ -422,10 +413,12 @@ void Entity::sendWorld(const Operation & op)
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubPedestrian.h"
 #include "stubs/rulesets/stubMovement.h"
+#include "stubs/rulesets/stubUsagesProperty.h"
+#include "stubs/rulesets/entityfilter/stubFilter.h"
 
 BaseWorld * BaseWorld::m_instance = 0;
 
-BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld()
 {
     m_instance = this;
 }
@@ -433,10 +426,6 @@ BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
 BaseWorld::~BaseWorld()
 {
     m_instance = 0;
-}
-
-LocatedEntity& BaseWorld::getDefaultLocation() {
-    return m_gameWorld;
 }
 
 LocatedEntity * BaseWorld::getEntity(const std::string & id) const

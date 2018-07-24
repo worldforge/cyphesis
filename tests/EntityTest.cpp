@@ -42,7 +42,7 @@
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubCustom.h"
 #include "stubs/common/stubTypeNode.h"
-#include "stubs/modules/stubLocation.h"
+#include "stubs/rulesets/stubLocation.h"
 
 #include "stubs/rulesets/stubContainsProperty.h"
 #include "stubs/rulesets/stubDomain.h"
@@ -281,15 +281,7 @@ int main()
 
 // stubs
 
-void TestWorld::message(const Operation & op, LocatedEntity & ent)
-{
-}
 
-LocatedEntity * TestWorld::addNewEntity(const std::string &,
-                                 const Atlas::Objects::Entity::RootEntity &)
-{
-    return 0;
-}
 
 
 void addToEntity(const Point3D & p, std::vector<double> & vd)
@@ -302,7 +294,7 @@ void addToEntity(const Point3D & p, std::vector<double> & vd)
 
 BaseWorld * BaseWorld::m_instance = 0;
 
-BaseWorld::BaseWorld(LocatedEntity & gw) : m_gameWorld(gw)
+BaseWorld::BaseWorld()
 {
     m_instance = this;
 }
