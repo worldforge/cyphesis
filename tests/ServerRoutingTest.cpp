@@ -27,7 +27,7 @@
 
 #include "server/Account.h"
 
-#include "common/BaseWorld.h"
+#include "rulesets/BaseWorld.h"
 #include "common/id.h"
 #include "common/log.h"
 #include "DatabaseNull.h"
@@ -427,18 +427,27 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 
-BaseWorld::BaseWorld()
+#ifndef STUB_BaseWorld_getEntity
+#define STUB_BaseWorld_getEntity
+LocatedEntity* BaseWorld::getEntity(const std::string & id) const
 {
+    return getEntity(integerId(id));
 }
 
-BaseWorld::~BaseWorld()
+LocatedEntity* BaseWorld::getEntity(long id) const
 {
+    auto I = m_eobjects.find(id);
+    if (I != m_eobjects.end()) {
+        assert(I->second);
+        return I->second;
+    } else {
+        return nullptr;
+    }
 }
+#endif //STUB_BaseWorld_getEntity
 
-double BaseWorld::getTime() const
-{
-    return .0;
-}
+#include "stubs/rulesets/stubBaseWorld.h"
+
 
 static long idGenerator = 0;
 

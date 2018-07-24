@@ -17,7 +17,7 @@
 
 
 #include "SuspendedProperty.h"
-#include "common/BaseWorld.h"
+#include "BaseWorld.h"
 #include "common/custom.h"
 #include "Entity.h"
 

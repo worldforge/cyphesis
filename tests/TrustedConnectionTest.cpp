@@ -301,7 +301,7 @@ void Link::disconnect()
 #include "stubs/rulesets/stubLocation.h"
 #include "common/Property_impl.h"
 #include "stubs/common/stubProperty.h"
-#include "stubs/common/stubBaseWorld.h"
+#include "stubs/rulesets/stubBaseWorld.h"
 
 
 #ifndef STUB_Inheritance_getClass

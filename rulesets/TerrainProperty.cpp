@@ -20,7 +20,7 @@
 #include "LocatedEntity.h"
 #include "Domain.h"
 
-#include "common/BaseWorld.h"
+#include "BaseWorld.h"
 #include "common/debug.h"
 #include "common/custom.h"
 #include "common/TypeNode.h"

@@ -135,7 +135,7 @@ int main()
 
 #include "rulesets/Domain.h"
 
-#include "common/BaseWorld.h"
+#include "rulesets/BaseWorld.h"
 #include "common/const.h"
 #include "common/log.h"
 
@@ -143,7 +143,7 @@ int main()
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubDomain.h"
 #include "stubs/common/stubRouter.h"
-#include "stubs/common/stubBaseWorld.h"
+#include "stubs/rulesets/stubBaseWorld.h"
 #include "stubs/rulesets/stubLocation.h"
 #include "stubs/rulesets/stubPropelProperty.h"
 #include "stubs/rulesets/stubDomainProperty.h"

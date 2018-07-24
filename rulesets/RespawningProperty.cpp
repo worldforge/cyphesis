@@ -23,7 +23,7 @@
 #include "LocatedEntity.h"
 #include "Character.h"
 #include "ExternalMind.h"
-#include "common/BaseWorld.h"
+#include "BaseWorld.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Entity.h>

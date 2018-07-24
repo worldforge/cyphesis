@@ -1755,27 +1755,8 @@ TypeNode::~TypeNode()
 {
 }
 
-BaseWorld * BaseWorld::m_instance = 0;
+#include "stubs/rulesets/stubBaseWorld.h"
 
-BaseWorld::BaseWorld()
-{
-    m_instance = this;
-}
-
-BaseWorld::~BaseWorld()
-{
-    m_instance = 0;
-}
-
-LocatedEntity * BaseWorld::getEntity(const std::string & id) const
-{
-    return 0;
-}
-
-LocatedEntity * BaseWorld::getEntity(long id) const
-{
-    return 0;
-}
 
 Router::Router(const std::string & id, long intId) : m_id(id),
                                                              m_intId(intId)

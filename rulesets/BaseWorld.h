@@ -16,10 +16,11 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
-#ifndef COMMON_BASE_WORLD_H
-#define COMMON_BASE_WORLD_H
+#ifndef RULESETS_BASE_WORLD_H
+#define RULESETS_BASE_WORLD_H
 
-#include "globals.h"
+#include "common/globals.h"
+#include "common/Singleton.h"
 
 #include "modules/Ref.h"
 
@@ -43,11 +44,7 @@ typedef std::map<long, LocatedEntity *> EntityDict;
 /// This base class provides the common features required by cyphesis
 /// for the object which encapsulates the game world. Other classes
 /// inherit from this provide the core game world system.
-class BaseWorld : private boost::noncopyable {
-  private:
-
-    /// \brief Singleton instance pointer for the World manager object.
-    static BaseWorld * m_instance;
+class BaseWorld : public Singleton<BaseWorld> {
 
   protected:
     /// The system time when the server was started.
@@ -78,16 +75,7 @@ class BaseWorld : private boost::noncopyable {
 
   public:
 
-    virtual ~BaseWorld();
-
-    /// \brief Singleton accessor for the World manager object.
-    static BaseWorld & instance() {
-        return *m_instance;
-    }
-
-    static bool hasInstance() {
-        return m_instance != nullptr;
-    }
+    ~BaseWorld() override = default;
 
     LocatedEntity * getEntity(const std::string & id) const;
 
@@ -217,4 +205,4 @@ class BaseWorld : private boost::noncopyable {
     sigc::signal<void, Atlas::Objects::Operation::RootOperation> Dispatching;
 };
 
-#endif // COMMON_BASE_WORLD_H
+#endif // RULESETS_BASE_WORLD_H

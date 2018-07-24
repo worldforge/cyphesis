@@ -31,7 +31,7 @@
 
 #include "common/OperationRouter.h"
 #include "common/PropertyFactory_impl.h"
-#include "common/BaseWorld.h"
+#include "rulesets/BaseWorld.h"
 
 #include "stubs/rulesets/stubLocation.h"
 
@@ -46,10 +46,11 @@ using Atlas::Objects::Operation::Move;
 class TerrainModPropertyintegration : public Cyphesis::TestBase
 {
   private:
-    Entity * m_world;
+    Entity * m_rootEntity;
     Entity * m_entity;
     PropertyBase * m_property;
     PropertyBase * m_terrainProperty;
+    std::unique_ptr<TestWorld> m_world;
   public:
     TerrainModPropertyintegration();
 
@@ -68,23 +69,24 @@ TerrainModPropertyintegration::TerrainModPropertyintegration()
 
 void TerrainModPropertyintegration::setup()
 {
-    m_world = new Entity("0", 0);
+    m_rootEntity = new Entity("0", 0);
 
-    new TestWorld(*m_world);
+    m_world.reset();
+    m_world.reset(new TestWorld(*m_rootEntity));
 
     m_entity = new Entity("1", 1);
     m_entity->m_location.m_pos = Point3D(5.f, 5.f, 5.f);
-    m_entity->m_location.m_loc = m_world;
-    m_world->incRef();
+    m_entity->m_location.m_loc = m_rootEntity;
+    m_rootEntity->incRef();
     ASSERT_TRUE(m_entity->m_location.isValid());
 
     PropertyFactory<TerrainModProperty> terrainmod_property_factory;
 
     m_terrainProperty = new TerrainProperty;
-    m_terrainProperty->install(m_world, "terrain");
-    m_world->setProperty("terrain", m_terrainProperty);
-    m_terrainProperty->apply(m_world);
-    m_world->propertyApplied("terrain", *m_terrainProperty);
+    m_terrainProperty->install(m_rootEntity, "terrain");
+    m_rootEntity->setProperty("terrain", m_terrainProperty);
+    m_terrainProperty->apply(m_rootEntity);
+    m_rootEntity->propertyApplied("terrain", *m_terrainProperty);
 
     m_property = terrainmod_property_factory.newProperty();
     m_property->install(m_entity, "terrainmod");
@@ -96,7 +98,7 @@ void TerrainModPropertyintegration::setup()
 void TerrainModPropertyintegration::teardown()
 {
     m_entity->decRef();
-    m_world->decRef();
+    m_rootEntity->decRef();
 }
 
 void TerrainModPropertyintegration::test_move_handler()
@@ -134,7 +136,7 @@ int main()
 #include "rulesets/Domain.h"
 #include "rulesets/Script.h"
 
-#include "common/BaseWorld.h"
+#include "rulesets/BaseWorld.h"
 #include "common/id.h"
 #include "common/log.h"
 #include "common/PropertyManager.h"
@@ -173,42 +175,26 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 
-BaseWorld * BaseWorld::m_instance = 0;
-
-BaseWorld::BaseWorld()
+#ifndef STUB_BaseWorld_getEntity
+#define STUB_BaseWorld_getEntity
+LocatedEntity* BaseWorld::getEntity(const std::string & id) const
 {
-    m_instance = this;
+    return getEntity(integerId(id));
 }
 
-BaseWorld::~BaseWorld()
+LocatedEntity* BaseWorld::getEntity(long id) const
 {
-    m_instance = 0;
-}
-
-LocatedEntity * BaseWorld::getEntity(const std::string & id) const
-{
-    long intId = integerId(id);
-
-    EntityDict::const_iterator I = m_eobjects.find(intId);
+    auto I = m_eobjects.find(id);
     if (I != m_eobjects.end()) {
-        assert(I->second != 0);
+        assert(I->second);
         return I->second;
     } else {
-        return 0;
+        return nullptr;
     }
 }
+#endif //STUB_BaseWorld_getEntity
 
-LocatedEntity * BaseWorld::getEntity(long id) const
-{
-    EntityDict::const_iterator I = m_eobjects.find(id);
-    if (I != m_eobjects.end()) {
-        assert(I->second != 0);
-        return I->second;
-    } else {
-        return 0;
-    }
-}
-
+#include "stubs/rulesets/stubBaseWorld.h"
 #include "stubs/rulesets/stubScript.h"
 
 

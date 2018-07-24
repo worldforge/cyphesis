@@ -23,7 +23,7 @@
 #define DEBUG
 #endif
 
-#include "common/BaseWorld.h"
+#include "rulesets/BaseWorld.h"
 #include "common/log.h"
 
 #include <Atlas/Objects/RootOperation.h>

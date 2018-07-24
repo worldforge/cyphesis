@@ -59,7 +59,9 @@ class ConnectionCharacterintegration : public Cyphesis::TestBase
     Connection * m_connection;
     Character * m_character;
     TypeNode * m_characterType;
-  public:
+    std::unique_ptr<TestWorld> m_world;
+
+    public:
     ConnectionCharacterintegration();
 
     void setup();
@@ -117,11 +119,12 @@ void ConnectionCharacterintegration::setup()
 
     Entity * gw = new Entity(compose("%1", m_id_counter),
                              m_id_counter++);
-    auto testWorld = new TestWorld(*gw);
+    m_world.reset();
+    m_world.reset(new TestWorld(*gw));
     TestWorld::extension.messageFn = [](const Operation & op, LocatedEntity & ent) {
         ConnectionCharacterintegration::BaseWorld_message_called(op, ent);
     };
-    m_server = new ServerRouting(*testWorld,
+    m_server = new ServerRouting(*m_world,
                                  "dd7452be-0137-4664-b90e-77dfb395ac39",
                                  "a2feda8e-62e9-4ba0-95c4-09f92eda6a78",
                                  compose("%1", m_id_counter), m_id_counter++,
@@ -712,7 +715,7 @@ TypeNode::~TypeNode()
 {
 }
 
-#include "stubs/common/stubBaseWorld.h"
+#include "stubs/rulesets/stubBaseWorld.h"
 
 #ifndef STUB_Inheritance_getClass
 #define STUB_Inheritance_getClass

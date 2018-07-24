@@ -688,18 +688,7 @@ StatisticsProperty * StatisticsProperty::copy() const
 #include "stubs/rulesets/stubTransientProperty.h"
 #include "stubs/rulesets/stubLocation.h"
 
-
-BaseWorld * BaseWorld::m_instance = 0;
-
-BaseWorld::~BaseWorld()
-{
-    m_instance = 0;
-}
-
-LocatedEntity * BaseWorld::getEntity(const std::string & id) const
-{
-    return 0;
-}
+#include "stubs/rulesets/stubBaseWorld.h"
 
 bool_config_register::bool_config_register(bool & var,
                                            const char * section,

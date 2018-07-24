@@ -38,7 +38,7 @@
 #include "common/Unseen.h"
 #include "common/TypeNode.h"
 #include "common/Update.h"
-#include "common/BaseWorld.h"
+#include "BaseWorld.h"
 #include "EntityProperty.h"
 #include "PerceptionSightProperty.h"
 #include "BBoxProperty.h"

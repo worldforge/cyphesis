@@ -20,7 +20,7 @@
 #endif
 
 #include "DefaultLocationProperty.h"
-#include "common/BaseWorld.h"
+#include "BaseWorld.h"
 
 
 DefaultLocationProperty * DefaultLocationProperty::copy() const

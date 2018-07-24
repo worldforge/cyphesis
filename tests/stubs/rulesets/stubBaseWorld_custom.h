@@ -1,13 +1,12 @@
 //Add custom implementations of stubbed functions here; this file won't be rewritten when re-generating stubs.
 #include "rulesets/Task.h"
-BaseWorld *BaseWorld::m_instance = 0;
+template<> BaseWorld* Singleton<BaseWorld>::ms_Singleton = nullptr;
 
 #ifndef STUB_BaseWorld_BaseWorld
 #define STUB_BaseWorld_BaseWorld
 
 BaseWorld::BaseWorld()
-        : m_defaultLocation(nullptr), m_limboLocation(nullptr) {
-    m_instance = this;
+    : m_defaultLocation(nullptr), m_limboLocation(nullptr) {
 }
 
 #endif //STUB_BaseWorld_BaseWorld

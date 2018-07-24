@@ -167,7 +167,7 @@ void Rulesetintegration::test_sequence()
 
         // Check that creating an entity of a type we know we have not yet
         // installed results in a null pointer.
-        assert(test_eb->newEntity("1", 1, "custom_type", attributes, *m_test_world) == 0);
+        assert(!test_eb->newEntity("1", 1, "custom_type", attributes, *m_test_world));
 
         // Set up a type description for a new type, and install it.
         {
@@ -240,7 +240,7 @@ void Rulesetintegration::test_sequence()
 
         // Check that creating an entity of a type we know we have not yet
         // installed results in a null pointer.
-        assert(test_eb->newEntity("1", 1, "custom_inherited_type", attributes, *m_test_world) == 0);
+        assert(!test_eb->newEntity("1", 1, "custom_inherited_type", attributes, *m_test_world));
 
         // Set up a type description for a second new type which inherits
         // from the first, and install it.

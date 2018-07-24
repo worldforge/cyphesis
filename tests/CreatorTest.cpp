@@ -47,7 +47,7 @@
 #include "stubs/rulesets/stubLocation.h"
 
 #include "stubs/common/stubRouter.h"
-#include "stubs/common/stubBaseWorld.h"
+#include "stubs/rulesets/stubBaseWorld.h"
 #include "stubs/common/stubProperty.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/common/stubPropertyManager.h"

@@ -30,9 +30,10 @@
 #define _GLIBCXX_USE_NANOSLEEP 1
 
 #include <sys/prctl.h>
-#include <common/AssetsManager.h>
-#include <common/FileSystemObserver.h>
-#include <common/Think.h>
+#include "common/AssetsManager.h"
+#include "common/FileSystemObserver.h"
+#include "common/Think.h"
+#include "common/globals.h"
 
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;

@@ -20,7 +20,7 @@
 
 #include "BaseMind.h"
 
-#include "common/BaseWorld.h"
+#include "BaseWorld.h"
 #include "common/debug.h"
 
 #include "common/Setup.h"

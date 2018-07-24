@@ -33,7 +33,7 @@
 
 #include <iostream>
 #include <unordered_set>
-#include <common/BaseWorld.h>
+#include <rulesets/BaseWorld.h>
 
 static const bool debug_flag = true;
 

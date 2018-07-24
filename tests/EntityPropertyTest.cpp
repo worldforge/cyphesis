@@ -219,10 +219,10 @@ int main()
 
 // stubs
 
-#include "common/BaseWorld.h"
+#include "rulesets/BaseWorld.h"
 
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"
-#include "stubs/common/stubBaseWorld.h"
+#include "stubs/rulesets/stubBaseWorld.h"
 #include "stubs/rulesets/stubLocation.h"

@@ -21,7 +21,7 @@
 #include "rulesets/ArithmeticScript.h"
 
 #include "common/log.h"
-#include "common/BaseWorld.h"
+#include "BaseWorld.h"
 
 static const bool debug_flag = false;
 

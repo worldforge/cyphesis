@@ -20,7 +20,7 @@
 
 #include "QuaternionProperty.h"
 
-#include "common/BaseWorld.h"
+#include "BaseWorld.h"
 
 #include <Atlas/Objects/Entity.h>
 #include <Atlas/Objects/Operation.h>

@@ -21,7 +21,7 @@
 #include "Domain.h"
 #include "LocatedEntity.h"
 
-#include "common/BaseWorld.h"
+#include "BaseWorld.h"
 #include "common/const.h"
 #include "common/debug.h"
 

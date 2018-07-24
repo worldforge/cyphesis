@@ -27,7 +27,7 @@
 #include "rulesets/LocatedEntity.h"
 #include "rulesets/Character.h"
 
-#include "common/BaseWorld.h"
+#include "rulesets/BaseWorld.h"
 #include "common/id.h"
 #include "common/debug.h"
 #include "common/custom.h"

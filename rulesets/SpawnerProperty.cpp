@@ -25,7 +25,7 @@
 #include "common/Tick.h"
 #include "common/TypeNode.h"
 #include "common/const.h"
-#include "common/BaseWorld.h"
+#include "BaseWorld.h"
 #include "common/Inheritance.h"
 #include "common/debug.h"
 

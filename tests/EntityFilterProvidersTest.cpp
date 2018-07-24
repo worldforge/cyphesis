@@ -17,7 +17,7 @@
 #include "rulesets/OutfitProperty.h"
 #include "rulesets/BBoxProperty.h"
 #include "common/Property.h"
-#include "common/BaseWorld.h"
+#include "rulesets/BaseWorld.h"
 #include "common/log.h"
 #include "common/Inheritance.h"
 
@@ -550,7 +550,7 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 
-#include "stubs/common/stubBaseWorld.h"
+#include "stubs/rulesets/stubBaseWorld.h"
 
 void Location::addToMessage(Atlas::Message::MapType & omap) const
 {

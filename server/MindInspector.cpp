@@ -23,7 +23,7 @@
 
 #include "rulesets/World.h"
 
-#include "common/BaseWorld.h"
+#include "rulesets/BaseWorld.h"
 #include "common/custom.h"
 #include "common/Commune.h"
 #include "common/Think.h"

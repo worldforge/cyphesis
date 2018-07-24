@@ -447,43 +447,26 @@ long newId(std::string & id)
     return new_id;
 }
 
-BaseWorld::BaseWorld()
+#ifndef STUB_BaseWorld_getEntity
+#define STUB_BaseWorld_getEntity
+LocatedEntity* BaseWorld::getEntity(const std::string & id) const
 {
+    return getEntity(integerId(id));
 }
 
-BaseWorld::~BaseWorld()
+LocatedEntity* BaseWorld::getEntity(long id) const
 {
-}
-
-LocatedEntity * BaseWorld::getEntity(const std::string & id) const
-{
-    long intId = integerId(id);
-
-    EntityDict::const_iterator I = m_eobjects.find(intId);
+    auto I = m_eobjects.find(id);
     if (I != m_eobjects.end()) {
-        assert(I->second != 0);
+        assert(I->second);
         return I->second;
     } else {
-        return 0;
+        return nullptr;
     }
 }
+#endif //STUB_BaseWorld_getEntity
 
-LocatedEntity * BaseWorld::getEntity(long id) const
-{
-    EntityDict::const_iterator I = m_eobjects.find(id);
-    if (I != m_eobjects.end()) {
-        assert(I->second != 0);
-        return I->second;
-    } else {
-        return 0;
-    }
-}
-
-
-double BaseWorld::getTime() const
-{
-    return 0;
-}
+#include "stubs/rulesets/stubBaseWorld.h"
 
 
 

@@ -23,7 +23,7 @@
 
 #include "Script.h"
 
-#include "common/BaseWorld.h"
+#include "BaseWorld.h"
 #include "common/TypeNode.h"
 
 #include <Atlas/Objects/Operation.h>

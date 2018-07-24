@@ -20,7 +20,7 @@
 
 #include "rulesets/LocatedEntity.h"
 
-#include "common/BaseWorld.h"
+#include "BaseWorld.h"
 #include "common/Link.h"
 
 #include <Atlas/Objects/SmartPtr.h>

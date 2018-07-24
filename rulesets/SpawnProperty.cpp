@@ -20,7 +20,7 @@
 
 #include "rulesets/LocatedEntity.h"
 
-#include "common/BaseWorld.h"
+#include "BaseWorld.h"
 
 using Atlas::Message::MapType;
 

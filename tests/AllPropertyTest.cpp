@@ -36,7 +36,7 @@
 
 #include "rulesets/ArithmeticFactory.h"
 
-#include "common/BaseWorld.h"
+#include "rulesets/BaseWorld.h"
 #include "common/log.h"
 #include "common/Property_impl.h"
 #include "common/TypeNode.h"
@@ -165,27 +165,7 @@ int main()
 
 // stubs
 
-BaseWorld * BaseWorld::m_instance = 0;
-
-BaseWorld::BaseWorld()
-{
-    m_instance = this;
-}
-
-BaseWorld::~BaseWorld()
-{
-    m_instance = 0;
-}
-
-LocatedEntity * BaseWorld::getEntity(const std::string & id) const
-{
-    return 0;
-}
-
-LocatedEntity * BaseWorld::getEntity(long id) const
-{
-    return 0;
-}
+#include "stubs/rulesets/stubBaseWorld.h"
 
 TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
 {

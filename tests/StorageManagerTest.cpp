@@ -206,7 +206,7 @@ int main()
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubCharacter.h"
 #include "stubs/rulesets/stubThing.h"
-#include "stubs/common/stubBaseWorld.h"
+#include "stubs/rulesets/stubBaseWorld.h"
 
 #include <Atlas/Objects/RootOperation.h>
 #include <Atlas/Objects/SmartPtr.h>

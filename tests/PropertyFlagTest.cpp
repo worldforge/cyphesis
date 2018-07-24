@@ -113,7 +113,7 @@ using Atlas::Objects::Entity::RootEntity;
 
 #include "stubs/common/stubRouter.h"
 #include "stubs/rulesets/stubLocation.h"
-#include "stubs/common/stubBaseWorld.h"
+#include "stubs/rulesets/stubBaseWorld.h"
 #include "stubs/common/stubPropertyManager.h"
 #include "stubs/common/stubTypeNode.h"
 

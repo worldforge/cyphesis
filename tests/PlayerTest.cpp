@@ -474,7 +474,7 @@ void Router::error(const Operation & op,
 {
     res.push_back(Atlas::Objects::Operation::Error());
 }
-#include "stubs/common/stubBaseWorld.h"
+#include "stubs/rulesets/stubBaseWorld.h"
 #include "stubs/rulesets/stubLocation.h"
 
 long newId(std::string & id)

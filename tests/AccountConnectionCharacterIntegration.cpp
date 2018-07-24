@@ -64,6 +64,7 @@ class AccountConnectionCharacterintegration : public Cyphesis::TestBase
     Account * m_account;
     Character * m_character;
     TypeNode * m_characterType;
+    std::unique_ptr<TestWorld> m_world;
   public:
     AccountConnectionCharacterintegration();
 
@@ -111,9 +112,11 @@ void AccountConnectionCharacterintegration::setup()
 
     m_Link_send_sent = 0;
 
-    Entity * gw = new Entity(compose("%1", m_id_counter),
+    Ref<Entity> gw = new Entity(compose("%1", m_id_counter),
                              m_id_counter++);
-    m_server = new ServerRouting(*new TestWorld(*gw),
+    m_world.reset();
+    m_world.reset(new TestWorld(*gw));
+    m_server = new ServerRouting(*m_world,
                                  "989cfbbe-67e3-4571-858c-488b91e06e7d",
                                  "10658e5e-373b-4565-b34e-954b9223961e",
                                  compose("%1", m_id_counter), m_id_counter++,
@@ -710,7 +713,7 @@ TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
 TypeNode::~TypeNode()
 {
 }
-#include "stubs/common/stubBaseWorld.h"
+#include "stubs/rulesets/stubBaseWorld.h"
 #include "stubs/rulesets/stubUsagesProperty.h"
 #include "stubs/rulesets/entityfilter/stubFilter.h"
 

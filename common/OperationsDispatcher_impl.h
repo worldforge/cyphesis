@@ -21,7 +21,6 @@
 
 #include "OperationsDispatcher.h"
 #include "rulesets/LocatedEntity.h"
-#include "BaseWorld.h"
 #include "const.h"
 #include "debug.h"
 #include "Monitors.h"

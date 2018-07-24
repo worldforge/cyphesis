@@ -23,7 +23,7 @@
 #include "TeleportState.h"
 #include "rulesets/ExternalMind.h"
 
-#include "common/BaseWorld.h"
+#include "rulesets/BaseWorld.h"
 #include "common/CommSocket.h"
 #include "common/log.h"
 #include "common/compose.hpp"

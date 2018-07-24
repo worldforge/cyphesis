@@ -61,6 +61,7 @@ class AccountServerLobbyintegration : public Cyphesis::TestBase
     ServerRouting * m_server;
     TestAccount * m_account;
     long m_id_counter;
+    std::unique_ptr<TestWorld> m_world;
   public:
     AccountServerLobbyintegration();
 
@@ -102,9 +103,11 @@ void AccountServerLobbyintegration::setup()
 {
     m_persistence = new Persistence(m_database);
 
-    LocatedEntity * gw = new Entity(compose("%1", m_id_counter),
+    Ref<LocatedEntity> gw = new Entity(compose("%1", m_id_counter),
                                     m_id_counter++);
-    m_server = new ServerRouting(*new TestWorld(*gw),
+    m_world.reset();
+    m_world.reset(new TestWorld(*gw));
+    m_server = new ServerRouting(*m_world,
                                  "59331d74-bb5d-4a54-b1c2-860999a4e344",
                                  "93e1f67f-63c5-4b07-af4c-574b2273563d",
                                  compose("%1", m_id_counter), m_id_counter++,
@@ -353,7 +356,7 @@ void Router::error(const Operation & op,
 {
 }
 
-#include "stubs/common/stubBaseWorld.h"
+#include "stubs/rulesets/stubBaseWorld.h"
 
 Location::Location() : m_loc(0)
 {

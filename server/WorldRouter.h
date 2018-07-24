@@ -19,7 +19,7 @@
 #ifndef SERVER_WORLD_ROUTER_H
 #define SERVER_WORLD_ROUTER_H
 
-#include "common/BaseWorld.h"
+#include "rulesets/BaseWorld.h"
 #include "common/OperationsDispatcher.h"
 
 #include <list>

@@ -1824,7 +1824,7 @@ void Link::disconnect()
 {
 }
 
-#include "stubs/common/stubBaseWorld.h"
+#include "stubs/rulesets/stubBaseWorld.h"
 
 Router::Router(const std::string & id, long intId) : m_id(id),
                                                              m_intId(intId)

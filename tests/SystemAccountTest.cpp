@@ -419,7 +419,7 @@ LocatedEntity *PossessionAuthenticator::authenticatePossession(const std::string
 #include "stubs/rulesets/stubThing.h"
 #include "stubs/rulesets/stubCharacter.h"
 #include "stubs/common/stubLink.h"
-#include "stubs/common/stubBaseWorld.h"
+#include "stubs/rulesets/stubBaseWorld.h"
 #include "stubs/common/stubRouter.h"
 
 

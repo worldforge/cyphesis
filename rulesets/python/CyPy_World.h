@@ -19,7 +19,7 @@
 #ifndef CYPHESIS_CYPY_WORLD_H
 #define CYPHESIS_CYPY_WORLD_H
 
-#include <common/BaseWorld.h>
+#include "../BaseWorld.h"
 #include "WrapperBase.h"
 
 class CyPy_World : public WrapperBase<BaseWorld*, CyPy_World>

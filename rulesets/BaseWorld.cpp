@@ -18,38 +18,24 @@
 
 #include "BaseWorld.h"
 
-#include "id.h"
-#include "log.h"
-#include "SystemTime.h"
+#include "common/id.h"
+#include "common/log.h"
+#include "common/SystemTime.h"
 
 #include <cassert>
 
-BaseWorld * BaseWorld::m_instance = 0;
+template<> BaseWorld* Singleton<BaseWorld>::ms_Singleton = nullptr;
 
 /// \brief BaseWorld constructor.
 ///
 /// Protected as BaseWorld is a base class.
-/// This constructor registers the instance created as the singleton, and
-/// in debug mode ensures that an instance has not already been created.
-/// @param gw the top level in-game entity in the world.
 BaseWorld::BaseWorld() :
     m_isSuspended(false),
     m_defaultLocation(nullptr),
     m_limboLocation(nullptr)
 {
-    assert(m_instance == nullptr);
-    m_instance = this;
 }
 
-/// \brief BaseWorld destructor.
-///
-/// Removes this instance from the singleton pointer. In debug mode ensures
-/// that this instance is correctly installed as the singleton.
-BaseWorld::~BaseWorld()
-{
-    assert(m_instance == this);
-    m_instance = nullptr;
-}
 
 /// \brief Get an in-game Entity by its string ID.
 ///

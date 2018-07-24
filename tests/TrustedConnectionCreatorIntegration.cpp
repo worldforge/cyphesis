@@ -60,7 +60,9 @@ class TrustedConnectionCreatorintegration : public Cyphesis::TestBase
     Connection * m_connection;
     Creator * m_creator;
     TypeNode * m_creatorType;
-  public:
+    std::unique_ptr<TestWorld> m_world;
+
+    public:
     TrustedConnectionCreatorintegration();
 
     void setup();
@@ -128,9 +130,11 @@ void TrustedConnectionCreatorintegration::setup()
     m_BaseWorld_message_called_from = 0;
     m_Entity_callOperation_called = 0;
 
-    Entity * gw = new Entity(compose("%1", m_id_counter),
+    Ref<Entity> gw = new Entity(compose("%1", m_id_counter),
                              m_id_counter++);
-    m_server = new ServerRouting(*new TestWorld(*gw),
+    m_world.reset();
+    m_world.reset(new TestWorld(*gw));
+    m_server = new ServerRouting(*m_world,
                                  "dd7452be-0137-4664-b90e-77dfb395ac39",
                                  "a2feda8e-62e9-4ba0-95c4-09f92eda6a78",
                                  compose("%1", m_id_counter), m_id_counter++,
@@ -894,47 +898,26 @@ TypeNode::~TypeNode()
 {
 }
 
-BaseWorld * BaseWorld::m_instance = 0;
-
-BaseWorld::BaseWorld()
+#ifndef STUB_BaseWorld_getEntity
+#define STUB_BaseWorld_getEntity
+LocatedEntity* BaseWorld::getEntity(const std::string & id) const
 {
-    m_instance = this;
+    return getEntity(integerId(id));
 }
 
-BaseWorld::~BaseWorld()
+LocatedEntity* BaseWorld::getEntity(long id) const
 {
-    m_instance = 0;
-}
-
-double BaseWorld::getTime() const
-{
-    return .0;
-}
-
-LocatedEntity * BaseWorld::getEntity(const std::string & id) const
-{
-    long intId = integerId(id);
-
-    EntityDict::const_iterator I = m_eobjects.find(intId);
+    auto I = m_eobjects.find(id);
     if (I != m_eobjects.end()) {
-        assert(I->second != 0);
+        assert(I->second);
         return I->second;
     } else {
-        return 0;
+        return nullptr;
     }
 }
+#endif //STUB_BaseWorld_getEntity
 
-LocatedEntity * BaseWorld::getEntity(long id) const
-{
-    EntityDict::const_iterator I = m_eobjects.find(id);
-    if (I != m_eobjects.end()) {
-        assert(I->second != 0);
-        return I->second;
-    } else {
-        return 0;
-    }
-}
-
+#include "stubs/rulesets/stubBaseWorld.h"
 
 #define STUB_Inheritance_getClass
 const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent)

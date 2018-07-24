@@ -23,7 +23,7 @@ add_library(common
     PropertyManager.cpp
     OperationRouter.cpp
     Router.cpp
-    BaseWorld.cpp
+    ../rulesets/BaseWorld.cpp
     AtlasFileLoader.cpp
     Monitors.cpp
     Variable.cpp

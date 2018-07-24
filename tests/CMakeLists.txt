@@ -76,7 +76,7 @@ wf_add_test(TickTest.cpp)
 wf_add_test(UnseenTest.cpp)
 wf_add_test(UpdateTest.cpp)
 wf_add_test(AtlasFileLoaderTest.cpp ${PROJECT_SOURCE_DIR}/common/AtlasFileLoader.cpp)
-wf_add_test(BaseWorldTest.cpp ${PROJECT_SOURCE_DIR}/common/BaseWorld.cpp)
+wf_add_test(BaseWorldTest.cpp ../rulesets/BaseWorld.cpp)
 wf_add_test(idTest.cpp ${PROJECT_SOURCE_DIR}/common/id.cpp)
 wf_add_test(StorageTest.cpp ${PROJECT_SOURCE_DIR}/common/Storage.cpp)
 wf_add_test(debugTest.cpp ${PROJECT_SOURCE_DIR}/common/debug.cpp)
@@ -365,7 +365,7 @@ wf_add_test(TerrainPropertyIntegration.cpp ${PROJECT_SOURCE_DIR}/rulesets/Terrai
         ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp
         ${PROJECT_SOURCE_DIR}/rulesets/Domain.cpp
         ${PROJECT_SOURCE_DIR}/rulesets/AtlasProperties.cpp
-        ${PROJECT_SOURCE_DIR}/common/BaseWorld.cpp
+    ../rulesets/BaseWorld.cpp
         ${PROJECT_SOURCE_DIR}/common/Property.cpp
         ${PROJECT_SOURCE_DIR}/common/PropertyManager.cpp
         ${PROJECT_SOURCE_DIR}/common/Router.cpp
@@ -574,7 +574,7 @@ wf_add_test(AccountIntegration.cpp ${PROJECT_SOURCE_DIR}/server/EntityBuilder.cp
         ${PROJECT_SOURCE_DIR}/modules/DateTime.cpp
     ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp
     ../rulesets/Location.cpp
-        ${PROJECT_SOURCE_DIR}/common/BaseWorld.cpp
+    ../rulesets/BaseWorld.cpp
         ${PROJECT_SOURCE_DIR}/common/const.cpp
         ${PROJECT_SOURCE_DIR}/common/id.cpp
         ${PROJECT_SOURCE_DIR}/common/Link.cpp
@@ -596,7 +596,7 @@ wf_add_test(AccountConnectionIntegration.cpp ${PROJECT_SOURCE_DIR}/server/Accoun
         ${PROJECT_SOURCE_DIR}/server/ServerAccount.cpp
         ${PROJECT_SOURCE_DIR}/server/ServerRouting.cpp
         ${PROJECT_SOURCE_DIR}/server/SystemAccount.cpp
-        ${PROJECT_SOURCE_DIR}/common/BaseWorld.cpp
+    ../rulesets/BaseWorld.cpp
         ${PROJECT_SOURCE_DIR}/common/Inheritance.cpp
         ${PROJECT_SOURCE_DIR}/common/Property.cpp
         ${PROJECT_SOURCE_DIR}/common/Router.cpp

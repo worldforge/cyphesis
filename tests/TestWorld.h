@@ -19,7 +19,7 @@
 #ifndef TESTS_TEST_WORLD_H
 #define TESTS_TEST_WORLD_H
 
-#include "common/BaseWorld.h"
+#include "rulesets/BaseWorld.h"
 
 #include "rulesets/LocatedEntity.h"
 #include "rulesets/Task.h"

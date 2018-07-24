@@ -29,7 +29,7 @@
 #include "Domain.h"
 #include "Task.h"
 
-#include "common/BaseWorld.h"
+#include "BaseWorld.h"
 #include "common/op_switch.h"
 #include "common/const.h"
 #include "common/custom.h"

@@ -29,7 +29,7 @@
 #include "rulesets/Domain.h"
 #include "rulesets/TerrainProperty.h"
 
-#include "common/BaseWorld.h"
+#include "rulesets/BaseWorld.h"
 
 #include <Atlas/Objects/RootOperation.h>
 #include <Atlas/Objects/SmartPtr.h>
@@ -84,7 +84,7 @@ int main()
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/rulesets/stubDomain.h"
-#include "stubs/common/stubBaseWorld.h"
+#include "stubs/rulesets/stubBaseWorld.h"
 #include "stubs/rulesets/stubLocation.h"
 
 

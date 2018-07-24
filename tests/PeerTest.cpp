@@ -31,7 +31,7 @@
 #include "server/CommPeer.h"
 #include "rulesets/ExternalMind.h"
 
-#include "common/BaseWorld.h"
+#include "rulesets/BaseWorld.h"
 #include "common/CommSocket.h"
 
 #include "rulesets/Character.h"
@@ -538,41 +538,26 @@ void Link::disconnect()
 #include "stubs/rulesets/stubLocation.h"
 
 
-BaseWorld * BaseWorld::m_instance = 0;
-
-BaseWorld::BaseWorld()
+#ifndef STUB_BaseWorld_getEntity
+#define STUB_BaseWorld_getEntity
+LocatedEntity* BaseWorld::getEntity(const std::string & id) const
 {
-    m_instance = this;
+    return getEntity(integerId(id));
 }
 
-BaseWorld::~BaseWorld()
+LocatedEntity* BaseWorld::getEntity(long id) const
 {
-    m_instance = 0;
-}
-
-LocatedEntity * BaseWorld::getEntity(const std::string & id) const
-{
-    long intId = integerId(id);
-
-    EntityDict::const_iterator I = m_eobjects.find(intId);
+    auto I = m_eobjects.find(id);
     if (I != m_eobjects.end()) {
-        assert(I->second != 0);
+        assert(I->second);
         return I->second;
     } else {
-        return 0;
+        return nullptr;
     }
 }
+#endif //STUB_BaseWorld_getEntity
 
-LocatedEntity * BaseWorld::getEntity(long id) const
-{
-    EntityDict::const_iterator I = m_eobjects.find(id);
-    if (I != m_eobjects.end()) {
-        assert(I->second != 0);
-        return I->second;
-    } else {
-        return 0;
-    }
-}
+#include "stubs/rulesets/stubBaseWorld.h"
 
 void log(LogLevel lvl, const std::string & msg)
 {

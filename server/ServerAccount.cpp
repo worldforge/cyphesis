@@ -24,7 +24,7 @@
 
 #include "rulesets/LocatedEntity.h"
 
-#include "common/BaseWorld.h"
+#include "rulesets/BaseWorld.h"
 #include "common/debug.h"
 
 #include <Atlas/Objects/SmartPtr.h>

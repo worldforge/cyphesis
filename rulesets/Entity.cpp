@@ -22,7 +22,7 @@
 #include "Domain.h"
 #include "DomainProperty.h"
 
-#include "common/BaseWorld.h"
+#include "BaseWorld.h"
 #include "common/debug.h"
 #include "common/op_switch.h"
 #include "common/TypeNode.h"

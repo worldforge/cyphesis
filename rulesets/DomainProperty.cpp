@@ -30,7 +30,7 @@
 #include "common/Tick.h"
 
 #include <Atlas/Objects/Anonymous.h>
-#include <common/BaseWorld.h>
+#include <rulesets/BaseWorld.h>
 
 PropertyInstanceState<Domain> DomainProperty::sInstanceState;
 

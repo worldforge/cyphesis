@@ -10,8 +10,16 @@
 #ifndef STUB_CyPy_Props_CyPy_Props
 //#define STUB_CyPy_Props_CyPy_Props
    CyPy_Props::CyPy_Props(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
-    : Py::PythonClass(self, args, kwds)
-    , m_value(nullptr)
+    : WrapperBase(self, args, kwds)
+  {
+    
+  }
+#endif //STUB_CyPy_Props_CyPy_Props
+
+#ifndef STUB_CyPy_Props_CyPy_Props
+//#define STUB_CyPy_Props_CyPy_Props
+   CyPy_Props::CyPy_Props(Py::PythonClassInstance* self, Ref<LocatedEntity> value)
+    : WrapperBase(self, value)
   {
     
   }

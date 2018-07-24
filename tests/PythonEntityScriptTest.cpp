@@ -34,7 +34,7 @@
 #include "rulesets/Script.h"
 
 #include "common/Tick.h"
-#include "common/BaseWorld.h"
+#include "rulesets/BaseWorld.h"
 
 #include <Atlas/Objects/Operation.h>
 

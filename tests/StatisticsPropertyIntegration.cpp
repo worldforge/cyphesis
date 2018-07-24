@@ -29,7 +29,7 @@
 #include "rulesets/Entity.h"
 #include "rulesets/StatisticsProperty.h"
 
-#include "common/BaseWorld.h"
+#include "rulesets/BaseWorld.h"
 #include "common/TypeNode.h"
 
 class TestArithmeticScript : public ArithmeticScript
@@ -201,27 +201,7 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 
-BaseWorld * BaseWorld::m_instance = 0;
-
-BaseWorld::BaseWorld()
-{
-    m_instance = this;
-}
-
-BaseWorld::~BaseWorld()
-{
-    m_instance = 0;
-}
-
-LocatedEntity * BaseWorld::getEntity(const std::string & id) const
-{
-    return 0;
-}
-
-LocatedEntity * BaseWorld::getEntity(long id) const
-{
-    return 0;
-}
+#include "stubs/rulesets/stubBaseWorld.h"
 
 #include "stubs/rulesets/stubScript.h"
 

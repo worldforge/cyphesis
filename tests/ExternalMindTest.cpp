@@ -29,7 +29,7 @@
 
 #include "rulesets/Entity.h"
 
-#include "common/BaseWorld.h"
+#include "rulesets/BaseWorld.h"
 
 #include <Atlas/Objects/Operation.h>
 
@@ -338,7 +338,7 @@ void Link::send(const Operation & op) const
 
 #include "stubs/common/stubLink.h"
 #include "stubs/common/stubRouter.h"
-#include "stubs/common/stubBaseWorld.h"
+#include "stubs/rulesets/stubBaseWorld.h"
 
 void log(LogLevel lvl, const std::string & msg)
 {

@@ -546,7 +546,7 @@ int main()
 
 // Stubs
 
-#include "common/BaseWorld.h"
+#include "rulesets/BaseWorld.h"
 
 bool restricted_flag;
 
@@ -835,7 +835,7 @@ void Router::clientError(const Operation & op,
 #include "stubs/common/stubTypeNode.h"
 #include "stubs/rulesets/stubLocation.h"
 #include "stubs/common/stubProperty.h"
-#include "stubs/common/stubBaseWorld.h"
+#include "stubs/rulesets/stubBaseWorld.h"
 #include "stubs/server/stubExternalMindsManager.h"
 #include "stubs/server/stubExternalMindsConnection.h"
 

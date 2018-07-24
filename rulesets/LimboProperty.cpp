@@ -20,7 +20,7 @@
 #endif
 
 #include "LimboProperty.h"
-#include "common/BaseWorld.h"
+#include "BaseWorld.h"
 
 LimboProperty * LimboProperty::copy() const
 {

@@ -27,7 +27,7 @@
 #include "rulesets/Entity.h"
 #include "rulesets/SuspendedProperty.h"
 
-#include "common/BaseWorld.h"
+#include "rulesets/BaseWorld.h"
 #include "common/TypeNode.h"
 #include "common/Tick.h"
 #include "common/custom.h"
@@ -195,51 +195,38 @@ long integerId(const std::string & id)
     return intId;
 }
 
-BaseWorld * BaseWorld::m_instance = 0;
-
-BaseWorld::BaseWorld()
+#ifndef STUB_BaseWorld_getEntity
+#define STUB_BaseWorld_getEntity
+LocatedEntity* BaseWorld::getEntity(const std::string & id) const
 {
-    m_instance = this;
+    return getEntity(integerId(id));
 }
 
-BaseWorld::~BaseWorld()
+LocatedEntity* BaseWorld::getEntity(long id) const
 {
-    m_instance = 0;
-}
-
-LocatedEntity * BaseWorld::getEntity(const std::string & id) const
-{
-    long intId = integerId(id);
-
-    EntityDict::const_iterator I = m_eobjects.find(intId);
+    auto I = m_eobjects.find(id);
     if (I != m_eobjects.end()) {
-        assert(I->second != 0);
+        assert(I->second);
         return I->second;
     } else {
-        return 0;
+        return nullptr;
     }
 }
+#endif //STUB_BaseWorld_getEntity
 
-LocatedEntity * BaseWorld::getEntity(long id) const
-{
-    EntityDict::const_iterator I = m_eobjects.find(id);
-    if (I != m_eobjects.end()) {
-        assert(I->second != 0);
-        return I->second;
-    } else {
-        return 0;
-    }
-}
-
-double BaseWorld::getTime() const
-{
-    return 0.0;
-}
-
+#ifndef STUB_BaseWorld_setIsSuspended
+#define STUB_BaseWorld_setIsSuspended
 void BaseWorld::setIsSuspended(bool suspended)
 {
-	worldSetSuspendedCallback(suspended);
+    worldSetSuspendedCallback(suspended);
 }
+#endif //STUB_BaseWorld_setIsSuspended
+
+
+#include "stubs/rulesets/stubBaseWorld.h"
+
+
+
 
 void log(LogLevel lvl, const std::string & msg)
 {

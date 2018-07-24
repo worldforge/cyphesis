@@ -21,7 +21,7 @@
 #include "PropelProperty.h"
 #include "Domain.h"
 
-#include "common/BaseWorld.h"
+#include "BaseWorld.h"
 #include "common/debug.h"
 
 #include "common/Burn.h"
