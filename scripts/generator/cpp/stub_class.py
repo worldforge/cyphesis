@@ -75,9 +75,11 @@ def _GenerateMethods(output_lines, source, class_node):
 
     for node in class_node.body:
 
+        #Ignore all functions with all upper case letters, since these should be macros.
         if (isinstance(node, ast.Function)
             and not node.IsDefinition()
-            and not node.modifiers & deleted_or_defaulted):
+            and not node.modifiers & deleted_or_defaulted
+            and not node.name.isupper()):
             # Pick out all the elements we need from the original function.
             const = ''
             methodName = node.name
