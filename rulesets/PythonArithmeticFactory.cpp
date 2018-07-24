@@ -51,22 +51,25 @@ int PythonArithmeticFactory::setup()
 /// @param chr the Character that requires a new script
 ArithmeticScript * PythonArithmeticFactory::newScript(LocatedEntity * owner)
 {
+    if (!m_class) {
+        return nullptr;
+    }
     // Create the task, and use its script to add a script
-    if (m_class.isNull()) {
+    if (m_class->isNull()) {
         return nullptr;
     }
 
     // FIXME Pass in entity for initialisation of entity pointer in
     // EntityWrapper.
-    Py::Object  py_object;
+    Py::Object py_object;
 
-    if (owner == nullptr) {
-        py_object = m_class.apply();
-    } else {
-        py_object = m_class.apply(Py::Tuple(CyPy_LocatedEntity::wrap(owner)));
-    }
-    
-    if (py_object.isNull()) {
+    try {
+        if (owner == nullptr) {
+            py_object = m_class->apply();
+        } else {
+            py_object = m_class->apply(Py::Tuple(CyPy_LocatedEntity::wrap(owner)));
+        }
+    } catch (const Py::BaseException& ex) {
         if (PyErr_Occurred() == nullptr) {
             log(ERROR, "Could not create python stats instance");
         } else {
@@ -76,7 +79,6 @@ ArithmeticScript * PythonArithmeticFactory::newScript(LocatedEntity * owner)
     }
 
     ArithmeticScript * script = new PythonArithmeticScript(py_object);
-    assert(script != nullptr);
     // FIXME This is now part of the property, not the character.
     // chr.statistics().m_script = script;
 

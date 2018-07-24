@@ -25,10 +25,10 @@
 class BaseMind;
 class Entity;
 
-Py::Callable Get_PyClass(const Py::Module& module,
+Py::Object Get_PyClass(const Py::Module& module,
                        const std::string & package,
                        const std::string & type);
 Py::Module Get_PyModule(const std::string & package);
-Py::Callable Create_PyScript(struct _object *, struct _object *);
+Py::Object Create_PyScript(const Py::Object& wrapper, const Py::Callable& py_class);
 
 #endif // RULESETS_PYTHON_SCRIPT_UTILS_H

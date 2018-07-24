@@ -33,6 +33,7 @@
 
 #include <iostream>
 #include <memory>
+#include <utility>
 #include <rulesets/python/CyPy_Operation.h>
 #include <rulesets/python/CyPy_Oplist.h>
 #include <rulesets/python/CyPy_LocatedEntity.h>
@@ -40,8 +41,8 @@
 static const bool debug_flag = false;
 
 /// \brief PythonEntityScript constructor
-PythonEntityScript::PythonEntityScript(Py::Callable obj) :
-                    PythonWrapper(obj)
+PythonEntityScript::PythonEntityScript(Py::Object obj) :
+                    PythonWrapper(std::move(obj))
 {
 }
 

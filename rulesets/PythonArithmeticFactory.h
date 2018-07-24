@@ -26,7 +26,7 @@
 #include <string>
 
 /// \brief Factory class for for creating python arithmetic scripts
-class PythonArithmeticFactory : public ArithmeticKit, private PythonClass
+class PythonArithmeticFactory : private PythonClass, public ArithmeticKit
 {
     public:
         PythonArithmeticFactory(const std::string& package,

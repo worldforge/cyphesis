@@ -26,7 +26,7 @@
 /// \brief PythonArithmeticScript
 ///
 /// @param script Python instance object implementing the script
-PythonArithmeticScript::PythonArithmeticScript(Py::Callable script) :
+PythonArithmeticScript::PythonArithmeticScript(Py::Object script) :
     m_script(std::move(script))
 {
 }

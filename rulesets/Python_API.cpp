@@ -100,7 +100,7 @@ struct LogWriter : public WrapperBase<LogLevel, LogWriter>
 
     Py::Object write(const Py::Tuple& args)
     {
-        if (args.length() > 0 && args.front().isString()) {
+        if (args.length() > 0) {
             python_log(m_value, verifyString(args.front()));
         }
 
@@ -132,7 +132,7 @@ struct LogWriter : public WrapperBase<LogLevel, LogWriter>
 /// @param package the name of the module for error reporting
 /// @param type the name of the class or type
 /// @return new reference
-Py::Callable Get_PyClass(const Py::Module& module,
+Py::Object Get_PyClass(const Py::Module& module,
                        const std::string & package,
                        const std::string & type)
 {
@@ -148,7 +148,7 @@ Py::Callable Get_PyClass(const Py::Module& module,
                                    package, type));
         return Py::Null();
     }
-    return Py::Callable(py_class);
+    return py_class;
 }
 
 /// \brief Import a Python module
@@ -162,24 +162,24 @@ Py::Module Get_PyModule(const std::string & package)
     if (module == nullptr) {
         log(ERROR, String::compose("Missing python module \"%1\"", package));
         PyErr_Print();
+        return Py::Module(nullptr);
     }
     return Py::Module(module);
 }
 
 Py::Object Create_PyScript(const Py::Object& wrapper, const Py::Callable& py_class)
 {
-    auto ret = py_class.apply(Py::Tuple(wrapper));
-
-    //FIXME: try..catch?
-    if (ret.isNull()) {
+    try {
+        return py_class.apply(Py::TupleN(wrapper));
+    } catch (...) {
         if (PyErr_Occurred() == nullptr) {
             log(ERROR, "Could not create python instance");
         } else {
             log(ERROR, "Reporting python error");
             PyErr_Print();
         }
+        return Py::None();
     }
-    return ret;
 }
 
 sigc::signal<void> python_reload_scripts;

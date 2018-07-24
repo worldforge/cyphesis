@@ -29,14 +29,14 @@ class PythonArithmeticScript : public ArithmeticScript
 {
     protected:
         /// \brief Python instance object implementing the script
-        Py::Callable m_script;
+        Py::Object m_script;
     public:
-        explicit PythonArithmeticScript(Py::Callable script);
+        explicit PythonArithmeticScript(Py::Object script);
 
         ~PythonArithmeticScript() override;
 
         /// \brief Accessor for python instance object implementing the script
-        const Py::Callable& script() const
+        const Py::Object& script() const
         { return m_script; }
 
         int attribute(const std::string& name, float& val) override;

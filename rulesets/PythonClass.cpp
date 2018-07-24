@@ -34,8 +34,7 @@ PythonClass::PythonClass(const std::string & package,
     m_package(package),
     m_type(type),
 //    m_base(base),
-    m_module(nullptr),
-    m_class(nullptr)
+    m_module(nullptr)
 {
 }
 
@@ -45,10 +44,11 @@ PythonClass::~PythonClass()
 
 int PythonClass::load()
 {
-    m_module = Get_PyModule(m_package);
-    if (m_module.isNull()) {
+    auto module= Get_PyModule(m_package);
+    if (module.isNull()) {
         return -1;
     }
+    m_module = module;
     return getClass(m_module);
 }
 
@@ -64,13 +64,18 @@ int PythonClass::getClass(const Py::Module& module)
         // fail the update. This should signal back to the client.
         return -1;
     }
+    if (!new_class.isCallable()) {
+        log(ERROR, String::compose("Python class \"%1.%2\" is not callable.",
+                                   m_package, m_type));
+        return -1;
+    }
 //    if (!PyType_IsSubtype((PyTypeObject*)new_class.type().ptr, m_base)) {
 //        log(ERROR, String::compose("Python class \"%1.%2\" does not inherit "
 //                                   "from a core server type \"%3\".",
 //                                   m_package, m_type, m_base->tp_name));
 //        return -1;
 //    }
-    m_class = new_class;
+    m_class = Py::Callable(new_class);
 
     return 0;
 }
