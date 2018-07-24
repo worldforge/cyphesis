@@ -107,7 +107,11 @@ void Task::initTask(const Operation & op, OpVector & res)
         log(WARNING, "Task script failed");
         irrelevant();
     } else {
-        m_script->operation(op->getParent(), op, res);
+        auto result = m_script->operation(op->getParent(), op, res);
+        if (result == OPERATION_IGNORED) {
+            log(WARNING, "Task init failed");
+            irrelevant();
+        }
     }
 
     if (obsolete()) {
