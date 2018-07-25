@@ -21,6 +21,8 @@
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
 
+#include <boost/optional.hpp>
+
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -356,7 +358,7 @@ void EntityImporterBase::sendResolvedEntityReferences()
     if (!mEntitiesWithReferenceAttributes.empty()) {
         for (auto entryI : mEntitiesWithReferenceAttributes) {
             const auto& persistedEntityId = entryI.first;
-            const auto& attributeNames = entryI.second;
+            const auto& referenceEntries = entryI.second;
 
             auto createdEntityI = mEntityIdMap.find(persistedEntityId);
             if (createdEntityI == mEntityIdMap.end()) {
@@ -370,10 +372,10 @@ void EntityImporterBase::sendResolvedEntityReferences()
 
             RootEntity entity;
 
-            for (const auto& attributeName : attributeNames) {
-                Element element = persistedEntity->getAttr(attributeName);
+            for (const auto& referenceEntry : referenceEntries) {
+                Element element = persistedEntity->getAttr(referenceEntry.propertyName);
                 resolveEntityReferences(element);
-                entity->setAttr(attributeName, element);
+                entity->setAttr(referenceEntry.propertyName, element);
             }
 
             Set set;
@@ -447,9 +449,42 @@ void EntityImporterBase::createEntity(const RootEntity & obj, OpVector & res)
     //The attribute will later on be set through a Set op in sendResolvedEntityReferences().
     auto referenceMapEntryI = mEntitiesWithReferenceAttributes.find(obj->getId());
     if (referenceMapEntryI != mEntitiesWithReferenceAttributes.end()) {
-        for (const auto& attributeName : referenceMapEntryI->second) {
-            create_arg->removeAttr(attributeName);
+        std::set<std::string> resolvedAttributes;
+        for (const auto& referenceEntry : referenceMapEntryI->second) {
+            size_t resolvedEntitiesCount = 0;
+            //Check if all the referenced entities perhaps already have been created.
+            for (const auto& entityId : referenceEntry.referencedEntities) {
+                auto resolvedI = mEntityIdMap.find(entityId);
+                if (resolvedI != mEntityIdMap.end()) {
+                    resolvedEntitiesCount++;
+                }
+            }
+
+            //If all entities were resolved, we should resolve the property now.
+            if (resolvedEntitiesCount == referenceEntry.referencedEntities.size()) {
+                Element element = create_arg->getAttr(referenceEntry.propertyName);
+                resolveEntityReferences(element);
+                create_arg->setAttr(referenceEntry.propertyName, element);
+                resolvedAttributes.insert(referenceEntry.propertyName);
+            } else {
+                create_arg->removeAttr(referenceEntry.propertyName);
+            }
         }
+        //Remove those attributes that were resolved
+        if (resolvedAttributes.size() == referenceMapEntryI->second.size()) {
+            //All attributes were resolved, remove the entry completely.
+            mEntitiesWithReferenceAttributes.erase(referenceMapEntryI);
+        } else {
+            //Only remove those entries that were destroyed.
+            std::vector<ReferencedEntry> copy;
+            for (auto& referenceEntry : referenceMapEntryI->second) {
+                if (resolvedAttributes.find(referenceEntry.propertyName) == resolvedAttributes.end()) {
+                    copy.push_back(std::move(referenceEntry));
+                }
+            }
+            referenceMapEntryI->second = std::move(copy);
+        }
+
     }
 
     Create create;
@@ -875,30 +910,34 @@ void EntityImporterBase::registerEntityReferences(const std::string& id, const A
         if (name == "id" || name == "parent" || name == "contains") {
             continue;
         }
-        if (hasEntityReference(I.second)) {
-            mEntitiesWithReferenceAttributes[id].push_back(name);
+        auto res = extractEntityReferences(I.second);
+        if (!res.empty()) {
+            mEntitiesWithReferenceAttributes[id].push_back({name, std::move(res)});
         }
     }
 }
 
-bool EntityImporterBase::hasEntityReference(const Element& element)
+std::set<std::string> EntityImporterBase::extractEntityReferences(const Element& element) const
 {
+    std::set<std::string> ids;
     if (element.isMap()) {
         auto entityRefI = element.asMap().find("$eid");
         if (entityRefI != element.asMap().end() && entityRefI->second.isString()) {
-            return true;
+            ids.insert(entityRefI->second.String());
         }
         //If it's a map we need to process all child elements too
         for (auto& I : element.asMap()) {
-            return hasEntityReference(I.second);
+            auto res = extractEntityReferences(I.second);
+            ids.insert(res.begin(), res.end());
         }
     } else if (element.isList()) {
         //If it's a list we need to process all child elements too
         for (auto& I : element.asList()) {
-            return hasEntityReference(I);
+            auto res = extractEntityReferences(I);
+            ids.insert(res.begin(), res.end());
         }
     }
-    return false;
+    return ids;
 }
 
 

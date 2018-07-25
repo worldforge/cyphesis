@@ -294,6 +294,11 @@ protected:
      */
     std::vector<std::pair<std::string, Atlas::Objects::Root>> mResolvedMindMapping;
 
+    struct ReferencedEntry {
+        std::string propertyName;
+        std::set<std::string> referencedEntities;
+    };
+
     /**
      * @brief Keeps track of any entities that have references to other entities in their attributes.
      *
@@ -305,7 +310,7 @@ protected:
      * the most usual case, since most entity references refer to things worn or wielded, and these
      * entities aren't created until the owner entity has been created.
      */
-    std::map<std::string, std::vector<std::string>> mEntitiesWithReferenceAttributes;
+    std::map<std::string, std::vector<ReferencedEntry>> mEntitiesWithReferenceAttributes;
 
     enum
     {
@@ -436,7 +441,7 @@ protected:
      * @param element The element to check.
      * @return True if any entity reference was found.
      */
-    bool hasEntityReference(const Atlas::Message::Element& element);
+    std::set<std::string> extractEntityReferences(const Atlas::Message::Element& element) const;
 
     /**
      * @brief Resolves any entity references in the element.
