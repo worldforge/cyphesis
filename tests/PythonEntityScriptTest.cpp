@@ -39,6 +39,7 @@
 #include <Atlas/Objects/Operation.h>
 
 #include <cassert>
+#include <rulesets/PythonEntityScript.h>
 #include "external/pycxx/CXX/Extensions.hxx"
 
 #include "TestWorld.h"
@@ -64,6 +65,9 @@ int main()
     run_python_string("import testmod");
     run_python_string("from atlas import Operation");
     run_python_string("class TestEntity(server.Thing):\n"
+                      " def __init__(self, cppthing):\n"
+                      "  self.foo = 'bar'\n"
+                      "  assert self.foo == 'bar'\n"
                       " def look_operation(self, op): pass\n"
                       " def delete_operation(self, op):\n"
                       "  raise AssertionError('deliberate')\n"
@@ -90,6 +94,9 @@ int main()
     new TestWorld(*e);
     ret = psf.addScript(e);
     assert(ret == 0);
+
+    assert(e->m_scripts.size() == 1);
+    assert(dynamic_cast<PythonEntityScript*>(e->m_scripts.front())->wrapper().getAttr("foo").as_string() == "bar");
 
     OpVector res;
     Atlas::Objects::Operation::Look op1;

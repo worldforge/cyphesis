@@ -31,7 +31,7 @@ class CyPy_RootEntity : public WrapperBase<Atlas::Objects::Entity::RootEntity, C
     public:
         CyPy_RootEntity(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
 
-        CyPy_RootEntity(Py::PythonClassInstance* self, Atlas::Objects::Entity::RootEntity&& value);
+        CyPy_RootEntity(Py::PythonClassInstance* self, Atlas::Objects::Entity::RootEntity value);
 
         static void init_type();
 

@@ -30,7 +30,7 @@ class CyPy_Element : public WrapperBase<Atlas::Message::Element, CyPy_Element>
     public:
         CyPy_Element(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
 
-        CyPy_Element(Py::PythonClassInstance* self, Atlas::Message::Element&& element);
+        CyPy_Element(Py::PythonClassInstance* self, Atlas::Message::Element element);
 
         static void init_type();
 

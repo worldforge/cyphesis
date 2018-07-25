@@ -67,13 +67,15 @@ ArithmeticScript * PythonArithmeticFactory::newScript(LocatedEntity * owner)
         if (owner == nullptr) {
             py_object = m_class->apply();
         } else {
-            py_object = m_class->apply(Py::Tuple(CyPy_LocatedEntity::wrap(owner)));
+            py_object = m_class->apply(Py::TupleN(CyPy_LocatedEntity::wrap(owner)));
         }
     } catch (const Py::BaseException& ex) {
-        if (PyErr_Occurred() == nullptr) {
-            log(ERROR, "Could not create python stats instance");
+        if (owner) {
+            log(ERROR, "Could not create python stats instance for " + owner->describeEntity());
         } else {
-            log(ERROR, "Reporting python error");
+            log(ERROR, "Could not create python stats instance");
+        }
+        if (PyErr_Occurred()) {
             PyErr_Print();
         }
     }

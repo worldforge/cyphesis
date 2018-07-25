@@ -32,20 +32,18 @@ Py::Object wrapLocatedEntity(LocatedEntity* le)
         return boost::any_cast<Py::Object>(le->m_scriptEntity);
     } else {
         Py::Object wrapper;
-        auto memEntity = dynamic_cast<MemEntity*>(le);
-        if (memEntity) {
-            wrapper = WrapperBase<MemEntity*, CyPy_MemEntity>::wrap(memEntity);
-
+        auto baseMind = dynamic_cast<BaseMind*>(le);
+        if (baseMind) {
+            wrapper = WrapperBase<BaseMind*, CyPy_BaseMind>::wrap(baseMind);
         } else {
-
             auto character = dynamic_cast<Character*>(le);
             if (character) {
                 wrapper = WrapperBase<Character*, CyPy_Character>::wrap(character);
             } else {
 
-                auto baseMind = dynamic_cast<BaseMind*>(le);
-                if (baseMind) {
-                    wrapper = WrapperBase<BaseMind*, CyPy_BaseMind>::wrap(baseMind);
+                auto memEntity = dynamic_cast<MemEntity*>(le);
+                if (memEntity) {
+                    wrapper = WrapperBase<MemEntity*, CyPy_MemEntity>::wrap(memEntity);
                 } else {
                     auto entity = dynamic_cast<Entity*>(le);
                     wrapper = WrapperBase<Entity*, CyPy_Entity>::wrap(entity);

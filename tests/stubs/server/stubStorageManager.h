@@ -163,7 +163,7 @@
 
 #ifndef STUB_StorageManager_shutdown
 //#define STUB_StorageManager_shutdown
-  int StorageManager::shutdown(bool& exit_flag, const std::map<long, LocatedEntity *>& entites)
+  int StorageManager::shutdown(bool& exit_flag, const std::map<long, Ref<LocatedEntity>>& entites)
   {
     return 0;
   }
@@ -171,7 +171,7 @@
 
 #ifndef STUB_StorageManager_requestMinds
 //#define STUB_StorageManager_requestMinds
-  size_t StorageManager::requestMinds(const std::map<long, LocatedEntity *>& entites)
+  size_t StorageManager::requestMinds(const std::map<long, Ref<LocatedEntity>>& entites)
   {
     return 0;
   }

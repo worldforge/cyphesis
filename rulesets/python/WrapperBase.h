@@ -19,6 +19,7 @@
 #ifndef CYPHESIS_WRAPPERBASE_H
 #define CYPHESIS_WRAPPERBASE_H
 
+#include <common/compose.hpp>
 #include "external/pycxx/CXX/Extensions.hxx"
 
 template<typename TValue, typename TPythonClass>
@@ -36,12 +37,61 @@ class WrapperBase : public Py::PythonClass<TPythonClass>
 
         TValue m_value;
 
+        void reinit(Py::Tuple&/*args*/, Py::Dict&/*kwds*/ )
+        {
+            //noop
+        }
         //Py::Object rich_compare(const Py::Object&, int) override;
 
     protected:
         WrapperBase(Py::PythonClassInstance* self, TValue value);
 
+        /**
+         * This differs from Py::PythonClass::extension_object_new in that it will create the C++ instance directly.
+         */
+        static PyObject* wrapper_extension_object_new(PyTypeObject* subtype, PyObject* args_, PyObject* kwds_)
+        {
+#ifdef PYCXX_DEBUG
+            std::cout << "extension_object_new()" << std::endl;
+#endif
+            auto* o = reinterpret_cast<Py::PythonClassInstance*>( subtype->tp_alloc(subtype, 0));
+            if (o == nullptr) {
+                return nullptr;
+            }
+
+            Py::Tuple args(args_);
+            Py::Dict kwds;
+            if (kwds_ != nullptr) {
+                kwds = kwds_;
+            }
+
+            //Create the C++ object here already, before __init__ is called. This is to guarantee that there's
+            //an C++ instance even if a subclass forgets to call __init__ on the superclass.
+            try {
+                o->m_pycxx_object = new TPythonClass(o, args, kwds);
+            } catch (Py::BaseException&) {
+                return nullptr;
+            }
+
+
+            auto* self = reinterpret_cast<PyObject*>( o );
+
+#ifdef PYCXX_DEBUG
+            std::cout << "extension_object_new() => self=0x" << std::hex << reinterpret_cast< unsigned long >( self ) << std::dec << std::endl;
+#endif
+            return self;
+        }
+
+        static Py::PythonType& behaviors()
+        {
+            //We need to replace the standard "new" function with our own.
+            auto& type = Py::PythonClass<TPythonClass>::behaviors();
+            type.set_tp_new(wrapper_extension_object_new);
+            return type;
+        }
+
 };
+
 
 template<typename TValue, typename TPythonClass>
 WrapperBase<TValue, TPythonClass>::WrapperBase(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
@@ -56,6 +106,7 @@ WrapperBase<TValue, TPythonClass>::WrapperBase(Py::PythonClassInstance* self, TV
 template<typename TValue, typename TPythonClass>
 Py::Object WrapperBase<TValue, TPythonClass>::wrap(TValue value)
 {
+    //Use the base class extension_object_new since it will only allocate memory and won't create the C++ instance
     auto obj = Py::PythonClass<TPythonClass>::extension_object_new(Py::PythonClass<TPythonClass>::type_object(), nullptr, nullptr);
     reinterpret_cast<Py::PythonClassInstance*>(obj)->m_pycxx_object = new TPythonClass(reinterpret_cast<Py::PythonClassInstance*>(obj), std::move(value));
     return Py::PythonClassObject<TPythonClass>(obj);
@@ -102,7 +153,7 @@ typename T::value_type& verifyObject(const Py::Object& object, const std::string
 {
     if (!T::check(object)) {
         if (message.empty()) {
-            throw Py::TypeError("Must be a " + std::string(T::type_object()->tp_name));
+            throw Py::TypeError(String::compose("Must be %1. Instead got %2", T::type_object()->tp_name, object.type().as_string()));
         }
         throw Py::TypeError(message);
     }

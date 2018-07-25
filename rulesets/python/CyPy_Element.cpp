@@ -38,7 +38,7 @@ CyPy_Element::CyPy_Element(Py::PythonClassInstance* self, Py::Tuple& args, Py::D
     }
 }
 
-CyPy_Element::CyPy_Element(Py::PythonClassInstance* self, Atlas::Message::Element&& element)
+CyPy_Element::CyPy_Element(Py::PythonClassInstance* self, Atlas::Message::Element element)
     : WrapperBase(self, std::move(element))
 {
 }

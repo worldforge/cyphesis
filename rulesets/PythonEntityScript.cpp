@@ -69,7 +69,7 @@ HandlerResult PythonEntityScript::operation(const std::string & op_type,
         }
     try {
         Py::Callable callable(m_wrapper);
-        auto ret = callable.callMemberFunction(op_name, CyPy_Operation::wrap(op));
+        auto ret = callable.callMemberFunction(op_name, Py::TupleN(CyPy_Operation::wrap(op)));
         if (ret.isNull()) {
                 log(ERROR, String::compose("Python error calling \"%1\"", op_name));
                 PyErr_Print();
@@ -135,8 +135,10 @@ HandlerResult PythonEntityScript::operation(const std::string & op_type,
 
         return result;
     } catch (const Py::BaseException& py_ex) {
-        log(ERROR, String::compose("Python error calling \"%1\"", op_name));
-        PyErr_Print();
+        log(ERROR, String::compose("Python error calling \"%1\" on " + CyPy_LocatedEntity::value(m_wrapper).describeEntity(), op_name));
+        if (PyErr_Occurred()) {
+            PyErr_Print();
+        }
         if (op->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
             log(ERROR,
                 String::compose("Script for \"%1\" has reported an error "
@@ -157,10 +159,12 @@ void PythonEntityScript::hook(const std::string & function,
     }
 
     try {
-        auto ret = m_wrapper.callMemberFunction(function, wrapper);
+        auto ret = m_wrapper.callMemberFunction(function, Py::TupleN(wrapper));
     } catch (const Py::BaseException& py_ex) {
-        log(ERROR, "Reporting python error");
-        PyErr_Print();
+        log(ERROR, "Could not call hook function " + function + " on " + wrapper.type().as_string());
+        if (PyErr_Occurred()) {
+            PyErr_Print();
+        }
     }
 
 }

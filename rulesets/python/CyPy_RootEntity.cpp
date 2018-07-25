@@ -58,7 +58,7 @@ CyPy_RootEntity::CyPy_RootEntity(Py::PythonClassInstance* self, Py::Tuple& args,
     }
 }
 
-CyPy_RootEntity::CyPy_RootEntity(Py::PythonClassInstance* self, Atlas::Objects::Entity::RootEntity&& value)
+CyPy_RootEntity::CyPy_RootEntity(Py::PythonClassInstance* self, Atlas::Objects::Entity::RootEntity value)
     : WrapperBase(self, std::move(value))
 {
 

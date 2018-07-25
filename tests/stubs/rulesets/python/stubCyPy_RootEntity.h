@@ -18,7 +18,7 @@
 
 #ifndef STUB_CyPy_RootEntity_CyPy_RootEntity
 //#define STUB_CyPy_RootEntity_CyPy_RootEntity
-   CyPy_RootEntity::CyPy_RootEntity(Py::PythonClassInstance* self, Atlas::Objects::Entity::RootEntity&& value)
+   CyPy_RootEntity::CyPy_RootEntity(Py::PythonClassInstance* self, Atlas::Objects::Entity::RootEntity value)
     : WrapperBase(self, value)
   {
     

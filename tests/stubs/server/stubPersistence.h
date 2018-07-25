@@ -50,7 +50,7 @@
 
 #ifndef STUB_Persistence_registerCharacters
 //#define STUB_Persistence_registerCharacters
-  void Persistence::registerCharacters(Account &, const EntityDict & worldObjects)
+  void Persistence::registerCharacters(Account &, const EntityRefDict & worldObjects)
   {
     
   }

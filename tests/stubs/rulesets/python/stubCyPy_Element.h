@@ -18,7 +18,7 @@
 
 #ifndef STUB_CyPy_Element_CyPy_Element
 //#define STUB_CyPy_Element_CyPy_Element
-   CyPy_Element::CyPy_Element(Py::PythonClassInstance* self, Atlas::Message::Element&& element)
+   CyPy_Element::CyPy_Element(Py::PythonClassInstance* self, Atlas::Message::Element element)
     : WrapperBase(self, element)
   {
     
