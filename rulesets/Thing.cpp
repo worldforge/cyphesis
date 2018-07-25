@@ -630,9 +630,9 @@ void Thing::CreateOperation(const Operation& op, OpVector& res)
         }
         debug_print(getId() << " creating " << type);
 
-        LocatedEntity* obj = BaseWorld::instance().addNewEntity(type, ent);
+        auto obj = BaseWorld::instance().addNewEntity(type, ent);
 
-        if (obj == nullptr) {
+        if (!obj) {
             error(op, "Create op failed.", res, op->getFrom());
             return;
         }

@@ -34,6 +34,7 @@
 #include <iostream>
 #include <unordered_set>
 #include <rulesets/BaseWorld.h>
+#include <common/Update.h>
 
 static const bool debug_flag = true;
 
@@ -65,7 +66,15 @@ void InventoryDomain::addEntity(LocatedEntity& entity)
 //    entity.m_location.update(BaseWorld::instance().getTime());
     entity.removeFlags(entity_clean);
 
-    //Nothing special to do for this domain.
+    //Reset any planted_on properties when moving to this domain.
+    if (auto prop = entity.getPropertyClass<EntityProperty>("planted_on")) {
+        if (prop->data()) {
+            entity.setAttr("planted_on", Atlas::Message::Element());
+            Atlas::Objects::Operation::Update update;
+            update->setTo(entity.getId());
+            entity.sendWorld(update);
+        }
+    }
 }
 
 void InventoryDomain::removeEntity(LocatedEntity& entity)
