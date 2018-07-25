@@ -37,7 +37,7 @@ class SystemTime;
 class Task;
 class Location;
 
-typedef std::map<long, LocatedEntity *> EntityDict;
+typedef std::map<long, Ref<LocatedEntity>> EntityRefDict;
 
 /// \brief Base class for game world manager object.
 ///
@@ -54,7 +54,7 @@ class BaseWorld : public Singleton<BaseWorld> {
     ///
     /// Pointers to all in-game entities in the world are stored keyed to
     /// their integer ID.
-    EntityDict m_eobjects;
+    EntityRefDict m_eobjects;
 
     /// \brief Whether the base world is suspended or not.
     ///
@@ -82,7 +82,7 @@ class BaseWorld : public Singleton<BaseWorld> {
     LocatedEntity * getEntity(long id) const;
 
     /// \brief Read only accessor for the in-game objects dictionary.
-    const EntityDict & getEntities() const {
+    const EntityRefDict & getEntities() const {
         return m_eobjects;
     }
 

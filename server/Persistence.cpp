@@ -199,7 +199,7 @@ void Persistence::putAccount(const Account & ac)
 }
 
 void Persistence::registerCharacters(Account & ac,
-                                     const EntityDict & worldObjects)
+                                     const EntityRefDict & worldObjects)
 {
     DatabaseResult dr = m_db.selectRelation(m_characterRelation,
                                                     ac.getId());

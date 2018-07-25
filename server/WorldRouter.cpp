@@ -534,8 +534,8 @@ void WorldRouter::operation(const Operation & op, LocatedEntity & from)
         deliverTo(op, *to_entity);
 
     } else {
-        EntityDict::const_iterator I = m_eobjects.begin();
-        EntityDict::const_iterator Iend = m_eobjects.end();
+        auto I = m_eobjects.begin();
+        auto Iend = m_eobjects.end();
         for (; I != Iend; ++I) {
             op->setTo(I->second->getId());
             deliverTo(op, *I->second);
@@ -582,8 +582,8 @@ double WorldRouter::secondsUntilNextOp() const {
 LocatedEntity * WorldRouter::findByName(const std::string & name)
 {
     Element name_attr;
-    EntityDict::const_iterator Iend = m_eobjects.end();
-    for (EntityDict::const_iterator I = m_eobjects.begin(); I != Iend; ++I) {
+    auto Iend = m_eobjects.end();
+    for (auto I = m_eobjects.begin(); I != Iend; ++I) {
         if (I->second->getAttr("name", name_attr) == 0) {
             if (name_attr == name) {
                 return I->second;
@@ -601,8 +601,8 @@ LocatedEntity * WorldRouter::findByName(const std::string & name)
 /// instance was found.
 LocatedEntity * WorldRouter::findByType(const std::string & type)
 {
-    EntityDict::const_iterator Iend = m_eobjects.end();
-    for(EntityDict::const_iterator I = m_eobjects.begin(); I != Iend; ++I) {
+    auto Iend = m_eobjects.end();
+    for(auto I = m_eobjects.begin(); I != Iend; ++I) {
         if (I->second->getType()->name() == type) {
             return I->second;
         }

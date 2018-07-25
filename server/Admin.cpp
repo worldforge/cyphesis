@@ -237,7 +237,7 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
 
         const auto& OOGDict = m_connection->m_server.getObjects();
         auto J = OOGDict.find(intId);
-        const EntityDict & worldDict = m_connection->m_server.m_world.getEntities();
+        auto& worldDict = m_connection->m_server.m_world.getEntities();
         auto K = worldDict.find(intId);
 
         if (J != OOGDict.end()) {

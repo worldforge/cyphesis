@@ -20,6 +20,7 @@
 #define SERVER_PERSISTENCE_H
 
 #include "common/Singleton.h"
+#include "modules/Ref.h"
 #include <Atlas/Objects/ObjectsFwd.h>
 
 #include <sigc++/signal.h>
@@ -31,7 +32,7 @@ class Account;
 class Database;
 class LocatedEntity;
 
-typedef std::map<long, LocatedEntity *> EntityDict;
+typedef std::map<long, Ref<LocatedEntity>> EntityRefDict;
 
 /// \brief Class for managing the required database tables for persisting
 /// in-game entities and server accounts
@@ -65,7 +66,7 @@ class Persistence : public Singleton<Persistence> {
     bool findAccount(const std::string &);
     Account * getAccount(const std::string &);
     void putAccount(const Account &);
-    void registerCharacters(Account &, const EntityDict & worldObjects);
+    void registerCharacters(Account &, const EntityRefDict & worldObjects);
     void addCharacter(const Account &, const LocatedEntity &);
     void delCharacter(const std::string &);
 

@@ -21,6 +21,7 @@
 #include "common/id.h"
 #include "common/log.h"
 #include "common/SystemTime.h"
+#include "LocatedEntity.h"
 
 #include <cassert>
 
@@ -43,15 +44,7 @@ BaseWorld::BaseWorld() :
 /// @return pointer to Entity retrieved, or zero if it was not found.
 LocatedEntity * BaseWorld::getEntity(const std::string & id) const
 {
-    long intId = integerId(id);
-
-    auto I = m_eobjects.find(intId);
-    if (I != m_eobjects.end()) {
-        assert(I->second != 0);
-        return I->second;
-    } else {
-        return nullptr;
-    }
+    return getEntity(integerId(id));
 }
 
 /// \brief Get an in-game Entity by its integer ID.
@@ -62,7 +55,7 @@ LocatedEntity * BaseWorld::getEntity(long id) const
 {
     auto I = m_eobjects.find(id);
     if (I != m_eobjects.end()) {
-        assert(I->second != 0);
+        assert(I->second);
         return I->second;
     } else {
         return nullptr;

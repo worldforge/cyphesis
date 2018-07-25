@@ -120,10 +120,26 @@ struct RefTest : public Cyphesis::TestBase
         ASSERT_FALSE(parent3 != t1);
     }
 
+    void test_container()
+    {
+        long count1 = 0;
+        auto r1 = new RefCounted(count1);
+        std::set<Ref<RefCounted>> set;
+        set.insert(r1);
+        ASSERT_EQUAL(1u, set.size());
+        set.insert(r1);
+        ASSERT_EQUAL(1u, set.size());
+        set.insert(Ref<RefCounted>(r1));
+        ASSERT_EQUAL(1u, set.size());
+        set.erase(r1);
+        ASSERT_TRUE(set.empty());
+
+    }
     RefTest()
     {
         ADD_TEST(RefTest::test_refcount);
         ADD_TEST(RefTest::test_conversion);
+        ADD_TEST(RefTest::test_container);
 
     }
 

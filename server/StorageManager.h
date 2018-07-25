@@ -123,7 +123,7 @@ class StorageManager : public sigc::trackable {
     /// \brief Called when shutting down.
     ///
     /// It's expected that the storage manager attempts to persist entity state.
-    int shutdown(bool& exit_flag, const std::map<long, LocatedEntity *>& entites);
+    int shutdown(bool& exit_flag, const std::map<long, Ref<LocatedEntity>>& entites);
 
     /// \brief Request thoughts from the supplied entities.
     ///
@@ -132,7 +132,7 @@ class StorageManager : public sigc::trackable {
     /// \param entities A list of entities. Only those entities that have
     /// external minds will be queried.
     /// \return The number of requests sent.
-    size_t requestMinds(const std::map<long, LocatedEntity *>& entites);
+    size_t requestMinds(const std::map<long, Ref<LocatedEntity>>& entites);
 
     /// \brief Gets the number of outstanding thought requests.
     size_t numberOfOutstandingThoughtRequests() const;

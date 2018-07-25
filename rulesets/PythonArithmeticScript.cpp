@@ -63,5 +63,14 @@ int PythonArithmeticScript::attribute(const std::string& name, float& val)
 
 void PythonArithmeticScript::set(const std::string& name, const float& val)
 {
-    m_script.setAttr(name, Py::Float(val));
+    try {
+        m_script.setAttr(name, Py::Float(val));
+    } catch (const Py::BaseException& ex) {
+        if (PyErr_Occurred() == nullptr) {
+            log(ERROR, "Error when setting attribute " + name);
+        } else {
+            log(ERROR, "Reporting python error when setting attribute " + name);
+            PyErr_Print();
+        }
+    }
 }

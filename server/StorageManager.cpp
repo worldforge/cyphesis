@@ -659,7 +659,7 @@ int StorageManager::restoreWorld(const Ref<LocatedEntity>& ent)
     return 0;
 }
 
-int StorageManager::shutdown(bool& exit_flag, const std::map<long, LocatedEntity *>& entites)
+int StorageManager::shutdown(bool& exit_flag, const std::map<long, Ref<LocatedEntity>>& entites)
 {
     tick();
     while (Database::instance().queryQueueSize()) {
@@ -677,7 +677,7 @@ int StorageManager::shutdown(bool& exit_flag, const std::map<long, LocatedEntity
     return 0;
 }
 
-size_t StorageManager::requestMinds(const std::map<long, LocatedEntity *>& entites)
+size_t StorageManager::requestMinds(const std::map<long, Ref<LocatedEntity>>& entites)
 {
     size_t requests = 0;
     for (auto& pair : entites) {
