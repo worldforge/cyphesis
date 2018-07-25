@@ -179,20 +179,9 @@ Ref<LocatedEntity> WorldRouter::addEntity(const Ref<LocatedEntity>& ent)
                         << std::endl << std::flush;);
     }
     ent->m_location.update(getTime());
-    if (ent->m_location.m_loc) {
-        Domain* movementDomain = ent->m_location.m_loc->getDomain();
-        if (movementDomain) {
-            movementDomain->addEntity(*ent);
-        }
-    }
-    ent->m_location.m_loc->makeContainer();
-    bool cont_change = ent->m_location.m_loc->m_contains->empty();
 
-    // FIXME Should we call this every time a new child is inserted (now it's just called if the container is empty first
-    if (cont_change) {
-        // FIXME Mark the entity as dirty?
-        ent->onUpdated();
-    }
+    ent->m_location.m_loc->addChild(*ent);
+
     debug(std::cout << "Entity loc " << ent->m_location << std::endl
                     << std::flush;);
 
