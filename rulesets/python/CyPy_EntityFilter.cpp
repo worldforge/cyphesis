@@ -23,7 +23,7 @@
 
 
 CyPy_Filter::CyPy_Filter(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
-    : Py::PythonClass<CyPy_Filter>::PythonClass(self, args, kwds)
+    : WrapperBase(self, args, kwds)
 {
     args.verify_length(1);
     auto arg = args.front();
@@ -70,9 +70,10 @@ Py::List CyPy_Filter::search_contains(const Py::Tuple& args)
     return list;
 }
 
-EntityFilter::Filter& CyPy_Filter::value(const Py::Object& object)
+CyPy_Filter::CyPy_Filter(Py::PythonClassInstance* self, std::shared_ptr<EntityFilter::Filter> value)
+: WrapperBase(self, value)
 {
-    return *Py::PythonClassObject<CyPy_Filter>(object).getCxxObject()->m_value.get();
+
 }
 
 CyPy_EntityFilter::CyPy_EntityFilter()

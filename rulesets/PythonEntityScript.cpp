@@ -50,26 +50,18 @@ HandlerResult PythonEntityScript::operation(const std::string & op_type,
                                    const Operation & op,
                                    OpVector & res)
 {
-        assert(!m_wrapper.isNull());
-        std::string op_name = op_type + "_operation";
-        debug(std::cout << "Got script object for " << op_name << std::endl
-                        << std::flush;);
-        // This check isn't really necessary, except it saves the conversion
-        // time.
-        if (!m_wrapper.hasAttr(op_name)) {
-            debug(std::cout << "No method to be found for " << op_name
-                            << std::endl << std::flush;);
-            return OPERATION_IGNORED;
-        }
+    assert(!m_wrapper.isNull());
+    std::string op_name = op_type + "_operation";
+    debug(std::cout << "Got script object for " << op_name << std::endl
+                    << std::flush;);
+    if (!m_wrapper.hasAttr(op_name)) {
+        debug(std::cout << "No method to be found for " << op_name
+                        << std::endl << std::flush;);
+        return OPERATION_IGNORED;
+    }
 
-        if (!m_wrapper.isCallable()) {
-            debug(std::cout << "Python object can't be called"
-                            << std::endl << std::flush;);
-            return OPERATION_IGNORED;
-        }
     try {
-        Py::Callable callable(m_wrapper);
-        auto ret = callable.callMemberFunction(op_name, Py::TupleN(CyPy_Operation::wrap(op)));
+        auto ret = m_wrapper.callMemberFunction(op_name, Py::TupleN(CyPy_Operation::wrap(op)));
         if (ret.isNull()) {
                 log(ERROR, String::compose("Python error calling \"%1\"", op_name));
                 PyErr_Print();

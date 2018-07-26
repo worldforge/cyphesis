@@ -22,6 +22,7 @@
 #include "CyPy_Operation.h"
 #include "CyPy_Oplist.h"
 #include "CyPy_Location.h"
+#include "CyPy_RootEntity.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -211,6 +212,9 @@ Element CyPy_Element::asElement(const Py::Object& o)
     if (CyPy_Operation::check(o)) {
         return CyPy_Operation::value(o)->asMessage();
     }
+    if (CyPy_RootEntity::check(o)) {
+        return CyPy_RootEntity::value(o)->asMessage();
+    }
     if (CyPy_Oplist::check(o)) {
         Py::PythonClassObject<CyPy_Oplist> listObj(o);
         ListType list;
@@ -225,7 +229,7 @@ Element CyPy_Element::asElement(const Py::Object& o)
         CyPy_Location::value(o).addToMessage(map);
         return map;
     }
-    throw Py::TypeError("Contained object could not be converted to an Element.");
+    throw Py::TypeError(String::compose("Contained object (of type %1) could not be converted to an Element.", o.type().as_string()));
 }
 
 Py::Object CyPy_Element::wrap(Atlas::Message::Element value)

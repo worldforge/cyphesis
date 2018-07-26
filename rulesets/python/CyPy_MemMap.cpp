@@ -215,7 +215,7 @@ Py::Object CyPy_MemMap::find_by_filter(const Py::Tuple& args)
     Py::List list;
 
     for (auto& entry : m_value->getEntities()) {
-        if (filter.match(*entry.second)) {
+        if (filter->match(*entry.second)) {
             list.append(CyPy_MemEntity::wrap(entry.second));
         }
     }
@@ -240,8 +240,8 @@ Py::Object CyPy_MemMap::find_by_location_query(const Py::Tuple& args)
 
     Py::List list;
     if (location.m_loc && location.m_loc->m_contains) {
-        for (auto entry : *location.m_loc->m_contains) {
-            if (entry->isVisible() && filter.match(*entry)) {
+        for (const auto& entry : *location.m_loc->m_contains) {
+            if (entry->isVisible() && filter->match(*entry)) {
                 if (squareDistance(location.pos(), entry->m_location.pos()) < square_range) {
                     list.append(CyPy_LocatedEntity::wrap(entry));
                 }

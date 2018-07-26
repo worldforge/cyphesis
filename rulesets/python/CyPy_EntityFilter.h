@@ -22,20 +22,18 @@
 #include <rulesets/entityfilter/Filter.h>
 #include "external/pycxx/CXX/Objects.hxx"
 #include "external/pycxx/CXX/Extensions.hxx"
+#include "WrapperBase.h"
 #include <memory>
 
 
-class CyPy_Filter : public Py::PythonClass<CyPy_Filter>
+class CyPy_Filter : public WrapperBase<std::shared_ptr<EntityFilter::Filter>, CyPy_Filter>
 {
     public:
 
-        typedef EntityFilter::Filter value_type;
         CyPy_Filter(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
+        CyPy_Filter(Py::PythonClassInstance* self, std::shared_ptr<EntityFilter::Filter> value);
 
         static void init_type();
-        static EntityFilter::Filter& value(const Py::Object& object);
-
-        std::unique_ptr<EntityFilter::Filter> m_value;
 
         ///\brief Match a single entity using a filter that called this method.
         Py::Boolean match_entity(const Py::Tuple& args);
