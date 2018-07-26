@@ -16,8 +16,6 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <rulesets/Py_Task.h>
-#include <rulesets/Py_Oplist.h>
 #include "CyPy_Character.h"
 #include "CyPy_Task.h"
 #include "CyPy_Operation.h"

@@ -28,7 +28,6 @@
 #include "python_testers.h"
 
 #include "rulesets/Entity.h"
-#include "rulesets/Py_Thing.h"
 #include "rulesets/Python_API.h"
 #include "rulesets/PythonScriptFactory.h"
 #include "rulesets/Script.h"

@@ -16,7 +16,6 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <rulesets/Py_Oplist.h>
 #include "CyPy_Oplist.h"
 #include "CyPy_Operation.h"
 

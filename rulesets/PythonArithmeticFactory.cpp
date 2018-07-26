@@ -16,15 +16,13 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
-#include <Python.h>
-#include <rulesets/python/CyPy_LocatedEntity.h>
+#include "python/CyPy_LocatedEntity.h"
 
-#include "rulesets/PythonArithmeticFactory.h"
+#include "PythonArithmeticFactory.h"
 
-#include "rulesets/Python_Script_Utils.h"
-#include "rulesets/PythonArithmeticScript.h"
-#include "rulesets/Py_Thing.h"
-#include "rulesets/Character.h"
+#include "Python_Script_Utils.h"
+#include "PythonArithmeticScript.h"
+#include "Character.h"
 
 /// \brief PythonArithmeticFactory constructor
 ///

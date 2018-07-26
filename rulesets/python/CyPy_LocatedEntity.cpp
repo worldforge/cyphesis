@@ -18,9 +18,6 @@
 
 #include "CyPy_LocatedEntity.h"
 
-#include <rulesets/Py_Location.h>
-#include <rulesets/Py_Thing.h>
-
 #include "CyPy_MemEntity.h"
 #include "CyPy_Character.h"
 #include "CyPy_BaseMind.h"

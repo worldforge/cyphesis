@@ -30,7 +30,6 @@
 #include "python_testers.h"
 
 #include "rulesets/Python_API.h"
-#include "rulesets/Py_WorldTime.h"
 
 #include <cassert>
 

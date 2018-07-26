@@ -28,7 +28,6 @@
 #include "python_testers.h"
 
 #include "rulesets/Python_API.h"
-#include "rulesets/Py_BBox.h"
 
 #include <cassert>
 

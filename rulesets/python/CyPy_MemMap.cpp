@@ -22,8 +22,6 @@
 #include "CyPy_EntityFilter.h"
 
 #include <Atlas/Objects/objectFactory.h>
-#include <rulesets/Py_Message.h>
-#include <rulesets/Py_Thing.h>
 
 
 using Atlas::Objects::Root;

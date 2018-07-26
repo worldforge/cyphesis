@@ -30,7 +30,6 @@
 #include "python_testers.h"
 
 #include "rulesets/Python_API.h"
-#include "rulesets/Py_RootEntity.h"
 #include "rulesets/python/CyPy_RootEntity.h"
 
 #include <cassert>

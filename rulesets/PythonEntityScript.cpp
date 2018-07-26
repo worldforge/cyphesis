@@ -20,9 +20,9 @@
 
 #include "PythonEntityScript.h"
 
-#include "Py_Operation.h"
-#include "Py_Oplist.h"
-#include "Py_Thing.h"
+#include "python/CyPy_Operation.h"
+#include "python/CyPy_Oplist.h"
+#include "python/CyPy_LocatedEntity.h"
 
 #include "common/Tick.h"
 
@@ -34,9 +34,6 @@
 #include <iostream>
 #include <memory>
 #include <utility>
-#include <rulesets/python/CyPy_Operation.h>
-#include <rulesets/python/CyPy_Oplist.h>
-#include <rulesets/python/CyPy_LocatedEntity.h>
 
 static const bool debug_flag = false;
 

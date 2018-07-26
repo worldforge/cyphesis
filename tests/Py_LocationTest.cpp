@@ -33,8 +33,6 @@
 
 #include "rulesets/Entity.h"
 #include "rulesets/Python_API.h"
-#include "rulesets/Py_Location.h"
-#include "rulesets/Py_Thing.h"
 
 #include <cassert>
 

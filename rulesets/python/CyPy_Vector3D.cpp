@@ -16,8 +16,6 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <rulesets/Py_Quaternion.h>
-#include <rulesets/Py_Vector3D.h>
 #include "CyPy_Vector3D.h"
 #include "CyPy_Point3D.h"
 #include "CoordHelper.h"

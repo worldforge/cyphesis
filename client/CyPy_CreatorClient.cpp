@@ -16,8 +16,6 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "rulesets/Py_Message.h"
-#include "rulesets/Py_RootEntity.h"
 #include "rulesets/python/CyPy_Element.h"
 #include "rulesets/python/CyPy_RootEntity.h"
 #include "rulesets/python/CyPy_LocatedEntity.h"

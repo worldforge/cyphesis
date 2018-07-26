@@ -114,7 +114,6 @@ add_library(scriptpython
     PythonArithmeticFactory.cpp
     PythonScriptFactory.cpp
     PythonScriptFactory_impl.h
-    CyPy_Props.cpp CyPy_Props.h
 
     python/CyPy_EntityFilter.cpp python/CyPy_EntityFilter.h
     python/CyPy_LocatedEntity.cpp python/CyPy_LocatedEntity.h
