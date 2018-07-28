@@ -136,9 +136,32 @@ int CyPy_Element::setattro(const Py::String& name, const Py::Object& attr)
 
 Py::Object CyPy_Element::rich_compare(const Py::Object& other, int op)
 {
+    if (m_value.isFloat()) {
+        if (op == Py_GT && other.isNumeric()) {
+            return Py::Boolean(m_value.Float() > Py::Float(other));
+        } else if (op == Py_GE && other.isNumeric()) {
+            return Py::Boolean(m_value.Float() >= Py::Float(other));
+        } else if (op == Py_LT && other.isNumeric()) {
+            return Py::Boolean(m_value.Float() < Py::Float(other));
+        } else if (op == Py_LE && other.isNumeric()) {
+            return Py::Boolean(m_value.Float() <= Py::Float(other));
+        }
+    } else if (m_value.isInt()) {
+        if (op == Py_GT && other.isNumeric()) {
+            return Py::Boolean(m_value.Int() > Py::Long(other));
+        } else if (op == Py_GE && other.isNumeric()) {
+            return Py::Boolean(m_value.Int() >= Py::Long(other));
+        } else if (op == Py_LT && other.isNumeric()) {
+            return Py::Boolean(m_value.Int() < Py::Long(other));
+        } else if (op == Py_LE && other.isNumeric()) {
+            return Py::Boolean(m_value.Int() <= Py::Long(other));
+        }
+    }
+
+
     bool equal = false;
     if ((op != Py_EQ) && (op != Py_NE)) {
-        throw Py::NotImplementedError("MessageElement object can only be check for == or !=");
+        throw Py::NotImplementedError("MessageElement object can only be check for == or !=, or <, <=, > and >= for ints and floats.");
     }
     if (m_value.isString()) {
         if (other.isString() &&
@@ -236,6 +259,12 @@ Py::Object CyPy_Element::wrap(Atlas::Message::Element value)
 {
     if (value.isNone()) {
         return Py::None();
+    } else if (value.isString()) {
+        return Py::String(value.String());
+    } else if (value.isInt()) {
+        return Py::Long(value.Int());
+    } else if (value.isFloat()) {
+        return Py::Float(value.Float());
     } else {
         return WrapperBase::wrap(std::move(value));
     }

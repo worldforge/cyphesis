@@ -172,6 +172,10 @@ int main()
     run_python_string("m.props.int_attr=23");
     run_python_string("assert(m.props.int_attr == 23)");
     run_python_string("m.props.float_attr=17.23");
+    run_python_string("m.props.float_attr>1.3");
+    run_python_string("m.props.float_attr>1");
+    run_python_string("m.props.float_attr<100.3");
+    run_python_string("m.props.float_attr<100");
 //    expect_python_error("m.map_attr={'1': 2}", PyExc_AttributeError);
 //    expect_python_error("m.map_attr", PyExc_AttributeError);
 //    expect_python_error("m.list_attr=[1,2]", PyExc_AttributeError);
