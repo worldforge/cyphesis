@@ -20,7 +20,6 @@
 #define RULESETS_PYTHON_WRAPPER_H
 
 #include "Script.h"
-#include <object.h>
 #include "external/pycxx/CXX/Objects.hxx"
 
 /// \brief Wrapper class for entities without scripts but with wrappers

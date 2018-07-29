@@ -17,6 +17,7 @@
 
 
 #include <Python.h>
+#include <rulesets/python/CyPy_LocatedEntity.h>
 
 #include "PythonArithmeticScript.h"
 
@@ -66,10 +67,8 @@ void PythonArithmeticScript::set(const std::string& name, const float& val)
     try {
         m_script.setAttr(name, Py::Float(val));
     } catch (const Py::BaseException& ex) {
-        if (PyErr_Occurred() == nullptr) {
-            log(ERROR, "Error when setting attribute " + name);
-        } else {
-            log(ERROR, "Reporting python error when setting attribute " + name);
+        log(ERROR, String::compose("Error when setting attribute '%1' on script '%2'.", name, m_script.str()));
+        if (PyErr_Occurred() != nullptr) {
             PyErr_Print();
         }
     }

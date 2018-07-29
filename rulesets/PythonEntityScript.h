@@ -35,6 +35,8 @@ class PythonEntityScript : public PythonWrapper {
                        OpVector & res) override;
 
     void hook(const std::string & function, LocatedEntity * entity) override;
+
+    static HandlerResult processScriptResult(const std::string& scriptName, const Py::Object& ret, OpVector& res);
 };
 
 #endif // RULESETS_PYTHON_ENTITY_SCRIPT_H
