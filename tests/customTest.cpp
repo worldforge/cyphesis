@@ -87,4 +87,5 @@ int THINK_NO = -1;
 int RELAY_NO = -1;
 int POSSESS_NO = -1;
 int CHANGE_NO = -1;
+int HIT_NO = -1;
 } } }

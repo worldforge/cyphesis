@@ -83,13 +83,13 @@ int main()
     run_python_string("assert server.testentity is not None");
     run_python_string("assert server.testentity.props.foo == 'bar'");
 
-    expect_python_error("Entity()", PyExc_IndexError);
-    expect_python_error("Entity('s')", PyExc_TypeError);
-    run_python_string("le=Entity('1')");
+    expect_python_error("Thing()", PyExc_IndexError);
+    expect_python_error("Thing('s')", PyExc_TypeError);
+    run_python_string("le=Thing('1')");
     run_python_string("le_ent = le.as_entity()");
     run_python_string("assert(le_ent.id == '1')");
     run_python_string("le.send_world(Operation('get'))");
-    run_python_string("le==Entity('2')");
+    run_python_string("le==Thing('2')");
     expect_python_error("print(le.type)", PyExc_AttributeError);
     expect_python_error("print(le.foo_operation)", PyExc_AttributeError);
     run_python_string("print(le.location)");
@@ -108,16 +108,8 @@ int main()
     expect_python_error("le.props.non_atlas=set([1,2])", PyExc_TypeError);
     run_python_string("le.props.non_atlas == None");
 
-    // run_python_string("le.foo=1");
-    // run_python_string("le.foo='1'");
-    // run_python_string("le.foo=[1]");
-    // run_python_string("le.foo=['1']");
-    // run_python_string("le.foo={'foo': 1, 'bar': '1'}");
 
-    expect_python_error("Thing()", PyExc_IndexError);
-    expect_python_error("Thing('s')", PyExc_TypeError);
-    expect_python_error("Thing(1)", PyExc_TypeError);
-    run_python_string("Thing(Entity('1'))");
+    run_python_string("Thing(Thing('1'))");
     run_python_string("t=Thing('1')");
     run_python_string("Thing(t)");
     //run_python_string("Thing(Character('1'))");
@@ -161,7 +153,7 @@ int main()
     run_python_string("m_ent = m.as_entity()");
     run_python_string("assert(m_ent.id == '1')");
     expect_python_error("m.send_world(Operation('get'))", PyExc_AttributeError);
-    run_python_string("m==Entity('2')");
+    run_python_string("m==Thing('2')");
     expect_python_error("print(m.foo_operation)", PyExc_AttributeError);
     run_python_string("print(m.location)");
     run_python_string("print(m.contains)");

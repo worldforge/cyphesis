@@ -10,7 +10,16 @@
 #ifndef STUB_CyPy_Filter_CyPy_Filter
 //#define STUB_CyPy_Filter_CyPy_Filter
    CyPy_Filter::CyPy_Filter(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
-    : Py::PythonClass(self, args, kwds)
+    : WrapperBase(self, args, kwds)
+  {
+    
+  }
+#endif //STUB_CyPy_Filter_CyPy_Filter
+
+#ifndef STUB_CyPy_Filter_CyPy_Filter
+//#define STUB_CyPy_Filter_CyPy_Filter
+   CyPy_Filter::CyPy_Filter(Py::PythonClassInstance* self, std::shared_ptr<EntityFilter::Filter> value)
+    : WrapperBase(self, value)
   {
     
   }
@@ -23,14 +32,6 @@
     
   }
 #endif //STUB_CyPy_Filter_init_type
-
-#ifndef STUB_CyPy_Filter_value
-//#define STUB_CyPy_Filter_value
-   EntityFilter::Filter& CyPy_Filter::value(const Py::Object& object)
-  {
-    return *static_cast< EntityFilter::Filter*>(nullptr);
-  }
-#endif //STUB_CyPy_Filter_value
 
 #ifndef STUB_CyPy_Filter_match_entity
 //#define STUB_CyPy_Filter_match_entity

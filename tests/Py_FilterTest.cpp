@@ -35,8 +35,8 @@ int main()
     run_python_string("from server import *");
     run_python_string("from atlas import Operation");
 
-    run_python_string("le1 = Entity('1')");
-    run_python_string("le2 = Entity('2')");
+    run_python_string("le1 = Thing('1')");
+    run_python_string("le2 = Thing('2')");
 
     run_python_string("f = entity_filter.get_filter('entity.id=1')");
     run_python_string("assert(f.match_entity(le1))");

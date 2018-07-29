@@ -44,7 +44,7 @@ class TestProp : public Py::ExtensionModule<TestProp>
     public:
         Py::Object add_properties(const Py::Tuple& args)
         {
-            auto& ent = CyPy_Entity::value(args.front());
+            auto ent = CyPy_Entity::value(args.front());
 
             PropertyBase * p = ent->setProperty("terrain", new TerrainProperty);
             p->install(ent, "terrain");

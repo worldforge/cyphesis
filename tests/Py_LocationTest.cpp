@@ -48,7 +48,6 @@ int main()
     run_python_string("from physics import Point3D");
     expect_python_error("atlas.Location(set([1,1]))", PyExc_TypeError);
     expect_python_error("atlas.Location(1,1,1)", PyExc_TypeError);
-    run_python_string("atlas.Location(server.Entity('1'))");
     run_python_string("atlas.Location(server.Thing('1'))");
     run_python_string("atlas.Location(server.Character('1'))");
     //run_python_string("atlas.Location(server.World())");

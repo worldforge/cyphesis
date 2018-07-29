@@ -169,14 +169,6 @@
   }
 #endif //STUB_Character_NourishOperation
 
-#ifndef STUB_Character_UseOperation
-//#define STUB_Character_UseOperation
-  void Character::UseOperation(const Operation & op, OpVector &)
-  {
-    
-  }
-#endif //STUB_Character_UseOperation
-
 #ifndef STUB_Character_WieldOperation
 //#define STUB_Character_WieldOperation
   void Character::WieldOperation(const Operation & op, OpVector &)

@@ -69,7 +69,7 @@ int main()
     stub_look_fail = false;
     expect_python_error("c.look(1)", PyExc_TypeError);
     run_python_string("e=c.look('1')");
-    run_python_string("assert type(e) == server.Entity");
+    run_python_string("assert type(e) == server.Thing");
     run_python_string("c.look_for(atlas.Entity('1'))");
     stub_lookfor_fail = true;
     run_python_string("c.look_for(atlas.Entity('1'))");

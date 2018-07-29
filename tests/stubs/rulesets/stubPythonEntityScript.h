@@ -32,5 +32,13 @@
   }
 #endif //STUB_PythonEntityScript_hook
 
+#ifndef STUB_PythonEntityScript_processScriptResult
+//#define STUB_PythonEntityScript_processScriptResult
+   HandlerResult PythonEntityScript::processScriptResult(const std::string& scriptName, const Py::Object& ret, OpVector& res)
+  {
+    return *static_cast< HandlerResult*>(nullptr);
+  }
+#endif //STUB_PythonEntityScript_processScriptResult
+
 
 #endif

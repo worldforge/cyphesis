@@ -83,7 +83,6 @@ int main()
     // to be stored directly.
     expect_python_error("t.foo = Character('2')", PyExc_TypeError);
     run_python_string("import server");
-    expect_python_error("t.foo = server.Entity('2')", PyExc_TypeError);
     expect_python_error("t.foo = server.Thing('2')", PyExc_TypeError);
 
     run_python_string("assert not t.obsolete()");
