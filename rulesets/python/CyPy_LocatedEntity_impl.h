@@ -20,6 +20,7 @@
 #define CYPHESIS_CYPY_LOCATEDENTITY_IMPL_H
 
 #include "CyPy_LocatedEntity.h"
+#include "CyPy_Point3D.h"
 
 template<typename TValue, typename TPythonClass>
 CyPy_LocatedEntityBase<TValue, TPythonClass>::CyPy_LocatedEntityBase(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
@@ -146,12 +147,20 @@ template<typename TValue, typename TPythonClass>
 Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::is_reachable_for_other_entity(const Py::Tuple& args)
 {
 
-    args.verify_length(1);
+    args.verify_length(1, 3);
     if (!CyPy_LocatedEntity::check(args.front())) {
         throw Py::TypeError("Target must be a located entity");
     }
+    WFMath::Point<3> pos;
+    float extraReach = 0;
+    if (args.length() > 1) {
+        pos = CyPy_Point3D::parse(args[1]);
+    }
+    if (args.length() > 2) {
+        extraReach = verifyNumeric(args[2]);
+    }
 
-    return Py::Boolean(CyPy_LocatedEntity::value(args.front()).isReachableForOtherEntity(this->m_value));
+    return Py::Boolean(verifyObject<CyPy_LocatedEntity>(args.front()).isReachableForOtherEntity(this->m_value, pos, extraReach));
 }
 
 template<typename TValue, typename TPythonClass>

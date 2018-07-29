@@ -100,16 +100,18 @@ TValue CoordHelper::parse(const Py::Object& object)
     if (TPythonClass::check(object)) {
         return Py::PythonClassObject<TPythonClass>(object).getCxxObject()->m_value;
     }
-    if (TPythonClass::check(object)) {
-        return TValue(Py::PythonClassObject<TPythonClass>(object).getCxxObject()->m_value);
-    }
-    if (object.isList()) {
-        Py::List list(object);
-        if (list.length() == 3) {
-            if (list[0].isNumeric() && list[1].isNumeric() && list[2].isNumeric()) {
-                return TValue(Py::Float(list[0]), Py::Float(list[1]), Py::Float(list[2]));
+
+    if (object.isList() || object.isTuple()) {
+        Py::Sequence seq(object);
+        if (seq.length() == 3) {
+            if (seq[0].isNumeric() && seq[1].isNumeric() && seq[2].isNumeric()) {
+                return TValue(Py::Float(seq[0]), Py::Float(seq[1]), Py::Float(seq[2]));
             }
         }
+    }
+
+    if (object.isNone()) {
+        return TValue{};
     }
 
     throw Py::TypeError("Object can not be converted into a Coord.");

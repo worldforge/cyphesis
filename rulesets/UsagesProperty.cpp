@@ -210,9 +210,8 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
                 if (lastSeparatorPos != std::string::npos) {
                     auto moduleName = usage.handler.substr(0, lastSeparatorPos);
                     auto functionName = usage.handler.substr(lastSeparatorPos + 1);
-                    PyImport_ReloadModule(Py::String(moduleName).ptr());
-                    PyImport_Import(Py::String(moduleName).ptr());
-                    Py::Module module(moduleName);
+                    Py::Module module(PyImport_Import(Py::String(moduleName).ptr()));
+                    PyImport_ReloadModule(module.ptr());
                     auto functionObject = module.getDict()[functionName];
                     if (!functionObject.isCallable()) {
                         e->error(op, String::compose("Could not find Python function %1", usage.handler), res, e->getId());
@@ -231,7 +230,8 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
                     kwds["targets"] = std::move(targetsList);
                     kwds["consumed"] = std::move(consumedList);
                     kwds["op"] = CyPy_Operation::wrap(rop);
-                    kwds["from_"] = CyPy_LocatedEntity::wrap(actor);
+                    kwds["actor"] = CyPy_LocatedEntity::wrap(actor);
+                    kwds["tool"] = CyPy_LocatedEntity::wrap(e);
 
                     Atlas::Objects::Operation::Sight sight;
                     sight->setArgs1(rop);
