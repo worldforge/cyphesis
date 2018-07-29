@@ -18,6 +18,7 @@
 
 #include "CyPy_Entity.h"
 #include "CyPy_Operation.h"
+#include "CyPy_Character.h"
 
 CyPy_Entity::CyPy_Entity(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
     : CyPy_LocatedEntityBase(self, args, kwds)
@@ -73,4 +74,26 @@ Py::Object CyPy_Entity::send_world(const Py::Tuple& args)
     args.verify_length(1);
     m_value->sendWorld(verifyObject<CyPy_Operation>(args.front()));
     return Py::None();
+}
+
+bool CyPy_Entity::check(const Py::Object& object)
+{
+    return check(object.ptr());
+}
+
+bool CyPy_Entity::check(PyObject* object)
+{
+    //FIXME: Hack to fake inheritance
+    return WrapperBase::check(object)
+           || CyPy_Character::check(object);
+}
+
+Ref<Entity> CyPy_Entity::value(const Py::Object& object)
+{
+    //FIXME: Hack to fake inheritance
+    if (CyPy_Character::check(object)) {
+        return Py::PythonClassObject<CyPy_Character>(object).getCxxObject()->m_value;
+    }
+    return Py::PythonClassObject<CyPy_Entity>(object).getCxxObject()->m_value;
+
 }

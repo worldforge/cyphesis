@@ -49,8 +49,8 @@ CyPy_Server::CyPy_Server() : ExtensionModule("server")
     Py::Dict d(moduleDictionary());
     //d["LocatedEntity"] = CyPy_LocatedEntity::type();
     d["Character"] = CyPy_Character::type();
-    d["Entity"] = CyPy_Entity::type();
-    //FIXME: Remove "Thing"
+//    d["Entity"] = CyPy_Entity::type();
+    //FIXME: Make CyPy_Entity wrap Thing. And in the process also combine Thing and Entity (no reason to separate them)
     d["Thing"] = CyPy_Entity::type();
     d["Mind"] = CyPy_BaseMind::type();
     d["MemEntity"] = CyPy_MemEntity::type();

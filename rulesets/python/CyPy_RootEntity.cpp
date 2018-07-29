@@ -29,10 +29,9 @@ using Atlas::Objects::Entity::Anonymous;
 CyPy_RootEntity::CyPy_RootEntity(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
     : WrapperBase(self, args, kwds)
 {
-
     m_value = Anonymous();
     if (args.size() == 1) {
-        m_value->setId(Py::String(args.front()));
+        m_value->setId(verifyString(args.front()));
     }
     if (kwds.size() > 0) {
         for (auto key : kwds.keys()) {
@@ -42,15 +41,13 @@ CyPy_RootEntity::CyPy_RootEntity(Py::PythonClassInstance* self, Py::Tuple& args,
                 if (!CyPy_Location::check(value)) {
                     throw Py::TypeError("location must be a Location object");
                 }
-                Py::PythonClassObject<CyPy_Location>(value).getCxxObject()->m_value.addToEntity(m_value);
+                CyPy_Location::value(value).addToEntity(m_value);
             } else if (keyStr == "pos") {
                 m_value->setPos(sequence_asVector(value));
             } else if (keyStr == "parent") {
-                verifyString(value);
-                m_value->setParent(value.as_string());
+                m_value->setParent(verifyString(value));
             } else if (keyStr == "type") {
-                verifyString(value);
-                m_value->setObjtype(value.as_string());
+                m_value->setObjtype(verifyString(value));
             } else {
                 m_value->setAttr(key.str(), CyPy_Element::asElement(value));
             }
@@ -122,7 +119,7 @@ int CyPy_RootEntity::setattro(const Py::String& name, const Py::Object& attr)
     auto nameStr = name.as_string();
 
     if (nameStr == "name") {
-        m_value->setName(Py::String(attr));
+        m_value->setName(verifyString(attr));
     }
 
     m_value->setAttr(nameStr, CyPy_Element::asElement(attr));
