@@ -556,137 +556,6 @@ void Character::NourishOperation(const Operation & op, OpVector & res)
     res.push_back(si);
 }
 
-void Character::UseOperation(const Operation & op, OpVector & res)
-{
-    debug(std::cout << "Got Use op. " << describeEntity() << std::endl << std::flush;);
-
-    auto tp = modPropertyClass<TasksProperty>(TASKS);
-
-    const std::vector<Root> & args = op->getArgs();
-    if (args.empty()) {
-        if (tp != nullptr) {
-            tp->stopTask(this, res);
-        }
-        return;
-    }
-
-
-    std::string op_type;
-
-
-    RootEntity entity_arg(nullptr);
-
-    assert(!entity_arg.isValid());
-
-    auto argOp = smart_dynamic_cast<Atlas::Objects::Operation::RootOperation>(args.front());
-    if (!argOp) {
-        error(op, "First arg wasn't an operation.", res, getId());
-        return;
-    }
-
-
-    if (!argOp->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
-        error(op, "Use arg op has malformed parent", res, getId());
-        return;
-    }
-    op_type = argOp->getParent();
-    debug(std::cout << "Got op type " << op_type << " from arg" << std::endl << std::flush
-    ;);
-
-    const std::vector<Root> & arg_op_args = argOp->getArgs();
-    if (!arg_op_args.empty()) {
-        entity_arg = smart_dynamic_cast<RootEntity>(arg_op_args.front());
-        if (!entity_arg.isValid()) {
-            error(op, "Use op target is malformed", res, getId());
-            return;
-        }
-    }
-
-    if (argOp->isDefaultTo()) {
-        error(op, "No entity to use specified.", res, getId());
-        return;
-    }
-
-    auto tool = BaseWorld::instance().getEntity(argOp->getTo());
-    if (!tool) {
-        error(op, "Tool entity does not exist.", res, getId());
-        return;
-    }
-
-    auto usagesProp = tool->getPropertyClassFixed<UsagesProperty>();
-    if (!usagesProp) {
-        log(NOTICE, "Character::UseOp Attempt to use something without usages. " + describeEntity());
-        return;
-    }
-
-
-    if (op_type.empty()) {
-        error(op, "Character::UseOperation Unable to determine op type for tool", res, getId());
-        return;
-    }
-
-    debug(std::cout << "Using tool " << tool->getType() << " with " << op_type << " action." << std::endl << std::flush
-    ;);
-
-    Root obj = Atlas::Objects::Factories::instance()->createObject(op_type);
-    if (!obj.isValid()) {
-        log(ERROR, String::compose("Character::UseOperation Unknown op type "
-                "\"%1\" requested by \"%2\" tool. %3", op_type, tool->getType(), describeEntity()));
-        return;
-    }
-    Operation rop = smart_dynamic_cast<Operation>(obj);
-    if (!rop.isValid()) {
-        log(ERROR, String::compose("Character::UseOperation Op type "
-                "\"%1\" requested by %2 tool, "
-                "but it is not an operation type. %3", op_type, tool->getType(), describeEntity()));
-        // FIXME Think hard about how this error is reported. Would the error
-        // make it back to the client if we made an error response?
-        return;
-    } else {
-        if (entity_arg) {
-            Anonymous target;
-            if (!entity_arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-                error(op, "Character::UseOperation Target entity has no ID", res, getId());
-                return;
-            }
-            target->setId(entity_arg->getId());
-
-            if (entity_arg->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
-                target->setPos(entity_arg->getPos());
-            }
-            rop->setArgs1(target);
-        }
-    }
-
-    rop->setTo(tool->getId());
-    rop->setFrom(getId());
-
-    LocatedEntity * target_ent = BaseWorld::instance().getEntity(entity_arg->getId());
-    if (target_ent == nullptr) {
-        error(op, "Character::UseOperation Target does not exist", res, getId());
-        return;
-    }
-
-    auto taskName = usagesProp->findMatchingTask(op_type, target_ent);
-    if (taskName.empty()) {
-        clientError(op, "Could not find any matching usage.", res, getId());
-        return;
-    }
-
-
-
-    auto task = BaseWorld::instance().newTask(taskName, *this);
-    if (task) {
-        startTask(std::move(task), rop, res);
-    }
-
-    res.push_back(rop);
-
-    Sight sight;
-    sight->setArgs1(rop);
-    res.push_back(sight);
-}
-
 void Character::WieldOperation(const Operation & op, OpVector & res)
 {
     if (op->getArgs().empty()) {
@@ -1113,9 +982,38 @@ void Character::mindUseOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Got Use op from mind" << std::endl << std::flush
     ;);
-    //Distance filtering etc. happens in UseOperation
-    op->setTo(getId());
-    res.push_back(op);
+
+    //Make sure that the first contained arg is another Use operation,
+    // which is then sent to the actual tool.
+
+    auto & args = op->getArgs();
+    if (args.size() < 2) {
+        log(ERROR, "mindUseOperation: use op has no argument, should have two. " + describeEntity());
+        return;
+    }
+    auto toolEnt = smart_dynamic_cast<Atlas::Objects::Entity::RootEntity>(args.front());
+    if (!toolEnt) {
+        log(ERROR, "mindUseOperation: First arg is not an entity. " + describeEntity());
+        return;
+    }
+    if (!toolEnt->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+        log(ERROR, "mindMoveOperation: First arg has no ID. " + describeEntity());
+        return;
+    }
+
+    //TODO: should we perhaps check that this only can be Action ops?
+    auto innerOp = smart_dynamic_cast<Atlas::Objects::Operation::RootOperation>(args[1]);
+    if (!innerOp) {
+        log(ERROR, "mindUseOperation: Second arg is not an operation. " + describeEntity());
+        return;
+    }
+
+    Atlas::Objects::Operation::Use useOp;
+    useOp->setTo(toolEnt->getId());
+    useOp->setFrom(getId());
+    useOp->setArgs1(innerOp);
+
+    res.push_back(useOp);
 }
 
 /// \brief Filter a Update operation coming from the mind

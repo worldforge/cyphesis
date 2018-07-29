@@ -134,7 +134,6 @@ class Character : public Thing, public virtual sigc::trackable {
     virtual void TickOperation(const Operation & op, OpVector &);
     virtual void TalkOperation(const Operation & op, OpVector &);
     virtual void NourishOperation(const Operation & op, OpVector &);
-    virtual void UseOperation(const Operation & op, OpVector &);
     virtual void WieldOperation(const Operation & op, OpVector &);
     virtual void ActuateOperation(const Operation & op, OpVector &);
     virtual void RelayOperation(const Operation &, OpVector &);

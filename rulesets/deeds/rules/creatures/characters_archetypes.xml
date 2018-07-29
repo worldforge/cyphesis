@@ -24,8 +24,6 @@
                     </map>
                 </map>
                 <map name="statistics">
-                    <float name="attack">25</float>
-                    <float name="defend">21</float>
                     <float name="strength">23</float>
                 </map>
                 <float name="status">0.024</float>
@@ -125,8 +123,6 @@
                     </map>
                 </map>
                 <map name="statistics">
-                    <float name="attack">25</float>
-                    <float name="defend">21</float>
                     <float name="strength">23</float>
                 </map>
             </map>
@@ -229,8 +225,6 @@
                     <string name="$eid">sword</string>
                 </map>
                 <map name="statistics">
-                    <float name="attack">40</float>
-                    <float name="defend">40</float>
                     <float name="strength">40</float>
                 </map>
             </map>

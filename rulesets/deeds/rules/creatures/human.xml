@@ -44,8 +44,6 @@
             </map>
             <map name="statistics">
                 <map name="default">
-                    <float name="attack">25</float>
-                    <float name="defend">21</float>
                     <float name="strength">23</float>
                 </map>
             </map>

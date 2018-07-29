@@ -17,8 +17,31 @@
  */
 
 #include "UsagesProperty.h"
-#include "common/TypeNode.h"
+#include "BaseWorld.h"
+
 #include "entityfilter/Providers.h"
+
+#include "rulesets/python/CyPy_LocatedEntity.h"
+#include "rulesets/python/CyPy_Operation.h"
+#include "rulesets/python/CyPy_Oplist.h"
+#include "common/debug.h"
+#include "common/AtlasQuery.h"
+
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Entity.h>
+
+static const bool debug_flag = false;
+using Atlas::Message::Element;
+using Atlas::Message::ListType;
+using Atlas::Message::MapType;
+using Atlas::Objects::Root;
+using Atlas::Objects::Operation::Action;
+using Atlas::Objects::Operation::Use;
+using Atlas::Objects::Entity::Anonymous;
+using Atlas::Objects::Entity::RootEntity;
+
+
+using Atlas::Objects::smart_dynamic_cast;
 
 void UsagesProperty::set(const Atlas::Message::Element& val)
 {
@@ -26,66 +49,258 @@ void UsagesProperty::set(const Atlas::Message::Element& val)
 
     m_usages.clear();
 
-    for (auto& entry : m_data) {
-        if (entry.isMap()) {
-            auto operationI = entry.Map().find("operation");
-            if (operationI == entry.Map().end() || !operationI->second.isString()) {
-                continue;
-            }
-            auto taskI = entry.Map().find("task");
-            if (taskI == entry.Map().end() || !taskI->second.isString()) {
-                continue;
-            }
-            std::unique_ptr<EntityFilter::Filter> filterPtr;
-            auto targetI = entry.Map().find("filter");
-            if (targetI != entry.Map().end() && targetI->second.isString()) {
-                auto filter = targetI->second.String();
-                filterPtr.reset(new EntityFilter::Filter(filter, new EntityFilter::ProviderFactory()));
+    for (auto& usageEntry : m_data) {
+        if (!usageEntry.first.empty()) {
+            //TODO: check that the op is a subtype of "action"?
+            if (usageEntry.second.isMap()) {
+                auto map = usageEntry.second.Map();
 
-            }
-            m_usages.emplace_back(Usage{operationI->second.String(), taskI->second.String(), std::move(filterPtr)});
-        }
-    }
+                Usage usage;
 
-
-//    m_targetsAndTheirOperations.clear();
-//    for (auto& entry : m_data) {
-//        if (entry.isMap()) {
-//            auto operationI = entry.Map().find("operation");
-//            if (operationI == entry.Map().end() || !operationI->second.isString()) {
-//                continue;
-//            }
-//            std::string target;
-//            auto targetI = entry.Map().find("target");
-//            if (targetI != entry.Map().end() && targetI->second.isString()) {
-//                target = targetI->second.String();
-//            }
-//            m_targetsAndTheirOperations[target].push_back(operationI->second.String());
-//        }
-//    }
-}
-
-void UsagesProperty::install(TypeNode* typeNode, const std::string&)
-{
-//    auto operationsProp = new Property<Atlas::Message::ListType>();
-//    for (auto& activation : m_usages) {
-//        operationsProp->data().emplace_back(activation.operation);
-//    }
-//    operationsProp->addFlags(per_ephem);
-//    typeNode->injectProperty("operations", operationsProp);
-}
-
-std::string UsagesProperty::findMatchingTask(const std::string& operation, LocatedEntity* target) const
-{
-    for (auto& usage : m_usages) {
-        if (usage.operation == operation) {
-            if (usage.filter) {
-                if (!usage.filter->match(*target)) {
+                AtlasQuery::find<std::string>(map, "handler", [&](const std::string& value) {
+                    usage.handler = value;
+                });
+                if (usage.handler.empty()) {
                     continue;
                 }
+
+                AtlasQuery::find<std::string>(map, "description", [&](const std::string& value) {
+                    usage.description = value;
+                });
+                AtlasQuery::find<std::string>(map, "constraint", [&](const std::string& value) {
+                    //TODO: should be a usage constraint provider factory
+                    usage.constraint.reset(new EntityFilter::Filter(value, new EntityFilter::ProviderFactory()));
+                });
+                AtlasQuery::find<Atlas::Message::ListType>(map, "targets", [&](const Atlas::Message::ListType& value) {
+                    for (auto& entry : value) {
+                        if (entry.isString()) {
+                            usage.targets.emplace_back(new EntityFilter::Filter(entry.String(), new EntityFilter::ProviderFactory()));
+                        }
+                    }
+                });
+                AtlasQuery::find<Atlas::Message::ListType>(map, "consumes", [&](const Atlas::Message::ListType& value) {
+                    for (auto& entry : value) {
+                        if (entry.isString()) {
+                            usage.consumed.emplace_back(new EntityFilter::Filter(entry.String(), new EntityFilter::ProviderFactory()));
+                        }
+                    }
+                });
+                m_usages.emplace(usageEntry.first, std::move(usage));
             }
-            return usage.task;
         }
     }
-    return "";
+}
+
+void UsagesProperty::install(LocatedEntity* owner, const std::string& name)
+{
+    owner->installDelegate(Atlas::Objects::Operation::USE_NO, name);
+}
+
+
+void UsagesProperty::remove(LocatedEntity* owner, const std::string& name)
+{
+    owner->removeDelegate(Atlas::Objects::Operation::USE_NO, name);
+}
+
+HandlerResult UsagesProperty::operation(LocatedEntity* e,
+                                        const Operation& op, OpVector& res)
+{
+    return use_handler(e, op, res);
+}
+
+HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
+                                          const Operation& op, OpVector& res)
+{
+    if (op->isDefaultFrom()) {
+        e->error(op, "Top op has no 'from' attribute.", res, e->getId());
+        return OPERATION_IGNORED;
+    }
+
+    auto actor = BaseWorld::instance().getEntity(op->getFrom());
+    if (!actor) {
+        e->error(op, "Could not find 'from' entity.", res, e->getId());
+        return OPERATION_IGNORED;
+    }
+
+    if (!op->getArgs().empty()) {
+        auto& arg = op->getArgs().front();
+        auto argOp = smart_dynamic_cast<Atlas::Objects::Operation::RootOperation>(arg);
+        if (!argOp) {
+            e->error(op, "First arg wasn't an operation.", res, e->getId());
+            return OPERATION_IGNORED;
+        }
+
+
+        if (!argOp->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
+            e->error(op, "Use arg op has malformed parent", res, e->getId());
+            return OPERATION_IGNORED;
+        }
+        auto op_type = argOp->getParent();
+        debug_print("Got op type " << op_type << " from arg");
+
+        auto obj = Atlas::Objects::Factories::instance()->createObject(op_type);
+        if (!obj.isValid()) {
+            log(ERROR, String::compose("Character::UseOperation Unknown op type "
+                                       "\"%1\".", op_type));
+            return OPERATION_IGNORED;
+        }
+
+        auto rop = smart_dynamic_cast<Operation>(obj);
+        if (!rop.isValid()) {
+            log(ERROR, String::compose("Character::UseOperation Op type "
+                                       "\"%1\" but it is not an operation type. ", op_type));
+            return OPERATION_IGNORED;
+        }
+        rop->setFrom(actor->getId());
+        rop->setTo(e->getId());
+
+        //Optionally extract any involved entities
+        std::vector<LocatedEntity*> involvedEntities;
+        auto& arg_op_args = argOp->getArgs();
+        for (const auto& arg_op_arg : arg_op_args) {
+            auto entity_arg = smart_dynamic_cast<RootEntity>(arg_op_arg);
+            if (!entity_arg.isValid()) {
+                e->error(op, "Use op involved is malformed", res, e->getId());
+                return OPERATION_IGNORED;
+            }
+
+            if (!entity_arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+                e->error(op, "Involved entity has no ID", res, e->getId());
+                return OPERATION_IGNORED;
+            }
+
+            auto involved = BaseWorld::instance().getEntity(entity_arg->getId());
+            if (!involved) {
+                e->error(op, "Involved entity does not exist", res, e->getId());
+                return OPERATION_IGNORED;
+            }
+
+            involvedEntities.push_back(involved);
+        }
+
+        //Check that there's an action registered for this operation
+        auto usagesI = m_usages.find(op_type);
+        if (usagesI != m_usages.end()) {
+            auto& usage = usagesI->second;
+
+            if (usage.constraint) {
+                if (!usage.constraint->match(*actor)) {
+                    return OPERATION_IGNORED;
+                }
+            }
+
+            //Check that the number of involved entities match targets and consumed.
+            if (usage.targets.size() + usage.consumed.size() == involvedEntities.size()) {
+                std::vector<LocatedEntity*> targets;
+                std::vector<LocatedEntity*> consumed;
+                for (size_t i = 0; i < usage.targets.size(); ++i) {
+                    if (!usage.targets[i]->match(*involvedEntities[i])) {
+                        continue;
+                    }
+                    targets.push_back(involvedEntities[i]);
+                }
+                for (size_t i = 0; i < usage.consumed.size(); ++i) {
+                    if (!usage.consumed[i]->match(*involvedEntities[usage.targets.size() + i])) {
+                        continue;
+                    }
+                    consumed.push_back(involvedEntities[usage.targets.size() + i]);
+
+                }
+                auto lastSeparatorPos = usage.handler.find_last_of('.');
+                if (lastSeparatorPos != std::string::npos) {
+                    auto moduleName = usage.handler.substr(0, lastSeparatorPos);
+                    auto functionName = usage.handler.substr(lastSeparatorPos + 1);
+                    PyImport_ReloadModule(Py::String(moduleName).ptr());
+                    PyImport_Import(Py::String(moduleName).ptr());
+                    Py::Module module(moduleName);
+                    auto functionObject = module.getDict()[functionName];
+                    if (!functionObject.isCallable()) {
+                        e->error(op, String::compose("Could not find Python function %1", usage.handler), res, e->getId());
+                        return OPERATION_IGNORED;
+                    }
+                    Py::Dict kwds;
+                    Py::List targetsList;
+                    for (auto& entity: targets) {
+                        targetsList.append(CyPy_LocatedEntity::wrap(entity));
+                    }
+                    Py::List consumedList;
+                    for (auto& entity: consumed) {
+                        consumedList.append(CyPy_LocatedEntity::wrap(entity));
+                    }
+
+                    kwds["targets"] = std::move(targetsList);
+                    kwds["consumed"] = std::move(consumedList);
+                    kwds["op"] = CyPy_Operation::wrap(rop);
+                    kwds["from_"] = CyPy_LocatedEntity::wrap(actor);
+
+                    Atlas::Objects::Operation::Sight sight;
+                    sight->setArgs1(rop);
+                    actor->sendWorld(sight); //The sight needs to come from the actor.
+
+                    try {
+                        auto ret = Py::Callable(functionObject).apply(Py::TupleN(), kwds);
+                        return processScriptResult(usage.handler, ret, res, e);
+                    } catch (const Py::BaseException& py_ex) {
+                        log(ERROR, String::compose("Python error calling \"%1\" for entity %2", usage.handler, e->describeEntity()));
+                        if (PyErr_Occurred()) {
+                            PyErr_Print();
+                        }
+                    }
+                }
+            }
+        }
+    }
+    //We couldn't find any suitable task.
+    return OPERATION_IGNORED;
+}
+
+
+HandlerResult UsagesProperty::processScriptResult(const std::string& scriptName, const Py::Object& ret, OpVector& res, LocatedEntity* e)
+{
+    HandlerResult result = OPERATION_IGNORED;
+
+    auto processPythonResultFn = [&](const Py::Object& pythonResult) {
+        if (pythonResult.isLong()) {
+            auto numRet = Py::Long(pythonResult).as_long();
+            if (numRet == 0) {
+                result = OPERATION_IGNORED;
+            } else if (numRet == 1) {
+                result = OPERATION_HANDLED;
+            } else if (numRet == 2) {
+                result = OPERATION_BLOCKED;
+            } else {
+                log(ERROR, String::compose("Unrecognized return code %1 for operation handler '%2'", numRet, scriptName));
+            }
+
+        } else if (CyPy_Operation::check(pythonResult)) {
+            auto operation = CyPy_Operation::value(pythonResult);
+            assert(operation);
+            operation->setFrom(e->getId());
+            res.push_back(std::move(operation));
+        } else if (CyPy_Oplist::check(pythonResult)) {
+            auto& o = CyPy_Oplist::value(pythonResult);
+            for (auto& opRes : o) {
+                opRes->setFrom(e->getId());
+                res.push_back(opRes);
+            }
+        } else {
+            log(ERROR, String::compose("Python script \"%1\" returned an invalid "
+                                       "result.", scriptName));
+        }
+    };
+
+    if (ret.isNone()) {
+        debug(std::cout << "Returned none" << std::endl << std::flush;);
+    } else {
+        //Check if it's a tuple and process it.
+        if (ret.isTuple()) {
+            for (auto item : Py::Tuple(ret)) {
+                processPythonResultFn(item);
+            }
+        } else {
+            processPythonResultFn(ret);
+        }
+    }
+
+    return result;
 }
