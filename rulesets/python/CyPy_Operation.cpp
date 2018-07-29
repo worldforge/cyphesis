@@ -68,7 +68,7 @@ CyPy_Operation::CyPy_Operation(Py::PythonClassInstance* self, Py::Tuple& args, P
         if (kwds.hasKey("to")) {
             auto toObj = kwds.getItem("to");
             if (toObj.isString()) {
-                m_value->setFrom(toObj.as_string());
+                m_value->setTo(toObj.as_string());
             } else if (toObj.hasAttr("id") && toObj.getAttr("id").isString()) {
                 m_value->setTo(toObj.getAttr("id").as_string());
             } else {
