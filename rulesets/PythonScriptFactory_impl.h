@@ -64,7 +64,15 @@ Py::Object PythonScriptFactory<T>::createScript(T* entity) const
     if (wrapper.isNull()) {
         return Py::Null();
     }
-    return Create_PyScript(wrapper, *this->m_class);
+    try {
+        return this->m_class->apply(Py::TupleN(wrapper));
+    } catch (...) {
+        log(ERROR, String::compose("Error when creating script '%1.%2'.", this->m_package, this->m_type));
+        if (PyErr_Occurred() != nullptr) {
+            PyErr_Print();
+        }
+        return Py::None();
+    }
 }
 
 template <class T>
@@ -74,7 +82,6 @@ int PythonScriptFactory<T>::addScript(T * entity) const
     if (!script.isNone()) {
         auto scriptInstance = new PythonEntityScript(script);
         entity->setScript(scriptInstance);
-
     }
 
     return (script.isNull()) ? -1 : 0;
