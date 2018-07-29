@@ -96,6 +96,9 @@ void installCustomOperations(Inheritance & i)
      */
     i.addChild(atlasOpDefinition("change", "info"));
     Atlas::Objects::Operation::CHANGE_NO = atlas_factories->addFactory("change", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
+
+    i.addChild(atlasOpDefinition("hit", "affect"));
+    Atlas::Objects::Operation::HIT_NO = atlas_factories->addFactory("hit", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
 }
 
 void installCustomEntities(Inheritance & i)

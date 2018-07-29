@@ -43,6 +43,7 @@ extern int THINK_NO;
 extern int RELAY_NO;
 extern int POSSESS_NO;
 extern int CHANGE_NO;
+extern int HIT_NO;
 
 } } }
 
