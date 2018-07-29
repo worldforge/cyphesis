@@ -184,13 +184,13 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
         const std::string name = I.column("name");
         if (name.empty()) {
             log(ERROR, compose("No name column in property row for %1",
-                               ent->getId()));
+                               ent->describeEntity()));
             continue;
         }
         const std::string val_string = I.column("value");
         if (name.empty()) {
             log(ERROR, compose("No value column in property row for %1,%2",
-                               ent->getId(), name));
+                               ent->describeEntity(), name));
             continue;
         }
         MapType prop_data;
@@ -198,7 +198,7 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
         MapType::const_iterator J = prop_data.find("val");
         if (J == prop_data.end()) {
             log(ERROR, compose("No property value data for %1:%2",
-                               ent->getId(), name));
+                               ent->describeEntity(), name));
             continue;
         }
         assert(ent->getType() != nullptr);
