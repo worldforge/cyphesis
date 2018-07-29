@@ -24,13 +24,17 @@
 template <class T>
 PropertyBase * PropertyFactory<T>::newProperty()
 {
-    return new T();
+    auto prop = new T();
+    prop->addFlags(m_flags);
+    return prop;
 }
 
 template <class T>
 PropertyFactory<T> * PropertyFactory<T>::duplicateFactory() const
 {
-    return new PropertyFactory<T>;
+    auto copy = new PropertyFactory<T>{};
+    copy->m_flags = m_flags;
+    return copy;
 }
 
 #endif // COMMON_PROPERTY_FACTORY_IMPL_H

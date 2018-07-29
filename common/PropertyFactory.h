@@ -19,6 +19,8 @@
 #ifndef COMMON_PROPERTY_FACTORY_H
 #define COMMON_PROPERTY_FACTORY_H
 
+#include <cinttypes>
+
 class PropertyBase;
 
 /// \brief Kit interface for factories to create Property objects.
@@ -37,6 +39,8 @@ class PropertyKit {
 template <class T>
 class PropertyFactory : public PropertyKit {
   public:
+    std::uint32_t m_flags;
+    PropertyFactory() : m_flags(0) {}
     virtual PropertyBase * newProperty();
     virtual PropertyFactory<T> * duplicateFactory() const;
 };
