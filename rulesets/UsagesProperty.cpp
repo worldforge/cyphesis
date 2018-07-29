@@ -111,28 +111,30 @@ HandlerResult UsagesProperty::operation(LocatedEntity* e,
 HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
                                           const Operation& op, OpVector& res)
 {
-    if (op->isDefaultFrom()) {
-        e->error(op, "Top op has no 'from' attribute.", res, e->getId());
-        return OPERATION_IGNORED;
-    }
+
 
     auto actor = BaseWorld::instance().getEntity(op->getFrom());
     if (!actor) {
         e->error(op, "Could not find 'from' entity.", res, e->getId());
         return OPERATION_IGNORED;
     }
-
+    
+    if (op->isDefaultFrom()) {
+        actor->error(op, "Top op has no 'from' attribute.", res, actor->getId());
+        return OPERATION_IGNORED;
+    }
+    
     if (!op->getArgs().empty()) {
         auto& arg = op->getArgs().front();
         auto argOp = smart_dynamic_cast<Atlas::Objects::Operation::RootOperation>(arg);
         if (!argOp) {
-            e->error(op, "First arg wasn't an operation.", res, e->getId());
+            actor->error(op, "First arg wasn't an operation.", res, actor->getId());
             return OPERATION_IGNORED;
         }
 
 
         if (!argOp->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
-            e->error(op, "Use arg op has malformed parent", res, e->getId());
+            actor->error(op, "Use arg op has malformed parent", res, actor->getId());
             return OPERATION_IGNORED;
         }
         auto op_type = argOp->getParent();
@@ -160,18 +162,18 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
         for (const auto& arg_op_arg : arg_op_args) {
             auto entity_arg = smart_dynamic_cast<RootEntity>(arg_op_arg);
             if (!entity_arg.isValid()) {
-                e->error(op, "Use op involved is malformed", res, e->getId());
+                actor->error(op, "Use op involved is malformed", res, actor->getId());
                 return OPERATION_IGNORED;
             }
 
             if (!entity_arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-                e->error(op, "Involved entity has no ID", res, e->getId());
+                actor->error(op, "Involved entity has no ID", res, actor->getId());
                 return OPERATION_IGNORED;
             }
 
             auto involved = BaseWorld::instance().getEntity(entity_arg->getId());
             if (!involved) {
-                e->error(op, "Involved entity does not exist", res, e->getId());
+                actor->error(op, "Involved entity does not exist", res, actor->getId());
                 return OPERATION_IGNORED;
             }
 
@@ -186,6 +188,28 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
             if (usage.constraint) {
                 if (!usage.constraint->match(*actor)) {
                     return OPERATION_IGNORED;
+                }
+            }
+
+            //Check that the tool is ready
+            auto toolReadyAtProp = e->getPropertyType<double>("ready_at");
+            if (toolReadyAtProp) {
+                if (toolReadyAtProp->data() > BaseWorld::instance().getTime()) {
+                    actor->clientError(op, "Tool is not ready yet.", res, actor->getId());
+                    return OPERATION_IGNORED;
+                }
+            }
+
+            //Check if the tools is attached, and if so the attachment is ready
+            auto actorReadyAtProp = actor->getPropertyType<MapType>("_ready_at_attached");
+            if (actorReadyAtProp) {
+                //FIXME: don't hardcode this, instead get it from the tools "planted_on" prop
+                auto attachI = actorReadyAtProp->data().find("right_hand_wield");
+                if (attachI != actorReadyAtProp->data().end()) {
+                    if (attachI->second.isFloat() && attachI->second.Float() > BaseWorld::instance().getTime()) {
+                        actor->clientError(op, "Actor is not ready yet.", res, actor->getId());
+                        return OPERATION_IGNORED;
+                    }
                 }
             }
 
@@ -214,7 +238,7 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
                     PyImport_ReloadModule(module.ptr());
                     auto functionObject = module.getDict()[functionName];
                     if (!functionObject.isCallable()) {
-                        e->error(op, String::compose("Could not find Python function %1", usage.handler), res, e->getId());
+                        actor->error(op, String::compose("Could not find Python function %1", usage.handler), res, actor->getId());
                         return OPERATION_IGNORED;
                     }
                     Py::Dict kwds;

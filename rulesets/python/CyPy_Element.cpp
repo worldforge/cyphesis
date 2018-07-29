@@ -52,6 +52,9 @@ void CyPy_Element::init_type()
     behaviors().supportRepr();
     behaviors().supportRichCompare();
 
+    behaviors().supportMappingType(Py::PythonType::support_mapping_ass_subscript
+                                   | Py::PythonType::support_mapping_subscript);
+
     PYCXX_ADD_NOARGS_METHOD(get_name, get_name, "");
     PYCXX_ADD_NOARGS_METHOD(pythonize, pythonize, "");
 
@@ -268,4 +271,27 @@ Py::Object CyPy_Element::wrap(Atlas::Message::Element value)
     } else {
         return WrapperBase::wrap(std::move(value));
     }
+}
+
+Py::Object CyPy_Element::mapping_subscript(const Py::Object& key)
+{
+    if (!m_value.isMap()) {
+        throw Py::RuntimeError("Element is not of Map type.");
+    }
+    auto I = m_value.Map().find(verifyString(key));
+    if (I != m_value.Map().end()) {
+        return CyPy_Element::asPyObject(I->second);
+    }
+    return Py::None();
+}
+
+int CyPy_Element::mapping_ass_subscript(const Py::Object& key, const Py::Object& value)
+{
+    if (!m_value.isMap()) {
+        throw Py::RuntimeError("Element is not of Map type.");
+    }
+
+    m_value.Map()[verifyString(key)] = CyPy_Element::asElement(value);
+    return 0;
+
 }

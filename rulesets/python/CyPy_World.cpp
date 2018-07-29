@@ -27,7 +27,7 @@ CyPy_World::CyPy_World(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict&
     throw Py::RuntimeError("Can not create World instances.");
 }
 
-CyPy_World::CyPy_World(Py::PythonClassInstance* self, BaseWorld* value) 
+CyPy_World::CyPy_World(Py::PythonClassInstance* self, BaseWorld* value)
     : WrapperBase(self, value)
 {
 
@@ -48,14 +48,14 @@ void CyPy_World::init_type()
 
 Py::Object CyPy_World::get_time()
 {
-    return CyPy_WorldTime::wrap(WorldTimeWrapper(decltype(WorldTimeWrapper::m_value){WorldTime(BaseWorld::instance().getTime())}));
+    return Py::Float(m_value->getTime());
 }
 
-Py::Object CyPy_World::get_object( const Py::Tuple& args)
+Py::Object CyPy_World::get_object(const Py::Tuple& args)
 {
     args.verify_length(1);
     auto id = verifyString(args.front());
-    LocatedEntity * ent = BaseWorld::instance().getEntity(id);
+    LocatedEntity* ent = m_value->getEntity(id);
     if (ent == nullptr) {
         return Py::None();
     }
@@ -63,7 +63,7 @@ Py::Object CyPy_World::get_object( const Py::Tuple& args)
 }
 
 //FIXME: remove this one
-Py::Object CyPy_World::get_object_ref(  const Py::Tuple& args)
+Py::Object CyPy_World::get_object_ref(const Py::Tuple& args)
 {
     return get_object(args);
 }

@@ -82,33 +82,37 @@ using Atlas::Objects::Root;
 static const bool debug_flag = false;
 
 template<typename T>
-void CorePropertyManager::installBaseProperty(const std::string & type_name,
-                                              const std::string & parent)
+PropertyFactory<Property<T>>* CorePropertyManager::installBaseProperty(const std::string & type_name,
+                                                                       const std::string & parent)
 {
+    auto factory = new PropertyFactory<Property<T>>{};
     installFactory(type_name,
                    atlasType(type_name, parent, true),
-                   new PropertyFactory<Property<T>>);
+                   factory);
+    return factory;
 }
 
 template<typename PropertyT>
-void CorePropertyManager::installProperty(const std::string & type_name,
-                                          const std::string & parent)
+PropertyFactory<PropertyT>* CorePropertyManager::installProperty(const std::string & type_name,
+                                                                 const std::string & parent)
 {
+    auto factory = new PropertyFactory<PropertyT>{};
     installFactory(type_name,
                    atlasType(type_name, parent),
-                   new PropertyFactory<PropertyT>);
+                   factory);
+    return factory;
 }
 
 template<typename PropertyT>
-void CorePropertyManager::installProperty(const std::string & type_name)
+PropertyFactory<PropertyT>* CorePropertyManager::installProperty(const std::string & type_name)
 {
-    this->installProperty<PropertyT>(type_name, PropertyT::property_atlastype);
+    return this->installProperty<PropertyT>(type_name, PropertyT::property_atlastype);
 }
 
 template<typename PropertyT>
-void CorePropertyManager::installProperty()
+PropertyFactory<PropertyT>* CorePropertyManager::installProperty()
 {
-    this->installProperty<PropertyT>(PropertyT::property_name, PropertyT::property_atlastype);
+    return this->installProperty<PropertyT>(PropertyT::property_name, PropertyT::property_atlastype);
 }
 
 
@@ -259,6 +263,9 @@ CorePropertyManager::CorePropertyManager()
     installProperty<ScriptsProperty>();
 
     installProperty<UsagesProperty>();
+
+    installProperty<Property<MapType>>("_ready_at_attached")->m_flags = per_ephem;
+    installProperty<Property<double>>("ready_at")->m_flags = per_ephem;
 }
 
 int CorePropertyManager::installFactory(const std::string & type_name,

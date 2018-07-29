@@ -42,6 +42,11 @@ class CyPy_Element : public WrapperBase<Atlas::Message::Element, CyPy_Element>
 
         int setattro(const Py::String& name, const Py::Object& attr) override;
 
+        virtual Py::Object mapping_subscript(const Py::Object&);
+
+        virtual int mapping_ass_subscript(const Py::Object&, const Py::Object&);
+
+
         Py::Object get_name();
 
         PYCXX_NOARGS_METHOD_DECL(CyPy_Element, get_name);

@@ -19,25 +19,27 @@
 #ifndef SERVER_CORE_PROPERTY_MANAGER_H
 #define SERVER_CORE_PROPERTY_MANAGER_H
 
+#include "common/PropertyFactory.h"
 #include "common/PropertyManager.h"
+#include "common/Property.h"
 
 /// \brief Property manager for the core server. Handles assigning properties
 /// to entity instances in the world.
 class CorePropertyManager : public PropertyManager {
   private:
     template<typename T>
-    void installBaseProperty(const std::string & type_name,
-                             const std::string & parent);
+    PropertyFactory<Property<T>>* installBaseProperty(const std::string & type_name,
+                                                      const std::string & parent);
 
     template<class PropertyT>
-    void installProperty(const std::string & type_name,
-                         const std::string & parent);
+    PropertyFactory<PropertyT>* installProperty(const std::string & type_name,
+                                                const std::string & parent);
 
     template<class PropertyT>
-    void installProperty(const std::string & type_name);
+    PropertyFactory<PropertyT>* installProperty(const std::string & type_name);
 
     template<class PropertyT>
-    void installProperty();
+    PropertyFactory<PropertyT>* installProperty();
 
   public:
     CorePropertyManager();
