@@ -227,13 +227,15 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
                 std::vector<EntityLocation> consumed;
                 for (size_t i = 0; i < usage.targets.size(); ++i) {
                     if (!usage.targets[i]->match(*involvedEntities[i].m_loc)) {
-                        continue;
+                        actor->error(op, String::compose("Target nr. %1 does not match the filter.", i), res, actor->getId());
+                        return OPERATION_IGNORED;
                     }
                     targets.push_back(involvedEntities[i]);
                 }
                 for (size_t i = 0; i < usage.consumed.size(); ++i) {
                     if (!usage.consumed[i]->match(*involvedEntities[usage.targets.size() + i].m_loc)) {
-                        continue;
+                        actor->error(op, String::compose("Consumed nr. %1 does not match the filter.", i), res, actor->getId());
+                        return OPERATION_IGNORED;
                     }
                     consumed.push_back(involvedEntities[usage.targets.size() + i]);
 
