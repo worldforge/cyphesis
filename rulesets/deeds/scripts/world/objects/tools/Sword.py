@@ -1,6 +1,10 @@
+# This file is distributed under the terms of the GNU General Public license.
+# Copyright (C) 2018 Erik Ogenvik (See the file COPYING for details).
+
 from atlas import *
 
 import server
+from world.utils import Usage
 
 def strike(tool, actor, op, targets, consumed):
     # Check that we can reach the target with our weapon
@@ -9,14 +13,7 @@ def strike(tool, actor, op, targets, consumed):
         extraReach = tool.props.reach
 
     # If there's a cooldown we need to mark the actor
-    cooldown = tool.props.cooldown
-    if cooldown and cooldown > 0.0:
-        ready_at_attached_prop = actor.props._ready_at_attached
-        if not ready_at_attached_prop:
-            ready_at_attached_prop = {}
-
-        ready_at_attached_prop["right_hand_wield"] = server.world.get_time() + cooldown
-        actor.send_world(Operation('set', Entity(actor.id, _ready_at_attached=ready_at_attached_prop), to=actor.id))
+    Usage.set_cooldown_on_attached(tool, actor)
 
     # Sword only handles one target
     target = targets[0]

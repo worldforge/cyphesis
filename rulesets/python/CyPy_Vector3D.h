@@ -19,7 +19,6 @@
 #ifndef CYPHESIS_CYPY_VECTOR3D_H
 #define CYPHESIS_CYPY_VECTOR3D_H
 
-#include "external/pycxx/CXX/Extensions.hxx"
 #include "WrapperBase.h"
 #include <wfmath/vector.h>
 

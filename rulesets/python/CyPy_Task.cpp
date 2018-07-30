@@ -93,7 +93,6 @@ Py::Object CyPy_Task::nexttick(const Py::Tuple& args)
 
 Py::Object CyPy_Task::getattro(const Py::String& name)
 {
-    // Fairly major re-write of this to use operator[] of Task base class
     auto nameStr = name.as_string();
     if (nameStr == "character") {
         return CyPy_LocatedEntity::wrap(&m_value->owner());

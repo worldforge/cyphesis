@@ -13,6 +13,19 @@
             <map name="density">
                 <float name="default">2000</float>
             </map>
+            <map name="cooldown">
+                <float name="default">1</float>
+            </map>
+            <map name="usages">
+                <map name="default">
+                    <map name="sow">
+                        <list name="targets">
+                            <string>entity.type instance_of types.game_entity &amp;&amp; entity.germinates != none</string>
+                        </list>
+                        <string name="handler">world.objects.tools.Trowel.sow</string>
+                    </map>
+                </map>
+            </map>
         </map>
         <string name="id">trowel</string>
         <string name="objtype">class</string>
