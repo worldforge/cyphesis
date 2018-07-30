@@ -19,9 +19,10 @@
 #ifndef RULESETS_LOCATED_ENTITY_H
 #define RULESETS_LOCATED_ENTITY_H
 
-#include "Location.h"
 
+#include "modules/Ref.h"
 #include "modules/Flags.h"
+#include "Location.h"
 
 #include "common/Property.h"
 #include "common/Router.h"

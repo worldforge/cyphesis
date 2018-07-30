@@ -16,10 +16,10 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
-#ifndef MODULES_LOCATION_H
-#define MODULES_LOCATION_H
+#ifndef RULESETS_LOCATION_H
+#define RULESETS_LOCATION_H
 
-#include "modules/Ref.h"
+#include "EntityLocation.h"
 #include "physics/Vector3D.h"
 #include "physics/BBox.h"
 #include "physics/Quaternion.h"
@@ -33,7 +33,7 @@
 
 class LocatedEntity;
 
-class Location {
+class Location : public EntityLocation {
   protected:
     bool m_simple;
     bool m_solid;
@@ -43,14 +43,6 @@ class Location {
     float m_radius; // Radius of bounding sphere of box
     float m_squareRadius;
   public:
-    /**
-     * The parent entity.
-     */
-    Ref<LocatedEntity> m_loc;
-    /**
-     * Coords relative to the parent entity
-     */
-    Point3D m_pos;
     /**
      * Velocity vector, relative to m_loc entity.
      */
@@ -74,14 +66,11 @@ class Location {
     float radius() const { return m_radius; }
     float squareRadius() const { return m_squareRadius; }
 
-    const Point3D & pos() const { return m_pos; }
     const Vector3D & velocity() const { return m_velocity; }
     const Quaternion & orientation() const { return m_orientation; }
     const BBox & bBox() const { return m_bBox; }
 
-    bool isValid() const {
-        return (m_loc && m_pos.isValid());
-    }
+
 
     bool isSimple() const {
         return m_simple;
@@ -123,7 +112,6 @@ class Location {
     friend std::ostream & operator<<(std::ostream& s, Location& v);
 };
 
-#include "rulesets/LocatedEntity.h"
 
 const Vector3D distanceTo(const Location & self, const Location & other);
 
@@ -154,4 +142,6 @@ inline float distance(const Location & self, const Location & other)
     return std::sqrt(squareDistance(self, other));
 }
 
-#endif // MODULES_LOCATION_H
+#include "rulesets/LocatedEntity.h"
+
+#endif // RULESETS_LOCATION_H

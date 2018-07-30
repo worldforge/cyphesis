@@ -22,6 +22,7 @@
 #include "CyPy_Oplist.h"
 #include "CyPy_RootEntity.h"
 #include "CyPy_Location.h"
+#include "CyPy_EntityLocation.h"
 
 CyPy_Atlas::CyPy_Atlas() : ExtensionModule("atlas")
 {
@@ -31,6 +32,7 @@ CyPy_Atlas::CyPy_Atlas() : ExtensionModule("atlas")
     CyPy_Oplist::init_type();
     CyPy_RootEntity::init_type();
     CyPy_Location::init_type();
+    CyPy_EntityLocation::init_type();
 
     add_varargs_method("isLocation", &CyPy_Atlas::is_location, "");
 
@@ -44,6 +46,7 @@ CyPy_Atlas::CyPy_Atlas() : ExtensionModule("atlas")
     d["Oplist"] = CyPy_Oplist::type();
     d["Entity"] = CyPy_RootEntity::type();
     d["Location"] = CyPy_Location::type();
+    d["EntityLocation"] = CyPy_EntityLocation::type();
 }
 
 

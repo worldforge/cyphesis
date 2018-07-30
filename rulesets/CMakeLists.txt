@@ -3,7 +3,8 @@ add_library(rulesetbase
     EntityProperties.cpp
     AtlasProperties.cpp
     Script.cpp
-    Location.cpp)
+    Location.cpp
+    EntityLocation.cpp)
 
 add_library(rulesetentity
     Entity.cpp
@@ -87,26 +88,6 @@ add_library(rulesetmind
     mind/SharedTerrain.cpp)
 
 add_library(scriptpython
-#    Py_Message.cpp
-#    Py_Operation.cpp
-#    Py_RootEntity.cpp
-#    Py_Oplist.cpp
-#    Py_Vector3D.cpp
-#    Py_Point3D.cpp
-#    Py_Thing.cpp
-#    Py_Filter.cpp
-#    Py_MemMap.cpp
-#    Py_Quaternion.cpp
-#    Py_BBox.cpp
-#    Py_WorldTime.cpp
-#    Py_World.cpp
-#    Py_Location.cpp
-#    Py_Task.cpp
-#    Py_Shape.cpp
-#    Py_Property.cpp
-#    Py_TerrainModProperty.cpp
-#    Py_TerrainProperty.cpp
-    Python_API.cpp
     PythonClass.cpp
     PythonContext.cpp
     PythonWrapper.cpp
@@ -115,7 +96,7 @@ add_library(scriptpython
     PythonArithmeticFactory.cpp
     PythonScriptFactory.cpp
     PythonScriptFactory_impl.h
-
+    Python_API.cpp
     python/CyPy_EntityFilter.cpp python/CyPy_EntityFilter.h
     python/CyPy_LocatedEntity.cpp python/CyPy_LocatedEntity.h
     python/CyPy_Entity.cpp python/CyPy_Entity.h
@@ -141,7 +122,7 @@ add_library(scriptpython
     python/CyPy_Task.cpp python/CyPy_Task.h
     python/CyPy_WorldTime.cpp python/CyPy_WorldTime.h
     python/CyPy_World.cpp python/CyPy_World.h
-    python/CyPy_TerrainProperty.cpp python/CyPy_TerrainProperty.h)
+    python/CyPy_TerrainProperty.cpp python/CyPy_TerrainProperty.h python/CyPy_EntityLocation.cpp python/CyPy_EntityLocation.h)
 
 target_link_libraries(scriptpython ${PYTHON_LIBRARIES} pycxx)
 # Prevent GCC from messing up Python pointer handling

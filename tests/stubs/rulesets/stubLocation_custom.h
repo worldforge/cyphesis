@@ -1,25 +1,23 @@
 //Add custom implementations of stubbed functions here; this file won't be rewritten when re-generating stubs.
 #include "common/const.h"
+#include "stubEntityLocation.h"
 #include <Atlas/Objects/Anonymous.h>
 
 #ifndef STUB_Location_Location
 #define STUB_Location_Location
 
 Location::Location() :
-    m_simple(true), m_solid(true),
-    m_loc(0)
+    m_simple(true), m_solid(true)
 {
 }
 
 Location::Location(LocatedEntity * rf, const Point3D & pos) :
-    m_simple(true), m_solid(true),
-    m_loc(rf), m_pos(pos)
+    EntityLocation(rf, pos), m_simple(true), m_solid(true)
 {
 }
 
 Location::Location(LocatedEntity * rf):
-    m_simple(true), m_solid(true),
-    m_loc(rf)
+    EntityLocation(rf), m_simple(true), m_solid(true)
 {
 }
 #endif //STUB_Location_Location

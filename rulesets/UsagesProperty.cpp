@@ -32,6 +32,7 @@
 
 #include <wfmath/atlasconv.h>
 #include <rulesets/python/CyPy_Point3D.h>
+#include <rulesets/python/CyPy_EntityLocation.h>
 
 static const bool debug_flag = false;
 using Atlas::Message::Element;
@@ -160,7 +161,7 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
         rop->setTo(e->getId());
 
         //Optionally extract any involved entities
-        std::vector<std::pair<LocatedEntity*, WFMath::Point<3>>> involvedEntities;
+        std::vector<EntityLocation> involvedEntities;
         auto& arg_op_args = argOp->getArgs();
         for (const auto& arg_op_arg : arg_op_args) {
             auto entity_arg = smart_dynamic_cast<RootEntity>(arg_op_arg);
@@ -222,19 +223,19 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
 
             //Check that the number of involved entities match targets and consumed.
             if (usage.targets.size() + usage.consumed.size() == involvedEntities.size()) {
-                std::vector<std::pair<LocatedEntity*, WFMath::Point<3>>> targets;
-                std::vector<LocatedEntity*> consumed;
+                std::vector<EntityLocation> targets;
+                std::vector<EntityLocation> consumed;
                 for (size_t i = 0; i < usage.targets.size(); ++i) {
-                    if (!usage.targets[i]->match(*involvedEntities[i].first)) {
+                    if (!usage.targets[i]->match(*involvedEntities[i].m_loc)) {
                         continue;
                     }
                     targets.push_back(involvedEntities[i]);
                 }
                 for (size_t i = 0; i < usage.consumed.size(); ++i) {
-                    if (!usage.consumed[i]->match(*involvedEntities[usage.targets.size() + i].first)) {
+                    if (!usage.consumed[i]->match(*involvedEntities[usage.targets.size() + i].m_loc)) {
                         continue;
                     }
-                    consumed.push_back(involvedEntities[usage.targets.size() + i].first);
+                    consumed.push_back(involvedEntities[usage.targets.size() + i]);
 
                 }
                 auto lastSeparatorPos = usage.handler.find_last_of('.');
@@ -251,11 +252,11 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
                     Py::Dict kwds;
                     Py::List targetsList;
                     for (auto& entry: targets) {
-                        targetsList.append(Py::TupleN(CyPy_LocatedEntity::wrap(entry.first), CyPy_Point3D::wrap(entry.second)));
+                        targetsList.append(CyPy_EntityLocation::wrap(entry));
                     }
                     Py::List consumedList;
                     for (auto& entity: consumed) {
-                        consumedList.append(CyPy_LocatedEntity::wrap(entity));
+                        consumedList.append(CyPy_EntityLocation::wrap(entity));
                     }
 
                     kwds["targets"] = std::move(targetsList);

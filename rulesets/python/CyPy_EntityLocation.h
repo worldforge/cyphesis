@@ -16,18 +16,18 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef CYPHESIS_CYPY_LOCATION_H
-#define CYPHESIS_CYPY_LOCATION_H
+#ifndef CYPHESIS_CYPY_ENTITYLOCATION_H
+#define CYPHESIS_CYPY_ENTITYLOCATION_H
 
-#include "rulesets/Location.h"
+#include "rulesets/EntityLocation.h"
 #include "WrapperBase.h"
 
-class CyPy_Location : public WrapperBase<Location, CyPy_Location>
+class CyPy_EntityLocation : public WrapperBase<EntityLocation, CyPy_EntityLocation>
 {
     public:
-        CyPy_Location(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
+        CyPy_EntityLocation(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
 
-        CyPy_Location(Py::PythonClassInstance* self, Location value);
+        CyPy_EntityLocation(Py::PythonClassInstance* self, EntityLocation value);
 
         static void init_type();
 
@@ -35,16 +35,16 @@ class CyPy_Location : public WrapperBase<Location, CyPy_Location>
 
         int setattro(const Py::String& name, const Py::Object& attr) override;
 
-        Py::Object repr() override;
-
-        virtual Py::Object number_subtract(const Py::Object&);
+//        Py::Object repr() override;
+//
+//        virtual Py::Object number_subtract(const Py::Object&);
 
     private:
 
         Py::Object copy();
 
-        PYCXX_NOARGS_METHOD_DECL(CyPy_Location, copy);
+        PYCXX_NOARGS_METHOD_DECL(CyPy_EntityLocation, copy);
 };
 
 
-#endif //CYPHESIS_CYPY_LOCATION_H
+#endif //CYPHESIS_CYPY_ENTITYLOCATION_H

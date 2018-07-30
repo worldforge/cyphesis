@@ -35,28 +35,28 @@ using Atlas::Objects::Entity::Anonymous;
 static const bool debug_flag = false;
 
 Location::Location() :
-    m_simple(true), m_solid(true),
-    m_loc(nullptr)
+    m_simple(true), m_solid(true)
 {
 }
 
 Location::Location(LocatedEntity * rf) :
-    m_simple(true), m_solid(true),
-    m_loc(rf)
+    EntityLocation(rf),
+    m_simple(true), m_solid(true)
 {
 }
 
 Location::Location(LocatedEntity * rf, const Point3D & pos) :
-    m_simple(true), m_solid(true),
-    m_loc(rf), m_pos(pos)
+    EntityLocation(rf, pos),
+    m_simple(true), m_solid(true)
 {
 }
 
 Location::Location(LocatedEntity * rf,
                    const Point3D& pos,
                    const Vector3D& velocity) :
+    EntityLocation(rf, pos),
     m_simple(true), m_solid(true),
-    m_loc(rf), m_pos(pos), m_velocity(velocity)
+    m_velocity(velocity)
 {
 }
 
