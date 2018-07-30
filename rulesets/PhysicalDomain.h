@@ -129,15 +129,15 @@ class PhysicalDomain : public Domain
             btVector3 centerOfMassOffset;
 
             /**
-             * Max speed when on solid ground, derived from the "speed-ground" property and cached for performance.
+             * Max speed when on solid ground, derived from the "speed_ground" property and cached for performance.
              */
             double speedGround;
             /**
-             * Max speed when in water (swimming), derived from the "speed-water" property and cached for performance.
+             * Max speed when in water (swimming), derived from the "speed_water" property and cached for performance.
              */
             double speedWater;
             /**
-             * Max speed when flying, derived from the "speed-flight" property and cached for performance.
+             * Max speed when flying, derived from the "speed_flight" property and cached for performance.
              */
             double speedFlight;
 

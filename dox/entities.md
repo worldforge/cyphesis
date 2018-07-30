@@ -37,18 +37,18 @@ A "model definition" allows much more control than a single mesh. You can refer 
 * "entitymap"
 The most complex and powerful presentation is the "entity mapping". This is a rules engine which allows you to set up a series of rules with corresponding actions. These actions could be the showing of meshes or models, or more abstract things such as determining whether labels are shown or not. Use this when you need more control over complex behaviours, but keep in mind that the client presentation should play closely to the geometry as it's represented on the server.
 
-### "speed-ground"
+### "speed_ground"
 
 In m/s the max speed of the entity over ground. If absent the entity can't move over ground.
 
-### "speed-water"
+### "speed_water"
 
 In m/s the max speed of the entity in water. If absent the entity can't move in water.
 
-### "speed-flight"
+### "speed_flight"
 
 In m/s the max speed of the entity in in flight. If absent the entity can't fly.
 
-### "speed-jump"
+### "speed_jump"
 
 In m/s the max speed of the entity when jumping. If absent the entity can't jump.

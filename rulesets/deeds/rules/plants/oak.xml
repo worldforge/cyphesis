@@ -77,7 +77,7 @@
             <map name="sizeAdult">
                 <int name="default">4</int>
             </map>
-            <map name="planted-scaled-offset">
+            <map name="planted_scaled_offset">
                 <float name="default">-0.1</float>
             </map>
             <map name="present">

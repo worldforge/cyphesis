@@ -46,7 +46,7 @@ Steering::Steering(MemEntity& avatar) :
         mPathResult(0),
         mAvatarHorizRadius(0.4)
 {
-    auto speedGroundProp = avatar.getPropertyType<double>("speed-ground");
+    auto speedGroundProp = avatar.getPropertyType<double>("speed_ground");
     if (speedGroundProp) {
         mMaxSpeed = speedGroundProp->data();
     }

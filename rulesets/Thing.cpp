@@ -194,10 +194,10 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
         plantedOnEntity = BaseWorld::instance().getEntity(attr_plantedOn.String());
     }
 
-    //Move ops can also alter the "planted-offset" property
+    //Move ops can also alter the "planted_offset" property
     Element attr_plantedOffset;
-    if (ent->copyAttr("planted-offset", attr_plantedOffset) == 0) {
-        setAttr("planted-offset", attr_plantedOffset);
+    if (ent->copyAttr("planted_offset", attr_plantedOffset) == 0) {
+        setAttr("planted_offset", attr_plantedOffset);
     }
 
     const double& current_time = BaseWorld::instance().getTime();

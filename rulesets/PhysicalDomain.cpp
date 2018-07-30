@@ -926,13 +926,13 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
             entry->collisionObject->setCcdSweptSphereRadius(minSize * CCD_SPHERE_FACTOR);
 
             //Set up cached speed values
-            auto speedGroundProp = entity.getPropertyType<double>("speed-ground");
+            auto speedGroundProp = entity.getPropertyType<double>("speed_ground");
             entry->speedGround = speedGroundProp ? speedGroundProp->data() : 0;
 
-            auto speedWaterProp = entity.getPropertyType<double>("speed-water");
+            auto speedWaterProp = entity.getPropertyType<double>("speed_water");
             entry->speedWater = speedWaterProp ? speedWaterProp->data() : 0;
 
-            auto speedFlightProp = entity.getPropertyType<double>("speed-flight");
+            auto speedFlightProp = entity.getPropertyType<double>("speed_flight");
             entry->speedFlight = speedFlightProp ? speedFlightProp->data() : 0;
 
             //Only add to world if position is valid. Otherwise this will be done when a new valid position is applied in applyNewPositionForEntity
@@ -1309,7 +1309,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const P
                 m_dynamicsWorld->updateSingleAabb(bulletEntry->collisionObject);
             }
         }
-    } else if (name == "planted-offset" || name == "planted-scaled-offset") {
+    } else if (name == "planted_offset" || name == "planted_scaled_offset") {
         applyNewPositionForEntity(bulletEntry, bulletEntry->entity->m_location.m_pos);
         bulletEntry->entity->m_location.update(BaseWorld::instance().getTime());
         bulletEntry->entity->removeFlags(entity_clean);
@@ -1319,11 +1319,11 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const P
         sendMoveSight(*bulletEntry, true, false, false, false, false);
     } else if (name == TerrainModProperty::property_name) {
         updateTerrainMod(*bulletEntry->entity, true);
-    } else if (name == "speed-ground") {
+    } else if (name == "speed_ground") {
         bulletEntry->speedGround = dynamic_cast<const Property<double>*>(&prop)->data();
-    } else if (name == "speed-water") {
+    } else if (name == "speed_water") {
         bulletEntry->speedWater = dynamic_cast<const Property<double>*>(&prop)->data();
-    } else if (name == "speed-flight") {
+    } else if (name == "speed_flight") {
         bulletEntry->speedFlight = dynamic_cast<const Property<double>*>(&prop)->data();
     } else if (name == "floats") {
         applyNewPositionForEntity(bulletEntry, bulletEntry->entity->m_location.m_pos);
@@ -1744,11 +1744,11 @@ void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, Physica
                 pos.y() = h;
             }
 
-            auto plantedOffsetProp = entity.getPropertyType<double>("planted-offset");
+            auto plantedOffsetProp = entity.getPropertyType<double>("planted_offset");
             if (plantedOffsetProp) {
                 pos.y() += plantedOffsetProp->data();
             }
-            auto plantedScaledOffsetProp = entity.getPropertyType<double>("planted-scaled-offset");
+            auto plantedScaledOffsetProp = entity.getPropertyType<double>("planted_scaled_offset");
             if (plantedScaledOffsetProp && entity.m_location.bBox().isValid()) {
                 auto size = entity.m_location.bBox().highCorner() - entity.m_location.bBox().lowCorner();
 
@@ -1869,7 +1869,7 @@ void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& 
 
                     //Check if we're trying to jump
                     if (btVelocity.m_floats[1] > 0) {
-                        auto jumpSpeedProp = entity->getPropertyType<double>("speed-jump");
+                        auto jumpSpeedProp = entity->getPropertyType<double>("speed_jump");
                         if (jumpSpeedProp && jumpSpeedProp->data() > 0) {
 
                             bool isGrounded = false;

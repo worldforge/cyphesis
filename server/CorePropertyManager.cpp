@@ -189,23 +189,23 @@ CorePropertyManager::CorePropertyManager()
     /**
      * Vertical offset to use when entity is planted, and adjusted to the height of the terrain.
      */
-    installProperty<Property<double>>("planted-offset");
+    installProperty<Property<double>>("planted_offset");
 
     /**
      * Vertical scaled offset to use when entity is planted, and adjusted to the height of the terrain.
      * The resulting offset is a product of this value and the height of the entity.
      */
-    installProperty<Property<double>>("planted-scaled-offset");
+    installProperty<Property<double>>("planted_scaled_offset");
 
     /**
      * The rotation applied to the entity when it's planted.
      */
-    installProperty<QuaternionProperty>("planted-rotation");
+    installProperty<QuaternionProperty>("planted_rotation");
     /**
      * The current extra rotation applied to the entity.
-     * This is closely matched with "planted-rotation" to keep track of when the entity has the planted rotation applied and not.
+     * This is closely matched with "planted_rotation" to keep track of when the entity has the planted rotation applied and not.
      */
-    installProperty<QuaternionProperty>("active-rotation");
+    installProperty<QuaternionProperty>("active_rotation");
 
     /**
      * Used for things that grows, to limit the size.
@@ -225,19 +225,19 @@ CorePropertyManager::CorePropertyManager()
     /**
      * The max speed in meters per second (m/s) when moving over ground.
      */
-    installProperty<Property<double>>("speed-ground");
+    installProperty<Property<double>>("speed_ground");
     /**
      * The max speed in meters per second (m/s) when moving in water.
      */
-    installProperty<Property<double>>("speed-water");
+    installProperty<Property<double>>("speed_water");
     /**
      * The max speed in meters per second (m/s) when flying.
      */
-    installProperty<Property<double>>("speed-flight");
+    installProperty<Property<double>>("speed_flight");
     /**
      * The max speed in meters per second (m/s) when jumping.
      */
-    installProperty<Property<double>>("speed-jump");
+    installProperty<Property<double>>("speed_jump");
 
     /**
      * If set to 1 the entity is a body of water, i.e. either an Ocean (if no bbox) or a lake/pond (if a bbox).

@@ -19,7 +19,7 @@
                     <float>0.4</float>
                 </list>
             </map>
-            <map name="planted-rotation">
+            <map name="planted_rotation">
                 <list name="default">
                     <float>0.7071</float>
                     <float>0</float>

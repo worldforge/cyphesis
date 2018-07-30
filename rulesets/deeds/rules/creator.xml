@@ -37,16 +37,16 @@
                 <float name="default">1</float>
             </map>
             <!-- Creator agents should by default move quickly. -->
-            <map name="speed-ground">
+            <map name="speed_ground">
                 <float name="default">15</float>
             </map>
-            <map name="speed-water">
+            <map name="speed_water">
                 <float name="default">15</float>
             </map>
-            <map name="speed-flight">
+            <map name="speed_flight">
                 <float name="default">15</float>
             </map>
-            <map name="speed-jump">
+            <map name="speed_jump">
                 <float name="default">7.5</float>
             </map>
             <map name="step_factor">

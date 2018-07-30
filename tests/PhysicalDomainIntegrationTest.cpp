@@ -1394,7 +1394,7 @@ void PhysicalDomainIntegrationTest::test_collision()
     freeEntity->setProperty(PropelProperty::property_name, propelProperty);
     freeEntity->setProperty("mass", massProp);
     freeEntity->setProperty("friction", zeroFrictionProperty);
-    freeEntity->setProperty("speed-ground", speedGroundProperty);
+    freeEntity->setProperty("speed_ground", speedGroundProperty);
     freeEntity->setProperty(AngularFactorProperty::property_name, &angularZeroFactorProperty);
     freeEntity->setType(rockType);
     freeEntity->m_location.m_pos = WFMath::Point<3>(10, 10, 10);
@@ -1614,13 +1614,13 @@ void PhysicalDomainIntegrationTest::test_zoffset()
     plantedEntity->setType(rockType);
     plantedEntity->m_location.m_pos = WFMath::Point<3>(30, 10, 30);
     plantedEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 10, 1)));
-    plantedEntity->setProperty("planted-offset", plantedOffset);
+    plantedEntity->setProperty("planted_offset", plantedOffset);
     domain->addEntity(*plantedEntity);
     ASSERT_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(30, 8.01695, 30));
 
     plantedOffset->data() = -3;
     plantedOffset->apply(plantedEntity);
-    plantedEntity->propertyApplied.emit("planted-offset", *plantedOffset);
+    plantedEntity->propertyApplied.emit("planted_offset", *plantedOffset);
     ASSERT_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(30, 7.01695, 30));
 
 }
@@ -1655,13 +1655,13 @@ void PhysicalDomainIntegrationTest::test_zscaledoffset()
     plantedEntity->setType(rockType);
     plantedEntity->m_location.m_pos = WFMath::Point<3>(30, 10, 30);
     plantedEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 10, 10)));
-    plantedEntity->setProperty("planted-scaled-offset", plantedScaledOffset);
+    plantedEntity->setProperty("planted_scaled_offset", plantedScaledOffset);
     domain->addEntity(*plantedEntity);
     ASSERT_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(30, 8.01695, 30));
 
     plantedScaledOffset->data() = -0.3;
     plantedScaledOffset->apply(plantedEntity);
-    plantedEntity->propertyApplied.emit("planted-offset", *plantedScaledOffset);
+    plantedEntity->propertyApplied.emit("planted_offset", *plantedScaledOffset);
     ASSERT_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(30, 7.01695, 30));
 
 }
@@ -1785,7 +1785,7 @@ void PhysicalDomainIntegrationTest::test_stairs()
 //    Property<double>* stepFactorProp = new Property<double>();
 //    stepFactorProp->data() = 0.3;
 
-    humanType->injectProperty("speed-ground", speedGroundProperty);
+    humanType->injectProperty("speed_ground", speedGroundProperty);
 
 
     Entity* rootEntity = new Entity("0", newId());

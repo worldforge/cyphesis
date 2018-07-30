@@ -42,7 +42,7 @@
                 </map>
             </map>
             <!-- Don't move too slow or it makes traversal boring -->
-            <map name="speed-ground">
+            <map name="speed_ground">
                 <float name="default">8</float>
             </map>
         </map>

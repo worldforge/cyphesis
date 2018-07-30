@@ -17,14 +17,14 @@
             <map name="mass">
                 <float name="default">1</float>
             </map>
-            <map name="speed-ground">
+            <map name="speed_ground">
                 <float name="default">0.1</float>
             </map>
-            <map name="speed-water">
+            <map name="speed_water">
                 <float name="default">0.1</float>
             </map>
             <!-- By default we'll allow mobiles to jump like a normal human -->
-            <map name="speed-jump">
+            <map name="speed_jump">
                 <float name="default">0</float>
             </map>
         </map>

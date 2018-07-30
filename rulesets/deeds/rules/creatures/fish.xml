@@ -7,13 +7,13 @@
             <map name="mode">
                 <string name="default">submerged</string>
             </map>
-            <map name="speed-ground">
+            <map name="speed_ground">
                 <float name="default">0</float>
             </map>
-            <map name="speed-water">
+            <map name="speed_water">
                 <float name="default">3</float>
             </map>
-            <map name="speed-jump">
+            <map name="speed_jump">
                 <float name="default">0</float>
             </map>
         </map>

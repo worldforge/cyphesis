@@ -46,7 +46,7 @@ Each entity has a "position", an "orientation", a "velocity" and an "angular vel
 
 However, when a character needs to move, this is done by setting the "propel" property. This property determines how much the character is moving continously on its own. The resulting "velocity" differs from the "propel" value, since collision detection and other physical constraints are taken into account.
 
-Furthermore, the final velocity is calculated by multiplying the "propel" value with one of the "speed-ground", "speed-water" and "speed-flight" values. Which value to use should be decided by the domain depending on where the character is situated and in what state. An absence of such values, or 0, means that the entity can't move throughout the specified medium.
+Furthermore, the final velocity is calculated by multiplying the "propel" value with one of the "speed_ground", "speed_water" and "speed_flight" values. Which value to use should be decided by the domain depending on where the character is situated and in what state. An absence of such values, or 0, means that the entity can't move throughout the specified medium.
 
 The "propel" property is therefore normalized, in the sense that a value with magnitude of 1 means "full speed". Checks are done so that normal characters shouldn't be allowed to set values with larger magnitude than 1.
 
