@@ -2559,13 +2559,16 @@ bool PhysicalDomain::isEntityReachable(const LocatedEntity& reachingEntity, floa
             return false;
         }
 
+        //Try to get the collision objects positions, if there are any. Otherwise use the entities positions. This is because some entities don't have collision objects.
+        btVector3 reachingEntityPos = reachingEntityEntry->collisionObject ? reachingEntityEntry->collisionObject->getWorldTransform().getOrigin()
+                                                                           : Convert::toBullet(reachingEntity.m_location.pos());
         //If a contained entity tries to touch the domain entity we must check the optional position.
         if (&queriedEntity == &m_entity) {
             if (!positionOnQueriedEntity.isValid()) {
                 return false;
             }
 
-            auto distance = reachingEntityEntry->collisionObject->getWorldTransform().getOrigin().distance(Convert::toBullet(positionOnQueriedEntity));
+            auto distance = reachingEntityPos.distance(Convert::toBullet(positionOnQueriedEntity));
             distance -= reachingEntity.m_location.radius();
             return distance <= reach;
 
@@ -2578,11 +2581,14 @@ bool PhysicalDomain::isEntityReachable(const LocatedEntity& reachingEntity, floa
                     return false;
                 }
 
+                //Try to get the collision objects positions, if there are any. Otherwise use the entities positions. This is because some entities don't have collision objects.
+                btVector3 queriedEntityPos = queriedBulletEntryI->second->collisionObject ? queriedBulletEntryI->second->collisionObject->getWorldTransform().getOrigin()
+                    : Convert::toBullet(reachingEntity.m_location.pos());
 
                 //Note that we ignore the position.
 
                 //Start with the full distance.
-                auto distance = reachingEntityEntry->collisionObject->getWorldTransform().getOrigin().distance(queriedBulletEntryI->second->collisionObject->getWorldTransform().getOrigin());
+                auto distance = reachingEntityPos.distance(queriedEntityPos);
 
                 //We measure from the edge of one entity to the edge of another.
                 distance -= reachingEntity.m_location.radius();
