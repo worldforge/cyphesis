@@ -3,15 +3,12 @@
         <map name="attributes">
             <map name="biomass">
                 <float name="default">20</float>
-                <string name="visibility">public</string>
             </map>
             <map name="mass">
                 <float name="default">20</float>
-                <string name="visibility">public</string>
             </map>
             <map name="maxscale">
                 <float name="default">1.2</float>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">crab</string>
@@ -23,11 +20,9 @@
         <map name="attributes">
             <map name="biomass">
                 <float name="default">1</float>
-                <string name="visibility">public</string>
             </map>
             <map name="mass">
                 <float name="default">1</float>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">larva</string>
@@ -39,11 +34,9 @@
         <map name="attributes">
             <map name="biomass">
                 <float name="default">1</float>
-                <string name="visibility">public</string>
             </map>
             <map name="mass">
                 <float name="default">1</float>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">maggot</string>

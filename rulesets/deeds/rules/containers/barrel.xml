@@ -7,19 +7,15 @@
                     <string name="path">dural/items/containers/barrel/model/barrel.mesh</string>
                     <string name="type">cylinder-y</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="burn_speed">
                 <float name="default">0.25</float>
-                <string name="visibility">public</string>
             </map>
             <map name="density">
                 <float name="default">50</float>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/items/containers/barrel/model/barrel.mesh</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">barrel</string>

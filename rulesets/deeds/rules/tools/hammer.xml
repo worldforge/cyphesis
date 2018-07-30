@@ -6,15 +6,12 @@
                     <string name="path">dural/items/tools/hammer/model/hammer.mesh</string>
                     <string name="type">box</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/items/tools/hammer/hammer.modeldef</string>
-                <string name="visibility">public</string>
             </map>
             <map name="density">
                 <float name="default">2000</float>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">hammer</string>

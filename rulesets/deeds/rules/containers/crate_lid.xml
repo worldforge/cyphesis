@@ -6,15 +6,12 @@
                     <string name="path">dural/items/containers/crate/model/wooden_crate_lid.mesh</string>
                     <string name="type">box</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/items/containers/crate/model/wooden_crate_lid.mesh</string>
-                <string name="visibility">public</string>
             </map>
             <map name="density">
                 <float name="default">500</float>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">crate_lid</string>

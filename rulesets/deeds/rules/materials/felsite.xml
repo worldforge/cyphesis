@@ -4,7 +4,6 @@
         <map name="attributes">
             <map name="density">
                 <float name="default">2500</float>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">felsite</string>
@@ -19,11 +18,9 @@
                     <string name="path">dural/environment/felsite_boulder/model/stone_felsite_a.mesh</string>
                     <string name="type">mesh</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/environment/felsite_boulder/model/stone_felsite_a.mesh</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">felsite_a</string>
@@ -38,11 +35,9 @@
                     <string name="path">dural/environment/felsite_boulder/model/stone_felsite_b.mesh</string>
                     <string name="type">mesh</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/environment/felsite_boulder/model/stone_felsite_b.mesh</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">felsite_b</string>
@@ -57,11 +52,9 @@
                     <string name="path">dural/environment/felsite_boulder/model/stone_felsite_c.mesh</string>
                     <string name="type">mesh</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/environment/felsite_boulder/model/stone_felsite_c.mesh</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">felsite_c</string>
@@ -76,11 +69,9 @@
                     <string name="path">dural/environment/felsite_boulder/model/stone_felsite_d.mesh</string>
                     <string name="type">mesh</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/environment/felsite_boulder/model/stone_felsite_d.mesh</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">felsite_d</string>
@@ -95,11 +86,9 @@
                     <string name="path">dural/environment/felsite_boulder/model/stone_felsite_e.mesh</string>
                     <string name="type">mesh</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/environment/felsite_boulder/model/stone_felsite_e.mesh</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">felsite_e</string>
@@ -114,11 +103,9 @@
                     <string name="path">dural/environment/felsite_boulder/model/stone_felsite_f.mesh</string>
                     <string name="type">mesh</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/environment/felsite_boulder/model/stone_felsite_f.mesh</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">felsite_f</string>
@@ -133,11 +120,9 @@
                     <string name="path">dural/environment/felsite_boulder/model/stone_felsite_g.mesh</string>
                     <string name="type">mesh</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/environment/felsite_boulder/model/stone_felsite_g.mesh</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">felsite_g</string>
@@ -152,11 +137,9 @@
                     <string name="path">dural/environment/felsite_boulder/model/stone_felsite_h.mesh</string>
                     <string name="type">mesh</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/environment/felsite_boulder/model/stone_felsite_h.mesh</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">felsite_h</string>
@@ -171,18 +154,15 @@
                     <string name="path">dural/environment/felsite_boulder/model/stone_felsite_i.mesh</string>
                     <string name="type">mesh</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/environment/felsite_boulder/model/stone_felsite_i.mesh</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">felsite_i</string>
         <string name="objtype">class</string>
         <string name="parent">felsite</string>
     </map>
-
 
 
 </atlas>

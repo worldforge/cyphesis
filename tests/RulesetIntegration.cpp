@@ -127,8 +127,7 @@ Atlas::Objects::Root composeDeclaration(std::string class_name, std::string pare
     Atlas::Message::MapType composed;
     for (const auto& entry : rawAttributes) {
         composed[entry.first] = Atlas::Message::MapType{
-            {"default",    entry.second},
-            {"visibility", "public"}
+            {"default",    entry.second}
         };
     }
 
@@ -175,7 +174,6 @@ void Rulesetintegration::test_sequence()
             MapType attrs;
             MapType test_custom_type_attr;
             test_custom_type_attr["default"] = "test_value";
-            test_custom_type_attr["visibility"] = "public";
             attrs["test_custom_type_attr"] = test_custom_type_attr;
             custom_type_description->setAttr("attributes", attrs);
             custom_type_description->setId("custom_type");
@@ -249,7 +247,6 @@ void Rulesetintegration::test_sequence()
             MapType attrs;
             MapType test_custom_type_attr;
             test_custom_type_attr["default"] = "test_inherited_value";
-            test_custom_type_attr["visibility"] = "public";
             attrs["test_custom_inherited_type_attr"] = test_custom_type_attr;
             custom_inherited_type_description->setAttr("attributes", attrs);
             custom_inherited_type_description->setId("custom_inherited_type");
@@ -322,7 +319,6 @@ void Rulesetintegration::test_sequence()
             MapType test_custom_type_attr;
 
             test_custom_type_attr["default"] = "no_value";
-            test_custom_type_attr["visibility"] = "public";
             attrs["no_custom_type_attr"] = test_custom_type_attr;
 
             nonexistant_description->setId("nonexistant");
@@ -512,13 +508,11 @@ void Rulesetintegration::test_sequence()
             MapType test_custom_type_attr;
 
             test_custom_type_attr["default"] = "test_value";
-            test_custom_type_attr["visibility"] = "public";
             attrs["test_custom_type_attr"] = test_custom_type_attr;
 
             MapType new_custom_type_attr;
 
             new_custom_type_attr["default"] = "new_value";
-            new_custom_type_attr["visibility"] = "public";
             attrs["new_custom_type_attr"] = new_custom_type_attr;
 
             new_custom_type_description->setId("custom_type");

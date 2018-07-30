@@ -1,105 +1,99 @@
 <atlas>
 
-  <map>
-    <map name="attributes">
-      <map name="mode">
-        <string name="default">fixed</string>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">boundary</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="mode">
-        <string name="default">fixed</string>
-        <string name="visibility">public</string>
-      </map>
-      <map name="solid">
-        <int name="default">0</int>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">ocean</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="mass">
-        <float name="default">-1</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">path</string>
-    <string name="objtype">class</string>
-    <string name="parent">area</string>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="area">
-        <map name="default">
-          <int name="layer">8</int>
-          <map name="shape">
-            <list name="points">
-              <list>
-                <float>-3.5</float>
-                <float>-3.5</float>
-              </list>
-              <list>
-                <float>-5</float>
-                <float>0</float>
-              </list>
-              <list>
-                <float>-3.5</float>
-                <float>3.5</float>
-              </list>
-              <list>
-                <float>0</float>
-                <float>5</float>
-              </list>
-              <list>
-                <float>3.5</float>
-                <float>3.5</float>
-              </list>
-              <list>
-                <float>5</float>
-                <float>0</float>
-              </list>
-              <list>
-                <float>3.5</float>
-                <float>-3.5</float>
-              </list>
-              <list>
-                <float>0</float>
-                <float>-5</float>
-              </list>
-            </list>
-            <string name="type">polygon</string>
-          </map>
+    <map>
+        <map name="attributes">
+            <map name="mode">
+                <string name="default">fixed</string>
+            </map>
         </map>
-        <string name="visibility">public</string>
-      </map>
-      <map name="bbox">
-        <list name="default">
-          <float>-5</float>
-          <float>0</float>
-          <float>-5</float>
-          <float>5</float>
-          <float>0.1</float>
-          <float>5</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
+        <string name="id">boundary</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
     </map>
-    <string name="id">ploughed_field</string>
-    <string name="objtype">class</string>
-    <string name="parent">area</string>
-  </map>
+
+    <map>
+        <map name="attributes">
+            <map name="mode">
+                <string name="default">fixed</string>
+            </map>
+            <map name="solid">
+                <int name="default">0</int>
+            </map>
+        </map>
+        <string name="id">ocean</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+
+    <map>
+        <map name="attributes">
+            <map name="mass">
+                <float name="default">-1</float>
+            </map>
+        </map>
+        <string name="id">path</string>
+        <string name="objtype">class</string>
+        <string name="parent">area</string>
+    </map>
+
+    <map>
+        <map name="attributes">
+            <map name="area">
+                <map name="default">
+                    <int name="layer">8</int>
+                    <map name="shape">
+                        <list name="points">
+                            <list>
+                                <float>-3.5</float>
+                                <float>-3.5</float>
+                            </list>
+                            <list>
+                                <float>-5</float>
+                                <float>0</float>
+                            </list>
+                            <list>
+                                <float>-3.5</float>
+                                <float>3.5</float>
+                            </list>
+                            <list>
+                                <float>0</float>
+                                <float>5</float>
+                            </list>
+                            <list>
+                                <float>3.5</float>
+                                <float>3.5</float>
+                            </list>
+                            <list>
+                                <float>5</float>
+                                <float>0</float>
+                            </list>
+                            <list>
+                                <float>3.5</float>
+                                <float>-3.5</float>
+                            </list>
+                            <list>
+                                <float>0</float>
+                                <float>-5</float>
+                            </list>
+                        </list>
+                        <string name="type">polygon</string>
+                    </map>
+                </map>
+            </map>
+            <map name="bbox">
+                <list name="default">
+                    <float>-5</float>
+                    <float>0</float>
+                    <float>-5</float>
+                    <float>5</float>
+                    <float>0.1</float>
+                    <float>5</float>
+                </list>
+            </map>
+        </map>
+        <string name="id">ploughed_field</string>
+        <string name="objtype">class</string>
+        <string name="parent">area</string>
+    </map>
 
 </atlas>

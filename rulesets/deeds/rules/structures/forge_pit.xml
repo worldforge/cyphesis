@@ -7,11 +7,9 @@
                     <string name="path">dural/structures/forge_pit/model/forge_pit.mesh</string>
                     <string name="type">mesh</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/structures/forge_pit/forge_pit.modeldef</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">forge_pit</string>

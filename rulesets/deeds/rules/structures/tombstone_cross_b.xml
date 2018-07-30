@@ -1,22 +1,20 @@
 <atlas>
 
-  <map>
-    <map name="attributes">
-      <map name="geometry">
-        <map name="default">
-          <string name="path">dural/items/misc/tombstone/model/tombstone_cross_b.mesh</string>
-          <string name="type">mesh</string>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/misc/tombstone/model/tombstone_cross_b.mesh</string>
+                    <string name="type">mesh</string>
+                </map>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/misc/tombstone/model/tombstone_cross_b.mesh</string>
+            </map>
         </map>
-        <string name="visibility">public</string>
-      </map>
-        <map name="present">
-            <string name="default">dural/items/misc/tombstone/model/tombstone_cross_b.mesh</string>
-            <string name="visibility">public</string>
-        </map>
+        <string name="id">tombstone_cross_b</string>
+        <string name="objtype">class</string>
+        <string name="parent">tombstone</string>
     </map>
-    <string name="id">tombstone_cross_b</string>
-    <string name="objtype">class</string>
-    <string name="parent">tombstone</string>
-  </map>
 
 </atlas>

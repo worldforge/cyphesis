@@ -1,65 +1,59 @@
 <atlas>
 
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.25</float>
-          <float>0</float>
-          <float>-0.25</float>
-          <float>0.25</float>
-          <float>2</float>
-          <float>0.25</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="decays">
-        <string name="default">rock</string>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">60</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="sex">
-        <string name="default">male</string>
-        <string name="visibility">public</string>
-      </map>
-      <map name="statistics">
-        <map name="default">
-          <float name="attack">25</float>
-          <float name="defend">21</float>
-          <float name="strength">23</float>
+    <map>
+        <map name="attributes">
+            <map name="bbox">
+                <list name="default">
+                    <float>-0.25</float>
+                    <float>0</float>
+                    <float>-0.25</float>
+                    <float>0.25</float>
+                    <float>2</float>
+                    <float>0.25</float>
+                </list>
+            </map>
+            <map name="decays">
+                <string name="default">rock</string>
+            </map>
+            <map name="mass">
+                <float name="default">60</float>
+            </map>
+            <map name="sex">
+                <string name="default">male</string>
+            </map>
+            <map name="statistics">
+                <map name="default">
+                    <float name="attack">25</float>
+                    <float name="defend">21</float>
+                    <float name="strength">23</float>
+                </map>
+            </map>
         </map>
-      </map>
+        <string name="id">human</string>
+        <string name="objtype">class</string>
+        <string name="parent">mobile</string>
+        <int name="playable">1</int>
     </map>
-    <string name="id">human</string>
-    <string name="objtype">class</string>
-    <string name="parent">mobile</string>
-    <int name="playable">1</int>
-  </map>
 
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.25</float>
-          <float>0</float>
-          <float>-0.25</float>
-          <float>0.25</float>
-          <float>2</float>
-          <float>0.25</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="tick">
-        <float name="default">0</float>
-        <string name="visibility">public</string>
-      </map>
+    <map>
+        <map name="attributes">
+            <map name="bbox">
+                <list name="default">
+                    <float>-0.25</float>
+                    <float>0</float>
+                    <float>-0.25</float>
+                    <float>0.25</float>
+                    <float>2</float>
+                    <float>0.25</float>
+                </list>
+            </map>
+            <map name="tick">
+                <float name="default">0</float>
+            </map>
+        </map>
+        <string name="id">mobile</string>
+        <string name="objtype">class</string>
+        <string name="parent">character</string>
     </map>
-    <string name="id">mobile</string>
-    <string name="objtype">class</string>
-    <string name="parent">character</string>
-  </map>
 
 </atlas>

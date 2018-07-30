@@ -4,11 +4,9 @@
         <map name="attributes">
             <map name="density">
                 <float name="default">2000</float>
-                <string name="visibility">public</string>
             </map>
             <map name="name">
                 <string name="default">tombstone</string>
-                <string name="visibility">public</string>
             </map>
             <map name="scripts">
                 <list name="default">
@@ -17,7 +15,6 @@
                         <string name="name">world.objects.outdoor.Gravestone.Gravestone</string>
                     </map>
                 </list>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">tombstone</string>

@@ -6,15 +6,12 @@
                     <string name="path">dural/structures/cg_statue/model/cg_statue.mesh</string>
                     <string name="type">mesh</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/structures/cg_statue/model/cg_statue.mesh</string>
-                <string name="visibility">public</string>
             </map>
             <map name="density">
                 <float name="default">2000</float>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">statue</string>

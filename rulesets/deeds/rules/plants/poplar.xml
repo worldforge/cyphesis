@@ -7,27 +7,21 @@
                     <float>1</float>
                     <float>6</float>
                 </list>
-                <string name="visibility">public</string>
             </map>
             <map name="burn_speed">
                 <float name="default">0.025</float>
-                <string name="visibility">public</string>
             </map>
             <map name="height">
                 <float name="default">6</float>
-                <string name="visibility">public</string>
             </map>
             <map name="density">
                 <float name="default">400</float>
-                <string name="visibility">public</string>
             </map>
             <map name="maxscale">
                 <float name="default">1.5</float>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/plants/trees/poplar/poplar.modeldef</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">poplar</string>

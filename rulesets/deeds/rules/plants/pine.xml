@@ -10,23 +10,18 @@
                     <float>7</float>
                     <float>0.25</float>
                 </list>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/plants/trees/pine/pine_a.modeldef</string>
-                <string name="visibility">public</string>
             </map>
             <map name="height">
                 <float name="default">8</float>
-                <string name="visibility">public</string>
             </map>
             <map name="density">
                 <float name="default">600</float>
-                <string name="visibility">public</string>
             </map>
             <map name="maxscale">
                 <float name="default">1.5</float>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">pine</string>
@@ -38,7 +33,6 @@
         <map name="attributes">
             <map name="present">
                 <string name="default">dural/plants/trees/pine/pine_b.modeldef</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">pine_b</string>
@@ -50,7 +44,6 @@
         <map name="attributes">
             <map name="present">
                 <string name="default">dural/plants/trees/pine/pine_c.modeldef</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">pine_c</string>

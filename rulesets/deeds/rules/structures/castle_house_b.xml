@@ -7,15 +7,12 @@
                     <string name="type">mesh</string>
                     <string name="path">dural/structures/cg_house_b/model/cg_house_b.mesh</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/structures/cg_house_b/cg_house_b.entitymap</string>
-                <string name="visibility">public</string>
             </map>
             <map name="roof">
                 <string name="default">shingle</string>
-                <string name="visibility">public</string>
                 <list name="values">
                     <string>shingle</string>
                     <string>straw</string>
@@ -47,7 +44,6 @@
                         <string name="type">polygon</string>
                     </map>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="terrainmod">
                 <map name="default">
@@ -75,7 +71,6 @@
                     </map>
                     <string name="type">levelmod</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">castle_house_b</string>

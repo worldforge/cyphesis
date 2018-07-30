@@ -42,7 +42,6 @@
                         <string name="type">polygon</string>
                     </map>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="bbox">
                 <list name="default">
@@ -53,47 +52,36 @@
                     <float>12</float>
                     <float>1</float>
                 </list>
-                <string name="visibility">public</string>
             </map>
             <map name="burn_speed">
                 <float name="default">0.025</float>
-                <string name="visibility">public</string>
             </map>
             <map name="fruitChance">
                 <int name="default">5</int>
-                <string name="visibility">public</string>
             </map>
             <map name="fruitName">
                 <string name="default">acorn</string>
-                <string name="visibility">public</string>
             </map>
             <map name="fruits">
                 <int name="default">2</int>
-                <string name="visibility">public</string>
             </map>
             <map name="fruitsMax">
                 <int name="default">10</int>
-                <string name="visibility">public</string>
             </map>
             <map name="density">
                 <float name="default">600</float>
-                <string name="visibility">public</string>
             </map>
             <map name="maxscale">
                 <float name="default">1.5</float>
-                <string name="visibility">public</string>
             </map>
             <map name="sizeAdult">
                 <int name="default">4</int>
-                <string name="visibility">public</string>
             </map>
             <map name="planted-scaled-offset">
                 <float name="default">-0.1</float>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/plants/trees/oak/oak_straight.modeldef</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">oak</string>

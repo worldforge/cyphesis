@@ -1,27 +1,24 @@
 <atlas>
 
-  <map>
-    <map name="attributes">
-        <map name="geometry">
-            <map name="default">
-                <string name="path">dural/creatures/biped/malebuilder/model/leather_boots.mesh</string>
-                <string name="type">box</string>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/creatures/biped/malebuilder/model/leather_boots.mesh</string>
+                    <string name="type">box</string>
+                </map>
             </map>
-            <string name="visibility">public</string>
+            <map name="present">
+                <string name="default">dural/creatures/biped/malebuilder/model/leather_boots.mesh</string>
+            </map>
+            <map name="worn">
+                <string name="default">feet</string>
+            </map>
         </map>
-        <map name="present">
-            <string name="default">dural/creatures/biped/malebuilder/model/leather_boots.mesh</string>
-            <string name="visibility">public</string>
-        </map>
-      <map name="worn">
-        <string name="default">feet</string>
-        <string name="visibility">public</string>
-      </map>
+        <string name="id">boots</string>
+        <string name="objtype">class</string>
+        <string name="parent">garment</string>
     </map>
-    <string name="id">boots</string>
-    <string name="objtype">class</string>
-    <string name="parent">garment</string>
-  </map>
 
     <map>
         <map name="attributes">
@@ -30,15 +27,12 @@
                     <string name="path">dural/creatures/biped/malebuilder/model/tall_boots.mesh</string>
                     <string name="type">box</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/creatures/biped/malebuilder/model/tall_boots.mesh</string>
-                <string name="visibility">public</string>
             </map>
             <map name="worn">
                 <string name="default">feet</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">boots_tall</string>

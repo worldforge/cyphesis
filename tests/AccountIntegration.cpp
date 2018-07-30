@@ -165,8 +165,7 @@ Atlas::Objects::Root composeDeclaration(std::string class_name, std::string pare
     Atlas::Message::MapType composed;
     for (const auto& entry : rawAttributes) {
         composed[entry.first] = Atlas::Message::MapType{
-            {"default",    entry.second},
-            {"visibility", "public"}
+            {"default",    entry.second}
         };
     }
 

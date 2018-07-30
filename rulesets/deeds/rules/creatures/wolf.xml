@@ -7,19 +7,15 @@
                     <string name="type">sphere</string>
                     <string name="scaler">y</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/creatures/wolf/wolf.modeldef</string>
-                <string name="visibility">public</string>
             </map>
             <map name="biomass">
                 <float name="default">20</float>
-                <string name="visibility">public</string>
             </map>
             <map name="maxscale">
                 <float name="default">1.2</float>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">wolf</string>

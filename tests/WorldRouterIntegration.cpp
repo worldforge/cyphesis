@@ -118,8 +118,7 @@ void WorldRouterintegration::setup()
         Atlas::Message::MapType composed;
         for (const auto& entry : rawAttributes) {
             composed[entry.first] = Atlas::Message::MapType{
-                {"default",    entry.second},
-                {"visibility", "public"}
+                {"default",    entry.second}
             };
         }
 

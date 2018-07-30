@@ -10,15 +10,12 @@
                     <float>0.2381</float>
                     <float>0.045</float>
                 </list>
-                <string name="visibility">public</string>
             </map>
             <map name="mass">
                 <float name="default">5</float>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/creatures/tubular/bass_lm.modeldef</string>
-                <string name="visibility">public</string>
             </map>
             <map name="geometry">
                 <map name="default">
@@ -26,7 +23,6 @@
                     <string name="type">capsule-x</string>
                     <string name="scaler">y</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">bass</string>

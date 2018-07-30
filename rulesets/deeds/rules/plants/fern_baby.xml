@@ -3,7 +3,6 @@
         <map name="attributes">
             <map name="present">
                 <string name="default">dural/plants/shrubs/fern/model/fern_baby.mesh</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">fern_baby</string>

@@ -6,11 +6,9 @@
                     <string name="path">dural/items/resources/charcoal/model/charcoal_triple.mesh</string>
                     <string name="type">box</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/items/resources/charcoal/model/charcoal_triple.mesh</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">charcoal_triple</string>

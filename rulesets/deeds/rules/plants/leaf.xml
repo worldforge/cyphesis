@@ -11,15 +11,12 @@
                     <float>0.5</float>
                     <float>0.65</float>
                 </list>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/plants/shrubs/leaf/leaves_a.modeldef</string>
-                <string name="visibility">public</string>
             </map>
             <map name="density">
                 <float name="default">200</float>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">leaf</string>

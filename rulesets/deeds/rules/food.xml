@@ -1,31 +1,27 @@
 <atlas>
 
-  <map>
-    <map name="attributes">
-        <map name="geometry">
-            <map name="default">
-                <string name="path">dural/items/food/ham/model/ham.mesh</string>
-                <string name="type">box</string>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/food/ham/model/ham.mesh</string>
+                    <string name="type">box</string>
+                </map>
             </map>
-            <string name="visibility">public</string>
+            <map name="present">
+                <string name="default">dural/items/food/ham/ham.modeldef</string>
+            </map>
+            <map name="biomass">
+                <float name="default">1</float>
+            </map>
+            <map name="mass">
+                <float name="default">1</float>
+            </map>
         </map>
-        <map name="present">
-            <string name="default">dural/items/food/ham/ham.modeldef</string>
-            <string name="visibility">public</string>
-        </map>
-      <map name="biomass">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
+        <string name="id">ham</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
     </map>
-    <string name="id">ham</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
 
     <map>
         <map name="attributes">
@@ -34,19 +30,15 @@
                     <string name="path">dural/items/food/country_bread/model/bread_loaf.mesh</string>
                     <string name="type">box</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/items/food/country_bread/model/bread_loaf.mesh</string>
-                <string name="visibility">public</string>
             </map>
             <map name="biomass">
                 <float name="default">0.5</float>
-                <string name="visibility">public</string>
             </map>
             <map name="density">
                 <float name="default">190</float>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">bread</string>
@@ -61,15 +53,12 @@
                     <string name="path">dural/items/food/country_bread/model/bread_loaf_cut.mesh</string>
                     <string name="type">box</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/items/food/country_bread/model/bread_loaf_cut.mesh</string>
-                <string name="visibility">public</string>
             </map>
             <map name="biomass">
                 <float name="default">0.25</float>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">bread_cut</string>
@@ -84,15 +73,12 @@
                     <string name="path">dural/items/food/country_bread/model/bread_slice.mesh</string>
                     <string name="type">box</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/items/food/country_bread/model/bread_slice.mesh</string>
-                <string name="visibility">public</string>
             </map>
             <map name="biomass">
                 <float name="default">0.1</float>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">bread_slice</string>
@@ -100,31 +86,27 @@
         <string name="parent">bread</string>
     </map>
 
-  <map>
-    <map name="attributes">
-        <map name="geometry">
-            <map name="default">
-                <string name="path">dural/items/food/ham/model/ham.mesh</string>
-                <string name="type">box</string>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/food/ham/model/ham.mesh</string>
+                    <string name="type">box</string>
+                </map>
             </map>
-            <string name="visibility">public</string>
+            <map name="present">
+                <string name="default">dural/items/food/ham/ham.modeldef</string>
+            </map>
+            <map name="biomass">
+                <float name="default">1</float>
+            </map>
+            <map name="mass">
+                <float name="default">1</float>
+            </map>
         </map>
-        <map name="present">
-            <string name="default">dural/items/food/ham/ham.modeldef</string>
-            <string name="visibility">public</string>
-        </map>
-        <map name="biomass">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
+        <string name="id">venison</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
     </map>
-    <string name="id">venison</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
 
 </atlas>

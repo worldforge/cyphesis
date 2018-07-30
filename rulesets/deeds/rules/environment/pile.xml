@@ -6,26 +6,21 @@
                     <string name="path">dural/structures/ground_palisade/model/ground_palisade_a.mesh</string>
                     <string name="type">cylinder-y</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/structures/ground_palisade/model/ground_palisade_a.mesh</string>
-                <string name="visibility">public</string>
             </map>
             <map name="constituants">
                 <map name="default">
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="density">
                 <float name="default">1000</float>
-                <string name="visibility">public</string>
             </map>
             <map name="operations">
                 <list name="default">
                     <string>disperse</string>
                 </list>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">pile</string>

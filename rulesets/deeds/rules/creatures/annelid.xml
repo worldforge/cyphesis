@@ -10,28 +10,22 @@
                     <float>0.1</float>
                     <float>0.1</float>
                 </list>
-                <string name="visibility">public</string>
             </map>
             <map name="biomass">
                 <float name="default">1</float>
-                <string name="visibility">public</string>
             </map>
             <map name="mass">
                 <float name="default">1</float>
-                <string name="visibility">public</string>
             </map>
             <map name="speed-ground">
                 <float name="default">0.1</float>
-                <string name="visibility">public</string>
             </map>
             <map name="speed-water">
                 <float name="default">0.1</float>
-                <string name="visibility">public</string>
             </map>
             <!-- By default we'll allow mobiles to jump like a normal human -->
             <map name="speed-jump">
                 <float name="default">0</float>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">annelid</string>

@@ -6,11 +6,9 @@
                     <string name="path">dural/items/tools/hammer_mallet/model/hammer_mallet.mesh</string>
                     <string name="type">box</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/items/tools/hammer_mallet/model/hammer_mallet.mesh</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">hammer_mallet</string>

@@ -6,11 +6,9 @@
                     <string name="type">mesh</string>
                     <string name="path">dural/structures/concrete_stairs/model/concrete_stairs.mesh</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/structures/concrete_stairs/model/concrete_stairs.mesh</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">concrete_stairs</string>

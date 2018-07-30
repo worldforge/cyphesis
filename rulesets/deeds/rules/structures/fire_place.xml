@@ -6,11 +6,9 @@
                     <string name="type">mesh</string>
                     <string name="path">dural/structures/fire_place/model/fire_place.mesh</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/structures/fire_place/model/fire_place.mesh</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">fire_place</string>

@@ -6,11 +6,9 @@
                     <string name="path">dural/creatures/tubular/model/tuna.mesh</string>
                     <string name="type">capsule-z</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/creatures/tubular/tuna.modeldef</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">tuna</string>

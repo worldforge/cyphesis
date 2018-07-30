@@ -4,7 +4,6 @@
         <map name="attributes">
             <map name="density">
                 <float name="default">2500</float>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="description">Base class for boulders.</string>

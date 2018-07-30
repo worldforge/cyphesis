@@ -1,22 +1,20 @@
 <atlas>
 
-  <map>
-    <map name="attributes">
-      <map name="geometry">
-        <map name="default">
-          <string name="path">dural/items/tools/blacksmith_tools/model/ash_shovel.mesh</string>
-          <string name="type">box</string>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/tools/blacksmith_tools/model/ash_shovel.mesh</string>
+                    <string name="type">box</string>
+                </map>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/tools/blacksmith_tools/model/ash_shovel.mesh</string>
+            </map>
         </map>
-        <string name="visibility">public</string>
-      </map>
-        <map name="present">
-            <string name="default">dural/items/tools/blacksmith_tools/model/ash_shovel.mesh</string>
-            <string name="visibility">public</string>
-        </map>
+        <string name="id">ash_shovel</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
     </map>
-    <string name="id">ash_shovel</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
 
 </atlas>

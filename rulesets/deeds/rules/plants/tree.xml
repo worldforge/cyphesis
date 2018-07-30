@@ -3,19 +3,15 @@
         <map name="attributes">
             <map name="height">
                 <float name="default">6</float>
-                <string name="visibility">public</string>
             </map>
             <map name="ticks">
                 <float name="default">0</float>
-                <string name="visibility">public</string>
             </map>
             <map name="density">
                 <float name="default">600</float>
-                <string name="visibility">public</string>
             </map>
             <map name="friction_roll">
                 <float name="default">0.5</float>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">tree</string>

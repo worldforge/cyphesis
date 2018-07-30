@@ -1,20 +1,18 @@
 <atlas>
-      <map>
-          <map name="attributes">
-              <map name="density">
-                  <float name="default">30</float>
-                  <string name="visibility">public</string>
-              </map>
-              <map name="operations">
-                  <list name="default">
-                      <string>wear</string>
-                  </list>
-                  <string name="visibility">public</string>
-              </map>
-          </map>
-          <string name="id">garment</string>
-          <string name="objtype">class</string>
-          <string name="parent">thing</string>
-      </map>
+    <map>
+        <map name="attributes">
+            <map name="density">
+                <float name="default">30</float>
+            </map>
+            <map name="operations">
+                <list name="default">
+                    <string>wear</string>
+                </list>
+            </map>
+        </map>
+        <string name="id">garment</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
 
 </atlas>

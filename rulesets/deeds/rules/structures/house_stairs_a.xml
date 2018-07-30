@@ -7,11 +7,9 @@
                     <string name="type">mesh</string>
                     <string name="path">dural/structures/house_stairs_A/model/house_stairs_A.mesh</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/structures/house_stairs_A/model/house_stairs_A.mesh</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">house_stairs_a</string>

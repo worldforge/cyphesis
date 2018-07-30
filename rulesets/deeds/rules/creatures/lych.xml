@@ -10,18 +10,15 @@
                     <float>1.8</float>
                     <float>0.4</float>
                 </list>
-                <string name="visibility">public</string>
             </map>
             <map name="geometry">
                 <map name="default">
                     <string name="path">dural/creatures/biped/skeleton/model/skeleton.mesh</string>
                     <string name="type">capsule-y</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/creatures/biped/skeleton/skeleton.modeldef</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">lych</string>

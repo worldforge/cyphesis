@@ -1,4 +1,4 @@
-<atl    as>
+<atl as>
     <map>
         <map name="attributes">
             <map name="geometry">
@@ -6,11 +6,9 @@
                     <string name="path">dural/structures/cathedral_pew/model/pew_broken.mesh</string>
                     <string name="type">mesh</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/structures/cathedral_pew/model/pew_broken.mesh</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">pew_broken</string>

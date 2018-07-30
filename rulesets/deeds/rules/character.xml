@@ -4,20 +4,16 @@
         <map name="attributes">
             <map name="density">
                 <float name="default">125</float>
-                <string name="visibility">public</string>
             </map>
             <map name="perception_sight">
                 <float name="default">1.0</float>
-                <string name="visibility">public</string>
             </map>
             <map name="mode">
                 <string name="default">free</string>
-                <string name="visibility">public</string>
             </map>
             <!-- Default to a reach of 3 meters -->
             <map name="reach">
                 <float name="default">3</float>
-                <string name="visibility">public</string>
             </map>
             <map name="scripts">
                 <list name="default">
@@ -26,7 +22,6 @@
                         <string name="name">world.traits.Hittable.Hittable</string>
                     </map>
                 </list>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">character</string>

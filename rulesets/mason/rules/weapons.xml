@@ -1,47 +1,43 @@
 <atlas>
 
-  <map>
-    <map name="attributes">
-      <map name="mass">
-        <float name="default">0.05</float>
-        <string name="visibility">public</string>
-      </map>
+    <map>
+        <map name="attributes">
+            <map name="mass">
+                <float name="default">0.05</float>
+            </map>
+        </map>
+        <string name="id">arrow</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
     </map>
-    <string name="id">arrow</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
 
-  <map>
-    <map name="attributes">
-      <map name="ammo">
-        <string name="default">arrow</string>
-        <string name="visibility">internal</string>
-      </map>
-      <map name="mass">
-        <float name="default">1.5</float>
-        <string name="visibility">public</string>
-      </map>
+    <map>
+        <map name="attributes">
+            <map name="ammo">
+                <string name="default">arrow</string>
+            </map>
+            <map name="mass">
+                <float name="default">1.5</float>
+            </map>
+        </map>
+        <string name="id">bow</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+        <map name="script">
+            <string name="language">python</string>
+            <string name="name">world.objects.tools.Bow.Bow</string>
+        </map>
     </map>
-    <string name="id">bow</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.objects.tools.Bow.Bow</string>
-    </map>
-  </map>
 
-  <map>
-    <map name="attributes">
-      <map name="mass">
-        <float name="default">1.5</float>
-        <string name="visibility">public</string>
-      </map>
+    <map>
+        <map name="attributes">
+            <map name="mass">
+                <float name="default">1.5</float>
+            </map>
+        </map>
+        <string name="id">sword</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
     </map>
-    <string name="id">sword</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
 
 </atlas>

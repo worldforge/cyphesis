@@ -1,22 +1,20 @@
 <atlas>
 
-  <map>
-    <map name="attributes">
-      <map name="geometry">
-        <map name="default">
-          <string name="type">mesh</string>
-          <string name="path">dural/structures/cg_don_jon/model/cg_don_jon.mesh</string>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="type">mesh</string>
+                    <string name="path">dural/structures/cg_don_jon/model/cg_don_jon.mesh</string>
+                </map>
+            </map>
+            <map name="present">
+                <string name="default">dural/structures/cg_don_jon/model/cg_don_jon.mesh</string>
+            </map>
         </map>
-        <string name="visibility">public</string>
-      </map>
-        <map name="present">
-            <string name="default">dural/structures/cg_don_jon/model/cg_don_jon.mesh</string>
-            <string name="visibility">public</string>
-        </map>
+        <string name="id">castle_don_jon</string>
+        <string name="objtype">class</string>
+        <string name="parent">structure</string>
     </map>
-    <string name="id">castle_don_jon</string>
-    <string name="objtype">class</string>
-    <string name="parent">structure</string>
-  </map>
 
 </atlas>

@@ -10,19 +10,15 @@
                     <float>0.5</float>
                     <float>0.25</float>
                 </list>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/environment/fire.modeldef</string>
-                <string name="visibility">public</string>
             </map>
             <map name="status">
                 <float name="default">1</float>
-                <string name="visibility">public</string>
             </map>
             <map name="ticks">
                 <float name="default">0</float>
-                <string name="visibility">public</string>
             </map>
             <map name="scripts">
                 <list name="default">
@@ -31,7 +27,6 @@
                         <string name="name">world.objects.elements.Fire.Fire</string>
                     </map>
                 </list>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">fire</string>

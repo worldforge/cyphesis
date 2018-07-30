@@ -1,20 +1,18 @@
 <atlas>
-  <map>
-    <map name="attributes">
-      <map name="geometry">
-        <map name="default">
-          <string name="path">dural/structures/forge_below/model/forge_below.mesh</string>
-          <string name="type">mesh</string>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/structures/forge_below/model/forge_below.mesh</string>
+                    <string name="type">mesh</string>
+                </map>
+            </map>
+            <map name="present">
+                <string name="default">dural/structures/forge_below/model/forge_below.mesh</string>
+            </map>
         </map>
-        <string name="visibility">public</string>
-      </map>
-      <map name="present">
-        <string name="default">dural/structures/forge_below/model/forge_below.mesh</string>
-        <string name="visibility">public</string>
-      </map>
+        <string name="id">bellows</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
     </map>
-    <string name="id">bellows</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
 </atlas>

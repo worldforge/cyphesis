@@ -1,173 +1,150 @@
 <atlas>
 
-  <map>
-    <map name="attributes">
-        <map name="geometry">
-            <map name="default">
-                <string name="path">dural/items/misc/curly_document/model/curly_document.mesh</string>
-                <string name="type">box</string>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/misc/curly_document/model/curly_document.mesh</string>
+                    <string name="type">box</string>
+                </map>
             </map>
-            <string name="visibility">public</string>
-        </map>
-        <map name="present">
-            <string name="default">dural/items/misc/curly_document/model/curly_document.mesh</string>
-            <string name="visibility">public</string>
-        </map>
-        <map name="mass">
-        <float name="default">0.1</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="parameters">
-        <list name="default">
-        </list>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">blueprint</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
-
-
-
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.6</float>
-          <float>0</float>
-          <float>0.02</float>
-          <float>0.6</float>
-          <float>3</float>
-          <float>0.02</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="density">
-        <float name="default">500</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">board_wall</string>
-    <string name="objtype">class</string>
-    <string name="parent">wall</string>
-  </map>
-
-
-
-  <map>
-    <map name="attributes">
-      <map name="mass">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">construction</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
-
-  <map>
-    <map name="attributes">
-        <map name="geometry">
-            <map name="default">
-                <string name="path">dural/items/misc/curly_document/model/curly_document.mesh</string>
-                <string name="type">box</string>
+            <map name="present">
+                <string name="default">dural/items/misc/curly_document/model/curly_document.mesh</string>
             </map>
-            <string name="visibility">public</string>
-        </map>
-        <map name="present">
-            <string name="default">dural/items/misc/curly_document/model/curly_document.mesh</string>
-            <string name="visibility">public</string>
-        </map>
-      <map name="burn_speed">
-        <float name="default">2</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">0.2</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">deed</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
-
-  <map>
-    <map name="attributes">
-        <map name="geometry">
-            <map name="default">
-                <string name="path">dural/structures/ground_palisade/model/ground_palisade_b.mesh</string>
-                <string name="type">cylinder-y</string>
+            <map name="mass">
+                <float name="default">0.1</float>
             </map>
-            <string name="visibility">public</string>
-        </map>
-        <map name="present">
-            <string name="default">dural/structures/ground_palisade/model/ground_palisade_b.mesh</string>
-            <string name="visibility">public</string>
-        </map>
-      <map name="density">
-        <float name="default">1200</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">earth_wall</string>
-    <string name="objtype">class</string>
-    <string name="parent">wall</string>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.1</float>
-          <float>0</float>
-          <float>-0.1</float>
-          <float>0.1</float>
-          <float>0.5</float>
-          <float>0.1</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="burn_speed">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="density">
-        <float name="default">30</float>
-        <string name="visibility">public</string>
-      </map>
-    </map>
-    <string name="id">fibre</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
-
-
-
-  <map>
-    <map name="attributes">
-        <map name="geometry">
-            <map name="default">
-                <string name="path">dural/structures/building_elements/model/twobyfour.mesh</string>
-                <string name="type">box</string>
+            <map name="parameters">
+                <list name="default">
+                </list>
             </map>
-            <string name="visibility">public</string>
         </map>
-        <map name="present">
-            <string name="default">dural/structures/building_elements/model/twobyfour.mesh</string>
-            <string name="visibility">public</string>
-        </map>
-      <map name="density">
-        <float name="default">500</float>
-        <string name="visibility">public</string>
-      </map>
+        <string name="id">blueprint</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
     </map>
-    <string name="id">twobyfour</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
+
+
+    <map>
+        <map name="attributes">
+            <map name="bbox">
+                <list name="default">
+                    <float>-0.6</float>
+                    <float>0</float>
+                    <float>0.02</float>
+                    <float>0.6</float>
+                    <float>3</float>
+                    <float>0.02</float>
+                </list>
+            </map>
+            <map name="density">
+                <float name="default">500</float>
+            </map>
+        </map>
+        <string name="id">board_wall</string>
+        <string name="objtype">class</string>
+        <string name="parent">wall</string>
+    </map>
+
+
+    <map>
+        <map name="attributes">
+            <map name="mass">
+                <float name="default">1</float>
+            </map>
+        </map>
+        <string name="id">construction</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/misc/curly_document/model/curly_document.mesh</string>
+                    <string name="type">box</string>
+                </map>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/misc/curly_document/model/curly_document.mesh</string>
+            </map>
+            <map name="burn_speed">
+                <float name="default">2</float>
+            </map>
+            <map name="mass">
+                <float name="default">0.2</float>
+            </map>
+        </map>
+        <string name="id">deed</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/structures/ground_palisade/model/ground_palisade_b.mesh</string>
+                    <string name="type">cylinder-y</string>
+                </map>
+            </map>
+            <map name="present">
+                <string name="default">dural/structures/ground_palisade/model/ground_palisade_b.mesh</string>
+            </map>
+            <map name="density">
+                <float name="default">1200</float>
+            </map>
+        </map>
+        <string name="id">earth_wall</string>
+        <string name="objtype">class</string>
+        <string name="parent">wall</string>
+    </map>
+
+    <map>
+        <map name="attributes">
+            <map name="bbox">
+                <list name="default">
+                    <float>-0.1</float>
+                    <float>0</float>
+                    <float>-0.1</float>
+                    <float>0.1</float>
+                    <float>0.5</float>
+                    <float>0.1</float>
+                </list>
+            </map>
+            <map name="burn_speed">
+                <float name="default">1</float>
+            </map>
+            <map name="density">
+                <float name="default">30</float>
+            </map>
+        </map>
+        <string name="id">fibre</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+
+
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/structures/building_elements/model/twobyfour.mesh</string>
+                    <string name="type">box</string>
+                </map>
+            </map>
+            <map name="present">
+                <string name="default">dural/structures/building_elements/model/twobyfour.mesh</string>
+            </map>
+            <map name="density">
+                <float name="default">500</float>
+            </map>
+        </map>
+        <string name="id">twobyfour</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
 
 
 </atlas>

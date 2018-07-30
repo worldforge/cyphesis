@@ -63,15 +63,12 @@
                         </map>
                     </list>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/items/containers/open_crate/model/open_crate.mesh</string>
-                <string name="visibility">public</string>
             </map>
             <map name="density">
                 <float name="default">200</float>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">crate_open</string>

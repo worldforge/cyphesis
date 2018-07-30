@@ -6,21 +6,17 @@
                     <string name="path">dural/items/containers/tinderbox/model/tinderbox.mesh</string>
                     <string name="type">box</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/items/containers/tinderbox/model/tinderbox.mesh</string>
-                <string name="visibility">public</string>
             </map>
             <map name="density">
                 <float name="default">300</float>
-                <string name="visibility">public</string>
             </map>
             <map name="operations">
                 <list name="default">
                     <string>ignite</string>
                 </list>
-                <string name="visibility">public</string>
             </map>
             <map name="scripts">
                 <list name="default">
@@ -29,7 +25,6 @@
                         <string name="name">world.objects.tools.Tinderbox.Tinderbox</string>
                     </map>
                 </list>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">tinderbox</string>

@@ -10,11 +10,9 @@
                     <float>1.6</float>
                     <float>0.1</float>
                 </list>
-                <string name="visibility">public</string>
             </map>
             <map name="density">
                 <float name="default">400</float>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">shrub</string>

@@ -64,7 +64,6 @@ void TypeNode::injectProperty(const std::string& name,
     Atlas::Message::Element propertyElement;
     p->get(propertyElement);
     attributesElement.Map()[name] = Atlas::Message::MapType{
-        {"visibility", "public"},
         {"default", propertyElement}
     };
     m_description->setAttr("attributes", attributesElement);
@@ -129,7 +128,6 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType & attributes
             p->set(entry.second);
 
             attributesElement.Map()[entry.first] = Atlas::Message::MapType{
-                {"visibility", "public"},
                 {"default", entry.second}
             };
         } else {
@@ -140,7 +138,6 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType & attributes
                 p->set(entry.second);
                 propertiesUpdate.changedProps.emplace(entry.first);
                 attributesElement.Map()[entry.first] = Atlas::Message::MapType{
-                    {"visibility", "public"},
                     {"default", entry.second}
                 };
 //                attributesElement.Map()[entry.first].Map()["default"] = entry.second;

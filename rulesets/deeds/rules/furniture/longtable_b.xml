@@ -6,11 +6,9 @@
                     <string name="path">dural/items/furniture/longtable/model/long_table.mesh</string>
                     <string name="type">mesh</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/items/furniture/longtable/model/long_table.mesh</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">longtable_b</string>

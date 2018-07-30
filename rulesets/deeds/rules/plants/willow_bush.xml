@@ -3,7 +3,6 @@
         <map name="attributes">
             <map name="present">
                 <string name="default">dural/plants/shrubs/bush/bush_green.modeldef</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">willow_bush</string>

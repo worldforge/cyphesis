@@ -1,15 +1,14 @@
 <atlas>
 
-  <map>
-    <map name="attributes">
-        <map name="density">
-            <float name="default">500</float>
-            <string name="visibility">public</string>
+    <map>
+        <map name="attributes">
+            <map name="density">
+                <float name="default">500</float>
+            </map>
         </map>
+        <string name="id">vehicle</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
     </map>
-    <string name="id">vehicle</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
 
 </atlas>

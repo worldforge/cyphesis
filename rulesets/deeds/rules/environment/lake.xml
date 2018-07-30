@@ -10,19 +10,15 @@
                     <float>0</float>
                     <float>10</float>
                 </list>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/environment/water/lake.modeldef</string>
-                <string name="visibility">public</string>
             </map>
             <map name="mode">
                 <string name="default">fixed</string>
-                <string name="visibility">public</string>
             </map>
             <map name="water_body">
                 <int name="default">1</int>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">lake</string>

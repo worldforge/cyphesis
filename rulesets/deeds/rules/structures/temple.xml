@@ -7,11 +7,9 @@
                     <string name="path">dural/structures/temple/model/temple.mesh</string>
                     <string name="type">mesh</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/structures/temple/model/temple.mesh</string>
-                <string name="visibility">public</string>
             </map>
             <map name="terrainmod">
                 <float name="heightoffset">0</float>
@@ -127,7 +125,6 @@
                         <string name="type">polygon</string>
                     </map>
                 </map>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">temple</string>

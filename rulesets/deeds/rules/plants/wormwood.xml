@@ -3,7 +3,6 @@
         <map name="attributes">
             <map name="present">
                 <string name="default">dural/plants/shrubs/bush/bush_gnarly_brown.modeldef</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">wormwood</string>

@@ -221,7 +221,6 @@ int main(int argc, char ** argv)
             MapType attrs;
             MapType test_custom_type_attr;
             test_custom_type_attr["default"] = "test_value";
-            test_custom_type_attr["visibility"] = "public";
             attrs["test_custom_type_attr"] = test_custom_type_attr;
             custom_type_description->setAttr("attributes", attrs);
             custom_type_description->setId("custom_type");
@@ -243,7 +242,6 @@ int main(int argc, char ** argv)
             MapType attrs;
             MapType test_custom_type_attr;
             test_custom_type_attr["default"] = "test_inherited_value";
-            test_custom_type_attr["visibility"] = "public";
             attrs["test_custom_inherited_type_attr"] = test_custom_type_attr;
             custom_inherited_type_description->setAttr("attributes", attrs);
             custom_inherited_type_description->setId("custom_inherited_type");
@@ -265,7 +263,6 @@ int main(int argc, char ** argv)
             MapType test_custom_type_attr;
 
             test_custom_type_attr["default"] = "no_value";
-            test_custom_type_attr["visibility"] = "public";
             attrs["no_custom_type_attr"] = test_custom_type_attr;
 
             nonexistant_description->setId("nonexistant");
@@ -331,13 +328,11 @@ int main(int argc, char ** argv)
             MapType test_custom_type_attr;
 
             test_custom_type_attr["default"] = "test_value";
-            test_custom_type_attr["visibility"] = "public";
             attrs["test_custom_type_attr"] = test_custom_type_attr;
 
             MapType new_custom_type_attr;
 
             new_custom_type_attr["default"] = "new_value";
-            new_custom_type_attr["visibility"] = "public";
             attrs["new_custom_type_attr"] = new_custom_type_attr;
 
             new_custom_type_description->setId("custom_type");

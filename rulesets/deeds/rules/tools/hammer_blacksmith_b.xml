@@ -6,11 +6,9 @@
                     <string name="path">dural/items/tools/blacksmith_tools/model/hammer_b.mesh</string>
                     <string name="type">box</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/items/tools/blacksmith_tools/model/hammer_b.mesh</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">hammer_blacksmith_b</string>

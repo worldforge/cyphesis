@@ -3,13 +3,11 @@
         <map name="attributes">
             <map name="agility">
                 <float name="default">0.3</float>
-                <string name="visibility">private</string>
             </map>
             <map name="geometry">
                 <map name="default">
                     <string name="type">capsule-y</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="angularfactor">
                 <list name="default">
@@ -23,46 +21,36 @@
                     <string name="language">python</string>
                     <string name="name">mind.NPCMind.NPCMind</string>
                 </map>
-                <string name="visibility">private</string>
             </map>
             <map name="stamina">
                 <float name="default">1</float>
-                <string name="visibility">public</string>
             </map>
             <map name="strength">
                 <float name="default">0.3</float>
-                <string name="visibility">private</string>
             </map>
             <map name="ticks">
                 <float name="default">0</float>
-                <string name="visibility">public</string>
             </map>
             <map name="domain">
                 <string name="default">inventory</string>
-                <string name="visibility">public</string>
             </map>
             <!-- Set a high friction so that mobile entities can cling to slopes without sliding down. -->
             <map name="friction">
                 <float name="default">10</float>
-                <string name="visibility">public</string>
             </map>
             <!-- By default mobile entities should step up 30% of their height. This is based on humans. -->
             <map name="step_factor">
                 <float name="default">0.3</float>
-                <string name="visibility">public</string>
             </map>
             <map name="speed-ground">
                 <float name="default">5</float>
-                <string name="visibility">public</string>
             </map>
             <map name="speed-water">
                 <float name="default">1</float>
-                <string name="visibility">public</string>
             </map>
             <!-- By default we'll allow mobiles to jump like a normal human -->
             <map name="speed-jump">
                 <float name="default">7.5</float>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">mobile</string>

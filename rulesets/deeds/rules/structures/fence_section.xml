@@ -6,15 +6,12 @@
                     <string name="type">mesh</string>
                     <string name="path">dural/structures/wooden_fence/model/wooden_fence.mesh</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/structures/wooden_fence/wooden_fence.modeldef</string>
-                <string name="visibility">public</string>
             </map>
             <map name="material">
                 <string name="default">wood</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">fence_section</string>

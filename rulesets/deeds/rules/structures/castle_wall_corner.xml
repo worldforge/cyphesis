@@ -7,11 +7,9 @@
                     <string name="type">mesh</string>
                     <string name="path">dural/structures/cg_outer_wall/model/cg_wall_corner.mesh</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/structures/cg_outer_wall/model/cg_wall_corner.mesh</string>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">castle_wall_corner</string>

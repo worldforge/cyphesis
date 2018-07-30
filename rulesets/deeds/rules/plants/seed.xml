@@ -3,15 +3,12 @@
         <map name="attributes">
             <map name="biomass">
                 <float name="default">0.05</float>
-                <string name="visibility">public</string>
             </map>
             <map name="germinates">
                 <string name="default">plant</string>
-                <string name="visibility">public</string>
             </map>
             <map name="density">
                 <float name="default">600</float>
-                <string name="visibility">public</string>
             </map>
             <map name="scripts">
                 <list name="default">
@@ -20,7 +17,6 @@
                         <string name="name">world.objects.plants.seeds.Seed.Seed</string>
                     </map>
                 </list>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">seed</string>

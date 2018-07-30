@@ -7,11 +7,9 @@
                     <string name="type">mesh</string>
                     <string name="path">dural/structures/two_room_house/model/two_room_house.mesh</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/structures/two_room_house/model/two_room_house.mesh</string>
-                <string name="visibility">public</string>
             </map>
             <map name="terrainmod">
                 <float name="heightoffset">0</float>
@@ -63,7 +61,6 @@
                         <string name="type">polygon</string>
                     </map>
                 </map>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">two_room_house</string>

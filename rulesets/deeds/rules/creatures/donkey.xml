@@ -7,15 +7,12 @@
                     <string name="type">sphere</string>
                     <string name="scaler">y</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/creatures/quadruped/donkey.modeldef</string>
-                <string name="visibility">public</string>
             </map>
             <map name="biomass">
                 <float name="default">270</float>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">donkey</string>

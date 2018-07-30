@@ -1,6 +1,6 @@
 <atlas>
 
-   <map>
+    <map>
         <string name="id">dead_human_skull</string>
         <string name="objtype">archetype</string>
         <string name="parent">archetype</string>

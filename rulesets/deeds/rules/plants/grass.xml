@@ -10,19 +10,15 @@
                     <float>1</float>
                     <float>0.1</float>
                 </list>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/plants/grass/grass_clump/grass_clump.modeldef</string>
-                <string name="visibility">public</string>
             </map>
             <map name="burn_speed">
                 <float name="default">0.7</float>
-                <string name="visibility">public</string>
             </map>
             <map name="density">
                 <float name="default">200</float>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">grass</string>

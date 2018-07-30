@@ -1,22 +1,20 @@
 <atlas>
 
-  <map>
-    <map name="attributes">
-      <map name="geometry">
-          <map name="default">
-              <string name="type">mesh</string>
-              <string name="path">dural/structures/palisade/model/palisade_circle_b.mesh</string>
-          </map>
-        <string name="visibility">public</string>
-      </map>
-        <map name="present">
-            <string name="default">dural/structures/palisade/model/palisade_circle_b.mesh</string>
-            <string name="visibility">public</string>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="type">mesh</string>
+                    <string name="path">dural/structures/palisade/model/palisade_circle_b.mesh</string>
+                </map>
+            </map>
+            <map name="present">
+                <string name="default">dural/structures/palisade/model/palisade_circle_b.mesh</string>
+            </map>
         </map>
+        <string name="id">palisade_circle_b</string>
+        <string name="objtype">class</string>
+        <string name="parent">structure</string>
     </map>
-    <string name="id">palisade_circle_b</string>
-    <string name="objtype">class</string>
-    <string name="parent">structure</string>
-  </map>
 
 </atlas>

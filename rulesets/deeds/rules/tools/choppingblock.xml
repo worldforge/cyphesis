@@ -6,15 +6,12 @@
                     <string name="path">dural/items/tools/chopping_block/model/chopping_block.mesh</string>
                     <string name="type">mesh</string>
                 </map>
-                <string name="visibility">public</string>
             </map>
             <map name="present">
                 <string name="default">dural/items/tools/chopping_block/choppingblock.modeldef</string>
-                <string name="visibility">public</string>
             </map>
             <map name="density">
                 <float name="default">500</float>
-                <string name="visibility">public</string>
             </map>
         </map>
         <string name="id">choppingblock</string>

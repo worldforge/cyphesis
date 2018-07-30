@@ -1,365 +1,326 @@
 <atlas>
 
-  <map>
-    <map name="attributes">
-      <map name="mass">
-        <float name="default">0.1</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="parameters">
-        <list name="default">
-        </list>
-        <string name="visibility">public</string>
-      </map>
+    <map>
+        <map name="attributes">
+            <map name="mass">
+                <float name="default">0.1</float>
+            </map>
+            <map name="parameters">
+                <list name="default">
+                </list>
+            </map>
+        </map>
+        <string name="id">blueprint</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
     </map>
-    <string name="id">blueprint</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
 
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-1</float>
-          <float>-0.02</float>
-          <float>-0.125</float>
-          <float>1</float>
-          <float>0.02</float>
-          <float>0.125</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="burn_speed">
-        <float name="default">0.6</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">20</float>
-        <string name="visibility">public</string>
-      </map>
+    <map>
+        <map name="attributes">
+            <map name="bbox">
+                <list name="default">
+                    <float>-1</float>
+                    <float>-0.02</float>
+                    <float>-0.125</float>
+                    <float>1</float>
+                    <float>0.02</float>
+                    <float>0.125</float>
+                </list>
+            </map>
+            <map name="burn_speed">
+                <float name="default">0.6</float>
+            </map>
+            <map name="mass">
+                <float name="default">20</float>
+            </map>
+        </map>
+        <string name="id">board</string>
+        <string name="objtype">class</string>
+        <string name="parent">material</string>
     </map>
-    <string name="id">board</string>
-    <string name="objtype">class</string>
-    <string name="parent">material</string>
-  </map>
 
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.6</float>
-          <float>0</float>
-          <float>0.02</float>
-          <float>0.6</float>
-          <float>3</float>
-          <float>0.02</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">20</float>
-        <string name="visibility">public</string>
-      </map>
+    <map>
+        <map name="attributes">
+            <map name="bbox">
+                <list name="default">
+                    <float>-0.6</float>
+                    <float>0</float>
+                    <float>0.02</float>
+                    <float>0.6</float>
+                    <float>3</float>
+                    <float>0.02</float>
+                </list>
+            </map>
+            <map name="mass">
+                <float name="default">20</float>
+            </map>
+        </map>
+        <string name="id">board_wall</string>
+        <string name="objtype">class</string>
+        <string name="parent">wall</string>
     </map>
-    <string name="id">board_wall</string>
-    <string name="objtype">class</string>
-    <string name="parent">wall</string>
-  </map>
 
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.1</float>
-          <float>0</float>
-          <float>-0.1</float>
-          <float>0.1</float>
-          <float>0.2</float>
-          <float>0.1</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="burn_speed">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">2</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="material">
-        <string name="default">wood</string>
-        <string name="visibility">public</string>
-      </map>
+    <map>
+        <map name="attributes">
+            <map name="bbox">
+                <list name="default">
+                    <float>-0.1</float>
+                    <float>0</float>
+                    <float>-0.1</float>
+                    <float>0.1</float>
+                    <float>0.2</float>
+                    <float>0.1</float>
+                </list>
+            </map>
+            <map name="burn_speed">
+                <float name="default">1</float>
+            </map>
+            <map name="mass">
+                <float name="default">2</float>
+            </map>
+            <map name="material">
+                <string name="default">wood</string>
+            </map>
+        </map>
+        <string name="id">charcoal</string>
+        <string name="objtype">class</string>
+        <string name="parent">material</string>
     </map>
-    <string name="id">charcoal</string>
-    <string name="objtype">class</string>
-    <string name="parent">material</string>
-  </map>
 
-  <map>
-    <map name="attributes">
-      <map name="mass">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
+    <map>
+        <map name="attributes">
+            <map name="mass">
+                <float name="default">1</float>
+            </map>
+        </map>
+        <string name="id">construction</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
     </map>
-    <string name="id">construction</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
 
-  <map>
-    <map name="attributes">
-      <map name="burn_speed">
-        <float name="default">2</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">0.2</float>
-        <string name="visibility">public</string>
-      </map>
+    <map>
+        <map name="attributes">
+            <map name="burn_speed">
+                <float name="default">2</float>
+            </map>
+            <map name="mass">
+                <float name="default">0.2</float>
+            </map>
+        </map>
+        <string name="id">deed</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
     </map>
-    <string name="id">deed</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
 
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-1</float>
-          <float>-0.1</float>
-          <float>-0.1</float>
-          <float>1</float>
-          <float>1</float>
-          <float>0.1</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">20</float>
-        <string name="visibility">public</string>
-      </map>
+    <map>
+        <map name="attributes">
+            <map name="bbox">
+                <list name="default">
+                    <float>-1</float>
+                    <float>-0.1</float>
+                    <float>-0.1</float>
+                    <float>1</float>
+                    <float>1</float>
+                    <float>0.1</float>
+                </list>
+            </map>
+            <map name="mass">
+                <float name="default">20</float>
+            </map>
+        </map>
+        <string name="id">earth_wall</string>
+        <string name="objtype">class</string>
+        <string name="parent">wall</string>
     </map>
-    <string name="id">earth_wall</string>
-    <string name="objtype">class</string>
-    <string name="parent">wall</string>
-  </map>
 
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.1</float>
-          <float>0</float>
-          <float>-0.1</float>
-          <float>0.1</float>
-          <float>0.5</float>
-          <float>0.1</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="burn_speed">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
+    <map>
+        <map name="attributes">
+            <map name="bbox">
+                <list name="default">
+                    <float>-0.1</float>
+                    <float>0</float>
+                    <float>-0.1</float>
+                    <float>0.1</float>
+                    <float>0.5</float>
+                    <float>0.1</float>
+                </list>
+            </map>
+            <map name="burn_speed">
+                <float name="default">1</float>
+            </map>
+            <map name="mass">
+                <float name="default">1</float>
+            </map>
+        </map>
+        <string name="id">fibre</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
     </map>
-    <string name="id">fibre</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
 
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.1</float>
-          <float>0</float>
-          <float>-0.1</float>
-          <float>0.1</float>
-          <float>0.2</float>
-          <float>0.1</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="burn_speed">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">2</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="material">
-        <string name="default">stone</string>
-        <string name="visibility">public</string>
-      </map>
+    <map>
+        <map name="attributes">
+            <map name="bbox">
+                <list name="default">
+                    <float>-0.1</float>
+                    <float>0</float>
+                    <float>-0.1</float>
+                    <float>0.1</float>
+                    <float>0.2</float>
+                    <float>0.1</float>
+                </list>
+            </map>
+            <map name="burn_speed">
+                <float name="default">1</float>
+            </map>
+            <map name="mass">
+                <float name="default">2</float>
+            </map>
+            <map name="material">
+                <string name="default">stone</string>
+            </map>
+        </map>
+        <string name="id">hematite</string>
+        <string name="objtype">class</string>
+        <string name="parent">material</string>
     </map>
-    <string name="id">hematite</string>
-    <string name="objtype">class</string>
-    <string name="parent">material</string>
-  </map>
 
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.201</float>
-          <float>0</float>
-          <float>-0.069</float>
-          <float>0.201</float>
-          <float>0.062</float>
-          <float>0.069</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="burn_speed">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">20</float>
-        <string name="visibility">public</string>
-      </map>
+    <map>
+        <map name="attributes">
+            <map name="bbox">
+                <list name="default">
+                    <float>-0.201</float>
+                    <float>0</float>
+                    <float>-0.069</float>
+                    <float>0.201</float>
+                    <float>0.062</float>
+                    <float>0.069</float>
+                </list>
+            </map>
+            <map name="burn_speed">
+                <float name="default">1</float>
+            </map>
+            <map name="mass">
+                <float name="default">20</float>
+            </map>
+        </map>
+        <string name="id">iron_ingot</string>
+        <string name="objtype">class</string>
+        <string name="parent">material</string>
     </map>
-    <string name="id">iron_ingot</string>
-    <string name="objtype">class</string>
-    <string name="parent">material</string>
-  </map>
 
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.1</float>
-          <float>0</float>
-          <float>-0.1</float>
-          <float>0.1</float>
-          <float>0.5</float>
-          <float>0.1</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="burn_speed">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">10</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="material">
-        <string name="default">wood</string>
-        <string name="visibility">public</string>
-      </map>
+    <map>
+        <map name="attributes">
+            <map name="bbox">
+                <list name="default">
+                    <float>-0.1</float>
+                    <float>0</float>
+                    <float>-0.1</float>
+                    <float>0.1</float>
+                    <float>0.5</float>
+                    <float>0.1</float>
+                </list>
+            </map>
+            <map name="burn_speed">
+                <float name="default">1</float>
+            </map>
+            <map name="mass">
+                <float name="default">10</float>
+            </map>
+            <map name="material">
+                <string name="default">wood</string>
+            </map>
+        </map>
+        <string name="id">lumber</string>
+        <string name="objtype">class</string>
+        <string name="parent">material</string>
     </map>
-    <string name="id">lumber</string>
-    <string name="objtype">class</string>
-    <string name="parent">material</string>
-  </map>
 
-  <map>
-    <map name="attributes">
+    <map>
+        <map name="attributes">
+        </map>
+        <string name="description">base class for solid materials</string>
+        <string name="id">material</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
     </map>
-    <string name="description">base class for solid materials</string>
-    <string name="id">material</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
 
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-0.1</float>
-          <float>0</float>
-          <float>-0.1</float>
-          <float>0.1</float>
-          <float>0.5</float>
-          <float>0.1</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="burn_speed">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">2000</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="material">
-        <string name="default">wood</string>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mode">
-        <string name="default">relative</string>
-        <string name="visibility">public</string>
-      </map>
+    <map>
+        <map name="attributes">
+            <map name="bbox">
+                <list name="default">
+                    <float>-0.1</float>
+                    <float>0</float>
+                    <float>-0.1</float>
+                    <float>0.1</float>
+                    <float>0.5</float>
+                    <float>0.1</float>
+                </list>
+            </map>
+            <map name="burn_speed">
+                <float name="default">1</float>
+            </map>
+            <map name="mass">
+                <float name="default">2000</float>
+            </map>
+            <map name="material">
+                <string name="default">wood</string>
+            </map>
+            <map name="mode">
+                <string name="default">relative</string>
+            </map>
+        </map>
+        <string name="id">stake</string>
+        <string name="objtype">class</string>
+        <string name="parent">construction</string>
     </map>
-    <string name="id">stake</string>
-    <string name="objtype">class</string>
-    <string name="parent">construction</string>
-  </map>
 
-  <map>
-    <map name="attributes">
+    <map>
+        <map name="attributes">
+        </map>
+        <string name="id">stone</string>
+        <string name="objtype">class</string>
+        <string name="parent">material</string>
     </map>
-    <string name="id">stone</string>
-    <string name="objtype">class</string>
-    <string name="parent">material</string>
-  </map>
 
-  <map>
-    <map name="attributes">
-      <map name="bbox">
-        <list name="default">
-          <float>-1</float>
-          <float>-0.05</float>
-          <float>-0.025</float>
-          <float>1</float>
-          <float>0.05</float>
-          <float>0.025</float>
-        </list>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">20</float>
-        <string name="visibility">public</string>
-      </map>
+    <map>
+        <map name="attributes">
+            <map name="bbox">
+                <list name="default">
+                    <float>-1</float>
+                    <float>-0.05</float>
+                    <float>-0.025</float>
+                    <float>1</float>
+                    <float>0.05</float>
+                    <float>0.025</float>
+                </list>
+            </map>
+            <map name="mass">
+                <float name="default">20</float>
+            </map>
+        </map>
+        <string name="id">twobyfour</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
     </map>
-    <string name="id">twobyfour</string>
-    <string name="objtype">class</string>
-    <string name="parent">thing</string>
-  </map>
 
-  <map>
-    <string name="id">wall</string>
-    <string name="objtype">class</string>
-    <string name="parent">construction</string>
-  </map>
-
-  <map>
-    <map name="attributes">
-      <map name="burn_speed">
-        <float name="default">1</float>
-        <string name="visibility">public</string>
-      </map>
-      <map name="mass">
-        <float name="default">10</float>
-        <string name="visibility">public</string>
-      </map>
+    <map>
+        <string name="id">wall</string>
+        <string name="objtype">class</string>
+        <string name="parent">construction</string>
     </map>
-    <string name="id">wood</string>
-    <string name="objtype">class</string>
-    <string name="parent">material</string>
-  </map>
+
+    <map>
+        <map name="attributes">
+            <map name="burn_speed">
+                <float name="default">1</float>
+            </map>
+            <map name="mass">
+                <float name="default">10</float>
+            </map>
+        </map>
+        <string name="id">wood</string>
+        <string name="objtype">class</string>
+        <string name="parent">material</string>
+    </map>
 
 </atlas>
