@@ -665,7 +665,7 @@ void Account::LookOperation(const Operation & op, OpVector & res)
         res.push_back(s);
         return;
     }
-    error(op, "Unknown look target", res, getId());
+    error(op, String::compose("Unknown look target '%1'.", to), res, getId());
 }
 
 void Account::GetOperation(const Operation & op, OpVector & res)
