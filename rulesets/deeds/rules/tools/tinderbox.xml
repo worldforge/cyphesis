@@ -18,13 +18,20 @@
                     <string>ignite</string>
                 </list>
             </map>
-            <map name="scripts">
-                <list name="default">
-                    <map>
-                        <string name="language">python</string>
-                        <string name="name">world.objects.tools.Tinderbox.Tinderbox</string>
+            <map name="cooldown">
+                <float name="default">1</float>
+            </map>
+            <map name="usages">
+                <map name="default">
+                    <map name="ignite">
+                        <list name="targets">
+                            <string>entity.type instance_of types.game_entity</string>
+                        </list>
+                        <list name="consumed">
+                        </list>
+                        <string name="handler">world.objects.tools.Tinderbox.ignite</string>
                     </map>
-                </list>
+                </map>
             </map>
         </map>
         <string name="id">tinderbox</string>

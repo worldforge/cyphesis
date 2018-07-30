@@ -21,12 +21,13 @@ def strike(tool, actor, op, targets, consumed):
 
     #Sword only handles one target
     target = targets[0]
-    if target.is_reachable_for_other_entity(actor, None, extraReach):
+    #Ignore pos
+    if target[0].is_reachable_for_other_entity(actor, None, extraReach):
         print("Strike!")
         damage = 0
         if tool.props.damage:
             damage = tool.props.damage
-        hitOp = Operation('hit', Entity(damage=damage), to=target)
+        hitOp = Operation('hit', Entity(damage=damage), to=target[0])
         return (server.OPERATION_BLOCKED, hitOp, Operation('sight', hitOp))
     else:
         print("Too far away.")

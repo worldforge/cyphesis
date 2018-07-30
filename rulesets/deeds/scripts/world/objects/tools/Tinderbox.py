@@ -7,10 +7,10 @@ from physics import Point3D
 
 import server
 
-class Tinderbox(server.Thing):
-    """This is base class for axes, this one just ordinary axe"""
-    def ignite_operation(self, op):
-        to_ = op[0].id
-        if not to_:
-            return self.error(op,"To is undefined object")
-        return Operation("create",Entity(parent='fire',status=0.05, location=Location(server.world.get_object(to_),Point3D(0.0,0.0,0.0))),to=to_)
+def ignite(tool, actor, op, targets, consumed):
+    target = targets[0]
+    if target[0].is_reachable_for_other_entity(actor, target[1], 0):
+        return (server.OPERATION_BLOCKED, Operation("create", Entity(parent='fire',status=0.05, location=Location(target[0],target[1])),to=target[0]))
+    else:
+        print("Too far away.")
+        return (server.OPERATION_BLOCKED)

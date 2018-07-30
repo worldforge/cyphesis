@@ -160,7 +160,8 @@ Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::is_reachable_for_other_
         extraReach = verifyNumeric(args[2]);
     }
 
-    return Py::Boolean(verifyObject<CyPy_LocatedEntity>(args.front()).isReachableForOtherEntity(this->m_value, pos, extraReach));
+    auto& reacher = verifyObject<CyPy_LocatedEntity>(args.front());
+    return Py::Boolean(this->m_value->isReachableForOtherEntity(&reacher, pos, extraReach));
 }
 
 template<typename TValue, typename TPythonClass>
