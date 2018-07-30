@@ -42,9 +42,9 @@ class CyPy_Element : public WrapperBase<Atlas::Message::Element, CyPy_Element>
 
         int setattro(const Py::String& name, const Py::Object& attr) override;
 
-        virtual Py::Object mapping_subscript(const Py::Object&);
+        Py::Object mapping_subscript(const Py::Object&) override;
 
-        virtual int mapping_ass_subscript(const Py::Object&, const Py::Object&);
+        int mapping_ass_subscript(const Py::Object&, const Py::Object&) override;
 
 
         Py::Object get_name();

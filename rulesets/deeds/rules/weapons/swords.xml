@@ -1,16 +1,6 @@
 <atlas>
 
     <map>
-        <string name="id">weapon_strike</string>
-        <string name="objtype">class</string>
-        <string name="parent">task</string>
-        <map name="script">
-            <string name="language">python</string>
-            <string name="name">world.tasks.Strike.Strike</string>
-        </map>
-    </map>
-
-    <map>
         <map name="attributes">
             <map name="geometry">
                 <map name="default">
@@ -41,7 +31,7 @@
                         </list>
                         <list name="consumed">
                         </list>
-                        <string name="handler">world.objects.tools.Sword.strike</string>
+                        <string name="handler">world.objects.tools.Hitting.strike</string>
                     </map>
                 </map>
             </map>

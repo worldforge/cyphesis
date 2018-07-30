@@ -13,6 +13,25 @@
             <map name="present">
                 <string name="default">dural/items/tools/hatchet/hatchet.modeldef</string>
             </map>
+            <map name="reach">
+                <float name="default">1.5</float>
+            </map>
+            <map name="damage">
+                <float name="default">1</float>
+            </map>
+            <map name="cooldown">
+                <float name="default">1</float>
+            </map>
+            <map name="usages">
+                <map name="default">
+                    <map name="chop">
+                        <list name="targets">
+                            <string>entity.type instance_of types.game_entity</string>
+                        </list>
+                        <string name="handler">world.objects.tools.Hitting.strike</string>
+                    </map>
+                </map>
+            </map>
         </map>
         <string name="id">axe</string>
         <string name="objtype">class</string>

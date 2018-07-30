@@ -23,7 +23,7 @@ def strike(tool, actor, op, targets, consumed):
         damage = 0
         if tool.props.damage:
             damage = tool.props.damage
-        hitOp = Operation('hit', Entity(damage=damage), to=target.entity)
+        hitOp = Operation('hit', Entity(damage=damage, hit_type=op.id), to=target.entity)
         return (server.OPERATION_BLOCKED, hitOp, Operation('sight', hitOp))
     else:
         print("Too far away.")

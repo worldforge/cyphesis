@@ -36,6 +36,8 @@ class CyPy_Props : public WrapperBase<Ref<LocatedEntity>, CyPy_Props>
 
         int setattro(const Py::String& name, const Py::Object& attr) override;
 
+        Py::Object mapping_subscript(const Py::Object&) override;
+
     private:
 
 };

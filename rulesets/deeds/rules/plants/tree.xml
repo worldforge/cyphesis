@@ -13,6 +13,22 @@
             <map name="friction_roll">
                 <float name="default">0.5</float>
             </map>
+            <!-- When hitting with an axe we want the tree to take much more damage -->
+            <map name="__modifier_hit_type_chop">
+                <float name="default">40</float>
+            </map>
+            <map name="scripts">
+                <list name="default">
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Hittable.Hittable</string>
+                    </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Loggable.Loggable</string>
+                    </map>
+                </list>
+            </map>
         </map>
         <string name="id">tree</string>
         <string name="objtype">class</string>

@@ -39,6 +39,7 @@ void CyPy_Props::init_type()
     behaviors().name("Properties");
     behaviors().doc("");
 
+    behaviors().supportMappingType(Py::PythonType::support_mapping_subscript);
     behaviors().readyType();
 }
 
@@ -83,4 +84,12 @@ int CyPy_Props::setattro(const Py::String& name, const Py::Object& attr)
     Atlas::Message::Element obj = CyPy_Element::asElement(attr);
     m_value->setAttr(name, obj);
     return 0;
+}
+
+Py::Object CyPy_Props::mapping_subscript(const Py::Object& key)
+{
+    if (key.isString()) {
+        return getattro(Py::String(key));
+    }
+    return Py::None();
 }
