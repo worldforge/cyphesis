@@ -29,9 +29,7 @@ using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Message::FloatType;
 
-CalendarProperty::CalendarProperty()
-{
-}
+CalendarProperty::CalendarProperty() = default;
 
 int CalendarProperty::get(Element & ent) const
 {
@@ -46,7 +44,6 @@ int CalendarProperty::get(Element & ent) const
 
 void CalendarProperty::set(const Element & ent)
 {
-    return;
 }
 
 CalendarProperty * CalendarProperty::copy() const

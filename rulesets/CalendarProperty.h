@@ -23,13 +23,16 @@
 
 /// \brief Class to handle World calendar property
 /// \ingroup PropertyClasses
-class CalendarProperty : public PropertyBase {
-  public:
-    CalendarProperty();
+class CalendarProperty : public PropertyBase
+{
+    public:
+        CalendarProperty();
 
-    virtual int get(Atlas::Message::Element &) const;
-    virtual void set(const Atlas::Message::Element &);
-    virtual CalendarProperty * copy() const;
+        int get(Atlas::Message::Element&) const override;
+
+        void set(const Atlas::Message::Element&) override;
+
+        CalendarProperty* copy() const override;
 };
 
 #endif // RULESETS_CALENDAR_PROPERTY_H

@@ -1,3 +1,5 @@
+#include <utility>
+
 // Cyphesis Online RPG Server and AI Engine
 // Copyright (C) 2000-2005 Alistair Riddoch
 //
@@ -29,6 +31,7 @@
 
 #include "common/Eat.h"
 #include "common/Nourish.h"
+#include "WorldTimeProperty.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -53,15 +56,17 @@ typedef enum { ROCK = 0, SAND = 1, GRASS = 2, SILT = 3, SNOW = 4} Surface;
 /// \brief Constructor for the World entity
 World::World(const std::string & id, long intId) : Thing(id, intId), m_serialNumber(0)
 {
-
-    CalendarProperty* calProp = new CalendarProperty();
+    auto calProp = new CalendarProperty();
     calProp->install(this, "calendar");
     m_properties["calendar"] = calProp;
+
+    auto worldTimeProp = new WorldTimeProperty();
+    worldTimeProp->install(this, "time");
+    m_properties["time"] = worldTimeProp;
+
 }
 
-World::~World()
-{
-}
+World::~World() = default;
 
 void World::LookOperation(const Operation & op, OpVector & res)
 {
@@ -262,7 +267,7 @@ void World::sendRelayToEntity(const LocatedEntity& to, const Operation& op, sigc
     relayOp->setArgs1(op);
     Relay relay;
     relay.entityId = to.getId();
-    relay.callback = callback;
+    relay.callback = std::move(callback);
     m_relays.insert(std::make_pair(serialNo, relay));
 
     sendWorld(relayOp);
