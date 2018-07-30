@@ -19,6 +19,7 @@
 #ifndef COMMON_PROPERTY_H
 #define COMMON_PROPERTY_H
 
+#include "modules/Flags.h"
 #include "OperationRouter.h"
 
 #include <Atlas/Message/Element.h>
@@ -32,22 +33,31 @@ class TypeNode;
 class PropertyBase {
   protected:
     /// \brief Flags indicating how this Property should be handled
-    std::uint32_t m_flags;
+    Flags m_flags;
     explicit PropertyBase(std::uint32_t flags = 0);
     PropertyBase(const PropertyBase &) = default;
   public:
     virtual ~PropertyBase() = default;
 
     /// \brief Accessor for Property flags
-    std::uint32_t flags() const { return m_flags; }
+    const Flags& flags() const { return m_flags; }
     /// \brief Accessor for Property flags
-    std::uint32_t & flags() { return m_flags; }
+    Flags& flags() { return m_flags; }
 
-    void addFlags(std::uint32_t flags) { m_flags |= flags; }
+        void addFlags(std::uint32_t flags)
+        {
+            m_flags.addFlags(flags);
+        }
 
-    void removeFlags(std::uint32_t flags) { m_flags &= ~flags; }
+        void removeFlags(std::uint32_t flags)
+        {
+            m_flags.removeFlags(flags);
+        }
 
-    bool hasFlags(std::uint32_t flags) const { return (m_flags & flags) != 0; }
+        bool hasFlags(std::uint32_t flags) const
+        {
+            return m_flags.hasFlags(flags);
+        }
 
     /// \brief Install this property on an entity
     ///

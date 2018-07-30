@@ -95,7 +95,7 @@ TasksProperty * TasksProperty::copy() const
 
 int TasksProperty::updateTask(LocatedEntity * owner, OpVector & res)
 {
-    addFlags(flag_unsent);
+    m_flags.addFlags(flag_unsent);
 
     Update update;
     update->setTo(owner->getId());
@@ -137,7 +137,7 @@ int TasksProperty::clearTask(LocatedEntity * owner, OpVector & res)
     if (!m_task) {
         // This function should never be called when there is no task,
         // except during Entity destruction
-        assert(owner->getFlags() & entity_destroyed);
+        assert(owner->hasFlags(entity_destroyed));
         return -1;
     }
     m_task = nullptr;

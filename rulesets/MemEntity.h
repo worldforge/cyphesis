@@ -36,9 +36,9 @@ class MemEntity : public LocatedEntity {
 
     void setVisible(bool v = true) {
         if (v) {
-            m_flags |= entity_visible;
+            m_flags.addFlags(entity_visible);
         } else {
-            m_flags &= ~entity_visible;
+            m_flags.removeFlags(entity_visible);
         }
     }
 

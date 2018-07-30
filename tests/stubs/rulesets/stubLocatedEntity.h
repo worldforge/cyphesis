@@ -243,7 +243,7 @@
 
 #ifndef STUB_LocatedEntity_broadcast
 //#define STUB_LocatedEntity_broadcast
-  void LocatedEntity::broadcast(const Atlas::Objects::Operation::RootOperation& op, OpVector& res) const
+  void LocatedEntity::broadcast(const Atlas::Objects::Operation::RootOperation& op, OpVector& res, Visibility visibility) const
   {
     
   }

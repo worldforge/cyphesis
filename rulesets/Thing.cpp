@@ -90,7 +90,7 @@ void Thing::DeleteOperation(const Operation& op, OpVector& res)
 
     Sight s;
     s->setArgs1(op);
-    broadcast(s, res);
+    broadcast(s, res, Visibility::PUBLIC);
 
 //    //Important to send directly before this entity is deleted, so that broadcasts gets right.
 //    sendWorld(s);
@@ -288,7 +288,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
 
                     Sight s;
                     s->setArgs1(p);
-                    m_location.m_loc->broadcast(s, res);
+                    m_location.m_loc->broadcast(s, res, Visibility::PUBLIC);
                 }
 
                 Anonymous wield_arg;
@@ -308,7 +308,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
                 d->setTo(getId());
                 Sight s;
                 s->setArgs1(d);
-                m_location.m_loc->broadcast(s, res);
+                m_location.m_loc->broadcast(s, res, Visibility::PUBLIC);
             }
 
             // Update loc
@@ -362,7 +362,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
 
         Sight s;
         s->setArgs1(m);
-        broadcast(s, res);
+        broadcast(s, res, Visibility::PUBLIC);
 
         //Check if there are any other transformed entities, and send move ops for those.
         //However, with this setup the Sight ops for the resting entities will be sent _before_ the Sight
@@ -392,7 +392,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
                     Sight sight;
                     sight->setArgs1(movedOp);
                     OpVector childRes;
-                    transformedEntity->broadcast(sight, childRes);
+                    transformedEntity->broadcast(sight, childRes, Visibility::PUBLIC);
                     for (auto& childOp : childRes) {
                         transformedEntity->sendWorld(childOp);
                     }
@@ -440,12 +440,16 @@ void Thing::updateProperties(const Operation& op, OpVector& res)
     Anonymous set_arg;
     set_arg->setId(getId());
 
-    Anonymous protected_set_arg;
-    protected_set_arg->setId(getId());
+    Anonymous set_arg_protected;
+    set_arg_protected->setId(getId());
+
+    Anonymous set_arg_private;
+    set_arg_private->setId(getId());
 
     bool hadChanges = false;
     bool hadPublicChanges = false;
     bool hadProtectedChanges = false;
+    bool hadPrivateChanges = false;
 
     for (auto entry : m_properties) {
         PropertyBase* prop = entry.second;
@@ -454,9 +458,10 @@ void Thing::updateProperties(const Operation& op, OpVector& res)
             debug(std::cout << "UPDATE:  " << flag_unsent << " " << entry.first
                             << std::endl << std::flush;);
             if (entry.second->hasFlags(vis_private)) {
-                //Don't add property; it's private.
+                prop->add(entry.first, set_arg_private);
+                hadPrivateChanges = true;
             } else if (entry.second->hasFlags(vis_protected)) {
-                prop->add(entry.first, protected_set_arg);
+                prop->add(entry.first, set_arg_protected);
                 hadProtectedChanges = true;
             } else {
                 prop->add(entry.first, set_arg);
@@ -482,7 +487,7 @@ void Thing::updateProperties(const Operation& op, OpVector& res)
 
         Sight sight;
         sight->setArgs1(set);
-        broadcast(sight, res);
+        broadcast(sight, res, Visibility::PUBLIC);
     }
 
     if (hadProtectedChanges) {
@@ -491,17 +496,28 @@ void Thing::updateProperties(const Operation& op, OpVector& res)
         set->setTo(getId());
         set->setFrom(getId());
         set->setSeconds(op->getSeconds());
-        set->setArgs1(protected_set_arg);
+        set->setArgs1(set_arg_protected);
 
         Sight sight;
         sight->setArgs1(set);
-        sight->setTo(getId());
-        res.push_back(sight);
+        broadcast(sight, res, Visibility::PROTECTED);
     }
 
+    if (hadPrivateChanges) {
+
+        Set set;
+        set->setTo(getId());
+        set->setFrom(getId());
+        set->setSeconds(op->getSeconds());
+        set->setArgs1(set_arg_private);
+
+        Sight sight;
+        sight->setArgs1(set);
+        broadcast(sight, res, Visibility::PRIVATE);
+    }
 
     //Location changes must be communicated through a Move op.
-    if (m_flags & entity_dirty_location) {
+    if (m_flags.hasFlags(entity_dirty_location)) {
         Move m;
         Anonymous move_arg;
         move_arg->setId(getId());
@@ -514,7 +530,7 @@ void Thing::updateProperties(const Operation& op, OpVector& res)
         Sight s;
         s->setArgs1(m);
 
-        broadcast(s, res);
+        broadcast(s, res, Visibility::PUBLIC);
         removeFlags(entity_dirty_location);
         hadChanges = true;
     }
@@ -523,7 +539,7 @@ void Thing::updateProperties(const Operation& op, OpVector& res)
     //Only change sequence number and call onUpdated if something actually changed.
     if (hadChanges) {
         m_seq++;
-        if (~m_flags & entity_clean) {
+        if (!hasFlags(entity_clean)) {
             onUpdated();
         }
     }
@@ -561,7 +577,7 @@ void Thing::generateSightOp(const LocatedEntity& observingEntity, const Operatio
     Anonymous sarg;
 
     //Don't call "addToEntity" since we want to filter out private and protected properties
-    if (observingEntity.getIntId() == getIntId()) {
+    if (observingEntity.getIntId() == getIntId() || observingEntity.hasFlags(entity_admin)) {
         for (auto& entry : m_properties) {
             if (!entry.second->hasFlags(vis_private)) {
                 entry.second->add(entry.first, sarg);
@@ -690,7 +706,8 @@ void Thing::CreateOperation(const Operation& op, OpVector& res)
 
         Sight s;
         s->setArgs1(c);
-        broadcast(s, res);
+        //TODO: perhaps check that we don't send private and protected properties?
+        broadcast(s, res, Visibility::PUBLIC);
     }
     catch (Atlas::Message::WrongTypeException&) {
         log(ERROR, "EXCEPTION: Malformed object to be created");

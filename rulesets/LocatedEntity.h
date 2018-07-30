@@ -21,6 +21,8 @@
 
 #include "Location.h"
 
+#include "modules/Flags.h"
+
 #include "common/Property.h"
 #include "common/Router.h"
 #include "common/log.h"
@@ -94,6 +96,11 @@ static const std::uint32_t entity_dirty_thoughts = 1u << 10u;
 /// \ingroup EntityFlags
 static const std::uint32_t entity_dirty_location = 1u << 11u;
 
+/**
+ * The entity is an admin character, and has additional capabilities.
+ */
+static const std::uint32_t entity_admin = 1u << 12u;
+
 /// \brief This is the base class from which in-game and in-memory objects
 /// inherit.
 ///
@@ -120,8 +127,6 @@ class LocatedEntity : public Router {
     
     /// Class of which this is an instance
     const TypeNode * m_type;
-    /// Flags indicating changes to attributes
-    std::uint32_t m_flags;
 
     void clearProperties();
 
@@ -135,7 +140,31 @@ class LocatedEntity : public Router {
     void collectObserversForChild(const LocatedEntity& child, std::set<const LocatedEntity*>& receivers) const;
 
     public:
-    /// Scripts that are associated with this entity.
+
+        /**
+         * Visibility for broadcasted entities.
+         */
+        enum class Visibility {
+                /**
+                 * Sent to all.
+                 */
+                PUBLIC,
+                /**
+                 * Sent to the entity itself and admins.
+                 */
+                PROTECTED,
+
+                /**
+                 * Sent only to admins (not even the entity itself).
+                 */
+                PRIVATE
+        };
+
+        /// Flags indicating entity behaviour
+        Flags m_flags;
+
+
+        /// Scripts that are associated with this entity.
     std::vector<Script*> m_scripts;
     /// Full details of location
     Location m_location;
@@ -166,19 +195,31 @@ class LocatedEntity : public Router {
     }
 
     /// \brief Check if this entity is flagged as perceptive
-    bool isPerceptive() const { return ( m_flags & entity_perceptive) != 0; }
+    bool isPerceptive() const { return m_flags.hasFlags(entity_perceptive); }
 
     /// \brief Check if this entity is flagged as destroyed
-    bool isDestroyed() const { return (m_flags & entity_destroyed) != 0; }
+    bool isDestroyed() const { return m_flags.hasFlags(entity_destroyed); }
 
-    bool isVisible() const { return (m_flags & entity_visible) != 0; }
+    bool isVisible() const { return m_flags.hasFlags(entity_visible); }
 
     /// \brief Accessor for flags
-    std::uint32_t getFlags() const { return m_flags; }
+    const Flags& flags() const { return m_flags; }
+    Flags& flags() { return m_flags; }
 
-    void addFlags(std::uint32_t flags) { m_flags |= flags; }
+        void addFlags(std::uint32_t flags)
+        {
+            m_flags.addFlags(flags);
+        }
 
-    void removeFlags(std::uint32_t flags) { m_flags &= ~flags; }
+        void removeFlags(std::uint32_t flags)
+        {
+            m_flags.removeFlags(flags);
+        }
+
+        bool hasFlags(std::uint32_t flags) const
+        {
+            return m_flags.hasFlags(flags);
+        }
 
     /// \brief Accessor for sequence number
     const int getSeq() const { return m_seq; }
@@ -248,7 +289,7 @@ class LocatedEntity : public Router {
      * @param op
      * @param res
      */
-    void broadcast(const Atlas::Objects::Operation::RootOperation& op, OpVector& res) const;
+    void broadcast(const Atlas::Objects::Operation::RootOperation& op, OpVector& res, Visibility visibility) const;
 
     /**
      * Processes appearance and disappearance of this entity for other observing entities. This is done by matching the supplied list of entities that previously

@@ -174,7 +174,7 @@ SoftProperty * SoftProperty::copy() const
 
 int BoolProperty::get(Atlas::Message::Element & ent) const
 {
-    ent = hasFlags(flag_bool) ? 1 : 0;
+    ent = m_flags.hasFlags(flag_bool) ? 1 : 0;
     return 0;
 }
 
@@ -182,9 +182,9 @@ void BoolProperty::set(const Atlas::Message::Element & ent)
 {
     if (ent.isInt()) {
         if (ent.Int() == 0) {
-            removeFlags(flag_bool);
+            m_flags.removeFlags(flag_bool);
         } else {
-            addFlags(flag_bool);
+            m_flags.addFlags(flag_bool);
         }
     }
 }
@@ -196,7 +196,7 @@ BoolProperty * BoolProperty::copy() const
 
 bool BoolProperty::isTrue() const
 {
-    return hasFlags(flag_bool);
+    return m_flags.hasFlags(flag_bool);
 }
 
 

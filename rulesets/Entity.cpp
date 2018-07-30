@@ -115,7 +115,7 @@ void Entity::addChild(LocatedEntity& childEntity)
 
 void Entity::removeChild(LocatedEntity& childEntity)
 {
-    if (m_flags & entity_domain) {
+    if (m_flags.hasFlags(entity_domain)) {
         auto domain = getPropertyClass<DomainProperty>("domain")->getDomain(this);
         domain->removeEntity(childEntity);
     }
@@ -152,7 +152,7 @@ PropertyBase * Entity::setAttr(const std::string & name, const Element & attr)
     prop->addFlags(flag_unsent);
     propertyApplied(name, *prop);
     // Mark the Entity as unclean
-    removeFlags(entity_clean);
+    m_flags.removeFlags(entity_clean);
     return prop;
 }
 
@@ -187,7 +187,7 @@ PropertyBase * Entity::modProperty(const std::string & name, const Atlas::Messag
                 new_prop->set(def_val);
             }
             I->second->remove(this, name);
-            new_prop->flags() &= ~flag_class;
+            new_prop->removeFlags(flag_class);
             m_properties[name] = new_prop;
             new_prop->apply(this);
             propertyApplied(name, *new_prop);
@@ -316,28 +316,24 @@ void Entity::destroy()
 
     LocatedEntity::destroy();
 
-    m_flags |= entity_destroyed;
+    m_flags.addFlags(entity_destroyed);
     destroyed.emit();
 }
 
 Domain * Entity::getDomain()
 {
-    if (m_flags & entity_domain) {
+    if (m_flags.hasFlags(entity_domain)) {
         return getPropertyClass<DomainProperty>("domain")->getDomain(this);
-    } else {
-        return nullptr;
     }
+    return nullptr;
 }
 
 const Domain * Entity::getDomain() const
 {
-    if (m_flags & entity_domain) {
+    if (m_flags.hasFlags(entity_domain)) {
         return getPropertyClass<DomainProperty>("domain")->getDomain(this);
-    } else {
-        return nullptr;
     }
     return nullptr;
-
 }
 
 

@@ -294,12 +294,24 @@ void LocatedEntity::changeContainer(LocatedEntity* new_loc)
     onContainered(oldLoc);
 }
 
-void LocatedEntity::broadcast(const Atlas::Objects::Operation::RootOperation& op, OpVector& res) const
+void LocatedEntity::broadcast(const Atlas::Objects::Operation::RootOperation& op, OpVector& res, Visibility visibility) const
 {
     std::set<const LocatedEntity*> receivers;
     collectObservers(receivers);
 
     for (auto& entity : receivers) {
+        if (visibility == Visibility::PRIVATE) {
+            //Only send private ops to admins
+            if (!entity->hasFlags(entity_admin)) {
+                continue;
+            }
+        } else if (visibility == Visibility::PROTECTED) {
+            //Protected ops also goes to the entity itself
+            if (!entity->hasFlags(entity_admin) &&
+                entity->getIntId() != getIntId()) {
+                continue;
+            }
+        }
         auto newOp = op.copy();
         newOp->setTo(entity->getId());
         newOp->setFrom(getId());

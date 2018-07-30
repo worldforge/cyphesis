@@ -44,6 +44,7 @@ Creator::Creator(const std::string & id, long intId) :
          Character(id, intId)
 {
     debug( std::cout << "Creator::Creator" << std::endl << std::flush;);
+    addFlags(entity_admin);
 }
 
 

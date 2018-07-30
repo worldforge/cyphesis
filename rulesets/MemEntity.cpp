@@ -62,7 +62,7 @@ void MemEntity::destroy()
              }
          }
      }
-     m_flags |= entity_destroyed;
+     m_flags.addFlags(entity_destroyed);
 }
 
 PropertyBase * MemEntity::setAttr(const std::string & name, const Atlas::Message::Element & attr)

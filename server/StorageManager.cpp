@@ -80,14 +80,14 @@ StorageManager:: StorageManager(WorldRouter & world) :
     Monitors::instance()->watch("storage_property_updates",
                                 new Variable<int>(m_updatePropertyCount));
 
-    Monitors::instance()->watch("storage_qps{qtype=\"inserts\",t=\"1\"}",
+    Monitors::instance()->watch(R"(storage_qps{qtype="inserts",t="1"})",
                                 new Variable<int>(m_insertQpsNow));
-    Monitors::instance()->watch("storage_qps{qtype=\"updates\",t=\"1\"}",
+    Monitors::instance()->watch(R"(storage_qps{qtype="updates",t="1"})",
                                 new Variable<int>(m_updateQpsNow));
 
-    Monitors::instance()->watch("storage_qps{qtype=\"inserts\",t=\"32\"}",
+    Monitors::instance()->watch(R"(storage_qps{qtype="inserts",t="32"})",
                                 new Variable<int>(m_insertQpsAvg));
-    Monitors::instance()->watch("storage_qps{qtype=\"updates\",t=\"32\"}",
+    Monitors::instance()->watch(R"(storage_qps{qtype="updates",t="32"})",
                                 new Variable<int>(m_updateQpsAvg));
 
     for (int i = 0; i < 32; ++i) {
@@ -107,11 +107,11 @@ StorageManager::~StorageManager()
 /// \brief Called when a new Entity is inserted in the world
 void StorageManager::entityInserted(LocatedEntity * ent)
 {
-    if (ent->getFlags() & (entity_ephem)) {
+    if (ent->hasFlags(entity_ephem)) {
         // This entity is not persisted.
         return;
     }
-    if (ent->getFlags() & (entity_clean)) {
+    if (ent->hasFlags(entity_clean)) {
         // This entity has just been restored from the database, so does
         // not need to be inserted, but will need to be updated.
         // For non-restored entities that have been newly created this
@@ -136,7 +136,7 @@ void StorageManager::entityUpdated(LocatedEntity * ent)
     // Is it already in the dirty Entities queue?
     // Perhaps we need to modify the semantics of the updated signal
     // so it is only emitted if the entity was not marked as dirty.
-    if (ent->getFlags() & entity_queued) {
+    if (ent->hasFlags(entity_queued)) {
         // std::cout << "Already queued " << ent->getId() << std::endl << std::flush;
         return;
     }
@@ -326,7 +326,7 @@ bool StorageManager::storeThoughts(LocatedEntity * ent)
         return false;
     }
 
-    if (ent->getFlags() & (entity_ephem)) {
+    if (ent->hasFlags(entity_ephem)) {
         // This entity is not persisted.
         return false;
     }
@@ -369,7 +369,7 @@ void StorageManager::insertEntity(LocatedEntity * ent)
     auto Iend = properties.end();
     for (; I != Iend; ++I) {
         PropertyBase * prop = I->second;
-        if (prop->flags() & per_ephem) {
+        if (prop->hasFlags(per_ephem)) {
             continue;
         }
         encodeProperty(prop, property_tuples[I->first]);
@@ -432,11 +432,11 @@ void StorageManager::updateEntity(LocatedEntity * ent)
     auto Iend = properties.end();
     for (; I != Iend; ++I) {
         PropertyBase * prop = I->second;
-        if (prop->flags() & per_mask) {
+        if (prop->hasFlags(per_mask)) {
             continue;
         }
         // FIXME check if this is new or just modded.
-        if (prop->flags() & per_seen) {
+        if (prop->hasFlags(per_seen)) {
             encodeProperty(prop, upd_property_tuples[I->first]);
             ++m_updatePropertyCount;
         } else {
@@ -513,7 +513,7 @@ void StorageManager::tick()
 
     while (!m_unstoredEntities.empty()) {
         const WeakEntityRef & ent = m_unstoredEntities.front();
-        if (ent.get() != 0) {
+        if (ent) {
             debug( std::cout << "storing " << ent->getId() << std::endl << std::flush; );
             insertEntity(ent.get());
             ++inserts;
@@ -541,13 +541,13 @@ void StorageManager::tick()
             break;
         }
         const WeakEntityRef & ent = m_dirtyEntities.front();
-        if (ent.get() != 0) {
-            if ((ent->getFlags() & entity_clean_mask) != entity_clean_mask) {
+        if (ent) {
+            if ((ent->flags().m_flags & entity_clean_mask) != entity_clean_mask) {
                 debug( std::cout << "updating " << ent->getId() << std::endl << std::flush; );
                 updateEntity(ent.get());
                 ++updates;
             }
-            if ((ent->getFlags() & entity_dirty_thoughts) != 0) {
+            if (ent->hasFlags(entity_dirty_thoughts)) {
                 debug( std::cout << "updating thoughts " << ent->getId() << std::endl << std::flush; );
                 updateEntityThoughts(ent.get());
                 ++updates;

@@ -479,7 +479,7 @@ void GeometryProperty::install(TypeNode* typeNode, const std::string&)
             //Mark the property as ephemeral since it's calculated.
             bBoxProperty->addFlags(flag_class | per_ephem);
             bBoxProperty->install(typeNode, BBoxProperty::property_name);
-        } else if ((I->second->flags() & per_ephem) != 0) {
+        } else if (I->second->flags().hasFlags(per_ephem)) {
             bBoxProperty = dynamic_cast<BBoxProperty*>(I->second);
             if (bBoxProperty) {
                 bBoxProperty->data() = m_meshBounds;
@@ -506,9 +506,9 @@ void GeometryProperty::buildCompoundCreator()
         if (I != m_data.end() && I->second.isList()) {
             auto shapes = I->second.List();
 #if BT_BULLET_VERSION > 283
-            btCompoundShape* compoundShape = new btCompoundShape(true, shapes.size());
+            auto compoundShape = new btCompoundShape(true, static_cast<const int>(shapes.size()));
 #else
-            btCompoundShape* compoundShape = new btCompoundShape(true);
+            auto compoundShape = new btCompoundShape(true);
 #endif
             std::vector<btCollisionShape*> childShapes(shapes.size());
             for (auto& shapeElement : shapes) {

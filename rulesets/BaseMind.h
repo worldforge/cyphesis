@@ -48,12 +48,12 @@ class BaseMind : public MemEntity {
     WorldTime * getTime() { return &m_time; }
 
     /// \brief Is this mind active
-    bool isAwake() const { return (getFlags() & entity_asleep) == 0; }
+    bool isAwake() const { return !m_flags.hasFlags(entity_asleep); }
 
     /// \brief Set this mind as inactive
-    void sleep() { addFlags(entity_asleep); }
+    void sleep() { m_flags.addFlags(entity_asleep); }
     /// \brief Set this mind as active
-    void awake() { removeFlags(entity_asleep); }
+    void awake() { m_flags.removeFlags(entity_asleep); }
 
     void sightCreateOperation(const Operation &, OpVector &);
     void sightDeleteOperation(const Operation &, OpVector &);

@@ -94,7 +94,7 @@ void ExternalMind::operation(const Operation & op, OpVector & res)
     //Another solution is to do something with the entity when the connection is cut; perhaps move
     //it to limbo or some other place. All of these solutions are better than just deleting it.
     if (m_link == nullptr) {
-        if (m_entity.getFlags() & entity_ephem) {
+        if (m_entity.hasFlags(entity_ephem)) {
             // If this entity no longer has a connection, and is ephemeral
             // we should delete it.
             if (op->getClassNo() != Atlas::Objects::Operation::DELETE_NO) {
