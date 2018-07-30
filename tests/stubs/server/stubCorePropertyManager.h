@@ -9,33 +9,33 @@
 
 #ifndef STUB_CorePropertyManager_installBaseProperty
 //#define STUB_CorePropertyManager_installBaseProperty
-  void CorePropertyManager::installBaseProperty(const std::string & type_name, const std::string & parent)
+  PropertyFactory<Property<T>>* CorePropertyManager::installBaseProperty(const std::string & type_name, const std::string & parent)
   {
-    
+    return nullptr;
   }
 #endif //STUB_CorePropertyManager_installBaseProperty
 
 #ifndef STUB_CorePropertyManager_installProperty
 //#define STUB_CorePropertyManager_installProperty
-  void CorePropertyManager::installProperty(const std::string & type_name, const std::string & parent)
+  PropertyFactory<PropertyT>* CorePropertyManager::installProperty(const std::string & type_name, const std::string & parent)
   {
-    
+    return nullptr;
   }
 #endif //STUB_CorePropertyManager_installProperty
 
 #ifndef STUB_CorePropertyManager_installProperty
 //#define STUB_CorePropertyManager_installProperty
-  void CorePropertyManager::installProperty(const std::string & type_name)
+  PropertyFactory<PropertyT>* CorePropertyManager::installProperty(const std::string & type_name)
   {
-    
+    return nullptr;
   }
 #endif //STUB_CorePropertyManager_installProperty
 
 #ifndef STUB_CorePropertyManager_installProperty
 //#define STUB_CorePropertyManager_installProperty
-  void CorePropertyManager::installProperty()
+  PropertyFactory<PropertyT>* CorePropertyManager::installProperty()
   {
-    
+    return nullptr;
   }
 #endif //STUB_CorePropertyManager_installProperty
 

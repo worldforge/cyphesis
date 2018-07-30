@@ -95,6 +95,14 @@
   }
 #endif //STUB_PropertyBase_copy
 
+#ifndef STUB_PropertyBase_flagsForPropertyName
+//#define STUB_PropertyBase_flagsForPropertyName
+   std::uint32_t PropertyBase::flagsForPropertyName(const std::string& name)
+  {
+    return *static_cast< std::uint32_t*>(nullptr);
+  }
+#endif //STUB_PropertyBase_flagsForPropertyName
+
 
 #ifndef STUB_Property_Property
 //#define STUB_Property_Property

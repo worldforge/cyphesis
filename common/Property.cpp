@@ -17,6 +17,8 @@
 
 
 #include "Property_impl.h"
+#include "Property.h"
+
 
 /// \brief Classes that define properties on in world entities
 ///
@@ -213,3 +215,13 @@ template <> const std::string Property<double>::property_atlastype = "float";
 template <> const std::string Property<std::string>::property_atlastype = "string";
 template <> const std::string Property<Atlas::Message::ListType>::property_atlastype = "list";
 template <> const std::string Property<Atlas::Message::MapType>::property_atlastype = "map";
+
+std::uint32_t PropertyBase::flagsForPropertyName(const std::string& name)
+{
+    if (name.size() > 1 && name[0] == '_' && name[1] == '_') {
+        return vis_private;
+    } else if (!name.empty() && name[0] == '_') {
+        return vis_protected;
+    }
+    return 0;
+}

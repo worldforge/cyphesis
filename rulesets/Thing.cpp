@@ -416,20 +416,8 @@ void Thing::SetOperation(const Operation& op, OpVector& res)
     }
     const Root& ent = args.front();
     merge(ent->asMessage());
-    Sight s;
-    s->setArgs1(op);
-    broadcast(s, res);
-    //res.push_back(s);
-    m_seq++;
-    if (~m_flags & entity_clean) {
-        onUpdated();
-    }
 
-    //Send an update in case there are properties that were updated as a side effect of the merge
-    //TODO: only do this if there actually are changes
-    Update update;
-    update->setTo(getId());
-    res.push_back(update);
+    updateProperties(op, res);
 }
 
 /// \brief Generate a Sight(Set) operation giving an update on named attributes
@@ -452,27 +440,39 @@ void Thing::updateProperties(const Operation& op, OpVector& res)
     Anonymous set_arg;
     set_arg->setId(getId());
 
+    Anonymous protected_set_arg;
+    protected_set_arg->setId(getId());
 
     bool hadChanges = false;
+    bool hadPublicChanges = false;
+    bool hadProtectedChanges = false;
 
     for (auto entry : m_properties) {
         PropertyBase* prop = entry.second;
-        assert(prop != 0);
-        if (prop->flags() & flag_unsent) {
+        assert(prop != nullptr);
+        if (prop->hasFlags(flag_unsent)) {
             debug(std::cout << "UPDATE:  " << flag_unsent << " " << entry.first
                             << std::endl << std::flush;);
-
-            prop->add(entry.first, set_arg);
+            if (entry.second->hasFlags(vis_private)) {
+                //Don't add property; it's private.
+            } else if (entry.second->hasFlags(vis_protected)) {
+                prop->add(entry.first, protected_set_arg);
+                hadProtectedChanges = true;
+            } else {
+                prop->add(entry.first, set_arg);
+                hadPublicChanges = true;
+            }
             prop->removeFlags(flag_unsent | per_clean);
-
             hadChanges = true;
-            // FIXME Make sure we handle separately for private properties
         }
     }
 
     if (hadChanges) {
         //Mark that entity needs to be written to storage.
         removeFlags(entity_clean);
+    }
+
+    if (hadPublicChanges) {
 
         Set set;
         set->setTo(getId());
@@ -483,6 +483,20 @@ void Thing::updateProperties(const Operation& op, OpVector& res)
         Sight sight;
         sight->setArgs1(set);
         broadcast(sight, res);
+    }
+
+    if (hadProtectedChanges) {
+
+        Set set;
+        set->setTo(getId());
+        set->setFrom(getId());
+        set->setSeconds(op->getSeconds());
+        set->setArgs1(protected_set_arg);
+
+        Sight sight;
+        sight->setArgs1(set);
+        sight->setTo(getId());
+        res.push_back(sight);
     }
 
 
@@ -545,7 +559,29 @@ void Thing::generateSightOp(const LocatedEntity& observingEntity, const Operatio
     Sight s;
 
     Anonymous sarg;
-    addToEntity(sarg);
+
+    //Don't call "addToEntity" since we want to filter out private and protected properties
+    if (observingEntity.getIntId() == getIntId()) {
+        for (auto& entry : m_properties) {
+            if (!entry.second->hasFlags(vis_private)) {
+                entry.second->add(entry.first, sarg);
+            }
+        }
+    } else {
+        for (auto& entry : m_properties) {
+            if (!entry.second->hasFlags(vis_non_public)) {
+                entry.second->add(entry.first, sarg);
+            }
+        }
+    }
+
+    sarg->setStamp(m_seq);
+    if (m_type) {
+        sarg->setParent(m_type->name());
+    }
+    m_location.addToEntity(sarg);
+    sarg->setObjtype("obj");
+
     s->setArgs1(sarg);
 
     if (m_contains != nullptr) {

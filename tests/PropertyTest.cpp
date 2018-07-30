@@ -63,15 +63,15 @@ int main()
     assert((per_ephem & per_mask) == per_ephem);
     assert((per_ephem & per_clean) == 0);
 
-    assert((vis_hidden | vis_mask) == vis_mask);
-    assert((vis_internal | vis_mask) == vis_mask);
-    assert((vis_internal | vis_hidden) == vis_mask);
+    assert((vis_private | vis_non_public) == vis_non_public);
+    assert((vis_protected | vis_non_public) == vis_non_public);
+    assert((vis_protected | vis_private) == vis_non_public);
 
-    assert((vis_hidden & vis_mask) == vis_hidden);
-    assert((vis_internal & vis_mask) == vis_internal);
-    assert((vis_internal & vis_hidden) == 0);
+    assert((vis_private & vis_non_public) == vis_private);
+    assert((vis_protected & vis_non_public) == vis_protected);
+    assert((vis_protected & vis_private) == 0);
 
-    assert((vis_mask & per_mask) == 0);
+    assert((vis_non_public & per_mask) == 0);
 
     Element val;
 

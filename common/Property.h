@@ -83,6 +83,16 @@ class PropertyBase {
     ///
     /// The copy should have exactly the same type, and the same value
     virtual PropertyBase * copy() const = 0;
+
+    /**
+     * Extract the property visibility flags from the name.
+     * Names that starts with "__" are "private". Only visible to the simulation and to administrators.
+     * Names that starts with "_" are "protected". Only visible to the entity it belongs, the simulation and to administrators.
+     * All other properties are "public", i.e. visible to everyone.
+     * @param name A property name.
+     * @return
+     */
+    static std::uint32_t flagsForPropertyName(const std::string& name);
 };
 
 /// \brief Flag indicating data has been written to permanent store
@@ -99,16 +109,16 @@ static const std::uint32_t per_seen = 1u << 2u;
 /// \ingroup PropertyFlags
 static const std::uint32_t per_mask = per_clean | per_ephem;
 
-/// \brief Flag indicating data is not visible
+/// \brief Flag indicating property is "private", i.e. only available to the simulation.
 /// \ingroup PropertyFlags
-static const std::uint32_t vis_hidden = 1u << 3u;
-/// \brief Flag indicating data is server internal
+static const std::uint32_t vis_private = 1u << 3u;
+/// \brief Flag indicating property is "protected", i.e. only available to the entity itself.
 /// \ingroup PropertyFlags
-static const std::uint32_t vis_internal = 1u << 4u;
+static const std::uint32_t vis_protected = 1u << 4u;
 
-/// \brief Flag mask indicating data should be be perceptable
+/// \brief Flag mask indicating property is private or protected.
 /// \ingroup PropertyFlags
-static const std::uint32_t vis_mask = vis_hidden | vis_internal;
+static const std::uint32_t vis_non_public = vis_private | vis_protected;
 
 /// \brief Flag set to indicate this is a class property, and has no instance
 /// \ingroup PropertyFlags

@@ -172,7 +172,10 @@ PropertyBase* LocatedEntity::setAttr(const std::string& name,
         I->second->set(attr);
         return I->second;
     }
-    return m_properties[name] = new SoftProperty(attr);
+    auto prop = new SoftProperty(attr);
+    prop->addFlags(PropertyBase::flagsForPropertyName(name));
+    m_properties.emplace(name, prop);
+    return prop;
 }
 
 /// \brief Get the property object for a given attribute

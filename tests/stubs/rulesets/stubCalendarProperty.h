@@ -18,7 +18,7 @@
 
 #ifndef STUB_CalendarProperty_get
 //#define STUB_CalendarProperty_get
-  int CalendarProperty::get(Atlas::Message::Element &) const
+  int CalendarProperty::get(Atlas::Message::Element&) const
   {
     return 0;
   }
@@ -26,7 +26,7 @@
 
 #ifndef STUB_CalendarProperty_set
 //#define STUB_CalendarProperty_set
-  void CalendarProperty::set(const Atlas::Message::Element &)
+  void CalendarProperty::set(const Atlas::Message::Element&)
   {
     
   }

@@ -85,11 +85,7 @@ template<typename T>
 PropertyFactory<Property<T>>* CorePropertyManager::installBaseProperty(const std::string & type_name,
                                                                        const std::string & parent)
 {
-    auto factory = new PropertyFactory<Property<T>>{};
-    installFactory(type_name,
-                   atlasType(type_name, parent, true),
-                   factory);
-    return factory;
+    return this->installProperty<Property<T>>(type_name, parent);
 }
 
 template<typename PropertyT>
@@ -97,6 +93,8 @@ PropertyFactory<PropertyT>* CorePropertyManager::installProperty(const std::stri
                                                                  const std::string & parent)
 {
     auto factory = new PropertyFactory<PropertyT>{};
+    //Attach visibility flags. Properties that starts with "__" are private, "_" are protected and the rest are public.
+    factory->m_flags = PropertyBase::flagsForPropertyName(type_name);
     installFactory(type_name,
                    atlasType(type_name, parent),
                    factory);
@@ -264,8 +262,17 @@ CorePropertyManager::CorePropertyManager()
 
     installProperty<UsagesProperty>();
 
-    installProperty<Property<MapType>>("_ready_at_attached")->m_flags = per_ephem;
-    installProperty<Property<double>>("ready_at")->m_flags = per_ephem;
+    /**
+     * Keeps track of when attachments are ready to be used again.
+     * For example, if you swing a sword you can't do anything with the sword arm for a second or two.
+     */
+    installProperty<Property<MapType>>("_ready_at_attached")->m_flags |= per_ephem;
+
+    /**
+     * Keeps track of when singular entities are ready to be used again.
+     * This could be used on a magic scroll for example.
+     */
+    installProperty<Property<double>>("ready_at")->m_flags |= per_ephem;
 }
 
 int CorePropertyManager::installFactory(const std::string & type_name,
