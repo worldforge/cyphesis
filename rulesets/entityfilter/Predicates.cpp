@@ -34,27 +34,15 @@ bool ComparePredicate::isMatch(const QueryContext& context) const
     {
         Atlas::Message::Element left, right;
         m_lhs->value(left, context);
-        if (!left.isNone()) {
-            m_rhs->value(right, context);
-            if (!right.isNone()) {
-                return left == right;
-            }
-        }
-
-        return false;
+        m_rhs->value(right, context);
+        return left == right;
     }
     case Comparator::NOT_EQUALS:
     {
         Atlas::Message::Element left, right;
         m_lhs->value(left, context);
-        if (!left.isNone()) {
-            m_rhs->value(right, context);
-            if (!right.isNone()) {
-                return left != right;
-            }
-        }
-
-        return true;
+        m_rhs->value(right, context);
+        return left != right;
     }
     case Comparator::LESS:
     {

@@ -82,9 +82,9 @@ class EntityFilterTest : public Cyphesis::TestBase {
     public:
         EntityFilterTest();
         ///\Initialize private variables for testing before each test.
-        void setup();
+        void setup() override;
         ///\Free allocated space after every test
-        void teardown();
+        void teardown() override;
 
         //General tests for soft properties. Also includes a few misc. tests
         void test_SoftProperty();
@@ -109,6 +109,8 @@ class EntityFilterTest : public Cyphesis::TestBase {
 
 void EntityFilterTest::test_SoftProperty()
 {
+    TestQuery("entity.burn_speed != none", {m_b1, m_b2}, {});
+    TestQuery("entity.non_existing = none", {m_b1, m_b2}, {});
     TestQuery("entity.burn_speed=0.3", { m_b1 }, { m_b2 });
 
     TestQuery("entity.burn_speed>0.3", { }, { m_b1, m_bl1 });
@@ -520,13 +522,11 @@ void EntityFilterTest::TestQuery(const std::string& query,
 {
     EntityFilter::ProviderFactory factory;
     EntityFilter::Filter f(query, &factory);
-    for (auto iter = entitiesToPass.begin(); iter != entitiesToPass.end();
-            ++iter) {
-        assert(f.match(**iter));
+    for (auto entitiesToPas : entitiesToPass) {
+        assert(f.match(*entitiesToPas));
     }
-    for (auto iter = entitiesToFail.begin(); iter != entitiesToFail.end();
-            ++iter) {
-        assert(!f.match(**iter));
+    for (auto iter : entitiesToFail) {
+        assert(!f.match(*iter));
     }
 }
 
@@ -584,58 +584,12 @@ ContainsProperty * ContainsProperty::copy() const
     return 0;
 }
 
-namespace Atlas
-{
-namespace Objects
-{
-namespace Operation
-{
-int ACTUATE_NO = -1;
-int ATTACK_NO = -1;
-int EAT_NO = -1;
-int NOURISH_NO = -1;
-int SETUP_NO = -1;
-int TICK_NO = -1;
-int UPDATE_NO = -1;
-int RELAY_NO = -1;
-}
-}
-}
-Router::Router(const std::string & id, long intId) :
-        m_id(id), m_intId(intId)
-{
-}
 
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
+#include "stubs/common/stubCustom.h"
+#include "stubs/common/stubRouter.h"
 
 #include "stubs/rulesets/stubBaseWorld.h"
-
-void Location::addToMessage(MapType & omap) const
-{
-}
-
-Location::Location() :
-        m_loc(0)
-{
-}
-
-void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-void Location::modifyBBox()
-{
-}
-
+#include "stubs/rulesets/stubLocation.h"
 #define STUB_Inheritance_getType
 const TypeNode* Inheritance::getType(const std::string & parent)
 {

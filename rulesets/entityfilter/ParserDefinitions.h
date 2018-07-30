@@ -136,6 +136,8 @@ struct query_parser : qi::grammar<Iterator, Predicate*(),
                     no_case[qi::string("true")[_b = true] | qi::string("false")[_b = false]]
                     [_val = new_<FixedElementProvider>(_b)]                                                             |
 
+                    no_case[qi::string("none")][_val = new_<FixedElementProvider>(Atlas::Message::Element())]            |
+
                     //contains_recursive function takes a consumer (contains_recursive is itself a consumer),
                     //and a predicate as arguments.
                     (no_case[qi::lit("contains_recursive")] >> "(" >> consumer_g >> "," >> parenthesised_predicate_g >> ")")
