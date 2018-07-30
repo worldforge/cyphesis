@@ -46,7 +46,7 @@ class Entity : public LocatedEntity {
 
   public:
     explicit Entity(const std::string & id, long intId);
-    virtual ~Entity();
+    ~Entity() override;
 
     void setType(const TypeNode * t) override;
 
