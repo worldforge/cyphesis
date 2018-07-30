@@ -11,6 +11,19 @@ If you've used an Object-Oriented system, you can think of the Types as "classes
 
 Internally each Type is handled by the TypeNode class.
 
+## Properties
+
+The behaviour of entities is mainly driven by various properties. Properties are named, with the only allowed characters being [a-z0-9_]. There are three visibility levels for properties. These are determined by the names of the properties.
+
+### Private properties
+
+Properties that starts with "__" (for example "__curse") are "private". These can only be seen by the simulation and admin clients. The entity to which they belong can't see them itself.
+These properties are meant to be used for internal and secret things, which would ruin the game if they were known by players.
+
+### Protected properties
+
+Properties that starts with "_" (for example "_thoughts") are "protected". These can only be seen by the simulation, admin clients and the entity to which they belong. Typically these would be properties that should be hidden to other players.
+
 ## Useful properties
 
 While the number of properties are large, there are a couple of base ones that are essential to have knowledge of.
