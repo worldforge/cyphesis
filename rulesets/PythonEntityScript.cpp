@@ -101,16 +101,11 @@ HandlerResult PythonEntityScript::processScriptResult(const std::string& scriptN
             } else if (numRet == 2) {
                 result = OPERATION_BLOCKED;
             } else {
-                log(ERROR, String::compose("Unrecognized return code %1 for operation handler '%2'", numRet, scriptName));
+                log(ERROR, String::compose("Unrecognized return code %1 for script '%2'", numRet, scriptName));
             }
 
         } else if (CyPy_Operation::check(pythonResult)) {
-            auto operation = CyPy_Operation::value(pythonResult);
-            assert(operation);
-            //Filter out raw operations, as these are meant to be used to short circuit goals. They should thus never be sent on.
-            if (operation->getParent() != "operation") {
-                res.push_back(std::move(operation));
-            }
+            res.push_back(std::move(CyPy_Operation::value(pythonResult)));
         } else if (CyPy_Oplist::check(pythonResult)) {
             auto& o = CyPy_Oplist::value(pythonResult);
             for (auto& opRes : o) {

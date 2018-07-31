@@ -65,25 +65,25 @@ int TaskRuleHandler::populateTaskFactory(const std::string & class_name,
 
 
     // FIXME This is the same code as EntityRuleHandler
-    if (factory->m_scriptFactory == nullptr ||
-        factory->m_scriptFactory->package() != script_package) {
-        auto* ptsf = new PythonScriptFactory<Task>(script_package, script_class);
-
-        if (ptsf->setup() == 0) {
-            delete factory->m_scriptFactory;
-            factory->m_scriptFactory = ptsf;
-        } else {
-            log(ERROR, compose("Python class \"%1.%2\" failed to load",
-                               script_package, script_class));
-            delete ptsf;
-            return -1;
-        }
-    } else {
-        // FIXME If this fails, that's bad.
-        // If this fails the user needs to know, but the old values
-        // should remain in place.
-        factory->m_scriptFactory->refreshClass();
-    }
+//    if (factory->m_scriptFactory == nullptr ||
+//        factory->m_scriptFactory->package() != script_package) {
+//        auto* ptsf = new PythonScriptFactory<Task>(script_package, script_class);
+//
+//        if (ptsf->setup() == 0) {
+//            delete factory->m_scriptFactory;
+//            factory->m_scriptFactory = ptsf;
+//        } else {
+//            log(ERROR, compose("Python class \"%1.%2\" failed to load",
+//                               script_package, script_class));
+//            delete ptsf;
+//            return -1;
+//        }
+//    } else {
+//        // FIXME If this fails, that's bad.
+//        // If this fails the user needs to know, but the old values
+//        // should remain in place.
+//        factory->m_scriptFactory->refreshClass();
+//    }
 
     return 0;
 }

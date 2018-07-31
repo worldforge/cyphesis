@@ -36,11 +36,12 @@ static const bool debug_flag = false;
 
 static const std::string SERIALNO = "serialno";
 
-TasksProperty::TasksProperty() : PropertyBase(per_ephem), m_task(nullptr)
+TasksProperty::TasksProperty()
+    : PropertyBase(per_ephem)
 {
 }
 
-int TasksProperty::get(Atlas::Message::Element & val) const
+int TasksProperty::get(Atlas::Message::Element& val) const
 {
     if (!m_task) {
         val = ListType();
@@ -60,10 +61,9 @@ int TasksProperty::get(Atlas::Message::Element & val) const
     return 0;
 }
 
-void TasksProperty::set(const Atlas::Message::Element & val)
+void TasksProperty::set(const Atlas::Message::Element& val)
 {
-    if (!val.isList())
-    {
+    if (!val.isList()) {
         log(ERROR, "Task property must be a list.");
         return;
     }
@@ -73,28 +73,25 @@ void TasksProperty::set(const Atlas::Message::Element & val)
         return;
     }
 
-    ListType tasks = val.asList();
-    ListType::const_iterator I = tasks.begin();
-    ListType::const_iterator Iend = tasks.end();
-    for (; I != Iend; ++I) {
-        if (!I->isMap()) {
+    auto& tasks = val.List();
+    for (auto entry : tasks) {
+        if (!entry.isMap()) {
             log(ERROR, "Task must be a map.");
             return;
         }
-        const MapType & task = I->asMap();
-        auto Jend = task.end();
-        for (auto J = task.begin(); J != Jend; ++J) {
-            m_task->setAttr(J->first, J->second);
+        auto& task = entry.Map();
+        for (auto& attr : task) {
+            m_task->setAttr(attr.first, attr.second);
         }
     }
 }
 
-TasksProperty * TasksProperty::copy() const
+TasksProperty* TasksProperty::copy() const
 {
     return new TasksProperty(*this);
 }
 
-int TasksProperty::updateTask(LocatedEntity * owner, OpVector & res)
+int TasksProperty::updateTask(LocatedEntity* owner, OpVector& res)
 {
     m_flags.addFlags(flag_unsent);
 
@@ -107,9 +104,8 @@ int TasksProperty::updateTask(LocatedEntity * owner, OpVector & res)
 }
 
 int TasksProperty::startTask(Ref<Task> task,
-                             LocatedEntity * owner,
-                             const Operation & op,
-                             OpVector & res)
+                             LocatedEntity* owner,
+                             OpVector& res)
 {
     bool update_required = false;
     if (m_task) {
@@ -117,7 +113,7 @@ int TasksProperty::startTask(Ref<Task> task,
         m_task = nullptr;
     }
 
-    task->initTask(op, res);
+    task->initTask(res);
 
     if (!task->obsolete()) {
         assert(!res.empty());
@@ -133,7 +129,7 @@ int TasksProperty::startTask(Ref<Task> task,
 
 }
 
-int TasksProperty::clearTask(LocatedEntity * owner, OpVector & res)
+int TasksProperty::clearTask(LocatedEntity* owner, OpVector& res)
 {
     if (!m_task) {
         // This function should never be called when there is no task,
@@ -146,7 +142,7 @@ int TasksProperty::clearTask(LocatedEntity * owner, OpVector & res)
     return updateTask(owner, res);
 }
 
-void TasksProperty::stopTask(LocatedEntity * owner, OpVector & res)
+void TasksProperty::stopTask(LocatedEntity* owner, OpVector& res)
 {
     // This is just clearTask without an assert
     if (!m_task) {
@@ -159,20 +155,20 @@ void TasksProperty::stopTask(LocatedEntity * owner, OpVector & res)
     updateTask(owner, res);
 }
 
-void TasksProperty::TickOperation(LocatedEntity * owner,
-                                  const Operation & op,
-                                  OpVector & res)
+void TasksProperty::TickOperation(LocatedEntity* owner,
+                                  const Operation& op,
+                                  OpVector& res)
 {
     if (!m_task) {
         return;
     }
 
-    const std::vector<Root> & args = op->getArgs();
+    const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
         return;
     }
 
-    const Root & arg = args.front();
+    const Root& arg = args.front();
 
     Element serialno;
     if (arg->copyAttr(SERIALNO, serialno) == 0 && (serialno.isInt())) {
@@ -184,7 +180,7 @@ void TasksProperty::TickOperation(LocatedEntity * owner,
         log(ERROR, "Character::TickOperation: No serialno in tick arg");
         return;
     }
-    m_task->operation(op, res);
+    m_task->tick(res);
     if (m_task->obsolete()) {
         clearTask(owner, res);
     } else {
@@ -198,15 +194,15 @@ void TasksProperty::TickOperation(LocatedEntity * owner,
     }
 }
 
-void TasksProperty::UseOperation(LocatedEntity * owner,
-                                 const Operation & op,
-                                 OpVector & res)
+void TasksProperty::UseOperation(LocatedEntity* owner,
+                                 const Operation& op,
+                                 OpVector& res)
 {
 }
 
-HandlerResult TasksProperty::operation(LocatedEntity * owner,
-                                       const Operation & op,
-                                       OpVector & res)
+HandlerResult TasksProperty::operation(LocatedEntity* owner,
+                                       const Operation& op,
+                                       OpVector& res)
 {
     auto& args = op->getArgs();
     if (!args.empty()) {
@@ -220,12 +216,12 @@ HandlerResult TasksProperty::operation(LocatedEntity * owner,
     return OPERATION_IGNORED;
 }
 
-void TasksProperty::install(LocatedEntity * owner, const std::string & name)
+void TasksProperty::install(LocatedEntity* owner, const std::string& name)
 {
     owner->installDelegate(Atlas::Objects::Operation::TICK_NO, name);
 }
 
-void TasksProperty::remove(LocatedEntity * owner, const std::string & name)
+void TasksProperty::remove(LocatedEntity* owner, const std::string& name)
 {
     owner->removeDelegate(Atlas::Objects::Operation::TICK_NO, name);
 }

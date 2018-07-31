@@ -55,7 +55,8 @@ Ref<Task> TaskFactory::newTask(LocatedEntity & chr)
 {
     // Create the task, and use its script to add a script
 
-    Task * task = new Task(chr);
+    Task * task;
+    //Task * task = new Task(chr);
     task->name() = m_name;
     assert(task != nullptr);
 

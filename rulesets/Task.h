@@ -20,6 +20,8 @@
 #define RULESETS_TASK_H
 
 #include "common/OperationRouter.h"
+#include "UsageInstance.h"
+#include "external/pycxx/CXX/Objects.hxx"
 
 #include <Atlas/Message/Element.h>
 
@@ -52,13 +54,6 @@ class Task : public boost::noncopyable{
     /// \brief Rate of progress towards task completion
     float m_rate;
 
-
-    /// \brief Entity owning the task
-    ///
-    /// This doesn't handle the idea that there might be multiple actors
-    /// involved.
-    LocatedEntity & m_owner;
-
     /// \brief Additional task attributes
     Atlas::Message::MapType m_attr;
 
@@ -66,13 +61,16 @@ class Task : public boost::noncopyable{
     std::string m_name;
 
     /// \brief The language script that will handle this task
-    Script * m_script;
+    Py::Object m_script;
 
   public:
+
     float m_tick_interval;
 
+    UsageInstance m_usageInstance;
+
     /// \brief Constructor
-    explicit Task(LocatedEntity & owner);
+    explicit Task(UsageInstance usageInstance, const Py::Object& script);
 
     ~Task();
 
@@ -81,17 +79,15 @@ class Task : public boost::noncopyable{
 
     /// \brief Handle the operation that instigates the task
     ///
-    /// @param op The operation to be processed
     /// @param res The result of the operation is returned here.
-    void initTask(const Operation & op, OpVector & res);
+    void initTask(OpVector & res);
 
     /// \brief Handle an operation to perform the task
     ///
     /// A Task gets regular ticks which cause whatever actions this
     /// Task involves to be returned.
-    /// @param op The operation to be processed
     /// @param res The result of the operation is returned here.
-    void operation(const Operation & op, OpVector & res);
+    void tick(OpVector & res);
 
     /// \brief Create a new tick op for the next iteration of this task
     Operation nextTick(double interval);
@@ -124,18 +120,10 @@ class Task : public boost::noncopyable{
         return ++m_serialno;
     }
 
-    /// \brief Accessor for the script that handles this task
-    Script * script() const {
-        return m_script;
-    }
-
     void setScript(Script * scrpt);
 
     /// \brief Accessor to determine if this Task is obsolete
     const bool obsolete() { return m_obsolete; }
-
-    /// \brief Accessor for character that owns this Task.
-    LocatedEntity & owner() const { return m_owner; }
 
     /// \brief Accessor for name of this task
     std::string & name() { return m_name; }

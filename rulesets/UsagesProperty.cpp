@@ -33,6 +33,7 @@
 #include <wfmath/atlasconv.h>
 #include <rulesets/python/CyPy_Point3D.h>
 #include <rulesets/python/CyPy_EntityLocation.h>
+#include <rulesets/python/CyPy_UsageInstance.h>
 
 static const bool debug_flag = false;
 using Atlas::Message::Element;
@@ -226,61 +227,46 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
                 std::vector<EntityLocation> targets;
                 std::vector<EntityLocation> consumed;
                 for (size_t i = 0; i < usage.targets.size(); ++i) {
-                    if (!usage.targets[i]->match(*involvedEntities[i].m_loc)) {
-                        actor->error(op, String::compose("Target nr. %1 does not match the filter.", i), res, actor->getId());
-                        return OPERATION_IGNORED;
-                    }
                     targets.push_back(involvedEntities[i]);
                 }
                 for (size_t i = 0; i < usage.consumed.size(); ++i) {
-                    if (!usage.consumed[i]->match(*involvedEntities[usage.targets.size() + i].m_loc)) {
-                        actor->error(op, String::compose("Consumed nr. %1 does not match the filter.", i), res, actor->getId());
-                        return OPERATION_IGNORED;
-                    }
                     consumed.push_back(involvedEntities[usage.targets.size() + i]);
-
                 }
-                auto lastSeparatorPos = usage.handler.find_last_of('.');
-                if (lastSeparatorPos != std::string::npos) {
-                    auto moduleName = usage.handler.substr(0, lastSeparatorPos);
-                    auto functionName = usage.handler.substr(lastSeparatorPos + 1);
-                    Py::Module module(PyImport_Import(Py::String(moduleName).ptr()));
-                    PyImport_ReloadModule(module.ptr());
-                    auto functionObject = module.getDict()[functionName];
-                    if (!functionObject.isCallable()) {
-                        actor->error(op, String::compose("Could not find Python function %1", usage.handler), res, actor->getId());
-                        return OPERATION_IGNORED;
-                    }
-                    Py::Dict kwds;
-                    Py::List targetsList;
-                    for (auto& entry: targets) {
-                        targetsList.append(CyPy_EntityLocation::wrap(entry));
-                    }
-                    Py::List consumedList;
-                    for (auto& entity: consumed) {
-                        consumedList.append(CyPy_EntityLocation::wrap(entity));
-                    }
 
-                    kwds["targets"] = std::move(targetsList);
-                    kwds["consumed"] = std::move(consumedList);
-                    kwds["op"] = CyPy_Operation::wrap(rop);
-                    kwds["actor"] = CyPy_LocatedEntity::wrap(actor);
-                    kwds["tool"] = CyPy_LocatedEntity::wrap(e);
+                UsageInstance usageInstance{usage, actor, e, std::move(targets), std::move(consumed), rop};
+                auto validRes = usageInstance.isValid();
+                if (!validRes.first) {
+                    actor->error(op, validRes.second, res, actor->getId());
+                } else {
+                    auto lastSeparatorPos = usage.handler.find_last_of('.');
+                    if (lastSeparatorPos != std::string::npos) {
+                        auto moduleName = usage.handler.substr(0, lastSeparatorPos);
+                        auto functionName = usage.handler.substr(lastSeparatorPos + 1);
+                        Py::Module module(PyImport_Import(Py::String(moduleName).ptr()));
+                        PyImport_ReloadModule(module.ptr());
+                        auto functionObject = module.getDict()[functionName];
+                        if (!functionObject.isCallable()) {
+                            actor->error(op, String::compose("Could not find Python function %1", usage.handler), res, actor->getId());
+                            return OPERATION_IGNORED;
+                        }
 
-                    Atlas::Objects::Operation::Sight sight;
-                    sight->setArgs1(rop);
-                    actor->sendWorld(sight); //The sight needs to come from the actor.
+                        Atlas::Objects::Operation::Sight sight;
+                        sight->setArgs1(rop);
+                        actor->sendWorld(sight); //The sight needs to come from the actor.
 
-                    try {
-                        auto ret = Py::Callable(functionObject).apply(Py::TupleN(), kwds);
-                        return processScriptResult(usage.handler, ret, res, e);
-                    } catch (const Py::BaseException& py_ex) {
-                        log(ERROR, String::compose("Python error calling \"%1\" for entity %2", usage.handler, e->describeEntity()));
-                        if (PyErr_Occurred()) {
-                            PyErr_Print();
+                        try {
+                            auto ret = Py::Callable(functionObject).apply(Py::TupleN(CyPy_UsageInstance::wrap(std::move(usageInstance))));
+                            return processScriptResult(usage.handler, ret, res, e);
+                        } catch (const Py::BaseException& py_ex) {
+                            log(ERROR, String::compose("Python error calling \"%1\" for entity %2", usage.handler, e->describeEntity()));
+                            if (PyErr_Occurred()) {
+                                PyErr_Print();
+                            }
                         }
                     }
                 }
+                return OPERATION_BLOCKED;
+
             }
         }
     }
@@ -303,7 +289,7 @@ HandlerResult UsagesProperty::processScriptResult(const std::string& scriptName,
             } else if (numRet == 2) {
                 result = OPERATION_BLOCKED;
             } else {
-                log(ERROR, String::compose("Unrecognized return code %1 for operation handler '%2'", numRet, scriptName));
+                log(ERROR, String::compose("Unrecognized return code %1 for script '%2' attached to entity '%3'", numRet, scriptName, e->describeEntity()));
             }
 
         } else if (CyPy_Operation::check(pythonResult)) {

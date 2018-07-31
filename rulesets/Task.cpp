@@ -1,3 +1,5 @@
+#include <utility>
+
 // Cyphesis Online RPG Server and AI Engine
 // Copyright (C) 2004-2005 Alistair Riddoch
 //
@@ -22,31 +24,30 @@
 #include "Script.h"
 
 #include "common/Tick.h"
+#include "UsagesProperty.h"
 
 #include <Atlas/Objects/Anonymous.h>
+#include <external/pycxx/CXX/Objects.hxx>
 
 using Atlas::Objects::Operation::Tick;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Message::MapType;
 
 /// \brief Task constructor for classes which inherit from Task
-Task::Task(LocatedEntity& owner) :
+Task::Task(UsageInstance usageInstance, const Py::Object& script) :
     m_refCount(0),
     m_serialno(0),
     m_obsolete(false),
     m_progress(-1),
     m_rate(-1),
-    m_owner(owner),
-    m_script(nullptr),
-    m_tick_interval(1.0)
+    m_script(script),
+    m_tick_interval(1.0),
+    m_usageInstance(std::move(usageInstance))
 {
 }
 
 /// \brief Task destructor
-Task::~Task()
-{
-    delete m_script;
-}
+Task::~Task() = default;
 
 /// \brief Set the obsolete flag indicating that this task is obsolete
 ///
@@ -67,7 +68,7 @@ Operation Task::nextTick(double interval)
     tick_arg->setAttr("serialno", newTick());
     Tick tick;
     tick->setArgs1(tick_arg);
-    tick->setTo(m_owner.getId());
+    tick->setTo(m_usageInstance.actor->getId());
     tick->setFutureSeconds(interval);
 
     return tick;
@@ -92,30 +93,24 @@ void Task::setAttr(const std::string& attr,
     m_attr[attr] = val;
 }
 
-
-/// \brief Assign a script to this scripted task
-///
-/// @param scrpt the language script object handle this task
-void Task::setScript(Script* scrpt)
+void Task::initTask(OpVector& res)
 {
-    if (m_script != nullptr) {
-        log(WARNING, "Installing a new task script over an existing script");
-        delete m_script;
-    }
-    m_script = scrpt;
-}
-
-void Task::initTask(const Operation& op, OpVector& res)
-{
-    assert(!op->getParent().empty());
-    if (m_script == nullptr) {
+    if (m_script.isNull()) {
         log(WARNING, "Task script failed");
         irrelevant();
     } else {
-        auto result = m_script->operation(op->getParent(), op, res);
-        if (result == OPERATION_IGNORED) {
-            log(WARNING, "Task init failed");
-            irrelevant();
+        if (m_script.hasAttr("setup")) {
+            try {
+                auto ret = m_script.callMemberFunction("setup");
+                //Ignore any return codes
+                UsagesProperty::processScriptResult(m_script.str(), ret, res, m_usageInstance.actor);
+            } catch (const Py::BaseException& e) {
+                log(ERROR, String::compose("Error when setting up task '%1' on entity '%2'.", m_script.str(), m_usageInstance.actor->describeEntity()));
+                if (PyErr_Occurred() != nullptr) {
+                    PyErr_Print();
+                }
+                irrelevant();
+            }
         }
     }
 
@@ -123,16 +118,26 @@ void Task::initTask(const Operation& op, OpVector& res)
         return;
     }
 
-
     res.push_back(nextTick(m_tick_interval));
 }
 
-void Task::operation(const Operation& op, OpVector& res)
+void Task::tick(OpVector& res)
 {
-    if (m_script != nullptr) {
-        m_script->operation(op->getParent(), op, res);
-        if (!obsolete()) {
-            res.push_back(nextTick(m_tick_interval));
+    if (m_script.hasAttr("tick")) {
+        try {
+            auto ret = m_script.callMemberFunction("tick");
+            //Ignore any return codes
+            UsagesProperty::processScriptResult(m_script.str(), ret, res, m_usageInstance.actor);
+        } catch (const Py::BaseException& e) {
+            log(ERROR, String::compose("Error when calling 'tick' on task '%1' on entity '%2'.", m_script.str(), m_usageInstance.actor->describeEntity()));
+            if (PyErr_Occurred() != nullptr) {
+                PyErr_Print();
+            }
+            irrelevant();
         }
+    }
+
+    if (!obsolete()) {
+        res.push_back(nextTick(m_tick_interval));
     }
 }

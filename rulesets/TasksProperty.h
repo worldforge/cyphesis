@@ -55,7 +55,6 @@ class TasksProperty : public PropertyBase
 
         int startTask(Ref<Task> task,
                       LocatedEntity* owner,
-                      const Operation& op,
                       OpVector& res);
 
         int clearTask(LocatedEntity* owner, OpVector& res);

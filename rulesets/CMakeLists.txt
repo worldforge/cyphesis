@@ -65,9 +65,9 @@ add_library(rulesetentity
     OgreMeshDeserializer.cpp OgreMeshDeserializer.h
     PerceptionSightProperty.cpp PerceptionSightProperty.h
     ScaleProperty.cpp ScaleProperty.h
-    ScriptsProperty.cpp ScriptsProperty.h
     UsagesProperty.cpp UsagesProperty.h
-    WorldTimeProperty.cpp)
+    WorldTimeProperty.cpp
+    UsageInstance.cpp UsageInstance.h)
 
 target_link_libraries(rulesetentity ${BULLET_LIBRARIES})
 
@@ -75,7 +75,7 @@ add_library(entityfilter
     entityfilter/Filter.cpp
     entityfilter/Providers.cpp
     entityfilter/Predicates.cpp
-    entityfilter/ParserDefinitions.h python/CyPy_Props.cpp python/CyPy_Props.h)
+    entityfilter/ParserDefinitions.h)
 
 add_library(rulesetmind
     BaseMind.cpp
@@ -97,6 +97,7 @@ add_library(scriptpython
     PythonScriptFactory.cpp
     PythonScriptFactory_impl.h
     Python_API.cpp
+    ScriptsProperty.cpp ScriptsProperty.h
     python/CyPy_EntityFilter.cpp python/CyPy_EntityFilter.h
     python/CyPy_LocatedEntity.cpp python/CyPy_LocatedEntity.h
     python/CyPy_Entity.cpp python/CyPy_Entity.h
@@ -122,7 +123,10 @@ add_library(scriptpython
     python/CyPy_Task.cpp python/CyPy_Task.h
     python/CyPy_WorldTime.cpp python/CyPy_WorldTime.h
     python/CyPy_World.cpp python/CyPy_World.h
-    python/CyPy_TerrainProperty.cpp python/CyPy_TerrainProperty.h python/CyPy_EntityLocation.cpp python/CyPy_EntityLocation.h)
+    python/CyPy_TerrainProperty.cpp python/CyPy_TerrainProperty.h
+    python/CyPy_EntityLocation.cpp python/CyPy_EntityLocation.h
+    python/CyPy_UsageInstance.cpp python/CyPy_UsageInstance.h
+    python/CyPy_Props.cpp python/CyPy_Props.h)
 
 target_link_libraries(scriptpython ${PYTHON_LIBRARIES} pycxx)
 # Prevent GCC from messing up Python pointer handling

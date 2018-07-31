@@ -21,32 +21,17 @@
 
 #include "external/pycxx/CXX/Objects.hxx"
 #include "common/Property.h"
-#include "entityfilter/Filter.h"
+#include "UsageInstance.h"
 
 #include <memory>
 
-namespace EntityFilter {
-    class Filter;
-}
+
 class UsagesProperty : public Property<Atlas::Message::MapType>
 {
     public:
 
         static constexpr const char* property_name = "usages";
 
-        struct Usage
-        {
-            std::string description;
-
-            std::vector<std::unique_ptr<EntityFilter::Filter>> targets;
-            std::vector<std::unique_ptr<EntityFilter::Filter>> consumed;
-            /**
-             * The Python script which will handle this op.
-             */
-            std::string handler;
-            std::unique_ptr<EntityFilter::Filter> constraint;
-
-        };
 
         void set(const Atlas::Message::Element& val) override;
 
@@ -56,13 +41,14 @@ class UsagesProperty : public Property<Atlas::Message::MapType>
 
         HandlerResult operation(LocatedEntity* e, const Operation& op, OpVector& res) override;
 
+        static HandlerResult processScriptResult(const std::string& scriptName, const Py::Object& ret, OpVector& res, LocatedEntity* e);
+
     private:
 
         std::map<std::string, Usage> m_usages;
 
         HandlerResult use_handler(LocatedEntity* e, const Operation& op, OpVector& res);
 
-        HandlerResult processScriptResult(const std::string& scriptName, const Py::Object& ret, OpVector& res, LocatedEntity* e);
 
 
 };

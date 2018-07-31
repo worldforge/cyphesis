@@ -21,6 +21,8 @@
 #include "CyPy_Task.h"
 #include "CyPy_Operation.h"
 #include "CyPy_LocatedEntity.h"
+#include "CyPy_UsageInstance.h"
+#include "CyPy_EntityLocation.h"
 
 CyPy_Task::CyPy_Task(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
     : WrapperBase(self, args, kwds)
@@ -29,11 +31,10 @@ CyPy_Task::CyPy_Task(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& k
     auto arg = args.front();
     if (CyPy_Task::check(arg)) {
         m_value = CyPy_Task::value(arg);
-    } else if (CyPy_LocatedEntity::check(arg)) {
-        m_value = new Task(CyPy_LocatedEntity::value(arg));
-        m_value->setScript(new PythonEntityScript(this->self()));
+    } else if (CyPy_UsageInstance::check(arg)) {
+        m_value = new Task(CyPy_UsageInstance::value(arg), this->self());
     } else {
-        throw Py::TypeError("Task requires a Task, or Entity");
+        throw Py::TypeError("Task requires a Task, or UsageInstance");
     }
 }
 
@@ -97,9 +98,37 @@ Py::Object CyPy_Task::nexttick(const Py::Tuple& args)
 Py::Object CyPy_Task::getattro(const Py::String& name)
 {
     auto nameStr = name.as_string();
-    if (nameStr == "character") {
-        return CyPy_LocatedEntity::wrap(&m_value->owner());
+    if (nameStr == "usage") {
+        return CyPy_UsageInstance::wrap(m_value->m_usageInstance);
     }
+    if (nameStr == "actor") {
+        return CyPy_LocatedEntity::wrap(m_value->m_usageInstance.actor);
+    }
+    if (nameStr == "tool") {
+        return CyPy_LocatedEntity::wrap(m_value->m_usageInstance.tool);
+    }
+    if (nameStr == "targets") {
+        Py::List list(m_value->m_usageInstance.targets.size());
+        for (size_t i = 0; i < m_value->m_usageInstance.targets.size(); ++i) {
+            list[i] = CyPy_EntityLocation::wrap(m_value->m_usageInstance.targets[i]);
+        }
+        return list;
+    }
+    if (nameStr == "consumed") {
+        Py::List list(m_value->m_usageInstance.consumed.size());
+        for (size_t i = 0; i < m_value->m_usageInstance.consumed.size(); ++i) {
+            list[i] = CyPy_EntityLocation::wrap(m_value->m_usageInstance.consumed[i]);
+        }
+        return list;
+    }
+    if (nameStr == "definition") {
+        return CyPy_Usage::wrap(m_value->m_usageInstance.definition);
+    }
+    if (nameStr == "op") {
+        return CyPy_Operation::wrap(m_value->m_usageInstance.op);
+    }
+
+
     if (nameStr == "progress") {
         return Py::Float(m_value->progress());
     }

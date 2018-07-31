@@ -33,14 +33,6 @@ PythonScriptFactory<LocatedEntity>::PythonScriptFactory(const std::string & p,
 }
 
 template<>
-PythonScriptFactory<Task>::PythonScriptFactory(const std::string & package,
-                                               const std::string & type) :
-                                               PythonClass(package,
-                                                           type)
-{
-}
-
-template<>
 PythonScriptFactory<BaseMind>::PythonScriptFactory(const std::string & package,
                                                    const std::string & type) :
                                                    PythonClass(package,
@@ -49,5 +41,4 @@ PythonScriptFactory<BaseMind>::PythonScriptFactory(const std::string & package,
 }
 
 template class PythonScriptFactory<LocatedEntity>;
-template class PythonScriptFactory<Task>;
 template class PythonScriptFactory<BaseMind>;
