@@ -16,6 +16,8 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <rulesets/PythonWrapper.h>
+#include <rulesets/PythonEntityScript.h>
 #include "CyPy_Task.h"
 #include "CyPy_Operation.h"
 #include "CyPy_LocatedEntity.h"
@@ -29,6 +31,7 @@ CyPy_Task::CyPy_Task(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& k
         m_value = CyPy_Task::value(arg);
     } else if (CyPy_LocatedEntity::check(arg)) {
         m_value = new Task(CyPy_LocatedEntity::value(arg));
+        m_value->setScript(new PythonEntityScript(this->self()));
     } else {
         throw Py::TypeError("Task requires a Task, or Entity");
     }
@@ -103,6 +106,12 @@ Py::Object CyPy_Task::getattro(const Py::String& name)
     if (nameStr == "rate") {
         return Py::Float(m_value->rate());
     }
+    if (nameStr == "tick_interval") {
+        return Py::Float(m_value->m_tick_interval);
+    }
+    if (nameStr == "name") {
+        return Py::String(m_value->name());
+    }
     Atlas::Message::Element val;
     if (m_value->getAttr(name, val) == 0) {
         if (val.isNone()) {
@@ -125,6 +134,14 @@ int CyPy_Task::setattro(const Py::String& name, const Py::Object& attr)
     }
     if (nameStr == "rate") {
         m_value->rate() = verifyNumeric(attr);
+        return 0;
+    }
+    if (nameStr == "tick_interval") {
+        m_value->m_tick_interval = verifyNumeric(attr);
+        return 0;
+    }
+    if (nameStr == "name") {
+        m_value->name() = verifyString(attr);
         return 0;
     }
 

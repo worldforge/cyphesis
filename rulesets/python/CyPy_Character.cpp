@@ -80,16 +80,16 @@ Py::Object CyPy_Character::start_task(const Py::Tuple& args)
     args.verify_length(3);
 
     auto task = verifyObject<CyPy_Task>(args[0]);
-    auto op = verifyObject<CyPy_Operation>(args[1]);
-    auto res = verifyObject<CyPy_Oplist>(args[2]);
+    auto& op = verifyObject<CyPy_Operation>(args[1]);
+    auto& res = verifyObject<CyPy_Oplist>(args[2]);
     m_value->startTask(task, op, res);
-    return Py::None();
+    return CyPy_Task::wrap(task);
 }
 
 Py::Object CyPy_Character::mind2body(const Py::Tuple& args)
 {
     args.verify_length(1);
-    auto op = verifyObject<CyPy_Operation>(args.front());
+    auto& op = verifyObject<CyPy_Operation>(args.front());
     OpVector res;
     m_value->mind2body(op, res);
     if (res.empty()) {

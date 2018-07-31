@@ -29,7 +29,7 @@ class PythonWrapper : public Script {
     /// \brief Python object that wraps the entity.
     Py::Object m_wrapper;
   public:
-    explicit PythonWrapper(Py::Object wrapper);
+    explicit PythonWrapper(const Py::Object& wrapper);
     ~PythonWrapper() override;
 
     /// \brief Accessor for the python object that wraps the entity.
@@ -37,6 +37,6 @@ class PythonWrapper : public Script {
 };
 
 template<class T>
-struct Py::Object wrapPython(T * entity);
+Py::Object wrapPython(T * entity);
 
 #endif // RULESETS_PYTHON_WRAPPER_H

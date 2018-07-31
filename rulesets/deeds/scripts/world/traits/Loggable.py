@@ -5,13 +5,16 @@ import server
 class Loggable(server.Thing):
 
     def delete_operation(self, op):
-        create_loc = self.location.copy()
+        new_ent = Entity(parent="lumber",
+               mass = self.props.mass,
+               location = self.location.copy(),
+               mode = "free")
+
+        #Copy scale if there is one
+        if self.props.scale:
+            new_ent.scale = self.props.scale
         create = Operation("create",
-                           Entity(parent="lumber",
-                                  mass = self.props.mass,
-                                  location = create_loc,
-                                  #bbox = self.target().bbox,
-                                  mode = "free"),
+                           new_ent,
                            to = self.location.parent)
         #Send through parent since this entity will be destroyed once the op is handled.
         self.location.parent.send_world(create)

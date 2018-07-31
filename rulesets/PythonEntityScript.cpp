@@ -28,9 +28,8 @@
 
 static const bool debug_flag = false;
 
-/// \brief PythonEntityScript constructor
-PythonEntityScript::PythonEntityScript(Py::Object obj) :
-    PythonWrapper(std::move(obj))
+PythonEntityScript::PythonEntityScript(const Py::Object& obj) :
+    PythonWrapper(obj)
 {
 }
 

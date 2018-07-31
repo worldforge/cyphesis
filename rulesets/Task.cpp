@@ -30,10 +30,15 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Message::MapType;
 
 /// \brief Task constructor for classes which inherit from Task
-Task::Task(LocatedEntity & owner) : m_refCount(0), m_serialno(0),
-                                    m_obsolete(false),
-                                    m_progress(-1), m_rate(-1),
-                                    m_owner(owner), m_script(nullptr)
+Task::Task(LocatedEntity& owner) :
+    m_refCount(0),
+    m_serialno(0),
+    m_obsolete(false),
+    m_progress(-1),
+    m_rate(-1),
+    m_owner(owner),
+    m_script(nullptr),
+    m_tick_interval(1.0)
 {
 }
 
@@ -69,8 +74,8 @@ Operation Task::nextTick(double interval)
 }
 
 /// \brief Retrieve additional attribute values
-int Task::getAttr(const std::string & attr,
-                  Atlas::Message::Element & val) const
+int Task::getAttr(const std::string& attr,
+                  Atlas::Message::Element& val) const
 {
     auto I = m_attr.find(attr);
     if (I == m_attr.end()) {
@@ -81,8 +86,8 @@ int Task::getAttr(const std::string & attr,
 }
 
 /// \brief Set additional attributes
-void Task::setAttr(const std::string & attr,
-                   const Atlas::Message::Element & val)
+void Task::setAttr(const std::string& attr,
+                   const Atlas::Message::Element& val)
 {
     m_attr[attr] = val;
 }
@@ -91,7 +96,7 @@ void Task::setAttr(const std::string & attr,
 /// \brief Assign a script to this scripted task
 ///
 /// @param scrpt the language script object handle this task
-void Task::setScript(Script * scrpt)
+void Task::setScript(Script* scrpt)
 {
     if (m_script != nullptr) {
         log(WARNING, "Installing a new task script over an existing script");
@@ -100,7 +105,7 @@ void Task::setScript(Script * scrpt)
     m_script = scrpt;
 }
 
-void Task::initTask(const Operation & op, OpVector & res)
+void Task::initTask(const Operation& op, OpVector& res)
 {
     assert(!op->getParent().empty());
     if (m_script == nullptr) {
@@ -118,19 +123,22 @@ void Task::initTask(const Operation & op, OpVector & res)
         return;
     }
 
-    Anonymous tick_arg;
-    tick_arg->setName("task");
-    tick_arg->setAttr("serialno", 0);
-    Tick tick;
-    tick->setArgs1(tick_arg);
-    tick->setTo(m_owner.getId());
+//    Anonymous tick_arg;
+//    tick_arg->setName("task");
+//    tick_arg->setAttr("serialno", 0);
+//    Tick tick;
+//    tick->setArgs1(tick_arg);
+//    tick->setTo(m_owner.getId());
 
-    res.push_back(tick);
+    res.push_back(nextTick(m_tick_interval));
 }
 
-void Task::operation(const Operation & op, OpVector & res)
+void Task::operation(const Operation& op, OpVector& res)
 {
     if (m_script != nullptr) {
         m_script->operation(op->getParent(), op, res);
+        if (!obsolete()) {
+            res.push_back(nextTick(m_tick_interval));
+        }
     }
 }

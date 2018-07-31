@@ -26,13 +26,14 @@
 #include <string>
 
 #include <cassert>
+#include <boost/core/noncopyable.hpp>
 
 class LocatedEntity;
 class Script;
 
 /// \brief Interface class for handling tasks which take a short while to
 /// complete
-class Task {
+class Task : public boost::noncopyable{
   private:
 
     /// \brief Count of references held by entities involved in this task
@@ -51,6 +52,7 @@ class Task {
     /// \brief Rate of progress towards task completion
     float m_rate;
 
+
     /// \brief Entity owning the task
     ///
     /// This doesn't handle the idea that there might be multiple actors
@@ -66,12 +68,9 @@ class Task {
     /// \brief The language script that will handle this task
     Script * m_script;
 
-  private:
-    /// \brief Private deleted, to make sure slicing is impossible
-    Task(const Task & t) = delete;
-    /// \brief Private deleted, to make sure slicing is impossible
-    const Task & operator=(const Task &) = delete;
   public:
+    float m_tick_interval;
+
     /// \brief Constructor
     explicit Task(LocatedEntity & owner);
 

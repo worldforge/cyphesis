@@ -24,8 +24,8 @@
 #include "common/log.h"
 
 /// \brief PythonWrapper constructor
-PythonWrapper::PythonWrapper(Py::Object wrapper)
-    : m_wrapper(std::move(wrapper))
+PythonWrapper::PythonWrapper(const Py::Object& wrapper)
+    : m_wrapper(wrapper)
 {
 }
 

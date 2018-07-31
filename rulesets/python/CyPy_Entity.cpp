@@ -16,9 +16,12 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <rulesets/TasksProperty.h>
 #include "CyPy_Entity.h"
 #include "CyPy_Operation.h"
 #include "CyPy_Character.h"
+#include "CyPy_Task.h"
+#include "CyPy_Oplist.h"
 
 CyPy_Entity::CyPy_Entity(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
     : CyPy_LocatedEntityBase(self, args, kwds)
@@ -67,6 +70,22 @@ CyPy_Entity::CyPy_Entity(Py::PythonClassInstance* self, Ref<Entity> value)
     : CyPy_LocatedEntityBase(self, std::move(value))
 {
 
+}
+
+
+Py::Object CyPy_Entity::start_task(const Py::Tuple& args)
+{
+    args.verify_length(3);
+
+    auto task = verifyObject<CyPy_Task>(args[0]);
+    auto& op = verifyObject<CyPy_Operation>(args[1]);
+    auto& res = verifyObject<CyPy_Oplist>(args[2]);
+
+    auto tp = m_value->requirePropertyClassFixed<TasksProperty>();
+
+    tp->startTask(task, m_value, op, res);
+
+    return CyPy_Task::wrap(task);
 }
 
 Py::Object CyPy_Entity::send_world(const Py::Tuple& args)
