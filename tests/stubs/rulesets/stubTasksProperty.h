@@ -16,9 +16,25 @@
   }
 #endif //STUB_TasksProperty_TasksProperty
 
+#ifndef STUB_TasksProperty_install
+//#define STUB_TasksProperty_install
+  void TasksProperty::install(LocatedEntity*, const std::string&)
+  {
+    
+  }
+#endif //STUB_TasksProperty_install
+
+#ifndef STUB_TasksProperty_remove
+//#define STUB_TasksProperty_remove
+  void TasksProperty::remove(LocatedEntity*, const std::string& name)
+  {
+    
+  }
+#endif //STUB_TasksProperty_remove
+
 #ifndef STUB_TasksProperty_get
 //#define STUB_TasksProperty_get
-  int TasksProperty::get(Atlas::Message::Element & val) const
+  int TasksProperty::get(Atlas::Message::Element& val) const
   {
     return 0;
   }
@@ -26,7 +42,7 @@
 
 #ifndef STUB_TasksProperty_set
 //#define STUB_TasksProperty_set
-  void TasksProperty::set(const Atlas::Message::Element & val)
+  void TasksProperty::set(const Atlas::Message::Element& val)
   {
     
   }
@@ -42,7 +58,7 @@
 
 #ifndef STUB_TasksProperty_updateTask
 //#define STUB_TasksProperty_updateTask
-  int TasksProperty::updateTask(LocatedEntity * owner, OpVector & res)
+  int TasksProperty::updateTask(LocatedEntity* owner, OpVector& res)
   {
     return 0;
   }
@@ -50,7 +66,7 @@
 
 #ifndef STUB_TasksProperty_startTask
 //#define STUB_TasksProperty_startTask
-  int TasksProperty::startTask(Ref<Task> task, LocatedEntity * owner, const Operation & op, OpVector & res)
+  int TasksProperty::startTask(Ref<Task> task, LocatedEntity* owner, const Operation& op, OpVector& res)
   {
     return 0;
   }
@@ -58,7 +74,7 @@
 
 #ifndef STUB_TasksProperty_clearTask
 //#define STUB_TasksProperty_clearTask
-  int TasksProperty::clearTask(LocatedEntity * owner, OpVector & res)
+  int TasksProperty::clearTask(LocatedEntity* owner, OpVector& res)
   {
     return 0;
   }
@@ -66,7 +82,7 @@
 
 #ifndef STUB_TasksProperty_stopTask
 //#define STUB_TasksProperty_stopTask
-  void TasksProperty::stopTask(LocatedEntity * owner, OpVector & res)
+  void TasksProperty::stopTask(LocatedEntity* owner, OpVector& res)
   {
     
   }
@@ -74,7 +90,7 @@
 
 #ifndef STUB_TasksProperty_TickOperation
 //#define STUB_TasksProperty_TickOperation
-  void TasksProperty::TickOperation(LocatedEntity * owner, const Operation & op, OpVector &)
+  void TasksProperty::TickOperation(LocatedEntity* owner, const Operation& op, OpVector&)
   {
     
   }
@@ -82,7 +98,7 @@
 
 #ifndef STUB_TasksProperty_UseOperation
 //#define STUB_TasksProperty_UseOperation
-  void TasksProperty::UseOperation(LocatedEntity * owner, const Operation & op, OpVector &)
+  void TasksProperty::UseOperation(LocatedEntity* owner, const Operation& op, OpVector&)
   {
     
   }
@@ -90,7 +106,7 @@
 
 #ifndef STUB_TasksProperty_operation
 //#define STUB_TasksProperty_operation
-  HandlerResult TasksProperty::operation(LocatedEntity * owner, const Operation & op, OpVector &)
+  HandlerResult TasksProperty::operation(LocatedEntity* owner, const Operation& op, OpVector&)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }

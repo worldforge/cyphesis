@@ -123,12 +123,6 @@ void Task::initTask(const Operation& op, OpVector& res)
         return;
     }
 
-//    Anonymous tick_arg;
-//    tick_arg->setName("task");
-//    tick_arg->setAttr("serialno", 0);
-//    Tick tick;
-//    tick->setArgs1(tick_arg);
-//    tick->setTo(m_owner.getId());
 
     res.push_back(nextTick(m_tick_interval));
 }

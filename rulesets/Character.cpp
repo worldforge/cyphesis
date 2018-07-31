@@ -192,6 +192,9 @@ void Character::metabolise(OpVector & res, double ammount)
         }
     }
     // FIXME Stamina property?
+
+    //TODO The idea here seems to be that as long as there's no active tasks, stamina should recover.
+    // This needs to be refactored into a different system.
     auto tp = getPropertyClass<TasksProperty>(TASKS);
     if ((tp == nullptr || !tp->busy())) {
 
@@ -389,45 +392,6 @@ int Character::unlinkExternal(Link * link)
     return 0;
 }
 
-/// \brief Set up a new task as the one being performed by the Character
-///
-/// @param task The new task to be assigned to the Character
-/// @param op The operation that initiates the task.
-/// @param res The result of the task startup.
-int Character::startTask(Ref<Task> task, const Operation & op, OpVector & res)
-{
-    TasksProperty * tp = requirePropertyClass<TasksProperty>(TASKS);
-
-    return tp->startTask(task, this, op, res);
-}
-
-/// \brief Update the visible representation of the current task
-///
-/// Generate a Set operation which modifies the Characters task property
-/// to reflect the current status of the task.
-void Character::updateTask(OpVector & res)
-{
-    TasksProperty * tp = requirePropertyClass<TasksProperty>(TASKS);
-
-    tp->updateTask(this, res);
-}
-
-/// \brief Clean up and remove the task currently being executed
-///
-/// Remove the task, and send an operation indicating that no tasks
-/// are now present.
-void Character::clearTask(OpVector & res)
-{
-    TasksProperty * tp = modPropertyClass<TasksProperty>(TASKS);
-
-    if (tp == nullptr) {
-        log(NOTICE, "Clearing task when no property exists. " + describeEntity());
-        return;
-    }
-
-    tp->clearTask(this, res);
-}
-
 std::vector<Atlas::Objects::Root> Character::getThoughts() const
 {
     if (m_proxyMind) {
@@ -444,16 +408,6 @@ void Character::ImaginaryOperation(const Operation & op, OpVector & res)
     res.push_back(s);
 }
 
-void Character::InfoOperation(const Operation & op, OpVector & res)
-{
-    TasksProperty * tp = modPropertyClass<TasksProperty>(TASKS);
-
-    if (tp == nullptr) {
-        return;
-    }
-
-    tp->operation(this, op, res);
-}
 
 void Character::TickOperation(const Operation & op, OpVector & res)
 {
@@ -462,46 +416,11 @@ void Character::TickOperation(const Operation & op, OpVector & res)
     const std::vector<Root> & args = op->getArgs();
     if (!args.empty()) {
         const Root & arg = args.front();
-        if (arg->getName() == "move") {
-//            // Deal with movement.
-//            Element serialno;
-//            if (arg->copyAttr(SERIALNO, serialno) == 0 && (serialno.isInt())) {
-//                if (serialno.asInt() < m_movement.serialno()) {
-//                    debug(std::cout << "Old tick" << std::endl << std::flush;);
-//                    return;
-//                }
-//            } else {
-//                log(ERROR, "Character::TickOperation: No serialno in tick arg");
-//            }
-//            Location return_location;
-//            if (m_movement.getUpdatedLocation(return_location)) {
-//                return;
-//            }
-//            res.push_back(m_movement.generateMove(return_location));
-//            Anonymous tick_arg;
-//            tick_arg->setName("move");
-//            tick_arg->setAttr(SERIALNO, m_movement.serialno());
-//            Tick tickOp;
-//            tickOp->setTo(getId());
-//            tickOp->setFutureSeconds(m_movement.getTickAddition(return_location.pos(), return_location.velocity()));
-//            tickOp->setArgs1(tick_arg);
-//            res.push_back(tickOp);
-        } else if (arg->getName() == "task") {
-            TasksProperty * tp = modPropertyClass<TasksProperty>(TASKS);
-
-            if (tp == 0) {
-                log(ERROR, "Tick for task, but not tasks property. " + describeEntity());
-                return;
-            }
-
-            tp->TickOperation(this, op, res);
-
-        } else if (arg->getName() == "mind") {
+        if (arg->getName() == "mind") {
             // Do nothing. Passed to mind.
         } else {
-            debug(std::cout << "Tick to unknown subsystem " << arg->getName()
-                            << " arrived. " << describeEntity() << std::endl << std::flush
-            ;);
+            debug_print("Tick to unknown subsystem " << arg->getName()
+                            << " arrived. " << describeEntity());
         }
     } else {
         // METABOLISE
@@ -517,8 +436,7 @@ void Character::TickOperation(const Operation & op, OpVector & res)
 
 void Character::TalkOperation(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Character::Operation(Talk) " << describeEntity() << std::endl << std::flush
-    ;);
+    debug_print("Character::Operation(Talk) " << describeEntity());
     Sound s;
     s->setArgs1(op);
     res.push_back(s);

@@ -9,7 +9,7 @@
 
 #ifndef STUB_PythonWrapper_PythonWrapper
 //#define STUB_PythonWrapper_PythonWrapper
-   PythonWrapper::PythonWrapper(Py::Object wrapper)
+   PythonWrapper::PythonWrapper(const Py::Object& wrapper)
     : Script(wrapper)
   {
     

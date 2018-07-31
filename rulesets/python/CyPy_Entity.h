@@ -26,6 +26,7 @@ class CyPy_Entity : public CyPy_LocatedEntityBase<Ref<Entity>, CyPy_Entity>
 {
     public:
         CyPy_Entity(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
+
         CyPy_Entity(Py::PythonClassInstance* self, Ref<Entity> value);
 
         ~CyPy_Entity() override;
@@ -38,13 +39,20 @@ class CyPy_Entity : public CyPy_LocatedEntityBase<Ref<Entity>, CyPy_Entity>
 
         static Ref<Entity> value(const Py::Object& object);
 
+        static Py::Object send_world(const Ref<Entity>& entity, const Py::Tuple& args);
+
+        static Py::Object start_task(const Ref<Entity>& entity, const Py::Tuple& args);
+
     protected:
 
         Py::Object send_world(const Py::Tuple& args);
+
         PYCXX_VARARGS_METHOD_DECL(CyPy_Entity, send_world);
 
         Py::Object start_task(const Py::Tuple& args);
+
         PYCXX_VARARGS_METHOD_DECL(CyPy_Entity, start_task);
+
 };
 
 #endif //CYPHESIS_CYPY_ENTITY_H

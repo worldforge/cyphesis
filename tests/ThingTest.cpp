@@ -126,7 +126,7 @@ void LocatedEntity::changeContainer(LocatedEntity * new_loc)
 }
 
 #define STUB_LocatedEntity_broadcast
-void LocatedEntity::broadcast(const Atlas::Objects::Operation::RootOperation& op, OpVector& res) const
+void LocatedEntity::broadcast(const Atlas::Objects::Operation::RootOperation& op, OpVector& res, LocatedEntity::Visibility visibility) const
 {
     auto copy = op.copy();
     copy->setTo(getId());

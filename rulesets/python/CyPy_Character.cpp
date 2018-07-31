@@ -20,6 +20,7 @@
 #include "CyPy_Task.h"
 #include "CyPy_Operation.h"
 #include "CyPy_Oplist.h"
+#include "CyPy_Entity.h"
 
 CyPy_Character::CyPy_Character(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
     : CyPy_LocatedEntityBase(self, args, kwds)
@@ -77,13 +78,12 @@ CyPy_Character::CyPy_Character(Py::PythonClassInstance* self, Ref<Character> val
 
 Py::Object CyPy_Character::start_task(const Py::Tuple& args)
 {
-    args.verify_length(3);
+    return CyPy_Entity::start_task(m_value, args);
+}
 
-    auto task = verifyObject<CyPy_Task>(args[0]);
-    auto& op = verifyObject<CyPy_Operation>(args[1]);
-    auto& res = verifyObject<CyPy_Oplist>(args[2]);
-    m_value->startTask(task, op, res);
-    return CyPy_Task::wrap(task);
+Py::Object CyPy_Character::send_world(const Py::Tuple& args)
+{
+    return CyPy_Entity::send_world(m_value, args);
 }
 
 Py::Object CyPy_Character::mind2body(const Py::Tuple& args)
@@ -99,12 +99,4 @@ Py::Object CyPy_Character::mind2body(const Py::Tuple& args)
     } else {
         return CyPy_Oplist::wrap(std::move(res));
     }
-}
-
-//TODO: This is copied from Entity, perhaps we should consolidate the code?
-Py::Object CyPy_Character::send_world(const Py::Tuple& args)
-{
-    args.verify_length(1);
-    m_value->sendWorld(verifyObject<CyPy_Operation>(args.front()));
-    return Py::None();
 }

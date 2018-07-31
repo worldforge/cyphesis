@@ -67,11 +67,35 @@
 
 #ifndef STUB_CyPy_Entity_send_world
 //#define STUB_CyPy_Entity_send_world
+   Py::Object CyPy_Entity::send_world(const Ref<Entity>& entity, const Py::Tuple& args)
+  {
+    return *static_cast< Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_Entity_send_world
+
+#ifndef STUB_CyPy_Entity_start_task
+//#define STUB_CyPy_Entity_start_task
+   Py::Object CyPy_Entity::start_task(const Ref<Entity>& entity, const Py::Tuple& args)
+  {
+    return *static_cast< Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_Entity_start_task
+
+#ifndef STUB_CyPy_Entity_send_world
+//#define STUB_CyPy_Entity_send_world
   Py::Object CyPy_Entity::send_world(const Py::Tuple& args)
   {
     return *static_cast<Py::Object*>(nullptr);
   }
 #endif //STUB_CyPy_Entity_send_world
+
+#ifndef STUB_CyPy_Entity_start_task
+//#define STUB_CyPy_Entity_start_task
+  Py::Object CyPy_Entity::start_task(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_Entity_start_task
 
 
 #endif

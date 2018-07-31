@@ -24,41 +24,51 @@
 
 class Task;
 
-/// \brief Class to handle whether or not an entity is solid for collisions.
+/// \brief Keeps track of any ongoing tasks.
 /// \ingroup PropertyClasses
-class TasksProperty : public PropertyBase {
-  protected:
-    Ref<Task> m_task;
-  public:
-    static constexpr const char* property_name = "tasks";
-    static constexpr const char* property_atlastype = "map";
+class TasksProperty : public PropertyBase
+{
+    protected:
+        Ref<Task> m_task;
+    public:
+        static constexpr const char* property_name = "tasks";
+        static constexpr const char* property_atlastype = "map";
 
-    /// \brief Constructor
-    explicit TasksProperty();
+        explicit TasksProperty();
 
-    bool busy() const
-    {
-        return m_task != nullptr;
-    }
+        void install(LocatedEntity*, const std::string&) override;
 
-    int get(Atlas::Message::Element & val) const override;
-    void set(const Atlas::Message::Element & val) override;
-    TasksProperty * copy() const override;
+        void remove(LocatedEntity*, const std::string& name) override;
 
-    int updateTask(LocatedEntity * owner, OpVector & res);
-    int startTask(Ref<Task> task,
-                  LocatedEntity * owner,
-                  const Operation & op,
-                  OpVector & res);
-    int clearTask(LocatedEntity * owner, OpVector & res);
-    void stopTask(LocatedEntity * owner, OpVector & res);
+        bool busy() const
+        {
+            return m_task != nullptr;
+        }
 
-    void TickOperation(LocatedEntity * owner, const Operation & op, OpVector &);
-    void UseOperation(LocatedEntity * owner, const Operation & op, OpVector &);
+        int get(Atlas::Message::Element& val) const override;
 
-    HandlerResult operation(LocatedEntity * owner,
-                            const Operation & op,
-                            OpVector &) override;
+        void set(const Atlas::Message::Element& val) override;
+
+        TasksProperty* copy() const override;
+
+        int updateTask(LocatedEntity* owner, OpVector& res);
+
+        int startTask(Ref<Task> task,
+                      LocatedEntity* owner,
+                      const Operation& op,
+                      OpVector& res);
+
+        int clearTask(LocatedEntity* owner, OpVector& res);
+
+        void stopTask(LocatedEntity* owner, OpVector& res);
+
+        void TickOperation(LocatedEntity* owner, const Operation& op, OpVector&);
+
+        void UseOperation(LocatedEntity* owner, const Operation& op, OpVector&);
+
+        HandlerResult operation(LocatedEntity* owner,
+                                const Operation& op,
+                                OpVector&) override;
 };
 
 #endif // RULESETS_TASKS_PROPERTY_H

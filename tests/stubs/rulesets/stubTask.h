@@ -10,7 +10,8 @@
 #ifndef STUB_Task_Task
 //#define STUB_Task_Task
    Task::Task(LocatedEntity & owner)
-    : m_script(nullptr)
+    : boost::noncopyable(owner)
+    , m_script(nullptr)
   {
     
   }

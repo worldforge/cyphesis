@@ -389,11 +389,7 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 }
 
 #include "stubs/rulesets/stubScript.h"
-
-
-Location::Location() : m_loc(0)
-{
-}
+#include "stubs/rulesets/stubLocation.h"
 
 IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),
                                                    m_data(data)

@@ -16,6 +16,7 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
+#include <common/Tick.h>
 #include "TasksProperty.h"
 
 #include "LocatedEntity.h"
@@ -176,14 +177,20 @@ void TasksProperty::TickOperation(LocatedEntity * owner,
     Element serialno;
     if (arg->copyAttr(SERIALNO, serialno) == 0 && (serialno.isInt())) {
         if (serialno.asInt() != m_task->serialno()) {
-            debug(std::cout << "Old tick" << std::endl << std::flush;);
+            debug_print("Old tick");
             return;
         }
     } else {
         log(ERROR, "Character::TickOperation: No serialno in tick arg");
         return;
     }
-    operation(owner, op, res);
+    m_task->operation(op, res);
+    if (m_task->obsolete()) {
+        clearTask(owner, res);
+    } else {
+        updateTask(owner, res);
+    }
+
     if (m_task != nullptr && res.empty()) {
         log(WARNING, String::compose("Character::%1: Task %2 has "
                                      "stalled", __func__,
@@ -201,11 +208,24 @@ HandlerResult TasksProperty::operation(LocatedEntity * owner,
                                        const Operation & op,
                                        OpVector & res)
 {
-    m_task->operation(op, res);
-    if (m_task->obsolete()) {
-        clearTask(owner, res);
-    } else {
-        updateTask(owner, res);
+    auto& args = op->getArgs();
+    if (!args.empty()) {
+        auto& arg = args.front();
+        if (arg->getName() == "task") {
+            TickOperation(owner, op, res);
+            return OPERATION_BLOCKED;
+        }
     }
-    return OPERATION_HANDLED;
+
+    return OPERATION_IGNORED;
+}
+
+void TasksProperty::install(LocatedEntity * owner, const std::string & name)
+{
+    owner->installDelegate(Atlas::Objects::Operation::TICK_NO, name);
+}
+
+void TasksProperty::remove(LocatedEntity * owner, const std::string & name)
+{
+    owner->removeDelegate(Atlas::Objects::Operation::TICK_NO, name);
 }

@@ -72,27 +72,14 @@ CyPy_Entity::CyPy_Entity(Py::PythonClassInstance* self, Ref<Entity> value)
 
 }
 
-
 Py::Object CyPy_Entity::start_task(const Py::Tuple& args)
 {
-    args.verify_length(3);
-
-    auto task = verifyObject<CyPy_Task>(args[0]);
-    auto& op = verifyObject<CyPy_Operation>(args[1]);
-    auto& res = verifyObject<CyPy_Oplist>(args[2]);
-
-    auto tp = m_value->requirePropertyClassFixed<TasksProperty>();
-
-    tp->startTask(task, m_value, op, res);
-
-    return CyPy_Task::wrap(task);
+    return CyPy_Entity::start_task(m_value, args);
 }
 
 Py::Object CyPy_Entity::send_world(const Py::Tuple& args)
 {
-    args.verify_length(1);
-    m_value->sendWorld(verifyObject<CyPy_Operation>(args.front()));
-    return Py::None();
+    return CyPy_Entity::send_world(m_value, args);
 }
 
 bool CyPy_Entity::check(const Py::Object& object)
@@ -115,4 +102,26 @@ Ref<Entity> CyPy_Entity::value(const Py::Object& object)
     }
     return Py::PythonClassObject<CyPy_Entity>(object).getCxxObject()->m_value;
 
+}
+
+Py::Object CyPy_Entity::send_world(const Ref<Entity>& entity, const Py::Tuple& args)
+{
+    args.verify_length(1);
+    entity->sendWorld(verifyObject<CyPy_Operation>(args.front()));
+    return Py::None();
+}
+
+Py::Object CyPy_Entity::start_task(const Ref<Entity>& entity, const Py::Tuple& args)
+{
+    args.verify_length(3);
+
+    auto task = verifyObject<CyPy_Task>(args[0]);
+    auto& op = verifyObject<CyPy_Operation>(args[1]);
+    auto& res = verifyObject<CyPy_Oplist>(args[2]);
+
+    auto tp = entity->requirePropertyClassFixed<TasksProperty>();
+
+    tp->startTask(task, entity, op, res);
+
+    return CyPy_Task::wrap(task);
 }

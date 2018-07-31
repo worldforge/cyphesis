@@ -421,12 +421,7 @@ LocatedEntity *PossessionAuthenticator::authenticatePossession(const std::string
 #include "stubs/common/stubLink.h"
 #include "stubs/rulesets/stubBaseWorld.h"
 #include "stubs/common/stubRouter.h"
-
-
-
-Location::Location() : m_loc(0)
-{
-}
+#include "stubs/rulesets/stubLocation.h"
 
 void logEvent(LogEvent lev, const std::string & msg)
 {

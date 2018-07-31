@@ -163,18 +163,7 @@ LocatedEntity* BaseWorld::getEntity(long id) const
 
 #include "stubs/rulesets/stubBaseWorld.h"
 #include "stubs/rulesets/stubScript.h"
-
-void Location::addToMessage(MapType & omap) const
-{
-}
-
-Location::Location() : m_loc(0)
-{
-}
-
-void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
+#include "stubs/rulesets/stubLocation.h"
 
 IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),
                                                    m_data(data)

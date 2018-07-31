@@ -137,14 +137,6 @@
   }
 #endif //STUB_Character_ImaginaryOperation
 
-#ifndef STUB_Character_InfoOperation
-//#define STUB_Character_InfoOperation
-  void Character::InfoOperation(const Operation & op, OpVector &)
-  {
-    
-  }
-#endif //STUB_Character_InfoOperation
-
 #ifndef STUB_Character_TickOperation
 //#define STUB_Character_TickOperation
   void Character::TickOperation(const Operation & op, OpVector &)

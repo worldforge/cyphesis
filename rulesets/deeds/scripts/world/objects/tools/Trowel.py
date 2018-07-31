@@ -18,7 +18,6 @@ def sow(tool, actor, op, targets, consumed):
         task.tick_interval = 1.75
         task.name = "Cultivate"
         actor.start_task(task, Operation('sow'), oplist)
-        print (str(len(oplist)))
         return (server.OPERATION_BLOCKED, oplist)
     else:
         print("Too far away.")
@@ -32,7 +31,6 @@ class Cultivate(server.Task):
         return (server.OPERATION_HANDLED)
 
     def tick_operation(self, op):
-        print('tick')
 
         target = server.world.get_object(self.target_id)
 

@@ -357,10 +357,7 @@ void Router::error(const Operation & op,
 }
 
 #include "stubs/rulesets/stubBaseWorld.h"
-
-Location::Location() : m_loc(0)
-{
-}
+#include "stubs/rulesets/stubLocation.h"
 
 long integerId(const std::string & id)
 {

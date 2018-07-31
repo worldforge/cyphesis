@@ -49,5 +49,13 @@
   }
 #endif //STUB_CyPy_Props_setattro
 
+#ifndef STUB_CyPy_Props_mapping_subscript
+//#define STUB_CyPy_Props_mapping_subscript
+  Py::Object CyPy_Props::mapping_subscript(const Py::Object&)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_Props_mapping_subscript
+
 
 #endif
