@@ -22,6 +22,7 @@
 #include "CyPy_Vector3D.h"
 #include "CyPy_Quaternion.h"
 #include "CyPy_Axisbox.h"
+#include "CyPy_EntityLocation.h"
 
 CyPy_Location::CyPy_Location(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
     : WrapperBase(self, args, kwds)
@@ -29,10 +30,17 @@ CyPy_Location::CyPy_Location(Py::PythonClassInstance* self, Py::Tuple& args, Py:
 
     if (args.length() > 0) {
 
-        m_value.m_loc = &verifyObject<CyPy_LocatedEntity>(args[0]);
-
-        if (args.length() == 2) {
-            m_value.m_pos = CyPy_Point3D::parse(args[1]);
+        //If there's only one argument it could be either an EntityLocation or a LocatedEntity.
+        //If it's a LocatedEntity there could be an additional position too.
+        if (args.length() == 1 && CyPy_EntityLocation::check(args[0])) {
+            const auto& entityLocation = CyPy_EntityLocation::value(args[0]);
+            m_value.m_loc = entityLocation.m_loc;
+            m_value.m_pos = entityLocation.m_pos;
+        } else {
+            m_value.m_loc = &verifyObject<CyPy_LocatedEntity>(args[0]);
+            if (args.length() == 2) {
+                m_value.m_pos = CyPy_Point3D::parse(args[1]);
+            }
         }
     }
 }

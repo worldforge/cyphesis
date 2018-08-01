@@ -55,6 +55,7 @@ int main()
     expect_python_error("atlas.Location(server.Thing('1'), 1)",
                         PyExc_TypeError);
     run_python_string("atlas.Location(server.Thing('1'), Point3D(0,0,0))");
+    run_python_string("atlas.Location(atlas.EntityLocation(server.Thing('1'), Point3D(0,0,0)))");
     run_python_string("l=atlas.Location()");
     run_python_string("l1=l.copy()");
     run_python_string("l.parent");

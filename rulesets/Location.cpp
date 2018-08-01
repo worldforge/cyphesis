@@ -51,6 +51,12 @@ Location::Location(LocatedEntity * rf, const Point3D & pos) :
 {
 }
 
+Location::Location(EntityLocation entityLocation) :
+    EntityLocation(std::move(entityLocation)),
+    m_simple(true), m_solid(true)
+{
+}
+
 Location::Location(LocatedEntity * rf,
                    const Point3D& pos,
                    const Vector3D& velocity) :

@@ -63,6 +63,9 @@ class Location : public EntityLocation {
                       const Point3D & pos,
                       const Vector3D & velocity);
 
+    explicit Location(EntityLocation entityLocation);
+
+
     float radius() const { return m_radius; }
     float squareRadius() const { return m_squareRadius; }
 
