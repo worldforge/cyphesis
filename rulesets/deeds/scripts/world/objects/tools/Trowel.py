@@ -12,8 +12,8 @@ def sow(instance):
 
     if target_entity.is_reachable_for_other_entity(instance.actor, None, 0):
         task = Cultivate(instance)
-        task.rate = 1 / 1.75
-        task.tick_interval = 1.75
+        task.duration = 10.75
+        task.tick_interval = 1
         task.name = "Cultivate"
 
         return (server.OPERATION_BLOCKED, instance.actor.start_task(task))
@@ -28,20 +28,22 @@ class Cultivate(server.Task):
         pass
 
     def tick(self):
-
         target = self.targets[0]
         entity = target.entity
 
-        if not target:
-            self.irrelevant()
-            return
-        if not entity.is_reachable_for_other_entity(self.actor, None, 0):
-            self.irrelevant()
-            return
         (valid, err_op) = self.usage.is_valid()
         if not valid:
             self.irrelevant()
             return err_op
+
+        if not entity.is_reachable_for_other_entity(self.actor, None, 0):
+            self.irrelevant()
+            return
+
+    def completed(self):
+
+        target = self.targets[0]
+        entity = target.entity
 
         new_loc = entity.location.copy()
         #Create a small instance of the type this target germinates, and destroy the seed.
@@ -51,5 +53,4 @@ class Cultivate(server.Task):
                                           mode = "planted"), to = entity)
         set=Operation("set", Entity(entity.id, status=-1), to=entity)
 
-        self.irrelevant()
         return (create, set)

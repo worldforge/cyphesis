@@ -53,9 +53,8 @@ int TasksProperty::get(Atlas::Message::Element& val) const
     if (progress > 0) {
         task["progress"] = progress;
     }
-    float rate = m_task->rate();
-    if (rate > 0) {
-        task["rate"] = rate;
+    if (m_task->m_duration) {
+        task["rate"] = 1.0f / *m_task->m_duration;
     }
     val = ListType(1, task);
     return 0;
@@ -180,7 +179,7 @@ void TasksProperty::TickOperation(LocatedEntity* owner,
         log(ERROR, "Character::TickOperation: No serialno in tick arg");
         return;
     }
-    m_task->tick(res);
+    m_task->tick(op, res);
     if (m_task->obsolete()) {
         clearTask(owner, res);
     } else {

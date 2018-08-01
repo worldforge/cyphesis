@@ -117,9 +117,7 @@ Py::Object CyPy_Entity::start_task(const Ref<Entity>& entity, const Py::Tuple& a
     args.verify_length(1);
 
     auto task = verifyObject<CyPy_Task>(args[0]);
-
     auto tp = entity->requirePropertyClassFixed<TasksProperty>();
-
     tp->startTask(task, entity, res);
 
     return CyPy_Oplist::wrap(std::move(res));

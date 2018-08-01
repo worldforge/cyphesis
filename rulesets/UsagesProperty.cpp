@@ -160,6 +160,7 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
         }
         rop->setFrom(actor->getId());
         rop->setTo(e->getId());
+        rop->setSeconds(op->getSeconds());
 
         //Optionally extract any involved entities
         std::vector<EntityLocation> involvedEntities;

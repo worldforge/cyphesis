@@ -29,6 +29,7 @@
 
 #include <cassert>
 #include <boost/core/noncopyable.hpp>
+#include <boost/optional.hpp>
 
 class LocatedEntity;
 class Script;
@@ -49,10 +50,12 @@ class Task : public boost::noncopyable{
     bool m_obsolete;
 
     /// \brief Progress towards task completion
-    float m_progress;
+    double m_progress;
 
     /// \brief Rate of progress towards task completion
-    float m_rate;
+    double m_rate;
+
+    double m_start_time;
 
     /// \brief Additional task attributes
     Atlas::Message::MapType m_attr;
@@ -63,9 +66,13 @@ class Task : public boost::noncopyable{
     /// \brief The language script that will handle this task
     Py::Object m_script;
 
+    void callScriptFunction(const std::string& function, OpVector& res);
+
   public:
 
-    float m_tick_interval;
+    boost::optional<double> m_duration;
+
+    boost::optional<double> m_tick_interval;
 
     UsageInstance m_usageInstance;
 
@@ -87,10 +94,10 @@ class Task : public boost::noncopyable{
     /// A Task gets regular ticks which cause whatever actions this
     /// Task involves to be returned.
     /// @param res The result of the operation is returned here.
-    void tick(OpVector & res);
+    void tick(const Operation& op, OpVector & res);
 
     /// \brief Create a new tick op for the next iteration of this task
-    Operation nextTick(double interval);
+    Operation nextTick(const Operation& op);
 
     /// \brief Increment the reference count on this task
     void incRef() {
@@ -103,11 +110,6 @@ class Task : public boost::noncopyable{
             assert(m_refCount == 0);
             delete this;
         }
-    }
-
-    /// \brief Return the number of entities involved in this task
-    int count() const {
-        return m_refCount;
     }
 
     /// \brief Return the number of the next to arrive at this task
@@ -129,10 +131,10 @@ class Task : public boost::noncopyable{
     std::string & name() { return m_name; }
 
     /// \brief Accessor for progress towards completion
-    float & progress() { return m_progress; }
+    double & progress() { return m_progress; }
 
     /// \brief Accessor for rate of progress towards completion
-    float & rate() { return m_rate; }
+    double & rate() { return m_rate; }
 
     /// \brief Accessor for additional attributes
     int getAttr(const std::string & attr, Atlas::Message::Element & val) const;

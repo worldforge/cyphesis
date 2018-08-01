@@ -58,12 +58,6 @@ void CyPy_Task::init_type()
 
     PYCXX_ADD_NOARGS_METHOD(obsolete, obsolete, "");
 
-    PYCXX_ADD_NOARGS_METHOD(count, count, "");
-
-    PYCXX_ADD_NOARGS_METHOD(new_tick, newtick, "");
-
-    PYCXX_ADD_VARARGS_METHOD(next_tick, nexttick, "");
-
     behaviors().readyType();
 }
 
@@ -77,22 +71,6 @@ Py::Object CyPy_Task::irrelevant()
 Py::Object CyPy_Task::obsolete()
 {
     return Py::Boolean(m_value->obsolete());
-}
-
-Py::Object CyPy_Task::count()
-{
-    return Py::Long(m_value->count());
-}
-
-Py::Object CyPy_Task::newtick()
-{
-    return Py::Long(m_value->newTick());
-}
-
-Py::Object CyPy_Task::nexttick(const Py::Tuple& args)
-{
-    double interval = verifyNumeric(args.front());
-    return CyPy_Operation::wrap(m_value->nextTick(interval));
 }
 
 Py::Object CyPy_Task::getattro(const Py::String& name)
@@ -132,11 +110,17 @@ Py::Object CyPy_Task::getattro(const Py::String& name)
     if (nameStr == "progress") {
         return Py::Float(m_value->progress());
     }
-    if (nameStr == "rate") {
-        return Py::Float(m_value->rate());
+    if (nameStr == "duration") {
+        if (m_value->m_duration) {
+            return Py::None();
+        }
+        return Py::Float(*m_value->m_duration);
     }
     if (nameStr == "tick_interval") {
-        return Py::Float(m_value->m_tick_interval);
+        if (m_value->m_duration) {
+            return Py::None();
+        }
+        return Py::Float(*m_value->m_tick_interval);
     }
     if (nameStr == "name") {
         return Py::String(m_value->name());
@@ -161,8 +145,8 @@ int CyPy_Task::setattro(const Py::String& name, const Py::Object& attr)
         m_value->progress() = verifyNumeric(attr);
         return 0;
     }
-    if (nameStr == "rate") {
-        m_value->rate() = verifyNumeric(attr);
+    if (nameStr == "duration") {
+        m_value->m_duration = verifyNumeric(attr);
         return 0;
     }
     if (nameStr == "tick_interval") {

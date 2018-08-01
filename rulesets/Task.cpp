@@ -61,7 +61,7 @@ void Task::irrelevant()
     m_obsolete = true;
 }
 
-Operation Task::nextTick(double interval)
+Operation Task::nextTick(const Operation& op)
 {
     Anonymous tick_arg;
     tick_arg->setName("task");
@@ -69,7 +69,19 @@ Operation Task::nextTick(double interval)
     Tick tick;
     tick->setArgs1(tick_arg);
     tick->setTo(m_usageInstance.actor->getId());
-    tick->setFutureSeconds(interval);
+    //Default to once per second.
+    double futureSeconds = 1.0;
+    if (m_tick_interval) {
+        futureSeconds = *m_tick_interval;
+    } else if(m_duration) {
+        futureSeconds = *m_duration;
+    }
+
+    //If there's a duration, adjust the tick interval so it matches the duration end
+    if (m_duration) {
+        futureSeconds = std::min(futureSeconds, *m_duration - (op->getSeconds() - m_start_time));
+    }
+    tick->setFutureSeconds(futureSeconds);
 
     return tick;
 }
@@ -95,49 +107,52 @@ void Task::setAttr(const std::string& attr,
 
 void Task::initTask(OpVector& res)
 {
+    m_start_time = m_usageInstance.op->getSeconds();
     if (m_script.isNull()) {
         log(WARNING, "Task script failed");
         irrelevant();
     } else {
-        if (m_script.hasAttr("setup")) {
-            try {
-                auto ret = m_script.callMemberFunction("setup");
-                //Ignore any return codes
-                UsagesProperty::processScriptResult(m_script.str(), ret, res, m_usageInstance.actor);
-            } catch (const Py::BaseException& e) {
-                log(ERROR, String::compose("Error when setting up task '%1' on entity '%2'.", m_script.str(), m_usageInstance.actor->describeEntity()));
-                if (PyErr_Occurred() != nullptr) {
-                    PyErr_Print();
-                }
-                irrelevant();
-            }
-        }
+        callScriptFunction("setup", res);
     }
 
     if (obsolete()) {
         return;
     }
 
-    res.push_back(nextTick(m_tick_interval));
+    res.push_back(nextTick(m_usageInstance.op));
 }
 
-void Task::tick(OpVector& res)
+void Task::tick(const Operation& op, OpVector& res)
 {
-    if (m_script.hasAttr("tick")) {
+    if (m_duration) {
+        auto elapsed = (op->getSeconds() - m_start_time);
+        m_progress = std::min(1.0,  elapsed / *m_duration);
+    }
+    callScriptFunction("tick", res);
+    if (!obsolete()) {
+        if (m_progress >= 1.0) {
+            irrelevant();
+            callScriptFunction("completed", res);
+        } else {
+            res.push_back(nextTick(op));
+        }
+    }
+}
+
+void Task::callScriptFunction(const std::string& function, OpVector& res)
+{
+    if (m_script.hasAttr(function)) {
         try {
-            auto ret = m_script.callMemberFunction("tick");
+            auto ret = m_script.callMemberFunction(function);
             //Ignore any return codes
             UsagesProperty::processScriptResult(m_script.str(), ret, res, m_usageInstance.actor);
         } catch (const Py::BaseException& e) {
-            log(ERROR, String::compose("Error when calling 'tick' on task '%1' on entity '%2'.", m_script.str(), m_usageInstance.actor->describeEntity()));
+            log(ERROR, String::compose("Error when calling '%1' on task '%2' on entity '%3'.", function, m_script.str(), m_usageInstance.actor->describeEntity()));
             if (PyErr_Occurred() != nullptr) {
                 PyErr_Print();
             }
             irrelevant();
         }
     }
-
-    if (!obsolete()) {
-        res.push_back(nextTick(m_tick_interval));
-    }
 }
+

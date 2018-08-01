@@ -47,18 +47,6 @@ class CyPy_Task : public WrapperBase<Ref<Task>, CyPy_Task>
 
         PYCXX_NOARGS_METHOD_DECL(CyPy_Task, obsolete);
 
-        Py::Object count();
-
-        PYCXX_NOARGS_METHOD_DECL(CyPy_Task, count);
-
-        Py::Object newtick();
-
-        PYCXX_NOARGS_METHOD_DECL(CyPy_Task, newtick);
-
-        Py::Object nexttick(const Py::Tuple& args);
-
-        PYCXX_VARARGS_METHOD_DECL(CyPy_Task, nexttick);
-
         Py::Object rich_compare(const Py::Object& other, int type) override;
 
 };
