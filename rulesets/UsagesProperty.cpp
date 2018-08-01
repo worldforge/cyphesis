@@ -195,12 +195,6 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
         if (usagesI != m_usages.end()) {
             auto& usage = usagesI->second;
 
-            if (usage.constraint) {
-                if (!usage.constraint->match(*actor)) {
-                    return OPERATION_IGNORED;
-                }
-            }
-
             //Check that the tool is ready
             auto toolReadyAtProp = e->getPropertyType<double>("ready_at");
             if (toolReadyAtProp) {
@@ -235,6 +229,7 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
                 }
 
                 UsageInstance usageInstance{usage, actor, e, std::move(targets), std::move(consumed), rop};
+                //Check that the usage is valid before continuing
                 auto validRes = usageInstance.isValid();
                 if (!validRes.first) {
                     actor->clientError(op, validRes.second, res, actor->getId());
@@ -250,7 +245,6 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
                             actor->error(op, String::compose("Could not find Python function %1", usage.handler), res, actor->getId());
                             return OPERATION_IGNORED;
                         }
-
 
                         try {
                             auto ret = Py::Callable(functionObject).apply(Py::TupleN(CyPy_UsageInstance::wrap(std::move(usageInstance))));

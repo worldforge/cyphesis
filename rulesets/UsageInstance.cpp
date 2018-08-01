@@ -35,27 +35,6 @@ std::pair<bool, std::string> UsageInstance::isValid() const
         return {false, "Constraint does not match."};
     }
 
-    //Check that the tool is ready
-    auto toolReadyAtProp = tool->getPropertyType<double>("ready_at");
-    if (toolReadyAtProp) {
-        if (toolReadyAtProp->data() > BaseWorld::instance().getTime()) {
-            //actor->clientError(op, "Tool is not ready yet.", res, actor->getId());
-            return {false, "Tool is not ready yet."};
-        }
-    }
-
-    //Check if the tools is attached, and if so the attachment is ready
-    auto actorReadyAtProp = actor->getPropertyType<MapType>("_ready_at_attached");
-    if (actorReadyAtProp) {
-        //FIXME: don't hardcode this, instead get it from the tools "planted_on" prop
-        auto attachI = actorReadyAtProp->data().find("right_hand_wield");
-        if (attachI != actorReadyAtProp->data().end()) {
-            if (attachI->second.isFloat() && attachI->second.Float() > BaseWorld::instance().getTime()) {
-                return {false, "Actor is not ready yet."};
-            }
-        }
-    }
-
     for (size_t i = 0; i < targets.size(); ++i) {
         auto& entry = targets[i];
         if (entry.m_loc->isDestroyed()) {
