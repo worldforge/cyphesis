@@ -113,7 +113,7 @@ void ThingIntegration::test_visibility()
     auto verifyBroadcastContains = [&](ThingExt* thing, std::initializer_list<const ThingExt*> expectedThings) {
         OpVector res;
         Atlas::Objects::Operation::Sight s;
-        thing->broadcast(s, res);
+        thing->broadcast(s, res, LocatedEntity::Visibility::PUBLIC);
 
         for (auto expectedThing : expectedThings) {
             auto I = std::find_if(std::begin(res), std::end(res), [&](Operation entry) { return entry->getTo() == expectedThing->getId(); });
@@ -551,22 +551,22 @@ void ThingIntegration::test_reachability()
         t1->addChild(*t5);
         t2->addChild(*t3);
         //T1 can reach itself
-        ASSERT_TRUE(t1->isReachableForOtherEntity(t1));
+        ASSERT_TRUE(t1->canReach({t1, {}}));
         //T1 can reach T2 since it's a child and there's no domain
-        ASSERT_TRUE(t2->isReachableForOtherEntity(t1));
+        ASSERT_TRUE(t1->canReach({t2, {}}));
         //T1 can reach T3 since it's a grandchild and there's no domain
-        ASSERT_TRUE(t3->isReachableForOtherEntity(t1));
+        ASSERT_TRUE(t1->canReach({t3, {}}));
         //T1 can't reach T4 since it's not in the same graph
-        ASSERT_FALSE(t4->isReachableForOtherEntity(t1));
+        ASSERT_FALSE(t1->canReach({t4, {}}));
 
         //T2 can reach T1 since it's a parent and there's no domain
-        ASSERT_TRUE(t1->isReachableForOtherEntity(t2));
+        ASSERT_TRUE(t2->canReach({t1, {}}));
         //T3 can reach T1 since it's a grand parent and there's no domain
-        ASSERT_TRUE(t1->isReachableForOtherEntity(t3));
+        ASSERT_TRUE(t3->canReach({t1, {}}));
         //T5 can reach T3 since they share T1 as parent/grand parent and there's no domain
-        ASSERT_TRUE(t3->isReachableForOtherEntity(t5));
+        ASSERT_TRUE(t5->canReach({t3, {}}));
         //T4 can't reach T1 since it's not in the same graph
-        ASSERT_FALSE(t1->isReachableForOtherEntity(t4));
+        ASSERT_FALSE(t4->canReach({t1, {}}));
     }
 
     /**
@@ -591,21 +591,21 @@ void ThingIntegration::test_reachability()
         t2->addFlags(entity_domain);
 
         //T1 can reach itself
-        ASSERT_TRUE(t1->isReachableForOtherEntity(t1));
+        ASSERT_TRUE(t1->canReach({t1, {}}));
         //T1 can reach T2 since it's a child and there's no domain
-        ASSERT_TRUE(t2->isReachableForOtherEntity(t1));
+        ASSERT_TRUE(t1->canReach({t2, {}}));
         //T1 can't reach T3 since T2 has a Void domain
-        ASSERT_FALSE(t3->isReachableForOtherEntity(t1));
+        ASSERT_FALSE(t1->canReach({t3, {}}));
 
         //T2 can reach T1 since it's a parent and there's no domain
-        ASSERT_TRUE(t1->isReachableForOtherEntity(t2));
+        ASSERT_TRUE(t2->canReach({t1, {}}));
         //T3 can't reach T1 since T2 has a domain
-        ASSERT_FALSE(t1->isReachableForOtherEntity(t3));
+        ASSERT_FALSE(t3->canReach({t1, {}}));
 
         //T2 can reach itself
-        ASSERT_TRUE(t2->isReachableForOtherEntity(t2));
+        ASSERT_TRUE(t2->canReach({t2, {}}));
         //T2 can reach T3 even though T2 has a Void domain, since T2 is the parent
-        ASSERT_TRUE(t3->isReachableForOtherEntity(t2));
+        ASSERT_TRUE(t2->canReach({t3, {}}));
 
 
     }
@@ -658,32 +658,32 @@ void ThingIntegration::test_reachability()
         t3->addChild(*t4);
 
         //T1 can reach itself
-        ASSERT_TRUE(t1->isReachableForOtherEntity( t1));
+        ASSERT_TRUE( t1->canReach({t1, {}}));
         //T1 can reach T2 since it's a child and there's no domain
-        ASSERT_TRUE(t2->isReachableForOtherEntity( t1));
+        ASSERT_TRUE( t1->canReach({t2, {}}));
         //T1 can't reach T3 since T2 has a Physical domain and it doesn't allow external entities to reach into it.
-        ASSERT_FALSE(t3->isReachableForOtherEntity( t1));
+        ASSERT_FALSE( t1->canReach({t3, {}}));
 
         //T2 can reach T1 since it's a parent and there's no domain
-        ASSERT_TRUE(t1->isReachableForOtherEntity( t2));
+        ASSERT_TRUE( t2->canReach({t1, {}}));
         //T3 can't reach T1 since T2 has a domain
-        ASSERT_FALSE(t1->isReachableForOtherEntity( t3));
+        ASSERT_FALSE( t3->canReach({t1, {}}));
 
         //T2 can reach itself
-        ASSERT_TRUE(t2->isReachableForOtherEntity( t2));
+        ASSERT_TRUE( t2->canReach({t2, {}}));
         //T2 can reach T3 since T2 has a Physical domain which allows it.
-        ASSERT_TRUE(t3->isReachableForOtherEntity( t2));
+        ASSERT_TRUE( t2->canReach({t3, {}}));
         //T5 can reach T3 since T2 has a Physical domain which allows it.
-        ASSERT_TRUE(t3->isReachableForOtherEntity( t5));
+        ASSERT_TRUE( t5->canReach({t3, {}}));
         //T5 can reach T4 since T2 has a Physical domain which allows it to reach T3, and thus T4.
-        ASSERT_TRUE(t4->isReachableForOtherEntity( t5));
+        ASSERT_TRUE( t5->canReach({t4, {}}));
 
         //T2 can reach T6 since the parent of T6 is T5, which can be reached and has no domain.
-        ASSERT_TRUE(t6->isReachableForOtherEntity( t2));
+        ASSERT_TRUE( t2->canReach({t6, {}}));
         //T3 can't reach T7 since T2 has a Physical domain and T7 has an invalid pos.
-        ASSERT_FALSE(t7->isReachableForOtherEntity( t3));
+        ASSERT_FALSE( t3->canReach({t7, {}}));
         //T4 can't reach T5 since T4 isn't a direct child of T2
-        ASSERT_FALSE(t5->isReachableForOtherEntity( t4));
+        ASSERT_FALSE( t4->canReach({t5, {}}));
 
 
     }
@@ -723,22 +723,22 @@ void ThingIntegration::test_reachability()
         t2->setProperty("right_hand_wield", entityProp);
 
         //T1 can reach itself
-        ASSERT_TRUE(t1->isReachableForOtherEntity(t1));
+        ASSERT_TRUE(t1->canReach({t1, {}}));
         //T1 can reach T2 since it's a child and there's no domain
-        ASSERT_TRUE(t2->isReachableForOtherEntity(t1));
+        ASSERT_TRUE(t1->canReach({t2, {}}));
         //T1 can't reach T3 since T2 has an Inventory domain, even though T3 is wielded.
-        ASSERT_FALSE(t3->isReachableForOtherEntity(t1));
+        ASSERT_FALSE(t1->canReach({t3, {}}));
         //T1 can't reach T4 since T2 has an Inventory domain, even though T3 is wielded, and T4 is a child.
-        ASSERT_FALSE(t4->isReachableForOtherEntity(t1));
+        ASSERT_FALSE(t1->canReach({t4, {}}));
         //T1 can't reach T5 since T2 has an Inventory domain.
-        ASSERT_FALSE(t5->isReachableForOtherEntity(t1));
+        ASSERT_FALSE(t1->canReach({t5, {}}));
 
         //T6 can't reach T3 since T2 has an Inventory domain, even though T3 is wielded.
-        ASSERT_FALSE(t3->isReachableForOtherEntity(t6));
+        ASSERT_FALSE(t6->canReach({t3, {}}));
         //T6 can't reach T4 since T2 has an Inventory domain, even though T3 is wielded, and T4 is a child.
-        ASSERT_FALSE(t4->isReachableForOtherEntity(t6));
+        ASSERT_FALSE(t6->canReach({t4, {}}));
         //T6 can't reach T5 since T2 has an Inventory domain.
-        ASSERT_FALSE(t5->isReachableForOtherEntity(t6));
+        ASSERT_FALSE(t6->canReach({t5, {}}));
 
 
     }
@@ -790,20 +790,20 @@ void ThingIntegration::test_reachability()
         t3->setProperty("right_hand_wield", entityProp);
 
         //T1 can reach itself
-        ASSERT_TRUE(t1->isReachableForOtherEntity(t1));
+        ASSERT_TRUE(t1->canReach({t1, {}}));
         //T1 can reach T2 since it's a child and there's no domain
-        ASSERT_TRUE(t2->isReachableForOtherEntity(t1));
+        ASSERT_TRUE(t1->canReach({t2, {}}));
         //T1 can't reach T3 since T2 has an Physical domain and T1 is a parent.
-        ASSERT_FALSE(t3->isReachableForOtherEntity(t1));
+        ASSERT_FALSE(t1->canReach({t3, {}}));
         //T1 can't reach T4 since T2 has an Physical domain and T1 is a parent.
-        ASSERT_FALSE(t4->isReachableForOtherEntity(t1));
+        ASSERT_FALSE(t1->canReach({t4, {}}));
 
         //T5 can reach T3 since T2 has an Physical domain .
-        ASSERT_TRUE(t3->isReachableForOtherEntity(t5));
+        ASSERT_TRUE(t5->canReach({t3, {}}));
         //T5 can't reach T4 since T2 has an Physical domain, T3 has an Inventory Domain and is close, even though T4 is wielded.
-        ASSERT_FALSE(t4->isReachableForOtherEntity(t5));
+        ASSERT_FALSE(t5->canReach({t4, {}}));
         //T5 can't reach T6 since T2 has an Physical domain, T3 has an Inventory Domain.
-        ASSERT_FALSE(t6->isReachableForOtherEntity(t5));
+        ASSERT_FALSE(t5->canReach({t6, {}}));
 
     }
 
@@ -855,13 +855,13 @@ void ThingIntegration::test_reachability()
         t2->setProperty("right_hand_wield", entityProp);
 
         //T3 can't reach t4 even though it's wielded
-        ASSERT_FALSE(t4->isReachableForOtherEntity(t3));
+        ASSERT_FALSE(t3->canReach({t4, {}}));
         //"creator" can reach t4 since it's a "creator"
-        ASSERT_TRUE(t4->isReachableForOtherEntity(creator));
+        ASSERT_TRUE(creator->canReach({t4, {}}));
         //T3 can't reach t5
-        ASSERT_FALSE(t5->isReachableForOtherEntity(t3));
+        ASSERT_FALSE(t3->canReach({t5, {}}));
         //"creator" can reach t5 since it's a "creator"
-        ASSERT_TRUE(t5->isReachableForOtherEntity(creator));
+        ASSERT_TRUE(creator->canReach({t5, {}}));
 
     }
 
@@ -905,19 +905,19 @@ void ThingIntegration::test_reachability()
         t1->addChild(*t4);
 
         //T2 can't reach t3 since t2 has no reach
-        ASSERT_FALSE(t3->isReachableForOtherEntity(t2));
+        ASSERT_FALSE(t2->canReach({t3, {}}));
         //T3 can reach t2 since they are close
-        ASSERT_TRUE(t2->isReachableForOtherEntity(t3));
+        ASSERT_TRUE(t3->canReach({t2, {}}));
         //T3 can't reach t4 since it's far away
-        ASSERT_FALSE(t4->isReachableForOtherEntity(t3));
+        ASSERT_FALSE(t3->canReach({t4, {}}));
         //T2 can't reach t4 since it's far away and t2 has no reach
-        ASSERT_FALSE(t4->isReachableForOtherEntity(t2));
+        ASSERT_FALSE(t2->canReach({t4, {}}));
         //T3 can reach a close point in t1
-        ASSERT_TRUE(t1->isReachableForOtherEntity(t3, {9, 0, 9}));
+        ASSERT_TRUE(t3->canReach({t1, {9, 0, 9}}));
         //T3 can't reach a far away point in t1
-        ASSERT_FALSE(t1->isReachableForOtherEntity(t3, {90, 0, 90}));
+        ASSERT_FALSE(t3->canReach({t1, {90, 0, 90}}));
         //T2 can't reach a close point in t1 since it has no reach
-        ASSERT_FALSE(t1->isReachableForOtherEntity(t2, {6, 0, 6}));
+        ASSERT_FALSE(t2->canReach({t1, {6, 0, 6}}));
 
 
 

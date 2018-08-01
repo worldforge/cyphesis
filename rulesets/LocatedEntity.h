@@ -313,12 +313,10 @@ class LocatedEntity : public Router {
     /**
     * @brief Determines if this entity can be reached by another entity (i.e. physically interacted with).
     *
-    * @param watcher The other entity reaching for this entity, for which we want to determine reachability.
+    * @param entityLocation Where we want to reach.
     * @return True if this entity is reachable to another entity.
     */
-    bool isReachableForOtherEntity(const LocatedEntity* reacher,
-                                   const WFMath::Point<3>& positionOnEntity = WFMath::Point<3>(),
-                                   float extraReach = 0) const;
+    bool canReach(const EntityLocation& entityLocation, float extraReach = 0) const;
 
     /// \brief Get a property that is required to of a given type.
     template <class PropertyT>

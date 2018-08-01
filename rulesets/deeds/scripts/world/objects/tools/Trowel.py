@@ -8,9 +8,9 @@ import server
 
 def sow(instance):
     Usage.set_cooldown_on_attached(instance.tool, instance.actor)
-    target_entity = instance.targets[0].entity
+    target = instance.targets[0]
 
-    if target_entity.is_reachable_for_other_entity(instance.actor, None, 0):
+    if instance.actor.can_reach(target):
         task = Cultivate(instance)
         task.duration = 10.75
         task.tick_interval = 1
@@ -36,7 +36,7 @@ class Cultivate(server.Task):
         if not valid:
             return self.irrelevant(err)
 
-        if not entity.is_reachable_for_other_entity(self.actor, None, 0):
+        if not self.actor.can_reach(target):
             return self.irrelevant("Can not reach.")
 
     def completed(self):

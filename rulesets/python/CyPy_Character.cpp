@@ -56,7 +56,7 @@ void CyPy_Character::init_type()
     behaviors().supportRichCompare();
 
     PYCXX_ADD_NOARGS_METHOD(as_entity, as_entity, "");
-    PYCXX_ADD_VARARGS_METHOD(is_reachable_for_other_entity, is_reachable_for_other_entity, "");
+    PYCXX_ADD_VARARGS_METHOD(can_reach, can_reach, "");
     PYCXX_ADD_NOARGS_METHOD(describe_entity, describe_entity, "");
     PYCXX_ADD_VARARGS_METHOD(client_error, client_error, "");
 

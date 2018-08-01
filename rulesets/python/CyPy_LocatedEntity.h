@@ -56,9 +56,9 @@ class CyPy_LocatedEntityBase : public WrapperBase<TValue, TPythonClass>
 
         PYCXX_NOARGS_METHOD_DECL(CyPy_LocatedEntityBase, as_entity);
 
-        Py::Object is_reachable_for_other_entity(const Py::Tuple& args);
+        Py::Object can_reach(const Py::Tuple& args);
 
-        PYCXX_VARARGS_METHOD_DECL(CyPy_LocatedEntityBase, is_reachable_for_other_entity);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_LocatedEntityBase, can_reach);
 
         Py::Object describe_entity();
 

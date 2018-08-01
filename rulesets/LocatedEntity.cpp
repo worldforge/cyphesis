@@ -485,12 +485,11 @@ bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* watcher) const
     return true;
 }
 
-bool LocatedEntity::isReachableForOtherEntity(const LocatedEntity* reachingEntity,
-                                              const WFMath::Point<3>& positionOnEntity,
-                                              float extraReach) const
+bool LocatedEntity::canReach(const EntityLocation& entityLocation, float extraReach) const
 {
+    auto reachingEntity = this;
     //Are we reaching for our ourselves?
-    if (reachingEntity == this) {
+    if (reachingEntity == entityLocation.m_loc) {
         return true;
     }
 
@@ -526,13 +525,13 @@ bool LocatedEntity::isReachableForOtherEntity(const LocatedEntity* reachingEntit
     //or the reacher itself
     std::vector<const LocatedEntity*> toAncestors;
     toAncestors.reserve(4);
-    const LocatedEntity* ancestorEntity = this;
+    auto ancestorEntity = entityLocation.m_loc;
 
     while (true) {
         if (ancestorEntity == reacherDomainEntity) {
-            if (ancestorEntity == this) {
+            if (ancestorEntity == entityLocation.m_loc) {
                 //We're trying to reach our containing domain entity, handle separately
-                return !(reacherParentDomain && !reacherParentDomain->isEntityReachable(*reachingEntity, reachDistance, *reacherDomainEntity, positionOnEntity));
+                return !(reacherParentDomain && !reacherParentDomain->isEntityReachable(*reachingEntity, reachDistance, *reacherDomainEntity, entityLocation.m_pos));
             }
             break;
         }
@@ -562,7 +561,7 @@ bool LocatedEntity::isReachableForOtherEntity(const LocatedEntity* reachingEntit
     for (auto I = toAncestors.rbegin(); I != toAncestors.rend(); ++I) {
         const LocatedEntity* ancestor = *I;
         auto domain = ancestor->m_location.m_loc ? ancestor->m_location.m_loc->getDomain() : nullptr;
-        if (domain && !domain->isEntityReachable(*reachingEntity, reachDistance, *ancestor, positionOnEntity)) {
+        if (domain && !domain->isEntityReachable(*reachingEntity, reachDistance, *ancestor, entityLocation.m_pos)) {
             return false;
         }
     }

@@ -8,7 +8,6 @@ import server
 class Hittable(server.Thing):
 
     def hit_operation(self, op):
-        print("Hit!")
         arg = op[0]
         if arg:
             statusDecrease = 0.1
@@ -17,11 +16,8 @@ class Hittable(server.Thing):
             #Check if there's a modifier for the specific type of hit.
             if hasattr(arg, 'hit_type') and self.props["__modifier_hit_type_"+arg.hit_type]:
                 statusDecrease = statusDecrease * self.props["__modifier_hit_type_"+arg.hit_type]
-            print('statusDecrease: ' + str(statusDecrease))
 
-            print('status: ' + str(self.props.status))
             new_status = self.props.status - statusDecrease
-            print('new status: ' + str(new_status))
             return (server.OPERATION_BLOCKED, Operation("set", Entity(self.id, status=new_status), to=self.id))
 
         return server.OPERATION_IGNORED

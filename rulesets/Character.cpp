@@ -675,7 +675,7 @@ void Character::ActuateOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    if (!device->isReachableForOtherEntity(this)) {
+    if (!this->canReach({device, {}})) {
         clientError(op, "Device is too far away.", res, op->getFrom());
         return;
     }
@@ -1014,7 +1014,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
         }
 
         //Check that we actually can reach the other entity.
-        if (other->isReachableForOtherEntity(this)) {
+        if (this->canReach({other, {}})) {
             //Now also check that we can reach wherever we're trying to move the entity.
 
             auto targetLoc = other->m_location.m_loc;
@@ -1038,7 +1038,7 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
                 targetPos.fromAtlas(arg->getPosAsList());
             }
             //Check that we can reach the edge of the entity if it's placed in its new location.
-            if (!targetLoc->isReachableForOtherEntity(this, targetPos, other->m_location.radius())) {
+            if (!this->canReach({targetLoc, targetPos}, other->m_location.radius())) {
                 clientError(op, "Target is too far away.", res, op->getFrom());
                 return;
             }
@@ -1386,7 +1386,7 @@ void Character::mindEatOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    if (!target->isReachableForOtherEntity(this)) {
+    if (!this->canReach({target, {}})) {
         clientError(op, "Target is too far away.", res, op->getFrom());
         return;
     }
@@ -1430,7 +1430,7 @@ void Character::mindTouchOperation(const Operation & op, OpVector & res)
     LocatedEntity * other = BaseWorld::instance().getEntity(arg->getId());
 
     //Check that we actually can reach the other entity.
-    if (other->isReachableForOtherEntity(this, pos)) {
+    if (this->canReach({other, pos})) {
         // Pass the modified touch operation on to target.
         op->setTo(arg->getId());
         res.push_back(op);

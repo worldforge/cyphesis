@@ -44,7 +44,7 @@ struct EntityLocation
 
     explicit EntityLocation(Ref<LocatedEntity> loc);
 
-    explicit EntityLocation(Ref<LocatedEntity> loc, const WFMath::Point<3>& pos);
+    EntityLocation(Ref<LocatedEntity> loc, const WFMath::Point<3>& pos);
 
     const WFMath::Point<3>& pos() const;
 
