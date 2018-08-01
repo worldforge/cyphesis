@@ -21,6 +21,7 @@
 
 #include "CyPy_LocatedEntity.h"
 #include "CyPy_Point3D.h"
+#include "CyPy_Operation.h"
 
 template<typename TValue, typename TPythonClass>
 CyPy_LocatedEntityBase<TValue, TPythonClass>::CyPy_LocatedEntityBase(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
@@ -36,9 +37,7 @@ CyPy_LocatedEntityBase<TValue, TPythonClass>::CyPy_LocatedEntityBase(Py::PythonC
 
 
 template<typename TValue, typename TPythonClass>
-CyPy_LocatedEntityBase<TValue, TPythonClass>::~CyPy_LocatedEntityBase()
-{
-}
+CyPy_LocatedEntityBase<TValue, TPythonClass>::~CyPy_LocatedEntityBase() = default;
 
 
 template<typename TValue, typename TPythonClass>
@@ -171,9 +170,23 @@ Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::describe_entity()
 }
 
 template<typename TValue, typename TPythonClass>
+Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::client_error(const Py::Tuple& args)
+{
+    args.verify_length(2);
+
+    OpVector res;
+    this->m_value->clientError(verifyObject<CyPy_Operation>(args[0]), verifyString(args[1]), res, this->m_value->getId());
+    if (!res.empty()) {
+        return CyPy_Operation::wrap(res.front());
+    }
+    return Py::None();
+}
+
+template<typename TValue, typename TPythonClass>
 Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::wrap(LocatedEntity* value)
 {
     return wrapLocatedEntity(value);
 }
+
 
 #endif //CYPHESIS_CYPY_LOCATEDENTITY_IMPL_H

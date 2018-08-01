@@ -40,10 +40,7 @@ CyPy_MemEntity::CyPy_MemEntity(Py::PythonClassInstance* self, Py::Tuple& args, P
     m_value->incRef();
 }
 
-CyPy_MemEntity::~CyPy_MemEntity()
-{
-
-}
+CyPy_MemEntity::~CyPy_MemEntity() = default;
 
 void CyPy_MemEntity::init_type()
 {
@@ -55,6 +52,7 @@ void CyPy_MemEntity::init_type()
     PYCXX_ADD_NOARGS_METHOD(as_entity, as_entity, "");
     PYCXX_ADD_VARARGS_METHOD(is_reachable_for_other_entity, is_reachable_for_other_entity, "");
     PYCXX_ADD_NOARGS_METHOD(describe_entity, describe_entity, "");
+    PYCXX_ADD_VARARGS_METHOD(client_error, client_error, "");
 
     //behaviors().type_object()->tp_base = base;
 

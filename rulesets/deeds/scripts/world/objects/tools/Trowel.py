@@ -16,10 +16,11 @@ def sow(instance):
         task.tick_interval = 1
         task.name = "Cultivate"
 
+        instance.actor.send_world(Operation("sight", instance.op))
+
         return (server.OPERATION_BLOCKED, instance.actor.start_task(task))
     else:
-        print("Too far away.")
-        return (server.OPERATION_BLOCKED)
+        return (server.OPERATION_BLOCKED, instance.actor.client_error(instance.op, "Too far away"))
 
 class Cultivate(server.Task):
     """ A proof of concept task germinating seeds into plants."""
@@ -31,14 +32,12 @@ class Cultivate(server.Task):
         target = self.targets[0]
         entity = target.entity
 
-        (valid, err_op) = self.usage.is_valid()
+        (valid, err) = self.usage.is_valid()
         if not valid:
-            self.irrelevant()
-            return err_op
+            return self.irrelevant(err)
 
         if not entity.is_reachable_for_other_entity(self.actor, None, 0):
-            self.irrelevant()
-            return
+            return self.irrelevant("Can not reach.")
 
     def completed(self):
 

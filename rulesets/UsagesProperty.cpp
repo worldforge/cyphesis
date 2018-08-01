@@ -237,7 +237,7 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
                 UsageInstance usageInstance{usage, actor, e, std::move(targets), std::move(consumed), rop};
                 auto validRes = usageInstance.isValid();
                 if (!validRes.first) {
-                    actor->error(op, validRes.second, res, actor->getId());
+                    actor->clientError(op, validRes.second, res, actor->getId());
                 } else {
                     auto lastSeparatorPos = usage.handler.find_last_of('.');
                     if (lastSeparatorPos != std::string::npos) {
@@ -251,9 +251,6 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
                             return OPERATION_IGNORED;
                         }
 
-                        Atlas::Objects::Operation::Sight sight;
-                        sight->setArgs1(rop);
-                        actor->sendWorld(sight); //The sight needs to come from the actor.
 
                         try {
                             auto ret = Py::Callable(functionObject).apply(Py::TupleN(CyPy_UsageInstance::wrap(std::move(usageInstance))));

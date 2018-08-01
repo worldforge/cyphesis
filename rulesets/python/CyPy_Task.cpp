@@ -23,7 +23,8 @@
 #include "CyPy_LocatedEntity.h"
 #include "CyPy_UsageInstance.h"
 #include "CyPy_EntityLocation.h"
-
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Anonymous.h>
 CyPy_Task::CyPy_Task(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
     : WrapperBase(self, args, kwds)
 {
@@ -54,7 +55,7 @@ void CyPy_Task::init_type()
 
     behaviors().supportRichCompare();
 
-    PYCXX_ADD_NOARGS_METHOD(irrelevant, irrelevant, "");
+    PYCXX_ADD_VARARGS_METHOD(irrelevant, irrelevant, "");
 
     PYCXX_ADD_NOARGS_METHOD(obsolete, obsolete, "");
 
@@ -62,9 +63,18 @@ void CyPy_Task::init_type()
 }
 
 
-Py::Object CyPy_Task::irrelevant()
+Py::Object CyPy_Task::irrelevant(const Py::Tuple& args)
 {
     m_value->irrelevant();
+    if (args.size() > 0) {
+        args.verify_length(1);
+        Atlas::Objects::Operation::Error e;
+        Atlas::Objects::Entity::Anonymous arg;
+        arg->setAttr("message", verifyString(args.front()));
+        e->modifyArgs().push_back(arg);
+        e->setTo(m_value->m_usageInstance.actor->getId());
+        return CyPy_Operation::wrap(e);
+    }
     return Py::None();
 }
 

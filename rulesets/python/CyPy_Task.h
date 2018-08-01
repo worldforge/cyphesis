@@ -39,9 +39,9 @@ class CyPy_Task : public WrapperBase<Ref<Task>, CyPy_Task>
 
         int setattro(const Py::String& name, const Py::Object& attr) override;
 
-        Py::Object irrelevant();
+        Py::Object irrelevant(const Py::Tuple& args);
 
-        PYCXX_NOARGS_METHOD_DECL(CyPy_Task, irrelevant);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Task, irrelevant);
 
         Py::Object obsolete();
 

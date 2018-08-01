@@ -64,6 +64,9 @@ class CyPy_LocatedEntityBase : public WrapperBase<TValue, TPythonClass>
 
         PYCXX_NOARGS_METHOD_DECL(CyPy_LocatedEntityBase, describe_entity);
 
+        Py::Object client_error(const Py::Tuple& args);
+
+        PYCXX_VARARGS_METHOD_DECL(CyPy_LocatedEntityBase, client_error);
 };
 
 class CyPy_LocatedEntity

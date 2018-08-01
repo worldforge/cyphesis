@@ -45,10 +45,7 @@ CyPy_BaseMind::CyPy_BaseMind(Py::PythonClassInstance* self, Py::Tuple& args, Py:
     m_value->incRef();
 }
 
-CyPy_BaseMind::~CyPy_BaseMind()
-{
-
-}
+CyPy_BaseMind::~CyPy_BaseMind() = default;
 
 void CyPy_BaseMind::init_type()
 {
@@ -60,6 +57,7 @@ void CyPy_BaseMind::init_type()
     PYCXX_ADD_NOARGS_METHOD(as_entity, as_entity, "");
     PYCXX_ADD_VARARGS_METHOD(is_reachable_for_other_entity, is_reachable_for_other_entity, "");
     PYCXX_ADD_NOARGS_METHOD(describe_entity, describe_entity, "");
+    PYCXX_ADD_VARARGS_METHOD(client_error, client_error, "");
 
     PYCXX_ADD_VARARGS_METHOD(setDestination, setDestination, "");
     PYCXX_ADD_NOARGS_METHOD(refreshPath, refreshPath, "");
@@ -78,7 +76,7 @@ CyPy_BaseMind::CyPy_BaseMind(Py::PythonClassInstance* self, Ref<BaseMind> value)
 Py::Object CyPy_BaseMind::refreshPath()
 {
 
-    AwareMind* awareMind = dynamic_cast<AwareMind*>(m_value.get());
+    auto awareMind = dynamic_cast<AwareMind*>(m_value.get());
     if (!awareMind) {
         throw Py::TypeError("Not an AwareMind");
     }
@@ -88,7 +86,7 @@ Py::Object CyPy_BaseMind::refreshPath()
 
 Py::Object CyPy_BaseMind::setDestination(const Py::Tuple& args)
 {
-    AwareMind* awareMind = dynamic_cast<AwareMind*>(m_value.get());
+    auto awareMind = dynamic_cast<AwareMind*>(m_value.get());
     if (!awareMind) {
         throw Py::TypeError("Not an AwareMind");
     }
@@ -136,14 +134,14 @@ Py::Object CyPy_BaseMind::getattro(const Py::String& name)
     }
     if (nameStr == "unawareTilesCount") {
 
-        AwareMind* awareMind = dynamic_cast<AwareMind*>(m_value.get());
+        auto awareMind = dynamic_cast<AwareMind*>(m_value.get());
         if (!awareMind) {
             throw Py::TypeError("Not an AwareMind");
         }
         return Py::Long(awareMind->getSteering().unawareAreaCount());
     }
     if (nameStr == "path") {
-        AwareMind* awareMind = dynamic_cast<AwareMind*>(m_value.get());
+        auto awareMind = dynamic_cast<AwareMind*>(m_value.get());
         if (!awareMind) {
             throw Py::TypeError("Not an AwareMind");
         }
@@ -158,7 +156,7 @@ Py::Object CyPy_BaseMind::getattro(const Py::String& name)
     }
 
     if (nameStr == "pathResult") {
-        AwareMind* awareMind = dynamic_cast<AwareMind*>(m_value.get());
+        auto awareMind = dynamic_cast<AwareMind*>(m_value.get());
         if (!awareMind) {
             throw Py::TypeError("Not an AwareMind");
         }

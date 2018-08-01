@@ -22,8 +22,6 @@
 #include "CyPy_EntityFilter.h"
 #include "CyPy_Operation.h"
 
-#include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/Anonymous.h>
 
 CyPy_UsageInstance::CyPy_UsageInstance(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
     : WrapperBase(self, args, kwds)
@@ -88,13 +86,7 @@ Py::Object CyPy_UsageInstance::isValid()
 {
     auto res = m_value.isValid();
     if (!res.first) {
-        Atlas::Objects::Operation::Error e;
-        auto& args = e->modifyArgs();
-        Atlas::Objects::Entity::Anonymous arg;
-        arg->setAttr("message", res.second);
-        args.push_back(arg);
-        e->setTo(m_value.actor->getId());
-        return Py::TupleN(Py::Boolean(res.first), CyPy_Operation::wrap(e));
+        return Py::TupleN(Py::Boolean(res.first), Py::String(res.second));
     }
 
     return Py::TupleN(Py::Boolean(res.first), Py::None());

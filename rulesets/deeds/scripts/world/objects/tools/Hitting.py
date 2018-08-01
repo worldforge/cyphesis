@@ -6,24 +6,27 @@ from atlas import *
 import server
 from world.utils import Usage
 
-def strike(tool, actor, op, targets, consumed):
+def strike(instance):
     # Check that we can reach the target with our weapon
     extraReach = 0.0
-    if tool.props.reach:
-        extraReach = tool.props.reach
+    if instance.tool.props.reach:
+        extraReach = instance.tool.props.reach
 
     # If there's a cooldown we need to mark the actor
-    Usage.set_cooldown_on_attached(tool, actor)
+    Usage.set_cooldown_on_attached(instance.tool, instance.actor)
+
+    # Send sight even if we miss
+    instance.actor.send_world(Operation("sight", instance.op))
 
     # Sword only handles one target
-    target = targets[0]
+    target = instance.targets[0]
     # Ignore pos
-    if target.entity.is_reachable_for_other_entity(actor, None, extraReach):
+    if target.entity.is_reachable_for_other_entity(instance.actor, None, extraReach):
         print("Strike!")
         damage = 0
-        if tool.props.damage:
-            damage = tool.props.damage
-        hitOp = Operation('hit', Entity(damage=damage, hit_type=op.id), to=target.entity)
+        if instance.tool.props.damage:
+            damage = instance.tool.props.damage
+        hitOp = Operation('hit', Entity(damage=damage, hit_type=instance.op.id), to=target.entity)
         return (server.OPERATION_BLOCKED, hitOp, Operation('sight', hitOp))
     else:
         print("Too far away.")
