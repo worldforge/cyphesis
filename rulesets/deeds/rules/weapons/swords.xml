@@ -27,7 +27,7 @@
                 <map name="default">
                     <map name="strike">
                         <list name="targets">
-                            <string>entity.type instance_of types.game_entity</string>
+                            <string>entity instance_of types.game_entity</string>
                         </list>
                         <list name="consumed">
                         </list>

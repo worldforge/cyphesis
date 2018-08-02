@@ -26,7 +26,7 @@
                 <map name="default">
                     <map name="chop">
                         <list name="targets">
-                            <string>entity.type instance_of types.game_entity</string>
+                            <string>entity instance_of types.game_entity</string>
                         </list>
                         <string name="handler">world.objects.tools.Hitting.strike</string>
                     </map>

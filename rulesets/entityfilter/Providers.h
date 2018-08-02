@@ -350,6 +350,7 @@ class ProviderFactory {
         virtual ~ProviderFactory() = default;
 
         virtual Consumer<QueryContext>* createProviders(SegmentsList segments) const;
+        virtual Consumer<QueryContext>* createProvider(Segment segment) const;
 
     protected:
         FixedTypeNodeProvider* createFixedTypeNodeProvider(SegmentsList segments) const;

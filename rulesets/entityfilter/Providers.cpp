@@ -363,9 +363,24 @@ bool ContainsRecursiveFunctionProvider::checkContainer(LocatedEntitySet* contain
     return false;
 }
 
+Consumer<QueryContext>* ProviderFactory::createProvider(Segment segment) const
+{
+    SegmentsList segments({segment});
+    auto& first_attribute = segment.attribute;
+    if (first_attribute == "entity") {
+        return createEntityProvider(segments);
+    } else if (first_attribute == "self") {
+        return createSelfEntityProvider(segments);
+    } else if (first_attribute == "types") {
+        return createFixedTypeNodeProvider(segments);
+    }
+    return nullptr;
+}
+
 Consumer<QueryContext>* ProviderFactory::createProviders(SegmentsList segments) const
 {
     if (!segments.empty()) {
+        auto front = segments.front();
         auto& first_attribute = segments.front().attribute;
         if (first_attribute == "entity") {
             return createEntityProvider(segments);
@@ -402,6 +417,9 @@ EntityProvider* ProviderFactory::createEntityProvider(SegmentsList segments) con
         return nullptr;
     }
     segments.pop_front();
+    if (segments.empty()) {
+        return new EntityProvider(nullptr);
+    }
     return new EntityProvider(createPropertyProvider(segments));
 }
 SelfEntityProvider* ProviderFactory::createSelfEntityProvider(SegmentsList segments) const

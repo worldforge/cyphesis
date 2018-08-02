@@ -143,7 +143,9 @@ struct query_parser : qi::grammar<Iterator, Predicate*(),
                     (no_case[qi::lit("contains_recursive")] >> "(" >> consumer_g >> "," >> parenthesised_predicate_g >> ")")
                     [_val = new_<ContainsRecursiveFunctionProvider>(_1, _2)]                                            |
 
-                    segmented_expr_g[_val = boost::phoenix::bind(&ProviderFactory::createProviders, *m_factory, _1)];
+                    segmented_expr_g[_val = boost::phoenix::bind(&ProviderFactory::createProviders, *m_factory, _1)]     |
+
+                    special_segment_g[_val = boost::phoenix::bind(&ProviderFactory::createProvider, *m_factory, _1)];
 
             //Construct comparer predicate, depending on which comparison operator we encounter.
             comparer_predicate_g =

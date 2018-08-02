@@ -111,15 +111,15 @@ void ParserTest::test_ComparisonOperators()
     TypeNode* thingType = new TypeNode("thing");
     types["thing"] = thingType;
     pred = (ComparePredicate*)ConstructPredicate(
-            "types.thing instance_of entity.type");
-    assert(pred->m_comparator == ComparePredicate::Comparator::INSTANCE_OF);
+            "types.thing = entity.type");
+    assert(pred->m_comparator == ComparePredicate::Comparator::EQUALS);
     delete pred;
     types["thing"] = nullptr;
     delete thingType;
 
     try { //Should throw an exception for nonexisting type
         pred = (ComparePredicate*)ConstructPredicate(
-                "types.nonexistant instance_of entity.type");
+                "types.nonexistant = entity.type");
         assert(false);
     } catch (std::invalid_argument &e) {
     }
@@ -215,85 +215,13 @@ int main(int argc, char ** argv)
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
 #include "stubs/rulesets/stubDomainProperty.h"
-#include "stubs/rulesets/stubIdProperty.h"
 #include "stubs/rulesets/stubDensityProperty.h"
 #include "stubs/rulesets/stubScaleProperty.h"
-
-ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
-        PropertyBase(per_ephem), m_data(data)
-{
-}
-
-int ContainsProperty::get(Atlas::Message::Element & e) const
-{
-    return 0;
-}
-
-void ContainsProperty::set(const Atlas::Message::Element & e)
-{
-}
-
-void ContainsProperty::add(const std::string & s,
-                           const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-ContainsProperty * ContainsProperty::copy() const
-{
-    return 0;
-}
-
-namespace Atlas
-{
-namespace Objects
-{
-namespace Operation
-{
-int ACTUATE_NO = -1;
-int ATTACK_NO = -1;
-int EAT_NO = -1;
-int NOURISH_NO = -1;
-int SETUP_NO = -1;
-int TICK_NO = -1;
-int UPDATE_NO = -1;
-int RELAY_NO = -1;
-}
-}
-}
-Router::Router(const std::string & id, long intId) :
-        m_id(id), m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
+#include "stubs/rulesets/stubAtlasProperties.h"
+#include "stubs/common/stubCustom.h"
+#include "stubs/common/stubRouter.h"
 #include "stubs/rulesets/stubBaseWorld.h"
-
-void Location::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-Location::Location() :
-        m_loc(0)
-{
-}
-
-void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-void Location::modifyBBox()
-{
-}
+#include "stubs/rulesets/stubLocation.h"
 
 #define STUB_Inheritance_getType
 const TypeNode* Inheritance::getType(const std::string & parent)
