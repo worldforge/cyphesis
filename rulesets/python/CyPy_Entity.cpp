@@ -115,11 +115,10 @@ Py::Object CyPy_Entity::send_world(const Ref<Entity>& entity, const Py::Tuple& a
 Py::Object CyPy_Entity::start_task(const Ref<Entity>& entity, const Py::Tuple& args)
 {
     OpVector res;
-    args.verify_length(1);
+    args.verify_length(2);
 
-    auto task = verifyObject<CyPy_Task>(args[0]);
     auto tp = entity->requirePropertyClassFixed<TasksProperty>();
-    tp->startTask(task, entity, res);
+    tp->startTask(verifyString(args[0]), verifyObject<CyPy_Task>(args[1]), entity, res);
 
     return CyPy_Oplist::wrap(std::move(res));
 }

@@ -61,9 +61,10 @@ void Task::irrelevant()
     m_obsolete = true;
 }
 
-Operation Task::nextTick(const Operation& op)
+Operation Task::nextTick(const std::string& id, const Operation& op)
 {
     Anonymous tick_arg;
+    tick_arg->setId(id);
     tick_arg->setName("task");
     tick_arg->setAttr("serialno", newTick());
     Tick tick;
@@ -105,7 +106,7 @@ void Task::setAttr(const std::string& attr,
     m_attr[attr] = val;
 }
 
-void Task::initTask(OpVector& res)
+void Task::initTask(const std::string& id, OpVector& res)
 {
     m_start_time = m_usageInstance.op->getSeconds();
     if (m_script.isNull()) {
@@ -119,10 +120,10 @@ void Task::initTask(OpVector& res)
         return;
     }
 
-    res.push_back(nextTick(m_usageInstance.op));
+    res.push_back(nextTick(id, m_usageInstance.op));
 }
 
-void Task::tick(const Operation& op, OpVector& res)
+void Task::tick(const std::string& id, const Operation& op, OpVector& res)
 {
     if (m_duration) {
         auto elapsed = (op->getSeconds() - m_start_time);
@@ -134,7 +135,7 @@ void Task::tick(const Operation& op, OpVector& res)
             irrelevant();
             callScriptFunction("completed", res);
         } else {
-            res.push_back(nextTick(op));
+            res.push_back(nextTick(id, op));
         }
     }
 }

@@ -66,7 +66,7 @@
 
 #ifndef STUB_TasksProperty_startTask
 //#define STUB_TasksProperty_startTask
-  int TasksProperty::startTask(Ref<Task> task, LocatedEntity* owner, const Operation& op, OpVector& res)
+  int TasksProperty::startTask(std::string id, Ref<Task> task, LocatedEntity* owner, OpVector& res)
   {
     return 0;
   }
@@ -74,7 +74,7 @@
 
 #ifndef STUB_TasksProperty_clearTask
 //#define STUB_TasksProperty_clearTask
-  int TasksProperty::clearTask(LocatedEntity* owner, OpVector& res)
+  int TasksProperty::clearTask(const std::string& id, LocatedEntity* owner, OpVector& res)
   {
     return 0;
   }
@@ -82,7 +82,7 @@
 
 #ifndef STUB_TasksProperty_stopTask
 //#define STUB_TasksProperty_stopTask
-  void TasksProperty::stopTask(LocatedEntity* owner, OpVector& res)
+  void TasksProperty::stopTask(const std::string& id, LocatedEntity* owner, OpVector& res)
   {
     
   }

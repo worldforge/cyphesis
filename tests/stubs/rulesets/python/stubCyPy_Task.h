@@ -59,7 +59,7 @@
 
 #ifndef STUB_CyPy_Task_irrelevant
 //#define STUB_CyPy_Task_irrelevant
-  Py::Object CyPy_Task::irrelevant()
+  Py::Object CyPy_Task::irrelevant(const Py::Tuple& args)
   {
     return *static_cast<Py::Object*>(nullptr);
   }
@@ -72,30 +72,6 @@
     return *static_cast<Py::Object*>(nullptr);
   }
 #endif //STUB_CyPy_Task_obsolete
-
-#ifndef STUB_CyPy_Task_count
-//#define STUB_CyPy_Task_count
-  Py::Object CyPy_Task::count()
-  {
-    return *static_cast<Py::Object*>(nullptr);
-  }
-#endif //STUB_CyPy_Task_count
-
-#ifndef STUB_CyPy_Task_newtick
-//#define STUB_CyPy_Task_newtick
-  Py::Object CyPy_Task::newtick()
-  {
-    return *static_cast<Py::Object*>(nullptr);
-  }
-#endif //STUB_CyPy_Task_newtick
-
-#ifndef STUB_CyPy_Task_nexttick
-//#define STUB_CyPy_Task_nexttick
-  Py::Object CyPy_Task::nexttick(const Py::Tuple& args)
-  {
-    return *static_cast<Py::Object*>(nullptr);
-  }
-#endif //STUB_CyPy_Task_nexttick
 
 #ifndef STUB_CyPy_Task_rich_compare
 //#define STUB_CyPy_Task_rich_compare

@@ -81,14 +81,14 @@
   }
 #endif //STUB_CyPy_LocatedEntityBase_as_entity
 
-#ifndef STUB_CyPy_LocatedEntityBase_is_reachable_for_other_entity
-//#define STUB_CyPy_LocatedEntityBase_is_reachable_for_other_entity
+#ifndef STUB_CyPy_LocatedEntityBase_can_reach
+//#define STUB_CyPy_LocatedEntityBase_can_reach
   template <typename TValue,typename TPythonClass>
-  Py::Object CyPy_LocatedEntityBase<TValue,TPythonClass>::is_reachable_for_other_entity(const Py::Tuple& args)
+  Py::Object CyPy_LocatedEntityBase<TValue,TPythonClass>::can_reach(const Py::Tuple& args)
   {
     return *static_cast<Py::Object*>(nullptr);
   }
-#endif //STUB_CyPy_LocatedEntityBase_is_reachable_for_other_entity
+#endif //STUB_CyPy_LocatedEntityBase_can_reach
 
 #ifndef STUB_CyPy_LocatedEntityBase_describe_entity
 //#define STUB_CyPy_LocatedEntityBase_describe_entity
@@ -98,6 +98,15 @@
     return *static_cast<Py::Object*>(nullptr);
   }
 #endif //STUB_CyPy_LocatedEntityBase_describe_entity
+
+#ifndef STUB_CyPy_LocatedEntityBase_client_error
+//#define STUB_CyPy_LocatedEntityBase_client_error
+  template <typename TValue,typename TPythonClass>
+  Py::Object CyPy_LocatedEntityBase<TValue,TPythonClass>::client_error(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_LocatedEntityBase_client_error
 
 
 #ifndef STUB_CyPy_LocatedEntity_check

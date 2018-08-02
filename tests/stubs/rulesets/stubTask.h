@@ -7,11 +7,18 @@
 #include "rulesets/Task.h"
 #include "stubTask_custom.h"
 
+#ifndef STUB_Task_callScriptFunction
+//#define STUB_Task_callScriptFunction
+  void Task::callScriptFunction(const std::string& function, OpVector& res)
+  {
+    
+  }
+#endif //STUB_Task_callScriptFunction
+
 #ifndef STUB_Task_Task
 //#define STUB_Task_Task
-   Task::Task(LocatedEntity & owner)
-    : boost::noncopyable(owner)
-    , m_script(nullptr)
+   Task::Task(UsageInstance usageInstance, const Py::Object& script)
+    : boost::noncopyable(usageInstance, script)
   {
     
   }
@@ -35,23 +42,23 @@
 
 #ifndef STUB_Task_initTask
 //#define STUB_Task_initTask
-  void Task::initTask(const Operation & op, OpVector & res)
+  void Task::initTask(const std::string& id, OpVector & res)
   {
     
   }
 #endif //STUB_Task_initTask
 
-#ifndef STUB_Task_operation
-//#define STUB_Task_operation
-  void Task::operation(const Operation & op, OpVector & res)
+#ifndef STUB_Task_tick
+//#define STUB_Task_tick
+  void Task::tick(const std::string& id, const Operation& op, OpVector & res)
   {
     
   }
-#endif //STUB_Task_operation
+#endif //STUB_Task_tick
 
 #ifndef STUB_Task_nextTick
 //#define STUB_Task_nextTick
-  Operation Task::nextTick(double interval)
+  Operation Task::nextTick(const std::string& id, const Operation& op)
   {
     return *static_cast<Operation*>(nullptr);
   }

@@ -87,17 +87,17 @@ class Task : public boost::noncopyable{
     /// \brief Handle the operation that instigates the task
     ///
     /// @param res The result of the operation is returned here.
-    void initTask(OpVector & res);
+    void initTask(const std::string& id, OpVector & res);
 
     /// \brief Handle an operation to perform the task
     ///
     /// A Task gets regular ticks which cause whatever actions this
     /// Task involves to be returned.
     /// @param res The result of the operation is returned here.
-    void tick(const Operation& op, OpVector & res);
+    void tick(const std::string& id, const Operation& op, OpVector & res);
 
     /// \brief Create a new tick op for the next iteration of this task
-    Operation nextTick(const Operation& op);
+    Operation nextTick(const std::string& id, const Operation& op);
 
     /// \brief Increment the reference count on this task
     void incRef() {

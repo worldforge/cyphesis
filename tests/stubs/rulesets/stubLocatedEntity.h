@@ -265,13 +265,13 @@
   }
 #endif //STUB_LocatedEntity_isVisibleForOtherEntity
 
-#ifndef STUB_LocatedEntity_isReachableForOtherEntity
-//#define STUB_LocatedEntity_isReachableForOtherEntity
-  bool LocatedEntity::isReachableForOtherEntity(const LocatedEntity* reacher, const WFMath::Point<3>& positionOnEntity ) const
+#ifndef STUB_LocatedEntity_canReach
+//#define STUB_LocatedEntity_canReach
+  bool LocatedEntity::canReach(const EntityLocation& entityLocation, float extraReach ) const
   {
     return false;
   }
-#endif //STUB_LocatedEntity_isReachableForOtherEntity
+#endif //STUB_LocatedEntity_canReach
 
 #ifndef STUB_LocatedEntity_describeEntity
 //#define STUB_LocatedEntity_describeEntity

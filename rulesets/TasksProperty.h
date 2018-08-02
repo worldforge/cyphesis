@@ -21,6 +21,7 @@
 
 #include "modules/Ref.h"
 #include "common/Property.h"
+#include <map>
 
 class Task;
 
@@ -29,7 +30,7 @@ class Task;
 class TasksProperty : public PropertyBase
 {
     protected:
-        Ref<Task> m_task;
+        std::map<std::string, Ref<Task>> m_tasks;
     public:
         static constexpr const char* property_name = "tasks";
         static constexpr const char* property_atlastype = "map";
@@ -42,7 +43,7 @@ class TasksProperty : public PropertyBase
 
         bool busy() const
         {
-            return m_task != nullptr;
+            return !m_tasks.empty();
         }
 
         int get(Atlas::Message::Element& val) const override;
@@ -53,13 +54,13 @@ class TasksProperty : public PropertyBase
 
         int updateTask(LocatedEntity* owner, OpVector& res);
 
-        int startTask(Ref<Task> task,
+        int startTask(std::string id, Ref<Task> task,
                       LocatedEntity* owner,
                       OpVector& res);
 
-        int clearTask(LocatedEntity* owner, OpVector& res);
+        int clearTask(const std::string& id, LocatedEntity* owner, OpVector& res);
 
-        void stopTask(LocatedEntity* owner, OpVector& res);
+        void stopTask(const std::string& id, LocatedEntity* owner, OpVector& res);
 
         void TickOperation(LocatedEntity* owner, const Operation& op, OpVector&);
 

@@ -43,46 +43,28 @@ TasksProperty::TasksProperty()
 
 int TasksProperty::get(Atlas::Message::Element& val) const
 {
-    if (!m_task) {
-        val = ListType();
-        return 0;
+    MapType tasks;
+    for (auto entry : m_tasks) {
+        auto& task = entry.second;
+        MapType taskMap;
+        taskMap["name"] = task->name();
+        auto progress = task->progress();
+        if (progress > 0) {
+            taskMap["progress"] = progress;
+        }
+        if (task->m_duration) {
+            taskMap["rate"] = 1.0f / *task->m_duration;
+        }
+        tasks.emplace(entry.first, std::move(taskMap));
     }
-    MapType task;
-    task["name"] = m_task->name();
-    float progress = m_task->progress();
-    if (progress > 0) {
-        task["progress"] = progress;
-    }
-    if (m_task->m_duration) {
-        task["rate"] = 1.0f / *m_task->m_duration;
-    }
-    val = ListType(1, task);
+
+    val = std::move(tasks);
     return 0;
 }
 
 void TasksProperty::set(const Atlas::Message::Element& val)
 {
-    if (!val.isList()) {
-        log(ERROR, "Task property must be a list.");
-        return;
-    }
-
-    if (!m_task) {
-        log(ERROR, "No task in ::set");
-        return;
-    }
-
-    auto& tasks = val.List();
-    for (auto entry : tasks) {
-        if (!entry.isMap()) {
-            log(ERROR, "Task must be a map.");
-            return;
-        }
-        auto& task = entry.Map();
-        for (auto& attr : task) {
-            m_task->setAttr(attr.first, attr.second);
-        }
-    }
+    log(ERROR, "Cannot set 'tasks' property.");
 }
 
 TasksProperty* TasksProperty::copy() const
@@ -102,54 +84,59 @@ int TasksProperty::updateTask(LocatedEntity* owner, OpVector& res)
     return 0;
 }
 
-int TasksProperty::startTask(Ref<Task> task,
+int TasksProperty::startTask(std::string id, Ref<Task> task,
                              LocatedEntity* owner,
                              OpVector& res)
 {
     bool update_required = false;
-    if (m_task) {
+
+    auto tasksI = m_tasks.find(id);
+
+    if (tasksI != m_tasks.end()) {
         update_required = true;
-        m_task = nullptr;
+        m_tasks.erase(id);
     }
 
-    task->initTask(res);
+    task->initTask(id, res);
 
     if (!task->obsolete()) {
         assert(!res.empty());
-        m_task = task;
+        m_tasks.emplace(id, task);
         update_required = true;
+    } else {
+        task = nullptr;
     }
 
     if (update_required) {
         updateTask(owner, res);
     }
 
-    return (m_task) ? 0 : -1;
+    return task ? 0 : -1;
 
 }
 
-int TasksProperty::clearTask(LocatedEntity* owner, OpVector& res)
+int TasksProperty::clearTask(const std::string& id, LocatedEntity* owner, OpVector& res)
 {
-    if (!m_task) {
+    if (m_tasks.empty()) {
         // This function should never be called when there is no task,
         // except during Entity destruction
         assert(owner->hasFlags(entity_destroyed));
         return -1;
     }
-    m_task = nullptr;
+    m_tasks.erase(id);
 
     return updateTask(owner, res);
 }
 
-void TasksProperty::stopTask(LocatedEntity* owner, OpVector& res)
+void TasksProperty::stopTask(const std::string& id, LocatedEntity* owner, OpVector& res)
 {
     // This is just clearTask without an assert
-    if (!m_task) {
+    if (m_tasks.find(id) == m_tasks.end()) {
         log(ERROR, "Tasks property stop when no task");
         return;
     }
 
-    m_task = nullptr;
+    m_tasks.erase(id);
 
     updateTask(owner, res);
 }
@@ -158,9 +145,6 @@ void TasksProperty::TickOperation(LocatedEntity* owner,
                                   const Operation& op,
                                   OpVector& res)
 {
-    if (!m_task) {
-        return;
-    }
 
     const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
@@ -169,9 +153,21 @@ void TasksProperty::TickOperation(LocatedEntity* owner,
 
     const Root& arg = args.front();
 
+    if (arg->isDefaultId()) {
+        return;
+    }
+
+    auto taskI = m_tasks.find(arg->getId());
+    if (taskI == m_tasks.end()) {
+        return;
+    }
+
+    auto& id = taskI->first;
+    auto& task = taskI->second;
+
     Element serialno;
     if (arg->copyAttr(SERIALNO, serialno) == 0 && (serialno.isInt())) {
-        if (serialno.asInt() != m_task->serialno()) {
+        if (serialno.asInt() != task->serialno()) {
             debug_print("Old tick");
             return;
         }
@@ -179,17 +175,17 @@ void TasksProperty::TickOperation(LocatedEntity* owner,
         log(ERROR, "Character::TickOperation: No serialno in tick arg");
         return;
     }
-    m_task->tick(op, res);
-    if (m_task->obsolete()) {
-        clearTask(owner, res);
+    task->tick(id, op, res);
+    if (task->obsolete()) {
+        clearTask(id, owner, res);
     } else {
         updateTask(owner, res);
     }
 
-    if (m_task != nullptr && res.empty()) {
+    if (task != nullptr && res.empty()) {
         log(WARNING, String::compose("Character::%1: Task %2 has "
                                      "stalled", __func__,
-                                     m_task->name()));
+                                     task->name()));
     }
 }
 

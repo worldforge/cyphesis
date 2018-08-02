@@ -43,6 +43,15 @@
   }
 #endif //STUB_Location_Location
 
+#ifndef STUB_Location_Location
+//#define STUB_Location_Location
+   Location::Location(EntityLocation entityLocation)
+    : EntityLocation(entityLocation)
+  {
+    
+  }
+#endif //STUB_Location_Location
+
 #ifndef STUB_Location_addToMessage
 //#define STUB_Location_addToMessage
   void Location::addToMessage(Atlas::Message::MapType & ent) const

@@ -18,7 +18,7 @@ def sow(instance):
 
         instance.actor.send_world(Operation("sight", instance.op))
 
-        return (server.OPERATION_BLOCKED, instance.actor.start_task(task))
+        return (server.OPERATION_BLOCKED, instance.actor.start_task('cultivate', task))
     else:
         return (server.OPERATION_BLOCKED, instance.actor.client_error(instance.op, "Too far away"))
 
