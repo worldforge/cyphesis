@@ -31,7 +31,7 @@
             <map name="present">
                 <string name="default">dural/plants/fruit/acorn/acorn.modeldef</string>
             </map>
-            <map name="scripts">
+            <map name="__scripts">
                 <list name="default">
                     <map>
                         <string name="language">python</string>

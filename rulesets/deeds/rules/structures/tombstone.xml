@@ -8,7 +8,7 @@
             <map name="name">
                 <string name="default">tombstone</string>
             </map>
-            <map name="scripts">
+            <map name="__scripts">
                 <list name="default">
                     <map>
                         <string name="language">python</string>

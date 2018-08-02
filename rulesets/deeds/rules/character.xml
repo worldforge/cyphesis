@@ -15,7 +15,7 @@
             <map name="reach">
                 <float name="default">3</float>
             </map>
-            <map name="scripts">
+            <map name="__scripts">
                 <list name="default">
                     <map>
                         <string name="language">python</string>

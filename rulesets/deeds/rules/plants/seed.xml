@@ -10,7 +10,7 @@
             <map name="density">
                 <float name="default">600</float>
             </map>
-            <map name="scripts">
+            <map name="__scripts">
                 <list name="default">
                     <map>
                         <string name="language">python</string>

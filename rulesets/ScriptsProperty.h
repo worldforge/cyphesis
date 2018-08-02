@@ -16,7 +16,6 @@
  */
 class ScriptsProperty : public Property<Atlas::Message::ListType> {
 public:
-    static constexpr const char *property_name = "scripts";
 
     /**
      * Cache of script factories.

@@ -17,7 +17,7 @@
             <map name="__modifier_hit_type_chop">
                 <float name="default">40</float>
             </map>
-            <map name="scripts">
+            <map name="__scripts">
                 <list name="default">
                     <map>
                         <string name="language">python</string>

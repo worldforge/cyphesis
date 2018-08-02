@@ -20,7 +20,7 @@
             <map name="ticks">
                 <float name="default">0</float>
             </map>
-            <map name="scripts">
+            <map name="__scripts">
                 <list name="default">
                     <map>
                         <string name="language">python</string>

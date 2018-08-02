@@ -258,7 +258,12 @@ CorePropertyManager::CorePropertyManager()
      */
     installProperty<Property<double>>("maxscale");
 
-    installProperty<ScriptsProperty>();
+    /**
+     * "__scripts" is meant to be installed on the Type, whereas "__scripts_instance" is meant to be installed on the entity instance.
+     * This way it should be possible to both override type scripts, and to alternatively add new ones to specific instances.
+     */
+    installProperty<ScriptsProperty>("__scripts");
+    installProperty<ScriptsProperty>("__scripts_instance");
 
     installProperty<UsagesProperty>();
 
