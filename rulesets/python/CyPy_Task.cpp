@@ -37,6 +37,13 @@ CyPy_Task::CyPy_Task(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& k
     } else {
         throw Py::TypeError("Task requires a Task, or UsageInstance");
     }
+
+    for (auto entry : kwds) {
+        if (entry.first.isString()) {
+            setattro(entry.first.as_string(), entry.second);
+        }
+    }
+
 }
 
 CyPy_Task::CyPy_Task(Py::PythonClassInstance* self, Ref<Task> value)
@@ -121,13 +128,13 @@ Py::Object CyPy_Task::getattro(const Py::String& name)
         return Py::Float(m_value->progress());
     }
     if (nameStr == "duration") {
-        if (m_value->m_duration) {
+        if (!m_value->m_duration) {
             return Py::None();
         }
         return Py::Float(*m_value->m_duration);
     }
     if (nameStr == "tick_interval") {
-        if (m_value->m_duration) {
+        if (!m_value->m_tick_interval) {
             return Py::None();
         }
         return Py::Float(*m_value->m_tick_interval);

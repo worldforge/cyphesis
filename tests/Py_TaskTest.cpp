@@ -35,48 +35,57 @@
 
 #include <cassert>
 #include <rulesets/python/CyPy_Task.h>
+#include <rulesets/python/CyPy_UsageInstance.h>
+#include <rulesets/python/CyPy_LocatedEntity.h>
 
 
 int main()
 {
     init_python_api("6715c02a-cc63-497b-988d-453579eae35d");
 
-    Entity entity("", 1);
-    auto task = CyPy_Task::wrap(new Task(entity));
-    assert(CyPy_Task::check(task));
+    Ref<Entity> entity(new Entity("", 1));
+    UsageInstance usageInstance;
+    usageInstance.actor = entity;
+    Py::Module module("server");
+    module.setAttr("usageInstance", CyPy_UsageInstance::wrap(usageInstance));
+    module.setAttr("entity", CyPy_LocatedEntity::wrap(entity));
 
+    run_python_string("import server")
     run_python_string("from server import Task");
     expect_python_error("Task()", PyExc_IndexError);
     expect_python_error("Task(1)", PyExc_TypeError);
     expect_python_error("Task('1')", PyExc_TypeError);
     run_python_string("from server import Character");
-    run_python_string("c=Character('1')");
-    run_python_string("t=Task(c)");
+    run_python_string("c=server.entity");
+    run_python_string("t=Task(server.usageInstance)");
     run_python_string("Task(t)");
-    run_python_string("t==Task(c)");
-    run_python_string("assert t.character == c");
+    run_python_string("Task(t, name='t', tick_interval=11.0, duration=12.0, progress=0.5)");
+    run_python_string("assert t.name == 't'");
+    run_python_string("assert t.tick_interval == 11.0");
+    run_python_string("assert t.duration == 12.0");
+    run_python_string("assert t.progress == 0.5");
+    run_python_string("t==Task(server.usageInstance)");
+    run_python_string("assert t.actor == c");
     run_python_string("print(t.progress)");
-    run_python_string("print(t.rate)");
     expect_python_error("print(t.foo)", PyExc_AttributeError);
     run_python_string("t.progress = 0");
     run_python_string("t.progress = 0.5");
     expect_python_error("t.progress = '1'", PyExc_TypeError);
     run_python_string("t.rate = 0");
     run_python_string("t.rate = 0.5");
-    expect_python_error("t.rate = '1'", PyExc_TypeError);
     run_python_string("t.foo = 1");
     run_python_string("t.foo = 1.1");
     run_python_string("t.foo = 'foois1'");
     run_python_string("assert t.foo == 'foois1'");
 
     run_python_string("class TaskSubclass(Task): pass");
-    run_python_string("t2=TaskSubclass(c)");
+    run_python_string("t2=TaskSubclass(server.usageInstance)");
     // The subclass should have a dict offset
     run_python_string("t2.foo = 1");
     run_python_string("t2.foo = 1.1");
     run_python_string("t2.foo = 'foois1'");
     run_python_string("assert t2.foo == 'foois1'");
-    run_python_string("assert t!=Task(c)");
+    run_python_string("assert t!=Task(server.usageInstance)");
 
 
     // Tasks do not permit wrappers of core server objects
@@ -86,11 +95,6 @@ int main()
     expect_python_error("t.foo = server.Thing('2')", PyExc_TypeError);
 
     run_python_string("assert not t.obsolete()");
-    run_python_string("print(t.count())");
-    run_python_string("print(t.new_tick())");
-    run_python_string("print(t.next_tick(1))");
-    run_python_string("print(t.next_tick(1.1))");
-    expect_python_error("print(t.next_tick('1'))", PyExc_TypeError);
     run_python_string("t.irrelevant()");
     run_python_string("assert t.obsolete()");
 

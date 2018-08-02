@@ -11,10 +11,7 @@ def sow(instance):
     target = instance.targets[0]
 
     if instance.actor.can_reach(target):
-        task = Cultivate(instance)
-        task.duration = 10.75
-        task.tick_interval = 1
-        task.name = "Cultivate"
+        task = Cultivate(instance, duration=11, tick_interval=1, name="Cultivate")
 
         instance.actor.send_world(Operation("sight", instance.op))
 
