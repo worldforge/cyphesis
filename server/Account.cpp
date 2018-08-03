@@ -623,14 +623,14 @@ void Account::LookOperation(const Operation & op, OpVector & res)
     if (arg->copyAttr("possess_key", key) == 0 && key.isString()) {
         const std::string & key_str = key.String();
         LocatedEntity * character;
-        character = PossessionAuthenticator::instance()->authenticatePossession(to, key_str);
+        character = PossessionAuthenticator::instance().authenticatePossession(to, key_str);
         // FIXME Not finding the character should be fatal
         // FIXME TA needs to generate clientError ops for the client
         if (character) {
             // FIXME If we don't succeed in connecting, no need to carry on
             // and we probably need to indicate to the client
             if (connectCharacter(character) == 0) {
-                PossessionAuthenticator::instance()->removePossession(to);
+                PossessionAuthenticator::instance().removePossession(to);
                 logEvent(POSSESS_CHAR,
                          String::compose("%1 %2 %3 Claimed character (%4) "
                                          "by account %5",

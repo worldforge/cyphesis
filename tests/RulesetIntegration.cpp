@@ -51,7 +51,6 @@ using Atlas::Objects::Root;
 class ExposedEntityBuilder : public EntityBuilder {
   public:
     explicit ExposedEntityBuilder() : EntityBuilder() {
-        m_instance = this;
     }
 
     const FactoryDict & factoryDict() const { return m_entityFactories; }
@@ -142,7 +141,7 @@ void Rulesetintegration::test_sequence()
 
         // Instance of Ruleset with all protected methods exposed
         // for testing
-        EntityBuilder * test_eb = EntityBuilder::instance();
+        EntityBuilder * test_eb = EntityBuilder::instancePtr();
         assert(test_eb == m_entity_builder);
         boost::asio::io_service io_service;
         Ruleset test_ruleset(test_eb, io_service);
@@ -661,6 +660,7 @@ int main()
 #include "stubs/server/stubAdmin.h"
 #include "stubs/rulesets/stubLocation.h"
 #include "stubs/rulesets/stubScriptsProperty.h"
+#include "stubs/common/stubMonitors.h"
 
 Account::Account(Connection * conn,
                  const std::string & uname,

@@ -43,6 +43,8 @@
 #include <rulesets/python/CyPy_UsageInstance.h>
 #include <Atlas/Objects/Operation.h>
 
+#include "stubs/common/stubMonitors.h"
+
 int main()
 {
 

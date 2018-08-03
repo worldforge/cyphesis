@@ -55,6 +55,7 @@ class SystemAccounttest : public Cyphesis::TestBase
     ServerRouting * m_server;
     Connection * m_connection;
     Account * m_account;
+    TestWorld* m_world;
   public:
     SystemAccounttest();
 
@@ -78,7 +79,8 @@ void SystemAccounttest::setup()
 {
     Entity * gw = new Entity(compose("%1", m_id_counter),
                              m_id_counter++);
-    m_server = new ServerRouting(*new TestWorld(*gw),
+    m_world = new TestWorld(*gw);
+    m_server = new ServerRouting(*m_world,
                                  "5529d7a4-0158-4dc1-b4a5-b5f260cac635",
                                  "bad621d4-616d-4faf-b9e6-471d12b139a9",
                                  compose("%1", m_id_counter), m_id_counter++,
@@ -94,6 +96,7 @@ void SystemAccounttest::setup()
 
 void SystemAccounttest::teardown()
 {
+    delete m_world;
     delete m_server;
     delete m_account;
     delete m_connection;
@@ -359,60 +362,8 @@ ConnectableRouter::ConnectableRouter(const std::string & id,
 {
 }
 
-ServerRouting::ServerRouting(BaseWorld & wrld,
-                             const std::string & ruleset,
-                             const std::string & name,
-                             const std::string & id, long intId,
-                             const std::string & lId, long lIntId) :
-        Router(id, intId),
-        m_svrRuleset(ruleset), m_svrName(name),
-        m_numClients(0), m_world(wrld), m_lobby(*(Lobby*)0)
-{
-}
-
-ServerRouting::~ServerRouting()
-{
-    delete &m_world;
-}
-
-void ServerRouting::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-Account * ServerRouting::getAccountByName(const std::string & username)
-{
-    return 0;
-}
-
-void ServerRouting::addAccount(Account * a)
-{
-}
-
-void ServerRouting::externalOperation(const Operation & op, Link &)
-{
-}
-
-void ServerRouting::operation(const Operation &, OpVector &)
-{
-}
-
-PossessionAuthenticator * PossessionAuthenticator::m_instance = nullptr;
-
-int PossessionAuthenticator::removePossession(const std::string &entity_id)
-{
-    return 0;
-}
-
-LocatedEntity *PossessionAuthenticator::authenticatePossession(const std::string &entity_id,
-                                            const std::string &possess_key)
-{
-    return 0;
-}
-
+#include "stubs/server/stubServerRouting.h"
+#include "stubs/server/stubPossessionAuthenticator.h"
 #include "stubs/server/stubPersistence.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/rulesets/stubEntity.h"

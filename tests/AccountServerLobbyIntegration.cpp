@@ -235,19 +235,7 @@ ConnectableRouter::ConnectableRouter(const std::string & id,
 {
 }
 
-PossessionAuthenticator * PossessionAuthenticator::m_instance = nullptr;
-
-int PossessionAuthenticator::removePossession(const std::string &entity_id)
-{
-    return 0;
-}
-
-LocatedEntity *PossessionAuthenticator::authenticatePossession(const std::string &entity_id,
-                                            const std::string &possess_key)
-{
-    return 0;
-}
-
+#include "stubs/server/stubPossessionAuthenticator.h"
 #include "stubs/server/stubPersistence.h"
 #include "stubs/rulesets/stubCharacter.h"
 #include "stubs/rulesets/stubThing.h"

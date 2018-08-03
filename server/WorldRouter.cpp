@@ -65,7 +65,7 @@ WorldRouter::WorldRouter(const SystemTime & time, Ref<LocatedEntity> baseEntity)
     m_initTime = time.seconds();
 
     m_eobjects[baseEntity->getIntId()] = baseEntity;
-    Monitors::instance()->watch("entities", new Variable<int>(m_entityCount));
+    Monitors::instance().watch("entities", new Variable<int>(m_entityCount));
 
     /**
      * When types are updated we will send an "change" op to all connected clients.
@@ -221,7 +221,7 @@ Ref<LocatedEntity> WorldRouter::addNewEntity(const std::string & typestr,
         return nullptr;
     }
 
-    auto ent = EntityBuilder::instance()->newEntity(id, intId, typestr, attrs, *this);
+    auto ent = EntityBuilder::instance().newEntity(id, intId, typestr, attrs, *this);
     if (ent == nullptr) {
         log(ERROR, String::compose("Attempt to create an entity of type \"%1\" "
                                    "but type is unknown or forbidden",
@@ -320,7 +320,7 @@ int WorldRouter::moveToSpawn(const std::string & name, Location& location)
 ArithmeticScript * WorldRouter::newArithmetic(const std::string & name,
                                               LocatedEntity * owner)
 {
-    return ArithmeticBuilder::instance()->newArithmetic(name, owner);
+    return ArithmeticBuilder::instance().newArithmetic(name, owner);
 }
 
 
@@ -380,7 +380,7 @@ void WorldRouter::message(const Operation & op, LocatedEntity & fromEntity)
 
 void WorldRouter::messageToClients(const Operation & op)
 {
-    auto& accounts = ServerRouting::instance()->getAccounts();
+    auto& accounts = ServerRouting::instance().getAccounts();
     OpVector res;
     for (auto entry : accounts) {
         entry.second->operation(op, res);

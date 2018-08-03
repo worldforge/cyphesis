@@ -24,9 +24,9 @@ namespace EntityFilter {
 
 #ifndef STUB_ComparePredicate_ComparePredicate
 //#define STUB_ComparePredicate_ComparePredicate
-   ComparePredicate::ComparePredicate(const Consumer<QueryContext>* lhs, const Consumer<QueryContext>* rhs, Comparator comparator)
-    : Predicate(lhs, rhs, comparator)
-    , m_lhs(nullptr),m_rhs(nullptr)
+   ComparePredicate::ComparePredicate(const Consumer<QueryContext>* lhs, const Consumer<QueryContext>* rhs, Comparator comparator, const Consumer<QueryContext>* with)
+    : Predicate(lhs, rhs, comparator, with)
+    , m_lhs(nullptr),m_rhs(nullptr),m_with(nullptr)
   {
     
   }
@@ -39,6 +39,29 @@ namespace EntityFilter {
     return false;
   }
 #endif //STUB_ComparePredicate_isMatch
+
+
+}  // namespace EntityFilter
+
+namespace EntityFilter {
+
+#ifndef STUB_CompareWithPredicate_CompareWithPredicate
+//#define STUB_CompareWithPredicate_CompareWithPredicate
+   CompareWithPredicate::CompareWithPredicate(const Consumer<QueryContext>* lhs, const Consumer<QueryContext>* rhs, const Consumer<QueryContext>* with, Comparator comparator)
+    : Predicate(lhs, rhs, with, comparator)
+    , m_lhs(nullptr),m_rhs(nullptr),m_with(nullptr)
+  {
+    
+  }
+#endif //STUB_CompareWithPredicate_CompareWithPredicate
+
+#ifndef STUB_CompareWithPredicate_isMatch
+//#define STUB_CompareWithPredicate_isMatch
+  bool CompareWithPredicate::isMatch(const QueryContext& context) const
+  {
+    return false;
+  }
+#endif //STUB_CompareWithPredicate_isMatch
 
 
 }  // namespace EntityFilter

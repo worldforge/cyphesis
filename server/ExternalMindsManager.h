@@ -26,16 +26,15 @@
 #include <map>
 #include <unordered_set>
 #include <string>
+#include <common/Singleton.h>
 
 class Character;
 
-class ExternalMindsManager : public virtual sigc::trackable
+class ExternalMindsManager : public virtual sigc::trackable, public Singleton<ExternalMindsManager>
 {
     public:
         explicit ExternalMindsManager() = default;
-        ~ExternalMindsManager() = default;
-
-        static ExternalMindsManager * instance();
+        ~ExternalMindsManager() override = default;
 
         int addConnection(const ExternalMindsConnection& connection);
         int removeConnection(const std::string& routerId);
@@ -60,7 +59,6 @@ class ExternalMindsManager : public virtual sigc::trackable
         std::map<std::string, ExternalMindsConnection> m_connections;
         std::unordered_set<Character*> m_unpossessedEntities;
         std::unordered_set<Character*> m_possessedEntities;
-        static ExternalMindsManager * m_instance;
 
         void entity_destroyed(Character* character);
         void character_externalLinkChanged(Character* character);

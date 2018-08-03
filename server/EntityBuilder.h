@@ -24,6 +24,7 @@
 #include <Atlas/Objects/ObjectsFwd.h>
 
 #include <memory>
+#include <common/Singleton.h>
 #include "EntityFactory.h"
 
 class BaseWorld;
@@ -38,11 +39,8 @@ typedef std::map<std::string, EntityKit *> FactoryDict;
 ///
 /// Uses PersistantThingFactory to store information about entity types, and
 /// create them. Handles connecting entities to their persistor as required.
-class EntityBuilder {
+class EntityBuilder : public Singleton<EntityBuilder> {
   protected:
-    explicit EntityBuilder();
-    ~EntityBuilder();
-    static EntityBuilder * m_instance;
 
     std::unique_ptr<CorePropertyManager> m_propertyManager;
 
@@ -53,18 +51,8 @@ class EntityBuilder {
                             EntityKit * factory);
 
   public:
-    static void init() {
-        m_instance = new EntityBuilder();
-    }
-    static EntityBuilder * instance() {
-        return m_instance;
-    }
-    static void del() {
-        if (m_instance != 0) {
-            delete m_instance;
-            m_instance = 0;
-        }
-    }
+    explicit EntityBuilder();
+    ~EntityBuilder();
 
     int installFactory(const std::string & class_name,
                        const Atlas::Objects::Root & class_desc,

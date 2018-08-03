@@ -47,6 +47,7 @@
 
 #include <cassert>
 #include <server/Persistence.h>
+#include <server/PossessionAuthenticator.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -92,19 +93,23 @@ std::ostream & operator<<(std::ostream & os,
 
 class TestAccount;
 
+PossessionAuthenticator* possessionAuthenticator = new PossessionAuthenticator();
+
 class Accounttest : public Cyphesis::TestBase
 {
   protected:
     long m_id_counter;
 
     DatabaseNull m_database;
+    Ref<Entity> m_gw;
     Persistence* m_persistence;
+    TestWorld* m_world;
     ServerRouting * m_server;
     Connection * m_connection;
     TestAccount * m_account;
 
-    static Entity * TestWorld_addNewEntity_ret_value;
-    static Entity * TeleportAuthenticator_ret_value;
+    static Ref<Entity> TestWorld_addNewEntity_ret_value;
+    static Ref<Entity> TeleportAuthenticator_ret_value;
     static OpVector Link_send_sent;
     static int characterError_ret_value;
     static int Lobby_operation_called;
@@ -194,8 +199,8 @@ class Accounttest : public Cyphesis::TestBase
                                               LocatedEntity &);
 };
 
-Entity * Accounttest::TestWorld_addNewEntity_ret_value;
-Entity * Accounttest::TeleportAuthenticator_ret_value;
+Ref<Entity> Accounttest::TestWorld_addNewEntity_ret_value;
+Ref<Entity> Accounttest::TeleportAuthenticator_ret_value;
 OpVector Accounttest::Link_send_sent;
 int Accounttest::characterError_ret_value;
 int Accounttest::Lobby_operation_called;
@@ -335,20 +340,21 @@ void Accounttest::setup()
 
 
     m_persistence = new Persistence(m_database);
-    Entity * gw = new Entity(compose("%1", m_id_counter),
+    m_gw = new Entity(compose("%1", m_id_counter),
                              m_id_counter++);
     TestWorld::extension.messageFn = &Accounttest::set_TestWorld_message_called;
-    TestWorld::extension.addNewEntityFn = [&, gw](const std::string &,
+    TestWorld::extension.addNewEntityFn = [&](const std::string &,
                         const Atlas::Objects::Entity::RootEntity &){
         Entity * ne = Accounttest::get_TestWorld_addNewEntity_ret_value();
         if (ne != nullptr) {
-            ne->m_location.m_loc = gw;
+            ne->m_location.m_loc = m_gw;
             ne->m_location.m_pos = Point3D(0,0,0);
             assert(ne->m_location.isValid());
         }
         return ne;
     };
-    m_server = new ServerRouting(*new TestWorld(*gw),
+    m_world = new TestWorld(*m_gw);
+    m_server = new ServerRouting(*m_world,
                                  "5529d7a4-0158-4dc1-b4a5-b5f260cac635",
                                  "bad621d4-616d-4faf-b9e6-471d12b139a9",
                                  compose("%1", m_id_counter), m_id_counter++,
@@ -364,6 +370,7 @@ void Accounttest::setup()
 
 void Accounttest::teardown()
 {
+    delete m_world;
     delete m_server;
     delete m_account;
     delete m_persistence;
@@ -506,7 +513,7 @@ void Accounttest::test_addNewCharacter_raw_Entity()
     // It hasn't been connected, because it is not a character
     ASSERT_TRUE(m_account->m_charactersDict.empty());
 
-    delete TestWorld_addNewEntity_ret_value;
+    
 }
 
 void Accounttest::test_addNewCharacter_Character()
@@ -527,11 +534,11 @@ void Accounttest::test_addNewCharacter_Character()
     ASSERT_NOT_EQUAL(m_account->m_charactersDict.find(cid),
                      m_account->m_charactersDict.end());
     ASSERT_EQUAL(m_account->m_charactersDict.find(cid)->second, 
-                 TestWorld_addNewEntity_ret_value);
+                 TestWorld_addNewEntity_ret_value.get());
 
     m_account->m_charactersDict.erase(cid);
 
-    delete TestWorld_addNewEntity_ret_value;
+    
 }
 
 void Accounttest::test_addNewCharacter_unconnected()
@@ -553,7 +560,6 @@ void Accounttest::test_addNewCharacter_unconnected()
 
     ASSERT_NULL(te);
 
-    delete TestWorld_addNewEntity_ret_value;
     TestWorld_addNewEntity_ret_value = 0;
 }
 
@@ -794,7 +800,7 @@ void Accounttest::test_CreateOperation_good()
 
     ASSERT_EQUAL(res.size(), 2u);
 
-    delete TestWorld_addNewEntity_ret_value;
+    
     TestWorld_addNewEntity_ret_value = 0;
 }
 
@@ -1547,7 +1553,7 @@ void Accounttest::test_createObject_raw_Entity()
     ASSERT_EQUAL(res.size(), 1u);
     ASSERT_TRUE(m_account->m_charactersDict.empty());
 
-    delete TestWorld_addNewEntity_ret_value;
+    
     TestWorld_addNewEntity_ret_value = 0;
 }
 
@@ -1687,6 +1693,7 @@ ConnectableRouter::ConnectableRouter(const std::string & id,
 {
 }
 
+#define STUB_ServerRouting_ServerRouting
 ServerRouting::ServerRouting(BaseWorld & wrld,
                              const std::string & ruleset,
                              const std::string & name,
@@ -1699,50 +1706,16 @@ ServerRouting::ServerRouting(BaseWorld & wrld,
 {
 }
 
-ServerRouting::~ServerRouting()
-{
-    delete &m_world;
-    delete &m_lobby;
-}
+#include "stubs/server/stubServerRouting.h"
 
-void ServerRouting::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-Account * ServerRouting::getAccountByName(const std::string & username)
-{
-    return 0;
-}
-
-void ServerRouting::addAccount(Account * a)
-{
-}
-
-void ServerRouting::externalOperation(const Operation & op, Link &)
-{
-}
-
-void ServerRouting::operation(const Operation &, OpVector &)
-{
-}
-
-PossessionAuthenticator * PossessionAuthenticator::m_instance = nullptr;
-
-int PossessionAuthenticator::removePossession(const std::string &entity_id)
-{
-    return 0;
-}
-
+#define STUB_PossessionAuthenticator_authenticatePossession
 LocatedEntity *PossessionAuthenticator::authenticatePossession(const std::string &entity_id,
                                             const std::string &possess_key)
 {
     Entity * ne = Accounttest::get_TeleportAuthenticator_ret_value();
     return ne;
 }
+#include "stubs/server/stubPossessionAuthenticator.h"
 #include "stubs/server/stubPersistence.h"
 
 

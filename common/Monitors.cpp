@@ -25,7 +25,8 @@
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 
-Monitors * Monitors::m_instance = nullptr;
+template<>
+Monitors* Singleton<Monitors>::ms_Singleton = nullptr;
 
 Monitors::Monitors()
 {
@@ -40,20 +41,6 @@ Monitors::~Monitors()
     }
 }
 
-Monitors * Monitors::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Monitors();
-    }
-    return m_instance;
-}
-
-void Monitors::cleanup()
-{
-    delete m_instance;
-
-    m_instance = 0;
-}
 
 void Monitors::insert(const std::string & key, const Element & val)
 {

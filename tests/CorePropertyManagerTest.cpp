@@ -375,25 +375,7 @@ void Account::OtherOperation(const Operation & op, OpVector & res)
 {
 }
 
-ArithmeticBuilder * ArithmeticBuilder::m_instance = 0;
-
-ArithmeticBuilder::ArithmeticBuilder()
-{
-}
-
-ArithmeticBuilder * ArithmeticBuilder::instance()
-{
-    if (m_instance == 0) {
-        m_instance = new ArithmeticBuilder;
-    }
-    return m_instance;
-}
-
-ArithmeticScript * ArithmeticBuilder::newArithmetic(const std::string & name,
-                                                    LocatedEntity * owner)
-{
-    return 0;
-}
+#include "stubs/server/stubArithmeticBuilder.h"
 
 ConnectableRouter::ConnectableRouter(const std::string & id,
                                  long iid,

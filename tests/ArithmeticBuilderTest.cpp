@@ -31,22 +31,11 @@
 
 int main()
 {
-    {
-        ArithmeticBuilder * ab = ArithmeticBuilder::instance();
-        assert(ab != 0);
-    }
 
     {
-        ArithmeticBuilder * ab = ArithmeticBuilder::instance();
-        assert(ab != 0);
-        ArithmeticBuilder::del();
-    }
+        ArithmeticBuilder  ab;
 
-    {
-        ArithmeticBuilder * ab = ArithmeticBuilder::instance();
-        assert(ab != 0);
-
-        ArithmeticScript * as = ab->newArithmetic("foo", 0);
+        ArithmeticScript * as = ab.newArithmetic("foo", 0);
         // The factory this uses is stubbed out to return 0.
         assert(as == 0);
     }

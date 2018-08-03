@@ -61,6 +61,7 @@ static bool stub_deny_newid = false;
 class WorldRoutertest : public Cyphesis::TestBase
 {
     WorldRouter * test_world;
+        EntityBuilder* m_eb;
   public:
     WorldRoutertest();
 
@@ -105,14 +106,14 @@ void WorldRoutertest::setup()
     m_rootEntity = new Entity("", 0);
     m_inheritance = new Inheritance();
     test_world = new WorldRouter(SystemTime(), m_rootEntity);
+    m_eb = new EntityBuilder();
 }
 
 void WorldRoutertest::teardown()
 {
+    delete m_eb;
     delete test_world;
     delete m_inheritance;
-
-    EntityBuilder::del();
 }
 
 void WorldRoutertest::test_constructor()
@@ -480,31 +481,9 @@ const TypeNode* Inheritance::getType(const std::string & parent)
 #include "stubs/common/stubPropertyManager.h"
 #include "server/CorePropertyManager.h"
 #include "common/Property_impl.h"
+#include "stubs/server/stubArithmeticBuilder.h"
 
-
-ArithmeticBuilder * ArithmeticBuilder::m_instance = 0;
-
-ArithmeticBuilder * ArithmeticBuilder::instance()
-{
-    return 0;
-}
-
-ArithmeticScript * ArithmeticBuilder::newArithmetic(const std::string &,
-                                                    LocatedEntity *)
-{
-    return 0;
-}
-
-EntityBuilder * EntityBuilder::m_instance = nullptr;
-
-EntityBuilder::EntityBuilder()
-{
-}
-
-EntityBuilder::~EntityBuilder()
-{
-}
-
+#define STUB_EntityBuilder_newEntity
 Ref<LocatedEntity> EntityBuilder::newEntity(const std::string & id, long intId,
                                          const std::string & type,
                                          const RootEntity & attributes,
@@ -518,6 +497,7 @@ Ref<LocatedEntity> EntityBuilder::newEntity(const std::string & id, long intId,
     }
     return 0;
 }
+#include "stubs/server/stubEntityBuilder.h"
 
 
 SpawnEntity::SpawnEntity(LocatedEntity *)

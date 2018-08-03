@@ -10,26 +10,11 @@
 #ifndef STUB_ArithmeticBuilder_ArithmeticBuilder
 //#define STUB_ArithmeticBuilder_ArithmeticBuilder
    ArithmeticBuilder::ArithmeticBuilder()
+    : Singleton()
   {
     
   }
 #endif //STUB_ArithmeticBuilder_ArithmeticBuilder
-
-#ifndef STUB_ArithmeticBuilder_instance
-//#define STUB_ArithmeticBuilder_instance
-   ArithmeticBuilder* ArithmeticBuilder::instance()
-  {
-    return nullptr;
-  }
-#endif //STUB_ArithmeticBuilder_instance
-
-#ifndef STUB_ArithmeticBuilder_del
-//#define STUB_ArithmeticBuilder_del
-   void ArithmeticBuilder::del()
-  {
-    
-  }
-#endif //STUB_ArithmeticBuilder_del
 
 #ifndef STUB_ArithmeticBuilder_newArithmetic
 //#define STUB_ArithmeticBuilder_newArithmetic

@@ -454,37 +454,7 @@ namespace Atlas { namespace Objects { namespace Operation {
 int CONNECT_NO = 500;
 
 } } }
-
-ServerRouting::ServerRouting(BaseWorld & wrld,
-                             const std::string & ruleset,
-                             const std::string & name,
-                             const std::string & id, long intId,
-                             const std::string & lId, long lIntId) :
-        Router(id, intId),
-        m_svrRuleset(ruleset), m_svrName(name),
-        m_numClients(0), m_world(wrld), m_lobby(*(Lobby*)0)
-{
-}
-
-ServerRouting::~ServerRouting()
-{
-}
-
-void ServerRouting::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-void ServerRouting::externalOperation(const Operation & op, Link &)
-{
-}
-
-void ServerRouting::operation(const Operation &, OpVector &)
-{
-}
+#include "stubs/server/stubServerRouting.h"
 
 CommPeer::CommPeer(const std::string & n, boost::asio::io_service& svr) :
         CommAsioClient<boost::asio::ip::tcp> (n, svr), m_auth_timer(svr)

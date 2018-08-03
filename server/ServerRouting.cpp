@@ -43,7 +43,8 @@ using Atlas::Objects::Entity::RootEntity;
 BOOL_OPTION(restricted_flag, false, CYPHESIS, "restricted",
             "Flag to control restricted mode");
 
-ServerRouting * ServerRouting::m_instance = 0;
+template<>
+ServerRouting* Singleton<ServerRouting>::ms_Singleton = nullptr;
 
 /// \brief Constructor for server object.
 ///
@@ -58,16 +59,15 @@ ServerRouting::ServerRouting(BaseWorld & wrld,
         m_svrRuleset(ruleset), m_svrName(name),
         m_numClients(0), m_world(wrld), m_lobby(*new Lobby(*this, lId, lIntId))
 {
-    Monitors * monitors = Monitors::instance();
-    monitors->insert("server", "cyphesis");
-    monitors->watch("instance", new Variable<std::string>(::instance));
-    monitors->watch("name", new Variable<std::string>(m_svrName));
-    monitors->watch("ruleset", new Variable<std::string>(m_svrRuleset));
-    monitors->watch("version", new Variable<const char *>(consts::version));
-    monitors->watch("buildid", new Variable<const char *>(consts::buildId));
-    monitors->watch("clients", new Variable<int>(m_numClients));
+    Monitors& monitors = Monitors::instance();
+    monitors.insert("server", "cyphesis");
+    monitors.watch("instance", new Variable<std::string>(::instance));
+    monitors.watch("name", new Variable<std::string>(m_svrName));
+    monitors.watch("ruleset", new Variable<std::string>(m_svrRuleset));
+    monitors.watch("version", new Variable<const char *>(consts::version));
+    monitors.watch("buildid", new Variable<const char *>(consts::buildId));
+    monitors.watch("clients", new Variable<int>(m_numClients));
 
-    m_instance = this;
 }
 
 /// Server destructor, implicitly destroys all OOG objects in the server.

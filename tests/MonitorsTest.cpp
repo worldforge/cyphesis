@@ -33,30 +33,27 @@
 
 int main()
 {
-    Monitors * m = Monitors::instance();
-
-    assert(m != 0);
+    Monitors m;
 
     int foo = 7;
     std::stringstream ss;
 
-    m->watch("foo", new Variable<int>(foo));
+    m.watch("foo", new Variable<int>(foo));
 
-    m->insert("bar", 3);
-    m->insert("mim", 3.f);
-    m->insert("qux", "three");
+    m.insert("bar", 3);
+    m.insert("mim", 3.f);
+    m.insert("qux", "three");
 
     // positive check
-    assert( m->readVariable("foo",ss) == 0 );
+    assert( m.readVariable("foo",ss) == 0 );
     assert( ss.str().compare("7") == 0 );
 
     // negative check
     ss.clear();
-    assert(m->readVariable("nonexistent",ss) != 0);
+    assert(m.readVariable("nonexistent",ss) != 0);
 
-    m->send(std::cout);
+    m.send(std::cout);
 
-    Monitors::cleanup();
     return 0;
 }
 

@@ -44,16 +44,16 @@ static TypeNode * stub_addChild_result = 0;
 
 int main()
 {
-    EntityBuilder::init();
+    EntityBuilder eb;
 
     {
-        RuleHandler * rh = new EntityRuleHandler(EntityBuilder::instance());
+        RuleHandler * rh = new EntityRuleHandler(&eb);
         delete rh;
     }
 
     // check() not a class
     {
-        RuleHandler * rh = new EntityRuleHandler(EntityBuilder::instance());
+        RuleHandler * rh = new EntityRuleHandler(&eb);
 
         Anonymous description;
         description->setParent("foo");
@@ -66,7 +66,7 @@ int main()
 
     // check() stub says it's not a task
     {
-        RuleHandler * rh = new EntityRuleHandler(EntityBuilder::instance());
+        RuleHandler * rh = new EntityRuleHandler(&eb);
 
         Anonymous description;
         description->setObjtype("class");
@@ -79,7 +79,7 @@ int main()
     }
 
     {
-        RuleHandler * rh = new EntityRuleHandler(EntityBuilder::instance());
+        RuleHandler * rh = new EntityRuleHandler(&eb);
         std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
 
         Anonymous description;
@@ -97,7 +97,7 @@ int main()
 
     // Install a rule with addChild rigged to give a correct result
     {
-        RuleHandler * rh = new EntityRuleHandler(EntityBuilder::instance());
+        RuleHandler * rh = new EntityRuleHandler(&eb);
         std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
 
         Anonymous description;
@@ -117,7 +117,7 @@ int main()
         delete rh;
     }
     {
-        RuleHandler * rh = new EntityRuleHandler(EntityBuilder::instance());
+        RuleHandler * rh = new EntityRuleHandler(&eb);
         std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
 
         Anonymous description;

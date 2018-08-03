@@ -53,91 +53,84 @@ int main()
     global_conf = varconf::Config::inst();
 
     {
+        HttpCache httpCache;
         HttpCache::instance();
-        HttpCache::del();
     }
 
     // No header, invalid
     {
-        HttpCache *hc = HttpCache::instance();
+        HttpCache hc;
 
-        hc->processQuery(std::cout, std::list<std::string>());
+        hc.processQuery(std::cout, std::list<std::string>());
 
-        HttpCache::del();
     }
 
     // Bad request header
     {
-        HttpCache *hc = HttpCache::instance();
+        HttpCache hc;
 
         std::list<std::string> headers;
         headers.push_back("boo");
 
-        hc->processQuery(std::cout, headers);
+        hc.processQuery(std::cout, headers);
 
-        HttpCache::del();
     }
 
     // Legacy HTTP (0.9??)
     {
-        HttpCache *hc = HttpCache::instance();
+        HttpCache hc;
 
         std::list<std::string> headers;
         headers.push_back("GET foo");
 
-        hc->processQuery(std::cout, headers);
+        hc.processQuery(std::cout, headers);
 
-        HttpCache::del();
     }
 
     // HTTP (n.m??)
     {
-        HttpCache *hc = HttpCache::instance();
+        HttpCache hc;
 
         std::list<std::string> headers;
         headers.push_back("GET foo HTTP/1.0");
 
-        hc->processQuery(std::cout, headers);
+        hc.processQuery(std::cout, headers);
 
-        HttpCache::del();
     }
 
     // HTTP get /config
     {
-        HttpCache *hc = HttpCache::instance();
+        HttpCache hc;
 
         std::list<std::string> headers;
         headers.push_back("GET /config HTTP/1.0");
 
-        hc->processQuery(std::cout, headers);
+        hc.processQuery(std::cout, headers);
 
-        HttpCache::del();
     }
 
     // HTTP get /config with some config
     {
-        HttpCache *hc = HttpCache::instance();
+        HttpCache hc;
 
         global_conf->setItem(instance, "bar", "value");
 
         std::list<std::string> headers;
         headers.push_back("GET /config HTTP/1.0");
 
-        hc->processQuery(std::cout, headers);
+        hc.processQuery(std::cout, headers);
 
-        HttpCache::del();
     }
 
     // HTTP get /monitors
     {
-        HttpCache *hc = HttpCache::instance();
+        HttpCache hc;
 
         std::list<std::string> headers;
         headers.push_back("GET /monitors HTTP/1.0");
 
-        hc->processQuery(std::cout, headers);
+        hc.processQuery(std::cout, headers);
 
-        HttpCache::del();
     }
 
     {

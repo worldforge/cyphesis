@@ -136,6 +136,7 @@ class Accountintegration : public Cyphesis::TestBase
 
         Inheritance* m_inheritance;
         Entity* m_rootEntity;
+        EntityBuilder* m_eb;
 };
 
 Accountintegration::Accountintegration()
@@ -180,8 +181,8 @@ void Accountintegration::setup()
     m_persistence = new Persistence(m_database);
     m_inheritance = new Inheritance();
     m_time = new SystemTime;
-    EntityBuilder::init();
-    auto entityRuleHandler = new EntityRuleHandler(EntityBuilder::instance());
+    m_eb = new EntityBuilder();
+    auto entityRuleHandler = new EntityRuleHandler(m_eb);
 
     m_world = new WorldRouter(*m_time, m_rootEntity);
 
@@ -203,9 +204,10 @@ void Accountintegration::setup()
 
 void Accountintegration::teardown()
 {
+    delete m_server;
     delete m_ac;
     delete m_world;
-    EntityBuilder::del();
+    delete m_eb;
     delete m_inheritance;
     delete m_persistence;
 }
@@ -505,27 +507,7 @@ int PythonScriptFactory<LocatedEntity>::setup()
 
 template class OperationsDispatcher<LocatedEntity>;
 template class OpQueEntry<LocatedEntity>;
-
-ArithmeticBuilder * ArithmeticBuilder::m_instance = 0;
-
-ArithmeticBuilder::ArithmeticBuilder()
-{
-}
-
-ArithmeticBuilder * ArithmeticBuilder::instance()
-{
-    if (m_instance == 0) {
-        m_instance = new ArithmeticBuilder;
-    }
-    return m_instance;
-}
-
-ArithmeticScript * ArithmeticBuilder::newArithmetic(const std::string & name,
-                                                    LocatedEntity * owner)
-{
-    return 0;
-}
-
+#include "stubs/server/stubArithmeticBuilder.h"
 #include "stubs/rulesets/stubPlant.h"
 #include "stubs/rulesets/stubWorldTimeProperty.h"
 #include "stubs/rulesets/stubScriptUtils.h"

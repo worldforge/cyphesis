@@ -46,7 +46,8 @@ using String::compose;
 
 static const bool debug_flag = false;
 
-EntityBuilder* EntityBuilder::m_instance = nullptr;
+template<>
+EntityBuilder* Singleton<EntityBuilder>::ms_Singleton = nullptr;
 
 EntityBuilder::EntityBuilder()
 : m_propertyManager(new CorePropertyManager())
@@ -169,7 +170,7 @@ int EntityBuilder::installFactory(const std::string& class_name, const Root& cla
 
     m_entityFactories.insert(std::make_pair(class_name, factory));
 
-    Monitors::instance()->watch(compose("created_count{type=\"%1\"}", class_name), new Variable<int>(factory->m_createdCount));
+    Monitors::instance().watch(compose("created_count{type=\"%1\"}", class_name), new Variable<int>(factory->m_createdCount));
     return 0;
 }
 

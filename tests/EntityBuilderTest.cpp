@@ -88,6 +88,7 @@ class EntityBuildertest : public Cyphesis::TestBase
   private:
     Entity * e;
     BaseWorld * test_world;
+    EntityBuilder* eb;
   public:
     EntityBuildertest();
 
@@ -119,17 +120,17 @@ void EntityBuildertest::setup()
     inheritance = new Inheritance();
     e = new Entity("1", 1);
     test_world = new TestWorld(*e);
-    EntityBuilder::init();
+    eb = new EntityBuilder();
 
-    EntityBuilder::instance()->installBaseFactory("thing", "game_entity", new EntityFactory<Thing>());
+    EntityBuilder::instance().installBaseFactory("thing", "game_entity", new EntityFactory<Thing>());
 }
 
 void EntityBuildertest::teardown()
 {
     delete test_world;
     delete e;
-    EntityBuilder::del();
-    assert(EntityBuilder::instance() == 0);
+    delete eb;
+    assert(!EntityBuilder::hasInstance());
     delete inheritance;
 }
 
@@ -142,27 +143,23 @@ void EntityBuildertest::test_sequence1()
 {
     Anonymous attributes;
 
-    assert(EntityBuilder::instance() != nullptr);
-
-    assert(EntityBuilder::instance()->newEntity("1", 1, "world", attributes, BaseWorld::instance()) == nullptr);
-    assert(EntityBuilder::instance()->newEntity("1", 1, "nonexistant", attributes, BaseWorld::instance()) == nullptr);
-    assert(EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, BaseWorld::instance()) != nullptr);
+    assert(EntityBuilder::instance().newEntity("1", 1, "world", attributes, BaseWorld::instance()) == nullptr);
+    assert(EntityBuilder::instance().newEntity("1", 1, "nonexistant", attributes, BaseWorld::instance()) == nullptr);
+    assert(EntityBuilder::instance().newEntity("1", 1, "thing", attributes, BaseWorld::instance()) != nullptr);
 }
 
 void EntityBuildertest::test_sequence2()
 {
     Anonymous attributes;
 
-    assert(EntityBuilder::instance() != 0);
-
     // Create a normal Entity
-    LocatedEntity * test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, BaseWorld::instance());
+    LocatedEntity * test_ent = EntityBuilder::instance().newEntity("1", 1, "thing", attributes, BaseWorld::instance());
     assert(test_ent != 0);
 
     // Create an entity specifying an attrbute
     attributes->setAttr("funky", "true");
 
-    test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, BaseWorld::instance());
+    test_ent = EntityBuilder::instance().newEntity("1", 1, "thing", attributes, BaseWorld::instance());
     assert(test_ent != 0);
 
     // Create an entity causing VELOCITY to be set
@@ -172,7 +169,7 @@ void EntityBuildertest::test_sequence2()
 
     LocatedEntity_merge_action = SET_VELOCITY;
 
-    test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, BaseWorld::instance());
+    test_ent = EntityBuilder::instance().newEntity("1", 1, "thing", attributes, BaseWorld::instance());
     assert(test_ent != 0);
 
     LocatedEntity_merge_action = DO_NOTHING;
@@ -182,7 +179,7 @@ void EntityBuildertest::test_sequence2()
 
     LocatedEntity_merge_action = SET_VELOCITY;
 
-    test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, BaseWorld::instance());
+    test_ent = EntityBuilder::instance().newEntity("1", 1, "thing", attributes, BaseWorld::instance());
     assert(test_ent != 0);
 
     LocatedEntity_merge_action = DO_NOTHING;
@@ -192,13 +189,13 @@ void EntityBuildertest::test_sequence2()
 
     attributes->setLoc("1");
 
-    test_ent = EntityBuilder::instance()->newEntity("1", 1, "thing", attributes, BaseWorld::instance());
+    test_ent = EntityBuilder::instance().newEntity("1", 1, "thing", attributes, BaseWorld::instance());
     assert(test_ent != 0);
 }
 
 void EntityBuildertest::test_sequence3()
 {
-    EntityBuilder & entity_factory = *EntityBuilder::instance();
+    EntityBuilder & entity_factory = EntityBuilder::instance();
 
     // Attributes for test entities being created
     Anonymous attributes;
@@ -210,7 +207,7 @@ void EntityBuildertest::test_sequence3()
 
 void EntityBuildertest::test_sequence4()
 {
-    EntityBuilder & entity_factory = *EntityBuilder::instance();
+    EntityBuilder & entity_factory = EntityBuilder::instance();
     // Attributes for test entities being created
     Anonymous attributes;
 
@@ -277,7 +274,7 @@ void EntityBuildertest::test_sequence4()
 
 void EntityBuildertest::test_sequence5()
 {
-    EntityBuilder & entity_factory = *EntityBuilder::instance();
+    EntityBuilder & entity_factory = EntityBuilder::instance();
     Anonymous attributes;
 
     // Get a reference to the internal dictionary of entity factories.
@@ -317,7 +314,7 @@ void EntityBuildertest::test_sequence5()
 
 void EntityBuildertest::test_installFactory_duplicate()
 {
-    EntityBuilder & entity_factory = *EntityBuilder::instance();
+    EntityBuilder & entity_factory = EntityBuilder::instance();
     FactoryDict & factories = entity_factory.m_entityFactories;
 
     EntityFactoryBase * custom_type_factory = new EntityFactory<Entity>();

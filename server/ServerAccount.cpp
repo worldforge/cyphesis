@@ -99,7 +99,7 @@ void ServerAccount::createObject(const std::string & type_str,
     }
 
     // If we have a possess key (entity has a mind)
-    PossessionAuthenticator * tele_auth = 0;
+    PossessionAuthenticator * tele_auth = nullptr;
     std::string possess_key;
 
     const std::vector<Root> & args = op->getArgs();
@@ -108,7 +108,7 @@ void ServerAccount::createObject(const std::string & type_str,
         Element key;
         if(arg2->copyAttr("possess_key", key) == 0 && key.isString()) {
             possess_key = key.String();
-            tele_auth = PossessionAuthenticator::instance();
+            tele_auth = PossessionAuthenticator::instancePtr();
         } else {
             log(ERROR, "Entity has mind but no possess key found");
             return;

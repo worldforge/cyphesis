@@ -77,7 +77,7 @@ Connection::~Connection()
     //It's important that we disconnect ourselves as a possession router before we disconnect our objects,
     //else there's a risk that the external minds manager will just issue new possession request to this connection.
     for (auto& routerId : m_possessionRouters) {
-        ExternalMindsManager::instance()->removeConnection(routerId);
+        ExternalMindsManager::instance().removeConnection(routerId);
     }
 
     auto Iend = m_objects.end();
@@ -169,14 +169,14 @@ void Connection::setPossessionEnabled(bool enabled, const std::string& routerId)
 {
     if (enabled) {
         ExternalMindsConnection connection(this, routerId);
-        auto result = ExternalMindsManager::instance()->addConnection(connection);
+        auto result = ExternalMindsManager::instance().addConnection(connection);
         if (result == 0) {
             m_possessionRouters.push_back(routerId);
         }
     } else {
         auto result = std::find(m_possessionRouters.begin(), m_possessionRouters.end(), routerId);
         if (result != m_possessionRouters.end()) {
-            ExternalMindsManager::instance()->removeConnection(routerId);
+            ExternalMindsManager::instance().removeConnection(routerId);
         }
     }
 }

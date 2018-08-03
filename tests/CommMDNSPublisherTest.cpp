@@ -52,37 +52,7 @@ int main()
 
 #include "common/log.h"
 #include "common/Shaker.h"
-
-ServerRouting::ServerRouting(BaseWorld & wrld,
-                             const std::string & ruleset,
-                             const std::string & name,
-                             const std::string & id, long intId,
-                             const std::string & lId, long lIntId) :
-        Router(id, intId),
-        m_svrRuleset(ruleset), m_svrName(name),
-        m_numClients(0), m_world(wrld), m_lobby(*(Lobby*)0)
-{
-}
-
-ServerRouting::~ServerRouting()
-{
-}
-
-void ServerRouting::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-void ServerRouting::externalOperation(const Operation & op, Link &)
-{
-}
-
-void ServerRouting::operation(const Operation &, OpVector &)
-{
-}
+#include "stubs/server/stubServerRouting.h"
 
 Router::Router(const std::string & id, long intId) : m_id(id),
                                                      m_intId(intId)

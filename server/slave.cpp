@@ -196,7 +196,7 @@ int main(int argc, char ** argv)
 
     Persistence::instance().shutdown();
 
-    EntityBuilder::instance()->flushFactories();
+    EntityBuilder::instance().flushFactories();
     EntityBuilder::del();
     MindFactory::del();
 

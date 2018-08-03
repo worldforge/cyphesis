@@ -60,52 +60,43 @@ int main(int argc, char ** argv)
 
     {
         Inheritance inheritance;
-        EntityBuilder::init();
+        EntityBuilder eb;
         {
-            Ruleset instance(EntityBuilder::instance(), io_service);
+            Ruleset instance(&eb, io_service);
             instance.loadRules(ruleset);
 
             assert(Ruleset::hasInstance());
 
-            assert(EntityBuilder::instance() != 0);
         }
         assert(!Ruleset::hasInstance());
-        EntityBuilder::del();
-        assert(EntityBuilder::instance() == 0);
     }
 
     {
         etc_directory = data_path + "/ruleset1/etc";
         Inheritance inheritance;
-        EntityBuilder::init();
+        EntityBuilder eb;
         {
-            Ruleset instance(EntityBuilder::instance(), io_service);
+            Ruleset instance(&eb, io_service);
             instance.loadRules(ruleset);
 
             assert(Ruleset::hasInstance());
 
-            assert(EntityBuilder::instance() != 0);
         }
         assert(!Ruleset::hasInstance());
-        EntityBuilder::del();
-        assert(EntityBuilder::instance() == 0);
     }
 
     {
         etc_directory = data_path + "/ruleset2/etc";
         Inheritance inheritance;
-        EntityBuilder::init();
+        EntityBuilder eb;
         {
-            Ruleset instance(EntityBuilder::instance(), io_service);
+            Ruleset instance(&eb, io_service);
             instance.loadRules(ruleset);
 
             assert(Ruleset::hasInstance());
 
-            assert(EntityBuilder::instance() != 0);
         }
         assert(!Ruleset::hasInstance());
-        EntityBuilder::del();
-        assert(EntityBuilder::instance() == 0);
     }
 
     {
@@ -114,8 +105,8 @@ int main(int argc, char ** argv)
         Inheritance inheritance;
         // Instance of Ruleset with all protected methods exposed
         // for testing
-        EntityBuilder::init();
-        EntityBuilder * test_eb = EntityBuilder::instance();
+        EntityBuilder eb;
+        EntityBuilder * test_eb = &eb;
         ExposedRuleset test_ruleset(test_eb, io_service);
 
         // Attributes for test entities being created

@@ -24,11 +24,8 @@
 
 #include <varconf/config.h>
 
-HttpCache * HttpCache::m_instance = 0;
-
-HttpCache::HttpCache()
-{
-}
+template<>
+HttpCache* Singleton<HttpCache>::ms_Singleton = nullptr;
 
 void HttpCache::sendHeaders(std::ostream & io,
                             int status,
@@ -89,10 +86,10 @@ void HttpCache::processQuery(std::ostream & io,
         }
     } else if (path == "/monitors") {
         sendHeaders(io);
-        Monitors::instance()->send(io);
+        Monitors::instance().send(io);
     } else if (path == "/monitors/numerics") {
         sendHeaders(io);
-        Monitors::instance()->sendNumerics(io);
+        Monitors::instance().sendNumerics(io);
     } else {
         reportBadRequest(io, 404, "Not Found");
     }

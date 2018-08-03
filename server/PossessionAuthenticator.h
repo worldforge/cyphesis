@@ -21,6 +21,7 @@
 #include <string>
 #include <unordered_map>
 #include <boost/optional.hpp>
+#include <common/Singleton.h>
 
 class LocatedEntity;
 class PendingPossession;
@@ -28,12 +29,12 @@ class PendingPossession;
 /// \brief Map of teleported entity IDs and their PendingState objects
 typedef std::unordered_map<std::string, PendingPossession *> PendingPossessionsMap;
 
+
 /// \brief A class that stores and authenticates possession requests
-class PossessionAuthenticator
+class PossessionAuthenticator : public Singleton<PossessionAuthenticator>
 {
   private:
-    /// \brief An instance pointer for singleton behaviour
-    static PossessionAuthenticator * m_instance;
+
     /// \brief Map of teleport requests
     PendingPossessionsMap m_possessions;
 
@@ -41,20 +42,6 @@ class PossessionAuthenticator
 
   public:
 
-    static void init() {
-        if(m_instance == 0) {
-            m_instance = new PossessionAuthenticator();
-        }
-    }
-    static PossessionAuthenticator * instance() {
-        return m_instance;
-    }
-    static void del() {
-        if (m_instance != 0) {
-            delete m_instance;
-            m_instance = 0;
-        }
-    }
 
     bool isPending(const std::string &) const;
 

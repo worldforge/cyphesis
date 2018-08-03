@@ -36,6 +36,8 @@
 #include "DatabaseNull.h"
 
 #include <cassert>
+#include <server/EntityBuilder.h>
+
 using Atlas::Message::Element;
 
 class TestStorageManager : public StorageManager
@@ -73,6 +75,7 @@ class TestStorageManager : public StorageManager
 
 int main()
 {
+    EntityBuilder eb;
     DatabaseNull database;
     Persistence persistence(database);
 

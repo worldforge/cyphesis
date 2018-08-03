@@ -186,7 +186,7 @@ CreatorClient * BaseClient::createCharacter(const std::string & type)
     // FIXME We are making no attempt to set LOC, as we have no entity to
     // set it to.
     obj->m_location.readFromEntity(ent);
-    // obj = EntityFactory::instance()->newThing(type, body, tmp);
+    // obj = EntityFactory::instance().newThing(type, body, tmp);
     // FIXME Do we need to create a local entity for this as is done in
     // the python version? If so, do we need to keep track of a full world
     // model here, or just in the minds (when we become an AI client

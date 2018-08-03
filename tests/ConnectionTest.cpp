@@ -172,6 +172,7 @@ void Connectiontest::setup()
 
 void Connectiontest::teardown()
 {
+    delete m_server;
     delete m_inheritance;
 }
 
@@ -667,45 +668,7 @@ ConnectableRouter::ConnectableRouter(const std::string & id,
 {
 }
 
-ServerRouting::ServerRouting(BaseWorld & wrld,
-                             const std::string & ruleset,
-                             const std::string & name,
-                             const std::string & id, long intId,
-                             const std::string & lId, long lIntId) :
-        Router(id, intId),
-        m_svrRuleset(ruleset), m_svrName(name),
-        m_numClients(0), m_world(wrld), m_lobby(*(Lobby*)0)
-{
-}
-
-ServerRouting::~ServerRouting()
-{
-}
-
-void ServerRouting::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-Account * ServerRouting::getAccountByName(const std::string & username)
-{
-    return 0;
-}
-
-void ServerRouting::addAccount(Account * a)
-{
-}
-
-void ServerRouting::externalOperation(const Operation & op, Link &)
-{
-}
-
-void ServerRouting::operation(const Operation &, OpVector &)
-{
-}
+#include "stubs/server/stubServerRouting.h"
 
 Lobby::Lobby(ServerRouting & s, const std::string & id, long intId) :
        Router(id, intId),

@@ -7,9 +7,18 @@
 #include "server/EntityBuilder.h"
 #include "stubEntityBuilder_custom.h"
 
+#ifndef STUB_EntityBuilder_installBaseFactory
+//#define STUB_EntityBuilder_installBaseFactory
+  void EntityBuilder::installBaseFactory(const std::string & class_name, const std::string & parent, EntityKit * factory)
+  {
+    
+  }
+#endif //STUB_EntityBuilder_installBaseFactory
+
 #ifndef STUB_EntityBuilder_EntityBuilder
 //#define STUB_EntityBuilder_EntityBuilder
    EntityBuilder::EntityBuilder()
+    : Singleton()
   {
     
   }
@@ -22,14 +31,6 @@
     
   }
 #endif //STUB_EntityBuilder_EntityBuilder_DTOR
-
-#ifndef STUB_EntityBuilder_installBaseFactory
-//#define STUB_EntityBuilder_installBaseFactory
-  void EntityBuilder::installBaseFactory(const std::string & class_name, const std::string & parent, EntityKit * factory)
-  {
-    
-  }
-#endif //STUB_EntityBuilder_installBaseFactory
 
 #ifndef STUB_EntityBuilder_installFactory
 //#define STUB_EntityBuilder_installFactory

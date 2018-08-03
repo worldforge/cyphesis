@@ -688,7 +688,7 @@ void showUsage(const char * prgname, int usage_flags, const char * extras)
     }
     std::cout << std::endl;
     std::cout << "Options:" << std::endl;
-    
+
     size_t column_width = 0;
 
     Options * options = Options::instance();

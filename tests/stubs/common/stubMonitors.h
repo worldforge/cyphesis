@@ -10,6 +10,7 @@
 #ifndef STUB_Monitors_Monitors
 //#define STUB_Monitors_Monitors
    Monitors::Monitors()
+    : Singleton()
   {
     
   }
@@ -22,22 +23,6 @@
     
   }
 #endif //STUB_Monitors_Monitors_DTOR
-
-#ifndef STUB_Monitors_instance
-//#define STUB_Monitors_instance
-   Monitors* Monitors::instance()
-  {
-    return nullptr;
-  }
-#endif //STUB_Monitors_instance
-
-#ifndef STUB_Monitors_cleanup
-//#define STUB_Monitors_cleanup
-   void Monitors::cleanup()
-  {
-    
-  }
-#endif //STUB_Monitors_cleanup
 
 #ifndef STUB_Monitors_insert
 //#define STUB_Monitors_insert

@@ -19,6 +19,7 @@
 #ifndef SERVER_SERVER_ROUTING_H
 #define SERVER_SERVER_ROUTING_H
 
+#include <common/Singleton.h>
 #include "common/Router.h"
 #include "common/Shaker.h"
 #include "ConnectableRouter.h"
@@ -36,7 +37,7 @@ extern bool restricted_flag;
 ///
 /// This class has one instance which is the core object in the server.
 /// It maintains list of all out-of-game (OOG) objects in the server.
-class ServerRouting : public Router {
+class ServerRouting : public Router, public Singleton<ServerRouting> {
   protected:
     /// A shaker to generate a salt.
     Shaker m_shaker;
@@ -51,17 +52,11 @@ class ServerRouting : public Router {
     const std::string m_svrName;
     /// The number of clients currently connected.
     int m_numClients;
-    /// Static self object for external access
-    static ServerRouting * m_instance;
   public:
     /// A reference to the World management object.
     BaseWorld & m_world;
     /// A reference to the Lobby management object.
     Lobby & m_lobby;
-
-    static ServerRouting * instance() {
-        return m_instance;
-    }
 
     ServerRouting(BaseWorld & wrld,
                   const std::string & ruleset,

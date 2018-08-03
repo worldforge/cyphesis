@@ -95,6 +95,8 @@ int main(int argc, char** argv)
     //Kill ourselves if our parent is killed.
     prctl(PR_SET_PDEATHSIG, SIGTERM);
 
+    std::unique_ptr<Monitors> monitors(new Monitors());
+
     interactive_signals();
 
     int config_status = loadConfig(argc, argv, USAGE_AICLIENT);

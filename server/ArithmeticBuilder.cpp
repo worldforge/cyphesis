@@ -20,26 +20,11 @@
 
 #include "rulesets/PythonArithmeticFactory.h"
 
-ArithmeticBuilder * ArithmeticBuilder::m_instance = 0;
+template<>
+ArithmeticBuilder* Singleton<ArithmeticBuilder>::ms_Singleton = nullptr;
 
 ArithmeticBuilder::ArithmeticBuilder()
 {
-}
-
-ArithmeticBuilder * ArithmeticBuilder::instance()
-{
-    if (m_instance == 0) {
-        m_instance = new ArithmeticBuilder;
-    }
-    return m_instance;
-}
-
-void ArithmeticBuilder::del()
-{
-    if (m_instance != 0) {
-        delete m_instance;
-        m_instance = 0;
-    }
 }
 
 ArithmeticScript * ArithmeticBuilder::newArithmetic(const std::string & name,

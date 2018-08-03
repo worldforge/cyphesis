@@ -2,7 +2,7 @@
 #ifndef STUB_Task_Task
 #define STUB_Task_Task
 Task::Task(UsageInstance usageInstance, const Py::Object& script)
-: m_script(script), m_usageInstance(std::move(usageInstance))
+:m_refCount(0), m_script(script), m_usageInstance(std::move(usageInstance))
 {
 
 }

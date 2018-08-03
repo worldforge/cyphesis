@@ -1,5 +1,6 @@
 //Add custom implementations of stubbed functions here; this file won't be rewritten when re-generating stubs.
-ServerRouting * ServerRouting::m_instance = nullptr;
+template<>
+ServerRouting * Singleton<ServerRouting>::ms_Singleton = nullptr;
 
 
 #ifndef STUB_ServerRouting_ServerRouting

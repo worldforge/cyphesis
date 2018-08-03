@@ -54,6 +54,7 @@
 #include "common/sockets.h"
 #include "common/SystemTime.h"
 #include "common/Monitors.h"
+#include "ExternalMindsManager.h"
 
 #include <varconf/config.h>
 
@@ -178,6 +179,7 @@ int main(int argc, char ** argv)
         }
     }
 
+    auto monitors = new Monitors();
     //Check if we should spawn AI clients.
     if (ai_clients) {
         log(INFO, compose("Spawning %1 AI client processes.", ai_clients));
@@ -202,7 +204,7 @@ int main(int argc, char ** argv)
     }
 
 
-    io_service* io_service = new boost::asio::io_service();
+    auto io_service = new boost::asio::io_service();
 
     // Initialise the persistence subsystem.
     std::string databaseBackend;
@@ -282,9 +284,10 @@ int main(int argc, char ** argv)
     SystemTime time{};
     time.update();
 
-    EntityBuilder::init();
+    auto entityBuilder = new EntityBuilder();
+    auto arithmenticBuilder = new ArithmeticBuilder();
 
-    Ruleset* ruleset = new Ruleset(EntityBuilder::instance(), *io_service);
+    Ruleset* ruleset = new Ruleset(entityBuilder, *io_service);
     ruleset->loadRules(ruleset_name);
 
     Ref<LocatedEntity> baseEntity = new World(consts::rootWorldId, consts::rootWorldIntId);
@@ -295,9 +298,10 @@ int main(int argc, char ** argv)
     register_baseworld_with_python(world);
 
 
-    PossessionAuthenticator::init();
+    auto possessionAuthenticator = new PossessionAuthenticator();
 
-    StorageManager * store = new StorageManager(*world);
+    auto externalMindsManager = new ExternalMindsManager();
+    auto store = new StorageManager(*world);
 
     // This ID is currently generated every time, but should perhaps be
     // persistent in future.
@@ -386,7 +390,7 @@ int main(int argc, char ** argv)
 
 
     //Instantiate at startup
-    HttpCache::instance();
+    auto httpCache = new HttpCache();
     std::function<void(CommHttpClient&)> httpStarter = [&](CommHttpClient& client) {
         //Listen to both ipv4 and ipv6
         //client.getSocket().set_option(boost::asio::ip::v6_only(false));
@@ -641,7 +645,7 @@ int main(int argc, char ** argv)
     delete localListener;
     delete httpListener;
 
-    HttpCache::del();
+    delete httpCache;
 
     delete pythonListener;
 
@@ -660,19 +664,22 @@ int main(int argc, char ** argv)
 
     delete store;
 
+    delete externalMindsManager;
+
+    delete possessionAuthenticator;
+
     delete world;
 
     delete ruleset;
 
+    entityBuilder->flushFactories();
+    delete entityBuilder;
+
+    delete arithmenticBuilder;
+
     delete persistence;
 
     delete database;
-
-
-    EntityBuilder::instance()->flushFactories();
-    EntityBuilder::del();
-    ArithmeticBuilder::del();
-    PossessionAuthenticator::del();
 
     delete inheritance;
 
@@ -685,7 +692,7 @@ int main(int argc, char ** argv)
 
     delete global_conf;
 
-    Monitors::cleanup();
+    delete monitors;
 
     log(INFO, "Clean shutdown complete.");
     logEvent(STOP, "- - - Standalone server shutdown");

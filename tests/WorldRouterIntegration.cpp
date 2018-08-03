@@ -73,6 +73,7 @@ class WorldRouterintegration : public Cyphesis::TestBase
     void test_sequence();
 
         Inheritance* m_inheritance;
+        EntityBuilder* m_eb;
         DatabaseNull m_database;
 };
 
@@ -87,7 +88,7 @@ WorldRouterintegration::WorldRouterintegration()
 void WorldRouterintegration::setup()
 {
     m_inheritance = new Inheritance();
-    EntityBuilder::init();
+    m_eb = new EntityBuilder();
 
 
     class TestEntityRuleHandler : public EntityRuleHandler {
@@ -106,7 +107,7 @@ void WorldRouterintegration::setup()
             }
     };
 
-    auto entityRuleHandler = new TestEntityRuleHandler(EntityBuilder::instance());
+    auto entityRuleHandler = new TestEntityRuleHandler(m_eb);
 
     auto composeDeclaration = [](std::string class_name, std::string parent, Atlas::Message::MapType rawAttributes) {
 
@@ -138,6 +139,7 @@ void WorldRouterintegration::setup()
 
 void WorldRouterintegration::teardown()
 {
+    delete m_eb;
     delete m_inheritance;
 }
 
@@ -352,6 +354,8 @@ int PythonScriptFactory<LocatedEntity>::setup()
 #include "stubs/server/stubServerRouting.h"
 #include "stubs/rulesets/stubEntityProperty.h"
 #include "stubs/rulesets/stubPythonScriptFactory.h"
+
+#include "stubs/common/stubMonitors.h"
 
 #include <Atlas/Objects/Operation.h>
 #include "stubs/rulesets/stubScriptsProperty.h"

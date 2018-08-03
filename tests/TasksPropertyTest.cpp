@@ -51,7 +51,7 @@ int main()
     OpVector res;
     Ref<Character> actor = pc.createCharacterEntity();
     UsageInstance usageInstance;
-    usageInstance.actor = pc.createCharacterEntity();
+    usageInstance.actor = actor;
     usageInstance.op = Atlas::Objects::Operation::Action();
     Ref<Task> task = new Task(usageInstance, fake);
     task->progress() = .1;

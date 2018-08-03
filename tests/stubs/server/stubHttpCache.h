@@ -7,14 +7,6 @@
 #include "server/HttpCache.h"
 #include "stubHttpCache_custom.h"
 
-#ifndef STUB_HttpCache_HttpCache
-//#define STUB_HttpCache_HttpCache
-   HttpCache::HttpCache()
-  {
-    
-  }
-#endif //STUB_HttpCache_HttpCache
-
 #ifndef STUB_HttpCache_sendHeaders
 //#define STUB_HttpCache_sendHeaders
   void HttpCache::sendHeaders(std::ostream &, int status , const std::string & type , const std::string & mesg )

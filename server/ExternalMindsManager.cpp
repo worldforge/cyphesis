@@ -38,15 +38,9 @@
 
 static const bool debug_flag = false;
 
-ExternalMindsManager * ExternalMindsManager::m_instance = nullptr;
+template<>
+ExternalMindsManager* Singleton<ExternalMindsManager>::ms_Singleton = nullptr;
 
-ExternalMindsManager * ExternalMindsManager::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new ExternalMindsManager();
-    }
-    return m_instance;
-}
 
 int ExternalMindsManager::addConnection(
         const ExternalMindsConnection& connection)
@@ -105,7 +99,7 @@ void ExternalMindsManager::addPossessionEntryForCharacter(Character& character)
         key += ch;
     }
 
-    PossessionAuthenticator::instance()->addPossession(character.getId(), key);
+    PossessionAuthenticator::instance().addPossession(character.getId(), key);
 }
 
 int ExternalMindsManager::requestPossession(Character& character, const std::string& language, const std::string& script)
@@ -130,8 +124,7 @@ int ExternalMindsManager::requestPossessionFromRegisteredClients(
         const std::string& entity_id)
 {
     if (!m_connections.empty()) {
-        auto result = PossessionAuthenticator::instance()->getPossessionKey(
-                entity_id);
+        auto result = PossessionAuthenticator::instance().getPossessionKey(entity_id);
         if (result.is_initialized()) {
             //Use the last one registered.
             //TODO: implement a better way to select the connection to use. Should we rotate the connections?

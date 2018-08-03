@@ -20,19 +20,15 @@
 #define SERVER_ARITHMETIC_BUILDER_H
 
 #include <string>
+#include <common/Singleton.h>
 
 class ArithmeticScript;
 class LocatedEntity;
 
 /// \brief Builder to handle the creation of arithmetic objects
-class ArithmeticBuilder {
-  protected:
-    static ArithmeticBuilder * m_instance;
-
-    ArithmeticBuilder();
+class ArithmeticBuilder : public Singleton<ArithmeticBuilder> {
   public:
-    static ArithmeticBuilder * instance();
-    static void del();
+    ArithmeticBuilder();
 
     ArithmeticScript * newArithmetic(const std::string &, LocatedEntity *);
 };

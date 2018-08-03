@@ -20,6 +20,7 @@
 #define COMMON_MONITORS_H
 
 #include <Atlas/Message/Element.h>
+#include "Singleton.h"
 
 class VariableBase;
 
@@ -27,20 +28,17 @@ class VariableBase;
 ///
 /// Any code can insert or update key value pairs here, and subsystems like
 /// the http interface can access it.
-class Monitors {
+class Monitors : public Singleton<Monitors>{
   protected:
     typedef std::map<std::string, VariableBase *> MonitorDict;
 
-    static Monitors * m_instance;
 
-    Monitors();
-    ~Monitors();
 
     Atlas::Message::MapType m_pairs;
     MonitorDict m_variableMonitors;
   public:
-    static Monitors * instance();
-    static void cleanup();
+    Monitors();
+    ~Monitors() override;
 
     void insert(const std::string &, const Atlas::Message::Element &);
     void watch(const std::string &, VariableBase *);

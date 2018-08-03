@@ -21,13 +21,12 @@
 
 #include <list>
 #include <string>
+#include <common/Singleton.h>
 
 /// \brief A caching generator for the results of http requests.
 ///
-class HttpCache {
+class HttpCache : public Singleton<HttpCache> {
   protected:
-    HttpCache();
-    static HttpCache * m_instance;
 
     void sendHeaders(std::ostream &,
                      int status = 200,
@@ -38,18 +37,7 @@ class HttpCache {
                           int status = 400,
                           const std::string & mesg = "Bad Request");
   public:
-    static HttpCache * instance() {
-        if (m_instance == nullptr) {
-            m_instance = new HttpCache();
-        }
-        return m_instance;
-    }
-    static void del() {
-        if (m_instance != nullptr) {
-            delete m_instance;
-            m_instance = nullptr;
-        }
-    }
+
     void processQuery(std::ostream &, const std::list<std::string> &);
 };
 

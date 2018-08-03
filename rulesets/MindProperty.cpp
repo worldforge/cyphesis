@@ -97,7 +97,7 @@ void MindProperty::apply(LocatedEntity * ent)
         return;
     }
 
-    ExternalMindsManager::instance()->requestPossession(*chr, m_language, m_script);
+    ExternalMindsManager::instance().requestPossession(*chr, m_language, m_script);
 
 }
 

@@ -76,7 +76,7 @@ Ref<LocatedEntity> ArchetypeFactory::createEntity(const std::string & id, long i
         ::addToEntity(Point3D::ZERO(), cleansedAttributes->modifyPos());
     }
 
-    auto entity = EntityBuilder::instance()->newChildEntity(id, intId, concreteType, cleansedAttributes, *location);
+    auto entity = EntityBuilder::instance().newChildEntity(id, intId, concreteType, cleansedAttributes, *location);
 
     if (entity == nullptr) {
         log(ERROR, String::compose("Could not create entity of type %1.", concreteType));

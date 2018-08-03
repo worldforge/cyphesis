@@ -27,7 +27,8 @@
 
 static const bool debug_flag = false;
 
-PossessionAuthenticator * PossessionAuthenticator::m_instance = nullptr;
+template<>
+PossessionAuthenticator* Singleton<PossessionAuthenticator>::ms_Singleton = nullptr;
 
 /// \brief Checks if there is a pending possession on an account
 ///

@@ -424,27 +424,7 @@ void Link::disconnect()
 #include "server/OpRuleHandler.h"
 #include "stubs/server/stubRuleset.h"
 #include "stubs/common/stubDatabase.h"
-
-
-PossessionAuthenticator * PossessionAuthenticator::m_instance = nullptr;
-
-int PossessionAuthenticator::addPossession(const std::string &entity_id,
-                                        const std::string &possess_key)
-{
-    return 0;
-}
-
-int PossessionAuthenticator::removePossession(const std::string &entity_id)
-{
-    return 0;
-}
-
-LocatedEntity *PossessionAuthenticator::authenticatePossession(const std::string &entity_id,
-                                            const std::string &possess_key)
-{
-    return 0;
-}
-
+#include "stubs/server/stubPossessionAuthenticator.h"
 #include "stubs/server/stubPersistence.h"
 
 void log(LogLevel lvl, const std::string & msg)

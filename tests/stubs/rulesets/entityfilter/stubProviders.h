@@ -241,6 +241,50 @@ namespace EntityFilter {
 
 namespace EntityFilter {
 
+#ifndef STUB_ActorProvider_ActorProvider
+//#define STUB_ActorProvider_ActorProvider
+   ActorProvider::ActorProvider(Consumer<LocatedEntity>* consumer)
+    : EntityProvider(consumer)
+  {
+    
+  }
+#endif //STUB_ActorProvider_ActorProvider
+
+#ifndef STUB_ActorProvider_value
+//#define STUB_ActorProvider_value
+  void ActorProvider::value(Atlas::Message::Element& value, const QueryContext& context) const
+  {
+    
+  }
+#endif //STUB_ActorProvider_value
+
+
+}  // namespace EntityFilter
+
+namespace EntityFilter {
+
+#ifndef STUB_ToolProvider_ToolProvider
+//#define STUB_ToolProvider_ToolProvider
+   ToolProvider::ToolProvider(Consumer<LocatedEntity>* consumer)
+    : EntityProvider(consumer)
+  {
+    
+  }
+#endif //STUB_ToolProvider_ToolProvider
+
+#ifndef STUB_ToolProvider_value
+//#define STUB_ToolProvider_value
+  void ToolProvider::value(Atlas::Message::Element& value, const QueryContext& context) const
+  {
+    
+  }
+#endif //STUB_ToolProvider_value
+
+
+}  // namespace EntityFilter
+
+namespace EntityFilter {
+
 #ifndef STUB_SelfEntityProvider_SelfEntityProvider
 //#define STUB_SelfEntityProvider_SelfEntityProvider
    SelfEntityProvider::SelfEntityProvider(Consumer<LocatedEntity>* consumer)
@@ -556,7 +600,7 @@ namespace EntityFilter {
 
 #ifndef STUB_ProviderFactory_createEntityProvider
 //#define STUB_ProviderFactory_createEntityProvider
-  EntityProvider* ProviderFactory::createEntityProvider(SegmentsList segments) const
+  T* ProviderFactory::createEntityProvider(SegmentsList segments) const
   {
     return nullptr;
   }

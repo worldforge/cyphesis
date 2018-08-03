@@ -7,14 +7,6 @@
 #include "server/ExternalMindsManager.h"
 #include "stubExternalMindsManager_custom.h"
 
-#ifndef STUB_ExternalMindsManager_instance
-//#define STUB_ExternalMindsManager_instance
-   ExternalMindsManager* ExternalMindsManager::instance()
-  {
-    return nullptr;
-  }
-#endif //STUB_ExternalMindsManager_instance
-
 #ifndef STUB_ExternalMindsManager_addConnection
 //#define STUB_ExternalMindsManager_addConnection
   int ExternalMindsManager::addConnection(const ExternalMindsConnection& connection)

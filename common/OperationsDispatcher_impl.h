@@ -81,7 +81,7 @@ bool OperationsDispatcher<T>::idle()
     // to tell the server not to sleep when polling clients. This ensures
     // that we keep processing ops at a the maximum rate without leaving
     // clients unattended.
-    Monitors::instance()->insert("operations_queue", (Atlas::Message::IntType) m_operationQueue.size());
+    Monitors::instance().insert("operations_queue", (Atlas::Message::IntType) m_operationQueue.size());
     return opsAvailableRightNow;
 }
 

@@ -100,7 +100,6 @@ typedef std::set<std::string> TableSet;
 class Database : public Singleton<Database>
 {
     protected:
-        static Database* m_instance;
 
         bool m_queryInProgress;
 

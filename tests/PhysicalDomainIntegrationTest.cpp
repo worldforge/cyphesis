@@ -53,6 +53,7 @@
 
 #include <rulesets/TerrainModProperty.h>
 #include <rulesets/EntityProperty.h>
+#include "stubs/common/stubMonitors.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;

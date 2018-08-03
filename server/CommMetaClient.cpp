@@ -246,7 +246,7 @@ void CommMetaClient::updateAttributes()
     for (auto& v : fields)
     {
         std::stringstream ss;
-        if ( Monitors::instance()->readVariable(v,ss) == 0 )
+        if ( Monitors::instance().readVariable(v,ss) == 0 )
         {
             std::string tmp = ss.str();
             boost::algorithm::trim(tmp);
