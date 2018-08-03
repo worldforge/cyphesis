@@ -24,14 +24,32 @@ class ComparePredicate : public Predicate {
         enum class Comparator {
             EQUALS, NOT_EQUALS, INSTANCE_OF, IN, CONTAINS, GREATER, GREATER_EQUAL, LESS, LESS_EQUAL, CAN_REACH
         };
-        ComparePredicate(const Consumer<QueryContext>* lhs, const Consumer<QueryContext>* rhs, Comparator comparator);
+        ComparePredicate(const Consumer<QueryContext>* lhs, const Consumer<QueryContext>* rhs, Comparator comparator, const Consumer<QueryContext>* with=nullptr);
 
         bool isMatch(const QueryContext& context) const override;
 
         const Consumer<QueryContext>* m_lhs;
         const Consumer<QueryContext>* m_rhs;
         const Comparator m_comparator;
+        const Consumer<QueryContext>* m_with;
 };
+
+class CompareWithPredicate : public Predicate {
+    public:
+
+        enum class Comparator {
+                EQUALS, NOT_EQUALS, INSTANCE_OF, IN, CONTAINS, GREATER, GREATER_EQUAL, LESS, LESS_EQUAL, CAN_REACH
+        };
+        CompareWithPredicate(const Consumer<QueryContext>* lhs, const Consumer<QueryContext>* rhs, const Consumer<QueryContext>* with, Comparator comparator);
+
+        bool isMatch(const QueryContext& context) const override;
+
+        const Consumer<QueryContext>* m_lhs;
+        const Consumer<QueryContext>* m_rhs;
+        const Consumer<QueryContext>* m_with;
+        const Comparator m_comparator;
+};
+
 
 class AndPredicate : public Predicate {
     public:

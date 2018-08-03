@@ -7,8 +7,9 @@
 namespace EntityFilter {
     ComparePredicate::ComparePredicate(const Consumer<QueryContext>* lhs,
                                        const Consumer<QueryContext>* rhs,
-                                       Comparator comparator) :
-        m_lhs(lhs), m_rhs(rhs), m_comparator(comparator)
+                                       Comparator comparator,
+                                       const Consumer<QueryContext>* with) :
+        m_lhs(lhs), m_rhs(rhs), m_comparator(comparator), m_with(with)
     {
         //make sure rhs and lhs exist
         if (!m_lhs || !m_rhs) {
@@ -28,6 +29,12 @@ namespace EntityFilter {
                 || (m_rhs->getType() != &typeid(const LocatedEntity*))) {
                 throw std::invalid_argument(
                     "When using the 'can_reach' comparator, both sides must return an entity. For example, 'actor can_reach entity'.");
+            }
+            if (m_with) {
+                if (m_with->getType() != &typeid(const LocatedEntity*)) {
+                    throw std::invalid_argument(
+                        "When using the 'can_reach ... with' comparator, all three inputs must return an entity. For example, 'actor can_reach entity with tool'.");
+                }
             }
         }
 
@@ -143,9 +150,19 @@ namespace EntityFilter {
                 auto leftEntity = static_cast<const LocatedEntity*>(left.Ptr());
                 m_rhs->value(right, context);
                 auto rightEntity = static_cast<LocatedEntity*>(right.Ptr());
+                float extraReach = 0;
+                if (m_with) {
+                    Atlas::Message::Element with;
+                    m_with->value(with, context);
+                    auto withEntity = static_cast<LocatedEntity*>(with.Ptr());
+                    auto reachProp = withEntity->getPropertyType<double>("reach");
+                    if (reachProp) {
+                        extraReach = (float) reachProp->data();
+                    }
+                }
 
                 if (leftEntity && rightEntity) {
-                    return leftEntity->canReach({rightEntity, WFMath::Point<3>()}, 0.0f);
+                    return leftEntity->canReach({rightEntity, WFMath::Point<3>()}, extraReach);
                 }
                 return false;
             }

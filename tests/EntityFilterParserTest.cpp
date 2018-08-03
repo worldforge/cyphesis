@@ -107,6 +107,14 @@ void ParserTest::test_ComparisonOperators()
     assert(pred->m_comparator == ComparePredicate::Comparator::IN);
     delete pred;
 
+    pred = (ComparePredicate*)ConstructPredicate("entity can_reach entity");
+    assert(pred->m_comparator == ComparePredicate::Comparator::CAN_REACH);
+    delete pred;
+
+    pred = (ComparePredicate*)ConstructPredicate("entity can_reach entity with entity");
+    assert(pred->m_comparator == ComparePredicate::Comparator::CAN_REACH);
+    delete pred;
+
     //Instance_of can only be created for existing types
     TypeNode* thingType = new TypeNode("thing");
     types["thing"] = thingType;

@@ -8,16 +8,12 @@ import server
 
 def sow(instance):
     Usage.set_cooldown_on_attached(instance.tool, instance.actor)
-    target = instance.targets[0]
 
-    if instance.actor.can_reach(target):
-        task = Cultivate(instance, duration=11, tick_interval=1, name="Cultivate")
+    task = Cultivate(instance, duration=11, tick_interval=1, name="Cultivate")
 
-        instance.actor.send_world(Operation("sight", instance.op))
+    instance.actor.send_world(Operation("sight", instance.op))
 
-        return (server.OPERATION_BLOCKED, instance.actor.start_task('cultivate', task))
-    else:
-        return (server.OPERATION_BLOCKED, instance.actor.client_error(instance.op, "Too far away"))
+    return (server.OPERATION_BLOCKED, instance.actor.start_task('cultivate', task))
 
 class Cultivate(server.Task):
     """ A proof of concept task germinating seeds into plants."""
@@ -32,9 +28,6 @@ class Cultivate(server.Task):
         (valid, err) = self.usage.is_valid()
         if not valid:
             return self.irrelevant(err)
-
-        if not self.actor.can_reach(target):
-            return self.irrelevant("Can not reach.")
 
     def completed(self):
 

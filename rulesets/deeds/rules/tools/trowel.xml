@@ -20,7 +20,7 @@
                 <map name="default">
                     <map name="sow">
                         <list name="targets">
-                            <string>entity instance_of types.game_entity &amp;&amp; entity.germinates != none</string>
+                            <string>entity instance_of types.game_entity &amp;&amp; entity.germinates != none &amp;&amp; actor can_reach entity with tool</string>
                         </list>
                         <string name="handler">world.objects.tools.Trowel.sow</string>
                     </map>

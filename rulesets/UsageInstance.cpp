@@ -16,6 +16,7 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <rulesets/entityfilter/Providers.h>
 #include "UsageInstance.h"
 #include "LocatedEntity.h"
 #include "BaseWorld.h"
@@ -31,8 +32,13 @@ using Atlas::Objects::Entity::RootEntity;
 
 std::pair<bool, std::string> UsageInstance::isValid() const
 {
-    if (definition.constraint && !definition.constraint->match(*actor)) {
-        return {false, "Constraint does not match."};
+
+    if (definition.constraint) {
+        EntityFilter::QueryContext queryContext{*tool, actor, tool};
+
+        if (!definition.constraint->match(queryContext)) {
+            return {false, "Constraint does not match."};
+        }
     }
 
     for (size_t i = 0; i < targets.size(); ++i) {
@@ -40,7 +46,8 @@ std::pair<bool, std::string> UsageInstance::isValid() const
         if (entry.m_loc->isDestroyed()) {
             return {false, String::compose("Target nr. %1 is destroyed.", i)};
         }
-        if (!definition.targets[i]->match(*entry.m_loc)) {
+        EntityFilter::QueryContext queryContext{*entry.m_loc, actor, tool};
+        if (!definition.targets[i]->match(queryContext)) {
             return {false, String::compose("Target nr. %1 does not match the filter.", i)};
         }
     }
@@ -50,7 +57,8 @@ std::pair<bool, std::string> UsageInstance::isValid() const
         if (entry.m_loc->isDestroyed()) {
             return {false, String::compose("Consumable nr. %1 is destroyed.", i)};
         }
-        if (!definition.consumed[i]->match(*entry.m_loc)) {
+        EntityFilter::QueryContext queryContext{*entry.m_loc, actor, tool};
+        if (!definition.consumed[i]->match(queryContext)) {
             return {false, String::compose("Consumable nr. %1 does not match the filter.", i)};
         }
     }

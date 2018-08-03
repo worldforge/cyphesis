@@ -99,6 +99,10 @@ struct TestDomain : Domain
 
     bool isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const override
     {
+        //For tests we'll return false if reach is zero
+        if (reach > 0.f) {
+            return false;
+        }
         //Only allow reaching if parent or child
         if (reachingEntity.m_location.m_loc == &queriedEntity || queriedEntity.m_location.m_loc == &reachingEntity) {
             return true;
@@ -184,16 +188,38 @@ struct EntityFilterTest : public Cyphesis::TestBase
 void EntityFilterTest::test_CanReach()
 {
     //TestDomain prevents m_b1 from reaching m_b2
-    QueryContext c1{*m_b1};
-    c1.actor = m_b2;
-    TestContextQuery("actor can_reach entity", {}, {c1});
-    TestContextQuery("entity can_reach actor", {}, {c1});
+    {
+        QueryContext c{*m_b1};
+        c.actor = m_b2;
+        TestContextQuery("actor can_reach entity", {}, {c});
+        TestContextQuery("entity can_reach actor", {}, {c});
+    }
 
     //TestDomain allows m_b1 from reaching m_bl1
-    QueryContext c2{*m_b1};
-    c2.actor = m_bl1;
-    TestContextQuery("actor can_reach entity", {c2}, {});
-    TestContextQuery("entity can_reach actor", {c2}, {});
+    {
+        QueryContext c{*m_b1};
+        c.actor = m_bl1;
+        TestContextQuery("actor can_reach entity", {c}, {});
+        TestContextQuery("entity can_reach actor", {c}, {});
+    }
+
+    //Test "with". m_glovesEntity has "reach" set, and our TestDomain will return false for any "reach" values that aren't zero
+    {
+        QueryContext c{*m_b1};
+        c.actor = m_bl1;
+        c.tool = m_glovesEntity;
+        TestContextQuery("actor can_reach entity with tool", {}, {c});
+        TestContextQuery("entity can_reach actor with tool", {}, {c});
+    }
+
+    //m_bootsEntity has no "reach" property so should work
+    {
+        QueryContext c{*m_b1};
+        c.actor = m_bl1;
+        c.tool = m_bootsEntity;
+        TestContextQuery("actor can_reach entity with tool", {c}, {});
+        TestContextQuery("entity can_reach actor with tool", {c}, {});
+    }
 }
 
 
@@ -496,6 +522,10 @@ void EntityFilterTest::setup()
     m_glovesEntity->setType(m_glovesType);
     m_glovesEntity->setProperty("color", new SoftProperty("brown"));
     m_glovesEntity->setProperty("mass", new SoftProperty(5));
+    //Mark it with a "reach" so we can use it in the "can_reach ... with" tests
+    auto reachProp = new Property<double>();
+    reachProp->data() = 10.0f;
+    m_glovesEntity->setProperty("reach", reachProp);
 
     m_bootsEntity = new Entity("6", 6);
     m_bootsEntity->setType(m_bootsType);
