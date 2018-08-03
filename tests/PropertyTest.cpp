@@ -84,7 +84,7 @@ int main()
     {
     long i = 23;
     PropertyBase * pb = new SoftProperty;
-    assert(pb->flags() == 0);
+    assert(pb->flags().m_flags == 0);
     pb->set(i);
     pb->get(val);
     assert(val == i);
@@ -95,7 +95,7 @@ int main()
     {
     long i = 23;
     PropertyBase * pb = new SoftProperty(i);
-    assert(pb->flags() == 0);
+    assert(pb->flags().m_flags == 0);
     pb->get(val);
     assert(val == i);
     exerciseProperty(pb);
@@ -105,7 +105,7 @@ int main()
     {
     long i = 23;
     PropertyBase * pb = new Property<int>(0);
-    assert(pb->flags() == 0);
+    assert(pb->flags().m_flags == 0);
     pb->set(i);
     pb->get(val);
     assert(val == i);
@@ -116,7 +116,7 @@ int main()
     {
     long i = 23;
     PropertyBase * pb = new Property<long>(0);
-    assert(pb->flags() == 0);
+    assert(pb->flags().m_flags == 0);
     pb->set(i);
     pb->get(val);
     assert(val == i);
@@ -127,7 +127,7 @@ int main()
     {
     float f = 17.2f;
     PropertyBase * pb = new Property<float>(1);
-    assert(pb->flags() == 1);
+    assert(pb->flags().m_flags == 1);
     pb->set(f);
     pb->get(val);
     assert(val == f);
@@ -138,7 +138,7 @@ int main()
     {
     double d = 65.4;
     PropertyBase * pb = new Property<double>(2);
-    assert(pb->flags() == 2);
+    assert(pb->flags().m_flags == 2);
     pb->set(d);
     pb->get(val);
     assert(val == d);
@@ -149,7 +149,7 @@ int main()
     {
     std::string s = "Test String";
     PropertyBase * pb = new Property<std::string>(3);
-    assert(pb->flags() == 3);
+    assert(pb->flags().m_flags == 3);
     pb->set(s);
     pb->get(val);
     assert(val == s);
@@ -160,7 +160,7 @@ int main()
     {
     long i = 23;
     PropertyBase * pb = new Property<long>(4);
-    assert(pb->flags() == 4);
+    assert(pb->flags().m_flags == 4);
     pb->set(i);
     pb->get(val);
     assert(val == i);
@@ -172,7 +172,7 @@ int main()
     MapType m;
     m.insert(std::make_pair("foo", "bar"));
     PropertyBase * pb = new Property<MapType>(5);
-    assert(pb->flags() == 5);
+    assert(pb->flags().m_flags == 5);
     pb->set(m);
     pb->get(val);
     assert(val == m);
@@ -183,7 +183,7 @@ int main()
     {
         long i = 1;
         PropertyBase * pb = new BoolProperty();
-        assert(pb->flags() == 0);
+        assert(pb->flags().m_flags == 0);
         pb->set(i);
         pb->get(val);
         assert(val == i);

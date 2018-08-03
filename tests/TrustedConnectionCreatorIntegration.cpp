@@ -606,72 +606,9 @@ void Entity::setType(const TypeNode* t) {
 #include "stubs/rulesets/stubEntityProperty.h"
 #include "stubs/rulesets/stubUsagesProperty.h"
 #include "stubs/rulesets/entityfilter/stubFilter.h"
+#include "stubs/rulesets/stubTask.h"
+#include "stubs/rulesets/stubTasksProperty.h"
 
-Task::~Task()
-{
-}
-
-void Task::initTask(const Operation & op, OpVector & res)
-{
-}
-
-void Task::operation(const Operation & op, OpVector & res)
-{
-}
-
-void Task::irrelevant()
-{
-}
-
-TasksProperty::TasksProperty() : PropertyBase(per_ephem), m_task(0)
-{
-}
-
-int TasksProperty::get(Atlas::Message::Element & val) const
-{
-    return 0;
-}
-
-void TasksProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-TasksProperty * TasksProperty::copy() const
-{
-    return 0;
-}
-
-int TasksProperty::startTask(Ref<Task>, LocatedEntity *, const Operation &, OpVector &)
-{
-    return 0;
-}
-
-int TasksProperty::updateTask(LocatedEntity *, OpVector &)
-{
-    return 0;
-}
-
-int TasksProperty::clearTask(LocatedEntity *, OpVector &)
-{
-    return 0;
-}
-
-void TasksProperty::stopTask(LocatedEntity *, OpVector &)
-{
-}
-
-void TasksProperty::TickOperation(LocatedEntity *, const Operation &, OpVector &)
-{
-}
-
-void TasksProperty::UseOperation(LocatedEntity *, const Operation &, OpVector &)
-{
-}
-
-HandlerResult TasksProperty::operation(LocatedEntity *, const Operation &, OpVector &)
-{
-    return OPERATION_IGNORED;
-}
 #define STUB_SoftProperty_get
 int SoftProperty::get(Atlas::Message::Element & val) const
 {

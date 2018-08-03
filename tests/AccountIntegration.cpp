@@ -499,7 +499,6 @@ int PythonScriptFactory<LocatedEntity>::setup()
 #include "stubs/common/stubProperty.h"
 #include "stubs/common/stubDatabase.h"
 
-#include "stubs/server/stubTaskRuleHandler.h"
 #include "stubs/server/stubArchetypeRuleHandler.h"
 #include "stubs/server/stubOpRuleHandler.h"
 #include "stubs/server/stubPropertyRuleHandler.h"
@@ -528,7 +527,8 @@ ArithmeticScript * ArithmeticBuilder::newArithmetic(const std::string & name,
 }
 
 #include "stubs/rulesets/stubPlant.h"
-
+#include "stubs/rulesets/stubWorldTimeProperty.h"
+#include "stubs/rulesets/stubScriptUtils.h"
 
 Stackable::Stackable(const std::string& id, long idInt)
 :Thing::Thing(id, idInt)
@@ -678,55 +678,7 @@ ExternalProperty * ExternalProperty::copy() const
     return 0;
 }
 
-TasksProperty::TasksProperty() : PropertyBase(per_ephem), m_task(0)
-{
-}
-
-int TasksProperty::get(Atlas::Message::Element & val) const
-{
-    return 0;
-}
-
-void TasksProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-TasksProperty * TasksProperty::copy() const
-{
-    return 0;
-}
-
-int TasksProperty::startTask(Ref<Task>, LocatedEntity *, const Operation &, OpVector &)
-{
-    return 0;
-}
-
-int TasksProperty::updateTask(LocatedEntity *, OpVector &)
-{
-    return 0;
-}
-
-int TasksProperty::clearTask(LocatedEntity *, OpVector &)
-{
-    return 0;
-}
-
-void TasksProperty::stopTask(LocatedEntity *, OpVector &)
-{
-}
-
-void TasksProperty::TickOperation(LocatedEntity *, const Operation &, OpVector &)
-{
-}
-
-void TasksProperty::UseOperation(LocatedEntity *, const Operation &, OpVector &)
-{
-}
-
-HandlerResult TasksProperty::operation(LocatedEntity *, const Operation &, OpVector &)
-{
-    return OPERATION_IGNORED;
-}
+#include "stubs/rulesets/stubTasksProperty.h"
 
 PropertyKit::~PropertyKit()
 {

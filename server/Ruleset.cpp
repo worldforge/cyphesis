@@ -26,7 +26,6 @@
 #include "EntityRuleHandler.h"
 #include "OpRuleHandler.h"
 #include "PropertyRuleHandler.h"
-#include "TaskRuleHandler.h"
 #include "ArchetypeRuleHandler.h"
 #include "Persistence.h"
 
@@ -61,7 +60,6 @@ static const bool debug_flag = false;
 template<> Ruleset* Singleton<Ruleset>::ms_Singleton = nullptr;
 
 Ruleset::Ruleset(EntityBuilder * eb, boost::asio::io_service& io_service) :
-      m_taskHandler(new TaskRuleHandler(eb)),
       m_entityHandler(new EntityRuleHandler(eb)),
       m_opHandler(new OpRuleHandler(eb)),
       m_propertyHandler(new PropertyRuleHandler(eb)),
@@ -98,9 +96,6 @@ int Ruleset::installRuleInner(const std::string & class_name,
     if (m_opHandler->check(class_desc) == 0) {
         ret = m_opHandler->install(class_name, parent, class_desc,
                                    dependent, reason, changes);
-    } else if (m_taskHandler->check(class_desc) == 0) {
-        ret = m_taskHandler->install(class_name, parent, class_desc,
-                                     dependent, reason, changes);
     } else if (m_entityHandler->check(class_desc) == 0) {
         ret = m_entityHandler->install(class_name, parent, class_desc,
                                        dependent, reason, changes);
@@ -223,8 +218,6 @@ int Ruleset::modifyRuleInner(const std::string & class_name,
     int ret = -1;
     if (m_opHandler->check(class_desc) == 0) {
         ret = m_opHandler->update(class_name, class_desc, changes);
-    } else if (m_taskHandler->check(o) == 0) {
-        ret = m_taskHandler->update(class_name, class_desc, changes);
     } else if (m_entityHandler->check(class_desc) == 0) {
         ret = m_entityHandler->update(class_name, class_desc, changes);
     } else if (m_propertyHandler->check(class_desc) == 0) {

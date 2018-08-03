@@ -102,7 +102,8 @@ def _GenerateMethods(output_lines, source, class_node):
                 if node.return_type.pointer:
                     return_statement = 'return nullptr;'
                 elif node.return_type.name != 'void':
-                    if node.return_type.name in ['int', 'unsigned int', 'long', 'unsigned long', 'size_t', 'float', 'double', 'short', 'unsigned short']:
+                    if node.return_type.name in ['int', 'unsigned int', 'long', 'unsigned long', 'size_t', 'float', 'double', 'short', 'unsigned short'
+                                                 'int32_t', 'int64_t', 'uint32_t', 'uint32_t', 'std::int32_t', 'std::int64_t', 'std::uint32_t', 'std::uint32_t']:
                         return_statement = 'return 0;'
                     elif node.return_type.name == 'bool':
                         return_statement = 'return false;'

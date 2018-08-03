@@ -171,13 +171,7 @@ void AreaProperty::apply(LocatedEntity * owner)
 {
 }
 
-Location::Location() : m_loc(0)
-{
-}
-
-void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
+#include "stubs/rulesets/stubLocation.h"
 
 void log(LogLevel, const std::string & msg)
 {

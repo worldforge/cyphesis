@@ -16,25 +16,20 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "EntityLocation.h"
+#ifndef CYPHESIS_SCRIPTUTILS_H
+#define CYPHESIS_SCRIPTUTILS_H
+
+
+#include "common/OperationRouter.h"
+#include "external/pycxx/CXX/Objects.hxx"
 #include "LocatedEntity.h"
+#include <string>
 
-EntityLocation::EntityLocation(Ref<LocatedEntity> loc)
-    : m_loc(std::move(loc))
+class ScriptUtils
 {
-}
+    public:
+        static HandlerResult processScriptResult(const std::string& scriptName, const Py::Object& ret, OpVector& res, LocatedEntity* e);
+};
 
-EntityLocation::EntityLocation(Ref<LocatedEntity> loc, const WFMath::Point<3>& pos)
-    : m_loc(std::move(loc)), m_pos(pos)
-{
-}
 
-const WFMath::Point<3>& EntityLocation::pos() const
-{
-    return m_pos;
-}
-
-bool EntityLocation::isValid() const
-{
-    return (m_loc && m_pos.isValid());
-}
+#endif //CYPHESIS_SCRIPTUTILS_H

@@ -25,8 +25,8 @@
 
 #ifndef STUB_ExternalMind_ExternalMind
 //#define STUB_ExternalMind_ExternalMind
-   ExternalMind::ExternalMind(LocatedEntity &)
-    : Router(LocatedEntity)
+   ExternalMind::ExternalMind(LocatedEntity & entity)
+    : Router(entity)
     , m_link(nullptr)
   {
     

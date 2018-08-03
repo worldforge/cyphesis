@@ -19,6 +19,11 @@
 #include "WorldTimeProperty.h"
 #include "BaseWorld.h"
 
+WorldTimeProperty::WorldTimeProperty() = default;
+
+WorldTimeProperty::~WorldTimeProperty() = default;
+
+
 WorldTimeProperty * WorldTimeProperty::copy() const
 {
     return new WorldTimeProperty(*this);

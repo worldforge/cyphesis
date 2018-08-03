@@ -22,27 +22,43 @@ Location::Location(LocatedEntity * rf):
 }
 #endif //STUB_Location_Location
 
+#ifndef STUB_distanceTo
+#define STUB_distanceTo
 
 const Vector3D distanceTo(const Location & self, const Location & other)
 {
     return *((Vector3D*)nullptr);
 }
+#endif //STUB_distanceTo
 
+#ifndef STUB_relativePos
+#define STUB_relativePos
 const Point3D relativePos(const Location & self, const Location & other)
 {
     return *((Point3D*)nullptr);
 }
+#endif //STUB_relativePos
 
+#ifndef STUB_squareDistance
+#define STUB_squareDistance
 float squareDistance(const Location & self, const Location & other)
 {
     return 0.0f;
 }
+#endif //STUB_squareDistance
+
+#ifndef STUB_squareHorizontalDistance
+#define STUB_squareHorizontalDistance
 float squareHorizontalDistance(const Location & self, const Location & other)
 {
     return 0.0f;
 }
+#endif //STUB_squareHorizontalDistance
 
+#ifndef STUB_squareDistanceWithAncestor
+#define STUB_squareDistanceWithAncestor
 float squareDistanceWithAncestor(const Location & self, const Location & other, const Location** ancestor)
 {
     return 0.f;
 }
+#endif //STUB_squareDistanceWithAncestor

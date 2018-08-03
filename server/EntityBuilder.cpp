@@ -32,7 +32,6 @@
 #include "common/TaskKit.h"
 #include "common/TypeNode.h"
 #include "common/Variable.h"
-#include "TaskFactory.h"
 
 #include <Atlas/Objects/RootOperation.h>
 #include <rulesets/Python_API.h>
@@ -81,14 +80,6 @@ EntityBuilder::EntityBuilder()
             }
         }
 
-        for (auto& entry : m_taskFactories) {
-            if (entry.second->m_scriptFactory) {
-                entry.second->m_scriptFactory->refreshClass();
-                //Note that we don't reload the tasks since they often are short lived. Should we perhaps?
-            }
-        }
-
-
     });
 }
 
@@ -98,12 +89,6 @@ EntityBuilder::~EntityBuilder()
     FactoryDict::const_iterator Iend = m_entityFactories.end();
     for (; I != Iend; ++I) {
         delete I->second;
-    }
-
-    TaskFactoryDict::const_iterator J = m_taskFactories.begin();
-    TaskFactoryDict::const_iterator Jend = m_taskFactories.end();
-    for (; J != Jend; ++J) {
-        delete J->second;
     }
 }
 
@@ -158,82 +143,6 @@ Ref<LocatedEntity> EntityBuilder::newChildEntity(const std::string& id, long int
 
 }
 
-Ref<Task> EntityBuilder::buildTask(TaskKit* factory, LocatedEntity& owner) const
-{
-    auto task = factory->newTask(owner);
-
-    if (task && factory->m_scriptFactory != nullptr) {
-        if (factory->m_scriptFactory->addScript(task) != 0) {
-            log(ERROR, "Assigning script to task failed");
-        }
-    }
-    return task;
-}
-
-/// \brief Build and populate a new task object.
-///
-/// @param name The name of the task type.
-/// @param owner The character entity that owns the task.
-Ref<Task> EntityBuilder::newTask(const std::string& name, LocatedEntity& owner) const
-{
-    auto I = m_taskFactories.find(name);
-    if (I == m_taskFactories.end()) {
-        return nullptr;
-    }
-    return buildTask(I->second, owner);
-}
-
-void EntityBuilder::installTaskFactory(const std::string& class_name, TaskKit* factory)
-{
-    m_taskFactories.insert(std::make_pair(class_name, factory));
-}
-
-TaskKit* EntityBuilder::getTaskFactory(const std::string& class_name)
-{
-    TaskFactoryDict::const_iterator I = m_taskFactories.find(class_name);
-    if (I == m_taskFactories.end()) {
-        return nullptr;
-    }
-    return I->second;
-}
-
-void EntityBuilder::addTaskActivation(const std::string& tool, const std::string& op, TaskKit* factory)
-{
-    m_taskActivations[tool].insert(std::make_pair(op, factory));
-}
-
-/// \brief Build a new task object activated by the described event.
-///
-/// An event is described in terms of the tool type used to cause it,
-/// the type of operation being performed using the tool and the type of
-/// the target object the tool is being used on. If a match is found for
-/// this event, a task object is instanced to track the progress of the
-/// result of the event.
-/// @param tool The type of tool activating the event.
-/// @param op The type of operation being performed with the tool.
-/// @param target The type of entity the operation is being performed on.
-/// @param owner The character entity activating the task.
-Ref<Task> EntityBuilder::activateTask(const std::string& tool, const std::string& op, LocatedEntity* target, LocatedEntity& owner) const
-{
-    auto I = m_taskActivations.find(tool);
-    if (I == m_taskActivations.end()) {
-        return nullptr;
-    }
-    const TaskFactoryMultimap& dict = I->second;
-    auto J = dict.lower_bound(op);
-    if (J == dict.end()) {
-        return nullptr;
-    }
-    auto Jend = dict.upper_bound(op);
-    for (; J != Jend; ++J) {
-        if (J->second->checkTarget(target) == -1) {
-            continue;
-        }
-        return buildTask(J->second, owner);
-    }
-    return nullptr;
-}
-
 /// \brief Clear out all the factory objects owned by the entity builder.
 void EntityBuilder::flushFactories()
 {
@@ -242,25 +151,6 @@ void EntityBuilder::flushFactories()
         delete I->second;
     }
     m_entityFactories.clear();
-    TaskFactoryDict::const_iterator K = m_taskFactories.begin();
-    TaskFactoryDict::const_iterator Kend = m_taskFactories.end();
-    for (; K != Kend; ++K) {
-        delete K->second;
-    }
-    m_taskFactories.clear();
-}
-
-bool EntityBuilder::isTask(const std::string& class_name)
-{
-    if (class_name == "task") {
-        return true;
-    }
-    return (m_taskFactories.find(class_name) != m_taskFactories.end());
-}
-
-bool EntityBuilder::hasTask(const std::string& class_name)
-{
-    return (m_taskFactories.find(class_name) != m_taskFactories.end());
 }
 
 void EntityBuilder::installBaseFactory(const std::string& class_name, const std::string& parent, EntityKit* factory)

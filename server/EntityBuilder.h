@@ -30,14 +30,9 @@ class BaseWorld;
 class LocatedEntity;
 class LocatedEntity;
 class EntityKit;
-class Task;
-class TaskKit;
 class CorePropertyManager;
 
 typedef std::map<std::string, EntityKit *> FactoryDict;
-typedef std::map<std::string, TaskKit *> TaskFactoryDict;
-typedef std::multimap<std::string, TaskKit *> TaskFactoryMultimap;
-typedef std::map<std::string, TaskFactoryMultimap> TaskFactoryActivationDict;
 
 /// \brief Builder to handle the creation of all entities for the world.
 ///
@@ -52,8 +47,6 @@ class EntityBuilder {
     std::unique_ptr<CorePropertyManager> m_propertyManager;
 
     FactoryDict m_entityFactories;
-    TaskFactoryDict m_taskFactories;
-    TaskFactoryActivationDict m_taskActivations;
 
     void installBaseFactory(const std::string & class_name,
                             const std::string & parent,
@@ -89,21 +82,6 @@ class EntityBuilder {
                               LocatedEntity & parentEntity) const;
     void flushFactories();
 
-    bool isTask(const std::string & class_name);
-    bool hasTask(const std::string & class_name);
-    Ref<Task> buildTask(TaskKit * factory, LocatedEntity & owner) const;
-    Ref<Task> newTask(const std::string & class_name,
-                   LocatedEntity & owner) const;
-    void installTaskFactory(const std::string & class_name,
-                            TaskKit * factory);
-    TaskKit * getTaskFactory(const std::string & class_name);
-    void addTaskActivation(const std::string & tool,
-                           const std::string & op,
-                           TaskKit * factory);
-    Ref<Task> activateTask(const std::string & tool,
-                        const std::string & op,
-                        LocatedEntity * target,
-                        LocatedEntity & owner) const;
 
     friend class EntityBuildertest;
 };

@@ -27,9 +27,9 @@ class WorldTimeProperty : public PropertyBase
         static constexpr const char* property_name = "world_time";
         static constexpr const char* property_atlastype = "float";
 
-        WorldTimeProperty() = default;
+        WorldTimeProperty();
 
-        ~WorldTimeProperty() override = default;
+        ~WorldTimeProperty() override;
 
         WorldTimeProperty* copy() const override;
 

@@ -169,22 +169,8 @@ bool Script::operation(const std::string & opname,
 void Script::hook(const std::string & function, LocatedEntity * entity)
 {
 }
+#include "stubs/rulesets/stubLocation.h"
 
-void Location::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-Location::Location() : m_loc(0)
-{
-}
-
-Location::Location(LocatedEntity * rf, const Point3D & pos)
-{
-}
-
-void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
 
 Character::Character(const std::string & id, long intId) :
            Thing(id, intId),

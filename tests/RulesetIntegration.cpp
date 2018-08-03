@@ -1002,27 +1002,7 @@ int PythonScriptFactory<T>::refreshClass()
 }
 
 template class PythonScriptFactory<LocatedEntity>;
-template class PythonScriptFactory<Task>;
+#include "stubs/rulesets/stubTask.h"
 
-void Task::initTask(const Operation & op, OpVector & res)
-{
-}
-
-void Task::operation(const Operation & op, OpVector & res)
-{
-}
-
-Task::Task(LocatedEntity & chr) : m_refCount(0), m_serialno(0), m_obsolete(false
-), m_progress(-1), m_rate(-1), m_owner(chr)
-{
-}
-
-Task::~Task()
-{
-}
-
-void Task::irrelevant()
-{
-}
 
 sigc::signal<void> python_reload_scripts;

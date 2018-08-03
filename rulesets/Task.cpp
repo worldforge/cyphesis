@@ -25,6 +25,7 @@
 
 #include "common/Tick.h"
 #include "UsagesProperty.h"
+#include "ScriptUtils.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <external/pycxx/CXX/Objects.hxx>
@@ -146,7 +147,7 @@ void Task::callScriptFunction(const std::string& function, OpVector& res)
         try {
             auto ret = m_script.callMemberFunction(function);
             //Ignore any return codes
-            UsagesProperty::processScriptResult(m_script.str(), ret, res, m_usageInstance.actor);
+            ScriptUtils::processScriptResult(m_script.str(), ret, res, m_usageInstance.actor);
         } catch (const Py::BaseException& e) {
             log(ERROR, String::compose("Error when calling '%1' on task '%2' on entity '%3'.", function, m_script.str(), m_usageInstance.actor->describeEntity()));
             if (PyErr_Occurred() != nullptr) {

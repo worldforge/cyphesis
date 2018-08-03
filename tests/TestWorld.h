@@ -71,9 +71,6 @@ struct TestWorld : public BaseWorld {
     }
     int moveToSpawn(const std::string & name,
                             Location& location) override{return 0;}
-    Ref<Task> newTask(const std::string &, LocatedEntity &) override { return 0; }
-    Ref<Task> activateTask(const std::string &, const std::string &,
-                                LocatedEntity *, LocatedEntity &) override { return 0; }
     ArithmeticScript * newArithmetic(const std::string &,
                                              LocatedEntity *) override {
         return 0;

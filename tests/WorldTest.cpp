@@ -124,6 +124,7 @@ LocatedEntity* BaseWorld::getEntity(long id) const
 #endif //STUB_BaseWorld_getEntity
 
 #include "stubs/rulesets/stubBaseWorld.h"
+#include "stubs/rulesets/stubWorldTimeProperty.h"
 
 void log(LogLevel lvl, const std::string & msg)
 {

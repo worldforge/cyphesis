@@ -64,14 +64,6 @@
   }
 #endif //STUB_Task_nextTick
 
-#ifndef STUB_Task_setScript
-//#define STUB_Task_setScript
-  void Task::setScript(Script * scrpt)
-  {
-    
-  }
-#endif //STUB_Task_setScript
-
 #ifndef STUB_Task_getAttr
 //#define STUB_Task_getAttr
   int Task::getAttr(const std::string & attr, Atlas::Message::Element & val) const

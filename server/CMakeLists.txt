@@ -30,7 +30,6 @@ set(cyphesis_files
     Spawn.h
     WorldRouter.cpp
     StorageManager.cpp
-    TaskFactory.cpp
     CorePropertyManager.cpp
     Ruleset.cpp
     RuleHandler.cpp
@@ -39,7 +38,6 @@ set(cyphesis_files
     ArchetypeFactory.cpp
     OpRuleHandler.cpp
     PropertyRuleHandler.cpp
-    TaskRuleHandler.cpp
     EntityBuilder.cpp
     ArithmeticBuilder.cpp
     Lobby.cpp

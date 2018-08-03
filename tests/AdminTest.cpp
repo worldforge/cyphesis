@@ -1496,7 +1496,6 @@ void Account::OtherOperation(const Operation &, OpVector &)
 
 #include "stubs/server/stubRuleHandler.h"
 
-#include "stubs/server/stubTaskRuleHandler.h"
 #include "stubs/server/stubEntityRuleHandler.h"
 #include "stubs/server/stubArchetypeRuleHandler.h"
 #include "stubs/server/stubOpRuleHandler.h"

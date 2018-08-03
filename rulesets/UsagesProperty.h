@@ -41,8 +41,6 @@ class UsagesProperty : public Property<Atlas::Message::MapType>
 
         HandlerResult operation(LocatedEntity* e, const Operation& op, OpVector& res) override;
 
-        static HandlerResult processScriptResult(const std::string& scriptName, const Py::Object& ret, OpVector& res, LocatedEntity* e);
-
     private:
 
         std::map<std::string, Usage> m_usages;

@@ -49,7 +49,7 @@ int main()
     {
         // Check constructor has set flags correctly to zero
         PropertyBase * pb = new EntityProperty;
-        assert(pb->flags() == 0);
+        assert(pb->flags().m_flags == 0);
         delete pb;
     }
 

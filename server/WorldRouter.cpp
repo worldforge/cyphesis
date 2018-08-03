@@ -317,39 +317,6 @@ int WorldRouter::moveToSpawn(const std::string & name, Location& location)
 }
 
 
-/// \brief Create a new task
-///
-/// Construct a new task linked to the LocatedEntity provided.
-/// @param name the name of the task type to be instantiated
-/// @param owner the character who will own the task
-/// @return a pointer to the new task
-Ref<Task> WorldRouter::newTask(const std::string & name, LocatedEntity & owner)
-{
-    auto task = EntityBuilder::instance()->newTask(name, owner);
-    if (!task) {
-        log(ERROR, String::compose("Attempt to create a task of type \"%1\" "
-                                   "but type is unknown or forbidden", name));
-    }
-    return task;
-}
-
-/// \brief Activate a new task
-///
-/// Construct a task linked to the LocatedEntity provided, activated by the
-/// tool and operation class given.
-/// @param tool the type of tool activating the task
-/// @param op the type of operation acitivating the task
-/// @param target the entity that the task uses as its target
-/// @param owner the character who will own the task
-/// @return a pointer to the new task
-Ref<Task> WorldRouter::activateTask(const std::string & tool,
-                                 const std::string & op,
-                                 LocatedEntity * target,
-                                 LocatedEntity & owner)
-{
-    return EntityBuilder::instance()->activateTask(tool, op, target, owner);
-}
-
 ArithmeticScript * WorldRouter::newArithmetic(const std::string & name,
                                               LocatedEntity * owner)
 {

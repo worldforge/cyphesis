@@ -41,7 +41,7 @@ int main(int argc, char ** argv)
     Entity * thing = new Thing("1", 1);
 
     // Check no flags are set
-    assert(thing->getFlags() == 0);
+    assert(thing->flags().m_flags == 0);
     // Check test attribute is not there
     assert(!thing->hasAttr("test_attr1"));
     // Check test property not there
@@ -50,22 +50,22 @@ int main(int argc, char ** argv)
     // Set the flag that this entity is clean
     thing->addFlags(entity_clean);
     // Check the flags are no longer clear
-    assert(thing->getFlags() != 0);
+    assert(thing->flags().m_flags != 0);
     // Check the entity_clean flag is set
-    assert(thing->getFlags() & entity_clean);
+    assert(thing->flags().m_flags & entity_clean);
     // Check entity_clean is the only flag set
-    assert((thing->getFlags() & ~entity_clean) == 0);
+    assert((thing->flags().m_flags & ~entity_clean) == 0);
     // Set the flag that this entity is queued
     thing->addFlags(entity_queued);
     // Check the entity_queued flag is set
-    assert(thing->getFlags() & entity_queued);
+    assert(thing->flags().m_flags & entity_queued);
     // Check the entity_clean flag is still set
-    assert(thing->getFlags() & entity_clean);
+    assert(thing->flags().m_flags & entity_clean);
     
     thing->setAttr("test_attr1", 1);
 
     // Check entity_clean is no longer set
-    assert((thing->getFlags() & entity_clean) == 0);
+    assert((thing->flags().m_flags & entity_clean) == 0);
     // Check the attribute is there
     assert(thing->hasAttr("test_attr1"));
     // Check it is there as a property

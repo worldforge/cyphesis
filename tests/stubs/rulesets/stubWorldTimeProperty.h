@@ -7,6 +7,23 @@
 #include "rulesets/WorldTimeProperty.h"
 #include "stubWorldTimeProperty_custom.h"
 
+#ifndef STUB_WorldTimeProperty_WorldTimeProperty
+//#define STUB_WorldTimeProperty_WorldTimeProperty
+   WorldTimeProperty::WorldTimeProperty()
+    : PropertyBase()
+  {
+    
+  }
+#endif //STUB_WorldTimeProperty_WorldTimeProperty
+
+#ifndef STUB_WorldTimeProperty_WorldTimeProperty_DTOR
+//#define STUB_WorldTimeProperty_WorldTimeProperty_DTOR
+   WorldTimeProperty::~WorldTimeProperty()
+  {
+    
+  }
+#endif //STUB_WorldTimeProperty_WorldTimeProperty_DTOR
+
 #ifndef STUB_WorldTimeProperty_copy
 //#define STUB_WorldTimeProperty_copy
   WorldTimeProperty* WorldTimeProperty::copy() const

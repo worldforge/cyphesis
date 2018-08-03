@@ -420,7 +420,6 @@ void Link::disconnect()
 
 #include "server/PropertyRuleHandler.h"
 #include "server/ArchetypeRuleHandler.h"
-#include "server/TaskRuleHandler.h"
 #include "server/EntityRuleHandler.h"
 #include "server/OpRuleHandler.h"
 #include "stubs/server/stubRuleset.h"

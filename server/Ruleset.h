@@ -38,7 +38,6 @@ class TaskRuleHandler;
 class OpRuleHandler;
 class PropertyRuleHandler;
 class ArchetypeRuleHandler;
-class TaskKit;
 
 /// \brief Class to handle rules that cannot yet be installed, and the reason
 class RuleWaiting {
@@ -59,7 +58,6 @@ typedef std::multimap<std::string, RuleWaiting> RuleWaitList;
 /// create them. Handles connecting entities to their persistor as required.
 class Ruleset : public Singleton<Ruleset>{
   protected:
-    std::unique_ptr<TaskRuleHandler>m_taskHandler;
     std::unique_ptr<EntityRuleHandler> m_entityHandler;
     std::unique_ptr<OpRuleHandler> m_opHandler;
     std::unique_ptr<PropertyRuleHandler> m_propertyHandler;

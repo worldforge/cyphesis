@@ -41,7 +41,6 @@ using Atlas::Objects::Root;
 using Atlas::Objects::Entity::Anonymous;
 
 static TypeNode * stub_addChild_result = 0;
-static bool stub_isTask_result = false;
 
 int main()
 {
@@ -61,24 +60,6 @@ int main()
         int ret = rh->check(description);
 
         assert(ret == -1);
-
-        delete rh;
-    }
-
-    // check() stub says it's a task
-    {
-        RuleHandler * rh = new EntityRuleHandler(EntityBuilder::instance());
-
-        stub_isTask_result = true;
-
-        Anonymous description;
-        description->setObjtype("class");
-        description->setParent("foo");
-        int ret = rh->check(description);
-
-        assert(ret == -1);
-
-        stub_isTask_result = false;
 
         delete rh;
     }
@@ -162,29 +143,7 @@ int main()
 #include "common/log.h"
 
 std::set<std::string> Player::playableTypes;
-
-EntityBuilder * EntityBuilder::m_instance = nullptr;
-
-EntityBuilder::EntityBuilder()
-{
-}
-
-bool EntityBuilder::isTask(const std::string & class_name)
-{
-    return stub_isTask_result;
-}
-
-EntityKit * EntityBuilder::getClassFactory(const std::string & class_name)
-{
-    return 0;
-}
-
-int EntityBuilder::installFactory(const std::string & class_name,
-                                  const Root & class_desc,
-                                  EntityKit * factory)
-{
-    return 0;
-}
+#include "stubs/server/stubEntityBuilder.h"
 
 template <class T>
 PythonScriptFactory<T>::PythonScriptFactory(const std::string & package,

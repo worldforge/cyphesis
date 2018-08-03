@@ -387,201 +387,30 @@ Ref<LocatedEntity> ArchetypeFactory::newEntity(const std::string & id, long intI
 class World;
 
 
-Stackable::Stackable(const std::string& id, long idInt)
-:Thing::Thing(id, idInt)
-{
-}
+#include "stubs/rulesets/stubStackable.h"
+#include "stubs/rulesets/stubAreaProperty.h"
+#include "stubs/rulesets/stubCalendarProperty.h"
+#include "stubs/rulesets/stubExternalProperty.h"
+#include "stubs/rulesets/stubWorldTimeProperty.h"
 
-Stackable::~Stackable(){}
-
-void Stackable::CombineOperation(const Operation & op, OpVector &)
+#define STUB_IdProperty_get
+int IdProperty::get(Atlas::Message::Element & val) const
 {
-}
-
-void Stackable::DivideOperation(const Operation & op, OpVector &)
-{
-}
-
-AreaProperty::AreaProperty()
-{
-}
-
-AreaProperty::~AreaProperty()
-{
-}
-
-void AreaProperty::set(const Atlas::Message::Element & ent)
-{
-}
-
-AreaProperty * AreaProperty::copy() const
-{
+    val = m_data;
     return 0;
 }
+#include "stubs/rulesets/stubTask.h"
+#include "stubs/rulesets/stubAtlasProperties.h"
+#include "stubs/rulesets/stubStatusProperty.h"
 
-void AreaProperty::apply(LocatedEntity * owner)
-{
-}
-
-CalendarProperty::CalendarProperty()
-{
-}
-
-int CalendarProperty::get(Element & ent) const
-{
-    return 0;
-}
-
-void CalendarProperty::set(const Element & ent)
-{
-}
-
-CalendarProperty * CalendarProperty::copy() const
-{
-    return 0;
-}
-
-ExternalProperty::ExternalProperty(ExternalMind * & data) : m_data(data)
-{
-}
-
-int ExternalProperty::get(Element & val) const
-{
-    return 0;
-}
-
-void ExternalProperty::set(const Element & val)
-{
-}
-
-void ExternalProperty::add(const std::string & s,
-                         MapType & map) const
-{
-}
-
-void ExternalProperty::add(const std::string & s,
-                         const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-ExternalProperty * ExternalProperty::copy() const
-{
-    return 0;
-}
-
-IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),
-                                                   m_data(data)
-{
-}
-
-int IdProperty::get(Atlas::Message::Element & e) const
-{
-    e = m_data;
-    return 0;
-}
-
-void IdProperty::set(const Atlas::Message::Element & e)
-{
-}
-
-void IdProperty::add(const std::string & key,
-                     Atlas::Message::MapType & ent) const
-{
-}
-
-void IdProperty::add(const std::string & key,
-                     const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-IdProperty * IdProperty::copy() const
-{
-    return 0;
-}
-
-
-Task::Task(LocatedEntity & owner) : m_refCount(0), m_serialno(0),
-                                    m_obsolete(false),
-                                    m_progress(-1), m_rate(-1),
-                                    m_owner(owner), m_script(0)
-{
-}
-
-Task::~Task()
-{
-}
-
-void Task::initTask(const Operation & op, OpVector & res)
-{
-}
-
-void Task::operation(const Operation & op, OpVector & res)
-{
-}
-
-void Task::irrelevant()
-{
-}
-
-
-ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
-      PropertyBase(per_ephem), m_data(data)
-{
-}
-
-int ContainsProperty::get(Element & e) const
-{
-    return 0;
-}
-
-void ContainsProperty::set(const Element & e)
-{
-}
-
-void ContainsProperty::add(const std::string & s,
-                           const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-ContainsProperty * ContainsProperty::copy() const
-{
-    return 0;
-}
-
-StatusProperty * StatusProperty::copy() const
-{
-    return 0;
-}
-
-void StatusProperty::apply(LocatedEntity * owner)
-{
-}
-
-
-ExternalMind::ExternalMind(LocatedEntity & e) : Router(e.getId(), e.getIntId()),
-                                         m_link(0),
-                                         m_entity(e),
-                                         m_lossTime(0.)
-{
-}
-
-void ExternalMind::externalOperation(const Operation & op, Link &)
-{
-}
-
+#define STUB_ExternalMind_linkUp
 void ExternalMind::linkUp(Link * c)
 {
     m_link = c;
 }
+#include "stubs/rulesets/stubExternalMind.h"
 
-void ExternalMind::operation(const Operation & op, OpVector & res)
-{
-}
-
-ArithmeticKit::~ArithmeticKit()
-{
-}
-
+#include "stubs/rulesets/stubArithmeticFactory.h"
 #include "stubs/rulesets/stubPythonArithmeticFactory.h"
 
 sigc::signal<void> python_reload_scripts;

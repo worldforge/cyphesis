@@ -587,23 +587,8 @@ void Entity::setType(const TypeNode* t) {
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
 #include "stubs/rulesets/stubEntityProperty.h"
+#include "stubs/rulesets/stubTask.h"
 
-
-Task::~Task()
-{
-}
-
-void Task::initTask(const Operation & op, OpVector & res)
-{
-}
-
-void Task::operation(const Operation & op, OpVector & res)
-{
-}
-
-void Task::irrelevant()
-{
-}
 #include "stubs/rulesets/stubTasksProperty.h"
 #include "stubs/rulesets/stubUsagesProperty.h"
 #include "stubs/rulesets/entityfilter/stubFilter.h"

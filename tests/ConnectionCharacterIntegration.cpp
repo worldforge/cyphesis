@@ -472,22 +472,7 @@ void Entity::setType(const TypeNode* t) {
 
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubEntityProperty.h"
-
-Task::~Task()
-{
-}
-
-void Task::initTask(const Operation & op, OpVector & res)
-{
-}
-
-void Task::operation(const Operation & op, OpVector & res)
-{
-}
-
-void Task::irrelevant()
-{
-}
+#include "stubs/rulesets/stubTask.h"
 
 #define STUB_SoftProperty_get
 int SoftProperty::get(Atlas::Message::Element & val) const

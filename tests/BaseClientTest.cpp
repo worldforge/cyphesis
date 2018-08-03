@@ -228,14 +228,7 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 
-Location::Location() : m_loc(0)
-{
-}
-
-int Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent)
-{
-    return 0;
-}
+#include "stubs/rulesets/stubLocation.h"
 
 void WorldTime::initTimeInfo()
 {

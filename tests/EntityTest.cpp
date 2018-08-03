@@ -149,7 +149,7 @@ void Entitytest::test_setAttr_new()
     PropertyBase * pb = m_entity->setAttr("test_int_property", 24);
     ASSERT_NOT_NULL(pb);
 
-    ASSERT_TRUE((pb->flags() & flag_class) == 0);
+    ASSERT_TRUE((pb->flags().m_flags & flag_class) == 0);
 
     auto * int_property = dynamic_cast<TestProperty *>(pb);
     ASSERT_NOT_NULL(int_property);
@@ -167,7 +167,7 @@ void Entitytest::test_setAttr_existing()
     ASSERT_NOT_NULL(pb);
     ASSERT_EQUAL(initial_property, pb);
 
-    ASSERT_TRUE((pb->flags() & flag_class) == 0);
+    ASSERT_TRUE((pb->flags().m_flags & flag_class) == 0);
 
     auto * int_property = dynamic_cast<TestProperty *>(pb);
     ASSERT_NOT_NULL(int_property);
@@ -180,14 +180,14 @@ void Entitytest::test_setAttr_type()
 {
     TestProperty * type_property = new TestProperty;
     type_property->data() = 17;
-    type_property->flags() &= flag_class;
+    type_property->flags().m_flags &= flag_class;
     m_type->injectProperty("test_int_property", type_property);
 
     PropertyBase * pb = m_entity->setAttr("test_int_property", 24);
     ASSERT_NOT_NULL(pb);
     ASSERT_NOT_EQUAL(type_property, pb);
 
-    ASSERT_TRUE((pb->flags() & flag_class) == 0);
+    ASSERT_TRUE((pb->flags().m_flags & flag_class) == 0);
 
     auto * int_property = dynamic_cast<TestProperty *>(pb);
     ASSERT_NOT_NULL(int_property);

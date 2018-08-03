@@ -352,7 +352,6 @@ int main(int argc, char ** argv)
 #include "server/EntityRuleHandler.h"
 #include "server/OpRuleHandler.h"
 #include "server/PropertyRuleHandler.h"
-#include "server/TaskRuleHandler.h"
 #include "server/ArchetypeRuleHandler.h"
 #include "server/Persistence.h"
 #include "server/EntityFactory.h"
@@ -390,17 +389,9 @@ int EntityRuleHandler::check(const Atlas::Objects::Root & desc)
     if (desc->getObjtype() != "class") {
         return -1;
     }
-    return m_builder->isTask(desc->getParent()) ? -1 : 0;
+    return 0;
 }
 
-
-#define STUB_TaskRuleHandler_check
-int TaskRuleHandler::check(const Atlas::Objects::Root & desc)
-{
-    return m_builder->isTask(desc->getParent()) ? 0 : -1;
-}
-
-#include "stubs/server/stubTaskRuleHandler.h"
 
 #define STUB_ArchetypeRuleHandler_check
 int ArchetypeRuleHandler::check(const Atlas::Objects::Root & desc)
@@ -412,25 +403,7 @@ int ArchetypeRuleHandler::check(const Atlas::Objects::Root & desc)
 }
 
 #include "stubs/server/stubArchetypeRuleHandler.h"
-
-EntityBuilder * EntityBuilder::m_instance = nullptr;
-
-EntityBuilder::EntityBuilder()
-{
-}
-
-EntityBuilder::~EntityBuilder()
-{
-}
-
-bool EntityBuilder::isTask(const std::string & class_name)
-{
-    if (class_name == "task") {
-        return true;
-    }
-    return (m_taskFactories.find(class_name) != m_taskFactories.end());
-}
-
+#include "stubs/server/stubEntityBuilder.h"
 #include "stubs/server/stubPersistence.h"
 #include "stubs/common/stubglobals.h"
 

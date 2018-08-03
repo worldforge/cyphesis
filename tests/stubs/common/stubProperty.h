@@ -99,7 +99,7 @@
 //#define STUB_PropertyBase_flagsForPropertyName
    std::uint32_t PropertyBase::flagsForPropertyName(const std::string& name)
   {
-    return *static_cast< std::uint32_t*>(nullptr);
+    return 0;
   }
 #endif //STUB_PropertyBase_flagsForPropertyName
 

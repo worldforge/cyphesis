@@ -295,10 +295,10 @@ int EntityRuleHandler::populateEntityFactory(const std::string & class_name,
 int EntityRuleHandler::check(const Atlas::Objects::Root & desc)
 {
     assert(!desc->getParent().empty());
-    if (desc->getObjtype() != "class") {
-        return -1;
+    if (desc->getObjtype() == "class") {
+        return 0;
     }
-    return m_builder->isTask(desc->getParent()) ? -1 : 0;
+    return -1;
 }
 
 int EntityRuleHandler::install(const std::string & name,

@@ -26,6 +26,7 @@
 #include "rulesets/python/CyPy_Oplist.h"
 #include "common/debug.h"
 #include "common/AtlasQuery.h"
+#include "ScriptUtils.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Entity.h>
@@ -252,7 +253,7 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
 
                         try {
                             auto ret = Py::Callable(functionObject).apply(Py::TupleN(CyPy_UsageInstance::wrap(std::move(usageInstance))));
-                            return processScriptResult(usage.handler, ret, res, e);
+                            return ScriptUtils::processScriptResult(usage.handler, ret, res, e);
                         } catch (const Py::BaseException& py_ex) {
                             log(ERROR, String::compose("Python error calling \"%1\" for entity %2", usage.handler, e->describeEntity()));
                             if (PyErr_Occurred()) {
@@ -271,52 +272,3 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
 }
 
 
-HandlerResult UsagesProperty::processScriptResult(const std::string& scriptName, const Py::Object& ret, OpVector& res, LocatedEntity* e)
-{
-    HandlerResult result = OPERATION_IGNORED;
-
-    auto processPythonResultFn = [&](const Py::Object& pythonResult) {
-        if (pythonResult.isLong()) {
-            auto numRet = Py::Long(pythonResult).as_long();
-            if (numRet == 0) {
-                result = OPERATION_IGNORED;
-            } else if (numRet == 1) {
-                result = OPERATION_HANDLED;
-            } else if (numRet == 2) {
-                result = OPERATION_BLOCKED;
-            } else {
-                log(ERROR, String::compose("Unrecognized return code %1 for script '%2' attached to entity '%3'", numRet, scriptName, e->describeEntity()));
-            }
-
-        } else if (CyPy_Operation::check(pythonResult)) {
-            auto operation = CyPy_Operation::value(pythonResult);
-            assert(operation);
-            operation->setFrom(e->getId());
-            res.push_back(std::move(operation));
-        } else if (CyPy_Oplist::check(pythonResult)) {
-            auto& o = CyPy_Oplist::value(pythonResult);
-            for (auto& opRes : o) {
-                opRes->setFrom(e->getId());
-                res.push_back(opRes);
-            }
-        } else {
-            log(ERROR, String::compose("Python script \"%1\" returned an invalid "
-                                       "result.", scriptName));
-        }
-    };
-
-    if (ret.isNone()) {
-        debug(std::cout << "Returned none" << std::endl << std::flush;);
-    } else {
-        //Check if it's a tuple and process it.
-        if (ret.isTuple()) {
-            for (auto item : Py::Tuple(ret)) {
-                processPythonResultFn(item);
-            }
-        } else {
-            processPythonResultFn(ret);
-        }
-    }
-
-    return result;
-}

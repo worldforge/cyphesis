@@ -153,22 +153,6 @@
   }
 #endif //STUB_BaseWorld_moveToSpawn
 
-#ifndef STUB_BaseWorld_newTask
-//#define STUB_BaseWorld_newTask
-  Ref<Task> BaseWorld::newTask(const std::string &, LocatedEntity &)
-  {
-    return *static_cast<Ref<Task>*>(nullptr);
-  }
-#endif //STUB_BaseWorld_newTask
-
-#ifndef STUB_BaseWorld_activateTask
-//#define STUB_BaseWorld_activateTask
-  Ref<Task> BaseWorld::activateTask(const std::string &, const std::string &, LocatedEntity *, LocatedEntity &)
-  {
-    return *static_cast<Ref<Task>*>(nullptr);
-  }
-#endif //STUB_BaseWorld_activateTask
-
 #ifndef STUB_BaseWorld_newArithmetic
 //#define STUB_BaseWorld_newArithmetic
   ArithmeticScript* BaseWorld::newArithmetic(const std::string &, LocatedEntity *)

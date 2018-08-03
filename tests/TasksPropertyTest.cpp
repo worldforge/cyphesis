@@ -41,16 +41,22 @@ using Atlas::Message::Element;
 
 int main()
 {
+    Py_InitializeEx(0);
+
     TasksProperty * ap = new TasksProperty;
 
     PropertyChecker<TasksProperty> pc(ap);
 
+    Py::Dict fake;
     OpVector res;
-    Character * chr = pc.createCharacterEntity();
-    Task * task = new Task(*chr);
+    Ref<Character> actor = pc.createCharacterEntity();
+    UsageInstance usageInstance;
+    usageInstance.actor = pc.createCharacterEntity();
+    usageInstance.op = Atlas::Objects::Operation::Action();
+    Ref<Task> task = new Task(usageInstance, fake);
     task->progress() = .1;
     task->rate() = .1;
-    chr->startTask(task, Atlas::Objects::Operation::Action(), res);
+    actor->startTask(task, usageInstance.op, res);
 
     MapType map;
     map["one"] = 23;
@@ -71,9 +77,5 @@ int main()
 
 #include "stubs/rulesets/stubTask.h"
 
-
-
-namespace Atlas { namespace Objects { namespace Operation {
-int UPDATE_NO = -1;
-} } }
+#include "stubs/common/stubCustom.h"
 

@@ -122,8 +122,6 @@ class Task : public boost::noncopyable{
         return ++m_serialno;
     }
 
-    void setScript(Script * scrpt);
-
     /// \brief Accessor to determine if this Task is obsolete
     const bool obsolete() { return m_obsolete; }
 

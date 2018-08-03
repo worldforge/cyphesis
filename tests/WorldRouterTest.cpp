@@ -333,19 +333,6 @@ void LocatedEntity::makeContainer()
 #include "stubs/server/stubServerRouting.h"
 #include "stubs/common/stubShaker.h"
 
-
-Location::Location() : m_loc(0)
-{
-}
-
-void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-void Location::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
 long integerId(const std::string & id)
 {
     long intId = strtol(id.c_str(), 0, 10);
@@ -365,10 +352,12 @@ static inline float sqr(float x)
     return x * x;
 }
 
+#define STUB_squareDistance
 float squareDistance(const Point3D & u, const Point3D & v)
 {
     return (sqr(u.x() - v.x()) + sqr(u.y() - v.y()) + sqr(u.z() - v.z()));
 }
+#include "stubs/rulesets/stubLocation.h"
 
 static bool distanceFromAncestor(const Location & self,
                                  const Location & other, Point3D & c)
@@ -530,18 +519,6 @@ Ref<LocatedEntity> EntityBuilder::newEntity(const std::string & id, long intId,
     return 0;
 }
 
-Ref<Task> EntityBuilder::newTask(const std::string & name, LocatedEntity & owner) const
-{
-    return 0;
-}
-
-Ref<Task> EntityBuilder::activateTask(const std::string & tool,
-                                   const std::string & op,
-                                   LocatedEntity * target,
-                                   LocatedEntity & owner) const
-{
-    return 0;
-}
 
 SpawnEntity::SpawnEntity(LocatedEntity *)
 {

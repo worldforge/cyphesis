@@ -1851,9 +1851,8 @@ void Router::error(const Operation & op,
     res.push_back(Atlas::Objects::Operation::Error());
 }
 
-Location::Location() : m_loc(0)
-{
-}
+#include "stubs/rulesets/stubLocation.h"
+
 
 void logEvent(LogEvent lev, const std::string & msg)
 {

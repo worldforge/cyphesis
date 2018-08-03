@@ -470,22 +470,7 @@ ExternalProperty * ExternalProperty::copy() const
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/rulesets/stubOutfitProperty.h"
 #include "stubs/rulesets/stubEntityProperty.h"
-
-Task::~Task()
-{
-}
-
-void Task::initTask(const Operation & op, OpVector & res)
-{
-}
-
-void Task::operation(const Operation & op, OpVector & res)
-{
-}
-
-void Task::irrelevant()
-{
-}
+#include "stubs/rulesets/stubTask.h"
 
 #include "stubs/rulesets/stubTasksProperty.h"
 #define STUB_SoftProperty_get

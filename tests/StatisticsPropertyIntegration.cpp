@@ -204,19 +204,8 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 #include "stubs/rulesets/stubBaseWorld.h"
 
 #include "stubs/rulesets/stubScript.h"
+#include "stubs/rulesets/stubLocation.h"
 
-
-void Location::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-Location::Location() : m_loc(0)
-{
-}
-
-void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
 
 IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),
                                                    m_data(data)

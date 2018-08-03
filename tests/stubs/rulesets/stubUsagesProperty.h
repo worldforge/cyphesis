@@ -39,14 +39,6 @@
   }
 #endif //STUB_UsagesProperty_operation
 
-#ifndef STUB_UsagesProperty_processScriptResult
-//#define STUB_UsagesProperty_processScriptResult
-   HandlerResult UsagesProperty::processScriptResult(const std::string& scriptName, const Py::Object& ret, OpVector& res, LocatedEntity* e)
-  {
-    return *static_cast< HandlerResult*>(nullptr);
-  }
-#endif //STUB_UsagesProperty_processScriptResult
-
 #ifndef STUB_UsagesProperty_use_handler
 //#define STUB_UsagesProperty_use_handler
   HandlerResult UsagesProperty::use_handler(LocatedEntity* e, const Operation& op, OpVector& res)

@@ -85,7 +85,7 @@ void ThingupdatePropertiestest::teardown()
 
 void ThingupdatePropertiestest::test_update()
 {
-    ASSERT_EQUAL(m_name->flags() & flag_unsent, flag_unsent);
+    ASSERT_EQUAL(m_name->flags().m_flags & flag_unsent, flag_unsent);
 
     Update u;
     OpVector res;
@@ -93,7 +93,7 @@ void ThingupdatePropertiestest::test_update()
     m_thing->updateProperties(u, res);
 
     // The flag marking the property has been cleared
-    ASSERT_EQUAL(m_name->flags() & flag_unsent, 0u);
+    ASSERT_EQUAL(m_name->flags().m_flags & flag_unsent, 0u);
 
     // The update operation should not have actually changed the name
     // at all
@@ -183,7 +183,7 @@ void LocatedEntity::changeContainer(LocatedEntity * new_loc)
 }
 
 #define STUB_LocatedEntity_broadcast
-void LocatedEntity::broadcast(const Atlas::Objects::Operation::RootOperation& op, OpVector& res) const
+void LocatedEntity::broadcast(const Atlas::Objects::Operation::RootOperation& op, OpVector& res, Visibility visibility) const
 {
     auto copy = op.copy();
     copy->setTo(getId());

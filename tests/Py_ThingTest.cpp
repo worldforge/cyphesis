@@ -40,6 +40,8 @@
 #include <common/Inheritance.h>
 #include <rulesets/Python_Script_Utils.h>
 #include <rulesets/python/CyPy_LocatedEntity.h>
+#include <rulesets/python/CyPy_UsageInstance.h>
+#include <Atlas/Objects/Operation.h>
 
 int main()
 {
@@ -53,6 +55,13 @@ int main()
     run_python_string("from server import *");
     run_python_string("from atlas import Operation");
     run_python_string("from atlas import Oplist");
+
+    UsageInstance usageInstance;
+    usageInstance.actor = new Entity("100", 100);
+    usageInstance.op = Atlas::Objects::Operation::Action();
+
+    Py::Module serverModule("server");
+    serverModule.setAttr("usage_instance", CyPy_UsageInstance::wrap(usageInstance));
 
     Ref<Entity> e = new Entity("1", 1);
 
@@ -130,13 +139,13 @@ int main()
     run_python_string("c.as_entity()");
     run_python_string("c.send_world(Operation('get'))");
     expect_python_error("c.start_task()", PyExc_IndexError);
-    expect_python_error("c.start_task(Task(c))", PyExc_IndexError);
+    expect_python_error("c.start_task(Task(server.usage_instance))", PyExc_IndexError);
     expect_python_error("c.start_task(1,Operation('cut'),Oplist())",
-                        PyExc_TypeError);
-    expect_python_error("c.start_task(Task(c),1,Oplist())", PyExc_TypeError);
-    expect_python_error("c.start_task(Task(c),Operation('cut'),1)",
-                        PyExc_TypeError);
-    run_python_string("c.start_task(Task(c),Operation('cut'),Oplist())");
+                        PyExc_IndexError);
+    expect_python_error("c.start_task(Task(server.usage_instance),1,Oplist())", PyExc_IndexError);
+    expect_python_error("c.start_task(Task(server.usage_instance),Operation('cut'),1)",
+                        PyExc_IndexError);
+    run_python_string("c.start_task('cut', Task(server.usage_instance))");
     expect_python_error("c.mind2body(1)", PyExc_TypeError);
     run_python_string("c.mind2body(Operation('update'))");
     run_python_string("c.mind2body(Operation('get'))");

@@ -128,22 +128,6 @@
   }
 #endif //STUB_WorldRouter_moveToSpawn
 
-#ifndef STUB_WorldRouter_newTask
-//#define STUB_WorldRouter_newTask
-  Ref<Task> WorldRouter::newTask(const std::string &, LocatedEntity &)
-  {
-    return *static_cast<Ref<Task>*>(nullptr);
-  }
-#endif //STUB_WorldRouter_newTask
-
-#ifndef STUB_WorldRouter_activateTask
-//#define STUB_WorldRouter_activateTask
-  Ref<Task> WorldRouter::activateTask(const std::string &, const std::string &, LocatedEntity *, LocatedEntity &)
-  {
-    return *static_cast<Ref<Task>*>(nullptr);
-  }
-#endif //STUB_WorldRouter_activateTask
-
 #ifndef STUB_WorldRouter_newArithmetic
 //#define STUB_WorldRouter_newArithmetic
   ArithmeticScript* WorldRouter::newArithmetic(const std::string &, LocatedEntity *)

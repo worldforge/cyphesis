@@ -34,7 +34,6 @@
 class ArithmeticScript;
 class LocatedEntity;
 class SystemTime;
-class Task;
 class Location;
 
 typedef std::map<long, Ref<LocatedEntity>> EntityRefDict;
@@ -173,13 +172,6 @@ class BaseWorld : public Singleton<BaseWorld> {
      */
     virtual int moveToSpawn(const std::string & name,
                             Location& location) = 0;
-
-    /// \brief Create a new task
-    virtual Ref<Task> newTask(const std::string &, LocatedEntity &) = 0;
-
-    /// \brief Activate a new tast
-    virtual Ref<Task> activateTask(const std::string &, const std::string &,
-                                LocatedEntity *, LocatedEntity &) = 0;
 
     /// \brief Create a new Arithmetic object
     virtual ArithmeticScript * newArithmetic(const std::string &,
