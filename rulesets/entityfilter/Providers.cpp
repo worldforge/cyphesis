@@ -368,11 +368,11 @@ Consumer<QueryContext>* ProviderFactory::createProvider(Segment segment) const
     SegmentsList segments({segment});
     auto& first_attribute = segment.attribute;
     if (first_attribute == "entity") {
-        return createEntityProvider(segments);
+        return createEntityProvider(std::move(segments));
     } else if (first_attribute == "self") {
-        return createSelfEntityProvider(segments);
+        return createSelfEntityProvider(std::move(segments));
     } else if (first_attribute == "types") {
-        return createFixedTypeNodeProvider(segments);
+        return createFixedTypeNodeProvider(std::move(segments));
     }
     return nullptr;
 }
@@ -383,11 +383,11 @@ Consumer<QueryContext>* ProviderFactory::createProviders(SegmentsList segments) 
         auto front = segments.front();
         auto& first_attribute = segments.front().attribute;
         if (first_attribute == "entity") {
-            return createEntityProvider(segments);
+            return createEntityProvider(std::move(segments));
         } else if (first_attribute == "self") {
-            return createSelfEntityProvider(segments);
+            return createSelfEntityProvider(std::move(segments));
         } else if (first_attribute == "types") {
-            return createFixedTypeNodeProvider(segments);
+            return createFixedTypeNodeProvider(std::move(segments));
         }
     }
     return nullptr;
@@ -408,7 +408,7 @@ FixedTypeNodeProvider* ProviderFactory::createFixedTypeNodeProvider(SegmentsList
         return nullptr;
     }
     segments.pop_front();
-    return new FixedTypeNodeProvider(createTypeNodeProvider(segments), *typeNode);
+    return new FixedTypeNodeProvider(createTypeNodeProvider(std::move(segments)), *typeNode);
 }
 
 EntityProvider* ProviderFactory::createEntityProvider(SegmentsList segments) const
@@ -420,7 +420,7 @@ EntityProvider* ProviderFactory::createEntityProvider(SegmentsList segments) con
     if (segments.empty()) {
         return new EntityProvider(nullptr);
     }
-    return new EntityProvider(createPropertyProvider(segments));
+    return new EntityProvider(createPropertyProvider(std::move(segments)));
 }
 SelfEntityProvider* ProviderFactory::createSelfEntityProvider(SegmentsList segments) const
 {
@@ -428,7 +428,7 @@ SelfEntityProvider* ProviderFactory::createSelfEntityProvider(SegmentsList segme
         return nullptr;
     }
     segments.pop_front();
-    return new SelfEntityProvider(createPropertyProvider(segments));
+    return new SelfEntityProvider(createPropertyProvider(std::move(segments)));
 }
 
 Consumer<LocatedEntity>* ProviderFactory::createPropertyProvider(SegmentsList segments) const
@@ -437,29 +437,29 @@ Consumer<LocatedEntity>* ProviderFactory::createPropertyProvider(SegmentsList se
         return nullptr;
     }
 
-    auto segment = segments.front();
+    auto segment = std::move(segments.front());
     auto attr = segment.attribute;
 
     segments.pop_front();
 
     if (segment.delimiter == ":") {
-        return new SoftPropertyProvider(createMapProvider(segments), attr);
+        return new SoftPropertyProvider(createMapProvider(std::move(segments)), attr);
     } else {
 
         if (attr == "type") {
-            return new EntityTypeProvider(createTypeNodeProvider(segments));
+            return new EntityTypeProvider(createTypeNodeProvider(std::move(segments)));
         }else if(attr == "id"){
             return new EntityIdProvider();
         }else if (attr == "outfit") {
-            return new PropertyProvider<OutfitProperty>(createOutfitEntityProvider(segments), attr);
+            return new PropertyProvider<OutfitProperty>(createOutfitEntityProvider(std::move(segments)), attr);
         } else if (attr == BBoxProperty::property_name) {
-            return new PropertyProvider<BBoxProperty>(createBBoxProvider(segments), attr);
+            return new PropertyProvider<BBoxProperty>(createBBoxProvider(std::move(segments)), attr);
         } else if (attr == "contains") {
             return new ContainsProvider();
         }else if (attr == "right_hand_wield"){
-            return new EntityRefProvider(createPropertyProvider(segments), attr);
+            return new EntityRefProvider(createPropertyProvider(std::move(segments)), attr);
         } else {
-            return new SoftPropertyProvider(createMapProvider(segments), attr);
+            return new SoftPropertyProvider(createMapProvider(std::move(segments)), attr);
         }
     }
 }
@@ -471,12 +471,12 @@ OutfitEntityProvider* ProviderFactory::createOutfitEntityProvider(SegmentsList s
         return nullptr;
     }
 
-    auto& segment = segments.front();
+    auto segment = std::move(segments.front());
     auto attr = segment.attribute;
 
     segments.pop_front();
 
-    return new OutfitEntityProvider(createPropertyProvider(segments), attr);
+    return new OutfitEntityProvider(createPropertyProvider(std::move(segments)), attr);
 
 }
 
@@ -506,7 +506,7 @@ BBoxProvider* ProviderFactory::createBBoxProvider(SegmentsList segments) const
 
     segments.pop_front();
 
-    return new BBoxProvider(createMapProvider(segments), measurement_extractor());
+    return new BBoxProvider(createMapProvider(std::move(segments)), measurement_extractor());
 
 }
 
@@ -516,12 +516,12 @@ MapProvider* ProviderFactory::createMapProvider(SegmentsList segments) const
         return nullptr;
     }
 
-    auto& segment = segments.front();
+    auto segment = std::move(segments.front());
     auto attr = segment.attribute;
 
     segments.pop_front();
 
-    return new MapProvider(createMapProvider(segments), attr);
+    return new MapProvider(createMapProvider(std::move(segments)), attr);
 }
 
 TypeNodeProvider* ProviderFactory::createTypeNodeProvider(SegmentsList segments) const
@@ -542,10 +542,10 @@ Consumer<QueryContext>* MindProviderFactory::createProviders(SegmentsList segmen
     if (!segments.empty()) {
         auto& first_attribute = segments.front().attribute;
         if (first_attribute == "memory") {
-            return createMemoryProvider(segments);
+            return createMemoryProvider(std::move(segments));
         }
         else{
-            return ProviderFactory::createProviders(segments);
+            return ProviderFactory::createProviders(std::move(segments));
         }
     }
     return nullptr;
@@ -557,7 +557,7 @@ MemoryProvider* MindProviderFactory::createMemoryProvider(SegmentsList segments)
         return nullptr;
     }
     segments.pop_front();
-    return new MemoryProvider(createMapProvider(segments));
+    return new MemoryProvider(createMapProvider(std::move(segments)));
 }
 
 }

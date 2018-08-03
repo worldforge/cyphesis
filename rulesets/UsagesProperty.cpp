@@ -56,41 +56,45 @@ void UsagesProperty::set(const Atlas::Message::Element& val)
 
     for (auto& usageEntry : m_data) {
         if (!usageEntry.first.empty()) {
-            //TODO: check that the op is a subtype of "action"?
-            if (usageEntry.second.isMap()) {
-                auto map = usageEntry.second.Map();
+            try {
+                //TODO: check that the op is a subtype of "action"?
+                if (usageEntry.second.isMap()) {
+                    auto map = usageEntry.second.Map();
 
-                Usage usage;
+                    Usage usage;
 
-                AtlasQuery::find<std::string>(map, "handler", [&](const std::string& value) {
-                    usage.handler = value;
-                });
-                if (usage.handler.empty()) {
-                    continue;
+                    AtlasQuery::find<std::string>(map, "handler", [&](const std::string& value) {
+                        usage.handler = value;
+                    });
+                    if (usage.handler.empty()) {
+                        continue;
+                    }
+
+                    AtlasQuery::find<std::string>(map, "description", [&](const std::string& value) {
+                        usage.description = value;
+                    });
+                    AtlasQuery::find<std::string>(map, "constraint", [&](const std::string& value) {
+                        //TODO: should be a usage constraint provider factory
+                        usage.constraint.reset(new EntityFilter::Filter(value, new EntityFilter::ProviderFactory()));
+                    });
+                    AtlasQuery::find<Atlas::Message::ListType>(map, "targets", [&](const Atlas::Message::ListType& value) {
+                        for (auto& entry : value) {
+                            if (entry.isString()) {
+                                usage.targets.emplace_back(new EntityFilter::Filter(entry.String(), new EntityFilter::ProviderFactory()));
+                            }
+                        }
+                    });
+                    AtlasQuery::find<Atlas::Message::ListType>(map, "consumes", [&](const Atlas::Message::ListType& value) {
+                        for (auto& entry : value) {
+                            if (entry.isString()) {
+                                usage.consumed.emplace_back(new EntityFilter::Filter(entry.String(), new EntityFilter::ProviderFactory()));
+                            }
+                        }
+                    });
+                    m_usages.emplace(usageEntry.first, std::move(usage));
                 }
-
-                AtlasQuery::find<std::string>(map, "description", [&](const std::string& value) {
-                    usage.description = value;
-                });
-                AtlasQuery::find<std::string>(map, "constraint", [&](const std::string& value) {
-                    //TODO: should be a usage constraint provider factory
-                    usage.constraint.reset(new EntityFilter::Filter(value, new EntityFilter::ProviderFactory()));
-                });
-                AtlasQuery::find<Atlas::Message::ListType>(map, "targets", [&](const Atlas::Message::ListType& value) {
-                    for (auto& entry : value) {
-                        if (entry.isString()) {
-                            usage.targets.emplace_back(new EntityFilter::Filter(entry.String(), new EntityFilter::ProviderFactory()));
-                        }
-                    }
-                });
-                AtlasQuery::find<Atlas::Message::ListType>(map, "consumes", [&](const Atlas::Message::ListType& value) {
-                    for (auto& entry : value) {
-                        if (entry.isString()) {
-                            usage.consumed.emplace_back(new EntityFilter::Filter(entry.String(), new EntityFilter::ProviderFactory()));
-                        }
-                    }
-                });
-                m_usages.emplace(usageEntry.first, std::move(usage));
+            } catch (const std::invalid_argument& e) {
+                log(ERROR, String::compose("Could not install usage '%1' : %2", usageEntry.first, e.what()));
             }
         }
     }
@@ -123,12 +127,12 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
         e->error(op, "Could not find 'from' entity.", res, e->getId());
         return OPERATION_IGNORED;
     }
-    
+
     if (op->isDefaultFrom()) {
         actor->error(op, "Top op has no 'from' attribute.", res, actor->getId());
         return OPERATION_IGNORED;
     }
-    
+
     if (!op->getArgs().empty()) {
         auto& arg = op->getArgs().front();
         auto argOp = smart_dynamic_cast<Atlas::Objects::Operation::RootOperation>(arg);
