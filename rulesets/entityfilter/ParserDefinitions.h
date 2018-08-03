@@ -46,7 +46,8 @@ struct comparators_ : qi::symbols<char, ComparePredicate::Comparator>
             ("<="   , ComparePredicate::Comparator::LESS_EQUAL)
             ("instance_of", ComparePredicate::Comparator::INSTANCE_OF)
             ("in"   , ComparePredicate::Comparator::IN)
-            ("contains", ComparePredicate::Comparator::CONTAINS);
+            ("contains", ComparePredicate::Comparator::CONTAINS)
+            ("can_reach", ComparePredicate::Comparator::CAN_REACH);
         ;
     }
 
