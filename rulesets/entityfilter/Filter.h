@@ -16,8 +16,8 @@ class Filter {
     public:
         ///\brief Initialize a filter with a given query
         ///@param what query to be used for filtering
-        ///@param factory a pointer to a factory to handle segments
-        Filter(const std::string &what, ProviderFactory* factory);
+        ///@param factory a factory to handle segments
+        Filter(const std::string &what, const ProviderFactory& factory);
         ~Filter();
 
         ///\brief test given entity for a match

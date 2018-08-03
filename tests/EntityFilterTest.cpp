@@ -521,7 +521,7 @@ void EntityFilterTest::TestQuery(const std::string& query,
                                  std::initializer_list<Entity*> entitiesToFail)
 {
     EntityFilter::ProviderFactory factory;
-    EntityFilter::Filter f(query, &factory);
+    EntityFilter::Filter f(query, factory);
     for (auto entitiesToPas : entitiesToPass) {
         assert(f.match(*entitiesToPas));
     }

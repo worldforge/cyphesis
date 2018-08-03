@@ -29,7 +29,7 @@ CyPy_Filter::CyPy_Filter(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dic
     auto arg = args.front();
     if (arg.isString()) {
         EntityFilter::MindProviderFactory factory;
-        m_value.reset(new EntityFilter::Filter(Py::String(arg).as_string(), &factory));
+        m_value.reset(new EntityFilter::Filter(Py::String(arg).as_string(), factory));
     }
 }
 

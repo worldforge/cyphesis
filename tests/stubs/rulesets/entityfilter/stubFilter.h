@@ -11,7 +11,7 @@ namespace EntityFilter {
 
 #ifndef STUB_Filter_Filter
 //#define STUB_Filter_Filter
-   Filter::Filter(const std::string &what, ProviderFactory* factory)
+   Filter::Filter(const std::string &what, const ProviderFactory& factory)
     : m_predicate(nullptr)
   {
     

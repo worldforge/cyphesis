@@ -75,19 +75,19 @@ void UsagesProperty::set(const Atlas::Message::Element& val)
                     });
                     AtlasQuery::find<std::string>(map, "constraint", [&](const std::string& value) {
                         //TODO: should be a usage constraint provider factory
-                        usage.constraint.reset(new EntityFilter::Filter(value, new EntityFilter::ProviderFactory()));
+                        usage.constraint.reset(new EntityFilter::Filter(value, EntityFilter::ProviderFactory()));
                     });
                     AtlasQuery::find<Atlas::Message::ListType>(map, "targets", [&](const Atlas::Message::ListType& value) {
                         for (auto& entry : value) {
                             if (entry.isString()) {
-                                usage.targets.emplace_back(new EntityFilter::Filter(entry.String(), new EntityFilter::ProviderFactory()));
+                                usage.targets.emplace_back(new EntityFilter::Filter(entry.String(), EntityFilter::ProviderFactory()));
                             }
                         }
                     });
                     AtlasQuery::find<Atlas::Message::ListType>(map, "consumes", [&](const Atlas::Message::ListType& value) {
                         for (auto& entry : value) {
                             if (entry.isString()) {
-                                usage.consumed.emplace_back(new EntityFilter::Filter(entry.String(), new EntityFilter::ProviderFactory()));
+                                usage.consumed.emplace_back(new EntityFilter::Filter(entry.String(), EntityFilter::ProviderFactory()));
                             }
                         }
                     });

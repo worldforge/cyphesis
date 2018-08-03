@@ -186,7 +186,7 @@ Predicate* ParserTest::ConstructPredicate(const std::string &query)
 {
     auto iter_begin = query.begin();
     auto iter_end = query.end();
-    ProviderFactory* factory = new ProviderFactory();
+    ProviderFactory factory{};
     parser::query_parser<std::string::const_iterator> grammar(factory);
 
     Predicate* pred;

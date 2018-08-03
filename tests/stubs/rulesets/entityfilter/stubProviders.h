@@ -538,6 +538,14 @@ namespace EntityFilter {
   }
 #endif //STUB_ProviderFactory_createProviders
 
+#ifndef STUB_ProviderFactory_createProvider
+//#define STUB_ProviderFactory_createProvider
+  Consumer<QueryContext>* ProviderFactory::createProvider(Segment segment) const
+  {
+    return nullptr;
+  }
+#endif //STUB_ProviderFactory_createProvider
+
 #ifndef STUB_ProviderFactory_createFixedTypeNodeProvider
 //#define STUB_ProviderFactory_createFixedTypeNodeProvider
   FixedTypeNodeProvider* ProviderFactory::createFixedTypeNodeProvider(SegmentsList segments) const
