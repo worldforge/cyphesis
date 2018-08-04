@@ -37,13 +37,13 @@ OperationsDispatcher<T>::~OperationsDispatcher()
 
 
 template <typename T>
-void OperationsDispatcher<T>::dispatchOperation(const OpQueEntry<T> & oqe)
+void OperationsDispatcher<T>::dispatchOperation(OpQueEntry<T> & oqe)
 {
     //Set the time of when this op is dispatched. That way, other components in the system can
     //always use the seconds set on the op to know the current time.
     oqe.op->setSeconds(getTime());
     try {
-        m_operationProcessor(oqe.op, *oqe.from);
+        m_operationProcessor(oqe.op, std::move(oqe.from));
     }
     catch (const std::exception & ex) {
         log(ERROR, String::compose("Exception caught in WorldRouter::idle() "
@@ -70,7 +70,7 @@ bool OperationsDispatcher<T>::idle()
 
     while (opsAvailableRightNow && op_count < 10) {
         ++op_count;
-        auto opQueueEntry = std::move(m_operationQueue.top());
+        auto opQueueEntry = m_operationQueue.top();
         //Pop it before we dispatch it, since dispatching might alter the queue.
         m_operationQueue.pop();
         dispatchOperation(opQueueEntry);
@@ -130,6 +130,14 @@ OpQueEntry<T>::OpQueEntry(const OpQueEntry & o) :
 {
 }
 
+template<typename T>
+OpQueEntry<T>::OpQueEntry(OpQueEntry&& o)
+    : op(std::move(o.op)),
+    from(std::move(o.from))
+{
+
+}
+
 template <typename T>
 OpQueEntry<T>::~OpQueEntry()
 {
@@ -138,7 +146,7 @@ OpQueEntry<T>::~OpQueEntry()
 
 
 template <typename T>
-OperationsDispatcher<T>::OperationsDispatcher(const std::function<void(const Operation &, T &)> & operationProcessor,
+OperationsDispatcher<T>::OperationsDispatcher(const std::function<void(const Operation &, Ref<T>)> & operationProcessor,
                                            const std::function<double()> & timeProviderFn)
     : m_operationProcessor(operationProcessor),
       m_timeProviderFn(timeProviderFn),
@@ -160,13 +168,13 @@ void OperationsDispatcher<T>::clearQueues()
 /// the entity that is responsible for adding the operation to the
 /// queue.
 template <typename T>
-void OperationsDispatcher<T>::addOperationToQueue(const Operation & op, T & ent)
+void OperationsDispatcher<T>::addOperationToQueue(Operation op, Ref<T> ent)
 {
     assert(op.isValid());
     assert(op->getFrom() != "cheat");
 
     m_operation_queues_dirty = true;
-    op->setFrom(ent.getId());
+    op->setFrom(ent->getId());
     if (!op->hasAttrFlag(Atlas::Objects::Operation::SECONDS_FLAG)) {
         if (!op->hasAttrFlag(Atlas::Objects::Operation::FUTURE_SECONDS_FLAG)) {
             op->setSeconds(getTime());
@@ -176,7 +184,7 @@ void OperationsDispatcher<T>::addOperationToQueue(const Operation & op, T & ent)
             op->removeAttrFlag(Atlas::Objects::Operation::FUTURE_SECONDS_FLAG);
         }
     }
-    m_operationQueue.push(OpQueEntry<T>(op, ent));
+    m_operationQueue.emplace(std::move(op), std::move(ent));
     if (opdispatcher_debug_flag) {
         std::cout << "WorldRouter::addOperationToQueue {" << std::endl;
         debug_dump(op, std::cout);

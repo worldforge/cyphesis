@@ -19,10 +19,14 @@
 #ifndef CYPHESIS_REF_H
 #define CYPHESIS_REF_H
 
+#include <memory>
+
 template<typename T>
 class Ref
 {
     public:
+        template<class U> friend
+        class Ref;
 
         constexpr Ref();
 
@@ -73,7 +77,30 @@ class Ref
             if (this->m_inner) {
                 this->m_inner->decRef();
             }
-            this->m_inner = rhs.get();
+            this->m_inner = rhs.m_inner;
+            return *this;
+        }
+
+        constexpr Ref& operator=(Ref&&) noexcept;
+
+        /**
+         * This operator allows us to move a Ref for a subclass to this.
+         *
+         * Like this:
+         * Ref<SuperClass> r;
+         * r = std::move(Ref<SubClass>());
+         *
+         */
+        template<class TSubclass>
+        constexpr Ref& operator=(Ref<TSubclass>&& rhs) noexcept
+        {
+
+            if (this->m_inner) {
+                this->m_inner->decRef();
+            }
+            this->m_inner = rhs.m_inner;
+            rhs.m_inner = nullptr;
+
             return *this;
         }
 
@@ -141,7 +168,7 @@ class Ref
 
         constexpr operator T*() const;
 
-    private:
+    protected:
         T* m_inner;
 
 };
@@ -214,6 +241,20 @@ constexpr Ref<T>& Ref<T>::operator=(const Ref<T>& rhs)
     this->m_inner = rhs.m_inner;
     return *this;
 }
+
+template<typename T>
+constexpr Ref<T>& Ref<T>::operator=(Ref<T>&& rhs) noexcept
+{
+    if (this != &rhs) {
+        if (this->m_inner) {
+            this->m_inner->decRef();
+        }
+        this->m_inner = rhs.m_inner;
+        rhs.m_inner = nullptr;
+    }
+    return *this;
+}
+
 
 template<typename T>
 constexpr Ref<T>::operator T*() const

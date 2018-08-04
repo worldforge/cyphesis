@@ -98,7 +98,7 @@ void PossessionClient::operationFromEntity(const Operation& op, BaseMind& locate
             //All resulting ops should go out to the server, except for Ticks which we'll keep ourselves.
             if (resOp->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
                 resOp->setTo(resOp->getFrom());
-                m_operationsDispatcher.addOperationToQueue(resOp, locatedEntity);
+                m_operationsDispatcher.addOperationToQueue(resOp, &locatedEntity);
             } else {
                 resOp->setFrom(locatedEntity.getId());
                 send(resOp);
@@ -127,7 +127,7 @@ void PossessionClient::operation(const Operation& op, OpVector& res)
                 auto I = m_minds.find(integerId(resOp->getFrom()));
                 if (I != m_minds.end()) {
                     resOp->setTo(resOp->getFrom());
-                    m_operationsDispatcher.addOperationToQueue(resOp, *I->second);
+                    m_operationsDispatcher.addOperationToQueue(resOp, I->second);
                 }
             } else {
                 res.push_back(resOp);
@@ -144,7 +144,7 @@ void PossessionClient::operation(const Operation& op, OpVector& res)
                 //All resulting ops should go out to the server, except for Ticks which we'll keep ourselves.
                 if (resOp->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
                     resOp->setTo(mind->getId());
-                    m_operationsDispatcher.addOperationToQueue(resOp, *mind);
+                    m_operationsDispatcher.addOperationToQueue(resOp, mind);
                 } else {
                     res.push_back(resOp);
                 }

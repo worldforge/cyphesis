@@ -58,7 +58,7 @@ class WorldRouter : public BaseWorld {
     /// @return True if broadcasting is allowed.
     bool shouldBroadcastPerception(const Atlas::Objects::Operation::RootOperation &) const;
     void deliverTo(const Atlas::Objects::Operation::RootOperation &,
-                   LocatedEntity &);
+                   Ref<LocatedEntity>);
     void resumeWorld() override;
   public:
     explicit WorldRouter(const SystemTime & systemTime, Ref<LocatedEntity> baseEntity);
@@ -88,7 +88,7 @@ class WorldRouter : public BaseWorld {
                                      LocatedEntity *) override;
 
     void operation(const Atlas::Objects::Operation::RootOperation &,
-                   LocatedEntity &);
+                   Ref<LocatedEntity>);
 
     void addPerceptive(LocatedEntity *) override;
     void message(const Atlas::Objects::Operation::RootOperation &,

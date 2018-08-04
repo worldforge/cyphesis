@@ -45,8 +45,19 @@ struct OpQueEntry {
     Ref<T> from;
 
     explicit OpQueEntry(Operation o, T & f);
+    OpQueEntry(Operation op, Ref<T> from) : op(std::move(op)), from(std::move(from))
+    {
+    }
     OpQueEntry(const OpQueEntry & o);
+    OpQueEntry(OpQueEntry && o);
     ~OpQueEntry();
+
+    constexpr OpQueEntry& operator=(OpQueEntry&& rhs) noexcept
+    {
+        this->op = std::move(rhs.op);
+        this->from = std::move(rhs.from);
+        return *this;
+    }
 
     const Operation & operator*() const {
         return op;
@@ -72,7 +83,7 @@ class OperationsDispatcher
          * @brief Ctor.
          * @param operationProcessor A processor function called each time an operation needs to be processed.
          */
-        OperationsDispatcher(const std::function<void(const Operation&, T&)>& operationProcessor, const std::function<double()>& timeProviderFn);
+        OperationsDispatcher(const std::function<void(const Operation&, Ref<T>)>& operationProcessor, const std::function<double()>& timeProviderFn);
 
         virtual ~OperationsDispatcher();
 
@@ -120,10 +131,10 @@ class OperationsDispatcher
          * @param The operation to add.
          * @param The located entity it belongs to.
          */
-        void addOperationToQueue(const Operation &, T &);
+        void addOperationToQueue(Operation, Ref<T>);
     protected:
 
-        std::function<void(const Operation&, T&)> m_operationProcessor;
+        std::function<void(const Operation&, Ref<T>)> m_operationProcessor;
         const std::function<double()> m_timeProviderFn;
 
         /// An ordered queue of operations to be dispatched in the future
@@ -135,7 +146,7 @@ class OperationsDispatcher
          * @brief Dispatches the operation contained in the OpQueueEntry.
          * @param opQueueEntry An entry from an op queue.
          */
-        void dispatchOperation(const OpQueEntry<T>& opQueueEntry);
+        void dispatchOperation(OpQueEntry<T>& opQueueEntry);
 
         double getTime() const;
 

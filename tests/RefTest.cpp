@@ -49,6 +49,22 @@ struct RefTest : public Cyphesis::TestBase
 
     };
 
+    struct RefCountedDeleteMarker : public  RefCounted
+    {
+        bool& delete_marker;
+        RefCountedDeleteMarker(long& count_ref, bool& delete_marker)
+        : RefCounted(count_ref), delete_marker(delete_marker) {
+
+        }
+
+        void decRef()
+        {
+            count--;
+            if (count == 0) {
+                delete_marker = true;
+            }
+        }
+    };
     void setup()
     {
     }
@@ -135,11 +151,56 @@ struct RefTest : public Cyphesis::TestBase
         ASSERT_TRUE(set.empty());
 
     }
+
+    void test_deletion()
+    {
+        {
+            long count1 = 0;
+            bool delete_marker1 = false;
+            {
+                Ref<RefCountedDeleteMarker> r1(new RefCountedDeleteMarker(count1, delete_marker1));
+                ASSERT_FALSE(delete_marker1);
+            }
+            ASSERT_TRUE(delete_marker1);
+            ASSERT_EQUAL(0, count1);
+        }
+
+        {
+            long count1 = 0;
+            bool delete_marker1 = false;
+            {
+                Ref<RefCountedDeleteMarker> r1(new RefCountedDeleteMarker(count1, delete_marker1));
+                ASSERT_FALSE(delete_marker1);
+                r1 = r1;
+                ASSERT_FALSE(delete_marker1);
+                r1 = std::move(r1);
+                ASSERT_FALSE(delete_marker1);
+            }
+            ASSERT_TRUE(delete_marker1);
+            ASSERT_EQUAL(0, count1);
+        }
+        {
+            long count1 = 0;
+            bool delete_marker1 = false;
+            {
+                Ref<RefCountedDeleteMarker> r1(new RefCountedDeleteMarker(count1, delete_marker1));
+                ASSERT_FALSE(delete_marker1);
+                Ref<RefCounted> r2 = r1;
+                ASSERT_FALSE(delete_marker1);
+                Ref<RefCounted> r3 = std::move(r1);
+                ASSERT_FALSE(delete_marker1);
+            }
+            ASSERT_TRUE(delete_marker1);
+            ASSERT_EQUAL(0, count1);
+        }
+
+    }
     RefTest()
     {
         ADD_TEST(RefTest::test_refcount);
         ADD_TEST(RefTest::test_conversion);
         ADD_TEST(RefTest::test_container);
+        ADD_TEST(RefTest::test_deletion);
 
     }
 

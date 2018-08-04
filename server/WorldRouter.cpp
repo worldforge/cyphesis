@@ -57,7 +57,7 @@ static const bool debug_flag = false;
 /// \brief Constructor for the world object.
 WorldRouter::WorldRouter(const SystemTime & time, Ref<LocatedEntity> baseEntity) :
       BaseWorld(),
-      m_operationsDispatcher([&](const Operation & op, LocatedEntity & from){this->operation(op, from);}, [&]()->double {return getTime();}),
+      m_operationsDispatcher([&](const Operation & op, Ref<LocatedEntity> from){this->operation(op, std::move(from));}, [&]()->double {return getTime();}),
       m_entityCount(1),
       m_baseEntity(baseEntity)
           
@@ -349,7 +349,7 @@ void WorldRouter::resumeWorld()
     //Take all suspended operations and add them to be executed.
     while (!m_suspendedQueue.empty()) {
         auto& ope = m_suspendedQueue.front();
-        m_operationsDispatcher.addOperationToQueue(ope.op, *ope.from);
+        m_operationsDispatcher.addOperationToQueue(std::move(ope.op), std::move(ope.from));
         m_suspendedQueue.pop();
     }
 }
@@ -367,10 +367,10 @@ void WorldRouter::message(const Operation & op, LocatedEntity & fromEntity)
         OpVector res;
         fromEntity.broadcast(op, res, LocatedEntity::Visibility::PUBLIC);
         for (auto& broadcastedOp : res) {
-            m_operationsDispatcher.addOperationToQueue(broadcastedOp, fromEntity);
+            m_operationsDispatcher.addOperationToQueue(broadcastedOp, Ref<LocatedEntity>(&fromEntity));
         }
     } else {
-        m_operationsDispatcher.addOperationToQueue(op, fromEntity);
+        m_operationsDispatcher.addOperationToQueue(op, Ref<LocatedEntity>(&fromEntity));
     }
     debug(std::cout << "WorldRouter::message {"
                     << op->getParent() << ":"
@@ -412,11 +412,8 @@ bool WorldRouter::shouldBroadcastPerception(const Operation & op) const
 /// Pass the operation to the target entity. The resulting operations
 /// have their ref numbers set, and are added to the queue for
 /// dispatch.
-void WorldRouter::deliverTo(const Operation & op, LocatedEntity & ent)
+void WorldRouter::deliverTo(const Operation & op, Ref<LocatedEntity> ent)
 {
-    //Make sure the entity isn't dereferenced while in this loop.
-    //This is mainly in place to handle relayed deletion ops.
-    Ref<LocatedEntity> referenceGuard(&ent);
     //If the world is suspended and the op is a tick, we should store it
     //(to be resent when the world is resumed) and not process it now.
     if (m_isSuspended) {
@@ -430,7 +427,7 @@ void WorldRouter::deliverTo(const Operation & op, LocatedEntity & ent)
                         << op->getParent() << ":"
                         << op->getFrom() << ":" << op->getTo() << "}" << std::endl
                         << std::flush;);
-    ent.operation(op, res);
+    ent->operation(op, res);
     debug(std::cout << "WorldRouter::deliverTo done {"
                         << op->getParent() << ":"
                         << op->getFrom() << ":" << op->getTo() << "}" << std::endl
@@ -441,7 +438,7 @@ void WorldRouter::deliverTo(const Operation & op, LocatedEntity & ent)
                 resOp->setRefno(op->getSerialno());
             }
         }
-        message(resOp, ent);
+        message(resOp, *ent);
     }
 }
 
@@ -452,13 +449,13 @@ void WorldRouter::deliverTo(const Operation & op, LocatedEntity & ent)
 /// @param op operation to be dispatched to the world.
 /// @param from entity the operation to be dispatched was send from. Note
 /// that it is possible that this entity has been destroyed.
-void WorldRouter::operation(const Operation & op, LocatedEntity & from)
+void WorldRouter::operation(const Operation & op, Ref<LocatedEntity> from)
 {
     debug(std::cout << "WorldRouter::operation {"
                     << op->getParent() << ":"
                     << op->getFrom() << ":" << op->getTo() << "}"
                     << std::endl << std::flush;);
-    assert(op->getFrom() == from.getId());
+    assert(op->getFrom() == from->getId());
     assert(!op->getParent().empty());
 
     Dispatching.emit(op);
@@ -466,14 +463,14 @@ void WorldRouter::operation(const Operation & op, LocatedEntity & from)
     if (!op->isDefaultTo()) {
         const std::string & to = op->getTo();
         assert(!to.empty());
-        LocatedEntity * to_entity = nullptr;
+        Ref<LocatedEntity> to_entity;
 
-        if (to == from.getId()) {
-            if (from.isDestroyed()) {
+        if (to == from->getId()) {
+            if (from->isDestroyed()) {
                 // Entity no longer exists
                 return;
             }
-            to_entity = &from;
+            to_entity = std::move(from);
         } else {
             to_entity = getEntity(to);
 
@@ -487,14 +484,14 @@ void WorldRouter::operation(const Operation & op, LocatedEntity & from)
 
         assert(to_entity != nullptr);
 
-        deliverTo(op, *to_entity);
+        deliverTo(op, std::move(to_entity));
 
     } else {
         auto I = m_eobjects.begin();
         auto Iend = m_eobjects.end();
         for (; I != Iend; ++I) {
             op->setTo(I->second->getId());
-            deliverTo(op, *I->second);
+            deliverTo(op, I->second);
         }
     }
 }
