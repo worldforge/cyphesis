@@ -325,9 +325,9 @@ void Admintest::setup()
     inheritance = new Inheritance();
     Atlas::Objects::Operation::MONITOR_NO = m_id_counter++;
 
-    Entity * gw = new Entity(compose("%1", m_id_counter),
+    Ref<Entity> gw = new Entity(compose("%1", m_id_counter),
                              m_id_counter++);
-    m_world = new TestWorld(*gw);
+    m_world = new TestWorld(gw);
 
     m_server = new ServerRouting(*m_world,
                                  "5529d7a4-0158-4dc1-b4a5-b5f260cac635",
@@ -767,14 +767,14 @@ void Admintest::test_GetOperation_obj_OOG()
     ASSERT_TRUE(!reply_arg->isDefaultId());
     ASSERT_EQUAL(reply_arg->getId(), to->getId());
 
-    delete to;
+    
 }
 
 void Admintest::test_GetOperation_obj_IG()
 {
     long cid = m_id_counter++;
     std::string cid_str = String::compose("%1", cid);
-    Entity * to = new Entity(cid_str, cid);
+    Ref<Entity>  to = new Entity(cid_str, cid);
 
     m_server->m_world.addEntity(to);
 
@@ -801,7 +801,6 @@ void Admintest::test_GetOperation_obj_IG()
     ASSERT_TRUE(!reply_arg->isDefaultId());
     ASSERT_EQUAL(reply_arg->getId(), to->getId());
 
-    delete to;
 }
 
 void Admintest::test_GetOperation_obj_not_found()
@@ -929,7 +928,7 @@ void Admintest::test_SetOperation_obj_IG()
     Account_SetOperation_called = 0;
 
     long cid = m_id_counter++;
-    Entity * c = new Entity(compose("%1", cid), cid);
+    Ref<Entity>  c = new Entity(compose("%1", cid), cid);
 
     m_account->m_charactersDict.insert(std::make_pair(cid, c));
 
@@ -949,7 +948,6 @@ void Admintest::test_SetOperation_obj_IG()
     // but that is stubbed out
     ASSERT_EQUAL(res.size(), 0u);
 
-    delete c;
 }
 
 void Admintest::test_SetOperation_obj_not_found()

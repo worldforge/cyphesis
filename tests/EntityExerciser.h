@@ -41,14 +41,15 @@ class LocatedEntityTest : public LocatedEntity {
 
 class EntityExerciser {
   protected:
-    LocatedEntity & m_ent;
+    Ref<LocatedEntity> m_ent;
     std::set<int> attr_types;
   public:
-    explicit EntityExerciser(LocatedEntity & e);
+    explicit EntityExerciser(Ref<LocatedEntity> e);
     virtual ~EntityExerciser();
 
     bool checkAttributes(const std::set<std::string> & attr_names);
-    bool checkProperties(const std::set<std::string> & prop_names);
+
+        virtual bool checkProperties(const std::set<std::string> & prop_names);
 
     bool fullAttributeTest(const Atlas::Message::MapType & attr_data);
 

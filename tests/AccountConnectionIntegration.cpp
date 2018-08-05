@@ -67,7 +67,7 @@ static const char * test_valid_character_type = "37702ce7a151";
 
 class SpawningTestWorld : public TestWorld {
   public:
-    SpawningTestWorld(Entity & gw) : TestWorld(gw) { }
+    SpawningTestWorld(Ref<Entity> gw) : TestWorld(gw) { }
 
     Ref<LocatedEntity> addEntity(const Ref<LocatedEntity>& ent) override{
         ent->m_location.m_loc = m_gw;
@@ -81,7 +81,7 @@ class SpawningTestWorld : public TestWorld {
         std::string id;
         long intId = newId(id);
 
-        Entity * e = new Character(id, intId);
+        Ref<Entity>  e = new Character(id, intId);
 
         e->setType(new TypeNode(t));
         return addEntity(e);
@@ -110,7 +110,7 @@ class AccountConnectionintegration : public Cyphesis::TestBase {
   protected:
     DatabaseNull m_database;
     Persistence* m_persistence;
-    Entity * m_tlve;
+    Ref<Entity> m_tlve;
     BaseWorld * m_world;
     ServerRouting * m_server;
     Connection * m_connection;
@@ -135,7 +135,7 @@ void AccountConnectionintegration::setup()
 {
     m_persistence = new Persistence(m_database);
     m_tlve = new Entity("0", 0);
-    m_world = new SpawningTestWorld(*m_tlve);
+    m_world = new SpawningTestWorld(m_tlve);
     m_server = new ServerRouting(*m_world,
                                  "testrules",
                                  "testname",

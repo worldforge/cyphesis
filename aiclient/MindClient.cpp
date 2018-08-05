@@ -60,9 +60,6 @@ MindClient::MindClient(const std::string& id, int intId,
 
 MindClient::~MindClient()
 {
-    if (m_mind) {
-        m_mind->decRef();
-    }
 }
 
 void MindClient::idle(OpVector& res)

@@ -190,8 +190,8 @@ class Accounttest : public Cyphesis::TestBase
     void test_filterTasks_malformed_no_name();
     void test_filterTasks_good();
 
-    static Entity * get_TestWorld_addNewEntity_ret_value();
-    static Entity * get_TeleportAuthenticator_ret_value();
+    static Ref<Entity>  get_TestWorld_addNewEntity_ret_value();
+    static Ref<Entity>  get_TeleportAuthenticator_ret_value();
     static void append_Link_send_sent(const RootOperation &);
     static int get_characterError_ret_value();
     static void set_Lobby_operation_called(int class_no);
@@ -207,12 +207,12 @@ int Accounttest::Lobby_operation_called;
 std::list<std::pair<RootOperation, LocatedEntity *> >
       Accounttest::TestWorld_message_called;
 
-Entity * Accounttest::get_TestWorld_addNewEntity_ret_value()
+Ref<Entity> Accounttest::get_TestWorld_addNewEntity_ret_value()
 {
     return TestWorld_addNewEntity_ret_value;
 }
 
-Entity * Accounttest::get_TeleportAuthenticator_ret_value()
+Ref<Entity> Accounttest::get_TeleportAuthenticator_ret_value()
 {
     return TeleportAuthenticator_ret_value;
 }
@@ -345,7 +345,7 @@ void Accounttest::setup()
     TestWorld::extension.messageFn = &Accounttest::set_TestWorld_message_called;
     TestWorld::extension.addNewEntityFn = [&](const std::string &,
                         const Atlas::Objects::Entity::RootEntity &){
-        Entity * ne = Accounttest::get_TestWorld_addNewEntity_ret_value();
+        Ref<Entity>  ne = Accounttest::get_TestWorld_addNewEntity_ret_value();
         if (ne != nullptr) {
             ne->m_location.m_loc = m_gw;
             ne->m_location.m_pos = Point3D(0,0,0);
@@ -353,7 +353,7 @@ void Accounttest::setup()
         }
         return ne;
     };
-    m_world = new TestWorld(*m_gw);
+    m_world = new TestWorld(m_gw);
     m_server = new ServerRouting(*m_world,
                                  "5529d7a4-0158-4dc1-b4a5-b5f260cac635",
                                  "bad621d4-616d-4faf-b9e6-471d12b139a9",
@@ -384,7 +384,7 @@ void Accounttest::test_null()
 void Accounttest::test_characterDestroyed()
 {
     long cid = m_id_counter++;
-    Entity * c = new Entity(compose("%1", cid), cid);
+    Ref<Entity>  c = new Entity(compose("%1", cid), cid);
 
     ASSERT_TRUE(m_account->m_charactersDict.empty());
 
@@ -392,13 +392,13 @@ void Accounttest::test_characterDestroyed()
 
     ASSERT_NOT_EQUAL(m_account->m_charactersDict.find(cid),
                      m_account->m_charactersDict.end());
-    ASSERT_EQUAL(m_account->m_charactersDict.find(cid)->second, c);
+    ASSERT_EQUAL(m_account->m_charactersDict.find(cid)->second, c.get());
 
     m_account->characterDestroyed(cid);
 
     ASSERT_TRUE(m_account->m_charactersDict.empty());
 
-    delete c;
+    
 }
 
 void Accounttest::test_characterDestroyed_invalid()
@@ -420,13 +420,13 @@ void Accounttest::test_connectCharacter_raw_Entity()
     ASSERT_TRUE(m_account->m_charactersDict.empty());
 
     long cid = m_id_counter++;
-    Entity * c = new Entity(compose("%1", cid), cid);
+    Ref<Entity>  c = new Entity(compose("%1", cid), cid);
     
     m_account->connectCharacter(c);
 
     ASSERT_TRUE(m_account->m_charactersDict.empty());
 
-    delete c;
+    
 }
 
 void Accounttest::test_connectCharacter_Character()
@@ -434,23 +434,23 @@ void Accounttest::test_connectCharacter_Character()
     ASSERT_TRUE(m_account->m_charactersDict.empty());
 
     long cid = m_id_counter++;
-    Entity * c = new Character(compose("%1", cid), cid);
+    Ref<Entity>  c = new Character(compose("%1", cid), cid);
     
     m_account->connectCharacter(c);
 
     ASSERT_NOT_EQUAL(m_account->m_charactersDict.find(cid),
                      m_account->m_charactersDict.end());
-    ASSERT_EQUAL(m_account->m_charactersDict.find(cid)->second, c);
+    ASSERT_EQUAL(m_account->m_charactersDict.find(cid)->second, c.get());
 
     m_account->m_charactersDict.erase(cid);
 
-    delete c;
+    
 }
 
 void Accounttest::test_addCharacter_raw_Entity()
 {
     long cid = m_id_counter++;
-    Entity * c = new Entity(compose("%1", cid), cid);
+    Ref<Entity>  c = new Entity(compose("%1", cid), cid);
 
     ASSERT_TRUE(m_account->m_charactersDict.empty());
 
@@ -459,13 +459,13 @@ void Accounttest::test_addCharacter_raw_Entity()
     // Only objects that inherit from Character are added
     ASSERT_TRUE(m_account->m_charactersDict.empty());
 
-    delete c;
+    
 }
 
 void Accounttest::test_addCharacter_Character()
 {
     long cid = m_id_counter++;
-    Entity * c = new Character(compose("%1", cid), cid);
+    Ref<Entity>  c = new Character(compose("%1", cid), cid);
 
     ASSERT_TRUE(m_account->m_charactersDict.empty());
 
@@ -473,11 +473,11 @@ void Accounttest::test_addCharacter_Character()
 
     ASSERT_NOT_EQUAL(m_account->m_charactersDict.find(cid),
                      m_account->m_charactersDict.end());
-    ASSERT_EQUAL(m_account->m_charactersDict.find(cid)->second, c);
+    ASSERT_EQUAL(m_account->m_charactersDict.find(cid)->second, c.get());
 
     m_account->m_charactersDict.erase(cid);
 
-    delete c;
+    
 }
 
 void Accounttest::test_addNewCharacter_fail()
@@ -632,7 +632,7 @@ void Accounttest::test_store()
 void Accounttest::test_addToMessage()
 {
     long cid = m_id_counter++;
-    Entity * c = new Character(compose("%1", cid), cid);
+    Ref<Entity>  c = new Character(compose("%1", cid), cid);
     m_account->m_charactersDict.insert(std::make_pair(c->getIntId(), c));
 
     MapType data;
@@ -651,13 +651,13 @@ void Accounttest::test_addToMessage()
     ASSERT_EQUAL(data["id"], m_account->getId());
 
     m_account->m_charactersDict.erase(c->getIntId());
-    delete c;
+    
 }
 
 void Accounttest::test_addToEntity()
 {
     long cid = m_id_counter++;
-    Entity * c = new Character(compose("%1", cid), cid);
+    Ref<Entity>  c = new Character(compose("%1", cid), cid);
     m_account->m_charactersDict.insert(std::make_pair(c->getIntId(), c));
 
     Anonymous data;
@@ -679,7 +679,7 @@ void Accounttest::test_addToEntity()
     ASSERT_EQUAL(data->getAttr("id"), m_account->getId());
 
     m_account->m_charactersDict.erase(c->getIntId());
-    delete c;
+    
 }
 
 void Accounttest::test_operation_Create()
@@ -942,7 +942,7 @@ void Accounttest::test_LookOperation_no_id()
 void Accounttest::test_LookOperation_known_character()
 {
     long cid = m_id_counter++;
-    Entity * c = new Character(compose("%1", cid), cid);
+    Ref<Entity>  c = new Character(compose("%1", cid), cid);
     m_account->m_charactersDict.insert(std::make_pair(c->getIntId(), c));
 
     Atlas::Objects::Operation::Look op;
@@ -970,7 +970,7 @@ void Accounttest::test_LookOperation_known_character()
                  c->getId());
 
     m_account->m_charactersDict.erase(c->getIntId());
-    delete c;
+    
 }
 
 void Accounttest::test_LookOperation_known_account()
@@ -1052,7 +1052,7 @@ void Accounttest::test_LookOperation_possess_invalid()
 void Accounttest::test_LookOperation_possess_Entity()
 {
     long cid = m_id_counter++;
-    Entity * c = new Entity(compose("%1", cid), cid);
+    Ref<Entity>  c = new Entity(compose("%1", cid), cid);
     TeleportAuthenticator_ret_value = c;
 
     Atlas::Objects::Operation::Look op;
@@ -1073,13 +1073,13 @@ void Accounttest::test_LookOperation_possess_Entity()
                  Atlas::Objects::Operation::ERROR_NO);
 
     m_account->m_charactersDict.erase(c->getIntId());
-    delete c;
+    
 }
 
 void Accounttest::test_LookOperation_possess_Character()
 {
     long cid = m_id_counter++;
-    Entity * c = new Character(compose("%1", cid), cid);
+    Ref<Entity>  c = new Character(compose("%1", cid), cid);
     TeleportAuthenticator_ret_value = c;
 
     Atlas::Objects::Operation::Look op;
@@ -1108,7 +1108,7 @@ void Accounttest::test_LookOperation_possess_Character()
                  c->getId());
 
     m_account->m_charactersDict.erase(c->getIntId());
-    delete c;
+    
 }
 
 void Accounttest::test_SetOperation_no_args()
@@ -1189,7 +1189,7 @@ void Accounttest::test_SetOperation_empty()
     ASSERT_TRUE(Accounttest::TestWorld_message_called.empty());
 
     m_account->m_charactersDict.clear();
-    delete c;
+    
 }
 
 void Accounttest::test_SetOperation_guise()
@@ -1230,7 +1230,7 @@ void Accounttest::test_SetOperation_guise()
     ASSERT_EQUAL(result_entity, c);
 
     m_account->m_charactersDict.clear();
-    delete c;
+    
 }
 
 void Accounttest::test_SetOperation_height()
@@ -1280,7 +1280,7 @@ void Accounttest::test_SetOperation_height()
     ASSERT_EQUAL(result_entity, c);
 
     m_account->m_charactersDict.clear();
-    delete c;
+    
 }
 
 void Accounttest::test_SetOperation_height_non_float()
@@ -1307,7 +1307,7 @@ void Accounttest::test_SetOperation_height_non_float()
     ASSERT_TRUE(Accounttest::TestWorld_message_called.empty());
 
     m_account->m_charactersDict.clear();
-    delete c;
+    
 }
 
 void Accounttest::test_SetOperation_height_no_bbox()
@@ -1333,7 +1333,7 @@ void Accounttest::test_SetOperation_height_no_bbox()
     ASSERT_TRUE(Accounttest::TestWorld_message_called.empty());
 
     m_account->m_charactersDict.clear();
-    delete c;
+    
 }
 
 void Accounttest::test_SetOperation_tasks_empty()
@@ -1359,7 +1359,7 @@ void Accounttest::test_SetOperation_tasks_empty()
     ASSERT_TRUE(Accounttest::TestWorld_message_called.empty());
 
     m_account->m_charactersDict.clear();
-    delete c;
+    
 }
 
 void Accounttest::test_SetOperation_tasks_good()
@@ -1405,7 +1405,7 @@ void Accounttest::test_SetOperation_tasks_good()
     ASSERT_EQUAL(result_entity, c);
 
     m_account->m_charactersDict.clear();
-    delete c;
+    
 }
 
 void Accounttest::test_TalkOperation_no_args()
@@ -1712,7 +1712,7 @@ ServerRouting::ServerRouting(BaseWorld & wrld,
 LocatedEntity *PossessionAuthenticator::authenticatePossession(const std::string &entity_id,
                                             const std::string &possess_key)
 {
-    Entity * ne = Accounttest::get_TeleportAuthenticator_ret_value();
+    Ref<Entity>  ne = Accounttest::get_TeleportAuthenticator_ret_value();
     return ne;
 }
 #include "stubs/server/stubPossessionAuthenticator.h"

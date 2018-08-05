@@ -106,9 +106,9 @@ class Charactertest : public Cyphesis::TestBase
 {
   private:
     static Operation m_BaseWorld_message_called;
-    static LocatedEntity * m_BaseWorld_message_called_from;
+    static Ref<LocatedEntity> m_BaseWorld_message_called_from;
 
-    Character * m_character;
+    Ref<Character> m_character;
     TypeNode * m_type;
   public:
     Charactertest();
@@ -131,7 +131,7 @@ class Charactertest : public Cyphesis::TestBase
 };
 
 Operation Charactertest::m_BaseWorld_message_called(0);
-LocatedEntity * Charactertest::m_BaseWorld_message_called_from(0);
+Ref<LocatedEntity> Charactertest::m_BaseWorld_message_called_from;
 
 void Charactertest::BaseWorld_message_called(const Operation & op,
                                              LocatedEntity & ent)
@@ -167,13 +167,12 @@ void Charactertest::setup()
 
 void Charactertest::teardown()
 {
-    delete m_character;
     delete m_type;
 }
 
 void Charactertest::test_exerciser()
 {
-    IGEntityExerciser ee(*m_character);
+    IGEntityExerciser ee(m_character);
 
     // Throw an op of every type at the entity
     ee.runOperations();
@@ -287,7 +286,7 @@ void Charactertest::test_unlinkExternal()
     ASSERT_NOT_NULL(m_character->m_externalMind)
     ASSERT_TRUE(!m_character->m_externalMind->isLinked())
     ASSERT_TRUE(m_BaseWorld_message_called.isValid());
-    ASSERT_EQUAL(m_BaseWorld_message_called_from, m_character);
+    ASSERT_EQUAL(m_BaseWorld_message_called_from.get(), m_character.get());
     ASSERT_EQUAL(m_BaseWorld_message_called->getClassNo(),
                  Atlas::Objects::Operation::MOVE_NO);
 }
@@ -359,8 +358,8 @@ void Charactertest::test_filterExternalOperation()
                  Atlas::Objects::Operation::TALK_NO);
     ASSERT_TRUE(!m_BaseWorld_message_called->isDefaultTo());
     ASSERT_EQUAL(m_BaseWorld_message_called->getTo(), m_character->getId());
-    ASSERT_NOT_NULL(m_BaseWorld_message_called_from);
-    ASSERT_EQUAL(m_BaseWorld_message_called_from, m_character);
+    ASSERT_NOT_NULL(m_BaseWorld_message_called_from.get());
+    ASSERT_EQUAL(m_BaseWorld_message_called_from.get(), m_character.get());
 }
 
 int main(int argc, char ** argv)

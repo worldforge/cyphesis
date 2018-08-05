@@ -137,7 +137,7 @@ Py::Object CyPy_MemMap::updateAdd(const Py::Tuple& args)
             if (!ret) {
                 throw Py::TypeError("arg is a Message that does not have an ID");
             }
-            return CyPy_MemEntity::wrap(ret);
+            return CyPy_MemEntity::wrap(std::move(ret));
         }
         catch (Atlas::Message::WrongTypeException&) {
             throw Py::TypeError("arg is a Message that contains malformed attributes");

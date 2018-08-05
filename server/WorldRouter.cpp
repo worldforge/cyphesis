@@ -59,12 +59,12 @@ WorldRouter::WorldRouter(const SystemTime & time, Ref<LocatedEntity> baseEntity)
       BaseWorld(),
       m_operationsDispatcher([&](const Operation & op, Ref<LocatedEntity> from){this->operation(op, std::move(from));}, [&]()->double {return getTime();}),
       m_entityCount(1),
-      m_baseEntity(baseEntity)
+      m_baseEntity(std::move(baseEntity))
           
 {
     m_initTime = time.seconds();
 
-    m_eobjects[baseEntity->getIntId()] = baseEntity;
+    m_eobjects[m_baseEntity->getIntId()] = m_baseEntity;
     Monitors::instance().watch("entities", new Variable<int>(m_entityCount));
 
     /**
@@ -221,8 +221,8 @@ Ref<LocatedEntity> WorldRouter::addNewEntity(const std::string & typestr,
         return nullptr;
     }
 
-    auto ent = EntityBuilder::instance().newEntity(id, intId, typestr, attrs, *this);
-    if (ent == nullptr) {
+    Ref<LocatedEntity> ent = EntityBuilder::instance().newEntity(id, intId, typestr, attrs, *this);
+    if (!ent) {
         log(ERROR, String::compose("Attempt to create an entity of type \"%1\" "
                                    "but type is unknown or forbidden",
                                    typestr));

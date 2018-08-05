@@ -64,7 +64,7 @@ class Entitytest : public Cyphesis::TestBase
   private:
     TestPropertyManager * m_pm;
     TypeNode * m_type;
-    Entity * m_entity;
+    Ref<Entity> m_entity;
 
     static bool m_TestProperty_install_called;
     static bool m_TestProperty_apply_called;
@@ -137,7 +137,6 @@ void Entitytest::setup()
 
 void Entitytest::teardown()
 {
-    delete m_entity;
     delete m_type;
     delete m_pm;
 }
@@ -203,7 +202,7 @@ void Entitytest::test_sequence()
     delete m_pm;
     m_pm = 0;
 
-    IGEntityExerciser ee(*m_entity);
+    IGEntityExerciser ee(m_entity);
 
     // Throw an op of every type at the entity
     ee.runOperations();

@@ -140,7 +140,7 @@ class PropertyEntityintegration : public Cyphesis::TestBase
 {
   private:
     TypeNode * m_type;
-    Entity * m_entity;
+    Ref<Entity> m_entity;
   public:
     PropertyEntityintegration();
 
@@ -265,7 +265,7 @@ void PropertyEntityintegration::setup()
 
 void PropertyEntityintegration::teardown()
 {
-    delete m_entity;
+    m_entity = nullptr;
     delete m_type;
     delete propertyManager;
 }

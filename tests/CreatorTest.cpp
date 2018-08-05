@@ -66,7 +66,7 @@ class Creatortest : public Cyphesis::TestBase
   private:
     static Operation m_Character_filterExternalOperation_called;
 
-    Creator * m_creator;
+    Ref<Creator> m_creator;
     TypeNode * m_type;
   public:
     Creatortest();
@@ -104,13 +104,12 @@ void Creatortest::setup()
 
 void Creatortest::teardown()
 {
-    delete m_creator;
     delete m_type;
 }
 
 void Creatortest::test_exerciser()
 {
-    IGEntityExerciser ee(*m_creator);
+    IGEntityExerciser ee(m_creator);
 
     // Throw an op of every type at the entity
     ee.runOperations();

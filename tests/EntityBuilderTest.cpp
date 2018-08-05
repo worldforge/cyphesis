@@ -45,7 +45,6 @@
 #include "common/TypeNode.h"
 #include "common/Variable.h"
 #include "common/ScriptKit.h"
-#include "common/TaskKit.h"
 
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubLocation.h"
@@ -65,28 +64,10 @@ using Atlas::Message::MapType;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Root;
 
-class TestScriptFactory : public ScriptKit<LocatedEntity> {
-  protected:
-    std::string m_package;
-  public:
-    TestScriptFactory() { }
-
-    const std::string & package() const { return m_package; }
-    int addScript(LocatedEntity * entity) const { return 0; }
-    int refreshClass() { return 0; }
-};
-
-class TestTaskFactory : public TaskKit
-{
-  public:
-    int checkTarget(LocatedEntity * target) override{ return 0; }
-    Ref<Task> newTask(LocatedEntity & chr) override { return 0; }
-};
-
 class EntityBuildertest : public Cyphesis::TestBase
 {
   private:
-    Entity * e;
+    Ref<Entity> e;
     BaseWorld * test_world;
     EntityBuilder* eb;
   public:
@@ -119,7 +100,7 @@ void EntityBuildertest::setup()
 {
     inheritance = new Inheritance();
     e = new Entity("1", 1);
-    test_world = new TestWorld(*e);
+    test_world = new TestWorld(e);
     eb = new EntityBuilder();
 
     EntityBuilder::instance().installBaseFactory("thing", "game_entity", new EntityFactory<Thing>());
@@ -128,7 +109,7 @@ void EntityBuildertest::setup()
 void EntityBuildertest::teardown()
 {
     delete test_world;
-    delete e;
+    e = nullptr;
     delete eb;
     assert(!EntityBuilder::hasInstance());
     delete inheritance;
@@ -666,14 +647,6 @@ long integerId(const std::string & id)
     }
 
     return intId;
-}
-
-TaskKit::TaskKit() : m_target(0), m_scriptFactory(0)
-{
-}
-
-TaskKit::~TaskKit()
-{
 }
 
 Root atlasClass(const std::string & name, const std::string & parent)

@@ -39,15 +39,15 @@
 
 int main()
 {
-    Entity * e = new Entity("1", 1);
-    Entity * wrld = new Entity("0", 0);
+    Ref<Entity> e = new Entity("1", 1);
+    Ref<Entity>  wrld = new Entity("0", 0);
 
     e->m_location.m_loc = wrld;
     e->m_location.m_loc->makeContainer();
     assert(e->m_location.m_loc->m_contains != 0);
     e->m_location.m_loc->m_contains->insert(e);
 
-    TestWorld test_world(*wrld);
+    TestWorld test_world(wrld);
 
     Pedestrian * p = new Pedestrian(*e);
 

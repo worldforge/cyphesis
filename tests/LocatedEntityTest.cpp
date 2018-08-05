@@ -40,7 +40,7 @@ using Atlas::Message::MapType;
 class LocatedEntitytest : public Cyphesis::TestBase
 {
   private:
-    LocatedEntity * m_entity;
+    Ref<LocatedEntity> m_entity;
     static bool m_TestProperty_remove_called;
   public:
     LocatedEntitytest();
@@ -104,7 +104,7 @@ void LocatedEntitytest::setup()
 
 void LocatedEntitytest::teardown()
 {
-    delete m_entity;
+    m_entity = nullptr;
 }
 
 void LocatedEntitytest::test_setProperty()
@@ -146,7 +146,7 @@ void LocatedEntitytest::test_coverage()
     m_entity->onContainered(nullptr);
     m_entity->onUpdated();
 
-    EntityExerciser ee(*m_entity);
+    EntityExerciser ee(m_entity);
     // Throw an op of every type at the entity
     ee.runOperations();
 
@@ -235,15 +235,16 @@ int main()
         LocatedEntityTest * e = new LocatedEntityTest("1", 1);
 
         e->incRef();
+        e->incRef();
         e->decRef();
-        assert(e->checkRef() == 0);
+        assert(e->checkRef() == 1);
         delete e;
     }
 
     // Test decRef()
     {
         LocatedEntityTest * e = new LocatedEntityTest("1", 1);
-
+        e->incRef();
         e->decRef();
         // Enitity deleted - verified as not leaked
     }
@@ -253,16 +254,14 @@ int main()
         LocatedEntityTest * e = new LocatedEntityTest("1", 1);
 
         e->setAttr("foo", "bar");
-        e->decRef();
     }
-    
+
     // Test setAttr()
     {
         LocatedEntityTest * e = new LocatedEntityTest("1", 1);
 
         e->setAttr("foo", "bar");
         e->setAttr("foo", 23);
-        e->decRef();
     }
 
     // Test getAttr()
@@ -273,7 +272,6 @@ int main()
         int ret = e->getAttr("foo", val);
         assert(ret == -1);
         assert(val.isNone());
-        e->decRef();
     }
 
     // Test getAttr()
@@ -285,7 +283,6 @@ int main()
         int ret = e->getAttr("foo", val);
         assert(ret == 0);
         assert(val.isString());
-        e->decRef();
     }
 
     // Test getAttrType()
@@ -296,7 +293,6 @@ int main()
         int ret = e->getAttrType("foo", val, Element::TYPE_STRING);
         assert(ret == -1);
         assert(val.isNone());
-        e->decRef();
     }
 
     // Test getAttrType()
@@ -307,7 +303,6 @@ int main()
         int ret = e->getAttrType("id", val, Element::TYPE_STRING);
         assert(ret == 0);
         assert(val.isString());
-        e->decRef();
     }
 
     // Test getAttrType()
@@ -318,7 +313,6 @@ int main()
         int ret = e->getAttrType("id", val, Element::TYPE_FLOAT);
         assert(ret != 0);
         assert(val.isString());
-        e->decRef();
     }
 
     // Test hasAttr()
@@ -328,7 +322,6 @@ int main()
 
         bool ret = e->hasAttr("foo");
         assert(ret == false);
-        e->decRef();
     }
 
     // Test hasAttr()
@@ -339,7 +332,6 @@ int main()
         e->setAttr("foo", "bar");
         bool ret = e->hasAttr("foo");
         assert(ret == true);
-        e->decRef();
     }
 
     LocatedEntitytest t;

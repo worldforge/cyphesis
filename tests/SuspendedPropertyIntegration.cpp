@@ -75,7 +75,7 @@ PropertyBase * TestPropertyManager::addProperty(const std::string & name,
 class SuspendedPropertyintegration : public Cyphesis::TestBase
 {
   private:
-	TestEntity* world_entity;
+	Ref<TestEntity> world_entity;
 
 	TestWorld* world;
 
@@ -104,7 +104,7 @@ void SuspendedPropertyintegration::setup()
         worldMessageCallback(op);
     };
 	world_entity = new TestEntity("0", 0);
-	world = new TestWorld(*world_entity);
+	world = new TestWorld(world_entity);
 }
 
 void SuspendedPropertyintegration::teardown()

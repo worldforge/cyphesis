@@ -40,8 +40,8 @@ using Atlas::Objects::Operation::Eat;
 class BiomassPropertyintegration : public Cyphesis::TestBase
 {
   private:
-    Entity * m_world;
-    Entity * m_entity;
+    Ref<Entity> m_world;
+    Ref<Entity> m_entity;
     PropertyBase * m_property;
   public:
     BiomassPropertyintegration();
@@ -73,7 +73,7 @@ void BiomassPropertyintegration::setup()
 
 void BiomassPropertyintegration::teardown()
 {
-    delete m_entity;
+    m_entity = nullptr;
 }
 
 void BiomassPropertyintegration::test_handler()

@@ -117,10 +117,10 @@ void ConnectionCharacterintegration::setup()
 {
     m_Link_send_sent = 0;
 
-    Entity * gw = new Entity(compose("%1", m_id_counter),
+    Ref<Entity> gw = new Entity(compose("%1", m_id_counter),
                              m_id_counter++);
     m_world.reset();
-    m_world.reset(new TestWorld(*gw));
+    m_world.reset(new TestWorld(gw));
     TestWorld::extension.messageFn = [](const Operation & op, LocatedEntity & ent) {
         ConnectionCharacterintegration::BaseWorld_message_called(op, ent);
     };

@@ -17,7 +17,7 @@
 
 #ifndef STUB_WorldRouter_deliverTo
 //#define STUB_WorldRouter_deliverTo
-  void WorldRouter::deliverTo(const Atlas::Objects::Operation::RootOperation &, LocatedEntity &)
+  void WorldRouter::deliverTo(const Atlas::Objects::Operation::RootOperation &, Ref<LocatedEntity>)
   {
     
   }
@@ -138,7 +138,7 @@
 
 #ifndef STUB_WorldRouter_operation
 //#define STUB_WorldRouter_operation
-  void WorldRouter::operation(const Atlas::Objects::Operation::RootOperation &, LocatedEntity &)
+  void WorldRouter::operation(const Atlas::Objects::Operation::RootOperation &, Ref<LocatedEntity>)
   {
     
   }

@@ -63,7 +63,7 @@ class ExposedEntityBuilder : public EntityBuilder {
 class Rulesetintegration : public Cyphesis::TestBase
 {
   protected:
-    World * m_entity;
+    Ref<World> m_entity;
     TestWorld * m_test_world;
     ExposedEntityBuilder * m_entity_builder;
   public:
@@ -90,14 +90,13 @@ void Rulesetintegration::setup()
 {
     m_inheritance = new Inheritance();
     m_entity = new World("1", 1);
-    m_test_world = new TestWorld(*m_entity);
+    m_test_world = new TestWorld(m_entity);
     m_entity_builder = new ExposedEntityBuilder();
 }
 
 void Rulesetintegration::teardown()
 {
     delete m_entity_builder;
-    delete m_entity;
     delete m_test_world;
     delete m_inheritance;
 }
@@ -157,7 +156,7 @@ void Rulesetintegration::test_sequence()
         Anonymous attributes;
 
         // Create an entity which is an instance of one of the core classes
-        LocatedEntity * test_ent = test_eb->newEntity("1", 1,
+        auto test_ent = test_eb->newEntity("1", 1,
                                                       "thing",
                                                       attributes,
                                                       *m_test_world);

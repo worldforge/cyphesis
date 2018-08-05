@@ -1595,7 +1595,7 @@ void PhysicalDomainIntegrationTest::test_zoffset()
     Property<double>* plantedOffset = new Property<double>();
     plantedOffset->data() = -2;
 
-    Entity* rootEntity = new Entity("0", newId());
+    Ref<Entity> rootEntity = new Entity("0", newId());
     TerrainProperty* terrainProperty = new TerrainProperty();
     Mercator::Terrain& terrain = terrainProperty->getData();
     terrain.setBasePoint(0, 0, Mercator::BasePoint(10));
@@ -1607,10 +1607,10 @@ void PhysicalDomainIntegrationTest::test_zoffset()
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(0, -64, 0), WFMath::Point<3>(64, 64, 64)));
     std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
 
-    TestWorld testWorld(*rootEntity);
+    TestWorld testWorld(rootEntity);
 
 
-    Entity* plantedEntity = new Entity("planted", newId());
+    Ref<Entity> plantedEntity = new Entity("planted", newId());
     plantedEntity->setProperty(ModeProperty::property_name, modePlantedProperty);
     plantedEntity->setType(rockType);
     plantedEntity->m_location.m_pos = WFMath::Point<3>(30, 10, 30);
@@ -1636,7 +1636,7 @@ void PhysicalDomainIntegrationTest::test_zscaledoffset()
     Property<double>* plantedScaledOffset = new Property<double>();
     plantedScaledOffset->data() = -0.2;
 
-    Entity* rootEntity = new Entity("0", newId());
+    Ref<Entity> rootEntity = new Entity("0", newId());
     TerrainProperty* terrainProperty = new TerrainProperty();
     Mercator::Terrain& terrain = terrainProperty->getData();
     terrain.setBasePoint(0, 0, Mercator::BasePoint(10));
@@ -1648,10 +1648,10 @@ void PhysicalDomainIntegrationTest::test_zscaledoffset()
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(0, -64, 0), WFMath::Point<3>(64, 64, 64)));
     std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
 
-    TestWorld testWorld(*rootEntity);
+    TestWorld testWorld(rootEntity);
 
 
-    Entity* plantedEntity = new Entity("planted", newId());
+    Ref<Entity> plantedEntity = new Entity("planted", newId());
     plantedEntity->setProperty(ModeProperty::property_name, modePlantedProperty);
     plantedEntity->setType(rockType);
     plantedEntity->m_location.m_pos = WFMath::Point<3>(30, 10, 30);
@@ -1678,44 +1678,44 @@ void PhysicalDomainIntegrationTest::test_visibility()
     visibilityProperty->set(1000.f);
 
 
-    Entity* rootEntity = new Entity("0", newId());
+    Ref<Entity> rootEntity = new Entity("0", newId());
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, 0, -64), WFMath::Point<3>(64, 64, 64)));
     std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
 
-    TestWorld testWorld(*rootEntity);
+    TestWorld testWorld(rootEntity);
 
-    Entity* smallEntity1 = new Entity("small1", newId());
-    smallEntity1->setProperty(ModeProperty::property_name, modePlantedProperty);
+    Ref<Entity> smallEntity1 = new Entity("small1", newId());
+    smallEntity1->setProperty(ModeProperty::property_name, modePlantedProperty->copy());
     smallEntity1->setType(rockType);
     smallEntity1->m_location.m_pos = WFMath::Point<3>(30, 0, 30);
     smallEntity1->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.2f, 0, -0.2f), WFMath::Point<3>(0.2, 0.4, 0.2)));
     domain->addEntity(*smallEntity1);
 
-    Entity* smallEntity2 = new Entity("small2", newId());
-    smallEntity2->setProperty(ModeProperty::property_name, modePlantedProperty);
+    Ref<Entity> smallEntity2 = new Entity("small2", newId());
+    smallEntity2->setProperty(ModeProperty::property_name, modePlantedProperty->copy());
     smallEntity2->setType(rockType);
     smallEntity2->m_location.m_pos = WFMath::Point<3>(-31, 0, -31);
     smallEntity2->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.2f, 0, -0.2f), WFMath::Point<3>(0.2, 0.4, 0.2)));
     domain->addEntity(*smallEntity2);
 
     //This entity should always be seen, as "visibility" is specified.
-    Entity* smallVisibleEntity = new Entity("smallVisible", newId());
-    smallVisibleEntity->setProperty(ModeProperty::property_name, modePlantedProperty);
+    Ref<Entity> smallVisibleEntity = new Entity("smallVisible", newId());
+    smallVisibleEntity->setProperty(ModeProperty::property_name, modePlantedProperty->copy());
     smallVisibleEntity->setType(rockType);
     smallVisibleEntity->m_location.m_pos = WFMath::Point<3>(-63, 0, -63);
     smallVisibleEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.2f, 0, -0.2f), WFMath::Point<3>(0.2, 0.4, 0.2)));
     smallVisibleEntity->setProperty("visibility", visibilityProperty);
     domain->addEntity(*smallVisibleEntity);
 
-    Entity* largeEntity1 = new Entity("large1", newId());
-    largeEntity1->setProperty(ModeProperty::property_name, modePlantedProperty);
+    Ref<Entity> largeEntity1 = new Entity("large1", newId());
+    largeEntity1->setProperty(ModeProperty::property_name, modePlantedProperty->copy());
     largeEntity1->setType(rockType);
     largeEntity1->m_location.m_pos = WFMath::Point<3>(0, 0, 0);
     largeEntity1->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-10.f, 0, -10.f), WFMath::Point<3>(10, 20, 10)));
     domain->addEntity(*largeEntity1);
 
-    Entity* observerEntity = new Entity("observer", newId());
+    Ref<Entity> observerEntity = new Entity("observer", newId());
     observerEntity->setType(humanType);
     observerEntity->m_location.m_pos = WFMath::Point<3>(-30, 0, -30);
     observerEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.2f, 0, -0.2f), WFMath::Point<3>(0.2, 2, 0.2)));
@@ -1789,12 +1789,12 @@ void PhysicalDomainIntegrationTest::test_stairs()
     humanType->injectProperty("speed_ground", speedGroundProperty);
 
 
-    Entity* rootEntity = new Entity("0", newId());
+    Ref<Entity> rootEntity = new Entity("0", newId());
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, 0, -64), WFMath::Point<3>(64, 64, 64)));
     std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
 
-    TestWorld testWorld(*rootEntity);
+    TestWorld testWorld(rootEntity);
 
 
     //Create 10 entities at increasing height, forming a stair.
@@ -1802,8 +1802,8 @@ void PhysicalDomainIntegrationTest::test_stairs()
         std::stringstream ss;
         long id = newId();
         ss << "step" << id;
-        Entity* stepElement = new Entity(ss.str(), id);
-        stepElement->setProperty(ModeProperty::property_name, modePlantedProperty);
+        Ref<Entity> stepElement = new Entity(ss.str(), id);
+        stepElement->setProperty(ModeProperty::property_name, modePlantedProperty->copy());
         float height = 0.1f + (i * 0.1f);
         float zPos = i * 0.2f;
         WFMath::Point<3> pos(0, 0, zPos);
@@ -1818,10 +1818,10 @@ void PhysicalDomainIntegrationTest::test_stairs()
 
     //First with an entity which doesn't step; it should collide and be kept in place
     {
-        Entity* human = new Entity("human", newId());
-        human->setProperty(AngularFactorProperty::property_name, &angularZeroFactorProperty);
-        human->setProperty("mass", massProp);
-        human->setProperty(PropelProperty::property_name, propelProperty);
+        Ref<Entity> human = new Entity("human", newId());
+        human->setProperty(AngularFactorProperty::property_name, angularZeroFactorProperty.copy());
+        human->setProperty("mass", massProp->copy());
+        human->setProperty(PropelProperty::property_name, propelProperty->copy());
         human->setType(humanType);
         human->m_location.m_pos = WFMath::Point<3>(0, 0, -1);
         human->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.4f, 0, -0.4f), WFMath::Point<3>(0.4, 1.8, 0.4)));
@@ -1836,12 +1836,12 @@ void PhysicalDomainIntegrationTest::test_stairs()
 
     //Then with an entity with a capsule geometry, it should step
     {
-        Entity* human = new Entity("human", newId());
+        Ref<Entity> human = new Entity("human", newId());
         //human->setProperty("step_factor", stepFactorProp);
-        human->setProperty(AngularFactorProperty::property_name, &angularZeroFactorProperty);
-        human->setProperty("mass", massProp);
-        human->setProperty(PropelProperty::property_name, propelProperty);
-        human->setProperty(GeometryProperty::property_name, &capsuleProperty);
+        human->setProperty(AngularFactorProperty::property_name, angularZeroFactorProperty.copy());
+        human->setProperty("mass", massProp->copy());
+        human->setProperty(PropelProperty::property_name, propelProperty->copy());
+        human->setProperty(GeometryProperty::property_name, capsuleProperty.copy());
         human->setType(humanType);
         human->m_location.m_pos = WFMath::Point<3>(0, 0, -1);
         human->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.4f, 0, -0.4f), WFMath::Point<3>(0.4, 1.8, 0.4)));
@@ -1859,8 +1859,8 @@ void PhysicalDomainIntegrationTest::test_stairs()
     {
 
         long id = newId();
-        Entity* stepElement = new Entity("tilted", id);
-        stepElement->setProperty(ModeProperty::property_name, modePlantedProperty);
+        Ref<Entity> stepElement = new Entity("tilted", id);
+        stepElement->setProperty(ModeProperty::property_name, modePlantedProperty->copy());
         WFMath::Point<3> pos(20, 0, 0);
         WFMath::AxisBox<3> bbox(WFMath::Point<3>(-0.4f, 0.f, 0), WFMath::Point<3>(0.4f, 1, 0.4f));
         stepElement->m_location.m_orientation.rotate(WFMath::Quaternion(0, WFMath::numeric_constants<float>::pi() * 0.2f));
@@ -1871,12 +1871,12 @@ void PhysicalDomainIntegrationTest::test_stairs()
 
         domain->addEntity(*stepElement);
 
-        Entity* human = new Entity("human", newId());
+        Ref<Entity> human = new Entity("human", newId());
         //human->setProperty("step_factor", stepFactorProp);
-        human->setProperty(AngularFactorProperty::property_name, &angularZeroFactorProperty);
+        human->setProperty(AngularFactorProperty::property_name, angularZeroFactorProperty.copy());
         human->setProperty("mass", massProp);
-        human->setProperty(PropelProperty::property_name, propelProperty);
-        human->setProperty(GeometryProperty::property_name, &capsuleProperty);
+        human->setProperty(PropelProperty::property_name, propelProperty->copy());
+        human->setProperty(GeometryProperty::property_name, capsuleProperty.copy());
         human->setType(humanType);
         human->m_location.m_pos = WFMath::Point<3>(20, 0, -1);
         human->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.4f, 0, -0.4f), WFMath::Point<3>(0.4, 1.8, 0.4)));
@@ -1895,7 +1895,7 @@ void PhysicalDomainIntegrationTest::test_stairs()
 void PhysicalDomainIntegrationTest::test_terrainPrecision()
 {
 
-    Entity* rootEntity = new Entity("0", newId());
+    Ref<Entity> rootEntity = new Entity("0", newId());
     TerrainProperty* terrainProperty = new TerrainProperty();
     Mercator::Terrain& terrain = terrainProperty->getData();
     terrain.setBasePoint(0, 0, Mercator::BasePoint(10));

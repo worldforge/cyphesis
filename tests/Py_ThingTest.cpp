@@ -75,7 +75,7 @@ int main()
     e->m_location.m_loc->makeContainer();
     assert(e->m_location.m_loc->m_contains != nullptr);
     e->m_location.m_loc->m_contains->insert(e);
-    TestWorld test_world(*wrld);
+    TestWorld test_world(wrld);
 
     auto wrap_e = CyPy_LocatedEntity::wrap(e);
     assert(CyPy_LocatedEntity::check(wrap_e));

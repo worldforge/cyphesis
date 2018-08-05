@@ -30,13 +30,13 @@
 
 class IGEntityExerciser : public EntityExerciser {
   protected:
-    Entity & m_ent;
+    Ref<Entity> m_ent;
   public:
-    explicit IGEntityExerciser(Entity & e);
+    explicit IGEntityExerciser(Ref<Entity> e);
 
-    bool checkProperties(const std::set<std::string> & prop_names);
+    bool checkProperties(const std::set<std::string> & prop_names) override;
 
-    void runOperations();
+    void runOperations() override;
 };
 
 #endif // TESTS_IG_ENTITY_EXERCISER_H

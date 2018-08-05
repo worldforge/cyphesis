@@ -37,19 +37,19 @@ struct TestWorld : public BaseWorld {
 
     static TestWorldExtension extension;
 
-    LocatedEntity* m_gw;
+    Ref<LocatedEntity> m_gw;
     explicit TestWorld() : BaseWorld(), m_gw(nullptr) {
     }
-    explicit TestWorld(LocatedEntity & gw) : BaseWorld(), m_gw(&gw) {
-        m_eobjects[gw.getIntId()] = &gw;
+    explicit TestWorld(Ref<LocatedEntity> gw) : BaseWorld(), m_gw(gw) {
+        m_eobjects[gw->getIntId()] = gw;
     }
 
     ~TestWorld() override{}
 
     bool idle() override { return false; }
     Ref<LocatedEntity> addEntity(const Ref<LocatedEntity>& ent) override {
-        m_eobjects[ent->getIntId()] = ent.get();
-        return 0;
+        m_eobjects[ent->getIntId()] = ent;
+        return ent;
     }
     Ref<LocatedEntity> addNewEntity(const std::string & id,
                                          const Atlas::Objects::Entity::RootEntity & op) override
@@ -66,14 +66,15 @@ struct TestWorld : public BaseWorld {
     int getSpawnList(Atlas::Message::ListType & data) override { return 0; }
     LocatedEntity * spawnNewEntity(const std::string & name,
                                    const std::string & type,
-                                   const Atlas::Objects::Entity::RootEntity & desc) {
+                                   const Atlas::Objects::Entity::RootEntity & desc) override
+    {
         return addNewEntity(type, desc);
     }
     int moveToSpawn(const std::string & name,
                             Location& location) override{return 0;}
     ArithmeticScript * newArithmetic(const std::string &,
                                              LocatedEntity *) override {
-        return 0;
+        return nullptr;
     }
     void message(const Operation & op, LocatedEntity & ent) override {
         if (extension.messageFn) {

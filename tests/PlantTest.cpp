@@ -88,9 +88,9 @@ using Atlas::Objects::Entity::RootEntity;
 
 int main()
 {
-    Plant e("1", 1);
+    Ref<Plant> e(new Plant("1", 1));
     TypeNode type("plant");
-    e.setType(&type);
+    e->setType(&type);
 
     IGEntityExerciser ee(e);
 

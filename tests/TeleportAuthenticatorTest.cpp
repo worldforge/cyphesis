@@ -56,7 +56,7 @@ class MyTestWorld : public TestWorld {
 
     LocatedEntity * test_addEntity(LocatedEntity * ent, long intId) { 
         m_eobjects[intId] = ent;
-        return 0;
+        return ent;
     }
 };
 
@@ -120,8 +120,8 @@ void TeleportAuthenticatortest::test_sequence()
 
 void TeleportAuthenticatortest::test_authenticatePossession()
 {
-    Entity ent("100", 100);
-    m_world->test_addEntity(&ent, 100);
+    Ref<Entity> ent(new Entity("100", 100));
+    m_world->test_addEntity(ent, 100);
 
     PossessionAuthenticator::instance().addPossession("100", "test_possess_key");
 
@@ -141,8 +141,8 @@ void TeleportAuthenticatortest::test_authenticatePossession()
 
 void TeleportAuthenticatortest::test_authenticatePossession_nonexist()
 {
-    Entity ent("100", 100);
-    m_world->test_addEntity(&ent, 100);
+    Ref<Entity> ent(new Entity("100", 100));
+    m_world->test_addEntity(ent, 100);
 
     PossessionAuthenticator::instance().addPossession("101", "test_possess_key");
 

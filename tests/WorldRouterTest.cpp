@@ -82,14 +82,14 @@ class WorldRoutertest : public Cyphesis::TestBase
     void test_delEntity_world();
 
         Inheritance* m_inheritance;
-        LocatedEntity* m_rootEntity;
+        Ref<LocatedEntity> m_rootEntity;
 };
 
 WorldRoutertest::WorldRoutertest()
 {
+    ADD_TEST(WorldRoutertest::test_addNewEntity_thing);
     ADD_TEST(WorldRoutertest::test_constructor);
     ADD_TEST(WorldRoutertest::test_addNewEntity_unknown);
-    ADD_TEST(WorldRoutertest::test_addNewEntity_thing);
     ADD_TEST(WorldRoutertest::test_addNewEntity_idfail);
     ADD_TEST(WorldRoutertest::test_addEntity);
     ADD_TEST(WorldRoutertest::test_addEntity_tick);
@@ -111,6 +111,7 @@ void WorldRoutertest::setup()
 
 void WorldRoutertest::teardown()
 {
+    m_rootEntity = nullptr;
     delete m_eb;
     delete test_world;
     delete m_inheritance;
@@ -123,15 +124,15 @@ void WorldRoutertest::test_constructor()
 void WorldRoutertest::test_addNewEntity_unknown()
 {
 
-    LocatedEntity * ent1 = test_world->addNewEntity("__no_such_type__",
+    auto ent1 = test_world->addNewEntity("__no_such_type__",
                                                     Anonymous());
-    assert(ent1 == 0);
+    assert(ent1.get() == 0);
 }
 
 void WorldRoutertest::test_addNewEntity_thing()
 {
-    LocatedEntity * ent1 = test_world->addNewEntity("thing", Anonymous());
-    assert(ent1 != 0);
+    auto ent1 = test_world->addNewEntity("thing", Anonymous());
+    assert(ent1.get() != 0);
 }
 
 
@@ -139,8 +140,8 @@ void WorldRoutertest::test_addNewEntity_idfail()
 {
     stub_deny_newid = true;
 
-    LocatedEntity * ent1 = test_world->addNewEntity("thing", Anonymous());
-    assert(ent1 == 0);
+    auto ent1 = test_world->addNewEntity("thing", Anonymous());
+    assert(ent1.get() == 0);
 
     stub_deny_newid = false;
 }
@@ -150,7 +151,7 @@ void WorldRoutertest::test_addEntity()
     std::string id;
     long int_id = newId(id);
 
-    Entity * ent2 = new Entity(id, int_id);
+    auto ent2 = new Entity(id, int_id);
     assert(ent2 != 0);
     ent2->m_location.m_loc = m_rootEntity;
     ent2->m_location.m_pos = Point3D(0,0,0);
@@ -162,7 +163,7 @@ void WorldRoutertest::test_addEntity_tick()
     std::string id;
     long int_id = newId(id);
 
-    Entity * ent2 = new Entity(id, int_id);
+    auto ent2 = new Entity(id, int_id);
     assert(ent2 != 0);
     ent2->m_location.m_loc = m_rootEntity;
     ent2->m_location.m_pos = Point3D(0,0,0);
@@ -180,7 +181,7 @@ void WorldRoutertest::test_addEntity_tick_get()
     std::string id;
     long int_id = newId(id);
 
-    Entity * ent2 = new Entity(id, int_id);
+    auto  ent2 = new Entity(id, int_id);
     assert(ent2 != 0);
     ent2->m_location.m_loc = m_rootEntity;
     ent2->m_location.m_pos = Point3D(0,0,0);
@@ -214,7 +215,7 @@ void WorldRoutertest::test_createSpawnPoint()
     std::string id;
     long int_id = newId(id);
 
-    Entity * ent2 = new Entity(id, int_id);
+    auto  ent2 = new Entity(id, int_id);
     assert(ent2 != 0);
     ent2->m_location.m_loc = m_rootEntity;
     ent2->m_location.m_pos = Point3D(0,0,0);
@@ -262,7 +263,7 @@ void WorldRoutertest::test_delEntity()
     std::string id;
     long int_id = newId(id);
 
-    Entity * ent2 = new Entity(id, int_id);
+    auto  ent2 = new Entity(id, int_id);
     assert(ent2 != 0);
     ent2->m_location.m_loc = m_rootEntity;
     ent2->m_location.m_pos = Point3D(0,0,0);
@@ -313,7 +314,7 @@ template class OpQueEntry<LocatedEntity>;
 LocatedEntity::~LocatedEntity()
 {
     if (m_location.m_loc) {
-        m_location.m_loc->decRef();
+        m_location.m_loc = nullptr;
     }
     delete m_contains;
 }
@@ -490,7 +491,7 @@ Ref<LocatedEntity> EntityBuilder::newEntity(const std::string & id, long intId,
                                          const BaseWorld & world) const
 {
     if (type == "thing") {
-        Entity * e = new Entity(id, intId);
+        auto e = new Entity(id, intId);
         e->m_location.m_loc = &world.getDefaultLocation();
         e->m_location.m_pos = Point3D(0,0,0);
         return e;

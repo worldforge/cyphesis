@@ -73,8 +73,8 @@ class StatisicsPropertyintegration : public Cyphesis::TestBase
   private:
     TypeNode * m_char_type;
     PropertyBase * m_char_property;
-    Entity * m_char1;
-    Entity * m_char2;
+    Ref<Entity>  m_char1;
+    Ref<Entity>  m_char2;
   public:
     StatisicsPropertyintegration();
 
@@ -114,8 +114,8 @@ void StatisicsPropertyintegration::setup()
 
 void StatisicsPropertyintegration::teardown()
 {
-    delete m_char1;
-    delete m_char2;
+    m_char1 = nullptr;
+    m_char2 = nullptr;
     delete m_char_type;
 }
 

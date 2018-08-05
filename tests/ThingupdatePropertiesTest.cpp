@@ -52,7 +52,7 @@ static const std::string testNewName("fred");
 class ThingupdatePropertiestest : public Cyphesis::TestBase
 {
   protected:
-    Thing * m_thing;
+    Ref<Thing> m_thing;
     Property<std::string> * m_name;
 
   public:
@@ -80,7 +80,7 @@ void ThingupdatePropertiestest::setup()
 
 void ThingupdatePropertiestest::teardown()
 {
-    delete m_thing;
+    m_thing = nullptr;
 }
 
 void ThingupdatePropertiestest::test_update()
@@ -179,7 +179,6 @@ void LocatedEntity::changeContainer(LocatedEntity * new_loc)
     assert(m_location.m_loc->checkRef() > 0);
 
     onContainered(oldLoc);
-    oldLoc->decRef();
 }
 
 #define STUB_LocatedEntity_broadcast

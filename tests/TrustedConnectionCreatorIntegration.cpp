@@ -133,7 +133,7 @@ void TrustedConnectionCreatorintegration::setup()
     Ref<Entity> gw = new Entity(compose("%1", m_id_counter),
                              m_id_counter++);
     m_world.reset();
-    m_world.reset(new TestWorld(*gw));
+    m_world.reset(new TestWorld(gw));
     m_server = new ServerRouting(*m_world,
                                  "dd7452be-0137-4664-b90e-77dfb395ac39",
                                  "a2feda8e-62e9-4ba0-95c4-09f92eda6a78",
@@ -219,7 +219,7 @@ void TrustedConnectionCreatorintegration::test_external_op_puppet()
     m_creator->m_externalMind = new ExternalMind(*m_creator);
     m_creator->m_externalMind->linkUp(m_connection);
 
-    Entity * other = new Entity(compose("%1", m_id_counter), m_id_counter++);
+    Ref<Entity>  other = new Entity(compose("%1", m_id_counter), m_id_counter++);
     other->setType(m_creatorType);
     m_server->m_world.addEntity(other);
 
@@ -237,7 +237,7 @@ void TrustedConnectionCreatorintegration::test_external_op_puppet()
     ASSERT_TRUE(!m_BaseWorld_message_called->isDefaultTo());
     ASSERT_EQUAL(m_BaseWorld_message_called->getTo(), other->getId());
     ASSERT_NOT_NULL(m_BaseWorld_message_called_from);
-    ASSERT_EQUAL(m_BaseWorld_message_called_from, other);
+    ASSERT_EQUAL(m_BaseWorld_message_called_from, other.get());
 }
 
 void TrustedConnectionCreatorintegration::test_external_op_puppet_nonexistant()
@@ -249,7 +249,7 @@ void TrustedConnectionCreatorintegration::test_external_op_puppet_nonexistant()
     m_creator->m_externalMind = new ExternalMind(*m_creator);
     m_creator->m_externalMind->linkUp(m_connection);
 
-    Entity * other = new Entity(compose("%1", m_id_counter), m_id_counter++);
+    Ref<Entity>  other = new Entity(compose("%1", m_id_counter), m_id_counter++);
     other->setType(m_creatorType);
     m_server->m_world.addEntity(other);
 

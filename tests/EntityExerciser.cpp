@@ -59,21 +59,21 @@ void LocatedEntityTest::destroy()
 {
 }
 
-EntityExerciser::EntityExerciser(LocatedEntity & e) : m_ent(e)
+EntityExerciser::EntityExerciser(Ref<LocatedEntity> e) : m_ent(e)
 {
-    if (e.getIntId() == 0) {
-        e.makeContainer();
-        assert(e.m_contains != 0);
+    if (e->getIntId() == 0) {
+        e->makeContainer();
+        assert(e->m_contains != 0);
     } else {
-        e.m_location.m_loc = new LocatedEntityTest("0", 0);
-        e.m_location.m_loc->makeContainer();
-        assert(e.m_location.m_loc->m_contains != 0);
-        e.m_location.m_loc->m_contains->insert(&e);
+        e->m_location.m_loc = new LocatedEntityTest("0", 0);
+        e->m_location.m_loc->makeContainer();
+        assert(e->m_location.m_loc->m_contains != 0);
+        e->m_location.m_loc->m_contains->insert(e);
     }
-    if (e.getType() == 0) {
+    if (e->getType() == 0) {
         TypeNode * test_type = new TypeNode("test_type");
         test_type->injectProperty("test_default", new SoftProperty);
-        e.setType(test_type);
+        e->setType(test_type);
     }
     attr_types.insert(Atlas::Message::Element::TYPE_INT);
     attr_types.insert(Atlas::Message::Element::TYPE_FLOAT);
@@ -89,7 +89,7 @@ EntityExerciser::~EntityExerciser()
 void EntityExerciser::dispatchOp(const Atlas::Objects::Operation::RootOperation&op)
 {
     OpVector ov1;
-    m_ent.operation(op, ov1);
+    m_ent->operation(op, ov1);
     flushOperations(ov1);
 }
 
@@ -101,12 +101,12 @@ bool EntityExerciser::checkAttributes(const std::set<std::string> & attr_names)
     std::set<std::string>::const_iterator I = attr_names.begin();
     std::set<std::string>::const_iterator Iend = attr_names.end();
     for (; I != Iend; ++I) {
-        if (this->m_ent.getAttr(*I, null) != 0) {
+        if (this->m_ent->getAttr(*I, null) != 0) {
             std::cerr << "Entity does not have \"" << *I << "\" attribute."
                       << std::endl << std::flush;
             res = false;
         }
-        if (this->m_ent.getProperty(*I) == nullptr) {
+        if (this->m_ent->getProperty(*I) == nullptr) {
             std::cerr << "Entity does not have \"" << *I << "\" property."
                       << std::endl << std::flush;
             res = false;
@@ -114,7 +114,7 @@ bool EntityExerciser::checkAttributes(const std::set<std::string> & attr_names)
         std::set<int>::const_iterator J = attr_types.begin();
         std::set<int>::const_iterator Jend = attr_types.end();
         for (; J != Jend; ++J) {
-            this->m_ent.getAttrType(*I, null, *J);
+            this->m_ent->getAttrType(*I, null, *J);
         }
     }
     return res;
@@ -238,7 +238,7 @@ void EntityExerciser::runOperations()
     }
     {
         Atlas::Objects::Operation::Look op;
-        op->setFrom(m_ent.getId());
+        op->setFrom(m_ent->getId());
         dispatchOp(op);
     }
     {
@@ -277,7 +277,7 @@ void EntityExerciser::runConversions()
         Atlas::Message::MapType data;
 
         assert(data.empty());
-        m_ent.addToMessage(data);
+        m_ent->addToMessage(data);
         assert(!data.empty());
     }
 
@@ -285,7 +285,7 @@ void EntityExerciser::runConversions()
         Atlas::Objects::Entity::Anonymous data;
 
         assert(data->isDefaultId());
-        m_ent.addToEntity(data);
+        m_ent->addToEntity(data);
         assert(!data->isDefaultId());
     }
 }

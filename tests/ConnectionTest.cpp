@@ -525,7 +525,7 @@ void Connectiontest::test_disconnectAccount_non_Character()
     RouterMap::iterator I = m_connection-> m_objects.find(ac->getIntId());
     assert(I != m_connection->m_objects.end());
 
-    Entity * avatar = new Thing("5", 5);
+    Ref<Entity>  avatar = new Thing("5", 5);
     m_connection->m_objects[avatar->getIntId()] = avatar;
     ac->addCharacter(avatar);
 

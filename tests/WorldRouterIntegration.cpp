@@ -62,27 +62,66 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Operation::Tick;
 
-class WorldRouterintegration : public Cyphesis::TestBase
+struct WorldRouterintegration : public Cyphesis::TestBase
 {
-  public:
-    WorldRouterintegration();
 
-    void setup();
-    void teardown();
+    Inheritance* m_inheritance;
+    EntityBuilder* m_eb;
+    DatabaseNull m_database;
+
+    void setup() override;
+
+    void teardown() override;
 
     void test_sequence();
 
-        Inheritance* m_inheritance;
-        EntityBuilder* m_eb;
-        DatabaseNull m_database;
+    void test_creationAndDeletion() {
+        {
+            Ref<LocatedEntity> base = new Entity("", 0);
+            std::unique_ptr<WorldRouter> test_world(new WorldRouter(SystemTime(), base));
+
+            auto ent1 = test_world->addNewEntity("thing", Anonymous());
+
+            ASSERT_EQUAL(2, test_world->m_entityCount);
+
+            test_world->delEntity(ent1);
+            //A single entity when removed should have all references removed too.
+            ASSERT_EQUAL(1, test_world->m_entityCount);
+            ASSERT_EQUAL(1, ent1->checkRef());
+        }
+
+        {
+            Ref<LocatedEntity> base = new Entity("", 0);
+            std::unique_ptr<WorldRouter> test_world(new WorldRouter(SystemTime(), base));
+
+            auto ent1 = test_world->addNewEntity("thing", Anonymous());
+
+            ASSERT_EQUAL(2, test_world->m_entityCount);
+
+            Anonymous ent2_arg{};
+            ent2_arg->setLoc(ent1->getId());
+            auto ent2 = test_world->addNewEntity("thing", ent2_arg);
+
+            ASSERT_EQUAL(3, test_world->m_entityCount);
+            //Make sure ent2 is a child of ent1.
+            ASSERT_EQUAL(ent2->m_location.m_loc.get(), ent1.get());
+
+            //Make sure that a child when removed has all references removed too.
+            test_world->delEntity(ent2);
+            ASSERT_EQUAL(2, test_world->m_entityCount);
+            ASSERT_EQUAL(1, ent2->checkRef());
+
+        }
+    }
+
+
+    WorldRouterintegration() {
+        ADD_TEST(WorldRouterintegration::test_sequence);
+        ADD_TEST(WorldRouterintegration::test_creationAndDeletion);
+
+    }
+
 };
-
-WorldRouterintegration::WorldRouterintegration()
-{
-    ADD_TEST(WorldRouterintegration::test_sequence);
-}
-
-
 
 
 void WorldRouterintegration::setup()
@@ -91,15 +130,17 @@ void WorldRouterintegration::setup()
     m_eb = new EntityBuilder();
 
 
-    class TestEntityRuleHandler : public EntityRuleHandler {
+    class TestEntityRuleHandler : public EntityRuleHandler
+    {
         public:
-            explicit TestEntityRuleHandler(EntityBuilder * eb) : EntityRuleHandler(eb) {}
+            explicit TestEntityRuleHandler(EntityBuilder* eb) : EntityRuleHandler(eb)
+            {}
 
-            int test_installEntityClass(const std::string & class_name,
-                                        const std::string & parent,
-                                        const Atlas::Objects::Root & class_desc,
-                                        std::string & dependent,
-                                        std::string & reason,
+            int test_installEntityClass(const std::string& class_name,
+                                        const std::string& parent,
+                                        const Atlas::Objects::Root& class_desc,
+                                        std::string& dependent,
+                                        std::string& reason,
                                         EntityFactoryBase* factory)
             {
                 std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
@@ -107,7 +148,7 @@ void WorldRouterintegration::setup()
             }
     };
 
-    auto entityRuleHandler = new TestEntityRuleHandler(m_eb);
+    TestEntityRuleHandler entityRuleHandler(m_eb);
 
     auto composeDeclaration = [](std::string class_name, std::string parent, Atlas::Message::MapType rawAttributes) {
 
@@ -119,7 +160,7 @@ void WorldRouterintegration::setup()
         Atlas::Message::MapType composed;
         for (const auto& entry : rawAttributes) {
             composed[entry.first] = Atlas::Message::MapType{
-                {"default",    entry.second}
+                {"default", entry.second}
             };
         }
 
@@ -129,11 +170,11 @@ void WorldRouterintegration::setup()
     std::string dependent, reason;
     {
         auto decl = composeDeclaration("thing", "game_entity", {});
-        entityRuleHandler->test_installEntityClass(decl->getId(), decl->getParent(), decl, dependent, reason, new EntityFactory<Thing>());
+        entityRuleHandler.test_installEntityClass(decl->getId(), decl->getParent(), decl, dependent, reason, new EntityFactory<Thing>());
     }
     {
         auto decl = composeDeclaration("character", "thing", {});
-        entityRuleHandler->test_installEntityClass(decl->getId(), decl->getParent(), decl, dependent, reason, new EntityFactory<Character>());
+        entityRuleHandler.test_installEntityClass(decl->getId(), decl->getParent(), decl, dependent, reason, new EntityFactory<Character>());
     }
 }
 
@@ -146,10 +187,10 @@ void WorldRouterintegration::teardown()
 void WorldRouterintegration::test_sequence()
 {
     LocatedEntity* base = new Entity("", 0);
-    WorldRouter * test_world = new WorldRouter(SystemTime(), base);
+    WorldRouter* test_world = new WorldRouter(SystemTime(), base);
 
-    LocatedEntity * ent1 = test_world->addNewEntity("__no_such_type__",
-                                                    Anonymous());
+    LocatedEntity* ent1 = test_world->addNewEntity("__no_such_type__",
+                                                   Anonymous());
     assert(ent1 == 0);
 
     ent1 = test_world->addNewEntity("thing", Anonymous());
@@ -158,10 +199,10 @@ void WorldRouterintegration::test_sequence()
     std::string id;
     long int_id = newId(id);
 
-    Entity * ent2 = new Thing(id, int_id);
+    Entity* ent2 = new Thing(id, int_id);
     assert(ent2 != 0);
     ent2->m_location.m_loc = base;
-    ent2->m_location.m_pos = Point3D(0,0,0);
+    ent2->m_location.m_pos = Point3D(0, 0, 0);
     test_world->addEntity(ent2);
 
     Tick tick;
@@ -200,9 +241,9 @@ void WorldRouterintegration::test_sequence()
         ASSERT_EQUAL(spawn_repr.size(), 1u);
     }
 
-    LocatedEntity * ent3 = test_world->spawnNewEntity("__no_spawn__",
-                                                      "character",
-                                                      Anonymous());
+    LocatedEntity* ent3 = test_world->spawnNewEntity("__no_spawn__",
+                                                     "character",
+                                                     Anonymous());
     assert(ent3 == 0);
 
     ent3 = test_world->spawnNewEntity("bob",
@@ -274,7 +315,7 @@ int main()
 {
     WorldRouterintegration t;
 
-    t.m_database.idGeneratorFn = [](){
+    t.m_database.idGeneratorFn = []() {
         static long id = 0;
         return ++id;
     };
@@ -312,14 +353,15 @@ int main()
 #include "rulesets/PythonScriptFactory.h"
 
 #define STUB_PythonScriptFactory_PythonScriptFactory
+
 template<>
-PythonScriptFactory<LocatedEntity>::PythonScriptFactory(const std::string & p,
-                                                        const std::string & t) :
+PythonScriptFactory<LocatedEntity>::PythonScriptFactory(const std::string& p,
+                                                        const std::string& t) :
     PythonClass(p, t)
 {
 }
 
-template <>
+template<>
 int PythonScriptFactory<LocatedEntity>::setup()
 {
     return load();
@@ -364,22 +406,23 @@ CorePropertyManager::CorePropertyManager()
 {
 }
 
-PropertyBase * CorePropertyManager::addProperty(const std::string & name,
-                                                int type)
+PropertyBase* CorePropertyManager::addProperty(const std::string& name,
+                                               int type)
 {
     return new Property<float>();
 }
 
-int CorePropertyManager::installFactory(const std::string & type_name,
-                                        const Atlas::Objects::Root & type_desc,
-                                        PropertyKit * factory)
+int CorePropertyManager::installFactory(const std::string& type_name,
+                                        const Atlas::Objects::Root& type_desc,
+                                        PropertyKit* factory)
 {
     return 0;
 }
 
 
 #define STUB_ArchetypeFactory_newEntity
-Ref<LocatedEntity> ArchetypeFactory::newEntity(const std::string & id, long intId, const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
+
+Ref<LocatedEntity> ArchetypeFactory::newEntity(const std::string& id, long intId, const Atlas::Objects::Entity::RootEntity& attributes, LocatedEntity* location)
 {
     return new Entity(id, intId);
 }
@@ -398,20 +441,24 @@ class World;
 #include "stubs/rulesets/stubWorldTimeProperty.h"
 
 #define STUB_IdProperty_get
-int IdProperty::get(Atlas::Message::Element & val) const
+
+int IdProperty::get(Atlas::Message::Element& val) const
 {
     val = m_data;
     return 0;
 }
+
 #include "stubs/rulesets/stubTask.h"
 #include "stubs/rulesets/stubAtlasProperties.h"
 #include "stubs/rulesets/stubStatusProperty.h"
 
 #define STUB_ExternalMind_linkUp
-void ExternalMind::linkUp(Link * c)
+
+void ExternalMind::linkUp(Link* c)
 {
     m_link = c;
 }
+
 #include "stubs/rulesets/stubExternalMind.h"
 
 #include "stubs/rulesets/stubArithmeticFactory.h"

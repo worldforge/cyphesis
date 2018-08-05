@@ -20,6 +20,7 @@
 #define TESTS_PROPERTY_COVERAGE_H
 
 #include <Atlas/Message/Element.h>
+#include <modules/Ref.h>
 
 class PropertyBase;
 class Entity;
@@ -29,9 +30,9 @@ class Character;
 class PropertyCoverage {
   protected:
     PropertyBase * const m_prop;
-    Entity * const m_tlve;
+    Ref<Entity> m_tlve;
     BaseWorld * const m_wrld;
-    Entity * m_ent;
+    Ref<Entity> m_ent;
 
     Atlas::Message::ListType m_testData;
 
@@ -44,11 +45,11 @@ class PropertyCoverage {
 
     void basicCoverage();
 
-    Character * createCharacterEntity();
+    Ref<Character> createCharacterEntity();
 
     void testDataAppend(const Atlas::Message::Element &);
 
-    Entity * tlve() { return m_tlve; }
+    Ref<Entity>& tlve() { return m_tlve; }
 };
 
 template<class PropertyT>

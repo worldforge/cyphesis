@@ -89,7 +89,7 @@ void checkSignal()
         emitted = false;
 
         Entity e("1", 1);
-        Entity * container = new Entity("2", 2);
+        Ref<Entity>  container = new Entity("2", 2);
 
         // Set the location of the entity being tested, as destroy requires it.
         e.m_location.m_loc = container;
@@ -155,7 +155,7 @@ int main()
 
     {
         // Check the initialising constructor via get
-        Entity * e = new Entity("1", 1);
+        Ref<Entity>  e = new Entity("1", 1);
         WeakEntityRef ref(e);
 
         assert(ref.get() == e);
@@ -163,7 +163,7 @@ int main()
 
     {
         // Check the initialising constructor via dereference
-        Entity * e = new Entity("1", 1);
+        Ref<Entity>  e = new Entity("1", 1);
         WeakEntityRef ref(e);
 
         assert(&(*ref) == e);
@@ -171,7 +171,7 @@ int main()
 
     {
         // Check the initialising constructor via ->
-        Entity * e = new Entity("1", 1);
+        Ref<Entity>  e = new Entity("1", 1);
         WeakEntityRef ref(e);
 
         assert(ref.operator->() == e);
@@ -179,7 +179,7 @@ int main()
 
     {
         // Check the initialising constructor via ==
-        Entity * e = new Entity("1", 1);
+        Ref<Entity>  e = new Entity("1", 1);
         WeakEntityRef ref(e);
 
         assert(ref == e);
@@ -187,7 +187,7 @@ int main()
 
     {
         // Check the copy constructor
-        Entity * e = new Entity("1", 1);
+        Ref<Entity>  e = new Entity("1", 1);
         WeakEntityRef ref(e);
         WeakEntityRef ref2(ref);
 
@@ -196,7 +196,7 @@ int main()
 
     {
         // Check the comparison operator
-        Entity * e = new Entity("1", 1);
+        Ref<Entity>  e = new Entity("1", 1);
         WeakEntityRef ref(e);
         WeakEntityRef ref2(e);
 
@@ -205,8 +205,8 @@ int main()
 
     {
         // Check the comparison operator
-        Entity * e = new Entity("1", 1);
-        Entity * e2 = new Entity("2", 2);
+        Ref<Entity>  e = new Entity("1", 1);
+        Ref<Entity>  e2 = new Entity("2", 2);
         WeakEntityRef ref(e);
         WeakEntityRef ref2(e2);
 
@@ -237,7 +237,7 @@ int main()
 
     {
         // Check the less than operator
-        Entity * e = new Entity("1", 1);
+        Ref<Entity>  e = new Entity("1", 1);
         WeakEntityRef ref(e);
         WeakEntityRef ref2(e);
 
@@ -246,8 +246,8 @@ int main()
 
     {
         // Check the less than operator
-        Entity * e = new Entity("1", 1);
-        Entity * e2 = new Entity("2", 2);
+        Ref<Entity>  e = new Entity("1", 1);
+        Ref<Entity>  e2 = new Entity("2", 2);
         WeakEntityRef ref(e);
         WeakEntityRef ref2(e2);
 
@@ -256,7 +256,7 @@ int main()
 
     {
         // Check the assignment operator
-        Entity * e = new Entity("1", 1);
+        Ref<Entity>  e = new Entity("1", 1);
         WeakEntityRef ref;
 
         ref = WeakEntityRef(e);
@@ -267,7 +267,7 @@ int main()
     {
         // Check that destroying the Entity makes the reference null.
         Entity e("1", 1);
-        Entity * container = new Entity("2", 2);
+        Ref<Entity>  container = new Entity("2", 2);
 
         // Set the location of the entity being tested, as destroy requires it.
         e.m_location.m_loc = container;

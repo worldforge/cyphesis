@@ -105,6 +105,14 @@
   }
 #endif //STUB_Character_clearTask
 
+#ifndef STUB_Character_destroy
+//#define STUB_Character_destroy
+  void Character::destroy()
+  {
+    
+  }
+#endif //STUB_Character_destroy
+
 #ifndef STUB_Character_getThoughts
 //#define STUB_Character_getThoughts
   std::vector<Atlas::Objects::Root> Character::getThoughts() const

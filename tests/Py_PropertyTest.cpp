@@ -82,7 +82,7 @@ int main()
     init_python_api("b513b7b1-b0d8-4495-b3f0-54c2ef3f27f6");
 
 
-    Entity wrld("0", 0);
+    Ref<Entity> wrld(new Entity("0", 0));
     TestWorld tw(wrld);
 
     run_python_string("from server import *");

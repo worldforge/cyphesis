@@ -97,19 +97,19 @@ void MemMap::readEntity(const Ref<MemEntity> entity, const RootEntity & ent, dou
     }
     entity->merge(ent->asMessage());
     if (ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
-        LocatedEntity * old_loc = entity->m_location.m_loc;
+        auto old_loc = entity->m_location.m_loc;
         const std::string & new_loc_id = ent->getLoc();
         // Has LOC been changed?
-        if (old_loc == 0 || new_loc_id != old_loc->getId()) {
+        if (!old_loc || new_loc_id != old_loc->getId()) {
             entity->m_location.m_loc = getAdd(new_loc_id);
             assert(0 != entity->m_location.m_loc);
             assert(old_loc != entity->m_location.m_loc);
-            if (old_loc != 0) {
-                assert(old_loc->m_contains != 0);
+            if (old_loc) {
+                assert(old_loc->m_contains != nullptr);
                 old_loc->m_contains->erase(entity);
             }
-            if (entity->m_location.m_loc->m_contains == 0) {
-                entity->m_location.m_loc->m_contains = new LocatedEntitySet;
+            if (entity->m_location.m_loc->m_contains == nullptr) {
+                entity->m_location.m_loc->m_contains = new LocatedEntitySet{};
             }
             entity->m_location.m_loc->m_contains->insert(entity);
         }
@@ -148,7 +148,7 @@ Ref<MemEntity> MemMap::newEntity(const std::string & id, long int_id,
 {
     assert(m_entities.find(int_id) == m_entities.end());
 
-    MemEntity * entity = new MemEntity(id, int_id);
+    Ref<MemEntity> entity = new MemEntity(id, int_id);
     entity->setType(m_entity_type);
 
     readEntity(entity, ent, timestamp);
@@ -189,7 +189,7 @@ Ref<MemEntity> MemMap::addId(const std::string & id, long int_id)
 
     debug( std::cout << "MemMap::add_id" << std::endl << std::flush;);
     m_additionsById.push_back(id);
-    MemEntity * entity = new MemEntity(id, int_id);
+    Ref<MemEntity> entity = new MemEntity(id, int_id);
     entity->setType(m_entity_type);
     return addEntity(entity);
 }

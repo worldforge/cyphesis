@@ -40,7 +40,7 @@ int main()
 {
     init_python_api("21b996b0-9dc3-4749-bd8c-24908f372ddc");
 
-    Entity wrld("0", 0);
+    Ref<Entity> wrld(new Entity("0", 0));
     TestWorld tw(wrld);
 
     run_python_string("import atlas");

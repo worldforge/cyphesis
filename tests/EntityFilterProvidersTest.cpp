@@ -39,14 +39,14 @@ class ProvidersTest : public Cyphesis::TestBase {
         ProviderFactory m_factory;
 
         //Entities for testing
-        Entity *m_b1;
+        Ref<Entity> m_b1;
         LocatedEntitySet *m_b1_container; //Container property for b1
-        Entity *m_b2;
+        Ref<Entity> m_b2;
         LocatedEntitySet *m_b2_container; //Container for b2
 
-        Entity *m_ch1; //Character type entity
-        Entity *m_glovesEntity; //Gloves for the character entity's outfit
-        Entity *m_cloth; //Cloth for gloves' outfit
+        Ref<Entity> m_ch1; //Character type entity
+        Ref<Entity> m_glovesEntity; //Gloves for the character entity's outfit
+        Ref<Entity> m_cloth; //Cloth for gloves' outfit
 
         //Types for testing
         TypeNode *m_thingType;
@@ -421,7 +421,7 @@ void ProvidersTest::setup()
 
     //Create outfit map where "thumb" outfit contains cloth
     std::map<std::string, Element> outfitMap1;
-    outfitMap1.insert(std::make_pair("thumb", Element(m_cloth)));
+    outfitMap1.insert(std::make_pair("thumb", Element(m_cloth.get())));
     OutfitProperty* outfit2 = new OutfitProperty;
     outfit2->set(outfitMap1);
     m_glovesEntity = new Entity("4", 4);
@@ -430,7 +430,7 @@ void ProvidersTest::setup()
 
     //Create outfit map where hands of character contain brown gloves
     std::map<std::string, Element> outfitMap;
-    outfitMap.insert(std::make_pair("hands", Element(m_glovesEntity)));
+    outfitMap.insert(std::make_pair("hands", Element(m_glovesEntity.get())));
     OutfitProperty* outfit1 = new OutfitProperty;
     outfit1->set(outfitMap);
 
@@ -450,10 +450,6 @@ void ProvidersTest::setup()
 void ProvidersTest::teardown()
 {
     delete m_inheritance;
-    delete m_b1;
-    delete m_b2;
-    delete m_ch1;
-    delete m_glovesEntity;
     delete m_barrelType;
     delete m_characterType;
     delete m_clothType;

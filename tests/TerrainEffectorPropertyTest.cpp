@@ -35,8 +35,8 @@ class TerrainEffectorPropertytest : public Cyphesis::TestBase
 {
   private:
     TerrainEffectorProperty * m_property;
-    Entity * m_entity;
-    Entity * m_world;
+    Ref<Entity> m_entity;
+    Ref<Entity> m_world;
   public:
     TerrainEffectorPropertytest();
 
@@ -66,14 +66,12 @@ void TerrainEffectorPropertytest::setup()
 void TerrainEffectorPropertytest::teardown()
 {
     delete m_property;
-    delete m_entity;
-    delete m_world;
 }
 
 void TerrainEffectorPropertytest::test_none_found()
 {
     ASSERT_FALSE(m_world->m_location.m_loc);
-    ASSERT_EQUAL(m_entity->m_location.m_loc.get(), m_world);
+    ASSERT_EQUAL(m_entity->m_location.m_loc.get(), m_world.get());
 
     const TerrainProperty * res = m_property->getTerrain(m_entity);
 
@@ -83,7 +81,7 @@ void TerrainEffectorPropertytest::test_none_found()
 void TerrainEffectorPropertytest::test_not_terrain()
 {
     ASSERT_FALSE(m_world->m_location.m_loc);
-    ASSERT_EQUAL(m_entity->m_location.m_loc.get(), m_world);
+    ASSERT_EQUAL(m_entity->m_location.m_loc.get(), m_world.get());
 
     m_world->setProperty("terrain",
                          new Property<Atlas::Message::MapType>);
@@ -96,7 +94,7 @@ void TerrainEffectorPropertytest::test_not_terrain()
 void TerrainEffectorPropertytest::test_found()
 {
     ASSERT_FALSE(m_world->m_location.m_loc);
-    ASSERT_EQUAL(m_entity->m_location.m_loc.get(), m_world);
+    ASSERT_EQUAL(m_entity->m_location.m_loc.get(), m_world.get());
 
     m_world->setProperty("terrain",
                          new TerrainProperty);

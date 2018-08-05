@@ -77,9 +77,9 @@ SystemAccounttest::SystemAccounttest() : m_id_counter(0L),
 
 void SystemAccounttest::setup()
 {
-    Entity * gw = new Entity(compose("%1", m_id_counter),
+    Ref<Entity> gw = new Entity(compose("%1", m_id_counter),
                              m_id_counter++);
-    m_world = new TestWorld(*gw);
+    m_world = new TestWorld(gw);
     m_server = new ServerRouting(*m_world,
                                  "5529d7a4-0158-4dc1-b4a5-b5f260cac635",
                                  "bad621d4-616d-4faf-b9e6-471d12b139a9",

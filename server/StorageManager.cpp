@@ -473,7 +473,7 @@ void StorageManager::restoreChildren(LocatedEntity * parent)
         //By sending an empty attributes pointer we're telling the builder not to apply any default
         //attributes. We will instead apply all attributes ourselves when we later on restore attributes.
         Atlas::Objects::SmartPtr<Atlas::Objects::Entity::RootEntityData> attrs(nullptr);
-        LocatedEntity * child = eb->newEntity(id, int_id, type, attrs, BaseWorld::instance());
+        auto child = eb->newEntity(id, int_id, type, attrs, BaseWorld::instance());
         if (!child) {
             log(ERROR, compose("Could not restore entity with id %1 of type %2"
                     ", most likely caused by this type missing.",

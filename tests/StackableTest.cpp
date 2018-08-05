@@ -67,9 +67,9 @@ using Atlas::Objects::Entity::RootEntity;
 
 int main()
 {
-    Stackable e("1", 1);
+    Ref<Stackable> e(new Stackable("1", 1));
     TypeNode type("stackable");
-    e.setType(&type);
+    e->setType(&type);
 
     IGEntityExerciser ee(e);
 

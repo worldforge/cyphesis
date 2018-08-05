@@ -59,9 +59,9 @@ using Atlas::Objects::Entity::RootEntity;
 
 int main()
 {
-    Thing e("1", 1);
+    Ref<Thing> e(new Thing("1", 1));
     TypeNode type("thing");
-    e.setType(&type);
+    e->setType(&type);
 
     IGEntityExerciser ee(e);
 
@@ -122,7 +122,6 @@ void LocatedEntity::changeContainer(LocatedEntity * new_loc)
     assert(m_location.m_loc->checkRef() > 0);
 
     onContainered(oldLoc);
-    oldLoc->decRef();
 }
 
 #define STUB_LocatedEntity_broadcast

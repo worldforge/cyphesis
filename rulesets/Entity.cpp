@@ -302,22 +302,8 @@ void Entity::destroy()
         }
     }
 
-    for (auto script : m_scripts) {
-        delete script;
-    }
-    m_scripts.clear();
-
-    // We don't call decRef() on our parent, because we may not get deleted
-    // yet, and we need to keep a reference to our parent in case there
-    // are broadcast ops left that we have not yet sent.
-    // It will be decRef()ed automatically from our (LocatedEntity)
-    // destructor
-    m_location.m_loc->removeChild(*this);
-
     LocatedEntity::destroy();
 
-    m_flags.addFlags(entity_destroyed);
-    destroyed.emit();
 }
 
 Domain * Entity::getDomain()

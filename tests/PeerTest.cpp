@@ -70,7 +70,7 @@ class MyTestWorld : public TestWorld {
 
     LocatedEntity * test_addEntity(LocatedEntity * ent, long intId) {
         m_eobjects[intId] = ent;
-        return 0;
+        return ent;
     }
     void test_delEntity(long intId) { 
         m_eobjects.erase(intId);
@@ -199,8 +199,8 @@ int main()
     {
         Peer *p = new Peer(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
-        Entity e("3", 3);
-        int ret = p->teleportEntity(&e);
+        Ref<Entity> e(new Entity("3", 3));
+        int ret = p->teleportEntity(e);
         assert(ret == -1);
     }
 
@@ -211,8 +211,8 @@ int main()
         
         p->setAuthState(PEER_AUTHENTICATED);
         
-        Entity e("3", 3);
-        int ret = p->teleportEntity(&e);
+        Ref<Entity> e(new Entity("3", 3));
+        int ret = p->teleportEntity(e);
         assert(ret == 0);
         assert(stub_CommClient_sent_op.isValid());
         assert(stub_CommClient_sent_op->getArgs().size() == 1);
@@ -225,13 +225,13 @@ int main()
         
         p->setAuthState(PEER_AUTHENTICATED);
         
-        Entity e("3", 3);
-        int ret = p->teleportEntity(&e);
+        Ref<Entity> e(new Entity("3", 3));
+        int ret = p->teleportEntity(e);
         assert(ret == 0);
         assert(stub_CommClient_sent_op.isValid());
         assert(stub_CommClient_sent_op->getArgs().size() == 1);
 
-        ret = p->teleportEntity(&e);
+        ret = p->teleportEntity(e);
         assert(ret != 0);
     }
 
@@ -242,8 +242,8 @@ int main()
         
         p->setAuthState(PEER_AUTHENTICATED);
         
-        Character e("3", 3);
-        int ret = p->teleportEntity(&e);
+        Ref<Character> e(new Character("3", 3));
+        int ret = p->teleportEntity(e);
         assert(ret == 0);
         assert(stub_CommClient_sent_op.isValid());
         assert(stub_CommClient_sent_op->getArgs().size() == 1);
@@ -256,9 +256,9 @@ int main()
         
         p->setAuthState(PEER_AUTHENTICATED);
         
-        Character e("3", 3);
-        e.m_externalMind = new ExternalMind(e);
-        int ret = p->teleportEntity(&e);
+        Ref<Character> e(new Character("3", 3));
+        e->m_externalMind = new ExternalMind(*e);
+        int ret = p->teleportEntity(e);
         assert(ret == 0);
         assert(stub_CommClient_sent_op.isValid());
         assert(stub_CommClient_sent_op->getArgs().size() == 1);
@@ -271,11 +271,11 @@ int main()
         
         p->setAuthState(PEER_AUTHENTICATED);
         
-        Character e("3", 3);
-        ExternalMind * mind = new ExternalMind(e);
+        Ref<Character> e(new Character("3", 3));
+        ExternalMind * mind = new ExternalMind(*e);
         mind->linkUp((Link*)23);
-        e.m_externalMind = mind;
-        int ret = p->teleportEntity(&e);
+        e->m_externalMind = mind;
+        int ret = p->teleportEntity(e);
         assert(ret == 0);
         assert(stub_CommClient_sent_op.isValid());
         assert(stub_CommClient_sent_op->getArgs().size() == 2);
@@ -341,8 +341,8 @@ int main()
         
         p->setAuthState(PEER_AUTHENTICATED);
         
-        Entity e("23", 23);
-        int ret = p->teleportEntity(&e);
+        Ref<Entity> e(new Entity("23", 23));
+        int ret = p->teleportEntity(e);
         assert(ret == 0);
 
         Atlas::Objects::Operation::Info op;
@@ -362,11 +362,11 @@ int main()
         
         p->setAuthState(PEER_AUTHENTICATED);
         
-        Entity e("23", 23);
-        int ret = p->teleportEntity(&e);
+        Ref<Entity> e(new Entity("23", 23));
+        int ret = p->teleportEntity(e);
         assert(ret == 0);
 
-        world.test_addEntity(&e, 23);
+        world.test_addEntity(e, 23);
 
         Atlas::Objects::Operation::Info op;
         OpVector res;
@@ -387,14 +387,14 @@ int main()
         
         p->setAuthState(PEER_AUTHENTICATED);
         
-        Character e("23", 23);
-        ExternalMind * mind = new ExternalMind(e);
+        Ref<Character> e(new Character("23", 23));
+        ExternalMind * mind = new ExternalMind(*e);
         mind->linkUp((Link*)23);
-        e.m_externalMind = mind;
-        int ret = p->teleportEntity(&e);
+        e->m_externalMind = mind;
+        int ret = p->teleportEntity(e);
         assert(ret == 0);
 
-        world.test_addEntity(&e, 23);
+        world.test_addEntity(e, 23);
 
         Atlas::Objects::Operation::Info op;
         OpVector res;
@@ -422,8 +422,8 @@ int main()
         
         p->setAuthState(PEER_AUTHENTICATED);
         
-        Entity e("23", 23);
-        int ret = p->teleportEntity(&e);
+        Ref<Entity> e(new Entity("23", 23));
+        int ret = p->teleportEntity(e);
         assert(ret == 0);
 
         p->cleanTeleports();

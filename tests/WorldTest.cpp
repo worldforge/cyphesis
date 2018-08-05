@@ -72,13 +72,13 @@ using Atlas::Objects::Entity::RootEntity;
 
 int main()
 {
-    World e("0", 0);
+    Ref<World> e(new World("0", 0));
     TypeNode type("world");
-    e.setType(&type);
+    e->setType(&type);
 
     IGEntityExerciser ee(e);
 
-    assert(e.m_location.m_loc == nullptr);
+    assert(e->m_location.m_loc == nullptr);
 
     // Throw an op of every type at the entity
     ee.runOperations();

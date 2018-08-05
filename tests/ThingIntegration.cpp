@@ -110,7 +110,7 @@ void ThingIntegration::test_visibility()
 {
     WFMath::AxisBox<3> bbox(WFMath::Point<3>(-10, -10, -10), WFMath::Point<3>(10, 10, 10));
 
-    auto verifyBroadcastContains = [&](ThingExt* thing, std::initializer_list<const ThingExt*> expectedThings) {
+    auto verifyBroadcastContains = [&](Ref<ThingExt> thing, std::initializer_list<const Ref<ThingExt>> expectedThings) {
         OpVector res;
         Atlas::Objects::Operation::Sight s;
         thing->broadcast(s, res, LocatedEntity::Visibility::PUBLIC);
@@ -147,11 +147,11 @@ void ThingIntegration::test_visibility()
      *
      */
     {
-        ThingExt* t1 = new ThingExt("1", 1);
-        ThingExt* t2 = new ThingExt("2", 2);
-        ThingExt* t3 = new ThingExt("3", 3);
-        ThingExt* t4 = new ThingExt("4", 4);
-        ThingExt* t5 = new ThingExt("5", 5);
+        Ref<ThingExt> t1 = new ThingExt("1", 1);
+        Ref<ThingExt> t2 = new ThingExt("2", 2);
+        Ref<ThingExt> t3 = new ThingExt("3", 3);
+        Ref<ThingExt> t4 = new ThingExt("4", 4);
+        Ref<ThingExt> t5 = new ThingExt("5", 5);
         t1->addChild(*t2);
         t1->addChild(*t5);
         t2->addChild(*t3);
@@ -195,9 +195,9 @@ void ThingIntegration::test_visibility()
      * With T2 having a void domain.
      */
     {
-        ThingExt* t1 = new ThingExt("1", 1);
-        ThingExt* t2 = new ThingExt("2", 2);
-        ThingExt* t3 = new ThingExt("3", 3);
+        Ref<ThingExt> t1 = new ThingExt("1", 1);
+        Ref<ThingExt> t2 = new ThingExt("2", 2);
+        Ref<ThingExt> t3 = new ThingExt("3", 3);
         t1->addChild(*t2);
         t2->addChild(*t3);
 
@@ -244,23 +244,23 @@ void ThingIntegration::test_visibility()
      * T8 is not perceptive.
      */
     {
-        ThingExt* t1 = new ThingExt("1", 1);
+        Ref<ThingExt> t1 = new ThingExt("1", 1);
 //        t1->setAttr()
-        ThingExt* t2 = new ThingExt("2", 2);
+        Ref<ThingExt> t2 = new ThingExt("2", 2);
         t2->m_location.m_pos = WFMath::Point<3>::ZERO();
         t2->m_location.setBBox(bbox);
-        ThingExt* t3 = new ThingExt("3", 3);
+        Ref<ThingExt> t3 = new ThingExt("3", 3);
         t3->m_location.m_pos = WFMath::Point<3>::ZERO();
         t3->m_location.setBBox(bbox);
-        ThingExt* t4 = new ThingExt("4", 4);
+        Ref<ThingExt> t4 = new ThingExt("4", 4);
         t4->m_location.m_pos = WFMath::Point<3>::ZERO();
         t4->m_location.setBBox(bbox);
-        ThingExt* t5 = new ThingExt("5", 5);
+        Ref<ThingExt> t5 = new ThingExt("5", 5);
         t5->m_location.m_pos = WFMath::Point<3>::ZERO();
         t5->m_location.setBBox(bbox);
-        ThingExt* t6 = new ThingExt("6", 6);
-        ThingExt* t7 = new ThingExt("7", 7);
-        ThingExt* t8 = new ThingExt("8", 8);
+        Ref<ThingExt> t6 = new ThingExt("6", 6);
+        Ref<ThingExt> t7 = new ThingExt("7", 7);
+        Ref<ThingExt> t8 = new ThingExt("8", 8);
         t8->m_location.m_pos = WFMath::Point<3>::ZERO();
         t8->m_location.setBBox(bbox);
         t8->removeFlags(entity_perceptive);
@@ -334,12 +334,12 @@ void ThingIntegration::test_visibility()
      * And T3 being wielded
      */
     {
-        ThingExt* t1 = new ThingExt("1", 1);
-        ThingExt* t2 = new ThingExt("2", 2);
-        ThingExt* t3 = new ThingExt("3", 3);
-        ThingExt* t4 = new ThingExt("4", 4);
-        ThingExt* t5 = new ThingExt("5", 5);
-        ThingExt* t6 = new ThingExt("6", 6);
+        Ref<ThingExt> t1 = new ThingExt("1", 1);
+        Ref<ThingExt> t2 = new ThingExt("2", 2);
+        Ref<ThingExt> t3 = new ThingExt("3", 3);
+        Ref<ThingExt> t4 = new ThingExt("4", 4);
+        Ref<ThingExt> t5 = new ThingExt("5", 5);
+        Ref<ThingExt> t6 = new ThingExt("6", 6);
 
         t1->addChild(*t2);
         t1->addChild(*t6);
@@ -398,18 +398,18 @@ void ThingIntegration::test_visibility()
      * And T4 being wielded
      */
     {
-        ThingExt* t1 = new ThingExt("1", 1);
-        ThingExt* t2 = new ThingExt("2", 2);
+        Ref<ThingExt> t1 = new ThingExt("1", 1);
+        Ref<ThingExt> t2 = new ThingExt("2", 2);
         t2->m_location.m_pos = WFMath::Point<3>::ZERO();
         t2->m_location.setBBox(bbox);
-        ThingExt* t3 = new ThingExt("3", 3);
+        Ref<ThingExt> t3 = new ThingExt("3", 3);
         t3->m_location.m_pos = WFMath::Point<3>::ZERO();
         t3->m_location.setBBox(bbox);
-        ThingExt* t4 = new ThingExt("4", 4);
-        ThingExt* t5 = new ThingExt("5", 5);
+        Ref<ThingExt> t4 = new ThingExt("4", 4);
+        Ref<ThingExt> t5 = new ThingExt("5", 5);
         t5->m_location.m_pos = WFMath::Point<3>::ZERO();
         t5->m_location.setBBox(bbox);
-        ThingExt* t6 = new ThingExt("6", 6);
+        Ref<ThingExt> t6 = new ThingExt("6", 6);
 
         t2->domain = new PhysicalDomain(*t2);
         t2->addFlags(entity_domain);
@@ -470,20 +470,20 @@ void ThingIntegration::test_visibility()
     * And T4 being wielded
     */
     {
-        ThingExt* t1 = new ThingExt("1", 1);
+        Ref<ThingExt> t1 = new ThingExt("1", 1);
         t1->m_location.m_pos = WFMath::Point<3>::ZERO();
         t1->m_location.setBBox(bbox);
-        ThingExt* t2 = new ThingExt("2", 2);
+        Ref<ThingExt> t2 = new ThingExt("2", 2);
         t2->m_location.m_pos = WFMath::Point<3>::ZERO();
         t2->m_location.setBBox(bbox);
-        ThingExt* creator = new ThingExt("creator", 10);
+        Ref<ThingExt> creator = new ThingExt("creator", 10);
         creator->m_location.m_pos = WFMath::Point<3>::ZERO();
         creator->m_location.setBBox(bbox);
-        ThingExt* t3 = new ThingExt("3", 3);
+        Ref<ThingExt> t3 = new ThingExt("3", 3);
         t3->m_location.m_pos = WFMath::Point<3>::ZERO();
         t3->m_location.setBBox(bbox);
-        ThingExt* t4 = new ThingExt("4", 4);
-        ThingExt* t5 = new ThingExt("5", 5);
+        Ref<ThingExt> t4 = new ThingExt("4", 4);
+        Ref<ThingExt> t5 = new ThingExt("5", 5);
 
         t1->domain = new PhysicalDomain(*t1);
         t1->addFlags(entity_domain);
@@ -542,11 +542,11 @@ void ThingIntegration::test_reachability()
      *
      */
     {
-        ThingExt* t1 = new ThingExt("1", 1);
-        ThingExt* t2 = new ThingExt("2", 2);
-        ThingExt* t3 = new ThingExt("3", 3);
-        ThingExt* t4 = new ThingExt("4", 4);
-        ThingExt* t5 = new ThingExt("5", 5);
+        Ref<ThingExt> t1 = new ThingExt("1", 1);
+        Ref<ThingExt> t2 = new ThingExt("2", 2);
+        Ref<ThingExt> t3 = new ThingExt("3", 3);
+        Ref<ThingExt> t4 = new ThingExt("4", 4);
+        Ref<ThingExt> t5 = new ThingExt("5", 5);
         t1->addChild(*t2);
         t1->addChild(*t5);
         t2->addChild(*t3);
@@ -581,9 +581,9 @@ void ThingIntegration::test_reachability()
      * With T2 having a void domain.
      */
     {
-        ThingExt* t1 = new ThingExt("1", 1);
-        ThingExt* t2 = new ThingExt("2", 2);
-        ThingExt* t3 = new ThingExt("3", 3);
+        Ref<ThingExt> t1 = new ThingExt("1", 1);
+        Ref<ThingExt> t2 = new ThingExt("2", 2);
+        Ref<ThingExt> t3 = new ThingExt("3", 3);
         t1->addChild(*t2);
         t2->addChild(*t3);
 
@@ -625,23 +625,23 @@ void ThingIntegration::test_reachability()
      * T8 is not perceptive.
      */
     {
-        ThingExt* t1 = new ThingExt("1", 1);
-        ThingExt* t2 = new ThingExt("2", 2);
+        Ref<ThingExt> t1 = new ThingExt("1", 1);
+        Ref<ThingExt> t2 = new ThingExt("2", 2);
         t2->m_location.m_pos = WFMath::Point<3>::ZERO();
         t2->m_location.setBBox(bbox);
-        ThingExt* t3 = new ThingExt("3", 3);
+        Ref<ThingExt> t3 = new ThingExt("3", 3);
         t3->m_location.m_pos = WFMath::Point<3>::ZERO();
         t3->m_location.setBBox(bbox);
-        ThingExt* t4 = new ThingExt("4", 4);
+        Ref<ThingExt> t4 = new ThingExt("4", 4);
         t4->m_location.m_pos = WFMath::Point<3>::ZERO();
         t4->m_location.setBBox(bbox);
-        ThingExt* t5 = new ThingExt("5", 5);
+        Ref<ThingExt> t5 = new ThingExt("5", 5);
         t5->m_location.m_pos = WFMath::Point<3>::ZERO();
         t5->m_location.setBBox(bbox);
         t5->setProperty("reach", createReachPropFn(10));
-        ThingExt* t6 = new ThingExt("6", 6);
-        ThingExt* t7 = new ThingExt("7", 7);
-        ThingExt* t8 = new ThingExt("8", 8);
+        Ref<ThingExt> t6 = new ThingExt("6", 6);
+        Ref<ThingExt> t7 = new ThingExt("7", 7);
+        Ref<ThingExt> t8 = new ThingExt("8", 8);
         t8->m_location.m_pos = WFMath::Point<3>::ZERO();
         t8->m_location.setBBox(bbox);
         t8->removeFlags(entity_perceptive);
@@ -703,12 +703,12 @@ void ThingIntegration::test_reachability()
      * And T3 being wielded
      */
     {
-        ThingExt* t1 = new ThingExt("1", 1);
-        ThingExt* t2 = new ThingExt("2", 2);
-        ThingExt* t3 = new ThingExt("3", 3);
-        ThingExt* t4 = new ThingExt("4", 4);
-        ThingExt* t5 = new ThingExt("5", 5);
-        ThingExt* t6 = new ThingExt("6", 6);
+        Ref<ThingExt> t1 = new ThingExt("1", 1);
+        Ref<ThingExt> t2 = new ThingExt("2", 2);
+        Ref<ThingExt> t3 = new ThingExt("3", 3);
+        Ref<ThingExt> t4 = new ThingExt("4", 4);
+        Ref<ThingExt> t5 = new ThingExt("5", 5);
+        Ref<ThingExt> t6 = new ThingExt("6", 6);
 
         t1->addChild(*t2);
         t1->addChild(*t6);
@@ -759,19 +759,19 @@ void ThingIntegration::test_reachability()
      * And T4 being wielded
      */
     {
-        ThingExt* t1 = new ThingExt("1", 1);
-        ThingExt* t2 = new ThingExt("2", 2);
+        Ref<ThingExt> t1 = new ThingExt("1", 1);
+        Ref<ThingExt> t2 = new ThingExt("2", 2);
         t2->m_location.m_pos = WFMath::Point<3>::ZERO();
         t2->m_location.setBBox(bbox);
-        ThingExt* t3 = new ThingExt("3", 3);
+        Ref<ThingExt> t3 = new ThingExt("3", 3);
         t3->m_location.m_pos = WFMath::Point<3>::ZERO();
         t3->m_location.setBBox(bbox);
-        ThingExt* t4 = new ThingExt("4", 4);
-        ThingExt* t5 = new ThingExt("5", 5);
+        Ref<ThingExt> t4 = new ThingExt("4", 4);
+        Ref<ThingExt> t5 = new ThingExt("5", 5);
         t5->m_location.m_pos = WFMath::Point<3>::ZERO();
         t5->m_location.setBBox(bbox);
         t5->setProperty("reach", createReachPropFn(10));
-        ThingExt* t6 = new ThingExt("6", 6);
+        Ref<ThingExt> t6 = new ThingExt("6", 6);
 
         t2->domain = new PhysicalDomain(*t2);
         t2->addFlags(entity_domain);
@@ -823,20 +823,20 @@ void ThingIntegration::test_reachability()
     * And T4 being wielded
     */
     {
-        ThingExt* t1 = new ThingExt("1", 1);
+        Ref<ThingExt> t1 = new ThingExt("1", 1);
         t1->m_location.m_pos = WFMath::Point<3>::ZERO();
         t1->m_location.setBBox(bbox);
-        ThingExt* t2 = new ThingExt("2", 2);
+        Ref<ThingExt> t2 = new ThingExt("2", 2);
         t2->m_location.m_pos = WFMath::Point<3>::ZERO();
         t2->m_location.setBBox(bbox);
-        ThingExt* creator = new ThingExt("creator", 10);
+        Ref<ThingExt> creator = new ThingExt("creator", 10);
         creator->m_location.m_pos = WFMath::Point<3>::ZERO();
         creator->m_location.setBBox(bbox);
-        ThingExt* t3 = new ThingExt("3", 3);
+        Ref<ThingExt> t3 = new ThingExt("3", 3);
         t3->m_location.m_pos = WFMath::Point<3>::ZERO();
         t3->m_location.setBBox(bbox);
-        ThingExt* t4 = new ThingExt("4", 4);
-        ThingExt* t5 = new ThingExt("5", 5);
+        Ref<ThingExt> t4 = new ThingExt("4", 4);
+        Ref<ThingExt> t5 = new ThingExt("5", 5);
 
         t1->domain = new PhysicalDomain(*t1);
         t1->addFlags(entity_domain);
@@ -881,19 +881,19 @@ void ThingIntegration::test_reachability()
     {
         WFMath::AxisBox<3> smallBbox = {{-1, -1, -1},
                                         {1,  1,  1}};
-        ThingExt* t1 = new ThingExt("1", 1);
+        Ref<ThingExt> t1 = new ThingExt("1", 1);
         t1->m_location.m_pos = WFMath::Point<3>::ZERO();
         t1->m_location.setBBox({{-200, -200, -200}, {200, 200, 200}});
-        ThingExt* t2 = new ThingExt("2", 2);
+        Ref<ThingExt> t2 = new ThingExt("2", 2);
         t2->m_location.m_pos = {5, 0, 5};
         t2->m_location.setBBox(smallBbox);
-        ThingExt* t3 = new ThingExt("3", 3);
+        Ref<ThingExt> t3 = new ThingExt("3", 3);
         t3->m_location.m_pos = {10, 0, 10};
         t3->m_location.setBBox(smallBbox);
         auto reachProp = new Property<double>();
         reachProp->data() = 20.f;
         t3->setProperty("reach", reachProp);
-        ThingExt* t4 = new ThingExt("4", 4);
+        Ref<ThingExt> t4 = new ThingExt("4", 4);
         t4->m_location.m_pos = {100, 0, 100};
         t4->m_location.setBBox(smallBbox);
 

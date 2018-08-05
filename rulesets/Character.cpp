@@ -99,6 +99,13 @@ const double Character::energyLaidDown = 0.1;
 // Ammount of weight gained as a result. High for Acorn.
 const double Character::weightGain = 0.5;
 
+void Character::destroy()
+{
+    m_proxyMind = nullptr;
+
+    Entity::destroy();
+}
+
 static const std::string FOOD = "food";
 static const std::string MASS = "mass";
 static const std::string MAXMASS = "maxmass";
@@ -1622,7 +1629,9 @@ void Character::sendMind(const Operation & op, OpVector & res)
     } else {
         debug(std::cout << "Using ops from local mind" << std::endl << std::flush
         ;);
-        m_proxyMind->operation(op, res);
+        if (m_proxyMind) {
+            m_proxyMind->operation(op, res);
+        }
     }
 }
 

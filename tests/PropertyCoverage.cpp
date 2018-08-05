@@ -43,7 +43,7 @@ using Atlas::Objects::Entity::Anonymous;
 PropertyCoverage::PropertyCoverage(PropertyBase * pb) :
     m_prop(pb),
     m_tlve(new Entity("0", 0)),
-    m_wrld(new TestWorld(*m_tlve)),
+    m_wrld(new TestWorld(m_tlve)),
     m_ent(new Entity("1", 1))
 {
     m_ent->m_location.m_loc = m_tlve;
@@ -72,9 +72,9 @@ PropertyCoverage::PropertyCoverage(PropertyBase * pb) :
 
 PropertyCoverage::~PropertyCoverage()
 {
-    m_ent->m_location.m_loc = 0;
-    delete m_ent;
-    delete m_tlve;
+    m_ent->m_location.m_loc = nullptr;
+    m_ent = nullptr;
+    m_tlve = nullptr;
     delete m_prop;
     delete m_wrld;
 }
@@ -117,13 +117,12 @@ void PropertyCoverage::basicCoverage()
     interfaceCoverage();
 }
 
-Character * PropertyCoverage::createCharacterEntity()
+Ref<Character> PropertyCoverage::createCharacterEntity()
 {
     m_ent->m_location.m_loc = 0;
-    delete m_ent;
     m_tlve->m_contains->clear();
 
-    Character * chr = new Character("2", 2);
+    Ref<Character> chr = new Character("2", 2);
     m_ent = chr;
     m_ent->m_location.m_loc = m_tlve;
     m_ent->m_location.m_pos = Point3D(1,0,0);

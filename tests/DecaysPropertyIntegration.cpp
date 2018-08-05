@@ -42,8 +42,8 @@ using Atlas::Objects::Operation::Delete;
 class DecaysPropertyintegration : public Cyphesis::TestBase
 {
   private:
-    Entity * m_world;
-    Entity * m_entity;
+    Ref<Entity> m_world;
+    Ref<Entity> m_entity;
     PropertyBase * m_property;
   public:
     DecaysPropertyintegration();
@@ -62,7 +62,7 @@ DecaysPropertyintegration::DecaysPropertyintegration()
 void DecaysPropertyintegration::setup()
 {
     m_world = new Entity("0", 0);
-    new TestWorld(*m_world);
+    new TestWorld(m_world);
 
     m_entity = new Entity("1", 1);
     m_entity->m_location.m_loc = m_world;
@@ -76,7 +76,6 @@ void DecaysPropertyintegration::setup()
 
 void DecaysPropertyintegration::teardown()
 {
-    delete m_entity;
 }
 
 void DecaysPropertyintegration::test_handler()

@@ -59,7 +59,7 @@ class PossessionClient: public BaseClient, public MindRegistry
     protected:
 
         void operation(const Operation & op, OpVector & res) override;
-        void operationFromEntity(const Operation & op, BaseMind& locatedEntity);
+        void operationFromEntity(const Operation & op, Ref<BaseMind> locatedEntity);
         double getTime() const;
 
 

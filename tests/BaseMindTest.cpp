@@ -38,7 +38,7 @@
 class BaseMindtest : public Cyphesis::TestBase
 {
   protected:
-    BaseMind * bm;
+    Ref<BaseMind> bm;
   public:
     BaseMindtest();
 
@@ -86,7 +86,7 @@ void BaseMindtest::setup()
 
 void BaseMindtest::teardown()
 {
-    delete bm;
+    bm = nullptr;
 }
 
 void BaseMindtest::test_getMap()

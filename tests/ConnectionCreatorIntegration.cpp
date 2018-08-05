@@ -53,12 +53,12 @@ class ConnectionCreatorintegration : public Cyphesis::TestBase
     static LogEvent m_logEvent_logged;
     static Operation m_Link_send_sent;
     static Operation m_BaseWorld_message_called;
-    static LocatedEntity * m_BaseWorld_message_called_from;
+    static Ref<LocatedEntity> m_BaseWorld_message_called_from;
     static Operation m_Entity_callOperation_called;
 
     ServerRouting * m_server;
     Connection * m_connection;
-    Creator * m_creator;
+    Ref<Creator> m_creator;
     TypeNode * m_creatorType;
     std::unique_ptr<TestWorld> m_world;
   public:
@@ -82,7 +82,7 @@ class ConnectionCreatorintegration : public Cyphesis::TestBase
 LogEvent ConnectionCreatorintegration::m_logEvent_logged = NONE;
 Operation ConnectionCreatorintegration::m_Link_send_sent(0);
 Operation ConnectionCreatorintegration::m_BaseWorld_message_called(0);
-LocatedEntity * ConnectionCreatorintegration::m_BaseWorld_message_called_from(0);
+Ref<LocatedEntity> ConnectionCreatorintegration::m_BaseWorld_message_called_from(0);
 Operation ConnectionCreatorintegration::m_Entity_callOperation_called(0);
 
 void ConnectionCreatorintegration::logEvent_logged(LogEvent le)
@@ -131,7 +131,7 @@ void ConnectionCreatorintegration::setup()
     Ref<Entity> gw = new Entity(compose("%1", m_id_counter),
                              m_id_counter++);
     m_world.reset();
-    m_world.reset(new TestWorld(*gw));
+    m_world.reset(new TestWorld(gw));
     TestWorld::extension.messageFn = [](const Operation & op, LocatedEntity & ent) {
         ConnectionCreatorintegration::BaseWorld_message_called(op, ent);
     };
@@ -157,7 +157,7 @@ void ConnectionCreatorintegration::setup()
 void ConnectionCreatorintegration::teardown()
 {
     delete m_connection;
-    delete m_creator;
+    m_creator = nullptr;
     delete m_creatorType;
     delete m_server;
 }
@@ -183,8 +183,8 @@ void ConnectionCreatorintegration::test_external_op()
                  Atlas::Objects::Operation::TALK_NO);
     ASSERT_TRUE(!m_BaseWorld_message_called->isDefaultTo());
     ASSERT_EQUAL(m_BaseWorld_message_called->getTo(), m_creator->getId());
-    ASSERT_NOT_NULL(m_BaseWorld_message_called_from);
-    ASSERT_EQUAL(m_BaseWorld_message_called_from, m_creator);
+    ASSERT_TRUE(m_BaseWorld_message_called_from);
+    ASSERT_EQUAL(m_BaseWorld_message_called_from.get(), m_creator.get());
 }
 
 void ConnectionCreatorintegration::test_external_op_override()
@@ -220,7 +220,7 @@ void ConnectionCreatorintegration::test_external_op_puppet()
     m_creator->m_externalMind = new ExternalMind(*m_creator);
     m_creator->m_externalMind->linkUp(m_connection);
 
-    Entity * other = new Entity(compose("%1", m_id_counter), m_id_counter++);
+    Ref<Entity>  other = new Entity(compose("%1", m_id_counter), m_id_counter++);
     other->setType(m_creatorType);
     m_server->m_world.addEntity(other);
 
@@ -237,8 +237,8 @@ void ConnectionCreatorintegration::test_external_op_puppet()
                  Atlas::Objects::Operation::TALK_NO);
     ASSERT_TRUE(!m_BaseWorld_message_called->isDefaultTo());
     ASSERT_EQUAL(m_BaseWorld_message_called->getTo(), other->getId());
-    ASSERT_NOT_NULL(m_BaseWorld_message_called_from);
-    ASSERT_EQUAL(m_BaseWorld_message_called_from, other);
+    ASSERT_TRUE(m_BaseWorld_message_called_from);
+    ASSERT_EQUAL(m_BaseWorld_message_called_from.get(), other.get());
 }
 
 void ConnectionCreatorintegration::test_external_op_puppet_nonexistant()
@@ -250,7 +250,7 @@ void ConnectionCreatorintegration::test_external_op_puppet_nonexistant()
     m_creator->m_externalMind = new ExternalMind(*m_creator);
     m_creator->m_externalMind->linkUp(m_connection);
 
-    Entity * other = new Entity(compose("%1", m_id_counter), m_id_counter++);
+    Ref<Entity>  other = new Entity(compose("%1", m_id_counter), m_id_counter++);
     other->setType(m_creatorType);
     m_server->m_world.addEntity(other);
 

@@ -46,8 +46,8 @@ using Atlas::Objects::Operation::Move;
 class TerrainModPropertyintegration : public Cyphesis::TestBase
 {
   private:
-    Entity * m_rootEntity;
-    Entity * m_entity;
+    Ref<Entity> m_rootEntity;
+    Ref<Entity> m_entity;
     PropertyBase * m_property;
     PropertyBase * m_terrainProperty;
     std::unique_ptr<TestWorld> m_world;
@@ -72,7 +72,7 @@ void TerrainModPropertyintegration::setup()
     m_rootEntity = new Entity("0", 0);
 
     m_world.reset();
-    m_world.reset(new TestWorld(*m_rootEntity));
+    m_world.reset(new TestWorld(m_rootEntity));
 
     m_entity = new Entity("1", 1);
     m_entity->m_location.m_pos = Point3D(5.f, 5.f, 5.f);
@@ -97,8 +97,7 @@ void TerrainModPropertyintegration::setup()
 
 void TerrainModPropertyintegration::teardown()
 {
-    m_entity->decRef();
-    m_rootEntity->decRef();
+
 }
 
 void TerrainModPropertyintegration::test_move_handler()

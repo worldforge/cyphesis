@@ -105,7 +105,7 @@ int main()
     ArithmeticScript * as = paf.newScript(0);
     assert(as != 0);
     
-    Entity * e = new Entity("1", 1);
+    Ref<Entity>  e = new Entity("1", 1);
 
     as = paf.newScript(e);
     assert(as != 0);
@@ -163,7 +163,6 @@ void LocatedEntity::changeContainer(LocatedEntity * new_loc)
     assert(m_location.m_loc->checkRef() > 0);
 
     onContainered(oldLoc);
-    oldLoc->decRef();
 }
 
 #include "stubs/rulesets/stubLocatedEntity.h"

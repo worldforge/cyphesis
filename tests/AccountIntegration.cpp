@@ -357,7 +357,7 @@ void Accountintegration::test_LogoutOperation()
 
 void Accountintegration::test_connectCharacter_entity()
 {
-    Entity *e = new Entity("7", 7);
+    Ref<Entity> e = new Entity("7", 7);
 
     int ret = m_ac->connectCharacter(e);
     ASSERT_NOT_EQUAL(ret, 0);
@@ -365,7 +365,7 @@ void Accountintegration::test_connectCharacter_entity()
 
 void Accountintegration::test_connectCharacter_character()
 {
-    Character * e = new Character("8", 8);
+    Ref<Character> e = new Character("8", 8);
 
     int ret = m_ac->connectCharacter(e);
     ASSERT_EQUAL(ret, 0);

@@ -124,6 +124,8 @@ class Character : public Thing, public virtual sigc::trackable {
     void updateTask(OpVector &);
     void clearTask(OpVector &);
 
+    void destroy() override;
+
     std::vector<Atlas::Objects::Root> getThoughts() const override;
 
     virtual void operation(const Operation & op, OpVector &);

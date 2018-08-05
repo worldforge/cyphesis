@@ -43,7 +43,7 @@ using Atlas::Objects::Operation::RootOperation;
 PossessionClient::PossessionClient(MindKit& mindFactory) :
     m_mindFactory(mindFactory),
     m_account(nullptr),
-    m_operationsDispatcher([&](const Operation& op, BaseMind& from) { this->operationFromEntity(op, from); },
+    m_operationsDispatcher([&](const Operation& op, Ref<BaseMind> from) { this->operationFromEntity(op, std::move(from)); },
                            [&]() -> double { return getTime(); }),
     m_inheritance(new Inheritance())
 {
@@ -89,23 +89,23 @@ void PossessionClient::createAccount(const std::string& accountId)
     }
 }
 
-void PossessionClient::operationFromEntity(const Operation& op, BaseMind& locatedEntity)
+void PossessionClient::operationFromEntity(const Operation& op, Ref<BaseMind> locatedEntity)
 {
-    if (!locatedEntity.isDestroyed()) {
+    if (!locatedEntity->isDestroyed()) {
         OpVector res;
-        locatedEntity.operation(op, res);
+        locatedEntity->operation(op, res);
         for (auto& resOp : res) {
             //All resulting ops should go out to the server, except for Ticks which we'll keep ourselves.
             if (resOp->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
                 resOp->setTo(resOp->getFrom());
-                m_operationsDispatcher.addOperationToQueue(resOp, &locatedEntity);
+                m_operationsDispatcher.addOperationToQueue(resOp, locatedEntity);
             } else {
-                resOp->setFrom(locatedEntity.getId());
+                resOp->setFrom(locatedEntity->getId());
                 send(resOp);
             }
         }
-        if (locatedEntity.isDestroyed()) {
-            removeLocatedEntity(&locatedEntity);
+        if (locatedEntity->isDestroyed()) {
+            removeLocatedEntity(std::move(locatedEntity));
         }
     }
 }

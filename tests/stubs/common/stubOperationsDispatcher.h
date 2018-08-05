@@ -25,6 +25,15 @@
   }
 #endif //STUB_OpQueEntry_OpQueEntry
 
+#ifndef STUB_OpQueEntry_OpQueEntry
+//#define STUB_OpQueEntry_OpQueEntry
+  template <typename T>
+   OpQueEntry<T>::OpQueEntry(OpQueEntry && o)
+  {
+    
+  }
+#endif //STUB_OpQueEntry_OpQueEntry
+
 #ifndef STUB_OpQueEntry_OpQueEntry_DTOR
 //#define STUB_OpQueEntry_OpQueEntry_DTOR
   template <typename T>
@@ -38,7 +47,7 @@
 #ifndef STUB_OperationsDispatcher_OperationsDispatcher
 //#define STUB_OperationsDispatcher_OperationsDispatcher
   template <typename T>
-   OperationsDispatcher<T>::OperationsDispatcher(const std::function<void(const Operation&, T&)>& operationProcessor, const std::function<double()>& timeProviderFn)
+   OperationsDispatcher<T>::OperationsDispatcher(const std::function<void(const Operation&, Ref<T>)>& operationProcessor, const std::function<double()>& timeProviderFn)
   {
     
   }
@@ -101,7 +110,7 @@
 #ifndef STUB_OperationsDispatcher_addOperationToQueue
 //#define STUB_OperationsDispatcher_addOperationToQueue
   template <typename T>
-  void OperationsDispatcher<T>::addOperationToQueue(const Operation &, T &)
+  void OperationsDispatcher<T>::addOperationToQueue(Operation, Ref<T>)
   {
     
   }
@@ -110,7 +119,7 @@
 #ifndef STUB_OperationsDispatcher_dispatchOperation
 //#define STUB_OperationsDispatcher_dispatchOperation
   template <typename T>
-  void OperationsDispatcher<T>::dispatchOperation(const OpQueEntry<T>& opQueueEntry)
+  void OperationsDispatcher<T>::dispatchOperation(OpQueEntry<T>& opQueueEntry)
   {
     
   }

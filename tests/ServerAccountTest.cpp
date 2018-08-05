@@ -129,7 +129,7 @@ void ServerAccounttest::setup()
         }
         return ne;
     };
-    m_world = new TestWorld(*gw);
+    m_world = new TestWorld(gw);
 
     m_server = new ServerRouting(*m_world,
                                  "5529d7a4-0158-4dc1-b4a5-b5f260cac635",
@@ -357,7 +357,7 @@ void ServerAccounttest::test_addNewEntity_failed()
 void ServerAccounttest::test_addNewEntity_success()
 {
     long cid = m_id_counter++;
-    Entity * c = new Character(compose("%1", cid), cid);
+    Ref<Entity>  c = new Character(compose("%1", cid), cid);
     TestWorld_addNewEntity_ret_value = c;
 
     std::string type_str("unimportant_string");
@@ -365,7 +365,7 @@ void ServerAccounttest::test_addNewEntity_success()
 
     LocatedEntity * e = m_account->addNewEntity(type_str, arg, arg);
 
-    ASSERT_EQUAL(c, e);
+    ASSERT_EQUAL(c.get(), e);
 
     TestWorld_addNewEntity_ret_value = nullptr;
 }
