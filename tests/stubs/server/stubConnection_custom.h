@@ -2,7 +2,7 @@
 #ifndef STUB_Connection_Connection
 #define STUB_Connection_Connection
 Connection::Connection(CommSocket & commSocket, ServerRouting & svr, const std::string & addr, const std::string & id, long iid)
-    : Link(commSocket, id, iid), m_server(svr)
+    : Link(commSocket, id, iid), m_obsolete(false), m_server(svr)
 {
 
 }

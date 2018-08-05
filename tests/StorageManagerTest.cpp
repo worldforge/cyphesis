@@ -249,25 +249,8 @@ DatabaseResult Database::selectThoughts(const std::string& loc)
 #include "stubs/common/stubPropertyManager.h"
 
 #include "stubs/rulesets/stubScript.h"
+#include "stubs/modules/stubWeakEntityRef.h"
 
-WeakEntityRef::WeakEntityRef(LocatedEntity* e) : m_inner(e)
-{
-}
-
-WeakEntityRef::WeakEntityRef(const WeakEntityRef& ref) : m_inner(ref.m_inner)
-{
-}
-
-WeakEntityRef& WeakEntityRef::operator=(const WeakEntityRef& ref)
-{
-    m_inner = ref.m_inner;
-
-    return *this;
-}
-
-void WeakEntityRef::onEntityDeleted()
-{
-}
 
 VariableBase::~VariableBase()
 {

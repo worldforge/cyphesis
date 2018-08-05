@@ -68,7 +68,7 @@ Ref<MemEntity> MemMap::addEntity(const Ref<MemEntity> entity)
         auto I = m_addHooks.begin();
         auto Iend = m_addHooks.end();
         for (; I != Iend; ++I) {
-            m_script->hook(*I, entity);
+            m_script->hook(*I, entity.get());
         }
     }
 
@@ -133,11 +133,11 @@ void MemMap::updateEntity(const Ref<MemEntity> entity, const RootEntity & ent, d
         auto K = m_updateHooks.begin();
         auto Kend = m_updateHooks.end();
         for (; K != Kend; ++K) {
-            m_script->hook(*K, entity);
+            m_script->hook(*K, entity.get());
         }
     }
     if (m_listener) {
-        m_listener->entityUpdated(*entity, ent, old_loc);
+        m_listener->entityUpdated(*entity, ent, old_loc.get());
     }
 
 }
@@ -228,10 +228,8 @@ void MemMap::del(const std::string & id)
         }
 
         if (m_script) {
-            std::vector<std::string>::const_iterator J = m_deleteHooks.begin();
-            std::vector<std::string>::const_iterator Jend = m_deleteHooks.end();
-            for(; J != Jend; ++J) {
-                m_script->hook(*J, ent);
+            for (auto& hook : m_deleteHooks) {
+                m_script->hook(hook, ent.get());
             }
         }
 
@@ -375,12 +373,12 @@ EntityVector MemMap::findByType(const std::string & what)
 {
     EntityVector res;
     
-    MemEntityDict::const_iterator Iend = m_entities.end();
-    for (MemEntityDict::const_iterator I = m_entities.begin(); I != Iend; ++I) {
+    auto Iend = m_entities.end();
+    for (auto I = m_entities.begin(); I != Iend; ++I) {
         auto item = I->second;
         debug( std::cout << "F" << what << ":" << item->getType() << ":" << item->getId() << std::endl << std::flush;);
         if (item->isVisible() && item->getType()->name() == what) {
-            res.push_back(I->second);
+            res.push_back(I->second.get());
         }
     }
     return res;
@@ -412,8 +410,8 @@ EntityVector MemMap::findByLocation(const Location & loc,
     float square_range = radius * radius;
     for (; I != Iend; ++I) {
         assert(*I != nullptr);
-        LocatedEntity * item = *I;
-        if (item == nullptr) {
+        auto item = *I;
+        if (!item) {
             log(ERROR, "Weird entity in memory");
             continue;
         }
@@ -421,7 +419,7 @@ EntityVector MemMap::findByLocation(const Location & loc,
             continue;
         }
         if (squareDistance(loc.pos(), item->m_location.pos()) < square_range) {
-            res.push_back(item);
+            res.push_back(item.get());
         }
     }
     return res;

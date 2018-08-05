@@ -113,14 +113,11 @@ Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::rich_compare(const Py::
 {
 
     if (CyPy_LocatedEntity::check(other)) {
-        auto otherPtr = &CyPy_LocatedEntity::value(other);
-        if (this->m_value == nullptr || otherPtr == nullptr) {
-            return Py::False();
-        }
+        auto& otherEntity = CyPy_LocatedEntity::value(other);
         if (op == Py_EQ) {
-            return (this->m_value == otherPtr) ? Py::True() : Py::False();
+            return (this->m_value.get() == &otherEntity) ? Py::True() : Py::False();
         } else if (op == Py_NE) {
-            return (this->m_value != otherPtr) ? Py::True() : Py::False();
+            return (this->m_value.get() != &otherEntity) ? Py::True() : Py::False();
         }
 
     } else {

@@ -84,7 +84,7 @@ struct WorldRouterintegration : public Cyphesis::TestBase
 
             ASSERT_EQUAL(2, test_world->m_entityCount);
 
-            test_world->delEntity(ent1);
+            test_world->delEntity(ent1.get());
             //A single entity when removed should have all references removed too.
             ASSERT_EQUAL(1, test_world->m_entityCount);
             ASSERT_EQUAL(1, ent1->checkRef());
@@ -107,7 +107,7 @@ struct WorldRouterintegration : public Cyphesis::TestBase
             ASSERT_EQUAL(ent2->m_location.m_loc.get(), ent1.get());
 
             //Make sure that a child when removed has all references removed too.
-            test_world->delEntity(ent2);
+            test_world->delEntity(ent2.get());
             ASSERT_EQUAL(2, test_world->m_entityCount);
             ASSERT_EQUAL(1, ent2->checkRef());
 
@@ -186,15 +186,15 @@ void WorldRouterintegration::teardown()
 
 void WorldRouterintegration::test_sequence()
 {
-    LocatedEntity* base = new Entity("", 0);
+    Ref<Entity> base = new Entity("", 0);
     WorldRouter* test_world = new WorldRouter(SystemTime(), base);
 
-    LocatedEntity* ent1 = test_world->addNewEntity("__no_such_type__",
+    auto ent1 = test_world->addNewEntity("__no_such_type__",
                                                    Anonymous());
-    assert(ent1 == 0);
+    assert(!ent1);
 
     ent1 = test_world->addNewEntity("thing", Anonymous());
-    assert(ent1 != 0);
+    assert(ent1);
 
     std::string id;
     long int_id = newId(id);
@@ -241,15 +241,15 @@ void WorldRouterintegration::test_sequence()
         ASSERT_EQUAL(spawn_repr.size(), 1u);
     }
 
-    LocatedEntity* ent3 = test_world->spawnNewEntity("__no_spawn__",
+    auto ent3 = test_world->spawnNewEntity("__no_spawn__",
                                                      "character",
                                                      Anonymous());
-    assert(ent3 == 0);
+    assert(!ent3);
 
     ent3 = test_world->spawnNewEntity("bob",
                                       "character",
                                       Anonymous());
-    assert(ent3 == 0);
+    assert(!ent3);
 
     {
         MapType spawn_data;
@@ -265,7 +265,7 @@ void WorldRouterintegration::test_sequence()
     ent3 = test_world->spawnNewEntity("bob",
                                       "spiddler",
                                       Anonymous());
-    assert(ent3 == 0);
+    assert(!ent3);
 
     {
         MapType spawn_data;
@@ -281,7 +281,7 @@ void WorldRouterintegration::test_sequence()
     ent3 = test_world->spawnNewEntity("bob",
                                       "character",
                                       Anonymous());
-    assert(ent3 != 0);
+    assert(ent3);
 
     //TODO: test creation of archetypes
 //    {
@@ -304,7 +304,7 @@ void WorldRouterintegration::test_sequence()
 //                                                      Anonymous());
 //    assert(ent4 != 0);
 //
-    test_world->delEntity(base);
+    test_world->delEntity(base.get());
 //    test_world->delEntity(ent4);
 //    ent4 = 0;
 
@@ -614,12 +614,12 @@ long newId(std::string & id)
 
 #ifndef STUB_BaseWorld_getEntity
 #define STUB_BaseWorld_getEntity
-LocatedEntity* BaseWorld::getEntity(const std::string & id) const
+Ref<LocatedEntity> BaseWorld::getEntity(const std::string & id) const
 {
     return getEntity(integerId(id));
 }
 
-LocatedEntity* BaseWorld::getEntity(long id) const
+Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 {
     auto I = m_eobjects.find(id);
     if (I != m_eobjects.end()) {

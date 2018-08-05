@@ -73,14 +73,14 @@ HandlerResult TeleportProperty::teleport_handler(LocatedEntity * e,
                               op->getFrom()));
 
     // This is the sender entity
-    LocatedEntity * entity = BaseWorld::instance().getEntity(op->getFrom());
-    if (entity == 0) {
+    auto entity = BaseWorld::instance().getEntity(op->getFrom());
+    if (!entity) {
         debug(std::cout << "No entity found with the specified ID: "
                         << op->getFrom(););
         return OPERATION_IGNORED;
     }
 
     // Inject the entity into remote server
-    link->teleportEntity(entity);
+    link->teleportEntity(entity.get());
     return OPERATION_IGNORED;
 }

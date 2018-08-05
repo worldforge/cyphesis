@@ -204,8 +204,8 @@ void BaseMind::SightOperation(const Operation & op, OpVector & res)
             return;
         }
         debug( std::cout << " arg is an entity!" << std::endl << std::flush;);
-        MemEntity * me = m_map.updateAdd(ent, op->getSeconds());
-        if (me != nullptr) {
+        auto me = m_map.updateAdd(ent, op->getSeconds());
+        if (me) {
             me->setVisible();
         }
     }
@@ -290,8 +290,8 @@ void BaseMind::AppearanceOperation(const Operation & op, OpVector & res)
             continue;
         }
         const std::string & id = (*I)->getId();
-        MemEntity * me = m_map.getAdd(id);
-        if (me != nullptr) {
+        auto me = m_map.getAdd(id);
+        if (me) {
             if ((*I)->hasAttrFlag(Atlas::Objects::STAMP_FLAG)) {
                 if ((int)(*I)->getStamp() != me->getSeq()) {
                     Look l;
@@ -317,8 +317,8 @@ void BaseMind::DisappearanceOperation(const Operation & op, OpVector & res)
     for (auto I = args.begin(); I != Iend; ++I) {
         const std::string & id = (*I)->getId();
         if (id.empty()) { continue; }
-        MemEntity * me = m_map.get(id);
-        if (me != nullptr) {
+        auto me = m_map.get(id);
+        if (me) {
             me->update(op->getSeconds());
             me->setVisible(false);
         }

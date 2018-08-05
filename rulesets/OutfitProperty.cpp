@@ -79,8 +79,8 @@ void OutfitProperty::set(const Atlas::Message::Element & val)
 
         if (item.isString()) {
             const std::string & id = item.String();
-            LocatedEntity * e = BaseWorld::instance().getEntity(id);
-            if (e != 0) {
+            auto e = BaseWorld::instance().getEntity(id);
+            if (e) {
                 m_data[key] = WeakEntityRef(e);
             }
         } else if (item.isPtr()) {
@@ -92,8 +92,8 @@ void OutfitProperty::set(const Atlas::Message::Element & val)
             if (J != item.asMap().end()) {
                 if (J->second.isString()) {
                     const std::string & id = J->second.String();
-                    LocatedEntity * e = BaseWorld::instance().getEntity(id);
-                    if (e != 0) {
+                    auto e = BaseWorld::instance().getEntity(id);
+                    if (e) {
                         m_data[key] = WeakEntityRef(e);
                     }
                 }

@@ -100,7 +100,7 @@ class Entity : public LocatedEntity {
 
     void removeChild(LocatedEntity& childEntity) override;
 
-    void onContainered(const LocatedEntity* oldLocation) override;
+    void onContainered(const Ref<LocatedEntity>& oldLocation) override;
     void onUpdated() override;
 
     void destroy() override;

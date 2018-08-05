@@ -131,7 +131,7 @@
 
 #ifndef STUB_LocatedEntity_onContainered
 //#define STUB_LocatedEntity_onContainered
-  void LocatedEntity::onContainered(const LocatedEntity* oldLocation)
+  void LocatedEntity::onContainered(const Ref<LocatedEntity>& oldLocation)
   {
     
   }
@@ -195,7 +195,7 @@
 
 #ifndef STUB_LocatedEntity_changeContainer
 //#define STUB_LocatedEntity_changeContainer
-  void LocatedEntity::changeContainer(LocatedEntity *)
+  void LocatedEntity::changeContainer(const Ref<LocatedEntity>&)
   {
     
   }

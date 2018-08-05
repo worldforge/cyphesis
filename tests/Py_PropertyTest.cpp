@@ -47,16 +47,16 @@ class TestProp : public Py::ExtensionModule<TestProp>
             auto ent = CyPy_Entity::value(args.front());
 
             PropertyBase * p = ent->setProperty("statistics", new StatisticsProperty);
-            p->install(ent, "statistics");
-            p->apply(ent);
+            p->install(ent.get(), "statistics");
+            p->apply(ent.get());
             ent->propertyApplied("statistics", *p);
             p = ent->setProperty("terrain", new TerrainProperty);
-            p->install(ent, "terrain");
-            p->apply(ent);
+            p->install(ent.get(), "terrain");
+            p->apply(ent.get());
             ent->propertyApplied("terrain", *p);
             p = ent->setProperty("line", new LineProperty);
-            p->install(ent, "line");
-            p->apply(ent);
+            p->install(ent.get(), "line");
+            p->apply(ent.get());
             ent->propertyApplied("line", *p);
 
             return Py::None();

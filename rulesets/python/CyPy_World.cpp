@@ -55,11 +55,11 @@ Py::Object CyPy_World::get_object(const Py::Tuple& args)
 {
     args.verify_length(1);
     auto id = verifyString(args.front());
-    LocatedEntity* ent = m_value->getEntity(id);
-    if (ent == nullptr) {
+    auto ent = m_value->getEntity(id);
+    if (!ent) {
         return Py::None();
     }
-    return CyPy_LocatedEntity::wrap(ent);
+    return CyPy_LocatedEntity::wrap(std::move(ent));
 }
 
 //FIXME: remove this one

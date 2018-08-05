@@ -261,92 +261,8 @@ int main()
 #include <cstdio>
 #include <cstdlib>
 #include "stubs/common/stubDatabase.h"
+#include "stubs/server/stubAccount.h"
 
-Account::Account(Connection * conn,
-                 const std::string & uname,
-                 const std::string & passwd,
-                 const std::string & id,
-                 long intId) :
-         ConnectableRouter(id, intId, conn),
-         m_username(uname), m_password(passwd)
-{
-}
-
-
-const char * Account::getType() const
-{
-    return "test_account";
-}
-
-void Account::store() const
-{
-}
-
-bool Account::isPersisted() const {
-    return true;
-}
-
-void Account::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Account::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-void Account::createObject(const std::string & type_str,
-                           const Atlas::Objects::Root & arg,
-                           const Operation & op,
-                           OpVector & res)
-{
-}
-
-LocatedEntity * Account::createCharacterEntity(const std::string &,
-                                const Atlas::Objects::Entity::RootEntity &,
-                                const Atlas::Objects::Root &)
-{
-    return 0;
-}
-
-void Account::externalOperation(const Operation &, Link &)
-{
-}
-
-void Account::operation(const Operation & op, OpVector & res)
-{
-}
-
-void Account::LogoutOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Account::CreateOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Account::SetOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Account::ImaginaryOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Account::TalkOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Account::LookOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Account::GetOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Account::OtherOperation(const Operation & op, OpVector & res)
-{
-}
 
 ConnectableRouter::ConnectableRouter(const std::string & id,
                                  long iid,
@@ -429,12 +345,12 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 
 #ifndef STUB_BaseWorld_getEntity
 #define STUB_BaseWorld_getEntity
-LocatedEntity* BaseWorld::getEntity(const std::string & id) const
+Ref<LocatedEntity> BaseWorld::getEntity(const std::string & id) const
 {
     return getEntity(integerId(id));
 }
 
-LocatedEntity* BaseWorld::getEntity(long id) const
+Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 {
     auto I = m_eobjects.find(id);
     if (I != m_eobjects.end()) {

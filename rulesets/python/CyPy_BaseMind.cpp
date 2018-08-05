@@ -42,7 +42,6 @@ CyPy_BaseMind::CyPy_BaseMind(Py::PythonClassInstance* self, Py::Tuple& args, Py:
     } else {
         throw Py::TypeError("Mind() requires string ID or Mind");
     }
-    m_value->incRef();
 }
 
 CyPy_BaseMind::~CyPy_BaseMind() = default;

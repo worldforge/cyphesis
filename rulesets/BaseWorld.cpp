@@ -42,7 +42,7 @@ BaseWorld::BaseWorld() :
 ///
 /// @param id string ID of Entity to be retrieved.
 /// @return pointer to Entity retrieved, or zero if it was not found.
-LocatedEntity * BaseWorld::getEntity(const std::string & id) const
+Ref<LocatedEntity> BaseWorld::getEntity(const std::string & id) const
 {
     return getEntity(integerId(id));
 }
@@ -51,7 +51,7 @@ LocatedEntity * BaseWorld::getEntity(const std::string & id) const
 ///
 /// @param id integer ID of Entity to be retrieved.
 /// @return pointer to Entity retrieved, or zero if it was not found.
-LocatedEntity * BaseWorld::getEntity(long id) const
+Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 {
     auto I = m_eobjects.find(id);
     if (I != m_eobjects.end()) {

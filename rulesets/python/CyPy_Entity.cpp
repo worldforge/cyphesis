@@ -42,7 +42,6 @@ CyPy_Entity::CyPy_Entity(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dic
     } else {
         throw Py::TypeError("Entity() requires string ID or Entity");
     }
-    m_value->incRef();
 }
 
 CyPy_Entity::~CyPy_Entity() = default;
@@ -118,7 +117,7 @@ Py::Object CyPy_Entity::start_task(const Ref<Entity>& entity, const Py::Tuple& a
     args.verify_length(2);
 
     auto tp = entity->requirePropertyClassFixed<TasksProperty>();
-    tp->startTask(verifyString(args[0]), verifyObject<CyPy_Task>(args[1]), entity, res);
+    tp->startTask(verifyString(args[0]), verifyObject<CyPy_Task>(args[1]), entity.get(), res);
 
     return CyPy_Oplist::wrap(std::move(res));
 }

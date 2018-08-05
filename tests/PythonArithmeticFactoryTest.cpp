@@ -105,9 +105,9 @@ int main()
     ArithmeticScript * as = paf.newScript(0);
     assert(as != 0);
     
-    Ref<Entity>  e = new Entity("1", 1);
+    Ref<Entity> e = new Entity("1", 1);
 
-    as = paf.newScript(e);
+    as = paf.newScript(e.get());
     assert(as != 0);
     
     Py_Finalize();
@@ -142,7 +142,7 @@ void LocatedEntity::makeContainer()
 }
 
 #define STUB_LocatedEntity_changeContainer
-void LocatedEntity::changeContainer(LocatedEntity * new_loc)
+void LocatedEntity::changeContainer(const Ref<LocatedEntity>& new_loc)
 {
     assert(m_location.m_loc);
     assert(m_location.m_loc->m_contains != nullptr);
@@ -157,9 +157,8 @@ void LocatedEntity::changeContainer(LocatedEntity * new_loc)
         new_loc->onUpdated();
     }
     assert(m_location.m_loc->checkRef() > 0);
-    LocatedEntity* oldLoc = m_location.m_loc;
+    auto oldLoc = m_location.m_loc;
     m_location.m_loc = new_loc;
-    m_location.m_loc->incRef();
     assert(m_location.m_loc->checkRef() > 0);
 
     onContainered(oldLoc);

@@ -41,7 +41,6 @@ CyPy_Character::CyPy_Character(Py::PythonClassInstance* self, Py::Tuple& args, P
     } else {
         throw Py::TypeError("Character() requires string ID or Character");
     }
-    m_value->incRef();
 }
 
 CyPy_Character::~CyPy_Character()

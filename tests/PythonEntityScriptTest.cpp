@@ -91,7 +91,7 @@ int main()
     assert(ret == 0);
     Ref<Entity> e = new Entity("1", 1);
     new TestWorld(e);
-    ret = psf.addScript(e);
+    ret = psf.addScript(e.get());
     assert(ret == 0);
 
     assert(e->m_scripts.size() == 1);
@@ -122,11 +122,10 @@ int main()
     Script * script = e->m_scripts.front();
     assert(script != 0);
 
-    script->hook("nohookfunction", e);
-    script->hook("test_hook", e);
-
-    delete e;
-
+    script->hook("nohookfunction", e.get());
+    script->hook("test_hook", e.get());
+    e = nullptr;
+    
     shutdown_python_api();
     return 0;
 }

@@ -49,9 +49,9 @@
 
 #ifndef STUB_PossessionAuthenticator_authenticatePossession
 //#define STUB_PossessionAuthenticator_authenticatePossession
-  LocatedEntity* PossessionAuthenticator::authenticatePossession(const std::string &, const std::string &)
+  Ref<LocatedEntity> PossessionAuthenticator::authenticatePossession(const std::string &, const std::string &)
   {
-    return nullptr;
+    return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
 #endif //STUB_PossessionAuthenticator_authenticatePossession
 

@@ -107,7 +107,7 @@
 
 #ifndef STUB_AwareMind_onContainered
 //#define STUB_AwareMind_onContainered
-  void AwareMind::onContainered(const LocatedEntity * new_loc)
+  void AwareMind::onContainered(const Ref<LocatedEntity>& new_loc)
   {
     
   }

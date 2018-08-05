@@ -56,12 +56,19 @@ class Location : public EntityLocation {
     BBox m_bBox;
 
     Location();
+    explicit Location(Ref<LocatedEntity> rf);
+    explicit Location(Ref<LocatedEntity> rf,
+                      Point3D pos);
+    explicit Location(Ref<LocatedEntity> rf,
+                      Point3D pos,
+                      Vector3D velocity);
+
     explicit Location(LocatedEntity * rf);
     explicit Location(LocatedEntity * rf,
-                      const Point3D & pos);
+                      Point3D pos);
     explicit Location(LocatedEntity * rf,
-                      const Point3D & pos,
-                      const Vector3D & velocity);
+                      Point3D pos,
+                      Vector3D velocity);
 
     explicit Location(EntityLocation entityLocation);
 

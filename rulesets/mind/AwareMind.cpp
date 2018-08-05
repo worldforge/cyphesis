@@ -227,7 +227,7 @@ void AwareMind::entityUpdated(const MemEntity& entity, const Atlas::Objects::Ent
         //Update the awareness if location, position, velocity, orientation or bbox has changed
         if (ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG) || ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG) || ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)
                 || ent->hasAttr("orientation") || ent->hasAttr("bbox")) {
-            if (oldLocation == entity.m_location.m_loc) {
+            if (oldLocation == entity.m_location.m_loc.get()) {
                 //Location wasn't changed
                 if (entity.m_location.m_loc == this->m_location.m_loc) {
                     //log(INFO, "Updated entity.");
@@ -238,7 +238,7 @@ void AwareMind::entityUpdated(const MemEntity& entity, const Atlas::Objects::Ent
                 if (entity.m_location.m_loc == this->m_location.m_loc) {
                     //log(INFO, "Adding entity.");
                     mAwareness->addEntity(*this, entity, false);
-                } else if (oldLocation == this->m_location.m_loc) {
+                } else if (oldLocation == this->m_location.m_loc.get()) {
                     //log(INFO, "Removing entity.");
                     mAwareness->removeEntity(*this, entity);
                 }
@@ -316,7 +316,7 @@ void AwareMind::entityDeleted(const MemEntity& entity)
     }
 }
 
-void AwareMind::onContainered(const LocatedEntity * new_loc)
+void AwareMind::onContainered(const Ref<LocatedEntity>& new_loc)
 {
 }
 

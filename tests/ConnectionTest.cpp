@@ -526,8 +526,8 @@ void Connectiontest::test_disconnectAccount_non_Character()
     assert(I != m_connection->m_objects.end());
 
     Ref<Entity>  avatar = new Thing("5", 5);
-    m_connection->m_objects[avatar->getIntId()] = avatar;
-    ac->addCharacter(avatar);
+    m_connection->m_objects[avatar->getIntId()] = avatar.get();
+    ac->addCharacter(avatar.get());
 
     m_connection->disconnectAccount(ac, I, "test_disconnect_account");
 
@@ -568,97 +568,14 @@ int CommSocket::flush()
 
 #include "stubs/server/stubPlayer.h"
 
-Account::Account(Connection * conn,
-                 const std::string & uname,
-                 const std::string & passwd,
-                 const std::string & id,
-                 long intId) :
-         ConnectableRouter(id, intId, conn),
-         m_username(uname), m_password(passwd)
-{
-}
-
-
-const char * Account::getType() const
-{
-    return "testaccount";
-}
-
+#define STUB_Account_addCharacter
 // Simplified stub version to allow us to test Connection::disconnectObject
 void Account::addCharacter(LocatedEntity * chr)
 {
     m_charactersDict[chr->getIntId()] = chr;
 }
+#include "stubs/server/stubAccount.h"
 
-void Account::store() const
-{
-}
-
-bool Account::isPersisted() const {
-    return true;
-}
-
-void Account::addToMessage(Atlas::Message::MapType &) const
-{
-}
-
-void Account::addToEntity(const Atlas::Objects::Entity::RootEntity &) const
-{
-}
-
-void Account::createObject(const std::string & type_str,
-                           const Root & arg,
-                           const Operation & op,
-                           OpVector & res)
-{
-}
-
-LocatedEntity * Account::createCharacterEntity(const std::string &,
-                                const Atlas::Objects::Entity::RootEntity &,
-                                const Atlas::Objects::Root &)
-{
-    return 0;
-}
-
-void Account::externalOperation(const Operation &, Link &)
-{
-}
-
-void Account::operation(const Operation &, OpVector &)
-{
-}
-
-void Account::LogoutOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::CreateOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::SetOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::ImaginaryOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::TalkOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::LookOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::GetOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::OtherOperation(const Operation &, OpVector &)
-{
-}
 
 ConnectableRouter::ConnectableRouter(const std::string & id,
                                  long iid,

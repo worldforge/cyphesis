@@ -127,7 +127,7 @@
 
 #ifndef STUB_CyPy_LocatedEntity_wrap
 //#define STUB_CyPy_LocatedEntity_wrap
-   Py::Object CyPy_LocatedEntity::wrap(LocatedEntity* value)
+   Py::Object CyPy_LocatedEntity::wrap(Ref<LocatedEntity> value)
   {
     return *static_cast< Py::Object*>(nullptr);
   }

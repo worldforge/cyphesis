@@ -79,7 +79,7 @@ class WorldRouter : public BaseWorld {
     int createSpawnPoint(const Atlas::Message::MapType &, LocatedEntity *) override;
     int removeSpawnPoint(LocatedEntity * ent) override;
     int getSpawnList(Atlas::Message::ListType & data) override;
-    LocatedEntity * spawnNewEntity(const std::string &,
+    Ref<LocatedEntity> spawnNewEntity(const std::string &,
                                    const std::string &,
                                    const Atlas::Objects::Entity::RootEntity &) override;
     int moveToSpawn(const std::string & name, Location& location) override;
@@ -96,8 +96,8 @@ class WorldRouter : public BaseWorld {
 
     void messageToClients(const Atlas::Objects::Operation::RootOperation &) override;
 
-    LocatedEntity * findByName(const std::string & name) override;
-    LocatedEntity * findByType(const std::string & type) override;
+    Ref<LocatedEntity> findByName(const std::string & name) override;
+    Ref<LocatedEntity> findByType(const std::string & type) override;
 
     /**
      * @brief Checks if the operation queues have been marked as dirty.

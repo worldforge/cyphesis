@@ -21,6 +21,8 @@
 
 #include "ConnectableRouter.h"
 
+#include "modules/Ref.h"
+
 #include <vector>
 
 namespace Atlas {
@@ -50,7 +52,7 @@ class Account : public ConnectableRouter {
     /// \brief The password used to authenticate this account
     std::string m_password;
 
-    LocatedEntity * addNewCharacter(const std::string &,
+    Ref<LocatedEntity> addNewCharacter(const std::string &,
                                     const Atlas::Objects::Entity::RootEntity &,
                                     const Atlas::Objects::Root &);
     void characterDestroyed(long);
@@ -74,7 +76,7 @@ class Account : public ConnectableRouter {
                     const Atlas::Objects::Entity::RootEntity &) const;
 
     /// \brief Creates a new entity for a character.
-    virtual LocatedEntity * createCharacterEntity(const std::string &,
+    virtual Ref<LocatedEntity> createCharacterEntity(const std::string &,
                                     const Atlas::Objects::Entity::RootEntity &,
                                     const Atlas::Objects::Root &);
 

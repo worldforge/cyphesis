@@ -73,7 +73,7 @@ void TerrainEffectorPropertytest::test_none_found()
     ASSERT_FALSE(m_world->m_location.m_loc);
     ASSERT_EQUAL(m_entity->m_location.m_loc.get(), m_world.get());
 
-    const TerrainProperty * res = m_property->getTerrain(m_entity);
+    const TerrainProperty * res = m_property->getTerrain(m_entity.get());
 
     ASSERT_NULL(res);
 }
@@ -86,7 +86,7 @@ void TerrainEffectorPropertytest::test_not_terrain()
     m_world->setProperty("terrain",
                          new Property<Atlas::Message::MapType>);
 
-    const TerrainProperty * res = m_property->getTerrain(m_entity);
+    const TerrainProperty * res = m_property->getTerrain(m_entity.get());
 
     ASSERT_NULL(res);
 }
@@ -99,7 +99,7 @@ void TerrainEffectorPropertytest::test_found()
     m_world->setProperty("terrain",
                          new TerrainProperty);
 
-    const TerrainProperty * res = m_property->getTerrain(m_entity);
+    const TerrainProperty * res = m_property->getTerrain(m_entity.get());
 
     ASSERT_NOT_NULL(res);
 }

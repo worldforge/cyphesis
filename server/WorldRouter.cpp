@@ -101,14 +101,14 @@ WorldRouter::WorldRouter(const SystemTime & time, Ref<LocatedEntity> baseEntity)
                     for (auto& changedPropName : I->second.changedProps) {
                         if (entity->getProperties().find(changedPropName) == entity->getProperties().end()) {
                             auto prop = typeNode->defaults().find(changedPropName)->second;
-                            prop->apply(entity);
+                            prop->apply(entity.get());
                             entity->propertyApplied(changedPropName, *prop);
                         }
                     }
                     for (auto& newPropName : I->second.changedProps) {
                         if (entity->getProperties().find(newPropName) == entity->getProperties().end()) {
                             auto prop = typeNode->defaults().find(newPropName)->second;
-                            prop->apply(entity);
+                            prop->apply(entity.get());
                             entity->propertyApplied(newPropName, *prop);
                         }
                     }
@@ -282,7 +282,7 @@ int WorldRouter::getSpawnList(Atlas::Message::ListType & data)
     return 0;
 }
 
-LocatedEntity * WorldRouter::spawnNewEntity(const std::string & name,
+Ref<LocatedEntity> WorldRouter::spawnNewEntity(const std::string & name,
                                             const std::string & type,
                                             const RootEntity & desc)
 {
@@ -297,8 +297,8 @@ LocatedEntity * WorldRouter::spawnNewEntity(const std::string & name,
         log(ERROR, String::compose("Spawn not permitting %1", type));
         return nullptr;
     }
-    LocatedEntity * e = addNewEntity(type, desc);
-    if (e == nullptr) {
+    auto e = addNewEntity(type, desc);
+    if (!e) {
         log(ERROR, String::compose("Entity creation failed %1", type));
         return e;
     }
@@ -333,7 +333,7 @@ ArithmeticScript * WorldRouter::newArithmetic(const std::string & name,
 /// entity.
 void WorldRouter::delEntity(LocatedEntity * ent)
 {
-    if (ent == m_baseEntity) {
+    if (ent == m_baseEntity.get()) {
         log(WARNING, "Attempt to delete game world");
         return;
     }
@@ -532,7 +532,7 @@ double WorldRouter::secondsUntilNextOp() const {
 /// @param name string specifying name of the instance required.
 /// @return a pointer to an entity with the type required, or zero if an
 /// instance with this name was not found.
-LocatedEntity * WorldRouter::findByName(const std::string & name)
+Ref<LocatedEntity> WorldRouter::findByName(const std::string & name)
 {
     Element name_attr;
     auto Iend = m_eobjects.end();
@@ -552,7 +552,7 @@ LocatedEntity * WorldRouter::findByName(const std::string & name)
 /// @param type string specifying the class name of the instance required.
 /// @return a pointer to an entity of the type required, or zero if no
 /// instance was found.
-LocatedEntity * WorldRouter::findByType(const std::string & type)
+Ref<LocatedEntity> WorldRouter::findByType(const std::string & type)
 {
     auto Iend = m_eobjects.end();
     for(auto I = m_eobjects.begin(); I != Iend; ++I) {

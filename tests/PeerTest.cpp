@@ -66,7 +66,8 @@ class MyTestWorld : public TestWorld {
     explicit MyTestWorld() : TestWorld() {
     }
 
-    virtual bool idle() { return false; }
+        bool idle() override
+        { return false; }
 
     LocatedEntity * test_addEntity(LocatedEntity * ent, long intId) {
         m_eobjects[intId] = ent;
@@ -75,9 +76,9 @@ class MyTestWorld : public TestWorld {
     void test_delEntity(long intId) { 
         m_eobjects.erase(intId);
     }
-     LocatedEntity * spawnNewEntity(const std::string & name,
+     Ref<LocatedEntity> spawnNewEntity(const std::string & name,
                                    const std::string & type,
-                                   const Atlas::Objects::Entity::RootEntity & desc) {
+                                   const Atlas::Objects::Entity::RootEntity & desc) override {
         return addNewEntity(type, desc);
     }
 
@@ -200,7 +201,7 @@ int main()
         Peer *p = new Peer(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         Ref<Entity> e(new Entity("3", 3));
-        int ret = p->teleportEntity(e);
+        int ret = p->teleportEntity(e.get());
         assert(ret == -1);
     }
 
@@ -212,7 +213,7 @@ int main()
         p->setAuthState(PEER_AUTHENTICATED);
         
         Ref<Entity> e(new Entity("3", 3));
-        int ret = p->teleportEntity(e);
+        int ret = p->teleportEntity(e.get());
         assert(ret == 0);
         assert(stub_CommClient_sent_op.isValid());
         assert(stub_CommClient_sent_op->getArgs().size() == 1);
@@ -226,12 +227,12 @@ int main()
         p->setAuthState(PEER_AUTHENTICATED);
         
         Ref<Entity> e(new Entity("3", 3));
-        int ret = p->teleportEntity(e);
+        int ret = p->teleportEntity(e.get());
         assert(ret == 0);
         assert(stub_CommClient_sent_op.isValid());
         assert(stub_CommClient_sent_op->getArgs().size() == 1);
 
-        ret = p->teleportEntity(e);
+        ret = p->teleportEntity(e.get());
         assert(ret != 0);
     }
 
@@ -243,7 +244,7 @@ int main()
         p->setAuthState(PEER_AUTHENTICATED);
         
         Ref<Character> e(new Character("3", 3));
-        int ret = p->teleportEntity(e);
+        int ret = p->teleportEntity(e.get());
         assert(ret == 0);
         assert(stub_CommClient_sent_op.isValid());
         assert(stub_CommClient_sent_op->getArgs().size() == 1);
@@ -258,7 +259,7 @@ int main()
         
         Ref<Character> e(new Character("3", 3));
         e->m_externalMind = new ExternalMind(*e);
-        int ret = p->teleportEntity(e);
+        int ret = p->teleportEntity(e.get());
         assert(ret == 0);
         assert(stub_CommClient_sent_op.isValid());
         assert(stub_CommClient_sent_op->getArgs().size() == 1);
@@ -275,7 +276,7 @@ int main()
         ExternalMind * mind = new ExternalMind(*e);
         mind->linkUp((Link*)23);
         e->m_externalMind = mind;
-        int ret = p->teleportEntity(e);
+        int ret = p->teleportEntity(e.get());
         assert(ret == 0);
         assert(stub_CommClient_sent_op.isValid());
         assert(stub_CommClient_sent_op->getArgs().size() == 2);
@@ -342,7 +343,7 @@ int main()
         p->setAuthState(PEER_AUTHENTICATED);
         
         Ref<Entity> e(new Entity("23", 23));
-        int ret = p->teleportEntity(e);
+        int ret = p->teleportEntity(e.get());
         assert(ret == 0);
 
         Atlas::Objects::Operation::Info op;
@@ -363,10 +364,10 @@ int main()
         p->setAuthState(PEER_AUTHENTICATED);
         
         Ref<Entity> e(new Entity("23", 23));
-        int ret = p->teleportEntity(e);
+        int ret = p->teleportEntity(e.get());
         assert(ret == 0);
 
-        world.test_addEntity(e, 23);
+        world.test_addEntity(e.get(), 23);
 
         Atlas::Objects::Operation::Info op;
         OpVector res;
@@ -391,10 +392,10 @@ int main()
         ExternalMind * mind = new ExternalMind(*e);
         mind->linkUp((Link*)23);
         e->m_externalMind = mind;
-        int ret = p->teleportEntity(e);
+        int ret = p->teleportEntity(e.get());
         assert(ret == 0);
 
-        world.test_addEntity(e, 23);
+        world.test_addEntity(e.get(), 23);
 
         Atlas::Objects::Operation::Info op;
         OpVector res;
@@ -423,7 +424,7 @@ int main()
         p->setAuthState(PEER_AUTHENTICATED);
         
         Ref<Entity> e(new Entity("23", 23));
-        int ret = p->teleportEntity(e);
+        int ret = p->teleportEntity(e.get());
         assert(ret == 0);
 
         p->cleanTeleports();
@@ -540,12 +541,12 @@ void Link::disconnect()
 
 #ifndef STUB_BaseWorld_getEntity
 #define STUB_BaseWorld_getEntity
-LocatedEntity* BaseWorld::getEntity(const std::string & id) const
+Ref<LocatedEntity> BaseWorld::getEntity(const std::string & id) const
 {
     return getEntity(integerId(id));
 }
 
-LocatedEntity* BaseWorld::getEntity(long id) const
+Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 {
     auto I = m_eobjects.find(id);
     if (I != m_eobjects.end()) {

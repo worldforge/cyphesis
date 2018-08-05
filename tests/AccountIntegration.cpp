@@ -215,9 +215,9 @@ void Accountintegration::teardown()
 void Accountintegration::test_addNewCharacter()
 {
     Anonymous new_char;
-    LocatedEntity * chr = m_ac->addNewCharacter("thing", new_char,
+    auto chr = m_ac->addNewCharacter("thing", new_char,
                                                 RootEntity());
-    assert(chr != 0);
+    assert(chr);
 
     std::cout << "Test 1" << std::endl << std::flush;
 }
@@ -282,7 +282,7 @@ void Accountintegration::test_ImaginaryOperation()
 void Accountintegration::test_LookOperation()
 {
     Anonymous new_char;
-    LocatedEntity * chr = m_ac->addNewCharacter("thing", new_char,
+    auto chr = m_ac->addNewCharacter("thing", new_char,
                                                 RootEntity());
 
     Anonymous op_arg;
@@ -301,7 +301,7 @@ void Accountintegration::test_LookOperation()
 void Accountintegration::test_SetOperation()
 {
     Anonymous new_char;
-    LocatedEntity * chr = m_ac->addNewCharacter("thing", new_char,
+    auto chr = m_ac->addNewCharacter("thing", new_char,
                                                 RootEntity());
     BBox newBox(WFMath::Point<3>(-0.5, 0.0, -0.5),
                 WFMath::Point<3>(-0.5, 2.0, -0.5));
@@ -359,7 +359,7 @@ void Accountintegration::test_connectCharacter_entity()
 {
     Ref<Entity> e = new Entity("7", 7);
 
-    int ret = m_ac->connectCharacter(e);
+    int ret = m_ac->connectCharacter(e.get());
     ASSERT_NOT_EQUAL(ret, 0);
 }
 
@@ -367,7 +367,7 @@ void Accountintegration::test_connectCharacter_character()
 {
     Ref<Character> e = new Character("8", 8);
 
-    int ret = m_ac->connectCharacter(e);
+    int ret = m_ac->connectCharacter(e.get());
     ASSERT_EQUAL(ret, 0);
     ASSERT_NOT_NULL(e->m_externalMind);
     ASSERT_TRUE(e->m_externalMind->isLinkedTo(m_c));

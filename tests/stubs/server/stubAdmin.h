@@ -9,9 +9,9 @@
 
 #ifndef STUB_Admin_createCharacterEntity
 //#define STUB_Admin_createCharacterEntity
-  LocatedEntity* Admin::createCharacterEntity(const std::string &, const Atlas::Objects::Entity::RootEntity &, const Atlas::Objects::Root &)
+  Ref<LocatedEntity> Admin::createCharacterEntity(const std::string &, const Atlas::Objects::Entity::RootEntity &, const Atlas::Objects::Root &)
   {
-    return nullptr;
+    return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
 #endif //STUB_Admin_createCharacterEntity
 

@@ -49,7 +49,7 @@ void CyPy_WorldTime::init_type()
 WorldTime& CyPy_WorldTime::get_value()
 {
     struct MyVisitor : public boost::static_visitor<WorldTime&> {
-        WorldTime& operator()(BaseMind* i) const
+        WorldTime& operator()(Ref<BaseMind>& i) const
         {
             return *i->getTime();
         }

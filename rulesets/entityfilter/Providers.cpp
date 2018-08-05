@@ -372,11 +372,7 @@ namespace EntityFilter {
 
     bool ContainsRecursiveFunctionProvider::checkContainer(LocatedEntitySet* container) const
     {
-        auto iter = container->begin();
-        auto iter_end = container->end();
-
-        for (; iter != iter_end; ++iter) {
-            LocatedEntity* item = *iter;
+        for (auto& item : *container) {
             if (m_condition->isMatch(QueryContext{*item})) {
                 return true;
             } else {

@@ -322,12 +322,12 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 
 #ifndef STUB_BaseWorld_getEntity
 #define STUB_BaseWorld_getEntity
-LocatedEntity* BaseWorld::getEntity(const std::string & id) const
+Ref<LocatedEntity> BaseWorld::getEntity(const std::string & id) const
 {
     return getEntity(integerId(id));
 }
 
-LocatedEntity* BaseWorld::getEntity(long id) const
+Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 {
     auto I = m_eobjects.find(id);
     if (I != m_eobjects.end()) {

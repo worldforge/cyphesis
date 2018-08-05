@@ -249,7 +249,7 @@ void BaseMindMapEntityintegration::test_MemMap_updateAdd_location_properties_hav
         m_mind->m_map.updateAdd(args, 1.0f);
     }
 
-    MemEntity* ent = m_mind->m_map.get("0");
+    auto ent = m_mind->m_map.get("0");
     ASSERT_EQUAL("0", ent->getId());
     ASSERT_TRUE(ent->m_location.isSolid());
     ASSERT_TRUE(ent->m_location.isSimple());

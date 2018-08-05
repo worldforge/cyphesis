@@ -48,7 +48,7 @@ void MindInspector::queryEntityForThoughts(const std::string& entityId)
         think->setArgs1(get);
 
         //Now find the World
-        World* world = dynamic_cast<World*>(BaseWorld::instance().getEntity(0L));
+        World* world = dynamic_cast<World*>(BaseWorld::instance().getEntity(0L).get());
         if (!world) {
             log(ERROR, "Could not get world; this is unusual.");
             return;

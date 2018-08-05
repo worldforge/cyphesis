@@ -59,9 +59,9 @@
 #ifndef STUB_Ref_*
 //#define STUB_Ref_*
   template <typename T>
-  operator constexpr T Ref<T>::*() const
+  explicit operator constexpr T Ref<T>::*() const
   {
-    return *static_cast<operator constexpr T*>(nullptr);
+    return *static_cast<explicit operator constexpr T*>(nullptr);
   }
 #endif //STUB_Ref_*
 

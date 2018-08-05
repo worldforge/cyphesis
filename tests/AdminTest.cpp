@@ -930,7 +930,7 @@ void Admintest::test_SetOperation_obj_IG()
     long cid = m_id_counter++;
     Ref<Entity>  c = new Entity(compose("%1", cid), cid);
 
-    m_account->m_charactersDict.insert(std::make_pair(cid, c));
+    m_account->m_charactersDict.insert(std::make_pair(cid, c.get()));
 
     Atlas::Objects::Operation::Set op;
     OpVector res;
@@ -1388,50 +1388,7 @@ int main()
 #include <cstdlib>
 #include <cstdio>
 
-Account::Account(Connection * conn,
-                 const std::string & uname,
-                 const std::string & passwd,
-                 const std::string & id,
-                 long intId) :
-         ConnectableRouter(id, intId, conn),
-         m_username(uname), m_password(passwd)
-{
-}
-
-
-LocatedEntity * Account::addNewCharacter(const std::string & typestr,
-                                         const RootEntity & ent,
-                                         const Root & arg)
-{
-    return 0;
-}
-
-LocatedEntity * Account::createCharacterEntity(const std::string &,
-                                const Atlas::Objects::Entity::RootEntity &,
-                                const Atlas::Objects::Root &)
-{
-    return 0;
-}
-
-
-int Account::connectCharacter(LocatedEntity *chr)
-{
-    return 0;
-}
-
-const char * Account::getType() const
-{
-    return "account";
-}
-
-void Account::store() const
-{
-}
-
-bool Account::isPersisted() const {
-    return true;
-}
-
+#define STUB_Account_createObject
 void Account::createObject(const std::string & type_str,
                            const Root & arg,
                            const Operation & op,
@@ -1440,18 +1397,7 @@ void Account::createObject(const std::string & type_str,
     Admintest::set_Account_createObject_called(this);
 }
 
-void Account::addToMessage(MapType & omap) const
-{
-}
-
-void Account::addToEntity(const RootEntity & ent) const
-{
-}
-
-void Account::externalOperation(const Operation & op, Link &)
-{
-}
-
+#define STUB_Account_operation
 void Account::operation(const Operation & op, OpVector & res)
 {
     if (op->getClassNo() == Atlas::Objects::Operation::LOGOUT_NO) {
@@ -1459,39 +1405,20 @@ void Account::operation(const Operation & op, OpVector & res)
     }
 }
 
+#define STUB_Account_LogoutOperation
 void Account::LogoutOperation(const Operation &, OpVector &)
 {
     Admintest::set_Account_LogoutOperation_called(this);
 }
 
-void Account::CreateOperation(const Operation &, OpVector &)
-{
-}
-
+#define STUB_Account_SetOperation
 void Account::SetOperation(const Operation &, OpVector &)
 {
     Admintest::set_Account_SetOperation_called(this);
 }
 
-void Account::ImaginaryOperation(const Operation &, OpVector &)
-{
-}
+#include "stubs/server/stubAccount.h"
 
-void Account::TalkOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::LookOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::GetOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::OtherOperation(const Operation &, OpVector &)
-{
-}
 
 #include "stubs/server/stubConnection.h"
 #include "stubs/rulesets/stubLocation.h"

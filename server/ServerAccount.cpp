@@ -118,14 +118,14 @@ void ServerAccount::createObject(const std::string & type_str,
     debug( std::cout << "ServerAccount creating a " << type_str << " object"
                      << std::endl << std::flush; );
 
-    LocatedEntity * entity = addNewEntity(type_str, ent, ent);
+    auto entity = addNewEntity(type_str, ent, ent);
 
-    if (entity == 0) {
+    if (!entity) {
         error(op, "Character creation failed", res, getId());
         return;
     }
 
-    if (tele_auth != 0) {
+    if (tele_auth != nullptr) {
         if (tele_auth->addPossession(entity->getId(), possess_key) != 0) {
             // Delete the created entity on failure
             log(CRITICAL, "Unable to insert into PossessionAuthenticator");
@@ -163,7 +163,7 @@ void ServerAccount::createObject(const std::string & type_str,
 /// \param typestr The type string of the entity
 /// \param ent A container for the entity to be created in the world
 /// \param arg The argument of the Create op containing the entity itself
-LocatedEntity * ServerAccount::addNewEntity(const std::string & typestr,
+Ref<LocatedEntity> ServerAccount::addNewEntity(const std::string & typestr,
                                             const RootEntity & ent,
                                             const Root & arg)
 {
@@ -172,7 +172,7 @@ LocatedEntity * ServerAccount::addNewEntity(const std::string & typestr,
     }
     BaseWorld & world = m_connection->m_server.m_world;
     debug(std::cout << "Account::Add_character" << std::endl << std::flush;);
-    LocatedEntity * chr;
+    Ref<LocatedEntity> chr;
     Element spawn;
     if (arg->copyAttr("spawn_name", spawn) == 0 && spawn.isString()) {
         chr = world.spawnNewEntity(spawn.String(), typestr, ent);

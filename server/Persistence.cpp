@@ -223,7 +223,7 @@ void Persistence::registerCharacters(Account & ac,
                                          "in world.", id));
             continue;
         }
-        ac.addCharacter(J->second);
+        ac.addCharacter(J->second.get());
     }
 }
 

@@ -23,6 +23,8 @@
 
 #include "common/Router.h"
 
+#include "modules/Ref.h"
+
 #include <sigc++/connection.h>
 
 /// \brief This is a class for handling users with administrative priveleges
@@ -33,7 +35,7 @@ class ServerAccount : public Account {
                        const Atlas::Objects::Root & ent,
                        OpVector & res) const override;
 
-    LocatedEntity * addNewEntity(const std::string &,
+    Ref<LocatedEntity> addNewEntity(const std::string &,
                                  const Atlas::Objects::Entity::RootEntity &,
                                  const Atlas::Objects::Root &);
 

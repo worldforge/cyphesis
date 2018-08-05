@@ -196,18 +196,18 @@ void WorldRoutertest::test_addEntity_tick_get()
 
 void WorldRoutertest::test_spawnNewEntity_unknown()
 {
-    LocatedEntity * ent3 = test_world->spawnNewEntity("__no_spawn__",
+    auto ent3 = test_world->spawnNewEntity("__no_spawn__",
                                                       "thing",
                                                       Anonymous());
-    assert(ent3 == 0);
+    assert(!ent3);
 }
 
 void WorldRoutertest::test_spawnNewEntity_thing()
 {
-    LocatedEntity * ent3 = test_world->spawnNewEntity("bob",
+    auto ent3 = test_world->spawnNewEntity("bob",
                                                       "thing",
                                                       Anonymous());
-    assert(ent3 == 0);
+    assert(!ent3);
 }
 
 void WorldRoutertest::test_createSpawnPoint()
@@ -247,15 +247,15 @@ void WorldRoutertest::test_createSpawnPoint()
         assert(spawn_repr.size() == 1u);
     }
 
-    LocatedEntity * ent3 = test_world->spawnNewEntity("bob",
+    auto ent3 = test_world->spawnNewEntity("bob",
                                                       "permitted_non_existant",
                                                       Anonymous());
-    assert(ent3 == 0);
+    assert(!ent3);
 
     ent3 = test_world->spawnNewEntity("bob",
                                       "thing",
                                       Anonymous());
-    assert(ent3 != 0);
+    assert(ent3);
 }
 
 void WorldRoutertest::test_delEntity()
@@ -270,12 +270,12 @@ void WorldRoutertest::test_delEntity()
     test_world->addEntity(ent2);
 
     test_world->delEntity(ent2);
-    test_world->delEntity(m_rootEntity);
+    test_world->delEntity(m_rootEntity.get());
 }
 
 void WorldRoutertest::test_delEntity_world()
 {
-    test_world->delEntity(m_rootEntity);
+    test_world->delEntity(m_rootEntity.get());
 }
 
 int main()
@@ -440,12 +440,12 @@ long newId(std::string & id)
 
 #ifndef STUB_BaseWorld_getEntity
 #define STUB_BaseWorld_getEntity
-LocatedEntity* BaseWorld::getEntity(const std::string & id) const
+Ref<LocatedEntity> BaseWorld::getEntity(const std::string & id) const
 {
     return getEntity(integerId(id));
 }
 
-LocatedEntity* BaseWorld::getEntity(long id) const
+Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 {
     auto I = m_eobjects.find(id);
     if (I != m_eobjects.end()) {

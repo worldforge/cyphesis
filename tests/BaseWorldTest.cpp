@@ -93,7 +93,7 @@ int main()
         Ref<Entity> wrld(new Entity("1", 1));
         MyTestWorld tw(wrld);
 
-        assert(tw.getEntity("2") == 0);
+        assert(!tw.getEntity("2"));
     }
 
     {
@@ -125,7 +125,7 @@ int main()
         Ref<Entity> wrld(new Entity("1", 1));
         MyTestWorld tw(wrld);
 
-        assert(tw.getEntity(2) == 0);
+        assert(!tw.getEntity(2));
     }
 
     {

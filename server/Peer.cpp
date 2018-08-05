@@ -244,8 +244,8 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
     // This is the sender entity. This is retreived again rather than
     // relying on a pointer (in the TeleportState object perhaps) as the
     // entity might have been deleted in the time between sending and response
-    LocatedEntity * entity = BaseWorld::instance().getEntity(iid);
-    if (entity == 0) {
+    auto entity = BaseWorld::instance().getEntity(iid);
+    if (!entity) {
         log(ERROR, String::compose("No entity found with ID: %1", iid));
         // Clean up the teleport state object
         m_teleports.erase(I);
@@ -254,7 +254,7 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
 
     // If entity has a mind, add extra information in the Logout op
     if (s->isMind()) {
-        Character * chr = dynamic_cast<Character *>(entity);
+        auto chr = dynamic_cast<Character *>(entity.get());
         if (!chr) {
             log(ERROR, "Entity is not a character");
             return;

@@ -23,27 +23,27 @@
 #include "CyPy_BaseMind.h"
 #include "CyPy_Entity.h"
 
-Py::Object wrapLocatedEntity(LocatedEntity* le)
+Py::Object wrapLocatedEntity(Ref<LocatedEntity> le)
 {
     if (!le->m_scriptEntity.empty()) {
         return boost::any_cast<Py::Object>(le->m_scriptEntity);
     } else {
         Py::Object wrapper;
-        auto baseMind = dynamic_cast<BaseMind*>(le);
+        auto baseMind = dynamic_cast<BaseMind*>(le.get());
         if (baseMind) {
-            wrapper = WrapperBase<BaseMind*, CyPy_BaseMind>::wrap(baseMind);
+            wrapper = WrapperBase<Ref<BaseMind>, CyPy_BaseMind>::wrap(baseMind);
         } else {
-            auto character = dynamic_cast<Character*>(le);
+            auto character = dynamic_cast<Character*>(le.get());
             if (character) {
-                wrapper = WrapperBase<Character*, CyPy_Character>::wrap(character);
+                wrapper = WrapperBase<Ref<Character>, CyPy_Character>::wrap(character);
             } else {
 
-                auto memEntity = dynamic_cast<MemEntity*>(le);
+                auto memEntity = dynamic_cast<MemEntity*>(le.get());
                 if (memEntity) {
-                    wrapper = WrapperBase<MemEntity*, CyPy_MemEntity>::wrap(memEntity);
+                    wrapper = WrapperBase<Ref<MemEntity>, CyPy_MemEntity>::wrap(memEntity);
                 } else {
-                    auto entity = dynamic_cast<Entity*>(le);
-                    wrapper = WrapperBase<Entity*, CyPy_Entity>::wrap(entity);
+                    auto entity = dynamic_cast<Entity*>(le.get());
+                    wrapper = WrapperBase<Ref<Entity>, CyPy_Entity>::wrap(entity);
                 }
             }
         }
@@ -54,9 +54,9 @@ Py::Object wrapLocatedEntity(LocatedEntity* le)
 }
 
 
-Py::Object CyPy_LocatedEntity::wrap(LocatedEntity* value)
+Py::Object CyPy_LocatedEntity::wrap(Ref<LocatedEntity> value)
 {
-    return wrapLocatedEntity(value);
+    return wrapLocatedEntity(std::move(value));
 }
 
 LocatedEntity& CyPy_LocatedEntity::value(const Py::Object& object)

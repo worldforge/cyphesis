@@ -250,7 +250,7 @@ class TestAccount : public Account {
                                const Atlas::Objects::Root & ent,
                                OpVector & res) const;
 
-    LocatedEntity * testAddNewCharacter(const std::string & typestr,
+    Ref<LocatedEntity> testAddNewCharacter(const std::string & typestr,
                                         const RootEntity & ent,
                                         const RootEntity & arg);
 
@@ -388,7 +388,7 @@ void Accounttest::test_characterDestroyed()
 
     ASSERT_TRUE(m_account->m_charactersDict.empty());
 
-    m_account->m_charactersDict.insert(std::make_pair(cid, c));
+    m_account->m_charactersDict.insert(std::make_pair(cid, c.get()));
 
     ASSERT_NOT_EQUAL(m_account->m_charactersDict.find(cid),
                      m_account->m_charactersDict.end());
@@ -422,7 +422,7 @@ void Accounttest::test_connectCharacter_raw_Entity()
     long cid = m_id_counter++;
     Ref<Entity>  c = new Entity(compose("%1", cid), cid);
     
-    m_account->connectCharacter(c);
+    m_account->connectCharacter(c.get());
 
     ASSERT_TRUE(m_account->m_charactersDict.empty());
 
@@ -436,7 +436,7 @@ void Accounttest::test_connectCharacter_Character()
     long cid = m_id_counter++;
     Ref<Entity>  c = new Character(compose("%1", cid), cid);
     
-    m_account->connectCharacter(c);
+    m_account->connectCharacter(c.get());
 
     ASSERT_NOT_EQUAL(m_account->m_charactersDict.find(cid),
                      m_account->m_charactersDict.end());
@@ -454,7 +454,7 @@ void Accounttest::test_addCharacter_raw_Entity()
 
     ASSERT_TRUE(m_account->m_charactersDict.empty());
 
-    m_account->addCharacter(c);
+    m_account->addCharacter(c.get());
 
     // Only objects that inherit from Character are added
     ASSERT_TRUE(m_account->m_charactersDict.empty());
@@ -469,7 +469,7 @@ void Accounttest::test_addCharacter_Character()
 
     ASSERT_TRUE(m_account->m_charactersDict.empty());
 
-    m_account->addCharacter(c);
+    m_account->addCharacter(c.get());
 
     ASSERT_NOT_EQUAL(m_account->m_charactersDict.find(cid),
                      m_account->m_charactersDict.end());
@@ -487,12 +487,12 @@ void Accounttest::test_addNewCharacter_fail()
     ASSERT_TRUE(m_account->m_charactersDict.empty());
     ASSERT_NOT_NULL(m_account->m_connection);
 
-    LocatedEntity * te = m_account->addNewCharacter(
+    auto te = m_account->addNewCharacter(
           "0e657318-2424-45c9-8a3c-a61ee1303342",
           RootEntity(),
           Root());
 
-    ASSERT_NULL(te);
+    ASSERT_FALSE(te);
 }
 
 void Accounttest::test_addNewCharacter_raw_Entity()
@@ -508,7 +508,7 @@ void Accounttest::test_addNewCharacter_raw_Entity()
           RootEntity(),
           Root());
 
-    ASSERT_NOT_NULL(te);
+    ASSERT_TRUE(te);
 
     // It hasn't been connected, because it is not a character
     ASSERT_TRUE(m_account->m_charactersDict.empty());
@@ -524,12 +524,12 @@ void Accounttest::test_addNewCharacter_Character()
     ASSERT_TRUE(m_account->m_charactersDict.empty());
     ASSERT_NOT_NULL(m_account->m_connection);
 
-    LocatedEntity * te = m_account->addNewCharacter(
+    auto te = m_account->addNewCharacter(
           "aa119eb0-ad7d-46d5-a8c3-5797ca541b6c",
           RootEntity(),
           Root());
 
-    ASSERT_NOT_NULL(te);
+    ASSERT_TRUE(te);
 
     ASSERT_NOT_EQUAL(m_account->m_charactersDict.find(cid),
                      m_account->m_charactersDict.end());
@@ -553,12 +553,12 @@ void Accounttest::test_addNewCharacter_unconnected()
     ASSERT_TRUE(m_account->m_charactersDict.empty());
     ASSERT_NULL(m_account->m_connection);
 
-    LocatedEntity * te = m_account->addNewCharacter(
+    auto te = m_account->addNewCharacter(
           "3b657231-f87b-407c-99ee-9e0195475a3f",
           RootEntity(),
           Root());
 
-    ASSERT_NULL(te);
+    ASSERT_FALSE(te);
 
     TestWorld_addNewEntity_ret_value = 0;
 }
@@ -633,7 +633,7 @@ void Accounttest::test_addToMessage()
 {
     long cid = m_id_counter++;
     Ref<Entity>  c = new Character(compose("%1", cid), cid);
-    m_account->m_charactersDict.insert(std::make_pair(c->getIntId(), c));
+    m_account->m_charactersDict.insert(std::make_pair(c->getIntId(), c.get()));
 
     MapType data;
 
@@ -658,7 +658,7 @@ void Accounttest::test_addToEntity()
 {
     long cid = m_id_counter++;
     Ref<Entity>  c = new Character(compose("%1", cid), cid);
-    m_account->m_charactersDict.insert(std::make_pair(c->getIntId(), c));
+    m_account->m_charactersDict.insert(std::make_pair(c->getIntId(), c.get()));
 
     Anonymous data;
 
@@ -943,7 +943,7 @@ void Accounttest::test_LookOperation_known_character()
 {
     long cid = m_id_counter++;
     Ref<Entity>  c = new Character(compose("%1", cid), cid);
-    m_account->m_charactersDict.insert(std::make_pair(c->getIntId(), c));
+    m_account->m_charactersDict.insert(std::make_pair(c->getIntId(), c.get()));
 
     Atlas::Objects::Operation::Look op;
     OpVector res;
@@ -1656,7 +1656,7 @@ int TestAccount::characterError(const Operation & op,
     return Accounttest::get_characterError_ret_value();
 }
 
-LocatedEntity * TestAccount::testAddNewCharacter(const std::string & typestr,
+Ref<LocatedEntity> TestAccount::testAddNewCharacter(const std::string & typestr,
                                                  const RootEntity & ent,
                                                  const RootEntity & arg)
 {
@@ -1709,7 +1709,7 @@ ServerRouting::ServerRouting(BaseWorld & wrld,
 #include "stubs/server/stubServerRouting.h"
 
 #define STUB_PossessionAuthenticator_authenticatePossession
-LocatedEntity *PossessionAuthenticator::authenticatePossession(const std::string &entity_id,
+Ref<LocatedEntity> PossessionAuthenticator::authenticatePossession(const std::string &entity_id,
                                             const std::string &possess_key)
 {
     Ref<Entity>  ne = Accounttest::get_TeleportAuthenticator_ret_value();

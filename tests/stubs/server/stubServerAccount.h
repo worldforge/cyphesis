@@ -17,9 +17,9 @@
 
 #ifndef STUB_ServerAccount_addNewEntity
 //#define STUB_ServerAccount_addNewEntity
-  LocatedEntity* ServerAccount::addNewEntity(const std::string &, const Atlas::Objects::Entity::RootEntity &, const Atlas::Objects::Root &)
+  Ref<LocatedEntity> ServerAccount::addNewEntity(const std::string &, const Atlas::Objects::Entity::RootEntity &, const Atlas::Objects::Root &)
   {
-    return nullptr;
+    return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
 #endif //STUB_ServerAccount_addNewEntity
 

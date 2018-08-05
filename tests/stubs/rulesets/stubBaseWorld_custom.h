@@ -14,11 +14,11 @@ BaseWorld::BaseWorld()
 #ifndef STUB_BaseWorld_getEntity
 #define STUB_BaseWorld_getEntity
 
-LocatedEntity *BaseWorld::getEntity(const std::string &id) const {
+Ref<LocatedEntity> BaseWorld::getEntity(const std::string &id) const {
     return getEntity(strtol(id.c_str(), 0, 10));
 }
 
-LocatedEntity* BaseWorld::getEntity(long id) const
+Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 {
     auto I = m_eobjects.find(id);
     if (I != m_eobjects.end()) {

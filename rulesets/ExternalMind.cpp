@@ -57,10 +57,7 @@ void ExternalMind::deleteEntity(const std::string & id, bool forceDelete)
 void ExternalMind::purgeEntity(const LocatedEntity & ent, bool forceDelete)
 {
     if (ent.m_contains != nullptr) {
-        auto I = ent.m_contains->begin();
-        auto Iend = ent.m_contains->end();
-        for (; I != Iend; ++I) {
-            LocatedEntity * child = *I;
+        for (auto& child : *ent.m_contains) {
             assert(child != nullptr);
             purgeEntity(*child);
         }

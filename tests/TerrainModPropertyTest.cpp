@@ -164,7 +164,4 @@ TerrainContext::TerrainContext(LocatedEntity * e) : m_entity(e)
 TerrainContext::~TerrainContext()
 {
 }
-
-WeakEntityRef::WeakEntityRef(LocatedEntity* e) : m_inner(e)
-{
-}
+#include "stubs/modules/stubWeakEntityRef.h"

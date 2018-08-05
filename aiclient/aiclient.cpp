@@ -182,7 +182,7 @@ int main(int argc, char** argv)
                     OpVector res;
                     entity->operation(think, res);
 
-                    mindFactory.m_scriptFactory->addScript(entity);
+                    mindFactory.m_scriptFactory->addScript(entity.get());
 
                     //After updating the script restore all thoughts
                     OpVector ignoresRes;

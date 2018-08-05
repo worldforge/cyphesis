@@ -166,7 +166,7 @@ class Ref
             return (m_inner < e.m_inner);
         }
 
-        constexpr operator T*() const;
+        constexpr explicit operator T*() const;
 
     protected:
         T* m_inner;

@@ -73,7 +73,7 @@ class AwareMind: public BaseMind, public MemMap::MapListener
          */
         double mServerTimeDiff;
 
-        void onContainered(const LocatedEntity * new_loc) override;
+        void onContainered(const Ref<LocatedEntity>& new_loc) override;
 
         void processMoveTick(const Operation & op, OpVector & res);
 

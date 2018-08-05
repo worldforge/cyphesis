@@ -158,7 +158,7 @@ int main()
         Ref<Entity>  e = new Entity("1", 1);
         WeakEntityRef ref(e);
 
-        assert(ref.get() == e);
+        assert(ref.get() == e.get());
     }
 
     {
@@ -166,7 +166,7 @@ int main()
         Ref<Entity>  e = new Entity("1", 1);
         WeakEntityRef ref(e);
 
-        assert(&(*ref) == e);
+        assert(&(*ref) == e.get());
     }
 
     {
@@ -174,7 +174,7 @@ int main()
         Ref<Entity>  e = new Entity("1", 1);
         WeakEntityRef ref(e);
 
-        assert(ref.operator->() == e);
+        assert(ref.operator->() == e.get());
     }
 
     {
@@ -182,7 +182,7 @@ int main()
         Ref<Entity>  e = new Entity("1", 1);
         WeakEntityRef ref(e);
 
-        assert(ref == e);
+        assert(ref == e.get());
     }
 
     {
@@ -191,7 +191,7 @@ int main()
         WeakEntityRef ref(e);
         WeakEntityRef ref2(ref);
 
-        assert(ref2.get() == e);
+        assert(ref2.get() == e.get());
     }
 
     {
@@ -261,7 +261,7 @@ int main()
 
         ref = WeakEntityRef(e);
 
-        assert(ref.get() == e);
+        assert(ref.get() == e.get());
     }
 
     {

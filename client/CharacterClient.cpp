@@ -51,7 +51,7 @@ void CharacterClient::send(const Operation & op)
     m_connection.send(op);
 }
 
-LocatedEntity * CharacterClient::look(const std::string & id)
+Ref<LocatedEntity> CharacterClient::look(const std::string & id)
 {
     Look op;
     if (!id.empty()) {
@@ -63,7 +63,7 @@ LocatedEntity * CharacterClient::look(const std::string & id)
     return sendLook(op);
 }
 
-LocatedEntity * CharacterClient::lookFor(const RootEntity & ent)
+Ref<LocatedEntity> CharacterClient::lookFor(const RootEntity & ent)
 {
     Look op;
     op->setArgs1(ent);
@@ -83,7 +83,7 @@ int CharacterClient::sendAndWaitReply(const Operation & op, OpVector & res)
     return m_connection.sendAndWaitReply(op, res);
 }
 
-LocatedEntity * CharacterClient::sendLook(const Operation & op)
+Ref<LocatedEntity> CharacterClient::sendLook(const Operation & op)
 {
     OpVector result;
     if (sendAndWaitReply(op, result) != 0) {
@@ -124,6 +124,5 @@ LocatedEntity * CharacterClient::sendLook(const Operation & op)
     } else {
         std::cout << "Seen: " << sight_id << std::endl << std::flush;
     }
-    LocatedEntity * obj = m_map.updateAdd(seen, res->getSeconds());
-    return obj;
+    return m_map.updateAdd(seen, res->getSeconds());
 }

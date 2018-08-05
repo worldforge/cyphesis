@@ -67,11 +67,10 @@ LocatedEntity * CreatorClient::handleMakeResponse(const RootOperation & op,
     const std::string & created_type = created->getParent();
     std::cout << "Created: " << created_type << "(" << created_id << ")"
               << std::endl << std::flush;
-    LocatedEntity * obj = m_map.updateAdd(created, create_time);
-    return obj;
+    return m_map.updateAdd(created, create_time).get();
 }
 
-LocatedEntity * CreatorClient::make(const RootEntity & entity)
+Ref<LocatedEntity> CreatorClient::make(const RootEntity & entity)
 {
     Create op;
     op->setArgs1(entity);

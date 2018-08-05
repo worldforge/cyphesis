@@ -51,8 +51,8 @@ void EntityProperty::set(const Atlas::Message::Element & val)
             if (id.empty()) {
                 m_data = WeakEntityRef(nullptr );
             } else {
-                LocatedEntity * e = BaseWorld::instance().getEntity(id);
-                if (e != nullptr ) {
+                auto e = BaseWorld::instance().getEntity(id);
+                if (!e) {
                     debug(std::cout << "Assigned" << std::endl << std::flush;);
                     m_data = WeakEntityRef(e);
                 }

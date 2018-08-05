@@ -17,6 +17,7 @@
 
 #include "PossessionAuthenticator.h"
 #include "PendingPossession.h"
+#include "rulesets/LocatedEntity.h"
 
 #include "rulesets/BaseWorld.h"
 #include "common/log.h"
@@ -99,7 +100,7 @@ boost::optional<std::string> PossessionAuthenticator::getPossessionKey(const std
 ///
 /// \param entity_id The ID of the entity that was created
 /// \param possess_key The possess key sent by the client
-LocatedEntity * PossessionAuthenticator::authenticatePossession(const std::string &entity_id,
+Ref<LocatedEntity> PossessionAuthenticator::authenticatePossession(const std::string &entity_id,
                                             const std::string &possess_key)
 {
     auto I = m_possessions.find(entity_id);
@@ -112,8 +113,8 @@ LocatedEntity * PossessionAuthenticator::authenticatePossession(const std::strin
     assert(entry != nullptr);
     if (entry->validate(entity_id, possess_key)) {
         // We are authenticated!
-        LocatedEntity * entity = BaseWorld::instance().getEntity(entity_id);
-        if (entity == nullptr) {
+        auto entity = BaseWorld::instance().getEntity(entity_id);
+        if (!entity) {
             // This means the authentication entry itself is invalid. Remove it.
             log(ERROR, String::compose("Unable to find possessable entity with ID %1",
                                                                         entity_id));

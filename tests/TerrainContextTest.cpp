@@ -43,8 +43,4 @@ int main()
 
 // stubs
 
-#include "modules/WeakEntityRef.h"
-
-WeakEntityRef::WeakEntityRef(LocatedEntity* e) : m_inner(e)
-{
-}
+#include "stubs/modules/stubWeakEntityRef.h"

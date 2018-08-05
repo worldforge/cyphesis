@@ -94,7 +94,7 @@ void ProvidersTest::test_EntityProperty()
     auto provider = CreateProvider( { "entity" });
 
     provider->value(value, QueryContext { *m_b1 });
-    assert(value.Ptr() == m_b1);
+    assert(value.Ptr() == m_b1.get());
 
     //entity.type
     provider = CreateProvider( { "entity", "type" });
@@ -152,7 +152,7 @@ void ProvidersTest::test_OutfitProviders()
     //Check if we get the right entity in outfit query
     auto provider = CreateProvider( { "entity", "outfit", "hands" });
     provider->value(value, QueryContext { *m_ch1 });
-    assert(value.Ptr() == m_glovesEntity);
+    assert(value.Ptr() == m_glovesEntity.get());
 
     //Check for outfit's property query
     provider = CreateProvider( { "entity", "outfit", "hands", "color" });
@@ -163,7 +163,7 @@ void ProvidersTest::test_OutfitProviders()
     provider = CreateProvider(
             { "entity", "outfit", "hands", "outfit", "thumb" });
     provider->value(value, QueryContext { *m_ch1 });
-    assert(value.Ptr() == m_cloth);
+    assert(value.Ptr() == m_cloth.get());
 
     //Check for nested outfit's property
     provider = CreateProvider( { "entity", "outfit", "hands", "outfit", "thumb",

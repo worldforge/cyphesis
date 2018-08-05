@@ -57,7 +57,7 @@ class ArchetypeFactory: public EntityKit
                 /**
                  * @brief The created entity (might be null if none was created).
                  */
-                LocatedEntity* createdEntity;
+                Ref<LocatedEntity> createdEntity;
 
                 /**
                  * Any attributes referring to unresolved entities.

@@ -37,7 +37,6 @@ CyPy_MemEntity::CyPy_MemEntity(Py::PythonClassInstance* self, Py::Tuple& args, P
     } else {
         throw Py::TypeError("MemEntity() requires string ID or MemEntity");
     }
-    m_value->incRef();
 }
 
 CyPy_MemEntity::~CyPy_MemEntity() = default;

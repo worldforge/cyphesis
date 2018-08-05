@@ -89,14 +89,14 @@ class CyPy_LocatedEntity
 
         static bool check(const Py::Object& object);
 
-        static Py::Object wrap(LocatedEntity* value);
+        static Py::Object wrap(Ref<LocatedEntity> value);
 
         static LocatedEntity& value(const Py::Object& object);
 
 
 };
 
-Py::Object wrapLocatedEntity(LocatedEntity* locatedEntity);
+Py::Object wrapLocatedEntity(Ref<LocatedEntity> locatedEntity);
 
 
 

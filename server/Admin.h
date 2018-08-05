@@ -27,7 +27,7 @@
 /// \brief This is a class for handling users with administrative priveleges
 class Admin : public Account {
   protected:
-    LocatedEntity * createCharacterEntity(const std::string &,
+    Ref<LocatedEntity> createCharacterEntity(const std::string &,
                                     const Atlas::Objects::Entity::RootEntity &,
                                     const Atlas::Objects::Root &) override;
 

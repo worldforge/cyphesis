@@ -118,7 +118,7 @@ void StorageManager::entityInserted(LocatedEntity * ent)
         // signal will be connected later once the initial database insert
         // has been done.
         ent->updated.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityUpdated), ent));
-        ent->containered.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityContainered), ent));
+        ent->containered.connect([&, ent](const Ref<LocatedEntity>& container) {entityUpdated(ent);});
         return;
     }
     // Queue the entity to be inserted into the persistence tables.
@@ -145,10 +145,6 @@ void StorageManager::entityUpdated(LocatedEntity * ent)
     ent->addFlags(entity_queued);
 }
 
-void StorageManager::entityContainered(const LocatedEntity *oldLocation, LocatedEntity *entity)
-{
-    entityUpdated(entity);
-}
 
 bool StorageManager::persistance_characterAdded(const Persistence::AddCharacterData& data)
 {
@@ -255,7 +251,7 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
     //Now restore all properties of the child entities.
     if (ent->m_contains) {
         for (auto& childEntity : *ent->m_contains) {
-            restorePropertiesRecursively(childEntity);
+            restorePropertiesRecursively(childEntity.get());
         }
     }
 
@@ -382,8 +378,7 @@ void StorageManager::insertEntity(LocatedEntity * ent)
     ent->removeFlags(entity_queued);
     ent->addFlags(entity_clean | entity_pos_clean | entity_orient_clean);
     ent->updated.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityUpdated), ent));
-    ent->containered.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityContainered), ent));
-
+    ent->containered.connect([&, ent](const Ref<LocatedEntity>& container) {entityUpdated(ent);});
 }
 
 void StorageManager::updateEntityThoughts(LocatedEntity * ent)
@@ -489,13 +484,12 @@ void StorageManager::restoreChildren(LocatedEntity * parent)
             std::cout << "No pos data" << std::endl << std::flush;
             log(ERROR, compose("Entity %1 restored from database has no "
                                "POS data. Ignored.", child->describeEntity()));
-            delete child;
             continue;
         }
         child->m_location.m_loc = parent;
         child->addFlags(entity_clean | entity_pos_clean | entity_orient_clean);
         BaseWorld::instance().addEntity(child);
-        restoreChildren(child);
+        restoreChildren(child.get());
     }
 }
 
@@ -636,7 +630,7 @@ void StorageManager::thoughtsReceived(const std::string& entityId, const Operati
 
 int StorageManager::initWorld(const Ref<LocatedEntity>& ent)
 {
-    ent->updated.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityUpdated), ent));
+    ent->updated.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityUpdated), ent.get()));
     ent->addFlags(entity_clean);
     // FIXME queue it so the initial state gets persisted.
     return 0;
@@ -651,9 +645,9 @@ int StorageManager::restoreWorld(const Ref<LocatedEntity>& ent)
     //the child isn't present when the property is installed there will be issues.
     //We do this by first restoring the children, without any properties, and the assigning the properties to
     //all entities in order.
-    restoreChildren(ent);
+    restoreChildren(ent.get());
 
-    restorePropertiesRecursively(ent);
+    restorePropertiesRecursively(ent.get());
 
     log(INFO, "Completed restoring world from storage.");
     return 0;
@@ -681,7 +675,7 @@ size_t StorageManager::requestMinds(const std::map<long, Ref<LocatedEntity>>& en
 {
     size_t requests = 0;
     for (auto& pair : entites) {
-        if (storeThoughts(pair.second)) {
+        if (storeThoughts(pair.second.get())) {
             requests++;
         }
     }

@@ -217,7 +217,7 @@ void LocatedEntity::removeDelegate(int, const std::string&)
 
 /// \brief Called when the container of this entity changes.
 ///
-void LocatedEntity::onContainered(const LocatedEntity* new_loc)
+void LocatedEntity::onContainered(const Ref<LocatedEntity>& new_loc)
 {
 }
 
@@ -300,7 +300,7 @@ void LocatedEntity::makeContainer()
 ///
 /// @param new_loc The entity which is to become this entity's new
 /// container.
-void LocatedEntity::changeContainer(LocatedEntity* new_loc)
+void LocatedEntity::changeContainer(const Ref<LocatedEntity>& new_loc)
 {
     auto oldLoc = m_location.m_loc;
     oldLoc->removeChild(*this);
@@ -440,7 +440,7 @@ bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* watcher) const
     }
 
     //First find the domain which contains the watcher, as well as if the watcher has a domain itself.
-    const LocatedEntity* domainEntity = watcher->m_location.m_loc;
+    const LocatedEntity* domainEntity = watcher->m_location.m_loc.get();
     const LocatedEntity* topWatcherEntity = watcher;
     const Domain* watcherParentDomain = nullptr;
 
@@ -450,10 +450,10 @@ bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* watcher) const
             break;
         }
         topWatcherEntity = domainEntity;
-        domainEntity = domainEntity->m_location.m_loc;
+        domainEntity = domainEntity->m_location.m_loc.get();
     }
 
-    domainEntity = watcher->m_location.m_loc;
+    domainEntity = watcher->m_location.m_loc.get();
     const Domain* watcherOwnDomain = watcher->getDomain();
 
     //Now walk upwards from the entity being looked at until we reach either the watcher's parent domain entity,
@@ -478,7 +478,7 @@ bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* watcher) const
         if (ancestorEntity == topWatcherEntity) {
             break;
         }
-        ancestorEntity = ancestorEntity->m_location.m_loc;
+        ancestorEntity = ancestorEntity->m_location.m_loc.get();
         if (ancestorEntity == nullptr) {
             //Could find no common ancestor; can't be seen.
             return false;
@@ -505,7 +505,7 @@ bool LocatedEntity::canReach(const EntityLocation& entityLocation, float extraRe
 {
     auto reachingEntity = this;
     //Are we reaching for our ourselves?
-    if (reachingEntity == entityLocation.m_loc) {
+    if (reachingEntity == entityLocation.m_loc.get()) {
         return true;
     }
 
@@ -522,7 +522,7 @@ bool LocatedEntity::canReach(const EntityLocation& entityLocation, float extraRe
     reachDistance += extraReach;
 
     //First find the domain which contains the reacher, as well as if the reacher has a domain itself.
-    const LocatedEntity* domainEntity = reachingEntity->m_location.m_loc;
+    const LocatedEntity* domainEntity = reachingEntity->m_location.m_loc.get();
     const LocatedEntity* topReachingEntity = reachingEntity;
     const Domain* reacherParentDomain = nullptr;
     const LocatedEntity* reacherDomainEntity = nullptr; //The entity which contains the reacher's domain
@@ -534,7 +534,7 @@ bool LocatedEntity::canReach(const EntityLocation& entityLocation, float extraRe
             break;
         }
         topReachingEntity = domainEntity;
-        domainEntity = domainEntity->m_location.m_loc;
+        domainEntity = domainEntity->m_location.m_loc.get();
     }
 
     //Now walk upwards from the entity being reached for until we reach either the reacher's parent domain entity,
@@ -555,7 +555,7 @@ bool LocatedEntity::canReach(const EntityLocation& entityLocation, float extraRe
             break;
         }
 
-        toAncestors.push_back(ancestorEntity);
+        toAncestors.push_back(ancestorEntity.get());
 
         if (ancestorEntity == topReachingEntity) {
             break;

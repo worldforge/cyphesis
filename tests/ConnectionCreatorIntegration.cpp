@@ -148,7 +148,7 @@ void ConnectionCreatorintegration::setup()
     m_creatorType = new TypeNode("test_avatar");
     m_creator->setType(m_creatorType);
 
-    m_connection->addObject(m_creator);
+    m_connection->addObject(m_creator.get());
 
     m_BaseWorld_message_called = 0;
     m_BaseWorld_message_called_from = 0;
@@ -348,93 +348,7 @@ int CommSocket::flush()
 }
 
 #include "stubs/server/stubPlayer.h"
-
-Account::Account(Connection * conn,
-                 const std::string & uname,
-                 const std::string & passwd,
-                 const std::string & id,
-                 long intId) :
-         ConnectableRouter(id, intId, conn),
-         m_username(uname), m_password(passwd)
-{
-}
-
-
-const char * Account::getType() const
-{
-    return "testaccount";
-}
-
-void Account::store() const
-{
-}
-
-bool Account::isPersisted() const {
-    return true;
-}
-
-void Account::addToMessage(Atlas::Message::MapType &) const
-{
-}
-
-void Account::addToEntity(const Atlas::Objects::Entity::RootEntity &) const
-{
-}
-
-void Account::createObject(const std::string & type_str,
-                           const Root & arg,
-                           const Operation & op,
-                           OpVector & res)
-{
-}
-
-LocatedEntity * Account::createCharacterEntity(const std::string &,
-                                const Atlas::Objects::Entity::RootEntity &,
-                                const Atlas::Objects::Root &)
-{
-    return 0;
-}
-
-void Account::externalOperation(const Operation &, Link &)
-{
-}
-
-void Account::operation(const Operation &, OpVector &)
-{
-}
-
-
-void Account::LogoutOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::CreateOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::SetOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::ImaginaryOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::TalkOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::LookOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::GetOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::OtherOperation(const Operation &, OpVector &)
-{
-}
+#include "stubs/server/stubAccount.h"
 
 ConnectableRouter::ConnectableRouter(const std::string & id,
                                  long iid,
@@ -695,12 +609,12 @@ TypeNode::~TypeNode()
 
 #ifndef STUB_BaseWorld_getEntity
 #define STUB_BaseWorld_getEntity
-LocatedEntity* BaseWorld::getEntity(const std::string & id) const
+Ref<LocatedEntity> BaseWorld::getEntity(const std::string & id) const
 {
     return getEntity(integerId(id));
 }
 
-LocatedEntity* BaseWorld::getEntity(long id) const
+Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 {
     auto I = m_eobjects.find(id);
     if (I != m_eobjects.end()) {
@@ -736,26 +650,7 @@ const TypeNode* Inheritance::getType(const std::string & parent)
 #endif //STUB_Inheritance_getType
 
 #include "stubs/common/stubInheritance.h"
-
-
-WeakEntityRef::WeakEntityRef(LocatedEntity* e) : m_inner(e)
-{
-}
-
-WeakEntityRef::WeakEntityRef(const WeakEntityRef& ref) : m_inner(ref.m_inner)
-{
-}
-
-WeakEntityRef& WeakEntityRef::operator=(const WeakEntityRef& ref)
-{
-    m_inner = ref.m_inner;
-
-    return *this;
-}
-
-void WeakEntityRef::onEntityDeleted()
-{
-}
+#include "stubs/modules/stubWeakEntityRef.h"
 
 template<class V>
 const Quaternion quaternionFromTo(const V & from, const V & to)

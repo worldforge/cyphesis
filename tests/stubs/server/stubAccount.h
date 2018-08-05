@@ -9,9 +9,9 @@
 
 #ifndef STUB_Account_addNewCharacter
 //#define STUB_Account_addNewCharacter
-  LocatedEntity* Account::addNewCharacter(const std::string &, const Atlas::Objects::Entity::RootEntity &, const Atlas::Objects::Root &)
+  Ref<LocatedEntity> Account::addNewCharacter(const std::string &, const Atlas::Objects::Entity::RootEntity &, const Atlas::Objects::Root &)
   {
-    return nullptr;
+    return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
 #endif //STUB_Account_addNewCharacter
 
@@ -49,9 +49,9 @@
 
 #ifndef STUB_Account_createCharacterEntity
 //#define STUB_Account_createCharacterEntity
-  LocatedEntity* Account::createCharacterEntity(const std::string &, const Atlas::Objects::Entity::RootEntity &, const Atlas::Objects::Root &)
+  Ref<LocatedEntity> Account::createCharacterEntity(const std::string &, const Atlas::Objects::Entity::RootEntity &, const Atlas::Objects::Root &)
   {
-    return nullptr;
+    return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
 #endif //STUB_Account_createCharacterEntity
 

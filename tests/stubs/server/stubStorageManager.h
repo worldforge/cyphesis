@@ -23,14 +23,6 @@
   }
 #endif //STUB_StorageManager_entityUpdated
 
-#ifndef STUB_StorageManager_entityContainered
-//#define STUB_StorageManager_entityContainered
-  void StorageManager::entityContainered(const LocatedEntity *oldLocation, LocatedEntity *entity)
-  {
-    
-  }
-#endif //STUB_StorageManager_entityContainered
-
 #ifndef STUB_StorageManager_encodeProperty
 //#define STUB_StorageManager_encodeProperty
   void StorageManager::encodeProperty(PropertyBase *, std::string &)

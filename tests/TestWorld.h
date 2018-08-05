@@ -64,7 +64,7 @@ struct TestWorld : public BaseWorld {
                          LocatedEntity *) override { return 0; }
     int removeSpawnPoint(LocatedEntity *) override {return 0; }
     int getSpawnList(Atlas::Message::ListType & data) override { return 0; }
-    LocatedEntity * spawnNewEntity(const std::string & name,
+    Ref<LocatedEntity> spawnNewEntity(const std::string & name,
                                    const std::string & type,
                                    const Atlas::Objects::Entity::RootEntity & desc) override
     {
@@ -82,8 +82,8 @@ struct TestWorld : public BaseWorld {
         }
     }
     void messageToClients(const Atlas::Objects::Operation::RootOperation &) override{}
-    LocatedEntity * findByName(const std::string & name) override { return 0; }
-    LocatedEntity * findByType(const std::string & type) override { return 0; }
+    Ref<LocatedEntity> findByName(const std::string & name) override { return nullptr; }
+    Ref<LocatedEntity> findByType(const std::string & type) override { return nullptr; }
     void addPerceptive(LocatedEntity *) override { }
 
     LocatedEntity& getDefaultLocation() const override {return *m_gw;};

@@ -120,7 +120,7 @@ void InventoryDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity
     if (m_entity.m_contains) {
         for (auto& entity : *m_entity.m_contains) {
             if (isEntityVisibleFor(observingEntity, *entity)) {
-                entityList.push_back(entity);
+                entityList.push_back(entity.get());
             }
         }
     }

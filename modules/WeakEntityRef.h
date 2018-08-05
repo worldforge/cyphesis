@@ -19,6 +19,7 @@
 #ifndef MODULES_WEAK_ENTITY_REF_H
 #define MODULES_WEAK_ENTITY_REF_H
 
+#include "Ref.h"
 #include <sigc++/trackable.h>
 #include <sigc++/signal.h>
 
@@ -37,6 +38,7 @@ class WeakEntityRef : public sigc::trackable
     {
     }
 
+    explicit WeakEntityRef(const Ref<LocatedEntity>&);
     explicit WeakEntityRef(LocatedEntity*);
 
     virtual ~WeakEntityRef() = default;

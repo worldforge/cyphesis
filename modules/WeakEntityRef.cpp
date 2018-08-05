@@ -27,6 +27,12 @@ void WeakEntityRef::setup()
     }
 }
 
+WeakEntityRef::WeakEntityRef(const Ref<LocatedEntity>& e)
+: m_inner(e.get())
+{
+
+}
+
 WeakEntityRef::WeakEntityRef(LocatedEntity* e) : m_inner(e)
 {
     setup();

@@ -89,20 +89,20 @@ Py::Object CyPy_CreatorClient::look(const Py::Tuple& args)
 {
     args.verify_length(1);
     auto retval = m_value->look(verifyString(args.front()));
-    if (retval == nullptr) {
+    if (!retval) {
         throw Py::RuntimeError("Entity look failed");
     }
-    return CyPy_LocatedEntity::wrap(retval);
+    return CyPy_LocatedEntity::wrap(std::move(retval));
 }
 
 Py::Object CyPy_CreatorClient::look_for(const Py::Tuple& args)
 {
     args.verify_length(1);
     auto retval = m_value->lookFor(verifyObject<CyPy_RootEntity>(args.front()));
-    if (retval == nullptr) {
+    if (!retval) {
         return Py::None();
     }
-    return CyPy_LocatedEntity::wrap(retval);
+    return CyPy_LocatedEntity::wrap(std::move(retval));
 }
 
 Py::Object CyPy_CreatorClient::send(const Py::Tuple& args)

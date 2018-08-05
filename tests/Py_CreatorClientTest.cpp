@@ -111,7 +111,7 @@ int main()
 
 using Atlas::Objects::Entity::RootEntity;
 
-LocatedEntity * CharacterClient::look(const std::string & id)
+Ref<LocatedEntity> CharacterClient::look(const std::string & id)
 {
     if (stub_look_fail) {
         return nullptr;
@@ -119,7 +119,7 @@ LocatedEntity * CharacterClient::look(const std::string & id)
     return new Entity(id, integerId(id));
 }
 
-LocatedEntity * CharacterClient::lookFor(const RootEntity & entity)
+Ref<LocatedEntity> CharacterClient::lookFor(const RootEntity & entity)
 {
     if (stub_lookfor_fail) {
         return nullptr;
@@ -127,7 +127,7 @@ LocatedEntity * CharacterClient::lookFor(const RootEntity & entity)
     return new Entity(entity->getId(), integerId(entity->getId()));
 }
 
-LocatedEntity * CreatorClient::make(const RootEntity & entity)
+Ref<LocatedEntity> CreatorClient::make(const RootEntity & entity)
 {
     if (stub_make_fail) {
         return nullptr;

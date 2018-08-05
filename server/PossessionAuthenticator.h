@@ -18,6 +18,7 @@
 #ifndef SERVER_POSSESSION_AUTHENTICATOR_H
 #define SERVER_POSSESSION_AUTHENTICATOR_H
 
+#include "modules/Ref.h"
 #include <string>
 #include <unordered_map>
 #include <boost/optional.hpp>
@@ -51,7 +52,7 @@ class PossessionAuthenticator : public Singleton<PossessionAuthenticator>
 
     boost::optional<std::string> getPossessionKey(const std::string& entity_id);
 
-    LocatedEntity * authenticatePossession(const std::string &,
+    Ref<LocatedEntity> authenticatePossession(const std::string &,
                                          const std::string &);
 
     friend class TeleportAuthenticatortest;

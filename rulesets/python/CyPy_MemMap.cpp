@@ -137,7 +137,7 @@ Py::Object CyPy_MemMap::updateAdd(const Py::Tuple& args)
             if (!ret) {
                 throw Py::TypeError("arg is a Message that does not have an ID");
             }
-            return CyPy_MemEntity::wrap(std::move(ret));
+            return CyPy_MemEntity::wrap(ret.get());
         }
         catch (Atlas::Message::WrongTypeException&) {
             throw Py::TypeError("arg is a Message that contains malformed attributes");
@@ -148,7 +148,7 @@ Py::Object CyPy_MemMap::updateAdd(const Py::Tuple& args)
         if (!ret) {
             throw Py::TypeError("arg is a Message that does not have an ID");
         }
-        return CyPy_MemEntity::wrap(ret);
+        return CyPy_MemEntity::wrap(ret.get());
     } else {
         throw Py::TypeError("arg is not an Atlas Entity or Message");
     }
@@ -169,7 +169,7 @@ Py::Object CyPy_MemMap::get(const Py::Tuple& args)
     if (!ret) {
         return Py::None();
     }
-    return CyPy_MemEntity::wrap(ret);
+    return CyPy_MemEntity::wrap(ret.get());
 }
 
 Py::Object CyPy_MemMap::get_add(const Py::Tuple& args)
@@ -180,7 +180,7 @@ Py::Object CyPy_MemMap::get_add(const Py::Tuple& args)
     if (!ret) {
         return Py::None();
     }
-    return CyPy_MemEntity::wrap(ret);
+    return CyPy_MemEntity::wrap(ret.get());
 }
 
 Py::Object CyPy_MemMap::add_hooks_append(const Py::Tuple& args)
@@ -214,7 +214,7 @@ Py::Object CyPy_MemMap::find_by_filter(const Py::Tuple& args)
 
     for (auto& entry : m_value->getEntities()) {
         if (filter->match(*entry.second)) {
-            list.append(CyPy_MemEntity::wrap(entry.second));
+            list.append(CyPy_MemEntity::wrap(entry.second.get()));
         }
     }
     return list;

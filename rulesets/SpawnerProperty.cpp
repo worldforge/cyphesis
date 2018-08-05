@@ -174,7 +174,7 @@ void SpawnerProperty::handleTick(LocatedEntity * e, const Operation & op,
 
     auto parentLoc = e->m_location.m_loc;
     float squared_radius = m_radius * m_radius;
-    LocatedEntity* container_entity = parentLoc;
+    auto container_entity = parentLoc;
     if (m_mode_external) {
         if (!parentLoc) {
             //If there's no parent entity we should just ignore.

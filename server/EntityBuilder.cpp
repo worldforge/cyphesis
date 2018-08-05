@@ -72,11 +72,11 @@ EntityBuilder::EntityBuilder()
         for (auto& entry : entities) {
             auto scriptsProp = entry.second->getPropertyClass<ScriptsProperty>("__scripts");
             if (scriptsProp) {
-                scriptsProp->applyScripts(entry.second);
+                scriptsProp->applyScripts(entry.second.get());
             }
             auto scriptsInstanceProp = entry.second->getPropertyClass<ScriptsProperty>("__scripts_instance");
             if (scriptsInstanceProp) {
-                scriptsInstanceProp->applyScripts(entry.second);
+                scriptsInstanceProp->applyScripts(entry.second.get());
             }
         }
 
@@ -107,7 +107,7 @@ EntityBuilder::~EntityBuilder()
 /// @param attributes A mapping of attribute values to set on the entity.
 Ref<LocatedEntity> EntityBuilder::newEntity(const std::string& id, long intId, const std::string& type, const RootEntity& attributes, const BaseWorld& world) const
 {
-    LocatedEntity* loc = nullptr;
+    Ref<LocatedEntity> loc;
     // Get location from entity, if it is present
     // The default attributes cannot contain info on location
     if (attributes.isValid() && attributes->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {

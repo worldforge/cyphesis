@@ -77,21 +77,20 @@ void TerrainModPropertyintegration::setup()
     m_entity = new Entity("1", 1);
     m_entity->m_location.m_pos = Point3D(5.f, 5.f, 5.f);
     m_entity->m_location.m_loc = m_rootEntity;
-    m_rootEntity->incRef();
     ASSERT_TRUE(m_entity->m_location.isValid());
 
     PropertyFactory<TerrainModProperty> terrainmod_property_factory;
 
     m_terrainProperty = new TerrainProperty;
-    m_terrainProperty->install(m_rootEntity, "terrain");
+    m_terrainProperty->install(m_rootEntity.get(), "terrain");
     m_rootEntity->setProperty("terrain", m_terrainProperty);
-    m_terrainProperty->apply(m_rootEntity);
+    m_terrainProperty->apply(m_rootEntity.get());
     m_rootEntity->propertyApplied("terrain", *m_terrainProperty);
 
     m_property = terrainmod_property_factory.newProperty();
-    m_property->install(m_entity, "terrainmod");
+    m_property->install(m_entity.get(), "terrainmod");
     m_entity->setProperty("terrainmod", m_property);
-    m_property->apply(m_entity);
+    m_property->apply(m_entity.get());
     m_entity->propertyApplied("terrainmod", *m_property);
 }
 
@@ -176,12 +175,12 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 
 #ifndef STUB_BaseWorld_getEntity
 #define STUB_BaseWorld_getEntity
-LocatedEntity* BaseWorld::getEntity(const std::string & id) const
+Ref<LocatedEntity> BaseWorld::getEntity(const std::string & id) const
 {
     return getEntity(integerId(id));
 }
 
-LocatedEntity* BaseWorld::getEntity(long id) const
+Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 {
     auto I = m_eobjects.find(id);
     if (I != m_eobjects.end()) {

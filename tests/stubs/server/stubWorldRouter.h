@@ -114,9 +114,9 @@
 
 #ifndef STUB_WorldRouter_spawnNewEntity
 //#define STUB_WorldRouter_spawnNewEntity
-  LocatedEntity* WorldRouter::spawnNewEntity(const std::string &, const std::string &, const Atlas::Objects::Entity::RootEntity &)
+  Ref<LocatedEntity> WorldRouter::spawnNewEntity(const std::string &, const std::string &, const Atlas::Objects::Entity::RootEntity &)
   {
-    return nullptr;
+    return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
 #endif //STUB_WorldRouter_spawnNewEntity
 
@@ -170,17 +170,17 @@
 
 #ifndef STUB_WorldRouter_findByName
 //#define STUB_WorldRouter_findByName
-  LocatedEntity* WorldRouter::findByName(const std::string & name)
+  Ref<LocatedEntity> WorldRouter::findByName(const std::string & name)
   {
-    return nullptr;
+    return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
 #endif //STUB_WorldRouter_findByName
 
 #ifndef STUB_WorldRouter_findByType
 //#define STUB_WorldRouter_findByType
-  LocatedEntity* WorldRouter::findByType(const std::string & type)
+  Ref<LocatedEntity> WorldRouter::findByType(const std::string & type)
   {
-    return nullptr;
+    return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
 #endif //STUB_WorldRouter_findByType
 

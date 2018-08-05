@@ -581,26 +581,8 @@ const TypeNode* Inheritance::getType(const std::string & parent)
 
 
 #include "stubs/common/stubInheritance.h"
+#include "stubs/modules/stubWeakEntityRef.h"
 
-
-WeakEntityRef::WeakEntityRef(LocatedEntity* e) : m_inner(e)
-{
-}
-
-WeakEntityRef::WeakEntityRef(const WeakEntityRef& ref) : m_inner(ref.m_inner)
-{
-}
-
-WeakEntityRef& WeakEntityRef::operator=(const WeakEntityRef& ref)
-{
-    m_inner = ref.m_inner;
-
-    return *this;
-}
-
-void WeakEntityRef::onEntityDeleted()
-{
-}
 
 template<class V>
 const Quaternion quaternionFromTo(const V & from, const V & to)

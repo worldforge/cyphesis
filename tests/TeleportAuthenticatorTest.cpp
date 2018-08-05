@@ -121,7 +121,7 @@ void TeleportAuthenticatortest::test_sequence()
 void TeleportAuthenticatortest::test_authenticatePossession()
 {
     Ref<Entity> ent(new Entity("100", 100));
-    m_world->test_addEntity(ent, 100);
+    m_world->test_addEntity(ent.get(), 100);
 
     PossessionAuthenticator::instance().addPossession("100", "test_possess_key");
 
@@ -142,7 +142,7 @@ void TeleportAuthenticatortest::test_authenticatePossession()
 void TeleportAuthenticatortest::test_authenticatePossession_nonexist()
 {
     Ref<Entity> ent(new Entity("100", 100));
-    m_world->test_addEntity(ent, 100);
+    m_world->test_addEntity(ent.get(), 100);
 
     PossessionAuthenticator::instance().addPossession("101", "test_possess_key");
 
@@ -208,12 +208,12 @@ void log(LogLevel lvl, const std::string & msg)
 
 #ifndef STUB_BaseWorld_getEntity
 #define STUB_BaseWorld_getEntity
-LocatedEntity* BaseWorld::getEntity(const std::string & id) const
+Ref<LocatedEntity> BaseWorld::getEntity(const std::string & id) const
 {
     return getEntity(integerId(id));
 }
 
-LocatedEntity* BaseWorld::getEntity(long id) const
+Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 {
     auto I = m_eobjects.find(id);
     if (I != m_eobjects.end()) {

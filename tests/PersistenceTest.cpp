@@ -23,6 +23,7 @@
 #define DEBUG
 #endif
 
+#include "rulesets/LocatedEntity.h"
 #include "server/Persistence.h"
 #include "DatabaseNull.h"
 
@@ -103,95 +104,7 @@ ConnectableRouter::ConnectableRouter(const std::string & id,
 {
 }
 
-Account::Account(Connection * conn,
-                 const std::string & uname,
-                 const std::string & passwd,
-                 const std::string & id,
-                 long intId) :
-         ConnectableRouter(id, intId, conn),
-         m_username(uname), m_password(passwd)
-{
-}
-
-
-const char * Account::getType() const
-{
-    return "account";
-}
-
-void Account::store() const
-{
-}
-
-bool Account::isPersisted() const {
-    return true;
-}
-
-void Account::createObject(const std::string & type_str,
-                           const Root & arg,
-                           const Operation & op,
-                           OpVector & res)
-{
-}
-
-LocatedEntity * Account::createCharacterEntity(const std::string &,
-                                const Atlas::Objects::Entity::RootEntity &,
-                                const Atlas::Objects::Root &)
-{
-    return 0;
-}
-
-void Account::addCharacter(LocatedEntity * chr)
-{
-}
-
-void Account::externalOperation(const Operation & op, Link &)
-{
-}
-
-void Account::operation(const Operation & op, OpVector & res)
-{
-}
-
-void Account::LogoutOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Account::CreateOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Account::ImaginaryOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Account::TalkOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Account::GetOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Account::SetOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Account::LookOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Account::OtherOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Account::addToMessage(MapType & omap) const
-{
-}
-
-void Account::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
+#include "stubs/server/stubAccount.h"
 
 ServerAccount::ServerAccount(Connection * conn,
              const std::string & username,
@@ -248,69 +161,8 @@ int Player::characterError(const Operation & op,
 {
     return 0;
 }
+#include "stubs/server/stubAdmin.h"
 
-Admin::Admin(Connection * conn,
-             const std::string & username,
-             const std::string & passwd,
-             const std::string & id,
-             long intId) :
-       Account(conn, username, passwd, id, intId)
-{
-}
-
-Admin::~Admin()
-{
-}
-
-const char * Admin::getType() const
-{
-    return "admin";
-}
-
-void Admin::addToMessage(MapType & omap) const
-{
-}
-
-void Admin::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-int Admin::characterError(const Operation & op,
-                          const Root & ent, OpVector & res) const
-{
-    return 0;
-}
-
-void Admin::createObject(const std::string & type_str,
-                           const Root & arg,
-                           const Operation & op,
-                           OpVector & res)
-{
-}
-
-LocatedEntity * Admin::createCharacterEntity(const std::string &,
-                                const Atlas::Objects::Entity::RootEntity &,
-                                const Atlas::Objects::Root &)
-{
-    return 0;
-}
-
-
-void Admin::LogoutOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Admin::SetOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Admin::GetOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Admin::OtherOperation(const Operation & op, OpVector & res)
-{
-}
 
 Shaker::Shaker() {}
 

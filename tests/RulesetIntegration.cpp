@@ -160,7 +160,7 @@ void Rulesetintegration::test_sequence()
                                                       "thing",
                                                       attributes,
                                                       *m_test_world);
-        assert(test_ent != 0);
+        assert(test_ent);
 
         // Check that creating an entity of a type we know we have not yet
         // installed results in a null pointer.
@@ -218,7 +218,7 @@ void Rulesetintegration::test_sequence()
 
         // Create an instance of our custom type, ensuring that it works.
         test_ent = test_eb->newEntity("1", 1, "custom_type", attributes, *m_test_world);
-        assert(test_ent != 0);
+        assert(test_ent);
 
         // Reset val.
         val = Atlas::Message::Element();
@@ -282,7 +282,7 @@ void Rulesetintegration::test_sequence()
 
         // Creat an instance of the second custom type, ensuring it works.
         test_ent = test_eb->newEntity("1", 1, "custom_inherited_type", attributes, *m_test_world);
-        assert(test_ent != 0);
+        assert(test_ent);
 
         // Reset val.
         val = Atlas::Message::Element();
@@ -380,7 +380,7 @@ void Rulesetintegration::test_sequence()
 
         // Creat an instance of the second custom type, ensuring it works.
         test_ent = test_eb->newEntity("1", 1, "custom_inherited_type", attributes, *m_test_world);
-        assert(test_ent != 0);
+        assert(test_ent);
 
         // Reset val.
         val = Atlas::Message::Element();
@@ -438,7 +438,7 @@ void Rulesetintegration::test_sequence()
 
         // Create an instance of our custom type, ensuring that it works.
         test_ent = test_eb->newEntity("1", 1, "custom_type", attributes, *m_test_world);
-        assert(test_ent != 0);
+        assert(test_ent);
 
         // Reset val.
         val = Atlas::Message::Element();
@@ -467,7 +467,7 @@ void Rulesetintegration::test_sequence()
 
         // Creat an instance of the second custom type, ensuring it works.
         test_ent = test_eb->newEntity("1", 1, "custom_inherited_type", attributes, *m_test_world);
-        assert(test_ent != 0);
+        assert(test_ent);
 
         // Reset val.
         val = Atlas::Message::Element();
@@ -541,7 +541,7 @@ void Rulesetintegration::test_sequence()
 
         // Create an instance of our custom type, ensuring that it works.
         test_ent = test_eb->newEntity("1", 1, "custom_type", attributes, *m_test_world);
-        assert(test_ent != 0);
+        assert(test_ent);
 
         // Reset val.
         val = Atlas::Message::Element();
@@ -583,7 +583,7 @@ void Rulesetintegration::test_sequence()
 
         // Creat an instance of the second custom type, ensuring it works.
         test_ent = test_eb->newEntity("1", 1, "custom_inherited_type", attributes, *m_test_world);
-        assert(test_ent != 0);
+        assert(test_ent);
 
         // Reset val.
         val = Atlas::Message::Element();
@@ -648,6 +648,7 @@ int main()
 #include "server/Player.h"
 #include "server/ServerAccount.h"
 #include "server/ServerRouting.h"
+#include "server/Account.h"
 
 #include "rulesets/PythonScriptFactory.h"
 #include "rulesets/Task.h"
@@ -661,107 +662,6 @@ int main()
 #include "stubs/rulesets/stubScriptsProperty.h"
 #include "stubs/common/stubMonitors.h"
 
-Account::Account(Connection * conn,
-                 const std::string & uname,
-                 const std::string & passwd,
-                 const std::string & id,
-                 long intId) :
-         ConnectableRouter(id, intId, conn),
-         m_username(uname), m_password(passwd)
-{
-}
-
-
-LocatedEntity * Account::addNewCharacter(const std::string & typestr,
-                                  const RootEntity & ent,
-                                  const Root & arg)
-{
-    return 0;
-}
-
-LocatedEntity * Account::createCharacterEntity(const std::string &,
-                                const Atlas::Objects::Entity::RootEntity &,
-                                const Atlas::Objects::Root &)
-{
-    return 0;
-}
-
-int Account::connectCharacter(LocatedEntity *chr)
-{
-    return 0;
-}
-
-const char * Account::getType() const
-{
-    return "account";
-}
-
-void Account::store() const
-{
-}
-
-bool Account::isPersisted() const {
-    return true;
-}
-
-void Account::createObject(const std::string & type_str,
-                           const Root & arg,
-                           const Operation & op,
-                           OpVector & res)
-{
-}
-
-void Account::addCharacter(LocatedEntity * chr)
-{
-}
-
-void Account::addToMessage(MapType & omap) const
-{
-}
-
-void Account::addToEntity(const RootEntity & ent) const
-{
-}
-
-void Account::externalOperation(const Operation & op, Link &)
-{
-}
-
-void Account::operation(const Operation & op, OpVector & res)
-{
-}
-
-void Account::LogoutOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::CreateOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::SetOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::ImaginaryOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::TalkOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::LookOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::GetOperation(const Operation &, OpVector &)
-{
-}
-
-void Account::OtherOperation(const Operation &, OpVector &)
-{
-}
 
 ConnectableRouter::ConnectableRouter(const std::string & id,
                                  long iid,
@@ -822,6 +722,7 @@ Ref<LocatedEntity> ArchetypeFactory::newEntity(const std::string & id, long intI
 }
 
 #include "stubs/server/stubArchetypeFactory.h"
+#include "stubs/server/stubAccount.h"
 
 class World;
 

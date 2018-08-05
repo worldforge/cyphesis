@@ -417,12 +417,12 @@ void Entity::sendWorld(const Operation & op)
 
 #ifndef STUB_BaseWorld_getEntity
 #define STUB_BaseWorld_getEntity
-LocatedEntity* BaseWorld::getEntity(const std::string & id) const
+Ref<LocatedEntity> BaseWorld::getEntity(const std::string & id) const
 {
     return getEntity(integerId(id));
 }
 
-LocatedEntity* BaseWorld::getEntity(long id) const
+Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 {
     auto I = m_eobjects.find(id);
     if (I != m_eobjects.end()) {
@@ -495,25 +495,7 @@ int fromStdVector(Vector3D & v, const std::vector<FloatT> & vf)
 template int fromStdVector<double>(Point3D & p, const std::vector<double> & vf);
 template int fromStdVector<double>(Vector3D & v, const std::vector<double> & vf);
 
-WeakEntityRef::WeakEntityRef(LocatedEntity* e) : m_inner(e)
-{
-}
-
-WeakEntityRef::WeakEntityRef(const WeakEntityRef& ref) : m_inner(ref.m_inner)
-{
-}
-
-WeakEntityRef& WeakEntityRef::operator=(const WeakEntityRef& ref)
-{
-    m_inner = ref.m_inner;
-
-    return *this;
-}
-
-void WeakEntityRef::onEntityDeleted()
-{
-}
-
+#include "stubs/modules/stubWeakEntityRef.h"
 
 template<class V>
 const Quaternion quaternionFromTo(const V & from, const V & to)

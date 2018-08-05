@@ -130,25 +130,7 @@ void addToEntity(const Point3D & p, std::vector<double> & vd)
     vd[1] = p[1];
     vd[2] = p[2];
 }
-
-WeakEntityRef::WeakEntityRef(LocatedEntity* e) : m_inner(e)
-{
-}
-
-WeakEntityRef::WeakEntityRef(const WeakEntityRef& ref) : m_inner(ref.m_inner)
-{
-}
-
-WeakEntityRef& WeakEntityRef::operator=(const WeakEntityRef& ref)
-{
-    m_inner = ref.m_inner;
-
-    return *this;
-}
-
-void WeakEntityRef::onEntityDeleted()
-{
-}
+#include "stubs/modules/stubWeakEntityRef.h"
 
 AreaProperty::AreaProperty()
 {

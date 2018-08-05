@@ -100,11 +100,11 @@ static void addTypeToList(const Root & type, ListType & typeList)
     }
 }
 
-LocatedEntity * Admin::createCharacterEntity(const std::string & typestr,
+Ref<LocatedEntity> Admin::createCharacterEntity(const std::string & typestr,
                                          const RootEntity & ent,
                                          const Root & arg)
 {
-    LocatedEntity* entity = Account::createCharacterEntity(typestr, ent, arg);
+    auto entity = Account::createCharacterEntity(typestr, ent, arg);
     if (entity) {
         return entity;
     }

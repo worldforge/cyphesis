@@ -1,3 +1,5 @@
+#include <utility>
+
 // Cyphesis Online RPG Server and AI Engine
 // Copyright (C) 2000-2008 Alistair Riddoch
 //
@@ -39,14 +41,35 @@ Location::Location() :
 {
 }
 
+Location::Location(Ref<LocatedEntity> rf) :
+    EntityLocation(std::move(rf)),
+    m_simple(true), m_solid(true)
+{
+}
+
+Location::Location(Ref<LocatedEntity> rf, Point3D pos) :
+    EntityLocation(std::move(rf), std::move(pos)),
+    m_simple(true), m_solid(true)
+{
+}
+
+Location::Location(Ref<LocatedEntity> rf,
+                   Point3D pos,
+                   Vector3D velocity) :
+    EntityLocation(std::move(rf), std::move(pos)),
+    m_simple(true), m_solid(true),
+    m_velocity(velocity)
+{
+}
+
 Location::Location(LocatedEntity * rf) :
     EntityLocation(rf),
     m_simple(true), m_solid(true)
 {
 }
 
-Location::Location(LocatedEntity * rf, const Point3D & pos) :
-    EntityLocation(rf, pos),
+Location::Location(LocatedEntity * rf, Point3D pos) :
+    EntityLocation(rf, std::move(pos)),
     m_simple(true), m_solid(true)
 {
 }
@@ -58,9 +81,9 @@ Location::Location(EntityLocation entityLocation) :
 }
 
 Location::Location(LocatedEntity * rf,
-                   const Point3D& pos,
-                   const Vector3D& velocity) :
-    EntityLocation(rf, pos),
+                   Point3D pos,
+                   Vector3D velocity) :
+    EntityLocation(rf, std::move(pos)),
     m_simple(true), m_solid(true),
     m_velocity(velocity)
 {

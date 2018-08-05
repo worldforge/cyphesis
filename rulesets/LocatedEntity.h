@@ -249,7 +249,7 @@ class LocatedEntity : public Router {
     virtual void installDelegate(int, const std::string &);
     virtual void removeDelegate(int, const std::string &);
 
-    virtual void onContainered(const LocatedEntity* oldLocation);
+    virtual void onContainered(const Ref<LocatedEntity>& oldLocation);
     virtual void onUpdated();
 
     virtual void destroy() = 0;
@@ -261,7 +261,7 @@ class LocatedEntity : public Router {
 
     virtual void setScript(Script * scrpt);
     void makeContainer();
-    void changeContainer(LocatedEntity *);
+    void changeContainer(const Ref<LocatedEntity>&);
     void merge(const Atlas::Message::MapType &);
 
     /**
@@ -458,7 +458,7 @@ class LocatedEntity : public Router {
 
     /// Signal indicating that this entity has changed its LOC.
     /// First parameter is the old location.
-    sigc::signal<void, const LocatedEntity*> containered;
+    sigc::signal<void, const Ref<LocatedEntity>&> containered;
 
     /// \brief Signal emitted when this entity is removed from the server
     ///

@@ -346,7 +346,7 @@
 
 #ifndef STUB_Entity_onContainered
 //#define STUB_Entity_onContainered
-  void Entity::onContainered(const LocatedEntity* oldLocation)
+  void Entity::onContainered(const Ref<LocatedEntity>& oldLocation)
   {
     
   }

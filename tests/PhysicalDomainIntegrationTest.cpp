@@ -1620,7 +1620,7 @@ void PhysicalDomainIntegrationTest::test_zoffset()
     ASSERT_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(30, 8.01695, 30));
 
     plantedOffset->data() = -3;
-    plantedOffset->apply(plantedEntity);
+    plantedOffset->apply(plantedEntity.get());
     plantedEntity->propertyApplied.emit("planted_offset", *plantedOffset);
     ASSERT_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(30, 7.01695, 30));
 
@@ -1661,7 +1661,7 @@ void PhysicalDomainIntegrationTest::test_zscaledoffset()
     ASSERT_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(30, 8.01695, 30));
 
     plantedScaledOffset->data() = -0.3;
-    plantedScaledOffset->apply(plantedEntity);
+    plantedScaledOffset->apply(plantedEntity.get());
     plantedEntity->propertyApplied.emit("planted_offset", *plantedScaledOffset);
     ASSERT_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(30, 7.01695, 30));
 

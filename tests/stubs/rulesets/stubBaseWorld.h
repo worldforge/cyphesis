@@ -19,17 +19,17 @@
 
 #ifndef STUB_BaseWorld_getEntity
 //#define STUB_BaseWorld_getEntity
-  LocatedEntity* BaseWorld::getEntity(const std::string & id) const
+  Ref<LocatedEntity> BaseWorld::getEntity(const std::string & id) const
   {
-    return nullptr;
+    return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
 #endif //STUB_BaseWorld_getEntity
 
 #ifndef STUB_BaseWorld_getEntity
 //#define STUB_BaseWorld_getEntity
-  LocatedEntity* BaseWorld::getEntity(long id) const
+  Ref<LocatedEntity> BaseWorld::getEntity(long id) const
   {
-    return nullptr;
+    return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
 #endif //STUB_BaseWorld_getEntity
 
@@ -139,9 +139,9 @@
 
 #ifndef STUB_BaseWorld_spawnNewEntity
 //#define STUB_BaseWorld_spawnNewEntity
-  LocatedEntity* BaseWorld::spawnNewEntity(const std::string & name, const std::string & type, const Atlas::Objects::Entity::RootEntity &)
+  Ref<LocatedEntity> BaseWorld::spawnNewEntity(const std::string & name, const std::string & type, const Atlas::Objects::Entity::RootEntity &)
   {
-    return nullptr;
+    return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
 #endif //STUB_BaseWorld_spawnNewEntity
 
@@ -179,17 +179,17 @@
 
 #ifndef STUB_BaseWorld_findByName
 //#define STUB_BaseWorld_findByName
-  LocatedEntity* BaseWorld::findByName(const std::string & name)
+  Ref<LocatedEntity> BaseWorld::findByName(const std::string & name)
   {
-    return nullptr;
+    return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
 #endif //STUB_BaseWorld_findByName
 
 #ifndef STUB_BaseWorld_findByType
 //#define STUB_BaseWorld_findByType
-  LocatedEntity* BaseWorld::findByType(const std::string & type)
+  Ref<LocatedEntity> BaseWorld::findByType(const std::string & type)
   {
-    return nullptr;
+    return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
 #endif //STUB_BaseWorld_findByType
 

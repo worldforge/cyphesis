@@ -90,7 +90,6 @@ class StorageManager : public sigc::trackable {
 
     void entityInserted(LocatedEntity *);
     void entityUpdated(LocatedEntity *);
-    void entityContainered(const LocatedEntity *oldLocation, LocatedEntity *entity);
 
     void encodeProperty(PropertyBase *, std::string &);
     void restorePropertiesRecursively(LocatedEntity *);

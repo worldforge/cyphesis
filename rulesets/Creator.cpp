@@ -121,8 +121,8 @@ void Creator::externalOperation(const Operation & op, Link &)
             // World will deal with it.
         }
     } else {
-        LocatedEntity * to = BaseWorld::instance().getEntity(op->getTo());
-        if (to != nullptr) {
+        auto to = BaseWorld::instance().getEntity(op->getTo());
+        if (to) {
             //If there's a serial number, we expect a response, and we should relay the operation
             if (op->isDefaultSerialno()) {
                 // Make it appear like it came from target itself;
@@ -214,8 +214,8 @@ void Creator::mindLookOperation(const Operation & op, OpVector & res)
             op->setTo(arg->getId());
         } else if (arg->hasAttrFlag(Atlas::Objects::NAME_FLAG)) {
             // Search by name
-            LocatedEntity * e = BaseWorld::instance().findByName(arg->getName());
-            if (e != nullptr) {
+            auto e = BaseWorld::instance().findByName(arg->getName());
+            if (e) {
                 //This will override the normal sights checking code, which is ok since we're an administrator
                 Sight s;
 
@@ -240,8 +240,8 @@ void Creator::mindLookOperation(const Operation & op, OpVector & res)
             }
         } else if (arg->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
             // Search by name
-            LocatedEntity * e = BaseWorld::instance().findByType(arg->getParent());
-            if (e != nullptr) {
+            auto e = BaseWorld::instance().findByType(arg->getParent());
+            if (e) {
                 //This will override the normal sights checking code, which is ok since we're an administrator
                 Sight s;
 

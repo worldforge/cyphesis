@@ -250,17 +250,17 @@ LocatedEntity * Character::findInContains(LocatedEntity * ent,
     if (ent->m_contains == nullptr) {
         return nullptr;
     }
-    auto I = ent->m_contains->begin();
-    auto Iend = ent->m_contains->end();
-    for (; I != Iend; ++I) {
-        LocatedEntity * child = *I;
-        if (child->getId() == id) {
-            return *I;
-        }
-        if (child->m_contains != nullptr && !child->m_contains->empty()) {
-            LocatedEntity * found = findInContains(child, id);
-            if (found != nullptr) {
-                return found;
+
+    if (ent->m_contains != nullptr) {
+        for (auto& child : *ent->m_contains) {
+            if (child->getId() == id) {
+                return child.get();
+            }
+            if (child->m_contains != nullptr && !child->m_contains->empty()) {
+                auto found = findInContains(child.get(), id);
+                if (found != nullptr) {
+                    return found;
+                }
             }
         }
     }
@@ -521,8 +521,8 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
         return;
     }
     const std::string & id = arg->getId();
-    LocatedEntity * item = BaseWorld::instance().getEntity(id);
-    if (item == nullptr) {
+    auto item = BaseWorld::instance().getEntity(id);
+    if (!item) {
         error(op, "Wield arg does not exist", res, getId());
         return;
     }
@@ -547,7 +547,7 @@ void Character::WieldOperation(const Operation & op, OpVector & res)
                 prevEntity->collectObservers(oldEntityPrevObserving);
             }
             item->collectObservers(newEntityPrevObserving);
-            outfit->wear(this, worn_attr.String(), item);
+            outfit->wear(this, worn_attr.String(), item.get());
             outfit->cleanUp();
 
             outfit->addFlags(flag_unsent);
@@ -675,7 +675,7 @@ void Character::ActuateOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    LocatedEntity * device = BaseWorld::instance().getEntity(entity_arg->getId());
+    auto device = BaseWorld::instance().getEntity(entity_arg->getId());
 
     if (!device) {
         log(ERROR, "Character::mindActuateOp trying to actuate non existing device. " + describeEntity());
@@ -1007,8 +1007,8 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     if (other_id != getId()) {
         debug(std::cout << "Moving something else. " << other_id << std::endl << std::flush
         ;);
-        LocatedEntity * other = BaseWorld::instance().getEntity(other_id);
-        if (other == nullptr) {
+        auto other = BaseWorld::instance().getEntity(other_id);
+        if (!other) {
             Unseen u;
 
             Anonymous unseen_arg;
@@ -1133,8 +1133,8 @@ void Character::mindMoveOperation(const Operation & op, OpVector & res)
     if (!new_loc.empty() && (new_loc != m_location.m_loc->getId())) {
         debug(std::cout << "Changing loc" << std::endl << std::flush
         ;);
-        LocatedEntity * target_loc = BaseWorld::instance().getEntity(new_loc);
-        if (target_loc == nullptr) {
+        auto target_loc = BaseWorld::instance().getEntity(new_loc);
+        if (!target_loc) {
             //TODO: what use case is this? Moving the entity to a null location?
             Unseen u;
 
@@ -1434,10 +1434,10 @@ void Character::mindTouchOperation(const Operation & op, OpVector & res)
         pos.fromAtlas(arg->getPosAsList());
     }
 
-    LocatedEntity * other = BaseWorld::instance().getEntity(arg->getId());
+    auto other = BaseWorld::instance().getEntity(arg->getId());
 
     //Check that we actually can reach the other entity.
-    if (this->canReach({other, pos})) {
+    if (this->canReach({std::move(other), pos})) {
         // Pass the modified touch operation on to target.
         op->setTo(arg->getId());
         res.push_back(op);

@@ -76,9 +76,9 @@ class BaseWorld : public Singleton<BaseWorld> {
 
     ~BaseWorld() override = default;
 
-    LocatedEntity * getEntity(const std::string & id) const;
+    Ref<LocatedEntity> getEntity(const std::string & id) const;
 
-    LocatedEntity * getEntity(long id) const;
+    Ref<LocatedEntity> getEntity(long id) const;
 
     /// \brief Read only accessor for the in-game objects dictionary.
     const EntityRefDict & getEntities() const {
@@ -159,7 +159,7 @@ class BaseWorld : public Singleton<BaseWorld> {
 
     virtual int getSpawnList(Atlas::Message::ListType & data) = 0;
 
-    virtual LocatedEntity * spawnNewEntity(
+    virtual Ref<LocatedEntity> spawnNewEntity(
           const std::string & name,
           const std::string & type,
           const Atlas::Objects::Entity::RootEntity &) = 0;
@@ -185,10 +185,10 @@ class BaseWorld : public Singleton<BaseWorld> {
     virtual void messageToClients(const Atlas::Objects::Operation::RootOperation &) = 0;
 
         /// \brief Find an entity of the given name.
-    virtual LocatedEntity * findByName(const std::string & name) = 0;
+    virtual Ref<LocatedEntity> findByName(const std::string & name) = 0;
 
     /// \brief Find an entity of the given type.
-    virtual LocatedEntity * findByType(const std::string & type) = 0;
+    virtual Ref<LocatedEntity> findByType(const std::string & type) = 0;
 
     /// \brief Add an entity provided to the list of perceptive entities.
     virtual void addPerceptive(LocatedEntity *) = 0;

@@ -128,7 +128,7 @@ void Account::addCharacter(LocatedEntity * chr)
 ///
 /// @param typestr The type name of the Character to be created
 /// @param ent Atlas description of the Character to be created
-LocatedEntity * Account::addNewCharacter(const std::string & typestr,
+Ref<LocatedEntity> Account::addNewCharacter(const std::string & typestr,
                                          const RootEntity & ent,
                                          const Root & arg)
 {
@@ -138,14 +138,14 @@ LocatedEntity * Account::addNewCharacter(const std::string & typestr,
     //Any entity created as a character should have it's "mind" property disabled; i.e. we don't want AI to control this character.
     ent->setAttr("mind", Atlas::Message::Element());
     debug(std::cout << "Account::Add_character" << std::endl << std::flush;);
-    LocatedEntity * chr = createCharacterEntity(typestr, ent, arg);
-    if (chr == nullptr) {
+    auto chr = createCharacterEntity(typestr, ent, arg);
+    if (!chr) {
         return nullptr;
     }
     debug(std::cout << "Added" << std::endl << std::flush;);
     assert(chr->m_location.isValid());
     debug(std::cout << "Location set to: " << chr->m_location << std::endl << std::flush;);
-    connectCharacter(chr);
+    connectCharacter(chr.get());
 
     logEvent(TAKE_CHAR, String::compose("%1 %2 %3 Created character (%4) "
                                         "by account %5",
@@ -158,7 +158,7 @@ LocatedEntity * Account::addNewCharacter(const std::string & typestr,
     return chr;
 }
 
-LocatedEntity * Account::createCharacterEntity(const std::string & typestr,
+Ref<LocatedEntity> Account::createCharacterEntity(const std::string & typestr,
                                                 const RootEntity & ent,
                                                 const Root & arg)
 {
@@ -391,14 +391,14 @@ void Account::createObject(const std::string & type_str,
         }
     }
 
-    LocatedEntity * entity = addNewCharacter(type_str, new_character, arg);
+    auto entity = addNewCharacter(type_str, new_character, arg);
 
     if (entity == nullptr) {
         error(op, "Character creation failed", res, getId());
         return;
     }
 
-    Character * character = dynamic_cast<Character *>(entity);
+    auto character = dynamic_cast<Character *>(entity.get());
     if (character != nullptr) {
         // Inform the client that it has successfully subscribed
         Info info;
@@ -622,14 +622,13 @@ void Account::LookOperation(const Operation & op, OpVector & res)
     Element key;
     if (arg->copyAttr("possess_key", key) == 0 && key.isString()) {
         const std::string & key_str = key.String();
-        LocatedEntity * character;
-        character = PossessionAuthenticator::instance().authenticatePossession(to, key_str);
+        auto character = PossessionAuthenticator::instance().authenticatePossession(to, key_str);
         // FIXME Not finding the character should be fatal
         // FIXME TA needs to generate clientError ops for the client
         if (character) {
             // FIXME If we don't succeed in connecting, no need to carry on
             // and we probably need to indicate to the client
-            if (connectCharacter(character) == 0) {
+            if (connectCharacter(character.get()) == 0) {
                 PossessionAuthenticator::instance().removePossession(to);
                 logEvent(POSSESS_CHAR,
                          String::compose("%1 %2 %3 Claimed character (%4) "

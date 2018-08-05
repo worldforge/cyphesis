@@ -158,22 +158,22 @@ void ThingIntegration::test_visibility()
         Operation sightOp;
         OpVector res;
         //T1 can see itself
-        ASSERT_TRUE(t1->test_lookAtEntity(sightOp, res, t1));
+        ASSERT_TRUE(t1->test_lookAtEntity(sightOp, res, t1.get()));
         //T1 can see T2 since it's a child and there's no domain
-        ASSERT_TRUE(t2->test_lookAtEntity(sightOp, res, t1));
+        ASSERT_TRUE(t2->test_lookAtEntity(sightOp, res, t1.get()));
         //T1 can see T3 since it's a grandchild and there's no domain
-        ASSERT_TRUE(t3->test_lookAtEntity(sightOp, res, t1));
+        ASSERT_TRUE(t3->test_lookAtEntity(sightOp, res, t1.get()));
         //T1 can't see T4 since it's not in the same graph
-        ASSERT_FALSE(t4->test_lookAtEntity(sightOp, res, t1));
+        ASSERT_FALSE(t4->test_lookAtEntity(sightOp, res, t1.get()));
 
         //T2 can see T1 since it's a parent and there's no domain
-        ASSERT_TRUE(t1->test_lookAtEntity(sightOp, res, t2));
+        ASSERT_TRUE(t1->test_lookAtEntity(sightOp, res, t2.get()));
         //T3 can see T1 since it's a grand parent and there's no domain
-        ASSERT_TRUE(t1->test_lookAtEntity(sightOp, res, t3));
+        ASSERT_TRUE(t1->test_lookAtEntity(sightOp, res, t3.get()));
         //T5 can see T3 since they share T1 as parent/grand parent and there's no domain
-        ASSERT_TRUE(t3->test_lookAtEntity(sightOp, res, t5));
+        ASSERT_TRUE(t3->test_lookAtEntity(sightOp, res, t5.get()));
         //T4 can't see T1 since it's not in the same graph
-        ASSERT_FALSE(t1->test_lookAtEntity(sightOp, res, t4));
+        ASSERT_FALSE(t1->test_lookAtEntity(sightOp, res, t4.get()));
 
 
         ASSERT_TRUE(verifyBroadcastContains(t1, {t1}));
@@ -207,21 +207,21 @@ void ThingIntegration::test_visibility()
         Operation sightOp;
         OpVector res;
         //T1 can see itself
-        ASSERT_TRUE(t1->test_lookAtEntity(sightOp, res, t1));
+        ASSERT_TRUE(t1->test_lookAtEntity(sightOp, res, t1.get()));
         //T1 can see T2 since it's a child and there's no domain
-        ASSERT_TRUE(t2->test_lookAtEntity(sightOp, res, t1));
+        ASSERT_TRUE(t2->test_lookAtEntity(sightOp, res, t1.get()));
         //T1 can't see T3 since T2 has a Void domain
-        ASSERT_FALSE(t3->test_lookAtEntity(sightOp, res, t1));
+        ASSERT_FALSE(t3->test_lookAtEntity(sightOp, res, t1.get()));
 
         //T2 can see T1 since it's a parent and there's no domain
-        ASSERT_TRUE(t1->test_lookAtEntity(sightOp, res, t2));
+        ASSERT_TRUE(t1->test_lookAtEntity(sightOp, res, t2.get()));
         //T3 can't see T1 since T2 has a domain
-        ASSERT_FALSE(t1->test_lookAtEntity(sightOp, res, t3));
+        ASSERT_FALSE(t1->test_lookAtEntity(sightOp, res, t3.get()));
 
         //T2 can see itself
-        ASSERT_TRUE(t2->test_lookAtEntity(sightOp, res, t2));
+        ASSERT_TRUE(t2->test_lookAtEntity(sightOp, res, t2.get()));
         //T2 can see T3 even though T2 has a Void domain, since T2 is the parent
-        ASSERT_TRUE(t3->test_lookAtEntity(sightOp, res, t2));
+        ASSERT_TRUE(t3->test_lookAtEntity(sightOp, res, t2.get()));
 
         ASSERT_TRUE(verifyBroadcastContains(t1, {t1}));
         ASSERT_TRUE(verifyBroadcastContains(t2, {t1, t2}));
@@ -280,32 +280,32 @@ void ThingIntegration::test_visibility()
         Operation sightOp;
         OpVector res;
         //T1 can see itself
-        ASSERT_TRUE(t1->test_lookAtEntity(sightOp, res, t1));
+        ASSERT_TRUE(t1->test_lookAtEntity(sightOp, res, t1.get()));
         //T1 can see T2 since it's a child and there's no domain
-        ASSERT_TRUE(t2->test_lookAtEntity(sightOp, res, t1));
+        ASSERT_TRUE(t2->test_lookAtEntity(sightOp, res, t1.get()));
         //T1 can't see T3 since T2 has a Physical domain and it doesn't allow external entities to look into it.
-        ASSERT_FALSE(t3->test_lookAtEntity(sightOp, res, t1));
+        ASSERT_FALSE(t3->test_lookAtEntity(sightOp, res, t1.get()));
 
         //T2 can see T1 since it's a parent and there's no domain
-        ASSERT_TRUE(t1->test_lookAtEntity(sightOp, res, t2));
+        ASSERT_TRUE(t1->test_lookAtEntity(sightOp, res, t2.get()));
         //T3 can't see T1 since T2 has a domain
-        ASSERT_FALSE(t1->test_lookAtEntity(sightOp, res, t3));
+        ASSERT_FALSE(t1->test_lookAtEntity(sightOp, res, t3.get()));
 
         //T2 can see itself
-        ASSERT_TRUE(t2->test_lookAtEntity(sightOp, res, t2));
+        ASSERT_TRUE(t2->test_lookAtEntity(sightOp, res, t2.get()));
         //T2 can see T3 since T2 has a Physical domain which allows it.
-        ASSERT_TRUE(t3->test_lookAtEntity(sightOp, res, t2));
+        ASSERT_TRUE(t3->test_lookAtEntity(sightOp, res, t2.get()));
         //T5 can see T3 since T2 has a Physical domain which allows it.
-        ASSERT_TRUE(t3->test_lookAtEntity(sightOp, res, t5));
+        ASSERT_TRUE(t3->test_lookAtEntity(sightOp, res, t5.get()));
         //T5 can see T4 since T2 has a Physical domain which allows it to see T3, and thus T4.
-        ASSERT_TRUE(t4->test_lookAtEntity(sightOp, res, t5));
+        ASSERT_TRUE(t4->test_lookAtEntity(sightOp, res, t5.get()));
 
         //T2 can see T6 since the parent of T6 is T5, which can be seen and has no domain.
-        ASSERT_TRUE(t6->test_lookAtEntity(sightOp, res, t2));
+        ASSERT_TRUE(t6->test_lookAtEntity(sightOp, res, t2.get()));
         //T3 can't see T7 since T2 has a Physical domain and T7 has an invalid pos.
-        ASSERT_FALSE(t7->test_lookAtEntity(sightOp, res, t3));
+        ASSERT_FALSE(t7->test_lookAtEntity(sightOp, res, t3.get()));
         //T4 can't see T5 since T4 isn't a direct child of T2
-        ASSERT_FALSE(t5->test_lookAtEntity(sightOp, res, t4));
+        ASSERT_FALSE(t5->test_lookAtEntity(sightOp, res, t4.get()));
 
         ASSERT_TRUE(verifyBroadcastContains(t1, {t1}));
         ASSERT_TRUE(verifyBroadcastContains(t2, {t2, t3, t5, t7, t1}));
@@ -356,22 +356,22 @@ void ThingIntegration::test_visibility()
         Operation sightOp;
         OpVector res;
         //T1 can see itself
-        ASSERT_TRUE(t1->test_lookAtEntity(sightOp, res, t1));
+        ASSERT_TRUE(t1->test_lookAtEntity(sightOp, res, t1.get()));
         //T1 can see T2 since it's a child and there's no domain
-        ASSERT_TRUE(t2->test_lookAtEntity(sightOp, res, t1));
+        ASSERT_TRUE(t2->test_lookAtEntity(sightOp, res, t1.get()));
         //T1 can see T3 since T2 has an Inventory domain and T3 is wielded.
-        ASSERT_TRUE(t3->test_lookAtEntity(sightOp, res, t1));
+        ASSERT_TRUE(t3->test_lookAtEntity(sightOp, res, t1.get()));
         //T1 can see T4 since T2 has an Inventory domain and T3 is wielded, and T4 is a child.
-        ASSERT_TRUE(t4->test_lookAtEntity(sightOp, res, t1));
+        ASSERT_TRUE(t4->test_lookAtEntity(sightOp, res, t1.get()));
         //T1 can't see T5 since T2 has an Inventory domain and T5 isn't wielded.
-        ASSERT_FALSE(t5->test_lookAtEntity(sightOp, res, t1));
+        ASSERT_FALSE(t5->test_lookAtEntity(sightOp, res, t1.get()));
 
         //T6 can see T3 since T2 has an Inventory domain and T3 is wielded.
-        ASSERT_TRUE(t3->test_lookAtEntity(sightOp, res, t6));
+        ASSERT_TRUE(t3->test_lookAtEntity(sightOp, res, t6.get()));
         //T6 can see T4 since T2 has an Inventory domain and T3 is wielded, and T4 is a child.
-        ASSERT_TRUE(t4->test_lookAtEntity(sightOp, res, t6));
+        ASSERT_TRUE(t4->test_lookAtEntity(sightOp, res, t6.get()));
         //T6 can't see T5 since T2 has an Inventory domain and T5 isn't wielded.
-        ASSERT_FALSE(t5->test_lookAtEntity(sightOp, res, t6));
+        ASSERT_FALSE(t5->test_lookAtEntity(sightOp, res, t6.get()));
 
         ASSERT_TRUE(verifyBroadcastContains(t1, {t1}));
         ASSERT_TRUE(verifyBroadcastContains(t2, {t2, t1}));
@@ -430,20 +430,20 @@ void ThingIntegration::test_visibility()
         Operation sightOp;
         OpVector res;
         //T1 can see itself
-        ASSERT_TRUE(t1->test_lookAtEntity(sightOp, res, t1));
+        ASSERT_TRUE(t1->test_lookAtEntity(sightOp, res, t1.get()));
         //T1 can see T2 since it's a child and there's no domain
-        ASSERT_TRUE(t2->test_lookAtEntity(sightOp, res, t1));
+        ASSERT_TRUE(t2->test_lookAtEntity(sightOp, res, t1.get()));
         //T1 can't see T3 since T2 has an Physical domain and T1 is a parent.
-        ASSERT_FALSE(t3->test_lookAtEntity(sightOp, res, t1));
+        ASSERT_FALSE(t3->test_lookAtEntity(sightOp, res, t1.get()));
         //T1 can't see T4 since T2 has an Physical domain and T1 is a parent.
-        ASSERT_FALSE(t4->test_lookAtEntity(sightOp, res, t1));
+        ASSERT_FALSE(t4->test_lookAtEntity(sightOp, res, t1.get()));
 
         //T5 can see T3 since T2 has an Physical domain .
-        ASSERT_TRUE(t3->test_lookAtEntity(sightOp, res, t5));
+        ASSERT_TRUE(t3->test_lookAtEntity(sightOp, res, t5.get()));
         //T5 can see T4 since T2 has an Physical domain, T3 has an Inventory Domain and is close, and T4 is wielded.
-        ASSERT_TRUE(t4->test_lookAtEntity(sightOp, res, t5));
+        ASSERT_TRUE(t4->test_lookAtEntity(sightOp, res, t5.get()));
         //T5 can't see T6 since T2 has an Physical domain, T3 has an Inventory Domain and is close, and T6 isn't wielded.
-        ASSERT_FALSE(t6->test_lookAtEntity(sightOp, res, t5));
+        ASSERT_FALSE(t6->test_lookAtEntity(sightOp, res, t5.get()));
 
         ASSERT_TRUE(verifyBroadcastContains(t1, {t1}));
         ASSERT_TRUE(verifyBroadcastContains(t2, {t1, t2, t3, t5}));
@@ -504,13 +504,13 @@ void ThingIntegration::test_visibility()
         Operation sightOp;
         OpVector res;
         //T3 can see t4 since it's wielded
-        ASSERT_TRUE(t4->test_lookAtEntity(sightOp, res, t3));
+        ASSERT_TRUE(t4->test_lookAtEntity(sightOp, res, t3.get()));
         //"creator" can see t4 since it's wielded
-        ASSERT_TRUE(t4->test_lookAtEntity(sightOp, res, creator));
+        ASSERT_TRUE(t4->test_lookAtEntity(sightOp, res, creator.get()));
         //T3 can't see t5 since it's not wielded
-        ASSERT_FALSE(t5->test_lookAtEntity(sightOp, res, t3));
+        ASSERT_FALSE(t5->test_lookAtEntity(sightOp, res, t3.get()));
         //"creator" can see t5 since it's a "creator"
-        ASSERT_TRUE(t5->test_lookAtEntity(sightOp, res, creator));
+        ASSERT_TRUE(t5->test_lookAtEntity(sightOp, res, creator.get()));
 
         ASSERT_TRUE(verifyBroadcastContains(t4, {t1, t2, t3, t4, creator}));
         ASSERT_TRUE(verifyBroadcastContains(t5, {t2, t5})); //broadcasts won't be sent to creator, since they will be stopped at T2

@@ -101,7 +101,7 @@ void LocatedEntity::makeContainer()
 }
 
 #define STUB_LocatedEntity_changeContainer
-void LocatedEntity::changeContainer(LocatedEntity * new_loc)
+void LocatedEntity::changeContainer(const Ref<LocatedEntity>& new_loc)
 {
     assert(m_location.m_loc != nullptr);
     assert(m_location.m_loc->m_contains != nullptr);
@@ -116,9 +116,8 @@ void LocatedEntity::changeContainer(LocatedEntity * new_loc)
         new_loc->onUpdated();
     }
     assert(m_location.m_loc->checkRef() > 0);
-    LocatedEntity* oldLoc = m_location.m_loc;
+    auto oldLoc = m_location.m_loc;
     m_location.m_loc = new_loc;
-    m_location.m_loc->incRef();
     assert(m_location.m_loc->checkRef() > 0);
 
     onContainered(oldLoc);
@@ -146,12 +145,12 @@ void addToEntity(const Point3D & p, std::vector<double> & vd)
 
 #ifndef STUB_BaseWorld_getEntity
 #define STUB_BaseWorld_getEntity
-LocatedEntity* BaseWorld::getEntity(const std::string & id) const
+Ref<LocatedEntity> BaseWorld::getEntity(const std::string & id) const
 {
     return getEntity(integerId(id));
 }
 
-LocatedEntity* BaseWorld::getEntity(long id) const
+Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 {
     auto I = m_eobjects.find(id);
     if (I != m_eobjects.end()) {

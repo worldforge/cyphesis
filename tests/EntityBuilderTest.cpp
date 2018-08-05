@@ -134,14 +134,14 @@ void EntityBuildertest::test_sequence2()
     Anonymous attributes;
 
     // Create a normal Entity
-    LocatedEntity * test_ent = EntityBuilder::instance().newEntity("1", 1, "thing", attributes, BaseWorld::instance());
-    assert(test_ent != 0);
+    auto test_ent = EntityBuilder::instance().newEntity("1", 1, "thing", attributes, BaseWorld::instance());
+    assert(test_ent);
 
     // Create an entity specifying an attrbute
     attributes->setAttr("funky", "true");
 
     test_ent = EntityBuilder::instance().newEntity("1", 1, "thing", attributes, BaseWorld::instance());
-    assert(test_ent != 0);
+    assert(test_ent);
 
     // Create an entity causing VELOCITY to be set
     attributes = Anonymous();
@@ -151,7 +151,7 @@ void EntityBuildertest::test_sequence2()
     LocatedEntity_merge_action = SET_VELOCITY;
 
     test_ent = EntityBuilder::instance().newEntity("1", 1, "thing", attributes, BaseWorld::instance());
-    assert(test_ent != 0);
+    assert(test_ent);
 
     LocatedEntity_merge_action = DO_NOTHING;
 
@@ -161,7 +161,7 @@ void EntityBuildertest::test_sequence2()
     LocatedEntity_merge_action = SET_VELOCITY;
 
     test_ent = EntityBuilder::instance().newEntity("1", 1, "thing", attributes, BaseWorld::instance());
-    assert(test_ent != 0);
+    assert(test_ent);
 
     LocatedEntity_merge_action = DO_NOTHING;
 
@@ -171,7 +171,7 @@ void EntityBuildertest::test_sequence2()
     attributes->setLoc("1");
 
     test_ent = EntityBuilder::instance().newEntity("1", 1, "thing", attributes, BaseWorld::instance());
-    assert(test_ent != 0);
+    assert(test_ent);
 }
 
 void EntityBuildertest::test_sequence3()
@@ -182,8 +182,8 @@ void EntityBuildertest::test_sequence3()
     Anonymous attributes;
 
     // Create an entity which is an instance of one of the core classes
-    LocatedEntity * test_ent = entity_factory.newEntity("1", 1, "thing", attributes, BaseWorld::instance());
-    assert(test_ent != 0);
+    auto test_ent = entity_factory.newEntity("1", 1, "thing", attributes, BaseWorld::instance());
+    assert(test_ent);
 }
 
 void EntityBuildertest::test_sequence4()
@@ -239,8 +239,8 @@ void EntityBuildertest::test_sequence4()
     assert(J->second.String() == "test_value");
 
     // Create an instance of our custom type, ensuring that it works.
-    LocatedEntity * test_ent = entity_factory.newEntity("1", 1, "custom_type", attributes, BaseWorld::instance());
-    assert(test_ent != 0);
+    auto test_ent = entity_factory.newEntity("1", 1, "custom_type", attributes, BaseWorld::instance());
+    assert(test_ent);
 
     assert(test_ent->getType() == custom_type_factory->m_type);
 
@@ -287,8 +287,8 @@ void EntityBuildertest::test_sequence5()
     assert(custom_type_factory == I->second);
 
     // Create an instance of our custom type, ensuring that it works.
-    LocatedEntity * test_ent = entity_factory.newEntity("1", 1, "custom_scripted_type", attributes, BaseWorld::instance());
-    assert(test_ent != 0);
+    auto test_ent = entity_factory.newEntity("1", 1, "custom_scripted_type", attributes, BaseWorld::instance());
+    assert(test_ent);
 
     assert(test_ent->getType() == custom_type_factory->m_type);
 }
@@ -600,12 +600,12 @@ template class Property<Atlas::Message::ListType>;
 #include "stubs/rulesets/stubTask.h"
 #ifndef STUB_BaseWorld_getEntity
 #define STUB_BaseWorld_getEntity
-LocatedEntity* BaseWorld::getEntity(const std::string & id) const
+Ref<LocatedEntity> BaseWorld::getEntity(const std::string & id) const
 {
     return getEntity(integerId(id));
 }
 
-LocatedEntity* BaseWorld::getEntity(long id) const
+Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 {
     auto I = m_eobjects.find(id);
     if (I != m_eobjects.end()) {

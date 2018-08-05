@@ -77,15 +77,15 @@ void World::LookOperation(const Operation & op, OpVector & res)
 
     //The top level entity is a little special, since its properties can be inspected by all entities, although it's children can not.
     //First check if there's a movement domain. If so we'll handle Look ops just like usually. However, if not we'll send the properties sans the "contains" property.
-    LocatedEntity * from = BaseWorld::instance().getEntity(op->getFrom());
-    if (from == nullptr) {
+    auto from = BaseWorld::instance().getEntity(op->getFrom());
+    if (!from) {
         log(ERROR, String::compose("Look op has invalid from %1. %2", op->getFrom(), describeEntity()));
         return;
     }
 
     //TODO: this does nothing. How should we handle entities with no perception_sight property which looks at things?
     // Register the entity with the world router as perceptive.
-    BaseWorld::instance().addPerceptive(from);
+    BaseWorld::instance().addPerceptive(from.get());
 
     Domain* domain = nullptr;
     if (m_location.m_loc) {
@@ -130,7 +130,7 @@ void World::DeleteOperation(const Operation & op, OpVector & res)
                     log(ERROR, "World::DeleteOperation cannot delete world unless 'force' flag is set.");
                 }
             } else {
-                BaseWorld::instance().delEntity(entity);
+                BaseWorld::instance().delEntity(entity.get());
             }
         } else {
             log(ERROR, "World::DeleteOperation got delete op with arg but no id.");
@@ -149,7 +149,7 @@ void World::clearWorld(OpVector & res) {
     if (m_contains) {
         while (!m_contains->empty()) {
 
-            LocatedEntity* entity = *m_contains->begin();
+            auto& entity = *m_contains->begin();
 
             if (entity->isPerceptive()) {
                 //Send a sight of a delete op to the entity so that it knows it has been deleted.
@@ -165,7 +165,7 @@ void World::clearWorld(OpVector & res) {
                 sToEntity->setTo(entity->getId());
                 entity->operation(sToEntity, ignoredRes);
             }
-            baseWorld.delEntity(entity);
+            baseWorld.delEntity(entity.get());
         }
     }
 

@@ -104,12 +104,12 @@ CharacterClient::CharacterClient(const std::string & id, long intId,
 {
 }
 
-LocatedEntity * CharacterClient::look(const std::string & id)
+Ref<LocatedEntity> CharacterClient::look(const std::string & id)
 {
     return 0;
 }
 
-LocatedEntity * CharacterClient::lookFor(const RootEntity & ent)
+Ref<LocatedEntity> CharacterClient::lookFor(const RootEntity & ent)
 {
     return 0;
 }
@@ -124,7 +124,7 @@ CreatorClient::CreatorClient(const std::string & id, long intId,
 {
 }
 
-LocatedEntity * CreatorClient::make(const RootEntity & entity)
+Ref<LocatedEntity> CreatorClient::make(const RootEntity & entity)
 {
     return 0;
 }

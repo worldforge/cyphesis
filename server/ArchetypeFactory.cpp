@@ -93,7 +93,7 @@ Ref<LocatedEntity> ArchetypeFactory::createEntity(const std::string & id, long i
         }
         std::string childEntityId;
         long childIntId = newId(childEntityId);
-        auto childEntity = createEntity(childEntityId, childIntId, entityI->second, entity, entities);
+        auto childEntity = createEntity(childEntityId, childIntId, entityI->second, entity.get(), entities);
         if (childEntity == nullptr) {
             log(ERROR, String::compose("Could not create child entity with id %1.", childId));
             return nullptr;
@@ -221,8 +221,7 @@ Ref<LocatedEntity> ArchetypeFactory::newEntity(const std::string & id, long intI
     if (!attributes->isDefaultPos()) {
         attrEntity->modifyPos() = attributes->getPos();
     }
-    LocatedEntity* entity = createEntity(id, intId, entityCreation, location,
-            entities);
+    auto entity = createEntity(id, intId, entityCreation, location, entities);
 
     if (entity != nullptr) {
         processResolvedAttributes(entities);

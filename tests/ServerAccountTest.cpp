@@ -349,9 +349,9 @@ void ServerAccounttest::test_addNewEntity_failed()
     std::string type_str("unimportant_string");
     RootEntity arg;
 
-    LocatedEntity * e = m_account->addNewEntity(type_str, arg, arg);
+    auto e = m_account->addNewEntity(type_str, arg, arg);
 
-    ASSERT_NULL(e);
+    ASSERT_FALSE(e);
 }
 
 void ServerAccounttest::test_addNewEntity_success()
@@ -363,9 +363,9 @@ void ServerAccounttest::test_addNewEntity_success()
     std::string type_str("unimportant_string");
     RootEntity arg;
 
-    LocatedEntity * e = m_account->addNewEntity(type_str, arg, arg);
+    auto e = m_account->addNewEntity(type_str, arg, arg);
 
-    ASSERT_EQUAL(c.get(), e);
+    ASSERT_EQUAL(c.get(), e.get());
 
     TestWorld_addNewEntity_ret_value = nullptr;
 }
@@ -377,9 +377,9 @@ void ServerAccounttest::test_addNewEntity_unconnected()
     std::string type_str("unimportant_string");
     RootEntity arg;
 
-    LocatedEntity * e = m_account->addNewEntity(type_str, arg, arg);
+    auto e = m_account->addNewEntity(type_str, arg, arg);
 
-    ASSERT_NULL(e);
+    ASSERT_FALSE(e);
 }
 
 

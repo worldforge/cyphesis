@@ -125,7 +125,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
         return;
     }
 
-    LocatedEntity* new_loc = nullptr;
+    Ref<LocatedEntity> new_loc = nullptr;
     if (ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
         const std::string& new_loc_id = ent->getLoc();
         if (new_loc_id != m_location.m_loc->getId()) {
@@ -137,7 +137,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
                 return;
             }
             debug(std::cout << "LOC: " << new_loc_id << std::endl << std::flush;);
-            LocatedEntity* test_loc = new_loc;
+            auto test_loc = new_loc;
             for (; test_loc != nullptr; test_loc = test_loc->m_location.m_loc) {
                 if (test_loc == this) {
                     error(op, "Attempt to move into itself", res, getId());
@@ -145,7 +145,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
                 }
             }
             assert(new_loc != nullptr);
-            assert(m_location.m_loc.get() != new_loc);
+            assert(m_location.m_loc != new_loc);
         }
 
     }
@@ -189,7 +189,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
     //It's expected that only admins should ever send a "planted_on" as Move ops (to build the world).
     //In all other cases we want to let regular Domain rules apply
     Element attr_plantedOn;
-    LocatedEntity* plantedOnEntity = nullptr;
+    Ref<LocatedEntity> plantedOnEntity;
     if (ent->copyAttr("planted_on", attr_plantedOn) == 0 && attr_plantedOn.isString()) {
         plantedOnEntity = BaseWorld::instance().getEntity(attr_plantedOn.String());
     }
@@ -273,7 +273,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
         if (new_loc != nullptr) {
             // new_loc should only be non-null if the LOC specified is
             // different from the current LOC
-            assert(m_location.m_loc.get() != new_loc);
+            assert(m_location.m_loc != new_loc);
             // Check for pickup, ie if the new LOC is the actor, and the
             // previous LOC is the actor's LOC.
             if (new_loc->getId() == op->getFrom() &&
@@ -329,7 +329,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
             processAppearDisappear(std::move(previousObserving), res);
         } else {
             if (updatedTransform) {
-                Domain::TransformData transformData{newOrientation, newPos, newVelocity, plantedOnEntity};
+                Domain::TransformData transformData{newOrientation, newPos, newVelocity, plantedOnEntity.get()};
                 domain->applyTransform(*this, transformData, transformedEntities);
             }
         }
@@ -635,17 +635,17 @@ void Thing::generateSightOp(const LocatedEntity& observingEntity, const Operatio
 
 void Thing::LookOperation(const Operation& op, OpVector& res)
 {
-    LocatedEntity* from = BaseWorld::instance().getEntity(op->getFrom());
-    if (from == nullptr) {
+    auto from = BaseWorld::instance().getEntity(op->getFrom());
+    if (!from) {
         log(ERROR, String::compose("Look op has invalid from %1. %2", op->getFrom(), describeEntity()));
         return;
     }
 
     //TODO: this does nothing. How should we handle entities with no perception_sight property which looks at things?
     // Register the entity with the world router as perceptive.
-    BaseWorld::instance().addPerceptive(from);
+    BaseWorld::instance().addPerceptive(from.get());
 
-    bool result = lookAtEntity(op, res, from);
+    bool result = lookAtEntity(op, res, from.get());
 
     if (!result) {
         Unseen u;

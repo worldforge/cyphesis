@@ -1,1 +1,18 @@
 //Add custom implementations of stubbed functions here; this file won't be rewritten when re-generating stubs.
+#include <Atlas/Objects/Operation.h>
+#ifndef STUB_Admin_Admin
+#define STUB_Admin_Admin
+Admin::Admin(Connection * conn, const std::string & username, const std::string & passwd, const std::string & id, long intId)
+    : Account(conn, username, passwd, id, intId)
+{
+
+}
+#endif //STUB_Admin_Admin
+
+#ifndef STUB_Admin_getType
+#define STUB_Admin_getType
+const char* Admin::getType() const
+{
+    return "admin";
+}
+#endif //STUB_Admin_getType

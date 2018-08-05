@@ -190,7 +190,7 @@ void EntityFilterTest::test_CanReach()
     //TestDomain prevents m_b1 from reaching m_b2
     {
         QueryContext c{*m_b1};
-        c.actor = m_b2;
+        c.actor = m_b2.get();
         TestContextQuery("actor can_reach entity", {}, {c});
         TestContextQuery("entity can_reach actor", {}, {c});
     }
@@ -198,7 +198,7 @@ void EntityFilterTest::test_CanReach()
     //TestDomain allows m_b1 from reaching m_bl1
     {
         QueryContext c{*m_b1};
-        c.actor = m_bl1;
+        c.actor = m_bl1.get();
         TestContextQuery("actor can_reach entity", {c}, {});
         TestContextQuery("entity can_reach actor", {c}, {});
     }
@@ -206,8 +206,8 @@ void EntityFilterTest::test_CanReach()
     //Test "with". m_glovesEntity has "reach" set, and our TestDomain will return false for any "reach" values that aren't zero
     {
         QueryContext c{*m_b1};
-        c.actor = m_bl1;
-        c.tool = m_glovesEntity;
+        c.actor = m_bl1.get();
+        c.tool = m_glovesEntity.get();
         TestContextQuery("actor can_reach entity with tool", {}, {c});
         TestContextQuery("entity can_reach actor with tool", {}, {c});
     }
@@ -215,8 +215,8 @@ void EntityFilterTest::test_CanReach()
     //m_bootsEntity has no "reach" property so should work
     {
         QueryContext c{*m_b1};
-        c.actor = m_bl1;
-        c.tool = m_bootsEntity;
+        c.actor = m_bl1.get();
+        c.tool = m_bootsEntity.get();
         TestContextQuery("actor can_reach entity with tool", {c}, {});
         TestContextQuery("entity can_reach actor with tool", {c}, {});
     }

@@ -68,12 +68,12 @@ void Stackable::CombineOperation(const Operation & op, OpVector & res)
             // This is normal
             continue;
         }
-        LocatedEntity * ent = BaseWorld::instance().getEntity(id);
-        if (ent == nullptr) {
+        auto ent = BaseWorld::instance().getEntity(id);
+        if (!ent) {
             // FIXME Send an Unseen op?
             continue;
         }
-        Stackable * obj = dynamic_cast<Stackable *>(ent);
+        Stackable * obj = dynamic_cast<Stackable *>(ent.get());
         if (obj == nullptr) { continue; }
         if (obj->m_type != m_type) { continue; }
         m_num = m_num + obj->m_num;

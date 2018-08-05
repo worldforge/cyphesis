@@ -93,9 +93,9 @@ void EntityFactorytest::teardown()
 
 void EntityFactorytest::test_newEntity()
 {
-    LocatedEntity * e = m_ek->newEntity("1", 1, Atlas::Objects::Entity::RootEntity(), nullptr);
+    auto e = m_ek->newEntity("1", 1, Atlas::Objects::Entity::RootEntity(), nullptr);
 
-    ASSERT_NOT_NULL(e);
+    ASSERT_TRUE(e);
 }
 
 void EntityFactorytest::test_destructor()
