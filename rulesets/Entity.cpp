@@ -489,21 +489,29 @@ void Entity::RelayOperation(const Operation & op, OpVector & res)
 
 }
 
+void Entity::ThoughtOperation(const Operation&, OpVector&)
+{
+}
+
+
 void Entity::externalOperation(const Operation & op, Link &)
 {
     OpVector res;
     operation(op, res);
-    OpVector::const_iterator Iend = res.end();
-    for (OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
+    for (auto& resOp : res) {
         if (!op->isDefaultSerialno()) {
-            (*I)->setRefno(op->getSerialno());
+            resOp->setRefno(op->getSerialno());
         }
-        sendWorld(*I);
+        sendWorld(resOp);
     }
 }
 
 void Entity::operation(const Operation & op, OpVector & res)
 {
+    for (auto& listener : m_listeners) {
+        listener.operation(op, res);
+    }
+
     HandlerResult hr = OPERATION_IGNORED;
     if (!m_scripts.empty()) {
         for (auto script: m_scripts) {

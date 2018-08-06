@@ -46,6 +46,7 @@
 #include "common/Unseen.h"
 #include "common/Update.h"
 #include "common/Think.h"
+#include "common/Thought.h"
 #include "TransientProperty.h"
 #include "UsagesProperty.h"
 
@@ -267,15 +268,6 @@ LocatedEntity * Character::findInContains(LocatedEntity * ent,
     return nullptr;
 }
 
-/// \brief Search for an entity in the Character's inventory
-///
-/// Implemented using the recursive function findInContains.
-/// @param id Identifier of entity to search for
-LocatedEntity * Character::findInInventory(const std::string & id)
-{
-    return findInContains(this, id);
-}
-
 /// \brief Character constructor
 ///
 /// @param id String identifier
@@ -306,11 +298,11 @@ Character::~Character()
 
 int Character::linkExternal(Link * link)
 {
-    if (m_externalMind == nullptr) {
+    //if (m_externalMind == nullptr) {
         m_externalMind = new ExternalMind(*this);
-    } else if (m_externalMind->isLinked()) {
-        return -1;
-    }
+    //} else if (m_externalMind->isLinked()) {
+    //    return -1;
+    //}
     m_externalMind->linkUp(link);
 
     if (getProperty("external") == nullptr) {
@@ -1635,6 +1627,18 @@ void Character::sendMind(const Operation & op, OpVector & res)
     }
 }
 
+void Character::ThoughtOperation(const Operation& op, OpVector& res)
+{
+    //Extract the inner thought ops.
+    for (auto& innerObj : op->getArgs()) {
+        auto innerOp = smart_dynamic_cast<Operation>(innerObj);
+        if (innerOp) {
+            filterExternalOperation(innerOp);
+        }
+    }
+
+}
+
 /// \brief Filter operations from the mind destined for the body.
 ///
 /// Operations from the character's mind which is either an NPC mind,
@@ -1779,14 +1783,12 @@ void Character::filterExternalOperation(const Operation & op)
     }
 }
 
-void Character::operation(const Operation & op, OpVector & res)
+void Character::operation(const Operation& op, OpVector& res)
 {
-    debug(std::cout << "Character::operation(" << op->getParent() << ") " << describeEntity() << std::endl << std::flush
-    ;);
+    debug(std::cout << "Character::operation(" << op->getParent() << ") " << describeEntity() << std::endl << std::flush;);
     Entity::operation(op, res);
     if (world2mind(op)) {
-        debug(std::cout << "Character::operation(" << op->getParent() << ") passed to mind" << std::endl << std::flush
-        ;);
+        debug_print("Character::operation(" << op->getParent() << ") passed to mind");
         OpVector mres;
         sendMind(op, mres);
         OpVector::const_iterator Iend = mres.end();
@@ -1800,18 +1802,18 @@ void Character::externalOperation(const Operation & op, Link & link)
 {
     debug(std::cout << "Character::externalOperation(" << op->getParent() << ") " << describeEntity() << std::endl << std::flush
     ;);
-    if (linkExternal(&link) == 0) {
-        debug(std::cout << "Subscribing existing character" << std::endl << std::flush
-        ;);
-
-        Info info;
-        Anonymous info_arg;
-        addToEntity(info_arg);
-        info->setArgs1(info_arg);
-
-        link.send(info);
-
-        logEvent(TAKE_CHAR, String::compose("%1 - %2 Taken character (%3)", getId(), link.getId(), m_type ? m_type->name() : "none"));
+    if (op->getClassNo() != Atlas::Objects::Operation::THOUGHT_NO) {
+        OpVector res;
+        clientError(op, "An entity can only be externally controlled by Thoughts.", res, getId());
+        for (auto& resOp : res) {
+            link.send(resOp);
+        }
     }
-    filterExternalOperation(op);
+
+    OpVector res;
+    operation(op, res);
+    for (auto& resOp : res) {
+        sendWorld(resOp);
+    }
+
 }

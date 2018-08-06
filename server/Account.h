@@ -125,6 +125,7 @@ class Account : public ConnectableRouter {
     virtual void LookOperation(const Operation &, OpVector &);
     virtual void GetOperation(const Operation &, OpVector &);
     virtual void OtherOperation(const Operation &, OpVector &);
+    virtual void PossessOperation(const Operation &, OpVector &);
 
     void addCharacter(LocatedEntity *);
 
@@ -135,6 +136,8 @@ class Account : public ConnectableRouter {
 
     friend class Accounttest;
     friend class Accountintegration;
+
+        void possessEntity(LocatedEntity* entity, const Operation& op, OpVector& res);
 };
 
 #endif // SERVER_ACCOUNT_H

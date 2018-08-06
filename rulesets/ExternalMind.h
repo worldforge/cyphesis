@@ -57,6 +57,9 @@ class ExternalMind : public Router {
     Link* getLink() const {
         return m_link;
     }
+
+    void addToEntity(const Atlas::Objects::Entity::RootEntity &) const override;
+
 };
 
 #endif // RULESETS_EXTERNAL_MIND_H

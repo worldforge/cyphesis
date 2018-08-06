@@ -96,6 +96,14 @@ int Account::connectCharacter(LocatedEntity *chr)
                                          getId(), m_username, chr->getId(), character->m_externalMind->getLink()));
             return -2;
         }
+        m_connection->addObject(character->m_externalMind);
+
+        //Inform the client about the mind.
+        Info mindInfo{};
+        Anonymous mindEntity;
+        character->m_externalMind->addToEntity(mindEntity);
+        mindInfo->setArgs1(mindEntity);
+        m_connection->send(mindInfo);
 
         // Only genuinely playable characters should go in here. Otherwise
         // if a normal entity gets into the account, and connection, it
@@ -335,7 +343,11 @@ void Account::processExternalOperation(const Operation & op, OpVector& res) {
         case OP_INVALID:
             break;
         default:
-            OtherOperation(op, res);
+            if (op_no == Atlas::Objects::Operation::POSSESS_NO) {
+                PossessOperation(op, res);
+            } else {
+                OtherOperation(op, res);
+            }
             break;
     }
 }
@@ -589,6 +601,85 @@ void Account::TalkOperation(const Operation & op, OpVector & res)
         m_connection->m_server.m_lobby.operation(s, res);
     }
 }
+
+void Account::PossessOperation(const Operation &op, OpVector &res)
+{
+    if (!m_connection) {
+        return;
+    }
+    auto& args = op->getArgs();
+    if (args.empty()) {
+        clientError(op, "Empty args in possess op.", res, getId());
+        return;
+    }
+    auto& arg = args.front();
+
+    // FIXME In the possess case this ID isn't really required
+    if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+        error(op, "No target for look", res, getId());
+        return;
+    }
+    const std::string & to = arg->getId();
+
+    long intId = integerId(to);
+
+    // Check for a possess key attached to the argument of the Look op. If
+    // we have one, this is a request to transfer a character to this account.
+    // Authenticate the requested character with the possess key found and if
+    // successful, add the character to this account.
+    Element key;
+    if (arg->copyAttr("possess_key", key) == 0 && key.isString()) {
+        const std::string & key_str = key.String();
+        auto character = PossessionAuthenticator::instance().authenticatePossession(to, key_str);
+        // FIXME Not finding the character should be fatal
+        // FIXME TA needs to generate clientError ops for the client
+        if (character) {
+            // FIXME If we don't succeed in connecting, no need to carry on
+            // and we probably need to indicate to the client
+            if (connectCharacter(character.get()) == 0) {
+                PossessionAuthenticator::instance().removePossession(to);
+                logEvent(POSSESS_CHAR,
+                         String::compose("%1 %2 %3 Claimed character (%4) "
+                                         "by account %5",
+                                         m_connection->getId(),
+                                         getId(),
+                                         character->getId(),
+                                         character->getType(),
+                                         m_username));
+            }
+        }
+    }
+    auto J = m_charactersDict.find(intId);
+    if (J != m_charactersDict.end()) {
+        possessEntity(J->second, op, res);
+        return;
+    }
+    clientError(op, String::compose("Could not find character '%1' to possess.", to), res, getId());
+
+
+}
+
+void Account::possessEntity(LocatedEntity* entity, const Operation& op, OpVector& res)
+{
+    Character * character = dynamic_cast<Character *>(entity);
+    if (character) {
+        if (character->linkExternal(m_connection) != 0) {
+            log(WARNING, String::compose("Account %1 (%2) could not take character %3 as it "
+                                         "already is connected to an external mind with id %4.",
+                                         getId(), m_username, character->getId(), character->m_externalMind->getLink()));
+            return;
+        }
+        m_connection->addObject(character->m_externalMind);
+
+        //Inform the client about the mind.
+        Info mindInfo{};
+        Anonymous mindEntity;
+        character->m_externalMind->addToEntity(mindEntity);
+        mindInfo->setArgs1(mindEntity);
+        res.push_back(mindInfo);
+    }
+}
+
 
 void Account::LookOperation(const Operation & op, OpVector & res)
 {

@@ -26,6 +26,8 @@
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
+#include <common/Think.h>
+#include <common/Thought.h>
 
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
@@ -72,9 +74,31 @@ ExternalMind::ExternalMind(LocatedEntity & e) : Router(e.getId(), e.getIntId()),
 {
 }
 
-void ExternalMind::externalOperation(const Operation & op, Link &)
+void ExternalMind::addToEntity(const Atlas::Objects::Entity::RootEntity& ent) const
 {
-    log(ERROR, String::compose("%1 called", __PRETTY_FUNCTION__));
+    ent->setObjtype("obj");
+    ent->setId(getId());
+
+    Anonymous entityAttr;
+    entityAttr->setId(m_entity.getId());
+    ent->setAttr("entity", entityAttr->asMessage());
+}
+
+
+void ExternalMind::externalOperation(const Operation & op, Link & link)
+{
+    //The entity only allows external Thought ops, so we need to wrap the ones we receive from the client.
+    Atlas::Objects::Operation::Thought thought{};
+    thought->setTo(m_entity.getId());
+    thought->setArgs1(op);
+
+    OpVector res;
+    m_entity.operation(thought, res);
+
+    for (auto& resOp : res) {
+        m_entity.sendWorld(resOp);
+    }
+
 }
 
 void ExternalMind::operation(const Operation & op, OpVector & res)

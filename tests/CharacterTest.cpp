@@ -79,6 +79,8 @@
 #include <cstdlib>
 
 #include <cassert>
+#include <rulesets/ExternalMind.h>
+
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;

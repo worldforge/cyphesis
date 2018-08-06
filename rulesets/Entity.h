@@ -44,9 +44,12 @@ class Entity : public LocatedEntity {
     /// per type.
     static std::unordered_map<const TypeNode*, std::unique_ptr<int>> s_monitorsMap;
 
+
   public:
     explicit Entity(const std::string & id, long intId);
     ~Entity() override;
+
+    std::vector<Router> m_listeners;
 
     void setType(const TypeNode * t) override;
 
@@ -84,9 +87,10 @@ class Entity : public LocatedEntity {
     virtual void UseOperation(const Operation &, OpVector &);
     virtual void WieldOperation(const Operation &, OpVector &);
     virtual void RelayOperation(const Operation &, OpVector &);
+    virtual void ThoughtOperation(const Operation &, OpVector &);
 
-    virtual void externalOperation(const Operation & op, Link &);
-    virtual void operation(const Operation &, OpVector &);
+    void externalOperation(const Operation & op, Link &) override;
+    void operation(const Operation &, OpVector &) override;
 
     HandlerResult callDelegate(const std::string &,
                                const Operation &,

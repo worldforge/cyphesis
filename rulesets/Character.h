@@ -115,29 +115,26 @@ class Character : public Thing, public virtual sigc::trackable {
     sigc::signal<void> externalLinkChanged;
 
     explicit Character(const std::string & id, long intId);
-    virtual ~Character();
+    ~Character() override;
 
     int linkExternal(Link *);
     int unlinkExternal(Link *);
-
-    int startTask(Ref<Task>, const Operation & op, OpVector &);
-    void updateTask(OpVector &);
-    void clearTask(OpVector &);
 
     void destroy() override;
 
     std::vector<Atlas::Objects::Root> getThoughts() const override;
 
-    virtual void operation(const Operation & op, OpVector &);
-    virtual void externalOperation(const Operation & op, Link &);
+    void operation(const Operation & op, OpVector &) override;
+    void externalOperation(const Operation & op, Link &) override;
 
-    virtual void ImaginaryOperation(const Operation & op, OpVector &);
-    virtual void TickOperation(const Operation & op, OpVector &);
-    virtual void TalkOperation(const Operation & op, OpVector &);
-    virtual void NourishOperation(const Operation & op, OpVector &);
-    virtual void WieldOperation(const Operation & op, OpVector &);
-    virtual void ActuateOperation(const Operation & op, OpVector &);
-    virtual void RelayOperation(const Operation &, OpVector &);
+    void ImaginaryOperation(const Operation & op, OpVector &) override;
+    void TickOperation(const Operation & op, OpVector &) override;
+    void TalkOperation(const Operation & op, OpVector &) override;
+    void NourishOperation(const Operation & op, OpVector &) override;
+    void WieldOperation(const Operation & op, OpVector &) override;
+    void ActuateOperation(const Operation & op, OpVector &) override;
+    void RelayOperation(const Operation &, OpVector &) override;
+    void ThoughtOperation(const Operation&, OpVector&) override;
 
     virtual void mindActuateOperation(const Operation &, OpVector &);
     virtual void mindCombineOperation(const Operation &, OpVector &);

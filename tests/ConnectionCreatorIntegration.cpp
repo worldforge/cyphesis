@@ -42,6 +42,8 @@
 #include <cstring>
 
 #include <cassert>
+#include <rulesets/Entity.h>
+
 
 using Atlas::Objects::Operation::RootOperation;
 using String::compose;
