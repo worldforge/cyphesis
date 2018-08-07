@@ -24,6 +24,7 @@
 #include "rulesets/ExternalMind.h"
 #include "Persistence.h"
 #include "PossessionAuthenticator.h"
+#include "common/custom.h"
 
 #include "rulesets/Character.h"
 
@@ -37,6 +38,7 @@
 #include <Atlas/Objects/Anonymous.h>
 
 #include <sigc++/adaptors/bind.h>
+#include <rulesets/MindsProperty.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -76,6 +78,12 @@ Account::Account(Connection * conn,
 /// @param id Integer identifier of the Character destroyed.
 void Account::characterDestroyed(long id)
 {
+    //Delete any mind attached to this character
+    auto I = m_minds.find(id);
+    if (I != m_minds.end()) {
+        m_connection->removeObject(I->second->getIntId());
+        delete I->second;
+    }
     m_charactersDict.erase(id);
     if (isPersisted()) {
         Persistence::instance().delCharacter(String::compose("%1", id));
@@ -86,37 +94,53 @@ void Account::characterDestroyed(long id)
 ///
 /// \brief chr The character to connect to this account
 /// \return Returns 0 on success and -1 on failure.
-int Account::connectCharacter(LocatedEntity *chr)
+int Account::connectCharacter(LocatedEntity *chr, OpVector& res)
 {
-    Character * character = dynamic_cast<Character *>(chr);
-    if (character) {
-        if (character->linkExternal(m_connection) != 0) {
-            log(WARNING, String::compose("Account %1 (%2) could not take character %3 as it "
-                "already is connected to an external mind with id %4.",
-                                         getId(), m_username, chr->getId(), character->m_externalMind->getLink()));
-            return -2;
-        }
-        m_connection->addObject(character->m_externalMind);
+    //Create an external mind and hook it up with the entity
+    std::string strId;
 
-        //Inform the client about the mind.
-        Info mindInfo{};
-        Anonymous mindEntity;
-        character->m_externalMind->addToEntity(mindEntity);
-        mindInfo->setArgs1(mindEntity);
-        m_connection->send(mindInfo);
+    auto id = newId(strId);
+    auto mind = new ExternalMind(strId, id, *chr);
+    mind->linkUp(m_connection);
 
-        // Only genuinely playable characters should go in here. Otherwise
-        // if a normal entity gets into the account, and connection, it
-        // starts getting hard to tell whether or not they exist.
-        m_charactersDict[chr->getIntId()] = chr;
-        chr->destroyed.connect(sigc::bind(sigc::mem_fun(this, &Account::characterDestroyed), chr->getIntId()));
-        m_connection->addEntity(chr);
-        if (isPersisted()) {
-            Persistence::instance().addCharacter(*this, *chr);
-        }
-        return 0;
+    auto mindsProp = chr->requirePropertyClassFixed<MindsProperty>();
+    mindsProp->m_data.push_back(mind);
+
+    m_connection->addObject(mind);
+
+    //Inform the client about the mind.
+    //Inform the client about the mind.
+    Info mindInfo{};
+    Anonymous mindEntity;
+    mind->addToEntity(mindEntity);
+    mindInfo->setArgs1(mindEntity);
+    res.push_back(mindInfo);
+
+    m_charactersDict[chr->getIntId()] = chr;
+    m_minds.emplace(chr->getIntId(), mind);
+    chr->destroyed.connect(sigc::bind(sigc::mem_fun(this, &Account::characterDestroyed), chr->getIntId()));
+    //m_connection->addEntity(chr);
+    if (isPersisted()) {
+        Persistence::instance().addCharacter(*this, *chr);
     }
-    return -1;
+    return 0;
+
+//    //Now that we're connected we need to send any thoughts that we've been given to the mind client.
+//    auto thoughts = m_proxyMind->getThoughts();
+//    //We need to clear the existing thoughts since we'll be sending them anew; else we'll end up with duplicates.
+//    m_proxyMind->clearThoughts();
+//    Atlas::Objects::Operation::Think think;
+//    Atlas::Objects::Operation::Set setThoughts;
+//    setThoughts->setArgs(thoughts);
+//    think->setArgs1(setThoughts);
+//    think->setTo(getId());
+//    sendWorld(think);
+//
+//    externalLinkChanged.emit();
+
+
+
+
 }
 
 /// \brief Add a Character to those that belong to this Account
@@ -124,10 +148,6 @@ int Account::connectCharacter(LocatedEntity *chr)
 /// @param chr Character object to be adddded
 void Account::addCharacter(LocatedEntity * chr)
 {
-    Character * pchar = dynamic_cast<Character *>(chr);
-    if (pchar == nullptr) {
-        return;
-    }
     m_charactersDict[chr->getIntId()] = chr;
     chr->destroyed.connect(sigc::bind(sigc::mem_fun(this, &Account::characterDestroyed), chr->getIntId()));
 }
@@ -138,7 +158,7 @@ void Account::addCharacter(LocatedEntity * chr)
 /// @param ent Atlas description of the Character to be created
 Ref<LocatedEntity> Account::addNewCharacter(const std::string & typestr,
                                          const RootEntity & ent,
-                                         const Root & arg)
+                                         const Root & arg, OpVector& res)
 {
     if (m_connection == nullptr) {
         return nullptr;
@@ -153,7 +173,7 @@ Ref<LocatedEntity> Account::addNewCharacter(const std::string & typestr,
     debug(std::cout << "Added" << std::endl << std::flush;);
     assert(chr->m_location.isValid());
     debug(std::cout << "Location set to: " << chr->m_location << std::endl << std::flush;);
-    connectCharacter(chr.get());
+    connectCharacter(chr.get(), res);
 
     logEvent(TAKE_CHAR, String::compose("%1 %2 %3 Created character (%4) "
                                         "by account %5",
@@ -403,7 +423,7 @@ void Account::createObject(const std::string & type_str,
         }
     }
 
-    auto entity = addNewCharacter(type_str, new_character, arg);
+    auto entity = addNewCharacter(type_str, new_character, arg, res);
 
     if (entity == nullptr) {
         error(op, "Character creation failed", res, getId());
@@ -636,7 +656,7 @@ void Account::PossessOperation(const Operation &op, OpVector &res)
         if (character) {
             // FIXME If we don't succeed in connecting, no need to carry on
             // and we probably need to indicate to the client
-            if (connectCharacter(character.get()) == 0) {
+            if (connectCharacter(character.get(), res) == 0) {
                 PossessionAuthenticator::instance().removePossession(to);
                 logEvent(POSSESS_CHAR,
                          String::compose("%1 %2 %3 Claimed character (%4) "
@@ -651,7 +671,7 @@ void Account::PossessOperation(const Operation &op, OpVector &res)
     }
     auto J = m_charactersDict.find(intId);
     if (J != m_charactersDict.end()) {
-        possessEntity(J->second, op, res);
+        connectCharacter(J->second, res);
         return;
     }
     clientError(op, String::compose("Could not find character '%1' to possess.", to), res, getId());
@@ -696,7 +716,6 @@ void Account::LookOperation(const Operation & op, OpVector & res)
         res.push_back(s);
         return;
     }
-    // FIXME In the possess case this ID isn't really required
     const Root & arg = args.front();
     if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         error(op, "No target for look", res, getId());
@@ -706,35 +725,7 @@ void Account::LookOperation(const Operation & op, OpVector & res)
 
     long intId = integerId(to);
 
-    // Check for a possess key attached to the argument of the Look op. If 
-    // we have one, this is a request to transfer a character to this account.
-    // Authenticate the requested character with the possess key found and if
-    // successful, add the character to this account.
-    Element key;
-    if (arg->copyAttr("possess_key", key) == 0 && key.isString()) {
-        const std::string & key_str = key.String();
-        auto character = PossessionAuthenticator::instance().authenticatePossession(to, key_str);
-        // FIXME Not finding the character should be fatal
-        // FIXME TA needs to generate clientError ops for the client
-        if (character) {
-            // FIXME If we don't succeed in connecting, no need to carry on
-            // and we probably need to indicate to the client
-            if (connectCharacter(character.get()) == 0) {
-                PossessionAuthenticator::instance().removePossession(to);
-                logEvent(POSSESS_CHAR,
-                         String::compose("%1 %2 %3 Claimed character (%4) "
-                                         "by account %5",
-                                         m_connection->getId(),
-                                         getId(),
-                                         character->getId(),
-                                         character->getType(),
-                                         m_username));
-            }
-        }
-    }
-
-    // FIXME Avoid this lookup if we just took possession of a character
-    EntityDict::const_iterator J = m_charactersDict.find(intId);
+    auto J = m_charactersDict.find(intId);
     if (J != m_charactersDict.end()) {
         Sight s;
         s->setTo(getId());
@@ -744,7 +735,7 @@ void Account::LookOperation(const Operation & op, OpVector & res)
         res.push_back(s);
         return;
     }
-    const AccountDict & accounts = m_connection->m_server.m_lobby.getAccounts();
+    auto& accounts = m_connection->m_server.m_lobby.getAccounts();
     auto K = accounts.find(to);
     if (K != accounts.end()) {
         Sight s;

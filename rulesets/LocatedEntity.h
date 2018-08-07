@@ -275,6 +275,9 @@ class LocatedEntity : public Router {
     /// \brief Removes a child from this entity.
     virtual void removeChild(LocatedEntity& childEntity);
 
+    virtual void addListener(OperationsListener* listener);
+    virtual void removeListener(OperationsListener* listener);
+
 
     /**
      * Collects all entities that are observing this entity.

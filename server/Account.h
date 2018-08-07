@@ -34,6 +34,7 @@ namespace Atlas {
 
 class Connection;
 class LocatedEntity;
+class ExternalMind;
 
 typedef std::map<long, LocatedEntity *> EntityDict;
 
@@ -52,9 +53,11 @@ class Account : public ConnectableRouter {
     /// \brief The password used to authenticate this account
     std::string m_password;
 
+    std::map<long, ExternalMind*> m_minds;
+
     Ref<LocatedEntity> addNewCharacter(const std::string &,
                                     const Atlas::Objects::Entity::RootEntity &,
-                                    const Atlas::Objects::Root &);
+                                    const Atlas::Objects::Root &, OpVector& res);
     void characterDestroyed(long);
 
     /// \brief Check a character creation op is within the privelege levels
@@ -84,7 +87,7 @@ class Account : public ConnectableRouter {
 
   public:
     /// \brief Connect and add a character to this account
-    int connectCharacter(LocatedEntity *chr);
+    int connectCharacter(LocatedEntity *chr, OpVector& res);
 
     Account(Connection * conn, const std::string & username,
                                const std::string & passwd,

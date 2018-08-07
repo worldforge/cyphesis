@@ -30,7 +30,7 @@ class TypeNode;
 /// \brief Interface for Entity properties
 ///
 /// \ingroup PropertyClasses
-class PropertyBase {
+class PropertyBase : public OperationsListener {
   protected:
     /// \brief Flags indicating how this Property should be handled
     Flags m_flags;

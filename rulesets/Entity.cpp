@@ -236,17 +236,12 @@ void Entity::addToMessage(MapType & omap) const
 void Entity::addToEntity(const RootEntity & ent) const
 {
     // We need to have a list of keys to pull from attributes.
-    PropertyDict::const_iterator J;
-    PropertyDict::const_iterator Jend;
-
-    J = m_properties.begin();
-    Jend = m_properties.end();
-    for (; J != Jend; ++J) {
-        J->second->add(J->first, ent);
+    for (auto& entry : m_properties) {
+        entry.second->add(entry.first, ent);
     }
 
     ent->setStamp(m_seq);
-    if (m_type != 0) {
+    if (m_type != nullptr) {
         ent->setParent(m_type->name());
     }
     m_location.addToEntity(ent);
@@ -493,6 +488,20 @@ void Entity::ThoughtOperation(const Operation&, OpVector&)
 {
 }
 
+void Entity::addListener(OperationsListener* listener)
+{
+    if (std::find(m_listeners.begin(), m_listeners.end(), listener) == m_listeners.end()) {
+        m_listeners.push_back(listener);
+    }
+}
+
+void Entity::removeListener(OperationsListener* listener)
+{
+    auto I = std::find(m_listeners.begin(), m_listeners.end(), listener);
+    if (I != m_listeners.end()) {
+        m_listeners.erase(I);
+    }
+}
 
 void Entity::externalOperation(const Operation & op, Link &)
 {
@@ -508,11 +517,12 @@ void Entity::externalOperation(const Operation & op, Link &)
 
 void Entity::operation(const Operation & op, OpVector & res)
 {
+    HandlerResult hr = OPERATION_IGNORED;
+    //TODO: decide on whether we should honour result here?
     for (auto& listener : m_listeners) {
-        listener.operation(op, res);
+        listener->operation(this, op, res);
     }
 
-    HandlerResult hr = OPERATION_IGNORED;
     if (!m_scripts.empty()) {
         for (auto script: m_scripts) {
             auto hr_call = script->operation(op->getParent(), op, res);
@@ -535,17 +545,6 @@ void Entity::operation(const Operation & op, OpVector & res)
                 hr = hr_call;
             }
         }
-        // How to access the property? We need a non-const pointer to call
-        // operation, but to get this easily we need to force instantiation
-        // from the type dict, making properties way less efficient.
-        // Making the operation() method const strongly limits the usefulness
-        // of delegates, but if we fetch the pointer the hard way, we then
-        // require the method to handle instantiation on demand.
-        //
-        // Can we make a clean way to handle the property in the general case
-        // handle instantiation itself? Making it responsible for copying
-        // itself on instantiation would be faster than the
-        // get/set/PropertyManager currently required in in modProperty.
     }
     //If the operation was blocked we shouldn't send it on to the entity.
     if (hr == OPERATION_BLOCKED) {
@@ -558,17 +557,17 @@ HandlerResult Entity::callDelegate(const std::string & name,
                                    const Operation & op,
                                    OpVector & res)
 {
-    PropertyBase * p = 0;
+    PropertyBase * p = nullptr;
     PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
         p = I->second;
-    } else if (m_type != 0) {
+    } else if (m_type != nullptr) {
         I = m_type->defaults().find(name); 
         if (I != m_type->defaults().end()) {
             p = I->second;
         }
     }
-    if (p != 0) {
+    if (p != nullptr) {
         return p->operation(this, op, res);
     }
     return OPERATION_IGNORED;

@@ -24,6 +24,8 @@
 #include <iostream>
 #include <unordered_map>
 
+class OperationsListener;
+
 /// \brief This is the base class from which all in-game objects inherit.
 ///
 /// This class should not normally be instantiated directly.
@@ -49,7 +51,7 @@ class Entity : public LocatedEntity {
     explicit Entity(const std::string & id, long intId);
     ~Entity() override;
 
-    std::vector<Router> m_listeners;
+    std::vector<OperationsListener*> m_listeners;
 
     void setType(const TypeNode * t) override;
 
@@ -113,6 +115,10 @@ class Entity : public LocatedEntity {
     const Domain * getDomain() const override ;
 
     void sendWorld(const Operation & op) override;
+
+    void addListener(OperationsListener* listener) override;
+    void removeListener(OperationsListener* listener) override;
+
 
     friend class Entitytest;
     friend class PropertyEntityintegration;

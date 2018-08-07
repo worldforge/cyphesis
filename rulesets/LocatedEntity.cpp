@@ -427,6 +427,16 @@ void LocatedEntity::removeChild(LocatedEntity& childEntity)
     }
 }
 
+void LocatedEntity::addListener(OperationsListener* listener)
+{
+    //No-op in LocatedEntity
+}
+
+void LocatedEntity::removeListener(OperationsListener* listener)
+{
+    //No-op in LocatedEntity
+}
+
 bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* watcher) const
 {
     //Are we looking at ourselves?

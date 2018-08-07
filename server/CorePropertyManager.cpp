@@ -73,6 +73,7 @@
 #include <iostream>
 #include <rulesets/ScriptsProperty.h>
 #include <rulesets/UsagesProperty.h>
+#include <rulesets/MindsProperty.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -278,6 +279,8 @@ CorePropertyManager::CorePropertyManager()
      * This could be used on a magic scroll for example.
      */
     installProperty<Property<double>>("ready_at")->m_flags |= per_ephem;
+
+    installProperty<MindsProperty>();
 }
 
 int CorePropertyManager::installFactory(const std::string & type_name,

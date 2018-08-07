@@ -68,7 +68,7 @@ add_library(rulesetentity
     UsagesProperty.cpp UsagesProperty.h
     WorldTimeProperty.cpp
     UsageInstance.cpp UsageInstance.h
-    ScriptUtils.cpp ScriptUtils.h)
+    ScriptUtils.cpp ScriptUtils.h MindsProperty.cpp MindsProperty.h)
 
 target_link_libraries(rulesetentity ${BULLET_LIBRARIES})
 

@@ -67,7 +67,7 @@ void ExternalMind::purgeEntity(const LocatedEntity & ent, bool forceDelete)
     deleteEntity(ent.getId(), forceDelete);
 }
 
-ExternalMind::ExternalMind(LocatedEntity & e) : Router(e.getId(), e.getIntId()),
+ExternalMind::ExternalMind(std::string strId, long id, LocatedEntity & e) : Router(strId, id),
                                                 m_link(nullptr),
                                                 m_entity(e),
                                                 m_lossTime(0.)
@@ -87,7 +87,7 @@ void ExternalMind::addToEntity(const Atlas::Objects::Entity::RootEntity& ent) co
 
 void ExternalMind::externalOperation(const Operation & op, Link & link)
 {
-    //The entity only allows external Thought ops, so we need to wrap the ones we receive from the client.
+    //Any ops coming from the mind must be Thought ops.
     Atlas::Objects::Operation::Thought thought{};
     thought->setTo(m_entity.getId());
     thought->setArgs1(op);

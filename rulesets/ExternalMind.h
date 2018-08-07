@@ -40,7 +40,7 @@ class ExternalMind : public Router {
     void purgeEntity(const LocatedEntity & ent, bool forceDelete = false);
   public:
 
-    explicit ExternalMind(LocatedEntity & entity);
+    explicit ExternalMind(std::string strId, long id, LocatedEntity & entity);
 
     ~ExternalMind() override = default;
 

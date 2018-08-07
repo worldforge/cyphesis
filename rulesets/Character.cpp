@@ -56,6 +56,7 @@
 #include <Atlas/Objects/Anonymous.h>
 
 #include <sigc++/adaptors/hide.h>
+#include <common/id.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -278,13 +279,6 @@ Character::Character(const std::string & id, long intId) :
            m_proxyMind(new ProxyMind(id, intId, *this)),
            m_externalMind(nullptr)
 {
-    //Prevent the proxy mind from being deleted when all references to itself are removed
-    //(for example through a Sight of a Delete).
-    // FIXME Do we still need this?
-    // It is my hope that once the task object is fully held by the
-    // property, this will no longer be necessary. If it is we will
-    // need to find another way.
-    // destroyed.connect(sigc::mem_fun(this, &Character::clearTask));
 }
 
 Character::~Character()
@@ -299,7 +293,9 @@ Character::~Character()
 int Character::linkExternal(Link * link)
 {
     //if (m_externalMind == nullptr) {
-        m_externalMind = new ExternalMind(*this);
+    std::string strId;
+    auto id = newId(strId);
+        m_externalMind = new ExternalMind(strId, id, *this);
     //} else if (m_externalMind->isLinked()) {
     //    return -1;
     //}
@@ -1787,15 +1783,6 @@ void Character::operation(const Operation& op, OpVector& res)
 {
     debug(std::cout << "Character::operation(" << op->getParent() << ") " << describeEntity() << std::endl << std::flush;);
     Entity::operation(op, res);
-    if (world2mind(op)) {
-        debug_print("Character::operation(" << op->getParent() << ") passed to mind");
-        OpVector mres;
-        sendMind(op, mres);
-        OpVector::const_iterator Iend = mres.end();
-        for (OpVector::const_iterator I = mres.begin(); I != Iend; ++I) {
-            filterExternalOperation(*I);
-        }
-    }
 }
 
 void Character::externalOperation(const Operation & op, Link & link)
