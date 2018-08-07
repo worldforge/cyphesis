@@ -27,16 +27,14 @@
 /// \brief This is a class for handling users with administrative priveleges
 class Admin : public Account {
   protected:
-    Ref<LocatedEntity> createCharacterEntity(const std::string &,
-                                    const Atlas::Objects::Entity::RootEntity &,
+    Ref<LocatedEntity> createCharacterEntity(const Atlas::Objects::Entity::RootEntity &,
                                     const Atlas::Objects::Root &) override;
 
     int characterError(const Operation & op,
                            const Atlas::Objects::Root & ent,
                            OpVector & res) const override;
 
-    void createObject(const std::string &,
-                          const Atlas::Objects::Root &,
+    void createObject(const Atlas::Objects::Root &,
                           const Operation &,
                           OpVector &) override;
 

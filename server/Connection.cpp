@@ -80,11 +80,9 @@ Connection::~Connection()
         ExternalMindsManager::instance().removeConnection(routerId);
     }
 
-    auto Iend = m_objects.end();
-    for (auto I = m_objects.begin(); I != Iend; ++I) {
-        disconnectObject(I, "Disconnect");
+    for (auto& entry : m_connectableRouters) {
+        disconnectObject(entry.second, "Disconnect");
     }
-
 
     m_server.decClients();
 }
@@ -118,9 +116,8 @@ Account * Connection::addNewAccount(const std::string & type,
     if (account == nullptr) {
         return nullptr;
     }
-    addObject(account);
-    assert(account->m_connection == this);
-    account->m_connection = this;
+    addConnectableRouter(account);
+    assert(account->getConnection() == this);
     m_server.addAccount(account);
     m_server.m_lobby.addAccount(account);
     return account;
@@ -130,39 +127,11 @@ Account * Connection::addNewAccount(const std::string & type,
 ///
 /// The object being removed may be a player, or another type of object such
 /// as an avatar. If it is an player or other account, a pointer is returned.
-void Connection::disconnectObject(RouterMap::iterator I,
+void Connection::disconnectObject(ConnectableRouter* router,
                                   const std::string & event)
 {
-    ConnectableRouter * cr = dynamic_cast<ConnectableRouter *>(I->second);
-    if (cr != nullptr) {
-        // FIXME assert that the connection pointer points to this
-        cr->m_connection = nullptr;
-        Account * ac = dynamic_cast<Account *>(cr);
-        if (ac != nullptr) {
-            disconnectAccount(ac, I, event);
-        }
-        return;
-    }
-    Character * chr = dynamic_cast<Character *>(I->second);
-    if (chr != nullptr) {
-        int taken = chr->unlinkExternal(this);
-        if (taken == 0) {
-            logEvent(DROP_CHAR, String::compose("%1 - %2 %4 character (%3)",
-                                                getId(), chr->getId(),
-                                                chr->getType()->name(),
-                                                event));
-        } else if (taken == -2) {
-            // FIXME This may not be an error if we allow IG entities
-            // to belong to multiple accounts
-            log(ERROR, String::compose("Connection(%1) requested to "
-                                       "remove active character %2(%3) "
-                                       "which is subscribed to another "
-                                       "Connection(%4).", getId(),
-                                       chr->getType()->name(),
-                                       chr->getId(),
-                                       chr->m_externalMind->connectionId()));
-        }
-    }
+    m_server.m_lobby.removeAccount(router);
+    router->setConnection(nullptr);
 }
 
 void Connection::setPossessionEnabled(bool enabled, const std::string& routerId)
@@ -182,29 +151,22 @@ void Connection::setPossessionEnabled(bool enabled, const std::string& routerId)
 }
 
 
-void Connection::addEntity(LocatedEntity * ent)
-{
-    addObject(ent);
-    ent->destroyed.connect(sigc::bind(sigc::mem_fun(this,
-                                                    &Connection::objectDeleted),
-                                      ent->getIntId()));
-}
-
 void Connection::addObject(Router * obj)
 {
     m_objects[obj->getIntId()] = obj;
 }
+
+void Connection::addConnectableRouter(ConnectableRouter * obj) {
+    addObject(obj);
+    m_connectableRouters[obj->getIntId()] = obj;
+}
+
 
 void Connection::removeObject(long id)
 {
     if (!m_obsolete) {
         m_objects.erase(id);
     }
-}
-
-void Connection::objectDeleted(long id)
-{
-    removeObject(id);
 }
 
 int Connection::verifyCredentials(const Account & account,
@@ -320,19 +282,14 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
         return;
     }
     // Account appears to be who they say they are
-    if (account->m_connection) {
+    if (account->getConnection()) {
         // Internals don't allow player to log in more than once.
         clientError(op, "This account is already logged in", res);
         return;
     }
     // Connect everything up
     addObject(account);
-    auto J = account->getCharacters().begin();
-    auto Jend = account->getCharacters().end();
-    for (; J != Jend; ++J) {
-        addEntity(J->second);
-    }
-    account->m_connection = this;
+    account->setConnection(this);
     m_server.m_lobby.addAccount(account);
     // Let the client know they have logged in
     Info info;
@@ -428,7 +385,7 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
     const Root & arg = args.front();
     
     if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        error(op, "Got logout for entith with no ID", res);
+        error(op, "Got logout for entity with no ID", res);
         return;
     }
     const long obj_id = integerId(arg->getId());
@@ -436,14 +393,15 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
         error(op, "Got logout for non numeric entity ID", res);
         return;
     }
-    auto I = m_objects.find(obj_id);
-    if (I == m_objects.end()) {
+    auto I = m_connectableRouters.find(obj_id);
+    if (I == m_connectableRouters.end()) {
         error(op, String::compose("Got logout for unknown entity ID(%1)",
                                   obj_id),
               res);
         return;
     }
-    disconnectObject(I, "Logout");
+    disconnectObject(I->second, "Logout");
+    m_connectableRouters.erase(I);
 
     Info info;
     info->setArgs1(op);
@@ -451,62 +409,6 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
         info->setRefno(op->getSerialno());
     }
     res.push_back(info);
-}
-
-void Connection::disconnectAccount(Account * ac,
-                                   RouterMap::iterator I,
-                                   const std::string & event)
-{
-    m_server.m_lobby.delAccount(ac);
-    logEvent(LOGOUT, String::compose("%1 %2 - %4 account %3", getId(),
-                                     ac->getId(), ac->username(),
-                                     event));
-    if (m_obsolete) {
-        return;
-    }
-    m_objects.erase(I);
-    auto J = ac->getCharacters().begin();
-    auto Jend = ac->getCharacters().end();
-    for (; J != Jend; ++J) {
-        LocatedEntity * ent = J->second;
-        Character * chr = dynamic_cast<Character *>(ent);
-        // This code removes from this connection any of the accounts IG
-        // entities, except one which is currently in use by this connection.
-        // IE A player can log out their account, but continue using their
-        // exisiting character. The only case where removeObject() is not
-        // called is if the character has an external mind linked to this
-        // connection.
-        if (chr != 0) {
-            if (chr->m_externalMind != 0) {
-                if (!chr->m_externalMind->isLinked()) {
-                    // FIXME This is probably not an error. This can happen
-                    // if the account used this character in a previous
-                    // session, but not in this one. The ExternalMind gets
-                    // left behind, but would not be linked if it wasn't used
-                    // this time.
-                    log(ERROR, compose("Connection(%1) has found a "
-                                       "character in its dictionery "
-                                       "which is not connected.",
-                                       getId()));
-                    removeObject(ent->getIntId());
-                } else if (!chr->m_externalMind->isLinkedTo(this)) {
-                    // FIXME This is not an error _if_ we allow IG entities
-                    // to be owned by multiple accounts.
-                    log(ERROR, compose("Connection(%1) has found a "
-                                       "character in its dictionery "
-                                       "which is connected to another "
-                                       "Connection(%2)", getId(),
-                                       chr->m_externalMind->connectionId()));
-                    removeObject(ent->getIntId());
-                }
-            } else {
-                removeObject(ent->getIntId());
-            }
-        } else {
-            // Non character entity
-            removeObject(ent->getIntId());
-        }
-    }
 }
 
 void Connection::GetOperation(const Operation & op, OpVector & res)

@@ -42,7 +42,11 @@ class PeerAddress;
 /// own.
 class Juncture : public ConnectableRouter, virtual public sigc::trackable {
   protected:
+
+    /// \brief The network connection currently subscribed to this object
+    Connection * m_connection;
     PeerAddress * m_address;
+
     std::weak_ptr<CommPeer> m_socket;
     Peer * m_peer;
     long m_connectRef;
@@ -57,13 +61,16 @@ class Juncture : public ConnectableRouter, virtual public sigc::trackable {
     int attemptConnect(const std::string &, int);
   public:
     Juncture(Connection *, const std::string & id, long iid);
-    virtual ~Juncture();
 
-    virtual void externalOperation(const Operation & op, Link &);
-    virtual void operation(const Operation &, OpVector &);
+    ~Juncture() override;
 
-    virtual void addToMessage(Atlas::Message::MapType &) const;
-    virtual void addToEntity(const Atlas::Objects::Entity::RootEntity &) const;
+    void externalOperation(const Operation & op, Link &) override;
+
+    void operation(const Operation &, OpVector &) override;
+
+    void addToMessage(Atlas::Message::MapType &) const override;
+
+    void addToEntity(const Atlas::Objects::Entity::RootEntity &) const override;
 
     void LoginOperation(const Operation &, OpVector &);
     void OtherOperation(const Operation &, OpVector &);
@@ -71,6 +78,10 @@ class Juncture : public ConnectableRouter, virtual public sigc::trackable {
     void customConnectOperation(const Operation &, OpVector &);
 
     int teleportEntity(const LocatedEntity *);
+
+    void setConnection(Connection* connection) override;
+
+    Connection* getConnection() const override;
 };
 
 #endif // SERVER_JUNCTURE_H

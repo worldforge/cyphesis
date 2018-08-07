@@ -35,12 +35,10 @@ class ServerAccount : public Account {
                        const Atlas::Objects::Root & ent,
                        OpVector & res) const override;
 
-    Ref<LocatedEntity> addNewEntity(const std::string &,
-                                 const Atlas::Objects::Entity::RootEntity &,
+    Ref<LocatedEntity> addNewEntity(const Atlas::Objects::Entity::RootEntity &,
                                  const Atlas::Objects::Root &);
 
-    void createObject(const std::string &,
-                      const Atlas::Objects::Root &,
+    void createObject(const Atlas::Objects::Root &,
                       const Operation &,
                       OpVector &) override;
   public:

@@ -20,11 +20,10 @@
 #define SERVER_LOBBY_H
 
 #include "common/Router.h"
+#include "ConnectableRouter.h"
 
 class Account;
 class ServerRouting;
-
-typedef std::map<std::string, Account *> AccountDict;
 
 /// \brief This class handles the default out-of-game chat area that all
 /// Account objects that are currently logged in are subscribed to by default.
@@ -33,17 +32,18 @@ typedef std::map<std::string, Account *> AccountDict;
 /// discusion out of the context of the game.
 class Lobby : public Router {
   private:
-    AccountDict m_accounts;
+    std::map<std::string, ConnectableRouter *> m_accounts;
     ServerRouting & m_server;
   public:
     explicit Lobby(ServerRouting & serverRouting, const std::string & id, long intId);
-    virtual ~Lobby();
 
-    void addAccount(Account * a);
-    void delAccount(Account * a);
+    ~Lobby() override;
+
+    void addAccount(ConnectableRouter * a);
+    void removeAccount(ConnectableRouter * a);
 
     /// Accessor for Accounts map.
-    const AccountDict & getAccounts() const {
+    const std::map<std::string, ConnectableRouter *> & getAccounts() const {
         return m_accounts;
     }
 

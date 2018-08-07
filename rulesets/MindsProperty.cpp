@@ -17,16 +17,20 @@
  */
 
 #include "MindsProperty.h"
+#include "LocatedEntity.h"
+#include "TransientProperty.h"
 #include "common/Router.h"
 #include "common/debug.h"
 #include "common/op_switch.h"
 #include "common/custom.h"
-#include "LocatedEntity.h"
+#include "common/Thought.h"
 #include <Atlas/Objects/RootEntity.h>
+#include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
 
+#include <wfmath/atlasconv.h>
+
 #include <iostream>
-#include <common/Thought.h>
 
 static const bool debug_flag = false;
 
@@ -243,3 +247,49 @@ bool MindsProperty::w2mRelayOperation(const Operation& op)
     //Relay is an internal op.
     return false;
 }
+
+void MindsProperty::addMind(Router* mind)
+{
+    m_data.push_back(mind);
+}
+
+void MindsProperty::removeMind(Router* mind, LocatedEntity* entity)
+{
+    auto I = std::find(m_data.begin(), m_data.end(), mind);
+    if (I != m_data.end()) {
+        m_data.erase(I);
+    }
+
+    //If there are no more minds controlling we should either remove a transient entity, or stop a moving one.
+    if (m_data.empty()) {
+        //If the entity is marked as "transient" we should remove it from the world once it's not controlled anymore.
+        if (entity->getProperty(TransientProperty::property_name)) {
+            log(INFO, "Removing entity marked as transient when mind disconnected. " + entity->describeEntity());
+
+            Atlas::Objects::Operation::Delete delOp;
+            delOp->setTo(entity->getId());
+            Atlas::Objects::Entity::Anonymous anon;
+            anon->setId(entity->getId());
+            delOp->setArgs1(anon);
+
+            entity->sendWorld(delOp);
+        } else {
+            // Send a move op stopping the current movement
+            Atlas::Objects::Entity::Anonymous move_arg;
+            move_arg->setId(entity->getId());
+            move_arg->setAttr("propel", Vector3D::ZERO().toAtlas());
+            ::addToEntity(Vector3D::ZERO(), move_arg->modifyVelocity());
+
+            Atlas::Objects::Operation::Move move;
+            move->setFrom(entity->getId());
+            move->setArgs1(move_arg);
+            entity->sendWorld(move);
+        }
+    }
+}
+
+const std::vector<Router*>& MindsProperty::getMinds() const
+{
+    return m_data;
+}
+

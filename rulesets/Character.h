@@ -117,9 +117,6 @@ class Character : public Thing, public virtual sigc::trackable {
     explicit Character(const std::string & id, long intId);
     ~Character() override;
 
-    int linkExternal(Link *);
-    int unlinkExternal(Link *);
-
     void destroy() override;
 
     std::vector<Atlas::Objects::Root> getThoughts() const override;

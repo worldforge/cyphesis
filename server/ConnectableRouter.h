@@ -24,18 +24,21 @@
 class Connection;
 
 /// \brief This is the base class for any entity which has an Atlas
-/// compatible indentifier, and can be bound to a connection
+/// compatible identifier, and can be bound to a connection
 ///
-class ConnectableRouter : public Router {
-  protected:
-    explicit ConnectableRouter(const std::string & id,
-                             long intId,
-                             Connection * c = nullptr);
-  public:
-    /// \brief The network connection currently subscribed to this object
-    Connection * m_connection;
+struct ConnectableRouter : public Router
+{
+    explicit ConnectableRouter(const std::string& id, long intId)
+        : Router(id, intId)
+    {
+    }
 
     ~ConnectableRouter() override = default;
+
+    virtual void setConnection(Connection* connection) = 0;
+
+    virtual Connection* getConnection() const = 0;
+
 };
 
 #endif // SERVER_CONNECTABLE_ROUTER_H

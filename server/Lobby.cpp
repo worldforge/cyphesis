@@ -47,11 +47,9 @@ Lobby::Lobby(ServerRouting & s, const std::string & id, long intId) :
 {
 }
 
-Lobby::~Lobby()
-{
-}
+Lobby::~Lobby() = default;
 
-void Lobby::addAccount(Account * ac)
+void Lobby::addAccount(ConnectableRouter * ac)
 {
     debug(std::cout << "Lobby::addAccount(" << ac->getId() << ")"
                     << std::endl << std::flush;);
@@ -71,7 +69,7 @@ void Lobby::addAccount(Account * ac)
     m_accounts[ac->getId()] = ac;
 }
 
-void Lobby::delAccount(Account * ac)
+void Lobby::removeAccount(ConnectableRouter * ac)
 {
     debug(std::cout << "Lobby::delAccount(" << ac->getId() << ")"
                     << std::endl << std::flush;);
@@ -104,23 +102,21 @@ void Lobby::operation(const Operation & op, OpVector & res)
     const std::string & to = op->getTo();
     if (to.empty() || to == getId()) {
         Operation newop(op.copy());
-        AccountDict::const_iterator I = m_accounts.begin();
-        AccountDict::const_iterator Iend = m_accounts.end();
-        for (; I != Iend; ++I) {
-            Connection * c = I->second->m_connection;
-            if (c != 0) {
-                newop->setTo(I->first);
-                debug(std::cout << "Lobby sending " << newop->getParent() << " operation to " << I->first << std::endl << std::flush; );
+        for (auto& entry : m_accounts) {
+            auto c = entry.second->getConnection();
+            if (c) {
+                newop->setTo(entry.first);
+                debug_print("Lobby sending " << newop->getParent() << " operation to " << entry.first);
                 c->send(newop);
             }
         }
     } else {
-        AccountDict::const_iterator I = m_accounts.find(to);
+        auto I = m_accounts.find(to);
         if (I == m_accounts.end()) {
             error(op, "Target account not logged in", res);
         } else {
-            Connection * c = I->second->m_connection;
-            if (c == 0) {
+            auto c = I->second->getConnection();
+            if (!c) {
                 error(op, "Target account not logged in", res);
             } else {
                 c->send(op);
@@ -134,9 +130,8 @@ void Lobby::addToMessage(MapType & omap) const
     omap["name"] = "lobby";
     omap["parent"] = "room";
     ListType player_list;
-    AccountDict::const_iterator Iend = m_accounts.end();
-    for (AccountDict::const_iterator I = m_accounts.begin(); I != Iend; ++I) {
-        player_list.push_back(I->first);
+    for (auto& entry : m_accounts) {
+        player_list.push_back(entry.first);
     }
     omap["people"] = player_list;
     omap["rooms"] = ListType();
@@ -150,9 +145,8 @@ void Lobby::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
     ListType plist(1, "room");
     ent->setParent("room");
     ListType player_list;
-    AccountDict::const_iterator Iend = m_accounts.end();
-    for (AccountDict::const_iterator I = m_accounts.begin(); I != Iend; ++I) {
-        player_list.push_back(I->first);
+    for (auto& entry : m_accounts) {
+        player_list.push_back(entry.first);
     }
     ent->setAttr("people", player_list);
     ent->setAttr("rooms", ListType());

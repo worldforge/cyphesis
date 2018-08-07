@@ -484,7 +484,7 @@ wf_add_test(TeleportAuthenticatorTest.cpp ${PROJECT_SOURCE_DIR}/server/Possessio
 wf_add_test(TeleportStateTest.cpp ${PROJECT_SOURCE_DIR}/server/TeleportState.cpp)
 wf_add_test(PendingTeleportTest.cpp ${PROJECT_SOURCE_DIR}/server/PendingPossession.cpp)
 wf_add_test(JunctureTest.cpp ${PROJECT_SOURCE_DIR}/server/Juncture.cpp)
-wf_add_test(ConnectableRouterTest.cpp ${PROJECT_SOURCE_DIR}/server/ConnectableRouter.cpp)
+wf_add_test(ConnectableRouterTest.cpp)
 wf_add_test(RuleHandlerTest.cpp ${PROJECT_SOURCE_DIR}/server/RuleHandler.cpp)
 wf_add_test(OpRuleHandlerTest.cpp ${PROJECT_SOURCE_DIR}/server/OpRuleHandler.cpp)
 wf_add_test(EntityRuleHandlerTest.cpp ${PROJECT_SOURCE_DIR}/server/EntityRuleHandler.cpp
@@ -557,7 +557,6 @@ wf_add_test(AccountIntegration.cpp ${PROJECT_SOURCE_DIR}/server/EntityBuilder.cp
     ${PROJECT_SOURCE_DIR}/server/PendingPossession.cpp
     ${PROJECT_SOURCE_DIR}/server/WorldRouter.cpp
     ${PROJECT_SOURCE_DIR}/server/SpawnEntity.cpp
-    ${PROJECT_SOURCE_DIR}/server/ConnectableRouter.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/Domain.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/Entity.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/ExternalMind.cpp
@@ -586,7 +585,6 @@ wf_add_test(EntityFactoryTypeNodeIntegration.cpp TestPropertyManager.cpp ${PROJE
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
 wf_add_test(AccountConnectionIntegration.cpp ${PROJECT_SOURCE_DIR}/server/Account.cpp
     ${PROJECT_SOURCE_DIR}/server/Admin.cpp
-    ${PROJECT_SOURCE_DIR}/server/ConnectableRouter.cpp
     ${PROJECT_SOURCE_DIR}/server/Connection.cpp
     ${PROJECT_SOURCE_DIR}/server/Lobby.cpp
     ${PROJECT_SOURCE_DIR}/server/Player.cpp

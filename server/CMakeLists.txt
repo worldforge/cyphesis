@@ -41,7 +41,6 @@ set(cyphesis_files
     EntityBuilder.cpp
     ArithmeticBuilder.cpp
     Lobby.cpp
-    ConnectableRouter.cpp
     Connection.cpp
     TrustedConnection.cpp
     Peer.cpp

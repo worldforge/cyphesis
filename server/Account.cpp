@@ -68,14 +68,15 @@ Account::Account(Connection * conn,
                  const std::string & passwd,
                  const std::string & id,
                  long intId) :
-         ConnectableRouter(id, intId, conn),
+         ConnectableRouter(id, intId),
+         m_connection(conn),
          m_username(uname), m_password(passwd)
 {
 }
 
-/// \brief Called when the Character has been removed from the world.
+/// \brief Called when the LocatedEntity has been removed from the world.
 ///
-/// @param id Integer identifier of the Character destroyed.
+/// @param id Integer identifier of the LocatedEntity destroyed.
 void Account::characterDestroyed(long id)
 {
     //Delete any mind attached to this character
@@ -89,6 +90,30 @@ void Account::characterDestroyed(long id)
         Persistence::instance().delCharacter(String::compose("%1", id));
     }
 }
+
+void Account::setConnection(Connection* connection) {
+    if (!connection) {
+        for (auto& entry : m_minds) {
+            auto entity = m_connection->m_server.m_world.getEntity(entry.first);
+            auto prop = entity->modPropertyClassFixed<MindsProperty>();
+            if (prop) {
+                auto characterI = m_charactersDict.find(entry.first);
+                if (characterI != m_charactersDict.end()) {
+                    prop->removeMind(entry.second, characterI->second);
+                }
+            }
+
+            //TODO: remove property if it's empty
+        }
+    }
+    m_connection = connection;
+}
+
+Connection* Account::getConnection() const
+{
+    return m_connection;
+}
+
 
 /// \brief Connect an existing character to this account
 ///
@@ -104,11 +129,10 @@ int Account::connectCharacter(LocatedEntity *chr, OpVector& res)
     mind->linkUp(m_connection);
 
     auto mindsProp = chr->requirePropertyClassFixed<MindsProperty>();
-    mindsProp->m_data.push_back(mind);
+    mindsProp->addMind(mind);
 
     m_connection->addObject(mind);
 
-    //Inform the client about the mind.
     //Inform the client about the mind.
     Info mindInfo{};
     Anonymous mindEntity;
@@ -156,8 +180,7 @@ void Account::addCharacter(LocatedEntity * chr)
 ///
 /// @param typestr The type name of the Character to be created
 /// @param ent Atlas description of the Character to be created
-Ref<LocatedEntity> Account::addNewCharacter(const std::string & typestr,
-                                         const RootEntity & ent,
+Ref<LocatedEntity> Account::addNewCharacter(const RootEntity & ent,
                                          const Root & arg, OpVector& res)
 {
     if (m_connection == nullptr) {
@@ -166,14 +189,28 @@ Ref<LocatedEntity> Account::addNewCharacter(const std::string & typestr,
     //Any entity created as a character should have it's "mind" property disabled; i.e. we don't want AI to control this character.
     ent->setAttr("mind", Atlas::Message::Element());
     debug(std::cout << "Account::Add_character" << std::endl << std::flush;);
-    auto chr = createCharacterEntity(typestr, ent, arg);
+    auto chr = createCharacterEntity(ent, arg);
     if (!chr) {
         return nullptr;
     }
+
+    // Inform the client of the newly created character
+    Sight sight;
+    sight->setTo(getId());
+    Anonymous sight_arg;
+    addToEntity(sight_arg);
+    sight->setArgs1(sight_arg);
+    res.push_back(sight);
+
     debug(std::cout << "Added" << std::endl << std::flush;);
     assert(chr->m_location.isValid());
     debug(std::cout << "Location set to: " << chr->m_location << std::endl << std::flush;);
-    connectCharacter(chr.get(), res);
+
+    //Check if we also should possess the newly created character.
+    Element possessElem;
+    if (arg->copyAttr("possess", possessElem) == 0 && possessElem.isInt()) {
+        connectCharacter(chr.get(), res);
+    }
 
     logEvent(TAKE_CHAR, String::compose("%1 %2 %3 Created character (%4) "
                                         "by account %5",
@@ -186,16 +223,16 @@ Ref<LocatedEntity> Account::addNewCharacter(const std::string & typestr,
     return chr;
 }
 
-Ref<LocatedEntity> Account::createCharacterEntity(const std::string & typestr,
-                                                const RootEntity & ent,
+Ref<LocatedEntity> Account::createCharacterEntity(const RootEntity & ent,
                                                 const Root & arg)
 {
     BaseWorld & world = m_connection->m_server.m_world;
     Element spawn;
     if (arg->copyAttr("spawn_name", spawn) == 0 && spawn.isString()) {
-        return world.spawnNewEntity(spawn.String(), typestr, ent);
+        return world.spawnNewEntity(spawn.String(), arg->getParent(), ent);
     } else {
-        return world.addNewEntity(typestr, ent);
+        //TODO: remove, only allow spawning characters in spawns
+        return world.addNewEntity(arg->getParent(), ent);
     }
 }
 
@@ -283,7 +320,7 @@ void Account::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
         ent->setAttr("password", m_password);
     }
     ent->setParent(getType());
-    if (m_connection != 0) {
+    if (m_connection) {
         BaseWorld & world = m_connection->m_server.m_world;
         ListType spawn_list;
         if (world.getSpawnList(spawn_list) == 0) {
@@ -387,18 +424,16 @@ void Account::CreateOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    const Root & arg = args.front();
+    auto& arg = args.front();
     if (!arg->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
         error(op, "Object to be created has no type", res, getId());
         return;
     }
-    const std::string & type_str = arg->getParent();
 
-    createObject(type_str, arg, op, res);
+    createObject(arg, op, res);
 }
 
-void Account::createObject(const std::string & type_str,
-                           const Root & arg,
+void Account::createObject(const Root & arg,
                            const Operation & op,
                            OpVector & res)
 {
@@ -406,13 +441,11 @@ void Account::createObject(const std::string & type_str,
         return;
     }
 
-    debug( std::cout << "Account creating a " << type_str << " object"
+    debug( std::cout << "Account creating a " << arg->getParent() << " object"
                      << std::endl << std::flush; );
 
     Anonymous new_character;
-    new_character->setParent(type_str);
-    //Disable the AI mind since this will be controlled by a client.
-    new_character->setAttr("mind", MapType());
+    new_character->setParent(arg->getParent());
     if (!arg->isDefaultName()) {
         new_character->setName(arg->getName());
     }
@@ -423,139 +456,37 @@ void Account::createObject(const std::string & type_str,
         }
     }
 
-    auto entity = addNewCharacter(type_str, new_character, arg, res);
+    auto entity = addNewCharacter(new_character, arg, res);
 
     if (entity == nullptr) {
-        error(op, "Character creation failed", res, getId());
+        clientError(op, "Character creation failed", res, getId());
         return;
     }
 
-    auto character = dynamic_cast<Character *>(entity.get());
-    if (character != nullptr) {
-        // Inform the client that it has successfully subscribed
-        Info info;
-        Anonymous info_arg;
-        entity->addToEntity(info_arg);
-        info->setArgs1(info_arg);
-        res.push_back(info);
-    }
-
-    // Inform the client of the newly created character
-    Sight sight;
-    sight->setTo(getId());
-    Anonymous sight_arg;
-    addToEntity(sight_arg);
-    sight->setArgs1(sight_arg);
-    res.push_back(sight);
-}
-
-int Account::filterTasks(const ListType & tasks,
-                         const RootEntity & filtered_arg) const
-{
-    ListType filtered_tasks;
-    auto I = tasks.begin();
-    auto Iend = tasks.end();
-    for (; I != Iend; ++I) {
-        if (!I->isMap()) {
-            return -1;
-        }
-        const MapType & task = I->asMap();
-        MapType filtered_task;
-        auto J = task.find("name");
-        auto Jend = task.end();
-        if (J == Jend || !J->second.isString()) {
-            log(ERROR, "Task has no name");
-            return -1;
-        }
-        const std::string & task_name = J->second.asString();
-        filtered_task["name"] = task_name;
-        // FIXME Use the typeinfo to check which attributes can be changed.
-        for (J = task.begin(); J != Jend; ++J) {
-            if (J->first == "name") {
-                continue;
-            }
-            filtered_task[J->first] = J->second;
-        }
-        filtered_tasks.emplace_back(filtered_task);
-    }
-    filtered_arg->setAttr("tasks", filtered_tasks);
-    return 0;
+//    auto character = dynamic_cast<Character *>(entity.get());
+//    if (character != nullptr) {
+//        // Inform the client that it has successfully subscribed
+//        Info info;
+//        Anonymous info_arg;
+//        entity->addToEntity(info_arg);
+//        info->setArgs1(info_arg);
+//        res.push_back(info);
+//    }
+//
+//    // Inform the client of the newly created character
+//    Sight sight;
+//    sight->setTo(getId());
+//    Anonymous sight_arg;
+//    addToEntity(sight_arg);
+//    sight->setArgs1(sight_arg);
+//    res.push_back(sight);
 }
 
 void Account::SetOperation(const Operation & op, OpVector & res)
 {
     debug(std::cout << "Account::Operation(set)" << std::endl << std::flush;);
-    const std::vector<Root> & args = op->getArgs();
-    if (args.empty()) {
-        return;
-    }
+    //Nothing to set on account.
 
-    const Root & arg = args.front();
-
-    if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        error(op, "Set character has no ID", res, getId());
-        return;
-    }
-
-    const std::string & id = arg->getId();
-
-    long intId = integerId(id);
-
-    EntityDict::const_iterator J = m_charactersDict.find(intId);
-    if (J == m_charactersDict.end()) {
-        // Client has sent a Set op for an object that is not
-        // one of our characters.
-        return error(op, "Permission denied.", res, getId());
-    }
-
-    LocatedEntity * e = J->second;
-    Anonymous new_arg;
-    bool argument_valid = false;
-    Element guise;
-    if (arg->copyAttr("guise", guise) == 0) {
-        debug(std::cout << "Got attempt to change characters guise"
-                        << std::endl << std::flush;);
-        // Apply change to character in-game
-        new_arg->setAttr("guise", guise);
-        argument_valid = true;
-    }
-    Element height;
-    if (arg->copyAttr("height", height) == 0 && (height.isNum())) {
-        debug(std::cout << "Got attempt to change characters height"
-                        << std::endl << std::flush;);
-        const BBox & bbox = e->m_location.bBox();
-        if (bbox.isValid()) {
-            float old_height = bbox.highCorner().y() - bbox.lowCorner().y();
-            float scale = height.asNum() / old_height;
-            BBox newBox(WFMath::Point<3>(bbox.lowCorner().x() * scale,
-                                         bbox.lowCorner().y() * scale,
-                                         bbox.lowCorner().z() * scale),
-                        WFMath::Point<3>(bbox.highCorner().x() * scale,
-                                         bbox.highCorner().y() * scale,
-                                         bbox.highCorner().z() * scale));
-            new_arg->setAttr("bbox", newBox.toAtlas());
-            argument_valid = true;
-        }
-    }
-    Element tasks;
-    if (arg->copyAttr("tasks", tasks) == 0 && (tasks.isList())) {
-        log(NOTICE, "Got as yet unsupported task modification from client");
-        if (filterTasks(tasks.asList(), new_arg) == 0) {
-            argument_valid = true;
-        }
-    }
-
-    if (argument_valid) {
-        debug(std::cout << "Passing character mods in-game"
-                        << std::endl << std::flush;);
-        Set s;
-        s->setTo(id);
-        new_arg->setId(id);
-        s->setArgs1(new_arg);
-        if (m_connection != 0) {
-            m_connection->m_server.m_world.message(s, *e);
-        }
-    }
 }
 
 void Account::ImaginaryOperation(const Operation & op, OpVector & res)
@@ -677,27 +608,6 @@ void Account::PossessOperation(const Operation &op, OpVector &res)
     clientError(op, String::compose("Could not find character '%1' to possess.", to), res, getId());
 
 
-}
-
-void Account::possessEntity(LocatedEntity* entity, const Operation& op, OpVector& res)
-{
-    Character * character = dynamic_cast<Character *>(entity);
-    if (character) {
-        if (character->linkExternal(m_connection) != 0) {
-            log(WARNING, String::compose("Account %1 (%2) could not take character %3 as it "
-                                         "already is connected to an external mind with id %4.",
-                                         getId(), m_username, character->getId(), character->m_externalMind->getLink()));
-            return;
-        }
-        m_connection->addObject(character->m_externalMind);
-
-        //Inform the client about the mind.
-        Info mindInfo{};
-        Anonymous mindEntity;
-        character->m_externalMind->addToEntity(mindEntity);
-        mindInfo->setArgs1(mindEntity);
-        res.push_back(mindInfo);
-    }
 }
 
 

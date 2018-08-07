@@ -74,8 +74,7 @@ int ServerAccount::characterError(const Operation & op,
     return -1;
 }
 
-void ServerAccount::createObject(const std::string & type_str,
-                                 const Root & arg,
+void ServerAccount::createObject(const Root & arg,
                                  const Operation & op,
                                  OpVector & res)
 {
@@ -115,10 +114,10 @@ void ServerAccount::createObject(const std::string & type_str,
         }
     }
 
-    debug( std::cout << "ServerAccount creating a " << type_str << " object"
+    debug( std::cout << "ServerAccount creating a " << ent->getParent() << " object"
                      << std::endl << std::flush; );
 
-    auto entity = addNewEntity(type_str, ent, ent);
+    auto entity = addNewEntity(ent, ent);
 
     if (!entity) {
         error(op, "Character creation failed", res, getId());
@@ -163,8 +162,7 @@ void ServerAccount::createObject(const std::string & type_str,
 /// \param typestr The type string of the entity
 /// \param ent A container for the entity to be created in the world
 /// \param arg The argument of the Create op containing the entity itself
-Ref<LocatedEntity> ServerAccount::addNewEntity(const std::string & typestr,
-                                            const RootEntity & ent,
+Ref<LocatedEntity> ServerAccount::addNewEntity(const RootEntity & ent,
                                             const Root & arg)
 {
     if (!m_connection) {
@@ -175,9 +173,9 @@ Ref<LocatedEntity> ServerAccount::addNewEntity(const std::string & typestr,
     Ref<LocatedEntity> chr;
     Element spawn;
     if (arg->copyAttr("spawn_name", spawn) == 0 && spawn.isString()) {
-        chr = world.spawnNewEntity(spawn.String(), typestr, ent);
+        chr = world.spawnNewEntity(spawn.String(), ent->getParent(), ent);
     } else {
-        chr = world.addNewEntity(typestr, ent);
+        chr = world.addNewEntity(ent->getParent(), ent);
     }
     if (!chr) {
         return nullptr;

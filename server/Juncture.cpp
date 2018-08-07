@@ -66,7 +66,7 @@ void Juncture::onSocketConnected()
     m_peer->replied.connect(sigc::mem_fun(this, &Juncture::onPeerReplied));
 
     log(INFO, String::compose("Juncture onPeerC succeeded %1", getId()));
-    if (m_connection != 0) {
+    if (m_connection != nullptr) {
         Anonymous info_arg;
         addToEntity(info_arg);
 
@@ -84,10 +84,10 @@ void Juncture::onSocketConnected()
 
 void Juncture::onSocketFailed()
 {
-    assert(m_address != 0);
-    assert(m_peer == 0);
+    assert(m_address != nullptr);
+    assert(m_peer == nullptr);
     assert(!m_socket.expired());
-    if (m_connection != 0) {
+    if (m_connection != nullptr) {
         if (++m_address->i != boost::asio::ip::tcp::resolver::iterator()) {
             if (attemptConnect("foo", 6767) == 0) {
                 return;
@@ -114,7 +114,7 @@ void Juncture::onPeerLost()
 
 void Juncture::onPeerReplied(const Operation & op)
 {
-    if (m_connection != 0) {
+    if (m_connection != nullptr) {
         m_connection->send(op);
     }
 }
@@ -140,22 +140,21 @@ int Juncture::attemptConnect(const std::string & hostname, int port)
 }
 
 Juncture::Juncture(Connection * c, const std::string & id, long iid) :
-          ConnectableRouter(id, iid, c),
-          m_address(0),
+          ConnectableRouter(id, iid),
+          m_connection(c),
+          m_address(nullptr),
           m_socket(),
           m_peer(nullptr),
           m_connectRef(0)
 {
 }
 
-Juncture::~Juncture()
-{
-}
+Juncture::~Juncture() = default;
 
 void Juncture::externalOperation(const Operation & op, Link &)
 {
     log(ERROR, String::compose("%1 called", __PRETTY_FUNCTION__));
-    assert(m_connection != 0);
+    assert(m_connection != nullptr);
     OpVector reply;
     long serialno = op->getSerialno();
     operation(op, reply);
@@ -227,7 +226,7 @@ void Juncture::LoginOperation(const Operation & op, OpVector & res)
     }
     const std::string & password = password_attr.String();
 
-    if (m_peer == 0) {
+    if (m_peer == nullptr) {
         error(op, "Juncture not connected", res, getId());
         return;
     }
@@ -264,7 +263,7 @@ void Juncture::customConnectOperation(const Operation & op, OpVector & res)
 {
     log(INFO, "Juncture got connect");
 
-    if (m_peer != 0) {
+    if (m_peer != nullptr) {
         error(op, "Juncture already connected", res, getId());
         return;
     }
@@ -289,7 +288,7 @@ void Juncture::customConnectOperation(const Operation & op, OpVector & res)
         error(op, "Argument to connect op has no port", res, getId());
         return;
     }
-    int port = port_attr.Int();
+    auto port = port_attr.Int();
 
     debug(std::cout << "Connecting to " << hostname << std::endl << std::flush;);
     m_address = new PeerAddress;
@@ -306,16 +305,25 @@ void Juncture::customConnectOperation(const Operation & op, OpVector & res)
 
     m_connectRef = op->getSerialno();
 
-    if (attemptConnect(hostname, port) != 0) {
+    if (attemptConnect(hostname, static_cast<int>(port)) != 0) {
         error(op, "Connection failed", res, getId());
     }
 }
 
 int Juncture::teleportEntity(const LocatedEntity * ent)
 {
-    if (m_peer == 0) {
+    if (m_peer == nullptr) {
         log(ERROR, "Attempt to teleport through disconnected juncture");
         return -1;
     }
     return m_peer->teleportEntity(ent);
+}
+
+void Juncture::setConnection(Connection* connection) {
+    m_connection = connection;
+}
+
+Connection* Juncture::getConnection() const
+{
+    return m_connection;
 }

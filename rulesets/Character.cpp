@@ -289,103 +289,50 @@ Character::~Character()
     delete &m_movement;
     delete m_externalMind;
 }
-
-int Character::linkExternal(Link * link)
-{
-    //if (m_externalMind == nullptr) {
-    std::string strId;
-    auto id = newId(strId);
-        m_externalMind = new ExternalMind(strId, id, *this);
-    //} else if (m_externalMind->isLinked()) {
-    //    return -1;
-    //}
-    m_externalMind->linkUp(link);
-
-    if (getProperty("external") == nullptr) {
-        ExternalProperty * ep = new ExternalProperty(m_externalMind);
-        // FIXME ensure this is install()ed and apply()ed
-        setProperty("external", ep);
-        ep->install(this, "external");
-        ep->apply(this);
-    }
-
-    Anonymous update_arg;
-    update_arg->setId(getId());
-    update_arg->setAttr("external", 1);
-
-    Update update;
-    update->setTo(getId());
-    update->setArgs1(update_arg);
-
-    sendWorld(update);
-
-    //Now that we're connected we need to send any thoughts that we've been given to the mind client.
-    auto thoughts = m_proxyMind->getThoughts();
-    //We need to clear the existing thoughts since we'll be sending them anew; else we'll end up with duplicates.
-    m_proxyMind->clearThoughts();
-    Atlas::Objects::Operation::Think think;
-    Atlas::Objects::Operation::Set setThoughts;
-    setThoughts->setArgs(thoughts);
-    think->setArgs1(setThoughts);
-    think->setTo(getId());
-    sendWorld(think);
-
-    externalLinkChanged.emit();
-    return 0;
-}
-
-int Character::unlinkExternal(Link * link)
-{
-    if (m_externalMind == nullptr) {
-        log(ERROR, "Character is not connected. " + describeEntity());
-        return -1;
-    }
-
-    if  (!m_externalMind->isLinkedTo(link)) {
-        if (m_externalMind->isLinked()) {
-            return -2;
-        }
-        return -1;
-    }
-
-    // Send a move op stopping the current movement
-    Anonymous move_arg;
-    move_arg->setId(getId());
-    // Include the EXTERNAL property which is changing to zero.
-    // It would be more correct at this point to send a separate
-    // update to have the property update itself, but this
-    // will be much less of an issue once Sight(Set) is created
-    // more correctly
-    move_arg->setAttr("external", 0);
-    ::addToEntity(Vector3D(0,0,0), move_arg->modifyVelocity());
-
-    Move move;
-    move->setFrom(getId());
-    move->setArgs1(move_arg);
-
-    filterExternalOperation(move);
-
-
-    // We used to delete the external mind here, but now we
-    // leave it in place, as it takes care of the disconnected
-    // character.
-    m_externalMind->linkUp(nullptr);
-    externalLinkChanged.emit();
-
-    //If the entity is marked as "transient" we should remove it from the world once it's not controlled anymore.
-    if (getProperty(TransientProperty::property_name)) {
-        log(INFO, "Removing entity marked as transient when mind disconnected. " + describeEntity());
-
-        Atlas::Objects::Operation::Delete delOp;
-        delOp->setTo(getId());
-        Anonymous anon;
-        anon->setId(getId());
-        delOp->setArgs1(anon);
-
-        sendWorld(delOp);
-    }
-    return 0;
-}
+//
+//int Character::linkExternal(Link * link)
+//{
+////    //if (m_externalMind == nullptr) {
+////    std::string strId;
+////    auto id = newId(strId);
+////        m_externalMind = new ExternalMind(strId, id, *this);
+////    //} else if (m_externalMind->isLinked()) {
+////    //    return -1;
+////    //}
+////    m_externalMind->linkUp(link);
+////
+////    if (getProperty("external") == nullptr) {
+////        ExternalProperty * ep = new ExternalProperty(m_externalMind);
+////        // FIXME ensure this is install()ed and apply()ed
+////        setProperty("external", ep);
+////        ep->install(this, "external");
+////        ep->apply(this);
+////    }
+////
+////    Anonymous update_arg;
+////    update_arg->setId(getId());
+////    update_arg->setAttr("external", 1);
+////
+////    Update update;
+////    update->setTo(getId());
+////    update->setArgs1(update_arg);
+////
+////    sendWorld(update);
+//
+//    //Now that we're connected we need to send any thoughts that we've been given to the mind client.
+//    auto thoughts = m_proxyMind->getThoughts();
+//    //We need to clear the existing thoughts since we'll be sending them anew; else we'll end up with duplicates.
+//    m_proxyMind->clearThoughts();
+//    Atlas::Objects::Operation::Think think;
+//    Atlas::Objects::Operation::Set setThoughts;
+//    setThoughts->setArgs(thoughts);
+//    think->setArgs1(setThoughts);
+//    think->setTo(getId());
+//    sendWorld(think);
+//
+//    externalLinkChanged.emit();
+//    return 0;
+//}
 
 std::vector<Atlas::Objects::Root> Character::getThoughts() const
 {

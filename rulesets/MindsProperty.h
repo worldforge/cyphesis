@@ -49,13 +49,19 @@ class MindsProperty : public PropertyBase
 
         void remove(LocatedEntity*, const std::string& name) override;
 
-        std::vector<Router*> m_data;
+        void addMind(Router* mind);
+        void removeMind(Router* mind, LocatedEntity* entity);
+
+        const std::vector<Router*>& getMinds() const;
 
         HandlerResult operation(LocatedEntity*,
                                 const Operation&,
                                 OpVector&) override;
 
     protected:
+
+        std::vector<Router*> m_data;
+
         bool world2mind(const Operation & op);
 
         bool w2mSightOperation(const Operation &);

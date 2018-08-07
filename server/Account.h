@@ -36,8 +36,6 @@ class Connection;
 class LocatedEntity;
 class ExternalMind;
 
-typedef std::map<long, LocatedEntity *> EntityDict;
-
 /// \brief This is the base class for storing information about uses who
 /// can use this server.
 ///
@@ -46,17 +44,22 @@ typedef std::map<long, LocatedEntity *> EntityDict;
 /// characterError().
 class Account : public ConnectableRouter {
   protected:
+    /// \brief The network connection currently subscribed to this object
+    Connection * m_connection;
+
     /// \brief A store of Character entities belonging to this account
-    EntityDict m_charactersDict;
+    std::map<long, LocatedEntity *> m_charactersDict;
     /// \brief The username of this account
     std::string m_username;
     /// \brief The password used to authenticate this account
     std::string m_password;
 
+    /**
+     * A map of external characters->minds.
+     */
     std::map<long, ExternalMind*> m_minds;
 
-    Ref<LocatedEntity> addNewCharacter(const std::string &,
-                                    const Atlas::Objects::Entity::RootEntity &,
+    Ref<LocatedEntity> addNewCharacter(const Atlas::Objects::Entity::RootEntity &,
                                     const Atlas::Objects::Root &, OpVector& res);
     void characterDestroyed(long);
 
@@ -70,8 +73,7 @@ class Account : public ConnectableRouter {
                                const Atlas::Objects::Root & ent,
                                OpVector & res) const = 0;
 
-    virtual void createObject(const std::string &,
-                              const Atlas::Objects::Root &,
+    virtual void createObject(const Atlas::Objects::Root &,
                               const Operation &,
                               OpVector &);
 
@@ -79,8 +81,7 @@ class Account : public ConnectableRouter {
                     const Atlas::Objects::Entity::RootEntity &) const;
 
     /// \brief Creates a new entity for a character.
-    virtual Ref<LocatedEntity> createCharacterEntity(const std::string &,
-                                    const Atlas::Objects::Entity::RootEntity &,
+    virtual Ref<LocatedEntity> createCharacterEntity(const Atlas::Objects::Entity::RootEntity &,
                                     const Atlas::Objects::Root &);
 
     void processExternalOperation(const Operation & op, OpVector& res);
@@ -133,14 +134,17 @@ class Account : public ConnectableRouter {
     void addCharacter(LocatedEntity *);
 
     /// \brief Read only accessor for the Character dictionary
-    const EntityDict & getCharacters() const {
+    const std::map<long, LocatedEntity *>& getCharacters() const {
         return m_charactersDict;
     }
+
+    void setConnection(Connection* connection) override;
+
+    Connection* getConnection() const override;
 
     friend class Accounttest;
     friend class Accountintegration;
 
-        void possessEntity(LocatedEntity* entity, const Operation& op, OpVector& res);
 };
 
 #endif // SERVER_ACCOUNT_H

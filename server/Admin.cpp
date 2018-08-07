@@ -100,11 +100,10 @@ static void addTypeToList(const Root & type, ListType & typeList)
     }
 }
 
-Ref<LocatedEntity> Admin::createCharacterEntity(const std::string & typestr,
-                                         const RootEntity & ent,
+Ref<LocatedEntity> Admin::createCharacterEntity(const RootEntity & ent,
                                          const Root & arg)
 {
-    auto entity = Account::createCharacterEntity(typestr, ent, arg);
+    auto entity = Account::createCharacterEntity(ent, arg);
     if (entity) {
         return entity;
     }
@@ -116,7 +115,7 @@ Ref<LocatedEntity> Admin::createCharacterEntity(const std::string & typestr,
         world.moveToSpawn(spawn.String(), new_loc);
         new_loc.addToEntity(ent);
 
-        entity = world.addNewEntity(typestr, ent);
+        entity = world.addNewEntity(arg->getParent(), ent);
     }
     return entity;
 }
@@ -327,11 +326,11 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
     }
 }
 
-void Admin::createObject(const std::string & type_str,
-                           const Root & arg,
+void Admin::createObject(const Root & arg,
                            const Operation & op,
                            OpVector & res)
 {
+    auto& type_str = arg->getParent();
     const std::string & objtype = arg->getObjtype();
     if (objtype == "class" || objtype == "op_definition") {
         // New entity type
@@ -384,7 +383,7 @@ void Admin::createObject(const std::string & type_str,
         }
         res.push_back(info);
     } else {
-        Account::createObject(type_str, arg, op, res);
+        Account::createObject(arg, op, res);
     }
 }
 

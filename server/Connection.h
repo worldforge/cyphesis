@@ -30,6 +30,7 @@ class Character;
 class CommSocket;
 class LocatedEntity;
 class ServerRouting;
+class ConnectableRouter;
 
 typedef std::map<long, Router *> RouterMap;
 
@@ -45,6 +46,8 @@ class Connection : public Link, virtual public sigc::trackable {
   protected:
     RouterMap m_objects;
 
+    std::map<long, ConnectableRouter *> m_connectableRouters;
+
     std::list<std::string> m_possessionRouters;
 
     /// \brief Flag to indicate if this connection has already been
@@ -59,11 +62,8 @@ class Connection : public Link, virtual public sigc::trackable {
     Account * addNewAccount(const std::string & account,
                             const std::string & username,
                             const std::string & password);
-    void disconnectObject(RouterMap::iterator,
+    void disconnectObject(ConnectableRouter* router,
                           const std::string & event);
-    void disconnectAccount(Account *,
-                           RouterMap::iterator,
-                           const std::string & event);
 
     virtual Account * newAccount(const std::string & type,
                                  const std::string & username,
@@ -76,7 +76,8 @@ class Connection : public Link, virtual public sigc::trackable {
 
     Connection(CommSocket & commSocket, ServerRouting & svr,
                const std::string & addr, const std::string & id, long iid);
-    virtual ~Connection();
+
+    ~Connection() override;
 
     RouterMap & objects() { return m_objects; }
 
@@ -89,10 +90,9 @@ class Connection : public Link, virtual public sigc::trackable {
      */
     void setPossessionEnabled(bool enabled, const std::string& routerId);
 
-    void addEntity(LocatedEntity * ent);
     void addObject(Router * obj);
+    void addConnectableRouter(ConnectableRouter * obj);
     void removeObject(long id);
-    void objectDeleted(long id);
 
     void externalOperation(const Operation & op, Link &) override;
     void operation(const Operation &, OpVector &) override;
