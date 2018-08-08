@@ -88,15 +88,20 @@ void CommAsioClient<ProtocolT>::do_read()
                                     mReadBuffer.commit(length);
                                     m_codec->poll(true);
                                     this->dispatch();
-                                    //By calling do_read again we make sure that the instance
-                                    //doesn't go out of scope ("shared_from this"). As soon as that
-                                    //doesn't happen, and there's no write in progress, the instance
-                                    //will be deleted since there's no more references to it.
-                                    this->do_read();
+                                    if (m_active) {
+                                        //By calling do_read again we make sure that the instance
+                                        //doesn't go out of scope ("shared_from this"). As soon as that
+                                        //doesn't happen, and there's no write in progress, the instance
+                                        //will be deleted since there's no more references to it.
+                                        this->do_read();
+                                    }
                                 } else {
-                                    std::stringstream ss;
-                                    ss << "Error when reading from socket: (" << ec << ") " << ec.message();
-                                    log(WARNING, ss.str());
+                                    //No need to write if connection has been actively shut down.
+                                    if (m_active) {
+                                        std::stringstream ss;
+                                        ss << "Error when reading from socket: (" << ec << ") " << ec.message();
+                                        log(WARNING, ss.str());
+                                    }
                                 }
                             });
 }
@@ -137,9 +142,12 @@ void CommAsioClient<ProtocolT>::write()
                                              this->write();
                                          }
                                      } else {
-                                         std::stringstream ss;
-                                         ss << "Error when writing to socket: (" << ec << ") " << ec.message();
-                                         log(WARNING, ss.str());
+                                         //No need to write if connection has been actively shut down.
+                                         if (m_active) {
+                                             std::stringstream ss;
+                                             ss << "Error when writing to socket: (" << ec << ") " << ec.message();
+                                             log(WARNING, ss.str());
+                                         }
                                      }
                                  });
     }
@@ -151,7 +159,7 @@ void CommAsioClient<ProtocolT>::negotiate_read()
     auto self(this->shared_from_this());
     mSocket.async_read_some(mReadBuffer.prepare(read_buffer_size),
                             [this, self](boost::system::error_code ec, std::size_t length) {
-                                if (!ec) {
+                                if (!ec && m_active) {
                                     mReadBuffer.commit(length);
                                     if (length > 0) {
                                         int negotiateResult = this->negotiate();
@@ -186,7 +194,7 @@ void CommAsioClient<ProtocolT>::negotiate_write()
     if (mWriteBuffer->size() != 0) {
         boost::asio::async_write(mSocket, mWriteBuffer->data(),
                                  [this, self](boost::system::error_code ec, std::size_t length) {
-                                     if (!ec) {
+                                     if (!ec && m_active) {
                                          mWriteBuffer->consume(length);
                                      }
                                  });
@@ -317,7 +325,7 @@ void CommAsioClient<ProtocolT>::objectArrived(const Atlas::Objects::Root& obj)
     if (!op.isValid()) {
         log(ERROR,
             String::compose("Object of type \"%1\" with parent "
-                                "\"%2\" arrived from client", obj->getObjtype(),
+                            "\"%2\" arrived from client", obj->getObjtype(),
                             obj->getParent()));
         return;
     }
@@ -360,7 +368,11 @@ int CommAsioClient<ProtocolT>::send(
 template<class ProtocolT>
 void CommAsioClient<ProtocolT>::disconnect()
 {
-    mSocket.close();
+    m_active = false;
+    delete m_negotiate;
+    m_negotiate = nullptr;
+    mNegotiateTimer.cancel();
+    mSocket.cancel();
 }
 
 template<class ProtocolT>

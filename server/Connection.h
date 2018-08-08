@@ -50,15 +50,6 @@ class Connection : public Link, virtual public sigc::trackable {
 
     std::list<std::string> m_possessionRouters;
 
-    /// \brief Flag to indicate if this connection has already been
-    /// disconnected from the entities associated with it.
-    ///
-    /// This ensures that entities that get destroyed are removed as
-    /// they are destroyed, but when this connection is destroyed,
-    /// it can destroy certain types of entity connected to itself,
-    /// without them trying to remove themselves from the connection.
-    bool m_obsolete;
-
     Account * addNewAccount(const std::string & account,
                             const std::string & username,
                             const std::string & password);

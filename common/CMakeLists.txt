@@ -32,7 +32,6 @@ add_library(common
     SystemTime.cpp
     EntityKit.cpp
     ScriptKit.h
-    CommSocket.cpp
     Link.cpp
     atlas_helpers.cpp
     Shaker.cpp

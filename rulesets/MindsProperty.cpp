@@ -282,6 +282,7 @@ void MindsProperty::removeMind(Router* mind, LocatedEntity* entity)
 
             Atlas::Objects::Operation::Move move;
             move->setFrom(entity->getId());
+            move->setTo(entity->getId());
             move->setArgs1(move_arg);
             entity->sendWorld(move);
         }

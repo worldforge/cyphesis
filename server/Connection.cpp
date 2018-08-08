@@ -56,8 +56,7 @@ Connection::Connection(CommSocket & socket,
                        ServerRouting & svr,
                        const std::string & addr,
                        const std::string & id, long iid) :
-            Link(socket, id, iid), m_obsolete(false),
-                                                m_server(svr)
+            Link(socket, id, iid), m_server(svr)
 {
     m_server.incClients();
     logEvent(CONNECT, String::compose("%1 - - Connect from %2", id, addr));
@@ -65,11 +64,6 @@ Connection::Connection(CommSocket & socket,
 
 Connection::~Connection()
 {
-    // Once we are obsolete, ExternalMind can no longer affect contents
-    // of objects when we delete it.
-    assert(!m_obsolete);
-    m_obsolete = true;
-
     debug(std::cout << "destroy called" << std::endl << std::flush;);
     
     logEvent(DISCONNECT, String::compose("%1 - - Disconnect", getId()));
@@ -164,9 +158,7 @@ void Connection::addConnectableRouter(ConnectableRouter * obj) {
 
 void Connection::removeObject(long id)
 {
-    if (!m_obsolete) {
-        m_objects.erase(id);
-    }
+    m_objects.erase(id);
 }
 
 int Connection::verifyCredentials(const Account & account,

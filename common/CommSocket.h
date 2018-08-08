@@ -22,19 +22,32 @@
 #include <boost/asio/io_service.hpp>
 
 
-/// \brief Base class for all classes for handling socket communication.
-/// \ingroup ServerSockets
+/// \defgroup ServerSockets Server Socket Classes
+///
+////Socket handling classes for the server code.
+/// Socket classes which inherit from CommSocket are to communicate with other
+/// parts of a WorldForge system using network sockets.
+/// \brief Constructor for socket object.
+///
+/// @param io_service Reference to the object that manages all socket communication.
 class CommSocket {
   protected:
-    explicit CommSocket(boost::asio::io_service& io_service);
+    explicit CommSocket(boost::asio::io_service& io_service)
+    : m_io_service(io_service), m_active(true){
+    }
+
+  public:
+
     CommSocket(const CommSocket &) = delete;
     CommSocket & operator=(const CommSocket &) = delete;
-  public:
+
     /// Reference to the main IO service.
     boost::asio::io_service& m_io_service;
 
+    bool m_active;
+
     /// \brief Destructor.
-    virtual ~CommSocket();
+    virtual ~CommSocket() = default;
 
     /// \brief Disconnect cleanly
     ///

@@ -82,7 +82,11 @@ void Account::characterDestroyed(long id)
     //Delete any mind attached to this character
     auto I = m_minds.find(id);
     if (I != m_minds.end()) {
-        m_connection->removeObject(I->second->getIntId());
+        if (m_connection) {
+            m_connection->removeObject(I->second->getIntId());
+        } else {
+            log(WARNING, "Account still had minds even after connection had been shut down.");
+        }
         delete I->second;
     }
     m_charactersDict.erase(id);
