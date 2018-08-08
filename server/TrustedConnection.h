@@ -28,18 +28,21 @@
 /// store the admin password in plain text anywhere. The client might be
 /// trusted because it has connected with a known certificate of some kind,
 /// or because it has connected over a unix domain socket.
-class TrustedConnection : public Connection {
-  protected:
-    virtual Account * newAccount(const std::string & type,
-                                 const std::string & username,
-                                 const std::string & passwd,
-                                 const std::string & id, long intId);
-  public:
-    TrustedConnection(CommSocket & client,
-                      ServerRouting & svr,
-                      const std::string & addr,
-                      const std::string & id, long iid);
-    virtual ~TrustedConnection();
+class TrustedConnection : public Connection
+{
+    protected:
+        Account* newAccount(const std::string& type,
+                            const std::string& username,
+                            const std::string& passwd,
+                            const std::string& id, long intId) override;
+
+    public:
+        TrustedConnection(CommSocket& client,
+                          ServerRouting& svr,
+                          const std::string& addr,
+                          const std::string& id, long iid);
+
+        ~TrustedConnection() override;
 };
 
 #endif // SERVER_TRUSTED_CONNECTION_H

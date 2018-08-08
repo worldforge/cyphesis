@@ -283,12 +283,6 @@ int EntityRuleHandler::populateEntityFactory(const std::string & class_name,
         }
     }
 
-    // Check whether it should be available to players as a playable character.
-    J = class_desc.find("playable");
-    if (J != class_desc.end() && J->second.isInt()) {
-        Player::playableTypes.insert(class_name);
-    }
-
     return 0;
 }
 

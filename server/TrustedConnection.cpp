@@ -30,22 +30,20 @@
 /// @param svr The core server object
 /// @param addr A string representation of the client's network address
 /// @param id The identifier of this connection.
-TrustedConnection::TrustedConnection(CommSocket & client,
-                                     ServerRouting & svr,
-                                     const std::string & addr,
-                                     const std::string & id, long iid) :
-                                     Connection(client, svr, addr, id, iid)
+TrustedConnection::TrustedConnection(CommSocket& client,
+                                     ServerRouting& svr,
+                                     const std::string& addr,
+                                     const std::string& id, long iid) :
+    Connection(client, svr, addr, id, iid)
 {
 }
 
-TrustedConnection::~TrustedConnection()
-{
-}
+TrustedConnection::~TrustedConnection() = default;
 
-Account * TrustedConnection::newAccount(const std::string & type,
-                                        const std::string & username,
-                                        const std::string & hash,
-                                        const std::string & id, long intId)
+Account* TrustedConnection::newAccount(const std::string& type,
+                                       const std::string& username,
+                                       const std::string& hash,
+                                       const std::string& id, long intId)
 {
     if (type == "sys") {
         return new SystemAccount(this, username, hash, id, intId);

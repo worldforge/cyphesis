@@ -23,8 +23,6 @@
 
 #include "common/compose.hpp"
 
-std::set<std::string> Player::playableTypes;
-
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
@@ -55,24 +53,11 @@ const char * Player::getType() const
 void Player::addToMessage(MapType & omap) const
 {
     Account::addToMessage(omap);
-    ListType & typeList = (omap["character_types"] = ListType()).asList();
-    auto I = Player::playableTypes.begin();
-    auto Iend = Player::playableTypes.end();
-    for (; I != Iend; ++I) {
-        typeList.push_back(Element(*I));
-    }
 }
 
 void Player::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
     Account::addToEntity(ent);
-    ListType typeList;
-    auto I = Player::playableTypes.begin();
-    auto Iend = Player::playableTypes.end();
-    for (; I != Iend; ++I) {
-        typeList.push_back(Element(*I));
-    }
-    ent->setAttr("character_types", typeList);
 }
 
 int Player::characterError(const Operation & op,
@@ -82,20 +67,6 @@ int Player::characterError(const Operation & op,
         error(op, "Entity to be created has no name", res, getId());
         return -1;
     }
-    const std::string & name = ent->getName();
-    if (name.compare(0,5,"admin") == 0) {
-        error(op, "Entity to be created cannot start with admin", res, getId());
-        return -1;
-    }
 
-    // Parent must have been checked already before calling this method
-    const std::string & type = ent->getParent();
-    if (Player::playableTypes.find(type) == Player::playableTypes.end()) {
-        error(op,
-              String::compose("You cannot create a character of type \"%1\".",
-                              type),
-              res, getId());
-        return -1;
-    }
     return 0;
 }

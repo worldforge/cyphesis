@@ -40,10 +40,6 @@ class Player : public Account {
     void addToMessage(Atlas::Message::MapType &) const override;
     void addToEntity(const Atlas::Objects::Entity::RootEntity &) const override;
 
-    /// \brief Set of types which can be created as playable characters by
-    /// Player accounts.
-    static std::set<std::string> playableTypes;
-
     friend class Playertest;
 };
 

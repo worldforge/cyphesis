@@ -200,7 +200,7 @@ Ref<LocatedEntity> Account::addNewCharacter(const RootEntity & ent,
     Sight sight;
     sight->setTo(getId());
     Anonymous sight_arg;
-    addToEntity(sight_arg);
+    chr->addToEntity(sight_arg);
     sight->setArgs1(sight_arg);
     res.push_back(sight);
 
@@ -233,8 +233,8 @@ Ref<LocatedEntity> Account::createCharacterEntity(const RootEntity & ent,
     if (arg->copyAttr("spawn_name", spawn) == 0 && spawn.isString()) {
         return world.spawnNewEntity(spawn.String(), arg->getParent(), ent);
     } else {
-        //TODO: remove, only allow spawning characters in spawns
-        return world.addNewEntity(arg->getParent(), ent);
+        log(WARNING, "Client tried to create character out of spawn.");
+        return nullptr;
     }
 }
 

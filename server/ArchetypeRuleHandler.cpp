@@ -217,11 +217,6 @@ int ArchetypeRuleHandler::populateArchetypeFactory(
         factory->m_classThoughts.insert(factory->m_classThoughts.end(),
                 thoughts.begin(), thoughts.end());
     }
-    // Check whether it should be available to players as a playable character.
-    auto playableI = class_desc.find("playable");
-    if (playableI != class_desc.end() && playableI->second.isInt()) {
-        Player::playableTypes.insert(class_name);
-    }
 
     return 0;
 }

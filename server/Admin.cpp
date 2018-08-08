@@ -103,21 +103,14 @@ static void addTypeToList(const Root & type, ListType & typeList)
 Ref<LocatedEntity> Admin::createCharacterEntity(const RootEntity & ent,
                                          const Root & arg)
 {
-    auto entity = Account::createCharacterEntity(ent, arg);
-    if (entity) {
-        return entity;
-    }
+    auto& world = m_connection->m_server.m_world;
     Element spawn;
     if (arg->copyAttr("spawn_name", spawn) == 0 && spawn.isString()) {
-        BaseWorld & world = m_connection->m_server.m_world;
-
         Location new_loc;
         world.moveToSpawn(spawn.String(), new_loc);
         new_loc.addToEntity(ent);
-
-        entity = world.addNewEntity(arg->getParent(), ent);
     }
-    return entity;
+    return world.addNewEntity(arg->getParent(), ent);
 }
 
 
@@ -149,7 +142,7 @@ void Admin::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 /// to the client.
 void Admin::opDispatched(Operation op)
 {
-    if (m_connection != 0) {
+    if (m_connection != nullptr) {
         m_connection->send(op);
     } else {
         if (m_monitorConnection.connected()) {
@@ -171,39 +164,39 @@ int Admin::characterError(const Operation & op,
     }
     return 0;
 }
-
-void Admin::LogoutOperation(const Operation & op, OpVector & res)
-{
-    const std::vector<Root> & args = op->getArgs();
-    
-    if (args.empty()) {
-        Account::LogoutOperation(op, res);
-        return;
-    }
-
-    const Root & arg = args.front();
-    if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        error(op, "No account id given on logout op", res, getId());
-        return;
-    }
-    const std::string & account_id = arg->getId();
-    if (account_id == getId()) {
-        Account::LogoutOperation(op, res);
-        return;
-    }
-
-    if (m_connection == nullptr) {
-        error(op,"Disconnected admin account handling explicit logout",res, getId());
-        return;
-    }
-
-    Router * account = m_connection->m_server.getObject(account_id);
-    if (!account) {
-        error(op, "Logout failed", res, getId());
-        return;
-    }
-    account->operation(op, res);
-}
+//
+//void Admin::LogoutOperation(const Operation & op, OpVector & res)
+//{
+//    const std::vector<Root> & args = op->getArgs();
+//
+//    if (args.empty()) {
+//        Account::LogoutOperation(op, res);
+//        return;
+//    }
+//
+//    const Root & arg = args.front();
+//    if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+//        error(op, "No account id given on logout op", res, getId());
+//        return;
+//    }
+//    const std::string & account_id = arg->getId();
+//    if (account_id == getId()) {
+//        Account::LogoutOperation(op, res);
+//        return;
+//    }
+//
+//    if (m_connection == nullptr) {
+//        error(op,"Disconnected admin account handling explicit logout",res, getId());
+//        return;
+//    }
+//
+//    Router * account = m_connection->m_server.getObject(account_id);
+//    if (!account) {
+//        error(op, "Logout failed", res, getId());
+//        return;
+//    }
+//    account->operation(op, res);
+//}
 
 void Admin::GetOperation(const Operation & op, OpVector & res)
 {
@@ -229,7 +222,7 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
     }
     Info info;
     if (objtype == "object" || objtype == "obj") {
-        if (m_connection == 0) {
+        if (!m_connection) {
             return;
         }
         long intId = integerId(id);
@@ -264,7 +257,7 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
         }
         info->setArgs1(o);
     } else {
-        error(op, compose("Unknown object type \"%1\" requested for \"%2\"",
+        error(op, compose(R"(Unknown object type "%1" requested for "%2")",
                           objtype, id), res, getId());
         return;
     }
