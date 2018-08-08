@@ -94,17 +94,15 @@ void Account::characterDestroyed(long id)
 void Account::setConnection(Connection* connection) {
     if (!connection) {
         for (auto& entry : m_minds) {
-            auto entity = m_connection->m_server.m_world.getEntity(entry.first);
-            auto prop = entity->modPropertyClassFixed<MindsProperty>();
+            auto& entity = entry.second->getEntity();
+            auto prop = entity.modPropertyClassFixed<MindsProperty>();
             if (prop) {
-                auto characterI = m_charactersDict.find(entry.first);
-                if (characterI != m_charactersDict.end()) {
-                    prop->removeMind(entry.second, characterI->second);
-                }
+                prop->removeMind(entry.second, &entity);
             }
-
+            delete entry.second;
             //TODO: remove property if it's empty
         }
+        m_minds.clear();
     }
     m_connection = connection;
 }
@@ -245,15 +243,43 @@ void Account::LogoutOperation(const Operation & op, OpVector & res)
         return;
     }
 
-    Info info;
-    info->setArgs1(op);
-    if (!op->isDefaultSerialno()) {
-        info->setRefno(op->getSerialno());
+    if (!op->getArgs().empty()) {
+        auto arg = op->getArgs().front();
+        auto id = arg->getId();
+        for (auto& entry : m_minds) {
+            if (entry.second->getId() == id) {
+                m_connection->removeObject(entry.second->getIntId());
+                auto prop = entry.second->getEntity().modPropertyClassFixed<MindsProperty>();
+                if (prop) {
+                    prop->removeMind(entry.second, &entry.second->getEntity());
+                }
+                delete entry.second;
+
+                m_minds.erase(entry.first);
+                Info info;
+                info->setArgs1(op);
+                if (!op->isDefaultSerialno()) {
+                    info->setRefno(op->getSerialno());
+                }
+                info->setFrom(getId());
+                info->setTo(getId());
+                m_connection->send(info);
+
+                break;
+            }
+        }
+    } else {
+
+        Info info;
+        info->setArgs1(op);
+        if (!op->isDefaultSerialno()) {
+            info->setRefno(op->getSerialno());
+        }
+        info->setFrom(getId());
+        info->setTo(getId());
+        m_connection->send(info);
+        m_connection->disconnect();
     }
-    info->setFrom(getId());
-    info->setTo(getId());
-    m_connection->send(info);
-    m_connection->disconnect();
 }
 
 const char * Account::getType() const

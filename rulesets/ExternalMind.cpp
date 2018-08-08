@@ -38,9 +38,7 @@ using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Operation::Imaginary;
 
-static const double character_expire_time = 60 * 60; // 1 hour
-
-void ExternalMind::deleteEntity(const std::string & id, bool forceDelete)
+void ExternalMind::deleteEntity(const std::string& id, bool forceDelete)
 {
     Delete d;
     Anonymous del_arg;
@@ -56,7 +54,7 @@ void ExternalMind::deleteEntity(const std::string & id, bool forceDelete)
     m_entity.sendWorld(d);
 }
 
-void ExternalMind::purgeEntity(const LocatedEntity & ent, bool forceDelete)
+void ExternalMind::purgeEntity(const LocatedEntity& ent, bool forceDelete)
 {
     if (ent.m_contains != nullptr) {
         for (auto& child : *ent.m_contains) {
@@ -67,11 +65,16 @@ void ExternalMind::purgeEntity(const LocatedEntity & ent, bool forceDelete)
     deleteEntity(ent.getId(), forceDelete);
 }
 
-ExternalMind::ExternalMind(std::string strId, long id, LocatedEntity & e) : Router(strId, id),
-                                                m_link(nullptr),
-                                                m_entity(e),
-                                                m_lossTime(0.)
+ExternalMind::ExternalMind(std::string strId, long id, LocatedEntity& e) : Router(strId, id),
+                                                                           m_link(nullptr),
+                                                                           m_entity(e),
+                                                                           m_lossTime(0.)
 {
+}
+
+LocatedEntity& ExternalMind::getEntity() const
+{
+    return m_entity;
 }
 
 void ExternalMind::addToEntity(const Atlas::Objects::Entity::RootEntity& ent) const
@@ -85,7 +88,7 @@ void ExternalMind::addToEntity(const Atlas::Objects::Entity::RootEntity& ent) co
 }
 
 
-void ExternalMind::externalOperation(const Operation & op, Link & link)
+void ExternalMind::externalOperation(const Operation& op, Link& link)
 {
     //Any ops coming from the mind must be Thought ops.
     Atlas::Objects::Operation::Thought thought{};
@@ -98,10 +101,9 @@ void ExternalMind::externalOperation(const Operation & op, Link & link)
     for (auto& resOp : res) {
         m_entity.sendWorld(resOp);
     }
-
 }
 
-void ExternalMind::operation(const Operation & op, OpVector & res)
+void ExternalMind::operation(const Operation& op, OpVector& res)
 {
 
     //TODO: remove this hacked in fix.
@@ -138,13 +140,13 @@ void ExternalMind::operation(const Operation & op, OpVector & res)
     // extra info about. The initial demo implementation checks for
     // Set ops which make the characters status less than 0.1, and sends
     // emotes that the character is hungry.
-    const std::vector<Root> & args = op->getArgs();
+    const std::vector<Root>& args = op->getArgs();
     if (op->getClassNo() == Atlas::Objects::Operation::SIGHT_NO && !args.empty()) {
         Operation sub_op = smart_dynamic_cast<Operation>(args.front());
         if (sub_op.isValid()) {
-            const std::vector<Root> & sub_args = sub_op->getArgs();
+            const std::vector<Root>& sub_args = sub_op->getArgs();
             if (sub_op->getClassNo() == Atlas::Objects::Operation::SET_NO && !sub_args.empty()) {
-                const Root & arg = sub_args.front();
+                const Root& arg = sub_args.front();
                 Element status_value;
                 if (arg->getId() == getId() and
                     arg->copyAttr("status", status_value) == 0 and
@@ -175,13 +177,13 @@ void ExternalMind::operation(const Operation & op, OpVector & res)
     }
 }
 
-const std::string & ExternalMind::connectionId()
+const std::string& ExternalMind::connectionId()
 {
     assert(m_link != nullptr);
     return m_link->getId();
 }
 
-void ExternalMind::linkUp(Link * c)
+void ExternalMind::linkUp(Link* c)
 {
     m_link = c;
     if (c == nullptr) {

@@ -22,7 +22,9 @@
 #include "common/Router.h"
 
 class Link;
+
 class Entity;
+
 class LocatedEntity;
 
 /// \brief This class connects in-game entities to the Link of the client
@@ -30,35 +32,45 @@ class LocatedEntity;
 ///
 /// Essentially used to relay in-game operations that pass to the mind on
 /// to the client.
-class ExternalMind : public Router {
-  protected:
-    Link * m_link;
-    LocatedEntity & m_entity;
-    double m_lossTime;
+class ExternalMind : public Router
+{
+    protected:
+        Link* m_link;
+        LocatedEntity& m_entity;
+        double m_lossTime;
 
-    void deleteEntity(const std::string & id, bool forceDelete);
-    void purgeEntity(const LocatedEntity & ent, bool forceDelete = false);
-  public:
+        void deleteEntity(const std::string& id, bool forceDelete);
 
-    explicit ExternalMind(std::string strId, long id, LocatedEntity & entity);
+        void purgeEntity(const LocatedEntity& ent, bool forceDelete = false);
 
-    ~ExternalMind() override = default;
+    public:
 
-    void externalOperation(const Operation & op, Link &) override;
-    void operation(const Operation &, OpVector &) override;
+        explicit ExternalMind(std::string strId, long id, LocatedEntity& entity);
 
-    bool isLinked() { return m_link != nullptr; }
-    bool isLinkedTo(Link * c) { return m_link == c; }
+        ~ExternalMind() override = default;
 
-    const std::string & connectionId();
+        void externalOperation(const Operation& op, Link&) override;
 
-    void linkUp(Link * c);
+        void operation(const Operation&, OpVector&) override;
 
-    Link* getLink() const {
-        return m_link;
-    }
+        bool isLinked()
+        { return m_link != nullptr; }
 
-    void addToEntity(const Atlas::Objects::Entity::RootEntity &) const override;
+        bool isLinkedTo(Link* c)
+        { return m_link == c; }
+
+        LocatedEntity& getEntity() const;
+
+        const std::string& connectionId();
+
+        void linkUp(Link* c);
+
+        Link* getLink() const
+        {
+            return m_link;
+        }
+
+        void addToEntity(const Atlas::Objects::Entity::RootEntity&) const override;
 
 };
 

@@ -74,19 +74,21 @@ void Lobby::removeAccount(ConnectableRouter * ac)
     debug(std::cout << "Lobby::delAccount(" << ac->getId() << ")"
                     << std::endl << std::flush;);
                     
-    Disappearance d;
-    Anonymous us;
-    us->setId(ac->getId());
-    us->setLoc(getId());
-    d->setArgs1(us);
-    d->setFrom(ac->getId());
-    d->setTo(getId());
 
-    OpVector res;
-    operation(d, res);
-    assert(res.empty());
+    auto result = m_accounts.erase(ac->getId());
+    if (result) {
+        Disappearance d;
+        Anonymous us;
+        us->setId(ac->getId());
+        us->setLoc(getId());
+        d->setArgs1(us);
+        d->setFrom(ac->getId());
+        d->setTo(getId());
 
-    m_accounts.erase(ac->getId());
+        OpVector res;
+        operation(d, res);
+        assert(res.empty());
+    }
 }
 
 

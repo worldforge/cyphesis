@@ -369,7 +369,7 @@ void Admin::createObject(const Root & arg,
 
         Juncture * j = new Juncture(m_connection, junc_id, junc_iid);
 
-        m_connection->addObject(j);
+        m_connection->addConnectableRouter(j);
         m_connection->m_server.addObject(j);
 
         Anonymous info_arg;

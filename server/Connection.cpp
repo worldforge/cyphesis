@@ -288,7 +288,7 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
         return;
     }
     // Connect everything up
-    addObject(account);
+    addConnectableRouter(account);
     account->setConnection(this);
     m_server.m_lobby.addAccount(account);
     // Let the client know they have logged in
