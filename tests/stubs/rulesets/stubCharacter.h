@@ -65,46 +65,6 @@
   }
 #endif //STUB_Character_Character_DTOR
 
-#ifndef STUB_Character_linkExternal
-//#define STUB_Character_linkExternal
-  int Character::linkExternal(Link *)
-  {
-    return 0;
-  }
-#endif //STUB_Character_linkExternal
-
-#ifndef STUB_Character_unlinkExternal
-//#define STUB_Character_unlinkExternal
-  int Character::unlinkExternal(Link *)
-  {
-    return 0;
-  }
-#endif //STUB_Character_unlinkExternal
-
-#ifndef STUB_Character_startTask
-//#define STUB_Character_startTask
-  int Character::startTask(Ref<Task>, const Operation & op, OpVector &)
-  {
-    return 0;
-  }
-#endif //STUB_Character_startTask
-
-#ifndef STUB_Character_updateTask
-//#define STUB_Character_updateTask
-  void Character::updateTask(OpVector &)
-  {
-    
-  }
-#endif //STUB_Character_updateTask
-
-#ifndef STUB_Character_clearTask
-//#define STUB_Character_clearTask
-  void Character::clearTask(OpVector &)
-  {
-    
-  }
-#endif //STUB_Character_clearTask
-
 #ifndef STUB_Character_destroy
 //#define STUB_Character_destroy
   void Character::destroy()
@@ -192,6 +152,14 @@
     
   }
 #endif //STUB_Character_RelayOperation
+
+#ifndef STUB_Character_ThoughtOperation
+//#define STUB_Character_ThoughtOperation
+  void Character::ThoughtOperation(const Operation&, OpVector&)
+  {
+    
+  }
+#endif //STUB_Character_ThoughtOperation
 
 #ifndef STUB_Character_mindActuateOperation
 //#define STUB_Character_mindActuateOperation

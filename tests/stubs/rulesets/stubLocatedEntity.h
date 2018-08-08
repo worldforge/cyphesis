@@ -233,6 +233,22 @@
   }
 #endif //STUB_LocatedEntity_removeChild
 
+#ifndef STUB_LocatedEntity_addListener
+//#define STUB_LocatedEntity_addListener
+  void LocatedEntity::addListener(OperationsListener* listener)
+  {
+    
+  }
+#endif //STUB_LocatedEntity_addListener
+
+#ifndef STUB_LocatedEntity_removeListener
+//#define STUB_LocatedEntity_removeListener
+  void LocatedEntity::removeListener(OperationsListener* listener)
+  {
+    
+  }
+#endif //STUB_LocatedEntity_removeListener
+
 #ifndef STUB_LocatedEntity_collectObservers
 //#define STUB_LocatedEntity_collectObservers
   void LocatedEntity::collectObservers(std::set<const LocatedEntity*>& observers) const

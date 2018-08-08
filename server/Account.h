@@ -86,9 +86,11 @@ class Account : public ConnectableRouter {
 
     void processExternalOperation(const Operation & op, OpVector& res);
 
+    virtual ExternalMind* createMind(LocatedEntity* entity) const;
+
   public:
     /// \brief Connect and add a character to this account
-    int connectCharacter(LocatedEntity *chr, OpVector& res);
+    int connectCharacter(LocatedEntity *entity, OpVector& res);
 
     Account(Connection * conn, const std::string & username,
                                const std::string & passwd,

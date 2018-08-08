@@ -17,19 +17,11 @@
 
 #ifndef STUB_Connection_disconnectObject
 //#define STUB_Connection_disconnectObject
-  void Connection::disconnectObject(RouterMap::iterator, const std::string & event)
+  void Connection::disconnectObject(ConnectableRouter* router, const std::string & event)
   {
     
   }
 #endif //STUB_Connection_disconnectObject
-
-#ifndef STUB_Connection_disconnectAccount
-//#define STUB_Connection_disconnectAccount
-  void Connection::disconnectAccount(Account *, RouterMap::iterator, const std::string & event)
-  {
-    
-  }
-#endif //STUB_Connection_disconnectAccount
 
 #ifndef STUB_Connection_newAccount
 //#define STUB_Connection_newAccount
@@ -72,14 +64,6 @@
   }
 #endif //STUB_Connection_setPossessionEnabled
 
-#ifndef STUB_Connection_addEntity
-//#define STUB_Connection_addEntity
-  void Connection::addEntity(LocatedEntity * ent)
-  {
-    
-  }
-#endif //STUB_Connection_addEntity
-
 #ifndef STUB_Connection_addObject
 //#define STUB_Connection_addObject
   void Connection::addObject(Router * obj)
@@ -88,6 +72,14 @@
   }
 #endif //STUB_Connection_addObject
 
+#ifndef STUB_Connection_addConnectableRouter
+//#define STUB_Connection_addConnectableRouter
+  void Connection::addConnectableRouter(ConnectableRouter * obj)
+  {
+    
+  }
+#endif //STUB_Connection_addConnectableRouter
+
 #ifndef STUB_Connection_removeObject
 //#define STUB_Connection_removeObject
   void Connection::removeObject(long id)
@@ -95,14 +87,6 @@
     
   }
 #endif //STUB_Connection_removeObject
-
-#ifndef STUB_Connection_objectDeleted
-//#define STUB_Connection_objectDeleted
-  void Connection::objectDeleted(long id)
-  {
-    
-  }
-#endif //STUB_Connection_objectDeleted
 
 #ifndef STUB_Connection_externalOperation
 //#define STUB_Connection_externalOperation

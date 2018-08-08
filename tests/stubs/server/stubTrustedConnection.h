@@ -9,7 +9,7 @@
 
 #ifndef STUB_TrustedConnection_newAccount
 //#define STUB_TrustedConnection_newAccount
-  Account* TrustedConnection::newAccount(const std::string & type, const std::string & username, const std::string & passwd, const std::string & id, long intId)
+  Account* TrustedConnection::newAccount(const std::string& type, const std::string& username, const std::string& passwd, const std::string& id, long intId)
   {
     return nullptr;
   }
@@ -17,7 +17,7 @@
 
 #ifndef STUB_TrustedConnection_TrustedConnection
 //#define STUB_TrustedConnection_TrustedConnection
-   TrustedConnection::TrustedConnection(CommSocket & client, ServerRouting & svr, const std::string & addr, const std::string & id, long iid)
+   TrustedConnection::TrustedConnection(CommSocket& client, ServerRouting& svr, const std::string& addr, const std::string& id, long iid)
     : Connection(client, svr, addr, id, iid)
   {
     

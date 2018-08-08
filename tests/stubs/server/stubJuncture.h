@@ -51,7 +51,7 @@
 //#define STUB_Juncture_Juncture
    Juncture::Juncture(Connection *, const std::string & id, long iid)
     : ConnectableRouter(Connection, id, iid)
-    , m_address(nullptr),m_peer(nullptr)
+    , m_connection(nullptr),m_address(nullptr),m_peer(nullptr)
   {
     
   }
@@ -128,6 +128,22 @@
     return 0;
   }
 #endif //STUB_Juncture_teleportEntity
+
+#ifndef STUB_Juncture_setConnection
+//#define STUB_Juncture_setConnection
+  void Juncture::setConnection(Connection* connection)
+  {
+    
+  }
+#endif //STUB_Juncture_setConnection
+
+#ifndef STUB_Juncture_getConnection
+//#define STUB_Juncture_getConnection
+  Connection* Juncture::getConnection() const
+  {
+    return nullptr;
+  }
+#endif //STUB_Juncture_getConnection
 
 
 #endif

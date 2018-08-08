@@ -7,22 +7,6 @@
 #include "common/CommSocket.h"
 #include "stubCommSocket_custom.h"
 
-#ifndef STUB_CommSocket_CommSocket
-//#define STUB_CommSocket_CommSocket
-   CommSocket::CommSocket(boost::asio::io_service& io_service)
-  {
-    
-  }
-#endif //STUB_CommSocket_CommSocket
-
-#ifndef STUB_CommSocket_CommSocket_DTOR
-//#define STUB_CommSocket_CommSocket_DTOR
-   CommSocket::~CommSocket()
-  {
-    
-  }
-#endif //STUB_CommSocket_CommSocket_DTOR
-
 #ifndef STUB_CommSocket_disconnect
 //#define STUB_CommSocket_disconnect
   void CommSocket::disconnect()

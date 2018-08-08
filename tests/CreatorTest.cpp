@@ -28,7 +28,6 @@
 #include "allOperations.h"
 #include "TestWorld.h"
 
-#include "rulesets/Creator.h"
 #include "rulesets/Python_API.h"
 #include "rulesets/Script.h"
 

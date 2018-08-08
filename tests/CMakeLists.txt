@@ -141,7 +141,6 @@ wf_add_test(StackableTest.cpp ${ENTITYEXERCISE} ${PROJECT_SOURCE_DIR}/rulesets/S
 wf_add_test(ThingTest.cpp ${ENTITYEXERCISE} ${PROJECT_SOURCE_DIR}/rulesets/Thing.cpp)
 wf_add_test(WorldTest.cpp ${ENTITYEXERCISE} ${PROJECT_SOURCE_DIR}/rulesets/World.cpp)
 wf_add_test(CharacterTest.cpp ${ENTITYEXERCISE} ${PROJECT_SOURCE_DIR}/rulesets/Character.cpp ${PROJECT_SOURCE_DIR}/physics/Quaternion.cpp)
-wf_add_test(CreatorTest.cpp ${ENTITYEXERCISE} ${PROJECT_SOURCE_DIR}/rulesets/Creator.cpp)
 wf_add_test(ThingupdatePropertiesTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/Thing.cpp ${PROJECT_SOURCE_DIR}/common/Property.cpp)
 wf_add_test(TaskTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/Task.cpp)
 wf_add_test(EntityPropertyTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/EntityProperty.cpp ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp ${PROJECT_SOURCE_DIR}/common/Property.cpp)
@@ -532,12 +531,10 @@ wf_add_test(ConnectionCharacterIntegration.cpp ${PROJECT_SOURCE_DIR}/physics/Qua
     ${PROJECT_SOURCE_DIR}/rulesets/ExternalMind.cpp)
 wf_add_test(ConnectionCreatorIntegration.cpp ${PROJECT_SOURCE_DIR}/physics/Quaternion.cpp
     ${PROJECT_SOURCE_DIR}/server/Connection.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/Creator.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/Character.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/ExternalMind.cpp)
 wf_add_test(TrustedConnectionCreatorIntegration.cpp ${PROJECT_SOURCE_DIR}/physics/Quaternion.cpp
     ${PROJECT_SOURCE_DIR}/server/Connection.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/Creator.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/Character.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/ExternalMind.cpp)
 wf_add_test(AccountConnectionCharacterIntegration.cpp ${PROJECT_SOURCE_DIR}/physics/Quaternion.cpp

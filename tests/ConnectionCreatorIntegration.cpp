@@ -29,7 +29,6 @@
 #include "server/Connection.h"
 #include "server/ServerRouting.h"
 
-#include "rulesets/Creator.h"
 #include "rulesets/ExternalMind.h"
 
 #include "common/const.h"

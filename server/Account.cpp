@@ -116,21 +116,25 @@ Connection* Account::getConnection() const
     return m_connection;
 }
 
+ExternalMind* Account::createMind(LocatedEntity* entity) const {
+    std::string strId;
+
+    auto id = newId(strId);
+
+    return new ExternalMind(strId, id, *entity);;
+}
 
 /// \brief Connect an existing character to this account
 ///
 /// \brief chr The character to connect to this account
 /// \return Returns 0 on success and -1 on failure.
-int Account::connectCharacter(LocatedEntity *chr, OpVector& res)
+int Account::connectCharacter(LocatedEntity *entity, OpVector& res)
 {
     //Create an external mind and hook it up with the entity
-    std::string strId;
-
-    auto id = newId(strId);
-    auto mind = new ExternalMind(strId, id, *chr);
+    auto mind = createMind(entity);
     mind->linkUp(m_connection);
 
-    auto mindsProp = chr->requirePropertyClassFixed<MindsProperty>();
+    auto mindsProp = entity->requirePropertyClassFixed<MindsProperty>();
     mindsProp->addMind(mind);
 
     m_connection->addObject(mind);
@@ -142,12 +146,12 @@ int Account::connectCharacter(LocatedEntity *chr, OpVector& res)
     mindInfo->setArgs1(mindEntity);
     res.push_back(mindInfo);
 
-    m_charactersDict[chr->getIntId()] = chr;
-    m_minds.emplace(chr->getIntId(), mind);
-    chr->destroyed.connect(sigc::bind(sigc::mem_fun(this, &Account::characterDestroyed), chr->getIntId()));
-    //m_connection->addEntity(chr);
+    m_charactersDict[entity->getIntId()] = entity;
+    m_minds.emplace(entity->getIntId(), mind);
+    entity->destroyed.connect(sigc::bind(sigc::mem_fun(this, &Account::characterDestroyed), entity->getIntId()));
+    //m_connection->addEntity(entity);
     if (isPersisted()) {
-        Persistence::instance().addCharacter(*this, *chr);
+        Persistence::instance().addCharacter(*this, *entity);
     }
     return 0;
 

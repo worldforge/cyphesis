@@ -26,19 +26,19 @@
 
 #ifndef STUB_Lobby_addAccount
 //#define STUB_Lobby_addAccount
-  void Lobby::addAccount(Account * a)
+  void Lobby::addAccount(ConnectableRouter * a)
   {
     
   }
 #endif //STUB_Lobby_addAccount
 
-#ifndef STUB_Lobby_delAccount
-//#define STUB_Lobby_delAccount
-  void Lobby::delAccount(Account * a)
+#ifndef STUB_Lobby_removeAccount
+//#define STUB_Lobby_removeAccount
+  void Lobby::removeAccount(ConnectableRouter * a)
   {
     
   }
-#endif //STUB_Lobby_delAccount
+#endif //STUB_Lobby_removeAccount
 
 #ifndef STUB_Lobby_externalOperation
 //#define STUB_Lobby_externalOperation

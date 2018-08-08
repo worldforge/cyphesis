@@ -275,8 +275,6 @@ int main()
 #include "server/Ruleset.h"
 #include "server/PossessionAuthenticator.h"
 
-#include "rulesets/Creator.h"
-
 #include "common/const.h"
 #include "common/globals.h"
 #include "common/log.h"

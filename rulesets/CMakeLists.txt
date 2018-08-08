@@ -11,7 +11,6 @@ add_library(rulesetentity
     Thing.cpp
     World.cpp
     Character.cpp
-    Creator.cpp
     Plant.cpp
     Stackable.cpp
     Domain.cpp
@@ -68,7 +67,7 @@ add_library(rulesetentity
     UsagesProperty.cpp UsagesProperty.h
     WorldTimeProperty.cpp
     UsageInstance.cpp UsageInstance.h
-    ScriptUtils.cpp ScriptUtils.h MindsProperty.cpp MindsProperty.h)
+    ScriptUtils.cpp ScriptUtils.h MindsProperty.cpp MindsProperty.h AdminMind.cpp AdminMind.h AdminProperty.cpp AdminProperty.h)
 
 target_link_libraries(rulesetentity ${BULLET_LIBRARIES})
 

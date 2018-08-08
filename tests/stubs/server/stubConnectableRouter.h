@@ -7,15 +7,21 @@
 #include "server/ConnectableRouter.h"
 #include "stubConnectableRouter_custom.h"
 
-#ifndef STUB_ConnectableRouter_ConnectableRouter
-//#define STUB_ConnectableRouter_ConnectableRouter
-   ConnectableRouter::ConnectableRouter(const std::string & id, long intId, Connection * c )
-    : Router(id, intId, c)
-    , m_connection(nullptr)
+#ifndef STUB_ConnectableRouter_setConnection
+//#define STUB_ConnectableRouter_setConnection
+  void ConnectableRouter::setConnection(Connection* connection)
   {
     
   }
-#endif //STUB_ConnectableRouter_ConnectableRouter
+#endif //STUB_ConnectableRouter_setConnection
+
+#ifndef STUB_ConnectableRouter_getConnection
+//#define STUB_ConnectableRouter_getConnection
+  Connection* ConnectableRouter::getConnection() const
+  {
+    return nullptr;
+  }
+#endif //STUB_ConnectableRouter_getConnection
 
 
 #endif

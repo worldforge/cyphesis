@@ -19,7 +19,6 @@
 #include "EntityFactory_impl.h"
 
 #include "rulesets/Character.h"
-#include "rulesets/Creator.h"
 #include "rulesets/Plant.h"
 #include "rulesets/Stackable.h"
 #include "rulesets/World.h"
@@ -130,7 +129,6 @@ void EntityFactoryBase::updateProperties(std::map<const TypeNode*, TypeNode::Pro
 
 template class EntityFactory<Thing>;
 template class EntityFactory<Character>;
-template class EntityFactory<Creator>;
 template class EntityFactory<Plant>;
 template class EntityFactory<Stackable>;
 template class EntityFactory<World>;

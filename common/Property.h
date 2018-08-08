@@ -86,9 +86,9 @@ class PropertyBase : public OperationsListener {
     /// \brief Add the value as an attribute to an Atlas entity
     virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
     /// \brief Handle an operation
-    virtual HandlerResult operation(LocatedEntity *,
+    HandlerResult operation(LocatedEntity *,
                                     const Operation &,
-                                    OpVector &);
+                                    OpVector &) override;
     /// \brief Create a copy of this instance
     ///
     /// The copy should have exactly the same type, and the same value

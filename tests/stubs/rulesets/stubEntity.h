@@ -280,6 +280,14 @@
   }
 #endif //STUB_Entity_RelayOperation
 
+#ifndef STUB_Entity_ThoughtOperation
+//#define STUB_Entity_ThoughtOperation
+  void Entity::ThoughtOperation(const Operation &, OpVector &)
+  {
+    
+  }
+#endif //STUB_Entity_ThoughtOperation
+
 #ifndef STUB_Entity_externalOperation
 //#define STUB_Entity_externalOperation
   void Entity::externalOperation(const Operation & op, Link &)
@@ -391,6 +399,22 @@
     
   }
 #endif //STUB_Entity_sendWorld
+
+#ifndef STUB_Entity_addListener
+//#define STUB_Entity_addListener
+  void Entity::addListener(OperationsListener* listener)
+  {
+    
+  }
+#endif //STUB_Entity_addListener
+
+#ifndef STUB_Entity_removeListener
+//#define STUB_Entity_removeListener
+  void Entity::removeListener(OperationsListener* listener)
+  {
+    
+  }
+#endif //STUB_Entity_removeListener
 
 
 #endif

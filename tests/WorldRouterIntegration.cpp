@@ -343,7 +343,6 @@ int main()
 #include "rulesets/DomainProperty.h"
 
 #include "rulesets/Character.h"
-#include "rulesets/Creator.h"
 #include "rulesets/Plant.h"
 #include "rulesets/Stackable.h"
 #include "rulesets/ExternalMind.h"

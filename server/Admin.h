@@ -45,7 +45,10 @@ class Admin : public Account {
 
     /// \brief Connection used to monitor the in-game operations
     sigc::connection m_monitorConnection;
-  public:
+
+    virtual ExternalMind* createMind(LocatedEntity* entity) const;
+
+    public:
     Admin(Connection * conn, const std::string & username,
                              const std::string & passwd,
                              const std::string & id, long intId);

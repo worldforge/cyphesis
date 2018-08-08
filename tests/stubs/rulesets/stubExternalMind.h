@@ -9,7 +9,7 @@
 
 #ifndef STUB_ExternalMind_deleteEntity
 //#define STUB_ExternalMind_deleteEntity
-  void ExternalMind::deleteEntity(const std::string & id, bool forceDelete)
+  void ExternalMind::deleteEntity(const std::string& id, bool forceDelete)
   {
     
   }
@@ -17,7 +17,7 @@
 
 #ifndef STUB_ExternalMind_purgeEntity
 //#define STUB_ExternalMind_purgeEntity
-  void ExternalMind::purgeEntity(const LocatedEntity & ent, bool forceDelete )
+  void ExternalMind::purgeEntity(const LocatedEntity& ent, bool forceDelete )
   {
     
   }
@@ -25,8 +25,8 @@
 
 #ifndef STUB_ExternalMind_ExternalMind
 //#define STUB_ExternalMind_ExternalMind
-   ExternalMind::ExternalMind(LocatedEntity & entity)
-    : Router(entity)
+   ExternalMind::ExternalMind(std::string strId, long id, LocatedEntity& entity)
+    : Router(strId, id, entity)
     , m_link(nullptr)
   {
     
@@ -35,7 +35,7 @@
 
 #ifndef STUB_ExternalMind_externalOperation
 //#define STUB_ExternalMind_externalOperation
-  void ExternalMind::externalOperation(const Operation & op, Link &)
+  void ExternalMind::externalOperation(const Operation& op, Link&)
   {
     
   }
@@ -43,11 +43,19 @@
 
 #ifndef STUB_ExternalMind_operation
 //#define STUB_ExternalMind_operation
-  void ExternalMind::operation(const Operation &, OpVector &)
+  void ExternalMind::operation(const Operation&, OpVector&)
   {
     
   }
 #endif //STUB_ExternalMind_operation
+
+#ifndef STUB_ExternalMind_getEntity
+//#define STUB_ExternalMind_getEntity
+  LocatedEntity& ExternalMind::getEntity() const
+  {
+    return *static_cast<LocatedEntity*>(nullptr);
+  }
+#endif //STUB_ExternalMind_getEntity
 
 #ifndef STUB_ExternalMind_connectionId
 //#define STUB_ExternalMind_connectionId
@@ -59,11 +67,19 @@
 
 #ifndef STUB_ExternalMind_linkUp
 //#define STUB_ExternalMind_linkUp
-  void ExternalMind::linkUp(Link * c)
+  void ExternalMind::linkUp(Link* c)
   {
     
   }
 #endif //STUB_ExternalMind_linkUp
+
+#ifndef STUB_ExternalMind_addToEntity
+//#define STUB_ExternalMind_addToEntity
+  void ExternalMind::addToEntity(const Atlas::Objects::Entity::RootEntity&) const
+  {
+    
+  }
+#endif //STUB_ExternalMind_addToEntity
 
 
 #endif

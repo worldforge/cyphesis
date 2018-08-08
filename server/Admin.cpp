@@ -18,6 +18,7 @@
 
 #include "Admin.h"
 
+#include "rulesets/AdminMind.h"
 #include "ServerRouting.h"
 #include "Connection.h"
 #include "Ruleset.h"
@@ -87,8 +88,8 @@ static void addTypeToList(const Root & type, ListType & typeList)
                            Element::typeName(children.getType())));
         return;
     }
-    ListType::const_iterator I = children.List().begin();
-    ListType::const_iterator Iend = children.List().end();
+    auto I = children.List().begin();
+    auto Iend = children.List().end();
     for (; I != Iend; ++I) {
         Root child = Inheritance::instance().getClass(I->asString());
         if (!child.isValid()) {
@@ -98,6 +99,14 @@ static void addTypeToList(const Root & type, ListType & typeList)
         }
         addTypeToList(child, typeList);
     }
+}
+
+ExternalMind* Admin::createMind(LocatedEntity* entity) const {
+    std::string strId;
+
+    auto id = newId(strId);
+
+    return new AdminMind(strId, id, *entity);;
 }
 
 Ref<LocatedEntity> Admin::createCharacterEntity(const RootEntity & ent,
@@ -360,7 +369,7 @@ void Admin::createObject(const Root & arg,
             return;
         }
 
-        Juncture * j = new Juncture(m_connection, junc_id, junc_iid);
+        auto j = new Juncture(m_connection, junc_id, junc_iid);
 
         m_connection->addConnectableRouter(j);
         m_connection->m_server.addObject(j);
@@ -393,11 +402,7 @@ void Admin::setAttribute(const Root& args) {
     //account acts as an external minds connection.
     if (args->hasAttr("possessive")) {
         const Element possessiveElement = args->getAttr("possessive");
-        if (possessiveElement.isInt() && possessiveElement.asInt() != 0) {
-            m_connection->setPossessionEnabled(true, getId());
-        } else {
-            m_connection->setPossessionEnabled(false, getId());
-        }
+        m_connection->setPossessionEnabled(possessiveElement.isInt() && possessiveElement.asInt() != 0, getId());
     }
 }
 
@@ -409,7 +414,7 @@ void Admin::setAttribute(const Root& args) {
 void Admin::customMonitorOperation(const Operation & op, OpVector & res)
 {
     if (!op->getArgs().empty()) {
-        if (m_connection != 0) {
+        if (m_connection != nullptr) {
             if (!m_monitorConnection.connected()) {
                 m_monitorConnection = m_connection->m_server.m_world.Dispatching.connect(sigc::mem_fun(this, &Admin::opDispatched));
             }

@@ -1,6 +1,7 @@
 <atlas>
     <map>
         <map name="attributes">
+            <map name="admin">1</map>
             <map name="transient">
                 <int name="default">-1</int>
             </map>

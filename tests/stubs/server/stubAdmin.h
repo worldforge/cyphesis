@@ -9,7 +9,7 @@
 
 #ifndef STUB_Admin_createCharacterEntity
 //#define STUB_Admin_createCharacterEntity
-  Ref<LocatedEntity> Admin::createCharacterEntity(const std::string &, const Atlas::Objects::Entity::RootEntity &, const Atlas::Objects::Root &)
+  Ref<LocatedEntity> Admin::createCharacterEntity(const Atlas::Objects::Entity::RootEntity &, const Atlas::Objects::Root &)
   {
     return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
@@ -25,7 +25,7 @@
 
 #ifndef STUB_Admin_createObject
 //#define STUB_Admin_createObject
-  void Admin::createObject(const std::string &, const Atlas::Objects::Root &, const Operation &, OpVector &)
+  void Admin::createObject(const Atlas::Objects::Root &, const Operation &, OpVector &)
   {
     
   }
@@ -46,6 +46,14 @@
     
   }
 #endif //STUB_Admin_setAttribute
+
+#ifndef STUB_Admin_createMind
+//#define STUB_Admin_createMind
+  ExternalMind* Admin::createMind(LocatedEntity* entity) const
+  {
+    return nullptr;
+  }
+#endif //STUB_Admin_createMind
 
 #ifndef STUB_Admin_Admin
 //#define STUB_Admin_Admin
@@ -87,14 +95,6 @@
     
   }
 #endif //STUB_Admin_addToEntity
-
-#ifndef STUB_Admin_LogoutOperation
-//#define STUB_Admin_LogoutOperation
-  void Admin::LogoutOperation(const Operation &, OpVector &)
-  {
-    
-  }
-#endif //STUB_Admin_LogoutOperation
 
 #ifndef STUB_Admin_GetOperation
 //#define STUB_Admin_GetOperation

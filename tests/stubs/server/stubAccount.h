@@ -9,7 +9,7 @@
 
 #ifndef STUB_Account_addNewCharacter
 //#define STUB_Account_addNewCharacter
-  Ref<LocatedEntity> Account::addNewCharacter(const std::string &, const Atlas::Objects::Entity::RootEntity &, const Atlas::Objects::Root &)
+  Ref<LocatedEntity> Account::addNewCharacter(const Atlas::Objects::Entity::RootEntity &, const Atlas::Objects::Root &, OpVector& res)
   {
     return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
@@ -33,7 +33,7 @@
 
 #ifndef STUB_Account_createObject
 //#define STUB_Account_createObject
-  void Account::createObject(const std::string &, const Atlas::Objects::Root &, const Operation &, OpVector &)
+  void Account::createObject(const Atlas::Objects::Root &, const Operation &, OpVector &)
   {
     
   }
@@ -49,7 +49,7 @@
 
 #ifndef STUB_Account_createCharacterEntity
 //#define STUB_Account_createCharacterEntity
-  Ref<LocatedEntity> Account::createCharacterEntity(const std::string &, const Atlas::Objects::Entity::RootEntity &, const Atlas::Objects::Root &)
+  Ref<LocatedEntity> Account::createCharacterEntity(const Atlas::Objects::Entity::RootEntity &, const Atlas::Objects::Root &)
   {
     return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
@@ -63,9 +63,17 @@
   }
 #endif //STUB_Account_processExternalOperation
 
+#ifndef STUB_Account_createMind
+//#define STUB_Account_createMind
+  ExternalMind* Account::createMind(LocatedEntity* entity) const
+  {
+    return nullptr;
+  }
+#endif //STUB_Account_createMind
+
 #ifndef STUB_Account_connectCharacter
 //#define STUB_Account_connectCharacter
-  int Account::connectCharacter(LocatedEntity *chr)
+  int Account::connectCharacter(LocatedEntity *entity, OpVector& res)
   {
     return 0;
   }
@@ -75,6 +83,7 @@
 //#define STUB_Account_Account
    Account::Account(Connection * conn, const std::string & username, const std::string & passwd, const std::string & id, long intId)
     : ConnectableRouter(conn, username, passwd, id, intId)
+    , m_connection(nullptr)
   {
     
   }
@@ -200,6 +209,14 @@
   }
 #endif //STUB_Account_OtherOperation
 
+#ifndef STUB_Account_PossessOperation
+//#define STUB_Account_PossessOperation
+  void Account::PossessOperation(const Operation &, OpVector &)
+  {
+    
+  }
+#endif //STUB_Account_PossessOperation
+
 #ifndef STUB_Account_addCharacter
 //#define STUB_Account_addCharacter
   void Account::addCharacter(LocatedEntity *)
@@ -207,6 +224,22 @@
     
   }
 #endif //STUB_Account_addCharacter
+
+#ifndef STUB_Account_setConnection
+//#define STUB_Account_setConnection
+  void Account::setConnection(Connection* connection)
+  {
+    
+  }
+#endif //STUB_Account_setConnection
+
+#ifndef STUB_Account_getConnection
+//#define STUB_Account_getConnection
+  Connection* Account::getConnection() const
+  {
+    return nullptr;
+  }
+#endif //STUB_Account_getConnection
 
 
 #endif

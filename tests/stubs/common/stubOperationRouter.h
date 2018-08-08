@@ -7,4 +7,13 @@
 #include "common/OperationRouter.h"
 #include "stubOperationRouter_custom.h"
 
+#ifndef STUB_OperationsListener_operation
+//#define STUB_OperationsListener_operation
+  HandlerResult OperationsListener::operation(LocatedEntity *, const Operation&, OpVector & res)
+  {
+    return *static_cast<HandlerResult*>(nullptr);
+  }
+#endif //STUB_OperationsListener_operation
+
+
 #endif
