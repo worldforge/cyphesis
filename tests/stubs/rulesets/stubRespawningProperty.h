@@ -55,13 +55,13 @@
   }
 #endif //STUB_RespawningProperty_delete_handler
 
-#ifndef STUB_RespawningProperty_entity_externalLinkChanged
-//#define STUB_RespawningProperty_entity_externalLinkChanged
-  void RespawningProperty::entity_externalLinkChanged(LocatedEntity* entity)
+#ifndef STUB_RespawningProperty_entity_gotMinds
+//#define STUB_RespawningProperty_entity_gotMinds
+  void RespawningProperty::entity_gotMinds(LocatedEntity* entity)
   {
     
   }
-#endif //STUB_RespawningProperty_entity_externalLinkChanged
+#endif //STUB_RespawningProperty_entity_gotMinds
 
 
 #endif

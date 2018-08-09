@@ -25,7 +25,7 @@
 
 #ifndef STUB_ExternalMindsManager_requestPossession
 //#define STUB_ExternalMindsManager_requestPossession
-  int ExternalMindsManager::requestPossession(Character& character, const std::string& language, const std::string& script)
+  int ExternalMindsManager::requestPossession(LocatedEntity* character)
   {
     return 0;
   }
@@ -33,19 +33,19 @@
 
 #ifndef STUB_ExternalMindsManager_entity_destroyed
 //#define STUB_ExternalMindsManager_entity_destroyed
-  void ExternalMindsManager::entity_destroyed(Character* character)
+  void ExternalMindsManager::entity_destroyed(LocatedEntity* character)
   {
     
   }
 #endif //STUB_ExternalMindsManager_entity_destroyed
 
-#ifndef STUB_ExternalMindsManager_character_externalLinkChanged
-//#define STUB_ExternalMindsManager_character_externalLinkChanged
-  void ExternalMindsManager::character_externalLinkChanged(Character* character)
+#ifndef STUB_ExternalMindsManager_entity_mindsChanged
+//#define STUB_ExternalMindsManager_entity_mindsChanged
+  void ExternalMindsManager::entity_mindsChanged(LocatedEntity* character, const MindsProperty* mindsProp)
   {
     
   }
-#endif //STUB_ExternalMindsManager_character_externalLinkChanged
+#endif //STUB_ExternalMindsManager_entity_mindsChanged
 
 #ifndef STUB_ExternalMindsManager_requestPossessionFromRegisteredClients
 //#define STUB_ExternalMindsManager_requestPossessionFromRegisteredClients
@@ -57,7 +57,7 @@
 
 #ifndef STUB_ExternalMindsManager_addPossessionEntryForCharacter
 //#define STUB_ExternalMindsManager_addPossessionEntryForCharacter
-  void ExternalMindsManager::addPossessionEntryForCharacter(Character& character)
+  void ExternalMindsManager::addPossessionEntryForCharacter(LocatedEntity* character)
   {
     
   }

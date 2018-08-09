@@ -28,7 +28,8 @@
 #include <string>
 #include <common/Singleton.h>
 
-class Character;
+class LocatedEntity;
+class MindsProperty;
 
 class ExternalMindsManager : public virtual sigc::trackable, public Singleton<ExternalMindsManager>
 {
@@ -53,19 +54,19 @@ class ExternalMindsManager : public virtual sigc::trackable, public Singleton<Ex
          * @param script The preferred script to use for the mind.
          * @return
          */
-        int requestPossession(Character& character, const std::string& language, const std::string& script);
+        int requestPossession(LocatedEntity* character);
 
     private:
         std::map<std::string, ExternalMindsConnection> m_connections;
-        std::unordered_set<Character*> m_unpossessedEntities;
-        std::unordered_set<Character*> m_possessedEntities;
+        std::unordered_set<LocatedEntity*> m_unpossessedEntities;
+        std::unordered_set<LocatedEntity*> m_possessedEntities;
 
-        void entity_destroyed(Character* character);
-        void character_externalLinkChanged(Character* character);
+        void entity_destroyed(LocatedEntity* character);
+        void entity_mindsChanged(LocatedEntity* character, const MindsProperty* mindsProp);
 
         int requestPossessionFromRegisteredClients(const std::string& character_id);
 
-        void addPossessionEntryForCharacter(Character& character);
+        void addPossessionEntryForCharacter(LocatedEntity* character);
 
 
 };

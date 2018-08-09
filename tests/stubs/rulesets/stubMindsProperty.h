@@ -112,9 +112,17 @@
   }
 #endif //STUB_MindsProperty_operation
 
+#ifndef STUB_MindsProperty_operation
+//#define STUB_MindsProperty_operation
+  HandlerResult MindsProperty::operation(LocatedEntity*, const Operation&, OpVector&) const
+  {
+    return *static_cast<HandlerResult*>(nullptr);
+  }
+#endif //STUB_MindsProperty_operation
+
 #ifndef STUB_MindsProperty_world2mind
 //#define STUB_MindsProperty_world2mind
-  bool MindsProperty::world2mind(const Operation & op)
+  bool MindsProperty::world2mind(const Operation& op) const
   {
     return false;
   }
@@ -122,7 +130,7 @@
 
 #ifndef STUB_MindsProperty_w2mSightOperation
 //#define STUB_MindsProperty_w2mSightOperation
-  bool MindsProperty::w2mSightOperation(const Operation &)
+  bool MindsProperty::w2mSightOperation(const Operation&) const
   {
     return false;
   }
@@ -130,7 +138,7 @@
 
 #ifndef STUB_MindsProperty_w2mSoundOperation
 //#define STUB_MindsProperty_w2mSoundOperation
-  bool MindsProperty::w2mSoundOperation(const Operation &)
+  bool MindsProperty::w2mSoundOperation(const Operation&) const
   {
     return false;
   }
@@ -138,7 +146,7 @@
 
 #ifndef STUB_MindsProperty_w2mTouchOperation
 //#define STUB_MindsProperty_w2mTouchOperation
-  bool MindsProperty::w2mTouchOperation(const Operation &)
+  bool MindsProperty::w2mTouchOperation(const Operation&) const
   {
     return false;
   }
@@ -146,7 +154,7 @@
 
 #ifndef STUB_MindsProperty_w2mTickOperation
 //#define STUB_MindsProperty_w2mTickOperation
-  bool MindsProperty::w2mTickOperation(const Operation &)
+  bool MindsProperty::w2mTickOperation(const Operation&) const
   {
     return false;
   }
@@ -154,7 +162,7 @@
 
 #ifndef STUB_MindsProperty_w2mUnseenOperation
 //#define STUB_MindsProperty_w2mUnseenOperation
-  bool MindsProperty::w2mUnseenOperation(const Operation &)
+  bool MindsProperty::w2mUnseenOperation(const Operation&) const
   {
     return false;
   }
@@ -162,7 +170,7 @@
 
 #ifndef STUB_MindsProperty_w2mSetupOperation
 //#define STUB_MindsProperty_w2mSetupOperation
-  bool MindsProperty::w2mSetupOperation(const Operation &)
+  bool MindsProperty::w2mSetupOperation(const Operation&) const
   {
     return false;
   }
@@ -170,7 +178,7 @@
 
 #ifndef STUB_MindsProperty_w2mAppearanceOperation
 //#define STUB_MindsProperty_w2mAppearanceOperation
-  bool MindsProperty::w2mAppearanceOperation(const Operation &)
+  bool MindsProperty::w2mAppearanceOperation(const Operation&) const
   {
     return false;
   }
@@ -178,7 +186,7 @@
 
 #ifndef STUB_MindsProperty_w2mDisappearanceOperation
 //#define STUB_MindsProperty_w2mDisappearanceOperation
-  bool MindsProperty::w2mDisappearanceOperation(const Operation &)
+  bool MindsProperty::w2mDisappearanceOperation(const Operation&) const
   {
     return false;
   }
@@ -186,7 +194,7 @@
 
 #ifndef STUB_MindsProperty_w2mErrorOperation
 //#define STUB_MindsProperty_w2mErrorOperation
-  bool MindsProperty::w2mErrorOperation(const Operation &)
+  bool MindsProperty::w2mErrorOperation(const Operation&) const
   {
     return false;
   }
@@ -194,7 +202,7 @@
 
 #ifndef STUB_MindsProperty_w2mThoughtOperation
 //#define STUB_MindsProperty_w2mThoughtOperation
-  bool MindsProperty::w2mThoughtOperation(const Operation & op)
+  bool MindsProperty::w2mThoughtOperation(const Operation& op) const
   {
     return false;
   }
@@ -202,7 +210,7 @@
 
 #ifndef STUB_MindsProperty_w2mThinkOperation
 //#define STUB_MindsProperty_w2mThinkOperation
-  bool MindsProperty::w2mThinkOperation(const Operation & op)
+  bool MindsProperty::w2mThinkOperation(const Operation& op) const
   {
     return false;
   }
@@ -210,7 +218,7 @@
 
 #ifndef STUB_MindsProperty_w2mCommuneOperation
 //#define STUB_MindsProperty_w2mCommuneOperation
-  bool MindsProperty::w2mCommuneOperation(const Operation & op)
+  bool MindsProperty::w2mCommuneOperation(const Operation& op) const
   {
     return false;
   }
@@ -218,11 +226,195 @@
 
 #ifndef STUB_MindsProperty_w2mRelayOperation
 //#define STUB_MindsProperty_w2mRelayOperation
-  bool MindsProperty::w2mRelayOperation(const Operation & op)
+  bool MindsProperty::w2mRelayOperation(const Operation& op) const
   {
     return false;
   }
 #endif //STUB_MindsProperty_w2mRelayOperation
+
+#ifndef STUB_MindsProperty_filterExternalOperation
+//#define STUB_MindsProperty_filterExternalOperation
+  void MindsProperty::filterExternalOperation(LocatedEntity* ent, const Operation& op, OpVector& res) const
+  {
+    
+  }
+#endif //STUB_MindsProperty_filterExternalOperation
+
+#ifndef STUB_MindsProperty_mindActuateOperation
+//#define STUB_MindsProperty_mindActuateOperation
+  void MindsProperty::mindActuateOperation(LocatedEntity*, const Operation&, OpVector&) const
+  {
+    
+  }
+#endif //STUB_MindsProperty_mindActuateOperation
+
+#ifndef STUB_MindsProperty_mindCombineOperation
+//#define STUB_MindsProperty_mindCombineOperation
+  void MindsProperty::mindCombineOperation(LocatedEntity*, const Operation&, OpVector&) const
+  {
+    
+  }
+#endif //STUB_MindsProperty_mindCombineOperation
+
+#ifndef STUB_MindsProperty_mindCreateOperation
+//#define STUB_MindsProperty_mindCreateOperation
+  void MindsProperty::mindCreateOperation(LocatedEntity*, const Operation&, OpVector&) const
+  {
+    
+  }
+#endif //STUB_MindsProperty_mindCreateOperation
+
+#ifndef STUB_MindsProperty_mindDeleteOperation
+//#define STUB_MindsProperty_mindDeleteOperation
+  void MindsProperty::mindDeleteOperation(LocatedEntity*, const Operation&, OpVector&) const
+  {
+    
+  }
+#endif //STUB_MindsProperty_mindDeleteOperation
+
+#ifndef STUB_MindsProperty_mindDivideOperation
+//#define STUB_MindsProperty_mindDivideOperation
+  void MindsProperty::mindDivideOperation(LocatedEntity*, const Operation&, OpVector&) const
+  {
+    
+  }
+#endif //STUB_MindsProperty_mindDivideOperation
+
+#ifndef STUB_MindsProperty_mindEatOperation
+//#define STUB_MindsProperty_mindEatOperation
+  void MindsProperty::mindEatOperation(LocatedEntity*, const Operation&, OpVector&) const
+  {
+    
+  }
+#endif //STUB_MindsProperty_mindEatOperation
+
+#ifndef STUB_MindsProperty_mindGoalInfoOperation
+//#define STUB_MindsProperty_mindGoalInfoOperation
+  void MindsProperty::mindGoalInfoOperation(LocatedEntity*, const Operation&, OpVector&) const
+  {
+    
+  }
+#endif //STUB_MindsProperty_mindGoalInfoOperation
+
+#ifndef STUB_MindsProperty_mindImaginaryOperation
+//#define STUB_MindsProperty_mindImaginaryOperation
+  void MindsProperty::mindImaginaryOperation(LocatedEntity*, const Operation&, OpVector&) const
+  {
+    
+  }
+#endif //STUB_MindsProperty_mindImaginaryOperation
+
+#ifndef STUB_MindsProperty_mindLookOperation
+//#define STUB_MindsProperty_mindLookOperation
+  void MindsProperty::mindLookOperation(LocatedEntity*, const Operation&, OpVector&) const
+  {
+    
+  }
+#endif //STUB_MindsProperty_mindLookOperation
+
+#ifndef STUB_MindsProperty_mindMoveOperation
+//#define STUB_MindsProperty_mindMoveOperation
+  void MindsProperty::mindMoveOperation(LocatedEntity*, const Operation&, OpVector&) const
+  {
+    
+  }
+#endif //STUB_MindsProperty_mindMoveOperation
+
+#ifndef STUB_MindsProperty_mindSetOperation
+//#define STUB_MindsProperty_mindSetOperation
+  void MindsProperty::mindSetOperation(LocatedEntity*, const Operation&, OpVector&) const
+  {
+    
+  }
+#endif //STUB_MindsProperty_mindSetOperation
+
+#ifndef STUB_MindsProperty_mindSetupOperation
+//#define STUB_MindsProperty_mindSetupOperation
+  void MindsProperty::mindSetupOperation(LocatedEntity*, const Operation&, OpVector&) const
+  {
+    
+  }
+#endif //STUB_MindsProperty_mindSetupOperation
+
+#ifndef STUB_MindsProperty_mindTalkOperation
+//#define STUB_MindsProperty_mindTalkOperation
+  void MindsProperty::mindTalkOperation(LocatedEntity*, const Operation&, OpVector&) const
+  {
+    
+  }
+#endif //STUB_MindsProperty_mindTalkOperation
+
+#ifndef STUB_MindsProperty_mindThoughtOperation
+//#define STUB_MindsProperty_mindThoughtOperation
+  void MindsProperty::mindThoughtOperation(LocatedEntity*, const Operation&, OpVector&) const
+  {
+    
+  }
+#endif //STUB_MindsProperty_mindThoughtOperation
+
+#ifndef STUB_MindsProperty_mindThinkOperation
+//#define STUB_MindsProperty_mindThinkOperation
+  void MindsProperty::mindThinkOperation(LocatedEntity*, const Operation&, OpVector&) const
+  {
+    
+  }
+#endif //STUB_MindsProperty_mindThinkOperation
+
+#ifndef STUB_MindsProperty_mindTickOperation
+//#define STUB_MindsProperty_mindTickOperation
+  void MindsProperty::mindTickOperation(LocatedEntity*, const Operation&, OpVector&) const
+  {
+    
+  }
+#endif //STUB_MindsProperty_mindTickOperation
+
+#ifndef STUB_MindsProperty_mindTouchOperation
+//#define STUB_MindsProperty_mindTouchOperation
+  void MindsProperty::mindTouchOperation(LocatedEntity*, const Operation&, OpVector&) const
+  {
+    
+  }
+#endif //STUB_MindsProperty_mindTouchOperation
+
+#ifndef STUB_MindsProperty_mindUpdateOperation
+//#define STUB_MindsProperty_mindUpdateOperation
+  void MindsProperty::mindUpdateOperation(LocatedEntity*, const Operation&, OpVector&) const
+  {
+    
+  }
+#endif //STUB_MindsProperty_mindUpdateOperation
+
+#ifndef STUB_MindsProperty_mindUseOperation
+//#define STUB_MindsProperty_mindUseOperation
+  void MindsProperty::mindUseOperation(LocatedEntity*, const Operation&, OpVector&) const
+  {
+    
+  }
+#endif //STUB_MindsProperty_mindUseOperation
+
+#ifndef STUB_MindsProperty_mindWieldOperation
+//#define STUB_MindsProperty_mindWieldOperation
+  void MindsProperty::mindWieldOperation(LocatedEntity*, const Operation&, OpVector&) const
+  {
+    
+  }
+#endif //STUB_MindsProperty_mindWieldOperation
+
+#ifndef STUB_MindsProperty_mindOtherOperation
+//#define STUB_MindsProperty_mindOtherOperation
+  void MindsProperty::mindOtherOperation(LocatedEntity*, const Operation&, OpVector&) const
+  {
+    
+  }
+#endif //STUB_MindsProperty_mindOtherOperation
+
+#ifndef STUB_MindsProperty_mind2body
+//#define STUB_MindsProperty_mind2body
+  void MindsProperty::mind2body(LocatedEntity*, const Operation& op, OpVector&) const
+  {
+    
+  }
+#endif //STUB_MindsProperty_mind2body
 
 
 #endif

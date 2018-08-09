@@ -45,6 +45,7 @@ using Atlas::Message::MapType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Sight;
+using Atlas::Objects::Operation::Sound;
 using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Operation::Drop;
 using Atlas::Objects::Operation::Info;
@@ -714,4 +715,19 @@ void Thing::CreateOperation(const Operation& op, OpVector& res)
         error(op, "Malformed object to be created", res, getId());
         return;
     }
+}
+
+
+void Thing::ImaginaryOperation(const Operation & op, OpVector & res)
+{
+    Sight s{};
+    s->setArgs1(op);
+    res.push_back(s);
+}
+
+void Thing::TalkOperation(const Operation & op, OpVector & res)
+{
+    Sound s{};
+    s->setArgs1(op);
+    res.push_back(s);
 }

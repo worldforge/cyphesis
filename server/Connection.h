@@ -26,7 +26,6 @@
 #include <list>
 
 class Account;
-class Character;
 class CommSocket;
 class LocatedEntity;
 class ServerRouting;

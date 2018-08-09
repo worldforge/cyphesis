@@ -39,7 +39,6 @@ using Atlas::Objects::Root;
 using String::compose;
 
 
-class Character;
 
 class Entity;
 
@@ -50,9 +49,6 @@ class Stackable;
 class Thing;
 
 class World;
-
-extern template
-class EntityFactory<Character>;
 
 extern template
 class EntityFactory<Thing>;
@@ -80,11 +76,6 @@ EntityRuleHandler::EntityRuleHandler(EntityBuilder * eb)
     };
     mFactories["thing"] = [](EntityFactoryBase* parent) -> EntityFactoryBase* {
         auto factory = new EntityFactory<Thing>();
-        factory->m_parent = parent;
-        return factory;
-    };
-    mFactories["character"] = [](EntityFactoryBase* parent) -> EntityFactoryBase* {
-        auto factory = new EntityFactory<Character>();
         factory->m_parent = parent;
         return factory;
     };

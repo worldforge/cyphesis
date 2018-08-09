@@ -80,7 +80,7 @@ class RespawningProperty : public Property<std::string>
         /// \brief Called when a character that is in limbo gets externally controlled.
         ///
         /// The character should then return to the world.
-        void entity_externalLinkChanged(LocatedEntity* entity);
+        void entity_gotMinds(LocatedEntity* entity);
 
 
 };

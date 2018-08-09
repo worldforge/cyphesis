@@ -133,10 +133,6 @@ int Account::connectCharacter(LocatedEntity *entity, OpVector& res)
     //Create an external mind and hook it up with the entity
     auto mind = createMind(entity);
     mind->linkUp(m_connection);
-
-    auto mindsProp = entity->requirePropertyClassFixed<MindsProperty>();
-    mindsProp->addMind(mind);
-
     m_connection->addObject(mind);
 
     //Inform the client about the mind.
@@ -149,6 +145,11 @@ int Account::connectCharacter(LocatedEntity *entity, OpVector& res)
     m_charactersDict[entity->getIntId()] = entity;
     m_minds.emplace(entity->getIntId(), mind);
     entity->destroyed.connect(sigc::bind(sigc::mem_fun(this, &Account::characterDestroyed), entity->getIntId()));
+
+    auto mindsProp = entity->requirePropertyClassFixed<MindsProperty>();
+    mindsProp->addMind(mind);
+    entity->propertyApplied.emit(MindsProperty::property_name, *mindsProp);
+
     //m_connection->addEntity(entity);
     if (isPersisted()) {
         Persistence::instance().addCharacter(*this, *entity);

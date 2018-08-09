@@ -128,7 +128,6 @@ void EntityFactoryBase::updateProperties(std::map<const TypeNode*, TypeNode::Pro
 }
 
 template class EntityFactory<Thing>;
-template class EntityFactory<Character>;
 template class EntityFactory<Plant>;
 template class EntityFactory<Stackable>;
 template class EntityFactory<World>;

@@ -64,8 +64,6 @@ class Character : public Thing, public virtual sigc::trackable {
 
 
   protected:
-    /// \brief Handler for simulating movement under direction from the mind
-    Movement & m_movement;
     /// \brief Internal AI mind keeping track of what this character experiences.
     Ref<ProxyMind> m_proxyMind;
 
@@ -100,7 +98,6 @@ class Character : public Thing, public virtual sigc::trackable {
     /// for wielded entities.
     sigc::connection m_rightHandWieldConnection;
 
-    void filterExternalOperation(const Operation &);
     void metabolise(OpVector &, double ammount = 1);
     void wieldDropped();
     LocatedEntity * findInContains(LocatedEntity * ent, const std::string & id);
@@ -108,11 +105,6 @@ class Character : public Thing, public virtual sigc::trackable {
 
     friend class Movement;
   public:
-    /// \brief External network connected agent controlling this character
-    ExternalMind * m_externalMind;
-
-    /// \brief Emitted when the external link for this character has changed.
-    sigc::signal<void> externalLinkChanged;
 
     explicit Character(const std::string & id, long intId);
     ~Character() override;
@@ -121,58 +113,11 @@ class Character : public Thing, public virtual sigc::trackable {
 
     std::vector<Atlas::Objects::Root> getThoughts() const override;
 
-    void operation(const Operation & op, OpVector &) override;
-    void externalOperation(const Operation & op, Link &) override;
-
-    void ImaginaryOperation(const Operation & op, OpVector &) override;
-    void TickOperation(const Operation & op, OpVector &) override;
-    void TalkOperation(const Operation & op, OpVector &) override;
     void NourishOperation(const Operation & op, OpVector &) override;
     void WieldOperation(const Operation & op, OpVector &) override;
     void ActuateOperation(const Operation & op, OpVector &) override;
     void RelayOperation(const Operation &, OpVector &) override;
-    void ThoughtOperation(const Operation&, OpVector&) override;
 
-    virtual void mindActuateOperation(const Operation &, OpVector &);
-    virtual void mindCombineOperation(const Operation &, OpVector &);
-    virtual void mindCreateOperation(const Operation &, OpVector &);
-    virtual void mindDeleteOperation(const Operation &, OpVector &);
-    virtual void mindDivideOperation(const Operation &, OpVector &);
-    virtual void mindEatOperation(const Operation &, OpVector &);
-    virtual void mindGoalInfoOperation(const Operation &, OpVector &);
-    virtual void mindImaginaryOperation(const Operation &, OpVector &);
-    virtual void mindLookOperation(const Operation &, OpVector &);
-    virtual void mindMoveOperation(const Operation &, OpVector &);
-    virtual void mindSetOperation(const Operation &, OpVector &);
-    virtual void mindSetupOperation(const Operation &, OpVector &);
-    virtual void mindTalkOperation(const Operation &, OpVector &);
-    virtual void mindThoughtOperation(const Operation &, OpVector &);
-    virtual void mindThinkOperation(const Operation &, OpVector &);
-    virtual void mindTickOperation(const Operation &, OpVector &);
-    virtual void mindTouchOperation(const Operation &, OpVector &);
-    virtual void mindUpdateOperation(const Operation &, OpVector &);
-    virtual void mindUseOperation(const Operation &, OpVector &);
-    virtual void mindWieldOperation(const Operation &, OpVector &);
-
-    virtual void mindOtherOperation(const Operation &, OpVector &);
-
-    bool w2mSightOperation(const Operation &);
-    bool w2mSoundOperation(const Operation &);
-    bool w2mTouchOperation(const Operation &);
-    bool w2mTickOperation(const Operation &);
-    bool w2mUnseenOperation(const Operation &);
-    bool w2mSetupOperation(const Operation &);
-    bool w2mAppearanceOperation(const Operation &);
-    bool w2mDisappearanceOperation(const Operation &);
-    bool w2mErrorOperation(const Operation &);
-    bool w2mThoughtOperation(const Operation & op);
-    bool w2mThinkOperation(const Operation & op);
-    bool w2mCommuneOperation(const Operation & op);
-    bool w2mRelayOperation(const Operation & op);
-
-    void sendMind(const Operation & op, OpVector &);
-    void mind2body(const Operation & op, OpVector &);
-    bool world2mind(const Operation & op);
 
     friend class Charactertest;
 };

@@ -26,6 +26,7 @@
 #include "common/debug.h"
 #include "common/op_switch.h"
 #include "common/TypeNode.h"
+#include "common/Link.h"
 #include "common/PropertyManager.h"
 
 #include "common/Actuate.h"
@@ -503,14 +504,19 @@ void Entity::removeListener(OperationsListener* listener)
     }
 }
 
-void Entity::externalOperation(const Operation & op, Link &)
+void Entity::externalOperation(const Operation & op, Link & link)
 {
+    if (op->getClassNo() != Atlas::Objects::Operation::THOUGHT_NO) {
+        OpVector res;
+        clientError(op, "An entity can only be externally controlled by Thoughts.", res, getId());
+        for (auto& resOp : res) {
+            link.send(resOp);
+        }
+    }
+
     OpVector res;
     operation(op, res);
     for (auto& resOp : res) {
-        if (!op->isDefaultSerialno()) {
-            resOp->setRefno(op->getSerialno());
-        }
         sendWorld(resOp);
     }
 }
@@ -518,10 +524,6 @@ void Entity::externalOperation(const Operation & op, Link &)
 void Entity::operation(const Operation & op, OpVector & res)
 {
     HandlerResult hr = OPERATION_IGNORED;
-    //TODO: decide on whether we should honour result here?
-    for (auto& listener : m_listeners) {
-        listener->operation(this, op, res);
-    }
 
     if (!m_scripts.empty()) {
         for (auto script: m_scripts) {
@@ -546,9 +548,15 @@ void Entity::operation(const Operation & op, OpVector & res)
             }
         }
     }
+
     //If the operation was blocked we shouldn't send it on to the entity.
     if (hr == OPERATION_BLOCKED) {
         return;
+    }
+
+    //TODO: decide on whether we should honour result here?
+    for (auto& listener : m_listeners) {
+        listener->operation(this, op, res);
     }
     return callOperation(op, res);
 }

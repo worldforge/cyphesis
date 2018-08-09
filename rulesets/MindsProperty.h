@@ -50,6 +50,7 @@ class MindsProperty : public PropertyBase
         void remove(LocatedEntity*, const std::string& name) override;
 
         void addMind(Router* mind);
+
         void removeMind(Router* mind, LocatedEntity* entity);
 
         const std::vector<Router*>& getMinds() const;
@@ -58,25 +59,89 @@ class MindsProperty : public PropertyBase
                                 const Operation&,
                                 OpVector&) override;
 
+
+        HandlerResult operation(LocatedEntity*,
+                                const Operation&,
+                                OpVector&) const;
+
     protected:
 
         std::vector<Router*> m_data;
 
-        bool world2mind(const Operation & op);
+        bool world2mind(const Operation& op) const;
 
-        bool w2mSightOperation(const Operation &);
-        bool w2mSoundOperation(const Operation &);
-        bool w2mTouchOperation(const Operation &);
-        bool w2mTickOperation(const Operation &);
-        bool w2mUnseenOperation(const Operation &);
-        bool w2mSetupOperation(const Operation &);
-        bool w2mAppearanceOperation(const Operation &);
-        bool w2mDisappearanceOperation(const Operation &);
-        bool w2mErrorOperation(const Operation &);
-        bool w2mThoughtOperation(const Operation & op);
-        bool w2mThinkOperation(const Operation & op);
-        bool w2mCommuneOperation(const Operation & op);
-        bool w2mRelayOperation(const Operation & op);
+        bool w2mSightOperation(const Operation&) const;
+
+        bool w2mSoundOperation(const Operation&) const;
+
+        bool w2mTouchOperation(const Operation&) const;
+
+        bool w2mTickOperation(const Operation&) const;
+
+        bool w2mUnseenOperation(const Operation&) const;
+
+        bool w2mSetupOperation(const Operation&) const;
+
+        bool w2mAppearanceOperation(const Operation&) const;
+
+        bool w2mDisappearanceOperation(const Operation&) const;
+
+        bool w2mErrorOperation(const Operation&) const;
+
+        bool w2mThoughtOperation(const Operation& op) const;
+
+        bool w2mThinkOperation(const Operation& op) const;
+
+        bool w2mCommuneOperation(const Operation& op) const;
+
+        bool w2mRelayOperation(const Operation& op) const;
+
+        void filterExternalOperation(LocatedEntity* ent, const Operation& op, OpVector& res) const;
+
+
+        void mindActuateOperation(LocatedEntity*, const Operation&, OpVector&) const;
+
+        void mindCombineOperation(LocatedEntity*, const Operation&, OpVector&) const;
+
+        void mindCreateOperation(LocatedEntity*, const Operation&, OpVector&) const;
+
+        void mindDeleteOperation(LocatedEntity*, const Operation&, OpVector&) const;
+
+        void mindDivideOperation(LocatedEntity*, const Operation&, OpVector&) const;
+
+        void mindEatOperation(LocatedEntity*, const Operation&, OpVector&) const;
+
+        void mindGoalInfoOperation(LocatedEntity*, const Operation&, OpVector&) const;
+
+        void mindImaginaryOperation(LocatedEntity*, const Operation&, OpVector&) const;
+
+        void mindLookOperation(LocatedEntity*, const Operation&, OpVector&) const;
+
+        void mindMoveOperation(LocatedEntity*, const Operation&, OpVector&) const;
+
+        void mindSetOperation(LocatedEntity*, const Operation&, OpVector&) const;
+
+        void mindSetupOperation(LocatedEntity*, const Operation&, OpVector&) const;
+
+        void mindTalkOperation(LocatedEntity*, const Operation&, OpVector&) const;
+
+        void mindThoughtOperation(LocatedEntity*, const Operation&, OpVector&) const;
+
+        void mindThinkOperation(LocatedEntity*, const Operation&, OpVector&) const;
+
+        void mindTickOperation(LocatedEntity*, const Operation&, OpVector&) const;
+
+        void mindTouchOperation(LocatedEntity*, const Operation&, OpVector&) const;
+
+        void mindUpdateOperation(LocatedEntity*, const Operation&, OpVector&) const;
+
+        void mindUseOperation(LocatedEntity*, const Operation&, OpVector&) const;
+
+        void mindWieldOperation(LocatedEntity*, const Operation&, OpVector&) const;
+
+        void mindOtherOperation(LocatedEntity*, const Operation&, OpVector&) const;
+
+        void mind2body(LocatedEntity*, const Operation& op, OpVector&) const;
 
 
 };

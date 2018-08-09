@@ -24,6 +24,7 @@
 #include "Character.h"
 #include "ExternalMind.h"
 #include "BaseWorld.h"
+#include "MindsProperty.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Entity.h>
@@ -53,11 +54,17 @@ void RespawningProperty::remove(LocatedEntity *owner, const std::string & name)
 void RespawningProperty::apply(LocatedEntity * ent)
 {
     //Check if we're already in limbo.
-    Character* character = dynamic_cast<Character*>(ent);
-    if (character && BaseWorld::instance().getLimboLocation() && character->m_location.m_loc.get() == BaseWorld::instance().getLimboLocation()) {
+    if (BaseWorld::instance().getLimboLocation() && ent->m_location.m_loc.get() == BaseWorld::instance().getLimboLocation()) {
         sigc::connection* connection = sInstanceState.getState(ent);
         if (!(*connection)) {
-            (*connection) = character->externalLinkChanged.connect(sigc::bind(sigc::mem_fun(*this, &RespawningProperty::entity_externalLinkChanged), ent));
+            (*connection) = ent->propertyApplied.connect([this, ent](const std::string& propName, const PropertyBase& prop){
+                if (propName == MindsProperty::property_name) {
+                    auto changedMindsProp = dynamic_cast<const MindsProperty*>(&prop);
+                    if (changedMindsProp && !changedMindsProp->getMinds().empty()) {
+                        entity_gotMinds(ent);
+                    }
+                }
+            });
         }
     }
 
@@ -81,17 +88,23 @@ HandlerResult RespawningProperty::delete_handler(LocatedEntity * e,
 
         Location new_loc;
         new_loc.m_velocity = Vector3D::ZERO();
-        Character* character = dynamic_cast<Character*>(e);
-        //if it's a character we should check if it's externally controlled. If it's not
-        //we should put the character in limbo until an external mind is connected.
-        if (character && (!character->m_externalMind || !character->m_externalMind->isLinked()) &&
+        auto mindsProp = e->getPropertyClassFixed<MindsProperty>();
+        //Check if there are minds. If no minds are controlling we should put it in Limbo
+        if (mindsProp && mindsProp->getMinds().empty() &&
                 BaseWorld::instance().getLimboLocation()) {
             new_loc.m_loc = BaseWorld::instance().getLimboLocation();
             new_loc.m_pos = Point3D::ZERO();
 
             sigc::connection* connection = sInstanceState.getState(e);
             if (!(*connection)) {
-                (*connection) = character->externalLinkChanged.connect(sigc::bind(sigc::mem_fun(*this, &RespawningProperty::entity_externalLinkChanged), e));
+                (*connection) = e->propertyApplied.connect([this, e](const std::string& propName, const PropertyBase& prop){
+                    if (propName == MindsProperty::property_name) {
+                        auto changedMindsProp = dynamic_cast<const MindsProperty*>(&prop);
+                        if (changedMindsProp && !changedMindsProp->getMinds().empty()) {
+                            entity_gotMinds(e);
+                        }
+                    }
+                });
             }
 
             //Suspend the entity while its in limbo
@@ -127,7 +140,7 @@ HandlerResult RespawningProperty::delete_handler(LocatedEntity * e,
     return OPERATION_IGNORED;
 }
 
-void RespawningProperty::entity_externalLinkChanged(LocatedEntity* entity) {
+void RespawningProperty::entity_gotMinds(LocatedEntity* entity) {
     //When the entity gets externally controlled again we should move it out of limbo and back to the respawn.
     OpVector res;
 

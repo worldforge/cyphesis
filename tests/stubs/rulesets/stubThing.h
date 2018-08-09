@@ -88,5 +88,21 @@
   }
 #endif //STUB_Thing_CreateOperation
 
+#ifndef STUB_Thing_ImaginaryOperation
+//#define STUB_Thing_ImaginaryOperation
+  void Thing::ImaginaryOperation(const Operation & op, OpVector &)
+  {
+    
+  }
+#endif //STUB_Thing_ImaginaryOperation
+
+#ifndef STUB_Thing_TalkOperation
+//#define STUB_Thing_TalkOperation
+  void Thing::TalkOperation(const Operation & op, OpVector &)
+  {
+    
+  }
+#endif //STUB_Thing_TalkOperation
+
 
 #endif

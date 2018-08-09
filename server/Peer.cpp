@@ -28,12 +28,13 @@
 #include "common/log.h"
 #include "common/compose.hpp"
 
-#include "rulesets/Character.h"
+#include "rulesets/LocatedEntity.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
 #include <chrono>
+#include <rulesets/MindsProperty.h>
 
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
@@ -159,10 +160,9 @@ int Peer::teleportEntity(const LocatedEntity * ent)
     auto teleport_time = boost::posix_time::microsec_clock::local_time();
 
     // Add a teleport state object to identify this teleport request
-    TeleportState * s = new TeleportState(teleport_time);
+    auto* s = new TeleportState(teleport_time);
 
     // Check if the entity has a mind
-    const Character * chr = dynamic_cast<const Character *>(ent);
 
     Atlas::Objects::Entity::Anonymous atlas_repr;
     ent->addToEntity(atlas_repr);
@@ -171,10 +171,10 @@ int Peer::teleportEntity(const LocatedEntity * ent)
     op->setFrom(m_accountId);
     op->setSerialno(iid);
     op->setArgs1(atlas_repr);
-    
-    if (chr != 0 &&
-        chr->m_externalMind != 0 &&
-        chr->m_externalMind->isLinked()) {
+
+    auto mindsProperty = ent->getPropertyClassFixed<MindsProperty>();
+
+    if (mindsProperty && !mindsProperty->getMinds().empty()) {
         // Entities with a mind require an additional one-time possess key that
         // is used by the client to authenticate a teleport on the destination
         // peer
@@ -216,7 +216,7 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
     log(INFO, "Got a peer teleport response");
     // Response to a Create op
     const std::vector<Root> & args = op->getArgs();
-    if (args.size() < 1) {
+    if (args.empty()) {
         log(ERROR, "Malformed args in Info op");
         return;
     }
@@ -229,7 +229,7 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
 
     long iid = op->getRefno();
 
-    TeleportMap::iterator I = m_teleports.find(iid);
+    auto I = m_teleports.find(iid);
     if (I == m_teleports.end()) {
         log(ERROR, "Info op for unknown create");
         return;
@@ -254,17 +254,9 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
 
     // If entity has a mind, add extra information in the Logout op
     if (s->isMind()) {
-        auto chr = dynamic_cast<Character *>(entity.get());
-        if (!chr) {
-            log(ERROR, "Entity is not a character");
-            return;
-        }
-        if (chr->m_externalMind == 0) {
+        auto mindsProperty = entity->getPropertyClassFixed<MindsProperty>();
+        if (mindsProperty->getMinds().empty()) {
             log(ERROR, "No external mind (though teleport state claims it)");
-            return;
-        }
-        if (!chr->m_externalMind->isLinked()) {
-            log(ERROR, "Mind is nullptr or not connected");
             return;
         }
         std::vector<Root> logout_args;
@@ -284,7 +276,8 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
         logoutOp->setArgs(logout_args);
         logoutOp->setTo(entity->getId());
         OpVector temp;
-        chr->m_externalMind->operation(logoutOp, temp);
+
+        mindsProperty->operation(entity.get(), logoutOp, temp);
         log(INFO, "Sent random key to connected mind");
     }
 
@@ -307,14 +300,13 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
 
 void Peer::cleanTeleports()
 {
-    if (m_teleports.size() == 0) {
+    if (m_teleports.empty()) {
         return;
     }
     // Get the current time
     auto curr_time = boost::posix_time::microsec_clock::local_time();
 
-    TeleportMap::iterator I = m_teleports.begin();
-    for(I = m_teleports.begin(); I != m_teleports.end(); ++I) {
+    for(auto I = m_teleports.begin(); I != m_teleports.end(); ++I) {
         auto time_passed = curr_time - I->second->getCreateTime();
         // If 5 seconds have passed, the teleport has failed
         if (time_passed.seconds() >= 10 && I->second->isRequested()) {

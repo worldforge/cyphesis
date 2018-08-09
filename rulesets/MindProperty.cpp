@@ -34,10 +34,7 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::Setup;
 using Atlas::Objects::Operation::Look;
 
-MindProperty::MindProperty(const MindProperty & rhs)
-: m_language(rhs.m_language), m_script(rhs.m_script)
-{
-}
+MindProperty::MindProperty(const MindProperty & rhs) = default;
 
 void MindProperty::set(const Element & val)
 {
@@ -84,21 +81,7 @@ MindProperty * MindProperty::copy() const
 
 void MindProperty::apply(LocatedEntity * ent)
 {
-
-    //Only request a possession if there's a language and script specified.
-    if (m_language.empty() || m_script.empty()) {
-        return;
-    }
-
-    Character * chr = dynamic_cast<Character *>(ent);
-
-    if (chr == nullptr) {
-        log(NOTICE, "Mind property applied to non-character");
-        return;
-    }
-
-    ExternalMindsManager::instance().requestPossession(*chr, m_language, m_script);
-
+    ExternalMindsManager::instance().requestPossession(ent);
 }
 
 bool MindProperty::isMindEnabled() const

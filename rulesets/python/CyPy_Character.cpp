@@ -91,7 +91,7 @@ Py::Object CyPy_Character::mind2body(const Py::Tuple& args)
     args.verify_length(1);
     auto& op = verifyObject<CyPy_Operation>(args.front());
     OpVector res;
-    m_value->mind2body(op, res);
+//    m_value->mind2body(op, res);
     if (res.empty()) {
         return Py::None();
     } else if (res.size() == 1) {

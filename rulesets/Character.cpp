@@ -275,9 +275,7 @@ LocatedEntity * Character::findInContains(LocatedEntity * ent,
 /// @param intId Integer identifier
 Character::Character(const std::string & id, long intId) :
            Thing(id, intId),
-           m_movement(*new Pedestrian(*this)),
-           m_proxyMind(new ProxyMind(id, intId, *this)),
-           m_externalMind(nullptr)
+           m_proxyMind(new ProxyMind(id, intId, *this))
 {
 }
 
@@ -286,8 +284,6 @@ Character::~Character()
     if (m_rightHandWieldConnection.connected()) {
         m_rightHandWieldConnection.disconnect();
     }
-    delete &m_movement;
-    delete m_externalMind;
 }
 //
 //int Character::linkExternal(Link * link)
@@ -343,46 +339,6 @@ std::vector<Atlas::Objects::Root> Character::getThoughts() const
 }
 
 
-void Character::ImaginaryOperation(const Operation & op, OpVector & res)
-{
-    Sight s;
-    s->setArgs1(op);
-    res.push_back(s);
-}
-
-
-void Character::TickOperation(const Operation & op, OpVector & res)
-{
-    debug(std::cout << "================================" << std::endl
-                    << std::flush;);
-    const std::vector<Root> & args = op->getArgs();
-    if (!args.empty()) {
-        const Root & arg = args.front();
-        if (arg->getName() == "mind") {
-            // Do nothing. Passed to mind.
-        } else {
-            debug_print("Tick to unknown subsystem " << arg->getName()
-                            << " arrived. " << describeEntity());
-        }
-    } else {
-        // METABOLISE
-        metabolise(res);
-
-        // TICK
-        Tick tickOp;
-        tickOp->setTo(getId());
-        tickOp->setFutureSeconds(consts::basic_tick * 30);
-        res.push_back(tickOp);
-    }
-}
-
-void Character::TalkOperation(const Operation & op, OpVector & res)
-{
-    debug_print("Character::Operation(Talk) " << describeEntity());
-    Sound s;
-    s->setArgs1(op);
-    res.push_back(s);
-}
 
 void Character::NourishOperation(const Operation & op, OpVector & res)
 {
@@ -689,1065 +645,120 @@ void Character::ActuateOperation(const Operation & op, OpVector & res)
 
 void Character::RelayOperation(const Operation & op, OpVector & res)
 {
-    //A Relay operation with refno sent to ourselves signals that we should prune
-    //our registered relays in m_relays. This is a feature to allow for a timeout; if
-    //no Relay has been received from the destination Entity after a certain period
-    //we'll shut down the relay link.
-    if (op->getTo() == getId() && op->getFrom() == getId() && !op->isDefaultRefno()) {
-        auto I = m_relays.find(op->getRefno());
-        if (I != m_relays.end()) {
-            //Also send a no-op to any client to make it stop waiting for any response.
-            Operation noop;
-            noop->setRefno(I->second.serialno);
-            noop->setTo(getId());
-            noop->setFrom(getId());
-            OpVector mres;
-            sendMind(noop, mres);
-            m_relays.erase(I);
-            for (auto& resOp : mres) {
-                filterExternalOperation(resOp);
-            }
-        }
-    } else {
-        if (op->getArgs().empty()) {
-            log(ERROR, "Character::RelayOperation no args. " + describeEntity());
-            return;
-        }
-        Operation relayedOp = Atlas::Objects::smart_dynamic_cast<Operation>(op->getArgs().front());
-
-        if (!relayedOp.isValid()) {
-            log(ERROR, "Character::RelayOperation first arg is not an operation. " + describeEntity());
-            return;
-        }
-
-        //If a relay op has a refno, it's a response to a Relay op previously sent out to another
-        //entity, and we should send the incoming relayed operation to the mind.
-        if (!op->isDefaultRefno()) {
-            //Note that the relayed op should be considered untrusted in this case, as it has originated
-            //from a random entity or its mind.
-            auto I = m_relays.find(op->getRefno());
-            if (I == m_relays.end()) {
-                log(WARNING, "Character::RelayOperation could not find registrered Relay with refno. " + describeEntity());
-                return;
-            }
-
-            //Make sure that this op really comes from the entity the original Relay op was sent to.
-            if (op->getFrom() != I->second.destination) {
-                log(WARNING, "Character::RelayOperation got relay op with mismatching 'from'. " + describeEntity());
-                return;
-            }
-
-            //Get the relayed operation and send to mind.
-            //Note that we don't send the operation to the entity; this is because we have
-            //to treat the relayed operation as "unsafe". This is since it originated from an random
-            //entity's mind and could in effect be anything (Set, Logout etc.)
-            //We should therefore handle it with care and only send it on to the mind.
-            //This of course hinges on the mind client code making sure to handle it correctly, given
-            //its refno.
-            relayedOp->setRefno(I->second.serialno);
-            OpVector mres;
-            //We only send to external minds; never to internal minds or proxy minds.
-            if (m_externalMind) {
-                m_externalMind->operation(relayedOp, mres);
-            }
-            m_relays.erase(I);
-            for (auto& resOp : mres) {
-                filterExternalOperation(resOp);
-            }
-        } else {
-
-            //Check if the mind should handle the relayed operation; else we'll just let the
-            //standard Entity relay code do it's thing.
-            if (!world2mind(relayedOp)) {
-                //This operation won't be sent to the mind, we'll pass it on to the standard
-                //relay method which will generate a Sight as response.
-                Entity::RelayOperation(op, res);
-                return;
-            }
-
-            //If the Relay op instead has a serial no, it's a Relay op sent from us by another Entity
-            //which expects a response. We should send it on to the mind (efter registering an entry in
-            //m_relays to be handled by mind2body).
-            //Note that the relayed operation in this case should be considered "trusted", as it has originated
-            //from either the server itself or a trusted client.
-
-            //Extract the contained operation, and register the relay into m_relays
-            if (op->isDefaultSerialno()) {
-                log(ERROR, "Character::RelayOperation no serial number. " + describeEntity());
-                return;
-            }
-
-            Relay relay;
-            relay.serialno = op->getSerialno();
-            relay.destination = op->getFrom();
-
-            //Generate a local serial number which we'll register in m_relays. When a response is received
-            //we'll check the refno and match it against what we've stored
-            long int serialNo = ++s_serialNumberNext;
-            relayedOp->setSerialno(serialNo);
-            m_relays.insert(std::make_pair(serialNo, relay));
-
-            //Make sure that the contained op is addressed to the entity
-            relayedOp->setTo(getId());
-
-            //Now send the contained op to the entity
-            operation(relayedOp, res);
-
-            //Also send a future Relay op to ourselves to make sure that the registered relay in m_relays
-            //is removed in the case that we don't get any response.
-            Atlas::Objects::Operation::Generic pruneOp;
-            pruneOp->setType("relay", Atlas::Objects::Operation::RELAY_NO);
-            pruneOp->setTo(getId());
-            pruneOp->setFrom(getId());
-            pruneOp->setRefno(serialNo);
-            //5 seconds should be more than enough.
-            pruneOp->setFutureSeconds(5);
-            sendWorld(pruneOp);
-        }
-    }
-}
-
-/// \brief Filter an Actuate operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindActuateOperation(const Operation & op, OpVector & res)
-{
-    debug(std::cout << "Got Actuate op from mind" << std::endl << std::flush
-    ;);
-
-    //Distance filtering etc. happens in ActuateOperation
-    op->setTo(getId());
-    res.push_back(op);
-}
-
-/// \brief Filter a Setup operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindSetupOperation(const Operation & op, OpVector & res)
-{
-    Anonymous setup_arg;
-    setup_arg->setName("mind");
-    op->setArgs1(setup_arg);
-    op->setTo(getId());
-    res.push_back(op);
-}
-
-/// \brief Filter a Use operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindUseOperation(const Operation & op, OpVector & res)
-{
-    debug(std::cout << "Got Use op from mind" << std::endl << std::flush
-    ;);
-
-    //Make sure that the first contained arg is another Use operation,
-    // which is then sent to the actual tool.
-
-    auto & args = op->getArgs();
-    if (args.size() < 2) {
-        log(ERROR, "mindUseOperation: use op has no argument, should have two. " + describeEntity());
-        return;
-    }
-    auto toolEnt = smart_dynamic_cast<Atlas::Objects::Entity::RootEntity>(args.front());
-    if (!toolEnt) {
-        log(ERROR, "mindUseOperation: First arg is not an entity. " + describeEntity());
-        return;
-    }
-    if (!toolEnt->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        log(ERROR, "mindMoveOperation: First arg has no ID. " + describeEntity());
-        return;
-    }
-
-    //TODO: should we perhaps check that this only can be Action ops?
-    auto innerOp = smart_dynamic_cast<Atlas::Objects::Operation::RootOperation>(args[1]);
-    if (!innerOp) {
-        log(ERROR, "mindUseOperation: Second arg is not an operation. " + describeEntity());
-        return;
-    }
-
-    Atlas::Objects::Operation::Use useOp;
-    useOp->setTo(toolEnt->getId());
-    useOp->setFrom(getId());
-    useOp->setArgs1(innerOp);
-
-    res.push_back(useOp);
-}
-
-/// \brief Filter a Update operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindUpdateOperation(const Operation & op, OpVector & res)
-{
-}
-
-/// \brief Filter a Wield operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindWieldOperation(const Operation & op, OpVector & res)
-{
-    debug(std::cout << "Got Wield op from mind" << std::endl << std::flush
-    ;);
-    op->setTo(getId());
-    res.push_back(op);
-}
-
-/// \brief Filter a Tick operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindTickOperation(const Operation & op, OpVector & res)
-{
-    Anonymous tick_arg;
-    tick_arg->setName("mind");
-    op->setArgs1(tick_arg);
-    op->setTo(getId());
-    res.push_back(op);
-}
-
-/// \brief Filter a Move operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindMoveOperation(const Operation & op, OpVector & res)
-{
-    debug(std::cout << "Character::mind_move_op" << std::endl << std::flush
-    ;);
-    const std::vector<Root> & args = op->getArgs();
-    if (args.empty()) {
-        log(ERROR, "mindMoveOperation: move op has no argument. " + describeEntity());
-        return;
-    }
-    const RootEntity arg = smart_dynamic_cast<RootEntity>(args.front());
-    if (!arg.isValid()) {
-        log(ERROR, "mindMoveOperation: Arg is not an entity. " + describeEntity());
-        return;
-    }
-    if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        log(ERROR, "mindMoveOperation: Arg has no ID. " + describeEntity());
-        return;
-    }
-    Element stamina_attr;
-    if (getAttrType(STAMINA, stamina_attr, Element::TYPE_FLOAT) == 0) {
-        if (stamina_attr.Float() <= 0.f) {
-            // Character is immobilised.
-            return;
-        }
-    }
-    const std::string & other_id = arg->getId();
-    if (other_id != getId()) {
-        debug(std::cout << "Moving something else. " << other_id << std::endl << std::flush
-        ;);
-        auto other = BaseWorld::instance().getEntity(other_id);
-        if (!other) {
-            Unseen u;
-
-            Anonymous unseen_arg;
-            unseen_arg->setId(other_id);
-            u->setArgs1(unseen_arg);
-
-            u->setTo(getId());
-            res.push_back(u);
-            return;
-        }
-
-        //Check that we actually can reach the other entity.
-        if (this->canReach({other, {}})) {
-            //Now also check that we can reach wherever we're trying to move the entity.
-
-            auto targetLoc = other->m_location.m_loc;
-
-            //Only allow some things to be set when moving another entity.
-            RootEntity newArgs1;
-            //We've already checked that the id exists
-            newArgs1->setId(arg->getId());
-
-            if (!arg->isDefaultLoc()) {
-                newArgs1->setLoc(arg->getLoc());
-                targetLoc = BaseWorld::instance().getEntity(arg->getLoc());
-            }
-            if (!targetLoc) {
-                clientError(op, "Target parent entity doesn't exist.", res, op->getFrom());
-                return;
-            }
-            WFMath::Point<3> targetPos;
-            if (!arg->isDefaultPos()) {
-                newArgs1->setPos(arg->getPos());
-                targetPos.fromAtlas(arg->getPosAsList());
-            }
-            //Check that we can reach the edge of the entity if it's placed in its new location.
-            if (!this->canReach({targetLoc, targetPos}, other->m_location.radius())) {
-                clientError(op, "Target is too far away.", res, op->getFrom());
-                return;
-            }
-            if (arg->hasAttr("orientation")) {
-                newArgs1->setAttr("orientation", arg->getAttr("orientation"));
-            }
-            //Replace first arg with our sanitized arg.
-            op->setArgs1(newArgs1);
-            op->setFrom(this->getId());
-            op->setTo(other_id);
-
-            res.push_back(op);
-
-        } else {
-            clientError(op, "Entity is too far away.", res, op->getFrom());
-        }
-
-        //TODO: add checks for the things that we can reach, and that we can move.
-        //Probably involve the domain in this.
-//        Element mass;
-//        if (other->getAttr(MASS, mass) != 0 || !mass.isFloat()) {
-//            // FIXME Check against strength
-//            // || mass.Float() > m_statistics.get("strength"));
-//            debug(std::cout << "We can't move this. Just too heavy" << std::endl << std::flush
-//            ;);
-//            //TODO: send op back to the mind informing it that it was too heavy to move.
+//    //A Relay operation with refno sent to ourselves signals that we should prune
+//    //our registered relays in m_relays. This is a feature to allow for a timeout; if
+//    //no Relay has been received from the destination Entity after a certain period
+//    //we'll shut down the relay link.
+//    if (op->getTo() == getId() && op->getFrom() == getId() && !op->isDefaultRefno()) {
+//        auto I = m_relays.find(op->getRefno());
+//        if (I != m_relays.end()) {
+//            //Also send a no-op to any client to make it stop waiting for any response.
+//            Operation noop;
+//            noop->setRefno(I->second.serialno);
+//            noop->setTo(getId());
+//            noop->setFrom(getId());
+//            OpVector mres;
+//            sendMind(noop, mres);
+//            m_relays.erase(I);
+//            for (auto& resOp : mres) {
+//                filterExternalOperation(resOp);
+//            }
+//        }
+//    } else {
+//        if (op->getArgs().empty()) {
+//            log(ERROR, "Character::RelayOperation no args. " + describeEntity());
 //            return;
 //        }
-
-        return;
-    }
-    std::string new_loc;
-    if (arg->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
-        new_loc = arg->getLoc();
-    } else {
-        debug(std::cout << "Parent not set" << std::endl << std::flush
-        ;);
-    }
-    Point3D new_pos;
-    Vector3D new_propel;
-    Quaternion new_orientation;
-    try {
-        //If there's a position specified, that takes precedence (i.e. move as quickly straight to the position).
-        //Note that we still look for a propel attribute, since that can be used to determine the speed of movement.
-        if (arg->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
-            fromStdVector(new_pos, arg->getPos());
-            debug(std::cout << "pos set to " << new_pos << std::endl << std::flush
-            ;);
-        }
-
-        //First look for the "propel" attribute; if that's not there look for the legacy "velocity" attribute.
-        //Note that we differ between "propel", which is how an entity propels itself forward, and "velocity"
-        //which is the resulting velocity of the entity, taking all other entities as well as gravity into consideration.
-        Element attr_propel;
-        if (arg->copyAttr("propel", attr_propel) == 0) {
-            try {
-                new_propel.fromAtlas(attr_propel);
-            } catch (...) {
-                //just ignore malformed data
-            }
-        } else {
-            if (arg->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
-                fromStdVector(new_propel, arg->getVelocity());
-                debug(std::cout << "propel set to " << new_propel << std::endl << std::flush;);
-            }
-        }
-
-        Element orientation_attr;
-        if (arg->copyAttr("orientation", orientation_attr) == 0) {
-            new_orientation.fromAtlas(orientation_attr);
-            debug(std::cout << "ori set to " << new_orientation << std::endl << std::flush;);
-            if (!new_orientation.isValid()) {
-                log(ERROR, "Ignoring invalid orientation from client " + describeEntity() + ".");
-            }
-        }
-    } catch (Atlas::Message::WrongTypeException&) {
-        log(ERROR, "EXCEPTION: mindMoveOperation: Malformed move operation. " + describeEntity());
-        return;
-    } catch (...) {
-        log(ERROR, "EXCEPTION: mindMoveOperation: Unknown exception thrown. " + describeEntity());
-        return;
-    }
-
-    debug(std::cout << ":" << new_loc << ":" << m_location.m_loc->getId() << ":" << std::endl << std::flush;);
-    if (!new_loc.empty() && (new_loc != m_location.m_loc->getId())) {
-        debug(std::cout << "Changing loc" << std::endl << std::flush
-        ;);
-        auto target_loc = BaseWorld::instance().getEntity(new_loc);
-        if (!target_loc) {
-            //TODO: what use case is this? Moving the entity to a null location?
-            Unseen u;
-
-            Anonymous unseen_arg;
-            unseen_arg->setId(new_loc);
-            u->setArgs1(unseen_arg);
-
-            u->setTo(getId());
-            res.push_back(u);
-            return;
-        }
-
-        if (new_pos.isValid()) {
-            Location target(target_loc, new_pos);
-            Vector3D distance = distanceTo(m_location, target);
-            assert(distance.isValid());
-            // Convert target into our current frame of reference.
-            new_pos = m_location.pos() + distance;
-        } else {
-            log(WARNING, "mindMoveOperation: Argument changes LOC, but no POS specified. Not sure this makes any sense. " + describeEntity());
-        }
-    }
-    // Movement within current loc. Work out the speed and stuff and
-    // use movement object to track movement.
-
-    Location ret_location = m_location;
-
-    //If there's a position set, we'll use that to determine the propel value. However, we'll also check if there also was a propel value set,
-    //since the magnitude of that indicates the speed to use (otherwise we'll use full speed).
-    if (new_pos.isValid()) {
-        if (new_propel.isValid()) {
-            auto mag = new_propel.mag();
-            new_propel = new_pos - m_location.pos();
-            new_propel.normalize();
-            new_propel *= mag;
-        } else {
-            new_propel = new_pos - m_location.pos();
-            new_propel.normalize();
-        }
-    }
-    // Set up argument for operation
-    Anonymous move_arg;
-    move_arg->setId(getId());
-
-    // Need to add the arguments to this op before we return it
-    // direction is already a unit vector
-    if (new_pos.isValid()) {
-        m_movement.setTarget(new_pos);
-        debug(std::cout << "Target" << new_pos << std::endl << std::flush
-        ;);
-    }
-    if (new_propel.isValid()) {
-        auto mag = new_propel.mag();
-        if (mag == 0) {
-            move_arg->setAttr("propel", new_propel.toAtlas());
-        } else {
-            //We don't allow the mind to set any speed greater than a normalized value.
-            if (mag > 1.0) {
-                new_propel.normalize();
-            }
-            move_arg->setAttr("propel", new_propel.toAtlas());
-        }
-    }
-
-    if (new_orientation.isValid()) {
-        move_arg->setAttr("orientation", new_orientation.toAtlas());
-    }
-
-    // Create move operation
-    Move moveOp;
-    moveOp->setTo(getId());
-    moveOp->setSeconds(BaseWorld::instance().getTime());
-    moveOp->setArgs1(move_arg);
-
-    res.push_back(moveOp);
-
-}
-
-/// \brief Filter a Set operation coming from the mind
-///
-/// Currently any Set op is permitted. In the future this will be locked
-/// down to only allow mutable things to be changed. For example, for
-/// inventory items with no name can have their name set from the client.
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindSetOperation(const Operation & op, OpVector & res)
-{
-    log(WARNING, "Set op from mind");
-    const std::vector<Root> & args = op->getArgs();
-    if (args.empty()) {
-        log(ERROR, "mindSetOperation: set op has no argument. " + describeEntity());
-        return;
-    }
-    const Root & arg = args.front();
-    if (arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        op->setTo(arg->getId());
-    } else {
-        op->setTo(getId());
-    }
-    res.push_back(op);
-}
-
-/// \brief Filter a Combine operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindCombineOperation(const Operation & op, OpVector & res)
-{
-    debug(std::cout << "mindCombineOperation" << std::endl << std::flush
-    ;);
-    const std::vector<Root> & args = op->getArgs();
-    if (args.empty()) {
-        log(ERROR, "mindCombineOperation: combine op has no argument. " + describeEntity());
-        return;
-    }
-    auto I = args.begin();
-    const Root & arg1 = *I;
-    op->setTo(arg1->getId());
-    auto Iend = args.end();
-    for (; I != Iend; ++I) {
-        const Root & arg = *I;
-        if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-            error(op, "Character::mindCombineOp No ID.", res, getId());
-            return;
-        }
-        // FIXME Check item to be combined is in inventory
-        // and then also check stackable and the same type.
-    }
-    res.push_back(op);
-}
-
-/// \brief Filter a Create operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindCreateOperation(const Operation & op, OpVector & res)
-{
-    op->setTo(getId());
-    res.push_back(op);
-}
-
-/// \brief Filter a Delete operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindDeleteOperation(const Operation & op, OpVector & res)
-{
-    op->setTo(getId());
-    res.push_back(op);
-}
-
-/// \brief Filter a Divide operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindDivideOperation(const Operation & op, OpVector & res)
-{
-    const std::vector<Root> & args = op->getArgs();
-    if (args.empty()) {
-        log(ERROR, "mindDivideOperation: op has no argument. " + describeEntity());
-        return;
-    }
-    auto I = args.begin();
-    const Root & arg1 = *I;
-    if (!arg1->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        error(op, "Character::mindDivideOp arg 1 has no ID.", res, getId());
-        return;
-    }
-    // FIXME Check entity to be divided is in inventory
-    op->setTo(arg1->getId());
-    ++I;
-    auto Iend = args.end();
-    for (; I != Iend; ++I) {
-        const Root & arg = *I;
-        if (arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-            error(op, "Character::mindDivideOp arg has ID.", res, getId());
-            return;
-        }
-        // Check the same type?
-    }
-    res.push_back(op);
-}
-
-/// \brief Filter a Imaginary operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindImaginaryOperation(const Operation & op, OpVector & res)
-{
-    op->setTo(getId());
-    res.push_back(op);
-}
-
-/// \brief Filter a Talk operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindTalkOperation(const Operation & op, OpVector & res)
-{
-    debug(std::cout << "Character::mindTalkOperation" << std::endl << std::flush
-    ;);
-    op->setTo(getId());
-    res.push_back(op);
-}
-
-/// \brief Filter a Look operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindLookOperation(const Operation & op, OpVector & res)
-{
-    debug(std::cout << "Got look up from mind from [" << op->getFrom() << "] to [" << op->getTo() << "]" << std::endl << std::flush
-    ;);
-
-    const std::vector<Root> & args = op->getArgs();
-    if (args.empty()) {
-        //If nothing is specified, send to parent, if available.
-        if (m_location.m_loc) {
-            op->setTo(m_location.m_loc->getId());
-        } else {
-            return;
-        }
-    } else {
-        const Root & arg = args.front();
-        if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-            log(ERROR, describeEntity() + " mindLookOperation: Op has no ID");
-            return;
-        }
-        op->setTo(arg->getId());
-    }
-    debug(std::cout << "  now to [" << op->getTo() << "]" << std::endl << std::flush
-    ;);
-    res.push_back(op);
-}
-
-/// \brief Filter a Eat operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindEatOperation(const Operation & op, OpVector & res)
-{
-    const std::vector<Root> & args = op->getArgs();
-    if (args.empty()) {
-        log(ERROR, describeEntity() + " mindEatOperation: Op has no ARGS");
-        return;
-    }
-    const Root & arg = args.front();
-    if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        log(ERROR, describeEntity() + " mindEatOperation: Arg has no ID");
-        return;
-    }
-
-    auto target = BaseWorld::instance().getEntity(arg->getId());
-    if (!target) {
-        log(NOTICE, describeEntity() + " mindEatOperation: Target does not exist");
-        return;
-    }
-
-    if (!this->canReach({target, {}})) {
-        clientError(op, "Target is too far away.", res, op->getFrom());
-        return;
-    }
-    op->setTo(arg->getId());
-    res.push_back(op);
-}
-
-/// \brief Filter a GoalInfo operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindGoalInfoOperation(const Operation & op, OpVector & res)
-{
-    op->setTo(getId());
-    res.push_back(op);
-}
-
-/// \brief Filter a Touch operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindTouchOperation(const Operation & op, OpVector & res)
-{
-    // Work out what is being touched.
-    const std::vector<Root> & args = op->getArgs();
-    if (args.empty()) {
-        log(ERROR, "mindTouchOperation: Op has no ARGS");
-        return;
-    }
-    auto arg = smart_dynamic_cast<Atlas::Objects::Entity::Anonymous>(args.front());
-    if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        log(ERROR, describeEntity() + " mindTouchOperation: Op has no ID");
-        return;
-    }
-
-    WFMath::Point<3> pos;
-    if (arg->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
-        pos.fromAtlas(arg->getPosAsList());
-    }
-
-    auto other = BaseWorld::instance().getEntity(arg->getId());
-
-    //Check that we actually can reach the other entity.
-    if (this->canReach({std::move(other), pos})) {
-        // Pass the modified touch operation on to target.
-        op->setTo(arg->getId());
-        res.push_back(op);
-        // Send sight of touch
-        Sight s;
-        s->setArgs1(op);
-        res.push_back(s);
-    } else {
-        clientError(op, "Entity is too far away.", res, op->getFrom());
-    }
-
-
-}
-
-/// \brief Filter any other operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindOtherOperation(const Operation & op, OpVector & res)
-{
-    log(WARNING, String::compose("Passing '%1' op from mind through to world. %2", op->getParent(), describeEntity()));
-    op->setTo(getId());
-    res.push_back(op);
-}
-
-/// \brief Filter a Appearance operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mAppearanceOperation(const Operation & op)
-{
-    return true;
-}
-
-/// \brief Filter a Disappearance operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mDisappearanceOperation(const Operation & op)
-{
-    return true;
-}
-
-/// \brief Filter a Error operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mErrorOperation(const Operation & op)
-{
-    return true;
-}
-
-/// \brief Filter a Setup operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mSetupOperation(const Operation & op)
-{
-    if (!op->getArgs().empty()) {
-        if (op->getArgs().front()->getName() == "mind") {
-            return true;
-        }
-    }
-    return false;
-}
-
-/// \brief Filter a Thought operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindThoughtOperation(const Operation & op, OpVector & res)
-{
-    op->setTo(getId());
-    res.push_back(op);
-}
-
-/// \brief Filter a Think operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void Character::mindThinkOperation(const Operation & op, OpVector & res)
-{
-    op->setTo(getId());
-    res.push_back(op);
-}
-
-/// \brief Filter a Tick operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mTickOperation(const Operation & op)
-{
-    if (!op->getArgs().empty()) {
-        if (op->getArgs().front()->getName() == "mind") {
-            return true;
-        }
-    }
-    return false;
-}
-
-/// \brief Filter a Unseen operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mUnseenOperation(const Operation & op)
-{
-    return true;
-}
-
-/// \brief Filter a Sight operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mSightOperation(const Operation & op)
-{
-    return true;
-}
-
-/// \brief Filter a Sound operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mSoundOperation(const Operation & op)
-{
-    return true;
-}
-
-/// \brief Filter a Thought operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mThoughtOperation(const Operation & op)
-{
-    //Only allow thoughts which are sent from the mind
-    return op->getFrom() == getId();
-}
-
-bool Character::w2mThinkOperation(const Operation & op)
-{
-    return true;
-}
-
-bool Character::w2mCommuneOperation(const Operation & op)
-{
-    return true;
-}
-
-/// \brief Filter a Touch operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mTouchOperation(const Operation & op)
-{
-    return true;
-}
-
-/// \brief Filter a Relay operation coming from the world to the mind
-///
-/// @param op The operation to be filtered.
-/// @return true if the operation should be passed.
-bool Character::w2mRelayOperation(const Operation & op)
-{
-    //Relay is an internal op.
-    return false;
-}
-
-/// \brief Send an operation to the current active part of the mind
-///
-/// The operation can potentially go to an external mind if one is
-/// currently one attached to this Character. This is normally a player
-/// client, but could be a remote AI agent. Additionally the operation
-/// can go to an internal AI mind. The result from the AI mind is
-/// discarded if an external mind is connected.
-/// @param op Operation to be processed.
-/// @param res The result of the operation is returned here.
-void Character::sendMind(const Operation & op, OpVector & res)
-{
-    debug(std::cout << "Character::sendMind(" << op->getParent() << ") " << describeEntity() << std::endl << std::flush
-    ;);
-
-    if (m_externalMind != nullptr && m_externalMind->isLinked()) {
-        OpVector mindRes;
-        m_proxyMind->operation(op, mindRes);
-        // Discard all the local results
-
-        debug(std::cout << "Sending to external mind" << std::endl << std::flush
-        ;);
-        m_externalMind->operation(op, res);
-    } else {
-        debug(std::cout << "Using ops from local mind" << std::endl << std::flush
-        ;);
-        if (m_proxyMind) {
-            m_proxyMind->operation(op, res);
-        }
-    }
-}
-
-void Character::ThoughtOperation(const Operation& op, OpVector& res)
-{
-    //Extract the inner thought ops.
-    for (auto& innerObj : op->getArgs()) {
-        auto innerOp = smart_dynamic_cast<Operation>(innerObj);
-        if (innerOp) {
-            filterExternalOperation(innerOp);
-        }
-    }
-
-}
-
-/// \brief Filter operations from the mind destined for the body.
-///
-/// Operations from the character's mind which is either an NPC mind,
-/// or a remote client are passed in here for pre-processing and filtering
-/// before they are valid to be processed as internal ops. The operation
-/// may be modified and re-used so operations passed to this function have
-/// their ownership passed in, and caller should not modify the operation,
-/// make assumptions that it has not been modified after calling mind2body.
-/// @param op The operation to be processed.
-/// @param res The result of the operation is returned here.
-void Character::mind2body(const Operation & op, OpVector & res)
-{
-    debug(std::cout << "Character::mind2body(" << op->getParent() << ") " << describeEntity() << std::endl << std::flush
-    ;);
-
-    //Check if we have any relays registered for this op.
-    if (!op->isDefaultRefno()) {
-        auto I = m_relays.find(op->getRefno());
-        if (I != m_relays.end()) {
-            //The operation is a response to a relayed op, and we should send it on to the originating
-            //entity. When doing this, we're basically wrapping an unsafe operation (i.e. the operation from
-            //the mind could be anything), so it's important that the client or code which receives
-            //the relayed op handles it with case.
-
-            //Wrap the operation in a relay op
-            Atlas::Objects::Operation::Generic relayOp;
-            relayOp->setType("relay", Atlas::Objects::Operation::RELAY_NO);
-            relayOp->setArgs1(op);
-            relayOp->setTo(I->second.destination);
-            relayOp->setRefno(I->second.serialno);
-            res.push_back(relayOp);
-            m_relays.erase(I);
-
-            //The operation should not be processed anymore after it has been relayed.
-            return;
-        }
-    }
-
-    if (!op->isDefaultTo()) {
-
-        log(ERROR, String::compose("Operation \"%1\" from mind with TO set. %2", op->getParent(), describeEntity()));
-        return;
-    }
-    if (!op->isDefaultFutureSeconds() && op->getClassNo() != Atlas::Objects::Operation::TICK_NO) {
-        log(ERROR, String::compose("Operation \"%1\" from mind with "
-                "FUTURE_SECONDS set. %2", op->getParent(), describeEntity()));
-    }
-    auto op_no = op->getClassNo();
-    switch (op_no) {
-    case Atlas::Objects::Operation::COMBINE_NO:
-        mindCombineOperation(op, res);
-        break;
-    case Atlas::Objects::Operation::CREATE_NO:
-        mindCreateOperation(op, res);
-        break;
-    case Atlas::Objects::Operation::DELETE_NO:
-        mindDeleteOperation(op, res);
-        break;
-    case Atlas::Objects::Operation::DIVIDE_NO:
-        mindDivideOperation(op, res);
-        break;
-    case Atlas::Objects::Operation::IMAGINARY_NO:
-        mindImaginaryOperation(op, res);
-        break;
-    case Atlas::Objects::Operation::LOOK_NO:
-        mindLookOperation(op, res);
-        break;
-    case Atlas::Objects::Operation::MOVE_NO:
-        mindMoveOperation(op, res);
-        break;
-    case Atlas::Objects::Operation::SET_NO:
-        mindSetOperation(op, res);
-        break;
-    case Atlas::Objects::Operation::TALK_NO:
-        mindTalkOperation(op, res);
-        break;
-    case Atlas::Objects::Operation::TOUCH_NO:
-        mindTouchOperation(op, res);
-        break;
-    case Atlas::Objects::Operation::USE_NO:
-        mindUseOperation(op, res);
-        break;
-    case Atlas::Objects::Operation::WIELD_NO:
-        mindWieldOperation(op, res);
-        break;
-    default:
-        if (op_no == Atlas::Objects::Operation::ACTUATE_NO) {
-            mindActuateOperation(op, res);
-        } else if (op_no == Atlas::Objects::Operation::EAT_NO) {
-            mindEatOperation(op, res);
-        } else if (op_no == Atlas::Objects::Operation::SETUP_NO) {
-            mindSetupOperation(op, res);
-        } else if (op_no == Atlas::Objects::Operation::TICK_NO) {
-            mindTickOperation(op, res);
-        } else if (op_no == Atlas::Objects::Operation::UPDATE_NO) {
-            mindUpdateOperation(op, res);
-        } else if (op_no == Atlas::Objects::Operation::THOUGHT_NO) {
-            mindThoughtOperation(op, res);
-        } else if (op_no == Atlas::Objects::Operation::GOAL_INFO_NO) {
-            mindGoalInfoOperation(op, res);
-        } else if (op_no == Atlas::Objects::Operation::THINK_NO) {
-            mindThinkOperation(op, res);
-        } else {
-            mindOtherOperation(op, res);
-        }
-        break;
-    }
-}
-
-/// \brief Filter operations from the world to the mind
-///
-/// Operations from the world are checked here to see if they are suitable
-/// to send to the mind. Some operations should not go to the mind as they
-/// leak information. Others are just not necessary as they provide no
-/// useful information.
-bool Character::world2mind(const Operation & op)
-{
-    debug(std::cout << "Character::world2mind(" << op->getParent() << ") " << describeEntity() << std::endl << std::flush
-    ;);
-    auto otype = op->getClassNo();
-    POLL_OP_SWITCH(op, otype, w2m)
-    return false;
-}
-
-void Character::filterExternalOperation(const Operation & op)
-{
-    OpVector mres;
-    mind2body(op, mres);
-
-    OpVector::const_iterator I = mres.begin();
-    OpVector::const_iterator Iend = mres.end();
-
-    // If the original op had a serial no, we assume the first consequence
-    // of that is effectively the same operation.
-    // FIXME Can this be guaranteed by the mind2body phase?
-    if (!op->isDefaultSerialno() && I != Iend) {
-        (*I)->setSerialno(op->getSerialno());
-    }
-
-    for (; I != Iend; ++I) {
-        sendWorld(*I);
-    }
-}
-
-void Character::operation(const Operation& op, OpVector& res)
-{
-    debug(std::cout << "Character::operation(" << op->getParent() << ") " << describeEntity() << std::endl << std::flush;);
-    Entity::operation(op, res);
-}
-
-void Character::externalOperation(const Operation & op, Link & link)
-{
-    debug(std::cout << "Character::externalOperation(" << op->getParent() << ") " << describeEntity() << std::endl << std::flush
-    ;);
-    if (op->getClassNo() != Atlas::Objects::Operation::THOUGHT_NO) {
-        OpVector res;
-        clientError(op, "An entity can only be externally controlled by Thoughts.", res, getId());
-        for (auto& resOp : res) {
-            link.send(resOp);
-        }
-    }
-
-    OpVector res;
-    operation(op, res);
-    for (auto& resOp : res) {
-        sendWorld(resOp);
-    }
-
+//        Operation relayedOp = Atlas::Objects::smart_dynamic_cast<Operation>(op->getArgs().front());
+//
+//        if (!relayedOp.isValid()) {
+//            log(ERROR, "Character::RelayOperation first arg is not an operation. " + describeEntity());
+//            return;
+//        }
+//
+//        //If a relay op has a refno, it's a response to a Relay op previously sent out to another
+//        //entity, and we should send the incoming relayed operation to the mind.
+//        if (!op->isDefaultRefno()) {
+//            //Note that the relayed op should be considered untrusted in this case, as it has originated
+//            //from a random entity or its mind.
+//            auto I = m_relays.find(op->getRefno());
+//            if (I == m_relays.end()) {
+//                log(WARNING, "Character::RelayOperation could not find registrered Relay with refno. " + describeEntity());
+//                return;
+//            }
+//
+//            //Make sure that this op really comes from the entity the original Relay op was sent to.
+//            if (op->getFrom() != I->second.destination) {
+//                log(WARNING, "Character::RelayOperation got relay op with mismatching 'from'. " + describeEntity());
+//                return;
+//            }
+//
+//            //Get the relayed operation and send to mind.
+//            //Note that we don't send the operation to the entity; this is because we have
+//            //to treat the relayed operation as "unsafe". This is since it originated from an random
+//            //entity's mind and could in effect be anything (Set, Logout etc.)
+//            //We should therefore handle it with care and only send it on to the mind.
+//            //This of course hinges on the mind client code making sure to handle it correctly, given
+//            //its refno.
+//            relayedOp->setRefno(I->second.serialno);
+//            OpVector mres;
+//            //We only send to external minds; never to internal minds or proxy minds.
+//            if (m_externalMind) {
+//                m_externalMind->operation(relayedOp, mres);
+//            }
+//            m_relays.erase(I);
+//            for (auto& resOp : mres) {
+//                filterExternalOperation(resOp);
+//            }
+//        } else {
+//
+//            //Check if the mind should handle the relayed operation; else we'll just let the
+//            //standard Entity relay code do it's thing.
+//            if (!world2mind(relayedOp)) {
+//                //This operation won't be sent to the mind, we'll pass it on to the standard
+//                //relay method which will generate a Sight as response.
+//                Entity::RelayOperation(op, res);
+//                return;
+//            }
+//
+//            //If the Relay op instead has a serial no, it's a Relay op sent from us by another Entity
+//            //which expects a response. We should send it on to the mind (efter registering an entry in
+//            //m_relays to be handled by mind2body).
+//            //Note that the relayed operation in this case should be considered "trusted", as it has originated
+//            //from either the server itself or a trusted client.
+//
+//            //Extract the contained operation, and register the relay into m_relays
+//            if (op->isDefaultSerialno()) {
+//                log(ERROR, "Character::RelayOperation no serial number. " + describeEntity());
+//                return;
+//            }
+//
+//            Relay relay;
+//            relay.serialno = op->getSerialno();
+//            relay.destination = op->getFrom();
+//
+//            //Generate a local serial number which we'll register in m_relays. When a response is received
+//            //we'll check the refno and match it against what we've stored
+//            long int serialNo = ++s_serialNumberNext;
+//            relayedOp->setSerialno(serialNo);
+//            m_relays.insert(std::make_pair(serialNo, relay));
+//
+//            //Make sure that the contained op is addressed to the entity
+//            relayedOp->setTo(getId());
+//
+//            //Now send the contained op to the entity
+//            operation(relayedOp, res);
+//
+//            //Also send a future Relay op to ourselves to make sure that the registered relay in m_relays
+//            //is removed in the case that we don't get any response.
+//            Atlas::Objects::Operation::Generic pruneOp;
+//            pruneOp->setType("relay", Atlas::Objects::Operation::RELAY_NO);
+//            pruneOp->setTo(getId());
+//            pruneOp->setFrom(getId());
+//            pruneOp->setRefno(serialNo);
+//            //5 seconds should be more than enough.
+//            pruneOp->setFutureSeconds(5);
+//            sendWorld(pruneOp);
+//        }
+//    }
 }
