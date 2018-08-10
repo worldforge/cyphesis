@@ -39,6 +39,7 @@
 
 #include <sigc++/adaptors/bind.h>
 #include <rulesets/MindsProperty.h>
+#include <common/Update.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -102,6 +103,12 @@ void Account::setConnection(Connection* connection) {
             auto prop = entity.modPropertyClassFixed<MindsProperty>();
             if (prop) {
                 prop->removeMind(entry.second, &entity);
+                entity.propertyApplied.emit(MindsProperty::property_name, *prop);
+
+                prop->flags().addFlags(flag_unsent);
+                Atlas::Objects::Operation::Update update;
+                update->setTo(entity.getId());
+                entity.sendWorld(update);
             }
             delete entry.second;
             //TODO: remove property if it's empty
@@ -149,6 +156,11 @@ int Account::connectCharacter(LocatedEntity *entity, OpVector& res)
     auto mindsProp = entity->requirePropertyClassFixed<MindsProperty>();
     mindsProp->addMind(mind);
     entity->propertyApplied.emit(MindsProperty::property_name, *mindsProp);
+    mindsProp->flags().addFlags(flag_unsent);
+
+    Atlas::Objects::Operation::Update update;
+    update->setTo(entity->getId());
+    entity->sendWorld(update);
 
     //m_connection->addEntity(entity);
     if (isPersisted()) {

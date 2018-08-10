@@ -68,32 +68,31 @@ void AdminMind::externalOperation(const Operation& op, Link& link)
         //Send directly to the entity, bypassing any normal Thought filtering
         debug_print("Creator handling op ");
         OpVector lres;
-        OpVector eres;
         m_entity.operation(op, lres);
     } else {
         //Otherwise we're sending something to someone else.
         auto to = BaseWorld::instance().getEntity(op->getTo());
         if (to) {
-            to->sendWorld(op);
-//            //If there's a serial number, we expect a response, and we should relay the operation
-//            if (op->isDefaultSerialno()) {
-//                // Make it appear like it came from target itself;
-//                to->sendWorld(op);
-//
-////                //Send a sight of the operation to the mind
-////                //NOTE: Is this really a good idea? There's no serial number set, so the op
-////                //will be handled by the client as a valid op, even though it might not in reality
-////                //always succeed (depending on game rules etc.).
-////                Sight sight;
-////                sight->setArgs1(op);
-////                sight->setTo(getId());
-////                OpVector res;
-////                link.send(sight);
-//            } else {
-//                //TODO: remove the Relay functionality. Instead we can directly send ops to minds and implement
-//                //specific code in the ExternalMind class to handle how to return the reponse to the original mind
-//                //relayOperationTo(op, *to);
-//            }
+            //If it's a relay op we should send it as if it came from ourselves,
+            // so the receiving entity knows where to return it.
+            if (op->getClassNo() == Atlas::Objects::Operation::RELAY_NO) {
+                //Make sure that "from_id" is set to this mind, so the Relay can find its way back.
+                op->setAttr("from_id", getId());
+                m_entity.sendWorld(op);
+            } else {
+                // Make it appear like it came from target itself;
+                to->sendWorld(op);
+
+//                //Send a sight of the operation to the mind
+//                //NOTE: Is this really a good idea? There's no serial number set, so the op
+//                //will be handled by the client as a valid op, even though it might not in reality
+//                //always succeed (depending on game rules etc.).
+//                Sight sight;
+//                sight->setArgs1(op);
+//                sight->setTo(getId());
+//                OpVector res;
+//                link.send(sight);
+            }
 
         } else {
             log(ERROR, String::compose("Creator operation from client "

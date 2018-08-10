@@ -277,7 +277,7 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
         logoutOp->setTo(entity->getId());
         OpVector temp;
 
-        mindsProperty->operation(entity.get(), logoutOp, temp);
+        mindsProperty->sendToMinds(logoutOp, temp);
         log(INFO, "Sent random key to connected mind");
     }
 

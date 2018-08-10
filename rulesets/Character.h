@@ -68,19 +68,6 @@ class Character : public Thing, public virtual sigc::trackable {
     Ref<ProxyMind> m_proxyMind;
 
 
-    /**
-     * \brief A store of registered relays for this character, both outgoing and incoming.
-     *
-     * Whenever a relay is set up between two entities entries are created in this
-     * map. The refno of the operations is used as a key.
-     */
-    std::map<long int, Relay> m_relays;
-
-    /**
-     * Serial number generation to use when generating new serial numbers.
-     */
-    static long int s_serialNumberNext;
-
     /// \brief Energy loss by metabolism per tick
     static const double energyConsumption;
     /// \brief Food consumed by digestion per tick
@@ -111,12 +98,8 @@ class Character : public Thing, public virtual sigc::trackable {
 
     void destroy() override;
 
-    std::vector<Atlas::Objects::Root> getThoughts() const override;
-
     void NourishOperation(const Operation & op, OpVector &) override;
     void WieldOperation(const Operation & op, OpVector &) override;
-    void ActuateOperation(const Operation & op, OpVector &) override;
-    void RelayOperation(const Operation &, OpVector &) override;
 
 
     friend class Charactertest;

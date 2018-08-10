@@ -26,8 +26,9 @@
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
-#include <common/Think.h>
-#include <common/Thought.h>
+#include "common/Think.h"
+#include "common/Thought.h"
+#include "common/Relay.h"
 
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
@@ -37,6 +38,8 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Operation::Imaginary;
+
+long ExternalMind::s_serialNumberNext = 0L;
 
 void ExternalMind::deleteEntity(const std::string& id, bool forceDelete)
 {
@@ -67,8 +70,7 @@ void ExternalMind::purgeEntity(const LocatedEntity& ent, bool forceDelete)
 
 ExternalMind::ExternalMind(std::string strId, long id, LocatedEntity& e) : Router(strId, id),
                                                                            m_link(nullptr),
-                                                                           m_entity(e),
-                                                                           m_lossTime(0.)
+                                                                           m_entity(e)
 {
 }
 
@@ -90,91 +92,211 @@ void ExternalMind::addToEntity(const Atlas::Objects::Entity::RootEntity& ent) co
 
 void ExternalMind::externalOperation(const Operation& op, Link& link)
 {
-    //Any ops coming from the mind must be Thought ops.
-    Atlas::Objects::Operation::Thought thought{};
-    thought->setTo(m_entity.getId());
-    thought->setArgs1(op);
+    //Any operations coming from the mind with a refno is a response to a previously Relayed op, and need to be handled.
+    if (!op->isDefaultRefno()) {
+        externalRelayedOperation(op, link);
+    } else {
+        //Any ops coming from the mind must be Thought ops.
+        Atlas::Objects::Operation::Thought thought{};
+        thought->setTo(m_entity.getId());
+        thought->setArgs1(op);
 
-    OpVector res;
-    m_entity.operation(thought, res);
+        OpVector res;
+        m_entity.operation(thought, res);
 
-    for (auto& resOp : res) {
-        m_entity.sendWorld(resOp);
+        for (auto& resOp : res) {
+            m_entity.sendWorld(resOp);
+        }
     }
 }
 
 void ExternalMind::operation(const Operation& op, OpVector& res)
 {
 
-    //TODO: remove this hacked in fix.
-    //So, what's happening here is that if the external connection has been disconnected, and
-    //the entity either is marked as ephemeral, or has been inactive for an hour, it is
-    //deleted along with all of its inventory. This is to prevent the starting position
-    //being spammed by abandoned characters. Now, there are a lot of better ways to handle this.
-    //One solution is to make sure that all new entities are created in an instanced location.
-    //Thus players have to actively move from the instanced location to the main world, which
-    //would make sure that only those players which are active end up in the real world.
-    //Another solution is to do something with the entity when the connection is cut; perhaps move
-    //it to limbo or some other place. All of these solutions are better than just deleting it.
-    if (m_link == nullptr) {
-        if (m_entity.hasFlags(entity_ephem)) {
-            // If this entity no longer has a connection, and is ephemeral
-            // we should delete it.
-            if (op->getClassNo() != Atlas::Objects::Operation::DELETE_NO) {
-                purgeEntity(m_entity);
-            }
-        }
-//        if (BaseWorld::instance().getTime() - m_lossTime > character_expire_time) {
+//    //TODO: remove this hacked in fix.
+//    //So, what's happening here is that if the external connection has been disconnected, and
+//    //the entity either is marked as ephemeral, or has been inactive for an hour, it is
+//    //deleted along with all of its inventory. This is to prevent the starting position
+//    //being spammed by abandoned characters. Now, there are a lot of better ways to handle this.
+//    //One solution is to make sure that all new entities are created in an instanced location.
+//    //Thus players have to actively move from the instanced location to the main world, which
+//    //would make sure that only those players which are active end up in the real world.
+//    //Another solution is to do something with the entity when the connection is cut; perhaps move
+//    //it to limbo or some other place. All of these solutions are better than just deleting it.
+//    if (m_link == nullptr) {
+//        if (m_entity.hasFlags(entity_ephem)) {
+//            // If this entity no longer has a connection, and is ephemeral
+//            // we should delete it.
 //            if (op->getClassNo() != Atlas::Objects::Operation::DELETE_NO) {
-//                //reset m_lossTime since it's not a given that the entity will be deleted
-//                //(properties such as respawnable might intervene)
-//                m_lossTime = BaseWorld::instance().getTime();
 //                purgeEntity(m_entity);
 //            }
 //        }
-        return;
+////        if (BaseWorld::instance().getTime() - m_lossTime > character_expire_time) {
+////            if (op->getClassNo() != Atlas::Objects::Operation::DELETE_NO) {
+////                //reset m_lossTime since it's not a given that the entity will be deleted
+////                //(properties such as respawnable might intervene)
+////                m_lossTime = BaseWorld::instance().getTime();
+////                purgeEntity(m_entity);
+////            }
+////        }
+//        return;
+//    }
+
+    if (op->getClassNo() == Atlas::Objects::Operation::RELAY_NO) {
+        RelayOperation(op, res);
+    } else {
+        m_link->send(op);
     }
-    m_link->send(op);
 
-    // Here we see if there is anything we should be sending the user
-    // extra info about. The initial demo implementation checks for
-    // Set ops which make the characters status less than 0.1, and sends
-    // emotes that the character is hungry.
-    const std::vector<Root>& args = op->getArgs();
-    if (op->getClassNo() == Atlas::Objects::Operation::SIGHT_NO && !args.empty()) {
-        Operation sub_op = smart_dynamic_cast<Operation>(args.front());
-        if (sub_op.isValid()) {
-            const std::vector<Root>& sub_args = sub_op->getArgs();
-            if (sub_op->getClassNo() == Atlas::Objects::Operation::SET_NO && !sub_args.empty()) {
-                const Root& arg = sub_args.front();
-                Element status_value;
-                if (arg->getId() == getId() and
-                    arg->copyAttr("status", status_value) == 0 and
-                    status_value.isFloat() and status_value.Float() < 0.1) {
 
-                    Anonymous imaginary_arg;
-                    imaginary_arg->setId(getId());
-                    if (status_value.Float() < 0.01) {
-                        imaginary_arg->setAttr("description", "is starving.");
-                    } else {
-                        imaginary_arg->setAttr("description", "is hungry.");
-                    }
+//    // Here we see if there is anything we should be sending the user
+//    // extra info about. The initial demo implementation checks for
+//    // Set ops which make the characters status less than 0.1, and sends
+//    // emotes that the character is hungry.
+//    const std::vector<Root>& args = op->getArgs();
+//    if (op->getClassNo() == Atlas::Objects::Operation::SIGHT_NO && !args.empty()) {
+//        Operation sub_op = smart_dynamic_cast<Operation>(args.front());
+//        if (sub_op.isValid()) {
+//            const std::vector<Root>& sub_args = sub_op->getArgs();
+//            if (sub_op->getClassNo() == Atlas::Objects::Operation::SET_NO && !sub_args.empty()) {
+//                const Root& arg = sub_args.front();
+//                Element status_value;
+//                if (arg->getId() == getId() and
+//                    arg->copyAttr("status", status_value) == 0 and
+//                    status_value.isFloat() and status_value.Float() < 0.1) {
+//
+//                    Anonymous imaginary_arg;
+//                    imaginary_arg->setId(getId());
+//                    if (status_value.Float() < 0.01) {
+//                        imaginary_arg->setAttr("description", "is starving.");
+//                    } else {
+//                        imaginary_arg->setAttr("description", "is hungry.");
+//                    }
+//
+//                    Imaginary imaginary;
+//                    imaginary->setTo(getId());
+//                    imaginary->setFrom(getId());
+//                    imaginary->setArgs1(imaginary_arg);
+//
+//                    Sight sight;
+//                    sight->setTo(getId());
+//                    sight->setFrom(getId());
+//                    sight->setArgs1(imaginary);
+//
+//                    m_link->send(sight);
+//                }
+//            }
+//        }
+//    }
+}
 
-                    Imaginary imaginary;
-                    imaginary->setTo(getId());
-                    imaginary->setFrom(getId());
-                    imaginary->setArgs1(imaginary_arg);
-
-                    Sight sight;
-                    sight->setTo(getId());
-                    sight->setFrom(getId());
-                    sight->setArgs1(imaginary);
-
-                    m_link->send(sight);
-                }
+void ExternalMind::RelayOperation(const Operation& op, OpVector& res)
+{
+    //A Relay operation with refno sent to ourselves signals that we should prune
+    //our registered relays in m_relays. This is a feature to allow for a timeout; if
+    //no Relay has been received from the destination Entity after a certain period
+    //we'll shut down the relay link.
+    if (op->getTo() == m_entity.getId() && op->getFrom() == m_entity.getId() && !op->isDefaultRefno()) {
+        auto I = m_relays.find(op->getRefno());
+        if (I != m_relays.end()) {
+            auto& relay = I->second;
+            if (!relay.op->isDefaultSerialno() || !relay.op->isDefaultFrom()) {
+                //Also send a no-op to any entity to make it stop waiting for any response.
+                Atlas::Objects::Operation::Relay noop;
+                noop->setRefno(relay.op->getSerialno());
+                noop->setTo(relay.op->getFrom());
+                noop->setFrom(m_entity.getId());
+                noop->setId(relay.from_id);
+                m_entity.sendWorld(noop);
             }
+            m_relays.erase(I);
+        }
+    } else {
+
+
+        //If a relay op has a refno, it's a response to a Relay op previously sent out to another
+        //entity, and we should send the incoming relayed operation to the mind.
+        if (!op->isDefaultRefno()) {
+            //Send the relay op on to the mind
+            m_link->send(op);
+
+        } else {
+
+
+            //If the Relay op instead has a serial no, it's a Relay op sent from us by another Entity
+            //which expects a response. We should send it on to the mind (after registering an entry in
+            //m_relays to be handled by mind2body).
+            //Note that the relayed operation in this case should be considered "trusted", as it has originated
+            //from either the server itself or a trusted client.
+
+            //Extract the contained operation, and register the relay into m_relays
+            if (op->isDefaultSerialno()) {
+                log(ERROR, "ExternalMind::RelayOperation no serial number. " + m_entity.describeEntity());
+                return;
+            }
+
+            Element from_id;
+            if (op->copyAttr("from_id", from_id) != 0 || !from_id.isString()) {
+                log(ERROR, "ExternalMind::RelayOperation no valid 'from_id' attribute. " + m_entity.describeEntity());
+                return;
+            }
+
+
+            if (op->getArgs().empty()) {
+                log(ERROR, "ExternalMind::RelayOperation relay op has no args. " + m_entity.describeEntity());
+                return;
+            }
+
+            Operation relayedOp = Atlas::Objects::smart_dynamic_cast<Operation>(op->getArgs().front());
+
+            if (!relayedOp.isValid()) {
+                log(ERROR, "ExternalMind::RelayOperation first arg is not an operation. " + m_entity.describeEntity());
+                return;
+            }
+
+
+            Relay relay{op, from_id.String()};
+            //Generate a local serial number which we'll register in m_relays. When a response is received
+            //we'll check the refno and match it against what we've stored
+            long int serialNo = ++s_serialNumberNext;
+            relayedOp->setSerialno(serialNo);
+            m_relays.insert(std::make_pair(serialNo, relay));
+
+            m_link->send(relayedOp);
+
+            //Also send a future Relay op to ourselves to make sure that the registered relay in m_relays
+            //is removed in the case that we don't get any response.
+            Atlas::Objects::Operation::Relay pruneOp;
+            pruneOp->setTo(m_entity.getId());
+            pruneOp->setFrom(m_entity.getId());
+            pruneOp->setRefno(serialNo);
+            //5 seconds should be more than enough.
+            pruneOp->setFutureSeconds(5);
+            //Set id to direct it to this mind
+            pruneOp->setId(getId());
+
+            res.push_back(pruneOp);
         }
     }
+}
+
+void ExternalMind::externalRelayedOperation(const Operation& op, Link& link)
+{
+    //We received an op with a refno from the mind, it's a response to a previously relayed op.
+    auto I = m_relays.find(op->getRefno());
+    if (I != m_relays.end()) {
+        auto& relay = I->second;
+
+        auto& origOp = relay.op;
+        if (!origOp->isDefaultFrom() && !origOp->isDefaultSerialno() && !origOp->isDefaultId()) {
+            Atlas::Objects::Operation::Relay relayOp;
+            relayOp->setTo(origOp->getFrom()); //Send back to the originating entity.
+            relayOp->setRefno(origOp->getSerialno()); //Set refno to match serial no.
+            relayOp->setId(relay.from_id);
+            relayOp->setArgs1(op);
+        }
+    }
+
 }
 
 const std::string& ExternalMind::connectionId()
@@ -186,7 +308,4 @@ const std::string& ExternalMind::connectionId()
 void ExternalMind::linkUp(Link* c)
 {
     m_link = c;
-    if (c == nullptr) {
-        m_lossTime = BaseWorld::instance().getTime();
-    }
 }

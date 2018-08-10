@@ -37,6 +37,7 @@
 #include "common/Tick.h"
 #include "common/Update.h"
 #include "common/custom.h"
+#include "common/Relay.h"
 
 #include "common/Monitors.h"
 #include "common/Variable.h"
@@ -451,38 +452,6 @@ void Entity::WieldOperation(const Operation &, OpVector &)
 /// \brief Handle a relay operation
 void Entity::RelayOperation(const Operation & op, OpVector & res)
 {
-    if (op->getArgs().empty()) {
-        log(ERROR, "Entity::RelayOperation no args.");
-        return;
-    }
-    Operation relayedOp = Atlas::Objects::smart_dynamic_cast<Operation>(
-            op->getArgs().front());
-
-    if (!relayedOp.isValid()) {
-        log(ERROR,
-                "Entity::RelayOperation first arg is not an operation.");
-        return;
-    }
-
-    if (op->isDefaultSerialno()) {
-        log(ERROR, "Entity::RelayOperation no serial number.");
-        return;
-    }
-
-    //Add a sight of the operation
-    Sight sight;
-    sight->setArgs1(relayedOp);
-
-    Atlas::Objects::Operation::Generic responseOp;
-    responseOp->setType("relay", Atlas::Objects::Operation::RELAY_NO);
-    responseOp->setArgs1(sight);
-    responseOp->setTo(op->getFrom());
-    res.push_back(responseOp);
-
-    //Make sure that the contained op is addressed to the entity
-    relayedOp->setTo(getId());
-    operation(relayedOp, res);
-
 }
 
 void Entity::ThoughtOperation(const Operation&, OpVector&)

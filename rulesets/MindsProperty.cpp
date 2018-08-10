@@ -117,32 +117,25 @@ MindsProperty* MindsProperty::copy() const
 void MindsProperty::install(LocatedEntity* entity, const std::string& name)
 {
     entity->addListener(this);
-//    entity->installDelegate(Atlas::Objects::Operation::THOUGHT_NO, name);
 }
 
 void MindsProperty::remove(LocatedEntity* entity, const std::string& name)
 {
     entity->removeListener(this);
-//    entity->removeDelegate(Atlas::Objects::Operation::THOUGHT_NO, name);
 }
 
-HandlerResult MindsProperty::operation(LocatedEntity* ent, const Operation& op, OpVector& res) const
+
+HandlerResult MindsProperty::operation(LocatedEntity* ent, const Operation& op, OpVector& res)
 {
     if (op->getClassNo() == Atlas::Objects::Operation::THOUGHT_NO) {
-        for (auto& arg : op->getArgs()) {
-            auto innerOp = smart_dynamic_cast<Operation>(arg);
-            if (innerOp) {
-                filterExternalOperation(ent, innerOp, res);
-            }
-        }
-        return OPERATION_BLOCKED;
+        return ThoughtOperation(ent, op, res);
+    } else if (op->getClassNo() == Atlas::Objects::Operation::RELAY_NO) {
+        return RelayOperation(ent, op, res);
     } else {
         if (world2mind(op)) {
             debug_print("MindsProperty::operation(" << op->getParent() << ") passed to mind");
             OpVector mres;
-            for (auto& mind : m_data) {
-                mind->operation(op, res);
-            }
+            sendToMinds(op, mres);
             for (auto& resOp: mres) {
                 //Wrap any returning ops in thoughts and send them to our entity
                 Atlas::Objects::Operation::Thought thought;
@@ -156,28 +149,72 @@ HandlerResult MindsProperty::operation(LocatedEntity* ent, const Operation& op, 
     return OPERATION_HANDLED;
 }
 
-
-HandlerResult MindsProperty::operation(LocatedEntity* ent, const Operation& op, OpVector& res)
+void MindsProperty::sendToMinds(const Operation& op, OpVector& res) const
 {
-    return ((const MindsProperty*) this)->operation(ent, op, res);
+    for (auto& mind : m_data) {
+        mind->operation(op, res);
+    }
 }
 
-void MindsProperty::filterExternalOperation(LocatedEntity* ent, const Operation& op, OpVector& res) const
+
+HandlerResult MindsProperty::RelayOperation(LocatedEntity* ent, const Operation& op, OpVector& res)
 {
-    OpVector mres;
-    mind2body(ent, op, mres);
-
-    // If the original op had a serial no, we assume the first consequence
-    // of that is effectively the same operation.
-    // FIXME Can this be guaranteed by the mind2body phase?
-    if (!mres.empty() && mres.front()->isDefaultSerialno()) {
-        mres.front()->setSerialno(op->getSerialno());
+    if (op->isDefaultTo()) {
+        ent->error(op, "A relay op must have a 'to'.", res, ent->getId());
+        return OPERATION_BLOCKED;
+    }
+    if (op->isDefaultFrom()) {
+        ent->error(op, "A relay op must have a 'from'.", res, ent->getId());
+        return OPERATION_BLOCKED;
+    }
+    if (op->isDefaultId()) {
+        ent->error(op, "A relay op must have an 'id'.", res, ent->getId());
+        return OPERATION_BLOCKED;
     }
 
-    for (auto& resOp : mres) {
-        resOp->setFrom(ent->getId());
-        res.push_back(std::move(resOp));
+    //Get the mind to which the relay is directed.
+    auto mindId = op->getId();
+
+    for (auto& mind : m_data) {
+        if (mind->getId() == mindId) {
+            OpVector mres;
+            mind->operation(op, res);
+            for (auto& resOp: mres) {
+                //Wrap any returning ops in thoughts and send them to our entity
+                Atlas::Objects::Operation::Thought thought;
+                thought->setArgs1(resOp);
+                thought->setTo(ent->getId());
+                res.push_back(std::move(resOp));
+            }
+            return OPERATION_BLOCKED;
+        }
     }
+
+    return OPERATION_BLOCKED;
+}
+
+HandlerResult MindsProperty::ThoughtOperation(LocatedEntity* ent, const Operation& op, OpVector& res) const
+{
+    for (auto& arg : op->getArgs()) {
+        auto innerOp = smart_dynamic_cast<Operation>(arg);
+        if (innerOp) {
+            OpVector mres;
+            mind2body(ent, innerOp, mres);
+
+            // If the original op had a serial no, we assume the first consequence
+            // of that is effectively the same operation.
+            // FIXME Can this be guaranteed by the mind2body phase?
+            if (!mres.empty() && mres.front()->isDefaultSerialno()) {
+                mres.front()->setSerialno(op->getSerialno());
+            }
+
+            for (auto& resOp : mres) {
+                resOp->setFrom(ent->getId());
+                res.push_back(std::move(resOp));
+            }
+        }
+    }
+    return OPERATION_BLOCKED;
 }
 
 
@@ -793,30 +830,6 @@ void MindsProperty::mind2body(LocatedEntity* ent, const Operation& op, OpVector&
 {
     debug_print("MindsProperty::mind2body(" << op->getParent() << ") " << ent->describeEntity());
 
-
-//    //Check if we have any relays registered for this op.
-//    if (!op->isDefaultRefno()) {
-//        auto I = m_relays.find(op->getRefno());
-//        if (I != m_relays.end()) {
-//            //The operation is a response to a relayed op, and we should send it on to the originating
-//            //entity. When doing this, we're basically wrapping an unsafe operation (i.e. the operation from
-//            //the mind could be anything), so it's important that the client or code which receives
-//            //the relayed op handles it with case.
-//
-//            //Wrap the operation in a relay op
-//            Atlas::Objects::Operation::Generic relayOp;
-//            relayOp->setType("relay", Atlas::Objects::Operation::RELAY_NO);
-//            relayOp->setArgs1(op);
-//            relayOp->setTo(I->second.destination);
-//            relayOp->setRefno(I->second.serialno);
-//            res.push_back(relayOp);
-//            m_relays.erase(I);
-//
-//            //The operation should not be processed anymore after it has been relayed.
-//            return;
-//        }
-//    }
-
     if (!op->isDefaultTo()) {
         log(ERROR, String::compose("Operation \"%1\" from mind with TO set. %2", op->getParent(), ent->describeEntity()));
         return;
@@ -993,7 +1006,7 @@ bool MindsProperty::w2mThoughtOperation(const Operation& op) const
 {
     return true;
     //Only allow thoughts which are sent from the mind
-//    return op->getFrom() == getId();
+//    return op->getFrom() == ent->getId();
 }
 
 bool MindsProperty::w2mThinkOperation(const Operation& op) const

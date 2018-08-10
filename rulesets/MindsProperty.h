@@ -20,6 +20,7 @@
 #define CYPHESIS_MINDSPROPERTY_H
 
 #include "common/Property.h"
+#include <Atlas/Objects/Operation.h>
 
 class Router;
 
@@ -28,6 +29,7 @@ class MindsProperty : public PropertyBase
     public:
         static constexpr const char* property_name = "_minds";
         static constexpr const char* property_atlastype = "list";
+
 
         MindsProperty();
 
@@ -59,14 +61,13 @@ class MindsProperty : public PropertyBase
                                 const Operation&,
                                 OpVector&) override;
 
+        void sendToMinds(const Operation& op, OpVector& res) const;
 
-        HandlerResult operation(LocatedEntity*,
-                                const Operation&,
-                                OpVector&) const;
 
     protected:
 
         std::vector<Router*> m_data;
+
 
         bool world2mind(const Operation& op) const;
 
@@ -96,7 +97,9 @@ class MindsProperty : public PropertyBase
 
         bool w2mRelayOperation(const Operation& op) const;
 
-        void filterExternalOperation(LocatedEntity* ent, const Operation& op, OpVector& res) const;
+        HandlerResult ThoughtOperation(LocatedEntity* ent, const Operation& op, OpVector& res) const;
+
+        HandlerResult RelayOperation(LocatedEntity* ent, const Operation& op, OpVector& res);
 
 
         void mindActuateOperation(LocatedEntity*, const Operation&, OpVector&) const;

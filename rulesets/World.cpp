@@ -35,6 +35,7 @@
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
+#include <common/Relay.h>
 
 static const bool debug_flag = false;
 
@@ -260,8 +261,7 @@ void World::sendRelayToEntity(const LocatedEntity& to, const Operation& op, sigc
     op->setFrom(to.getId());
 
     long int serialNo = ++m_serialNumber;
-    Atlas::Objects::Operation::Generic relayOp;
-    relayOp->setType("relay", Atlas::Objects::Operation::RELAY_NO);
+    Atlas::Objects::Operation::Relay relayOp;
     relayOp->setTo(to.getId());
     relayOp->setSerialno(serialNo);
     relayOp->setArgs1(op);
@@ -274,8 +274,7 @@ void World::sendRelayToEntity(const LocatedEntity& to, const Operation& op, sigc
 
     //Also send a future Relay op to ourselves to make sure that the registered relay in m_relays
     //is removed in the case that we don't get any response.
-    Atlas::Objects::Operation::Generic pruneOp;
-    pruneOp->setType("relay", Atlas::Objects::Operation::RELAY_NO);
+    Atlas::Objects::Operation::Relay pruneOp;
     pruneOp->setTo(getId());
     pruneOp->setFrom(getId());
     pruneOp->setRefno(serialNo);
