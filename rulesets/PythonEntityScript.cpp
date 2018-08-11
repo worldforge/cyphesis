@@ -109,9 +109,7 @@ HandlerResult PythonEntityScript::processScriptResult(const std::string& scriptN
         } else if (CyPy_Oplist::check(pythonResult)) {
             auto& o = CyPy_Oplist::value(pythonResult);
             for (auto& opRes : o) {
-                if (opRes->getParent() != "operation") {
-                    res.push_back(opRes);
-                }
+                res.push_back(opRes);
             }
         } else {
             log(ERROR, String::compose("Python script \"%1\" returned an invalid "
