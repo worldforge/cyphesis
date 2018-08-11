@@ -2013,8 +2013,12 @@ void PhysicalDomain::applyTransformInternal(LocatedEntity& entity, const WFMath:
     }
 
     if (hadChange) {
-        transformedEntities.insert(entry->entity);
-        transformRestingEntities(entry, entry->entity->m_location.m_pos - oldPos, rotationChange, transformedEntities);
+
+        //Only check for resting entities if the entity has been moved; not if the velocity has changed.
+        if (pos.isValid()) {
+            transformedEntities.insert(entry->entity);
+            transformRestingEntities(entry, entry->entity->m_location.m_pos - oldPos, rotationChange, transformedEntities);
+        }
         updateTerrainMod(entity);
         if (entry->collisionShape) {
             //Since we've deactivated automatic updating of all aabbs each tick we need to do it ourselves when updating the position.
