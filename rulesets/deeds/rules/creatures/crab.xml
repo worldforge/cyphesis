@@ -14,6 +14,10 @@
             <map name="maxscale">
                 <float name="default">1.2</float>
             </map>
+            <!-- Carnivore -->
+            <map name="_modifier_eat_type_plant">
+                <float name="default">0</float>
+            </map>
             <map name="usages">
                 <map name="default">
                     <map name="eat">

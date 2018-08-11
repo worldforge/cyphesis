@@ -11,14 +11,15 @@
             <map name="present">
                 <string name="default">dural/creatures/deer/deer.modeldef</string>
             </map>
-            <map name="biomass">
-                <float name="default">100</float>
-            </map>
             <map name="maxscale">
                 <float name="default">1.2</float>
             </map>
             <map name="meat">
                 <string name="default">venison</string>
+            </map>
+            <!-- Herbivore -->
+            <map name="_modifier_eat_type_meat">
+                <float name="default">0</float>
             </map>
         </map>
         <string name="id">deer</string>

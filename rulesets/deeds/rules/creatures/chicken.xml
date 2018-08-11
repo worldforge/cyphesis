@@ -11,9 +11,6 @@
             <map name="present">
                 <string name="default">dural/creatures/chicken/chicken.entitymap</string>
             </map>
-            <map name="biomass">
-                <float name="default">3</float>
-            </map>
             <map name="plumage">
                 <string name="default">red</string>
                 <list name="values">

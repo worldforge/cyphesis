@@ -11,8 +11,9 @@
             <map name="present">
                 <string name="default">dural/creatures/quadruped/squirrel.modeldef</string>
             </map>
-            <map name="biomass">
-                <float name="default">1</float>
+            <!-- Herbivore -->
+            <map name="_modifier_eat_type_meat">
+                <float name="default">0</float>
             </map>
             <map name="maxscale">
                 <float name="default">1.2</float>

@@ -11,8 +11,9 @@
             <map name="present">
                 <string name="default">dural/creatures/quadruped_v2/horse.modeldef</string>
             </map>
-            <map name="biomass">
-                <float name="default">300</float>
+            <!-- Herbivore -->
+            <map name="_modifier_eat_type_meat">
+                <float name="default">0</float>
             </map>
         </map>
         <string name="id">horse</string>

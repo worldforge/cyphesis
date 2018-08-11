@@ -11,9 +11,6 @@
             <map name="present">
                 <string name="default">dural/creatures/quadruped_v2/pig.modeldef</string>
             </map>
-            <map name="biomass">
-                <float name="default">5</float>
-            </map>
             <map name="maxscale">
                 <float name="default">1.2</float>
             </map>

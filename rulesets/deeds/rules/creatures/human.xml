@@ -30,9 +30,6 @@
                     </map>
                 </map>
             </map>
-            <map name="mass">
-                <float name="default">60</float>
-            </map>
             <map name="sex">
                 <string name="default">male</string>
             </map>

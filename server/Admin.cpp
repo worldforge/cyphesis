@@ -126,22 +126,22 @@ Ref<LocatedEntity> Admin::createCharacterEntity(const RootEntity & ent,
 void Admin::addToMessage(MapType & omap) const
 {
     Account::addToMessage(omap);
-    ListType & typeList = (omap["character_types"] = ListType()).asList();
-    Root character_type = Inheritance::instance().getClass("character");
-    if (character_type.isValid()) {
-        addTypeToList(character_type, typeList);
-    }
+//    ListType & typeList = (omap["character_types"] = ListType()).asList();
+//    Root character_type = Inheritance::instance().getClass("character");
+//    if (character_type.isValid()) {
+//        addTypeToList(character_type, typeList);
+//    }
 }
 
 void Admin::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
     Account::addToEntity(ent);
-    ListType typeList;
-    Root character_type = Inheritance::instance().getClass("character");
-    if (character_type.isValid()) {
-        addTypeToList(character_type, typeList);
-    }
-    ent->setAttr("character_types", typeList);
+//    ListType typeList;
+//    Root character_type = Inheritance::instance().getClass("character");
+//    if (character_type.isValid()) {
+//        addTypeToList(character_type, typeList);
+//    }
+//    ent->setAttr("character_types", typeList);
 }
 
 /// \brief Function to monitor server operations

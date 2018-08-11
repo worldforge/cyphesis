@@ -25,8 +25,8 @@ class Metabolizing(server.Thing):
                         food = self.props._food
                     food_new = food + (arg.mass * eat_factor)
                     #Check if there's a limit to the food we can contain in our stomach
-                    if self.props._food_max:
-                        food_new = max(self.props._food_max, food_new)
+                    if self.props._food_max_factor and self.props.mass:
+                        food_new = min(self.props._food_max_factor * self.props.mass, food_new)
 
                     if food_new != food:
                         return (server.OPERATION_BLOCKED, Operation("set", Entity(self.id, _food=food_new), to=self))

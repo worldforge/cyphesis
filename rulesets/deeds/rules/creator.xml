@@ -56,9 +56,6 @@
             <map name="present">
                 <string name="default">dural/items/misc/flame/creator.modeldef</string>
             </map>
-            <map name="present">
-                <string name="default">dural/items/misc/flame/creator.modeldef</string>
-            </map>
             <map name="mode">
                 <string name="default">free</string>
             </map>
@@ -68,7 +65,7 @@
         </map>
         <string name="id">creator</string>
         <string name="objtype">class</string>
-        <string name="parent">character</string>
+        <string name="parent">thing</string>
     </map>
 
 </atlas>

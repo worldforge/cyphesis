@@ -11,9 +11,6 @@
             <map name="present">
                 <string name="default">dural/creatures/flying_bird/flying_bird.modeldef</string>
             </map>
-            <map name="biomass">
-                <float name="default">3</float>
-            </map>
         </map>
         <string name="id">flying_bird</string>
         <string name="objtype">class</string>

@@ -11,12 +11,14 @@
             <map name="present">
                 <string name="default">dural/creatures/wolf/wolf.modeldef</string>
             </map>
-            <map name="biomass">
-                <float name="default">20</float>
-            </map>
             <map name="maxscale">
                 <float name="default">1.2</float>
             </map>
+            <!-- Carnivore -->
+            <map name="_modifier_eat_type_plant">
+                <float name="default">0</float>
+            </map>
+
         </map>
         <string name="id">wolf</string>
         <string name="objtype">class</string>

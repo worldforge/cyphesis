@@ -1,0 +1,73 @@
+<atlas>
+
+    <map>
+        <!-- A base class for most creatures. -->
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="type">capsule-y</string>
+                </map>
+            </map>
+            <!-- By default don't allow creatures to tumble -->
+            <map name="angularfactor">
+                <list name="default">
+                    <float>0</float>
+                    <float>0</float>
+                    <float>0</float>
+                </list>
+            </map>
+            <map name="mind">
+                <map name="default">
+                    <string name="language">python</string>
+                    <string name="name">mind.NPCMind.NPCMind</string>
+                </map>
+            </map>
+            <!-- Standard density for meat and bones -->
+            <map name="density">
+                <float name="default">125</float>
+            </map>
+            <map name="stamina">
+                <float name="default">1</float>
+            </map>
+            <map name="perception_sight">
+                <float name="default">1.0</float>
+            </map>
+            <map name="mode">
+                <string name="default">free</string>
+            </map>
+            <!-- Default to a reach of 3 meters (this applies to all creatures, even for worms) -->
+            <map name="reach">
+                <float name="default">3</float>
+            </map>
+            <!-- Characters are by default omnivores and handle both plants and meats.
+            To limit put "_modifier_eat_type_meat=0" or "_modifier_eat_type_plant=0" on subclasses. -->
+            <map name="_modifier_eat">
+                <float name="default">1</float>
+            </map>
+            <!-- All creatures should by default have inventory domains, although for most animals they can't equip anything -->
+            <map name="domain">
+                <string name="default">inventory</string>
+            </map>
+            <!-- The max amount of food we can contain in our stomach, relative to our mass. -->
+            <map name="_food_max_factor">
+                <float name="default">0.1</float>
+            </map>
+            <map name="__scripts">
+                <list name="default">
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Hittable.Hittable</string>
+                    </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Metabolizing.Metabolizing</string>
+                    </map>
+                </list>
+            </map>
+        </map>
+        <string name="id">creature</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+
+</atlas>
