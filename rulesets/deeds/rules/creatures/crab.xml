@@ -1,0 +1,30 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/creatures/spider/model/spider.mesh</string>
+                    <string name="type">sphere</string>
+                    <string name="scaler">y</string>
+                </map>
+            </map>
+            <map name="present">
+                <string name="default">dural/creatures/spider/spider.modeldef</string>
+            </map>
+            <map name="maxscale">
+                <float name="default">1.2</float>
+            </map>
+            <map name="usages">
+                <map name="default">
+                    <map name="eat">
+                        <string name="handler">world.objects.Consumable.eat</string>
+                        <string name="constraint">actor can_reach tool &amp;&amp; tool.props.status &lt;= 0</string>
+                    </map>
+                </map>
+            </map>
+        </map>
+        <string name="id">crab</string>
+        <string name="objtype">class</string>
+        <string name="parent">mobile</string>
+    </map>
+</atlas>

@@ -11,11 +11,22 @@
             <map name="present">
                 <string name="default">dural/items/food/ham/ham.modeldef</string>
             </map>
-            <map name="biomass">
-                <float name="default">1</float>
+            <map name="density">
+                <float name="default">150</float>
             </map>
-            <map name="mass">
-                <float name="default">1</float>
+            <map name="_eat_mass_conversion">
+                <float name="default">1.0</float>
+            </map>
+            <map name="consumable_type">
+                <string name="default">meat</string>
+            </map>
+            <map name="usages">
+                <map name="default">
+                    <map name="eat">
+                        <string name="handler">world.objects.Consumable.eat</string>
+                        <string name="constraint">actor can_reach tool</string>
+                    </map>
+                </map>
             </map>
         </map>
         <string name="id">ham</string>
@@ -34,11 +45,22 @@
             <map name="present">
                 <string name="default">dural/items/food/country_bread/model/bread_loaf.mesh</string>
             </map>
-            <map name="biomass">
-                <float name="default">0.5</float>
-            </map>
             <map name="density">
                 <float name="default">190</float>
+            </map>
+            <map name="_eat_mass_conversion">
+                <float name="default">1.0</float>
+            </map>
+            <map name="consumable_type">
+                <string name="default">plant</string>
+            </map>
+            <map name="usages">
+                <map name="default">
+                    <map name="eat">
+                        <string name="handler">world.objects.Consumable.eat</string>
+                        <string name="constraint">actor can_reach tool</string>
+                    </map>
+                </map>
             </map>
         </map>
         <string name="id">bread</string>
@@ -57,8 +79,19 @@
             <map name="present">
                 <string name="default">dural/items/food/country_bread/model/bread_loaf_cut.mesh</string>
             </map>
-            <map name="biomass">
-                <float name="default">0.25</float>
+            <map name="_eat_mass_conversion">
+                <float name="default">1.0</float>
+            </map>
+            <map name="consumable_type">
+                <string name="default">plant</string>
+            </map>
+            <map name="usages">
+                <map name="default">
+                    <map name="eat">
+                        <string name="handler">world.objects.Consumable.eat</string>
+                        <string name="constraint">actor can_reach tool</string>
+                    </map>
+                </map>
             </map>
         </map>
         <string name="id">bread_cut</string>
@@ -77,8 +110,19 @@
             <map name="present">
                 <string name="default">dural/items/food/country_bread/model/bread_slice.mesh</string>
             </map>
-            <map name="biomass">
-                <float name="default">0.1</float>
+            <map name="_eat_mass_conversion">
+                <float name="default">1.0</float>
+            </map>
+            <map name="consumable_type">
+                <string name="default">plant</string>
+            </map>
+            <map name="usages">
+                <map name="default">
+                    <map name="eat">
+                        <string name="handler">world.objects.Consumable.eat</string>
+                        <string name="constraint">actor can_reach tool</string>
+                    </map>
+                </map>
             </map>
         </map>
         <string name="id">bread_slice</string>
@@ -97,11 +141,19 @@
             <map name="present">
                 <string name="default">dural/items/food/ham/ham.modeldef</string>
             </map>
-            <map name="biomass">
-                <float name="default">1</float>
+            <map name="_eat_mass_conversion">
+                <float name="default">1.0</float>
             </map>
-            <map name="mass">
-                <float name="default">1</float>
+            <map name="consumable_type">
+                <string name="default">meat</string>
+            </map>
+            <map name="usages">
+                <map name="default">
+                    <map name="eat">
+                        <string name="handler">world.objects.Consumable.eat</string>
+                        <string name="constraint">actor can_reach tool</string>
+                    </map>
+                </map>
             </map>
         </map>
         <string name="id">venison</string>

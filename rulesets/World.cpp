@@ -123,15 +123,19 @@ void World::DeleteOperation(const Operation & op, OpVector & res)
         auto arg = args.front();
         if (!arg->isDefaultId()) {
             auto entity = BaseWorld::instance().getEntity(arg->getId());
-            if (entity == this) {
-                Atlas::Message::Element force;
-                if (arg->copyAttr("force", force) == 0 && force.isInt() && force.asInt() == 1) {
-                    clearWorld(res);
+            if (entity) {
+                if (entity == this) {
+                    Atlas::Message::Element force;
+                    if (arg->copyAttr("force", force) == 0 && force.isInt() && force.asInt() == 1) {
+                        clearWorld(res);
+                    } else {
+                        log(ERROR, "World::DeleteOperation cannot delete world unless 'force' flag is set.");
+                    }
                 } else {
-                    log(ERROR, "World::DeleteOperation cannot delete world unless 'force' flag is set.");
+                    BaseWorld::instance().delEntity(entity.get());
                 }
             } else {
-                BaseWorld::instance().delEntity(entity.get());
+                log(NOTICE, String::compose("Tried to delete non existent entity with id %1", arg->getId()));
             }
         } else {
             log(ERROR, "World::DeleteOperation got delete op with arg but no id.");

@@ -11,11 +11,8 @@
                     <float>0.1</float>
                 </list>
             </map>
-            <map name="biomass">
-                <float name="default">1</float>
-            </map>
-            <map name="mass">
-                <float name="default">1</float>
+            <map name="density">
+                <float name="default">100</float>
             </map>
             <map name="speed_ground">
                 <float name="default">0.1</float>
@@ -23,9 +20,21 @@
             <map name="speed_water">
                 <float name="default">0.1</float>
             </map>
-            <!-- By default we'll allow mobiles to jump like a normal human -->
+            <!-- Annelids can't jump -->
             <map name="speed_jump">
                 <float name="default">0</float>
+            </map>
+            <!-- Annelids can be eaten since they are so small -->
+            <map name="_eat_mass_conversion">
+                <float name="default">0.5</float>
+            </map>
+            <map name="usages">
+                <map name="default">
+                    <map name="eat">
+                        <string name="handler">world.objects.Consumable.eat</string>
+                        <string name="constraint">actor can_reach tool</string>
+                    </map>
+                </map>
             </map>
         </map>
         <string name="id">annelid</string>

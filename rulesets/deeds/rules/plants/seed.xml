@@ -1,14 +1,17 @@
 <atlas>
     <map>
         <map name="attributes">
-            <map name="biomass">
-                <float name="default">0.05</float>
-            </map>
             <map name="germinates">
                 <string name="default">plant</string>
             </map>
             <map name="density">
                 <float name="default">600</float>
+            </map>
+            <map name="_eat_mass_conversion">
+                <float name="default">0.5</float>
+            </map>
+            <map name="consumable_type">
+                <string name="default">plant</string>
             </map>
             <map name="__scripts">
                 <list name="default">
@@ -16,7 +19,19 @@
                         <string name="language">python</string>
                         <string name="name">world.objects.plants.seeds.Seed.Seed</string>
                     </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.StatusDeletable.StatusDeletable</string>
+                    </map>
                 </list>
+            </map>
+            <map name="usages">
+                <map name="default">
+                    <map name="eat">
+                        <string name="handler">world.objects.Consumable.eat</string>
+                        <string name="constraint">actor can_reach tool</string>
+                    </map>
+                </map>
             </map>
         </map>
         <string name="id">seed</string>

@@ -418,7 +418,9 @@ void Thing::SetOperation(const Operation& op, OpVector& res)
     const Root& ent = args.front();
     merge(ent->asMessage());
 
-    updateProperties(op, res);
+    Update update;
+    update->setTo(getId());
+    res.push_back(std::move(update));
 }
 
 /// \brief Generate a Sight(Set) operation giving an update on named attributes

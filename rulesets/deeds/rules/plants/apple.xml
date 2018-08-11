@@ -31,14 +31,6 @@
             <map name="present">
                 <string name="default">dural/plants/fruit/apple/apple.modeldef</string>
             </map>
-            <map name="__scripts">
-                <list name="default">
-                    <map>
-                        <string name="language">python</string>
-                        <string name="name">world.objects.plants.seeds.Apple.Apple</string>
-                    </map>
-                </list>
-            </map>
         </map>
         <string name="id">apple</string>
         <string name="objtype">class</string>

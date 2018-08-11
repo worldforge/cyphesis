@@ -35,11 +35,11 @@ StatusProperty * StatusProperty::copy() const
 void StatusProperty::apply(LocatedEntity * owner)
 {
     if (m_data < 0) {
-        Delete del;
-        Anonymous delete_arg;
-        delete_arg->setId(owner->getId());
-        del->setArgs1(delete_arg);
-        del->setTo(owner->getId());
-        owner->sendWorld(del);
+//        Delete del;
+//        Anonymous delete_arg;
+//        delete_arg->setId(owner->getId());
+//        del->setArgs1(delete_arg);
+//        del->setTo(owner->getId());
+//        owner->sendWorld(del);
     }
 }

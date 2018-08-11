@@ -16,31 +16,4 @@
         <string name="parent">mobile</string>
     </map>
 
-    <map>
-        <map name="attributes">
-            <map name="biomass">
-                <float name="default">1</float>
-            </map>
-            <map name="mass">
-                <float name="default">1</float>
-            </map>
-        </map>
-        <string name="id">larva</string>
-        <string name="objtype">class</string>
-        <string name="parent">mobile</string>
-    </map>
-
-    <map>
-        <map name="attributes">
-            <map name="biomass">
-                <float name="default">1</float>
-            </map>
-            <map name="mass">
-                <float name="default">1</float>
-            </map>
-        </map>
-        <string name="id">maggot</string>
-        <string name="objtype">class</string>
-        <string name="parent">mobile</string>
-    </map>
 </atlas>

@@ -15,11 +15,26 @@
             <map name="reach">
                 <float name="default">3</float>
             </map>
+            <!-- Characters are by default omnivores and handle both plants and meats. -->
+            <map name="_modifier_eat">
+                <float name="default">1.0</float>
+            </map>
+            <map name="domain">
+                <string name="default">inventory</string>
+            </map>
+            <!-- The max amount of food we can contain in our stomach. -->
+            <map name="_food_max">
+                <float name="default">5</float>
+            </map>
             <map name="__scripts">
                 <list name="default">
                     <map>
                         <string name="language">python</string>
                         <string name="name">world.traits.Hittable.Hittable</string>
+                    </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Metabolizing.Metabolizing</string>
                     </map>
                 </list>
             </map>
