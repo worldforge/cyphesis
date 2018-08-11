@@ -363,11 +363,15 @@ void WorldRouter::resumeWorld()
 /// for each observer.
 void WorldRouter::message(const Operation & op, LocatedEntity & fromEntity)
 {
-    if (op->isDefaultTo() && shouldBroadcastPerception(op)) {
-        OpVector res;
-        fromEntity.broadcast(op, res, LocatedEntity::Visibility::PUBLIC);
-        for (auto& broadcastedOp : res) {
-            m_operationsDispatcher.addOperationToQueue(broadcastedOp, Ref<LocatedEntity>(&fromEntity));
+    if (op->isDefaultTo()) {
+        if (shouldBroadcastPerception(op)) {
+            OpVector res;
+            fromEntity.broadcast(op, res, LocatedEntity::Visibility::PUBLIC);
+            for (auto& broadcastedOp : res) {
+                m_operationsDispatcher.addOperationToQueue(broadcastedOp, Ref<LocatedEntity>(&fromEntity));
+            }
+        } else {
+            //Don't broadcast ops which shouldn't be broadcasted.
         }
     } else {
         m_operationsDispatcher.addOperationToQueue(op, Ref<LocatedEntity>(&fromEntity));
