@@ -43,6 +43,8 @@ class CyPy_Entity : public CyPy_LocatedEntityBase<Ref<Entity>, CyPy_Entity>
 
         static Py::Object start_task(const Ref<Entity>& entity, const Py::Tuple& args);
 
+        static Py::Object mod_property(const Ref<Entity>& entity, const Py::Tuple& args);
+
     protected:
 
         Py::Object send_world(const Py::Tuple& args);
@@ -53,6 +55,9 @@ class CyPy_Entity : public CyPy_LocatedEntityBase<Ref<Entity>, CyPy_Entity>
 
         PYCXX_VARARGS_METHOD_DECL(CyPy_Entity, start_task);
 
+        Py::Object mod_property(const Py::Tuple& args);
+
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Entity, mod_property);
 };
 
 #endif //CYPHESIS_CYPY_ENTITY_H

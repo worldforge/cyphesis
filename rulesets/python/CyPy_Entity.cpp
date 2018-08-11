@@ -59,6 +59,8 @@ void CyPy_Entity::init_type()
     PYCXX_ADD_VARARGS_METHOD(client_error, client_error, "");
 
     PYCXX_ADD_VARARGS_METHOD(send_world, send_world, "");
+    PYCXX_ADD_VARARGS_METHOD(mod_property, mod_property, "");
+
 
     //behaviors().type_object()->tp_base = base;
 
@@ -76,6 +78,12 @@ Py::Object CyPy_Entity::start_task(const Py::Tuple& args)
 {
     return CyPy_Entity::start_task(m_value, args);
 }
+
+Py::Object CyPy_Entity::mod_property(const Py::Tuple& args)
+{
+    return CyPy_Entity::mod_property(m_value, args);
+}
+
 
 Py::Object CyPy_Entity::send_world(const Py::Tuple& args)
 {
@@ -120,4 +128,24 @@ Py::Object CyPy_Entity::start_task(const Ref<Entity>& entity, const Py::Tuple& a
     tp->startTask(verifyString(args[0]), verifyObject<CyPy_Task>(args[1]), entity.get(), res);
 
     return CyPy_Oplist::wrap(std::move(res));
+}
+
+Py::Object CyPy_Entity::mod_property(const Ref<Entity>& entity, const Py::Tuple& args)
+{
+    OpVector res;
+    args.verify_length(1, 2);
+    auto name = verifyString(args.front());
+
+    PropertyBase* prop;
+    if (args.length() == 2) {
+        auto defaultElement = CyPy_Element::asElement(args[1]);
+        prop = entity->modProperty(name, defaultElement);
+    } else {
+        prop = entity->modProperty(name);
+    }
+    Atlas::Message::Element value;
+    if (prop->get(value) != 0) {
+        throw Py::RuntimeError(String::compose("Could not create property '%1'.", name));
+    }
+    return CyPy_Element::asPyObject(value);
 }
