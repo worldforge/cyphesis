@@ -372,6 +372,10 @@ void WorldRouter::message(const Operation & op, LocatedEntity & fromEntity)
             }
         } else {
             //Don't broadcast ops which shouldn't be broadcasted.
+            log(WARNING, String::compose("Trying to broadcast '%1' op from %2, which we don't allow.",
+                                         op->getParent(),
+                                         fromEntity.describeEntity()));
+
         }
     } else {
         m_operationsDispatcher.addOperationToQueue(op, Ref<LocatedEntity>(&fromEntity));
@@ -405,9 +409,6 @@ bool WorldRouter::shouldBroadcastPerception(const Operation & op) const
         op_class == Atlas::Objects::Operation::DISAPPEARANCE_NO) {
         return true;
     }
-    log(WARNING, String::compose("Broadcasting %1 op from %2",
-                                 op->getParent(),
-                                 op->getFrom()));
     return false;
 }
 
