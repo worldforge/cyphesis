@@ -40,42 +40,21 @@ CyPy_Operation::CyPy_Operation(Py::PythonClassInstance* self, Py::Tuple& args, P
         throw Py::TypeError("Must submit argument for operation type.");
     }
 
-    auto typeArg = args.front();
-    if (!typeArg.isString()) {
-        throw Py::TypeError("First argument must be string.");
-    }
+    auto parent = verifyString(args.front());
 
-    Root r = Atlas::Objects::Factories::instance()->createObject(Py::String(typeArg).as_string());
+    Root r = Atlas::Objects::Factories::instance()->createObject(parent);
     m_value = Atlas::Objects::smart_dynamic_cast<RootOperation>(r);
     if (!m_value) {
-        // PyErr_SetString(PyExc_TypeError, "Operation() unknown operation type requested");
-        // return -1;
         m_value = Generic();
-        m_value->setParent(Py::String(typeArg).as_string());
+        m_value->setParent(parent);
     }
-    if (kwds.size()) {
-        if (kwds.hasKey("from_")) {
-            auto fromObj = kwds.getItem("from_");
-            if (fromObj.isString()) {
-                m_value->setFrom(fromObj.as_string());
-            } else if (fromObj.hasAttr("id") && fromObj.getAttr("id").isString()) {
-                m_value->setFrom(fromObj.getAttr("id").as_string());
-            } else {
-                throw Py::TypeError("from is not a string and has no id");
-            }
-        }
 
-        if (kwds.hasKey("to")) {
-            auto toObj = kwds.getItem("to");
-            if (toObj.isString()) {
-                m_value->setTo(toObj.as_string());
-            } else if (toObj.hasAttr("id") && toObj.getAttr("id").isString()) {
-                m_value->setTo(toObj.getAttr("id").as_string());
-            } else {
-                throw Py::TypeError("to is not a string and has no id");
-            }
+    for (auto entry : kwds) {
+        if (entry.first.isString()) {
+            setattro(entry.first.as_string(), entry.second);
         }
     }
+
     if (args.size() > 1) {
         auto& args_list = m_value->modifyArgs();
         for (PyCxx_ssize_t i = 1; i < args.size(); ++i) {
@@ -226,15 +205,15 @@ Py::Object CyPy_Operation::setArgs(const Py::Tuple& args)
 {
     args.verify_length(1);
     auto arg = args.front();
-    if (!arg.isList()) {
+    if (!arg.isSequence()) {
         throw Py::TypeError("Must submit list.");
     }
-    Py::List argsAsList(args.front());
+    Py::Sequence argsAsList(args.front());
     std::vector<Root> argslist;
 
     for (auto item : argsAsList) {
         if (CyPy_Operation::check(item)) {
-            argslist.push_back(Py::PythonClassObject<CyPy_Operation>(item).getCxxObject()->m_value);
+            argslist.push_back(CyPy_Operation::value(item));
         } else if (CyPy_Element::check(item)) {
             auto& e = CyPy_Element::value(item);
             if (!e.isMap()) {
@@ -242,9 +221,8 @@ Py::Object CyPy_Operation::setArgs(const Py::Tuple& args)
             }
             argslist.push_back(Factories::instance()->createObject(e.Map()));
         } else if (CyPy_RootEntity::check(item)) {
-            argslist.push_back(Py::PythonClassObject<CyPy_RootEntity>(item).getCxxObject()->m_value);
+            argslist.push_back(CyPy_RootEntity::value(item));
         } else {
-            //std::cout << "o: " << i << item->ob_type->tp_name << std::endl << std::flush;
             throw Py::TypeError("args contains non Atlas Object");
         }
     }
@@ -372,6 +350,22 @@ Py::Object CyPy_Operation::getattro(const Py::String& name)
         return Py::String(m_value->getParent());
     }
 
+    if (nameStr == "future_seconds") {
+        return getFutureSeconds();
+    }
+    if (nameStr == "name") {
+        return getName();
+    }
+    if (nameStr == "serialno") {
+        return getSerialno();
+    }
+    if (nameStr == "refno") {
+        return getRefno();
+    }
+    if (nameStr == "args") {
+        return getArgs();
+    }
+
     return PythonExtensionBase::getattro(name);
 }
 
@@ -379,28 +373,47 @@ int CyPy_Operation::setattro(const Py::String& name, const Py::Object& attr)
 {
     auto nameStr = name.as_string();
 
-    //TODO: Original code looked for an attribute "id" in the submitted "attr" object.
-        //We've kept this, but it's not clear exactly why it's this way. Perhaps look into changing it?
     if (nameStr == "from_") {
-        if (attr.hasAttr("id")) {
-            auto inner = attr.getAttr("id");
-            if (inner.isString()) {
-                m_value->setFrom(Py::String(inner));
-                return 0;
-            }
+        if (attr.isString()) {
+            m_value->setFrom(attr.as_string());
+        } else if (attr.hasAttr("id") && attr.getAttr("id").isString()) {
+            m_value->setFrom(attr.getAttr("id").as_string());
+        } else {
+            throw Py::TypeError("from_ is neither a string nor an object with an 'id' attribute");
         }
-        throw Py::TypeError("invalid from_");
+        return 0;
     }
     if (nameStr == "to") {
-        if (attr.hasAttr("id")) {
-            auto inner = attr.getAttr("id");
-            if (inner.isString()) {
-                m_value->setTo(Py::String(inner));
-                return 0;
-            }
+        if (attr.isString()) {
+            m_value->setTo(attr.as_string());
+        } else if (attr.hasAttr("id") && attr.getAttr("id").isString()) {
+            m_value->setTo(attr.getAttr("id").as_string());
+        } else {
+            throw Py::TypeError("to is neither a string nor an object with an 'id' attribute");
         }
-        throw Py::TypeError("invalid to_");
+        return 0;
     }
+    if (nameStr == "future_seconds") {
+        m_value->setFutureSeconds(verifyFloat(attr));
+        return 0;
+    }
+    if (nameStr == "name") {
+        m_value->setName(verifyString(attr));
+        return 0;
+    }
+    if (nameStr == "serialno") {
+        m_value->setSerialno(verifyLong(attr));
+        return 0;
+    }
+    if (nameStr == "refno") {
+        m_value->setRefno(verifyLong(attr));
+        return 0;
+    }
+    if (nameStr == "args") {
+        setArgs(Py::Tuple(attr));
+        return 0;
+    }
+
     throw Py::AttributeError("unknown attribute");
 }
 

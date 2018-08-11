@@ -112,11 +112,11 @@ int main()
     run_python_string("assert type(o.from_) == str");
     run_python_string("assert type(o.to) == str");
     run_python_string("assert type(o.id) == str");
-    expect_python_error("o.from_='1'", PyExc_TypeError);
+    run_python_string("o.from_='1'");
     expect_python_error("o.from_=1", PyExc_TypeError);
     expect_python_error("o.from_=Message({'id': 1})", PyExc_TypeError);
     run_python_string("o.from_=Message({'id': '1'})");
-    expect_python_error("o.to='1'", PyExc_TypeError);
+    run_python_string("o.to='1'");
     expect_python_error("o.to=1", PyExc_TypeError);
     expect_python_error("o.to=Message({'id': 1})", PyExc_TypeError);
     run_python_string("o.to=Message({'id': '1'})");

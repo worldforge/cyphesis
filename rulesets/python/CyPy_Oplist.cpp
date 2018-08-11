@@ -50,14 +50,14 @@ void CyPy_Oplist::init_type()
 void CyPy_Oplist::appendToList(const Py::Object& op, std::vector<Atlas::Objects::Operation::RootOperation>& list)
 {
     if (CyPy_Operation::check(op)) {
-        Py::PythonClassObject<CyPy_Operation> opObj(op);
-        if (!opObj.getCxxObject()->m_value.isValid()) {
+        auto& rootOp = CyPy_Operation::value(op);
+        if (!rootOp.isValid()) {
             throw Py::ValueError("Invalid Operation in other of Oplist.num_add");
         }
-        list.push_back(opObj.getCxxObject()->m_value);
+        list.push_back(rootOp);
     } else if (CyPy_Oplist::check(op)) {
-        Py::PythonClassObject<CyPy_Oplist> opObj(op);
-        for (auto& entry : opObj.getCxxObject()->m_value) {
+        auto& opList = CyPy_Oplist::value(op);
+        for (auto& entry : opList) {
             if (!entry.isValid()) {
                 throw Py::ValueError("Invalid Operation in other of Oplist.num_add");
             }
